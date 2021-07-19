@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD373CE807
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643043CE6EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348084AbhGSQgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:36:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38040 "EHLO mail.kernel.org"
+        id S1349258AbhGSQR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:17:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348112AbhGSPYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C679C6143A;
-        Mon, 19 Jul 2021 16:01:48 +0000 (UTC)
+        id S1344059AbhGSPK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:10:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0ECB6138C;
+        Mon, 19 Jul 2021 15:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710509;
-        bh=lMXqqgo3Fi6EqGKVYChvs0Q6edpm5Mnt9CW+CR7CCnw=;
+        s=korg; t=1626709897;
+        bh=W0ztL6wgycmfs0UAmxkvrauLtxZFCImL3jwtyFwNpUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QgKLrY1GLqDdR6kSWSQyf7Q2yQ3U6CM5qBct0NrvGmyYdgZ3DBrmTLGdyefJTIw+Q
-         EKb6OMtIpldXiyZe1JUGaxLhVXbeqtCbGwo8o8luvLfmV2DfMfX/58nIAaQ5GCcDOg
-         Z1ddgYtDVVvvL/K02eZ18sFulAKUYeIN/c65bF2E=
+        b=BnT7arM5IBeH+gwqdYTtujId6JJ1/saItG0PCXckS7N156WfdjT/1cuNYe3t/eirA
+         yjypKcjVxb02suZqTHcJszRXOfCZ6o/x1GJ17ayTXozBD9bLBuDXRCIAT9OMI54JZ1
+         U+BFWFyX2qThaIig2Lw51hzOFbrWs7tqnS/JdK80=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gowtham Tammana <g-tammana@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 221/243] ARM: dts: dra7: Fix duplicate USB4 target module node
+Subject: [PATCH 5.4 142/149] firmware: turris-mox-rwtm: fail probing when firmware does not support hwrng
 Date:   Mon, 19 Jul 2021 16:54:10 +0200
-Message-Id: <20210719144948.061679916@linuxfoundation.org>
+Message-Id: <20210719144934.883712083@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,226 +43,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gowtham Tammana <g-tammana@ti.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 78b4b165280d3d70e7a217599f0c06a4c0bb11f9 ]
+[ Upstream commit 2eab59cf0d2036a5a9e264f719b71c21ccf679c2 ]
 
-With [1] USB4 target-module node got defined in dra74x.dtsi file.
-However, the earlier definition in [2] was not removed, and this
-duplication of the target module is causing boot failure on dra74
-variant boards - dra7-evm, dra76-evm.
+When Marvell's rWTM firmware, which does not support the GET_RANDOM
+command, is used, kernel prints an error message
+  hwrng: no data available
+every 10 seconds.
 
-USB4 is only present in DRA74x variants, so keeping the entry in
-dra74x.dtsi and removing it from the top level interconnect hierarchy
-dra7-l4.dtsi file. This change makes the USB4 target module no longer
-visible to AM5718, DRA71x and DRA72x so removing references to it in
-their respective dts files.
+Fail probing of this driver if the rWTM firmware does not support the
+GET_RANDOM command.
 
-[1]: commit c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for
-dra7 dwc3")
-[2]: commit 549fce068a311 ("ARM: dts: dra7: Add l4 interconnect
-hierarchy and ti-sysc data")
-
-Fixes: c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for dra7 dwc3")
-Signed-off-by: Gowtham Tammana <g-tammana@ti.com>
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Fixes: 389711b37493 ("firmware: Add Turris Mox rWTM firmware driver")
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/am5718.dtsi  |  6 +--
- arch/arm/boot/dts/dra7-l4.dtsi | 22 --------
- arch/arm/boot/dts/dra71x.dtsi  |  4 --
- arch/arm/boot/dts/dra72x.dtsi  |  4 --
- arch/arm/boot/dts/dra74x.dtsi  | 92 ++++++++++++++++++----------------
- 5 files changed, 50 insertions(+), 78 deletions(-)
+ drivers/firmware/turris-mox-rwtm.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/arch/arm/boot/dts/am5718.dtsi b/arch/arm/boot/dts/am5718.dtsi
-index ebf4d3cc1cfb..6d7530a48c73 100644
---- a/arch/arm/boot/dts/am5718.dtsi
-+++ b/arch/arm/boot/dts/am5718.dtsi
-@@ -17,17 +17,13 @@
-  * VCP1, VCP2
-  * MLB
-  * ISS
-- * USB3, USB4
-+ * USB3
-  */
+diff --git a/drivers/firmware/turris-mox-rwtm.c b/drivers/firmware/turris-mox-rwtm.c
+index e22ad73d4c86..9a6cf5af27a3 100644
+--- a/drivers/firmware/turris-mox-rwtm.c
++++ b/drivers/firmware/turris-mox-rwtm.c
+@@ -247,6 +247,27 @@ static int mox_get_board_info(struct mox_rwtm *rwtm)
+ 	return 0;
+ }
  
- &usb3_tm {
- 	status = "disabled";
- };
- 
--&usb4_tm {
--	status = "disabled";
--};
--
- &atl_tm {
- 	status = "disabled";
- };
-diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
-index a294a02f2d23..1dafce92fc76 100644
---- a/arch/arm/boot/dts/dra7-l4.dtsi
-+++ b/arch/arm/boot/dts/dra7-l4.dtsi
-@@ -4095,28 +4095,6 @@
- 			};
- 		};
- 
--		usb4_tm: target-module@140000 {		/* 0x48940000, ap 75 3c.0 */
--			compatible = "ti,sysc-omap4", "ti,sysc";
--			reg = <0x140000 0x4>,
--			      <0x140010 0x4>;
--			reg-names = "rev", "sysc";
--			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
--			ti,sysc-midle = <SYSC_IDLE_FORCE>,
--					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>,
--					<SYSC_IDLE_SMART_WKUP>;
--			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
--					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>,
--					<SYSC_IDLE_SMART_WKUP>;
--			/* Domains (P, C): l3init_pwrdm, l3init_clkdm */
--			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
--			clock-names = "fck";
--			#address-cells = <1>;
--			#size-cells = <1>;
--			ranges = <0x0 0x140000 0x20000>;
--		};
--
- 		target-module@170000 {			/* 0x48970000, ap 21 0a.0 */
- 			compatible = "ti,sysc-omap4", "ti,sysc";
- 			reg = <0x170010 0x4>;
-diff --git a/arch/arm/boot/dts/dra71x.dtsi b/arch/arm/boot/dts/dra71x.dtsi
-index cad0e4a2bd8d..9c270d8f75d5 100644
---- a/arch/arm/boot/dts/dra71x.dtsi
-+++ b/arch/arm/boot/dts/dra71x.dtsi
-@@ -11,7 +11,3 @@
- &rtctarget {
- 	status = "disabled";
- };
--
--&usb4_tm {
--	status = "disabled";
--};
-diff --git a/arch/arm/boot/dts/dra72x.dtsi b/arch/arm/boot/dts/dra72x.dtsi
-index d403acc754b6..f3e934ef7d3e 100644
---- a/arch/arm/boot/dts/dra72x.dtsi
-+++ b/arch/arm/boot/dts/dra72x.dtsi
-@@ -108,7 +108,3 @@
- &pcie2_rc {
- 	compatible = "ti,dra726-pcie-rc", "ti,dra7-pcie";
- };
--
--&usb4_tm {
--	status = "disabled";
--};
-diff --git a/arch/arm/boot/dts/dra74x.dtsi b/arch/arm/boot/dts/dra74x.dtsi
-index e1850d6c841a..b4e07d99ffde 100644
---- a/arch/arm/boot/dts/dra74x.dtsi
-+++ b/arch/arm/boot/dts/dra74x.dtsi
-@@ -49,49 +49,6 @@
- 			reg = <0x41500000 0x100>;
- 		};
- 
--		target-module@48940000 {
--			compatible = "ti,sysc-omap4", "ti,sysc";
--			reg = <0x48940000 0x4>,
--			      <0x48940010 0x4>;
--			reg-names = "rev", "sysc";
--			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
--			ti,sysc-midle = <SYSC_IDLE_FORCE>,
--					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>,
--					<SYSC_IDLE_SMART_WKUP>;
--			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
--					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>,
--					<SYSC_IDLE_SMART_WKUP>;
--			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
--			clock-names = "fck";
--			#address-cells = <1>;
--			#size-cells = <1>;
--			ranges = <0x0 0x48940000 0x20000>;
--
--			omap_dwc3_4: omap_dwc3_4@0 {
--				compatible = "ti,dwc3";
--				reg = <0 0x10000>;
--				interrupts = <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>;
--				#address-cells = <1>;
--				#size-cells = <1>;
--				utmi-mode = <2>;
--				ranges;
--				status = "disabled";
--				usb4: usb@10000 {
--					compatible = "snps,dwc3";
--					reg = <0x10000 0x17000>;
--					interrupts = <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
--						     <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
--						     <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>;
--					interrupt-names = "peripheral",
--							  "host",
--							  "otg";
--					maximum-speed = "high-speed";
--					dr_mode = "otg";
--				};
--			};
--		};
- 
- 		target-module@41501000 {
- 			compatible = "ti,sysc-omap2", "ti,sysc";
-@@ -224,3 +181,52 @@
- &pcie2_rc {
- 	compatible = "ti,dra746-pcie-rc", "ti,dra7-pcie";
- };
++static int check_get_random_support(struct mox_rwtm *rwtm)
++{
++	struct armada_37xx_rwtm_tx_msg msg;
++	int ret;
 +
-+&l4_per3 {
-+	segment@0 {
-+		usb4_tm: target-module@140000 {         /* 0x48940000, ap 75 3c.0 */
-+			compatible = "ti,sysc-omap4", "ti,sysc";
-+			reg = <0x140000 0x4>,
-+			      <0x140010 0x4>;
-+			reg-names = "rev", "sysc";
-+			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
-+			ti,sysc-midle = <SYSC_IDLE_FORCE>,
-+					<SYSC_IDLE_NO>,
-+					<SYSC_IDLE_SMART>,
-+					<SYSC_IDLE_SMART_WKUP>;
-+			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
-+					<SYSC_IDLE_NO>,
-+					<SYSC_IDLE_SMART>,
-+					<SYSC_IDLE_SMART_WKUP>;
-+			/* Domains (P, C): l3init_pwrdm, l3init_clkdm */
-+			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
-+			clock-names = "fck";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges = <0x0 0x140000 0x20000>;
++	msg.command = MBOX_CMD_GET_RANDOM;
++	msg.args[0] = 1;
++	msg.args[1] = rwtm->buf_phys;
++	msg.args[2] = 4;
 +
-+			omap_dwc3_4: omap_dwc3_4@0 {
-+				compatible = "ti,dwc3";
-+				reg = <0 0x10000>;
-+				interrupts = <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>;
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+				utmi-mode = <2>;
-+				ranges;
-+				status = "disabled";
-+				usb4: usb@10000 {
-+					compatible = "snps,dwc3";
-+					reg = <0x10000 0x17000>;
-+					interrupts = <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
-+						     <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
-+						     <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>;
-+					interrupt-names = "peripheral",
-+							  "host",
-+							  "otg";
-+					maximum-speed = "high-speed";
-+					dr_mode = "otg";
-+				};
-+			};
-+		};
-+	};
-+};
++	ret = mbox_send_message(rwtm->mbox, &msg);
++	if (ret < 0)
++		return ret;
++
++	ret = wait_for_completion_timeout(&rwtm->cmd_done, HZ / 2);
++	if (ret < 0)
++		return ret;
++
++	return mox_get_status(MBOX_CMD_GET_RANDOM, rwtm->reply.retval);
++}
++
+ static int mox_hwrng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+ {
+ 	struct mox_rwtm *rwtm = (struct mox_rwtm *) rng->priv;
+@@ -338,6 +359,13 @@ static int turris_mox_rwtm_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		dev_warn(dev, "Cannot read board information: %i\n", ret);
+ 
++	ret = check_get_random_support(rwtm);
++	if (ret < 0) {
++		dev_notice(dev,
++			   "Firmware does not support the GET_RANDOM command\n");
++		goto free_channel;
++	}
++
+ 	rwtm->hwrng.name = DRIVER_NAME "_hwrng";
+ 	rwtm->hwrng.read = mox_hwrng_read;
+ 	rwtm->hwrng.priv = (unsigned long) rwtm;
 -- 
 2.30.2
 
