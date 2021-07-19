@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5DE3CDA1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117443CDA1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244444AbhGSOds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:33:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38286 "EHLO mail.kernel.org"
+        id S244371AbhGSOd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:33:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243791AbhGSO1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:27:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBB936120E;
-        Mon, 19 Jul 2021 15:07:36 +0000 (UTC)
+        id S243802AbhGSO1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:27:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BC9261249;
+        Mon, 19 Jul 2021 15:07:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707257;
-        bh=n+0XJynvQ3g2TJBNwx1g29f/04ZhxenECKti1p1dDs4=;
+        s=korg; t=1626707260;
+        bh=CIADLAAL6WpqfZGPLy4acIuop1uxaFMKRGUR8ITcPMY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z1gzdGVCkXhhxzqG2cYIHQcDkmeOe3GUzExUW9hHSKv0marXfifp5rLuucFdSDR2g
-         cApGTn9Dzghmg+jcMbDQtWpYzME2srqToV9XlEvNZK92y17q/AzKkDpeqH0XoslDz8
-         AJ1GvoqjBPW7fVsoDTuTi/8dP66zB9+9KI2WJKhU=
+        b=FEGDZao4aM3urJU7LmbtULN0FZuz+GAJN8QUBgZQ3EIa9v1gVp+MJXhOpD3lGhuXl
+         hrehl95MPIswAat5tbi2Qae+P1zPIBxtXe47rkGw39hM9CRZ8zdYW4NNBAXPU5eUfQ
+         MKnPl1UD8j3TGtCMTOhp+Z+QajfUJSdxtEVmZEXw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 088/245] i40e: Fix error handling in i40e_vsi_open
-Date:   Mon, 19 Jul 2021 16:50:30 +0200
-Message-Id: <20210719144943.253013544@linuxfoundation.org>
+Subject: [PATCH 4.9 089/245] Bluetooth: mgmt: Fix slab-out-of-bounds in tlv_data_is_valid
+Date:   Mon, 19 Jul 2021 16:50:31 +0200
+Message-Id: <20210719144943.283310861@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -41,36 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-[ Upstream commit 9c04cfcd4aad232e36306cdc5c74cd9fc9148a7e ]
+[ Upstream commit 799acb9347915bfe4eac0ff2345b468f0a1ca207 ]
 
-When vsi->type == I40E_VSI_FDIR, we have caught the return value of
-i40e_vsi_request_irq() but without further handling. Check and execute
-memory clean on failure just like the other i40e_vsi_request_irq().
+This fixes parsing of LTV entries when the length is 0.
 
-Fixes: 8a9eb7d3cbcab ("i40e: rework fdir setup and teardown")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Found with:
+
+tools/mgmt-tester -s "Add Advertising - Success (ScRsp only)"
+
+Add Advertising - Success (ScRsp only) - run
+  Sending Add Advertising (0x003e)
+  Test condition added, total 1
+[   11.004577] ==================================================================
+[   11.005292] BUG: KASAN: slab-out-of-bounds in tlv_data_is_valid+0x87/0xe0
+[   11.005984] Read of size 1 at addr ffff888002c695b0 by task mgmt-tester/87
+[   11.006711]
+[   11.007176]
+[   11.007429] Allocated by task 87:
+[   11.008151]
+[   11.008438] The buggy address belongs to the object at ffff888002c69580
+[   11.008438]  which belongs to the cache kmalloc-64 of size 64
+[   11.010526] The buggy address is located 48 bytes inside of
+[   11.010526]  64-byte region [ffff888002c69580, ffff888002c695c0)
+[   11.012423] The buggy address belongs to the page:
+[   11.013291]
+[   11.013544] Memory state around the buggy address:
+[   11.014359]  ffff888002c69480: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+[   11.015453]  ffff888002c69500: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+[   11.016232] >ffff888002c69580: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
+[   11.017010]                                      ^
+[   11.017547]  ffff888002c69600: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
+[   11.018296]  ffff888002c69680: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+[   11.019116] ==================================================================
+
+Fixes: 2bb36870e8cb2 ("Bluetooth: Unify advertising instance flags check")
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/bluetooth/mgmt.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 0b1ee353f415..832fffed4a1f 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -5478,6 +5478,8 @@ int i40e_vsi_open(struct i40e_vsi *vsi)
- 			 dev_driver_string(&pf->pdev->dev),
- 			 dev_name(&pf->pdev->dev));
- 		err = i40e_vsi_request_irq(vsi, int_name);
-+		if (err)
-+			goto err_setup_rx;
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index bca1408f815f..fa9526712b0a 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -6087,6 +6087,9 @@ static bool tlv_data_is_valid(struct hci_dev *hdev, u32 adv_flags, u8 *data,
+ 	for (i = 0, cur_len = 0; i < len; i += (cur_len + 1)) {
+ 		cur_len = data[i];
  
- 	} else {
- 		err = -EINVAL;
++		if (!cur_len)
++			continue;
++
+ 		if (data[i + 1] == EIR_FLAGS &&
+ 		    (!is_adv_data || flags_managed(adv_flags)))
+ 			return false;
 -- 
 2.30.2
 
