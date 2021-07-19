@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1BA3CE744
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894113CE88A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236829AbhGSQYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:24:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47200 "EHLO mail.kernel.org"
+        id S1352255AbhGSQmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:42:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240148AbhGSPNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:13:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 231DB613F7;
-        Mon, 19 Jul 2021 15:53:23 +0000 (UTC)
+        id S1348560AbhGSPYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F1E1601FD;
+        Mon, 19 Jul 2021 16:05:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710004;
-        bh=lCdk4KvdkqhuT7eU4nbzEYIv1Ck4ZGJw/yP9mk5WzZI=;
+        s=korg; t=1626710734;
+        bh=4cmWkVFhdTzQWY9usqWWMyf40gKiTVqMUh3jZzfwEhU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kJdkuKAU6OZ7tA7IfsUR8i10WDiHgyEiAojBVJ/BlRtZ5tIVMutC79ICeyZuOXP+U
-         egI+tyZ+r8wfo/BXWEDI0kkDch4E2PumSpXP1mKuK8fBhLeLqCQ2OwJwRAkrc2fqqf
-         rtPRRSm+qpxejQ9l7yB5Hskc67fNw3ZkAWwDz85o=
+        b=ntrnK3Q8yZ1u/J9PFmcCqwnikfseV2L4GOYhvRwzNciXORzsLgb8REIpMZyu8MmE2
+         KEx+If/sygyctoAEgQoy9hkvim4qq/b2rDTtYuzDnrMVOWfYLP0xAPkaTdhYxQoYPr
+         pxg0pjpW3jDTZm3mvp3F8Jju3oUmu6pQLhu+uKEw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 004/243] KVM: x86: Use guest MAXPHYADDR from CPUID.0x8000_0008 iff TDP is enabled
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>, Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 087/351] mfd: da9052/stmpe: Add and modify MODULE_DEVICE_TABLE
 Date:   Mon, 19 Jul 2021 16:50:33 +0200
-Message-Id: <20210719144941.064675417@linuxfoundation.org>
+Message-Id: <20210719144947.379834520@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-commit 4bf48e3c0aafd32b960d341c4925b48f416f14a5 upstream.
+[ Upstream commit 4700ef326556ed74aba188f12396740a8c1c21dd ]
 
-Ignore the guest MAXPHYADDR reported by CPUID.0x8000_0008 if TDP, i.e.
-NPT, is disabled, and instead use the host's MAXPHYADDR.  Per AMD'S APM:
+This patch adds/modifies MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-  Maximum guest physical address size in bits. This number applies only
-  to guests using nested paging. When this field is zero, refer to the
-  PhysAddrSize field for the maximum guest physical address size.
-
-Fixes: 24c82e576b78 ("KVM: Sanitize cpuid")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210623230552.4027702-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/cpuid.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/mfd/da9052-i2c.c | 1 +
+ drivers/mfd/stmpe-i2c.c  | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -827,8 +827,14 @@ static inline int __do_cpuid_func(struct
- 		unsigned virt_as = max((entry->eax >> 8) & 0xff, 48U);
- 		unsigned phys_as = entry->eax & 0xff;
+diff --git a/drivers/mfd/da9052-i2c.c b/drivers/mfd/da9052-i2c.c
+index 47556d2d9abe..8ebfc7bbe4e0 100644
+--- a/drivers/mfd/da9052-i2c.c
++++ b/drivers/mfd/da9052-i2c.c
+@@ -113,6 +113,7 @@ static const struct i2c_device_id da9052_i2c_id[] = {
+ 	{"da9053-bc", DA9053_BC},
+ 	{}
+ };
++MODULE_DEVICE_TABLE(i2c, da9052_i2c_id);
  
--		if (!g_phys_as)
-+		/*
-+		 * Use bare metal's MAXPHADDR if the CPU doesn't report guest
-+		 * MAXPHYADDR separately, or if TDP (NPT) is disabled, as the
-+		 * guest version "applies only to guests using nested paging".
-+		 */
-+		if (!g_phys_as || !tdp_enabled)
- 			g_phys_as = phys_as;
-+
- 		entry->eax = g_phys_as | (virt_as << 8);
- 		entry->edx = 0;
- 		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
+ #ifdef CONFIG_OF
+ static const struct of_device_id dialog_dt_ids[] = {
+diff --git a/drivers/mfd/stmpe-i2c.c b/drivers/mfd/stmpe-i2c.c
+index 61aa020199f5..cd2f45257dc1 100644
+--- a/drivers/mfd/stmpe-i2c.c
++++ b/drivers/mfd/stmpe-i2c.c
+@@ -109,7 +109,7 @@ static const struct i2c_device_id stmpe_i2c_id[] = {
+ 	{ "stmpe2403", STMPE2403 },
+ 	{ }
+ };
+-MODULE_DEVICE_TABLE(i2c, stmpe_id);
++MODULE_DEVICE_TABLE(i2c, stmpe_i2c_id);
+ 
+ static struct i2c_driver stmpe_i2c_driver = {
+ 	.driver = {
+-- 
+2.30.2
+
 
 
