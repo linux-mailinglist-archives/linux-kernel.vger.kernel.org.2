@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE5E3CDA26
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547A53CDA19
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244537AbhGSOeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:34:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39348 "EHLO mail.kernel.org"
+        id S244338AbhGSOdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:33:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242775AbhGSO1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:27:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97A2A61241;
-        Mon, 19 Jul 2021 15:07:28 +0000 (UTC)
+        id S243756AbhGSO1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:27:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A32560FDC;
+        Mon, 19 Jul 2021 15:07:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707249;
-        bh=nPqDtAEpokEUH1MZYzEBofl/ycrJlSrA4FUvobEDXbc=;
+        s=korg; t=1626707251;
+        bh=KliTdoe5hJcH0PpJx2ajeKVcSDVcyge+e4e1Kk4KVVA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QXhLbsGwzkGr+EVDKrFldKUGSEf1SjficrzYYH1B2s3sJmj+kXE1GN168TszlLnUy
-         DvKZMeaw9Lxyy21s1afRCprbe7wTRa+q+sMzKWT+7JnkHexvTOAvzP+7eFIS6ft4zH
-         6MlfNX9p03uNaQB+pvr3c4TQzdwfHbV4E9sC8DyI=
+        b=DQKqh1Q5hPq9QeFYUTuqVUtcli5cv1J/oihmG+lCCG0qzI4giSXQDvWFpFCy3QYaa
+         muXHNr89B30HDSQ35szSspnrgF57a4X7TN2V2g4NzjHhoSF9+H0TKdXv8WUuizD1pY
+         IYg1i5umaO53/5CGPiTQjvcZn3osnikzutR03Nt8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 085/245] net: ethernet: ezchip: fix UAF in nps_enet_remove
-Date:   Mon, 19 Jul 2021 16:50:27 +0200
-Message-Id: <20210719144943.150784116@linuxfoundation.org>
+Subject: [PATCH 4.9 086/245] net: ethernet: ezchip: fix error handling
+Date:   Mon, 19 Jul 2021 16:50:28 +0200
+Message-Id: <20210719144943.184081878@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -42,12 +42,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit e4b8700e07a86e8eab6916aa5c5ba99042c34089 ]
+[ Upstream commit 0de449d599594f5472e00267d651615c7f2c6c1d ]
 
-priv is netdev private data, but it is used
-after free_netdev(). It can cause use-after-free when accessing priv
-pointer. So, fix it by moving free_netdev() after netif_napi_del()
-call.
+As documented at drivers/base/platform.c for platform_get_irq:
+
+ * Gets an IRQ for a platform device and prints an error message if finding the
+ * IRQ fails. Device drivers should check the return value for errors so as to
+ * not pass a negative integer value to the request_irq() APIs.
+
+So, the driver should check that platform_get_irq() return value
+is _negative_, not that it's equal to zero, because -ENXIO (return
+value from request_irq() if irq was not found) will
+pass this check and it leads to passing negative irq to request_irq()
 
 Fixes: 0dd077093636 ("NET: Add ezchip ethernet driver")
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
@@ -58,19 +64,18 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/ezchip/nps_enet.c b/drivers/net/ethernet/ezchip/nps_enet.c
-index 223f35cc034c..1edf1c76c22c 100644
+index 1edf1c76c22c..6de29f2a0a09 100644
 --- a/drivers/net/ethernet/ezchip/nps_enet.c
 +++ b/drivers/net/ethernet/ezchip/nps_enet.c
-@@ -659,8 +659,8 @@ static s32 nps_enet_remove(struct platform_device *pdev)
- 	struct nps_enet_priv *priv = netdev_priv(ndev);
+@@ -624,7 +624,7 @@ static s32 nps_enet_probe(struct platform_device *pdev)
  
- 	unregister_netdev(ndev);
--	free_netdev(ndev);
- 	netif_napi_del(&priv->napi);
-+	free_netdev(ndev);
- 
- 	return 0;
- }
+ 	/* Get IRQ number */
+ 	priv->irq = platform_get_irq(pdev, 0);
+-	if (!priv->irq) {
++	if (priv->irq < 0) {
+ 		dev_err(dev, "failed to retrieve <irq Rx-Tx> value from device tree\n");
+ 		err = -ENODEV;
+ 		goto out_netdev;
 -- 
 2.30.2
 
