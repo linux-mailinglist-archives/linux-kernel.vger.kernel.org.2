@@ -2,59 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988673CD0C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71B53CD0CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235934AbhGSIrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:47:25 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:40510 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234868AbhGSIrS (ORCPT
+        id S235886AbhGSIrs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Jul 2021 04:47:48 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:50818 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234868AbhGSIrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:47:18 -0400
-Received: by mail-wr1-f51.google.com with SMTP id l7so21144595wrv.7;
-        Mon, 19 Jul 2021 02:27:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gdNcKm/5tWIKzoJJEWGoc8HuwkdVdE+Ye382bk1RyWI=;
-        b=iLdfzB9gkSOmRgKAfGqx8+yxJlQNcZYTBx2GkwjWY8arlPlvJJFm6Vqtr1fA7YOPL/
-         su06eTFEKu/U3cyLk/gkm0NdEkpenxBP0OkuS1psd6yRYpIDuSsU4EGC3oPfq52BMouN
-         d4VPDFtycTsRvLCdkO+yyNsxegaGoMNWOnJPlFDXn3VGsYFrF9Uqel7JythFd68nDwof
-         sF6fxTrEag4qqf7VvAuXuIqjh2Hu1xNe6YAhNPuQioJ5m7Mk+f6BId3Pi23WZ8xY7cPd
-         s5l51vyrBjYN7hz4LShqVJpQfyfoNRdSfrvF5WAuvp4CPUItbkfj4jNorY7TvBmACDwV
-         UnKg==
-X-Gm-Message-State: AOAM532M/KAklV+kbJGpclwsLCS0N1+1WebMXY2RuQC9/d2POeVxbQD1
-        dJxtjhcfk9kNTQTBgGYDREw=
-X-Google-Smtp-Source: ABdhPJwj3PNr8oe9ZBWc4Yv5ZV7cI+XIJnDGOWg5TfuS07JxXdIVRp5On5n5HjJHgCKgTE6JaP0mOA==
-X-Received: by 2002:a05:6000:18ae:: with SMTP id b14mr27745167wri.427.1626686877784;
-        Mon, 19 Jul 2021 02:27:57 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id d29sm23874777wrb.63.2021.07.19.02.27.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 02:27:57 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 09:27:56 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, kys@microsoft.com,
-        linux-kernel@vger.kernel.org, Wei Liu <wei.liu@kernel.org>
-Subject: Re: [PATCH v3,hyperv-fixes] Drivers: hv: vmbus: Fix duplicate CPU
- assignments within a device
-Message-ID: <20210719092756.p4pg356ljhyrho42@liuwe-devbox-debian-v2>
-References: <1626459673-17420-1-git-send-email-haiyangz@microsoft.com>
+        Mon, 19 Jul 2021 04:47:45 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 8799C6074005;
+        Mon, 19 Jul 2021 11:28:15 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id mOx5PEkD266R; Mon, 19 Jul 2021 11:28:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 0CBD06169BCD;
+        Mon, 19 Jul 2021 11:28:15 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id SIFyXQH69MuA; Mon, 19 Jul 2021 11:28:14 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id CCEAA6074005;
+        Mon, 19 Jul 2021 11:28:14 +0200 (CEST)
+Date:   Mon, 19 Jul 2021 11:28:14 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     Pintu Agarwal <pintu.ping@gmail.com>
+Cc:     Greg KH <greg@kroah.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Sean Nyekjaer <sean@geanix.com>,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>
+Message-ID: <1458549943.44607.1626686894648.JavaMail.zimbra@nod.at>
+In-Reply-To: <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com>
+References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com> <YPGojf7hX//Wn5su@kroah.com> <568938486.33366.1626452816917.JavaMail.zimbra@nod.at> <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com>
+Subject: Re: MTD: How to get actual image size from MTD partition
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626459673-17420-1-git-send-email-haiyangz@microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: How to get actual image size from MTD partition
+Thread-Index: HGpmZleyphvaG4K0/EnAjW05MlN5eA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 11:21:13AM -0700, Haiyang Zhang wrote:
-[...]
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-> Tested-by: Michael Kelley <mikelley@microsoft.com>
+----- Ursprüngliche Mail -----
+> Von: "Pintu Agarwal" <pintu.ping@gmail.com>
+> An: "richard" <richard@nod.at>
+> CC: "Greg KH" <greg@kroah.com>, "linux-kernel" <linux-kernel@vger.kernel.org>, "linux-mtd"
+> <linux-mtd@lists.infradead.org>, "linux-fsdevel" <linux-fsdevel@vger.kernel.org>, "Phillip Lougher"
+> <phillip@squashfs.org.uk>, "Sean Nyekjaer" <sean@geanix.com>, "Kernelnewbies" <kernelnewbies@kernelnewbies.org>
+> Gesendet: Montag, 19. Juli 2021 11:09:46
+> Betreff: Re: MTD: How to get actual image size from MTD partition
 
-Applied to hyperv-fixes. Thanks.
+> On Fri, 16 Jul 2021 at 21:56, Richard Weinberger <richard@nod.at> wrote:
+> 
+>> >> My requirement:
+>> >> To find the checksum of a real image in runtime which is flashed in an
+>> >> MTD partition.
+>> >
+>> > Try using the dm-verity module for ensuring that a block device really
+>> > is properly signed before mounting it.  That's what it was designed for
+>> > and is independent of the block device type.
+>>
+>> MTDs are not block devices. :-)
+>>
+> Is it possible to use dm-verity with squashfs ?
+> We are using squashfs for our rootfs which is an MTD block /dev/mtdblock44
+
+Well, if you emulate a block device using mtdblock, you can use dm-verity and friends.
+Also consider using ubiblock. It offers better performance and wear leveling support.
+
+Thanks,
+//richard
