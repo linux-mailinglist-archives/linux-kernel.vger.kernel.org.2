@@ -2,115 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68DF3CCCA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 05:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA38B3CCCA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 05:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhGSD2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 23:28:34 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:49555
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S234360AbhGSD2d (ORCPT
+        id S234296AbhGSDay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 23:30:54 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:11340 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233720AbhGSDaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 23:28:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=Lcw52HFkeq79mvMCsUXc/S2q9uj7FXlOnZGYD5PeKys=; b=W
-        QlLosoW25H2O8B0qQBk7NkSVUV40cyeeEgw8Fg2OFOfLFfJDJCyNy2AH65mSQpTb
-        Nt6Mbuqm0zQ7+QpN2h9PYlkD3StJFeW1bD/NCvy5JcFsNEecmAw6Bdq7M0xAuLQV
-        GL+w5bakBb46YZpG7oZLA/2vQx1UV3hEYwuka8ZPbc=
-Received: from localhost.localdomain (unknown [10.162.86.133])
-        by app1 (Coremail) with SMTP id XAUFCgDXt2iY8PRgLyaIAA--.722S3;
-        Mon, 19 Jul 2021 11:25:12 +0800 (CST)
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
-        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] xen-blkback: Convert from atomic_t to refcount_t on xen_blkif->refcnt
-Date:   Mon, 19 Jul 2021 11:25:06 +0800
-Message-Id: <1626665106-49298-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgDXt2iY8PRgLyaIAA--.722S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF17ZrWkWr4fGryfZwb_yoW8Zw4rpF
-        s8Aa4xJFWUKF1xW3ZrAa1I9a43Ja98JFW5Way7C3s8Zr9xtwn2y3ZYkryagry8ZrZ3Jrn2
-        q3ZIgw18A3WxuF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280
-        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
-        ZEXa7VUbZmitUUUUU==
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        Sun, 18 Jul 2021 23:30:52 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GSnH91YfYz7tjD;
+        Mon, 19 Jul 2021 11:23:17 +0800 (CST)
+Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 19 Jul 2021 11:27:50 +0800
+Received: from [10.174.177.250] (10.174.177.250) by
+ dggpemm000001.china.huawei.com (7.185.36.245) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 19 Jul 2021 11:27:50 +0800
+Subject: Re: [PATCH -next v2] riscv: add VMAP_STACK overflow detection
+To:     Andreas Schwab <schwab@linux-m68k.org>,
+        Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+References: <20210621032855.130650-1-tongtiangen@huawei.com>
+ <87pmvjtumc.fsf@igel.home> <20210716205332.5856df78@xhacker>
+ <871r7yz241.fsf@igel.home> <20210717101805.2afabacb@xhacker>
+ <875yx9qvih.fsf@linux-m68k.org>
+CC:     <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+From:   tongtiangen <tongtiangen@huawei.com>
+Message-ID: <b9a2143b-a258-4404-704e-a94605b68eca@huawei.com>
+Date:   Mon, 19 Jul 2021 11:27:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
+MIME-Version: 1.0
+In-Reply-To: <875yx9qvih.fsf@linux-m68k.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.250]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm000001.china.huawei.com (7.185.36.245)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-refcount_t type and corresponding API can protect refcounters from
-accidental underflow and overflow and further use-after-free situations.
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- drivers/block/xen-blkback/common.h | 7 ++++---
- drivers/block/xen-blkback/xenbus.c | 2 +-
- 2 files changed, 5 insertions(+), 4 deletions(-)
+On 2021/7/17 14:55, Andreas Schwab wrote:
+> Please use
+> https://download.opensuse.org/repositories/home:/Andreas_Schwab:/riscv:/jeos/images/openSUSE-Tumbleweed-RISC-V-JeOS-efi.riscv64.raw.xz
+> and run it in qemu with u-boot as kernel.
+>
+> Andreas.
+>
 
-diff --git a/drivers/block/xen-blkback/common.h b/drivers/block/xen-blkback/common.h
-index bda5c815e441..d074cf41b4bc 100644
---- a/drivers/block/xen-blkback/common.h
-+++ b/drivers/block/xen-blkback/common.h
-@@ -27,6 +27,7 @@
- #ifndef __XEN_BLKIF__BACKEND__COMMON_H__
- #define __XEN_BLKIF__BACKEND__COMMON_H__
- 
-+#include <linux/refcount.h>
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/slab.h>
-@@ -306,7 +307,7 @@ struct xen_blkif {
- 	struct xen_vbd		vbd;
- 	/* Back pointer to the backend_info. */
- 	struct backend_info	*be;
--	atomic_t		refcnt;
-+	refcount_t		refcnt;
- 	/* for barrier (drain) requests */
- 	struct completion	drain_complete;
- 	atomic_t		drain;
-@@ -359,10 +360,10 @@ struct pending_req {
- 
- #define vbd_sz(_v)	bdev_nr_sectors((_v)->bdev)
- 
--#define xen_blkif_get(_b) (atomic_inc(&(_b)->refcnt))
-+#define xen_blkif_get(_b) (refcount_inc(&(_b)->refcnt))
- #define xen_blkif_put(_b)				\
- 	do {						\
--		if (atomic_dec_and_test(&(_b)->refcnt))	\
-+		if (refcount_dec_and_test(&(_b)->refcnt))	\
- 			schedule_work(&(_b)->free_work);\
- 	} while (0)
- 
-diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-index 125b22205d38..b0bd5faa3865 100644
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -168,7 +168,7 @@ static struct xen_blkif *xen_blkif_alloc(domid_t domid)
- 		return ERR_PTR(-ENOMEM);
- 
- 	blkif->domid = domid;
--	atomic_set(&blkif->refcnt, 1);
-+	refcount_set(&blkif->refcnt, 1);
- 	init_completion(&blkif->drain_complete);
- 
- 	/*
--- 
-2.7.4
+Hi andreas:
+I used today's latest mainline code and .config provided by you, and I 
+can't reproduce this panic.
+Can you provide your code branch, I'll test and analyze it.
 
+Thanks.
