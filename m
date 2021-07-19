@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326253CE7FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C653CE6E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355132AbhGSQf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:35:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40238 "EHLO mail.kernel.org"
+        id S1353405AbhGSQQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:16:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347971AbhGSPXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:23:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09173613D3;
-        Mon, 19 Jul 2021 16:00:05 +0000 (UTC)
+        id S1344072AbhGSPKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:10:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C933F606A5;
+        Mon, 19 Jul 2021 15:50:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710406;
-        bh=R5v9OgEwcjZa8ieC98gxzWeUdtmbSLxTyoDoyWpuVyE=;
+        s=korg; t=1626709853;
+        bh=nXyHw/DQ+3MHnoET8dBcqqnuoyNIonAdyS8lNG25KEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I7nNwqy7IEXV+mZ/C+zo8tjzaeg+765KmcRX8F+7EGyZ3qbEg3qPsWVUzdR1Czgc9
-         czhVPWm2SFXi8s7BjxWR5mXnxehTgc48PhGWcd9bET0+ZNn8FwFLI8Ul+bns4Iv+HR
-         SmPsN/5iGV3CtEK+tCsdnyuQkkiiRv7tBCtoriSg=
+        b=ZaQEYsGLnpANTzIYoLNGnyrrMiQpqSOYwcTqCmjzeLPExvO0Nkv4UyNeu+sKH7Gea
+         Yl8TdlELe5o7wjQ+2RdwCdLwBiuqdtp0eywSXjyQFs4MyCRZ4zzoS/UxmgqyJO1HfF
+         Btq/1GuSJ46YyetU5GCwKijAEui1eblPV4rW+dVg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roger Quadros <rogerq@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 202/243] arm64: dts: ti: j7200-main: Enable USB2 PHY RX sensitivity workaround
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 123/149] memory: pl353: Fix error return code in pl353_smc_probe()
 Date:   Mon, 19 Jul 2021 16:53:51 +0200
-Message-Id: <20210719144947.451238345@linuxfoundation.org>
+Message-Id: <20210719144930.479970754@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roger Quadros <rogerq@ti.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit a2894d85f44ba3f2bdf5806c8dc62e2ec40c1c09 ]
+[ Upstream commit 76e5624f3f9343a621dd3f4006f4e4d9c3f91e33 ]
 
-Enable work around feature built into the controller to address issue with
-RX Sensitivity for USB2 PHY.
+When no child nodes are matched, an appropriate error code -ENODEV should
+be returned. However, we currently do not explicitly assign this error
+code to 'err'. As a result, 0 was incorrectly returned.
 
-Fixes: 6197d7139d12 ("arm64: dts: ti: k3-j7200-main: Add USB controller")
-Signed-off-by: Roger Quadros <rogerq@ti.com>
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: Nishanth Menon <nm@ti.com>
-Link: https://lore.kernel.org/r/20210512153308.5840-1-a-govindraju@ti.com
+Fixes: fee10bd22678 ("memory: pl353: Add driver for arm pl353 static memory controller")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210515040004.6983-1-thunder.leizhen@huawei.com
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 1 +
+ drivers/memory/pl353-smc.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index 689538244392..5832ad830ed1 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -446,6 +446,7 @@
- 					  "otg";
- 			maximum-speed = "super-speed";
- 			dr_mode = "otg";
-+			cdns,phyrst-a-enable;
- 		};
- 	};
- };
+diff --git a/drivers/memory/pl353-smc.c b/drivers/memory/pl353-smc.c
+index b42804b1801e..cc01979780d8 100644
+--- a/drivers/memory/pl353-smc.c
++++ b/drivers/memory/pl353-smc.c
+@@ -407,6 +407,7 @@ static int pl353_smc_probe(struct amba_device *adev, const struct amba_id *id)
+ 		break;
+ 	}
+ 	if (!match) {
++		err = -ENODEV;
+ 		dev_err(&adev->dev, "no matching children\n");
+ 		goto out_clk_disable;
+ 	}
 -- 
 2.30.2
 
