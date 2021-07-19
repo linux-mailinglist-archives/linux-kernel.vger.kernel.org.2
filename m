@@ -2,46 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1EE3CE912
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBA53CEA85
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352949AbhGSQuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:50:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45468 "EHLO mail.kernel.org"
+        id S1377537AbhGSRQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:16:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243148AbhGSP11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:27:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E002261249;
-        Mon, 19 Jul 2021 16:08:05 +0000 (UTC)
+        id S1346190AbhGSPik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:38:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC14260E0C;
+        Mon, 19 Jul 2021 16:18:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710886;
-        bh=+uFTDpvKhWHlQ5H7ysMc7Ohh59fU2zT9cKN7k1vT62k=;
+        s=korg; t=1626711514;
+        bh=euNVsQczHH08fRdHiWeAn7inWfpEXgXy04b321J2LD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GgaBdJt0Az1Y2dkpI0UbkK8bkTk/o+L5mcNdhfYLFOHJ5qsH9rMy4TDaeFgmZcoTL
-         8fw+2mC9DQv+MSd1Bs8oi2NQiSkeQg2nTJlRnp1M6o3ekkIKTbBiq4l0oOHf/unWSa
-         PeqtVV+BvowIE4n/rN/4mg5sdssCT59WzQ2WU5i4=
+        b=klMzZExL1BrwqNakPHo/gxwDr1QT1uTEfNoBw4tgTlvM3UsaxL/OUiUwZgt36/rum
+         cGJcTFItgfuac0hD4bzFMPmTawY3B1djex9LUlmjBM9QF/xir73alVpKdQ18QVllvN
+         c7F759FKWEX8kcL5Vgsm5nHhsNOWOYBngjJjqnCc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
-        Kyungsik Lee <kyungsik.lee@lge.com>,
-        Yinghai Lu <yinghai@kernel.org>,
-        Bongkyu Kim <bongkyu.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sven Schmidt <4sschmid@informatik.uni-hamburg.de>,
-        Rajat Asthana <thisisrast7@gmail.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Gao Xiang <hsiangkao@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 146/351] lib/decompress_unlz4.c: correctly handle zero-padding around initrds.
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.12 030/292] io_uring: put link timeout req consistently
 Date:   Mon, 19 Jul 2021 16:51:32 +0200
-Message-Id: <20210719144949.810047891@linuxfoundation.org>
+Message-Id: <20210719144943.520945560@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,99 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit 2c484419efc09e7234c667aa72698cb79ba8d8ed ]
+commit df9727affa058f4f18e388b30247650f8ae13cd8 upstream.
 
-lz4 compatible decompressor is simple.  The format is underspecified and
-relies on EOF notification to determine when to stop.  Initramfs buffer
-format[1] explicitly states that it can have arbitrary number of zero
-padding.  Thus when operating without a fill function, be extra careful to
-ensure that sizes less than 4, or apperantly empty chunksizes are treated
-as EOF.
+Don't put linked timeout req in io_async_find_and_cancel() but do it in
+io_link_timeout_fn(), so we have only one point for that and won't have
+to do it differently as it's now (put vs put_deferred). Btw, improve a
+bit io_async_find_and_cancel()'s locking.
 
-To test this I have created two cpio initrds, first a normal one,
-main.cpio.  And second one with just a single /test-file with content
-"second" second.cpio.  Then i compressed both of them with gzip, and with
-lz4 -l.  Then I created a padding of 4 bytes (dd if=/dev/zero of=pad4 bs=1
-count=4).  To create four testcase initrds:
-
- 1) main.cpio.gzip + extra.cpio.gzip = pad0.gzip
- 2) main.cpio.lz4  + extra.cpio.lz4 = pad0.lz4
- 3) main.cpio.gzip + pad4 + extra.cpio.gzip = pad4.gzip
- 4) main.cpio.lz4  + pad4 + extra.cpio.lz4 = pad4.lz4
-
-The pad4 test-cases replicate the initrd load by grub, as it pads and
-aligns every initrd it loads.
-
-All of the above boot, however /test-file was not accessible in the initrd
-for the testcase #4, as decoding in lz4 decompressor failed.  Also an
-error message printed which usually is harmless.
-
-Whith a patched kernel, all of the above testcases now pass, and
-/test-file is accessible.
-
-This fixes lz4 initrd decompress warning on every boot with grub.  And
-more importantly this fixes inability to load multiple lz4 compressed
-initrds with grub.  This patch has been shipping in Ubuntu kernels since
-January 2021.
-
-[1] ./Documentation/driver-api/early-userspace/buffer-format.rst
-
-BugLink: https://bugs.launchpad.net/bugs/1835660
-Link: https://lore.kernel.org/lkml/20210114200256.196589-1-xnox@ubuntu.com/ # v0
-Link: https://lkml.kernel.org/r/20210513104831.432975-1-dimitri.ledkov@canonical.com
-Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Cc: Kyungsik Lee <kyungsik.lee@lge.com>
-Cc: Yinghai Lu <yinghai@kernel.org>
-Cc: Bongkyu Kim <bongkyu.kim@lge.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Sven Schmidt <4sschmid@informatik.uni-hamburg.de>
-Cc: Rajat Asthana <thisisrast7@gmail.com>
-Cc: Nick Terrell <terrelln@fb.com>
-Cc: Gao Xiang <hsiangkao@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Link: https://lore.kernel.org/r/d75b70957f245275ab7cba83e0ac9c1b86aae78a.1617287883.git.asml.silence@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/decompress_unlz4.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/io_uring.c |   10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/lib/decompress_unlz4.c b/lib/decompress_unlz4.c
-index c0cfcfd486be..e6327391b6b6 100644
---- a/lib/decompress_unlz4.c
-+++ b/lib/decompress_unlz4.c
-@@ -112,6 +112,9 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 				error("data corrupted");
- 				goto exit_2;
- 			}
-+		} else if (size < 4) {
-+			/* empty or end-of-file */
-+			goto exit_3;
- 		}
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -5727,12 +5727,9 @@ static void io_async_find_and_cancel(str
+ 	int ret;
  
- 		chunksize = get_unaligned_le32(inp);
-@@ -125,6 +128,10 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 			continue;
- 		}
+ 	ret = io_async_cancel_one(req->task->io_uring, sqe_addr, ctx);
+-	if (ret != -ENOENT) {
+-		spin_lock_irqsave(&ctx->completion_lock, flags);
+-		goto done;
+-	}
+-
+ 	spin_lock_irqsave(&ctx->completion_lock, flags);
++	if (ret != -ENOENT)
++		goto done;
+ 	ret = io_timeout_cancel(ctx, sqe_addr);
+ 	if (ret != -ENOENT)
+ 		goto done;
+@@ -5747,7 +5744,6 @@ done:
  
-+		if (!fill && chunksize == 0) {
-+			/* empty or end-of-file */
-+			goto exit_3;
-+		}
+ 	if (ret < 0)
+ 		req_set_fail_links(req);
+-	io_put_req(req);
+ }
  
- 		if (posp)
- 			*posp += 4;
-@@ -184,6 +191,7 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 		}
+ static int io_async_cancel_prep(struct io_kiocb *req,
+@@ -6310,8 +6306,8 @@ static enum hrtimer_restart io_link_time
+ 		io_put_req_deferred(req, 1);
+ 	} else {
+ 		io_req_complete_post(req, -ETIME, 0);
+-		io_put_req_deferred(req, 1);
  	}
++	io_put_req_deferred(req, 1);
+ 	return HRTIMER_NORESTART;
+ }
  
-+exit_3:
- 	ret = 0;
- exit_2:
- 	if (!input)
--- 
-2.30.2
-
 
 
