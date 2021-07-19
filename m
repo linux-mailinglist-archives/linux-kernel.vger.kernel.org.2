@@ -2,135 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB5E3CD1F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32A33CD1FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236322AbhGSJu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:50:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:55020 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236234AbhGSJuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:50:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C31091042;
-        Mon, 19 Jul 2021 03:31:25 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DD50F3F73D;
-        Mon, 19 Jul 2021 03:31:24 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: [PATCH v2 2/2] sched/fair: Trigger nohz.next_balance updates when a CPU goes NOHZ-idle
-Date:   Mon, 19 Jul 2021 11:31:17 +0100
-Message-Id: <20210719103117.3624936-3-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210719103117.3624936-1-valentin.schneider@arm.com>
-References: <20210719103117.3624936-1-valentin.schneider@arm.com>
+        id S236151AbhGSJwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235440AbhGSJwu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 05:52:50 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D866CC061574;
+        Mon, 19 Jul 2021 02:40:12 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d9so4882191pfv.4;
+        Mon, 19 Jul 2021 03:33:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=Lu76TUF5t5P7dhULSWQL1jOmPG4hRwR7T2VCuhQQuSc=;
+        b=s/e2GR87SdKlpiDUPcwZ+dquU6uA39GKut+j1/4HcntzhbYi3Z7/E8VVQDfxiBGt9s
+         TOwP3W4uDRwEkYNx6sLQxz8/xmY+FwFbW3nWxk5Mt7SQrqefrvXHDJ/Dh6ZewK3qwCnx
+         RtmyF/EPz0wUZLHw6PxG4QkLRem5eWFeAOnNlkMeOi4zJsrom0YszNhftGIAD+VvcCf0
+         Whs77pdZvsdc7xqM2ljwWgkL4ERK0QfG1yKw5x6xYpVh6J7hiaY7Fzb20VKrKUzNHoMn
+         oJ1OHSrvqWYvh787wWCiR9PfR5JIwFds1prNGj4qV7QJpoDGSRkTVNLJhVF9atqHui7i
+         p12Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=Lu76TUF5t5P7dhULSWQL1jOmPG4hRwR7T2VCuhQQuSc=;
+        b=i/25vCHiK8fQoJrlZoflHnCHBpCZ7JcsJNxUQNWZ1pRarvROAbyT2gnFofXImcHDzK
+         HbX1WynWQN76Yhn0/lH5nl/Yvwncb+1cBhZ6bsz4jdC9PiazPRzCMEtpRtTQAIYSTkvG
+         3rZWrfUHIvXXU/b/IvKgpyszUkB5VHCXvgEmuLW5u+CSTSwQHGc2nFk6MPTUQrGia9jT
+         zmdkvjOhEEl8DOA3svEasvrDcKHtPpH4a9f+raZQi3n0mf6+txMswXFxxUx1YNwphlEh
+         igFPSUaHedr083x6+xlpZfLKAzUZJBTgp4aSD2c4Uhd4wC3/f3G9pFl/ZgIol2RVyZ6W
+         gKiQ==
+X-Gm-Message-State: AOAM530Ddxn3wh8AiTZjlhM4qyJhZ9yDmQJqdDBffmFV89vwWhZBMNlQ
+        /3R+LfJxtGmzhganqEgwMnhnI0i5vUB4y5P2h1nmQ5QYCKQK5pyx
+X-Google-Smtp-Source: ABdhPJyc6W2WqVVRhAqL8WPMeFs3lJRq2sffzWDsBMKIVXyG30vBCtTy1sl0G9+nn7MncbPvQs7tLgVu8y17tvuavIE=
+X-Received: by 2002:a05:6a00:9a5:b029:30d:fad7:4515 with SMTP id
+ u37-20020a056a0009a5b029030dfad74515mr25338538pfg.28.1626690808507; Mon, 19
+ Jul 2021 03:33:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
+ <20210715141742.15072-3-andrea.merello@gmail.com> <CAHp75Vf_Og2wjRy2j0gC37DgR0x9B_F5iSUj8VOtWkhWjgiOag@mail.gmail.com>
+ <CAN8YU5NKGLO6a4wqaW07NAU-OdsdBohoXzMCBcskaFsCRtrGhw@mail.gmail.com> <YPF97IvnlUDtIHar@smile.fi.intel.com>
+In-Reply-To: <YPF97IvnlUDtIHar@smile.fi.intel.com>
+Reply-To: andrea.merello@gmail.com
+From:   Andrea Merello <andrea.merello@gmail.com>
+Date:   Mon, 19 Jul 2021 12:33:16 +0200
+Message-ID: <CAN8YU5MMtP8M7jTDP2S3EBM-PM1dsxVLEgGyB-3BtY5xUF+JTQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] iio: imu: add Bosch Sensortec BNO055 core driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Andrea Merello <andrea.merello@iit.it>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consider a system with some NOHZ-idle CPUs, such that
+> > > > +               for (i = 0; i < 4; i++)
+> > > > +                       vals[i] = (s16)le16_to_cpu(raw_vals[i]);
+> > >
+> > > Extract this to be a helper like there are for u32 and u64.
+> >
+> > Could you please point me to those helpers? I don't know what you are
+> > referring to.
+>
+> Read include/linux/byteorder/generic.h to the end.
 
-  nohz.idle_cpus_mask = S
-  nohz.next_balance = T
+I realized that implementing an helper like the other ones wouldn't
+work in this specific case: I'd say a reasonable helper would take a
+ptr to a s16 as its destination argument, but here we are assigning to
+a int vector; so our brand new helper would be of no use here.
 
-When a new CPU k goes NOHZ idle (nohz_balance_enter_idle()), we end up
-with:
+What I can do is to implement a macroized helper that would have no
+issues wrt ptr type; I guess something like this:
 
-  nohz.idle_cpus_mask = S \U {k}
-  nohz.next_balance = T
+#define le16_to_cpu_signed_array(dst, src, len) \
+({ \
+    size_t __i; \
+    for (__i = 0; __i < len; __i++) \
+        dst[__i] = (s16)le16_to_cpu(src[__i]); \
+})
 
-Note that the nohz.next_balance hasn't changed - it won't be updated until
-a NOHZ balance is triggered. This is problematic if the newly NOHZ idle CPU
-has an earlier rq.next_balance than the other NOHZ idle CPUs, IOW if:
-
-  cpu_rq(k).next_balance < nohz.next_balance
-
-In such scenarios, the existing nohz.next_balance will prevent any NOHZ
-balance from happening, which itself will prevent nohz.next_balance from
-being updated to this new cpu_rq(k).next_balance. Unnecessary load balance
-delays of over 12ms caused by this were observed on an arm64 RB5 board.
-
-Use the new nohz.needs_update flag to mark the presence of newly-idle CPUs
-that need their rq->next_balance to be collated into
-nohz.next_balance. Trigger a NOHZ_NEXT_KICK when the flag is set.
-
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- kernel/sched/fair.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 5c88698c3664..b5a4ea7715b9 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5698,6 +5698,7 @@ static struct {
- 	cpumask_var_t idle_cpus_mask;
- 	atomic_t nr_cpus;
- 	int has_blocked;		/* Idle CPUS has blocked load */
-+	int needs_update;		/* Newly idle CPUs need their next_balance collated */
- 	unsigned long next_balance;     /* in jiffy units */
- 	unsigned long next_blocked;	/* Next update of blocked load in jiffies */
- } nohz ____cacheline_aligned;
-@@ -10351,6 +10352,9 @@ static void nohz_balancer_kick(struct rq *rq)
- unlock:
- 	rcu_read_unlock();
- out:
-+	if (READ_ONCE(nohz.needs_update))
-+		flags |= NOHZ_NEXT_KICK;
-+
- 	if (flags)
- 		kick_ilb(flags);
- }
-@@ -10447,12 +10451,13 @@ void nohz_balance_enter_idle(int cpu)
- 	/*
- 	 * Ensures that if nohz_idle_balance() fails to observe our
- 	 * @idle_cpus_mask store, it must observe the @has_blocked
--	 * store.
-+	 * and @needs_update stores.
- 	 */
- 	smp_mb__after_atomic();
- 
- 	set_cpu_sd_state_idle(cpu);
- 
-+	WRITE_ONCE(nohz.needs_update, 1);
- out:
- 	/*
- 	 * Each time a cpu enter idle, we assume that it has blocked load and
-@@ -10501,13 +10506,17 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 	/*
- 	 * We assume there will be no idle load after this update and clear
- 	 * the has_blocked flag. If a cpu enters idle in the mean time, it will
--	 * set the has_blocked flag and trig another update of idle load.
-+	 * set the has_blocked flag and trigger another update of idle load.
- 	 * Because a cpu that becomes idle, is added to idle_cpus_mask before
- 	 * setting the flag, we are sure to not clear the state and not
- 	 * check the load of an idle cpu.
-+	 *
-+	 * Same applies to idle_cpus_mask vs needs_update.
- 	 */
- 	if (flags & NOHZ_STATS_KICK)
- 		WRITE_ONCE(nohz.has_blocked, 0);
-+	if (flags & NOHZ_NEXT_KICK)
-+		WRITE_ONCE(nohz.needs_update, 0);
- 
- 	/*
- 	 * Ensures that if we miss the CPU, we must see the has_blocked
-@@ -10531,6 +10540,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 		if (need_resched()) {
- 			if (flags & NOHZ_STATS_KICK)
- 				has_blocked_load = true;
-+			if (flags & NOHZ_NEXT_KICK)
-+				WRITE_ONCE(nohz.needs_update, 1);
- 			goto abort;
- 		}
- 
--- 
-2.25.1
-
+What's your opinion here? should I go with something like this or do
+you prefer to let the open-coded implementation stay in this specific
+case?
