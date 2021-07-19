@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D563CDC51
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7FB3CE013
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238148AbhGSOwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:52:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47358 "EHLO mail.kernel.org"
+        id S244024AbhGSPNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:13:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244676AbhGSOeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:34:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6D8D61285;
-        Mon, 19 Jul 2021 15:13:32 +0000 (UTC)
+        id S1344257AbhGSOsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3913361279;
+        Mon, 19 Jul 2021 15:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707613;
-        bh=9ToCizXFsijnGuvutrVvkbzrt0UaohYIt/PO8Y92xL0=;
+        s=korg; t=1626708475;
+        bh=HklMvLiQ0ZurrPuUni8v0DxHMnK/beGzBC1+vRj/KR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m+1Q9p1jxcEjQ0SYJV5fhNtY7o33FXBAqiKh18ZieEkK4StKuV/NXZ3vct+B44i+c
-         82tLPm7qFOxF4KE/ngHRWUXe5xc1W4Y/gP+zldqYFr1gfYscQVBrWzZqJKZ5O4H4Cy
-         OIQ8Y/e5PueonYuMEq06I8cv6oNJiXx7Xu/9PM8k=
+        b=KzvcEkK6NL+lAhh8mKmMYUcBqrKZh4PF2rDtTak4pcc1qItoXB3AqRA/vXrAzgKZX
+         yC7vL9WiV78YDdyl09I6OsHAw/J8e+V0s/QpigCiLsqEIXBLlWvAkdkzVhgzvsw9ko
+         rx7F4D/qFfrqvRPoIRXJYjOfLSz5DbK9lmjTe6G0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 234/245] ARM: dts: exynos: fix PWM LED max brightness on Odroid XU/XU3
-Date:   Mon, 19 Jul 2021 16:52:56 +0200
-Message-Id: <20210719144947.946263998@linuxfoundation.org>
+Subject: [PATCH 4.14 288/315] PCI/sysfs: Fix dsm_label_utf16s_to_utf8s() buffer overrun
+Date:   Mon, 19 Jul 2021 16:52:57 +0200
+Message-Id: <20210719144952.911330566@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+References: <20210719144942.861561397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Krzysztof Wilczyński <kw@linux.com>
 
-[ Upstream commit 75121e1dc9fe4def41e63d57f6a53749b88006ed ]
+[ Upstream commit bdcdaa13ad96f1a530711c29e6d4b8311eff767c ]
 
-There is no "max_brightness" property.  This brings the intentional
-brightness reduce of green LED and dtschema checks as well:
+"utf16s_to_utf8s(..., buf, PAGE_SIZE)" puts up to PAGE_SIZE bytes into
+"buf" and returns the number of bytes it actually put there.  If it wrote
+PAGE_SIZE bytes, the newline added by dsm_label_utf16s_to_utf8s() would
+overrun "buf".
 
-  arch/arm/boot/dts/exynos5410-odroidxu.dt.yaml: led-controller-1: led-1: 'max-brightness' is a required property
+Reduce the size available for utf16s_to_utf8s() to use so there is always
+space for the newline.
 
-Fixes: 719f39fec586 ("ARM: dts: exynos5422-odroidxu3: Hook up PWM and use it for LEDs")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210505135941.59898-3-krzysztof.kozlowski@canonical.com
+[bhelgaas: reorder patch in series, commit log]
+Fixes: 6058989bad05 ("PCI: Export ACPI _DSM provided firmware instance number and string name to sysfs")
+Link: https://lore.kernel.org/r/20210603000112.703037-7-kw@linux.com
+Reported-by: Joe Perches <joe@perches.com>
+Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pci/pci-label.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi b/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
-index 0ed30206625c..f547f67f2783 100644
---- a/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
-+++ b/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
-@@ -25,7 +25,7 @@
- 			 * Green LED is much brighter than the others
- 			 * so limit its max brightness
- 			 */
--			max_brightness = <127>;
-+			max-brightness = <127>;
- 			linux,default-trigger = "mmc0";
- 		};
+diff --git a/drivers/pci/pci-label.c b/drivers/pci/pci-label.c
+index a961a71d950f..6beafc1bee96 100644
+--- a/drivers/pci/pci-label.c
++++ b/drivers/pci/pci-label.c
+@@ -161,7 +161,7 @@ static void dsm_label_utf16s_to_utf8s(union acpi_object *obj, char *buf)
+ 	len = utf16s_to_utf8s((const wchar_t *)obj->buffer.pointer,
+ 			      obj->buffer.length,
+ 			      UTF16_LITTLE_ENDIAN,
+-			      buf, PAGE_SIZE);
++			      buf, PAGE_SIZE - 1);
+ 	buf[len] = '\n';
+ }
  
-@@ -33,7 +33,7 @@
- 			label = "blue:heartbeat";
- 			pwms = <&pwm 2 2000000 0>;
- 			pwm-names = "pwm2";
--			max_brightness = <255>;
-+			max-brightness = <255>;
- 			linux,default-trigger = "heartbeat";
- 		};
- 	};
 -- 
 2.30.2
 
