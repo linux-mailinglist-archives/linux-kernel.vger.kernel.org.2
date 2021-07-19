@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0312A3CED9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B07E3CED9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385891AbhGSTPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 15:15:08 -0400
-Received: from mail-lf1-f52.google.com ([209.85.167.52]:33579 "EHLO
-        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385226AbhGSSwe (ORCPT
+        id S1385959AbhGSTRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 15:17:12 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21396 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1357618AbhGSSyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 14:52:34 -0400
-Received: by mail-lf1-f52.google.com with SMTP id g22so20174910lfu.0;
-        Mon, 19 Jul 2021 12:33:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E8F6ulf3Oh3gKHX57xk/lTLRVi9bCHRita1SLlYmKUo=;
-        b=Aof+KgD+fDeC35ox94/DXlEK01YjITyBhD4ZOrtSGWsStAcn7Hl5WEemh3Od15tOfx
-         BY3GqSD9dPr0A4MumqDpJcilyhOK35wRWB2Q1T8hTshwNVNWjVlaneuJ+9PDDKcWYFul
-         dUGQ8WzfrQ1iG1L+DuQ3tikXFDatdgrTO3XrS0Qhmd5Q9KFXKKt1O7gnJMmNw9+ZDKrX
-         CpUSvA7PKu3S4mRZziePbMraxenIKTTfBs23mO5ddxFvfYFk88GUHrxAdass35jibpsN
-         YDjj7f7wjcE/gEeK69672OQzgQPZSsKcYhJVwIOdDHQdozT934JfKq2kf/neHwehl2iN
-         nunw==
-X-Gm-Message-State: AOAM533CCGo+YL0WLFG8oot3/dFXBZLX0BBPJTr6WHHiBWI1KAxWfj79
-        1qf6CZTSLd+67W2uAXG2Q1QDWV4KD6zeIFYZLn0=
-X-Google-Smtp-Source: ABdhPJzotHGXypU5oLdAcWzF9OxM5vACZopyDPo94F0gQN7a7o7Xhm4pQ4I1TU8eVAqdzMif6MY2igKpK0wC+PkcxWQ=
-X-Received: by 2002:ac2:46fc:: with SMTP id q28mr19176592lfo.300.1626723177938;
- Mon, 19 Jul 2021 12:32:57 -0700 (PDT)
+        Mon, 19 Jul 2021 14:54:53 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16JJXuDh141732;
+        Mon, 19 Jul 2021 15:35:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=6wXL8kYv7PIHuPHbF8+Ujp0VE7YSWe+NXheDrO5+zMg=;
+ b=tIwFa4zUvvjq6Rd5L+BlVlr6nEhyn20iBBMlxVw4Sn4sRo7FvLJP+uZMllNB7beT2b6D
+ roeD2XOleIwsf8I7HAmp6huwruQVzpdYWNV4HQbCGBmkckW+MGqLjpx0N0OWI65E02Xk
+ 6oky7p1Dt4sSQdlE0BtrVMPLt2RPo1dlBgKl/XykK0WLDCvfLYskvKS0oE2GU9iJvkB4
+ H/TS237pmlmCOmOTv0Zv9orrNTiMtEMHA9MgUHGpx11NpmntUykltd0Zj8x6Eiyz0O+u
+ Z78Rppq5ZsENy1xc20KciOar2rbPbLwyTXsnN/Am4I8iOs5zn6IeGU1w3wSF7f17nonW TA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39wch9xcsv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 15:35:06 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16JJXvVw141804;
+        Mon, 19 Jul 2021 15:35:06 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39wch9xcs3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 15:35:06 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16JJRalx016117;
+        Mon, 19 Jul 2021 19:35:05 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma05wdc.us.ibm.com with ESMTP id 39upuajb7q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 19:35:05 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16JJZ5X340894868
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Jul 2021 19:35:05 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3C9E011206F;
+        Mon, 19 Jul 2021 19:35:05 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 54FEF11206E;
+        Mon, 19 Jul 2021 19:35:04 +0000 (GMT)
+Received: from fedora.ibmuc.com (unknown [9.85.184.30])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 19 Jul 2021 19:35:04 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
+Subject: [PATCH 0/2] s390/vfio-ap: do not open code locks for VFIO_GROUP_NOTIFY_SET_KVM notification
+Date:   Mon, 19 Jul 2021 15:35:01 -0400
+Message-Id: <20210719193503.793910-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210715013343.2286699-1-irogers@google.com>
-In-Reply-To: <20210715013343.2286699-1-irogers@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 19 Jul 2021 12:32:46 -0700
-Message-ID: <CAM9d7cjfRx89AHaC7ngvA2rFQ5wFxk95opUw1D3+mcBadLksaA@mail.gmail.com>
-Subject: Re: [PATCH 0/7] Tidy perf Documentation build
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: nfv7yS_eUVlvpRgulUmoBRHGySaD-g-T
+X-Proofpoint-GUID: CFiAGp56OYfDFRpW8CD3ZHVKKD99PFiC
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-19_09:2021-07-19,2021-07-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ mlxlogscore=934 bulkscore=0 lowpriorityscore=0 malwarescore=0
+ suspectscore=0 impostorscore=0 priorityscore=1501 phishscore=0
+ clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107190111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+This series is actually only comprised of a single patch to replace the
+open coded locks used during VFIO_GROUP_NOTIFY_SET_KVM notification. The
+first patch is included because it is a pre-req slotted to be merged but is
+not yet available in the kernel.
 
-On Wed, Jul 14, 2021 at 6:33 PM Ian Rogers <irogers@google.com> wrote:
->
-> Perf's Documenation Makefile is based off git's, but some parts of it
-> were never completed. 'make info' also fails. These patches fix 'make
-> info' and do some related tidy up. Two missing files are added from git.
->
-> Ian Rogers (7):
->   perf doc: Fix perfman.info build
->   perf doc: Fix doc.dep
->   perf doc: Remove references to user-manual
->   perf doc: Add info pages to all target.
->   perf doc: Remove cmd-list.perl references
->   perf doc: Remove howto-index.sh related references.
->   perf doc: Reorganize ARTICLES variables.
+Tony Krowiak (2):
+  s390/vfio-ap: r/w lock for PQAP interception handler function pointer
+  s390/vfio-ap: replace open coded locks for VFIO_GROUP_NOTIFY_SET_KVM
+    notification
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+ arch/s390/include/asm/kvm_host.h      |   8 +-
+ arch/s390/kvm/kvm-s390.c              |  28 +++++-
+ arch/s390/kvm/priv.c                  |  10 +-
+ drivers/s390/crypto/vfio_ap_ops.c     | 127 +++++++++-----------------
+ drivers/s390/crypto/vfio_ap_private.h |   4 +-
+ 5 files changed, 77 insertions(+), 100 deletions(-)
 
-Thanks,
-Namhyung
+-- 
+2.30.2
 
-
->
->  tools/perf/Documentation/Makefile          | 74 +++-------------------
->  tools/perf/Documentation/build-docdep.perl | 46 ++++++++++++++
->  tools/perf/Documentation/cat-texi.perl     | 46 ++++++++++++++
->  3 files changed, 100 insertions(+), 66 deletions(-)
->  create mode 100755 tools/perf/Documentation/build-docdep.perl
->  create mode 100755 tools/perf/Documentation/cat-texi.perl
->
-> --
-> 2.32.0.402.g57bb445576-goog
->
