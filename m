@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622D63CEA36
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0022F3CE9E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351296AbhGSRJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:09:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
+        id S1349662AbhGSRDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:03:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348527AbhGSPf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:35:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2A53616EC;
-        Mon, 19 Jul 2021 16:14:00 +0000 (UTC)
+        id S1347635AbhGSPfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69C2061463;
+        Mon, 19 Jul 2021 16:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711241;
-        bh=IiQLSQKe0QytNTZJeipUQIlPirPvmPbnwL7v6w/WYx4=;
+        s=korg; t=1626711146;
+        bh=8hZM0TH5jMTV5SS61jK1QbiVK7qmppmV8FJNt8l1stM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DYk8SNXDFEpZQhyAV04KxFb88T/Wo1PgD1FY3GWkDRFE9aOpHGnVNOXoldP8+2ZZL
-         hQAHkVIsJlUuvN6hh05Vs1Uf4pcZy8PFuL5kpHRiYHUHS7epJ/aBVr84eappwXsexo
-         qm+tsCWv7WOp82Z4Xu1s/oRKl7vy6N5Zu74pP0Tg=
+        b=NMzdJMbgAA8Gj6XVOAslDnSHZh8dLUTnJa5or6p3C0UT2rl2PA9FwS3UzPJC8sJ9R
+         O8SR9lQD3PG3Z7QeY1yP3r0RAk8Szbu48o6neVXzgH538xyXCcnnPNKVVb+0bYjJQN
+         akpwgpMaKm0Mnf72r3ByEcvf0ZoCckdC5ZhBUlGc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rahul Tanwar <rtanwar@maxlinear.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 236/351] PCI: intel-gw: Fix INTx enable
-Date:   Mon, 19 Jul 2021 16:53:02 +0200
-Message-Id: <20210719144952.751818796@linuxfoundation.org>
+Subject: [PATCH 5.13 237/351] pwm: imx1: Dont disable clocks at device remove time
+Date:   Mon, 19 Jul 2021 16:53:03 +0200
+Message-Id: <20210719144952.782722889@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -43,55 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 655832d12f2251e04031294f547c86935a0a126d ]
+[ Upstream commit 1bc6ea31cb41d50302a3c9b401964cf0a88d41f9 ]
 
-The legacy PCI interrupt lines need to be enabled using PCIE_APP_IRNEN bits
-13 (INTA), 14 (INTB), 15 (INTC) and 16 (INTD). The old code however was
-taking (for example) "13" as raw value instead of taking BIT(13).  Define
-the legacy PCI interrupt bits using the BIT() macro and then use these in
-PCIE_APP_IRN_INT.
+The .remove() callback disables clocks that were not enabled in
+.probe(). So just probing and then unbinding the driver results in a clk
+enable imbalance.
 
-Link: https://lore.kernel.org/r/20210106135540.48420-1-martin.blumenstingl@googlemail.com
-Fixes: ed22aaaede44 ("PCI: dwc: intel: PCIe RC controller driver")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Acked-by: Rahul Tanwar <rtanwar@maxlinear.com>
+So just drop the call to disable the clocks. (Which BTW was also in the
+wrong order because the call makes the PWM unfunctional and so should
+have come only after pwmchip_remove()).
+
+Fixes: 9f4c8f9607c3 ("pwm: imx: Add ipg clock operation")
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/dwc/pcie-intel-gw.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/pwm/pwm-imx1.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-intel-gw.c b/drivers/pci/controller/dwc/pcie-intel-gw.c
-index f89a7d24ba28..d15cf35fa7f2 100644
---- a/drivers/pci/controller/dwc/pcie-intel-gw.c
-+++ b/drivers/pci/controller/dwc/pcie-intel-gw.c
-@@ -39,6 +39,10 @@
- #define PCIE_APP_IRN_PM_TO_ACK		BIT(9)
- #define PCIE_APP_IRN_LINK_AUTO_BW_STAT	BIT(11)
- #define PCIE_APP_IRN_BW_MGT		BIT(12)
-+#define PCIE_APP_IRN_INTA		BIT(13)
-+#define PCIE_APP_IRN_INTB		BIT(14)
-+#define PCIE_APP_IRN_INTC		BIT(15)
-+#define PCIE_APP_IRN_INTD		BIT(16)
- #define PCIE_APP_IRN_MSG_LTR		BIT(18)
- #define PCIE_APP_IRN_SYS_ERR_RC		BIT(29)
- #define PCIE_APP_INTX_OFST		12
-@@ -48,10 +52,8 @@
- 	PCIE_APP_IRN_RX_VDM_MSG | PCIE_APP_IRN_SYS_ERR_RC | \
- 	PCIE_APP_IRN_PM_TO_ACK | PCIE_APP_IRN_MSG_LTR | \
- 	PCIE_APP_IRN_BW_MGT | PCIE_APP_IRN_LINK_AUTO_BW_STAT | \
--	(PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTA) | \
--	(PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTB) | \
--	(PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTC) | \
--	(PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTD))
-+	PCIE_APP_IRN_INTA | PCIE_APP_IRN_INTB | \
-+	PCIE_APP_IRN_INTC | PCIE_APP_IRN_INTD)
+diff --git a/drivers/pwm/pwm-imx1.c b/drivers/pwm/pwm-imx1.c
+index c957b365448e..e73858a8e464 100644
+--- a/drivers/pwm/pwm-imx1.c
++++ b/drivers/pwm/pwm-imx1.c
+@@ -168,8 +168,6 @@ static int pwm_imx1_remove(struct platform_device *pdev)
+ {
+ 	struct pwm_imx1_chip *imx = platform_get_drvdata(pdev);
  
- #define BUS_IATU_OFFSET			SZ_256M
- #define RESET_INTERVAL_MS		100
+-	pwm_imx1_clk_disable_unprepare(&imx->chip);
+-
+ 	return pwmchip_remove(&imx->chip);
+ }
+ 
 -- 
 2.30.2
 
