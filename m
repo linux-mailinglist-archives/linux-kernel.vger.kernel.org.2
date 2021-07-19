@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F6B3CE425
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7AB3CE09A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242802AbhGSPmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:42:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53106 "EHLO mail.kernel.org"
+        id S1346171AbhGSPRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:17:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344529AbhGSO7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE3766023D;
-        Mon, 19 Jul 2021 15:40:24 +0000 (UTC)
+        id S245408AbhGSOr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:47:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 778A16135D;
+        Mon, 19 Jul 2021 15:23:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709225;
-        bh=NDiODlLmOEuq5EcKIsxhmc5kUyZ62mvvBBbePoXBd+A=;
+        s=korg; t=1626708225;
+        bh=zJBtUAFuuksWae+2E56PDniugb1rGdBRRDPRRqC7C1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PUMYr2KF1aGyUt4sOjtZFz2+uJlOje6ogfksxslqbsI3vIg2NUbr8JQcEY7AG/JF4
-         UJv3mNkW2vrhyZqWLijvhA4XMizvC51+oCOHX/SJSqhY2SVzmNXbUnK+OInAaOkMpW
-         dig5hMnLO0ucAWIDptpF2TjsfkJU9r+QwKqX+L8w=
+        b=B84ytYHBgjSzdJZuE4uUlqskKP72rjB2TZgv98AgjBXCEGb0LDNOMIrJcCeWEta3W
+         tQva5ZuH9u7dRNWs1zIfrtniy1ypLAC+sv586EfLNJNDOgKvPm3SmC+1pGqVDcw+PB
+         EDf1/SO3J12wd8ttJB4hBu5+9oZ9DRULvjiIBrIo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yun Zhou <yun.zhou@windriver.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.19 300/421] seq_buf: Fix overflow in seq_buf_putmem_hex()
-Date:   Mon, 19 Jul 2021 16:51:51 +0200
-Message-Id: <20210719144956.718554937@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.14 230/315] KVM: x86: Use guest MAXPHYADDR from CPUID.0x8000_0008 iff TDP is enabled
+Date:   Mon, 19 Jul 2021 16:51:59 +0200
+Message-Id: <20210719144950.984768127@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+References: <20210719144942.861561397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yun Zhou <yun.zhou@windriver.com>
+From: Sean Christopherson <seanjc@google.com>
 
-commit d3b16034a24a112bb83aeb669ac5b9b01f744bb7 upstream.
+commit 4bf48e3c0aafd32b960d341c4925b48f416f14a5 upstream.
 
-There's two variables being increased in that loop (i and j), and i
-follows the raw data, and j follows what is being written into the buffer.
-We should compare 'i' to MAX_MEMHEX_BYTES or compare 'j' to HEX_CHARS.
-Otherwise, if 'j' goes bigger than HEX_CHARS, it will overflow the
-destination buffer.
+Ignore the guest MAXPHYADDR reported by CPUID.0x8000_0008 if TDP, i.e.
+NPT, is disabled, and instead use the host's MAXPHYADDR.  Per AMD'S APM:
 
-Link: https://lore.kernel.org/lkml/20210625122453.5e2fe304@oasis.local.home/
-Link: https://lkml.kernel.org/r/20210626032156.47889-1-yun.zhou@windriver.com
+  Maximum guest physical address size in bits. This number applies only
+  to guests using nested paging. When this field is zero, refer to the
+  PhysAddrSize field for the maximum guest physical address size.
 
+Fixes: 24c82e576b78 ("KVM: Sanitize cpuid")
 Cc: stable@vger.kernel.org
-Fixes: 5e3ca0ec76fce ("ftrace: introduce the "hex" output method")
-Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210623230552.4027702-2-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/seq_buf.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/x86/kvm/cpuid.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/lib/seq_buf.c
-+++ b/lib/seq_buf.c
-@@ -228,8 +228,10 @@ int seq_buf_putmem_hex(struct seq_buf *s
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -649,8 +649,14 @@ static inline int __do_cpuid_ent(struct
+ 		unsigned virt_as = max((entry->eax >> 8) & 0xff, 48U);
+ 		unsigned phys_as = entry->eax & 0xff;
  
- 	WARN_ON(s->size == 0);
- 
-+	BUILD_BUG_ON(MAX_MEMHEX_BYTES * 2 >= HEX_CHARS);
+-		if (!g_phys_as)
++		/*
++		 * Use bare metal's MAXPHADDR if the CPU doesn't report guest
++		 * MAXPHYADDR separately, or if TDP (NPT) is disabled, as the
++		 * guest version "applies only to guests using nested paging".
++		 */
++		if (!g_phys_as || !tdp_enabled)
+ 			g_phys_as = phys_as;
 +
- 	while (len) {
--		start_len = min(len, HEX_CHARS - 1);
-+		start_len = min(len, MAX_MEMHEX_BYTES);
- #ifdef __BIG_ENDIAN
- 		for (i = 0, j = 0; i < start_len; i++) {
- #else
+ 		entry->eax = g_phys_as | (virt_as << 8);
+ 		entry->edx = 0;
+ 		/*
 
 
