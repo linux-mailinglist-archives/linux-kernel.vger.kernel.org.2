@@ -2,121 +2,509 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD6B3CD4B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B2A3CD4B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236947AbhGSLns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhGSLnr (ORCPT
+        id S236975AbhGSLpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:45:09 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:12228 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236790AbhGSLpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:43:47 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07C0C061574;
-        Mon, 19 Jul 2021 04:40:24 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1626697464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ymvuQOiwKUSpANGmy6VygBcyGlRswj0psccsffBvtok=;
-        b=eCPFUxyKaT0PGkj4bo4HFm2GuN3gDoTjjJKSyHJhsYzoyZFPEPq711H5pPQzxTWsOPKU3X
-        QawghvgEyqNzGvG2a53H/OBXKDyISHLeWj7WlVrBSu7jjXtRA3Ukv5ph/2XqKBgxtJw4sM
-        AmOhe6ASBKgJaPVRTPC71GL7zxZe5ls=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     davem@davemloft.net, kuba@kernel.org, roopa@nvidia.com,
-        nikolay@nvidia.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        courmisch@gmail.com, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
-        jiri@resnulli.us, johannes@sipsolutions.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH 1/4] rtnetlink: remove rtnetlink_send() in rtnetlink
-Date:   Mon, 19 Jul 2021 20:24:07 +0800
-Message-Id: <20210719122407.5253-1-yajun.deng@linux.dev>
+        Mon, 19 Jul 2021 07:45:08 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GT1BT0YkWz1CLRr;
+        Mon, 19 Jul 2021 20:20:01 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 19 Jul 2021 20:25:45 +0800
+Received: from localhost.localdomain (10.67.165.2) by
+ dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 19 Jul 2021 20:25:44 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
+        <davem@davemloft.net>, <mhiramat@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <song.bao.hua@hisilicon.com>, <prime.zeng@hisilicon.com>,
+        <robin.murphy@arm.com>, <liuqi115@huawei.com>,
+        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
+Date:   Mon, 19 Jul 2021 20:24:17 +0800
+Message-ID: <20210719122417.10355-1-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rtnetlink_send() is similar to rtnl_notify(), so remove rtnetlink_send().
-Modify the fifth parameter from 'struct nlmsghdr *nlh' to 'int report'
-in rtnl_notify(). This will do well for the caller havn't nlh variable.
-And modify the return value to integer, Some caller may be need the
-return value.
+This patch introduce optprobe for ARM64. In optprobe, probed
+instruction is replaced by a branch instruction to detour
+buffer. Detour buffer contains trampoline code and a call to
+optimized_callback(). optimized_callback() calls opt_pre_handler()
+to execute kprobe handler.
 
-Rename pid to portid to avoid confusion in rtnl_{unicast, notify}.
+Limitations:
+- We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
+guarantee the offset between probe point and kprobe pre_handler
+is not larger than 128MiB.
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Performance of optprobe on Hip08 platform is test using kprobe
+example module[1] to analyze the latency of a kernel function,
+and here is the result:
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/kprobes/kretprobe_example.c
+
+kprobe before optimized:
+[280709.846380] do_empty returned 0 and took 1530 ns to execute
+[280709.852057] do_empty returned 0 and took 550 ns to execute
+[280709.857631] do_empty returned 0 and took 440 ns to execute
+[280709.863215] do_empty returned 0 and took 380 ns to execute
+[280709.868787] do_empty returned 0 and took 360 ns to execute
+[280709.874362] do_empty returned 0 and took 340 ns to execute
+[280709.879936] do_empty returned 0 and took 320 ns to execute
+[280709.885505] do_empty returned 0 and took 300 ns to execute
+[280709.891075] do_empty returned 0 and took 280 ns to execute
+[280709.896646] do_empty returned 0 and took 290 ns to execute
+[280709.902220] do_empty returned 0 and took 290 ns to execute
+[280709.907807] do_empty returned 0 and took 290 ns to execute
+
+optprobe:
+[ 2965.964572] do_empty returned 0 and took 90 ns to execute
+[ 2965.969952] do_empty returned 0 and took 80 ns to execute
+[ 2965.975332] do_empty returned 0 and took 70 ns to execute
+[ 2965.980714] do_empty returned 0 and took 60 ns to execute
+[ 2965.986128] do_empty returned 0 and took 80 ns to execute
+[ 2965.991507] do_empty returned 0 and took 70 ns to execute
+[ 2965.996884] do_empty returned 0 and took 70 ns to execute
+[ 2966.002262] do_empty returned 0 and took 80 ns to execute
+[ 2966.007642] do_empty returned 0 and took 70 ns to execute
+[ 2966.013020] do_empty returned 0 and took 70 ns to execute
+[ 2966.018400] do_empty returned 0 and took 70 ns to execute
+[ 2966.023779] do_empty returned 0 and took 70 ns to execute
+[ 2966.029158] do_empty returned 0 and took 70 ns to execute
+
+Signed-off-by: Qi Liu <liuqi115@huawei.com>
 ---
- include/linux/rtnetlink.h |  7 +++----
- net/core/rtnetlink.c      | 21 +++++----------------
- 2 files changed, 8 insertions(+), 20 deletions(-)
+ arch/arm64/Kconfig                            |   1 +
+ arch/arm64/include/asm/kprobes.h              |  23 ++
+ arch/arm64/kernel/probes/Makefile             |   2 +
+ arch/arm64/kernel/probes/kprobes.c            |  19 +-
+ arch/arm64/kernel/probes/opt-arm64.c          | 217 ++++++++++++++++++
+ .../arm64/kernel/probes/optprobe_trampoline.S |  80 +++++++
+ 6 files changed, 339 insertions(+), 3 deletions(-)
+ create mode 100644 arch/arm64/kernel/probes/opt-arm64.c
+ create mode 100644 arch/arm64/kernel/probes/optprobe_trampoline.S
 
-diff --git a/include/linux/rtnetlink.h b/include/linux/rtnetlink.h
-index bb9cb84114c1..409c334746a6 100644
---- a/include/linux/rtnetlink.h
-+++ b/include/linux/rtnetlink.h
-@@ -9,10 +9,9 @@
- #include <linux/refcount.h>
- #include <uapi/linux/rtnetlink.h>
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index b48fa6da8d9f..1690cec625ed 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -200,6 +200,7 @@ config ARM64
+ 	select HAVE_STACKPROTECTOR
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HAVE_KPROBES
++	select HAVE_OPTPROBES if !RANDOMIZE_MODULE_REGION_FULL
+ 	select HAVE_KRETPROBES
+ 	select HAVE_GENERIC_VDSO
+ 	select HOLES_IN_ZONE
+diff --git a/arch/arm64/include/asm/kprobes.h b/arch/arm64/include/asm/kprobes.h
+index 5d38ff4a4806..9e1c492a0c3d 100644
+--- a/arch/arm64/include/asm/kprobes.h
++++ b/arch/arm64/include/asm/kprobes.h
+@@ -39,6 +39,29 @@ void arch_remove_kprobe(struct kprobe *);
+ int kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr);
+ int kprobe_exceptions_notify(struct notifier_block *self,
+ 			     unsigned long val, void *data);
++
++#define RELATIVEJUMP_SIZE (4)
++#define MAX_COPIED_INSN	DIV_ROUND_UP(RELATIVEJUMP_SIZE, sizeof(kprobe_opcode_t))
++struct arch_optimized_insn {
++	kprobe_opcode_t copied_insn[MAX_COPIED_INSN];
++	/* detour code buffer */
++	kprobe_opcode_t *insn;
++};
++
++/* optinsn template addresses */
++extern __visible kprobe_opcode_t optprobe_template_entry[];
++extern __visible kprobe_opcode_t optprobe_template_val[];
++extern __visible kprobe_opcode_t optprobe_template_call[];
++extern __visible kprobe_opcode_t optprobe_template_end[];
++extern __visible kprobe_opcode_t optprobe_template_restore_begin[];
++extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn[];
++extern __visible kprobe_opcode_t optprobe_template_restore_end[];
++
++#define MAX_OPTIMIZED_LENGTH	4
++#define MAX_OPTINSN_SIZE				\
++	((unsigned long)optprobe_template_end -	\
++	 (unsigned long)optprobe_template_entry)
++
+ void kretprobe_trampoline(void);
+ void __kprobes *trampoline_probe_handler(struct pt_regs *regs);
  
--extern int rtnetlink_send(struct sk_buff *skb, struct net *net, u32 pid, u32 group, int echo);
--extern int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 pid);
--extern void rtnl_notify(struct sk_buff *skb, struct net *net, u32 pid,
--			u32 group, struct nlmsghdr *nlh, gfp_t flags);
-+extern int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 portid);
-+extern int rtnl_notify(struct sk_buff *skb, struct net *net, u32 portid,
-+		       u32 group, int report, gfp_t flags);
- extern void rtnl_set_sk_err(struct net *net, u32 group, int error);
- extern int rtnetlink_put_metrics(struct sk_buff *skb, u32 *metrics);
- extern int rtnl_put_cacheinfo(struct sk_buff *skb, struct dst_entry *dst,
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index 670d74ab91ae..48bb9dc6f06f 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -707,31 +707,20 @@ static int rtnl_link_fill(struct sk_buff *skb, const struct net_device *dev)
- 	return err;
- }
+diff --git a/arch/arm64/kernel/probes/Makefile b/arch/arm64/kernel/probes/Makefile
+index 8e4be92e25b1..52cf5d4ffe8a 100644
+--- a/arch/arm64/kernel/probes/Makefile
++++ b/arch/arm64/kernel/probes/Makefile
+@@ -4,3 +4,5 @@ obj-$(CONFIG_KPROBES)		+= kprobes.o decode-insn.o	\
+ 				   simulate-insn.o
+ obj-$(CONFIG_UPROBES)		+= uprobes.o decode-insn.o	\
+ 				   simulate-insn.o
++obj-$(CONFIG_OPTPROBES)		+= opt-arm64.o			\
++				   optprobe_trampoline.o
+diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+index 6dbcc89f6662..83755ad62abe 100644
+--- a/arch/arm64/kernel/probes/kprobes.c
++++ b/arch/arm64/kernel/probes/kprobes.c
+@@ -11,6 +11,7 @@
+ #include <linux/kasan.h>
+ #include <linux/kernel.h>
+ #include <linux/kprobes.h>
++#include <linux/moduleloader.h>
+ #include <linux/sched/debug.h>
+ #include <linux/set_memory.h>
+ #include <linux/slab.h>
+@@ -113,9 +114,21 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
  
--int rtnetlink_send(struct sk_buff *skb, struct net *net, u32 pid, unsigned int group, int echo)
-+int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 portid)
+ void *alloc_insn_page(void)
  {
- 	struct sock *rtnl = net->rtnl;
- 
--	return nlmsg_notify(rtnl, skb, pid, group, echo, GFP_KERNEL);
--}
--
--int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 pid)
--{
--	struct sock *rtnl = net->rtnl;
--
--	return nlmsg_unicast(rtnl, skb, pid);
-+	return nlmsg_unicast(rtnl, skb, portid);
+-	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
+-			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
+-			NUMA_NO_NODE, __builtin_return_address(0));
++	void *page;
++
++	page = module_alloc(PAGE_SIZE);
++	if (!page)
++		return NULL;
++
++	set_vm_flush_reset_perms(page);
++	/*
++	 * First make the page read-only, and only then make it executable to
++	 * prevent it from being W+X in between.
++	 */
++	set_memory_ro((unsigned long)page, 1);
++	set_memory_x((unsigned long)page, 1);
++
++	return page;
  }
- EXPORT_SYMBOL(rtnl_unicast);
  
--void rtnl_notify(struct sk_buff *skb, struct net *net, u32 pid, u32 group,
--		 struct nlmsghdr *nlh, gfp_t flags)
-+int rtnl_notify(struct sk_buff *skb, struct net *net, u32 portid,
-+		u32 group, int report, gfp_t flags)
- {
- 	struct sock *rtnl = net->rtnl;
--	int report = 0;
--
--	if (nlh)
--		report = nlmsg_report(nlh);
- 
--	nlmsg_notify(rtnl, skb, pid, group, report, flags);
-+	return nlmsg_notify(rtnl, skb, portid, group, report, flags);
- }
- EXPORT_SYMBOL(rtnl_notify);
- 
+ /* arm kprobe: install breakpoint in text */
+diff --git a/arch/arm64/kernel/probes/opt-arm64.c b/arch/arm64/kernel/probes/opt-arm64.c
+new file mode 100644
+index 000000000000..ff72f6275e71
+--- /dev/null
++++ b/arch/arm64/kernel/probes/opt-arm64.c
+@@ -0,0 +1,217 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Code for Kernel probes Jump optimization.
++ *
++ * Copyright (C) 2021 Hisilicon Limited
++ */
++
++#include <linux/jump_label.h>
++#include <linux/kprobes.h>
++
++#include <asm/cacheflush.h>
++#include <asm/insn.h>
++#include <asm/kprobes.h>
++#include <asm/patching.h>
++
++#define TMPL_VAL_IDX \
++	(optprobe_template_val - optprobe_template_entry)
++#define TMPL_CALL_BACK \
++	(optprobe_template_call - optprobe_template_entry)
++#define TMPL_END_IDX \
++	(optprobe_template_end - optprobe_template_entry)
++#define TMPL_RESTORE_ORIGN_INSN \
++	(optprobe_template_restore_orig_insn - optprobe_template_entry)
++#define TMPL_RESTORE_END \
++	(optprobe_template_restore_end - optprobe_template_entry)
++
++int arch_check_optimized_kprobe(struct optimized_kprobe *op)
++{
++	return 0;
++}
++
++int arch_prepared_optinsn(struct arch_optimized_insn *optinsn)
++{
++	return optinsn->insn != NULL;
++}
++
++int arch_within_optimized_kprobe(struct optimized_kprobe *op,
++				unsigned long addr)
++{
++	return ((unsigned long)op->kp.addr <= addr &&
++		(unsigned long)op->kp.addr + RELATIVEJUMP_SIZE > addr);
++}
++
++static void
++optimized_callback(struct optimized_kprobe *op, struct pt_regs *regs)
++{
++	/* This is possible if op is under delayed unoptimizing */
++	if (kprobe_disabled(&op->kp))
++		return;
++
++	preempt_disable();
++
++	if (kprobe_running()) {
++		kprobes_inc_nmissed_count(&op->kp);
++	} else {
++		__this_cpu_write(current_kprobe, &op->kp);
++		regs->pc = (unsigned long)op->kp.addr;
++		get_kprobe_ctlblk()->kprobe_status = KPROBE_HIT_ACTIVE;
++		opt_pre_handler(&op->kp, regs);
++		__this_cpu_write(current_kprobe, NULL);
++	}
++
++	preempt_enable_no_resched();
++}
++NOKPROBE_SYMBOL(optimized_callback)
++
++static bool is_offset_in_branch_range(long offset)
++{
++	return (offset >= -0x08000000 && offset <= 0x07fffffc && !(offset & 0x3));
++}
++
++int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *orig)
++{
++	kprobe_opcode_t *code;
++	long rel_chk;
++	u32 insn, size;
++	int ret, i;
++	void *addr;
++
++	code = get_optinsn_slot();
++	if (!code)
++		return -ENOMEM;
++
++	/*
++	 * Verify if the address gap is in 128MiB range, because this uses
++	 * a relative jump.
++	 *
++	 * kprobe opt use a 'b' instruction to branch to optinsn.insn.
++	 * According to ARM manual, branch instruction is:
++	 *
++	 *   31  30                  25              0
++	 *  +----+---+---+---+---+---+---------------+
++	 *  |cond| 0 | 0 | 1 | 0 | 1 |     imm26     |
++	 *  +----+---+---+---+---+---+---------------+
++	 *
++	 * imm26 is a signed 26 bits integer. The real branch offset is computed
++	 * by: imm64 = SignExtend(imm26:'00', 64);
++	 *
++	 * So the maximum forward branch should be:
++	 *   (0x01ffffff << 2) = 1720x07fffffc =  0x07fffffc
++	 * The maximum backward branch should be:
++	 *   (0xfe000000 << 2) = 0xFFFFFFFFF8000000 = -0x08000000
++	 *
++	 * We can simply check (rel & 0xf8000003):
++	 *  if rel is positive, (rel & 0xf8000003) should be 0
++	 *  if rel is negitive, (rel & 0xf8000003) should be 0xf8000000
++	 *  the last '3' is used for alignment checking.
++	 */
++	rel_chk = (unsigned long)code -
++			(unsigned long)orig->addr + 8;
++	if (!is_offset_in_branch_range(rel_chk)) {
++		pr_err("%s is out of branch range.\n", orig->symbol_name);
++		free_optinsn_slot(code, 0);
++		return -ERANGE;
++	}
++
++	/* Setup template */
++	size = (TMPL_END_IDX * sizeof(kprobe_opcode_t)) / sizeof(int);
++	for (i = 0; i < size; i++) {
++		addr = code + i;
++		insn = *(optprobe_template_entry + i);
++		ret = aarch64_insn_patch_text(&addr, &insn, 1);
++		if (ret < 0) {
++			free_optinsn_slot(code, 0);
++			return -ERANGE;
++		}
++	}
++
++	/* Set probe information */
++	addr = code + TMPL_VAL_IDX;
++	insn =  (unsigned long long)op & 0xffffffff;
++	aarch64_insn_patch_text(&addr, &insn, 1);
++
++	addr = addr + 4;
++	insn = ((unsigned long long)op & GENMASK_ULL(63, 32)) >> 32;
++	aarch64_insn_patch_text(&addr, &insn, 1);
++
++	addr = code + TMPL_CALL_BACK;
++	insn =  aarch64_insn_gen_branch_imm((unsigned long)addr,
++				(unsigned long)optimized_callback,
++				AARCH64_INSN_BRANCH_LINK);
++	aarch64_insn_patch_text(&addr, &insn, 1);
++
++	/* The original probed instruction */
++	addr = code + TMPL_RESTORE_ORIGN_INSN;
++	insn =  orig->opcode;
++	aarch64_insn_patch_text(&addr, &insn, 1);
++
++	/* Jump back to next instruction */
++	addr = code + TMPL_RESTORE_END;
++	insn = aarch64_insn_gen_branch_imm(
++				(unsigned long)(&code[TMPL_RESTORE_END]),
++				(unsigned long)(op->kp.addr) + 4,
++				AARCH64_INSN_BRANCH_NOLINK);
++	aarch64_insn_patch_text(&addr, &insn, 1);
++
++	flush_icache_range((unsigned long)code,
++			   (unsigned long)(&code[TMPL_END_IDX]));
++	/* Set op->optinsn.insn means prepared. */
++	op->optinsn.insn = code;
++	return 0;
++}
++
++void arch_optimize_kprobes(struct list_head *oplist)
++{
++	struct optimized_kprobe *op, *tmp;
++
++	list_for_each_entry_safe(op, tmp, oplist, list) {
++		u32 insn;
++
++		WARN_ON(kprobe_disabled(&op->kp));
++
++		/*
++		 * Backup instructions which will be replaced
++		 * by jump address
++		 */
++		memcpy(op->optinsn.copied_insn, op->kp.addr,
++			RELATIVEJUMP_SIZE);
++		insn = aarch64_insn_gen_branch_imm((unsigned long)op->kp.addr,
++				(unsigned long)op->optinsn.insn,
++				AARCH64_INSN_BRANCH_NOLINK);
++
++		WARN_ON(insn == 0);
++
++		aarch64_insn_patch_text((void *)&(op->kp.addr), &insn, 1);
++
++		list_del_init(&op->list);
++	}
++}
++
++void arch_unoptimize_kprobe(struct optimized_kprobe *op)
++{
++	arch_arm_kprobe(&op->kp);
++}
++
++/*
++ * Recover original instructions and breakpoints from relative jumps.
++ * Caller must call with locking kprobe_mutex.
++ */
++void arch_unoptimize_kprobes(struct list_head *oplist,
++			    struct list_head *done_list)
++{
++	struct optimized_kprobe *op, *tmp;
++
++	list_for_each_entry_safe(op, tmp, oplist, list) {
++		arch_unoptimize_kprobe(op);
++		list_move(&op->list, done_list);
++	}
++}
++
++void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
++{
++	if (op->optinsn.insn) {
++		free_optinsn_slot(op->optinsn.insn, 1);
++		op->optinsn.insn = NULL;
++	}
++}
+diff --git a/arch/arm64/kernel/probes/optprobe_trampoline.S b/arch/arm64/kernel/probes/optprobe_trampoline.S
+new file mode 100644
+index 000000000000..13729cb279b8
+--- /dev/null
++++ b/arch/arm64/kernel/probes/optprobe_trampoline.S
+@@ -0,0 +1,80 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * trampoline entry and return code for optprobes.
++ */
++
++#include <linux/linkage.h>
++#include <asm/asm-offsets.h>
++#include <asm/assembler.h>
++
++	.global optprobe_template_entry
++optprobe_template_entry:
++	sub sp, sp, #PT_REGS_SIZE
++	stp x0, x1, [sp, #S_X0]
++	stp x2, x3, [sp, #S_X2]
++	stp x4, x5, [sp, #S_X4]
++	stp x6, x7, [sp, #S_X6]
++	stp x8, x9, [sp, #S_X8]
++	stp x10, x11, [sp, #S_X10]
++	stp x12, x13, [sp, #S_X12]
++	stp x14, x15, [sp, #S_X14]
++	stp x16, x17, [sp, #S_X16]
++	stp x18, x19, [sp, #S_X18]
++	stp x20, x21, [sp, #S_X20]
++	stp x22, x23, [sp, #S_X22]
++	stp x24, x25, [sp, #S_X24]
++	stp x26, x27, [sp, #S_X26]
++	stp x28, x29, [sp, #S_X28]
++	add x0, sp, #PT_REGS_SIZE
++	stp lr, x0, [sp, #S_LR]
++	/*
++	 * Construct a useful saved PSTATE
++	 */
++	mrs x0, nzcv
++	mrs x1, daif
++	orr x0, x0, x1
++	mrs x1, CurrentEL
++	orr x0, x0, x1
++	mrs x1, SPSel
++	orr x0, x0, x1
++	stp xzr, x0, [sp, #S_PC]
++	/* Get parameters to optimized_callback() */
++	ldr	x0, 1f
++	mov	x1, sp
++	/* Branch to optimized_callback() */
++	.global optprobe_template_call
++optprobe_template_call:
++	nop
++        /* Restore registers */
++	ldr x0, [sp, #S_PSTATE]
++	and x0, x0, #(PSR_N_BIT | PSR_Z_BIT | PSR_C_BIT | PSR_V_BIT)
++	msr nzcv, x0
++	ldp x0, x1, [sp, #S_X0]
++	ldp x2, x3, [sp, #S_X2]
++	ldp x4, x5, [sp, #S_X4]
++	ldp x6, x7, [sp, #S_X6]
++	ldp x8, x9, [sp, #S_X8]
++	ldp x10, x11, [sp, #S_X10]
++	ldp x12, x13, [sp, #S_X12]
++	ldp x14, x15, [sp, #S_X14]
++	ldp x16, x17, [sp, #S_X16]
++	ldp x18, x19, [sp, #S_X18]
++	ldp x20, x21, [sp, #S_X20]
++	ldp x22, x23, [sp, #S_X22]
++	ldp x24, x25, [sp, #S_X24]
++	ldp x26, x27, [sp, #S_X26]
++	ldp x28, x29, [sp, #S_X28]
++	ldr lr, [sp, #S_LR]
++        add sp, sp, #PT_REGS_SIZE
++	.global optprobe_template_restore_orig_insn
++optprobe_template_restore_orig_insn:
++	nop
++	.global optprobe_template_restore_end
++optprobe_template_restore_end:
++	nop
++	.global optprobe_template_end
++optprobe_template_end:
++	.global optprobe_template_val
++optprobe_template_val:
++	1:	.long 0
++		.long 0
 -- 
-2.32.0
+2.17.1
 
