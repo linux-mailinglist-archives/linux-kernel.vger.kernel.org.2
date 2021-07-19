@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0243CE905
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951733CEA84
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351767AbhGSQtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:49:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46396 "EHLO mail.kernel.org"
+        id S1377522AbhGSRQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:16:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243361AbhGSP1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:27:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6D4161287;
-        Mon, 19 Jul 2021 16:07:58 +0000 (UTC)
+        id S1346113AbhGSPij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:38:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A586961363;
+        Mon, 19 Jul 2021 16:18:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710879;
-        bh=uj+ORLF5pISP46S1mI5o10kGfkNTzBTePAF3/5vtGTg=;
+        s=korg; t=1626711506;
+        bh=lTQAdoT+A2R5QcppUh7z770vJdI+rfGpo1UKuzMDMIc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ifH1a0rwILirfo7oVoBxw0W6QucWEbESF9KkFut+XCDYMfUzS8VZf97M2mlg1PIrz
-         xopCoXiayaxk2+22KH4xxSkA+QcgdWAtN3ErQpNQyVGgKuGHxvE8zsTrMkcwLK2kAU
-         1zbboyWUJ5P7hALNpJTuP8RviGBcQrZ3QpQSCtWg=
+        b=SZ/N5d919D7QrpaUmBdJKA6t6VZjb7BilIS4DqtvI/hlz3RfeKZhYzUZSLEBh56Z7
+         v00Kss3/tVotHBGIE/Sj3mz3GwgOCuR3QhnTHp7/hi01SkVo99eFwyb/hIEdPjFPn3
+         IugUIIVwHbDd2T6L+NVvMn7l6V92YySEgGLXK2sI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 143/351] intel_th: Wait until port is in reset before programming it
+        stable@vger.kernel.org, Wayne Lin <Wayne.Lin@amd.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 5.12 027/292] drm/dp_mst: Do not set proposed vcpi directly
 Date:   Mon, 19 Jul 2021 16:51:29 +0200
-Message-Id: <20210719144949.213140027@linuxfoundation.org>
+Message-Id: <20210719144943.429006877@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,119 +43,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+From: Wayne Lin <Wayne.Lin@amd.com>
 
-[ Upstream commit ab1afed701d2db7eb35c1a2526a29067a38e93d1 ]
+commit 35d3e8cb35e75450f87f87e3d314e2d418b6954b upstream.
 
-Some devices don't drain their pipelines if we don't make sure that
-the corresponding output port is in reset before programming it for
-a new trace capture, resulting in bits of old trace appearing in the
-new trace capture. Fix that by explicitly making sure the reset is
-asserted before programming new trace capture.
+[Why]
+When we receive CSN message to notify one port is disconnected, we will
+implicitly set its corresponding num_slots to 0. Later on, we will
+eventually call drm_dp_update_payload_part1() to arrange down streams.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Link: https://lore.kernel.org/r/20210621151246.31891-5-alexander.shishkin@linux.intel.com
+In drm_dp_update_payload_part1(), we iterate over all proposed_vcpis[]
+to do the update. Not specific to a target sink only. For example, if we
+light up 2 monitors, Monitor_A and Monitor_B, and then we unplug
+Monitor_B. Later on, when we call drm_dp_update_payload_part1() to try
+to update payload for Monitor_A, we'll also implicitly clean payload for
+Monitor_B at the same time. And finally, when we try to call
+drm_dp_update_payload_part1() to clean payload for Monitor_B, we will do
+nothing at this time since payload for Monitor_B has been cleaned up
+previously.
+
+For StarTech 1to3 DP hub, it seems like if we didn't update DPCD payload
+ID table then polling for "ACT Handled"(BIT_1 of DPCD 002C0h) will fail
+and this polling will last for 3 seconds.
+
+Therefore, guess the best way is we don't set the proposed_vcpi[]
+diretly. Let user of these herlper functions to set the proposed_vcpi
+directly.
+
+[How]
+1. Revert commit 7617e9621bf2 ("drm/dp_mst: clear time slots for ports
+invalid")
+2. Tackle the issue in previous commit by skipping those trasient
+proposed VCPIs. These stale VCPIs shoulde be explicitly cleared by
+user later on.
+
+Changes since v1:
+* Change debug macro to use drm_dbg_kms() instead
+* Amend the commit message to add Fixed & Cc tags
+
+Signed-off-by: Wayne Lin <Wayne.Lin@amd.com>
+Fixes: 7617e9621bf2 ("drm/dp_mst: clear time slots for ports invalid")
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Wayne Lin <Wayne.Lin@amd.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: dri-devel@lists.freedesktop.org
+Cc: <stable@vger.kernel.org> # v5.5+
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210616035501.3776-2-Wayne.Lin@amd.com
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/intel_th/core.c     | 17 +++++++++++++++++
- drivers/hwtracing/intel_th/gth.c      | 16 ++++++++++++++++
- drivers/hwtracing/intel_th/intel_th.h |  3 +++
- 3 files changed, 36 insertions(+)
+ drivers/gpu/drm/drm_dp_mst_topology.c |   36 +++++++++-------------------------
+ 1 file changed, 10 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/hwtracing/intel_th/core.c b/drivers/hwtracing/intel_th/core.c
-index 24d0c974bfd5..1b44d86af9c2 100644
---- a/drivers/hwtracing/intel_th/core.c
-+++ b/drivers/hwtracing/intel_th/core.c
-@@ -215,6 +215,22 @@ static ssize_t port_show(struct device *dev, struct device_attribute *attr,
- 
- static DEVICE_ATTR_RO(port);
- 
-+static void intel_th_trace_prepare(struct intel_th_device *thdev)
-+{
-+	struct intel_th_device *hub = to_intel_th_hub(thdev);
-+	struct intel_th_driver *hubdrv = to_intel_th_driver(hub->dev.driver);
-+
-+	if (hub->type != INTEL_TH_SWITCH)
-+		return;
-+
-+	if (thdev->type != INTEL_TH_OUTPUT)
-+		return;
-+
-+	pm_runtime_get_sync(&thdev->dev);
-+	hubdrv->prepare(hub, &thdev->output);
-+	pm_runtime_put(&thdev->dev);
-+}
-+
- static int intel_th_output_activate(struct intel_th_device *thdev)
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -2499,7 +2499,7 @@ drm_dp_mst_handle_conn_stat(struct drm_d
  {
- 	struct intel_th_driver *thdrv =
-@@ -235,6 +251,7 @@ static int intel_th_output_activate(struct intel_th_device *thdev)
- 	if (ret)
- 		goto fail_put;
+ 	struct drm_dp_mst_topology_mgr *mgr = mstb->mgr;
+ 	struct drm_dp_mst_port *port;
+-	int old_ddps, old_input, ret, i;
++	int old_ddps, ret;
+ 	u8 new_pdt;
+ 	bool new_mcs;
+ 	bool dowork = false, create_connector = false;
+@@ -2531,7 +2531,6 @@ drm_dp_mst_handle_conn_stat(struct drm_d
+ 	}
  
-+	intel_th_trace_prepare(thdev);
- 	if (thdrv->activate)
- 		ret = thdrv->activate(thdev);
- 	else
-diff --git a/drivers/hwtracing/intel_th/gth.c b/drivers/hwtracing/intel_th/gth.c
-index 28509b02a0b5..b3308934a687 100644
---- a/drivers/hwtracing/intel_th/gth.c
-+++ b/drivers/hwtracing/intel_th/gth.c
-@@ -564,6 +564,21 @@ static void gth_tscu_resync(struct gth_device *gth)
- 	iowrite32(reg, gth->base + REG_TSCU_TSUCTRL);
- }
+ 	old_ddps = port->ddps;
+-	old_input = port->input;
+ 	port->input = conn_stat->input_port;
+ 	port->ldps = conn_stat->legacy_device_plug_status;
+ 	port->ddps = conn_stat->displayport_device_plug_status;
+@@ -2554,28 +2553,6 @@ drm_dp_mst_handle_conn_stat(struct drm_d
+ 		dowork = false;
+ 	}
  
-+static void intel_th_gth_prepare(struct intel_th_device *thdev,
-+				 struct intel_th_output *output)
-+{
-+	struct gth_device *gth = dev_get_drvdata(&thdev->dev);
-+	int count;
-+
-+	/*
-+	 * Wait until the output port is in reset before we start
-+	 * programming it.
-+	 */
-+	for (count = GTH_PLE_WAITLOOP_DEPTH;
-+	     count && !(gth_output_get(gth, output->port) & BIT(5)); count--)
-+		cpu_relax();
-+}
-+
- /**
-  * intel_th_gth_enable() - enable tracing to an output device
-  * @thdev:	GTH device
-@@ -815,6 +830,7 @@ static struct intel_th_driver intel_th_gth_driver = {
- 	.assign		= intel_th_gth_assign,
- 	.unassign	= intel_th_gth_unassign,
- 	.set_output	= intel_th_gth_set_output,
-+	.prepare	= intel_th_gth_prepare,
- 	.enable		= intel_th_gth_enable,
- 	.trig_switch	= intel_th_gth_switch,
- 	.disable	= intel_th_gth_disable,
-diff --git a/drivers/hwtracing/intel_th/intel_th.h b/drivers/hwtracing/intel_th/intel_th.h
-index 89c67e0e1d34..0ffb42990175 100644
---- a/drivers/hwtracing/intel_th/intel_th.h
-+++ b/drivers/hwtracing/intel_th/intel_th.h
-@@ -143,6 +143,7 @@ intel_th_output_assigned(struct intel_th_device *thdev)
-  * @remove:	remove method
-  * @assign:	match a given output type device against available outputs
-  * @unassign:	deassociate an output type device from an output port
-+ * @prepare:	prepare output port for tracing
-  * @enable:	enable tracing for a given output device
-  * @disable:	disable tracing for a given output device
-  * @irq:	interrupt callback
-@@ -164,6 +165,8 @@ struct intel_th_driver {
- 					  struct intel_th_device *othdev);
- 	void			(*unassign)(struct intel_th_device *thdev,
- 					    struct intel_th_device *othdev);
-+	void			(*prepare)(struct intel_th_device *thdev,
-+					   struct intel_th_output *output);
- 	void			(*enable)(struct intel_th_device *thdev,
- 					  struct intel_th_output *output);
- 	void			(*trig_switch)(struct intel_th_device *thdev,
--- 
-2.30.2
-
+-	if (!old_input && old_ddps != port->ddps && !port->ddps) {
+-		for (i = 0; i < mgr->max_payloads; i++) {
+-			struct drm_dp_vcpi *vcpi = mgr->proposed_vcpis[i];
+-			struct drm_dp_mst_port *port_validated;
+-
+-			if (!vcpi)
+-				continue;
+-
+-			port_validated =
+-				container_of(vcpi, struct drm_dp_mst_port, vcpi);
+-			port_validated =
+-				drm_dp_mst_topology_get_port_validated(mgr, port_validated);
+-			if (!port_validated) {
+-				mutex_lock(&mgr->payload_lock);
+-				vcpi->num_slots = 0;
+-				mutex_unlock(&mgr->payload_lock);
+-			} else {
+-				drm_dp_mst_topology_put_port(port_validated);
+-			}
+-		}
+-	}
+-
+ 	if (port->connector)
+ 		drm_modeset_unlock(&mgr->base.lock);
+ 	else if (create_connector)
+@@ -3406,8 +3383,15 @@ int drm_dp_update_payload_part1(struct d
+ 				port = drm_dp_mst_topology_get_port_validated(
+ 				    mgr, port);
+ 				if (!port) {
+-					mutex_unlock(&mgr->payload_lock);
+-					return -EINVAL;
++					if (vcpi->num_slots == payload->num_slots) {
++						cur_slots += vcpi->num_slots;
++						payload->start_slot = req_payload.start_slot;
++						continue;
++					} else {
++						drm_dbg_kms("Fail:set payload to invalid sink");
++						mutex_unlock(&mgr->payload_lock);
++						return -EINVAL;
++					}
+ 				}
+ 				put_port = true;
+ 			}
 
 
