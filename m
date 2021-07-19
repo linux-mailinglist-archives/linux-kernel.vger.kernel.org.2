@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FE93CD977
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FFAC3CD93D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244471AbhGSO3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:29:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37430 "EHLO mail.kernel.org"
+        id S243932AbhGSO1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:27:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244221AbhGSOY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:24:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F3E461003;
-        Mon, 19 Jul 2021 15:05:36 +0000 (UTC)
+        id S244258AbhGSOZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:25:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33CFF60551;
+        Mon, 19 Jul 2021 15:05:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707137;
-        bh=zrYboXMK70Pl5qXC/p9zvCsNi9myE2zUuzYTu+8hHLQ=;
+        s=korg; t=1626707139;
+        bh=vo77HdlqcG/jKpPS48DViD5bY7q9eq+uWjZN9WAnGlU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cbl3HRAUnOulpLXqvdjvvWBwB5sbDX6bnHk0OiSkB7sA1m53XWQtHsfJEkdlrE8qO
-         YyHPPOoYNQ1JMVrA/y1fP/7QOrxl/8bUCAMG2GFUACPcEDOPT200mUUUtxHffwV37Y
-         Q1d5RA69mHW2JbYgMsokrj8AeCnIWPd+stlustbs=
+        b=fBvKVQkFB0syP8BjJZ0LhZLdHzmioaGwawo+iztvH1jchl+0CjqvVVABkA2rv6rNM
+         Chc6Y9WeJP2CeJn8y44x1S/gOtpat4TwOFIOs7CD0ynbHRGwx54/P0dZgcb+ETuU/x
+         UoqyZcoiOKnLevRwAfTluO9alobwN3t9ZIQmqipA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 044/245] media: siano: fix device register error path
-Date:   Mon, 19 Jul 2021 16:49:46 +0200
-Message-Id: <20210719144941.825459775@linuxfoundation.org>
+Subject: [PATCH 4.9 045/245] btrfs: abort transaction if we fail to update the delayed inode
+Date:   Mon, 19 Jul 2021 16:49:47 +0200
+Message-Id: <20210719144941.855812892@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -40,37 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 5368b1ee2939961a16e74972b69088433fc52195 ]
+[ Upstream commit 04587ad9bef6ce9d510325b4ba9852b6129eebdb ]
 
-As reported by smatch:
-	drivers/media/common/siano/smsdvb-main.c:1231 smsdvb_hotplug() warn: '&client->entry' not removed from list
+If we fail to update the delayed inode we need to abort the transaction,
+because we could leave an inode with the improper counts or some other
+such corruption behind.
 
-If an error occur at the end of the registration logic, it won't
-drop the device from the list.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/common/siano/smsdvb-main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/btrfs/delayed-inode.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
-index 9d5eb8b6aede..3a5b5f94398a 100644
---- a/drivers/media/common/siano/smsdvb-main.c
-+++ b/drivers/media/common/siano/smsdvb-main.c
-@@ -1187,6 +1187,10 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
- 	return 0;
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 4d8f8a8c9c90..29e75fba5376 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1076,6 +1076,14 @@ err_out:
+ 	btrfs_delayed_inode_release_metadata(root, node);
+ 	btrfs_release_delayed_inode(node);
  
- media_graph_error:
-+	mutex_lock(&g_smsdvb_clientslock);
-+	list_del(&client->entry);
-+	mutex_unlock(&g_smsdvb_clientslock);
++	/*
++	 * If we fail to update the delayed inode we need to abort the
++	 * transaction, because we could leave the inode with the improper
++	 * counts behind.
++	 */
++	if (ret && ret != -ENOENT)
++		btrfs_abort_transaction(trans, ret);
 +
- 	smsdvb_debugfs_release(client);
+ 	return ret;
  
- client_error:
+ search:
 -- 
 2.30.2
 
