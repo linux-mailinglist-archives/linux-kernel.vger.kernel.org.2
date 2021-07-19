@@ -2,342 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45AD3CCFF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2353CD002
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235547AbhGSIYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:24:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41442 "EHLO mail.kernel.org"
+        id S236121AbhGSIYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:24:31 -0400
+Received: from mga01.intel.com ([192.55.52.88]:53499 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235878AbhGSIXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:23:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A189661009;
-        Mon, 19 Jul 2021 08:47:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626684454;
-        bh=Z8QxgJGFP3p/nfg2SDMpVEKedbs0kk0rI6anNltZnjo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=R1unZ01KJujtGTmo/J9J6hR8G0lo1mUHWxkHcROjETXmAY3mOFr8wU7azwnyqvsrA
-         bnwio/yvyJf8bAIW7xjuExhrcY709L88xKdffd72aVGMQzNXOq8ucpviRTUzFkh89G
-         rhh9XHEulz76ULCMS6hNKcuJ88eBERIljROHIz0LSpLferHS2XwUFPrdMsaM0Wfkbk
-         MDOQfY894w4x644N+tZcem2Aeb+76QQyNBS2PoZVKsbA2CeuwvIYE57vUHjJGkkneZ
-         WtCwbZsy1OzIB6i8ArNvEPp1nhZL8HQRmut1kULhCxYma7tCwvE9M/IWRizH8VSvHy
-         OcRM8B7H5Yy7Q==
-From:   Chao Yu <chao@kernel.org>
-To:     jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
-        Chao Yu <chao@kernel.org>
-Subject: [PATCH] f2fs: multidevice: support direct IO
-Date:   Mon, 19 Jul 2021 16:47:29 +0800
-Message-Id: <20210719084729.26117-1-chao@kernel.org>
-X-Mailer: git-send-email 2.22.1
+        id S235105AbhGSIYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 04:24:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10049"; a="232785962"
+X-IronPort-AV: E=Sophos;i="5.84,251,1620716400"; 
+   d="scan'208,223";a="232785962"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 01:47:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,251,1620716400"; 
+   d="scan'208,223";a="468350636"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by fmsmga008.fm.intel.com with ESMTP; 19 Jul 2021 01:47:53 -0700
+Date:   Mon, 19 Jul 2021 16:47:52 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the akpm-current tree
+Message-ID: <20210719084752.GA51285@shbuild999.sh.intel.com>
+References: <20210719175203.2152c54b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="rwEMma7ioTxnRzrJ"
+Content-Disposition: inline
+In-Reply-To: <20210719175203.2152c54b@canb.auug.org.au>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 3c62be17d4f5 ("f2fs: support multiple devices") missed
-to support direct IO for multiple device feature, this patch
-adds to support the missing part of multidevice feature.
 
-In addition, for multiple device image, we should be aware of
-any issued direct write IO rather than just buffered write IO,
-so that fsync and syncfs can issue a preflush command to the
-device where direct write IO goes, to persist user data for
-posix compliant.
+--rwEMma7ioTxnRzrJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Chao Yu <chao@kernel.org>
+Hi Stephen,
+
+On Mon, Jul 19, 2021 at 05:52:03PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the akpm-current tree, today's linux-next build (i386
+> defconfig) produced this warning:
+> 
+> mm/hugetlb.c: In function 'dequeue_huge_page_vma':
+> mm/hugetlb.c:1180:1: warning: label 'check_reserve' defined but not used [-Wunused-label]
+>  1180 | check_reserve:
+>       | ^~~~~~~~~~~~~
+> 
+> Introduced by commit
+> 
+>   df178183cf05 ("mm/hugetlb: add support for mempolicy MPOL_PREFERRED_MANY")
+
+Thanks for the report!
+
+The below patch should fix it (Also attached).
+
+Andrew,
+
+Could you help to fold it to the 4/6 of patchset of "introducing
+multi-preference memplicy":
+  [PATCH v6 4/6] mm/hugetlb: add support for mempolicy MPOL_PREFERRED_MANY 
+
+Thanks!
+
+- Feng
+
+--------------------------------8<-----------------------------------
+
+From 4d3b4b0037bf4e1eacae4886387ffe4af90f5a1f Mon Sep 17 00:00:00 2001
+From: Feng Tang <feng.tang@intel.com>
+Date: Mon, 19 Jul 2021 16:24:23 +0800
+Subject: [PATCH] mm/hugetlb: fix compile warning for !CONFIG_NUMA build
+
+Stephen Rothwell reported the i386 build with CONFIG_NUMA=n
+will have a warning:
+
+mm/hugetlb.c: In function 'dequeue_huge_page_vma':
+mm/hugetlb.c:1180:1: warning: label 'check_reserve' defined but not used [-Wunused-label]
+ 1180 | check_reserve:
+       | ^~~~~~~~~~~~~
+
+introduced by commit
+    df178183cf05 ("mm/hugetlb: add support for mempolicy MPOL_PREFERRED_MANY")
+
+Signed-off-by: Feng Tang <feng.tang@intel.com>
 ---
- fs/f2fs/data.c    | 52 +++++++++++++++++++++++++++++++++++++++++++++--
- fs/f2fs/f2fs.h    | 24 +++++++++++++++++++---
- fs/f2fs/segment.c | 29 +++++++++++++-------------
- fs/f2fs/super.c   |  7 +++++++
- 4 files changed, 93 insertions(+), 19 deletions(-)
+ mm/hugetlb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 095350ccf80d..be65dca0de40 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -1451,10 +1451,16 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
- 	struct extent_info ei = {0,0,0};
- 	block_t blkaddr;
- 	unsigned int start_pgofs;
-+	int bidx = 0;
-+	bool multidevice_dio;
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index ae1a39e11bcf..528947da65c8 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1177,7 +1177,9 @@ static struct page *dequeue_huge_page_vma(struct hstate *h,
+ #endif
+ 	page = dequeue_huge_page_nodemask(h, gfp_mask, nid, nodemask);
  
- 	if (!maxblocks)
- 		return 0;
- 
-+	multidevice_dio = f2fs_allow_multi_device_dio(sbi, flag);
-+	if (multidevice_dio)
-+		map->m_bdev = sbi->sb->s_bdev;
-+
- 	map->m_len = 0;
- 	map->m_flags = 0;
- 
-@@ -1477,6 +1483,16 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
- 		if (flag == F2FS_GET_BLOCK_DIO)
- 			f2fs_wait_on_block_writeback_range(inode,
- 						map->m_pblk, map->m_len);
-+
-+		if (multidevice_dio) {
-+			bidx = f2fs_target_device_index(sbi, map->m_pblk);
-+			if (bidx) {
-+				map->m_bdev = FDEV(bidx).bdev;
-+				map->m_pblk -= FDEV(bidx).start_blk;
-+				map->m_len = min(map->m_len,
-+					FDEV(bidx).end_blk + 1 - map->m_pblk);
-+			}
-+		}
- 		goto out;
- 	}
- 
-@@ -1574,6 +1590,9 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
- 	if (flag == F2FS_GET_BLOCK_PRE_AIO)
- 		goto skip;
- 
-+	if (multidevice_dio)
-+		bidx = f2fs_target_device_index(sbi, blkaddr);
-+
- 	if (map->m_len == 0) {
- 		/* preallocated unwritten block should be mapped for fiemap. */
- 		if (blkaddr == NEW_ADDR)
-@@ -1582,10 +1601,15 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
- 
- 		map->m_pblk = blkaddr;
- 		map->m_len = 1;
-+
-+		if (multidevice_dio && map->m_bdev != FDEV(bidx).bdev)
-+			map->m_bdev = FDEV(bidx).bdev;
- 	} else if ((map->m_pblk != NEW_ADDR &&
- 			blkaddr == (map->m_pblk + ofs)) ||
- 			(map->m_pblk == NEW_ADDR && blkaddr == NEW_ADDR) ||
- 			flag == F2FS_GET_BLOCK_PRE_DIO) {
-+		if (multidevice_dio && map->m_bdev != FDEV(bidx).bdev)
-+			goto sync_out;
- 		ofs++;
- 		map->m_len++;
- 	} else {
-@@ -1638,11 +1662,27 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
- 
- sync_out:
- 
--	/* for hardware encryption, but to avoid potential issue in future */
--	if (flag == F2FS_GET_BLOCK_DIO && map->m_flags & F2FS_MAP_MAPPED)
-+	if (flag == F2FS_GET_BLOCK_DIO && map->m_flags & F2FS_MAP_MAPPED) {
-+		/*
-+		 * for hardware encryption, but to avoid potential issue
-+		 * in future
-+		 */
- 		f2fs_wait_on_block_writeback_range(inode,
- 						map->m_pblk, map->m_len);
- 
-+		if (multidevice_dio) {
-+			bidx = f2fs_target_device_index(sbi, map->m_pblk);
-+			if (bidx) {
-+				map->m_bdev = FDEV(bidx).bdev;
-+				map->m_pblk -= FDEV(bidx).start_blk;
-+				f2fs_bug_on(sbi,
-+					map->m_bdev != FDEV(bidx).bdev ||
-+					map->m_pblk + map->m_len >
-+						FDEV(bidx).end_blk + 1);
-+			}
-+		}
-+	}
-+
- 	if (flag == F2FS_GET_BLOCK_PRECACHE) {
- 		if (map->m_flags & F2FS_MAP_MAPPED) {
- 			unsigned int ofs = start_pgofs - map->m_lblk;
-@@ -1720,6 +1760,9 @@ static int __get_data_block(struct inode *inode, sector_t iblock,
- 		map_bh(bh, inode->i_sb, map.m_pblk);
- 		bh->b_state = (bh->b_state & ~F2FS_MAP_FLAGS) | map.m_flags;
- 		bh->b_size = blks_to_bytes(inode, map.m_len);
-+
-+		if (f2fs_allow_multi_device_dio(F2FS_I_SB(inode), flag))
-+			bh->b_bdev = map.m_bdev;
- 	}
- 	return err;
- }
-@@ -3511,6 +3554,7 @@ static void f2fs_dio_submit_bio(struct bio *bio, struct inode *inode,
- {
- 	struct f2fs_private_dio *dio;
- 	bool write = (bio_op(bio) == REQ_OP_WRITE);
-+	block_t blkaddr = SECTOR_TO_BLOCK(bio->bi_iter.bi_sector);
- 	unsigned int blkcnt = bio_sectors(bio) >> F2FS_LOG_SECTORS_PER_BLOCK;
- 
- 	dio = f2fs_kzalloc(F2FS_I_SB(inode),
-@@ -3527,6 +3571,10 @@ static void f2fs_dio_submit_bio(struct bio *bio, struct inode *inode,
- 	bio->bi_end_io = f2fs_dio_end_io;
- 	bio->bi_private = dio;
- 
-+	if (write)
-+		f2fs_update_device_state(F2FS_I_SB(inode), inode->i_ino,
-+							blkaddr, blkcnt);
-+
- 	inc_page_counts(F2FS_I_SB(inode),
- 			write ? F2FS_DIO_WRITE : F2FS_DIO_READ, dio->blkcnt);
- 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 7369f8087f64..f3ac3cbad2e3 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -607,6 +607,7 @@ struct extent_tree {
- 				F2FS_MAP_UNWRITTEN)
- 
- struct f2fs_map_blocks {
-+	struct block_device *m_bdev;	/* for multi-device */
- 	block_t m_pblk;
- 	block_t m_lblk;
- 	unsigned int m_len;
-@@ -1712,12 +1713,15 @@ struct f2fs_sb_info {
- 
- 	/* For shrinker support */
- 	struct list_head s_list;
-+	struct mutex umount_mutex;
-+	unsigned int shrinker_run_no;
-+
-+	/* For multi devices */
- 	int s_ndevs;				/* number of devices */
- 	struct f2fs_dev_info *devs;		/* for device list */
- 	unsigned int dirty_device;		/* for checkpoint data flush */
- 	spinlock_t dev_lock;			/* protect dirty_device */
--	struct mutex umount_mutex;
--	unsigned int shrinker_run_no;
-+	bool aligned_blksize;			/* all devices has the same logical blksize */
- 
- 	/* For write statistics */
- 	u64 sectors_written_start;
-@@ -3527,6 +3531,8 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
- 			block_t old_blkaddr, block_t *new_blkaddr,
- 			struct f2fs_summary *sum, int type,
- 			struct f2fs_io_info *fio);
-+void f2fs_update_device_state(struct f2fs_sb_info *sbi, nid_t ino,
-+					block_t blkaddr, unsigned int blkcnt);
- void f2fs_wait_on_page_writeback(struct page *page,
- 			enum page_type type, bool ordered, bool locked);
- void f2fs_wait_on_block_writeback(struct inode *inode, block_t blkaddr);
-@@ -4334,6 +4340,16 @@ static inline int allow_outplace_dio(struct inode *inode,
- 				!block_unaligned_IO(inode, iocb, iter));
- }
- 
-+static inline bool f2fs_allow_multi_device_dio(struct f2fs_sb_info *sbi,
-+								int flag)
-+{
-+	if (!f2fs_is_multi_device(sbi))
-+		return false;
-+	if (flag != F2FS_GET_BLOCK_DIO)
-+		return false;
-+	return sbi->aligned_blksize;
-+}
-+
- static inline bool f2fs_force_buffered_io(struct inode *inode,
- 				struct kiocb *iocb, struct iov_iter *iter)
- {
-@@ -4342,7 +4358,9 @@ static inline bool f2fs_force_buffered_io(struct inode *inode,
- 
- 	if (f2fs_post_read_required(inode))
- 		return true;
--	if (f2fs_is_multi_device(sbi))
-+
-+	/* disallow direct IO if any of devices has unaligned blksize */
-+	if (f2fs_is_multi_device(sbi) && !sbi->aligned_blksize)
- 		return true;
- 	/*
- 	 * for blkzoned device, fallback direct IO to buffered IO, so
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 15cc89eef28d..6fcfd234108a 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -3442,24 +3442,24 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
- 	up_read(&SM_I(sbi)->curseg_lock);
- }
- 
--static void update_device_state(struct f2fs_io_info *fio)
-+void f2fs_update_device_state(struct f2fs_sb_info *sbi, nid_t ino,
-+					block_t blkaddr, unsigned int blkcnt)
- {
--	struct f2fs_sb_info *sbi = fio->sbi;
--	unsigned int devidx;
--
- 	if (!f2fs_is_multi_device(sbi))
- 		return;
- 
--	devidx = f2fs_target_device_index(sbi, fio->new_blkaddr);
-+	for (; blkcnt > 0; blkcnt--, blkaddr++) {
-+		unsigned int devidx = f2fs_target_device_index(sbi, blkaddr);
- 
--	/* update device state for fsync */
--	f2fs_set_dirty_device(sbi, fio->ino, devidx, FLUSH_INO);
-+		/* update device state for fsync */
-+		f2fs_set_dirty_device(sbi, ino, devidx, FLUSH_INO);
- 
--	/* update device state for checkpoint */
--	if (!f2fs_test_bit(devidx, (char *)&sbi->dirty_device)) {
--		spin_lock(&sbi->dev_lock);
--		f2fs_set_bit(devidx, (char *)&sbi->dirty_device);
--		spin_unlock(&sbi->dev_lock);
-+		/* update device state for checkpoint */
-+		if (!f2fs_test_bit(devidx, (char *)&sbi->dirty_device)) {
-+			spin_lock(&sbi->dev_lock);
-+			f2fs_set_bit(devidx, (char *)&sbi->dirty_device);
-+			spin_unlock(&sbi->dev_lock);
-+		}
- 	}
- }
- 
-@@ -3486,7 +3486,7 @@ static void do_write_page(struct f2fs_summary *sum, struct f2fs_io_info *fio)
- 		goto reallocate;
- 	}
- 
--	update_device_state(fio);
-+	f2fs_update_device_state(fio->sbi, fio->ino, fio->new_blkaddr, 1);
- 
- 	if (keep_order)
- 		up_read(&fio->sbi->io_order_lock);
-@@ -3575,7 +3575,8 @@ int f2fs_inplace_write_data(struct f2fs_io_info *fio)
- 	else
- 		err = f2fs_submit_page_bio(fio);
- 	if (!err) {
--		update_device_state(fio);
-+		f2fs_update_device_state(fio->sbi, fio->ino,
-+						fio->new_blkaddr, 1);
- 		f2fs_update_iostat(fio->sbi, fio->io_type, F2FS_BLKSIZE);
- 	}
- 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 72eb9d70969f..dced7778d530 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3646,6 +3646,7 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
- {
- 	struct f2fs_super_block *raw_super = F2FS_RAW_SUPER(sbi);
- 	unsigned int max_devices = MAX_DEVICES;
-+	unsigned int logical_blksize;
- 	int i;
- 
- 	/* Initialize single device information */
-@@ -3666,6 +3667,9 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
- 	if (!sbi->devs)
- 		return -ENOMEM;
- 
-+	logical_blksize = bdev_logical_block_size(sbi->sb->s_bdev);
-+	sbi->aligned_blksize = true;
-+
- 	for (i = 0; i < max_devices; i++) {
- 
- 		if (i > 0 && !RDEV(i).path[0])
-@@ -3702,6 +3706,9 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
- 		/* to release errored devices */
- 		sbi->s_ndevs = i + 1;
- 
-+		if (logical_blksize != bdev_logical_block_size(FDEV(i).bdev))
-+			sbi->aligned_blksize = false;
-+
- #ifdef CONFIG_BLK_DEV_ZONED
- 		if (bdev_zoned_model(FDEV(i).bdev) == BLK_ZONED_HM &&
- 				!f2fs_sb_has_blkzoned(sbi)) {
++#ifdef CONFIG_NUMA
+ check_reserve:
++#endif
+ 	if (page && !avoid_reserve && vma_has_reserves(vma, chg)) {
+ 		SetHPageRestoreReserve(page);
+ 		h->resv_huge_pages--;
 -- 
-2.22.1
+2.7.4
 
+
+> -- 
+> Cheers,
+> Stephen Rothwell
+
+
+
+--rwEMma7ioTxnRzrJ
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="0001-mm-hugetlb-fix-compile-warning-for-CONFIG_NUMA-build.patch"
+
+From 4d3b4b0037bf4e1eacae4886387ffe4af90f5a1f Mon Sep 17 00:00:00 2001
+From: Feng Tang <feng.tang@intel.com>
+Date: Mon, 19 Jul 2021 16:24:23 +0800
+Subject: [PATCH] mm/hugetlb: fix compile warning for !CONFIG_NUMA build
+
+Stephen Rothwell reported the i386 build with CONFIG_NUMA=n
+will have a warning:
+
+mm/hugetlb.c: In function 'dequeue_huge_page_vma':
+mm/hugetlb.c:1180:1: warning: label 'check_reserve' defined but not used [-Wunused-label]
+ 1180 | check_reserve:
+       | ^~~~~~~~~~~~~
+
+introduced by commit
+    df178183cf05 ("mm/hugetlb: add support for mempolicy MPOL_PREFERRED_MANY")
+
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+---
+ mm/hugetlb.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index ae1a39e11bcf..528947da65c8 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1177,7 +1177,9 @@ static struct page *dequeue_huge_page_vma(struct hstate *h,
+ #endif
+ 	page = dequeue_huge_page_nodemask(h, gfp_mask, nid, nodemask);
+ 
++#ifdef CONFIG_NUMA
+ check_reserve:
++#endif
+ 	if (page && !avoid_reserve && vma_has_reserves(vma, chg)) {
+ 		SetHPageRestoreReserve(page);
+ 		h->resv_huge_pages--;
+-- 
+2.7.4
+
+
+--rwEMma7ioTxnRzrJ--
