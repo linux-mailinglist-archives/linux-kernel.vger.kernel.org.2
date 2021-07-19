@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254433CE5FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F323CE594
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349621AbhGSP7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:59:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38316 "EHLO mail.kernel.org"
+        id S1349939AbhGSPu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:50:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346172AbhGSPFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:05:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11D5660238;
-        Mon, 19 Jul 2021 15:45:55 +0000 (UTC)
+        id S1344792AbhGSPBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:01:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C3E160551;
+        Mon, 19 Jul 2021 15:41:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709556;
-        bh=v5VR3ML5WWx7WsjA2n/GGkbhcKCR+pId0vcZ6ZoDZzo=;
+        s=korg; t=1626709308;
+        bh=hyCIWKKZjngvuEMe5c7TdZ6aQySOfdGzqdDSWh/eYEQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rHsYpqr5V7+/tfrRw1hTX0P6Z4zJ2xMyd1GctO2bLET+uqwPtqufYOOYnOfJKSmQr
-         m/m+eb3Dimsd6FCU7UWEZDSG6kRIFgMXTdBtJ819BgjJK5LPgZz9KtMAq7mCXIHLYD
-         8qpXUh09brNU/ywbySqNJGyDIGzdjehrWx5rq4l4=
+        b=uezvzTr+Clhh41AfQ21B/Z/3YwN3i7tOuaf+VtRIPGIxaA24+VQVYqGo9CyRsGEhF
+         svVgHbABxpMsRjJ8k8mEqsMDQ9/04vFNVjQn06Bb9W3+tpPUbdvhiU92ZaAsr7qQFW
+         pA4AI/pQCbHGh2/86v6zH8mQCT0jwoLv2Xjn14WQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        kvm@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 5.4 001/149] KVM: mmio: Fix use-after-free Read in kvm_vm_ioctl_unregister_coalesced_mmio
+        stable@vger.kernel.org, Petr Pavlu <petr.pavlu@suse.com>,
+        Corey Minyard <cminyard@mvista.com>
+Subject: [PATCH 4.19 298/421] ipmi/watchdog: Stop watchdog timer when the current action is none
 Date:   Mon, 19 Jul 2021 16:51:49 +0200
-Message-Id: <20210719144901.709931996@linuxfoundation.org>
+Message-Id: <20210719144956.655729931@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
+References: <20210719144946.310399455@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,128 +39,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+From: Petr Pavlu <petr.pavlu@suse.com>
 
-commit 23fa2e46a5556f787ce2ea1a315d3ab93cced204 upstream.
+commit 2253042d86f57d90a621ac2513a7a7a13afcf809 upstream.
 
-BUG: KASAN: use-after-free in kvm_vm_ioctl_unregister_coalesced_mmio+0x7c/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:183
-Read of size 8 at addr ffff0000c03a2500 by task syz-executor083/4269
+When an IPMI watchdog timer is being stopped in ipmi_close() or
+ipmi_ioctl(WDIOS_DISABLECARD), the current watchdog action is updated to
+WDOG_TIMEOUT_NONE and _ipmi_set_timeout(IPMI_SET_TIMEOUT_NO_HB) is called
+to install this action. The latter function ends up invoking
+__ipmi_set_timeout() which makes the actual 'Set Watchdog Timer' IPMI
+request.
 
-CPU: 5 PID: 4269 Comm: syz-executor083 Not tainted 5.10.0 #7
-Hardware name: linux,dummy-virt (DT)
-Call trace:
- dump_backtrace+0x0/0x2d0 arch/arm64/kernel/stacktrace.c:132
- show_stack+0x28/0x34 arch/arm64/kernel/stacktrace.c:196
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x110/0x164 lib/dump_stack.c:118
- print_address_description+0x78/0x5c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report+0x148/0x1e4 mm/kasan/report.c:562
- check_memory_region_inline mm/kasan/generic.c:183 [inline]
- __asan_load8+0xb4/0xbc mm/kasan/generic.c:252
- kvm_vm_ioctl_unregister_coalesced_mmio+0x7c/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:183
- kvm_vm_ioctl+0xe30/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3755
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
- __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
- el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
- do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
- el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
- el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
- el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
+For IPMI 1.0, this operation results in fully stopping the watchdog timer.
+For IPMI >= 1.5, function __ipmi_set_timeout() always specifies the "don't
+stop" flag in the prepared 'Set Watchdog Timer' IPMI request. This causes
+that the watchdog timer has its action correctly updated to 'none' but the
+timer continues to run. A problem is that IPMI firmware can then still log
+an expiration event when the configured timeout is reached, which is
+unexpected because the watchdog timer was requested to be stopped.
 
-Allocated by task 4269:
- stack_trace_save+0x80/0xb8 kernel/stacktrace.c:121
- kasan_save_stack mm/kasan/common.c:48 [inline]
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc+0xdc/0x120 mm/kasan/common.c:461
- kasan_kmalloc+0xc/0x14 mm/kasan/common.c:475
- kmem_cache_alloc_trace include/linux/slab.h:450 [inline]
- kmalloc include/linux/slab.h:552 [inline]
- kzalloc include/linux/slab.h:664 [inline]
- kvm_vm_ioctl_register_coalesced_mmio+0x78/0x1cc arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:146
- kvm_vm_ioctl+0x7e8/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3746
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
- __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
- el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
- do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
- el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
- el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
- el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
+The patch fixes this problem by not setting the "don't stop" flag in
+__ipmi_set_timeout() when the current action is WDOG_TIMEOUT_NONE which
+results in stopping the watchdog timer. This makes the behaviour for
+IPMI >= 1.5 consistent with IPMI 1.0. It also matches the logic in
+__ipmi_heartbeat() which does not allow to reset the watchdog if the
+current action is WDOG_TIMEOUT_NONE as that would start the timer.
 
-Freed by task 4269:
- stack_trace_save+0x80/0xb8 kernel/stacktrace.c:121
- kasan_save_stack mm/kasan/common.c:48 [inline]
- kasan_set_track+0x38/0x6c mm/kasan/common.c:56
- kasan_set_free_info+0x20/0x40 mm/kasan/generic.c:355
- __kasan_slab_free+0x124/0x150 mm/kasan/common.c:422
- kasan_slab_free+0x10/0x1c mm/kasan/common.c:431
- slab_free_hook mm/slub.c:1544 [inline]
- slab_free_freelist_hook mm/slub.c:1577 [inline]
- slab_free mm/slub.c:3142 [inline]
- kfree+0x104/0x38c mm/slub.c:4124
- coalesced_mmio_destructor+0x94/0xa4 arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:102
- kvm_iodevice_destructor include/kvm/iodev.h:61 [inline]
- kvm_io_bus_unregister_dev+0x248/0x280 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:4374
- kvm_vm_ioctl_unregister_coalesced_mmio+0x158/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:186
- kvm_vm_ioctl+0xe30/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3755
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
- __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
- el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
- do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
- el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
- el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
- el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
-
-If kvm_io_bus_unregister_dev() return -ENOMEM, we already call kvm_iodevice_destructor()
-inside this function to delete 'struct kvm_coalesced_mmio_dev *dev' from list
-and free the dev, but kvm_iodevice_destructor() is called again, it will lead
-the above issue.
-
-Let's check the the return value of kvm_io_bus_unregister_dev(), only call
-kvm_iodevice_destructor() if the return value is 0.
-
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-Id: <20210626070304.143456-1-wangkefeng.wang@huawei.com>
+Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
+Message-Id: <10a41bdc-9c99-089c-8d89-fa98ce5ea080@suse.com>
 Cc: stable@vger.kernel.org
-Fixes: 5d3c4c79384a ("KVM: Stop looking for coalesced MMIO zones if the bus is destroyed", 2021-04-20)
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Corey Minyard <cminyard@mvista.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- virt/kvm/coalesced_mmio.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/virt/kvm/coalesced_mmio.c
-+++ b/virt/kvm/coalesced_mmio.c
-@@ -190,7 +190,6 @@ int kvm_vm_ioctl_unregister_coalesced_mm
- 		    coalesced_mmio_in_range(dev, zone->addr, zone->size)) {
- 			r = kvm_io_bus_unregister_dev(kvm,
- 				zone->pio ? KVM_PIO_BUS : KVM_MMIO_BUS, &dev->dev);
--			kvm_iodevice_destructor(&dev->dev);
+---
+ drivers/char/ipmi/ipmi_watchdog.c |   22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
+
+--- a/drivers/char/ipmi/ipmi_watchdog.c
++++ b/drivers/char/ipmi/ipmi_watchdog.c
+@@ -366,16 +366,18 @@ static int __ipmi_set_timeout(struct ipm
+ 	data[0] = 0;
+ 	WDOG_SET_TIMER_USE(data[0], WDOG_TIMER_USE_SMS_OS);
  
- 			/*
- 			 * On failure, unregister destroys all devices on the
-@@ -200,6 +199,7 @@ int kvm_vm_ioctl_unregister_coalesced_mm
- 			 */
- 			if (r)
- 				break;
-+			kvm_iodevice_destructor(&dev->dev);
- 		}
+-	if ((ipmi_version_major > 1)
+-	    || ((ipmi_version_major == 1) && (ipmi_version_minor >= 5))) {
+-		/* This is an IPMI 1.5-only feature. */
+-		data[0] |= WDOG_DONT_STOP_ON_SET;
+-	} else if (ipmi_watchdog_state != WDOG_TIMEOUT_NONE) {
+-		/*
+-		 * In ipmi 1.0, setting the timer stops the watchdog, we
+-		 * need to start it back up again.
+-		 */
+-		hbnow = 1;
++	if (ipmi_watchdog_state != WDOG_TIMEOUT_NONE) {
++		if ((ipmi_version_major > 1) ||
++		    ((ipmi_version_major == 1) && (ipmi_version_minor >= 5))) {
++			/* This is an IPMI 1.5-only feature. */
++			data[0] |= WDOG_DONT_STOP_ON_SET;
++		} else {
++			/*
++			 * In ipmi 1.0, setting the timer stops the watchdog, we
++			 * need to start it back up again.
++			 */
++			hbnow = 1;
++		}
  	}
  
+ 	data[1] = 0;
 
 
