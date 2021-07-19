@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8463CE5AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FDE3CE5AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243600AbhGSPwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:52:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59498 "EHLO mail.kernel.org"
+        id S1346591AbhGSPwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:52:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345114AbhGSPET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345121AbhGSPET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:04:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B03276128E;
-        Mon, 19 Jul 2021 15:43:43 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 504906135D;
+        Mon, 19 Jul 2021 15:43:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709424;
-        bh=WZ/5XOfX4bc45hYaIWnQsXJHdn1W2JlwDE8ELQqhuDE=;
+        s=korg; t=1626709426;
+        bh=sTkZHXRgOpXvIiUCPagaAj2uguiM5yNFTsCoRAXk3nY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qrQwOdX1KWcH6VOSu68PMfcUKmL1CObIZqTKjcyexb2+nkBgTv7oDsMmKyBqCISau
-         acyJaGJQ7V0U9NBRnvBRanV+W9j+/7w8GGS/8OIwnSLL54QnndDR1qGm8KI3p/XSxS
-         LPphInHD4YgifiVocp6+19wlDp5TbtM3tWSDG42w=
+        b=Me8320YIqTEhPl0o/PvV49QdRq5b+dPLh8GswG6MlqfBzXoP7Xza9SwHW5txo+qC5
+         z3j4WHpReSkhCrXcIXWBSe+dtVD6SZygi40L5mv56fzlzRigNYSnRMvobPvNOhdpE6
+         4Eyqz4QjJe0vzy+HaXCE/mRsc+vXf1dpDqcvmHS4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jason Wang <jasowang@redhat.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 379/421] virtio_net: Fix error handling in virtnet_restore()
-Date:   Mon, 19 Jul 2021 16:53:10 +0200
-Message-Id: <20210719144959.514770525@linuxfoundation.org>
+Subject: [PATCH 4.19 380/421] virtio_console: Assure used length from device is limited
+Date:   Mon, 19 Jul 2021 16:53:11 +0200
+Message-Id: <20210719144959.546435041@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -43,36 +43,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit 3f2869cace829fb4b80fc53b3ddaa7f4ba9acbf1 ]
+[ Upstream commit d00d8da5869a2608e97cfede094dfc5e11462a46 ]
 
-Do some cleanups in virtnet_restore() when virtnet_cpu_notif_add() failed.
+The buf->len might come from an untrusted device. This
+ensures the value would not exceed the size of the buffer
+to avoid data corruption or loss.
 
 Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Link: https://lore.kernel.org/r/20210517084516.332-1-xieyongji@bytedance.com
 Acked-by: Jason Wang <jasowang@redhat.com>
+Link: https://lore.kernel.org/r/20210525125622.1203-1-xieyongji@bytedance.com
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/char/virtio_console.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 84a82c4a9535..bb11a1e30646 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -3199,8 +3199,11 @@ static __maybe_unused int virtnet_restore(struct virtio_device *vdev)
- 	virtnet_set_queues(vi, vi->curr_queue_pairs);
+diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+index ca71ee939533..cdf441942bae 100644
+--- a/drivers/char/virtio_console.c
++++ b/drivers/char/virtio_console.c
+@@ -488,7 +488,7 @@ static struct port_buffer *get_inbuf(struct port *port)
  
- 	err = virtnet_cpu_notif_add(vi);
--	if (err)
-+	if (err) {
-+		virtnet_freeze_down(vdev);
-+		remove_vq_common(vi);
- 		return err;
-+	}
+ 	buf = virtqueue_get_buf(port->in_vq, &len);
+ 	if (buf) {
+-		buf->len = len;
++		buf->len = min_t(size_t, len, buf->size);
+ 		buf->offset = 0;
+ 		port->stats.bytes_received += len;
+ 	}
+@@ -1738,7 +1738,7 @@ static void control_work_handler(struct work_struct *work)
+ 	while ((buf = virtqueue_get_buf(vq, &len))) {
+ 		spin_unlock(&portdev->c_ivq_lock);
  
- 	return 0;
- }
+-		buf->len = len;
++		buf->len = min_t(size_t, len, buf->size);
+ 		buf->offset = 0;
+ 
+ 		handle_control_message(vq->vdev, portdev, buf);
 -- 
 2.30.2
 
