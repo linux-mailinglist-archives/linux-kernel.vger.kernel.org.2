@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D183CCF05
+	by mail.lfdr.de (Postfix) with ESMTP id F1BA53CCF06
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 10:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235136AbhGSIHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:07:05 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:21492 "EHLO
+        id S235209AbhGSIHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:07:13 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:31636 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234923AbhGSIGs (ORCPT
+        with ESMTP id S234920AbhGSIGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:06:48 -0400
+        Mon, 19 Jul 2021 04:06:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1626681829; x=1658217829;
+  t=1626681833; x=1658217833;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=aMU2Keona05uhnlgelXuEon2J2aPu42xdGB3C86PBpM=;
-  b=QTd+/HpD561jpMx2aXROGeCe4T2ViLiK8X+CVa/4xqbVdJkEfcOTeeTB
-   78YEvZNGfwApddRkrfRf1t2oFuj0VfYz7R3NVXG4nIuFMTbfb5vNYuXCf
-   QN4wBAXWXUPg58K0xXNB7Ev36wl5Su2MZG1HqHBMgm21CP/nvjrdltapt
-   1IqYZ4X/05olCLJEVXL/9pSmcfcai18BJL1p0eJzLUCuojT7WizatDNqT
-   PTuSNm/+Nzl9z34D4F6YNTrMIFAJBt9czd1aqfQXBZ1EpY5xBPL1GVQls
-   xc6ZAM7G6+7YnezstcOv3oXI2vhoNJEOwxPCEYu2jpRnHqzBgxjViWWvL
+  bh=6nzt5yiAvhxMKL7rPLuDR0oOaQ4zLZ3+WTR88aoj8sI=;
+  b=Kb3aMdVBD+clVwr8iaEm4egxrcjXmCInt5jiQ4CuadhK3V1hakH7DR3S
+   6CQ/763RLux8AMQtQf4orgjqjKa1q29gQJIVuIaSa5m2bVfsN6u/su5rb
+   PyP0nI/VaYlVkc3mUFgAKTBMebqOpzBfJewdZHJtcM9BRuYIih9Qi3vhi
+   lPmeKxPKGUuNIZy17NENIv/xC5zaXDYhx70y3hhFXfLBNeG00Ub0MJjIr
+   0k+DXhKUorMJoXEmcxZRnAG7cB4x+dgnL0UPpGlGnrGDdMkTOhcDRxOxB
+   JIl7+6EFJ8YGDzgFLH3r4CoLIOfpzRfX7ofMOOtK2At/JBSIzSJq++6YD
    g==;
-IronPort-SDR: T+HQZZ1TD7sFwhhDpkk+1lOzUDIv67WFpXFr4VUrqs++SiulZ7yKHgiQunuUv7QXouz1DB8vbB
- XyFA2tssN9tChqTJXnyUxAlIMoUAT4aZPebSG+TkjE63whZnhoS42Y1FYjdUMbtN7M4N4RfugK
- pf6H4yj9w/MpUAdIwfIin5taVcuVefRnKCaZ1uMsE4MXMxjao4lQoVQLVvsmneC2t5gGrWIchv
- Su7wEtH93U07QpGlT4TUgW/36vdITrW/dF1/FRgSVQx967pm24EnCYAPlLeT/rq439QVzxYzj8
- 8l/XmTPBHFzNJhmZuy34GDHt
+IronPort-SDR: dhI/Rgc7DzpyD+1nHj7ZiWhO4QaiQ4xmX02N1cUmgqu7bDrctZVHg7Gj/uiVY1lha9wsgYL67u
+ VBVgc8kTJrH/q3q6LMd0BK8wFoVqpO4Xxzc8+8BoE92LXIpi7dKNWI5XH0U6XqhuX0KU6+dCiW
+ dODI/coRVvL1Ia9l67yQgOdbpdQomdqaZgnRaw7E52BFovFfEsaceIKVg9iuG5qYyqVpPfnbKa
+ Pjw14maDgA0kqDqKO5c/1wUkp89r9quERyHaGwfJOTY+0mJQ/Akq8TaxLL/itc0K0XMiSptOUQ
+ 9OfHpe70TAyw9uc3tqTtRhsZ
 X-IronPort-AV: E=Sophos;i="5.84,251,1620716400"; 
-   d="scan'208";a="125054061"
+   d="scan'208";a="136432819"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Jul 2021 01:03:46 -0700
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Jul 2021 01:03:49 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 19 Jul 2021 01:03:45 -0700
+ 15.1.2176.2; Mon, 19 Jul 2021 01:03:49 -0700
 Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 19 Jul 2021 01:03:42 -0700
+ 15.1.2176.2 via Frontend Transport; Mon, 19 Jul 2021 01:03:46 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <linux@armlinux.org.uk>, <nicolas.ferre@microchip.com>,
         <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
@@ -50,9 +50,9 @@ CC:     <eugen.hristev@microchip.com>,
         <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
         <sfr@canb.auug.org.au>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 1/2] ARM: at91: fix link error
-Date:   Mon, 19 Jul 2021 11:03:16 +0300
-Message-ID: <20210719080317.1045832-2-claudiu.beznea@microchip.com>
+Subject: [PATCH 2/2] clk: at91: add register definition for sama7g5's master clock
+Date:   Mon, 19 Jul 2021 11:03:17 +0300
+Message-ID: <20210719080317.1045832-3-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210719080317.1045832-1-claudiu.beznea@microchip.com>
 References: <20210719080317.1045832-1-claudiu.beznea@microchip.com>
@@ -63,38 +63,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PM support for SAMA7G5 has been submitted to mailing list before SAMA7G5
-soc support thus the SAMA7G5 was not present in AT91 Kconfig file at
-that moment. SoC support for SAMA7G5 hasn't added the proper PM flags to
-Kconfig thus the link error bellow:
+Add register definitions for SAMA7G5's master clock. These would be
+also used by architecture specific power saving code.
 
-arch/arm/mach-at91/sama7.o: In function `sama7_dt_device_init':
-sama7.c:(.init.text+0x18): undefined reference to `sama7_pm_init'
-make: *** [Makefile:1176: vmlinux] Error 1
-
-Add proper flags to AT91 Kconfig file to solve the issue.
-
-Fixes: 5617a08dd9e1 ("ARM: at91: pm: add pm support for SAMA7G5")
-Fixes: 18d694ecd91e ("ARM: at91: add new SoC sama7g5") 
+Fixes: 6cb0e54412a3 ("ARM: at91: pm: add support for MCK1..4 save/restore for ulp modes")
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- arch/arm/mach-at91/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
-index f52b46bccd85..b09bb2279f7f 100644
---- a/arch/arm/mach-at91/Kconfig
-+++ b/arch/arm/mach-at91/Kconfig
-@@ -204,6 +204,9 @@ config ATMEL_PM
- config SOC_SAMA7
- 	bool
- 	select ARM_GIC
-+	select ATMEL_PM if PM
-+	select ATMEL_SDRAMC
- 	select MEMORY
- 	select SOC_SAM_V7
-+	select SRAM if PM
- endif
+Hi Stephen,
+
+This is a part from patch at [1]. I keep it at minimum (only definitions)
+for faster acceptance as the build is broken on arm multi_v7_defconfig
+without it).
+In next version of patch at [1] I will update it accordingly.
+
+Thank you,
+Claudiu Beznea
+
+[1] https://lore.kernel.org/linux-clk/20210401122726.28528-5-claudiu.beznea@microchip.com/
+
+ include/linux/clk/at91_pmc.h | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+diff --git a/include/linux/clk/at91_pmc.h b/include/linux/clk/at91_pmc.h
+index a4f82e836a7c..ccb3f034bfa9 100644
+--- a/include/linux/clk/at91_pmc.h
++++ b/include/linux/clk/at91_pmc.h
+@@ -137,6 +137,32 @@
+ #define			AT91_PMC_PLLADIV2_ON		(1 << 12)
+ #define		AT91_PMC_H32MXDIV	BIT(24)
+ 
++#define	AT91_PMC_MCR_V2		0x30				/* Master Clock Register [SAMA7G5 only] */
++#define		AT91_PMC_MCR_V2_ID_MSK	(0xF)
++#define			AT91_PMC_MCR_V2_ID(_id)		((_id) & AT91_PMC_MCR_V2_ID_MSK)
++#define		AT91_PMC_MCR_V2_CMD	(1 << 7)
++#define		AT91_PMC_MCR_V2_DIV	(7 << 8)
++#define			AT91_PMC_MCR_V2_DIV1		(0 << 8)
++#define			AT91_PMC_MCR_V2_DIV2		(1 << 8)
++#define			AT91_PMC_MCR_V2_DIV4		(2 << 8)
++#define			AT91_PMC_MCR_V2_DIV8		(3 << 8)
++#define			AT91_PMC_MCR_V2_DIV16		(4 << 8)
++#define			AT91_PMC_MCR_V2_DIV32		(5 << 8)
++#define			AT91_PMC_MCR_V2_DIV64		(6 << 8)
++#define			AT91_PMC_MCR_V2_DIV3		(7 << 8)
++#define		AT91_PMC_MCR_V2_CSS	(0x1F << 16)
++#define			AT91_PMC_MCR_V2_CSS_MD_SLCK	(0 << 16)
++#define			AT91_PMC_MCR_V2_CSS_TD_SLCK	(1 << 16)
++#define			AT91_PMC_MCR_V2_CSS_MAINCK	(2 << 16)
++#define			AT91_PMC_MCR_V2_CSS_MCK0	(3 << 16)
++#define			AT91_PMC_MCR_V2_CSS_SYSPLL	(5 << 16)
++#define			AT91_PMC_MCR_V2_CSS_DDRPLL	(6 << 16)
++#define			AT91_PMC_MCR_V2_CSS_IMGPLL	(7 << 16)
++#define			AT91_PMC_MCR_V2_CSS_BAUDPLL	(8 << 16)
++#define			AT91_PMC_MCR_V2_CSS_AUDIOPLL	(9 << 16)
++#define			AT91_PMC_MCR_V2_CSS_ETHPLL	(10 << 16)
++#define		AT91_PMC_MCR_V2_EN	(1 << 28)
++
+ #define AT91_PMC_XTALF		0x34			/* Main XTAL Frequency Register [SAMA7G5 only] */
+ 
+ #define	AT91_PMC_USB		0x38			/* USB Clock Register [some SAM9 only] */
 -- 
 2.25.1
 
