@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947B83CE945
+	by mail.lfdr.de (Postfix) with ESMTP id 4726A3CE944
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357801AbhGSQwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:52:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38168 "EHLO mail.kernel.org"
+        id S1357772AbhGSQwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:52:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347862AbhGSPWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1347861AbhGSPWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:22:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97F7D613FB;
-        Mon, 19 Jul 2021 15:59:45 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E6C961205;
+        Mon, 19 Jul 2021 15:59:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710386;
-        bh=jgg0uQosO6yAVi5yQtfEpZjl7nko8NRs6L7+JDAfTC4=;
+        s=korg; t=1626710388;
+        bh=SqMSKcVET3eL/CjFpttP+c/eX1PAOvEaZL+V4uhj9J0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ndYDWw1s1fxCg4YyAHUjpWpFqG/wTxyuwz10S0SQfj15Ae0R4Z0lJXABsIv8Dq5vB
-         NK749pu2uer360Q91gYux4cUXWH+Zrh8H0QiiKHlqyirv9CAK0/VKcNMAAl/JCr7v+
-         0VIvYILmcqlIqPLIus11DFF9Dk7ZNBQN5wenquJk=
+        b=sa6BVOX/EQfhEi3CXYeVS8nBVjMOObgPSh50rd6iwUSdWycFSAf2FawW/7hgJRxw/
+         OOuPlWosPZOFmqnwD2Vmc11DvN5hJnYgEwwIpAhlqxIRqyl5iJhAfOdQgyigorglIg
+         tnTeHi2B11Xz1796p0FLz/tQai7olaBiVK6QjsHg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 195/243] memory: atmel-ebi: add missing of_node_put for loop iteration
-Date:   Mon, 19 Jul 2021 16:53:44 +0200
-Message-Id: <20210719144947.213594437@linuxfoundation.org>
+Subject: [PATCH 5.10 196/243] reset: brcmstb: Add missing MODULE_DEVICE_TABLE
+Date:   Mon, 19 Jul 2021 16:53:45 +0200
+Message-Id: <20210719144947.243740855@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -40,40 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 907c5bbb514a4676160e79764522fff56ce3448e ]
+[ Upstream commit e207457f9045343a24d936fbb67eb4b412f1c6ad ]
 
-Early exits from for_each_available_child_of_node() should decrement the
-node reference counter.  Reported by Coccinelle:
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-  drivers/memory/atmel-ebi.c:593:1-33: WARNING:
-    Function "for_each_available_child_of_node" should have of_node_put() before return around line 604.
-
-Fixes: 6a4ec4cd0888 ("memory: add Atmel EBI (External Bus Interface) driver")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210423101815.119341-2-krzysztof.kozlowski@canonical.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 77750bc089e4 ("reset: Add Broadcom STB SW_INIT reset controller driver")
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Link: https://lore.kernel.org/r/1620789283-15048-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/atmel-ebi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/reset/reset-brcmstb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/memory/atmel-ebi.c b/drivers/memory/atmel-ebi.c
-index 14386d0b5f57..c267283b01fd 100644
---- a/drivers/memory/atmel-ebi.c
-+++ b/drivers/memory/atmel-ebi.c
-@@ -600,8 +600,10 @@ static int atmel_ebi_probe(struct platform_device *pdev)
- 				child);
+diff --git a/drivers/reset/reset-brcmstb.c b/drivers/reset/reset-brcmstb.c
+index f213264c8567..42c9d5241c53 100644
+--- a/drivers/reset/reset-brcmstb.c
++++ b/drivers/reset/reset-brcmstb.c
+@@ -111,6 +111,7 @@ static const struct of_device_id brcmstb_reset_of_match[] = {
+ 	{ .compatible = "brcm,brcmstb-reset" },
+ 	{ /* sentinel */ }
+ };
++MODULE_DEVICE_TABLE(of, brcmstb_reset_of_match);
  
- 			ret = atmel_ebi_dev_disable(ebi, child);
--			if (ret)
-+			if (ret) {
-+				of_node_put(child);
- 				return ret;
-+			}
- 		}
- 	}
- 
+ static struct platform_driver brcmstb_reset_driver = {
+ 	.probe	= brcmstb_reset_probe,
 -- 
 2.30.2
 
