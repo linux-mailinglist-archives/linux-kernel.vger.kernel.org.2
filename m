@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363F33CE64D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F813CE648
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343529AbhGSQDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:03:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60416 "EHLO mail.kernel.org"
+        id S242977AbhGSQDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:03:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345582AbhGSPEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345580AbhGSPEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:04:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91DA561002;
-        Mon, 19 Jul 2021 15:44:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53EB5608FC;
+        Mon, 19 Jul 2021 15:44:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709464;
-        bh=MsuFiYr1B/vBs+rZ9Sy8lx3c5KEKHFIwYu/WAIBpf6w=;
+        s=korg; t=1626709466;
+        bh=dI0pHhPcB160m+cv+0IezzUj6hvXNpfMeDRFZDsAkXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MROTOiw85dvUhNdfUpSmWoTqAZajXVrHw2KyZISTp3gEZXwKOEWOa0yLq+ADNYnlC
-         a8Re1EM+iDzg433lFElXFGtYVqnSTay59DCQL9h8A8ihk5tY9CIBF1FgwEgMn1zWY5
-         UUdk/7sahjqyQ3rl+fn2+4tOiRyRStOhfdOyq4ek=
+        b=NGXkh+4bK/jhiqpXSJ8I6MfcDtMqWsBwL4H6ePdRah/R5R52ziHe92jlaBh4QDinn
+         G5w0ox4a5D8oGlRKtrwDHd/XepB6t1G02DGUnwtTEyKBACnk2+0UZFYlzGFgBmai9+
+         IPlOkYBIEJQeY1D335uYXS9G0SzECd4KGG84rLLY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 393/421] virtio_net: move tx vq operation under tx queue lock
-Date:   Mon, 19 Jul 2021 16:53:24 +0200
-Message-Id: <20210719144959.997457901@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 394/421] ALSA: isa: Fix error return code in snd_cmi8330_probe()
+Date:   Mon, 19 Jul 2021 16:53:25 +0200
+Message-Id: <20210719145000.029787011@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -39,69 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael S. Tsirkin <mst@redhat.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 5a2f966d0f3fa0ef6dada7ab9eda74cacee96b8a ]
+[ Upstream commit 31028cbed26a8afa25533a10425ffa2ab794c76c ]
 
-It's unsafe to operate a vq from multiple threads.
-Unfortunately this is exactly what we do when invoking
-clean tx poll from rx napi.
-Same happens with napi-tx even without the
-opportunistic cleaning from the receive interrupt: that races
-with processing the vq in start_xmit.
+When 'SB_HW_16' check fails, the error code -ENODEV instead of 0 should be
+returned, which is the same as that returned when 'WSS_HW_CMI8330' check
+fails.
 
-As a fix move everything that deals with the vq to under tx lock.
-
-Fixes: b92f1e6751a6 ("virtio-net: transmit napi")
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Fixes: 43bcd973d6d0 ("[ALSA] Add snd_card_set_generic_dev() call to ISA drivers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210707074051.2663-1-thunder.leizhen@huawei.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ sound/isa/cmi8330.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index bb11a1e30646..5e8b40630286 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1506,6 +1506,8 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
- 	struct virtnet_info *vi = sq->vq->vdev->priv;
- 	unsigned int index = vq2txq(sq->vq);
- 	struct netdev_queue *txq;
-+	int opaque;
-+	bool done;
+diff --git a/sound/isa/cmi8330.c b/sound/isa/cmi8330.c
+index 6b8c46942efb..75b3d76eb852 100644
+--- a/sound/isa/cmi8330.c
++++ b/sound/isa/cmi8330.c
+@@ -564,7 +564,7 @@ static int snd_cmi8330_probe(struct snd_card *card, int dev)
+ 	}
+ 	if (acard->sb->hardware != SB_HW_16) {
+ 		snd_printk(KERN_ERR PFX "SB16 not found during probe\n");
+-		return err;
++		return -ENODEV;
+ 	}
  
- 	if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
- 		/* We don't need to enable cb for XDP */
-@@ -1515,10 +1517,28 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
- 
- 	txq = netdev_get_tx_queue(vi->dev, index);
- 	__netif_tx_lock(txq, raw_smp_processor_id());
-+	virtqueue_disable_cb(sq->vq);
- 	free_old_xmit_skbs(sq, true);
-+
-+	opaque = virtqueue_enable_cb_prepare(sq->vq);
-+
-+	done = napi_complete_done(napi, 0);
-+
-+	if (!done)
-+		virtqueue_disable_cb(sq->vq);
-+
- 	__netif_tx_unlock(txq);
- 
--	virtqueue_napi_complete(napi, sq->vq, 0);
-+	if (done) {
-+		if (unlikely(virtqueue_poll(sq->vq, opaque))) {
-+			if (napi_schedule_prep(napi)) {
-+				__netif_tx_lock(txq, raw_smp_processor_id());
-+				virtqueue_disable_cb(sq->vq);
-+				__netif_tx_unlock(txq);
-+				__napi_schedule(napi);
-+			}
-+		}
-+	}
- 
- 	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
- 		netif_tx_wake_queue(txq);
+ 	snd_wss_out(acard->wss, CS4231_MISC_INFO, 0x40); /* switch on MODE2 */
 -- 
 2.30.2
 
