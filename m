@@ -2,106 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7EF83CEDEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE973CEDEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387268AbhGSUCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 16:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
+        id S1387291AbhGSUDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 16:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387028AbhGSTp0 (ORCPT
+        with ESMTP id S1387042AbhGSTp0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 15:45:26 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4925BC0613E9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 13:19:35 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id l5so21528840iok.7
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 13:23:41 -0700 (PDT)
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1909C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 13:20:50 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id t9so20345564pgn.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 13:24:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MTo4LBHxr6WcVmPmqqb31U3oy5mXIOOOFkovyYtikHI=;
-        b=Z20dqVx+5d90dMhiE/vjpGdOXMC1EvHJXuai9onFKR9y5dKdqhCv2b2/gxpC1QdMad
-         G87t0rQXarGllXKi43YQNITaKnuiD6mzmMXvEwAi4lLmNZbP4kDEMlCZfuC2Ksu2KjLQ
-         qb2w1OqHx7hVwVQ6TlnoMKc/sjz5VX6som42BeYp7BNsMsjC/8DEztAzR/swltXWUHr7
-         wuJAnNjJoxvQrGO97pZeLKNN4MIUTYzmO6ARnfp79nvbOMOzm+1QP8uAWfj22/6SywJO
-         nsCjvdla2p1FHxAPP+VM0dS2Z5zZBtjqQjqPJ/Uiq9cWnZw+xtWr9WleMzIgSPBggp7M
-         kjcA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=/ueH7e1R+Y/9Tjm+iXp9T6qooVmg3C+ED64P3I591HI=;
+        b=rpRYvrfz6uIHeUpHKmujhCdwk9rbm/oL9LmMIjkgkvoLoy4OntrYE11Df5glviaYn+
+         6C0Q64khcfMxVcXVTZZJn0FhXZsMIWu7qge2Ikf+ANhdDMCuolK0QajXqXOPTNNHQZdC
+         y/xBvL7a5FL6SqIsOmmCdR8XBrRAJI17s57sbB5vZLH7VyKT5Kd02Df0zVHtq3PHedc2
+         AYGbSnbqVtsE8UGU6HqfkIJfnpR8FHr2WEGoUKQqEJb0tyMcLPVkbr0kfMMru3LYCdSj
+         TFMutp7A6eXjOdVSWKArL+d8R0xMsMIgFPkOWgSOt7A4IDqP9TdzUq3FT9hlrYbGTz3z
+         kCxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MTo4LBHxr6WcVmPmqqb31U3oy5mXIOOOFkovyYtikHI=;
-        b=oic7dVR1N6OrJmDAHKCjmrmCxfi0hTwo+TIyrhoXmMxMyxcTofhTVUDByevGiNDuqR
-         jtiRf858uQU8BC5Fs3dTIAw3igRcJCSwUITO0bVAqadbfMrwsLp4uwO9hT4mlJNF3f0U
-         nA5a4Q9jfXCqKyMDYyipel9b3ANbwwmjqvTNkYrvMhM6YNknybHETOCc4VnXLWJAognV
-         gTqZ/J7CwRF498UzanMD8ivMe2oRT3I9PsiLe0SxxK/SBh5KPkfs21E+QtDBAeQXqxeH
-         RLnSf+kEUfG9OE2v0SRoxFJaJJsVl0NmWbxOzRQYMs+lWhqPHO7bJSvQQdDaKOXQGRct
-         oEBA==
-X-Gm-Message-State: AOAM5325kXe0HwgrGJz3MPVXnwaR0j5wSPKP88/ymaGUR/qldLEijRA0
-        n2ddzsOdMoq8Yovi0ZTRWHSpig==
-X-Google-Smtp-Source: ABdhPJyE7UgDop/g8zbvqQ4eMEP3B+0g67LVNr62XYPmnF9zFUkmiXlumKMdcyXKMiYYGHC9EjBRYg==
-X-Received: by 2002:a6b:e90b:: with SMTP id u11mr12746940iof.134.1626726220561;
-        Mon, 19 Jul 2021 13:23:40 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id m184sm11123652ioa.17.2021.07.19.13.23.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=/ueH7e1R+Y/9Tjm+iXp9T6qooVmg3C+ED64P3I591HI=;
+        b=ixFVizTIu0klgOKb3fy2QtTPwiLnJNibfVrL6VP84Q/GH0DJ42viK8tpRPHgyxkLkW
+         yCsHk0GNvPD/+H0AadSEFTrt8nkh7cYJEiqO0Q7sRWxon+YkUJmVVFv6gtKhhoqFCcuk
+         XiCj58kS1pEHClflfRs/EDW59yjRBRGXwy5vh4d2BzxZy98LOc2OGsDveYboSIU8wD75
+         TmsWUcno+p8uDcMLyi4+f8L/dBE9rE8KQv4zfd65UONkEX31D8X/ZXo08fuVaa4e7VX6
+         OTuAtSm+lw15nZq3gDuppyGf/4A9rp/c+hPmjEx3/U6ravvGfd71O1qON9gfUK8ZPZ32
+         v/0g==
+X-Gm-Message-State: AOAM531XpxqwENt39+ulTlHh0MlXs2IhSlRMI6lHdLwy61CMafdd1THg
+        iYtEsdPx/nXp2Rxxx0ZpmnLelA==
+X-Google-Smtp-Source: ABdhPJx5z2KfcuWt/DfKkC4lsDSx4E1hp1htq+WW2Tom9he1jw05rOfD+bqBAYmCI98dUfs6qLi1hw==
+X-Received: by 2002:a62:1a47:0:b029:328:cbf8:6d42 with SMTP id a68-20020a621a470000b0290328cbf86d42mr27228516pfa.37.1626726290119;
+        Mon, 19 Jul 2021 13:24:50 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id n6sm23363563pgb.60.2021.07.19.13.24.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 13:23:39 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net: ipa: fix IPA v4.11 interconnect data
-Date:   Mon, 19 Jul 2021 15:23:33 -0500
-Message-Id: <20210719202333.3067361-1-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
+        Mon, 19 Jul 2021 13:24:49 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 20:24:45 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 22/40] KVM: SVM: Add KVM_SNP_INIT command
+Message-ID: <YPXfjYsEepISApuf@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-23-brijesh.singh@amd.com>
+ <YPHfC1mI8dQkkzyV@google.com>
+ <3f12243a-dee3-2a97-9a1b-51f4f6095349@amd.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <3f12243a-dee3-2a97-9a1b-51f4f6095349@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently three interconnects are defined for the Qualcomm SC7280
-SoC, but this was based on a misunderstanding.  There should only be
-two interconnects defined:  one between the IPA and system memory;
-and another between the AP and IPA config space.  The bandwidths
-defined for the memory and config interconnects do not match what I
-understand to be proper values, so update these.
+On Fri, Jul 16, 2021, Brijesh Singh wrote:
+> 
+> On 7/16/21 2:33 PM, Sean Christopherson wrote:
+> > On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> >> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> >> index 3fd9a7e9d90c..989a64aa1ae5 100644
+> >> --- a/include/uapi/linux/kvm.h
+> >> +++ b/include/uapi/linux/kvm.h
+> >> @@ -1678,6 +1678,9 @@ enum sev_cmd_id {
+> >>  	/* Guest Migration Extension */
+> >>  	KVM_SEV_SEND_CANCEL,
+> >>  
+> >> +	/* SNP specific commands */
+> >> +	KVM_SEV_SNP_INIT = 256,
+> > Is there any meaning behind '256'?  If not, why skip a big chunk?  I wouldn't be
+> > concerned if it weren't for KVM_SEV_NR_MAX, whose existence arguably implies that
+> > 0-KVM_SEV_NR_MAX-1 are all valid SEV commands.
+> 
+> In previous patches, Peter highlighted that we should keep some gap
+> between the SEV/ES and SNP to leave room for legacy SEV/ES expansion. I
+> was not sure how many we need to reserve without knowing what will come
+> in the future; especially recently some of the command additional  are
+> not linked to the firmware. I am okay to reduce the gap or remove the
+> gap all together.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_data-v4.11.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+Unless the numbers themselves have meaning, which I don't think they do, I vote
+to keep the arbitrary numbers contiguous.  KVM_SEV_NR_MAX makes me nervous, and
+there are already cases of related commands being discontiguous, e.g. KVM_SEND_CANCEL.
 
-diff --git a/drivers/net/ipa/ipa_data-v4.11.c b/drivers/net/ipa/ipa_data-v4.11.c
-index 9353efbd504fb..598b410cd7ab4 100644
---- a/drivers/net/ipa/ipa_data-v4.11.c
-+++ b/drivers/net/ipa/ipa_data-v4.11.c
-@@ -368,18 +368,13 @@ static const struct ipa_mem_data ipa_mem_data = {
- static const struct ipa_interconnect_data ipa_interconnect_data[] = {
- 	{
- 		.name			= "memory",
--		.peak_bandwidth		= 465000,	/* 465 MBps */
--		.average_bandwidth	= 80000,	/* 80 MBps */
--	},
--	/* Average rate is unused for the next two interconnects */
--	{
--		.name			= "imem",
--		.peak_bandwidth		= 68570,	/* 68.57 MBps */
--		.average_bandwidth	= 80000,	/* 80 MBps (unused?) */
-+		.peak_bandwidth		= 600000,	/* 600 MBps */
-+		.average_bandwidth	= 150000,	/* 150 MBps */
- 	},
-+	/* Average rate is unused for the next interconnect */
- 	{
- 		.name			= "config",
--		.peak_bandwidth		= 30000,	/* 30 MBps */
-+		.peak_bandwidth		= 74000,	/* 74 MBps */
- 		.average_bandwidth	= 0,		/* unused */
- 	},
- };
--- 
-2.27.0
-
+Peter or Paolo, any thoughts?
