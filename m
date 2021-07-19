@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B603CEA9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053DB3CE960
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378306AbhGSRRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34196 "EHLO mail.kernel.org"
+        id S1348118AbhGSQyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:54:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347088AbhGSPkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:40:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7F896135F;
-        Mon, 19 Jul 2021 16:20:46 +0000 (UTC)
+        id S1346688AbhGSP2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:28:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B045161376;
+        Mon, 19 Jul 2021 16:08:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711647;
-        bh=NIOvFFYGolkiUWHbQp1PRNxwIQ3ks2cXnYip0cqAkgI=;
+        s=korg; t=1626710932;
+        bh=qlSoQXzTWJ0PPHGF4laKvOS2DjROVtRbFbYZ9XURl38=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vKH1L3N8SaKxTkp1KWfegfqiSF3wSct0srtPGnKRR5+ez4FLlHJJHABQ/eq0aglXm
-         H5dt5MHKQzMGlvX9FdNOARysbfNARbqZoBEw/uk7rASqoCtBCZ5x+f0DL9NhVKF5pa
-         c4F0tNtnJD//9sGowp3DW2rBAmofgBcTurlAtR5M=
+        b=vCDC3TxJ2gFAwemn/25NdpIeWy2al8SwYLe0L22jQp6OZiyIwo4rgoGmDFGknMYOI
+         Lr8mMLLefFugFQUVtfqJ+9gS4paVwgeIWBWhkULHX83hIjO2ba8asjxaeo1ihl+DZz
+         A7lNzbOU6dKyV5F2qdc6Gx2sjYwnn8hJrpxu+r7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 046/292] partitions: msdos: fix one-byte get_unaligned()
+Subject: [PATCH 5.13 162/351] NFSv4: Fix delegation return in cases where we have to retry
 Date:   Mon, 19 Jul 2021 16:51:48 +0200
-Message-Id: <20210719144944.024354253@linuxfoundation.org>
+Message-Id: <20210719144950.332597775@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,140 +40,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 1b1774998b2dec837a57d729d1a22e5eb2d6d206 ]
+[ Upstream commit be20037725d17935ec669044bd2b15bc40c3b5ab ]
 
-A simplification of get_unaligned() clashes with callers that pass
-in a character pointer, causing a harmless warning like:
+If we're unable to immediately recover all locks because the server is
+unable to immediately service our reclaim calls, then we want to retry
+after we've finished servicing all the other asynchronous delegation
+returns on our queue.
 
-block/partitions/msdos.c: In function 'msdos_partition':
-include/asm-generic/unaligned.h:13:22: warning: 'packed' attribute ignored for field of type 'u8' {aka 'unsigned char'} [-Wattributes]
-
-Remove the SYS_IND() macro with the get_unaligned() call
-and just use the ->ind field directly.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/partitions/ldm.c   |  2 +-
- block/partitions/ldm.h   |  3 ---
- block/partitions/msdos.c | 24 +++++++++++-------------
- 3 files changed, 12 insertions(+), 17 deletions(-)
+ fs/nfs/delegation.c | 71 +++++++++++++++++++++++++++++++++++----------
+ fs/nfs/delegation.h |  1 +
+ fs/nfs/nfs4_fs.h    |  1 +
+ 3 files changed, 58 insertions(+), 15 deletions(-)
 
-diff --git a/block/partitions/ldm.c b/block/partitions/ldm.c
-index d333786b5c7e..cc86534c80ad 100644
---- a/block/partitions/ldm.c
-+++ b/block/partitions/ldm.c
-@@ -510,7 +510,7 @@ static bool ldm_validate_partition_table(struct parsed_partitions *state)
- 
- 	p = (struct msdos_partition *)(data + 0x01BE);
- 	for (i = 0; i < 4; i++, p++)
--		if (SYS_IND (p) == LDM_PARTITION) {
-+		if (p->sys_ind == LDM_PARTITION) {
- 			result = true;
- 			break;
- 		}
-diff --git a/block/partitions/ldm.h b/block/partitions/ldm.h
-index d8d6beaa72c4..8693704dcf5e 100644
---- a/block/partitions/ldm.h
-+++ b/block/partitions/ldm.h
-@@ -84,9 +84,6 @@ struct parsed_partitions;
- #define TOC_BITMAP1		"config"	/* Names of the two defined */
- #define TOC_BITMAP2		"log"		/* bitmaps in the TOCBLOCK. */
- 
--/* Borrowed from msdos.c */
--#define SYS_IND(p)		(get_unaligned(&(p)->sys_ind))
--
- struct frag {				/* VBLK Fragment handling */
- 	struct list_head list;
- 	u32		group;
-diff --git a/block/partitions/msdos.c b/block/partitions/msdos.c
-index 8f2fcc080264..c94de377c502 100644
---- a/block/partitions/msdos.c
-+++ b/block/partitions/msdos.c
-@@ -38,8 +38,6 @@
-  */
- #include <asm/unaligned.h>
- 
--#define SYS_IND(p)	get_unaligned(&p->sys_ind)
--
- static inline sector_t nr_sects(struct msdos_partition *p)
- {
- 	return (sector_t)get_unaligned_le32(&p->nr_sects);
-@@ -52,9 +50,9 @@ static inline sector_t start_sect(struct msdos_partition *p)
- 
- static inline int is_extended_partition(struct msdos_partition *p)
- {
--	return (SYS_IND(p) == DOS_EXTENDED_PARTITION ||
--		SYS_IND(p) == WIN98_EXTENDED_PARTITION ||
--		SYS_IND(p) == LINUX_EXTENDED_PARTITION);
-+	return (p->sys_ind == DOS_EXTENDED_PARTITION ||
-+		p->sys_ind == WIN98_EXTENDED_PARTITION ||
-+		p->sys_ind == LINUX_EXTENDED_PARTITION);
+diff --git a/fs/nfs/delegation.c b/fs/nfs/delegation.c
+index e6ec6f09ac6e..7c45ac3c3b0b 100644
+--- a/fs/nfs/delegation.c
++++ b/fs/nfs/delegation.c
+@@ -75,6 +75,13 @@ void nfs_mark_delegation_referenced(struct nfs_delegation *delegation)
+ 	set_bit(NFS_DELEGATION_REFERENCED, &delegation->flags);
  }
  
- #define MSDOS_LABEL_MAGIC1	0x55
-@@ -193,7 +191,7 @@ static void parse_extended(struct parsed_partitions *state,
++static void nfs_mark_return_delegation(struct nfs_server *server,
++				       struct nfs_delegation *delegation)
++{
++	set_bit(NFS_DELEGATION_RETURN, &delegation->flags);
++	set_bit(NFS4CLNT_DELEGRETURN, &server->nfs_client->cl_state);
++}
++
+ static bool
+ nfs4_is_valid_delegation(const struct nfs_delegation *delegation,
+ 		fmode_t flags)
+@@ -293,6 +300,7 @@ nfs_start_delegation_return_locked(struct nfs_inode *nfsi)
+ 		goto out;
+ 	spin_lock(&delegation->lock);
+ 	if (!test_and_set_bit(NFS_DELEGATION_RETURNING, &delegation->flags)) {
++		clear_bit(NFS_DELEGATION_RETURN_DELAYED, &delegation->flags);
+ 		/* Refcount matched in nfs_end_delegation_return() */
+ 		ret = nfs_get_delegation(delegation);
+ 	}
+@@ -314,16 +322,17 @@ nfs_start_delegation_return(struct nfs_inode *nfsi)
+ 	return delegation;
+ }
  
- 			put_partition(state, state->next, next, size);
- 			set_info(state, state->next, disksig);
--			if (SYS_IND(p) == LINUX_RAID_PARTITION)
-+			if (p->sys_ind == LINUX_RAID_PARTITION)
- 				state->parts[state->next].flags = ADDPART_FLAG_RAID;
- 			loopct = 0;
- 			if (++state->next == state->limit)
-@@ -546,7 +544,7 @@ static void parse_minix(struct parsed_partitions *state,
- 	 * a secondary MBR describing its subpartitions, or
- 	 * the normal boot sector. */
- 	if (msdos_magic_present(data + 510) &&
--	    SYS_IND(p) == MINIX_PARTITION) { /* subpartition table present */
-+	    p->sys_ind == MINIX_PARTITION) { /* subpartition table present */
- 		char tmp[1 + BDEVNAME_SIZE + 10 + 9 + 1];
+-static void
+-nfs_abort_delegation_return(struct nfs_delegation *delegation,
+-		struct nfs_client *clp)
++static void nfs_abort_delegation_return(struct nfs_delegation *delegation,
++					struct nfs_client *clp, int err)
+ {
  
- 		snprintf(tmp, sizeof(tmp), " %s%d: <minix:", state->name, origin);
-@@ -555,7 +553,7 @@ static void parse_minix(struct parsed_partitions *state,
- 			if (state->next == state->limit)
- 				break;
- 			/* add each partition in use */
--			if (SYS_IND(p) == MINIX_PARTITION)
-+			if (p->sys_ind == MINIX_PARTITION)
- 				put_partition(state, state->next++,
- 					      start_sect(p), nr_sects(p));
- 		}
-@@ -643,7 +641,7 @@ int msdos_partition(struct parsed_partitions *state)
- 	p = (struct msdos_partition *) (data + 0x1be);
- 	for (slot = 1 ; slot <= 4 ; slot++, p++) {
- 		/* If this is an EFI GPT disk, msdos should ignore it. */
--		if (SYS_IND(p) == EFI_PMBR_OSTYPE_EFI_GPT) {
-+		if (p->sys_ind == EFI_PMBR_OSTYPE_EFI_GPT) {
- 			put_dev_sector(sect);
- 			return 0;
- 		}
-@@ -685,11 +683,11 @@ int msdos_partition(struct parsed_partitions *state)
- 		}
- 		put_partition(state, slot, start, size);
- 		set_info(state, slot, disksig);
--		if (SYS_IND(p) == LINUX_RAID_PARTITION)
-+		if (p->sys_ind == LINUX_RAID_PARTITION)
- 			state->parts[slot].flags = ADDPART_FLAG_RAID;
--		if (SYS_IND(p) == DM6_PARTITION)
-+		if (p->sys_ind == DM6_PARTITION)
- 			strlcat(state->pp_buf, "[DM]", PAGE_SIZE);
--		if (SYS_IND(p) == EZD_PARTITION)
-+		if (p->sys_ind == EZD_PARTITION)
- 			strlcat(state->pp_buf, "[EZD]", PAGE_SIZE);
+ 	spin_lock(&delegation->lock);
+ 	clear_bit(NFS_DELEGATION_RETURNING, &delegation->flags);
+-	set_bit(NFS_DELEGATION_RETURN, &delegation->flags);
++	if (err == -EAGAIN) {
++		set_bit(NFS_DELEGATION_RETURN_DELAYED, &delegation->flags);
++		set_bit(NFS4CLNT_DELEGRETURN_DELAYED, &clp->cl_state);
++	}
+ 	spin_unlock(&delegation->lock);
+-	set_bit(NFS4CLNT_DELEGRETURN, &clp->cl_state);
+ }
+ 
+ static struct nfs_delegation *
+@@ -539,7 +548,7 @@ static int nfs_end_delegation_return(struct inode *inode, struct nfs_delegation
+ 	} while (err == 0);
+ 
+ 	if (err) {
+-		nfs_abort_delegation_return(delegation, clp);
++		nfs_abort_delegation_return(delegation, clp, err);
+ 		goto out;
  	}
  
-@@ -698,7 +696,7 @@ int msdos_partition(struct parsed_partitions *state)
- 	/* second pass - output for each on a separate line */
- 	p = (struct msdos_partition *) (0x1be + data);
- 	for (slot = 1 ; slot <= 4 ; slot++, p++) {
--		unsigned char id = SYS_IND(p);
-+		unsigned char id = p->sys_ind;
- 		int n;
+@@ -568,6 +577,7 @@ static bool nfs_delegation_need_return(struct nfs_delegation *delegation)
+ 	if (ret)
+ 		clear_bit(NFS_DELEGATION_RETURN_IF_CLOSED, &delegation->flags);
+ 	if (test_bit(NFS_DELEGATION_RETURNING, &delegation->flags) ||
++	    test_bit(NFS_DELEGATION_RETURN_DELAYED, &delegation->flags) ||
+ 	    test_bit(NFS_DELEGATION_REVOKED, &delegation->flags))
+ 		ret = false;
  
- 		if (!nr_sects(p))
+@@ -647,6 +657,38 @@ out:
+ 	return err;
+ }
+ 
++static bool nfs_server_clear_delayed_delegations(struct nfs_server *server)
++{
++	struct nfs_delegation *d;
++	bool ret = false;
++
++	list_for_each_entry_rcu (d, &server->delegations, super_list) {
++		if (!test_bit(NFS_DELEGATION_RETURN_DELAYED, &d->flags))
++			continue;
++		nfs_mark_return_delegation(server, d);
++		clear_bit(NFS_DELEGATION_RETURN_DELAYED, &d->flags);
++		ret = true;
++	}
++	return ret;
++}
++
++static bool nfs_client_clear_delayed_delegations(struct nfs_client *clp)
++{
++	struct nfs_server *server;
++	bool ret = false;
++
++	if (!test_and_clear_bit(NFS4CLNT_DELEGRETURN_DELAYED, &clp->cl_state))
++		goto out;
++	rcu_read_lock();
++	list_for_each_entry_rcu (server, &clp->cl_superblocks, client_link) {
++		if (nfs_server_clear_delayed_delegations(server))
++			ret = true;
++	}
++	rcu_read_unlock();
++out:
++	return ret;
++}
++
+ /**
+  * nfs_client_return_marked_delegations - return previously marked delegations
+  * @clp: nfs_client to process
+@@ -659,8 +701,14 @@ out:
+  */
+ int nfs_client_return_marked_delegations(struct nfs_client *clp)
+ {
+-	return nfs_client_for_each_server(clp,
+-			nfs_server_return_marked_delegations, NULL);
++	int err = nfs_client_for_each_server(
++		clp, nfs_server_return_marked_delegations, NULL);
++	if (err)
++		return err;
++	/* If a return was delayed, sleep to prevent hard looping */
++	if (nfs_client_clear_delayed_delegations(clp))
++		ssleep(1);
++	return 0;
+ }
+ 
+ /**
+@@ -775,13 +823,6 @@ static void nfs_mark_return_if_closed_delegation(struct nfs_server *server,
+ 	set_bit(NFS4CLNT_DELEGRETURN, &server->nfs_client->cl_state);
+ }
+ 
+-static void nfs_mark_return_delegation(struct nfs_server *server,
+-		struct nfs_delegation *delegation)
+-{
+-	set_bit(NFS_DELEGATION_RETURN, &delegation->flags);
+-	set_bit(NFS4CLNT_DELEGRETURN, &server->nfs_client->cl_state);
+-}
+-
+ static bool nfs_server_mark_return_all_delegations(struct nfs_server *server)
+ {
+ 	struct nfs_delegation *delegation;
+diff --git a/fs/nfs/delegation.h b/fs/nfs/delegation.h
+index c19b4fd20781..1c378992b7c0 100644
+--- a/fs/nfs/delegation.h
++++ b/fs/nfs/delegation.h
+@@ -36,6 +36,7 @@ enum {
+ 	NFS_DELEGATION_REVOKED,
+ 	NFS_DELEGATION_TEST_EXPIRED,
+ 	NFS_DELEGATION_INODE_FREEING,
++	NFS_DELEGATION_RETURN_DELAYED,
+ };
+ 
+ int nfs_inode_set_delegation(struct inode *inode, const struct cred *cred,
+diff --git a/fs/nfs/nfs4_fs.h b/fs/nfs/nfs4_fs.h
+index 543d916f79ab..3e344bec3647 100644
+--- a/fs/nfs/nfs4_fs.h
++++ b/fs/nfs/nfs4_fs.h
+@@ -45,6 +45,7 @@ enum nfs4_client_state {
+ 	NFS4CLNT_RECALL_RUNNING,
+ 	NFS4CLNT_RECALL_ANY_LAYOUT_READ,
+ 	NFS4CLNT_RECALL_ANY_LAYOUT_RW,
++	NFS4CLNT_DELEGRETURN_DELAYED,
+ };
+ 
+ #define NFS4_RENEW_TIMEOUT		0x01
 -- 
 2.30.2
 
