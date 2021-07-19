@@ -2,113 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035AB3CD026
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCB93CD01C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235528AbhGSI3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:29:04 -0400
-Received: from mail-qv1-f43.google.com ([209.85.219.43]:33340 "EHLO
-        mail-qv1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234991AbhGSI3D (ORCPT
+        id S235920AbhGSI1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:27:50 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:42751 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235129AbhGSI1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:29:03 -0400
-Received: by mail-qv1-f43.google.com with SMTP id h9so8050137qvs.0;
-        Mon, 19 Jul 2021 02:09:43 -0700 (PDT)
+        Mon, 19 Jul 2021 04:27:48 -0400
+Received: by mail-lf1-f43.google.com with SMTP id 8so28972763lfp.9;
+        Mon, 19 Jul 2021 02:08:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=BSOq/6LU7myFeRU9sVPe/x6k8J7ibQSkaSa7AKjKFSw=;
+        b=DjXoqORFiqtt4rE5ZyXDIb7/ln22JGSkGZaFHNCsrKxgS+jBCtKuODQNkTLOIEACqc
+         KLj44NNYb1P7JhBYYk333PjdMs6+/6wjl3wDOUhYRRNvkDKcU1b4BMBDUXkrALp/yR3c
+         eik4IoWYEHSBl3n48IG93J5JTgnKZkDE/rAVPc0uXwJsgyiJFeDlv9RAFS/lPFbBHUEx
+         xX7EuCM3Id9LBQ/tNf0BohPT15mRhDjLCYQWjOeU2HwZbnLVVOtb1uF+nZJjmK1m7bz0
+         kcQFHH6Tbo5xmxnZc+zVzIbZkEnV6N4K5ulew+NE+OpIoEbwR0fAmtMqASjkSZGJMF23
+         uVbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IvRFsTZWHUBtfjypkwrQKZFWUxIibSU0lyg1+VUtg3o=;
-        b=j0bGFns5Ac3BxtVOjHAryaoX9TzjRmVc+Bb8oyKZYmB+1rRqQ0Krb6wrQvnuE3Imnl
-         9HzSLDHurtZjAcRlzXENZJmpFZLQTW+36lqYLs0S0BYTFuCFKpeK/VJ2ZCeUBkygdqOQ
-         71ODkqrMjCihexkcceWyeaX+BxV221udNoPLFrPb5q29LbfVxqj+G5DZXzKG5J5cgEGE
-         Hf7Yy+xitn4bF49ZESiXseH0wsowhDRVyOc3aUWG2BCyfJDCUSuJrgodcbusWCMLQcHh
-         sZwSiyRB7LtvIaukE9sIsWaCVgFHu1BSuyMJYEmXeMB/vWWjhnINz9LVodL1uQfKpBe5
-         HDnQ==
-X-Gm-Message-State: AOAM5328SYVW6WmIyuh2evRGYJkn0yrLxhYgvXS3L+PzP7FRKm4Mnh2X
-        ADetPEmEDWUD9dyzd3fZ2JYn3teLOPLFWHKqssoqwCx6
-X-Google-Smtp-Source: ABdhPJwzsz6tgCn138Wv0TTHdZGLVQIes9AbYd5clSec/oNFY1H5H69RrugV3uvyOApiMcAqUtYYJvmBeEEACUg8xbI=
-X-Received: by 2002:ac5:cd9b:: with SMTP id i27mr20830596vka.1.1626684043244;
- Mon, 19 Jul 2021 01:40:43 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=BSOq/6LU7myFeRU9sVPe/x6k8J7ibQSkaSa7AKjKFSw=;
+        b=nM959NlR4b6GwoCw+E/ezFzJyflPWfDnHy0Kd4lm7PNXb7IpjVKm+JUlXCLgX/FKGK
+         h6bINAgRKjWIQgwL2o9NmC3+EVZYvtFByPQcm0StGb7IyBRvPFz1mSizCI1p+dj1sDv5
+         +plJlQKW9PK7qBvLVfdKYCmsdYXJGlU5LxwavXx3P7HMDVpfz8PYMmy59CHLWqq1Mz01
+         1Sdq4al/s3wjHktESlKZ1ut0aftN87dv4u1ZZoVMyHc1WmL8SKicDtbrexnbBXl8IA+5
+         0ZTtg8dzatrTIKnBkf/8FzjdPxKI4IO2j5ry19+zm+zgQ/uK9IZ9QWMf24Y9JXgWA9Ex
+         BqiA==
+X-Gm-Message-State: AOAM5328IGkKgOIYOsbu21xSbELY+KpouChycXp8hb2uV1C/gwsjvyc7
+        AbTRWQDZuOYOP7+NjQIoN2tdMnjJU/M=
+X-Google-Smtp-Source: ABdhPJx78JN8b/ZveBWU79Ei+AvwV8ONa7QAzZR4sp6UFDoSwGfCbcKq6sN7s1mjTYYeyCHxC/dWoQ==
+X-Received: by 2002:adf:c102:: with SMTP id r2mr27884871wre.22.1626684059448;
+        Mon, 19 Jul 2021 01:40:59 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:e48d:68a9:5ef4:9e09? ([2a02:908:1252:fb60:e48d:68a9:5ef4:9e09])
+        by smtp.gmail.com with ESMTPSA id e6sm22661717wrg.18.2021.07.19.01.40.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 01:40:59 -0700 (PDT)
+Subject: Re: [Linaro-mm-sig] [PATCH 00/11] drm/msm: drm scheduler conversion
+ and cleanups
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Emma Anholt <emma@anholt.net>, Bernard Zhao <bernard@vivo.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Dave Airlie <airlied@redhat.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+References: <20210717202924.987514-1-robdclark@gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <582b8869-f370-3803-60a8-df31088f8088@gmail.com>
+Date:   Mon, 19 Jul 2021 10:40:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <cover.1626383424.git.apark0006@student.cerritos.edu>
- <9b5902665dcc4c0fca7546987303e348d8657f59.1626383424.git.apark0006@student.cerritos.edu>
- <alpine.DEB.2.22.394.2107190912320.178229@ramsan.of.borg>
-In-Reply-To: <alpine.DEB.2.22.394.2107190912320.178229@ramsan.of.borg>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 19 Jul 2021 10:40:32 +0200
-Message-ID: <CAMuHMdXZcaR28fUuiNWF8jv-NnOYkAXxR8z+vOQ2rY3BqQMWTQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] swap led_brightness from enum to typedef
-To:     Amy Parker <apark0006@student.cerritos.edu>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210717202924.987514-1-robdclark@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 9:18 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Thu, 15 Jul 2021, Amy Parker wrote:
-> > This commit changes how led_brightness, declared in header file
-> > include/linux/leds.h, works throughout the kernel, and updates other
-> > files in accordance.
-> >
-> > The TODO located at drivers/leds/TODO requests:
-> >
-> > * Get rid of led_brightness
-> >
-> > It is really an integer, as maximum is configurable. Get rid of it, or
-> > make it into typedef or something.
-> >
-> > This patch changes the declaration of led_brightness from an enum to a
-> > typedef. In order to hold the currently existing enum values, macro
-> > definitions are provided. Files which use led_brightness are updated to
-> > conform to the new types.
-> >
-> > Signed-off-by: Amy Parker <apark0006@student.cerritos.edu>
+Am 17.07.21 um 22:29 schrieb Rob Clark:
+> From: Rob Clark <robdclark@chromium.org>
 >
-> Thanks for your patch!
+> Conversion to gpu_scheduler, and bonus removal of
+> drm_gem_object_put_locked()
+
+Oh yes please!
+
+If I'm not completely mistaken that was the last puzzle piece missing to 
+unify TTMs and GEMs refcount of objects.
+
+Only problem is that I only see patch 7 and 9 in my inbox. Where is the 
+rest?
+
+Thanks,
+Christian.
+
 >
-> > 207 files changed, 437 insertions(+), 438 deletions(-)
+> Rob Clark (11):
+>    drm/msm: Docs and misc cleanup
+>    drm/msm: Small submitqueue creation cleanup
+>    drm/msm: drop drm_gem_object_put_locked()
+>    drm: Drop drm_gem_object_put_locked()
+>    drm/msm/submit: Simplify out-fence-fd handling
+>    drm/msm: Consolidate submit bo state
+>    drm/msm: Track "seqno" fences by idr
+>    drm/msm: Return ERR_PTR() from submit_create()
+>    drm/msm: Conversion to drm scheduler
+>    drm/msm: Drop struct_mutex in submit path
+>    drm/msm: Utilize gpu scheduler priorities
 >
-> This touches a lot of files, so we better get it right.
+>   drivers/gpu/drm/drm_gem.c                   |  22 --
+>   drivers/gpu/drm/msm/Kconfig                 |   1 +
+>   drivers/gpu/drm/msm/adreno/a5xx_debugfs.c   |   4 +-
+>   drivers/gpu/drm/msm/adreno/a5xx_gpu.c       |   6 +-
+>   drivers/gpu/drm/msm/adreno/a5xx_power.c     |   2 +-
+>   drivers/gpu/drm/msm/adreno/a5xx_preempt.c   |   7 +-
+>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c       |  12 +-
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c       |   2 +-
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c |   4 +-
+>   drivers/gpu/drm/msm/adreno/adreno_gpu.c     |   6 +-
+>   drivers/gpu/drm/msm/msm_drv.c               |  30 +-
+>   drivers/gpu/drm/msm/msm_fence.c             |  39 ---
+>   drivers/gpu/drm/msm/msm_fence.h             |   2 -
+>   drivers/gpu/drm/msm/msm_gem.c               |  91 +-----
+>   drivers/gpu/drm/msm/msm_gem.h               |  37 ++-
+>   drivers/gpu/drm/msm/msm_gem_submit.c        | 300 ++++++++++++--------
+>   drivers/gpu/drm/msm/msm_gpu.c               |  50 +---
+>   drivers/gpu/drm/msm/msm_gpu.h               |  41 ++-
+>   drivers/gpu/drm/msm/msm_ringbuffer.c        |  70 ++++-
+>   drivers/gpu/drm/msm/msm_ringbuffer.h        |  12 +
+>   drivers/gpu/drm/msm/msm_submitqueue.c       |  49 +++-
+>   include/drm/drm_gem.h                       |   2 -
+>   include/uapi/drm/msm_drm.h                  |  10 +-
+>   23 files changed, 440 insertions(+), 359 deletions(-)
 >
-> > --- a/include/linux/leds.h
-> > +++ b/include/linux/leds.h
-> > @@ -26,12 +26,11 @@ struct device_node;
-> >  */
-> >
-> > /* This is obsolete/useless. We now support variable maximum brightness. */
-> > -enum led_brightness {
-> > -     LED_OFF         = 0,
-> > -     LED_ON          = 1,
-> > -     LED_HALF        = 127,
-> > -     LED_FULL        = 255,
-> > -};
-> > +typedef u8 led_brightness;
->
-> In general, typedefs are frowned upon in the kernel, but there can be a
-> good reason to use one.
-> What if the maximum brightness is larger than 255?
-> Using "unsigned int" sounds better to me, but let's wait for Pavel...
 
-And as Dan just pointed out, "signed int" would be even better, as it
-would allow a function to return an error code.
-
-> > +#define LED_OFF 0
-> > +#define LED_ON 1
-> > +#define LED_HALF 127
-> > +#define LED_FULL 255
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
