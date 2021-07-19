@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C583CE5DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3013CE622
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350155AbhGSPyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:54:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58644 "EHLO mail.kernel.org"
+        id S1351794AbhGSQAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:00:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345554AbhGSPEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345567AbhGSPEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:04:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D890C61244;
-        Mon, 19 Jul 2021 15:44:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 158F8613B7;
+        Mon, 19 Jul 2021 15:44:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709459;
-        bh=5xMAOuf/uUcKWu1TnncZu2bZZy8rSiR9ke4NSH1QfL4=;
+        s=korg; t=1626709461;
+        bh=GUnLCwqGq+Q1BY2Di5mdFrrVM7TVqfE4gqATT0VHGZw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s2jl44MqReHSw/TwWbEtoMV/iv7kaCtldSSh/DCtYUC3HTWwYvgmwd0qvS9lrdZN2
-         3kdoNtZuMd22DBRG2dbI6+t2gJZjzbc1yMloaaisBweFci3ZLH+zvWZCbyU/0JqKlz
-         SAehPRo4ezqTjhBrAoU5hBzc81RBvAM2vHS4KBIA=
+        b=B/JLcDxysHLq4rzVL+7AmL7lutApdWn8PCKOa99mAzwC6MEUXkrAIgjpyqSURoEFW
+         4uOCnhxBux2hfQMjHW3sbJwfwLn7PN2/ep6Ak9JZ3fQkYBtfwX+R6/tzS2//BgdDlx
+         0qtUro4YXjKO7DzpKqaA7WSlg+8m7w+wvePXSMPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Sandor Bodo-Merle <sbodomerle@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Ray Jui <ray.jui@broadcom.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 391/421] PCI: iproc: Support multi-MSI only on uniprocessor kernel
-Date:   Mon, 19 Jul 2021 16:53:22 +0200
-Message-Id: <20210719144959.931116454@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 392/421] x86/fpu: Limit xstate copy size in xstateregs_set()
+Date:   Mon, 19 Jul 2021 16:53:23 +0200
+Message-Id: <20210719144959.962270944@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -42,62 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sandor Bodo-Merle <sbodomerle@gmail.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 2dc0a201d0f59e6818ef443609f0850a32910844 ]
+[ Upstream commit 07d6688b22e09be465652cf2da0da6bf86154df6 ]
 
-The interrupt affinity scheme used by this driver is incompatible with
-multi-MSI as it implies moving the doorbell address to that of another MSI
-group.  This isn't possible for multi-MSI, as all the MSIs must have the
-same doorbell address. As such it is restricted to systems with a single
-CPU.
+If the count argument is larger than the xstate size, this will happily
+copy beyond the end of xstate.
 
-Link: https://lore.kernel.org/r/20210622152630.40842-2-sbodomerle@gmail.com
-Fixes: fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
-Reported-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Sandor Bodo-Merle <sbodomerle@gmail.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Pali Rohár <pali@kernel.org>
-Acked-by: Ray Jui <ray.jui@broadcom.com>
+Fixes: 91c3dba7dbc1 ("x86/fpu/xstate: Fix PTRACE frames for XSAVES")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Andy Lutomirski <luto@kernel.org>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210623121452.120741557@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pcie-iproc-msi.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/x86/kernel/fpu/regset.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
-index b43ae4c06f30..dc4d5a590795 100644
---- a/drivers/pci/controller/pcie-iproc-msi.c
-+++ b/drivers/pci/controller/pcie-iproc-msi.c
-@@ -171,7 +171,7 @@ static struct irq_chip iproc_msi_irq_chip = {
- 
- static struct msi_domain_info iproc_msi_domain_info = {
- 	.flags = MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
--		MSI_FLAG_MULTI_PCI_MSI | MSI_FLAG_PCI_MSIX,
-+		MSI_FLAG_PCI_MSIX,
- 	.chip = &iproc_msi_irq_chip,
- };
- 
-@@ -250,6 +250,9 @@ static int iproc_msi_irq_domain_alloc(struct irq_domain *domain,
- 	struct iproc_msi *msi = domain->host_data;
- 	int hwirq, i;
- 
-+	if (msi->nr_cpus > 1 && nr_irqs > 1)
-+		return -EINVAL;
-+
- 	mutex_lock(&msi->bitmap_lock);
- 
+diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
+index bc02f5144b95..621d249ded0b 100644
+--- a/arch/x86/kernel/fpu/regset.c
++++ b/arch/x86/kernel/fpu/regset.c
+@@ -128,7 +128,7 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
  	/*
-@@ -539,6 +542,9 @@ int iproc_msi_init(struct iproc_pcie *pcie, struct device_node *node)
- 	mutex_init(&msi->bitmap_lock);
- 	msi->nr_cpus = num_possible_cpus();
+ 	 * A whole standard-format XSAVE buffer is needed:
+ 	 */
+-	if ((pos != 0) || (count < fpu_user_xstate_size))
++	if (pos != 0 || count != fpu_user_xstate_size)
+ 		return -EFAULT;
  
-+	if (msi->nr_cpus == 1)
-+		iproc_msi_domain_info.flags |=  MSI_FLAG_MULTI_PCI_MSI;
-+
- 	msi->nr_irqs = of_irq_count(node);
- 	if (!msi->nr_irqs) {
- 		dev_err(pcie->dev, "found no MSI GIC interrupt\n");
+ 	xsave = &fpu->state.xsave;
 -- 
 2.30.2
 
