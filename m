@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48F23CDB13
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74C63CDAC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343631AbhGSOjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:39:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37472 "EHLO mail.kernel.org"
+        id S245220AbhGSOiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:38:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244300AbhGSO3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:29:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CFE76128C;
-        Mon, 19 Jul 2021 15:09:11 +0000 (UTC)
+        id S244303AbhGSO3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:29:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68E7061186;
+        Mon, 19 Jul 2021 15:09:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707351;
-        bh=K7yRgeYfZKueZ2ulqcGtNwreF3WOq9W1nAEYaOemvhY=;
+        s=korg; t=1626707353;
+        bh=zGOVYjwyMffJLWfigNL2olJxhT7aPhNmZaFHOVgs7cA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LGhfTV6mdeDAaYHjqkQHRzEKsRSnTuVTCdeiNWRGyMhNzB//rFgWmdcR47OoqiMyl
-         N2O/rFNBjdvdA3Bj06dhcVuKrkDzYJNlngIdFLvGNpcgY/aHLlEus1L5dMa7Ii87Nd
-         +RYRuAhbiLB0dSGjccizN6McZgKzkYve1uZVBIak=
+        b=CJdEvUBuy5OvlBwOFZprbdiSAGQzxn5JGfEn/ZjoSlOyLwmzB6NU3VXFMm7TGOT1S
+         JI7Xsl/K/wiSWKWlmV1RrayDnMb3js91sR2jrTGRTb7lBmV+aImqVsWXvicYADzutA
+         lRw+sxBFGDNbjmEnU0HkU+xVHI324zMupMz0rrW0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Zou Wei <zou_wei@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 126/245] atm: iphase: fix possible use-after-free in ia_module_exit()
-Date:   Mon, 19 Jul 2021 16:51:08 +0200
-Message-Id: <20210719144944.484301189@linuxfoundation.org>
+Subject: [PATCH 4.9 127/245] mISDN: fix possible use-after-free in HFC_cleanup()
+Date:   Mon, 19 Jul 2021 16:51:09 +0200
+Message-Id: <20210719144944.514144850@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -43,7 +43,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 1c72e6ab66b9598cac741ed397438a52065a8f1f ]
+[ Upstream commit 009fc857c5f6fda81f2f7dd851b2d54193a8e733 ]
 
 This module's remove path calls del_timer(). However, that function
 does not wait until the timer handler finishes. This means that the
@@ -58,22 +58,22 @@ Signed-off-by: Zou Wei <zou_wei@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/atm/iphase.c | 2 +-
+ drivers/isdn/hardware/mISDN/hfcpci.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/atm/iphase.c b/drivers/atm/iphase.c
-index fe47c924dc64..a1427cb9b9ed 100644
---- a/drivers/atm/iphase.c
-+++ b/drivers/atm/iphase.c
-@@ -3301,7 +3301,7 @@ static void __exit ia_module_exit(void)
+diff --git a/drivers/isdn/hardware/mISDN/hfcpci.c b/drivers/isdn/hardware/mISDN/hfcpci.c
+index ff48da61c94c..89cf1d695a01 100644
+--- a/drivers/isdn/hardware/mISDN/hfcpci.c
++++ b/drivers/isdn/hardware/mISDN/hfcpci.c
+@@ -2352,7 +2352,7 @@ static void __exit
+ HFC_cleanup(void)
  {
- 	pci_unregister_driver(&ia_driver);
+ 	if (timer_pending(&hfc_tl))
+-		del_timer(&hfc_tl);
++		del_timer_sync(&hfc_tl);
  
--        del_timer(&ia_timer);
-+	del_timer_sync(&ia_timer);
+ 	pci_unregister_driver(&hfc_driver);
  }
- 
- module_init(ia_module_init);
 -- 
 2.30.2
 
