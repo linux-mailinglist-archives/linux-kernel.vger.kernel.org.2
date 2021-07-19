@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8683CE6A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E8C3CE85E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350635AbhGSQLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:11:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39054 "EHLO mail.kernel.org"
+        id S1356117AbhGSQkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:40:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345465AbhGSPJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:09:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A155608FC;
-        Mon, 19 Jul 2021 15:48:51 +0000 (UTC)
+        id S1346906AbhGSPST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:18:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E37061406;
+        Mon, 19 Jul 2021 15:58:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709731;
-        bh=NVlw8FdD1InjhL9vfc52dDxWF+C4FWMDMsiClR8WO7w=;
+        s=korg; t=1626710289;
+        bh=6aTflyQFmFomlDwzDmPE7l9RTZTxsm8IuLC6j0pLP30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sYWQ2rBUxJPkswnSwRMF+shqpszEY4rDjO1MBpF6v5rWL8layrDyK95urtFkkSk4m
-         2iUtcTrNCv7HnA1Q8NiqVSpanCibT5aVYAVzffjTURMEXZ4OuMMJfDnBkBAqc/MiPJ
-         QbKe589hvK1KgL4qfb7X2/E4a72B6Ks8PZunSmXQ=
+        b=j7xEkC/wsMjC13QOupasAefboZwfaImk0uNirQJ+VJAZ0sIiEe01iKzmih4kerXr3
+         JQ2CLQEO3vhMSHxu9vWZbfTpPscr+HIHpZVgSYwmfKGrIEy5kTZYZRwemBMi1ZXdPx
+         SJGDNdsmUBEht0igeyamyDm9EyRxmzb0OTd2mVzg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Jian Cai <jiancai@google.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 075/149] ARM: 9087/1: kprobes: test-thumb: fix for LLVM_IAS=1
-Date:   Mon, 19 Jul 2021 16:53:03 +0200
-Message-Id: <20210719144919.033297424@linuxfoundation.org>
+Subject: [PATCH 5.10 155/243] NFSv4: Fix an Oops in pnfs_mark_request_commit() when doing O_DIRECT
+Date:   Mon, 19 Jul 2021 16:53:04 +0200
+Message-Id: <20210719144945.910532369@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 8b95a7d90ce8160ac5cffd5bace6e2eba01a871e ]
+[ Upstream commit 3731d44bba8e0116b052b1b374476c5f6dd9a456 ]
 
-There's a few instructions that GAS infers operands but Clang doesn't;
-from what I can tell the Arm ARM doesn't say these are optional.
+Fix an Oopsable condition in pnfs_mark_request_commit() when we're
+putting a set of writes on the commit list to reschedule them after a
+failed pNFS attempt.
 
-F5.1.257 TBB, TBH T1 Halfword variant
-F5.1.238 STREXD T1 variant
-F5.1.84 LDREXD T1 variant
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1309
-
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Jian Cai <jiancai@google.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Fixes: 9c455a8c1e14 ("NFS/pNFS: Clean up pNFS commit operations")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/probes/kprobes/test-thumb.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/nfs/direct.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm/probes/kprobes/test-thumb.c b/arch/arm/probes/kprobes/test-thumb.c
-index 456c181a7bfe..4e11f0b760f8 100644
---- a/arch/arm/probes/kprobes/test-thumb.c
-+++ b/arch/arm/probes/kprobes/test-thumb.c
-@@ -441,21 +441,21 @@ void kprobe_thumb32_test_cases(void)
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
+diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
+index 2d30a4da49fa..2e894fec036b 100644
+--- a/fs/nfs/direct.c
++++ b/fs/nfs/direct.c
+@@ -700,8 +700,8 @@ static void nfs_direct_write_completion(struct nfs_pgio_header *hdr)
+ {
+ 	struct nfs_direct_req *dreq = hdr->dreq;
+ 	struct nfs_commit_info cinfo;
+-	bool request_commit = false;
+ 	struct nfs_page *req = nfs_list_entry(hdr->pages.next);
++	int flags = NFS_ODIRECT_DONE;
  
--	TEST_RX("tbh	[pc, r",7, (9f-(1f+4))>>1,"]",
-+	TEST_RX("tbh	[pc, r",7, (9f-(1f+4))>>1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
+ 	nfs_init_cinfo_from_dreq(&cinfo, dreq);
  
--	TEST_RX("tbh	[pc, r",12, ((9f-(1f+4))>>1)+1,"]",
-+	TEST_RX("tbh	[pc, r",12, ((9f-(1f+4))>>1)+1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
+@@ -713,15 +713,9 @@ static void nfs_direct_write_completion(struct nfs_pgio_header *hdr)
  
--	TEST_RRX("tbh	[r",1,9f, ", r",14,1,"]",
-+	TEST_RRX("tbh	[r",1,9f, ", r",14,1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
-@@ -468,10 +468,10 @@ void kprobe_thumb32_test_cases(void)
+ 	nfs_direct_count_bytes(dreq, hdr);
+ 	if (hdr->good_bytes != 0 && nfs_write_need_commit(hdr)) {
+-		switch (dreq->flags) {
+-		case 0:
++		if (!dreq->flags)
+ 			dreq->flags = NFS_ODIRECT_DO_COMMIT;
+-			request_commit = true;
+-			break;
+-		case NFS_ODIRECT_RESCHED_WRITES:
+-		case NFS_ODIRECT_DO_COMMIT:
+-			request_commit = true;
+-		}
++		flags = dreq->flags;
+ 	}
+ 	spin_unlock(&dreq->lock);
  
- 	TEST_UNSUPPORTED("strexb	r0, r1, [r2]")
- 	TEST_UNSUPPORTED("strexh	r0, r1, [r2]")
--	TEST_UNSUPPORTED("strexd	r0, r1, [r2]")
-+	TEST_UNSUPPORTED("strexd	r0, r1, r2, [r2]")
- 	TEST_UNSUPPORTED("ldrexb	r0, [r1]")
- 	TEST_UNSUPPORTED("ldrexh	r0, [r1]")
--	TEST_UNSUPPORTED("ldrexd	r0, [r1]")
-+	TEST_UNSUPPORTED("ldrexd	r0, r1, [r1]")
+@@ -729,12 +723,15 @@ static void nfs_direct_write_completion(struct nfs_pgio_header *hdr)
  
- 	TEST_GROUP("Data-processing (shifted register) and (modified immediate)")
- 
+ 		req = nfs_list_entry(hdr->pages.next);
+ 		nfs_list_remove_request(req);
+-		if (request_commit) {
++		if (flags == NFS_ODIRECT_DO_COMMIT) {
+ 			kref_get(&req->wb_kref);
+ 			memcpy(&req->wb_verf, &hdr->verf.verifier,
+ 			       sizeof(req->wb_verf));
+ 			nfs_mark_request_commit(req, hdr->lseg, &cinfo,
+ 				hdr->ds_commit_idx);
++		} else if (flags == NFS_ODIRECT_RESCHED_WRITES) {
++			kref_get(&req->wb_kref);
++			nfs_mark_request_commit(req, NULL, &cinfo, 0);
+ 		}
+ 		nfs_unlock_and_release_request(req);
+ 	}
 -- 
 2.30.2
 
