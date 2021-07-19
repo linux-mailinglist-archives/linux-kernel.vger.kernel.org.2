@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0443CEAA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FA93CE957
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355627AbhGSRPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:15:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36090 "EHLO mail.kernel.org"
+        id S1358792AbhGSQxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:53:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236961AbhGSPhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:37:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 779856113A;
-        Mon, 19 Jul 2021 16:17:58 +0000 (UTC)
+        id S1346484AbhGSP2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:28:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E7F26135D;
+        Mon, 19 Jul 2021 16:09:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711479;
-        bh=s8qxXTQl66UCi8CW5gBxbUGTEfvj080RXKdnY+bWkSg=;
+        s=korg; t=1626710945;
+        bh=kqyg7CJAfmjiDbc0FaQuC/ZCu6IEVDBFFYXk5fhMUBE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dqZAyuyZR5XEByT8HGr7PhPlzUF+LmiNzCVzmQpYaLFMM+tBfkqRQ/i9eziWiekZg
-         9QVbrMmxs2NwqUjvwSfqImsVF3xXQlSKvXa45Xe4DMhaZBU8C8IZnzz/tSjFEba/JJ
-         hEgdmtGexu4eAXH9s9BgPMIKTZiRCtq24n0EibZo=
+        b=PlYg2/5kSuDWzPKGvZ4ap3rPfhLgXTO56OQgpnrT9svEIaAFvD+MkY8lrTXYJ8+9H
+         60Ft1h9rasJRoeOf+v5r5vjzgwU26RcAYhAjGBoq9sDPFUshqL4jz65ib/SS+NLKJb
+         XyqadCJMYd1U+EF6xi2mZ1DgznWO0T06nmWkXauc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 5.12 018/292] fbmem: Do not delete the mode that is still in use
-Date:   Mon, 19 Jul 2021 16:51:20 +0200
-Message-Id: <20210719144943.124764533@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Rander Wang <rander.wang@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 135/351] ASoC: Intel: kbl_da7219_max98357a: shrink platform_id below 20 characters
+Date:   Mon, 19 Jul 2021 16:51:21 +0200
+Message-Id: <20210719144948.948672251@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,85 +44,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-commit 0af778269a522c988ef0b4188556aba97fb420cc upstream.
+[ Upstream commit 94efd726b947f265bd313605c9f73edec5469d65 ]
 
-The execution of fb_delete_videomode() is not based on the result of the
-previous fbcon_mode_deleted(). As a result, the mode is directly deleted,
-regardless of whether it is still in use, which may cause UAF.
+Sparse throws the following warnings:
 
-==================================================================
-BUG: KASAN: use-after-free in fb_mode_is_equal+0x36e/0x5e0 \
-drivers/video/fbdev/core/modedb.c:924
-Read of size 4 at addr ffff88807e0ddb1c by task syz-executor.0/18962
+sound/soc/intel/boards/kbl_da7219_max98357a.c:647:25: error: too long
+initializer-string for array of char(no space for nul char)
 
-CPU: 2 PID: 18962 Comm: syz-executor.0 Not tainted 5.10.45-rc1+ #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ...
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x137/0x1be lib/dump_stack.c:118
- print_address_description+0x6c/0x640 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report+0x13d/0x1e0 mm/kasan/report.c:562
- fb_mode_is_equal+0x36e/0x5e0 drivers/video/fbdev/core/modedb.c:924
- fbcon_mode_deleted+0x16a/0x220 drivers/video/fbdev/core/fbcon.c:2746
- fb_set_var+0x1e1/0xdb0 drivers/video/fbdev/core/fbmem.c:975
- do_fb_ioctl+0x4d9/0x6e0 drivers/video/fbdev/core/fbmem.c:1108
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Fix by using the 'mx' acronym for Maxim.
 
-Freed by task 18960:
- kasan_save_stack mm/kasan/common.c:48 [inline]
- kasan_set_track+0x3d/0x70 mm/kasan/common.c:56
- kasan_set_free_info+0x17/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0x108/0x140 mm/kasan/common.c:422
- slab_free_hook mm/slub.c:1541 [inline]
- slab_free_freelist_hook+0xd6/0x1a0 mm/slub.c:1574
- slab_free mm/slub.c:3139 [inline]
- kfree+0xca/0x3d0 mm/slub.c:4121
- fb_delete_videomode+0x56a/0x820 drivers/video/fbdev/core/modedb.c:1104
- fb_set_var+0x1f3/0xdb0 drivers/video/fbdev/core/fbmem.c:978
- do_fb_ioctl+0x4d9/0x6e0 drivers/video/fbdev/core/fbmem.c:1108
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Fixes: 13ff178ccd6d ("fbcon: Call fbcon_mode_deleted/new_modelist directly")
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Cc: <stable@vger.kernel.org> # v5.3+
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210712085544.2828-1-thunder.leizhen@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Link: https://lore.kernel.org/r/20210621194057.21711-6-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/core/fbmem.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ sound/soc/intel/boards/kbl_da7219_max98357a.c     | 4 ++--
+ sound/soc/intel/common/soc-acpi-intel-kbl-match.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/video/fbdev/core/fbmem.c
-+++ b/drivers/video/fbdev/core/fbmem.c
-@@ -970,13 +970,11 @@ fb_set_var(struct fb_info *info, struct
- 		fb_var_to_videomode(&mode2, &info->var);
- 		/* make sure we don't delete the videomode of current var */
- 		ret = fb_mode_is_equal(&mode1, &mode2);
--
--		if (!ret)
--			fbcon_mode_deleted(info, &mode1);
--
--		if (!ret)
--			fb_delete_videomode(&mode1, &info->modelist);
--
-+		if (!ret) {
-+			ret = fbcon_mode_deleted(info, &mode1);
-+			if (!ret)
-+				fb_delete_videomode(&mode1, &info->modelist);
-+		}
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+index c0d8a73c6d21..7ca3347dbd2e 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+@@ -644,7 +644,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
  
- 		return ret ? -EINVAL : 0;
- 	}
+ static const struct platform_device_id kbl_board_ids[] = {
+ 	{
+-		.name = "kbl_da7219_max98357a",
++		.name = "kbl_da7219_mx98357a",
+ 		.driver_data =
+ 			(kernel_ulong_t)&kabylake_audio_card_da7219_m98357a,
+ 	},
+@@ -666,4 +666,4 @@ module_platform_driver(kabylake_audio)
+ MODULE_DESCRIPTION("Audio Machine driver-DA7219 & MAX98357A in I2S mode");
+ MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
+ MODULE_LICENSE("GPL v2");
+-MODULE_ALIAS("platform:kbl_da7219_max98357a");
++MODULE_ALIAS("platform:kbl_da7219_mx98357a");
+diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+index 47dadc9d5d2a..ba5ff468c265 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+@@ -113,7 +113,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+ 	},
+ 	{
+ 		.id = "DLGS7219",
+-		.drv_name = "kbl_da7219_max98373",
++		.drv_name = "kbl_da7219_mx98373",
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &kbl_7219_98373_codecs,
+-- 
+2.30.2
+
 
 
