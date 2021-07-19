@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD3E3CE31E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7380E3CE321
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241746AbhGSPgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:36:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52468 "EHLO mail.kernel.org"
+        id S235040AbhGSPgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:36:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244661AbhGSO63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:58:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E21A61073;
-        Mon, 19 Jul 2021 15:36:02 +0000 (UTC)
+        id S1343496AbhGSO7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 484A1613F7;
+        Mon, 19 Jul 2021 15:36:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708962;
-        bh=e3UiD8zQPyfg6ZSBdn2TWMGmZ4mt2ttSBOp7Q22+uPs=;
+        s=korg; t=1626709007;
+        bh=eEm72G8V7KlveK6mKI0MQVvwWrPp8W3SBpcrY+CGJPQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2WtcAuGBKl2Jy9Ad8VyEQh2wnXbFATbU0b9ui1AQehEjVDCxFlq9dDwdlikKSZqbm
-         M5CxasasPzlpEQYE/w1nBGSQo+1Y6VvxECGx+1ufmRIVDrxopUqSSJ9Sl1M1ZTxja6
-         pA/2toSyYM6KvmvCkOiRcUlx4mJhDbXIhK+4xWIU=
+        b=r8YW3rjs5tHEilEQCTH7o6LCfcKCihXQYmnJFDoADnqWauO15pqevYauDclUlmAk5
+         5GFkHzTiilIEhC+xu9NxKtkYxV2nT9o5q7wBQfp2E7NvpiQvGfVfo6SZLCpC6XwZYf
+         GpNUFeq0NQJgZSjESRwM105R36uVw+Sls1ougFKg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 182/421] iio: light: tcs3414: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 19 Jul 2021 16:49:53 +0200
-Message-Id: <20210719144952.738554117@linuxfoundation.org>
+Subject: [PATCH 4.19 184/421] iio: potentiostat: lmp91000: Fix alignment of buffer in iio_push_to_buffers_with_timestamp()
+Date:   Mon, 19 Jul 2021 16:49:55 +0200
+Message-Id: <20210719144952.802599953@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -43,53 +43,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit ff08fbc22ab32ccc6690c21b0e5e1d402dcc076f ]
+[ Upstream commit 8979b67ec61abc232636400ee8c758a16a73c95f ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+Add __aligned(8) to ensure the buffer passed to
+iio_push_to_buffers_with_timestamp() is suitable for the naturally
+aligned timestamp that will be inserted.
 
-Found during an audit of all calls of uses of
-iio_push_to_buffers_with_timestamp()
+Here structure is not used, because this buffer is also used
+elsewhere in the driver.
 
-Fixes: a244e7b57f0f ("iio: Add driver for AMS/TAOS tcs3414 digital color sensor")
+Fixes: 67e17300dc1d ("iio: potentiostat: add LMP91000 support")
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-19-jic23@kernel.org
+Cc: Matt Ranostay <matt.ranostay@konsulko.com>
+Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
+Link: https://lore.kernel.org/r/20210501171352.512953-8-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/light/tcs3414.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/iio/potentiostat/lmp91000.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/light/tcs3414.c b/drivers/iio/light/tcs3414.c
-index 205e5659ce6b..c525420e7c62 100644
---- a/drivers/iio/light/tcs3414.c
-+++ b/drivers/iio/light/tcs3414.c
-@@ -56,7 +56,11 @@ struct tcs3414_data {
- 	u8 control;
- 	u8 gain;
- 	u8 timing;
--	u16 buffer[8]; /* 4x 16-bit + 8 bytes timestamp */
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		u16 chans[4];
-+		s64 timestamp __aligned(8);
-+	} scan;
+diff --git a/drivers/iio/potentiostat/lmp91000.c b/drivers/iio/potentiostat/lmp91000.c
+index 90e895adf997..68f4f6fa27da 100644
+--- a/drivers/iio/potentiostat/lmp91000.c
++++ b/drivers/iio/potentiostat/lmp91000.c
+@@ -71,8 +71,8 @@ struct lmp91000_data {
+ 
+ 	struct completion completion;
+ 	u8 chan_select;
+-
+-	u32 buffer[4]; /* 64-bit data + 64-bit timestamp */
++	/* 64-bit data + 64-bit naturally aligned timestamp */
++	u32 buffer[4] __aligned(8);
  };
  
- #define TCS3414_CHANNEL(_color, _si, _addr) { \
-@@ -212,10 +216,10 @@ static irqreturn_t tcs3414_trigger_handler(int irq, void *p)
- 		if (ret < 0)
- 			goto done;
- 
--		data->buffer[j++] = ret;
-+		data->scan.chans[j++] = ret;
- 	}
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 		iio_get_time_ns(indio_dev));
- 
- done:
+ static const struct iio_chan_spec lmp91000_channels[] = {
 -- 
 2.30.2
 
