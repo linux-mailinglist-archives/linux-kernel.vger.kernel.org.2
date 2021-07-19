@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65413CD94C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4787A3CD94F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243218AbhGSO2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:28:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55504 "EHLO mail.kernel.org"
+        id S243369AbhGSO2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:28:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243359AbhGSOXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:23:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D359C611ED;
-        Mon, 19 Jul 2021 15:03:11 +0000 (UTC)
+        id S242407AbhGSOXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:23:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F9FB61220;
+        Mon, 19 Jul 2021 15:03:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706992;
-        bh=ppW35qgSusQj6wBIpMSCIYMQAiPVAwVu0i48L2F97tA=;
+        s=korg; t=1626706995;
+        bh=BMwHAXZgdhqQwUQ5+UshBBH8/SkY4gFxYKmSeVWpeAA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1fqyab8/ERpgQKAfEuTtdJCLIrgHtoTNaL8TAJlGrhWKRCLxkfDTVIp5gq0JR6WC8
-         sHhq1Y5xoG50LVlCY0kS+1PMlO3a+YCmnEMIaf6YOYUOw3/rT36lbMqBcAc4ik986R
-         ceLoYffOrnZblwQ6eBeqwSKEush4UuMIM1w68k4Y=
+        b=RWj9Jm+ppPzacBZdYhweLM7HLfTzy1xgBJA0cwnQvyUQYWGdidwgeJCGEUEN3bv06
+         qYRxgTzSQ2FMuk0o19fD6NORBDymKzWLvT8SS41zwgLnhlPdMA97KeNfkwDIEJz40n
+         rQcq2I7URJaeYZW2DK9A18ClmRm5P8YwkDDlIIdA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         anton.ivanov@cambridgegreys.com,
         Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 177/188] um: fix error return code in slip_open()
-Date:   Mon, 19 Jul 2021 16:52:41 +0200
-Message-Id: <20210719144942.278748365@linuxfoundation.org>
+Subject: [PATCH 4.4 178/188] um: fix error return code in winch_tramp()
+Date:   Mon, 19 Jul 2021 16:52:42 +0200
+Message-Id: <20210719144942.309325990@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
 References: <20210719144913.076563739@linuxfoundation.org>
@@ -44,35 +44,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit b77e81fbe5f5fb4ad9a61ec80f6d1e30b6da093a ]
+[ Upstream commit ccf1236ecac476d9d2704866d9a476c86e387971 ]
 
 Fix to return a negative error code from the error handling case instead
 of 0, as done elsewhere in this function.
 
-Fixes: a3c77c67a443 ("[PATCH] uml: slirp and slip driver cleanups and fixes")
+Fixes: 89df6bfc0405 ("uml: DEBUG_SHIRQ fixes")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 Acked-By: anton.ivanov@cambridgegreys.com
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/slip_user.c | 3 ++-
+ arch/um/drivers/chan_user.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/drivers/slip_user.c b/arch/um/drivers/slip_user.c
-index 0d6b66c64a81..76d155631c5d 100644
---- a/arch/um/drivers/slip_user.c
-+++ b/arch/um/drivers/slip_user.c
-@@ -145,7 +145,8 @@ static int slip_open(void *data)
+diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
+index 3fd7c3efdb18..feb7f5ab4084 100644
+--- a/arch/um/drivers/chan_user.c
++++ b/arch/um/drivers/chan_user.c
+@@ -256,7 +256,8 @@ static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
+ 		goto out_close;
  	}
- 	sfd = err;
  
--	if (set_up_tty(sfd))
-+	err = set_up_tty(sfd);
-+	if (err)
- 		goto out_close2;
- 
- 	pri->slave = sfd;
+-	if (os_set_fd_block(*fd_out, 0)) {
++	err = os_set_fd_block(*fd_out, 0);
++	if (err) {
+ 		printk(UM_KERN_ERR "winch_tramp: failed to set thread_fd "
+ 		       "non-blocking.\n");
+ 		goto out_close;
 -- 
 2.30.2
 
