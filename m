@@ -2,32 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CA33CE90B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038593CE924
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352226AbhGSQtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:49:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40236 "EHLO mail.kernel.org"
+        id S1356089AbhGSQvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:51:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348124AbhGSPYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3037B61414;
-        Mon, 19 Jul 2021 16:02:13 +0000 (UTC)
+        id S1348649AbhGSPY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8C55600EF;
+        Mon, 19 Jul 2021 16:05:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710533;
-        bh=Nt71ATj0KwVhLuqT2oOfSg/mtQATBcjDteQfvjiRlz0=;
+        s=korg; t=1626710737;
+        bh=qGZ/XPXWZNsgiZS33sYC3mAXAM5fqIhgEEX1RPAfsW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R1ymCdUPZWQYczmQ36J3B1H3KivZa7fZu1zJatjFyK3rT5IKbNt0EguFE+tsJR/hB
-         QxKMl/Df2TMDND/7m5JPD/k0izwUIjqGFsUG4Djql4iNO3LRARdnbLuvAmhv0uSAhd
-         kVSbWf5fFuSv7zApAmUjTAAX5sYSIQQlNgl0eHjk=
+        b=vwujao5NBg8qmppEKgv2Okw7yM6QID9LBwOb4luplmxLWMCkM9aYpnXTGQvhGkfHa
+         gDMbM6KywwTIJwZhj71XipLymRLulUfIvv05HgnN2+jp/fyeRvq+mpCjZUxIJrxMKH
+         twuOJEowa/kUp2OqkuGyOgeLDcipXqEu+cfKyaRs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.13 013/351] KVM: SVM: remove INIT intercept handler
-Date:   Mon, 19 Jul 2021 16:49:19 +0200
-Message-Id: <20210719144944.967681029@linuxfoundation.org>
+        stable@vger.kernel.org, Carl Philipp Klemm <philipp@uvos.xyz>,
+        Ivan Jelincic <parazyd@dyne.org>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Sebastian Reichel <sre@kernel.org>,
+        "Sicelo A. Mhlongo" <absicsz@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 088/351] mfd: cpcap: Fix cpcap dmamask not set warnings
+Date:   Mon, 19 Jul 2021 16:50:34 +0200
+Message-Id: <20210719144947.409248725@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -39,39 +46,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Levitsky <mlevitsk@redhat.com>
+From: Tony Lindgren <tony@atomide.com>
 
-commit 896707c212d440a6863ce0a3930c8a609e24497d upstream.
+[ Upstream commit 0b7cbe811ca524295ea43d9a4d73d3427e419c54 ]
 
-Kernel never sends real INIT even to CPUs, other than on boot.
+We have started to get a bunch of pointless dmamask not set warnings
+that makes the output of dmesg -l err,warn hard to read with many
+extra warnings:
 
-Thus INIT interception is an error which should be caught
-by a check for an unknown VMexit reason.
+cpcap-regulator cpcap-regulator.0: DMA mask not set
+cpcap_adc cpcap_adc.0: DMA mask not set
+cpcap_battery cpcap_battery.0: DMA mask not set
+cpcap-charger cpcap-charger.0: DMA mask not set
+cpcap-pwrbutton cpcap-pwrbutton.0: DMA mask not set
+cpcap-led cpcap-led.0: DMA mask not set
+cpcap-led cpcap-led.1: DMA mask not set
+cpcap-led cpcap-led.2: DMA mask not set
+cpcap-led cpcap-led.3: DMA mask not set
+cpcap-led cpcap-led.4: DMA mask not set
+cpcap-rtc cpcap-rtc.0: DMA mask not set
+cpcap-usb-phy cpcap-usb-phy.0: DMA mask not set
 
-On top of that, the current INIT VM exit handler skips
-the current instruction which is wrong.
-That was added in commit 5ff3a351f687 ("KVM: x86: Move trivial
-instruction-based exit handlers to common code").
+This seems to have started with commit 4d8bde883bfb ("OF: Don't set
+default coherent DMA mask"). We have the parent SPI controller use
+DMA, while CPCAP driver and it's children do not. For audio, the
+DMA is handled over I2S bus with the McBSP driver.
 
-Fixes: 5ff3a351f687 ("KVM: x86: Move trivial instruction-based exit handlers to common code")
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-Message-Id: <20210707125100.677203-3-mlevitsk@redhat.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+Cc: Ivan Jelincic <parazyd@dyne.org>
+Cc: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Sebastian Reichel <sre@kernel.org>
+Cc: Sicelo A. Mhlongo <absicsz@gmail.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/svm/svm.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/mfd/motorola-cpcap.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3069,7 +3069,6 @@ static int (*const svm_exit_handlers[])(
- 	[SVM_EXIT_INTR]				= intr_interception,
- 	[SVM_EXIT_NMI]				= nmi_interception,
- 	[SVM_EXIT_SMI]				= smi_interception,
--	[SVM_EXIT_INIT]				= kvm_emulate_as_nop,
- 	[SVM_EXIT_VINTR]			= interrupt_window_interception,
- 	[SVM_EXIT_RDPMC]			= kvm_emulate_rdpmc,
- 	[SVM_EXIT_CPUID]			= kvm_emulate_cpuid,
+diff --git a/drivers/mfd/motorola-cpcap.c b/drivers/mfd/motorola-cpcap.c
+index 30d82bfe5b02..6fb206da2729 100644
+--- a/drivers/mfd/motorola-cpcap.c
++++ b/drivers/mfd/motorola-cpcap.c
+@@ -327,6 +327,10 @@ static int cpcap_probe(struct spi_device *spi)
+ 	if (ret)
+ 		return ret;
+ 
++	/* Parent SPI controller uses DMA, CPCAP and child devices do not */
++	spi->dev.coherent_dma_mask = 0;
++	spi->dev.dma_mask = &spi->dev.coherent_dma_mask;
++
+ 	return devm_mfd_add_devices(&spi->dev, 0, cpcap_mfd_devices,
+ 				    ARRAY_SIZE(cpcap_mfd_devices), NULL, 0, NULL);
+ }
+-- 
+2.30.2
+
 
 
