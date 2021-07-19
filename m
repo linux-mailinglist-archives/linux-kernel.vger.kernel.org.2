@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D38A3CE69F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798F73CE7E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350379AbhGSQKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:10:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40562 "EHLO mail.kernel.org"
+        id S1354360AbhGSQfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:35:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241461AbhGSPI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:08:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B2576128E;
-        Mon, 19 Jul 2021 15:48:36 +0000 (UTC)
+        id S1347833AbhGSPVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:21:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA12161166;
+        Mon, 19 Jul 2021 15:59:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709717;
-        bh=31Q2SxNVO6mzsD2YnuunmRyukAVykWhnb+sZHX1XplY=;
+        s=korg; t=1626710359;
+        bh=VyaFkPbmP551gwGWTz8D0oqbKVTTcJGTVq12IEJfT7c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f3452vKxwORV46DBxLDA70a+rNWSLbuwRB8zx0pjQVxjbvLEnGj86rml+FWFM0A2x
-         ceaCLGOoBqH+wPKvkYyhtsOaEiaXCWl4zihLkOq5nQh3MF26TlFhaKp1u30apkJSiH
-         G4na/72vAO8Z6d3NRj/qaC+vbkNHYW7W+R+3GHqY=
+        b=W8TgayXdYLNrwvLg32NATQ/sFJfzXf1i6OVd9xQRjHl4eLaXRb1hJ3sfr0zc8xBET
+         L1IAaqJnNNCU6jJPZdcDspZNz6AYj+YUZow8aEm/eZVxGcos0qB8lYlfatLB2/x40M
+         9GgihOxWHjc3qDxPQ2j/llLX7ftAQTeXQ6b1V2xo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, marcosfrm <marcosfrm@gmail.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 070/149] power: supply: sc2731_charger: Add missing MODULE_DEVICE_TABLE
+Subject: [PATCH 5.10 149/243] f2fs: add MODULE_SOFTDEP to ensure crc32 is included in the initramfs
 Date:   Mon, 19 Jul 2021 16:52:58 +0200
-Message-Id: <20210719144917.896605209@linuxfoundation.org>
+Message-Id: <20210719144945.721082128@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Chao Yu <yuchao0@huawei.com>
 
-[ Upstream commit 2aac79d14d76879c8e307820b31876e315b1b242 ]
+[ Upstream commit 0dd571785d61528d62cdd8aa49d76bc6085152fe ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+As marcosfrm reported in bugzilla:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+https://bugzilla.kernel.org/show_bug.cgi?id=213089
+
+Initramfs generators rely on "pre" softdeps (and "depends") to include
+additional required modules.
+
+F2FS does not declare "pre: crc32" softdep. Then every generator (dracut,
+mkinitcpio...) has to maintain a hardcoded list for this purpose.
+
+Hence let's use MODULE_SOFTDEP("pre: crc32") in f2fs code.
+
+Fixes: 43b6573bac95 ("f2fs: use cryptoapi crc32 functions")
+Reported-by: marcosfrm <marcosfrm@gmail.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/sc2731_charger.c | 1 +
+ fs/f2fs/super.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/power/supply/sc2731_charger.c b/drivers/power/supply/sc2731_charger.c
-index 335cb857ef30..288b79836c13 100644
---- a/drivers/power/supply/sc2731_charger.c
-+++ b/drivers/power/supply/sc2731_charger.c
-@@ -524,6 +524,7 @@ static const struct of_device_id sc2731_charger_of_match[] = {
- 	{ .compatible = "sprd,sc2731-charger", },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(of, sc2731_charger_of_match);
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 4af02719bb14..c52988067887 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -4122,4 +4122,5 @@ module_exit(exit_f2fs_fs)
+ MODULE_AUTHOR("Samsung Electronics's Praesto Team");
+ MODULE_DESCRIPTION("Flash Friendly File System");
+ MODULE_LICENSE("GPL");
++MODULE_SOFTDEP("pre: crc32");
  
- static struct platform_driver sc2731_charger_driver = {
- 	.driver = {
 -- 
 2.30.2
 
