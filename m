@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C854F3CDAAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973383CD83F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245095AbhGSOhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:37:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45642 "EHLO mail.kernel.org"
+        id S241879AbhGSOVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:21:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245131AbhGSOaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:30:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BCEA60249;
-        Mon, 19 Jul 2021 15:11:00 +0000 (UTC)
+        id S242340AbhGSOTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:19:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B777661073;
+        Mon, 19 Jul 2021 14:59:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707460;
-        bh=ewg361im44F8sFW1ZFkaddSWziBwf+YTsPrcJ9kXGLM=;
+        s=korg; t=1626706785;
+        bh=zGOVYjwyMffJLWfigNL2olJxhT7aPhNmZaFHOVgs7cA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PcMiky3badb1ksIgfUH8SEvQKpzF4fkET5X6uBQa5AJnRq+1BTQLj906GXTyR/LR4
-         MQ0bru/BK5RT6jxQ4mMgalQNdXbT7syvVhiEMwELKF2NcNtmlwUFnVB3+yQVMjyrCz
-         PkgKvljh3sOSZPpl+JL/i+eQZVnHbAFrUOAQuo7k=
+        b=hmNgUw5Z/FKZ9ln8Nh7bP5ImVrsU6ToGlqQMDpkjW8fNzQdaO/HLpab4fp3h8cRog
+         ZekqYRMbp7GNi9V/F1L56hRhEQ1eq8qHuCW8kq/QNYRxS3grL//OTo+/n7V8QnBrKE
+         oJ/AQ7PeHqoKK3tmZBqiSXs1jNBaGkFUUJFgMgtk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 139/245] fjes: check return value after calling platform_get_resource()
+Subject: [PATCH 4.4 097/188] mISDN: fix possible use-after-free in HFC_cleanup()
 Date:   Mon, 19 Jul 2021 16:51:21 +0200
-Message-Id: <20210719144944.895629360@linuxfoundation.org>
+Message-Id: <20210719144935.739756396@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
+References: <20210719144913.076563739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit f18c11812c949553d2b2481ecaa274dd51bed1e7 ]
+[ Upstream commit 009fc857c5f6fda81f2f7dd851b2d54193a8e733 ]
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+This module's remove path calls del_timer(). However, that function
+does not wait until the timer handler finishes. This means that the
+timer handler may still be running after the driver's remove function
+has finished, which would result in a use-after-free.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Fix by calling del_timer_sync(), which makes sure the timer handler
+has finished, and unable to re-schedule itself.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/fjes/fjes_main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/isdn/hardware/mISDN/hfcpci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/fjes/fjes_main.c b/drivers/net/fjes/fjes_main.c
-index 3511d40ba3f1..440047a239f5 100644
---- a/drivers/net/fjes/fjes_main.c
-+++ b/drivers/net/fjes/fjes_main.c
-@@ -1212,6 +1212,10 @@ static int fjes_probe(struct platform_device *plat_dev)
- 	adapter->interrupt_watch_enable = false;
+diff --git a/drivers/isdn/hardware/mISDN/hfcpci.c b/drivers/isdn/hardware/mISDN/hfcpci.c
+index ff48da61c94c..89cf1d695a01 100644
+--- a/drivers/isdn/hardware/mISDN/hfcpci.c
++++ b/drivers/isdn/hardware/mISDN/hfcpci.c
+@@ -2352,7 +2352,7 @@ static void __exit
+ HFC_cleanup(void)
+ {
+ 	if (timer_pending(&hfc_tl))
+-		del_timer(&hfc_tl);
++		del_timer_sync(&hfc_tl);
  
- 	res = platform_get_resource(plat_dev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		err = -EINVAL;
-+		goto err_free_control_wq;
-+	}
- 	hw->hw_res.start = res->start;
- 	hw->hw_res.size = resource_size(res);
- 	hw->hw_res.irq = platform_get_irq(plat_dev, 0);
+ 	pci_unregister_driver(&hfc_driver);
+ }
 -- 
 2.30.2
 
