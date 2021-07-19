@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332673CDFE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11BC3CDCF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345793AbhGSPMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:12:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344278AbhGSOso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FB8461073;
-        Mon, 19 Jul 2021 15:27:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708450;
-        bh=erJ9aSIfprXFO6o/cmgrtnUepYazan/PLqTzcf7Z+N0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z/otOqxcOtWtCIGigywYvsE5ilguSBqZbRqFDTi4ljy0XqmLQoYAYYHv5IQfVD7YL
-         lCFnO3RMbiIXFbHwLwvcwE+4RQyKDfuTGtP0Wq5vnHC+x/V+g/qdmV/JNyNGQkCeYO
-         N5IefJRjL75jKajaoHcDRTuB39vaXGyXFWpo2LqE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 315/315] net: bridge: multicast: fix PIM hello router port marking race
-Date:   Mon, 19 Jul 2021 16:53:24 +0200
-Message-Id: <20210719144953.844806034@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
-References: <20210719144942.861561397@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S237854AbhGSOyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242840AbhGSOfN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:35:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93497C0613E3;
+        Mon, 19 Jul 2021 07:35:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ELJ0z2aDXla8iuVKhbEh0uG66iZXIkBu/r64UbziHV8=; b=BYSV7NdoWNUqr1E4SGKE2LA2nX
+        CMURjH+NbrSvI1kKwda4DItB17PJEdXwbrPXPvprFW8SzUZGMzOlHzBUqwK3R0soimpYF/pW6cphG
+        3oKs7+0EEnmN16KZ4oa6KJdUmnP2H7XHwC2WUShMu7fQjID2ijfkME8tnBkSY57Z7zKAKD3G8ATUC
+        L8xNsVlPCmHPmd8CrIjvbcQpOSWppIN0B6xgCupALXjo/IqXTj1ohVQKamJSB0AqztiO/aULV+UN5
+        dZxf8CWXMZcPwWHYiI1Jf+e6bp/fJOFpXUaWLs9zIr0CIcZqCUo+LGXk3yOoMJqWQmWIA+tHf+0jE
+        pamPMvPw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5Ums-006xWQ-IK; Mon, 19 Jul 2021 15:03:10 +0000
+Date:   Mon, 19 Jul 2021 16:02:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Subject: Re: [PATCH v3] iomap: support tail packing inline read
+Message-ID: <YPWUBhxhoaEp8Frn@casper.infradead.org>
+References: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikolay Aleksandrov <nikolay@nvidia.com>
+On Mon, Jul 19, 2021 at 10:47:47PM +0800, Gao Xiang wrote:
+> @@ -246,18 +245,19 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+>  	unsigned poff, plen;
+>  	sector_t sector;
+>  
+> -	if (iomap->type == IOMAP_INLINE) {
+> -		WARN_ON_ONCE(pos);
+> -		iomap_read_inline_data(inode, page, iomap);
+> -		return PAGE_SIZE;
+> -	}
+> -
+> -	/* zero post-eof blocks as the page may be mapped */
+>  	iop = iomap_page_create(inode, page);
+> +	/* needs to skip some leading uptodated blocks */
+>  	iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
+>  	if (plen == 0)
+>  		goto done;
+>  
+> +	if (iomap->type == IOMAP_INLINE) {
+> +		iomap_read_inline_data(inode, page, iomap, pos);
+> +		plen = PAGE_SIZE - poff;
+> +		goto done;
+> +	}
 
-commit 04bef83a3358946bfc98a5ecebd1b0003d83d882 upstream.
+This is going to break Andreas' case that he just patched to work.
+GFS2 needs for there to _not_ be an iop for inline data.  That's
+why I said we need to sort out when to create an iop before moving
+the IOMAP_INLINE case below the creation of the iop.
 
-When a PIM hello packet is received on a bridge port with multicast
-snooping enabled, we mark it as a router port automatically, that
-includes adding that port the router port list. The multicast lock
-protects that list, but it is not acquired in the PIM message case
-leading to a race condition, we need to take it to fix the race.
+If we're not going to do that first, then I recommend leaving the
+IOMAP_INLINE case where it is and changing it to ...
 
-Cc: stable@vger.kernel.org
-Fixes: 91b02d3d133b ("bridge: mcast: add router port on PIM hello message")
-Signed-off-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/bridge/br_multicast.c |    2 ++
- 1 file changed, 2 insertions(+)
+	if (iomap->type == IOMAP_INLINE)
+		return iomap_read_inline_data(inode, page, iomap, pos);
 
---- a/net/bridge/br_multicast.c
-+++ b/net/bridge/br_multicast.c
-@@ -1763,7 +1763,9 @@ static void br_multicast_pim(struct net_
- 	    pim_hdr_type(pimhdr) != PIM_TYPE_HELLO)
- 		return;
- 
-+	spin_lock(&br->multicast_lock);
- 	br_multicast_mark_router(br, port);
-+	spin_unlock(&br->multicast_lock);
- }
- 
- static int br_multicast_ipv4_rcv(struct net_bridge *br,
-
+... and have iomap_read_inline_data() return the number of bytes that
+it copied + zeroed (ie PAGE_SIZE - poff).
 
