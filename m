@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A833C3CE607
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B305B3CE5DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351515AbhGSQAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:00:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32768 "EHLO mail.kernel.org"
+        id S1351372AbhGSPzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:55:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343544AbhGSPCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:02:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44A6761003;
-        Mon, 19 Jul 2021 15:43:01 +0000 (UTC)
+        id S1345660AbhGSPEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:04:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 286DF60FED;
+        Mon, 19 Jul 2021 15:44:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709381;
-        bh=04LlMv8rOHb58b6lvWv89DmumIl50y9zCL2ZpAa3RMQ=;
+        s=korg; t=1626709489;
+        bh=E5gakLHyoe19pVPdx3PyzX6GHXRVihVguyptxbz+nMM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jFvc2ma96IBFuz3pW0o9o0/riavhQ+A7FP8vHEkAKqFbwTrA9R9MIKB4laZhAxtmt
-         4VwNZyQoGeoYLOnDwLelNM8j1KN18zmyMRuP9xtJjpxa+3uPVEQHYfNfQFesbo9A8V
-         zBmd7JUFBexsmgOzEEO1gk+C5wAXJIjTrr2OVV94=
+        b=b0SN1o8Y+1fdMBSdr5m6bdEN6IK+rXy57gUSrhw90EAqbxHMVteBDbtwVnDhMsk6/
+         Vq0pj7D8RztfcDHAss1Gjxkp0/QS3osqHfsMsvQE31pL8z06QezEdHQqmL1Z37kdtB
+         L6jcrt9A0FbCo0+KR8vD4kfI4+RTTNrk3aTJr+Fw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
         Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 360/421] power: supply: ab8500: Avoid NULL pointers
-Date:   Mon, 19 Jul 2021 16:52:51 +0200
-Message-Id: <20210719144958.740213093@linuxfoundation.org>
+Subject: [PATCH 4.19 361/421] power: supply: max17042: Do not enforce (incorrect) interrupt trigger type
+Date:   Mon, 19 Jul 2021 16:52:52 +0200
+Message-Id: <20210719144958.770138593@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,58 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 5bcb5087c9dd3dca1ff0ebd8002c5313c9332b56 ]
+[ Upstream commit 7fbf6b731bca347700e460d94b130f9d734b33e9 ]
 
-Sometimes the code will crash because we haven't enabled
-AC or USB charging and thus not created the corresponding
-psy device. Fix it by checking that it is there before
-notifying.
+Interrupt line can be configured on different hardware in different way,
+even inverted.  Therefore driver should not enforce specific trigger
+type - edge falling - but instead rely on Devicetree to configure it.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+The Maxim 17047/77693 datasheets describe the interrupt line as active
+low with a requirement of acknowledge from the CPU therefore the edge
+falling is not correct.
+
+The interrupt line is shared between PMIC and RTC driver, so using level
+sensitive interrupt is here especially important to avoid races.  With
+an edge configuration in case if first PMIC signals interrupt followed
+shortly after by the RTC, the interrupt might not be yet cleared/acked
+thus the second one would not be noticed.
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/ab8500_charger.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/power/supply/max17042_battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply/ab8500_charger.c
-index 98b335042ba6..76b6c60cde80 100644
---- a/drivers/power/supply/ab8500_charger.c
-+++ b/drivers/power/supply/ab8500_charger.c
-@@ -407,6 +407,14 @@ disable_otp:
- static void ab8500_power_supply_changed(struct ab8500_charger *di,
- 					struct power_supply *psy)
- {
-+	/*
-+	 * This happens if we get notifications or interrupts and
-+	 * the platform has been configured not to support one or
-+	 * other type of charging.
-+	 */
-+	if (!psy)
-+		return;
-+
- 	if (di->autopower_cfg) {
- 		if (!di->usb.charger_connected &&
- 		    !di->ac.charger_connected &&
-@@ -433,7 +441,15 @@ static void ab8500_charger_set_usb_connected(struct ab8500_charger *di,
- 		if (!connected)
- 			di->flags.vbus_drop_end = false;
+diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
+index 1a568df383db..00a3a581e079 100644
+--- a/drivers/power/supply/max17042_battery.c
++++ b/drivers/power/supply/max17042_battery.c
+@@ -1083,7 +1083,7 @@ static int max17042_probe(struct i2c_client *client,
+ 	}
  
--		sysfs_notify(&di->usb_chg.psy->dev.kobj, NULL, "present");
-+		/*
-+		 * Sometimes the platform is configured not to support
-+		 * USB charging and no psy has been created, but we still
-+		 * will get these notifications.
-+		 */
-+		if (di->usb_chg.psy) {
-+			sysfs_notify(&di->usb_chg.psy->dev.kobj, NULL,
-+				     "present");
-+		}
+ 	if (client->irq) {
+-		unsigned int flags = IRQF_TRIGGER_FALLING | IRQF_ONESHOT;
++		unsigned int flags = IRQF_ONESHOT;
  
- 		if (connected) {
- 			mutex_lock(&di->charger_attached_mutex);
+ 		/*
+ 		 * On ACPI systems the IRQ may be handled by ACPI-event code,
 -- 
 2.30.2
 
