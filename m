@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120453CDB9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51D73CD88C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343870AbhGSOsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:48:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46154 "EHLO mail.kernel.org"
+        id S243043AbhGSOXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:23:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243999AbhGSOcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:32:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 964E560551;
-        Mon, 19 Jul 2021 15:12:45 +0000 (UTC)
+        id S242369AbhGSOU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:20:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34E706113E;
+        Mon, 19 Jul 2021 15:01:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707566;
-        bh=uGK7TRqmLeMBZNebujvsvaybiaQqa+sTGjV2A2pnPYE=;
+        s=korg; t=1626706892;
+        bh=nJ1grWDtmDKfyzxuAG3JLQEzaYyWCK/Z7JuC2PlMmrU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w8F2tTEwVzVjlXOLpA65ntghJbpCVfUmZPR+ELG5ixw1/YLh7snPI/vDxLuWsEJnQ
-         Tfl+xpmmRr5b+frm8oMod9CV4RD9K4XChKASpo1BEqRsaq+Ulx/nYBVj8GowHF7PG7
-         N5D0r39YUiZ558I7aSm0mG5A5Ks1ikfGpUgJOFsk=
+        b=VqduJJrcuk+j6gA+y1iyKKrSdk3Ko9PicSUqmGSpahSPazS9qrqB+3MJ/vc2+jE/r
+         lC4jEoHX+JNxt/ukuX/GjlTV59RFCgCcsiD1fhI/E3su6UQEp3AEw3A6rEMSnL5LcE
+         b3rQEak7FoEbMQiu04gsnDfy+haxAxyLUKz/nIdU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.9 181/245] KVM: X86: Disable hardware breakpoints unconditionally before kvm_x86->run()
-Date:   Mon, 19 Jul 2021 16:52:03 +0200
-Message-Id: <20210719144946.250539225@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
+Subject: [PATCH 4.4 140/188] jfs: fix GPF in diFree
+Date:   Mon, 19 Jul 2021 16:52:04 +0200
+Message-Id: <20210719144941.074965191@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
+References: <20210719144913.076563739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit f85d40160691881a17a397c448d799dfc90987ba upstream.
+commit 9d574f985fe33efd6911f4d752de6f485a1ea732 upstream.
 
-When the host is using debug registers but the guest is not using them
-nor is the guest in guest-debug state, the kvm code does not reset
-the host debug registers before kvm_x86->run().  Rather, it relies on
-the hardware vmentry instruction to automatically reset the dr7 registers
-which ensures that the host breakpoints do not affect the guest.
+Avoid passing inode with
+JFS_SBI(inode->i_sb)->ipimap == NULL to
+diFree()[1]. GFP will appear:
 
-This however violates the non-instrumentable nature around VM entry
-and exit; for example, when a host breakpoint is set on vcpu->arch.cr2,
+	struct inode *ipimap = JFS_SBI(ip->i_sb)->ipimap;
+	struct inomap *imap = JFS_IP(ipimap)->i_imap;
 
-Another issue is consistency.  When the guest debug registers are active,
-the host breakpoints are reset before kvm_x86->run(). But when the
-guest debug registers are inactive, the host breakpoints are delayed to
-be disabled.  The host tracing tools may see different results depending
-on what the guest is doing.
+JFS_IP() will return invalid pointer when ipimap == NULL
 
-To fix the problems, we clear %db7 unconditionally before kvm_x86->run()
-if the host has set any breakpoints, no matter if the guest is using
-them or not.
+Call Trace:
+ diFree+0x13d/0x2dc0 fs/jfs/jfs_imap.c:853 [1]
+ jfs_evict_inode+0x2c9/0x370 fs/jfs/inode.c:154
+ evict+0x2ed/0x750 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput.part.0+0x3fe/0x820 fs/inode.c:1680
+ iput+0x58/0x70 fs/inode.c:1670
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-Message-Id: <20210628172632.81029-1-jiangshanlai@gmail.com>
-Cc: stable@vger.kernel.org
-[Only clear %db7 instead of reloading all debug registers. - Paolo]
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Reported-and-tested-by: syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/x86.c |    2 ++
- 1 file changed, 2 insertions(+)
+ fs/jfs/inode.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -7044,6 +7044,8 @@ static int vcpu_enter_guest(struct kvm_v
- 		set_debugreg(vcpu->arch.eff_db[3], 3);
- 		set_debugreg(vcpu->arch.dr6, 6);
- 		vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
-+	} else if (unlikely(hw_breakpoint_active())) {
-+		set_debugreg(0, 7);
- 	}
+--- a/fs/jfs/inode.c
++++ b/fs/jfs/inode.c
+@@ -160,7 +160,8 @@ void jfs_evict_inode(struct inode *inode
+ 			if (test_cflag(COMMIT_Freewmap, inode))
+ 				jfs_free_zero_link(inode);
  
- 	kvm_x86_ops->run(vcpu);
+-			diFree(inode);
++			if (JFS_SBI(inode->i_sb)->ipimap)
++				diFree(inode);
+ 
+ 			/*
+ 			 * Free the inode from the quota allocation.
 
 
