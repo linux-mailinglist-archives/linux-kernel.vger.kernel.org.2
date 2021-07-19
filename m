@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7813CE057
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D55B3CDF64
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345231AbhGSPQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:16:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40436 "EHLO mail.kernel.org"
+        id S1343906AbhGSPKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:10:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245446AbhGSOr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:47:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77DE5613BB;
-        Mon, 19 Jul 2021 15:23:18 +0000 (UTC)
+        id S245160AbhGSOr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:47:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3024D6120C;
+        Mon, 19 Jul 2021 15:23:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708198;
-        bh=aGOBuTpCyBT/9YPbAH2QN7D0OjQUj74F9IAvV0an/SQ=;
+        s=korg; t=1626708203;
+        bh=A83FRVSo6F+diaBzL3hQzAQEi7LOLnR0Fl6Xy51eJhk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n6drw4oOoT/N1LH+56S9kiRk+CEjQ8s4vjfU6mRcE25msb0AnYk2k4ddXnEP0QhbF
-         gWANzsGUdaStmQ5L18vQXiHjQ8GxO7syBSXBHqun6kH8TKmCdMkN7U9YvA0G4y5j0v
-         bNz6HDm3NWLiYZS70zE2g2Ylw+6YwI77FpytMUTE=
+        b=BY9MZRaqkWvRIEYWwP7YpIjCxjWxZ+187vqWoQm5v0oMI2I2nvBxb/dAbLy38xnSQ
+         o0dHHqPbmy77ZEHEvUT+yXE54bom/+diMZWvwjNRdP2xLNXRGoofBMCPFLfVEF/txK
+         UdcqXdfhtAnQw5nsHyOWBmyN+ujq4P0+CbJBTAJ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 186/315] cw1200: add missing MODULE_DEVICE_TABLE
-Date:   Mon, 19 Jul 2021 16:51:15 +0200
-Message-Id: <20210719144949.011471818@linuxfoundation.org>
+Subject: [PATCH 4.14 188/315] atm: nicstar: use dma_free_coherent instead of kfree
+Date:   Mon, 19 Jul 2021 16:51:17 +0200
+Message-Id: <20210719144949.087613763@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,35 +40,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit dd778f89225cd258e8f0fed2b7256124982c8bb5 ]
+[ Upstream commit 6a1e5a4af17e440dd82a58a2c5f40ff17a82b722 ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+When 'nicstar_init_one' fails, 'ns_init_card_error' will be executed for
+error handling, but the correct memory free function should be used,
+otherwise it will cause an error. Since 'card->rsq.org' and
+'card->tsq.org' are allocated using 'dma_alloc_coherent' function, they
+should be freed using 'dma_free_coherent'.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1620788714-14300-1-git-send-email-zou_wei@huawei.com
+Fix this by using 'dma_free_coherent' instead of 'kfree'
+
+This log reveals it:
+
+[    3.440294] kernel BUG at mm/slub.c:4206!
+[    3.441059] invalid opcode: 0000 [#1] PREEMPT SMP PTI
+[    3.441430] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.12.4-g70e7f0549188-dirty #141
+[    3.441986] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+[    3.442780] RIP: 0010:kfree+0x26a/0x300
+[    3.443065] Code: e8 3a c3 b9 ff e9 d6 fd ff ff 49 8b 45 00 31 db a9 00 00 01 00 75 4d 49 8b 45 00 a9 00 00 01 00 75 0a 49 8b 45 08 a8 01 75 02 <0f> 0b 89 d9 b8 00 10 00 00 be 06 00 00 00 48 d3 e0 f7 d8 48 63 d0
+[    3.443396] RSP: 0000:ffffc90000017b70 EFLAGS: 00010246
+[    3.443396] RAX: dead000000000100 RBX: 0000000000000000 RCX: 0000000000000000
+[    3.443396] RDX: 0000000000000000 RSI: ffffffff85d3df94 RDI: ffffffff85df38e6
+[    3.443396] RBP: ffffc90000017b90 R08: 0000000000000001 R09: 0000000000000001
+[    3.443396] R10: 0000000000000000 R11: 0000000000000001 R12: ffff888107dc0000
+[    3.443396] R13: ffffea00001f0100 R14: ffff888101a8bf00 R15: ffff888107dc0160
+[    3.443396] FS:  0000000000000000(0000) GS:ffff88817bc80000(0000) knlGS:0000000000000000
+[    3.443396] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    3.443396] CR2: 0000000000000000 CR3: 000000000642e000 CR4: 00000000000006e0
+[    3.443396] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    3.443396] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    3.443396] Call Trace:
+[    3.443396]  ns_init_card_error+0x12c/0x220
+[    3.443396]  nicstar_init_one+0x10d2/0x1130
+[    3.443396]  local_pci_probe+0x4a/0xb0
+[    3.443396]  pci_device_probe+0x126/0x1d0
+[    3.443396]  ? pci_device_remove+0x100/0x100
+[    3.443396]  really_probe+0x27e/0x650
+[    3.443396]  driver_probe_device+0x84/0x1d0
+[    3.443396]  ? mutex_lock_nested+0x16/0x20
+[    3.443396]  device_driver_attach+0x63/0x70
+[    3.443396]  __driver_attach+0x117/0x1a0
+[    3.443396]  ? device_driver_attach+0x70/0x70
+[    3.443396]  bus_for_each_dev+0xb6/0x110
+[    3.443396]  ? rdinit_setup+0x40/0x40
+[    3.443396]  driver_attach+0x22/0x30
+[    3.443396]  bus_add_driver+0x1e6/0x2a0
+[    3.443396]  driver_register+0xa4/0x180
+[    3.443396]  __pci_register_driver+0x77/0x80
+[    3.443396]  ? uPD98402_module_init+0xd/0xd
+[    3.443396]  nicstar_init+0x1f/0x75
+[    3.443396]  do_one_initcall+0x7a/0x3d0
+[    3.443396]  ? rdinit_setup+0x40/0x40
+[    3.443396]  ? rcu_read_lock_sched_held+0x4a/0x70
+[    3.443396]  kernel_init_freeable+0x2a7/0x2f9
+[    3.443396]  ? rest_init+0x2c0/0x2c0
+[    3.443396]  kernel_init+0x13/0x180
+[    3.443396]  ? rest_init+0x2c0/0x2c0
+[    3.443396]  ? rest_init+0x2c0/0x2c0
+[    3.443396]  ret_from_fork+0x1f/0x30
+[    3.443396] Modules linked in:
+[    3.443396] Dumping ftrace buffer:
+[    3.443396]    (ftrace buffer empty)
+[    3.458593] ---[ end trace 3c6f8f0d8ef59bcd ]---
+[    3.458922] RIP: 0010:kfree+0x26a/0x300
+[    3.459198] Code: e8 3a c3 b9 ff e9 d6 fd ff ff 49 8b 45 00 31 db a9 00 00 01 00 75 4d 49 8b 45 00 a9 00 00 01 00 75 0a 49 8b 45 08 a8 01 75 02 <0f> 0b 89 d9 b8 00 10 00 00 be 06 00 00 00 48 d3 e0 f7 d8 48 63 d0
+[    3.460499] RSP: 0000:ffffc90000017b70 EFLAGS: 00010246
+[    3.460870] RAX: dead000000000100 RBX: 0000000000000000 RCX: 0000000000000000
+[    3.461371] RDX: 0000000000000000 RSI: ffffffff85d3df94 RDI: ffffffff85df38e6
+[    3.461873] RBP: ffffc90000017b90 R08: 0000000000000001 R09: 0000000000000001
+[    3.462372] R10: 0000000000000000 R11: 0000000000000001 R12: ffff888107dc0000
+[    3.462871] R13: ffffea00001f0100 R14: ffff888101a8bf00 R15: ffff888107dc0160
+[    3.463368] FS:  0000000000000000(0000) GS:ffff88817bc80000(0000) knlGS:0000000000000000
+[    3.463949] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    3.464356] CR2: 0000000000000000 CR3: 000000000642e000 CR4: 00000000000006e0
+[    3.464856] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    3.465356] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    3.465860] Kernel panic - not syncing: Fatal exception
+[    3.466370] Dumping ftrace buffer:
+[    3.466616]    (ftrace buffer empty)
+[    3.466871] Kernel Offset: disabled
+[    3.467122] Rebooting in 1 seconds..
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/st/cw1200/cw1200_sdio.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/atm/nicstar.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/st/cw1200/cw1200_sdio.c b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-index 1037ec62659d..ee86436bf152 100644
---- a/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-+++ b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-@@ -63,6 +63,7 @@ static const struct sdio_device_id cw1200_sdio_ids[] = {
- 	{ SDIO_DEVICE(SDIO_VENDOR_ID_STE, SDIO_DEVICE_ID_STE_CW1200) },
- 	{ /* end: all zeroes */			},
- };
-+MODULE_DEVICE_TABLE(sdio, cw1200_sdio_ids);
- 
- /* hwbus_ops implemetation */
- 
+diff --git a/drivers/atm/nicstar.c b/drivers/atm/nicstar.c
+index 2c1a81b85816..d62ec533087e 100644
+--- a/drivers/atm/nicstar.c
++++ b/drivers/atm/nicstar.c
+@@ -838,10 +838,12 @@ static void ns_init_card_error(ns_dev *card, int error)
+ 			dev_kfree_skb_any(hb);
+ 	}
+ 	if (error >= 12) {
+-		kfree(card->rsq.org);
++		dma_free_coherent(&card->pcidev->dev, NS_RSQSIZE + NS_RSQ_ALIGNMENT,
++				card->rsq.org, card->rsq.dma);
+ 	}
+ 	if (error >= 11) {
+-		kfree(card->tsq.org);
++		dma_free_coherent(&card->pcidev->dev, NS_TSQSIZE + NS_TSQ_ALIGNMENT,
++				card->tsq.org, card->tsq.dma);
+ 	}
+ 	if (error >= 10) {
+ 		free_irq(card->pcidev->irq, card);
 -- 
 2.30.2
 
