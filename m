@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B943CE972
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969C63CEA7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359150AbhGSQzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:55:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45858 "EHLO mail.kernel.org"
+        id S1377109AbhGSRQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:16:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346779AbhGSP2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:28:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 067D2613AE;
-        Mon, 19 Jul 2021 16:08:30 +0000 (UTC)
+        id S1347279AbhGSPjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:39:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DD2D61264;
+        Mon, 19 Jul 2021 16:18:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710911;
-        bh=RZakjTkCdwXu3fsk64N+jk2ykyeOqf/HGFpYcec9oRM=;
+        s=korg; t=1626711540;
+        bh=3WBfwcuwGRYVyqJDwmS4N664i6N+pbX2/wBRHuVVNvU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qLpy+41/3mOfdVoJ4j4BYHYdgn4Ba8IKWWqmT4siMmx2CqZgIkYpkCQxH7bKbppkq
-         9C28KiE096D3RTCa81tkHD5MzYeosPHDbsZFFFmmaYXJgiGkEp2Xo+3RlivjHJHfjV
-         PnT4SFhVhPPWVI7EvIiyicQr+v3gN8NhX5EvI620=
+        b=hOBWgwzcqBpTlNy1jwDl1dgEcldM/QO1krrO6qSTlCZdGPSkv1G8ZgsTXZ8louJRO
+         IbhFqAd2eTtcKrndvaoU5k9lsYhw/+46GMBakxSt/u14O7Uy5MJzoC9MjDpqJEIOpX
+         MQPvCkEi2GKKhKDZt1WMAsFi1wbF65jHnVgUC4b8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Long Li <longli@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Michael Kelley <mikelley@microsoft.com>,
+        stable@vger.kernel.org,
+        syzbot+dde0cc33951735441301@syzkaller.appspotmail.com,
+        Matthew Wilcox <willy@infradead.org>,
+        syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 155/351] PCI: hv: Fix a race condition when removing the device
+Subject: [PATCH 5.12 039/292] rcu: Reject RCU_LOCKDEP_WARN() false positives
 Date:   Mon, 19 Jul 2021 16:51:41 +0200
-Message-Id: <20210719144950.104675554@linuxfoundation.org>
+Message-Id: <20210719144943.802825080@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,104 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-[ Upstream commit 94d22763207ac6633612b8d8e0ca4fba0f7aa139 ]
+[ Upstream commit 3066820034b5dd4e89bd74a7739c51c2d6f5e554 ]
 
-On removing the device, any work item (hv_pci_devices_present() or
-hv_pci_eject_device()) scheduled on workqueue hbus->wq may still be running
-and race with hv_pci_remove().
+If another lockdep report runs concurrently with an RCU lockdep report
+from RCU_LOCKDEP_WARN(), the following sequence of events can occur:
 
-This can happen because the host may send PCI_EJECT or PCI_BUS_RELATIONS(2)
-and decide to rescind the channel immediately after that.
+1.	debug_lockdep_rcu_enabled() sees that lockdep is enabled
+	when called from (say) synchronize_rcu().
 
-Fix this by flushing/destroying the workqueue of hbus before doing hbus remove.
+2.	Lockdep is disabled by a concurrent lockdep report.
 
-Link: https://lore.kernel.org/r/1620806800-30983-1-git-send-email-longli@linuxonhyperv.com
-Signed-off-by: Long Li <longli@microsoft.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+3.	debug_lockdep_rcu_enabled() evaluates its lockdep-expression
+	argument, for example, lock_is_held(&rcu_bh_lock_map).
+
+4.	Because lockdep is now disabled, lock_is_held() plays it safe and
+	returns the constant 1.
+
+5.	But in this case, the constant 1 is not safe, because invoking
+	synchronize_rcu() under rcu_read_lock_bh() is disallowed.
+
+6.	debug_lockdep_rcu_enabled() wrongly invokes lockdep_rcu_suspicious(),
+	resulting in a false-positive splat.
+
+This commit therefore changes RCU_LOCKDEP_WARN() to check
+debug_lockdep_rcu_enabled() after checking the lockdep expression,
+so that any "safe" returns from lock_is_held() are rejected by
+debug_lockdep_rcu_enabled().  This requires memory ordering, which is
+supplied by READ_ONCE(debug_locks).  The resulting volatile accesses
+prevent the compiler from reordering and the fact that only one variable
+is being accessed prevents the underlying hardware from reordering.
+The combination works for IA64, which can reorder reads to the same
+location, but this is defeated by the volatile accesses, which compile
+to load instructions that provide ordering.
+
+Reported-by: syzbot+dde0cc33951735441301@syzkaller.appspotmail.com
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Reported-by: syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com
+Reported-by: Thomas Gleixner <tglx@linutronix.de>
+Suggested-by: Boqun Feng <boqun.feng@gmail.com>
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-hyperv.c | 30 ++++++++++++++++++++++-------
- 1 file changed, 23 insertions(+), 7 deletions(-)
+ include/linux/rcupdate.h | 2 +-
+ kernel/rcu/update.c      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index bebe3eeebc4e..efbf8c80bd31 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -444,7 +444,6 @@ enum hv_pcibus_state {
- 	hv_pcibus_probed,
- 	hv_pcibus_installed,
- 	hv_pcibus_removing,
--	hv_pcibus_removed,
- 	hv_pcibus_maximum
- };
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index bd04f722714f..d11bee5d9347 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -315,7 +315,7 @@ static inline int rcu_read_lock_any_held(void)
+ #define RCU_LOCKDEP_WARN(c, s)						\
+ 	do {								\
+ 		static bool __section(".data.unlikely") __warned;	\
+-		if (debug_lockdep_rcu_enabled() && !__warned && (c)) {	\
++		if ((c) && debug_lockdep_rcu_enabled() && !__warned) {	\
+ 			__warned = true;				\
+ 			lockdep_rcu_suspicious(__FILE__, __LINE__, s);	\
+ 		}							\
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index b95ae86c40a7..dd94a602a6d2 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -277,7 +277,7 @@ EXPORT_SYMBOL_GPL(rcu_callback_map);
  
-@@ -3243,8 +3242,9 @@ static int hv_pci_bus_exit(struct hv_device *hdev, bool keep_devs)
- 		struct pci_packet teardown_packet;
- 		u8 buffer[sizeof(struct pci_message)];
- 	} pkt;
--	struct hv_dr_state *dr;
- 	struct hv_pci_compl comp_pkt;
-+	struct hv_pci_dev *hpdev, *tmp;
-+	unsigned long flags;
- 	int ret;
- 
- 	/*
-@@ -3256,9 +3256,16 @@ static int hv_pci_bus_exit(struct hv_device *hdev, bool keep_devs)
- 
- 	if (!keep_devs) {
- 		/* Delete any children which might still exist. */
--		dr = kzalloc(sizeof(*dr), GFP_KERNEL);
--		if (dr && hv_pci_start_relations_work(hbus, dr))
--			kfree(dr);
-+		spin_lock_irqsave(&hbus->device_list_lock, flags);
-+		list_for_each_entry_safe(hpdev, tmp, &hbus->children, list_entry) {
-+			list_del(&hpdev->list_entry);
-+			if (hpdev->pci_slot)
-+				pci_destroy_slot(hpdev->pci_slot);
-+			/* For the two refs got in new_pcichild_device() */
-+			put_pcichild(hpdev);
-+			put_pcichild(hpdev);
-+		}
-+		spin_unlock_irqrestore(&hbus->device_list_lock, flags);
- 	}
- 
- 	ret = hv_send_resources_released(hdev);
-@@ -3301,13 +3308,23 @@ static int hv_pci_remove(struct hv_device *hdev)
- 
- 	hbus = hv_get_drvdata(hdev);
- 	if (hbus->state == hv_pcibus_installed) {
-+		tasklet_disable(&hdev->channel->callback_event);
-+		hbus->state = hv_pcibus_removing;
-+		tasklet_enable(&hdev->channel->callback_event);
-+		destroy_workqueue(hbus->wq);
-+		hbus->wq = NULL;
-+		/*
-+		 * At this point, no work is running or can be scheduled
-+		 * on hbus-wq. We can't race with hv_pci_devices_present()
-+		 * or hv_pci_eject_device(), it's safe to proceed.
-+		 */
-+
- 		/* Remove the bus from PCI's point of view. */
- 		pci_lock_rescan_remove();
- 		pci_stop_root_bus(hbus->pci_bus);
- 		hv_pci_remove_slots(hbus);
- 		pci_remove_root_bus(hbus->pci_bus);
- 		pci_unlock_rescan_remove();
--		hbus->state = hv_pcibus_removed;
- 	}
- 
- 	ret = hv_pci_bus_exit(hdev, false);
-@@ -3322,7 +3339,6 @@ static int hv_pci_remove(struct hv_device *hdev)
- 	irq_domain_free_fwnode(hbus->sysdata.fwnode);
- 	put_hvpcibus(hbus);
- 	wait_for_completion(&hbus->remove_event);
--	destroy_workqueue(hbus->wq);
- 
- 	hv_put_dom_num(hbus->sysdata.domain);
- 
+ noinstr int notrace debug_lockdep_rcu_enabled(void)
+ {
+-	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
++	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && READ_ONCE(debug_locks) &&
+ 	       current->lockdep_recursion == 0;
+ }
+ EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
 -- 
 2.30.2
 
