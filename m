@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E043CE71C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B3B3CE81E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243165AbhGSQU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:20:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48582 "EHLO mail.kernel.org"
+        id S1345109AbhGSQqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:46:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345657AbhGSPMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:12:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF5C36128D;
-        Mon, 19 Jul 2021 15:52:45 +0000 (UTC)
+        id S1348465AbhGSPYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A23DC600EF;
+        Mon, 19 Jul 2021 16:05:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709966;
-        bh=DN12DoBl/MGtiLQsU+mZ80hhRkf98LVSc3dzCI7ikwo=;
+        s=korg; t=1626710729;
+        bh=bx2NjaHIi7EIzUuk5t5pEMwJV/11m704jcJmZ6JoNMI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vuK4x8aEKsLbjx7tJiTPLvTjAFBGumP1VumnfPNjRWwL/se4ETCBWdmmubihFWNBv
-         AJYQW7lY5tZlBlNkORgPP7cBhffiitNk92OxneATt6EA//BvioWm57MnD1Jijp+JbR
-         ZbEmT+eYj8sbepmjtPupf3PVAciKZNjKvD/8n1DE=
+        b=z57cLzvrVQVThpThVhZ4L/0GxAEgCwNDlNp7KQuiQP3iWvWhlAnZK5oO73OjT4Yua
+         XA5d/kNO9GXQU7qxnJu0jt21lKiI/Wy4HbiTe+3IoliXbLO+F+XBnxK73ROmZbXEOA
+         NJVoock7359skrernl+xjt3RjpLYFcxbVfpdvViA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.10 002/243] cifs: handle reconnect of tcon when there is no cached dfs referral
+        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 085/351] scsi: qedi: Fix TMF session block/unblock use
 Date:   Mon, 19 Jul 2021 16:50:31 +0200
-Message-Id: <20210719144940.987200832@linuxfoundation.org>
+Message-Id: <20210719144947.319964909@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paulo Alcantara <pc@cjr.nz>
+From: Mike Christie <michael.christie@oracle.com>
 
-commit 507345b5ae6a57b7ecd7550ff39282ed20de7b8d upstream.
+[ Upstream commit 2819b4ae2873d50fd55292877b0231ec936c3b2e ]
 
-When there is no cached DFS referral of tcon->dfs_path, then reconnect
-to same share.
+Drivers shouldn't be calling block/unblock session for tmf handling because
+the functions can change the session state from under libiscsi.
+iscsi_queuecommand's call to iscsi_prep_scsi_cmd_pdu->
+iscsi_check_tmf_restrictions will prevent new cmds from being sent to qedi
+after we've started handling a TMF. So we don't need to try and block it in
+the driver, and we can remove these block calls.
 
-Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210525181821.7617-25-michael.christie@oracle.com
+Reviewed-by: Manish Rangankar <mrangankar@marvell.com>
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/connect.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/scsi/qedi/qedi_fw.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -5352,7 +5352,8 @@ int cifs_tree_connect(const unsigned int
- 	if (!tree)
- 		return -ENOMEM;
+diff --git a/drivers/scsi/qedi/qedi_fw.c b/drivers/scsi/qedi/qedi_fw.c
+index c12bb2dd5ff9..4c87640e6a91 100644
+--- a/drivers/scsi/qedi/qedi_fw.c
++++ b/drivers/scsi/qedi/qedi_fw.c
+@@ -159,14 +159,9 @@ static void qedi_tmf_resp_work(struct work_struct *work)
+ 	set_bit(QEDI_CONN_FW_CLEANUP, &qedi_conn->flags);
+ 	resp_hdr_ptr =  (struct iscsi_tm_rsp *)qedi_cmd->tmf_resp_buf;
  
--	if (!tcon->dfs_path) {
-+	/* If it is not dfs or there was no cached dfs referral, then reconnect to same share */
-+	if (!tcon->dfs_path || dfs_cache_noreq_find(tcon->dfs_path + 1, &ref, &tl)) {
- 		if (tcon->ipc) {
- 			scnprintf(tree, MAX_TREE_SIZE, "\\\\%s\\IPC$", server->hostname);
- 			rc = ops->tree_connect(xid, tcon->ses, tree, tcon, nlsc);
-@@ -5362,9 +5363,6 @@ int cifs_tree_connect(const unsigned int
- 		goto out;
- 	}
+-	iscsi_block_session(session->cls_session);
+ 	rval = qedi_cleanup_all_io(qedi, qedi_conn, qedi_cmd->task, true);
+-	if (rval) {
+-		iscsi_unblock_session(session->cls_session);
++	if (rval)
+ 		goto exit_tmf_resp;
+-	}
+-
+-	iscsi_unblock_session(session->cls_session);
  
--	rc = dfs_cache_noreq_find(tcon->dfs_path + 1, &ref, &tl);
--	if (rc)
--		goto out;
- 	isroot = ref.server_type == DFS_TYPE_ROOT;
- 	free_dfs_info_param(&ref);
- 
+ 	spin_lock(&session->back_lock);
+ 	__iscsi_complete_pdu(conn, (struct iscsi_hdr *)resp_hdr_ptr, NULL, 0);
+-- 
+2.30.2
+
 
 
