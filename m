@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF2C3CDA5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CE43CDB10
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243353AbhGSOfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:35:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38396 "EHLO mail.kernel.org"
+        id S232283AbhGSOix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:38:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244329AbhGSO3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:29:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C64C461165;
-        Mon, 19 Jul 2021 15:09:17 +0000 (UTC)
+        id S244436AbhGSO3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:29:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 265D860FDC;
+        Mon, 19 Jul 2021 15:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707358;
-        bh=+mPVfOcxAxvOn4g1UTVHi39fRgRmaymEHJL+MrSZeuE=;
+        s=korg; t=1626707373;
+        bh=kEwWaMOI6TJiRC7j1KouIgmDwjJioPK5FYgLyi3eNGk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tBOwiWBodg/ShZQ2Z5ttz4mL3D9zL4JFjEKjcuRzw83Oemcprwwy8Vg+98fyP13qD
-         wf8xiM3guenZiczocvt3/m3n+BHcHh1uu4LkX3YQBh7n6j28MEzx0W1Ss9Vs+STusD
-         bWuWVxbg8028t/3FSB5IYNPcUPLwQX+M4PSGBKZ8=
+        b=x6+kgbD+5Q81f5a/HMiVhoIOfezNS6oXIzKxe4ev98JQfWlyoGfUrc1RScEIWAZPj
+         v5zMeHky1bblpS3yauplYypQR+ynlp6J7ur6LxfUiOHtht7JogIpLs+04it21DZtgj
+         F22luKlrm9gWZO43O8gsL3+0Ct65y1jva90bdrnQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 102/245] iio: humidity: am2315: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 19 Jul 2021 16:50:44 +0200
-Message-Id: <20210719144943.722446760@linuxfoundation.org>
+Subject: [PATCH 4.9 103/245] iio: prox: pulsed-light: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Date:   Mon, 19 Jul 2021 16:50:45 +0200
+Message-Id: <20210719144943.752092403@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -43,7 +44,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit f4ca2e2595d9fee65d5ce0d218b22ce00e5b2915 ]
+[ Upstream commit 679cc377a03ff1944491eafc7355c1eb1fad4109 ]
 
 To make code more readable, use a structure to express the channel
 layout and ensure the timestamp is 8 byte aligned.
@@ -51,58 +52,46 @@ layout and ensure the timestamp is 8 byte aligned.
 Found during an audit of all calls of uses of
 iio_push_to_buffers_with_timestamp()
 
-Fixes: 0d96d5ead3f7 ("iio: humidity: Add triggered buffer support for AM2315")
+Fixes: cb119d535083 ("iio: proximity: add support for PulsedLight LIDAR")
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Matt Ranostay <matt.ranostay@konsulko.com>
+Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-12-jic23@kernel.org
+Link: https://lore.kernel.org/r/20210501170121.512209-14-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/humidity/am2315.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ drivers/iio/proximity/pulsedlight-lidar-lite-v2.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/humidity/am2315.c b/drivers/iio/humidity/am2315.c
-index ff96b6d0fdae..77513fd84b99 100644
---- a/drivers/iio/humidity/am2315.c
-+++ b/drivers/iio/humidity/am2315.c
-@@ -36,7 +36,11 @@
- struct am2315_data {
- 	struct i2c_client *client;
- 	struct mutex lock;
--	s16 buffer[8]; /* 2x16-bit channels + 2x16 padding + 4x16 timestamp */
+diff --git a/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c b/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c
+index 46e969a3a9b7..ed7397f0b4c8 100644
+--- a/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c
++++ b/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c
+@@ -51,7 +51,11 @@ struct lidar_data {
+ 	int (*xfer)(struct lidar_data *data, u8 reg, u8 *val, int len);
+ 	int i2c_enabled;
+ 
+-	u16 buffer[8]; /* 2 byte distance + 8 byte timestamp */
 +	/* Ensure timestamp is naturally aligned */
 +	struct {
-+		s16 chans[2];
++		u16 chan;
 +		s64 timestamp __aligned(8);
 +	} scan;
  };
  
- struct am2315_sensor_data {
-@@ -170,20 +174,20 @@ static irqreturn_t am2315_trigger_handler(int irq, void *p)
+ static const struct iio_chan_spec lidar_channels[] = {
+@@ -236,9 +240,9 @@ static irqreturn_t lidar_trigger_handler(int irq, void *private)
+ 	struct lidar_data *data = iio_priv(indio_dev);
+ 	int ret;
  
- 	mutex_lock(&data->lock);
- 	if (*(indio_dev->active_scan_mask) == AM2315_ALL_CHANNEL_MASK) {
--		data->buffer[0] = sensor_data.hum_data;
--		data->buffer[1] = sensor_data.temp_data;
-+		data->scan.chans[0] = sensor_data.hum_data;
-+		data->scan.chans[1] = sensor_data.temp_data;
- 	} else {
- 		i = 0;
- 		for_each_set_bit(bit, indio_dev->active_scan_mask,
- 				 indio_dev->masklength) {
--			data->buffer[i] = (bit ? sensor_data.temp_data :
--						 sensor_data.hum_data);
-+			data->scan.chans[i] = (bit ? sensor_data.temp_data :
-+					       sensor_data.hum_data);
- 			i++;
- 		}
- 	}
- 	mutex_unlock(&data->lock);
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 					   pf->timestamp);
- err:
- 	iio_trigger_notify_done(indio_dev->trig);
+-	ret = lidar_get_measurement(data, data->buffer);
++	ret = lidar_get_measurement(data, &data->scan.chan);
+ 	if (!ret) {
+-		iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
++		iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+ 						   iio_get_time_ns(indio_dev));
+ 	} else if (ret != -EINVAL) {
+ 		dev_err(&data->client->dev, "cannot read LIDAR measurement");
 -- 
 2.30.2
 
