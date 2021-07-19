@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FDE3CE5AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8849F3CE5B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346591AbhGSPwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:52:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60818 "EHLO mail.kernel.org"
+        id S1349060AbhGSPxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:53:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345121AbhGSPET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:04:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 504906135D;
-        Mon, 19 Jul 2021 15:43:46 +0000 (UTC)
+        id S1345424AbhGSPEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:04:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F2A860238;
+        Mon, 19 Jul 2021 15:43:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709426;
-        bh=sTkZHXRgOpXvIiUCPagaAj2uguiM5yNFTsCoRAXk3nY=;
+        s=korg; t=1626709431;
+        bh=QYTHVKAk8jN3oDibGlvNSAtJhO/sJJEXPVwOVQHYIos=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Me8320YIqTEhPl0o/PvV49QdRq5b+dPLh8GswG6MlqfBzXoP7Xza9SwHW5txo+qC5
-         z3j4WHpReSkhCrXcIXWBSe+dtVD6SZygi40L5mv56fzlzRigNYSnRMvobPvNOhdpE6
-         4Eyqz4QjJe0vzy+HaXCE/mRsc+vXf1dpDqcvmHS4=
+        b=LM6vmDUKXyzO56LicJVLwbDqvvoYX4+FSmtoOAIyjTxfZo9teyXpruVyLshx0Bl6Q
+         JG+h8d9MJ1kMV6WVV9ggP5lzNelnEpQA55uA0LjdY8oRDii5z8ZnL4Kxq/s1C2V19r
+         y3m0FvC2hx8sMOpFOwznFDB/UUjB76utVDSDqngg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org, marcosfrm <marcosfrm@gmail.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 380/421] virtio_console: Assure used length from device is limited
-Date:   Mon, 19 Jul 2021 16:53:11 +0200
-Message-Id: <20210719144959.546435041@linuxfoundation.org>
+Subject: [PATCH 4.19 381/421] f2fs: add MODULE_SOFTDEP to ensure crc32 is included in the initramfs
+Date:   Mon, 19 Jul 2021 16:53:12 +0200
+Message-Id: <20210719144959.576786708@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,45 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie Yongji <xieyongji@bytedance.com>
+From: Chao Yu <yuchao0@huawei.com>
 
-[ Upstream commit d00d8da5869a2608e97cfede094dfc5e11462a46 ]
+[ Upstream commit 0dd571785d61528d62cdd8aa49d76bc6085152fe ]
 
-The buf->len might come from an untrusted device. This
-ensures the value would not exceed the size of the buffer
-to avoid data corruption or loss.
+As marcosfrm reported in bugzilla:
 
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Link: https://lore.kernel.org/r/20210525125622.1203-1-xieyongji@bytedance.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+https://bugzilla.kernel.org/show_bug.cgi?id=213089
+
+Initramfs generators rely on "pre" softdeps (and "depends") to include
+additional required modules.
+
+F2FS does not declare "pre: crc32" softdep. Then every generator (dracut,
+mkinitcpio...) has to maintain a hardcoded list for this purpose.
+
+Hence let's use MODULE_SOFTDEP("pre: crc32") in f2fs code.
+
+Fixes: 43b6573bac95 ("f2fs: use cryptoapi crc32 functions")
+Reported-by: marcosfrm <marcosfrm@gmail.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/virtio_console.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/f2fs/super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-index ca71ee939533..cdf441942bae 100644
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -488,7 +488,7 @@ static struct port_buffer *get_inbuf(struct port *port)
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 161ce0eb8891..89fc8a4ce149 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3373,4 +3373,5 @@ module_exit(exit_f2fs_fs)
+ MODULE_AUTHOR("Samsung Electronics's Praesto Team");
+ MODULE_DESCRIPTION("Flash Friendly File System");
+ MODULE_LICENSE("GPL");
++MODULE_SOFTDEP("pre: crc32");
  
- 	buf = virtqueue_get_buf(port->in_vq, &len);
- 	if (buf) {
--		buf->len = len;
-+		buf->len = min_t(size_t, len, buf->size);
- 		buf->offset = 0;
- 		port->stats.bytes_received += len;
- 	}
-@@ -1738,7 +1738,7 @@ static void control_work_handler(struct work_struct *work)
- 	while ((buf = virtqueue_get_buf(vq, &len))) {
- 		spin_unlock(&portdev->c_ivq_lock);
- 
--		buf->len = len;
-+		buf->len = min_t(size_t, len, buf->size);
- 		buf->offset = 0;
- 
- 		handle_control_message(vq->vdev, portdev, buf);
 -- 
 2.30.2
 
