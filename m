@@ -2,333 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2492B3CED7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDAC3CED8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384945AbhGSSl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 14:41:29 -0400
-Received: from mail-bn8nam12on2047.outbound.protection.outlook.com ([40.107.237.47]:30784
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1384076AbhGSSSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 14:18:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jh8vbgavik8xuVJXumMr3ojzmvoLR2aNUbfZ5t+r183ZSBBxdWko1P+jvp86BE8kXIj4xvZYfHjcBmiQjNw0C8a/JigSgIjBVkNy9Sy/MvgQ3FzUB7Auu8Uvzl8TPLWakEBxOtB4rcR+HMb1xnGa2Cz0OLy4LhzBIuyW1H3rDGRSvqAvXKHwEMrV9dUrCQssGqhaJ2pr/WzbzeTGk2MEBEcujr0vH/jPOnoCPURLTfTBNRp59twab6W0j6x/Hl8s1j3Qnt95b0jYXXgN1g0riFa4l43lLO8U5DdCwK+80VNWYAylh4k7bchhxmNdasIGl3qmX16SCvjPuB5MShNVQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/fVN7qvrhtgvTQt0F7G3JjGzeJUzQIENvcBLC4Cn57E=;
- b=jqVq7mKVVj+3xkt3XHzLOPehSU4SLj8UkjNFNlMrur36mlPgUOBuz/cPtftqntW0Fe9K5TwzSQqkGmmoMfVdBTOtzAtIOJJc3rAepyUPOmT8dvpjikJvHFZddIZWJuji//s6w6/Zb0a4nfkbS++X28hKELUvfNcGA2aAosF6v61GPwLzgNxDCMCOo4Qx+FBfG9n6xMSAGWU+R00Uk9+ACHWStwZa35s+Y9McfgeyIRg5Ki4boD+ADJwBGGeJE01ZyXEu9PshDeEzCLiQe4KNMvNAG4oMI/aan5upLO+n+8XzYc1A+KXhGCIac2tNBU9KpwmGmrSO4HViYRsNCJdqzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/fVN7qvrhtgvTQt0F7G3JjGzeJUzQIENvcBLC4Cn57E=;
- b=B7BTikLmYs/8GpM7xmYPADd1pHJAfeSQq/XUCYifFtJkN8HrT1dSh4dk+3DtVPqJxjmof6V8SNM8wf07QjZcZUueAXTbfOxsRydf1cavOcXNzXA/EZhf0CuATSMu/GIones8MY95u+g54BSdVm4oORBS+hCASUwGKK2gCOtdP7M=
-Authentication-Results: collabora.com; dkim=none (message not signed)
- header.d=none;collabora.com; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23) by MWHPR1201MB0221.namprd12.prod.outlook.com
- (2603:10b6:301:56::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.25; Mon, 19 Jul
- 2021 18:59:20 +0000
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::d0a9:a5f1:ca5a:b439]) by MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::d0a9:a5f1:ca5a:b439%11]) with mapi id 15.20.4331.033; Mon, 19 Jul
- 2021 18:59:19 +0000
-Subject: Re: [PATCH V3 04/12] ASoC: amd: create acp5x platform devices
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        broonie@kernel.org, alsa-devel@alsa-project.org
-Cc:     Sunil-kumar.Dommati@amd.com,
-        open list <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, Alexander.Deucher@amd.com,
-        krisman@collabora.com
-References: <20210719165140.16143-1-vijendar.mukunda@amd.com>
- <20210719165140.16143-5-vijendar.mukunda@amd.com>
- <035b3dbe-bbe0-bf0b-3893-d176418658f7@linux.intel.com>
-From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Message-ID: <a6c5600b-4d1b-2791-8b61-f241dcdbeb14@amd.com>
-Date:   Tue, 20 Jul 2021 00:47:03 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <035b3dbe-bbe0-bf0b-3893-d176418658f7@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MAXPR0101CA0012.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:c::22) To MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23)
+        id S1385646AbhGSTFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 15:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1384871AbhGSSip (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 14:38:45 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D143C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:09:52 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id y66so12492046oie.7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SudKCvvWg+Me2mbMwVYeRd31oZcZoO+nm1Zj7MU/9gg=;
+        b=RiQJfGKTOT2Bj8qhCAPRxVkQZzJtvEnwyjwbYTcQHA7FdW/IjgqG6dCtax0iF7wZ2+
+         lJ6ZILsNV8Tn+kJ2osIhKWO6+BYMHQI7C/oeokRCZr7kbIZ9PDfpGDj6xejngosaZkBZ
+         oCJrxu77q+CrhX7GrjH62ULOIcf9vv5fDwSHFuFTPv610ALry6kWkpWYGm6dqV1qDiNE
+         6Y7ZBjkIVDgOmfXIB+pHLaipkkBmRVcxCvzPdgk1NqM9goQtPQTPgackMCv17gTIPF+g
+         bkoXpPN2pU4AF8ohL6w1DOwmqNc9S+eHMr+XQZhn3oolQIgtEw86MbbiTrly+ksKWlb1
+         QITA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SudKCvvWg+Me2mbMwVYeRd31oZcZoO+nm1Zj7MU/9gg=;
+        b=AQVPy3R4Lr+iXDZS1xetPYz52N2hdm03cvdlNpprwUTstevKAhmrgOjZHFzGccVk8H
+         Dd++GYqkycc7hWC6wriW+mb5DDwmv40bwYjT3yQix4W2f4T9VUo3c5rfA/8O/jPjTCsG
+         Mke+eIr5x9m40jzGIl0r5bILpc1kEwD5WASQTWbfoGJLuryoiKrlUa1+GPW6DsyJUJfA
+         cRf8XvlbaSuejmR+afuGhfqr4t9c5eqrXA7A8AY8fSiTxceb1A+vKGfqD7I7x2I0X1FG
+         lQek13/Awrg8fFuoztE7HjV118cmo1G0prJ+XfJ3rib3hIkbuRvesrv6eKPxzF3DUSO+
+         46vA==
+X-Gm-Message-State: AOAM530IZc9In/avSvAD9xT/BNQlgKf3qI/cQhBVsu2eGOyxFuhsvfEZ
+        lV51FU2pjbNeVA8TTPYEsnIl0Q==
+X-Google-Smtp-Source: ABdhPJwO37v6aowZTTyjCfO4cfR2vcCGGaC3PxOZL4mHx6+hfxl3wT4+ud5JxCI5Zjr3L+1noEk9zA==
+X-Received: by 2002:a05:6808:a83:: with SMTP id q3mr22994769oij.125.1626722359359;
+        Mon, 19 Jul 2021 12:19:19 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id d81sm2738922oob.13.2021.07.19.12.19.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 12:19:18 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 14:19:16 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>, ulf.hansson@linaro.org,
+        viresh.kumar@linaro.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, rojay@codeaurora.org,
+        stephan@gerhold.net
+Subject: Re: [PATCH v4 2/2] arm64: dts: sc7180: Add required-opps for i2c
+Message-ID: <YPXQNFYKfH/xZxFY@yoga>
+References: <1626429658-18961-1-git-send-email-rnayak@codeaurora.org>
+ <1626429658-18961-3-git-send-email-rnayak@codeaurora.org>
+ <YPHpsO5LlQRQxj9y@yoga>
+ <CAE-0n53CHD8c7C4ETWRgzmZmFSCcBw46wSs4pKbYMRjA_tD3yg@mail.gmail.com>
+ <YPHxfHPC/faq/y+J@yoga>
+ <CAE-0n50qx80cMFPJ1x9rc+EMR1L+j2CUMyDjWAbnE9mPHjf-TQ@mail.gmail.com>
+ <YPIBK/NJgBNZVI8Y@yoga>
+ <12711a61-e16c-d2bc-6e04-ab94c7551abe@codeaurora.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.160] (49.206.46.65) by MAXPR0101CA0012.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:c::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 18:59:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f76776db-0c0e-47a9-04c3-08d94ae75063
-X-MS-TrafficTypeDiagnostic: MWHPR1201MB0221:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR1201MB0221DCF9B69D34B62B268A6197E19@MWHPR1201MB0221.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3LBfh5c6+kXU6efHKjlnB1tIo54BU5iv4lVBRdUUWsuAF564lrUzolLQahURfDhGVV3uetXKO+wBja4L6/wuMeWi/AbwQ5dRJs8c9/51aMRwWTZkWz7Ca8d0QYN3v8lTTnC4cnqmYKT49/T58oSveGzPs+UiM5I73vFyG+6wxpsQPuSWSY6mnNldZloG4IJ/0aiJShOTYKLlYY4NBxeTfvJWHyvlmLcL3KQ2FpMYaptcr1kUvUx0oUILi8vKcKs00wGbLtjqfSWgGmT32A1VaiGceAhgI2gmANxq9rQQMUyUuWZGbotnswcOdmMXHNOge/qKTWpraAco9ikX8Kuf6Ux23LejXifPQ5MhNLsNYEtIwsOBuawL/XEjfat0vuc78+eSFOM6CobtOvQxmgSZVEe64j1y0jQ1LzML4U7kSxe+ih1o9lL0rAFmbHRiZfv3sStHb9sZGglwIDM4ERmuJTShbORLoqaWsgYiXJLSk/Dm/+A1FpcwoKm73c6JCzggCYwfhPIpaxlnjQVdKV3JtWg2TpcQuZMVQbKbXRvxf5DeVpgyqCDVDpPsXyyBXaaU0ecrpMQcPlYuO5X2Ri5kRxgfAY+U48so6DugjQJCSzjkzSULy+acHekNvpN4UVkYRtHGeh78urTd7CT/D907DxAUjqNJfedg2deyHk02tG+fXUu3HMDQktoM6oknpJEdYojjD+0pQ1Z8B98SKrlKIEEugJrc/FpIgFYpDTtFCsFtqbanQ0PVCpL3Hn5ehd/4oJ0uf6/5sg0udLzLA7ymoNnAy6vlmAr8rVeofvs66BE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(346002)(366004)(2906002)(316002)(956004)(31696002)(2616005)(6486002)(4326008)(16576012)(36756003)(66556008)(54906003)(55236004)(66946007)(26005)(66476007)(186003)(6666004)(8936002)(1006002)(8676002)(31686004)(86362001)(5660300002)(38100700002)(83380400001)(478600001)(53546011)(42413003)(32563001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WXBmTVI4eHROc1hUNTJHWFpVTFkzYTE1dFFPSlRhQTRDTWwxRVNLKzdrVW1M?=
- =?utf-8?B?NENHZXFCa1VIWWNVUmNaK3RPbWxEWUFrczhaTzlsT3VGaE96a2lEdzNhV2xw?=
- =?utf-8?B?OVpCalg1M1F4L1FGTGZscCtTc3FNVlhGeW9UVkpwWjdMbWlmVVZ3S251Q3Ro?=
- =?utf-8?B?b1NxZFEyR1VjdTNQeXd6b1kxb2xPQkNVbmtoc2dDc3lzUWc1UHZNMFA4TUsv?=
- =?utf-8?B?YWpCdTVtT0R6bnlqZktFTFBySytKeG8rNW41Tmo5RGdRamtZdEgrbG9YZEdt?=
- =?utf-8?B?YSs4TkF6MWZUd3NwVEtpZzJ3YWkyYS9NdTVGRnV5d0VGWUxBcjdxREFiRDlG?=
- =?utf-8?B?K1k2Wk1kODM3bHo5V1pEUU9yd05uSWtrS0l2b0l5RmtVcnVKdFE1b1pSeFVP?=
- =?utf-8?B?T3d1dFNJQmtEbG5FcVlCN0s0blVXeVJ0MHpxczVVN3l1RFlnSXl2T3dPRFVx?=
- =?utf-8?B?bTZxQWN5K2xlVmtKbmtZcEdNOExYbkNVejIvMC9GbURqNkgwOGFqQ05HL1JV?=
- =?utf-8?B?ZURzTno0SGxYeG9SaEsvVlVjbXBPL2hMWnlkNktHcU12MVV1aHpMb3VJMjdo?=
- =?utf-8?B?ekprNHpSWWdqbisycGx3NUpMalNzNXVpWEtqaWExdmVjbytlYzJHU3JHTElv?=
- =?utf-8?B?MjZHNzMyOTlZbldZSnd6ejRnYlp6MWNqSmdmR2NaRVE5QWI4MzN5eGs4VGNZ?=
- =?utf-8?B?Nk5EUFRYRFFUMlJMbEVpWUd3VHR2M2dPYmFBVWZpNEtZVE5PV0tmSkllSGxZ?=
- =?utf-8?B?UmYwcGtQYTA1OW04Ykd3aDhLWkZHR014bGVHUjJZSGoxbUs1OXZzQ0hRNFdG?=
- =?utf-8?B?RmJJNzIxejVMRkZFeXlLeCswaWVkdUJTMUdvN2sxSDVwZUVDUHFuWTNSdXF6?=
- =?utf-8?B?cTAvdFRhT1I5amVFQ1hKaWRoWTJrTFZoUVB2NHlrblFhSEQ0TzJmTVZBaE9S?=
- =?utf-8?B?OERBK0RiUDQvdDNWVHdLbW5uUk9PQzlLeTVjYkkwc1ZvUWhsWDV1RmFxNUxB?=
- =?utf-8?B?RVZ2WUhsS0pPZmNYdGlKWUE4Ym40UFRUYXlscEx0SXdqWTRQMVdJWGdWbXJV?=
- =?utf-8?B?eitvK1ZMYnBEV1h0T0g2cGlBczFJSnhkMWpNcU9vV1pudU8wK09lM28reXhY?=
- =?utf-8?B?T3dubEkxZEdOVTJyRjkwUWNwZlRKMGNyYUhwWENQNkFtdkYwU0ducWdPeng4?=
- =?utf-8?B?QmVWRDMrRnloV1ZySVkrVkNhWXE1QWIrbnRDN0NHTlVkU0dZQWpSSW5maFV6?=
- =?utf-8?B?Y1pGSzhGQSs0Z3N5M2sxSUptbGl2Y2hSTThrbStjZ2k3Z2FWdXdqNE9IQU9J?=
- =?utf-8?B?RTFES1g3ZEhNNXBjSkhJQXA1eERMZmZnMERjWTR2Y1JuQ3JQRS8rV2NTbFpY?=
- =?utf-8?B?TzV4M09YWktReXlRbVcxaTZBRkNUWjdzQlo1T1IzUU5CemJWcUFiNjlxM3E2?=
- =?utf-8?B?U1VQMTRXOGpLVHlnK3VkSmJXaEhIek9Wd29VR0g4Nnlpa1ZJVW9tSmI3eEw1?=
- =?utf-8?B?aFNaZmI2dSt6bml4RHJLVkpPNWFFeEpSUE45SHpoa2k2dnVEQzA4eWhrUVVv?=
- =?utf-8?B?T3c1cDQ3UkVySmVBa3lwanVLRkljbmVpWHFtODN3akJJNmtVaVlHbHlFRUZv?=
- =?utf-8?B?Rk84OFhZanNCRC9MSk4vQndZZXdyNVF5K0tQZk9wZHR0YjJubHY2eFR4NTkw?=
- =?utf-8?B?VlpSSjVtMFcrZzJBZDFHWWdUd2MwaFZxQ1pVTmxPY24raHpsOTd0ekwrYThD?=
- =?utf-8?Q?XjA4UmSuoiHfuTUahoEES3DHnvlcd4Wb+udOlQQ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f76776db-0c0e-47a9-04c3-08d94ae75063
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 18:59:19.7882
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UekjKRRtUn6alzULIFNRmg5R9xP7eDcnHaYxXyoFQxpN0/hJN8MioUShN91/+MQ05OdahkmIxDOovo2we8HZXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0221
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <12711a61-e16c-d2bc-6e04-ab94c7551abe@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/21 11:37 PM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 7/19/21 11:51 AM, Vijendar Mukunda wrote:
->> ACP5.x IP has multiple I2S controllers and DMA controller.
->> Create platform devices for I2S HS controller instance, I2S SP controller
->> instance and DMA contrller.
-> 
-> typo: controller
-Will fix it.
-> 
->> Pass PCI resources like MMIO, irq to these platform devices.
->>
->> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
->> ---
->>  sound/soc/amd/vangogh/acp5x.h     | 10 ++++
->>  sound/soc/amd/vangogh/pci-acp5x.c | 95 ++++++++++++++++++++++++++++++-
->>  2 files changed, 102 insertions(+), 3 deletions(-)
->>
->> diff --git a/sound/soc/amd/vangogh/acp5x.h b/sound/soc/amd/vangogh/acp5x.h
->> index 708586109315..bbf29fd2b12f 100644
->> --- a/sound/soc/amd/vangogh/acp5x.h
->> +++ b/sound/soc/amd/vangogh/acp5x.h
->> @@ -22,6 +22,16 @@
->>  #define ACP_ERR_INTR_MASK	0x20000000
->>  #define ACP_EXT_INTR_STAT_CLEAR_MASK 0xFFFFFFFF
->>  
->> +#define ACP5x_DEVS 0x03
-> 
-> 3?
-> 
-Will create 3 platform devices for DMA device and two
-I2S controllers.
-
->> +#define	ACP5x_REG_START	0x1240000
->> +#define	ACP5x_REG_END	0x1250200
->> +#define ACP5x_I2STDM_REG_START	0x1242400
->> +#define ACP5x_I2STDM_REG_END	0x1242410
->> +#define ACP5x_HS_TDM_REG_START	0x1242814
->> +#define ACP5x_HS_TDM_REG_END	0x1242824
->> +#define I2S_MODE 0x00
->> +#define ACP5x_I2S_MODE 0x00
->> +
->>  /* common header file uses exact offset rather than relative
->>   * offset which requires substraction logic from base_addr
-> 
-> typo: subtraction
-Will fix it
-> 
->>   * for accessing ACP5x MMIO space registers
->> diff --git a/sound/soc/amd/vangogh/pci-acp5x.c b/sound/soc/amd/vangogh/pci-acp5x.c
->> index 523b962fe35e..3cc15a15b745 100644
->> --- a/sound/soc/amd/vangogh/pci-acp5x.c
->> +++ b/sound/soc/amd/vangogh/pci-acp5x.c
->> @@ -8,11 +8,16 @@
->>  #include <linux/module.h>
->>  #include <linux/io.h>
->>  #include <linux/delay.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/interrupt.h>
->>  
->>  #include "acp5x.h"
->>  
->>  struct acp5x_dev_data {
->>  	void __iomem *acp5x_base;
->> +	bool acp5x_audio_mode;
->> +	struct resource *res;
->> +	struct platform_device *pdev[3];
-> 
-> pdev[ACP5x_DEVS] ?
-Will update it.
-> 
->>  };
->>  
->>  static int acp5x_power_on(void __iomem *acp5x_base)
->> @@ -114,9 +119,12 @@ static int snd_acp5x_probe(struct pci_dev *pci,
->>  			   const struct pci_device_id *pci_id)
->>  {
->>  	struct acp5x_dev_data *adata;
->> -	int ret;
->> -	u32 addr;
->> +	struct platform_device_info pdevinfo[3];
->> +	unsigned int irqflags;
->> +	int ret, i;
->> +	u32 addr, val;
->>  
->> +	irqflags = IRQF_SHARED;
->>  	if (pci->revision != 0x50)
->>  		return -ENODEV;
->>  
->> @@ -150,6 +158,83 @@ static int snd_acp5x_probe(struct pci_dev *pci,
->>  	if (ret)
->>  		goto release_regions;
->>  
->> +	val = acp_readl(adata->acp5x_base + ACP_PIN_CONFIG);
->> +	switch (val) {
->> +	case I2S_MODE:
->> +		adata->res = devm_kzalloc(&pci->dev,
->> +					  sizeof(struct resource) * 4,
-> 
-> what is this 4 value?
-We are creating 4 resources using MFD framework.
-Will use macro instead of hard-coded value.
-> 
->> +					  GFP_KERNEL);
->> +		if (!adata->res) {
->> +			ret = -ENOMEM;
->> +			goto de_init;
->> +		}
->> +
->> +		adata->res[0].name = "acp5x_i2s_iomem";
->> +		adata->res[0].flags = IORESOURCE_MEM;
->> +		adata->res[0].start = addr;
->> +		adata->res[0].end = addr + (ACP5x_REG_END - ACP5x_REG_START);
->> +
->> +		adata->res[1].name = "acp5x_i2s_sp";
->> +		adata->res[1].flags = IORESOURCE_MEM;
->> +		adata->res[1].start = addr + ACP5x_I2STDM_REG_START;
->> +		adata->res[1].end = addr + ACP5x_I2STDM_REG_END;
->> +
->> +		adata->res[2].name = "acp5x_i2s_hs";
->> +		adata->res[2].flags = IORESOURCE_MEM;
->> +		adata->res[2].start = addr + ACP5x_HS_TDM_REG_START;
->> +		adata->res[2].end = addr + ACP5x_HS_TDM_REG_END;
->> +
->> +		adata->res[3].name = "acp5x_i2s_irq";
->> +		adata->res[3].flags = IORESOURCE_IRQ;
->> +		adata->res[3].start = pci->irq;
->> +		adata->res[3].end = adata->res[3].start;
->> +
->> +		adata->acp5x_audio_mode = ACP5x_I2S_MODE;
->> +
->> +		memset(&pdevinfo, 0, sizeof(pdevinfo));
->> +		pdevinfo[0].name = "acp5x_i2s_dma";
->> +		pdevinfo[0].id = 0;
->> +		pdevinfo[0].parent = &pci->dev;
->> +		pdevinfo[0].num_res = 4;
->> +		pdevinfo[0].res = &adata->res[0];
->> +		pdevinfo[0].data = &irqflags;
->> +		pdevinfo[0].size_data = sizeof(irqflags);
->> +
->> +		pdevinfo[1].name = "acp5x_i2s_playcap";
->> +		pdevinfo[1].id = 0;
->> +		pdevinfo[1].parent = &pci->dev;
->> +		pdevinfo[1].num_res = 1;
->> +		pdevinfo[1].res = &adata->res[1];
->> +
->> +		pdevinfo[2].name = "acp5x_i2s_playcap";
->> +		pdevinfo[2].id = 1;
->> +		pdevinfo[2].parent = &pci->dev;
->> +		pdevinfo[2].num_res = 1;
->> +		pdevinfo[2].res = &adata->res[2];
->> +
->> +		for (i = 0; i < ACP5x_DEVS; i++) {
->> +			adata->pdev[i] =
->> +				platform_device_register_full(&pdevinfo[i]);
->> +			if (IS_ERR(adata->pdev[i])) {
->> +				dev_err(&pci->dev, "cannot register %s device\n",
->> +					pdevinfo[i].name);
->> +				ret = PTR_ERR(adata->pdev[i]);
->> +				goto unregister_devs;
->> +			}
->> +		}
->> +		break;
->> +	default:
->> +		dev_info(&pci->dev, "ACP audio mode : %d\n", val);
->> +	}
->> +	return 0;
->> +
->> +unregister_devs:
->> +	if (val == I2S_MODE)
-> 
-> nit-pick: you can't reach this point outside of the I2S_MODE, so this test is not useful
-> 
-> 
->> +		for (i = 0; i < ACP5x_DEVS; i++)
->> +			platform_device_unregister(adata->pdev[i]);
-> 
-> only unregister what you registered?
-
-Yes, We are unregistering devices which got registered.
-We can refactor the code by moving code to switch case it self rather
-than handling by declaring the label for it.
-
-Will fix it and post the new version.
+On Mon 19 Jul 04:37 CDT 2021, Rajendra Nayak wrote:
 
 > 
-> for (--i; i > 0; i--)
 > 
->> +de_init:
->> +	if (acp5x_deinit(adata->acp5x_base))
->> +		dev_err(&pci->dev, "ACP de-init failed\n");
->>  release_regions:
->>  	pci_release_regions(pci);
->>  disable_pci:
->> @@ -161,9 +246,13 @@ static int snd_acp5x_probe(struct pci_dev *pci,
->>  static void snd_acp5x_remove(struct pci_dev *pci)
->>  {
->>  	struct acp5x_dev_data *adata;
->> -	int ret;
->> +	int i, ret;
->>  
->>  	adata = pci_get_drvdata(pci);
->> +	if (adata->acp5x_audio_mode == ACP5x_I2S_MODE) {
->> +		for (i = 0; i < ACP5x_DEVS; i++)
->> +			platform_device_unregister(adata->pdev[i]);
->> +	}
->>  	ret = acp5x_deinit(adata->acp5x_base);
->>  	if (ret)
->>  		dev_err(&pci->dev, "ACP de-init failed\n");
->>
+> On 7/17/2021 3:29 AM, Bjorn Andersson wrote:
+> > On Fri 16 Jul 16:49 CDT 2021, Stephen Boyd wrote:
+> > 
+> > > Quoting Bjorn Andersson (2021-07-16 13:52:12)
+> > > > On Fri 16 Jul 15:21 CDT 2021, Stephen Boyd wrote:
+> > > > 
+> > > > > Quoting Bjorn Andersson (2021-07-16 13:18:56)
+> > > > > > On Fri 16 Jul 05:00 CDT 2021, Rajendra Nayak wrote:
+> > > > > > 
+> > > > > > > qup-i2c devices on sc7180 are clocked with a fixed clock (19.2 MHz)
+> > > > > > > Though qup-i2c does not support DVFS, it still needs to vote for a
+> > > > > > > performance state on 'CX' to satisfy the 19.2 Mhz clock frequency
+> > > > > > > requirement.
+> > > > > > > 
+> > > > > > 
+> > > > > > Sounds good, but...
+> > > > > > 
+> > > > > > > Use 'required-opps' to pass this information from
+> > > > > > > device tree, and also add the power-domains property to specify
+> > > > > > > the CX power-domain.
+> > > > > > > 
+> > > > > > 
+> > > > > > ..is the required-opps really needed with my rpmhpd patch in place?
+> > > > > > 
+> > > > > 
+> > > > > Yes? Because rpmhpd_opp_low_svs is not the lowest performance state for
+> > > > > CX.
+> > > > 
+> > > > On e.g. sm8250 the first available non-zero corner presented in cmd-db
+> > > > is low_svs.
+> 
+> what rail is this? the mmcx? Perhaps it does not support RET.
+> cx usually supports both collapse state and RET.
+> 
 
+That was the one I was specifically looking at for the MDSS_GDSC->MMCX
+issue, so it's likely I didn't look elsewhere.
+
+> > > 
+> > > Indeed. On sc7180 it's not the first non-zero corner. I suppose
+> > > retention for CX isn't actually used when the SoC is awake so your
+> > > rpmhpd patch is putting in a vote for something that doesn't do anything
+> > > at runtime for CX? I imagine that rpmh only sets the aggregate corner to
+> > > retention when the whole SoC is suspended/sleeping, otherwise things
+> > > wouldn't go very well. Similarly, min_svs may be VDD minimization? If
+> > > so, those first two states are basically states that shouldn't be used
+> > > at runtime, almost like sleep states.
+> > > 
+> > 
+> > But if that's the case, I don't think it's appropriate for the "enabled
+> > state" of the domain to use any of those corners.
+> 
+> I rechecked the downstream kernels where all this voting happens from within
+> the clock drivers, and I do see votes to min_svs for some clocks, but Stephen is
+> right that RET is not something that's voted on while in active state.
+> 
+> But always going with something just above the ret level while active will also
+> not work for all devices, for instance for i2c on 7180, it needs a cx vote of
+> low svs while the rail (cx) does support something lower than that which is min svs.
+> (why can't it just work with min svs?, I don't know, these values and recommendations
+> come in from the voltage plans published by HW teams for every SoC and we just end up
+> using them in SW, perhaps something to dig further and understand which I will try and
+> do but these are the values in voltage plans and downstream kernels which work for now)
+> 
+
+So to some degree this invalidates my argumentation about the
+enabled_corner in rpmhpd, given that "enabled" means a different corner
+for each rail - not just the one with lowest non-zero value.
+
+So perhaps instead of introducing the enabled_corner we need to
+introduce your patch and slap a WARN_ON(corner == 0) in
+rpmhpd_power_on() - to ensure that all clients that uses a rpmhpd domain
+actually do vote for a high enough corner?
+
+Regards,
+Bjorn
+
+> > 
+> > As this means that anyone who needs any of the rpmhpd domains active
+> > also needs to specify required-opps, which wouldn't be needed for any
+> > other power domain provider.
+> > 
+> > And more importantly it means that a device sitting in a GDSC, which
+> > would be parented by a rpmhpd domain has no way to specify the GDSC and
+> > trickle the minimum-vote up to the rpmhpd domain. (And I know that we
+> > don't describe the parentship of the GDSCs today, but this patch
+> > tells me that it's around the corner - for more than MMCX)
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> > > > 
+> > > > And if this (which?) clock requires a higher corner than the lowest
+> > > > possible in order to tick at this "lowest" frequency, I'm certainly
+> > > > interested in some more details.
+> > > > 
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
