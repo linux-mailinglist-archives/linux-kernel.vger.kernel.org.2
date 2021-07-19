@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FEC13CCFB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757323CCFB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235855AbhGSITe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:19:34 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:58254 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235804AbhGSIT1 (ORCPT
+        id S235830AbhGSITa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:19:30 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:56046 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235658AbhGSITX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:19:27 -0400
-X-UUID: 1fcc70fbc6b94ce9ad2f54dd16c388cf-20210719
-X-UUID: 1fcc70fbc6b94ce9ad2f54dd16c388cf-20210719
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        Mon, 19 Jul 2021 04:19:23 -0400
+X-UUID: aae2e18161884d439af3e0e736ba2a0f-20210719
+X-UUID: aae2e18161884d439af3e0e736ba2a0f-20210719
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
         (envelope-from <yongqiang.niu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 376120561; Mon, 19 Jul 2021 16:24:46 +0800
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 164044496; Mon, 19 Jul 2021 16:24:47 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 19 Jul 2021 16:24:44 +0800
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 19 Jul 2021 16:24:45 +0800
 Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 19 Jul 2021 16:24:43 +0800
+ Transport; Mon, 19 Jul 2021 16:24:44 +0800
 From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
 To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
 CC:     Rob Herring <robh+dt@kernel.org>,
@@ -42,9 +42,11 @@ CC:     Rob Herring <robh+dt@kernel.org>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>,
         Hsin-Yi Wang <hsinyi@chromium.org>
 Subject: [PATCH v2] drm/mediatek: add dither 6 setting
-Date:   Mon, 19 Jul 2021 16:24:41 +0800
-Message-ID: <1626683082-29570-1-git-send-email-yongqiang.niu@mediatek.com>
+Date:   Mon, 19 Jul 2021 16:24:42 +0800
+Message-ID: <1626683082-29570-2-git-send-email-yongqiang.niu@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
+In-Reply-To: <1626683082-29570-1-git-send-email-yongqiang.niu@mediatek.com>
+References: <1626683082-29570-1-git-send-email-yongqiang.niu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK:  N
@@ -52,15 +54,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change since v1:
-- -x
+in the first version dither patch
+https://patchwork.kernel.org/project/linux-mediatek/patch/1553667561-25447-13-git-send-email-yongqiang.niu@mediatek.com/
+dither 6 setting is included in that patch
+bit 1 is lfsr_en( "Enables LFSR-type dithering"), need enable
+bit 2 is rdither_en(Enables running order dithering), need disable
+in this issue
+https://partnerissuetracker.corp.google.com/issues/190643544
 
-Yongqiang Niu (1):
-  drm/mediatek: add dither 6 setting
+dither 6 setting missed in set dither common patch
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c?h=next-20210430&id=a6b7c98afdcad0f149010ae028b24f2d0dc24cdb
 
+Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+---
  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 2 ++
  1 file changed, 2 insertions(+)
 
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+index 99cbf44..7dd8e05 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+@@ -26,6 +26,7 @@
+ #define DISP_OD_CFG				0x0020
+ #define DISP_OD_SIZE				0x0030
+ #define DISP_DITHER_5				0x0114
++#define DISP_DITHER_6				0x0118
+ #define DISP_DITHER_7				0x011c
+ #define DISP_DITHER_15				0x013c
+ #define DISP_DITHER_16				0x0140
+@@ -135,6 +136,7 @@ void mtk_dither_set_common(void __iomem *regs, struct cmdq_client_reg *cmdq_reg,
+ 
+ 	if (bpc >= MTK_MIN_BPC) {
+ 		mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_5);
++		mtk_ddp_write(cmdq_pkt, 0x3002, cmdq_reg, regs, DISP_DITHER_6);
+ 		mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_7);
+ 		mtk_ddp_write(cmdq_pkt,
+ 			      DITHER_LSB_ERR_SHIFT_R(MTK_MAX_BPC - bpc) |
 -- 
 1.8.1.1.dirty
 
