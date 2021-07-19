@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B923CEA9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61213CE965
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231754AbhGSRRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34260 "EHLO mail.kernel.org"
+        id S1354321AbhGSQyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:54:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233689AbhGSPkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:40:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F03161363;
-        Mon, 19 Jul 2021 16:20:52 +0000 (UTC)
+        id S1347951AbhGSPaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:30:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97568613CC;
+        Mon, 19 Jul 2021 16:09:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711652;
-        bh=cyHD2oQuOJvUpiuoQ4Y/gRXIIVB8xWrQuC8BwU950Ks=;
+        s=korg; t=1626710981;
+        bh=0rOQmzH2/RHjeIWMPO1I5FaTDOuQ4tbgwtr7wXAqSH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lhk6DndT0uRfe1vWTJmxdmcrFF2qJsY5131IUakDt34T8uOImU863s74dM1GSM/n9
-         +9nGThQJaeR84Li541rSbY1QIBJYMu0oINWH5wugQ5eOK8h/fkNxMVFa4+tBKOYaze
-         WnCnAfPJ1DpN1Dx2qfvqATi4fle137M6X22rt2MA=
+        b=SvRV09LNul3dWZIZQRmpGNH3dgGqhfevrTHNAKx9K723ER8co5kjEUxTNzqh39KLz
+         GSRYvUJnMQT1nnu5DT7Bk1toFDcZMC3jw4ktisL3oxMIadDBj7BhuDVwekF9A5NsIT
+         fJvjs8LCw8/EFoUmSmQF92v20f+dE2T0D4f9x45M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rui Miguel Silva <rui.silva@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 048/292] iio: gyro: fxa21002c: Balance runtime pm + use pm_runtime_resume_and_get().
-Date:   Mon, 19 Jul 2021 16:51:50 +0200
-Message-Id: <20210719144944.090229374@linuxfoundation.org>
+Subject: [PATCH 5.13 165/351] watchdog: Fix possible use-after-free in wdt_startup()
+Date:   Mon, 19 Jul 2021 16:51:51 +0200
+Message-Id: <20210719144950.425310541@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,68 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 41120ebbb1eb5e9dec93320e259d5b2c93226073 ]
+[ Upstream commit c08a6b31e4917034f0ed0cb457c3bb209576f542 ]
 
-In both the probe() error path and remove() pm_runtime_put_noidle()
-is called which will decrement the runtime pm reference count.
-However, there is no matching function to have raised the reference count.
-Not this isn't a fix as the runtime pm core will stop the reference count
-going negative anyway.
+This module's remove path calls del_timer(). However, that function
+does not wait until the timer handler finishes. This means that the
+timer handler may still be running after the driver's remove function
+has finished, which would result in a use-after-free.
 
-An alternative would have been to raise the count in these paths, but
-it is not clear why that would be necessary.
+Fix by calling del_timer_sync(), which makes sure the timer handler
+has finished, and unable to re-schedule itself.
 
-Whilst we are here replace some boilerplate with pm_runtime_resume_and_get()
-Found using coccicheck script under review at:
-https://lore.kernel.org/lkml/20210427141946.2478411-1-Julia.Lawall@inria.fr/
-
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Rui Miguel Silva <rui.silva@linaro.org>
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Link: https://lore.kernel.org/r/20210509113354.660190-2-jic23@kernel.org
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/1620716495-108352-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/gyro/fxas21002c_core.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ drivers/watchdog/sbc60xxwdt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/gyro/fxas21002c_core.c b/drivers/iio/gyro/fxas21002c_core.c
-index b7523357d8eb..ec6bd15bd2d4 100644
---- a/drivers/iio/gyro/fxas21002c_core.c
-+++ b/drivers/iio/gyro/fxas21002c_core.c
-@@ -366,14 +366,7 @@ out_unlock:
- 
- static int  fxas21002c_pm_get(struct fxas21002c_data *data)
+diff --git a/drivers/watchdog/sbc60xxwdt.c b/drivers/watchdog/sbc60xxwdt.c
+index a947a63fb44a..7b974802dfc7 100644
+--- a/drivers/watchdog/sbc60xxwdt.c
++++ b/drivers/watchdog/sbc60xxwdt.c
+@@ -146,7 +146,7 @@ static void wdt_startup(void)
+ static void wdt_turnoff(void)
  {
--	struct device *dev = regmap_get_device(data->regmap);
--	int ret;
--
--	ret = pm_runtime_get_sync(dev);
--	if (ret < 0)
--		pm_runtime_put_noidle(dev);
--
--	return ret;
-+	return pm_runtime_resume_and_get(regmap_get_device(data->regmap));
+ 	/* Stop the timer */
+-	del_timer(&timer);
++	del_timer_sync(&timer);
+ 	inb_p(wdt_stop);
+ 	pr_info("Watchdog timer is now disabled...\n");
  }
- 
- static int  fxas21002c_pm_put(struct fxas21002c_data *data)
-@@ -1005,7 +998,6 @@ int fxas21002c_core_probe(struct device *dev, struct regmap *regmap, int irq,
- pm_disable:
- 	pm_runtime_disable(dev);
- 	pm_runtime_set_suspended(dev);
--	pm_runtime_put_noidle(dev);
- 
- 	return ret;
- }
-@@ -1019,7 +1011,6 @@ void fxas21002c_core_remove(struct device *dev)
- 
- 	pm_runtime_disable(dev);
- 	pm_runtime_set_suspended(dev);
--	pm_runtime_put_noidle(dev);
- }
- EXPORT_SYMBOL_GPL(fxas21002c_core_remove);
- 
 -- 
 2.30.2
 
