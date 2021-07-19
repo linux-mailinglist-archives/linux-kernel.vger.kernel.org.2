@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7C23CE029
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652993CDEB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237399AbhGSPOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:14:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40454 "EHLO mail.kernel.org"
+        id S245501AbhGSPFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:05:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344212AbhGSOsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344216AbhGSOsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:48:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9160261407;
-        Mon, 19 Jul 2021 15:27:06 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0B5761406;
+        Mon, 19 Jul 2021 15:27:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708427;
-        bh=isaK2RSGJXEwIQB1n4vG2VnQPhaCURabXSCIby9CP4c=;
+        s=korg; t=1626708432;
+        bh=Ull+HBjYMAu3jf+YhHQ7f8LdoRH52QHKotZnOBasL6Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BntXfmfyoTtpEWDVjURiixva2nnIuIotsvF1u5amjfb3AFQnQ40xNI0DE1dvT7xHf
-         Nz67Dw2DuspSxAvic15sc35xcQjy7r3TZK72G1Qv1Iqcm1oQhAdd7E/lJUFu/QM0ch
-         sB3gUSvJb1fX06oqcNb937i458G9XugyNhekQjq4=
+        b=VY3jqHYeA6RI4ZCgUOKVENxClwHAKTcjXX62QKKFn8AuRq3ze+Mq4J8C+lh/De/Zp
+         m+HhxarXVzXYze7H3YIBKG6++QnMWF/irz/9KRUy5TI0j/cIIDBRp0XvsrWfK5NCK/
+         D/6+3JzsJ/SrSmZi+Pb7rvHenKIaJ3A4VQe09mGc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 307/315] reset: bail if try_module_get() fails
-Date:   Mon, 19 Jul 2021 16:53:16 +0200
-Message-Id: <20210719144953.567238268@linuxfoundation.org>
+Subject: [PATCH 4.14 308/315] memory: fsl_ifc: fix leak of IO mapping on probe failure
+Date:   Mon, 19 Jul 2021 16:53:17 +0200
+Message-Id: <20210719144953.607110056@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -42,39 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Zabel <p.zabel@pengutronix.de>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 4fb26fb83f0def3d39c14e268bcd4003aae8fade ]
+[ Upstream commit 3b132ab67fc7a358fff35e808fa65d4bea452521 ]
 
-Abort instead of returning a new reset control for a reset controller
-device that is going to have its module unloaded.
+On probe error the driver should unmap the IO memory.  Smatch reports:
 
-Reported-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Fixes: 61fc41317666 ("reset: Add reset controller API")
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Link: https://lore.kernel.org/r/20210607082615.15160-1-p.zabel@pengutronix.de
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+  drivers/memory/fsl_ifc.c:298 fsl_ifc_ctrl_probe() warn: 'fsl_ifc_ctrl_dev->gregs' not released on lines: 298.
+
+Fixes: a20cbdeffce2 ("powerpc/fsl: Add support for Integrated Flash Controller")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210527154322.81253-1-krzysztof.kozlowski@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/memory/fsl_ifc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/reset/core.c b/drivers/reset/core.c
-index 7e0a14211c88..d941fb4050bb 100644
---- a/drivers/reset/core.c
-+++ b/drivers/reset/core.c
-@@ -398,7 +398,10 @@ static struct reset_control *__reset_control_get_internal(
- 	if (!rstc)
- 		return ERR_PTR(-ENOMEM);
+diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
+index 1b182b117f9c..74bbbdc584f4 100644
+--- a/drivers/memory/fsl_ifc.c
++++ b/drivers/memory/fsl_ifc.c
+@@ -231,8 +231,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+ 	fsl_ifc_ctrl_dev->gregs = of_iomap(dev->dev.of_node, 0);
+ 	if (!fsl_ifc_ctrl_dev->gregs) {
+ 		dev_err(&dev->dev, "failed to get memory region\n");
+-		ret = -ENODEV;
+-		goto err;
++		return -ENODEV;
+ 	}
  
--	try_module_get(rcdev->owner);
-+	if (!try_module_get(rcdev->owner)) {
-+		kfree(rstc);
-+		return ERR_PTR(-ENODEV);
-+	}
+ 	if (of_property_read_bool(dev->dev.of_node, "little-endian")) {
+@@ -308,6 +307,7 @@ err_irq:
+ 	free_irq(fsl_ifc_ctrl_dev->irq, fsl_ifc_ctrl_dev);
+ 	irq_dispose_mapping(fsl_ifc_ctrl_dev->irq);
+ err:
++	iounmap(fsl_ifc_ctrl_dev->gregs);
+ 	return ret;
+ }
  
- 	rstc->rcdev = rcdev;
- 	list_add(&rstc->list, &rcdev->reset_control_head);
 -- 
 2.30.2
 
