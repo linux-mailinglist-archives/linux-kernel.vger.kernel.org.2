@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138623CDB94
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B153CD93F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238244AbhGSOoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:44:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46720 "EHLO mail.kernel.org"
+        id S240954AbhGSO1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:27:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242893AbhGSOb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:31:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FB3760720;
-        Mon, 19 Jul 2021 15:12:24 +0000 (UTC)
+        id S243144AbhGSOW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:22:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AC7061245;
+        Mon, 19 Jul 2021 15:02:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707545;
-        bh=BC0d3JEZTjVg/cD/fz//KnLazwuydKt7zuKa+28OpfY=;
+        s=korg; t=1626706955;
+        bh=Sh3k0haP4j3m4OI1KzmGOpnxvyieK4bU3KKRJYtp9Sc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=owuGBLZ+woZlKUM7wzibP7/A2NjW+YklKGLzkPIVyIXHZH3M8icF5E8QFIBDBBXkH
-         lwj9KB3GoUpWCXXuGz9U7uHiqoZferYMku6Zicoh3WsxlpY70fj4m3j9iBhhnho2sz
-         kNl6ojDSuigAbHRj1dtxSN2NhigwrPDcfRbv64wE=
+        b=n7FlFHaoXEY2OT4OxJXvOrB2rYWPIg02lJR9oOMDwqxv0A3lEH7wbKeP1Sd6EPT81
+         kzaL1kz0O7UKcpZ7z/Iy49mToSizx1k2L1TPwT/ujTNMTOkDednANAAL13hj2bSgpM
+         juI55+yw3hLsnUIS7WOteo3rMF97yWY7z7Sx/3o0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 206/245] i2c: core: Disable client irq on reboot/shutdown
-Date:   Mon, 19 Jul 2021 16:52:28 +0200
-Message-Id: <20210719144947.063704746@linuxfoundation.org>
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 165/188] power: supply: ab8500: Avoid NULL pointers
+Date:   Mon, 19 Jul 2021 16:52:29 +0200
+Message-Id: <20210719144941.894489969@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
+References: <20210719144913.076563739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit b64210f2f7c11c757432ba3701d88241b2b98fb1 ]
+[ Upstream commit 5bcb5087c9dd3dca1ff0ebd8002c5313c9332b56 ]
 
-If an i2c client receives an interrupt during reboot or shutdown it may
-be too late to service it by making an i2c transaction on the bus
-because the i2c controller has already been shutdown. This can lead to
-system hangs if the i2c controller tries to make a transfer that is
-doomed to fail because the access to the i2c pins is already shut down,
-or an iommu translation has been torn down so i2c controller register
-access doesn't work.
+Sometimes the code will crash because we haven't enabled
+AC or USB charging and thus not created the corresponding
+psy device. Fix it by checking that it is there before
+notifying.
 
-Let's simply disable the irq if there isn't a shutdown callback for an
-i2c client when there is an irq associated with the device. This will
-make sure that irqs don't come in later than the time that we can handle
-it. We don't do this if the i2c client device already has a shutdown
-callback because presumably they're doing the right thing and quieting
-the device so irqs don't come in after the shutdown callback returns.
-
-Reported-by: kernel test robot <lkp@intel.com>
-[swboyd@chromium.org: Dropped newline, added commit text, added
-interrupt.h for robot build error]
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/i2c-core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/power/ab8500_charger.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/i2c-core.c b/drivers/i2c/i2c-core.c
-index 4fd7bfda2f9d..67e44e990777 100644
---- a/drivers/i2c/i2c-core.c
-+++ b/drivers/i2c/i2c-core.c
-@@ -42,6 +42,7 @@
- #include <linux/i2c.h>
- #include <linux/idr.h>
- #include <linux/init.h>
-+#include <linux/interrupt.h>
- #include <linux/irqflags.h>
- #include <linux/jump_label.h>
- #include <linux/kernel.h>
-@@ -1003,6 +1004,8 @@ static void i2c_device_shutdown(struct device *dev)
- 	driver = to_i2c_driver(dev->driver);
- 	if (driver->shutdown)
- 		driver->shutdown(client);
-+	else if (client->irq > 0)
-+		disable_irq(client->irq);
- }
+diff --git a/drivers/power/ab8500_charger.c b/drivers/power/ab8500_charger.c
+index e388171f4e58..98724c3a28e5 100644
+--- a/drivers/power/ab8500_charger.c
++++ b/drivers/power/ab8500_charger.c
+@@ -409,6 +409,14 @@ disable_otp:
+ static void ab8500_power_supply_changed(struct ab8500_charger *di,
+ 					struct power_supply *psy)
+ {
++	/*
++	 * This happens if we get notifications or interrupts and
++	 * the platform has been configured not to support one or
++	 * other type of charging.
++	 */
++	if (!psy)
++		return;
++
+ 	if (di->autopower_cfg) {
+ 		if (!di->usb.charger_connected &&
+ 		    !di->ac.charger_connected &&
+@@ -435,7 +443,15 @@ static void ab8500_charger_set_usb_connected(struct ab8500_charger *di,
+ 		if (!connected)
+ 			di->flags.vbus_drop_end = false;
  
- static void i2c_client_dev_release(struct device *dev)
+-		sysfs_notify(&di->usb_chg.psy->dev.kobj, NULL, "present");
++		/*
++		 * Sometimes the platform is configured not to support
++		 * USB charging and no psy has been created, but we still
++		 * will get these notifications.
++		 */
++		if (di->usb_chg.psy) {
++			sysfs_notify(&di->usb_chg.psy->dev.kobj, NULL,
++				     "present");
++		}
+ 
+ 		if (connected) {
+ 			mutex_lock(&di->charger_attached_mutex);
 -- 
 2.30.2
 
