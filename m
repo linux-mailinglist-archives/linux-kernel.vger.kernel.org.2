@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5803CE6CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AF33CE7EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352859AbhGSQPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:15:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42188 "EHLO mail.kernel.org"
+        id S1355064AbhGSQfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:35:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344325AbhGSPKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C32761363;
-        Mon, 19 Jul 2021 15:50:45 +0000 (UTC)
+        id S1347963AbhGSPXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:23:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9569261355;
+        Mon, 19 Jul 2021 16:00:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709845;
-        bh=P/mGYUe+B9c7lUBpA4DwgYeVTxKUh0XhDGiOAMbxswQ=;
+        s=korg; t=1626710401;
+        bh=7gOoMLDNgg7bccwt9OSWLnzp82hCcuBRNjG1rE+AQHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M/kD594TA4zb/c/LeycOmraujFJCzn8bHO/RAAc7h08wqd//nVHbO9qHhGheQtGRP
-         MyeG1S140ZHDwQyNsJanGeEiMfIHgI/oCjBHLOHGZiQ4NTyykhcCFunMrjMDQVRw3C
-         OkxYfZaD4TvAnvM6FX6tmImQP08FIzWEuOYfgvEY=
+        b=SXh+tzuApFkeQ42H8CM/aC5UNAQIj5FfPz8KkpBxmRGz4hUT9Y1xCrasYZpD/gqr0
+         oskv9OA3kk8bf/VFoXRzm0hJVJ4wOWS796Q2lEXIzj2cvojKERl/cD4gJshNOa/LXk
+         ZkI1lOhuEjdaZQABrlWEi1J9uevRuJRs25k/OTbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Valentine Barshak <valentine.barshak@cogentembedded.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 121/149] memory: atmel-ebi: add missing of_node_put for loop iteration
+Subject: [PATCH 5.10 200/243] arm64: dts: renesas: v3msk: Fix memory size
 Date:   Mon, 19 Jul 2021 16:53:49 +0200
-Message-Id: <20210719144930.043188264@linuxfoundation.org>
+Message-Id: <20210719144947.392007659@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 
-[ Upstream commit 907c5bbb514a4676160e79764522fff56ce3448e ]
+[ Upstream commit a422ec20caef6a50cf3c1efa93538888ebd576a6 ]
 
-Early exits from for_each_available_child_of_node() should decrement the
-node reference counter.  Reported by Coccinelle:
+The V3MSK board has 2 GiB RAM according to the datasheet and schematics.
 
-  drivers/memory/atmel-ebi.c:593:1-33: WARNING:
-    Function "for_each_available_child_of_node" should have of_node_put() before return around line 604.
-
-Fixes: 6a4ec4cd0888 ("memory: add Atmel EBI (External Bus Interface) driver")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210423101815.119341-2-krzysztof.kozlowski@canonical.com
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+[geert: Verified schematics]
+Fixes: cc3e267e9bb0ce7f ("arm64: dts: renesas: initial V3MSK board device tree")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20210326121050.1578460-1-geert+renesas@glider.be
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/atmel-ebi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/memory/atmel-ebi.c b/drivers/memory/atmel-ebi.c
-index 0322df9dc249..89646896a183 100644
---- a/drivers/memory/atmel-ebi.c
-+++ b/drivers/memory/atmel-ebi.c
-@@ -601,8 +601,10 @@ static int atmel_ebi_probe(struct platform_device *pdev)
- 				child);
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts b/arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts
+index 668a1ece9af0..0c66cc0a1367 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts
+@@ -59,7 +59,7 @@
+ 	memory@48000000 {
+ 		device_type = "memory";
+ 		/* first 128MB is reserved for secure area. */
+-		reg = <0x0 0x48000000 0x0 0x38000000>;
++		reg = <0x0 0x48000000 0x0 0x78000000>;
+ 	};
  
- 			ret = atmel_ebi_dev_disable(ebi, child);
--			if (ret)
-+			if (ret) {
-+				of_node_put(child);
- 				return ret;
-+			}
- 		}
- 	}
- 
+ 	osc5_clk: osc5-clock {
 -- 
 2.30.2
 
