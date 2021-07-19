@@ -2,211 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F335E3CE618
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C343CE637
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352413AbhGSQBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
+        id S1349591AbhGSQC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345865AbhGSPFE (ORCPT
+        with ESMTP id S1345864AbhGSPFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:05:04 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23102C09F5FD
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 07:56:30 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id r18so9265910iot.4
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:25:27 -0700 (PDT)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289DEC08EBB4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:00:32 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id t2so24134110edd.13
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:29:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
+        d=linuxtx.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HuZyqBI8VecIWEXCo/n1pGBHsUOUwnLTjPNhfVWEiOY=;
-        b=tvMm++S3Z7x57fvLv2MDf7kScofpvB+ZLhgUm+VbzxvKo4/VVVOK9myCTWZ9QHRI5/
-         VAX8lWCy2R8HFUaVZTVTDGVmpvZUKSUARSIKOZhotCYeZn1yKSmK6wieZtYwBV9Bcdaa
-         +nqUdzgAf2ra5eMfe5QDzVLWSsJUUWY7oZ/WsQIIUhA8IOOhz+3ccl6DzMRGSZO1vbBq
-         mLQgNF5msop7dWuA3gyrbLttIbqedhLh3fvtfyti5/QOeGVsaMlZxV8n8D/RVFs1qbYw
-         xiOm99N8ssbZwrNooTj4Nvu9/CmPLSCCFJsbxZJ1c906R5IAvFKz4yslZ31UZocFG6Yz
-         uRug==
+         :cc;
+        bh=SFohRrC/J6yvJekNzc8d5a/rCXsepe2YSJfKC79IXAc=;
+        b=EGWPO34lxZS/UR7cBQkRiPuptCLTxX4xTeh/NVtC5Cxjcy+Klfi83m4iS1j46P8n5q
+         GwnV27ibn8k6pIReRaX6tvQzUZ7XKvPDuzgS5P5i8yTvXTMvkl/BW/UzKWQI+/tiAtIq
+         PUG6SfjmAOu9Fttb60JW3fmvDY/mYtiY6xn9o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HuZyqBI8VecIWEXCo/n1pGBHsUOUwnLTjPNhfVWEiOY=;
-        b=t2BdDbocpc7jUGJ+TLJiES+awI/1r2BdrbpKuSCcbwfPwlPUyMFbbEoVtugcLC2jvn
-         3T4riJl1x58EhW1C+lcgMN16YoTwkfBcaoyMpw9K0qeKMJzBO9rLV17KrieRxK1JRkBc
-         z56Z3aDjY5qO+n4DaajHc1BTscdrGTLDinHWFnb/9w2K62dVRPz4h4cfYf+oOSS4KADa
-         s4QMmBnWx0/G1HOF6CdDUSFqqRznj7mmrVo2sX4zi4A4OaCzgK/54TP78fTIVAF69348
-         KpD05u4TURUcVzCOXspgruF5zlfrKKYa45nlcVLkhMjJpxwuOwaneOByBIdzX1OydXfJ
-         TbSQ==
-X-Gm-Message-State: AOAM530gyQLf1Kh6y2T9xBAewgu8OjNXqZZng7BFdmBgxpy7dyrsXe7U
-        4bWVezoyL3bAEj4EjNVMTXjC9AulkVzLexWYlrz1GQ==
-X-Google-Smtp-Source: ABdhPJw8Acogs6CFL1FweALTU6/lOaHkkUc95/HwNpa3qUGS2F5qRxoy90LCQC7l9/cSBxPQUKPYuL9z7gO3afm/eKA=
-X-Received: by 2002:a05:6602:2e11:: with SMTP id o17mr10320207iow.55.1626708326696;
- Mon, 19 Jul 2021 08:25:26 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=SFohRrC/J6yvJekNzc8d5a/rCXsepe2YSJfKC79IXAc=;
+        b=E+jahO3kcBmkXazVjrN37xIgNM4Vkh9aDMcbUWr0W1ecuyC57QwgNeHpO04/fO31yJ
+         KmvjtK4NnumaHRKsKyMGkmZTOXlipQ6XQL6Y584NutitoyrsEzTjQPDHELJ76oibh3Tm
+         Gbj6ngWGrMXwe8eqX539WHuVg5b4ofZhHOlyXmVYiOF4if6q1Zv+Y3TDNpNc7t+t7IQD
+         TAwh1EhSiO0kOLOxEE5kZSqC+vYJa6+5DttYGeZ4eIDhszZCvlQHluahokuIFaL7TRw+
+         7lbRuxM/6rsg1+1MYPorT8zParLtc0qHkfGbX7ZQgw9dmLbEEtFknbv85ubK0HEBID4A
+         +Xdg==
+X-Gm-Message-State: AOAM530BO83Nkowp0Bi39TSbgGHok7cTSkgD3ph2PuM8BvYU3dndzQgc
+        A3Co+/oVyE6w9L9ej+m57Yj2CxUATk2cjmhqMAxS6Q==
+X-Google-Smtp-Source: ABdhPJzFxSo/D4kyepQRqCtyMUtqcVwoO2Cj10WkZ1Hg9vbFtTWR5fcQDRuQ6zqRqtBTD2CrJEYx/HZEMQtnmXc72jE=
+X-Received: by 2002:a50:9b06:: with SMTP id o6mr35753968edi.284.1626708549000;
+ Mon, 19 Jul 2021 08:29:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210718203746.7159-1-theobf@usp.br> <CA+U=DspWmrWWsQDFPLycS2y-=8Q7TSn5NYMVgbQ42FccAy0=pw@mail.gmail.com>
-In-Reply-To: <CA+U=DspWmrWWsQDFPLycS2y-=8Q7TSn5NYMVgbQ42FccAy0=pw@mail.gmail.com>
-From:   =?UTF-8?Q?Th=C3=A9o_Bor=C3=A9m_Fabris?= <theobf@usp.br>
-Date:   Mon, 19 Jul 2021 12:24:50 -0300
-Message-ID: <CAD5vTa8gnQpZ8B4KQkA=-6Oo-YiN4J7pDp0HoUZgpHN99vJK_g@mail.gmail.com>
-Subject: Re: [PATCH] iio: dac: max5821: convert device register to device
- managed function
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210712060912.995381202@linuxfoundation.org> <20210712060916.499546891@linuxfoundation.org>
+ <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
+ <YPMUu+kNu0GZeQQ1@kroah.com> <YPM0IE8U7oDSVbvd@epycbox.lan>
+In-Reply-To: <YPM0IE8U7oDSVbvd@epycbox.lan>
+From:   Justin Forbes <jmforbes@linuxtx.org>
+Date:   Mon, 19 Jul 2021 10:28:57 -0500
+Message-ID: <CAFxkdAr7KHgx3etpia8_OdFySP-1HQVW=2LL6Vu=UO4Jh1dW5w@mail.gmail.com>
+Subject: Re: [PATCH 5.13 024/800] usb: renesas-xhci: Fix handling of unknown
+ ROM state
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Vinod Koul <vkoul@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Alexandru.
+On Sat, Jul 17, 2021 at 2:48 PM Moritz Fischer <mdf@kernel.org> wrote:
+>
+> On Sat, Jul 17, 2021 at 07:34:51PM +0200, Greg Kroah-Hartman wrote:
+> > On Sat, Jul 17, 2021 at 08:39:19AM -0500, Justin Forbes wrote:
+> > > On Mon, Jul 12, 2021 at 2:31 AM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > From: Moritz Fischer <mdf@kernel.org>
+> > > >
+> > > > commit d143825baf15f204dac60acdf95e428182aa3374 upstream.
+> > > >
+> > > > The ROM load sometimes seems to return an unknown status
+> > > > (RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
+> > > >
+> > > > If the ROM load indeed failed this leads to failures when trying to
+> > > > communicate with the controller later on.
+> > > >
+> > > > Attempt to load firmware using RAM load in those cases.
+> > > >
+> > > > Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
+> > > > Cc: stable@vger.kernel.org
+> > > > Cc: Mathias Nyman <mathias.nyman@intel.com>
+> > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > Cc: Vinod Koul <vkoul@kernel.org>
+> > > > Tested-by: Vinod Koul <vkoul@kernel.org>
+> > > > Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> > > > Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> > > > Link: https://lore.kernel.org/r/20210615153758.253572-1-mdf@kernel.org
+> > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > >
+> > >
+> > > After sending out 5.12.17 for testing, we had a user complain that all
+> > > of their USB devices disappeared with the error:
+> > >
+> > > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: Direct firmware load
+> > > for renesas_usb_fw.mem failed with error -2
+> > > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: request_firmware failed: -2
+> > > Jul 15 23:18:53 kernel: xhci_hcd: probe of 0000:04:00.0 failed with error -2
+> > >
+> > > After first assuming that something was missing in the backport to
+> > > 5.12, I had the user try 5.13.2, and then 5.14-rc1. Both of those
+> > > failed in the same way, so it is not working in the current Linus tree
+> > > either.  Reverting this patch fixed the issue.
+> >
+> > Can you send a revert for this so I can get that into Linus's tree and
+> > then all stable releases as well?
+> >
+> > thanks,
+> >
+> > greg k-h
+>
+> Me or Justin? I can do it. This is annoying my system doesn't work
+> without this :-(
+>
+> Back to the drawing board I guess ...
+>
+> Justin, any idea if your customer had the eeprom populated and
+> programmed or not, just as additional datapoint.
 
-Em seg., 19 de jul. de 2021 =C3=A0s 04:33, Alexandru Ardelean
-<ardeleanalex@gmail.com> escreveu:
->
-> On Sun, Jul 18, 2021 at 11:42 PM Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.=
-br> wrote:
-> >
-> > Add a device managed hook, via devm_add_action_or_reset() and
-> > max5821_regulator_disable(), to disable voltage regulator on device
-> > detach.
-> > Replace iio_device_register() by devm_iio_device_register() and remove
-> > the max5821_remove() function used to unregister the device and disable=
- the
-> > voltage regulator.
-> > Remove i2c_set_clientdata() from the probe function, since
-> > i2c_get_clientdata() is not used anymore.
->
-> Looks good overall.
-> A few comments inline.
->
-> >
-> > Signed-off-by: Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.br>
-> > ---
-> >  drivers/iio/dac/max5821.c | 30 ++++++++++++++++--------------
-> >  1 file changed, 16 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/drivers/iio/dac/max5821.c b/drivers/iio/dac/max5821.c
-> > index bd6e75699a63..44c04ae70b32 100644
-> > --- a/drivers/iio/dac/max5821.c
-> > +++ b/drivers/iio/dac/max5821.c
-> > @@ -294,6 +294,13 @@ static const struct iio_info max5821_info =3D {
-> >         .write_raw =3D max5821_write_raw,
-> >  };
-> >
-> > +static void max5821_regulator_disable(void *data)
-> > +{
-> > +       struct regulator *rdata =3D data;
-> > +
-> > +       regulator_disable(rdata);
->
-> This can be simplified a bit:
->
-> static void max5821_regulator_disable(void *reg)
-> {
->       regulator_disable(reg);
-> }
->
-> I used to do explicit casting, but then I also figured that it's not nece=
-ssary.
->
-Ok.
+I am not sure, but I did have another user chime in on the bug saying
+the test kernel with the revert fixed their system as well. It was a
+T14s AMD
+Generation_1. The original reporter had a ASUS System Product
+Name/PRIME H370M-PLUS, BIOS 2801 04/13/2021.
 
-> > +}
-> > +
-> >  static int max5821_probe(struct i2c_client *client,
-> >                         const struct i2c_device_id *id)
-> >  {
-> > @@ -306,7 +313,6 @@ static int max5821_probe(struct i2c_client *client,
-> >         if (!indio_dev)
-> >                 return -ENOMEM;
-> >         data =3D iio_priv(indio_dev);
-> > -       i2c_set_clientdata(client, indio_dev);
-> >         data->client =3D client;
-> >         mutex_init(&data->lock);
-> >
-> > @@ -331,6 +337,14 @@ static int max5821_probe(struct i2c_client *client=
-,
-> >                 goto error_free_reg;
-> >         }
-> >
-> > +       ret =3D devm_add_action_or_reset(&client->dev, max5821_regulato=
-r_disable,
-> > +                                      data->vref_reg);
-> > +       if (ret) {
-> > +               dev_err(&client->dev,
-> > +                       "Failed to add action to managed regulator: %d\=
-n", ret);
-> > +               goto error_disable_reg;
->
-> return ret;
->
-> devm_add_action_or_reset() should call max5821_regulator_disable() in
-> case of error
->
-Ok.
+Justin
 
-> > +       }
-> > +
-> >         ret =3D regulator_get_voltage(data->vref_reg);
-> >         if (ret < 0) {
-> >                 dev_err(&client->dev,
-> > @@ -346,7 +360,7 @@ static int max5821_probe(struct i2c_client *client,
-> >         indio_dev->modes =3D INDIO_DIRECT_MODE;
-> >         indio_dev->info =3D &max5821_info;
-> >
-> > -       return iio_device_register(indio_dev);
-> > +       return devm_iio_device_register(&client->dev, indio_dev);
-> >
-> >  error_disable_reg:
->
-> This entire goto block should be removed.
-> The idea of using only devm_ functions is to not have these goto statemen=
-ts.
->
-I thought the action added via devm_add_action (and devres_add) was called =
-only
-on driver detach, thus the error_disable_reg label would be necessary
-to handle the
-possible error on regulator_get_voltage. Could you please clarify for
-me when does
-a driver detach happen?
-
-Thanks for your reply,
-Th=C3=A9o
-
-> >         regulator_disable(data->vref_reg);
-> > @@ -356,17 +370,6 @@ static int max5821_probe(struct i2c_client *client=
-,
-> >         return ret;
-> >  }
-> >
-> > -static int max5821_remove(struct i2c_client *client)
-> > -{
-> > -       struct iio_dev *indio_dev =3D i2c_get_clientdata(client);
-> > -       struct max5821_data *data =3D iio_priv(indio_dev);
-> > -
-> > -       iio_device_unregister(indio_dev);
-> > -       regulator_disable(data->vref_reg);
-> > -
-> > -       return 0;
-> > -}
-> > -
-> >  static const struct i2c_device_id max5821_id[] =3D {
-> >         { "max5821", ID_MAX5821 },
-> >         { }
-> > @@ -386,7 +389,6 @@ static struct i2c_driver max5821_driver =3D {
-> >                 .pm     =3D &max5821_pm_ops,
-> >         },
-> >         .probe          =3D max5821_probe,
-> > -       .remove         =3D max5821_remove,
-> >         .id_table       =3D max5821_id,
-> >  };
-> >  module_i2c_driver(max5821_driver);
-> > --
-> > 2.20.1
-> >
+> - Moritz
