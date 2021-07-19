@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA57C3CCE92
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C88363CCE9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234882AbhGSHhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 03:37:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36741 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233759AbhGSHhY (ORCPT
+        id S234917AbhGSHiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 03:38:51 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:52582 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234897AbhGSHiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 03:37:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626680064;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0sfSO6C1l3WtCtuFbg0VI6VLBjRIkRSfgQNpDtonfxE=;
-        b=PdsUK6CcnpDkzgT7rmSkVERCqDksMyVtTzhWFXH9O/OY2DVC1dRu5drARJOuZMM4CUZ206
-        I1JqnMoc48CmU0NSDUpAVrMFxG4EgQdZ2l5ZLnbaDeLL3nstwkiWsR8U+dWlBHRoiDYi0j
-        uJxWUx4Mg2mesO2oLFpCewMtRUIrzC8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-66-QGB3zAoxPNCtdMDAyHWvxw-1; Mon, 19 Jul 2021 03:34:23 -0400
-X-MC-Unique: QGB3zAoxPNCtdMDAyHWvxw-1
-Received: by mail-wm1-f71.google.com with SMTP id y6-20020a7bc1860000b0290227b53c7cefso5064663wmi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 00:34:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=0sfSO6C1l3WtCtuFbg0VI6VLBjRIkRSfgQNpDtonfxE=;
-        b=q2WF6rkap+/df3ysjo3RQilRcHavQhGGh3eeSJxFQnQrMFk9vaQ6sc5vDJvDi6pQ0k
-         MwrjL/0L/MoAN2/LYN5OlD++OimfdNES/Xhu0WTbgsAc8e+R3pYa/vijH3l417oTN/Wj
-         CD3dKvng5HT5k+1GIMdqWIB08PuZXDqpn2u1aYQs90WDjf967UfVGiIHdiSVtvny54ax
-         MsRRiBgOXdzjP+Wz1IUa2kiiKF1icc3ngG0oFUIhwUvPAo2NYmQVx3QPzfzxrqxu+oCr
-         cA1S0hp+77lZW2QZgEOgmnHq2wHSr++il4H71UUUpJUNiiopEU233tgeh0IQiiT1Mq1U
-         u3yw==
-X-Gm-Message-State: AOAM5336PZfE9LceauwQuCdONqhrdsR02oID/fRImb1aoQKB7kRNLsI7
-        vUguXlUjTHa2LJ9kco2d8M7r7F7Btlayh6Mv0hZIjJkRpSQjM1N4Yk8fWSjPASiLJmMr7as3MsQ
-        52zzKY2m2UXXvtHmNWCl973NY
-X-Received: by 2002:a05:600c:3595:: with SMTP id p21mr17863833wmq.105.1626680062007;
-        Mon, 19 Jul 2021 00:34:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz07efcFEv5EX0OoyTVlUJhLNO1Fd9o7f8O9ViBtmkhlottvR3Rzu2ykVMUwwmu3TH+CIaAhw==
-X-Received: by 2002:a05:600c:3595:: with SMTP id p21mr17863820wmq.105.1626680061792;
-        Mon, 19 Jul 2021 00:34:21 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id y3sm19433446wrh.16.2021.07.19.00.34.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 00:34:21 -0700 (PDT)
-To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com
-References: <20210718043034.76431-1-zhengqi.arch@bytedance.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH 0/7] Free user PTE page table pages
-Message-ID: <5ce5fb25-df1d-b807-8807-595b8a7bfc63@redhat.com>
-Date:   Mon, 19 Jul 2021 09:34:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 19 Jul 2021 03:38:50 -0400
+X-UUID: c8027073d19b494b8063573dc30295ee-20210719
+X-UUID: c8027073d19b494b8063573dc30295ee-20210719
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <chuanjia.liu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1450423299; Mon, 19 Jul 2021 15:35:48 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 19 Jul 2021 15:35:46 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 19 Jul 2021 15:35:46 +0800
+From:   Chuanjia Liu <chuanjia.liu@mediatek.com>
+To:     <robh+dt@kernel.org>, <bhelgaas@google.com>,
+        <matthias.bgg@gmail.com>, <lorenzo.pieralisi@arm.com>
+CC:     <ryder.lee@mediatek.com>, <jianjun.wang@mediatek.com>,
+        <yong.wu@mediatek.com>, Frank Wunderlich <frank-w@public-files.de>,
+        <chuanjia.liu@mediatek.com>, <linux-pci@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v11 0/4] PCI: mediatek: Spilt PCIe node to comply with hardware design 
+Date:   Mon, 19 Jul 2021 15:34:52 +0800
+Message-ID: <20210719073456.28666-1-chuanjia.liu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20210718043034.76431-1-zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.07.21 06:30, Qi Zheng wrote:
-> Hi,
-> 
-> This patch series aims to free user PTE page table pages when all PTE entries
-> are empty.
-> 
-> The beginning of this story is that some malloc libraries(e.g. jemalloc or
-> tcmalloc) usually allocate the amount of VAs by mmap() and do not unmap those VAs.
-> They will use madvise(MADV_DONTNEED) to free physical memory if they want.
-> But the page tables do not be freed by madvise(), so it can produce many
-> page tables when the process touches an enormous virtual address space.
+There are two independent PCIe controllers in MT2712 and MT7622 platform.
+Each of them should contain an independent MSI domain.
 
-... did you see that I am actually looking into this?
+In old dts architecture, MSI domain will be inherited from the root bridge,
+and all of the devices will share the same MSI domain.Hence that,
+the PCIe devices will not work properly if the irq number 
+which required is more than 32.
 
-https://lkml.kernel.org/r/bae8b967-c206-819d-774c-f57b94c4b362@redhat.com
+Split the PCIe node for MT2712 and MT7622 platform to comply with 
+the hardware design and fix MSI issue.
 
-and have already spent a significant time on it as part of my research, 
-which is *really* unfortunate and makes me quite frustrated at the 
-beginning of the week alreadty ...
+change note:
+  v11:Rebase for 5.14-rc1 and add "interrupt-names", "linux,pci-domain" 
+      description in binding file. No code change.
+  v10:Rebase for 5.13-rc1, no code change. 
+  v9:fix kernel-ci bot warning. In the scene of using new dts format,
+     when mtk_pcie_parse_port fails, of_node_put don't need to be called.
+  v8:remove slot node and fix yaml warning.
+  v7:dt-bindings file was modified as suggested by Rob, other file no
+     change.
+  v6:Fix yaml error. make sure driver compatible with old and 
+     new DTS format.
+  v5:rebase for 5.9-rc1, no code change. 
+  v4:change commit message due to bayes statistical bogofilter
+     considers this series patch SPAM.
+  v3:rebase for 5.8-rc1. Only collect ack of Ryder, No code change.
+  v2:change the allocation of MT2712 PCIe MMIO space due to the
+     allocation size is not right in v1.
 
-Ripping out page tables is quite difficult, as we have to stop all page 
-table walkers from touching it, including the fast_gup, rmap and page 
-faults. This usually involves taking the mmap lock in write. My approach 
-does page table reclaim asynchronously from another thread and do not 
-rely on reference counts.
+Chuanjia Liu (4):
+  dt-bindings: PCI: mediatek: Update the Device tree bindings
+  PCI: mediatek: Add new method to get shared pcie-cfg base address and parse node
+  arm64: dts: mediatek: Split PCIe node for MT2712 and MT7622
+  ARM: dts: mediatek: Update MT7629 PCIe node for new format
 
--- 
-Thanks,
+  .../bindings/pci/mediatek-pcie-cfg.yaml       |  39 ++++
+  .../devicetree/bindings/pci/mediatek-pcie.txt | 206 ++++++++++--------
+  arch/arm/boot/dts/mt7629-rfb.dts              |   3 +-
+  arch/arm/boot/dts/mt7629.dtsi                 |  45 ++--
+  arch/arm64/boot/dts/mediatek/mt2712e.dtsi     |  97 +++++----
+  .../dts/mediatek/mt7622-bananapi-bpi-r64.dts  |  16 +-
+  arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts  |   6 +-
+  arch/arm64/boot/dts/mediatek/mt7622.dtsi      | 112 +++++-----
+  drivers/pci/controller/pcie-mediatek.c        |  52 +++--
+  9 files changed, 330 insertions(+), 246 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/mediatek-pcie-cfg.yaml
 
-David / dhildenb
+--
+2.18.0
+
 
