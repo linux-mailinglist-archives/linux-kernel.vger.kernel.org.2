@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A166B3CDF99
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D483CDEAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343930AbhGSPKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:10:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41942 "EHLO mail.kernel.org"
+        id S1345931AbhGSPFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:05:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343894AbhGSOsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 018586127C;
-        Mon, 19 Jul 2021 15:25:24 +0000 (UTC)
+        id S1343930AbhGSOsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD54D61283;
+        Mon, 19 Jul 2021 15:25:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708325;
-        bh=pfH0Ji+8ZDpSskIgX+PwG5GckvMLIe/0t8YKozXpRVo=;
+        s=korg; t=1626708328;
+        bh=vGFioSWvtRgICLzoYPoDXxpPQu2d3N5bConmOJySD3w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yTa7V+bHeTAMYg0WPoeT4LMrY+r3FtFcoJxY+lW+DY1wnKL/ugWOpYBcxssKHoDRQ
-         6Tqy5RP1+QLXKT+SyHLbt6g8fQg10ASMzpcj2ezODAjC2w1YgtIRfQRjHNn9b0fbKH
-         T7Ncp4fKWrJIeb5LM7c+rw4WSbYiDI5kI8ItyUyo=
+        b=LauD7hXT8LT6WVFG4n3kHyRdshTTvA00alx8O2qd8LKvHjYs4TW/oNrzpN+x93lU1
+         3g+stwJsCTCeCU/iZjRFvjdQERnsiBiMD0FcSRxcPlrQPlodJyE9iwuhI4zWbHlbrK
+         EgovEP+db61VDmVaJF/InUhxWvFtsp6GoFVAYmc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Bixuan Cui <cuibixuan@huawei.com>,
         Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 268/315] power: supply: max17042: Do not enforce (incorrect) interrupt trigger type
-Date:   Mon, 19 Jul 2021 16:52:37 +0200
-Message-Id: <20210719144952.236851829@linuxfoundation.org>
+Subject: [PATCH 4.14 269/315] power: reset: gpio-poweroff: add missing MODULE_DEVICE_TABLE
+Date:   Mon, 19 Jul 2021 16:52:38 +0200
+Message-Id: <20210719144952.270100842@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -40,44 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Bixuan Cui <cuibixuan@huawei.com>
 
-[ Upstream commit 7fbf6b731bca347700e460d94b130f9d734b33e9 ]
+[ Upstream commit ed3443fb4df4e140a22f65144546c8a8e1e27f4e ]
 
-Interrupt line can be configured on different hardware in different way,
-even inverted.  Therefore driver should not enforce specific trigger
-type - edge falling - but instead rely on Devicetree to configure it.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-The Maxim 17047/77693 datasheets describe the interrupt line as active
-low with a requirement of acknowledge from the CPU therefore the edge
-falling is not correct.
-
-The interrupt line is shared between PMIC and RTC driver, so using level
-sensitive interrupt is here especially important to avoid races.  With
-an edge configuration in case if first PMIC signals interrupt followed
-shortly after by the RTC, the interrupt might not be yet cleared/acked
-thus the second one would not be noticed.
-
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
 Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/max17042_battery.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/power/reset/gpio-poweroff.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
-index 9c7eaaeda343..911d42366ef1 100644
---- a/drivers/power/supply/max17042_battery.c
-+++ b/drivers/power/supply/max17042_battery.c
-@@ -1051,7 +1051,7 @@ static int max17042_probe(struct i2c_client *client,
- 	}
+diff --git a/drivers/power/reset/gpio-poweroff.c b/drivers/power/reset/gpio-poweroff.c
+index be3d81ff51cc..a44e3427fdeb 100644
+--- a/drivers/power/reset/gpio-poweroff.c
++++ b/drivers/power/reset/gpio-poweroff.c
+@@ -84,6 +84,7 @@ static const struct of_device_id of_gpio_poweroff_match[] = {
+ 	{ .compatible = "gpio-poweroff", },
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, of_gpio_poweroff_match);
  
- 	if (client->irq) {
--		unsigned int flags = IRQF_TRIGGER_FALLING | IRQF_ONESHOT;
-+		unsigned int flags = IRQF_ONESHOT;
- 
- 		/*
- 		 * On ACPI systems the IRQ may be handled by ACPI-event code,
+ static struct platform_driver gpio_poweroff_driver = {
+ 	.probe = gpio_poweroff_probe,
 -- 
 2.30.2
 
