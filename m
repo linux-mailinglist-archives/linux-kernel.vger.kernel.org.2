@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FF73CE6B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D495D3CE6C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351091AbhGSQNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:13:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40366 "EHLO mail.kernel.org"
+        id S1352103AbhGSQNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:13:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346051AbhGSPKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1346060AbhGSPKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:10:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3E3261279;
-        Mon, 19 Jul 2021 15:50:12 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4955E61241;
+        Mon, 19 Jul 2021 15:50:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709813;
-        bh=qZkyoG2FBn2OT+lhuZGNVpkXT/zpxIylfZrc701XAf8=;
+        s=korg; t=1626709815;
+        bh=6VI+H0xnqlJM+JgDKkrwBxzWYaGpPM5UawKrq2R/Mok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oeaCVKWmt9B938Fjazdn3p0qZnTa9aFwJm8WfZtgtjQcd/24dF3eVbe3/ugeXVU4w
-         1EJjHQEcszfCsdTm3lmc0tHuATK6OzJS79AnQmvS/6Fh6Nbf1fl8lpHtp4LRtAWD18
-         talG8OahLnS5aP0FjZ9PbUi73Jz4tteYvA73SuhE=
+        b=XmiVyJtaaIVJ4YUafvGvOjRv28OKRCoZoycQNnTkBQzb1sWgjsvrj4olYYERs3nOH
+         xuK9LxNicVe565tXGUlbL7ayzS70rsMSICiRTe3coG8g95NzD5OCMAAXvZunVh0BeY
+         2AV/9QzV0oXcA0qtpa8gY+Jbn1L5sTtvLfvPO5xA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 109/149] pwm: imx1: Dont disable clocks at device remove time
-Date:   Mon, 19 Jul 2021 16:53:37 +0200
-Message-Id: <20210719144927.183141317@linuxfoundation.org>
+Subject: [PATCH 5.4 110/149] virtio_net: move tx vq operation under tx queue lock
+Date:   Mon, 19 Jul 2021 16:53:38 +0200
+Message-Id: <20210719144927.436821051@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
 References: <20210719144901.370365147@linuxfoundation.org>
@@ -42,39 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Michael S. Tsirkin <mst@redhat.com>
 
-[ Upstream commit 1bc6ea31cb41d50302a3c9b401964cf0a88d41f9 ]
+[ Upstream commit 5a2f966d0f3fa0ef6dada7ab9eda74cacee96b8a ]
 
-The .remove() callback disables clocks that were not enabled in
-.probe(). So just probing and then unbinding the driver results in a clk
-enable imbalance.
+It's unsafe to operate a vq from multiple threads.
+Unfortunately this is exactly what we do when invoking
+clean tx poll from rx napi.
+Same happens with napi-tx even without the
+opportunistic cleaning from the receive interrupt: that races
+with processing the vq in start_xmit.
 
-So just drop the call to disable the clocks. (Which BTW was also in the
-wrong order because the call makes the PWM unfunctional and so should
-have come only after pwmchip_remove()).
+As a fix move everything that deals with the vq to under tx lock.
 
-Fixes: 9f4c8f9607c3 ("pwm: imx: Add ipg clock operation")
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Fixes: b92f1e6751a6 ("virtio-net: transmit napi")
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-imx1.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/virtio_net.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pwm/pwm-imx1.c b/drivers/pwm/pwm-imx1.c
-index f8b2c2e001a7..c17652c40e14 100644
---- a/drivers/pwm/pwm-imx1.c
-+++ b/drivers/pwm/pwm-imx1.c
-@@ -180,8 +180,6 @@ static int pwm_imx1_remove(struct platform_device *pdev)
- {
- 	struct pwm_imx1_chip *imx = platform_get_drvdata(pdev);
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index af7d69719c4f..15453d6fcc23 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -1504,6 +1504,8 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+ 	struct virtnet_info *vi = sq->vq->vdev->priv;
+ 	unsigned int index = vq2txq(sq->vq);
+ 	struct netdev_queue *txq;
++	int opaque;
++	bool done;
  
--	pwm_imx1_clk_disable_unprepare(&imx->chip);
--
- 	return pwmchip_remove(&imx->chip);
- }
+ 	if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
+ 		/* We don't need to enable cb for XDP */
+@@ -1513,10 +1515,28 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
  
+ 	txq = netdev_get_tx_queue(vi->dev, index);
+ 	__netif_tx_lock(txq, raw_smp_processor_id());
++	virtqueue_disable_cb(sq->vq);
+ 	free_old_xmit_skbs(sq, true);
++
++	opaque = virtqueue_enable_cb_prepare(sq->vq);
++
++	done = napi_complete_done(napi, 0);
++
++	if (!done)
++		virtqueue_disable_cb(sq->vq);
++
+ 	__netif_tx_unlock(txq);
+ 
+-	virtqueue_napi_complete(napi, sq->vq, 0);
++	if (done) {
++		if (unlikely(virtqueue_poll(sq->vq, opaque))) {
++			if (napi_schedule_prep(napi)) {
++				__netif_tx_lock(txq, raw_smp_processor_id());
++				virtqueue_disable_cb(sq->vq);
++				__netif_tx_unlock(txq);
++				__napi_schedule(napi);
++			}
++		}
++	}
+ 
+ 	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
+ 		netif_tx_wake_queue(txq);
 -- 
 2.30.2
 
