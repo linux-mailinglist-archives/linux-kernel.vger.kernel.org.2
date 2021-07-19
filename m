@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835CD3CE8AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F813CE76D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357122AbhGSQp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:45:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43846 "EHLO mail.kernel.org"
+        id S1353927AbhGSQ0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:26:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349215AbhGSP0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:26:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9877608FC;
-        Mon, 19 Jul 2021 16:06:53 +0000 (UTC)
+        id S1345690AbhGSPNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:13:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7A2861351;
+        Mon, 19 Jul 2021 15:53:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710814;
-        bh=lqt3SH4p4r111KwtXJpHwqGvKo1eeRBYvgubUMk13vA=;
+        s=korg; t=1626710021;
+        bh=cyHD2oQuOJvUpiuoQ4Y/gRXIIVB8xWrQuC8BwU950Ks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XJVyWAr95vi4M2avmSbVR3xYj3//KId1GkeaCYGNyqSTuNJYLCNTxyWItAf+Z2yEV
-         XFBclviD6I/T8AGsQnqV8twTTxJkrT0rhXaBb5p2eAZkDkhGUYfaS6uWHWqUQotklk
-         Zp7QpgG3vyKD4BcDES/bnoBEALn7EfAnvUdijmbQ=
+        b=SAlYJlQ4ziqHcFftwrmDDcvL/Q9JzGMuM9zwgR1hK/e4khSB0nc1lO8/LtKiijjKI
+         a4rjAnaoTS1P8WkLkMDEGa75+PtkLntrkUoFBHXy7/novrttgcugvYSgCHDcO6oN4C
+         Bl1+ZMnxcAeKH31e3FDeDP9akD9OKWf8wNeKxyio=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Koby Elbaz <kelbaz@habana.ai>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rui Miguel Silva <rui.silva@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 118/351] habanalabs: set rc as valid in case of intentional func exit
+Subject: [PATCH 5.10 035/243] iio: gyro: fxa21002c: Balance runtime pm + use pm_runtime_resume_and_get().
 Date:   Mon, 19 Jul 2021 16:51:04 +0200
-Message-Id: <20210719144948.384582914@linuxfoundation.org>
+Message-Id: <20210719144942.065467933@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Koby Elbaz <kelbaz@habana.ai>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 11d5cb8b95456e2432dfee2ffcebf0623998493a ]
+[ Upstream commit 41120ebbb1eb5e9dec93320e259d5b2c93226073 ]
 
-fix the following smatch warnings:
-hl_fw_static_init_cpu() warn: missing error code 'rc'
+In both the probe() error path and remove() pm_runtime_put_noidle()
+is called which will decrement the runtime pm reference count.
+However, there is no matching function to have raised the reference count.
+Not this isn't a fix as the runtime pm core will stop the reference count
+going negative anyway.
 
-Signed-off-by: Koby Elbaz <kelbaz@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+An alternative would have been to raise the count in these paths, but
+it is not clear why that would be necessary.
+
+Whilst we are here replace some boilerplate with pm_runtime_resume_and_get()
+Found using coccicheck script under review at:
+https://lore.kernel.org/lkml/20210427141946.2478411-1-Julia.Lawall@inria.fr/
+
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Rui Miguel Silva <rui.silva@linaro.org>
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Link: https://lore.kernel.org/r/20210509113354.660190-2-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/common/device.c      | 5 +++--
- drivers/misc/habanalabs/common/firmware_if.c | 5 ++++-
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ drivers/iio/gyro/fxas21002c_core.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index 00e92b678828..eea0d3e35b88 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -1334,8 +1334,9 @@ int hl_device_init(struct hl_device *hdev, struct class *hclass)
- 	}
+diff --git a/drivers/iio/gyro/fxas21002c_core.c b/drivers/iio/gyro/fxas21002c_core.c
+index b7523357d8eb..ec6bd15bd2d4 100644
+--- a/drivers/iio/gyro/fxas21002c_core.c
++++ b/drivers/iio/gyro/fxas21002c_core.c
+@@ -366,14 +366,7 @@ out_unlock:
  
- 	/*
--	 * From this point, in case of an error, add char devices and create
--	 * sysfs nodes as part of the error flow, to allow debugging.
-+	 * From this point, override rc (=0) in case of an error to allow
-+	 * debugging (by adding char devices and create sysfs nodes as part of
-+	 * the error flow).
- 	 */
- 	add_cdev_sysfs_on_err = true;
+ static int  fxas21002c_pm_get(struct fxas21002c_data *data)
+ {
+-	struct device *dev = regmap_get_device(data->regmap);
+-	int ret;
+-
+-	ret = pm_runtime_get_sync(dev);
+-	if (ret < 0)
+-		pm_runtime_put_noidle(dev);
+-
+-	return ret;
++	return pm_runtime_resume_and_get(regmap_get_device(data->regmap));
+ }
  
-diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
-index 0713b2c12d54..86efb9fa701c 100644
---- a/drivers/misc/habanalabs/common/firmware_if.c
-+++ b/drivers/misc/habanalabs/common/firmware_if.c
-@@ -1006,11 +1006,14 @@ int hl_fw_init_cpu(struct hl_device *hdev, u32 cpu_boot_status_reg,
+ static int  fxas21002c_pm_put(struct fxas21002c_data *data)
+@@ -1005,7 +998,6 @@ int fxas21002c_core_probe(struct device *dev, struct regmap *regmap, int irq,
+ pm_disable:
+ 	pm_runtime_disable(dev);
+ 	pm_runtime_set_suspended(dev);
+-	pm_runtime_put_noidle(dev);
  
- 	if (!(hdev->fw_components & FW_TYPE_LINUX)) {
- 		dev_info(hdev->dev, "Skip loading Linux F/W\n");
-+		rc = 0;
- 		goto out;
- 	}
+ 	return ret;
+ }
+@@ -1019,7 +1011,6 @@ void fxas21002c_core_remove(struct device *dev)
  
--	if (status == CPU_BOOT_STATUS_SRAM_AVAIL)
-+	if (status == CPU_BOOT_STATUS_SRAM_AVAIL) {
-+		rc = 0;
- 		goto out;
-+	}
+ 	pm_runtime_disable(dev);
+ 	pm_runtime_set_suspended(dev);
+-	pm_runtime_put_noidle(dev);
+ }
+ EXPORT_SYMBOL_GPL(fxas21002c_core_remove);
  
- 	dev_info(hdev->dev,
- 		"Loading firmware to device, may take some time...\n");
 -- 
 2.30.2
 
