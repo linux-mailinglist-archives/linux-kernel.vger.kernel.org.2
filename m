@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036693CE978
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FC73CEA8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346318AbhGSQ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:56:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46008 "EHLO mail.kernel.org"
+        id S1377805AbhGSRRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:17:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346279AbhGSP2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:28:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17FA861364;
-        Mon, 19 Jul 2021 16:08:35 +0000 (UTC)
+        id S1347839AbhGSPjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:39:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EE9B613F1;
+        Mon, 19 Jul 2021 16:19:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710916;
-        bh=3WsvUFMC4EHCRxhjhVyIkTSgZyzYaxrEe+k4XWy8HQc=;
+        s=korg; t=1626711556;
+        bh=QtPEqdfQOScgFynDx1d1MBk/zWmMI0Fptn7UuC7rYXA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K54kJC1k3LRR1oTwjCQt32Z2XLBcWmrxsNgSQsGrsdgeRfF5txDgbaBeg0Jbsq/Ma
-         y9bnyykF4vaA95zIjHt55jf3f5pCcrNRPjQIf+vbK5nuI+6su915o3GxwOIMMufK3s
-         buZAzqgxGZssPtv+VOiO3Du1EdeTt+ztp26+PpJk=
+        b=n/XyOVkMTdAAIgzPhhmSJ2FCWgbJHFYoHVgUjX2qPBicKy++1RBhcJHoHw5sJ+Oqz
+         zNOAktx5vcjH14156wrxOppsTo6VTefa5K0oJS2mC8Mv9liM6XMPrYGjCeQOtleqEQ
+         heUbBtXao2zRNQm825O7gKFBrv3926LWIioiVYrs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Geoffrey D. Bennett" <g@b4.vu>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 130/351] ALSA: usb-audio: scarlett2: Fix scarlett2_*_ctl_put() return values
+        stable@vger.kernel.org, Jinzhou Su <Jinzhou.Su@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.12 014/292] drm/amdgpu: add another Renoir DID
 Date:   Mon, 19 Jul 2021 16:51:16 +0200
-Message-Id: <20210719144948.783409639@linuxfoundation.org>
+Message-Id: <20210719144942.997909650@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,63 +40,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geoffrey D. Bennett <g@b4.vu>
+From: Jinzhou Su <Jinzhou.Su@amd.com>
 
-[ Upstream commit c5d8e008032f3cd5f266d552732973a960b0bd4b ]
+commit 775da83005cb61d4c213c636df9337da05714ff1 upstream.
 
-Mixer control put callbacks should return 1 if the value is changed.
-Fix the sw_hw, level, pad, and button controls accordingly.
+Add new PCI device id.
 
-Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
-Link: https://lore.kernel.org/r/20210620164645.GA9221@m.b4.vu
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Jinzhou Su <Jinzhou.Su@amd.com>
+Reviewed-by: Huang Rui <ray.huang@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org # 5.11.x
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/mixer_scarlett_gen2.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-index 2ea41c8eafd1..b92319928ddd 100644
---- a/sound/usb/mixer_scarlett_gen2.c
-+++ b/sound/usb/mixer_scarlett_gen2.c
-@@ -1184,6 +1184,8 @@ static int scarlett2_sw_hw_enum_ctl_put(struct snd_kcontrol *kctl,
- 	/* Send SW/HW switch change to the device */
- 	err = scarlett2_usb_set_config(mixer, SCARLETT2_CONFIG_SW_HW_SWITCH,
- 				       index, val);
-+	if (err == 0)
-+		err = 1;
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -1092,6 +1092,7 @@ static const struct pci_device_id pciidl
+ 	{0x1002, 0x734F, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI14},
  
- unlock:
- 	mutex_unlock(&private->data_mutex);
-@@ -1244,6 +1246,8 @@ static int scarlett2_level_enum_ctl_put(struct snd_kcontrol *kctl,
- 	/* Send switch change to the device */
- 	err = scarlett2_usb_set_config(mixer, SCARLETT2_CONFIG_LEVEL_SWITCH,
- 				       index, val);
-+	if (err == 0)
-+		err = 1;
- 
- unlock:
- 	mutex_unlock(&private->data_mutex);
-@@ -1294,6 +1298,8 @@ static int scarlett2_pad_ctl_put(struct snd_kcontrol *kctl,
- 	/* Send switch change to the device */
- 	err = scarlett2_usb_set_config(mixer, SCARLETT2_CONFIG_PAD_SWITCH,
- 				       index, val);
-+	if (err == 0)
-+		err = 1;
- 
- unlock:
- 	mutex_unlock(&private->data_mutex);
-@@ -1349,6 +1355,8 @@ static int scarlett2_button_ctl_put(struct snd_kcontrol *kctl,
- 	/* Send switch change to the device */
- 	err = scarlett2_usb_set_config(mixer, SCARLETT2_CONFIG_BUTTONS,
- 				       index, val);
-+	if (err == 0)
-+		err = 1;
- 
- unlock:
- 	mutex_unlock(&private->data_mutex);
--- 
-2.30.2
-
+ 	/* Renoir */
++	{0x1002, 0x15E7, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_RENOIR|AMD_IS_APU},
+ 	{0x1002, 0x1636, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_RENOIR|AMD_IS_APU},
+ 	{0x1002, 0x1638, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_RENOIR|AMD_IS_APU},
+ 	{0x1002, 0x164C, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_RENOIR|AMD_IS_APU},
 
 
