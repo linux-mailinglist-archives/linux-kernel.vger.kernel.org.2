@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744DA3CE471
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23803CE4AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348392AbhGSPno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:43:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53516 "EHLO mail.kernel.org"
+        id S1350079AbhGSPpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:45:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344015AbhGSO71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D76A760FE9;
-        Mon, 19 Jul 2021 15:38:19 +0000 (UTC)
+        id S1344221AbhGSO7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B769613B7;
+        Mon, 19 Jul 2021 15:39:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709100;
-        bh=WtqPB5MKbb9f4Znuqs7cgBs3WXwdAkg9h1wOf5Br/vY=;
+        s=korg; t=1626709150;
+        bh=03smCh26/GYOWe5lhahVhl1KR+OidGB07r5Z9zhMGYQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rzc5MhXiIt7HyS8BsGO7JEoAaEnuDhloRc2UOVOJ6bE1orq/lO6JbFFknwkLAdulO
-         cs8R6j7gpvssWhF9s4jSu3OjVuN1mrSy8mAOm4BMVguVRxGCtxfLyde6uV6Za3o7iQ
-         wfQYtEh6npM8K5kJOOeJ195XNfcEOv2gkMA2EA38=
+        b=wjCtFwqFOGeNG7MeU66Q96Unp8fw4Z9hl8miuAHWFyrKk1j8Cd9X5xxfoY3mojNzj
+         os+QIBdHkFC7afTAEerwsz2wXPS0Yw8JFasfhxzysigcy835vrf/yJPZyHh+CDI54d
+         b3qqIBun8fBVyYuK2Ld7kVTcQIDxHjl9q1byWzoE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Tobias Brunner <tobias@strongswan.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 251/421] net: micrel: check return value after calling platform_get_resource()
-Date:   Mon, 19 Jul 2021 16:51:02 +0200
-Message-Id: <20210719144955.103618720@linuxfoundation.org>
+Subject: [PATCH 4.19 254/421] xfrm: Fix error reporting in xfrm_state_construct.
+Date:   Mon, 19 Jul 2021 16:51:05 +0200
+Message-Id: <20210719144955.203033751@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,35 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Steffen Klassert <steffen.klassert@secunet.com>
 
-[ Upstream commit 20f1932e2282c58cb5ac59517585206cf5b385ae ]
+[ Upstream commit 6fd06963fa74197103cdbb4b494763127b3f2f34 ]
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+When memory allocation for XFRMA_ENCAP or XFRMA_COADDR fails,
+the error will not be reported because the -ENOMEM assignment
+to the err variable is overwritten before. Fix this by moving
+these two in front of the function so that memory allocation
+failures will be reported.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: Tobias Brunner <tobias@strongswan.org>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/micrel/ks8842.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/xfrm/xfrm_user.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/ethernet/micrel/ks8842.c b/drivers/net/ethernet/micrel/ks8842.c
-index e3d7c74d47bb..5282c5754ac1 100644
---- a/drivers/net/ethernet/micrel/ks8842.c
-+++ b/drivers/net/ethernet/micrel/ks8842.c
-@@ -1150,6 +1150,10 @@ static int ks8842_probe(struct platform_device *pdev)
- 	unsigned i;
+diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
+index 0b80c7907715..f94abe1fdd58 100644
+--- a/net/xfrm/xfrm_user.c
++++ b/net/xfrm/xfrm_user.c
+@@ -579,6 +579,20 @@ static struct xfrm_state *xfrm_state_construct(struct net *net,
  
- 	iomem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!iomem) {
-+		dev_err(&pdev->dev, "Invalid resource\n");
-+		return -EINVAL;
+ 	copy_from_user_state(x, p);
+ 
++	if (attrs[XFRMA_ENCAP]) {
++		x->encap = kmemdup(nla_data(attrs[XFRMA_ENCAP]),
++				   sizeof(*x->encap), GFP_KERNEL);
++		if (x->encap == NULL)
++			goto error;
 +	}
- 	if (!request_mem_region(iomem->start, resource_size(iomem), DRV_NAME))
- 		goto err_mem_region;
++
++	if (attrs[XFRMA_COADDR]) {
++		x->coaddr = kmemdup(nla_data(attrs[XFRMA_COADDR]),
++				    sizeof(*x->coaddr), GFP_KERNEL);
++		if (x->coaddr == NULL)
++			goto error;
++	}
++
+ 	if (attrs[XFRMA_SA_EXTRA_FLAGS])
+ 		x->props.extra_flags = nla_get_u32(attrs[XFRMA_SA_EXTRA_FLAGS]);
  
+@@ -599,23 +613,9 @@ static struct xfrm_state *xfrm_state_construct(struct net *net,
+ 				   attrs[XFRMA_ALG_COMP])))
+ 		goto error;
+ 
+-	if (attrs[XFRMA_ENCAP]) {
+-		x->encap = kmemdup(nla_data(attrs[XFRMA_ENCAP]),
+-				   sizeof(*x->encap), GFP_KERNEL);
+-		if (x->encap == NULL)
+-			goto error;
+-	}
+-
+ 	if (attrs[XFRMA_TFCPAD])
+ 		x->tfcpad = nla_get_u32(attrs[XFRMA_TFCPAD]);
+ 
+-	if (attrs[XFRMA_COADDR]) {
+-		x->coaddr = kmemdup(nla_data(attrs[XFRMA_COADDR]),
+-				    sizeof(*x->coaddr), GFP_KERNEL);
+-		if (x->coaddr == NULL)
+-			goto error;
+-	}
+-
+ 	xfrm_mark_get(attrs, &x->mark);
+ 
+ 	xfrm_smark_init(attrs, &x->props.smark);
 -- 
 2.30.2
 
