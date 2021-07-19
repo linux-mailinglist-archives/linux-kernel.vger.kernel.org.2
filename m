@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB243CE4C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA46C3CE651
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbhGSPqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:46:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58164 "EHLO mail.kernel.org"
+        id S1346276AbhGSQEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:04:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344477AbhGSO7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A57260238;
-        Mon, 19 Jul 2021 15:40:22 +0000 (UTC)
+        id S245360AbhGSPFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:05:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32B7A60551;
+        Mon, 19 Jul 2021 15:46:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709223;
-        bh=bQ6o2NIi3EfTjmaHCOFG+RzRJtr0dJpoXEu17KBfHcQ=;
+        s=korg; t=1626709583;
+        bh=kLTIpvOZ32+6MYMPkGf1nFmXSYOM+osAesHAb6P/h/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EwFt/CDBhVv+RVR+ZH9/kv3fQWxdWr/k7kJLfiC9uyZDfKVUprQY+kV34TU/3VjTY
-         DgjfcG7mLbNKni7cjI4AARvkQCsN6ptX+Cs9f73sV6w7GqQ8dLjPyEgiBsDl5nDW3D
-         +WEsLww3HzX1Xed4Uj3/cUc2dmtv8l5YDn4s2lWA=
+        b=vdV1+NbvXwRicnCNMBxPllxABRji9ZAfPIH3vy8a9rmwPgCRaJTmzTzNLy6DTlU8U
+         MPpEiZIh4JGwes7wHIzGypEr6yCkwsUqw5cfjPZs/20RYC51xtSAFPDxyswSPXAoaT
+         8iodKS4cnRbx0foJL4gkqKtr8MDEiv8+5lXMofgc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 4.19 299/421] power: supply: ab8500: Fix an old bug
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.4 002/149] KVM: x86: Use guest MAXPHYADDR from CPUID.0x8000_0008 iff TDP is enabled
 Date:   Mon, 19 Jul 2021 16:51:50 +0200
-Message-Id: <20210719144956.686450765@linuxfoundation.org>
+Message-Id: <20210719144901.943271232@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Sean Christopherson <seanjc@google.com>
 
-commit f1c74a6c07e76fcb31a4bcc1f437c4361a2674ce upstream.
+commit 4bf48e3c0aafd32b960d341c4925b48f416f14a5 upstream.
 
-Trying to get the AB8500 charging driver working I ran into a bit
-of bitrot: we haven't used the driver for a while so errors in
-refactorings won't be noticed.
+Ignore the guest MAXPHYADDR reported by CPUID.0x8000_0008 if TDP, i.e.
+NPT, is disabled, and instead use the host's MAXPHYADDR.  Per AMD'S APM:
 
-This one is pretty self evident: use argument to the macro or we
-end up with a random pointer to something else.
+  Maximum guest physical address size in bits. This number applies only
+  to guests using nested paging. When this field is zero, refer to the
+  PhysAddrSize field for the maximum guest physical address size.
 
+Fixes: 24c82e576b78 ("KVM: Sanitize cpuid")
 Cc: stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Marcus Cooper <codekipper@gmail.com>
-Fixes: 297d716f6260 ("power_supply: Change ownership from driver to core")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210623230552.4027702-2-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/mfd/abx500/ux500_chargalg.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/cpuid.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/include/linux/mfd/abx500/ux500_chargalg.h
-+++ b/include/linux/mfd/abx500/ux500_chargalg.h
-@@ -15,7 +15,7 @@
-  * - POWER_SUPPLY_TYPE_USB,
-  * because only them store as drv_data pointer to struct ux500_charger.
-  */
--#define psy_to_ux500_charger(x) power_supply_get_drvdata(psy)
-+#define psy_to_ux500_charger(x) power_supply_get_drvdata(x)
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -745,8 +745,14 @@ static inline int __do_cpuid_func(struct
+ 		unsigned virt_as = max((entry->eax >> 8) & 0xff, 48U);
+ 		unsigned phys_as = entry->eax & 0xff;
  
- /* Forward declaration */
- struct ux500_charger;
+-		if (!g_phys_as)
++		/*
++		 * Use bare metal's MAXPHADDR if the CPU doesn't report guest
++		 * MAXPHYADDR separately, or if TDP (NPT) is disabled, as the
++		 * guest version "applies only to guests using nested paging".
++		 */
++		if (!g_phys_as || !tdp_enabled)
+ 			g_phys_as = phys_as;
++
+ 		entry->eax = g_phys_as | (virt_as << 8);
+ 		entry->edx = 0;
+ 		entry->ebx &= kvm_cpuid_8000_0008_ebx_x86_features;
 
 
