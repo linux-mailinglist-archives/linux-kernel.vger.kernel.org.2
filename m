@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5372F3CCCD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 06:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012D83CCCE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 06:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhGSEEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 00:04:43 -0400
-Received: from mout.gmx.net ([212.227.15.19]:57755 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229512AbhGSEEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 00:04:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626667299;
-        bh=HCJDDIc8iDe4AoIykd92qO5vSXF85+DD8a8vNQB+A8g=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=cGo4NqQKp7+AFWiGcuyrcHSR27bvHkaj2gecQE2SB1a2UjbW05W2QXrEprXW0y4J0
-         dGzRp2vKu0T+oYyqSQcAr9neYJaMR+Wkgw0FkbZQQXJTcy8CjMWPcFZRC/ZHO6ApgC
-         BmdAEwW4MzhncpjQ8Bm4d3J2867C4oofpXnOZk3w=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.216.243]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mw9UE-1lDEPv0Rca-00s8YH; Mon, 19
- Jul 2021 06:01:39 +0200
-Message-ID: <00a7c04b109c01a7668abc2a8192a6b889765de5.camel@gmx.de>
-Subject: Re: [patch] v2 mm/slub: restore/expand unfreeze_partials() local
- exclusion scope
-From:   Mike Galbraith <efault@gmx.de>
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-rt-users@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Date:   Mon, 19 Jul 2021 06:01:38 +0200
-In-Reply-To: <dd10ebb3-7687-6e8d-8984-3dfb9cd0e927@suse.cz>
-References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
-         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
-         <878s2fnv79.ffs@nanos.tec.linutronix.de>
-         <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
-         <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
-         <476d147ab6eec386a1e8b8e11cb09708377f8c3e.camel@gmx.de>
-         <dd10ebb3-7687-6e8d-8984-3dfb9cd0e927@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S229878AbhGSEZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 00:25:46 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:27312 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229512AbhGSEZp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 00:25:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UgB0hYy_1626668564;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UgB0hYy_1626668564)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 19 Jul 2021 12:22:45 +0800
+Subject: Re: [PATCH] virtio-balloon: Use virtio_find_vqs() helper
+To:     Jason Wang <jasowang@redhat.com>,
+        Xianting Tian <xianting_tian@126.com>, mst@redhat.com,
+        david@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <1626190724-7942-1-git-send-email-xianting_tian@126.com>
+ <bbe52a89-c7ea-c155-6226-0397f223cd80@linux.alibaba.com>
+ <b427ac2a-e439-3675-8a42-9fdcd23a5114@redhat.com>
+From:   tianxianting <xianting.tian@linux.alibaba.com>
+Message-ID: <d1b6f3d5-22a0-f0a5-ed49-1523dd740ffb@linux.alibaba.com>
+Date:   Mon, 19 Jul 2021 12:22:44 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UkBuBQ5jP2bFLgAIB0WM8jYjER0ZRFI9JiJltyIlE3wLomFEH2i
- Sv/KZr24o4ZDf8yWg9J+OTW3xeW48IJRmJY7hFIR2Qpece0IbgvJ1t9exJqW8gv3Sd4fHjA
- /VIUzo4uRM/O3NJkA+CSr8rJi4HXGRxVyaPCWmise3W9n9bP3232/MK36wjPOTpLkiow1Gb
- w/S4c6y2I2AmEHkqFZB8g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:CtdQEPmWUWI=:hYCyshGp2oYcnAnuvPJTr+
- QBq0eJ/7MJgQgmmlCoqytu4GZMMbMtm9vjFt4nHUQqTPUpvy/wXS07Ih5ejpFHKJUO44bW9Cz
- xC0fw2GwFMe4Ecl+Ioj+Tks/+jlBRkizUoioI1Ol8zc+F9ozMp1NsmMKpc0RYcsT//w54sl5/
- Bs17QStd9ESQC3YpRYC1VpT2Wzs5Oa62/gs9oV/WSYjI5+h46ch0UxIKbfbIGk6Wjm8BCITFA
- EUtwf0nG5bUOGrEFnCI0Cy0/1H5xdtGrvVPv2g6FWzdEPSkhACLrbEZ7WYTuihX6IzwNMcsyC
- 8R+vliVX43aUPNAibJwdUG9GpS4t59PcmDY/zzQsDGw1B+wjQX5cjbDm4z5RdHPX1U2Q4RzG4
- eaUAfuiduNCVMt04CjVzwVxtAFXp2VAUFeNw+F6GL6N1IEgRzzw7APQiCmShrmuwkts2itNsk
- 2oJiCXzoba/bV4EhNW8+LScWTzwlfju9heSkbh7vM8RY299Bp/gvIepBWD9OwYmznBOgLqboc
- ljlFpfROT6py9A0U0qsw6KtLgXnLatULR3waP2PbvSae7CXEmvhdFg4bUaNj6NjTsmOYY8e1Y
- 2StdaAtRNerjpObVYj6VlN5f3u3gCnN77aN4EKcgih6wLCJIIhlUj2YTk0yD4oQA3ra31jDt2
- hoWUtlyEHfwRz6/YzdO22F3KbQwHdBeC1/sp1QHonIH5x4Hg6KBWzstdF3/mSDniz+y2nLmJw
- nFTEgRjdpNq5k4oV2+LFQYFhLIcWrIxuE+0AUK0MQEV779I8o5g84IgBEB+dNPXIYQJfBO6+/
- c9yMyXK2OfYQEvzNF/RxNRR+21K1jNcJP2i3d9NQsNjUs85JCaanYXrlwCTrnSYA1jqZ3DjrJ
- 4QK+4UwgExBCFaX5BLdTRvSZq0kxCJJQgUwnegp/Z4Vtr++9zypLfGdL/s61HMx82HAOQb6l0
- HERxif3awRCHKeY8hGaifZL/B6IgJ8enTU0wUVfx4pa+1DR46w9Bg2FteVdvw4rOam5zO6FhC
- S2XwiNCT1x+NH+UpH8Yv+Ea6CDX/W5oKIlc7lKqP3JfnTDMYvKrSsiKbrMRTtk7pJDVE0kXir
- ErrY8Vao8FeDrGVGalTwUgxmz4m0WL4vpkm
+In-Reply-To: <b427ac2a-e439-3675-8a42-9fdcd23a5114@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(a pox on whomever broke evolution text quoting yet again)
+thanks,
 
-On Sun, 2021-07-18 at 23:19 +0200, Vlastimil Babka wrote:
+I checked, actually all virtio drivers have switched to use the helper 
+after this one merged.
+
+在 2021/7/19 上午11:46, Jason Wang 写道:
 >
-> Hm you mention put_cpu_partial() but your patch handles only the
-> unfreeze_partial() call from that function?
-
-Indeed, and that's because when I poked that slub_get_cpu_ptr(), it
-poked me back by real deal deadlocking on boot, so I posted the
-restoration of previously existing exclusion points with the
-unlock/relock to appease lockdep (big hairy wart) bit instead.
-
->  If I understand the problem
-> correctly, all modifications of cpu_slab->partial has to be protected
-> on RT after the local_lock conversion, thus also the one that
-> put_cpu_partial() does by itself (via this_cpu_cmpxchg).
-
-Yup, that's what I concluded too, but box disagreed by not booting when
-I did that, while seemingly being perfectly fine with the one in
-put_cpu_partial() itself.  I figured my slub_get_cpu_ptr() replacement
-had failed due to list_lock/local_lock order woes that I didn't notice
-until after box bricked on me, but despite the unlock/relock in this
-patch, it still manages to be a -ENOBOOT.
-
-	-Mike
-
+> 在 2021/7/16 下午8:46, tianxianting 写道:
+>> Do you interest in this patch? just little improvment:)
+>>
+>> 在 2021/7/13 下午11:38, Xianting Tian 写道:
+>>> From: Xianting Tian <xianting.tian@linux.alibaba.com>
+>>>
+>>> Use the helper virtio_find_vqs().
+>>>
+>>> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+>>> ---
+>>>   drivers/virtio/virtio_balloon.c | 4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/virtio/virtio_balloon.c 
+>>> b/drivers/virtio/virtio_balloon.c
+>>> index 510e931..18e0bf3 100644
+>>> --- a/drivers/virtio/virtio_balloon.c
+>>> +++ b/drivers/virtio/virtio_balloon.c
+>>> @@ -531,8 +531,8 @@ static int init_vqs(struct virtio_balloon *vb)
+>>>           callbacks[VIRTIO_BALLOON_VQ_REPORTING] = balloon_ack;
+>>>       }
+>>>   -    err = vb->vdev->config->find_vqs(vb->vdev, 
+>>> VIRTIO_BALLOON_VQ_MAX,
+>>> -                     vqs, callbacks, names, NULL, NULL);
+>>> +    err = virtio_find_vqs(vb->vdev, VIRTIO_BALLOON_VQ_MAX, vqs,
+>>> +                callbacks, names, NULL);
+>>>       if (err)
+>>>           return err;
+>>
+>
+> Acked-by: Jason Wang <jasowang@redhat.com>
+>
+> Maybe it's better to convert all the drivers that doesn't use 
+> virtio_find_vqs{_ctx}.
+>
+> Thanks
