@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8F43CD9E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2783CD96F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244800AbhGSOcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:32:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39738 "EHLO mail.kernel.org"
+        id S244120AbhGSO3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:29:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242432AbhGSO0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:26:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45F0D6113A;
-        Mon, 19 Jul 2021 15:06:46 +0000 (UTC)
+        id S244139AbhGSOYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:24:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6FEA6024A;
+        Mon, 19 Jul 2021 15:05:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707206;
-        bh=akcR7Pm/E7YJgiGct8FsuxZrYv4JOGAcsaYKBK4XVC4=;
+        s=korg; t=1626707118;
+        bh=/E9/ZizkB3VQvBKEl336Wh/NfyX46/O5edmmaZXQVHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AYnzqs8JfNqeRyPg7hzMkmqDclCaeIOB9Fk5uPi5IIV0wE96TVuERPJ/9W7C0S+DS
-         xYYW4UdHjT+goaVX7YWFxdJBSmv9FByC4YQwy8w3aO9WZGg6zSbDo4s8EVkzZMl6dF
-         9k0Vj8PelhGK5SyDXu4Csg2MGbfah50MaskiZerM=
+        b=h6tv+h6vLnpt8wpnRya2KqHReeNfSS2GAeyoxM3TSi/u/3RlEdI1RlLf850XGrTU1
+         e5jig2/uduClBFpFhgXfnMAL1Wl+rhhdUJ4wF2geRXd6E5+nAbjfnM+ksLsFEy7ykJ
+         +NVAi3AxglgR5RkP+x4o+jTv1gtV3Zb4s1/0xmJM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 036/245] crypto: qat - check return code of qat_hal_rd_rel_reg()
-Date:   Mon, 19 Jul 2021 16:49:38 +0200
-Message-Id: <20210719144941.562296608@linuxfoundation.org>
+Subject: [PATCH 4.9 037/245] crypto: qat - remove unused macro in FW loader
+Date:   Mon, 19 Jul 2021 16:49:39 +0200
+Message-Id: <20210719144941.593614767@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -44,15 +44,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jack Xu <jack.xu@intel.com>
 
-[ Upstream commit 96b57229209490c8bca4335b01a426a96173dc56 ]
+[ Upstream commit 9afe77cf25d9670e61b489fd52cc6f75fd7f6803 ]
 
-Check the return code of the function qat_hal_rd_rel_reg() and return it
-to the caller.
+Remove the unused macro ICP_DH895XCC_PESRAM_BAR_SIZE in the firmware
+loader.
 
-This is to fix the following warning when compiling the driver with
-clang scan-build:
+This is to fix the following warning when compiling the driver using the
+clang compiler with CC=clang W=2:
 
-    drivers/crypto/qat/qat_common/qat_hal.c:1436:2: warning: 6th function call argument is an uninitialized value
+    drivers/crypto/qat/qat_common/qat_uclo.c:345:9: warning: macro is not used [-Wunused-macros]
 
 Signed-off-by: Jack Xu <jack.xu@intel.com>
 Co-developed-by: Zhehui Xiang <zhehui.xiang@intel.com>
@@ -61,26 +61,21 @@ Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/qat_hal.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/crypto/qat/qat_common/qat_uclo.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/crypto/qat/qat_common/qat_hal.c b/drivers/crypto/qat/qat_common/qat_hal.c
-index 8c4fd255a601..cdf80c16a033 100644
---- a/drivers/crypto/qat/qat_common/qat_hal.c
-+++ b/drivers/crypto/qat/qat_common/qat_hal.c
-@@ -1255,7 +1255,11 @@ static int qat_hal_put_rel_wr_xfer(struct icp_qat_fw_loader_handle *handle,
- 		pr_err("QAT: bad xfrAddr=0x%x\n", xfr_addr);
- 		return -EINVAL;
- 	}
--	qat_hal_rd_rel_reg(handle, ae, ctx, ICP_GPB_REL, gprnum, &gprval);
-+	status = qat_hal_rd_rel_reg(handle, ae, ctx, ICP_GPB_REL, gprnum, &gprval);
-+	if (status) {
-+		pr_err("QAT: failed to read register");
-+		return status;
-+	}
- 	gpr_addr = qat_hal_get_reg_addr(ICP_GPB_REL, gprnum);
- 	data16low = 0xffff & data;
- 	data16hi = 0xffff & (data >> 0x10);
+diff --git a/drivers/crypto/qat/qat_common/qat_uclo.c b/drivers/crypto/qat/qat_common/qat_uclo.c
+index 4f1cd83bf56f..a8e3191e5185 100644
+--- a/drivers/crypto/qat/qat_common/qat_uclo.c
++++ b/drivers/crypto/qat/qat_common/qat_uclo.c
+@@ -385,7 +385,6 @@ static int qat_uclo_init_umem_seg(struct icp_qat_fw_loader_handle *handle,
+ 	return 0;
+ }
+ 
+-#define ICP_DH895XCC_PESRAM_BAR_SIZE 0x80000
+ static int qat_uclo_init_ae_memory(struct icp_qat_fw_loader_handle *handle,
+ 				   struct icp_qat_uof_initmem *init_mem)
+ {
 -- 
 2.30.2
 
