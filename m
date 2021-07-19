@@ -2,509 +2,535 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B2A3CD4B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A723CD4B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236975AbhGSLpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:45:09 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:12228 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236790AbhGSLpI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:45:08 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GT1BT0YkWz1CLRr;
-        Mon, 19 Jul 2021 20:20:01 +0800 (CST)
-Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 19 Jul 2021 20:25:45 +0800
-Received: from localhost.localdomain (10.67.165.2) by
- dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 19 Jul 2021 20:25:44 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
-        <davem@davemloft.net>, <mhiramat@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <song.bao.hua@hisilicon.com>, <prime.zeng@hisilicon.com>,
-        <robin.murphy@arm.com>, <liuqi115@huawei.com>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
-Date:   Mon, 19 Jul 2021 20:24:17 +0800
-Message-ID: <20210719122417.10355-1-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S236965AbhGSLoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:44:46 -0400
+Received: from out2.migadu.com ([188.165.223.204]:18979 "EHLO out2.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236667AbhGSLoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 07:44:44 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1626697523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=K7ghx0AZsAyKL0WMYIN9lYhMMsO+l3gMR+GM0jJGS+I=;
+        b=FJCsD5NtTUaB7czIVAKgJuxtM6SYhbF1SJR38/MCwH6CIGd4srQFQT3hgT+hz89P1tV+Bn
+        lKGr12K2SdoKpXR6u6KLFvC4c1yhq8WE/zQltRThUr2cp0XhPBehHrRrYBn8jxHMqQBnx8
+        AWZQKLBgy1LlH/3SsBIslC66ddTQnxI=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org, roopa@nvidia.com,
+        nikolay@nvidia.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        courmisch@gmail.com, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
+        jiri@resnulli.us, johannes@sipsolutions.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH 2/4] net: Adjustment parameters in rtnl_notify()
+Date:   Mon, 19 Jul 2021 20:25:06 +0800
+Message-Id: <20210719122506.5414-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema757-chm.china.huawei.com (10.1.198.199)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduce optprobe for ARM64. In optprobe, probed
-instruction is replaced by a branch instruction to detour
-buffer. Detour buffer contains trampoline code and a call to
-optimized_callback(). optimized_callback() calls opt_pre_handler()
-to execute kprobe handler.
+The fifth parameter alread modify from 'struct nlmsghdr *nlh' to
+'int report', just adjustment them.
+Add the case the nlh variable is NULL in nlmsg_report().
 
-Limitations:
-- We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
-guarantee the offset between probe point and kprobe pre_handler
-is not larger than 128MiB.
-
-Performance of optprobe on Hip08 platform is test using kprobe
-example module[1] to analyze the latency of a kernel function,
-and here is the result:
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/kprobes/kretprobe_example.c
-
-kprobe before optimized:
-[280709.846380] do_empty returned 0 and took 1530 ns to execute
-[280709.852057] do_empty returned 0 and took 550 ns to execute
-[280709.857631] do_empty returned 0 and took 440 ns to execute
-[280709.863215] do_empty returned 0 and took 380 ns to execute
-[280709.868787] do_empty returned 0 and took 360 ns to execute
-[280709.874362] do_empty returned 0 and took 340 ns to execute
-[280709.879936] do_empty returned 0 and took 320 ns to execute
-[280709.885505] do_empty returned 0 and took 300 ns to execute
-[280709.891075] do_empty returned 0 and took 280 ns to execute
-[280709.896646] do_empty returned 0 and took 290 ns to execute
-[280709.902220] do_empty returned 0 and took 290 ns to execute
-[280709.907807] do_empty returned 0 and took 290 ns to execute
-
-optprobe:
-[ 2965.964572] do_empty returned 0 and took 90 ns to execute
-[ 2965.969952] do_empty returned 0 and took 80 ns to execute
-[ 2965.975332] do_empty returned 0 and took 70 ns to execute
-[ 2965.980714] do_empty returned 0 and took 60 ns to execute
-[ 2965.986128] do_empty returned 0 and took 80 ns to execute
-[ 2965.991507] do_empty returned 0 and took 70 ns to execute
-[ 2965.996884] do_empty returned 0 and took 70 ns to execute
-[ 2966.002262] do_empty returned 0 and took 80 ns to execute
-[ 2966.007642] do_empty returned 0 and took 70 ns to execute
-[ 2966.013020] do_empty returned 0 and took 70 ns to execute
-[ 2966.018400] do_empty returned 0 and took 70 ns to execute
-[ 2966.023779] do_empty returned 0 and took 70 ns to execute
-[ 2966.029158] do_empty returned 0 and took 70 ns to execute
-
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
- arch/arm64/Kconfig                            |   1 +
- arch/arm64/include/asm/kprobes.h              |  23 ++
- arch/arm64/kernel/probes/Makefile             |   2 +
- arch/arm64/kernel/probes/kprobes.c            |  19 +-
- arch/arm64/kernel/probes/opt-arm64.c          | 217 ++++++++++++++++++
- .../arm64/kernel/probes/optprobe_trampoline.S |  80 +++++++
- 6 files changed, 339 insertions(+), 3 deletions(-)
- create mode 100644 arch/arm64/kernel/probes/opt-arm64.c
- create mode 100644 arch/arm64/kernel/probes/optprobe_trampoline.S
+ include/net/netlink.h    | 5 ++---
+ net/bridge/br_fdb.c      | 2 +-
+ net/bridge/br_mdb.c      | 4 ++--
+ net/bridge/br_netlink.c  | 2 +-
+ net/bridge/br_vlan.c     | 2 +-
+ net/core/fib_rules.c     | 2 +-
+ net/core/neighbour.c     | 2 +-
+ net/core/net_namespace.c | 2 +-
+ net/core/rtnetlink.c     | 6 +++---
+ net/dcb/dcbnl.c          | 2 +-
+ net/decnet/dn_dev.c      | 2 +-
+ net/decnet/dn_table.c    | 2 +-
+ net/ipv4/devinet.c       | 4 ++--
+ net/ipv4/fib_semantics.c | 2 +-
+ net/ipv4/fib_trie.c      | 2 +-
+ net/ipv4/ipmr.c          | 4 ++--
+ net/ipv4/nexthop.c       | 4 ++--
+ net/ipv6/addrconf.c      | 8 ++++----
+ net/ipv6/ip6mr.c         | 4 ++--
+ net/ipv6/ndisc.c         | 2 +-
+ net/ipv6/route.c         | 9 +++++----
+ net/mpls/af_mpls.c       | 4 ++--
+ net/phonet/pn_netlink.c  | 4 ++--
+ net/wireless/wext-core.c | 2 +-
+ 24 files changed, 41 insertions(+), 41 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index b48fa6da8d9f..1690cec625ed 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -200,6 +200,7 @@ config ARM64
- 	select HAVE_STACKPROTECTOR
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_KPROBES
-+	select HAVE_OPTPROBES if !RANDOMIZE_MODULE_REGION_FULL
- 	select HAVE_KRETPROBES
- 	select HAVE_GENERIC_VDSO
- 	select HOLES_IN_ZONE
-diff --git a/arch/arm64/include/asm/kprobes.h b/arch/arm64/include/asm/kprobes.h
-index 5d38ff4a4806..9e1c492a0c3d 100644
---- a/arch/arm64/include/asm/kprobes.h
-+++ b/arch/arm64/include/asm/kprobes.h
-@@ -39,6 +39,29 @@ void arch_remove_kprobe(struct kprobe *);
- int kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr);
- int kprobe_exceptions_notify(struct notifier_block *self,
- 			     unsigned long val, void *data);
-+
-+#define RELATIVEJUMP_SIZE (4)
-+#define MAX_COPIED_INSN	DIV_ROUND_UP(RELATIVEJUMP_SIZE, sizeof(kprobe_opcode_t))
-+struct arch_optimized_insn {
-+	kprobe_opcode_t copied_insn[MAX_COPIED_INSN];
-+	/* detour code buffer */
-+	kprobe_opcode_t *insn;
-+};
-+
-+/* optinsn template addresses */
-+extern __visible kprobe_opcode_t optprobe_template_entry[];
-+extern __visible kprobe_opcode_t optprobe_template_val[];
-+extern __visible kprobe_opcode_t optprobe_template_call[];
-+extern __visible kprobe_opcode_t optprobe_template_end[];
-+extern __visible kprobe_opcode_t optprobe_template_restore_begin[];
-+extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn[];
-+extern __visible kprobe_opcode_t optprobe_template_restore_end[];
-+
-+#define MAX_OPTIMIZED_LENGTH	4
-+#define MAX_OPTINSN_SIZE				\
-+	((unsigned long)optprobe_template_end -	\
-+	 (unsigned long)optprobe_template_entry)
-+
- void kretprobe_trampoline(void);
- void __kprobes *trampoline_probe_handler(struct pt_regs *regs);
- 
-diff --git a/arch/arm64/kernel/probes/Makefile b/arch/arm64/kernel/probes/Makefile
-index 8e4be92e25b1..52cf5d4ffe8a 100644
---- a/arch/arm64/kernel/probes/Makefile
-+++ b/arch/arm64/kernel/probes/Makefile
-@@ -4,3 +4,5 @@ obj-$(CONFIG_KPROBES)		+= kprobes.o decode-insn.o	\
- 				   simulate-insn.o
- obj-$(CONFIG_UPROBES)		+= uprobes.o decode-insn.o	\
- 				   simulate-insn.o
-+obj-$(CONFIG_OPTPROBES)		+= opt-arm64.o			\
-+				   optprobe_trampoline.o
-diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-index 6dbcc89f6662..83755ad62abe 100644
---- a/arch/arm64/kernel/probes/kprobes.c
-+++ b/arch/arm64/kernel/probes/kprobes.c
-@@ -11,6 +11,7 @@
- #include <linux/kasan.h>
- #include <linux/kernel.h>
- #include <linux/kprobes.h>
-+#include <linux/moduleloader.h>
- #include <linux/sched/debug.h>
- #include <linux/set_memory.h>
- #include <linux/slab.h>
-@@ -113,9 +114,21 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
- 
- void *alloc_insn_page(void)
- {
--	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
--			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
--			NUMA_NO_NODE, __builtin_return_address(0));
-+	void *page;
-+
-+	page = module_alloc(PAGE_SIZE);
-+	if (!page)
-+		return NULL;
-+
-+	set_vm_flush_reset_perms(page);
-+	/*
-+	 * First make the page read-only, and only then make it executable to
-+	 * prevent it from being W+X in between.
-+	 */
-+	set_memory_ro((unsigned long)page, 1);
-+	set_memory_x((unsigned long)page, 1);
-+
-+	return page;
+diff --git a/include/net/netlink.h b/include/net/netlink.h
+index 1ceec518ab49..85320141769b 100644
+--- a/include/net/netlink.h
++++ b/include/net/netlink.h
+@@ -875,8 +875,6 @@ static inline int nlmsg_validate_deprecated(const struct nlmsghdr *nlh,
+ 			      policy, NL_VALIDATE_LIBERAL, extack);
  }
  
- /* arm kprobe: install breakpoint in text */
-diff --git a/arch/arm64/kernel/probes/opt-arm64.c b/arch/arm64/kernel/probes/opt-arm64.c
-new file mode 100644
-index 000000000000..ff72f6275e71
---- /dev/null
-+++ b/arch/arm64/kernel/probes/opt-arm64.c
-@@ -0,0 +1,217 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Code for Kernel probes Jump optimization.
-+ *
-+ * Copyright (C) 2021 Hisilicon Limited
-+ */
+-
+-
+ /**
+  * nlmsg_report - need to report back to application?
+  * @nlh: netlink message header
+@@ -885,7 +883,8 @@ static inline int nlmsg_validate_deprecated(const struct nlmsghdr *nlh,
+  */
+ static inline int nlmsg_report(const struct nlmsghdr *nlh)
+ {
+-	return !!(nlh->nlmsg_flags & NLM_F_ECHO);
 +
-+#include <linux/jump_label.h>
-+#include <linux/kprobes.h>
++	return nlh ? !!(nlh->nlmsg_flags & NLM_F_ECHO) : 0;
+ }
+ 
+ /**
+diff --git a/net/bridge/br_fdb.c b/net/bridge/br_fdb.c
+index 2b862cffc03a..79d2f01280ae 100644
+--- a/net/bridge/br_fdb.c
++++ b/net/bridge/br_fdb.c
+@@ -816,7 +816,7 @@ static void fdb_notify(struct net_bridge *br,
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
+-	rtnl_notify(skb, net, 0, RTNLGRP_NEIGH, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_NEIGH, 0, GFP_ATOMIC);
+ 	return;
+ errout:
+ 	rtnl_set_sk_err(net, RTNLGRP_NEIGH, err);
+diff --git a/net/bridge/br_mdb.c b/net/bridge/br_mdb.c
+index 17a720b4473f..e1fc0674edde 100644
+--- a/net/bridge/br_mdb.c
++++ b/net/bridge/br_mdb.c
+@@ -773,7 +773,7 @@ void br_mdb_notify(struct net_device *dev,
+ 		goto errout;
+ 	}
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_MDB, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_MDB, 0, GFP_ATOMIC);
+ 	return;
+ errout:
+ 	rtnl_set_sk_err(net, RTNLGRP_MDB, err);
+@@ -839,7 +839,7 @@ void br_rtr_notify(struct net_device *dev, struct net_bridge_port *port,
+ 		goto errout;
+ 	}
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_MDB, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_MDB, 0, GFP_ATOMIC);
+ 	return;
+ 
+ errout:
+diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
+index 8642e56059fb..05a0c67f8a8c 100644
+--- a/net/bridge/br_netlink.c
++++ b/net/bridge/br_netlink.c
+@@ -607,7 +607,7 @@ void br_info_notify(int event, const struct net_bridge *br,
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
+-	rtnl_notify(skb, net, 0, RTNLGRP_LINK, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_LINK, 0, GFP_ATOMIC);
+ 	return;
+ errout:
+ 	rtnl_set_sk_err(net, RTNLGRP_LINK, err);
+diff --git a/net/bridge/br_vlan.c b/net/bridge/br_vlan.c
+index a08e9f193009..6ab6bfec5787 100644
+--- a/net/bridge/br_vlan.c
++++ b/net/bridge/br_vlan.c
+@@ -1795,7 +1795,7 @@ void br_vlan_notify(const struct net_bridge *br,
+ 		goto out_err;
+ 
+ 	nlmsg_end(skb, nlh);
+-	rtnl_notify(skb, net, 0, RTNLGRP_BRVLAN, NULL, GFP_KERNEL);
++	rtnl_notify(skb, net, 0, RTNLGRP_BRVLAN, 0, GFP_KERNEL);
+ 	return;
+ 
+ out_err:
+diff --git a/net/core/fib_rules.c b/net/core/fib_rules.c
+index a9f937975080..47a6335839b5 100644
+--- a/net/core/fib_rules.c
++++ b/net/core/fib_rules.c
+@@ -1183,7 +1183,7 @@ static void notify_rule_change(int event, struct fib_rule *rule,
+ 		goto errout;
+ 	}
+ 
+-	rtnl_notify(skb, net, pid, ops->nlgroup, nlh, GFP_KERNEL);
++	rtnl_notify(skb, net, pid, ops->nlgroup, nlmsg_report(nlh), GFP_KERNEL);
+ 	return;
+ errout:
+ 	if (err < 0)
+diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+index 53e85c70c6e5..a7d7e3d78651 100644
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -3370,7 +3370,7 @@ static void __neigh_notify(struct neighbour *n, int type, int flags,
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
+-	rtnl_notify(skb, net, 0, RTNLGRP_NEIGH, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_NEIGH, 0, GFP_ATOMIC);
+ 	return;
+ errout:
+ 	if (err < 0)
+diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+index 9b5a767eddd5..4c1853e4e550 100644
+--- a/net/core/net_namespace.c
++++ b/net/core/net_namespace.c
+@@ -1070,7 +1070,7 @@ static void rtnl_net_notifyid(struct net *net, int cmd, int id, u32 portid,
+ 	if (err < 0)
+ 		goto err_out;
+ 
+-	rtnl_notify(msg, net, portid, RTNLGRP_NSID, nlh, gfp);
++	rtnl_notify(msg, net, portid, RTNLGRP_NSID, nlmsg_report(nlh), gfp);
+ 	return;
+ 
+ err_out:
+diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+index 48bb9dc6f06f..5c6b7faf4dbc 100644
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -3814,7 +3814,7 @@ void rtmsg_ifinfo_send(struct sk_buff *skb, struct net_device *dev, gfp_t flags)
+ {
+ 	struct net *net = dev_net(dev);
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_LINK, NULL, flags);
++	rtnl_notify(skb, net, 0, RTNLGRP_LINK, 0, flags);
+ }
+ 
+ static void rtmsg_ifinfo_event(int type, struct net_device *dev,
+@@ -3908,7 +3908,7 @@ static void rtnl_fdb_notify(struct net_device *dev, u8 *addr, u16 vid, int type,
+ 		goto errout;
+ 	}
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_NEIGH, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_NEIGH, 0, GFP_ATOMIC);
+ 	return;
+ errout:
+ 	rtnl_set_sk_err(net, RTNLGRP_NEIGH, err);
+@@ -4839,7 +4839,7 @@ static int rtnl_bridge_notify(struct net_device *dev)
+ 	if (!skb->len)
+ 		goto errout;
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_LINK, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_LINK, 0, GFP_ATOMIC);
+ 	return 0;
+ errout:
+ 	WARN_ON(err == -EMSGSIZE);
+diff --git a/net/dcb/dcbnl.c b/net/dcb/dcbnl.c
+index b441ab330fd3..79cf618c768d 100644
+--- a/net/dcb/dcbnl.c
++++ b/net/dcb/dcbnl.c
+@@ -1395,7 +1395,7 @@ static int dcbnl_notify(struct net_device *dev, int event, int cmd,
+ 	} else {
+ 		/* End nlmsg and notify broadcast listeners */
+ 		nlmsg_end(skb, nlh);
+-		rtnl_notify(skb, net, 0, RTNLGRP_DCB, NULL, GFP_KERNEL);
++		rtnl_notify(skb, net, 0, RTNLGRP_DCB, 0, GFP_KERNEL);
+ 	}
+ 
+ 	return err;
+diff --git a/net/decnet/dn_dev.c b/net/decnet/dn_dev.c
+index d1c50a48614b..1e795723b25c 100644
+--- a/net/decnet/dn_dev.c
++++ b/net/decnet/dn_dev.c
+@@ -728,7 +728,7 @@ static void dn_ifaddr_notify(int event, struct dn_ifaddr *ifa)
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
+-	rtnl_notify(skb, &init_net, 0, RTNLGRP_DECnet_IFADDR, NULL, GFP_KERNEL);
++	rtnl_notify(skb, &init_net, 0, RTNLGRP_DECnet_IFADDR, 0, GFP_KERNEL);
+ 	return;
+ errout:
+ 	if (err < 0)
+diff --git a/net/decnet/dn_table.c b/net/decnet/dn_table.c
+index 4086f9c746af..3f545e486f81 100644
+--- a/net/decnet/dn_table.c
++++ b/net/decnet/dn_table.c
+@@ -399,7 +399,7 @@ static void dn_rtmsg_fib(int event, struct dn_fib_node *f, int z, u32 tb_id,
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
+-	rtnl_notify(skb, &init_net, portid, RTNLGRP_DECnet_ROUTE, nlh, GFP_KERNEL);
++	rtnl_notify(skb, &init_net, portid, RTNLGRP_DECnet_ROUTE, nlmsg_report(nlh), GFP_KERNEL);
+ 	return;
+ errout:
+ 	if (err < 0)
+diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
+index 73721a4448bd..063b52804122 100644
+--- a/net/ipv4/devinet.c
++++ b/net/ipv4/devinet.c
+@@ -1907,7 +1907,7 @@ static void rtmsg_ifa(int event, struct in_ifaddr *ifa, struct nlmsghdr *nlh,
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
+-	rtnl_notify(skb, net, portid, RTNLGRP_IPV4_IFADDR, nlh, GFP_KERNEL);
++	rtnl_notify(skb, net, portid, RTNLGRP_IPV4_IFADDR, nlmsg_report(nlh), GFP_KERNEL);
+ 	return;
+ errout:
+ 	if (err < 0)
+@@ -2102,7 +2102,7 @@ void inet_netconf_notify_devconf(struct net *net, int event, int type,
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
+-	rtnl_notify(skb, net, 0, RTNLGRP_IPV4_NETCONF, NULL, GFP_KERNEL);
++	rtnl_notify(skb, net, 0, RTNLGRP_IPV4_NETCONF, 0, GFP_KERNEL);
+ 	return;
+ errout:
+ 	if (err < 0)
+diff --git a/net/ipv4/fib_semantics.c b/net/ipv4/fib_semantics.c
+index 4c0c33e4710d..785cf4cc4ddf 100644
+--- a/net/ipv4/fib_semantics.c
++++ b/net/ipv4/fib_semantics.c
+@@ -530,7 +530,7 @@ void rtmsg_fib(int event, __be32 key, struct fib_alias *fa,
+ 		goto errout;
+ 	}
+ 	rtnl_notify(skb, info->nl_net, info->portid, RTNLGRP_IPV4_ROUTE,
+-		    info->nlh, GFP_KERNEL);
++		    nlmsg_report(info->nlh), GFP_KERNEL);
+ 	return;
+ errout:
+ 	if (err < 0)
+diff --git a/net/ipv4/fib_trie.c b/net/ipv4/fib_trie.c
+index 25cf387cca5b..2ded42e3ad67 100644
+--- a/net/ipv4/fib_trie.c
++++ b/net/ipv4/fib_trie.c
+@@ -1078,7 +1078,7 @@ void fib_alias_hw_flags_set(struct net *net, const struct fib_rt_info *fri)
+ 		goto errout;
+ 	}
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_IPV4_ROUTE, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_IPV4_ROUTE, 0, GFP_ATOMIC);
+ 	goto out;
+ 
+ errout:
+diff --git a/net/ipv4/ipmr.c b/net/ipv4/ipmr.c
+index 2dda856ca260..6768f773e104 100644
+--- a/net/ipv4/ipmr.c
++++ b/net/ipv4/ipmr.c
+@@ -2383,7 +2383,7 @@ static void mroute_netlink_event(struct mr_table *mrt, struct mfc_cache *mfc,
+ 	if (err < 0)
+ 		goto errout;
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_IPV4_MROUTE, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_IPV4_MROUTE, 0, GFP_ATOMIC);
+ 	return;
+ 
+ errout:
+@@ -2447,7 +2447,7 @@ static void igmpmsg_netlink_event(struct mr_table *mrt, struct sk_buff *pkt)
+ 
+ 	nlmsg_end(skb, nlh);
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_IPV4_MROUTE_R, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_IPV4_MROUTE_R, 0, GFP_ATOMIC);
+ 	return;
+ 
+ nla_put_failure:
+diff --git a/net/ipv4/nexthop.c b/net/ipv4/nexthop.c
+index 4075230b14c6..681bfb4212d4 100644
+--- a/net/ipv4/nexthop.c
++++ b/net/ipv4/nexthop.c
+@@ -857,7 +857,7 @@ static void nexthop_notify(int event, struct nexthop *nh, struct nl_info *info)
+ 	}
+ 
+ 	rtnl_notify(skb, info->nl_net, info->portid, RTNLGRP_NEXTHOP,
+-		    info->nlh, gfp_any());
++		    nlmsg_report(info->nlh), gfp_any());
+ 	return;
+ errout:
+ 	if (err < 0)
+@@ -978,7 +978,7 @@ static void nexthop_bucket_notify(struct nh_res_table *res_table,
+ 		goto errout;
+ 	}
+ 
+-	rtnl_notify(skb, nh->net, 0, RTNLGRP_NEXTHOP, NULL, GFP_KERNEL);
++	rtnl_notify(skb, nh->net, 0, RTNLGRP_NEXTHOP, 0, GFP_KERNEL);
+ 	return;
+ errout:
+ 	if (err < 0)
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index e2f625e39455..27a4d3aa5558 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -583,7 +583,7 @@ void inet6_netconf_notify_devconf(struct net *net, int event, int type,
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
+-	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_NETCONF, NULL, GFP_KERNEL);
++	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_NETCONF, 0, GFP_KERNEL);
+ 	return;
+ errout:
+ 	rtnl_set_sk_err(net, RTNLGRP_IPV6_NETCONF, err);
+@@ -5442,7 +5442,7 @@ static void inet6_ifa_notify(int event, struct inet6_ifaddr *ifa)
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
+-	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_IFADDR, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_IFADDR, 0, GFP_ATOMIC);
+ 	return;
+ errout:
+ 	if (err < 0)
+@@ -5979,7 +5979,7 @@ void inet6_ifinfo_notify(int event, struct inet6_dev *idev)
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
+-	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_IFINFO, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_IFINFO, 0, GFP_ATOMIC);
+ 	return;
+ errout:
+ 	if (err < 0)
+@@ -6051,7 +6051,7 @@ static void inet6_prefix_notify(int event, struct inet6_dev *idev,
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
+-	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_PREFIX, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_PREFIX, 0, GFP_ATOMIC);
+ 	return;
+ errout:
+ 	if (err < 0)
+diff --git a/net/ipv6/ip6mr.c b/net/ipv6/ip6mr.c
+index 06b0d2c329b9..daa4dce01964 100644
+--- a/net/ipv6/ip6mr.c
++++ b/net/ipv6/ip6mr.c
+@@ -2412,7 +2412,7 @@ static void mr6_netlink_event(struct mr_table *mrt, struct mfc6_cache *mfc,
+ 	if (err < 0)
+ 		goto errout;
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_MROUTE, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_MROUTE, 0, GFP_ATOMIC);
+ 	return;
+ 
+ errout:
+@@ -2476,7 +2476,7 @@ static void mrt6msg_netlink_event(struct mr_table *mrt, struct sk_buff *pkt)
+ 
+ 	nlmsg_end(skb, nlh);
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_MROUTE_R, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_MROUTE_R, 0, GFP_ATOMIC);
+ 	return;
+ 
+ nla_put_failure:
+diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
+index c467c6419893..bd8219f2d75f 100644
+--- a/net/ipv6/ndisc.c
++++ b/net/ipv6/ndisc.c
+@@ -1157,7 +1157,7 @@ static void ndisc_ra_useropt(struct sk_buff *ra, struct nd_opt_hdr *opt)
+ 		goto nla_put_failure;
+ 	nlmsg_end(skb, nlh);
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_ND_USEROPT, NULL, GFP_ATOMIC);
++	rtnl_notify(skb, net, 0, RTNLGRP_ND_USEROPT, 0, GFP_ATOMIC);
+ 	return;
+ 
+ nla_put_failure:
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 7b756a7dc036..c107fcf539d6 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -3968,7 +3968,7 @@ static int __ip6_del_rt_siblings(struct fib6_info *rt, struct fib6_config *cfg)
+ 
+ 	if (skb) {
+ 		rtnl_notify(skb, net, info->portid, RTNLGRP_IPV6_ROUTE,
+-			    info->nlh, gfp_any());
++			    nlmsg_report(info->nlh), gfp_any());
+ 	}
+ 	return err;
+ }
+@@ -6149,7 +6149,7 @@ void inet6_rt_notify(int event, struct fib6_info *rt, struct nl_info *info,
+ 		goto errout;
+ 	}
+ 	rtnl_notify(skb, net, info->portid, RTNLGRP_IPV6_ROUTE,
+-		    info->nlh, gfp_any());
++		    nlmsg_report(info->nlh), gfp_any());
+ 	return;
+ errout:
+ 	if (err < 0)
+@@ -6175,8 +6175,9 @@ void fib6_rt_update(struct net *net, struct fib6_info *rt,
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
 +
-+#include <asm/cacheflush.h>
-+#include <asm/insn.h>
-+#include <asm/kprobes.h>
-+#include <asm/patching.h>
-+
-+#define TMPL_VAL_IDX \
-+	(optprobe_template_val - optprobe_template_entry)
-+#define TMPL_CALL_BACK \
-+	(optprobe_template_call - optprobe_template_entry)
-+#define TMPL_END_IDX \
-+	(optprobe_template_end - optprobe_template_entry)
-+#define TMPL_RESTORE_ORIGN_INSN \
-+	(optprobe_template_restore_orig_insn - optprobe_template_entry)
-+#define TMPL_RESTORE_END \
-+	(optprobe_template_restore_end - optprobe_template_entry)
-+
-+int arch_check_optimized_kprobe(struct optimized_kprobe *op)
-+{
-+	return 0;
-+}
-+
-+int arch_prepared_optinsn(struct arch_optimized_insn *optinsn)
-+{
-+	return optinsn->insn != NULL;
-+}
-+
-+int arch_within_optimized_kprobe(struct optimized_kprobe *op,
-+				unsigned long addr)
-+{
-+	return ((unsigned long)op->kp.addr <= addr &&
-+		(unsigned long)op->kp.addr + RELATIVEJUMP_SIZE > addr);
-+}
-+
-+static void
-+optimized_callback(struct optimized_kprobe *op, struct pt_regs *regs)
-+{
-+	/* This is possible if op is under delayed unoptimizing */
-+	if (kprobe_disabled(&op->kp))
-+		return;
-+
-+	preempt_disable();
-+
-+	if (kprobe_running()) {
-+		kprobes_inc_nmissed_count(&op->kp);
-+	} else {
-+		__this_cpu_write(current_kprobe, &op->kp);
-+		regs->pc = (unsigned long)op->kp.addr;
-+		get_kprobe_ctlblk()->kprobe_status = KPROBE_HIT_ACTIVE;
-+		opt_pre_handler(&op->kp, regs);
-+		__this_cpu_write(current_kprobe, NULL);
-+	}
-+
-+	preempt_enable_no_resched();
-+}
-+NOKPROBE_SYMBOL(optimized_callback)
-+
-+static bool is_offset_in_branch_range(long offset)
-+{
-+	return (offset >= -0x08000000 && offset <= 0x07fffffc && !(offset & 0x3));
-+}
-+
-+int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *orig)
-+{
-+	kprobe_opcode_t *code;
-+	long rel_chk;
-+	u32 insn, size;
-+	int ret, i;
-+	void *addr;
-+
-+	code = get_optinsn_slot();
-+	if (!code)
-+		return -ENOMEM;
-+
-+	/*
-+	 * Verify if the address gap is in 128MiB range, because this uses
-+	 * a relative jump.
-+	 *
-+	 * kprobe opt use a 'b' instruction to branch to optinsn.insn.
-+	 * According to ARM manual, branch instruction is:
-+	 *
-+	 *   31  30                  25              0
-+	 *  +----+---+---+---+---+---+---------------+
-+	 *  |cond| 0 | 0 | 1 | 0 | 1 |     imm26     |
-+	 *  +----+---+---+---+---+---+---------------+
-+	 *
-+	 * imm26 is a signed 26 bits integer. The real branch offset is computed
-+	 * by: imm64 = SignExtend(imm26:'00', 64);
-+	 *
-+	 * So the maximum forward branch should be:
-+	 *   (0x01ffffff << 2) = 1720x07fffffc =  0x07fffffc
-+	 * The maximum backward branch should be:
-+	 *   (0xfe000000 << 2) = 0xFFFFFFFFF8000000 = -0x08000000
-+	 *
-+	 * We can simply check (rel & 0xf8000003):
-+	 *  if rel is positive, (rel & 0xf8000003) should be 0
-+	 *  if rel is negitive, (rel & 0xf8000003) should be 0xf8000000
-+	 *  the last '3' is used for alignment checking.
-+	 */
-+	rel_chk = (unsigned long)code -
-+			(unsigned long)orig->addr + 8;
-+	if (!is_offset_in_branch_range(rel_chk)) {
-+		pr_err("%s is out of branch range.\n", orig->symbol_name);
-+		free_optinsn_slot(code, 0);
-+		return -ERANGE;
-+	}
-+
-+	/* Setup template */
-+	size = (TMPL_END_IDX * sizeof(kprobe_opcode_t)) / sizeof(int);
-+	for (i = 0; i < size; i++) {
-+		addr = code + i;
-+		insn = *(optprobe_template_entry + i);
-+		ret = aarch64_insn_patch_text(&addr, &insn, 1);
-+		if (ret < 0) {
-+			free_optinsn_slot(code, 0);
-+			return -ERANGE;
-+		}
-+	}
-+
-+	/* Set probe information */
-+	addr = code + TMPL_VAL_IDX;
-+	insn =  (unsigned long long)op & 0xffffffff;
-+	aarch64_insn_patch_text(&addr, &insn, 1);
-+
-+	addr = addr + 4;
-+	insn = ((unsigned long long)op & GENMASK_ULL(63, 32)) >> 32;
-+	aarch64_insn_patch_text(&addr, &insn, 1);
-+
-+	addr = code + TMPL_CALL_BACK;
-+	insn =  aarch64_insn_gen_branch_imm((unsigned long)addr,
-+				(unsigned long)optimized_callback,
-+				AARCH64_INSN_BRANCH_LINK);
-+	aarch64_insn_patch_text(&addr, &insn, 1);
-+
-+	/* The original probed instruction */
-+	addr = code + TMPL_RESTORE_ORIGN_INSN;
-+	insn =  orig->opcode;
-+	aarch64_insn_patch_text(&addr, &insn, 1);
-+
-+	/* Jump back to next instruction */
-+	addr = code + TMPL_RESTORE_END;
-+	insn = aarch64_insn_gen_branch_imm(
-+				(unsigned long)(&code[TMPL_RESTORE_END]),
-+				(unsigned long)(op->kp.addr) + 4,
-+				AARCH64_INSN_BRANCH_NOLINK);
-+	aarch64_insn_patch_text(&addr, &insn, 1);
-+
-+	flush_icache_range((unsigned long)code,
-+			   (unsigned long)(&code[TMPL_END_IDX]));
-+	/* Set op->optinsn.insn means prepared. */
-+	op->optinsn.insn = code;
-+	return 0;
-+}
-+
-+void arch_optimize_kprobes(struct list_head *oplist)
-+{
-+	struct optimized_kprobe *op, *tmp;
-+
-+	list_for_each_entry_safe(op, tmp, oplist, list) {
-+		u32 insn;
-+
-+		WARN_ON(kprobe_disabled(&op->kp));
-+
-+		/*
-+		 * Backup instructions which will be replaced
-+		 * by jump address
-+		 */
-+		memcpy(op->optinsn.copied_insn, op->kp.addr,
-+			RELATIVEJUMP_SIZE);
-+		insn = aarch64_insn_gen_branch_imm((unsigned long)op->kp.addr,
-+				(unsigned long)op->optinsn.insn,
-+				AARCH64_INSN_BRANCH_NOLINK);
-+
-+		WARN_ON(insn == 0);
-+
-+		aarch64_insn_patch_text((void *)&(op->kp.addr), &insn, 1);
-+
-+		list_del_init(&op->list);
-+	}
-+}
-+
-+void arch_unoptimize_kprobe(struct optimized_kprobe *op)
-+{
-+	arch_arm_kprobe(&op->kp);
-+}
-+
-+/*
-+ * Recover original instructions and breakpoints from relative jumps.
-+ * Caller must call with locking kprobe_mutex.
-+ */
-+void arch_unoptimize_kprobes(struct list_head *oplist,
-+			    struct list_head *done_list)
-+{
-+	struct optimized_kprobe *op, *tmp;
-+
-+	list_for_each_entry_safe(op, tmp, oplist, list) {
-+		arch_unoptimize_kprobe(op);
-+		list_move(&op->list, done_list);
-+	}
-+}
-+
-+void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
-+{
-+	if (op->optinsn.insn) {
-+		free_optinsn_slot(op->optinsn.insn, 1);
-+		op->optinsn.insn = NULL;
-+	}
-+}
-diff --git a/arch/arm64/kernel/probes/optprobe_trampoline.S b/arch/arm64/kernel/probes/optprobe_trampoline.S
-new file mode 100644
-index 000000000000..13729cb279b8
---- /dev/null
-+++ b/arch/arm64/kernel/probes/optprobe_trampoline.S
-@@ -0,0 +1,80 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * trampoline entry and return code for optprobes.
-+ */
-+
-+#include <linux/linkage.h>
-+#include <asm/asm-offsets.h>
-+#include <asm/assembler.h>
-+
-+	.global optprobe_template_entry
-+optprobe_template_entry:
-+	sub sp, sp, #PT_REGS_SIZE
-+	stp x0, x1, [sp, #S_X0]
-+	stp x2, x3, [sp, #S_X2]
-+	stp x4, x5, [sp, #S_X4]
-+	stp x6, x7, [sp, #S_X6]
-+	stp x8, x9, [sp, #S_X8]
-+	stp x10, x11, [sp, #S_X10]
-+	stp x12, x13, [sp, #S_X12]
-+	stp x14, x15, [sp, #S_X14]
-+	stp x16, x17, [sp, #S_X16]
-+	stp x18, x19, [sp, #S_X18]
-+	stp x20, x21, [sp, #S_X20]
-+	stp x22, x23, [sp, #S_X22]
-+	stp x24, x25, [sp, #S_X24]
-+	stp x26, x27, [sp, #S_X26]
-+	stp x28, x29, [sp, #S_X28]
-+	add x0, sp, #PT_REGS_SIZE
-+	stp lr, x0, [sp, #S_LR]
-+	/*
-+	 * Construct a useful saved PSTATE
-+	 */
-+	mrs x0, nzcv
-+	mrs x1, daif
-+	orr x0, x0, x1
-+	mrs x1, CurrentEL
-+	orr x0, x0, x1
-+	mrs x1, SPSel
-+	orr x0, x0, x1
-+	stp xzr, x0, [sp, #S_PC]
-+	/* Get parameters to optimized_callback() */
-+	ldr	x0, 1f
-+	mov	x1, sp
-+	/* Branch to optimized_callback() */
-+	.global optprobe_template_call
-+optprobe_template_call:
-+	nop
-+        /* Restore registers */
-+	ldr x0, [sp, #S_PSTATE]
-+	and x0, x0, #(PSR_N_BIT | PSR_Z_BIT | PSR_C_BIT | PSR_V_BIT)
-+	msr nzcv, x0
-+	ldp x0, x1, [sp, #S_X0]
-+	ldp x2, x3, [sp, #S_X2]
-+	ldp x4, x5, [sp, #S_X4]
-+	ldp x6, x7, [sp, #S_X6]
-+	ldp x8, x9, [sp, #S_X8]
-+	ldp x10, x11, [sp, #S_X10]
-+	ldp x12, x13, [sp, #S_X12]
-+	ldp x14, x15, [sp, #S_X14]
-+	ldp x16, x17, [sp, #S_X16]
-+	ldp x18, x19, [sp, #S_X18]
-+	ldp x20, x21, [sp, #S_X20]
-+	ldp x22, x23, [sp, #S_X22]
-+	ldp x24, x25, [sp, #S_X24]
-+	ldp x26, x27, [sp, #S_X26]
-+	ldp x28, x29, [sp, #S_X28]
-+	ldr lr, [sp, #S_LR]
-+        add sp, sp, #PT_REGS_SIZE
-+	.global optprobe_template_restore_orig_insn
-+optprobe_template_restore_orig_insn:
-+	nop
-+	.global optprobe_template_restore_end
-+optprobe_template_restore_end:
-+	nop
-+	.global optprobe_template_end
-+optprobe_template_end:
-+	.global optprobe_template_val
-+optprobe_template_val:
-+	1:	.long 0
-+		.long 0
+ 	rtnl_notify(skb, net, info->portid, RTNLGRP_IPV6_ROUTE,
+-		    info->nlh, gfp_any());
++		    nlmsg_report(info->nlh), gfp_any());
+ 	return;
+ errout:
+ 	if (err < 0)
+@@ -6227,7 +6228,7 @@ void fib6_info_hw_flags_set(struct net *net, struct fib6_info *f6i,
+ 		goto errout;
+ 	}
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_ROUTE, NULL, GFP_KERNEL);
++	rtnl_notify(skb, net, 0, RTNLGRP_IPV6_ROUTE, 0, GFP_KERNEL);
+ 	return;
+ 
+ errout:
+diff --git a/net/mpls/af_mpls.c b/net/mpls/af_mpls.c
+index 05a21dd072df..2915be869471 100644
+--- a/net/mpls/af_mpls.c
++++ b/net/mpls/af_mpls.c
+@@ -1197,7 +1197,7 @@ static void mpls_netconf_notify_devconf(struct net *net, int event,
+ 		goto errout;
+ 	}
+ 
+-	rtnl_notify(skb, net, 0, RTNLGRP_MPLS_NETCONF, NULL, GFP_KERNEL);
++	rtnl_notify(skb, net, 0, RTNLGRP_MPLS_NETCONF, 0, GFP_KERNEL);
+ 	return;
+ errout:
+ 	if (err < 0)
+@@ -2257,7 +2257,7 @@ static void rtmsg_lfib(int event, u32 label, struct mpls_route *rt,
+ 		kfree_skb(skb);
+ 		goto errout;
+ 	}
+-	rtnl_notify(skb, net, portid, RTNLGRP_MPLS_ROUTE, nlh, GFP_KERNEL);
++	rtnl_notify(skb, net, portid, RTNLGRP_MPLS_ROUTE, nlmsg_report(nlh), GFP_KERNEL);
+ 
+ 	return;
+ errout:
+diff --git a/net/phonet/pn_netlink.c b/net/phonet/pn_netlink.c
+index 59aebe296890..03e04d0b8453 100644
+--- a/net/phonet/pn_netlink.c
++++ b/net/phonet/pn_netlink.c
+@@ -38,7 +38,7 @@ void phonet_address_notify(int event, struct net_device *dev, u8 addr)
+ 		goto errout;
+ 	}
+ 	rtnl_notify(skb, dev_net(dev), 0,
+-		    RTNLGRP_PHONET_IFADDR, NULL, GFP_KERNEL);
++		    RTNLGRP_PHONET_IFADDR, 0, GFP_KERNEL);
+ 	return;
+ errout:
+ 	rtnl_set_sk_err(dev_net(dev), RTNLGRP_PHONET_IFADDR, err);
+@@ -204,7 +204,7 @@ void rtm_phonet_notify(int event, struct net_device *dev, u8 dst)
+ 		goto errout;
+ 	}
+ 	rtnl_notify(skb, dev_net(dev), 0,
+-			  RTNLGRP_PHONET_ROUTE, NULL, GFP_KERNEL);
++			  RTNLGRP_PHONET_ROUTE, 0, GFP_KERNEL);
+ 	return;
+ errout:
+ 	rtnl_set_sk_err(dev_net(dev), RTNLGRP_PHONET_ROUTE, err);
+diff --git a/net/wireless/wext-core.c b/net/wireless/wext-core.c
+index 76a80a41615b..7fb2c3144254 100644
+--- a/net/wireless/wext-core.c
++++ b/net/wireless/wext-core.c
+@@ -350,7 +350,7 @@ void wireless_nlevent_flush(void)
+ 	down_read(&net_rwsem);
+ 	for_each_net(net) {
+ 		while ((skb = skb_dequeue(&net->wext_nlevents)))
+-			rtnl_notify(skb, net, 0, RTNLGRP_LINK, NULL,
++			rtnl_notify(skb, net, 0, RTNLGRP_LINK, 0,
+ 				    GFP_KERNEL);
+ 	}
+ 	up_read(&net_rwsem);
 -- 
-2.17.1
+2.32.0
 
