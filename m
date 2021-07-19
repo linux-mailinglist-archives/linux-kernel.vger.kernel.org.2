@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409FC3CDFE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328F93CDC4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245298AbhGSPMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:12:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41942 "EHLO mail.kernel.org"
+        id S243782AbhGSOv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:51:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344281AbhGSOso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6474D610A5;
-        Mon, 19 Jul 2021 15:27:35 +0000 (UTC)
+        id S244888AbhGSOe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:34:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87DAC6113C;
+        Mon, 19 Jul 2021 15:13:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708455;
-        bh=RIUjBmXvhAh6zcbWGsDhBiHoTG8GsMEaX0KmMTVHLQo=;
+        s=korg; t=1626707632;
+        bh=buEgtu8vPGsBKS3HtvZ9ChBpyLl0G/Iljag4eaLJBSU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ThvgYHBksGi5sca3CoPgo5LHX35dpfiDCg3u8A5zSK/bw6TpQhWcvn21WJdnMkz9g
-         8a5b+u7SZS9hp7SUWcwE3Fq9udYUGwqzJ9lPthzigtPjE+8x/x70Sx2Z6CoL3zFHoa
-         1xL4EHvzvHp7i2VXgt2d/GA/n9qrxoQKpwtZeaIQ=
+        b=195n3kZU0RNyE9j1pzwF8x6UiCwqkVR093gnvVy8n27bgHiF7HKqyPRa6pFVkdXB1
+         CrjqXMWJbnRLz5hGeq0KFjhCJQLP6/5XhEBiKk0k/90DN+7l/hVm4HuByr7muc9Nbh
+         ofjyugnYMUOCIsBUIWbUJxN8vFpedhqE9xYHHE5U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amithash Prasad <amithash@fb.com>,
-        Tao Ren <rentao.bupt@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 292/315] watchdog: aspeed: fix hardware timeout calculation
-Date:   Mon, 19 Jul 2021 16:53:01 +0200
-Message-Id: <20210719144953.059717379@linuxfoundation.org>
+Subject: [PATCH 4.9 240/245] memory: fsl_ifc: fix leak of private memory on probe failure
+Date:   Mon, 19 Jul 2021 16:53:02 +0200
+Message-Id: <20210719144948.127626966@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
-References: <20210719144942.861561397@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Ren <rentao.bupt@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit e7dc481c92060f9ce872878b0b7a08c24713a7e5 ]
+[ Upstream commit 8e0d09b1232d0538066c40ed4c13086faccbdff6 ]
 
-Fix hardware timeout calculation in aspeed_wdt_set_timeout function to
-ensure the reload value does not exceed the hardware limit.
+On probe error the driver should free the memory allocated for private
+structure.  Fix this by using resource-managed allocation.
 
-Fixes: efa859f7d786 ("watchdog: Add Aspeed watchdog driver")
-Reported-by: Amithash Prasad <amithash@fb.com>
-Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20210417034249.5978-1-rentao.bupt@gmail.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Fixes: a20cbdeffce2 ("powerpc/fsl: Add support for Integrated Flash Controller")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210527154322.81253-2-krzysztof.kozlowski@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/aspeed_wdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/memory/fsl_ifc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
-index f5835cbd5d41..5c13659cc89a 100644
---- a/drivers/watchdog/aspeed_wdt.c
-+++ b/drivers/watchdog/aspeed_wdt.c
-@@ -147,7 +147,7 @@ static int aspeed_wdt_set_timeout(struct watchdog_device *wdd,
+diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
+index 74bbbdc584f4..38b945eb410f 100644
+--- a/drivers/memory/fsl_ifc.c
++++ b/drivers/memory/fsl_ifc.c
+@@ -109,7 +109,6 @@ static int fsl_ifc_ctrl_remove(struct platform_device *dev)
+ 	iounmap(ctrl->gregs);
  
- 	wdd->timeout = timeout;
+ 	dev_set_drvdata(&dev->dev, NULL);
+-	kfree(ctrl);
  
--	actual = min(timeout, wdd->max_hw_heartbeat_ms * 1000);
-+	actual = min(timeout, wdd->max_hw_heartbeat_ms / 1000);
+ 	return 0;
+ }
+@@ -221,7 +220,8 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
  
- 	writel(actual * WDT_RATE_1MHZ, wdt->base + WDT_RELOAD_VALUE);
- 	writel(WDT_RESTART_MAGIC, wdt->base + WDT_RESTART);
+ 	dev_info(&dev->dev, "Freescale Integrated Flash Controller\n");
+ 
+-	fsl_ifc_ctrl_dev = kzalloc(sizeof(*fsl_ifc_ctrl_dev), GFP_KERNEL);
++	fsl_ifc_ctrl_dev = devm_kzalloc(&dev->dev, sizeof(*fsl_ifc_ctrl_dev),
++					GFP_KERNEL);
+ 	if (!fsl_ifc_ctrl_dev)
+ 		return -ENOMEM;
+ 
 -- 
 2.30.2
 
