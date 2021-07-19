@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE8D3CE6AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAF03CE864
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350880AbhGSQM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:12:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40562 "EHLO mail.kernel.org"
+        id S1356230AbhGSQky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:40:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345815AbhGSPJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:09:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA49360FDA;
-        Mon, 19 Jul 2021 15:49:25 +0000 (UTC)
+        id S1347581AbhGSPTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:19:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E40D6127C;
+        Mon, 19 Jul 2021 15:58:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709766;
-        bh=jD10MEmmsMtXO80he3B1eOkXfbkNRRj7TJMSSwPQHr0=;
+        s=korg; t=1626710324;
+        bh=EQo2bEt6DIdKXGkXsHjRhrkMhLn9zQsgLogQXGrwVJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IEvKC9kPwuph1f+9KtidEn/cobacFm+omBGZoAO/aYd3Umo4/yUxb89pv4PFwLqu6
-         6loQbmd66hyISGTfm/FaMZO9hPfCwVHLXLqXuE5R3i3tnt8Y6dTqYz3pwia9Ya3Zkp
-         GHWuf8zZhKf+81MeF5YzqReNyAWIHCERBB9xDGOE=
+        b=yGy0OFrbTwKHl8GSvHkHzFB/ju6kaGznDe0ufExj/uktQmQFMwMlmdHfWJ7IaLv8X
+         RBk2egEr2y6m15AReCMPcUGmgTVexANzMut5QrkDmyArWTosgEcZl/xxyGmi9XBboq
+         9bTnPC0q+EUhtTw8fK0LziLO3vDpVC1ESjPj7iUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 088/149] power: supply: ab8500: add missing MODULE_DEVICE_TABLE
-Date:   Mon, 19 Jul 2021 16:53:16 +0200
-Message-Id: <20210719144922.238128078@linuxfoundation.org>
+Subject: [PATCH 5.10 168/243] f2fs: fix to avoid adding tab before doc section
+Date:   Mon, 19 Jul 2021 16:53:17 +0200
+Message-Id: <20210719144946.327644552@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Chao Yu <yuchao0@huawei.com>
 
-[ Upstream commit dfe52db13ab8d24857a9840ec7ca75eef800c26c ]
+[ Upstream commit 3c16dc40aab84bab9cf54c2b61a458bb86b180c3 ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+Otherwise whole section after tab will be invisible in compiled
+html format document.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 89272ca1102e ("docs: filesystems: convert f2fs.txt to ReST")
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/ab8500_btemp.c   | 1 +
- drivers/power/supply/ab8500_charger.c | 1 +
- drivers/power/supply/ab8500_fg.c      | 1 +
- 3 files changed, 3 insertions(+)
+ Documentation/filesystems/f2fs.rst | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/power/supply/ab8500_btemp.c b/drivers/power/supply/ab8500_btemp.c
-index 8fe81259bfd9..c8a22df65036 100644
---- a/drivers/power/supply/ab8500_btemp.c
-+++ b/drivers/power/supply/ab8500_btemp.c
-@@ -1120,6 +1120,7 @@ static const struct of_device_id ab8500_btemp_match[] = {
- 	{ .compatible = "stericsson,ab8500-btemp", },
- 	{ },
- };
-+MODULE_DEVICE_TABLE(of, ab8500_btemp_match);
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index b8ee761c9922..8c0fbdd8ce6f 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -688,10 +688,10 @@ users.
+ ===================== ======================== ===================
+ User                  F2FS                     Block
+ ===================== ======================== ===================
+-                      META                     WRITE_LIFE_NOT_SET
+-                      HOT_NODE                 "
+-                      WARM_NODE                "
+-                      COLD_NODE                "
++N/A                   META                     WRITE_LIFE_NOT_SET
++N/A                   HOT_NODE                 "
++N/A                   WARM_NODE                "
++N/A                   COLD_NODE                "
+ ioctl(COLD)           COLD_DATA                WRITE_LIFE_EXTREME
+ extension list        "                        "
  
- static struct platform_driver ab8500_btemp_driver = {
- 	.probe = ab8500_btemp_probe,
-diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply/ab8500_charger.c
-index 90dbf3760e83..28e9d4f9ab8c 100644
---- a/drivers/power/supply/ab8500_charger.c
-+++ b/drivers/power/supply/ab8500_charger.c
-@@ -3633,6 +3633,7 @@ static const struct of_device_id ab8500_charger_match[] = {
- 	{ .compatible = "stericsson,ab8500-charger", },
- 	{ },
- };
-+MODULE_DEVICE_TABLE(of, ab8500_charger_match);
+@@ -717,10 +717,10 @@ WRITE_LIFE_LONG       "                        WRITE_LIFE_LONG
+ ===================== ======================== ===================
+ User                  F2FS                     Block
+ ===================== ======================== ===================
+-                      META                     WRITE_LIFE_MEDIUM;
+-                      HOT_NODE                 WRITE_LIFE_NOT_SET
+-                      WARM_NODE                "
+-                      COLD_NODE                WRITE_LIFE_NONE
++N/A                   META                     WRITE_LIFE_MEDIUM;
++N/A                   HOT_NODE                 WRITE_LIFE_NOT_SET
++N/A                   WARM_NODE                "
++N/A                   COLD_NODE                WRITE_LIFE_NONE
+ ioctl(COLD)           COLD_DATA                WRITE_LIFE_EXTREME
+ extension list        "                        "
  
- static struct platform_driver ab8500_charger_driver = {
- 	.probe = ab8500_charger_probe,
-diff --git a/drivers/power/supply/ab8500_fg.c b/drivers/power/supply/ab8500_fg.c
-index 6fc4bc30644c..69452fc085b9 100644
---- a/drivers/power/supply/ab8500_fg.c
-+++ b/drivers/power/supply/ab8500_fg.c
-@@ -3230,6 +3230,7 @@ static const struct of_device_id ab8500_fg_match[] = {
- 	{ .compatible = "stericsson,ab8500-fg", },
- 	{ },
- };
-+MODULE_DEVICE_TABLE(of, ab8500_fg_match);
- 
- static struct platform_driver ab8500_fg_driver = {
- 	.probe = ab8500_fg_probe,
 -- 
 2.30.2
 
