@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382C23CD973
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5E83CD979
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244259AbhGSO3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:29:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37040 "EHLO mail.kernel.org"
+        id S244588AbhGSO3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:29:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244129AbhGSOYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:24:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B3D861181;
-        Mon, 19 Jul 2021 15:05:14 +0000 (UTC)
+        id S244342AbhGSOZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:25:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C5AC6024A;
+        Mon, 19 Jul 2021 15:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707115;
-        bh=6n5sxH6TLCkHVBS8XWxoUBmCml3j7SUf5EA0kGP6Tx0=;
+        s=korg; t=1626707145;
+        bh=6RJKt1rJB+Tl9PSJdzMzybbrRaOroIwvNMi4G3NUILc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qdUCbD5ILE/mDYPqJvGzoOIRc1zDGeq3WAVFhnvtYdW6Mqu5cBEVRMmOxBhfsi0sc
-         UmCBpRUaTQ6cKEHT7rf0BYjdffaoam1K2/9cgcDD8j1jnCiwCWhoSYTgQWj/FXZtnm
-         Tc1AlJn2ft+75VQfarqxRKH1PIN4uqmsSzCwH5pI=
+        b=UbMFQF4IHwTmK+v7C6pcI7RuctDXS20JL6Z0HZXA00DMtLLEL/lLkH+BCVe8YLVV1
+         3/RP8YaTs0mWX7DnCg/PHXUW/4MB69qFfIr8blxiZxuGfHmIEW+GeOI4zvrBCS7d3s
+         HWG0ODO/t+2Yd27xHK7rqLHuKoyzTed5/Gr55SEM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pradeep P V K <pragalla@codeaurora.org>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 4.9 028/245] fuse: check connected before queueing on fpq->io
-Date:   Mon, 19 Jul 2021 16:49:30 +0200
-Message-Id: <20210719144941.315466725@linuxfoundation.org>
+        stable@vger.kernel.org, Jay Fang <f.fangjian@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 029/245] spi: spi-loopback-test: Fix tx_buf might be rx_buf
+Date:   Mon, 19 Jul 2021 16:49:31 +0200
+Message-Id: <20210719144941.348110284@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -39,58 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: Jay Fang <f.fangjian@huawei.com>
 
-commit 80ef08670d4c28a06a3de954bd350368780bcfef upstream.
+[ Upstream commit 9e37a3ab0627011fb63875e9a93094b6fc8ddf48 ]
 
-A request could end up on the fpq->io list after fuse_abort_conn() has
-reset fpq->connected and aborted requests on that list:
+In function 'spi_test_run_iter': Value 'tx_buf' might be 'rx_buf'.
 
-Thread-1			  Thread-2
-========			  ========
-->fuse_simple_request()           ->shutdown
-  ->__fuse_request_send()
-    ->queue_request()		->fuse_abort_conn()
-->fuse_dev_do_read()                ->acquire(fpq->lock)
-  ->wait_for(fpq->lock) 	  ->set err to all req's in fpq->io
-				  ->release(fpq->lock)
-  ->acquire(fpq->lock)
-  ->add req to fpq->io
-
-After the userspace copy is done the request will be ended, but
-req->out.h.error will remain uninitialized.  Also the copy might block
-despite being already aborted.
-
-Fix both issues by not allowing the request to be queued on the fpq->io
-list after fuse_abort_conn() has processed this list.
-
-Reported-by: Pradeep P V K <pragalla@codeaurora.org>
-Fixes: fd22d62ed0c3 ("fuse: no fc->lock for iqueue parts")
-Cc: <stable@vger.kernel.org> # v4.2
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Jay Fang <f.fangjian@huawei.com>
+Link: https://lore.kernel.org/r/1620629903-15493-5-git-send-email-f.fangjian@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fuse/dev.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/spi/spi-loopback-test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/fuse/dev.c
-+++ b/fs/fuse/dev.c
-@@ -1298,6 +1298,15 @@ static ssize_t fuse_dev_do_read(struct f
- 		goto restart;
+diff --git a/drivers/spi/spi-loopback-test.c b/drivers/spi/spi-loopback-test.c
+index 7120083fe761..cac38753d0cd 100644
+--- a/drivers/spi/spi-loopback-test.c
++++ b/drivers/spi/spi-loopback-test.c
+@@ -803,7 +803,7 @@ static int spi_test_run_iter(struct spi_device *spi,
+ 			test.transfers[i].len = len;
+ 		if (test.transfers[i].tx_buf)
+ 			test.transfers[i].tx_buf += tx_off;
+-		if (test.transfers[i].tx_buf)
++		if (test.transfers[i].rx_buf)
+ 			test.transfers[i].rx_buf += rx_off;
  	}
- 	spin_lock(&fpq->lock);
-+	/*
-+	 *  Must not put request on fpq->io queue after having been shut down by
-+	 *  fuse_abort_conn()
-+	 */
-+	if (!fpq->connected) {
-+		req->out.h.error = err = -ECONNABORTED;
-+		goto out_end;
-+
-+	}
- 	list_add(&req->list, &fpq->io);
- 	spin_unlock(&fpq->lock);
- 	cs->req = req;
+ 
+-- 
+2.30.2
+
 
 
