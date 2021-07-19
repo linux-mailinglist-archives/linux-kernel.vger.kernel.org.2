@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515693CE6B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E92B3CE7FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351061AbhGSQNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:13:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
+        id S1354985AbhGSQfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:35:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346052AbhGSPKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F0EF61221;
-        Mon, 19 Jul 2021 15:50:17 +0000 (UTC)
+        id S1347852AbhGSPWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:22:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4A306113A;
+        Mon, 19 Jul 2021 15:59:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709818;
-        bh=WF0TpTCVtD/q8bjs/VLUNrGERQsRQGf0gDxkGI0J854=;
+        s=korg; t=1626710376;
+        bh=dQXRwl+jaHmxdeLPAIHrajF3etZ4p+FU8NlpsilrVhM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EALweJnoTuoYJPHG0Ws2TjZX7RsRHoA/wNpu1nsTeeJJNzQdt0IyXsgcElXCTYBIv
-         Po38tff61z2NvIdmNmphPpuy541tFg7TMmApGsiL8GlAmIizHy6l/0aXS6OZW8qJ3J
-         JtNKAf8/bdSrCxXtejhYZa6aSgwWMuQ0MOgPvSMk=
+        b=kLzTSOI+92XnnUKaW3NdBQwFFnIu8SQK8+AvfU4lNxnSGPfuHbXkycOELsX21r0PF
+         d2x4Rt7q1CkQN1xgCdtsodBdkhtuAY+Ut51armSMlfJHEzMqzGOPU1IBQEtmumipaR
+         SYPhNoNHaTBd4KdyZW0LOb3h+bJyToSBxJ1H+6y8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maurizio Lombardi <mlombard@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 111/149] nvme-tcp: cant set sk_user_data without write_lock
-Date:   Mon, 19 Jul 2021 16:53:39 +0200
-Message-Id: <20210719144927.643964494@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 191/243] ARM: dts: exynos: fix PWM LED max brightness on Odroid XU/XU3
+Date:   Mon, 19 Jul 2021 16:53:40 +0200
+Message-Id: <20210719144947.083992436@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maurizio Lombardi <mlombard@redhat.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 0755d3be2d9bb6ea38598ccd30d6bbaa1a5c3a50 ]
+[ Upstream commit 75121e1dc9fe4def41e63d57f6a53749b88006ed ]
 
-The sk_user_data pointer is supposed to be modified only while
-holding the write_lock "sk_callback_lock", otherwise
-we could race with other threads and crash the kernel.
+There is no "max_brightness" property.  This brings the intentional
+brightness reduce of green LED and dtschema checks as well:
 
-we can't take the write_lock in nvmet_tcp_state_change()
-because it would cause a deadlock, but the release_work queue
-will set the pointer to NULL later so we can simply remove
-the assignment.
+  arch/arm/boot/dts/exynos5410-odroidxu.dt.yaml: led-controller-1: led-1: 'max-brightness' is a required property
 
-Fixes: b5332a9f3f3d ("nvmet-tcp: fix incorrect locking in state_change sk callback")
-
-Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: 719f39fec586 ("ARM: dts: exynos5422-odroidxu3: Hook up PWM and use it for LEDs")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210505135941.59898-3-krzysztof.kozlowski@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/tcp.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
-index 9bfd92b6677b..2ae846297d7c 100644
---- a/drivers/nvme/target/tcp.c
-+++ b/drivers/nvme/target/tcp.c
-@@ -1412,7 +1412,6 @@ static void nvmet_tcp_state_change(struct sock *sk)
- 	case TCP_CLOSE_WAIT:
- 	case TCP_CLOSE:
- 		/* FALLTHRU */
--		sk->sk_user_data = NULL;
- 		nvmet_tcp_schedule_release_queue(queue);
- 		break;
- 	default:
+diff --git a/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi b/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
+index 56acd832f0b3..16e1087ec717 100644
+--- a/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
++++ b/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
+@@ -22,7 +22,7 @@
+ 			 * Green LED is much brighter than the others
+ 			 * so limit its max brightness
+ 			 */
+-			max_brightness = <127>;
++			max-brightness = <127>;
+ 			linux,default-trigger = "mmc0";
+ 		};
+ 
+@@ -30,7 +30,7 @@
+ 			label = "blue:heartbeat";
+ 			pwms = <&pwm 2 2000000 0>;
+ 			pwm-names = "pwm2";
+-			max_brightness = <255>;
++			max-brightness = <255>;
+ 			linux,default-trigger = "heartbeat";
+ 		};
+ 	};
 -- 
 2.30.2
 
