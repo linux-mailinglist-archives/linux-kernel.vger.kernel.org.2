@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CDA3CE72C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDA13CE89D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345423AbhGSQXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:23:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49168 "EHLO mail.kernel.org"
+        id S1355738AbhGSQod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:44:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345303AbhGSPM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:12:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABD9F61375;
-        Mon, 19 Jul 2021 15:52:59 +0000 (UTC)
+        id S1349162AbhGSPZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:25:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DE7B601FD;
+        Mon, 19 Jul 2021 16:06:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709980;
-        bh=79/HYkvwxCe55o5MFGHNpPyyxL7jdePrtaRs3K2/aC4=;
+        s=korg; t=1626710785;
+        bh=2PZ0lzObAQRnJF57W3GYqnaYB/bfZfQaQjuMHASKseE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YLfTzoo7zrlh6Z1wiAf1Da7flLMjLZhaoxLYL7f56dUffHsNy4ocJADEOLFgfQgAl
-         xIzHCWaVPE77G/INE6ppyBSa4kIxeft4W4LUvN7UF/ZY8wuFOl4DFBxHV1XSA5u1dd
-         eH4opZ76vota0me6z6KfYnSSi1r2xr9+Zt7ko3GY=
+        b=CNH/H8VpKyvSlI2vcjA7JSMru4YdbnArjWmV7huaVmwphcJF0Qx1PvVNLOksqofr1
+         JYsn3HGu0SItHpcVyenEd5RwPNVsivSkeaur6UhN66bvib22U5IZehiQBAtkILFjuE
+         0ndPy2G67InjLZf9D7OirnRE9LEjKPArIG6EdKLE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robin Gong <yibin.gong@nxp.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 025/243] dmaengine: fsl-qdma: check dma_set_mask return value
+        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 108/351] scsi: storvsc: Correctly handle multiple flags in srb_status
 Date:   Mon, 19 Jul 2021 16:50:54 +0200
-Message-Id: <20210719144941.740694921@linuxfoundation.org>
+Message-Id: <20210719144948.061022382@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +40,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Gong <yibin.gong@nxp.com>
+From: Michael Kelley <mikelley@microsoft.com>
 
-[ Upstream commit f0c07993af0acf5545d5c1445798846565f4f147 ]
+[ Upstream commit 52e1b3b3daa9d53f0204bf474ee1d4b1beb38234 ]
 
-For fix below warning reported by static code analysis tool like Coverity
-from Synopsys:
+Hyper-V is observed to sometimes set multiple flags in the srb_status, such
+as ABORTED and ERROR. Current code in storvsc_handle_error() handles only a
+single flag being set, and does nothing when multiple flags are set.  Fix
+this by changing the case statement into a series of "if" statements
+testing individual flags. The functionality for handling each flag is
+unchanged.
 
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
-Addresses-Coverity-ID: 12285639 ("Unchecked return value")
-Link: https://lore.kernel.org/r/1619427549-20498-1-git-send-email-yibin.gong@nxp.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/1622827263-12516-3-git-send-email-mikelley@microsoft.com
+Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/fsl-qdma.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/scsi/storvsc_drv.c | 61 +++++++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/dma/fsl-qdma.c b/drivers/dma/fsl-qdma.c
-index ed2ab46b15e7..045ead46ec8f 100644
---- a/drivers/dma/fsl-qdma.c
-+++ b/drivers/dma/fsl-qdma.c
-@@ -1235,7 +1235,11 @@ static int fsl_qdma_probe(struct platform_device *pdev)
- 	fsl_qdma->dma_dev.device_synchronize = fsl_qdma_synchronize;
- 	fsl_qdma->dma_dev.device_terminate_all = fsl_qdma_terminate_all;
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index e6718a74e5da..b2e28197a086 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -1009,17 +1009,40 @@ static void storvsc_handle_error(struct vmscsi_request *vm_srb,
+ 	struct storvsc_scan_work *wrk;
+ 	void (*process_err_fn)(struct work_struct *work);
+ 	struct hv_host_device *host_dev = shost_priv(host);
+-	bool do_work = false;
  
--	dma_set_mask(&pdev->dev, DMA_BIT_MASK(40));
-+	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(40));
-+	if (ret) {
-+		dev_err(&pdev->dev, "dma_set_mask failure.\n");
-+		return ret;
+-	switch (SRB_STATUS(vm_srb->srb_status)) {
+-	case SRB_STATUS_ERROR:
++	/*
++	 * In some situations, Hyper-V sets multiple bits in the
++	 * srb_status, such as ABORTED and ERROR. So process them
++	 * individually, with the most specific bits first.
++	 */
++
++	if (vm_srb->srb_status & SRB_STATUS_INVALID_LUN) {
++		set_host_byte(scmnd, DID_NO_CONNECT);
++		process_err_fn = storvsc_remove_lun;
++		goto do_work;
 +	}
++
++	if (vm_srb->srb_status & SRB_STATUS_ABORTED) {
++		if (vm_srb->srb_status & SRB_STATUS_AUTOSENSE_VALID &&
++		    /* Capacity data has changed */
++		    (asc == 0x2a) && (ascq == 0x9)) {
++			process_err_fn = storvsc_device_scan;
++			/*
++			 * Retry the I/O that triggered this.
++			 */
++			set_host_byte(scmnd, DID_REQUEUE);
++			goto do_work;
++		}
++	}
++
++	if (vm_srb->srb_status & SRB_STATUS_ERROR) {
+ 		/*
+ 		 * Let upper layer deal with error when
+ 		 * sense message is present.
+ 		 */
+-
+ 		if (vm_srb->srb_status & SRB_STATUS_AUTOSENSE_VALID)
+-			break;
++			return;
++
+ 		/*
+ 		 * If there is an error; offline the device since all
+ 		 * error recovery strategies would have already been
+@@ -1032,37 +1055,19 @@ static void storvsc_handle_error(struct vmscsi_request *vm_srb,
+ 			set_host_byte(scmnd, DID_PASSTHROUGH);
+ 			break;
+ 		/*
+-		 * On Some Windows hosts TEST_UNIT_READY command can return
+-		 * SRB_STATUS_ERROR, let the upper level code deal with it
+-		 * based on the sense information.
++		 * On some Hyper-V hosts TEST_UNIT_READY command can
++		 * return SRB_STATUS_ERROR. Let the upper level code
++		 * deal with it based on the sense information.
+ 		 */
+ 		case TEST_UNIT_READY:
+ 			break;
+ 		default:
+ 			set_host_byte(scmnd, DID_ERROR);
+ 		}
+-		break;
+-	case SRB_STATUS_INVALID_LUN:
+-		set_host_byte(scmnd, DID_NO_CONNECT);
+-		do_work = true;
+-		process_err_fn = storvsc_remove_lun;
+-		break;
+-	case SRB_STATUS_ABORTED:
+-		if (vm_srb->srb_status & SRB_STATUS_AUTOSENSE_VALID &&
+-		    (asc == 0x2a) && (ascq == 0x9)) {
+-			do_work = true;
+-			process_err_fn = storvsc_device_scan;
+-			/*
+-			 * Retry the I/O that triggered this.
+-			 */
+-			set_host_byte(scmnd, DID_REQUEUE);
+-		}
+-		break;
+ 	}
++	return;
  
- 	platform_set_drvdata(pdev, fsl_qdma);
- 
+-	if (!do_work)
+-		return;
+-
++do_work:
+ 	/*
+ 	 * We need to schedule work to process this error; schedule it.
+ 	 */
 -- 
 2.30.2
 
