@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BEAA3CEAB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4F93CE9A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377655AbhGSRQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:16:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37992 "EHLO mail.kernel.org"
+        id S1348049AbhGSQ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:59:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347837AbhGSPjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95C6861107;
-        Mon, 19 Jul 2021 16:19:26 +0000 (UTC)
+        id S235557AbhGSPcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:32:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0755D6141D;
+        Mon, 19 Jul 2021 16:10:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711567;
-        bh=PFPsC1bwNfkre24GbZAloHDyURgIzkgS9yrhCz7qWhA=;
+        s=korg; t=1626711030;
+        bh=4l/AoMsvGwjk7Lsth8aoRoQQpUwOUt4rTVkI0sOT9vM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KJLyNsR3+JONBFF4kW108IApp7fhKKIBSgu+2/xNawBEvpbMremJvJl5I95lfZTIM
-         tgSNQ7BxJmHWnp7Xsdkj3fKXS0G2M/OkZUMLniF5aeCx1RLXkt9DpYx60Kdv3E56CA
-         Y21OUbmIwUcA9PNw+ygTi7EPoBqByMcbe2PytW0Y=
+        b=RB1a1Jk4PxV94pIU0EPU7bF61fGwiFtH4bVX5/bXDDGoHUqwfk02A2ssrN3CmDdc+
+         9hg6kFFu/NYuek8Ptg6WaMqn9b8zzufYobLr/wrkYvP4OAAWPyle3LMzlX8XKjyd1/
+         PiEjKhB1F/tqZg2mTeyqzEkl5pc4ix0pUvUj65bo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 051/292] ALSA: usx2y: Dont call free_pages_exact() with NULL address
+Subject: [PATCH 5.13 167/351] watchdog: Fix possible use-after-free by calling del_timer_sync()
 Date:   Mon, 19 Jul 2021 16:51:53 +0200
-Message-Id: <20210719144944.195916262@linuxfoundation.org>
+Message-Id: <20210719144950.502349970@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit cae0cf651adccee2c3f376e78f30fbd788d0829f ]
+[ Upstream commit d0212f095ab56672f6f36aabc605bda205e1e0bf ]
 
-Unlike some other functions, we can't pass NULL pointer to
-free_pages_exact().  Add a proper NULL check for avoiding possible
-Oops.
+This driver's remove path calls del_timer(). However, that function
+does not wait until the timer handler finishes. This means that the
+timer handler may still be running after the driver's remove function
+has finished, which would result in a use-after-free.
 
-Link: https://lore.kernel.org/r/20210517131545.27252-10-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fix by calling del_timer_sync(), which makes sure the timer handler
+has finished, and unable to re-schedule itself.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Vladimir Zapolskiy <vz@mleia.com>
+Link: https://lore.kernel.org/r/1620802676-19701-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/usx2y/usb_stream.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/watchdog/lpc18xx_wdt.c | 2 +-
+ drivers/watchdog/w83877f_wdt.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
-index 091c071b270a..cff684942c4f 100644
---- a/sound/usb/usx2y/usb_stream.c
-+++ b/sound/usb/usx2y/usb_stream.c
-@@ -142,8 +142,11 @@ void usb_stream_free(struct usb_stream_kernel *sk)
- 	if (!s)
- 		return;
+diff --git a/drivers/watchdog/lpc18xx_wdt.c b/drivers/watchdog/lpc18xx_wdt.c
+index 78cf11c94941..60b6d74f267d 100644
+--- a/drivers/watchdog/lpc18xx_wdt.c
++++ b/drivers/watchdog/lpc18xx_wdt.c
+@@ -292,7 +292,7 @@ static int lpc18xx_wdt_remove(struct platform_device *pdev)
+ 	struct lpc18xx_wdt_dev *lpc18xx_wdt = platform_get_drvdata(pdev);
  
--	free_pages_exact(sk->write_page, s->write_size);
--	sk->write_page = NULL;
-+	if (sk->write_page) {
-+		free_pages_exact(sk->write_page, s->write_size);
-+		sk->write_page = NULL;
-+	}
-+
- 	free_pages_exact(s, s->read_size);
- 	sk->s = NULL;
+ 	dev_warn(&pdev->dev, "I quit now, hardware will probably reboot!\n");
+-	del_timer(&lpc18xx_wdt->timer);
++	del_timer_sync(&lpc18xx_wdt->timer);
+ 
+ 	return 0;
  }
+diff --git a/drivers/watchdog/w83877f_wdt.c b/drivers/watchdog/w83877f_wdt.c
+index 5772cc5d3780..f2650863fd02 100644
+--- a/drivers/watchdog/w83877f_wdt.c
++++ b/drivers/watchdog/w83877f_wdt.c
+@@ -166,7 +166,7 @@ static void wdt_startup(void)
+ static void wdt_turnoff(void)
+ {
+ 	/* Stop the timer */
+-	del_timer(&timer);
++	del_timer_sync(&timer);
+ 
+ 	wdt_change(WDT_DISABLE);
+ 
 -- 
 2.30.2
 
