@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A083CDF4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A7B3CE033
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343949AbhGSPJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:09:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40436 "EHLO mail.kernel.org"
+        id S1346575AbhGSPOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:14:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343963AbhGSOsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343994AbhGSOsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:48:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B57C3613CF;
-        Mon, 19 Jul 2021 15:25:45 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70EED613D0;
+        Mon, 19 Jul 2021 15:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708346;
-        bh=Qov3NdALQaJngH7UvnuSSQKyNioJNZNNRlHpZDfJudE=;
+        s=korg; t=1626708349;
+        bh=wgxYcTgE1IyXhY2dHPu39iYdHLNL7gNaAHZJBz0shPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VC/8a1zHTl69GcIAWemXtiHaZ+wQN58djOEsk4e5ALpaYHLiLtJXI86qiTfvnawDy
-         mVwx/xyd9a73esLtqXPx39n6qya5gGhjajyTIa482uPWJkIFEK4RVAq6hC/ZGN/zfd
-         l3XuIVhq/7MO7WLjnkW2HK16E1Bz1FaS0K6VTov0=
+        b=FOMMKdJ7t1YCHikTUb8jqUu6cNj2jzKJIIf0gnObbcA4wAu9Bbg/KZOyXsEKmCRuI
+         vGNr1Aiic83Y54VSyLcdMBslo/cRM/hZ/t9ViWYblSU8MOMrQvfEDH/V7ph6HHqA5O
+         xqQdrJ16Hk7G4PbrcvXcnTDuwjDjYJi/kPMj63OY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 275/315] x86/fpu: Return proper error codes from user access functions
-Date:   Mon, 19 Jul 2021 16:52:44 +0200
-Message-Id: <20210719144952.464562001@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Marshall <hubcap@omnibond.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 276/315] orangefs: fix orangefs df output.
+Date:   Mon, 19 Jul 2021 16:52:45 +0200
+Message-Id: <20210719144952.496851812@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -39,84 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Mike Marshall <hubcap@omnibond.com>
 
-[ Upstream commit aee8c67a4faa40a8df4e79316dbfc92d123989c1 ]
+[ Upstream commit 0fdec1b3c9fbb5e856a40db5993c9eaf91c74a83 ]
 
-When *RSTOR from user memory raises an exception, there is no way to
-differentiate them. That's bad because it forces the slow path even when
-the failure was not a fault. If the operation raised eg. #GP then going
-through the slow path is pointless.
+Orangefs df output is whacky. Walt Ligon suggested this might fix it.
+It seems way more in line with reality now...
 
-Use _ASM_EXTABLE_FAULT() which stores the trap number and let the exception
-fixup return the negated trap number as error.
-
-This allows to separate the fast path and let it handle faults directly and
-avoid the slow path for all other exceptions.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210623121457.601480369@linutronix.de
+Signed-off-by: Mike Marshall <hubcap@omnibond.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/fpu/internal.h | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ fs/orangefs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index fa2c93cb42a2..b8c935033d21 100644
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -103,6 +103,7 @@ static inline void fpstate_init_fxstate(struct fxregs_state *fx)
- }
- extern void fpstate_sanitize_xstate(struct fpu *fpu);
+diff --git a/fs/orangefs/super.c b/fs/orangefs/super.c
+index 1997ce49ab46..e5f7df28793d 100644
+--- a/fs/orangefs/super.c
++++ b/fs/orangefs/super.c
+@@ -197,7 +197,7 @@ static int orangefs_statfs(struct dentry *dentry, struct kstatfs *buf)
+ 	buf->f_bavail = (sector_t) new_op->downcall.resp.statfs.blocks_avail;
+ 	buf->f_files = (sector_t) new_op->downcall.resp.statfs.files_total;
+ 	buf->f_ffree = (sector_t) new_op->downcall.resp.statfs.files_avail;
+-	buf->f_frsize = sb->s_blocksize;
++	buf->f_frsize = 0;
  
-+/* Returns 0 or the negated trap number, which results in -EFAULT for #PF */
- #define user_insn(insn, output, input...)				\
- ({									\
- 	int err;							\
-@@ -110,14 +111,14 @@ extern void fpstate_sanitize_xstate(struct fpu *fpu);
- 	might_fault();							\
- 									\
- 	asm volatile(ASM_STAC "\n"					\
--		     "1:" #insn "\n\t"					\
-+		     "1: " #insn "\n"					\
- 		     "2: " ASM_CLAC "\n"				\
- 		     ".section .fixup,\"ax\"\n"				\
--		     "3:  movl $-1,%[err]\n"				\
-+		     "3:  negl %%eax\n"					\
- 		     "    jmp  2b\n"					\
- 		     ".previous\n"					\
--		     _ASM_EXTABLE(1b, 3b)				\
--		     : [err] "=r" (err), output				\
-+		     _ASM_EXTABLE_FAULT(1b, 3b)				\
-+		     : [err] "=a" (err), output				\
- 		     : "0"(0), input);					\
- 	err;								\
- })
-@@ -221,16 +222,20 @@ static inline void copy_fxregs_to_kernel(struct fpu *fpu)
- #define XRSTOR		".byte " REX_PREFIX "0x0f,0xae,0x2f"
- #define XRSTORS		".byte " REX_PREFIX "0x0f,0xc7,0x1f"
- 
-+/*
-+ * After this @err contains 0 on success or the negated trap number when
-+ * the operation raises an exception. For faults this results in -EFAULT.
-+ */
- #define XSTATE_OP(op, st, lmask, hmask, err)				\
- 	asm volatile("1:" op "\n\t"					\
- 		     "xor %[err], %[err]\n"				\
- 		     "2:\n\t"						\
- 		     ".pushsection .fixup,\"ax\"\n\t"			\
--		     "3: movl $-2,%[err]\n\t"				\
-+		     "3: negl %%eax\n\t"				\
- 		     "jmp 2b\n\t"					\
- 		     ".popsection\n\t"					\
--		     _ASM_EXTABLE(1b, 3b)				\
--		     : [err] "=r" (err)					\
-+		     _ASM_EXTABLE_FAULT(1b, 3b)				\
-+		     : [err] "=a" (err)					\
- 		     : "D" (st), "m" (*st), "a" (lmask), "d" (hmask)	\
- 		     : "memory")
- 
+ out_op_release:
+ 	op_release(new_op);
 -- 
 2.30.2
 
