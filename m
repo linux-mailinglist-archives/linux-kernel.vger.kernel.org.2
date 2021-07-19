@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EAE33CE60B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4163CE5D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351691AbhGSQAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:00:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59982 "EHLO mail.kernel.org"
+        id S1349800AbhGSPyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:54:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345490AbhGSPEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:04:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D341261396;
-        Mon, 19 Jul 2021 15:44:08 +0000 (UTC)
+        id S1345521AbhGSPEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:04:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57C4A6120A;
+        Mon, 19 Jul 2021 15:44:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709449;
-        bh=tHqcx/RbHcKopyWXvSFnQBhyo19ftC2v//zfIdwxrEU=;
+        s=korg; t=1626709451;
+        bh=FgqSjQ3cKtP/OqAQ3Ef4jS4Y62Dr+ipSI10gqyoyvrg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vPWH7dob8boKECRXmenxovVmSqK6zhhsTX/uxmyyo8I64psx1wqW38IhVwvMs6l6j
-         My27ywV4yAO1gl0Kd/p/X6Q1JQbGvBk0OQIfbZ/YxgFpfML3rXqu1zkU2jmHQI7Q++
-         YtKTZHTSLJfUovmRXMX6kKbyq4T580iQvdqy0yJo=
+        b=ncgMqp5ybNxoDZE9goHOM2mGlFfjAxh8v8uZvofex6cs0gypRFkqPcdx89kR3lexj
+         zDZXqhB+1viCvpjbdKGcOhgINCecUpsm6FenMxxB7bADvJsXJl+HQAFG5KvY+mQWJd
+         SNLBHSy6Wg1y8334M3OlY+Tgf+lFf4gpdPSxXLVc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 388/421] nfs: fix acl memory leak of posix_acl_create()
-Date:   Mon, 19 Jul 2021 16:53:19 +0200
-Message-Id: <20210719144959.834321741@linuxfoundation.org>
+Subject: [PATCH 4.19 389/421] ubifs: Set/Clear I_LINKABLE under i_lock for whiteout inode
+Date:   Mon, 19 Jul 2021 16:53:20 +0200
+Message-Id: <20210719144959.864671358@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -44,48 +40,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit 1fcb6fcd74a222d9ead54d405842fc763bb86262 ]
+[ Upstream commit a801fcfeef96702fa3f9b22ad56c5eb1989d9221 ]
 
-When looking into another nfs xfstests report, I found acl and
-default_acl in nfs3_proc_create() and nfs3_proc_mknod() error
-paths are possibly leaked. Fix them in advance.
+xfstests-generic/476 reports a warning message as below:
 
-Fixes: 013cdf1088d7 ("nfs: use generic posix ACL infrastructure for v3 Posix ACLs")
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: Anna Schumaker <anna.schumaker@netapp.com>
-Cc: Christoph Hellwig <hch@infradead.org>
-Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+WARNING: CPU: 2 PID: 30347 at fs/inode.c:361 inc_nlink+0x52/0x70
+Call Trace:
+  do_rename+0x502/0xd40 [ubifs]
+  ubifs_rename+0x8b/0x180 [ubifs]
+  vfs_rename+0x476/0x1080
+  do_renameat2+0x67c/0x7b0
+  __x64_sys_renameat2+0x6e/0x90
+  do_syscall_64+0x66/0xe0
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Following race case can cause this:
+         rename_whiteout(Thread 1)             wb_workfn(Thread 2)
+ubifs_rename
+  do_rename
+                                          __writeback_single_inode
+					    spin_lock(&inode->i_lock)
+    whiteout->i_state |= I_LINKABLE
+                                            inode->i_state &= ~dirty;
+---- How race happens on i_state:
+    (tmp = whiteout->i_state | I_LINKABLE)
+		                           (tmp = inode->i_state & ~dirty)
+    (whiteout->i_state = tmp)
+		                           (inode->i_state = tmp)
+----
+					    spin_unlock(&inode->i_lock)
+    inc_nlink(whiteout)
+    WARN_ON(!(inode->i_state & I_LINKABLE)) !!!
+
+Fix to add i_lock to avoid i_state update race condition.
+
+Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs3proc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ubifs/dir.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/fs/nfs/nfs3proc.c b/fs/nfs/nfs3proc.c
-index ec8a9efa268f..e302f8370b9b 100644
---- a/fs/nfs/nfs3proc.c
-+++ b/fs/nfs/nfs3proc.c
-@@ -346,7 +346,7 @@ nfs3_proc_create(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
- 				break;
- 
- 			case NFS3_CREATE_UNCHECKED:
--				goto out;
-+				goto out_release_acls;
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 8fe2ee5462a0..dbdf6a4230fb 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1354,7 +1354,10 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 			goto out_release;
  		}
- 		nfs_fattr_init(data->res.dir_attr);
- 		nfs_fattr_init(data->res.fattr);
-@@ -695,7 +695,7 @@ nfs3_proc_mknod(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
- 		break;
- 	default:
- 		status = -EINVAL;
--		goto out;
-+		goto out_release_acls;
+ 
++		spin_lock(&whiteout->i_lock);
+ 		whiteout->i_state |= I_LINKABLE;
++		spin_unlock(&whiteout->i_lock);
++
+ 		whiteout_ui = ubifs_inode(whiteout);
+ 		whiteout_ui->data = dev;
+ 		whiteout_ui->data_len = ubifs_encode_dev(dev, MKDEV(0, 0));
+@@ -1447,7 +1450,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 
+ 		inc_nlink(whiteout);
+ 		mark_inode_dirty(whiteout);
++
++		spin_lock(&whiteout->i_lock);
+ 		whiteout->i_state &= ~I_LINKABLE;
++		spin_unlock(&whiteout->i_lock);
++
+ 		iput(whiteout);
  	}
  
- 	status = nfs3_do_create(dir, dentry, data);
 -- 
 2.30.2
 
