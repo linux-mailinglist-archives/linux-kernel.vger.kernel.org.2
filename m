@@ -2,444 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5325E3CF0A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7EC3CF0B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376548AbhGSXfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 19:35:11 -0400
-Received: from mail-il1-f181.google.com ([209.85.166.181]:40562 "EHLO
-        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1391985AbhGSWFF (ORCPT
+        id S1378675AbhGSXjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 19:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1441853AbhGSWN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 18:05:05 -0400
-Received: by mail-il1-f181.google.com with SMTP id b14so17496771ilf.7;
-        Mon, 19 Jul 2021 15:45:13 -0700 (PDT)
+        Mon, 19 Jul 2021 18:13:59 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791B7C0617A7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 15:46:04 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id i94so23884794wri.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 15:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9Xdhpm2k+PKRkOIMYXDY5v+obTyo9rMVta8zQ2xLsEM=;
+        b=vVUAywRyhSi0ve4UwHU/2A5NltsR81o/zKn31xuu70XIZQ7PB5lQL7yLaptb87Fl61
+         B/RZ4hkRsM/dhR7JTKwPJ6T8d71glObR9UmC6XDahl0UZZPbR0U7oeI0boGbUR69gLt/
+         7hXkUVSJ2THgvyyaNtTXkHkbsRA2oVWuPA1Tod8b7tJVG3MyHXvDtDsYOOGLv0JdGd+Z
+         LFzqZFFDX4h7DsGmjb1U28FuWU9fWOasqy+elvkGV6AR2qJd+COSRskhvzI+IZgPj+Yf
+         GEFRw4KpmulLvbj8o4IJ8pZfKR61K8hayKCjNUM73ThgRfWxUMJJm0/Wcm1r1cRMAENG
+         MMVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UgKCluu06sIWq4HIhRmQcnhaz8MJ1fMfRsS8AIHxuDI=;
-        b=o2VEunsOiKD/3TiPQTPkk71BnNUjtdeguoRgJvc2JVsDGHj+uk+0SDCLxVxaoVqkGG
-         UBNtn7MsRyUBY+6FidXcjmwRdRNIyftLQfqd3dGfI10EwpoMmc+5i041KwtLqZu1qME5
-         2CEF1lv206DPxihQim26hIF5UYZcsYcgoUbZW6u7vRgC7iXb+/CqGwJQf14/dzKWMYww
-         33QOJuhIlZxWPpAtQ/zXVUz6ahIwzIbmvD7qjR0FdQ7mNC6H618diOSz4EdOYE8mxNFz
-         ALfTN+1Exyz7IkjIqvdf+fQwnIw6WnPnlodUte+sMwDyoB+XOzzre3NoF0YA3zQbEmT1
-         1gjg==
-X-Gm-Message-State: AOAM531LNegaLgx6rryiIvSrZS9JC9l8RMsyVQ5Gtn9S3HZTVC27YVO5
-        nefgqDxsMOd2hC+C7dI1/g==
-X-Google-Smtp-Source: ABdhPJw4eWpTeuNqpoZmxkhzAEy06fVdvVfXKlIBCx5V165VInggDLf7EHWiqjP2L00vk9/1IqIxgg==
-X-Received: by 2002:a92:d305:: with SMTP id x5mr19164682ila.150.1626734712817;
-        Mon, 19 Jul 2021 15:45:12 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id p19sm11320032iob.7.2021.07.19.15.45.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9Xdhpm2k+PKRkOIMYXDY5v+obTyo9rMVta8zQ2xLsEM=;
+        b=X0KepUj3bvHhYuAb1LaIJetO5XkTtgPysX5e2BodC3TQ6hnUTxV3NQZSwgvF9XEj9a
+         Fb1v0tKGjEdCwsZ6cC3naUk/OLViwee6u8fq/eq1qauPDL3mGxmtRmoWuqimGF3lCEFl
+         we6l7C3RHT9Xkj1WMbTKMgP+gPqBLYQAs9PPnrGex7rWqt3xwQoJUrCshjpVzr11QjoU
+         h4r4ixX7O1B+aitCjw8myp2UchbQUfTRKzEW82TyccqaLDrk8A1aWU/j3SLxcjS+e30N
+         D1U/gti810RRhPKHHPCnAgFWESeJpn1PTBcNrw1TUtMaUBxpN39uxSYHviMxYqFiJwZW
+         z2tQ==
+X-Gm-Message-State: AOAM532w0G9C1NO+xd40mBBPaF+cGvE5HldG5z93zNBO3njrEHG8/ueW
+        GzaF6bXyibunc5/LhArnoCXl1A==
+X-Google-Smtp-Source: ABdhPJyWrJ8/aw0IR8ZaKLCccjMcoWnkdlNznoFrfdnOQMcA+zd7+KuK+SITFtHmM/YabISkQa9QFw==
+X-Received: by 2002:a5d:6851:: with SMTP id o17mr10645087wrw.346.1626734763100;
+        Mon, 19 Jul 2021 15:46:03 -0700 (PDT)
+Received: from localhost.localdomain (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id z6sm8423608wrw.9.2021.07.19.15.46.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 15:45:12 -0700 (PDT)
-Received: (nullmailer pid 2763300 invoked by uid 1000);
-        Mon, 19 Jul 2021 22:45:07 -0000
-Date:   Mon, 19 Jul 2021 16:45:07 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        bruno.thomsen@gmail.com, linux-imx@nxp.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH V1 1/3] dt-bindings: net: fec: convert fsl,*fec bindings
- to yaml
-Message-ID: <20210719224507.GA2740161@robh.at.kernel.org>
-References: <20210716102911.23694-1-qiangqing.zhang@nxp.com>
- <20210716102911.23694-2-qiangqing.zhang@nxp.com>
+        Mon, 19 Jul 2021 15:46:02 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH resend] staging: rtl8188eu: move all source files from core subdirectory
+Date:   Mon, 19 Jul 2021 23:46:01 +0100
+Message-Id: <20210719224601.255364-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716102911.23694-2-qiangqing.zhang@nxp.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 06:29:09PM +0800, Joakim Zhang wrote:
-> In order to automate the verification of DT nodes convert fsl-fec.txt to
-> fsl,fec.yaml, and pass binding check with below command.
-> 
-> $ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/net/fsl,fec.yaml
->   DTEX    Documentation/devicetree/bindings/net/fsl,fec.example.dts
->   DTC     Documentation/devicetree/bindings/net/fsl,fec.example.dt.yaml
->   CHECK   Documentation/devicetree/bindings/net/fsl,fec.example.dt.yaml
-> 
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> ---
->  .../devicetree/bindings/net/fsl,fec.yaml      | 213 ++++++++++++++++++
->  .../devicetree/bindings/net/fsl-fec.txt       |  95 --------
->  2 files changed, 213 insertions(+), 95 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/fsl,fec.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/fsl-fec.txt
+Move all C source files from the core subdirectory to the root
+folder of the driver, and adjust Makefile accordingly. The ultmate
+goal is to remove hal layer and fold its functionalty into the main
+sources. At this point, the distinction between hal and core will be
+meaningless, so this is the first step towards simplifying the file
+layout.
 
-Since the networking maintainers can't wait for actual binding reviews, 
-you get to send a follow-up patch...
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ drivers/staging/rtl8188eu/Makefile            | 34 +++++++++----------
+ drivers/staging/rtl8188eu/{core => }/rtw_ap.c |  0
+ .../staging/rtl8188eu/{core => }/rtw_cmd.c    |  0
+ .../staging/rtl8188eu/{core => }/rtw_efuse.c  |  0
+ .../rtl8188eu/{core => }/rtw_ieee80211.c      |  0
+ .../rtl8188eu/{core => }/rtw_ioctl_set.c      |  0
+ .../staging/rtl8188eu/{core => }/rtw_iol.c    |  0
+ .../staging/rtl8188eu/{core => }/rtw_led.c    |  0
+ .../staging/rtl8188eu/{core => }/rtw_mlme.c   |  0
+ .../rtl8188eu/{core => }/rtw_mlme_ext.c       |  0
+ .../rtl8188eu/{core => }/rtw_pwrctrl.c        |  0
+ .../staging/rtl8188eu/{core => }/rtw_recv.c   |  0
+ drivers/staging/rtl8188eu/{core => }/rtw_rf.c |  0
+ .../rtl8188eu/{core => }/rtw_security.c       |  0
+ .../staging/rtl8188eu/{core => }/rtw_sreset.c |  0
+ .../rtl8188eu/{core => }/rtw_sta_mgt.c        |  0
+ .../rtl8188eu/{core => }/rtw_wlan_util.c      |  0
+ .../staging/rtl8188eu/{core => }/rtw_xmit.c   |  0
+ 18 files changed, 17 insertions(+), 17 deletions(-)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_ap.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_cmd.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_efuse.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_ieee80211.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_ioctl_set.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_iol.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_led.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_mlme.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_mlme_ext.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_pwrctrl.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_recv.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_rf.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_security.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_sreset.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_sta_mgt.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_wlan_util.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_xmit.c (100%)
 
-> 
-> diff --git a/Documentation/devicetree/bindings/net/fsl,fec.yaml b/Documentation/devicetree/bindings/net/fsl,fec.yaml
-> new file mode 100644
-> index 000000000000..7fa11f6622b1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/fsl,fec.yaml
-> @@ -0,0 +1,213 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/fsl,fec.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale Fast Ethernet Controller (FEC)
-> +
-> +maintainers:
-> +  - Joakim Zhang <qiangqing.zhang@nxp.com>
-> +
-> +allOf:
-> +  - $ref: ethernet-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - enum:
-> +          - fsl,imx25-fec
-> +          - fsl,imx27-fec
-> +          - fsl,imx28-fec
-> +          - fsl,imx6q-fec
-> +          - fsl,mvf600-fec
-> +      - items:
-> +          - enum:
-> +              - fsl,imx53-fec
-> +              - fsl,imx6sl-fec
-> +          - const: fsl,imx25-fec
-> +      - items:
-> +          - enum:
-> +              - fsl,imx35-fec
-> +              - fsl,imx51-fec
-> +          - const: fsl,imx27-fec
-> +      - items:
-> +          - enum:
-> +              - fsl,imx6ul-fec
-> +              - fsl,imx6sx-fec
-> +          - const: fsl,imx6q-fec
-> +      - items:
-> +          - enum:
-> +              - fsl,imx7d-fec
-> +          - const: fsl,imx6sx-fec
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    minItems: 1
-> +    maxItems: 4
-> +
-> +  interrupt-names:
-> +    description:
-> +      Names of the interrupts listed in interrupts property in the same order.
-> +      The defaults if not specified are
-> +      __Number of interrupts__   __Default__
-> +            1                       "int0"
-> +            2                       "int0", "pps"
-> +            3                       "int0", "int1", "int2"
-> +            4                       "int0", "int1", "int2", "pps"
-> +      The order may be changed as long as they correspond to the interrupts
-> +      property. 
+diff --git a/drivers/staging/rtl8188eu/Makefile b/drivers/staging/rtl8188eu/Makefile
+index 28b936e8be0a..2dad13bdbdeb 100644
+--- a/drivers/staging/rtl8188eu/Makefile
++++ b/drivers/staging/rtl8188eu/Makefile
+@@ -1,22 +1,22 @@
+ # SPDX-License-Identifier: GPL-2.0
+ r8188eu-y :=				\
+-		core/rtw_ap.o		\
+-		core/rtw_cmd.o		\
+-		core/rtw_efuse.o	\
+-		core/rtw_ieee80211.o	\
+-		core/rtw_ioctl_set.o	\
+-		core/rtw_iol.o		\
+-		core/rtw_led.o		\
+-		core/rtw_mlme.o		\
+-		core/rtw_mlme_ext.o	\
+-		core/rtw_pwrctrl.o	\
+-		core/rtw_recv.o		\
+-		core/rtw_rf.o		\
+-		core/rtw_security.o	\
+-		core/rtw_sreset.o	\
+-		core/rtw_sta_mgt.o	\
+-		core/rtw_wlan_util.o	\
+-		core/rtw_xmit.o		\
++		rtw_ap.o		\
++		rtw_cmd.o		\
++		rtw_efuse.o		\
++		rtw_ieee80211.o		\
++		rtw_ioctl_set.o		\
++		rtw_iol.o		\
++		rtw_led.o		\
++		rtw_mlme.o		\
++		rtw_mlme_ext.o		\
++		rtw_pwrctrl.o		\
++		rtw_recv.o		\
++		rtw_rf.o		\
++		rtw_security.o		\
++		rtw_sreset.o		\
++		rtw_sta_mgt.o		\
++		rtw_wlan_util.o		\
++		rtw_xmit.o		\
+ 		hal/fw.o	\
+ 		hal/mac_cfg.o \
+ 		hal/bb_cfg.o \
+diff --git a/drivers/staging/rtl8188eu/core/rtw_ap.c b/drivers/staging/rtl8188eu/rtw_ap.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_ap.c
+rename to drivers/staging/rtl8188eu/rtw_ap.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_cmd.c b/drivers/staging/rtl8188eu/rtw_cmd.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_cmd.c
+rename to drivers/staging/rtl8188eu/rtw_cmd.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_efuse.c b/drivers/staging/rtl8188eu/rtw_efuse.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_efuse.c
+rename to drivers/staging/rtl8188eu/rtw_efuse.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_ieee80211.c b/drivers/staging/rtl8188eu/rtw_ieee80211.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_ieee80211.c
+rename to drivers/staging/rtl8188eu/rtw_ieee80211.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c b/drivers/staging/rtl8188eu/rtw_ioctl_set.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_ioctl_set.c
+rename to drivers/staging/rtl8188eu/rtw_ioctl_set.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_iol.c b/drivers/staging/rtl8188eu/rtw_iol.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_iol.c
+rename to drivers/staging/rtl8188eu/rtw_iol.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_led.c b/drivers/staging/rtl8188eu/rtw_led.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_led.c
+rename to drivers/staging/rtl8188eu/rtw_led.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme.c b/drivers/staging/rtl8188eu/rtw_mlme.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_mlme.c
+rename to drivers/staging/rtl8188eu/rtw_mlme.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c b/drivers/staging/rtl8188eu/rtw_mlme_ext.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
+rename to drivers/staging/rtl8188eu/rtw_mlme_ext.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_pwrctrl.c b/drivers/staging/rtl8188eu/rtw_pwrctrl.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_pwrctrl.c
+rename to drivers/staging/rtl8188eu/rtw_pwrctrl.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_recv.c b/drivers/staging/rtl8188eu/rtw_recv.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_recv.c
+rename to drivers/staging/rtl8188eu/rtw_recv.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_rf.c b/drivers/staging/rtl8188eu/rtw_rf.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_rf.c
+rename to drivers/staging/rtl8188eu/rtw_rf.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_security.c b/drivers/staging/rtl8188eu/rtw_security.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_security.c
+rename to drivers/staging/rtl8188eu/rtw_security.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_sreset.c b/drivers/staging/rtl8188eu/rtw_sreset.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_sreset.c
+rename to drivers/staging/rtl8188eu/rtw_sreset.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c b/drivers/staging/rtl8188eu/rtw_sta_mgt.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_sta_mgt.c
+rename to drivers/staging/rtl8188eu/rtw_sta_mgt.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_wlan_util.c b/drivers/staging/rtl8188eu/rtw_wlan_util.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_wlan_util.c
+rename to drivers/staging/rtl8188eu/rtw_wlan_util.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_xmit.c b/drivers/staging/rtl8188eu/rtw_xmit.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_xmit.c
+rename to drivers/staging/rtl8188eu/rtw_xmit.c
+-- 
+2.31.1
 
-Why? None of the existing dts files do that and there is no reason to 
-support random order. You can do this:
-
-oneOf:
-  - minItems: 1
-    items:
-      - const: int0
-      - const: pps
-  - minItems: 3
-    items:
-      - const: int0
-      - const: int1
-      - const: int2
-      - const: pps
-      
-
-
-> Currently, only i.mx7 uses "int1" and "int2". They correspond to
-
-Sounds like another constraint under an if/then schema.
-
-> +      tx/rx queues 1 and 2. "int0" will be used for queue 0 and ENET_MII interrupts.
-> +      For imx6sx, "int0" handles all 3 queues and ENET_MII. "pps" is for the pulse
-> +      per second interrupt associated with 1588 precision time protocol(PTP).
-> +
-> +  clocks:
-> +    minItems: 2
-> +    maxItems: 5
-> +    description:
-> +      The "ipg", for MAC ipg_clk_s, ipg_clk_mac_s that are for register accessing.
-> +      The "ahb", for MAC ipg_clk, ipg_clk_mac that are bus clock.
-> +      The "ptp"(option), for IEEE1588 timer clock that requires the clock.
-> +      The "enet_clk_ref"(option), for MAC transmit/receiver reference clock like
-> +      RGMII TXC clock or RMII reference clock. It depends on board design,
-> +      the clock is required if RGMII TXC and RMII reference clock source from
-> +      SOC internal PLL.
-> +      The "enet_out"(option), output clock for external device, like supply clock
-> +      for PHY. The clock is required if PHY clock source from SOC.
-> +
-> +  clock-names:
-> +    minItems: 2
-> +    maxItems: 5
-> +    contains:
-> +      enum:
-> +      - ipg
-> +      - ahb
-> +      - ptp
-> +      - enet_clk_ref
-> +      - enet_out
-
-This means clock-names contains one of these strings and then anything 
-else is valid.
-
-s/contains/items/
-
-
-> +
-> +  phy-mode: true
-> +
-> +  phy-handle: true
-> +
-> +  fixed-link: true
-> +
-> +  local-mac-address: true
-> +
-> +  mac-address: true
-> +
-> +  phy-supply:
-> +    description:
-> +      Regulator that powers the Ethernet PHY.
-> +
-> +  fsl,num-tx-queues:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      The property is valid for enet-avb IP, which supports hw multi queues.
-> +      Should specify the tx queue number, otherwise set tx queue number to 1.
-
-constraints? 2^32 queues are valid?
-
-> +
-> +  fsl,num-rx-queues:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      The property is valid for enet-avb IP, which supports hw multi queues.
-> +      Should specify the rx queue number, otherwise set rx queue number to 1.
-
-constraints?
-
-> +
-> +  fsl,magic-packet:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      If present, indicates that the hardware supports waking up via magic packet.
-> +
-> +  fsl,err006687-workaround-present:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      If present indicates that the system has the hardware workaround for
-> +      ERR006687 applied and does not need a software workaround.
-> +
-> +  fsl,stop-mode:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    description:
-> +      Register bits of stop mode control, the format is <&gpr req_gpr req_bit>.
-
-So, maxItems: 3
-
-> +      gpr is the phandle to general purpose register node.
-> +      req_gpr is the gpr register offset for ENET stop request.
-> +      req_bit is the gpr bit offset for ENET stop request.
-> +
-> +  mdio:
-> +    type: object
-> +    description:
-> +      Specifies the mdio bus in the FEC, used as a container for phy nodes.
-> +
-> +  # Deprecated optional properties:
-> +  # To avoid these, create a phy node according to ethernet-phy.yaml in the same
-> +  # directory, and point the FEC's "phy-handle" property to it. Then use
-> +  # the phy's reset binding, again described by ethernet-phy.yaml.
-> +
-> +  phy-reset-gpios:
-> +    deprecated: true
-> +    description:
-> +      Should specify the gpio for phy reset.
-> +
-> +  phy-reset-duration:
-> +    deprecated: true
-> +    description:
-> +      Reset duration in milliseconds.  Should present only if property
-> +      "phy-reset-gpios" is available.  Missing the property will have the
-> +      duration be 1 millisecond.  Numbers greater than 1000 are invalid
-> +      and 1 millisecond will be used instead.
-> +
-> +  phy-reset-active-high:
-> +    deprecated: true
-> +    description:
-> +      If present then the reset sequence using the GPIO specified in the
-> +      "phy-reset-gpios" property is reversed (H=reset state, L=operation state).
-> +
-> +  phy-reset-post-delay:
-> +    deprecated: true
-> +    description:
-> +      Post reset delay in milliseconds. If present then a delay of phy-reset-post-delay
-> +      milliseconds will be observed after the phy-reset-gpios has been toggled.
-> +      Can be omitted thus no delay is observed. Delay is in range of 1ms to 1000ms.
-> +      Other delays are invalid.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +# FIXME: We had better set additionalProperties to false to avoid invalid or at
-> +# least undocumented properties. However, PHY may have a deprecated option to
-> +# place PHY OF properties in the MAC node, such as Micrel PHY, and we can find
-> +# these boards which is based on i.MX6QDL.
-> +additionalProperties: true
-
-Why can't the dts files be updated? Can you point me to an example .dts?
-
-> +
-> +examples:
-> +  - |
-> +    ethernet@83fec000 {
-> +      compatible = "fsl,imx51-fec", "fsl,imx27-fec";
-> +      reg = <0x83fec000 0x4000>;
-> +      interrupts = <87>;
-> +      phy-mode = "mii";
-> +      phy-reset-gpios = <&gpio2 14 0>;
-> +      phy-supply = <&reg_fec_supply>;
-> +    };
-> +
-> +    ethernet@83fed000 {
-> +      compatible = "fsl,imx51-fec", "fsl,imx27-fec";
-> +      reg = <0x83fed000 0x4000>;
-> +      interrupts = <87>;
-> +      phy-mode = "mii";
-> +      phy-reset-gpios = <&gpio2 14 0>;
-> +      phy-supply = <&reg_fec_supply>;
-> +      phy-handle = <&ethphy0>;
-> +
-> +      mdio {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        ethphy0: ethernet-phy@0 {
-> +          compatible = "ethernet-phy-ieee802.3-c22";
-> +          reg = <0>;
-> +        };
-> +      };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/net/fsl-fec.txt b/Documentation/devicetree/bindings/net/fsl-fec.txt
-> deleted file mode 100644
-> index 9b543789cd52..000000000000
-> --- a/Documentation/devicetree/bindings/net/fsl-fec.txt
-> +++ /dev/null
-> @@ -1,95 +0,0 @@
-> -* Freescale Fast Ethernet Controller (FEC)
-> -
-> -Required properties:
-> -- compatible : Should be "fsl,<soc>-fec"
-> -- reg : Address and length of the register set for the device
-> -- interrupts : Should contain fec interrupt
-> -- phy-mode : See ethernet.txt file in the same directory
-> -
-> -Optional properties:
-> -- phy-supply : regulator that powers the Ethernet PHY.
-> -- phy-handle : phandle to the PHY device connected to this device.
-> -- fixed-link : Assume a fixed link. See fixed-link.txt in the same directory.
-> -  Use instead of phy-handle.
-> -- fsl,num-tx-queues : The property is valid for enet-avb IP, which supports
-> -  hw multi queues. Should specify the tx queue number, otherwise set tx queue
-> -  number to 1.
-> -- fsl,num-rx-queues : The property is valid for enet-avb IP, which supports
-> -  hw multi queues. Should specify the rx queue number, otherwise set rx queue
-> -  number to 1.
-> -- fsl,magic-packet : If present, indicates that the hardware supports waking
-> -  up via magic packet.
-> -- fsl,err006687-workaround-present: If present indicates that the system has
-> -  the hardware workaround for ERR006687 applied and does not need a software
-> -  workaround.
-> -- fsl,stop-mode: register bits of stop mode control, the format is
-> -		 <&gpr req_gpr req_bit>.
-> -		 gpr is the phandle to general purpose register node.
-> -		 req_gpr is the gpr register offset for ENET stop request.
-> -		 req_bit is the gpr bit offset for ENET stop request.
-> - -interrupt-names:  names of the interrupts listed in interrupts property in
-> -  the same order. The defaults if not specified are
-> -  __Number of interrupts__   __Default__
-> -	1			"int0"
-> -	2			"int0", "pps"
-> -	3			"int0", "int1", "int2"
-> -	4			"int0", "int1", "int2", "pps"
-> -  The order may be changed as long as they correspond to the interrupts
-> -  property. Currently, only i.mx7 uses "int1" and "int2". They correspond to
-> -  tx/rx queues 1 and 2. "int0" will be used for queue 0 and ENET_MII interrupts.
-> -  For imx6sx, "int0" handles all 3 queues and ENET_MII. "pps" is for the pulse
-> -  per second interrupt associated with 1588 precision time protocol(PTP).
-> -
-> -Optional subnodes:
-> -- mdio : specifies the mdio bus in the FEC, used as a container for phy nodes
-> -  according to phy.txt in the same directory
-> -
-> -Deprecated optional properties:
-> -	To avoid these, create a phy node according to phy.txt in the same
-> -	directory, and point the fec's "phy-handle" property to it. Then use
-> -	the phy's reset binding, again described by phy.txt.
-> -- phy-reset-gpios : Should specify the gpio for phy reset
-> -- phy-reset-duration : Reset duration in milliseconds.  Should present
-> -  only if property "phy-reset-gpios" is available.  Missing the property
-> -  will have the duration be 1 millisecond.  Numbers greater than 1000 are
-> -  invalid and 1 millisecond will be used instead.
-> -- phy-reset-active-high : If present then the reset sequence using the GPIO
-> -  specified in the "phy-reset-gpios" property is reversed (H=reset state,
-> -  L=operation state).
-> -- phy-reset-post-delay : Post reset delay in milliseconds. If present then
-> -  a delay of phy-reset-post-delay milliseconds will be observed after the
-> -  phy-reset-gpios has been toggled. Can be omitted thus no delay is
-> -  observed. Delay is in range of 1ms to 1000ms. Other delays are invalid.
-> -
-> -Example:
-> -
-> -ethernet@83fec000 {
-> -	compatible = "fsl,imx51-fec", "fsl,imx27-fec";
-> -	reg = <0x83fec000 0x4000>;
-> -	interrupts = <87>;
-> -	phy-mode = "mii";
-> -	phy-reset-gpios = <&gpio2 14 GPIO_ACTIVE_LOW>; /* GPIO2_14 */
-> -	local-mac-address = [00 04 9F 01 1B B9];
-> -	phy-supply = <&reg_fec_supply>;
-> -};
-> -
-> -Example with phy specified:
-> -
-> -ethernet@83fec000 {
-> -	compatible = "fsl,imx51-fec", "fsl,imx27-fec";
-> -	reg = <0x83fec000 0x4000>;
-> -	interrupts = <87>;
-> -	phy-mode = "mii";
-> -	phy-reset-gpios = <&gpio2 14 GPIO_ACTIVE_LOW>; /* GPIO2_14 */
-> -	local-mac-address = [00 04 9F 01 1B B9];
-> -	phy-supply = <&reg_fec_supply>;
-> -	phy-handle = <&ethphy>;
-> -	mdio {
-> -	        clock-frequency = <5000000>;
-> -		ethphy: ethernet-phy@6 {
-> -			compatible = "ethernet-phy-ieee802.3-c22";
-> -			reg = <6>;
-> -			max-speed = <100>;
-> -		};
-> -	};
-> -};
-> -- 
-> 2.17.1
-> 
-> 
