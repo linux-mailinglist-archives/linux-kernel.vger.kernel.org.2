@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E843CE975
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8833CEA7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359206AbhGSQzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:55:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48624 "EHLO mail.kernel.org"
+        id S1377345AbhGSRQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:16:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346705AbhGSP2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:28:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D49E6128E;
-        Mon, 19 Jul 2021 16:08:25 +0000 (UTC)
+        id S1347321AbhGSPjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:39:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B98DA613F3;
+        Mon, 19 Jul 2021 16:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710906;
-        bh=v6UqtFtjG4iruUiQJF78ThgQFAMWAej5WqbCRUipamI=;
+        s=korg; t=1626711535;
+        bh=IYoubfj/OlkMZZB5SY71eKlG6nEiNmDXtp7ZUMa6i/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gsTSnXrhx1HvGuh52WbJlah/Foe2kLcDv+LiCHUnRTZK7kdOVHffVYMKyWL5tI+XI
-         ZWwbKpqfAWyeaDlZQeHJhFX868YTAbxopecaJX01x2dc2fS87jnYrAgY65R/0DRLEc
-         yLAFmpC8lyf3B1krRpMXtAdRQVymp7Zil7nNp5Q8=
+        b=nlzfZPdoaCCN3QioIPiaIEWN0j0uco/0nr1GEBheqxiVtED2fOeH1utaGvhdXCOIp
+         290DiKgD8Zu26W1zPULbsKZ2FN5HZP2v9onAXy3biIpfJLdktWDAqtiDlqTP1vQbtY
+         EJPo2L0JDb75Y5jWXLaF834yWcFvaDqkqLFtn6tw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, ching Huang <ching2048@areca.com.tw>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 153/351] power: supply: ab8500: Avoid NULL pointers
+Subject: [PATCH 5.12 037/292] scsi: arcmsr: Fix the wrong CDB payload report to IOP
 Date:   Mon, 19 Jul 2021 16:51:39 +0200
-Message-Id: <20210719144950.038235048@linuxfoundation.org>
+Message-Id: <20210719144943.742992169@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: ching Huang <ching2048@areca.com.tw>
 
-[ Upstream commit 5bcb5087c9dd3dca1ff0ebd8002c5313c9332b56 ]
+[ Upstream commit 5b8644968d2ca85abb785e83efec36934974b0c2 ]
 
-Sometimes the code will crash because we haven't enabled
-AC or USB charging and thus not created the corresponding
-psy device. Fix it by checking that it is there before
-notifying.
+This patch fixes the wrong CDB payload report to IOP.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Link: https://lore.kernel.org/r/d2c97df3c817595c6faf582839316209022f70da.camel@areca.com.tw
+Signed-off-by: ching Huang <ching2048@areca.com.tw>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/ab8500_charger.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/scsi/arcmsr/arcmsr_hba.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply/ab8500_charger.c
-index af32cfae9f19..57fbfe3d8c03 100644
---- a/drivers/power/supply/ab8500_charger.c
-+++ b/drivers/power/supply/ab8500_charger.c
-@@ -415,6 +415,14 @@ disable_otp:
- static void ab8500_power_supply_changed(struct ab8500_charger *di,
- 					struct power_supply *psy)
- {
-+	/*
-+	 * This happens if we get notifications or interrupts and
-+	 * the platform has been configured not to support one or
-+	 * other type of charging.
-+	 */
-+	if (!psy)
-+		return;
-+
- 	if (di->autopower_cfg) {
- 		if (!di->usb.charger_connected &&
- 		    !di->ac.charger_connected &&
-@@ -441,7 +449,15 @@ static void ab8500_charger_set_usb_connected(struct ab8500_charger *di,
- 		if (!connected)
- 			di->flags.vbus_drop_end = false;
+diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
+index 4b79661275c9..930972cda38c 100644
+--- a/drivers/scsi/arcmsr/arcmsr_hba.c
++++ b/drivers/scsi/arcmsr/arcmsr_hba.c
+@@ -1923,8 +1923,12 @@ static void arcmsr_post_ccb(struct AdapterControlBlock *acb, struct CommandContr
  
--		sysfs_notify(&di->usb_chg.psy->dev.kobj, NULL, "present");
-+		/*
-+		 * Sometimes the platform is configured not to support
-+		 * USB charging and no psy has been created, but we still
-+		 * will get these notifications.
-+		 */
-+		if (di->usb_chg.psy) {
-+			sysfs_notify(&di->usb_chg.psy->dev.kobj, NULL,
-+				     "present");
+ 		if (ccb->arc_cdb_size <= 0x300)
+ 			arc_cdb_size = (ccb->arc_cdb_size - 1) >> 6 | 1;
+-		else
+-			arc_cdb_size = (((ccb->arc_cdb_size + 0xff) >> 8) + 2) << 1 | 1;
++		else {
++			arc_cdb_size = ((ccb->arc_cdb_size + 0xff) >> 8) + 2;
++			if (arc_cdb_size > 0xF)
++				arc_cdb_size = 0xF;
++			arc_cdb_size = (arc_cdb_size << 1) | 1;
 +		}
- 
- 		if (connected) {
- 			mutex_lock(&di->charger_attached_mutex);
+ 		ccb_post_stamp = (ccb->smid | arc_cdb_size);
+ 		writel(0, &pmu->inbound_queueport_high);
+ 		writel(ccb_post_stamp, &pmu->inbound_queueport_low);
 -- 
 2.30.2
 
