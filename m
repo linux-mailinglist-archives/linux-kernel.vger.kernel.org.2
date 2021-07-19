@@ -2,92 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E093CECED
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844CA3CECF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382503AbhGSRjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58434 "EHLO
+        id S1382553AbhGSRj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352737AbhGSQOd (ORCPT
+        with ESMTP id S1352712AbhGSQOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 12:14:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70A3C05BD3D;
-        Mon, 19 Jul 2021 09:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=t0i+7tXFhVAJI+nlAjaCd7T6XGAQwmoipG3wOX3BNN4=; b=aukGzst6WKaOLTfMq0IMTJVP/W
-        oW4ss9z0jiy2pgZaSBv/ZXarhM3VSBxdESUqy1kE7h1qXvBgiIdjbm1D5q+RQYj4PbqsL/t0+kqlh
-        dy6KPznHqP5JpRsC8Xa6dnhQQapIQxbmuO7likzE6uh9ZP2tXjdzgXqWkCJ4c1q/Fai8CAtY7t6Ac
-        t+jsX6iBmhYsMWUt6mBRrwDTTms5h2MroCNEe7CqBtzOy3GiC/Ba8I8TUexNnYJy7PGganCeqDRpn
-        nmt7X3oDM8G4sFx6X+DCZ1DvbmiOAMgQs2eLqI2bNgkE2ElmUrjlqjBK82Y04+jrqh5xZE024sN6A
-        tfAYcc4A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m5WAg-0075UR-UE; Mon, 19 Jul 2021 16:31:29 +0000
-Date:   Mon, 19 Jul 2021 17:31:10 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v3] iomap: support tail packing inline read
-Message-ID: <YPWozhzNIljcC83R@casper.infradead.org>
-References: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
- <YPWUBhxhoaEp8Frn@casper.infradead.org>
- <20210719151310.GA22355@lst.de>
- <YPWkRRzy5reIMu8u@B-P7TQMD6M-0146.local>
+        Mon, 19 Jul 2021 12:14:31 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222CBC05BD2D
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:08:19 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id t4-20020a05683014c4b02904cd671b911bso10702439otq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kbUdQK2vlTB6j8FkLGF5mfubURI8TtogZmmaDTQnPvE=;
+        b=m1Y5GGDzL9DhhIvkQOhKE8jm3ZPo4x4Kv6XvT4jPArx0adIOBT1hGUUUbAshqq35At
+         cndkNHv3bLE99B2KPXbx+BBHRsvMNEKx7wZFz3S2elI3zJMYHu0SAlm5rcIyp1hfBy2h
+         89LdnkHO0yJuDXGxtdbPbok1w/9yDgFDESo27uJMpG9xBVdPCaPb7TxfI4h1HltRqi8V
+         EVWjePQnUvjw4o8vQiw0vFx0L2ew1xzqVhz8912TvG7AK2WMYtMRkiu6XZ46lYpGSiap
+         Bv0DFKDwfzskPik/IwZXUFaBoM1tM253EjCycIAHlDL9qYGSyy3QqtYCqiS+KdK70o5r
+         SaNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kbUdQK2vlTB6j8FkLGF5mfubURI8TtogZmmaDTQnPvE=;
+        b=TY3urOHuhBXkLHStdF5xKrW+cnbnVndqhYYibL1qbf0dqXEyifemekP+nmDmQjjxiU
+         wnkyGsBGne+dLF0rAsv0W7m2BrJKv/B5SnwRQ37ytt8t6HIzaKCGrmAjHPMMzkVq54Uy
+         IInXhsA0g9yk+NujmxSvKqYHCusfw80RbG2Ti/BQq+15j5pH9BzhvL5bgDOmT62jWfkc
+         WK4QDMRdVDOXzqMP9BlKbBaMowwCzeUBeYM3Cek7mHYOsL9Gs58vyryW1OruXwYBsMOG
+         jMXQQQSzs5/NpLxooB6eiFR1vW9QyjhlHMN26pIEsRy+7AmiOPpu3Lp5PTX7uabXzehu
+         OQEg==
+X-Gm-Message-State: AOAM530u9gWy0eELGImwHJsD9IsrIp/U0DNz1sriCNFyt/aq7vnzvdBG
+        58s1fVJ5//t1eGd6wUv58puYx2rM38a9q0xLiSmALw==
+X-Google-Smtp-Source: ABdhPJxNFGGSwVV4mbFVlmbTZTuBcgOgdMnEF1cKN+gu3X2TRo9H89LDD1Q4vY5nLoK0erRMiePXRw+pMiFgx5TJODI=
+X-Received: by 2002:a05:6830:242f:: with SMTP id k15mr19821711ots.72.1626712304089;
+ Mon, 19 Jul 2021 09:31:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPWkRRzy5reIMu8u@B-P7TQMD6M-0146.local>
+References: <20210719144940.904087935@linuxfoundation.org> <20210719144947.891096868@linuxfoundation.org>
+In-Reply-To: <20210719144947.891096868@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 19 Jul 2021 22:01:30 +0530
+Message-ID: <CA+G9fYt3-5vb_1rjdW3=4nASPGMe3gRrXzdCu10bSgR+Zeo-Hw@mail.gmail.com>
+Subject: Re: [PATCH 5.10 216/243] arm64: dts: ti: k3-j721e-common-proc-board:
+ Use external clock for SERDES
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 12:11:49AM +0800, Gao Xiang wrote:
-> On Mon, Jul 19, 2021 at 05:13:10PM +0200, Christoph Hellwig wrote:
-> > On Mon, Jul 19, 2021 at 04:02:30PM +0100, Matthew Wilcox wrote:
-> > > > +	if (iomap->type == IOMAP_INLINE) {
-> > > > +		iomap_read_inline_data(inode, page, iomap, pos);
-> > > > +		plen = PAGE_SIZE - poff;
-> > > > +		goto done;
-> > > > +	}
-> > > 
-> > > This is going to break Andreas' case that he just patched to work.
-> > > GFS2 needs for there to _not_ be an iop for inline data.  That's
-> > > why I said we need to sort out when to create an iop before moving
-> > > the IOMAP_INLINE case below the creation of the iop.
-> > > 
-> > > If we're not going to do that first, then I recommend leaving the
-> > > IOMAP_INLINE case where it is and changing it to ...
-> > > 
-> > > 	if (iomap->type == IOMAP_INLINE)
-> > > 		return iomap_read_inline_data(inode, page, iomap, pos);
-> > > 
-> > > ... and have iomap_read_inline_data() return the number of bytes that
-> > > it copied + zeroed (ie PAGE_SIZE - poff).
-> > 
-> > Returning the bytes is much cleaner anyway.  But we still need to deal
-> > with the sub-page uptodate status in one form or another.
-> 
-> There is another iomap_read_inline_data() caller as in:
-> +static int iomap_write_begin_inline(struct inode *inode, loff_t pos,
-> +		struct page *page, struct iomap *srcmap)
-> +{
-> +	/* needs more work for the tailpacking case, disable for now */
-> +	if (WARN_ON_ONCE(pos != 0))
-> +		return -EIO;
-> +	if (PageUptodate(page))
-> +		return 0;
-> +	iomap_read_inline_data(inode, page, srcmap, pos);
-> +	return 0;
-> +}
-> 
-> I'd like to avoid it as (void)iomap_read_inline_data(...). That's why it
-> left as void return type.
+On Mon, 19 Jul 2021 at 21:42, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> From: Kishon Vijay Abraham I <kishon@ti.com>
+>
+> [ Upstream commit f2a7657ad7a821de9cc77d071a5587b243144cd5 ]
+>
+> Use external clock for all the SERDES used by PCIe controller. This will
+> make the same clock used by the local SERDES as well as the clock
+> provided to the PCIe connector.
+>
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> Link: https://lore.kernel.org/r/20210603143427.28735-4-kishon@ti.com
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  .../dts/ti/k3-j721e-common-proc-board.dts     | 40 +++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> index 7cd31ac67f88..56a92f59c3a1 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> @@ -9,6 +9,7 @@
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/input.h>
+>  #include <dt-bindings/net/ti-dp83867.h>
+> +#include <dt-bindings/phy/phy-cadence.h>
 
-You don't need to cast away the return value in C.
+Following build errors noticed on arm64 architecture on 5.10 branch.
 
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64
+CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
+'HOSTCC=sccache gcc'
+/builds/linux/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts:12:10:
+fatal error: dt-bindings/phy/phy-cadence.h: No such file or directory
+   12 | #include <dt-bindings/phy/phy-cadence.h>
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[3]: *** [scripts/Makefile.lib:326:
+arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dtb] Error 1
+make[3]: Target '__build' not remade because of errors.
+make[2]: *** [/builds/linux/scripts/Makefile.build:497:
+arch/arm64/boot/dts/ti] Error 2
+make[2]: Target '__build' not remade because of errors.
+make[1]: *** [/builds/linux/Makefile:1358: dtbs] Error 2
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+
+ref:
+https://builds.tuxbuild.com/1vXT3b334rT9K155TzUSkMWobkx/
+https://builds.tuxbuild.com/1vXT3b334rT9K155TzUSkMWobkx/config
+
+Steps to reproduce:
+--------------------
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
+
+
+tuxmake --runtime podman --target-arch arm64 --toolchain gcc-11
+--kconfig defconfig --kconfig-add
+https://builds.tuxbuild.com/1vXT3b334rT9K155TzUSkMWobkx/config
+
+--
+Linaro LKFT
+https://lkft.linaro.org
