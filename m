@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5D73CDF45
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDAF3CDC2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345304AbhGSPIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:08:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40454 "EHLO mail.kernel.org"
+        id S242268AbhGSOve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:51:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344058AbhGSOsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E1DC613E8;
-        Mon, 19 Jul 2021 15:26:09 +0000 (UTC)
+        id S244123AbhGSOeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:34:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9190361181;
+        Mon, 19 Jul 2021 15:13:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708370;
-        bh=mSF4KWxKqflnSF5N8gIsUPwDq4JB+/Htfxs/bFcwq4Q=;
+        s=korg; t=1626707604;
+        bh=0MhgbH6QdC0c5kmzGdjW5OwP4rKEMVjEmrLTcINHv/E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nOOa4bbAy6pisYKVnzNmt9qXRlgj8O4OxfFBw6VzzwnogSDyv+tK5OyP3Oy8/DEUq
-         D5N/AHheXBJ9owYM6UdhB95bCOp29RQi3Avc5Q/HEWAd2+REWiJ/TmTxBTC5XD0wPt
-         VMGrEUdLC5TbDwm6pO9nizGRs8EKUkEt80HEnyEY=
+        b=G5fX8Y7ehFw5dwXKbnVX1kRFyN7b5Jx6P7n0KFXj5aNqJxQs+qIc8FruqmsAYujWE
+         pp0rlvjRtUPNysjhDx9i55MAb/sx8WPwvDRbwfOMumunRMzPlK/JYmEyZFmr3b98vF
+         Kkk/9YYX9/Zy8ZEAddp6E5yty3ljBQJXoA5jkauQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 283/315] ACPI: video: Add quirk for the Dell Vostro 3350
+Subject: [PATCH 4.9 230/245] ubifs: Set/Clear I_LINKABLE under i_lock for whiteout inode
 Date:   Mon, 19 Jul 2021 16:52:52 +0200
-Message-Id: <20210719144952.739916565@linuxfoundation.org>
+Message-Id: <20210719144947.820522067@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
-References: <20210719144942.861561397@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit 9249c32ec9197e8d34fe5179c9e31668a205db04 ]
+[ Upstream commit a801fcfeef96702fa3f9b22ad56c5eb1989d9221 ]
 
-The Dell Vostro 3350 ACPI video-bus device reports spurious
-ACPI_VIDEO_NOTIFY_CYCLE events resulting in spurious KEY_SWITCHVIDEOMODE
-events being reported to userspace (and causing trouble there).
+xfstests-generic/476 reports a warning message as below:
 
-Add a quirk setting the report_key_events mask to
-REPORT_BRIGHTNESS_KEY_EVENTS so that the ACPI_VIDEO_NOTIFY_CYCLE
-events will be ignored, while still reporting brightness up/down
-hotkey-presses to userspace normally.
+WARNING: CPU: 2 PID: 30347 at fs/inode.c:361 inc_nlink+0x52/0x70
+Call Trace:
+  do_rename+0x502/0xd40 [ubifs]
+  ubifs_rename+0x8b/0x180 [ubifs]
+  vfs_rename+0x476/0x1080
+  do_renameat2+0x67c/0x7b0
+  __x64_sys_renameat2+0x6e/0x90
+  do_syscall_64+0x66/0xe0
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1911763
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Following race case can cause this:
+         rename_whiteout(Thread 1)             wb_workfn(Thread 2)
+ubifs_rename
+  do_rename
+                                          __writeback_single_inode
+					    spin_lock(&inode->i_lock)
+    whiteout->i_state |= I_LINKABLE
+                                            inode->i_state &= ~dirty;
+---- How race happens on i_state:
+    (tmp = whiteout->i_state | I_LINKABLE)
+		                           (tmp = inode->i_state & ~dirty)
+    (whiteout->i_state = tmp)
+		                           (inode->i_state = tmp)
+----
+					    spin_unlock(&inode->i_lock)
+    inc_nlink(whiteout)
+    WARN_ON(!(inode->i_state & I_LINKABLE)) !!!
+
+Fix to add i_lock to avoid i_state update race condition.
+
+Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpi_video.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/ubifs/dir.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
-index 7df7abde1fcb..5a69260edf80 100644
---- a/drivers/acpi/acpi_video.c
-+++ b/drivers/acpi/acpi_video.c
-@@ -556,6 +556,15 @@ static const struct dmi_system_id video_dmi_table[] = {
- 		DMI_MATCH(DMI_PRODUCT_NAME, "Vostro V131"),
- 		},
- 	},
-+	{
-+	 .callback = video_set_report_key_events,
-+	 .driver_data = (void *)((uintptr_t)REPORT_BRIGHTNESS_KEY_EVENTS),
-+	 .ident = "Dell Vostro 3350",
-+	 .matches = {
-+		DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+		DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3350"),
-+		},
-+	},
- 	/*
- 	 * Some machines change the brightness themselves when a brightness
- 	 * hotkey gets pressed, despite us telling them not to. In this case
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 87ab02e2d666..56eed54633cf 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1144,7 +1144,10 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 			return err;
+ 		}
+ 
++		spin_lock(&whiteout->i_lock);
+ 		whiteout->i_state |= I_LINKABLE;
++		spin_unlock(&whiteout->i_lock);
++
+ 		whiteout_ui = ubifs_inode(whiteout);
+ 		whiteout_ui->data = dev;
+ 		whiteout_ui->data_len = ubifs_encode_dev(dev, MKDEV(0, 0));
+@@ -1239,7 +1242,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 
+ 		inc_nlink(whiteout);
+ 		mark_inode_dirty(whiteout);
++
++		spin_lock(&whiteout->i_lock);
+ 		whiteout->i_state &= ~I_LINKABLE;
++		spin_unlock(&whiteout->i_lock);
++
+ 		iput(whiteout);
+ 	}
+ 
 -- 
 2.30.2
 
