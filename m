@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B598C3CDBD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9573CD8BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238757AbhGSOuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:50:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47024 "EHLO mail.kernel.org"
+        id S242884AbhGSOZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:25:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245536AbhGSOen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:34:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B4386128E;
-        Mon, 19 Jul 2021 15:14:12 +0000 (UTC)
+        id S242783AbhGSOXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:23:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02A836120E;
+        Mon, 19 Jul 2021 15:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707652;
-        bh=cgQeWa6VY+L9UnqvCofy0cc87uTZTbvmtNzBafYrQEQ=;
+        s=korg; t=1626706984;
+        bh=er0SduiRWDtUZFVT+JqXZo1go7bIbj2776gLF2zIl3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hrv/QlawUh4qdsbAAr/timFCdm2DL56WjGH2byshdh/HDen+ldunalB8vlmlWeRj8
-         MNDdsxT9uHPwkNvGrZY5Mmgkp+R1DMFPKughZiBrV24yzr+vLLzCUYseLArUB+c1TO
-         cJg57ivWXtBuS2cDzxzrLTB9gbH9J10cqWtTGl/E=
+        b=Ni5Akvrbyl5wXVHDjITjj+gTdVKIlsHW+r3ARd9k15sAlnRefSaqxVkGuIeU1nKdB
+         iArs91niiDvz+3kCGbgquiVaTybxMN6iAfjJSPwM5yGPBvwH9xsDKhc/HoH62Xynww
+         7FgSFMh/arzeZLTUttGqZTOGOgAovNQfM4go2SW0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Marshall <hubcap@omnibond.com>,
+        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 216/245] orangefs: fix orangefs df output.
-Date:   Mon, 19 Jul 2021 16:52:38 +0200
-Message-Id: <20210719144947.370813955@linuxfoundation.org>
+Subject: [PATCH 4.4 175/188] virtio_console: Assure used length from device is limited
+Date:   Mon, 19 Jul 2021 16:52:39 +0200
+Message-Id: <20210719144942.209087475@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
+References: <20210719144913.076563739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,32 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Marshall <hubcap@omnibond.com>
+From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit 0fdec1b3c9fbb5e856a40db5993c9eaf91c74a83 ]
+[ Upstream commit d00d8da5869a2608e97cfede094dfc5e11462a46 ]
 
-Orangefs df output is whacky. Walt Ligon suggested this might fix it.
-It seems way more in line with reality now...
+The buf->len might come from an untrusted device. This
+ensures the value would not exceed the size of the buffer
+to avoid data corruption or loss.
 
-Signed-off-by: Mike Marshall <hubcap@omnibond.com>
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Link: https://lore.kernel.org/r/20210525125622.1203-1-xieyongji@bytedance.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/orangefs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/virtio_console.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/orangefs/super.c b/fs/orangefs/super.c
-index 6e35ef6521b4..8972ebc87016 100644
---- a/fs/orangefs/super.c
-+++ b/fs/orangefs/super.c
-@@ -185,7 +185,7 @@ static int orangefs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 	buf->f_bavail = (sector_t) new_op->downcall.resp.statfs.blocks_avail;
- 	buf->f_files = (sector_t) new_op->downcall.resp.statfs.files_total;
- 	buf->f_ffree = (sector_t) new_op->downcall.resp.statfs.files_avail;
--	buf->f_frsize = sb->s_blocksize;
-+	buf->f_frsize = 0;
+diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+index 226ccb7891d4..c2f1c921cb2c 100644
+--- a/drivers/char/virtio_console.c
++++ b/drivers/char/virtio_console.c
+@@ -487,7 +487,7 @@ static struct port_buffer *get_inbuf(struct port *port)
  
- out_op_release:
- 	op_release(new_op);
+ 	buf = virtqueue_get_buf(port->in_vq, &len);
+ 	if (buf) {
+-		buf->len = len;
++		buf->len = min_t(size_t, len, buf->size);
+ 		buf->offset = 0;
+ 		port->stats.bytes_received += len;
+ 	}
+@@ -1752,7 +1752,7 @@ static void control_work_handler(struct work_struct *work)
+ 	while ((buf = virtqueue_get_buf(vq, &len))) {
+ 		spin_unlock(&portdev->c_ivq_lock);
+ 
+-		buf->len = len;
++		buf->len = min_t(size_t, len, buf->size);
+ 		buf->offset = 0;
+ 
+ 		handle_control_message(vq->vdev, portdev, buf);
 -- 
 2.30.2
 
