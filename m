@@ -2,108 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EDB3CE2EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C343CE318
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235675AbhGSPcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:32:54 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:52019 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232795AbhGSO4H (ORCPT
+        id S1349820AbhGSPgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:36:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21822 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245300AbhGSO6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:56:07 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UgItzbm_1626709003;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgItzbm_1626709003)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 19 Jul 2021 23:36:45 +0800
-Date:   Mon, 19 Jul 2021 23:36:43 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Andreas =?utf-8?Q?Gr=C3=BCnbacher?= 
-        <andreas.gruenbacher@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Mon, 19 Jul 2021 10:58:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626709130;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+lFKwCAVKeBwWtdk13YauC5QOjrFzKdwp3ovNP9k6AY=;
+        b=eTlO2q63EOW+QlTvtHrBScLXv+7tMfTT8vBfqsC0trOM9Ju8drqKPhOCqha897c9xCHJBr
+        TPVMeBi3NtntERUWe2vXBY5CgImYn9Wf+iY9hOUdW0BOaGeWfyoJEDH5WLEpWBwKVvuvaA
+        16P5cXrqda8WncAXG2q0WyaWGlfmMwo=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-491-D_5G5JRJPCyZF0N5R_fDSQ-1; Mon, 19 Jul 2021 11:38:49 -0400
+X-MC-Unique: D_5G5JRJPCyZF0N5R_fDSQ-1
+Received: by mail-ed1-f69.google.com with SMTP id e3-20020a0564020883b029039ef9536577so9471084edy.5
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:38:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+lFKwCAVKeBwWtdk13YauC5QOjrFzKdwp3ovNP9k6AY=;
+        b=SWKpXm9a8A+MKpZd1G9FVHi+c2jtasAvr8VOrI15KqcDh6Q1qiwfFADKcIPuKbq8oG
+         KkYlXECpxCrHqCPyEwSPTgU6vJXkamO+CNz4Xaao2QlLi77imv4/C7McxLs4CNu+F98U
+         QsBpqaZhpAe7nOlv4pG+/CwsaJy7bmrYpSY52juhXjb1dYICgxHbBBdNupmeM1OYfMDN
+         c0SiErnNsowS5/Q2ChzHhTjPQEcCOyAq/Lt0EQs5FXSgeATCUNCst9dbsYowpt13GH0t
+         ymTl9jgGLZaGFXCIyNVxnm49H+QNw3BmVYdzH1T715JWH5N7PcSpx0ymftSgCF20rw4V
+         aP2g==
+X-Gm-Message-State: AOAM5305wj0Z7HE6fte42xxjrSWkoRh2Nnqht/eNI4DhrlfZyE9Hwaue
+        1rMXq+UdUhEvOX5ypvRMnvXsPGzmY/MvwR5auZAkj/F8dfWE0drA7n+ncyFPwKzLRBUwOxd6/sm
+        tbOJZ+nvHmI8w2BH9sSNalI3K
+X-Received: by 2002:a17:906:2752:: with SMTP id a18mr28974317ejd.458.1626709127966;
+        Mon, 19 Jul 2021 08:38:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzlJYprLql9Zhw1pUb/b66jZIzRDGS7wig2XiTxZjcvWhWWmHMwbRIx2nEi48m+v6BnHOglLQ==
+X-Received: by 2002:a17:906:2752:: with SMTP id a18mr28974294ejd.458.1626709127731;
+        Mon, 19 Jul 2021 08:38:47 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id t15sm6060125ejf.119.2021.07.19.08.38.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 08:38:47 -0700 (PDT)
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>, linux-mm@kvack.org,
         LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>
-Subject: Re: [PATCH v3] iomap: support tail packing inline read
-Message-ID: <YPWcC0HYu1ICo3dc@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Andreas =?utf-8?Q?Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>
-References: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
- <YPWUBhxhoaEp8Frn@casper.infradead.org>
- <YPWaUNeV1K13vpGF@B-P7TQMD6M-0146.local>
- <CAHpGcM+V+_AxTBwp_eq6R3osH0CMA5N-o8bzBKW3uMsBZY6KWA@mail.gmail.com>
+        Al Viro <viro@zeniv.linux.org.uk>
+References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
+ <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
+ <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
+ <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
+ <20210715102249.2205-1-hdanton@sina.com>
+ <20210716020611.2288-1-hdanton@sina.com>
+ <20210716075539.2376-1-hdanton@sina.com>
+ <20210716093725.2438-1-hdanton@sina.com>
+ <20210718124219.1521-1-hdanton@sina.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
+Message-ID: <724e7951-59c8-8b2b-37b8-6b0bf696ab04@redhat.com>
+Date:   Mon, 19 Jul 2021 17:38:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210718124219.1521-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHpGcM+V+_AxTBwp_eq6R3osH0CMA5N-o8bzBKW3uMsBZY6KWA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 05:31:51PM +0200, Andreas Grünbacher wrote:
-> Am Mo., 19. Juli 2021 um 17:29 Uhr schrieb Gao Xiang
-> <hsiangkao@linux.alibaba.com>:
-> > On Mon, Jul 19, 2021 at 04:02:30PM +0100, Matthew Wilcox wrote:
-> > > On Mon, Jul 19, 2021 at 10:47:47PM +0800, Gao Xiang wrote:
-> > > > @@ -246,18 +245,19 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
-> > > >     unsigned poff, plen;
-> > > >     sector_t sector;
-> > > >
-> > > > -   if (iomap->type == IOMAP_INLINE) {
-> > > > -           WARN_ON_ONCE(pos);
-> > > > -           iomap_read_inline_data(inode, page, iomap);
-> > > > -           return PAGE_SIZE;
-> > > > -   }
-> > > > -
-> > > > -   /* zero post-eof blocks as the page may be mapped */
-> > > >     iop = iomap_page_create(inode, page);
-> > > > +   /* needs to skip some leading uptodated blocks */
-> > > >     iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
-> > > >     if (plen == 0)
-> > > >             goto done;
-> > > >
-> > > > +   if (iomap->type == IOMAP_INLINE) {
-> > > > +           iomap_read_inline_data(inode, page, iomap, pos);
-> > > > +           plen = PAGE_SIZE - poff;
-> > > > +           goto done;
-> > > > +   }
-> > >
-> > > This is going to break Andreas' case that he just patched to work.
-> > > GFS2 needs for there to _not_ be an iop for inline data.  That's
-> > > why I said we need to sort out when to create an iop before moving
-> > > the IOMAP_INLINE case below the creation of the iop.
-> >
-> > I have no idea how it breaks Andreas' case from the previous commit
-> > message: "
-> > iomap: Don't create iomap_page objects for inline files
-> > In iomap_readpage_actor, don't create iop objects for inline inodes.
-> > Otherwise, iomap_read_inline_data will set PageUptodate without setting
-> > iop->uptodate, and iomap_page_release will eventually complain.
-> >
-> > To prevent this kind of bug from occurring in the future, make sure the
-> > page doesn't have private data attached in iomap_read_inline_data.
-> > "
-> >
-> > After this patch, iomap_read_inline_data() will set iop->uptodate with
-> > iomap_set_range_uptodate() rather than set PageUptodate() directly,
-> > so iomap_page_release won't complain.
+On 18/07/21 14:42, Hillf Danton wrote:
+>> It's caused by the missing wakeup, i.e. eventfd_signal not really
+>> signaling anything.
 > 
-> Yes, that actually looks fine.
+> Can you please point me to the waiters in the mainline?
 
-Yeah, although I admit it looks (maybe) somewhat sub-optimal, but I think
-let's make it work correctly first. Then consider how to optimize it even
-further (like drop iops or likewise...).
+It's irqfd_wakeup.
 
-Just my humble suggestion of this from heart....
-
-Thanks,
-Gao Xiang
-
+> There are two cases of write_seqcount_begin in x/virt/kvm/eventfd.c, and
+> in kvm_irqfd_deassign() it is surrounded by spin_lock_irq(&kvm->irqfds.lock)
+> that also protects irqfd_update().
 > 
-> Thanks,
-> Andreas
+> What isnt clear is if the risk is zero that either case can be preempted by
+> seqcount reader. That risk may end up with the livelock described in
+> x/Documentation/locking/seqlock.rst.
+
+Since the introduction of seqcount_spinlock_t, the writers automatically 
+disable preemption.  This is definitely the right thing in this case 
+where the seqcount writers are small enough, and the readers are hot 
+enough, that using a local lock would be too heavyweight.
+
+Without that, the livelock would be possible, though very unlikely.  In 
+practice seqcount updates should only happen while the producer is 
+quiescent; and also the seqcount readers and writers will often be 
+pinned to separate CPUs.
+
+Paolo
+
+> +A sequence counter write side critical section must never be preempted
+> +or interrupted by read side sections. Otherwise the reader will spin for
+> +the entire scheduler tick due to the odd sequence count value and the
+> +interrupted writer. If that reader belongs to a real-time scheduling
+> +class, it can spin forever and the kernel will livelock.
+> 
+
