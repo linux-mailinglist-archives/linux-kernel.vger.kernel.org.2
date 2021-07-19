@@ -2,80 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A16683CF0CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BCB3CF0C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377731AbhGSXoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 19:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
+        id S1379533AbhGSXpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 19:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441928AbhGSW0v (ORCPT
+        with ESMTP id S1376744AbhGSWc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 18:26:51 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D312BC0613E6;
-        Mon, 19 Jul 2021 16:04:20 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GTHTs1crwz9sS8;
-        Tue, 20 Jul 2021 09:04:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626735857;
-        bh=U9dlsr4YHzfWpAfVsdW9AZpPXJCMyfPY5QJPYdcMf8k=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mHdA9Bl+ScuVImzL6201tvS35kzq9MuECxPbx7+/Jl4Yz3LjaZ1KoV6rFhgHtmFPM
-         2YfdtS46upio1APoA33QMvwEaqP6TOv06bqqbRW0nrBP7MGRliK+6fuJw11+sx0kQ1
-         yuvJHoTLvkDq6Xul2ceVyg5ERyvaWH3PcY9GhvaDgf1WnKZC41OpOUYmc58K7ZKlks
-         nMrKyQVKbSArW5Ie2Ye1tFBhDbWg20cXC+Ro0izoHe3cU160hAx3bx4mrAMmyuzTYY
-         LCO2CJAHdB+zNOHyKcPqx7cqyv4Xs/d7emEfz+j42R834ARKMd8rUQz6Dsw7ZrrcUs
-         0TbXDDAFjIHvg==
-Date:   Tue, 20 Jul 2021 09:04:15 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commits in the overlayfs tree
-Message-ID: <20210720090415.279cbb19@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gym2R/aMqFK1abFsmh.cgpp";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Mon, 19 Jul 2021 18:32:58 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A138CC061797;
+        Mon, 19 Jul 2021 16:11:52 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id b6so17530865iln.12;
+        Mon, 19 Jul 2021 16:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=UInFx3lsKkpvv0erIEUaDzneQf280BDgbwg4LuWK5Zk=;
+        b=lLB9Yldmy7KbqPY/COpnRBeMcw8tAx6dntzKr4rMQyki3XQqqliZfaxahyFe6FQYS+
+         1pRh67/oyxfO64Wjq04bKaCky3pwuBE1xX5P6Iqd3EM52oCq+RYS7WNMBfH0zrno+IYt
+         ee1xFS9333Hgfw4AbbzR4VPd8wrClUoIt4gblyxWuVBmFWF1XGrOvI7OM7cAX1D745lD
+         pUkaYzStWyYbXbVNVkgZH7gUeUhLucp/iK8KZTP1wnrzRI5UMYBTcSeQAfCkypA3UGtV
+         6F1yABRTN5GLbzZI1k1Gl7aFHTMk2o/y+j8f/98U3j4wjtHrJH9xD1OVQvzck+e07Ilu
+         /WgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=UInFx3lsKkpvv0erIEUaDzneQf280BDgbwg4LuWK5Zk=;
+        b=jfLCpXmrXhLOQOFLesHI0ah4Zur+9Xzn2YJMCIyWgltIvop0S+tVpx+ge1R/d3jpl9
+         H+GoTzT+A0fMbps+8cczSJMr7OhnINFcJ/ZDTmnt20mUgfVkMChUbuAAStJKX7lpxi7z
+         e/JkwCA49n0KXvCfIf4rzZSn7zk/lvevDkC8QKce6nMEnDTKM4L2MhUHQoxHBbkloDu5
+         TAj4/2OmnXTwop8+HvPw6Quc05CfMVzekHrRIEPpknBMrxbVFq5KACo772BdoHnsCLpS
+         cyGJ0MwZowlQyyBX3iXe4GuTwGG/4sEgKmv7tGfK0wvgmQwkTx0ERtGlaNjPnsehuY77
+         flZg==
+X-Gm-Message-State: AOAM532LkLhgIewbuhPjHgyLJJCO9esC9gUxZmkVxhkWrIv7SrJNMBwe
+        qISffuGKfqE87d0E8e4ZPOE=
+X-Google-Smtp-Source: ABdhPJxrqPifbHMteNN1GWXSaMfoXWJFNG8A9DR2VfDqX6Db+Mw2ZI+nLOb3+2gwOqSmvZDNizwNRg==
+X-Received: by 2002:a05:6e02:c73:: with SMTP id f19mr18055464ilj.291.1626736312070;
+        Mon, 19 Jul 2021 16:11:52 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id l5sm11245729ion.44.2021.07.19.16.11.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 16:11:51 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 16:11:43 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <60f606afc66a1_1e832208e7@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210719085134.43325-2-lmb@cloudflare.com>
+References: <20210719085134.43325-1-lmb@cloudflare.com>
+ <20210719085134.43325-2-lmb@cloudflare.com>
+Subject: RE: [PATCH bpf v2 1/1] bpf: fix OOB read when printing XDP link
+ fdinfo
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gym2R/aMqFK1abFsmh.cgpp
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Lorenz Bauer wrote:
+> We got the following UBSAN report on one of our testing machines:
+> 
+>     ================================================================================
+>     UBSAN: array-index-out-of-bounds in kernel/bpf/syscall.c:2389:24
+>     index 6 is out of range for type 'char *[6]'
+>     CPU: 43 PID: 930921 Comm: systemd-coredum Tainted: G           O      5.10.48-cloudflare-kasan-2021.7.0 #1
+>     Hardware name: <snip>
+>     Call Trace:
+>      dump_stack+0x7d/0xa3
+>      ubsan_epilogue+0x5/0x40
+>      __ubsan_handle_out_of_bounds.cold+0x43/0x48
+>      ? seq_printf+0x17d/0x250
+>      bpf_link_show_fdinfo+0x329/0x380
+>      ? bpf_map_value_size+0xe0/0xe0
+>      ? put_files_struct+0x20/0x2d0
+>      ? __kasan_kmalloc.constprop.0+0xc2/0xd0
+>      seq_show+0x3f7/0x540
+>      seq_read_iter+0x3f8/0x1040
+>      seq_read+0x329/0x500
+>      ? seq_read_iter+0x1040/0x1040
+>      ? __fsnotify_parent+0x80/0x820
+>      ? __fsnotify_update_child_dentry_flags+0x380/0x380
+>      vfs_read+0x123/0x460
+>      ksys_read+0xed/0x1c0
+>      ? __x64_sys_pwrite64+0x1f0/0x1f0
+>      do_syscall_64+0x33/0x40
+>      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>     <snip>
+>     ================================================================================
+>     ================================================================================
+>     UBSAN: object-size-mismatch in kernel/bpf/syscall.c:2384:2
+> 
+> From the report, we can infer that some array access in bpf_link_show_fdinfo at index 6
+> is out of bounds. The obvious candidate is bpf_link_type_strs[BPF_LINK_TYPE_XDP] with
+> BPF_LINK_TYPE_XDP == 6. It turns out that BPF_LINK_TYPE_XDP is missing from bpf_types.h
+> and therefore doesn't have an entry in bpf_link_type_strs:
+> 
+>     pos:	0
+>     flags:	02000000
+>     mnt_id:	13
+>     link_type:	(null)
+>     link_id:	4
+>     prog_tag:	bcf7977d3b93787c
+>     prog_id:	4
+>     ifindex:	1
+> 
+> Fixes: aa8d3a716b59 ("bpf, xdp: Add bpf_link-based XDP attachment API")
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
+>  include/linux/bpf_types.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> index a9db1eae6796..ae3ac3a2018c 100644
+> --- a/include/linux/bpf_types.h
+> +++ b/include/linux/bpf_types.h
+> @@ -134,4 +134,5 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_CGROUP, cgroup)
+>  BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
+>  #ifdef CONFIG_NET
+>  BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
+> +BPF_LINK_TYPE(BPF_LINK_TYPE_XDP, xdp)
+>  #endif
+> -- 
+> 2.30.2
+> 
 
-Hi all,
+Still lgtm.
 
-Commits
-
-  3132b5adad49 ("ovl: pass ovl_fs to ovl_check_setxattr()")
-  d1e717e0032c ("fs: add generic helper for filling statx attribute flags")
-
-are missing a Signed-off-by from their committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gym2R/aMqFK1abFsmh.cgpp
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD2BO8ACgkQAVBC80lX
-0GwBGwf8C5Q0551FvdLACT0oXWJ+PdLFm4hPZp36900tzsv2XHO0KbzSZ3sqAT+/
-O8iDOS5rNw2tCxS2Rul56pB96c6hOshOoe9+UQq6VAZ5vHo52qOUzNo7Leno/vba
-PHu7jtAnE5XZ3u4dnoMa0N3qd5qcC8Vojo0250k+EACSe7Qibxk/LYUw9/LiqfQx
-CuROfPIwrsJZcG5JrNYLCzG8SR4i75Hk5+TXLMtn+6vT6A5lNmvCp3aPAv1CGKGm
-nLa+knAnw0lQa8jTCOV0p13+dy3ub68jRmrf7x1D+qe+HxgxgXHP+QYCWmvttVhO
-ZvgXNqwD8ZcgcI0EPgOp1cNYMzoChw==
-=4CT8
------END PGP SIGNATURE-----
-
---Sig_/gym2R/aMqFK1abFsmh.cgpp--
+Acked-by; John Fastabend <john.fastabend@gmail.com>
