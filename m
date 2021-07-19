@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19503CE69E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5083CE7E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350352AbhGSQKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:10:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
+        id S1354747AbhGSQfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:35:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344697AbhGSPJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:09:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AF9361264;
-        Mon, 19 Jul 2021 15:48:39 +0000 (UTC)
+        id S1347835AbhGSPVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:21:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACCD46143B;
+        Mon, 19 Jul 2021 15:59:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709719;
-        bh=lwqM6PvVga1wrNPdaKICIzDas3E2Hl7kjyv++ULeiNA=;
+        s=korg; t=1626710364;
+        bh=H8qgTPdhyT1Kx8rXCvJiWcyjj55kRUNtbwE8zaJvcYc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c+HBZW+7rxEXJhRm9l6jNWkxPcrkd53Ep+uXFsFqT+N7uSLoyqnkP7V8WZnIOxAEW
-         yjx7BXGUdAIS/d41Dm9srwhohfq/ODsVOONtyR8AxRfbjDRBXY5s6mhawRZqQt37wc
-         4UjSWxOQ1ZZrS6v99EPitcCdVvPPMbGur9BTAp98=
+        b=UTXIBfO6cupIUGGELpYyy+rC0hI4gqZNIrRm2S3BtutOR14GtIWKrDqbgBW3yTEWa
+         iynEd3uTxrbnvM6zZVFCRsc8UPckpuGjrhfEl2e1Um9owP8UAPs6ooFwPMiggZIOCZ
+         a3KyUGIp6C9t/42cjWV4Ml8XfYlNZ6UmujFWKHNg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Suman Anna <s-anna@ti.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 071/149] pwm: spear: Dont modify HW state in .remove callback
-Date:   Mon, 19 Jul 2021 16:52:59 +0200
-Message-Id: <20210719144918.140091199@linuxfoundation.org>
+Subject: [PATCH 5.10 151/243] remoteproc: k3-r5: Fix an error message
+Date:   Mon, 19 Jul 2021 16:53:00 +0200
+Message-Id: <20210719144945.788956203@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit b601a18f12383001e7a8da238de7ca1559ebc450 ]
+[ Upstream commit 34c4da6d5dfba48f49f891ebd75bb55999f0c538 ]
 
-A consumer is expected to disable a PWM before calling pwm_put(). And if
-they didn't there is hopefully a good reason (or the consumer needs
-fixing). Also if disabling an enabled PWM was the right thing to do,
-this should better be done in the framework instead of in each low level
-driver.
+'ret' is known to be 0 here.
+Reorder the code so that the expected error code is printed.
 
-So drop the hardware modification from the .remove() callback.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Acked-by: Suman Anna <s-anna@ti.com>
+Fixes: 6dedbd1d5443 ("remoteproc: k3-r5: Add a remoteproc driver for R5F subsystem")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/d6e29d903b48957bf59c67229d54b0fc215e31ae.1620333870.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-spear.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/remoteproc/ti_k3_r5_remoteproc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pwm/pwm-spear.c b/drivers/pwm/pwm-spear.c
-index 6c6b44fd3f43..2d11ac277de8 100644
---- a/drivers/pwm/pwm-spear.c
-+++ b/drivers/pwm/pwm-spear.c
-@@ -231,10 +231,6 @@ static int spear_pwm_probe(struct platform_device *pdev)
- static int spear_pwm_remove(struct platform_device *pdev)
- {
- 	struct spear_pwm_chip *pc = platform_get_drvdata(pdev);
--	int i;
--
--	for (i = 0; i < NUM_PWM; i++)
--		pwm_disable(&pc->chip.pwms[i]);
+diff --git a/drivers/remoteproc/ti_k3_r5_remoteproc.c b/drivers/remoteproc/ti_k3_r5_remoteproc.c
+index d9307935441d..afeb9d6e4313 100644
+--- a/drivers/remoteproc/ti_k3_r5_remoteproc.c
++++ b/drivers/remoteproc/ti_k3_r5_remoteproc.c
+@@ -1202,9 +1202,9 @@ static int k3_r5_core_of_init(struct platform_device *pdev)
  
- 	/* clk was prepared in probe, hence unprepare it here */
- 	clk_unprepare(pc->clk);
+ 	core->tsp = k3_r5_core_of_get_tsp(dev, core->ti_sci);
+ 	if (IS_ERR(core->tsp)) {
++		ret = PTR_ERR(core->tsp);
+ 		dev_err(dev, "failed to construct ti-sci proc control, ret = %d\n",
+ 			ret);
+-		ret = PTR_ERR(core->tsp);
+ 		goto err;
+ 	}
+ 
 -- 
 2.30.2
 
