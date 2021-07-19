@@ -2,123 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B263CCDE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925983CCDEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234520AbhGSGah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 02:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
+        id S234370AbhGSGdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 02:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233052AbhGSGaf (ORCPT
+        with ESMTP id S233048AbhGSGdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 02:30:35 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A64AC061762
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 23:27:36 -0700 (PDT)
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id A7605B3EB05;
-        Mon, 19 Jul 2021 08:27:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1626676052;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0v0oBiJSSwI4t8kOgBANJD3E8AfEItyUoFNrqOwtw/k=;
-        b=CoUK7msWh4ZR8H9c9RULRkAEDiRFhiKF79kXZfsJXWHsy4xyGPj7euxv1SxESTXSurfVJ2
-        9yzwjpzRuR8K5KLYrgj9tpr0+Hdy71qL4lz3gjGV/b5I7zWpZsgIAMwfyiBZt4xIqcsJL8
-        il/H9M4DRQvsbu6jP2oHzKYsypN1nyI=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org,
-        David Jeffery <djeffery@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: New warning in nvme_setup_discard
-Date:   Mon, 19 Jul 2021 08:27:29 +0200
-Message-ID: <2407736.Le3fEKZpXq@natalenko.name>
-In-Reply-To: <YPTYGD1zeae1x7Yp@T590>
-References: <4729812.CpyZKHjjVO@natalenko.name> <3383530.3bVf3B8HMu@natalenko.name> <YPTYGD1zeae1x7Yp@T590>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        Mon, 19 Jul 2021 02:33:32 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485C9C061762;
+        Sun, 18 Jul 2021 23:30:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=LY5CK1r0/hjsqY17xf0eUdo8D9KcHjidZGqfXP+fN/Y=;
+        t=1626676233; x=1627885833; b=K6SH53/9xDU+0DkCI4/OcTZ/rHSSe7cqFOwfd2q+2cqsRVA
+        vZpHgN5AMo3Knlp2fhqU52RISVdFMwURfcpzmQkycypuHGVUHrJ91M3Mm7VBWnlVBKjWxOHDdSFqS
+        P6fJUPA/bC2TVdoPG1oWDFPg0a7NWKEql73yMKaAsAdMYfiGBlxX7h3lWRum0QyAAwdkUAYx0w3RE
+        KbbO6vyUPTpIsNcd4hmbmRbxju+eRemuBJlUVtp0BQlnZ7pCgNIKgb//SLbv4ZiKO0zSt9pGlXocL
+        YRTnu4tEFZOXGOhc//zfeSINDHTo5EiMKaO3o7YaQJ6P+l91EzM9wl2avi8NEWXQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1m5MnM-004Fmu-7W; Mon, 19 Jul 2021 08:30:28 +0200
+Message-ID: <5c43c41de4bdfd2412d5f2feadffc309243ed134.camel@sipsolutions.net>
+Subject: Re: [PATCH RFC v1 1/7] mac80211: Add stations iterator where the
+ iterator function may sleep
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-wireless@vger.kernel.org
+Cc:     tony0620emma@gmail.com, kvalo@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neo Jou <neojou@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Date:   Mon, 19 Jul 2021 08:30:26 +0200
+In-Reply-To: <20210717204057.67495-2-martin.blumenstingl@googlemail.com>
+References: <20210717204057.67495-1-martin.blumenstingl@googlemail.com>
+         <20210717204057.67495-2-martin.blumenstingl@googlemail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+> 
+> +/**
+> + * ieee80211_iterate_stations_atomic - iterate stations
 
-On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 3:40:40 CEST Ming Lei wrote:
-> On Sat, Jul 17, 2021 at 02:35:14PM +0200, Oleksandr Natalenko wrote:
-> > On sobota 17. =C4=8Dervence 2021 14:19:59 CEST Oleksandr Natalenko wrot=
-e:
-> > > On sobota 17. =C4=8Dervence 2021 14:11:05 CEST Oleksandr Natalenko wr=
-ote:
-> > > > On sobota 17. =C4=8Dervence 2021 11:35:32 CEST Ming Lei wrote:
-> > > > > Maybe you need to check if the build is OK, I can't reproduce it =
-in
-> > > > > my
-> > > > > VM, and BFQ is still builtin:
-> > > > >=20
-> > > > > [root@ktest-01 ~]# uname -a
-> > > > > Linux ktest-01 5.14.0-rc1+ #52 SMP Fri Jul 16 18:56:36 CST 2021
-> > > > > x86_64
-> > > > > x86_64 x86_64 GNU/Linux [root@ktest-01 ~]# cat
-> > > > > /sys/block/nvme0n1/queue/scheduler
-> > > > > [none] mq-deadline kyber bfq
-> > > >=20
-> > > > I don't think this is an issue with the build=E2=80=A6 BTW, with
-> > > > `initcall_debug`:
-> > > >=20
-> > > > ```
-> > > > [    0.902555] calling  bfq_init+0x0/0x8b @ 1
-> > > > [    0.903448] initcall bfq_init+0x0/0x8b returned -28 after 507 us=
-ecs
-> > > > ```
-> > > >=20
-> > > > -ENOSPC? Why? Also re-tested with the latest git tip, same result :=
-(.
-> > >=20
-> > > OK, one extra pr_info, and I see this:
-> > >=20
-> > > ```
-> > > [    0.871180] blkcg_policy_register: BLKCG_MAX_POLS too small
-> > > [    0.871612] blkcg_policy_register: -28
-> > > ```
-> > >=20
-> > > What does it mean please :)? The value seems to be hard-coded:
-> > >=20
-> > > ```
-> > > include/linux/blkdev.h
-> > > 60:#define BLKCG_MAX_POLS               5
-> > > ```
-> >=20
-> > OK, after increasing this to 6 I've got my BFQ back. Please see [1].
-> >=20
-> > [1]
-> > https://lore.kernel.org/linux-block/20210717123328.945810-1-oleksandr@n=
-at
-> > alenko.name/
-> OK, after you fixed the issue in blkcg_policy_register(), can you
-> reproduce the discard issue on v5.14-rc1 with BFQ applied? If yes,
-> can you test the patch I posted previously?
+Copy/paste issue, as PK pointed out too.
 
-Yes, the issue is reproducible with both v5.13.2 and v5.14-rc1. I haven't=20
-managed to reproduce it with v5.13.2+your patch. Now I will build v5.14-
-rc2+your patch and test further.
+> + *
+> + * This function iterates over all stations associated with a given
+> + * hardware that are currently uploaded to the driver and calls the callback
+> + * function for them.
+> + * This function allows the iterator function to sleep, when the iterator
+> + * function is atomic @ieee80211_iterate_stations_atomic can be used.
+> 
 
-Thanks.
+I have no real objections to this, but I think you should carefully
+document something like "the driver must not call this with a lock held
+that it can also take in response to callbacks from mac80211, and it
+must not call this within callbacks made by mac80211" or something like
+that, because both of those things are going to cause deadlocks.
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
-
+johannes
 
