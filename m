@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CB23CE973
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43BF63CEAA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359167AbhGSQzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:55:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48644 "EHLO mail.kernel.org"
+        id S1347088AbhGSRSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:18:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346782AbhGSP2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:28:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 982DD613BB;
-        Mon, 19 Jul 2021 16:08:38 +0000 (UTC)
+        id S1344337AbhGSPlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:41:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 102E4613F7;
+        Mon, 19 Jul 2021 16:21:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710919;
-        bh=RfE1IFR9OF9g0z4sWjAce4k+hRR+zDu2D930Zd6Iz0k=;
+        s=korg; t=1626711661;
+        bh=N0b5EA01m6rix3zjJGI/CI/y5V9fr1n/JREdGLiscwk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NMYOT323/CmWlLC/SVHPKCltNPXfh4S6LsHZ0iaGTJSYOnxYLSkCNxPVIxerWvsqu
-         xD1jZCxfskfNZFcCf7WJL848ImL0dIyAYD5rrz5IQ3knUzyjCInV1rDyS4JUpBvEXf
-         tHMnAgVTpONoccyj3QECuBxGUifzTXudaYH8jOFg=
+        b=2NtXbQJN2Ao68lSemN7N9Ip/oGQo3NwmsVoPG8WPYV41uKzOdXwX5vgeEkIhl6LRI
+         zY0f4uTCa8ajYJY4uhZ415FcWEonWV0GwqATSx9tBv9Az/MO9bhJ/W2XFuwRzUA7Kn
+         X14xDJkgjkyrwYBRnUstb7qdG/O9YTsLTnrwizLw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Sherry Sun <sherry.sun@nxp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 157/351] power: supply: max17042: Do not enforce (incorrect) interrupt trigger type
+Subject: [PATCH 5.12 041/292] tty: serial: fsl_lpuart: fix the potential risk of division or modulo by zero
 Date:   Mon, 19 Jul 2021 16:51:43 +0200
-Message-Id: <20210719144950.166087862@linuxfoundation.org>
+Message-Id: <20210719144943.866461330@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Sherry Sun <sherry.sun@nxp.com>
 
-[ Upstream commit 7fbf6b731bca347700e460d94b130f9d734b33e9 ]
+[ Upstream commit fcb10ee27fb91b25b68d7745db9817ecea9f1038 ]
 
-Interrupt line can be configured on different hardware in different way,
-even inverted.  Therefore driver should not enforce specific trigger
-type - edge falling - but instead rely on Devicetree to configure it.
+We should be very careful about the register values that will be used
+for division or modulo operations, althrough the possibility that the
+UARTBAUD register value is zero is very low, but we had better to deal
+with the "bad data" of hardware in advance to avoid division or modulo
+by zero leading to undefined kernel behavior.
 
-The Maxim 17047/77693 datasheets describe the interrupt line as active
-low with a requirement of acknowledge from the CPU therefore the edge
-falling is not correct.
-
-The interrupt line is shared between PMIC and RTC driver, so using level
-sensitive interrupt is here especially important to avoid races.  With
-an edge configuration in case if first PMIC signals interrupt followed
-shortly after by the RTC, the interrupt might not be yet cleared/acked
-thus the second one would not be noticed.
-
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
+Link: https://lore.kernel.org/r/20210427021226.27468-1-sherry.sun@nxp.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/max17042_battery.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/fsl_lpuart.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
-index 1d7326cd8fc6..ce2041b30a06 100644
---- a/drivers/power/supply/max17042_battery.c
-+++ b/drivers/power/supply/max17042_battery.c
-@@ -1104,7 +1104,7 @@ static int max17042_probe(struct i2c_client *client,
- 	}
+diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
+index 9c78e43e669d..4cad2ac00e9f 100644
+--- a/drivers/tty/serial/fsl_lpuart.c
++++ b/drivers/tty/serial/fsl_lpuart.c
+@@ -2404,6 +2404,9 @@ lpuart32_console_get_options(struct lpuart_port *sport, int *baud,
  
- 	if (client->irq) {
--		unsigned int flags = IRQF_TRIGGER_FALLING | IRQF_ONESHOT;
-+		unsigned int flags = IRQF_ONESHOT;
- 
- 		/*
- 		 * On ACPI systems the IRQ may be handled by ACPI-event code,
+ 	bd = lpuart32_read(&sport->port, UARTBAUD);
+ 	bd &= UARTBAUD_SBR_MASK;
++	if (!bd)
++		return;
++
+ 	sbr = bd;
+ 	uartclk = lpuart_get_baud_clk_rate(sport);
+ 	/*
 -- 
 2.30.2
 
