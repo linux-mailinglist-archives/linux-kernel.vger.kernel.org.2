@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C054E3CE3C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DE73CE0A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234454AbhGSPkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:40:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52610 "EHLO mail.kernel.org"
+        id S1347484AbhGSPRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:17:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344141AbhGSO7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A496061221;
-        Mon, 19 Jul 2021 15:38:47 +0000 (UTC)
+        id S245390AbhGSOr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:47:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8BC2610D2;
+        Mon, 19 Jul 2021 15:23:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709128;
-        bh=5Z5yOYQ0o8pG1pSfroH3j/bq5+6tKzgx0kwokEttSOQ=;
+        s=korg; t=1626708201;
+        bh=YLXnt5wG5jvESbfEUk+/masoINAD5jvQEUvbk327gPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P3B89tuetYYJi8ZOm6lFM81t4Yd7j87KU3IbQdGjHHWI1Dgw+WV5OstcCpN9+RQOv
-         mwZmuHIORX3uKuXR1LpMN2K92okXxXp7tcxJkWV3cKErpgh4P2KUmVuHLxxkqjEnXg
-         ic4ap3mRmAOm4fQQ0qNIQhcfEIcykQFhwq11DmHY=
+        b=Huum/aoMc9sb7uRCyCcmkltrjGKurCuIsk+6a7k8ZK6RbvF0Gu24c1+uLrSq0xfW4
+         sGW0whPfA/x0+/4f8IcZrRab1eNjqdpprHMNBNQYuKVnx6ouNqKYGw41PSrOp5RUiH
+         2VkFArK197/CwqK9vCnSC0DpEODMfw8SUgC+dQWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiao Yang <yangx.jy@fujitsu.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Huang Pei <huangpei@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 264/421] RDMA/rxe: Dont overwrite errno from ib_umem_get()
-Date:   Mon, 19 Jul 2021 16:51:15 +0200
-Message-Id: <20210719144955.540818045@linuxfoundation.org>
+Subject: [PATCH 4.14 187/315] MIPS: add PMD table accounting into MIPSpmd_alloc_one
+Date:   Mon, 19 Jul 2021 16:51:16 +0200
+Message-Id: <20210719144949.056012137@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+References: <20210719144942.861561397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiao Yang <yangx.jy@fujitsu.com>
+From: Huang Pei <huangpei@loongson.cn>
 
-[ Upstream commit 20ec0a6d6016aa28b9b3299be18baef1a0f91cd2 ]
+[ Upstream commit ed914d48b6a1040d1039d371b56273d422c0081e ]
 
-rxe_mr_init_user() always returns the fixed -EINVAL when ib_umem_get()
-fails so it's hard for user to know which actual error happens in
-ib_umem_get(). For example, ib_umem_get() will return -EOPNOTSUPP when
-trying to pin pages on a DAX file.
+This fixes Page Table accounting bug.
 
-Return actual error as mlx4/mlx5 does.
+MIPS is the ONLY arch just defining __HAVE_ARCH_PMD_ALLOC_ONE alone.
+Since commit b2b29d6d011944 (mm: account PMD tables like PTE tables),
+"pmd_free" in asm-generic with PMD table accounting and "pmd_alloc_one"
+in MIPS without PMD table accounting causes PageTable accounting number
+negative, which read by global_zone_page_state(), always returns 0.
 
-Link: https://lore.kernel.org/r/20210621071456.4259-1-ice_yangxiao@163.com
-Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_mr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/include/asm/pgalloc.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 2cca89ca08cd..375e5520865e 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -175,7 +175,7 @@ int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
- 	if (IS_ERR(umem)) {
- 		pr_warn("err %d from rxe_umem_get\n",
- 			(int)PTR_ERR(umem));
--		err = -EINVAL;
-+		err = PTR_ERR(umem);
- 		goto err1;
- 	}
+diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
+index 39b9f311c4ef..f800872f867b 100644
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -93,11 +93,15 @@ do {							\
+ 
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	pmd_t *pmd;
++	pmd_t *pmd = NULL;
++	struct page *pg;
+ 
+-	pmd = (pmd_t *) __get_free_pages(GFP_KERNEL, PMD_ORDER);
+-	if (pmd)
++	pg = alloc_pages(GFP_KERNEL | __GFP_ACCOUNT, PMD_ORDER);
++	if (pg) {
++		pgtable_pmd_page_ctor(pg);
++		pmd = (pmd_t *)page_address(pg);
+ 		pmd_init((unsigned long)pmd, (unsigned long)invalid_pte_table);
++	}
+ 	return pmd;
+ }
  
 -- 
 2.30.2
