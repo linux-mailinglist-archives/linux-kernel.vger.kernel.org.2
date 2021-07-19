@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BF63CE0D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3DC3CE0CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346917AbhGSPSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:18:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32930 "EHLO mail.kernel.org"
+        id S1346852AbhGSPSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:18:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237882AbhGSOo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:44:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C536561073;
-        Mon, 19 Jul 2021 15:22:57 +0000 (UTC)
+        id S237897AbhGSOo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:44:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5761B6024A;
+        Mon, 19 Jul 2021 15:23:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708178;
-        bh=bx742uTUNRflyupydRQIjYRp84R79HcNqmh7470IApY=;
+        s=korg; t=1626708180;
+        bh=5e8KczDTaAgS3l6dTQWA6tnWWADjJe1wyCKZv2zxxNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fzNmGx3MzVhH2162n9bWGZY9Eete9YfrPNLvP9DYyKYwKifYPFDzOvtlGR2r+PsSC
-         P0AHXqqLf/4I9+6F8MIIaO9HfcKY6p7i9Q3WHYiGZgkcW/+P6LuVzl6EbITsqFPMt+
-         kkT66zggoJhJgDWbRvjH16ZqelUbVNKJweAhfyyQ=
+        b=2lYrWRL86Q67NsfKm1jfcO150TtIPetKCDuV7O3+Bj+PIBcxfOPscDuwuSG2sQWXi
+         WRs1krJ9QNr6mbNKePOn7SeUOxuPlREoP0x19jq6ybRDmas8Owq9yvE6xQCZ8fA2p/
+         2DoJqrVAf53oiVwPz4x28nan4yXXU4vdels/KWbw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
         Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 4.14 210/315] mmc: sdhci: Fix warning message when accessing RPMB in HS400 mode
-Date:   Mon, 19 Jul 2021 16:51:39 +0200
-Message-Id: <20210719144950.334621108@linuxfoundation.org>
+Subject: [PATCH 4.14 211/315] mmc: core: clear flags before allowing to retune
+Date:   Mon, 19 Jul 2021 16:51:40 +0200
+Message-Id: <20210719144950.365238372@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -40,61 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Cooper <alcooperx@gmail.com>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-commit d0244847f9fc5e20df8b7483c8a4717fe0432d38 upstream.
+commit 77347eda64ed5c9383961d1de9165f9d0b7d8df6 upstream.
 
-When an eMMC device is being run in HS400 mode, any access to the
-RPMB device will cause the error message "mmc1: Invalid UHS-I mode
-selected". This happens as a result of tuning being disabled before
-RPMB access and then re-enabled after the RPMB access is complete.
-When tuning is re-enabled, the system has to switch from HS400
-to HS200 to do the tuning and then back to HS400. As part of
-sequence to switch from HS400 to HS200 the system is temporarily
-put into HS mode. When switching to HS mode, sdhci_get_preset_value()
-is called and does not have support for HS mode and prints the warning
-message and returns the preset for SDR12. The fix is to add support
-for MMC and SD HS modes to sdhci_get_preset_value().
+It might be that something goes wrong during tuning so the MMC core will
+immediately trigger a retune. In our case it was:
 
-This can be reproduced on any system running eMMC in HS400 mode
-(not HS400ES) by using the "mmc" utility to run the following
-command: "mmc rpmb read-counter /dev/mmcblk0rpmb".
+ - we sent a tuning block
+ - there was an error so we need to send an abort cmd to the eMMC
+ - the abort cmd had a CRC error
+ - retune was set by the MMC core
 
-Signed-off-by: Al Cooper <alcooperx@gmail.com>
+This lead to a vicious circle causing a performance regression of 75%.
+So, clear retuning flags before we enable retuning to start with a known
+cleared state.
+
+Reported-by Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Fixes: 52983382c74f ("mmc: sdhci: enhance preset value function")
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Tested-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Fixes: bd11e8bd03ca ("mmc: core: Flag re-tuning is needed on CRC errors")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210624163045.33651-1-alcooperx@gmail.com
+Link: https://lore.kernel.org/r/20210624151616.38770-2-wsa+renesas@sang-engineering.com
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/sdhci.c |    4 ++++
- drivers/mmc/host/sdhci.h |    1 +
- 2 files changed, 5 insertions(+)
+ drivers/mmc/core/core.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -1293,6 +1293,10 @@ static u16 sdhci_get_preset_value(struct
- 	u16 preset = 0;
+--- a/drivers/mmc/core/core.c
++++ b/drivers/mmc/core/core.c
+@@ -992,11 +992,14 @@ int mmc_execute_tuning(struct mmc_card *
  
- 	switch (host->timing) {
-+	case MMC_TIMING_MMC_HS:
-+	case MMC_TIMING_SD_HS:
-+		preset = sdhci_readw(host, SDHCI_PRESET_FOR_HIGH_SPEED);
-+		break;
- 	case MMC_TIMING_UHS_SDR12:
- 		preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR12);
- 		break;
---- a/drivers/mmc/host/sdhci.h
-+++ b/drivers/mmc/host/sdhci.h
-@@ -252,6 +252,7 @@
+ 	err = host->ops->execute_tuning(host, opcode);
  
- /* 60-FB reserved */
+-	if (err)
++	if (err) {
+ 		pr_err("%s: tuning execution failed: %d\n",
+ 			mmc_hostname(host), err);
+-	else
++	} else {
++		host->retune_now = 0;
++		host->need_retune = 0;
+ 		mmc_retune_enable(host);
++	}
  
-+#define SDHCI_PRESET_FOR_HIGH_SPEED	0x64
- #define SDHCI_PRESET_FOR_SDR12 0x66
- #define SDHCI_PRESET_FOR_SDR25 0x68
- #define SDHCI_PRESET_FOR_SDR50 0x6A
+ 	return err;
+ }
 
 
