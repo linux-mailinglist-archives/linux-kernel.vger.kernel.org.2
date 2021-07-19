@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94AD63CE90E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9AE3CE91C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352356AbhGSQuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:50:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37554 "EHLO mail.kernel.org"
+        id S1353834AbhGSQui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:50:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348120AbhGSPYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 146FF61448;
-        Mon, 19 Jul 2021 16:02:00 +0000 (UTC)
+        id S1348061AbhGSPYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01DF5613F1;
+        Mon, 19 Jul 2021 16:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710521;
-        bh=ZiHeNXEw0+M1lKHuz3XUPD3ArO1nyNsZflgnMZb2AZo=;
+        s=korg; t=1626710456;
+        bh=Yxsl8x1opyX50THCsARORkBr5Q0cix0VZwo5yzMphxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yTRVYBlq1CrvxwRYXGVnmbzIq+bWUi/1inmFhk8yDDOT30fpqspMBlaQ5t3iPZuYE
-         VOxfl64yvVyApKqSMxAh8Q2xgj+G/zrlyUdHnVU6HXGM4LZg/Q/wsTDY3rJ3gKl3Y3
-         WYSK4NsFoTBDhpoPeBapGsHwTfGNo8AyQ6PTOUbg=
+        b=q1oVTHXwwvrmgdxs0WUxOydhgQXrk1kbC5rThRykU+lbEE9IF993DkHjbYyvNSguf
+         vfheGbi4Ky/AoQptUSb9ibk5UgQreHv7sxFoAaw1vRrw9lGjoH8XX96R5fdMpY9Fuh
+         xBPYegskhhljogGuez/ZyVFX7mZOGgod9Yhtnj5k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
         Aswath Govindraju <a-govindraju@ti.com>,
         Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 216/243] arm64: dts: ti: k3-j721e-common-proc-board: Use external clock for SERDES
-Date:   Mon, 19 Jul 2021 16:54:05 +0200
-Message-Id: <20210719144947.891096868@linuxfoundation.org>
+Subject: [PATCH 5.10 217/243] arm64: dts: ti: k3-j721e-common-proc-board: Re-name "link" name as "phy"
+Date:   Mon, 19 Jul 2021 16:54:06 +0200
+Message-Id: <20210719144947.930849236@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -42,94 +42,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kishon Vijay Abraham I <kishon@ti.com>
 
-[ Upstream commit f2a7657ad7a821de9cc77d071a5587b243144cd5 ]
+[ Upstream commit 02b4d9186121d842a53e347f53a86ec7f2c6b0c7 ]
 
-Use external clock for all the SERDES used by PCIe controller. This will
-make the same clock used by the local SERDES as well as the clock
-provided to the PCIe connector.
+Commit 66db854b1f62d ("arm64: dts: ti: k3-j721e-common-proc-board:
+Configure the PCIe instances") and
+commit 02c35dca2b488 ("arm64: dts: ti: k3-j721e: Enable Super-Speed
+support for USB0") added PHY DT nodes with node name as "link"
+However nodes with #phy-cells should be named 'phy' as discussed in [1].
+Re-name subnodes of serdes in J721E to 'phy'.
 
+[1] -> http://lore.kernel.org/r/20200909203631.GA3026331@bogus
+
+Fixes: 66db854b1f62d ("arm64: dts: ti: k3-j721e-common-proc-board: Configure the PCIe instances")
+Fixes: 02c35dca2b488 ("arm64: dts: ti: k3-j721e: Enable Super-Speed support for USB0")
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
 Signed-off-by: Nishanth Menon <nm@ti.com>
-Link: https://lore.kernel.org/r/20210603143427.28735-4-kishon@ti.com
+Link: https://lore.kernel.org/r/20210603143427.28735-5-kishon@ti.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../dts/ti/k3-j721e-common-proc-board.dts     | 40 +++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-index 7cd31ac67f88..56a92f59c3a1 100644
+index 56a92f59c3a1..964e70ddf8e6 100644
 --- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
 +++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-@@ -9,6 +9,7 @@
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/net/ti-dp83867.h>
-+#include <dt-bindings/phy/phy-cadence.h>
- 
- / {
- 	chosen {
-@@ -564,7 +565,40 @@
- 	clock-frequency = <100000000>;
+@@ -326,7 +326,7 @@
  };
  
-+&wiz0_pll1_refclk {
-+	assigned-clocks = <&wiz0_pll1_refclk>;
-+	assigned-clock-parents = <&cmn_refclk1>;
-+};
-+
-+&wiz0_refclk_dig {
-+	assigned-clocks = <&wiz0_refclk_dig>;
-+	assigned-clock-parents = <&cmn_refclk1>;
-+};
-+
-+&wiz1_pll1_refclk {
-+	assigned-clocks = <&wiz1_pll1_refclk>;
-+	assigned-clock-parents = <&cmn_refclk1>;
-+};
-+
-+&wiz1_refclk_dig {
-+	assigned-clocks = <&wiz1_refclk_dig>;
-+	assigned-clock-parents = <&cmn_refclk1>;
-+};
-+
-+&wiz2_pll1_refclk {
-+	assigned-clocks = <&wiz2_pll1_refclk>;
-+	assigned-clock-parents = <&cmn_refclk1>;
-+};
-+
-+&wiz2_refclk_dig {
-+	assigned-clocks = <&wiz2_refclk_dig>;
-+	assigned-clock-parents = <&cmn_refclk1>;
-+};
-+
- &serdes0 {
-+	assigned-clocks = <&serdes0 CDNS_SIERRA_PLL_CMNLC>;
-+	assigned-clock-parents = <&wiz0_pll1_refclk>;
-+
- 	serdes0_pcie_link: link@0 {
+ &serdes3 {
+-	serdes3_usb_link: link@0 {
++	serdes3_usb_link: phy@0 {
+ 		reg = <0>;
+ 		cdns,num-lanes = <2>;
+ 		#phy-cells = <0>;
+@@ -599,7 +599,7 @@
+ 	assigned-clocks = <&serdes0 CDNS_SIERRA_PLL_CMNLC>;
+ 	assigned-clock-parents = <&wiz0_pll1_refclk>;
+ 
+-	serdes0_pcie_link: link@0 {
++	serdes0_pcie_link: phy@0 {
  		reg = <0>;
  		cdns,num-lanes = <1>;
-@@ -575,6 +609,9 @@
- };
+ 		#phy-cells = <0>;
+@@ -612,7 +612,7 @@
+ 	assigned-clocks = <&serdes1 CDNS_SIERRA_PLL_CMNLC>;
+ 	assigned-clock-parents = <&wiz1_pll1_refclk>;
  
- &serdes1 {
-+	assigned-clocks = <&serdes1 CDNS_SIERRA_PLL_CMNLC>;
-+	assigned-clock-parents = <&wiz1_pll1_refclk>;
-+
- 	serdes1_pcie_link: link@0 {
+-	serdes1_pcie_link: link@0 {
++	serdes1_pcie_link: phy@0 {
  		reg = <0>;
  		cdns,num-lanes = <2>;
-@@ -585,6 +622,9 @@
- };
+ 		#phy-cells = <0>;
+@@ -625,7 +625,7 @@
+ 	assigned-clocks = <&serdes2 CDNS_SIERRA_PLL_CMNLC>;
+ 	assigned-clock-parents = <&wiz2_pll1_refclk>;
  
- &serdes2 {
-+	assigned-clocks = <&serdes2 CDNS_SIERRA_PLL_CMNLC>;
-+	assigned-clock-parents = <&wiz2_pll1_refclk>;
-+
- 	serdes2_pcie_link: link@0 {
+-	serdes2_pcie_link: link@0 {
++	serdes2_pcie_link: phy@0 {
  		reg = <0>;
  		cdns,num-lanes = <2>;
+ 		#phy-cells = <0>;
 -- 
 2.30.2
 
