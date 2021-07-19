@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AA93CEA7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 025BC3CE913
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377363AbhGSRQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:16:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37194 "EHLO mail.kernel.org"
+        id S1353007AbhGSQuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:50:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347561AbhGSPjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A2761375;
-        Mon, 19 Jul 2021 16:19:10 +0000 (UTC)
+        id S1347431AbhGSP13 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:27:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E10D61283;
+        Mon, 19 Jul 2021 16:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711551;
-        bh=HGzPH/kZU3EuHBtmCNthJWOisw7LLQrFiy75ALmkrAA=;
+        s=korg; t=1626710889;
+        bh=sEkRuphTMwr2a3ubNhQqvFiqPbchASYk6LFAm9qznhE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1CbPe4WAwIWsYJQO0ajbKh5uaAXrMA2peuZq392uqC/BIVXs8l99YnT6Qx26owkrw
-         aLDcrlkmaiivrrfpS4Q7TkjHmKLZ8uWv64UTohFpaoe0G0kpmqzYMXsQhCf0WuirbQ
-         DqdwqyE7lvx+B2ZgF3Gi6S/1z7GXrhJC2k1iaKXo=
+        b=wNL6nMA/YJ/2SGpSFSvdMxDquJRVPJ/wbsnnjPQOUcwdYC3nOAqdJDkNc1bh15+NQ
+         JvkAPtzSKLxVUIF5QwyQtCw+DZatYKkm7E0g3SvYtqlM7hHuwjxVY8H9c3Xoo6fZqC
+         2CiUvBRweojbqWO55PBZsPPSUjhniDXTCCXKVc0w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sanjay Kumar <sanjay.k.kumar@intel.com>,
-        Jon Derrick <jonathan.derrick@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 5.12 012/292] iommu/vt-d: Fix clearing real DMA devices scalable-mode context entries
-Date:   Mon, 19 Jul 2021 16:51:14 +0200
-Message-Id: <20210719144942.935102034@linuxfoundation.org>
+        stable@vger.kernel.org, "Geoffrey D. Bennett" <g@b4.vu>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 129/351] ALSA: usb-audio: scarlett2: Fix data_mutex lock
+Date:   Mon, 19 Jul 2021 16:51:15 +0200
+Message-Id: <20210719144948.753335070@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +39,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+From: Geoffrey D. Bennett <g@b4.vu>
 
-commit 474dd1c6506411752a9b2f2233eec11f1733a099 upstream.
+[ Upstream commit 9b5ddea9ce5a68d7d2bedcb69901ac2a86c96c7b ]
 
-The commit 2b0140c69637e ("iommu/vt-d: Use pci_real_dma_dev() for mapping")
-fixes an issue of "sub-device is removed where the context entry is cleared
-for all aliases". But this commit didn't consider the PASID entry and PASID
-table in VT-d scalable mode. This fix increases the coverage of scalable
-mode.
+The private->vol_updated flag was being checked outside of the
+mutex_lock/unlock() of private->data_mutex leading to the volume data
+being fetched twice from the device unnecessarily or old volume data
+being returned.
 
-Suggested-by: Sanjay Kumar <sanjay.k.kumar@intel.com>
-Fixes: 8038bdb855331 ("iommu/vt-d: Only clear real DMA device's context entries")
-Fixes: 2b0140c69637e ("iommu/vt-d: Use pci_real_dma_dev() for mapping")
-Cc: stable@vger.kernel.org # v5.6+
-Cc: Jon Derrick <jonathan.derrick@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20210712071712.3416949-1-baolu.lu@linux.intel.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Update scarlett2_*_ctl_get() and include the private->vol_updated flag
+check inside the critical region.
+
+Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
+Link: https://lore.kernel.org/r/20210620164643.GA9216@m.b4.vu
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/intel/iommu.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/usb/mixer_scarlett_gen2.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -4503,14 +4503,13 @@ static void __dmar_remove_one_dev_info(s
- 	iommu = info->iommu;
- 	domain = info->domain;
+diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+index 1982e67a0f32..2ea41c8eafd1 100644
+--- a/sound/usb/mixer_scarlett_gen2.c
++++ b/sound/usb/mixer_scarlett_gen2.c
+@@ -1033,11 +1033,10 @@ static int scarlett2_master_volume_ctl_get(struct snd_kcontrol *kctl,
+ 	struct usb_mixer_interface *mixer = elem->head.mixer;
+ 	struct scarlett2_mixer_data *private = mixer->private_data;
  
--	if (info->dev) {
-+	if (info->dev && !dev_is_real_dma_subdevice(info->dev)) {
- 		if (dev_is_pci(info->dev) && sm_supported(iommu))
- 			intel_pasid_tear_down_entry(iommu, info->dev,
- 					PASID_RID2PASID, false);
+-	if (private->vol_updated) {
+-		mutex_lock(&private->data_mutex);
++	mutex_lock(&private->data_mutex);
++	if (private->vol_updated)
+ 		scarlett2_update_volumes(mixer);
+-		mutex_unlock(&private->data_mutex);
+-	}
++	mutex_unlock(&private->data_mutex);
  
- 		iommu_disable_dev_iotlb(info);
--		if (!dev_is_real_dma_subdevice(info->dev))
--			domain_context_clear(info);
-+		domain_context_clear(info);
- 		intel_pasid_free_table(info->dev);
- 	}
+ 	ucontrol->value.integer.value[0] = private->master_vol;
+ 	return 0;
+@@ -1051,11 +1050,10 @@ static int scarlett2_volume_ctl_get(struct snd_kcontrol *kctl,
+ 	struct scarlett2_mixer_data *private = mixer->private_data;
+ 	int index = elem->control;
  
+-	if (private->vol_updated) {
+-		mutex_lock(&private->data_mutex);
++	mutex_lock(&private->data_mutex);
++	if (private->vol_updated)
+ 		scarlett2_update_volumes(mixer);
+-		mutex_unlock(&private->data_mutex);
+-	}
++	mutex_unlock(&private->data_mutex);
+ 
+ 	ucontrol->value.integer.value[0] = private->vol[index];
+ 	return 0;
+@@ -1319,11 +1317,10 @@ static int scarlett2_button_ctl_get(struct snd_kcontrol *kctl,
+ 	struct usb_mixer_interface *mixer = elem->head.mixer;
+ 	struct scarlett2_mixer_data *private = mixer->private_data;
+ 
+-	if (private->vol_updated) {
+-		mutex_lock(&private->data_mutex);
++	mutex_lock(&private->data_mutex);
++	if (private->vol_updated)
+ 		scarlett2_update_volumes(mixer);
+-		mutex_unlock(&private->data_mutex);
+-	}
++	mutex_unlock(&private->data_mutex);
+ 
+ 	ucontrol->value.enumerated.item[0] = private->buttons[elem->control];
+ 	return 0;
+-- 
+2.30.2
+
 
 
