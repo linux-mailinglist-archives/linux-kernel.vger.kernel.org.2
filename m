@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AB23CE028
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F663CDF20
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345467AbhGSPOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:14:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40458 "EHLO mail.kernel.org"
+        id S1345105AbhGSPHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:07:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344235AbhGSOsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344236AbhGSOsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:48:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FD9460720;
-        Mon, 19 Jul 2021 15:27:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4006F60FED;
+        Mon, 19 Jul 2021 15:27:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708440;
-        bh=i+G2kUEBmi+G1M3L2rdcYPgBks09r0PBN1osL1oZ6HI=;
+        s=korg; t=1626708442;
+        bh=MHBxAPKyqc+lJw8lq8G4ATINV2DINglleA8QB3vIpRs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U5f4DABMY82GRLdMLauahlZGyk7/HH3TQkYM4GRt4bPEWPEgD81DQ60zANk4Qnms5
-         5Df6i5ZXUrvQTT50eAsxVF5AANddz+McpUs2l2wDIgTGMd55eeTCshg3vXEY95YKOp
-         wNOLnG6WyL0eDZ+Cw/DcR089QPfdxvilJdt+bC1k=
+        b=zL0G2NoWIE+B7HVyjrLgHw2nQv79QI5nKaPkgqhIptxDy1iYzEXV3XUtiugyjVWJQ
+         e7f66+HqnTGKf/T/Zg7bzvimIYEUietrr3XCri9kdngBUakL5G5ha2clmXOBRYXD4u
+         0vZRGh1cHkNW07KNWTly81eqZRIaHEPnc2ZlJJvY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 311/315] scsi: be2iscsi: Fix an error handling path in beiscsi_dev_probe()
-Date:   Mon, 19 Jul 2021 16:53:20 +0200
-Message-Id: <20210719144953.709293484@linuxfoundation.org>
+Subject: [PATCH 4.14 312/315] mips: always link byteswap helpers into decompressor
+Date:   Mon, 19 Jul 2021 16:53:21 +0200
+Message-Id: <20210719144953.740204246@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,35 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 030e4138d11fced3b831c2761e4cecf347bae99c ]
+[ Upstream commit cddc40f5617e53f97ef019d5b29c1bd6cbb031ec ]
 
-If an error occurs after a pci_enable_pcie_error_reporting() call, it must
-be undone by a corresponding pci_disable_pcie_error_reporting() call, as
-already done in the remove function.
+My series to clean up the unaligned access implementation
+across architectures caused some mips randconfig builds to
+fail with:
 
-Link: https://lore.kernel.org/r/77adb02cfea7f1364e5603ecf3930d8597ae356e.1623482155.git.christophe.jaillet@wanadoo.fr
-Fixes: 3567f36a09d1 ("[SCSI] be2iscsi: Fix AER handling in driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+   mips64-linux-ld: arch/mips/boot/compressed/decompress.o: in function `decompress_kernel':
+   decompress.c:(.text.decompress_kernel+0x54): undefined reference to `__bswapsi2'
+
+It turns out that this problem has already been fixed for the XZ
+decompressor but now it also shows up in (at least) LZO and LZ4.  From my
+analysis I concluded that the compiler could always have emitted those
+calls, but the different implementation allowed it to make otherwise
+better decisions about not inlining the byteswap, which results in the
+link error when the out-of-line code is missing.
+
+While it could be addressed by adding it to the two decompressor
+implementations that are known to be affected, but as this only adds
+112 bytes to the kernel, the safer choice is to always add them.
+
+Fixes: c50ec6787536 ("MIPS: zboot: Fix the build with XZ compression on older GCC versions")
+Fixes: 0652035a5794 ("asm-generic: unaligned: remove byteshift helpers")
+Link: https://lore.kernel.org/linux-mm/202106301304.gz2wVY9w-lkp@intel.com/
+Link: https://lore.kernel.org/linux-mm/202106260659.TyMe8mjr-lkp@intel.com/
+Link: https://lore.kernel.org/linux-mm/202106172016.onWT6Tza-lkp@intel.com/
+Link: https://lore.kernel.org/linux-mm/202105231743.JJcALnhS-lkp@intel.com/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/be2iscsi/be_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/boot/compressed/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
-index d7ed1ec02f5e..a1fd8a7fa48c 100644
---- a/drivers/scsi/be2iscsi/be_main.c
-+++ b/drivers/scsi/be2iscsi/be_main.c
-@@ -5737,6 +5737,7 @@ hba_free:
- 	pci_disable_msix(phba->pcidev);
- 	pci_dev_put(phba->pcidev);
- 	iscsi_host_free(phba->shost);
-+	pci_disable_pcie_error_reporting(pcidev);
- 	pci_set_drvdata(pcidev, NULL);
- disable_pci:
- 	pci_release_regions(pcidev);
+diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
+index 516e593a8ee9..b5f08fac5ddc 100644
+--- a/arch/mips/boot/compressed/Makefile
++++ b/arch/mips/boot/compressed/Makefile
+@@ -33,7 +33,7 @@ KBUILD_AFLAGS := $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
+ KCOV_INSTRUMENT		:= n
+ 
+ # decompressor objects (linked with vmlinuz)
+-vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/string.o
++vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/string.o $(obj)/bswapsi.o
+ 
+ ifdef CONFIG_DEBUG_ZBOOT
+ vmlinuzobjs-$(CONFIG_DEBUG_ZBOOT)		   += $(obj)/dbg.o
+@@ -47,7 +47,7 @@ extra-y += uart-ath79.c
+ $(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
+ 	$(call cmd,shipped)
+ 
+-vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o $(obj)/bswapsi.o
++vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
+ 
+ extra-y += ashldi3.c bswapsi.c
+ $(obj)/ashldi3.o $(obj)/bswapsi.o: KBUILD_CFLAGS += -I$(srctree)/arch/mips/lib
 -- 
 2.30.2
 
