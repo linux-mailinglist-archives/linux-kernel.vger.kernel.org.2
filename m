@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5D33CDF24
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373B63CE02E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245552AbhGSPH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:07:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40962 "EHLO mail.kernel.org"
+        id S1346256AbhGSPO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:14:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344129AbhGSOsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEF2F613FB;
-        Mon, 19 Jul 2021 15:26:40 +0000 (UTC)
+        id S1344181AbhGSOsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AEB561408;
+        Mon, 19 Jul 2021 15:27:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708401;
-        bh=YPP6zuJ2ab3ghiSpsXmPP4KiZpp/JGYyr9Zjmon0lmk=;
+        s=korg; t=1626708429;
+        bh=ppW35qgSusQj6wBIpMSCIYMQAiPVAwVu0i48L2F97tA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=InbxD/i71vy9bf0FwtPlkHbFMrnZ7Kl6A+sLaCfVi6fECPvCGf6WPLpEUXLVzjmku
-         GZk+TmTbqPEINKDL2tdiue5mZ8J3JjGRBXYll9Ic7J8CnI21m39Htfl5DasRdC2V0T
-         245+2fCMXBK/7n5tebZf69WqdGy7Jet+4NVUU3mM=
+        b=CsgwWr3d9BXLhen+Ek7Xs5gyRxtvZtBD3ph7RGg2K+sCKYkjQz0FR/TEHo3nLZ6kQ
+         5iQcGXkN/6t8LFtXPH4BE47XPr7/aDUrPWxeZml9BbEkk5HCXcUPLM5QtqZto/AYzt
+         C2RD/zz7D9Vk61st3/sQJ3HmeUSClAPu3yFP52A0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Beomho Seo <beomho.seo@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        anton.ivanov@cambridgegreys.com,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 289/315] power: supply: rt5033_battery: Fix device tree enumeration
-Date:   Mon, 19 Jul 2021 16:52:58 +0200
-Message-Id: <20210719144952.942597806@linuxfoundation.org>
+Subject: [PATCH 4.14 290/315] um: fix error return code in slip_open()
+Date:   Mon, 19 Jul 2021 16:52:59 +0200
+Message-Id: <20210719144952.982242355@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -42,65 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit f3076cd8d1d5fa64b5e1fa5affc045c2fc123baa ]
+[ Upstream commit b77e81fbe5f5fb4ad9a61ec80f6d1e30b6da093a ]
 
-The fuel gauge in the RT5033 PMIC has its own I2C bus and interrupt
-line. Therefore, it is not actually part of the RT5033 MFD and needs
-its own of_match_table to probe properly.
+Fix to return a negative error code from the error handling case instead
+of 0, as done elsewhere in this function.
 
-Also, given that it's independent of the MFD, there is actually
-no need to make the Kconfig depend on MFD_RT5033. Although the driver
-uses the shared <linux/mfd/rt5033.h> header, there is no compile
-or runtime dependency on the RT5033 MFD driver.
-
-Cc: Beomho Seo <beomho.seo@samsung.com>
-Cc: Chanwoo Choi <cw00.choi@samsung.com>
-Fixes: b847dd96e659 ("power: rt5033_battery: Add RT5033 Fuel gauge device driver")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fixes: a3c77c67a443 ("[PATCH] uml: slirp and slip driver cleanups and fixes")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Acked-By: anton.ivanov@cambridgegreys.com
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/Kconfig          | 3 ++-
- drivers/power/supply/rt5033_battery.c | 7 +++++++
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ arch/um/drivers/slip_user.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index 24163cf8612c..645908ccb710 100644
---- a/drivers/power/supply/Kconfig
-+++ b/drivers/power/supply/Kconfig
-@@ -596,7 +596,8 @@ config BATTERY_GOLDFISH
+diff --git a/arch/um/drivers/slip_user.c b/arch/um/drivers/slip_user.c
+index 0d6b66c64a81..76d155631c5d 100644
+--- a/arch/um/drivers/slip_user.c
++++ b/arch/um/drivers/slip_user.c
+@@ -145,7 +145,8 @@ static int slip_open(void *data)
+ 	}
+ 	sfd = err;
  
- config BATTERY_RT5033
- 	tristate "RT5033 fuel gauge support"
--	depends on MFD_RT5033
-+	depends on I2C
-+	select REGMAP_I2C
- 	help
- 	  This adds support for battery fuel gauge in Richtek RT5033 PMIC.
- 	  The fuelgauge calculates and determines the battery state of charge
-diff --git a/drivers/power/supply/rt5033_battery.c b/drivers/power/supply/rt5033_battery.c
-index bcdd83048492..9310b85f3405 100644
---- a/drivers/power/supply/rt5033_battery.c
-+++ b/drivers/power/supply/rt5033_battery.c
-@@ -167,9 +167,16 @@ static const struct i2c_device_id rt5033_battery_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt5033_battery_id);
+-	if (set_up_tty(sfd))
++	err = set_up_tty(sfd);
++	if (err)
+ 		goto out_close2;
  
-+static const struct of_device_id rt5033_battery_of_match[] = {
-+	{ .compatible = "richtek,rt5033-battery", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, rt5033_battery_of_match);
-+
- static struct i2c_driver rt5033_battery_driver = {
- 	.driver = {
- 		.name = "rt5033-battery",
-+		.of_match_table = rt5033_battery_of_match,
- 	},
- 	.probe = rt5033_battery_probe,
- 	.remove = rt5033_battery_remove,
+ 	pri->slave = sfd;
 -- 
 2.30.2
 
