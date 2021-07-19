@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD1A3CE032
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5D73CDF45
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346503AbhGSPOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:14:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40456 "EHLO mail.kernel.org"
+        id S1345304AbhGSPIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:08:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344030AbhGSOsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C13AA613E7;
-        Mon, 19 Jul 2021 15:26:06 +0000 (UTC)
+        id S1344058AbhGSOsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E1DC613E8;
+        Mon, 19 Jul 2021 15:26:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708367;
-        bh=twK7smbQ2xhiwNylkjkTv7chyuqvOTm6osPmo7B/YOk=;
+        s=korg; t=1626708370;
+        bh=mSF4KWxKqflnSF5N8gIsUPwDq4JB+/Htfxs/bFcwq4Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iWeVqFCv6xDfzzuh63MkijbwXkpLecL9B0SnfP13oMqEpdqf0+BgCOezkDJao6SUT
-         mkxiwUeY6i3BAXlVJgOj6smtOR8LW1Ns0tSzr6w0ClgA6ID8nAirWz4yUAs3i9nvcw
-         76TKlztct9WHdeBWvLOn5bpKOW1pUg5dEqEMUvNg=
+        b=nOOa4bbAy6pisYKVnzNmt9qXRlgj8O4OxfFBw6VzzwnogSDyv+tK5OyP3Oy8/DEUq
+         D5N/AHheXBJ9owYM6UdhB95bCOp29RQi3Avc5Q/HEWAd2+REWiJ/TmTxBTC5XD0wPt
+         VMGrEUdLC5TbDwm6pO9nizGRs8EKUkEt80HEnyEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Liguang Zhang <zhangliguang@linux.alibaba.com>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 282/315] ACPI: AMBA: Fix resource name in /proc/iomem
-Date:   Mon, 19 Jul 2021 16:52:51 +0200
-Message-Id: <20210719144952.702508907@linuxfoundation.org>
+Subject: [PATCH 4.14 283/315] ACPI: video: Add quirk for the Dell Vostro 3350
+Date:   Mon, 19 Jul 2021 16:52:52 +0200
+Message-Id: <20210719144952.739916565@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,34 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liguang Zhang <zhangliguang@linux.alibaba.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 7718629432676b5ebd9a32940782fe297a0abf8d ]
+[ Upstream commit 9249c32ec9197e8d34fe5179c9e31668a205db04 ]
 
-In function amba_handler_attach(), dev->res.name is initialized by
-amba_device_alloc. But when address_found is false, dev->res.name is
-assigned to null value, which leads to wrong resource name display in
-/proc/iomem, "<BAD>" is seen for those resources.
+The Dell Vostro 3350 ACPI video-bus device reports spurious
+ACPI_VIDEO_NOTIFY_CYCLE events resulting in spurious KEY_SWITCHVIDEOMODE
+events being reported to userspace (and causing trouble there).
 
-Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
+Add a quirk setting the report_key_events mask to
+REPORT_BRIGHTNESS_KEY_EVENTS so that the ACPI_VIDEO_NOTIFY_CYCLE
+events will be ignored, while still reporting brightness up/down
+hotkey-presses to userspace normally.
+
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1911763
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpi_amba.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/acpi/acpi_video.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/acpi/acpi_amba.c b/drivers/acpi/acpi_amba.c
-index 7f77c071709a..eb09ee71ceb2 100644
---- a/drivers/acpi/acpi_amba.c
-+++ b/drivers/acpi/acpi_amba.c
-@@ -70,6 +70,7 @@ static int amba_handler_attach(struct acpi_device *adev,
- 		case IORESOURCE_MEM:
- 			if (!address_found) {
- 				dev->res = *rentry->res;
-+				dev->res.name = dev_name(&dev->dev);
- 				address_found = true;
- 			}
- 			break;
+diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
+index 7df7abde1fcb..5a69260edf80 100644
+--- a/drivers/acpi/acpi_video.c
++++ b/drivers/acpi/acpi_video.c
+@@ -556,6 +556,15 @@ static const struct dmi_system_id video_dmi_table[] = {
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "Vostro V131"),
+ 		},
+ 	},
++	{
++	 .callback = video_set_report_key_events,
++	 .driver_data = (void *)((uintptr_t)REPORT_BRIGHTNESS_KEY_EVENTS),
++	 .ident = "Dell Vostro 3350",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++		DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3350"),
++		},
++	},
+ 	/*
+ 	 * Some machines change the brightness themselves when a brightness
+ 	 * hotkey gets pressed, despite us telling them not to. In this case
 -- 
 2.30.2
 
