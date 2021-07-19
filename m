@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE003CDC6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DBC3CDF52
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238228AbhGSOwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:52:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47094 "EHLO mail.kernel.org"
+        id S1344864AbhGSPJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:09:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245549AbhGSOeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:34:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC76461249;
-        Mon, 19 Jul 2021 15:14:14 +0000 (UTC)
+        id S1343934AbhGSOsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0BF061285;
+        Mon, 19 Jul 2021 15:25:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707655;
-        bh=UI8arizcMZt0jWWuWkWK+1dPrCxJSzyeFbsb5TRcol0=;
+        s=korg; t=1626708333;
+        bh=8vf89cqAEiEpOFAna+3saqsBdZd00cUqtRl2GaRnTcw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yja4tB4vU4f4dvjsmwBz5mRr1HayyHZrhBPbqjzLCjtDh8dxjXSeUCA2FmWjn5I9I
-         J1m7Im8c4cjsmTdZm6H5Yu0gE//2aXKni1L8tqFeCe91lyYSU89fIDHvX4h67wbLD2
-         lp3EdeW0pbXqK96HdFEcl+LlhGZkFc6pDvVG/zoE=
+        b=ICw9yJQyDOBmWNL7hA/sbMFWcyMrRDt5htSdpqwpt0oDYdr/+soxVRr6p4lBJrff6
+         K5Z21QblDZW32a5Xz2TPRBdi84DOQV0scSFxmt97KPr2gWwC63drJoP8VV2HYZPM5O
+         ru8UwODriREzQv8wrncMvj5p63OcPRqxgW1WowbI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 217/245] ceph: remove bogus checks and WARN_ONs from ceph_set_page_dirty
-Date:   Mon, 19 Jul 2021 16:52:39 +0200
-Message-Id: <20210719144947.400686556@linuxfoundation.org>
+Subject: [PATCH 4.14 271/315] watchdog: Fix possible use-after-free in wdt_startup()
+Date:   Mon, 19 Jul 2021 16:52:40 +0200
+Message-Id: <20210719144952.333524863@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+References: <20210719144942.861561397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 22d41cdcd3cfd467a4af074165357fcbea1c37f5 ]
+[ Upstream commit c08a6b31e4917034f0ed0cb457c3bb209576f542 ]
 
-The checks for page->mapping are odd, as set_page_dirty is an
-address_space operation, and I don't see where it would be called on a
-non-pagecache page.
+This module's remove path calls del_timer(). However, that function
+does not wait until the timer handler finishes. This means that the
+timer handler may still be running after the driver's remove function
+has finished, which would result in a use-after-free.
 
-The warning about the page lock also seems bogus.  The comment over
-set_page_dirty() says that it can be called without the page lock in
-some rare cases. I don't think we want to warn if that's the case.
+Fix by calling del_timer_sync(), which makes sure the timer handler
+has finished, and unable to re-schedule itself.
 
-Reported-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/1620716495-108352-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/addr.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ drivers/watchdog/sbc60xxwdt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index 36aa6d8cdff7..9791de2dc773 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -72,10 +72,6 @@ static int ceph_set_page_dirty(struct page *page)
- 	struct inode *inode;
- 	struct ceph_inode_info *ci;
- 	struct ceph_snap_context *snapc;
--	int ret;
--
--	if (unlikely(!mapping))
--		return !TestSetPageDirty(page);
- 
- 	if (PageDirty(page)) {
- 		dout("%p set_page_dirty %p idx %lu -- already dirty\n",
-@@ -121,11 +117,7 @@ static int ceph_set_page_dirty(struct page *page)
- 	page->private = (unsigned long)snapc;
- 	SetPagePrivate(page);
- 
--	ret = __set_page_dirty_nobuffers(page);
--	WARN_ON(!PageLocked(page));
--	WARN_ON(!page->mapping);
--
--	return ret;
-+	return __set_page_dirty_nobuffers(page);
+diff --git a/drivers/watchdog/sbc60xxwdt.c b/drivers/watchdog/sbc60xxwdt.c
+index 2eef58a0cf05..152db059d5aa 100644
+--- a/drivers/watchdog/sbc60xxwdt.c
++++ b/drivers/watchdog/sbc60xxwdt.c
+@@ -152,7 +152,7 @@ static void wdt_startup(void)
+ static void wdt_turnoff(void)
+ {
+ 	/* Stop the timer */
+-	del_timer(&timer);
++	del_timer_sync(&timer);
+ 	inb_p(wdt_stop);
+ 	pr_info("Watchdog timer is now disabled...\n");
  }
- 
- /*
 -- 
 2.30.2
 
