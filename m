@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABFD3CE6EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D853F3CE7F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343928AbhGSQRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:17:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47744 "EHLO mail.kernel.org"
+        id S1355674AbhGSQge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:36:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245158AbhGSPKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D3F46127C;
-        Mon, 19 Jul 2021 15:51:28 +0000 (UTC)
+        id S1348087AbhGSPYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3ACB61412;
+        Mon, 19 Jul 2021 16:01:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709889;
-        bh=Fry/1E8mbPD6UCOOJj7TJfsf86Evh8iAMVEoW9evQ7Y=;
+        s=korg; t=1626710483;
+        bh=OgCApF9g4DGMHKRlYaoHVBOoAFpWrb/y9h744UR1QNs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wSbx1pJxCdeEP743X0HSl4xPVY2mcf+vK4KOwJQr/fArt99R5zZbwO31QS7a97mYq
-         Dqz7HqfIKJzKl0HDceiCRyzxd584BMoHCkqI4+l1L9qGCodW4CRYlz5hYf81y+TtPx
-         c8CZ3obNO2JCNWKQnPHuRznW8DFSsFGNFU+2XzD8=
+        b=CcebVu3txsqsyWVYWjkri8LR6Mljg7VH4DMgYvx9pbo+JnMMWorc1LV9qpDnDpkHK
+         rffVRviD8HXR/y1RcMIwN2iHasn+mdXkGNHQVPjLg0Um6H5Wrj94MQMnkUabtEXcU7
+         H/ZJVAiYCpgG71VFJhfLmiIk4jb68D+476fxsi0E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 139/149] thermal/drivers/rcar_gen3_thermal: Fix coefficient calculations
+Subject: [PATCH 5.10 218/243] memory: fsl_ifc: fix leak of IO mapping on probe failure
 Date:   Mon, 19 Jul 2021 16:54:07 +0200
-Message-Id: <20210719144934.246491005@linuxfoundation.org>
+Message-Id: <20210719144947.961556771@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 8946187ab57ffd02088e50256c73dd31f49db06d ]
+[ Upstream commit 3b132ab67fc7a358fff35e808fa65d4bea452521 ]
 
-The fixed value of 157 used in the calculations are only correct for
-M3-W, on other Gen3 SoC it should be 167. The constant can be derived
-correctly from the static TJ_3 constant and the SoC specific TJ_1 value.
-Update the calculation be correct on all Gen3 SoCs.
+On probe error the driver should unmap the IO memory.  Smatch reports:
 
-Fixes: 4eb39f79ef44 ("thermal: rcar_gen3_thermal: Update value of Tj_1")
-Reported-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210605085211.564909-1-niklas.soderlund+renesas@ragnatech.se
+  drivers/memory/fsl_ifc.c:298 fsl_ifc_ctrl_probe() warn: 'fsl_ifc_ctrl_dev->gregs' not released on lines: 298.
+
+Fixes: a20cbdeffce2 ("powerpc/fsl: Add support for Integrated Flash Controller")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210527154322.81253-1-krzysztof.kozlowski@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thermal/rcar_gen3_thermal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/memory/fsl_ifc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/thermal/rcar_gen3_thermal.c b/drivers/thermal/rcar_gen3_thermal.c
-index 1ab2ffff4e7c..a0673059bd4a 100644
---- a/drivers/thermal/rcar_gen3_thermal.c
-+++ b/drivers/thermal/rcar_gen3_thermal.c
-@@ -143,7 +143,7 @@ static void rcar_gen3_thermal_calc_coefs(struct rcar_gen3_thermal_tsc *tsc,
- 	 * Division is not scaled in BSP and if scaled it might overflow
- 	 * the dividend (4095 * 4095 << 14 > INT_MAX) so keep it unscaled
- 	 */
--	tsc->tj_t = (FIXPT_INT((ptat[1] - ptat[2]) * 157)
-+	tsc->tj_t = (FIXPT_INT((ptat[1] - ptat[2]) * (ths_tj_1 - TJ_3))
- 		     / (ptat[0] - ptat[2])) + FIXPT_INT(TJ_3);
+diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
+index 89f99b5b6450..a6324044a085 100644
+--- a/drivers/memory/fsl_ifc.c
++++ b/drivers/memory/fsl_ifc.c
+@@ -219,8 +219,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+ 	fsl_ifc_ctrl_dev->gregs = of_iomap(dev->dev.of_node, 0);
+ 	if (!fsl_ifc_ctrl_dev->gregs) {
+ 		dev_err(&dev->dev, "failed to get memory region\n");
+-		ret = -ENODEV;
+-		goto err;
++		return -ENODEV;
+ 	}
  
- 	tsc->coef.a1 = FIXPT_DIV(FIXPT_INT(thcode[1] - thcode[2]),
+ 	if (of_property_read_bool(dev->dev.of_node, "little-endian")) {
+@@ -295,6 +294,7 @@ err_irq:
+ 	free_irq(fsl_ifc_ctrl_dev->irq, fsl_ifc_ctrl_dev);
+ 	irq_dispose_mapping(fsl_ifc_ctrl_dev->irq);
+ err:
++	iounmap(fsl_ifc_ctrl_dev->gregs);
+ 	return ret;
+ }
+ 
 -- 
 2.30.2
 
