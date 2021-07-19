@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603433CE7DF
+	by mail.lfdr.de (Postfix) with ESMTP id D7CEA3CE7E0
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353020AbhGSQeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:34:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58334 "EHLO mail.kernel.org"
+        id S1353085AbhGSQet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:34:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347655AbhGSPUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:20:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEA2F6140E;
-        Mon, 19 Jul 2021 15:59:01 +0000 (UTC)
+        id S1347709AbhGSPUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:20:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20515613F7;
+        Mon, 19 Jul 2021 15:59:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710342;
-        bh=msz6kQGMxwihYwKqvmiGMzNq4gvtPtrGbyd0fbVlsw4=;
+        s=korg; t=1626710344;
+        bh=O1dqbL5v9Pk/htBaCbRsgljVqbpZTvU1GsfbxVTbALY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xFOqRfj+FAkX0u+LjmEa20qCYyWC1pYD/F52KY1pKwEM0yFMGWN6kdJymW9eOia8T
-         b+mia38ipAELn36cR7NfB2yc8dJz0h2vz+rylos+7cMYbmFBVSnXXpJURkjFt6oLOl
-         0UXaZsidy8NaOkuGWh739LrVgFP7xCK4SAuUSnSU=
+        b=gydYbcilQtNGxcfKbt9IiA1PA/QD0wRuymaSGuLzAd5+0C9wp3MIqbB85KbJ9welh
+         TzWbdRA5kuNCF+0gigomMNRvd7pFdliQ+BE4VxUVawyFN/WsCwa8bn3W9q/cjpbhp6
+         9gKqyLmakruvbaWQFUSWm6a5elDPX/PHyWn3SnME=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 175/243] vdpa/mlx5: Fix possible failure in umem size calculation
-Date:   Mon, 19 Jul 2021 16:53:24 +0200
-Message-Id: <20210719144946.555350354@linuxfoundation.org>
+Subject: [PATCH 5.10 176/243] virtio_net: move tx vq operation under tx queue lock
+Date:   Mon, 19 Jul 2021 16:53:25 +0200
+Message-Id: <20210719144946.586016208@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -41,69 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eli Cohen <elic@nvidia.com>
+From: Michael S. Tsirkin <mst@redhat.com>
 
-[ Upstream commit 71ab6a7cfbae27f86a3901daab10bfe13b3a1e3a ]
+[ Upstream commit 5a2f966d0f3fa0ef6dada7ab9eda74cacee96b8a ]
 
-umem size is a 32 bit unsigned value so assigning it to an int could
-cause false failures. Set the calculated value inside the function and
-modify function name to reflect the fact it updates the size.
+It's unsafe to operate a vq from multiple threads.
+Unfortunately this is exactly what we do when invoking
+clean tx poll from rx napi.
+Same happens with napi-tx even without the
+opportunistic cleaning from the receive interrupt: that races
+with processing the vq in start_xmit.
 
-This bug was found during code review but never had real impact to this
-date.
+As a fix move everything that deals with the vq to under tx lock.
 
-Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-Signed-off-by: Eli Cohen <elic@nvidia.com>
-Link: https://lore.kernel.org/r/20210530090349.8360-1-elic@nvidia.com
+Fixes: b92f1e6751a6 ("virtio-net: transmit napi")
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ drivers/net/virtio_net.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index ef76cfedcd79..5773b68f9a93 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -596,8 +596,8 @@ static void cq_destroy(struct mlx5_vdpa_net *ndev, u16 idx)
- 	mlx5_db_free(ndev->mvdev.mdev, &vcq->db);
- }
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 345a0f51e8d7..7d1f609306f9 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -1519,6 +1519,8 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+ 	struct virtnet_info *vi = sq->vq->vdev->priv;
+ 	unsigned int index = vq2txq(sq->vq);
+ 	struct netdev_queue *txq;
++	int opaque;
++	bool done;
  
--static int umem_size(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq, int num,
--		     struct mlx5_vdpa_umem **umemp)
-+static void set_umem_size(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq, int num,
-+			  struct mlx5_vdpa_umem **umemp)
- {
- 	struct mlx5_core_dev *mdev = ndev->mvdev.mdev;
- 	int p_a;
-@@ -620,7 +620,7 @@ static int umem_size(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq
- 		*umemp = &mvq->umem3;
- 		break;
- 	}
--	return p_a * mvq->num_ent + p_b;
-+	(*umemp)->size = p_a * mvq->num_ent + p_b;
- }
+ 	if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
+ 		/* We don't need to enable cb for XDP */
+@@ -1528,10 +1530,28 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
  
- static void umem_frag_buf_free(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_umem *umem)
-@@ -636,15 +636,10 @@ static int create_umem(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
- 	void *in;
- 	int err;
- 	__be64 *pas;
--	int size;
- 	struct mlx5_vdpa_umem *umem;
+ 	txq = netdev_get_tx_queue(vi->dev, index);
+ 	__netif_tx_lock(txq, raw_smp_processor_id());
++	virtqueue_disable_cb(sq->vq);
+ 	free_old_xmit_skbs(sq, true);
++
++	opaque = virtqueue_enable_cb_prepare(sq->vq);
++
++	done = napi_complete_done(napi, 0);
++
++	if (!done)
++		virtqueue_disable_cb(sq->vq);
++
+ 	__netif_tx_unlock(txq);
  
--	size = umem_size(ndev, mvq, num, &umem);
--	if (size < 0)
--		return size;
--
--	umem->size = size;
--	err = umem_frag_buf_alloc(ndev, umem, size);
-+	set_umem_size(ndev, mvq, num, &umem);
-+	err = umem_frag_buf_alloc(ndev, umem, umem->size);
- 	if (err)
- 		return err;
+-	virtqueue_napi_complete(napi, sq->vq, 0);
++	if (done) {
++		if (unlikely(virtqueue_poll(sq->vq, opaque))) {
++			if (napi_schedule_prep(napi)) {
++				__netif_tx_lock(txq, raw_smp_processor_id());
++				virtqueue_disable_cb(sq->vq);
++				__netif_tx_unlock(txq);
++				__napi_schedule(napi);
++			}
++		}
++	}
  
+ 	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
+ 		netif_tx_wake_queue(txq);
 -- 
 2.30.2
 
