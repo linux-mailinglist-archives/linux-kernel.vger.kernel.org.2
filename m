@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89783CE4A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CA83CE499
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349497AbhGSPpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:45:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52766 "EHLO mail.kernel.org"
+        id S1348838AbhGSPob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:44:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343704AbhGSO7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E9BC61283;
-        Mon, 19 Jul 2021 15:37:02 +0000 (UTC)
+        id S245261AbhGSO64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:58:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5169D61244;
+        Mon, 19 Jul 2021 15:36:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709023;
-        bh=kH0ztzjTDpwSK5QeTbad/iCJMkXvG2jh8hJ0rTfdHhE=;
+        s=korg; t=1626708989;
+        bh=uDEsRfUXqu5O5OORtcgIp9bYL4asVcFiUAnOQaB2Wio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fQaZTylOk5gUi553BhmWVS9xFlXX8N4vmM0GM30OvQ09TS/qApS/FdQTJV7+97DpX
-         d58hCRtkq9l/LZigkV08XJx9g8XaStWrHtD+lN8Cbg7rmjcGo5QdMQKT54C0rpJ0dP
-         3BrrKswYDdvgrsyICTFywJvTiDPsWicvwPiRQipU=
+        b=zETscRXkDzqvGJk0U9yvDxFq8u7Ymo7aW+UPpl2rHgQFUsCjTiGLZyhIcfMDZNq5i
+         XYaAulLAcBz/25PqyfQHODb83sOZHjWKkY6abqXwHQ0GuiYNi6qiXveiyznTk2gUoA
+         3G5dcz8IrDBFHz+rP17LhSxmjjFoXIxziTCbqPrw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 180/421] iio: prox: as3935: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 19 Jul 2021 16:49:51 +0200
-Message-Id: <20210719144952.666978873@linuxfoundation.org>
+Subject: [PATCH 4.19 183/421] iio: light: tcs3472: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Date:   Mon, 19 Jul 2021 16:49:54 +0200
+Message-Id: <20210719144952.772175547@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -44,53 +43,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 37eb8d8c64f2ecb3a5521ba1cc1fad973adfae41 ]
+[ Upstream commit df2f37cffd6ed486d613e7ee22aadc8e49ae2dd3 ]
 
 To make code more readable, use a structure to express the channel
 layout and ensure the timestamp is 8 byte aligned.
 
 Found during an audit of all calls of uses of
-iio_push_to_buffers_with_timestamp()
+iio_push_to_buffers_with_timestamp().
 
-Fixes: 37b1ba2c68cf ("iio: proximity: as3935: fix buffer stack trashing")
+Fixes tag is not strictly accurate as prior to that patch there was
+potentially an unaligned write.  However, any backport past there will
+need to be done manually.
+
+Fixes: 0624bf847dd0 ("iio:tcs3472: Use iio_push_to_buffers_with_timestamp()")
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Matt Ranostay <matt.ranostay@konsulko.com>
-Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-15-jic23@kernel.org
+Link: https://lore.kernel.org/r/20210501170121.512209-20-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/proximity/as3935.c | 10 +++++++---
+ drivers/iio/light/tcs3472.c | 10 +++++++---
  1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/proximity/as3935.c b/drivers/iio/proximity/as3935.c
-index f130388a16a0..9069eec46093 100644
---- a/drivers/iio/proximity/as3935.c
-+++ b/drivers/iio/proximity/as3935.c
-@@ -61,7 +61,11 @@ struct as3935_state {
- 	unsigned long noise_tripped;
- 	u32 tune_cap;
- 	u32 nflwdth_reg;
--	u8 buffer[16]; /* 8-bit data + 56-bit padding + 64-bit timestamp */
+diff --git a/drivers/iio/light/tcs3472.c b/drivers/iio/light/tcs3472.c
+index 1995cc5cd732..82204414c7a1 100644
+--- a/drivers/iio/light/tcs3472.c
++++ b/drivers/iio/light/tcs3472.c
+@@ -67,7 +67,11 @@ struct tcs3472_data {
+ 	u8 control;
+ 	u8 atime;
+ 	u8 apers;
+-	u16 buffer[8]; /* 4 16-bit channels + 64-bit timestamp */
 +	/* Ensure timestamp is naturally aligned */
 +	struct {
-+		u8 chan;
++		u16 chans[4];
 +		s64 timestamp __aligned(8);
 +	} scan;
- 	u8 buf[2] ____cacheline_aligned;
  };
  
-@@ -227,8 +231,8 @@ static irqreturn_t as3935_trigger_handler(int irq, void *private)
- 	if (ret)
- 		goto err_read;
+ static const struct iio_event_spec tcs3472_events[] = {
+@@ -389,10 +393,10 @@ static irqreturn_t tcs3472_trigger_handler(int irq, void *p)
+ 		if (ret < 0)
+ 			goto done;
  
--	st->buffer[0] = val & AS3935_DATA_MASK;
--	iio_push_to_buffers_with_timestamp(indio_dev, &st->buffer,
-+	st->scan.chan = val & AS3935_DATA_MASK;
-+	iio_push_to_buffers_with_timestamp(indio_dev, &st->scan,
- 					   iio_get_time_ns(indio_dev));
- err_read:
- 	iio_trigger_notify_done(indio_dev->trig);
+-		data->buffer[j++] = ret;
++		data->scan.chans[j++] = ret;
+ 	}
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+ 		iio_get_time_ns(indio_dev));
+ 
+ done:
 -- 
 2.30.2
 
