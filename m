@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BEEE3CE75F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC2F3CE6D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353155AbhGSQZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:25:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55604 "EHLO mail.kernel.org"
+        id S1345369AbhGSQP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:15:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347116AbhGSPPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:15:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2D30601FD;
-        Mon, 19 Jul 2021 15:56:14 +0000 (UTC)
+        id S1344695AbhGSPIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:08:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E39261351;
+        Mon, 19 Jul 2021 15:48:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710175;
-        bh=YrfJ8dKNlutmPddgbdWUgLKsXiT8/9F7vm9xuBCNROM=;
+        s=korg; t=1626709693;
+        bh=TLnzebTb9MmGCEw9e7SnEQlxLGwSIHh9/HCpE8FFGjg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ooizk6dYo2j8ngBBJqqSHGNmpXSG/FN3uMaHQCrA6J273t3FwCDiCPbwb3k8vAxoy
-         Zcaxyljhzq0KJjJB8Fs1wotus6Y28zMwC+kZ/UnU9/6CQy+Lgn0WcLkvKu0nzlW2Fz
-         PC27C807eXlcbDAh/b0pf0p0ypZaQfTFhLjjsFQQ=
+        b=izFmtmIGHqVVoK+8bkAqjCc6PRaVSYz9VYTiiMqokSoe2VNrGP8T+LDbR+SQ62NfQ
+         8oKzFVe/ZBVU7jKZ92EJ5CBkOHh8EHLl9i55Qf3GsHmYw9k6nlEXCJrw0ljKCcZiVT
+         hkGf5zbJkbOi9Q9miq4gFZj3DXwOtzioOHGqah2g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 106/243] intel_th: Wait until port is in reset before programming it
+Subject: [PATCH 5.4 027/149] scsi: megaraid_sas: Fix resource leak in case of probe failure
 Date:   Mon, 19 Jul 2021 16:52:15 +0200
-Message-Id: <20210719144944.327437336@linuxfoundation.org>
+Message-Id: <20210719144907.967077289@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,117 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+From: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
 
-[ Upstream commit ab1afed701d2db7eb35c1a2526a29067a38e93d1 ]
+[ Upstream commit b5438f48fdd8e1c3f130d32637511efd32038152 ]
 
-Some devices don't drain their pipelines if we don't make sure that
-the corresponding output port is in reset before programming it for
-a new trace capture, resulting in bits of old trace appearing in the
-new trace capture. Fix that by explicitly making sure the reset is
-asserted before programming new trace capture.
+The driver doesn't clean up all the allocated resources properly when
+scsi_add_host(), megasas_start_aen() function fails during the PCI device
+probe.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Link: https://lore.kernel.org/r/20210621151246.31891-5-alexander.shishkin@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Clean up all those resources.
+
+Link: https://lore.kernel.org/r/20210528131307.25683-3-chandrakanth.patil@broadcom.com
+Signed-off-by: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
+Signed-off-by: Sumit Saxena <sumit.saxena@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/intel_th/core.c     | 17 +++++++++++++++++
- drivers/hwtracing/intel_th/gth.c      | 16 ++++++++++++++++
- drivers/hwtracing/intel_th/intel_th.h |  3 +++
- 3 files changed, 36 insertions(+)
+ drivers/scsi/megaraid/megaraid_sas_base.c   | 13 +++++++++++++
+ drivers/scsi/megaraid/megaraid_sas_fusion.c |  1 +
+ 2 files changed, 14 insertions(+)
 
-diff --git a/drivers/hwtracing/intel_th/core.c b/drivers/hwtracing/intel_th/core.c
-index c9ac3dc65113..9cb8c7d13d46 100644
---- a/drivers/hwtracing/intel_th/core.c
-+++ b/drivers/hwtracing/intel_th/core.c
-@@ -215,6 +215,22 @@ static ssize_t port_show(struct device *dev, struct device_attribute *attr,
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index b9c1f722f1de..418178c2b548 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -7415,11 +7415,16 @@ static int megasas_probe_one(struct pci_dev *pdev,
+ 	return 0;
  
- static DEVICE_ATTR_RO(port);
+ fail_start_aen:
++	instance->unload = 1;
++	scsi_remove_host(instance->host);
+ fail_io_attach:
+ 	megasas_mgmt_info.count--;
+ 	megasas_mgmt_info.max_index--;
+ 	megasas_mgmt_info.instance[megasas_mgmt_info.max_index] = NULL;
  
-+static void intel_th_trace_prepare(struct intel_th_device *thdev)
-+{
-+	struct intel_th_device *hub = to_intel_th_hub(thdev);
-+	struct intel_th_driver *hubdrv = to_intel_th_driver(hub->dev.driver);
++	if (instance->requestorId && !instance->skip_heartbeat_timer_del)
++		del_timer_sync(&instance->sriov_heartbeat_timer);
 +
-+	if (hub->type != INTEL_TH_SWITCH)
-+		return;
-+
-+	if (thdev->type != INTEL_TH_OUTPUT)
-+		return;
-+
-+	pm_runtime_get_sync(&thdev->dev);
-+	hubdrv->prepare(hub, &thdev->output);
-+	pm_runtime_put(&thdev->dev);
-+}
-+
- static int intel_th_output_activate(struct intel_th_device *thdev)
- {
- 	struct intel_th_driver *thdrv =
-@@ -235,6 +251,7 @@ static int intel_th_output_activate(struct intel_th_device *thdev)
- 	if (ret)
- 		goto fail_put;
+ 	instance->instancet->disable_intr(instance);
+ 	megasas_destroy_irqs(instance);
  
-+	intel_th_trace_prepare(thdev);
- 	if (thdrv->activate)
- 		ret = thdrv->activate(thdev);
+@@ -7427,8 +7432,16 @@ fail_io_attach:
+ 		megasas_release_fusion(instance);
  	else
-diff --git a/drivers/hwtracing/intel_th/gth.c b/drivers/hwtracing/intel_th/gth.c
-index 28509b02a0b5..b3308934a687 100644
---- a/drivers/hwtracing/intel_th/gth.c
-+++ b/drivers/hwtracing/intel_th/gth.c
-@@ -564,6 +564,21 @@ static void gth_tscu_resync(struct gth_device *gth)
- 	iowrite32(reg, gth->base + REG_TSCU_TSUCTRL);
- }
- 
-+static void intel_th_gth_prepare(struct intel_th_device *thdev,
-+				 struct intel_th_output *output)
-+{
-+	struct gth_device *gth = dev_get_drvdata(&thdev->dev);
-+	int count;
+ 		megasas_release_mfi(instance);
 +
-+	/*
-+	 * Wait until the output port is in reset before we start
-+	 * programming it.
-+	 */
-+	for (count = GTH_PLE_WAITLOOP_DEPTH;
-+	     count && !(gth_output_get(gth, output->port) & BIT(5)); count--)
-+		cpu_relax();
-+}
+ 	if (instance->msix_vectors)
+ 		pci_free_irq_vectors(instance->pdev);
++	instance->msix_vectors = 0;
 +
- /**
-  * intel_th_gth_enable() - enable tracing to an output device
-  * @thdev:	GTH device
-@@ -815,6 +830,7 @@ static struct intel_th_driver intel_th_gth_driver = {
- 	.assign		= intel_th_gth_assign,
- 	.unassign	= intel_th_gth_unassign,
- 	.set_output	= intel_th_gth_set_output,
-+	.prepare	= intel_th_gth_prepare,
- 	.enable		= intel_th_gth_enable,
- 	.trig_switch	= intel_th_gth_switch,
- 	.disable	= intel_th_gth_disable,
-diff --git a/drivers/hwtracing/intel_th/intel_th.h b/drivers/hwtracing/intel_th/intel_th.h
-index 5fe694708b7a..595615b79108 100644
---- a/drivers/hwtracing/intel_th/intel_th.h
-+++ b/drivers/hwtracing/intel_th/intel_th.h
-@@ -143,6 +143,7 @@ intel_th_output_assigned(struct intel_th_device *thdev)
-  * @remove:	remove method
-  * @assign:	match a given output type device against available outputs
-  * @unassign:	deassociate an output type device from an output port
-+ * @prepare:	prepare output port for tracing
-  * @enable:	enable tracing for a given output device
-  * @disable:	disable tracing for a given output device
-  * @irq:	interrupt callback
-@@ -164,6 +165,8 @@ struct intel_th_driver {
- 					  struct intel_th_device *othdev);
- 	void			(*unassign)(struct intel_th_device *thdev,
- 					    struct intel_th_device *othdev);
-+	void			(*prepare)(struct intel_th_device *thdev,
-+					   struct intel_th_output *output);
- 	void			(*enable)(struct intel_th_device *thdev,
- 					  struct intel_th_output *output);
- 	void			(*trig_switch)(struct intel_th_device *thdev,
++	if (instance->fw_crash_state != UNAVAILABLE)
++		megasas_free_host_crash_buffer(instance);
++
++	if (instance->adapter_type != MFI_SERIES)
++		megasas_fusion_stop_watchdog(instance);
+ fail_init_mfi:
+ 	scsi_host_put(host);
+ fail_alloc_instance:
+diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+index 5dcd7b9b72ce..ae7a3e154bb2 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
++++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+@@ -5177,6 +5177,7 @@ megasas_alloc_fusion_context(struct megasas_instance *instance)
+ 		if (!fusion->log_to_span) {
+ 			dev_err(&instance->pdev->dev, "Failed from %s %d\n",
+ 				__func__, __LINE__);
++			kfree(instance->ctrl_context);
+ 			return -ENOMEM;
+ 		}
+ 	}
 -- 
 2.30.2
 
