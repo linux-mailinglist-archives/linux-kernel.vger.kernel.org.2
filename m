@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93723CE7C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E1C3CE6AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351997AbhGSQca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:32:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58072 "EHLO mail.kernel.org"
+        id S1350798AbhGSQMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:12:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346100AbhGSPQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:16:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D46C460200;
-        Mon, 19 Jul 2021 15:57:14 +0000 (UTC)
+        id S1345100AbhGSPHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:07:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12CDE6120A;
+        Mon, 19 Jul 2021 15:47:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710235;
-        bh=6HvT/XvruA45g30KjXZYhixeen6q9eCh5lcEAfjyexw=;
+        s=korg; t=1626709678;
+        bh=hwI9xTL2ebUdO0DmxdC1jpzwPPvsqSev3UsSzitDOfE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gUUozvM15bfQryx61gFBlRCD8dMRkhirmmiyBurpb2qhO61pCqEuBwuxJmt3AaJt0
-         tHza7OPWP2HEwICSDh/0/6APzI67tK/chtqmMrMrCzh9vKFddlH52Ub0zRSfCCxem0
-         8JoqDX48Xj38Ikfjioy4uJtuOGVbIkCkj4+sOD9E=
+        b=0N9oGlGGLXNnvwyqEsY9ZnuOEUxHk9TMYOGp5KtQmkNH8Ugn+RdTM3L6Dj11LUQbO
+         41tzcboa8ibEzpzCj166DwBQm77cSWBhswNgguprQuATWZn+Z8E/cRnzcrBMNpi+7q
+         zcpK9yPLfqEM91cp+C2Dznh5f0dT6M424NhZ/3VE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
+        stable@vger.kernel.org, Yizhuo <yzhai003@ucr.edu>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 132/243] ceph: remove bogus checks and WARN_ONs from ceph_set_page_dirty
+Subject: [PATCH 5.4 053/149] Input: hideep - fix the uninitialized use in hideep_nvm_unlock()
 Date:   Mon, 19 Jul 2021 16:52:41 +0200
-Message-Id: <20210719144945.179746621@linuxfoundation.org>
+Message-Id: <20210719144913.980281995@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Yizhuo Zhai <yzhai003@ucr.edu>
 
-[ Upstream commit 22d41cdcd3cfd467a4af074165357fcbea1c37f5 ]
+[ Upstream commit cac7100d4c51c04979dacdfe6c9a5e400d3f0a27 ]
 
-The checks for page->mapping are odd, as set_page_dirty is an
-address_space operation, and I don't see where it would be called on a
-non-pagecache page.
+Inside function hideep_nvm_unlock(), variable "unmask_code" could
+be uninitialized if hideep_pgm_r_reg() returns error, however, it
+is used in the later if statement after an "and" operation, which
+is potentially unsafe.
 
-The warning about the page lock also seems bogus.  The comment over
-set_page_dirty() says that it can be called without the page lock in
-some rare cases. I don't think we want to warn if that's the case.
-
-Reported-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/addr.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ drivers/input/touchscreen/hideep.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index 8b0507f69c15..3465ff95cb89 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -78,10 +78,6 @@ static int ceph_set_page_dirty(struct page *page)
- 	struct inode *inode;
- 	struct ceph_inode_info *ci;
- 	struct ceph_snap_context *snapc;
--	int ret;
--
--	if (unlikely(!mapping))
--		return !TestSetPageDirty(page);
- 
- 	if (PageDirty(page)) {
- 		dout("%p set_page_dirty %p idx %lu -- already dirty\n",
-@@ -127,11 +123,7 @@ static int ceph_set_page_dirty(struct page *page)
- 	page->private = (unsigned long)snapc;
- 	SetPagePrivate(page);
- 
--	ret = __set_page_dirty_nobuffers(page);
--	WARN_ON(!PageLocked(page));
--	WARN_ON(!page->mapping);
--
--	return ret;
-+	return __set_page_dirty_nobuffers(page);
+diff --git a/drivers/input/touchscreen/hideep.c b/drivers/input/touchscreen/hideep.c
+index ddad4a82a5e5..e9547ee29756 100644
+--- a/drivers/input/touchscreen/hideep.c
++++ b/drivers/input/touchscreen/hideep.c
+@@ -361,13 +361,16 @@ static int hideep_enter_pgm(struct hideep_ts *ts)
+ 	return -EIO;
  }
  
- /*
+-static void hideep_nvm_unlock(struct hideep_ts *ts)
++static int hideep_nvm_unlock(struct hideep_ts *ts)
+ {
+ 	u32 unmask_code;
++	int error;
+ 
+ 	hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_SFR_RPAGE);
+-	hideep_pgm_r_reg(ts, 0x0000000C, &unmask_code);
++	error = hideep_pgm_r_reg(ts, 0x0000000C, &unmask_code);
+ 	hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_DEFAULT_PAGE);
++	if (error)
++		return error;
+ 
+ 	/* make it unprotected code */
+ 	unmask_code &= ~HIDEEP_PROT_MODE;
+@@ -384,6 +387,8 @@ static void hideep_nvm_unlock(struct hideep_ts *ts)
+ 	NVM_W_SFR(HIDEEP_NVM_MASK_OFS, ts->nvm_mask);
+ 	SET_FLASH_HWCONTROL();
+ 	hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_DEFAULT_PAGE);
++
++	return 0;
+ }
+ 
+ static int hideep_check_status(struct hideep_ts *ts)
+@@ -462,7 +467,9 @@ static int hideep_program_nvm(struct hideep_ts *ts,
+ 	u32 addr = 0;
+ 	int error;
+ 
+-	hideep_nvm_unlock(ts);
++       error = hideep_nvm_unlock(ts);
++       if (error)
++               return error;
+ 
+ 	while (ucode_len > 0) {
+ 		xfer_len = min_t(size_t, ucode_len, HIDEEP_NVM_PAGE_SIZE);
 -- 
 2.30.2
 
