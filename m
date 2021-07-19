@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A19F3CDF0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BBF3CE138
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344594AbhGSPH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:07:27 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:42188 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344265AbhGSOso (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UgI5qI7_1626708560;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgI5qI7_1626708560)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 19 Jul 2021 23:29:22 +0800
-Date:   Mon, 19 Jul 2021 23:29:20 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v3] iomap: support tail packing inline read
-Message-ID: <YPWaUNeV1K13vpGF@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-References: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
- <YPWUBhxhoaEp8Frn@casper.infradead.org>
+        id S1348967AbhGSPZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:25:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237580AbhGSOuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:50:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A43C6023D;
+        Mon, 19 Jul 2021 15:30:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626708657;
+        bh=Pjw6H46iN4TAvAiKYCLqFrokYvlfrYykslGCRgTk6QU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Ci7L+AON83e+GrH6Cxn7oM+4wO3YDf9SX0aV+FTvZAs/kAa8UzkFXhMWxqXl8RPa2
+         enEcI/INkd2EpYZGdZ6gcb50Y95Xv7bWdudz3+BVSB2nWL3VmVMBNm5e0yTCNekBJw
+         LXmPwCNfEeclI+72dpmR51cGwQwC0iLo3NkYP6Rc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Oliver Lang <Oliver.Lang@gossenmetrawatt.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>, Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Nikita Travkin <nikita@trvn.ru>
+Subject: [PATCH 4.19 034/421] iio: ltr501: mark register holding upper 8 bits of ALS_DATA{0,1} and PS_DATA as volatile, too
+Date:   Mon, 19 Jul 2021 16:47:25 +0200
+Message-Id: <20210719144947.412739616@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
+References: <20210719144946.310399455@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YPWUBhxhoaEp8Frn@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 04:02:30PM +0100, Matthew Wilcox wrote:
-> On Mon, Jul 19, 2021 at 10:47:47PM +0800, Gao Xiang wrote:
-> > @@ -246,18 +245,19 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
-> >  	unsigned poff, plen;
-> >  	sector_t sector;
-> >  
-> > -	if (iomap->type == IOMAP_INLINE) {
-> > -		WARN_ON_ONCE(pos);
-> > -		iomap_read_inline_data(inode, page, iomap);
-> > -		return PAGE_SIZE;
-> > -	}
-> > -
-> > -	/* zero post-eof blocks as the page may be mapped */
-> >  	iop = iomap_page_create(inode, page);
-> > +	/* needs to skip some leading uptodated blocks */
-> >  	iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
-> >  	if (plen == 0)
-> >  		goto done;
-> >  
-> > +	if (iomap->type == IOMAP_INLINE) {
-> > +		iomap_read_inline_data(inode, page, iomap, pos);
-> > +		plen = PAGE_SIZE - poff;
-> > +		goto done;
-> > +	}
-> 
-> This is going to break Andreas' case that he just patched to work.
-> GFS2 needs for there to _not_ be an iop for inline data.  That's
-> why I said we need to sort out when to create an iop before moving
-> the IOMAP_INLINE case below the creation of the iop.
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-I have no idea how it breaks Andreas' case from the previous commit
-message: "
-iomap: Don't create iomap_page objects for inline files
-In iomap_readpage_actor, don't create iop objects for inline inodes.
-Otherwise, iomap_read_inline_data will set PageUptodate without setting
-iop->uptodate, and iomap_page_release will eventually complain.
+commit 2ac0b029a04b673ce83b5089368f467c5dca720c upstream.
 
-To prevent this kind of bug from occurring in the future, make sure the
-page doesn't have private data attached in iomap_read_inline_data.
-"
+The regmap is configured for 8 bit registers, uses a RB-Tree cache and
+marks several registers as volatile (i.e. do not cache).
 
-After this patch, iomap_read_inline_data() will set iop->uptodate with
-iomap_set_range_uptodate() rather than set PageUptodate() directly, 
-so iomap_page_release won't complain.
+The ALS and PS data registers in the chip are 16 bit wide and spans
+two regmap registers. In the current driver only the base register is
+marked as volatile, resulting in the upper register only read once.
 
-Am I missing something?
+Further the data sheet notes:
 
-Thanks,
-Gao Xiang
+| When the I2C read operation starts, all four ALS data registers are
+| locked until the I2C read operation of register 0x8B is completed.
 
-> 
-> If we're not going to do that first, then I recommend leaving the
-> IOMAP_INLINE case where it is and changing it to ...
-> 
-> 	if (iomap->type == IOMAP_INLINE)
-> 		return iomap_read_inline_data(inode, page, iomap, pos);
-> 
-> ... and have iomap_read_inline_data() return the number of bytes that
-> it copied + zeroed (ie PAGE_SIZE - poff).
+Which results in the registers never update after the 2nd read.
+
+This patch fixes the problem by marking the upper 8 bits of the ALS
+and PS registers as volatile, too.
+
+Fixes: 2f2c96338afc ("iio: ltr501: Add regmap support.")
+Reported-by: Oliver Lang <Oliver.Lang@gossenmetrawatt.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Tested-by: Nikita Travkin <nikita@trvn.ru> # ltr559
+Link: https://lore.kernel.org/r/20210610134619.2101372-2-mkl@pengutronix.de
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/iio/light/ltr501.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+--- a/drivers/iio/light/ltr501.c
++++ b/drivers/iio/light/ltr501.c
+@@ -35,9 +35,12 @@
+ #define LTR501_PART_ID 0x86
+ #define LTR501_MANUFAC_ID 0x87
+ #define LTR501_ALS_DATA1 0x88 /* 16-bit, little endian */
++#define LTR501_ALS_DATA1_UPPER 0x89 /* upper 8 bits of LTR501_ALS_DATA1 */
+ #define LTR501_ALS_DATA0 0x8a /* 16-bit, little endian */
++#define LTR501_ALS_DATA0_UPPER 0x8b /* upper 8 bits of LTR501_ALS_DATA0 */
+ #define LTR501_ALS_PS_STATUS 0x8c
+ #define LTR501_PS_DATA 0x8d /* 16-bit, little endian */
++#define LTR501_PS_DATA_UPPER 0x8e /* upper 8 bits of LTR501_PS_DATA */
+ #define LTR501_INTR 0x8f /* output mode, polarity, mode */
+ #define LTR501_PS_THRESH_UP 0x90 /* 11 bit, ps upper threshold */
+ #define LTR501_PS_THRESH_LOW 0x92 /* 11 bit, ps lower threshold */
+@@ -1356,9 +1359,12 @@ static bool ltr501_is_volatile_reg(struc
+ {
+ 	switch (reg) {
+ 	case LTR501_ALS_DATA1:
++	case LTR501_ALS_DATA1_UPPER:
+ 	case LTR501_ALS_DATA0:
++	case LTR501_ALS_DATA0_UPPER:
+ 	case LTR501_ALS_PS_STATUS:
+ 	case LTR501_PS_DATA:
++	case LTR501_PS_DATA_UPPER:
+ 		return true;
+ 	default:
+ 		return false;
+
+
