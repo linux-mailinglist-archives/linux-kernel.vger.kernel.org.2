@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1911C3CDF53
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A063A3CDC23
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345358AbhGSPJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:09:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40438 "EHLO mail.kernel.org"
+        id S241259AbhGSOv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:51:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343932AbhGSOsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C63D66128C;
-        Mon, 19 Jul 2021 15:25:37 +0000 (UTC)
+        id S244244AbhGSOcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:32:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA7CF6120E;
+        Mon, 19 Jul 2021 15:12:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708338;
-        bh=Z1n8wsZv+jOd5MN9VkohCRg6WHiM6xigm4+S3agCXjg=;
+        s=korg; t=1626707576;
+        bh=yZiHhf7MDMsrBOm+Rfirza9bKGPc4BGe3mcHCLe6UbU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YjuraogHLw7r3B4Mb0rKjOSUuoR1dWI0I+J2hh/yRi8zKbmwD3zuKDibm8zhsjrlu
-         5H/q9ZBDPxoSkCLdqNA0Q6ImbFvf+T37bCrbo8AqMOlHbB8YEYkAGtbM8a1J9Otok7
-         ihJXG7bzDjqCmszTSKh7pICPe6fFPDN4QmmDs86I=
+        b=ZGj+PzOniICMjCS7vlb/zkcnm+Z4USLEnE7DhE6I5+BYrvbhnQz8FAQw4DjxjzKJ2
+         r6yKStE4ySh/mQsNu+q7GeDEAbibmS/wPGo9LXDaETajG4DSMXngj/3pFFDc9Rh8c8
+         DALr8+i06d2LGCT03cX6N4rLZIHJTqMrDT+g3QdE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 272/315] watchdog: sc520_wdt: Fix possible use-after-free in wdt_turnoff()
-Date:   Mon, 19 Jul 2021 16:52:41 +0200
-Message-Id: <20210719144952.364081229@linuxfoundation.org>
+Subject: [PATCH 4.9 220/245] pwm: tegra: Dont modify HW state in .remove callback
+Date:   Mon, 19 Jul 2021 16:52:42 +0200
+Message-Id: <20210719144947.492624219@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
-References: <20210719144942.861561397@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 90b7c141132244e8e49a34a4c1e445cce33e07f4 ]
+[ Upstream commit 86f7fa71cd830d18d7ebcaf719dffd5ddfe1acdd ]
 
-This module's remove path calls del_timer(). However, that function
-does not wait until the timer handler finishes. This means that the
-timer handler may still be running after the driver's remove function
-has finished, which would result in a use-after-free.
+A consumer is expected to disable a PWM before calling pwm_put(). And if
+they didn't there is hopefully a good reason (or the consumer needs
+fixing). Also if disabling an enabled PWM was the right thing to do,
+this should better be done in the framework instead of in each low level
+driver.
 
-Fix by calling del_timer_sync(), which makes sure the timer handler
-has finished, and unable to re-schedule itself.
+So drop the hardware modification from the .remove() callback.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/1620716691-108460-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/sc520_wdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pwm/pwm-tegra.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/drivers/watchdog/sc520_wdt.c b/drivers/watchdog/sc520_wdt.c
-index 1cfd3f6a13d5..08500db8324f 100644
---- a/drivers/watchdog/sc520_wdt.c
-+++ b/drivers/watchdog/sc520_wdt.c
-@@ -190,7 +190,7 @@ static int wdt_startup(void)
- static int wdt_turnoff(void)
+diff --git a/drivers/pwm/pwm-tegra.c b/drivers/pwm/pwm-tegra.c
+index 7e8906d6ab7a..d76698ce6472 100644
+--- a/drivers/pwm/pwm-tegra.c
++++ b/drivers/pwm/pwm-tegra.c
+@@ -228,7 +228,6 @@ static int tegra_pwm_probe(struct platform_device *pdev)
+ static int tegra_pwm_remove(struct platform_device *pdev)
  {
- 	/* Stop the timer */
--	del_timer(&timer);
-+	del_timer_sync(&timer);
+ 	struct tegra_pwm_chip *pc = platform_get_drvdata(pdev);
+-	unsigned int i;
+ 	int err;
  
- 	/* Stop the watchdog */
- 	wdt_config(0);
+ 	if (WARN_ON(!pc))
+@@ -238,18 +237,6 @@ static int tegra_pwm_remove(struct platform_device *pdev)
+ 	if (err < 0)
+ 		return err;
+ 
+-	for (i = 0; i < pc->chip.npwm; i++) {
+-		struct pwm_device *pwm = &pc->chip.pwms[i];
+-
+-		if (!pwm_is_enabled(pwm))
+-			if (clk_prepare_enable(pc->clk) < 0)
+-				continue;
+-
+-		pwm_writel(pc, i, 0);
+-
+-		clk_disable_unprepare(pc->clk);
+-	}
+-
+ 	reset_control_assert(pc->rst);
+ 	clk_disable_unprepare(pc->clk);
+ 
 -- 
 2.30.2
 
