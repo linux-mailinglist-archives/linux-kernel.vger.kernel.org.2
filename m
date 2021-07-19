@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EDC3CDF55
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C3F3CE054
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345455AbhGSPJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:09:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40440 "EHLO mail.kernel.org"
+        id S1344277AbhGSPQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:16:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245139AbhGSOr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:47:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5B6E61363;
-        Mon, 19 Jul 2021 15:23:36 +0000 (UTC)
+        id S245168AbhGSOr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:47:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B04861375;
+        Mon, 19 Jul 2021 15:23:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708217;
-        bh=V55OotZTM1O2aMmV9536ILQb5yI1FsYwaTgVcTdi8rk=;
+        s=korg; t=1626708220;
+        bh=tWVXGu/HX1v3G1LQMW2of1bw8eLUL8rFjcAstOR9S8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=STinYalFxUKg19BM2uICZ7r/lN37WeH6VrZ1tqHSx1hzo5lQDiNAcrhrMELZDRsPQ
-         CqRmodaZ4V6RtvO0JL2sbNYcy73ZfNFMN5V3nkusfJw8iXNFfvtjBjjLlo67qWzmrS
-         VYpHbyk3/WuGl/43hNlNAY1vjwIX/+1i7IEXtoPI=
+        b=TvleT4PR5Hg80bfEOjQN55OJNLqEXLmkLHy5J5WvOiCfHY/zdNI7nVjJly2qsAZC9
+         jIVdy7VFsHECAeYnVojieFAPVjFXTOxhu8eKZI1BV83UIVDdiBjuIz8bf1UGlX1AAa
+         muQb2VFWYv9GMuIWkUWInEWhOLaj5EA68MWkEPLw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benjamin Drung <bdrung@posteo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.14 227/315] media: uvcvideo: Fix pixel format change for Elgato Cam Link 4K
-Date:   Mon, 19 Jul 2021 16:51:56 +0200
-Message-Id: <20210719144950.890006757@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
+Subject: [PATCH 4.14 228/315] jfs: fix GPF in diFree
+Date:   Mon, 19 Jul 2021 16:51:57 +0200
+Message-Id: <20210719144950.922217628@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -40,122 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Drung <bdrung@posteo.de>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 4c6e0976295add7f0ed94d276c04a3d6f1ea8f83 upstream.
+commit 9d574f985fe33efd6911f4d752de6f485a1ea732 upstream.
 
-The Elgato Cam Link 4K HDMI video capture card reports to support three
-different pixel formats, where the first format depends on the connected
-HDMI device.
+Avoid passing inode with
+JFS_SBI(inode->i_sb)->ipimap == NULL to
+diFree()[1]. GFP will appear:
 
-```
-$ v4l2-ctl -d /dev/video0 --list-formats-ext
-ioctl: VIDIOC_ENUM_FMT
-	Type: Video Capture
+	struct inode *ipimap = JFS_SBI(ip->i_sb)->ipimap;
+	struct inomap *imap = JFS_IP(ipimap)->i_imap;
 
-	[0]: 'NV12' (Y/CbCr 4:2:0)
-		Size: Discrete 3840x2160
-			Interval: Discrete 0.033s (29.970 fps)
-	[1]: 'NV12' (Y/CbCr 4:2:0)
-		Size: Discrete 3840x2160
-			Interval: Discrete 0.033s (29.970 fps)
-	[2]: 'YU12' (Planar YUV 4:2:0)
-		Size: Discrete 3840x2160
-			Interval: Discrete 0.033s (29.970 fps)
-```
+JFS_IP() will return invalid pointer when ipimap == NULL
 
-Changing the pixel format to anything besides the first pixel format
-does not work:
+Call Trace:
+ diFree+0x13d/0x2dc0 fs/jfs/jfs_imap.c:853 [1]
+ jfs_evict_inode+0x2c9/0x370 fs/jfs/inode.c:154
+ evict+0x2ed/0x750 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput.part.0+0x3fe/0x820 fs/inode.c:1680
+ iput+0x58/0x70 fs/inode.c:1670
 
-```
-$ v4l2-ctl -d /dev/video0 --try-fmt-video pixelformat=YU12
-Format Video Capture:
-	Width/Height      : 3840/2160
-	Pixel Format      : 'NV12' (Y/CbCr 4:2:0)
-	Field             : None
-	Bytes per Line    : 3840
-	Size Image        : 12441600
-	Colorspace        : sRGB
-	Transfer Function : Rec. 709
-	YCbCr/HSV Encoding: Rec. 709
-	Quantization      : Default (maps to Limited Range)
-	Flags             :
-```
-
-User space applications like VLC might show an error message on the
-terminal in that case:
-
-```
-libv4l2: error set_fmt gave us a different result than try_fmt!
-```
-
-Depending on the error handling of the user space applications, they
-might display a distorted video, because they use the wrong pixel format
-for decoding the stream.
-
-The Elgato Cam Link 4K responds to the USB video probe
-VS_PROBE_CONTROL/VS_COMMIT_CONTROL with a malformed data structure: The
-second byte contains bFormatIndex (instead of being the second byte of
-bmHint). The first byte is always zero. The third byte is always 1.
-
-The firmware bug was reported to Elgato on 2020-12-01 and it was
-forwarded by the support team to the developers as feature request.
-There is no firmware update available since then. The latest firmware
-for Elgato Cam Link 4K as of 2021-03-23 has MCU 20.02.19 and FPGA 67.
-
-Therefore correct the malformed data structure for this device. The
-change was successfully tested with VLC, OBS, and Chromium using
-different pixel formats (YUYV, NV12, YU12), resolutions (3840x2160,
-1920x1080), and frame rates (29.970 and 59.940 fps).
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Benjamin Drung <bdrung@posteo.de>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reported-and-tested-by: syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/uvc/uvc_video.c |   27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ fs/jfs/inode.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -89,10 +89,37 @@ int uvc_query_ctrl(struct uvc_device *de
- static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
- 	struct uvc_streaming_control *ctrl)
- {
-+	static const struct usb_device_id elgato_cam_link_4k = {
-+		USB_DEVICE(0x0fd9, 0x0066)
-+	};
- 	struct uvc_format *format = NULL;
- 	struct uvc_frame *frame = NULL;
- 	unsigned int i;
+--- a/fs/jfs/inode.c
++++ b/fs/jfs/inode.c
+@@ -161,7 +161,8 @@ void jfs_evict_inode(struct inode *inode
+ 			if (test_cflag(COMMIT_Freewmap, inode))
+ 				jfs_free_zero_link(inode);
  
-+	/*
-+	 * The response of the Elgato Cam Link 4K is incorrect: The second byte
-+	 * contains bFormatIndex (instead of being the second byte of bmHint).
-+	 * The first byte is always zero. The third byte is always 1.
-+	 *
-+	 * The UVC 1.5 class specification defines the first five bits in the
-+	 * bmHint bitfield. The remaining bits are reserved and should be zero.
-+	 * Therefore a valid bmHint will be less than 32.
-+	 *
-+	 * Latest Elgato Cam Link 4K firmware as of 2021-03-23 needs this fix.
-+	 * MCU: 20.02.19, FPGA: 67
-+	 */
-+	if (usb_match_one_id(stream->dev->intf, &elgato_cam_link_4k) &&
-+	    ctrl->bmHint > 255) {
-+		u8 corrected_format_index = ctrl->bmHint >> 8;
-+
-+		/* uvc_dbg(stream->dev, VIDEO,
-+			"Correct USB video probe response from {bmHint: 0x%04x, bFormatIndex: %u} to {bmHint: 0x%04x, bFormatIndex: %u}\n",
-+			ctrl->bmHint, ctrl->bFormatIndex,
-+			1, corrected_format_index); */
-+		ctrl->bmHint = 1;
-+		ctrl->bFormatIndex = corrected_format_index;
-+	}
-+
- 	for (i = 0; i < stream->nformats; ++i) {
- 		if (stream->format[i].index == ctrl->bFormatIndex) {
- 			format = &stream->format[i];
+-			diFree(inode);
++			if (JFS_SBI(inode->i_sb)->ipimap)
++				diFree(inode);
+ 
+ 			/*
+ 			 * Free the inode from the quota allocation.
 
 
