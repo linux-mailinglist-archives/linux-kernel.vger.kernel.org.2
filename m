@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F27B3CD91F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5DE3CD96B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242888AbhGSO0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:26:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56038 "EHLO mail.kernel.org"
+        id S244005AbhGSO3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:29:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243892AbhGSOYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:24:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B70F610A5;
-        Mon, 19 Jul 2021 15:04:26 +0000 (UTC)
+        id S243958AbhGSOYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:24:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42B5161003;
+        Mon, 19 Jul 2021 15:04:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707066;
-        bh=bvm33jyJXdQm3RZnaxOHMbicFaMy8Y6/9H7JfLGBDqw=;
+        s=korg; t=1626707069;
+        bh=aqBJCsVihav4Yb5+bCdDWcvz8gk3PAphLrjk4OVQsSg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oUyP7ZS8Q1PXb7qWk1LBMLsxyD8+m31Jd07VWwY0+oA/hOYfkHxxC2kxLQt/E6i8Y
-         Na2VuRKcdxuOrB/OlJWZsGMVfomXG8ST4q7eckbxvmXhXGoHhyMccq9O5wZAWWfuya
-         H1O/PilyoXX9czWSpGgAtob7VX0px8J2MUVujXXs=
+        b=kL9pUPgow3GiT3uYubBebztpRvy4c5za2pKq/gr8ZP70JobJPyDfj7L1W2Qgy2jlZ
+         c+xlfZkyjEAwRXie/dVhczH067IsTusixPmW3eNn/hkn3JEywOrHhpf6U6z2pUqVXr
+         1nnGU6zQpySqtiiA0n9E59PAW9Q/OEVPoKbAtWck=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 4.9 018/245] s390/cio: dont call css_wait_for_slow_path() inside a lock
-Date:   Mon, 19 Jul 2021 16:49:20 +0200
-Message-Id: <20210719144940.989754641@linuxfoundation.org>
+        Oliver Lang <Oliver.Lang@gossenmetrawatt.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>, Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Nikita Travkin <nikita@trvn.ru>
+Subject: [PATCH 4.9 019/245] iio: ltr501: mark register holding upper 8 bits of ALS_DATA{0,1} and PS_DATA as volatile, too
+Date:   Mon, 19 Jul 2021 16:49:21 +0200
+Message-Id: <20210719144941.021292078@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -41,67 +43,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineeth Vijayan <vneethv@linux.ibm.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-commit c749d8c018daf5fba6dfac7b6c5c78b27efd7d65 upstream.
+commit 2ac0b029a04b673ce83b5089368f467c5dca720c upstream.
 
-Currently css_wait_for_slow_path() gets called inside the chp->lock.
-The path-verification-loop of slowpath inside this lock could lead to
-deadlock as reported by the lockdep validator.
+The regmap is configured for 8 bit registers, uses a RB-Tree cache and
+marks several registers as volatile (i.e. do not cache).
 
-The ccw_device_get_chp_desc() during the instance of a device-set-online
-would try to acquire the same 'chp->lock' to read the chp->desc.
-The instance of this function can get called from multiple scenario,
-like probing or setting-device online manually. This could, in some
-corner-cases lead to the deadlock.
+The ALS and PS data registers in the chip are 16 bit wide and spans
+two regmap registers. In the current driver only the base register is
+marked as volatile, resulting in the upper register only read once.
 
-lockdep validator reported this as,
+Further the data sheet notes:
 
-        CPU0                    CPU1
-        ----                    ----
-   lock(&chp->lock);
-                                lock(kn->active#43);
-                                lock(&chp->lock);
-   lock((wq_completion)cio);
+| When the I2C read operation starts, all four ALS data registers are
+| locked until the I2C read operation of register 0x8B is completed.
 
-The chp->lock was introduced to serialize the access of struct
-channel_path. This lock is not needed for the css_wait_for_slow_path()
-function, so invoke the slow-path function outside this lock.
+Which results in the registers never update after the 2nd read.
 
-Fixes: b730f3a93395 ("[S390] cio: add lock to struct channel_path")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
-Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+This patch fixes the problem by marking the upper 8 bits of the ALS
+and PS registers as volatile, too.
+
+Fixes: 2f2c96338afc ("iio: ltr501: Add regmap support.")
+Reported-by: Oliver Lang <Oliver.Lang@gossenmetrawatt.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Tested-by: Nikita Travkin <nikita@trvn.ru> # ltr559
+Link: https://lore.kernel.org/r/20210610134619.2101372-2-mkl@pengutronix.de
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/s390/cio/chp.c  |    3 +++
- drivers/s390/cio/chsc.c |    2 --
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/iio/light/ltr501.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/s390/cio/chp.c
-+++ b/drivers/s390/cio/chp.c
-@@ -254,6 +254,9 @@ static ssize_t chp_status_write(struct d
- 	if (!num_args)
- 		return count;
- 
-+	/* Wait until previous actions have settled. */
-+	css_wait_for_slow_path();
-+
- 	if (!strncasecmp(cmd, "on", 2) || !strcmp(cmd, "1")) {
- 		mutex_lock(&cp->lock);
- 		error = s390_vary_chpid(cp->chpid, 1);
---- a/drivers/s390/cio/chsc.c
-+++ b/drivers/s390/cio/chsc.c
-@@ -769,8 +769,6 @@ int chsc_chp_vary(struct chp_id chpid, i
+--- a/drivers/iio/light/ltr501.c
++++ b/drivers/iio/light/ltr501.c
+@@ -35,9 +35,12 @@
+ #define LTR501_PART_ID 0x86
+ #define LTR501_MANUFAC_ID 0x87
+ #define LTR501_ALS_DATA1 0x88 /* 16-bit, little endian */
++#define LTR501_ALS_DATA1_UPPER 0x89 /* upper 8 bits of LTR501_ALS_DATA1 */
+ #define LTR501_ALS_DATA0 0x8a /* 16-bit, little endian */
++#define LTR501_ALS_DATA0_UPPER 0x8b /* upper 8 bits of LTR501_ALS_DATA0 */
+ #define LTR501_ALS_PS_STATUS 0x8c
+ #define LTR501_PS_DATA 0x8d /* 16-bit, little endian */
++#define LTR501_PS_DATA_UPPER 0x8e /* upper 8 bits of LTR501_PS_DATA */
+ #define LTR501_INTR 0x8f /* output mode, polarity, mode */
+ #define LTR501_PS_THRESH_UP 0x90 /* 11 bit, ps upper threshold */
+ #define LTR501_PS_THRESH_LOW 0x92 /* 11 bit, ps lower threshold */
+@@ -1329,9 +1332,12 @@ static bool ltr501_is_volatile_reg(struc
  {
- 	struct channel_path *chp = chpid_to_chp(chpid);
- 
--	/* Wait until previous actions have settled. */
--	css_wait_for_slow_path();
- 	/*
- 	 * Redo PathVerification on the devices the chpid connects to
- 	 */
+ 	switch (reg) {
+ 	case LTR501_ALS_DATA1:
++	case LTR501_ALS_DATA1_UPPER:
+ 	case LTR501_ALS_DATA0:
++	case LTR501_ALS_DATA0_UPPER:
+ 	case LTR501_ALS_PS_STATUS:
+ 	case LTR501_PS_DATA:
++	case LTR501_PS_DATA_UPPER:
+ 		return true;
+ 	default:
+ 		return false;
 
 
