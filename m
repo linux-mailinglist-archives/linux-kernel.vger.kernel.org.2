@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2CB3CDDF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06093CDDC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243931AbhGSPB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:01:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
+        id S1344417AbhGSO7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:59:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343998AbhGSOjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:39:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01F9F60249;
-        Mon, 19 Jul 2021 15:20:17 +0000 (UTC)
+        id S1343503AbhGSOj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:39:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3640A6120C;
+        Mon, 19 Jul 2021 15:18:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708018;
-        bh=CIADLAAL6WpqfZGPLy4acIuop1uxaFMKRGUR8ITcPMY=;
+        s=korg; t=1626707937;
+        bh=XCIlvktbw64/to7yDfMXk9QRna2tJOsiYJd9MSczrIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yja/vrDWxoqgsEvEvnE2G5EuDcJGbJB9WeeG049HHTGxKKm2gxmk6kEoqkEgWtUWp
-         YJ9UKWIcbYqG91yHFBI+Rx1iGCZhantmj6zbSvAzpWNCeFSN9yCLbbzWdRMMFJjklx
-         cfuA7OV04QV6FbDThEqBwpmTYRtL8IAKk7B9LNXU=
+        b=mzLxLKfEmjO6FIAjWIvP7a0MW/YWrDy/fJrd7TAlhlhYgFuzTORUQXqWL8Hus8kDv
+         e5KhvMxcf62nfek5GxyUgrjV5Mkhei9MfEwCG790HwBr15TuTnYYEwwm5yoVhAzpws
+         QHpNCJFm/KziMi2NjoRwPQ2yD//sQTAqFq+rt7Xs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 115/315] Bluetooth: mgmt: Fix slab-out-of-bounds in tlv_data_is_valid
-Date:   Mon, 19 Jul 2021 16:50:04 +0200
-Message-Id: <20210719144946.656041924@linuxfoundation.org>
+        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 116/315] writeback: fix obtain a reference to a freeing memcg css
+Date:   Mon, 19 Jul 2021 16:50:05 +0200
+Message-Id: <20210719144946.687086635@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,63 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-[ Upstream commit 799acb9347915bfe4eac0ff2345b468f0a1ca207 ]
+[ Upstream commit 8b0ed8443ae6458786580d36b7d5f8125535c5d4 ]
 
-This fixes parsing of LTV entries when the length is 0.
+The caller of wb_get_create() should pin the memcg, because
+wb_get_create() relies on this guarantee. The rcu read lock
+only can guarantee that the memcg css returned by css_from_id()
+cannot be released, but the reference of the memcg can be zero.
 
-Found with:
+  rcu_read_lock()
+  memcg_css = css_from_id()
+  wb_get_create(memcg_css)
+      cgwb_create(memcg_css)
+          // css_get can change the ref counter from 0 back to 1
+          css_get(memcg_css)
+  rcu_read_unlock()
 
-tools/mgmt-tester -s "Add Advertising - Success (ScRsp only)"
+Fix it by holding a reference to the css before calling
+wb_get_create(). This is not a problem I encountered in the
+real world. Just the result of a code review.
 
-Add Advertising - Success (ScRsp only) - run
-  Sending Add Advertising (0x003e)
-  Test condition added, total 1
-[   11.004577] ==================================================================
-[   11.005292] BUG: KASAN: slab-out-of-bounds in tlv_data_is_valid+0x87/0xe0
-[   11.005984] Read of size 1 at addr ffff888002c695b0 by task mgmt-tester/87
-[   11.006711]
-[   11.007176]
-[   11.007429] Allocated by task 87:
-[   11.008151]
-[   11.008438] The buggy address belongs to the object at ffff888002c69580
-[   11.008438]  which belongs to the cache kmalloc-64 of size 64
-[   11.010526] The buggy address is located 48 bytes inside of
-[   11.010526]  64-byte region [ffff888002c69580, ffff888002c695c0)
-[   11.012423] The buggy address belongs to the page:
-[   11.013291]
-[   11.013544] Memory state around the buggy address:
-[   11.014359]  ffff888002c69480: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[   11.015453]  ffff888002c69500: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[   11.016232] >ffff888002c69580: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
-[   11.017010]                                      ^
-[   11.017547]  ffff888002c69600: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
-[   11.018296]  ffff888002c69680: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[   11.019116] ==================================================================
-
-Fixes: 2bb36870e8cb2 ("Bluetooth: Unify advertising instance flags check")
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
+Link: https://lore.kernel.org/r/20210402091145.80635-1-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/mgmt.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/fs-writeback.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index bca1408f815f..fa9526712b0a 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -6087,6 +6087,9 @@ static bool tlv_data_is_valid(struct hci_dev *hdev, u32 adv_flags, u8 *data,
- 	for (i = 0, cur_len = 0; i < len; i += (cur_len + 1)) {
- 		cur_len = data[i];
- 
-+		if (!cur_len)
-+			continue;
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 08fef9c2296b..1e583e24dd5d 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -512,9 +512,14 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+ 	/* find and pin the new wb */
+ 	rcu_read_lock();
+ 	memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
+-	if (memcg_css)
+-		isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
++	if (memcg_css && !css_tryget(memcg_css))
++		memcg_css = NULL;
+ 	rcu_read_unlock();
++	if (!memcg_css)
++		goto out_free;
 +
- 		if (data[i + 1] == EIR_FLAGS &&
- 		    (!is_adv_data || flags_managed(adv_flags)))
- 			return false;
++	isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
++	css_put(memcg_css);
+ 	if (!isw->new_wb)
+ 		goto out_free;
+ 
 -- 
 2.30.2
 
