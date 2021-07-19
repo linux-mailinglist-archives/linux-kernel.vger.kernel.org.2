@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E9B3CE97A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCB93CEA7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351224AbhGSQ4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:56:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48626 "EHLO mail.kernel.org"
+        id S1377005AbhGSRQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:16:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346211AbhGSP2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:28:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 794406128A;
-        Mon, 19 Jul 2021 16:08:33 +0000 (UTC)
+        id S1347296AbhGSPjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:39:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6E5261175;
+        Mon, 19 Jul 2021 16:19:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710914;
-        bh=Jxp4XfILcSlnmavtHA8DR7HbSTaJRkfBAiSUv4lxPXw=;
+        s=korg; t=1626711543;
+        bh=LTJWYMUPiITN3Wa6Cf/Hoco6oaVd8XiUe0xBl1/a+Fo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nahOlIdi6c+591ogRV7m8F6+l4e6nkNB85z3thi5BE9GMntRneCTSBSe69jWQ2LCr
-         RBxPGPiLSLfPDEGvxISnhNtclmCvnfM/WhL3L98FTnrn84qisVdWo3rxpwBHIQ3190
-         IEtm3wFnlsw4YHQ1iRgDpc+/Dl8o0Ay0PObxO2ik=
+        b=iIAmSnwFapjC7zzP2Ye2rZvfI4o1i66rsAMaRmWG/wUpGIpwRXwRS5WmjjCm2gzsd
+         PBvqR733n54N4izZlg0O9x/vYfK3wPq9AKv9PAGgFXkasfwi2da9ysn0Fx4SJLZTJ6
+         /kMLmSMEidH5JvpzqyJ64ewjeflO4pjgD6e/1WyA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Clemens Gruber <clemens.gruber@pqgruber.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Raymond Tan <raymond.tan@intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 156/351] pwm: pca9685: Restrict period change for enabled PWMs
+Subject: [PATCH 5.12 040/292] usb: dwc3: pci: Fix DEFINE for Intel Elkhart Lake
 Date:   Mon, 19 Jul 2021 16:51:42 +0200
-Message-Id: <20210719144950.136567558@linuxfoundation.org>
+Message-Id: <20210719144943.835218100@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,177 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Clemens Gruber <clemens.gruber@pqgruber.com>
+From: Raymond Tan <raymond.tan@intel.com>
 
-[ Upstream commit 6d6e7050276d40b5de97aa950d5d71057f2e2a25 ]
+[ Upstream commit 457d22850b27de3aea336108272d08602c55fdf7 ]
 
-Previously, the last used PWM channel could change the global prescale
-setting, even if other channels are already in use.
+There's no separate low power (LP) version of Elkhart Lake, thus
+this patch updates the PCI Device ID DEFINE to indicate this.
 
-Fix it by only allowing the first enabled PWM to change the global
-chip-wide prescale setting. If there is more than one channel in use,
-the prescale settings resulting from the chosen periods must match.
-
-GPIOs do not count as enabled PWMs as they are not using the prescaler
-and can't change it.
-
-Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Raymond Tan <raymond.tan@intel.com>
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Link: https://lore.kernel.org/r/20210512135901.28495-1-heikki.krogerus@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-pca9685.c | 74 +++++++++++++++++++++++++++++++++------
- 1 file changed, 64 insertions(+), 10 deletions(-)
+ drivers/usb/dwc3/dwc3-pci.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-index 7c9f174de64e..ec9f93006654 100644
---- a/drivers/pwm/pwm-pca9685.c
-+++ b/drivers/pwm/pwm-pca9685.c
-@@ -23,11 +23,11 @@
- #include <linux/bitmap.h>
+diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
+index 19789e94bbd0..45ec5ac9876e 100644
+--- a/drivers/usb/dwc3/dwc3-pci.c
++++ b/drivers/usb/dwc3/dwc3-pci.c
+@@ -36,7 +36,7 @@
+ #define PCI_DEVICE_ID_INTEL_CNPH		0xa36e
+ #define PCI_DEVICE_ID_INTEL_CNPV		0xa3b0
+ #define PCI_DEVICE_ID_INTEL_ICLLP		0x34ee
+-#define PCI_DEVICE_ID_INTEL_EHLLP		0x4b7e
++#define PCI_DEVICE_ID_INTEL_EHL			0x4b7e
+ #define PCI_DEVICE_ID_INTEL_TGPLP		0xa0ee
+ #define PCI_DEVICE_ID_INTEL_TGPH		0x43ee
+ #define PCI_DEVICE_ID_INTEL_JSP			0x4dee
+@@ -167,7 +167,7 @@ static int dwc3_pci_quirks(struct dwc3_pci *dwc)
+ 	if (pdev->vendor == PCI_VENDOR_ID_INTEL) {
+ 		if (pdev->device == PCI_DEVICE_ID_INTEL_BXT ||
+ 		    pdev->device == PCI_DEVICE_ID_INTEL_BXT_M ||
+-		    pdev->device == PCI_DEVICE_ID_INTEL_EHLLP) {
++		    pdev->device == PCI_DEVICE_ID_INTEL_EHL) {
+ 			guid_parse(PCI_INTEL_BXT_DSM_GUID, &dwc->guid);
+ 			dwc->has_dsm_for_pm = true;
+ 		}
+@@ -375,8 +375,8 @@ static const struct pci_device_id dwc3_pci_id_table[] = {
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ICLLP),
+ 	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
  
- /*
-- * Because the PCA9685 has only one prescaler per chip, changing the period of
-- * one channel affects the period of all 16 PWM outputs!
-- * However, the ratio between each configured duty cycle and the chip-wide
-- * period remains constant, because the OFF time is set in proportion to the
-- * counter range.
-+ * Because the PCA9685 has only one prescaler per chip, only the first channel
-+ * that is enabled is allowed to change the prescale register.
-+ * PWM channels requested afterwards must use a period that results in the same
-+ * prescale setting as the one set by the first requested channel.
-+ * GPIOs do not count as enabled PWMs as they are not using the prescaler.
-  */
+-	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_EHLLP),
+-	  (kernel_ulong_t) &dwc3_pci_intel_swnode },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_EHL),
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
  
- #define PCA9685_MODE1		0x00
-@@ -78,8 +78,9 @@
- struct pca9685 {
- 	struct pwm_chip chip;
- 	struct regmap *regmap;
--#if IS_ENABLED(CONFIG_GPIOLIB)
- 	struct mutex lock;
-+	DECLARE_BITMAP(pwms_enabled, PCA9685_MAXCHAN + 1);
-+#if IS_ENABLED(CONFIG_GPIOLIB)
- 	struct gpio_chip gpio;
- 	DECLARE_BITMAP(pwms_inuse, PCA9685_MAXCHAN + 1);
- #endif
-@@ -90,6 +91,22 @@ static inline struct pca9685 *to_pca(struct pwm_chip *chip)
- 	return container_of(chip, struct pca9685, chip);
- }
- 
-+/* This function is supposed to be called with the lock mutex held */
-+static bool pca9685_prescaler_can_change(struct pca9685 *pca, int channel)
-+{
-+	/* No PWM enabled: Change allowed */
-+	if (bitmap_empty(pca->pwms_enabled, PCA9685_MAXCHAN + 1))
-+		return true;
-+	/* More than one PWM enabled: Change not allowed */
-+	if (bitmap_weight(pca->pwms_enabled, PCA9685_MAXCHAN + 1) > 1)
-+		return false;
-+	/*
-+	 * Only one PWM enabled: Change allowed if the PWM about to
-+	 * be changed is the one that is already enabled
-+	 */
-+	return test_bit(channel, pca->pwms_enabled);
-+}
-+
- /* Helper function to set the duty cycle ratio to duty/4096 (e.g. duty=2048 -> 50%) */
- static void pca9685_pwm_set_duty(struct pca9685 *pca, int channel, unsigned int duty)
- {
-@@ -240,8 +257,6 @@ static int pca9685_pwm_gpio_probe(struct pca9685 *pca)
- {
- 	struct device *dev = pca->chip.dev;
- 
--	mutex_init(&pca->lock);
--
- 	pca->gpio.label = dev_name(dev);
- 	pca->gpio.parent = dev;
- 	pca->gpio.request = pca9685_pwm_gpio_request;
-@@ -285,8 +300,8 @@ static void pca9685_set_sleep_mode(struct pca9685 *pca, bool enable)
- 	}
- }
- 
--static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
--			     const struct pwm_state *state)
-+static int __pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-+			       const struct pwm_state *state)
- {
- 	struct pca9685 *pca = to_pca(chip);
- 	unsigned long long duty, prescale;
-@@ -309,6 +324,12 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 
- 	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
- 	if (prescale != val) {
-+		if (!pca9685_prescaler_can_change(pca, pwm->hwpwm)) {
-+			dev_err(chip->dev,
-+				"pwm not changed: periods of enabled pwms must match!\n");
-+			return -EBUSY;
-+		}
-+
- 		/*
- 		 * Putting the chip briefly into SLEEP mode
- 		 * at this point won't interfere with the
-@@ -331,6 +352,25 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 	return 0;
- }
- 
-+static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-+			     const struct pwm_state *state)
-+{
-+	struct pca9685 *pca = to_pca(chip);
-+	int ret;
-+
-+	mutex_lock(&pca->lock);
-+	ret = __pca9685_pwm_apply(chip, pwm, state);
-+	if (ret == 0) {
-+		if (state->enabled)
-+			set_bit(pwm->hwpwm, pca->pwms_enabled);
-+		else
-+			clear_bit(pwm->hwpwm, pca->pwms_enabled);
-+	}
-+	mutex_unlock(&pca->lock);
-+
-+	return ret;
-+}
-+
- static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
- 				  struct pwm_state *state)
- {
-@@ -372,6 +412,14 @@ static int pca9685_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
- 
- 	if (pca9685_pwm_test_and_set_inuse(pca, pwm->hwpwm))
- 		return -EBUSY;
-+
-+	if (pwm->hwpwm < PCA9685_MAXCHAN) {
-+		/* PWMs - except the "all LEDs" channel - default to enabled */
-+		mutex_lock(&pca->lock);
-+		set_bit(pwm->hwpwm, pca->pwms_enabled);
-+		mutex_unlock(&pca->lock);
-+	}
-+
- 	pm_runtime_get_sync(chip->dev);
- 
- 	return 0;
-@@ -381,7 +429,11 @@ static void pca9685_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
- {
- 	struct pca9685 *pca = to_pca(chip);
- 
-+	mutex_lock(&pca->lock);
- 	pca9685_pwm_set_duty(pca, pwm->hwpwm, 0);
-+	clear_bit(pwm->hwpwm, pca->pwms_enabled);
-+	mutex_unlock(&pca->lock);
-+
- 	pm_runtime_put(chip->dev);
- 	pca9685_pwm_clear_inuse(pca, pwm->hwpwm);
- }
-@@ -422,6 +474,8 @@ static int pca9685_pwm_probe(struct i2c_client *client,
- 
- 	i2c_set_clientdata(client, pca);
- 
-+	mutex_init(&pca->lock);
-+
- 	regmap_read(pca->regmap, PCA9685_MODE2, &reg);
- 
- 	if (device_property_read_bool(&client->dev, "invert"))
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_TGPLP),
+ 	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
 -- 
 2.30.2
 
