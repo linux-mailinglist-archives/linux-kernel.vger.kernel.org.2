@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA763CE770
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C5D3CE7AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354033AbhGSQ0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:26:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49168 "EHLO mail.kernel.org"
+        id S1349496AbhGSQap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:30:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346152AbhGSPOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1346156AbhGSPOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:14:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54D10601FD;
-        Mon, 19 Jul 2021 15:53:48 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4B78613F6;
+        Mon, 19 Jul 2021 15:53:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710028;
-        bh=651vPCq6Maq6BkWOTJQanT2rRDroh8tOQQWo1JlNQeY=;
+        s=korg; t=1626710031;
+        bh=F0zeVKDyFDPy6hrxyowfbDBSqgsKZ6SvVWTV12S9pX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EDds+q0nxcDKaHf2OVf0Aq/Ha2dcYNktpht4s3XVAI8EITiX6oLk3PBqULYxoK9rh
-         r8RQo/Uo1i6WKDePWtu6FogakZkCUGYX8Qs0bWmw4gCoSgfGyG2/Eyv+ghGnO3yQix
-         l6+L6KTaOWJRRDFS35TLUfCWE0sLiY6u3eC7wTZo=
+        b=yF4OOvGLjhehMawNUCj849knYw5HoWWmgd1QlR2VbrL5kvBV0ufZzYWWRpXU2Vbgp
+         QOCbuOTWF/Ty/fFnQx8FbkBK4JgoC3jTGI5jJpeA8yOUcqy4Kx7FkYRSBR7x9sM/9F
+         AP9hkArRW4qPJTb4MKEZfVku0XkYGOlqcQzjDirA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
+        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        John Garry <john.garry@huawei.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 046/243] scsi: lpfc: Fix crash when lpfc_sli4_hba_setup() fails to initialize the SGLs
-Date:   Mon, 19 Jul 2021 16:51:15 +0200
-Message-Id: <20210719144942.407688270@linuxfoundation.org>
+Subject: [PATCH 5.10 047/243] scsi: core: Cap scsi_host cmd_per_lun at can_queue
+Date:   Mon, 19 Jul 2021 16:51:16 +0200
+Message-Id: <20210719144942.438101997@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -41,52 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: John Garry <john.garry@huawei.com>
 
-[ Upstream commit 5aa615d195f1e142c662cb2253f057c9baec7531 ]
+[ Upstream commit ea2f0f77538c50739b9fb4de4700cee5535e1f77 ]
 
-The driver is encountering a crash in lpfc_free_iocb_list() while
-performing initial attachment.
+The sysfs handling function sdev_store_queue_depth() enforces that the sdev
+queue depth cannot exceed shost can_queue. The initial sdev queue depth
+comes from shost cmd_per_lun. However, the LLDD may manually set
+cmd_per_lun to be larger than can_queue, which leads to an initial sdev
+queue depth greater than can_queue.
 
-Code review found this to be an errant failure path that was taken, jumping
-to a tag that then referenced structures that were uninitialized.
+Such an issue was reported in [0], which caused a hang. That has since been
+fixed in commit fc09acb7de31 ("scsi: scsi_debug: Fix cmd_per_lun, set to
+max_queue").
 
-Fix the failure path.
+Stop this possibly happening for other drivers by capping shost cmd_per_lun
+at shost can_queue.
 
-Link: https://lore.kernel.org/r/20210514195559.119853-9-jsmart2021@gmail.com
-Co-developed-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
+[0] https://lore.kernel.org/linux-scsi/YHaez6iN2HHYxYOh@T590/
+
+Link: https://lore.kernel.org/r/1621434662-173079-1-git-send-email-john.garry@huawei.com
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: John Garry <john.garry@huawei.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_sli.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/scsi/hosts.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index bf171ef61abd..990b700de689 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -7825,7 +7825,7 @@ lpfc_sli4_hba_setup(struct lpfc_hba *phba)
- 				"0393 Error %d during rpi post operation\n",
- 				rc);
- 		rc = -ENODEV;
--		goto out_destroy_queue;
-+		goto out_free_iocblist;
+diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
+index bd0dcb540f82..da3920a19d53 100644
+--- a/drivers/scsi/hosts.c
++++ b/drivers/scsi/hosts.c
+@@ -220,6 +220,9 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
+ 		goto fail;
  	}
- 	lpfc_sli4_node_prep(phba);
  
-@@ -7991,8 +7991,9 @@ out_io_buff_free:
- out_unset_queue:
- 	/* Unset all the queues set up in this routine when error out */
- 	lpfc_sli4_queue_unset(phba);
--out_destroy_queue:
-+out_free_iocblist:
- 	lpfc_free_iocb_list(phba);
-+out_destroy_queue:
- 	lpfc_sli4_queue_destroy(phba);
- out_stop_timers:
- 	lpfc_stop_hba_timers(phba);
++	shost->cmd_per_lun = min_t(short, shost->cmd_per_lun,
++				   shost->can_queue);
++
+ 	error = scsi_init_sense_cache(shost);
+ 	if (error)
+ 		goto fail;
 -- 
 2.30.2
 
