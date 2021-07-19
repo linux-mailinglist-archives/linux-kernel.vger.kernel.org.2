@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEE73CE4A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B253CE4A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349440AbhGSPpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:45:06 -0400
+        id S1349333AbhGSPo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:44:59 -0400
 Received: from mail.kernel.org ([198.145.29.99]:52610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343695AbhGSO7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B06DE613FE;
-        Mon, 19 Jul 2021 15:37:00 +0000 (UTC)
+        id S243431AbhGSO6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:58:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5AD3613F1;
+        Mon, 19 Jul 2021 15:36:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709021;
-        bh=0yNl8kQL6q/icoWLiI7TVvbpyAmpwf6Ic8qpG9qS0Zk=;
+        s=korg; t=1626708970;
+        bh=S2dxN00wnpmBcAe1YJ8Qq9IBpDffisGEBHh7om3O0Ec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zaNKg0kjTrQeNm9EfsEfVu5oEBV/5I8G5RTc/WpgqkcB4EuY6J04xMujQYYBfuV+0
-         4axvyw0iAHYYYn9ZsRonz900O8Mqd4q6DLuFFOoetl73MC97eUM7dub2Uue4sOmMxp
-         x3zzffBeXMx1+VliBYTYPicwYiKSgNsCnQMFYdug=
+        b=HAk4yP6L+IICBaotmsEQIebkS5l0d07LgTnpiAmaG2zHlY/BuA0obRCLJ9995vq+/
+         bgcB6THkBm4FS/pHBAaXlTVVbeDsUucyf7EYCtg84523eMGtAkcczceu+Jg1hmVUpc
+         fLjpwVZ8+t9ZgQ379FOWAkqq4TctpZ/l+a108pRk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 189/421] tty: nozomi: Fix the error handling path of nozomi_card_init()
-Date:   Mon, 19 Jul 2021 16:50:00 +0200
-Message-Id: <20210719144952.964349914@linuxfoundation.org>
+Subject: [PATCH 4.19 202/421] staging: gdm724x: check for buffer overflow in gdm_lte_multi_sdu_pkt()
+Date:   Mon, 19 Jul 2021 16:50:13 +0200
+Message-Id: <20210719144953.375049340@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,56 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 6ae7d0f5a92b9619f6e3c307ce56b2cefff3f0e9 ]
+[ Upstream commit 4a36e160856db8a8ddd6a3d2e5db5a850ab87f82 ]
 
-The error handling path is broken and we may un-register things that have
-never been registered.
+There needs to be a check to verify that we don't read beyond the end
+of "buf".  This function is called from do_rx().  The "buf" is the USB
+transfer_buffer and "len" is "urb->actual_length".
 
-Update the loops index accordingly.
-
-Fixes: 9842c38e9176 ("kfifo: fix warn_unused_result")
-Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/e28c2e92c7475da25b03d022ea2d6dcf1ba807a2.1621968629.git.christophe.jaillet@wanadoo.fr
+Fixes: 61e121047645 ("staging: gdm7240: adding LTE USB driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YMcnl4zCwGWGDVMG@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/nozomi.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/staging/gdm724x/gdm_lte.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
-index 8dde9412a1aa..f291f4b06b68 100644
---- a/drivers/tty/nozomi.c
-+++ b/drivers/tty/nozomi.c
-@@ -1403,7 +1403,7 @@ static int nozomi_card_init(struct pci_dev *pdev,
- 			NOZOMI_NAME, dc);
- 	if (unlikely(ret)) {
- 		dev_err(&pdev->dev, "can't request irq %d\n", pdev->irq);
--		goto err_free_kfifo;
-+		goto err_free_all_kfifo;
- 	}
+diff --git a/drivers/staging/gdm724x/gdm_lte.c b/drivers/staging/gdm724x/gdm_lte.c
+index 3c2aab7a921e..25135980349a 100644
+--- a/drivers/staging/gdm724x/gdm_lte.c
++++ b/drivers/staging/gdm724x/gdm_lte.c
+@@ -677,6 +677,7 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
+ 	struct sdu *sdu = NULL;
+ 	u8 endian = phy_dev->get_endian(phy_dev->priv_dev);
+ 	u8 *data = (u8 *)multi_sdu->data;
++	int copied;
+ 	u16 i = 0;
+ 	u16 num_packet;
+ 	u16 hci_len;
+@@ -688,6 +689,12 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
+ 	num_packet = gdm_dev16_to_cpu(endian, multi_sdu->num_packet);
  
- 	DBG1("base_addr: %p", dc->base_addr);
-@@ -1441,13 +1441,15 @@ static int nozomi_card_init(struct pci_dev *pdev,
- 	return 0;
+ 	for (i = 0; i < num_packet; i++) {
++		copied = data - multi_sdu->data;
++		if (len < copied + sizeof(*sdu)) {
++			pr_err("rx prevent buffer overflow");
++			return;
++		}
++
+ 		sdu = (struct sdu *)data;
  
- err_free_tty:
--	for (i = 0; i < MAX_PORT; ++i) {
-+	for (i--; i >= 0; i--) {
- 		tty_unregister_device(ntty_driver, dc->index_start + i);
- 		tty_port_destroy(&dc->port[i].port);
- 	}
- 	free_irq(pdev->irq, dc);
-+err_free_all_kfifo:
-+	i = MAX_PORT;
- err_free_kfifo:
--	for (i = 0; i < MAX_PORT; i++)
-+	for (i--; i >= PORT_MDM; i--)
- 		kfifo_free(&dc->port[i].fifo_ul);
- err_free_sbuf:
- 	kfree(dc->send_buf);
+ 		cmd_evt  = gdm_dev16_to_cpu(endian, sdu->cmd_evt);
+@@ -698,7 +705,8 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
+ 			pr_err("rx sdu wrong hci %04x\n", cmd_evt);
+ 			return;
+ 		}
+-		if (hci_len < 12) {
++		if (hci_len < 12 ||
++		    len < copied + sizeof(*sdu) + (hci_len - 12)) {
+ 			pr_err("rx sdu invalid len %d\n", hci_len);
+ 			return;
+ 		}
 -- 
 2.30.2
 
