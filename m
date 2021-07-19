@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBA43CEABD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100EE3CE963
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378069AbhGSRRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34938 "EHLO mail.kernel.org"
+        id S1354242AbhGSQyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:54:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243651AbhGSPkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:40:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0649B61002;
-        Mon, 19 Jul 2021 16:20:09 +0000 (UTC)
+        id S1348390AbhGSPaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:30:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 020A36135C;
+        Mon, 19 Jul 2021 16:09:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711610;
-        bh=YpocWr17IC73lrDXfQ8pQR21WQ1hbjgFYsS/FrqkNUg=;
+        s=korg; t=1626710978;
+        bh=BwS4FGvYH+5J50gDNL+sFbHRZu+tSr/ySH75Dxt2hMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kxsFINa06AZLNNMekbrJi9c8oLbvAaQDtwYoPbwJd8gBiKW80AuZ8b3wmxjS4v+ta
-         kF4miBKKHalx233SGUGCPIOXtnDGl3pXoo/ptzNbogZ2j3bzC4+vNayn68BlxF50DL
-         oJq96MOfxpdgyk0+LV4MI8tCA0EzISDl+oQT6/Eg=
+        b=Aq9qSSb9GpN1R5EVh2h0XrJ1GXrkW4oXL4qDNgTlMKpz0Es6SzGr3KUR0JRuzxRo0
+         pVznZrFJxd03m5KE7UTB1xIhfgdhqNcUEXXPPKsWWKeHZsjyrwKk9ber6yT11j316Y
+         drdfS/ZYwpqTRZB970hplKgySa2JE2zpn7WsYqs4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 066/292] fs/jfs: Fix missing error code in lmLogInit()
+Subject: [PATCH 5.13 182/351] NFS: nfs_find_open_context() may only select open files
 Date:   Mon, 19 Jul 2021 16:52:08 +0200
-Message-Id: <20210719144944.695274190@linuxfoundation.org>
+Message-Id: <20210719144950.997098704@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 492109333c29e1bb16d8732e1d597b02e8e0bf2e ]
+[ Upstream commit e97bc66377bca097e1f3349ca18ca17f202ff659 ]
 
-The error code is missing in this code scenario, add the error code
-'-EINVAL' to the return value 'rc.
+If a file has already been closed, then it should not be selected to
+support further I/O.
 
-Eliminate the follow smatch warning:
-
-fs/jfs/jfs_logmgr.c:1327 lmLogInit() warn: missing error code 'rc'.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+[Trond: Fix an invalid pointer deref reported by Colin Ian King]
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_logmgr.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/nfs/inode.c         | 4 ++++
+ include/linux/nfs_fs.h | 1 +
+ 2 files changed, 5 insertions(+)
 
-diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
-index 9330eff210e0..78fd136ac13b 100644
---- a/fs/jfs/jfs_logmgr.c
-+++ b/fs/jfs/jfs_logmgr.c
-@@ -1324,6 +1324,7 @@ int lmLogInit(struct jfs_log * log)
- 		} else {
- 			if (!uuid_equal(&logsuper->uuid, &log->uuid)) {
- 				jfs_warn("wrong uuid on JFS log device");
-+				rc = -EINVAL;
- 				goto errout20;
- 			}
- 			log->size = le32_to_cpu(logsuper->size);
+diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
+index 327f9ae4dd3f..1acae1716df1 100644
+--- a/fs/nfs/inode.c
++++ b/fs/nfs/inode.c
+@@ -1101,6 +1101,7 @@ EXPORT_SYMBOL_GPL(nfs_inode_attach_open_context);
+ void nfs_file_set_open_context(struct file *filp, struct nfs_open_context *ctx)
+ {
+ 	filp->private_data = get_nfs_open_context(ctx);
++	set_bit(NFS_CONTEXT_FILE_OPEN, &ctx->flags);
+ 	if (list_empty(&ctx->list))
+ 		nfs_inode_attach_open_context(ctx);
+ }
+@@ -1120,6 +1121,8 @@ struct nfs_open_context *nfs_find_open_context(struct inode *inode, const struct
+ 			continue;
+ 		if ((pos->mode & (FMODE_READ|FMODE_WRITE)) != mode)
+ 			continue;
++		if (!test_bit(NFS_CONTEXT_FILE_OPEN, &pos->flags))
++			continue;
+ 		ctx = get_nfs_open_context(pos);
+ 		if (ctx)
+ 			break;
+@@ -1135,6 +1138,7 @@ void nfs_file_clear_open_context(struct file *filp)
+ 	if (ctx) {
+ 		struct inode *inode = d_inode(ctx->dentry);
+ 
++		clear_bit(NFS_CONTEXT_FILE_OPEN, &ctx->flags);
+ 		/*
+ 		 * We fatal error on write before. Try to writeback
+ 		 * every page again.
+diff --git a/include/linux/nfs_fs.h b/include/linux/nfs_fs.h
+index ffba254d2098..ce6474594872 100644
+--- a/include/linux/nfs_fs.h
++++ b/include/linux/nfs_fs.h
+@@ -84,6 +84,7 @@ struct nfs_open_context {
+ #define NFS_CONTEXT_RESEND_WRITES	(1)
+ #define NFS_CONTEXT_BAD			(2)
+ #define NFS_CONTEXT_UNLOCK	(3)
++#define NFS_CONTEXT_FILE_OPEN		(4)
+ 	int error;
+ 
+ 	struct list_head list;
 -- 
 2.30.2
 
