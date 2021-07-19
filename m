@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C97493CE7FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5785E3CE6B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354880AbhGSQfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:35:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59740 "EHLO mail.kernel.org"
+        id S1350932AbhGSQMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:12:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347851AbhGSPWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:22:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDB266008E;
-        Mon, 19 Jul 2021 15:59:25 +0000 (UTC)
+        id S1345898AbhGSPJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:09:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D024761242;
+        Mon, 19 Jul 2021 15:49:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710366;
-        bh=N5eJoTF0ViH2kJuzZiUhRZNc/Voul3eL5qnXxBEUhno=;
+        s=korg; t=1626709786;
+        bh=XR3dWfvD9cMKxo2cyYHMTS9Hz+WqHyups7DSJhlqi0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ok2CQ70hD7H9Yk4hNfFicS+n4Co0WcExBebvIBxe2YQ2WWdEVITI86hCTHSN2C4iA
-         0HHHY0R0q/hUAemD1KC7ijmYE7A1E1tGps6b6Zz0/H3CgEJCJjmCSbwv7NoB2P2/Vp
-         szXCWh4+jMpCH/APrCIj/pNXNm0QBqi0BthT+L1g=
+        b=vRnzf5EutkvMwK/gtDwWZtGgLHk61iy3CiNKaCE27Uvvo7utKFZlMzdY5piNp/Mv0
+         PqTnduLuBAnzNk611qC6bN+sly1lLoEouHoFh7c7gcNkBqsN1dSLTgDrbpjnuJaSUD
+         dZtJreYsHvZoua3o17sI1xtnhYDUcCq6HE4jP/64=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Robinson <pbrobinson@gmail.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 142/243] PCI: rockchip: Register IRQ handlers after device and data are ready
+        stable@vger.kernel.org, Jiajun Cao <jjcao20@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 063/149] ALSA: hda: Add IRQ check for platform_get_irq()
 Date:   Mon, 19 Jul 2021 16:52:51 +0200
-Message-Id: <20210719144945.500147280@linuxfoundation.org>
+Message-Id: <20210719144916.279771226@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,79 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javier Martinez Canillas <javierm@redhat.com>
+From: Jiajun Cao <jjcao20@fudan.edu.cn>
 
-[ Upstream commit 3cf5f7ab230e2b886e493c7a8449ed50e29d2b98 ]
+[ Upstream commit 8c13212443230d03ff25014514ec0d53498c0912 ]
 
-An IRQ handler may be called at any time after it is registered, so
-anything it relies on must be ready before registration.
+The function hda_tegra_first_init() neglects to check the return
+value after executing platform_get_irq().
 
-rockchip_pcie_subsys_irq_handler() and rockchip_pcie_client_irq_handler()
-read registers in the PCIe controller, but we registered them before
-turning on clocks to the controller.  If either is called before the clocks
-are turned on, the register reads fail and the machine hangs.
+hda_tegra_first_init() should check the return value (if negative
+error number) for errors so as to not pass a negative value to
+the devm_request_irq().
 
-Similarly, rockchip_pcie_legacy_int_handler() uses rockchip->irq_domain,
-but we installed it before initializing irq_domain.
+Fix it by adding a check for the return value irq_id.
 
-Register IRQ handlers after their data structures are initialized and
-clocks are enabled.
-
-Found by enabling CONFIG_DEBUG_SHIRQ, which calls the IRQ handler when it
-is being unregistered.  An error during the probe path might cause this
-unregistration and IRQ handler execution before the device or data
-structure init has finished.
-
-[bhelgaas: commit log]
-Link: https://lore.kernel.org/r/20210608080409.1729276-1-javierm@redhat.com
-Reported-by: Peter Robinson <pbrobinson@gmail.com>
-Tested-by: Peter Robinson <pbrobinson@gmail.com>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Acked-by: Shawn Lin <shawn.lin@rock-chips.com>
+Signed-off-by: Jiajun Cao <jjcao20@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Reviewed-by: Thierry Reding <treding@nvidia.com>
+Link: https://lore.kernel.org/r/20210622131947.94346-1-jjcao20@fudan.edu.cn
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pcie-rockchip-host.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/pci/hda/hda_tegra.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
-index 9705059523a6..0d6df73bb918 100644
---- a/drivers/pci/controller/pcie-rockchip-host.c
-+++ b/drivers/pci/controller/pcie-rockchip-host.c
-@@ -593,10 +593,6 @@ static int rockchip_pcie_parse_host_dt(struct rockchip_pcie *rockchip)
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index e378cb33c69d..2971b34c87c1 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -292,6 +292,9 @@ static int hda_tegra_first_init(struct azx *chip, struct platform_device *pdev)
+ 	const char *sname, *drv_name = "tegra-hda";
+ 	struct device_node *np = pdev->dev.of_node;
+ 
++	if (irq_id < 0)
++		return irq_id;
++
+ 	err = hda_tegra_init_chip(chip, pdev);
  	if (err)
  		return err;
- 
--	err = rockchip_pcie_setup_irq(rockchip);
--	if (err)
--		return err;
--
- 	rockchip->vpcie12v = devm_regulator_get_optional(dev, "vpcie12v");
- 	if (IS_ERR(rockchip->vpcie12v)) {
- 		if (PTR_ERR(rockchip->vpcie12v) != -ENODEV)
-@@ -974,8 +970,6 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
- 	if (err)
- 		goto err_vpcie;
- 
--	rockchip_pcie_enable_interrupts(rockchip);
--
- 	err = rockchip_pcie_init_irq_domain(rockchip);
- 	if (err < 0)
- 		goto err_deinit_port;
-@@ -993,6 +987,12 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
- 	bridge->sysdata = rockchip;
- 	bridge->ops = &rockchip_pcie_ops;
- 
-+	err = rockchip_pcie_setup_irq(rockchip);
-+	if (err)
-+		goto err_remove_irq_domain;
-+
-+	rockchip_pcie_enable_interrupts(rockchip);
-+
- 	err = pci_host_probe(bridge);
- 	if (err < 0)
- 		goto err_remove_irq_domain;
 -- 
 2.30.2
 
