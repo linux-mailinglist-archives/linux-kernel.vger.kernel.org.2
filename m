@@ -2,129 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AFF3CEDB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E623CEDAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386636AbhGSTf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 15:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385462AbhGSTAs (ORCPT
+        id S1358689AbhGSTaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 15:30:39 -0400
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:38478 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1385401AbhGSS7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 15:00:48 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2510C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:31:46 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id u126so9721100pfb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:39:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fFuXsI4PgyPBGNuMhPa281s8CQuE4AWpLc5Xceic260=;
-        b=ECiX0oNLlcFpWmilqN5OxAdbfaPG4SI/FYoyMUhgO6rGqvzRbd4O8okKz6He/+mk4N
-         X82VoHVUOn1ejX7uUGUggH07qc4nAiIrHskUJdEbwrekzZ39/etYvl195Oee2LkLuum7
-         SzN9RhjYIR0Gt8edNDQInjXwZEblPSMvCSyFaXqA7rmKOuUNoULZ2mdzbjDE1BrSHb3H
-         cD5E9c1X5VG40NnzwX/gCsGjlgKPg0ORwuwuwVc3J/YXlVYtftAN8VpWU4ZfmdcBspSy
-         imvGfdFYOFi6UVYvgwN7eSxsO9rC/McbDLIzshd6NJEx392PYakf04rT0lJpB38Fx1Az
-         89Uw==
+        Mon, 19 Jul 2021 14:59:08 -0400
+Received: by mail-lf1-f52.google.com with SMTP id q16so32158902lfa.5;
+        Mon, 19 Jul 2021 12:39:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fFuXsI4PgyPBGNuMhPa281s8CQuE4AWpLc5Xceic260=;
-        b=DsbMyX6LMYOLwRfgd33v/z3LW5BjPdDjp5NXHEMA78UcLsWM9JzHnCVYs09HcIHyJN
-         36LLiRA0XUD0aKowO1JXyVxh/MncUWfYzLdZ4gUFu3LTEhoY80o3rMhui4e1UOyDbET0
-         4OAJFtDbB9dqEdltVNgHgO2FaV5FtNfWLSpe7sDQt6GR6ttmUuO1fjtVCBIaqWpOWXFW
-         E78M5hF12QQz6deOv/YUDdId174iu7nXah/pt+j3R5MYNMO20776SepR6C8fEzs8Qcbc
-         tcibGHdEbe4ZvhRy/MyDitrpuR+SVoRuqbkBtjvvp2AieL2Xlcs74hMkLqvosdOH7H8W
-         aJAQ==
-X-Gm-Message-State: AOAM530B0OHjXESg2H3V+9oPWZyyb2qJWBiJd0zQW+TwBw2zZ3KZxVgl
-        +fLTMZFyeigeSHmftA6Sq2hMjg==
-X-Google-Smtp-Source: ABdhPJxFKcaSE33JIxQuQEL7vCmz1D74iz2EYew7MfencyWpYdy/Jt286p6phb6zm/weKNVUd7aPIw==
-X-Received: by 2002:aa7:8f07:0:b029:332:958b:1513 with SMTP id x7-20020aa78f070000b0290332958b1513mr27832606pfr.4.1626723572793;
-        Mon, 19 Jul 2021 12:39:32 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id n12sm21573191pgr.2.2021.07.19.12.39.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 12:39:31 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 13:39:29 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     acme@kernel.org, coresight@lists.linaro.org, leo.yan@linaro.org,
-        al.grant@arm.com, branislav.rankov@arm.com, suzuki.poulose@arm.com,
-        anshuman.khandual@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] perf cs-etm: Suppress printing when resetting decoder
-Message-ID: <20210719193929.GE2255168@p14s>
-References: <20210713154008.29656-1-james.clark@arm.com>
- <20210713154008.29656-5-james.clark@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HEN45b6Z8/uL9/GqjJXBg1/MFSQ0qCbwqikBovitQAc=;
+        b=JJSC/fU/GibSIuZWhDvEwEUqvHxdtNU+897ZQXGFCTJg7ZX3lVaTnsWyHvQodhQy9F
+         qzWTlP8gs6OpccbeTWUddMtm6QkACK/KDWtevrxuQYdMrSf+1XS/uLDMhVZIsZNlVPPy
+         qpbj8WDjZuAWqSTD+6e1CP1vhNX7JA6V1p8NyWcbukqbZIJh+iEOwK81tw3v+ShVfpYi
+         Yp4bbySLKYAgFFA3bPh2qK6xGIyZGefJ7i78YXH+iycpA9ylwruvhccu5dxvfUMB/QJN
+         gUKZRJxKPQFqs6oR10t3u3ENhPHgmGYXa3vvvy9mqIz55JOvN1V/uwz2Fz36hztphfw+
+         YNRw==
+X-Gm-Message-State: AOAM530PMFc86ImzfdC6iBdE3svp2uKA0xGBrp1fw0L2j3Fix8k60NV0
+        JMrWgjyD5ebf4BajXRJkPZ3/9PDu+zjnIQgm9xI=
+X-Google-Smtp-Source: ABdhPJzNM0u5QF31yqgj84U19qrNo1gyB2UXEM01Jim9YrGvQw4twO6u3HY+sg0mXHk1ZOTZXOTRxSoa+7SMtBiU/vs=
+X-Received: by 2002:a05:6512:3125:: with SMTP id p5mr18772177lfd.635.1626723584586;
+ Mon, 19 Jul 2021 12:39:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713154008.29656-5-james.clark@arm.com>
+References: <cover.1626177381.git.rickyman7@gmail.com> <46f9e291af3d87c212d279717d56eeab4cbfde68.1626177381.git.rickyman7@gmail.com>
+ <YO7xpFg0F5Fv/7sI@kernel.org> <CAM9d7chhjRhif=1+Sjjwrc2p+mLN+Lv4LY8dFZZpk5z5VG-+Pw@mail.gmail.com>
+ <b7aa58d750f5919f30877fe2f9878698f3cddbc4.camel@gmail.com>
+In-Reply-To: <b7aa58d750f5919f30877fe2f9878698f3cddbc4.camel@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 19 Jul 2021 12:39:33 -0700
+Message-ID: <CAM9d7cggQkX=LpaOu+zJCJfPqsj0RUvECTDiU2dJpW-XqY5D8g@mail.gmail.com>
+Subject: Re: [RFC PATCH 01/10] perf workqueue: threadpool creation and destruction
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 04:40:06PM +0100, James Clark wrote:
-> The decoder is quite noisy when being reset. In a future commit,
-> dump-raw-trace will use a code path that resets the decoder rather than
-> creating a new one, so printing has to be suppressed to not flood the
-> output.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> ---
->  tools/perf/util/cs-etm-decoder/cs-etm-decoder.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
+On Fri, Jul 16, 2021 at 6:36 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
 >
+> Hi Namhyung,
+> thanks for the review.
+>
+> On Thu, 2021-07-15 at 16:29 -0700, Namhyung Kim wrote:
+> > Hi Riccardo and Arnaldo,
+> >
+> > On Wed, Jul 14, 2021 at 7:16 AM Arnaldo Carvalho de Melo
+> > <acme@kernel.org> wrote:
+> > >
+> > > Em Tue, Jul 13, 2021 at 02:11:12PM +0200, Riccardo Mancini escreveu:
+> > > > The workqueue library is made up by two components:
+> > > >  - threadpool: handles the lifetime of the threads
+> > > >  - workqueue: handles work distribution among the threads
+> > > >
+> > > > This first patch introduces the threadpool, starting from its creation
+> > > > and destruction functions.
+> > > > Thread management is based on the prototype from Alexey:
+> > > > https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
+> > > >
+> > > > Each thread in the threadpool executes the same function (aka task)
+> > > > with a different argument tidx.
+> > > > Threads use a pair of pipes to communicate with the main process.
+> > > > The threadpool is static (all threads will be spawned at the same time).
+> > > > Future work could include making it resizable and adding affinity support
+> > > > (as in Alexey prototype).
+> > > >
+> > > > Suggested-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> > > > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> > > > ---
+> > > >  tools/perf/util/Build                  |   1 +
+> > > >  tools/perf/util/workqueue/Build        |   1 +
+> > > >  tools/perf/util/workqueue/threadpool.c | 175 +++++++++++++++++++++++++
+> > > >  tools/perf/util/workqueue/threadpool.h |  19 +++
+> > > >  4 files changed, 196 insertions(+)
+> > > >  create mode 100644 tools/perf/util/workqueue/Build
+> > > >  create mode 100644 tools/perf/util/workqueue/threadpool.c
+> > > >  create mode 100644 tools/perf/util/workqueue/threadpool.h
+> <SNIP>
+> > > > +
+> > > > +struct threadpool_struct {
+> > >
+> > > Can this be just 'struct threadpool'? I think its descriptive enough:
+> > >
+> > > > +     int                     nr_threads;     /* number of threads in the
+> > > > pool */
+> > > > +     struct thread_struct    *threads;       /* array of threads in the
+> > > > pool */
+> > > > +     struct task_struct      *current_task;  /* current executing
+> > > > function */
+> >
+> > Does this mean it can only have a single function to run?
+>
+> Yes.
+>
+> > Why do we need it?
+>
+> My idea is to separate the workqueue from the actual implementation of the
+> threads. This way, when the function executing on the threadpool ends, the
+> threads are kept alive to execute new work.
+> By adding this additional layer of abstraction, we can achieve more flexibility.
+> For example, the use-case I have in mind is to recycle the same threadpool for
+> both Alexey's threaded trace and the workqueue.
+> I don't think this could be easily achieved with just the workqueue since the
+> perf-record threads are not just a task that needs to be executed by they have
+> specific affinities to be respected.
+>
+> What are your thoughts?
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+I'm fine with the separation of work(queue) and thread-pool.
 
-> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> index 3e1a05bc82cc..ed1f0326f859 100644
-> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> @@ -35,6 +35,7 @@
->  struct cs_etm_decoder {
->  	void *data;
->  	void (*packet_printer)(const char *msg);
-> +	bool suppress_printing;
->  	dcd_tree_handle_t dcd_tree;
->  	cs_etm_mem_cb_type mem_access;
->  	ocsd_datapath_resp_t prev_return;
-> @@ -74,9 +75,10 @@ int cs_etm_decoder__reset(struct cs_etm_decoder *decoder)
->  	ocsd_datapath_resp_t dp_ret;
->  
->  	decoder->prev_return = OCSD_RESP_CONT;
-> -
-> +	decoder->suppress_printing = true;
->  	dp_ret = ocsd_dt_process_data(decoder->dcd_tree, OCSD_OP_RESET,
->  				      0, 0, NULL, NULL);
-> +	decoder->suppress_printing = false;
->  	if (OCSD_DATA_RESP_IS_FATAL(dp_ret))
->  		return -1;
->  
-> @@ -146,8 +148,10 @@ static void cs_etm_decoder__print_str_cb(const void *p_context,
->  					 const char *msg,
->  					 const int str_len)
->  {
-> -	if (p_context && str_len)
-> -		((struct cs_etm_decoder *)p_context)->packet_printer(msg);
-> +	const struct cs_etm_decoder *decoder = p_context;
-> +
-> +	if (p_context && str_len && !decoder->suppress_printing)
-> +		decoder->packet_printer(msg);
->  }
->  
->  static int
-> -- 
-> 2.28.0
-> 
+I thought the backing thread-pool is general and can handle
+multiple works at the same time.
+
+The work queue should keep track of works it submitted
+and their status.  We can have multiple workqueues
+sharing a single thread pool.
+
+
+>
+> >
+> >
+> > > > +     enum threadpool_status  status;         /* current status of the
+> > > > pool */
+> > > > +};
+> > > > +
+> > > > +struct thread_struct {
+> > > > +     int                             idx;    /* idx of thread in pool-
+> > > > >threads */
+> > > > +     pid_t                           tid;    /* tid of thread */
+> > > > +     struct threadpool_struct        *pool;  /* parent threadpool */
+> > > > +     struct {
+> > > > +             int from[2];                    /* messages from thread
+> > > > (acks) */
+> > > > +             int to[2];                      /* messages to thread
+> > > > (commands) */
+> >
+> > It can be confusing if you think from the main thread.
+> > Maybe 'ack' and 'cmd' would be better.
+>
+> Agreed.
+>
+> >
+> >
+> > > > +     } pipes;
+> > > > +};
+> > >
+> > > This one, since we have already a 'struct thread' in tools/perf, to
+> > > represent a PERF_RECORD_FORK, perhaps we can call it 'struct
+> > > threadpool_entry'?
+> >
+> > I think we can even use 'worker' instead of 'thread' but it requires
+> > huge renaming and conflicts so I won't insist on it strongly.  :)
+>
+> Also, worker internally conflicts with the workqueue's worker, which runs on a
+> (threadpool-)thread.
+> Another name I had in mind is pool_thread to prevent having too many 'thread' in
+> the name, but it might be confusing.
+> I think threadpool_entry is fine.
+>
+> I have another question.
+> In general, when should I use zfree instead of free?
+
+I think the zfree is generally preferable to free.
+Especially if the pointer can be accessed after free.
+
+Thanks,
+Namhyung
