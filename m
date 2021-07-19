@@ -2,161 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB023CE449
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F335E3CE618
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236849AbhGSPnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:43:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
+        id S1352413AbhGSQBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345171AbhGSPAO (ORCPT
+        with ESMTP id S1345865AbhGSPFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:00:14 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36C0C076B96
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 07:53:31 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id jx7-20020a17090b46c7b02901757deaf2c8so233356pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:22:42 -0700 (PDT)
+        Mon, 19 Jul 2021 11:05:04 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23102C09F5FD
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 07:56:30 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id r18so9265910iot.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:25:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nvVob/r6aogoYIZPXj3xzusDgNE755/gn+vTBsW74ko=;
-        b=RPkxmalK9O2x0tnnD63jkQ1EtIKZ7h7qqYU1CHCCSAGuud+0tDc03Qr561ZcB5P9ta
-         2i8hidiCj9YuDDEdqXR0gC7n6pTh3IUhO3eVZDyvfto9Eid4HrFpJXOq8aFNPJgG+mwz
-         azvJJGUa2Pfrv5LcWY1YOomimuhASWz7l7EpGEAqAWPABmrfMp6faOb/srC4ebwnVsAr
-         twPOayf0xMmviobC7ygj+yLp6qTlIjxnnGKioeszevYnlzo426CbaAt8XiMadYSYofdf
-         SoMCq8OVfL9vUPLxBisBbGzNysqPInMIx8DJXVOASFjBIeasi1SA68zz03NxNHneuSG4
-         sqiw==
+        d=usp.br; s=usp-google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HuZyqBI8VecIWEXCo/n1pGBHsUOUwnLTjPNhfVWEiOY=;
+        b=tvMm++S3Z7x57fvLv2MDf7kScofpvB+ZLhgUm+VbzxvKo4/VVVOK9myCTWZ9QHRI5/
+         VAX8lWCy2R8HFUaVZTVTDGVmpvZUKSUARSIKOZhotCYeZn1yKSmK6wieZtYwBV9Bcdaa
+         +nqUdzgAf2ra5eMfe5QDzVLWSsJUUWY7oZ/WsQIIUhA8IOOhz+3ccl6DzMRGSZO1vbBq
+         mLQgNF5msop7dWuA3gyrbLttIbqedhLh3fvtfyti5/QOeGVsaMlZxV8n8D/RVFs1qbYw
+         xiOm99N8ssbZwrNooTj4Nvu9/CmPLSCCFJsbxZJ1c906R5IAvFKz4yslZ31UZocFG6Yz
+         uRug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nvVob/r6aogoYIZPXj3xzusDgNE755/gn+vTBsW74ko=;
-        b=ZNqNhXbavuN3x4NnHbZjFBFz3KEEYcOUpyr12IWgcnDiEU10zhkGw3EJZqiCWXzMQB
-         cBbrGOOBN4RRNSwxM7BUVAnHfiHCO6uNq7lz9o2eCYwZg+QTo+NMQ76rS7AawNjJnFjq
-         OPKGbqckAy2KYn6Rfj1C4vrgKixClUBbgNFiUHoO9mue9SWnuvoYHhr212EGWaWX73K1
-         Px6iNsrme6YMbnmjXQEFgbOS/75Q1DzDKmAXWSvKGftoYU8WtJW66giU0LKaBMbjQzv8
-         a8mtzRnKOOA1G5ktkhvSK7PlBx99GDaMDa9fmnuZn5by1N0DOyvwMdD/iUe0uBZmduAr
-         CuFw==
-X-Gm-Message-State: AOAM532cbxGNrMkEl82JQHewQYnuMy5NhkckWNt0Qcll0XyslYOCS7P4
-        UenaElgjcOaQ0B9qZ5uO6saXzyXMdPM=
-X-Google-Smtp-Source: ABdhPJy/lOXC2/EtKPIbuho79iPei4tSqmfJjQhDAOQlSWLSr/7dxEBzOHbcMFV2VFVzJN4KVsqx1g==
-X-Received: by 2002:a17:90b:2112:: with SMTP id kz18mr30847210pjb.137.1626708161753;
-        Mon, 19 Jul 2021 08:22:41 -0700 (PDT)
-Received: from [192.168.1.153] (M106072041033.v4.enabler.ne.jp. [106.72.41.33])
-        by smtp.gmail.com with ESMTPSA id w145sm9410903pfc.39.2021.07.19.08.22.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 08:22:41 -0700 (PDT)
-Subject: Re: [PATCH v4 1/1] riscv: __asm_copy_to-from_user: Optimize unaligned
- memory access and pipeline stall
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <a7a801d2-13d2-7b5b-66a5-98e7c95b00cc@gmail.com>
- <5e1b5d90-5a1e-5e9f-7b92-6c53b8589c2a@gmail.com>
- <CAMuHMdVMi8zfmSiZ0vnvCcsZQua_LKXpNAQVmRUdBKxNay=f-w@mail.gmail.com>
-From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Message-ID: <97ee158e-0fe8-cd7a-6ee2-35f9018838de@gmail.com>
-Date:   Tue, 20 Jul 2021 00:22:37 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HuZyqBI8VecIWEXCo/n1pGBHsUOUwnLTjPNhfVWEiOY=;
+        b=t2BdDbocpc7jUGJ+TLJiES+awI/1r2BdrbpKuSCcbwfPwlPUyMFbbEoVtugcLC2jvn
+         3T4riJl1x58EhW1C+lcgMN16YoTwkfBcaoyMpw9K0qeKMJzBO9rLV17KrieRxK1JRkBc
+         z56Z3aDjY5qO+n4DaajHc1BTscdrGTLDinHWFnb/9w2K62dVRPz4h4cfYf+oOSS4KADa
+         s4QMmBnWx0/G1HOF6CdDUSFqqRznj7mmrVo2sX4zi4A4OaCzgK/54TP78fTIVAF69348
+         KpD05u4TURUcVzCOXspgruF5zlfrKKYa45nlcVLkhMjJpxwuOwaneOByBIdzX1OydXfJ
+         TbSQ==
+X-Gm-Message-State: AOAM530gyQLf1Kh6y2T9xBAewgu8OjNXqZZng7BFdmBgxpy7dyrsXe7U
+        4bWVezoyL3bAEj4EjNVMTXjC9AulkVzLexWYlrz1GQ==
+X-Google-Smtp-Source: ABdhPJw8Acogs6CFL1FweALTU6/lOaHkkUc95/HwNpa3qUGS2F5qRxoy90LCQC7l9/cSBxPQUKPYuL9z7gO3afm/eKA=
+X-Received: by 2002:a05:6602:2e11:: with SMTP id o17mr10320207iow.55.1626708326696;
+ Mon, 19 Jul 2021 08:25:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdVMi8zfmSiZ0vnvCcsZQua_LKXpNAQVmRUdBKxNay=f-w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210718203746.7159-1-theobf@usp.br> <CA+U=DspWmrWWsQDFPLycS2y-=8Q7TSn5NYMVgbQ42FccAy0=pw@mail.gmail.com>
+In-Reply-To: <CA+U=DspWmrWWsQDFPLycS2y-=8Q7TSn5NYMVgbQ42FccAy0=pw@mail.gmail.com>
+From:   =?UTF-8?Q?Th=C3=A9o_Bor=C3=A9m_Fabris?= <theobf@usp.br>
+Date:   Mon, 19 Jul 2021 12:24:50 -0300
+Message-ID: <CAD5vTa8gnQpZ8B4KQkA=-6Oo-YiN4J7pDp0HoUZgpHN99vJK_g@mail.gmail.com>
+Subject: Re: [PATCH] iio: dac: max5821: convert device register to device
+ managed function
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi, Alexandru.
 
-On 7/19/2021 11:49 PM, Geert Uytterhoeven wrote:
-> Hi Tsukamoto-san,
-> 
-> On Mon, Jul 19, 2021 at 2:53 PM Akira Tsukamoto
-> <akira.tsukamoto@gmail.com> wrote:
->> This patch will reduce cpu usage dramatically in kernel space especially
->> for application which use sys-call with large buffer size, such as
->> network applications. The main reason behind this is that every
->> unaligned memory access will raise exceptions and switch between s-mode
->> and m-mode causing large overhead.
-> 
-> [...]
-> 
->> Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
-> 
-> Thanks for your patch!
+Em seg., 19 de jul. de 2021 =C3=A0s 04:33, Alexandru Ardelean
+<ardeleanalex@gmail.com> escreveu:
+>
+> On Sun, Jul 18, 2021 at 11:42 PM Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.=
+br> wrote:
+> >
+> > Add a device managed hook, via devm_add_action_or_reset() and
+> > max5821_regulator_disable(), to disable voltage regulator on device
+> > detach.
+> > Replace iio_device_register() by devm_iio_device_register() and remove
+> > the max5821_remove() function used to unregister the device and disable=
+ the
+> > voltage regulator.
+> > Remove i2c_set_clientdata() from the probe function, since
+> > i2c_get_clientdata() is not used anymore.
+>
+> Looks good overall.
+> A few comments inline.
+>
+> >
+> > Signed-off-by: Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.br>
+> > ---
+> >  drivers/iio/dac/max5821.c | 30 ++++++++++++++++--------------
+> >  1 file changed, 16 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/drivers/iio/dac/max5821.c b/drivers/iio/dac/max5821.c
+> > index bd6e75699a63..44c04ae70b32 100644
+> > --- a/drivers/iio/dac/max5821.c
+> > +++ b/drivers/iio/dac/max5821.c
+> > @@ -294,6 +294,13 @@ static const struct iio_info max5821_info =3D {
+> >         .write_raw =3D max5821_write_raw,
+> >  };
+> >
+> > +static void max5821_regulator_disable(void *data)
+> > +{
+> > +       struct regulator *rdata =3D data;
+> > +
+> > +       regulator_disable(rdata);
+>
+> This can be simplified a bit:
+>
+> static void max5821_regulator_disable(void *reg)
+> {
+>       regulator_disable(reg);
+> }
+>
+> I used to do explicit casting, but then I also figured that it's not nece=
+ssary.
+>
+Ok.
 
-Thanks for trying!
+> > +}
+> > +
+> >  static int max5821_probe(struct i2c_client *client,
+> >                         const struct i2c_device_id *id)
+> >  {
+> > @@ -306,7 +313,6 @@ static int max5821_probe(struct i2c_client *client,
+> >         if (!indio_dev)
+> >                 return -ENOMEM;
+> >         data =3D iio_priv(indio_dev);
+> > -       i2c_set_clientdata(client, indio_dev);
+> >         data->client =3D client;
+> >         mutex_init(&data->lock);
+> >
+> > @@ -331,6 +337,14 @@ static int max5821_probe(struct i2c_client *client=
+,
+> >                 goto error_free_reg;
+> >         }
+> >
+> > +       ret =3D devm_add_action_or_reset(&client->dev, max5821_regulato=
+r_disable,
+> > +                                      data->vref_reg);
+> > +       if (ret) {
+> > +               dev_err(&client->dev,
+> > +                       "Failed to add action to managed regulator: %d\=
+n", ret);
+> > +               goto error_disable_reg;
+>
+> return ret;
+>
+> devm_add_action_or_reset() should call max5821_regulator_disable() in
+> case of error
+>
+Ok.
 
-> 
-> As v3 is part of v5.14-rc1, all fixes and improvements need to be
-> send as incremental patches.
+> > +       }
+> > +
+> >         ret =3D regulator_get_voltage(data->vref_reg);
+> >         if (ret < 0) {
+> >                 dev_err(&client->dev,
+> > @@ -346,7 +360,7 @@ static int max5821_probe(struct i2c_client *client,
+> >         indio_dev->modes =3D INDIO_DIRECT_MODE;
+> >         indio_dev->info =3D &max5821_info;
+> >
+> > -       return iio_device_register(indio_dev);
+> > +       return devm_iio_device_register(&client->dev, indio_dev);
+> >
+> >  error_disable_reg:
+>
+> This entire goto block should be removed.
+> The idea of using only devm_ functions is to not have these goto statemen=
+ts.
+>
+I thought the action added via devm_add_action (and devres_add) was called =
+only
+on driver detach, thus the error_disable_reg label would be necessary
+to handle the
+possible error on regulator_get_voltage. Could you please clarify for
+me when does
+a driver detach happen?
 
-Yeah, I was not paying attention to v5.14-rc1. Will regenerate it 
-when I spot the remaining bug on rv32.
+Thanks for your reply,
+Th=C3=A9o
 
-> 
-> After reverting ca6eaaa210deec0e ("riscv: __asm_copy_to-from_user:
-> Optimize unaligned memory access and pipeline stall") and applying
-> v4, booting linux-on-litex-vexriscv still fails, but now differently
-> (real crash):
-
-This time it looks like under copy instead of overrun copy last time.
-The SZREG, LGREG, REG_L and REG_S should been taking care of the 
-difference of rv32 and rv64, but probably still forgetting applying
-some places.
-
-Akira
-
-> 
->     /bi�����V�F-: applet not found
->     2'�����t: applet not found
->     Kernel panic - not syncing: Attempted to kill init! exitcode=0x00007f00
->     CPU: 0 PID: 1 Comm: init Not tainted
-> 5.14.0-rc2-orangecrab-01933-g5c9574869017 #357
->     Call Trace:
->     Unable to handle kernel NULL pointer dereference at virtual address 00000af0
->     Oops [#1]
->     CPU: 0 PID: 1 Comm: init Not tainted
-> 5.14.0-rc2-orangecrab-01933-g5c9574869017 #357
->     epc : walk_stackframe+0x11c/0x13c
->      ra : dump_backtrace+0x2c/0x3c
->     epc : c0003970 ra : c00039bc sp : c1835e20
->      gp : c06a7690 tp : c1838000 t0 : 00000000
->      t1 : 00000000 t2 : 00000000 s0 : c1835e50
->      s1 : c05d8180 a0 : 00001000 a1 : 00000000
->      a2 : c04dfd68 a3 : c05d8180 a4 : ab1d4cdc
->      a5 : 00001000 a6 : c067d204 a7 : ffffefff
->      s2 : 00000000 s3 : c05cc9f4 s4 : 00000000
->      s5 : c05d8180 s6 : c04dfd68 s7 : 00000001
->      s8 : 00000000 s9 : 95b6f158 s10: 00000000
->      s11: 00000001 t3 : 00000000 t4 : 00000001
->      t5 : 00000000 t6 : 00000000
->     status: 00000100 badaddr: 00000af0 cause: 0000000d
->     [<c0003970>] walk_stackframe+0x11c/0x13c
->     [<c00039bc>] dump_backtrace+0x2c/0x3c
->     [<c04dfde8>] show_stack+0x44/0x5c
->     [<c04e4c98>] dump_stack_lvl+0x2c/0x40
->     [<c04e4cc8>] dump_stack+0x1c/0x2c
->     [<c04dff3c>] panic+0x13c/0x330
->     [<c000c774>] do_exit+0x830/0x8b8
->     [<c000c888>] do_group_exit+0x40/0xac
->     [<c000c918>] __wake_up_parent+0x0/0x34
->     [<c0002128>] ret_from_syscall+0x0/0x4
->     ---[ end trace d147f0f146982b08 ]---
->     note: init[1] exited with preempt_count 1
->     Fixing recursive fault but reboot is needed!
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+> >         regulator_disable(data->vref_reg);
+> > @@ -356,17 +370,6 @@ static int max5821_probe(struct i2c_client *client=
+,
+> >         return ret;
+> >  }
+> >
+> > -static int max5821_remove(struct i2c_client *client)
+> > -{
+> > -       struct iio_dev *indio_dev =3D i2c_get_clientdata(client);
+> > -       struct max5821_data *data =3D iio_priv(indio_dev);
+> > -
+> > -       iio_device_unregister(indio_dev);
+> > -       regulator_disable(data->vref_reg);
+> > -
+> > -       return 0;
+> > -}
+> > -
+> >  static const struct i2c_device_id max5821_id[] =3D {
+> >         { "max5821", ID_MAX5821 },
+> >         { }
+> > @@ -386,7 +389,6 @@ static struct i2c_driver max5821_driver =3D {
+> >                 .pm     =3D &max5821_pm_ops,
+> >         },
+> >         .probe          =3D max5821_probe,
+> > -       .remove         =3D max5821_remove,
+> >         .id_table       =3D max5821_id,
+> >  };
+> >  module_i2c_driver(max5821_driver);
+> > --
+> > 2.20.1
+> >
