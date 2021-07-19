@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E0C3CDD2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DA63CDD2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242621AbhGSO4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:56:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54478 "EHLO mail.kernel.org"
+        id S244008AbhGSO4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:56:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244994AbhGSOfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:35:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A42F060551;
-        Mon, 19 Jul 2021 15:16:34 +0000 (UTC)
+        id S244007AbhGSOf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:35:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 279296121E;
+        Mon, 19 Jul 2021 15:16:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707795;
-        bh=oELBDiCkfRqdOuU0PT4sHdy7R3CRpNSQfTPY0Vfv2u0=;
+        s=korg; t=1626707797;
+        bh=yOnU8Oz2gvMo29s4Kl8t5at4h0zmOD7m884pQ+lFje0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KEMmJurrJPH/EYzy91OOOGRXvaJALAoDs+S3HBQTjiTVa2hDjedqkFIVGSxYyj2cK
-         xHRTrIVB6HDEENpxy9kaU+2qGApDHFIevxy6D5Ycg6if2j1PntXcsJUVjK1VcbPlUl
-         fSjxH19j67FePDU5Oz0BeVDTBCzl5V80WJx3b1UA=
+        b=EXgthl0I6aM8N0dwR7YzFG7G3UDHjO55RkgoTzt2PuOZk5nCq8H/XcEaZL3nrpWXj
+         jk/5J38LJqIXtEytf/kZ/5x9L+NSlFueLoBkgReOOcVKCaWe9YDBTdhFBwe/PD82c2
+         PnjSmwGR5fUJc4jOum9Pu5nk82kEHNm2IBydXxU4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 059/315] regulator: da9052: Ensure enough delay time for .set_voltage_time_sel
-Date:   Mon, 19 Jul 2021 16:49:08 +0200
-Message-Id: <20210719144944.803706626@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 060/315] HID: do not use down_interruptible() when unbinding devices
+Date:   Mon, 19 Jul 2021 16:49:09 +0200
+Message-Id: <20210719144944.836070756@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -40,37 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Axel Lin <axel.lin@ingics.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit a336dc8f683e5be794186b5643cd34cb28dd2c53 ]
+[ Upstream commit f2145f8dc566c4f3b5a8deb58dcd12bed4e20194 ]
 
-Use DIV_ROUND_UP to prevent truncation by integer division issue.
-This ensures we return enough delay time.
+Action of unbinding driver from a device is not cancellable and should not
+fail, and driver core does not pay attention to the result of "remove"
+method, therefore using down_interruptible() in hid_device_remove() does
+not make sense.
 
-Also fix returning negative value when new_sel < old_sel.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Link: https://lore.kernel.org/r/20210618141412.4014912-1-axel.lin@ingics.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/da9052-regulator.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/hid/hid-core.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/regulator/da9052-regulator.c b/drivers/regulator/da9052-regulator.c
-index 9ececfef42d6..bd91c95f73e0 100644
---- a/drivers/regulator/da9052-regulator.c
-+++ b/drivers/regulator/da9052-regulator.c
-@@ -258,7 +258,8 @@ static int da9052_regulator_set_voltage_time_sel(struct regulator_dev *rdev,
- 	case DA9052_ID_BUCK3:
- 	case DA9052_ID_LDO2:
- 	case DA9052_ID_LDO3:
--		ret = (new_sel - old_sel) * info->step_uV / 6250;
-+		ret = DIV_ROUND_UP(abs(new_sel - old_sel) * info->step_uV,
-+				   6250);
- 		break;
- 	}
+diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+index 381ab96c1e38..a3656a158ba3 100644
+--- a/drivers/hid/hid-core.c
++++ b/drivers/hid/hid-core.c
+@@ -2613,12 +2613,8 @@ static int hid_device_remove(struct device *dev)
+ {
+ 	struct hid_device *hdev = to_hid_device(dev);
+ 	struct hid_driver *hdrv;
+-	int ret = 0;
  
+-	if (down_interruptible(&hdev->driver_input_lock)) {
+-		ret = -EINTR;
+-		goto end;
+-	}
++	down(&hdev->driver_input_lock);
+ 	hdev->io_started = false;
+ 
+ 	hdrv = hdev->driver;
+@@ -2633,8 +2629,8 @@ static int hid_device_remove(struct device *dev)
+ 
+ 	if (!hdev->io_started)
+ 		up(&hdev->driver_input_lock);
+-end:
+-	return ret;
++
++	return 0;
+ }
+ 
+ static ssize_t modalias_show(struct device *dev, struct device_attribute *a,
 -- 
 2.30.2
 
