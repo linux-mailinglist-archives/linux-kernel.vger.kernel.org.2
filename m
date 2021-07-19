@@ -2,361 +2,513 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D8E3CF0C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C825F3CF0D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379982AbhGSXqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 19:46:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:50082 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1376708AbhGSWov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 18:44:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="210868831"
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="210868831"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 16:25:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="453865137"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga007.jf.intel.com with ESMTP; 19 Jul 2021 16:25:29 -0700
-Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Mon, 19 Jul 2021 16:25:28 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Mon, 19 Jul 2021 16:25:28 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.109)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Mon, 19 Jul 2021 16:25:28 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cyVJumLf1Iu0qYXBAEhIQ+KA3dM2cx9yEqifCViCZUCRzcJQhQpTGsJc823BTiQQ4CIE0B0hkz9tyhNWcaZne+0wl1EgdLoh0+GKjQp91eIBScOz/rBNQGXIItcACkmRWNxOSgac9lFpvlSGNwvc3os+1mGQq0HPwTiyJR9Cf2NJ+MBG/IbG9kmQEAaB0PGvpTy44rQGe8+viZPQTOhGTC0JybWU1A8vQ4MPavMSzvZldtQoU9Z8FnWL48A18SsU7hxPqodiJIG1LNtcKa/KgPRu6/LPfkrqZZwaKU50gQBEyDQM5rhhSN6HKIIgU95dp/ZecYw9c4UqobRgtpHQIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CrH+p1Fx+tTD3ZOQ8ZJmLuNng1qSSqD9R2NTVQ6rXKs=;
- b=JhNAU0OEbY+rkpVI9GHvMeqsmkndO7asMYSagt2QAzUfIxv2L5jcYI7WBv+/VY1v6zyPzZZB2Rq9MQiPpSMrXGG1OWw/nHhm4IXkHRSlP/gGG7eUL920/9039XlN9AWEBZddjZQduo9lbRMD7xzqoXLFti+gvSKnlXgWI7xxZJusyYLVdhaoLaq6DhgHRlSOQzBnAywwCT5EF9i0nXS2lTHBuybdWPnnQjDrIDJrzyL55CwODUVwEf6BmHemzh+CPfUizcYbpn6r4OJ0F6D6MZPO6Hpf5Vc95JdnBicnfCX406l+1qP3Ew1DmhprBVIYgt4futEdpmYQf9EpKCE6QA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CrH+p1Fx+tTD3ZOQ8ZJmLuNng1qSSqD9R2NTVQ6rXKs=;
- b=T4Holiwm1sfgLYd+uoN+UFI2sfHnOvVY3hbhv/DJrRyh1TtdiaWJ0EeEL6A4oassfnb3/mfCCKGkLFZa+J8ij3c5xZRSp8c2ttSr/+bRCcS+Nqi6Nv3bMh1HH4ojIVL/vIgY7bL4pJ442yZDwGVm37p50roZZ6hGpO6s0Sg3Tv4=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-Received: from BN0PR11MB5744.namprd11.prod.outlook.com (2603:10b6:408:166::16)
- by BN6PR11MB1411.namprd11.prod.outlook.com (2603:10b6:404:3c::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.29; Mon, 19 Jul
- 2021 23:25:27 +0000
-Received: from BN0PR11MB5744.namprd11.prod.outlook.com
- ([fe80::202f:e602:3983:e631]) by BN0PR11MB5744.namprd11.prod.outlook.com
- ([fe80::202f:e602:3983:e631%8]) with mapi id 15.20.4331.033; Mon, 19 Jul 2021
- 23:25:27 +0000
-Subject: Re: About add an A64FX cache control function into resctrl
-To:     "tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>,
-        "'fenghua.yu@intel.com'" <fenghua.yu@intel.com>
-CC:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'linux-arm-kernel@lists.infradead.org'" 
-        <linux-arm-kernel@lists.infradead.org>,
-        'James Morse' <james.morse@arm.com>,
-        "misono.tomohiro@fujitsu.com" <misono.tomohiro@fujitsu.com>,
-        "Luck, Tony" <tony.luck@intel.com>
-References: <OSAPR01MB214600C7923AEF7C35B02E648B739@OSAPR01MB2146.jpnprd01.prod.outlook.com>
- <OSAPR01MB214657641D532FB8D112DD528B479@OSAPR01MB2146.jpnprd01.prod.outlook.com>
- <bb0967c0-5b88-c6c2-0242-1e3928189a04@intel.com>
- <OSAPR01MB2146D42FC04779268BA231878B409@OSAPR01MB2146.jpnprd01.prod.outlook.com>
- <14ddf86b-89e1-ba26-b684-f3d5d5f8ade7@intel.com>
- <TYAPR01MB633071CD547B0AAF818520E48B2D9@TYAPR01MB6330.jpnprd01.prod.outlook.com>
- <f53b9bfd-0d55-4cf2-fabb-82b3ec86e52a@intel.com>
- <TYAPR01MB6330758A49FECF90B5290C768B259@TYAPR01MB6330.jpnprd01.prod.outlook.com>
- <89416df1-4e91-8ad2-981c-827808a65229@intel.com>
- <TYAPR01MB633085C894CA3B064BB637E28B1A9@TYAPR01MB6330.jpnprd01.prod.outlook.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <26ffe50f-7ff4-2c4e-534c-edf23cb88df1@intel.com>
-Date:   Mon, 19 Jul 2021 16:25:23 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
-In-Reply-To: <TYAPR01MB633085C894CA3B064BB637E28B1A9@TYAPR01MB6330.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: CO1PR15CA0096.namprd15.prod.outlook.com
- (2603:10b6:101:21::16) To BN0PR11MB5744.namprd11.prod.outlook.com
- (2603:10b6:408:166::16)
+        id S1378117AbhGSXgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 19:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349399AbhGSWH4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 18:07:56 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C144BC0604DE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 15:32:03 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id y4so17929097pfi.9
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 15:32:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ure4PJDnW+TdrRHxUVXLP2Q7FtH2grzURki2f6baSRU=;
+        b=i3w/gnLpoOU9Yisq3IC42kjBGyFAUHpq/t6ivTh3GrbonEB7lfLoeJ3o7/2HBcwrxT
+         0Yp+zwctUraRFhXDGJ/GB1S/B34h3Hc/E4r4fsfP2NJBJudpCu0YmHxfzwFkaSC5ysVv
+         cQ/UKfD7SfdZAhfY29t7DhkftNssiHtha26GQ6OYHauu+CaA2Im/LtstLrD/W/Ap+RRN
+         iQpc4NW6PBJWeSxDt5+cwBSBzXdo1Z5gp+8f5FBtrO8LFIkEWwT2/hIoHiSQhi7GaPgk
+         yFb+odfrrU8BUYGdVERN5AiTLr/XW/Kv3Ux8ofjUJcQYot4/GOQfuX9/MRDl9Ygk1fh0
+         3G0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=ure4PJDnW+TdrRHxUVXLP2Q7FtH2grzURki2f6baSRU=;
+        b=ACu/uok9dVPH/FJ6ON0/6SqTUhk73PkyqOK1zA6Z176iEhEC5wkJ2TB64WwxCKZaDT
+         V56Mt3X9sKxZ7MZ4Ko11ZwyM/b3hDcV2vXOljIIa+5nvY3MTbi6RCvS4t++68qkQnWBq
+         jRk/p7RRsxB6M1l11BXR45Ra3eOEmyhfZmQh2IR7zdiHi2Q8pRNXNkL6rMcNoJbnt1Ud
+         /pGIvK2QUroQqgMcoGTaYbzSehxO+Ou5lk4I1s4GSyMH57G1voEEzCnlNCf6tIc/u2Vr
+         UjwouU2txqFAPibbBb8wgy1u+14r/Hiyxu8bPUXL+ydNDvVrfLVJRCU/7vtiWqA8mOUe
+         Xs/w==
+X-Gm-Message-State: AOAM533s/T6q1TXH7fNcBseZ/M6RiE2IgYv1VqJZ2v1DYiZzm5/dmyKM
+        Q9WVOdV9rNTxQhNLZyUmgP0=
+X-Google-Smtp-Source: ABdhPJzuFXtp9oUjhBFXagxsqcpl1ZedcNwCcp2M8CgHhA0Dkh8PEVa9SI8zGxDc3HvqQ0mnU++0CA==
+X-Received: by 2002:a65:63d2:: with SMTP id n18mr27318875pgv.447.1626733923275;
+        Mon, 19 Jul 2021 15:32:03 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:4801:c8d0:ff4e:db29:48ff:3778])
+        by smtp.gmail.com with ESMTPSA id q19sm6921569pgj.17.2021.07.19.15.32.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 15:32:02 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCH 1/5] perf tools: Remove repipe argument from perf_session__new()
+Date:   Mon, 19 Jul 2021 15:31:49 -0700
+Message-Id: <20210719223153.1618812-2-namhyung@kernel.org>
+X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
+In-Reply-To: <20210719223153.1618812-1-namhyung@kernel.org>
+References: <20210719223153.1618812-1-namhyung@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.219] (71.238.111.198) by CO1PR15CA0096.namprd15.prod.outlook.com (2603:10b6:101:21::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 23:25:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dd83e6c6-2b2a-4f2c-cf09-08d94b0c7dbc
-X-MS-TrafficTypeDiagnostic: BN6PR11MB1411:
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN6PR11MB14117650CC9C472653E96DCFF8E19@BN6PR11MB1411.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6rXoAa1L1SuDmD+0gBGKUGltgRzbqSpWfNrkCbD/3wcwrBIDSMZs0K8iLIm3z9uBIF73ji5ZePaWlqX19nKdB/5iMkH8ZFNYBZCczAmOA8Pg2g+NQdb//jfDx/FCZaRkCzefJ/TP9saI4BDYdfc7UgdKB7IbSgdCqodkP7T3MUGUDCXBbMEdcT2aKD07387IfyHfoYMazF7vVb68cECGoaszk0KzJsGw0meYNEjSI5Y2UVXCzzR3RzW3iVL20g6XHZkenrKBrmqpUhXnvuAncILUuu3TdGLuqa2LLa+ic/dnqbf29lM7eN/qTGbJ4u/EEsjZ2Hq89eg0nX0932lWbDgHcGIoEyIq9y1UmbxrkB4uzjkLAiWVdIn694dGm9YuFHUzAZOdxxBfKfgFxueO7HnD4/p9lyBDQm470N+Yd1Lfh24xB1jqErdO+TYzmzCjGqThp7yLeYoo/sRC6xCu0UqzT/JkIxQA9vtDCh9dj0ESQAGGpMoQla3pmgFKnChaQtayQTjBlzPMyEIWIrXQ07SatPr5rgAtBkQLXNvsiZXc+cPniO92wwZa2pLsz7OTcNdan+kTCRBKD/5l8+j0nIVk2pXNH8K8kU4ixfYga+cAaaFG9kesF1Syht4GmyysfrVg/3nDabM+cy1ZoWBrK19KKTSTaSuBEBKU86dQuEMAq3FiSU/NVvnLSNEcW0QGq6BASa8LLRiITZLZ14+xsUMztt2kCR0vFTes30SQbadG2E4U0gj3UND5tEEQsqrU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR11MB5744.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(136003)(396003)(39860400002)(6486002)(2616005)(956004)(26005)(6636002)(6666004)(53546011)(86362001)(36756003)(38100700002)(4326008)(31696002)(83380400001)(478600001)(66946007)(8676002)(110136005)(2906002)(8936002)(66556008)(66476007)(44832011)(31686004)(107886003)(186003)(316002)(54906003)(16576012)(5660300002)(45980500001)(491001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZVpxbkZwT2ZabFYxSmZpTDVud3dLenp3Rk42QXc2M0R1ZnBLR0twVFV1UzFy?=
- =?utf-8?B?Z3h0eXBXNkRoclV5dG1jRmp5U21iS241YmdjNnJKaDRmdkZRTUExVHpjdnNh?=
- =?utf-8?B?N2c3TXVrWThhWmNPQ0Z2WHZUSW00QTl3QXQvdkxiUkMveFFHV1NYNlBVYWxG?=
- =?utf-8?B?c0RTOGVEQVVKQXRkd2hQY0p5b2JQbGZTRlZUMXFFelVUU2EyaldjRjBFUENU?=
- =?utf-8?B?ZzBjSGJPVTlmem5wOGVFREZ4OGVnd3luRkxNS0pSR21PaElpOUM0ZVJZRHhK?=
- =?utf-8?B?elpqcnFXZE5uVHNacUVaTGZsbi9OWW42bXhOT014RFY2c2pJKzBnSjBjMk42?=
- =?utf-8?B?cEkwbDZCMlBUdk1oQm9xdHJGdW0wRFhmYjBVUkxwZUxydjlsVTV5VC9TU3Z1?=
- =?utf-8?B?MVc4UlUxbWJWN3IwTElCTkcxeUN6M2tMUmtzbXNXbWdzMmV5bmNQaExVSnlO?=
- =?utf-8?B?aGY1V3VGVlVaS0tmNHdvdGVqdjVJUUs0a1krNEMxUlRZT2RCaWFqV1dibnRL?=
- =?utf-8?B?V1g2SXVaMGw2Z0Y2TkY2c1FFVlBNdjdPcmowYXZCbTh3VmNVeEFVRjQ4U3hN?=
- =?utf-8?B?Vzl1bkMyZzZXY3FRb1dpODJhWGVMTmNrSWRMNzRXQnZWc0lXSG91WEpLM0Fl?=
- =?utf-8?B?ZGF5bVRIN0ExZjNMTVEvT0twU25pcWlFYVRHOEdXMkUxTlRvVEloZkFjVTU1?=
- =?utf-8?B?cU5NdFhPTnl6dXo2ZjBkTU9tZ3hYa2lwSjNBazhFR3JWWlRWVU5kNHhJMk5Y?=
- =?utf-8?B?LzhZalJuSFdVTytDVDJYN1F1Ti81YXptbjdYSXZMMk8vTEg2Ty8ydEJKOXM0?=
- =?utf-8?B?OTVCNVBYSmRvRXNGVk02OEV6S1NHaDZqT2dhWmI1cjF2T1ZZSEMxS2M2YTMw?=
- =?utf-8?B?Z3lHL1NGK0tML0dybXpjS1MyNHRCTjMzTys1R0RUNHhOb1ppT1VNVXg3bmN2?=
- =?utf-8?B?cktDMjFLdFpacEQwS1JRN0JURkdUZ0tUa3F0eEJ0bGpXZm5meW9sRU9YRGNv?=
- =?utf-8?B?TUhHa2JzYml2dUJWNFlGT3RLRWFwUjg5WmdSUzlvalpFUXNxeXhlR1BnTHhh?=
- =?utf-8?B?VXBUanQrNGd5YTI3SGtnODU0d1NJSEZieEJvcTNCOSt3Y016aGZ2TEkxNmpQ?=
- =?utf-8?B?OVExU0w1eHNhWlh0c245VHhiTk9JNjRiYklOeTc1Q3h5SE5vd291cS9SUDFN?=
- =?utf-8?B?RjQvbnFrOFRWdVZOWTROdTgrcmovbUNqMkN2aUlLQy94NTZJcXg2YkpHdloz?=
- =?utf-8?B?SFNhU1B0MHp0cHd5di95ZnVNbGY3bHdrZ3pETmlXV3pBRWEwRkxsRGxoVWVY?=
- =?utf-8?B?WWVPY3FyVXZNSHJTS1lJb1pDa0ZFTHVKNzJtOWhUbVd3REV5K2FVNXIwWW9V?=
- =?utf-8?B?ekw4ZHVsWjdCZld6WWxYWXExUXo3blhYNGFGZ0M0WXdGYXg2aFJhSlhwRHpm?=
- =?utf-8?B?WGdlTjNLYlFUVUNSVmt2dUpqd0FFZDRNei8zZk0za21iSEthZUdXQVhSOXNr?=
- =?utf-8?B?cUdFRVBMdGw5VEw1QXVnU0JFRStiS0xtK1NNUk45S0R2blF1R0NsS1lTS1NE?=
- =?utf-8?B?WnNTcEE3VGtmUTJFd2ZYZDczVkk4SDNqcjd4QWhzL0phSE40bkpBVUppSCtH?=
- =?utf-8?B?aGpFa2dCUDdWTjRwSTJPZDVkVWxpQlVZWUhkN1lDT2VzdGpHTVZjYWEwczUy?=
- =?utf-8?B?d1Q3ZDZEYUZ1TW5pd0xrTG84SnFXbTBlaWhqYmZmVGYyTHlVYWpsSHFDcC8w?=
- =?utf-8?Q?KrfQaGSU9/l3rAFCCoPFT5uhvKy9F6IKD9l367u?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd83e6c6-2b2a-4f2c-cf09-08d94b0c7dbc
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR11MB5744.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 23:25:27.3411
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: otq/Eqhg4egZqfufoBeH4h86zK9R7Cn3A3nZMqmQxKg7ml4cBSnoUn157H6elLRSI3ilyMaHhUfF3z4pmDBprfIMDkUrVjvp7tX4uJhWGMk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1411
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tan Shaopeng,
+The repipe argument is only used by perf inject and the all others
+passes 'false'.  Let's remove it from the function signature and add
+__perf_session__new() to be called from perf inject directly.
 
-On 7/7/2021 4:26 AM, tan.shaopeng@fujitsu.com wrote:
->>> Sorry, I have not explained A64FX's sector cache function well yet.
->>> I think I need explain this function from different perspective.
->>
->> You have explained the A64FX's sector cache function well. I have also read
->> both specs to understand it better. It appears to me that you are not considering
->> the resctrl architecture as part of your solution but instead just forcing your
->> architecture onto the resctrl filesystem. For example, in resctrl the resource
->> groups are not just a directory structure but has significance in what is being
->> represented within the directory (a class of service). The files within a resource
->> group's directory build on that. From your side I have not seen any effort in
->> aligning the sector cache function with the resctrl architecture but instead you
->> are just changing resctrl interface to match the A64FX architecture.
->>
->> Could you please take a moment to understand what resctrl is and how it could
->> be mapped to A64FX in a coherent way?
-> 
-> Previously, my idea is based on how to make instructions use different
-> sectors in one task. After I studied resctrl, to utilize resctrl
-> architecture on A64FX, I think it’s better to assign one sector to
-> one task. Thanks for your idea that "sectors" could be considered the
-> same as the resctrl "classes of service".
-> 
-> Based on your idea, I am considering the implementation details.
-> In this email, I will explain the outline of new proposal, and then
-> please allow me to confirm a few technologies about resctrl.
-> 
-> The outline of my proposal is as follows.
-> - Add a sector function equivalent to Intel's CAT function into resctrl.
->    (divide shared L2 cache into multiple partitions for multiple cores use)
-> - Allocate one sector to one resource group (one CLOSID). Since one
->    core can only be assigned to one resource group, on A64FX each core
->    only uses one sector at a time.
+This is a preparation of the change the pipe input/output.
 
-ok, so a sector is a portion of cache and matches with what can be 
-represented with a resource group.
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/bench/synthesize.c       |  4 ++--
+ tools/perf/builtin-annotate.c       |  2 +-
+ tools/perf/builtin-buildid-cache.c  |  2 +-
+ tools/perf/builtin-buildid-list.c   |  2 +-
+ tools/perf/builtin-c2c.c            |  2 +-
+ tools/perf/builtin-diff.c           |  4 ++--
+ tools/perf/builtin-evlist.c         |  2 +-
+ tools/perf/builtin-inject.c         |  3 ++-
+ tools/perf/builtin-kmem.c           |  2 +-
+ tools/perf/builtin-kvm.c            |  4 ++--
+ tools/perf/builtin-lock.c           |  2 +-
+ tools/perf/builtin-mem.c            |  3 +--
+ tools/perf/builtin-record.c         |  2 +-
+ tools/perf/builtin-report.c         |  2 +-
+ tools/perf/builtin-sched.c          |  4 ++--
+ tools/perf/builtin-script.c         |  4 ++--
+ tools/perf/builtin-stat.c           |  4 ++--
+ tools/perf/builtin-timechart.c      |  3 +--
+ tools/perf/builtin-top.c            |  2 +-
+ tools/perf/builtin-trace.c          |  2 +-
+ tools/perf/tests/topology.c         |  4 ++--
+ tools/perf/util/data-convert-bt.c   |  2 +-
+ tools/perf/util/data-convert-json.c |  2 +-
+ tools/perf/util/session.c           |  5 +++--
+ tools/perf/util/session.h           | 12 ++++++++++--
+ 25 files changed, 44 insertions(+), 36 deletions(-)
 
-The second part of your comment is not clear to me. In the first part 
-you mention: "one core can only be assigned to one resource group" - 
-this seems to indicate some static assignment between cores and sectors 
-and if this is the case this needs more thinking since the current 
-implementation assumes that any core that can access the cache can 
-access all resource groups associated with that cache. On the other 
-hand, you mention "on A64FX each core only uses one sector at a time" - 
-this now sounds dynamic and is how resctrl works since the CPU is 
-assigned a single class of service to indicate all resources accessible 
-to it.
+diff --git a/tools/perf/bench/synthesize.c b/tools/perf/bench/synthesize.c
+index b2924e3181dc..05f7c923c745 100644
+--- a/tools/perf/bench/synthesize.c
++++ b/tools/perf/bench/synthesize.c
+@@ -117,7 +117,7 @@ static int run_single_threaded(void)
+ 	int err;
+ 
+ 	perf_set_singlethreaded();
+-	session = perf_session__new(NULL, false, NULL);
++	session = perf_session__new(NULL, NULL);
+ 	if (IS_ERR(session)) {
+ 		pr_err("Session creation failed.\n");
+ 		return PTR_ERR(session);
+@@ -161,7 +161,7 @@ static int do_run_multi_threaded(struct target *target,
+ 	init_stats(&time_stats);
+ 	init_stats(&event_stats);
+ 	for (i = 0; i < multi_iterations; i++) {
+-		session = perf_session__new(NULL, false, NULL);
++		session = perf_session__new(NULL, NULL);
+ 		if (IS_ERR(session))
+ 			return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+index cebb861be3e3..05eb098cb0e3 100644
+--- a/tools/perf/builtin-annotate.c
++++ b/tools/perf/builtin-annotate.c
+@@ -596,7 +596,7 @@ int cmd_annotate(int argc, const char **argv)
+ 
+ 	data.path = input_name;
+ 
+-	annotate.session = perf_session__new(&data, false, &annotate.tool);
++	annotate.session = perf_session__new(&data, &annotate.tool);
+ 	if (IS_ERR(annotate.session))
+ 		return PTR_ERR(annotate.session);
+ 
+diff --git a/tools/perf/builtin-buildid-cache.c b/tools/perf/builtin-buildid-cache.c
+index ecd0d3cb6f5c..0db3cfc04c47 100644
+--- a/tools/perf/builtin-buildid-cache.c
++++ b/tools/perf/builtin-buildid-cache.c
+@@ -443,7 +443,7 @@ int cmd_buildid_cache(int argc, const char **argv)
+ 		data.path  = missing_filename;
+ 		data.force = force;
+ 
+-		session = perf_session__new(&data, false, NULL);
++		session = perf_session__new(&data, NULL);
+ 		if (IS_ERR(session))
+ 			return PTR_ERR(session);
+ 	}
+diff --git a/tools/perf/builtin-buildid-list.c b/tools/perf/builtin-buildid-list.c
+index 833405c27dae..cebadd632234 100644
+--- a/tools/perf/builtin-buildid-list.c
++++ b/tools/perf/builtin-buildid-list.c
+@@ -65,7 +65,7 @@ static int perf_session__list_build_ids(bool force, bool with_hits)
+ 	if (filename__fprintf_build_id(input_name, stdout) > 0)
+ 		goto out;
+ 
+-	session = perf_session__new(&data, false, &build_id__mark_dso_hit_ops);
++	session = perf_session__new(&data, &build_id__mark_dso_hit_ops);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+index 6dea37f141b2..a812f32cf5d9 100644
+--- a/tools/perf/builtin-c2c.c
++++ b/tools/perf/builtin-c2c.c
+@@ -2790,7 +2790,7 @@ static int perf_c2c__report(int argc, const char **argv)
+ 		goto out;
+ 	}
+ 
+-	session = perf_session__new(&data, 0, &c2c.tool);
++	session = perf_session__new(&data, &c2c.tool);
+ 	if (IS_ERR(session)) {
+ 		err = PTR_ERR(session);
+ 		pr_debug("Error creating perf session\n");
+diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
+index 80450c0e8f36..d925096dd7f0 100644
+--- a/tools/perf/builtin-diff.c
++++ b/tools/perf/builtin-diff.c
+@@ -1156,7 +1156,7 @@ static int check_file_brstack(void)
+ 	int i;
+ 
+ 	data__for_each_file(i, d) {
+-		d->session = perf_session__new(&d->data, false, &pdiff.tool);
++		d->session = perf_session__new(&d->data, &pdiff.tool);
+ 		if (IS_ERR(d->session)) {
+ 			pr_err("Failed to open %s\n", d->data.path);
+ 			return PTR_ERR(d->session);
+@@ -1188,7 +1188,7 @@ static int __cmd_diff(void)
+ 	ret = -EINVAL;
+ 
+ 	data__for_each_file(i, d) {
+-		d->session = perf_session__new(&d->data, false, &pdiff.tool);
++		d->session = perf_session__new(&d->data, &pdiff.tool);
+ 		if (IS_ERR(d->session)) {
+ 			ret = PTR_ERR(d->session);
+ 			pr_err("Failed to open %s\n", d->data.path);
+diff --git a/tools/perf/builtin-evlist.c b/tools/perf/builtin-evlist.c
+index 4617b32c9c97..b1076177c37f 100644
+--- a/tools/perf/builtin-evlist.c
++++ b/tools/perf/builtin-evlist.c
+@@ -42,7 +42,7 @@ static int __cmd_evlist(const char *file_name, struct perf_attr_details *details
+ 	};
+ 	bool has_tracepoint = false;
+ 
+-	session = perf_session__new(&data, 0, &tool);
++	session = perf_session__new(&data, &tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+index 5d6f583e2cd3..3cffb12f01be 100644
+--- a/tools/perf/builtin-inject.c
++++ b/tools/perf/builtin-inject.c
+@@ -991,7 +991,8 @@ int cmd_inject(int argc, const char **argv)
+ 	}
+ 
+ 	data.path = inject.input_name;
+-	inject.session = perf_session__new(&data, inject.output.is_pipe, &inject.tool);
++	inject.session = __perf_session__new(&data, inject.output.is_pipe,
++					     &inject.tool);
+ 	if (IS_ERR(inject.session))
+ 		return PTR_ERR(inject.session);
+ 
+diff --git a/tools/perf/builtin-kmem.c b/tools/perf/builtin-kmem.c
+index 0062445e8ead..da03a341c63c 100644
+--- a/tools/perf/builtin-kmem.c
++++ b/tools/perf/builtin-kmem.c
+@@ -1953,7 +1953,7 @@ int cmd_kmem(int argc, const char **argv)
+ 
+ 	data.path = input_name;
+ 
+-	kmem_session = session = perf_session__new(&data, false, &perf_kmem);
++	kmem_session = session = perf_session__new(&data, &perf_kmem);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-kvm.c b/tools/perf/builtin-kvm.c
+index 1105c9e40a80..aa1b127ffb5b 100644
+--- a/tools/perf/builtin-kvm.c
++++ b/tools/perf/builtin-kvm.c
+@@ -1093,7 +1093,7 @@ static int read_events(struct perf_kvm_stat *kvm)
+ 	};
+ 
+ 	kvm->tool = eops;
+-	kvm->session = perf_session__new(&file, false, &kvm->tool);
++	kvm->session = perf_session__new(&file, &kvm->tool);
+ 	if (IS_ERR(kvm->session)) {
+ 		pr_err("Initializing perf session failed\n");
+ 		return PTR_ERR(kvm->session);
+@@ -1447,7 +1447,7 @@ static int kvm_events_live(struct perf_kvm_stat *kvm,
+ 	/*
+ 	 * perf session
+ 	 */
+-	kvm->session = perf_session__new(&data, false, &kvm->tool);
++	kvm->session = perf_session__new(&data, &kvm->tool);
+ 	if (IS_ERR(kvm->session)) {
+ 		err = PTR_ERR(kvm->session);
+ 		goto out;
+diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+index 01326e370009..d70131b7b1b1 100644
+--- a/tools/perf/builtin-lock.c
++++ b/tools/perf/builtin-lock.c
+@@ -868,7 +868,7 @@ static int __cmd_report(bool display_info)
+ 		.force = force,
+ 	};
+ 
+-	session = perf_session__new(&data, false, &eops);
++	session = perf_session__new(&data, &eops);
+ 	if (IS_ERR(session)) {
+ 		pr_err("Initializing perf session failed\n");
+ 		return PTR_ERR(session);
+diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
+index 0fd2a74dbaca..fcf65a59bea2 100644
+--- a/tools/perf/builtin-mem.c
++++ b/tools/perf/builtin-mem.c
+@@ -271,8 +271,7 @@ static int report_raw_events(struct perf_mem *mem)
+ 		.force = mem->force,
+ 	};
+ 	int ret;
+-	struct perf_session *session = perf_session__new(&data, false,
+-							 &mem->tool);
++	struct perf_session *session = perf_session__new(&data, &mem->tool);
+ 
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 671a21c9ee4d..472cd12f10c6 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1681,7 +1681,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		signal(SIGUSR2, SIG_IGN);
+ 	}
+ 
+-	session = perf_session__new(data, false, tool);
++	session = perf_session__new(data, tool);
+ 	if (IS_ERR(session)) {
+ 		pr_err("Perf session creation failed.\n");
+ 		return PTR_ERR(session);
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index 6386af6a2612..7b36afac7c26 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -1405,7 +1405,7 @@ int cmd_report(int argc, const char **argv)
+ 	data.force = symbol_conf.force;
+ 
+ repeat:
+-	session = perf_session__new(&data, false, &report.tool);
++	session = perf_session__new(&data, &report.tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+index 954ce2f594e9..d4ffc331aacb 100644
+--- a/tools/perf/builtin-sched.c
++++ b/tools/perf/builtin-sched.c
+@@ -1804,7 +1804,7 @@ static int perf_sched__read_events(struct perf_sched *sched)
+ 	};
+ 	int rc = -1;
+ 
+-	session = perf_session__new(&data, false, &sched->tool);
++	session = perf_session__new(&data, &sched->tool);
+ 	if (IS_ERR(session)) {
+ 		pr_debug("Error creating perf session");
+ 		return PTR_ERR(session);
+@@ -3011,7 +3011,7 @@ static int perf_sched__timehist(struct perf_sched *sched)
+ 
+ 	symbol_conf.use_callchain = sched->show_callchain;
+ 
+-	session = perf_session__new(&data, false, &sched->tool);
++	session = perf_session__new(&data, &sched->tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 8c03a9862872..f777d7dd2037 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -3288,7 +3288,7 @@ int find_scripts(char **scripts_array, char **scripts_path_array, int num,
+ 	char *temp;
+ 	int i = 0;
+ 
+-	session = perf_session__new(&data, false, NULL);
++	session = perf_session__new(&data, NULL);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+@@ -4001,7 +4001,7 @@ int cmd_script(int argc, const char **argv)
+ 		use_browser = 0;
+ 	}
+ 
+-	session = perf_session__new(&data, false, &script.tool);
++	session = perf_session__new(&data, &script.tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index d25cb8088e8c..2c8c1dc7b095 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -1996,7 +1996,7 @@ static int __cmd_record(int argc, const char **argv)
+ 		return -1;
+ 	}
+ 
+-	session = perf_session__new(data, false, NULL);
++	session = perf_session__new(data, NULL);
+ 	if (IS_ERR(session)) {
+ 		pr_err("Perf session creation failed\n");
+ 		return PTR_ERR(session);
+@@ -2168,7 +2168,7 @@ static int __cmd_report(int argc, const char **argv)
+ 	perf_stat.data.path = input_name;
+ 	perf_stat.data.mode = PERF_DATA_MODE_READ;
+ 
+-	session = perf_session__new(&perf_stat.data, false, &perf_stat.tool);
++	session = perf_session__new(&perf_stat.data, &perf_stat.tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-timechart.c b/tools/perf/builtin-timechart.c
+index 4e380e7b5230..43bf4d67edb0 100644
+--- a/tools/perf/builtin-timechart.c
++++ b/tools/perf/builtin-timechart.c
+@@ -1598,8 +1598,7 @@ static int __cmd_timechart(struct timechart *tchart, const char *output_name)
+ 		.force = tchart->force,
+ 	};
+ 
+-	struct perf_session *session = perf_session__new(&data, false,
+-							 &tchart->tool);
++	struct perf_session *session = perf_session__new(&data, &tchart->tool);
+ 	int ret = -EINVAL;
+ 
+ 	if (IS_ERR(session))
+diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+index 02f8bb5dbc0f..a3ae9176a83e 100644
+--- a/tools/perf/builtin-top.c
++++ b/tools/perf/builtin-top.c
+@@ -1740,7 +1740,7 @@ int cmd_top(int argc, const char **argv)
+ 		signal(SIGWINCH, winch_sig);
+ 	}
+ 
+-	top.session = perf_session__new(NULL, false, NULL);
++	top.session = perf_session__new(NULL, NULL);
+ 	if (IS_ERR(top.session)) {
+ 		status = PTR_ERR(top.session);
+ 		goto out_delete_evlist;
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 7ec18ff57fc4..f963bd61de36 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -4205,7 +4205,7 @@ static int trace__replay(struct trace *trace)
+ 	/* add tid to output */
+ 	trace->multiple_threads = true;
+ 
+-	session = perf_session__new(&data, false, &trace->tool);
++	session = perf_session__new(&data, &trace->tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
+index ec4e3b21b831..870bcc03e977 100644
+--- a/tools/perf/tests/topology.c
++++ b/tools/perf/tests/topology.c
+@@ -38,7 +38,7 @@ static int session_write_header(char *path)
+ 		.mode = PERF_DATA_MODE_WRITE,
+ 	};
+ 
+-	session = perf_session__new(&data, false, NULL);
++	session = perf_session__new(&data, NULL);
+ 	TEST_ASSERT_VAL("can't get session", !IS_ERR(session));
+ 
+ 	if (!perf_pmu__has_hybrid()) {
+@@ -76,7 +76,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+ 	int i;
+ 	struct aggr_cpu_id id;
+ 
+-	session = perf_session__new(&data, false, NULL);
++	session = perf_session__new(&data, NULL);
+ 	TEST_ASSERT_VAL("can't get session", !IS_ERR(session));
+ 	cpu__setup_cpunode_map();
+ 
+diff --git a/tools/perf/util/data-convert-bt.c b/tools/perf/util/data-convert-bt.c
+index cace349fb700..aa862a26d95c 100644
+--- a/tools/perf/util/data-convert-bt.c
++++ b/tools/perf/util/data-convert-bt.c
+@@ -1634,7 +1634,7 @@ int bt_convert__perf2ctf(const char *input, const char *path,
+ 
+ 	err = -1;
+ 	/* perf.data session */
+-	session = perf_session__new(&data, 0, &c.tool);
++	session = perf_session__new(&data, &c.tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/util/data-convert-json.c b/tools/perf/util/data-convert-json.c
+index 355cd1948bdf..f1ab6edba446 100644
+--- a/tools/perf/util/data-convert-json.c
++++ b/tools/perf/util/data-convert-json.c
+@@ -334,7 +334,7 @@ int bt_convert__perf2json(const char *input_name, const char *output_name,
+ 		goto err;
+ 	}
+ 
+-	session = perf_session__new(&data, false, &c.tool);
++	session = perf_session__new(&data, &c.tool);
+ 	if (IS_ERR(session)) {
+ 		fprintf(stderr, "Error creating perf session!\n");
+ 		goto err_fclose;
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index e9c929a39973..f76b18e3c061 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -185,8 +185,9 @@ static int ordered_events__deliver_event(struct ordered_events *oe,
+ 					   session->tool, event->file_offset);
+ }
+ 
+-struct perf_session *perf_session__new(struct perf_data *data,
+-				       bool repipe, struct perf_tool *tool)
++struct perf_session *__perf_session__new(struct perf_data *data,
++					 bool repipe,
++					 struct perf_tool *tool)
+ {
+ 	int ret = -ENOMEM;
+ 	struct perf_session *session = zalloc(sizeof(*session));
+diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
+index e31ba4c92a6c..9d19d2a918c6 100644
+--- a/tools/perf/util/session.h
++++ b/tools/perf/util/session.h
+@@ -54,8 +54,16 @@ struct decomp {
+ 
+ struct perf_tool;
+ 
+-struct perf_session *perf_session__new(struct perf_data *data,
+-				       bool repipe, struct perf_tool *tool);
++struct perf_session *__perf_session__new(struct perf_data *data,
++					 bool repipe,
++					 struct perf_tool *tool);
++
++static inline struct perf_session *perf_session__new(struct perf_data *data,
++						     struct perf_tool *tool)
++{
++	return __perf_session__new(data, false, tool);
++}
++
+ void perf_session__delete(struct perf_session *session);
+ 
+ void perf_event_header__bswap(struct perf_event_header *hdr);
+-- 
+2.32.0.402.g57bb445576-goog
 
-> - Disable A64FX's HPC tag address override function. We only set each
->    core's default sector value according to closid(default sector ID=CLOSID).
-> - No L1 cache control since L1 cache is not shared for cores. It is not
->    necessary to add L1 cache interface for schemata file.
-> - No need to update schemata interface. Resctrl's L2 cache interface
->    (L2: <cache_id0> = <cbm>; <cache_id1> = <cbm>; ...)
->    will be used as it is. However, on A64FX, <cbm> does not indicate
->    the position of cache partition, only indicate the number of
->    cache ways (size).
-
- From what I understand the upcoming MPAM support would make this easier 
-to do.
-
-> 
-> This is the smallest start of incorporating sector cache function into
-> resctrl. I will consider if we could add more sector cache features
-> into resctrl (e.g. selecting different sectors from one task) after
-> finishing this.
-> 
-> (some questions are below)
-> 
->>>
->>>> On 5/17/2021 1:31 AM, tan.shaopeng@fujitsu.com wrote:
->>
->>> --------
->>> A64FX NUMA-PE-Cache Architecture:
->>> NUMA0:
->>>     PE0:
->>>       L1sector0,L1sector1,L1sector2,L1sector3
->>>     PE1:
->>>       L1sector0,L1sector1,L1sector2,L1sector3
->>>     ...
->>>     PE11:
->>>       L1sector0,L1sector1,L1sector2,L1sector3
->>>
->>>     L2sector0,1/L2sector2,3
->>> NUMA1:
->>>     PE0:
->>>       L1sector0,L1sector1,L1sector2,L1sector3
->>>     ...
->>>     PE11:
->>>       L1sector0,L1sector1,L1sector2,L1sector3
->>>
->>>     L2sector0,1/L2sector2,3
->>> NUMA2:
->>>     ...
->>> NUMA3:
->>>     ...
->>> --------
->>> In A64FX processor, one L1 sector cache capacity setting register is
->>> only for one PE and not shared among PEs. L2 sector cache maximum
->>> capacity setting registers are shared among PEs in same NUMA, and it
->>> is to be noted that changing these registers in one PE influences other PE.
->>
->> Understood. cache affinity is familiar to resctrl. When a CPU becomes online it
->> is discovered which caches/resources it has affinity to.
->> Resources then have CPU mask associated with them to indicate on which
->> CPU a register could be changed to configure the resource/cache. See
->> domain_add_cpu() and struct rdt_domain.
-> 
-> Is the following understanding correct?
-> Struct rdt_domain is a group of online CPUs that share a same cache
-> instance. When a CPU is online(resctrl initialization),
-> the domain_add_cpu() function add the online cpu to corresponding
-> rdt_domain (in rdt_resource:domains list). For example, if there are
-> 4 L2 cache instances, then there will be 4 rdt_domain in the list and
-> each CPU is assigned to corresponding rdt_domain.
-
-Correct.
-
-> 
-> The set values of cache/memory are stored in the *ctrl_val array
-> (indexed by CLOSID) of struct rdt_domain. For example, in CAT function,
-> the CBM value of CLOSID=x is stored in ctrl_val [x].
-> When we create a resource group and write set values of cache into
-> the schemata file, the update_domains() function updates the CBM value
-> to ctrl_val [CLOSID = resource group ID] in rdt_domain and updates the
-> CBM value to CBM register(MSR_IA32_Lx_CBM_BASE).
-
-For the most part, yes. The only part that I would like to clarify is 
-that each CLOSID is represented by a different register, which register 
-is updated depends on which CLOSID is changed. Could be written as 
-MSR_IA32_L2_CBM_CLOSID/MSR_IA32_L3_CBM_CLOSID. The "BASE" register is 
-CLOSID 0, the default, and the other registers are determined as offset 
-from it.
-
-Also, the registers have the scope of the resource/cache. So, for 
-example, if CPU 0 and CPU 1 share a L2 cache then it is only necessary 
-to update the register on one of these CPUs.
-
-> 
->>> The number of ways for L2 Sector ID (0,1 or 2,3) can be set through
->>> any PEs in same NUMA. The sector ID 0,1 and 2,3 are not available at
->>> the same time in same NUMA.
->>>
->>>
->>> I think, in your idea, a resource group will be created for each sector ID.
->>> (> "sectors" could be considered the same as the resctrl "classes of
->>> service") Then, an example of resource group is created as follows.
->>> ・ L1: NUMAX-PEY-L1sector0 (X = 0,1,2,3.Y = 0,1,2 ... 11),
->>> ・ L2: NUMAX-L2sector0 (X = 0,1,2,3)
->>>
->>> In this example, sector with same ID(0) of all PEs is allocated to
->>> resource group. The L1D caches are numbered from
->>> NUMA0_PE0-L1sector0(0) to NUMA4_PE11-L1sector0(47) and the L2
->> caches
->>> numbered from
->>> NUMA0-L2sector0(0) to NUM4-L2sector0(3).
->>> (NUMA number X is from 0-4, PE number Y is from 0-11)
->>> (1) The number of ways of NUMAX-PEY-L1sector0 can be set independently
->>>       for each PEs (0-47). When run a task on this resource group,
->>>       we cannot control on which PE the task is running on and how many
->>>       cache ways the task is using.
->>
->> resctrl does not control the affinity on which PE/CPU a task is run.
->> resctrl is an interface with which to configure how resources are allocated on
->> the system. resctrl could thus provide interface with which each sector of each
->> cache instance is assigned a number of cache ways.
->> resctrl also provides an interface to assign a task with a class of service (sector
->> id?). Through this the task obtains access to all resources that is allocated to
->> the particular class of service (sector id?). Depending on which CPU the task is
->> running it may indeed experience different performance if the sector id it is
->> running with does not have the same allocations on all cache instances. The
->> affinity of the task needs to be managed separately using for example taskset.
->> Please see Documentation/x86/resctrl.rst "Examples for RDT allocation usage"
-> 
-> In resctrl_sched_in(), there are comments as follow:
->    /*
->   * If this task has a closid/rmid assigned, use it.
->    * Else use the closid/rmid assigned to this cpu.
->    */
-> I thought when we write PID to tasks file, this task (PID) will only
-> run on the CPUs which are specified in cpus file in the same resource
-> group. So, the task_struct's closid and cpu's closid is the same.
-> When task's closid is different from cpu's closid?
-
-resctrl does not manage the affinity of tasks.
-
-Tony recently summarized the cpus file very well to me: The actual 
-semantics of the CPUs file is to associate a CLOSid for a task that is 
-in the default resctrl group – while it is running on one of the listed 
-CPUs.
-
-To answer your question the task's closid could be different from the 
-CPU's closid if the task's closid is 0 while it is running on a CPU that 
-is in the cpus file of a non-default resource group.
-
-You can see a summary of the decision flow in section "Resource 
-allocation rules" in Documentation/x86/resctrl.rst
-
-The "cpus" file was created in support of the real-time use cases. In 
-these use cases a group of CPUs can be designated as supporting the 
-real-time work and with their own resource group and assigned the needed 
-resources to do the real-time work. A real-time task can then be started 
-with affinity to those CPUs and dynamically any kernel threads (that 
-will be started on the same CPU) doing work on behalf of this task would 
-be able to use the resources set aside for the real-time work.
-
-Reinette
