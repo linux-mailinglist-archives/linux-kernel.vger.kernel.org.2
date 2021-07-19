@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3F23CE047
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590D73CDFBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346347AbhGSPOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:14:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40440 "EHLO mail.kernel.org"
+        id S1345376AbhGSPLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:11:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344180AbhGSOsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344187AbhGSOsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:48:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 417CB613FE;
-        Mon, 19 Jul 2021 15:26:48 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06FA261400;
+        Mon, 19 Jul 2021 15:26:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708408;
-        bh=9ToCizXFsijnGuvutrVvkbzrt0UaohYIt/PO8Y92xL0=;
+        s=korg; t=1626708411;
+        bh=QBx3US9L4/cfch+MN3nGUY6pCxkjbdq4oXbetkGVI4k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KA80EmyhFLhm+PBNeaP3TqyeX7NrNsMHd28cijuCmR2eGaVALEUtME63l8EB7ILKC
-         zSlfQfZwCTFBc2zoooPH42In9CfTUwP+mqD4WgM0W0iEetlNRMWbvwPwo81wUM1/FU
-         XEp3coC8wmHVYg33wAEcKnY1nH3HykMKSuJ1x++A=
+        b=2II7kdsQ/h/c20aXYEjOb4ADFxfRY4EiGE0iyhzexzOzDQeo4oP9TxojI3dY4VLP7
+         MjibQLtP0KHZBQCyLzN7II7dr8mk2t2tdvPb43gWBWVOlCR0sjg/txeop+XptcCBTc
+         EctUELuxfta/d+yqbIN2Ni0TlSxJ1FQDpltyNA5M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 300/315] ARM: dts: exynos: fix PWM LED max brightness on Odroid XU/XU3
-Date:   Mon, 19 Jul 2021 16:53:09 +0200
-Message-Id: <20210719144953.334283150@linuxfoundation.org>
+Subject: [PATCH 4.14 301/315] ARM: dts: exynos: fix PWM LED max brightness on Odroid XU4
+Date:   Mon, 19 Jul 2021 16:53:10 +0200
+Message-Id: <20210719144953.365328822@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -42,35 +42,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 75121e1dc9fe4def41e63d57f6a53749b88006ed ]
+[ Upstream commit fd2f1717966535b7d0b6fe45cf0d79e94330da5f ]
 
-There is no "max_brightness" property.  This brings the intentional
-brightness reduce of green LED and dtschema checks as well:
+There is no "max_brightness" property as pointed out by dtschema:
 
-  arch/arm/boot/dts/exynos5410-odroidxu.dt.yaml: led-controller-1: led-1: 'max-brightness' is a required property
+  arch/arm/boot/dts/exynos5422-odroidxu4.dt.yaml: led-controller: led-1: 'max-brightness' is a required property
 
-Fixes: 719f39fec586 ("ARM: dts: exynos5422-odroidxu3: Hook up PWM and use it for LEDs")
+Fixes: 6658356014cb ("ARM: dts: Add support Odroid XU4 board for exynos5422-odroidxu4")
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210505135941.59898-3-krzysztof.kozlowski@canonical.com
+Link: https://lore.kernel.org/r/20210505135941.59898-5-krzysztof.kozlowski@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/exynos5422-odroidxu4.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi b/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
-index 0ed30206625c..f547f67f2783 100644
---- a/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
-+++ b/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
-@@ -25,7 +25,7 @@
- 			 * Green LED is much brighter than the others
- 			 * so limit its max brightness
- 			 */
--			max_brightness = <127>;
-+			max-brightness = <127>;
- 			linux,default-trigger = "mmc0";
- 		};
- 
-@@ -33,7 +33,7 @@
+diff --git a/arch/arm/boot/dts/exynos5422-odroidxu4.dts b/arch/arm/boot/dts/exynos5422-odroidxu4.dts
+index 2faf88627a48..b45e2a0c3908 100644
+--- a/arch/arm/boot/dts/exynos5422-odroidxu4.dts
++++ b/arch/arm/boot/dts/exynos5422-odroidxu4.dts
+@@ -26,7 +26,7 @@
  			label = "blue:heartbeat";
  			pwms = <&pwm 2 2000000 0>;
  			pwm-names = "pwm2";
