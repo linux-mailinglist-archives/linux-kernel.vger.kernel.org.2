@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CA83CE499
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579703CE494
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348838AbhGSPob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:44:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53370 "EHLO mail.kernel.org"
+        id S1348629AbhGSPoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:44:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245261AbhGSO64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:58:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5169D61244;
-        Mon, 19 Jul 2021 15:36:29 +0000 (UTC)
+        id S1343562AbhGSO7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC4F613FD;
+        Mon, 19 Jul 2021 15:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708989;
-        bh=uDEsRfUXqu5O5OORtcgIp9bYL4asVcFiUAnOQaB2Wio=;
+        s=korg; t=1626709013;
+        bh=ekly2r3/9OhVJ9p26++FHPxq7FNSFnXO8gg1d7hT8Xk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zETscRXkDzqvGJk0U9yvDxFq8u7Ymo7aW+UPpl2rHgQFUsCjTiGLZyhIcfMDZNq5i
-         XYaAulLAcBz/25PqyfQHODb83sOZHjWKkY6abqXwHQ0GuiYNi6qiXveiyznTk2gUoA
-         3G5dcz8IrDBFHz+rP17LhSxmjjFoXIxziTCbqPrw=
+        b=ixK4zwIZbgPQXfKQoJGVbW3nlKqjKs+pl8ZFFz2FIULQHQ9Sh6Z3fVcgsStN1PrM0
+         xAVf7efRlXYiaGeoi9LDJ6hXvFrPqGwVI0M6A9NyBdiT9NqFiP5ll16mCpNzvdqBS/
+         3DLUNDBqmIpjacm73V/D6isRZIk67S6PYN1U5SP4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 183/421] iio: light: tcs3472: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 19 Jul 2021 16:49:54 +0200
-Message-Id: <20210719144952.772175547@linuxfoundation.org>
+Subject: [PATCH 4.19 186/421] ASoC: rsnd: tidyup loop on rsnd_adg_clk_query()
+Date:   Mon, 19 Jul 2021 16:49:57 +0200
+Message-Id: <20210719144952.872823027@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,59 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-[ Upstream commit df2f37cffd6ed486d613e7ee22aadc8e49ae2dd3 ]
+[ Upstream commit cf9d5c6619fadfc41cf8f5154cb990cc38e3da85 ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+commit 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate() under
+atomic context") used saved clk_rate, thus for_each_rsnd_clk()
+is no longer needed. This patch fixes it.
 
-Found during an audit of all calls of uses of
-iio_push_to_buffers_with_timestamp().
-
-Fixes tag is not strictly accurate as prior to that patch there was
-potentially an unaligned write.  However, any backport past there will
-need to be done manually.
-
-Fixes: 0624bf847dd0 ("iio:tcs3472: Use iio_push_to_buffers_with_timestamp()")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-20-jic23@kernel.org
+Fixes: 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate() under atomic context")
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87v978oe2u.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/light/tcs3472.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/adg.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/iio/light/tcs3472.c b/drivers/iio/light/tcs3472.c
-index 1995cc5cd732..82204414c7a1 100644
---- a/drivers/iio/light/tcs3472.c
-+++ b/drivers/iio/light/tcs3472.c
-@@ -67,7 +67,11 @@ struct tcs3472_data {
- 	u8 control;
- 	u8 atime;
- 	u8 apers;
--	u16 buffer[8]; /* 4 16-bit channels + 64-bit timestamp */
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		u16 chans[4];
-+		s64 timestamp __aligned(8);
-+	} scan;
- };
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 549a137878a6..dc08260031ee 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -318,7 +318,6 @@ static void rsnd_adg_set_ssi_clk(struct rsnd_mod *ssi_mod, u32 val)
+ int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate)
+ {
+ 	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
+-	struct clk *clk;
+ 	int i;
+ 	int sel_table[] = {
+ 		[CLKA] = 0x1,
+@@ -331,10 +330,9 @@ int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate)
+ 	 * find suitable clock from
+ 	 * AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC/AUDIO_CLKI.
+ 	 */
+-	for_each_rsnd_clk(clk, adg, i) {
++	for (i = 0; i < CLKMAX; i++)
+ 		if (rate == adg->clk_rate[i])
+ 			return sel_table[i];
+-	}
  
- static const struct iio_event_spec tcs3472_events[] = {
-@@ -389,10 +393,10 @@ static irqreturn_t tcs3472_trigger_handler(int irq, void *p)
- 		if (ret < 0)
- 			goto done;
- 
--		data->buffer[j++] = ret;
-+		data->scan.chans[j++] = ret;
- 	}
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 		iio_get_time_ns(indio_dev));
- 
- done:
+ 	/*
+ 	 * find divided clock from BRGA/BRGB
 -- 
 2.30.2
 
