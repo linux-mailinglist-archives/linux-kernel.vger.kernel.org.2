@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363603CEA44
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100D83CE9E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354651AbhGSRKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:10:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57568 "EHLO mail.kernel.org"
+        id S1350528AbhGSRDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:03:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347672AbhGSPfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1347661AbhGSPfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:35:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC061613DF;
-        Mon, 19 Jul 2021 16:12:43 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 779FE61483;
+        Mon, 19 Jul 2021 16:12:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711164;
-        bh=nmDQb14vqsWx45S6KLOXM72coRqCzzmh9BgKba6W3uY=;
+        s=korg; t=1626711167;
+        bh=FimqVhx3Nl9CSY/B93ae4Yh6WUKzNqLoNA2K8FvVq+0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ot/xvJFbFGZ8f8ha2UwiGxOLb67CKBMPHlWcPzbLbVa3ZnmeZVAkM10b/UWIHDS+5
-         J0tFNt4Hl7itQlLy8HHhAPEMcAXi2/9HoF8Jr8i9m4vPtgwvSlNTCLew+l+AvZDea9
-         a2KF7QUklu4cI11nwt9P279Ucj0uFbgxHxCUQVwg=
+        b=rPI7XO40S3HRkDl3YPkloEFL8Qz71iiCEDvycEFKGhTC/V2VC7a999clAYn0QT7gl
+         TT4cXusz7nUcNWfpMjKlMVG4z9HH4znbjEpCvhF0s8nNlLcarP7uZxnpXaEYIFI/oD
+         XzcLhhtrS9fVKQjguA1QPd8t7L2cp1RPWVvi24Us=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 252/351] vdp/mlx5: Fix setting the correct dma_device
-Date:   Mon, 19 Jul 2021 16:53:18 +0200
-Message-Id: <20210719144953.290541145@linuxfoundation.org>
+Subject: [PATCH 5.13 253/351] virtio_net: move tx vq operation under tx queue lock
+Date:   Mon, 19 Jul 2021 16:53:19 +0200
+Message-Id: <20210719144953.320953261@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -41,79 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eli Cohen <elic@nvidia.com>
+From: Michael S. Tsirkin <mst@redhat.com>
 
-[ Upstream commit 7d23dcdf213c2e5f097eb7eec3148c26eb01d59f ]
+[ Upstream commit 5a2f966d0f3fa0ef6dada7ab9eda74cacee96b8a ]
 
-Before SF support was introduced, the DMA device was equal to
-mdev->device which was in essence equal to pdev->dev.
+It's unsafe to operate a vq from multiple threads.
+Unfortunately this is exactly what we do when invoking
+clean tx poll from rx napi.
+Same happens with napi-tx even without the
+opportunistic cleaning from the receive interrupt: that races
+with processing the vq in start_xmit.
 
-With SF introduction this is no longer true. It has already been
-handled for vhost_vdpa since the reference to the dma device can from
-within mlx5_vdpa. With virtio_vdpa this broke. To fix this we set the
-real dma device when initializing the device.
+As a fix move everything that deals with the vq to under tx lock.
 
-In addition, for the sake of consistency, previous references in the
-code to the dma device are changed to vdev->dma_dev.
-
-Fixes: d13a15d544ce5 ("vdpa/mlx5: Use the correct dma device when registering memory")
-Signed-off-by: Eli Cohen <elic@nvidia.com>
-Link: https://lore.kernel.org/r/20210606053150.170489-1-elic@nvidia.com
+Fixes: b92f1e6751a6 ("virtio-net: transmit napi")
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vdpa/mlx5/core/mr.c       | 9 ++-------
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
- 2 files changed, 3 insertions(+), 8 deletions(-)
+ drivers/net/virtio_net.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-index 800cfd1967ad..cfa56a58b271 100644
---- a/drivers/vdpa/mlx5/core/mr.c
-+++ b/drivers/vdpa/mlx5/core/mr.c
-@@ -219,11 +219,6 @@ static void destroy_indirect_key(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_m
- 	mlx5_vdpa_destroy_mkey(mvdev, &mkey->mkey);
- }
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index af4e04beb03a..6af227964413 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -1581,6 +1581,8 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+ 	struct virtnet_info *vi = sq->vq->vdev->priv;
+ 	unsigned int index = vq2txq(sq->vq);
+ 	struct netdev_queue *txq;
++	int opaque;
++	bool done;
  
--static struct device *get_dma_device(struct mlx5_vdpa_dev *mvdev)
--{
--	return &mvdev->mdev->pdev->dev;
--}
--
- static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr,
- 			 struct vhost_iotlb *iotlb)
- {
-@@ -239,7 +234,7 @@ static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr
- 	u64 pa;
- 	u64 paend;
- 	struct scatterlist *sg;
--	struct device *dma = get_dma_device(mvdev);
-+	struct device *dma = mvdev->vdev.dma_dev;
+ 	if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
+ 		/* We don't need to enable cb for XDP */
+@@ -1590,10 +1592,28 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
  
- 	for (map = vhost_iotlb_itree_first(iotlb, mr->start, mr->end - 1);
- 	     map; map = vhost_iotlb_itree_next(map, start, mr->end - 1)) {
-@@ -298,7 +293,7 @@ err_map:
+ 	txq = netdev_get_tx_queue(vi->dev, index);
+ 	__netif_tx_lock(txq, raw_smp_processor_id());
++	virtqueue_disable_cb(sq->vq);
+ 	free_old_xmit_skbs(sq, true);
++
++	opaque = virtqueue_enable_cb_prepare(sq->vq);
++
++	done = napi_complete_done(napi, 0);
++
++	if (!done)
++		virtqueue_disable_cb(sq->vq);
++
+ 	__netif_tx_unlock(txq);
  
- static void unmap_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr)
- {
--	struct device *dma = get_dma_device(mvdev);
-+	struct device *dma = mvdev->vdev.dma_dev;
+-	virtqueue_napi_complete(napi, sq->vq, 0);
++	if (done) {
++		if (unlikely(virtqueue_poll(sq->vq, opaque))) {
++			if (napi_schedule_prep(napi)) {
++				__netif_tx_lock(txq, raw_smp_processor_id());
++				virtqueue_disable_cb(sq->vq);
++				__netif_tx_unlock(txq);
++				__napi_schedule(napi);
++			}
++		}
++	}
  
- 	destroy_direct_mr(mvdev, mr);
- 	dma_unmap_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 01eb6c100d2d..2b74e34fbdec 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -2032,7 +2032,7 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
- 			goto err_mtu;
- 	}
- 
--	mvdev->vdev.dma_dev = mdev->device;
-+	mvdev->vdev.dma_dev = &mdev->pdev->dev;
- 	err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
- 	if (err)
- 		goto err_mpfs;
+ 	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
+ 		netif_tx_wake_queue(txq);
 -- 
 2.30.2
 
