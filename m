@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74C03CEAB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C153CE927
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377774AbhGSRQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:16:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37966 "EHLO mail.kernel.org"
+        id S1357059AbhGSQvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:51:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347854AbhGSPjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C62E6120C;
-        Mon, 19 Jul 2021 16:19:20 +0000 (UTC)
+        id S1349322AbhGSP0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:26:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 609C360200;
+        Mon, 19 Jul 2021 16:07:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711561;
-        bh=IW+kRm7y3/w5PDA1gPnsPSpm83DD9zwtepBPUsz8hoI=;
+        s=korg; t=1626710830;
+        bh=ZP9KQES+HDuOGeyqR9cpbVw/7pbTbMeag+0gntsBwL4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oEdw+RQu9p0dZB3RR33r/84tV3Jx/myhLLw3XHGSGKhNtK9aMvrZn6ROGNRiQ4yS7
-         irWIkJUI2ddJ468oXmrvqntmJZfOEXMXBUXCNPGx+aUT4HbkMOvpmUwFeQJWEAdVR2
-         Cr3rsRDl5M9bpG30oR19iIozdDq4tCTY6FSHyZuU=
+        b=w2wpunK7fWWd0GtZVs46T60+11B6NdHz8wCBUITGc7vCp6m7phJ/4m1tzLhnHY6TY
+         BA0jTurchCAak0M4K6o7exVPLfZ9JaB4LDAZB7A5o0fBIqomU9kWWEJrkS48HIV8BU
+         kZYGAT6Gs9GGFZdX0KKWaqFkwgNWxnP+XzTly1dA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.12 006/292] KVM: x86/mmu: Do not apply HPA (memory encryption) mask to GPAs
-Date:   Mon, 19 Jul 2021 16:51:08 +0200
-Message-Id: <20210719144942.727723302@linuxfoundation.org>
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 123/351] s390/mem_detect: fix diag260() program check new psw handling
+Date:   Mon, 19 Jul 2021 16:51:09 +0200
+Message-Id: <20210719144948.547557005@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,111 +40,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-commit fc9bf2e087efcd81bda2e52d09616d2a1bf982a8 upstream.
+[ Upstream commit 86807f348f418a84970eebb8f9912a7eea16b497 ]
 
-Ignore "dynamic" host adjustments to the physical address mask when
-generating the masks for guest PTEs, i.e. the guest PA masks.  The host
-physical address space and guest physical address space are two different
-beasts, e.g. even though SEV's C-bit is the same bit location for both
-host and guest, disabling SME in the host (which clears shadow_me_mask)
-does not affect the guest PTE->GPA "translation".
+The __diag260() inline asm temporarily changes the program check new
+psw to redirect a potential program check on the diag instruction.
+Restoring of the program check new psw is done in C code behind the
+inline asm.
 
-For non-SEV guests, not dropping bits is the correct behavior.  Assuming
-KVM and userspace correctly enumerate/configure guest MAXPHYADDR, bits
-that are lost as collateral damage from memory encryption are treated as
-reserved bits, i.e. KVM will never get to the point where it attempts to
-generate a gfn using the affected bits.  And if userspace wants to create
-a bogus vCPU, then userspace gets to deal with the fallout of hardware
-doing odd things with bad GPAs.
+This can be problematic, especially if the function is inlined, since
+the compiler can reorder instructions in such a way that a different
+instruction, which may result in a program check, might be executed
+before the program check new psw has been restored.
 
-For SEV guests, not dropping the C-bit is technically wrong, but it's a
-moot point because KVM can't read SEV guest's page tables in any case
-since they're always encrypted.  Not to mention that the current KVM code
-is also broken since sme_me_mask does not have to be non-zero for SEV to
-be supported by KVM.  The proper fix would be to teach all of KVM to
-correctly handle guest private memory, but that's a task for the future.
+To avoid such a scenario move restoring into the inline asm. For
+consistency reasons move also saving of the original program check new
+psw into the inline asm.
 
-Fixes: d0ec49d4de90 ("kvm/x86/svm: Support Secure Memory Encryption within KVM")
-Cc: stable@vger.kernel.org
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210623230552.4027702-5-seanjc@google.com>
-[Use a new header instead of adding header guards to paging_tmpl.h. - Paolo]
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmu/mmu.c         |    2 ++
- arch/x86/kvm/mmu/paging.h      |   14 ++++++++++++++
- arch/x86/kvm/mmu/paging_tmpl.h |    4 ++--
- arch/x86/kvm/mmu/spte.h        |    6 ------
- 4 files changed, 18 insertions(+), 8 deletions(-)
- create mode 100644 arch/x86/kvm/mmu/paging.h
+ arch/s390/boot/mem_detect.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -52,6 +52,8 @@
- #include <asm/kvm_page_track.h>
- #include "trace.h"
+diff --git a/arch/s390/boot/mem_detect.c b/arch/s390/boot/mem_detect.c
+index 40168e59abd3..3f093556dc3b 100644
+--- a/arch/s390/boot/mem_detect.c
++++ b/arch/s390/boot/mem_detect.c
+@@ -69,24 +69,27 @@ static int __diag260(unsigned long rx1, unsigned long rx2)
+ 	register unsigned long _ry asm("4") = 0x10; /* storage configuration */
+ 	int rc = -1;				    /* fail */
+ 	unsigned long reg1, reg2;
+-	psw_t old = S390_lowcore.program_new_psw;
++	psw_t old;
  
-+#include "paging.h"
-+
- extern bool itlb_multihit_kvm_mitigation;
+ 	asm volatile(
++		"	mvc	0(16,%[psw_old]),0(%[psw_pgm])\n"
+ 		"	epsw	%0,%1\n"
+-		"	st	%0,%[psw_pgm]\n"
+-		"	st	%1,%[psw_pgm]+4\n"
++		"	st	%0,0(%[psw_pgm])\n"
++		"	st	%1,4(%[psw_pgm])\n"
+ 		"	larl	%0,1f\n"
+-		"	stg	%0,%[psw_pgm]+8\n"
++		"	stg	%0,8(%[psw_pgm])\n"
+ 		"	diag	%[rx],%[ry],0x260\n"
+ 		"	ipm	%[rc]\n"
+ 		"	srl	%[rc],28\n"
+-		"1:\n"
++		"1:	mvc	0(16,%[psw_pgm]),0(%[psw_old])\n"
+ 		: "=&d" (reg1), "=&a" (reg2),
+-		  [psw_pgm] "=Q" (S390_lowcore.program_new_psw),
++		  "+Q" (S390_lowcore.program_new_psw),
++		  "=Q" (old),
+ 		  [rc] "+&d" (rc), [ry] "+d" (_ry)
+-		: [rx] "d" (_rx1), "d" (_rx2)
++		: [rx] "d" (_rx1), "d" (_rx2),
++		  [psw_old] "a" (&old),
++		  [psw_pgm] "a" (&S390_lowcore.program_new_psw)
+ 		: "cc", "memory");
+-	S390_lowcore.program_new_psw = old;
+ 	return rc == 0 ? _ry : -1;
+ }
  
- static int __read_mostly nx_huge_pages = -1;
---- /dev/null
-+++ b/arch/x86/kvm/mmu/paging.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/* Shadow paging constants/helpers that don't need to be #undef'd. */
-+#ifndef __KVM_X86_PAGING_H
-+#define __KVM_X86_PAGING_H
-+
-+#define GUEST_PT64_BASE_ADDR_MASK (((1ULL << 52) - 1) & ~(u64)(PAGE_SIZE-1))
-+#define PT64_LVL_ADDR_MASK(level) \
-+	(GUEST_PT64_BASE_ADDR_MASK & ~((1ULL << (PAGE_SHIFT + (((level) - 1) \
-+						* PT64_LEVEL_BITS))) - 1))
-+#define PT64_LVL_OFFSET_MASK(level) \
-+	(GUEST_PT64_BASE_ADDR_MASK & ((1ULL << (PAGE_SHIFT + (((level) - 1) \
-+						* PT64_LEVEL_BITS))) - 1))
-+#endif /* __KVM_X86_PAGING_H */
-+
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -24,7 +24,7 @@
- 	#define pt_element_t u64
- 	#define guest_walker guest_walker64
- 	#define FNAME(name) paging##64_##name
--	#define PT_BASE_ADDR_MASK PT64_BASE_ADDR_MASK
-+	#define PT_BASE_ADDR_MASK GUEST_PT64_BASE_ADDR_MASK
- 	#define PT_LVL_ADDR_MASK(lvl) PT64_LVL_ADDR_MASK(lvl)
- 	#define PT_LVL_OFFSET_MASK(lvl) PT64_LVL_OFFSET_MASK(lvl)
- 	#define PT_INDEX(addr, level) PT64_INDEX(addr, level)
-@@ -57,7 +57,7 @@
- 	#define pt_element_t u64
- 	#define guest_walker guest_walkerEPT
- 	#define FNAME(name) ept_##name
--	#define PT_BASE_ADDR_MASK PT64_BASE_ADDR_MASK
-+	#define PT_BASE_ADDR_MASK GUEST_PT64_BASE_ADDR_MASK
- 	#define PT_LVL_ADDR_MASK(lvl) PT64_LVL_ADDR_MASK(lvl)
- 	#define PT_LVL_OFFSET_MASK(lvl) PT64_LVL_OFFSET_MASK(lvl)
- 	#define PT_INDEX(addr, level) PT64_INDEX(addr, level)
---- a/arch/x86/kvm/mmu/spte.h
-+++ b/arch/x86/kvm/mmu/spte.h
-@@ -23,12 +23,6 @@
- #else
- #define PT64_BASE_ADDR_MASK (((1ULL << 52) - 1) & ~(u64)(PAGE_SIZE-1))
- #endif
--#define PT64_LVL_ADDR_MASK(level) \
--	(PT64_BASE_ADDR_MASK & ~((1ULL << (PAGE_SHIFT + (((level) - 1) \
--						* PT64_LEVEL_BITS))) - 1))
--#define PT64_LVL_OFFSET_MASK(level) \
--	(PT64_BASE_ADDR_MASK & ((1ULL << (PAGE_SHIFT + (((level) - 1) \
--						* PT64_LEVEL_BITS))) - 1))
- 
- #define PT64_PERM_MASK (PT_PRESENT_MASK | PT_WRITABLE_MASK | shadow_user_mask \
- 			| shadow_x_mask | shadow_nx_mask | shadow_me_mask)
+-- 
+2.30.2
+
 
 
