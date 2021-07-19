@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2BA3CE9E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387443CEA50
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350426AbhGSRDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:03:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59808 "EHLO mail.kernel.org"
+        id S1352619AbhGSRLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:11:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348817AbhGSPfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1348824AbhGSPfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:35:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F29B6120A;
-        Mon, 19 Jul 2021 16:14:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93F5D6120C;
+        Mon, 19 Jul 2021 16:14:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711297;
-        bh=COFsRCR5FAvmzhR4K9/J+3u2Pp14fMhkJTNqHmAebXY=;
+        s=korg; t=1626711300;
+        bh=Dh5HL0PnJrzEXrqJWxQaBUTwW+D2eHY9QIN5n4fbosQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jHeHF+M5j7+FyjKE/KqVGJRdhEpK30+0MA3aPW77biMmwDjq6H+oU2u19DAprGKif
-         Y/Vs1awc7Bdb+gHSzfv+hmBIKO11ADbNjFmkDpUUhQrfGAHfFG7DO+5sBfG3RbQuZS
-         z0pCDuUQBd6kG/Q2OpzeRwI5F0w/wa/g5AvhLNpw=
+        b=xlpFMOofP3xeHh6wmnWRRZB5wLa3l2wewPs3vfTfn4Sz/7y8x9T4b/GLbE/iQaB27
+         iVOsD1xw0b7kolmWqQBaJ9wc/6RPhcdN2jSl1K/cGtOpZj6c9psF3eFFkFZ6xJHuzT
+         6Z6GP/LOW5fqaynmGnsfdEPr6CpLJM+8XbIrg6OE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Steev Klimaszewski <steev@kali.org>,
+        stable@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
         Stephen Boyd <swboyd@chromium.org>,
+        Jeykumar Sankaran <jsanka@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 301/351] arm64: dts: qcom: c630: Add no-hpd to DSI bridge node
-Date:   Mon, 19 Jul 2021 16:54:07 +0200
-Message-Id: <20210719144955.011324919@linuxfoundation.org>
+Subject: [PATCH 5.13 302/351] arm64: dts: qcom: sc7180: Fix sc7180-qmp-usb3-dp-phy reg sizes
+Date:   Mon, 19 Jul 2021 16:54:08 +0200
+Message-Id: <20210719144955.044337114@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -43,42 +48,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit c0dcfe6a784fdf7fcc0fdc74bfbb06e9f77de964 ]
+[ Upstream commit c1124180eb9883891ad2acef89c9d17d6190eab4 ]
 
-We should indicate that we're not using the HPD pin on this device, per
-the binding document. Otherwise if code in the future wants to enable
-HPD in the bridge when this property is absent we'll be enabling HPD
-when it isn't supposed to be used. Presumably this board isn't using hpd
-on the bridge.
+As per Dmitry Baryshkov [1]:
+a) The 2nd "reg" should be 0x3c because "Offset 0x38 is
+   USB3_DP_COM_REVISION_ID3 (not used by the current driver though)."
+b) The 3rd "reg" "is a serdes region and qmp_v3_dp_serdes_tbl contains
+   registers 0x148 and 0x154."
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Steev Klimaszewski <steev@kali.org>
-Fixes: 956e9c85f47b ("arm64: dts: qcom: c630: Define eDP bridge and panel")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/20210324231424.2890039-1-swboyd@chromium.org
+I think because the 3rd "reg" is a serdes region we should just use
+the same size as the 1st "reg"?
+
+[1] https://lore.kernel.org/r/ee5695bb-a603-0dd5-7a7f-695e919b1af1@linaro.org
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Cc: Stephen Boyd <swboyd@chromium.org>
+Cc: Jeykumar Sankaran <jsanka@codeaurora.org>
+Cc: Chandan Uddaraju <chandanu@codeaurora.org>
+Cc: Vara Reddy <varar@codeaurora.org>
+Cc: Tanmay Shah <tanmay@codeaurora.org>
+Cc: Rob Clark <robdclark@chromium.org>
+Fixes: 58fd7ae621e7 ("arm64: dts: qcom: sc7180: Update dts for DP phy inside QMP phy")
+Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Link: https://lore.kernel.org/r/20210315103836.1.I9a97120319d43b42353aeac4d348624d60687df7@changeid
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-index 140db2d5ba31..c2a709a384e9 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-@@ -376,6 +376,8 @@
- 		clocks = <&sn65dsi86_refclk>;
- 		clock-names = "refclk";
- 
-+		no-hpd;
-+
- 		ports {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 6228ba2d8513..b82014eac56b 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -2754,8 +2754,8 @@
+ 		usb_1_qmpphy: phy-wrapper@88e9000 {
+ 			compatible = "qcom,sc7180-qmp-usb3-dp-phy";
+ 			reg = <0 0x088e9000 0 0x18c>,
+-			      <0 0x088e8000 0 0x38>,
+-			      <0 0x088ea000 0 0x40>;
++			      <0 0x088e8000 0 0x3c>,
++			      <0 0x088ea000 0 0x18c>;
+ 			status = "disabled";
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
 -- 
 2.30.2
 
