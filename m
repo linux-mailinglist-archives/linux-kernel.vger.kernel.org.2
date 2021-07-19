@@ -2,130 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB393CD474
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA1D3CD47C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236888AbhGSLbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236781AbhGSLbj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:31:39 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A50C061574;
-        Mon, 19 Jul 2021 04:27:16 -0700 (PDT)
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S236830AbhGSLeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:34:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236491AbhGSLeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 07:34:11 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id E3AA4B3F575;
-        Mon, 19 Jul 2021 14:12:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1626696737;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qlJj4jq6CFTczdnKasdGAp0h/VuYGaTHb5oyVSK2n6A=;
-        b=eknuVfSKTLtuDykfPZHOumpM3soNteCD60OWx+ITsiaCfqZy9bV/S1RDkzDqk8T/goRGOI
-        TG9a7oBVoKe0w/ikIrQ1PzZf/mY3fibkDsEdPN9gJe9IgLMIKLlEOKk3SebfvFXJa23Q1J
-        I31hxRvnVsuJ2FtZhFTQXUJdp03vQ1M=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>, paulmck@kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Chris Clayton <chris2553@googlemail.com>,
-        Chris Rankin <rankincj@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Huang, Ying" <ying.huang@intel.com>, gregkh@linuxfoundation.org
-Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
-Date:   Mon, 19 Jul 2021 14:12:15 +0200
-Message-ID: <5812280.fcLxn8YiTP@natalenko.name>
-In-Reply-To: <688a2cb1-5cd8-2c00-889c-4d48021371f8@huawei.com>
-References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com> <2145858.R0O0FObHBN@natalenko.name> <688a2cb1-5cd8-2c00-889c-4d48021371f8@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AE0E60200;
+        Mon, 19 Jul 2021 12:14:51 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m5SAb-00EChJ-A3; Mon, 19 Jul 2021 13:14:49 +0100
+Date:   Mon, 19 Jul 2021 13:14:48 +0100
+Message-ID: <87lf62jy9z.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        tabba@google.com, dbrazdil@google.com, kernel-team@android.com,
+        Yanan Wang <wangyanan55@huawei.com>
+Subject: Re: [PATCH 03/14] KVM: arm64: Continue stage-2 map when re-creating mappings
+In-Reply-To: <20210719104735.3681732-4-qperret@google.com>
+References: <20210719104735.3681732-1-qperret@google.com>
+        <20210719104735.3681732-4-qperret@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: qperret@google.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com, tabba@google.com, dbrazdil@google.com, kernel-team@android.com, wangyanan55@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 14:08:37 CEST Miaohe Lin wrote:
-> On 2021/7/19 19:59, Oleksandr Natalenko wrote:
-> > On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 13:50:07 CEST Miaohe Lin wr=
-ote:
-> >> On 2021/7/19 19:22, Matthew Wilcox wrote:
-> >>> On Mon, Jul 19, 2021 at 07:12:58PM +0800, Miaohe Lin wrote:
-> >>>> When in the commit 2799e77529c2a, we're using the percpu_ref to
-> >>>> serialize
-> >>>> against concurrent swapoff, i.e. there's percpu_ref inside
-> >>>> get_swap_device() instead of rcu_read_lock(). Please see commit
-> >>>> 63d8620ecf93 ("mm/swapfile: use percpu_ref to serialize against
-> >>>> concurrent swapoff") for detail.
-> >>>=20
-> >>> Oh, so this is a backport problem.  2799e77529c2 was backported witho=
-ut
-> >>> its prerequisite 63d8620ecf93.  Greg, probably best to just drop
-> >>=20
-> >> Yes, they're posted as a patch set:
-> >>=20
-> >> https://lkml.kernel.org/r/20210426123316.806267-1-linmiaohe@huawei.com
-> >>=20
-> >>> 2799e77529c2 from all stable trees; the race described is not very
-> >>> important (swapoff vs reading a page back from that swap device).
-> >>> .
-> >>=20
-> >> The swapoff races with reading a page back from that swap device should
-> >> be
-> >> really uncommon as most users only do swapoff when the system is going=
- to
-> >> shutdown.
-> >>=20
-> >> Sorry for the trouble!
-> >=20
-> > git log --oneline v5.13..v5.13.3 --author=3D"Miaohe Lin"
-> > 11ebc09e50dc mm/zswap.c: fix two bugs in zswap_writeback_entry()
-> > 95d192da198d mm/z3fold: use release_z3fold_page_locked() to release loc=
-ked
-> > z3fold page
-> > ccb7848e2344 mm/z3fold: fix potential memory leak in z3fold_destroy_poo=
-l()
-> > 9f7229c901c1 mm/huge_memory.c: don't discard hugepage if other processes
-> > are mapping it
-> > f13259175e4f mm/huge_memory.c: add missing read-only THP checking in
-> > transparent_hugepage_enabled()
-> > afafd371e7de mm/huge_memory.c: remove dedicated macro
-> > HPAGE_CACHE_INDEX_MASK a533a21b692f mm/shmem: fix shmem_swapin() race
-> > with swapoff
-> > c3b39134bbd0 swap: fix do_swap_page() race with swapoff
-> >=20
-> > Do you suggest reverting "mm/shmem: fix shmem_swapin() race with swapof=
-f"
-> > as well?
->=20
-> This patch also rely on its prerequisite 63d8620ecf93. I think we should
-> either revert any commit in this series or just backport the entire serie=
-s.
+On Mon, 19 Jul 2021 11:47:24 +0100,
+Quentin Perret <qperret@google.com> wrote:
+> 
+> The stage-2 map walkers currently return -EAGAIN when re-creating
+> identical mappings or only changing access permissions. This allows to
+> optimize mapping pages for concurrent (v)CPUs faulting on the same
+> page.
+> 
+> While this works as expected when touching one page-table leaf at a
+> time, this can lead to difficult situations when mapping larger ranges.
+> Indeed, a large map operation can fail in the middle if an existing
+> mapping is found in the range, even if it has compatible attributes,
+> hence leaving only half of the range mapped.
 
-Then why not just pick up 2 more patches instead of dropping 2 patches. Gre=
-g,=20
-could you please make sure the whole series from [1] gets pulled?
+I'm curious of when this can happen. We normally map a single leaf at
+a time, and we don't have a way to map multiple leaves at once: we
+either use the VMA base size or try to upgrade it to a THP, but the
+result is always a single leaf entry. What changed?
 
-Thanks.
+> To avoid having to deal with such failures in the caller, don't
+> interrupt the map operation when hitting existing PTEs, but make sure to
+> still return -EAGAIN so that user_mem_abort() can mark the page dirty
+> when needed.
 
-[1] https://lkml.kernel.org/r/20210426123316.806267-1-linmiaohe@huawei.com
+I don't follow you here: if you return -EAGAIN for a writable mapping,
+we don't account for the page to be dirty on the assumption that
+nothing has been mapped. But if there is a way to map more than a
+single entry and to get -EAGAIN at the same time, then we're bound to
+lose data on page eviction.
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
+Can you shed some light on this?
 
+Thanks,
 
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
