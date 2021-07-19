@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75423CE5F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5333CE615
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239567AbhGSPzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:55:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60818 "EHLO mail.kernel.org"
+        id S1352225AbhGSQB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:01:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345760AbhGSPE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:04:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6F6761166;
-        Mon, 19 Jul 2021 15:45:26 +0000 (UTC)
+        id S1345753AbhGSPE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:04:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86A6760238;
+        Mon, 19 Jul 2021 15:45:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709527;
-        bh=TNFVtHoJc3PqwJwXyaoHT9IFm9G1RO35rNOmgMwLZag=;
+        s=korg; t=1626709530;
+        bh=PPgBTkzggWDOjYGtn1EBckHWrI1Q6tPwwTuhJwolJ0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jqRME4eMjR7zx5Khbb6vdwWemHB8JWOeqmU9EIa9IEzq017sVeATKrTlVkWtsO7QE
-         zz98Anm04XJDh7gYaAxWQJPa1VnjKZtr9l35+76s3V16IjIMme6tU5swDax42UZpcF
-         lxRD95He1TFBVDHBJmcOpmDuXGuhe/vqRVNQkcxI=
+        b=CWfonLFXz21n3Ufb1ZY5bfdZsmBBatUOIx6Y/vrNmot4BFgs+JSq4/3oqOiu+M9w2
+         rlCIA30FXxjrrSv7lwJn1cQxSCh5sJSayB4HMqCiHbpv0ZlY1uwuqNrlc1cd2rvKGq
+         81y8FMAISgjOm6CY4DTA8VUl89L3syF3+IfD8Kc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Martin=20F=C3=A4cknitz?= <faecknitz@hotsplots.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 419/421] MIPS: vdso: Invalid GIC access through VDSO
-Date:   Mon, 19 Jul 2021 16:53:50 +0200
-Message-Id: <20210719145000.848021850@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 420/421] net: bridge: multicast: fix PIM hello router port marking race
+Date:   Mon, 19 Jul 2021 16:53:51 +0200
+Message-Id: <20210719145000.879567007@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,62 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Fäcknitz <faecknitz@hotsplots.de>
+From: Nikolay Aleksandrov <nikolay@nvidia.com>
 
-[ Upstream commit 47ce8527fbba145a7723685bc9a27d9855e06491 ]
+commit 04bef83a3358946bfc98a5ecebd1b0003d83d882 upstream.
 
-Accessing raw timers (currently only CLOCK_MONOTONIC_RAW) through VDSO
-doesn't return the correct time when using the GIC as clock source.
-The address of the GIC mapped page is in this case not calculated
-correctly. The GIC mapped page is calculated from the VDSO data by
-subtracting PAGE_SIZE:
+When a PIM hello packet is received on a bridge port with multicast
+snooping enabled, we mark it as a router port automatically, that
+includes adding that port the router port list. The multicast lock
+protects that list, but it is not acquired in the PIM message case
+leading to a race condition, we need to take it to fix the race.
 
-  void *get_gic(const struct vdso_data *data) {
-    return (void __iomem *)data - PAGE_SIZE;
-  }
-
-However, the data pointer is not page aligned for raw clock sources.
-This is because the VDSO data for raw clock sources (CS_RAW = 1) is
-stored after the VDSO data for coarse clock sources (CS_HRES_COARSE = 0).
-Therefore, only the VDSO data for CS_HRES_COARSE is page aligned:
-
-  +--------------------+
-  |                    |
-  | vd[CS_RAW]         | ---+
-  | vd[CS_HRES_COARSE] |    |
-  +--------------------+    | -PAGE_SIZE
-  |                    |    |
-  |  GIC mapped page   | <--+
-  |                    |
-  +--------------------+
-
-When __arch_get_hw_counter() is called with &vd[CS_RAW], get_gic returns
-the wrong address (somewhere inside the GIC mapped page). The GIC counter
-values are not returned which results in an invalid time.
-
-Fixes: a7f4df4e21dd ("MIPS: VDSO: Add implementations of gettimeofday() and clock_gettime()")
-Signed-off-by: Martin Fäcknitz <faecknitz@hotsplots.de>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 91b02d3d133b ("bridge: mcast: add router port on PIM hello message")
+Signed-off-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/vdso/vdso.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/bridge/br_multicast.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/vdso/vdso.h b/arch/mips/vdso/vdso.h
-index cfb1be441dec..921589b45bc2 100644
---- a/arch/mips/vdso/vdso.h
-+++ b/arch/mips/vdso/vdso.h
-@@ -81,7 +81,7 @@ static inline const union mips_vdso_data *get_vdso_data(void)
+--- a/net/bridge/br_multicast.c
++++ b/net/bridge/br_multicast.c
+@@ -1791,7 +1791,9 @@ static void br_multicast_pim(struct net_
+ 	    pim_hdr_type(pimhdr) != PIM_TYPE_HELLO)
+ 		return;
  
- static inline void __iomem *get_gic(const union mips_vdso_data *data)
- {
--	return (void __iomem *)data - PAGE_SIZE;
-+	return (void __iomem *)((unsigned long)data & PAGE_MASK) - PAGE_SIZE;
++	spin_lock(&br->multicast_lock);
+ 	br_multicast_mark_router(br, port);
++	spin_unlock(&br->multicast_lock);
  }
  
- #endif /* CONFIG_CLKSRC_MIPS_GIC */
--- 
-2.30.2
-
+ static int br_multicast_ipv4_rcv(struct net_bridge *br,
 
 
