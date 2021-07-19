@@ -2,118 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DF33CD68C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 16:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B14E3CD68E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 16:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241105AbhGSNoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 09:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51314 "EHLO
+        id S241117AbhGSNoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 09:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241055AbhGSNoH (ORCPT
+        with ESMTP id S241087AbhGSNoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 09:44:07 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD6DC061574;
-        Mon, 19 Jul 2021 06:50:45 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id t5so22244575wrw.12;
-        Mon, 19 Jul 2021 07:24:46 -0700 (PDT)
+        Mon, 19 Jul 2021 09:44:08 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B776C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 06:50:47 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so18348226otl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 07:24:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
+        h=sender:to:references:from:subject:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iJb8k19Y68cQ26kCOkNjiEf5YK8/nAR7Q1gJ3928CnI=;
-        b=T0oK4JxzZ8pyuYqCEuhGFUWAm90vPZvpJ5FopJBMYTz5T9joodP1iNPyT5Ax6p0g74
-         +By7csl0eik1QDfi+zDKjaQKIuXBH25O32x/7UkAwxQFMbqyFcPLfDla+dio31lZ+Fws
-         Ui3gsGNqqBB5ou20NAOWzjtv3G0+ApgVzXdFFoxtg92nRejmXWt0nayD8jGGerDm7Vq9
-         a68UeqZTbj6jRIO0HTy6Rwe2D9hCEqe4jlMD8Ijmg3v43e+RG9tampTKS6mmSQScfLmM
-         pxaK8qVMzxglGQrCBofgSuRCATOMzTMpp3DainE2CPsKLMub59e+fb+Qn2+pjKnDeRqj
-         LlQQ==
+        bh=7/qq3wyUV7N73BKpIHcRfvtIpGGk0m3CwLVAIa8erWo=;
+        b=i+k6lzbQu/gYTazdC+tDJ+VqdJU6OFUmm3rB+LR3/2M/9mHGl/O662JrlUjlhCJc7e
+         ZiJYreKouyfxkeiODkVVMvE41hTmVEAlG29kukXUrZ8czMj1LYShWI6tH+UNJvVMN3CT
+         aJyhBcrwvQfiOI+nlPUAk9g0yq6Vpa3U7S/PHgQuO5sd9Gi4dD+ECGAZAwq1Xjdksqcs
+         G2LR1m+G4OH60VqMYPePCoYzWde4SJdY/C+zBkr08pfbXPtpyWzEcENPmN8FnOyCClGF
+         OcNw1i6IQbEKmoKfsGdXCPJYdJ8t/SPX1T7m3MADjcJwpocz2qmqSMQx7V/MnXUD5p1X
+         leSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:sender:to:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=iJb8k19Y68cQ26kCOkNjiEf5YK8/nAR7Q1gJ3928CnI=;
-        b=LXPvQj1L8Fd4cLJo02JnqEuhEkgQIduwpLnwKjps+LJ7aXTCAOvevUS0OqMBN59b2G
-         M4UyiFojaxtW2KwAAa9ywbEnaCBgGYN7pHXx6vHAelBGWsgDAfYy+QNAurZXAKteJk+V
-         lqNnea2AQENHlTCSmgfzocyb2XTUew/q0uYL54pFjAK2bmybb2Yk9blPNKiULa5hzkyh
-         Z0HEPWbm5HQFNgOuWS2S3aEdMUqBfZexpeaDhsgbpfQuw0QcZ1aB/XK4Zvrqhn1SuEyX
-         xC8b9kau5i5F+dgsWbQF+uz4gZ7xbRz9PmGv9xw4Xy8azK/Ea7F15yojvcmLEaiKmYHL
-         tZTQ==
-X-Gm-Message-State: AOAM533t22p6O4hdBpe+VW1vRE+eYLRkcjZTK/MgXIVqPCIO2lHUtpQy
-        FCyfvvK9cbQsMwEIvzzXyk8=
-X-Google-Smtp-Source: ABdhPJyfXD/w6U3/F6XPoN9fIiWMlAhlbVA27hk1etsCXW5M8H5KslQRnNDEhxnO5hOwcsC1A4KdNg==
-X-Received: by 2002:adf:82f1:: with SMTP id 104mr30161129wrc.306.1626704685116;
-        Mon, 19 Jul 2021 07:24:45 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id p4sm20891339wrt.23.2021.07.19.07.24.44
+        bh=7/qq3wyUV7N73BKpIHcRfvtIpGGk0m3CwLVAIa8erWo=;
+        b=cvRcNVhaj2TXltBXUIoL9OWaO6lUI8eXMphlyK7y/cmYbN3J6Mf0QjkTZhy6laTSOr
+         RU9EzV/K5jpT9PIBosqIrvQ+a56Tvx6eLv3dFvHynud3eLhWPXlfduRBZkMHoKp0gjlq
+         WZBT0OywQnss6w6ONgXaAHeav1JFXR+n5hg1qS2rxR5E72S5hTLfvXVzp03FHeoYW1Dr
+         OCGJ6mtNlofyWuybciYJffKK6Qptz7IeHacZc7YvPdJLfdRcPaktbXKXpO1ghdMGjNib
+         il9VaISbhqG5A2BmfRth+pM3jT8qqrrtjKFk6FKEaTzw9yDQhGytpcbctG8xGxtTdRca
+         Zi1A==
+X-Gm-Message-State: AOAM530zk9LUh6aF0TdpDG0YZM7SkP7Do0LFbvVPwOW+Wun0sGxIQ460
+        /rdeg9n+66RcRnEKK2Js4N/cuK7d9yA=
+X-Google-Smtp-Source: ABdhPJx+VI2LTCuw35AamWFKyfBdlpvyzZmsV1/KxXQqjbQo5sFs3G6o6Fdv92eq+ScsT3IPzd7ANQ==
+X-Received: by 2002:a9d:638f:: with SMTP id w15mr470201otk.148.1626704686753;
+        Mon, 19 Jul 2021 07:24:46 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 48sm3584391otf.13.2021.07.19.07.24.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 07:24:44 -0700 (PDT)
-Subject: Re: [PATCH v5 02/16] memcg: enable accounting for IP address and
- routing-related objects
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Vasily Averin <vvs@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
- <cover.1626688654.git.vvs@virtuozzo.com>
- <9123bca3-23bb-1361-c48f-e468c81ad4f6@virtuozzo.com>
- <CAJwJo6ZgXDoXevNRte4G3Phei8WcgJ897JebWDkQDnPYrgTTQA@mail.gmail.com>
- <CALvZod7YhG1Ojp2Eyk=30OBzWr5_AyEW-c1AhQVDn7zpd6mpww@mail.gmail.com>
-From:   Dmitry Safonov <0x7f454c46@gmail.com>
-Message-ID: <55811200-dfca-0cc6-9dd4-692066adf4c6@gmail.com>
-Date:   Mon, 19 Jul 2021 15:24:43 +0100
+        Mon, 19 Jul 2021 07:24:46 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <a7a801d2-13d2-7b5b-66a5-98e7c95b00cc@gmail.com>
+ <5e1b5d90-5a1e-5e9f-7b92-6c53b8589c2a@gmail.com>
+ <cd14a8b0-0a27-77a8-6dc2-3268f9f09922@roeck-us.net>
+ <e1bb4768-5517-8ef3-eaf3-bbfc103fa918@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v4 1/1] riscv: __asm_copy_to-from_user: Optimize unaligned
+ memory access and pipeline stall
+Message-ID: <9a2bf544-2aaa-d175-bc0a-c8bcefd8141a@roeck-us.net>
+Date:   Mon, 19 Jul 2021 07:24:44 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CALvZod7YhG1Ojp2Eyk=30OBzWr5_AyEW-c1AhQVDn7zpd6mpww@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <e1bb4768-5517-8ef3-eaf3-bbfc103fa918@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/21 3:22 PM, Shakeel Butt wrote:
-> On Mon, Jul 19, 2021 at 7:00 AM Dmitry Safonov <0x7f454c46@gmail.com> wrote:
+On 7/19/21 7:00 AM, Akira Tsukamoto wrote:
+> 
+> On 7/19/2021 10:51 PM, Guenter Roeck wrote:
+>> Hi,
 >>
->> Hi Vasily,
->>
->> On Mon, 19 Jul 2021 at 11:45, Vasily Averin <vvs@virtuozzo.com> wrote:
->> [..]
->>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>> index ae1f5d0..1bbf239 100644
->>> --- a/mm/memcontrol.c
->>> +++ b/mm/memcontrol.c
->>> @@ -968,7 +968,7 @@ static __always_inline bool memcg_kmem_bypass(void)
->>>                 return false;
+>> On 7/19/21 5:53 AM, Akira Tsukamoto wrote:
 >>>
->>>         /* Memcg to charge can't be determined. */
->>> -       if (in_interrupt() || !current->mm || (current->flags & PF_KTHREAD))
->>> +       if (!in_task() || !current->mm || (current->flags & PF_KTHREAD))
->>>                 return true;
+>>> This patch will reduce cpu usage dramatically in kernel space especially
+>>> for application which use sys-call with large buffer size, such as
+>>> network applications. The main reason behind this is that every
+>>> unaligned memory access will raise exceptions and switch between s-mode
+>>> and m-mode causing large overhead.
+>>>
 >>
->> This seems to do two separate things in one patch.
->> Probably, it's better to separate them.
->> (I may miss how route changes are related to more generic
->> __alloc_pages() change)
+>> I had to revert the original patch from the mainline kernel prior to applying
+>> this patch. Obviously that means that there may be other changes affecting the
+>> outcome.
 >>
+>> riscv64 images work, but riscv32 images still fail with this patch applied.
+>> The error is a bit different than before, though.
+>>
+>> ...
+>> [   11.899979] Run /sbin/init as init process
+>> [   12.152666] random: fast init done
+>> moun: applet not found
+>> "�����V�t: applet not found
+>> /bi�����V�F-: applet not found
+>> moun: applet not found
+>> swaon: applet not found
+>> hostname-F: applet not found
+>>
+>> After this, the image hangs.
+>>
+>> For comparison, the mainline kernel (v5.14-rc2) fails as follows.
+>>
+>> [   10.788105] Run /sbin/init as init process
+>> Starting syslogd: OK
+>> Starting klogd: OK
+>> /etc/init.d/S02sysctl: line 68: syntax error: EOF in backquote substitution
+>> /etc/init.d/S20urandom: line 1: syntax error: unterminated quoted string
+>> Starting network: /bin/sh: syntax error: unterminated quoted string
+>> sed: unmatched '/'
+>> /bin/sh: syntax error: unterminated quoted string
+>> FAIL
+>> /etc/init.d/S55runtest: line 48: syntax error: EOF in backquote substitution
+>>
+>> I'll be happy to provide information on how to reproduce the problem
+>> if needed. Please let me know.
 > 
-> It was requested to squash them together in some previous versions.
-> https://lore.kernel.org/linux-mm/YEiUIf0old+AZssa@dhcp22.suse.cz/
+> Yes, I do would like to know the procedure of build instruction of your rv32 image.
+> Then I would reproduce the error and look into how to fix it.
 > 
-
-Ah, alright, never mind than.
+Please have a look at http://server.roeck-us.net/qemu/riscv32/
+and let me know if you need anything else.
 
 Thanks,
-           Dmitry
+Guenter
