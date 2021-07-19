@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9773CE6D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F009B3CE7CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353133AbhGSQPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:15:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40366 "EHLO mail.kernel.org"
+        id S1344091AbhGSQdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:33:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345809AbhGSPJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:09:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D21B613CC;
-        Mon, 19 Jul 2021 15:49:15 +0000 (UTC)
+        id S1347011AbhGSPRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:17:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 069A8600EF;
+        Mon, 19 Jul 2021 15:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709756;
-        bh=TGUlphfg0gPw5fgVemP1gCgF3rAL9XkfQysAcYM8f3s=;
+        s=korg; t=1626710249;
+        bh=CcTgJfVEmbNFgL0EvxomN/vMbIEdDbKcKAhs6s8IAmo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MSfD+8p+8FPSXndT9VugvNctXs76Or0Zh3hpr40XCfmUJyNGCF+SzposMsKrKCJ1V
-         /OYFtXr7ogeGYnvjBxvNiIY/9BwcIiHne2TDfvtRhDoeigQOb9mUGoZUGfAb5USAgP
-         mwmBx/NYjLG7zTYUbMEnNA8CQmt928vZkbIN46/E=
+        b=YOj+Qww8P+cM8Qnb/7f3f50IcmVQX1pjGSKoCM0Ixz5nHHQAwIWqwsqgUjnkvwveF
+         mCXvRfTC2ZMCZK/ewy41V9mnofsJeW+Gak+jD4KCABW7qTp3AJTkQINFGk3VFm0NDE
+         q3u6qP7N60xc8o7UntQWRNQk12MnrMEQFSk86MGg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Fabien Chouteau <fabien.chouteau@barco.com>,
-        Segiy Stetsyuk <serg_stetsuk@ukr.net>,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+        stable@vger.kernel.org, Philip Yang <Philip.Yang@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 058/149] usb: gadget: f_hid: fix endianness issue with descriptors
+Subject: [PATCH 5.10 137/243] drm/amdkfd: fix sysfs kobj leak
 Date:   Mon, 19 Jul 2021 16:52:46 +0200
-Message-Id: <20210719144915.120272272@linuxfoundation.org>
+Message-Id: <20210719144945.337210439@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +41,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+From: Philip Yang <Philip.Yang@amd.com>
 
-[ Upstream commit 33cb46c4676d01956811b68a29157ea969a5df70 ]
+[ Upstream commit dcdb4d904b4bd3078fe8d4d24b1658560d6078ef ]
 
-Running sparse checker it shows warning message about
-incorrect endianness used for descriptor initialization:
+3 cases of kobj leak, which causes memory leak:
 
-| f_hid.c:91:43: warning: incorrect type in initializer (different base types)
-| f_hid.c:91:43:    expected restricted __le16 [usertype] bcdHID
-| f_hid.c:91:43:    got int
+kobj_type must have release() method to free memory from release
+callback. Don't need NULL default_attrs to init kobj.
 
-Fixing issue with cpu_to_le16() macro, however this is not a real issue
-as the value is the same both endians.
+sysfs files created under kobj_status should be removed with kobj_status
+as parent kobject.
 
-Cc: Fabien Chouteau <fabien.chouteau@barco.com>
-Cc: Segiy Stetsyuk <serg_stetsuk@ukr.net>
-Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Link: https://lore.kernel.org/r/20210617162755.29676-1-ruslan.bilovol@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Remove queue sysfs files when releasing queue from process MMU notifier
+release callback.
+
+Signed-off-by: Philip Yang <Philip.Yang@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_hid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c           | 14 ++++++--------
+ .../gpu/drm/amd/amdkfd/kfd_process_queue_manager.c |  1 +
+ 2 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
-index 0586229ac83d..3d540b0d9368 100644
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -88,7 +88,7 @@ static struct usb_interface_descriptor hidg_interface_desc = {
- static struct hid_descriptor hidg_desc = {
- 	.bLength			= sizeof hidg_desc,
- 	.bDescriptorType		= HID_DT_HID,
--	.bcdHID				= 0x0101,
-+	.bcdHID				= cpu_to_le16(0x0101),
- 	.bCountryCode			= 0x00,
- 	.bNumDescriptors		= 0x1,
- 	/*.desc[0].bDescriptorType	= DYNAMIC */
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+index 65803e153a22..d243e60c6eef 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+@@ -452,13 +452,9 @@ static const struct sysfs_ops procfs_stats_ops = {
+ 	.show = kfd_procfs_stats_show,
+ };
+ 
+-static struct attribute *procfs_stats_attrs[] = {
+-	NULL
+-};
+-
+ static struct kobj_type procfs_stats_type = {
+ 	.sysfs_ops = &procfs_stats_ops,
+-	.default_attrs = procfs_stats_attrs,
++	.release = kfd_procfs_kobj_release,
+ };
+ 
+ int kfd_procfs_add_queue(struct queue *q)
+@@ -973,9 +969,11 @@ static void kfd_process_wq_release(struct work_struct *work)
+ 		list_for_each_entry(pdd, &p->per_device_data, per_device_list) {
+ 			sysfs_remove_file(p->kobj, &pdd->attr_vram);
+ 			sysfs_remove_file(p->kobj, &pdd->attr_sdma);
+-			sysfs_remove_file(p->kobj, &pdd->attr_evict);
+-			if (pdd->dev->kfd2kgd->get_cu_occupancy != NULL)
+-				sysfs_remove_file(p->kobj, &pdd->attr_cu_occupancy);
++
++			sysfs_remove_file(pdd->kobj_stats, &pdd->attr_evict);
++			if (pdd->dev->kfd2kgd->get_cu_occupancy)
++				sysfs_remove_file(pdd->kobj_stats,
++						  &pdd->attr_cu_occupancy);
+ 			kobject_del(pdd->kobj_stats);
+ 			kobject_put(pdd->kobj_stats);
+ 			pdd->kobj_stats = NULL;
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
+index eb1635ac8988..43c07ac2c6fc 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
+@@ -153,6 +153,7 @@ void pqm_uninit(struct process_queue_manager *pqm)
+ 		if (pqn->q && pqn->q->gws)
+ 			amdgpu_amdkfd_remove_gws_from_process(pqm->process->kgd_process_info,
+ 				pqn->q->gws);
++		kfd_procfs_del_queue(pqn->q);
+ 		uninit_queue(pqn->q);
+ 		list_del(&pqn->process_queue_list);
+ 		kfree(pqn);
 -- 
 2.30.2
 
