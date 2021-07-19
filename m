@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C073CE6F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677483CE808
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351753AbhGSQR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:17:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47876 "EHLO mail.kernel.org"
+        id S1350819AbhGSQgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:36:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343905AbhGSPKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC89A606A5;
-        Mon, 19 Jul 2021 15:51:33 +0000 (UTC)
+        id S1348113AbhGSPYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8387661442;
+        Mon, 19 Jul 2021 16:01:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709894;
-        bh=akWJEMxAsxv5NtMBhCQHrv5cI+M+jQxWlXYXs7RetEc=;
+        s=korg; t=1626710507;
+        bh=+s9U411Vo2Vr93teTyFht/XZanhXISJmoFuwzSVMBns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xczERFnxYGlo2ufEnSIBDxXelbBm9D/SNNcvNksKI3ZYI/E9wcq87DtMJ33HTPNdT
-         gkS5r4AOOZzP9NpcxyOxLdWJ+AB7yboZpfdJj9IHqwo6rhufQLSoy7S01A3HNe2bPK
-         G9s0Km9SX5LNnPEVMdm7AXpZZbD8SiwVIXsqWFnM=
+        b=cxqEWZlBWWIRHM0O8U8VycidugD/XlSezQxDVvk7mSuPjePZIEcLsXp/Bl3svzLAI
+         Y3Kta1wzr/EeTQMKfaOPmgvm94I2ETgNwtjLc06+HJl4iXxUOjQwNasSZfvx5DLVkD
+         jCAv3mIvGawxeHpRcOk9aO5QOkbT09paunaCcoIk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        stable@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 141/149] firmware: turris-mox-rwtm: report failures better
+Subject: [PATCH 5.10 220/243] arm64: dts: allwinner: a64-sopine-baseboard: change RGMII mode to TXID
 Date:   Mon, 19 Jul 2021 16:54:09 +0200
-Message-Id: <20210719144934.680046621@linuxfoundation.org>
+Message-Id: <20210719144948.032060312@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,65 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+From: Icenowy Zheng <icenowy@aosc.io>
 
-[ Upstream commit 72f99888944c44de1c899bbe44db1e53bdc9d994 ]
+[ Upstream commit bd5431b2f9b30a70f6ed964dd5ee9a6d1c397c06 ]
 
-Report a notice level message if a command is not supported by the rWTM
-firmware.
+Although the schematics of Pine A64-LTS and SoPine Baseboard shows both
+the RX and TX internal delay are enabled, they're using the same broken
+RTL8211E chip batch with Pine A64+, so they should use TXID instead, not
+ID.
 
-This should not be an error, merely a notice, because the firmware can
-be used on boards that do not have manufacturing information burned.
+In addition, by checking the real components soldered on both a SoPine
+Baseboard and a Pine A64-LTS, RX delay is not enabled (GR69 soldered and
+GR70 NC) despite the schematics says it's enabled. It's a common
+situation for Pine64 boards that the NC information on schematics is not
+the same with the board.
 
-Fixes: 389711b37493 ("firmware: Add Turris Mox rWTM firmware driver")
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Reviewed-by: Pali Rohár <pali@kernel.org>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+So the RGMII delay mode should be TXID on these boards.
+
+Fixes: c2b111e59a7b ("arm64: dts: allwinner: A64 Sopine: phy-mode rgmii-id")
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210609083843.463750-1-icenowy@aosc.io
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/turris-mox-rwtm.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/turris-mox-rwtm.c b/drivers/firmware/turris-mox-rwtm.c
-index ecc9e2de6492..e22ad73d4c86 100644
---- a/drivers/firmware/turris-mox-rwtm.c
-+++ b/drivers/firmware/turris-mox-rwtm.c
-@@ -191,11 +191,14 @@ static int mox_get_board_info(struct mox_rwtm *rwtm)
- 		return ret;
- 
- 	ret = mox_get_status(MBOX_CMD_BOARD_INFO, reply->retval);
--	if (ret < 0 && ret != -ENODATA) {
--		return ret;
--	} else if (ret == -ENODATA) {
-+	if (ret == -ENODATA) {
- 		dev_warn(rwtm->dev,
- 			 "Board does not have manufacturing information burned!\n");
-+	} else if (ret == -ENOSYS) {
-+		dev_notice(rwtm->dev,
-+			   "Firmware does not support the BOARD_INFO command\n");
-+	} else if (ret < 0) {
-+		return ret;
- 	} else {
- 		rwtm->serial_number = reply->status[1];
- 		rwtm->serial_number <<= 32;
-@@ -224,10 +227,13 @@ static int mox_get_board_info(struct mox_rwtm *rwtm)
- 		return ret;
- 
- 	ret = mox_get_status(MBOX_CMD_ECDSA_PUB_KEY, reply->retval);
--	if (ret < 0 && ret != -ENODATA) {
--		return ret;
--	} else if (ret == -ENODATA) {
-+	if (ret == -ENODATA) {
- 		dev_warn(rwtm->dev, "Board has no public key burned!\n");
-+	} else if (ret == -ENOSYS) {
-+		dev_notice(rwtm->dev,
-+			   "Firmware does not support the ECDSA_PUB_KEY command\n");
-+	} else if (ret < 0) {
-+		return ret;
- 	} else {
- 		u32 *s = reply->status;
- 
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
+index d4069749d721..068cbd955bfc 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
+@@ -79,7 +79,7 @@
+ &emac {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&rgmii_pins>;
+-	phy-mode = "rgmii-id";
++	phy-mode = "rgmii-txid";
+ 	phy-handle = <&ext_rgmii_phy>;
+ 	phy-supply = <&reg_dc1sw>;
+ 	status = "okay";
 -- 
 2.30.2
 
