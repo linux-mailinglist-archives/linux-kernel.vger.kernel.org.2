@@ -2,194 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75473CD72D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 16:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114893CD734
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 16:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241233AbhGSOLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:11:36 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:49938 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240298AbhGSOJO (ORCPT
+        id S232732AbhGSOLX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Jul 2021 10:11:23 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:46682 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241182AbhGSOJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:09:14 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UgIJ0CV_1626706070;
-Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgIJ0CV_1626706070)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 19 Jul 2021 22:48:00 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: [PATCH v3] iomap: support tail packing inline read
-Date:   Mon, 19 Jul 2021 22:47:47 +0800
-Message-Id: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
+Received: by mail-vs1-f53.google.com with SMTP id e9so9459900vsk.13
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 07:49:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Qx5mJkBsGELHIfg3tO6IBHVeQdtURYJ38KZzvX6xUBY=;
+        b=GTNIkkMT1/aroOpzSfHfqRdsuj2GeI1yQlIRXxjJq2glfJ/o7PEkkNvwUX7Iq45L1I
+         QOFyv7dNEryXiKOWOZIW7Ye4NB2Ds+nhOItWv1CsF86VHKDjw0zodVQaBTj/BcGFJT6B
+         pfYEBTO2MAUrSVWm1kgtbCxe8LZPk3Q5RYgWLqfEH7+eJmGnz21LAYp2r6INoVJ4zJ12
+         uMtWRAphd76GPOgXWz3dlu1xlJOhZEDJJ5h93tr+WQNNzUGAuoyIJ9EvFXeg//dMjw6Z
+         oju//bDRv+9QVZxYMVqQMWc/0Gy2c2dm38Z52tXeIcELO8xoQKo50VyNEF+/ecFAk+Ye
+         dz9w==
+X-Gm-Message-State: AOAM531/IwtrEo3YvZMKqYRqMzfxa/QDx/ttMrOBnW3uR1ImHWB3Gao4
+        Hw6hcf5TKrnazj5fFvQpGLT02AlUWEL2Hn/W4ao=
+X-Google-Smtp-Source: ABdhPJyWBmBLTA8AWcOVBVDelW9SF9rerNvvLBU1GLRis490q++voKnpseBb3FVTBjim+amqIyy5GHm+gV0aS+Sxsm8=
+X-Received: by 2002:a05:6102:321c:: with SMTP id r28mr24683436vsf.40.1626706162788;
+ Mon, 19 Jul 2021 07:49:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <a7a801d2-13d2-7b5b-66a5-98e7c95b00cc@gmail.com> <5e1b5d90-5a1e-5e9f-7b92-6c53b8589c2a@gmail.com>
+In-Reply-To: <5e1b5d90-5a1e-5e9f-7b92-6c53b8589c2a@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 19 Jul 2021 16:49:11 +0200
+Message-ID: <CAMuHMdVMi8zfmSiZ0vnvCcsZQua_LKXpNAQVmRUdBKxNay=f-w@mail.gmail.com>
+Subject: Re: [PATCH v4 1/1] riscv: __asm_copy_to-from_user: Optimize unaligned
+ memory access and pipeline stall
+To:     Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This tries to add tail packing inline read to iomap, which can support
-several inline tail blocks. Similar to the previous approach, it cleans
-post-EOF in one iteration.
+Hi Tsukamoto-san,
 
-The write path remains untouched since EROFS cannot be used for testing.
-It'd be better to be implemented if upcoming real users care rather than
-leave untested dead code around.
+On Mon, Jul 19, 2021 at 2:53 PM Akira Tsukamoto
+<akira.tsukamoto@gmail.com> wrote:
+> This patch will reduce cpu usage dramatically in kernel space especially
+> for application which use sys-call with large buffer size, such as
+> network applications. The main reason behind this is that every
+> unaligned memory access will raise exceptions and switch between s-mode
+> and m-mode causing large overhead.
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Darrick J. Wong <djwong@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
-v2: https://lore.kernel.org/r/YPLdSja%2F4FBsjss%2F@B-P7TQMD6M-0146.local/
-changes since v2:
- - update suggestion from Christoph:
-    https://lore.kernel.org/r/YPVe41YqpfGLNsBS@infradead.org/
+[...]
 
-Hi Andreas,
-would you mind test on the gfs2 side? Thanks in advance!
+> Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
 
-Thanks,
-Gao Xiang
+Thanks for your patch!
 
- fs/iomap/buffered-io.c | 50 ++++++++++++++++++++++++++----------------
- fs/iomap/direct-io.c   | 11 ++++++----
- 2 files changed, 38 insertions(+), 23 deletions(-)
+As v3 is part of v5.14-rc1, all fixes and improvements need to be
+send as incremental patches.
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 87ccb3438bec..cac8a88660d8 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -207,23 +207,22 @@ struct iomap_readpage_ctx {
- 
- static void
- iomap_read_inline_data(struct inode *inode, struct page *page,
--		struct iomap *iomap)
-+		struct iomap *iomap, loff_t pos)
- {
--	size_t size = i_size_read(inode);
-+	unsigned int size, poff = offset_in_page(pos);
- 	void *addr;
- 
--	if (PageUptodate(page))
--		return;
--
--	BUG_ON(page_has_private(page));
--	BUG_ON(page->index);
--	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* inline source data must be inside a single page */
-+	BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* handle tail-packing blocks cross the current page into the next */
-+	size = min_t(unsigned int, iomap->length + pos - iomap->offset,
-+		     PAGE_SIZE - poff);
- 
- 	addr = kmap_atomic(page);
--	memcpy(addr, iomap->inline_data, size);
--	memset(addr + size, 0, PAGE_SIZE - size);
-+	memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
-+	memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
- 	kunmap_atomic(addr);
--	SetPageUptodate(page);
-+	iomap_set_range_uptodate(page, poff, PAGE_SIZE - poff);
- }
- 
- static inline bool iomap_block_needs_zeroing(struct inode *inode,
-@@ -246,18 +245,19 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 	unsigned poff, plen;
- 	sector_t sector;
- 
--	if (iomap->type == IOMAP_INLINE) {
--		WARN_ON_ONCE(pos);
--		iomap_read_inline_data(inode, page, iomap);
--		return PAGE_SIZE;
--	}
--
--	/* zero post-eof blocks as the page may be mapped */
- 	iop = iomap_page_create(inode, page);
-+	/* needs to skip some leading uptodated blocks */
- 	iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
- 	if (plen == 0)
- 		goto done;
- 
-+	if (iomap->type == IOMAP_INLINE) {
-+		iomap_read_inline_data(inode, page, iomap, pos);
-+		plen = PAGE_SIZE - poff;
-+		goto done;
-+	}
-+
-+	/* zero post-eof blocks as the page may be mapped */
- 	if (iomap_block_needs_zeroing(inode, iomap, pos)) {
- 		zero_user(page, poff, plen);
- 		iomap_set_range_uptodate(page, poff, plen);
-@@ -589,6 +589,18 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
- 	return 0;
- }
- 
-+static int iomap_write_begin_inline(struct inode *inode, loff_t pos,
-+		struct page *page, struct iomap *srcmap)
-+{
-+	/* needs more work for the tailpacking case, disable for now */
-+	if (WARN_ON_ONCE(pos != 0))
-+		return -EIO;
-+	if (PageUptodate(page))
-+		return 0;
-+	iomap_read_inline_data(inode, page, srcmap, pos);
-+	return 0;
-+}
-+
- static int
- iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-@@ -618,7 +630,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 	}
- 
- 	if (srcmap->type == IOMAP_INLINE)
--		iomap_read_inline_data(inode, page, srcmap);
-+		status = iomap_write_begin_inline(inode, pos, page, srcmap);
- 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
- 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
- 	else
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 9398b8c31323..ee6309967b77 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -379,22 +379,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
- {
- 	struct iov_iter *iter = dio->submit.iter;
- 	size_t copied;
-+	void *dst = iomap->inline_data + pos - iomap->offset;
- 
--	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* inline data must be inside a single page */
-+	BUG_ON(length > PAGE_SIZE - offset_in_page(iomap->inline_data));
- 
- 	if (dio->flags & IOMAP_DIO_WRITE) {
- 		loff_t size = inode->i_size;
- 
- 		if (pos > size)
--			memset(iomap->inline_data + size, 0, pos - size);
--		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-+			memset(iomap->inline_data + size - iomap->offset,
-+			       0, pos - size);
-+		copied = copy_from_iter(dst, length, iter);
- 		if (copied) {
- 			if (pos + copied > size)
- 				i_size_write(inode, pos + copied);
- 			mark_inode_dirty(inode);
- 		}
- 	} else {
--		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-+		copied = copy_to_iter(dst, length, iter);
- 	}
- 	dio->size += copied;
- 	return copied;
+After reverting ca6eaaa210deec0e ("riscv: __asm_copy_to-from_user:
+Optimize unaligned memory access and pipeline stall") and applying
+v4, booting linux-on-litex-vexriscv still fails, but now differently
+(real crash):
+
+    /bi�����V�F-: applet not found
+    2'�����t: applet not found
+    Kernel panic - not syncing: Attempted to kill init! exitcode=0x00007f00
+    CPU: 0 PID: 1 Comm: init Not tainted
+5.14.0-rc2-orangecrab-01933-g5c9574869017 #357
+    Call Trace:
+    Unable to handle kernel NULL pointer dereference at virtual address 00000af0
+    Oops [#1]
+    CPU: 0 PID: 1 Comm: init Not tainted
+5.14.0-rc2-orangecrab-01933-g5c9574869017 #357
+    epc : walk_stackframe+0x11c/0x13c
+     ra : dump_backtrace+0x2c/0x3c
+    epc : c0003970 ra : c00039bc sp : c1835e20
+     gp : c06a7690 tp : c1838000 t0 : 00000000
+     t1 : 00000000 t2 : 00000000 s0 : c1835e50
+     s1 : c05d8180 a0 : 00001000 a1 : 00000000
+     a2 : c04dfd68 a3 : c05d8180 a4 : ab1d4cdc
+     a5 : 00001000 a6 : c067d204 a7 : ffffefff
+     s2 : 00000000 s3 : c05cc9f4 s4 : 00000000
+     s5 : c05d8180 s6 : c04dfd68 s7 : 00000001
+     s8 : 00000000 s9 : 95b6f158 s10: 00000000
+     s11: 00000001 t3 : 00000000 t4 : 00000001
+     t5 : 00000000 t6 : 00000000
+    status: 00000100 badaddr: 00000af0 cause: 0000000d
+    [<c0003970>] walk_stackframe+0x11c/0x13c
+    [<c00039bc>] dump_backtrace+0x2c/0x3c
+    [<c04dfde8>] show_stack+0x44/0x5c
+    [<c04e4c98>] dump_stack_lvl+0x2c/0x40
+    [<c04e4cc8>] dump_stack+0x1c/0x2c
+    [<c04dff3c>] panic+0x13c/0x330
+    [<c000c774>] do_exit+0x830/0x8b8
+    [<c000c888>] do_group_exit+0x40/0xac
+    [<c000c918>] __wake_up_parent+0x0/0x34
+    [<c0002128>] ret_from_syscall+0x0/0x4
+    ---[ end trace d147f0f146982b08 ]---
+    note: init[1] exited with preempt_count 1
+    Fixing recursive fault but reboot is needed!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.24.4
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
