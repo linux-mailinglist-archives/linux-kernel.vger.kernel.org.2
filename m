@@ -2,188 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E6D3CD434
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87EB3CD438
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236478AbhGSLP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:15:28 -0400
-Received: from mga09.intel.com ([134.134.136.24]:17988 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231290AbhGSLP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:15:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10049"; a="211038679"
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="211038679"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 04:56:07 -0700
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="461592878"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 04:56:04 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m5RsM-00FV62-HP; Mon, 19 Jul 2021 14:55:58 +0300
-Date:   Mon, 19 Jul 2021 14:55:58 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andrea Merello <andrea.merello@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Andrea Merello <andrea.merello@iit.it>
-Subject: Re: [PATCH 4/4] iio: imu: add BNO055 serdev driver
-Message-ID: <YPVoTp3SPzL6LQ6X@smile.fi.intel.com>
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20210715141742.15072-5-andrea.merello@gmail.com>
- <20210717165018.50a26629@jic23-huawei>
- <CAN8YU5M4+ZFNzLkGhP1w7Q80yKVBxAXqK=k6qYzpTYXj=+707w@mail.gmail.com>
+        id S232138AbhGSLRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:17:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24606 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231161AbhGSLR3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 07:17:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626695889;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pjiBFtBbN3Tpa6+FO6osoKkB4QfSBpg6c+lRQJCM5pw=;
+        b=IlrnW24Tfocx6kwP0vYWcarSpzIrFbT02t7HHGAPx6bm4SOHYKJwzm6014tBKf/hOgyK4G
+        teWf8PppFYGiLXjhRXKTzQv/Jry3KJKckALN+0cA7uPDqSgynDYplKAi3/q+QwxCPsMaYX
+        l0ZpzPvAzoCasyrrg3/z6NX7JtO1PoI=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-upBXC0WHObuVVGgvmHYLVg-1; Mon, 19 Jul 2021 07:58:08 -0400
+X-MC-Unique: upBXC0WHObuVVGgvmHYLVg-1
+Received: by mail-wm1-f72.google.com with SMTP id r13-20020a7bc08d0000b029023a3f081487so3605160wmh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 04:58:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pjiBFtBbN3Tpa6+FO6osoKkB4QfSBpg6c+lRQJCM5pw=;
+        b=EGkqfhLLAj17YDYJbKM2mTe/+llBH+5MWG/ZMG2YFiz8kHtw61T6lMeawY7O5PmYeS
+         3XvaJ/W8rkuorwdMhLc+jGeCfQbyEgh5Tt3zfKyJIBqCeIMGnCXdDR4ryKnffmeMb3wm
+         m/nvPmydRNUAhFIiCPUixFiYKGnRQY/mE1rHX7ICkKC2efKE7g2UNcPI64gsKM221dE5
+         bfWqeW/7XU/rHL/OWM3SEgfG3jz0tKCfBfybFVhAJKJsjZU9xlrgsfCDtJuO0ZNQ4LxC
+         YR66W4hOeHgkQW+qF0nvQy11B55lgVwhlfZdrg0e0665G8LhKZGMx9zQuJ14pVarMTjV
+         9t2w==
+X-Gm-Message-State: AOAM532eY8pyTys+mfG41uAnfV88w/xUckcHPNTahxMESwHd1BigEXPx
+        cwYVIhETVjdzF2cC+Nehle1Cxv8Bd46rBdfQakIUQicZsg6KBadh9QTer1pDK9Y1+v7jpopXY1a
+        KowHaRVuNn8ZFpRKUO+BjLno2
+X-Received: by 2002:a5d:6ac4:: with SMTP id u4mr29212484wrw.166.1626695887138;
+        Mon, 19 Jul 2021 04:58:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+OAIWZXBnOoLEaejahoNmZdXq7HnXiPt48QZY8Inz4B2bfDo9yCBx/7ow9p4m2kL0QelGZg==
+X-Received: by 2002:a5d:6ac4:: with SMTP id u4mr29212465wrw.166.1626695887015;
+        Mon, 19 Jul 2021 04:58:07 -0700 (PDT)
+Received: from redhat.com ([2.55.11.37])
+        by smtp.gmail.com with ESMTPSA id 129sm16885866wmz.26.2021.07.19.04.58.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 04:58:05 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 07:58:00 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, jasowang@redhat.com,
+        nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com,
+        akpm@linux-foundation.org, yury.norov@gmail.com,
+        andriy.shevchenko@linux.intel.com, ojeda@kernel.org,
+        ndesaulniers@gooogle.com, joe@perches.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>
+Subject: Re: [PATCH net-next 1/2] tools: add missing infrastructure for
+ building ptr_ring.h
+Message-ID: <20210719075748-mutt-send-email-mst@kernel.org>
+References: <1625457455-4667-1-git-send-email-linyunsheng@huawei.com>
+ <1625457455-4667-2-git-send-email-linyunsheng@huawei.com>
+ <20210705143144-mutt-send-email-mst@kernel.org>
+ <cbc4053e-7eda-4c46-5b98-558c741e45b6@huawei.com>
+ <20210717220239-mutt-send-email-mst@kernel.org>
+ <5d320b37-18f3-e853-ceb7-21af7ca12763@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAN8YU5M4+ZFNzLkGhP1w7Q80yKVBxAXqK=k6qYzpTYXj=+707w@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <5d320b37-18f3-e853-ceb7-21af7ca12763@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 10:49:54AM +0200, Andrea Merello wrote:
-> Il giorno sab 17 lug 2021 alle ore 17:48 Jonathan Cameron
-> <jic23@kernel.org> ha scritto:
-> > On Thu, 15 Jul 2021 16:17:42 +0200
-> > Andrea Merello <andrea.merello@gmail.com> wrote:
-
-...
-
-> > > +/*
-> > > + * Register writes cmd have the following format
-> > > + * +------+------+-----+-----+----- ... ----+
-> > > + * | 0xAA | 0xOO | REG | LEN | payload[LEN] |
-> > > + * +------+------+-----+-----+----- ... ----+
-> > > + *
-> > > + * Register write responses have the following format
-> > > + * +------+----------+
-> > > + * | 0xEE | ERROCODE |
-> > > + * +------+----------+
-> > > + *
-> > > + * Register read have the following format
-> > > + * +------+------+-----+-----+
-> > > + * | 0xAA | 0xO1 | REG | LEN |
-> > > + * +------+------+-----+-----+
-> > > + *
-> > > + * Successful register read response have the following format
-> > > + * +------+-----+----- ... ----+
-> > > + * | 0xBB | LEN | payload[LEN] |
-> > > + * +------+-----+----- ... ----+
-> > > + *
-> > > + * Failed register read response have the following format
-> > > + * +------+--------+
-> > > + * | 0xEE | ERRCODE|  (ERRCODE always > 1)
-> > > + * +------+--------+
-> > > + *
-> > > + * Error codes are
-> > > + * 01: OK
-> > > + * 02: read/write FAIL
-> > > + * 04: invalid address
-> > > + * 05: write on RO
-> > > + * 06: wrong start byte
-> > > + * 07: bus overrun
-> > > + * 08: len too high
-> > > + * 09: len too low
-> > > + * 10: bus RX byte timeout (timeout is 30mS)
-> > > + *
-> > > + *
-> > > + * **WORKAROUND ALERT**
-> > > + *
-> > > + * Serial communication seems very fragile: the BNO055 buffer seems to overflow
-> > > + * very easy; BNO055 seems able to sink few bytes, then it needs a brief pause.
-> > > + * On the other hand, it is also picky on timeout: if there is a pause > 30mS in
-> > > + * between two bytes then the transaction fails (IMU internal RX FSM resets).
-> > > + *
-> > > + * BMU055 has been seen also failing to process commands in case we send them
-> > > + * too close each other (or if it is somehow busy?)
-> > > + *
-> > > + * One idea would be to split data in chunks, and then wait 1-2mS between
-> > > + * chunks (we hope not to exceed 30mS delay for any reason - which should
-> > > + * be pretty a lot of time for us), and eventually retry in case the BNO055
-> > > + * gets upset for any reason. This seems to work in avoiding the overflow
-> > > + * errors, but indeed it seems slower than just perform a retry when an overflow
-> > > + * error occur.
-> > > + * In particular I saw these scenarios:
-> > > + * 1) If we send 2 bytes per time, then the IMU never(?) overflows.
-> > > + * 2) If we send 4 bytes per time (i.e. the full header), then the IMU could
-> > > + *    overflow, but it seem to sink all 4 bytes, then it returns error.
-> > > + * 3) If we send more than 4 bytes, the IMU could overflow, and I saw it sending
-> > > + *    error after 4 bytes are sent; we have troubles in synchronizing again,
-> > > + *    because we are still sending data, and the IMU interprets it as the 1st
-> > > + *    byte of a new command.
-> > > + *
-> > > + * So, we workaround all this in the following way:
-> > > + * In case of read we don't split the header but we rely on retries; This seems
-> > > + * convenient for data read (where we TX only the hdr).
-> > > + * For TX we split the transmission in 2-bytes chunks so that, we should not
-> > > + * only avoid case 2 (which is still manageable), but we also hopefully avoid
-> > > + * case 3, that would be by far worse.
-> >
-> > Nice docs and this sounds terrible!
+On Mon, Jul 19, 2021 at 09:40:39AM +0800, Yunsheng Lin wrote:
+> On 2021/7/18 10:09, Michael S. Tsirkin wrote:
+> > On Tue, Jul 06, 2021 at 10:04:02AM +0800, Yunsheng Lin wrote:
+> >> On 2021/7/6 2:39, Michael S. Tsirkin wrote:
+> >>> On Mon, Jul 05, 2021 at 11:57:34AM +0800, Yunsheng Lin wrote:
 > 
-> Indeed.. If anyone has nicer ideas, or is aware about better
-> workaround, I would really love to know...
+> [..]
+> 
+> >>>> diff --git a/tools/include/asm/processor.h b/tools/include/asm/processor.h
+> >>>> new file mode 100644
+> >>>> index 0000000..3198ad6
+> >>>> --- /dev/null
+> >>>> +++ b/tools/include/asm/processor.h
+> >>>> @@ -0,0 +1,36 @@
+> >>>> +/* SPDX-License-Identifier: GPL-2.0 */
+> >>>> +
+> >>>> +#ifndef __TOOLS_LINUX_ASM_PROCESSOR_H
+> >>>> +#define __TOOLS_LINUX_ASM_PROCESSOR_H
+> >>>> +
+> >>>> +#include <pthread.h>
+> >>>> +
+> >>>> +#if defined(__i386__) || defined(__x86_64__)
+> >>>> +#include "../../arch/x86/include/asm/vdso/processor.h"
+> >>>> +#elif defined(__arm__)
+> >>>> +#include "../../arch/arm/include/asm/vdso/processor.h"
+> >>>> +#elif defined(__aarch64__)
+> >>>> +#include "../../arch/arm64/include/asm/vdso/processor.h"
+> >>>> +#elif defined(__powerpc__)
+> >>>> +#include "../../arch/powerpc/include/vdso/processor.h"
+> >>>> +#elif defined(__s390__)
+> >>>> +#include "../../arch/s390/include/vdso/processor.h"
+> >>>> +#elif defined(__sh__)
+> >>>> +#include "../../arch/sh/include/asm/processor.h"
+> >>>> +#elif defined(__sparc__)
+> >>>> +#include "../../arch/sparc/include/asm/processor.h"
+> >>>> +#elif defined(__alpha__)
+> >>>> +#include "../../arch/alpha/include/asm/processor.h"
+> >>>> +#elif defined(__mips__)
+> >>>> +#include "../../arch/mips/include/asm/vdso/processor.h"
+> >>>> +#elif defined(__ia64__)
+> >>>> +#include "../../arch/ia64/include/asm/processor.h"
+> >>>> +#elif defined(__xtensa__)
+> >>>> +#include "../../arch/xtensa/include/asm/processor.h"
+> >>>> +#elif defined(__nds32__)
+> >>>> +#include "../../arch/nds32/include/asm/processor.h"
+> >>>> +#else
+> >>>> +#define cpu_relax()	sched_yield()
+> >>>
+> >>> Does this have a chance to work outside of kernel?
+> >>
+> >> I am not sure I understand what you meant here.
+> >> sched_yield() is a pthread API, so it should work in the
+> >> user space.
+> >> And it allow the rigntest to compile when it is built on
+> >> the arch which is not handled as above.
+> > 
+> > It might compile but is likely too heavy to behave
+> > reasonably.
+> > 
+> > Also, given you did not actually test it I don't
+> > think you should add such arch code.
+> > Note you broke at least s390 here:
+> > ../../arch/s390/include/vdso/processor.h
+> > does not actually exist. Where these headers
+> > do exit they tend to include lots of code which won't
+> > build out of kernel.
+> 
+> You are right, it should be in:
+> ../../arch/s390/include/asm/vdso/processor.h
+> 
+> > 
+> > All this is just for cpu_relax - open coding that seems way easier.
+> 
+> Sure.
+> 
+> As Eugenio has posted a patchset to fix the compilation, which does
+> not seems to be merged yet and may have some merging conflicts with
+> this patchset, so either wait for the Eugenio' patchset to be merged
+> before proceeding with this patchset, or explicitly note the dependency
+> of Eugenio' patchset when sending the new version of patchset. I am not
+> familiar with the merging flow of virtio to say which way is better, any
+> suggestion how to proceed with this patchset?
+> 
+> 1. https://lkml.org/lkml/2021/7/6/1132
+> 
+> > 
+> > 
+> >>>
+> >>>> +#endif
+> >>>
+> >>> did you actually test or even test build all these arches?
+> >>> Not sure we need to bother with hacks like these.
+> >>
+> >> Only x86_64 and arm64 arches have been built and tested.
+> > 
+> > In that case I think you should not add code that you
+> > have not even built let alone tested.
+> 
+> Ok.
+> 
+> > 
+> > 
+> >> This is added referring the tools/include/asm/barrier.h.
+> >>
+> >>>
+> >>>
+> >>>> +
+> > 
+> > .
 
-This needs somebody to go thru data sheet and check for possibilities, what you
-described above is not gonna fly. Okay, "in a robust way".
 
-I can't believe there is nothing in the communication protocol that may
-increase a robustness.
-
-> > > + */
-
-...
-
-> > > +/* Read operation overhead:
-> > > + * 4 bytes req + 2byte resp hdr
-> > > + * 6 bytes = 60 bit (considering 1start + 1stop bits).
-> > > + * 60/115200 = ~520uS
-> > > + * In 520uS we could read back about 34 bytes that means 3 samples, this means
-> > > + * that in case of scattered read in which the gap is 3 samples or less it is
-> > > + * still convenient to go for a burst.
-> > > + * We have to take into account also IMU response time - IMU seems to be often
-> > > + * reasonably quick to respond, but sometimes it seems to be in some "critical
-> > > + * section" in which it delays handling of serial protocol.
-> > > + * By experiment, it seems convenient to burst up to about 5/6-samples-long gap
-
-Missed perial and entire comment needs proper style and space occupation ratio.
-
-> > > + */
-
-...
-
-> > > +     enum {
-> > > +             STATUS_OK = 0,  /* command OK */
-> > > +             STATUS_FAIL = 1,/* IMU communicated an error */
-> > > +             STATUS_CRIT = -1/* serial communication with IMU failed */
-
-enum may be kernel doc described.
-
-> > > +     } cmd_status;
-
-...
-
-> > > +static struct serdev_device_driver bno055_sl_driver = {
-> > > +     .driver = {
-
-> > > +             .name = BNO055_SL_DRIVER_NAME,
-
-This is (semi-)ABI and preferably should be hard coded explicitly.
-
-> > > +             .of_match_table = bno055_sl_of_match,
-> > > +     },
-> > > +     .probe = bno055_sl_probe,
-> > > +};
+I will merge Eugenio's patchset soon.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+MST
 
