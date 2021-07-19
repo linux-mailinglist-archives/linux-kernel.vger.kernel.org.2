@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328F93CDC4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2323CDFE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243782AbhGSOv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:51:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47966 "EHLO mail.kernel.org"
+        id S1345747AbhGSPMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:12:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244888AbhGSOe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:34:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87DAC6113C;
-        Mon, 19 Jul 2021 15:13:51 +0000 (UTC)
+        id S1344286AbhGSOso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90DB96121F;
+        Mon, 19 Jul 2021 15:27:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707632;
-        bh=buEgtu8vPGsBKS3HtvZ9ChBpyLl0G/Iljag4eaLJBSU=;
+        s=korg; t=1626708458;
+        bh=TnTtTq4bNkNe5j4Zh8ZgsaHqO3yYo2zneElUalXvHIw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=195n3kZU0RNyE9j1pzwF8x6UiCwqkVR093gnvVy8n27bgHiF7HKqyPRa6pFVkdXB1
-         CrjqXMWJbnRLz5hGeq0KFjhCJQLP6/5XhEBiKk0k/90DN+7l/hVm4HuByr7muc9Nbh
-         ofjyugnYMUOCIsBUIWbUJxN8vFpedhqE9xYHHE5U=
+        b=anRG7pc+jOXLkuuGsqu4Lxk9kPn0nrvG25CIC6WaOt+zY8z4oQ1VHSbT53Bk+lR2q
+         o7J7TGuUuG3U42eWNPUHxCNIzTRvnamcLYW7Nnqd3jLCI9Fqa1x+mFifBXNxhBszJJ
+         4ObDsxnZxsyE8lTKmqKG8pZ1Avb0+hR0Dc5noRhQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 240/245] memory: fsl_ifc: fix leak of private memory on probe failure
+Subject: [PATCH 4.14 293/315] nfs: fix acl memory leak of posix_acl_create()
 Date:   Mon, 19 Jul 2021 16:53:02 +0200
-Message-Id: <20210719144948.127626966@linuxfoundation.org>
+Message-Id: <20210719144953.098170829@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+References: <20210719144942.861561397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-[ Upstream commit 8e0d09b1232d0538066c40ed4c13086faccbdff6 ]
+[ Upstream commit 1fcb6fcd74a222d9ead54d405842fc763bb86262 ]
 
-On probe error the driver should free the memory allocated for private
-structure.  Fix this by using resource-managed allocation.
+When looking into another nfs xfstests report, I found acl and
+default_acl in nfs3_proc_create() and nfs3_proc_mknod() error
+paths are possibly leaked. Fix them in advance.
 
-Fixes: a20cbdeffce2 ("powerpc/fsl: Add support for Integrated Flash Controller")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210527154322.81253-2-krzysztof.kozlowski@canonical.com
+Fixes: 013cdf1088d7 ("nfs: use generic posix ACL infrastructure for v3 Posix ACLs")
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Anna Schumaker <anna.schumaker@netapp.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/fsl_ifc.c | 4 ++--
+ fs/nfs/nfs3proc.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
-index 74bbbdc584f4..38b945eb410f 100644
---- a/drivers/memory/fsl_ifc.c
-+++ b/drivers/memory/fsl_ifc.c
-@@ -109,7 +109,6 @@ static int fsl_ifc_ctrl_remove(struct platform_device *dev)
- 	iounmap(ctrl->gregs);
+diff --git a/fs/nfs/nfs3proc.c b/fs/nfs/nfs3proc.c
+index bc673fb47fb3..65f9a8ae2845 100644
+--- a/fs/nfs/nfs3proc.c
++++ b/fs/nfs/nfs3proc.c
+@@ -357,7 +357,7 @@ nfs3_proc_create(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
+ 				break;
  
- 	dev_set_drvdata(&dev->dev, NULL);
--	kfree(ctrl);
+ 			case NFS3_CREATE_UNCHECKED:
+-				goto out;
++				goto out_release_acls;
+ 		}
+ 		nfs_fattr_init(data->res.dir_attr);
+ 		nfs_fattr_init(data->res.fattr);
+@@ -702,7 +702,7 @@ nfs3_proc_mknod(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
+ 		break;
+ 	default:
+ 		status = -EINVAL;
+-		goto out;
++		goto out_release_acls;
+ 	}
  
- 	return 0;
- }
-@@ -221,7 +220,8 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
- 
- 	dev_info(&dev->dev, "Freescale Integrated Flash Controller\n");
- 
--	fsl_ifc_ctrl_dev = kzalloc(sizeof(*fsl_ifc_ctrl_dev), GFP_KERNEL);
-+	fsl_ifc_ctrl_dev = devm_kzalloc(&dev->dev, sizeof(*fsl_ifc_ctrl_dev),
-+					GFP_KERNEL);
- 	if (!fsl_ifc_ctrl_dev)
- 		return -ENOMEM;
- 
+ 	status = nfs3_do_create(dir, dentry, data);
 -- 
 2.30.2
 
