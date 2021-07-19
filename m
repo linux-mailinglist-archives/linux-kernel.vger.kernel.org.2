@@ -2,33 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB0C3CE3A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133773CE41D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346461AbhGSPiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:38:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53314 "EHLO mail.kernel.org"
+        id S241487AbhGSPmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:42:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343993AbhGSO71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC4B061166;
-        Mon, 19 Jul 2021 15:38:03 +0000 (UTC)
+        id S1344065AbhGSO72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBC2E61407;
+        Mon, 19 Jul 2021 15:38:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709084;
-        bh=LZm0IwAXZP96iYJ8I9rte18foCwRy3g/casIoW6Apgc=;
+        s=korg; t=1626709108;
+        bh=utFl06T4H838if/gzcl7vFQzazaButfFXwmcYFAzzf0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HlZDCem/ZsoqlyLVVnGE0iI7cDG6pNMWbJgh/JPwVwK0YzXWszEgINO3o7ojGb6d4
-         RafYgtjPMa649f8TqInkRs4A51/rZ2fEkjnmHHmc71dO5sqoVUaRczkrflwgluMcCU
-         WQU5MVfPRUPG+Z+Ckp5HBblJ6YjVUbD6mkDsfPvg=
+        b=Fc9yUvrn/VlibPQ3vieuaodqiiJT8QkCzdkzXAY90OCgt5qQBTdpTqB22yu0dX+Zr
+         tf8BVYagobvUWb6eDKdQnP1NDu/mq5XLt1dPyLDw79yP2VCBNrT44g4FGgJ/DH0FY6
+         WWIM12hQjLDPKD+u/OMMH25ZOWXDwXuRTnbO1EaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        stable@vger.kernel.org, Yang Shi <shy828301@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Rik van Riel <riel@surriel.com>,
+        Song Liu <songliubraving@fb.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Zi Yan <ziy@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 219/421] serial: mvebu-uart: correctly calculate minimal possible baudrate
-Date:   Mon, 19 Jul 2021 16:50:30 +0200
-Message-Id: <20210719144953.929281990@linuxfoundation.org>
+Subject: [PATCH 4.19 222/421] mm/huge_memory.c: dont discard hugepage if other processes are mapping it
+Date:   Mon, 19 Jul 2021 16:50:33 +0200
+Message-Id: <20210719144954.033617970@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,61 +57,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit deeaf963569a0d9d1b08babb771f61bb501a5704 ]
+[ Upstream commit babbbdd08af98a59089334eb3effbed5a7a0cf7f ]
 
-For default (x16) scheme which is currently used by mvebu-uart.c driver,
-maximal divisor of UART base clock is 1023*16. Therefore there is limit for
-minimal supported baudrate. This change calculate it correctly and prevents
-setting invalid divisor 0 into hardware registers.
+If other processes are mapping any other subpages of the hugepage, i.e.
+in pte-mapped thp case, page_mapcount() will return 1 incorrectly.  Then
+we would discard the page while other processes are still mapping it.  Fix
+it by using total_mapcount() which can tell whether other processes are
+still mapping it.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 68a0db1d7da2 ("serial: mvebu-uart: add function to change baudrate")
-Link: https://lore.kernel.org/r/20210624224909.6350-4-pali@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lkml.kernel.org/r/20210511134857.1581273-6-linmiaohe@huawei.com
+Fixes: b8d3c4c3009d ("mm/huge_memory.c: don't split THP page when MADV_FREE syscall is called")
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Ralph Campbell <rcampbell@nvidia.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: William Kucharski <william.kucharski@oracle.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/mvebu-uart.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ mm/huge_memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
-index 0515b5e6326d..9369b4d42d24 100644
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -471,7 +471,7 @@ static void mvebu_uart_set_termios(struct uart_port *port,
- 				   struct ktermios *old)
- {
- 	unsigned long flags;
--	unsigned int baud;
-+	unsigned int baud, min_baud, max_baud;
- 
- 	spin_lock_irqsave(&port->lock, flags);
- 
-@@ -490,16 +490,21 @@ static void mvebu_uart_set_termios(struct uart_port *port,
- 		port->ignore_status_mask |= STAT_RX_RDY(port) | STAT_BRK_ERR;
- 
- 	/*
-+	 * Maximal divisor is 1023 * 16 when using default (x16) scheme.
- 	 * Maximum achievable frequency with simple baudrate divisor is 230400.
- 	 * Since the error per bit frame would be of more than 15%, achieving
- 	 * higher frequencies would require to implement the fractional divisor
- 	 * feature.
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 4400957d8e4e..800d7de32af8 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1692,7 +1692,7 @@ bool madvise_free_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
+ 	 * If other processes are mapping this page, we couldn't discard
+ 	 * the page unless they all do MADV_FREE so let's skip the page.
  	 */
--	baud = uart_get_baud_rate(port, termios, old, 0, 230400);
-+	min_baud = DIV_ROUND_UP(port->uartclk, 1023 * 16);
-+	max_baud = 230400;
-+
-+	baud = uart_get_baud_rate(port, termios, old, min_baud, max_baud);
- 	if (mvebu_uart_baud_rate_set(port, baud)) {
- 		/* No clock available, baudrate cannot be changed */
- 		if (old)
--			baud = uart_get_baud_rate(port, old, NULL, 0, 230400);
-+			baud = uart_get_baud_rate(port, old, NULL,
-+						  min_baud, max_baud);
- 	} else {
- 		tty_termios_encode_baud_rate(termios, baud, baud);
- 		uart_update_timeout(port, termios->c_cflag, baud);
+-	if (page_mapcount(page) != 1)
++	if (total_mapcount(page) != 1)
+ 		goto out;
+ 
+ 	if (!trylock_page(page))
 -- 
 2.30.2
 
