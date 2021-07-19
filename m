@@ -2,129 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8B13CF202
+	by mail.lfdr.de (Postfix) with ESMTP id 153263CF201
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234644AbhGTBlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 21:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
+        id S234421AbhGTBlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 21:41:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443887AbhGSXFV (ORCPT
+        with ESMTP id S1443892AbhGSXFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 19:05:21 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477A8C061767;
-        Mon, 19 Jul 2021 16:41:35 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id gh6so9276408qvb.3;
-        Mon, 19 Jul 2021 16:41:35 -0700 (PDT)
+        Mon, 19 Jul 2021 19:05:23 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D01EC0613DC;
+        Mon, 19 Jul 2021 16:45:49 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id me13-20020a17090b17cdb0290173bac8b9c9so841454pjb.3;
+        Mon, 19 Jul 2021 16:45:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tG3VNaXw5GOzMIsu0CiI5SvtjI+jDKkdFfqR2rMpbXQ=;
-        b=ukHLi4nkEFU5WxlAaCJhPm4GSHtNNmHN+xODDOgQkICkx9CLlFvbvBhNIBonKE0fJg
-         Ggl0q7FrCfw5psKcZbOcA1Awg1OodHbECGTMvBJ7ILivSLjEWJvHqh6YJxhmstdJEhyJ
-         B4ks3IjMvc5pGWlvmIEkZMk/OKQdj4yc1TYIau+JiZAe9CTXepZkAipq5jd9aaKaBbmw
-         EPg5FeoAzgE8ZJlfbZ5EiU8ZFn+f0cy/hUf7volywoSX8XeHfWFNcxo9Kd7/ApocefMa
-         BG2l0zy0o5Qm3AeaxilP2Qw8mesVRimXoojBWYpoYids/odf3d+QBQYpPqA3o5PuLXiD
-         yS1A==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Kgz2eeVTrVAZCaEOYMJ8unFPgBOAegGaTDFor4hhW4k=;
+        b=N8skB0g0RIgY1yzrP9QUxgAtO1Ujzw0uwpwRfp4/+YEbM5V5uGIU/pIhNhUjEvJXuU
+         GZdN0luA9lLUWDP2TvHLvThvWgL4qXFSOxnd4PbS55epYSTa/2X6bk+KbiLWQA4OIGaA
+         RrjA+ulBZktLrY3cXH/NWSNzOz/4GRz8KREvkkA5YgyRmta5voc8JkyOIoz6hpejThNj
+         hp01K2lhc/A1IpgDQY9bNwxt/O71v7J1QeJocywcRyArUVuNkjtEOuxs4Z9VZpy44DUh
+         OKT+Upu+XAFsYv+50Yl5Kplm/QQmadSkMIhwhmVIIvc3SEagVGEKlFpKFspprauzLFmU
+         jczQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=tG3VNaXw5GOzMIsu0CiI5SvtjI+jDKkdFfqR2rMpbXQ=;
-        b=YX0JcxbUNLxbtfIYXs/0H8uwTVoLvniVrj+MA5ILhL5lhGX16pLcNqkSlVuN2pdHBa
-         QTiqWF+aaMADsk3caC811tCFjm5I1NXPjcr/rOcK9HABc7kI2uUpPlExR6UIAWCxM95h
-         tuUA0lGL71UpEJ3U65uB+7cvTiPfb4qaAht9Q43A9xWmmozyW6X3xINf6UaH2G28PluH
-         rOb0mcPk7PVen/CoqXuLZw8ZasAhX42PJKeGBBUOvjbYeY/TpkH9wyvle2Au0zXzPTY2
-         z4ZEBs/NTVaGByJn0Cd6Lvmwik421iRScCHoaJXIXdHD+f7o7G3rtq6xLCahakDS+XXE
-         f3pA==
-X-Gm-Message-State: AOAM533XkjxPHidiI3UMvVcX4Qjdk86khjie3bBzH9G4oGonLRCPO05v
-        kccTtxXXr4ext2VIfxm+2w==
-X-Google-Smtp-Source: ABdhPJyw8paABx4qYfJX/57pB1bFva0Goisp+bJsoBNRvSMQ1zD/qE054Th1ZxDlCQ55ru0Oyztmhg==
-X-Received: by 2002:a05:6214:1882:: with SMTP id cx2mr27485724qvb.2.1626738094460;
-        Mon, 19 Jul 2021 16:41:34 -0700 (PDT)
-Received: from bytedance.attlocal.net (ec2-52-52-7-82.us-west-1.compute.amazonaws.com. [52.52.7.82])
-        by smtp.gmail.com with ESMTPSA id l12sm124689qtx.45.2021.07.19.16.41.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 16:41:33 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Cc:     Peilin Ye <peilin.ye@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>
-Subject: [PATCH net] net/sched: act_skbmod: Skip non-Ethernet packets
-Date:   Mon, 19 Jul 2021 16:41:24 -0700
-Message-Id: <20210719234124.18383-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=Kgz2eeVTrVAZCaEOYMJ8unFPgBOAegGaTDFor4hhW4k=;
+        b=Tr0O3EA6nnCLq5MGuQD5Zd6Hcg51LT7zNchgrazVck4Rk2MpGME/WVyowtBMJVrXx2
+         QAkZ4RUpvAk9L0aZfi8nweKSmAW8fZybZcaQE+PnFpRdlyLULMwZdRvUaXedXxdYx0oq
+         vOzPlS8ck8pJdZDcD1HUDhfoYVQXWVkpMNB3vMqImz+Ep/SYa5/d3CgritT5/Z7GOcGi
+         HotiZmbCcJLIq5VmpGhLxydY7H/Xqluv3GR7GpasrGtnuHBajX+p7lSDvg47NSBMTmvR
+         zd0loLtXXMxyd8uXqDXbl1bkhfWBHx0ahOKcaBekROvDla6OKg2GpT0LKf+QcdVDsdII
+         0Bww==
+X-Gm-Message-State: AOAM531jFiiUE2YMl2ASdmmEAeI34gSRdN4t6RVtBlFN3hyj0c+21bGo
+        uEm5B/oxhsRQ/Ax4qKHl5sCGAE+UMLG0OQ==
+X-Google-Smtp-Source: ABdhPJznQaIL8aTRdjnJbwpMIkbHjt56z2F9GQB00BrJMdFii30BhscOIYnTKHlP7+Vap9p2z57r4w==
+X-Received: by 2002:a17:902:6904:b029:fb:42b6:e952 with SMTP id j4-20020a1709026904b02900fb42b6e952mr21325342plk.16.1626738348512;
+        Mon, 19 Jul 2021 16:45:48 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id x189sm2335158pfx.99.2021.07.19.16.45.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 16:45:47 -0700 (PDT)
+Subject: Re: [PATCH] serial: 8250_bcm7271: use NULL to initialized a null
+ pointer
+To:     Colin King <colin.king@canonical.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210719095533.14017-1-colin.king@canonical.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <e926854a-39ca-262e-0fb4-eaf96ab0063a@gmail.com>
+Date:   Mon, 19 Jul 2021 16:45:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210719095533.14017-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <peilin.ye@bytedance.com>
+On 7/19/21 2:55 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Pointer membase is currently being in initialized with zero rather
+> than NULL. Fix this.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Currently tcf_skbmod_act() assumes that packets use Ethernet as their L2
-protocol, which is not always the case.  As an example, for CAN devices:
-
-	$ ip link add dev vcan0 type vcan
-	$ ip link set up vcan0
-	$ tc qdisc add dev vcan0 root handle 1: htb
-	$ tc filter add dev vcan0 parent 1: protocol ip prio 10 \
-		matchall action skbmod swap mac
-
-Doing the above silently corrupts all the packets.  Do not perform skbmod
-actions for non-Ethernet packets.
-
-Fixes: 86da71b57383 ("net_sched: Introduce skbmod action")
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
----
- net/sched/act_skbmod.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/net/sched/act_skbmod.c b/net/sched/act_skbmod.c
-index 81a1c67335be..8d17a543cc9f 100644
---- a/net/sched/act_skbmod.c
-+++ b/net/sched/act_skbmod.c
-@@ -6,6 +6,7 @@
- */
- 
- #include <linux/module.h>
-+#include <linux/if_arp.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/skbuff.h>
-@@ -33,6 +34,13 @@ static int tcf_skbmod_act(struct sk_buff *skb, const struct tc_action *a,
- 	tcf_lastuse_update(&d->tcf_tm);
- 	bstats_cpu_update(this_cpu_ptr(d->common.cpu_bstats), skb);
- 
-+	action = READ_ONCE(d->tcf_action);
-+	if (unlikely(action == TC_ACT_SHOT))
-+		goto drop;
-+
-+	if (!skb->dev || skb->dev->type != ARPHRD_ETHER)
-+		return action;
-+
- 	/* XXX: if you are going to edit more fields beyond ethernet header
- 	 * (example when you add IP header replacement or vlan swap)
- 	 * then MAX_EDIT_LEN needs to change appropriately
-@@ -41,10 +49,6 @@ static int tcf_skbmod_act(struct sk_buff *skb, const struct tc_action *a,
- 	if (unlikely(err)) /* best policy is to drop on the floor */
- 		goto drop;
- 
--	action = READ_ONCE(d->tcf_action);
--	if (unlikely(action == TC_ACT_SHOT))
--		goto drop;
--
- 	p = rcu_dereference_bh(d->skbmod_p);
- 	flags = p->flags;
- 	if (flags & SKBMOD_F_DMAC)
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.20.1
-
+Florian
