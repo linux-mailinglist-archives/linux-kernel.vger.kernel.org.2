@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CEA3CE7E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1CA3CE6E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353085AbhGSQet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:34:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56906 "EHLO mail.kernel.org"
+        id S1353481AbhGSQQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:16:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347709AbhGSPUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:20:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20515613F7;
-        Mon, 19 Jul 2021 15:59:03 +0000 (UTC)
+        id S245440AbhGSPK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:10:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 926BD60FD7;
+        Mon, 19 Jul 2021 15:51:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710344;
-        bh=O1dqbL5v9Pk/htBaCbRsgljVqbpZTvU1GsfbxVTbALY=;
+        s=korg; t=1626709869;
+        bh=110oo0bp8XEIgGoX8PuIKeTuPmcHodzQu7MT/F3PYyg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gydYbcilQtNGxcfKbt9IiA1PA/QD0wRuymaSGuLzAd5+0C9wp3MIqbB85KbJ9welh
-         TzWbdRA5kuNCF+0gigomMNRvd7pFdliQ+BE4VxUVawyFN/WsCwa8bn3W9q/cjpbhp6
-         9gKqyLmakruvbaWQFUSWm6a5elDPX/PHyWn3SnME=
+        b=fVCCLf7KZUmZG26a1XEYtKj5u8CY8J2DjxVPXQyBk6iLYSe2kSjLrCcoSZAEmgLma
+         /NvUHUwl6p1Y+74XVS7LeJpk/baX+Qr+5vdmxgfKASXHgh6HD1W9ypkI2ugkOYrHsh
+         yqBIpilpNZUzdkHzD2V0Zue8EvoCKKry0yJBS0MU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org, marcosfrm <marcosfrm@gmail.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 176/243] virtio_net: move tx vq operation under tx queue lock
+Subject: [PATCH 5.4 097/149] f2fs: add MODULE_SOFTDEP to ensure crc32 is included in the initramfs
 Date:   Mon, 19 Jul 2021 16:53:25 +0200
-Message-Id: <20210719144946.586016208@linuxfoundation.org>
+Message-Id: <20210719144924.326628728@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,69 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael S. Tsirkin <mst@redhat.com>
+From: Chao Yu <yuchao0@huawei.com>
 
-[ Upstream commit 5a2f966d0f3fa0ef6dada7ab9eda74cacee96b8a ]
+[ Upstream commit 0dd571785d61528d62cdd8aa49d76bc6085152fe ]
 
-It's unsafe to operate a vq from multiple threads.
-Unfortunately this is exactly what we do when invoking
-clean tx poll from rx napi.
-Same happens with napi-tx even without the
-opportunistic cleaning from the receive interrupt: that races
-with processing the vq in start_xmit.
+As marcosfrm reported in bugzilla:
 
-As a fix move everything that deals with the vq to under tx lock.
+https://bugzilla.kernel.org/show_bug.cgi?id=213089
 
-Fixes: b92f1e6751a6 ("virtio-net: transmit napi")
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Initramfs generators rely on "pre" softdeps (and "depends") to include
+additional required modules.
+
+F2FS does not declare "pre: crc32" softdep. Then every generator (dracut,
+mkinitcpio...) has to maintain a hardcoded list for this purpose.
+
+Hence let's use MODULE_SOFTDEP("pre: crc32") in f2fs code.
+
+Fixes: 43b6573bac95 ("f2fs: use cryptoapi crc32 functions")
+Reported-by: marcosfrm <marcosfrm@gmail.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ fs/f2fs/super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 345a0f51e8d7..7d1f609306f9 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1519,6 +1519,8 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
- 	struct virtnet_info *vi = sq->vq->vdev->priv;
- 	unsigned int index = vq2txq(sq->vq);
- 	struct netdev_queue *txq;
-+	int opaque;
-+	bool done;
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index a9a083232bcf..6d904dc9bd19 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3804,4 +3804,5 @@ module_exit(exit_f2fs_fs)
+ MODULE_AUTHOR("Samsung Electronics's Praesto Team");
+ MODULE_DESCRIPTION("Flash Friendly File System");
+ MODULE_LICENSE("GPL");
++MODULE_SOFTDEP("pre: crc32");
  
- 	if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
- 		/* We don't need to enable cb for XDP */
-@@ -1528,10 +1530,28 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
- 
- 	txq = netdev_get_tx_queue(vi->dev, index);
- 	__netif_tx_lock(txq, raw_smp_processor_id());
-+	virtqueue_disable_cb(sq->vq);
- 	free_old_xmit_skbs(sq, true);
-+
-+	opaque = virtqueue_enable_cb_prepare(sq->vq);
-+
-+	done = napi_complete_done(napi, 0);
-+
-+	if (!done)
-+		virtqueue_disable_cb(sq->vq);
-+
- 	__netif_tx_unlock(txq);
- 
--	virtqueue_napi_complete(napi, sq->vq, 0);
-+	if (done) {
-+		if (unlikely(virtqueue_poll(sq->vq, opaque))) {
-+			if (napi_schedule_prep(napi)) {
-+				__netif_tx_lock(txq, raw_smp_processor_id());
-+				virtqueue_disable_cb(sq->vq);
-+				__netif_tx_unlock(txq);
-+				__napi_schedule(napi);
-+			}
-+		}
-+	}
- 
- 	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
- 		netif_tx_wake_queue(txq);
 -- 
 2.30.2
 
