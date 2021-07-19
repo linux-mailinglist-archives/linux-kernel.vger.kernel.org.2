@@ -2,38 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D183CE7D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4614F3CE7D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348774AbhGSQdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:33:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58058 "EHLO mail.kernel.org"
+        id S1350683AbhGSQeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:34:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347221AbhGSPRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1346663AbhGSPRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:17:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A71D9611C1;
-        Mon, 19 Jul 2021 15:57:48 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E4FD61285;
+        Mon, 19 Jul 2021 15:57:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710269;
-        bh=qjAee10GKoNtEd3QJvJ5ofikK7mIpHulu3nelTdmX4M=;
+        s=korg; t=1626710272;
+        bh=UeCvVDPoh1OLSrZIlpm701XxGHZ0KFMRQimJk6/CQhE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RfFjs0xBwWSURZLuPTCQGxzUHhOSTbVMIdn6yc2hVXoSC3z4PVFLT/ZibqYetChUW
-         9QEd7a+H7+X+PIHsik6/l0lKJs/MJ0LARuIGIAmimQECr8qDae2BGor1g0ECcgtasg
-         dlCNLW6f4l5UHezbkgMQ9gbjYxuExpbLpNcMKe7g=
+        b=D+pkC8ODCdUMTEltCr+/lwerMxLusdt1GYzXwGEDRwqh43hK5H7bRebdLgincANjQ
+         0YFK4vKoL13rOIZvMvniYg3uoUzzENCc/eQ3802DPWtMbjpvX8UaoKJ3Fpc4mFFZo8
+         JbMZ2Gpf9ftycYJcCs0NNIO/bYXF2r4FmZA7n7jY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        kernel test robot <lkp@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 114/243] PCI: ftpci100: Rename macro name collision
-Date:   Mon, 19 Jul 2021 16:52:23 +0200
-Message-Id: <20210719144944.588695089@linuxfoundation.org>
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 115/243] power: supply: ab8500: Avoid NULL pointers
+Date:   Mon, 19 Jul 2021 16:52:24 +0200
+Message-Id: <20210719144944.620412444@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -45,118 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit 5be967d5016ac5ffb9c4d0df51b48441ee4d5ed1 ]
+[ Upstream commit 5bcb5087c9dd3dca1ff0ebd8002c5313c9332b56 ]
 
-PCI_IOSIZE is defined in mach-loongson64/spaces.h, so change the name
-of the PCI_* macros in pci-ftpci100.c to use FTPCI_* so that they are
-more localized and won't conflict with other drivers or arches.
+Sometimes the code will crash because we haven't enabled
+AC or USB charging and thus not created the corresponding
+psy device. Fix it by checking that it is there before
+notifying.
 
-../drivers/pci/controller/pci-ftpci100.c:37: warning: "PCI_IOSIZE" redefined
-   37 | #define PCI_IOSIZE 0x00
-      |
-In file included from ../arch/mips/include/asm/addrspace.h:13,
-...              from ../drivers/pci/controller/pci-ftpci100.c:15:
-arch/mips/include/asm/mach-loongson64/spaces.h:11: note: this is the location of the previous definition
-   11 | #define PCI_IOSIZE SZ_16M
-
-Suggested-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210517234117.3660-1-rdunlap@infradead.org
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Krzysztof Wilczyński <kw@linux.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-ftpci100.c | 30 +++++++++++++--------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ drivers/power/supply/ab8500_charger.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/pci-ftpci100.c b/drivers/pci/controller/pci-ftpci100.c
-index da3cd216da00..aefef1986201 100644
---- a/drivers/pci/controller/pci-ftpci100.c
-+++ b/drivers/pci/controller/pci-ftpci100.c
-@@ -34,12 +34,12 @@
-  * Special configuration registers directly in the first few words
-  * in I/O space.
-  */
--#define PCI_IOSIZE	0x00
--#define PCI_PROT	0x04 /* AHB protection */
--#define PCI_CTRL	0x08 /* PCI control signal */
--#define PCI_SOFTRST	0x10 /* Soft reset counter and response error enable */
--#define PCI_CONFIG	0x28 /* PCI configuration command register */
--#define PCI_DATA	0x2C
-+#define FTPCI_IOSIZE	0x00
-+#define FTPCI_PROT	0x04 /* AHB protection */
-+#define FTPCI_CTRL	0x08 /* PCI control signal */
-+#define FTPCI_SOFTRST	0x10 /* Soft reset counter and response error enable */
-+#define FTPCI_CONFIG	0x28 /* PCI configuration command register */
-+#define FTPCI_DATA	0x2C
+diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply/ab8500_charger.c
+index db65be026920..6765d0901320 100644
+--- a/drivers/power/supply/ab8500_charger.c
++++ b/drivers/power/supply/ab8500_charger.c
+@@ -413,6 +413,14 @@ disable_otp:
+ static void ab8500_power_supply_changed(struct ab8500_charger *di,
+ 					struct power_supply *psy)
+ {
++	/*
++	 * This happens if we get notifications or interrupts and
++	 * the platform has been configured not to support one or
++	 * other type of charging.
++	 */
++	if (!psy)
++		return;
++
+ 	if (di->autopower_cfg) {
+ 		if (!di->usb.charger_connected &&
+ 		    !di->ac.charger_connected &&
+@@ -439,7 +447,15 @@ static void ab8500_charger_set_usb_connected(struct ab8500_charger *di,
+ 		if (!connected)
+ 			di->flags.vbus_drop_end = false;
  
- #define FARADAY_PCI_STATUS_CMD		0x04 /* Status and command */
- #define FARADAY_PCI_PMC			0x40 /* Power management control */
-@@ -195,9 +195,9 @@ static int faraday_raw_pci_read_config(struct faraday_pci *p, int bus_number,
- 			PCI_CONF_FUNCTION(PCI_FUNC(fn)) |
- 			PCI_CONF_WHERE(config) |
- 			PCI_CONF_ENABLE,
--			p->base + PCI_CONFIG);
-+			p->base + FTPCI_CONFIG);
+-		sysfs_notify(&di->usb_chg.psy->dev.kobj, NULL, "present");
++		/*
++		 * Sometimes the platform is configured not to support
++		 * USB charging and no psy has been created, but we still
++		 * will get these notifications.
++		 */
++		if (di->usb_chg.psy) {
++			sysfs_notify(&di->usb_chg.psy->dev.kobj, NULL,
++				     "present");
++		}
  
--	*value = readl(p->base + PCI_DATA);
-+	*value = readl(p->base + FTPCI_DATA);
- 
- 	if (size == 1)
- 		*value = (*value >> (8 * (config & 3))) & 0xFF;
-@@ -230,17 +230,17 @@ static int faraday_raw_pci_write_config(struct faraday_pci *p, int bus_number,
- 			PCI_CONF_FUNCTION(PCI_FUNC(fn)) |
- 			PCI_CONF_WHERE(config) |
- 			PCI_CONF_ENABLE,
--			p->base + PCI_CONFIG);
-+			p->base + FTPCI_CONFIG);
- 
- 	switch (size) {
- 	case 4:
--		writel(value, p->base + PCI_DATA);
-+		writel(value, p->base + FTPCI_DATA);
- 		break;
- 	case 2:
--		writew(value, p->base + PCI_DATA + (config & 3));
-+		writew(value, p->base + FTPCI_DATA + (config & 3));
- 		break;
- 	case 1:
--		writeb(value, p->base + PCI_DATA + (config & 3));
-+		writeb(value, p->base + FTPCI_DATA + (config & 3));
- 		break;
- 	default:
- 		ret = PCIBIOS_BAD_REGISTER_NUMBER;
-@@ -469,7 +469,7 @@ static int faraday_pci_probe(struct platform_device *pdev)
- 		if (!faraday_res_to_memcfg(io->start - win->offset,
- 					   resource_size(io), &val)) {
- 			/* setup I/O space size */
--			writel(val, p->base + PCI_IOSIZE);
-+			writel(val, p->base + FTPCI_IOSIZE);
- 		} else {
- 			dev_err(dev, "illegal IO mem size\n");
- 			return -EINVAL;
-@@ -477,11 +477,11 @@ static int faraday_pci_probe(struct platform_device *pdev)
- 	}
- 
- 	/* Setup hostbridge */
--	val = readl(p->base + PCI_CTRL);
-+	val = readl(p->base + FTPCI_CTRL);
- 	val |= PCI_COMMAND_IO;
- 	val |= PCI_COMMAND_MEMORY;
- 	val |= PCI_COMMAND_MASTER;
--	writel(val, p->base + PCI_CTRL);
-+	writel(val, p->base + FTPCI_CTRL);
- 	/* Mask and clear all interrupts */
- 	faraday_raw_pci_write_config(p, 0, 0, FARADAY_PCI_CTRL2 + 2, 2, 0xF000);
- 	if (variant->cascaded_irq) {
+ 		if (connected) {
+ 			mutex_lock(&di->charger_attached_mutex);
 -- 
 2.30.2
 
