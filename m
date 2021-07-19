@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D14D3CDC12
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D7C3CDEAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241108AbhGSOvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:51:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46648 "EHLO mail.kernel.org"
+        id S1346080AbhGSPFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:05:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244461AbhGSOd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:33:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A42376124B;
-        Mon, 19 Jul 2021 15:13:14 +0000 (UTC)
+        id S1344050AbhGSOsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3643613D9;
+        Mon, 19 Jul 2021 15:25:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707595;
-        bh=BMwHAXZgdhqQwUQ5+UshBBH8/SkY4gFxYKmSeVWpeAA=;
+        s=korg; t=1626708360;
+        bh=2MGni7B5wZNEWF6vJLpZ9cH5IFFk7fHkR+8ePWBlKb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LoyEPyR/VjcQvzsJTfRKhjyNWJaalhWua+n57QmMWhMwIcH6/QiJRIrIAxl7gYy5j
-         vP+OpaU1WKMPXuUsyIo9wZb5rZPVbNy7ojhvVCRnXeXuMXZtmbvT0MlGD+G/oGuyFZ
-         TOV2qpCFkEZuqqFr/pwe9ILytYfq/6CLQE0XCCcY=
+        b=pIZ4aNk1aASEzG4xgTsQ8zLih633I/Gb/djKZsXxejVi76yx1UwG04efOjxiPxExc
+         RFnhBTV/PtWzcNG5NizJNiU4H7Xg+b/nfCazuZbIqqSsALFJ/TCkJnrsJkrqMuWPbI
+         TjC1ny85/0qzmkJGz/MtKicnzXwToZbcH+puNSOU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        anton.ivanov@cambridgegreys.com,
-        Richard Weinberger <richard@nod.at>,
+        Zou Wei <zou_wei@huawei.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 227/245] um: fix error return code in winch_tramp()
+Subject: [PATCH 4.14 280/315] power: supply: ab8500: add missing MODULE_DEVICE_TABLE
 Date:   Mon, 19 Jul 2021 16:52:49 +0200
-Message-Id: <20210719144947.726600469@linuxfoundation.org>
+Message-Id: <20210719144952.631391560@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+References: <20210719144942.861561397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit ccf1236ecac476d9d2704866d9a476c86e387971 ]
+[ Upstream commit dfe52db13ab8d24857a9840ec7ca75eef800c26c ]
 
-Fix to return a negative error code from the error handling case instead
-of 0, as done elsewhere in this function.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Fixes: 89df6bfc0405 ("uml: DEBUG_SHIRQ fixes")
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Acked-By: anton.ivanov@cambridgegreys.com
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/chan_user.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/power/supply/ab8500_btemp.c   | 1 +
+ drivers/power/supply/ab8500_charger.c | 1 +
+ drivers/power/supply/ab8500_fg.c      | 1 +
+ 3 files changed, 3 insertions(+)
 
-diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
-index 3fd7c3efdb18..feb7f5ab4084 100644
---- a/arch/um/drivers/chan_user.c
-+++ b/arch/um/drivers/chan_user.c
-@@ -256,7 +256,8 @@ static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
- 		goto out_close;
- 	}
+diff --git a/drivers/power/supply/ab8500_btemp.c b/drivers/power/supply/ab8500_btemp.c
+index f7a35ebfbab2..97423a04fc0f 100644
+--- a/drivers/power/supply/ab8500_btemp.c
++++ b/drivers/power/supply/ab8500_btemp.c
+@@ -1177,6 +1177,7 @@ static const struct of_device_id ab8500_btemp_match[] = {
+ 	{ .compatible = "stericsson,ab8500-btemp", },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, ab8500_btemp_match);
  
--	if (os_set_fd_block(*fd_out, 0)) {
-+	err = os_set_fd_block(*fd_out, 0);
-+	if (err) {
- 		printk(UM_KERN_ERR "winch_tramp: failed to set thread_fd "
- 		       "non-blocking.\n");
- 		goto out_close;
+ static struct platform_driver ab8500_btemp_driver = {
+ 	.probe = ab8500_btemp_probe,
+diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply/ab8500_charger.c
+index 8e74d27fad29..fe2341e92be9 100644
+--- a/drivers/power/supply/ab8500_charger.c
++++ b/drivers/power/supply/ab8500_charger.c
+@@ -3752,6 +3752,7 @@ static const struct of_device_id ab8500_charger_match[] = {
+ 	{ .compatible = "stericsson,ab8500-charger", },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, ab8500_charger_match);
+ 
+ static struct platform_driver ab8500_charger_driver = {
+ 	.probe = ab8500_charger_probe,
+diff --git a/drivers/power/supply/ab8500_fg.c b/drivers/power/supply/ab8500_fg.c
+index b87768238b70..2677592ed7af 100644
+--- a/drivers/power/supply/ab8500_fg.c
++++ b/drivers/power/supply/ab8500_fg.c
+@@ -3229,6 +3229,7 @@ static const struct of_device_id ab8500_fg_match[] = {
+ 	{ .compatible = "stericsson,ab8500-fg", },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, ab8500_fg_match);
+ 
+ static struct platform_driver ab8500_fg_driver = {
+ 	.probe = ab8500_fg_probe,
 -- 
 2.30.2
 
