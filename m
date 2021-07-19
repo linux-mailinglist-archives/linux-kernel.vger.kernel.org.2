@@ -2,131 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647593CEAB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF363CEA80
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376841AbhGSRQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49926 "EHLO
+        id S1377417AbhGSRQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347301AbhGSPjZ (ORCPT
+        with ESMTP id S1348095AbhGSPjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:25 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECCC9C0533A0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:30:43 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id c12so4639522wrt.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:57:03 -0700 (PDT)
+        Mon, 19 Jul 2021 11:39:54 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AB3C0533B1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:32:07 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id b24-20020a9d60d80000b02904d14e47202cso1252033otk.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:58:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lqk2jkzthWLyzhPPwl9UElGn40y2Dt6x0oKXE1RM9g8=;
-        b=jI3en6+L35OGQjtiyLEBUmVWVLufhxwq/1aOfwuDJV44bcq1jbW0DRpXwwWlYvSdMk
-         e4Xm3XmGv35SIVRFvfDV0Fdm1m0G59WRs/JZYelzbtxZfeEOv0+E2rKlGbQ1frzNzc76
-         fXzvmTXp+dnZBCwUIz5YNwPAkhnsQdXVRzQKoZsBp43fwvrYi9RgXPvTk1n7ltpWSPVQ
-         IZp88OIXUDGh7cL1PTzzyxgcCC1TNFv7J2WYENBPUFn78VP+iJbtcr9SZZkNqNjdndnk
-         FQG0OmlrWdFs0XoRXmu2H2p3Dl+9wpibmflX0a+iE/KQ2XvTufMt3nNZvVUNv9GRNHov
-         34sw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xIwzU+Afe1M0wAfoYltQGIMtQgvGqIlYy99BYrSr2Zc=;
+        b=HFRraTLnnT08snRhu4eIkJc1FsGkVqfFGCwoqAT7nsIJJSZOtj5YAbj2c+JSJ498pJ
+         kjAzlMENbtMtUv4OgutDWs+1/RUSUrK5/jnq4cL/sMh0e9+1RzDwMtbKBPDZ/gKrjvjN
+         ySYfO/VEf8Q1s+J8yh8XJ9rJtU4bL98CY4isOCHp+c6QnxdyBq8P9YHcDj67LHLNee4I
+         NHjqb0ekWeG7YTkuJdczBpVb+giozE3AnI2dcC4Iwf0htpCcFFi5ACFpQM+0Jjz4FHRx
+         fpCrhhdWE1DqZk+ImpC0WhBar6w8LBC45lH2H3oBR8HrcSl+WBuyWhI2My5FSmnJXHEH
+         ZreQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lqk2jkzthWLyzhPPwl9UElGn40y2Dt6x0oKXE1RM9g8=;
-        b=Y1XBrNGCQR0abYOiqUzr/21hPVRhUfnmqE3gan2HkGovcGO9BKTFMj1RAiqC9x2ZPb
-         Hck39rMDhSJJDToO33IxL8PmJuhXLK2SoYPca0UviYrPe/obyv+sZN9G+w2wLyATaG7M
-         KzVXO2ZjIxgQPIIANO1Lf9kbs0cKiRM/U0ZLhlk3FGIetHcexHJMFYVfo0d8l+GgSUUq
-         SghQLa+kHwJBOgr/Mh3WOY/UGskajQEQb6Gs9ZH4N4WyHGsOmUKVivDl640OT3T/7wwu
-         ILtp18/l/8PpsloXRZNfmOpzGq88TX01PUcsZgd9BhqK46kmqwOHaAhutQ+eCsaRv3ma
-         fT2A==
-X-Gm-Message-State: AOAM530EJhDcg9gitbwdOf5c+eAZ7xMOqoiSBYVkgvJDekhJEsgjUs+y
-        JaR8NVOhOywnA99hD/C9XZKspg==
-X-Google-Smtp-Source: ABdhPJxpNsB2RMnrXBTt9Gp1trnlhrfx+X5PhpEBH6aIheVp4g43w00+TxDIiSELO95IVAOEFTQhhA==
-X-Received: by 2002:adf:a41e:: with SMTP id d30mr30429082wra.10.1626710221588;
-        Mon, 19 Jul 2021 08:57:01 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:83e0:11ac:c870:2b97])
-        by smtp.gmail.com with ESMTPSA id w16sm6652930wru.58.2021.07.19.08.57.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 08:57:01 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 16:56:57 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        tabba@google.com, dbrazdil@google.com, kernel-team@android.com
-Subject: Re: [PATCH 09/14] KVM: arm64: Mark host bss and rodata section as
- shared
-Message-ID: <YPWgyS7i2sMtiX8S@google.com>
-References: <20210719104735.3681732-1-qperret@google.com>
- <20210719104735.3681732-10-qperret@google.com>
- <87eebujqjv.wl-maz@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xIwzU+Afe1M0wAfoYltQGIMtQgvGqIlYy99BYrSr2Zc=;
+        b=lyOd7++I3BzzI3xkyFADZpiEW9BP//SRJqEHrrkSh9dKuSsAA2vhDhsO78sOA7eQ2D
+         p8pOdsdiL6m1+v5lGKFuGmjXaW6Tc4HAmPeeksjFX0a8Bw/kXpMgh8fWjrldggAxYpUO
+         GuZibqXt7eG1CsxD1QkqyfYs9gj4fa900i5SdNkePYumI+ra2akXdItuJcTslQKitlcK
+         3nPn2DgxG9omFMmlxcGKif/sRK+P7NFUw3GyxVyOCrKxvt8FYwZF3F/HBH8nUG8z9T76
+         k/qmlr0YIyXVfuul7YjsuGJgD82FqYIH+MlRgBvKu1f5+TPbu/nlS2pwW7KFyA8bakOE
+         g2fg==
+X-Gm-Message-State: AOAM532I2T46sb/+SGGb8draX1mI2I7QJUNy+/Z1GcXk+8nbcqYmDWqD
+        83RqB+gww9Bq63bMqx8b+n2byBph/kAeebLsYBK/yA==
+X-Google-Smtp-Source: ABdhPJwfWwmWGxabniI5FM6nXIIa0z9IUme9GHWpOXFC0+sp+Mu8KeFjTZ4K5AzKVZgI+DphK1QbLX8bP9p573dAML0=
+X-Received: by 2002:a9d:32f:: with SMTP id 44mr19002565otv.266.1626710299343;
+ Mon, 19 Jul 2021 08:58:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87eebujqjv.wl-maz@kernel.org>
+References: <20210719144942.861561397@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 19 Jul 2021 21:28:05 +0530
+Message-ID: <CA+G9fYvCbZdAQbZw0+e-5ueyzRdsCog4JPQoHNK4TyxXLWpzqQ@mail.gmail.com>
+Subject: Re: [PATCH 4.14 000/315] 4.14.240-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 19 Jul 2021 at 16:01:40 (+0100), Marc Zyngier wrote:
-> On Mon, 19 Jul 2021 11:47:30 +0100,
-> Quentin Perret <qperret@google.com> wrote:
-> > +static int finalize_mappings(void)
-> > +{
-> > +	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_RWX;
-> > +	int ret;
-> > +
-> > +	/*
-> > +	 * The host's .bss and .rodata sections are now conceptually owned by
-> > +	 * the hypervisor, so mark them as 'borrowed' in the host stage-2. We
-> > +	 * can safely use host_stage2_idmap_locked() at this point since the
-> > +	 * host stage-2 has not been enabled yet.
-> > +	 */
-> > +	prot |= KVM_PGTABLE_STATE_SHARED | KVM_PGTABLE_STATE_BORROWED;
-> > +	ret = host_stage2_idmap_locked(__hyp_pa(__start_rodata),
-> > +				       __hyp_pa(__end_rodata), prot);
-> 
-> Do we really want to map the rodata section as RWX?
+On Mon, 19 Jul 2021 at 20:47, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.240 release.
+> There are 315 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 21 Jul 2021 14:47:42 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.240-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I know, feels odd, but for now I think so. The host is obviously
-welcome to restrict things in its stage-1, but for stage-2, this is
-just 'memory' so far, the host is allowed to patch it if it wants too.
+Following patch caused arm64 build errors on 4.19 and 4.14.
 
-Eventually, yes, I think we should make it RO in the host stage-2, but
-maybe that's for another series?
+> Petr Vorel <petr.vorel@gmail.com>
+>     arm64: dts: qcom: msm8994-angler: Fix gpio-reserved-ranges 85-88
 
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	return host_stage2_idmap_locked(__hyp_pa(__hyp_bss_end),
-> > +					__hyp_pa(__bss_stop), prot);
-> 
-> If the 'locked' state implies SHARED+BORROWED, maybe consider moving
-> the ORRing of the prot into host_stage2_idmap_locked()?
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64
+CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
+'HOSTCC=sccache gcc'
+Error: /builds/linux/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts:42.1-6
+Label or path tlmm not found
+FATAL ERROR: Syntax error parsing input tree
+make[3]: *** [scripts/Makefile.lib:294:
+arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dtb] Error 1
+make[3]: Target '__build' not remade because of errors.
+make[2]: *** [/builds/linux/scripts/Makefile.build:544:
+arch/arm64/boot/dts/qcom] Error 2
 
-Ah no, sorry for the confusion, but 'locked' means that we already hold
-the pgtable lock. That is not actually true here, but this is a special
-case as only the current CPU can be messing with it at this point in
-time so taking the lock would just be wasted cycles.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> > +}
-> > +
-> >  void __noreturn __pkvm_init_finalise(void)
-> >  {
-> >  	struct kvm_host_data *host_data = this_cpu_ptr(&kvm_host_data);
-> > @@ -167,6 +199,10 @@ void __noreturn __pkvm_init_finalise(void)
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > +	ret = finalize_mappings();
-> > +	if (ret)
-> > +		goto out;
-> > +
-> >  	pkvm_pgtable_mm_ops = (struct kvm_pgtable_mm_ops) {
-> >  		.zalloc_page = hyp_zalloc_hyp_page,
-> >  		.phys_to_virt = hyp_phys_to_virt,
-
-Thanks,
-Quentin
+--
+Linaro LKFT
+https://lkft.linaro.org
