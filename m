@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96EC33CDD56
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC753CDDB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244788AbhGSO5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:57:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54558 "EHLO mail.kernel.org"
+        id S1344724AbhGSO7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:59:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244217AbhGSOho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:37:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DC6461220;
-        Mon, 19 Jul 2021 15:17:25 +0000 (UTC)
+        id S244162AbhGSOhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:37:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E91FD61186;
+        Mon, 19 Jul 2021 15:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707846;
-        bh=fAySR2GxltjBMCs0mwVQzIM8EBH+3hm24OaJlIaGlVA=;
+        s=korg; t=1626707849;
+        bh=PFPsGtloBeXk6RGscme2w6t+8g1G3WoUgkd9m9GI2yA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A4fqghTIRK/8eDQkItgpU/EZPHrVNt9hxTEu8BukIgrG7HCCt0jqV1S13gXIqqkMo
-         1lWYzvD9I6SddKW7eyObhBHVrS6jOaYZxw/8o/zUdTIV/lH8bdMUcEx+Pt2f+rQvPf
-         OOGW2DOkSw6hTIuoTlCjf0KbG1cuBuxW2akNclFc=
+        b=aqfzC7WznIA8mv5q++LN3WLZNEPhnXcXiBJAeRahxSW1qrp4kmycUUjW1z7XdsdMr
+         O91il2QK/HZubIGkD8bHewLmWSyvib9z96HiEYXgQ2OEZBa5ljOxH7ZSFRioiyGILE
+         33Hi5D57TU+80NVAK9iln5Rf3NQbKyRNbHYfdsRQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 081/315] pata_octeon_cf: avoid WARN_ON() in ata_host_activate()
-Date:   Mon, 19 Jul 2021 16:49:30 +0200
-Message-Id: <20210719144945.539114445@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        John Allen <john.allen@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 082/315] crypto: ccp - Fix a resource leak in an error handling path
+Date:   Mon, 19 Jul 2021 16:49:31 +0200
+Message-Id: <20210719144945.570151277@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -39,43 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit bfc1f378c8953e68ccdbfe0a8c20748427488b80 ]
+[ Upstream commit a6f8e68e238a15bb15f1726b35c695136c64eaba ]
 
-Iff platform_get_irq() fails (or returns IRQ0) and thus the polling mode
-has to be used, ata_host_activate() hits the WARN_ON() due to 'irq_handler'
-parameter being non-NULL if the polling mode is selected.  Let's only set
-the pointer to the driver's IRQ handler if platform_get_irq() returns a
-valid IRQ # -- this should avoid the unnecessary WARN_ON()...
+If an error occurs after calling 'sp_get_irqs()', 'sp_free_irqs()' must be
+called as already done in the error handling path.
 
-Fixes: 43f01da0f279 ("MIPS/OCTEON/ata: Convert pata_octeon_cf.c to use device tree.")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Link: https://lore.kernel.org/r/3a241167-f84d-1d25-5b9b-be910afbe666@omp.ru
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: f4d18d656f88 ("crypto: ccp - Abstract interrupt registeration")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: John Allen <john.allen@amd.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/pata_octeon_cf.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/crypto/ccp/sp-pci.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/ata/pata_octeon_cf.c b/drivers/ata/pata_octeon_cf.c
-index d3d851b014a3..ac3b1fda820f 100644
---- a/drivers/ata/pata_octeon_cf.c
-+++ b/drivers/ata/pata_octeon_cf.c
-@@ -898,10 +898,11 @@ static int octeon_cf_probe(struct platform_device *pdev)
- 					return -EINVAL;
- 				}
- 
--				irq_handler = octeon_cf_interrupt;
- 				i = platform_get_irq(dma_dev, 0);
--				if (i > 0)
-+				if (i > 0) {
- 					irq = i;
-+					irq_handler = octeon_cf_interrupt;
-+				}
- 			}
- 			of_node_put(dma_node);
+diff --git a/drivers/crypto/ccp/sp-pci.c b/drivers/crypto/ccp/sp-pci.c
+index 9859aa683a28..e820d99c555f 100644
+--- a/drivers/crypto/ccp/sp-pci.c
++++ b/drivers/crypto/ccp/sp-pci.c
+@@ -173,7 +173,7 @@ static int sp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		if (ret) {
+ 			dev_err(dev, "dma_set_mask_and_coherent failed (%d)\n",
+ 				ret);
+-			goto e_err;
++			goto free_irqs;
  		}
+ 	}
+ 
+@@ -181,12 +181,14 @@ static int sp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 
+ 	ret = sp_init(sp);
+ 	if (ret)
+-		goto e_err;
++		goto free_irqs;
+ 
+ 	dev_notice(dev, "enabled\n");
+ 
+ 	return 0;
+ 
++free_irqs:
++	sp_free_irqs(sp);
+ e_err:
+ 	dev_notice(dev, "initialization failed\n");
+ 	return ret;
 -- 
 2.30.2
 
