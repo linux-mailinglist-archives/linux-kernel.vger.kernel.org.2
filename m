@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92623CE031
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512493CDBD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346428AbhGSPOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:14:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40446 "EHLO mail.kernel.org"
+        id S238126AbhGSOuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:50:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344146AbhGSOsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 163BD613F7;
-        Mon, 19 Jul 2021 15:26:43 +0000 (UTC)
+        id S245575AbhGSOeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:34:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2C1761355;
+        Mon, 19 Jul 2021 15:14:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708403;
-        bh=VvtALEWSNEAVWuiRWv20AZYkGoMKH7GeHM9YHnFQOUw=;
+        s=korg; t=1626707663;
+        bh=TNFVtHoJc3PqwJwXyaoHT9IFm9G1RO35rNOmgMwLZag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fD3TBBKMsj1dJmYqs3B5UcZYUDcyjd8wVMXys+XfuQGjhyfnCKFYZDKDJx6zzkQXy
-         gkXoC1i1ZL3nNfZxuT1nEzYXeFsPt8G+bp6JRqywkJMh2Tlk8WieDgHz8XhNfD468o
-         EBfFeIKfba+C5BXKn2gZowipNxe1SY9gY2oeiZdw=
+        b=Rx7bvrYxF+ZxYeDs61t7QrUZHOxGCqamMdTIiiOtJsnW9YZglxv8uFrYcaCWRHKqu
+         VppA9Nmh1H46XQLLrETuPL2wNWXa33h0oFSl+kd9Fo0FNnsP0wRiZ9kUOLNfCmpJQ7
+         ILKkr8u8JqHGLW5IM8Ee9JqrYMAYxiyiqZQ84NdE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Brian Cain <bcain@codeaurora.org>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Glitta <glittao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Martin=20F=C3=A4cknitz?= <faecknitz@hotsplots.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 298/315] hexagon: use common DISCARDS macro
+Subject: [PATCH 4.9 245/245] MIPS: vdso: Invalid GIC access through VDSO
 Date:   Mon, 19 Jul 2021 16:53:07 +0200
-Message-Id: <20210719144953.270864689@linuxfoundation.org>
+Message-Id: <20210719144948.279281452@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
-References: <20210719144942.861561397@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,60 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Martin Fäcknitz <faecknitz@hotsplots.de>
 
-[ Upstream commit 681ba73c72302214686401e707e2087ed11a6556 ]
+[ Upstream commit 47ce8527fbba145a7723685bc9a27d9855e06491 ]
 
-ld.lld warns that the '.modinfo' section is not currently handled:
+Accessing raw timers (currently only CLOCK_MONOTONIC_RAW) through VDSO
+doesn't return the correct time when using the GIC as clock source.
+The address of the GIC mapped page is in this case not calculated
+correctly. The GIC mapped page is calculated from the VDSO data by
+subtracting PAGE_SIZE:
 
-ld.lld: warning: kernel/built-in.a(workqueue.o):(.modinfo) is being placed in '.modinfo'
-ld.lld: warning: kernel/built-in.a(printk/printk.o):(.modinfo) is being placed in '.modinfo'
-ld.lld: warning: kernel/built-in.a(irq/spurious.o):(.modinfo) is being placed in '.modinfo'
-ld.lld: warning: kernel/built-in.a(rcu/update.o):(.modinfo) is being placed in '.modinfo'
+  void *get_gic(const struct vdso_data *data) {
+    return (void __iomem *)data - PAGE_SIZE;
+  }
 
-The '.modinfo' section was added in commit 898490c010b5 ("moduleparam:
-Save information about built-in modules in separate file") to the DISCARDS
-macro but Hexagon has never used that macro.  The unification of DISCARDS
-happened in commit 023bf6f1b8bf ("linker script: unify usage of discard
-definition") in 2009, prior to Hexagon being added in 2011.
+However, the data pointer is not page aligned for raw clock sources.
+This is because the VDSO data for raw clock sources (CS_RAW = 1) is
+stored after the VDSO data for coarse clock sources (CS_HRES_COARSE = 0).
+Therefore, only the VDSO data for CS_HRES_COARSE is page aligned:
 
-Switch Hexagon over to the DISCARDS macro so that anything that is
-expected to be discarded gets discarded.
+  +--------------------+
+  |                    |
+  | vd[CS_RAW]         | ---+
+  | vd[CS_HRES_COARSE] |    |
+  +--------------------+    | -PAGE_SIZE
+  |                    |    |
+  |  GIC mapped page   | <--+
+  |                    |
+  +--------------------+
 
-Link: https://lkml.kernel.org/r/20210521011239.1332345-3-nathan@kernel.org
-Fixes: e95bf452a9e2 ("Hexagon: Add configuration and makefiles for the Hexagon architecture.")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Acked-by: Brian Cain <bcain@codeaurora.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Oliver Glitta <glittao@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+When __arch_get_hw_counter() is called with &vd[CS_RAW], get_gic returns
+the wrong address (somewhere inside the GIC mapped page). The GIC counter
+values are not returned which results in an invalid time.
+
+Fixes: a7f4df4e21dd ("MIPS: VDSO: Add implementations of gettimeofday() and clock_gettime()")
+Signed-off-by: Martin Fäcknitz <faecknitz@hotsplots.de>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/hexagon/kernel/vmlinux.lds.S | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ arch/mips/vdso/vdso.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/hexagon/kernel/vmlinux.lds.S b/arch/hexagon/kernel/vmlinux.lds.S
-index ec87e67feb19..22c10102712a 100644
---- a/arch/hexagon/kernel/vmlinux.lds.S
-+++ b/arch/hexagon/kernel/vmlinux.lds.S
-@@ -71,13 +71,8 @@ SECTIONS
+diff --git a/arch/mips/vdso/vdso.h b/arch/mips/vdso/vdso.h
+index cfb1be441dec..921589b45bc2 100644
+--- a/arch/mips/vdso/vdso.h
++++ b/arch/mips/vdso/vdso.h
+@@ -81,7 +81,7 @@ static inline const union mips_vdso_data *get_vdso_data(void)
  
- 	_end = .;
- 
--	/DISCARD/ : {
--		EXIT_TEXT
--		EXIT_DATA
--		EXIT_CALL
--	}
--
- 	STABS_DEBUG
- 	DWARF_DEBUG
- 
-+	DISCARDS
+ static inline void __iomem *get_gic(const union mips_vdso_data *data)
+ {
+-	return (void __iomem *)data - PAGE_SIZE;
++	return (void __iomem *)((unsigned long)data & PAGE_MASK) - PAGE_SIZE;
  }
+ 
+ #endif /* CONFIG_CLKSRC_MIPS_GIC */
 -- 
 2.30.2
 
