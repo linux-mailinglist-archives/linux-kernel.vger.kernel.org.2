@@ -2,54 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506443CD503
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224FB3CD50A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237004AbhGSMEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 08:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
+        id S237078AbhGSMFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 08:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236571AbhGSMET (ORCPT
+        with ESMTP id S236899AbhGSMFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 08:04:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359C3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 05:02:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tGkUUStChLCXt1Uh1220a9d3L35+2D4Hyrolq+19Nbc=; b=FesO4hgZXSGsqrTOY4GPu4RWOC
-        xFyqdunUnk/ncfxgNVnYtdkBcOYownzTEQi5Kq1h7NqnJ9lRRtZc/KsLHP3Kl4BgF+vmVWjxP7MZv
-        exMfmFqQ9fSstaNshZwpG3XayTQHDR8p0NlVQsA9F+5rzpSZsJF7/6kdgUXPcHS6zfnzA0eOtZEN1
-        ABaFWiBAXuEEEWgWahlL3FCEfPYBQg2vIobdIjp682bb7X99Z7hgH6n6rZeT40Erxuh9QFqhSgT0+
-        8fUaTaz3BWRCN28WocOT3Q2LMF9uHbTZblywfZikEQn5l2pf+ny8LK3ifaCRV6cJKi7V+hYg/rGnT
-        Jqgaks9Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m5SdD-006r45-0z; Mon, 19 Jul 2021 12:44:32 +0000
-Date:   Mon, 19 Jul 2021 13:44:22 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1 1/1] mm/util: Rephrase documentation for kmemdup_nul()
- to clarify input
-Message-ID: <YPVzptA7JYMyWszg@casper.infradead.org>
-References: <20210719122002.41334-1-andriy.shevchenko@linux.intel.com>
+        Mon, 19 Jul 2021 08:05:08 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA3CC061574;
+        Mon, 19 Jul 2021 05:03:33 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id s18so18849807pgg.8;
+        Mon, 19 Jul 2021 05:45:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=tto4OVvjuCgq4lBBMOSB4qS7FSxO1fllKtx/pkaH/aM=;
+        b=LuQ/kJePBiQ2sZZAE0U5rHZDK1pdMQwE9VZ/S1Ngpg6VDNtB2XUn3nHKtrus/jXsFL
+         i1lw2oX51zCuDbuZUa4I1oUHkZLWAHBLZbqo2+4AP94xWDDpwz2RAMITYgt3Z2NYrbsJ
+         OmzY7hYqC/SQz0xg4Ih0X55QSOi7Pk6pdKCt+E67doyzAo3xVWu8+mYajawkR49UeerC
+         ZZ6Lycm/hFybFuKM2+4qybHbosPe5tR++hIoIrWSoIeSf6R+xn37t0WDEALhJyku01EC
+         pG1O5vPG10586FZ7rWFMqvGuxgj+mJj+CS31+3sGJL4lFmIVLPAkvLoFJQFUY6kjtok9
+         DlJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tto4OVvjuCgq4lBBMOSB4qS7FSxO1fllKtx/pkaH/aM=;
+        b=hz4cQqpFW+i7zmx/Le2W/npqr1OhU+n93YzfHev/h1XodIQp2+PJJcEUuYFm++1yqK
+         FS0+U3Zph2HH3F7nq+5GeCzcs0rDKFiGtwJkJkXHnvkpjRtsKTwnALw7trf326InDem4
+         XhKHRbfDCjDWhoLB7RUJO6KdR2Taxw84Jl9/piYqJKUaTVkiGV+0yDHp6JrU2phxBKF6
+         3L/Na1AmbPFCiWNxymmNdWLXBOmJG0zn1E90JOtD455AURYxjTRThUz7P0cwupjE+gMi
+         qOIyG41TaeSIK4ko0h2cwP+Pg5CiItoL05gUWp2uyebDLiZl9dJAw/A3mDEzbkVANkzs
+         Wh0A==
+X-Gm-Message-State: AOAM531uPY5pMPgfA//0rXQ106mViL3asyfPAMU/3mxKLZFOQYivXUER
+        fxIpxzyhm/4CLHd28FD8YE8LzGJ2JQW36qWlLZo=
+X-Google-Smtp-Source: ABdhPJwpKyQgs0rJ1djIB80LNagdLFagxsrcE0J+H7ot1s1STaLkL2e1Q8aLp4hs86aGu8FTDeXY8TYxDB9kCjSh568=
+X-Received: by 2002:a65:434a:: with SMTP id k10mr25333382pgq.4.1626698747965;
+ Mon, 19 Jul 2021 05:45:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210719122002.41334-1-andriy.shevchenko@linux.intel.com>
+References: <20210624224909.6350-1-pali@kernel.org> <20210625143617.12826-1-pali@kernel.org>
+ <20210625143617.12826-8-pali@kernel.org> <CAMuHMdUCEHtqNk-nGJhPK_=NrgSoRhmC99J9pdGqQxcWpoFqGg@mail.gmail.com>
+ <20210625153803.u6uesckcqyvvo7dl@pali>
+In-Reply-To: <20210625153803.u6uesckcqyvvo7dl@pali>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 19 Jul 2021 15:45:08 +0300
+Message-ID: <CAHp75Vdzb9yhm490vAhL7O0S+5FPR=sM1Tohqi70xYV+bXVr8g@mail.gmail.com>
+Subject: Re: [PATCH v2 07/11] math64: New DIV_U64_ROUND_CLOSEST helper
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 03:20:02PM +0300, Andy Shevchenko wrote:
-> kmemdup_nul() strictly speaking is not related to the string API,
-> while being quite useful for it. Rephrase documentation to make it
-> clear that input data can be anything (any data, which may contain
-> any bytes, including 0x00).
+On Fri, Jun 25, 2021 at 6:39 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> On Friday 25 June 2021 17:22:31 Geert Uytterhoeven wrote:
+> > On Fri, Jun 25, 2021 at 4:37 PM Pali Roh=C3=A1r <pali@kernel.org> wrote=
+:
 
-That's not a useful thing to do, though.  This rephrasing you've
-done is more confusing than the original.
+...
 
+> > > +/*
+> > > + * DIV_U64_ROUND_CLOSEST - unsigned 64bit divide with 32bit divisor =
+rounded to nearest integer
+
+> > > + * @dividend: unsigned 64bit dividend
+
+(1)
+
+> > > + * @divisor: unsigned 32bit divisor
+> > > + *
+> > > + * Divide unsigned 64bit dividend by unsigned 32bit divisor
+> > > + * and round to closest integer.
+> > > + *
+> > > + * Return: dividend / divisor rounded to nearest integer
+> > > + */
+> > > +#define DIV_U64_ROUND_CLOSEST(dividend, divisor)       \
+> > > +       ({ u32 _tmp =3D (divisor); div_u64((u64)(dividend) + _tmp / 2=
+, _tmp); })
+> >
+> > Given "dividend" should already be an unsigned 64-bit value, I don't
+> > think the cast to "u64" is needed. Similar macros in this file also
+> > don't have the cast.
+>
+> It is just to ensure that plus operation between dividend and _tmp is
+> evaluated in 64-bit context to prevent overflow. Just a case when user
+> calls this macro with 32-bit dividend param.
+
+This contradicts (1).
+
+> As it is a macro (and not
+> inline function) type is not automatically enforced.
+>
+> DIV_S64_ROUND_CLOSEST macro assigns its argument into temporary 64-bit
+> variable which then ensures usage of 64-bit arithmetic operations. Same
+> applies for DIV64_U64_ROUND_CLOSEST and DIV64_U64_ROUND_UP macros.
+>
+> So this is reason why I added explicit cast to u64.
+
+I don't see the reason for casting in the current code. Probably you
+need to rephrase documentation to explain why it's there.
+
+--=20
+With Best Regards,
+Andy Shevchenko
