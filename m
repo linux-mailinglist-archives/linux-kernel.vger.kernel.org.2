@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798F73CE7E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19503CE69E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354360AbhGSQfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:35:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37554 "EHLO mail.kernel.org"
+        id S1350352AbhGSQKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:10:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347833AbhGSPVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:21:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA12161166;
-        Mon, 19 Jul 2021 15:59:18 +0000 (UTC)
+        id S1344697AbhGSPJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:09:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AF9361264;
+        Mon, 19 Jul 2021 15:48:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710359;
-        bh=VyaFkPbmP551gwGWTz8D0oqbKVTTcJGTVq12IEJfT7c=;
+        s=korg; t=1626709719;
+        bh=lwqM6PvVga1wrNPdaKICIzDas3E2Hl7kjyv++ULeiNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W8TgayXdYLNrwvLg32NATQ/sFJfzXf1i6OVd9xQRjHl4eLaXRb1hJ3sfr0zc8xBET
-         L1IAaqJnNNCU6jJPZdcDspZNz6AYj+YUZow8aEm/eZVxGcos0qB8lYlfatLB2/x40M
-         9GgihOxWHjc3qDxPQ2j/llLX7ftAQTeXQ6b1V2xo=
+        b=c+HBZW+7rxEXJhRm9l6jNWkxPcrkd53Ep+uXFsFqT+N7uSLoyqnkP7V8WZnIOxAEW
+         yjx7BXGUdAIS/d41Dm9srwhohfq/ODsVOONtyR8AxRfbjDRBXY5s6mhawRZqQt37wc
+         4UjSWxOQ1ZZrS6v99EPitcCdVvPPMbGur9BTAp98=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, marcosfrm <marcosfrm@gmail.com>,
-        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 149/243] f2fs: add MODULE_SOFTDEP to ensure crc32 is included in the initramfs
-Date:   Mon, 19 Jul 2021 16:52:58 +0200
-Message-Id: <20210719144945.721082128@linuxfoundation.org>
+Subject: [PATCH 5.4 071/149] pwm: spear: Dont modify HW state in .remove callback
+Date:   Mon, 19 Jul 2021 16:52:59 +0200
+Message-Id: <20210719144918.140091199@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 0dd571785d61528d62cdd8aa49d76bc6085152fe ]
+[ Upstream commit b601a18f12383001e7a8da238de7ca1559ebc450 ]
 
-As marcosfrm reported in bugzilla:
+A consumer is expected to disable a PWM before calling pwm_put(). And if
+they didn't there is hopefully a good reason (or the consumer needs
+fixing). Also if disabling an enabled PWM was the right thing to do,
+this should better be done in the framework instead of in each low level
+driver.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=213089
+So drop the hardware modification from the .remove() callback.
 
-Initramfs generators rely on "pre" softdeps (and "depends") to include
-additional required modules.
-
-F2FS does not declare "pre: crc32" softdep. Then every generator (dracut,
-mkinitcpio...) has to maintain a hardcoded list for this purpose.
-
-Hence let's use MODULE_SOFTDEP("pre: crc32") in f2fs code.
-
-Fixes: 43b6573bac95 ("f2fs: use cryptoapi crc32 functions")
-Reported-by: marcosfrm <marcosfrm@gmail.com>
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/super.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pwm/pwm-spear.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 4af02719bb14..c52988067887 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -4122,4 +4122,5 @@ module_exit(exit_f2fs_fs)
- MODULE_AUTHOR("Samsung Electronics's Praesto Team");
- MODULE_DESCRIPTION("Flash Friendly File System");
- MODULE_LICENSE("GPL");
-+MODULE_SOFTDEP("pre: crc32");
+diff --git a/drivers/pwm/pwm-spear.c b/drivers/pwm/pwm-spear.c
+index 6c6b44fd3f43..2d11ac277de8 100644
+--- a/drivers/pwm/pwm-spear.c
++++ b/drivers/pwm/pwm-spear.c
+@@ -231,10 +231,6 @@ static int spear_pwm_probe(struct platform_device *pdev)
+ static int spear_pwm_remove(struct platform_device *pdev)
+ {
+ 	struct spear_pwm_chip *pc = platform_get_drvdata(pdev);
+-	int i;
+-
+-	for (i = 0; i < NUM_PWM; i++)
+-		pwm_disable(&pc->chip.pwms[i]);
  
+ 	/* clk was prepared in probe, hence unprepare it here */
+ 	clk_unprepare(pc->clk);
 -- 
 2.30.2
 
