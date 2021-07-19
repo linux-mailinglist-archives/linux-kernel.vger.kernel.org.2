@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC29D3CEA0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92203CEA62
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376783AbhGSRGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:06:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33856 "EHLO mail.kernel.org"
+        id S1345732AbhGSRNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:13:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349978AbhGSPgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:36:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97B19600EF;
-        Mon, 19 Jul 2021 16:17:10 +0000 (UTC)
+        id S1350015AbhGSPge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:36:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4685260E0C;
+        Mon, 19 Jul 2021 16:17:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711431;
-        bh=z4KeSNDkN7Hq+Zvi4NxPHsyEx/NrKFmg+97Q72eo0kE=;
+        s=korg; t=1626711433;
+        bh=df5gBBXuMGStVpHHUHWlMnjn0NvGlIlmnWSeiC1O6QQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v7K+C3mwfcvLqJCLSBLmchrNX/DwkOeRLYNAVOLFy8e3GQpm4Y9Vx8M7Ow3n/q88Y
-         ex72Shn/Rrd+wVZ0BI9zRTqdLp1Xm6L5UwsaBQPNDDXKhDV10t9siF6DxHdv2FVCsb
-         u36kuJrD6ZKJMw75YXc37Ew7xDeEEqFeqom8dDJA=
+        b=Hc7Nybz0DJ2V2JGvB5GKhOJnClEjNV2cQDD6HVoNY9FFCztfF+nghKBTF7HQUT1l4
+         rskEeRHY3Z1TQrx6/bGV5pZxDEN1BG7C8Yf1XVyp6ljf6Iph0quw3Iq3graN0qB8/D
+         UFm3wqArrikAQTIztci612CEnJFKNFrNjr7SNxds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        stable@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 317/351] memory: fsl_ifc: fix leak of private memory on probe failure
-Date:   Mon, 19 Jul 2021 16:54:23 +0200
-Message-Id: <20210719144955.543396673@linuxfoundation.org>
+Subject: [PATCH 5.13 318/351] arm64: dts: allwinner: a64-sopine-baseboard: change RGMII mode to TXID
+Date:   Mon, 19 Jul 2021 16:54:24 +0200
+Message-Id: <20210719144955.573317814@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -40,43 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Icenowy Zheng <icenowy@aosc.io>
 
-[ Upstream commit 8e0d09b1232d0538066c40ed4c13086faccbdff6 ]
+[ Upstream commit bd5431b2f9b30a70f6ed964dd5ee9a6d1c397c06 ]
 
-On probe error the driver should free the memory allocated for private
-structure.  Fix this by using resource-managed allocation.
+Although the schematics of Pine A64-LTS and SoPine Baseboard shows both
+the RX and TX internal delay are enabled, they're using the same broken
+RTL8211E chip batch with Pine A64+, so they should use TXID instead, not
+ID.
 
-Fixes: a20cbdeffce2 ("powerpc/fsl: Add support for Integrated Flash Controller")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210527154322.81253-2-krzysztof.kozlowski@canonical.com
+In addition, by checking the real components soldered on both a SoPine
+Baseboard and a Pine A64-LTS, RX delay is not enabled (GR69 soldered and
+GR70 NC) despite the schematics says it's enabled. It's a common
+situation for Pine64 boards that the NC information on schematics is not
+the same with the board.
+
+So the RGMII delay mode should be TXID on these boards.
+
+Fixes: c2b111e59a7b ("arm64: dts: allwinner: A64 Sopine: phy-mode rgmii-id")
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210609083843.463750-1-icenowy@aosc.io
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/fsl_ifc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
-index a6324044a085..d062c2f8250f 100644
---- a/drivers/memory/fsl_ifc.c
-+++ b/drivers/memory/fsl_ifc.c
-@@ -97,7 +97,6 @@ static int fsl_ifc_ctrl_remove(struct platform_device *dev)
- 	iounmap(ctrl->gregs);
- 
- 	dev_set_drvdata(&dev->dev, NULL);
--	kfree(ctrl);
- 
- 	return 0;
- }
-@@ -209,7 +208,8 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
- 
- 	dev_info(&dev->dev, "Freescale Integrated Flash Controller\n");
- 
--	fsl_ifc_ctrl_dev = kzalloc(sizeof(*fsl_ifc_ctrl_dev), GFP_KERNEL);
-+	fsl_ifc_ctrl_dev = devm_kzalloc(&dev->dev, sizeof(*fsl_ifc_ctrl_dev),
-+					GFP_KERNEL);
- 	if (!fsl_ifc_ctrl_dev)
- 		return -ENOMEM;
- 
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
+index e22b94c83647..5e66ce1a334f 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
+@@ -79,7 +79,7 @@
+ &emac {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&rgmii_pins>;
+-	phy-mode = "rgmii-id";
++	phy-mode = "rgmii-txid";
+ 	phy-handle = <&ext_rgmii_phy>;
+ 	phy-supply = <&reg_dc1sw>;
+ 	status = "okay";
 -- 
 2.30.2
 
