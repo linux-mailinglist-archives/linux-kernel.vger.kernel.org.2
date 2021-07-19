@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBAE3CEAAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426513CE91F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359815AbhGSRPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:15:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34324 "EHLO mail.kernel.org"
+        id S1354026AbhGSQur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:50:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346891AbhGSPjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DC036138C;
-        Mon, 19 Jul 2021 16:18:43 +0000 (UTC)
+        id S1345776AbhGSP1j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:27:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E879D6120D;
+        Mon, 19 Jul 2021 16:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711524;
-        bh=YUEniXoGWoNOiBcC3NU1p9VwfWhDIBz0E7edYEnC7PY=;
+        s=korg; t=1626710898;
+        bh=dr/RxNerB3iZPvigGjF9oT3gndKmVCtkZP8nkwtjB+Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eQF1v7O6faFQK6/QE2srawBO8KWQmWuuEh2jIYbJpFUiVk9ugbGelXUW91zDzn99U
-         Peiw8HYB2XpO7LefJDNTbdiW7U7yWGEpEwLvPBwoFG0qLUoY+Z2lRaZpoE+Fk27+ea
-         71fzF3SRW9Ro1XVU0T//MY5P0dvZ0POK1MDK8TTI=
+        b=f38S+RMWYwcUn0QHy40u8quribu2/kWoufnDhZIKfRgsGpvqYPOiFpXhC4niyqZyG
+         nUKlWyX2nQz2D8mm3hdY8FKXWX4lorDhyHq/Vg2sFsxsCdamQBXblfxY2QBCsnV5SY
+         2eOvV/DYnVzaj4FCDpchK8c+ipkEtH+aFjuf7GCY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 034/292] leds: tlc591xx: fix return value check in tlc591xx_probe()
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 150/351] pwm: spear: Dont modify HW state in .remove callback
 Date:   Mon, 19 Jul 2021 16:51:36 +0200
-Message-Id: <20210719144943.650279951@linuxfoundation.org>
+Message-Id: <20210719144949.937615237@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit ee522bcf026ec82ada793979c3a906274430595a ]
+[ Upstream commit b601a18f12383001e7a8da238de7ca1559ebc450 ]
 
-After device_get_match_data(), tlc591xx is not checked, add
-check for it and also check np after dev_of_node.
+A consumer is expected to disable a PWM before calling pwm_put(). And if
+they didn't there is hopefully a good reason (or the consumer needs
+fixing). Also if disabling an enabled PWM was the right thing to do,
+this should better be done in the framework instead of in each low level
+driver.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
+So drop the hardware modification from the .remove() callback.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/leds-tlc591xx.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/pwm/pwm-spear.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/leds/leds-tlc591xx.c b/drivers/leds/leds-tlc591xx.c
-index 5b9dfdf743ec..cb7bd1353f9f 100644
---- a/drivers/leds/leds-tlc591xx.c
-+++ b/drivers/leds/leds-tlc591xx.c
-@@ -148,16 +148,20 @@ static int
- tlc591xx_probe(struct i2c_client *client,
- 	       const struct i2c_device_id *id)
+diff --git a/drivers/pwm/pwm-spear.c b/drivers/pwm/pwm-spear.c
+index 1a1cedfd11ce..6879b49581b3 100644
+--- a/drivers/pwm/pwm-spear.c
++++ b/drivers/pwm/pwm-spear.c
+@@ -228,10 +228,6 @@ static int spear_pwm_probe(struct platform_device *pdev)
+ static int spear_pwm_remove(struct platform_device *pdev)
  {
--	struct device_node *np = dev_of_node(&client->dev), *child;
-+	struct device_node *np, *child;
- 	struct device *dev = &client->dev;
- 	const struct tlc591xx *tlc591xx;
- 	struct tlc591xx_priv *priv;
- 	int err, count, reg;
+ 	struct spear_pwm_chip *pc = platform_get_drvdata(pdev);
+-	int i;
+-
+-	for (i = 0; i < NUM_PWM; i++)
+-		pwm_disable(&pc->chip.pwms[i]);
  
--	tlc591xx = device_get_match_data(dev);
-+	np = dev_of_node(dev);
- 	if (!np)
- 		return -ENODEV;
- 
-+	tlc591xx = device_get_match_data(dev);
-+	if (!tlc591xx)
-+		return -ENODEV;
-+
- 	count = of_get_available_child_count(np);
- 	if (!count || count > tlc591xx->max_leds)
- 		return -EINVAL;
+ 	/* clk was prepared in probe, hence unprepare it here */
+ 	clk_unprepare(pc->clk);
 -- 
 2.30.2
 
