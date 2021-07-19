@@ -2,33 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DE63CE452
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B453CE461
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237809AbhGSPnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:43:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53806 "EHLO mail.kernel.org"
+        id S1347623AbhGSPna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:43:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344044AbhGSO72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344055AbhGSO72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:59:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3259D61380;
-        Mon, 19 Jul 2021 15:38:24 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DDC1613AA;
+        Mon, 19 Jul 2021 15:38:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709105;
-        bh=QexugMj5dFFmnzYoNcBzYlS0w0MzTJd5+Flu/vAN8lk=;
+        s=korg; t=1626709110;
+        bh=/NkhAXhQ2HHWRaiUh3uIDaEq56gCIBgjcXmfbG1PUhw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mEPQ0N+PhBRj3gFtNMJ8WCkFZvsUYkUEWNt9jwNM0E2eP36fPsQC3XRbJzDbycXfG
-         GXfGe3ZHJPhmAUOi8fGVpMcWyIydl42otiRdFTdG5pvoBtlSHXxUUlD+BqFMKakhVk
-         90gj1ZD+EPcLVF5CzQouwAow8Xvzr8QZFKnvXAhU=
+        b=UKpvQBhP3fVt6UXLhyUnSXpwKlhVG8BONXLj+84IC15NMYgHoAiXff6R7q5tMKdOA
+         B6/+s6BiN2oHxlpsv7+dztpT3QW6ECn5gDqmdchTRmV1NBlEx2PA0I1MA/qrsDVDVp
+         ML1YC1nR9EOGNly2BcP0aVMT6qB0GUfnLDEaSvRw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zeng Tao <prime.zeng@hisilicon.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Desnes A. Nunes do Rosario" <desnesn@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 221/421] vfio/pci: Handle concurrent vma faults
-Date:   Mon, 19 Jul 2021 16:50:32 +0200
-Message-Id: <20210719144953.998031396@linuxfoundation.org>
+Subject: [PATCH 4.19 223/421] selftests/vm/pkeys: fix alloc_random_pkey() to make it really, really random
+Date:   Mon, 19 Jul 2021 16:50:34 +0200
+Message-Id: <20210719144954.065654793@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,122 +53,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Williamson <alex.williamson@redhat.com>
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-[ Upstream commit 6a45ece4c9af473555f01f0f8b97eba56e3c7d0d ]
+[ Upstream commit f36ef407628835a7d7fb3d235b1f1aac7022d9a3 ]
 
-io_remap_pfn_range() will trigger a BUG_ON if it encounters a
-populated pte within the mapping range.  This can occur because we map
-the entire vma on fault and multiple faults can be blocked behind the
-vma_lock.  This leads to traces like the one reported below.
+Patch series "selftests/vm/pkeys: Bug fixes and a new test".
 
-We can use our vma_list to test whether a given vma is mapped to avoid
-this issue.
+There has been a lot of activity on the x86 front around the XSAVE
+architecture which is used to context-switch processor state (among other
+things).  In addition, AMD has recently joined the protection keys club by
+adding processor support for PKU.
 
-[ 1591.733256] kernel BUG at mm/memory.c:2177!
-[ 1591.739515] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-[ 1591.747381] Modules linked in: vfio_iommu_type1 vfio_pci vfio_virqfd vfio pv680_mii(O)
-[ 1591.760536] CPU: 2 PID: 227 Comm: lcore-worker-2 Tainted: G O 5.11.0-rc3+ #1
-[ 1591.770735] Hardware name:  , BIOS HixxxxFPGA 1P B600 V121-1
-[ 1591.778872] pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-[ 1591.786134] pc : remap_pfn_range+0x214/0x340
-[ 1591.793564] lr : remap_pfn_range+0x1b8/0x340
-[ 1591.799117] sp : ffff80001068bbd0
-[ 1591.803476] x29: ffff80001068bbd0 x28: 0000042eff6f0000
-[ 1591.810404] x27: 0000001100910000 x26: 0000001300910000
-[ 1591.817457] x25: 0068000000000fd3 x24: ffffa92f1338e358
-[ 1591.825144] x23: 0000001140000000 x22: 0000000000000041
-[ 1591.832506] x21: 0000001300910000 x20: ffffa92f141a4000
-[ 1591.839520] x19: 0000001100a00000 x18: 0000000000000000
-[ 1591.846108] x17: 0000000000000000 x16: ffffa92f11844540
-[ 1591.853570] x15: 0000000000000000 x14: 0000000000000000
-[ 1591.860768] x13: fffffc0000000000 x12: 0000000000000880
-[ 1591.868053] x11: ffff0821bf3d01d0 x10: ffff5ef2abd89000
-[ 1591.875932] x9 : ffffa92f12ab0064 x8 : ffffa92f136471c0
-[ 1591.883208] x7 : 0000001140910000 x6 : 0000000200000000
-[ 1591.890177] x5 : 0000000000000001 x4 : 0000000000000001
-[ 1591.896656] x3 : 0000000000000000 x2 : 0168044000000fd3
-[ 1591.903215] x1 : ffff082126261880 x0 : fffffc2084989868
-[ 1591.910234] Call trace:
-[ 1591.914837]  remap_pfn_range+0x214/0x340
-[ 1591.921765]  vfio_pci_mmap_fault+0xac/0x130 [vfio_pci]
-[ 1591.931200]  __do_fault+0x44/0x12c
-[ 1591.937031]  handle_mm_fault+0xcc8/0x1230
-[ 1591.942475]  do_page_fault+0x16c/0x484
-[ 1591.948635]  do_translation_fault+0xbc/0xd8
-[ 1591.954171]  do_mem_abort+0x4c/0xc0
-[ 1591.960316]  el0_da+0x40/0x80
-[ 1591.965585]  el0_sync_handler+0x168/0x1b0
-[ 1591.971608]  el0_sync+0x174/0x180
-[ 1591.978312] Code: eb1b027f 540000c0 f9400022 b4fffe02 (d4210000)
+The AMD implementation helped uncover a kernel bug around the PKRU "init
+state", which actually applied to Intel's implementation but was just
+harder to hit.  This series adds a test which is expected to help find
+this class of bug both on AMD and Intel.  All the work around pkeys on x86
+also uncovered a few bugs in the selftest.
 
-Fixes: 11c4cd07ba11 ("vfio-pci: Fault mmaps to enable vma tracking")
-Reported-by: Zeng Tao <prime.zeng@hisilicon.com>
-Suggested-by: Zeng Tao <prime.zeng@hisilicon.com>
-Link: https://lore.kernel.org/r/162497742783.3883260.3282953006487785034.stgit@omen
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+This patch (of 4):
+
+The "random" pkey allocation code currently does the good old:
+
+	srand((unsigned int)time(NULL));
+
+*But*, it unfortunately does this on every random pkey allocation.
+
+There may be thousands of these a second.  time() has a one second
+resolution.  So, each time alloc_random_pkey() is called, the PRNG is
+*RESET* to time().  This is nasty.  Normally, if you do:
+
+	srand(<ANYTHING>);
+	foo = rand();
+	bar = rand();
+
+You'll be quite guaranteed that 'foo' and 'bar' are different.  But, if
+you do:
+
+	srand(1);
+	foo = rand();
+	srand(1);
+	bar = rand();
+
+You are quite guaranteed that 'foo' and 'bar' are the *SAME*.  The recent
+"fix" effectively forced the test case to use the same "random" pkey for
+the whole test, unless the test run crossed a second boundary.
+
+Only run srand() once at program startup.
+
+This explains some very odd and persistent test failures I've been seeing.
+
+Link: https://lkml.kernel.org/r/20210611164153.91B76FB8@viggo.jf.intel.com
+Link: https://lkml.kernel.org/r/20210611164155.192D00FF@viggo.jf.intel.com
+Fixes: 6e373263ce07 ("selftests/vm/pkeys: fix alloc_random_pkey() to make it really random")
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Cc: Ram Pai <linuxram@us.ibm.com>
+Cc: Sandipan Das <sandipan@linux.ibm.com>
+Cc: Florian Weimer <fweimer@redhat.com>
+Cc: "Desnes A. Nunes do Rosario" <desnesn@linux.vnet.ibm.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Michal Suchanek <msuchanek@suse.de>
+Cc: Shuah Khan <shuah@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci.c | 29 +++++++++++++++++++++--------
- 1 file changed, 21 insertions(+), 8 deletions(-)
+ tools/testing/selftests/x86/protection_keys.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index c48e1d84efb6..51b791c750f1 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -1359,6 +1359,7 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
+diff --git a/tools/testing/selftests/x86/protection_keys.c b/tools/testing/selftests/x86/protection_keys.c
+index b8778960da10..27661302a698 100644
+--- a/tools/testing/selftests/x86/protection_keys.c
++++ b/tools/testing/selftests/x86/protection_keys.c
+@@ -613,7 +613,6 @@ int alloc_random_pkey(void)
+ 	int nr_alloced = 0;
+ 	int random_index;
+ 	memset(alloced_pkeys, 0, sizeof(alloced_pkeys));
+-	srand((unsigned int)time(NULL));
+ 
+ 	/* allocate every possible key and make a note of which ones we got */
+ 	max_nr_pkey_allocs = NR_PKEYS;
+@@ -1479,6 +1478,8 @@ int main(void)
  {
- 	struct vm_area_struct *vma = vmf->vma;
- 	struct vfio_pci_device *vdev = vma->vm_private_data;
-+	struct vfio_pci_mmap_vma *mmap_vma;
- 	vm_fault_t ret = VM_FAULT_NOPAGE;
+ 	int nr_iterations = 22;
  
- 	mutex_lock(&vdev->vma_lock);
-@@ -1366,24 +1367,36 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
- 
- 	if (!__vfio_pci_memory_enabled(vdev)) {
- 		ret = VM_FAULT_SIGBUS;
--		mutex_unlock(&vdev->vma_lock);
- 		goto up_out;
- 	}
- 
--	if (__vfio_pci_add_vma(vdev, vma)) {
--		ret = VM_FAULT_OOM;
--		mutex_unlock(&vdev->vma_lock);
--		goto up_out;
-+	/*
-+	 * We populate the whole vma on fault, so we need to test whether
-+	 * the vma has already been mapped, such as for concurrent faults
-+	 * to the same vma.  io_remap_pfn_range() will trigger a BUG_ON if
-+	 * we ask it to fill the same range again.
-+	 */
-+	list_for_each_entry(mmap_vma, &vdev->vma_list, vma_next) {
-+		if (mmap_vma->vma == vma)
-+			goto up_out;
- 	}
- 
--	mutex_unlock(&vdev->vma_lock);
--
- 	if (io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
--			       vma->vm_end - vma->vm_start, vma->vm_page_prot))
-+			       vma->vm_end - vma->vm_start,
-+			       vma->vm_page_prot)) {
- 		ret = VM_FAULT_SIGBUS;
-+		zap_vma_ptes(vma, vma->vm_start, vma->vm_end - vma->vm_start);
-+		goto up_out;
-+	}
++	srand((unsigned int)time(NULL));
 +
-+	if (__vfio_pci_add_vma(vdev, vma)) {
-+		ret = VM_FAULT_OOM;
-+		zap_vma_ptes(vma, vma->vm_start, vma->vm_end - vma->vm_start);
-+	}
+ 	setup_handlers();
  
- up_out:
- 	up_read(&vdev->memory_lock);
-+	mutex_unlock(&vdev->vma_lock);
- 	return ret;
- }
- 
+ 	printf("has pku: %d\n", cpu_has_pku());
 -- 
 2.30.2
 
