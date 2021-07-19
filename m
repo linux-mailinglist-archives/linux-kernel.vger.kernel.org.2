@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930003CE354
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214B93CE36E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236825AbhGSPhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:37:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51812 "EHLO mail.kernel.org"
+        id S239312AbhGSPiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:38:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343837AbhGSO7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CAA66113E;
-        Mon, 19 Jul 2021 15:37:27 +0000 (UTC)
+        id S1343898AbhGSO7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EF76613FB;
+        Mon, 19 Jul 2021 15:37:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709047;
-        bh=V5zivt4KHWMbQAUslsEEoDkydvtFrBaqqBpGyzEc12w=;
+        s=korg; t=1626709058;
+        bh=xRK/PhhfhjCInaS+gdP9roevZksbjf9A37UbDK8ficc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vQbJBAWLxUsW2N5BOEhxbuSjc3fjKWXz49viSYbpGLfl8SL+ixmCbiYjDb8Gxu1Bh
-         GkPya4AeZy4aavJDzbtKtOrEZnh+dwBa2H0P4w7K08yQQyJG0e0r0KtXcvkpOKSwne
-         HPJe2+1tmBo/X+YkiwwqzbrEQ9Jw0Uv6UqsVmYfw=
+        b=IiF5fjGrSljS/FjD/iTHFCLfNCNiu/q1pEWo6PcsD1Fle6/Y5Wy8f87geVBkLpVeO
+         A+jC4N1xwBoaYAV4W75BWNWRMSKJMbEv1I/bkfdbQDP4Qt68v0DPaY696EWXQfZZ+j
+         9g0GkVGevI2aIz7I9+ZCaC/k/rQebJgw8aU2HJBc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
+        stable@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 233/421] atm: iphase: fix possible use-after-free in ia_module_exit()
-Date:   Mon, 19 Jul 2021 16:50:44 +0200
-Message-Id: <20210719144954.494139511@linuxfoundation.org>
+Subject: [PATCH 4.19 236/421] net: Treat __napi_schedule_irqoff() as __napi_schedule() on PREEMPT_RT
+Date:   Mon, 19 Jul 2021 16:50:47 +0200
+Message-Id: <20210719144954.599905080@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,39 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-[ Upstream commit 1c72e6ab66b9598cac741ed397438a52065a8f1f ]
+[ Upstream commit 8380c81d5c4fced6f4397795a5ae65758272bbfd ]
 
-This module's remove path calls del_timer(). However, that function
-does not wait until the timer handler finishes. This means that the
-timer handler may still be running after the driver's remove function
-has finished, which would result in a use-after-free.
+__napi_schedule_irqoff() is an optimized version of __napi_schedule()
+which can be used where it is known that interrupts are disabled,
+e.g. in interrupt-handlers, spin_lock_irq() sections or hrtimer
+callbacks.
 
-Fix by calling del_timer_sync(), which makes sure the timer handler
-has finished, and unable to re-schedule itself.
+On PREEMPT_RT enabled kernels this assumptions is not true. Force-
+threaded interrupt handlers and spinlocks are not disabling interrupts
+and the NAPI hrtimer callback is forced into softirq context which runs
+with interrupts enabled as well.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Chasing all usage sites of __napi_schedule_irqoff() is a whack-a-mole
+game so make __napi_schedule_irqoff() invoke __napi_schedule() for
+PREEMPT_RT kernels.
+
+The callers of ____napi_schedule() in the networking core have been
+audited and are correct on PREEMPT_RT kernels as well.
+
+Reported-by: Juri Lelli <juri.lelli@redhat.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Juri Lelli <juri.lelli@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/atm/iphase.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/core/dev.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/atm/iphase.c b/drivers/atm/iphase.c
-index 008905d4152a..827c6d5e6177 100644
---- a/drivers/atm/iphase.c
-+++ b/drivers/atm/iphase.c
-@@ -3301,7 +3301,7 @@ static void __exit ia_module_exit(void)
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 7803bd9628dc..722ae0b57f3f 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5931,11 +5931,18 @@ EXPORT_SYMBOL(napi_schedule_prep);
+  * __napi_schedule_irqoff - schedule for receive
+  * @n: entry to schedule
+  *
+- * Variant of __napi_schedule() assuming hard irqs are masked
++ * Variant of __napi_schedule() assuming hard irqs are masked.
++ *
++ * On PREEMPT_RT enabled kernels this maps to __napi_schedule()
++ * because the interrupt disabled assumption might not be true
++ * due to force-threaded interrupts and spinlock substitution.
+  */
+ void __napi_schedule_irqoff(struct napi_struct *n)
  {
- 	pci_unregister_driver(&ia_driver);
- 
--        del_timer(&ia_timer);
-+	del_timer_sync(&ia_timer);
+-	____napi_schedule(this_cpu_ptr(&softnet_data), n);
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
++		____napi_schedule(this_cpu_ptr(&softnet_data), n);
++	else
++		__napi_schedule(n);
  }
+ EXPORT_SYMBOL(__napi_schedule_irqoff);
  
- module_init(ia_module_init);
 -- 
 2.30.2
 
