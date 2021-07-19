@@ -2,168 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5703CCC03
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 03:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A593CCC05
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 03:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhGSBnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 21:43:52 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:11339 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233713AbhGSBnw (ORCPT
+        id S234149AbhGSBoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 21:44:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53637 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233713AbhGSBoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 21:43:52 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GSkvh6RjXz7vZh;
-        Mon, 19 Jul 2021 09:36:16 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 19 Jul 2021 09:40:40 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 19 Jul
- 2021 09:40:40 +0800
-Subject: Re: [PATCH net-next 1/2] tools: add missing infrastructure for
- building ptr_ring.h
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <jasowang@redhat.com>,
-        <nickhu@andestech.com>, <green.hu@gmail.com>,
-        <deanbo422@gmail.com>, <akpm@linux-foundation.org>,
-        <yury.norov@gmail.com>, <andriy.shevchenko@linux.intel.com>,
-        <ojeda@kernel.org>, <ndesaulniers@gooogle.com>, <joe@perches.com>,
-        <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>,
-        =?UTF-8?Q?Eugenio_P=c3=a9rez?= <eperezma@redhat.com>
-References: <1625457455-4667-1-git-send-email-linyunsheng@huawei.com>
- <1625457455-4667-2-git-send-email-linyunsheng@huawei.com>
- <20210705143144-mutt-send-email-mst@kernel.org>
- <cbc4053e-7eda-4c46-5b98-558c741e45b6@huawei.com>
- <20210717220239-mutt-send-email-mst@kernel.org>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <5d320b37-18f3-e853-ceb7-21af7ca12763@huawei.com>
-Date:   Mon, 19 Jul 2021 09:40:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Sun, 18 Jul 2021 21:44:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626658861;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gEqAVMebt8KkaRBeojxifkyre8q09DDKsrxdRcTSaRM=;
+        b=PcJ6FVT8i17KyyQG4S8TRJIWMq3LLoW6Xh5/WCtZPozKehrCBcyp3NNl+YSZiYjFFtIPj3
+        S0RBDbIumWx3J9Yny9Kn5wf9ffKFaROmItf5IdPRXaFbpb8g0rroh587BI5/gWEu8I2+h7
+        JETqHMADRJ25ua5k5ntjTW9zh1aYf2U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-zjI_g7yqO8CK3PNlvtZDIw-1; Sun, 18 Jul 2021 21:41:00 -0400
+X-MC-Unique: zjI_g7yqO8CK3PNlvtZDIw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43EB9802C80;
+        Mon, 19 Jul 2021 01:40:58 +0000 (UTC)
+Received: from T590 (ovpn-13-11.pek2.redhat.com [10.72.13.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id ACF5A27068;
+        Mon, 19 Jul 2021 01:40:45 +0000 (UTC)
+Date:   Mon, 19 Jul 2021 09:40:40 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org,
+        David Jeffery <djeffery@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: New warning in nvme_setup_discard
+Message-ID: <YPTYGD1zeae1x7Yp@T590>
+References: <4729812.CpyZKHjjVO@natalenko.name>
+ <5053297.vgnLoh5Ws3@natalenko.name>
+ <8988303.mDXGIdCtx8@natalenko.name>
+ <3383530.3bVf3B8HMu@natalenko.name>
 MIME-Version: 1.0
-In-Reply-To: <20210717220239-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3383530.3bVf3B8HMu@natalenko.name>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/18 10:09, Michael S. Tsirkin wrote:
-> On Tue, Jul 06, 2021 at 10:04:02AM +0800, Yunsheng Lin wrote:
->> On 2021/7/6 2:39, Michael S. Tsirkin wrote:
->>> On Mon, Jul 05, 2021 at 11:57:34AM +0800, Yunsheng Lin wrote:
-
-[..]
-
->>>> diff --git a/tools/include/asm/processor.h b/tools/include/asm/processor.h
->>>> new file mode 100644
->>>> index 0000000..3198ad6
->>>> --- /dev/null
->>>> +++ b/tools/include/asm/processor.h
->>>> @@ -0,0 +1,36 @@
->>>> +/* SPDX-License-Identifier: GPL-2.0 */
->>>> +
->>>> +#ifndef __TOOLS_LINUX_ASM_PROCESSOR_H
->>>> +#define __TOOLS_LINUX_ASM_PROCESSOR_H
->>>> +
->>>> +#include <pthread.h>
->>>> +
->>>> +#if defined(__i386__) || defined(__x86_64__)
->>>> +#include "../../arch/x86/include/asm/vdso/processor.h"
->>>> +#elif defined(__arm__)
->>>> +#include "../../arch/arm/include/asm/vdso/processor.h"
->>>> +#elif defined(__aarch64__)
->>>> +#include "../../arch/arm64/include/asm/vdso/processor.h"
->>>> +#elif defined(__powerpc__)
->>>> +#include "../../arch/powerpc/include/vdso/processor.h"
->>>> +#elif defined(__s390__)
->>>> +#include "../../arch/s390/include/vdso/processor.h"
->>>> +#elif defined(__sh__)
->>>> +#include "../../arch/sh/include/asm/processor.h"
->>>> +#elif defined(__sparc__)
->>>> +#include "../../arch/sparc/include/asm/processor.h"
->>>> +#elif defined(__alpha__)
->>>> +#include "../../arch/alpha/include/asm/processor.h"
->>>> +#elif defined(__mips__)
->>>> +#include "../../arch/mips/include/asm/vdso/processor.h"
->>>> +#elif defined(__ia64__)
->>>> +#include "../../arch/ia64/include/asm/processor.h"
->>>> +#elif defined(__xtensa__)
->>>> +#include "../../arch/xtensa/include/asm/processor.h"
->>>> +#elif defined(__nds32__)
->>>> +#include "../../arch/nds32/include/asm/processor.h"
->>>> +#else
->>>> +#define cpu_relax()	sched_yield()
->>>
->>> Does this have a chance to work outside of kernel?
->>
->> I am not sure I understand what you meant here.
->> sched_yield() is a pthread API, so it should work in the
->> user space.
->> And it allow the rigntest to compile when it is built on
->> the arch which is not handled as above.
+On Sat, Jul 17, 2021 at 02:35:14PM +0200, Oleksandr Natalenko wrote:
+> On sobota 17. července 2021 14:19:59 CEST Oleksandr Natalenko wrote:
+> > On sobota 17. července 2021 14:11:05 CEST Oleksandr Natalenko wrote:
+> > > On sobota 17. července 2021 11:35:32 CEST Ming Lei wrote:
+> > > > Maybe you need to check if the build is OK, I can't reproduce it in my
+> > > > VM, and BFQ is still builtin:
+> > > > 
+> > > > [root@ktest-01 ~]# uname -a
+> > > > Linux ktest-01 5.14.0-rc1+ #52 SMP Fri Jul 16 18:56:36 CST 2021 x86_64
+> > > > x86_64 x86_64 GNU/Linux [root@ktest-01 ~]# cat
+> > > > /sys/block/nvme0n1/queue/scheduler
+> > > > [none] mq-deadline kyber bfq
+> > > 
+> > > I don't think this is an issue with the build… BTW, with `initcall_debug`:
+> > > 
+> > > ```
+> > > [    0.902555] calling  bfq_init+0x0/0x8b @ 1
+> > > [    0.903448] initcall bfq_init+0x0/0x8b returned -28 after 507 usecs
+> > > ```
+> > > 
+> > > -ENOSPC? Why? Also re-tested with the latest git tip, same result :(.
+> > 
+> > OK, one extra pr_info, and I see this:
+> > 
+> > ```
+> > [    0.871180] blkcg_policy_register: BLKCG_MAX_POLS too small
+> > [    0.871612] blkcg_policy_register: -28
+> > ```
+> > 
+> > What does it mean please :)? The value seems to be hard-coded:
+> > 
+> > ```
+> > include/linux/blkdev.h
+> > 60:#define BLKCG_MAX_POLS               5
+> > ```
 > 
-> It might compile but is likely too heavy to behave
-> reasonably.
+> OK, after increasing this to 6 I've got my BFQ back. Please see [1].
 > 
-> Also, given you did not actually test it I don't
-> think you should add such arch code.
-> Note you broke at least s390 here:
-> ../../arch/s390/include/vdso/processor.h
-> does not actually exist. Where these headers
-> do exit they tend to include lots of code which won't
-> build out of kernel.
+> [1] https://lore.kernel.org/linux-block/20210717123328.945810-1-oleksandr@natalenko.name/
 
-You are right, it should be in:
-../../arch/s390/include/asm/vdso/processor.h
+OK, after you fixed the issue in blkcg_policy_register(), can you
+reproduce the discard issue on v5.14-rc1 with BFQ applied? If yes,
+can you test the patch I posted previously?
 
-> 
-> All this is just for cpu_relax - open coding that seems way easier.
 
-Sure.
+Thanks,
+Ming
 
-As Eugenio has posted a patchset to fix the compilation, which does
-not seems to be merged yet and may have some merging conflicts with
-this patchset, so either wait for the Eugenio' patchset to be merged
-before proceeding with this patchset, or explicitly note the dependency
-of Eugenio' patchset when sending the new version of patchset. I am not
-familiar with the merging flow of virtio to say which way is better, any
-suggestion how to proceed with this patchset?
-
-1. https://lkml.org/lkml/2021/7/6/1132
-
-> 
-> 
->>>
->>>> +#endif
->>>
->>> did you actually test or even test build all these arches?
->>> Not sure we need to bother with hacks like these.
->>
->> Only x86_64 and arm64 arches have been built and tested.
-> 
-> In that case I think you should not add code that you
-> have not even built let alone tested.
-
-Ok.
-
-> 
-> 
->> This is added referring the tools/include/asm/barrier.h.
->>
->>>
->>>
->>>> +
-> 
-> .
-> 
