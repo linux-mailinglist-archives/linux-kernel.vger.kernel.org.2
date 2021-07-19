@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3470F3CE0DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4175F3CE3F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347214AbhGSPSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:18:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32808 "EHLO mail.kernel.org"
+        id S245653AbhGSPlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:41:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237846AbhGSOo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:44:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E80D6135B;
-        Mon, 19 Jul 2021 15:22:54 +0000 (UTC)
+        id S1344345AbhGSO7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D588661073;
+        Mon, 19 Jul 2021 15:39:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708175;
-        bh=F1ZVUip0/wCvsnrmJjuDmDGmihkGr4rmuDUP/0BdxA0=;
+        s=korg; t=1626709198;
+        bh=x8jhDSBqoV11atW8IT+tsmr20TaVmO7qEmvzFrqscko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EdmtYXXILaGu8vDFkEh/pTpWpt+WSYtmO181a80KHwXPqKLLCvgcCqgbC1GrrIxq4
-         ChjFBkEgPpXb/AE1fEgiv/FYRbPaxQwXbTWW0vjnMpM8YYPl+1DoPMtD88w9cg4IvQ
-         TUpoBYgWN+W0xY5roNvj6K4TZ6hbPzgT7pERaLxE=
+        b=TlncZrIWh6S+JKd/Il8n4Xw16/ZadgGw6JjhT2eqnWsmRj17BAkUAQyIyXxHaIVfy
+         N5y59jUk9b8bfa0J0XGSikAMmFWxftjeX5X19UqE++Az7xMVeoxmYUH3tbxSZ6C/vx
+         kyQA2jm79VxPrRcCl2HiPyR9ptHNdpEnZ3YPB4Cg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Sachi King <nakato@nakato.io>,
         Maximilian Luz <luzmaximilian@gmail.com>,
         Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 4.14 209/315] pinctrl/amd: Add device HID for new AMD GPIO controller
-Date:   Mon, 19 Jul 2021 16:51:38 +0200
-Message-Id: <20210719144950.296345677@linuxfoundation.org>
+Subject: [PATCH 4.19 288/421] pinctrl/amd: Add device HID for new AMD GPIO controller
+Date:   Mon, 19 Jul 2021 16:51:39 +0200
+Message-Id: <20210719144956.319667892@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
-References: <20210719144942.861561397@linuxfoundation.org>
+In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
+References: <20210719144946.310399455@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -61,7 +61,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/pinctrl/pinctrl-amd.c
 +++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -920,6 +920,7 @@ static int amd_gpio_remove(struct platfo
+@@ -966,6 +966,7 @@ static int amd_gpio_remove(struct platfo
  static const struct acpi_device_id amd_gpio_acpi_match[] = {
  	{ "AMD0030", 0 },
  	{ "AMDI0030", 0},
