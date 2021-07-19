@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21713CE9A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F803CEAC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353858AbhGSQ7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:59:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48624 "EHLO mail.kernel.org"
+        id S1352475AbhGSRSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:18:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235702AbhGSPcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:32:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8C7B61406;
-        Mon, 19 Jul 2021 16:10:19 +0000 (UTC)
+        id S1347531AbhGSPli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:41:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B85CA61364;
+        Mon, 19 Jul 2021 16:21:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711020;
-        bh=JH3lgEprC4v0CdgMRmqcGCrCoqX8B8UpPcJjyufCYdM=;
+        s=korg; t=1626711693;
+        bh=fkUJS1dADMxRAZQuLDsHZ0G5sxxumHZxKUvQov5hhjE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a2gv2S+PdCJm3eX1Gb51r/TuBNCQqp4KqGX0N7wzi+V+7xbpoSdSr0J0huLQLM2MG
-         oB2j06KgQgK3TPmBCZ13FJRmCRTRWiYEl+He2GnDy3GkHJ1sWD3uPoKs3+SOhkpTPH
-         cBxissCnHi48K0zNZHQz15Dr5Otgoaaz4CqPrNhY=
+        b=N3jlvckxp5PFFos5wJrka2ybB5QUYRne037WUWTgS7qrEqGPDODfr3L7mqZeShlgl
+         yj8xlUEY2BbhGoNUzravcdU0iRq1+eC49C5edwrJxXuoKmObaXqefqh2DX0jfDTnW2
+         LAFPQQaR/QNzasw9l47y9FZfP/rIBu40Bsme2NBA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>, Joel Stanley <joel@jms.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 196/351] virtio_net: Fix error handling in virtnet_restore()
+Subject: [PATCH 5.12 080/292] fsi: Add missing MODULE_DEVICE_TABLE
 Date:   Mon, 19 Jul 2021 16:52:22 +0200
-Message-Id: <20210719144951.451048470@linuxfoundation.org>
+Message-Id: <20210719144945.149409234@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie Yongji <xieyongji@bytedance.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 3f2869cace829fb4b80fc53b3ddaa7f4ba9acbf1 ]
+[ Upstream commit 19a52178125c1e8b84444d85f2ce34c0964b4a91 ]
 
-Do some cleanups in virtnet_restore() when virtnet_cpu_notif_add() failed.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Link: https://lore.kernel.org/r/20210517084516.332-1-xieyongji@bytedance.com
-Acked-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Link: https://lore.kernel.org/r/1620896249-52769-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/fsi/fsi-master-aspeed.c | 1 +
+ drivers/fsi/fsi-master-ast-cf.c | 1 +
+ drivers/fsi/fsi-master-gpio.c   | 1 +
+ drivers/fsi/fsi-occ.c           | 1 +
+ 4 files changed, 4 insertions(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 2debb32a1813..af4e04beb03a 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -3299,8 +3299,11 @@ static __maybe_unused int virtnet_restore(struct virtio_device *vdev)
- 	virtnet_set_queues(vi, vi->curr_queue_pairs);
+diff --git a/drivers/fsi/fsi-master-aspeed.c b/drivers/fsi/fsi-master-aspeed.c
+index 90dbe58ca1ed..dbad73162c83 100644
+--- a/drivers/fsi/fsi-master-aspeed.c
++++ b/drivers/fsi/fsi-master-aspeed.c
+@@ -645,6 +645,7 @@ static const struct of_device_id fsi_master_aspeed_match[] = {
+ 	{ .compatible = "aspeed,ast2600-fsi-master" },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, fsi_master_aspeed_match);
  
- 	err = virtnet_cpu_notif_add(vi);
--	if (err)
-+	if (err) {
-+		virtnet_freeze_down(vdev);
-+		remove_vq_common(vi);
- 		return err;
-+	}
+ static struct platform_driver fsi_master_aspeed_driver = {
+ 	.driver = {
+diff --git a/drivers/fsi/fsi-master-ast-cf.c b/drivers/fsi/fsi-master-ast-cf.c
+index 57a779a89b07..70c03e304d6c 100644
+--- a/drivers/fsi/fsi-master-ast-cf.c
++++ b/drivers/fsi/fsi-master-ast-cf.c
+@@ -1427,6 +1427,7 @@ static const struct of_device_id fsi_master_acf_match[] = {
+ 	{ .compatible = "aspeed,ast2500-cf-fsi-master" },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, fsi_master_acf_match);
  
- 	return 0;
- }
+ static struct platform_driver fsi_master_acf = {
+ 	.driver = {
+diff --git a/drivers/fsi/fsi-master-gpio.c b/drivers/fsi/fsi-master-gpio.c
+index aa97c4a250cb..7d5f29b4b595 100644
+--- a/drivers/fsi/fsi-master-gpio.c
++++ b/drivers/fsi/fsi-master-gpio.c
+@@ -882,6 +882,7 @@ static const struct of_device_id fsi_master_gpio_match[] = {
+ 	{ .compatible = "fsi-master-gpio" },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, fsi_master_gpio_match);
+ 
+ static struct platform_driver fsi_master_gpio_driver = {
+ 	.driver = {
+diff --git a/drivers/fsi/fsi-occ.c b/drivers/fsi/fsi-occ.c
+index cb05b6dacc9d..dc74bffedd72 100644
+--- a/drivers/fsi/fsi-occ.c
++++ b/drivers/fsi/fsi-occ.c
+@@ -636,6 +636,7 @@ static const struct of_device_id occ_match[] = {
+ 	},
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, occ_match);
+ 
+ static struct platform_driver occ_driver = {
+ 	.driver = {
 -- 
 2.30.2
 
