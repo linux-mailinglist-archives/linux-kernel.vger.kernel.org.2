@@ -2,150 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDC03CED0D
+	by mail.lfdr.de (Postfix) with ESMTP id 763BA3CED0E
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382818AbhGSRms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40252 "EHLO
+        id S1382836AbhGSRmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358667AbhGSQxU (ORCPT
+        with ESMTP id S1358906AbhGSQx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 12:53:20 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EADDC014DAD
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 10:10:50 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id t4-20020a05683014c4b02904cd671b911bso10884851otq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 10:29:27 -0700 (PDT)
+        Mon, 19 Jul 2021 12:53:29 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD6BC0F26EB
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 10:11:39 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id l11so12179951ljq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 10:30:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wzuKjO1Bj462QTMKvDqhgEerTybn9c7OBhwpooW3xtg=;
-        b=VNsTTFSUKiQbiKtytaDLBVf3Jz77PfOOK3R9uHEQIBtCz0/A3qZIw6j12E3AT55kJ9
-         Gb14QHVlkwsp8ShHAiruL601fC5L1GgvqaP5nGBktvtc/b98AoTF7Op6i5rr09lR95+E
-         gcHShc2gPYQ1CJ5ECchNfZChzkKEGIzl748Fa9g/IGbFDmftva3U3AA46TpAtdi13a5A
-         SB5ewlnZcCcTFr8V8Z8X2gUQM9PU3/ulYUqZ+VNnAhsZzTZ8Brl7CFSVpzvNefplCszl
-         GOyGrlYqX5qjexbsUr0A2xN7vdpve+3uOS5NRmzUiJg6i4ndut2dEocBU/anT2ifc4un
-         P6rw==
+        bh=+vqFcAPpr2Wrm3IQBRWJ29wt2kc6RE+Zc3iAnlFe6GY=;
+        b=DREFa+Crra3/Gwt/ozWS6XyyFKY4Mg7dPcld3cizJiTFXWiznp9HUE67QvDO9oZbMl
+         3B000kz0sS3krAYD5a9gSu4NLZy1dE4yjQ9TVgBrKCK528Roj8zK08CGtsxThRGSyXDy
+         ffWrnC9O7291POYBsVEi4zTCMxsxY7N/ykOM/tzi3rOF108KqHG+a3+2JefEhIN/oX0f
+         VyMRoQNFp8urHC5L9xqQac7l8DS+rfqzzY7gd9u2EOqO//9C9pgpq/ZMCAFw4jQUsB6A
+         v19hBqOGOdThZ0zo/07dXAHgVKO8uuU8kzOaDdOVo8Li2Tzapur/tu/weHW3xGPsT6zs
+         GwVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wzuKjO1Bj462QTMKvDqhgEerTybn9c7OBhwpooW3xtg=;
-        b=NDHIKYiFBCL6INl9i5edmfB6SkG4j6cF1/IYqfCmSd4OF7Nd38nMpLTnLqYeZsUxaZ
-         diiOnoNQNpBhSyQgmyuDW34mkDJFAd14/ChVEfobWHB13kLqSmfVOd9dnk3Y/rGNTsY3
-         c88/uL7b9f7XzVXypjbQe9GYNmkx+w7+n/KSgOBvI7V5jMm8rL66ydyR0LKmkjSkcFxN
-         7JshEK384zEGAB/425POi0RoFwYzYpRwzM+QB9Fh28ugVUcuxJBn2BlhkWKOeGFrB4B3
-         jQdwueu/6i7E/EppgpgYr/7WTJol2Pkhc3CW8AHNEDOaJTLCm+qwLr2bNK+3MUZaQ1fv
-         0RCw==
-X-Gm-Message-State: AOAM532jW6ma/jHpGc6uUAudsNsvqGya45CCHax+Uo6fdinBTIV0pJkY
-        Pgs6A/hujRElvpXUf5Hw5mgqmtkT15+p8BJBgIjhWA==
-X-Google-Smtp-Source: ABdhPJxtMrpwPvoJzvlQoTebB/00JUT1s1m5LDSL/PeBtVdVeUkGBjNSGmGgepU4b//aJt4UjoNlb1eWeKqBJCe7kxQ=
-X-Received: by 2002:a9d:27a4:: with SMTP id c33mr19831834otb.281.1626715766376;
- Mon, 19 Jul 2021 10:29:26 -0700 (PDT)
+        bh=+vqFcAPpr2Wrm3IQBRWJ29wt2kc6RE+Zc3iAnlFe6GY=;
+        b=eTQGG5OyrwgcSAbLPc3bz/+bWfVISiKHA7k8Bi+RBYuUgfmFxKwuZgEimB/wfM4gC5
+         HbJlWcem/FMAIUuVQfqd8d6MOt4uHOIRB676iVJsIc1cO3VZ16YJDUOXkTviY1JZD4L/
+         nYQLqghCKUEgsZpePkolZS55kV7Kqk/vLXfOHyEEsRy0KPidthqkvv5fj5Kjj3xPZILl
+         d2yMYNn4BryQDkIwfgz7mrZg4PqbNoOT28SFXToKjbuqt0Ts5XEltq708Rg70wCWzKI1
+         vTtKYeHCGT3by4bov+WIWdEiSaXsdpah/WzHkKFOaKZBp9+RtKZ1UFQsyFk4B+NqKU7s
+         Be6w==
+X-Gm-Message-State: AOAM533W0CVnuRM2AT8xZDsD3V55kWy13RJU+8//9QmjhHwxVj6geDAR
+        tu007frbu/PY6THjEIdEyBoUrtVJ2G7NZfV6WdZcWQ==
+X-Google-Smtp-Source: ABdhPJyo55MqgRQDKulqoMn04KoWQCUp51qWy4Z5KYNeT0BBLUr4vsWWfK5wvi9jXem9ykTLN5UMvoyZTpEdSMcXwUM=
+X-Received: by 2002:a2e:934f:: with SMTP id m15mr22566736ljh.208.1626715811254;
+ Mon, 19 Jul 2021 10:30:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210719144940.904087935@linuxfoundation.org> <20210719144947.891096868@linuxfoundation.org>
- <CA+G9fYt3-5vb_1rjdW3=4nASPGMe3gRrXzdCu10bSgR+Zeo-Hw@mail.gmail.com>
-In-Reply-To: <CA+G9fYt3-5vb_1rjdW3=4nASPGMe3gRrXzdCu10bSgR+Zeo-Hw@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 19 Jul 2021 22:59:14 +0530
-Message-ID: <CA+G9fYvHj9w1ZYk7UCCh2raCybeb0QeFFic-cuCgj8s_Ffwtbw@mail.gmail.com>
-Subject: Re: [PATCH 5.10 216/243] arm64: dts: ti: k3-j721e-common-proc-board:
- Use external clock for SERDES
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>,
-        lkft-triage@lists.linaro.org
+References: <20210716184719.269033-5-posk@google.com> <2c971806-b8f6-50b9-491f-e1ede4a33579@uwaterloo.ca>
+In-Reply-To: <2c971806-b8f6-50b9-491f-e1ede4a33579@uwaterloo.ca>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Mon, 19 Jul 2021 10:29:59 -0700
+Message-ID: <CAPNVh5cmhFEWr4bmODkDDFhV=mHLcO0DZJ432GEL=OitzPP80g@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/4 v0.3] sched/umcg: RFC: implement UMCG syscalls
+To:     Thierry Delisle <tdelisle@uwaterloo.ca>
+Cc:     posk@posk.io, avagin@google.com, bsegall@google.com,
+        jannh@google.com, jnewsome@torproject.org, joel@joelfernandes.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org, pjt@google.com,
+        tglx@linutronix.de, Peter Buhr <pabuhr@uwaterloo.ca>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 at 22:01, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+On Mon, Jul 19, 2021 at 9:07 AM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
 >
-> On Mon, 19 Jul 2021 at 21:42, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > From: Kishon Vijay Abraham I <kishon@ti.com>
-> >
-> > [ Upstream commit f2a7657ad7a821de9cc77d071a5587b243144cd5 ]
-> >
-> > Use external clock for all the SERDES used by PCIe controller. This will
-> > make the same clock used by the local SERDES as well as the clock
-> > provided to the PCIe connector.
-> >
-> > Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> > Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
-> > Signed-off-by: Nishanth Menon <nm@ti.com>
-> > Link: https://lore.kernel.org/r/20210603143427.28735-4-kishon@ti.com
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > ---
-> >  .../dts/ti/k3-j721e-common-proc-board.dts     | 40 +++++++++++++++++++
-> >  1 file changed, 40 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-> > index 7cd31ac67f88..56a92f59c3a1 100644
-> > --- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-> > +++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-> > @@ -9,6 +9,7 @@
-> >  #include <dt-bindings/gpio/gpio.h>
-> >  #include <dt-bindings/input/input.h>
-> >  #include <dt-bindings/net/ti-dp83867.h>
-> > +#include <dt-bindings/phy/phy-cadence.h>
+>  > /**
+>  >  * @idle_servers_ptr: a single-linked list pointing to the list
+>  >  *                    of idle servers. Can be NULL.
+>  >  *
+>  >  * Readable/writable by both the kernel and the userspace: the
+>  >  * userspace adds items to the list, the kernel removes them.
+>  >  *
+>  >  * This is a single-linked list (stack): head->next->next->next->NULL.
+>  >  * "next" nodes are idle_servers_ptr fields in struct umcg_task.
+>  >  *
+>  >  * Example:
+>  >  *
+>  >  *  a running worker             idle server 1        idle server 2
+>  >  *
+>  >  * struct umct_task:             struct umcg_task:    struct umcg_task:
+>  >  *    state                         state state
+>  >  *    api_version                   api_version api_version
+>  >  *    ...                           ...                  ...
+>  >  *    idle_servers_ptr --> head --> idle_servers_ptr -->
+> idle_servers_ptr --> NULL
+>  >  *    ...                           ...                  ...
+>  >  *
+>  >  *
+>  >  * Due to the way struct umcg_task is aligned, idle_servers_ptr
+>  >  * is aligned at 8 byte boundary, and so has its first byte as zero
+>  >  * when it holds a valid pointer.
+>  >  *
+>  >  * When pulling idle servers from the list, the kernel marks nodes as
+>  >  * "deleted" by ORing the node value (the pointer) with 1UL atomically.
+>  >  * If a node is "deleted" (i.e. its value AND 1UL is not zero),
+>  >  * the kernel proceeds to the next node.
+>  >  *
+>  >  * The kernel checks at most [nr_cpu_ids * 2] first nodes in the list.
+>  >  *
+>  >  * It is NOT considered an error if the kernel cannot find an idle
+>  >  * server.
+>  >  *
+>  >  * The userspace is responsible for cleanup/gc (i.e. for actually
+>  >  * removing nodes marked as "deleted" from the list).
+>  >  */
+>  > uint64_t    idle_servers_ptr;    /* r/w */
 >
-> Following build errors noticed on arm64 architecture on 5.10 branch.
+> I don't understand the reason for using this ad-hoc scheme, over using a
+> simple
+> eventfd to do the job. As I understand it, the goal here is to let
+> servers that
+> cannot find workers to run, block instead of spinning. Isn't that
+> exactly what
+> the eventfd interface is for?
 
-also noticed on stable-rc 5.12.
+Latency/efficiency: on worker wakeup an idle server can be picked from
+the list and context-switched into synchronously, on the same CPU.
+Using FDs and select/poll/epoll will add extra layers of abstractions;
+synchronous context-switches (not yet fully implemented in UMCG) will
+most likely be impossible. This patchset seems much more efficient and
+lightweight than whatever can be built on top of FDs.
 
-
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64
-> CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
-> 'HOSTCC=sccache gcc'
-> /builds/linux/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts:12:10:
-> fatal error: dt-bindings/phy/phy-cadence.h: No such file or directory
->    12 | #include <dt-bindings/phy/phy-cadence.h>
->       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> compilation terminated.
-> make[3]: *** [scripts/Makefile.lib:326:
-> arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dtb] Error 1
-> make[3]: Target '__build' not remade because of errors.
-> make[2]: *** [/builds/linux/scripts/Makefile.build:497:
-> arch/arm64/boot/dts/ti] Error 2
-> make[2]: Target '__build' not remade because of errors.
-> make[1]: *** [/builds/linux/Makefile:1358: dtbs] Error 2
 >
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Have you considered an idle_fd field, the kernel writes 1 to the fd when a
+> worker is appended to the idle_workers_ptr? Servers that don't find work can
+> read the fd or alternatively use select/poll/epoll. Multiple workers are
+> expected to share fds, either a single global fd, one fd per server, or any
+> other combination the scheduler may fancy.
 >
->
-> ref:
-> https://builds.tuxbuild.com/1vXT3b334rT9K155TzUSkMWobkx/
-> https://builds.tuxbuild.com/1vXT3b334rT9K155TzUSkMWobkx/config
->
-> Steps to reproduce:
-> --------------------
-> # TuxMake is a command line tool and Python library that provides
-> # portable and repeatable Linux kernel builds across a variety of
-> # architectures, toolchains, kernel configurations, and make targets.
-> #
-> # TuxMake supports the concept of runtimes.
-> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
-> # that you install podman or docker on your system.
-> #
-> # To install tuxmake on your system globally:
-> # sudo pip3 install -U tuxmake
-> #
-> # See https://docs.tuxmake.org/ for complete documentation.
->
->
-> tuxmake --runtime podman --target-arch arm64 --toolchain gcc-11
-> --kconfig defconfig --kconfig-add
-> https://builds.tuxbuild.com/1vXT3b334rT9K155TzUSkMWobkx/config
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
