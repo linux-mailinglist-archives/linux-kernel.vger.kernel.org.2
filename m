@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2543CDD70
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9640C3CDDD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245234AbhGSO56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:57:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54260 "EHLO mail.kernel.org"
+        id S1344333AbhGSPBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:01:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343539AbhGSOja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:39:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8073611CE;
-        Mon, 19 Jul 2021 15:18:59 +0000 (UTC)
+        id S1343551AbhGSOjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:39:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C32561221;
+        Mon, 19 Jul 2021 15:19:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707940;
-        bh=Xig838R7qfc3NVGddFFVfGWgtkES/pd2dEx2YcMiClA=;
+        s=korg; t=1626707942;
+        bh=0C9uuqB1dFJzprdnF7w86hJ0Q0f8gYo6yYcSZaejqIc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gwe0qLKdnZWN5Bq6148fHvtja/HCU0WEUTVLUfdaGfTrxMfLBLHo6pPfD3fVX2NO4
-         +inbx4Xi2GiAr3U0LpzWxni37CmSk0gIc/XPFHbG2NUeTNUbV3DsVjtSCiQ15Pi7lh
-         hQ7fI9sw8zqILHNVe0FkloMZQyEeADO+KwrXHmtQ=
+        b=kS66jWFxTA+vac/vWU5vy66kzHcWEdLrqqiZMHsT7jFrbhwDXVq5+GfD84zMAHZmm
+         wxxrg9DLp5NlUawL/NuCTpLPSDXdtSZU9N2jVEqvtqM3DtIdeWOmOj6i9RZWnOfQSn
+         IncXl/zRGfR0x/b0pfk5DUbb4ZLp7X0+v/sAwX14=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+1071ad60cd7df39fdadb@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 117/315] net: sched: fix warning in tcindex_alloc_perfect_hash
-Date:   Mon, 19 Jul 2021 16:50:06 +0200
-Message-Id: <20210719144946.719624654@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 118/315] tty: nozomi: Fix a resource leak in an error handling function
+Date:   Mon, 19 Jul 2021 16:50:07 +0200
+Message-Id: <20210719144946.754205766@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -42,38 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 3f2db250099f46988088800052cdf2332c7aba61 ]
+[ Upstream commit 31a9a318255960d32ae183e95d0999daf2418608 ]
 
-Syzbot reported warning in tcindex_alloc_perfect_hash. The problem
-was in too big cp->hash, which triggers warning in kmalloc. Since
-cp->hash comes from userspace, there is no need to warn if value
-is not correct
+A 'request_irq()' call is not balanced by a corresponding 'free_irq()' in
+the error handling path, as already done in the remove function.
 
-Fixes: b9a24bb76bf6 ("net_sched: properly handle failure case of tcf_exts_init()")
-Reported-and-tested-by: syzbot+1071ad60cd7df39fdadb@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Acked-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Add it.
+
+Fixes: 9842c38e9176 ("kfifo: fix warn_unused_result")
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/4f0d2b3038e82f081d370ccb0cade3ad88463fe7.1620580838.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/cls_tcindex.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/nozomi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/sched/cls_tcindex.c b/net/sched/cls_tcindex.c
-index 5b119efb20ee..9314a739c170 100644
---- a/net/sched/cls_tcindex.c
-+++ b/net/sched/cls_tcindex.c
-@@ -297,7 +297,7 @@ static int tcindex_alloc_perfect_hash(struct tcindex_data *cp)
- 	int i, err = 0;
- 
- 	cp->perfect = kcalloc(cp->hash, sizeof(struct tcindex_filter_result),
--			      GFP_KERNEL);
-+			      GFP_KERNEL | __GFP_NOWARN);
- 	if (!cp->perfect)
- 		return -ENOMEM;
- 
+diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
+index 39b3723a32a6..d19acddc3cf3 100644
+--- a/drivers/tty/nozomi.c
++++ b/drivers/tty/nozomi.c
+@@ -1458,6 +1458,7 @@ err_free_tty:
+ 		tty_unregister_device(ntty_driver, dc->index_start + i);
+ 		tty_port_destroy(&dc->port[i].port);
+ 	}
++	free_irq(pdev->irq, dc);
+ err_free_kfifo:
+ 	for (i = 0; i < MAX_PORT; i++)
+ 		kfifo_free(&dc->port[i].fifo_ul);
 -- 
 2.30.2
 
