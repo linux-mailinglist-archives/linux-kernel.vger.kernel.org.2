@@ -2,162 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475ED3CED50
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27AEB3CED3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383125AbhGSRwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:52:53 -0400
-Received: from mga01.intel.com ([192.55.52.88]:33823 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241373AbhGSRn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 13:43:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="232883868"
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="232883868"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 11:24:36 -0700
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="414430046"
-Received: from rraymond-mobl1.amr.corp.intel.com (HELO [10.209.130.70]) ([10.209.130.70])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 11:24:35 -0700
-Subject: Re: [PATCH V3 06/12] ASoC: amd: irq handler changes for ACP5x PCM dma
- driver
-To:     Vijendar Mukunda <vijendar.mukunda@amd.com>, broonie@kernel.org,
-        alsa-devel@alsa-project.org
-Cc:     Sunil-kumar.Dommati@amd.com,
-        open list <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, Alexander.Deucher@amd.com,
-        krisman@collabora.com
-References: <20210719165140.16143-1-vijendar.mukunda@amd.com>
- <20210719165140.16143-7-vijendar.mukunda@amd.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a9566929-0fa0-f8f0-58ce-99a1e111e6a2@linux.intel.com>
-Date:   Mon, 19 Jul 2021 13:11:13 -0500
+        id S1352059AbhGSRtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:49:11 -0400
+Received: from esa.hc503-62.ca.iphmx.com ([216.71.135.51]:35849 "EHLO
+        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355519AbhGSRcd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 13:32:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
+  t=1626718393; x=1658254393;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=VzvZu29zOp7shLhWo6Q+hyIk6zoz9Y0UhxdZuvE/Y24=;
+  b=rEjltEZlhcSecXMOT7kJdsAPCYi0TsoeT5wXWEh/Xrsr2sv3hJAsTmzz
+   tgh94nXEvf5L95b8OEV6H4X++SFjOeofhJPyzfVJojh3H2rVmP45v7Ai1
+   DVnYrYp5wkDq114XR8c14CExwiVxVEfIT7v62op3hktrIKPESyg4VNG8+
+   M=;
+Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
+  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Jul 2021 14:13:06 -0400
+Received: from [10.42.0.123] (10.32.139.159) by connhm04.connect.uwaterloo.ca
+ (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 19
+ Jul 2021 14:13:05 -0400
+Subject: Re: [RFC PATCH 4/4 v0.3] sched/umcg: RFC: implement UMCG syscalls
+To:     Peter Oskolkov <posk@google.com>
+CC:     <posk@posk.io>, <avagin@google.com>, <bsegall@google.com>,
+        <jannh@google.com>, <jnewsome@torproject.org>,
+        <joel@joelfernandes.org>, <linux-api@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <mingo@redhat.com>,
+        <peterz@infradead.org>, <pjt@google.com>, <tglx@linutronix.de>,
+        Peter Buhr <pabuhr@uwaterloo.ca>
+References: <20210716184719.269033-5-posk@google.com>
+ <2c971806-b8f6-50b9-491f-e1ede4a33579@uwaterloo.ca>
+ <CAPNVh5cmhFEWr4bmODkDDFhV=mHLcO0DZJ432GEL=OitzPP80g@mail.gmail.com>
+From:   Thierry Delisle <tdelisle@uwaterloo.ca>
+Message-ID: <c8ea4892-51e5-0dc2-86c6-b705e8a23cde@uwaterloo.ca>
+Date:   Mon, 19 Jul 2021 14:13:05 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210719165140.16143-7-vijendar.mukunda@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <CAPNVh5cmhFEWr4bmODkDDFhV=mHLcO0DZJ432GEL=OitzPP80g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.32.139.159]
+X-ClientProxiedBy: connhm02.connect.uwaterloo.ca (172.16.137.66) To
+ connhm04.connect.uwaterloo.ca (172.16.137.68)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ > Latency/efficiency: on worker wakeup an idle server can be picked from
+ > the list and context-switched into synchronously, on the same CPU.
+ > Using FDs and select/poll/epoll will add extra layers of abstractions;
+ > synchronous context-switches (not yet fully implemented in UMCG) will
+ > most likely be impossible. This patchset seems much more efficient and
+ > lightweight than whatever can be built on top of FDs.
 
-> +static irqreturn_t i2s_irq_handler(int irq, void *dev_id)
-> +{
-> +	struct i2s_dev_data *vg_i2s_data;
-> +	u16 irq_flag;
-> +	u32 val;
-> +
-> +	vg_i2s_data = dev_id;
-> +	if (!vg_i2s_data)
-> +		return IRQ_NONE;
-> +
-> +	irq_flag = 0;
-> +	val = acp_readl(vg_i2s_data->acp5x_base + ACP_EXTERNAL_INTR_STAT);
-> +	if ((val & BIT(HS_TX_THRESHOLD)) && vg_i2s_data->play_stream) {
-> +		acp_writel(BIT(HS_TX_THRESHOLD), vg_i2s_data->acp5x_base +
-> +			   ACP_EXTERNAL_INTR_STAT);
-> +		snd_pcm_period_elapsed(vg_i2s_data->play_stream);
-> +		irq_flag = 1;
-> +	}
-> +	if ((val & BIT(I2S_TX_THRESHOLD)) &&
-> +	    vg_i2s_data->i2ssp_play_stream) {
+I can believe that.
 
-use single line?
+Are you planning to support separate scheduling instances within a 
+single user
+space? That is having multiple sets of server threads and workers can 
+only run
+within a specific set.
 
-> +		acp_writel(BIT(I2S_TX_THRESHOLD),
-> +			   vg_i2s_data->acp5x_base + ACP_EXTERNAL_INTR_STAT);
-> +		snd_pcm_period_elapsed(vg_i2s_data->i2ssp_play_stream);
-> +		irq_flag = 1;
-> +	}
-> +
-> +	if ((val & BIT(HS_RX_THRESHOLD)) && vg_i2s_data->capture_stream) {
-> +		acp_writel(BIT(HS_RX_THRESHOLD), vg_i2s_data->acp5x_base +
-> +			   ACP_EXTERNAL_INTR_STAT);
-> +		snd_pcm_period_elapsed(vg_i2s_data->capture_stream);
-> +		irq_flag = 1;
-> +	}
-> +	if ((val & BIT(I2S_RX_THRESHOLD)) &&
-> +	    vg_i2s_data->i2ssp_capture_stream) {
+I believe the problem with the idle_servers_ptr as specified is that it 
+is not
+possible to reclaim used nodes safely. I don't see any indication of which
+nodes the kernel can concurrently access and on which some memory 
+reclamation
+scheme could be based.
 
-use single line?
-
-> +		acp_writel(BIT(I2S_RX_THRESHOLD),
-> +			   vg_i2s_data->acp5x_base + ACP_EXTERNAL_INTR_STAT);
-> +		snd_pcm_period_elapsed(vg_i2s_data->i2ssp_capture_stream);
-> +		irq_flag = 1;
-> +	}
-> +
-> +	if (irq_flag)
-> +		return IRQ_HANDLED;
-> +	else
-> +		return IRQ_NONE;
-> +}
-> +
->  static int acp5x_audio_probe(struct platform_device *pdev)
->  {
->  	struct resource *res;
->  	struct i2s_dev_data *adata;
-> +	unsigned int irqflags;
->  	int status;
->  
->  	if (!pdev->dev.platform_data) {
-> @@ -47,6 +94,14 @@ static int acp5x_audio_probe(struct platform_device *pdev)
->  					 resource_size(res));
->  	if (!adata->acp5x_base)
->  		return -ENOMEM;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "IORESOURCE_IRQ FAILED\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	adata->i2s_irq = res->start;
->  	dev_set_drvdata(&pdev->dev, adata);
->  	status = devm_snd_soc_register_component(&pdev->dev,
->  						 &acp5x_i2s_component,
-> @@ -55,6 +110,12 @@ static int acp5x_audio_probe(struct platform_device *pdev)
->  		dev_err(&pdev->dev, "Fail to register acp i2s component\n");
->  		return -ENODEV;
->  	}
-> +	status = devm_request_irq(&pdev->dev, adata->i2s_irq, i2s_irq_handler,
-> +				  irqflags, "ACP5x_I2S_IRQ", adata);
-> +	if (status) {
-> +		dev_err(&pdev->dev, "ACP5x I2S IRQ request failed\n");
-> +		return -ENODEV;
-> +	}
-
-return status?
-
->  	return 0;
->  }
->  
-> diff --git a/sound/soc/amd/vangogh/acp5x.h b/sound/soc/amd/vangogh/acp5x.h
-> index d2853738eb17..18df2b5a4283 100644
-> --- a/sound/soc/amd/vangogh/acp5x.h
-> +++ b/sound/soc/amd/vangogh/acp5x.h
-> @@ -31,9 +31,18 @@
->  #define ACP5x_HS_TDM_REG_END	0x1242824
->  #define I2S_MODE 0x00
->  #define ACP5x_I2S_MODE 0x00
-> +#define	I2S_RX_THRESHOLD 27
-> +#define	I2S_TX_THRESHOLD 28
-> +#define	HS_TX_THRESHOLD 24
-> +#define	HS_RX_THRESHOLD 23
->  
->  struct i2s_dev_data {
-> +	unsigned int i2s_irq;
->  	void __iomem *acp5x_base;
-> +	struct snd_pcm_substream *play_stream;
-> +	struct snd_pcm_substream *capture_stream;
-> +	struct snd_pcm_substream *i2ssp_play_stream;
-> +	struct snd_pcm_substream *i2ssp_capture_stream;
->  };
->  
->  /* common header file uses exact offset rather than relative
-> 
+What is the benefit of having users maintain themselves a list of idle 
+servers
+rather than each servers marking themselves as 'out of work' and having the
+kernel maintain the list?
