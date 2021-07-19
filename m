@@ -2,154 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0F93CCDCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 615153CCDCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234521AbhGSGOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 02:14:39 -0400
-Received: from mail-mw2nam08on2079.outbound.protection.outlook.com ([40.107.101.79]:3232
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229916AbhGSGOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 02:14:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V7PIJfQ+deSTvkJjEs+rjwculIpQgJ9nHcXSFoZELCmdpfnOXGowXPgFSmtMyFDHnsl0Jx4e3kWNsIyicYhmcLtLs8P08tqHhyaDnS6H3vQmGZYqq/oKGtgrZWGaLII7VcKz8iaCygHwch8hMTqq+hhKBD5E5KjyxSTdGKDwNoWKdHJyWzWbhjv/unkW7XvL+BBOEL7OT0VZ1dg7FTYN1Z98/e14pL2uPcCnuIA63DNsjD1lKsan7A4v5/LGmIMo2hOx5v8GhejO3v3v0s5Cird4k7OBZ0IokWbI2QntUg2aXGY/PXZvUyeTeDyeMA0dSzmqUTK1h651LaEURAKvlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mxljdsBvHogLJB5z/YcDnYE1k+kQ1JHdi5ZX4zi5Bbk=;
- b=UY1wBTzUT7gC3yqhIXj0tgyKUf/0k5rz8Uy+6Q4GSXRlW8bKn005ZIY6NGA6O7yIfb49V6n37ra3WFJ4+kP0SF2Q5e40t3qdyqSqwvagYR3F8SO2EsOVkQ92Fpi28RK00ydy0ugt/kzNdy35YdoR9sh/8rkc+8weZmm79fFWYapzJKSUamB5w2PT1eAoQEk1Zf8fKxyWtSU4VNyEbMTfyVEptfiYAbOrGjJ5OHgB+MMElfullXvDpSUETWHqE8m33FM8b3gD4VLEP0lQMG0jhPS+BIAsYSvbG5yrLYtfrXVX+P1Gy5YaevwevVhSom2YbYmEzrYx5JMy4dt1m7gTAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mxljdsBvHogLJB5z/YcDnYE1k+kQ1JHdi5ZX4zi5Bbk=;
- b=N/wvIW1isoKqsscSWnvXNG53CECfAED/xV3vci4XiaaoSbQzaTWYvgURBmIRrSuz5f5iBDzpFnnf2Tr5jUATtwgNLe6lORfxT3pEFdN714gtg8RZhdqJJLpKDncqBz5cuhdgyyFjc8Xt28odHO4fTmDo7ETjAIDccm4SSIeuozA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BY5PR12MB3764.namprd12.prod.outlook.com (2603:10b6:a03:1ac::17)
- by BYAPR12MB3224.namprd12.prod.outlook.com (2603:10b6:a03:137::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.29; Mon, 19 Jul
- 2021 06:11:34 +0000
-Received: from BY5PR12MB3764.namprd12.prod.outlook.com
- ([fe80::6c58:1598:e768:d45e]) by BY5PR12MB3764.namprd12.prod.outlook.com
- ([fe80::6c58:1598:e768:d45e%7]) with mapi id 15.20.4331.032; Mon, 19 Jul 2021
- 06:11:33 +0000
-Subject: Re: [git pull] drm fixes for 5.14-rc2
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Dave Airlie <airlied@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <CAPM=9tzb9KSspAtVkSH3pYN97hQ815MoOBTSiuHzUJnnb2fhRA@mail.gmail.com>
- <20210717214302.mpfil765uji5dnb7@box.shutemov.name>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <44538364-13c5-2626-502c-31d85161a0d4@amd.com>
-Date:   Mon, 19 Jul 2021 08:11:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210717214302.mpfil765uji5dnb7@box.shutemov.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: PR0P264CA0250.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100::22)
- To BY5PR12MB3764.namprd12.prod.outlook.com (2603:10b6:a03:1ac::17)
+        id S234496AbhGSGUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 02:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229916AbhGSGUD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 02:20:03 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA07CC061762;
+        Sun, 18 Jul 2021 23:17:03 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GSs7X37Zgz9sCD;
+        Mon, 19 Jul 2021 16:16:56 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626675420;
+        bh=pkk8P46Jrx5QnMnt5CGxX/9lY0lMs7VkihO+vVhu5fg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UwiVGxIJO2vOWh9mn7wt9s01pcc1uW2z+U4CiX0C3o0PV2HLenpZ/zwhEUdfQhAqx
+         j09Hd6NiZnq03+fkLfjU20BUq7RM+A8+0P2aeWyVqdH5YhYYiycfsiGaQVO1OaRp85
+         IUckxEbEx90AfIOxHSuNUTbfWUwaOEiVygEoGZouHwg+qyfpQAC4atWnrJpAR+5lrH
+         P38ocGC66VgONt4lUCPuT71tLW0rnlJKrhrDRGcnmknlxgas2l0FLFzr5kYQx5OPWa
+         fHe50PWiQW58/t8jsma8nPGTSxiDnxc1O+Nab0dJjYAnoHS2q0QKK3jbr0QBDSM3+o
+         +5wsecJl/LP5Q==
+Date:   Mon, 19 Jul 2021 16:16:53 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Boris-Chengbiao Zhou <bobo1239@web.de>,
+        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
+        Fox Chen <foxhlchen@gmail.com>, Gary Guo <gary@garyguo.net>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Yuki Okushi <jtitor@2k36.org>
+Subject: linux-next: manual merge of the rust tree with Linus' tree
+Message-ID: <20210719161653.56db337b@canb.auug.org.au>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:e48d:68a9:5ef4:9e09] (2a02:908:1252:fb60:e48d:68a9:5ef4:9e09) by PR0P264CA0250.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 06:11:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c9e01e07-4a50-4c11-bf15-08d94a7c0e5b
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3224:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB32243817205E61633FB66A6A83E19@BYAPR12MB3224.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MZ1/d6KQCz2qHFRDcAtAjt6lIy0ccLAoQgji2DpzRvmXEUU8BWf0+mThCUXbUPf6ap9dIXBCCzhBXEQScnUQdPPvFrF/jo9wKqrD2Ukwln9YvECYmeeOQLRzY5CJ8hvKmcB1+rfJqF0dnBH16V9EMfONpT1u+qCUQeJkTlC4oLE3sL3MpxrP68K4sV2UKPEfXuwhDcMsbjkONAhM4c6Jdkg4g26OEIRvZAA1HZuFN4TjA7YnhjVA/+s6ZmaLtwNXoKvOEK42YvsedoihyA8bJ8KpR2nxwc9VKkC/RiPvtrf+32nIQI2QLZvKSB5OCD3kpVcLcFldSTWaBkzDKtemE/TnpO6FEKW8q5kUCmlJ/UA++ni6cDAMXmQWX5JHqQfB4gLJPJltLbBHUvEiOoy74J/SJnsRBkrJJaQ0pdG4EWkad2RtJf0qY87OxXqyt6oK0omFkht1TLPWDy1i8bX88OZ0mKcbUS/sZGDCcTKE/7Ji6WlEiuYhXtVZZMCRzooCyDsuUsXk1jrq2iZSba+GbwD0Wn3AKqui9K/Os4aqByJVa7z0E9CxNE6YEaioVLdEBvi7lIigpwHsNagBV87kC55lgd8Iz86pOz9RN9SIWWKiGha+vKdbtIPcYM91mcRy5cSgW/qOtiyPI2Ch5t95Z6Hss5+8/6inVthmyAECihdLe/5pBtWuDqFmeMAZa15XbMqNJViALvJfNZNn1QCV2yZZ8dD6zWc/4nQN7Jj4aYKpwLNFp+ufyM8JcDODCsiWuWjRk9fKMngEdiy6aCqPGCXOV17zbf+UG/8mLDY5T9hS8lBJHJzwgnO9Tv2K947MNez90rBKH8iboM9AevlauQjbPKHtiAtP/j+gGNPCpfo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3764.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(110136005)(4326008)(316002)(86362001)(38100700002)(31696002)(45080400002)(966005)(8676002)(508600001)(8936002)(186003)(6666004)(2616005)(2906002)(36756003)(6486002)(83380400001)(31686004)(66946007)(5660300002)(66476007)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VkZYOXpKZ1lZcTk2MDNVL2pSVkhzTnE0NWgwTnZhU2VXekkyWUYwZkdMR2ty?=
- =?utf-8?B?ektORkhJRzF4K3JiOHV6OHNoNUh0VEFQQVJIazE5UkgxbktuajgyeG16Rzlp?=
- =?utf-8?B?cDFjSnVOd25MOFZTazFQN2JGdEpEWU4zV0VCdVUrcTdtS3JDN0h6MnRBTk5M?=
- =?utf-8?B?T2Q3dEJ6b0dmOXlrdXhBakpoZDVUZUlKTTVnMDRvQ1R6L2VvZW5yajNTOXFP?=
- =?utf-8?B?ZWQ2ZTBnVFdvQVIwS3dWaC84VWpnRjBoNjRpMUN1ckdmK2J1WU9naUpHTkxJ?=
- =?utf-8?B?dWJETEhLMFZkNWJxSmhtRndhTFNlcFhSNFg3aVF1bitGNmw1SGVDU1FmZkt3?=
- =?utf-8?B?OFZCSUkrTDFrNXUvc3RjeS9SMFhBSUxJSlVIUzYzNXFNR0pxeDZKb25JN1N2?=
- =?utf-8?B?Zy93Sm1rYjNoanJJcC9DRElleTZhKzl0UXVtWnluOXJ0TGJUKzlReHNSeE1t?=
- =?utf-8?B?NDdaWGhrWDZpdG9ZZEF1VHhSeE9MYVlCV0hnS2ZNM3A2T2ZtNmo0VE9uSHVP?=
- =?utf-8?B?VllWV0NMbjhFekE2NUFrRERxcFJwckJpc3dGd2FMVFdLWFphUHBTbVBmbVpm?=
- =?utf-8?B?Z0VsMXg3WnhQNE02QlZkL3AzRjZqNjA3am80aTg3ZG53c1Q1YXlDVStKNVp3?=
- =?utf-8?B?VHd4N2IwY1BZU1RPYXRyNTZmd2pwakdhUzNFcVdBVnpGR1RVYk5kL3pQMEFq?=
- =?utf-8?B?TzN3NVhPeEYzVkNpUmVvbGJSR0V1VE9GOWV4ODZYS1gvMWxPdVhaZG5zTmdz?=
- =?utf-8?B?Ynp6TTd4NXRlU0VXNzB4Slh5VG4rUFJYZmFKOC9IZFBJMkxoWXpuYy9LRHMw?=
- =?utf-8?B?VzhnaElvRnhTZ3RqVUl0VTh0TXpGZ0xmODMxVnlndmdCTkpNNGtHZWwzNk9T?=
- =?utf-8?B?LzVMalN2OUdYYzlGTTBaM0FWOWxVQm5lWm41ZzF0NVZXeTlhd0QzR001NzN4?=
- =?utf-8?B?ckVFK2tlZGdhcmFwRFBpNVg5THI4dG9vTVFNQ1UxNkdPVzRLYitJenRqSXVX?=
- =?utf-8?B?UEF1VUF0dEt6STAyZEVPZDlTbWpzc20yRnM3SHZGSEhVRXF2OEJ0dCs4cVpG?=
- =?utf-8?B?c0pzZUJ4NkN4dXdPMzBuQzN0MDdod0RScmRSZnpQQWdhTktNZkEwM1V0Vnc4?=
- =?utf-8?B?OXlWNWh2MTFKd0l5Y3pkRUE5cGJSbnppL0lNaWNlanh6SXIrd0ZIZUZmRGR4?=
- =?utf-8?B?UVRELzE2WjlFemMzY0paVmZCM2pSOVJTWVFNTmVWaDBQci9YeGU4MUFCcDVa?=
- =?utf-8?B?ck1RVkk1OTc1QzlobVQvSXovempoc3ptSkRRWjB3QzJZT0V4ZDlmUlhwbnVs?=
- =?utf-8?B?TVFQZHhUQjVLVXVCNm1uL0s1UVFoSlVQd3Z1RGo1dE11MVNUWjlWS0JsMnJV?=
- =?utf-8?B?clArMkVvZWlSK1VJeFpUTTYvcnl2UHM4TDhXSmJDWmVOL0R0dzZKeVRvVGMz?=
- =?utf-8?B?VzJyNXNYdWtWZElmaEIrUjZPZGNpWHVzMWhoVW5oUVVsLzJNOHFmN2l1T0pO?=
- =?utf-8?B?K3RUV09Fb1NUTG1JOWVzeWRVRGNRZ0dzQ3pZOENKMTUyaVE0QUR3dzErNnl3?=
- =?utf-8?B?bWdpWnBocEloOVFHMzJBQWNYazNWQjR3eWVUQUdaMWE5MHhoZjdianFiVm1D?=
- =?utf-8?B?U3lET3RuYjk3ZndrSGVtOEdGRWdEbnM4UFFXWlN5eEdrdUI2UitjOHJVMTFX?=
- =?utf-8?B?S203cGd0ZERuZ2NpZXg4L1dXcFRHOU0xUldyOVpxeUdkTTN4dzhkWWwrREc3?=
- =?utf-8?B?MnRQenlNUTlWVERUeTZ1SHlpUHVnd3Q2K3BwUC9WK0o0Z0x0OVJXWUtOa2FP?=
- =?utf-8?B?YnlEMVFyL0dtYVNBbTMveHZjV2UycVJiTGJSU1BZWWtoTmNpQ0dYLzE2SW9C?=
- =?utf-8?Q?97C8mDA6/zPtD?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9e01e07-4a50-4c11-bf15-08d94a7c0e5b
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3764.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 06:11:33.6444
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VRUYm8kOgYCXT5uQpHSgQFEhNyXqYUjWLQxqyJQyVO/yytR5yclVHwv96cuK8PF+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3224
+Content-Type: multipart/signed; boundary="Sig_/wNUyXrESa4LjzFaSe6hGzsZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/wNUyXrESa4LjzFaSe6hGzsZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-Am 17.07.21 um 23:43 schrieb Kirill A. Shutemov:
-> On Fri, Jul 16, 2021 at 01:41:18PM +1000, Dave Airlie wrote:
->> Hi Linus,
->>
->> Regular rc2 fixes though a bit more than usual at rc2 stage, people
->> must have been testing early or else some fixes from last week got a
->> bit laggy. There is one larger change in the amd fixes to amalgamate
->> some power management code on the newer chips with the code from the
->> older chips, it should only affects chips where support was introduced
->> in rc1 and it should make future fixes easier to maintain probably a
->> good idea to merge it now. Otherwise it's mostly fixes across the
->> board.
->>
->> Dave.
->>
->> drm-fixes-2021-07-16:
->> drm fixes for 5.14-rc2
-> Dave, Daniel,
+Today's linux-next merge of the rust tree got a conflict in:
 
-My fault, I've pushed it to drm-misc-next after the branch of.
+  Makefile
 
-Just cherry-picked that to drm-misc-fixes. Should be in the next -rc
+between commit:
 
-Thanks for the notice,
-Christian.
+  d952cfaf0cff ("kbuild: do not suppress Kconfig prompts for silent build")
 
->
-> Looks like the fix[1] for nouveau regression[2] is missing. Hm?
->
-> [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fnouveau%2F20210609172902.1937-1-christian.koenig%40amd.com%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cdfa76642807a4953a9dc08d9496bda6a%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637621549856073674%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=8wYkOJYcSoLt3P6cFdTsaYrvX2UEhm7M5RKkaSn5dws%3D&amp;reserved=0
-> [2] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flkml%2FYOC4uekpD7iA3xPi%40Red%2FT%2F%23u&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cdfa76642807a4953a9dc08d9496bda6a%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637621549856073674%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=h5QYbNjhPDAqioojBPTY7uVvfJx6XwEV7ic8rwuMxMc%3D&amp;reserved=0
->
+from Linus' tree and commit:
 
+  dc08d49444e9 ("Kbuild: add Rust support")
+
+from the rust tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc Makefile
+index 45a3215179b4,c814b209b6c9..000000000000
+--- a/Makefile
++++ b/Makefile
+@@@ -731,12 -763,11 +778,12 @@@ $(KCONFIG_CONFIG)
+  # This exploits the 'multi-target pattern rule' trick.
+  # The syncconfig should be executed only once to make all the targets.
+  # (Note: use the grouped target '&:' when we bump to GNU Make 4.3)
+ -quiet_cmd_syncconfig =3D SYNC    $@
+ -      cmd_syncconfig =3D $(MAKE) -f $(srctree)/Makefile syncconfig
+ -
+ +#
+ +# Do not use $(call cmd,...) here. That would suppress prompts from syncc=
+onfig,
+ +# so you cannot notice that Kconfig is waiting for the user input.
+- %/config/auto.conf %/config/auto.conf.cmd %/generated/autoconf.h: $(KCONF=
+IG_CONFIG)
++ %/config/auto.conf %/config/auto.conf.cmd %/generated/autoconf.h %/genera=
+ted/rustc_cfg: $(KCONFIG_CONFIG)
+ -	+$(call cmd,syncconfig)
+ +	$(Q)$(kecho) "  SYNC    $@"
+ +	$(Q)$(MAKE) -f $(srctree)/Makefile syncconfig
+  else # !may-sync-config
+  # External modules and some install targets need include/generated/autoco=
+nf.h
+  # and include/config/auto.conf but do not care if they are up-to-date.
+@@@ -1214,9 -1327,12 +1308,12 @@@ archprepare: outputmakefile archheader
+  prepare0: archprepare
+  	$(Q)$(MAKE) $(build)=3Dscripts/mod
+  	$(Q)$(MAKE) $(build)=3D.
++ ifdef CONFIG_RUST
++ 	$(Q)$(MAKE) $(build)=3Drust
++ endif
+ =20
+  # All the preparing..
+ -prepare: prepare0 prepare-objtool prepare-resolve_btfids
+ +prepare: prepare0
+ =20
+  PHONY +=3D remove-stale-files
+  remove-stale-files:
+
+--Sig_/wNUyXrESa4LjzFaSe6hGzsZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD1GNUACgkQAVBC80lX
+0GwhQQgAnfIGpLWlXw2rGKOvJVfspGtIFHHFypEl/OwsQRlIMZoxKoNVVvKwkfGX
+/3+arIrIyevQuk7PF7Eyl5iDAOCZjC92hIz8aA5BQS4TJQXZ5mdYiNqTjHh8ZHhD
+UCMCZThfVnOwRANIMIFgvtlnQ0O0ZfS2Wqufe8lDVbhOWRPqTTFSRCJNH599LdJ/
+3i2kLpOLm0Fsxg9/r20EGcH0EZ+EO5PkRIsaZQA5p7/qXEXlW34QdM5sMpU5ERgc
+5auZi8LZxQsOnTTD0tS4kaFzbaOZgHhM+IKh9SVp0nLhtZZGZf1ShBkemxprgC3o
+q+jMi+/+equxbPj2hMbEtXWBFTVOLQ==
+=AOy2
+-----END PGP SIGNATURE-----
+
+--Sig_/wNUyXrESa4LjzFaSe6hGzsZ--
