@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA08A3CDAE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195C93CD89F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245640AbhGSOjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:39:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38474 "EHLO mail.kernel.org"
+        id S243387AbhGSOXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:23:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244638AbhGSO3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:29:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C83C8611C1;
-        Mon, 19 Jul 2021 15:10:20 +0000 (UTC)
+        id S242714AbhGSOVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:21:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EC896120D;
+        Mon, 19 Jul 2021 15:01:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707421;
-        bh=e52m6nPOD7MY3LIXgu1mcAyXT0MQ1o8/4eSz7YPFYD4=;
+        s=korg; t=1626706917;
+        bh=VcW/ruN3c54Clx8FuvHi1OftTDyPfLkLXkAtK2a+IpY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ym7YTam8uwX68PshnFyPW2phi3aCXmCn5JHkGv++Ar7+rhh5sDFgYrnW7vfQ0wZrX
-         9oFclgeyTVBfbdBZzXNmrWo4CGCWkLWuz3t64dVb+sv9BcPE9nxECDM6bVGZcQEhdK
-         usW/U7oKSUcWgPoht4w7JLol+IM9QpHsMiDk2fmM=
+        b=etgz16Wqrc0SyDotSLkU2SC/cG0Bvg6dl/m1W1I1f6v/D8q+r+KDvmdxnuHl+Ah6B
+         YPmX7krHkgInbudt7VjoIhP1L6pMim7UZw70B/Msx8pj75WyvIXOD5HKw4RGp7LAzA
+         4cRWbVtAOf8nAU6yj3lVTazTjhUMkrIQ46a58Yjg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Anatoly Trosinenko <anatoly.trosinenko@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 4.9 157/245] fuse: reject internal errno
-Date:   Mon, 19 Jul 2021 16:51:39 +0200
-Message-Id: <20210719144945.481765333@linuxfoundation.org>
+        =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 116/188] sfc: error code if SRIOV cannot be disabled
+Date:   Mon, 19 Jul 2021 16:51:40 +0200
+Message-Id: <20210719144940.077105979@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
+References: <20210719144913.076563739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: Íñigo Huguet <ihuguet@redhat.com>
 
-commit 49221cf86d18bb66fe95d3338cb33bd4b9880ca5 upstream.
+[ Upstream commit 1ebe4feb8b442884f5a28d2437040096723dd1ea ]
 
-Don't allow userspace to report errors that could be kernel-internal.
+If SRIOV cannot be disabled during device removal or module unloading,
+return error code so it can be logged properly in the calling function.
 
-Reported-by: Anatoly Trosinenko <anatoly.trosinenko@gmail.com>
-Fixes: 334f485df85a ("[PATCH] FUSE - device functions")
-Cc: <stable@vger.kernel.org> # v2.6.14
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Note that this can only happen if any VF is currently attached to a
+guest using Xen, but not with vfio/KVM. Despite that in that case the
+VFs won't work properly with PF removed and/or the module unloaded, I
+have let it as is because I don't know what side effects may have
+changing it, and also it seems to be the same that other drivers are
+doing in this situation.
 
+In the case of being called during SRIOV reconfiguration, the behavior
+hasn't changed because the function is called with force=false.
+
+Signed-off-by: Íñigo Huguet <ihuguet@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fuse/dev.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/sfc/ef10_sriov.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
---- a/fs/fuse/dev.c
-+++ b/fs/fuse/dev.c
-@@ -1883,7 +1883,7 @@ static ssize_t fuse_dev_do_write(struct
- 	}
+diff --git a/drivers/net/ethernet/sfc/ef10_sriov.c b/drivers/net/ethernet/sfc/ef10_sriov.c
+index b3c27331b374..8fce0c819a4b 100644
+--- a/drivers/net/ethernet/sfc/ef10_sriov.c
++++ b/drivers/net/ethernet/sfc/ef10_sriov.c
+@@ -378,12 +378,17 @@ fail1:
+ 	return rc;
+ }
  
- 	err = -EINVAL;
--	if (oh.error <= -1000 || oh.error > 0)
-+	if (oh.error <= -512 || oh.error > 0)
- 		goto err_finish;
++/* Disable SRIOV and remove VFs
++ * If some VFs are attached to a guest (using Xen, only) nothing is
++ * done if force=false, and vports are freed if force=true (for the non
++ * attachedc ones, only) but SRIOV is not disabled and VFs are not
++ * removed in either case.
++ */
+ static int efx_ef10_pci_sriov_disable(struct efx_nic *efx, bool force)
+ {
+ 	struct pci_dev *dev = efx->pci_dev;
+-	unsigned int vfs_assigned = 0;
+-
+-	vfs_assigned = pci_vfs_assigned(dev);
++	unsigned int vfs_assigned = pci_vfs_assigned(dev);
++	int rc = 0;
  
- 	spin_lock(&fpq->lock);
+ 	if (vfs_assigned && !force) {
+ 		netif_info(efx, drv, efx->net_dev, "VFs are assigned to guests; "
+@@ -393,10 +398,12 @@ static int efx_ef10_pci_sriov_disable(struct efx_nic *efx, bool force)
+ 
+ 	if (!vfs_assigned)
+ 		pci_disable_sriov(dev);
++	else
++		rc = -EBUSY;
+ 
+ 	efx_ef10_sriov_free_vf_vswitching(efx);
+ 	efx->vf_count = 0;
+-	return 0;
++	return rc;
+ }
+ 
+ int efx_ef10_sriov_configure(struct efx_nic *efx, int num_vfs)
+-- 
+2.30.2
+
 
 
