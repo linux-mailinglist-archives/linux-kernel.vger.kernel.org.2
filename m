@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF453CE513
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E293CE62D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238464AbhGSPrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:47:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58806 "EHLO mail.kernel.org"
+        id S1350113AbhGSQCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:02:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343671AbhGSPAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:00:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E56B601FD;
-        Mon, 19 Jul 2021 15:41:00 +0000 (UTC)
+        id S1343667AbhGSPFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:05:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 255C96023D;
+        Mon, 19 Jul 2021 15:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709261;
-        bh=PL5aCO4as6xANYS7odvexncPcBJjOp9Bk8XouauD5lc=;
+        s=korg; t=1626709575;
+        bh=PFPsC1bwNfkre24GbZAloHDyURgIzkgS9yrhCz7qWhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AnBdp7z1ZUZJVs1JVT7ekJiKZUEXjVl50j6h3UNjJZ+OJSH59HGbA45vt4F09NbD1
-         99CqkjMywAkP2jmprvNvyrGGBBL68DqJPs9xqkClouy/Ct39xv90DZisxiK3ixfV0Y
-         kIv3tOTtqf+raxJB5fqM2blRCf1iriEnziOTPf4k=
+        b=H0Lm+/CPWkAau+bWfTmOfS66xaTKFHEpJD0B9T5zgRK4KKzO652uTwuz48OY2Fh9B
+         TCF0tItg9GU2GlqcINgmXl1my5kvtoNSG/q8J79hwulp3S0Wr21ZZBp0jqIHKrJQHy
+         18ZxDOpte7UA0dys6ax+NXiWDY3Al5jl4x+AXopc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.19 312/421] media: gspca/sunplus: fix zero-length control requests
-Date:   Mon, 19 Jul 2021 16:52:03 +0200
-Message-Id: <20210719144957.135959846@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 016/149] ALSA: usx2y: Dont call free_pages_exact() with NULL address
+Date:   Mon, 19 Jul 2021 16:52:04 +0200
+Message-Id: <20210719144905.273222544@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,62 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit b4bb4d425b7b02424afea2dfdcd77b3b4794175e upstream.
+[ Upstream commit cae0cf651adccee2c3f376e78f30fbd788d0829f ]
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+Unlike some other functions, we can't pass NULL pointer to
+free_pages_exact().  Add a proper NULL check for avoiding possible
+Oops.
 
-Control transfers without a data stage are treated as OUT requests by
-the USB stack and should be using usb_sndctrlpipe(). Failing to do so
-will now trigger a warning.
-
-Fix the single zero-length control request which was using the
-read-register helper, and update the helper so that zero-length reads
-fail with an error message instead.
-
-Fixes: 6a7eba24e4f0 ("V4L/DVB (8157): gspca: all subdrivers")
-Cc: stable@vger.kernel.org      # 2.6.27
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210517131545.27252-10-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/sunplus.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/usb/usx2y/usb_stream.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/media/usb/gspca/sunplus.c
-+++ b/drivers/media/usb/gspca/sunplus.c
-@@ -251,6 +251,10 @@ static void reg_r(struct gspca_dev *gspc
- 		gspca_err(gspca_dev, "reg_r: buffer overflow\n");
+diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
+index 091c071b270a..cff684942c4f 100644
+--- a/sound/usb/usx2y/usb_stream.c
++++ b/sound/usb/usx2y/usb_stream.c
+@@ -142,8 +142,11 @@ void usb_stream_free(struct usb_stream_kernel *sk)
+ 	if (!s)
  		return;
- 	}
-+	if (len == 0) {
-+		gspca_err(gspca_dev, "reg_r: zero-length read\n");
-+		return;
+ 
+-	free_pages_exact(sk->write_page, s->write_size);
+-	sk->write_page = NULL;
++	if (sk->write_page) {
++		free_pages_exact(sk->write_page, s->write_size);
++		sk->write_page = NULL;
 +	}
- 	if (gspca_dev->usb_err < 0)
- 		return;
- 	ret = usb_control_msg(gspca_dev->dev,
-@@ -259,7 +263,7 @@ static void reg_r(struct gspca_dev *gspc
- 			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 			0,		/* value */
- 			index,
--			len ? gspca_dev->usb_buf : NULL, len,
-+			gspca_dev->usb_buf, len,
- 			500);
- 	if (ret < 0) {
- 		pr_err("reg_r err %d\n", ret);
-@@ -736,7 +740,7 @@ static int sd_start(struct gspca_dev *gs
- 		case MegaImageVI:
- 			reg_w_riv(gspca_dev, 0xf0, 0, 0);
- 			spca504B_WaitCmdStatus(gspca_dev);
--			reg_r(gspca_dev, 0xf0, 4, 0);
-+			reg_w_riv(gspca_dev, 0xf0, 4, 0);
- 			spca504B_WaitCmdStatus(gspca_dev);
- 			break;
- 		default:
++
+ 	free_pages_exact(s, s->read_size);
+ 	sk->s = NULL;
+ }
+-- 
+2.30.2
+
 
 
