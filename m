@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1BCB3CEEEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 00:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A131C3CEEE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 00:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359379AbhGSVUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 17:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39436 "EHLO
+        id S243307AbhGSVT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 17:19:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1388253AbhGSUrk (ORCPT
+        with ESMTP id S1388261AbhGSUru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 16:47:40 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE6CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:23:11 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id u3so10355392plf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:23:11 -0700 (PDT)
+        Mon, 19 Jul 2021 16:47:50 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02AEAC0613DB
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:24:59 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id k16so21668106ios.10
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:24:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=tfjE6DG+RbuRPps+rG5+i3aixe658dKN7HiNj1LodmE=;
-        b=ORlbcQnj8QYBkQMMf0uIA33jFlPX3Md/1LcA4ZIyxNmCLpjz90sJvJVgqhYRutW5qv
-         QJydnZUlsnwLSBxqHhCkM8OvLJkL+4TPdxh+hF1z+cR9cIVAqMUlr43dxBPjDw1XtG90
-         NHD9+iwbVna0r7a3/Oj9zHBMTXV+JrwiEm3L5LevYqk/YGSp143InCKo4X9fSu7Ww8n5
-         6EB92FoBDIJleCRScQsisFWYUSgyLqIaUMUK+u/O/ZcWn/tC7WUYm1f7ryiQ9VsjvSzz
-         +YL5+KqBa3JvLw14II/YvMKNGoVM9O8xYTqAtGMcMpujdaPGvRTJb3V/BzrnEuzGAih5
-         duYg==
+        bh=eiS9vjeAV2w43I7uPoTEYtj1lxKQUremRNEzEWxblLQ=;
+        b=DmY3NAa1Wc7QkMPU62eiTsB1Y9XMGMG14olpOm1y0iQeG893XV5S2Uq/fuVCzYj5aK
+         bQOhjz5/VB3zL9FxM6Kdgwxfoyq8oS1aFLxYEayLiggZVGYF4d0igSOCQelpOrNzM2PK
+         +51FLp0tofK1DaInT9Gv0UWyrF721EKaQc3aOGuvfkeq9uWC/VXkL3z4YjLOa9PoyNd6
+         67sL4xd5oLyWZ5WkUoysxjjz8dM1WZAGP7Nge6Zkbzo9qvEViAd9xIfamr1ByjScq5zc
+         /JS+Mb4Z88GieoUtAehR2++vIUG1UYzmjVyLiPY5S9N5bmydhZRD85HzOMoAEtiATBFM
+         nK8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=tfjE6DG+RbuRPps+rG5+i3aixe658dKN7HiNj1LodmE=;
-        b=Q7bS13Ih6H1Rqqa9GWNOoo+0i/0bJRum4OIq1FeQTcuW7epTBWR8uqOvxJNjgx25cy
-         yf9YevlJz2S9xsCH9sXACpNcVdGH4NGIHQSv5hX1OdXQrn632g1Tlh+jz1fBArl4RNdZ
-         xAmff4kE2MDzfplPOZNl2uIDQo6bfCQaYELxl1NFVghHAUtweSAxjy6RREzTMOu3raIC
-         iuY0u2NVdJfWeq0jGSdpUzZWTWlUh3UjqYBrWdzW89jM6sexyMbPL3vXfb42JByW0xCL
-         hvevfDkzrPcydii/oWel3zd3iRkC/Kr+3G3/nXhiCjzfM5MbAX1KtORzRVHDjnjhvpxF
-         pWgg==
-X-Gm-Message-State: AOAM530mrVXeXqdHXHKBgM0/23WaEP7sIQcTPytaks669SG+Yf8ZM5Pn
-        WpsyDXIgNubmNY3qzfE/GjgqD1rdlrgaU1gIZ2U=
-X-Google-Smtp-Source: ABdhPJzaXXj50NHTFyHdkNIx/bGEGDPc8/twvYkK9em1U0b8YlJ401jXehIVrcSSjg4copttnqZqLV780ObcjcJaRng=
-X-Received: by 2002:a17:90a:a07:: with SMTP id o7mr32074587pjo.99.1626729790420;
- Mon, 19 Jul 2021 14:23:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eiS9vjeAV2w43I7uPoTEYtj1lxKQUremRNEzEWxblLQ=;
+        b=IsUNUAFpvIeoABjL73ErvE727ymct+oi1Jp4Qbr9XWxrfrMuPbdheIGKtuMkMO8L4r
+         pJm6k4aeJvrLKdiyTCA2FOkgjidrFtZYizcf20nd4PhQFxEhz95G4sOu9OvPdOvLT7y4
+         1wHGgJv/TayWmmt3A43Z+5jW6VTK5TocpRFJOLqstbR2At7wnorfjZpwCgCbajyS035B
+         pNd8ErGL05sKJ2lDgqgmhL66f+3ufVp5gTxvb17DcCG62boiUZeYGzuWKm+k2WI+5IFo
+         Y96xVnuRcEROMVDvEs/iz8tUNhmwR6KQw87bh6rZHRqDDZLO/78gR1V8CU0cAV1Q3nck
+         AGJQ==
+X-Gm-Message-State: AOAM53195CRbNm6kSbRp6g+Tbsi57RWSgMMAC1ZX5HdjUv/+BsEEva2j
+        q/3Jf9bFAo69nIcv5uz7l8zUvA==
+X-Google-Smtp-Source: ABdhPJzBE7wuSpBBojhR5L71d5Kg8g/9Kq2GBgkRksKv2M7CNBU0DAHcj9JSFTJLp5LE7JUsWEHvpA==
+X-Received: by 2002:a05:6638:6a6:: with SMTP id d6mr23269298jad.118.1626729899304;
+        Mon, 19 Jul 2021 14:24:59 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id f16sm10365634ilc.53.2021.07.19.14.24.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 14:24:58 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     bjorn.andersson@linaro.org, agross@kernel.org, robh+dt@kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/3] arm64: dts: qcom: DTS updates
+Date:   Mon, 19 Jul 2021 16:24:53 -0500
+Message-Id: <20210719212456.3176086-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Received: by 2002:a05:7300:760b:b029:1f:43c:7f13 with HTTP; Mon, 19 Jul 2021
- 14:23:09 -0700 (PDT)
-Reply-To: tombaba110@gmail.com
-From:   MR TOM BABA <engieernkassem@gmail.com>
-Date:   Mon, 19 Jul 2021 14:23:09 -0700
-Message-ID: <CAKge284D534DU7RXYCCYWX2-C1+_30TDm7orOLMSAhhv0x923g@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
---=20
-Dear Friend,
+This series updates some IPA-related DT nodes.
 
-I Am Mr. Tom Baba. from west Africa i have a business deal to share
-with You in the sum of10.2M USD dollars that is been held in our here
-in (B.O.A) bank of Africa the fund mentioned rightful belong to one of
-Our late client who deposited the money in our bank here ever since he
-Died nobody have Been able to apply to claim the fund so I wish that
-you will come and Assume as his foreign business partner also note
-this business is risk Free not to be sacred or doubt is real please my
-dearest one also noted.
-This once we succeed in Transferring this fund to your wish provided
-account in your country it Will shared among us in agreement of 60%40
-i believe that after this Deal joy and happiness will be on or face's
-and family's please reply to me with your details so we can move on
-with this great plan ok.
+Newer versions of IPA do not require an interconnect between IPA
+and SoC internal memory.  The first patch updates the DT binding
+to reflect this.
 
+The second patch adds IPA information to "sc7280.dtsi", using only
+two interconnects.  It includes the definition of the reserved
+memory area used to hold IPA firmware.
 
-REPLY TO-- (tombaba110@gmail.com)
+The last patch defines the reserved IPA firmware memory area in
+"sc7180.dtsi".
 
+					-Alex
 
-Your Full Name.......
+Alex Elder (3):
+  dt-bindings: net: qcom,ipa: make imem interconnect optional
+  arm64: dts: qcom: sc7280: add IPA information
+  arm64: dts: qcom: sc7180: define ipa_fw_mem node
 
-You=E2=80=99re Age&Sex........
+ .../devicetree/bindings/net/qcom,ipa.yaml     | 18 ++++----
+ arch/arm64/boot/dts/qcom/sc7180.dtsi          |  5 +++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi          | 43 +++++++++++++++++++
+ 3 files changed, 58 insertions(+), 8 deletions(-)
 
-Your Marital Status......
+-- 
+2.27.0
 
-You=E2=80=99re Country Name.......
-
-You=E2=80=99re Phone Number......
-
-Your Occupation.....
-
-You=E2=80=99re Bank Name......
-
-You=E2=80=99re Account Number......
-
-Thanks Yours Brother
-
-Mr. Tom Baba
