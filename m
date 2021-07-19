@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B62C3CE9B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4B93CEAC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357988AbhGSRAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:00:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59626 "EHLO mail.kernel.org"
+        id S1353065AbhGSRSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:18:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235289AbhGSPeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:34:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44ABB61376;
-        Mon, 19 Jul 2021 16:11:02 +0000 (UTC)
+        id S1347532AbhGSPli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:41:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32D456120F;
+        Mon, 19 Jul 2021 16:21:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711062;
-        bh=6aTflyQFmFomlDwzDmPE7l9RTZTxsm8IuLC6j0pLP30=;
+        s=korg; t=1626711695;
+        bh=xn8zvo5PmEO6AmZd5H31rEwXkj3zR4ZR3UbEHQBnKQA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yX9m3bZIojTNyQSUR9CC8SchiX1aBgIwZkYjUKH5/SFsV46JoliL1btBqDxEQLD9H
-         YKYOVc/vRDC9Y/7Monnpqyxds4gcgnYgbvu3kmPxaXYWoIk5qXX5H9EzUDFagkUYu6
-         aNTRFC1+fMcuYN2kFI1VHf/UpFnofYaRnwHjEUmY=
+        b=WLwHL9guz9ySg+r/D9vQA//kvVWKIc8iVwUMB/pD+8652oRj7y7g+SyOjCv9RerJL
+         +j7h9thp6rGWydFIy5OuS8d5+MONSmTbDFsR7YT4jWeskeAsaMZAz1EH3V9DEoUSwX
+         XbWFlGMQmjpntsLtv8YQq/NJBUQiw7BcUYNZpo7k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 214/351] NFSv4: Fix an Oops in pnfs_mark_request_commit() when doing O_DIRECT
+Subject: [PATCH 5.12 098/292] powerpc/mm/book3s64: Fix possible build error
 Date:   Mon, 19 Jul 2021 16:52:40 +0200
-Message-Id: <20210719144952.040944342@linuxfoundation.org>
+Message-Id: <20210719144945.720196605@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +42,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-[ Upstream commit 3731d44bba8e0116b052b1b374476c5f6dd9a456 ]
+[ Upstream commit 07d8ad6fd8a3d47f50595ca4826f41dbf4f3a0c6 ]
 
-Fix an Oopsable condition in pnfs_mark_request_commit() when we're
-putting a set of writes on the commit list to reschedule them after a
-failed pNFS attempt.
+Update _tlbiel_pid() such that we can avoid build errors like below when
+using this function in other places.
 
-Fixes: 9c455a8c1e14 ("NFS/pNFS: Clean up pNFS commit operations")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+arch/powerpc/mm/book3s64/radix_tlb.c: In function ‘__radix__flush_tlb_range_psize’:
+arch/powerpc/mm/book3s64/radix_tlb.c:114:2: warning: ‘asm’ operand 3 probably does not match constraints
+  114 |  asm volatile(PPC_TLBIEL(%0, %4, %3, %2, %1)
+      |  ^~~
+arch/powerpc/mm/book3s64/radix_tlb.c:114:2: error: impossible constraint in ‘asm’
+make[4]: *** [scripts/Makefile.build:271: arch/powerpc/mm/book3s64/radix_tlb.o] Error 1
+m
+
+With this fix, we can also drop the __always_inline in __radix_flush_tlb_range_psize
+which was added by commit e12d6d7d46a6 ("powerpc/mm/radix: mark __radix__flush_tlb_range_psize() as __always_inline")
+
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210610083639.387365-1-aneesh.kumar@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/direct.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ arch/powerpc/mm/book3s64/radix_tlb.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
-index 2d30a4da49fa..2e894fec036b 100644
---- a/fs/nfs/direct.c
-+++ b/fs/nfs/direct.c
-@@ -700,8 +700,8 @@ static void nfs_direct_write_completion(struct nfs_pgio_header *hdr)
+diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
+index 409e61210789..817a02ef6032 100644
+--- a/arch/powerpc/mm/book3s64/radix_tlb.c
++++ b/arch/powerpc/mm/book3s64/radix_tlb.c
+@@ -291,22 +291,30 @@ static inline void fixup_tlbie_lpid(unsigned long lpid)
+ /*
+  * We use 128 set in radix mode and 256 set in hpt mode.
+  */
+-static __always_inline void _tlbiel_pid(unsigned long pid, unsigned long ric)
++static inline void _tlbiel_pid(unsigned long pid, unsigned long ric)
  {
- 	struct nfs_direct_req *dreq = hdr->dreq;
- 	struct nfs_commit_info cinfo;
--	bool request_commit = false;
- 	struct nfs_page *req = nfs_list_entry(hdr->pages.next);
-+	int flags = NFS_ODIRECT_DONE;
+ 	int set;
  
- 	nfs_init_cinfo_from_dreq(&cinfo, dreq);
+ 	asm volatile("ptesync": : :"memory");
  
-@@ -713,15 +713,9 @@ static void nfs_direct_write_completion(struct nfs_pgio_header *hdr)
+-	/*
+-	 * Flush the first set of the TLB, and if we're doing a RIC_FLUSH_ALL,
+-	 * also flush the entire Page Walk Cache.
+-	 */
+-	__tlbiel_pid(pid, 0, ric);
++	switch (ric) {
++	case RIC_FLUSH_PWC:
  
- 	nfs_direct_count_bytes(dreq, hdr);
- 	if (hdr->good_bytes != 0 && nfs_write_need_commit(hdr)) {
--		switch (dreq->flags) {
--		case 0:
-+		if (!dreq->flags)
- 			dreq->flags = NFS_ODIRECT_DO_COMMIT;
--			request_commit = true;
--			break;
--		case NFS_ODIRECT_RESCHED_WRITES:
--		case NFS_ODIRECT_DO_COMMIT:
--			request_commit = true;
--		}
-+		flags = dreq->flags;
+-	/* For PWC, only one flush is needed */
+-	if (ric == RIC_FLUSH_PWC) {
++		/* For PWC, only one flush is needed */
++		__tlbiel_pid(pid, 0, RIC_FLUSH_PWC);
+ 		ppc_after_tlbiel_barrier();
+ 		return;
++	case RIC_FLUSH_TLB:
++		__tlbiel_pid(pid, 0, RIC_FLUSH_TLB);
++		break;
++	case RIC_FLUSH_ALL:
++	default:
++		/*
++		 * Flush the first set of the TLB, and if
++		 * we're doing a RIC_FLUSH_ALL, also flush
++		 * the entire Page Walk Cache.
++		 */
++		__tlbiel_pid(pid, 0, RIC_FLUSH_ALL);
  	}
- 	spin_unlock(&dreq->lock);
  
-@@ -729,12 +723,15 @@ static void nfs_direct_write_completion(struct nfs_pgio_header *hdr)
- 
- 		req = nfs_list_entry(hdr->pages.next);
- 		nfs_list_remove_request(req);
--		if (request_commit) {
-+		if (flags == NFS_ODIRECT_DO_COMMIT) {
- 			kref_get(&req->wb_kref);
- 			memcpy(&req->wb_verf, &hdr->verf.verifier,
- 			       sizeof(req->wb_verf));
- 			nfs_mark_request_commit(req, hdr->lseg, &cinfo,
- 				hdr->ds_commit_idx);
-+		} else if (flags == NFS_ODIRECT_RESCHED_WRITES) {
-+			kref_get(&req->wb_kref);
-+			nfs_mark_request_commit(req, NULL, &cinfo, 0);
- 		}
- 		nfs_unlock_and_release_request(req);
+ 	if (!cpu_has_feature(CPU_FTR_ARCH_31)) {
+@@ -1176,7 +1184,7 @@ void radix__tlb_flush(struct mmu_gather *tlb)
  	}
+ }
+ 
+-static __always_inline void __radix__flush_tlb_range_psize(struct mm_struct *mm,
++static void __radix__flush_tlb_range_psize(struct mm_struct *mm,
+ 				unsigned long start, unsigned long end,
+ 				int psize, bool also_pwc)
+ {
 -- 
 2.30.2
 
