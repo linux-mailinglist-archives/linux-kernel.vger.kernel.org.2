@@ -2,66 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47EE3CE301
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4EDB3CE2EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242468AbhGSPej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:34:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242977AbhGSO4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:56:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81ECB606A5;
-        Mon, 19 Jul 2021 15:34:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626708866;
-        bh=kFwrrZiktRhJ3Qh0OY0gWhVFAGAgdLvoGwGzStoM7T8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pRpkP3KZmbP6sMqDn82A88iRdY0xfmb0zXfCdT2t1mF3K5ZBzYryS7YvP3nWgL3Le
-         7iYAIw9/SfwbaWZWsBgZ4iJaUEuPANLtuZNZdxC33xB75lF+F6+edboXppkgcRNJyO
-         NlzWydMzvm9qGId/Y8ydP7U7G8ozVDtP8Hr258T0lUlNUjyQWY6rlgVXWF/PLXzmNN
-         AY0x47WeHZAwbXXt+wcdbwWEKHBW8WXI6mdIZoYqAjjEkYX5qEzh1zj4ZZQfm8R4Zi
-         MWZEPqSk+OQeTS8kkwchtuLCVfD1rkTBNLRyXIrBT7V8xKkM1SGAimeohS9LS4mEnt
-         ewwkM5lpkqXJQ==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ohad Sharabi <osharabi@habana.ai>
-Subject: [PATCH 4/4] habanalabs: convert PCI BAR offset to u64
-Date:   Mon, 19 Jul 2021 18:34:17 +0300
-Message-Id: <20210719153417.4787-4-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210719153417.4787-1-ogabbay@kernel.org>
-References: <20210719153417.4787-1-ogabbay@kernel.org>
+        id S235675AbhGSPcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:32:54 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:52019 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232795AbhGSO4H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:56:07 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UgItzbm_1626709003;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgItzbm_1626709003)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 19 Jul 2021 23:36:45 +0800
+Date:   Mon, 19 Jul 2021 23:36:43 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Andreas =?utf-8?Q?Gr=C3=BCnbacher?= 
+        <andreas.gruenbacher@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>
+Subject: Re: [PATCH v3] iomap: support tail packing inline read
+Message-ID: <YPWcC0HYu1ICo3dc@B-P7TQMD6M-0146.local>
+Mail-Followup-To: Andreas =?utf-8?Q?Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>
+References: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
+ <YPWUBhxhoaEp8Frn@casper.infradead.org>
+ <YPWaUNeV1K13vpGF@B-P7TQMD6M-0146.local>
+ <CAHpGcM+V+_AxTBwp_eq6R3osH0CMA5N-o8bzBKW3uMsBZY6KWA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHpGcM+V+_AxTBwp_eq6R3osH0CMA5N-o8bzBKW3uMsBZY6KWA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ohad Sharabi <osharabi@habana.ai>
+On Mon, Jul 19, 2021 at 05:31:51PM +0200, Andreas Grünbacher wrote:
+> Am Mo., 19. Juli 2021 um 17:29 Uhr schrieb Gao Xiang
+> <hsiangkao@linux.alibaba.com>:
+> > On Mon, Jul 19, 2021 at 04:02:30PM +0100, Matthew Wilcox wrote:
+> > > On Mon, Jul 19, 2021 at 10:47:47PM +0800, Gao Xiang wrote:
+> > > > @@ -246,18 +245,19 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+> > > >     unsigned poff, plen;
+> > > >     sector_t sector;
+> > > >
+> > > > -   if (iomap->type == IOMAP_INLINE) {
+> > > > -           WARN_ON_ONCE(pos);
+> > > > -           iomap_read_inline_data(inode, page, iomap);
+> > > > -           return PAGE_SIZE;
+> > > > -   }
+> > > > -
+> > > > -   /* zero post-eof blocks as the page may be mapped */
+> > > >     iop = iomap_page_create(inode, page);
+> > > > +   /* needs to skip some leading uptodated blocks */
+> > > >     iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
+> > > >     if (plen == 0)
+> > > >             goto done;
+> > > >
+> > > > +   if (iomap->type == IOMAP_INLINE) {
+> > > > +           iomap_read_inline_data(inode, page, iomap, pos);
+> > > > +           plen = PAGE_SIZE - poff;
+> > > > +           goto done;
+> > > > +   }
+> > >
+> > > This is going to break Andreas' case that he just patched to work.
+> > > GFS2 needs for there to _not_ be an iop for inline data.  That's
+> > > why I said we need to sort out when to create an iop before moving
+> > > the IOMAP_INLINE case below the creation of the iop.
+> >
+> > I have no idea how it breaks Andreas' case from the previous commit
+> > message: "
+> > iomap: Don't create iomap_page objects for inline files
+> > In iomap_readpage_actor, don't create iop objects for inline inodes.
+> > Otherwise, iomap_read_inline_data will set PageUptodate without setting
+> > iop->uptodate, and iomap_page_release will eventually complain.
+> >
+> > To prevent this kind of bug from occurring in the future, make sure the
+> > page doesn't have private data attached in iomap_read_inline_data.
+> > "
+> >
+> > After this patch, iomap_read_inline_data() will set iop->uptodate with
+> > iomap_set_range_uptodate() rather than set PageUptodate() directly,
+> > so iomap_page_release won't complain.
+> 
+> Yes, that actually looks fine.
 
-Done as the bar size can exceed 4GB.
+Yeah, although I admit it looks (maybe) somewhat sub-optimal, but I think
+let's make it work correctly first. Then consider how to optimize it even
+further (like drop iops or likewise...).
 
-Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/common/habanalabs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Just my humble suggestion of this from heart....
 
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 6fc2234576de..815d7e1a7e6d 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -931,7 +931,7 @@ struct pci_mem_region {
- 	u64 region_base;
- 	u64 region_size;
- 	u64 bar_size;
--	u32 offset_in_bar;
-+	u64 offset_in_bar;
- 	u8 bar_id;
- 	u8 used;
- };
--- 
-2.25.1
+Thanks,
+Gao Xiang
 
+> 
+> Thanks,
+> Andreas
