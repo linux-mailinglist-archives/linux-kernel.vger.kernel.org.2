@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82593CE95A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C343CEAB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358916AbhGSQxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:53:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45468 "EHLO mail.kernel.org"
+        id S1377680AbhGSRQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:16:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347139AbhGSP2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:28:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E65961002;
-        Mon, 19 Jul 2021 16:08:54 +0000 (UTC)
+        id S1347828AbhGSPjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:39:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54ABD6127C;
+        Mon, 19 Jul 2021 16:19:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710935;
-        bh=dHZi18C9lJeUvnD0sWQG3L29nXUo5nkGqGTKq+/lsCs=;
+        s=korg; t=1626711558;
+        bh=x+cz/X891inrQ3//V1KNZH9uM4o88sLn4CZYgOTpkpA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iJTS06fdjNg+q/PM/ozdkOt6bQ81lkKqIf07sS9WlqvvlVk2SORlBSa2NP6cTJgDy
-         K0f9Gm0MtAQmwTVj/pRWSM7No7k32NRru9BI3K852/vd3+uZntp7L4VETkzeDhIgwj
-         ksgQRKhGXDk7W93fczotK2tJYy6gcPW0S/tFcej0=
+        b=elTdL9QK2FX+njvaXcozJPwY9ZoKVAOfnicv5dPHTbuhEfC2sfbpLhu7wWSR87Ewa
+         0fQP3/BbEDPpSx1LOV6OoGJTD581yDyePCfvtyUD8EWlslTVfya1RYj5MiVJcsBuWa
+         HrOGwneF5Q96HydkJmFpHMAsoItzoL24Or1jcK3Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Fabien Chouteau <fabien.chouteau@barco.com>,
-        Segiy Stetsyuk <serg_stetsuk@ukr.net>,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 131/351] usb: gadget: f_hid: fix endianness issue with descriptors
+        stable@vger.kernel.org, Matthew Auld <matthew.auld@intel.com>,
+        Jon Bloomfield <jon.bloomfield@intel.com>,
+        Chris Wilson <chris.p.wilson@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.12 015/292] drm/i915/gtt: drop the page table optimisation
 Date:   Mon, 19 Jul 2021 16:51:17 +0200
-Message-Id: <20210719144948.816248915@linuxfoundation.org>
+Message-Id: <20210719144943.030257610@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+From: Matthew Auld <matthew.auld@intel.com>
 
-[ Upstream commit 33cb46c4676d01956811b68a29157ea969a5df70 ]
+commit 0abb33bfca0fb74df76aac03e90ce685016ef7be upstream.
 
-Running sparse checker it shows warning message about
-incorrect endianness used for descriptor initialization:
+We skip filling out the pt with scratch entries if the va range covers
+the entire pt, since we later have to fill it with the PTEs for the
+object pages anyway. However this might leave open a small window where
+the PTEs don't point to anything valid for the HW to consume.
 
-| f_hid.c:91:43: warning: incorrect type in initializer (different base types)
-| f_hid.c:91:43:    expected restricted __le16 [usertype] bcdHID
-| f_hid.c:91:43:    got int
+When for example using 2M GTT pages this fill_px() showed up as being
+quite significant in perf measurements, and ends up being completely
+wasted since we ignore the pt and just use the pde directly.
 
-Fixing issue with cpu_to_le16() macro, however this is not a real issue
-as the value is the same both endians.
+Anyway, currently we have our PTE construction split between alloc and
+insert, which is probably slightly iffy nowadays, since the alloc
+doesn't actually allocate anything anymore, instead it just sets up the
+page directories and points the PTEs at the scratch page. Later when we
+do the insert step we re-program the PTEs again. Better might be to
+squash the alloc and insert into a single step, then bringing back this
+optimisation(along with some others) should be possible.
 
-Cc: Fabien Chouteau <fabien.chouteau@barco.com>
-Cc: Segiy Stetsyuk <serg_stetsuk@ukr.net>
-Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Link: https://lore.kernel.org/r/20210617162755.29676-1-ruslan.bilovol@gmail.com
+Fixes: 14826673247e ("drm/i915: Only initialize partially filled pagetables")
+Signed-off-by: Matthew Auld <matthew.auld@intel.com>
+Cc: Jon Bloomfield <jon.bloomfield@intel.com>
+Cc: Chris Wilson <chris.p.wilson@intel.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: <stable@vger.kernel.org> # v4.15+
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210713130431.2392740-1-matthew.auld@intel.com
+(cherry picked from commit 8f88ca76b3942d82e2c1cea8735ec368d89ecc15)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_hid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/i915/gt/gen8_ppgtt.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
-index e55699308117..a82b3de1a54b 100644
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -88,7 +88,7 @@ static struct usb_interface_descriptor hidg_interface_desc = {
- static struct hid_descriptor hidg_desc = {
- 	.bLength			= sizeof hidg_desc,
- 	.bDescriptorType		= HID_DT_HID,
--	.bcdHID				= 0x0101,
-+	.bcdHID				= cpu_to_le16(0x0101),
- 	.bCountryCode			= 0x00,
- 	.bNumDescriptors		= 0x1,
- 	/*.desc[0].bDescriptorType	= DYNAMIC */
--- 
-2.30.2
-
+--- a/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
++++ b/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
+@@ -298,10 +298,7 @@ static void __gen8_ppgtt_alloc(struct i9
+ 			__i915_gem_object_pin_pages(pt->base);
+ 			i915_gem_object_make_unshrinkable(pt->base);
+ 
+-			if (lvl ||
+-			    gen8_pt_count(*start, end) < I915_PDES ||
+-			    intel_vgpu_active(vm->i915))
+-				fill_px(pt, vm->scratch[lvl]->encode);
++			fill_px(pt, vm->scratch[lvl]->encode);
+ 
+ 			spin_lock(&pd->lock);
+ 			if (likely(!pd->entry[idx])) {
 
 
