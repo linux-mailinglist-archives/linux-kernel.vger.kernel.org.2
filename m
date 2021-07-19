@@ -2,177 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E033CD12F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E3F3CD0E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235264AbhGSJK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:10:29 -0400
-Received: from gateway24.websitewelcome.com ([192.185.50.66]:39479 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234913AbhGSJK2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:10:28 -0400
-X-Greylist: delayed 2100 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Jul 2021 05:10:28 EDT
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id 2164719470
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:55:15 -0500 (CDT)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id 5O7PmSd5YoIHn5O7PmgsKr; Mon, 19 Jul 2021 02:55:15 -0500
-X-Authority-Reason: nr=8
-Received: from host-79-37-206-118.retail.telecomitalia.it ([79.37.206.118]:40920 helo=f34.bristot.me)
-        by gator4132.hostgator.com with esmtpa (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1m5O7K-004Hrb-2v; Mon, 19 Jul 2021 02:55:10 -0500
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        He Zhe <zhe.he@windriver.com>, Jens Axboe <axboe@kernel.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        stable@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH] eventfd: protect eventfd_wake_count with a local_lock
-Date:   Mon, 19 Jul 2021 09:54:52 +0200
-Message-Id: <523c91c4a30f21295508004c81cd2e46ccc37dc2.1626680553.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S236006AbhGSIuQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Jul 2021 04:50:16 -0400
+Received: from aposti.net ([89.234.176.197]:43596 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235034AbhGSIuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 04:50:14 -0400
+Date:   Mon, 19 Jul 2021 09:15:04 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 1/6] mmc: JZ4740: remove the flush_kernel_dcache_page call
+ in jz4740_mmc_read_data
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Geoff Levand <geoff@infradead.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alex Shi <alexs@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org
+Message-Id: <49GHWQ.K50TS8ZL6H1N1@crapouillou.net>
+In-Reply-To: <20210712060928.4161649-2-hch@lst.de>
+References: <20210712060928.4161649-1-hch@lst.de>
+        <20210712060928.4161649-2-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 79.37.206.118
-X-Source-L: No
-X-Exim-ID: 1m5O7K-004Hrb-2v
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-79-37-206-118.retail.telecomitalia.it (f34.bristot.me) [79.37.206.118]:40920
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 9
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-eventfd_signal assumes that spin_lock_irqsave/spin_unlock_irqrestore is
-non-preemptable and therefore increments and decrements the percpu
-variable inside the critical section.
+Hi Christoph,
 
-This obviously does not fly with PREEMPT_RT. If eventfd_signal is
-preempted and an unrelated thread calls eventfd_signal, the result is
-a spurious WARN. To avoid this, protect the percpu variable with a
-local_lock.
+Le lun., juil. 12 2021 at 08:09:23 +0200, Christoph Hellwig 
+<hch@lst.de> a écrit :
+> MIPS now implements flush_kernel_dcache_page (as an alias to
+> flush_dcache_page).
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Reported-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-Fixes: b5e683d5cab8 ("eventfd: track eventfd_signal() recursion depth")
-Cc: He Zhe <zhe.he@windriver.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: stable@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Co-developed-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- fs/eventfd.c            | 27 ++++++++++++++++++++++-----
- include/linux/eventfd.h |  7 +------
- 2 files changed, 23 insertions(+), 11 deletions(-)
+Tested-by: Paul Cercueil <paul@crapouillou.net>
 
-diff --git a/fs/eventfd.c b/fs/eventfd.c
-index e265b6dd4f34..9754fcd38690 100644
---- a/fs/eventfd.c
-+++ b/fs/eventfd.c
-@@ -12,6 +12,7 @@
- #include <linux/fs.h>
- #include <linux/sched/signal.h>
- #include <linux/kernel.h>
-+#include <linux/local_lock.h>
- #include <linux/slab.h>
- #include <linux/list.h>
- #include <linux/spinlock.h>
-@@ -25,8 +26,6 @@
- #include <linux/idr.h>
- #include <linux/uio.h>
- 
--DEFINE_PER_CPU(int, eventfd_wake_count);
--
- static DEFINE_IDA(eventfd_ida);
- 
- struct eventfd_ctx {
-@@ -45,6 +44,20 @@ struct eventfd_ctx {
- 	int id;
- };
- 
-+struct event_fd_recursion {
-+	local_lock_t lock;
-+	int count;
-+};
-+
-+static DEFINE_PER_CPU(struct event_fd_recursion, event_fd_recursion) = {
-+	.lock = INIT_LOCAL_LOCK(lock),
-+};
-+
-+bool eventfd_signal_count(void)
-+{
-+	return this_cpu_read(event_fd_recursion.count);
-+}
-+
- /**
-  * eventfd_signal - Adds @n to the eventfd counter.
-  * @ctx: [in] Pointer to the eventfd context.
-@@ -71,18 +84,22 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
- 	 * it returns true, the eventfd_signal() call should be deferred to a
- 	 * safe context.
- 	 */
--	if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count)))
-+	local_lock(&event_fd_recursion.lock);
-+	if (WARN_ON_ONCE(this_cpu_read(event_fd_recursion.count))) {
-+		local_unlock(&event_fd_recursion.lock);
- 		return 0;
-+	}
- 
- 	spin_lock_irqsave(&ctx->wqh.lock, flags);
--	this_cpu_inc(eventfd_wake_count);
-+	this_cpu_inc(event_fd_recursion.count);
- 	if (ULLONG_MAX - ctx->count < n)
- 		n = ULLONG_MAX - ctx->count;
- 	ctx->count += n;
- 	if (waitqueue_active(&ctx->wqh))
- 		wake_up_locked_poll(&ctx->wqh, EPOLLIN);
--	this_cpu_dec(eventfd_wake_count);
-+	this_cpu_dec(event_fd_recursion.count);
- 	spin_unlock_irqrestore(&ctx->wqh.lock, flags);
-+	local_unlock(&event_fd_recursion.lock);
- 
- 	return n;
- }
-diff --git a/include/linux/eventfd.h b/include/linux/eventfd.h
-index fa0a524baed0..ca89d6c409c1 100644
---- a/include/linux/eventfd.h
-+++ b/include/linux/eventfd.h
-@@ -43,12 +43,7 @@ int eventfd_ctx_remove_wait_queue(struct eventfd_ctx *ctx, wait_queue_entry_t *w
- 				  __u64 *cnt);
- void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt);
- 
--DECLARE_PER_CPU(int, eventfd_wake_count);
--
--static inline bool eventfd_signal_count(void)
--{
--	return this_cpu_read(eventfd_wake_count);
--}
-+bool eventfd_signal_count(void);
- 
- #else /* CONFIG_EVENTFD */
- 
--- 
-2.31.1
+Cheers,
+-Paul
+
+> ---
+>  drivers/mmc/host/jz4740_mmc.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/jz4740_mmc.c 
+> b/drivers/mmc/host/jz4740_mmc.c
+> index 0db17bcc9c16..aa2240c83510 100644
+> --- a/drivers/mmc/host/jz4740_mmc.c
+> +++ b/drivers/mmc/host/jz4740_mmc.c
+> @@ -578,10 +578,6 @@ static bool jz4740_mmc_read_data(struct 
+> jz4740_mmc_host *host,
+>  			}
+>  		}
+>  		data->bytes_xfered += miter->length;
+> -
+> -		/* This can go away once MIPS implements
+> -		 * flush_kernel_dcache_page */
+> -		flush_dcache_page(miter->page);
+>  	}
+>  	sg_miter_stop(miter);
+> 
+> --
+> 2.30.2
+> 
+
 
