@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF23D3CE950
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B923CEA9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358530AbhGSQxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:53:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44194 "EHLO mail.kernel.org"
+        id S231754AbhGSRRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:17:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346348AbhGSP2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:28:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A45A60FD7;
-        Mon, 19 Jul 2021 16:09:13 +0000 (UTC)
+        id S233689AbhGSPkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:40:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F03161363;
+        Mon, 19 Jul 2021 16:20:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710953;
-        bh=ulASt+uq2EGbH/FUO0R6uoW9fT+V39WzwC6Z8HjWuxg=;
+        s=korg; t=1626711652;
+        bh=cyHD2oQuOJvUpiuoQ4Y/gRXIIVB8xWrQuC8BwU950Ks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JD2nb9Ap9LXV/nTD0QZczSSBYzZQLbXGgV5ciSdkUasN1xlYRTvwxw+AiSPUSJPSA
-         0bgoxDHfwcvFM1wXjwbVaUdGn0Ne3PIhaoX2SKFZKtqKlD2BydflO6D1RSbtFfNJuP
-         AhIzGhj+k5D7nxJanrNGhspmTPN9CTtNnkK87i0k=
+        b=lhk6DndT0uRfe1vWTJmxdmcrFF2qJsY5131IUakDt34T8uOImU863s74dM1GSM/n9
+         +9nGThQJaeR84Li541rSbY1QIBJYMu0oINWH5wugQ5eOK8h/fkNxMVFa4+tBKOYaze
+         WnCnAfPJ1DpN1Dx2qfvqATi4fle137M6X22rt2MA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rui Miguel Silva <rui.silva@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 164/351] PCI: Dynamically map ECAM regions
+Subject: [PATCH 5.12 048/292] iio: gyro: fxa21002c: Balance runtime pm + use pm_runtime_resume_and_get().
 Date:   Mon, 19 Jul 2021 16:51:50 +0200
-Message-Id: <20210719144950.393193049@linuxfoundation.org>
+Message-Id: <20210719144944.090229374@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,160 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 8fe55ef23387ce3c7488375b1fd539420d7654bb ]
+[ Upstream commit 41120ebbb1eb5e9dec93320e259d5b2c93226073 ]
 
-Attempting to boot 32-bit ARM kernels under QEMU's 3.x virt models fails
-when we have more than 512M of RAM in the model as we run out of vmalloc
-space for the PCI ECAM regions. This failure will be silent when running
-libvirt, as the console in that situation is a PCI device.
+In both the probe() error path and remove() pm_runtime_put_noidle()
+is called which will decrement the runtime pm reference count.
+However, there is no matching function to have raised the reference count.
+Not this isn't a fix as the runtime pm core will stop the reference count
+going negative anyway.
 
-In this configuration, the kernel maps the whole ECAM, which QEMU sets up
-for 256 buses, even when maybe only seven buses are in use.  Each bus uses
-1M of ECAM space, and ioremap() adds an additional guard page between
-allocations. The kernel vmap allocator will align these regions to 512K,
-resulting in each mapping eating 1.5M of vmalloc space. This means we need
-384M of vmalloc space just to map all of these, which is very wasteful of
-resources.
+An alternative would have been to raise the count in these paths, but
+it is not clear why that would be necessary.
 
-Fix this by only mapping the ECAM for buses we are going to be using.  In
-my setups, this is around seven buses in most guests, which is 10.5M of
-vmalloc space - way smaller than the 384M that would otherwise be required.
-This also means that the kernel can boot without forcing extra RAM into
-highmem with the vmalloc= argument, or decreasing the virtual RAM available
-to the guest.
+Whilst we are here replace some boilerplate with pm_runtime_resume_and_get()
+Found using coccicheck script under review at:
+https://lore.kernel.org/lkml/20210427141946.2478411-1-Julia.Lawall@inria.fr/
 
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/E1lhCAV-0002yb-50@rmk-PC.armlinux.org.uk
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Rui Miguel Silva <rui.silva@linaro.org>
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Link: https://lore.kernel.org/r/20210509113354.660190-2-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/ecam.c       | 54 ++++++++++++++++++++++++++++++++++------
- include/linux/pci-ecam.h |  1 +
- 2 files changed, 47 insertions(+), 8 deletions(-)
+ drivers/iio/gyro/fxas21002c_core.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/drivers/pci/ecam.c b/drivers/pci/ecam.c
-index d2a1920bb055..1c40d2506aef 100644
---- a/drivers/pci/ecam.c
-+++ b/drivers/pci/ecam.c
-@@ -32,7 +32,7 @@ struct pci_config_window *pci_ecam_create(struct device *dev,
- 	struct pci_config_window *cfg;
- 	unsigned int bus_range, bus_range_max, bsz;
- 	struct resource *conflict;
--	int i, err;
-+	int err;
+diff --git a/drivers/iio/gyro/fxas21002c_core.c b/drivers/iio/gyro/fxas21002c_core.c
+index b7523357d8eb..ec6bd15bd2d4 100644
+--- a/drivers/iio/gyro/fxas21002c_core.c
++++ b/drivers/iio/gyro/fxas21002c_core.c
+@@ -366,14 +366,7 @@ out_unlock:
  
- 	if (busr->start > busr->end)
- 		return ERR_PTR(-EINVAL);
-@@ -50,6 +50,7 @@ struct pci_config_window *pci_ecam_create(struct device *dev,
- 	cfg->busr.start = busr->start;
- 	cfg->busr.end = busr->end;
- 	cfg->busr.flags = IORESOURCE_BUS;
-+	cfg->bus_shift = bus_shift;
- 	bus_range = resource_size(&cfg->busr);
- 	bus_range_max = resource_size(cfgres) >> bus_shift;
- 	if (bus_range > bus_range_max) {
-@@ -77,13 +78,6 @@ struct pci_config_window *pci_ecam_create(struct device *dev,
- 		cfg->winp = kcalloc(bus_range, sizeof(*cfg->winp), GFP_KERNEL);
- 		if (!cfg->winp)
- 			goto err_exit_malloc;
--		for (i = 0; i < bus_range; i++) {
--			cfg->winp[i] =
--				pci_remap_cfgspace(cfgres->start + i * bsz,
--						   bsz);
--			if (!cfg->winp[i])
--				goto err_exit_iomap;
--		}
- 	} else {
- 		cfg->win = pci_remap_cfgspace(cfgres->start, bus_range * bsz);
- 		if (!cfg->win)
-@@ -129,6 +123,44 @@ void pci_ecam_free(struct pci_config_window *cfg)
+ static int  fxas21002c_pm_get(struct fxas21002c_data *data)
+ {
+-	struct device *dev = regmap_get_device(data->regmap);
+-	int ret;
+-
+-	ret = pm_runtime_get_sync(dev);
+-	if (ret < 0)
+-		pm_runtime_put_noidle(dev);
+-
+-	return ret;
++	return pm_runtime_resume_and_get(regmap_get_device(data->regmap));
  }
- EXPORT_SYMBOL_GPL(pci_ecam_free);
  
-+static int pci_ecam_add_bus(struct pci_bus *bus)
-+{
-+	struct pci_config_window *cfg = bus->sysdata;
-+	unsigned int bsz = 1 << cfg->bus_shift;
-+	unsigned int busn = bus->number;
-+	phys_addr_t start;
-+
-+	if (!per_bus_mapping)
-+		return 0;
-+
-+	if (busn < cfg->busr.start || busn > cfg->busr.end)
-+		return -EINVAL;
-+
-+	busn -= cfg->busr.start;
-+	start = cfg->res.start + busn * bsz;
-+
-+	cfg->winp[busn] = pci_remap_cfgspace(start, bsz);
-+	if (!cfg->winp[busn])
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+static void pci_ecam_remove_bus(struct pci_bus *bus)
-+{
-+	struct pci_config_window *cfg = bus->sysdata;
-+	unsigned int busn = bus->number;
-+
-+	if (!per_bus_mapping || busn < cfg->busr.start || busn > cfg->busr.end)
-+		return;
-+
-+	busn -= cfg->busr.start;
-+	if (cfg->winp[busn]) {
-+		iounmap(cfg->winp[busn]);
-+		cfg->winp[busn] = NULL;
-+	}
-+}
-+
- /*
-  * Function to implement the pci_ops ->map_bus method
-  */
-@@ -167,6 +199,8 @@ EXPORT_SYMBOL_GPL(pci_ecam_map_bus);
- /* ECAM ops */
- const struct pci_ecam_ops pci_generic_ecam_ops = {
- 	.pci_ops	= {
-+		.add_bus	= pci_ecam_add_bus,
-+		.remove_bus	= pci_ecam_remove_bus,
- 		.map_bus	= pci_ecam_map_bus,
- 		.read		= pci_generic_config_read,
- 		.write		= pci_generic_config_write,
-@@ -178,6 +212,8 @@ EXPORT_SYMBOL_GPL(pci_generic_ecam_ops);
- /* ECAM ops for 32-bit access only (non-compliant) */
- const struct pci_ecam_ops pci_32b_ops = {
- 	.pci_ops	= {
-+		.add_bus	= pci_ecam_add_bus,
-+		.remove_bus	= pci_ecam_remove_bus,
- 		.map_bus	= pci_ecam_map_bus,
- 		.read		= pci_generic_config_read32,
- 		.write		= pci_generic_config_write32,
-@@ -187,6 +223,8 @@ const struct pci_ecam_ops pci_32b_ops = {
- /* ECAM ops for 32-bit read only (non-compliant) */
- const struct pci_ecam_ops pci_32b_read_ops = {
- 	.pci_ops	= {
-+		.add_bus	= pci_ecam_add_bus,
-+		.remove_bus	= pci_ecam_remove_bus,
- 		.map_bus	= pci_ecam_map_bus,
- 		.read		= pci_generic_config_read32,
- 		.write		= pci_generic_config_write,
-diff --git a/include/linux/pci-ecam.h b/include/linux/pci-ecam.h
-index fbdadd4d8377..adea5a4771cf 100644
---- a/include/linux/pci-ecam.h
-+++ b/include/linux/pci-ecam.h
-@@ -55,6 +55,7 @@ struct pci_ecam_ops {
- struct pci_config_window {
- 	struct resource			res;
- 	struct resource			busr;
-+	unsigned int			bus_shift;
- 	void				*priv;
- 	const struct pci_ecam_ops	*ops;
- 	union {
+ static int  fxas21002c_pm_put(struct fxas21002c_data *data)
+@@ -1005,7 +998,6 @@ int fxas21002c_core_probe(struct device *dev, struct regmap *regmap, int irq,
+ pm_disable:
+ 	pm_runtime_disable(dev);
+ 	pm_runtime_set_suspended(dev);
+-	pm_runtime_put_noidle(dev);
+ 
+ 	return ret;
+ }
+@@ -1019,7 +1011,6 @@ void fxas21002c_core_remove(struct device *dev)
+ 
+ 	pm_runtime_disable(dev);
+ 	pm_runtime_set_suspended(dev);
+-	pm_runtime_put_noidle(dev);
+ }
+ EXPORT_SYMBOL_GPL(fxas21002c_core_remove);
+ 
 -- 
 2.30.2
 
