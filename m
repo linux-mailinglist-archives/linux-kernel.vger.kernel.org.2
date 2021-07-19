@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4F93CE9A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E15E3CEA88
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348049AbhGSQ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:59:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48720 "EHLO mail.kernel.org"
+        id S1377622AbhGSRQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:16:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235557AbhGSPcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:32:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0755D6141D;
-        Mon, 19 Jul 2021 16:10:29 +0000 (UTC)
+        id S1347849AbhGSPji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:39:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2719361166;
+        Mon, 19 Jul 2021 16:19:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711030;
-        bh=4l/AoMsvGwjk7Lsth8aoRoQQpUwOUt4rTVkI0sOT9vM=;
+        s=korg; t=1626711569;
+        bh=wrF8ezly5hOS9kAYOcf2E6X904LNxqEox+vrkpnSTug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RB1a1Jk4PxV94pIU0EPU7bF61fGwiFtH4bVX5/bXDDGoHUqwfk02A2ssrN3CmDdc+
-         9hg6kFFu/NYuek8Ptg6WaMqn9b8zzufYobLr/wrkYvP4OAAWPyle3LMzlX8XKjyd1/
-         PiEjKhB1F/tqZg2mTeyqzEkl5pc4ix0pUvUj65bo=
+        b=fvcqr9ljUjtkjbJxO2MfWeqtkUolOGixxS+XF8mwf1GRgduhR8ZqbBOkdtkEKQ6zu
+         Zve9Sba55KxLOGHg9iFWIsi1MMzuMsT4JjaztieO8zL4ZLgvHcojsDidtOHJ2ogoiH
+         MPvyRw+PHMpS8ICmPynXiPbfDjT1x+15ttE0jCGk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 167/351] watchdog: Fix possible use-after-free by calling del_timer_sync()
-Date:   Mon, 19 Jul 2021 16:51:53 +0200
-Message-Id: <20210719144950.502349970@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 052/292] Revert "ALSA: bebob/oxfw: fix Kconfig entry for Mackie d.2 Pro"
+Date:   Mon, 19 Jul 2021 16:51:54 +0200
+Message-Id: <20210719144944.231377707@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit d0212f095ab56672f6f36aabc605bda205e1e0bf ]
+[ Upstream commit 5d6fb80a142b5994355ce675c517baba6089d199 ]
 
-This driver's remove path calls del_timer(). However, that function
-does not wait until the timer handler finishes. This means that the
-timer handler may still be running after the driver's remove function
-has finished, which would result in a use-after-free.
+This reverts commit 0edabdfe89581669609eaac5f6a8d0ae6fe95e7f.
 
-Fix by calling del_timer_sync(), which makes sure the timer handler
-has finished, and unable to re-schedule itself.
+I've explained that optional FireWire card for d.2 is also built-in to
+d.2 Pro, however it's wrong. The optional card uses DM1000 ASIC and has
+'Mackie DJ Mixer' in its model name of configuration ROM. On the other
+hand, built-in FireWire card for d.2 Pro and d.4 Pro uses OXFW971 ASIC
+and has 'd.Pro' in its model name according to manuals and user
+experiences. The former card is not the card for d.2 Pro. They are similar
+in appearance but different internally.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
-Link: https://lore.kernel.org/r/1620802676-19701-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210518084557.102681-2-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/lpc18xx_wdt.c | 2 +-
- drivers/watchdog/w83877f_wdt.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/firewire/Kconfig       | 4 ++--
+ sound/firewire/bebob/bebob.c | 2 +-
+ sound/firewire/oxfw/oxfw.c   | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/watchdog/lpc18xx_wdt.c b/drivers/watchdog/lpc18xx_wdt.c
-index 78cf11c94941..60b6d74f267d 100644
---- a/drivers/watchdog/lpc18xx_wdt.c
-+++ b/drivers/watchdog/lpc18xx_wdt.c
-@@ -292,7 +292,7 @@ static int lpc18xx_wdt_remove(struct platform_device *pdev)
- 	struct lpc18xx_wdt_dev *lpc18xx_wdt = platform_get_drvdata(pdev);
- 
- 	dev_warn(&pdev->dev, "I quit now, hardware will probably reboot!\n");
--	del_timer(&lpc18xx_wdt->timer);
-+	del_timer_sync(&lpc18xx_wdt->timer);
- 
- 	return 0;
- }
-diff --git a/drivers/watchdog/w83877f_wdt.c b/drivers/watchdog/w83877f_wdt.c
-index 5772cc5d3780..f2650863fd02 100644
---- a/drivers/watchdog/w83877f_wdt.c
-+++ b/drivers/watchdog/w83877f_wdt.c
-@@ -166,7 +166,7 @@ static void wdt_startup(void)
- static void wdt_turnoff(void)
- {
- 	/* Stop the timer */
--	del_timer(&timer);
-+	del_timer_sync(&timer);
- 
- 	wdt_change(WDT_DISABLE);
- 
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 9897bd26a438..def1f3d5ecf5 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -38,7 +38,7 @@ config SND_OXFW
+ 	   * Mackie(Loud) Onyx 1640i (former model)
+ 	   * Mackie(Loud) Onyx Satellite
+ 	   * Mackie(Loud) Tapco Link.Firewire
+-	   * Mackie(Loud) d.4 pro
++	   * Mackie(Loud) d.2 pro/d.4 pro (built-in FireWire card with OXFW971 ASIC)
+ 	   * Mackie(Loud) U.420/U.420d
+ 	   * TASCAM FireOne
+ 	   * Stanton Controllers & Systems 1 Deck/Mixer
+@@ -84,7 +84,7 @@ config SND_BEBOB
+ 	  * PreSonus FIREBOX/FIREPOD/FP10/Inspire1394
+ 	  * BridgeCo RDAudio1/Audio5
+ 	  * Mackie Onyx 1220/1620/1640 (FireWire I/O Card)
+-	  * Mackie d.2 (FireWire Option) and d.2 Pro
++	  * Mackie d.2 (optional FireWire card with DM1000 ASIC)
+ 	  * Stanton FinalScratch 2 (ScratchAmp)
+ 	  * Tascam IF-FW/DM
+ 	  * Behringer XENIX UFX 1204/1604
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index daeecfa8b9aa..90e98a6d1546 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -387,7 +387,7 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010049, &spec_normal),
+ 	/* Mackie, Onyx 1220/1620/1640 (Firewire I/O Card) */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MACKIE2, 0x00010065, &spec_normal),
+-	// Mackie, d.2 (Firewire option card) and d.2 Pro (the card is built-in).
++	// Mackie, d.2 (optional Firewire card with DM1000).
+ 	SND_BEBOB_DEV_ENTRY(VEN_MACKIE1, 0x00010067, &spec_normal),
+ 	/* Stanton, ScratchAmp */
+ 	SND_BEBOB_DEV_ENTRY(VEN_STANTON, 0x00000001, &spec_normal),
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index 9eea25c46dc7..5490637d278a 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -355,7 +355,7 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
+ 	 *  Onyx-i series (former models):	0x081216
+ 	 *  Mackie Onyx Satellite:		0x00200f
+ 	 *  Tapco LINK.firewire 4x6:		0x000460
+-	 *  d.4 pro:				Unknown
++	 *  d.2 pro/d.4 pro (built-in card):	Unknown
+ 	 *  U.420:				Unknown
+ 	 *  U.420d:				Unknown
+ 	 */
 -- 
 2.30.2
 
