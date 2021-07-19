@@ -2,191 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3763D3CD0B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988673CD0C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235759AbhGSIqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235404AbhGSIpq (ORCPT
+        id S235934AbhGSIrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:47:25 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:40510 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234868AbhGSIrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:45:46 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A927C061574;
-        Mon, 19 Jul 2021 01:27:34 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id q15so2462876qkm.8;
-        Mon, 19 Jul 2021 02:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KfeoXYA6FAtVnL9pqwpm6Rlfaw4SHNyLHqSR71j5cS8=;
-        b=O+zM/7TQrw2PWROfcV5KenDe+huC/6iTcCfC7TZoCS2FAccbYtdUrHL7RvR8wCPXpv
-         Iy8pW6YMY3xpX0kDdxQ4AEjKaXW7kCp8YTrjD0IvsUbMMZtg6HrH6NAnOHs88lpPifTO
-         F4mD6j3TikLJ0Y9+ZNUtywj6MG5vzLfm8hw7x7bEymZUgwOuawoshGDXrc94jwOnTz/b
-         za2bbIlgd0cGzDsqRhOlnOIqnYuc6SaFWpNqCs19pHaj+/DFeJYv1pz/sWSgtuoAVza9
-         /Y5JMkySAYSAe83r6bHAM3CQvp9qm+uQPm9TSvHjqz2Go4BVFbnlH35+P9qHIplKrIV/
-         6oSw==
+        Mon, 19 Jul 2021 04:47:18 -0400
+Received: by mail-wr1-f51.google.com with SMTP id l7so21144595wrv.7;
+        Mon, 19 Jul 2021 02:27:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KfeoXYA6FAtVnL9pqwpm6Rlfaw4SHNyLHqSR71j5cS8=;
-        b=Ah6WXzo6iT/pGh7euCANqUOC3TiwiNYCxdK5Nof+wdOcHA8EjI1Zx6dpFYG+xhoU++
-         pSwUB2ow3NpXO+pTbs36MqOeS4D6t9HOi8LChyWu0DJS9CzvaAzXE0rPGEURlvix1i7A
-         QI9EVPXRum4YtkYRS6hofT8C0vYfF6NuK91GERpnLmDCfkjPxOsw6UXmSUZ4B2yDL6Mz
-         6qBCYFM8uBYZCZY65hy+M2r3bJiEq5CzCd51rGbycprUN3ExdTfSVJxwyo5i35rqHoNI
-         anMamZ2rJG2Rx/JSQITxIXmCTj+oPSZuwsyeycyiw6KvzeaOTBXJ/hpS+uprfZZMhgdL
-         RYbw==
-X-Gm-Message-State: AOAM531gVfocDbf82qhCsH74Fv+5sY2T6mDy1WSxtN851cXHFIcccRZ+
-        MPbTAG1B9oNalVUnGlm+8tODMYNlexspH1CAp2Y=
-X-Google-Smtp-Source: ABdhPJxFNsUpfpnCq4bK4q3CccJePDsYucwThwxwfhLlAZhhvH9C2tqSBgEtIisAtECISVRJm9WpIDjcvFbnBv1hgCU=
-X-Received: by 2002:a37:5646:: with SMTP id k67mr22482354qkb.309.1626686785944;
- Mon, 19 Jul 2021 02:26:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gdNcKm/5tWIKzoJJEWGoc8HuwkdVdE+Ye382bk1RyWI=;
+        b=iLdfzB9gkSOmRgKAfGqx8+yxJlQNcZYTBx2GkwjWY8arlPlvJJFm6Vqtr1fA7YOPL/
+         su06eTFEKu/U3cyLk/gkm0NdEkpenxBP0OkuS1psd6yRYpIDuSsU4EGC3oPfq52BMouN
+         d4VPDFtycTsRvLCdkO+yyNsxegaGoMNWOnJPlFDXn3VGsYFrF9Uqel7JythFd68nDwof
+         sF6fxTrEag4qqf7VvAuXuIqjh2Hu1xNe6YAhNPuQioJ5m7Mk+f6BId3Pi23WZ8xY7cPd
+         s5l51vyrBjYN7hz4LShqVJpQfyfoNRdSfrvF5WAuvp4CPUItbkfj4jNorY7TvBmACDwV
+         UnKg==
+X-Gm-Message-State: AOAM532M/KAklV+kbJGpclwsLCS0N1+1WebMXY2RuQC9/d2POeVxbQD1
+        dJxtjhcfk9kNTQTBgGYDREw=
+X-Google-Smtp-Source: ABdhPJwj3PNr8oe9ZBWc4Yv5ZV7cI+XIJnDGOWg5TfuS07JxXdIVRp5On5n5HjJHgCKgTE6JaP0mOA==
+X-Received: by 2002:a05:6000:18ae:: with SMTP id b14mr27745167wri.427.1626686877784;
+        Mon, 19 Jul 2021 02:27:57 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id d29sm23874777wrb.63.2021.07.19.02.27.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 02:27:57 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 09:27:56 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, kys@microsoft.com,
+        linux-kernel@vger.kernel.org, Wei Liu <wei.liu@kernel.org>
+Subject: Re: [PATCH v3,hyperv-fixes] Drivers: hv: vmbus: Fix duplicate CPU
+ assignments within a device
+Message-ID: <20210719092756.p4pg356ljhyrho42@liuwe-devbox-debian-v2>
+References: <1626459673-17420-1-git-send-email-haiyangz@microsoft.com>
 MIME-Version: 1.0
-References: <20210705090050.15077-1-reniuschengl@gmail.com>
- <CAPDyKFotmw-HQpZKCOD_8kThEa0_KSPnn36FNFLKRyUHYRHQjQ@mail.gmail.com>
- <CAJU4x8u8JPBJ3V6MCi1XcO4Qim-COPuxOhTdUnor7JdNCUFb=w@mail.gmail.com>
- <CAPDyKFqXsn91BvkJXMYSnc7X=RP9DXxXp2nKMmv+aMPoNdK2Tw@mail.gmail.com>
- <CAJU4x8srB7skGFVcj1SPrzEZSnVkwKiW3OPN0GQxvgtRG7GAAQ@mail.gmail.com>
- <CAPDyKFq0yHxX7wb4XGeiMiSGGiOf8RKJ5ahhFQ+_vodqnyPV9Q@mail.gmail.com>
- <CAJU4x8uGxb5VD1WVV5-QeLkVzuuR09-NacL-9nuXe8Zofzb2=w@mail.gmail.com>
- <CAPDyKFpvCFYQVEp77hiRHY6CVDej-ffF5UE=LH=HSGcqMZA02w@mail.gmail.com>
- <CAJU4x8t+aOqq82EJMUNDpWiE3GPeyZkjFhy=AkmctcDE3mx6fA@mail.gmail.com>
- <CAPDyKFoSOk+4pmW60uGzKaYw3XOXshx+NSNqF_po=VLkK1-7Qw@mail.gmail.com>
- <CAJU4x8sMJSOnfBwDq7tVygRGFRw-SyrM1z8GBsF_Mur64-Y3_g@mail.gmail.com>
- <CAJU4x8uCAQoozeAqa6icVba61uo_eP+NtOxgnLzsXh6g2HeQdA@mail.gmail.com> <02c26834-f16e-e1c7-9ea9-36414d1c4403@intel.com>
-In-Reply-To: <02c26834-f16e-e1c7-9ea9-36414d1c4403@intel.com>
-From:   Renius Chen <reniuschengl@gmail.com>
-Date:   Mon, 19 Jul 2021 17:26:14 +0800
-Message-ID: <CAJU4x8u+BtU5iUna0tSws9rfUTJWfHZ21jteB5nk8e_2iMJgNg@mail.gmail.com>
-Subject: Re: [PATCH] [v2] mmc: sdhci-pci-gli: Improve Random 4K Read
- Performance of GL9763E
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <Ben.Chuang@genesyslogic.com.tw>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626459673-17420-1-git-send-email-haiyangz@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adrian Hunter <adrian.hunter@intel.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=8816=
-=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=886:27=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> On 14/07/21 5:15 am, Renius Chen wrote:
-> > Hi Adrain,
-> >
-> > What do you think of this patch?
-> > Or do you have any ideas or suggestions about the modification for
-> > Ulf's comments?
->
-> Perhaps try to define your power management requirements in terms of
-> latencies instead of request size, and then take the issue to the
-> power management mailing list and power management maintainers for
-> suggestions.  You will probably need to point out why runtime PM doesn't
-> met your requirements.
->
+On Fri, Jul 16, 2021 at 11:21:13AM -0700, Haiyang Zhang wrote:
+[...]
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> Tested-by: Michael Kelley <mikelley@microsoft.com>
 
-Hi Adrain,
-
-
-Thanks for your advice.
-
-Our purpose is only to improve the performance of 4K reads, and we
-hope that it doesn't affect any other use cases. If we look into the
-latencies, it may affect not only 4K reads but also some other use
-cases.
-
-Behaviors of ASPM is controlled by circuits of hardware. Drivers only
-enable or disable ASPM or set some parameters for ASPM, and are not
-able to know when the device enters or exits the L0s/L1 state. So the
-PM part of drivers may not suit this case.
-
-This patch could be simply divided into two parts:
-1. Monitor requests.
-2. Set a vendor specific register of GL9763e.
-
-The part 2 is no problems we think. And Ulf thinks that the behaviors
-of part 1 should not be implemented in sdhci-pci-gli.c. Do you have
-any suggestions on where we can implement the monitoring?
-
-Thank you.
-
-
-Best regards,
-
-Renius
-
-> >
-> > Thank you.
-> >
-> >
-> > Best regards,
-> >
-> > Renius
-> >
-> > Renius Chen <reniuschengl@gmail.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=887=
-=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=889:49=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-> >>
-> >> Ulf Hansson <ulf.hansson@linaro.org> =E6=96=BC 2021=E5=B9=B47=E6=9C=88=
-7=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=888:16=E5=AF=AB=E9=81=93=EF=
-=BC=9A
-> >>>
-> >>> [...]
-> >>>
-> >>>>
-> >>>> Thanks, I understand what you mean.
-> >>>>
-> >>>> I simply searched for the keyword "MMC_READ_MULTIPLE_BLOCK" in the
-> >>>> drivers/mmc/host folder, and found that in some SD/MMC host controll=
-er
-> >>>> driver codes such as alcor.c, cavium.c, ...etc, there are also
-> >>>> behaviors for monitoring the request in their driver. What's the
-> >>>> difference between theirs and ours?
-> >>>
-> >>> Those checks are there to allow the HWs to be supported properly.
-> >>>
-> >>>>
-> >>>> And if the code that monitors the requstes does not belong the drive=
-r,
-> >>>> where should I implement the code and how to add some functions only
-> >>>> for GL9763e in that place, in your opinion?
-> >>>
-> >>> Honestly, I am not sure what suits your use case best.
-> >>>
-> >>> So far we have used runtime PM with a default auto suspend timeout, i=
-n
-> >>> combination with dev PM Qos. In other words, run as fast as possible
-> >>> to complete the requests in the queue then go back to idle and enter =
-a
-> >>> low power state. Clearly, that seems not to be sufficient for your us=
-e
-> >>> case, sorry.
-> >>>
-> >> Yes, the runtime PM, auto suspend, and PM Qos are all about the
-> >> suspend/resume behaviors of the system or related to power states such
-> >> as D0/D3 of the device. But these are totally different from the ASPM
-> >> L0s/L1 for link states. Entering/exiting the ASPM is pure hardware
-> >> behavior on the link layer and is not handled by any codes in
-> >> drivers/mmc/core or drivers/mmc/host. We'd like to try to modify the
-> >> patch by your opinions, but we are also confused about what or where
-> >> suits our use case best. So we wonder how to start the modification
-> >> and may need some suggestions to deal with the work, sorry.
-> >>
-> >> Thank you.
-> >>
-> >>
-> >> Best regards,
-> >>
-> >> Renius
-> >>
-> >>
-> >>> Kind regards
-> >>> Uffe
->
+Applied to hyperv-fixes. Thanks.
