@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CA13CD8C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C898E3CD8B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243067AbhGSOZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:25:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56252 "EHLO mail.kernel.org"
+        id S242323AbhGSOZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:25:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242691AbhGSOWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:22:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32BB761165;
-        Mon, 19 Jul 2021 15:02:47 +0000 (UTC)
+        id S242960AbhGSOWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:22:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC8686113B;
+        Mon, 19 Jul 2021 15:02:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706968;
-        bh=Z1n8wsZv+jOd5MN9VkohCRg6WHiM6xigm4+S3agCXjg=;
+        s=korg; t=1626706971;
+        bh=hkADfCiMoQJ+risbIzZYtyX+fRNEebwVd2J4+7NsjoQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VbQI8yH+3RyhSsBwnWxOfK8J98FYSI/N12ui++ETn8spp18ArMbr4vLZ5lEFO8Ok9
-         kXsv2VCFSi1JJ6OWi0IFH7+MgjIQZjeE/Ed+dQ+s8AS4ysO7j/i97nP5u+AlYQjBfF
-         nabG7HNciHW9upSTLuaAQvgYsQ1QnGamjl0KxRF0=
+        b=lvnsE7a9m+ky6GhCSZFTZ1W5tNLOJm2SL0i7suQ/mZBEZV2Uj1H23L42Vg/v0jtn/
+         cljdQPvBWTJtBYpzepLPPGGHRa3XD1V03qRmYQRwJdoLBMRhQhxYPFIOwvwQf9FZne
+         udvGYBGOwcvFdotagi1K5lbKeLmYJqk3G5NWoW0k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
         Zou Wei <zou_wei@huawei.com>,
         Guenter Roeck <linux@roeck-us.net>,
+        Vladimir Zapolskiy <vz@mleia.com>,
         Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 169/188] watchdog: sc520_wdt: Fix possible use-after-free in wdt_turnoff()
-Date:   Mon, 19 Jul 2021 16:52:33 +0200
-Message-Id: <20210719144942.020394029@linuxfoundation.org>
+Subject: [PATCH 4.4 170/188] watchdog: Fix possible use-after-free by calling del_timer_sync()
+Date:   Mon, 19 Jul 2021 16:52:34 +0200
+Message-Id: <20210719144942.056045172@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
 References: <20210719144913.076563739@linuxfoundation.org>
@@ -44,9 +45,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 90b7c141132244e8e49a34a4c1e445cce33e07f4 ]
+[ Upstream commit d0212f095ab56672f6f36aabc605bda205e1e0bf ]
 
-This module's remove path calls del_timer(). However, that function
+This driver's remove path calls del_timer(). However, that function
 does not wait until the timer handler finishes. This means that the
 timer handler may still be running after the driver's remove function
 has finished, which would result in a use-after-free.
@@ -57,27 +58,42 @@ has finished, and unable to re-schedule itself.
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zou Wei <zou_wei@huawei.com>
 Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/1620716691-108460-1-git-send-email-zou_wei@huawei.com
+Acked-by: Vladimir Zapolskiy <vz@mleia.com>
+Link: https://lore.kernel.org/r/1620802676-19701-1-git-send-email-zou_wei@huawei.com
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/sc520_wdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/watchdog/lpc18xx_wdt.c | 2 +-
+ drivers/watchdog/w83877f_wdt.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/watchdog/sc520_wdt.c b/drivers/watchdog/sc520_wdt.c
-index 1cfd3f6a13d5..08500db8324f 100644
---- a/drivers/watchdog/sc520_wdt.c
-+++ b/drivers/watchdog/sc520_wdt.c
-@@ -190,7 +190,7 @@ static int wdt_startup(void)
- static int wdt_turnoff(void)
+diff --git a/drivers/watchdog/lpc18xx_wdt.c b/drivers/watchdog/lpc18xx_wdt.c
+index ab7b8b185d99..fbdc0f32e666 100644
+--- a/drivers/watchdog/lpc18xx_wdt.c
++++ b/drivers/watchdog/lpc18xx_wdt.c
+@@ -309,7 +309,7 @@ static int lpc18xx_wdt_remove(struct platform_device *pdev)
+ 	unregister_restart_handler(&lpc18xx_wdt->restart_handler);
+ 
+ 	dev_warn(&pdev->dev, "I quit now, hardware will probably reboot!\n");
+-	del_timer(&lpc18xx_wdt->timer);
++	del_timer_sync(&lpc18xx_wdt->timer);
+ 
+ 	watchdog_unregister_device(&lpc18xx_wdt->wdt_dev);
+ 	clk_disable_unprepare(lpc18xx_wdt->wdt_clk);
+diff --git a/drivers/watchdog/w83877f_wdt.c b/drivers/watchdog/w83877f_wdt.c
+index f0483c75ed32..4b52cf321747 100644
+--- a/drivers/watchdog/w83877f_wdt.c
++++ b/drivers/watchdog/w83877f_wdt.c
+@@ -170,7 +170,7 @@ static void wdt_startup(void)
+ static void wdt_turnoff(void)
  {
  	/* Stop the timer */
 -	del_timer(&timer);
 +	del_timer_sync(&timer);
  
- 	/* Stop the watchdog */
- 	wdt_config(0);
+ 	wdt_change(WDT_DISABLE);
+ 
 -- 
 2.30.2
 
