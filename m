@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 794513CD956
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60783CDB77
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243531AbhGSO2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:28:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55982 "EHLO mail.kernel.org"
+        id S244352AbhGSOnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:43:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243426AbhGSOXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:23:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB2F161186;
-        Mon, 19 Jul 2021 15:03:27 +0000 (UTC)
+        id S245002AbhGSObN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:31:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E84BD61181;
+        Mon, 19 Jul 2021 15:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707008;
+        s=korg; t=1626707512;
         bh=0maWroivBJOvh18abpe9bTk7gxcjye2N3W9KBM9/MHA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S6RIJiA7qi42qJGTexgmyK/rkcXaDaaICVFv4hZqL0L9z8wnx0pxTZa5S7Lw7hJH5
-         e1LYcEEb/yczbdlGv9eNr6PXfuyJaW/5o0J3gaJB1VBbTlSA0s1Xy9H5VLS2NHU23x
-         EarspRWOmuNf2Rv4ufQ3eqFN4X9LIMHSEnNbdPco=
+        b=QsovzxH7QDP3H0VTlGh6jVPgINcrB7+bnvbjtagWNO1EaKD8OnIS8r0gwxYlch4yq
+         jV6OUdXNSd14y83g/eew71u1n53c1N/+KGl+JbDzrym1ugF1ZeIp2Ti6aSwMLGn3+l
+         pvRv9u1JOiaUBkM7iEodyMDFxCnDxm/ZDia/DYm8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 151/188] ALSA: sb: Fix potential double-free of CSP mixer elements
-Date:   Mon, 19 Jul 2021 16:52:15 +0200
-Message-Id: <20210719144941.426859457@linuxfoundation.org>
+Subject: [PATCH 4.9 194/245] ALSA: sb: Fix potential double-free of CSP mixer elements
+Date:   Mon, 19 Jul 2021 16:52:16 +0200
+Message-Id: <20210719144946.668391001@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
