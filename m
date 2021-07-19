@@ -2,111 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FBC3CE8AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061B33CE8A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357199AbhGSQpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:45:41 -0400
-Received: from esa.hc503-62.ca.iphmx.com ([216.71.131.47]:53697 "EHLO
-        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349432AbhGSP07 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:26:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
-  t=1626710858; x=1658246858;
-  h=to:cc:references:subject:in-reply-to:from:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=jl235RA06PWh11CvKod4yfJvroVnAN8xTTdoZoAOoFE=;
-  b=Exs7oBMc669tX2uyJpKJ1MlxYpXpw097EeizW2dN4tn65hI2gH2OZqnM
-   UcXV57acaa/49/RVgoB4/0NbO9uA0CX8iE5GJ7Ve4Qj2oDZPtdgg9WEn5
-   FrspsdTo/74iZJFHqtnRyCVUeD9dSeutZ7JEUTNBOulwhbHRzy1xJPWlS
-   Q=;
-Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
-  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Jul 2021 12:07:34 -0400
-Received: from [10.42.0.123] (10.32.139.159) by connhm04.connect.uwaterloo.ca
- (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 19
- Jul 2021 12:07:33 -0400
-To:     <posk@posk.io>
-CC:     <avagin@google.com>, <bsegall@google.com>, <jannh@google.com>,
-        <jnewsome@torproject.org>, <joel@joelfernandes.org>,
-        <linux-api@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mingo@redhat.com>, <peterz@infradead.org>, <pjt@google.com>,
-        <posk@google.com>, <tdelisle@uwaterloo.ca>, <tglx@linutronix.de>,
-        Peter Buhr <pabuhr@uwaterloo.ca>
-References: <20210716184719.269033-5-posk@google.com>
-Subject: Re: [RFC PATCH 4/4 v0.3] sched/umcg: RFC: implement UMCG syscalls
-In-Reply-To: <20210716184719.269033-5-posk@google.com>
-From:   Thierry Delisle <tdelisle@uwaterloo.ca>
-Message-ID: <2c971806-b8f6-50b9-491f-e1ede4a33579@uwaterloo.ca>
-Date:   Mon, 19 Jul 2021 12:07:33 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1357090AbhGSQpU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Jul 2021 12:45:20 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:9273 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349217AbhGSP0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:26:16 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GT6DF4xN0zB58n;
+        Mon, 19 Jul 2021 18:06:53 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id COi69W5SXrwD; Mon, 19 Jul 2021 18:06:53 +0200 (CEST)
+Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GT6DF3zhRzB58l;
+        Mon, 19 Jul 2021 18:06:53 +0200 (CEST)
+Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
+        id BD3BA37C; Mon, 19 Jul 2021 18:12:05 +0200 (CEST)
+Received: from 37.172.104.68 ([37.172.104.68]) by messagerie.c-s.fr (Horde
+ Framework) with HTTP; Mon, 19 Jul 2021 18:12:05 +0200
+Date:   Mon, 19 Jul 2021 18:12:05 +0200
+Message-ID: <20210719181205.Horde.xU8C00MIRgjqhZQ3-RrANw8@messagerie.c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Salah Triki <salah.triki@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, davem@davemloft.net,
+        herbert@gondor.apana.org.au, paulus@samba.org,
+        benh@kernel.crashing.org, mpe@ellerman.id.au, haren@us.ibm.com
+Subject: Re: [PATCH] replace if with min
+In-Reply-To: <20210712204546.GA1492390@pc>
+User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.32.139.159]
-X-ClientProxiedBy: connhm04.connect.uwaterloo.ca (172.16.137.68) To
- connhm04.connect.uwaterloo.ca (172.16.137.68)
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- > /**
- >  * @idle_servers_ptr: a single-linked list pointing to the list
- >  *                    of idle servers. Can be NULL.
- >  *
- >  * Readable/writable by both the kernel and the userspace: the
- >  * userspace adds items to the list, the kernel removes them.
- >  *
- >  * This is a single-linked list (stack): head->next->next->next->NULL.
- >  * "next" nodes are idle_servers_ptr fields in struct umcg_task.
- >  *
- >  * Example:
- >  *
- >  *  a running worker             idle server 1        idle server 2
- >  *
- >  * struct umct_task:             struct umcg_task:    struct umcg_task:
- >  *    state                         state state
- >  *    api_version                   api_version api_version
- >  *    ...                           ...                  ...
- >  *    idle_servers_ptr --> head --> idle_servers_ptr --> 
-idle_servers_ptr --> NULL
- >  *    ...                           ...                  ...
- >  *
- >  *
- >  * Due to the way struct umcg_task is aligned, idle_servers_ptr
- >  * is aligned at 8 byte boundary, and so has its first byte as zero
- >  * when it holds a valid pointer.
- >  *
- >  * When pulling idle servers from the list, the kernel marks nodes as
- >  * "deleted" by ORing the node value (the pointer) with 1UL atomically.
- >  * If a node is "deleted" (i.e. its value AND 1UL is not zero),
- >  * the kernel proceeds to the next node.
- >  *
- >  * The kernel checks at most [nr_cpu_ids * 2] first nodes in the list.
- >  *
- >  * It is NOT considered an error if the kernel cannot find an idle
- >  * server.
- >  *
- >  * The userspace is responsible for cleanup/gc (i.e. for actually
- >  * removing nodes marked as "deleted" from the list).
- >  */
- > uint64_t    idle_servers_ptr;    /* r/w */
+Salah Triki <salah.triki@gmail.com> a écrit :
 
-I don't understand the reason for using this ad-hoc scheme, over using a 
-simple
-eventfd to do the job. As I understand it, the goal here is to let 
-servers that
-cannot find workers to run, block instead of spinning. Isn't that 
-exactly what
-the eventfd interface is for?
+> Replace if with min in order to make code more clean.
+>
+> Signed-off-by: Salah Triki <salah.triki@gmail.com>
+> ---
+>  drivers/crypto/nx/nx-842.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/crypto/nx/nx-842.c b/drivers/crypto/nx/nx-842.c
+> index 2ab90ec10e61..0d1d5a463899 100644
+> --- a/drivers/crypto/nx/nx-842.c
+> +++ b/drivers/crypto/nx/nx-842.c
+> @@ -134,8 +134,7 @@ EXPORT_SYMBOL_GPL(nx842_crypto_exit);
+>  static void check_constraints(struct nx842_constraints *c)
+>  {
+>  	/* limit maximum, to always have enough bounce buffer to decompress */
+> -	if (c->maximum > BOUNCE_BUFFER_SIZE)
+> -		c->maximum = BOUNCE_BUFFER_SIZE;
+> +	c->maximum = min(c->maximum, BOUNCE_BUFFER_SIZE);
 
-Have you considered an idle_fd field, the kernel writes 1 to the fd when a
-worker is appended to the idle_workers_ptr? Servers that don't find work can
-read the fd or alternatively use select/poll/epoll. Multiple workers are
-expected to share fds, either a single global fd, one fd per server, or any
-other combination the scheduler may fancy.
+For me the code is less clear with this change, and in addition it  
+slightly changes the behaviour. Before, the write was done only when  
+the value was changing. Now you rewrite the value always, even when it  
+doesn't change.
+
+>  }
+>
+>  static int nx842_crypto_add_header(struct nx842_crypto_header *hdr, u8 *buf)
+> --
+> 2.25.1
+
 
