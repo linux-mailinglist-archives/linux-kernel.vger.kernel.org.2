@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EC43CDF74
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F24A73CDF56
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237772AbhGSPK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:10:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40442 "EHLO mail.kernel.org"
+        id S1345499AbhGSPJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:09:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343862AbhGSOsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C74D36113C;
-        Mon, 19 Jul 2021 15:25:03 +0000 (UTC)
+        id S245414AbhGSOr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:47:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BB6761380;
+        Mon, 19 Jul 2021 15:23:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708304;
-        bh=wz0jGm5t/5tgxTa81DBr4oQNtuh3RKgL0FZxFtODv24=;
+        s=korg; t=1626708237;
+        bh=lK1OJcXdg459ZhteeF7voycMQlelBiJ59v0OFlhME6I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MI+ker7m+Cv7avNv+QpNNsSxF9riPafPcekCDd9LctD2FQHO/kSjmGMVfUFhjQxiL
-         IgYCz1iVr63bR9FEs7Ic75W59RdJ4DnfydTQyVpnczK70U+xq8PkZphX3muBONnKcx
-         D10pMJbQSI+q9mgw3Z7Isrpr/ywxBp6IPCYxtdpw=
+        b=u/Z+86FsXEYw1Pq9v/Pq2dow6gBnoyugA74yNgyubjeppvW4lbBfKwn5xNnB7CTpu
+         qpkSFl/GkPY/q3hE87tQl2ov7zFHN6QbCvVT6IpPKI3usjZMXaPZuJvGrK2TBC/nve
+         aVJ0TqJmB+5Eha3VZkTeBId8PCH4HA8J9NkrTwBY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.14 215/315] ASoC: tegra: Set driver_name=tegra for all machine drivers
-Date:   Mon, 19 Jul 2021 16:51:44 +0200
-Message-Id: <20210719144950.505106146@linuxfoundation.org>
+        stable@vger.kernel.org, Petr Pavlu <petr.pavlu@suse.com>,
+        Corey Minyard <cminyard@mvista.com>
+Subject: [PATCH 4.14 217/315] ipmi/watchdog: Stop watchdog timer when the current action is none
+Date:   Mon, 19 Jul 2021 16:51:46 +0200
+Message-Id: <20210719144950.567817714@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -39,131 +39,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Petr Pavlu <petr.pavlu@suse.com>
 
-commit f6eb84fa596abf28959fc7e0b626f925eb1196c7 upstream.
+commit 2253042d86f57d90a621ac2513a7a7a13afcf809 upstream.
 
-The driver_name="tegra" is now required by the newer ALSA UCMs, otherwise
-Tegra UCMs don't match by the path/name.
+When an IPMI watchdog timer is being stopped in ipmi_close() or
+ipmi_ioctl(WDIOS_DISABLECARD), the current watchdog action is updated to
+WDOG_TIMEOUT_NONE and _ipmi_set_timeout(IPMI_SET_TIMEOUT_NO_HB) is called
+to install this action. The latter function ends up invoking
+__ipmi_set_timeout() which makes the actual 'Set Watchdog Timer' IPMI
+request.
 
-All Tegra machine drivers are specifying the card's name, but it has no
-effect if model name is specified in the device-tree since it overrides
-the card's name. We need to set the driver_name to "tegra" in order to
-get a usable lookup path for the updated ALSA UCMs. The new UCM lookup
-path has a form of driver_name/card_name.
+For IPMI 1.0, this operation results in fully stopping the watchdog timer.
+For IPMI >= 1.5, function __ipmi_set_timeout() always specifies the "don't
+stop" flag in the prepared 'Set Watchdog Timer' IPMI request. This causes
+that the watchdog timer has its action correctly updated to 'none' but the
+timer continues to run. A problem is that IPMI firmware can then still log
+an expiration event when the configured timeout is reached, which is
+unexpected because the watchdog timer was requested to be stopped.
 
-The old lookup paths that are based on driver module name continue to
-work as before. Note that UCM matching never worked for Tegra ASoC drivers
-if they were compiled as built-in, this is fixed by supporting the new
-naming scheme.
+The patch fixes this problem by not setting the "don't stop" flag in
+__ipmi_set_timeout() when the current action is WDOG_TIMEOUT_NONE which
+results in stopping the watchdog timer. This makes the behaviour for
+IPMI >= 1.5 consistent with IPMI 1.0. It also matches the logic in
+__ipmi_heartbeat() which does not allow to reset the watchdog if the
+current action is WDOG_TIMEOUT_NONE as that would start the timer.
 
+Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
+Message-Id: <10a41bdc-9c99-089c-8d89-fa98ce5ea080@suse.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Link: https://lore.kernel.org/r/20210529154649.25936-2-digetx@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Corey Minyard <cminyard@mvista.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/tegra/tegra_alc5632.c  |    1 +
- sound/soc/tegra/tegra_max98090.c |    1 +
- sound/soc/tegra/tegra_rt5640.c   |    1 +
- sound/soc/tegra/tegra_rt5677.c   |    1 +
- sound/soc/tegra/tegra_sgtl5000.c |    1 +
- sound/soc/tegra/tegra_wm8753.c   |    1 +
- sound/soc/tegra/tegra_wm8903.c   |    1 +
- sound/soc/tegra/tegra_wm9712.c   |    1 +
- sound/soc/tegra/trimslice.c      |    1 +
- 9 files changed, 9 insertions(+)
+ drivers/char/ipmi/ipmi_watchdog.c |   22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
---- a/sound/soc/tegra/tegra_alc5632.c
-+++ b/sound/soc/tegra/tegra_alc5632.c
-@@ -137,6 +137,7 @@ static struct snd_soc_dai_link tegra_alc
+--- a/drivers/char/ipmi/ipmi_watchdog.c
++++ b/drivers/char/ipmi/ipmi_watchdog.c
+@@ -394,16 +394,18 @@ static int i_ipmi_set_timeout(struct ipm
+ 	data[0] = 0;
+ 	WDOG_SET_TIMER_USE(data[0], WDOG_TIMER_USE_SMS_OS);
  
- static struct snd_soc_card snd_soc_tegra_alc5632 = {
- 	.name = "tegra-alc5632",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_alc5632_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_max98090.c
-+++ b/sound/soc/tegra/tegra_max98090.c
-@@ -188,6 +188,7 @@ static struct snd_soc_dai_link tegra_max
+-	if ((ipmi_version_major > 1)
+-	    || ((ipmi_version_major == 1) && (ipmi_version_minor >= 5))) {
+-		/* This is an IPMI 1.5-only feature. */
+-		data[0] |= WDOG_DONT_STOP_ON_SET;
+-	} else if (ipmi_watchdog_state != WDOG_TIMEOUT_NONE) {
+-		/*
+-		 * In ipmi 1.0, setting the timer stops the watchdog, we
+-		 * need to start it back up again.
+-		 */
+-		hbnow = 1;
++	if (ipmi_watchdog_state != WDOG_TIMEOUT_NONE) {
++		if ((ipmi_version_major > 1) ||
++		    ((ipmi_version_major == 1) && (ipmi_version_minor >= 5))) {
++			/* This is an IPMI 1.5-only feature. */
++			data[0] |= WDOG_DONT_STOP_ON_SET;
++		} else {
++			/*
++			 * In ipmi 1.0, setting the timer stops the watchdog, we
++			 * need to start it back up again.
++			 */
++			hbnow = 1;
++		}
+ 	}
  
- static struct snd_soc_card snd_soc_tegra_max98090 = {
- 	.name = "tegra-max98090",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_max98090_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_rt5640.c
-+++ b/sound/soc/tegra/tegra_rt5640.c
-@@ -138,6 +138,7 @@ static struct snd_soc_dai_link tegra_rt5
- 
- static struct snd_soc_card snd_soc_tegra_rt5640 = {
- 	.name = "tegra-rt5640",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_rt5640_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_rt5677.c
-+++ b/sound/soc/tegra/tegra_rt5677.c
-@@ -181,6 +181,7 @@ static struct snd_soc_dai_link tegra_rt5
- 
- static struct snd_soc_card snd_soc_tegra_rt5677 = {
- 	.name = "tegra-rt5677",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_rt5677_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_sgtl5000.c
-+++ b/sound/soc/tegra/tegra_sgtl5000.c
-@@ -103,6 +103,7 @@ static struct snd_soc_dai_link tegra_sgt
- 
- static struct snd_soc_card snd_soc_tegra_sgtl5000 = {
- 	.name = "tegra-sgtl5000",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_sgtl5000_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_wm8753.c
-+++ b/sound/soc/tegra/tegra_wm8753.c
-@@ -110,6 +110,7 @@ static struct snd_soc_dai_link tegra_wm8
- 
- static struct snd_soc_card snd_soc_tegra_wm8753 = {
- 	.name = "tegra-wm8753",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm8753_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_wm8903.c
-+++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -222,6 +222,7 @@ static struct snd_soc_dai_link tegra_wm8
- 
- static struct snd_soc_card snd_soc_tegra_wm8903 = {
- 	.name = "tegra-wm8903",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm8903_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_wm9712.c
-+++ b/sound/soc/tegra/tegra_wm9712.c
-@@ -59,6 +59,7 @@ static struct snd_soc_dai_link tegra_wm9
- 
- static struct snd_soc_card snd_soc_tegra_wm9712 = {
- 	.name = "tegra-wm9712",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm9712_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/trimslice.c
-+++ b/sound/soc/tegra/trimslice.c
-@@ -103,6 +103,7 @@ static struct snd_soc_dai_link trimslice
- 
- static struct snd_soc_card snd_soc_trimslice = {
- 	.name = "tegra-trimslice",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &trimslice_tlv320aic23_dai,
- 	.num_links = 1,
+ 	data[1] = 0;
 
 
