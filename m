@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 611F53CE621
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8463CE5AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351632AbhGSQAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:00:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60626 "EHLO mail.kernel.org"
+        id S243600AbhGSPwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:52:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345102AbhGSPES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:04:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 340316127C;
-        Mon, 19 Jul 2021 15:43:41 +0000 (UTC)
+        id S1345114AbhGSPET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:04:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B03276128E;
+        Mon, 19 Jul 2021 15:43:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709421;
-        bh=NtwPwY13+UkNy05MJKmtncoXJxnnGqWgemsC1i4b/Nk=;
+        s=korg; t=1626709424;
+        bh=WZ/5XOfX4bc45hYaIWnQsXJHdn1W2JlwDE8ELQqhuDE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ILnsk7z4ebUWuPIs3ZRwPfnTVBqGau2fAwKYWsSCuG6dTO4YLVxywUbnLTsGvo+au
-         /E4TeniVHQy0ms/hh+QQhGcvhXk8TRnx4+BJH7OicxV0IEaq4kOHeIXt/wHx31dkf8
-         EY17ziahFPItHbo9dfA53k2t92oeZbTI9312UFJo=
+        b=qrQwOdX1KWcH6VOSu68PMfcUKmL1CObIZqTKjcyexb2+nkBgTv7oDsMmKyBqCISau
+         acyJaGJQ7V0U9NBRnvBRanV+W9j+/7w8GGS/8OIwnSLL54QnndDR1qGm8KI3p/XSxS
+         LPphInHD4YgifiVocp6+19wlDp5TbtM3tWSDG42w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jason Wang <jasowang@redhat.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 378/421] virtio-blk: Fix memory leak among suspend/resume procedure
-Date:   Mon, 19 Jul 2021 16:53:09 +0200
-Message-Id: <20210719144959.484056562@linuxfoundation.org>
+Subject: [PATCH 4.19 379/421] virtio_net: Fix error handling in virtnet_restore()
+Date:   Mon, 19 Jul 2021 16:53:10 +0200
+Message-Id: <20210719144959.514770525@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -43,33 +43,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit b71ba22e7c6c6b279c66f53ee7818709774efa1f ]
+[ Upstream commit 3f2869cace829fb4b80fc53b3ddaa7f4ba9acbf1 ]
 
-The vblk->vqs should be freed before we call init_vqs()
-in virtblk_restore().
+Do some cleanups in virtnet_restore() when virtnet_cpu_notif_add() failed.
 
 Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Link: https://lore.kernel.org/r/20210517084332.280-1-xieyongji@bytedance.com
+Link: https://lore.kernel.org/r/20210517084516.332-1-xieyongji@bytedance.com
 Acked-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/virtio_blk.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/virtio_net.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-index c2d9459ec5d1..dac1769146d7 100644
---- a/drivers/block/virtio_blk.c
-+++ b/drivers/block/virtio_blk.c
-@@ -944,6 +944,8 @@ static int virtblk_freeze(struct virtio_device *vdev)
- 	blk_mq_quiesce_queue(vblk->disk->queue);
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 84a82c4a9535..bb11a1e30646 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -3199,8 +3199,11 @@ static __maybe_unused int virtnet_restore(struct virtio_device *vdev)
+ 	virtnet_set_queues(vi, vi->curr_queue_pairs);
  
- 	vdev->config->del_vqs(vdev);
-+	kfree(vblk->vqs);
-+
+ 	err = virtnet_cpu_notif_add(vi);
+-	if (err)
++	if (err) {
++		virtnet_freeze_down(vdev);
++		remove_vq_common(vi);
+ 		return err;
++	}
+ 
  	return 0;
  }
- 
 -- 
 2.30.2
 
