@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8D63CE6DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4CB3CE6E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352086AbhGSQQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:16:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46386 "EHLO mail.kernel.org"
+        id S1353521AbhGSQQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:16:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344990AbhGSPKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC064601FD;
-        Mon, 19 Jul 2021 15:50:47 +0000 (UTC)
+        id S1345217AbhGSPK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:10:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A3E16113B;
+        Mon, 19 Jul 2021 15:51:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709848;
-        bh=qHclCUiD/FAMElbZW4VKMO6R/swMk2HSVvU0lbPiUZ0=;
+        s=korg; t=1626709866;
+        bh=avXpt2IE8evYRyq1qslB7oJTaE/69xXYFne8L/SFsqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tDRGQB1G2vzUTGQpoTEfYItWRoDxHjYbNV/EDMrXrEp2JTJbaMx6Av3RYsHYIgk6t
-         Q9KKeVDuGMBVQXXAgPVQpjiGkX3ENpSekp6ampmiCegy6kKdZ/XJIMYPAxi3ui36jf
-         vzQoXugQgTE6jVvxB0IEwteBtCLbpFgE/cpPPfWE=
+        b=Gcw7ZPb4NNhwwNQfjVXhzDFdP6yflkJaIqIwVqmbEjHkdc3DFaJTACdGupq+n/Ree
+         DAJLHj1XKs/fW7XtUm9qpB8ZfaYU92/mL5o55nfCWG+c2OlW/ajSfpW7mDU16MsQPG
+         NgNMW4w2DRTfHng8ZxMCiUPVU523760EmselOrbM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org, Florian Weimer <fweimer@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Borislav Petkov <bp@suse.de>, Len Brown <len.brown@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 095/149] virtio_console: Assure used length from device is limited
-Date:   Mon, 19 Jul 2021 16:53:23 +0200
-Message-Id: <20210719144923.863319830@linuxfoundation.org>
+Subject: [PATCH 5.4 096/149] x86/signal: Detect and prevent an alternate signal stack overflow
+Date:   Mon, 19 Jul 2021 16:53:24 +0200
+Message-Id: <20210719144924.106579372@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
 References: <20210719144901.370365147@linuxfoundation.org>
@@ -41,45 +44,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie Yongji <xieyongji@bytedance.com>
+From: Chang S. Bae <chang.seok.bae@intel.com>
 
-[ Upstream commit d00d8da5869a2608e97cfede094dfc5e11462a46 ]
+[ Upstream commit 2beb4a53fc3f1081cedc1c1a198c7f56cc4fc60c ]
 
-The buf->len might come from an untrusted device. This
-ensures the value would not exceed the size of the buffer
-to avoid data corruption or loss.
+The kernel pushes context on to the userspace stack to prepare for the
+user's signal handler. When the user has supplied an alternate signal
+stack, via sigaltstack(2), it is easy for the kernel to verify that the
+stack size is sufficient for the current hardware context.
 
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Link: https://lore.kernel.org/r/20210525125622.1203-1-xieyongji@bytedance.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Check if writing the hardware context to the alternate stack will exceed
+it's size. If yes, then instead of corrupting user-data and proceeding with
+the original signal handler, an immediate SIGSEGV signal is delivered.
+
+Refactor the stack pointer check code from on_sig_stack() and use the new
+helper.
+
+While the kernel allows new source code to discover and use a sufficient
+alternate signal stack size, this check is still necessary to protect
+binaries with insufficient alternate signal stack size from data
+corruption.
+
+Fixes: c2bc11f10a39 ("x86, AVX-512: Enable AVX-512 States Context Switch")
+Reported-by: Florian Weimer <fweimer@redhat.com>
+Suggested-by: Jann Horn <jannh@google.com>
+Suggested-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Len Brown <len.brown@intel.com>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/20210518200320.17239-6-chang.seok.bae@intel.com
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=153531
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/virtio_console.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kernel/signal.c     | 24 ++++++++++++++++++++----
+ include/linux/sched/signal.h | 19 ++++++++++++-------
+ 2 files changed, 32 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-index 5eabbf73fdef..b453029487a1 100644
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -475,7 +475,7 @@ static struct port_buffer *get_inbuf(struct port *port)
+diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+index 2fdbf5ef8c39..026ce06a24c0 100644
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -241,10 +241,11 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 	     void __user **fpstate)
+ {
+ 	/* Default to using normal stack */
++	bool nested_altstack = on_sig_stack(regs->sp);
++	bool entering_altstack = false;
+ 	unsigned long math_size = 0;
+ 	unsigned long sp = regs->sp;
+ 	unsigned long buf_fx = 0;
+-	int onsigstack = on_sig_stack(sp);
+ 	int ret;
  
- 	buf = virtqueue_get_buf(port->in_vq, &len);
- 	if (buf) {
--		buf->len = len;
-+		buf->len = min_t(size_t, len, buf->size);
- 		buf->offset = 0;
- 		port->stats.bytes_received += len;
+ 	/* redzone */
+@@ -253,15 +254,23 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 
+ 	/* This is the X/Open sanctioned signal stack switching.  */
+ 	if (ka->sa.sa_flags & SA_ONSTACK) {
+-		if (sas_ss_flags(sp) == 0)
++		/*
++		 * This checks nested_altstack via sas_ss_flags(). Sensible
++		 * programs use SS_AUTODISARM, which disables that check, and
++		 * programs that don't use SS_AUTODISARM get compatible.
++		 */
++		if (sas_ss_flags(sp) == 0) {
+ 			sp = current->sas_ss_sp + current->sas_ss_size;
++			entering_altstack = true;
++		}
+ 	} else if (IS_ENABLED(CONFIG_X86_32) &&
+-		   !onsigstack &&
++		   !nested_altstack &&
+ 		   regs->ss != __USER_DS &&
+ 		   !(ka->sa.sa_flags & SA_RESTORER) &&
+ 		   ka->sa.sa_restorer) {
+ 		/* This is the legacy signal stack switching. */
+ 		sp = (unsigned long) ka->sa.sa_restorer;
++		entering_altstack = true;
  	}
-@@ -1714,7 +1714,7 @@ static void control_work_handler(struct work_struct *work)
- 	while ((buf = virtqueue_get_buf(vq, &len))) {
- 		spin_unlock(&portdev->c_ivq_lock);
  
--		buf->len = len;
-+		buf->len = min_t(size_t, len, buf->size);
- 		buf->offset = 0;
+ 	sp = fpu__alloc_mathframe(sp, IS_ENABLED(CONFIG_X86_32),
+@@ -274,8 +283,15 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 	 * If we are on the alternate signal stack and would overflow it, don't.
+ 	 * Return an always-bogus address instead so we will die with SIGSEGV.
+ 	 */
+-	if (onsigstack && !likely(on_sig_stack(sp)))
++	if (unlikely((nested_altstack || entering_altstack) &&
++		     !__on_sig_stack(sp))) {
++
++		if (show_unhandled_signals && printk_ratelimit())
++			pr_info("%s[%d] overflowed sigaltstack\n",
++				current->comm, task_pid_nr(current));
++
+ 		return (void __user *)-1L;
++	}
  
- 		handle_control_message(vq->vdev, portdev, buf);
+ 	/* save i387 and extended state */
+ 	ret = copy_fpstate_to_sigframe(*fpstate, (void __user *)buf_fx, math_size);
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index baf58f4cb057..b3f88470cbb5 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -509,6 +509,17 @@ static inline int kill_cad_pid(int sig, int priv)
+ #define SEND_SIG_NOINFO ((struct kernel_siginfo *) 0)
+ #define SEND_SIG_PRIV	((struct kernel_siginfo *) 1)
+ 
++static inline int __on_sig_stack(unsigned long sp)
++{
++#ifdef CONFIG_STACK_GROWSUP
++	return sp >= current->sas_ss_sp &&
++		sp - current->sas_ss_sp < current->sas_ss_size;
++#else
++	return sp > current->sas_ss_sp &&
++		sp - current->sas_ss_sp <= current->sas_ss_size;
++#endif
++}
++
+ /*
+  * True if we are on the alternate signal stack.
+  */
+@@ -526,13 +537,7 @@ static inline int on_sig_stack(unsigned long sp)
+ 	if (current->sas_ss_flags & SS_AUTODISARM)
+ 		return 0;
+ 
+-#ifdef CONFIG_STACK_GROWSUP
+-	return sp >= current->sas_ss_sp &&
+-		sp - current->sas_ss_sp < current->sas_ss_size;
+-#else
+-	return sp > current->sas_ss_sp &&
+-		sp - current->sas_ss_sp <= current->sas_ss_size;
+-#endif
++	return __on_sig_stack(sp);
+ }
+ 
+ static inline int sas_ss_flags(unsigned long sp)
 -- 
 2.30.2
 
