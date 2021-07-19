@@ -2,311 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F05493CDEA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989193CDEBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345799AbhGSPFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37772 "EHLO
+        id S245573AbhGSPFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245715AbhGSOsK (ORCPT
+        with ESMTP id S1344420AbhGSOss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:10 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1C3C0A88D8;
-        Mon, 19 Jul 2021 07:37:20 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id t9so19279886pgn.4;
-        Mon, 19 Jul 2021 08:07:46 -0700 (PDT)
+        Mon, 19 Jul 2021 10:48:48 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A9DC0613A8
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 07:41:35 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id a66so9499395vsd.10
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:11:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=PLz8EifVbvuejdzmJtsQlC2LwyXKUj5bie8PKGDaTRI=;
-        b=jFsUyKV2K1wTAVQBwzOydhwnvr5v1uXUAbXf7lj0+73sUmJG2OY7dy7iY1e5AZoWPZ
-         EmrYy+z0vQ0Vexjx6kuIL/AnQYOqGkRZtWqvmf/5LiU2HyH6DojT5JvNp8yyuk/iNLnO
-         6TAsHW8eHnJybfid2ZntyENRYePoSu62r2GZv1brZAlLr97VQIpTpgzwVnB4njuEzRGk
-         q5FJWy25snuwWntywi028USXiqYd9ZCLEaGkT11OU6Vup3T0SzJzoPzeqWSr27iueX9C
-         N05kTuCXMn8D34FFgOCBJ4ngg9vPrRhgy+TdrZEIqp6fh78tLB+EwEw5Q7KVKUcFsuG3
-         IN7Q==
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LjiH1/YnFLckwUasoeKSaPcZP1uajCNCDPTrO6JXzNs=;
+        b=WFch/tkRRnxVJ17Dby1P3cYgzcNJA1oLTdtUroWQqsYM5RAajIoMecg+MX/OIm3rjx
+         n9W068o6YreyOSfhHhCQ8WoJTXJN+nOIyQnJkOadRBWhrO1uVbqwlE8yo9cAiDJU7x+J
+         W96hUEygPS4ZAeGWBZTMmWSXX3riBwG68ESZM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=PLz8EifVbvuejdzmJtsQlC2LwyXKUj5bie8PKGDaTRI=;
-        b=mbYZr53wgHbzvM2SysuhFRKOsD1aOnMIXuhpEojOFPP2JzkdIq1q+SBah/gy4Vb+HB
-         nPCctuRnOEjdFZYfbXYeZJPplCfmO5FnqgnZstuI6AVybmE0SKKL5RugxxydezNVKmAs
-         9aRkR6sXJdl/fEcyqoxcvL4u6fgEaYjyOIZaogqkkfO3pGZoDKyh2D8Seccx1qze0tVb
-         JLLYr7GfiD8I+ThXAnYQug+8SN8b0Nd8GyGKLKjpOJAjFWRmbB4KyCBJaMsZ/gWByY5N
-         Yk1ZJyMfkP0CyPdHGkxvc52rsla8nviaG7EqDDHwKKj6Xl6Y62NX7oUpqnI7EPmyzYqD
-         dXvA==
-X-Gm-Message-State: AOAM531IRJpl5YS0NquO+IJhuz3ZIZsstQY2vbwm6Mwi/cGuo9761nyh
-        86Onf49ihhr+8Mp/qqZvMFpTSf+Wp0PY6FmNfw0=
-X-Google-Smtp-Source: ABdhPJyo3jAOtys4kUeLLoWI1SOGRPb6q7moE1eOOLTCdJixkva3z5EXqAGjT43Rcr0oGuQAsbj87xDie8SXDULpAvA=
-X-Received: by 2002:a63:ae48:: with SMTP id e8mr4831838pgp.0.1626707265611;
- Mon, 19 Jul 2021 08:07:45 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LjiH1/YnFLckwUasoeKSaPcZP1uajCNCDPTrO6JXzNs=;
+        b=Q1td+srLVjAjebluIB1CpubfGBrhKKUZ+gzDGgE5op1eUGUEhSLd+m6cROowZiTyX7
+         jnISleXXxW2iEsUrRYZ2uFymrCFCPjas3aI8c+nWQ81EpflCrWF84yTN038Xf5SeoVYl
+         uc9CzoZszohiE8ceSVNak3mfU3Mb9kVtgsQ4bYsXyFTB8Iky7Kp4w2G80CFLRaLyVjR8
+         Q/cFy3x630lNOB06WIqhCocW4KpAbazxmRn6ocQEj/NegGzAj32jCHwky94CQI2a8TEG
+         kWwRHuwmsfJ3ASRq78TUMzI6B6ZW9qeAv1DSHDG6MVvqg9FW5fLoEBOosVVm3VZDPwas
+         YW7Q==
+X-Gm-Message-State: AOAM533I8L1c2rm1DH1UBXr6YzoiPJvO7rsWeosFNCK0P3sdkq13Fe93
+        kIj1rrutzFJ+HO+noT1t1KdQ5PRc2kI0IudqibhZeQ==
+X-Google-Smtp-Source: ABdhPJy/kVV4j1YiP2Dwqz+GRGm0j7Za8dDJP8TPfNlhMLX2qbeoU5pogatCV4NLvaFEeCQzeCdkBUtQnqD3ko8wWX0=
+X-Received: by 2002:a05:6102:209c:: with SMTP id h28mr21982028vsr.21.1626707500317;
+ Mon, 19 Jul 2021 08:11:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20210715141742.15072-5-andrea.merello@gmail.com> <20210717165018.50a26629@jic23-huawei>
- <CAN8YU5M4+ZFNzLkGhP1w7Q80yKVBxAXqK=k6qYzpTYXj=+707w@mail.gmail.com>
- <YPVoTp3SPzL6LQ6X@smile.fi.intel.com> <CAN8YU5N9mktrxT6Tv67m=nh_Cnw0SYBq+bf5kUzpoWUAToJm+Q@mail.gmail.com>
- <YPWJCE55q04bUEuA@smile.fi.intel.com>
-In-Reply-To: <YPWJCE55q04bUEuA@smile.fi.intel.com>
-Reply-To: andrea.merello@gmail.com
-From:   Andrea Merello <andrea.merello@gmail.com>
-Date:   Mon, 19 Jul 2021 17:07:34 +0200
-Message-ID: <CAN8YU5P5XwdviNsh-rAHwx-Ay3nKoUZtcwc-At+PUpt4UKPReQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] iio: imu: add BNO055 serdev driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Andrea Merello <andrea.merello@iit.it>
+References: <00000000000067d24205c4d0e599@google.com>
+In-Reply-To: <00000000000067d24205c4d0e599@google.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 19 Jul 2021 17:11:29 +0200
+Message-ID: <CAJfpegsYNcv+mEVpLBxVGSQhXr0Q_UnOUC1VkYuYB=xzRt+f-A@mail.gmail.com>
+Subject: Re: [syzbot] possible deadlock in mnt_want_write (2)
+To:     syzbot <syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-integrity <linux-integrity@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno lun 19 lug 2021 alle ore 16:15 Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> ha scritto:
+[CC: linux-intergrity]
+
+On Tue, 15 Jun 2021 at 18:59, syzbot
+<syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com> wrote:
 >
-> On Mon, Jul 19, 2021 at 02:59:30PM +0200, Andrea Merello wrote:
-> > Il giorno lun 19 lug 2021 alle ore 13:56 Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> ha scritto:
-> > >
-> > > On Mon, Jul 19, 2021 at 10:49:54AM +0200, Andrea Merello wrote:
-> > > > Il giorno sab 17 lug 2021 alle ore 17:48 Jonathan Cameron
-> > > > <jic23@kernel.org> ha scritto:
-> > > > > On Thu, 15 Jul 2021 16:17:42 +0200
-> > > > > Andrea Merello <andrea.merello@gmail.com> wrote:
+> Hello,
 >
-> ...
+> syzbot found the following issue on:
 >
-> > > > > > +/*
-> > > > > > + * Register writes cmd have the following format
-> > > > > > + * +------+------+-----+-----+----- ... ----+
-> > > > > > + * | 0xAA | 0xOO | REG | LEN | payload[LEN] |
-> > > > > > + * +------+------+-----+-----+----- ... ----+
-> > > > > > + *
-> > > > > > + * Register write responses have the following format
-> > > > > > + * +------+----------+
-> > > > > > + * | 0xEE | ERROCODE |
-> > > > > > + * +------+----------+
-> > > > > > + *
-> > > > > > + * Register read have the following format
-> > > > > > + * +------+------+-----+-----+
-> > > > > > + * | 0xAA | 0xO1 | REG | LEN |
-> > > > > > + * +------+------+-----+-----+
-> > > > > > + *
-> > > > > > + * Successful register read response have the following format
-> > > > > > + * +------+-----+----- ... ----+
-> > > > > > + * | 0xBB | LEN | payload[LEN] |
-> > > > > > + * +------+-----+----- ... ----+
-> > > > > > + *
-> > > > > > + * Failed register read response have the following format
-> > > > > > + * +------+--------+
-> > > > > > + * | 0xEE | ERRCODE|  (ERRCODE always > 1)
-> > > > > > + * +------+--------+
-> > > > > > + *
-> > > > > > + * Error codes are
-> > > > > > + * 01: OK
-> > > > > > + * 02: read/write FAIL
-> > > > > > + * 04: invalid address
-> > > > > > + * 05: write on RO
-> > > > > > + * 06: wrong start byte
-> > > > > > + * 07: bus overrun
-> > > > > > + * 08: len too high
-> > > > > > + * 09: len too low
-> > > > > > + * 10: bus RX byte timeout (timeout is 30mS)
-> > > > > > + *
-> > > > > > + *
-> > > > > > + * **WORKAROUND ALERT**
-> > > > > > + *
-> > > > > > + * Serial communication seems very fragile: the BNO055 buffer seems to overflow
-> > > > > > + * very easy; BNO055 seems able to sink few bytes, then it needs a brief pause.
-> > > > > > + * On the other hand, it is also picky on timeout: if there is a pause > 30mS in
-> > > > > > + * between two bytes then the transaction fails (IMU internal RX FSM resets).
-> > > > > > + *
-> > > > > > + * BMU055 has been seen also failing to process commands in case we send them
-> > > > > > + * too close each other (or if it is somehow busy?)
-> > > > > > + *
-> > > > > > + * One idea would be to split data in chunks, and then wait 1-2mS between
-> > > > > > + * chunks (we hope not to exceed 30mS delay for any reason - which should
-> > > > > > + * be pretty a lot of time for us), and eventually retry in case the BNO055
-> > > > > > + * gets upset for any reason. This seems to work in avoiding the overflow
-> > > > > > + * errors, but indeed it seems slower than just perform a retry when an overflow
-> > > > > > + * error occur.
-> > > > > > + * In particular I saw these scenarios:
-> > > > > > + * 1) If we send 2 bytes per time, then the IMU never(?) overflows.
-> > > > > > + * 2) If we send 4 bytes per time (i.e. the full header), then the IMU could
-> > > > > > + *    overflow, but it seem to sink all 4 bytes, then it returns error.
-> > > > > > + * 3) If we send more than 4 bytes, the IMU could overflow, and I saw it sending
-> > > > > > + *    error after 4 bytes are sent; we have troubles in synchronizing again,
-> > > > > > + *    because we are still sending data, and the IMU interprets it as the 1st
-> > > > > > + *    byte of a new command.
-> > > > > > + *
-> > > > > > + * So, we workaround all this in the following way:
-> > > > > > + * In case of read we don't split the header but we rely on retries; This seems
-> > > > > > + * convenient for data read (where we TX only the hdr).
-> > > > > > + * For TX we split the transmission in 2-bytes chunks so that, we should not
-> > > > > > + * only avoid case 2 (which is still manageable), but we also hopefully avoid
-> > > > > > + * case 3, that would be by far worse.
-> > > > >
-> > > > > Nice docs and this sounds terrible!
-> > > >
-> > > > Indeed.. If anyone has nicer ideas, or is aware about better
-> > > > workaround, I would really love to know...
-> > >
-> > > This needs somebody to go thru data sheet and check for possibilities, what you
-> > > described above is not gonna fly. Okay, "in a robust way".
-> > >
-> > > I can't believe there is nothing in the communication protocol that may
-> > > increase a robustness.
-> >
-> > The serial protocol is both described in the datasheet and in an
-> > application note "BNO055UART interface". Both of them mention the fact
-> > that  the IMU could just fail in processing the commands and responds
-> > with a status message with the "overflow" error code. The application
-> > note says this can happen because of an internal IMU buffer clearing
-> > stuff not happening in time, and that you have to retry the command in
-> > such case (which works for read commands, because after the header the
-> > IMU will always respond with something).
-> >
-> > They say nothing about the fact that the IMU could decide to respond
-> > with an "overflow" status message when a write command is still being
-> > TXed, even if it is not finished yet, but this actually happens (seen
-> > at least after the 4-bytes header).
+> HEAD commit:    06af8679 coredump: Limit what can interrupt coredumps
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=162f99afd00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=547a5e42ca601229
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b42fe626038981fb7bfa
+> compiler:       Debian clang version 11.0.1-2
 >
-> (1)
+> Unfortunately, I don't have any reproducer for this issue yet.
 >
-> >
-> > I think there is not much other information about this in datasheet
-> > and application note. Besides, the message formats are also described
-> > the comments in bno055_sl.c
-> >
-> > Given that the IMU behaves like this, I could only see three possible
-> > workarounds for managing write commands:
-> > 1 - be quick enough on RX side in catching the IMU overflow status
-> > response before sending the next char, which seems unfeasible.
-> > 2 - be slow enough to let the IMU do its own stuff, which seems doable.
-> > 3 - let the mess happen and try to recover: when we get the IMU
-> > overflow error then we might still being TXing; in this case we stop
-> > and we wait for the IMU to complain for a malformed command, but I'm
-> > unsure how the IMU could handle this: it will refuse the wrong
-> > starting byte (unless our payload is 0xAA by chance), but then how
-> > many bytes does it throw away? How may (malformed) commands would it
-> > try to extract from a the garbage we TXed (how may complaints response
-> > would we receive and need to wait) ? And what if there is something in
-> > payload that resembles a valid command and got accepted? This seems
-> > worse than workaround #2
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com
 >
-> I believe the #3 is the right thing to do actually.
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 5.13.0-rc5-syzkaller #0 Not tainted
+> ------------------------------------------------------
+> syz-executor.1/21398 is trying to acquire lock:
+> ffff8881485a6460 (sb_writers#5){.+.+}-{0:0}, at: mnt_want_write+0x3b/0x80 fs/namespace.c:375
 >
-> The payload is up to 128 bytes and speed is fixed. I believe that firmware has
-> internally the state of the input processing. OTOH the UART is duplex and what
-> you need in the driver is to have a callback that will read whatever the answer
-> from the sensor will be at the time it appears.
-
-I can add a reader thread that always process IMU data, but I doubt we
-can make assumptions on the fact it will be triggered in time to avoid
-to TX extra characters after IMU signals an overflow; this seems
-really a RT stuff, and it would even depends by the USART HW (think
-about USB-UART adaptors).
-
-So, how could we implement #3 dealing correctly with the issue about
-the IMU possiblly misinterpreting the bytes we might have already sent
-out? What's if they are a valid command by chance? The problem here is
-that this protocol has no any CRC or something like that to make sure
-garbage is really thrown away.
-
-> Also note that Linux is not an RTOS and you may end up, maybe rarely, in the
-> case which resembles the #3 while using workaround #2.
-
-Yes, in case we sleep more than 30mS we fail. I would say it's very
-unlikely, but that's true.
-
-Maybe if I add a reader thread to the workaround #2, considering we
-sleep every two bytes, then we can know about IMU errors - maybe still
-not before TXing any further data - but before we TX the bare minimum
-data amount in order to produce an unintentionally valid write command
-(should be 5 bytes).
-
-Anyway it seems to me that there is no perfectly robust way to deal
-with this IMU.. But, in real word scenarios, workaround #2 seem to
-work well enough.
-
-> On top of that you demolish the idea of using DMA with UART.
-
-True, but we really have no rush for write commands, so that it
-shouldn't be an issue indeed - and apart for the few bytes of the
-calibration data, that we might discuss about, all other writes are so
-short that DMA has probably no real advantage (OTOH read command
-doesn't have any extra sleep, so we are fine with reading the IMU
-measures).
-
-> (Btw, AN012 [1] says 100ms is the write timeout for the next byte,
->  and not 30ms.)
-
-Yes: there is an inconsistency here: the datasheet says 30mS, the AN
-says 100mS. We should then consider not to exceed 30mS.
-
-> As AN012 rightfully pointed out the UART is _async_ interface, so I believe (1)
-> is covered by this, meaning that error respond may appear _at any time_ on the
-> (host-side) Rx line.
-
-Ah, that is an interesting interpretation :)
-
-> My personal take away is never ever use UART for this kind (*) of
-> communications and this sensor specifically.
-
-Consider that this kind of devices are position dependant, e.g. you
-want to fix them on your arms, or on your robot feet, etc. I2C is
-electrically unsuitable for long off-board wires, while serial lines
-should be by far better in this case.
-
-> *) time-based IPCs are doomed by definition in non-RTOS environments with UART
->    hardware interface.
-
-We have to live with this :/ But indeed having sensors that measure
-real-world physical phenomena probably are a bit RT-ish anyway..
-
-> [1]: BST-BNO055-AN012-00 | Revision 1.0 | June 2015
+> but task is already holding lock:
+> ffff888034945bc0 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x75a/0x1ba0 security/integrity/ima/ima_main.c:253
 >
-> > What I meant: given this IMU behaviour, if someone has a better idea
-> > about how to deal with it, I would listen :)
-> >
-> > > > > > + */
->
-> ...
->
-> > > > > > +/* Read operation overhead:
-> > > > > > + * 4 bytes req + 2byte resp hdr
-> > > > > > + * 6 bytes = 60 bit (considering 1start + 1stop bits).
-> > > > > > + * 60/115200 = ~520uS
-> > > > > > + * In 520uS we could read back about 34 bytes that means 3 samples, this means
-> > > > > > + * that in case of scattered read in which the gap is 3 samples or less it is
-> > > > > > + * still convenient to go for a burst.
-> > > > > > + * We have to take into account also IMU response time - IMU seems to be often
-> > > > > > + * reasonably quick to respond, but sometimes it seems to be in some "critical
-> > > > > > + * section" in which it delays handling of serial protocol.
-> > > > > > + * By experiment, it seems convenient to burst up to about 5/6-samples-long gap
-> > >
-> > > Missed perial and entire comment needs proper style and space occupation ratio.
-> >
-> > Perial? But OK: text reflow and I see the 1st line for multilne
->
-> Period.
-
-Ah, OK :)
-
-> > commend is not correct.
-> >
-> > > > > > + */
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+> which lock already depends on the new lock.
 >
 >
+> the existing dependency chain (in reverse order) is:
+>
+> -> #1 (&iint->mutex){+.+.}-{3:3}:
+>        lock_acquire+0x17f/0x720 kernel/locking/lockdep.c:5512
+>        __mutex_lock_common+0x1bf/0x3100 kernel/locking/mutex.c:959
+>        __mutex_lock kernel/locking/mutex.c:1104 [inline]
+>        mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:1119
+>        process_measurement+0x75a/0x1ba0 security/integrity/ima/ima_main.c:253
+>        ima_file_check+0xe0/0x130 security/integrity/ima/ima_main.c:499
+>        do_open fs/namei.c:3363 [inline]
+>        path_openat+0x293d/0x39b0 fs/namei.c:3494
+>        do_filp_open+0x221/0x460 fs/namei.c:3521
+>        do_sys_openat2+0x124/0x460 fs/open.c:1187
+>        do_sys_open fs/open.c:1203 [inline]
+>        __do_sys_open fs/open.c:1211 [inline]
+>        __se_sys_open fs/open.c:1207 [inline]
+>        __x64_sys_open+0x221/0x270 fs/open.c:1207
+>        do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
+>        entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> -> #0 (sb_writers#5){.+.+}-{0:0}:
+>        check_prev_add kernel/locking/lockdep.c:2938 [inline]
+>        check_prevs_add+0x4f9/0x5b60 kernel/locking/lockdep.c:3061
+>        validate_chain kernel/locking/lockdep.c:3676 [inline]
+>        __lock_acquire+0x4307/0x6040 kernel/locking/lockdep.c:4902
+>        lock_acquire+0x17f/0x720 kernel/locking/lockdep.c:5512
+>        percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+>        __sb_start_write include/linux/fs.h:1763 [inline]
+>        sb_start_write+0x4f/0x180 include/linux/fs.h:1833
+>        mnt_want_write+0x3b/0x80 fs/namespace.c:375
+>        ovl_maybe_copy_up+0x117/0x180 fs/overlayfs/copy_up.c:996
+>        ovl_open+0xa2/0x200 fs/overlayfs/file.c:149
+>        do_dentry_open+0x7cb/0x1010 fs/open.c:826
+>        vfs_open fs/open.c:940 [inline]
+>        dentry_open+0xc6/0x120 fs/open.c:956
+>        ima_calc_file_hash+0x157/0x1b00 security/integrity/ima/ima_crypto.c:557
+>        ima_collect_measurement+0x283/0x520 security/integrity/ima/ima_api.c:252
+>        process_measurement+0xf79/0x1ba0 security/integrity/ima/ima_main.c:330
+>        ima_file_check+0xe0/0x130 security/integrity/ima/ima_main.c:499
+>        do_open fs/namei.c:3363 [inline]
+>        path_openat+0x293d/0x39b0 fs/namei.c:3494
+>        do_filp_open+0x221/0x460 fs/namei.c:3521
+>        do_sys_openat2+0x124/0x460 fs/open.c:1187
+>        do_sys_open fs/open.c:1203 [inline]
+>        __do_sys_open fs/open.c:1211 [inline]
+>        __se_sys_open fs/open.c:1207 [inline]
+>        __x64_sys_open+0x221/0x270 fs/open.c:1207
+>        do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
+>        entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> other info that might help us debug this:
+>
+>  Possible unsafe locking scenario:
+>
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(&iint->mutex);
+>                                lock(sb_writers#5);
+>                                lock(&iint->mutex);
+>   lock(sb_writers#5);
+>
+>  *** DEADLOCK ***
+>
+> 1 lock held by syz-executor.1/21398:
+>  #0: ffff888034945bc0 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x75a/0x1ba0 security/integrity/ima/ima_main.c:253
+>
+> stack backtrace:
+> CPU: 0 PID: 21398 Comm: syz-executor.1 Not tainted 5.13.0-rc5-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x202/0x31e lib/dump_stack.c:120
+>  print_circular_bug+0xb17/0xdc0 kernel/locking/lockdep.c:2007
+>  check_noncircular+0x2cc/0x390 kernel/locking/lockdep.c:2129
+>  check_prev_add kernel/locking/lockdep.c:2938 [inline]
+>  check_prevs_add+0x4f9/0x5b60 kernel/locking/lockdep.c:3061
+>  validate_chain kernel/locking/lockdep.c:3676 [inline]
+>  __lock_acquire+0x4307/0x6040 kernel/locking/lockdep.c:4902
+>  lock_acquire+0x17f/0x720 kernel/locking/lockdep.c:5512
+>  percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+>  __sb_start_write include/linux/fs.h:1763 [inline]
+>  sb_start_write+0x4f/0x180 include/linux/fs.h:1833
+>  mnt_want_write+0x3b/0x80 fs/namespace.c:375
+>  ovl_maybe_copy_up+0x117/0x180 fs/overlayfs/copy_up.c:996
+>  ovl_open+0xa2/0x200 fs/overlayfs/file.c:149
+>  do_dentry_open+0x7cb/0x1010 fs/open.c:826
+>  vfs_open fs/open.c:940 [inline]
+>  dentry_open+0xc6/0x120 fs/open.c:956
+>  ima_calc_file_hash+0x157/0x1b00 security/integrity/ima/ima_crypto.c:557
+>  ima_collect_measurement+0x283/0x520 security/integrity/ima/ima_api.c:252
+>  process_measurement+0xf79/0x1ba0 security/integrity/ima/ima_main.c:330
+>  ima_file_check+0xe0/0x130 security/integrity/ima/ima_main.c:499
+>  do_open fs/namei.c:3363 [inline]
+>  path_openat+0x293d/0x39b0 fs/namei.c:3494
+>  do_filp_open+0x221/0x460 fs/namei.c:3521
+>  do_sys_openat2+0x124/0x460 fs/open.c:1187
+>  do_sys_open fs/open.c:1203 [inline]
+>  __do_sys_open fs/open.c:1211 [inline]
+>  __se_sys_open fs/open.c:1207 [inline]
+>  __x64_sys_open+0x221/0x270 fs/open.c:1207
+>  do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x4665d9
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f28cc64c188 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+> RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+> RDX: 0000000000000000 RSI: 0000000000000003 RDI: 0000000020000200
+> RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+> R13: 00007ffdd1759cef R14: 00007f28cc64c300 R15: 0000000000022000
+> overlayfs: upperdir is in-use as upperdir/workdir of another mount, mount with '-o index=off' to override exclusive upperdir protection.
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
