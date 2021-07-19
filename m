@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579703CE494
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2864E3CE51C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348629AbhGSPoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:44:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52506 "EHLO mail.kernel.org"
+        id S1343837AbhGSPrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:47:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343562AbhGSO7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC4F613FD;
-        Mon, 19 Jul 2021 15:36:52 +0000 (UTC)
+        id S1343578AbhGSO7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8AA9610A5;
+        Mon, 19 Jul 2021 15:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709013;
-        bh=ekly2r3/9OhVJ9p26++FHPxq7FNSFnXO8gg1d7hT8Xk=;
+        s=korg; t=1626709018;
+        bh=u4UdE8j93cevc9q+wDk5Yz5C2snzK3ng5PDQJKTT+mU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ixK4zwIZbgPQXfKQoJGVbW3nlKqjKs+pl8ZFFz2FIULQHQ9Sh6Z3fVcgsStN1PrM0
-         xAVf7efRlXYiaGeoi9LDJ6hXvFrPqGwVI0M6A9NyBdiT9NqFiP5ll16mCpNzvdqBS/
-         3DLUNDBqmIpjacm73V/D6isRZIk67S6PYN1U5SP4=
+        b=DjhypKEPSF4rx8H6WkGs9ERAHLIg/9dcc/pKDX5N6K9rpv8XkT4iS8u7fUXzQHmDK
+         LxNuJ5OVqHNe5MxOZYIEPmK6HYdQ3blmBjffuWJNvjC+SecGWCkYQJbfK3ZgfcJFSQ
+         V4yiTqiIuu3h6n8GvhMaliMxpWcHwxBtUcIiSHYU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 186/421] ASoC: rsnd: tidyup loop on rsnd_adg_clk_query()
-Date:   Mon, 19 Jul 2021 16:49:57 +0200
-Message-Id: <20210719144952.872823027@linuxfoundation.org>
+Subject: [PATCH 4.19 188/421] char: pcmcia: error out if num_bytes_read is greater than 4 in set_protocol()
+Date:   Mon, 19 Jul 2021 16:49:59 +0200
+Message-Id: <20210719144952.934938020@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,47 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit cf9d5c6619fadfc41cf8f5154cb990cc38e3da85 ]
+[ Upstream commit 37188559c610f1b7eec83c8e448936c361c578de ]
 
-commit 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate() under
-atomic context") used saved clk_rate, thus for_each_rsnd_clk()
-is no longer needed. This patch fixes it.
+Theoretically, it will cause index out of bounds error if
+'num_bytes_read' is greater than 4. As we expect it(and was tested)
+never to be greater than 4, error out if it happens.
 
-Fixes: 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate() under atomic context")
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87v978oe2u.wl-kuninori.morimoto.gx@renesas.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: c1986ee9bea3 ("[PATCH] New Omnikey Cardman 4000 driver")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Link: https://lore.kernel.org/r/20210521120617.138396-1-yukuai3@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/char/pcmcia/cm4000_cs.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 549a137878a6..dc08260031ee 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -318,7 +318,6 @@ static void rsnd_adg_set_ssi_clk(struct rsnd_mod *ssi_mod, u32 val)
- int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate)
- {
- 	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
--	struct clk *clk;
- 	int i;
- 	int sel_table[] = {
- 		[CLKA] = 0x1,
-@@ -331,10 +330,9 @@ int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate)
- 	 * find suitable clock from
- 	 * AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC/AUDIO_CLKI.
- 	 */
--	for_each_rsnd_clk(clk, adg, i) {
-+	for (i = 0; i < CLKMAX; i++)
- 		if (rate == adg->clk_rate[i])
- 			return sel_table[i];
--	}
- 
- 	/*
- 	 * find divided clock from BRGA/BRGB
+diff --git a/drivers/char/pcmcia/cm4000_cs.c b/drivers/char/pcmcia/cm4000_cs.c
+index a219964cb770..cdc72db29ae0 100644
+--- a/drivers/char/pcmcia/cm4000_cs.c
++++ b/drivers/char/pcmcia/cm4000_cs.c
+@@ -544,6 +544,10 @@ static int set_protocol(struct cm4000_dev *dev, struct ptsreq *ptsreq)
+ 		io_read_num_rec_bytes(iobase, &num_bytes_read);
+ 		if (num_bytes_read >= 4) {
+ 			DEBUGP(2, dev, "NumRecBytes = %i\n", num_bytes_read);
++			if (num_bytes_read > 4) {
++				rc = -EIO;
++				goto exit_setprotocol;
++			}
+ 			break;
+ 		}
+ 		mdelay(10);
 -- 
 2.30.2
 
