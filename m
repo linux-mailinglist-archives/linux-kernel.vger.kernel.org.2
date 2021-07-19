@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5421B3CDE9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BBD3CDE9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344308AbhGSPEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:04:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34974 "EHLO mail.kernel.org"
+        id S1345091AbhGSPES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:04:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243877AbhGSOl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:41:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96BD261248;
-        Mon, 19 Jul 2021 15:21:34 +0000 (UTC)
+        id S243989AbhGSOmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:42:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42A2461264;
+        Mon, 19 Jul 2021 15:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708095;
-        bh=kmGKFWbJJL9Hw2c1Zq2y3HJdEnTJrqSwgwIX2ATRWXU=;
+        s=korg; t=1626708097;
+        bh=sCPVr7Zd+H5/hjvU4EXEkWQYTiG50FlZdz5A3qgX7zs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pcts98jfj6+XRoEelJw31f6NoWrNM8Y7enUaOb0AlEB/iRgjdXpX6QMG13I1RtJ4a
-         ETTzuBtkjnkwv+pVQ2JMCkgkGZbNpEPjARFtzoxZfsYO8X/UEdvG/7uTD+ztAECO1M
-         cMpexaiZy5si/49XR3aIL9YGVkSf+2bMTP0VAPrI=
+        b=HnHdI4q8p6/3Uut75DPLf0zKYBqi1Mw60ACD1HxZbZaqzcveKqQE3rQDn0H1xr7DW
+         gbArGl2YYKaHTnUdC46VIvN5Jng18mbQ+AP1ANGoFUcaHnSxw2NfQtmDRX1OyuuYaz
+         ST7e8uIf0+MOP57L2bwuFivgMnY3uEn9BoXBqoMA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joe Thornber <ejt@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
+        stable@vger.kernel.org,
+        Xianting Tian <xianting.tian@linux.alibaba.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 177/315] dm space maps: dont reset space map allocation cursor when committing
-Date:   Mon, 19 Jul 2021 16:51:06 +0200
-Message-Id: <20210719144948.709362546@linuxfoundation.org>
+Subject: [PATCH 4.14 178/315] virtio_net: Remove BUG() to avoid machine dead
+Date:   Mon, 19 Jul 2021 16:51:07 +0200
+Message-Id: <20210719144948.741021933@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -40,87 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Thornber <ejt@redhat.com>
+From: Xianting Tian <xianting.tian@linux.alibaba.com>
 
-[ Upstream commit 5faafc77f7de69147d1e818026b9a0cbf036a7b2 ]
+[ Upstream commit 85eb1389458d134bdb75dad502cc026c3753a619 ]
 
-Current commit code resets the place where the search for free blocks
-will begin back to the start of the metadata device.  There are a couple
-of repercussions to this:
+We should not directly BUG() when there is hdr error, it is
+better to output a print when such error happens. Currently,
+the caller of xmit_skb() already did it.
 
-- The first allocation after the commit is likely to take longer than
-  normal as it searches for a free block in an area that is likely to
-  have very few free blocks (if any).
-
-- Any free blocks it finds will have been recently freed.  Reusing them
-  means we have fewer old copies of the metadata to aid recovery from
-  hardware error.
-
-Fix these issues by leaving the cursor alone, only resetting when the
-search hits the end of the metadata device.
-
-Signed-off-by: Joe Thornber <ejt@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/persistent-data/dm-space-map-disk.c     | 9 ++++++++-
- drivers/md/persistent-data/dm-space-map-metadata.c | 9 ++++++++-
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ drivers/net/virtio_net.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/md/persistent-data/dm-space-map-disk.c b/drivers/md/persistent-data/dm-space-map-disk.c
-index bf4c5e2ccb6f..e0acae7a3815 100644
---- a/drivers/md/persistent-data/dm-space-map-disk.c
-+++ b/drivers/md/persistent-data/dm-space-map-disk.c
-@@ -171,6 +171,14 @@ static int sm_disk_new_block(struct dm_space_map *sm, dm_block_t *b)
- 	 * Any block we allocate has to be free in both the old and current ll.
- 	 */
- 	r = sm_ll_find_common_free_block(&smd->old_ll, &smd->ll, smd->begin, smd->ll.nr_blocks, b);
-+	if (r == -ENOSPC) {
-+		/*
-+		 * There's no free block between smd->begin and the end of the metadata device.
-+		 * We search before smd->begin in case something has been freed.
-+		 */
-+		r = sm_ll_find_common_free_block(&smd->old_ll, &smd->ll, 0, smd->begin, b);
-+	}
-+
- 	if (r)
- 		return r;
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 2d2a307c0231..71052d17c9ae 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -1262,7 +1262,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+ 	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
+ 				    virtio_is_little_endian(vi->vdev), false,
+ 				    0))
+-		BUG();
++		return -EPROTO;
  
-@@ -199,7 +207,6 @@ static int sm_disk_commit(struct dm_space_map *sm)
- 		return r;
- 
- 	memcpy(&smd->old_ll, &smd->ll, sizeof(smd->old_ll));
--	smd->begin = 0;
- 	smd->nr_allocated_this_transaction = 0;
- 
- 	r = sm_disk_get_nr_free(sm, &nr_free);
-diff --git a/drivers/md/persistent-data/dm-space-map-metadata.c b/drivers/md/persistent-data/dm-space-map-metadata.c
-index 31a999458be9..b3ded452e573 100644
---- a/drivers/md/persistent-data/dm-space-map-metadata.c
-+++ b/drivers/md/persistent-data/dm-space-map-metadata.c
-@@ -451,6 +451,14 @@ static int sm_metadata_new_block_(struct dm_space_map *sm, dm_block_t *b)
- 	 * Any block we allocate has to be free in both the old and current ll.
- 	 */
- 	r = sm_ll_find_common_free_block(&smm->old_ll, &smm->ll, smm->begin, smm->ll.nr_blocks, b);
-+	if (r == -ENOSPC) {
-+		/*
-+		 * There's no free block between smm->begin and the end of the metadata device.
-+		 * We search before smm->begin in case something has been freed.
-+		 */
-+		r = sm_ll_find_common_free_block(&smm->old_ll, &smm->ll, 0, smm->begin, b);
-+	}
-+
- 	if (r)
- 		return r;
- 
-@@ -502,7 +510,6 @@ static int sm_metadata_commit(struct dm_space_map *sm)
- 		return r;
- 
- 	memcpy(&smm->old_ll, &smm->ll, sizeof(smm->old_ll));
--	smm->begin = 0;
- 	smm->allocated_this_transaction = 0;
- 
- 	return 0;
+ 	if (vi->mergeable_rx_bufs)
+ 		hdr->num_buffers = 0;
 -- 
 2.30.2
 
