@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07793CE699
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38BF3CE75D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350178AbhGSQJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:09:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39392 "EHLO mail.kernel.org"
+        id S1353071AbhGSQZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:25:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344079AbhGSPIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:08:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A30A611CE;
-        Mon, 19 Jul 2021 15:48:07 +0000 (UTC)
+        id S1347057AbhGSPPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:15:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01A58606A5;
+        Mon, 19 Jul 2021 15:56:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709688;
-        bh=JPtE6/POe2kzDiNAsnf2rJwrMZwZuBqlLA51f9qPsE8=;
+        s=korg; t=1626710170;
+        bh=JgL551oFfxdmH9y/atJVWQ9IvGlZp0b9DjZZSGo8qz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LegfUH5gZYqI9JspuHCQyqIWLhQ0N6Ts/+CVJtlqbDo4LgoPc2ZLeJwA1DzLn3VCP
-         W1y0lK/wBYgo6sMvUmLE9QMx5QN4h6RThP5jgkMoFU41odkDLp6ZgVW+Q4ajeeAW3Z
-         1Ri7zGA3xphxT9BJjru6UUOOeNElf7Vl+3rCrYM8=
+        b=hgzBtjdY51ABYgQFU04fFSClW4OP5PqNku8s4QI8dcjL0RtyVKGO+rcobCok+hSux
+         6wg5x7K44QFy+PYLWeoy760/e3yUu1ArMCgQK0WEx60vqwz0+8ggt/WF4Jb0pUYO2v
+         1R1aNQIBfUGFIZA0Xgn1Q9Dxl0EPAHE56oO7kQYA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>, Pavel Machek <pavel@ucw.cz>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 025/149] scsi: scsi_dh_alua: Check for negative result value
+Subject: [PATCH 5.10 104/243] leds: turris-omnia: add missing MODULE_DEVICE_TABLE
 Date:   Mon, 19 Jul 2021 16:52:13 +0200
-Message-Id: <20210719144907.539925320@linuxfoundation.org>
+Message-Id: <20210719144944.259719781@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 7e26e3ea028740f934477ec01ba586ab033c35aa ]
+[ Upstream commit 9d0150db97583cfbb6b44cbe02241a1a48f90210 ]
 
-scsi_execute() will now return a negative error if there was an error prior
-to command submission; evaluate that instead if checking for DRIVER_ERROR.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-[mkp: build fix]
-
-Link: https://lore.kernel.org/r/20210427083046.31620-6-hare@suse.de
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/device_handler/scsi_dh_alua.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/leds/leds-turris-omnia.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/device_handler/scsi_dh_alua.c b/drivers/scsi/device_handler/scsi_dh_alua.c
-index df5a3bbeba5e..4743317a269a 100644
---- a/drivers/scsi/device_handler/scsi_dh_alua.c
-+++ b/drivers/scsi/device_handler/scsi_dh_alua.c
-@@ -548,12 +548,12 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
- 			kfree(buff);
- 			return SCSI_DH_OK;
- 		}
--		if (!scsi_sense_valid(&sense_hdr)) {
-+		if (retval < 0 || !scsi_sense_valid(&sense_hdr)) {
- 			sdev_printk(KERN_INFO, sdev,
- 				    "%s: rtpg failed, result %d\n",
- 				    ALUA_DH_NAME, retval);
- 			kfree(buff);
--			if (driver_byte(retval) == DRIVER_ERROR)
-+			if (retval < 0)
- 				return SCSI_DH_DEV_TEMP_BUSY;
- 			return SCSI_DH_IO;
- 		}
-@@ -775,11 +775,11 @@ static unsigned alua_stpg(struct scsi_device *sdev, struct alua_port_group *pg)
- 	retval = submit_stpg(sdev, pg->group_id, &sense_hdr);
+diff --git a/drivers/leds/leds-turris-omnia.c b/drivers/leds/leds-turris-omnia.c
+index 880fc8def530..ec87a958f151 100644
+--- a/drivers/leds/leds-turris-omnia.c
++++ b/drivers/leds/leds-turris-omnia.c
+@@ -277,6 +277,7 @@ static const struct i2c_device_id omnia_id[] = {
+ 	{ "omnia", 0 },
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(i2c, omnia_id);
  
- 	if (retval) {
--		if (!scsi_sense_valid(&sense_hdr)) {
-+		if (retval < 0 || !scsi_sense_valid(&sense_hdr)) {
- 			sdev_printk(KERN_INFO, sdev,
- 				    "%s: stpg failed, result %d",
- 				    ALUA_DH_NAME, retval);
--			if (driver_byte(retval) == DRIVER_ERROR)
-+			if (retval < 0)
- 				return SCSI_DH_DEV_TEMP_BUSY;
- 		} else {
- 			sdev_printk(KERN_INFO, sdev, "%s: stpg failed\n",
+ static struct i2c_driver omnia_leds_driver = {
+ 	.probe		= omnia_leds_probe,
 -- 
 2.30.2
 
