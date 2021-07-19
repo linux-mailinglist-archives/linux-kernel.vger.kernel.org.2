@@ -2,156 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFBB3CD3B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A059E3CD3BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236623AbhGSKgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 06:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235999AbhGSKge (ORCPT
+        id S236816AbhGSKk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 06:40:58 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:11449 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236565AbhGSKjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 06:36:34 -0400
-X-Greylist: delayed 48219 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 19 Jul 2021 03:27:36 PDT
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FFEC061574;
-        Mon, 19 Jul 2021 03:27:36 -0700 (PDT)
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 695A1B3F3D1;
-        Mon, 19 Jul 2021 13:17:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1626693429;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wrtAMp8n8lOfYMpdjEfS7NS2+/lTSHmoD6u2/ln0m0M=;
-        b=TUtaLbEqSNYuzc0eN7Y8ZZEE82uB4YSU4usOV9A63uQh9EV1ZVvdPzRFFHrIW9iVWiJbi8
-        Q4UzzAQomutjXIc6CBkHdg8QNK+TWjSFTMONW7yFd6grqHJvuemKiH7uuvtLDlvjAsns/+
-        ejiX7ahR4cTe1KXWi/drpvktUGSQemc=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Boqun Feng <boqun.feng@gmail.com>,
-        Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>, paulmck@kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Chris Clayton <chris2553@googlemail.com>,
-        Chris Rankin <rankincj@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
-Date:   Mon, 19 Jul 2021 13:17:07 +0200
-Message-ID: <11144384.Jnp629F0a1@natalenko.name>
-In-Reply-To: <08803f78-3e99-6b3f-e809-5828fe47cf06@huawei.com>
-References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com> <YPVQfaamqwu1PRrK@boqun-archlinux> <08803f78-3e99-6b3f-e809-5828fe47cf06@huawei.com>
+        Mon, 19 Jul 2021 06:39:03 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GSzn00mpFzcg21;
+        Mon, 19 Jul 2021 19:16:20 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 19 Jul 2021 19:19:41 +0800
+Received: from localhost.localdomain (10.67.165.2) by
+ dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 19 Jul 2021 19:19:38 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
+        <mike.leach@linaro.org>
+CC:     <coresight@lists.linaro.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>
+Subject: [PATCH 0/2] coresight: ultrasoc: Add support for System Memory Buffer device
+Date:   Mon, 19 Jul 2021 19:17:35 +0800
+Message-ID: <20210719111737.47891-1-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+This patchset add support for SMB(System Memory Buffer) device, SMB
+obtains CPU instructions from Coresight ETM device and stores these
+messages in system memory.
+SMB is developed by Ultrasoc technology, which is acquired by Siemens,
+and we still use "Ultrasoc" to name document and driver.
 
-On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 13:12:58 CEST Miaohe Lin wrote:
-> On 2021/7/19 18:14, Boqun Feng wrote:
-> > On Mon, Jul 19, 2021 at 03:43:00AM +0100, Matthew Wilcox wrote:
-> >> On Mon, Jul 19, 2021 at 10:24:18AM +0800, Zhouyi Zhou wrote:
-> >>> Meanwhile, I examined the 5.12.17 by naked eye, and found a suspicious
-> >>> place that could possibly trigger that problem:
-> >>>=20
-> >>> struct swap_info_struct *get_swap_device(swp_entry_t entry)
-> >>> {
-> >>>=20
-> >>>      struct swap_info_struct *si;
-> >>>      unsigned long offset;
-> >>>     =20
-> >>>      if (!entry.val)
-> >>>     =20
-> >>>              goto out;
-> >>>    =20
-> >>>     si =3D swp_swap_info(entry);
-> >>>     if (!si)
-> >>>    =20
-> >>>        goto bad_nofile;
-> >>>   =20
-> >>>    rcu_read_lock();
-> >>>  =20
-> >>>   if (data_race(!(si->flags & SWP_VALID)))
-> >>>  =20
-> >>>      goto unlock_out;
-> >>>  =20
-> >>>   offset =3D swp_offset(entry);
-> >>>   if (offset >=3D si->max)
-> >>>  =20
-> >>>    goto unlock_out;
-> >>>  =20
-> >>>   return si;
-> >>>=20
-> >>> bad_nofile:
-> >>>   pr_err("%s: %s%08lx\n", __func__, Bad_file, entry.val);
-> >>>=20
-> >>> out:
-> >>>   return NULL;
-> >>>=20
-> >>> unlock_out:
-> >>>   rcu_read_unlock();
-> >>>   return NULL;
-> >>>=20
-> >>> }
-> >>> I guess the function "return si" without a rcu_read_unlock.
-> >>=20
-> >> Yes, but the caller is supposed to call put_swap_device() which
-> >> calls rcu_read_unlock().  See commit eb085574a752.
-> >=20
-> > Right, but we need to make sure there is no sleepable function called
-> > before put_swap_device() called, and the call trace showed the following
-> >=20
-> > happened:
-> > 	do_swap_page():
-> > 	  si =3D get_swap_device():
-> > 	    rcu_read_lock();
-> > 	 =20
-> > 	  lock_page_or_retry():
-> > 	    might_sleep(); // call a sleepable function inside RCU read-side=20
-c.s.
-> > 	   =20
-> > 	    __lock_page_or_retry():
-> > 	      wait_on_page_bit_common():
-> > 	        schedule():
-> > 		  rcu_note_context_switch();
-> > 		  // Warn here
-> > 	 =20
-> > 	  put_swap_device();
-> > 	 =20
-> > 	    rcu_read_unlock();
-> >=20
-> > , which introduced by commit 2799e77529c2a
->=20
-> When in the commit 2799e77529c2a, we're using the percpu_ref to serialize
-> against concurrent swapoff, i.e. there's percpu_ref inside
-> get_swap_device() instead of rcu_read_lock(). Please see commit
-> 63d8620ecf93 ("mm/swapfile: use percpu_ref to serialize against concurrent
-> swapoff") for detail.
+Change since RFC:
+- Move ultrasoc driver to drivers/hwtracing/coresight.
+- Remove ultrasoc-axi-com.c, as AXI-COM doesn't need to be configured in
+  basic tracing function.
+- Remove ultrasoc.c as SMB does not need to register with the ultrasoc core.
+- Address the comments from Mathieu and Suzuki.
+- Link: https://lists.linaro.org/pipermail/coresight/2021-June/006535.html
 
-The problem here is that 2799e77529c2a got pulled into stable, but=20
-63d8620ecf93 was not pulled. Are you suggesting that 63d8620ecf93 should be=
-=20
-pulled into the stable kernel as well?
+Qi Liu (2):
+  Documentation: tracing: Documentation for ultrasoc SMB drivers
+  coresight: ultrasoc: Add System Memory Buffer driver
 
-Thanks.
+ .../trace/coresight/ultrasoc-trace.rst        | 193 +++++
+ MAINTAINERS                                   |   7 +
+ drivers/hwtracing/coresight/Kconfig           |   3 +
+ drivers/hwtracing/coresight/Makefile          |   2 +
+ drivers/hwtracing/coresight/ultrasoc/Kconfig  |  12 +
+ drivers/hwtracing/coresight/ultrasoc/Makefile |   6 +
+ .../coresight/ultrasoc/ultrasoc-smb.c         | 722 ++++++++++++++++++
+ .../coresight/ultrasoc/ultrasoc-smb.h         | 142 ++++
+ 8 files changed, 1087 insertions(+)
+ create mode 100644 Documentation/trace/coresight/ultrasoc-trace.rst
+ create mode 100644 drivers/hwtracing/coresight/ultrasoc/Kconfig
+ create mode 100644 drivers/hwtracing/coresight/ultrasoc/Makefile
+ create mode 100644 drivers/hwtracing/coresight/ultrasoc/ultrasoc-smb.c
+ create mode 100644 drivers/hwtracing/coresight/ultrasoc/ultrasoc-smb.h
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
-
+-- 
+2.17.1
 
