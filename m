@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7289D3CE31B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F323CE31F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350022AbhGSPge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:36:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52506 "EHLO mail.kernel.org"
+        id S234904AbhGSPgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:36:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242714AbhGSO63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:58:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A04760E0C;
-        Mon, 19 Jul 2021 15:36:06 +0000 (UTC)
+        id S1343493AbhGSO7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8531C613F9;
+        Mon, 19 Jul 2021 15:36:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708967;
-        bh=UWK4/zr5ZrVbbtkGNiIgPDOwUyqRc1kXZ6w3sfBNic8=;
+        s=korg; t=1626709005;
+        bh=XB1lbfNODKL/0dCeVgEWwEViT6E/AW7dZX8UgH08D/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hvao/d0DV2zeFwfwscBhkgFlPXnuhGSvx1lI82HT/OUyVQzA50iZ19ySs/BF9FS1A
-         gjb19deBO2ic4tpFIFRlFiy4THNLPXodL4tPSU2hEpPNMeh8aWF9Tgro8VOhy22Vgi
-         bFk3Gl66lryHUPBIt5F4UCtheJEgqwvEg4uRmPjU=
+        b=nykWkAGYogIoIx6Z2H6lG+slnPtrLfQqyRHvTadDxz8AfhqP+dGX0IpoZUp1MKfrZ
+         EBjnn24iHOgteLNsVBjUdz5+jWT8y1oReWeB5p+Q35VCkEiAVjGnq4HruV8XEQRGWf
+         KeSWeUnEbcYkv3GKLvrfm6mOtvqWMe/83IVRCe6g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 201/421] iio: adc: ti-ads8688: Fix alignment of buffer in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 19 Jul 2021 16:50:12 +0200
-Message-Id: <20210719144953.345986553@linuxfoundation.org>
+        stable@vger.kernel.org, Chung-Chiang Cheng <cccheng@synology.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 215/421] configfs: fix memleak in configfs_release_bin_file
+Date:   Mon, 19 Jul 2021 16:50:26 +0200
+Message-Id: <20210719144953.787321124@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,37 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Chung-Chiang Cheng <shepjeng@gmail.com>
 
-[ Upstream commit 61fa5dfa5f52806f5ce37a0ba5712c271eb22f98 ]
+[ Upstream commit 3c252b087de08d3cb32468b54a158bd7ad0ae2f7 ]
 
-Add __aligned(8) to ensure the buffer passed to
-iio_push_to_buffers_with_timestamp() is suitable for the naturally
-aligned timestamp that will be inserted.
+When reading binary attributes in progress, buffer->bin_buffer is setup in
+configfs_read_bin_file() but never freed.
 
-Fixes: f214ff521fb1 ("iio: ti-ads8688: Update buffer allocation for timestamps")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Nuno Sá <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20210613152301.571002-5-jic23@kernel.org
+Fixes: 03607ace807b4 ("configfs: implement binary attributes")
+Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+[hch: move the vfree rather than duplicating it]
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/ti-ads8688.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/configfs/file.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iio/adc/ti-ads8688.c b/drivers/iio/adc/ti-ads8688.c
-index 7f16c77b99fb..9bcb05897c9d 100644
---- a/drivers/iio/adc/ti-ads8688.c
-+++ b/drivers/iio/adc/ti-ads8688.c
-@@ -386,7 +386,8 @@ static irqreturn_t ads8688_trigger_handler(int irq, void *p)
- {
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
--	u16 buffer[ADS8688_MAX_CHANNELS + sizeof(s64)/sizeof(u16)];
-+	/* Ensure naturally aligned timestamp */
-+	u16 buffer[ADS8688_MAX_CHANNELS + sizeof(s64)/sizeof(u16)] __aligned(8);
- 	int i, j = 0;
+diff --git a/fs/configfs/file.c b/fs/configfs/file.c
+index 50b7c4c4310e..38eb80e29715 100644
+--- a/fs/configfs/file.c
++++ b/fs/configfs/file.c
+@@ -496,13 +496,13 @@ static int configfs_release_bin_file(struct inode *inode, struct file *file)
+ 					buffer->bin_buffer_size);
+ 		}
+ 		up_read(&frag->frag_sem);
+-		/* vfree on NULL is safe */
+-		vfree(buffer->bin_buffer);
+-		buffer->bin_buffer = NULL;
+-		buffer->bin_buffer_size = 0;
+-		buffer->needs_read_fill = 1;
+ 	}
  
- 	for (i = 0; i < indio_dev->masklength; i++) {
++	vfree(buffer->bin_buffer);
++	buffer->bin_buffer = NULL;
++	buffer->bin_buffer_size = 0;
++	buffer->needs_read_fill = 1;
++
+ 	configfs_release(inode, file);
+ 	return 0;
+ }
 -- 
 2.30.2
 
