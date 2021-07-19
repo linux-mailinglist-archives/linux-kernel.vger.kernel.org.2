@@ -2,127 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E883CD629
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22D73CD62C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241044AbhGSNNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 09:13:37 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53062 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S241029AbhGSNNf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 09:13:35 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16JDiN4H195829;
-        Mon, 19 Jul 2021 09:53:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=bG+X0zh0Xpv72GLaZ0EbCCB+IPhr2RzBO2EEM9ydBUw=;
- b=GKZpGepeYY5QsC5SEy3aYS33TZ/rwxRh+ZKJpuxs9Oa6Tqmk+w+A0ATWomkGFBnBddXJ
- hlm+gldCw/NJhECVedpgIj/lru79d95h5BNSQXNTclYTq4pAAKBJ2orC//JManFbAokx
- 8y6QKrH9zxW5DEUkJgp6EbY87gbHTA487jtoG6aYDqh8Ldqt+RaoezgWCly/Zd2PDUr6
- X+x4iYVCeR7L/SEHRNsx8G/2/+eF+cHdnGW6bveyYha2IFHWrBE8KhbDUDsHeyUfk/3R
- GSRBDkKX/XkvgMls44M4GH6mecfpKdc9pCS1owqUxtiDziWm1WKpTKZElcxrrsaQ4zUY Zw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39w7x4e6m7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Jul 2021 09:53:51 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16JDipJs002148;
-        Mon, 19 Jul 2021 09:53:50 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39w7x4e6gd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Jul 2021 09:53:50 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16JDCXxu018923;
-        Mon, 19 Jul 2021 13:53:46 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 39upu88r2c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Jul 2021 13:53:46 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16JDpP1L21889350
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Jul 2021 13:51:25 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 37A6AAE058;
-        Mon, 19 Jul 2021 13:53:44 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D4921AE059;
-        Mon, 19 Jul 2021 13:53:43 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.62.205])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 19 Jul 2021 13:53:43 +0000 (GMT)
-Subject: Re: [PATCH v5 02/11] powerpc/kernel/iommu: Add new
- iommu_table_in_use() helper
-To:     Leonardo Bras <leobras.c@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        kernel test robot <lkp@intel.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210716082755.428187-1-leobras.c@gmail.com>
- <20210716082755.428187-3-leobras.c@gmail.com>
-From:   Frederic Barrat <fbarrat@linux.ibm.com>
-Message-ID: <29c199f3-63a8-3edb-b29e-de157431d89f@linux.ibm.com>
-Date:   Mon, 19 Jul 2021 15:53:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239508AbhGSNOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 09:14:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239352AbhGSNOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 09:14:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CED6E601FF;
+        Mon, 19 Jul 2021 13:54:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626702883;
+        bh=3tPYHJRCtyoikc4wbq0m278Es/pj7dJKMWmF4o9SYdI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lBqipVouv/afMeOExIbgc8TRLYvc+TzbDan0pk48/NMDDBYu9+VnfgMKHmuc+Zbfq
+         oWannhkXisQ/J/4F2Ckwh9SGyqS0FnscUjQX2O0IU5RwlWxdXLgGF83mCYFWSnVvsV
+         8vLSBnh1vBhyM6GTLrA2McF8IexugqXkb5iEfBPVk8+3H0RZWQBXOqRXJzIccNaQpu
+         nY1NkZ9fDJLnUBG78SFGQwpUMX3RpwUDdOczwXWqtTG+8k7HH8A5VrKUo5anc6tDeN
+         XvGtRyFXyWmD1YcG12u80zCsWOifgfNV/VNTGGEhyAuzYVW9y4PnE0raywRGksDTW9
+         44zyrQ+BNGjRg==
+Date:   Mon, 19 Jul 2021 15:54:40 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc:     He Zhe <zhe.he@windriver.com>, anna-maria@linutronix.de,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH] timers: Fix get_next_timer_interrupt() with no timers
+ pending
+Message-ID: <20210719135440.GC116346@lothringen>
+References: <20200723151641.12236-1-frederic@kernel.org>
+ <dfbf752e-91db-b128-76a8-98fde4c5d480@windriver.com>
+ <20210708153620.GA6716@lothringen>
+ <c7a5015a-2b93-17d2-29bc-cd03e40cc09c@windriver.com>
+ <20210709084303.GA17239@lothringen>
+ <11e85cd8-40ac-09fe-e1fe-0eafa351072c@windriver.com>
+ <f520c8b87f56fcda0158853c5127f0488918503e.camel@redhat.com>
+ <4409fa71931446d9cabd849431ee0098c9b31292.camel@redhat.com>
+ <20210710005243.GA23956@lothringen>
+ <95fb6503b1513cff1df54a043d9e3df530ddd63a.camel@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210716082755.428187-3-leobras.c@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: TFluKUD2HZvcl5_ntqKYotqIH5VodY1O
-X-Proofpoint-GUID: RfAfaSxtRfVXmhLnVoCkiQZccTmjhGoO
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-19_05:2021-07-19,2021-07-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 clxscore=1015 bulkscore=0 spamscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
- phishscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107190078
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <95fb6503b1513cff1df54a043d9e3df530ddd63a.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 16, 2021 at 06:38:37PM +0200, Nicolas Saenz Julienne wrote:
+> On Sat, 2021-07-10 at 02:52 +0200, Frederic Weisbecker wrote:
+> > I guess later we can turn this .timers_pending into
+> > .timers_count and that would spare us the costly call to
+> > __next_timer_interrupt() up to the last level after the last
+> > timer is dequeued.
+> 
+> I've been looking into this. AFAIU there is no limit to the number of timers
+> one might enqueue, so there is no fool proof way of selecting .timers_count's
+> size. That said, 'struct timer_list' size is 40 bytes (as per pahole), so in
+> order to overflow an u32 .timers_count you'd need to allocate ~160GB in 'struct
+> timer_list' which I think is safe to assume will never happen.
+> 
+> Also, I measured the costy call to __next_timer_interrupt() it's slightly less
+> than 1us on my test machine. Not a that big in the grand scheme of things, but
+> it's in the irq exit code path, so I think it's worth the extra complexity in
+> the timer code.
 
+And also each time we iterate the idle loop. In fact __next_timer_interrupt()
+won't always have the same cost: the worst case is when the wheel is entirely
+empty after the last removal and we need to walk through all 9 levels. It's
+a pretty common case because it happens when the last timer expires.
 
-On 16/07/2021 10:27, Leonardo Bras wrote:
-> @@ -1099,18 +1105,13 @@ int iommu_take_ownership(struct iommu_table *tbl)
->   	for (i = 0; i < tbl->nr_pools; i++)
->   		spin_lock_nest_lock(&tbl->pools[i].lock, &tbl->large_pool.lock);
->   
-> -	iommu_table_release_pages(tbl);
-> -
-> -	if (!bitmap_empty(tbl->it_map, tbl->it_size)) {
-> +	if (iommu_table_in_use(tbl)) {
->   		pr_err("iommu_tce: it_map is not empty");
->   		ret = -EBUSY;
-> -		/* Undo iommu_table_release_pages, i.e. restore bit#0, etc */
-> -		iommu_table_reserve_pages(tbl, tbl->it_reserved_start,
-> -				tbl->it_reserved_end);
-> -	} else {
-> -		memset(tbl->it_map, 0xff, sz);
->   	}
->   
-> +	memset(tbl->it_map, 0xff, sz);
-> +
+And that's the only one case to measure because it's the only one covered
+by the counter.
 
-
-So if the table is not empty, we fail (EBUSY) but we now also completely 
-overwrite the bitmap. It was in an unexpected state, but we're making it 
-worse. Or am I missing something?
-
-   Fred
-
-
->   	for (i = 0; i < tbl->nr_pools; i++)
->   		spin_unlock(&tbl->pools[i].lock);
->   	spin_unlock_irqrestore(&tbl->large_pool.lock, flags);
+> 
+> Any thoughs?
+> 
+> -- 
+> Nicolás Sáenz
+> 
