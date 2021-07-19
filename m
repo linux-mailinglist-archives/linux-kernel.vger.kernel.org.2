@@ -2,294 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D403D3CD0A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3763D3CD0B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235663AbhGSIo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33962 "EHLO
+        id S235759AbhGSIqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235013AbhGSIo6 (ORCPT
+        with ESMTP id S235404AbhGSIpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:44:58 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3414C061574;
-        Mon, 19 Jul 2021 01:26:42 -0700 (PDT)
-Received: from [IPv6:2a02:810a:880:f54:121:b44d:bc4b:65bc] (unknown [IPv6:2a02:810a:880:f54:121:b44d:bc4b:65bc])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 762FA1F423B0;
-        Mon, 19 Jul 2021 10:25:35 +0100 (BST)
-Subject: Re: [PATCH v2, 06/14] media: mtk-vcodec: Add irq interface for core
- hardware
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-References: <20210717081233.7809-1-yunfei.dong@mediatek.com>
- <20210717081233.7809-7-yunfei.dong@mediatek.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <87713751-3938-fa68-dea0-ff48806f7d52@collabora.com>
-Date:   Mon, 19 Jul 2021 11:25:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 19 Jul 2021 04:45:46 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A927C061574;
+        Mon, 19 Jul 2021 01:27:34 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id q15so2462876qkm.8;
+        Mon, 19 Jul 2021 02:26:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KfeoXYA6FAtVnL9pqwpm6Rlfaw4SHNyLHqSR71j5cS8=;
+        b=O+zM/7TQrw2PWROfcV5KenDe+huC/6iTcCfC7TZoCS2FAccbYtdUrHL7RvR8wCPXpv
+         Iy8pW6YMY3xpX0kDdxQ4AEjKaXW7kCp8YTrjD0IvsUbMMZtg6HrH6NAnOHs88lpPifTO
+         F4mD6j3TikLJ0Y9+ZNUtywj6MG5vzLfm8hw7x7bEymZUgwOuawoshGDXrc94jwOnTz/b
+         za2bbIlgd0cGzDsqRhOlnOIqnYuc6SaFWpNqCs19pHaj+/DFeJYv1pz/sWSgtuoAVza9
+         /Y5JMkySAYSAe83r6bHAM3CQvp9qm+uQPm9TSvHjqz2Go4BVFbnlH35+P9qHIplKrIV/
+         6oSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KfeoXYA6FAtVnL9pqwpm6Rlfaw4SHNyLHqSR71j5cS8=;
+        b=Ah6WXzo6iT/pGh7euCANqUOC3TiwiNYCxdK5Nof+wdOcHA8EjI1Zx6dpFYG+xhoU++
+         pSwUB2ow3NpXO+pTbs36MqOeS4D6t9HOi8LChyWu0DJS9CzvaAzXE0rPGEURlvix1i7A
+         QI9EVPXRum4YtkYRS6hofT8C0vYfF6NuK91GERpnLmDCfkjPxOsw6UXmSUZ4B2yDL6Mz
+         6qBCYFM8uBYZCZY65hy+M2r3bJiEq5CzCd51rGbycprUN3ExdTfSVJxwyo5i35rqHoNI
+         anMamZ2rJG2Rx/JSQITxIXmCTj+oPSZuwsyeycyiw6KvzeaOTBXJ/hpS+uprfZZMhgdL
+         RYbw==
+X-Gm-Message-State: AOAM531gVfocDbf82qhCsH74Fv+5sY2T6mDy1WSxtN851cXHFIcccRZ+
+        MPbTAG1B9oNalVUnGlm+8tODMYNlexspH1CAp2Y=
+X-Google-Smtp-Source: ABdhPJxFNsUpfpnCq4bK4q3CccJePDsYucwThwxwfhLlAZhhvH9C2tqSBgEtIisAtECISVRJm9WpIDjcvFbnBv1hgCU=
+X-Received: by 2002:a37:5646:: with SMTP id k67mr22482354qkb.309.1626686785944;
+ Mon, 19 Jul 2021 02:26:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210717081233.7809-7-yunfei.dong@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210705090050.15077-1-reniuschengl@gmail.com>
+ <CAPDyKFotmw-HQpZKCOD_8kThEa0_KSPnn36FNFLKRyUHYRHQjQ@mail.gmail.com>
+ <CAJU4x8u8JPBJ3V6MCi1XcO4Qim-COPuxOhTdUnor7JdNCUFb=w@mail.gmail.com>
+ <CAPDyKFqXsn91BvkJXMYSnc7X=RP9DXxXp2nKMmv+aMPoNdK2Tw@mail.gmail.com>
+ <CAJU4x8srB7skGFVcj1SPrzEZSnVkwKiW3OPN0GQxvgtRG7GAAQ@mail.gmail.com>
+ <CAPDyKFq0yHxX7wb4XGeiMiSGGiOf8RKJ5ahhFQ+_vodqnyPV9Q@mail.gmail.com>
+ <CAJU4x8uGxb5VD1WVV5-QeLkVzuuR09-NacL-9nuXe8Zofzb2=w@mail.gmail.com>
+ <CAPDyKFpvCFYQVEp77hiRHY6CVDej-ffF5UE=LH=HSGcqMZA02w@mail.gmail.com>
+ <CAJU4x8t+aOqq82EJMUNDpWiE3GPeyZkjFhy=AkmctcDE3mx6fA@mail.gmail.com>
+ <CAPDyKFoSOk+4pmW60uGzKaYw3XOXshx+NSNqF_po=VLkK1-7Qw@mail.gmail.com>
+ <CAJU4x8sMJSOnfBwDq7tVygRGFRw-SyrM1z8GBsF_Mur64-Y3_g@mail.gmail.com>
+ <CAJU4x8uCAQoozeAqa6icVba61uo_eP+NtOxgnLzsXh6g2HeQdA@mail.gmail.com> <02c26834-f16e-e1c7-9ea9-36414d1c4403@intel.com>
+In-Reply-To: <02c26834-f16e-e1c7-9ea9-36414d1c4403@intel.com>
+From:   Renius Chen <reniuschengl@gmail.com>
+Date:   Mon, 19 Jul 2021 17:26:14 +0800
+Message-ID: <CAJU4x8u+BtU5iUna0tSws9rfUTJWfHZ21jteB5nk8e_2iMJgNg@mail.gmail.com>
+Subject: Re: [PATCH] [v2] mmc: sdhci-pci-gli: Improve Random 4K Read
+ Performance of GL9763E
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <Ben.Chuang@genesyslogic.com.tw>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adrian Hunter <adrian.hunter@intel.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=8816=
+=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=886:27=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> On 14/07/21 5:15 am, Renius Chen wrote:
+> > Hi Adrain,
+> >
+> > What do you think of this patch?
+> > Or do you have any ideas or suggestions about the modification for
+> > Ulf's comments?
+>
+> Perhaps try to define your power management requirements in terms of
+> latencies instead of request size, and then take the issue to the
+> power management mailing list and power management maintainers for
+> suggestions.  You will probably need to point out why runtime PM doesn't
+> met your requirements.
+>
+
+Hi Adrain,
 
 
-On 17.07.21 10:12, Yunfei Dong wrote:
-> Adds irq interface for core hardware.
-> 
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> ---
-> v2: Using enum mtk_vdec_hw_count instead of magic numbers
-> ---
->   .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  | 31 ++++++++++++++++--
->   .../platform/mtk-vcodec/mtk_vcodec_dec_hw.c   | 11 ++++---
->   .../platform/mtk-vcodec/mtk_vcodec_drv.h      | 19 +++++++++++
->   .../platform/mtk-vcodec/mtk_vcodec_intr.c     | 32 ++++++++++++++++++-
->   .../platform/mtk-vcodec/mtk_vcodec_intr.h     |  4 ++-
->   5 files changed, 88 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-> index e7f60e948fe8..d1c4124f6092 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-> @@ -75,6 +75,20 @@ static void wake_up_ctx(struct mtk_vcodec_ctx *ctx)
->   	wake_up_interruptible(&ctx->queue);
->   }
->   
-> +static int mtk_vcodec_get_hw_count(struct mtk_vcodec_dev *dev)
-> +{
-> +	switch (dev->vdec_pdata->hw_arch) {
-> +	case MTK_VDEC_PURE_SINGLE_CORE:
-> +		return MTK_VDEC_ONE_CORE;
-> +	case MTK_VDEC_LAT_SINGLE_CORE:
-> +		return MTK_VDEC_ONE_LAT_ONE_CORE;
-> +	default:
-> +		mtk_v4l2_err("not support hw arch:%d",
-> +			dev->vdec_pdata->hw_arch);
-> +		return MTK_VDEC_NO_HW;
-> +	}
-> +}
-> +
->   static struct component_match *mtk_vcodec_match_add(
->   	struct mtk_vcodec_dev *vdec_dev)
->   {
-> @@ -246,7 +260,7 @@ static int fops_vcodec_open(struct file *file)
->   {
->   	struct mtk_vcodec_dev *dev = video_drvdata(file);
->   	struct mtk_vcodec_ctx *ctx = NULL;
-> -	int ret = 0;
-> +	int ret = 0, i, hw_count;
->   	struct vb2_queue *src_vq;
->   
->   	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-> @@ -260,7 +274,19 @@ static int fops_vcodec_open(struct file *file)
->   	v4l2_fh_add(&ctx->fh);
->   	INIT_LIST_HEAD(&ctx->list);
->   	ctx->dev = dev;
-> -	init_waitqueue_head(&ctx->queue);
-> +
-> +	if (ctx->dev->is_support_comp) {
-> +		hw_count = mtk_vcodec_get_hw_count(dev);
-> +		if (!hw_count) {
-> +			ret = -EINVAL;
-> +			goto err_init_queue;
-> +		}
-> +		for (i = 0; i < hw_count; i++)
-> +			init_waitqueue_head(&ctx->core_queue[i]);
-> +	} else {
-> +		init_waitqueue_head(&ctx->queue);
-> +	}
-> +
->   	mutex_init(&ctx->lock);
->   
->   	ctx->type = MTK_INST_DECODER;
-> @@ -317,6 +343,7 @@ static int fops_vcodec_open(struct file *file)
->   err_m2m_ctx_init:
->   	v4l2_ctrl_handler_free(&ctx->ctrl_hdl);
->   err_ctrls_setup:
-> +err_init_queue:
->   	v4l2_fh_del(&ctx->fh);
->   	v4l2_fh_exit(&ctx->fh);
->   	kfree(ctx);
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.c
-> index ea6d289d9773..34d51fe409c6 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.c
-> @@ -59,11 +59,12 @@ static const struct component_ops mtk_vdec_hw_component_ops = {
->   	.unbind = mtk_vdec_comp_unbind,
->   };
->   
-> -/* Wake up context wait_queue */
-> -static void mtk_vdec_comp_wake_up_ctx(struct mtk_vcodec_ctx *ctx)
-> +/* Wake up core context wait_queue */
-> +static void mtk_vdec_comp_wake_up_ctx(struct mtk_vcodec_ctx *ctx,
-> +	unsigned int hw_id)
->   {
-> -	ctx->int_cond = 1;
-> -	wake_up_interruptible(&ctx->queue);
-> +	ctx->int_core_cond[hw_id] = 1;
-> +	wake_up_interruptible(&ctx->core_queue[hw_id]);
->   }
->   
->   static irqreturn_t mtk_vdec_comp_irq_handler(int irq, void *priv)
-> @@ -94,7 +95,7 @@ static irqreturn_t mtk_vdec_comp_irq_handler(int irq, void *priv)
->   	writel(readl(vdec_misc_addr) | VDEC_IRQ_CFG, vdec_misc_addr);
->   	writel(readl(vdec_misc_addr) & ~VDEC_IRQ_CLR, vdec_misc_addr);
->   
-> -	mtk_vdec_comp_wake_up_ctx(ctx);
-> +	mtk_vdec_comp_wake_up_ctx(ctx, dev->comp_idx);
->   
->   	mtk_v4l2_debug(3, "wake up ctx %d, dec_done_status=%x",
->   		ctx->id, dec_done_status);
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> index 9d05ee72b2a7..76160b6f4152 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> @@ -109,6 +109,16 @@ enum mtk_vdec_hw_id {
->   	MTK_VDEC_HW_MAX,
->   };
->   
-> +/**
-> + * struct mtk_vdec_hw_count - Supported hardware count
-> + */
-> +enum mtk_vdec_hw_count {
-> +	MTK_VDEC_NO_HW = 0,
-> +	MTK_VDEC_ONE_CORE,
-> +	MTK_VDEC_ONE_LAT_ONE_CORE,
-> +	MTK_VDEC_MAX_HW_COUNT,
-> +};
-> +
->   /*
->    * struct mtk_video_fmt - Structure used to store information about pixelformats
->    */
-> @@ -261,6 +271,11 @@ struct vdec_pic_info {
->    *	   finish
->    * @irq_status: irq status
->    *
-> + * @int_core_cond: variable used by the waitqueue  for component arch
-> + * @int_core_type: type of the last interrupt for component arch
-> + * @core_queue: waitqueue that can be used to wait for this context to
-> + *	   finish for component arch
-> + *
->    * @ctrl_hdl: handler for v4l2 framework
->    * @decode_work: worker for the decoding
->    * @encode_work: worker for the encoding
-> @@ -303,6 +318,10 @@ struct mtk_vcodec_ctx {
->   	wait_queue_head_t queue;
->   	unsigned int irq_status;
->   
-> +	int int_core_cond[MTK_VDEC_HW_MAX];
-> +	int int_core_type[MTK_VDEC_HW_MAX];
-> +	wait_queue_head_t core_queue[MTK_VDEC_HW_MAX];
+Thanks for your advice.
 
-can't the code be generalized so that, instead of having both fields
-'core_queue' and 'queue' and both fields
-'core_cond' + 'int_code' / 'core_type' + 'int_type' that only one of them is used
-we can have only the array version of the fields and access the index 0 if only one is used.
-So for example instead of accessing 'queue' field we can access 'core_queue[0]' etc and we can remove the field 'queue' from the struct.
+Our purpose is only to improve the performance of 4K reads, and we
+hope that it doesn't affect any other use cases. If we look into the
+latencies, it may affect not only 4K reads but also some other use
+cases.
 
-This why we don't need both "mtk_vcodec_wait_for_done_ctx" and "mtk_vcodec_wait_for_comp_done_ctx"
-for example.
+Behaviors of ASPM is controlled by circuits of hardware. Drivers only
+enable or disable ASPM or set some parameters for ASPM, and are not
+able to know when the device enters or exits the L0s/L1 state. So the
+PM part of drivers may not suit this case.
 
-> +
->   	struct v4l2_ctrl_handler ctrl_hdl;
->   	struct work_struct decode_work;
->   	struct work_struct encode_work;
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c
-> index 70580c2525ba..306358d9bef0 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c
-> @@ -11,7 +11,7 @@
->   #include "mtk_vcodec_intr.h"
->   #include "mtk_vcodec_util.h"
->   
-> -int mtk_vcodec_wait_for_done_ctx(struct mtk_vcodec_ctx  *ctx, int command,
-> +int mtk_vcodec_wait_for_done_ctx(struct mtk_vcodec_ctx *ctx, int command,
+This patch could be simply divided into two parts:
+1. Monitor requests.
+2. Set a vendor specific register of GL9763e.
 
-This line just remove an extra space? better remove  from this patch
+The part 2 is no problems we think. And Ulf thinks that the behaviors
+of part 1 should not be implemented in sdhci-pci-gli.c. Do you have
+any suggestions on where we can implement the monitoring?
 
->   				 unsigned int timeout_ms)
->   {
->   	wait_queue_head_t *waitqueue;
-> @@ -43,3 +43,33 @@ int mtk_vcodec_wait_for_done_ctx(struct mtk_vcodec_ctx  *ctx, int command,
->   	return status;
->   }
->   EXPORT_SYMBOL(mtk_vcodec_wait_for_done_ctx);
-> +
-> +int mtk_vcodec_wait_for_comp_done_ctx(struct mtk_vcodec_ctx *ctx,
-> +	int command, unsigned int timeout_ms, unsigned hw_id)
-> +{
-> +	long timeout_jiff, ret;
-> +	int status = 0;
-> +
-> +	timeout_jiff = msecs_to_jiffies(timeout_ms);
-> +	ret = wait_event_interruptible_timeout(ctx->core_queue[hw_id],
-> +				ctx->int_core_cond[hw_id],
-> +				timeout_jiff);
-> +
-> +	if (!ret) {
-> +		status = -1;	/* timeout */
-> +		mtk_v4l2_err("[%d] cmd=%d, type=%d, dec timeout=%ums (%d %d)",
-> +				ctx->id, command, ctx->type, timeout_ms,
-> +				ctx->int_core_cond[hw_id], ctx->int_core_type[hw_id]);
-> +	} else if (-ERESTARTSYS == ret) {
-> +		status = -1;
-> +		mtk_v4l2_err("[%d] cmd=%d, type=%d, dec inter fail (%d %d)",
-> +				ctx->id, command, ctx->type,
-> +				ctx->int_core_cond[hw_id], ctx->int_core_type[hw_id]);
-> +	}
-> +
-> +	ctx->int_core_cond[hw_id] = 0;
-> +	ctx->int_core_type[hw_id] = 0;
-> +
-> +	return status;
-> +}
-> +EXPORT_SYMBOL(mtk_vcodec_wait_for_comp_done_ctx);
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.h
-> index 638cd1f3526a..5ca611a1ddab 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.h
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.h
-> @@ -12,7 +12,9 @@
->   struct mtk_vcodec_ctx;
->   
->   /* timeout is ms */
-> -int mtk_vcodec_wait_for_done_ctx(struct mtk_vcodec_ctx *data, int command,
-> +int mtk_vcodec_wait_for_done_ctx(struct mtk_vcodec_ctx *ctx, int command,
+Thank you.
 
-I would remove this line since it does not belong to the patch
 
-Thanks,
-Dafna
+Best regards,
 
->   				unsigned int timeout_ms);
-> +int mtk_vcodec_wait_for_comp_done_ctx(struct mtk_vcodec_ctx *ctx,
-> +				int command, unsigned int timeout_ms, unsigned int hw_id);
->   
->   #endif /* _MTK_VCODEC_INTR_H_ */
-> 
+Renius
+
+> >
+> > Thank you.
+> >
+> >
+> > Best regards,
+> >
+> > Renius
+> >
+> > Renius Chen <reniuschengl@gmail.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=887=
+=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=889:49=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+> >>
+> >> Ulf Hansson <ulf.hansson@linaro.org> =E6=96=BC 2021=E5=B9=B47=E6=9C=88=
+7=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=888:16=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+> >>>
+> >>> [...]
+> >>>
+> >>>>
+> >>>> Thanks, I understand what you mean.
+> >>>>
+> >>>> I simply searched for the keyword "MMC_READ_MULTIPLE_BLOCK" in the
+> >>>> drivers/mmc/host folder, and found that in some SD/MMC host controll=
+er
+> >>>> driver codes such as alcor.c, cavium.c, ...etc, there are also
+> >>>> behaviors for monitoring the request in their driver. What's the
+> >>>> difference between theirs and ours?
+> >>>
+> >>> Those checks are there to allow the HWs to be supported properly.
+> >>>
+> >>>>
+> >>>> And if the code that monitors the requstes does not belong the drive=
+r,
+> >>>> where should I implement the code and how to add some functions only
+> >>>> for GL9763e in that place, in your opinion?
+> >>>
+> >>> Honestly, I am not sure what suits your use case best.
+> >>>
+> >>> So far we have used runtime PM with a default auto suspend timeout, i=
+n
+> >>> combination with dev PM Qos. In other words, run as fast as possible
+> >>> to complete the requests in the queue then go back to idle and enter =
+a
+> >>> low power state. Clearly, that seems not to be sufficient for your us=
+e
+> >>> case, sorry.
+> >>>
+> >> Yes, the runtime PM, auto suspend, and PM Qos are all about the
+> >> suspend/resume behaviors of the system or related to power states such
+> >> as D0/D3 of the device. But these are totally different from the ASPM
+> >> L0s/L1 for link states. Entering/exiting the ASPM is pure hardware
+> >> behavior on the link layer and is not handled by any codes in
+> >> drivers/mmc/core or drivers/mmc/host. We'd like to try to modify the
+> >> patch by your opinions, but we are also confused about what or where
+> >> suits our use case best. So we wonder how to start the modification
+> >> and may need some suggestions to deal with the work, sorry.
+> >>
+> >> Thank you.
+> >>
+> >>
+> >> Best regards,
+> >>
+> >> Renius
+> >>
+> >>
+> >>> Kind regards
+> >>> Uffe
+>
