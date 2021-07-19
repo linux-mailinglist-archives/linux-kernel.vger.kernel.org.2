@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C493CDE28
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713973CDE2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245669AbhGSPCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:02:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
+        id S244999AbhGSPCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:02:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243260AbhGSOkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:40:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E5D060FED;
-        Mon, 19 Jul 2021 15:20:42 +0000 (UTC)
+        id S242984AbhGSOkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:40:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0669860720;
+        Mon, 19 Jul 2021 15:20:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708043;
-        bh=G4WPC7FAv0HH833Zqk/XAFaSJDMKLVbhiTTC4oBRhmM=;
+        s=korg; t=1626708045;
+        bh=MfhOHP9+n0LI8xfLnM2mS/CsEj2P2NLk0DnPZEVhPb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dpo6NkSJ+VcrgsJc5THYNwULzuNAh/Lokncvj7YSZo+6vgCovD/OPsn9B4IHjoDnI
-         69TyXZcB1hIJ6pL29VoVUzmqyIkrpcHqTrQja9raKtxcKvB7X7iqfVQBpNALm8lTib
-         Umk4A4CPRzjhweug2XhTUABvqORZInjxk0I+9A0w=
+        b=nlAdxrxBsjDvLV0243fCxLpMXZzBPGV5lnX193HaMzXrvjtobdfiMVMt2ltFD1eat
+         eqk2X263c2MWaCpjHQQj1lkSM+Iw/I7KxNwpSKmOUp/u+loOiNMEt4E/kEwc8IMuzo
+         cAX0qyx+jw5UXmF1vQP03YkPotMw9tEwYxRh+q4I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Quat Le <quat.le@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.14 159/315] scsi: core: Retry I/O for Notify (Enable Spinup) Required error
-Date:   Mon, 19 Jul 2021 16:50:48 +0200
-Message-Id: <20210719144948.118988498@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        Stefan Agner <stefan@agner.ch>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 160/315] drm/mxsfb: Dont select DRM_KMS_FB_HELPER
+Date:   Mon, 19 Jul 2021 16:50:49 +0200
+Message-Id: <20210719144948.155729862@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -40,35 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quat Le <quat.le@oracle.com>
+From: Thomas Zimmermann <tzimmermann@suse.de>
 
-commit 104739aca4488909175e9e31d5cd7d75b82a2046 upstream.
+[ Upstream commit 13b29cc3a722c2c0bc9ab9f72f9047d55d08a2f9 ]
 
-If the device is power-cycled, it takes time for the initiator to transmit
-the periodic NOTIFY (ENABLE SPINUP) SAS primitive, and for the device to
-respond to the primitive to become ACTIVE. Retry the I/O request to allow
-the device time to become ACTIVE.
+Selecting DRM_FBDEV_EMULATION will include the correct settings for
+fbdev emulation. Drivers should not override this.
 
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210629155826.48441-1-quat.le@oracle.com
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Quat Le <quat.le@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Acked-by: Stefan Agner <stefan@agner.ch>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210415110040.23525-3-tzimmermann@suse.de
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_lib.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/mxsfb/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -971,6 +971,7 @@ void scsi_io_completion(struct scsi_cmnd
- 				case 0x07: /* operation in progress */
- 				case 0x08: /* Long write in progress */
- 				case 0x09: /* self test in progress */
-+				case 0x11: /* notify (enable spinup) required */
- 				case 0x14: /* space allocation in progress */
- 					action = ACTION_DELAYED_RETRY;
- 					break;
+diff --git a/drivers/gpu/drm/mxsfb/Kconfig b/drivers/gpu/drm/mxsfb/Kconfig
+index e9a8d90e6723..3ed6849d63cb 100644
+--- a/drivers/gpu/drm/mxsfb/Kconfig
++++ b/drivers/gpu/drm/mxsfb/Kconfig
+@@ -9,7 +9,6 @@ config DRM_MXSFB
+ 	depends on COMMON_CLK
+ 	select DRM_MXS
+ 	select DRM_KMS_HELPER
+-	select DRM_KMS_FB_HELPER
+ 	select DRM_KMS_CMA_HELPER
+ 	select DRM_PANEL
+ 	help
+-- 
+2.30.2
+
 
 
