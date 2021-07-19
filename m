@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F953CDD9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 841D63CDDA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245709AbhGSO67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:58:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54478 "EHLO mail.kernel.org"
+        id S1343545AbhGSO7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:59:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343936AbhGSOjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:39:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C945761002;
-        Mon, 19 Jul 2021 15:19:56 +0000 (UTC)
+        id S1343931AbhGSOju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:39:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48D14610D2;
+        Mon, 19 Jul 2021 15:19:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707997;
-        bh=rQGy8cqcvQFQWXICBxVU7vxBghpZ8ulbRgzAOF6P3BY=;
+        s=korg; t=1626707999;
+        bh=MC4NVmBGXrM/WSdJz6Zwb7kvjndWarIAprMhhRf7m+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TRa2csLCC8KsPJ1+RLRLCeJEp2eyx4b12DlwpzD6B1B3av07dTwruaaipLlHuBpA1
-         BzMc/qZtoJvYMo87krX1IJTgb5sCb5Cpb5paQ8isI75OB+ee1rSu4AseLXLH3IcOeK
-         2QVhi8elDJJrSeQ+uS2wiUxYQOSM4eCzQ0gCSciA=
+        b=pcPBhaEHMH8WycBVLzxZwHzJzdqpZKJZI325Dc87NEvPT7neyG1jPRKMgEViNiged
+         tUy1LMb+qhJbg27d+C3sPZGMup+LjWWQlUVz8l9X6+fMrxpRnsknao6w66EBE5USfZ
+         1rz74GV/m0bBdYIeD8kYfdd+lwVKGbn11a4jS5e8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 138/315] Input: hil_kbd - fix error return code in hil_dev_connect()
-Date:   Mon, 19 Jul 2021 16:50:27 +0200
-Message-Id: <20210719144947.430578947@linuxfoundation.org>
+Subject: [PATCH 4.14 139/315] char: pcmcia: error out if num_bytes_read is greater than 4 in set_protocol()
+Date:   Mon, 19 Jul 2021 16:50:28 +0200
+Message-Id: <20210719144947.463946299@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,35 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit d9b576917a1d0efa293801a264150a1b37691617 ]
+[ Upstream commit 37188559c610f1b7eec83c8e448936c361c578de ]
 
-Return error code -EINVAL rather than '0' when the combo devices are not
-supported.
+Theoretically, it will cause index out of bounds error if
+'num_bytes_read' is greater than 4. As we expect it(and was tested)
+never to be greater than 4, error out if it happens.
 
-Fixes: fa71c605c2bb ("Input: combine hil_kbd and hil_ptr drivers")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210515030053.6824-1-thunder.leizhen@huawei.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: c1986ee9bea3 ("[PATCH] New Omnikey Cardman 4000 driver")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Link: https://lore.kernel.org/r/20210521120617.138396-1-yukuai3@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/keyboard/hil_kbd.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/char/pcmcia/cm4000_cs.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/input/keyboard/hil_kbd.c b/drivers/input/keyboard/hil_kbd.c
-index bb29a7c9a1c0..54afb38601b9 100644
---- a/drivers/input/keyboard/hil_kbd.c
-+++ b/drivers/input/keyboard/hil_kbd.c
-@@ -512,6 +512,7 @@ static int hil_dev_connect(struct serio *serio, struct serio_driver *drv)
- 		    HIL_IDD_NUM_AXES_PER_SET(*idd)) {
- 			printk(KERN_INFO PREFIX
- 				"combo devices are not supported.\n");
-+			error = -EINVAL;
- 			goto bail1;
+diff --git a/drivers/char/pcmcia/cm4000_cs.c b/drivers/char/pcmcia/cm4000_cs.c
+index cd53771b9ae7..432e161efe5d 100644
+--- a/drivers/char/pcmcia/cm4000_cs.c
++++ b/drivers/char/pcmcia/cm4000_cs.c
+@@ -544,6 +544,10 @@ static int set_protocol(struct cm4000_dev *dev, struct ptsreq *ptsreq)
+ 		io_read_num_rec_bytes(iobase, &num_bytes_read);
+ 		if (num_bytes_read >= 4) {
+ 			DEBUGP(2, dev, "NumRecBytes = %i\n", num_bytes_read);
++			if (num_bytes_read > 4) {
++				rc = -EIO;
++				goto exit_setprotocol;
++			}
+ 			break;
  		}
- 
+ 		mdelay(10);
 -- 
 2.30.2
 
