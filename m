@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B763CEA98
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF6D3CE976
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378233AbhGSRRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35796 "EHLO mail.kernel.org"
+        id S235372AbhGSQ4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:56:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346999AbhGSPka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:40:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BAC46124C;
-        Mon, 19 Jul 2021 16:20:31 +0000 (UTC)
+        id S239753AbhGSPan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:30:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9157B6140F;
+        Mon, 19 Jul 2021 16:09:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711631;
-        bh=/Ywzl3YnQBCIkG6s/ugnov4Z859kjCR/5Z0M6eTuF58=;
+        s=korg; t=1626710999;
+        bh=B6M+TEEyT4yZKC2+XgZybp+diuzpOAhge+9nkCwgf+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tt72xSUu7uaxnWG7kMNkRYtCTS421WkUvt6bPZF/aYTLpK55dWM6ejhviYDBnYeNw
-         8o5F7KDlAZNan0+ywQFU8436la6Ywp9dUhu4Ut/6DDd6szhVDLLcfg8jBhYFn9E/nP
-         UYeZBs773YHuos4arhFkg+fOFt865kuSspz/pvhY=
+        b=eRIUkeWFnubRqOArOLzvVqNkRoBJGBNOmx0yPzR7CeBWZM9AOakNjaqtO1bRKFZ95
+         SD/f8o37al+kByZQnDUOL1LYcBmqqTD1dJ26mU1S4OlonIV6ThJOrsUjissrYp6CLd
+         n/lEoUWsBvRbH/+xt5Z/5u+7E61x0jWEIh4wWAKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 073/292] scsi: qedi: Fix null ref during abort handling
+Subject: [PATCH 5.13 189/351] pwm: img: Fix PM reference leak in img_pwm_enable()
 Date:   Mon, 19 Jul 2021 16:52:15 +0200
-Message-Id: <20210719144944.923707756@linuxfoundation.org>
+Message-Id: <20210719144951.229084481@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 5777b7f0f03ce49372203b6521631f62f2810c8f ]
+[ Upstream commit fde25294dfd8e36e4e30b693c27a86232864002a ]
 
-If qedi_process_cmd_cleanup_resp finds the cmd it frees the work and sets
-list_tmf_work to NULL, so qedi_tmf_work should check if list_tmf_work is
-non-NULL when it wants to force cleanup.
+pm_runtime_get_sync will increment pm usage counter even it failed.
+Forgetting to putting operation will result in reference leak here.
+Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+counter balanced.
 
-Link: https://lore.kernel.org/r/20210525181821.7617-20-michael.christie@oracle.com
-Reviewed-by: Manish Rangankar <mrangankar@marvell.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedi/qedi_fw.c | 2 +-
+ drivers/pwm/pwm-img.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/qedi/qedi_fw.c b/drivers/scsi/qedi/qedi_fw.c
-index 440ddd2309f1..cf57b4e49700 100644
---- a/drivers/scsi/qedi/qedi_fw.c
-+++ b/drivers/scsi/qedi/qedi_fw.c
-@@ -1453,7 +1453,7 @@ abort_ret:
+diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
+index cc37054589cc..11b16ecc4f96 100644
+--- a/drivers/pwm/pwm-img.c
++++ b/drivers/pwm/pwm-img.c
+@@ -156,7 +156,7 @@ static int img_pwm_enable(struct pwm_chip *chip, struct pwm_device *pwm)
+ 	struct img_pwm_chip *pwm_chip = to_img_pwm_chip(chip);
+ 	int ret;
  
- ldel_exit:
- 	spin_lock_bh(&qedi_conn->tmf_work_lock);
--	if (!qedi_cmd->list_tmf_work) {
-+	if (qedi_cmd->list_tmf_work) {
- 		list_del_init(&list_work->list);
- 		qedi_cmd->list_tmf_work = NULL;
- 		kfree(list_work);
+-	ret = pm_runtime_get_sync(chip->dev);
++	ret = pm_runtime_resume_and_get(chip->dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
 2.30.2
 
