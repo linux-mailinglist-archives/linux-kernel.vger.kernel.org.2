@@ -2,110 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABDCC3CED63
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A753CED64
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384287AbhGSS1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 14:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383602AbhGSR6D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 13:58:03 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF22C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 11:25:48 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id k20so19905490pgg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 11:38:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=2GDIeoSRCpC7dRtQi/P8zv3DNxVEppuMxPefDLRGLvo=;
-        b=OeKjXa48A0pN/3XXle4GeVXRZmcs0TibjoXBcRIdYsE0wWIdF8DuLYtWLvTcn6o81k
-         JHl6klHO+oP4Tgu78um0l3O54z+eSY2KSs1SZV7jvtEz8RM5bRYFnpnzokRNoqBR006F
-         O8M0y2+DnNqwRWUC9WduzXsuMcuM/mQNmAF/fhbTlXxr8jc9lyTXmplLAUHK1cZCBJCb
-         mMZQNBpjp/3geQHIcyWs9CwWlS8dkm1XrSQZBFfvI6PO+SoRxYeJ3U6iERPgO6o9appT
-         pLSufwYQTbnqi+CMFgXS7hnWYnXs5CmDKy44sxTOKUV5bMHAcByM6GDutbDkys3Dw+zX
-         SP4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2GDIeoSRCpC7dRtQi/P8zv3DNxVEppuMxPefDLRGLvo=;
-        b=FlNB1x0ELbNvyoaiR+drdgvUWh3ItEyUdz9ju4vZm2CKEmYbLhMfS8BxGIWyHPJ71q
-         h+ekWxGZFurL32vGacmOgjrn7Zdx2PfPZTkQDED7aPxwK6klv8gBzval0u1NmLfN5JpQ
-         mZBTKaX/5ly+DwrCpybhqEXc/AKnqrNtfdbPUrLJ0R2WVTuyAMLn5aUkh8e29aI2RMMh
-         ht+n9fOiN3O91iwdAmdAgWhx+UwP/zAqv6KNBnKe+pDM63J0USdFrfp2rZSRj//xm7Kp
-         3AnCB3/Fec3O7B9RFC8ItBrpcA5NJKHAVSk1pNTNLG1YoL/5a1RRh0R4No13uXI4DoPk
-         LIow==
-X-Gm-Message-State: AOAM532/b0NTDvuCZkVfqcPDRoeBfK0xWG0lT6TG8vtO+D9opgEMEyDv
-        5sNe21ZWKy5/LakaeKMasy9OXg==
-X-Google-Smtp-Source: ABdhPJzFZKkogPgLbbV2IjYWsMbvhfkUBEIbqZhWjB8Cb9H93gbmTY1dTU0gdOOCJdmkUQhnxLwQBA==
-X-Received: by 2002:aa7:9a42:0:b029:333:a3d2:8d8f with SMTP id x2-20020aa79a420000b0290333a3d28d8fmr22583136pfj.45.1626719919373;
-        Mon, 19 Jul 2021 11:38:39 -0700 (PDT)
-Received: from [192.168.1.187] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id k19sm17420699pji.32.2021.07.19.11.38.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 11:38:38 -0700 (PDT)
-Subject: Re: [syzbot] INFO: task hung in io_sq_thread_park (2)
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        syzbot <syzbot+ac957324022b7132accf@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        will@kernel.org
-References: <000000000000e1f38205c73b72cc@google.com>
- <c57f80f7-440b-9f12-a7b7-a58ed7ab400a@gmail.com>
- <3ff29943-0f93-1381-1c8a-46f80aecd0b4@kernel.dk>
- <b48f3e01-c07d-56ac-3624-afc74ef08acd@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <98a5f4a7-428b-fc0c-3f8c-c368f98d79a2@kernel.dk>
-Date:   Mon, 19 Jul 2021 12:38:37 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1384308AbhGSS2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 14:28:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1383605AbhGSR6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 13:58:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FD7461001;
+        Mon, 19 Jul 2021 18:38:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626719930;
+        bh=XAFEEvD3nR4KfB4EUkhX7aCbFMc/mjRTf1uxFVpvuCY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qmcBF93MmkGg1pjgrYtgaC3K1iGGXdgNiriEIV2sZZP87nshMF7ZviuU8zFB50kk7
+         rKUuY7/BDxhWuCxjWwlsaIxSJrjLmbeUtMOy1PQiZ36mJOEjx3+oitP1yF5CnyoSUN
+         nGXDqco7AJhzG6TV5L11cgJXYJfJhYVKi/W1LfCCa+zZcAIjGxRoaBsUxBEvEFcPT+
+         u1Npn7gyd658OpKeoSu76JSj32bzaKcfTu3lfWtduMicOa5p3/GR0gV+gZKof8okXX
+         f1//7H/9Gxnu3+FB4Le8fn0MR6opAXci0mnKEksivTxfVh9Hn8P5qaUNV0sCtyB9Ry
+         5dtn9qPynBiaQ==
+Date:   Mon, 19 Jul 2021 11:38:48 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 RFC] f2fs: fix to force keeping write barrier for
+ strict fsync mode
+Message-ID: <YPXGuNJWESJ098o/@google.com>
+References: <YN32/NsjqJONbvz7@google.com>
+ <648a96f7-2c83-e9ed-0cbd-4ee8e4797724@kernel.org>
+ <YN5srPRZaPN9gpZ0@google.com>
+ <b828fc22-f15a-8be4-631a-ed4ecb631386@kernel.org>
+ <YOXo3CT5sBvj6p0J@google.com>
+ <55e069f7-662d-630c-1201-d0163b38bc17@kernel.org>
+ <YO4jGkKLQWZKrgny@google.com>
+ <8f8d5645-9860-3e16-a09d-1a988ca6be72@kernel.org>
+ <YO5JptcNuT28JJtX@google.com>
+ <c6abf9b4-adbb-f3a6-39a5-5b77ea8b1545@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b48f3e01-c07d-56ac-3624-afc74ef08acd@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c6abf9b4-adbb-f3a6-39a5-5b77ea8b1545@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/21 11:28 AM, Pavel Begunkov wrote:
-> On 7/19/21 6:13 PM, Jens Axboe wrote:
->> On 7/19/21 10:57 AM, Pavel Begunkov wrote:
->>> On 7/16/21 11:57 AM, syzbot wrote:
->>>> Hello,
->>>>
->>>> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
->>>> WARNING in io_uring_cancel_generic
->>>
->>> __arm_poll doesn't remove a second poll entry in case of failed
->>> __io_queue_proc(), it's most likely the cause here.
->>>
->>> #syz test: https://github.com/isilence/linux.git syztest_sqpoll_hang
->>
->> Was my thought on seeing the last debug run too. Haven't written a test
->> case, but my initial thought was catching this at the time that double
->> poll is armed, in __io_queue_proc(). Totally untested, just tossing
->> it out there.
+On 07/14, Chao Yu wrote:
+> On 2021/7/14 10:19, Jaegeuk Kim wrote:
+> > On 07/14, Chao Yu wrote:
+> > > On 2021/7/14 7:34, Jaegeuk Kim wrote:
+> > > > On 07/13, Chao Yu wrote:
+> > > > > On 2021/7/8 1:48, Jaegeuk Kim wrote:
+> > > > > > On 07/02, Chao Yu wrote:
+> > > > > > > On 2021/7/2 9:32, Jaegeuk Kim wrote:
+> > > > > > > > On 07/02, Chao Yu wrote:
+> > > > > > > > > On 2021/7/2 1:10, Jaegeuk Kim wrote:
+> > > > > > > > > > On 06/01, Chao Yu wrote:
+> > > > > > > > > > > [1] https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg15126.html
+> > > > > > > > > > > 
+> > > > > > > > > > > As [1] reported, if lower device doesn't support write barrier, in below
+> > > > > > > > > > > case:
+> > > > > > > > > > > 
+> > > > > > > > > > > - write page #0; persist
+> > > > > > > > > > > - overwrite page #0
+> > > > > > > > > > > - fsync
+> > > > > > > > > > >       - write data page #0 OPU into device's cache
+> > > > > > > > > > >       - write inode page into device's cache
+> > > > > > > > > > >       - issue flush
+> > > > > > > > > > 
+> > > > > > > > > > Well, we have preflush for node writes, so I don't think this is the case.
+> > > > > > > > > > 
+> > > > > > > > > >       fio.op_flags |= REQ_PREFLUSH | REQ_FUA;
+> > > > > > > > > 
+> > > > > > > > > This is only used for atomic write case, right?
+> > > > > > > > > 
+> > > > > > > > > I mean the common case which is called from f2fs_issue_flush() in
+> > > > > > > > > f2fs_do_sync_file().
+> > > > > > > > 
+> > > > > > > > How about adding PREFLUSH when writing node blocks aligned to the above set?
+> > > > > > > 
+> > > > > > > You mean implementation like v1 as below?
+> > > > > > > 
+> > > > > > > https://lore.kernel.org/linux-f2fs-devel/20200120100045.70210-1-yuchao0@huawei.com/
+> > > > > > 
+> > > > > > Yea, I think so. :P
+> > > > > 
+> > > > > I prefer v2, we may have several schemes to improve performance with v2, e.g.
+> > > > > - use inplace IO to avoid newly added preflush
+> > > > > - use flush_merge option to avoid redundant preflush
+> > > > > - if lower device supports barrier IO, we can avoid newly added preflush
+> > > > 
+> > > > Doesn't v2 give one more flush than v1? Why do you want to take worse one and
+> > > 
+> > > FUA implies an extra preflush command or similar mechanism in lower device to keep data
+> > > in bio being persistent before this command's completion.
+> > > 
+> > > Also if lower device doesn't support FUA natively, block layer turns it into an empty
+> > > PREFLUSH command.
+> > > 
+> > > So, it's hard to say which one will win the benchmark game, maybe we need some
+> > > performance data before making the choice, but you know, it depends on device's
+> > > character.
+> > 
+> > I was looking at # of bios.
+> > 
+> > > 
+> > > > try to improve back? Not clear the benefit on v2.
+> > > 
+> > > Well, if user suffer and complain performance regression with v1, any plan to improve it?
+> > > 
+> > > I just thought about plan B/C/D for no matter v1 or v2.
+> > 
+> > I assumed you wanted v2 since it might be used for B/C/D improvements. But, it
+> > seems it wasn't. My point is to save one bio, but piggyback the flag to the
+> > device driver.
 > 
-> Wouldn't help, unfortunately, the way syz triggers it is making a
-> request to go through __io_queue_proc() three times.
+> I doubt the conclusion...but it needs to get some data to prove it.
 > 
-> Either it's 3 waitqueues or we need to extend the check below to
-> the double poll entry.
+> I think the right way is merging v1 now to fix the bug firstly, and let me do
+> the comparison on them a little bit later to see whether we need another
+> implementation... thoughts?
+
+Chao, could you please post v1 with an updated description?
+
 > 
-> if (poll_one->head == head)
-> 	return;
-
-Yes good point, that'd depend on single poll erroring first. Given
-the variety of cases for it, catching it after the fact like in your
-patch is likely the simplest/cleanest way.
-
--- 
-Jens Axboe
-
+> Thanks,
+> 
+> > 
+> > > 
+> > > Thanks,
+> > > 
+> > > > 
+> > > > > 
+> > > > > Thanks,
+> > > > > 
+> > > > > > 
+> > > > > > > 
+> > > > > > > Thanks,
+> > > > > > > 
+> > > > > > > > 
+> > > > > > > > > 
+> > > > > > > > > And please see do_checkpoint(), we call f2fs_flush_device_cache() and
+> > > > > > > > > commit_checkpoint() separately to keep persistence order of CP datas.
+> > > > > > > > > 
+> > > > > > > > > See commit 46706d5917f4 ("f2fs: flush cp pack except cp pack 2 page at first")
+> > > > > > > > > for details.
+> > > > > > > > > 
+> > > > > > > > > Thanks,
+> > > > > > > > > 
+> > > > > > > > > > 
+> > > > > > > > > > > 
+> > > > > > > > > > > If SPO is triggered during flush command, inode page can be persisted
+> > > > > > > > > > > before data page #0, so that after recovery, inode page can be recovered
+> > > > > > > > > > > with new physical block address of data page #0, however there may
+> > > > > > > > > > > contains dummy data in new physical block address.
+> > > > > > > > > > > 
+> > > > > > > > > > > Then what user will see is: after overwrite & fsync + SPO, old data in
+> > > > > > > > > > > file was corrupted, if any user do care about such case, we can suggest
+> > > > > > > > > > > user to use STRICT fsync mode, in this mode, we will force to trigger
+> > > > > > > > > > > preflush command to persist data in device cache in prior to node
+> > > > > > > > > > > writeback, it avoids potential data corruption during fsync().
+> > > > > > > > > > > 
+> > > > > > > > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > > > > > > > > > ---
+> > > > > > > > > > > v2:
+> > > > > > > > > > > - fix this by adding additional preflush command rather than using
+> > > > > > > > > > > atomic write flow.
+> > > > > > > > > > >       fs/f2fs/file.c | 14 ++++++++++++++
+> > > > > > > > > > >       1 file changed, 14 insertions(+)
+> > > > > > > > > > > 
+> > > > > > > > > > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> > > > > > > > > > > index 7d5311d54f63..238ca2a733ac 100644
+> > > > > > > > > > > --- a/fs/f2fs/file.c
+> > > > > > > > > > > +++ b/fs/f2fs/file.c
+> > > > > > > > > > > @@ -301,6 +301,20 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
+> > > > > > > > > > >       				f2fs_exist_written_data(sbi, ino, UPDATE_INO))
+> > > > > > > > > > >       			goto flush_out;
+> > > > > > > > > > >       		goto out;
+> > > > > > > > > > > +	} else {
+> > > > > > > > > > > +		/*
+> > > > > > > > > > > +		 * for OPU case, during fsync(), node can be persisted before
+> > > > > > > > > > > +		 * data when lower device doesn't support write barrier, result
+> > > > > > > > > > > +		 * in data corruption after SPO.
+> > > > > > > > > > > +		 * So for strict fsync mode, force to trigger preflush to keep
+> > > > > > > > > > > +		 * data/node write order to avoid potential data corruption.
+> > > > > > > > > > > +		 */
+> > > > > > > > > > > +		if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT &&
+> > > > > > > > > > > +								!atomic) {
+> > > > > > > > > > > +			ret = f2fs_issue_flush(sbi, inode->i_ino);
+> > > > > > > > > > > +			if (ret)
+> > > > > > > > > > > +				goto out;
+> > > > > > > > > > > +		}
+> > > > > > > > > > >       	}
+> > > > > > > > > > >       go_write:
+> > > > > > > > > > >       	/*
+> > > > > > > > > > > -- 
+> > > > > > > > > > > 2.29.2
