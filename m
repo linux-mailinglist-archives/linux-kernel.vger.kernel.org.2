@@ -2,62 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EECF3CD89A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6913CDBA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243121AbhGSOXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:23:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56408 "EHLO mail.kernel.org"
+        id S1343769AbhGSOsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:48:33 -0400
+Received: from verein.lst.de ([213.95.11.211]:50020 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241738AbhGSOVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:21:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5FBF611C1;
-        Mon, 19 Jul 2021 15:01:54 +0000 (UTC)
-Subject: [PATCH 3/3] NFSD: Use new __string_len C macros for nfsd_clid_class
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
-Cc:     rostedt@goodmis.org
-Date:   Mon, 19 Jul 2021 11:01:54 -0400
-Message-ID: <162670691408.60572.2483516312081665117.stgit@klimt.1015granger.net>
-In-Reply-To: <162670659736.60572.10597769067889138558.stgit@klimt.1015granger.net>
-References: <162670659736.60572.10597769067889138558.stgit@klimt.1015granger.net>
-User-Agent: StGit/1.1
+        id S243437AbhGSOcj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:32:39 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1206568BFE; Mon, 19 Jul 2021 17:13:12 +0200 (CEST)
+Date:   Mon, 19 Jul 2021 17:13:10 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Subject: Re: [PATCH v3] iomap: support tail packing inline read
+Message-ID: <20210719151310.GA22355@lst.de>
+References: <20210719144747.189634-1-hsiangkao@linux.alibaba.com> <YPWUBhxhoaEp8Frn@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPWUBhxhoaEp8Frn@casper.infradead.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up.
+On Mon, Jul 19, 2021 at 04:02:30PM +0100, Matthew Wilcox wrote:
+> > +	if (iomap->type == IOMAP_INLINE) {
+> > +		iomap_read_inline_data(inode, page, iomap, pos);
+> > +		plen = PAGE_SIZE - poff;
+> > +		goto done;
+> > +	}
+> 
+> This is going to break Andreas' case that he just patched to work.
+> GFS2 needs for there to _not_ be an iop for inline data.  That's
+> why I said we need to sort out when to create an iop before moving
+> the IOMAP_INLINE case below the creation of the iop.
+> 
+> If we're not going to do that first, then I recommend leaving the
+> IOMAP_INLINE case where it is and changing it to ...
+> 
+> 	if (iomap->type == IOMAP_INLINE)
+> 		return iomap_read_inline_data(inode, page, iomap, pos);
+> 
+> ... and have iomap_read_inline_data() return the number of bytes that
+> it copied + zeroed (ie PAGE_SIZE - poff).
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- fs/nfsd/trace.h |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/fs/nfsd/trace.h b/fs/nfsd/trace.h
-index 52a43acd546c..538520957a81 100644
---- a/fs/nfsd/trace.h
-+++ b/fs/nfsd/trace.h
-@@ -606,7 +606,7 @@ DECLARE_EVENT_CLASS(nfsd_clid_class,
- 		__array(unsigned char, addr, sizeof(struct sockaddr_in6))
- 		__field(unsigned long, flavor)
- 		__array(unsigned char, verifier, NFS4_VERIFIER_SIZE)
--		__dynamic_array(char, name, clp->cl_name.len + 1)
-+		__string_len(name, name, clp->cl_name.len)
- 	),
- 	TP_fast_assign(
- 		__entry->cl_boot = clp->cl_clientid.cl_boot;
-@@ -616,8 +616,7 @@ DECLARE_EVENT_CLASS(nfsd_clid_class,
- 		__entry->flavor = clp->cl_cred.cr_flavor;
- 		memcpy(__entry->verifier, (void *)&clp->cl_verifier,
- 		       NFS4_VERIFIER_SIZE);
--		memcpy(__get_str(name), clp->cl_name.data, clp->cl_name.len);
--		__get_str(name)[clp->cl_name.len] = '\0';
-+		__assign_str_len(name, clp->cl_name.data, clp->cl_name.len);
- 	),
- 	TP_printk("addr=%pISpc name='%s' verifier=0x%s flavor=%s client=%08x:%08x",
- 		__entry->addr, __get_str(name),
-
-
+Returning the bytes is much cleaner anyway.  But we still need to deal
+with the sub-page uptodate status in one form or another.
