@@ -2,96 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A71B3CEE4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 23:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CEF3CEE3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 23:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359103AbhGSUdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 16:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34520 "EHLO
+        id S1357915AbhGSUak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 16:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354304AbhGSUXp (ORCPT
+        with ESMTP id S1354299AbhGSUXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 16:23:45 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DCFC061788;
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9E3C061787;
         Mon, 19 Jul 2021 14:02:34 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id b2so5751458plx.1;
+Received: by mail-pf1-x42a.google.com with SMTP id j199so17677115pfd.7;
         Mon, 19 Jul 2021 14:03:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OhK3u3FqQBViJYF9EHyu7f3sYqoxbsemvfR7CYLIyP0=;
-        b=IFGsz6nN1pnrS96DBQAHtNcq5gjiVVi7KPSamFL7ln4A/BY57kuHcGHJvqOJoZKKl7
-         av/MmjUMwc5cM5TKjRuzDraaIF2h7Xr7NF9J46qo/BDIZVBPpiib8T1cIMl66KJkpz+7
-         JkHe7+CxJeRw31PZ8HirqPKkoSJoqtsqlsLquJvVdD4dEs29KvoNa03j7sDtVfCaGyeB
-         p3PZ0XjccnmskDjnSAN6lezSZjzz7ponqbq+Kwzl517+EmJNSD2gJAYWXupAp878rRJc
-         ASyC4ISq48RzpJslK4zheKKxnFoa6SLplErC5zQo469S8VKFrBF7YzjqNQlrRWQS4Rlb
-         B5fQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M5VbLoDXsQD50yQzjB6TT1EHQn/LEejS2HSUVl4nV+E=;
+        b=jTIxdQWErN7a9362DzqyPp3w7keD5GTAVGG3eVJmU+FejkSbGQ1esSQDtyy/6HgHUD
+         aqwGSD4qlS1YjFzh95Lneq02admIGC+Pd0eruJewo+423PBbHBTVQTw1ImjrBoFQEzlI
+         5uIoGj8vCISnehbzlPGaWD6C9HXsf9GJJ3VUPw4+UjPfkLUI2p2a+YKWNELpFJSDsoZz
+         HVXRynus4sXds1S8C/EdTBdDBD3Dbc4PAsLY7JWHw8zjBktowS8mMGoIzUqgCn/0+pwM
+         njWvoe1/R+K2hObnO8HBZJRSA5GpMoBZ0kZ0fUXngYf0xSOuuZrxcGNrD3rUMThluN/a
+         I7og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=OhK3u3FqQBViJYF9EHyu7f3sYqoxbsemvfR7CYLIyP0=;
-        b=FAVxE71sk6uzikjnuLSvA+YC81GQz+NLvQGnOK9kjgCAaPxNpJXf8MIEZd5kdVeLyN
-         XFd+s8ZpkBPh1kgpZlYqSsi7hKZ8VdV6V/fUHSMdXWba8bKMeJ7BN3LBBcIwDpbnJr7A
-         YcgZf3ravGv4lBXMMCVuyCFQks19zWV2SqVYs+dD73Gr7hu1ZQxj7pmUq2twEOHmy8DS
-         M5fD4Vme8diEexupRIXmhuhFYSTueQbi4wB8ybWLzTYQrlVBhcbLBPDYHuO/9wmhiSrn
-         z0uMLjVrkJfbYmhTTTdXz2qpoguNBljFf2TnaOeRZMWfV28LLjSZnDCsuJnu+7pagQqT
-         kxow==
-X-Gm-Message-State: AOAM532QWXI79i9MUv/mN+Ds7DzyQa+/gwCwTyAHs5ZVK/4//iGnGw23
-        ziL4lVSAh3Hy9KfZ7PSP/+ydFNpXIdnA9w==
-X-Google-Smtp-Source: ABdhPJxn32UuhK8Qw1HPKzbBqqU6QBsxWwlMklk7fFT89dGmX2ooX9wq6oPWA6gPNfjw2Q+a5AoUMA==
-X-Received: by 2002:a17:90a:885:: with SMTP id v5mr32474845pjc.54.1626728601465;
+        bh=M5VbLoDXsQD50yQzjB6TT1EHQn/LEejS2HSUVl4nV+E=;
+        b=P7apoH97kKoE/tLVfQiQY2/kp7sm1qSi6NdXeqoiIG5Jxm8zEGeINrhnUuTciLXwQg
+         tzS/igHB8fb8aUDng8rdLM0MdA0A/t9v8xJX2E4TLAcI5sPmrXUr98qq7xyMD7Y+IDKT
+         +YZRwTTfL8kNRbvDYvnxd/H4bOH2odEenoKDWQdpLRKdth612S6qTz+YvQ9Gqfq9owwT
+         Cf9zmBzH/waU6hIazrJn74+DSsG31uBZscP1rpKzCDDEZQ+fCFkVexvfqaA23wdcoWye
+         fblIVdm3lAFgH3IDeg3QEWsjLIXihopFzqOPm6okbpUl/Xu5ses2I+JLn8T++v8WGZ+l
+         7r7A==
+X-Gm-Message-State: AOAM531zZkAJyLPGWbJhsGWVGP5x1MR2CEjZIDRmHSyL749V1GrgUhIw
+        wXf3rNPVkYMsIwA63eKxIYoQlqinwlYiiPKh
+X-Google-Smtp-Source: ABdhPJzQrhbnl6q5d88XYxVJ2SDt2acFjbzYFNmTZC7RiLUV2Umt6AF8ZOyXVDdRcQzGl/XNojBPbw==
+X-Received: by 2002:a62:5a86:0:b029:334:567b:d80e with SMTP id o128-20020a625a860000b0290334567bd80emr21479115pfb.44.1626728601684;
         Mon, 19 Jul 2021 14:03:21 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id 11sm23547432pge.7.2021.07.19.14.03.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+Received: from localhost.localdomain ([2604:a880:1:20::1f:7001])
+        by smtp.gmail.com with ESMTPSA id i8sm390396pjh.36.2021.07.19.14.03.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 19 Jul 2021 14:03:21 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/239] 5.10.52-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210719184320.888029606@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <03b1d9eb-7c87-7463-9dcf-a98a64be9997@gmail.com>
-Date:   Mon, 19 Jul 2021 14:03:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+From:   Wende Tan <twd2.me@gmail.com>
+To:     arnd@arndb.de, linux-arch@vger.kernel.org
+Cc:     Wende Tan <twd2.me@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] arch: Move page table config macros out of `#ifndef __ASSEMBLY__` condition
+Date:   Mon, 19 Jul 2021 21:03:18 +0000
+Message-Id: <20210719210318.1023754-1-twd2.me@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210719184320.888029606@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/21 11:45 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.52 release.
-> There are 239 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 21 Jul 2021 18:42:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.52-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Move page table configuration macros like `P4D_SHIFT` out of
+`#ifndef __ASSEMBLY__` condition, so that they can be used by assembly
+code or linker scripts.  For example, the `TEXT_CFI_JT` macro in
+`include/asm-generic/vmlinux.lds.h` needs `PMD_SIZE` when Clang CFI is
+enabled.
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+Signed-off-by: Wende Tan <twd2.me@gmail.com>
+---
+ include/asm-generic/pgtable-nop4d.h | 10 ++++++----
+ include/asm-generic/pgtable-nopmd.h | 19 ++++++++++---------
+ include/asm-generic/pgtable-nopud.h | 15 ++++++++-------
+ 3 files changed, 24 insertions(+), 20 deletions(-)
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+diff --git a/include/asm-generic/pgtable-nop4d.h b/include/asm-generic/pgtable-nop4d.h
+index 03b7dae47dd4..a3de2e358ebc 100644
+--- a/include/asm-generic/pgtable-nop4d.h
++++ b/include/asm-generic/pgtable-nop4d.h
+@@ -2,17 +2,19 @@
+ #ifndef _PGTABLE_NOP4D_H
+ #define _PGTABLE_NOP4D_H
+ 
+-#ifndef __ASSEMBLY__
++#include <linux/const.h>
+ 
+ #define __PAGETABLE_P4D_FOLDED 1
+ 
+-typedef struct { pgd_t pgd; } p4d_t;
+-
+ #define P4D_SHIFT		PGDIR_SHIFT
+ #define PTRS_PER_P4D		1
+-#define P4D_SIZE		(1UL << P4D_SHIFT)
++#define P4D_SIZE		(_UL(1) << P4D_SHIFT)
+ #define P4D_MASK		(~(P4D_SIZE-1))
+ 
++#ifndef __ASSEMBLY__
++
++typedef struct { pgd_t pgd; } p4d_t;
++
+ /*
+  * The "pgd_xxx()" functions here are trivial for a folded two-level
+  * setup: the p4d is never bad, and a p4d always exists (as it's folded
+diff --git a/include/asm-generic/pgtable-nopmd.h b/include/asm-generic/pgtable-nopmd.h
+index 10789cf51d16..cacaa454f97b 100644
+--- a/include/asm-generic/pgtable-nopmd.h
++++ b/include/asm-generic/pgtable-nopmd.h
+@@ -2,14 +2,20 @@
+ #ifndef _PGTABLE_NOPMD_H
+ #define _PGTABLE_NOPMD_H
+ 
+-#ifndef __ASSEMBLY__
+-
+ #include <asm-generic/pgtable-nopud.h>
+-
+-struct mm_struct;
++#include <linux/const.h>
+ 
+ #define __PAGETABLE_PMD_FOLDED 1
+ 
++#define PMD_SHIFT	PUD_SHIFT
++#define PTRS_PER_PMD	1
++#define PMD_SIZE  	(_UL(1) << PMD_SHIFT)
++#define PMD_MASK  	(~(PMD_SIZE-1))
++
++#ifndef __ASSEMBLY__
++
++struct mm_struct;
++
+ /*
+  * Having the pmd type consist of a pud gets the size right, and allows
+  * us to conceptually access the pud entry that this pmd is folded into
+@@ -17,11 +23,6 @@ struct mm_struct;
+  */
+ typedef struct { pud_t pud; } pmd_t;
+ 
+-#define PMD_SHIFT	PUD_SHIFT
+-#define PTRS_PER_PMD	1
+-#define PMD_SIZE  	(1UL << PMD_SHIFT)
+-#define PMD_MASK  	(~(PMD_SIZE-1))
+-
+ /*
+  * The "pud_xxx()" functions here are trivial for a folded two-level
+  * setup: the pmd is never bad, and a pmd always exists (as it's folded
+diff --git a/include/asm-generic/pgtable-nopud.h b/include/asm-generic/pgtable-nopud.h
+index eb70c6d7ceff..dd9239073a86 100644
+--- a/include/asm-generic/pgtable-nopud.h
++++ b/include/asm-generic/pgtable-nopud.h
+@@ -2,12 +2,18 @@
+ #ifndef _PGTABLE_NOPUD_H
+ #define _PGTABLE_NOPUD_H
+ 
+-#ifndef __ASSEMBLY__
+-
+ #include <asm-generic/pgtable-nop4d.h>
++#include <linux/const.h>
+ 
+ #define __PAGETABLE_PUD_FOLDED 1
+ 
++#define PUD_SHIFT	P4D_SHIFT
++#define PTRS_PER_PUD	1
++#define PUD_SIZE  	(_UL(1) << PUD_SHIFT)
++#define PUD_MASK  	(~(PUD_SIZE-1))
++
++#ifndef __ASSEMBLY__
++
+ /*
+  * Having the pud type consist of a p4d gets the size right, and allows
+  * us to conceptually access the p4d entry that this pud is folded into
+@@ -15,11 +21,6 @@
+  */
+ typedef struct { p4d_t p4d; } pud_t;
+ 
+-#define PUD_SHIFT	P4D_SHIFT
+-#define PTRS_PER_PUD	1
+-#define PUD_SIZE  	(1UL << PUD_SHIFT)
+-#define PUD_MASK  	(~(PUD_SIZE-1))
+-
+ /*
+  * The "p4d_xxx()" functions here are trivial for a folded two-level
+  * setup: the pud is never bad, and a pud always exists (as it's folded
 -- 
-Florian
+2.25.1
+
