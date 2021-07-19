@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFF83CDDBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614383CDDCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244620AbhGSPAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:00:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55510 "EHLO mail.kernel.org"
+        id S245479AbhGSPAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:00:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245574AbhGSOjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:39:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7A6860249;
-        Mon, 19 Jul 2021 15:18:38 +0000 (UTC)
+        id S245591AbhGSOjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:39:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 619516135D;
+        Mon, 19 Jul 2021 15:18:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707919;
-        bh=b4Yuh9ZXGTBdk6of/NfxeZDGAlGbAWPMhlBaB7ZNN9c=;
+        s=korg; t=1626707922;
+        bh=dK4oXBu7DvXkxRUmQC1iqHAflWit35SWU6qTryn/LvE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wakVNW2UgdSuG+Ml91QC5NfDziwzaT/xeQnPiLzWuYcrhkIHjmGxeoPT2PwHBtahI
-         VBjpfCQVeNTKrcHBMjJQFyJSe/v4evoHvuOJXIP2WKT2UKBoz32MdHGk474tf2wDQe
-         yn3yOlw1g5D0dhyrBZKTiQisKbYkcZCwgAOBDKbA=
+        b=ejWDxItUr5LJoqB3GQS+iXgWmSSt9A9O9FxzVI4Q+Srxo9MchMZs+sxx0N7254Jbh
+         dIdOMqF4Q2yeiUVmSf1xIhty0bI65SQm7xPeqfDeOQL26zRcadLJZm1UtwxjeyqKGv
+         fRxQDGSsD81H5SPOuL72+8NI/6vw+aXQAX47Vr7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 074/315] ia64: mca_drv: fix incorrect array size calculation
-Date:   Mon, 19 Jul 2021 16:49:23 +0200
-Message-Id: <20210719144945.300910321@linuxfoundation.org>
+Subject: [PATCH 4.14 075/315] media: s5p_cec: decrement usage count if disabled
+Date:   Mon, 19 Jul 2021 16:49:24 +0200
+Message-Id: <20210719144945.338705296@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -43,46 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit c5f320ff8a79501bb59338278336ec43acb9d7e2 ]
+[ Upstream commit 747bad54a677d8633ec14b39dfbeb859c821d7f2 ]
 
-gcc points out a mistake in the mca driver that goes back to before the
-git history:
+There's a bug at s5p_cec_adap_enable(): if called to
+disable the device, it should call pm_runtime_put()
+instead of pm_runtime_disable(), as the goal here is to
+decrement the usage_count and not to disable PM runtime.
 
-arch/ia64/kernel/mca_drv.c: In function 'init_record_index_pools':
-arch/ia64/kernel/mca_drv.c:346:54: error: expression does not compute the number of elements in this array; element typ
-e is 'int', not 'size_t' {aka 'long unsigned int'} [-Werror=sizeof-array-div]
-  346 |         for (i = 1; i < sizeof sal_log_sect_min_sizes/sizeof(size_t); i++)
-      |                                                      ^
-
-This is the same as sizeof(size_t), which is two shorter than the actual
-array.  Use the ARRAY_SIZE() macro to get the correct calculation instead.
-
-Link: https://lkml.kernel.org/r/20210514214123.875971-1-arnd@kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: 1bcbf6f4b6b0 ("[media] cec: s5p-cec: Add s5p-cec driver")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/ia64/kernel/mca_drv.c | 2 +-
+ drivers/media/platform/s5p-cec/s5p_cec.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/ia64/kernel/mca_drv.c b/arch/ia64/kernel/mca_drv.c
-index 94f8bf777afa..3503d488e9b3 100644
---- a/arch/ia64/kernel/mca_drv.c
-+++ b/arch/ia64/kernel/mca_drv.c
-@@ -343,7 +343,7 @@ init_record_index_pools(void)
+diff --git a/drivers/media/platform/s5p-cec/s5p_cec.c b/drivers/media/platform/s5p-cec/s5p_cec.c
+index 8837e2678bde..3032247c63a5 100644
+--- a/drivers/media/platform/s5p-cec/s5p_cec.c
++++ b/drivers/media/platform/s5p-cec/s5p_cec.c
+@@ -55,7 +55,7 @@ static int s5p_cec_adap_enable(struct cec_adapter *adap, bool enable)
+ 	} else {
+ 		s5p_cec_mask_tx_interrupts(cec);
+ 		s5p_cec_mask_rx_interrupts(cec);
+-		pm_runtime_disable(cec->dev);
++		pm_runtime_put(cec->dev);
+ 	}
  
- 	/* - 2 - */
- 	sect_min_size = sal_log_sect_min_sizes[0];
--	for (i = 1; i < sizeof sal_log_sect_min_sizes/sizeof(size_t); i++)
-+	for (i = 1; i < ARRAY_SIZE(sal_log_sect_min_sizes); i++)
- 		if (sect_min_size > sal_log_sect_min_sizes[i])
- 			sect_min_size = sal_log_sect_min_sizes[i];
- 
+ 	return 0;
 -- 
 2.30.2
 
