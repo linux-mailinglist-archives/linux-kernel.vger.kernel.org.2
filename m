@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126923CEA8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACA13CE9AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377839AbhGSRRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38792 "EHLO mail.kernel.org"
+        id S1354067AbhGSQ7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:59:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348007AbhGSPjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5198E61241;
-        Mon, 19 Jul 2021 16:19:40 +0000 (UTC)
+        id S235781AbhGSPcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:32:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CC5B6142B;
+        Mon, 19 Jul 2021 16:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711580;
-        bh=HXXsm6bDL23ZwcCamIIW0m6ncof559sel1rCAX8ztzU=;
+        s=korg; t=1626711043;
+        bh=xrdCy1QqxZg1UrPMNmOK+vwd06oX25X0tMQaTm+IQzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OzjsSdkbas8rn4cdp4qEfVgT5qQ7yDCzqClX1Clt6YZ9965qmW/UsipRmOGRi2QDV
-         opZUZVN7ZCur8WFLEogJnvJBOMxDOX/YurLLnZsktpibeNb65xsYREYd95KSsltOaC
-         SqzWyHBaYWw670zszJtRBuK4Gn7lCi7vkFWzVsW4=
+        b=kSkpH3C/SfZif3KkQvUCt/h96P4ZmECYVNSuJ6C3qp5SakwdgjdlSgRiQMznOiVGH
+         AnrK7mlUtiC2Srlh0s96XbwhqZEjp9kO8OCIpQw+3aPg8QHRCBHQjwRBKbD0qX4yrJ
+         scIQgHbOPfjPgWI8y48BL0cAhWiiP2Y5kX1m3CMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, ching Huang <ching2048@areca.com.tw>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 056/292] scsi: arcmsr: Fix doorbell status being updated late on ARC-1886
+Subject: [PATCH 5.13 172/351] PCI: mediatek-gen3: Add missing MODULE_DEVICE_TABLE
 Date:   Mon, 19 Jul 2021 16:51:58 +0200
-Message-Id: <20210719144944.370278619@linuxfoundation.org>
+Message-Id: <20210719144950.661970418@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ching Huang <ching2048@areca.com.tw>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit d9a231226f28261a787535e08d0c78669e1ad010 ]
+[ Upstream commit 3a2e476dc5d02af3422143b07d8db1eced475314 ]
 
-It is possible for the IOP to be delayed in updating the doorbell
-status. The doorbell status should not be 0 so loop until the value
-changes.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Link: https://lore.kernel.org/r/afdfdf7eabecf14632492c4987a6b9ac6312a7ad.camel@areca.com.tw
-Signed-off-by: ching Huang <ching2048@areca.com.tw>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/1620717091-108691-1-git-send-email-zou_wei@huawei.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/arcmsr/arcmsr_hba.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/pci/controller/pcie-mediatek-gen3.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
-index 930972cda38c..42e494a7106c 100644
---- a/drivers/scsi/arcmsr/arcmsr_hba.c
-+++ b/drivers/scsi/arcmsr/arcmsr_hba.c
-@@ -2419,10 +2419,17 @@ static void arcmsr_hbaD_doorbell_isr(struct AdapterControlBlock *pACB)
+diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
+index 3c5b97716d40..f3aeb8d4eaca 100644
+--- a/drivers/pci/controller/pcie-mediatek-gen3.c
++++ b/drivers/pci/controller/pcie-mediatek-gen3.c
+@@ -1012,6 +1012,7 @@ static const struct of_device_id mtk_pcie_of_match[] = {
+ 	{ .compatible = "mediatek,mt8192-pcie" },
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, mtk_pcie_of_match);
  
- static void arcmsr_hbaE_doorbell_isr(struct AdapterControlBlock *pACB)
- {
--	uint32_t outbound_doorbell, in_doorbell, tmp;
-+	uint32_t outbound_doorbell, in_doorbell, tmp, i;
- 	struct MessageUnit_E __iomem *reg = pACB->pmuE;
- 
--	in_doorbell = readl(&reg->iobound_doorbell);
-+	if (pACB->adapter_type == ACB_ADAPTER_TYPE_F) {
-+		for (i = 0; i < 5; i++) {
-+			in_doorbell = readl(&reg->iobound_doorbell);
-+			if (in_doorbell != 0)
-+				break;
-+		}
-+	} else
-+		in_doorbell = readl(&reg->iobound_doorbell);
- 	outbound_doorbell = in_doorbell ^ pACB->in_doorbell;
- 	do {
- 		writel(0, &reg->host_int_status); /* clear interrupt */
+ static struct platform_driver mtk_pcie_driver = {
+ 	.probe = mtk_pcie_probe,
 -- 
 2.30.2
 
