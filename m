@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBD43CE581
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403203CE582
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350493AbhGSPvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:51:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58992 "EHLO mail.kernel.org"
+        id S1350550AbhGSPvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:51:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345060AbhGSPBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245694AbhGSPBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:01:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2B9D6120A;
-        Mon, 19 Jul 2021 15:42:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FDCC61221;
+        Mon, 19 Jul 2021 15:42:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709344;
-        bh=4TsRwoe2ro7D8QzGFv+I3O7ZQ9kjnMVzdT1a+YTSFPg=;
+        s=korg; t=1626709347;
+        bh=8Q3uEpjy477WheXpk2ubs8evkJ+OhUEsTaZIHEwoyiM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DLDCCrFtf9VVo0jlygWHZ3i5OL7IsPT8/+7GQ/pcMtkSRgcM6zNqgBzX5dQfLciXX
-         Yl36WZzn+miaVVAFuCSeGfAu9RyO42On4ImlDGfUy+av2mIsmVfQVoqn8t2Yh4XxVF
-         vGPW3kg5HIWUskKmNXKzqA3sZEt7d6kWzkZsM9YQ=
+        b=yl3//SUPXQoySSEFUhUGPrD68LYj+bz7P5iSeEfgy9O/umhc3vI7ML6oYiIHSY35f
+         Geuarlf/wk4xYN7uEAFRx1Cl2fNhdWOGx+m+bKC+xv7h+Pn/vckIOfx7S5k70ovCNu
+         vfsq931mdl3VbgWkf/POgwtuF5iIorsPpYJXaW0o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Robinson <pbrobinson@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 346/421] gpio: pca953x: Add support for the On Semi pca9655
-Date:   Mon, 19 Jul 2021 16:52:37 +0200
-Message-Id: <20210719144958.282648747@linuxfoundation.org>
+Subject: [PATCH 4.19 347/421] ASoC: soc-core: Fix the error return code in snd_soc_of_parse_audio_routing()
+Date:   Mon, 19 Jul 2021 16:52:38 +0200
+Message-Id: <20210719144958.313681688@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,33 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Robinson <pbrobinson@gmail.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 6d49b3a0f351925b5ea5047166c112b7590b918a ]
+[ Upstream commit 7d3865a10b9ff2669c531d5ddd60bf46b3d48f1e ]
 
-The On Semi pca9655 is a 16 bit variant of the On Semi pca9654 GPIO
-expander, with 16 GPIOs and interrupt functionality.
+When devm_kcalloc() fails, the error code -ENOMEM should be returned
+instead of -EINVAL.
 
-Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
-[Bartosz: fixed indentation as noted by Andy]
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210617103729.1918-1-thunder.leizhen@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-pca953x.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
-index 0232c25a1586..dc4088a47ab2 100644
---- a/drivers/gpio/gpio-pca953x.c
-+++ b/drivers/gpio/gpio-pca953x.c
-@@ -980,6 +980,7 @@ static const struct of_device_id pca953x_dt_ids[] = {
- 	{ .compatible = "ti,tca6424", .data = OF_953X(24, PCA_INT), },
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 595fe20bbc6d..8531b490f6f6 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3510,7 +3510,7 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+ 	if (!routes) {
+ 		dev_err(card->dev,
+ 			"ASoC: Could not allocate DAPM route table\n");
+-		return -EINVAL;
++		return -ENOMEM;
+ 	}
  
- 	{ .compatible = "onnn,pca9654", .data = OF_953X( 8, PCA_INT), },
-+	{ .compatible = "onnn,pca9655", .data = OF_953X(16, PCA_INT), },
- 
- 	{ .compatible = "exar,xra1202", .data = OF_953X( 8, 0), },
- 	{ }
+ 	for (i = 0; i < num_routes; i++) {
 -- 
 2.30.2
 
