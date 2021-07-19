@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC7B3CE69C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC083CE7FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350303AbhGSQJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:09:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42188 "EHLO mail.kernel.org"
+        id S1353726AbhGSQfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:35:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344058AbhGSPI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:08:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82FED61222;
-        Mon, 19 Jul 2021 15:48:34 +0000 (UTC)
+        id S1347834AbhGSPVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:21:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3609661435;
+        Mon, 19 Jul 2021 15:59:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709715;
-        bh=xDDqPtISmtoJbD92SaB2g1bXCd4plRfczxuEqxbeOlQ=;
+        s=korg; t=1626710356;
+        bh=x+IICyJLGOlrp2+/G8fNZaP7xtm6pYWcCebeeTG4bj8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rqjEchvjK7DqSJL3nLR0MWN32wqvLpNCWFSgGIlPZqsH/GGzT7B7D2+8Pb8qQnwcs
-         OcP0ymveHsnUIr1DK1qrkOgteT19wACIJJ/8pDUkVuV6lBHuJYNqsarg2DtXShTsMD
-         PWyHprBkQuF7hPv1ymNg2kXQ057sekM+SzOYFr5I=
+        b=FBazeP/2Mo+Bh71zF3haTJd+20zP8bpp8ojJ01dB+ZyF8GK+4RwjTcAY6O6F/t5HF
+         UNy4I0cpVQGTRpL/CdHjQ0nmZRHo/CAG4pCrZnBWNtQey51w+/ZHontSOwtw76rgvb
+         nsSzmUvKA9NpzA1SrFQmQixwz+FLO42ybU+q1+4s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Florian Weimer <fweimer@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Borislav Petkov <bp@suse.de>, Len Brown <len.brown@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 069/149] power: supply: sc27xx: Add missing MODULE_DEVICE_TABLE
+Subject: [PATCH 5.10 148/243] x86/signal: Detect and prevent an alternate signal stack overflow
 Date:   Mon, 19 Jul 2021 16:52:57 +0200
-Message-Id: <20210719144917.690120140@linuxfoundation.org>
+Message-Id: <20210719144945.690624002@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +44,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Chang S. Bae <chang.seok.bae@intel.com>
 
-[ Upstream commit 603fcfb9d4ec1cad8d66d3bb37f3613afa8a661a ]
+[ Upstream commit 2beb4a53fc3f1081cedc1c1a198c7f56cc4fc60c ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+The kernel pushes context on to the userspace stack to prepare for the
+user's signal handler. When the user has supplied an alternate signal
+stack, via sigaltstack(2), it is easy for the kernel to verify that the
+stack size is sufficient for the current hardware context.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Check if writing the hardware context to the alternate stack will exceed
+it's size. If yes, then instead of corrupting user-data and proceeding with
+the original signal handler, an immediate SIGSEGV signal is delivered.
+
+Refactor the stack pointer check code from on_sig_stack() and use the new
+helper.
+
+While the kernel allows new source code to discover and use a sufficient
+alternate signal stack size, this check is still necessary to protect
+binaries with insufficient alternate signal stack size from data
+corruption.
+
+Fixes: c2bc11f10a39 ("x86, AVX-512: Enable AVX-512 States Context Switch")
+Reported-by: Florian Weimer <fweimer@redhat.com>
+Suggested-by: Jann Horn <jannh@google.com>
+Suggested-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Len Brown <len.brown@intel.com>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/20210518200320.17239-6-chang.seok.bae@intel.com
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=153531
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/sc27xx_fuel_gauge.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kernel/signal.c     | 24 ++++++++++++++++++++----
+ include/linux/sched/signal.h | 19 ++++++++++++-------
+ 2 files changed, 32 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/power/supply/sc27xx_fuel_gauge.c b/drivers/power/supply/sc27xx_fuel_gauge.c
-index bc8f5bda5762..5e5bcdbf2e69 100644
---- a/drivers/power/supply/sc27xx_fuel_gauge.c
-+++ b/drivers/power/supply/sc27xx_fuel_gauge.c
-@@ -1215,6 +1215,7 @@ static const struct of_device_id sc27xx_fgu_of_match[] = {
- 	{ .compatible = "sprd,sc2731-fgu", },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(of, sc27xx_fgu_of_match);
+diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+index f51cab3e983d..b001ba811cab 100644
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -234,10 +234,11 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 	     void __user **fpstate)
+ {
+ 	/* Default to using normal stack */
++	bool nested_altstack = on_sig_stack(regs->sp);
++	bool entering_altstack = false;
+ 	unsigned long math_size = 0;
+ 	unsigned long sp = regs->sp;
+ 	unsigned long buf_fx = 0;
+-	int onsigstack = on_sig_stack(sp);
+ 	int ret;
  
- static struct platform_driver sc27xx_fgu_driver = {
- 	.probe = sc27xx_fgu_probe,
+ 	/* redzone */
+@@ -246,15 +247,23 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 
+ 	/* This is the X/Open sanctioned signal stack switching.  */
+ 	if (ka->sa.sa_flags & SA_ONSTACK) {
+-		if (sas_ss_flags(sp) == 0)
++		/*
++		 * This checks nested_altstack via sas_ss_flags(). Sensible
++		 * programs use SS_AUTODISARM, which disables that check, and
++		 * programs that don't use SS_AUTODISARM get compatible.
++		 */
++		if (sas_ss_flags(sp) == 0) {
+ 			sp = current->sas_ss_sp + current->sas_ss_size;
++			entering_altstack = true;
++		}
+ 	} else if (IS_ENABLED(CONFIG_X86_32) &&
+-		   !onsigstack &&
++		   !nested_altstack &&
+ 		   regs->ss != __USER_DS &&
+ 		   !(ka->sa.sa_flags & SA_RESTORER) &&
+ 		   ka->sa.sa_restorer) {
+ 		/* This is the legacy signal stack switching. */
+ 		sp = (unsigned long) ka->sa.sa_restorer;
++		entering_altstack = true;
+ 	}
+ 
+ 	sp = fpu__alloc_mathframe(sp, IS_ENABLED(CONFIG_X86_32),
+@@ -267,8 +276,15 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 	 * If we are on the alternate signal stack and would overflow it, don't.
+ 	 * Return an always-bogus address instead so we will die with SIGSEGV.
+ 	 */
+-	if (onsigstack && !likely(on_sig_stack(sp)))
++	if (unlikely((nested_altstack || entering_altstack) &&
++		     !__on_sig_stack(sp))) {
++
++		if (show_unhandled_signals && printk_ratelimit())
++			pr_info("%s[%d] overflowed sigaltstack\n",
++				current->comm, task_pid_nr(current));
++
+ 		return (void __user *)-1L;
++	}
+ 
+ 	/* save i387 and extended state */
+ 	ret = copy_fpstate_to_sigframe(*fpstate, (void __user *)buf_fx, math_size);
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index 4b6a8234d7fc..657640015b33 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -525,6 +525,17 @@ static inline int kill_cad_pid(int sig, int priv)
+ #define SEND_SIG_NOINFO ((struct kernel_siginfo *) 0)
+ #define SEND_SIG_PRIV	((struct kernel_siginfo *) 1)
+ 
++static inline int __on_sig_stack(unsigned long sp)
++{
++#ifdef CONFIG_STACK_GROWSUP
++	return sp >= current->sas_ss_sp &&
++		sp - current->sas_ss_sp < current->sas_ss_size;
++#else
++	return sp > current->sas_ss_sp &&
++		sp - current->sas_ss_sp <= current->sas_ss_size;
++#endif
++}
++
+ /*
+  * True if we are on the alternate signal stack.
+  */
+@@ -542,13 +553,7 @@ static inline int on_sig_stack(unsigned long sp)
+ 	if (current->sas_ss_flags & SS_AUTODISARM)
+ 		return 0;
+ 
+-#ifdef CONFIG_STACK_GROWSUP
+-	return sp >= current->sas_ss_sp &&
+-		sp - current->sas_ss_sp < current->sas_ss_size;
+-#else
+-	return sp > current->sas_ss_sp &&
+-		sp - current->sas_ss_sp <= current->sas_ss_size;
+-#endif
++	return __on_sig_stack(sp);
+ }
+ 
+ static inline int sas_ss_flags(unsigned long sp)
 -- 
 2.30.2
 
