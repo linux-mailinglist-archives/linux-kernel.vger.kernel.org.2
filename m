@@ -2,217 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A546B3CD687
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 16:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415DF3CD68A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 16:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240626AbhGSNnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 09:43:42 -0400
-Received: from mail-mw2nam12on2089.outbound.protection.outlook.com ([40.107.244.89]:2113
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231789AbhGSNnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 09:43:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gqPHyHIiddxKlYth22ZMxGC8bIk3pcNB8wxttj1ALLYPMpZxVCNvH0aWnt1N1KXpRH8CeN1QiSWGkGnoc72e2szg1vJm/PQRUFG56pZ2bKvUv31hKOJa26epm+50RwutdhPI/UjUF4nrYdOorgD6BiicidbApNizPVyzMNKHYKP2Ny6dhHHQk4VO+fzKNvNFmom9XWDP2IC/T+5O2/YiwBPmhMF+2jjCwPoeQVs+Z+aFqTf3E6kxfiuj8B4Bo/0WFf2TK6uiBUsVPV9KQz0qgwLcJGR7z8YjdP1bnLLiAOMu+viVWHkZ5V8I/1DfGU+jy754Y70C85J8zGtoXzKt2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5GKURgwHZLy/+xuETOoszdBBmBI1n4sbyuDE24jxkm0=;
- b=XQpguF2BAJ1QRuhmzXM9MXfU0zbF8TEB0c7R5COhsy+4+YoCSbXRxEVT0rbdwc7FC+LdUNfm+G5aA7xCB6Cx1bPtb9PCsvv958PPoBKTAtAe9k1xiYXS5UOr407CuInTpNcPdWG8JgMcTQf1DuFA4BpCtIGVYsZ8Z/+d8buZB55VhRXjaPw0pRC+osB380wLjBdkpkVkT+cCAaMZsuJLGNjp9sMnQIbQqXf28Mymt8OLc3aV8ymUGH6i4Y7Pj8K118/QmHwmfY11ZiBPuC6Y6v/FoHpo16xZivBxKgGOCuQjPlqpupuZJ9iPG6qAsO6p1FqtzV3sHxSeUYoxOBoZXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5GKURgwHZLy/+xuETOoszdBBmBI1n4sbyuDE24jxkm0=;
- b=mL6rrmVg0l1SQrFUC3IenluUYdMb8kjkLTLlPVsVx4/j+Mum+u2sJfCYeERhOsF282V286bpWbp8nm68Ku0QWDGS5idq2rDI6bLBoDOgZUIuxAy91XKFSBWhRaKTiZOpTQWSn4jWuPfsqGzdRb3H5/YiP5A9r5zgBy9Pkacjp54=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SA0PR12MB4592.namprd12.prod.outlook.com (2603:10b6:806:9b::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Mon, 19 Jul
- 2021 14:24:18 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4331.033; Mon, 19 Jul 2021
- 14:24:18 +0000
-Cc:     brijesh.singh@amd.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 34/40] KVM: SVM: Add support to handle Page
- State Change VMGEXIT
-To:     Sean Christopherson <seanjc@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-35-brijesh.singh@amd.com> <YPH2qRkkG6m0FT2X@google.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <54f916af-1d10-4a8e-1e14-cd261d407dd2@amd.com>
-Date:   Mon, 19 Jul 2021 09:24:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YPH2qRkkG6m0FT2X@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0801CA0003.namprd08.prod.outlook.com
- (2603:10b6:803:29::13) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.31.95] (165.204.77.1) by SN4PR0801CA0003.namprd08.prod.outlook.com (2603:10b6:803:29::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 14:24:16 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 715e5e0c-ae4c-4a34-b2a4-08d94ac0e473
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4592:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4592B12177F676540CFCA995E5E19@SA0PR12MB4592.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1snQXtS4NjZluEU7Vku0RCtK1GJZmPoCjr66FSIGsKBFIUht7C0HCicVFlDKtC6U2xdZFkDI5lmdEyIWonQgV9edvWb4YtpTohSsng4by6N2T4eCKorV9BhGCs8DvuZW0NL0mH+m0p8qVHAvjxKZRNiJnHj2n9lnWYe5vkYtfhBufA33hTTsPv3UwXEihfrtyv81pqcsyObqLSV1XhhrhnmBLOj6e6gt5F659IdtxvyhclSt4ZrlwgdZuphPMLHcub9K3u7F1YSzcCqpyS+1x6eP57aui0fQSBDsw4YVfPN2lcIp/RlC9HtNgn4jyLyTJWAqHjerPWd9gYeCkqlJAWcxzEh7PvuDF8CmjzaOfm6beE3UR1eEXcMoqreE5n3s4iOmKI4rH0YmusJwrGwrd6zhTUz4SD8a4LRXe5piqZOxIKw6wtze4e6b7Mm/m7Y6VXIqr5LwDyyJEpMUU+AUufPQQW9SisGpzwjZYsTz/LsHyKh1PzvCxKJFNhaoeESXJTsOiYCqRd0go4Eg+rQEQT/Gj2K8FbcDqaMqKlCdjK2Igh6mfan3M6Sd6qOP/XNtbNAXAB7NlnkxGCSf+B/T7alJO+ivBWGvgSYEbIqLAqWChA2PYEM/E9jfiDNeimU/R+CdiC1wIX+44hDStKtC1g/i5NCmwTtcTeIDhZykaHYJ6d+CFR8/N9SCW/iJ8sEI/llt6XgvWm3FCKaZhY41iTHeIxBxQHa77+02IBsIPFalVJH7fznxGWoSlRwrSb9or3/pGMdEuimKBxZsPD9tAA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(396003)(136003)(346002)(8936002)(6486002)(8676002)(38350700002)(38100700002)(956004)(66556008)(66946007)(5660300002)(66476007)(2906002)(44832011)(31686004)(2616005)(31696002)(478600001)(36756003)(26005)(6916009)(16576012)(316002)(4326008)(54906003)(83380400001)(53546011)(186003)(52116002)(86362001)(7406005)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dXNVdzYrMEk1aU0vVHk1bjZKWUxMMEprOUdQLzlzUDRldDFKMG5uNUEzckhv?=
- =?utf-8?B?TGlyZFhHcS9ubytEUitFdnpXbFNhS1hqTFJqWXdFM3l0VjN3eUVWRFZYVFBs?=
- =?utf-8?B?cEcxTDR6Q3QxVlNuaXJVOWIvZVdZc3pVVTF0MVErZHJXNFR5emhZV1JzL1RT?=
- =?utf-8?B?RElKTXIrdnZIdlhKMUVnbFJjK3VWRXFzUWNXbGxxQkZwbk5UcGwrZk83U2tG?=
- =?utf-8?B?WldiVFZhVW93M0RCK0JZKy9qc1publhJc3dLMzltODF0cy8ycTVydDgxcmx2?=
- =?utf-8?B?SmZqbTJkUks5cFIzNzNzK09oOHRWVmZ5ajVwTnVlc200OW9La283a1lnNEh1?=
- =?utf-8?B?VUdCbnRXOGloRDZldTBRREdQb2RidXlrME1HNGlvdDhtL2xZd05ON293K1VY?=
- =?utf-8?B?UnBoZm0rODdnb2tOQ1J1Ty9ZVFdWa0p1eDl4QXlIZ3RVL3NyUUpOREszQ3Yw?=
- =?utf-8?B?QnNWRnFMcnB0d3VOMWN2cFZWblhGbnJGckJqZ0h2cXlJdkpDSkFJaGp4V3hr?=
- =?utf-8?B?TTREazdpZU5xaHRsMkZVa0xGR3FrT0Q4RStSb09UaVpkVTdmWG5aNWswVDNJ?=
- =?utf-8?B?ZUt5blIyTCt5Uzd2ZDJ4OHJwL1gzRnFzbnl1R0Y5QVpZOVBpK2ZWZ2FhV2ky?=
- =?utf-8?B?eHkxMnVvTnk4Mk5IOTQyNTZFRHBkREx2Ui9LZ3BRMEdMamZxWXY4TC8yblJI?=
- =?utf-8?B?aGw4bFJRME0wVmswVndxUHZYYWRvYWVTdkVsZGFOR0U1Q3N5L0dJUEZNK3l5?=
- =?utf-8?B?R1VrWmkvS3BVVHRkWkNuRjJCeUo0M1lMQlRVa2VVR0FLalpiUWNFUE15ai9N?=
- =?utf-8?B?S0VTM29FUSt5RnZXSXBtYkI4WjhBOHczdFQ5Z21Kckhkcm9XMGdyYVdzc1k5?=
- =?utf-8?B?dGxVQ05rQ045bXhJRkczRFh5L3owaG8yaVdzZHp4MGZPTEVLNk5TN3lGdEw4?=
- =?utf-8?B?VkxzMTIwczlqdXN4eWNEYXZ6eEVzcmdaUWtRbUxxcjhsS3VLai9xWE85Zzly?=
- =?utf-8?B?b1JjQUJ6SzNjckZ4aTE3SG82djJHNTBTbEgvQzJ0RmdyL2VnUy9teGdVUmlY?=
- =?utf-8?B?YzRVVU9TdHMrZGJKT3orOEZFS1UyS2d0akhSZ3E2enA4bFJkQWhtNjRjR1Qw?=
- =?utf-8?B?NW40ZXNHckZVWVArZldLWm1wTFQzcHYydHRMeWlBdW90WVBnSmYvQmdVeFpH?=
- =?utf-8?B?clVxWGY2RkswcE5EQzIrM25pdmFiZXlId1RzMmlxSGNEMll0UTNTYzMxSy96?=
- =?utf-8?B?VnhxalMyeFBFM1NJTWN1dVVvbzJmTGZwUVdENEY3NXlDSXBaYjd5TXA0N0dO?=
- =?utf-8?B?bkx2QlA3VkFyZHZIRWR3YlZjTDYxM3FZNW5VTldyM3pNSnd3eHQ0c0lhOFhr?=
- =?utf-8?B?bXR0SjJCeW1sV3NBRjRTYjFJWTd0Rit0ZFJiVWlGLzhGQWltZjRBK3FQdnVq?=
- =?utf-8?B?Q2hPTVlra0h6NTZSeEc5U000bWppMVlKWUlEdFg5WnlPdTQzalBrTkFhWkQz?=
- =?utf-8?B?VW5RVWYrek5wTjczUHcwMU44OHdGZkJWc2R2WVNaVEFtQy9CWTVPRmx2cDNY?=
- =?utf-8?B?MTBZNEdxY3VDQ0E0azlyNXAwVmM4QWV0UXFYTFVwQXloK0x4Z1NpeWcvbVpW?=
- =?utf-8?B?Y1dFWjJYRHQ5bE5aYlBLR2xyTWJsZ0NYSzlhTDBzZmVIUE5XOWYrUDRaL3V3?=
- =?utf-8?B?U21oRTRBOFFBOW1HNTJqYlNlblk2T2x3Z3djUUJMc0xBSmdEUHlldlpkamhi?=
- =?utf-8?Q?+PkUGv2ihQbwK7rVCjrB0beIA4f2bPPWhKFUgpI?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 715e5e0c-ae4c-4a34-b2a4-08d94ac0e473
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 14:24:17.9997
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LcBxFMluTgAXFeoe+pyLR9zsheARIare/i/jnldP1Wk2VVdwZWxJRhqM8cTDtmdcnsGmlfbHmXVXyXuLkLTwoQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4592
+        id S240793AbhGSNn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 09:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232022AbhGSNnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 09:43:55 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7476E60FE9;
+        Mon, 19 Jul 2021 14:24:35 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m5UC9-00EE2W-Ao; Mon, 19 Jul 2021 15:24:33 +0100
+Date:   Mon, 19 Jul 2021 15:24:32 +0100
+Message-ID: <87h7gqjs9r.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        tabba@google.com, dbrazdil@google.com, kernel-team@android.com
+Subject: Re: [PATCH 07/14] KVM: arm64: Enable forcing page-level stage-2 mappings
+In-Reply-To: <20210719104735.3681732-8-qperret@google.com>
+References: <20210719104735.3681732-1-qperret@google.com>
+        <20210719104735.3681732-8-qperret@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: qperret@google.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com, tabba@google.com, dbrazdil@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 19 Jul 2021 11:47:28 +0100,
+Quentin Perret <qperret@google.com> wrote:
+> 
+> Much of the stage-2 manipulation logic relies on being able to destroy
+> block mappings if e.g. installing a smaller mapping in the range. The
+> rationale for this behaviour is that stage-2 mappings can always be
+> re-created lazily. However, this gets more complicated when the stage-2
+> page-table is used to store metadata about the underlying pages. In such
+> a case, destroying a block mapping may lead to losing part of the
+> state, and confuse the user of those metadata (such as the hypervisor in
+> nVHE protected mode).
+> 
+> To fix this, introduce a callback function in the pgtable struct which
+> is called during all map operations to determine whether the mappings
+> can us blocks, or should be forced to page-granularity level. This is
 
+nit: use?
 
-On 7/16/21 4:14 PM, Sean Christopherson wrote:
-> On Wed, Jul 07, 2021, Brijesh Singh wrote:
->> +static unsigned long snp_handle_psc(struct vcpu_svm *svm, struct ghcb *ghcb)
->> +{
->> +	struct kvm_vcpu *vcpu = &svm->vcpu;
->> +	int level, op, rc = PSC_UNDEF_ERR;
->> +	struct snp_psc_desc *info;
->> +	struct psc_entry *entry;
->> +	gpa_t gpa;
->> +
->> +	if (!sev_snp_guest(vcpu->kvm))
->> +		goto out;
->> +
->> +	if (!setup_vmgexit_scratch(svm, true, sizeof(ghcb->save.sw_scratch))) {
->> +		pr_err("vmgexit: scratch area is not setup.\n");
->> +		rc = PSC_INVALID_HDR;
->> +		goto out;
->> +	}
->> +
->> +	info = (struct snp_psc_desc *)svm->ghcb_sa;
->> +	entry = &info->entries[info->hdr.cur_entry];
+> used by the hypervisor when creating the host stage-2 to force
+> page-level mappings when using non-default protection attributes.
 > 
-> Grabbing "entry" here is unnecessary and confusing.
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_pgtable.h  | 63 +++++++++++++++++----------
+>  arch/arm64/kvm/hyp/nvhe/mem_protect.c | 16 +++++--
+>  arch/arm64/kvm/hyp/pgtable.c          | 20 +++++++--
+>  3 files changed, 69 insertions(+), 30 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> index af62203d2f7a..dd72653314c7 100644
+> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> @@ -75,25 +75,6 @@ enum kvm_pgtable_stage2_flags {
+>  	KVM_PGTABLE_S2_IDMAP			= BIT(1),
+>  };
+>  
+> -/**
+> - * struct kvm_pgtable - KVM page-table.
+> - * @ia_bits:		Maximum input address size, in bits.
+> - * @start_level:	Level at which the page-table walk starts.
+> - * @pgd:		Pointer to the first top-level entry of the page-table.
+> - * @mm_ops:		Memory management callbacks.
+> - * @mmu:		Stage-2 KVM MMU struct. Unused for stage-1 page-tables.
+> - */
+> -struct kvm_pgtable {
+> -	u32					ia_bits;
+> -	u32					start_level;
+> -	kvm_pte_t				*pgd;
+> -	struct kvm_pgtable_mm_ops		*mm_ops;
+> -
+> -	/* Stage-2 only */
+> -	struct kvm_s2_mmu			*mmu;
+> -	enum kvm_pgtable_stage2_flags		flags;
+> -};
+> -
+>  /**
+>   * enum kvm_pgtable_prot - Page-table permissions and attributes.
+>   * @KVM_PGTABLE_PROT_X:		Execute permission.
+> @@ -109,11 +90,41 @@ enum kvm_pgtable_prot {
+>  	KVM_PGTABLE_PROT_DEVICE			= BIT(3),
+>  };
+>  
+> -#define PAGE_HYP		(KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W)
+> +#define KVM_PGTABLE_PROT_RW	(KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W)
+> +#define KVM_PGTABLE_PROT_RWX	(KVM_PGTABLE_PROT_RW | KVM_PGTABLE_PROT_X)
+> +
+> +#define PAGE_HYP		KVM_PGTABLE_PROT_RW
+>  #define PAGE_HYP_EXEC		(KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_X)
+>  #define PAGE_HYP_RO		(KVM_PGTABLE_PROT_R)
+>  #define PAGE_HYP_DEVICE		(PAGE_HYP | KVM_PGTABLE_PROT_DEVICE)
+>  
+> +typedef bool (*kvm_pgtable_want_pte_cb_t)(u64 addr, u64 end,
+> +					  enum kvm_pgtable_prot prot);
+> +
+> +/**
+> + * struct kvm_pgtable - KVM page-table.
+> + * @ia_bits:		Maximum input address size, in bits.
+> + * @start_level:	Level at which the page-table walk starts.
+> + * @pgd:		Pointer to the first top-level entry of the page-table.
+> + * @mm_ops:		Memory management callbacks.
+> + * @mmu:		Stage-2 KVM MMU struct. Unused for stage-1 page-tables.
+> + * @flags:		Stage-2 page-table flags.
+> + * @want_pte_cb:	Callback function used during map operations to decide
+> + *			whether block mappings can be used to map the given IPA
+> + *			range.
+> + */
+> +struct kvm_pgtable {
+> +	u32					ia_bits;
+> +	u32					start_level;
+> +	kvm_pte_t				*pgd;
+> +	struct kvm_pgtable_mm_ops		*mm_ops;
+> +
+> +	/* Stage-2 only */
+> +	struct kvm_s2_mmu			*mmu;
+> +	enum kvm_pgtable_stage2_flags		flags;
+> +	kvm_pgtable_want_pte_cb_t		want_pte_cb;
+> +};
 
-Noted.
+nit: does this whole definition really need to move around?
 
-> 
->> +
->> +	if ((info->hdr.cur_entry >= VMGEXIT_PSC_MAX_ENTRY) ||
->> +	    (info->hdr.end_entry >= VMGEXIT_PSC_MAX_ENTRY) ||
->> +	    (info->hdr.cur_entry > info->hdr.end_entry)) {
-> 
-> There's a TOCTOU bug here if the guest uses the GHCB instead of a scratch area.
-> If the guest uses the scratch area, then KVM makes a full copy into kernel memory.
-> But if the guest uses the GHCB, then KVM maps the GHCB into kernel address space
-> but doesn't make a full copy, i.e. the guest can modify the data while it's being
-> processed by KVM.
-> 
-Sure, I can make a full copy of the page-state change buffer.
+> +
+>  /**
+>   * struct kvm_mem_range - Range of Intermediate Physical Addresses
+>   * @start:	Start of the range.
+> @@ -216,21 +227,25 @@ int kvm_pgtable_hyp_map(struct kvm_pgtable *pgt, u64 addr, u64 size, u64 phys,
+>  u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift);
+>  
+>  /**
+> - * kvm_pgtable_stage2_init_flags() - Initialise a guest stage-2 page-table.
+> + * kvm_pgtable_stage2_init_full() - Initialise a guest stage-2 page-table.
+>   * @pgt:	Uninitialised page-table structure to initialise.
+>   * @arch:	Arch-specific KVM structure representing the guest virtual
+>   *		machine.
+>   * @mm_ops:	Memory management callbacks.
+>   * @flags:	Stage-2 configuration flags.
+> + * @want_pte_cb: Callback function used during map operations to decide
+> + *		whether block mappings can be used to map the given IPA
+> + *		range.
+>   *
+>   * Return: 0 on success, negative error code on failure.
+>   */
+> -int kvm_pgtable_stage2_init_flags(struct kvm_pgtable *pgt, struct kvm_arch *arch,
+> +int kvm_pgtable_stage2_init_full(struct kvm_pgtable *pgt, struct kvm_arch *arch,
+>  				  struct kvm_pgtable_mm_ops *mm_ops,
+> -				  enum kvm_pgtable_stage2_flags flags);
+> +				  enum kvm_pgtable_stage2_flags flags,
+> +				  kvm_pgtable_want_pte_cb_t want_pte_cb);
+>  
+>  #define kvm_pgtable_stage2_init(pgt, arch, mm_ops) \
+> -	kvm_pgtable_stage2_init_flags(pgt, arch, mm_ops, 0)
+> +	kvm_pgtable_stage2_init_full(pgt, arch, mm_ops, 0, NULL)
 
+nit: in general, we use __foo() as the primitive for foo(), rather
+than foo_with_icing_on_top().
 
-> IIRC, Peter and I discussed the sketchiness of the GHCB mapping offline a few
-> times, but determined that there were no existing SEV-ES bugs because the guest
-> could only submarine its own emulation request.  But here, it could coerce KVM
-> into running off the end of a buffer.
-> 
-> I think you can get away with capturing cur_entry/end_entry locally, though
-> copying the GHCB would be more robust.  That would also make the code a bit
-> prettier, e.g.
-> 
-> 	cur = info->hdr.cur_entry;
-> 	end = info->hdr.end_entry;
-> 
->> +		rc = PSC_INVALID_ENTRY;
->> +		goto out;
->> +	}
->> +
->> +	while (info->hdr.cur_entry <= info->hdr.end_entry) {
-> 
-> Make this a for loop?
+>  
+>  /**
+>   * kvm_pgtable_stage2_destroy() - Destroy an unused guest stage-2 page-table.
+> diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> index 58edc62be6f7..cdace80d3e28 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> @@ -89,6 +89,7 @@ static void prepare_host_vtcr(void)
+>  					  id_aa64mmfr1_el1_sys_val, phys_shift);
+>  }
+>  
+> +static bool host_stage2_want_pte_cb(u64 addr, u64 end, enum kvm_pgtable_prot prot);
+>  int kvm_host_prepare_stage2(void *pgt_pool_base)
+>  {
+>  	struct kvm_s2_mmu *mmu = &host_kvm.arch.mmu;
+> @@ -101,8 +102,9 @@ int kvm_host_prepare_stage2(void *pgt_pool_base)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = kvm_pgtable_stage2_init_flags(&host_kvm.pgt, &host_kvm.arch,
+> -					    &host_kvm.mm_ops, KVM_HOST_S2_FLAGS);
+> +	ret = kvm_pgtable_stage2_init_full(&host_kvm.pgt, &host_kvm.arch,
+> +					   &host_kvm.mm_ops, KVM_HOST_S2_FLAGS,
+> +					   host_stage2_want_pte_cb);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -225,9 +227,17 @@ static inline int __host_stage2_idmap(u64 start, u64 end,
+>  		__ret;							\
+>  	 })
+>  
+> +static bool host_stage2_want_pte_cb(u64 addr, u64 end, enum kvm_pgtable_prot prot)
+> +{
+> +	if (range_is_memory(addr, end))
+> +		return prot != KVM_PGTABLE_PROT_RWX;
+> +	else
+> +		return prot != KVM_PGTABLE_PROT_RW;
+> +}
 
-Sure, I can use the for loop. IIRC, in previous review feedbacks I got 
-the feeling that while() was preferred in the part1 so I used the 
-similar approach here.
+This really deserves a comment about *why* you make such decision. I
+also find it a bit odd that you use the permissions to decide whether
+to map a block or a not. It feels like the permission is more of a
+side effect than anything else.
 
-> 
-> 	for ( ; cur_entry < end_entry; cur_entry++)
-> 
->> +		entry = &info->entries[info->hdr.cur_entry];
-> 
-> Does this need array_index_nospec() treatment?
-> 
+> +
+>  static int host_stage2_idmap(u64 addr)
+>  {
+> -	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W;
+> +	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_RW;
+>  	struct kvm_mem_range range;
+>  	bool is_memory = find_mem_range(addr, &range);
+>  	int ret;
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index 34cf67997a82..5bdbe7a31551 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -452,6 +452,8 @@ int kvm_pgtable_hyp_init(struct kvm_pgtable *pgt, u32 va_bits,
+>  	pgt->start_level	= KVM_PGTABLE_MAX_LEVELS - levels;
+>  	pgt->mm_ops		= mm_ops;
+>  	pgt->mmu		= NULL;
+> +	pgt->want_pte_cb	= NULL;
+> +
+>  	return 0;
+>  }
+>  
+> @@ -491,6 +493,7 @@ struct stage2_map_data {
+>  	struct kvm_pgtable_mm_ops	*mm_ops;
+>  
+>  	int				ret;
+> +	bool				force_pte;
 
-I don't think so.
+OK, so you have *two* mechanisms here: once to decide if a range can
+be mapped as a block or not, and another one to remember the result
+while walking the S2 PTW. This probably deserves some documentation
+and/or patch splitting.
 
-thanks
+>  };
+>  
+>  u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift)
+> @@ -613,6 +616,9 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>  	struct kvm_pgtable *pgt = data->mmu->pgt;
+>  	struct kvm_pgtable_mm_ops *mm_ops = data->mm_ops;
+>  
+> +	if (data->force_pte && (level < (KVM_PGTABLE_MAX_LEVELS - 1)))
+> +		return -E2BIG;
+> +
+>  	if (!kvm_block_mapping_supported(addr, end, phys, level))
+>  		return -E2BIG;
+>  
+> @@ -660,6 +666,9 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end, u32 level,
+>  	if (data->anchor)
+>  		return 0;
+>  
+> +	if (data->force_pte && (level < (KVM_PGTABLE_MAX_LEVELS - 1)))
+> +		return 0;
+> +
+>  	if (!kvm_block_mapping_supported(addr, end, data->phys, level))
+
+There is something in me screaming that kvm_block_mapping_supported()
+should be the point where we check for these things...  Or at least a
+helper function that takes 'data' as a parameter.
+
+>  		return 0;
+>  
+> @@ -791,6 +800,7 @@ int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
+>  		.memcache	= mc,
+>  		.mm_ops		= pgt->mm_ops,
+>  		.ret		= 0,
+> +		.force_pte	= pgt->want_pte_cb && pgt->want_pte_cb(addr, addr + size, prot),
+
+Reading this makes me want to rename want_pte_cb() to force_pte_cb()...
+
+>  	};
+>  	struct kvm_pgtable_walker walker = {
+>  		.cb		= stage2_map_walker,
+> @@ -826,6 +836,7 @@ int kvm_pgtable_stage2_set_owner(struct kvm_pgtable *pgt, u64 addr, u64 size,
+>  		.mm_ops		= pgt->mm_ops,
+>  		.owner_id	= owner_id,
+>  		.ret		= 0,
+> +		.force_pte	= true,
+>  	};
+>  	struct kvm_pgtable_walker walker = {
+>  		.cb		= stage2_map_walker,
+> @@ -1070,9 +1081,11 @@ int kvm_pgtable_stage2_flush(struct kvm_pgtable *pgt, u64 addr, u64 size)
+>  	return kvm_pgtable_walk(pgt, addr, size, &walker);
+>  }
+>  
+> -int kvm_pgtable_stage2_init_flags(struct kvm_pgtable *pgt, struct kvm_arch *arch,
+> -				  struct kvm_pgtable_mm_ops *mm_ops,
+> -				  enum kvm_pgtable_stage2_flags flags)
+> +
+> +int kvm_pgtable_stage2_init_full(struct kvm_pgtable *pgt, struct kvm_arch *arch,
+> +				 struct kvm_pgtable_mm_ops *mm_ops,
+> +				 enum kvm_pgtable_stage2_flags flags,
+> +				 kvm_pgtable_want_pte_cb_t want_pte_cb)
+>  {
+>  	size_t pgd_sz;
+>  	u64 vtcr = arch->vtcr;
+> @@ -1090,6 +1103,7 @@ int kvm_pgtable_stage2_init_flags(struct kvm_pgtable *pgt, struct kvm_arch *arch
+>  	pgt->mm_ops		= mm_ops;
+>  	pgt->mmu		= &arch->mmu;
+>  	pgt->flags		= flags;
+> +	pgt->want_pte_cb	= want_pte_cb;
+>  
+>  	/* Ensure zeroed PGD pages are visible to the hardware walker */
+>  	dsb(ishst);
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
