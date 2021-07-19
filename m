@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4A63CE85F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8683CE6A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356134AbhGSQkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:40:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56908 "EHLO mail.kernel.org"
+        id S1350635AbhGSQLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:11:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346900AbhGSPST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:18:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9DCD6140C;
-        Mon, 19 Jul 2021 15:58:05 +0000 (UTC)
+        id S1345465AbhGSPJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:09:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A155608FC;
+        Mon, 19 Jul 2021 15:48:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710286;
-        bh=iaom5LMGMUcs5cgKGLW7PvOCY5RHyoSGxIBVI4rq93w=;
+        s=korg; t=1626709731;
+        bh=NVlw8FdD1InjhL9vfc52dDxWF+C4FWMDMsiClR8WO7w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cRqH+vSwaI4mhTmIY6rET54yb5bCOk6Xl8wInLVA+FCYwHrSb2BeyobucugFi2WtQ
-         sgLeCccMC5iALTUUPWSjtjit3BVlJIfoHLC4nz6W3JgRDp/tVwCBkfBgCXdNb5UgIV
-         wmrRmMc6PYgy/nI67O4CuUUqNBAnEVKsceuMme1g=
+        b=sYWQ2rBUxJPkswnSwRMF+shqpszEY4rDjO1MBpF6v5rWL8layrDyK95urtFkkSk4m
+         2iUtcTrNCv7HnA1Q8NiqVSpanCibT5aVYAVzffjTURMEXZ4OuMMJfDnBkBAqc/MiPJ
+         QbKe589hvK1KgL4qfb7X2/E4a72B6Ks8PZunSmXQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Wakabayashi <mwakabayashi@vmware.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Jian Cai <jiancai@google.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 154/243] NFSv4: Initialise connection to the server in nfs4_alloc_client()
+Subject: [PATCH 5.4 075/149] ARM: 9087/1: kprobes: test-thumb: fix for LLVM_IAS=1
 Date:   Mon, 19 Jul 2021 16:53:03 +0200
-Message-Id: <20210719144945.880910336@linuxfoundation.org>
+Message-Id: <20210719144919.033297424@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,138 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-[ Upstream commit dd99e9f98fbf423ff6d365b37a98e8879170f17c ]
+[ Upstream commit 8b95a7d90ce8160ac5cffd5bace6e2eba01a871e ]
 
-Set up the connection to the NFSv4 server in nfs4_alloc_client(), before
-we've added the struct nfs_client to the net-namespace's nfs_client_list
-so that a downed server won't cause other mounts to hang in the trunking
-detection code.
+There's a few instructions that GAS infers operands but Clang doesn't;
+from what I can tell the Arm ARM doesn't say these are optional.
 
-Reported-by: Michael Wakabayashi <mwakabayashi@vmware.com>
-Fixes: 5c6e5b60aae4 ("NFS: Fix an Oops in the pNFS files and flexfiles connection setup to the DS")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+F5.1.257 TBB, TBH T1 Halfword variant
+F5.1.238 STREXD T1 variant
+F5.1.84 LDREXD T1 variant
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1309
+
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Jian Cai <jiancai@google.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4client.c | 82 +++++++++++++++++++++++----------------------
- 1 file changed, 42 insertions(+), 40 deletions(-)
+ arch/arm/probes/kprobes/test-thumb.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/fs/nfs/nfs4client.c b/fs/nfs/nfs4client.c
-index 7491323a5820..6d74f2e2de46 100644
---- a/fs/nfs/nfs4client.c
-+++ b/fs/nfs/nfs4client.c
-@@ -197,8 +197,11 @@ void nfs40_shutdown_client(struct nfs_client *clp)
+diff --git a/arch/arm/probes/kprobes/test-thumb.c b/arch/arm/probes/kprobes/test-thumb.c
+index 456c181a7bfe..4e11f0b760f8 100644
+--- a/arch/arm/probes/kprobes/test-thumb.c
++++ b/arch/arm/probes/kprobes/test-thumb.c
+@@ -441,21 +441,21 @@ void kprobe_thumb32_test_cases(void)
+ 		"3:	mvn	r0, r0	\n\t"
+ 		"2:	nop		\n\t")
  
- struct nfs_client *nfs4_alloc_client(const struct nfs_client_initdata *cl_init)
- {
--	int err;
-+	char buf[INET6_ADDRSTRLEN + 1];
-+	const char *ip_addr = cl_init->ip_addr;
- 	struct nfs_client *clp = nfs_alloc_client(cl_init);
-+	int err;
-+
- 	if (IS_ERR(clp))
- 		return clp;
+-	TEST_RX("tbh	[pc, r",7, (9f-(1f+4))>>1,"]",
++	TEST_RX("tbh	[pc, r",7, (9f-(1f+4))>>1,", lsl #1]",
+ 		"9:			\n\t"
+ 		".short	(2f-1b-4)>>1	\n\t"
+ 		".short	(3f-1b-4)>>1	\n\t"
+ 		"3:	mvn	r0, r0	\n\t"
+ 		"2:	nop		\n\t")
  
-@@ -222,6 +225,44 @@ struct nfs_client *nfs4_alloc_client(const struct nfs_client_initdata *cl_init)
- 	init_waitqueue_head(&clp->cl_lock_waitq);
- #endif
- 	INIT_LIST_HEAD(&clp->pending_cb_stateids);
-+
-+	if (cl_init->minorversion != 0)
-+		__set_bit(NFS_CS_INFINITE_SLOTS, &clp->cl_flags);
-+	__set_bit(NFS_CS_DISCRTRY, &clp->cl_flags);
-+	__set_bit(NFS_CS_NO_RETRANS_TIMEOUT, &clp->cl_flags);
-+
-+	/*
-+	 * Set up the connection to the server before we add add to the
-+	 * global list.
-+	 */
-+	err = nfs_create_rpc_client(clp, cl_init, RPC_AUTH_GSS_KRB5I);
-+	if (err == -EINVAL)
-+		err = nfs_create_rpc_client(clp, cl_init, RPC_AUTH_UNIX);
-+	if (err < 0)
-+		goto error;
-+
-+	/* If no clientaddr= option was specified, find a usable cb address */
-+	if (ip_addr == NULL) {
-+		struct sockaddr_storage cb_addr;
-+		struct sockaddr *sap = (struct sockaddr *)&cb_addr;
-+
-+		err = rpc_localaddr(clp->cl_rpcclient, sap, sizeof(cb_addr));
-+		if (err < 0)
-+			goto error;
-+		err = rpc_ntop(sap, buf, sizeof(buf));
-+		if (err < 0)
-+			goto error;
-+		ip_addr = (const char *)buf;
-+	}
-+	strlcpy(clp->cl_ipaddr, ip_addr, sizeof(clp->cl_ipaddr));
-+
-+	err = nfs_idmap_new(clp);
-+	if (err < 0) {
-+		dprintk("%s: failed to create idmapper. Error = %d\n",
-+			__func__, err);
-+		goto error;
-+	}
-+	__set_bit(NFS_CS_IDMAP, &clp->cl_res_state);
- 	return clp;
+-	TEST_RX("tbh	[pc, r",12, ((9f-(1f+4))>>1)+1,"]",
++	TEST_RX("tbh	[pc, r",12, ((9f-(1f+4))>>1)+1,", lsl #1]",
+ 		"9:			\n\t"
+ 		".short	(2f-1b-4)>>1	\n\t"
+ 		".short	(3f-1b-4)>>1	\n\t"
+ 		"3:	mvn	r0, r0	\n\t"
+ 		"2:	nop		\n\t")
  
- error:
-@@ -372,8 +413,6 @@ static int nfs4_init_client_minor_version(struct nfs_client *clp)
- struct nfs_client *nfs4_init_client(struct nfs_client *clp,
- 				    const struct nfs_client_initdata *cl_init)
- {
--	char buf[INET6_ADDRSTRLEN + 1];
--	const char *ip_addr = cl_init->ip_addr;
- 	struct nfs_client *old;
- 	int error;
+-	TEST_RRX("tbh	[r",1,9f, ", r",14,1,"]",
++	TEST_RRX("tbh	[r",1,9f, ", r",14,1,", lsl #1]",
+ 		"9:			\n\t"
+ 		".short	(2f-1b-4)>>1	\n\t"
+ 		".short	(3f-1b-4)>>1	\n\t"
+@@ -468,10 +468,10 @@ void kprobe_thumb32_test_cases(void)
  
-@@ -381,43 +420,6 @@ struct nfs_client *nfs4_init_client(struct nfs_client *clp,
- 		/* the client is initialised already */
- 		return clp;
+ 	TEST_UNSUPPORTED("strexb	r0, r1, [r2]")
+ 	TEST_UNSUPPORTED("strexh	r0, r1, [r2]")
+-	TEST_UNSUPPORTED("strexd	r0, r1, [r2]")
++	TEST_UNSUPPORTED("strexd	r0, r1, r2, [r2]")
+ 	TEST_UNSUPPORTED("ldrexb	r0, [r1]")
+ 	TEST_UNSUPPORTED("ldrexh	r0, [r1]")
+-	TEST_UNSUPPORTED("ldrexd	r0, [r1]")
++	TEST_UNSUPPORTED("ldrexd	r0, r1, [r1]")
  
--	/* Check NFS protocol revision and initialize RPC op vector */
--	clp->rpc_ops = &nfs_v4_clientops;
--
--	if (clp->cl_minorversion != 0)
--		__set_bit(NFS_CS_INFINITE_SLOTS, &clp->cl_flags);
--	__set_bit(NFS_CS_DISCRTRY, &clp->cl_flags);
--	__set_bit(NFS_CS_NO_RETRANS_TIMEOUT, &clp->cl_flags);
--
--	error = nfs_create_rpc_client(clp, cl_init, RPC_AUTH_GSS_KRB5I);
--	if (error == -EINVAL)
--		error = nfs_create_rpc_client(clp, cl_init, RPC_AUTH_UNIX);
--	if (error < 0)
--		goto error;
--
--	/* If no clientaddr= option was specified, find a usable cb address */
--	if (ip_addr == NULL) {
--		struct sockaddr_storage cb_addr;
--		struct sockaddr *sap = (struct sockaddr *)&cb_addr;
--
--		error = rpc_localaddr(clp->cl_rpcclient, sap, sizeof(cb_addr));
--		if (error < 0)
--			goto error;
--		error = rpc_ntop(sap, buf, sizeof(buf));
--		if (error < 0)
--			goto error;
--		ip_addr = (const char *)buf;
--	}
--	strlcpy(clp->cl_ipaddr, ip_addr, sizeof(clp->cl_ipaddr));
--
--	error = nfs_idmap_new(clp);
--	if (error < 0) {
--		dprintk("%s: failed to create idmapper. Error = %d\n",
--			__func__, error);
--		goto error;
--	}
--	__set_bit(NFS_CS_IDMAP, &clp->cl_res_state);
--
- 	error = nfs4_init_client_minor_version(clp);
- 	if (error < 0)
- 		goto error;
+ 	TEST_GROUP("Data-processing (shifted register) and (modified immediate)")
+ 
 -- 
 2.30.2
 
