@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649693CD1F1
+	by mail.lfdr.de (Postfix) with ESMTP id ACB5E3CD1F2
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236304AbhGSJuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:50:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:55012 "EHLO foss.arm.com"
+        id S236322AbhGSJu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:50:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:55020 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236110AbhGSJuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:50:44 -0400
+        id S236234AbhGSJuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 05:50:46 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA7E1ED1;
-        Mon, 19 Jul 2021 03:31:24 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C31091042;
+        Mon, 19 Jul 2021 03:31:25 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C46F63F73D;
-        Mon, 19 Jul 2021 03:31:23 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DD50F3F73D;
+        Mon, 19 Jul 2021 03:31:24 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: [PATCH v2 1/2] sched/fair: Add NOHZ balancer flag for nohz.next_balance updates
-Date:   Mon, 19 Jul 2021 11:31:16 +0100
-Message-Id: <20210719103117.3624936-2-valentin.schneider@arm.com>
+Subject: [PATCH v2 2/2] sched/fair: Trigger nohz.next_balance updates when a CPU goes NOHZ-idle
+Date:   Mon, 19 Jul 2021 11:31:17 +0100
+Message-Id: <20210719103117.3624936-3-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210719103117.3624936-1-valentin.schneider@arm.com>
 References: <20210719103117.3624936-1-valentin.schneider@arm.com>
@@ -35,78 +35,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A following patch will trigger NOHZ idle balances as a means to update
-nohz.next_balance. Vincent noted that blocked load updates can have
-non-negligible overhead, which should be avoided if the intent is to only
-update nohz.next_balance.
+Consider a system with some NOHZ-idle CPUs, such that
 
-Add a new NOHZ balance kick flag, NOHZ_NEXT_KICK. Gate NOHZ blocked load
-update by the presence of NOHZ_STATS_KICK - currently all NOHZ balance
-kicks will have the NOHZ_STATS_KICK flag set, so no change in behaviour is
-expected.
+  nohz.idle_cpus_mask = S
+  nohz.next_balance = T
 
-Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+When a new CPU k goes NOHZ idle (nohz_balance_enter_idle()), we end up
+with:
+
+  nohz.idle_cpus_mask = S \U {k}
+  nohz.next_balance = T
+
+Note that the nohz.next_balance hasn't changed - it won't be updated until
+a NOHZ balance is triggered. This is problematic if the newly NOHZ idle CPU
+has an earlier rq.next_balance than the other NOHZ idle CPUs, IOW if:
+
+  cpu_rq(k).next_balance < nohz.next_balance
+
+In such scenarios, the existing nohz.next_balance will prevent any NOHZ
+balance from happening, which itself will prevent nohz.next_balance from
+being updated to this new cpu_rq(k).next_balance. Unnecessary load balance
+delays of over 12ms caused by this were observed on an arm64 RB5 board.
+
+Use the new nohz.needs_update flag to mark the presence of newly-idle CPUs
+that need their rq->next_balance to be collated into
+nohz.next_balance. Trigger a NOHZ_NEXT_KICK when the flag is set.
+
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- kernel/sched/fair.c  | 9 ++++++---
- kernel/sched/sched.h | 8 +++++++-
- 2 files changed, 13 insertions(+), 4 deletions(-)
+ kernel/sched/fair.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 11d22943753f..5c88698c3664 100644
+index 5c88698c3664..b5a4ea7715b9 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -10506,7 +10506,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+@@ -5698,6 +5698,7 @@ static struct {
+ 	cpumask_var_t idle_cpus_mask;
+ 	atomic_t nr_cpus;
+ 	int has_blocked;		/* Idle CPUS has blocked load */
++	int needs_update;		/* Newly idle CPUs need their next_balance collated */
+ 	unsigned long next_balance;     /* in jiffy units */
+ 	unsigned long next_blocked;	/* Next update of blocked load in jiffies */
+ } nohz ____cacheline_aligned;
+@@ -10351,6 +10352,9 @@ static void nohz_balancer_kick(struct rq *rq)
+ unlock:
+ 	rcu_read_unlock();
+ out:
++	if (READ_ONCE(nohz.needs_update))
++		flags |= NOHZ_NEXT_KICK;
++
+ 	if (flags)
+ 		kick_ilb(flags);
+ }
+@@ -10447,12 +10451,13 @@ void nohz_balance_enter_idle(int cpu)
+ 	/*
+ 	 * Ensures that if nohz_idle_balance() fails to observe our
+ 	 * @idle_cpus_mask store, it must observe the @has_blocked
+-	 * store.
++	 * and @needs_update stores.
+ 	 */
+ 	smp_mb__after_atomic();
+ 
+ 	set_cpu_sd_state_idle(cpu);
+ 
++	WRITE_ONCE(nohz.needs_update, 1);
+ out:
+ 	/*
+ 	 * Each time a cpu enter idle, we assume that it has blocked load and
+@@ -10501,13 +10506,17 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 	/*
+ 	 * We assume there will be no idle load after this update and clear
+ 	 * the has_blocked flag. If a cpu enters idle in the mean time, it will
+-	 * set the has_blocked flag and trig another update of idle load.
++	 * set the has_blocked flag and trigger another update of idle load.
+ 	 * Because a cpu that becomes idle, is added to idle_cpus_mask before
  	 * setting the flag, we are sure to not clear the state and not
  	 * check the load of an idle cpu.
++	 *
++	 * Same applies to idle_cpus_mask vs needs_update.
  	 */
--	WRITE_ONCE(nohz.has_blocked, 0);
-+	if (flags & NOHZ_STATS_KICK)
-+		WRITE_ONCE(nohz.has_blocked, 0);
+ 	if (flags & NOHZ_STATS_KICK)
+ 		WRITE_ONCE(nohz.has_blocked, 0);
++	if (flags & NOHZ_NEXT_KICK)
++		WRITE_ONCE(nohz.needs_update, 0);
  
  	/*
  	 * Ensures that if we miss the CPU, we must see the has_blocked
-@@ -10528,13 +10529,15 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 		 * balancing owner will pick it up.
- 		 */
+@@ -10531,6 +10540,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
  		if (need_resched()) {
--			has_blocked_load = true;
-+			if (flags & NOHZ_STATS_KICK)
-+				has_blocked_load = true;
+ 			if (flags & NOHZ_STATS_KICK)
+ 				has_blocked_load = true;
++			if (flags & NOHZ_NEXT_KICK)
++				WRITE_ONCE(nohz.needs_update, 1);
  			goto abort;
  		}
- 
- 		rq = cpu_rq(balance_cpu);
- 
--		has_blocked_load |= update_nohz_stats(rq);
-+		if (flags & NOHZ_STATS_KICK)
-+			has_blocked_load |= update_nohz_stats(rq);
- 
- 		/*
- 		 * If time for next balance is due,
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 9a1c6aeb9165..b0f38b5d2550 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2695,12 +2695,18 @@ extern void cfs_bandwidth_usage_dec(void);
- #define NOHZ_BALANCE_KICK_BIT	0
- #define NOHZ_STATS_KICK_BIT	1
- #define NOHZ_NEWILB_KICK_BIT	2
-+#define NOHZ_NEXT_KICK_BIT	3
- 
-+/* Run rebalance_domains() */
- #define NOHZ_BALANCE_KICK	BIT(NOHZ_BALANCE_KICK_BIT)
-+/* Update blocked load */
- #define NOHZ_STATS_KICK		BIT(NOHZ_STATS_KICK_BIT)
-+/* Update blocked load when entering idle */
- #define NOHZ_NEWILB_KICK	BIT(NOHZ_NEWILB_KICK_BIT)
-+/* Update nohz.next_balance */
-+#define NOHZ_NEXT_KICK		BIT(NOHZ_NEXT_KICK_BIT)
- 
--#define NOHZ_KICK_MASK	(NOHZ_BALANCE_KICK | NOHZ_STATS_KICK)
-+#define NOHZ_KICK_MASK	(NOHZ_BALANCE_KICK | NOHZ_STATS_KICK | NOHZ_NEXT_KICK)
- 
- #define nohz_flags(cpu)	(&cpu_rq(cpu)->nohz_flags)
  
 -- 
 2.25.1
