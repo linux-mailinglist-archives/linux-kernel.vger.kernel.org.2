@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD37D3CF85B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600053CF7E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237591AbhGTKIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:08:52 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:38177 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236868AbhGTKDx (ORCPT
+        id S237487AbhGTJvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 05:51:09 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:50324 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237398AbhGTJtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:03:53 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Tue, 20 Jul 2021 03:28:59 -0700
-Received: from sc-dbc2166.eng.vmware.com (sc-dbc2166.eng.vmware.com [10.182.28.66])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 86F0C200DE;
-        Tue, 20 Jul 2021 03:29:01 -0700 (PDT)
-From:   Jorgen Hansen <jhansen@vmware.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>
-CC:     <gregkh@linuxfoundation.org>, <pv-drivers@vmware.com>,
-        Jorgen Hansen <jhansen@vmware.com>
-Subject: [PATCH] MAINTAINERS: Update for VMCI driver
-Date:   Tue, 20 Jul 2021 03:29:01 -0700
-Message-ID: <1626776941-9163-1-git-send-email-jhansen@vmware.com>
-X-Mailer: git-send-email 2.6.2
+        Tue, 20 Jul 2021 05:49:08 -0400
+X-UUID: a2fa50a6c4404291b4e25540da31ebec-20210720
+X-UUID: a2fa50a6c4404291b4e25540da31ebec-20210720
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 55608880; Tue, 20 Jul 2021 18:29:39 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 20 Jul 2021 18:29:37 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ MTKCAS06.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Tue, 20 Jul 2021 18:29:37 +0800
+From:   <guangming.cao@mediatek.com>
+To:     <christian.koenig@amd.com>
+CC:     <dri-devel@lists.freedesktop.org>, <guangming.cao@mediatek.com>,
+        <linaro-mm-sig@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
+        <sumit.semwal@linaro.org>, <wsd_upstream@mediatek.com>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: Re: [PATCH] dma_buf: remove dmabuf sysfs teardown before release/detach
+Date:   Tue, 20 Jul 2021 18:29:35 +0800
+Message-ID: <20210720102935.83187-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <8d7dfc78-aa85-48b5-2828-21ec6b463ac3@amd.com>
+References: <8d7dfc78-aa85-48b5-2828-21ec6b463ac3@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: jhansen@vmware.com does not
- designate permitted sender hosts)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainer info for the VMware VMCI driver.
+From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-Signed-off-by: Jorgen Hansen <jhansen@vmware.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a61f4f3..7e7c6fa 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19792,6 +19792,14 @@ L:	netdev@vger.kernel.org
- S:	Supported
- F:	drivers/ptp/ptp_vmw.c
- 
-+VMWARE VMCI DRIVER
-+M:	Jorgen Hansen <jhansen@vmware.com>
-+M:	Vishnu Dasa <vdasa@vmware.com>
-+M:	"VMware, Inc." <pv-drivers@vmware.com>
-+L:	linux-kernel@vger.kernel.org
-+S:	Maintained
-+F:	drivers/misc/vmw_vmci/
-+
- VMWARE VMMOUSE SUBDRIVER
- M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
- M:	"VMware, Inc." <pv-drivers@vmware.com>
--- 
-2.6.2
-
+On Tue, 2021-07-20 at 11:31 +0200, Christian König wrote:
+> Am 19.07.21 um 07:19 schrieb guangming.cao@mediatek.com:
+> > From: Guangming Cao <Guangming.Cao@mediatek.com>
+> > 
+> > Dmabuf sysfs stat is used for dmabuf info track.
+> > but these file maybe still use after buffer release/detach,
+> > should clear it before buffer release/detach.
+> 
+> Please rebase on current drm-misc-next. The attachment sysfs files
+> have 
+> been removed in the meantime.
+> 
+> Thanks,
+> Christian.
+> 
+updated, thanks for your reminding.
