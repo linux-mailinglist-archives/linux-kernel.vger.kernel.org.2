@@ -2,100 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032BE3CF55A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 568573CF566
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhGTGw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 02:52:56 -0400
-Received: from mail-ua1-f42.google.com ([209.85.222.42]:37447 "EHLO
-        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234908AbhGTGwo (ORCPT
+        id S235026AbhGTG4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 02:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232164AbhGTG4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:52:44 -0400
-Received: by mail-ua1-f42.google.com with SMTP id w6so7770829uaq.4;
-        Tue, 20 Jul 2021 00:33:22 -0700 (PDT)
+        Tue, 20 Jul 2021 02:56:30 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218DCC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 00:37:08 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id m83so18879199pfd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 00:37:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pwbSHIBLxgN9zlEsecgswveri3V8MEcEgSNn8jds2Tc=;
+        b=f+ZpcNdyeBneAeWjVRGw6Bdsa73D3S6JwUB+9vz0k13cRWodFdl3JotZDuHy678rf+
+         GMscKndaIV5JWODN6mftvEkPdQeWkfSsZr3ZSquwkHTmgAwewAu799ggUNfgxt5qoHJY
+         8mS5dt+lmntFbvJkAyMP1he8RRLsZ542Iwn6D9EBZis+1NvRRst50/I/AI7a5QZ7Mxhx
+         0Yc+VWcrHNSvrH3ie5AzU2E9obEtD/twmsv01SBpfZqKFvQm/5G1/yKDXNjcKnXtxHRq
+         v1dmgMI4jrupltLtRLMfUJI1g+HRM/Ciwdx1RaUA23JxUIJn1lAY7U8dfm7IY8VGqTzG
+         VgKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lcwwIKXkcen+cASiKX8dxRt5ZT8ziwWwN38CXX7LydU=;
-        b=dTHtdYxMC99ojL9KB6M8ky4NXxZPfUZc33CcpVXyJWvmpMuYN7iw+nInCfh/a86opD
-         /f6FPCPsQwvshIdQTK9DymGaz9PK0c7o0UNI+tKQVV4SsmMosbzL+xjicVzy7t8Ovjon
-         eyf8kVxDiFxeb32E+tcU3dnf0I/hJxM534aMvM4T3HjCRFvExHlqcANuu8aZbwZTy7UI
-         OWbYXXE2fGVmKuFgoiXzho1axvwIJbYbtjIx2diPFDlUrtg9wlUl96av1EjbCAf5ChA6
-         YKcVw4pe8lbysryrQKxCB5ZcHsFEe7o7h4kknttjOTozZNKyhEbt6XcK5lcwBEW+f6WN
-         SEgA==
-X-Gm-Message-State: AOAM532X4WmHahO/+aG+xwAr496sngMm+PblkJOjvRb8NBIog6arCbZ8
-        tXEobtEjcNzV0Q5aqxpu/LaGgqdie/A0s5huydUYlfMc
-X-Google-Smtp-Source: ABdhPJwPDX91aff2YPV7tV6BcHro69P/gJKxmT+erTLAbtVlBy5/BOX9Kb3TXYB1oJJEukohKoWiib/KNNVZ8lXCc/c=
-X-Received: by 2002:ab0:6710:: with SMTP id q16mr6956039uam.106.1626766402335;
- Tue, 20 Jul 2021 00:33:22 -0700 (PDT)
+        bh=pwbSHIBLxgN9zlEsecgswveri3V8MEcEgSNn8jds2Tc=;
+        b=P3T1xOqbc5vV3UFxm1NrDVRxM2+l0B/arxA+ULxB1Y34czl9jFe9dBpvxG2ehsaszh
+         ZfKLb/meDrqOuml/B0A/KMOJealpQRBj3ExgaPVdSP2qGY3uYgYqP+tMSVdju0Vncfgs
+         /rAYTRem3VqfUgN0QB/kTd5e4x73NoyVELQ5MA5pWKKRpDDye8CxusleWAg2H0gVUcHv
+         jgYL530lpFrGAFFa64ETo+yHzlOflkbh7jfZ09DYWxVruyUr8UAeqPCtcaYkHhONMOkD
+         A37U2uLRhytBngbXwFQdmhkOI9gff3iuHlTYx7UCYdPECXn/2gQkvkHiMvilF1jM5gAs
+         RLvw==
+X-Gm-Message-State: AOAM531PO3VWx9pntDx6F5i77Lf89IFcA/kPKKi+8Gzd44vnWvEmvyWv
+        0+LtkEWw5s0N51zYa0agCbWqqczI5i+Nsfu49FI=
+X-Google-Smtp-Source: ABdhPJzFWcLQF3eTm9OTmlEo/y25MSkBplyhQU9Inkqwk7d7oypSRqJ5LXTAaZ9I9btB9hnt3sMki1wPA+fBfVqJPQs=
+X-Received: by 2002:a63:114d:: with SMTP id 13mr29931210pgr.180.1626766627504;
+ Tue, 20 Jul 2021 00:37:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210714145804.2530727-1-geert@linux-m68k.org> <YPXRMXQxCW+Agaz8@ravnborg.org>
-In-Reply-To: <YPXRMXQxCW+Agaz8@ravnborg.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 20 Jul 2021 09:33:11 +0200
-Message-ID: <CAMuHMdXK5X5Zawgp=SivGQSvOi=p_PwarYUR4QikGuB+f_d6YQ@mail.gmail.com>
-Subject: Re: [PATCH resend 0/5] video: fbdev: ssd1307fb: Optimizations and improvements
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Ripard <mripard@kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
+References: <20210121221207.GB2174@grain>
+In-Reply-To: <20210121221207.GB2174@grain>
+From:   Andrei Vagin <avagin@gmail.com>
+Date:   Tue, 20 Jul 2021 00:33:11 -0700
+Message-ID: <CANaxB-zuh-TvODuQ9pdycqGUyXfO4rXXtyFmXFh905+es6AOXQ@mail.gmail.com>
+Subject: Re: [PATCH] prctl: allow to setup brk for et_dyn executables
+To:     Cyrill Gorcunov <gorcunov@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
-
-On Mon, Jul 19, 2021 at 9:23 PM Sam Ravnborg <sam@ravnborg.org> wrote:
-> On Wed, Jul 14, 2021 at 04:57:59PM +0200, Geert Uytterhoeven wrote:
-> > This patch series optimizes console operations on ssd1307fb, after the
-> > customary fixes and cleanups.
-> >
-> > Currently, each screen update triggers an I2C transfer of all screen
-> > data, up to 1 KiB of data for a 128x64 display, which takes at least 20
-> > ms in Fast mode.  While many displays are smaller, and thus require less
-> > data to be transferred, 20 ms is still an optimistic value, as the
-> > actual data transfer may be much slower, especially on bitbanged I2C
-> > drivers.  After this series, the amount of data transfer is reduced, as
-> > fillrect, copyarea, and imageblit only update the rectangle that
-> > changed.
-> >
-> > This has been tested on an Adafruit FeatherWing OLED with an SSD1306
-> > controller and a 128x32 OLED, connected to an OrangeCrab ECP5 FPGA board
-> > running a 64 MHz VexRiscv RISC-V softcore, where it reduced the CPU
-> > usage for blinking the cursor from more than 70% to ca. 10%.
-> >
-> > Thanks for your comments!
-> >
-> > Geert Uytterhoeven (5):
-> >   video: fbdev: ssd1307fb: Propagate errors via
-> >     ssd1307fb_update_display()
-> >   video: fbdev: ssd1307fb: Simplify ssd1307fb_update_display()
-> >   video: fbdev: ssd1307fb: Extract ssd1307fb_set_address_range()
-> >   video: fbdev: ssd1307fb: Optimize screen updates
-> >   video: fbdev: ssd1307fb: Cache address ranges
+On Thu, Jan 21, 2021 at 2:12 PM Cyrill Gorcunov <gorcunov@gmail.com> wrote:
 >
-> A few comments left for a couple of patches.
-> The remaining patches are:
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> Keno Fischer reported that when a binray loaded via
+> ld-linux-x the prctl(PR_SET_MM_MAP) doesn't allow to
+> setup brk value because it lays before mm:end_data.
+>
+> For example a test program shows
+>
+>  | # ~/t
+>  |
+>  | start_code      401000
+>  | end_code        401a15
+>  | start_stack     7ffce4577dd0
+>  | start_data      403e10
+>  | end_data        40408c
+>  | start_brk       b5b000
+>  | sbrk(0)         b5b000
+>
+> and when executed via ld-linux
+>
+>  | # /lib64/ld-linux-x86-64.so.2 ~/t
+>  |
+>  | start_code      7fc25b0a4000
+>  | end_code        7fc25b0c4524
+>  | start_stack     7fffcc6b2400
+>  | start_data      7fc25b0ce4c0
+>  | end_data        7fc25b0cff98
+>  | start_brk       55555710c000
+>  | sbrk(0)         55555710c000
+>
+> This of course prevent criu from restoring such programs.
+> Looking into how kernel operates with brk/start_brk inside
+> brk() syscall I don't see any problem if we allow to setup
+> brk/start_brk without checking for end_data. Even if someone
+> pass some weird address here on a purpose then the worst
+> possible result will be an unexpected unmapping of existing
+> vma (own vma, since prctl works with the callers memory) but
+> test for RLIMIT_DATA is still valid and a user won't be able
+> to gain more memory in case of expanding VMAs via new values
+> shipped with prctl call.
+>
+> Reported-by: Keno Fischer <keno@juliacomputing.com>
+> Signed-off-by: Cyrill Gorcunov <gorcunov@gmail.com>
+> CC: Andrew Morton <akpm@linux-foundation.org>
+> CC: Dmitry Safonov <0x7f454c46@gmail.com>
+> CC: Andrey Vagin <avagin@gmail.com>
 
-Thank you!
+Acked-by: Andrey Vagin <avagin@gmail.com>
+Fixes: bbdc6076d2e5 ("binfmt_elf: move brk out of mmap when doing
+direct loader exec")
 
-> Do you have commit rights to drm-misc-next?
+> CC: Kirill Tkhai <ktkhai@virtuozzo.com>
+> CC: Eric W. Biederman <ebiederm@xmission.com>
+> ---
+> Guys, take a look please once time permit. Hopefully I didn't
+> miss something 'cause made this patch via code reading only.
+>
+> Andrey, do we still have a criu container which tests new kernels,
+> right? Would be great to run criu tests with this patch applied
+> to make sure everything is intact.
 
-No I have not (and I don't think I should).
+Sorry for the delay. I run tests and everything works as expected.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+Andrei
