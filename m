@@ -2,104 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E776E3D0452
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 00:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2713D0457
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 00:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhGTVbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 17:31:19 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:50044 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbhGTV3a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 17:29:30 -0400
-Received: by mail-io1-f69.google.com with SMTP id h7-20020a6bb7070000b0290525efa1b760so82050iof.16
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 15:10:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=su0ZDiChfXsok14gNrh34ghXNW9Yz7pmB2Wte3vJIIU=;
-        b=NuUeR/bX5HrUE6Br0QXoIag0NeKDMHgkwIoMd8US8W/CF2WwS/LcNzYgQkeGUGvscl
-         3/J4D5i4QCvT1snm6mxCJXf3/ictibfx6gBxG5NDjeVWu0sGufBJQApplJ48Rx7sHS5f
-         rrCOwSOk3sVvccawcA6qrh1G2JzksP72Nib7rw9XrsbsCRlOPLf8J7/C+Y9Pyyrak7aU
-         fIkZQ5hDNyGFxPSSN5+CybHd+i/jdfE/9p0o0HtVzkBxQZ6OKXePwv0qHUnbyX7TPstE
-         68wefPL0eU4PbMY9208zQQndQf1ygZEfLyTsYqn+Yvbb3ZJxy2Twd1624Z7mwoMtrAzB
-         SqFA==
-X-Gm-Message-State: AOAM530o802QGRH5JlwtJFWEbEVamjQJ20oCUlsqEMMJpiP4ODEfNHjK
-        64xIpxpbi/KiCoJirQZ+CmtwePV8Gi0iKxvKxBohnqa2Qxof
-X-Google-Smtp-Source: ABdhPJw7gKJqBfPZhtoEW17TY2o5NwcXqOloYEoHUj5de29DbsZwtbAHDlVohsYHSOXNqd2gHkTi+g1IngNnrlUzrBL6/KYKWFuG
+        id S232345AbhGTVcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 17:32:05 -0400
+Received: from mail-dm6nam12on2110.outbound.protection.outlook.com ([40.107.243.110]:31835
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231702AbhGTVbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 17:31:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lzTcHlbKD0dN/Jo/GK3VAriRr2+ce/FnqdTt6D3hqKwMM3NcPnb0DeaUr6JgcND9D1xgoe/p4X0fsKHAabTNkLjrh3vXzupy+ksYfzz0oMFQrs6GBY62hwNkoPjwMzvGcNKtt78MLmUM9NOly36FiR3O654jWDU7noE7SpycBM/seD7v7X2Mio7bABqDjBO2z4iHovvb5vucTpYhIIc35GRss3i94K3lK3RT5yueVC4AE/CJGJ3ImIGPIutU+Vmwage8h6Buo3RonOzJ0Rbyod+ozxhN8MgY3OvG6aHwCvCk+qSS9uZT/cDW/EmsWEnWNfSKFKueUGWwaeibEaMX2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MeULuOqifQAojlTc/nJ8EgALsbv5pPouQ8n+lUPR7Y4=;
+ b=U75GHHt5chqfF9QjPMcX/oQMCl+s1cmiVWZdDWEcUGSgCRwocBfYPMMKSCaZJikMYBlDJEBxzqXPDV6TV51xxAKuKCFp72hvRlu5Lm1zZ5yYjJRlmSYAWHKu+Qw4yVna1BwCVbpWD129o8pSKOnRAmEPJGfZZ5uJgtD3Ky5eJhueWG/z69bQCFoiD9MzeF5LTqzqqRabJyRfVYgE9Ijb4wW+3VvwVssYfLE6YkjLPdZ3hnamJ1nbV69PrhJu7FT4sl1uATqq3S0JKLbaDX83ilrRlYBXe+kFlqsNc3QWWJ42gzw/ubqKhAdhB/jFXb95z9d03n1TAOLhiOCWBW0JjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MeULuOqifQAojlTc/nJ8EgALsbv5pPouQ8n+lUPR7Y4=;
+ b=eyT4vgqcdgOOY3aWmn7oc1ZA/iofzjtdkSztNwYPfSTQ6LfBZDtTeudHR/LJwkdMjc5b334mn8pgTVGG93n8bW8nMXUjpNp3hueY6LrUsg0pL/Usc0GehtliToBVc36/NpEkZ+ef83/S08a0iMyooKD1Dd7GVa5h+6dw02wg9oI=
+Received: from BY5PR21MB1506.namprd21.prod.outlook.com (2603:10b6:a03:23d::12)
+ by BYAPR21MB1669.namprd21.prod.outlook.com (2603:10b6:a02:be::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.6; Tue, 20 Jul
+ 2021 22:12:19 +0000
+Received: from BY5PR21MB1506.namprd21.prod.outlook.com
+ ([fe80::d97f:36c9:1b1:5d07]) by BY5PR21MB1506.namprd21.prod.outlook.com
+ ([fe80::d97f:36c9:1b1:5d07%8]) with mapi id 15.20.4373.006; Tue, 20 Jul 2021
+ 22:12:19 +0000
+From:   Long Li <longli@microsoft.com>
+To:     Jiri Slaby <jirislaby@kernel.org>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        "linux-fs@vger.kernel.org" <linux-fs@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+CC:     Jonathan Corbet <corbet@lwn.net>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: RE: [Patch v4 2/3] Drivers: hv: add Azure Blob driver
+Thread-Topic: [Patch v4 2/3] Drivers: hv: add Azure Blob driver
+Thread-Index: AQHXfRfGpWx8JX5XBkGm4J8f9X8COatLtWUAgAC0zpA=
+Date:   Tue, 20 Jul 2021 22:12:18 +0000
+Message-ID: <BY5PR21MB15069D0519AD92773355FCF6CEE29@BY5PR21MB1506.namprd21.prod.outlook.com>
+References: <1626751866-15765-1-git-send-email-longli@linuxonhyperv.com>
+ <1626751866-15765-3-git-send-email-longli@linuxonhyperv.com>
+ <90ed52d3-5095-9789-53f0-477ba70edc3b@kernel.org>
+In-Reply-To: <90ed52d3-5095-9789-53f0-477ba70edc3b@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=37bdcd41-ad74-4147-85e4-c6b5c5c95e6f;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-07-20T21:57:11Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f558d41d-a8d7-4cf8-d3c5-08d94bcb70bf
+x-ms-traffictypediagnostic: BYAPR21MB1669:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <BYAPR21MB1669F1EF9349B93B37BAA767CEE29@BYAPR21MB1669.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Qf0RxXHasB38zGKCO0t7bdYHtmQ5NmR+JouYhHH8NeDUBB7TMenpiOFAlRsG/6LsRLgCywWMrIXCYmXfcKbFIaZMrQ0qCnLC5x2+KoY5fUV/okoZG1so6huWdT+BYcA1nhVVl+L12xRv7QTGNdnAtr9/ARLgM5zRrWZFabBEOjG9mJam0VRnbI/b2ykh2IVLzugDQBmbhr0UMc+h6Ft2F2Gqjr1AAJgjpbUtPRNwFc7/dRrkqc39AGySeU/MjBO0RNyfKw5tDBjBUSpT9s8tev0UplEf2kLV7KjyKCo19VaX87pbfFdH58JDQ3dr9UWBP26+AE+sHUL8MxSaASlVmoyKCzp5lBd6VvFRq9SkIPmwuMKrZWMKdTFXGw7bLEneWbNHER0DvCKAkXj3aihVpbf2qFiaiHodxs3kky6uMFPEmMP4msSVuSYdgqNU9wpiXTCGVbTv8bXQCvwKJOv034xbSEmV0rbG6IReRS3L30I9IJCPU/JAbL6grKhhD+BE4qbVfW5YH+Ue8AfsamXbb2Ca6AfV6WOcZsbGZ2h5y/F5+hSD7wcvCW7CpJ6n8m8jofY4NAMBniUeLmhEfM+NudPpF4cthZxO9nKJ+v+VJPoWEhEyV2Sms+sPDpEZ+aYjdbhechBrdyQpqhWcNH9wwSnTCIPKIax/ynCfEwCRzuNFvUdsiSqyQeI44CB92a5pc9QuaZ6tuyhyR8vmrH/eHoiM+6GJjMLSHzu2Jfx5Spuflsw7LrTGAKP2bM0wdh5eQDP9K5RZO7VdQ5ngQgC4o1wXODnf2o28JuOqYdrZF/8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1506.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7696005)(110136005)(9686003)(55016002)(4326008)(66946007)(66446008)(316002)(66476007)(66556008)(64756008)(52536014)(186003)(54906003)(86362001)(83380400001)(26005)(76116006)(10290500003)(6506007)(2906002)(5660300002)(71200400001)(33656002)(508600001)(8990500004)(82950400001)(966005)(82960400001)(8676002)(7416002)(8936002)(38100700002)(122000001)(38070700004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?cXLx2DLTeKvf6DSLecUZxtXXMFnjo1qpkYYGhJQ87R3NIEGxPztdRhugsDmr?=
+ =?us-ascii?Q?2k/DD6aw3OCm8YiuF4ua1ti9sG02LkPgdBMYVA3pqUqjWLukgDQcaFB6ruyn?=
+ =?us-ascii?Q?eB75ZsUcDPh6o0L2GzSsREn6F7scC+LOWHWp4gi53nJ91Mn2wSqF9FtXM0wV?=
+ =?us-ascii?Q?vHKmierJk+KgHVdnBvq6JQkQuzH+nkx+c1lfimbif/zDIVXDnvPlr/dI/WZb?=
+ =?us-ascii?Q?5nHNZHlB6hUc9kGq/2YBSjvSAeXUkZhyn3O8wusgIQyCZpbwX8xqFIh4bWcp?=
+ =?us-ascii?Q?Ijr7dqDX+jyNo0lfh8TwW31koJ9Czi9oKIQxeFL7JzJqlRbhesMr1dM00tm4?=
+ =?us-ascii?Q?ATRa9U6pxbFnRb2S3mQjebpbMNiiRs2KyZ4P59RtvItW/MLH2713MiGcB2R9?=
+ =?us-ascii?Q?FySSLN4CULfWzvYV3373BaaHXnbdQYWQCOtYqL1wY1I24HQQ7nQzA1aE+QE+?=
+ =?us-ascii?Q?J3I+rRh50255lK1CJk1YBp8Lvmbxiur500Z7wmr39bFV7LtMY4P/HioV2sxI?=
+ =?us-ascii?Q?mOp55aAv4nD00ihhY5Kp6K3QqpFFFmBe7cpw4pnS339fQCI7u7czvZeCkGc2?=
+ =?us-ascii?Q?B8LwvbfjEcuLg5p7/fWrOKVMw4boXgdXjUXYsWkuzhk7cMopNO1WCxgKVOE8?=
+ =?us-ascii?Q?0qToDyq3iAGtTO4mXSCGLDORsA/vHYJIYD9LanceMAgDf13Pq+3VcJO/gF/a?=
+ =?us-ascii?Q?9cHhMm3hSvIWQeM6wwQigLmDSedK3WtoKzvRicZqTiJOKsiGbqA8xqj3oe0d?=
+ =?us-ascii?Q?hQcZ+45g96nWGTfBTSCCFPP2DbRpki5VHT6wzaZmNI+gX5ecMcOjXI6CUdg7?=
+ =?us-ascii?Q?KnEirajfAtjbu0nCiMp12/ezz1G8e5oBA6j0p6svFtn/RYFIfL8fPT+EXBRH?=
+ =?us-ascii?Q?uHZKC+BH3tZ9qwfr1WB/+Z1JAVX2QGXhdftgAkK55ty89iDg9ex1KupcGlsR?=
+ =?us-ascii?Q?YsTvymJB8SOK8RWvfovQ8UyRCfpu4n1cvF1HqYZrJl8JQTWRvzrf9OvojNfy?=
+ =?us-ascii?Q?tTrpveMBfCL4zOfWd4QQhToj1zHgwD9VsB3YO235sug2D/W/esTz8d9YQaYR?=
+ =?us-ascii?Q?gqJ0NKFcP7EzwnX89kVRZq2FNYYqotMvu1EaPtRKi1HC/z+Ji6+Tkiboc6C5?=
+ =?us-ascii?Q?ERpk48h+2LnRTojARAjsXwhR0seZdnrpeXjKjOaUf4gInQVGtPrUkEQT9NQ4?=
+ =?us-ascii?Q?mI6DYvL0qbnNIZwpEFYBEPdtr5x8lSV/hJmX82OSR/FwodJ1Xtv02QqNmp7/?=
+ =?us-ascii?Q?VAbgoE33zAigzKUVD0RpAVdk0gbKBnEz9BMYdtIj8eGZX9eHUOQzKcmk3ix7?=
+ =?us-ascii?Q?rO4=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:10e:: with SMTP id s14mr25137569iot.52.1626819008218;
- Tue, 20 Jul 2021 15:10:08 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 15:10:08 -0700
-In-Reply-To: <20210720221445.7d022a9e@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001950a705c795515d@google.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in do_wait_for_common
-From:   syzbot <syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com>
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, hridayhegde1999@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        paskripkin@gmail.com, rkovhaev@gmail.com, straube.linux@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1506.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f558d41d-a8d7-4cf8-d3c5-08d94bcb70bf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2021 22:12:18.9917
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vRWWFlflc6KfX0VKEwF8mQnB3dNCOzFzvsfDyrSxAE1jy2XgVOCOgfjjgpkp6Um0P5BXOjwMZ7p4iokZhQSSIw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1669
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+> Subject: Re: [Patch v4 2/3] Drivers: hv: add Azure Blob driver
+>=20
+> On 20. 07. 21, 5:31, longli@linuxonhyperv.com wrote:
+> > --- /dev/null
+> > +++ b/include/uapi/misc/hv_azure_blob.h
+> > @@ -0,0 +1,34 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+> > +/* Copyright (c) 2021 Microsoft Corporation. */
+> > +
+> > +#ifndef _AZ_BLOB_H
+> > +#define _AZ_BLOB_H
+> > +
+> > +#include <linux/kernel.h>
+> > +#include <linux/uuid.h>
+>=20
+> Quoting from
+> https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flore.
+> kernel.org%2Flinux-
+> doc%2FMWHPR21MB159375586D810EC5DCB66AF0D7039%40MWHPR21MB1
+> 593.namprd21.prod.outlook.com%2F&amp;data=3D04%7C01%7Clongli%40micr
+> osoft.com%7C7fdf2d6ed15d4d4122a308d94b6eeed0%7C72f988bf86f141af91
+> ab2d7cd011db47%7C1%7C0%7C637623762292949381%7CUnknown%7CTWFp
+> bGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVC
+> I6Mn0%3D%7C3000&amp;sdata=3Dkv0ZkU1QL6TxlJJZEQEsT7aqLFL9lmP2SStz8k
+> U5sIs%3D&amp;reserved=3D0:
+> =3D=3D=3D=3D=3D
+> Seems like a #include of asm/ioctl.h (or something similar) is needed so =
+that
+> _IOWR is defined.  Also, a #include is needed for __u32, __aligned_u64,
+> guid_t, etc.
+> =3D=3D=3D=3D=3D
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-BUG: sleeping function called from invalid context in lock_sock_nested
+The user-space code includes "sys/ioctl.h" for calling into ioctl(). "sys/i=
+octl.h"
+includes <linux/ioctl.h>, so it has no problem finding _IOWR.
 
-BUG: sleeping function called from invalid context at net/core/sock.c:3161
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 8824, name: syz-executor.2
-1 lock held by syz-executor.2/8824:
- #0: ffffffff8d89c920 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev_event+0x2b6/0x630 net/bluetooth/hci_sock.c:763
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 0 PID: 8824 Comm: syz-executor.2 Not tainted 5.14.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1d3/0x29f lib/dump_stack.c:105
- ___might_sleep+0x4e5/0x6b0 kernel/sched/core.c:9154
- lock_sock_nested+0x34/0x110 net/core/sock.c:3161
- lock_sock include/net/sock.h:1613 [inline]
- hci_sock_dev_event+0x30a/0x630 net/bluetooth/hci_sock.c:765
- hci_unregister_dev+0x487/0x19b0 net/bluetooth/hci_core.c:4033
- vhci_release+0x73/0xc0 drivers/bluetooth/hci_vhci.c:340
- __fput+0x352/0x7b0 fs/file_table.c:280
- task_work_run+0x146/0x1c0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0x72b/0x2510 kernel/exit.c:825
- do_group_exit+0x168/0x2d0 kernel/exit.c:922
- __do_sys_exit_group+0x13/0x20 kernel/exit.c:933
- __se_sys_exit_group+0x10/0x10 kernel/exit.c:931
- __x64_sys_exit_group+0x37/0x40 kernel/exit.c:931
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665d9
-Code: Unable to access opcode bytes at RIP 0x4665af.
-RSP: 002b:00007ffe15e4abc8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 00007ffe15e4b388 RCX: 00000000004665d9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000043
-RBP: 0000000000000000 R08: 0000000000000025 R09: 00007ffe15e4b388
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00000000004bef54
-R13: 0000000000000010 R14: 0000000000000000 R15: 0000000000400538
-
-======================================================
+guid_t is defined in <uapi/linux/uuid.h>, included from <linux/uuid.h> (in =
+this file)
+__u32 and __aligned_u64 are defined in <uapi/linux/types.>, which is includ=
+ed from <linux/kernel.h> (in this file)
 
 
-Tested on:
 
-commit:         8cae8cd8 seq_file: disallow extremely large seq buffer..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=161182ea300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=300aea483211c875
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc699626e48a6ebaf295
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13c31a5a300000
 
+>=20
+> Why was no include added?
+>=20
+> > +
+> > +/* user-mode sync request sent through ioctl */ struct
+> > +az_blob_request_sync_response {
+> > +	__u32 status;
+> > +	__u32 response_len;
+> > +};
+> > +
+> > +struct az_blob_request_sync {
+> > +	guid_t guid;
+> > +	__u32 timeout;
+> > +	__u32 request_len;
+> > +	__u32 response_len;
+> > +	__u32 data_len;
+> > +	__u32 data_valid;
+> > +	__aligned_u64 request_buffer;
+> > +	__aligned_u64 response_buffer;
+> > +	__aligned_u64 data_buffer;
+> > +	struct az_blob_request_sync_response response; };
+> > +
+> > +#define AZ_BLOB_MAGIC_NUMBER	'R'
+> > +#define IOCTL_AZ_BLOB_DRIVER_USER_REQUEST \
+> > +		_IOWR(AZ_BLOB_MAGIC_NUMBER, 0xf0, \
+> > +			struct az_blob_request_sync)
+> > +
+> > +#endif /* define _AZ_BLOB_H */
+> >
+>=20
+> thanks,
+> --
+> js
+> suse labs
