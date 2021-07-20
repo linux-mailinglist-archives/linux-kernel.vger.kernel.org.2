@@ -2,68 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204753CF771
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED823CF781
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236124AbhGTJ3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 05:29:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235975AbhGTJ3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 05:29:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 661026113B;
-        Tue, 20 Jul 2021 10:10:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626775804;
-        bh=yABBTN23ANDNk3tFqDrNGvC0AT3X8Fv6CxCj6E6cE6s=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=X1GhBEt49QICC6Ss7InUO8U8xjwloC3eEWcZcuPJMoIVuMhhKBBn0Cy7Xyw8mUxdD
-         YVJHHof7yyeQ0cz5bvY9Yx6797mlN/IhemCZRkT6lQWCvUYiGVI5WmTFKE2/vbCHGD
-         NWYnRIwpukYcVKvDXpzSN/KCvyQZq4/2yi8c5NLXRdvPcQwmPMUypUsh8rxE1BxvqW
-         kFIUOGbyeax6CFc0yp3BcSKJIEwsiX+MXclEzXQMojhCa4Xp7QMrbAjA441JibLvrd
-         bLlEOZQSf+ZZFF1mFrK4XnS3x/93/Fm7o+4p3YtvGT0PW9e3I4JXp+I+DWKl1XMKKX
-         X0FHltkYJ+laQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5971860C2A;
-        Tue, 20 Jul 2021 10:10:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH NET] ipv6: ip6_finish_output2: set sk into newly allocated
- nskb
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162677580436.19024.594625629183939751.git-patchwork-notify@kernel.org>
-Date:   Tue, 20 Jul 2021 10:10:04 +0000
-References: <70c0744f-89ae-1869-7e3e-4fa292158f4b@virtuozzo.com>
-In-Reply-To: <70c0744f-89ae-1869-7e3e-4fa292158f4b@virtuozzo.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dsahern@kernel.org, kuba@kernel.org,
-        eric.dumazet@gmail.com, yoshfuji@linux-ipv6.org
+        id S236238AbhGTJdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 05:33:18 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:63878 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233143AbhGTJdE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 05:33:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626776023; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=AABY/orDGTTWdL6LYhMiGUY1MqMbtk4qga0RFxIt0yI=; b=hlKO+JyGP3JE0yw2k+YAvzZOdc7QwUk4aiCwaDuSfWFiXWd7rckcoC+LDNSqdrB2mrl4KCcQ
+ +Z7U/PcZTwOSktukzfo/oQSZBhJnBBxnXYnk4LgCXNidmR7uNYkWrfidlPzFSbZLUn+gFURF
+ I5C7b/632w99YZh1TIEPErZMr3I=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60f6a1c4fcf9fe7b78a241c6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Jul 2021 10:13:24
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2EDDFC4338A; Tue, 20 Jul 2021 10:13:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C65EDC433D3;
+        Tue, 20 Jul 2021 10:13:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C65EDC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
+        saiprakash.ranjan@codeaurora.org, mka@chromium.org
+Cc:     ohad@wizery.com, agross@kernel.org, mathieu.poirier@linaro.org,
+        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
+        dianders@chromium.org, swboyd@chromium.org,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH v2 00/10] Add Modem support on SC7280 SoCs
+Date:   Tue, 20 Jul 2021 15:42:50 +0530
+Message-Id: <1626775980-28637-1-git-send-email-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+This patch series adds support for booting the Modem Q6 DSP found on
+Qualcomm's SC7280 SoCs.
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Depends on:
+aoss yaml: https://patchwork.kernel.org/project/linux-arm-msm/cover/20210709174142.1274554-1-bjorn.andersson@linaro.org/
+qmp_send: https://patchwork.kernel.org/project/linux-arm-msm/cover/1623237532-20829-1-git-send-email-sibis@codeaurora.org/
+rproc qmp: https://patchwork.kernel.org/project/linux-arm-msm/cover/1626755807-11865-1-git-send-email-sibis@codeaurora.org/
 
-On Mon, 19 Jul 2021 10:55:14 +0300 you wrote:
-> skb_set_owner_w() should set sk not to old skb but to new nskb.
-> 
-> Fixes: 5796015fa968("ipv6: allocate enough headroom in ip6_finish_output2()")
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
->  net/ipv6/ip6_output.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+V2:
+ * Misc. typos {patch 3}. [Matthias]
+ * Document the q-channel takedown procedure {patch 5}. [Matthias]
+ * Split reserved memory updates between SoC and platform {patch 6}. [Matthias]
 
-Here is the summary with links:
-  - [NET] ipv6: ip6_finish_output2: set sk into newly allocated nskb
-    https://git.kernel.org/netdev/net/c/2d85a1b31dde
+Sibi Sankar (10):
+  dt-bindings: remoteproc: qcom: pas: Add SC7280 MPSS support
+  remoteproc: qcom: pas: Add SC7280 Modem support
+  dt-bindings: remoteproc: qcom: Update Q6V5 Modem PIL binding
+  iommu/arm-smmu-qcom: Request direct mapping for modem device
+  remoteproc: mss: q6v5-mss: Add modem support on SC7280
+  arm64: dts: qcom: sc7280: Update reserved memory map
+  arm64: dts: qcom: sc7280: Add/Delete/Update reserved memory nodes
+  arm64: dts: qcom: sc7280: Add nodes to boot modem
+  arm64: dts: qcom: sc7280: Add Q6V5 MSS node
+  arm64: dts: qcom: sc7280: Update Q6V5 MSS node
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ .../devicetree/bindings/remoteproc/qcom,adsp.yaml  |   6 +
+ .../devicetree/bindings/remoteproc/qcom,q6v5.txt   |  32 ++-
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts            |  59 +++++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 107 +++++++++
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c         |   1 +
+ drivers/remoteproc/qcom_q6v5_mss.c                 | 252 ++++++++++++++++++++-
+ drivers/remoteproc/qcom_q6v5_pas.c                 |   1 +
+ 7 files changed, 452 insertions(+), 6 deletions(-)
 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
