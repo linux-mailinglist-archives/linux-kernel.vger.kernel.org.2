@@ -2,238 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE96D3CFA8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D05E3CFA91
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239084AbhGTMto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238426AbhGTMd2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:33:28 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772EBC061574;
-        Tue, 20 Jul 2021 06:14:06 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id k4so8985039qkj.13;
-        Tue, 20 Jul 2021 06:14:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=YceUl9gK1f+DUw5lLJnUOuiqygVMuUWiniuXFoUnVS4=;
-        b=Ieb+Cvc3zbFZSyAoPxvbLvuq08w5aQSh69ss+eMxt4RYknpj0ExKOY/oKTfWFturrB
-         E43GJ5eaTG976f21rtJ2nnBi/lEBxkiGThyU+u5BRB2pt7lbhLThFDtmOfkK68KXQqZG
-         59Lr+XBFW7kK5PtlDmyapxVAAzXxTyH4Do5B6vxse4+xuC0N3XzrxvXZafCr8CTJiTPb
-         i1rh9+JKUi10lC7hDFaX9Weh/nO48gwFA0LEAwbt1aSOClkYCVQFQFWTjGBJy3EkuOIz
-         ISttkTcsq1km+U9TyI8B447iB6Qpwy1KRklTgzmdyNNnj8WjdAkhmTzO1Jjv/kxxvD3W
-         tAJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=YceUl9gK1f+DUw5lLJnUOuiqygVMuUWiniuXFoUnVS4=;
-        b=r4mDmHkKRwcWsd/I8qEzQ53dFUq7/60yYVJpY9cKEg2nA/orHBKYgYOYtqKiGJJlox
-         9vCbtfSQlpw0dPmi7FVO7bMPiH8yehQBIjU+yd2sWzjj3wUdpsrPuOcsBLFav+MP9g/a
-         GnxMSj6Qbvi+/rPWGhXFIbjnvh0MLMMZV012CP8PKafwzA8QGuCvfgxUiieRtZLndDFb
-         707vnHUQnxpNVa/Dqp0joXzcyfR0EZoRK0tIdCgoqBJizkJOkEqDkaYR9Pg881t7ViCr
-         sBoQHbI2ce8bfaWmPSCo/iX63uBIgXgN+3s60G1+LE8jtoyLDSHg9KGRNOPGBsaFOUZl
-         HhoA==
-X-Gm-Message-State: AOAM533EtsXIQhHqhulGG7uAO2320vqLCfKBE3W9bMp86HMnZEFW53Na
-        Qym5zmdPmMfznDQbfhbbzhU=
-X-Google-Smtp-Source: ABdhPJzdTEEl3SbX2pZcS9sDsNYjQP7I8ks/LX6G+x/G+B90qTjGmlMr22grI2h627KFW3x/REOsyQ==
-X-Received: by 2002:a05:620a:629:: with SMTP id 9mr15185106qkv.501.1626786845624;
-        Tue, 20 Jul 2021 06:14:05 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id g17sm9701225qkm.34.2021.07.20.06.14.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 06:14:05 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        amit@kernel.org, benh@kernel.crashing.org,
-        brendanhiggins@google.com, corbet@lwn.net, david@redhat.com,
-        dwmw@amazon.com, elver@google.com, fan.du@intel.com,
-        foersleo@amazon.de, greg@kroah.com, gthelen@google.com,
-        guoju.fgj@alibaba-inc.com, jgowans@amazon.com, joe@perches.com,
-        mgorman@suse.de, mheyne@amazon.de, minchan@kernel.org,
-        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
-        riel@surriel.com, rientjes@google.com, rostedt@goodmis.org,
-        rppt@kernel.org, shakeelb@google.com, shuah@kernel.org,
-        sieberf@amazon.com, sj38.park@gmail.com, snu@zelle79.org,
-        vbabka@suse.cz, vdavydov.dev@gmail.com, zgf574564920@gmail.com,
-        linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC v3 04/15] mm/damon/schemes: Implement time quota
-Date:   Tue, 20 Jul 2021 13:12:58 +0000
-Message-Id: <20210720131309.22073-5-sj38.park@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210720131309.22073-1-sj38.park@gmail.com>
-References: <20210720131309.22073-1-sj38.park@gmail.com>
+        id S238610AbhGTMvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:51:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238700AbhGTMfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 08:35:20 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFFE4610D2;
+        Tue, 20 Jul 2021 13:15:58 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m5pbI-00EVqR-FY; Tue, 20 Jul 2021 14:15:57 +0100
+Date:   Tue, 20 Jul 2021 14:15:56 +0100
+Message-ID: <87wnpl86sz.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
+        dbrazdil@google.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 04/16] KVM: arm64: Add MMIO checking infrastructure
+In-Reply-To: <YPav0Hye5Dat/yoL@google.com>
+References: <20210715163159.1480168-1-maz@kernel.org>
+        <20210715163159.1480168-5-maz@kernel.org>
+        <YPav0Hye5Dat/yoL@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: qperret@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org, dbrazdil@google.com, vatsa@codeaurora.org, sdonthineni@nvidia.com, james.morse@arm.com, suzuki.poulose@arm.com, alexandru.elisei@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Tue, 20 Jul 2021 12:13:20 +0100,
+Quentin Perret <qperret@google.com> wrote:
+> 
+> On Thursday 15 Jul 2021 at 17:31:47 (+0100), Marc Zyngier wrote:
+> > +struct s2_walk_data {
+> > +	kvm_pte_t	pteval;
+> > +	u32		level;
+> > +};
+> > +
+> > +static int s2_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+> > +		     enum kvm_pgtable_walk_flags flag, void * const arg)
+> > +{
+> > +	struct s2_walk_data *data = arg;
+> > +
+> > +	data->level = level;
+> > +	data->pteval = *ptep;
+> > +	return 0;
+> > +}
+> > +
+> > +/* Assumes mmu_lock taken */
+> > +static bool __check_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa)
+> > +{
+> > +	struct s2_walk_data data;
+> > +	struct kvm_pgtable_walker walker = {
+> > +		.cb             = s2_walker,
+> > +		.flags          = KVM_PGTABLE_WALK_LEAF,
+> > +		.arg            = &data,
+> > +	};
+> > +
+> > +	kvm_pgtable_walk(vcpu->arch.hw_mmu->pgt, ALIGN_DOWN(ipa, PAGE_SIZE),
+> > +			 PAGE_SIZE, &walker);
+> > +
+> > +	/* Must be a PAGE_SIZE mapping with our annotation */
+> > +	return (BIT(ARM64_HW_PGTABLE_LEVEL_SHIFT(data.level)) == PAGE_SIZE &&
+> > +		data.pteval == MMIO_NOTE);
+> 
+> Nit: you could do this check in the walker directly and check the return
+> value of kvm_pgtable_walk() instead. That would allow to get rid of
+> struct s2_walk_data.
+> 
+> Also, though the compiler might be able to optimize, maybe simplify the
+> level check to level == (KVM_PGTABLE_MAX_LEVELS - 1)?
 
-This commit implements time-based quota for DAMON-based Operation
-Schemes.  If the quota is set, DAMOS tries to use only up to the
-user-defined quota within the 'reset_interval' milliseconds.
+Yup, all good points. I guess I could do the same in my other series
+that parses the userspace PT to extract the level.
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- include/linux/damon.h | 25 +++++++++++++++++++-----
- mm/damon/core.c       | 45 ++++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 60 insertions(+), 10 deletions(-)
+Thanks,
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 7b1fa506e7a6..d2dd36b9dd6c 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -91,20 +91,35 @@ enum damos_action {
- 
- /**
-  * struct damos_quota - Controls the aggressiveness of the given scheme.
-+ * @ms:			Maximum milliseconds that the scheme can use.
-  * @sz:			Maximum bytes of memory that the action can be applied.
-  * @reset_interval:	Charge reset interval in milliseconds.
-  *
-  * To avoid consuming too much CPU time or IO resources for applying the
-- * &struct damos->action to large memory, DAMON allows users to set a size
-- * quota.  The quota can be set by writing non-zero values to &sz.  If the size
-- * quota is set, DAMON tries to apply the action only up to &sz bytes within
-- * &reset_interval.
-+ * &struct damos->action to large memory, DAMON allows users to set time and/or
-+ * size quotas.  The quotas can be set by writing non-zero values to &ms and
-+ * &sz, respectively.  If the time quota is set, DAMON tries to use only up to
-+ * &ms milliseconds within &reset_interval for applying the action.  If the
-+ * size quota is set, DAMON tries to apply the action only up to &sz bytes
-+ * within &reset_interval.
-+ *
-+ * Internally, the time quota is transformed to a size quota using estimated
-+ * throughput of the scheme's action.  DAMON then compares it against &sz and
-+ * uses smaller one as the effective quota.
-  */
- struct damos_quota {
-+	unsigned long ms;
- 	unsigned long sz;
- 	unsigned long reset_interval;
- 
--/* private: For charging the quota */
-+/* private: */
-+	/* For throughput estimation */
-+	unsigned long total_charged_sz;
-+	unsigned long total_charged_ns;
-+
-+	unsigned long esz;	/* Effective size quota in bytes */
-+
-+	/* For charging the quota */
- 	unsigned long charged_sz;
- 	unsigned long charged_from;
- 	struct damon_target *charge_target_from;
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index a41eb9d885bb..321523604ef6 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -107,8 +107,12 @@ struct damos *damon_new_scheme(
- 	scheme->stat_sz = 0;
- 	INIT_LIST_HEAD(&scheme->list);
- 
-+	scheme->quota.ms = quota->ms;
- 	scheme->quota.sz = quota->sz;
- 	scheme->quota.reset_interval = quota->reset_interval;
-+	scheme->quota.total_charged_sz = 0;
-+	scheme->quota.total_charged_ns = 0;
-+	scheme->quota.esz = 0;
- 	scheme->quota.charged_sz = 0;
- 	scheme->quota.charged_from = 0;
- 	scheme->quota.charge_target_from = NULL;
-@@ -555,9 +559,10 @@ static void damon_do_apply_schemes(struct damon_ctx *c,
- 	damon_for_each_scheme(s, c) {
- 		struct damos_quota *quota = &s->quota;
- 		unsigned long sz = r->ar.end - r->ar.start;
-+		struct timespec64 begin, end;
- 
- 		/* Check the quota */
--		if (quota->sz && quota->charged_sz >= quota->sz)
-+		if (quota->esz && quota->charged_sz >= quota->esz)
- 			continue;
- 
- 		/* Skip previously charged regions */
-@@ -602,16 +607,21 @@ static void damon_do_apply_schemes(struct damon_ctx *c,
- 
- 		/* Apply the scheme */
- 		if (c->primitive.apply_scheme) {
--			if (quota->sz && quota->charged_sz + sz > quota->sz) {
--				sz = ALIGN_DOWN(quota->sz - quota->charged_sz,
-+			if (quota->esz &&
-+					quota->charged_sz + sz > quota->esz) {
-+				sz = ALIGN_DOWN(quota->esz - quota->charged_sz,
- 						DAMON_MIN_REGION);
- 				if (!sz)
- 					goto update_stat;
- 				damon_split_region_at(c, t, r, sz);
- 			}
-+			ktime_get_coarse_ts64(&begin);
- 			c->primitive.apply_scheme(c, t, r, s);
-+			ktime_get_coarse_ts64(&end);
-+			quota->total_charged_ns += timespec64_to_ns(&end) -
-+				timespec64_to_ns(&begin);
- 			quota->charged_sz += sz;
--			if (quota->sz && quota->charged_sz >= quota->sz) {
-+			if (quota->esz && quota->charged_sz >= quota->esz) {
- 				quota->charge_target_from = t;
- 				quota->charge_addr_from = r->ar.end + 1;
- 			}
-@@ -625,6 +635,29 @@ static void damon_do_apply_schemes(struct damon_ctx *c,
- 	}
- }
- 
-+/* Shouldn't be called if quota->ms and quota->sz are zero */
-+static void damos_set_effective_quota(struct damos_quota *quota)
-+{
-+	unsigned long throughput;
-+	unsigned long esz;
-+
-+	if (!quota->ms) {
-+		quota->esz = quota->sz;
-+		return;
-+	}
-+
-+	if (quota->total_charged_ns)
-+		throughput = quota->total_charged_sz * 1000000 /
-+			quota->total_charged_ns;
-+	else
-+		throughput = PAGE_SIZE * 1024;
-+	esz = throughput * quota->ms;
-+
-+	if (quota->sz && quota->sz < esz)
-+		esz = quota->sz;
-+	quota->esz = esz;
-+}
-+
- static void kdamond_apply_schemes(struct damon_ctx *c)
- {
- 	struct damon_target *t;
-@@ -634,15 +667,17 @@ static void kdamond_apply_schemes(struct damon_ctx *c)
- 	damon_for_each_scheme(s, c) {
- 		struct damos_quota *quota = &s->quota;
- 
--		if (!quota->sz)
-+		if (!quota->ms && !quota->sz)
- 			continue;
- 
- 		/* New charge window starts */
- 		if (time_after_eq(jiffies, quota->charged_from +
- 					msecs_to_jiffies(
- 						quota->reset_interval))) {
-+			quota->total_charged_sz += quota->charged_sz;
- 			quota->charged_from = jiffies;
- 			quota->charged_sz = 0;
-+			damos_set_effective_quota(quota);
- 		}
- 	}
- 
+	M.
+
 -- 
-2.17.1
-
+Without deviation from the norm, progress is not possible.
