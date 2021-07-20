@@ -2,194 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854E83CFC58
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15463CFC5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239024AbhGTNwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 09:52:18 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:40254 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239498AbhGTNgz (ORCPT
+        id S239584AbhGTNxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 09:53:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49649 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239781AbhGTNjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 09:36:55 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16KEG4Sl017139;
-        Tue, 20 Jul 2021 09:16:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1626790564;
-        bh=1izAijwknd3Czt/bcb4ykqs+qHn6qPns0G130qgqFXA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=PBLrDRvzn6uPsvvc+Z4pNLKr/glTXYbMRhClUC4If7NjKHKR+axy4VK4ImpwcIRKe
-         iBaL79vTCZOQ5v2rvOQl4myYQjKT9YIf4GV9nF/5G4T1KtPSKIVOSLNdj/9cc2oc7D
-         ixScLfosdIEv9xtU6CBGSM5JaUztpi8+cw5ZiiFA=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16KEG4r3123199
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 20 Jul 2021 09:16:04 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 20
- Jul 2021 09:16:03 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 20 Jul 2021 09:16:03 -0500
-Received: from [10.250.234.142] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16KEFxev072402;
-        Tue, 20 Jul 2021 09:16:00 -0500
-Subject: Re: [PATCH] dt-bindings: mtd: spi-nand: Convert to DT schema format
-To:     Rob Herring <robh@kernel.org>
-CC:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>,
-        Michael Walle <michael@walle.cc>
-References: <20210718004125.733-1-a-nandan@ti.com>
- <20210719152413.GA1953551@robh.at.kernel.org>
-From:   "Nandan, Apurva" <a-nandan@ti.com>
-Message-ID: <8f51f347-54d9-d509-303c-d858b3d1896e@ti.com>
-Date:   Tue, 20 Jul 2021 19:45:59 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210719152413.GA1953551@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Tue, 20 Jul 2021 09:39:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626790786;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=9rN1rhrGAmjoIQEBqysfuy+nlrq3d0bQU+TwRDEyQg8=;
+        b=CT03EPUkcRdm2P927PpjLzAk0pDmDITlge8hqyqH1up9UT5cFxZrkizZa7iVutRjIUfNEc
+        2J7/9nix70TkdzZUZQ0YVpbLOhfoLyt5bXBF5wKiagx+rghS48W8Onq8ROKJoEX61IJFYf
+        hiXYTEx6WLzWhH7jPiJFuFBfZBDIepw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-31-VPuCQdTBMcyJW2NPAdD-bA-1; Tue, 20 Jul 2021 10:19:43 -0400
+X-MC-Unique: VPuCQdTBMcyJW2NPAdD-bA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94E4480365C;
+        Tue, 20 Jul 2021 14:19:40 +0000 (UTC)
+Received: from llong.com (ovpn-116-153.rdu2.redhat.com [10.10.116.153])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C8C9269FAD;
+        Tue, 20 Jul 2021 14:19:36 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v3 1/9] cgroup/cpuset: Miscellaneous code cleanup
+Date:   Tue, 20 Jul 2021 10:18:26 -0400
+Message-Id: <20210720141834.10624-2-longman@redhat.com>
+In-Reply-To: <20210720141834.10624-1-longman@redhat.com>
+References: <20210720141834.10624-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use more descriptive variable names for update_prstate(), remove
+unnecessary code and fix some typos. There is no functional change.
 
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ kernel/cgroup/cpuset.c | 40 +++++++++++++++++++---------------------
+ 1 file changed, 19 insertions(+), 21 deletions(-)
 
-On 19-Jul-21 8:54 PM, Rob Herring wrote:
-> On Sun, Jul 18, 2021 at 12:41:25AM +0000, Apurva Nandan wrote:
->> Convert spi-nand.txt binding to YAML format with an added example.
->>
->> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
->> ---
->>  .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
->>  .../devicetree/bindings/mtd/spi-nand.yaml     | 74 +++++++++++++++++++
->>  2 files changed, 74 insertions(+), 5 deletions(-)
->>  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
->>  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
->> deleted file mode 100644
->> index 8b51f3b6d55c..000000000000
->> --- a/Documentation/devicetree/bindings/mtd/spi-nand.txt
->> +++ /dev/null
->> @@ -1,5 +0,0 @@
->> -SPI NAND flash
->> -
->> -Required properties:
->> -- compatible: should be "spi-nand"
->> -- reg: should encode the chip-select line used to access the NAND chip
->> diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
->> new file mode 100644
->> index 000000000000..366b86e1b19c
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
->> @@ -0,0 +1,74 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: SPI NAND flash
->> +
->> +maintainers:
->> +  - Apurva Nandan <a-nandan@ti.com>
->> +
->> +allOf:
->> +  - $ref: "mtd.yaml#"
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - const: spi-nand
-> 
-> Drop 'oneOf' as there is only one.
-> 
->> +
->> +  reg:
->> +    items:
->> +      description:
->> +        should encode the chip-select line used to access the NAND chip
-> 
-> Just:
-> 
-> reg:
->   maxItems: 1
-> 
->> +
->> +  spi-max-frequency: true
->> +  spi-rx-bus-width: true
->> +  spi-tx-bus-width: true
->> +
->> +  partitions:
->> +    type: object
->> +
->> +  '#address-cells': true
->> +  '#size-cells': true
->> +
->> +patternProperties:
->> +  # Note: use 'partitions' node for new users
->> +  '^partition@':
->> +    type: object
->> +
->> +  "^otp(-[0-9]+)?$":
->> +    type: object
->> +
->> +additionalProperties: false
-> 
-> Just do:
-> 
-> additionalProperties:
->   type: object
-> 
-> and then drop partitions, partition@, and ^otp(-[0-9]+)?$.
-> 
->> +
->> +examples:
->> +  - |
->> +    spi {
->> +        #address-cells = <1>;
->> +        #size-cells = <0>;
->> +
->> +        flash@6 {
->> +            #address-cells = <1>;
->> +            #size-cells = <1>;
->> +            compatible = "spi-nand";
->> +            reg = <0x6>;
->> +            spi-max-frequency = <42000000>;
->> +
->> +            partitions {
->> +                compatible = "fixed-partitions";
->> +                #address-cells = <1>;
->> +                #size-cells = <1>;
->> +
->> +                partition@0 {
->> +                    label = "boot";
->> +                    reg = <0 0x200000>;
->> +                };
->> +
->> +                partition@200000 {
->> +                    label = "rootfs";
->> +                    reg = <0x200000 0xce0000>;
->> +                };
->> +            };
->> +        };
->> +    };
->> -- 
->> 2.17.1
->>
->>
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index adb5190c4429..f5fef5516d99 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1114,7 +1114,7 @@ enum subparts_cmd {
+  * cpus_allowed can be granted or an error code will be returned.
+  *
+  * For partcmd_disable, the cpuset is being transofrmed from a partition
+- * root back to a non-partition root. any CPUs in cpus_allowed that are in
++ * root back to a non-partition root. Any CPUs in cpus_allowed that are in
+  * parent's subparts_cpus will be taken away from that cpumask and put back
+  * into parent's effective_cpus. 0 should always be returned.
+  *
+@@ -1225,7 +1225,7 @@ static int update_parent_subparts_cpumask(struct cpuset *cpuset, int cmd,
+ 		/*
+ 		 * partcmd_update w/o newmask:
+ 		 *
+-		 * addmask = cpus_allowed & parent->effectiveb_cpus
++		 * addmask = cpus_allowed & parent->effective_cpus
+ 		 *
+ 		 * Note that parent's subparts_cpus may have been
+ 		 * pre-shrunk in case there is a change in the cpu list.
+@@ -1365,12 +1365,12 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp)
+ 			case PRS_DISABLED:
+ 				/*
+ 				 * If parent is not a partition root or an
+-				 * invalid partition root, clear the state
+-				 * state and the CS_CPU_EXCLUSIVE flag.
++				 * invalid partition root, clear its state
++				 * and its CS_CPU_EXCLUSIVE flag.
+ 				 */
+ 				WARN_ON_ONCE(cp->partition_root_state
+ 					     != PRS_ERROR);
+-				cp->partition_root_state = 0;
++				cp->partition_root_state = PRS_DISABLED;
+ 
+ 				/*
+ 				 * clear_bit() is an atomic operation and
+@@ -1937,30 +1937,28 @@ static int update_flag(cpuset_flagbits_t bit, struct cpuset *cs,
+ 
+ /*
+  * update_prstate - update partititon_root_state
+- * cs:	the cpuset to update
+- * val: 0 - disabled, 1 - enabled
++ * cs: the cpuset to update
++ * new_prs: new partition root state
+  *
+  * Call with cpuset_mutex held.
+  */
+-static int update_prstate(struct cpuset *cs, int val)
++static int update_prstate(struct cpuset *cs, int new_prs)
+ {
+ 	int err;
+ 	struct cpuset *parent = parent_cs(cs);
+-	struct tmpmasks tmp;
++	struct tmpmasks tmpmask;
+ 
+-	if ((val != 0) && (val != 1))
+-		return -EINVAL;
+-	if (val == cs->partition_root_state)
++	if (new_prs == cs->partition_root_state)
+ 		return 0;
+ 
+ 	/*
+ 	 * Cannot force a partial or invalid partition root to a full
+ 	 * partition root.
+ 	 */
+-	if (val && cs->partition_root_state)
++	if (new_prs && (cs->partition_root_state < 0))
+ 		return -EINVAL;
+ 
+-	if (alloc_cpumasks(NULL, &tmp))
++	if (alloc_cpumasks(NULL, &tmpmask))
+ 		return -ENOMEM;
+ 
+ 	err = -EINVAL;
+@@ -1978,7 +1976,7 @@ static int update_prstate(struct cpuset *cs, int val)
+ 			goto out;
+ 
+ 		err = update_parent_subparts_cpumask(cs, partcmd_enable,
+-						     NULL, &tmp);
++						     NULL, &tmpmask);
+ 		if (err) {
+ 			update_flag(CS_CPU_EXCLUSIVE, cs, 0);
+ 			goto out;
+@@ -1990,18 +1988,18 @@ static int update_prstate(struct cpuset *cs, int val)
+ 		 * CS_CPU_EXCLUSIVE bit.
+ 		 */
+ 		if (cs->partition_root_state == PRS_ERROR) {
+-			cs->partition_root_state = 0;
++			cs->partition_root_state = PRS_DISABLED;
+ 			update_flag(CS_CPU_EXCLUSIVE, cs, 0);
+ 			err = 0;
+ 			goto out;
+ 		}
+ 
+ 		err = update_parent_subparts_cpumask(cs, partcmd_disable,
+-						     NULL, &tmp);
++						     NULL, &tmpmask);
+ 		if (err)
+ 			goto out;
+ 
+-		cs->partition_root_state = 0;
++		cs->partition_root_state = PRS_DISABLED;
+ 
+ 		/* Turning off CS_CPU_EXCLUSIVE will not return error */
+ 		update_flag(CS_CPU_EXCLUSIVE, cs, 0);
+@@ -2015,11 +2013,11 @@ static int update_prstate(struct cpuset *cs, int val)
+ 		update_tasks_cpumask(parent);
+ 
+ 	if (parent->child_ecpus_count)
+-		update_sibling_cpumasks(parent, cs, &tmp);
++		update_sibling_cpumasks(parent, cs, &tmpmask);
+ 
+ 	rebuild_sched_domains_locked();
+ out:
+-	free_cpumasks(NULL, &tmp);
++	free_cpumasks(NULL, &tmpmask);
+ 	return err;
+ }
+ 
+@@ -3060,7 +3058,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+ 		goto retry;
+ 	}
+ 
+-	parent =  parent_cs(cs);
++	parent = parent_cs(cs);
+ 	compute_effective_cpumask(&new_cpus, cs, parent);
+ 	nodes_and(new_mems, cs->mems_allowed, parent->effective_mems);
+ 
+-- 
+2.18.1
 
-Agree with all the suggestions made, will correct and send v2.
-
-Thanks,
-Apurva Nandan
