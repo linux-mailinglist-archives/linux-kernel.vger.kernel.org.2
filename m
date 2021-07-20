@@ -2,110 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095893CF4FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B941A3CF4FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243183AbhGTGVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 02:21:19 -0400
-Received: from m12-14.163.com ([220.181.12.14]:60175 "EHLO m12-14.163.com"
+        id S234758AbhGTGVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 02:21:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:51834 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243192AbhGTGUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:20:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=EFHAEyeznjaRByha1I
-        PeNQQ59dwCgkZn4Fm5w0k6liM=; b=AbFQ/rGcALzxH/YA8QEpkHnUt+e489Dd9V
-        82z8VcpZUFZlNK1PTEfeulp+0/ebdZcefmwTfZUMcqaYHPgpLzYLAmxefgE7p+B8
-        ebX1Y9hdw6oS8exjl26pazPxUwHc7gzq2bQiHdg0jhUv0TzuIIpWWH0NxU8tTfox
-        K+oj5d5Ec=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp10 (Coremail) with SMTP id DsCowAAnOcOSdPZgzix+Bw--.36571S2;
-        Tue, 20 Jul 2021 15:00:36 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     Jes.Sorensen@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] rtl8xxxu: remove unnecessary labels
-Date:   Tue, 20 Jul 2021 15:00:40 +0800
-Message-Id: <20210720070040.20840-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DsCowAAnOcOSdPZgzix+Bw--.36571S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uw4kuFW8WF43Gw48XrWkZwb_yoW8AF4Upr
-        ZrC3yYkr1rJr1IqFW7J3WqvF1fu3WSyr97WFZrtw1Sqan3Zrn5WF1q9r9Yyr40gFykJFya
-        qrWDtrsrGa13KrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bjc_-UUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiERTVsV7+4Gp4+AAAsL
+        id S242681AbhGTGVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 02:21:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 435561FB;
+        Tue, 20 Jul 2021 00:01:50 -0700 (PDT)
+Received: from [10.163.66.175] (unknown [10.163.66.175])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EFE5F3F73D;
+        Tue, 20 Jul 2021 00:01:47 -0700 (PDT)
+Subject: Re: [PATCH 01/12] mm/debug_vm_pgtable: Introduce struct
+ vm_pgtable_debug
+To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, shan.gavin@gmail.com,
+        chuhu@redhat.com
+References: <20210706061748.161258-1-gshan@redhat.com>
+ <20210706061748.161258-2-gshan@redhat.com>
+ <a74549ac-6794-25a0-7238-2591745e6810@arm.com>
+ <65dbdc03-dd34-570c-6beb-7497855b5c8e@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <1e39cb49-21d8-7114-4ffa-237c6fa19de9@arm.com>
+Date:   Tue, 20 Jul 2021 12:32:38 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <65dbdc03-dd34-570c-6beb-7497855b5c8e@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
 
-Simplify the code by removing unnecessary labels and returning directly.
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8723a.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
+On 7/19/21 11:09 AM, Gavin Shan wrote:
+> Hi Anshuman,
+> 
+> On 7/14/21 4:24 PM, Anshuman Khandual wrote:
+>> On 7/6/21 11:47 AM, Gavin Shan wrote:
+> 
+> Thanks for your review. I will take all your suggestion if it's applicable.
+> Otherwise, I will explain as below. All changes will be included in v2,
+> which will be posted pretty soon.
 
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8723a.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8723a.c
-index 4f93f88..3fd14e6 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8723a.c
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8723a.c
-@@ -256,10 +256,8 @@ static int rtl8723a_emu_to_active(struct rtl8xxxu_priv *priv)
- 		udelay(10);
- 	}
- 
--	if (!count) {
--		ret = -EBUSY;
--		goto exit;
--	}
-+	if (!count)
-+		return -EBUSY;
- 
- 	/* We should be able to optimize the following three entries into one */
- 
-@@ -292,10 +290,8 @@ static int rtl8723a_emu_to_active(struct rtl8xxxu_priv *priv)
- 		udelay(10);
- 	}
- 
--	if (!count) {
--		ret = -EBUSY;
--		goto exit;
--	}
-+	if (!count)
-+		return -EBUSY;
- 
- 	/* 0x4C[23] = 0x4E[7] = 1, switch DPDT_SEL_P output from WL BB */
- 	/*
-@@ -307,7 +303,6 @@ static int rtl8723a_emu_to_active(struct rtl8xxxu_priv *priv)
- 	val8 &= ~LEDCFG2_DPDT_SELECT;
- 	rtl8xxxu_write8(priv, REG_LEDCFG2, val8);
- 
--exit:
- 	return ret;
- }
- 
-@@ -327,7 +322,7 @@ static int rtl8723au_power_on(struct rtl8xxxu_priv *priv)
- 
- 	ret = rtl8723a_emu_to_active(priv);
- 	if (ret)
--		goto exit;
-+		return ret;
- 
- 	/*
- 	 * 0x0004[19] = 1, reset 8051
-@@ -353,7 +348,7 @@ static int rtl8723au_power_on(struct rtl8xxxu_priv *priv)
- 	val32 &= ~(BIT(28) | BIT(29) | BIT(30));
- 	val32 |= (0x06 << 28);
- 	rtl8xxxu_write32(priv, REG_EFUSE_CTRL, val32);
--exit:
-+
- 	return ret;
- }
- 
--- 
-1.9.1
+You revised the series couple of times before I could even respond
+here :) Anyways, I will jump to V3 directly and continue reviewing
+from there.
 
+- Anshuman
