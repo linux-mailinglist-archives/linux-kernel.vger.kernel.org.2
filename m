@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A863CF548
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0C33CF549
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234607AbhGTGpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 02:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        id S235530AbhGTGpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 02:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbhGTGof (ORCPT
+        with ESMTP id S231645AbhGTGpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:44:35 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648B3C061574;
-        Tue, 20 Jul 2021 00:25:13 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id y17so21668111pgf.12;
-        Tue, 20 Jul 2021 00:25:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6JUzViD68gegqNetI6y/wfdESHnVphWZoL6pCq6XpXA=;
-        b=Z18XKz2sTPo5nFjVL/hrpIGU1K/u3urwWI2NKSE/7ysBnJQyS4FuA39J2/DiRwzNVY
-         pwIEWYxDKfnS+N2znevDC4ZdafFGwKJ7+sDMF3NMuSTrJE0Z0yZk4vpyco619bpZMzce
-         7sv7Tt8LmM4RVNib4tHMhku1gT9tqWyxEnlXDiA5S39qp6mmQNPt25tOpWSRQVYYoRoP
-         gq1yV9SesEwF3pLf5Ha+CSs0W01FDWsUCp4ebOiWGhcPpA5J3WYZN8hhOcfd/K4++Zvo
-         yilRrjwi3XAwlmGVdNYPMbi6AHy/Vl8mA1tdlyfw7Jmhc1umX7P8/6Pr2KinphuZDWj7
-         FFcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6JUzViD68gegqNetI6y/wfdESHnVphWZoL6pCq6XpXA=;
-        b=BpZc4WJByP/HKuTLAHNOJN+TgPQqbTyfr022sdNJfZJGNtguf3vcfb+Q7Mvq3SxW7o
-         itddjoQBzYNw07lr9Qnvg6OWt7HzaXv8B0d3GodktcuwmIWNDUoxuc4ww263am/6XGB+
-         UewY+idXVoWC+Nei+HsttTDKpSwYQXRAyaquFxQJWdeD5XyDd+OCFs9UuCZ9JxuuD7VO
-         A5jAsqYKXVDOOOXf73XREcrEaQEhvYURE4gJABlrP9q+nd3iOfqRBNO79YRAP0LdK77z
-         MBg7QQnc+b5hr5rWcKfFe/wmTgRRefNvVrZq5PwdIKQ8AJXUa/uneFtVSTt8iROK1LGt
-         K92Q==
-X-Gm-Message-State: AOAM530UFo33ZlVaTqtIxcVuhIrfycIQoML33i6KBQTipNwjX9jRe4KE
-        Rfbgd4up+ky1sa/A3rc2yVO3JB+lRpZo+PXF
-X-Google-Smtp-Source: ABdhPJz+YMOMa0hzD7xkWBOX4U1SKNDvi9xrV2fcZL08Kso6/AXDMUptccfIAPVdNWpPY/lx/umHqw==
-X-Received: by 2002:a62:87c6:0:b029:327:8be4:978e with SMTP id i189-20020a6287c60000b02903278be4978emr29765113pfe.50.1626765912887;
-        Tue, 20 Jul 2021 00:25:12 -0700 (PDT)
-Received: from fedora ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
-        by smtp.gmail.com with ESMTPSA id u16sm25236201pgh.53.2021.07.20.00.25.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 00:25:12 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 12:55:07 +0530
-From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-To:     axboe@kernel.dk, hch@infradead.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+cf89d662483d6a1a0790@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] loop: fix setting arbitrarily large block size
-Message-ID: <YPZ6U29ci0xjIQ/O@fedora>
-References: <20210623050933.140572-1-chouhan.shreyansh630@gmail.com>
- <20210626082406.348821-1-chouhan.shreyansh630@gmail.com>
+        Tue, 20 Jul 2021 02:45:04 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A9EEC061574;
+        Tue, 20 Jul 2021 00:25:42 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GTVcL6lLTz9sSs;
+        Tue, 20 Jul 2021 17:25:38 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626765939;
+        bh=t+27JaNOd1oJLgG4CpeSNUAdL729H9bkIaCkGNjSr+0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=U00+YCio+Y/79KQlMNUbm3qjR9N04Y03MvhG8vtXBW/q8UpEGNAzO9fhDU4hDsdra
+         2yC1/vrv/weeXcNJSEEoV/tRvL2OAFurzxGMkAsyzK1Mnrl7mRoeTGajS+q4+etUSD
+         hHFyB3GfDiLU3QXUcdfok6U3e0pq5ubpk+mF1XaN464AAlPHEaePPc1nad1eIyfjXc
+         /EIdJKcuH/M8VuujNGLrKj4mvdzjiOkWsJnurEm9QINp1/gKvVWrI8Amvd9jg5Taml
+         ADPgCWW0vcq4qlh91qs1LLjG6mka9dW+DjNrJnhI3HaEh+dmMStPs7UrgTEH1kNsRF
+         Pvig7V+Y6LXkA==
+Date:   Tue, 20 Jul 2021 17:25:37 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andy Gross <agross@kernel.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the qcom tree
+Message-ID: <20210720172537.1831573c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210626082406.348821-1-chouhan.shreyansh630@gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/H13Uu83jVE2mngmEZK92yoC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/H13Uu83jVE2mngmEZK92yoC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Pinging for review since there has been no activity on this
-patch for some time.
+Hi all,
 
-Thank you,
-Shreyansh Chouhan
+In commit
 
-On Sat, Jun 26, 2021 at 01:54:06PM +0530, Shreyansh Chouhan wrote:
-> 
-> loop_validate_block_size took an unsigned short argument. Passing an
-> argument with size greater than the size of unsigned short would cause
-> an overflow and could potentially render the upper bound check on the
-> block size useless, allowing to set an arbitrarily large block size.
-> 
-> Reported-by: syzbot+cf89d662483d6a1a0790@syzkaller.appspotmail.com
-> Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-> ---
-> 
-> Changes from v1: Fixed the spelling of reported-by tag. Fixed the
-> commit message.
-> 
->  drivers/block/loop.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-> index 9a758cf66507..635baff0dd66 100644
-> --- a/drivers/block/loop.c
-> +++ b/drivers/block/loop.c
-> @@ -236,7 +236,7 @@ static void __loop_update_dio(struct loop_device *lo, bool dio)
->   * @bsize: size to validate
->   */
->  static int
-> -loop_validate_block_size(unsigned short bsize)
-> +loop_validate_block_size(unsigned long bsize)
->  {
->  	if (bsize < 512 || bsize > PAGE_SIZE || !is_power_of_2(bsize))
->  		return -EINVAL;
-> -- 
-> 2.31.1
-> 
+  d550173b0071 ("arm64: dts: qcom: sm8250: fix usb2 qmp phy node")
+
+Fixes tag
+
+  Fixes: be0624b99042 ("arm64: dts: qcom: sm8250: Add USB and PHY device no=
+des")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: 46a6f297d7dd ("arm64: dts: qcom: sm8250: Add USB and PHY device node=
+s")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/H13Uu83jVE2mngmEZK92yoC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD2enEACgkQAVBC80lX
+0GzF3wgAh6L4uQc/Wk3uf160g4/HTch3gcqsY0atWKNW3S4ivkQLGtLlbVCEJ5La
+UyITNQGW73R+Ig45Q3mGmY9WUyzIezws/MeZ3rcw41A0+HOuSCdya7uRgtiD0i8g
+JIMnRQhmmFTCOPNmctzsz0cjwuN04UwyVoLZUZzj/NC/Ixn9X6lhE2KlbJ5DHEIj
+XBPvb1uMNmP/IViriZDT44fDDqWUmKW085N7ZXZ15fEJmG9pEKEIJd32ZR7BixsQ
+Z2zX2sC7jQS3j3VgoeCghgcaBFtw7G63r/4IEN9kWdjyyt8dMZhI3tOhEfDd7JSB
+TrhF2xbQUDz1ldeu1rXIfxOvgZxSGA==
+=tuDq
+-----END PGP SIGNATURE-----
+
+--Sig_/H13Uu83jVE2mngmEZK92yoC--
