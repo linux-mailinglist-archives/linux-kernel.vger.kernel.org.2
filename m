@@ -2,173 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDEC3CF3D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A991B3CF3E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346163AbhGTEZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 00:25:14 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37160 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1346226AbhGTEYW (ORCPT
+        id S236939AbhGTEl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 00:41:28 -0400
+Received: from regular1.263xmail.com ([211.150.70.198]:60280 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230219AbhGTEl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 00:24:22 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16K53NJ9019968;
-        Tue, 20 Jul 2021 01:04:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=YIlbonzyYfr48j+9mltYbtpEvxW+h5RKDMRsYj4+yp8=;
- b=bD8fD32/SMHgXFWkCZxZCzTI5HHc1jN9Lu64hUj1qXnSp2JdP2nHKV/mR7gmu2yQUhqC
- C8Ls0kvfnjPB60HM2uSmfmFmWsNhBZLskfteK/ntAIRIaF/kZFIieLI28D4TJ/wCsOCX
- WPBsSRbYF/QvNj2wPZj7XMMHEpsNSKmNhCdNF4lDffvWU9nrH52heYs/B6/4yX2oJ/lm
- GzNSVy5LOxBuVEq/foMNwavbZZWu1jFV6/VKDwk3IezmyKtcaaqcYKUFjYyAzLQJWXuJ
- PGIWziQTkB0/0dieRZqILEkEOhZGBye1BzJpjEkuVz41jfsINQ5FrKQ4aUf66tqP4xsw nQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39wny8jj8p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 01:04:29 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16K53O8T020069;
-        Tue, 20 Jul 2021 01:04:29 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39wny8jj81-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 01:04:29 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16K52cfK014061;
-        Tue, 20 Jul 2021 05:04:27 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 39vng70p9y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 05:04:27 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16K54PQH26673532
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Jul 2021 05:04:25 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6348FAE059;
-        Tue, 20 Jul 2021 05:04:25 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6F874AE051;
-        Tue, 20 Jul 2021 05:04:23 +0000 (GMT)
-Received: from [9.199.45.122] (unknown [9.199.45.122])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 20 Jul 2021 05:04:23 +0000 (GMT)
-Subject: Re: [PATCH v5 1/1] powerpc/pseries: Interface to represent PAPR
- firmware attributes
-To:     Fabiano Rosas <farosas@linux.ibm.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
-References: <20210719093250.41405-1-psampat@linux.ibm.com>
- <20210719093250.41405-2-psampat@linux.ibm.com> <87fswa2k93.fsf@linux.ibm.com>
-From:   Pratik Sampat <psampat@linux.ibm.com>
-Message-ID: <de3c5540-2a07-8373-57a2-a89e3d304413@linux.ibm.com>
-Date:   Tue, 20 Jul 2021 10:34:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 20 Jul 2021 00:41:27 -0400
+X-Greylist: delayed 397 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Jul 2021 00:41:27 EDT
+Received: from localhost (unknown [192.168.167.16])
+        by regular1.263xmail.com (Postfix) with ESMTP id A54EEF12;
+        Tue, 20 Jul 2021 13:15:10 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [111.207.172.18])
+        by smtp.263.net (postfix) whith ESMTP id P12365T139710519256832S1626758110822022_;
+        Tue, 20 Jul 2021 13:15:11 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <cb6bf40f8de7bb7e8a6f4f4a9a8d4a86>
+X-RL-SENDER: zhaoxiao@uniontech.com
+X-SENDER: zhaoxiao@uniontech.com
+X-LOGIN-NAME: zhaoxiao@uniontech.com
+X-FST-TO: airlied@linux.ie
+X-RCPT-COUNT: 7
+X-SENDER-IP: 111.207.172.18
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     airlied@linux.ie, daniel@ffwll.ch
+Cc:     bskeggs@redhat.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH] drivers/gpu/drm/nouveau/dispnv50/headc57d.c: mark headc57d_olut() as static
+Date:   Tue, 20 Jul 2021 13:15:08 +0800
+Message-Id: <20210720051509.30044-1-zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <87fswa2k93.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ssVwGSroUKkgqBVXNDRQTUb2Yw54hczw
-X-Proofpoint-GUID: 4u1S___xB0Dar2DtbsH4-eXC1GRUkLB7
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-20_01:2021-07-19,2021-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- impostorscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
- malwarescore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107200028
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixes the following W=1 kernel build warning(s):
+
+drivers/gpu/drm/nouveau/dispnv50/headc57d.c:173:1: warning: no previous prototype for ‘headc57d_olut’ [-Wmissing-prototypes]
+headc57d_olut(struct nv50_head *head, struct nv50_head_atom *asyh, int size)
+
+And no header file define a prototype for this function, so we should
+mark it as static.
+
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+---
+ drivers/gpu/drm/nouveau/dispnv50/headc57d.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/headc57d.c b/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
+index fd51527b56b8..bdcfd240d61c 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
+@@ -169,7 +169,7 @@ headc57d_olut_load(struct drm_color_lut *in, int size, void __iomem *mem)
+ 	writew(readw(mem - 4), mem + 4);
+ }
+ 
+-bool
++static bool
+ headc57d_olut(struct nv50_head *head, struct nv50_head_atom *asyh, int size)
+ {
+ 	if (size != 0 && size != 256 && size != 1024)
+-- 
+2.20.1
 
 
-On 20/07/21 12:39 am, Fabiano Rosas wrote:
-> "Pratik R. Sampat" <psampat@linux.ibm.com> writes:
->
->> +	pgs = kcalloc(num_attrs, sizeof(*pgs), GFP_KERNEL);
->> +	if (!pgs)
->> +		goto out;
->> +
->> +	papr_kobj = kobject_create_and_add("papr", firmware_kobj);
->> +	if (!papr_kobj) {
->> +		pr_warn("kobject_create_and_add papr failed\n");
->> +		goto out_pgs;
->> +	}
->> +
->> +	esi_kobj = kobject_create_and_add("energy_scale_info", papr_kobj);
->> +	if (!esi_kobj) {
->> +		pr_warn("kobject_create_and_add energy_scale_info failed\n");
->> +		goto out_kobj;
->> +	}
->> +
->> +	for (idx = 0; idx < num_attrs; idx++) {
->> +		bool show_val_desc = true;
->> +
->> +		pgs[idx].pg.attrs = kcalloc(MAX_ATTRS + 1,
->> +					    sizeof(*pgs[idx].pg.attrs),
->> +					    GFP_KERNEL);
->> +		if (!pgs[idx].pg.attrs) {
->> +			for (i = idx - 1; i >= 0; i--)
->> +				kfree(pgs[i].pg.attrs);
-> What about the pg.name from the previous iterations?
->
->> +			goto out_ekobj;
->> +		}
->> +
->> +		pgs[idx].pg.name = kasprintf(GFP_KERNEL, "%lld",
->> +					     be64_to_cpu(esi_attrs[idx].id));
->> +		if (pgs[idx].pg.name == NULL) {
->> +			for (i = idx; i >= 0; i--)
->> +				kfree(pgs[i].pg.attrs);
-> Here too.
->
-> You could just 'goto out_pgattrs' in both cases.
-
-Yeah, you're right. I may have over-complicated the free, in case of
-failure in both the cases above I could just free from "out_pgattrs"
-with no issues
-
->> +			goto out_ekobj;
->> +		}
->> +		/* Do not add the value description if it does not exist */
->> +		if (strnlen(esi_attrs[idx].value_desc,
->> +			    sizeof(esi_attrs[idx].value_desc)) == 0)
->> +			show_val_desc = false;
->> +
->> +		if (add_attr_group(be64_to_cpu(esi_attrs[idx].id), &pgs[idx],
->> +				   show_val_desc)) {
->> +			pr_warn("Failed to create papr attribute group %s\n",
->> +				pgs[idx].pg.name);
->> +			goto out_pgattrs;
->> +		}
->> +	}
->> +
->> +	kfree(esi_buf);
->> +	return 0;
->> +
->> +out_pgattrs:
->> +	for (i = 0; i < num_attrs ; i++) {
->> +		kfree(pgs[i].pg.attrs);
->> +		kfree(pgs[i].pg.name);
->> +	}
->> +out_ekobj:
->> +	kobject_put(esi_kobj);
->> +out_kobj:
->> +	kobject_put(papr_kobj);
->> +out_pgs:
->> +	kfree(pgs);
->> +out:
->> +	kfree(esi_buf);
->> +
->> +	return -ENOMEM;
->> +}
->> +
->> +machine_device_initcall(pseries, papr_init);
 
