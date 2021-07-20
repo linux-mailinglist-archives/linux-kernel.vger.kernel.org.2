@@ -2,119 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1AD3CFA1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791623CFA20
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238292AbhGTM0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:26:09 -0400
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:20306 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238456AbhGTMZX (ORCPT
+        id S236884AbhGTM15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235536AbhGTM1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:25:23 -0400
-Received: from [192.168.1.102] ([80.15.159.30])
-        by mwinf5d34 with ME
-        id XR5v2500f0feRjk03R5wRC; Tue, 20 Jul 2021 15:05:57 +0200
-X-ME-Helo: [192.168.1.102]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 20 Jul 2021 15:05:57 +0200
-X-ME-IP: 80.15.159.30
-Subject: Re: [PATCH] RDMA/irdma: Improve the way 'cqp_request' structures are
- cleaned when they are recycled
-To:     leon@kernel.org
-Cc:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        christophe.jaillet@wanadoo.fr
-References: <7f93f2a2c2fd18ddfeb99339d175b85ffd1c6398.1626713915.git.christophe.jaillet@wanadoo.fr>
- <YPbALA/P5+NsC7MO@unreal>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <629bc34e-ef41-9af6-9ed7-71865251a62c@wanadoo.fr>
-Date:   Tue, 20 Jul 2021 15:05:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 20 Jul 2021 08:27:36 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0CFC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:08:14 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id m2so25972102wrq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:08:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uvHTohQOXUo1eNzTbptDnQ980SKchLpYfyQkug8oLsM=;
+        b=FZ7B87n7ZKH5WlwYufOcG72EJmbAaUBUE4aFuEpuEsqmjOIyRz6/XyFpVO7exRf5Wb
+         dyZrHG+WOrHkEo9owvwnpXCrJcTd7X4Frz4ddtsdLCY2qk9tlFUBWk94lopmcQM3+zt6
+         BjfmggyN4mvYvqpXEhBlTfCVoea5a0qDcd/Ss=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=uvHTohQOXUo1eNzTbptDnQ980SKchLpYfyQkug8oLsM=;
+        b=DATgLP4z+loxrsTZ2eP4XjdASWttugSD0xUGzG2cgqPN1QB/nOXUttYRqxVi75+06i
+         SAtKHOjai5H9kys7xHwtMqmMiKTduLxfN6hQHCbZxmwYP/hFzd1TjgYyuDn3xIzdqyoi
+         FvZaF025sCUc+OcxJ4xaVce1YVBX1bt96V9i9FNoaWNup5tH2Fyvd70E71FzTX4aLh42
+         /tHN5bq0+8Q/284vU2aQUg09u60z9u0HvGFDWUm4jUOsZf+bR9flFJmQ1QY9Bngl2hHF
+         dURRYd4EEi4SLel8ak8TrE8lgjFzs3dUsXFdQCq8SvDazuDcKFM7CsPpXevXzgY1hHkG
+         WYvQ==
+X-Gm-Message-State: AOAM530CoPTK91ZxuzBVw0dqdOANG7mX0jQNt8t7dN1pxXC5qoWhOXQL
+        OGXGoqDkebTu6eVRAu+wGVjgTA==
+X-Google-Smtp-Source: ABdhPJyUbagFa2jJYY8PhdxQ3iWQEkYXCDmIYQQXB8xNIPSArbgllu0G7MR5Pi9l2jz7RgWOZA4nAw==
+X-Received: by 2002:a05:6000:2a1:: with SMTP id l1mr35043388wry.128.1626786493358;
+        Tue, 20 Jul 2021 06:08:13 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id r17sm2423906wmq.13.2021.07.20.06.08.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 06:08:12 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 15:08:10 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jim Cromie <jim.cromie@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jbaron@akamai.com
+Subject: Re: [PATCH v3 1/5] drm/print: fixup spelling in a comment
+Message-ID: <YPbKukQVbHt1Yuin@phenom.ffwll.local>
+Mail-Followup-To: Jim Cromie <jim.cromie@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jbaron@akamai.com
+References: <20210714175138.319514-1-jim.cromie@gmail.com>
+ <20210714175138.319514-2-jim.cromie@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YPbALA/P5+NsC7MO@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714175138.319514-2-jim.cromie@gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 20/07/2021 à 14:23, Leon Romanovsky a écrit :
-> On Mon, Jul 19, 2021 at 07:02:15PM +0200, Christophe JAILLET wrote:
->> A set of IRDMA_CQP_SW_SQSIZE_2048 (i.e. 2048) 'cqp_request' are
->> pre-allocated and zeroed in 'irdma_create_cqp()' (hw.c).  These
->> structures are managed with the 'cqp->cqp_avail_reqs' list which keeps
->> track of available entries.
->>
->> In 'irdma_free_cqp_request()' (utils.c), when an entry is recycled and goes
->> back to the 'cqp_avail_reqs' list, some fields are reseted.
->>
->> However, one of these fields, 'compl_info', is initialized within
->> 'irdma_alloc_and_get_cqp_request()'.
->>
->> Move the corresponding memset to 'irdma_free_cqp_request()' so that the
->> clean-up is done in only one place. This makes the logic more easy to
->> understand.
+On Wed, Jul 14, 2021 at 11:51:34AM -0600, Jim Cromie wrote:
+> s/prink/printk/ - no functional changes
 > 
-> I'm not so sure. The function irdma_alloc_and_get_cqp_request() returns
-> prepared cqp_request and all users expect that it will returned cleaned
-> one. The reliance on some other place to clear part of the structure is
-> prone to errors.
+> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 
-Ok, so maybe, moving:
-	cqp_request->request_done = false;
-	cqp_request->callback_fcn = NULL;
-	cqp_request->waiting = false;
-from 'irdma_free_cqp_request()' to 'irdma_alloc_and_get_cqp_request()' 
-to make explicit what is reseted makes more sense?
+Applied to drm-misc-next, thanks for your patch.
+-Daniel
 
- From my point of view, it is same same: all (re)initialization are done 
-at 1 place only.
-
-This would also avoid setting 'waiting' twice (once to false in 
-'irdma_free_cqp_request()' and one to 'wait' 
-'irdma_alloc_and_get_cqp_request()')
-
-
-CJ
+> ---
+>  include/drm/drm_print.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Thanks
-> 
->>
->> This also saves this memset in the case that the 'cqp_avail_reqs' list is
->> empty and a new 'cqp_request' structure must be allocated. This memset is
->> useless, because the structure is already kzalloc'ed.
->>
->> Signed-off-by: Christophe JAILLET <christophe.jaillet-39ZsbGIQGT5GWvitb5QawA@public.gmane.org>
->> ---
->>   drivers/infiniband/hw/irdma/utils.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
->> index 5bbe44e54f9a..66711024d38b 100644
->> --- a/drivers/infiniband/hw/irdma/utils.c
->> +++ b/drivers/infiniband/hw/irdma/utils.c
->> @@ -445,7 +445,6 @@ struct irdma_cqp_request *irdma_alloc_and_get_cqp_request(struct irdma_cqp *cqp,
->>   
->>   	cqp_request->waiting = wait;
->>   	refcount_set(&cqp_request->refcnt, 1);
->> -	memset(&cqp_request->compl_info, 0, sizeof(cqp_request->compl_info));
->>   
->>   	return cqp_request;
->>   }
->> @@ -475,6 +474,7 @@ void irdma_free_cqp_request(struct irdma_cqp *cqp,
->>   		cqp_request->request_done = false;
->>   		cqp_request->callback_fcn = NULL;
->>   		cqp_request->waiting = false;
->> +		memset(&cqp_request->compl_info, 0, sizeof(cqp_request->compl_info));
->>   
->>   		spin_lock_irqsave(&cqp->req_lock, flags);
->>   		list_add_tail(&cqp_request->list, &cqp->cqp_avail_reqs);
->> -- 
->> 2.30.2
->>
+> diff --git a/include/drm/drm_print.h b/include/drm/drm_print.h
+> index 9b66be54dd16..15a089a87c22 100644
+> --- a/include/drm/drm_print.h
+> +++ b/include/drm/drm_print.h
+> @@ -327,7 +327,7 @@ static inline bool drm_debug_enabled(enum drm_debug_category category)
+>  /*
+>   * struct device based logging
+>   *
+> - * Prefer drm_device based logging over device or prink based logging.
+> + * Prefer drm_device based logging over device or printk based logging.
+>   */
+>  
+>  __printf(3, 4)
+> -- 
+> 2.31.1
 > 
 
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
