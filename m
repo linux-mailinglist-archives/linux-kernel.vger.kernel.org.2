@@ -2,124 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765A53CF3D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDEC3CF3D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241125AbhGTEWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 00:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244560AbhGTEUl (ORCPT
+        id S1346163AbhGTEZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 00:25:14 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37160 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1346226AbhGTEYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 00:20:41 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E01DC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 22:01:15 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id j5so18117676ilk.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 22:01:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sdFmRaMOmgHuGWvIA23Uxlb55xudqfFv81rs6+IjDL8=;
-        b=ev1KPypUlq3y0Q4/dy0N6VoE6A7j4QNY+od7m8kBCzEroX+XGVjvgM4EjjxV9Tse0k
-         tYpASYDiB4O80BGdwAp9NKlwF1WBPnoLL5GIw4wqt6OimddHmlmr/PD4S03FNEeHnsDq
-         ns9+32yAu01J8lLJKvy5Tt42o2zvu2IMmYY/0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sdFmRaMOmgHuGWvIA23Uxlb55xudqfFv81rs6+IjDL8=;
-        b=gSx7qkx3y7GxWzjJ5Hk8sT0i7ziVQMBFDoVYDRHnDJZ5348dCj/ga2GUyaGBgHg6Vm
-         Z9Gf0Jz8/jFOOnvE9ldt81Cim8R2hisXEmwf+n4TQNZ4w7Qf+1nlOonXEyyW3PNt0yTX
-         CPOoMhJyEhZD4KeOpYdUlmwVuOlVP1pcoblkUubs0d9M3Xe0LJbG6Ss1YRS5N0R+k4Nh
-         ckmWyYBj1QaVpoZf9nUgbT0WiM3haKJwlH0ZhgA/z/bu3RtZtlRWqWH3ZlL68z9jw1On
-         w5zHp89TA+rAXQ7S6zfexVqrPIXqoUWWlcgIHNFbuqZdqzckzLr2KMh7zzXhxZsRAt8X
-         bLpA==
-X-Gm-Message-State: AOAM533y9udnhJvu73CNUyfrUWp7WhYYj8m89UdHyMoBLxNV+/GxAb/q
-        DmChOLHMLKZ+Cr+OSN/H1E+gcrmNYOoRxac0oBAZFw==
-X-Google-Smtp-Source: ABdhPJxvZdJx3bv0pe2kdZh0PN0L4BVAX2MZFdn/Gb2Ux/JNOFo8roz4c1a5MLWVtRCFH1YMiTt1HHEqW3KZXcnUX08=
-X-Received: by 2002:a92:d305:: with SMTP id x5mr20065108ila.150.1626757274018;
- Mon, 19 Jul 2021 22:01:14 -0700 (PDT)
+        Tue, 20 Jul 2021 00:24:22 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16K53NJ9019968;
+        Tue, 20 Jul 2021 01:04:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=YIlbonzyYfr48j+9mltYbtpEvxW+h5RKDMRsYj4+yp8=;
+ b=bD8fD32/SMHgXFWkCZxZCzTI5HHc1jN9Lu64hUj1qXnSp2JdP2nHKV/mR7gmu2yQUhqC
+ C8Ls0kvfnjPB60HM2uSmfmFmWsNhBZLskfteK/ntAIRIaF/kZFIieLI28D4TJ/wCsOCX
+ WPBsSRbYF/QvNj2wPZj7XMMHEpsNSKmNhCdNF4lDffvWU9nrH52heYs/B6/4yX2oJ/lm
+ GzNSVy5LOxBuVEq/foMNwavbZZWu1jFV6/VKDwk3IezmyKtcaaqcYKUFjYyAzLQJWXuJ
+ PGIWziQTkB0/0dieRZqILEkEOhZGBye1BzJpjEkuVz41jfsINQ5FrKQ4aUf66tqP4xsw nQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39wny8jj8p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 01:04:29 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16K53O8T020069;
+        Tue, 20 Jul 2021 01:04:29 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39wny8jj81-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 01:04:29 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16K52cfK014061;
+        Tue, 20 Jul 2021 05:04:27 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 39vng70p9y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 05:04:27 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16K54PQH26673532
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Jul 2021 05:04:25 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6348FAE059;
+        Tue, 20 Jul 2021 05:04:25 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6F874AE051;
+        Tue, 20 Jul 2021 05:04:23 +0000 (GMT)
+Received: from [9.199.45.122] (unknown [9.199.45.122])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Jul 2021 05:04:23 +0000 (GMT)
+Subject: Re: [PATCH v5 1/1] powerpc/pseries: Interface to represent PAPR
+ firmware attributes
+To:     Fabiano Rosas <farosas@linux.ibm.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
+References: <20210719093250.41405-1-psampat@linux.ibm.com>
+ <20210719093250.41405-2-psampat@linux.ibm.com> <87fswa2k93.fsf@linux.ibm.com>
+From:   Pratik Sampat <psampat@linux.ibm.com>
+Message-ID: <de3c5540-2a07-8373-57a2-a89e3d304413@linux.ibm.com>
+Date:   Tue, 20 Jul 2021 10:34:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <1626683082-29570-1-git-send-email-yongqiang.niu@mediatek.com> <1626683082-29570-2-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1626683082-29570-2-git-send-email-yongqiang.niu@mediatek.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Tue, 20 Jul 2021 13:00:48 +0800
-Message-ID: <CAJMQK-jsbudDCj2TjS13_z--5j+2heUgLYsCTQ23Xd7T4wUZYQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/mediatek: add dither 6 setting
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87fswa2k93.fsf@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ssVwGSroUKkgqBVXNDRQTUb2Yw54hczw
+X-Proofpoint-GUID: 4u1S___xB0Dar2DtbsH4-eXC1GRUkLB7
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-20_01:2021-07-19,2021-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ impostorscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
+ malwarescore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107200028
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 4:24 PM Yongqiang Niu
-<yongqiang.niu@mediatek.com> wrote:
->
-> in the first version dither patch
-> https://patchwork.kernel.org/project/linux-mediatek/patch/1553667561-25447-13-git-send-email-yongqiang.niu@mediatek.com/
-> dither 6 setting is included in that patch
-I think you don't need to link the first version here.
-
-> bit 1 is lfsr_en( "Enables LFSR-type dithering"), need enable
-> bit 2 is rdither_en(Enables running order dithering), need disable
-> in this issue
-> https://partnerissuetracker.corp.google.com/issues/190643544
-Can you describe the issue in text instead of pasting a link that is
-not accessible to everyone?
-
->
-> dither 6 setting missed in set dither common patch
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c?h=next-20210430&id=a6b7c98afdcad0f149010ae028b24f2d0dc24cdb
-
-If this is fixing a previous patch, please add Fixes: tag instead of
-pasting a link here.
 
 
+On 20/07/21 12:39 am, Fabiano Rosas wrote:
+> "Pratik R. Sampat" <psampat@linux.ibm.com> writes:
 >
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 2 ++
->  1 file changed, 2 insertions(+)
+>> +	pgs = kcalloc(num_attrs, sizeof(*pgs), GFP_KERNEL);
+>> +	if (!pgs)
+>> +		goto out;
+>> +
+>> +	papr_kobj = kobject_create_and_add("papr", firmware_kobj);
+>> +	if (!papr_kobj) {
+>> +		pr_warn("kobject_create_and_add papr failed\n");
+>> +		goto out_pgs;
+>> +	}
+>> +
+>> +	esi_kobj = kobject_create_and_add("energy_scale_info", papr_kobj);
+>> +	if (!esi_kobj) {
+>> +		pr_warn("kobject_create_and_add energy_scale_info failed\n");
+>> +		goto out_kobj;
+>> +	}
+>> +
+>> +	for (idx = 0; idx < num_attrs; idx++) {
+>> +		bool show_val_desc = true;
+>> +
+>> +		pgs[idx].pg.attrs = kcalloc(MAX_ATTRS + 1,
+>> +					    sizeof(*pgs[idx].pg.attrs),
+>> +					    GFP_KERNEL);
+>> +		if (!pgs[idx].pg.attrs) {
+>> +			for (i = idx - 1; i >= 0; i--)
+>> +				kfree(pgs[i].pg.attrs);
+> What about the pg.name from the previous iterations?
 >
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> index 99cbf44..7dd8e05 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> @@ -26,6 +26,7 @@
->  #define DISP_OD_CFG                            0x0020
->  #define DISP_OD_SIZE                           0x0030
->  #define DISP_DITHER_5                          0x0114
-> +#define DISP_DITHER_6                          0x0118
->  #define DISP_DITHER_7                          0x011c
->  #define DISP_DITHER_15                         0x013c
->  #define DISP_DITHER_16                         0x0140
-> @@ -135,6 +136,7 @@ void mtk_dither_set_common(void __iomem *regs, struct cmdq_client_reg *cmdq_reg,
+>> +			goto out_ekobj;
+>> +		}
+>> +
+>> +		pgs[idx].pg.name = kasprintf(GFP_KERNEL, "%lld",
+>> +					     be64_to_cpu(esi_attrs[idx].id));
+>> +		if (pgs[idx].pg.name == NULL) {
+>> +			for (i = idx; i >= 0; i--)
+>> +				kfree(pgs[i].pg.attrs);
+> Here too.
 >
->         if (bpc >= MTK_MIN_BPC) {
->                 mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_5);
-> +               mtk_ddp_write(cmdq_pkt, 0x3002, cmdq_reg, regs, DISP_DITHER_6);
->                 mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_7);
->                 mtk_ddp_write(cmdq_pkt,
->                               DITHER_LSB_ERR_SHIFT_R(MTK_MAX_BPC - bpc) |
-> --
-> 1.8.1.1.dirty
->
+> You could just 'goto out_pgattrs' in both cases.
+
+Yeah, you're right. I may have over-complicated the free, in case of
+failure in both the cases above I could just free from "out_pgattrs"
+with no issues
+
+>> +			goto out_ekobj;
+>> +		}
+>> +		/* Do not add the value description if it does not exist */
+>> +		if (strnlen(esi_attrs[idx].value_desc,
+>> +			    sizeof(esi_attrs[idx].value_desc)) == 0)
+>> +			show_val_desc = false;
+>> +
+>> +		if (add_attr_group(be64_to_cpu(esi_attrs[idx].id), &pgs[idx],
+>> +				   show_val_desc)) {
+>> +			pr_warn("Failed to create papr attribute group %s\n",
+>> +				pgs[idx].pg.name);
+>> +			goto out_pgattrs;
+>> +		}
+>> +	}
+>> +
+>> +	kfree(esi_buf);
+>> +	return 0;
+>> +
+>> +out_pgattrs:
+>> +	for (i = 0; i < num_attrs ; i++) {
+>> +		kfree(pgs[i].pg.attrs);
+>> +		kfree(pgs[i].pg.name);
+>> +	}
+>> +out_ekobj:
+>> +	kobject_put(esi_kobj);
+>> +out_kobj:
+>> +	kobject_put(papr_kobj);
+>> +out_pgs:
+>> +	kfree(pgs);
+>> +out:
+>> +	kfree(esi_buf);
+>> +
+>> +	return -ENOMEM;
+>> +}
+>> +
+>> +machine_device_initcall(pseries, papr_init);
+
