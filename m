@@ -2,108 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FEC3D0121
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CF83D0135
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhGTRTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 13:19:07 -0400
-Received: from mga18.intel.com ([134.134.136.126]:49181 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234058AbhGTRSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 13:18:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="198570202"
-X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; 
-   d="scan'208";a="198570202"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 10:59:06 -0700
-X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; 
-   d="scan'208";a="469851169"
-Received: from kvadariv-mobl1.amr.corp.intel.com (HELO [10.212.155.118]) ([10.212.155.118])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 10:59:04 -0700
-Subject: Re: [PATCH v3 5/6] platform/x86: intel_tdx_attest: Add TDX Guest
- attestation interface driver
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S230463AbhGTRV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 13:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhGTRVq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 13:21:46 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14730C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:02:24 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id k20so23243264pgg.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:02:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=M9MyM6SiQLZ5m3aBTaXSLwq/XGnRhh08/VcLgE/dXu0=;
+        b=STNATKcfH1avBpmTllo0BejrpE+zX75J13FmRFIATfMMH+ODZAEmHcUarX83AoF6E4
+         CCm9bro8RnZa4wVgDdnozFQnggMPUw/sucQh3JE/5zlmTB9UYuoE743sVGa31+KS2N5A
+         XtQOv5JnRkaKKyp/0AhP3l+ew8rMoVQr+9T+dZP9WDU9WEGJbu0VkOCqicPcFl8cHQAi
+         mJzSnKO+hkfhC4wVsD23n2VmibHbSG9HDT1aGu0RvrnBsAmHQFBQUot1BLzBhhDwoOKl
+         fqBqmjJ8O7lSuaa6Dv4/rACTMeCNfvkFJ1w6yI455+/K3WCCiXHNgR6Pqw3QbCxHZyg5
+         axKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M9MyM6SiQLZ5m3aBTaXSLwq/XGnRhh08/VcLgE/dXu0=;
+        b=GLNEEk1al69rolkSso+KDuwmemUA/TBC0r84TeJDy8B3M1bnbTfqINEp8v2VQxoP3K
+         Qw0bF4s0iFP/XbM2z478SfwNLit0b7mjtkmQ0N49mrv7feKxuahLdCFubHiCfRTm0roo
+         NemUrCuO0ICRR/vTKv379bKQjf+KO9FzE2VmMdVs2Sl7eAdlV8fUHmLoHU5qkbLJ6m8p
+         cYRNe3ZrN4OFeLJWi3Cw1RibmUL+JIn97/3z7oW6mRWLspUf/sFEkmtPTHc6OvFNHH+1
+         DzlZQBiCIl8OLVPKCLsSaO7X3SiTOllAVDt9pfTIZd2oOKJJuHB0KDQVeC8rR3JI526n
+         //Gg==
+X-Gm-Message-State: AOAM532gWoX17x3tWfc51yPo8CapmcDfwTXgPhp1XZuMgpNG8UDD+dvP
+        U7PFCNimJqxjI6qcoLa03jZNaw==
+X-Google-Smtp-Source: ABdhPJztjb1vCs7OC4JfJwLTVUau3HVEAMypgjUcIXcXHaeykJbmgjHUQ20ZSm2OZU/jp51eFJFfyg==
+X-Received: by 2002:aa7:95a4:0:b029:332:f4e1:1dac with SMTP id a4-20020aa795a40000b0290332f4e11dacmr31607712pfk.34.1626804143248;
+        Tue, 20 Jul 2021 11:02:23 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id x6sm3444697pjr.5.2021.07.20.11.02.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 11:02:22 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 18:02:18 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
         Andy Lutomirski <luto@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210720045552.2124688-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210720045552.2124688-6-sathyanarayanan.kuppuswamy@linux.intel.com>
- <eddc318e-e9c9-546d-6cff-b3c40062aecd@intel.com>
- <4c43dfe4-e44b-9d6d-b012-63790bb47b19@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
- 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
- K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
- VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
- e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
- ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
- kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
- rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
- f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
- mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
- UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
- sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
- 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
- cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
- UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
- db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
- lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
- kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
- gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
- AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
- XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
- e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
- pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
- YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
- lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
- M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
- 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
- 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
- OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
- ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
- z5cecg==
-Message-ID: <52caa0e2-d3da-eef0-da5f-e83cc54c133c@intel.com>
-Date:   Tue, 20 Jul 2021 10:59:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 20/40] KVM: SVM: Make AVIC backing, VMSA and
+ VMCB memory allocation SNP safe
+Message-ID: <YPcPqpqRju/QLoHI@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-21-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <4c43dfe4-e44b-9d6d-b012-63790bb47b19@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707183616.5620-21-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/21 10:52 AM, Kuppuswamy, Sathyanarayanan wrote:
->> Why does this need to use the page allocator directly? 
+IMO, the CPU behavior is a bug, even if the behavior is working as intended for
+the microarchitecture.  I.e. this should be treated as an erratum.
 
-^^ You didn't address this question.
+On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> When SEV-SNP is globally enabled on a system, the VMRUN instruction
+> performs additional security checks on AVIC backing, VMSA, and VMCB page.
+> On a successful VMRUN, these pages are marked "in-use" by the
+> hardware in the RMP entry
+
+There's a lot of "noise" in this intro.  That the CPU does additional checks at
+VMRUN isn't all that interesting, what's relevant is that the CPU tags the
+associated RMP entry with a special flag.  And IIUC, it does that for _all_ VMs,
+not just SNP VMs.
+
+Also, what happens if the pages aren't covered by the RMP?  Table 15-41 states
+that the VMCB, AVIC, and VMSA for non-SNP guests need to be Hypervisor-Owned,
+but doesn't explicitly require them to be RMP covered.  On the other hand, it
+does state that the VMSA for an SNP guest must be Guest-Owned and RMP-Covered.
+That implies that the Hypervisor-Owned pages do not need to contained within the
+RMP, but how does that work if the CPU is setting a magic flag in the RMP?  Does
+VMRUN explode?  Does the CPU corrupt random memory?
+
+Is the in-use flag visible to software?  We've already established that "struct
+rmpentry" is microarchitectural, so why not document it in the PPR?  It could be
+useful info for debugging unexpected RMP violations, even if the flag isn't stable.
+
+Are there other possible collisions with the in-use flag?  The APM states that
+the in-use flag results in RMPUPDATE failing with FAIL_INUSE.  That's the same
+error code that's returned if two CPUs attempt RMPUPDATE on the same entry.  That
+implies that the RMPUPDATE also sets the in-use flag.  If that's true, then isn't
+it possible that the spurious RMP violation #PF could happen if the kernel accesses
+a hugepage at the same time a CPU is doing RMPUPDATE on the associated 2mb-aligned
+entry?
+
+> and any attempt to modify the RMP entry for these pages will result in
+> page-fault (RMP violation check).
+
+Again, not that relevant since KVM isn't attempting to modify the RMP entry.
+I've no objection to mentioning this behavior in passing, but it should not be
+the focal point of the intro.
+
+> While performing the RMP check, hardware will try to create a 2MB TLB
+> entry for the large page accesses. When it does this, it first reads
+> the RMP for the base of 2MB region and verifies that all this memory is
+> safe. If AVIC backing, VMSA, and VMCB memory happen to be the base of
+> 2MB region, then RMP check will fail because of the "in-use" marking for
+> the base entry of this 2MB region.
+
+There's a critical piece missing here, which is why an RMP violation is thrown
+on "in-use" pages.  E.g. are any translations problematic, or just writable
+translations?  It may not affect the actual KVM workaround, but knowing exactly
+what goes awry is important.
+
+> e.g.
+> 
+> 1. A VMCB was allocated on 2MB-aligned address.
+> 2. The VMRUN instruction marks this RMP entry as "in-use".
+> 3. Another process allocated some other page of memory that happened to be
+>    within the same 2MB region.
+> 4. That process tried to write its page using physmap.
+
+Please explicitly call out the relevance of the physmap.  IIUC, only the physmap,
+a.k.a. direct map, is problematic because that's the only scenario where a large
+page can overlap one of the magic pages.  That should be explicitly stated.
+
+> If the physmap entry in step #4 uses a large (1G/2M) page, then the
+
+Be consistent with 2MB vs. 2M, i.e. choose one.
+
+> hardware will attempt to create a 2M TLB entry. The hardware will find
+> that the "in-use" bit is set in the RMP entry (because it was a
+> VMCB page) and will cause an RMP violation check.
+
+So what happens if the problematic page isn't 2mb aligned?  The lack of an RMP
+violation on access implies that the hypervisor can bypass the in-use restriction
+and create a 2mb hugepage, i.e. access the in-use page.  Same question for if the
+TLB entry exists before the page is marked in-use, which also begs the question
+of why the in-use flag is being checked at all on RMP lookups.
+
+> See APM2 section 15.36.12 for more information on VMRUN checks when
+> SEV-SNP is globally active.
+> 
+> A generic allocator can return a page which are 2M aligned and will not
+> be safe to be used when SEV-SNP is globally enabled.
+
+> Add a snp_safe_alloc_page() helper that can be used for allocating the SNP
+> safe memory. The helper allocated 2 pages and splits them into order-1
+> allocation. It frees one page and keeps one of the page which is not 2M
+> aligned.
+
+I know it's personal preference as to whether to lead with the solution or the
+problem statement, but in this case it would be very helpful to at least provide
+a brief summary early on so that the reader has some idea of where the changelog
+is headed.  As is, the actual change is buried after a big pile of hardware
+details.
+
+E.g. something like this
+
+  Implement a workaround for an SNP erratum where the CPU will incorrectly
+  signal an RMP violation #PF if a hugepage (2mb or 1gb) collides with the
+  RMP entry of a VMCB, VMSA, or AVIC backing page.
+
+  When SEV-SNP is globally enabled, the CPU marks the VMCB, VMSA, and AVIC
+  backing   pages as "in-use" in the RMP after a successful VMRUN.  This is
+  done for _all_   VMs, not just SNP-Active VMs.
+
+  If the hypervisor accesses an in-use page through a writable translation,
+  the CPU will throw an RMP violation #PF.  On early SNP hardware, if an
+  in-use page is 2mb aligned and software accesses any part of the associated
+  2mb region with a hupage, the CPU will incorrectly treat the entire 2mb
+  region as in-use and signal a spurious RMP violation #PF.
+
+  <gory details on the workaround>
+
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  1 +
+>  arch/x86/kvm/lapic.c            |  5 ++++-
+>  arch/x86/kvm/svm/sev.c          | 27 +++++++++++++++++++++++++++
+>  arch/x86/kvm/svm/svm.c          | 16 ++++++++++++++--
+>  arch/x86/kvm/svm/svm.h          |  1 +
+>  5 files changed, 47 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 55efbacfc244..188110ab2c02 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1383,6 +1383,7 @@ struct kvm_x86_ops {
+>  	int (*complete_emulated_msr)(struct kvm_vcpu *vcpu, int err);
+>  
+>  	void (*vcpu_deliver_sipi_vector)(struct kvm_vcpu *vcpu, u8 vector);
+> +	void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
+>  };
+>  
+>  struct kvm_x86_nested_ops {
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index c0ebef560bd1..d4c77f66d7d5 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -2441,7 +2441,10 @@ int kvm_create_lapic(struct kvm_vcpu *vcpu, int timer_advance_ns)
+>  
+>  	vcpu->arch.apic = apic;
+>  
+> -	apic->regs = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+> +	if (kvm_x86_ops.alloc_apic_backing_page)
+> +		apic->regs = kvm_x86_ops.alloc_apic_backing_page(vcpu);
+
+This can be a static_call().
+
+> +	else
+> +		apic->regs = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+>  	if (!apic->regs) {
+>  		printk(KERN_ERR "malloc apic regs error for vcpu %x\n",
+>  		       vcpu->vcpu_id);
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index b8505710c36b..411ed72f63af 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -2692,3 +2692,30 @@ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
+>  		break;
+>  	}
+>  }
+> +
+> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu)
+> +{
+> +	unsigned long pfn;
+> +	struct page *p;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +		return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+> +
+> +	p = alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
+> +	if (!p)
+> +		return NULL;
+> +
+> +	/* split the page order */
+> +	split_page(p, 1);
+> +
+> +	/* Find a non-2M aligned page */
+
+This isn't "finding" anything, it's identifying which of the two pages is
+_guaranteed_ to be unaligned.  The whole function needs a much bigger comment to
+explain what's going on.
+
+> +	pfn = page_to_pfn(p);
+> +	if (IS_ALIGNED(__pfn_to_phys(pfn), PMD_SIZE)) {
+> +		pfn++;
+> +		__free_page(p);
+> +	} else {
+> +		__free_page(pfn_to_page(pfn + 1));
+> +	}
+> +
+> +	return pfn_to_page(pfn);
+> +}
