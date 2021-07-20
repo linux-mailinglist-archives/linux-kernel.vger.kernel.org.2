@@ -2,162 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09BC3D0385
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 23:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092743D0386
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 23:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbhGTUTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 16:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
+        id S234571AbhGTUTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 16:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234709AbhGTUNc (ORCPT
+        with ESMTP id S235101AbhGTUPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 16:13:32 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81AB2C061574;
-        Tue, 20 Jul 2021 13:53:55 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id qa36so14911840ejc.10;
-        Tue, 20 Jul 2021 13:53:55 -0700 (PDT)
+        Tue, 20 Jul 2021 16:15:17 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB95C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:55:51 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id w194so629779oie.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:55:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ffwll.ch; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=44qk/SPvu//rgjLJF5jwtYI5ft2vVL7G4C4DfylIoXY=;
-        b=OftM9WCENnpMqTUJsIA3MKKjn708iT/Lw3yrY6lH1pEDZ27vJs7PaELvwkvhNb8fmq
-         TjIN5vWnEzofvLkBgJEnMz+x9HVXlenHZlFjtpMGCMvkk8h6cYk1gulnF1aNzwJNTTLe
-         +Wb57w1ZES/sxVHMNDmVbbYawPgdjbEyJSny4a3qM5jkJ1EmXKm6dzYC5fG0O6gGW/eW
-         mrrsdNiL6JC6ad6SN09iCU9B6OXaIIEbe0vZElpqM2NfG0owmt+qu0lOZ5DNKdzBAK/Y
-         s/1nloGCdGw9CWDd/JVvMBPp8MG2Kr5EyKI1mhcQ/Wl9BJ2PFTz2qkr3d2mCOfTwLTTN
-         zfTw==
+         :cc:content-transfer-encoding;
+        bh=0FQ82C/BDxcwvqgrHBgcLPp625UNp5/w2TKk6xmMVnk=;
+        b=KjPwXABt1PYA4lXlmqRcKo/UhZkXVnJpWcYWrBKPXBcF9VKfFRLo21TwI+OyUdgzLs
+         gDF0b+Lz41zSaYobRXX6QG1HT8VG+3GECdGGccD+cykHHTbrzzzjtLEsduKbKbyA4brk
+         TmHou4NpNRxbhms9ARD+Pu4SO11RzqykGySGw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=44qk/SPvu//rgjLJF5jwtYI5ft2vVL7G4C4DfylIoXY=;
-        b=PTJntb9Yj0H3GG2xCnYLnemGMTENnmwjqOPhpR9etYqMt+pQZhsEHdOV/VXkqMJtmu
-         uSf/3KPFEZQyXRItMKts2E9vcUJNznMpI6lWWbAzLSrNe7X4Gcppu+452RPv2JiNpr2n
-         R1+xZR2DTOr/g/BlscHCWwe3qZ7+GHCIwXr7inyq5N5HuBYIpokTyE9ig6fIP9ik+CTo
-         oJFoU6hzyPk9LEhV5PavoWBqxX36ZxDvkjVXDfGnYDDMlBJ0vKbmKE+BbynpYDiUuIYB
-         r8o+2dnGPvmUBUfr5wA2fTMP6BOdfyGKSjuufjJGeqCN4OW3fQOQtOo7hbcqfMYyGr80
-         2Y5g==
-X-Gm-Message-State: AOAM531wxD05YYXi+dZyLVlk0aNLM8BSybvVaU5oL16IfGVUGkY3nfM2
-        dWxgjC6r5zFj82aWJlSjXk+sqCB2vr8Pvp4dGsc=
-X-Google-Smtp-Source: ABdhPJwUAntyq17ENwtwuvmBlgGc6On+crRf2x/UG5Ey0hWO7A9tRypRUaEosm0MRG3hgYJ+pgeYJHAQyPd6Thw1qro=
-X-Received: by 2002:a17:907:4cf:: with SMTP id vz15mr34336344ejb.161.1626814434101;
- Tue, 20 Jul 2021 13:53:54 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0FQ82C/BDxcwvqgrHBgcLPp625UNp5/w2TKk6xmMVnk=;
+        b=ZM4G9IYUlhfsil1k1SvJXE9RkS2ugvEOSxyTCYQ35CcpUFgpf8LjUCPY5AkkuLNlXl
+         AV8Aadhth3NK5QaFzVbHwaR0NYLOpb9UVfAeAb64rEX5mBlqKb8gF08o++LXHOggIT+a
+         jx2XCdevCMKPJh9aka2nZX1uAkZrwifkDgfBHWdViQfNbX7C+BnK+Pizhh4ABrSLVtIf
+         k5p9glG3RGj7vk6UJ4nuunEJ8LUX5fL4lwQjVABsQa1x5i2jnuNDxKFwYRBbVOu6Zheg
+         pOJiVUuKRC35nKdNBjLI11pvqY+gnP5/g176+nFAikQvFAs7rjJcXhMFR4JXmu4+GIeu
+         /rLA==
+X-Gm-Message-State: AOAM530vhw+6jvGZmofM9+IH7hJigGDLb4XIc+hKPxrryVUWNCHGwFqB
+        34COxeSEegHXUKRx2b+k0t4AOBki2OUj1jZ+AST5VA==
+X-Google-Smtp-Source: ABdhPJzYXoCxha1rxN7bdt/YYSiGbqPjD7v773ymPQkBBlM7PfF21QIL9NPCc7be3ecyZV3iFh61z8dmCCpZQ1n3F9g=
+X-Received: by 2002:aca:d4cf:: with SMTP id l198mr291067oig.14.1626814550571;
+ Tue, 20 Jul 2021 13:55:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210720065529.716031-1-ying.huang@intel.com> <eadff602-3824-f69d-e110-466b37535c99@de.ibm.com>
-In-Reply-To: <eadff602-3824-f69d-e110-466b37535c99@de.ibm.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 20 Jul 2021 13:53:39 -0700
-Message-ID: <CAHbLzkp6LDLUK9TLM+geQM6+X6+toxAGi53UBd49Zm5xgc5aWQ@mail.gmail.com>
-Subject: Re: [PATCH] mm,do_huge_pmd_numa_page: remove unnecessary TLB flushing code
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, Zi Yan <ziy@nvidia.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        kvm list <kvm@vger.kernel.org>
+References: <20210720150716.1213775-1-robdclark@gmail.com> <60ffb6f3-e932-d9af-3b90-81adf0c15250@gmail.com>
+ <CAF6AEGtOW3EjZWo36ij8U1om=gAqvg8CSkJJq2GkyHFGWUH4kQ@mail.gmail.com>
+In-Reply-To: <CAF6AEGtOW3EjZWo36ij8U1om=gAqvg8CSkJJq2GkyHFGWUH4kQ@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Tue, 20 Jul 2021 22:55:39 +0200
+Message-ID: <CAKMK7uF1=Y6_9znGoWG8GrteXBBRmyW8C3bFE+eJQqOj0A1buA@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH] drm/msm: Add fence->wait() op
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Sean Paul <sean@poorly.run>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 7:25 AM Christian Borntraeger
-<borntraeger@de.ibm.com> wrote:
+On Tue, Jul 20, 2021 at 8:26 PM Rob Clark <robdclark@gmail.com> wrote:
 >
+> On Tue, Jul 20, 2021 at 11:03 AM Christian K=C3=B6nig
+> <ckoenig.leichtzumerken@gmail.com> wrote:
+> >
+> > Hi Rob,
+> >
+> > Am 20.07.21 um 17:07 schrieb Rob Clark:
+> > > From: Rob Clark <robdclark@chromium.org>
+> > >
+> > > Somehow we had neither ->wait() nor dma_fence_signal() calls, and no
+> > > one noticed.  Oops.
+> >
+> >
+> > I'm not sure if that is a good idea.
+> >
+> > The dma_fence->wait() callback is pretty much deprecated and should not
+> > be used any more.
+> >
+> > What exactly do you need that for?
 >
+> Well, the alternative is to track the set of fences which have
+> signalling enabled, and then figure out which ones to signal, which
+> seems like a lot more work, vs just re-purposing the wait
+> implementation we already have for non-dma_fence cases ;-)
 >
-> On 20.07.21 08:55, Huang Ying wrote:
-> > Before the commit c5b5a3dd2c1f ("mm: thp: refactor NUMA fault
-> > handling"), the TLB flushing is done in do_huge_pmd_numa_page() itself
-> > via flush_tlb_range().
-> >
-> > But after commit c5b5a3dd2c1f ("mm: thp: refactor NUMA fault
-> > handling"), the TLB flushing is done in migrate_pages() as in the
-> > following code path anyway.
-> >
-> > do_huge_pmd_numa_page
-> >    migrate_misplaced_page
-> >      migrate_pages
-> >
-> > So now, the TLB flushing code in do_huge_pmd_numa_page() becomes
-> > unnecessary.  So the code is deleted in this patch to simplify the
-> > code.  This is only code cleanup, there's no visible performance
-> > difference.
-> >
-> > Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> > Cc: Yang Shi <shy828301@gmail.com>
-> > Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> > Cc: Mel Gorman <mgorman@suse.de>
-> > Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> > Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-> > Cc: Heiko Carstens <hca@linux.ibm.com>
-> > Cc: Hugh Dickins <hughd@google.com>
-> > Cc: Andrea Arcangeli <aarcange@redhat.com>
-> > Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > Cc: Michal Hocko <mhocko@suse.com>
-> > Cc: Vasily Gorbik <gor@linux.ibm.com>
-> > Cc: Zi Yan <ziy@nvidia.com>
-> > ---
-> >   mm/huge_memory.c | 26 --------------------------
-> >   1 file changed, 26 deletions(-)
-> >
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index afff3ac87067..9f21e44c9030 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -1440,32 +1440,6 @@ vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf)
-> >               goto out;
-> >       }
-> >
-> > -     /*
-> > -      * Since we took the NUMA fault, we must have observed the !accessible
-> > -      * bit. Make sure all other CPUs agree with that, to avoid them
-> > -      * modifying the page we're about to migrate.
-> > -      *
-> > -      * Must be done under PTL such that we'll observe the relevant
-> > -      * inc_tlb_flush_pending().
-> > -      *
-> > -      * We are not sure a pending tlb flush here is for a huge page
-> > -      * mapping or not. Hence use the tlb range variant
-> > -      */
-> > -     if (mm_tlb_flush_pending(vma->vm_mm)) {
-> > -             flush_tlb_range(vma, haddr, haddr + HPAGE_PMD_SIZE);
-> > -             /*
-> > -              * change_huge_pmd() released the pmd lock before
-> > -              * invalidating the secondary MMUs sharing the primary
-> > -              * MMU pagetables (with ->invalidate_range()). The
-> > -              * mmu_notifier_invalidate_range_end() (which
-> > -              * internally calls ->invalidate_range()) in
-> > -              * change_pmd_range() will run after us, so we can't
-> > -              * rely on it here and we need an explicit invalidate.
-> > -              */
-> > -             mmu_notifier_invalidate_range(vma->vm_mm, haddr,
-> > -                                           haddr + HPAGE_PMD_SIZE);
-> > -     }
-> > CC Paolo/KVM list so we also remove the mmu notifier here. Do we need those
-> now in migrate_pages? I am not an expert in that code, but I cant find
-> an equivalent mmu_notifier in migrate_misplaced_pages.
-> I might be totally wrong, just something that I noticed.
+> Why is the ->wait() callback (pretty much) deprecated?
 
-Do you mean the missed mmu notifier invalidate for the THP migration
-case? Yes, I noticed that too. But I'm not sure whether it is intended
-or just missed.
+Because if you need it that means for your driver dma_fence_add_cb is
+broken, which means a _lot_ of things don't work. Like dma_buf poll
+(compositors have patches to start using that), and I think
+drm/scheduler also becomes rather unhappy.
 
-Zi Yan is the author for THP migration code, he may have some clue.
+It essentially exists only for old drivers where ->enable_signalling
+is unreliable and we paper over that with a retry loop in ->wait and
+pray no one notices that it's too butchered. The proper fix is to have
+a driver thread to guarantee that ->enable_signalling works reliable,
+so you don't need a ->wait.
+
+Can you type up a kerneldoc patch for dma_fence_ops->wait to hammer
+this in please?
+-Daniel
 
 >
-> >       pmd = pmd_modify(oldpmd, vma->vm_page_prot);
-> >       page = vm_normal_page_pmd(vma, haddr, pmd);
-> >       if (!page)
+> BR,
+> -R
+>
+> > Regards,
+> > Christian.
 > >
+> > >
+> > > Note that this removes the !timeout case, which has not been used in
+> > > a long time.
+> >
+> >
+> > >
+> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > ---
+> > >   drivers/gpu/drm/msm/msm_fence.c | 59 +++++++++++++++++++-----------=
+---
+> > >   1 file changed, 34 insertions(+), 25 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/ms=
+m_fence.c
+> > > index cd59a5918038..8ee96b90ded6 100644
+> > > --- a/drivers/gpu/drm/msm/msm_fence.c
+> > > +++ b/drivers/gpu/drm/msm/msm_fence.c
+> > > @@ -38,11 +38,10 @@ static inline bool fence_completed(struct msm_fen=
+ce_context *fctx, uint32_t fenc
+> > >       return (int32_t)(fctx->completed_fence - fence) >=3D 0;
+> > >   }
+> > >
+> > > -/* legacy path for WAIT_FENCE ioctl: */
+> > > -int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> > > -             ktime_t *timeout, bool interruptible)
+> > > +static signed long wait_fence(struct msm_fence_context *fctx, uint32=
+_t fence,
+> > > +             signed long remaining_jiffies, bool interruptible)
+> > >   {
+> > > -     int ret;
+> > > +     signed long ret;
+> > >
+> > >       if (fence > fctx->last_fence) {
+> > >               DRM_ERROR_RATELIMITED("%s: waiting on invalid fence: %u=
+ (of %u)\n",
+> > > @@ -50,33 +49,34 @@ int msm_wait_fence(struct msm_fence_context *fctx=
+, uint32_t fence,
+> > >               return -EINVAL;
+> > >       }
+> > >
+> > > -     if (!timeout) {
+> > > -             /* no-wait: */
+> > > -             ret =3D fence_completed(fctx, fence) ? 0 : -EBUSY;
+> > > +     if (interruptible) {
+> > > +             ret =3D wait_event_interruptible_timeout(fctx->event,
+> > > +                     fence_completed(fctx, fence),
+> > > +                     remaining_jiffies);
+> > >       } else {
+> > > -             unsigned long remaining_jiffies =3D timeout_to_jiffies(=
+timeout);
+> > > -
+> > > -             if (interruptible)
+> > > -                     ret =3D wait_event_interruptible_timeout(fctx->=
+event,
+> > > -                             fence_completed(fctx, fence),
+> > > -                             remaining_jiffies);
+> > > -             else
+> > > -                     ret =3D wait_event_timeout(fctx->event,
+> > > -                             fence_completed(fctx, fence),
+> > > -                             remaining_jiffies);
+> > > -
+> > > -             if (ret =3D=3D 0) {
+> > > -                     DBG("timeout waiting for fence: %u (completed: =
+%u)",
+> > > -                                     fence, fctx->completed_fence);
+> > > -                     ret =3D -ETIMEDOUT;
+> > > -             } else if (ret !=3D -ERESTARTSYS) {
+> > > -                     ret =3D 0;
+> > > -             }
+> > > +             ret =3D wait_event_timeout(fctx->event,
+> > > +                     fence_completed(fctx, fence),
+> > > +                     remaining_jiffies);
+> > > +     }
+> > > +
+> > > +     if (ret =3D=3D 0) {
+> > > +             DBG("timeout waiting for fence: %u (completed: %u)",
+> > > +                             fence, fctx->completed_fence);
+> > > +             ret =3D -ETIMEDOUT;
+> > > +     } else if (ret !=3D -ERESTARTSYS) {
+> > > +             ret =3D 0;
+> > >       }
+> > >
+> > >       return ret;
+> > >   }
+> > >
+> > > +/* legacy path for WAIT_FENCE ioctl: */
+> > > +int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> > > +             ktime_t *timeout, bool interruptible)
+> > > +{
+> > > +     return wait_fence(fctx, fence, timeout_to_jiffies(timeout), int=
+erruptible);
+> > > +}
+> > > +
+> > >   /* called from workqueue */
+> > >   void msm_update_fence(struct msm_fence_context *fctx, uint32_t fenc=
+e)
+> > >   {
+> > > @@ -114,10 +114,19 @@ static bool msm_fence_signaled(struct dma_fence=
+ *fence)
+> > >       return fence_completed(f->fctx, f->base.seqno);
+> > >   }
+> > >
+> > > +static signed long msm_fence_wait(struct dma_fence *fence, bool intr=
+,
+> > > +             signed long timeout)
+> > > +{
+> > > +     struct msm_fence *f =3D to_msm_fence(fence);
+> > > +
+> > > +     return wait_fence(f->fctx, fence->seqno, timeout, intr);
+> > > +}
+> > > +
+> > >   static const struct dma_fence_ops msm_fence_ops =3D {
+> > >       .get_driver_name =3D msm_fence_get_driver_name,
+> > >       .get_timeline_name =3D msm_fence_get_timeline_name,
+> > >       .signaled =3D msm_fence_signaled,
+> > > +     .wait =3D msm_fence_wait,
+> > >   };
+> > >
+> > >   struct dma_fence *
+> >
+
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
