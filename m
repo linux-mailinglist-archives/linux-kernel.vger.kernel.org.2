@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42AA13CFA2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 198153CFA3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbhGTMaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbhGTMao (ORCPT
+        id S236671AbhGTMcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:32:21 -0400
+Received: from mail-io1-f49.google.com ([209.85.166.49]:46046 "EHLO
+        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232375AbhGTMbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:30:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4097C061574;
-        Tue, 20 Jul 2021 06:11:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hgPl5F02pttqsu+FUSnFeMJhzopEmUNSjuPlvxGlBNQ=; b=M6xeEccq4GIeEt99toObAGtega
-        3m5vXEaKuL0UJFc7tAGqTZZd0Og1h2AmXcr/BLCdSYHDFQQ+ceK9SAwtm4mhWFxtDlpMtrNk6kQtq
-        3narjx3gwvt6smCi08/VGdQn/hyuOVKK/96yfbhpmT1DUyh7sS2XAUpsD/e4loZnORNGjmGG7wjXq
-        G0ruOtWipKwCrP4s3jcp17w0HyaJCWrYiwi+KfgRX0OrCBHASij/vmXQj7Kl2Wv6ylaAkHkgxUuOS
-        EQBQjX0T+gILeL6j/dEER9Py2kZxiI+hT+kjb7WlRee4qMf0r9+dyT1RyHfUo1jzRxOvlLnk5Iuf7
-        b/ZhMeKA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m5pWL-008850-86; Tue, 20 Jul 2021 13:10:55 +0000
-Date:   Tue, 20 Jul 2021 14:10:49 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Yu Zhao <yuzhao@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Howells <dhowells@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v14 011/138] mm/lru: Add folio LRU functions
-Message-ID: <YPbLWVXXC8sJNt8N@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-12-willy@infradead.org>
- <YPao+syEWXGhDxay@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPao+syEWXGhDxay@kernel.org>
+        Tue, 20 Jul 2021 08:31:32 -0400
+Received: by mail-io1-f49.google.com with SMTP id z17so17256156iog.12;
+        Tue, 20 Jul 2021 06:12:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=abnffZ4MtGwQDAxtUagurofgQJnEps8wWqmtotQHpvs=;
+        b=fa7LAoKIML1VN/kQnUU+Nw8tlF6JMazIz/qcgY06QVzyFZ6O7AzEKrfpn5RnTJwVJD
+         8IceekUVCVdLAwNn89ELuGRFIYOP5dOnRUqr4HcxBLuaGxtp8TEQmAOb4skJYtnBEscX
+         4I62F6NIU2jiQgwkKUd4VALWMibd+hMxm18fgt7I8MDYd0BAOvqYD+MxtwLNZq7HvKcm
+         L/vQ462FkArCyHtF5gOnA2t0Qwl4twHYkwLkr7xmhqbTpFpf7NP/dfcvUHlswoTr/JTg
+         p2JX+lph2/LFXLRIf+CHXHSRy1PRIhAbWU3XLbFh8SKveoBnSti/S4RYCdTMcVjnWeKh
+         RTHA==
+X-Gm-Message-State: AOAM531iXs/bxNnMJ4TdCjHMCwgWllUXpukYVYcW3pS+2prNQZXNWBi8
+        fgE13e2K8dHUe0t6JyEsbw==
+X-Google-Smtp-Source: ABdhPJyKoIf00du5/ZAkd1mRiGtw0/iyDLxUKFdDVMCyrHFwePjpZT3XzrY/eI4EnXfeG3vsDsFrug==
+X-Received: by 2002:a05:6602:1814:: with SMTP id t20mr18779191ioh.204.1626786729379;
+        Tue, 20 Jul 2021 06:12:09 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id r4sm11231806ilb.42.2021.07.20.06.12.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 06:12:08 -0700 (PDT)
+Received: (nullmailer pid 4121606 invoked by uid 1000);
+        Tue, 20 Jul 2021 13:11:58 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <helgaas@kernel.org>
+In-Reply-To: <04943d3dff73e2fd5c9336540cb31d70ccf7b9cf.1626768323.git.mchehab+huawei@kernel.org>
+References: <cover.1626768323.git.mchehab+huawei@kernel.org> <04943d3dff73e2fd5c9336540cb31d70ccf7b9cf.1626768323.git.mchehab+huawei@kernel.org>
+Subject: Re: [PATCH v6 5/9] dt-bindings: phy: Add bindings for HiKey 970 PCIe PHY
+Date:   Tue, 20 Jul 2021 07:11:58 -0600
+Message-Id: <1626786718.742548.4121605.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 01:44:10PM +0300, Mike Rapoport wrote:
-> >  /**
-> > - * page_is_file_lru - should the page be on a file LRU or anon LRU?
-> > - * @page: the page to test
-> > + * folio_is_file_lru - should the folio be on a file LRU or anon LRU?
-> > + * @folio: the folio to test
-> >   *
-> > - * Returns 1 if @page is a regular filesystem backed page cache page or a lazily
-> > - * freed anonymous page (e.g. via MADV_FREE).  Returns 0 if @page is a normal
-> > - * anonymous page, a tmpfs page or otherwise ram or swap backed page.  Used by
-> > - * functions that manipulate the LRU lists, to sort a page onto the right LRU
-> > - * list.
-> > + * Returns 1 if @folio is a regular filesystem backed page cache folio
-> > + * or a lazily freed anonymous folio (e.g. via MADV_FREE).  Returns 0 if
-> > + * @folio is a normal anonymous folio, a tmpfs folio or otherwise ram or
-> > + * swap backed folio.  Used by functions that manipulate the LRU lists,
-> > + * to sort a folio onto the right LRU list.
-> >   *
-> >   * We would like to get this info without a page flag, but the state
-> > - * needs to survive until the page is last deleted from the LRU, which
-> > + * needs to survive until the folio is last deleted from the LRU, which
-> >   * could be as far down as __page_cache_release.
+On Tue, 20 Jul 2021 10:09:07 +0200, Mauro Carvalho Chehab wrote:
+> Document the bindings for HiKey 970 (hi3670) PCIe PHY
+> interface, supported via the pcie-kirin driver.
 > 
-> It seems mm_inline.h is not a part of generated API docs, otherwise
-> kerneldoc would be unhappy about missing Return: description.
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../phy/hisilicon,phy-hi3670-pcie.yaml        | 98 +++++++++++++++++++
+>  1 file changed, 98 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+> 
 
-kernel-doc doesn't warn about that by default.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-    # This check emits a lot of warnings at the moment, because many
-    # functions don't have a 'Return' doc section. So until the number
-    # of warnings goes sufficiently down, the check is only performed in
-    # verbose mode.
-    # TODO: always perform the check.
-    if ($verbose && !$noret) {
-            check_return_section($file, $declaration_name, $return_type);
-    }
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.example.dt.yaml: pcie-phy@fc000000: 'reg-names' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+\ndoc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1507427
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
