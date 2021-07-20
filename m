@@ -2,97 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09573D0336
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 22:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 582083D0337
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 22:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235781AbhGTUEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 16:04:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35804 "EHLO mail.kernel.org"
+        id S235968AbhGTUEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 16:04:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237642AbhGTTwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 15:52:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA00A60FF2;
-        Tue, 20 Jul 2021 20:33:15 +0000 (UTC)
+        id S237651AbhGTTw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 15:52:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AAF96100C;
+        Tue, 20 Jul 2021 20:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626813196;
-        bh=eAL8QwelZEjqkrY6xpSxtA3PODMbnmYsssC4KoVZiOc=;
+        s=k20201202; t=1626813214;
+        bh=zVdiQvS/fdjdUflraJ6E4hUkVNri5BfXKfYiwpln1oE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JJpAfKhnABUmpxOg9U/fYhIdK676lUC7zxdZO4Ov+XkzsTN1uNQpBFvYrirDfIakZ
-         byh9JWGpUaePwdP9P8a5i5BEvhoOUPFLDQF/TDfF6Dt16A3BeRLHI/9/G2uzjph8jw
-         MevIZGtIuySKTu1ntOZrkKNQFaWrdWeYOaJyeJpxUnq3KG8ahCOJyb+BlK+zntCxgx
-         Ed4I0eXobO8J3Ubp6zPV5nmDpkVivVrUweH+mzg1CoHXf/MLoxDBrQyTc2c5HwIyLh
-         QY1nFaI0Gwrfw7HTmsQ+TalbuwunzUd9K0sOoGUuoML7Km3jvcukKSLHc3yF+IDiUt
-         vtHRTxUbK9qGQ==
-Date:   Tue, 20 Jul 2021 21:33:12 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Dilip Kota <eswara.kota@linux.intel.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rtc@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH] dt-bindings: Remove "status" from schema examples
-Message-ID: <20210720203312.GG5042@sirena.org.uk>
-References: <20210720172025.363238-1-robh@kernel.org>
+        b=crglTabymW20c+v5BkHyYt/KuCyCVllyr7RaszpU4Q851Elt1omqlmbvSCdqro/g6
+         efRxeVWGsfI8Tc+mewAWww2XjV9PCcqYksVtekIYerYMLQLH1qS6CVDU4LvDphLALV
+         yBCHEcehJy417I//AE5kuuldOHvwxjJEOVPT6nLKd6sBvCMiEUtgZyNVyvbBMahMlF
+         OPp9KeghOCSFr+lOIjCgjcO7o2oR9kCmiWJTpw0b5AUSVyEask8+li0Djhq4ym0M3k
+         V8Pa+kiHegHSw41l98iQH5PM5cF0jzXKND+T2pu9VS0h0tOsgXyI/872xRean40wBS
+         XjxuiKeWjnoow==
+Date:   Tue, 20 Jul 2021 22:33:30 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] i2c: mpc: Poll for MCF
+Message-ID: <YPczGp5FcxWjzo60@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210715205832.17879-1-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kadn00tgSopKmJ1H"
+        protocol="application/pgp-signature"; boundary="6dPGcqBfGDZPN4Aa"
 Content-Disposition: inline
-In-Reply-To: <20210720172025.363238-1-robh@kernel.org>
-X-Cookie: Revenge is a meal best served cold.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210715205832.17879-1-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---kadn00tgSopKmJ1H
+--6dPGcqBfGDZPN4Aa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 20, 2021 at 11:20:25AM -0600, Rob Herring wrote:
-> There's no reason to have "status" properties in examples. "okay" is the
-> default, and "disabled" turns off some schema checks ('required'
-> specifically).
+On Fri, Jul 16, 2021 at 08:58:32AM +1200, Chris Packham wrote:
+> During some transfers the bus can still be busy when an interrupt is
+> received. Commit 763778cd7926 ("i2c: mpc: Restore reread of I2C status
+> register") attempted to address this by re-reading MPC_I2C_SR once but
+> that just made it less likely to happen without actually preventing it.
+> Instead of a single re-read, poll with a timeout so that the bus is given
+> enough time to settle but a genuine stuck SCL is still noticed.
+>=20
+> Fixes: 1538d82f4647 ("i2c: mpc: Interrupt driven transfer")
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Applied to for-current, thanks!
 
---kadn00tgSopKmJ1H
+
+--6dPGcqBfGDZPN4Aa
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD3MwcACgkQJNaLcl1U
-h9Bjsgf8DIiqqQ26ZTa4jvNqa3wI4t/EHPC0PLaGmxZWA2e7eTEGVrmipVIkUz2m
-dX2Rrsl6xOoU39mzMuCNQwVu9iqiJUoxt6xQsFG13raVCQhBTxxgkkVV2qU6BWh0
-TEuDrDM4Uh5EIU/PxpwbywfyPELaMCBkFvkd9D8O/0ek7OPcVuw5Au7es/ZG+NS/
-nQBA4oFRFdrIVSQmZ+Tn3/VjiivJhZ4H8MZ3oSKcFrMpQjG6ppG31dZGHpKtJNwE
-bUqasYXWrqKz1seky+xKbpbMnSjok627Byj0cGtNir3l8MpB2bV+Ae2OE/tc3nyZ
-aRZ/bNwgS/oYZ+vrKSOeJcgAasfyYw==
-=3Ukn
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmD3MxoACgkQFA3kzBSg
+KbaFIA//TtIkQBNdFqO6Wjttl//ZIg26ib0UEyfYR2oNpbKa6uQ3/IEP+4wLoOZk
+sF5FvP+21Y8eNGKHJPYJuLHEBl0Mfm/UumGAP/p+waAIkCc+aOm/hhJmrbh+kL7s
+lz4m1LdF+h4sZMnA2m9sT/XebqX/Ujcq5Ydnx+GmU3rVMERhBOLXkQ7xl5GJK8Xy
++s9JrK7hDuD3Fyxz+3NUyXXm5TJZr0FEg31Ahwe2rOSnZ2nBJ+u46Hb3yphLNuOl
+AyPzSwWamMCTzA2MfEJjFsI7x7h4gwRu4bzBi6NPFlXRdJsiOOF6CAEfeYzRgMiQ
+mbEbqX1jM9mxVI/8a/zGDNTvR2Ji6TjBKRVutz38Tm6uodNqXHeU9ooGbW8k94Sf
+ogdHOzf/7J9LYF8hFsJ4KkabQ7IDwUxBanpYrpcokRZkqDZxbQ8E//cwN2jUuHO4
+vuVjoFGPx4FAWw8dFIiFnYkigu/X5ha5IpkjZXRQ393FCcItErSv46wTU36O6FtD
+/A3F0Jp7T3Jy+jsVeWP8wxDWIoPpvBq8qgN0W8owKQAUUHxqJcrXmUVbwQDbcUWJ
+Via8JopdIHYIUZZqQT2Y5bFryEflj432++XkImemlXOegZrwD46lAIJOmrZmF/jQ
+zOpeXMMR45sqpA8F79IH4psJrS8hNbXaoUooZEflHk206UXwwYM=
+=MG5b
 -----END PGP SIGNATURE-----
 
---kadn00tgSopKmJ1H--
+--6dPGcqBfGDZPN4Aa--
