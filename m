@@ -2,131 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FCD3CF411
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E21B3CF414
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237846AbhGTFDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 01:03:21 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38092 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230477AbhGTFDB (ORCPT
+        id S234833AbhGTFFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 01:05:46 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:48603 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232809AbhGTFFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 01:03:01 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16K5YhL2072274;
-        Tue, 20 Jul 2021 01:43:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : content-type :
- mime-version; s=pp1; bh=f7Q5yspJe6r0GqwG/nqAUZN5kcItfRIYBbEwe620rc4=;
- b=JeDNi3bmnJR8nIPEvfMD5SxoZUMz/M9DZ/OYfq7JH3uCrgh1Mc/XhoK24+RFb+PITBkS
- UYCXnOZsx9v8eriLFza9ZLrwgGYtQDdCDI4/axao3xCHnj6rm/ufr7ySolyfM4zmJ9Ug
- PUEMZPvBEHDaqjnMkXXbGa6QxyiYkVnRaujJaXRXFXD2prkcz7VBKf+1NZS9cNOSzHs2
- 0Em6e4s+q5Aa1jxu0/LMEkZmDiuLecr4dnqXtlPOOhU4jykjSqXx+xzFzrXLZ/t1JS2/
- ygEXLbVDuy4IzNUhikwk9jI4D0XcsoAnR8KjcAu1ohOPA0+1JWgTsCWHqWY8lJsnztcS bQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39wngubydy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 01:43:18 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16K5ZEP5075470;
-        Tue, 20 Jul 2021 01:43:18 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39wngubydd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 01:43:17 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16K5b29F006997;
-        Tue, 20 Jul 2021 05:43:16 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06fra.de.ibm.com with ESMTP id 39upfh8m7a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 05:43:15 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16K5hDKR21889510
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Jul 2021 05:43:13 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A8A9611C04A;
-        Tue, 20 Jul 2021 05:43:13 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2172511C054;
-        Tue, 20 Jul 2021 05:43:13 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 20 Jul 2021 05:43:13 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Daniel =?utf-8?Q?D=C3=ADaz?= <daniel.diaz@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        linux- stable <stable@vger.kernel.org>, hca@linux.ibm.com
-Subject: Re: [PATCH 5.12 000/242] 5.12.18-rc1 review
-References: <20210715182551.731989182@linuxfoundation.org>
-        <CAEUSe7_+8fQZ=1+jcxJVTRw0DYttGmR-aBdobZ0GWYQi3Vg97w@mail.gmail.com>
-        <yt9dim16lv3u.fsf@linux.ibm.com> <YPUXPEiTrpKoKf+t@kroah.com>
-Date:   Tue, 20 Jul 2021 07:43:12 +0200
-In-Reply-To: <YPUXPEiTrpKoKf+t@kroah.com> (Greg Kroah-Hartman's message of
-        "Mon, 19 Jul 2021 08:10:04 +0200")
-Message-ID: <yt9d4kcp1qxb.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: SXYwiLKqLJLZYYD1-cHgywxYB8wqlGx5
-X-Proofpoint-GUID: T9LCOnltkCscTYODk6h6WUIIWTlF-WHY
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 20 Jul 2021 01:05:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626759977; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Sky0m1zkNTA75j9sDva6jJzx6ezxLcveD1wic3cSVP4=;
+ b=iKLn0cMG1BLA2iYXC0YQ2O1eMPGfJNx0QLsJ5nCJR1NU7H6quG+ZtwuilmXoGSI2pAfkfTVn
+ e1cKUAR9hWxaQWRSzaZHqgn/i/yebT60MU/gtm+Tm3UYrwXlSfUL8xE9SSFRYf79Dbt3hkTK
+ zW/4BxRFZop/cFKQQuqiMoXffeI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60f6632896a66e66b208ca50 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Jul 2021 05:46:16
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BDD2AC43460; Tue, 20 Jul 2021 05:46:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8D73FC433F1;
+        Tue, 20 Jul 2021 05:46:13 +0000 (UTC)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-20_01:2021-07-19,2021-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 spamscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107200030
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 20 Jul 2021 11:16:13 +0530
+From:   schowdhu@codeaurora.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
+Subject: Re: [PATCH V5 0/4] Add driver support for Data Capture and Compare
+ Engine(DCC) for SM8150
+In-Reply-To: <cover.1625059245.git.schowdhu@codeaurora.org>
+References: <cover.1625059245.git.schowdhu@codeaurora.org>
+Message-ID: <bc97a322585926cf357c61ad0dcbf814@codeaurora.org>
+X-Sender: schowdhu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On 2021-06-30 19:19, Souradeep Chowdhury wrote:
+> DCC(Data Capture and Compare) is a DMA engine designed for debugging
+> purposes.In case of a system
+> crash or manual software triggers by the user the DCC hardware stores
+> the value at the register
+> addresses which can be used for debugging purposes.The DCC driver
+> provides the user with sysfs
+> interface to configure the register addresses.The options that the DCC
+> hardware provides include
+> reading from registers,writing to registers,first reading and then
+> writing to registers and looping
+> through the values of the same register.
+> 
+> In certain cases a register write needs to be executed for accessing
+> the rest of the registers,
+> also the user might want to record the changing values of a register
+> with time for which he has the
+> option to use the loop feature.
+> 
+> The options mentioned above are exposed to the user by sysfs files
+> once the driver is probed.The
+> details and usage of this sysfs files are documented in
+> Documentation/ABI/testing/sysfs-driver-dcc.
+> 
+> As an example let us consider a couple of debug scenarios where DCC
+> has been proved to be effective
+> for debugging purposes:-
+> 
+> i)TimeStamp Related Issue
+> 
+> On SC7180, there was a coresight timestamp issue where it would
+> occasionally be all 0 instead of proper
+> timestamp values.
+> 
+> Proper timestamp:
+> Idx:3373; ID:10; I_TIMESTAMP : Timestamp.; Updated val =
+> 0x13004d8f5b7aa; CC=0x9e
+> 
+> Zero timestamp:
+> Idx:3387; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x0; CC=0xa2
+> 
+> Now this is a non-fatal issue and doesn't need a system reset, but 
+> still needs
+> to be rootcaused and fixed for those who do care about coresight etm 
+> traces.
+> Since this is a timestamp issue, we would be looking for any timestamp 
+> related
+> clocks and such.
+> 
+> o we get all the clk register details from IP documentation and 
+> configure it
+> via DCC config syfs node. Before that we set the current linked list.
+> 
+> /* Set the current linked list */
+> echo 3 > /sys/bus/platform/devices/10a2000.dcc/curr_list
+> 
+> /* Program the linked list with the addresses */
+> echo 0x10c004 > /sys/bus/platform/devices/10a2000.dcc/config
+> echo 0x10c008 > /sys/bus/platform/devices/10a2000.dcc/config
+> echo 0x10c00c > /sys/bus/platform/devices/10a2000.dcc/config
+> echo 0x10c010 > /sys/bus/platform/devices/10a2000.dcc/config
+> ..... and so on for other timestamp related clk registers
+> 
+> /* Other way of specifying is in "addr len" pair, in below case it
+> specifies to capture 4 words starting 0x10C004 */
+> 
+> echo 0x10C004 4 > /sys/bus/platform/devices/10a2000.dcc/config
+> 
+> /* Enable DCC */
+> echo 1 > /sys/bus/platform/devices/10a2000.dcc/enable
+> 
+> /* Run the timestamp test for working case */
+> 
+> /* Send SW trigger */
+> echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
+> 
+> /* Read SRAM */
+> cat /dev/dcc_sram > dcc_sram1.bin
+> 
+> /* Run the timestamp test for non-working case */
+> 
+> /* Send SW trigger */
+> echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
+> 
+> /* Read SRAM */
+> cat /dev/dcc_sram > dcc_sram2.bin
+> 
+> Get the parser from [1] and checkout the latest branch.
+> 
+> /* Parse the SRAM bin */
+> python dcc_parser.py -s dcc_sram1.bin --v2 -o output/
+> python dcc_parser.py -s dcc_sram2.bin --v2 -o output/
+> 
+> Sample parsed output of dcc_sram1.bin:
+> 
+> <hwioDump version="1">
+>         <timestamp>03/14/21</timestamp>
+>             <generator>Linux DCC Parser</generator>
+>                 <chip name="None" version="None">
+>                 <register address="0x0010c004" value="0x80000000" />
+>                 <register address="0x0010c008" value="0x00000008" />
+>                 <register address="0x0010c00c" value="0x80004220" />
+>                 <register address="0x0010c010" value="0x80000000" />
+>             </chip>
+>     <next_ll_offset>next_ll_offset : 0x1c </next_ll_offset>
+> </hwioDump>
+> 
+> ii)NOC register errors
+> 
+> A particular class of registers called NOC which are functional
+> registers was reporting
+> errors while logging the values.To trace these errors the DCC has been
+> used effectively.
+> The steps followed were similar to the ones mentioned above.
+> In addition to NOC registers a few other dependent registers were
+> configured in DCC to
+> monitor it's values during a crash. A look at the dependent register
+> values revealed that
+> the crash was happening due to a secured access to one of these
+> dependent registers.
+> All these debugging activity and finding the root cause was achieved 
+> using DCC.
+> 
+> DCC parser is available at the following open source location
+> 
+> https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/tools/tree/dcc_parser
+> 
+> Changes in v5:
+> 
+> *Fixed the issue with timeout faced while polling dcc_status register 
+> in case
+>  of software triggers.Increased the timeout from 100 us to 5000 us to 
+> enable
+>  dcc to process larger register sets in case of software triggers.
+> 
+> Souradeep Chowdhury (4):
+>   dt-bindings: Added the yaml bindings for DCC
+>   soc: qcom: dcc:Add driver support for Data Capture and Compare
+>     unit(DCC)
+>   MAINTAINERS: Add the entry for DCC(Data Capture and Compare) driver
+>     support
+>   arm64: dts: qcom: sm8150: Add Data Capture and Compare(DCC) support
+>     node
+> 
+>  Documentation/ABI/testing/sysfs-driver-dcc         |  114 ++
+>  .../devicetree/bindings/arm/msm/qcom,dcc.yaml      |   40 +
+>  MAINTAINERS                                        |    8 +
+>  arch/arm64/boot/dts/qcom/sm8150.dtsi               |    6 +
+>  drivers/soc/qcom/Kconfig                           |    8 +
+>  drivers/soc/qcom/Makefile                          |    1 +
+>  drivers/soc/qcom/dcc.c                             | 1534 
+> ++++++++++++++++++++
+>  7 files changed, 1711 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-driver-dcc
+>  create mode 100644 
+> Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
+>  create mode 100644 drivers/soc/qcom/dcc.c
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-
-> On Mon, Jul 19, 2021 at 07:40:21AM +0200, Sven Schnelle wrote:
->> If https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1428532107
->> is the logfile for this problem, than i see the following in the log:
->> 
->> make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=s390 CROSS_COMPILE=s390x-linux-gnu- 'CC=sccache s390x-linux-gnu-gcc' 'HOSTCC=sccache gcc'
->> /bin/sh: 1: /builds/linux/arch/s390/kernel/vdso64/gen_vdso_offsets.sh: Permission denied
->> 
->> However, in the patch this script is 755, and other architecture are
->> using this for a while now - can you check what the permission are when
->> you're trying to build the kernel?
->
-> Yes, the problem is that when handling patches, we can not change the
-> permissions on files.  That causes this file to not be added with
-> execute permissions.  This has generally been considered a bad thing
-> anyway, and other scripts that relied on being executable have been
-> changed over time to not be that way and be explicitly run by the
-> calling script.
-
-Hmm, right. I didn't thought about patches. So i'll adjust the patch and
-sent it again. I guess prefixing it with $(CONFIG_SHELL) is then the way
-to do it, at least i see a lot of location doing it that way.
-
-> But it looks like th gen_vdso_offsets.sh script has not been changed on
-> any arch to do that yet.  It is one of the few hold outs.
->
-> Also, this feels like a HUGE change for a stable tree, adding new
-> features like this, are you sure it's all needed?
-
-Yes. This fixes syscall restarting in combination with signals coming in
-on s390, which is broken since the conversion to generic entry. There's
-no easy way to fix that, and we don't want to introduce another
-workaround that is userspace visible, as we would have to carry that
-forever.
-
-Sven
+Gentle Ping
