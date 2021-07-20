@@ -2,214 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C003CF5B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FD83CF5B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhGTHZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:25:41 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:53274 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbhGTHZb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232388AbhGTHZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 20 Jul 2021 03:25:31 -0400
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 16K85aIU019345;
-        Tue, 20 Jul 2021 17:05:36 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 16K85aIU019345
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1626768336;
-        bh=tW4cmCGAAsT+oeAelhZJnVPmEjCboZT3XEV//GSWizc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mrzdUsA3YIn+n3k708pPIjUMuCFNnG0zjwNEjS7NS0oRb+OPyxaowI79c4X9RKDYe
-         efORXFgY4PEg490syeOUncMfUd28ikGQyEM3dIbQJSLXbnRy4RCM9lILXdM96K7RyQ
-         6y+Got5LjsSfvgvYSowHzlsg3a3bkn3PH6NN/ysXGUKCrwAufZXJL2rDxcO79qv5S4
-         vg2X6/wZx/UcEI56ODaVxuYZtmGenVCbKE13FOVjErZA1sTXF/qy61HTjtENgiCQIU
-         oDQS/wxnLjIOT7OVLjNJAsDBOH4ATW3saP9AHWEGNb6TQiDs23RxcYaYTWBFQ0duKD
-         2FXaI2+DDcQCw==
-X-Nifty-SrcIP: [209.85.214.182]
-Received: by mail-pl1-f182.google.com with SMTP id d1so11080565plg.0;
-        Tue, 20 Jul 2021 01:05:36 -0700 (PDT)
-X-Gm-Message-State: AOAM531TauQ6hVeSRSvvG3+jRMprMNvuY6Sf0gEWfDYpYmW2enetQiWf
-        a9j9dstY3W5qvN8O1QPMfX0qvIoxyiAk1hLFjII=
-X-Google-Smtp-Source: ABdhPJzj3AbsPJOsaEQdbpIotcSzOv6la/CgbC2360JBxnvUghgVdl5W+6VGJWzqojG/auw+XBkC1CgStexuggsL8LY=
-X-Received: by 2002:a17:90a:c506:: with SMTP id k6mr34598471pjt.198.1626768335780;
- Tue, 20 Jul 2021 01:05:35 -0700 (PDT)
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3434 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231345AbhGTHZZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 03:25:25 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GTWFk2B5xz6H7nW;
+        Tue, 20 Jul 2021 15:54:34 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 10:06:01 +0200
+Received: from [10.47.85.214] (10.47.85.214) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 20 Jul
+ 2021 09:06:00 +0100
+Subject: Re: [PATCH 3/9] blk-mq: Relocate shared sbitmap resize in
+ blk_mq_update_nr_requests()
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <kashyap.desai@broadcom.com>, <hare@suse.de>
+References: <1626275195-215652-1-git-send-email-john.garry@huawei.com>
+ <1626275195-215652-4-git-send-email-john.garry@huawei.com>
+ <YPaARLPPZxcbat8H@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <49151de5-0505-6cbd-d368-e032676232b9@huawei.com>
+Date:   Tue, 20 Jul 2021 09:06:00 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <20210708232522.3118208-1-ndesaulniers@google.com> <20210708232522.3118208-3-ndesaulniers@google.com>
-In-Reply-To: <20210708232522.3118208-3-ndesaulniers@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 20 Jul 2021 17:04:58 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
-Message-ID: <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
- LLVM=1 LLVM_IAS=1
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YPaARLPPZxcbat8H@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.85.214]
+X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 8:25 AM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> We get constant feedback that the command line invocation of make is too
-> long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
-> target triple, or is an absolute path outside of $PATH, but it's mostly
-> redundant for a given SRCARCH. SRCARCH itself is derived from ARCH
-> (normalized for a few different targets).
->
-> If CROSS_COMPILE is not set, simply set --target= for CLANG_FLAGS,
-> KBUILD_CFLAGS, and KBUILD_AFLAGS based on $SRCARCH.
->
-> Previously, we'd cross compile via:
-> $ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make LLVM=1 LLVM_IAS=1
-> Now:
-> $ ARCH=arm64 make LLVM=1 LLVM_IAS=1
->
-> For native builds (not involving cross compilation) we now explicitly
-> specify a target triple rather than rely on the implicit host triple.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1399
-> Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> Changes v1 -> v2:
-> * Fix typos in commit message as per Geert and Masahiro.
-> * Use SRCARCH instead of ARCH, simplifying x86 handling, as per
->   Masahiro. Add his sugguested by tag.
-> * change commit oneline from 'drop' to 'infer.'
-> * Add detail about explicit host --target and relationship of ARCH to
->   SRCARCH, as per Masahiro.
->
-> Changes RFC -> v1:
-> * Rebase onto linux-kbuild/for-next
-> * Keep full target triples since missing the gnueabi suffix messes up
->   32b ARM. Drop Fangrui's sugguested by tag. Update commit message to
->   drop references to arm64.
-> * Flush out TODOS.
-> * Add note about -EL/-EB, -m32/-m64.
-> * Add note to Documentation/.
->
->  Documentation/kbuild/llvm.rst |  5 +++++
->  scripts/Makefile.clang        | 34 ++++++++++++++++++++++++++++++++--
->  2 files changed, 37 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-> index b18401d2ba82..80c63dd9a6d1 100644
-> --- a/Documentation/kbuild/llvm.rst
-> +++ b/Documentation/kbuild/llvm.rst
-> @@ -46,6 +46,11 @@ example: ::
->
->         clang --target=aarch64-linux-gnu foo.c
->
-> +When both ``LLVM=1`` and ``LLVM_IAS=1`` are used, ``CROSS_COMPILE`` becomes
-> +unnecessary and can be inferred from ``ARCH``. Example: ::
-> +
-> +       ARCH=arm64 make LLVM=1 LLVM_IAS=1
-> +
->  LLVM Utilities
->  --------------
->
-> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-> index 297932e973d4..956603f56724 100644
-> --- a/scripts/Makefile.clang
-> +++ b/scripts/Makefile.clang
-> @@ -1,6 +1,36 @@
-> -ifneq ($(CROSS_COMPILE),)
-> +# Individual arch/{arch}/Makfiles should use -EL/-EB to set intended endianness
-> +# and -m32/-m64 to set word size based on Kconfigs instead of relying on the
-> +# target triple.
-> +ifeq ($(CROSS_COMPILE),)
-> +ifneq ($(LLVM),)
+On 20/07/2021 08:50, Ming Lei wrote:
+>> Signed-off-by: John Garry<john.garry@huawei.com>
+>> ---
+>>   block/blk-mq.c | 13 ++++++++-----
+>>   1 file changed, 8 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/block/blk-mq.c b/block/blk-mq.c
+>> index ae28f470893c..56e3c6fdba60 100644
+>> --- a/block/blk-mq.c
+>> +++ b/block/blk-mq.c
+>> @@ -3624,8 +3624,6 @@ int blk_mq_update_nr_requests(struct request_queue *q, unsigned int nr)
+>>   		if (!hctx->sched_tags) {
+>>   			ret = blk_mq_tag_update_depth(hctx, &hctx->tags, nr,
+>>   							false);
+>> -			if (!ret && blk_mq_is_sbitmap_shared(set->flags))
+>> -				blk_mq_tag_resize_shared_sbitmap(set, nr);
+>>   		} else {
+>>   			ret = blk_mq_tag_update_depth(hctx, &hctx->sched_tags,
+>>   							nr, true);
+>> @@ -3643,9 +3641,14 @@ int blk_mq_update_nr_requests(struct request_queue *q, unsigned int nr)
+>>   	}
+>>   	if (!ret) {
+>>   		q->nr_requests = nr;
+>> -		if (q->elevator && blk_mq_is_sbitmap_shared(set->flags))
+>> -			sbitmap_queue_resize(&q->sched_bitmap_tags,
+>> -					     nr - set->reserved_tags);
+>> +		if (blk_mq_is_sbitmap_shared(set->flags)) {
+
+Hi Ming,
+
+>> +			if (q->elevator) {
+>> +				sbitmap_queue_resize(&q->sched_bitmap_tags,
+>> +						     nr - set->reserved_tags);
+
+I have learned that some people prefer {} for multi-line single 
+statements, like this.
+
+Anyway, more code is added here later in the series, so better to add {} 
+now, rather than re-arrange code later.
+
+>> +			} else {
+>> +				blk_mq_tag_resize_shared_sbitmap(set, nr);
+>> +			}
+> The above two {} can be removed.
+
+Thanks,
+John
 
 
-Do you need to check $(LLVM) ?
-
-
-LLVM=1 is a convenient switch to change all the
-defaults, but yet you can flip each tool individually.
-
-Instead of LLVM=1, you still should be able to
-get the equivalent setups by:
-
-
-  make CC=clang LD=ld.lld AR=llvm-ar OBJCOPY=llvm-objcopy ...
-
-
-The --target option is passed to only
-KBUILD_CFLAGS and KBUILD_AFLAGS.
-
-So, when we talk about --target=,
-we only care about whether $(CC) is Clang.
-Not caring about $(AR), $(LD), or $(OBJCOPY).
-
-
-scripts/Makefile.clang is already guarded by:
-
-ifneq ($(findstring clang,$(CC_VERSION_TEXT)),
-
-
-
-
-
-
-
-
-
-> +ifeq ($(LLVM_IAS),1)
-> +ifeq ($(SRCARCH),arm)
-> +CLANG_FLAGS    += --target=arm-linux-gnueabi
-> +else ifeq ($(SRCARCH),arm64)
-> +CLANG_FLAGS    += --target=aarch64-linux-gnu
-> +else ifeq ($(SRCARCH),hexagon)
-> +CLANG_FLAGS    += --target=hexagon-linux-gnu
-> +else ifeq ($(SRCARCH),m68k)
-> +CLANG_FLAGS    += --target=m68k-linux-gnu
-> +else ifeq ($(SRCARCH),mips)
-> +CLANG_FLAGS    += --target=mipsel-linux-gnu
-> +else ifeq ($(SRCARCH),powerpc)
-> +CLANG_FLAGS    += --target=powerpc64le-linux-gnu
-> +else ifeq ($(SRCARCH),riscv)
-> +CLANG_FLAGS    += --target=riscv64-linux-gnu
-> +else ifeq ($(SRCARCH),s390)
-> +CLANG_FLAGS    += --target=s390x-linux-gnu
-> +else ifeq ($(SRCARCH),x86)
-> +CLANG_FLAGS    += --target=x86_64-linux-gnu
-> +else
-> +$(error Specify CROSS_COMPILE or add '--target=' option to scripts/Makefile.clang)
-> +endif # SRCARCH
-> +endif # LLVM_IAS
-> +endif # LLVM
-> +else
->  CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> -endif
-> +endif # CROSS_COMPILE
-> +
->  ifeq ($(LLVM_IAS),1)
->  CLANG_FLAGS    += -integrated-as
->  else
-> --
-> 2.32.0.93.g670b81a890-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210708232522.3118208-3-ndesaulniers%40google.com.
-
-
-
--- 
-Best Regards
-Masahiro Yamada
