@@ -2,134 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A3C3CF68A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B163CF69D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhGTIWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 04:22:12 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3436 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234127AbhGTIQV (ORCPT
-        <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:16:21 -0400
-Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GTXRY3cNxz6G8Dn;
-        Tue, 20 Jul 2021 16:48:09 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 10:56:57 +0200
-Received: from [10.47.85.214] (10.47.85.214) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 20 Jul
- 2021 09:56:56 +0100
-Subject: Re: [PATCH] perf pmu: Create x86 specific perf_pmu__valid_suffix
-To:     Jin Yao <yao.jin@linux.intel.com>, <acme@kernel.org>,
-        <jolsa@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
-        <alexander.shishkin@linux.intel.com>
-CC:     <Linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <ak@linux.intel.com>, <kan.liang@intel.com>, <yao.jin@intel.com>
-References: <20210720082044.5380-1-yao.jin@linux.intel.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <68849032-ccb2-2d36-ea70-6a41301c6063@huawei.com>
-Date:   Tue, 20 Jul 2021 09:56:57 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S235354AbhGTI0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 04:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234809AbhGTIVP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 04:21:15 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4890EC0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 02:00:45 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id t3so27511091edc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 02:00:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RnsSk0IgGqobCFjh6CXIgOm+uV9hEt1QtilnTcttZyE=;
+        b=an9esNH1MdcspqVlJT2+7qtVubv9TwaxW5wbCpdg28PCMLm8odmj/YPDk22ynQgcIK
+         zCsjj7iLHt4FOSiVvux7xroXdvCETk2lKDvQ25cSx/AE//3D1ewYmi9ZjLX/PluWyzM+
+         fKaTvYk33nKY9VMosPwoHUGmH30PLJWSJxouh3I//Q9gSLCe4i8opSufnZJT3UW5tDw7
+         NY/CYJhQ8YUfnltpOCgRKH0i3tCjVsFInvgu0GdfGbEM9XaeBRNZrJ5n//18CdabzcSN
+         pukTiCBHwppEqLBYpCsniyn7WNoBvWrJ6gzuaq5h6JXRXIo68X2ls0j9ZbnZxJqaazzy
+         jH1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RnsSk0IgGqobCFjh6CXIgOm+uV9hEt1QtilnTcttZyE=;
+        b=hOnO0DkDjtgRsCFlyeDL4Phwe2r73BqRvNWHHwu4AKLh5SJFwQGOKZCv8Qev+tVzJx
+         mPks7UhidZ7VSo3yXrgvfx2yv2LvxoMvhkJECZdvhAdoSRzmspWzi84TUKuqHQIBLZO4
+         p5+00WR0fHRwHR9krhsU2XZJ8Z//uCEuhz3CdnP5KP/3d9zkx65Yt7bR2AKeOWD4dsKC
+         8oIY22ZOo58ewGQtngIFfqU8C02OQVHab05yLNwPr+8jM8kyS9pf6gDqFcLla29wCITY
+         bT3yqmpeyvBlPHXsoXzCjq4j5FFv9L/X0rp+dpwcqjh6I8b9+ako96FXIAy3Z/1YowKf
+         KE1Q==
+X-Gm-Message-State: AOAM531gue2EFYoqx7mCuzIZpPBpxp8vK8hn4S1GK/p2914BAFSxoder
+        gbrCJTpiaIZMfTR+5+eIJTk=
+X-Google-Smtp-Source: ABdhPJzrYR3/S9DPB/a902Ci6IaMGVy82Zg4kfZ+HF8RAaQnDa7mfhGmUwRv2rCU6jScDnoj6lzROg==
+X-Received: by 2002:aa7:c4d1:: with SMTP id p17mr38992996edr.2.1626771643950;
+        Tue, 20 Jul 2021 02:00:43 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.77])
+        by smtp.gmail.com with ESMTPSA id f18sm6963472ejx.23.2021.07.20.02.00.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 02:00:43 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 11:00:36 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Phillip Potter <phil@philpotter.co.uk>, gregkh@linuxfoundation.org,
+        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH resend] staging: rtl8188eu: move all source files from
+ core subdirectory
+Message-ID: <20210720090035.GB1406@agape.jhs>
+References: <20210719224601.255364-1-phil@philpotter.co.uk>
+ <7bc43fb0-2dab-190b-c480-9e77cff863d4@lwfinger.net>
 MIME-Version: 1.0
-In-Reply-To: <20210720082044.5380-1-yao.jin@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.85.214]
-X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7bc43fb0-2dab-190b-c480-9e77cff863d4@lwfinger.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2021 09:20, Jin Yao wrote:
-> The commit c47a5599eda3 ("perf tools: Fix pattern matching for same
-> substring in different PMU type") breaks arm64 system because it
-> assumes the first token must be followed by a '_', but it is
-> possibly a numeric on arm64.
+Hi all,
 
-I wouldn't just say arm64. The core code should support matching 
-multiple tokens, but it just so happens that only arm64 uses it.
-
+On Mon, Jul 19, 2021 at 06:46:16PM -0500, Larry Finger wrote:
+> On 7/19/21 5:46 PM, Phillip Potter wrote:
+> > Move all C source files from the core subdirectory to the root
+> > folder of the driver, and adjust Makefile accordingly. The ultmate
+> > goal is to remove hal layer and fold its functionalty into the main
+> > sources. At this point, the distinction between hal and core will be
+> > meaningless, so this is the first step towards simplifying the file
+> > layout.
+> > 
+> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> > ---
+> >   drivers/staging/rtl8188eu/Makefile            | 34 +++++++++----------
+> >   drivers/staging/rtl8188eu/{core => }/rtw_ap.c |  0
+> >   .../staging/rtl8188eu/{core => }/rtw_cmd.c    |  0
+> >   .../staging/rtl8188eu/{core => }/rtw_efuse.c  |  0
+> >   .../rtl8188eu/{core => }/rtw_ieee80211.c      |  0
+> >   .../rtl8188eu/{core => }/rtw_ioctl_set.c      |  0
+> >   .../staging/rtl8188eu/{core => }/rtw_iol.c    |  0
+ > 
 > 
-> For example, perf_pmu__valid_suffix("hisi_sccl3_l3c7", "hisi_sccl")
-> fails. "hisi_sccl3_l3c7" is pmu name and "hisi_sccl" is token.
-> "hisi_sccl" is followed by a digit but not followed by a '_'
-> ('3' in this example).
+> I think this is just source churning. The current setup with include. core.
+> hal and os_dep subdirectories are not opressive.
 > 
-> Since the PMU alias format on arm64 has difference than the format
-> on x86. Create a x86 specific perf_pmu__valid_suffix. For other arch,
-> the weak function always returns true to keep original behavior
-> unchanged.
+> Larry
 > 
-> Fixes: c47a5599eda3 ("perf tools: Fix pattern matching for same substring in different PMU type")
-> Signed-off-by: Jin Yao<yao.jin@linux.intel.com>
-> Reported-by: John Garry<john.garry@huawei.com>
-> ---
+> 
 
-I tend not to agree with this solution. Let's not make it x86 vs non-x86 
-problem. Indeed, if we continue to support custom PMU alias matching 
-per-arch, then it becomes a maintenance burden.
+maybe the information we will need one day is:
 
-So this change fixes my initial problem:
+will the core/-os_dep/-hal/-include/-directory-structure be
+welcomed in mainline wireless subsystem, when an rtl* driver
+will be perfectly tuned?
 
------8<------
+At the moment I can't see such a directory organization
+in any of the realtek wireless driver.
 
- From bbc9c7bf65c9cea756f0716dd717e9cfc767ba39 Mon Sep 17 00:00:00 2001
-From: John Garry <john.garry@huawei.com>
-Date: Tue, 20 Jul 2021 09:48:22 +0100
-Subject: [PATCH] perf pmu: Only check valid suffix for final token
+Sure there's time for that ;),
 
-Since commit 730670b1d108 ("perf pmu: Support more complex PMU event
-aliasing"), matching multiple alias tokens has been supported.
+Thank you,
 
-However, commit c47a5599eda32 ("perf tools: Fix pattern matching for 
-same substring in different PMU type"), ignored the possibility of 
-multiple tokens, and assumed that we can only match on valid suffix and 
-a single token.
+fabio
 
-Fix multiple token support by only checking valid suffix from final token.
 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 44b90d638ad5..6de2275b2ae2 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -789,12 +789,17 @@ bool pmu_uncore_alias_match(const char *pmu_name, 
-const char *name)
-  	 *	    match "socket" in "socketX_pmunameY" and then "pmuname" in
-  	 *	    "pmunameY".
-  	 */
--	for (; tok; name += strlen(tok), tok = strtok_r(NULL, ",", &tmp)) {
-+	for (; ; ) {
-+		char *next_tok = strtok_r(NULL, ",", &tmp);
-  		name = strstr(name, tok);
--		if (!name || !perf_pmu__valid_suffix((char *)name, tok)) {
-+		if (!name || (!perf_pmu__valid_suffix((char *)name, tok) && !next_tok)) {
-  			res = false;
-  			goto out;
-  		}
-+		if (!next_tok)
-+			break;
-+		name += strlen(tok);
-+		tok = next_tok;
-  	}
-
-  	res = true;
--- 
-2.26.2
-
------>8------
-
-Please check it.
-
-I need to check the other place perf_pmu__valid_suffix() is referenced 
-(perf_pmu__match()) to see if anything is broken there.
-
-Thanks,
-John
