@@ -2,174 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845893CF40C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9ADF3CF40F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238226AbhGTE6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 00:58:09 -0400
-Received: from mail-pj1-f41.google.com ([209.85.216.41]:44773 "EHLO
-        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237648AbhGTE6D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 00:58:03 -0400
-Received: by mail-pj1-f41.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so1816275pjo.3;
-        Mon, 19 Jul 2021 22:38:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H6FMY36ifoVcSW+eRrx8urOcqQvcESIiNUaCo0mYNkk=;
-        b=rgAJmyzEzCvy4zhFESu3jOuAc3d6SMFB0kJnSvNpgG1QV6jacx/9WlePrBh2berJcC
-         EPyvXEWG+rbXGlsSmi7CvsaS5RbALvgVQEWfacbvdgWwwZGqIIP9SIdr+fhIL5OTOBCi
-         fhbbBkWAhNlAKRt+bAVwU0fcLbQKLeStQ3k/SoJ94LGe6S9Xk2QHwYPHPQEX8xbdvXf7
-         iTG0MRbHro2uk5x+3VZSw6IrCoVdLLUlhqG29aKt7N+HHzB4ewagVtqP3/vr/+f0PlCJ
-         RnuMX7WE65HP9BJraDWQnznFtp/D4k59X7BO1uBOideEUCVW5t26n5JrmLTjPZxh8/xz
-         uX7w==
-X-Gm-Message-State: AOAM531gn1Fujbct7iumTJEgUrZpW19fzbF257vWA91JIV+gpdn/Khdl
-        wH4mM8SYEq7waQnmryC7DIc=
-X-Google-Smtp-Source: ABdhPJwYgAyPPkoCWeF1bvYsckKE51nqjFwi21AE8/C4xiCNJZLa2ylcJzslBc4P4xyB78pVapKS/g==
-X-Received: by 2002:a17:902:684a:b029:12b:8d3e:68dc with SMTP id f10-20020a170902684ab029012b8d3e68dcmr6177240pln.79.1626759521913;
-        Mon, 19 Jul 2021 22:38:41 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:6f70:be34:681b:b1e9:776f])
-        by smtp.gmail.com with ESMTPSA id b9sm20591709pfm.124.2021.07.19.22.38.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 22:38:41 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 22:38:40 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Justin Forbes <jmforbes@linuxtx.org>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH 5.13 024/800] usb: renesas-xhci: Fix handling of unknown
- ROM state
-Message-ID: <YPZhYAbzdQvZqfV+@epycbox.lan>
-References: <20210712060912.995381202@linuxfoundation.org>
- <20210712060916.499546891@linuxfoundation.org>
- <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
- <YPNavEl340mxcNVd@epycbox.lan>
- <CAFxkdApGaw30O2HEkTA8r6g4_dLZEbykVjnnDnfTiX=3hVQwvw@mail.gmail.com>
- <CAFxkdAqd69oXdhUBEmMRvmfuk2YpWS7qsDKLjUEAEg8rhQkTyQ@mail.gmail.com>
+        id S238359AbhGTFA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 01:00:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235944AbhGTFAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 01:00:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F8BA6113A;
+        Tue, 20 Jul 2021 05:41:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626759688;
+        bh=2GuyoMxAkXwIEuz4kB/1FJuahjlvs/F+Am1H8l4oZ6o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LRXfAAm56gnQU5zTzJQzg6qkcSv7yw0kl4yYFk/21Z9WHHCS/YfSY1upoAtwKv5bT
+         V2O7oZHWj0fOK1IGM3v79BAcuYxOjoQhqUOKopcwlgQBrVFYG0G449b4T5r51t4r2s
+         npYhouHieUp13RGQWPuxEopMBsodExxP0CTY5MFrJgxjN/YwdfA01vcaOtK+AEq1Yd
+         ORUPos0vJHv62sSB0+yra/zR5L77thXGC2iAERObefhp+jMpFNa8tjsBcsiHoIdhtY
+         VF31HzwBbHUtc22fybXpvdYc58q6NvDcq/5I5KrSiYstSR+a3kuydNUqoSMsfU84YV
+         3qV/JLV27J/DQ==
+Date:   Tue, 20 Jul 2021 08:41:16 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        kexec@lists.infradead.org, Linux MM <linux-mm@kvack.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 02/10] memblock: Add variables for usable memory
+ limitation
+Message-ID: <YPZh/IawtmwaYccQ@kernel.org>
+References: <cover.1626266516.git.geert+renesas@glider.be>
+ <04c4d231fb03a3810d72a45c8a5bc2272c5975f3.1626266516.git.geert+renesas@glider.be>
+ <20210714135101.GB2441138@robh.at.kernel.org>
+ <YPP06QG7hfypZgYg@kernel.org>
+ <CAMuHMdXfFhzm48U2Hvjz8yrjPsQbagW4aC_L-QE_Q6yx1Lo=tA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFxkdAqd69oXdhUBEmMRvmfuk2YpWS7qsDKLjUEAEg8rhQkTyQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdXfFhzm48U2Hvjz8yrjPsQbagW4aC_L-QE_Q6yx1Lo=tA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 09:57:00PM -0500, Justin Forbes wrote:
-> On Mon, Jul 19, 2021 at 10:33 AM Justin Forbes <jmforbes@linuxtx.org> wrote:
-> >
-> > On Sat, Jul 17, 2021 at 5:33 PM Moritz Fischer <mdf@kernel.org> wrote:
-> > >
-> > > Justin,
-> > >
-> > > On Sat, Jul 17, 2021 at 08:39:19AM -0500, Justin Forbes wrote:
-> > > > On Mon, Jul 12, 2021 at 2:31 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > From: Moritz Fischer <mdf@kernel.org>
-> > > > >
-> > > > > commit d143825baf15f204dac60acdf95e428182aa3374 upstream.
-> > > > >
-> > > > > The ROM load sometimes seems to return an unknown status
-> > > > > (RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
-> > > > >
-> > > > > If the ROM load indeed failed this leads to failures when trying to
-> > > > > communicate with the controller later on.
-> > > > >
-> > > > > Attempt to load firmware using RAM load in those cases.
-> > > > >
-> > > > > Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
-> > > > > Cc: stable@vger.kernel.org
-> > > > > Cc: Mathias Nyman <mathias.nyman@intel.com>
-> > > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > Cc: Vinod Koul <vkoul@kernel.org>
-> > > > > Tested-by: Vinod Koul <vkoul@kernel.org>
-> > > > > Reviewed-by: Vinod Koul <vkoul@kernel.org>
-> > > > > Signed-off-by: Moritz Fischer <mdf@kernel.org>
-> > > > > Link: https://lore.kernel.org/r/20210615153758.253572-1-mdf@kernel.org
-> > > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > >
+Hi Geert,
+
+On Mon, Jul 19, 2021 at 08:59:03AM +0200, Geert Uytterhoeven wrote:
+> Hi Mike,
+> 
+> On Sun, Jul 18, 2021 at 11:31 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > On Wed, Jul 14, 2021 at 07:51:01AM -0600, Rob Herring wrote:
+> > > On Wed, Jul 14, 2021 at 02:50:12PM +0200, Geert Uytterhoeven wrote:
+> > > > Add two global variables (cap_mem_addr and cap_mem_size) for storing a
+> > > > base address and size, describing a limited region in which memory may
+> > > > be considered available for use by the kernel.  If enabled, memory
+> > > > outside of this range is not available for use.
 > > > >
-> > > > After sending out 5.12.17 for testing, we had a user complain that all
-> > > > of their USB devices disappeared with the error:
+> > > > These variables can by filled by firmware-specific code, and used in
+> > > > calls to memblock_cap_memory_range() by architecture-specific code.
+> > > > An example user is the parser of the "linux,usable-memory-range"
+> > > > property in the DT "/chosen" node.
 > > > >
-> > > > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: Direct firmware load
-> > > > for renesas_usb_fw.mem failed with error -2
-> > > > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: request_firmware failed: -2
-> > > > Jul 15 23:18:53 kernel: xhci_hcd: probe of 0000:04:00.0 failed with error -2
+> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > > ---
+> > > > This is similar to how the initial ramdisk (phys_initrd_{start,size})
+> > > > and ELF core headers (elfcorehdr_{addr,size})) are handled.
+> > > >
+> > > > Does there exist a suitable place in the common memblock code to call
+> > > > "memblock_cap_memory_range(cap_mem_addr, cap_mem_size)", or does this
+> > > > have to be done in architecture-specific code?
 > > >
-> > > This looks like it fails finding the actual firmware file (ENOENT). Any
-> > > chance you could give this a whirl on top of the original patch?
-> > >
-> >
-> > Sure. test kernel building now, will let you know when the user reports back.
+> > > Can't you just call it from early_init_dt_scan_usablemem? If the
+> > > property is present, you want to call it. If the property is not
+> > > present, nothing happens.
 > 
-> The original user reports success with this patch on top of the original patch.
-
-That's good news I guess.
-
-After reading through the datasheet once more I'm even more convinced
-that the original code with the early return in
-renesas_check_fw_running() is *very* shady.
-
-There are three statuses to be investigated
-- FW load status (fw_state)
-- ROM download status (rom_status)
-- Firmware version as reported by chip
-
-Currently there the code takes an early return if the latter says the
-external ROM is there and the 'write firmware to external ROM'
-worked out, which I think shouldn't be happening, since it doesn't tell
-us anything about the firmware state at all. In fact I think the early
-return should not exist at all (a path that the original patch made more
-likely to happen).
-
-The FW load status indicates whether firmware has been runtime loaded
-and returns 'No result yet' in your case, too I suspect, which *might*
-happen if the chip configured itself from external ROM?
-
-So the part that is unclear to me somewhat is should we use either of
-them at all in trying to determine whether we should load firmware?
-
-Maybe what we should do is:
-- Attempt to request_firmware()
-- If fail -> proceed and hope for the best
-- If success
-  - Compare the firmware file version with the version reported by the
-    controller
-  - If they don't match, load firmware, otherwise leave it alone?
-
-- Moritz
-
-
+> I will have a look...
 > 
-> Justin
+> > For memblock_cap_memory_range() to work properly it should be called after
+> > memory is detected and added to memblock with memblock_add[_node]()
+> >
+> > I'm not huge fan of adding more globals to memblock so if such ordering can
+> > be implemented on the DT side it would be great.
 > 
-> >
-> > Justin
-> >
-> > > diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-> > > index 18c2bbddf080..cde8f6f1ec5d 100644
-> > > --- a/drivers/usb/host/xhci-pci.c
-> > > +++ b/drivers/usb/host/xhci-pci.c
-> > > @@ -379,7 +379,11 @@ static int xhci_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
-> > >         driver_data = (struct xhci_driver_data *)id->driver_data;
-> > >         if (driver_data && driver_data->quirks & XHCI_RENESAS_FW_QUIRK) {
-> > >                 retval = renesas_xhci_check_request_fw(dev, id);
-> > > -               if (retval)
-> > > +               /*
-> > > +                * If firmware wasn't found there's still a chance this might work without
-> > > +                * loading firmware on some systems, so let's try at least.
-> > > +                */
-> > > +               if (retval && retval != -ENOENT)
-> > >                         return retval;
-> > >         }
-> > >
-> > >
-> > > Thanks,
-> > > Moritz
+> Me neither ;-)
+> 
+> > I don't see a way to actually enforce this ordering, so maybe we'd want to
+> > add warning in memblock_cap_memory_range() if memblock.memory is empty.
+> 
+> "linux,usable-memory-range" is optional, and typically used only in
+> crashdump kernels, so it would be a bad idea to add such a warning.
+
+If I remember correctly, memblock_cap_memory_range() was added to support
+"linux,usable-memory-range" for crasdump kernels on arm64 and if it would
+be called before memory is registered we may silently corrupt the memory
+because the crash kernel will see all the memory as available.
+
+So while WARN() maybe too much a pr_warn() seems to me quite appropriate.
+ 
+-- 
+Sincerely yours,
+Mike.
