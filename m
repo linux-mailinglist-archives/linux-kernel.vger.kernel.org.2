@@ -2,157 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A542A3CF300
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C18A3CF305
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234368AbhGTDag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 23:30:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50940 "EHLO mail.kernel.org"
+        id S244387AbhGTDb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 23:31:57 -0400
+Received: from mga14.intel.com ([192.55.52.115]:58885 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234617AbhGTD2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 23:28:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81A0A6101B;
-        Tue, 20 Jul 2021 04:08:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626754136;
-        bh=MQ4/GKjWZC19RRUqnFkuK07XPpUeTKW/wVdBKoVqlWU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=jJQZHFgrcERSt8QHLPghedY2/EovBkzW/t1YK2Nq4der5gqCpX8+z7PE6oRRukJkJ
-         tE1/cDarWzfi2AQXDJTk4QepR3lmqCDn09gS7Zrq711T1zDQpEsbTvf3lDWMQNOpxA
-         JOcLZSWJlLfQ6elrXRc14WfbZD6lo4754ywK+/PoVgJNbBgwFb0G3QWjUAN0JCIXH3
-         2vDAyw1RPb84ReyyAeb1Jbcbrfvzz9FacfZQqCerLlMjji7gOQSeaFgVn+SlDlbYLS
-         5H4gMJMCPymgfveYklWNBzuZ7e5qeApY5PZ22D5d5koz9Bje4NUy52EHaSguF7e8q3
-         r0g8zyinSlUqg==
-Subject: Re: [PATCH v2] f2fs: Reduce the scope of setting fsck tag when
- de->name_len is zero
-To:     Yangtao Li <frank.li@vivo.com>, jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20210719101419.370520-1-frank.li@vivo.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <cc6ee336-f5a9-8f9e-4105-4d297510e404@kernel.org>
-Date:   Tue, 20 Jul 2021 12:08:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S242962AbhGTD33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 23:29:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="210893258"
+X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
+   d="scan'208";a="210893258"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 21:10:07 -0700
+X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
+   d="scan'208";a="431914054"
+Received: from ywei11-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.138.31])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 21:10:07 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/5] Add TDX Guest Support (boot fixes)
+Date:   Mon, 19 Jul 2021 21:08:56 -0700
+Message-Id: <20210720040901.2121268-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210719101419.370520-1-frank.li@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/19 18:14, Yangtao Li wrote:
-> I recently found a case where de->name_len is 0 in f2fs_fill_dentries() easily reproduced,
-> and finally set the fsck flag.
-> 
-> Thread A					Thread B
-> 
-> f2fs_readdir
-> 	f2fs_read_inline_dir
-> 		ctx->pos = d.max
-> 						f2fs_add_dentry
-> 							f2fs_add_inline_entry
-> 								do_convert_inline_dir
-> 							f2fs_add_regular_entry
-> f2fs_readdir
-> 	f2fs_fill_dentries
-> 		set_sbi_flag(sbi, SBI_NEED_FSCK)
-> 
-> Process A opens the folder, and has been reading without closing it. During this period,
-> Process B created a file under the folder (occupying multiple f2fs_dir_entry, exceeding
-> the d.max of the inline dir). After creation, process A uses the d.max of inline dir to
-> read it again, and it will read that de->name_len is 0.
-> 
-> And Chao pointed out that w/o inline conversion, the race condition still can happen as below
-> 
-> dir_entry1: A
-> dir_entry2: B
-> dir_entry3: C
-> free slot: _
+Hi All,
 
-ctx->pos: ^
+Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+hosts and some physical attacks. This series adds boot code support
+and some additional fixes required for successful boot of TDX guest.
 
-> 
-> Before:
-> AAAABBBB___
->           ^
+This series is the continuation of the patch series titled "Add TDX Guest
+Support (Initial support)" and "Add TDX Guest Support (#VE handler support
+)", which added initial support and #VE handler support for TDX guests. You
+can find the related patchsets in the following links.
 
-AAAABBBB___
-         ^
+[set 1] - https://lore.kernel.org/patchwork/project/lkml/list/?series=508773
+[set 2] - https://lore.kernel.org/patchwork/project/lkml/list/?series=508792
 
-> Thread B delete dir_entry2, and create dir_entry3.
-> 
-> After:
-> AAAACCCCC__
->           ^
+Also please note that this series alone is not necessarily fully
+functional.
 
-AAAACCCCC__
-         ^
+You can find TDX related documents in the following link.
 
-> 
-> In these scenarios, the file system is not damaged, and it's hard to avoid it. But we can bypass
-> tagging FSCK flag if:
-> a) bit_pos (:= ctx->pos % d->max) is non-zero & b) before bit_pos moves to first
-> valid dir_entry.
-> 
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
->   fs/f2fs/dir.c | 14 +++++++++-----
->   1 file changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-> index 456651682daf..3e2a61a3600c 100644
-> --- a/fs/f2fs/dir.c
-> +++ b/fs/f2fs/dir.c
-> @@ -1000,6 +1000,7 @@ int f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
->   	struct f2fs_sb_info *sbi = F2FS_I_SB(d->inode);
->   	struct blk_plug plug;
->   	bool readdir_ra = sbi->readdir_ra == 1;
-> +	bool find_valid_dentry = false;
+https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
 
-found_valid_dirent?
+Changes since v2:
+ * Rebased on top of v5.14-rc1.
+ * No functional changes.
 
->   	int err = 0;
->   
->   	bit_pos = ((unsigned long)ctx->pos % d->max);
-> @@ -1014,13 +1015,15 @@ int f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
->   
->   		de = &d->dentry[bit_pos];
->   		if (de->name_len == 0) {
-> +			if (!(ctx->pos % d->max != 0 && find_valid_dentry == false)) {
+Changes since v1:
+ * Rebased on top of v3 version of "Add TDX Guest Support (Initial support)"
+   patchset. Since it had some changes at the TDCALL implementation level, we
+   have to rebase other dependent patches.
 
-if (found_valid_dirent || !bit_pos)) will be more clean?
+Kuppuswamy Sathyanarayanan (2):
+  x86/topology: Disable CPU online/offline control for TDX guest
+  x86: Skip WBINVD instruction for VM guest
 
+Sean Christopherson (3):
+  x86/boot: Add a trampoline for APs booting in 64-bit mode
+  x86/boot: Avoid #VE during boot for TDX platforms
+  x86/tdx: Forcefully disable legacy PIC for TDX guests
 
-> +				printk_ratelimited(
-> +					"%sF2FS-fs (%s): invalid namelen(0), ino:%u, run fsck to fix.",
-> +					KERN_WARNING, sbi->sb->s_id,
-> +					le32_to_cpu(de->ino));
-> +				set_sbi_flag(sbi, SBI_NEED_FSCK);
-> +			}
->   			bit_pos++;
->   			ctx->pos = start_pos + bit_pos;
-> -			printk_ratelimited(
-> -				"%sF2FS-fs (%s): invalid namelen(0), ino:%u, run fsck to fix.",
-> -				KERN_WARNING, sbi->sb->s_id,
-> -				le32_to_cpu(de->ino));
-> -			set_sbi_flag(sbi, SBI_NEED_FSCK);
->   			continue;
->   		}
->   
-> @@ -1063,6 +1066,7 @@ int f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
->   			f2fs_ra_node_page(sbi, le32_to_cpu(de->ino));
->   
->   		ctx->pos = start_pos + bit_pos;
-> +		find_valid_dentry = true;
+ arch/x86/boot/compressed/head_64.S       | 16 +++++--
+ arch/x86/boot/compressed/pgtable.h       |  2 +-
+ arch/x86/include/asm/acenv.h             |  7 ++-
+ arch/x86/include/asm/realmode.h          | 12 +++++
+ arch/x86/kernel/head_64.S                | 20 +++++++-
+ arch/x86/kernel/smpboot.c                |  2 +-
+ arch/x86/kernel/tdx.c                    | 18 ++++++++
+ arch/x86/kernel/topology.c               |  3 +-
+ arch/x86/realmode/rm/header.S            |  1 +
+ arch/x86/realmode/rm/trampoline_64.S     | 59 ++++++++++++++++++++++--
+ arch/x86/realmode/rm/trampoline_common.S | 12 ++++-
+ 11 files changed, 138 insertions(+), 14 deletions(-)
 
-found_valid_dirent = true;
+-- 
+2.25.1
 
-Thanks,
-
->   	}
->   out:
->   	if (readdir_ra)
-> 
