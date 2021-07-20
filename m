@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE933CFA62
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E643CFA5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237929AbhGTMfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53676 "EHLO
+        id S238558AbhGTMfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238504AbhGTMdZ (ORCPT
+        with ESMTP id S238521AbhGTMdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Jul 2021 08:33:25 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6CCC0613DF;
-        Tue, 20 Jul 2021 06:13:54 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id l2so3439314qtp.11;
-        Tue, 20 Jul 2021 06:13:54 -0700 (PDT)
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B68C0613E0;
+        Tue, 20 Jul 2021 06:13:57 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id j7so2381748qtj.6;
+        Tue, 20 Jul 2021 06:13:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=vycya5wChR8O11SPvwfrbgcahHWj2DvmeexI6w+aeRE=;
-        b=AXjurdksSSyEZKFZ4dwI7bqIy7rFRNuiCDsvXU0YkuocK0QEXajhTDLdW4z1z/e65T
-         LTLEY6rfvFw2zhW9t6YjY7pJAjqcinHqBHc+fLPFdMRjVhHRZY3JEDBzx0pGr0y45zCU
-         iMbw3FsUPACZLzgC4Ivq0MGqY+ZiR2YUf2t8qzEmccEijSZfWJAdOZQw6+fudK9PdaVL
-         vHFg5lAVpphObFQG7UQNG2Y7Zo2Wq6azf1aFxNlccsJv0JcY+wecDmxG65lP2Bd2K52V
-         0l/f7AZ2VcijTD9MfXEdPXS0oRr+XOwZHi1mI/PTW7FAtdTPFRyz8UwmWuFcQwEhzPy9
-         otjw==
+        bh=eLmnd6iZieuSdj2C5koxMI8ybXWCYl9uIJX/s9kWwgk=;
+        b=SPESqdfw1g2LlbIqfwQWGMNAqLDDUpO9U/iALe+hhuZKKmYbrK6PoXtSbYzvoBto8j
+         Mqb6PVx2ytiFguZeAmDxUzvhmXWsnlm7KrW9/4IqDcE2dgaY/pXXka1KKl8fH5vJUDmd
+         Qw/1lE+4gM2ENKmc1/Ns0LJn6Jlj8zV/05wJGydGwpGCrdeYp0tMVz1hPKpnVqwtChoh
+         PQU7fa8e/2oYPO38SRIpBypj903wQkE3FAxl2aa17AOFAjiH09gs3GwY8COqJ260Pu5T
+         2yJQmp1k1fxahEVxy1BGsS281WSgU415q42LAUe76lhlJhIV+V5TgrzXZpDLq6b+n6IH
+         Pi/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=vycya5wChR8O11SPvwfrbgcahHWj2DvmeexI6w+aeRE=;
-        b=tsXgX8jpQo1i2EuaUiEUqgLBzdXlq6avjlblGiF8XwM7dfbDzpclE3z/LKk9tzUgK6
-         BMFyk14ugfHHlXCiHpmB6NgY2JnHgEoN6e+W55JwFZdLTXKFO9djYZsd2zeUbHezmOok
-         jGahtIDtr19urCCj21WeckPNTw8uqG6fxRfzSBBRBfOJag3lMQoyJqrAk5apT6NMsuox
-         kz+tGTW21qv6aJyWe3XPdeWZYit8HVNAp0UORQ0S0stTZAegvzgSftkcuXAQULe8YX5F
-         Bo8WuTd9n692VaxYbqeYfM96Ntmo402YCFZpKo6X0a0uca90zMoslWVvV7Bj3vLCQsqa
-         CdKQ==
-X-Gm-Message-State: AOAM533ozi75qcWjckQu3cj87LQbKHGYjADPEynSz609SrHZFWuhJ8nM
-        o2LWEdnS4xY4ZVZJqwusy6M=
-X-Google-Smtp-Source: ABdhPJy0LjG6uDWiu+ZbyuX11opxgLX2i0q6/CnN0YojkXcrGAiVtf0xl2dZoqfsPzdIQwBuOwt9DA==
-X-Received: by 2002:ac8:7645:: with SMTP id i5mr26265284qtr.133.1626786833321;
-        Tue, 20 Jul 2021 06:13:53 -0700 (PDT)
+        bh=eLmnd6iZieuSdj2C5koxMI8ybXWCYl9uIJX/s9kWwgk=;
+        b=Z+Z1ZWVmId+lPjrdvc3TbBI6rZSqJfMRYUMdGijC1hhPLRLtlzMgu51gfRmO392UTk
+         Bd4rhWdmoG4K9DJq9OL+v76fjKlV32dEH2h5ewnNZla+2bewWpF/IlaWNw9Uf0JDJwls
+         IJRAAYYsV3M8tmcgGWu895EYxmfizKyizXkwx4ZCzTi3qG960jFXaj9+pjoVEbxGJRKZ
+         QW0/KW0Qk88WIZBLxCVmKydmRTG5SN8XYqfDHFYp9qKcDRJNF0EqdzfddCad8GvHOyhG
+         yANI+vFAPSh0EV6badHKsucYyuaDPZh0Ghie8+00Hth0uWR7Ob6FlMwv82txW8z64D2i
+         s4aQ==
+X-Gm-Message-State: AOAM532WxISeAhDWeLNimw7UC1IJVbVTUMuwbrCHLIDvi8fJLvMPlrun
+        7mz/eUc7SJeXRbgfr5sg+u8=
+X-Google-Smtp-Source: ABdhPJyElUl/ZW/jTKmwGkPtCxiExGimBuugukAYvyfYBT3iFiQT3lMQSoR5kNXpchEQELOw+NNtrw==
+X-Received: by 2002:ac8:7f07:: with SMTP id f7mr25960026qtk.120.1626786836336;
+        Tue, 20 Jul 2021 06:13:56 -0700 (PDT)
 Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id g17sm9701225qkm.34.2021.07.20.06.13.52
+        by smtp.gmail.com with ESMTPSA id g17sm9701225qkm.34.2021.07.20.06.13.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 06:13:52 -0700 (PDT)
+        Tue, 20 Jul 2021 06:13:55 -0700 (PDT)
 From:   SeongJae Park <sj38.park@gmail.com>
 To:     akpm@linux-foundation.org
 Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
@@ -64,9 +64,9 @@ Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
         vbabka@suse.cz, vdavydov.dev@gmail.com, zgf574564920@gmail.com,
         linux-damon@amazon.com, linux-mm@kvack.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC v3 01/15] mm/damon/paddr: Support the pageout scheme
-Date:   Tue, 20 Jul 2021 13:12:55 +0000
-Message-Id: <20210720131309.22073-2-sj38.park@gmail.com>
+Subject: [RFC v3 02/15] mm/damon/damos: Make schemes aggressiveness controllable
+Date:   Tue, 20 Jul 2021 13:12:56 +0000
+Message-Id: <20210720131309.22073-3-sj38.park@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210720131309.22073-1-sj38.park@gmail.com>
 References: <20210720131309.22073-1-sj38.park@gmail.com>
@@ -76,105 +76,224 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit makes the DAMON primitives for physical address space to
-support the pageout action for DAMON-based Operation Schemes.  IOW, now
-the users can implement their own data access-aware reclamations for
-whole system using DAMOS.
+If there are too large memory regions fulfilling the target data access
+pattern of a DAMON-based operation scheme, applying the action of the
+scheme could consume too much CPU.  To avoid that, this commit
+implements a limit for the action application speed.  Using the feature,
+the client can set up to how much amount of memory regions the action
+could applied within specific time duration.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- mm/damon/paddr.c        | 38 +++++++++++++++++++++++++++++++++++++-
- mm/damon/prmtv-common.c |  2 +-
- mm/damon/prmtv-common.h |  2 ++
- 3 files changed, 40 insertions(+), 2 deletions(-)
+ include/linux/damon.h | 36 +++++++++++++++++++++++---
+ mm/damon/core.c       | 60 +++++++++++++++++++++++++++++++++++++------
+ mm/damon/dbgfs.c      |  4 ++-
+ 3 files changed, 87 insertions(+), 13 deletions(-)
 
-diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
-index b92b07a3ce53..303db372e53b 100644
---- a/mm/damon/paddr.c
-+++ b/mm/damon/paddr.c
-@@ -7,6 +7,9 @@
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index 6eb265717fd4..9c996adb02b8 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -89,6 +89,26 @@ enum damos_action {
+ 	DAMOS_STAT,		/* Do nothing but only record the stat */
+ };
  
- #define pr_fmt(fmt) "damon-pa: " fmt
- 
-+#include <linux/swap.h>
++/**
++ * struct damos_quota - Controls the aggressiveness of the given scheme.
++ * @sz:			Maximum bytes of memory that the action can be applied.
++ * @reset_interval:	Charge reset interval in milliseconds.
++ *
++ * To avoid consuming too much CPU time or IO resources for applying the
++ * &struct damos->action to large memory, DAMON allows users to set a size
++ * quota.  The quota can be set by writing non-zero values to &sz.  If the size
++ * quota is set, DAMON tries to apply the action only up to &sz bytes within
++ * &reset_interval.
++ */
++struct damos_quota {
++	unsigned long sz;
++	unsigned long reset_interval;
 +
-+#include "../internal.h"
- #include "prmtv-common.h"
++/* private: For charging the quota */
++	unsigned long charged_sz;
++	unsigned long charged_from;
++};
++
+ /**
+  * struct damos - Represents a Data Access Monitoring-based Operation Scheme.
+  * @min_sz_region:	Minimum size of target regions.
+@@ -98,13 +118,20 @@ enum damos_action {
+  * @min_age_region:	Minimum age of target regions.
+  * @max_age_region:	Maximum age of target regions.
+  * @action:		&damo_action to be applied to the target regions.
++ * @quota:		Control the aggressiveness of this scheme.
+  * @stat_count:		Total number of regions that this scheme is applied.
+  * @stat_sz:		Total size of regions that this scheme is applied.
+  * @list:		List head for siblings.
+  *
+- * For each aggregation interval, DAMON applies @action to monitoring target
+- * regions fit in the condition and updates the statistics.  Note that both
+- * the minimums and the maximums are inclusive.
++ * For each aggregation interval, DAMON finds regions which fit in the
++ * condition (&min_sz_region, &max_sz_region, &min_nr_accesses,
++ * &max_nr_accesses, &min_age_region, &max_age_region) and applies &action to
++ * those.  To avoid consuming too much CPU time or IO resources for the
++ * &action, &quota is used.
++ *
++ * After applying the &action to each region, &stat_count and &stat_sz is
++ * updated to reflect the number of regions and total size of regions that the
++ * &action is applied.
+  */
+ struct damos {
+ 	unsigned long min_sz_region;
+@@ -114,6 +141,7 @@ struct damos {
+ 	unsigned int min_age_region;
+ 	unsigned int max_age_region;
+ 	enum damos_action action;
++	struct damos_quota quota;
+ 	unsigned long stat_count;
+ 	unsigned long stat_sz;
+ 	struct list_head list;
+@@ -338,7 +366,7 @@ struct damos *damon_new_scheme(
+ 		unsigned long min_sz_region, unsigned long max_sz_region,
+ 		unsigned int min_nr_accesses, unsigned int max_nr_accesses,
+ 		unsigned int min_age_region, unsigned int max_age_region,
+-		enum damos_action action);
++		enum damos_action action, struct damos_quota *quota);
+ void damon_add_scheme(struct damon_ctx *ctx, struct damos *s);
+ void damon_destroy_scheme(struct damos *s);
  
- /*
-@@ -85,6 +88,39 @@ bool damon_pa_target_valid(void *t)
- 	return true;
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index c45827e853cf..00804a1e5e2a 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -89,7 +89,7 @@ struct damos *damon_new_scheme(
+ 		unsigned long min_sz_region, unsigned long max_sz_region,
+ 		unsigned int min_nr_accesses, unsigned int max_nr_accesses,
+ 		unsigned int min_age_region, unsigned int max_age_region,
+-		enum damos_action action)
++		enum damos_action action, struct damos_quota *quota)
+ {
+ 	struct damos *scheme;
+ 
+@@ -107,6 +107,11 @@ struct damos *damon_new_scheme(
+ 	scheme->stat_sz = 0;
+ 	INIT_LIST_HEAD(&scheme->list);
+ 
++	scheme->quota.sz = quota->sz;
++	scheme->quota.reset_interval = quota->reset_interval;
++	scheme->quota.charged_sz = 0;
++	scheme->quota.charged_from = 0;
++
+ 	return scheme;
  }
  
-+int damon_pa_apply_scheme(struct damon_ctx *ctx, struct damon_target *t,
-+		struct damon_region *r, struct damos *scheme)
-+{
-+	unsigned long addr;
-+	LIST_HEAD(page_list);
+@@ -535,15 +540,25 @@ static void kdamond_reset_aggregated(struct damon_ctx *c)
+ 	}
+ }
+ 
++static void damon_split_region_at(struct damon_ctx *ctx,
++		struct damon_target *t, struct damon_region *r,
++		unsigned long sz_r);
 +
-+	if (scheme->action != DAMOS_PAGEOUT)
-+		return -EINVAL;
+ static void damon_do_apply_schemes(struct damon_ctx *c,
+ 				   struct damon_target *t,
+ 				   struct damon_region *r)
+ {
+ 	struct damos *s;
+-	unsigned long sz;
+ 
+ 	damon_for_each_scheme(s, c) {
+-		sz = r->ar.end - r->ar.start;
++		struct damos_quota *quota = &s->quota;
++		unsigned long sz = r->ar.end - r->ar.start;
 +
-+	for (addr = r->ar.start; addr < r->ar.end; addr += PAGE_SIZE) {
-+		struct page *page = damon_get_page(PHYS_PFN(addr));
-+
-+		if (!page)
++		/* Check the quota */
++		if (quota->sz && quota->charged_sz >= quota->sz)
 +			continue;
 +
-+		ClearPageReferenced(page);
-+		test_and_clear_page_young(page);
-+		if (isolate_lru_page(page)) {
-+			put_page(page);
-+			continue;
++		/* Check the target regions condition */
+ 		if (sz < s->min_sz_region || s->max_sz_region < sz)
+ 			continue;
+ 		if (r->nr_accesses < s->min_nr_accesses ||
+@@ -551,22 +566,51 @@ static void damon_do_apply_schemes(struct damon_ctx *c,
+ 			continue;
+ 		if (r->age < s->min_age_region || s->max_age_region < r->age)
+ 			continue;
+-		s->stat_count++;
+-		s->stat_sz += sz;
+-		if (c->primitive.apply_scheme)
++
++		/* Apply the scheme */
++		if (c->primitive.apply_scheme) {
++			if (quota->sz && quota->charged_sz + sz > quota->sz) {
++				sz = ALIGN_DOWN(quota->sz - quota->charged_sz,
++						DAMON_MIN_REGION);
++				if (!sz)
++					goto update_stat;
++				damon_split_region_at(c, t, r, sz);
++			}
+ 			c->primitive.apply_scheme(c, t, r, s);
++			quota->charged_sz += sz;
 +		}
-+		if (PageUnevictable(page)) {
-+			putback_lru_page(page);
-+		} else {
-+			list_add(&page->lru, &page_list);
-+			put_page(page);
+ 		if (s->action != DAMOS_STAT)
+ 			r->age = 0;
++
++update_stat:
++		s->stat_count++;
++		s->stat_sz += sz;
+ 	}
+ }
+ 
+ static void kdamond_apply_schemes(struct damon_ctx *c)
+ {
+ 	struct damon_target *t;
+-	struct damon_region *r;
++	struct damon_region *r, *next_r;
++	struct damos *s;
++
++	damon_for_each_scheme(s, c) {
++		struct damos_quota *quota = &s->quota;
++
++		if (!quota->sz)
++			continue;
++
++		/* New charge window starts */
++		if (time_after_eq(jiffies, quota->charged_from +
++					msecs_to_jiffies(
++						quota->reset_interval))) {
++			quota->charged_from = jiffies;
++			quota->charged_sz = 0;
 +		}
 +	}
-+	reclaim_pages(&page_list);
-+	cond_resched();
-+	return 0;
-+}
-+
- void damon_pa_set_primitives(struct damon_ctx *ctx)
- {
- 	ctx->primitive.init = NULL;
-@@ -94,5 +130,5 @@ void damon_pa_set_primitives(struct damon_ctx *ctx)
- 	ctx->primitive.reset_aggregated = NULL;
- 	ctx->primitive.target_valid = damon_pa_target_valid;
- 	ctx->primitive.cleanup = NULL;
--	ctx->primitive.apply_scheme = NULL;
-+	ctx->primitive.apply_scheme = damon_pa_apply_scheme;
+ 
+ 	damon_for_each_target(t, c) {
+-		damon_for_each_region(r, t)
++		damon_for_each_region_safe(r, next_r, t)
+ 			damon_do_apply_schemes(c, t, r);
+ 	}
  }
-diff --git a/mm/damon/prmtv-common.c b/mm/damon/prmtv-common.c
-index 08e9318d67ed..01c1c1b37859 100644
---- a/mm/damon/prmtv-common.c
-+++ b/mm/damon/prmtv-common.c
-@@ -14,7 +14,7 @@
-  * The body of this function is stolen from the 'page_idle_get_page()'.  We
-  * steal rather than reuse it because the code is quite simple.
-  */
--static struct page *damon_get_page(unsigned long pfn)
-+struct page *damon_get_page(unsigned long pfn)
- {
- 	struct page *page = pfn_to_online_page(pfn);
+diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+index c244e7689c70..ac0de2de1987 100644
+--- a/mm/damon/dbgfs.c
++++ b/mm/damon/dbgfs.c
+@@ -310,6 +310,8 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
  
-diff --git a/mm/damon/prmtv-common.h b/mm/damon/prmtv-common.h
-index 939c41af6b59..ba0c4eecbb79 100644
---- a/mm/damon/prmtv-common.h
-+++ b/mm/damon/prmtv-common.h
-@@ -18,6 +18,8 @@
- /* Get a random number in [l, r) */
- #define damon_rand(l, r) (l + prandom_u32_max(r - l))
- 
-+struct page *damon_get_page(unsigned long pfn);
+ 	*nr_schemes = 0;
+ 	while (pos < len && *nr_schemes < max_nr_schemes) {
++		struct damos_quota quota = {};
 +
- void damon_va_mkold(struct mm_struct *mm, unsigned long addr);
- bool damon_va_young(struct mm_struct *mm, unsigned long addr,
- 			unsigned long *page_sz);
+ 		ret = sscanf(&str[pos], "%lu %lu %u %u %u %u %u%n",
+ 				&min_sz, &max_sz, &min_nr_a, &max_nr_a,
+ 				&min_age, &max_age, &action, &parsed);
+@@ -322,7 +324,7 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
+ 
+ 		pos += parsed;
+ 		scheme = damon_new_scheme(min_sz, max_sz, min_nr_a, max_nr_a,
+-				min_age, max_age, action);
++				min_age, max_age, action, &quota);
+ 		if (!scheme)
+ 			goto fail;
+ 
 -- 
 2.17.1
 
