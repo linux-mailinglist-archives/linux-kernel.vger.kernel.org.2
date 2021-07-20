@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFADD3CF893
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52EE53CF895
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237372AbhGTKWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:22:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40034 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231177AbhGTKOt (ORCPT
+        id S238053AbhGTKXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:23:50 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:41474 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237512AbhGTKQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:14:49 -0400
-Date:   Tue, 20 Jul 2021 10:55:23 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626778523;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VDPnpQrIrSiEs1rRVmbSlyN4aoCWzjWyl+el3Yf10EM=;
-        b=nolEEyC31fAMxe7bqB2GEUmzk/yfWVm7SMk5GIOXhYX/yiDgpVHzhcHC1GmEZYJCZi4Ouw
-        e5J69bYybEvp8TdHk+vC0w6wUi4uAypg84XwVHaH5Y3JyZqXvTvojfckCTcW70FQG/r29z
-        9gwf0/knUElYnNg86lSCaUdzaFHnuVsl8mo5MzsJgQb5thlYAUgub53HjFbXYN2tVbJR4s
-        TcluNfj/wgk9wPq9VnpfiwzOzUCS+SGd15ucilnvt17GVp7WLUHfd0IMVejpas9xhus+pE
-        8fuZoWb+45Zlu95rS9AnwSGpDWWG8c4cODawWyJwY9O8UZM7Iju/8O/QGCVf9A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626778523;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VDPnpQrIrSiEs1rRVmbSlyN4aoCWzjWyl+el3Yf10EM=;
-        b=mON+3sDrXQJ8U3dpTJw0ieLn+tOyAQgGoq+C+CFtixIMv1MSirpP+V+lIVLCJHsk5AI2VW
-        zE/bFEPhydYJhyBA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/urgent] Merge branch 'timers/urgent' of
- git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks into
- timers/urgent
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210715104218.81276-1-frederic@kernel.org>
-References: <20210715104218.81276-1-frederic@kernel.org>
+        Tue, 20 Jul 2021 06:16:25 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UgQE3Hb_1626778618;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UgQE3Hb_1626778618)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 20 Jul 2021 18:56:58 +0800
+Subject: Re: [PATCH v2] vsock/virtio: set vsock frontend ready in
+ virtio_vsock_probe()
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     sgarzare@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        jasowang@redhat.com, kvm@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210720071337.1995-1-xianting.tian@linux.alibaba.com>
+ <YPakBTVDbgVcTGQX@stefanha-x1.localdomain>
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+Message-ID: <d6101597-975c-8606-2dc0-eae51cbbe42f@linux.alibaba.com>
+Date:   Tue, 20 Jul 2021 18:56:58 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Message-ID: <162677852315.395.402117055218610016.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YPakBTVDbgVcTGQX@stefanha-x1.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/urgent branch of tip:
+OK,
 
-Commit-ID:     ff5a6a3550cef4a272fee19520a13699343b6a47
-Gitweb:        https://git.kernel.org/tip/ff5a6a3550cef4a272fee19520a13699343b6a47
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 20 Jul 2021 12:51:23 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 20 Jul 2021 12:51:23 +02:00
+thanks
 
-Merge branch 'timers/urgent' of git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks into timers/urgent
-
-Pull dyntick fixes from Frederic Weisbecker:
-
-  - Fix a rearm race in the posix cpu timer code
-  - Handle get_next_timer_interrupt() correctly when no timers are pending
-
-Link: https://lore.kernel.org/r/20210715104218.81276-1-frederic@kernel.org
----
+在 2021/7/20 下午6:23, Stefan Hajnoczi 写道:
+> On Tue, Jul 20, 2021 at 03:13:37PM +0800, Xianting Tian wrote:
+>> Add the missed virtio_device_ready() to set vsock frontend ready.
+>>
+>> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+>> ---
+>>   net/vmw_vsock/virtio_transport.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+> Please include a changelog when you send v2, v3, etc patches.
+>
+>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>> index e0c2c992a..dc834b8fd 100644
+>> --- a/net/vmw_vsock/virtio_transport.c
+>> +++ b/net/vmw_vsock/virtio_transport.c
+>> @@ -639,6 +639,8 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
+>>   
+>>   	mutex_unlock(&the_virtio_vsock_mutex);
+>>   
+>> +	virtio_device_ready(vdev);
+> Why is this patch necessary?
+>
+> The core virtio_dev_probe() code already calls virtio_device_ready for
+> us:
+>
+>    static int virtio_dev_probe(struct device *_d)
+>    {
+>        ...
+>        err = drv->probe(dev);
+>        if (err)
+>            goto err;
+>    
+>        /* If probe didn't do it, mark device DRIVER_OK ourselves. */
+>        if (!(dev->config->get_status(dev) & VIRTIO_CONFIG_S_DRIVER_OK))
+>            virtio_device_ready(dev);
