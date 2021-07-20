@@ -2,148 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3C13CFB7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9923CFB7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239741AbhGTNVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 09:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
+        id S239509AbhGTNTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 09:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239031AbhGTNGf (ORCPT
+        with ESMTP id S238928AbhGTNIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 09:06:35 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C1FC0613E9;
-        Tue, 20 Jul 2021 06:46:42 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id u7so23934356ion.3;
-        Tue, 20 Jul 2021 06:46:42 -0700 (PDT)
+        Tue, 20 Jul 2021 09:08:10 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0B9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:48:46 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so21555720otq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:48:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MjtB63O8D6JZEGLQ/GVfQXEaFWYKcg+D2+varZhpuDo=;
-        b=dRiBWdPlS7gD/26YIVIlibyr6MUQmkqIbQCg1O2ad3Vlm1Om6UllVH7PyPSZ961ksi
-         2LfJUiHW3vw6ft+7UMAoqN7E0JLgPy+fOqV8w+JVfJDS62LYUBCkJ7gAprk9oB2CHH15
-         ZR+uh1KTSvRUwRDYgLfmTTbo/k1mIvhMwWmJNyQjhn7incwqHGSBJHtUuRS3+GwmNO4t
-         mt48VNGmfIb/Re4tYVBroDo9IjwS1zKZjq/oeeXUHlZZGdE3AaPxknrYe+Y/hytxc7Go
-         LUjHk5FnQLT4k99VK7G1ylZsOSjqLJV4W2RYeedEL5URLS1E4I+QQMA49Te6jlwmWktr
-         jAiw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sSKYKbxnVu+G8KsuMx0V0FlK4uTjY08r+UWrZ/z8LHQ=;
+        b=utAjJcc9cGMaMXp3rIBJ1ZRTSBKvYt0c86Q62CMxLwEWhTH+xS0N+cbAwxz7Y2TFM4
+         dp6GRnKGtA6N6wQuQ+FTqHC5WYixuviEtvzFioOV8p6mJoFir6Qc99xo2H87a8BznM6T
+         SmXVeUKSAJ2YxDebBssr4xVaAO78BHlhlYwsMlGNwZ8wmSgRCDB9iH5Ar+9VJBzUU4ga
+         7M6VNPrGVXhUCdtAr+Dmzm7WHV7bhTh/T6OMjEb6K2tww/GGztX2oZoTDDfyGdZ24ZfN
+         h6PgRlr2wokfmTq8lbrr7qoeplfwRm/eGNhXml8CRF+5rGCpdRCemqSuz/HNtGv1TRK/
+         8DJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MjtB63O8D6JZEGLQ/GVfQXEaFWYKcg+D2+varZhpuDo=;
-        b=b5feXPxzQ/Tnn+bTcvm51fcLtSTpCOxMcQSYVXt6pnv826V+PhkNdkjXRm7L7OPKXm
-         GvjQRw5M4pmUQWd8cHvKiFLsKv4ueunR9h+ZRqLrCqcKP57RMF+U4j+YC4JjVy8GYcRn
-         sNTz6nBD7TzPMVylCzUu2BveXNdAMwRU6ntscC0tHD8UqBvj+1pUieeczByBVDswPK1W
-         PBqQoHkMEHUFLL+7LI9ikFR1nSiU1ISfqs8Ta4ObkCrOhoJ41o0IQ43H+4aiyBGtwpIm
-         8aC8nrnC83QgTNR2ATiUy23387f6Gz8mPkZRz5MYA8/4Tv9491wLMWwlLYiH4oifB1+2
-         JJow==
-X-Gm-Message-State: AOAM5300gSR2k4u6PJ3q8EyFO/kgAhsSZbW5YKqZ3nnMFyCi4bWfkKt4
-        /y3OoBRc///ybP0kfe4DRIo=
-X-Google-Smtp-Source: ABdhPJzbgEejJohfrCjPWGfeFan9hbOBjdY9WcEs2PV1eNg5yhhrAdS5FuSUc6+qbEvGTVjdjCB2Nw==
-X-Received: by 2002:a02:93a3:: with SMTP id z32mr27012095jah.33.1626788801697;
-        Tue, 20 Jul 2021 06:46:41 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id 20sm5096218ily.40.2021.07.20.06.46.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 06:46:41 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 70D2227C0054;
-        Tue, 20 Jul 2021 09:46:40 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 20 Jul 2021 09:46:40 -0400
-X-ME-Sender: <xms:v9P2YEIC7FhQKo8Sz5kqJuJqK_rhHRzQcvue9TjpCMHjSH2ikENh0g>
-    <xme:v9P2YEJeUn_csbuHhZSIdgXFPOMgR9qdT54nnpRIOnz-xfm-1SqRpzQCMnhx4iMok
-    eI9azHYi5WwR98WpQ>
-X-ME-Received: <xmr:v9P2YEvG-U59q697QJ6Xah4wzD4DOHpAJ_rYrQ9Tvm2dBLw0pBk3dlTD-Ug>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfedvgdeijecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpeehvdevteefgfeiudettdefvedvvdelkeejueffffelgeeuhffhjeetkeeiueeu
-    leenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
-    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
-    gvrdhnrghmvg
-X-ME-Proxy: <xmx:v9P2YBY8iCR7NirCgdjmafxnabi0WPLZO5B8dnS-uH8ZRI72BUm_gw>
-    <xmx:v9P2YLYdiaiK21Bu6YdD1XHTi9sd1oQnG0I803NvLQALH7SHMR2LIQ>
-    <xmx:v9P2YNDGwau5eNX3vtTjVBjrv1nRZ0-LHgMqaOrzMb-SLDPhWBhwIQ>
-    <xmx:wNP2YISnfYlwe8OpDVG1DGUcSMaYFNJIdHj3wg54eaD3I7Fq-P_jAMEf_Oc>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 20 Jul 2021 09:46:39 -0400 (EDT)
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: [RFC v5 8/8] PCI: hv: Turn on the host bridge probing on ARM64
-Date:   Tue, 20 Jul 2021 21:44:29 +0800
-Message-Id: <20210720134429.511541-9-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210720134429.511541-1-boqun.feng@gmail.com>
-References: <20210720134429.511541-1-boqun.feng@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sSKYKbxnVu+G8KsuMx0V0FlK4uTjY08r+UWrZ/z8LHQ=;
+        b=YA5jslb8Gh/8P7BNjm9wFX76X+t79g5EHnIdrqJfk5pXJoQT8D90sZbhODpQDo/+1e
+         Aza5IY5g48G1IfF60JUe8gzzL9IUxnJAaPUdMksSR4mDbfSZd9cjNpPzKm9gStsT5ZVe
+         PKlHRUi7qKEM4DENet6piY2q7ic2QOwrTjlCS5klGSvZ1DdabZ710XTPMZH+ACcbK6ne
+         swwOplzq+MqH6gc7WclX9QbIVXjptwc4JTjtYLPor4AqmOqr8itQaajG6CE8oG3liZgM
+         AhN0BVJTQH97ztKXVDGDFTv7HzxmVQqh3Ar3adzueRl3uQw4Y4krf+U0Rv9eOMxaJpdL
+         mlRg==
+X-Gm-Message-State: AOAM531xoUOdSC1kLYCbKuz6frNaxLxRopcV8Q547BFxEDYHS59AWrky
+        YaChYzqEqO/no8etNBwh6M98lAUrU4JTaMkykja5dg==
+X-Google-Smtp-Source: ABdhPJwO2Xb6g/ZfTRHpSfHvJvHBkk79kp1jTLisPNfqjoFjNOCC/oC/AfEZFLcKbXu8Y1Xt91MqVh+c+yhVsZgW1nw=
+X-Received: by 2002:a05:6830:1455:: with SMTP id w21mr22257855otp.365.1626788926039;
+ Tue, 20 Jul 2021 06:48:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210719104735.3681732-1-qperret@google.com> <20210719104735.3681732-9-qperret@google.com>
+In-Reply-To: <20210719104735.3681732-9-qperret@google.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Tue, 20 Jul 2021 14:48:09 +0100
+Message-ID: <CA+EHjTwmmV6EooG+Ykbso3G6nkjq=sbRzXH3vetazzPF5mO02g@mail.gmail.com>
+Subject: Re: [PATCH 08/14] KVM: arm64: Add support for tagging shared pages in page-table
+To:     Quentin Perret <qperret@google.com>
+Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        dbrazdil@google.com, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now we have everything we need, just provide a proper sysdata type for
-the bus to use on ARM64 and everything else works.
+Hi Quentin,
 
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- drivers/pci/controller/pci-hyperv.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+On Mon, Jul 19, 2021 at 11:47 AM Quentin Perret <qperret@google.com> wrote:
+>
+> The hypervisor will soon be in charge of tracking ownership of all
+> memory pages in the system. The current page-tracking infrastructure at
+> EL2 only allows binary states: a page is either owned or not by an
+> entity. But a number of use-cases will require more complex states for
+> pages that are shared between two entities (host, hypervisor, or guests).
+>
+> In preparation for supporting these use-cases, introduce in the KVM
+> page-table library some infrastructure allowing to tag shared pages
+> using ignored bits (a.k.a. software bits) in PTEs.
+>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_pgtable.h |  5 +++++
+>  arch/arm64/kvm/hyp/pgtable.c         | 25 +++++++++++++++++++++++++
+>  2 files changed, 30 insertions(+)
+>
+> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> index dd72653314c7..f6d3d5c8910d 100644
+> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> @@ -81,6 +81,8 @@ enum kvm_pgtable_stage2_flags {
+>   * @KVM_PGTABLE_PROT_W:                Write permission.
+>   * @KVM_PGTABLE_PROT_R:                Read permission.
+>   * @KVM_PGTABLE_PROT_DEVICE:   Device attributes.
+> + * @KVM_PGTABLE_STATE_SHARED:  Page shared with another entity.
+> + * @KVM_PGTABLE_STATE_BORROWED:        Page borrowed from another entity.
+>   */
+>  enum kvm_pgtable_prot {
+>         KVM_PGTABLE_PROT_X                      = BIT(0),
+> @@ -88,6 +90,9 @@ enum kvm_pgtable_prot {
+>         KVM_PGTABLE_PROT_R                      = BIT(2),
+>
+>         KVM_PGTABLE_PROT_DEVICE                 = BIT(3),
+> +
+> +       KVM_PGTABLE_STATE_SHARED                = BIT(4),
+> +       KVM_PGTABLE_STATE_BORROWED              = BIT(5),
+>  };
+>
+>  #define KVM_PGTABLE_PROT_RW    (KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W)
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index 5bdbe7a31551..51598b79dafc 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -211,6 +211,29 @@ static kvm_pte_t kvm_init_invalid_leaf_owner(u8 owner_id)
+>         return FIELD_PREP(KVM_INVALID_PTE_OWNER_MASK, owner_id);
+>  }
+>
+> +static kvm_pte_t pte_ignored_bit_prot(enum kvm_pgtable_prot prot)
+> +{
+> +       kvm_pte_t ignored_bits = 0;
+> +
+> +       /*
+> +        * Ignored bits 0 and 1 are reserved to track the memory ownership
+> +        * state of each page:
+> +        *   00: The page is owned solely by the page-table owner.
+> +        *   01: The page is owned by the page-table owner, but is shared
+> +        *       with another entity.
+> +        *   10: The page is shared with, but not owned by the page-table owner.
+> +        *   11: Reserved for future use (lending).
+> +        */
+> +       if (prot & KVM_PGTABLE_STATE_SHARED) {
+> +               if (prot & KVM_PGTABLE_STATE_BORROWED)
+> +                       ignored_bits |= BIT(1);
+> +               else
+> +                       ignored_bits |= BIT(0);
+> +       }
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index e6276aaa4659..62dbe98d1fe1 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -40,6 +40,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/pci-ecam.h>
- #include <linux/delay.h>
- #include <linux/semaphore.h>
- #include <linux/irqdomain.h>
-@@ -448,7 +449,11 @@ enum hv_pcibus_state {
- };
- 
- struct hv_pcibus_device {
-+#ifdef CONFIG_X86
- 	struct pci_sysdata sysdata;
-+#elif defined(CONFIG_ARM64)
-+	struct pci_config_window sysdata;
-+#endif
- 	struct pci_host_bridge *bridge;
- 	struct fwnode_handle *fwnode;
- 	/* Protocol version negotiated with the host */
-@@ -3075,7 +3080,9 @@ static int hv_pci_probe(struct hv_device *hdev,
- 			 dom_req, dom);
- 
- 	hbus->bridge->domain_nr = dom;
-+#ifdef CONFIG_X86
- 	hbus->sysdata.domain = dom;
-+#endif
- 
- 	hbus->hdev = hdev;
- 	INIT_LIST_HEAD(&hbus->children);
--- 
-2.30.2
+This might tie in to Marc's comments for using enums, but
+consolidating the translation between prot and ignored/software bits
+in one place would be good: thinking about patch 10 as well, where you
+get the prot from the ignored bits. Even though you have documented
+it, I'm finding the part where a field can be borrowed and shared as
+opposed to being only shared not very intuitive, and I need to reread
+the comment here to remember the difference while going through the
+code.
 
+You also mention lending as potentially reserved for the future, but I
+think that lending is the other side of borrowing (depends on who's
+doing the giving/taking). I wonder if in this case it would be clearer
+to describe it in terms of whether it's exclusively owned vs owned but
+shared (for the owner), and just shared for the sharer...
+
+Thanks,
+/fuad
+
+
+> +       return FIELD_PREP(KVM_PTE_LEAF_ATTR_IGNORED, ignored_bits);
+> +}
+> +
+>  static int kvm_pgtable_visitor_cb(struct kvm_pgtable_walk_data *data, u64 addr,
+>                                   u32 level, kvm_pte_t *ptep,
+>                                   enum kvm_pgtable_walk_flags flag)
+> @@ -357,6 +380,7 @@ static int hyp_set_prot_attr(enum kvm_pgtable_prot prot, kvm_pte_t *ptep)
+>         attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S1_AP, ap);
+>         attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S1_SH, sh);
+>         attr |= KVM_PTE_LEAF_ATTR_LO_S1_AF;
+> +       attr |= pte_ignored_bit_prot(prot);
+>         *ptep = attr;
+>
+>         return 0;
+> @@ -558,6 +582,7 @@ static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot p
+>
+>         attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S2_SH, sh);
+>         attr |= KVM_PTE_LEAF_ATTR_LO_S2_AF;
+> +       attr |= pte_ignored_bit_prot(prot);
+>         *ptep = attr;
+>
+>         return 0;
+> --
+> 2.32.0.402.g57bb445576-goog
+>
