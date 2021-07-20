@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E2A3D01EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AB23D01F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbhGTSJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 14:09:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232902AbhGTSHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 14:07:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6139D60720;
-        Tue, 20 Jul 2021 18:48:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626806905;
-        bh=rCMKjEq6C3ShAT0LkuSu2FyDBlSMQ9aLoYabnytcWZ8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AhauWUxMX8UMxiVxECw0b5xOU30vcxuoRz8kZFSzcp3D2YpplLjr3pppEg7BQb1jM
-         VJedVNkYQkkFt3RMgnvse68VOrwG1MEojIbmsHUvKLfSoFcRGwi5a9gr2fGIfQ/Aeh
-         SkTEwSQJ+NDuZO3Qsk7q4szxB/cMsCkxSM3Y+JHMTbXNqfT7AHHR3T20iwCbVo9qcr
-         Sk4/mu8geal5aTTa0xaALnR9IdBAM6bJBuAtBjq/JKF0naMPnG0p3nFGOaSpOrx0B+
-         qKezjftxZlj0C93g1yIZJeM5+f/7pamKd3lMj9G+wEigETrHKStX0kInyHP4VUIOHq
-         JM52IZX0Q2lqQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     cy_huang <u0084500@gmail.com>, robh+dt@kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, cy_huang@richtek.com,
-        devicetree@vger.kernel.org, lgirdwood@gmail.com,
+        id S232208AbhGTSJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 14:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233862AbhGTSJS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 14:09:18 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0D9C061574;
+        Tue, 20 Jul 2021 11:49:55 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so22487863otl.3;
+        Tue, 20 Jul 2021 11:49:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=38ysDMlFx7OfVJ/aFP43WJt09nhQQM4u+Uto2k8gEks=;
+        b=FLNrJsaz5fXf7Xo66v38BaGPP1ocQoM/xxm8KEnVn5pgaEPyOFZHQMrx+kgbvPHzAl
+         tejfoRHgLwZRoJyYIdw8+RGr392WD99PGlFeZ3jJQSE9Y5mYXZY4D350hqmG91XFma0w
+         uDGbt/Giq6OF/2tKcQJkb6jYqK+6TCiZFOMLEi8L8DgYloMgxAFAdBjTu1odAIeu/Q0T
+         ja4m2nLrxZDvr6/f3YtoyveOowNY7etzfj5gJOLQrOyrXj/mNHWtWJ8LQYf+1CvzqULk
+         0nPeiNVmfpU/biN5Z3IHjPeE8GEoZwqIlsArql4rjJq6+kZeAYSkWVTZyfrTCSmulS3z
+         3sOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=38ysDMlFx7OfVJ/aFP43WJt09nhQQM4u+Uto2k8gEks=;
+        b=IxK5gtleYOpPq2Ud4sSq+DN9UHQau6iKsyRC6fhG6pZsw59VVZ5RNvmJLcU/oUtrte
+         utP2RNLFQGas053IxBrBJJ/amuS39JE0EnAdpjpMoqoGwv0zCvyRV+lwQu72twq7yne6
+         VoPJk3c1xzzTUskkfheKLLBRf3KXLs7Rk7XHXekhkygNt1KMkx26FhThbCm8c8FrjvBd
+         US9AL9P/9emyBL+HMYNOu82fsbVeM3LxQEJMKP1S8oaVt8CgFnxMzrXQ3Ejd0uR7aR9D
+         lEo9SNbvSWsHstK0RZ78eEXOLaFrfBEZCjoQL9vLAnlhL48UOkigM0ASlrY+dr3k/hsY
+         n7tA==
+X-Gm-Message-State: AOAM533xgRXjI3dVsD51wdjRcAdOZ/SNdLTsbUvFWF160lrqjmzWdA/D
+        icKajAjh1fX31elfT6bvCwFqgvJ4GSY=
+X-Google-Smtp-Source: ABdhPJyIrylkNRTWZUgUj5WIphNsXDuVP2tkhBXnf7xf4omEmU7VbmuAEf/BoKzz6q/xBg1DhHejCw==
+X-Received: by 2002:a9d:171c:: with SMTP id i28mr23086764ota.171.1626806994253;
+        Tue, 20 Jul 2021 11:49:54 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x30sm4414985ote.44.2021.07.20.11.49.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jul 2021 11:49:53 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 4.4 000/188] 4.4.276-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] regulator: rtq2134: Add binding document for Richtek RTQ2134 SubPMIC
-Date:   Tue, 20 Jul 2021 19:48:17 +0100
-Message-Id: <162680666036.11349.4601537863555148106.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1626422636-29458-1-git-send-email-u0084500@gmail.com>
-References: <1626422636-29458-1-git-send-email-u0084500@gmail.com>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20210719144913.076563739@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <a73a5e47-26f8-b0d6-c76a-c861ecd41c33@roeck-us.net>
+Date:   Tue, 20 Jul 2021 11:49:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 16:03:55 +0800, cy_huang wrote:
-> Add binding document for Richtek RTQ2134 SubPMIC.
+On 7/19/21 7:49 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.276 release.
+> There are 188 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 21 Jul 2021 14:47:42 +0000.
+> Anything received after that time might be too late.
+> 
 
-Applied to
+Building ppc:mpc8544ds:mpc85xx_defconfig:net,e1000:initrd ... failed
+------------
+Error log:
+drivers/memory/fsl_ifc.c: In function 'fsl_ifc_ctrl_probe':
+drivers/memory/fsl_ifc.c:308:28: error: 'struct fsl_ifc_ctrl' has no member named 'gregs'; did you mean 'regs'?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+Looks like 'regs' was at some point renamed to 'gregs'.
 
-Thanks!
-
-[1/2] regulator: rtq2134: Add binding document for Richtek RTQ2134 SubPMIC
-      commit: 4c922fd3d6fa4d51e1f5bb845548cbefd5de3d14
-[2/2] regulator: rtq2134: Add support for Richtek RTQ2134 SubPMIC
-      commit: 0555d41497de66d2f07ae36dcb46a32f0ff90d8d
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Guenter
