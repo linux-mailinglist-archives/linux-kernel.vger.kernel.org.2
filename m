@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B83F3CFC3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE2D3CFC3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239120AbhGTNqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 09:46:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41642 "EHLO mail.kernel.org"
+        id S238933AbhGTNrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 09:47:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239976AbhGTNj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239978AbhGTNj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Jul 2021 09:39:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 450AD611F2;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 566B56120F;
         Tue, 20 Jul 2021 14:20:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626790805;
-        bh=p+br29W5ktmzN2KC833uxKVEE2/+qI9VEz23Jm+x70Q=;
+        bh=PNC335c+0HpNmsknjHzh1aWP1BXG4QHhYXjsSrtp0o0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=EtaGiMmrLJqeBbbKF2gWpWBFVYX7Rra+LOrgyhoqmyXi+tHuxQBEy7DJmabvMgdR6
-         iy1nmQdpla8x4eJdd+utDxNZPYWrivFPo0FwUxsUN4ZZpa5zMqcLleqzv2ZraCfD9E
-         IGmDu91WjqaimoAygxsfUs6buZ4lrfbgkjOhjxSS2BMm09qer9G4pXrFOFTKNSHxr/
-         y7O2n9oQSxmuzIX6qTRbGed9Az3nRc+IjxRT11g2hZxOUPwyfVcHNAdJqLuTOeCcAx
-         PV2a5PTM9I2dLNIUHJFCIxkt+EDaLcBJyCZfwETa7rJWnLd3osw+zEev4cPQHcCvOX
-         ejPeCFQIG1TmA==
+        b=VYDqNhdecU2LcTZ2hys1MO4WSS4+3mN+lhnca8DIzYVqkP2PCNz+tmIfv8Q0QCALj
+         Ix5h2PAB+wigFQ/DXgleLWMLa/GoQbSRc/0mbrpsyZGfEsDhQP3iEQj/BpfudWtBaA
+         voCYDhrPwX3q3RslTdLZUs0x0CaWzb06HhA57ZfoTMdJDgZ+T4FjVEqKmm0CBH140q
+         4EiXthTQBuRdDlsIBvvtH5j7r8CSydx5TKN3Xq+wcrP3/lBrnRmb2ZWXGRXjpiBXwd
+         6ro4xQofK6kTpq/UcmEZiyxvvvi07VpJm+I3cxHepgpNU1mCQK84qf2OUplQa+IDd4
+         PH44BZS3qAFnQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3DF4560CCF;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4C77360A0B;
         Tue, 20 Jul 2021 14:20:05 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/3] arm64: dts: qcom: DTS updates
+Subject: Re: [PATCH net-next] net: ipv4: add capability check for net
+ administration
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162679080524.18101.16626774349145809936.git-patchwork-notify@kernel.org>
+Message-Id: <162679080530.18101.12497587424613555058.git-patchwork-notify@kernel.org>
 Date:   Tue, 20 Jul 2021 14:20:05 +0000
-References: <20210719212456.3176086-1-elder@linaro.org>
-In-Reply-To: <20210719212456.3176086-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org, robh+dt@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210720014328.378868-1-yang.yang29@zte.com.cn>
+In-Reply-To: <20210720014328.378868-1-yang.yang29@zte.com.cn>
+To:     None <cgel.zte@gmail.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yang.yang29@zte.com.cn,
+        zealci@zte.com.cn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 19 Jul 2021 16:24:53 -0500 you wrote:
-> This series updates some IPA-related DT nodes.
+On Mon, 19 Jul 2021 18:43:28 -0700 you wrote:
+> From: Yang Yang <yang.yang29@zte.com.cn>
 > 
-> Newer versions of IPA do not require an interconnect between IPA
-> and SoC internal memory.  The first patch updates the DT binding
-> to reflect this.
-> 
-> The second patch adds IPA information to "sc7280.dtsi", using only
-> two interconnects.  It includes the definition of the reserved
-> memory area used to hold IPA firmware.
+> Root in init user namespace can modify /proc/sys/net/ipv4/ip_forward
+> without CAP_NET_ADMIN, this doesn't follow the principle of
+> capabilities. For example, let's take a look at netdev_store(),
+> root can't modify netdev attribute without CAP_NET_ADMIN.
+> So let's keep the consistency of permission check logic.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,1/3] dt-bindings: net: qcom,ipa: make imem interconnect optional
-    https://git.kernel.org/netdev/net-next/c/6a0eb6c9d934
-  - [net-next,2/3] arm64: dts: qcom: sc7280: add IPA information
-    https://git.kernel.org/netdev/net-next/c/f8bd3c82bf7d
-  - [net-next,3/3] arm64: dts: qcom: sc7180: define ipa_fw_mem node
-    https://git.kernel.org/netdev/net-next/c/fd0f72c34bd9
+  - [net-next] net: ipv4: add capability check for net administration
+    https://git.kernel.org/netdev/net-next/c/8292d7f6e871
 
 You are awesome, thank you!
 --
