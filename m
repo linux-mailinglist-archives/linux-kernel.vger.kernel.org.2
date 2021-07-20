@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC86B3CF80A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980A53CF81E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234060AbhGTJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 05:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234770AbhGTJ6G (ORCPT
+        id S237483AbhGTKBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:01:41 -0400
+Received: from mail-vs1-f52.google.com ([209.85.217.52]:43676 "EHLO
+        mail-vs1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236747AbhGTJ6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 05:58:06 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E42EFC0613DB
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 03:38:22 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id t5so25424146wrw.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 03:38:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S2sNXLvJ4dwORJ7M5/nfuYVqqM+rERqyTBGgtikYXaE=;
-        b=mPoeiN3M2AOmzdQgoZ+DsS2PhTUq2lw5i1UCT1ddfJG9kUVbabmUf6v6T/MJAnkcik
-         Ud4mVQ2cHb5Bg2HqtZvCddGuPnOeb8RhDgH3SzMzXKHj4uvX2jEN8Bw0VcGbglQe2Dsq
-         vouf/5a7Mc3Pn/bkqJbHrfvkh70Dq9nxzGQBXEDXMaQzIFsYiHlqx2FuNizQXtVY7UNp
-         Kv41e6ik1XPLx4m6TiqW4Ngp46rhtMgmWDFnv+zX1TtY4Da+Ls+n3zuQMIb5C0HXeGY9
-         c0JEnJGW7vgmMokunPk94EwP213E7vP7VRB1R/sKUjGSVeoOAqC0hBSVX+t0qmsR8XOf
-         aT4Q==
+        Tue, 20 Jul 2021 05:58:40 -0400
+Received: by mail-vs1-f52.google.com with SMTP id a66so10953111vsd.10;
+        Tue, 20 Jul 2021 03:39:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S2sNXLvJ4dwORJ7M5/nfuYVqqM+rERqyTBGgtikYXaE=;
-        b=rP36O6YWN5kDmtVoo5yui8+dL5oFAFrsMh4cuQM5g+e6Oqy/9dsKV5TPxSCRr9hOHj
-         fmTR43UBIDT9cgMZV/QdelSTsi5NVuil0rc7jWQ3MCOnXSf9Fg5Ux6ogqQsUjXNOo1YM
-         Yc+kMrIirxH6j87igSvG20rRKZXbJ6mKlTIc6pDH8+wf8jvffk6Bp2GZODO3NKNJtlsV
-         1mL54F9YhZvLKf0xQpsU1QVPVV35PKz+YADvavMPH9J6GOfo1S49awxx5EmhASEgAKG/
-         sArgzu/iMZv9h8GJzAOwG1YIBzf03YSjBYNQtBf1oRzSn/3G7YzkQ0OgWpnMkAgCHYCP
-         H6IQ==
-X-Gm-Message-State: AOAM5336n7ERqSMkc8Ht+NWWEyLeDn8C+h54Pr4iSgrlakmFKHbzuh5p
-        l8Pk3jfKwAtFYJP2Xc2bzwuycw==
-X-Google-Smtp-Source: ABdhPJy7g7Xq2cQ/7zmh8X/o4J7TfkA9+eUT4oUX5FYEN6LxPQ9LUW/2mD3SHGS2l5+cFKz+ca5WyA==
-X-Received: by 2002:a5d:6992:: with SMTP id g18mr35879296wru.118.1626777501471;
-        Tue, 20 Jul 2021 03:38:21 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:83e0:11ac:c870:2b97])
-        by smtp.gmail.com with ESMTPSA id a10sm22857100wrm.12.2021.07.20.03.38.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 03:38:20 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 11:38:17 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        dbrazdil@google.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
-        Shanker R Donthineni <sdonthineni@nvidia.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 03/16] KVM: arm64: Turn kvm_pgtable_stage2_set_owner into
- kvm_pgtable_stage2_annotate
-Message-ID: <YPanmXfdr9rqnICK@google.com>
-References: <20210715163159.1480168-1-maz@kernel.org>
- <20210715163159.1480168-4-maz@kernel.org>
- <YPag0YQHB0nph5ji@google.com>
- <871r7t9tgi.wl-maz@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CSO/icj4gzKZwgdBUMKYFWUyTK7NvNCfOpft3VKskeo=;
+        b=SM08hSXDDv8IqRMCcmrpiyln7SaM2x80Dx31aLUACyGNZ/djx9JXyTFFx4Ad37BlTK
+         P1SXbq4ns0CJOuJr8LUeoMS1PdKete/G3GqIlblv+TtbRZF57e61GeFRNXHzF+bYAg8f
+         ORAUGvV6pTTz6q/S+fCX8xbj5ZoQV/E/sLj6AQ3eodPo3uVaNpkI57Td5xPPDQIN3Xrz
+         gRjGByHKXZ80HAObrlOPVPeTLdNTh4ewaoPHqyckOJcu3A1X/qMAv8uKuVhrR6s2K+rL
+         s9s7BsBmmyzw2oQO4HbnxboLyrrwq2poKetWoCh6ZdqS5xLl8xAsfMgb3Lds0UT6daKU
+         181g==
+X-Gm-Message-State: AOAM531/ftU7XlFuYnYRCUffR0xI8n4ssYSU/BNtzpVUvHY6fj7ZyKIr
+        fpWksK77fEAbblueFTJa9ILiA1s7BMiV6qVZT8E=
+X-Google-Smtp-Source: ABdhPJzRtcoT6owd3KcZf2ajJSjrqyZ2Ebluu5PNlZ7DbDPKNJmE2zJ7L7+yaj41O8uhqDPC+tueEC0bnsNjhfTlvzY=
+X-Received: by 2002:a67:1542:: with SMTP id 63mr28883617vsv.40.1626777558174;
+ Tue, 20 Jul 2021 03:39:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871r7t9tgi.wl-maz@kernel.org>
+References: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210719143811.2135-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210719143811.2135-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 20 Jul 2021 12:39:07 +0200
+Message-ID: <CAMuHMdWkeCxyaSfD2aQ346DV0n1JsxxUCB1jBD92evBYVVLFNg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] dt-bindings: clk: r9a07g044-cpg: Add entry for
+ P0_DIV2 core clock
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 20 Jul 2021 at 11:21:17 (+0100), Marc Zyngier wrote:
-> On Tue, 20 Jul 2021 11:09:21 +0100,
-> Quentin Perret <qperret@google.com> wrote:
-> > 
-> > On Thursday 15 Jul 2021 at 17:31:46 (+0100), Marc Zyngier wrote:
-> > > @@ -815,7 +807,7 @@ int kvm_pgtable_stage2_set_owner(struct kvm_pgtable *pgt, u64 addr, u64 size,
-> > >  		.arg		= &map_data,
-> > >  	};
-> > >  
-> > > -	if (owner_id > KVM_MAX_OWNER_ID)
-> > > +	if (!annotation || (annotation & PTE_VALID))
-> > >  		return -EINVAL;
-> > 
-> > Why do you consider annotation==0 invalid? The assumption so far has
-> > been that the owner_id for the host is 0, so annotating a range with 0s
-> > should be a valid operation -- this will be required when e.g.
-> > transferring ownership of a page back to the host.
-> 
-> How do you then distinguish it from an empty entry that doesn't map to
-> anything at all?
+On Mon, Jul 19, 2021 at 4:39 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add P0_DIV2 core clock required for CANFD module. CANFD core clock is
+> sourced from P0_DIV2 referenced from HW manual Rev.0.50.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-You don't, but that's beauty of it :)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-r9a07g044-dt-binding-defs, to be shared by
+renesas-clk-for-v5.15 and renesas-devel for v5.15.
 
-The host starts with a PGD full of zeroes, which in terms of ownership
-means that it owns the entire (I)PA space. And it loses ownership of a
-page only when we explicitly annotate it with an owner id != 0.
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
