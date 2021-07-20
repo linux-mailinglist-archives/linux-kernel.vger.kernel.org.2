@@ -2,164 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D573CF5ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D28313CF5F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhGTHgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        id S234217AbhGTHhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234509AbhGTHfi (ORCPT
+        with ESMTP id S232795AbhGTHhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:35:38 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7B8C0613DE;
-        Tue, 20 Jul 2021 01:15:48 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id f17so25025858wrt.6;
-        Tue, 20 Jul 2021 01:15:48 -0700 (PDT)
+        Tue, 20 Jul 2021 03:37:00 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B19AC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:17:38 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id go30so33075576ejc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ql1dPCLTKbbcS6/GHPVv78v3bVThvgbYbc34CpuUIL0=;
-        b=ffLyLY1/JAL7wmQS2W2DoShIdUns/9l1AiXt1wEe3BUKTUc88JoACXEPl3J6IRBCFJ
-         Og2uPlKAD/WnjV3cX8YUTJJ/KWxYz9FC+2OyCGY8x47xlp8s0LGQV8t/4TbcDu9uafVH
-         m92x+higKKO3druYA9RBT/Jod6LHeWpLf+P2CURLTriPMA4GH0mlvDwfq/+mwp7fYECv
-         5Rla3UkzZ48vDC8oyJ1Rkw6qHOkr1M+IjuOLxvTUpnsb7PymqG7S90xZh4H6gOGDUyET
-         fuO+/BVv5JMcyiezAirdVpW6TF9bu3hATNDNuoe6wCfg2kQjfGTsLx1bN28ta4MOK6nB
-         Tqpw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v2gsQnzIST0gsjN3UJrcLe/t2Tw7WtqJWLfqcGrUyzU=;
+        b=qfrwvKcsvCXv0OESA+8RRYb7WSVVu4AfzsV3nuOa9Q9CjH4T1NVnWAfHmEErE0ve/q
+         Tl7W2dd7fkoIotTprcdm/apYaZz7befwiEzfxZcU5SCfqdl6uRTNU1z9JZIDtiNTfGaA
+         9PCd5OGhMHTEpfxtbx18A9defDJgJAtNSFt4zDxnG+E/juIvSon9dvw+LmgAFkBi7dBt
+         g+7M8F0ojESOmKmZ1vSLpO38Pqlwt6rrABUsjVCzmWqtISNgyeiRy3SH4v92iho/BU2M
+         H854FWZE+0zyuXbPkFkJizx75kVv59dgJ77yFCWqZWBn/Pzb1wQ/QhOErneyDCVwaX8u
+         d2+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ql1dPCLTKbbcS6/GHPVv78v3bVThvgbYbc34CpuUIL0=;
-        b=CR8Gwi9l70vazlGiH0ICSbwJ/Iw0DuX+iGOdycuqp3loLACpa3945u9VJZmqpQIVsg
-         uJPEp2ouTapFBiBhcbtPBEMR668redRRECsAykBwytGg/VWhFtj3mE28eS996xIAFXxI
-         /0oI7xt8J7ZBPAe8BCcgegRDBga8tvqGebjnnQWGO7y/fOuRn0MDtps2YYdHpLEIys5G
-         j6kU5z56p/9LFxxoB2P5x9TX8qMiXJHUV0wB3zTEVKVZyR5Lrcitt2wckIfs7e7GVun/
-         HSNwkiCjaj5oxPxgwhTq4XFkBogjljizInPvRMZ8/uy1L9aPJDM27wX24+YS7jx9ICiM
-         MDug==
-X-Gm-Message-State: AOAM532YmEzCooHJHElzaA0PLQ4Fk4oCYUGTz7BFiNwNQWM/btcNezvx
-        dfyDFzyW2vE10QUXosmgWCs=
-X-Google-Smtp-Source: ABdhPJx9PjfIc8KKJoLAm/nwv9afljCvFz2qGCXfHFrlTSQ81Lcbriz7tucU92+5o1rHPb04wo2mvQ==
-X-Received: by 2002:adf:d1cd:: with SMTP id b13mr35045256wrd.200.1626768945210;
-        Tue, 20 Jul 2021 01:15:45 -0700 (PDT)
-Received: from pevik (gw.ms-free.net. [95.85.240.250])
-        by smtp.gmail.com with ESMTPSA id f7sm22692887wru.11.2021.07.20.01.15.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 01:15:44 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 10:15:42 +0200
-From:   Petr Vorel <petr.vorel@gmail.com>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org
-Subject: Re: [PATCH 4.14 305/315] arm64: dts: qcom: msm8994-angler: Fix
- gpio-reserved-ranges 85-88
-Message-ID: <YPaGLgPhdYuFGGxo@pevik>
-Reply-To: Petr Vorel <petr.vorel@gmail.com>
-References: <20210719144942.861561397@linuxfoundation.org>
- <20210719144953.504491331@linuxfoundation.org>
- <CA+G9fYvqW9ZG8PFMyUobaiT2a_nAYyuJeWvRr0AuwB6eWMa+cQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v2gsQnzIST0gsjN3UJrcLe/t2Tw7WtqJWLfqcGrUyzU=;
+        b=SWCPUOfyZTAPv0rc8cCcEFZvB3/QlW+X8mKtD5lpgS7s7ehSog4sbqYKr/POv4il0L
+         w4+6Zpgjn27L42OL3sxv5d7ZyVEgnUf2e/HoOcW64r852kerL/ZtmSIrXF3WI5+D4csa
+         rov3ar8IV7ZU9lImXAIKkuQio9KdhyM2EsM29ivaif7oqzAE4GMpEGUbbW0CaLSO3/ms
+         R1YiBdDrjYPYZigZfl592nESHpJD8RKurtPGcaTEVeIZTRNXbsyL8vMGwCZkV21TT5se
+         z4+qy/MWndjqeuuJ7dCiTFxoHiVdLrjhWLys4rRfQuLm/wzwfw7z60w1J2anRljqjTCy
+         L0Qg==
+X-Gm-Message-State: AOAM531i08DXpUxIt+6qEEifF26gku9z503YoxD9LNyayz5zIfJOnUq5
+        8/hRfj+cyBGff3KZJyhx3KBaGeeEuD7/CmQt24FBgHW0j2SN5ywM
+X-Google-Smtp-Source: ABdhPJzh5NZqbV6DMl/3IzLzdFeNMJYE+oTceH2715CwSYBA7iRhUu1kXrBQ0LaNs4QVN8ZF43XJv3ua51o4ERugzfc=
+X-Received: by 2002:a17:906:844d:: with SMTP id e13mr31351133ejy.503.1626769056841;
+ Tue, 20 Jul 2021 01:17:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYvqW9ZG8PFMyUobaiT2a_nAYyuJeWvRr0AuwB6eWMa+cQ@mail.gmail.com>
+References: <20210720174300.018cc765@canb.auug.org.au>
+In-Reply-To: <20210720174300.018cc765@canb.auug.org.au>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 20 Jul 2021 13:47:25 +0530
+Message-ID: <CA+G9fYs2ApGkrJHL5HOO1jEJZ714itVp+Tdj7fWzkG+JWc=pOA@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the printk tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Petr Mladek <pmladek@suse.com>, Chris Down <chris@chrisdown.name>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, 19 Jul 2021 at 21:01, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
+On Tue, 20 Jul 2021 at 13:13, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the printk tree, today's linux-next build (mips allnoconfig)
+> failed like this:
+>
+> arch/mips/kernel/genex.o: In function `handle_mcheck_int':
+> (.text+0x190c): undefined reference to `printk'
+> arch/mips/kernel/genex.o: In function `handle_reserved_int':
+> (.text+0x1c8c): undefined reference to `printk'
+>
+> Caused by commit
+>
+>   337015573718 ("printk: Userspace format indexing support")
 
-> > From: Petr Vorel <petr.vorel@gmail.com>
+Following MIPS builds failed at our end due the reported problem.
 
-> > [ Upstream commit f890f89d9a80fffbfa7ca791b78927e5b8aba869 ]
-
-> > Reserve GPIO pins 85-88 as these aren't meant to be accessible from the
-> > application CPUs (causes reboot). Yet another fix similar to
-> > 9134586715e3, 5f8d3ab136d0, which is needed to allow angler to boot after
-> > 3edfb7bd76bd ("gpiolib: Show correct direction from the beginning").
-
-> > Fixes: feeaf56ac78d ("arm64: dts: msm8994 SoC and Huawei Angler (Nexus 6P) support")
-
-> > Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-> > Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> > Link: https://lore.kernel.org/r/20210415193913.1836153-1-petr.vorel@gmail.com
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > ---
-> >  arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts | 4 ++++
-> >  1 file changed, 4 insertions(+)
-
-> > diff --git a/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts b/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts
-> > index dfa08f513dc4..e5850c4d3334 100644
-> > --- a/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts
-> > +++ b/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts
-> > @@ -38,3 +38,7 @@
-> >                 };
-> >         };
-> >  };
-> > +
-> > +&tlmm {
-> > +       gpio-reserved-ranges = <85 4>;
-> > +};
-
-> Following build errors noticed on arm64 architecture on on
-> stable-rc linux-4.19.y
-> stable-rc linux-4.14.y
+ - build/gcc-10-allnoconfig
+ - build/gcc-10-ar7_defconfig
+ - build/gcc-10-ath79_defconfig
+ - build/gcc-10-bcm47xx_defconfig
+ - build/gcc-10-bcm63xx_defconfig
+ - build/gcc-10-cavium_octeon_defconfig
+ - build/gcc-10-defconfig
+ - build/gcc-10-e55_defconfig
+ - build/gcc-10-malta_defconfig
+ - build/gcc-10-nlm_xlp_defconfig
+ - build/gcc-10-rt305x_defconfig
 
 
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64
-> CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
-> 'HOSTCC=sccache gcc'
-> Error: /builds/linux/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts:42.1-6
-> Label or path tlmm not found
-> FATAL ERROR: Syntax error parsing input tree
-> make[3]: *** [scripts/Makefile.lib:294:
-> arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dtb] Error 1
-> make[3]: Target '__build' not remade because of errors.
-> make[2]: *** [/builds/linux/scripts/Makefile.build:544:
-> arch/arm64/boot/dts/qcom] Error 2
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Yes, this patch needs modification, because tlmm was added in v5.9 in
-7c865b09b0a1 ("arm64: dts: qcom: msm8994: Modernize the DTS style").
-Before it was msmgpio, thus substitute to it should fix it. I can verify it and
-send correct patches, but this problem started since 3edfb7bd76bd (v4.20), thus
-I'd prefer just skip linux-4.19.y and linux-4.14.y (unless 3edfb7bd76bd is
-planning to be backported to it, which I don't think so).
-
-Kind regards,
-Petr
-
-
-> reference build link,
-> build: https://builds.tuxbuild.com/1vXT4jBYUbNdKdLS1wz6gmXPVLM/
-> config: https://builds.tuxbuild.com/1vXT4jBYUbNdKdLS1wz6gmXPVLM/config
-
-
-> steps to reproduce:
-> ---------------------
-> # TuxMake is a command line tool and Python library that provides
-> # portable and repeatable Linux kernel builds across a variety of
-> # architectures, toolchains, kernel configurations, and make targets.
-
-> # TuxMake supports the concept of runtimes.
-> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
-> # that you install podman or docker on your system.
-
-> # To install tuxmake on your system globally:
-> # sudo pip3 install -U tuxmake
-
-> # See https://docs.tuxmake.org/ for complete documentation.
-
-
-> tuxmake --runtime podman --target-arch arm64 --toolchain gcc-11
-> --kconfig defconfig --kconfig-add
-> https://builds.tuxbuild.com/1vXT4jBYUbNdKdLS1wz6gmXPVLM/config
+- Naresh
