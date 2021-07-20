@@ -2,81 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1363CF2F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F393CF2F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349305AbhGTDPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 23:15:53 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:43624 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1348417AbhGTDJ4 (ORCPT
+        id S236571AbhGTDUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 23:20:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242301AbhGTDTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 23:09:56 -0400
-X-UUID: 8f93c82db6994ebba2c117b63ada719a-20210720
-X-UUID: 8f93c82db6994ebba2c117b63ada719a-20210720
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <landen.chao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1487855149; Tue, 20 Jul 2021 11:50:26 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 20 Jul 2021 11:50:09 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 20 Jul 2021 11:50:09 +0800
-From:   Landen Chao <landen.chao@mediatek.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>, <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <frank-w@public-files.de>,
-        <steven.liu@mediatek.com>, Landen Chao <landen.chao@mediatek.com>
-Subject: [PATCH net-next v3] net: Update MAINTAINERS for MediaTek switch driver
-Date:   Tue, 20 Jul 2021 11:50:07 +0800
-Message-ID: <49e1aa8aac58dcbf1b5e036d09b3fa3bbb1d94d0.1626751861.git.landen.chao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <cover.1626751861.git.landen.chao@mediatek.com>
-References: <cover.1626751861.git.landen.chao@mediatek.com>
+        Mon, 19 Jul 2021 23:19:30 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933B1C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 21:00:08 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d1so10834601plg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 21:00:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=LsDEvt+bbqYoU5zEPmbWdAeNMHMU10ECNhR4D6yP+0g=;
+        b=Y/l/MXGyUc5j65oWklB0fLPG9owxhicm0ysyUPkN5qmQnVYOq/fW6Y2A77uBB38551
+         lyVBlCXnxxPttsbp5R+EBre6x55mJLBXNrCt55Pne5pU9egnwpCLcb/VobQZ2WiZ7Ieh
+         SOour+SNJOzWAp2fc3HQ/oiqtyeruzsWe4L/UeLOppL/Y/FgRwe9bq5k4ZriHvoyTQqX
+         AFdY9+mgIwmZjJG8RjE3YOJXk6B9VFWwjbalAzZPc2+0YNVvVqA4vAUvps+3rlbxe7bz
+         Z5c4R4B/d1ifFqIARoKQZcDzwQFUIqOoZ8n3NhW3jqK4G7y7HFVqAIvR7PQHDQF6WnoK
+         bu9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=LsDEvt+bbqYoU5zEPmbWdAeNMHMU10ECNhR4D6yP+0g=;
+        b=pnsAPuu/6ak4fQnMYB5xrz9TdqB+C77me3EgTN4LmjPsGJ4T0GteUkMkcYT2BbYVxw
+         VkRtrlrg9SGigSL5qYI2Sk9ZS3TJB6Vu5bIsr5G3Q6FuS7pNwG4gWfNqNa9sVl13Jo9t
+         YF8EYpKvPcYKgrom8J4oQksWIrBSIJXPkQZIQqKFHlgKGS5Wovev2gPJzM/GA/klRPHb
+         WYl3r2iLhoaMabg2Ek7S0fH3ACEBUmgcBAJdwyTW9J53l4tf1yl5N5w2UVZE+owUp75X
+         cY6vJNJEhroGjSj74y88GrM/D5BfdIfbcpkHgKszHDE6Ea/mP9CuT9DHOUvkOhJ+iTnB
+         YYWA==
+X-Gm-Message-State: AOAM53139cnpKPMdNZR2GQ30gvZYQS7BcuTmfo0FdJ+GY2ffRPpYJIKx
+        62pLY2WSPPit1AwTuIEIj+puBA==
+X-Google-Smtp-Source: ABdhPJw6mh9yUN8q0Jroq9MxXz0SQ3dON98jC9N/3zrg9BgpEySCUkL5IfzvS+cB6LnaaCXYRppPcA==
+X-Received: by 2002:a17:902:8c83:b029:129:17e5:a1cc with SMTP id t3-20020a1709028c83b029012917e5a1ccmr22051804plo.49.1626753608080;
+        Mon, 19 Jul 2021 21:00:08 -0700 (PDT)
+Received: from [10.254.201.89] ([139.177.225.253])
+        by smtp.gmail.com with ESMTPSA id b22sm17798221pje.1.2021.07.19.21.00.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 21:00:07 -0700 (PDT)
+Subject: Re: [PATCH 0/7] Free user PTE page table pages
+To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com
+References: <20210718043034.76431-1-zhengqi.arch@bytedance.com>
+ <5ce5fb25-df1d-b807-8807-595b8a7bfc63@redhat.com>
+ <089e710c-fb06-e731-6d50-7858d6b9ecdf@redhat.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+Message-ID: <2c9bc121-5d4f-4503-e2bd-b5cec0088352@bytedance.com>
+Date:   Tue, 20 Jul 2021 12:00:01 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <089e710c-fb06-e731-6d50-7858d6b9ecdf@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update maintainers for MediaTek switch driver with Deng Qingfang who has
-contributed many high-quality patches (interrupt, VLAN, GPIO, and etc.)
-and will help maintenance.
+On 7/19/21 7:28 PM, David Hildenbrand wrote:
+> On 19.07.21 09:34, David Hildenbrand wrote:
+>> On 18.07.21 06:30, Qi Zheng wrote:
+>>> Hi,
+>>>
+>>> This patch series aims to free user PTE page table pages when all PTE 
+>>> entries
+>>> are empty.
+>>>
+>>> The beginning of this story is that some malloc libraries(e.g. 
+>>> jemalloc or
+>>> tcmalloc) usually allocate the amount of VAs by mmap() and do not 
+>>> unmap those VAs.
+>>> They will use madvise(MADV_DONTNEED) to free physical memory if they 
+>>> want.
+>>> But the page tables do not be freed by madvise(), so it can produce many
+>>> page tables when the process touches an enormous virtual address space.
+>>
+>> ... did you see that I am actually looking into this?
+>>
+>> https://lkml.kernel.org/r/bae8b967-c206-819d-774c-f57b94c4b362@redhat.com
+>>
+>> and have already spent a significant time on it as part of my research,
+>> which is *really* unfortunate and makes me quite frustrated at the
+>> beginning of the week alreadty ...
+>>
+>> Ripping out page tables is quite difficult, as we have to stop all page
+>> table walkers from touching it, including the fast_gup, rmap and page
+>> faults. This usually involves taking the mmap lock in write. My approach
+>> does page table reclaim asynchronously from another thread and do not
+>> rely on reference counts.
+> 
+> FWIW, I had a quick peek and I like the simplistic approach using 
+> reference counting, although it seems to come with a price. By hooking 
+> using pte_alloc_get_map_lock() instead of pte_alloc_map_lock, we can 
+> handle quite some cases easily.
+> 
+> There are cases where we might immediately see a reuse after discarding 
+> memory (especially, with virtio-balloon free page reporting), in which 
+> case it's suboptimal to immediately discard instead of waiting a bit if 
+> there is a reuse. However, the performance impact seems to be 
+> comparatively small.
 
-Signed-off-by: Landen Chao <landen.chao@mediatek.com>
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Acked-by: Vladimir Oltean <olteanv@gmail.com>
----
-v2 -> v3: Change Message-Id from v1.
-v1 -> v2: Remove Change-Id.
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Good point, maybe we can wait a bit in the free_pte_table() in the added
+optimiztion patch if the frequency of immediate reuse is high.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..3315627ebb6b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11588,6 +11588,7 @@ F:	drivers/char/hw_random/mtk-rng.c
- MEDIATEK SWITCH DRIVER
- M:	Sean Wang <sean.wang@mediatek.com>
- M:	Landen Chao <Landen.Chao@mediatek.com>
-+M:	DENG Qingfang <dqfext@gmail.com>
- L:	netdev@vger.kernel.org
- S:	Maintained
- F:	drivers/net/dsa/mt7530.*
--- 
-2.29.2
-
+> 
+> I do wonder if the 1% overhead you're seeing is actually because of 
+> allcoating/freeing or because of the reference count handling on some 
+> hot paths.
+> 
+> I'm primarily looking into asynchronous reclaim, because it somewhat 
+> makes sense to only reclaim (+ pay a cost) when there is really need to 
+> reclaim memory -- similar to our shrinker infrastructure.
+> 
