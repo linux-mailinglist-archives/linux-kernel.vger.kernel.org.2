@@ -2,77 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2612A3CFEF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D783CFF00
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbhGTPcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:32:45 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:39970
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238592AbhGTP1X (ORCPT
+        id S229838AbhGTPd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232356AbhGTP22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:27:23 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 65E4C405FC;
-        Tue, 20 Jul 2021 16:07:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626797280;
-        bh=BamL6ieKcOJ11og7wi6bzdOGpaM7S+jvOc9FCtOg8M8=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=NyfLiqebzsym5tHDre5MuWTGGfK9ZUZ2cmBcjhN2wcgbuiCv5eUZFfLq+eZHn2L/i
-         ZVl8gZeIr2MoF+Q77zTFpILtEQK8awIOFz5H6wVC7IL9mHlzlENMYDGwsfP4TdkWvB
-         tvGOVz1p/h+pazRcJWxCugaWoCEVzn10CUqkAt0YXzh/rcx6FDXoZaXBN6yWDXuqrH
-         x5anBAj6g/FSJVTS6lXGYqK5P0CHjNMQbqeAM9fk67gONo2Vdc4do2r6DlwQq8ur4T
-         qlpR42+NfoCprnEceF7nkjKqFc5S0m/WETkDZCre9+cNn3Iwf/RYFV0s81HU427CcS
-         C9ngs5Hlxrz1g==
-From:   Colin King <colin.king@canonical.com>
-To:     Yasunari Takiguchi <Yasunari.Takiguchi@sony.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Sean Young <sean@mess.org>, linux-media@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] media: cxd2880-spi: Fix a null pointer dereference on error handling path
-Date:   Tue, 20 Jul 2021 17:07:49 +0100
-Message-Id: <20210720160749.73928-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 20 Jul 2021 11:28:28 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CDDC061766
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 09:09:06 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id u1so26652259wrs.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 09:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=pVCv+JmIPRuD56E6LjWFf8ij0FQMIIJAhgyKZFkghdo=;
+        b=KDpF/QuyH2EEa4BxevRhhQRc3tL81pg7UjwtIzvYVL5SLu8YVOJrJ9pS9/7kTefrcU
+         u1e+/YKV6+TzGoOi77/Pc96ewWe86kIvh9NLH9csdUUuVKG3vR+N8dYoMMNQkxq7aRtz
+         ETSXIp3GvVbfdPbRpafp1gXsMp86+41dnN5bI1HmJZqLepvzGWX52EQVP+bDehb9GVs+
+         gpxnKY7qFSkIJBwbSMun3krCYFY3yCImcKBVRmkoISIENvPECjvK+asWRIfXiNI+dS7P
+         pjKhCguoDdH51b6rCn0onhpZBgiDq/PMw8EiUI8Hlq4A88Oa5lkETUWcmtlwI/EJhqmA
+         3W/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=pVCv+JmIPRuD56E6LjWFf8ij0FQMIIJAhgyKZFkghdo=;
+        b=Y+h81U6SCLHrNoXWFxUWk57M6Be++Znz030glLv5qVX8+TO3aBc7cugvO2hToIUpKJ
+         /f1UNzmkId8Gd6mpf30TIDKSh8wtSHjQsPlpSLL1OjxEcHr3v73DmV2whS7r0zqIYycJ
+         zdu8QjFaSZbF+A/Tfl53KBpEpXA06XFwoau7BWp/9tRr5zlE3t6Yo0MoEafU77hfjEix
+         hvp6FM+ZTAsHyY8gK04AUVa/Vr7xgsUZO5rDIFn3hYZksFVOExMC6FCEHD29MbwIqdgc
+         MCSvrG22rumx7fx0y6RXe17kvaTKWz4E44yN3M7/3xaFSKfRYs8w8QF52aJ0Gjh2R1Z0
+         WX9Q==
+X-Gm-Message-State: AOAM533l/0/evR2OwHh4SHAXkB6lhnfQG24MDSTLa7CCklJJ5VlPZOml
+        3i45lEX7tALGzqgVcvCYf30qXA==
+X-Google-Smtp-Source: ABdhPJwuHu/m1lthS5BccZ3wR2hL1mhKs6xxC4mTNdlgsglE1LyhxOZuQpDBSRcSffjjBOtWVsERbg==
+X-Received: by 2002:adf:eb4c:: with SMTP id u12mr38140595wrn.111.1626797345081;
+        Tue, 20 Jul 2021 09:09:05 -0700 (PDT)
+Received: from google.com ([31.124.24.141])
+        by smtp.gmail.com with ESMTPSA id q19sm2676239wmq.38.2021.07.20.09.09.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 09:09:04 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 17:09:02 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Alistair Francis <alistair@alistair23.me>, robh+dt@kernel.org,
+        lgirdwood@gmail.com, linux-imx@nxp.com, kernel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v7 1/6] mfd: sy7636a: Initial commit
+Message-ID: <YPb1Hs0EoZ1MikuX@google.com>
+References: <20210708115804.212-1-alistair@alistair23.me>
+ <YPbjZdu7T9wFcvNz@google.com>
+ <20210720152351.GC5042@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210720152351.GC5042@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, 20 Jul 2021, Mark Brown wrote:
 
-Currently the null pointer check on dvb_spi->vcc_supply is inverted and
-this leads to only null values of the dvb_spi->vcc_supply being passed
-to the call of regulator_disable causing null pointer dereferences.
-Fix this by only calling regulator_disable if dvb_spi->vcc_supply is
-not null.
+> On Tue, Jul 20, 2021 at 03:53:25PM +0100, Lee Jones wrote:
+> > On Thu, 08 Jul 2021, Alistair Francis wrote:
+> 
+> > > +static const struct mfd_cell sy7636a_cells[] = {
+> > > +	{ .name = "sy7636a-regulator", },
+> > > +	{ .name = "sy7636a-temperature", },
+> > > +	{ .name = "sy7636a-thermal", },
+> > > +};
+> 
+> > If you put these in the Device Tree, you can use "simple-mfd-i2c"
+> 
+> At least the regulator probably shouldn't be - this is just a Linux
+> specific grouping of devices, it's not really directly a block in the
+> hardware in a way that's platform independent.
 
-Addresses-Coverity: ("Dereference after null check")
-Fixes: dcb014582101 ("media: cxd2880-spi: Fix an error handling path")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/media/spi/cxd2880-spi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've seen (and authored) regulator support in DT before.
 
-diff --git a/drivers/media/spi/cxd2880-spi.c b/drivers/media/spi/cxd2880-spi.c
-index b91a1e845b97..506f52c1af10 100644
---- a/drivers/media/spi/cxd2880-spi.c
-+++ b/drivers/media/spi/cxd2880-spi.c
-@@ -618,7 +618,7 @@ cxd2880_spi_probe(struct spi_device *spi)
- fail_attach:
- 	dvb_unregister_adapter(&dvb_spi->adapter);
- fail_adapter:
--	if (!dvb_spi->vcc_supply)
-+	if (dvb_spi->vcc_supply)
- 		regulator_disable(dvb_spi->vcc_supply);
- fail_regulator:
- 	kfree(dvb_spi);
+What's changed?  They're controlled by registers, right?
+
+Is the problem that the registers are usually split?
+
 -- 
-2.31.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
