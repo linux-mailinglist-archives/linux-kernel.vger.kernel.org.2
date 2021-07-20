@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CBB3CF301
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6293CF303
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237260AbhGTDak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 23:30:40 -0400
-Received: from mga14.intel.com ([192.55.52.115]:58887 "EHLO mga14.intel.com"
+        id S241965AbhGTDbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 23:31:16 -0400
+Received: from mga14.intel.com ([192.55.52.115]:58885 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243075AbhGTD3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243097AbhGTD3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 23:29:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="210893259"
+X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="210893260"
 X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="210893259"
+   d="scan'208";a="210893260"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 21:10:08 -0700
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 21:10:09 -0700
 X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="431914060"
+   d="scan'208";a="431914071"
 Received: from ywei11-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.138.31])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 21:10:07 -0700
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 21:10:08 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -34,15 +34,15 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         x86@kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Kai Huang <kai.huang@intel.com>
-Subject: [PATCH v3 1/5] x86/boot: Add a trampoline for APs booting in 64-bit mode
-Date:   Mon, 19 Jul 2021 21:08:57 -0700
-Message-Id: <20210720040901.2121268-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: [PATCH v3 2/5] x86/boot: Avoid #VE during boot for TDX platforms
+Date:   Mon, 19 Jul 2021 21:08:58 -0700
+Message-Id: <20210720040901.2121268-3-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210720040901.2121268-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20210720040901.2121268-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,173 +50,179 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Add a trampoline for booting APs in 64-bit mode via a software handoff
-with BIOS, and use the new trampoline for the ACPI MP wake protocol used
-by TDX. You can find MADT MP wake protocol details in ACPI specification
-r6.4, sec 5.2.12.19.
+There are a few MSRs and control register bits which the kernel
+normally needs to modify during boot. But, TDX disallows
+modification of these registers to help provide consistent
+security guarantees. Fortunately, TDX ensures that these are all
+in the correct state before the kernel loads, which means the
+kernel has no need to modify them.
 
-Extend the real mode IDT pointer by four bytes to support LIDT in 64-bit
-mode.  For the GDT pointer, create a new entry as the existing storage
-for the pointer occupies the zero entry in the GDT itself.
+The conditions to avoid are:
 
-Reported-by: Kai Huang <kai.huang@intel.com>
+  * Any writes to the EFER MSR
+  * Clearing CR0.NE
+  * Clearing CR3.MCE
+
+This theoretically makes guest boot more fragile. If, for
+instance, EFER was set up incorrectly and a WRMSR was performed,
+it will trigger early exception panic or a triple fault, if it's
+before early exceptions are set up. However, this is likely to
+trip up the guest BIOS long before control reaches the kernel. In
+any case, these kinds of problems are unlikely to occur in
+production environments, and developers have good debug
+tools to fix them quickly. 
+
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- arch/x86/include/asm/realmode.h          | 12 ++++++++
- arch/x86/kernel/smpboot.c                |  2 +-
- arch/x86/realmode/rm/header.S            |  1 +
- arch/x86/realmode/rm/trampoline_64.S     | 38 ++++++++++++++++++++++++
- arch/x86/realmode/rm/trampoline_common.S | 12 +++++++-
- 5 files changed, 63 insertions(+), 2 deletions(-)
+ arch/x86/boot/compressed/head_64.S   | 16 ++++++++++++----
+ arch/x86/boot/compressed/pgtable.h   |  2 +-
+ arch/x86/kernel/head_64.S            | 20 ++++++++++++++++++--
+ arch/x86/realmode/rm/trampoline_64.S | 23 +++++++++++++++++++----
+ 4 files changed, 50 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realmode.h
-index 5db5d083c873..ccdf158d5b65 100644
---- a/arch/x86/include/asm/realmode.h
-+++ b/arch/x86/include/asm/realmode.h
-@@ -12,6 +12,7 @@
- #ifndef __ASSEMBLY__
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index a2347ded77ea..0c68e3adc940 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -640,12 +640,20 @@ SYM_CODE_START(trampoline_32bit_src)
+ 	movl	$MSR_EFER, %ecx
+ 	rdmsr
+ 	btsl	$_EFER_LME, %eax
++	/* Avoid writing EFER if no change was made (for TDX guest) */
++	jc	1f
+ 	wrmsr
+-	popl	%edx
++1:	popl	%edx
+ 	popl	%ecx
  
- #include <linux/types.h>
-+#include <linux/protected_guest.h>
- #include <asm/io.h>
+ 	/* Enable PAE and LA57 (if required) paging modes */
+-	movl	$X86_CR4_PAE, %eax
++	movl	%cr4, %eax
++	/*
++	 * Clear all bits except CR4.MCE, which is preserved.
++	 * Clearing CR4.MCE will #VE in TDX guests.
++	 */
++	andl	$X86_CR4_MCE, %eax
++	orl	$X86_CR4_PAE, %eax
+ 	testl	%edx, %edx
+ 	jz	1f
+ 	orl	$X86_CR4_LA57, %eax
+@@ -659,8 +667,8 @@ SYM_CODE_START(trampoline_32bit_src)
+ 	pushl	$__KERNEL_CS
+ 	pushl	%eax
  
- /* This must match data at realmode/rm/header.S */
-@@ -25,6 +26,7 @@ struct real_mode_header {
- 	u32	sev_es_trampoline_start;
- #endif
- #ifdef CONFIG_X86_64
-+	u32	trampoline_start64;
- 	u32	trampoline_pgd;
- #endif
- 	/* ACPI S3 wakeup */
-@@ -88,6 +90,16 @@ static inline void set_real_mode_mem(phys_addr_t mem)
- 	real_mode_header = (struct real_mode_header *) __va(mem);
- }
+-	/* Enable paging again */
+-	movl	$(X86_CR0_PG | X86_CR0_PE), %eax
++	/* Enable paging again. Avoid clearing X86_CR0_NE for TDX */
++	movl	$(X86_CR0_PG | X86_CR0_NE | X86_CR0_PE), %eax
+ 	movl	%eax, %cr0
  
-+/* Common helper function to get start IP address */
-+static inline unsigned long get_trampoline_start_ip(struct real_mode_header *rmh)
-+{
-+#ifdef CONFIG_X86_64
-+	if (prot_guest_has(PR_GUEST_TDX))
-+		return rmh->trampoline_start64;
-+#endif
-+	return rmh->trampoline_start;
-+}
-+
- void reserve_real_mode(void);
+ 	lret
+diff --git a/arch/x86/boot/compressed/pgtable.h b/arch/x86/boot/compressed/pgtable.h
+index 6ff7e81b5628..cc9b2529a086 100644
+--- a/arch/x86/boot/compressed/pgtable.h
++++ b/arch/x86/boot/compressed/pgtable.h
+@@ -6,7 +6,7 @@
+ #define TRAMPOLINE_32BIT_PGTABLE_OFFSET	0
  
- #endif /* __ASSEMBLY__ */
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 9320285a5e29..8923193b97f7 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1031,7 +1031,7 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
- 		       int *cpu0_nmi_registered)
- {
- 	/* start_ip had better be page-aligned! */
--	unsigned long start_ip = real_mode_header->trampoline_start;
-+	unsigned long start_ip = get_trampoline_start_ip(real_mode_header);
+ #define TRAMPOLINE_32BIT_CODE_OFFSET	PAGE_SIZE
+-#define TRAMPOLINE_32BIT_CODE_SIZE	0x70
++#define TRAMPOLINE_32BIT_CODE_SIZE	0x80
  
- 	unsigned long boot_error = 0;
- 	unsigned long timeout;
-diff --git a/arch/x86/realmode/rm/header.S b/arch/x86/realmode/rm/header.S
-index 8c1db5bf5d78..2eb62be6d256 100644
---- a/arch/x86/realmode/rm/header.S
-+++ b/arch/x86/realmode/rm/header.S
-@@ -24,6 +24,7 @@ SYM_DATA_START(real_mode_header)
- 	.long	pa_sev_es_trampoline_start
- #endif
- #ifdef CONFIG_X86_64
-+	.long	pa_trampoline_start64
- 	.long	pa_trampoline_pgd;
- #endif
- 	/* ACPI S3 wakeup */
+ #define TRAMPOLINE_32BIT_STACK_END	TRAMPOLINE_32BIT_SIZE
+ 
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index d8b3ebd2bb85..96beac9eff42 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -141,7 +141,13 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 1:
+ 
+ 	/* Enable PAE mode, PGE and LA57 */
+-	movl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
++	movq	%cr4, %rcx
++	/*
++	 * Clear all bits except CR4.MCE, which is preserved.
++	 * Clearing CR4.MCE will #VE in TDX guests.
++	 */
++	andl	$X86_CR4_MCE, %ecx
++	orl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
+ #ifdef CONFIG_X86_5LEVEL
+ 	testl	$1, __pgtable_l5_enabled(%rip)
+ 	jz	1f
+@@ -229,13 +235,23 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 	/* Setup EFER (Extended Feature Enable Register) */
+ 	movl	$MSR_EFER, %ecx
+ 	rdmsr
++	/*
++	 * Preserve current value of EFER for comparison and to skip
++	 * EFER writes if no change was made (for TDX guest)
++	 */
++	movl    %eax, %edx
+ 	btsl	$_EFER_SCE, %eax	/* Enable System Call */
+ 	btl	$20,%edi		/* No Execute supported? */
+ 	jnc     1f
+ 	btsl	$_EFER_NX, %eax
+ 	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
+-1:	wrmsr				/* Make changes effective */
+ 
++	/* Avoid writing EFER if no change was made (for TDX guest) */
++1:	cmpl	%edx, %eax
++	je	1f
++	xor	%edx, %edx
++	wrmsr				/* Make changes effective */
++1:
+ 	/* Setup cr0 */
+ 	movl	$CR0_STATE, %eax
+ 	/* Make changes effective */
 diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
-index cc8391f86cdb..ae112a91592f 100644
+index ae112a91592f..0fdd74054044 100644
 --- a/arch/x86/realmode/rm/trampoline_64.S
 +++ b/arch/x86/realmode/rm/trampoline_64.S
-@@ -161,6 +161,19 @@ SYM_CODE_START(startup_32)
- 	ljmpl	$__KERNEL_CS, $pa_startup_64
- SYM_CODE_END(startup_32)
+@@ -143,13 +143,27 @@ SYM_CODE_START(startup_32)
+ 	movl	%eax, %cr3
  
-+SYM_CODE_START(pa_trampoline_compat)
+ 	# Set up EFER
++	movl	$MSR_EFER, %ecx
++	rdmsr
 +	/*
-+	 * In compatibility mode.  Prep ESP and DX for startup_32, then disable
-+	 * paging and complete the switch to legacy 32-bit mode.
++	 * Skip writing to EFER if the register already has desired
++	 * value (to avoid #VE for the TDX guest).
 +	 */
-+	movl	$rm_stack_end, %esp
-+	movw	$__KERNEL_DS, %dx
-+
-+	movl	$X86_CR0_PE, %eax
-+	movl	%eax, %cr0
-+	ljmpl   $__KERNEL32_CS, $pa_startup_32
-+SYM_CODE_END(pa_trampoline_compat)
-+
- 	.section ".text64","ax"
- 	.code64
- 	.balign 4
-@@ -169,6 +182,20 @@ SYM_CODE_START(startup_64)
- 	jmpq	*tr_start(%rip)
- SYM_CODE_END(startup_64)
++	cmp	pa_tr_efer, %eax
++	jne	.Lwrite_efer
++	cmp	pa_tr_efer + 4, %edx
++	je	.Ldone_efer
++.Lwrite_efer:
+ 	movl	pa_tr_efer, %eax
+ 	movl	pa_tr_efer + 4, %edx
+-	movl	$MSR_EFER, %ecx
+ 	wrmsr
  
-+SYM_CODE_START(trampoline_start64)
+-	# Enable paging and in turn activate Long Mode
+-	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_PE), %eax
++.Ldone_efer:
 +	/*
-+	 * APs start here on a direct transfer from 64-bit BIOS with identity
-+	 * mapped page tables.  Load the kernel's GDT in order to gear down to
-+	 * 32-bit mode (to handle 4-level vs. 5-level paging), and to (re)load
-+	 * segment registers.  Load the zero IDT so any fault triggers a
-+	 * shutdown instead of jumping back into BIOS.
++	 * Enable paging and in turn activate Long Mode. Avoid clearing
++	 * X86_CR0_NE for TDX.
 +	 */
-+	lidt	tr_idt(%rip)
-+	lgdt	tr_gdt64(%rip)
-+
-+	ljmpl	*tr_compat(%rip)
-+SYM_CODE_END(trampoline_start64)
-+
- 	.section ".rodata","a"
- 	# Duplicate the global descriptor table
- 	# so the kernel can live anywhere
-@@ -182,6 +209,17 @@ SYM_DATA_START(tr_gdt)
- 	.quad	0x00cf93000000ffff	# __KERNEL_DS
- SYM_DATA_END_LABEL(tr_gdt, SYM_L_LOCAL, tr_gdt_end)
++	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_NE | X86_CR0_PE), %eax
+ 	movl	%eax, %cr0
  
-+SYM_DATA_START(tr_gdt64)
-+	.short	tr_gdt_end - tr_gdt - 1	# gdt limit
-+	.long	pa_tr_gdt
-+	.long	0
-+SYM_DATA_END(tr_gdt64)
-+
-+SYM_DATA_START(tr_compat)
-+	.long	pa_trampoline_compat
-+	.short	__KERNEL32_CS
-+SYM_DATA_END(tr_compat)
-+
- 	.bss
- 	.balign	PAGE_SIZE
- SYM_DATA(trampoline_pgd, .space PAGE_SIZE)
-diff --git a/arch/x86/realmode/rm/trampoline_common.S b/arch/x86/realmode/rm/trampoline_common.S
-index 5033e640f957..4331c32c47f8 100644
---- a/arch/x86/realmode/rm/trampoline_common.S
-+++ b/arch/x86/realmode/rm/trampoline_common.S
-@@ -1,4 +1,14 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- 	.section ".rodata","a"
- 	.balign	16
--SYM_DATA_LOCAL(tr_idt, .fill 1, 6, 0)
-+
-+/*
-+ * When a bootloader hands off to the kernel in 32-bit mode an
-+ * IDT with a 2-byte limit and 4-byte base is needed. When a boot
-+ * loader hands off to a kernel 64-bit mode the base address
-+ * extends to 8-bytes. Reserve enough space for either scenario.
-+ */
-+SYM_DATA_START_LOCAL(tr_idt)
-+	.short  0
-+	.quad   0
-+SYM_DATA_END(tr_idt)
+ 	/*
+@@ -169,7 +183,8 @@ SYM_CODE_START(pa_trampoline_compat)
+ 	movl	$rm_stack_end, %esp
+ 	movw	$__KERNEL_DS, %dx
+ 
+-	movl	$X86_CR0_PE, %eax
++	/* Avoid clearing X86_CR0_NE for TDX */
++	movl	$(X86_CR0_NE | X86_CR0_PE), %eax
+ 	movl	%eax, %cr0
+ 	ljmpl   $__KERNEL32_CS, $pa_startup_32
+ SYM_CODE_END(pa_trampoline_compat)
 -- 
 2.25.1
 
