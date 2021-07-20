@@ -2,133 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5063CF5A9
+	by mail.lfdr.de (Postfix) with ESMTP id E9A203CF5AB
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbhGTHU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:20:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45563 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229675AbhGTHUz (ORCPT
+        id S231845AbhGTHVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:21:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230089AbhGTHVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:20:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626768094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LTrV5RbVeDNyG1pYgWpiiRkaajyN4AH34gq6Sc1Ja5U=;
-        b=NnU2ZAi7Fgxdq1HPF8do9QLB25YnmCnNYvVftLS/Zw6RvH/lizgAfEvds++Jy7YiLXW1EL
-        P4RtDsN9QAlyHWY26MJtDEsDGeR4eLE67jvgKr5hjqaV2IhxkuWzkKREEsNWZYZLG8eCti
-        A9Yet7Zfi1+LfEfoQSCTY8nyxI53cdg=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-530-GTZjbMMZOZyqJa8T3g3FDw-1; Tue, 20 Jul 2021 04:01:32 -0400
-X-MC-Unique: GTZjbMMZOZyqJa8T3g3FDw-1
-Received: by mail-pj1-f70.google.com with SMTP id j11-20020a17090a840bb029017582e03c3bso1389401pjn.7
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:01:32 -0700 (PDT)
+        Tue, 20 Jul 2021 03:21:34 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19E9C061574;
+        Tue, 20 Jul 2021 01:02:08 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id dt7so32985701ejc.12;
+        Tue, 20 Jul 2021 01:02:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2edD4ZbIoOM5dgV01Aj0vA4z3mEuf8snofuXl1oXreo=;
+        b=d95LEuqAdqoJ9ACA/94Go38gEhST2eZd9Qx7/4ma9tR1Saj3T7L/Y+GORjnWGEU2Sc
+         6YdawSAlWqwyZ/nn/11TgzaXx+BGOkrn6/HgBuqjebbxfyRnv1j0dVnGA1npVHdvkLT+
+         s2ZmXIh5mUvzoygiu+4tjVL8u3Bzy8HPhS1eL4I0Msh0Y9vuUoso1Y3m73iRSX7F5ids
+         8I8hukdpPLqX98oT7NZ6zuS5Mz8cAO9D8WvR4w8m2xt9aH2T/mxHeHaDhvZ3suOTOuLB
+         6cRgdBqQsqlCriqA73Sf7YzK6Ayx/kejohpedHFCUyaAHRJz26BTM7mRFWR+h4izZ0I3
+         O5pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LTrV5RbVeDNyG1pYgWpiiRkaajyN4AH34gq6Sc1Ja5U=;
-        b=TYF/Zs5u7IFM8cng7qjwpMFfjLbC/rMJ8CZDZI70mo6vVz0riI0jHfn11eNfLHCf0y
-         opC7BfLuMUZm8c2GrAe3mjskkwuDTSixSTxN53Nk/FeE6J+ni2DKXRbUzwpb4hkITspA
-         a/awRP6eEDD9O18ArqChxGh96He6lWWMRNd7BHTSZ/dzUFVBfeGl2Tr/81Inpj2MGJ4D
-         toE6/Z75reTl+ssb0QjiNARFeR7Bdl23jI3CV3UYigOrzcuj1I7BE8hDGxq1DZ68895t
-         CWB61PFSxN9qg4CT6Xm/m+vdSRJ60HHqRtTN++fxBOTAajHOnb53IR+3eRqWw+a5CgqJ
-         2jWw==
-X-Gm-Message-State: AOAM530ztbEJ7sBCZS5P8IRidbjjP+RwY8yYqHXHPREp35THzGfQoI5l
-        IKXMm476JzZexgCxOSL0C6O3OWW6SAY1XABIuEC6DMrCQK5Pf828PklcgH/MKSoeiqMGquBzaQb
-        xrV9gGuZuj34XMkbZ9ZDa6FPaa0wZKlEIlvc2iSeA
-X-Received: by 2002:aa7:9687:0:b029:337:3b49:df24 with SMTP id f7-20020aa796870000b02903373b49df24mr21001798pfk.35.1626768091743;
-        Tue, 20 Jul 2021 01:01:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/lz7xyoR5XNVuKo5OpMeCS8ZcA7bhLmy40KWtYzX4iPv/i5bUyo43tpWf+jLShuoE3NzooQDIy9RWJTynEGk=
-X-Received: by 2002:aa7:9687:0:b029:337:3b49:df24 with SMTP id
- f7-20020aa796870000b02903373b49df24mr21001779pfk.35.1626768091519; Tue, 20
- Jul 2021 01:01:31 -0700 (PDT)
+        bh=2edD4ZbIoOM5dgV01Aj0vA4z3mEuf8snofuXl1oXreo=;
+        b=GxE+HNvX6mfX7j8rXcESECcdzx3KI4wevhiMTSo6lcvlqmdNTYUdhZWUDwfNxZFML6
+         nXH5E+yoN/mcqxgy21ZuPEMcTZFXavp3u1UyK7dSST8gahFyEeWCuRHLRUuVvJicUeDe
+         9kEbh1cs6ucEhX7rs41ohTFX1FArnshcnYTSnPMUO1XAnyYVgwOT3/Z1VkZ7O+PhMRzk
+         UxLgHqkAJqubZyUUCHqGVz5SrKRfoVBGPXi842rykvsVUvCdBHEZ8/lDa/m8ep0XC8qS
+         v49hBb7UP9iOcF8/vmVUX54W/lfCSrVWIub5WHoWNtwzU/1lT/tIlIgTgocspOIu8eN6
+         5AuA==
+X-Gm-Message-State: AOAM531ttyq1q2RyFi+faYC1dEjk+zbnaUJq3uG7izxEM8Q7Pu+oopRV
+        TtPPdAVxxwucvFGOn8wPz7pkTpokv1StZS7aLA8MH+wdjaQ=
+X-Google-Smtp-Source: ABdhPJyO9ZvIDN2d6vogWARmI2N8r8z5KnWcZOZsKssnZq9MdMiE9SwxK57GIk2vAlTtMjpmt6tqwyPg5BbH3zAiNBs=
+X-Received: by 2002:a17:906:6050:: with SMTP id p16mr22033077ejj.43.1626768127286;
+ Tue, 20 Jul 2021 01:02:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210625081818.v2.1.I358cae5e33f742765fd38485d6ddf1a4a978644d@changeid>
- <nycvar.YFH.7.76.2107152150060.8253@cbobk.fhfr.pm>
-In-Reply-To: <nycvar.YFH.7.76.2107152150060.8253@cbobk.fhfr.pm>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Tue, 20 Jul 2021 10:01:20 +0200
-Message-ID: <CAO-hwJJp-qg0pRZNk1PKhha6S=Zd2_r1UDjZUgm9Yq0MFL69MQ@mail.gmail.com>
-Subject: Re: [PATCH v2] HID: i2c-hid: goodix: Tie the reset line to true state
- of the regulator
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
+ <YPGojf7hX//Wn5su@kroah.com> <568938486.33366.1626452816917.JavaMail.zimbra@nod.at>
+ <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com>
+ <1458549943.44607.1626686894648.JavaMail.zimbra@nod.at> <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
+ <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at>
+In-Reply-To: <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Tue, 20 Jul 2021 13:31:55 +0530
+Message-ID: <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
+Subject: Re: MTD: How to get actual image size from MTD partition
+To:     Richard Weinberger <richard@nod.at>
+Cc:     Greg KH <greg@kroah.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Sean Nyekjaer <sean@geanix.com>,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 9:50 PM Jiri Kosina <jikos@kernel.org> wrote:
->
-> On Fri, 25 Jun 2021, Douglas Anderson wrote:
->
-> > The regulator for the touchscreen could be:
-> > * A dedicated regulator just for the touchscreen.
-> > * A regulator shared with something else in the system.
-> > * An always-on regulator.
-> >
-> > How we want the "reset" line to behave depends a bit on which of those
-> > three cases we're in. Currently the code is written with the
-> > assumption that it has a dedicated regulator, but that's not really
-> > guaranteed to be the case.
-> >
-> > The problem we run into is that if we leave the touchscreen powered on
-> > (because someone else is requesting the regulator or it's an always-on
-> > regulator) and we assert reset then we apparently burn an extra 67 mW
-> > of power. That's not great.
-> >
-> > Let's instead tie the control of the reset line to the true state of
-> > the regulator as reported by regulator notifiers. If we have an
-> > always-on regulator our notifier will never be called. If we have a
-> > shared regulator then our notifier will be called when the touchscreen
-> > is truly turned on or truly turned off.
-> >
-> > Using notifiers like this nicely handles all the cases without
-> > resorting to hacks like pretending that there is no "reset" GPIO if we
-> > have an always-on regulator.
-> >
-> > NOTE: if the regulator is on a shared line it's still possible that
-> > things could be a little off. Specifically, this case is not handled
-> > even after this patch:
-> > 1. Suspend goodix (send "sleep", goodix stops requesting regulator on)
-> > 2. Other regulator user turns off (regulator fully turns off).
-> > 3. Goodix driver gets notified and asserts reset.
-> > 4. Other regulator user turns on.
-> > 5. Goodix driver gets notified and deasserts reset.
-> > 6. Nobody resumes goodix.
-> >
-> > With that set of steps we'll have reset deasserted but we will have
-> > lost the results of the I2C_HID_PWR_SLEEP from the suspend path. That
-> > means we might be in higher power than we could be even if the goodix
-> > driver thinks things are suspended. Presumably, however, we're still
-> > in better shape than if we were asserting "reset" the whole time. If
-> > somehow the above situation is actually affecting someone and we want
-> > to do better we can deal with it when we have a real use case.
-> >
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
->
-> Applied, thanks Doug.
+On Tue, 20 Jul 2021 at 12:10, Richard Weinberger <richard@nod.at> wrote:
 
-Thanks Jiri for taking this one in.
-
-FWIW, I am really glad Doug made the effort of splitting i2c-hid-core
-and i2c-hid-goodix, because this is the kind of patch that would have
-been a nightmare to make it generic :)
-
-Cheers,
-Benjamin
-
+> > Anyways, I will create a separate thread for dm-verity issue and keep
+> > this thread still open for UBI image size issue.
+> > We may use dm-verify for rootfs during booting, but still we need to
+> > perform integrity check for other nand partitions and UBI volumes.
+> >
+> > So, instead of calculating the checksum for the entire partition, is
+> > it possible to perform checksum only based on the image size ?
+> > Right now, we are still exploring what are the best possible
+> > mechanisms available for this.
 >
-> --
-> Jiri Kosina
-> SUSE Labs
+> I still don't fully understand what you are trying to achieve.
+> Is it about cryptographic integrity of your storage or detecting
+> errors after the flashing process?
 >
+Yes, it is about md5 checksum verification for every partition to
+check its integrity before updates.
 
+
+> But let me advertise ubiblock a second time.
+Sorry, I could not understand about the ubiblock request. Is it
+possible to elaborate little more ?
+We are already using squashfs on top of our UBI volumes (including
+rootfs mounting).
+This is the kernel command line we pass:
+rootfstype=squashfs root=/dev/mtdblock44 ubi.mtd=40,0,30
+And CONFIG_MTD_UBI_BLOCK=y is already enabled in our kernel.
+Do we need to do something different for ubiblock ?
+
+> If you place your squashfs on a UBI static volume, UBI knows the exact length and you can checksum it
+> more easily.
+Yes, we use squashfs on UBI volumes, but our volume type is still dynamic.
+Also, you said, UBI knows the exact length, you mean the whole image length ?
+How can we get this length at runtime ?
+Also, how can we get the checksum of the entire UBI volume content
+(ignoring the erased/empty/bad block content) ?
+
+Or, you mean to say, the whole checksum logic is in-built inside the
+UBI layer and users don't need to worry about the integrity at all ?
+
+
+Thanks,
+Pintu
