@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 593AB3CF99C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 672743CF99E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237898AbhGTLtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 07:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237897AbhGTLsT (ORCPT
+        id S237893AbhGTLvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 07:51:24 -0400
+Received: from mail-m17652.qiye.163.com ([59.111.176.52]:28934 "EHLO
+        mail-m17652.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237290AbhGTLvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:48:19 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED00C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 05:28:48 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id c17so5130492wmb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 05:28:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HA5pgOt3LuB7s8wJqihPNWq2/H5z2E0M6pXYeU8VDyA=;
-        b=bscvEdhIF7xDlYdr0m57loM89UGFczXij2tSGVhKyHrZMNESgX9PGh54fg9UWCChec
-         bAAq+qyVyhvnkjaA8qCY6sgFOdfy91XgtKzzNtH5XG3w07hLbXgGULjzm+76kygiQ6G3
-         GEk8IMmKr2DimSath9SwgTbd+v/duPcMPMb8M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HA5pgOt3LuB7s8wJqihPNWq2/H5z2E0M6pXYeU8VDyA=;
-        b=ae6UNeThol64LwsekVEPTqBbpN81t+LPsG41SVNdUnVks2lRs4SIK7/Ik8dspcussg
-         CnFivBlUALDTJwVXCIQXncgDkjxraF4+J9CLhpwIHIxM45/OcvA9f0dbUE93v1y6rjfB
-         vrvNCTT28KJWB1IAvJa06VyRupPh/oHj4XdIcjLVZ6tPIUVsqpxQsoEvDPocrvhb5iZ2
-         pHCUCGMuYT7uxhgVycSRUqCrdmPyJAIMlR7ag+eptkQaMbq0A2/jwCB5ZuQHafYvZlWq
-         LHx+bLV86ZcIhzDAr6k6pkSCI0aXyqcKVripfM2brIWp2aHQ2iRut0UcghO12ryU8enQ
-         xdww==
-X-Gm-Message-State: AOAM531c5UgKEDJiinYaY74ZwfO24tKBdLNKONjgKnh1N46yKEfZ1fzS
-        Ukf2mxT0zI1WR+Jp+v97oQV4pw==
-X-Google-Smtp-Source: ABdhPJx99dLkVaK1o2AY7YxAZkKj20vHt6UA1LoL8K4PzW3OMhlMZXpAl7+fRffonLvUmQSAIdLiLg==
-X-Received: by 2002:a1c:628a:: with SMTP id w132mr4727263wmb.90.1626784126822;
-        Tue, 20 Jul 2021 05:28:46 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:d571])
-        by smtp.gmail.com with ESMTPSA id 140sm19863114wmb.43.2021.07.20.05.28.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 05:28:46 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 13:28:45 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Petr Mladek <pmladek@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the printk tree
-Message-ID: <YPbBfdz9srIpI+bb@chrisdown.name>
-References: <20210720174300.018cc765@canb.auug.org.au>
- <CA+G9fYs2ApGkrJHL5HOO1jEJZ714itVp+Tdj7fWzkG+JWc=pOA@mail.gmail.com>
+        Tue, 20 Jul 2021 07:51:18 -0400
+DKIM-Signature: a=rsa-sha256;
+        b=fYXXoAplvpuwubi+JVYieORa2vHlU3KQKPKtIdrHxZj76ootDvb8xC29OkoZBC0+GeJGUvkW+UJClW5Wwjjm5LeGhTxPSBsfJ4XrHCYNk9OVYl0+Kp9a1eA3p4bKHGrJbnknUbJgEqMfscOcq8Yzn26c9D4LboleZn0q2C4RmPI=;
+        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
+        bh=3aSGc8E9xaopmoIEkqKrpHEuNNn6z/u06t690RBGZ5k=;
+        h=date:mime-version:subject:message-id:from;
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-m17652.qiye.163.com (Hmail) with ESMTP id 4EF533C01E5;
+        Tue, 20 Jul 2021 20:31:55 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AJcAmwDXD1QzgUCoyu2cQKql.3.1626784315314.Hmail.frank.li@vivo.com>
+To:     Chao Yu <chao@kernel.org>
+Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCB2M10gZjJmczogUmVkdWNlIHRoZSBzY29wZSBvZiBzZXR0aW5nIGZzY2sgdGFnIHdoZW4gZGUtPm5hbWVfbGVuIGlzIHplcm8=?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 59.36.4.5
+In-Reply-To: <9f221a92-6c95-8f2f-a3d9-1d7abf5a6a6e@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYs2ApGkrJHL5HOO1jEJZ714itVp+Tdj7fWzkG+JWc=pOA@mail.gmail.com>
-User-Agent: Mutt/2.1 (4b100969) (2021-06-12)
+Received: from frank.li@vivo.com( [59.36.4.5) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 20 Jul 2021 20:31:55 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
+Date:   Tue, 20 Jul 2021 20:31:55 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRlNT0tWGBpOTx4ZSR9CGk
+        sYVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1OSUNIT0JJSExMN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6MRg6Fgw*Iz9KKgEcLjgUAg5JGCowChdVSFVKTUlNTENPSEpOTkxLVTMWGhIXVR0JGhUQVRcS
+        Ow0SDRRVGBQWRVlXWRILWUFZTkJVSE1VT1VOWVdZCAFZQU5KSEg3Bg++
+X-HM-Tid: 0a7ac3e6b7bdd9fckuws4ef533c01e5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey folks,
-
-Naresh Kamboju writes:
->On Tue, 20 Jul 2021 at 13:13, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> Hi all,
->>
->> After merging the printk tree, today's linux-next build (mips allnoconfig)
->> failed like this:
->>
->> arch/mips/kernel/genex.o: In function `handle_mcheck_int':
->> (.text+0x190c): undefined reference to `printk'
->> arch/mips/kernel/genex.o: In function `handle_reserved_int':
->> (.text+0x1c8c): undefined reference to `printk'
->>
->> Caused by commit
->>
->>   337015573718 ("printk: Userspace format indexing support")
->
->Following MIPS builds failed at our end due the reported problem.
-
-Thanks: missed this as I made sure to change all .S files to use _printk, but 
-this is in a .h file included in a .S file.
-
-Here's what's needed. :-)
-
-diff --git arch/mips/include/asm/asm.h arch/mips/include/asm/asm.h
-index ea4b62ece336..2f8ce94ebaaf 100644
---- arch/mips/include/asm/asm.h
-+++ arch/mips/include/asm/asm.h
-@@ -114,7 +114,7 @@ symbol		=	value
-  		.set	push;				\
-  		.set	reorder;			\
-  		PTR_LA	a0, 8f;				\
--		jal	printk;				\
-+		jal	_printk;			\
-  		.set	pop;				\
-  		TEXT(string)
-  #else
+SEkgQ2hhb++8jAoKRnJvbTogQ2hhbyBZdSA8Y2hhb0BrZXJuZWwub3JnPgpEYXRlOiAyMDIxLTA3
+LTIwIDE4OjIzOjE1ClRvOiAgWWFuZ3RhbyBMaSA8ZnJhbmsubGlAdml2by5jb20+LGphZWdldWtA
+a2VybmVsLm9yZwpDYzogIGxpbnV4LWYyZnMtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0LGxp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcKU3ViamVjdDogUmU6IFtQQVRDSCB2M10gZjJmczog
+UmVkdWNlIHRoZSBzY29wZSBvZiBzZXR0aW5nIGZzY2sgdGFnIHdoZW4gZGUtPm5hbWVfbGVuIGlz
+IHplcm8+T24gMjAyMS83LzIwIDE1OjA2LCBZYW5ndGFvIExpIHdyb3RlOgo+PiBJIHJlY2VudGx5
+IGZvdW5kIGEgY2FzZSB3aGVyZSBkZS0+bmFtZV9sZW4gaXMgMCBpbiBmMmZzX2ZpbGxfZGVudHJp
+ZXMoKSBlYXNpbHkgcmVwcm9kdWNlZCwKPj4gYW5kIGZpbmFsbHkgc2V0IHRoZSBmc2NrIGZsYWcu
+Cj4+IAo+PiBUaHJlYWQgQQkJCQkJVGhyZWFkIEIKPj4gCj4+IGYyZnNfcmVhZGRpcgo+PiAJZjJm
+c19yZWFkX2lubGluZV9kaXIKPj4gCQljdHgtPnBvcyA9IGQubWF4Cj4+IAkJCQkJCWYyZnNfYWRk
+X2RlbnRyeQo+PiAJCQkJCQkJZjJmc19hZGRfaW5saW5lX2VudHJ5Cj4+IAkJCQkJCQkJZG9fY29u
+dmVydF9pbmxpbmVfZGlyCj4+IAkJCQkJCQlmMmZzX2FkZF9yZWd1bGFyX2VudHJ5Cj4+IGYyZnNf
+cmVhZGRpcgo+PiAJZjJmc19maWxsX2RlbnRyaWVzCj4+IAkJc2V0X3NiaV9mbGFnKHNiaSwgU0JJ
+X05FRURfRlNDSykKPj4gCj4+IFByb2Nlc3MgQSBvcGVucyB0aGUgZm9sZGVyLCBhbmQgaGFzIGJl
+ZW4gcmVhZGluZyB3aXRob3V0IGNsb3NpbmcgaXQuIER1cmluZyB0aGlzIHBlcmlvZCwKPj4gUHJv
+Y2VzcyBCIGNyZWF0ZWQgYSBmaWxlIHVuZGVyIHRoZSBmb2xkZXIgKG9jY3VweWluZyBtdWx0aXBs
+ZSBmMmZzX2Rpcl9lbnRyeSwgZXhjZWVkaW5nCj4+IHRoZSBkLm1heCBvZiB0aGUgaW5saW5lIGRp
+cikuIEFmdGVyIGNyZWF0aW9uLCBwcm9jZXNzIEEgdXNlcyB0aGUgZC5tYXggb2YgaW5saW5lIGRp
+ciB0bwo+PiByZWFkIGl0IGFnYWluLCBhbmQgaXQgd2lsbCByZWFkIHRoYXQgZGUtPm5hbWVfbGVu
+IGlzIDAuCj4+IAo+PiBBbmQgQ2hhbyBwb2ludGVkIG91dCB0aGF0IHcvbyBpbmxpbmUgY29udmVy
+c2lvbiwgdGhlIHJhY2UgY29uZGl0aW9uIHN0aWxsIGNhbiBoYXBwZW4gYXMgYmVsb3cKPj4gCj4+
+IGRpcl9lbnRyeTE6IEEKPj4gZGlyX2VudHJ5MjogQgo+PiBkaXJfZW50cnkzOiBDCj4+IGZyZWUg
+c2xvdDogXwo+PiBjdHgtPnBvczogXgo+PiAKPj4gQmVmb3JlOgo+PiBBQUFBQkJCQl9fXwo+PiAJ
+IF4KPgo+cGxlYXNlIHVzZSBibGFuayBpbnN0ZWFkIG9mIHRhYiBiZWZvcmUgJ14nCgpJIGRvbid0
+IGtub3cgZXhhY3RseSB3aGF0IGhhcHBlbmVkLiBJbiBmYWN0LCBpbiB2Miwgc3BhY2VzIHdlcmUg
+dXNlZC4gVGhlbiBpdCB3YXMgY2hhbmdlZCB0byB0YWIgaW4gdjMuCgo+Cj4+IFRocmVhZCBCIGRl
+bGV0ZSBkaXJfZW50cnkyLCBhbmQgY3JlYXRlIGRpcl9lbnRyeTMuCj4+IAo+PiBBZnRlcjoKPj4g
+QUFBQUNDQ0NDX18KPj4gCSBeCj4KPkRpdHRvCj4KPj4gCj4+IEluIHRoZXNlIHNjZW5hcmlvcywg
+dGhlIGZpbGUgc3lzdGVtIGlzIG5vdCBkYW1hZ2VkLCBhbmQgaXQncyBoYXJkIHRvIGF2b2lkIGl0
+LiBCdXQgd2UgY2FuIGJ5cGFzcwo+PiB0YWdnaW5nIEZTQ0sgZmxhZyBpZjoKPj4gYSkgYml0X3Bv
+cyAoOj0gY3R4LT5wb3MgJSBkLT5tYXgpIGlzIG5vbi16ZXJvICYgYikgYmVmb3JlIGJpdF9wb3Mg
+bW92ZXMgdG8gZmlyc3QKPj4gdmFsaWQgZGlyX2VudHJ5Lgo+PiAKPj4gU2lnbmVkLW9mZi1ieTog
+WWFuZ3RhbyBMaSA8ZnJhbmsubGlAdml2by5jb20+Cj4+IC0tLQo+PiAgIGZzL2YyZnMvZGlyLmMg
+fCAxNCArKysrKysrKystLS0tLQo+PiAgIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyks
+IDUgZGVsZXRpb25zKC0pCj4+IAo+PiBkaWZmIC0tZ2l0IGEvZnMvZjJmcy9kaXIuYyBiL2ZzL2Yy
+ZnMvZGlyLmMKPj4gaW5kZXggNDU2NjUxNjgyZGFmLi5iZmU5NDI3MzNiNWUgMTAwNjQ0Cj4+IC0t
+LSBhL2ZzL2YyZnMvZGlyLmMKPj4gKysrIGIvZnMvZjJmcy9kaXIuYwo+PiBAQCAtMTAwMCw2ICsx
+MDAwLDcgQEAgaW50IGYyZnNfZmlsbF9kZW50cmllcyhzdHJ1Y3QgZGlyX2NvbnRleHQgKmN0eCwg
+c3RydWN0IGYyZnNfZGVudHJ5X3B0ciAqZCwKPj4gICAJc3RydWN0IGYyZnNfc2JfaW5mbyAqc2Jp
+ID0gRjJGU19JX1NCKGQtPmlub2RlKTsKPj4gICAJc3RydWN0IGJsa19wbHVnIHBsdWc7Cj4+ICAg
+CWJvb2wgcmVhZGRpcl9yYSA9IHNiaS0+cmVhZGRpcl9yYSA9PSAxOwo+PiArCWJvb2wgZm91bmRf
+dmFsaWRfZGlyZW50ICA9IGZhbHNlOwo+Cj5PbmUgbW9yZSBibGFuayBiZWZvcmUgJz0nLgo+Cj5i
+b29sIGZvdW5kX3ZhbGlkX2RpcmVudCA9IGZhbHNlOwo+CgpPSy4KClRoeO+8jAoKDQoNCg==
