@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A36F3CF8C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F183CF8CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237427AbhGTKpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:45:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231442AbhGTKpg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:45:36 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B70EC061574;
-        Tue, 20 Jul 2021 04:26:15 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id u126so11578677pfb.8;
-        Tue, 20 Jul 2021 04:26:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GYswrRmNXFnD7iaIAgBbcYDCMDGk0Lr5a5LmLLvQOT0=;
-        b=pmXini3fllAe6dKP0sa3VGlf6kqajhL2LCwoTOEz6al3xca1jUYdD7g7epBILaFbQo
-         OxbyEItpTqVNcYDT9yw1Ns3D3LfUc615MbQtNwfACVr+gefsprNjIe8qYW74ozWeIqoZ
-         8R4tGgP8XsgaxsjPcFjbTTgEuQSGFOP2JbtNgIlP6jpo959NSADOLy7uIHf3DTNVCNuE
-         Vl5xtwk6Xy4AFzUdx7lcR0v5Y+GKa/R0YPLB0nBONlh/DBfB6n4yTdrXSmtsR8cs+5Cj
-         68SYJ72fsIZMk+kBv9oHtncAMv7CziEImdwUnH8JZN5jaP0BplVUH+tw0o4V2QGIPRqC
-         NPSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GYswrRmNXFnD7iaIAgBbcYDCMDGk0Lr5a5LmLLvQOT0=;
-        b=EFLdW7mZWzMrkRbUrH3r7IISeQtR1tRWINkitpGY6liDTEmmewiHnthua0Ok52wib2
-         GpmsYdfo/mdzLPkKTsjxK1YGFC889XvuDQtlVnugvFe/iv5dFl+fhncZ0jCkty+4mTK0
-         qYVIl4CT/WmGHqyWqziwamOaJmi2NoJ4unBJYbKpSLKWdxDmmn6fvZWf7G2oburMPnqh
-         ElbqZnb9kNPC9Ge15zmO8KpRD9vEvGgNSWZA4cQhaRlOzXB5Hge5HjSbLnAiii2WAGXo
-         KS2sXUUG+vtBh2Ufpu1et5YFlrQcvF3juKz81uPii0TFngmbkCvkiWqqnFfVRf8Putu0
-         K4OA==
-X-Gm-Message-State: AOAM533vn0L7X0vSLyMJ8hMWYoBki9e0OtSm9PCizUmR5ikwFYhwrFil
-        vA7f9fhJB9hq6aYqkCqYLqw=
-X-Google-Smtp-Source: ABdhPJw5md11+Ii1G8Bhy3jUs93vi7NkgN2xfyQ0lWdTsDFleJsGtbOnjfPFHcuGgR0fM0ZPg7iqeg==
-X-Received: by 2002:a62:8283:0:b029:336:6e7a:9c73 with SMTP id w125-20020a6282830000b02903366e7a9c73mr22325718pfd.45.1626780374946;
-        Tue, 20 Jul 2021 04:26:14 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id b22sm19215688pje.1.2021.07.20.04.26.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 20 Jul 2021 04:26:14 -0700 (PDT)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] perf/x86/amd: Do not touch the AMD64_EVENTSEL_HOSTONLY bit inside the guest
-Date:   Tue, 20 Jul 2021 19:26:05 +0800
-Message-Id: <20210720112605.63286-1-likexu@tencent.com>
-X-Mailer: git-send-email 2.32.0
+        id S237661AbhGTKqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:46:03 -0400
+Received: from mout.gmx.net ([212.227.17.21]:52417 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236776AbhGTKpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 06:45:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626780375;
+        bh=VBJRenTT6RN9XSmQwODnOnF5iGF5GDQ+g+X9lepK264=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=IBNwf0HB34I5hK6V1LeWpyR76CPLlO0/YHjKekKwQVB1oTV3VClBpVl5QRTLksOkk
+         ZspucokawawZVvgeYu/DUKnk6LJZ8kGuD1dWP3GbjAbKccPWffTLhJZtl4gwokfCqk
+         0QXp2S5vKEijAHyOjWlp0ghndjp/BXvy8ywdSrtA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.151.10]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MS3mt-1lhN7s03ch-00TU8S; Tue, 20
+ Jul 2021 13:26:15 +0200
+Message-ID: <f16b78bd3bb8fecf734017d40274e4c3294554ab.camel@gmx.de>
+Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
+ exclusion scope
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-rt-users@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Tue, 20 Jul 2021 13:26:14 +0200
+In-Reply-To: <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
+References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
+         <878s2fnv79.ffs@nanos.tec.linutronix.de>
+         <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
+         <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
+         <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:CDuvJn7v4dobctxVEtrJxuNY6SIKiGtXkG4dR8+5E07JtGIsHYy
+ CqOb3fRwijDGslHtbZEtwh/rEDmZA+9PkIwCO0kDx0IeAxEEb2jEbVsMj/tX0NX+PRWgtm5
+ JRUeLyFGtRLn5TlOK/V2v1LxfOy782XpDyl8rvgS+7Wy0NMERXWRHb+Gy2Qzr2XE8XcXKrk
+ nCSnd9v8Qa41ApOYuStwg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:K0nDJyu4qmw=:z119RK8wBzXX7kTPr1M6gq
+ cmZ9QesJWP0UWvfmFYqnehyWqiY0t4xO04Hz/boBWGMKXbZpZkdaEMYTQ9NIGgJzk4HLxXsh3
+ NiCWBgTqX0/MwuXBlUHiIfmYdXnRN/9BTxcNPC92IwIkGkHn32m9jCIsE+koUBl2RKGDzDRLx
+ pvcge7/kdwxTXdVbeWVHPOhFNgXeh643xD4rzrm5+Qtn1UUvXuVFqF0n23Gg+pay4UkUYpS2H
+ Lj5NOsIAsH54mTR8u8g3vRNBpbiCQhr5THjhVPAwMVQhicjdRn4EAUPQAnkPYrrXuLyd2bZKB
+ LjHPvoNM0QzQNxqPP6KPP8RLLXB1PwszLAUg68DwU/dVPP/v7/KL1odvYzb1PnNxrgGe3NWqn
+ TIG8wKeSReI79I1dv01D+ABLTP+CGsXQ83gWDhBn+At4RI6mDPgo1DrogoJ3Opqr+q1tyzICf
+ v9CHqgTizGTJXexQgSV9EvYo4fd6a8LXAsPzuMjFysyCGJq8qOxgqRiN2T755Zrj2Mk/5wTW+
+ /zY2LkBiMM3dBXQKHQhzxodj5m2RyfbBYa5pauj/lg7Gmlp8eAG02/qtplkOqmeskvQyQvW5X
+ qyUWMR6mayagDKFkI0zdS+rKHe8UG602fPO74hWjUsZCvqiE81fvvqUGxkbTYsBKBEfiUs5cs
+ adncS29Ey0AH8nOCM0YohFOhircW9xdxDTQUuAyiob7VkSOBe9qh4aMOnWSvzeBI3KAbVcmnz
+ d+fdMjhKcXtD0fvrSr0CkqAo31RK6jCG5VQtMo7g3kdFsKrEfeZhnGuxxFD1p+u11fCgX7KH8
+ g0klCKOp16SazArbZTDW5roEyAkHZZiZCLqvRz9xmuYSCEkTssslsdp+lz7aIrchPAO9jTSbz
+ uerzx5TcashbGN6dE/qodj5ZzJaUzWJi6byllwTCeVJIB+p6ksdDIIwRTAFrozGcuGopIsFax
+ +CizjUjLamd23b0wSLjwwgrWLjmE7E0391v/c607OISUnlDubMi8KNyYhNwP/Ovrau4GAwreJ
+ eudpvyxzdiFQiRUMz/ZcIJqs/CeXIK0UE0sDLuQkjOEA+UjTL8ckQVqk1Ik1hcQbnI17rjwY4
+ 1Pf/HDH7lgrw/JIlid0IzhtAO6NpHQb4qmu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
+On Tue, 2021-07-20 at 10:56 +0200, Vlastimil Babka wrote:
+>
+> > crash> bt -sx
+> > PID: 18761  TASK: ffff88812fff0000  CPU: 0   COMMAND: "hackbench"
+> >  #0 [ffff88818f8ff980] machine_kexec+0x14f at ffffffff81051c8f
+> >  #1 [ffff88818f8ff9c8] __crash_kexec+0xd2 at ffffffff8111ef72
+> >  #2 [ffff88818f8ffa88] crash_kexec+0x30 at ffffffff8111fd10
+> >  #3 [ffff88818f8ffa98] oops_end+0xd3 at ffffffff810267e3
+> >  #4 [ffff88818f8ffab8] exc_general_protection+0x195 at ffffffff8179fdb=
+5
+> >  #5 [ffff88818f8ffb50] asm_exc_general_protection+0x1e at ffffffff8180=
+0a0e
+> >     [exception RIP: __unfreeze_partials+156]
+>
+> Hm going back to this report...
 
-If we use "perf record" in an AMD Milan guest, dmesg reports a #GP
-warning from an unchecked MSR access error on MSR_F15H_PERF_CTLx:
+> So could it be that it was stillput_cpu_partial() preempting
+> __slab_alloc() messing the partial list, but for some reason the
+> put_cpu_partial() side crashed this time?
 
-[] unchecked MSR access error: WRMSR to 0xc0010200 (tried to write
-0x0000020000110076) at rIP: 0xffffffff8106ddb4 (native_write_msr+0x4/0x20)
-[] Call Trace:
-[]  amd_pmu_disable_event+0x22/0x90
-[]  x86_pmu_stop+0x4c/0xa0
-[]  x86_pmu_del+0x3a/0x140
+Thinking this bug is toast, I emptied the trash bin, so no can peek.
 
-The AMD64_EVENTSEL_HOSTONLY bit is defined and used on the host,
-while the guest perf driver should avoid such use.
+If need be, and nobody beats me to it (which ~guarantees nobody will
+beat me to it;), I can make the thing go boom again easily enough.
 
-Signed-off-by: Like Xu <likexu@tencent.com>
----
- arch/x86/events/perf_event.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 2bf1c7ea2758..795f4779023c 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -1116,8 +1116,9 @@ void x86_pmu_stop(struct perf_event *event, int flags);
- static inline void x86_pmu_disable_event(struct perf_event *event)
- {
- 	struct hw_perf_event *hwc = &event->hw;
-+	u64 disable_mask = __this_cpu_read(cpu_hw_events.perf_ctr_virt_mask);
- 
--	wrmsrl(hwc->config_base, hwc->config);
-+	wrmsrl(hwc->config_base, hwc->config & ~disable_mask);
- 
- 	if (is_counter_pair(hwc))
- 		wrmsrl(x86_pmu_config_addr(hwc->idx + 1), 0);
--- 
-2.32.0
+	-Mike
 
