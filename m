@@ -2,310 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEC63CF21C
+	by mail.lfdr.de (Postfix) with ESMTP id 820BD3CF21D
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345235AbhGTCAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 22:00:19 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:11346 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344643AbhGTBmC (ORCPT
+        id S1345278AbhGTCAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 22:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344729AbhGTBvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 21:42:02 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GTMnN14dyz7vY8;
-        Tue, 20 Jul 2021 10:18:00 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 10:22:34 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 10:22:34 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <mst@redhat.com>,
-        <jasowang@redhat.com>
-CC:     <nickhu@andestech.com>, <green.hu@gmail.com>,
-        <deanbo422@gmail.com>, <akpm@linux-foundation.org>,
-        <yury.norov@gmail.com>, <andriy.shevchenko@linux.intel.com>,
-        <ojeda@kernel.org>, <ndesaulniers@gooogle.com>, <joe@perches.com>,
-        <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linuxarm@openeuler.org>
-Subject: [PATCH v2 4/4] tools/virtio: use common infrastructure to build ptr_ring.h
-Date:   Tue, 20 Jul 2021 10:21:49 +0800
-Message-ID: <1626747709-34013-5-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1626747709-34013-1-git-send-email-linyunsheng@huawei.com>
-References: <1626747709-34013-1-git-send-email-linyunsheng@huawei.com>
+        Mon, 19 Jul 2021 21:51:41 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5643C061574;
+        Mon, 19 Jul 2021 19:32:20 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id j4so4502248pgk.5;
+        Mon, 19 Jul 2021 19:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NqBs+GBsePvxuJ7T8oHVXE+0kUbw069/LeZuzlfCcZ4=;
+        b=Y8rwWbhutI/72cKs7u3tfozo23N3gKPMg7M7gXJxUUL05fnTor/0vMW8ITphOZ07di
+         t1ufc7bEALcX29N5gjnfrr5+6IkuHSU+BwG0NLp0dxVHA4tRhfnRuEURjo3Y8FnPLvMo
+         ECw05xbWVF3VgTroOacoQa5xRo1j7P/m9cGc3VAQycZjy4WQnh1WkZyrQgBAsUvjFqOZ
+         WcHjzeD5eKDIandf518ZhU263ot2QuZvn+2ztZl7zYOBeZQiU52unpSewO9Mqy6V8a9r
+         6W7x8uxCXgN+mHusr3BagM4mujAsfh+OhDS64ZZK1RhRrKkSMYYrvzF49Sbk2aHMkKLt
+         jC5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NqBs+GBsePvxuJ7T8oHVXE+0kUbw069/LeZuzlfCcZ4=;
+        b=ROKJcOui9FhSwu9GZg28gKjwQ2233vWEZA/xAVT0TWQorFVyJVrMYZIsRxp9O0x9ag
+         crnZJi+mfv4hadQ3EnxkOyCDXa5O1iqMPbbNvwoUf2ZfK6KSmUiPb/7QUN0OEnbsLptC
+         6m3VTzMKxctG1LXSL9Qc1MF/pNABCpyk59dlz7eIL38Q1FNGKiFFUa/BE9BuhIO4qUyZ
+         WQxw4Zk2/Bj0qi4waWBaW5lpWt6MLgaV7CEnzns/IIf8XU76V+vTG/5yGeOXTcuAEn4g
+         XAFrMZfGRdEj2F7jJBeEyxs2bIvPCgDmIinO9/UCOnTmLF1uQzA266UgPBpEa+xE7vIs
+         gaew==
+X-Gm-Message-State: AOAM532xeQ4PAn648yYxh98ROLYBz5RlIqnqo1BLupdx+jTmPL7z7TJ6
+        8MRuheyYI2SnFGMxR33njgav+rL3vLJm+g==
+X-Google-Smtp-Source: ABdhPJw8ChIR3kg8fmYEnI2nUmPF2K/iGGfyPWq7h36woPrYS3chjEBD9WWev0KDp2gqdtGrUu1oDg==
+X-Received: by 2002:a62:584:0:b029:32e:3b57:a1c6 with SMTP id 126-20020a6205840000b029032e3b57a1c6mr28529616pff.13.1626748339693;
+        Mon, 19 Jul 2021 19:32:19 -0700 (PDT)
+Received: from [10.230.31.46] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id t26sm23317435pgu.35.2021.07.19.19.32.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 19:32:18 -0700 (PDT)
+Subject: Re: [PATCH v5 8/8] firmware: tee_bnxt: Release TEE shm, session, and
+ context during kexec
+To:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210716022332.GC3232@sequoia>
+ <CAHLZf_t5U1bh1H8sULbJz7xrZ-r3Dcmxuw9MMmG2fehS3C72uQ@mail.gmail.com>
+ <CAHUa44EetPuA_5+UQLW-c=-_OApiRoiq+YjeFs6TRPj6=AJfHw@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <903824a6-7a2b-1514-5b71-a2db634e9abf@gmail.com>
+Date:   Mon, 19 Jul 2021 19:32:01 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAHUa44EetPuA_5+UQLW-c=-_OApiRoiq+YjeFs6TRPj6=AJfHw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the common infrastructure in tools/include to build
-ptr_ring.h in user space.
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- tools/virtio/ringtest/Makefile   |   2 +-
- tools/virtio/ringtest/main.h     |  99 +++-----------------------------------
- tools/virtio/ringtest/ptr_ring.c | 101 ++-------------------------------------
- 3 files changed, 10 insertions(+), 192 deletions(-)
 
-diff --git a/tools/virtio/ringtest/Makefile b/tools/virtio/ringtest/Makefile
-index 85c98c2..89fc024 100644
---- a/tools/virtio/ringtest/Makefile
-+++ b/tools/virtio/ringtest/Makefile
-@@ -3,7 +3,7 @@ all:
- 
- all: ring virtio_ring_0_9 virtio_ring_poll virtio_ring_inorder ptr_ring noring
- 
--CFLAGS += -Wall
-+CFLAGS += -Wall -I../../include
- CFLAGS += -pthread -O2 -ggdb -flto -fwhole-program
- LDFLAGS += -pthread -O2 -ggdb -flto -fwhole-program
- 
-diff --git a/tools/virtio/ringtest/main.h b/tools/virtio/ringtest/main.h
-index 6d1fccd..26a8659 100644
---- a/tools/virtio/ringtest/main.h
-+++ b/tools/virtio/ringtest/main.h
-@@ -10,6 +10,12 @@
- 
- #include <stdbool.h>
- 
-+#include <asm/barrier.h>
-+#include <asm/processor.h>
-+
-+#define smp_acquire	smp_rmb
-+#define smp_release	smp_wmb
-+
- extern int param;
- 
- extern bool do_exit;
-@@ -87,18 +93,6 @@ void wait_for_call(void);
- 
- extern unsigned ring_size;
- 
--/* Compiler barrier - similar to what Linux uses */
--#define barrier() asm volatile("" ::: "memory")
--
--/* Is there a portable way to do this? */
--#if defined(__x86_64__) || defined(__i386__)
--#define cpu_relax() asm ("rep; nop" ::: "memory")
--#elif defined(__s390x__)
--#define cpu_relax() barrier()
--#else
--#define cpu_relax() assert(0)
--#endif
--
- extern bool do_relax;
- 
- static inline void busy_wait(void)
-@@ -110,85 +104,4 @@ static inline void busy_wait(void)
- 		barrier();
- } 
- 
--#if defined(__x86_64__) || defined(__i386__)
--#define smp_mb()     asm volatile("lock; addl $0,-132(%%rsp)" ::: "memory", "cc")
--#else
--/*
-- * Not using __ATOMIC_SEQ_CST since gcc docs say they are only synchronized
-- * with other __ATOMIC_SEQ_CST calls.
-- */
--#define smp_mb() __sync_synchronize()
--#endif
--
--/*
-- * This abuses the atomic builtins for thread fences, and
-- * adds a compiler barrier.
-- */
--#define smp_release() do { \
--    barrier(); \
--    __atomic_thread_fence(__ATOMIC_RELEASE); \
--} while (0)
--
--#define smp_acquire() do { \
--    __atomic_thread_fence(__ATOMIC_ACQUIRE); \
--    barrier(); \
--} while (0)
--
--#if defined(__i386__) || defined(__x86_64__) || defined(__s390x__)
--#define smp_wmb() barrier()
--#else
--#define smp_wmb() smp_release()
--#endif
--
--#ifdef __alpha__
--#define smp_read_barrier_depends() smp_acquire()
--#else
--#define smp_read_barrier_depends() do {} while(0)
--#endif
--
--static __always_inline
--void __read_once_size(const volatile void *p, void *res, int size)
--{
--        switch (size) {                                                 \
--        case 1: *(unsigned char *)res = *(volatile unsigned char *)p; break;              \
--        case 2: *(unsigned short *)res = *(volatile unsigned short *)p; break;            \
--        case 4: *(unsigned int *)res = *(volatile unsigned int *)p; break;            \
--        case 8: *(unsigned long long *)res = *(volatile unsigned long long *)p; break;            \
--        default:                                                        \
--                barrier();                                              \
--                __builtin_memcpy((void *)res, (const void *)p, size);   \
--                barrier();                                              \
--        }                                                               \
--}
--
--static __always_inline void __write_once_size(volatile void *p, void *res, int size)
--{
--	switch (size) {
--	case 1: *(volatile unsigned char *)p = *(unsigned char *)res; break;
--	case 2: *(volatile unsigned short *)p = *(unsigned short *)res; break;
--	case 4: *(volatile unsigned int *)p = *(unsigned int *)res; break;
--	case 8: *(volatile unsigned long long *)p = *(unsigned long long *)res; break;
--	default:
--		barrier();
--		__builtin_memcpy((void *)p, (const void *)res, size);
--		barrier();
--	}
--}
--
--#define READ_ONCE(x) \
--({									\
--	union { typeof(x) __val; char __c[1]; } __u;			\
--	__read_once_size(&(x), __u.__c, sizeof(x));		\
--	smp_read_barrier_depends(); /* Enforce dependency ordering from x */ \
--	__u.__val;							\
--})
--
--#define WRITE_ONCE(x, val) \
--({							\
--	union { typeof(x) __val; char __c[1]; } __u =	\
--		{ .__val = (typeof(x)) (val) }; \
--	__write_once_size(&(x), __u.__c, sizeof(x));	\
--	__u.__val;					\
--})
--
- #endif
-diff --git a/tools/virtio/ringtest/ptr_ring.c b/tools/virtio/ringtest/ptr_ring.c
-index c9b2633..e9849a3 100644
---- a/tools/virtio/ringtest/ptr_ring.c
-+++ b/tools/virtio/ringtest/ptr_ring.c
-@@ -10,104 +10,9 @@
- #include <errno.h>
- #include <limits.h>
- 
--#define SMP_CACHE_BYTES 64
--#define cache_line_size() SMP_CACHE_BYTES
--#define ____cacheline_aligned_in_smp __attribute__ ((aligned (SMP_CACHE_BYTES)))
--#define unlikely(x)    (__builtin_expect(!!(x), 0))
--#define likely(x)    (__builtin_expect(!!(x), 1))
--#define ALIGN(x, a) (((x) + (a) - 1) / (a) * (a))
--#define SIZE_MAX        (~(size_t)0)
--#define KMALLOC_MAX_SIZE SIZE_MAX
--
--typedef pthread_spinlock_t  spinlock_t;
--
--typedef int gfp_t;
--#define __GFP_ZERO 0x1
--
--static void *kmalloc(unsigned size, gfp_t gfp)
--{
--	void *p = memalign(64, size);
--	if (!p)
--		return p;
--
--	if (gfp & __GFP_ZERO)
--		memset(p, 0, size);
--	return p;
--}
--
--static inline void *kzalloc(unsigned size, gfp_t flags)
--{
--	return kmalloc(size, flags | __GFP_ZERO);
--}
--
--static inline void *kmalloc_array(size_t n, size_t size, gfp_t flags)
--{
--	if (size != 0 && n > SIZE_MAX / size)
--		return NULL;
--	return kmalloc(n * size, flags);
--}
--
--static inline void *kcalloc(size_t n, size_t size, gfp_t flags)
--{
--	return kmalloc_array(n, size, flags | __GFP_ZERO);
--}
--
--static void kfree(void *p)
--{
--	if (p)
--		free(p);
--}
--
--#define kvmalloc_array kmalloc_array
--#define kvfree kfree
--
--static void spin_lock_init(spinlock_t *lock)
--{
--	int r = pthread_spin_init(lock, 0);
--	assert(!r);
--}
--
--static void spin_lock(spinlock_t *lock)
--{
--	int ret = pthread_spin_lock(lock);
--	assert(!ret);
--}
--
--static void spin_unlock(spinlock_t *lock)
--{
--	int ret = pthread_spin_unlock(lock);
--	assert(!ret);
--}
--
--static void spin_lock_bh(spinlock_t *lock)
--{
--	spin_lock(lock);
--}
--
--static void spin_unlock_bh(spinlock_t *lock)
--{
--	spin_unlock(lock);
--}
--
--static void spin_lock_irq(spinlock_t *lock)
--{
--	spin_lock(lock);
--}
--
--static void spin_unlock_irq(spinlock_t *lock)
--{
--	spin_unlock(lock);
--}
--
--static void spin_lock_irqsave(spinlock_t *lock, unsigned long f)
--{
--	spin_lock(lock);
--}
--
--static void spin_unlock_irqrestore(spinlock_t *lock, unsigned long f)
--{
--	spin_unlock(lock);
--}
-+#include <linux/cache.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
- 
- #include "../../../include/linux/ptr_ring.h"
- 
+On 7/19/2021 3:49 AM, Jens Wiklander wrote:
+> Hi,
+> 
+> On Fri, Jul 16, 2021 at 4:48 AM Vikas Gupta <vikas.gupta@broadcom.com> wrote:
+>>
+>> Hi Allen/Tyler,
+>>   The patch looks good to me.
+> 
+> Thanks.
+> 
+> Rafal, is it OK if I include this patch together with the rest of the
+> patches in this patch set in a pull request to arm-soc?
+
+I can take those patches through the Broadcom ARM SoC pull request, 
+Rafal would that work for you? We seem to have a bit of a maintainer 
+coverage blind spot for that directory.
 -- 
-2.7.4
-
+Florian
