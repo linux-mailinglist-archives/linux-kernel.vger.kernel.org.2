@@ -2,307 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8393CFFA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66C23CFFAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233172AbhGTP6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:58:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45834 "EHLO mail.kernel.org"
+        id S235175AbhGTP7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:59:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235483AbhGTPyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:54:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1344161019;
-        Tue, 20 Jul 2021 16:34:52 +0000 (UTC)
+        id S233901AbhGTP4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 11:56:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF39D61019;
+        Tue, 20 Jul 2021 16:37:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626798893;
-        bh=Ilb8XrKqovfkMymDUiC3+G3Jga4jcmrm2aQtv8zfkuY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=tk8iHGCX6WbQoSZHsutVoIKam7nasApg6kOb1F6Omqqau+RZeJFC740bcDM9UJBkD
-         Ijlwo7lzsdWha7QWw8pwPfvh5zfxX6GEliA58pBZ33TGX/KaKuJBPHEo95K3PD6OZW
-         ipoGeDSam4UfQnvY/Ej5GjRc3O2nglHuNJMPOz4PEsQYK5MsAaeUgniZegJg2XXXsg
-         mneRkD5GpTh+bDDLeMtUEijogM78ENzeae09hsyMwOmWUKyTW9VmaLnxCd26ptX7gk
-         TQcPoElhF3+F1lUuuVZ8Qp4CKPU7O1Ikozr3j8tpRKjR7XQt158CunLxAIi+sh7Isl
-         YtZeDNKg7slfg==
-Date:   Tue, 20 Jul 2021 11:34:51 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH 2/3] PCI: aardvark: Fix checking for PIO status
-Message-ID: <20210720163451.GA86309@bjorn-Precision-5520>
+        s=k20201202; t=1626799043;
+        bh=qwl5BZp3viPeitFs/Y8ND34HFW6gVZA4Nal81IKD6cQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=i7U9TSkWiWcH+zmbrALD36wzUAedwjAGS0jl5p23Yn2y1EDnW/XvYh+6334hP47T5
+         iHlRYbd4VeJr1Vz6CBo4tg5I8/iDL5VQRT1tFK51/A4+ln6dKJ3dI8OEXVN+/9KQ+H
+         2NB92WLtmcqQmFfJur1Qnm0c7PRUEVNDcTbSSt8x4MKtUHwaejpZg5cL46pRvSxlVR
+         dOlBwUjc9yD1yjQHM5LrJhNYSVUudZJ0hg7iOPED+0mlbZRKEXVHNiw/MjWm/S86uw
+         /4mQdD0GLuHN2TlhzVUrxpUhnhGkdqQZBbiXC2UXB97wjcsZJ7s/vVYpWLILjD/TuW
+         6efdcrZZlGbAg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9B1615C094C; Tue, 20 Jul 2021 09:37:23 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 09:37:23 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     syzbot <syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] KCSAN: data-race in call_rcu / rcu_gp_kthread
+Message-ID: <20210720163723.GH4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <00000000000080403805c6ef586d@google.com>
+ <CANpmjNPx2b+W2OZxNROTWfGcU92bwqyDe-=vxgnV9MEurjyqzQ@mail.gmail.com>
+ <20210720131851.GE4397@paulmck-ThinkPad-P17-Gen-1>
+ <CANpmjNPR3FTMRa9zyb3Pd+f7EXfvjxBUmPVKOaKodn8JJt9raQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210720144955.eq564e756ghtpkfo@pali>
+In-Reply-To: <CANpmjNPR3FTMRa9zyb3Pd+f7EXfvjxBUmPVKOaKodn8JJt9raQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 04:49:55PM +0200, Pali Rohár wrote:
-> On Monday 19 July 2021 18:12:27 Bjorn Helgaas wrote:
-> > On Fri, Jun 25, 2021 at 12:04:29PM +0100, Lorenzo Pieralisi wrote:
-> > > On Thu, Jun 24, 2021 at 11:33:44PM +0200, Pali Rohár wrote:
-> > >
-> > > [...]
-> > > 
-> > > > -static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-> > > > +static int advk_pcie_check_pio_status(struct advk_pcie *pcie, u32 *val)
-> > > >  {
-> > > >  	struct device *dev = &pcie->pdev->dev;
-> > > >  	u32 reg;
-> > > > @@ -472,15 +476,50 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-> > > >  	status = (reg & PIO_COMPLETION_STATUS_MASK) >>
-> > > >  		PIO_COMPLETION_STATUS_SHIFT;
-> > > >  
-> > > > -	if (!status)
-> > > > -		return;
-> > > > -
-> > > > +	/*
-> > > > +	 * According to HW spec, the PIO status check sequence as below:
-> > > > +	 * 1) even if COMPLETION_STATUS(bit9:7) indicates successful,
-> > > > +	 *    it still needs to check Error Status(bit11), only when this bit
-> > > > +	 *    indicates no error happen, the operation is successful.
-> > > > +	 * 2) value Unsupported Request(1) of COMPLETION_STATUS(bit9:7) only
-> > > > +	 *    means a PIO write error, and for PIO read it is successful with
-> > > > +	 *    a read value of 0xFFFFFFFF.
-> > > > +	 * 3) value Completion Retry Status(CRS) of COMPLETION_STATUS(bit9:7)
-> > > > +	 *    only means a PIO write error, and for PIO read it is successful
-> > > > +	 *    with a read value of 0xFFFF0001.
-> > > > +	 * 4) value Completer Abort (CA) of COMPLETION_STATUS(bit9:7) means
-> > > > +	 *    error for both PIO read and PIO write operation.
-> > > > +	 * 5) other errors are indicated as 'unknown'.
-> > > > +	 */
-> > > >  	switch (status) {
-> > > > +	case PIO_COMPLETION_STATUS_OK:
-> > > > +		if (reg & PIO_ERR_STATUS) {
-> > > > +			strcomp_status = "COMP_ERR";
-> > > > +			break;
-> > > > +		}
-> > > > +		/* Get the read result */
-> > > > +		if (val)
-> > > > +			*val = advk_readl(pcie, PIO_RD_DATA);
-> > > > +		/* No error */
-> > > > +		strcomp_status = NULL;
-> > > > +		break;
-> > > >  	case PIO_COMPLETION_STATUS_UR:
-> > > > -		strcomp_status = "UR";
-> > > > +		if (val) {
-> > > > +			/* For reading, UR is not an error status */
-> > > > +			*val = CFG_RD_UR_VAL;
-> > 
-> > I think the comment is incorrect.  Unsupported Request *is* an error
-> > status.  But most platforms log it and fabricate ~0 data
-> > (CFG_RD_UR_VAL) to return to the CPU, and I think that's what you're
-> > doing here.  So I think the code is fine, but the "not an error
-> > status" comment is wrong.
+On Tue, Jul 20, 2021 at 04:10:10PM +0200, Marco Elver wrote:
+> On Tue, 20 Jul 2021 at 15:18, Paul E. McKenney <paulmck@kernel.org> wrote:
+> [...]
+> > Good catch!  And yes, this would be hard to reproduce.
+> >
+> > How about as shown below?
 > 
-> Ok, and what we should driver set as return value for pci_ops.read
-> callback in this case?
+> Acked-by: Marco Elver <elver@google.com>
 
-On most platforms, pci_ops.read() does not check for failure, so it
-returns PCIBIOS_SUCCESSFUL in this case.
+I will apply on the next rebase, thank you!
 
-> > Per the flowchart in PCIe r5.0, sec 6.2.5., fig 6-2, I think the
-> > hardware should be setting the "Unsupported Request Detected" bit in
-> > the Device Status register when this occurs.
+> I was merely a little surprised syzbot was able to exercise RCU in a
+> way that resulted in a data race your torture runs hadn't found yet
+> (or perhaps it did and missed?).
+
+My KCSAN runs are necessarily quite short because I do a normal, KASAN,
+and KCSAN variant of each scenario of each torture test, with the
+constraint that it all run overnight.
+
+So there are probably more to find.  ;-)
+
+							Thanx, Paul
+
+> Thanks,
+> -- Marco
 > 
-> Yes there is register in kernel's emulated PCIe bridge which at bit 19
-> has: Unsupported Request Detected - The core sets this bit to 1 when an
-> unsupported request is received. Write this bit to 1 to clear.
-
-I guess this bit 19 is the same as bit 3 in the 16-bit Device Status
-register?  Bit 19 if you look at Device Control + Device Status as a
-single 32-bit register?
-
-> > > > +			strcomp_status = NULL;
-> > > > +		} else {
-> > > > +			strcomp_status = "UR";
-> > > > +		}
-> > > >  		break;
-> > > >  	case PIO_COMPLETION_STATUS_CRS:
-> > > > -		strcomp_status = "CRS";
-> > > > +		if (val) {
-> > > > +			/* For reading, CRS is not an error status */
-> > > > +			*val = CFG_RD_CRS_VAL;
-> > > 
-> > > Need Bjorn's input on this. I don't think this is what is expected from
-> > > from a root complex according to the PCI specifications (depending on
-> > > whether CSR software visibility is supported or not).
-> > > 
-> > > Here we are fabricating a CRS completion value for all PCI config read
-> > > transactions that are hitting a CRS completion status (and that's not
-> > > the expected behaviour according to the PCI specifications and I don't
-> > > think that's correct).
-> > 
-> > Right.  I think any config access (read or write) can be completed
-> > with a CRS completion (sec 2.3.1).
-> > 
-> > Per sec 2.3.2, when CRS SV (in Root Control register, sec 7.5.3.12) is
-> > enabled and a config read that includes both bytes of the Vendor ID
-> > receives a CRS completion, we must return 0x0001 for the Vendor ID and
-> > 0xff for any additional bytes.  Note that a config read of only the
-> > two Vendor ID bytes is legal and should receive 0x0001 data.
-> > 
-> > But if CRS SV is disabled, I think config reads that receive CRS
-> > completions should fail the normal way, i.e., fabricate ~0 data.
-> 
-> In PCIe base 2.0 is:
-> 
-> For other Configuration Requests, or when CRS Software Visibility is not
-> enabled, the Root Complex will generally re-issue the Configuration
-> Request until it completes with a status other than CRS as described in
-> Section 2.3.2.
-
-That text is from the "Configuration Request Retry Status"
-implementation note in PCIe r2.0, sec 2.3.1, "Request Handling Rules",
-and PCIe r5.0 contains the same text.
-
-PCIe r4.0, sec 2.3.2, says (r5.0 contains the same text but with a
-formatting error that changes the meaning):
-
-  Root Complex handling of a Completion with Configuration Request
-  Retry Status for a Configuration Request is implementation specific,
-  except for the period following system reset (see Section 6.6). For
-  Root Complexes that support CRS Software Visibility, the following
-  rules apply:
-
-    * If CRS Software Visibility is not enabled, the Root Complex must
-      re-issue the Configuration Request as a new Request.
-
-    * If CRS Software Visibility is enabled (see below):
-
-      - For a Configuration Read Request that includes both bytes of
-	the Vendor ID field of a device Function's Configuration Space
-	Header, the Root Complex must complete the Request to the host
-	by returning a read-data value of 0001h for the Vendor ID
-	field and all ‘1’s for any additional bytes included in the
-	request. This read-data value has been reserved specifically
-	for this use by the PCI-SIG and does not correspond to any
-	assigned Vendor ID.
-
-      - For a Configuration Write Request or for any other
-	Configuration Read Request, the Root Complex must re-issue the
-	Configuration Request as a new Request.
-
-  A Root Complex implementation may choose to limit the number of
-  Configuration Request/CRS Completion Status loops before determining
-  that something is wrong with the target of the Request and taking
-  appropriate action, e.g., complete the Request to the host as a
-  failed transaction.
-
-> So what should pci-aardvark driver in this case do? Return ~0 or re-send
-> this config read request (and how many times)?
-
-That's a good question.  I don't know what other hardware
-implementations do, but I doubt they retry forever.  Since the spec
-doesn't specify a number of retries, I think you can choose to do
-none and immediately return ~0.
-
-> Also this relates to previous discussion about PCI_EXP_RTCTL_CRSSVE:
-> https://lore.kernel.org/linux-pci/20210507152542.sd54lk7bk56qapf3@pali/
-> 
-> > > > +			strcomp_status = NULL;
-> > > > +		} else {
-> > > > +			strcomp_status = "CRS";
-> > > > +		}
-> > > >  		break;
-> > > >  	case PIO_COMPLETION_STATUS_CA:
-> > > >  		strcomp_status = "CA";
-> > > > @@ -490,6 +529,9 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-> > > >  		break;
-> > > >  	}
-> > > >  
-> > > > +	if (!strcomp_status)
-> > > > +		return 0;
-> > > > +
-> > > >  	if (reg & PIO_NON_POSTED_REQ)
-> > > >  		str_posted = "Non-posted";
-> > > >  	else
-> > > > @@ -497,6 +539,8 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-> > > >  
-> > > >  	dev_err(dev, "%s PIO Response Status: %s, %#x @ %#x\n",
-> > > >  		str_posted, strcomp_status, reg, advk_readl(pcie, PIO_ADDR_LS));
-> > > > +
-> > > > +	return -EFAULT;
-> > > >  }
-> > > >  
-> > > >  static int advk_pcie_wait_pio(struct advk_pcie *pcie)
-> > > > @@ -703,8 +747,17 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
-> > > >  						 size, val);
-> > > >  
-> > > >  	if (advk_pcie_pio_is_running(pcie)) {
-> > > > -		*val = 0xffffffff;
-> > > > -		return PCIBIOS_SET_FAILED;
-> > > > +		/*
-> > > > +		 * For PCI_VENDOR_ID register, return Completion Retry Status
-> > > > +		 * so caller tries to issue the request again insted of failing
-> > > > +		 */
-> > > > +		if (where == PCI_VENDOR_ID) {
-> > > > +			*val = CFG_RD_CRS_VAL;
-> > > > +			return PCIBIOS_SUCCESSFUL;
-> > > 
-> > > Mmmm..here we are faking a CRS completion value to coerce the kernel
-> > > into believing a CRS completion was received (which is not necessarily
-> > > true) ?
-> > > 
-> > > if advk_pcie_pio_is_running(pcie) == true, is that an HW error ?
-> > > 
-> > > Lorenzo
-> > > 
-> > > > +		} else {
-> > > > +			*val = 0xffffffff;
-> > > > +			return PCIBIOS_SET_FAILED;
-> > > > +		}
-> > > >  	}
-> > > >  
-> > > >  	/* Program the control register */
-> > > > @@ -729,15 +782,27 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
-> > > >  	advk_writel(pcie, 1, PIO_START);
-> > > >  
-> > > >  	ret = advk_pcie_wait_pio(pcie);
-> > > > +	if (ret < 0) {
-> > > > +		/*
-> > > > +		 * For PCI_VENDOR_ID register, return Completion Retry Status
-> > > > +		 * so caller tries to issue the request again instead of failing
-> > > > +		 */
-> > > > +		if (where == PCI_VENDOR_ID) {
-> > > > +			*val = CFG_RD_CRS_VAL;
-> > > > +			return PCIBIOS_SUCCESSFUL;
-> > > > +		} else {
-> > > > +			*val = 0xffffffff;
-> > > > +			return PCIBIOS_SET_FAILED;
-> > > > +		}
-> > > > +	}
-> > > > +
-> > > > +	/* Check PIO status and get the read result */
-> > > > +	ret = advk_pcie_check_pio_status(pcie, val);
-> > > >  	if (ret < 0) {
-> > > >  		*val = 0xffffffff;
-> > > >  		return PCIBIOS_SET_FAILED;
-> > > >  	}
-> > > >  
-> > > > -	advk_pcie_check_pio_status(pcie);
-> > > > -
-> > > > -	/* Get the read result */
-> > > > -	*val = advk_readl(pcie, PIO_RD_DATA);
-> > > >  	if (size == 1)
-> > > >  		*val = (*val >> (8 * (where & 3))) & 0xff;
-> > > >  	else if (size == 2)
-> > > > @@ -801,7 +866,9 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
-> > > >  	if (ret < 0)
-> > > >  		return PCIBIOS_SET_FAILED;
-> > > >  
-> > > > -	advk_pcie_check_pio_status(pcie);
-> > > > +	ret = advk_pcie_check_pio_status(pcie, NULL);
-> > > > +	if (ret < 0)
-> > > > +		return PCIBIOS_SET_FAILED;
-> > > >  
-> > > >  	return PCIBIOS_SUCCESSFUL;
-> > > >  }
-> > > > -- 
-> > > > 2.20.1
-> > > > 
+> >                                                         Thanx, Paul
+> >
+> > ------------------------------------------------------------------------
+> >
+> > commit 43e0f01f3b6f510dbe31d02a8f4c909c45deff04
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Tue Jul 20 06:16:27 2021 -0700
+> >
+> >     rcu: Mark accesses to rcu_state.n_force_qs
+> >
+> >     This commit marks accesses to the rcu_state.n_force_qs.  These data
+> >     races are hard to make happen, but syzkaller was equal to the task.
+> >
+> >     Reported-by: syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index a7379c44a2366..245bca7cdf6ee 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1913,7 +1913,7 @@ static void rcu_gp_fqs(bool first_time)
+> >         struct rcu_node *rnp = rcu_get_root();
+> >
+> >         WRITE_ONCE(rcu_state.gp_activity, jiffies);
+> > -       rcu_state.n_force_qs++;
+> > +       WRITE_ONCE(rcu_state.n_force_qs, rcu_state.n_force_qs + 1);
+> >         if (first_time) {
+> >                 /* Collect dyntick-idle snapshots. */
+> >                 force_qs_rnp(dyntick_save_progress_counter);
+> > @@ -2556,7 +2556,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+> >         /* Reset ->qlen_last_fqs_check trigger if enough CBs have drained. */
+> >         if (count == 0 && rdp->qlen_last_fqs_check != 0) {
+> >                 rdp->qlen_last_fqs_check = 0;
+> > -               rdp->n_force_qs_snap = rcu_state.n_force_qs;
+> > +               rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
+> >         } else if (count < rdp->qlen_last_fqs_check - qhimark)
+> >                 rdp->qlen_last_fqs_check = count;
+> >
+> > @@ -2904,10 +2904,10 @@ static void __call_rcu_core(struct rcu_data *rdp, struct rcu_head *head,
+> >                 } else {
+> >                         /* Give the grace period a kick. */
+> >                         rdp->blimit = DEFAULT_MAX_RCU_BLIMIT;
+> > -                       if (rcu_state.n_force_qs == rdp->n_force_qs_snap &&
+> > +                       if (READ_ONCE(rcu_state.n_force_qs) == rdp->n_force_qs_snap &&
+> >                             rcu_segcblist_first_pend_cb(&rdp->cblist) != head)
+> >                                 rcu_force_quiescent_state();
+> > -                       rdp->n_force_qs_snap = rcu_state.n_force_qs;
+> > +                       rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
+> >                         rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
+> >                 }
+> >         }
+> > @@ -4134,7 +4134,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
+> >         /* Set up local state, ensuring consistent view of global state. */
+> >         raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> >         rdp->qlen_last_fqs_check = 0;
+> > -       rdp->n_force_qs_snap = rcu_state.n_force_qs;
+> > +       rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
+> >         rdp->blimit = blimit;
+> >         rdp->dynticks_nesting = 1;      /* CPU not up, no tearing. */
+> >         rcu_dynticks_eqs_online();
