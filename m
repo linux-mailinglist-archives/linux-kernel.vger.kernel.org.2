@@ -2,154 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBE73D04FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDCC3D0502
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231817AbhGTW25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 18:28:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23428 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230282AbhGTW2d (ORCPT
+        id S231985AbhGTW3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 18:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231876AbhGTW3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 18:28:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626822532;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OUD1OSZkbHdMiWproUmhkia/gxOQdMwBwJdJdItumaQ=;
-        b=ZPrIJvDeoR0EEIlUkN1X15tmKTha4vmAqYOch1T+kMddY9jBn2sAZv5gBmVP301oonX+Si
-        WqDS4zKD2dkJazQEl8B7lbXPrrcnNRNVoDPMz2boalDzw4mOIElNn84NqCeZLUIYDGgWDj
-        ZKhFA6xLn9b1Y39JDqX+EFnJMfBpw70=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-35-xp_2f9lyNwi0Mq1ihRHn8g-1; Tue, 20 Jul 2021 19:08:50 -0400
-X-MC-Unique: xp_2f9lyNwi0Mq1ihRHn8g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36FFF1084F54;
-        Tue, 20 Jul 2021 23:08:49 +0000 (UTC)
-Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9F86460843;
-        Tue, 20 Jul 2021 23:08:45 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v2 09/12] mm/vm_debug_pgtable: Use struct
- pgtable_debug_args in PUD modifying tests
-To:     kernel test robot <lkp@intel.com>, linux-mm@kvack.org
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        anshuman.khandual@arm.com, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210719054138.198373-10-gshan@redhat.com>
- <202107201004.qeO1MJnB-lkp@intel.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <3227af58-7ce4-1ea5-ae5d-bf3d8abc2790@redhat.com>
-Date:   Wed, 21 Jul 2021 09:09:03 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Tue, 20 Jul 2021 18:29:32 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25A6C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 16:10:09 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id y17so121867pgf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 16:10:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HmZtI1xpEI+ek1YEEmTrQH173EtPkZuQKAG16jfYelI=;
+        b=WWsHNFpumMchKKqPUZYeL3Q0MRwuhZGf1N5qizIbIoaqwSqsI0GRnaLgjtlY1VxNid
+         JskTU9X0Ts4uhfdYP1vrKcn9yRMbvUZXKCpzJ9wL+wUzJntjupv2qYxPwjCUS1MD9U5o
+         XjkDCRYBRTor9KRM7GkV/2bKjF3vPkwL8/YnI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HmZtI1xpEI+ek1YEEmTrQH173EtPkZuQKAG16jfYelI=;
+        b=DIVO6weDSbbYk+3UA1rF60GhMgVhszS1LqQ/ZBI1/+/Kk6qJMSIlz8eInlZy8aisN6
+         271D+fZ/X5FV8fEXsKPJPxu9TOL/Q8UsseZMYS+/9r/oxEkdOdZFDsIbVRJ7tnCUU3U1
+         iG/r2Eo4quhpiyuFBWa1TlGaZtVsq8meM4QKl9V0vKtePDMg2ZQPP+sle4IrU9kuQbl1
+         xl+BV63opM9WN9kCFuSvLh8xinQv6UblGYpNS88hWh0609brTRTQVBihoBplmCiKdSpe
+         eLaRr2lrjQHzOGWvzCGM205gYVrH+appob2uU11uTarI/NFJ9fLhy/eoSmM2gSUVBmuU
+         e7wA==
+X-Gm-Message-State: AOAM530f0lRBrChlbVvSvpCr3QvGBKfpAjRBC3B5JSJw2ECDkvuRNNG2
+        ngwW7zJxt7sLRPt30ti5Y+TrOQ==
+X-Google-Smtp-Source: ABdhPJxXibVoBqbItv1ED8m4kpKScTx/Sran0ivRFpDT+e0xLPrsaQZe1F9x4oWRAU2XI0LZzmyyUg==
+X-Received: by 2002:a63:1f0e:: with SMTP id f14mr28618978pgf.65.1626822609238;
+        Tue, 20 Jul 2021 16:10:09 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:c9c3:db46:7281:8e32])
+        by smtp.gmail.com with UTF8SMTPSA id u24sm26397365pfm.141.2021.07.20.16.10.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jul 2021 16:10:08 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 16:10:07 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     swboyd@chromium.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org, ulf.hansson@linaro.org, rjw@rjwysocki.net,
+        agross@kernel.org, ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v4 02/13] dt-bindings: remoteproc: qcom: pas: Add QMP
+ property
+Message-ID: <YPdXz1T89GcIYmJO@google.com>
+References: <1626755807-11865-1-git-send-email-sibis@codeaurora.org>
+ <1626755807-11865-3-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <202107201004.qeO1MJnB-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1626755807-11865-3-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/21 12:46 PM, kernel test robot wrote:
-> Hi Gavin,
+On Tue, Jul 20, 2021 at 10:06:36AM +0530, Sibi Sankar wrote:
+> The load state power-domain, used by the co-processors to notify the
+> Always on Subsystem (AOSS) that a particular co-processor is up/down,
+> suffers from the side-effect of changing states during suspend/resume.
+> However the co-processors enter low-power modes independent to that of
+> the application processor and their states are expected to remain
+> unaltered across system suspend/resume cycles. To achieve this behavior
+> let's drop the load state power-domain and replace them with the qmp
+> property for all SoCs supporting low power mode signalling.
 > 
-> Thank you for the patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on linus/master]
-> [also build test WARNING on v5.14-rc2]
-> [cannot apply to hnaz-linux-mm/master linux/master next-20210719]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Gavin-Shan/mm-debug_vm_pgtable-Enhancements/20210719-134236
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
-> config: x86_64-randconfig-c002-20210719 (attached as .config)
-> compiler: gcc-10 (Ubuntu 10.3.0-1ubuntu1~20.04) 10.3.0
-> reproduce (this is a W=1 build):
->          # https://github.com/0day-ci/linux/commit/69db26024e6bd48423ebc83b0f83b7b52217b624
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review Gavin-Shan/mm-debug_vm_pgtable-Enhancements/20210719-134236
->          git checkout 69db26024e6bd48423ebc83b0f83b7b52217b624
->          # save the attached .config to linux build tree
->          make W=1 ARCH=x86_64
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->     mm/debug_vm_pgtable.c: In function 'pud_huge_tests':
->>> mm/debug_vm_pgtable.c:445:8: warning: variable 'pud' set but not used [-Wunused-but-set-variable]
->       445 |  pud_t pud;
->           |        ^~~
->     mm/debug_vm_pgtable.c: In function 'debug_vm_pgtable':
->     mm/debug_vm_pgtable.c:1143:42: warning: variable 'pgd_aligned' set but not used [-Wunused-but-set-variable]
->      1143 |  unsigned long pud_aligned, p4d_aligned, pgd_aligned;
->           |                                          ^~~~~~~~~~~
->     mm/debug_vm_pgtable.c:1143:29: warning: variable 'p4d_aligned' set but not used [-Wunused-but-set-variable]
->      1143 |  unsigned long pud_aligned, p4d_aligned, pgd_aligned;
->           |                             ^~~~~~~~~~~
->     mm/debug_vm_pgtable.c:1143:16: warning: variable 'pud_aligned' set but not used [-Wunused-but-set-variable]
->      1143 |  unsigned long pud_aligned, p4d_aligned, pgd_aligned;
->           |                ^~~~~~~~~~~
->     mm/debug_vm_pgtable.c:1142:36: warning: variable 'pmd_aligned' set but not used [-Wunused-but-set-variable]
->      1142 |  unsigned long vaddr, pte_aligned, pmd_aligned;
->           |                                    ^~~~~~~~~~~
->     mm/debug_vm_pgtable.c:1140:17: warning: variable 'protnone' set but not used [-Wunused-but-set-variable]
->      1140 |  pgprot_t prot, protnone;
->           |                 ^~~~~~~~
->     mm/debug_vm_pgtable.c:1140:11: warning: variable 'prot' set but not used [-Wunused-but-set-variable]
->      1140 |  pgprot_t prot, protnone;
->           |           ^~~~
-> 
-
-Please ignore these build warnings raised against v2 series because all of them
-should have been fixed in v3 series.
-
-Thanks,
-Gavin
-
-> 
-> vim +/pud +445 mm/debug_vm_pgtable.c
-> 
-> 5fe77be6bf14bf Shixin Liu        2021-06-30  442
-> 69db26024e6bd4 Gavin Shan        2021-07-19  443  static void __init pud_huge_tests(struct pgtable_debug_args *args)
-> a5c3b9ffb0f404 Anshuman Khandual 2020-08-06  444  {
-> 5fe77be6bf14bf Shixin Liu        2021-06-30 @445  	pud_t pud;
-> 5fe77be6bf14bf Shixin Liu        2021-06-30  446
-> 69db26024e6bd4 Gavin Shan        2021-07-19  447  	if (!arch_vmap_pud_supported(args->page_prot))
-> 5fe77be6bf14bf Shixin Liu        2021-06-30  448  		return;
-> 5fe77be6bf14bf Shixin Liu        2021-06-30  449
-> 5fe77be6bf14bf Shixin Liu        2021-06-30  450  	pr_debug("Validating PUD huge\n");
-> 5fe77be6bf14bf Shixin Liu        2021-06-30  451  	/*
-> 5fe77be6bf14bf Shixin Liu        2021-06-30  452  	 * X86 defined pud_set_huge() verifies that the given
-> 5fe77be6bf14bf Shixin Liu        2021-06-30  453  	 * PUD is not a populated non-leaf entry.
-> 5fe77be6bf14bf Shixin Liu        2021-06-30  454  	 */
-> 69db26024e6bd4 Gavin Shan        2021-07-19  455  	WRITE_ONCE(*(args->pudp), __pud(0));
-> 69db26024e6bd4 Gavin Shan        2021-07-19  456  	WARN_ON(!pud_set_huge(args->pudp, __pfn_to_phys(args->fixed_pud_pfn),
-> 69db26024e6bd4 Gavin Shan        2021-07-19  457  			      args->page_prot));
-> 69db26024e6bd4 Gavin Shan        2021-07-19  458  	WARN_ON(!pud_clear_huge(args->pudp));
-> 69db26024e6bd4 Gavin Shan        2021-07-19  459  	pud = READ_ONCE(*(args->pudp));
-> a5c3b9ffb0f404 Anshuman Khandual 2020-08-06  460  }
-> 5fe77be6bf14bf Shixin Liu        2021-06-30  461  #else /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
-> 54b1f4b50ddb0f Gavin Shan        2021-07-19  462  static void __init pmd_huge_tests(struct pgtable_debug_args *args) { }
-> 69db26024e6bd4 Gavin Shan        2021-07-19  463  static void __init pud_huge_tests(struct pgtable_debug_args *args) { }
-> 5fe77be6bf14bf Shixin Liu        2021-06-30  464  #endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
-> 399145f9eb6c67 Anshuman Khandual 2020-06-04  465
-> 
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 > 
+> v4:
+>  * Commit message change and sc8180x co-processor addition. [Rob/Bjorn]
+> 
+>  .../devicetree/bindings/remoteproc/qcom,adsp.yaml  | 65 +++++++++++-----------
+>  1 file changed, 33 insertions(+), 32 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+> index c597ccced623..1182afb5f593 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+> @@ -78,11 +78,11 @@ properties:
+>  
+>    power-domains:
+>      minItems: 1
+> -    maxItems: 3
+> +    maxItems: 2
+>  
+>    power-domain-names:
+>      minItems: 1
+> -    maxItems: 3
+> +    maxItems: 2
+
+It seems maxItems should have been 4 in the first place and should remain
+unchanged after removing the load state power domain. With this patch:
+
+  - if:
+      properties:
+        compatible:
+          contains:
+            enum:
+              - qcom,sc7180-mpss-pas
+    then:
+      properties:
+        power-domains:
+          items:
+            - description: CX power domain
+            - description: MX power domain
+            - description: MSS power domain
+        power-domain-names:
+          items:
+            - const: cx
+            - const: mx
+            - const: mss
 
