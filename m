@@ -2,113 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A203CF5AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8394F3CF5B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhGTHVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbhGTHVe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:21:34 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19E9C061574;
-        Tue, 20 Jul 2021 01:02:08 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id dt7so32985701ejc.12;
-        Tue, 20 Jul 2021 01:02:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2edD4ZbIoOM5dgV01Aj0vA4z3mEuf8snofuXl1oXreo=;
-        b=d95LEuqAdqoJ9ACA/94Go38gEhST2eZd9Qx7/4ma9tR1Saj3T7L/Y+GORjnWGEU2Sc
-         6YdawSAlWqwyZ/nn/11TgzaXx+BGOkrn6/HgBuqjebbxfyRnv1j0dVnGA1npVHdvkLT+
-         s2ZmXIh5mUvzoygiu+4tjVL8u3Bzy8HPhS1eL4I0Msh0Y9vuUoso1Y3m73iRSX7F5ids
-         8I8hukdpPLqX98oT7NZ6zuS5Mz8cAO9D8WvR4w8m2xt9aH2T/mxHeHaDhvZ3suOTOuLB
-         6cRgdBqQsqlCriqA73Sf7YzK6Ayx/kejohpedHFCUyaAHRJz26BTM7mRFWR+h4izZ0I3
-         O5pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2edD4ZbIoOM5dgV01Aj0vA4z3mEuf8snofuXl1oXreo=;
-        b=GxE+HNvX6mfX7j8rXcESECcdzx3KI4wevhiMTSo6lcvlqmdNTYUdhZWUDwfNxZFML6
-         nXH5E+yoN/mcqxgy21ZuPEMcTZFXavp3u1UyK7dSST8gahFyEeWCuRHLRUuVvJicUeDe
-         9kEbh1cs6ucEhX7rs41ohTFX1FArnshcnYTSnPMUO1XAnyYVgwOT3/Z1VkZ7O+PhMRzk
-         UxLgHqkAJqubZyUUCHqGVz5SrKRfoVBGPXi842rykvsVUvCdBHEZ8/lDa/m8ep0XC8qS
-         v49hBb7UP9iOcF8/vmVUX54W/lfCSrVWIub5WHoWNtwzU/1lT/tIlIgTgocspOIu8eN6
-         5AuA==
-X-Gm-Message-State: AOAM531ttyq1q2RyFi+faYC1dEjk+zbnaUJq3uG7izxEM8Q7Pu+oopRV
-        TtPPdAVxxwucvFGOn8wPz7pkTpokv1StZS7aLA8MH+wdjaQ=
-X-Google-Smtp-Source: ABdhPJyO9ZvIDN2d6vogWARmI2N8r8z5KnWcZOZsKssnZq9MdMiE9SwxK57GIk2vAlTtMjpmt6tqwyPg5BbH3zAiNBs=
-X-Received: by 2002:a17:906:6050:: with SMTP id p16mr22033077ejj.43.1626768127286;
- Tue, 20 Jul 2021 01:02:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
- <YPGojf7hX//Wn5su@kroah.com> <568938486.33366.1626452816917.JavaMail.zimbra@nod.at>
- <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com>
- <1458549943.44607.1626686894648.JavaMail.zimbra@nod.at> <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
- <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at>
-In-Reply-To: <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Tue, 20 Jul 2021 13:31:55 +0530
-Message-ID: <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
-Subject: Re: MTD: How to get actual image size from MTD partition
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Greg KH <greg@kroah.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S232414AbhGTHYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:24:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47822 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232018AbhGTHX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 03:23:57 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4752610F7;
+        Tue, 20 Jul 2021 08:04:35 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m5kjx-00ESnt-U3; Tue, 20 Jul 2021 09:04:34 +0100
+Date:   Tue, 20 Jul 2021 09:04:33 +0100
+Message-ID: <877dhl9zse.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
+        dbrazdil@google.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 02/16] KVM: arm64: Don't issue CMOs when the physical address is invalid
+In-Reply-To: <YPWzykpDMOhT2yh8@google.com>
+References: <20210715163159.1480168-1-maz@kernel.org>
+        <20210715163159.1480168-3-maz@kernel.org>
+        <YPWzykpDMOhT2yh8@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: qperret@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org, dbrazdil@google.com, vatsa@codeaurora.org, sdonthineni@nvidia.com, james.morse@arm.com, suzuki.poulose@arm.com, alexandru.elisei@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 at 12:10, Richard Weinberger <richard@nod.at> wrote:
+On Mon, 19 Jul 2021 18:18:02 +0100,
+Quentin Perret <qperret@google.com> wrote:
+> 
+> On Thursday 15 Jul 2021 at 17:31:45 (+0100), Marc Zyngier wrote:
+> > Make sure we don't issue CMOs when mapping something that
+> > is not a memory address in the S2 page tables.
+> > 
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  arch/arm64/kvm/hyp/pgtable.c | 16 ++++++++++------
+> >  1 file changed, 10 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> > index 05321f4165e3..a5874ebd0354 100644
+> > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > @@ -619,12 +619,16 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+> >  	}
+> >  
+> >  	/* Perform CMOs before installation of the guest stage-2 PTE */
+> > -	if (mm_ops->dcache_clean_inval_poc && stage2_pte_cacheable(pgt, new))
+> > -		mm_ops->dcache_clean_inval_poc(kvm_pte_follow(new, mm_ops),
+> > -						granule);
+> > -
+> > -	if (mm_ops->icache_inval_pou && stage2_pte_executable(new))
+> > -		mm_ops->icache_inval_pou(kvm_pte_follow(new, mm_ops), granule);
+> > +	if (kvm_phys_is_valid(phys)) {
+> > +		if (mm_ops->dcache_clean_inval_poc &&
+> > +		    stage2_pte_cacheable(pgt, new))
+> > +			mm_ops->dcache_clean_inval_poc(kvm_pte_follow(new,
+> > +								      mm_ops),
+> > +						       granule);
+> > +		if (mm_ops->icache_inval_pou && stage2_pte_executable(new))
+> > +			mm_ops->icache_inval_pou(kvm_pte_follow(new, mm_ops),
+> > +						 granule);
+> > +	}
+> 
+> Hrmpf so this makes me realize we have a problem here, not really caused
+> by your patch though.
+> 
+> Specifically, calling kvm_pgtable_stage2_set_owner() can lead to
+> overriding valid mappings with invalid mappings, which is effectively an
+> unmap operation. In this case we should issue CMOs when unmapping a
+> cacheable page to ensure it is clean to the PoC, like the
+> kvm_pgtable_stage2_unmap() does.
 
-> > Anyways, I will create a separate thread for dm-verity issue and keep
-> > this thread still open for UBI image size issue.
-> > We may use dm-verify for rootfs during booting, but still we need to
-> > perform integrity check for other nand partitions and UBI volumes.
-> >
-> > So, instead of calculating the checksum for the entire partition, is
-> > it possible to perform checksum only based on the image size ?
-> > Right now, we are still exploring what are the best possible
-> > mechanisms available for this.
->
-> I still don't fully understand what you are trying to achieve.
-> Is it about cryptographic integrity of your storage or detecting
-> errors after the flashing process?
->
-Yes, it is about md5 checksum verification for every partition to
-check its integrity before updates.
+You only need that if you to have a non-cacheable mapping to the same
+page. Otherwise, you will be fine.
 
+For pages that are moved from host-EL1 to EL2, we're good (I don't
+think we ever have a non-cachable mapping at EL2). However, once we
+start moving pages to guests, we'll need something.
 
-> But let me advertise ubiblock a second time.
-Sorry, I could not understand about the ubiblock request. Is it
-possible to elaborate little more ?
-We are already using squashfs on top of our UBI volumes (including
-rootfs mounting).
-This is the kernel command line we pass:
-rootfstype=squashfs root=/dev/mtdblock44 ubi.mtd=40,0,30
-And CONFIG_MTD_UBI_BLOCK=y is already enabled in our kernel.
-Do we need to do something different for ubiblock ?
+> Note that you patch is already an improvement over the current state of
+> things, because calling stage2_pte_cacheable(pgt, new),
+> kvm_pte_follow(new, mm_ops) and friends is bogus when 'new' is invalid
 
-> If you place your squashfs on a UBI static volume, UBI knows the exact length and you can checksum it
-> more easily.
-Yes, we use squashfs on UBI volumes, but our volume type is still dynamic.
-Also, you said, UBI knows the exact length, you mean the whole image length ?
-How can we get this length at runtime ?
-Also, how can we get the checksum of the entire UBI volume content
-(ignoring the erased/empty/bad block content) ?
-
-Or, you mean to say, the whole checksum logic is in-built inside the
-UBI layer and users don't need to worry about the integrity at all ?
-
+Yeah, I had it mentally earmarked as a potential stable candidate. We
+may have to do a bit better in the light of the above though.
 
 Thanks,
-Pintu
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
