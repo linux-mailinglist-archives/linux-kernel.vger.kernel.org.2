@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C61F3D02C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 22:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901873D0326
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 22:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhGTTd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 15:33:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
+        id S234156AbhGTUBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 16:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhGTTbZ (ORCPT
+        with ESMTP id S235104AbhGTThj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 15:31:25 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2F5C061574;
-        Tue, 20 Jul 2021 13:12:01 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id p67so512360oig.2;
-        Tue, 20 Jul 2021 13:12:01 -0700 (PDT)
+        Tue, 20 Jul 2021 15:37:39 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079F6C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:18:15 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id y42so37667630lfa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:18:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=G//mpA+vZ/TD9Vw2AzYjXY810ZGCt8G3xDpHqv/4Bxk=;
-        b=QcY9Ncjze5eN+dZYyoO+8PLj1cKKFTE8IkgVP1nRJaz5LVafPwyelo7pUwXceUqt2H
-         l/VpiKmID5ZPdN2g4WgdSsZwLPBK1UjElJ4vALr9xdXHtTdE/lLVEKfMAm9IdOhF6ExX
-         /rYpRaJTjcYds+kKeXgythHU9cqaJtqZxV5ybMTzQW21Ua4ABb0+Dzo001c6juaxBPqM
-         jkRRv6ICqp0iCPYMQjA8W5eUIwU9fPNJR5jeov4BAgw4SzCpBLNJ5hbZd0WvKdfyOMvV
-         HWgoi6LSkC0B0dm7HDIZ/Zl9YaLO8Y+cJ/xlJ5mQf0B/fiU/SQIMfIfqGNCsNQoZ663j
-         3n5Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A9yhnAOKnkpaIpXwQ4S44wQp2Z5wbSnHNxsdlMsfhZg=;
+        b=AkPrJswLeZIna9xYH5/IZ7Y2Iixa+rSYTNzJ/f5zTdwVI5FoEcHarhzMeDCDwwAJOW
+         cuFEzaqi6+MLh3aA8xCnACXzvsvlp3dU9g7J7rkKGBk4ksNd/76c/JRmSBSQLN7KHraZ
+         aRoyqHGje3w6i2EySEFAhaMdNo8zJPYjziyj7wTIWFSNgsiCN6oihCzLg6Azc0t3hAJN
+         bvnOIDX+koQ3nH4EQBRYv/uZfoVyF55xpz7J46jejt5xzdYF3i3c41lePR9gPDYyzfKz
+         afnkxLZBeA0bifxPzLD0QpyTpfyQEleZdUrcAXl3xT7YjkJId6anWJs67J+SOmYMCRbA
+         HlTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=G//mpA+vZ/TD9Vw2AzYjXY810ZGCt8G3xDpHqv/4Bxk=;
-        b=BIWBt5QJOhgbNagKp+ERUDrOJwZMaU5nzVtrCPjUvTkC2yLYrKK8kC/jtcnnty9n6J
-         F1Mzene58TkJRML9RlocA7YuYScUGoGmZPatrdWRgSbvXaE+uQoc1/WYsri6UFrugz/E
-         i+ssRDsVMj3soEsynst7u5eLeLuCvzuusf4tHrNRYZsjdS2KfiAisfKol/TdVww731n3
-         dusyyyk/XhhvZCu7FKGteF8u6bb77bo1Z3bkhBrNEyzX3a/hNuWuaTmtaGCB1lXqqA+A
-         udWCnQTW2Zm/HgOwV+iotRwaBLZUj9ZctC3qTUvbpKwK0MT9ddD9pMdGYqW29fD6aOVf
-         MVwA==
-X-Gm-Message-State: AOAM5321zDsvFR4uzuG094iFxS7S/CsDwn5EmE96C2OfratdIrL40z7k
-        O9halQQZ0gjmQsqZTdbNUTk=
-X-Google-Smtp-Source: ABdhPJwcxfdwAuNB/C0FXJtlHZrQObRFRtoCOIBL4GTqF4yvqVN59lreD7PNaySNV+ZOcdz+mWrV2g==
-X-Received: by 2002:aca:4d0a:: with SMTP id a10mr118901oib.71.1626811921424;
-        Tue, 20 Jul 2021 13:12:01 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h96sm4367686oth.25.2021.07.20.13.12.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 13:12:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 20 Jul 2021 13:11:59 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.13 000/349] 5.13.4-rc2 review
-Message-ID: <20210720201159.GH2360284@roeck-us.net>
-References: <20210719184345.989046417@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A9yhnAOKnkpaIpXwQ4S44wQp2Z5wbSnHNxsdlMsfhZg=;
+        b=Wd8GqWH3rocTEgwSdNqZY+a2oUBTkD3jev12kX4PvdXV2qmVsWL9HLfGNj1NJsn/Yy
+         BgOU/qPitRuJnFDYX5ZkxS39LIlwLfB2eqXZcVRpRKBBuOWBROTnxViLfBjQSWmtkEFn
+         qasKcmz+hFXTzOClQvxeXgZ1dbfXOU1pbidHUh3wnZqp61e109p8YpCyFZyYN7VjP/zl
+         JeKs6zf6XCOluS653jn6XJATBjshFNrtOeF+RK4BqlGOUdi7pto03MlH41j7qTCXLDiA
+         g0Hx97TaZWOCezKWltCnbjart/XG9Zq8DjD3ErznCaaPvquDslY8VQnXH4uaclKdZuZo
+         3a4w==
+X-Gm-Message-State: AOAM532Y6jbQIM2J9skCf0dBpopY6kpSRBDpUQ2dx6VVFKVrRIyoecEP
+        9Ek5TIWGlGRMMLwek3Id/1k9p0N2Ew6UyCHBNE69doL91ZI=
+X-Google-Smtp-Source: ABdhPJySetWCDgaJU6+K2rRIahVT3YVfnnSgHpEEMLcXaFJUGdU2bQU2g+SNnqYrUYICdy5652MEKxCSG6bUd/MJ2i4=
+X-Received: by 2002:ac2:59db:: with SMTP id x27mr23163928lfn.547.1626812292943;
+ Tue, 20 Jul 2021 13:18:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210719184345.989046417@linuxfoundation.org>
+References: <20210708232522.3118208-1-ndesaulniers@google.com>
+ <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
+ <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com> <CAK8P3a3=JBQow-Ws6tt81k93aw+OCV5C2CtSWxASkv=iQZPGUw@mail.gmail.com>
+In-Reply-To: <CAK8P3a3=JBQow-Ws6tt81k93aw+OCV5C2CtSWxASkv=iQZPGUw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 20 Jul 2021 13:18:02 -0700
+Message-ID: <CAKwvOdm6yK3jK45AV2FULQAw614nfJi17RVAESH+wV11i+pMLw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ LLVM=1 LLVM_IAS=1
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 08:44:42PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.4 release.
-> There are 349 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 21 Jul 2021 18:42:59 +0000.
-> Anything received after that time might be too late.
-> 
+On Tue, Jul 20, 2021 at 12:58 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Tue, Jul 20, 2021 at 7:43 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> > On Tue, Jul 20, 2021 at 1:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > We do most of the other heavy lifting in this area in Kconfig anyway,
+> > why not add that compiler choice?
+> >
+> > Obviously it would be gated by the tests to see which compilers are
+> > _installed_ (and that they are valid versions), so that it doesn't ask
+> > stupid things ("do you want gcc or clang" when only one of them is
+> > installed and/or viable).
+>
+> I don't see a good way of making Kconfig options both select the
+> compiler and defining variables based on the compiler, since that
+> would mean teaching Kconfig about re-evaluating all compiler
+> dependent settings whenever the first option changes.
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 465 pass: 465 fail: 0
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+Right, there are many Kconfigs that are predicated on knowing whether
+the user is building with gcc vs clang.  We probably could note the
+users preference in Kconfig, but we would need to guarantee that we
+evaluate that ASAP and before most other Kconfigs were checked.
+-- 
+Thanks,
+~Nick Desaulniers
