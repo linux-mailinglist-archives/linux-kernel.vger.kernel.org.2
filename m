@@ -2,158 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EAE3CF6A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79443CF6AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235122AbhGTI3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 04:29:48 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46706 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235369AbhGTI0z (ORCPT
+        id S235206AbhGTIcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 04:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234857AbhGTIbF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:26:55 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3F96F1FD3E;
-        Tue, 20 Jul 2021 09:07:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626772053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QfevtJ7CO69XvR/FgxUv0tcNBb6dOkmnHZF1Y+3ecPE=;
-        b=qPP+VPihQCLt5SbGo30Cs//xoYyzsjBqGVUjA1v7oynKA9Cpsold5dkRVWMNHDcSRlokhM
-        LCow4zT5u2rnHLYUO2ZSdDffdy0kluHmt+QDRZjUPkycsfob/l4ri3ItuHoA1M49cw+IO6
-        6tZ/1WMRGEGu9BMKvVp4Kr+7n7Rcpac=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626772053;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QfevtJ7CO69XvR/FgxUv0tcNBb6dOkmnHZF1Y+3ecPE=;
-        b=Cqa4nl1n11cdmVl8DLDjDwA/2gnzCV/ihRUyR8BgzbHvrr18EHskqB+DQPNMIsOG1Ft4ET
-        YFTG7BbQu9ai/GAA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 0403213A2E;
-        Tue, 20 Jul 2021 09:07:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id pTTIOVSS9mD+FgAAGKfGzw
-        (envelope-from <tzimmermann@suse.de>); Tue, 20 Jul 2021 09:07:32 +0000
-Subject: Re: [PATCH -next v2 resend] drm/bochs: Fix missing
- pci_disable_device() on error in bochs_pci_probe()
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org
-Cc:     kraxel@redhat.com, airlied@linux.ie, daniel@ffwll.ch
-References: <20210715132845.2415619-1-yangyingliang@huawei.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <5c3f06d5-509a-0e59-7021-d25180f82de9@suse.de>
-Date:   Tue, 20 Jul 2021 11:07:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 20 Jul 2021 04:31:05 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C165EC061762;
+        Tue, 20 Jul 2021 02:10:54 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id o72-20020a9d224e0000b02904bb9756274cso20958605ota.6;
+        Tue, 20 Jul 2021 02:10:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p6Is2ssE5TIQVmIGiDn4GSKdJRhQ0anPapx4YCLQJX8=;
+        b=saKX98KeWneAhyQVzO5iKzGFol/XtOEBdaIxSKXVRh9tGcKnrbNpRe2KRcIFNmurDQ
+         M5BzlbGC+kZ8Nppkl61VyuwKm/HhSpZcTsR2CK+HOhdEqtfJdELZ6MH9PXVcVC7dlWNU
+         LScRRBdZKQTC/lkPOAoWRvpwYHusb+1unMDn8nwAJyD78zLDM4R2vpsymo+7yxqhLcAy
+         1eZbYf3F9WtugvGMsxoeOX4uGzJ10c9MJ/Y8IO8qHsFdgvcobUY395aVcdSnOrYmevy8
+         x68W1HYItydrjD4fl1hROEqH6BKH0g8xpv+2lyI23MnzyS2q+4M7PAXAjS2crIBV9Gw5
+         4Y3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p6Is2ssE5TIQVmIGiDn4GSKdJRhQ0anPapx4YCLQJX8=;
+        b=ixPFSuy+Vl8dkUlDo3e1JyYuQlGBA9ccXm4J+HGJ8OJoRG61XgRQLv0HuTR/qLzNJ5
+         uRVhecmwy05ESAIVTPVgchniaXSm++Ujlt4F0lcpyvQFUUQ0P5wjCmUT051MeRiR9AA0
+         xMOQRBrRFoAPV4BEHPFQNdIYi1MLd3VdptiCNGg5KTuokand92qXUdmRFJ7rQZ9bbG0G
+         4r6EUyiUo86llZujEGyhHD1Oyy9B6XJfD4WBVRJ+kWRlPrSMcR9KizMPU6Qn7JotuuJG
+         8PdXXI2HG2Kq6JYOOlb2dJ5lEkzJnVbDiHcHHxiJWt/vCIjYwo9sY4ehTg/FTOAoUb60
+         Fi0g==
+X-Gm-Message-State: AOAM531rASAowhpkxm/OU+lCsAMNhsLI2/PVlcAbEJAQJb1h7dY6A7l1
+        1LlUxREa7kEIilqhhfFyW/sAJMYJv5IBGUQgxx0=
+X-Google-Smtp-Source: ABdhPJzy2gyhp2Ac5tFifphlRMk5DJqNOX1IEF1IwKJkNoFCxmsrUUevYLMMx8mXFAQ2CYIBubGyB/3ux8dj5lStF9A=
+X-Received: by 2002:a9d:6d83:: with SMTP id x3mr3179843otp.110.1626772254143;
+ Tue, 20 Jul 2021 02:10:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210715132845.2415619-1-yangyingliang@huawei.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="1tWaCOjUssnJCaas5KXmJJXzgakIpD6xl"
+References: <20210719145317.79692-1-stephan@gerhold.net> <20210719145317.79692-5-stephan@gerhold.net>
+In-Reply-To: <20210719145317.79692-5-stephan@gerhold.net>
+From:   Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Date:   Tue, 20 Jul 2021 12:10:42 +0300
+Message-ID: <CAHNKnsTVSg5T_ZK3PQ50wuJydHbANFfpJd5NZ-71b1m3B_4dQg@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next 4/4] net: wwan: Add Qualcomm BAM-DMUX WWAN
+ network driver
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---1tWaCOjUssnJCaas5KXmJJXzgakIpD6xl
-Content-Type: multipart/mixed; boundary="3UkehBvmd5mFqfwTL1h90To2blVmYbJVN";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org
-Cc: kraxel@redhat.com, airlied@linux.ie, daniel@ffwll.ch
-Message-ID: <5c3f06d5-509a-0e59-7021-d25180f82de9@suse.de>
-Subject: Re: [PATCH -next v2 resend] drm/bochs: Fix missing
- pci_disable_device() on error in bochs_pci_probe()
-References: <20210715132845.2415619-1-yangyingliang@huawei.com>
-In-Reply-To: <20210715132845.2415619-1-yangyingliang@huawei.com>
+Hello Stephan,
 
---3UkehBvmd5mFqfwTL1h90To2blVmYbJVN
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-Am 15.07.21 um 15:28 schrieb Yang Yingliang:
-> Replace pci_enable_device() with pcim_enable_device(),
-> pci_disable_device() will be called in release automatically.
->=20
-> v2:
->    use pcim_enable_device()
->=20
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-Thanks, I'll merge it into drm-misc-next as v3. I also had to update the =
-
-path to the bochs driver meanwhile.
-
-Best regards
-Thomas
-
+On Mon, Jul 19, 2021 at 6:01 PM Stephan Gerhold <stephan@gerhold.net> wrote:
+> The BAM Data Multiplexer provides access to the network data channels of
+> modems integrated into many older Qualcomm SoCs, e.g. Qualcomm MSM8916 or
+> MSM8974. It is built using a simple protocol layer on top of a DMA engine
+> (Qualcomm BAM) and bidirectional interrupts to coordinate power control.
+>
+> The modem announces a fixed set of channels by sending an OPEN command.
+> The driver exports each channel as separate network interface so that
+> a connection can be established via QMI from userspace. The network
+> interface can work either in Ethernet or Raw-IP mode (configurable via
+> QMI). However, Ethernet mode seems to be broken with most firmwares
+> (network packets are actually received as Raw-IP), therefore the driver
+> only supports Raw-IP mode.
+>
+> The driver uses runtime PM to coordinate power control with the modem.
+> TX/RX buffers are put in a kind of "ring queue" and submitted via
+> the bam_dma driver of the DMAEngine subsystem.
+>
+> The basic architecture looks roughly like this:
+>
+>                    +------------+                +-------+
+>          [IPv4/6]  |  BAM-DMUX  |                |       |
+>          [Data...] |            |                |       |
+>         ---------->|rmnet0      | [DMUX chan: x] |       |
+>          [IPv4/6]  | (chan: 0)  | [IPv4/6]       |       |
+>          [Data...] |            | [Data...]      |       |
+>         ---------->|rmnet1      |--------------->| Modem |
+>                    | (chan: 1)  |      BAM       |       |
+>          [IPv4/6]  | ...        |  (DMA Engine)  |       |
+>          [Data...] |            |                |       |
+>         ---------->|rmnet7      |                |       |
+>                    | (chan: 7)  |                |       |
+>                    +------------+                +-------+
+>
+> However, on newer SoCs/firmware versions Qualcomm began gradually moving
+> to QMAP (rmnet driver) as backend-independent protocol for multiplexing
+> and data aggegration. Some firmware versions allow using QMAP on top of
+> BAM-DMUX (effectively resulting in a second multiplexing layer plus data
+> aggregation). The architecture with QMAP would look roughly like this:
+>
+>            +-------------+           +------------+                  +-------+
+>  [IPv4/6]  |    RMNET    |           |  BAM-DMUX  |                  |       |
+>  [Data...] |             |           |            | [DMUX chan: 0]   |       |
+> ---------->|rmnet_data1  |     ----->|rmnet0      | [QMAP mux-id: x] |       |
+>            | (mux-id: 1) |     |     | (chan: 0)  | [IPv4/6]         |       |
+>            |             |     |     |            | [Data...]        |       |
+>  [IPv4/6]  | ...         |------     |            |----------------->| Modem |
+>  [Data...] |             |           |            |       BAM        |       |
+> ---------->|rmnet_data42 | [QMAP: x] |[rmnet1]    |   (DMA Engine)   |       |
+>            | (mux-id: 42)| [IPv4/6]  |... unused! |                  |       |
+>            |             | [Data...] |[rmnet7]    |                  |       |
+>            |             |           |            |                  |       |
+>            +-------------+           +------------+                  +-------+
+>
+> In this case, rmnet1-7 would remain unused. The firmware used on the most
+> recent SoCs with BAM-DMUX even seems to announce only a single BAM-DMUX
+> channel (rmnet0), which makes QMAP the only option for multiplexing there.
+>
+> So far the driver is mainly tested on various smartphones/tablets based on
+> Qualcomm MSM8916/MSM8974 without QMAP. It looks like QMAP depends on a MTU
+> negotiation feature in BAM-DMUX which is not yet supported by the driver.
+>
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 > ---
->   drivers/gpu/drm/bochs/bochs_drv.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/bochs/bochs_drv.c b/drivers/gpu/drm/bochs/=
-bochs_drv.c
-> index c828cadbabff..8065c9537237 100644
-> --- a/drivers/gpu/drm/bochs/bochs_drv.c
-> +++ b/drivers/gpu/drm/bochs/bochs_drv.c
-> @@ -118,7 +118,7 @@ static int bochs_pci_probe(struct pci_dev *pdev,
->   	if (IS_ERR(dev))
->   		return PTR_ERR(dev);
->  =20
-> -	ret =3D pci_enable_device(pdev);
-> +	ret =3D pcim_enable_device(pdev);
->   	if (ret)
->   		goto err_free_dev;
->  =20
->=20
+> Note that this is my first network driver, so I apologize in advance
+> if I made some obvious mistakes. :)
+>
+> I'm not sure how to integrate the driver with the WWAN subsystem yet.
+> At the moment the driver creates network interfaces for all channels
+> announced by the modem, it does not make use of the WWAN link management
+> yet. Unfortunately, this is a bit complicated:
+>
+> Both QMAP and the built-in multiplexing layer might be needed at some point.
+> There are firmware versions that do not support QMAP and the other way around
+> (the built-in multiplexing was disabled on very recent firmware versions).
+> Only userspace can check if QMAP is supported in the firmware (via QMI).
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+I am not very familiar with the Qualcomm protocols and am just curious
+whether BAM-DMUX has any control (management) channels or only IPv4/v6
+data channels?
 
+The WWAN subsystem began as a framework for exporting management
+interfaces (MBIM, AT, etc.) to user space. And then the network
+interfaces (data channels) management interface was added to
+facilitate management of devices with multiple data channels. That is
+why I am curious about the BAM-DMUX device management interface or in
+other words, how a user space application could control the modem
+work?
 
---3UkehBvmd5mFqfwTL1h90To2blVmYbJVN--
+> I could ignore QMAP completely for now but I think someone will show up
+> who will need this eventually. And if there is going to be common code for
+> QMAP/rmnet link management it would be nice if BAM-DMUX could also make
+> use of it.
+>
+> But the question is, how could this look like? How do we know if we should
+> create a link for QMAP or a BAM-DMUX channel? Does it even make sense
+> to manage the 1-8 channels via the WWAN link management?
+>
+> Another problem is that the WWAN subsystem currently creates all network
+> interfaces below the common WWAN device. This means that userspace like
+> ModemManager has no way to check which driver provides them. This is
+> necessary though to decide how to set it up via QMI (ModemManager uses it).
+>
+> For reference, example of the channels announced by firmwares on various SoCs:
+>   - Qualcomm MSM8974: channel 0-7, QMAP not supported
+>   - Qualcomm MSM8916: channel 0-7, QMAP usually supported, but not always
+>                                    (depends on firmware version)
+>   - Qualcomm MSM8937: channel 0 only, QMAP required for multiplexing(?)
+>      (Note: This one is theoretic based on logs, this was not tested so far...)
 
---1tWaCOjUssnJCaas5KXmJJXzgakIpD6xl
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmD2klQFAwAAAAAACgkQlh/E3EQov+Dn
-LRAAytKE28XZKTScOgeBjGLyb6I50t+nAoIMtve7Gc22yETMye3+lkQ8ulGWm8OC931jHub2Qz8v
-3VsC3q2YuJSdXLPpPRGe59bgtnzSqgvvmEYzGXJ/dB6yhS4DDbks885mZBg5HusB5hvpwyE29lki
-67RuwzuQQ1tXmxSSuPmI5kT2BtawUxvP1bbU/44xgmhfUP4YMm53eLV/ELRvyvDjFfSJOxF857hQ
-ijfX6xWc3i7zLES4EPIc0sqNj0PPrP2wnuzUf6X65phtbS276Ym7tG9vTuI18YTnk7On9boiFtDr
-ZWeTSEmBq4nTi+XRsY3JPRQaGOmzMVx8vjex6iht5Uf835wX1j3F7FOEac9vP+/XFSVv4hAJ2/cy
-n2kuvhhLbko1TDgquFTqBI2cYZofEe6kkHqi0SSrIKn7/K7bJehJIBAZcHyqpBB5S6P1BkiusACM
-cqgM6NZ5t1OwFm1YFM9Oop4Hj2Kyat6Ucuv6O1sOLCfvWFS16g0jaJBUPfEar58Ly6FFefRvPD5v
-+3Ma64SwyLbRkVLxJjPYL2VuqDuVlTyGca8G42iHSi9P8gUTEJ797lWVLtKUi0HFxIPk75G6ctaU
-70sbjXHpsnIPS/+c6ekVJKDyDog2VBXAH7ip+tgDDxxYdlU1ssUGG5GqyETK65Y+bGqGTNcl0sJa
-rlI=
-=Sdka
------END PGP SIGNATURE-----
-
---1tWaCOjUssnJCaas5KXmJJXzgakIpD6xl--
+-- 
+Sergey
