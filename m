@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6153D044C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 00:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BCD3D044D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 00:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhGTV3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 17:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33622 "EHLO
+        id S229899AbhGTVaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 17:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231661AbhGTV2a (ORCPT
+        with ESMTP id S231709AbhGTV3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 17:28:30 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164A3C061766;
-        Tue, 20 Jul 2021 15:09:08 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id hd33so208539ejc.9;
-        Tue, 20 Jul 2021 15:09:08 -0700 (PDT)
+        Tue, 20 Jul 2021 17:29:02 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBEDC0613DE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 15:09:33 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id c1so666436pfc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 15:09:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9yBLdY7KHxHrlVOjcFhT5on4b0ty5A/PIQKOp8H8sX0=;
-        b=Of5GcmXFYsBBYYwA+L8dlDsyNx8xmE73+coBwK7Tw+ci53/8kYSkvDkgDDBRPbvyD1
-         0Y3KxVY3h8Ae1p59bRAC1yUmonHZ5rnN6/Sv/YVJKpZ0SqsjgggRL00pHg2vTcV7sQBq
-         NsBOB5rILAoCNQ0Drn1vV7yp0ZvzJ4FlrPbxh5Wzkfw3KeiR3CaX11xjlW32LxDurc71
-         sZfeRDl6D/eOd3oDJK/hN2Cutp385DgIaBoZij79Kt9UzWdj5pKJfEx8TI1pVZ3NAH4o
-         3qiGNMZj2w3aRlz0w6JNxGBbSyaW6/Bo5Z8q8ar9LdgBYbGAqbZkYSwye+Jr3I7fB6dR
-         0+EA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g1KpDtcbagCdJ8ZcB9ERipK82kYWQJWAaZ7siOAOkMw=;
+        b=iC5/q3Dl6pQ0rDuXXIFsUAbTTQ6Y1iAmt2YRVwiDFilqazfKQ9eEEPIayC2+XoUaT9
+         usur5pgbsW0fNlZwnXjGODqmC21M5aICjnd0qHR+a8GO8IcdohO4/jlCmYaIlbW9IpQ/
+         9icYBfvLFjmRAGsIv2RA8ekw4kWlpmiVwY66u3OydYL7Z53+N5wZpVGiQAecWFBlLpLe
+         sL9R9oq4gKRFUvlIZCwk423cdnRZmAN89qaHYNxWqXrQ1h70ThRegG+2GEW+VV4D7E6W
+         We1DWyHavLAYbXFybe4gmSLh43r2YhL50quM4zqfHfvjJeqPygE3Sbq/iA1L8bSDsgIo
+         MW0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9yBLdY7KHxHrlVOjcFhT5on4b0ty5A/PIQKOp8H8sX0=;
-        b=XkQKDtTjPZxQF+Do0paWLalu+rHYGmt5wOiR//qlBr/3bpo04BGRtz1ALxYzg+dBWB
-         rwyEzHCWSs/9klsgsNDHmNGadMf0E0mUgK2fbQ/v8t9HfVqoynEJpuZmTjemiLWIYYK0
-         CIY9l5txXxYwPGH9NGCoe0zt5W1xAg9WZ8uu1IHSYgbwkknbez8w90mbaMYLH9aoOFlQ
-         PpM6RGJk8sJi+MV2WVnFMT82lXipmdNabsN2kaqMBefYGNCoq/IDjSaZ9Tn5JT3Cfc/5
-         NvXuMQ0PFZZ9+rU6wU7itaZtW0FC0ox/iPg3y7wXhbT7WweD77LzauZ196nKN1TmwBM8
-         MAdQ==
-X-Gm-Message-State: AOAM533tf+bzPOEbRy51gcQGHH+JxVMohhQ84r3w1/4IAic83w/9oH2x
-        nzVhSu0sHY9COcufcYPZ57VNbOrRXXsZKAtH+FM=
-X-Google-Smtp-Source: ABdhPJwqJT12MjIkIm+nGR/6gUPI783Xejf4KnzDG/n9SAhxLQdAmS4aC0+kTR5vSb9DzeZdy4c9V3+Qx+c6osjThL8=
-X-Received: by 2002:a17:906:53d1:: with SMTP id p17mr35539038ejo.208.1626818946563;
- Tue, 20 Jul 2021 15:09:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g1KpDtcbagCdJ8ZcB9ERipK82kYWQJWAaZ7siOAOkMw=;
+        b=ROKQUnTouhx3nOM2ELMbxg9ys7hQUasZMQvDF2d0YFxJvgwev7pSm2y8coIG13U9Yu
+         8JG+n8OMnZWmwTXzqVefMD/bGzZm66ph2Ec/FX5VcAGPa2yB0nHyjnsE07hm+hp1z4Yh
+         VIQgXpU91/m6T/caOCABiaSOCnl7YsrNffTwRfEitSJE3M0h8aAy1yn7wFE4zEIWIlwh
+         Rg8U3vpuiUGDRoEW1u9Fs5SVcFoZPqZ+xunFNzBTxVvakAnCUGxQznOC1R0m3VH4R0dw
+         MLGyfamfM7PbL8M4VHjzmbZJGtJ4eLRj+D+J3og9/ORoYwpb+cND3X82SwcDKKUQoMv2
+         XL7Q==
+X-Gm-Message-State: AOAM533jVYaJTBS2OGSCO8APnkiB6j3rWEJI8t0EmzEGe1SerML+E3Xf
+        KSwGGGUT/KlHeVrxYt9lN6k72wk5sloDIQ==
+X-Google-Smtp-Source: ABdhPJx8WtrWjs7nIJb96K+K/6fJyf4kxrPOkag79GDpR0/USJYJ5ph8uncx7oovExjawasHg85EEw==
+X-Received: by 2002:a63:5059:: with SMTP id q25mr32834341pgl.9.1626818972887;
+        Tue, 20 Jul 2021 15:09:32 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id p5sm24369675pfn.46.2021.07.20.15.09.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 15:09:32 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 22:09:28 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 38/40] KVM: SVM: Provide support for
+ SNP_GUEST_REQUEST NAE event
+Message-ID: <YPdJmKXhXKOZdlld@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-39-brijesh.singh@amd.com>
+ <YPYBmlCuERUIO5+M@google.com>
+ <68ea014c-51bc-6ed4-a77e-dd7ce1a09aaf@amd.com>
+ <YPb5yfKEyJjvDbOl@google.com>
+ <0641fdec-48a0-b3b7-9926-3ce5a6e53eb0@amd.com>
 MIME-Version: 1.0
-References: <20210629182047.893415-1-martin.blumenstingl@googlemail.com>
- <20210629182047.893415-3-martin.blumenstingl@googlemail.com> <YPaLKwEKcDLWwztM@matsya>
-In-Reply-To: <YPaLKwEKcDLWwztM@matsya>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Wed, 21 Jul 2021 00:08:55 +0200
-Message-ID: <CAFBinCCJ5DjvjkfjYg7SveDB0bvJ-XV6BwcF_yEeUqxRN9awiQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] phy: amlogic: Add a new driver for the HDMI TX PHY
- on Meson8/8b/8m2
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     robh+dt@kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        kishon@ti.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0641fdec-48a0-b3b7-9926-3ce5a6e53eb0@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On Tue, Jul 20, 2021, Brijesh Singh wrote:
+> 
+> On 7/20/21 11:28 AM, Sean Christopherson wrote:
+> > Out of curiosity, why 4 VMPCKs?  It seems completely arbitrary.
+> > 
+> 
+> I believe the thought process was by providing 4 keys it can provide
+> flexibility for each VMPL levels to use a different keys (if they wish). The
+> firmware does not care about the vmpl level during the guest request
+> handling, it just want to know which key is used for encrypting the payload
+> so that he can decrypt and provide the  response for it.
 
-On Tue, Jul 20, 2021 at 10:37 AM Vinod Koul <vkoul@kernel.org> wrote:
-[...]
-> > +     if (clk_get_rate(priv->tmds_clk) >= 2970UL * 1000 * 1000)
-> > +             hdmi_ctl0 = 0x1e8b;
-> > +     else
-> > +             hdmi_ctl0 = 0x4d0b;
->
-> magic numbers..? I guess these are register offsets, would be better to
-> define..
-Unfortunately these are register values, not offsets
-The only "documentation" I have is:
-- documentation for the bits/bit-fields in these registers [0]
-- some reference code with magic values from the vendor BSP: [1]
+Ah, I forgot about VMPLs.  That makes sense.
 
-HDMI_CTL0/HDMI_CTL1 (the names from the datasheet) is not very
-specific and I could not find any other explanation on what the values
-mean.
-That's why I cannot offer more than these magic values (same situation
-for your finding below).
-
-[...]
-> > +     ret = device_property_read_u32_array(&pdev->dev, "reg", reg,
-> > +                                          ARRAY_SIZE(reg));
->
-> we have reg as single property, why array with 2 entries here?
-My thought when Rob requested a "reg" property in the dt-bindings was
-that I should use offset and size.
-I am not validating the size here, which would be in reg[1].
-If it's fine for Rob as well then I'll switch the dt-bindings to just
-have the offset inside the reg property.
-
-[...]
-> > +static const struct of_device_id phy_meson8_hdmi_tx_of_match[] = {
-> > +     { .compatible = "amlogic,meson8-hdmi-tx-phy" },
-> > +     { .compatible = "amlogic,meson8b-hdmi-tx-phy" },
-> > +     { .compatible = "amlogic,meson8m2-hdmi-tx-phy" },
-> > +     { /* sentinel */ }
->
-> I see that all three are handled similarly, no difference!
-So far this is correct, they're all treated the same.
-However, it happened to me (multiple times) in the past that later on
-I would spot a difference hidden in the vendor BSP.
-One example is commit f004be596c28f9 ("phy: amlogic: meson8b-usb2: Add
-a compatible string for Meson8m2").
-I know that other parts of the graphics pipeline are different on
-Meson8 compared to the other two SoCs (because Meson8b/Meson8m2 have
-some reset lines which need to be toggled after updating the video
-clocks. these resets don't exist on Meson8).
-So I decided to play safe and add compatible strings for every SoC so
-I can easily handle any differences in the future (in case I find
-any).
-
-
-Best regards,
-Martin
-
-
-[0] https://dn.odroid.com/S805/Datasheet/S805_Datasheet%20V0.8%2020150126.pdf
-[1] https://github.com/endlessm/linux-meson/blob/d6e13c220931110fe676ede6da69fc61a7cb04b6/arch/arm/mach-meson8/hdmi_tx_hw/hdmi_tx_hw.c#L2350-L2381
+Thanks!
