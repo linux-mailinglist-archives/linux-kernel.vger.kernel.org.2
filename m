@@ -2,196 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC353CFE0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8863CFE17
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240121AbhGTPEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:04:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27421 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241216AbhGTOph (ORCPT
+        id S240721AbhGTPFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240077AbhGTOph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Jul 2021 10:45:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626794762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VvhRyI9qx2opvkzxayFq3lx3Fi91A+65gJ9KuJmJw0Y=;
-        b=ABjbqeQc8tgEuI/Wo8oTCCUnwDrfhNUnbm5xS4feM83FscDbELbsVRdwohoqtjD6vuNG/7
-        0xMe/a/YhzZkUagnIfX4r4EwvTgWirF/8baBK+3IHECar7N8gwvZTsA3teUMza+bbPIF+W
-        zfAZaBaHz9uKumFb+BOHZ1fnbSgBfV8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-250-t1xGmvbZPOu_b0e2Gaa-1g-1; Tue, 20 Jul 2021 11:22:40 -0400
-X-MC-Unique: t1xGmvbZPOu_b0e2Gaa-1g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7462E80414C;
-        Tue, 20 Jul 2021 15:22:39 +0000 (UTC)
-Received: from T590 (ovpn-12-98.pek2.redhat.com [10.72.12.98])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C4FDE60877;
-        Tue, 20 Jul 2021 15:22:30 +0000 (UTC)
-Date:   Tue, 20 Jul 2021 23:22:25 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kashyap.desai@broadcom.com, hare@suse.de
-Subject: Re: [PATCH 0/9] blk-mq: Reduce static requests memory footprint for
- shared sbitmap
-Message-ID: <YPbqMSjZIA8l0jHQ@T590>
-References: <1626275195-215652-1-git-send-email-john.garry@huawei.com>
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3A5C0613DB;
+        Tue, 20 Jul 2021 08:23:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YMJtZl0zXHIg/quYkGxZ124m2IPJSkonaupGUSsz4Eg=; b=LmHCNdtnyQmWHaZa+nyfYJ9TbM
+        hlWkq/nRtQ+gQeZBatFJyw8v5ISxlLOHOrPJOZGpGTscR2vBu0ynTY3otLp/O+0DYdo8AHvH9U1OZ
+        CexnBvS9QvhGiyRDsimnFgbK0ffkcFhiBi2Nd/J3FW3NMJVoA1HoCZm+gXjwm92SEfPQDFlGEXviJ
+        pGMDTHuSUXpsgvPaE8lGNpGaIJO1+MGDWFs0FYYGgjWcj4IJVs7dkg2h16lwDhXQivyHSMclIAm7I
+        289weZ1G+Pa2nUUXhyiKPNb7YoHelS2rbxk2G76taXCJ3U0GT1/o6oJz/VyD1GcaLXsgjEuAiLOFb
+        5ihwf5wA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5raj-008Feq-29; Tue, 20 Jul 2021 15:23:41 +0000
+Date:   Tue, 20 Jul 2021 16:23:29 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 000/138] Memory folios
+Message-ID: <YPbqcQ9i/Vi7ivEE@casper.infradead.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <YParbk8LxhrZMExc@kernel.org>
+ <YPbEax52N7OBQCZp@casper.infradead.org>
+ <YPbpBv30NqeQPqPK@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1626275195-215652-1-git-send-email-john.garry@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <YPbpBv30NqeQPqPK@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 11:06:26PM +0800, John Garry wrote:
-> Currently a full set of static requests are allocated per hw queue per
-> tagset when shared sbitmap is used.
+On Tue, Jul 20, 2021 at 06:17:26PM +0300, Mike Rapoport wrote:
+> On Tue, Jul 20, 2021 at 01:41:15PM +0100, Matthew Wilcox wrote:
+> > On Tue, Jul 20, 2021 at 01:54:38PM +0300, Mike Rapoport wrote:
+> > > Most of the changelogs (at least at the first patches) mention reduction of
+> > > the kernel size for your configuration on x86. I wonder, what happens if
+> > > you build the kernel with "non-distro" configuration, e.g. defconfig or
+> > > tiny.config?
+> > 
+> > I did an allnoconfig build and that reduced in size by ~2KiB.
+> > 
+> > > Also, what is the difference on !x86 builds?
+> > 
+> > I don't generally do non-x86 builds ... feel free to compare for
+> > yourself!
 > 
-> However, only tagset->queue_depth number of requests may be active at
-> any given time. As such, only tagset->queue_depth number of static
-> requests are required.
+> I did allnoconfig and defconfig for arm64 and powerpc.
 > 
-> The same goes for using an IO scheduler, which allocates a full set of
-> static requests per hw queue per request queue.
+> All execpt arm64::defconfig show decrease by ~1KiB, while arm64::defconfig
+> was actually increased by ~500 bytes.
+
+Which patch did you go up to for that?  If you're going past patch 50 or
+so, then you're starting to add functionality (ie support for arbitrary
+order pages), so a certain amount of extra code size might be expected.
+I measured 6KB at patch 32 or so, then between patch 32 & 50 was pretty
+much a wash.
+
+> I didn't dig into objdumps yet.
 > 
-> This series very significantly reduces memory usage in both scenarios by
-> allocating static rqs per tagset and per request queue, respectively,
-> rather than per hw queue per tagset and per request queue.
+> I also tried to build arm but it failed with:
 > 
-> For megaraid sas driver on my 128-CPU arm64 system with 1x SATA disk, we
-> save approx. 300MB(!) [370MB -> 60MB]
-> 
-> A couple of patches are marked as RFC, as maybe there is a better
-> implementation approach.
+>   CC      fs/remap_range.o
+> fs/remap_range.c: In function 'vfs_dedupe_file_range_compare':
+> fs/remap_range.c:250:3: error: implicit declaration of function 'flush_dcache_folio'; did you mean 'flush_cache_louis'? [-Werror=implicit-function-declaration]
+>   250 |   flush_dcache_folio(src_folio);
+>       |   ^~~~~~~~~~~~~~~~~~
+>       |   flush_cache_louis
+> cc1: some warnings being treated as errors
 
-There is another candidate for addressing this issue, and looks simpler:
-
- block/blk-mq-sched.c |  4 ++++
- block/blk-mq-tag.c   |  4 ++++
- block/blk-mq-tag.h   |  3 +++
- block/blk-mq.c       | 18 ++++++++++++++++++
- block/blk-mq.h       | 11 +++++++++++
- 5 files changed, 40 insertions(+)
-
-diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-index c838d81ac058..b9236ee0fe4e 100644
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -538,6 +538,10 @@ static int blk_mq_sched_alloc_tags(struct request_queue *q,
- 	if (!hctx->sched_tags)
- 		return -ENOMEM;
- 
-+	blk_mq_set_master_tags(hctx->sched_tags,
-+			q->queue_hw_ctx[0]->sched_tags, hctx->flags,
-+			hctx_idx);
-+
- 	ret = blk_mq_alloc_rqs(set, hctx->sched_tags, hctx_idx, q->nr_requests);
- 	if (ret)
- 		blk_mq_sched_free_tags(set, hctx, hctx_idx);
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index 86f87346232a..c471a073234d 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -608,6 +608,10 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
- 				tags->nr_reserved_tags, set->flags);
- 		if (!new)
- 			return -ENOMEM;
-+
-+		blk_mq_set_master_tags(new,
-+			hctx->queue->queue_hw_ctx[0]->sched_tags, set->flags,
-+			hctx->queue_num);
- 		ret = blk_mq_alloc_rqs(set, new, hctx->queue_num, tdepth);
- 		if (ret) {
- 			blk_mq_free_rq_map(new, set->flags);
-diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
-index 8ed55af08427..0a3fbbc61e06 100644
---- a/block/blk-mq-tag.h
-+++ b/block/blk-mq-tag.h
-@@ -21,6 +21,9 @@ struct blk_mq_tags {
- 	struct request **static_rqs;
- 	struct list_head page_list;
- 
-+	/* only used for blk_mq_is_sbitmap_shared() */
-+	struct blk_mq_tags	*master;
-+
- 	/*
- 	 * used to clear request reference in rqs[] before freeing one
- 	 * request pool
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 2c4ac51e54eb..ef8a6a7e5f7c 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2348,6 +2348,15 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
- {
- 	struct page *page;
- 
-+	if (blk_mq_is_sbitmap_shared(set->flags)) {
-+		if (tags->master)
-+			tags = tags->master;
-+		if (hctx_idx < set->nr_hw_queues - 1) {
-+			blk_mq_clear_rq_mapping(set, tags, hctx_idx);
-+			return;
-+		}
-+	}
-+
- 	if (tags->rqs && set->ops->exit_request) {
- 		int i;
- 
-@@ -2444,6 +2453,12 @@ int blk_mq_alloc_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
- 	size_t rq_size, left;
- 	int node;
- 
-+	if (blk_mq_is_sbitmap_shared(set->flags) && tags->master) {
-+		memcpy(tags->static_rqs, tags->master->static_rqs,
-+		       sizeof(tags->static_rqs[0]) * tags->nr_tags);
-+		return 0;
-+	}
-+
- 	node = blk_mq_hw_queue_to_node(&set->map[HCTX_TYPE_DEFAULT], hctx_idx);
- 	if (node == NUMA_NO_NODE)
- 		node = set->numa_node;
-@@ -2860,6 +2875,9 @@ static bool __blk_mq_alloc_map_and_request(struct blk_mq_tag_set *set,
- 	if (!set->tags[hctx_idx])
- 		return false;
- 
-+	blk_mq_set_master_tags(set->tags[hctx_idx], set->tags[0], flags,
-+			       hctx_idx);
-+
- 	ret = blk_mq_alloc_rqs(set, set->tags[hctx_idx], hctx_idx,
- 				set->queue_depth);
- 	if (!ret)
-diff --git a/block/blk-mq.h b/block/blk-mq.h
-index d08779f77a26..a08b89be6acc 100644
---- a/block/blk-mq.h
-+++ b/block/blk-mq.h
-@@ -354,5 +354,16 @@ static inline bool hctx_may_queue(struct blk_mq_hw_ctx *hctx,
- 	return __blk_mq_active_requests(hctx) < depth;
- }
- 
-+static inline void blk_mq_set_master_tags(struct blk_mq_tags *tags,
-+		struct blk_mq_tags *master_tags, unsigned int flags,
-+		unsigned int hctx_idx)
-+{
-+	if (blk_mq_is_sbitmap_shared(flags)) {
-+		if (hctx_idx)
-+			tags->master = master_tags;
-+		else
-+			tags->master = NULL;
-+	}
-+}
- 
- #endif
-
-
-Thanks,
-Ming
-
+Already complained about by the build bot; already fixed.  You should
+maybe look at the git tree if you're doing more than code review.
