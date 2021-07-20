@@ -2,67 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EFC3CF467
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C453CF46F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241467AbhGTFkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 01:40:02 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:9102 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237106AbhGTFjB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 01:39:01 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app12-12012 (RichMail) with SMTP id 2eec60f66ad00f9-39695; Tue, 20 Jul 2021 14:18:56 +0800 (CST)
-X-RM-TRANSID: 2eec60f66ad00f9-39695
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.0.144.134])
-        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee260f66abc482-81c9c;
-        Tue, 20 Jul 2021 14:18:56 +0800 (CST)
-X-RM-TRANSID: 2ee260f66abc482-81c9c
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] power: supply: cpcap-battery: Use IS_ERR() to check and simplify code
-Date:   Tue, 20 Jul 2021 14:18:36 +0800
-Message-Id: <20210720061836.29148-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S237638AbhGTFlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 01:41:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236023AbhGTFlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 01:41:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D272161164;
+        Tue, 20 Jul 2021 06:21:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626762103;
+        bh=kT858tbM+FvoZJvsNWp8Z/qAwVIb0XIdGfoX9Qw5ELw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sBzwYBJmynrsdT64h222sKJzYzllzQb/0LG0Hlm1BGwCQRXm5vN/1Gp8rhfliVzuq
+         DVrt6B7pm+v0sFRrVt15qjeSJ4gIX7z57jz1JPR6LU7L3PVMol3oEcSG6CBPyexSFI
+         Q4QR92kenKuntNIWpGxs+Z6ooDY4csXi2KU06OKg=
+Date:   Tue, 20 Jul 2021 08:21:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 4.19 000/420] 4.19.198-rc2 review
+Message-ID: <YPZraezaAgdBNPSp@kroah.com>
+References: <20210719184335.198051502@linuxfoundation.org>
+ <CA+G9fYtAN7y5Z82nO59daxD=AtYOyu2J7ECFjY2P64JR9Fqifg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYtAN7y5Z82nO59daxD=AtYOyu2J7ECFjY2P64JR9Fqifg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use IS_ERR() and PTR_ERR() instead of PTR_ERR_OR_ZERO() to
-simplify code, avoid redundant judgements.
+On Tue, Jul 20, 2021 at 11:25:22AM +0530, Naresh Kamboju wrote:
+> On Tue, 20 Jul 2021 at 00:15, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 4.19.198 release.
+> > There are 420 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 21 Jul 2021 18:42:43 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.198-rc2.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> Perf fails to compile in 4.19 on Arm, Arm64, i386 and x86 with gcc 7.3
+> It was also reported on 5.4.134-rc2.
+> 
+>   perf-1.0/perf-in.o: In function `tasks_setup':
+>   tools/perf/builtin-report.c:664: undefined reference to `process_attr'
+>   perf-in.o: In function `stats_setup':
+>   tools/perf/builtin-report.c:644: undefined reference to `process_attr'
+> 
+> Bisection points to ee7531fb817c ("perf report: Fix --task and --stat
+> with pipe input" [upstream commit
+> 892ba7f18621a02af4428c58d97451f64685dba4]).
+> 
+> 
+> > Namhyung Kim <namhyung@kernel.org>
+> >     perf report: Fix --task and --stat with pipe input
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- drivers/power/supply/cpcap-battery.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Thanks, now dropped from all branches.
 
-diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/cpcap-battery.c
-index 90eba3646..7007e5d53 100644
---- a/drivers/power/supply/cpcap-battery.c
-+++ b/drivers/power/supply/cpcap-battery.c
-@@ -912,10 +912,9 @@ static int cpcap_battery_probe(struct platform_device *pdev)
- 
- 	ddata->psy = devm_power_supply_register(ddata->dev, psy_desc,
- 						&psy_cfg);
--	error = PTR_ERR_OR_ZERO(ddata->psy);
--	if (error) {
-+	if (IS_ERR(ddata->psy)) {
- 		dev_err(ddata->dev, "failed to register power supply\n");
--		return error;
-+		return PTR_ERR(ddata->psy);
- 	}
- 
- 	atomic_set(&ddata->active, 1);
--- 
-2.20.1.windows.1
-
-
-
+greg k-h
