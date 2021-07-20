@@ -2,151 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9743CF70D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF2E3CF70E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235708AbhGTJBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 05:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
+        id S234946AbhGTJCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 05:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235181AbhGTJAq (ORCPT
+        with ESMTP id S235243AbhGTJAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Jul 2021 05:00:46 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEF4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 02:41:09 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id b12so19086608pfv.6
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 02:41:09 -0700 (PDT)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD0DC061762;
+        Tue, 20 Jul 2021 02:41:21 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id u13so34834257lfs.11;
+        Tue, 20 Jul 2021 02:41:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=lBTdU8mREWjp6GuuDRHaFg8/8Aywm4XcbbpvuhmOIxI=;
-        b=OQPq3ivHPUv0PV3E0QM2yqaQD4NedeMCakKx7MBpzKAlKJmT8YbStiF3T9y0FixuKL
-         xU4iUVlLAguySXkO8kgsWzDP7f8Azr3RxK0+KZB0tRAA8cBSDuQzuJapBqEmYyZKoi/q
-         JvC2hGQJlh8EUa0PorL2dudpoZQgfYTXyyaVRKkB+J3gd+ajkAskmj1i6fcpwreX+TXb
-         RleIwS/fMI6yvAY1X2X/ZLOMwbL7Mg9pmHF9CVJa837enDVh29W2CH9eq+lJZrTrbts0
-         tZtWhO588w09ox/PL2pVT7Qw4w1WpxM5e/5iT1vnoXOZwMKUCmf2YfpZwDIXy1T1A0fU
-         Y5vw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xxXRlc1YpWUGD6qOrxBg//WnjXx9qz58b59edZfEv8E=;
+        b=HafbtGMgJPjsjx/piU8tN1c9iNcaXDKx8BO36TdzFhNcjmP417G0MESge57jW+Ds+A
+         Tf3xNr5zyy0w/VjH3JLW56QRtDXQ85ZhJvqIEI6JAyudr5PIE9fKBjtznXjPGQLPJ66G
+         Pf82v5KSq6L1YKeeLDW4v0/n+c6lVwiQLEHnD+hGdzbnMVYTUwoJD/noOqcbvcMwGbBK
+         /NokMPSLJ7zR14IiNeVV99bWrOXGKnazDN0DA420p2bsSpJ/vY7zWe36UOMmFAXen9sn
+         UNgKK1zPK0IVzp+7kPmHAjB5kTLTl/3LG2DSe4Ua0pNeOl7IZhgLGTZFtz9DFORX5NYh
+         /LZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=lBTdU8mREWjp6GuuDRHaFg8/8Aywm4XcbbpvuhmOIxI=;
-        b=Ge+F5f0q9S1XIaJyD35/bHUujMrzZq8NBJxbX26lS+zqw0u5GmLQnRHOe9rqiDcJ2D
-         kOtPDTtIbf/oL4fgjzM5kTpw3cYA6UC+X8GUofV4axDG1O1/Bz+5xQ5g1/FwJEAIFL/v
-         b1oXAY2TB37g2dCrfno9AVzPC0LMPWdWZIPW5XadMGinkCWpjo10rnfuMVHIQbLSKsZ7
-         rD76T868WQsYXgdqKFCax3bH74V+CL/C/PQ4oOYbWUfcfHjjofPUUYgjVCi7U3jLShMG
-         rSXZoR+H/1lylkxkn5hBoEurzGtjisMzfRr0+5dV+vsIqj42MaRYdH+Ka0pl/LynMynJ
-         dVIg==
-X-Gm-Message-State: AOAM533ICgUiWGONhwt9V68CHjwzpnqLZpZ6hegC8d8UC8N1yhiY5NuP
-        3lut5O/Ik0LhYiuN45x5ykQm/Q==
-X-Google-Smtp-Source: ABdhPJzwFMn5nWvbQaylTXslcD5MFqxqoe3hjE59RDXvkdB56AeXlY8I65PRaJL6t1G/soCSfzRAhg==
-X-Received: by 2002:a63:5244:: with SMTP id s4mr22843254pgl.267.1626774068971;
-        Tue, 20 Jul 2021 02:41:08 -0700 (PDT)
-Received: from [192.168.10.23] (219-90-184-65.ip.adam.com.au. [219.90.184.65])
-        by smtp.gmail.com with UTF8SMTPSA id n23sm24858904pgv.76.2021.07.20.02.41.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 02:41:08 -0700 (PDT)
-Message-ID: <cd309d68-65ac-0ce9-c941-520ac6402f8e@ozlabs.ru>
-Date:   Tue, 20 Jul 2021 19:41:02 +1000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:90.0) Gecko/20100101
- Thunderbird/90.0
-Subject: Re: [PATCH v5 02/11] powerpc/kernel/iommu: Add new
- iommu_table_in_use() helper
-Content-Language: en-US
-To:     =?UTF-8?Q?Leonardo_Br=c3=a1s?= <leobras.c@gmail.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xxXRlc1YpWUGD6qOrxBg//WnjXx9qz58b59edZfEv8E=;
+        b=UEksfE0xAN6LC17v8ny8OzsG2lIQkcmVGWVt/0uNcKA0gSa4pNCdtBmnTKMaRQusF/
+         h274jSz1LTYMXvHn66Li/AcLR9qk2ZU8scY0/dm93hVRks/sZlIpDLZZ5sC9PExu0xU+
+         NSJZNOZ9jfE9pmcn9j5AVXem7ySGfoB+J13oZmINUUQfx8vIMbUUNiwQQTZygxmgrlvR
+         vsWZgpFLR1QMec2DD1sRnrgm048/ogTxfQrDs8Hewzb2zW2B3g0MT2vdnMm8JkhROjH9
+         J+FHqoAng/+B3WOKBqiSs/3/tVHYez1MUgL547PTvj0v1TlRKYsUgxvP+zaBpN2GW7gH
+         LPnA==
+X-Gm-Message-State: AOAM531Kfy1+FC7K1puusVt0+ulyLoFhR5luGVySUF0gqea0PnkN+R0I
+        eAFdALuD3E8oK6l2tQbiu0I=
+X-Google-Smtp-Source: ABdhPJzIEiAc/bovbtbY9kJ0OUzC2TST2BxIthT+mJVo7EXVwQytMkmFfMBqOYEe9L8cEFkpRsa5Fw==
+X-Received: by 2002:ac2:5590:: with SMTP id v16mr22037103lfg.453.1626774079826;
+        Tue, 20 Jul 2021 02:41:19 -0700 (PDT)
+Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
+        by smtp.gmail.com with ESMTPSA id t7sm1746360ljc.81.2021.07.20.02.41.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 02:41:19 -0700 (PDT)
+Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
+        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 16K9fGjX004835;
+        Tue, 20 Jul 2021 12:41:17 +0300
+Received: (from paul@localhost)
+        by home.paul.comp (8.15.2/8.15.2/Submit) id 16K9fEPx004834;
+        Tue, 20 Jul 2021 12:41:14 +0300
+Date:   Tue, 20 Jul 2021 12:41:13 +0300
+From:   Paul Fertser <fercerpav@gmail.com>
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Joel Stanley <joel@jms.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        kernel test robot <lkp@intel.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210716082755.428187-1-leobras.c@gmail.com>
- <20210716082755.428187-3-leobras.c@gmail.com>
- <29c199f3-63a8-3edb-b29e-de157431d89f@linux.ibm.com>
- <283e44591010dcb0690769afaef147add3b36978.camel@gmail.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-In-Reply-To: <283e44591010dcb0690769afaef147add3b36978.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org
+Subject: Re: [PATCH v2 3/3] net/ncsi: add dummy response handler for Intel
+ boards
+Message-ID: <20210720094113.GA4789@home.paul.comp>
+References: <20210708122754.555846-1-i.mikhaylov@yadro.com>
+ <20210708122754.555846-4-i.mikhaylov@yadro.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708122754.555846-4-i.mikhaylov@yadro.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+On Thu, Jul 08, 2021 at 03:27:54PM +0300, Ivan Mikhaylov wrote:
+> Add the dummy response handler for Intel boards to prevent incorrect
+> handling of OEM commands.
 
-On 20/07/2021 15:38, Leonardo Brás wrote:
-> Hello Fred, thanks for this feedback!
-> 
-> Sorry if I miss anything, this snippet was written for v1 over an year
-> ago, and I have not taken a look at it ever since.
-> 
-> On Mon, 2021-07-19 at 15:53 +0200, Frederic Barrat wrote:
->>
->>
->> On 16/07/2021 10:27, Leonardo Bras wrote:
->>> @@ -1099,18 +1105,13 @@ int iommu_take_ownership(struct iommu_table
->>> *tbl)
->>>          for (i = 0; i < tbl->nr_pools; i++)
->>>                  spin_lock_nest_lock(&tbl->pools[i].lock, &tbl-
->>>> large_pool.lock);
->>>    
->>> -       iommu_table_release_pages(tbl);
->>> -
->>> -       if (!bitmap_empty(tbl->it_map, tbl->it_size)) {
->>> +       if (iommu_table_in_use(tbl)) {
->>>                  pr_err("iommu_tce: it_map is not empty");
->>>                  ret = -EBUSY;
->>> -               /* Undo iommu_table_release_pages, i.e. restore
->>> bit#0, etc */
->>> -               iommu_table_reserve_pages(tbl, tbl-
->>>> it_reserved_start,
->>> -                               tbl->it_reserved_end);
->>> -       } else {
->>> -               memset(tbl->it_map, 0xff, sz);
->>>          }
->>>    
->>> +       memset(tbl->it_map, 0xff, sz);
->>> +
->>
->>
->> So if the table is not empty, we fail (EBUSY) but we now also
->> completely
->> overwrite the bitmap. It was in an unexpected state, but we're making
->> it
->> worse. Or am I missing something?
-> 
-> IIRC there was a reason to do that at the time, but TBH I don't really
-> remember it, and by looking at the code right now you seem to be
-> correct about this causing trouble.
-> 
-> I will send a v6 fixing it soon.
-> Please review the remaining patches for some issue I may be missing.
-> 
-> Alexey, any comments on that?
+It would be much nicer if it wasn't dummy but provide means of
+obtaining the MAC properly, in a similar way to the other supported
+network cards.
 
+I have a patch I can share but not ready to send for proper mainlining
+due to time constraints. Feel free to take it over and send as part of
+your patch series.
 
-Agree with Fred, this is a bug, EBUSY is not that unexpected :-/ Thanks,
+From 6c717bbb75442c83bd11b37b7644f9ce187ee7e9 Mon Sep 17 00:00:00 2001
+From: Brad Ho <Brad_Ho@phoenix.com>
+Date: Thu, 25 Feb 2021 00:53:03 -0800
+Subject: [PATCH] Add get MAC address through NCSI command to get INTEL i210
+ MAC address
 
+Signed-off-by: Brad Ho <Brad_Ho@phoenix.com>
+Signed-off-by: Paul Fertser <fercerpav@gmail.com>
+---
+ net/ncsi/internal.h    |  5 ++++
+ net/ncsi/ncsi-manage.c | 25 ++++++++++++++++-
+ net/ncsi/ncsi-pkt.h    |  6 ++++
+ net/ncsi/ncsi-rsp.c    | 62 +++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 96 insertions(+), 2 deletions(-)
 
-> 
->>
->>     Fred
->>
-> 
-> Again, thank you for reviewing Fred!
-> Best regards,
-> Leonardo Bras
-> 
-> 
-> 
-> 
-> 
+diff --git a/net/ncsi/internal.h b/net/ncsi/internal.h
+index e37102546be6..8a6a8127156b 100644
+--- a/net/ncsi/internal.h
++++ b/net/ncsi/internal.h
+@@ -78,6 +78,7 @@ enum {
+ /* OEM Vendor Manufacture ID */
+ #define NCSI_OEM_MFR_MLX_ID             0x8119
+ #define NCSI_OEM_MFR_BCM_ID             0x113d
++#define NCSI_OEM_MFR_INTEL_ID           0x0157
+ /* Broadcom specific OEM Command */
+ #define NCSI_OEM_BCM_CMD_GMA            0x01   /* CMD ID for Get MAC */
+ /* Mellanox specific OEM Command */
+@@ -85,16 +86,20 @@ enum {
+ #define NCSI_OEM_MLX_CMD_GMA_PARAM      0x1b   /* Parameter for GMA  */
+ #define NCSI_OEM_MLX_CMD_SMAF           0x01   /* CMD ID for Set MC Affinity */
+ #define NCSI_OEM_MLX_CMD_SMAF_PARAM     0x07   /* Parameter for SMAF         */
++/* Intel specific OEM Command */
++#define NCSI_OEM_INTEL_CMD_GMA          0x06   /* CMD ID for Get MAC */
+ /* OEM Command payload lengths*/
+ #define NCSI_OEM_BCM_CMD_GMA_LEN        12
+ #define NCSI_OEM_MLX_CMD_GMA_LEN        8
+ #define NCSI_OEM_MLX_CMD_SMAF_LEN        60
++#define NCSI_OEM_INTEL_CMD_GMA_LEN      5
+ /* Offset in OEM request */
+ #define MLX_SMAF_MAC_ADDR_OFFSET         8     /* Offset for MAC in SMAF    */
+ #define MLX_SMAF_MED_SUPPORT_OFFSET      14    /* Offset for medium in SMAF */
+ /* Mac address offset in OEM response */
+ #define BCM_MAC_ADDR_OFFSET             28
+ #define MLX_MAC_ADDR_OFFSET             8
++#define INTEL_MAC_ADDR_OFFSET           1
+ 
+ 
+ struct ncsi_channel_version {
+diff --git a/net/ncsi/ncsi-manage.c b/net/ncsi/ncsi-manage.c
+index 1f387be7827b..fb25ae22ea3d 100644
+--- a/net/ncsi/ncsi-manage.c
++++ b/net/ncsi/ncsi-manage.c
+@@ -760,13 +760,36 @@ static int ncsi_oem_smaf_mlx(struct ncsi_cmd_arg *nca)
+ 	return ret;
+ }
+ 
++static int ncsi_oem_gma_handler_intel(struct ncsi_cmd_arg *nca)
++{
++	unsigned char data[NCSI_OEM_INTEL_CMD_GMA_LEN];
++	int ret = 0;
++
++	nca->payload = NCSI_OEM_INTEL_CMD_GMA_LEN;
++
++	memset(data, 0, NCSI_OEM_INTEL_CMD_GMA_LEN);
++	*(unsigned int *)data = ntohl(NCSI_OEM_MFR_INTEL_ID);
++	data[4] = NCSI_OEM_INTEL_CMD_GMA;
++
++	nca->data = data;
++
++	ret = ncsi_xmit_cmd(nca);
++	if (ret)
++		netdev_err(nca->ndp->ndev.dev,
++			   "NCSI: Failed to transmit cmd 0x%x during configure\n",
++			   nca->type);
++
++	return ret;
++}
++
+ /* OEM Command handlers initialization */
+ static struct ncsi_oem_gma_handler {
+ 	unsigned int	mfr_id;
+ 	int		(*handler)(struct ncsi_cmd_arg *nca);
+ } ncsi_oem_gma_handlers[] = {
+ 	{ NCSI_OEM_MFR_BCM_ID, ncsi_oem_gma_handler_bcm },
+-	{ NCSI_OEM_MFR_MLX_ID, ncsi_oem_gma_handler_mlx }
++	{ NCSI_OEM_MFR_MLX_ID, ncsi_oem_gma_handler_mlx },
++	{ NCSI_OEM_MFR_INTEL_ID, ncsi_oem_gma_handler_intel }
+ };
+ 
+ static int ncsi_gma_handler(struct ncsi_cmd_arg *nca, unsigned int mf_id)
+diff --git a/net/ncsi/ncsi-pkt.h b/net/ncsi/ncsi-pkt.h
+index 80938b338fee..ba66c7dc3a21 100644
+--- a/net/ncsi/ncsi-pkt.h
++++ b/net/ncsi/ncsi-pkt.h
+@@ -178,6 +178,12 @@ struct ncsi_rsp_oem_bcm_pkt {
+ 	unsigned char           data[];      /* Cmd specific Data */
+ };
+ 
++/* Intel Response Data */
++struct ncsi_rsp_oem_intel_pkt {
++	unsigned char           cmd;         /* OEM Command ID    */
++	unsigned char           data[];      /* Cmd specific Data */
++};
++
+ /* Get Link Status */
+ struct ncsi_rsp_gls_pkt {
+ 	struct ncsi_rsp_pkt_hdr rsp;        /* Response header   */
+diff --git a/net/ncsi/ncsi-rsp.c b/net/ncsi/ncsi-rsp.c
+index a94bb59793f0..b36c22ec4c3f 100644
+--- a/net/ncsi/ncsi-rsp.c
++++ b/net/ncsi/ncsi-rsp.c
+@@ -699,12 +699,72 @@ static int ncsi_rsp_handler_oem_bcm(struct ncsi_request *nr)
+ 	return 0;
+ }
+ 
++/* Response handler for Intel command Get Mac Address */
++static int ncsi_rsp_handler_oem_intel_gma(struct ncsi_request *nr)
++{
++	struct ncsi_dev_priv *ndp = nr->ndp;
++	struct net_device *ndev = ndp->ndev.dev;
++	const struct net_device_ops *ops = ndev->netdev_ops;
++	struct ncsi_rsp_oem_pkt *rsp;
++	struct sockaddr saddr;
++	int ret = 0;
++
++	/* Get the response header */
++	rsp = (struct ncsi_rsp_oem_pkt *)skb_network_header(nr->rsp);
++
++	saddr.sa_family = ndev->type;
++	ndev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
++	memcpy(saddr.sa_data, &rsp->data[INTEL_MAC_ADDR_OFFSET], ETH_ALEN);
++	/* Increase mac address by 1 for BMC's address */
++	eth_addr_inc((u8 *)saddr.sa_data);
++	if (!is_valid_ether_addr((const u8 *)saddr.sa_data))
++		return -ENXIO;
++
++	/* Set the flag for GMA command which should only be called once */
++	ndp->gma_flag = 1;
++
++	ret = ops->ndo_set_mac_address(ndev, &saddr);
++	if (ret < 0)
++		netdev_warn(ndev, "NCSI: 'Writing mac address to device failed\n");
++
++	return ret;
++}
++
++/* Response handler for Intel card */
++static int ncsi_rsp_handler_oem_intel(struct ncsi_request *nr)
++{
++	struct ncsi_rsp_oem_intel_pkt *intel;
++	struct ncsi_rsp_oem_pkt *rsp;
++
++	/* Get the response header */
++	rsp = (struct ncsi_rsp_oem_pkt *)skb_network_header(nr->rsp);
++	intel = (struct ncsi_rsp_oem_intel_pkt *)(rsp->data);
++
++#if 0 //For debug use
++    #define NCSI_INTEL_GMA_LEN 6
++    int i = 0;
++
++    printk("[Error] %s, %d, intel->cmd = %x\n", __func__, __LINE__, intel->cmd);
++    for(i ; i < NCSI_INTEL_GMA_LEN; i++)
++    {
++        printk("[Error] %s, %d, rsp->data[%d] = %x\n", __func__, __LINE__, i, rsp->data[i]);
++        printk("[Error] %s, %d, intel_rsp->data[%d] = %x\n", __func__, __LINE__, i, intel->data[i]);
++    }
++#endif
++    
++	if (intel->cmd == NCSI_OEM_INTEL_CMD_GMA)
++		return ncsi_rsp_handler_oem_intel_gma(nr);
++
++	return 0;
++}
++
+ static struct ncsi_rsp_oem_handler {
+ 	unsigned int	mfr_id;
+ 	int		(*handler)(struct ncsi_request *nr);
+ } ncsi_rsp_oem_handlers[] = {
+ 	{ NCSI_OEM_MFR_MLX_ID, ncsi_rsp_handler_oem_mlx },
+-	{ NCSI_OEM_MFR_BCM_ID, ncsi_rsp_handler_oem_bcm }
++	{ NCSI_OEM_MFR_BCM_ID, ncsi_rsp_handler_oem_bcm },
++	{ NCSI_OEM_MFR_INTEL_ID, ncsi_rsp_handler_oem_intel }
+ };
+ 
+ /* Response handler for OEM command */
 
 -- 
-Alexey
+Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
+mailto:fercerpav@gmail.com
