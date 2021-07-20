@@ -2,136 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90D43CF409
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 845893CF40C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237287AbhGTE53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 00:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234314AbhGTE5U (ORCPT
+        id S238226AbhGTE6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 00:58:09 -0400
+Received: from mail-pj1-f41.google.com ([209.85.216.41]:44773 "EHLO
+        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237648AbhGTE6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 00:57:20 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D0AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 22:37:59 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id bt15so13049889pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 22:37:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=EX/d3F27UugquyAjfTnPTBtVfKy8vmZpCCq0lcY7Gp0=;
-        b=P+ARNeROIU5w7F6upM0uMOhnGdKVUfmQhlCpsS+1vEmfU3ZNE4lrRdSnNh9QqZj6/I
-         sXH2ULhpNCH6GiGVKn02EwfoGv7kMogMIb064wzJd+KD366WFdbYebagk++I3tbejUcw
-         gJmDLKK7MvjwUz8WYnmALHRJ1kCKrea3IisDZr3zOYdiQGK7gRK8HqX0Q1SIUyAwH7nW
-         OlcmkF71YUGshKwj+/2JDHrNZX8Mbh4HN1zPUA446yP7pOkJGG368UO215wnZfl5bZ7P
-         L1UPztE+l0ypE9iKXJHpYdH8dhhMdCnPwASBPQR+IS3TQ8rpD/3r4pxnsI/BZ88es4y8
-         +jeA==
+        Tue, 20 Jul 2021 00:58:03 -0400
+Received: by mail-pj1-f41.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so1816275pjo.3;
+        Mon, 19 Jul 2021 22:38:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=EX/d3F27UugquyAjfTnPTBtVfKy8vmZpCCq0lcY7Gp0=;
-        b=ogu/PYrAcbQiH7cQnFDmOtImYl6juxPad2ya2byC5ZtwqWzFgbkmuNkvfPZq2r+xuV
-         mzIsGOHDvbCeFWbGH+Hg1mH30B6OkszeHgRhnU8Jxg+Dd/pIs38d2WQQyIdSJo6Jejc5
-         yN6Ce62FN72NLBAXd66YDzNnR9dZOejDUTOIlzs3Wk7Uh7wNPv/7aXg2wbbSA4C/Z+5M
-         tBlo/eSRz4SYYCeIzWbXm7qKWyK1sBo7jXVuz2ER48fiodk6Jtw5+vBQuSA3iPE5oS7h
-         O9klHroAo13/KTwASr3HJNFNZhMB2W+UG++29RPtncy41kSFAQNTHmqC8E5WTlHwkfbL
-         fWkA==
-X-Gm-Message-State: AOAM530yiNtfIpAqo2uJA2LPixGtTbN6VT8k7X/TaWSp3xTl8uTFqve3
-        aEvxc7Lf2JE9vLWKXeNtw63RW5iQAe8=
-X-Google-Smtp-Source: ABdhPJyQlHqS3FXu1Dr0bp/psH4zvJsFkI4lU09QGbSL0shBJV5Je3poGArd22+729MmoA7pBwdNSg==
-X-Received: by 2002:a17:90a:a6a:: with SMTP id o97mr34881140pjo.179.1626759479263;
-        Mon, 19 Jul 2021 22:37:59 -0700 (PDT)
-Received: from ?IPv6:2804:14c:482:92eb:ffdf:6b35:b94d:258? ([2804:14c:482:92eb:ffdf:6b35:b94d:258])
-        by smtp.gmail.com with ESMTPSA id j21sm18004462pjz.26.2021.07.19.22.37.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H6FMY36ifoVcSW+eRrx8urOcqQvcESIiNUaCo0mYNkk=;
+        b=rgAJmyzEzCvy4zhFESu3jOuAc3d6SMFB0kJnSvNpgG1QV6jacx/9WlePrBh2berJcC
+         EPyvXEWG+rbXGlsSmi7CvsaS5RbALvgVQEWfacbvdgWwwZGqIIP9SIdr+fhIL5OTOBCi
+         fhbbBkWAhNlAKRt+bAVwU0fcLbQKLeStQ3k/SoJ94LGe6S9Xk2QHwYPHPQEX8xbdvXf7
+         iTG0MRbHro2uk5x+3VZSw6IrCoVdLLUlhqG29aKt7N+HHzB4ewagVtqP3/vr/+f0PlCJ
+         RnuMX7WE65HP9BJraDWQnznFtp/D4k59X7BO1uBOideEUCVW5t26n5JrmLTjPZxh8/xz
+         uX7w==
+X-Gm-Message-State: AOAM531gn1Fujbct7iumTJEgUrZpW19fzbF257vWA91JIV+gpdn/Khdl
+        wH4mM8SYEq7waQnmryC7DIc=
+X-Google-Smtp-Source: ABdhPJwYgAyPPkoCWeF1bvYsckKE51nqjFwi21AE8/C4xiCNJZLa2ylcJzslBc4P4xyB78pVapKS/g==
+X-Received: by 2002:a17:902:684a:b029:12b:8d3e:68dc with SMTP id f10-20020a170902684ab029012b8d3e68dcmr6177240pln.79.1626759521913;
+        Mon, 19 Jul 2021 22:38:41 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:6f70:be34:681b:b1e9:776f])
+        by smtp.gmail.com with ESMTPSA id b9sm20591709pfm.124.2021.07.19.22.38.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 22:37:58 -0700 (PDT)
-Message-ID: <283e44591010dcb0690769afaef147add3b36978.camel@gmail.com>
-Subject: Re: [PATCH v5 02/11] powerpc/kernel/iommu: Add new
- iommu_table_in_use() helper
-From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
-To:     Frederic Barrat <fbarrat@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        kernel test robot <lkp@intel.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Tue, 20 Jul 2021 02:38:16 -0300
-In-Reply-To: <29c199f3-63a8-3edb-b29e-de157431d89f@linux.ibm.com>
-References: <20210716082755.428187-1-leobras.c@gmail.com>
-         <20210716082755.428187-3-leobras.c@gmail.com>
-         <29c199f3-63a8-3edb-b29e-de157431d89f@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 
+        Mon, 19 Jul 2021 22:38:41 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 22:38:40 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Justin Forbes <jmforbes@linuxtx.org>
+Cc:     Moritz Fischer <mdf@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH 5.13 024/800] usb: renesas-xhci: Fix handling of unknown
+ ROM state
+Message-ID: <YPZhYAbzdQvZqfV+@epycbox.lan>
+References: <20210712060912.995381202@linuxfoundation.org>
+ <20210712060916.499546891@linuxfoundation.org>
+ <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
+ <YPNavEl340mxcNVd@epycbox.lan>
+ <CAFxkdApGaw30O2HEkTA8r6g4_dLZEbykVjnnDnfTiX=3hVQwvw@mail.gmail.com>
+ <CAFxkdAqd69oXdhUBEmMRvmfuk2YpWS7qsDKLjUEAEg8rhQkTyQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFxkdAqd69oXdhUBEmMRvmfuk2YpWS7qsDKLjUEAEg8rhQkTyQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Fred, thanks for this feedback!
-
-Sorry if I miss anything, this snippet was written for v1 over an year
-ago, and I have not taken a look at it ever since.
-
-On Mon, 2021-07-19 at 15:53 +0200, Frederic Barrat wrote:
+On Mon, Jul 19, 2021 at 09:57:00PM -0500, Justin Forbes wrote:
+> On Mon, Jul 19, 2021 at 10:33 AM Justin Forbes <jmforbes@linuxtx.org> wrote:
+> >
+> > On Sat, Jul 17, 2021 at 5:33 PM Moritz Fischer <mdf@kernel.org> wrote:
+> > >
+> > > Justin,
+> > >
+> > > On Sat, Jul 17, 2021 at 08:39:19AM -0500, Justin Forbes wrote:
+> > > > On Mon, Jul 12, 2021 at 2:31 AM Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > From: Moritz Fischer <mdf@kernel.org>
+> > > > >
+> > > > > commit d143825baf15f204dac60acdf95e428182aa3374 upstream.
+> > > > >
+> > > > > The ROM load sometimes seems to return an unknown status
+> > > > > (RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
+> > > > >
+> > > > > If the ROM load indeed failed this leads to failures when trying to
+> > > > > communicate with the controller later on.
+> > > > >
+> > > > > Attempt to load firmware using RAM load in those cases.
+> > > > >
+> > > > > Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
+> > > > > Cc: stable@vger.kernel.org
+> > > > > Cc: Mathias Nyman <mathias.nyman@intel.com>
+> > > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > > Cc: Vinod Koul <vkoul@kernel.org>
+> > > > > Tested-by: Vinod Koul <vkoul@kernel.org>
+> > > > > Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> > > > > Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> > > > > Link: https://lore.kernel.org/r/20210615153758.253572-1-mdf@kernel.org
+> > > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > >
+> > > >
+> > > > After sending out 5.12.17 for testing, we had a user complain that all
+> > > > of their USB devices disappeared with the error:
+> > > >
+> > > > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: Direct firmware load
+> > > > for renesas_usb_fw.mem failed with error -2
+> > > > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: request_firmware failed: -2
+> > > > Jul 15 23:18:53 kernel: xhci_hcd: probe of 0000:04:00.0 failed with error -2
+> > >
+> > > This looks like it fails finding the actual firmware file (ENOENT). Any
+> > > chance you could give this a whirl on top of the original patch?
+> > >
+> >
+> > Sure. test kernel building now, will let you know when the user reports back.
 > 
-> 
-> On 16/07/2021 10:27, Leonardo Bras wrote:
-> > @@ -1099,18 +1105,13 @@ int iommu_take_ownership(struct iommu_table
-> > *tbl)
-> >         for (i = 0; i < tbl->nr_pools; i++)
-> >                 spin_lock_nest_lock(&tbl->pools[i].lock, &tbl-
-> > >large_pool.lock);
-> >   
-> > -       iommu_table_release_pages(tbl);
-> > -
-> > -       if (!bitmap_empty(tbl->it_map, tbl->it_size)) {
-> > +       if (iommu_table_in_use(tbl)) {
-> >                 pr_err("iommu_tce: it_map is not empty");
-> >                 ret = -EBUSY;
-> > -               /* Undo iommu_table_release_pages, i.e. restore
-> > bit#0, etc */
-> > -               iommu_table_reserve_pages(tbl, tbl-
-> > >it_reserved_start,
-> > -                               tbl->it_reserved_end);
-> > -       } else {
-> > -               memset(tbl->it_map, 0xff, sz);
-> >         }
-> >   
-> > +       memset(tbl->it_map, 0xff, sz);
-> > +
-> 
-> 
-> So if the table is not empty, we fail (EBUSY) but we now also
-> completely 
-> overwrite the bitmap. It was in an unexpected state, but we're making
-> it 
-> worse. Or am I missing something?
+> The original user reports success with this patch on top of the original patch.
 
-IIRC there was a reason to do that at the time, but TBH I don't really
-remember it, and by looking at the code right now you seem to be
-correct about this causing trouble.
+That's good news I guess.
 
-I will send a v6 fixing it soon.
-Please review the remaining patches for some issue I may be missing.
+After reading through the datasheet once more I'm even more convinced
+that the original code with the early return in
+renesas_check_fw_running() is *very* shady.
 
-Alexey, any comments on that?
+There are three statuses to be investigated
+- FW load status (fw_state)
+- ROM download status (rom_status)
+- Firmware version as reported by chip
+
+Currently there the code takes an early return if the latter says the
+external ROM is there and the 'write firmware to external ROM'
+worked out, which I think shouldn't be happening, since it doesn't tell
+us anything about the firmware state at all. In fact I think the early
+return should not exist at all (a path that the original patch made more
+likely to happen).
+
+The FW load status indicates whether firmware has been runtime loaded
+and returns 'No result yet' in your case, too I suspect, which *might*
+happen if the chip configured itself from external ROM?
+
+So the part that is unclear to me somewhat is should we use either of
+them at all in trying to determine whether we should load firmware?
+
+Maybe what we should do is:
+- Attempt to request_firmware()
+- If fail -> proceed and hope for the best
+- If success
+  - Compare the firmware file version with the version reported by the
+    controller
+  - If they don't match, load firmware, otherwise leave it alone?
+
+- Moritz
+
 
 > 
->    Fred
+> Justin
 > 
-
-Again, thank you for reviewing Fred! 
-Best regards,
-Leonardo Bras
-
-
-
-
-
+> >
+> > Justin
+> >
+> > > diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+> > > index 18c2bbddf080..cde8f6f1ec5d 100644
+> > > --- a/drivers/usb/host/xhci-pci.c
+> > > +++ b/drivers/usb/host/xhci-pci.c
+> > > @@ -379,7 +379,11 @@ static int xhci_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+> > >         driver_data = (struct xhci_driver_data *)id->driver_data;
+> > >         if (driver_data && driver_data->quirks & XHCI_RENESAS_FW_QUIRK) {
+> > >                 retval = renesas_xhci_check_request_fw(dev, id);
+> > > -               if (retval)
+> > > +               /*
+> > > +                * If firmware wasn't found there's still a chance this might work without
+> > > +                * loading firmware on some systems, so let's try at least.
+> > > +                */
+> > > +               if (retval && retval != -ENOENT)
+> > >                         return retval;
+> > >         }
+> > >
+> > >
+> > > Thanks,
+> > > Moritz
