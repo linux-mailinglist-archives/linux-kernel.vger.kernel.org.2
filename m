@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5323CF423
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927203CF424
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235365AbhGTFPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 01:15:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbhGTFO4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 01:14:56 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5A6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 22:55:35 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id h8so27075565eds.4
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 22:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W+eCdobjn3+ulB5NKygDiZMliBbGEgLHHiAuMSuNm64=;
-        b=jx0WhC+Qq5yZySQNzp4alTyVk+wJPmhKKMji4+PDuJC07+xX+GmAXtN4vN7nWFCpvo
-         i2ssSret5TX0qeToyf8gMQ+eWhA4v05eZLCosJFtjFFgeaWdLcE7NqjSEfNYiRKIpZ10
-         LFW+88TtPi3vrrjByxYUQifxp91Li2eNmszWGQA1nTQ/tIhTQ+2V5FAnwwfKIbLs2enm
-         o5NLuCyhSUFKJNFt0vtSYlE/z0WA1wfcxrGrLoU17nOlB/F6cK9I4kb0glTTawC38an9
-         l3wyt/aqXzEaO/aetwZjPaaT/g52rK4BKsxVejWPA2BxsKN/7HvuxcslaKxO8H7gPGrE
-         o0ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W+eCdobjn3+ulB5NKygDiZMliBbGEgLHHiAuMSuNm64=;
-        b=jSrp0GIANRtZeawt8Jrkut+I982unNTVNaV5yJ549co87Q8fCOH0CXJxiG4lmDNNiT
-         ZDue8dB2lW7X50OebTpHYIIozjrfdA/nMfKKrnSq0cqqHfWrxHNNRgZyC5wWMm6Syn4w
-         wC21hYLsAhWXfpSaDFAtbcGEufDOYJjECC+hSahTsA/5axji6aYRqVQIbLZaT1ZCXVUT
-         IO7cAbSrcfcTHLoeXZZOaL1cDSa/Q1gp4zHYKVFxs8TDESTk5uDvRYWC2LWSnFWuu7e5
-         fwH7iEXe2kAFFs6Bcas+z1f0VrraJYEikzVW4EOQr8L7SyHtdTCvalbUfmv7vqxPU4RJ
-         aJ3w==
-X-Gm-Message-State: AOAM531QnQgNqNYv7jYOophYyMhL4SKN5aXSfjTkDOj2stu0BPpPBh+j
-        BivIcFupMyb5o9r0fZBSF4VDf/lkEI2pqPwazWvx+g==
-X-Google-Smtp-Source: ABdhPJzyXpQN+izTAyFJ9JUPxr3rEHure5nCgtKyRzus+QckOhGYE5oXxwOr7hjftM0k4cNfxQyG86a1Wt0Y8mDvvDE=
-X-Received: by 2002:a05:6402:1771:: with SMTP id da17mr38850996edb.23.1626760533288;
- Mon, 19 Jul 2021 22:55:33 -0700 (PDT)
+        id S236381AbhGTFQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 01:16:26 -0400
+Received: from mga03.intel.com ([134.134.136.65]:7710 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232431AbhGTFQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 01:16:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="211240200"
+X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
+   d="scan'208";a="211240200"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 22:56:54 -0700
+X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
+   d="scan'208";a="500513712"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 22:56:51 -0700
+Subject: Re: [bug report] Patch "perf tools: Fix pattern matching for same
+ substring in different pmu type" broken
+To:     John Garry <john.garry@huawei.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        Zhangshaokun <zhangshaokun@hisilicon.com>,
+        "liuqi (BA)" <liuqi115@huawei.com>,
+        Andi Kleen <ak@linux.intel.com>, "Jin, Yao" <yao.jin@intel.com>
+References: <44e25825-5f23-c641-9f1c-72268d895f75@huawei.com>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <1522c39e-5658-d030-2e1e-f6e5d849d29b@linux.intel.com>
+Date:   Tue, 20 Jul 2021 13:56:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210719184335.198051502@linuxfoundation.org>
-In-Reply-To: <20210719184335.198051502@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 20 Jul 2021 11:25:22 +0530
-Message-ID: <CA+G9fYtAN7y5Z82nO59daxD=AtYOyu2J7ECFjY2P64JR9Fqifg@mail.gmail.com>
-Subject: Re: [PATCH 4.19 000/420] 4.19.198-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <44e25825-5f23-c641-9f1c-72268d895f75@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 at 00:15, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.198 release.
-> There are 420 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 21 Jul 2021 18:42:43 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.198-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi John, Hi Arnaldo,
 
-Perf fails to compile in 4.19 on Arm, Arm64, i386 and x86 with gcc 7.3
-It was also reported on 5.4.134-rc2.
+On 7/19/2021 10:13 PM, John Garry wrote:
+> Hi guys,
+> 
+> The named patch has broken PMU alias matching on my arm64 system.
+> 
+> Specifically it is broken for when multiple tokens are used in the alias. For example, alias 
+> "hisi_sccl,l3c" would previously match for PMU "hisi_sccl3_l3c7", but that no longer works.
+> 
+> In my example, in looking at the code, the callchain pmu_uncore_alias_match("hisi_sccl,l3c", 
+> "hisi_sccl3_l3c7") -> per_pmu__valid_suffix("hisi_sccl3_l3c7", "hisi_sccl") fails in the following 
+> check:
+> 
+> static bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
+> {
+>      char *p;
+>      ...
+>      p = pmu_name + strlen(tok);
+>      ...
+>      if (*p != '_') //here
+>          return false;
+> }
+> 
+> This check assumes the first token must be followed by a '_', but it is possibly a numeric.
+> 
 
-  perf-1.0/perf-in.o: In function `tasks_setup':
-  tools/perf/builtin-report.c:664: undefined reference to `process_attr'
-  perf-in.o: In function `stats_setup':
-  tools/perf/builtin-report.c:644: undefined reference to `process_attr'
+It looks that the PMU alias format on arm64 has big difference than the format on x86. My new idea 
+is we create a x86 specific perf_pmu__valid_suffix, and for other arch, the weak function always 
+returns true. That will not change original behavior.
 
-Bisection points to ee7531fb817c ("perf report: Fix --task and --stat
-with pipe input" [upstream commit
-892ba7f18621a02af4428c58d97451f64685dba4]).
+What do you think?
 
+> Please let me know how this should work. Previously it would match on the tokens, ignoring numerics 
+> and '_'.
+> 
+> As an aside, I'll look at why our testcases don't cover this scenario and look to add a test if 
+> necessary.
+> 
+> Thanks,
+> john
+> 
+> Ps, please cc linux-perf-users@vger.kernel.org as in the MAINTAINERS file in future, as not all 
+> subscribe to the open kernel list (and so cannot easily reply directly).
+> 
 
-> Namhyung Kim <namhyung@kernel.org>
->     perf report: Fix --task and --stat with pipe input
+Sorry about that! I will remember that, cc linux-perf-users@vger.kernel.org in next patch.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Thanks
+Jin Yao
