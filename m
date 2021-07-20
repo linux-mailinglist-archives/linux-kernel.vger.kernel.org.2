@@ -2,146 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA32F3CFF0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5023E3CFF13
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234685AbhGTPeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236061AbhGTPai (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:30:38 -0400
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBA8C0613DE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 09:10:14 -0700 (PDT)
-Received: by mail-vk1-xa2c.google.com with SMTP id h9so4668582vkp.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 09:10:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ec0bN+F2FYcAgixe06akg3xYKmKZd2jngWxTSS45B8I=;
-        b=WGBcU9P0qQ49uNJ6iccFbQk6nSstw1hhIRMiRCTKNLg5+moD8FWQSfrLatHJrXdgSB
-         S/SYBQcvNABDjqakTw3UjK7sLHBVUnCdpqR0tEYKuPScb2j0ySE/XnxtIOzR4+0aycqK
-         Jiw54aWMK09rjOsj5RD3Ri7ksN5cpNrWrjXEk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ec0bN+F2FYcAgixe06akg3xYKmKZd2jngWxTSS45B8I=;
-        b=JXba0R369MYcMNkfn0vqboN/BV3sauPn9SbG3E92mlQ97KpI0+lXqNc5Jv3hfOkYbG
-         D/1WO4T9MccGzJL8a3hkDF5JlEfkHt3a9CZvAFX3SBvbyzbwjCcpJAcizHHhGp98x60Y
-         ZvfZMrQeAz+paGrS4bW0b001BbDtMskGrCzSPCRkNWIJhvKgX20znX34l4JDS7XSVwCc
-         b6mUef0bS6OZ9JfglbB3VDNDOCgtgNV8H9fg7V7mmjFHYsRyG+3/QXbs4uWzUkkaE8QW
-         zTQbz7JXLLVMbQZVObiviefiqOC7XsceqGHvueQ6bwJCYWv+e+73UobrlDkEobWzxwjf
-         gvvg==
-X-Gm-Message-State: AOAM532D3lSok+Dps9o2QwEHEj5zmFglQ2ETPIt0edSONZvfSsyw1Aw1
-        AZxjJXXvMhUHCvM4NxQymWl5bNUJwXJwAw==
-X-Google-Smtp-Source: ABdhPJwebgQEZpg1neAAlrscbZbAzgnm6Ljy35SGLO6wE9xobBQRrfPVum+Ttu9h5lnosBZSmKcXKQ==
-X-Received: by 2002:ac5:ccda:: with SMTP id j26mr26938355vkn.17.1626797413108;
-        Tue, 20 Jul 2021 09:10:13 -0700 (PDT)
-Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com. [209.85.217.52])
-        by smtp.gmail.com with ESMTPSA id i4sm3145321vkp.19.2021.07.20.09.10.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 09:10:12 -0700 (PDT)
-Received: by mail-vs1-f52.google.com with SMTP id z7so11489739vsn.7
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 09:10:11 -0700 (PDT)
-X-Received: by 2002:a67:c986:: with SMTP id y6mr29636747vsk.52.1626797410875;
- Tue, 20 Jul 2021 09:10:10 -0700 (PDT)
+        id S229916AbhGTPhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:37:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231442AbhGTPcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 11:32:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73F6F6023D;
+        Tue, 20 Jul 2021 16:12:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626797573;
+        bh=f+iYwtkG8kDYHg0PqehVvMaNYBZ5PptC+jaDP443IOI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ftQkatKT+ppogoiX8WCKtzKR1gxiL3W02klCyhkyiDI5jthdKG1b+cuIM/Awk917U
+         GEv9mhZi++c1eHssVrFQzMhlYY5rqnmrYnDq8d12zzx/TEBqUlQeH0D1ThrTwNlgFp
+         N7Jkb2Oryn+AEVDJb5D0WZq44JnqhYZy3hIH8ycon4KufACWRRMgXNnGNVs3csEsQA
+         PE2JqUSf+a9g1iE/Rq3zLvoBYSDPJnoQPy7vDkvTqLiqgWC7TezHpu3UQx2Ocm0l5K
+         z3UIISv+EmHf7sqNURdqunohTMQMMSGXLkhe0xnZYDplLI5Xk4XicEhfVvvKqYg7fr
+         JIL49om/sQiKg==
+Received: by earth.universe (Postfix, from userid 1000)
+        id 849313C0C98; Tue, 20 Jul 2021 18:12:51 +0200 (CEST)
+Date:   Tue, 20 Jul 2021 18:12:51 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        "Andrew F. Davis" <afd@ti.com>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 3/3] power: reset: Add TPS65086 restart driver
+Message-ID: <20210720161251.lgx4xmk5oixp746r@earth.universe>
+References: <20210625224744.1020108-1-kernel@esmil.dk>
+ <20210625224744.1020108-4-kernel@esmil.dk>
 MIME-Version: 1.0
-References: <20210625081818.v2.1.I358cae5e33f742765fd38485d6ddf1a4a978644d@changeid>
- <nycvar.YFH.7.76.2107152150060.8253@cbobk.fhfr.pm> <CAO-hwJJp-qg0pRZNk1PKhha6S=Zd2_r1UDjZUgm9Yq0MFL69MQ@mail.gmail.com>
-In-Reply-To: <CAO-hwJJp-qg0pRZNk1PKhha6S=Zd2_r1UDjZUgm9Yq0MFL69MQ@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 20 Jul 2021 09:09:59 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=U980_xkfMt-x9cv6LgyK0qfRt81HYEtu_sW3c+PqFN9A@mail.gmail.com>
-Message-ID: <CAD=FV=U980_xkfMt-x9cv6LgyK0qfRt81HYEtu_sW3c+PqFN9A@mail.gmail.com>
-Subject: Re: [PATCH v2] HID: i2c-hid: goodix: Tie the reset line to true state
- of the regulator
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5qvxeltww2u6kx6k"
+Content-Disposition: inline
+In-Reply-To: <20210625224744.1020108-4-kernel@esmil.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+
+--5qvxeltww2u6kx6k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
 Hi,
 
-On Tue, Jul 20, 2021 at 1:01 AM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> On Thu, Jul 15, 2021 at 9:50 PM Jiri Kosina <jikos@kernel.org> wrote:
-> >
-> > On Fri, 25 Jun 2021, Douglas Anderson wrote:
-> >
-> > > The regulator for the touchscreen could be:
-> > > * A dedicated regulator just for the touchscreen.
-> > > * A regulator shared with something else in the system.
-> > > * An always-on regulator.
-> > >
-> > > How we want the "reset" line to behave depends a bit on which of those
-> > > three cases we're in. Currently the code is written with the
-> > > assumption that it has a dedicated regulator, but that's not really
-> > > guaranteed to be the case.
-> > >
-> > > The problem we run into is that if we leave the touchscreen powered on
-> > > (because someone else is requesting the regulator or it's an always-on
-> > > regulator) and we assert reset then we apparently burn an extra 67 mW
-> > > of power. That's not great.
-> > >
-> > > Let's instead tie the control of the reset line to the true state of
-> > > the regulator as reported by regulator notifiers. If we have an
-> > > always-on regulator our notifier will never be called. If we have a
-> > > shared regulator then our notifier will be called when the touchscreen
-> > > is truly turned on or truly turned off.
-> > >
-> > > Using notifiers like this nicely handles all the cases without
-> > > resorting to hacks like pretending that there is no "reset" GPIO if we
-> > > have an always-on regulator.
-> > >
-> > > NOTE: if the regulator is on a shared line it's still possible that
-> > > things could be a little off. Specifically, this case is not handled
-> > > even after this patch:
-> > > 1. Suspend goodix (send "sleep", goodix stops requesting regulator on)
-> > > 2. Other regulator user turns off (regulator fully turns off).
-> > > 3. Goodix driver gets notified and asserts reset.
-> > > 4. Other regulator user turns on.
-> > > 5. Goodix driver gets notified and deasserts reset.
-> > > 6. Nobody resumes goodix.
-> > >
-> > > With that set of steps we'll have reset deasserted but we will have
-> > > lost the results of the I2C_HID_PWR_SLEEP from the suspend path. That
-> > > means we might be in higher power than we could be even if the goodix
-> > > driver thinks things are suspended. Presumably, however, we're still
-> > > in better shape than if we were asserting "reset" the whole time. If
-> > > somehow the above situation is actually affecting someone and we want
-> > > to do better we can deal with it when we have a real use case.
-> > >
-> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> >
-> > Applied, thanks Doug.
->
-> Thanks Jiri for taking this one in.
->
-> FWIW, I am really glad Doug made the effort of splitting i2c-hid-core
-> and i2c-hid-goodix, because this is the kind of patch that would have
-> been a nightmare to make it generic :)
+On Sat, Jun 26, 2021 at 12:47:44AM +0200, Emil Renner Berthing wrote:
+> The only way to reset the BeagleV Starlight v0.9 board[1] properly is to
+> tell the PMIC to reset itself which will then assert the external reset
+> lines of the SoC, USB hub and ethernet phy.
+>=20
+> This adds a driver to register a reset handler to do just that.
+>=20
+> [1] https://github.com/beagleboard/beaglev-starlight
+>=20
+> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> ---
 
-Yeah, it was a bunch of work to split it but I think it worked out
-pretty well overall. :-)
+Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-Looking at this patch today with fresh eyes, I just spotted a bug
-though! :( I should have used the "devm" variant of
-regulator_register_notifier() since otherwise nothing is
-unregistering. Oops. I'll quickly send a fixup.
+-- Sebastian
 
-OK, it's should show up here:
+>  drivers/mfd/tps65086.c                 |  1 +
+>  drivers/power/reset/Kconfig            |  6 ++
+>  drivers/power/reset/Makefile           |  1 +
+>  drivers/power/reset/tps65086-restart.c | 99 ++++++++++++++++++++++++++
+>  4 files changed, 107 insertions(+)
+>  create mode 100644 drivers/power/reset/tps65086-restart.c
+>=20
+> diff --git a/drivers/mfd/tps65086.c b/drivers/mfd/tps65086.c
+> index cc3478ee9a64..1bfba0758fcc 100644
+> --- a/drivers/mfd/tps65086.c
+> +++ b/drivers/mfd/tps65086.c
+> @@ -24,6 +24,7 @@
+>  static const struct mfd_cell tps65086_cells[] =3D {
+>  	{ .name =3D "tps65086-regulator", },
+>  	{ .name =3D "tps65086-gpio", },
+> +	{ .name =3D "tps65086-restart", },
+>  };
+> =20
+>  static const struct regmap_range tps65086_yes_ranges[] =3D {
+> diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
+> index 4d1192062508..4b563db3ab3e 100644
+> --- a/drivers/power/reset/Kconfig
+> +++ b/drivers/power/reset/Kconfig
+> @@ -204,6 +204,12 @@ config POWER_RESET_ST
+>  	help
+>  	  Reset support for STMicroelectronics boards.
+> =20
+> +config POWER_RESET_TPS65086
+> +	bool "TPS65086 restart driver"
+> +	depends on MFD_TPS65086
+> +	help
+> +	  This driver adds support for resetting the TPS65086 PMIC on restart.
+> +
+>  config POWER_RESET_VERSATILE
+>  	bool "ARM Versatile family reboot driver"
+>  	depends on ARM
+> diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
+> index cf3f4d02d8a5..f606a2f60539 100644
+> --- a/drivers/power/reset/Makefile
+> +++ b/drivers/power/reset/Makefile
+> @@ -23,6 +23,7 @@ obj-$(CONFIG_POWER_RESET_QNAP) +=3D qnap-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_REGULATOR) +=3D regulator-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_RESTART) +=3D restart-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_ST) +=3D st-poweroff.o
+> +obj-$(CONFIG_POWER_RESET_TPS65086) +=3D tps65086-restart.o
+>  obj-$(CONFIG_POWER_RESET_VERSATILE) +=3D arm-versatile-reboot.o
+>  obj-$(CONFIG_POWER_RESET_VEXPRESS) +=3D vexpress-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_XGENE) +=3D xgene-reboot.o
+> diff --git a/drivers/power/reset/tps65086-restart.c b/drivers/power/reset=
+/tps65086-restart.c
+> new file mode 100644
+> index 000000000000..ad9f2c5a84ac
+> --- /dev/null
+> +++ b/drivers/power/reset/tps65086-restart.c
+> @@ -0,0 +1,99 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2021 Emil Renner Berthing
+> + */
+> +
+> +#include <linux/mfd/tps65086.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/reboot.h>
+> +
+> +struct tps65086_restart {
+> +	struct notifier_block handler;
+> +	struct tps65086 *tps;
+> +	struct device *dev;
+> +};
+> +
+> +static int tps65086_restart_notify(struct notifier_block *this,
+> +				   unsigned long mode, void *cmd)
+> +{
+> +	struct tps65086_restart *tps65086_restart =3D
+> +		container_of(this, struct tps65086_restart, handler);
+> +	int ret;
+> +
+> +	ret =3D regmap_write(tps65086_restart->tps->regmap, TPS65086_FORCESHUTD=
+N, 1);
+> +	if (ret) {
+> +		dev_err(tps65086_restart->dev, "%s: error writing to tps65086 pmic: %d=
+\n",
+> +			__func__, ret);
+> +		return NOTIFY_DONE;
+> +	}
+> +
+> +	/* give it a little time */
+> +	mdelay(200);
+> +
+> +	WARN_ON(1);
+> +
+> +	return NOTIFY_DONE;
+> +}
+> +
+> +static int tps65086_restart_probe(struct platform_device *pdev)
+> +{
+> +	struct tps65086_restart *tps65086_restart;
+> +	int ret;
+> +
+> +	tps65086_restart =3D devm_kzalloc(&pdev->dev, sizeof(*tps65086_restart)=
+, GFP_KERNEL);
+> +	if (!tps65086_restart)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, tps65086_restart);
+> +
+> +	tps65086_restart->handler.notifier_call =3D tps65086_restart_notify;
+> +	tps65086_restart->handler.priority =3D 192;
+> +	tps65086_restart->tps =3D dev_get_drvdata(pdev->dev.parent);
+> +	tps65086_restart->dev =3D &pdev->dev;
+> +
+> +	ret =3D register_restart_handler(&tps65086_restart->handler);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "%s: cannot register restart handler: %d\n",
+> +			__func__, ret);
+> +		return -ENODEV;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int tps65086_restart_remove(struct platform_device *pdev)
+> +{
+> +	struct tps65086_restart *tps65086_restart =3D platform_get_drvdata(pdev=
+);
+> +	int ret;
+> +
+> +	ret =3D unregister_restart_handler(&tps65086_restart->handler);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "%s: cannot unregister restart handler: %d\n",
+> +			__func__, ret);
+> +		return -ENODEV;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct platform_device_id tps65086_restart_id_table[] =3D {
+> +	{ "tps65086-restart", },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(platform, tps65086_restart_id_table);
+> +
+> +static struct platform_driver tps65086_restart_driver =3D {
+> +	.driver =3D {
+> +		.name =3D "tps65086-restart",
+> +	},
+> +	.probe =3D tps65086_restart_probe,
+> +	.remove =3D tps65086_restart_remove,
+> +	.id_table =3D tps65086_restart_id_table,
+> +};
+> +module_platform_driver(tps65086_restart_driver);
+> +
+> +MODULE_AUTHOR("Emil Renner Berthing <kernel@esmil.dk>");
+> +MODULE_DESCRIPTION("TPS65086 restart driver");
+> +MODULE_LICENSE("GPL v2");
+> --=20
+> 2.32.0
+>=20
 
-https://lore.kernel.org/r/20210720090736.1.Idc6db7d0f2c2ecc6e533e5b918a651a66f337b2f@changeid
+--5qvxeltww2u6kx6k
+Content-Type: application/pgp-signature; name="signature.asc"
 
--Doug
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmD29f0ACgkQ2O7X88g7
++pqXxw/5AYZiH7qMOFWMkMJ9EyeTslcltp522xu/Fv04DacApGjDzv/YvjJDrisv
+sG0lAXAl9rmxV3vtrQETIu/8dBL7qpcgvs5IVofG/bJnb5vVIdbd2B1MRhOZbJRH
+Lqm/usG6pevT/n51wGy3T6r9TA/4pxHZXn0C8I66qJScwqukXwAoBpuKfuxVCalu
+hsjrrEyzVNJzeTHnVzALgRLocGlV67gnnwYelehZQ3Ki3WDtX54LY8MTDcV2HiHW
+H08vVbZAjBkIqYvtiJWSebe0OWmZ+me8aPNmoE407zxKwhXLtvNp7BZWpMS1taED
+TzCHIsPlYi/8JrNPAvNoo7Q1WaVWEOEzjm/vCBZ5yP/SIYj96dxclxzVf4IlfN1C
+2hMTAXoTPWRAdRQHXkgJee52E9S86uAe0DEAr5koPgmSWagr7Ism1RAo/4vcy7GD
+qMpu0U17fpfcyWpqhIDvHqcMhQzWD6Vsm6n8RETNo+zXgrLqjOuGZwR1vNKb687r
+Ga8rQzTbJKN63Ox3+rGtTUaRBAemvaUo7glMXq2aZsZrGljsrhfCTP9t0rA2akkB
+euZCaSjMz/RgkbLOpHQZt8c4Se0BHrzW102aPJKfZ6NPKbrj7RNT5Cqhrlq94zRP
+KcTwsS90O+EZvJNMiRcQzEnJt6+hylB7NoYSHeWSeGmywutmPSc=
+=apaB
+-----END PGP SIGNATURE-----
+
+--5qvxeltww2u6kx6k--
