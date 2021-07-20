@@ -2,96 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704DB3CF100
+	by mail.lfdr.de (Postfix) with ESMTP id B83FB3CF101
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349101AbhGTALM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 20:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348190AbhGSXwY (ORCPT
+        id S1355668AbhGTALl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 20:11:41 -0400
+Received: from gateway30.websitewelcome.com ([192.185.193.11]:12540 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237024AbhGSXyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 19:52:24 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62121C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 17:33:02 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso20005259otu.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 17:33:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4cied0e7SWPRlTwXlatMsADeUvpwx3t61EYsWi64Us0=;
-        b=L8ycv7aXHkVjrfuYF25WVzpZnJtGGl+At24aolHZbcmW1EzjCuoBhiYPugTIQb5IJY
-         IGTxF10ozs5Lt5E7wlCNgUqWyI/oe1Fq52x7HiwretLG9aVEIzfk2RYd4XB9p5uiQ6en
-         DB/iVB2OUL0QSsQoyrDSSLX+3Zwo9U1BTqDRg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4cied0e7SWPRlTwXlatMsADeUvpwx3t61EYsWi64Us0=;
-        b=TAVf7/hNMUrCk3QI56tcFP+laVumDr9mB2agmZcyWcVEVvUPFOskoDIIN+T4i6l3sX
-         e6hv7wkya1ZOKGZmFRFiW8aJHCTk6f2ArU7TRhj1Fo/Rbdy6edFrQGfjh69vKTc5GhT4
-         SR5R2WjQnhs0sT1t0Au0gJzlIKfgzVvfeVi+A17Wv0XYZXzCzlooic8iAejOmWEyNk1z
-         s7VWtszYHPG25YisN+beor7BXg4VsyFFZLeiyFgAtvfnoeLWIoDGZvFV7p3mFyOWUeg7
-         qVSjkCDw20jHXyVlu6ApWlbJ/uj5oSZ4y0owKfdD9LVWjd0X8Xn9yrhKy9mxuh8LqNqZ
-         54UQ==
-X-Gm-Message-State: AOAM533bA6opjmg0lb60Tz3HmhVZU2ZE1/efWpjZX+jb6ApJ1RYLdvhZ
-        k7kcsnMbIH2Cw6kg7d+kgE4nUA==
-X-Google-Smtp-Source: ABdhPJzWLAplRkuJlG9zgG8nsg+/8hbutrHOINMxFWUw7ZEThhdChfa9Uo/VYsckYLoy+eBazITLIg==
-X-Received: by 2002:a05:6830:19cd:: with SMTP id p13mr19770896otp.362.1626741181805;
-        Mon, 19 Jul 2021 17:33:01 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id d81sm2874980oob.13.2021.07.19.17.33.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 17:33:01 -0700 (PDT)
-Subject: Re: [PATCH 4.4 000/188] 4.4.276-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3cb4816e-9b09-1df7-bb50-42eedb1770dc@linuxfoundation.org>
-Date:   Mon, 19 Jul 2021 18:33:00 -0600
+        Mon, 19 Jul 2021 19:54:08 -0400
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id AD358C08A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 19:34:29 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id 5diPmwlSUuMjb5diPmhOhy; Mon, 19 Jul 2021 19:34:29 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=nW0eV1Ts9Idn1vqEBQVZi/l1xO20XSwEQFJm3xKZUSk=; b=OWST1RtCmqW2E+qNpLEcXgKHPn
+        2nQ3Jj6ZkOiJ0pnImB633q+ECV+aJGoEnYPUpIPP3z9U4AvLwEvMparH+Ei2blHjythXiK3hLcXHj
+        8u+QA5EkvY/K7rRDCZL3sDzVkvXQUS4S03TjBe3sJwZqVi2DzFl1ATHvJh2l/RCaJKjYcTHIPqqMv
+        Lkz2Au0fNxfWLOlotGgbnBSzSGk3NoOieRquLnaU3W6aEUSykoEmmPR0Ye9V/VmHi2dd+1KlYGgfI
+        k4QNOl1X16vHYwPyNMjODjAw+9A8JrS/BLv8o/IlTAgMI7b5sY7Xoj7b9L6MzQj090kKMbKJlaUru
+        BQdFllBA==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:50338 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1m5diM-0017RG-68; Mon, 19 Jul 2021 19:34:26 -0500
+Subject: Re: [PATCH] media: ngene: Fix out-of-bounds bug in
+ ngene_command_config_free_buf()
+To:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ralph Metzler <rjkm@metzlerbros.de>,
+        Matthias Benesch <twoof7@freenet.de>,
+        Oliver Endriss <o.endriss@gmx.de>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210420001631.GA45456@embeddedor>
+ <202104211039.31E9785@keescook>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <70836714-f419-8d85-a490-190bc91ba5ae@embeddedor.com>
+Date:   Mon, 19 Jul 2021 19:36:38 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <202104211039.31E9785@keescook>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1m5diM-0017RG-68
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:50338
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 8
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/21 8:49 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.276 release.
-> There are 188 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 21 Jul 2021 14:47:42 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.276-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi all,
 
-Compiled and booted on my test system. No dmesg regressions.
+I'm taking this in my tree[1] for 5.14-rc3.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Thanks
+--
+Gustavo
 
-thanks,
--- Shuah
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/array-bounds
+
+On 4/21/21 12:40, Kees Cook wrote:
+> On Mon, Apr 19, 2021 at 07:16:31PM -0500, Gustavo A. R. Silva wrote:
+>> Fix an 11-year old bug in ngene_command_config_free_buf() while
+>> addressing the following warnings caught with -Warray-bounds:
+>>
+>> arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
+>> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
+>>
+>> The problem is that the original code is trying to copy 6 bytes of
+>> data into a one-byte size member _config_ of the wrong structue
+>> FW_CONFIGURE_BUFFERS, in a single call to memcpy(). This causes a
+>> legitimate compiler warning because memcpy() overruns the length
+>> of &com.cmd.ConfigureBuffers.config. It seems that the right
+>> structure is FW_CONFIGURE_FREE_BUFFERS, instead, because it contains
+>> 6 more members apart from the header _hdr_. Also, the name of
+>> the function ngene_command_config_free_buf() suggests that the actual
+>> intention is to ConfigureFreeBuffers, instead of ConfigureBuffers
+>> (which configuration takes place in the function ngene_command_config_buf(),
+>> above).
+>>
+>> Fix this by enclosing those 6 members of struct FW_CONFIGURE_FREE_BUFFERS
+>> into new struct config, and use &com.cmd.ConfigureFreeBuffers.config as
+>> the destination address, instead of &com.cmd.ConfigureBuffers.config,
+>> when calling memcpy().
+>>
+>> This also helps with the ongoing efforts to globally enable
+>> -Warray-bounds and get us closer to being able to tighten the
+>> FORTIFY_SOURCE routines on memcpy().
+>>
+>> Link: https://github.com/KSPP/linux/issues/109
+>> Fixes: dae52d009fc9 ("V4L/DVB: ngene: Initial check-in")
+>> Cc: stable@vger.kernel.org
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> 
+> Nice find! Yeah, this looks like a copy/paste bug but it went unnoticed
+> because it's occupying the same memory via the union. Heh.
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
+> -Kees
+> 
+>> ---
+>>  drivers/media/pci/ngene/ngene-core.c |  2 +-
+>>  drivers/media/pci/ngene/ngene.h      | 14 ++++++++------
+>>  2 files changed, 9 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/media/pci/ngene/ngene-core.c b/drivers/media/pci/ngene/ngene-core.c
+>> index 07f342db6701..7481f553f959 100644
+>> --- a/drivers/media/pci/ngene/ngene-core.c
+>> +++ b/drivers/media/pci/ngene/ngene-core.c
+>> @@ -385,7 +385,7 @@ static int ngene_command_config_free_buf(struct ngene *dev, u8 *config)
+>>  
+>>  	com.cmd.hdr.Opcode = CMD_CONFIGURE_FREE_BUFFER;
+>>  	com.cmd.hdr.Length = 6;
+>> -	memcpy(&com.cmd.ConfigureBuffers.config, config, 6);
+>> +	memcpy(&com.cmd.ConfigureFreeBuffers.config, config, 6);
+>>  	com.in_len = 6;
+>>  	com.out_len = 0;
+>>  
+>> diff --git a/drivers/media/pci/ngene/ngene.h b/drivers/media/pci/ngene/ngene.h
+>> index 84f04e0e0cb9..3d296f1998a1 100644
+>> --- a/drivers/media/pci/ngene/ngene.h
+>> +++ b/drivers/media/pci/ngene/ngene.h
+>> @@ -407,12 +407,14 @@ enum _BUFFER_CONFIGS {
+>>  
+>>  struct FW_CONFIGURE_FREE_BUFFERS {
+>>  	struct FW_HEADER hdr;
+>> -	u8   UVI1_BufferLength;
+>> -	u8   UVI2_BufferLength;
+>> -	u8   TVO_BufferLength;
+>> -	u8   AUD1_BufferLength;
+>> -	u8   AUD2_BufferLength;
+>> -	u8   TVA_BufferLength;
+>> +	struct {
+>> +		u8   UVI1_BufferLength;
+>> +		u8   UVI2_BufferLength;
+>> +		u8   TVO_BufferLength;
+>> +		u8   AUD1_BufferLength;
+>> +		u8   AUD2_BufferLength;
+>> +		u8   TVA_BufferLength;
+>> +	} __packed config;
+>>  } __attribute__ ((__packed__));
+>>  
+>>  struct FW_CONFIGURE_UART {
+>> -- 
+>> 2.27.0
+>>
+> 
