@@ -2,65 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198153CFA3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EF23CFA42
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236671AbhGTMcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:32:21 -0400
-Received: from mail-io1-f49.google.com ([209.85.166.49]:46046 "EHLO
-        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbhGTMbc (ORCPT
+        id S235863AbhGTMdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:33:00 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:37477 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234942AbhGTMb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:31:32 -0400
-Received: by mail-io1-f49.google.com with SMTP id z17so17256156iog.12;
-        Tue, 20 Jul 2021 06:12:09 -0700 (PDT)
+        Tue, 20 Jul 2021 08:31:29 -0400
+Received: by mail-io1-f54.google.com with SMTP id r18so12756553iot.4;
+        Tue, 20 Jul 2021 06:12:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=abnffZ4MtGwQDAxtUagurofgQJnEps8wWqmtotQHpvs=;
-        b=fa7LAoKIML1VN/kQnUU+Nw8tlF6JMazIz/qcgY06QVzyFZ6O7AzEKrfpn5RnTJwVJD
-         8IceekUVCVdLAwNn89ELuGRFIYOP5dOnRUqr4HcxBLuaGxtp8TEQmAOb4skJYtnBEscX
-         4I62F6NIU2jiQgwkKUd4VALWMibd+hMxm18fgt7I8MDYd0BAOvqYD+MxtwLNZq7HvKcm
-         L/vQ462FkArCyHtF5gOnA2t0Qwl4twHYkwLkr7xmhqbTpFpf7NP/dfcvUHlswoTr/JTg
-         p2JX+lph2/LFXLRIf+CHXHSRy1PRIhAbWU3XLbFh8SKveoBnSti/S4RYCdTMcVjnWeKh
-         RTHA==
-X-Gm-Message-State: AOAM531iXs/bxNnMJ4TdCjHMCwgWllUXpukYVYcW3pS+2prNQZXNWBi8
-        fgE13e2K8dHUe0t6JyEsbw==
-X-Google-Smtp-Source: ABdhPJyKoIf00du5/ZAkd1mRiGtw0/iyDLxUKFdDVMCyrHFwePjpZT3XzrY/eI4EnXfeG3vsDsFrug==
-X-Received: by 2002:a05:6602:1814:: with SMTP id t20mr18779191ioh.204.1626786729379;
-        Tue, 20 Jul 2021 06:12:09 -0700 (PDT)
+        bh=3uaiIA266oYzcSw5ViiNhUOcSHy5KGVbduxtAyiJ2M4=;
+        b=l1tWZ6ch5T16FJKcP2NGOCubyZTcfKqqfdJDGVnBsyotEw90fIynBrJ9xn5fzxbOpA
+         yWRWtmpL5SwD6k2CdiD6m9mttkJ8kQUDa0cgKIKA1Gky3gRGFR2V0/lAt1RNotzPAFfn
+         /LI7C2OAxH3BRipPJ8lh1j0tfHGx3B1Gy8T6ssQs4A1JtsDz5EWClX59sUxhpJSOCDzZ
+         p98rRykAT+4Neqe+Ig8YFUAAvNWkStsHXO6cMFMY0d4C+cDch1pO6/FPeC4eBUiPSrby
+         l15leE+jz0rr4MTou9E9+OH4IOm5JXCvPX+s7yjCGu+1TsCJbprExfg6dCsTzW0oB17K
+         rVcA==
+X-Gm-Message-State: AOAM532k4YaPYlcaJhwmwt4cb0oZHrMc7gLn95Dao1B8BfA8P5ph7JYd
+        OHfOTYad8jbUIuBLuleUQQ==
+X-Google-Smtp-Source: ABdhPJx3i7k89YrlM+ySkipECLjV8CBmT6J7j7w9kGYMYmrse6KfxDaHEo/SSOE0vZW49na1EM3A6A==
+X-Received: by 2002:a02:2382:: with SMTP id u124mr26150014jau.138.1626786720858;
+        Tue, 20 Jul 2021 06:12:00 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id r4sm11231806ilb.42.2021.07.20.06.12.07
+        by smtp.gmail.com with ESMTPSA id h6sm11993036iop.40.2021.07.20.06.11.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 06:12:08 -0700 (PDT)
-Received: (nullmailer pid 4121606 invoked by uid 1000);
+        Tue, 20 Jul 2021 06:12:00 -0700 (PDT)
+Received: (nullmailer pid 4121601 invoked by uid 1000);
         Tue, 20 Jul 2021 13:11:58 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>
-In-Reply-To: <04943d3dff73e2fd5c9336540cb31d70ccf7b9cf.1626768323.git.mchehab+huawei@kernel.org>
-References: <cover.1626768323.git.mchehab+huawei@kernel.org> <04943d3dff73e2fd5c9336540cb31d70ccf7b9cf.1626768323.git.mchehab+huawei@kernel.org>
-Subject: Re: [PATCH v6 5/9] dt-bindings: phy: Add bindings for HiKey 970 PCIe PHY
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Alvaro Gamez <alvaro.gamez@hazent.com>,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        devicetree@vger.kernel.org, michal.simek@xilinx.com,
+        linux-pwm@vger.kernel.org
+In-Reply-To: <20210719221322.3723009-1-sean.anderson@seco.com>
+References: <20210719221322.3723009-1-sean.anderson@seco.com>
+Subject: Re: [PATCH v5 1/3] dt-bindings: pwm: Add Xilinx AXI Timer
 Date:   Tue, 20 Jul 2021 07:11:58 -0600
-Message-Id: <1626786718.742548.4121605.nullmailer@robh.at.kernel.org>
+Message-Id: <1626786718.716987.4121600.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 10:09:07 +0200, Mauro Carvalho Chehab wrote:
-> Document the bindings for HiKey 970 (hi3670) PCIe PHY
-> interface, supported via the pcie-kirin driver.
+On Mon, 19 Jul 2021 18:13:20 -0400, Sean Anderson wrote:
+> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is a
+> "soft" block, so it has some parameters which would not be configurable in
+> most hardware. This binding is usually automatically generated by Xilinx's
+> tools, so the names and values of some properties should be kept as they
+> are, if possible. In addition, this binding is already in the kernel at
+> arch/microblaze/boot/dts/system.dts, and in user software such as QEMU.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> The existing driver uses the clock-frequency property, or alternatively the
+> /cpus/timebase-frequency property as its frequency input. Because these
+> properties are deprecated, they have not been included with this schema.
+> All new bindings should use the clocks/clock-names properties to specify
+> the parent clock.
+> 
+> Because we need to init timer devices so early in boot, we determine if we
+> should use the PWM driver or the clocksource/clockevent driver by the
+> presence/absence, respectively, of #pwm-cells. Because both counters are
+> used by the PWM, there is no need for a separate property specifying which
+> counters are to be used for the PWM.
+> 
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
 > ---
->  .../phy/hisilicon,phy-hi3670-pcie.yaml        | 98 +++++++++++++++++++
->  1 file changed, 98 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+> 
+> Changes in v5:
+> - Update commit message to reflect revisions
+> - Fix indentation lint
+> - Add example for timer binding
+> - Remove xlnx,axi-timer-2.0 compatible string
+> - Move schema into the timer directory
+> 
+> Changes in v4:
+> - Remove references to generate polarity so this can get merged
+> - Predicate PWM driver on the presence of #pwm-cells
+> - Make some properties optional for clocksource drivers
+> 
+> Changes in v3:
+> - Mark all boolean-as-int properties as deprecated
+> - Add xlnx,pwm and xlnx,gen?-active-low properties.
+> - Make newer replacement properties mutually-exclusive with what they
+>   replace
+> - Add an example with non-deprecated properties only.
+> 
+> Changes in v2:
+> - Use 32-bit addresses for example binding
+> 
+>  .../bindings/timer/xlnx,xps-timer.yaml        | 91 +++++++++++++++++++
+>  1 file changed, 91 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -69,11 +111,11 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.example.dt.yaml: pcie-phy@fc000000: 'reg-names' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+./Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/timer/xlnx,xps-timer.yaml#
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1507427
+See https://patchwork.ozlabs.org/patch/1507329
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
