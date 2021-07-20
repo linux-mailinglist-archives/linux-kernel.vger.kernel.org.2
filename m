@@ -2,105 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820BD3CF21D
+	by mail.lfdr.de (Postfix) with ESMTP id CB6803CF21E
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345278AbhGTCAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 22:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344729AbhGTBvl (ORCPT
+        id S1345092AbhGTCB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 22:01:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31883 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345270AbhGTCAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 21:51:41 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5643C061574;
-        Mon, 19 Jul 2021 19:32:20 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id j4so4502248pgk.5;
-        Mon, 19 Jul 2021 19:32:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NqBs+GBsePvxuJ7T8oHVXE+0kUbw069/LeZuzlfCcZ4=;
-        b=Y8rwWbhutI/72cKs7u3tfozo23N3gKPMg7M7gXJxUUL05fnTor/0vMW8ITphOZ07di
-         t1ufc7bEALcX29N5gjnfrr5+6IkuHSU+BwG0NLp0dxVHA4tRhfnRuEURjo3Y8FnPLvMo
-         ECw05xbWVF3VgTroOacoQa5xRo1j7P/m9cGc3VAQycZjy4WQnh1WkZyrQgBAsUvjFqOZ
-         WcHjzeD5eKDIandf518ZhU263ot2QuZvn+2ztZl7zYOBeZQiU52unpSewO9Mqy6V8a9r
-         6W7x8uxCXgN+mHusr3BagM4mujAsfh+OhDS64ZZK1RhRrKkSMYYrvzF49Sbk2aHMkKLt
-         jC5g==
+        Mon, 19 Jul 2021 22:00:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626748874;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9cx9vRaJKoB0elI+pAj8wQCUn2TBTDPaE649XEXqz5I=;
+        b=hmdyk5gEtyRRb86k3BP4cpPzpqwlI+TlV3345xp29UAWOVyICyIYwzBFea7T4/5lIdwB80
+        c5837Kr0R0/Q1AF1Gd5lg64grqAis/XIpMQORfdtP1gaoLoGjMJQ4rgCxNFL6OV4h3q0Qg
+        iD0LqfElFt1iEU4u9o2Kq/LGG2mVWKc=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-gwK0EfI5MS2pWdGwEFADDw-1; Mon, 19 Jul 2021 22:41:13 -0400
+X-MC-Unique: gwK0EfI5MS2pWdGwEFADDw-1
+Received: by mail-pf1-f197.google.com with SMTP id s187-20020a625ec40000b02903288ce43fc0so15117709pfb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 19:41:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NqBs+GBsePvxuJ7T8oHVXE+0kUbw069/LeZuzlfCcZ4=;
-        b=ROKJcOui9FhSwu9GZg28gKjwQ2233vWEZA/xAVT0TWQorFVyJVrMYZIsRxp9O0x9ag
-         crnZJi+mfv4hadQ3EnxkOyCDXa5O1iqMPbbNvwoUf2ZfK6KSmUiPb/7QUN0OEnbsLptC
-         6m3VTzMKxctG1LXSL9Qc1MF/pNABCpyk59dlz7eIL38Q1FNGKiFFUa/BE9BuhIO4qUyZ
-         WQxw4Zk2/Bj0qi4waWBaW5lpWt6MLgaV7CEnzns/IIf8XU76V+vTG/5yGeOXTcuAEn4g
-         XAFrMZfGRdEj2F7jJBeEyxs2bIvPCgDmIinO9/UCOnTmLF1uQzA266UgPBpEa+xE7vIs
-         gaew==
-X-Gm-Message-State: AOAM532xeQ4PAn648yYxh98ROLYBz5RlIqnqo1BLupdx+jTmPL7z7TJ6
-        8MRuheyYI2SnFGMxR33njgav+rL3vLJm+g==
-X-Google-Smtp-Source: ABdhPJw8ChIR3kg8fmYEnI2nUmPF2K/iGGfyPWq7h36woPrYS3chjEBD9WWev0KDp2gqdtGrUu1oDg==
-X-Received: by 2002:a62:584:0:b029:32e:3b57:a1c6 with SMTP id 126-20020a6205840000b029032e3b57a1c6mr28529616pff.13.1626748339693;
-        Mon, 19 Jul 2021 19:32:19 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id t26sm23317435pgu.35.2021.07.19.19.32.09
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=9cx9vRaJKoB0elI+pAj8wQCUn2TBTDPaE649XEXqz5I=;
+        b=h1hKNzOHZ2mYjIALUqTG+7vjZVkfAvEK04a6YrgQQZkQh6PrNrw/qXKW/L4welVis9
+         EedC//jLSgbQbr03jpzBR5BEhjt4pJAP020uQAKEmKSsqnpnymIow4Ed/m7jzUHV+U9X
+         Gw1zDSnbBP7Ilr0lDjj6qc9VT4FuNzMHfNyFd9n4LYYuDRcBMmR374N/v9Zbr8PAz9qH
+         iZaGdLeKP0EALX2PYFO0i30yopO9ww8R21YJ3VA8LHzU38yKWdEg9dUc6pvahTQLl7kf
+         9s0hrlmHDZUeZCJ5XDxoCNTI1MjxFKb+cPZb5dZiEDvwua3yhwAuS1SLN6rwxSF8U3YB
+         TnEg==
+X-Gm-Message-State: AOAM532vMkxcoTUIyGVWZcOrP57QuhhcOnSsBUXZ7e9OU7Awtt4nBpR8
+        lgxFdLVONMhv0qspQr+pUy5YY1S2VmCxXyrIlbVqqk1pQJU/21o+CTaI3RPy6RKs+8M67SQn4sd
+        YRedMDVcHrmwLr1/+s0S0P/KDhwtXLbWkF8iQ5tZAEDQ5QVL2ZqSoGvaKTcFm6JYsyYLyZrFl3z
+        hJ
+X-Received: by 2002:a63:ed47:: with SMTP id m7mr28577597pgk.194.1626748871763;
+        Mon, 19 Jul 2021 19:41:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxgxZiwuj0ggtt60dnHTwjkzia6vpHkhohJNoz9AYWKnuY4DXH4sLv44Eyv8ZJljg3HsqDpLg==
+X-Received: by 2002:a63:ed47:: with SMTP id m7mr28577572pgk.194.1626748871404;
+        Mon, 19 Jul 2021 19:41:11 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id q2sm10838498pfu.205.2021.07.19.19.41.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 19:32:18 -0700 (PDT)
-Subject: Re: [PATCH v5 8/8] firmware: tee_bnxt: Release TEE shm, session, and
- context during kexec
-To:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210716022332.GC3232@sequoia>
- <CAHLZf_t5U1bh1H8sULbJz7xrZ-r3Dcmxuw9MMmG2fehS3C72uQ@mail.gmail.com>
- <CAHUa44EetPuA_5+UQLW-c=-_OApiRoiq+YjeFs6TRPj6=AJfHw@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <903824a6-7a2b-1514-5b71-a2db634e9abf@gmail.com>
-Date:   Mon, 19 Jul 2021 19:32:01 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 19 Jul 2021 19:41:10 -0700 (PDT)
+Subject: Re: [PATCH] virtio-balloon: Use virtio_find_vqs() helper
+To:     tianxianting <xianting.tian@linux.alibaba.com>,
+        Xianting Tian <xianting_tian@126.com>, mst@redhat.com,
+        david@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <1626190724-7942-1-git-send-email-xianting_tian@126.com>
+ <bbe52a89-c7ea-c155-6226-0397f223cd80@linux.alibaba.com>
+ <b427ac2a-e439-3675-8a42-9fdcd23a5114@redhat.com>
+ <d1b6f3d5-22a0-f0a5-ed49-1523dd740ffb@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <76a227a9-1b2c-c433-c8d9-5963fb56028d@redhat.com>
+Date:   Tue, 20 Jul 2021 10:41:03 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAHUa44EetPuA_5+UQLW-c=-_OApiRoiq+YjeFs6TRPj6=AJfHw@mail.gmail.com>
+In-Reply-To: <d1b6f3d5-22a0-f0a5-ed49-1523dd740ffb@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+在 2021/7/19 下午12:22, tianxianting 写道:
+> thanks,
+>
+> I checked, actually all virtio drivers have switched to use the helper 
+> after this one merged.
 
-On 7/19/2021 3:49 AM, Jens Wiklander wrote:
-> Hi,
-> 
-> On Fri, Jul 16, 2021 at 4:48 AM Vikas Gupta <vikas.gupta@broadcom.com> wrote:
+
+Ok. Cool.
+
+Thanks
+
+
+>
+> 在 2021/7/19 上午11:46, Jason Wang 写道:
 >>
->> Hi Allen/Tyler,
->>   The patch looks good to me.
-> 
-> Thanks.
-> 
-> Rafal, is it OK if I include this patch together with the rest of the
-> patches in this patch set in a pull request to arm-soc?
+>> 在 2021/7/16 下午8:46, tianxianting 写道:
+>>> Do you interest in this patch? just little improvment:)
+>>>
+>>> 在 2021/7/13 下午11:38, Xianting Tian 写道:
+>>>> From: Xianting Tian <xianting.tian@linux.alibaba.com>
+>>>>
+>>>> Use the helper virtio_find_vqs().
+>>>>
+>>>> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+>>>> ---
+>>>>   drivers/virtio/virtio_balloon.c | 4 ++--
+>>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/virtio/virtio_balloon.c 
+>>>> b/drivers/virtio/virtio_balloon.c
+>>>> index 510e931..18e0bf3 100644
+>>>> --- a/drivers/virtio/virtio_balloon.c
+>>>> +++ b/drivers/virtio/virtio_balloon.c
+>>>> @@ -531,8 +531,8 @@ static int init_vqs(struct virtio_balloon *vb)
+>>>>           callbacks[VIRTIO_BALLOON_VQ_REPORTING] = balloon_ack;
+>>>>       }
+>>>>   -    err = vb->vdev->config->find_vqs(vb->vdev, 
+>>>> VIRTIO_BALLOON_VQ_MAX,
+>>>> -                     vqs, callbacks, names, NULL, NULL);
+>>>> +    err = virtio_find_vqs(vb->vdev, VIRTIO_BALLOON_VQ_MAX, vqs,
+>>>> +                callbacks, names, NULL);
+>>>>       if (err)
+>>>>           return err;
+>>>
+>>
+>> Acked-by: Jason Wang <jasowang@redhat.com>
+>>
+>> Maybe it's better to convert all the drivers that doesn't use 
+>> virtio_find_vqs{_ctx}.
+>>
+>> Thanks
+>
 
-I can take those patches through the Broadcom ARM SoC pull request, 
-Rafal would that work for you? We seem to have a bit of a maintainer 
-coverage blind spot for that directory.
--- 
-Florian
