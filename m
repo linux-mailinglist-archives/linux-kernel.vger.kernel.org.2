@@ -2,160 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D94A3CF626
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFEA3CF630
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234173AbhGTHtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:49:07 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:53960
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232349AbhGTHsu (ORCPT
+        id S234562AbhGTHy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:54:59 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15850 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234314AbhGTHyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:48:50 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 8E5FA404A2;
-        Tue, 20 Jul 2021 08:29:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626769767;
-        bh=CC18GBbjPHCdP1gYvQIWC86yDSWhY5wuo6EYPhoHKD0=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version:Content-Type;
-        b=S/IlXY962gz4RCNv/Vl+M+/z6FCsjXFHc5w7KU9mfr1adh9AXtWgpx7GQDbFLRBYN
-         Ih0nFcmPsJWWm6bHTee+ykSCemBfsmcjdhNLr9B0hhx7lEgEvyNJHIG4jiuPr/7Uka
-         edolGhjd8+dnzvErPvQqWHtRxDNTXdAdZAXYRV6lSiMJQ/IZ7BK3e57UoQ//kidKeE
-         m7A3Ls6/Fy7+apNpcOjvrMSkkXnTCplJ5aReUoTp4VI2PjSbAf8z2tGTY8FNTFdtX3
-         HDtkjadjfBYu2n6do9Hcr+6I2CwXBfBiUikwDL1TbSQq4STfplfieR5dsDQI3orDT3
-         SoLHViO5Odz+Q==
-From:   Colin King <colin.king@canonical.com>
-To:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][V2][next] power: supply: ab8500: clean up warnings found by checkpatch
-Date:   Tue, 20 Jul 2021 09:29:22 +0100
-Message-Id: <20210720082922.6398-2-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210720082922.6398-1-colin.king@canonical.com>
-References: <20210720082922.6398-1-colin.king@canonical.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Tue, 20 Jul 2021 03:54:23 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16K8X8nm082229;
+        Tue, 20 Jul 2021 04:34:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=Kmd0NCneQRO+ciEUF6cKsoYHvG4BwX5CNaYsPFWuCUo=;
+ b=EfaApuk3JH7dlqLqYcfhNN6Fz0oJdpSCGrfchAzBOXmhejt/Jyz0+vKgh8OcbFxuxZcS
+ 0owW5r9cUqsybMwL771Xm9Jquwwf1T84gpe3t8S6igyxfeWflG9VxRpo8yUyLRarrK0+
+ c/seHPFzmZijsNALCoOer84jsaIbM3tFfU4u38llLJtA6V7wEZtSrFA6ej+aKLncO6lz
+ nyn9moQaQ44RC0LZKAolEk42rQotp64MTyAc1KKL13CHHaU7VVLStieS1LWBJrAEOfYx
+ BO5/12RYjQ+b9+q1Qaa+wbHV+4DGi+2112cBh1ITlcMc5QGiiZTiJTzDYnWKNqAbGstd /g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39wr5d53hk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 04:34:54 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16K8YHE9087688;
+        Tue, 20 Jul 2021 04:34:53 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39wr5d53gk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 04:34:53 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16K8YThI027499;
+        Tue, 20 Jul 2021 08:34:52 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 39upu88ntg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 08:34:51 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16K8YnR717105304
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Jul 2021 08:34:49 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 550F8A4051;
+        Tue, 20 Jul 2021 08:34:49 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F3509A4040;
+        Tue, 20 Jul 2021 08:34:48 +0000 (GMT)
+Received: from sig-9-145-150-42.de.ibm.com (unknown [9.145.150.42])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Jul 2021 08:34:48 +0000 (GMT)
+Message-ID: <bd731ed627344a3a2eaeffabff21d499c4e2c3fd.camel@linux.ibm.com>
+Subject: Re: [PATCH] PCI: Move pci_dev_is/assign_added() to pci.h
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Date:   Tue, 20 Jul 2021 10:34:48 +0200
+In-Reply-To: <20210719121148.2403239-1-schnelle@linux.ibm.com>
+References: <20210719121148.2403239-1-schnelle@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: NH8bXqJo4bUpl19zSPOzUDOvoHBldX6w
+X-Proofpoint-ORIG-GUID: 5VMbc7ngO_SRBHdTLdoT6EIGkyIDvx33
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-20_04:2021-07-19,2021-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 mlxlogscore=999 priorityscore=1501 bulkscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 adultscore=0 suspectscore=0
+ phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2107200051
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Mon, 2021-07-19 at 14:11 +0200, Niklas Schnelle wrote:
+> The helper function pci_dev_is_added() from drivers/pci/pci.h is used in
+> PCI arch code of both s390 and powerpc leading to awkward relative
+> includes. Move it to the global include/linux/pci.h and get rid of these
+> includes just for that one function.
+> 
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> ---
+> 
+... snip ...
+>  
+>  static LIST_HEAD(bridge_list);
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 93dcdd431072..a159cd0f6f05 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -383,21 +383,6 @@ static inline bool pci_dev_is_disconnected(const struct pci_dev *dev)
+>  	return dev->error_state == pci_channel_io_perm_failure;
+>  }
+>  
+> -/* pci_dev priv_flags */
+> -#define PCI_DEV_ADDED 0
+> -#define PCI_DPC_RECOVERED 1
+> -#define PCI_DPC_RECOVERING 2
 
-Clean up a handful of checkpatch warnings:
- - static const char * array should probably be static const char * const
- - function arguments should have identifier names
- - else should follow close brace '}'
- - suspect code indent for conditional statements
- - unnecessary parentheses in an if condition
- - avoid multiple line dereference
- - remove debug showing function execution, ftrace can trace these better
- - prefer 'long' over 'long int' as the int is unnecessary
+Sorry, the above two PCI_DPC_* lines should remain in drivers/pci/pci.h
+I messed this up on rebasing to v5.14-rc1 and it didn't lead to
+problems on either s390x defconfig, nor pp64_defconfig but breaks ppc
+allyesconfig. Will resend a fixed version.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
-V2: Fix subject, s/cppcheck/checkpatch/
-    Remove debug, ftrace can track these better.
----
- drivers/power/supply/ab8500_chargalg.c | 24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
+> 
 
-diff --git a/drivers/power/supply/ab8500_chargalg.c b/drivers/power/supply/ab8500_chargalg.c
-index 46b0c9fedebb..ff4b26b1ceca 100644
---- a/drivers/power/supply/ab8500_chargalg.c
-+++ b/drivers/power/supply/ab8500_chargalg.c
-@@ -123,7 +123,7 @@ enum ab8500_chargalg_states {
- 	STATE_WD_EXPIRED,
- };
- 
--static const char *states[] = {
-+static const char * const states[] = {
- 	"HANDHELD_INIT",
- 	"HANDHELD",
- 	"CHG_NOT_OK_INIT",
-@@ -274,8 +274,8 @@ static enum power_supply_property ab8500_chargalg_props[] = {
- 
- struct ab8500_chargalg_sysfs_entry {
- 	struct attribute attr;
--	ssize_t (*show)(struct ab8500_chargalg *, char *);
--	ssize_t (*store)(struct ab8500_chargalg *, const char *, size_t);
-+	ssize_t (*show)(struct ab8500_chargalg *di, char *buf);
-+	ssize_t (*store)(struct ab8500_chargalg *di, const char *buf, size_t length);
- };
- 
- /**
-@@ -526,8 +526,7 @@ static int ab8500_chargalg_kick_watchdog(struct ab8500_chargalg *di)
- 			di->usb_chg->ops.kick_wd(di->usb_chg);
- 
- 		return di->ac_chg->ops.kick_wd(di->ac_chg);
--	}
--	else if (di->usb_chg && di->usb_chg->ops.kick_wd &&
-+	} else if (di->usb_chg && di->usb_chg->ops.kick_wd &&
- 			di->chg_info.online_chg & USB_CHG)
- 		return di->usb_chg->ops.kick_wd(di->usb_chg);
- 
-@@ -750,8 +749,8 @@ static void ab8500_chargalg_check_temp(struct ab8500_chargalg *di)
- 			di->t_hyst_norm = 0;
- 			di->t_hyst_lowhigh = di->bm->temp_hysteresis;
- 		} else {
--		/* Within hysteresis */
--		dev_dbg(di->dev, "Within hysteresis limit temp: %d "
-+			/* Within hysteresis */
-+			dev_dbg(di->dev, "Within hysteresis limit temp: %d "
- 				"hyst_lowhigh %d, hyst normal %d\n",
- 				di->batt_data.temp, di->t_hyst_lowhigh,
- 				di->t_hyst_norm);
-@@ -867,7 +866,7 @@ static enum maxim_ret ab8500_chargalg_chg_curr_maxim(struct ab8500_chargalg *di)
- 
- 	di->ccm.wait_cnt = 0;
- 
--	if ((di->batt_data.inst_curr > di->ccm.original_iset)) {
-+	if (di->batt_data.inst_curr > di->ccm.original_iset) {
- 		dev_dbg(di->dev, " Maximization Ibat (%dmA) too high"
- 			" (limit %dmA) (current iset: %dmA)!\n",
- 			di->batt_data.inst_curr, di->ccm.original_iset,
-@@ -1545,8 +1544,7 @@ static void ab8500_chargalg_algorithm(struct ab8500_chargalg *di)
- 
- 	case STATE_WAIT_FOR_RECHARGE:
- 		if (di->batt_data.percent <=
--		    di->bm->bat_type[di->bm->batt_id].
--		    recharge_cap)
-+		    di->bm->bat_type[di->bm->batt_id].recharge_cap)
- 			ab8500_chargalg_state_to(di, STATE_NORMAL_INIT);
- 		break;
- 
-@@ -1676,8 +1674,6 @@ static void ab8500_chargalg_wd_work(struct work_struct *work)
- 	struct ab8500_chargalg *di = container_of(work,
- 		struct ab8500_chargalg, chargalg_wd_work.work);
- 
--	dev_dbg(di->dev, "ab8500_chargalg_wd_work\n");
--
- 	ret = ab8500_chargalg_kick_watchdog(di);
- 	if (ret < 0)
- 		dev_err(di->dev, "failed to kick watchdog\n");
-@@ -1754,7 +1750,7 @@ static ssize_t ab8500_chargalg_curr_step_show(struct ab8500_chargalg *di,
- static ssize_t ab8500_chargalg_curr_step_store(struct ab8500_chargalg *di,
- 					       const char *buf, size_t length)
- {
--	long int param;
-+	long param;
- 	int ret;
- 
- 	ret = kstrtol(buf, 10, &param);
-@@ -1787,7 +1783,7 @@ static ssize_t ab8500_chargalg_en_show(struct ab8500_chargalg *di,
- static ssize_t ab8500_chargalg_en_store(struct ab8500_chargalg *di,
- 	const char *buf, size_t length)
- {
--	long int param;
-+	long param;
- 	int ac_usb;
- 	int ret;
- 
--- 
-2.31.1
+.. snip ..
 
