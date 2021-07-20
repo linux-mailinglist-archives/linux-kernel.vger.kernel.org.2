@@ -2,79 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416EF3CF470
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6B23CF473
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241557AbhGTFlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 01:41:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236407AbhGTFlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 01:41:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98FBA60FF4;
-        Tue, 20 Jul 2021 06:21:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626762106;
-        bh=jq0ewQwBw6Q1yW64gNoLCeTHLITzxApdaNjRG0iJlrs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qwKgcWgLiMYn06+ltx7KwDAOJO1RlwGmUwdk3TCad2x/M921gztXufgGiI+R7+JU6
-         B26QEsLPF1VFqBaIifhwzOoY2w4g9njSY8uTMY9zdlsFsLYM7meScVMoAnHEBDGF2y
-         0687mPc9r1eawSiuzJ+RWDiZNMstCWrsAn60T2Cs=
-Date:   Tue, 20 Jul 2021 08:21:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net,
-        linux-kernel@vger.kernel.org, namhyung@kernel.org
-Subject: Re: [PATCH 5.4 000/148] 5.4.134-rc2 review
-Message-ID: <YPZrcigTNlR5196d@kroah.com>
-References: <20210719184316.974243081@linuxfoundation.org>
- <3d770ab7-5008-cbee-98c1-101d839739cd@linaro.org>
- <b98fa7ee-bfb2-4c0b-19e1-9b4175e4a167@linaro.org>
+        id S241779AbhGTFoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 01:44:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237614AbhGTFnu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 01:43:50 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705F9C061574;
+        Mon, 19 Jul 2021 23:24:28 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GTTFh688Bz9sWw;
+        Tue, 20 Jul 2021 16:24:24 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626762265;
+        bh=af6S9rSG2z4cEsufseNG2kpNFLE4z52Qx93pQsWEvy4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=O6SwPUxLj/3MZH3FAQ6MuHRlziXWhzYLIov3WnwxdPn5Dgm0hVP7qgr8lU9CrIlJE
+         NyiJxTQr7a0QRmjC3zUizAuMuj9RSTJXL3964sa+MQHQr6tKobMhAlyPTup4Ccd1Tv
+         6mBHxwqvJqiHOTi1jxXVXwj7uJAd2t54AF0MzhosHWqbTfiyDH4JrzjiifUIotLlhH
+         nvwr8yj4C75F3o8///QN9+UTqHAQixpZ8xVJ2JBi15RV5HRjbEP8cqQ1Ih0YC6CLFb
+         h1LmiBLeeLL2VU4VkiEErlF+T5HSeoSVPRsjbmoJQj0xSXZqDSQ+l7Pv/kuQy7Ion/
+         EbLj7M1bk37xg==
+Date:   Tue, 20 Jul 2021 16:24:23 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Chris Down <chris@chrisdown.name>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the printk tree
+Message-ID: <20210720162423.75f61ce0@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b98fa7ee-bfb2-4c0b-19e1-9b4175e4a167@linaro.org>
+Content-Type: multipart/signed; boundary="Sig_/uGIa4vuWxX=T2P62lTrJ5jb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 05:46:26PM -0500, Daniel Díaz wrote:
-> Hello!
-> 
-> On 7/19/21 3:46 PM, Daniel Díaz wrote:
-> > On 7/19/21 1:45 PM, Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 5.4.134 release.
-> > > There are 148 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > > 
-> > > Responses should be made by Wed, 21 Jul 2021 18:42:54 +0000.
-> > > Anything received after that time might be too late.
-> > > 
-> > > The whole patch series can be found in one patch at:
-> > >     https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.134-rc2.gz
-> > > or in the git tree and branch at:
-> > >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > > and the diffstat can be found below.
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > 
-> > Perf fails to compile in 5.4 on Arm, Arm64, i386 and x86 (GCC 11 and GCC 7.3):
-> > 
-> >    builtin-report.c:669:12: error: 'process_attr' used but never defined [-Werror]
-> >      669 | static int process_attr(struct perf_tool *tool __maybe_unused,
-> >          |            ^~~~~~~~~~~~
-> >    cc1: all warnings being treated as errors
-> >    make[3]: *** [/builds/linux/tools/build/Makefile.build:96: /home/tuxbuild/.cache/tuxmake/builds/current/builtin-report.o] Error 1
-> 
-> Bisection points to ee7531fb817c ("perf report: Fix --task and --stat with pipe input" [upstream commit 892ba7f18621a02af4428c58d97451f64685dba4]).
+--Sig_/uGIa4vuWxX=T2P62lTrJ5jb
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, now dropped.
+Hi all,
 
-greg k-h
+After merging the printk tree, today's linux-next build (htmldocs)
+produced this warning:
+
+kernel/printk/printk.c:1: warning: 'printk' not found
+
+Introduced by commit
+
+  337015573718 ("printk: Userspace format indexing support")
+
+I presume that "printk" is referred to elsewhere in the documentation
+as being in this file.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/uGIa4vuWxX=T2P62lTrJ5jb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD2bBcACgkQAVBC80lX
+0Gw0AQf7BZkzr3PUP4JX2KPQEm1iZEpnPwUXLBOoVg6HkxckzXB0j7bsvhc0sqkH
+1opyzlGRoROoHvXyZpLA/U9JSvrWfpsyFV70QBPqhPM0GydgWBrDePKG4LnM2PFF
+AbzE7QbkDiSPAFpncG6OI4Vz8plmjAKQkZwZ7qmClu7hyXSlyCbJ99yflyketq2O
+ss9oWKKE0xD7c1QXoTfCsb1Merbrf6HyQZVkqifFEuROXOtqHUM5EKLPRI7YHypy
+KKv3Bk73sbNyyE9A+VV+1rcIukaI4edC37nk/cCfLyuKYcgmn0AKiHwCDs61a6MH
+MLloxbHa1wnnGZ17KTdMfLJsBHN04A==
+=6O+M
+-----END PGP SIGNATURE-----
+
+--Sig_/uGIa4vuWxX=T2P62lTrJ5jb--
