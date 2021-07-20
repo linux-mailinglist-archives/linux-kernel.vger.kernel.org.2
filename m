@@ -2,111 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC71A3CFDC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9C43CFDF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242184AbhGTO7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 10:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241274AbhGTOw3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:52:29 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9D0C0613E8
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:32:52 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id d2so26532773wrn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=y06R/0eT64/snTUFHobmbHosiuAMtQLzFtaIF77YTug=;
-        b=YhYegMtKNYPb7xq7sv3ppy3oiIKVCixO01NeWUBaUCvktmA/r28jh/UYGiTC30w9OW
-         u+olDDmVVJbncoluIzTY5pqBNfNkb5rw3L6lzXWNJ2aJqf0sx2+Wuolzv1Vez+o68gvg
-         I+AoXvaAAf2nu4p2lNyAI+PbiTtL4hVL7GzRXT+j7wTJCi6MwJkPxOSqiSuP5+G92EIe
-         25TaKZQnh1IAbRw3uRbxlKg0JgytouGJFe8DWmtDJbrtIXyO4Pyvfr977HypsmNvlXX5
-         etuGC6Rm8TJwBC/bNv0dgy/1C19Kj4oDL9delpu6Swc8MavFKkkyKqNDSTYE2JOgbGxM
-         JSWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=y06R/0eT64/snTUFHobmbHosiuAMtQLzFtaIF77YTug=;
-        b=qxWbHcB2R+9s4qGJR7wdCQVLENxyZKI/5vMObjXpx2106piEIw3ZrTVVca8FDyrp+j
-         h18Icgd/EXyMjn6sv2+UujQiQkpQSlGhgvMyZSDZEsTufrjHwEkFVCjNQDRiwn8S/Wit
-         pEznrGpDTkf625DvQQIUxLn9o27Ri1tazdFtx4enEYGelm0McdtKWwNZh+7ybtib/859
-         EgTZmbTSceo9akgrZvObz5B5g3WJDXtV3tnu78/D/KLVTE5RZszKBHP0ypU0UcTkcVy7
-         E/zyWf2EgiLzr0GL/357wH0DqKm/uIlf6IGhGutuo8zLrhlJAyskje2APZaQraOw0X1K
-         3lxA==
-X-Gm-Message-State: AOAM530Vb9EGIbiWATvT4lOC5E5lQGGJFjqdO6jR2Y/hSR2mJevfzFsc
-        7SRa0DXNquBHh1tSaKOaI2ZItw==
-X-Google-Smtp-Source: ABdhPJxrEYEfOCZ7X2e5jEkeAnhzsFbTZ1DrJExNijXr3c/wQ4kPbqkKIBgFJjoUjTybBXyidIHz3w==
-X-Received: by 2002:adf:f949:: with SMTP id q9mr35442776wrr.178.1626795171435;
-        Tue, 20 Jul 2021 08:32:51 -0700 (PDT)
-Received: from google.com ([31.124.24.141])
-        by smtp.gmail.com with ESMTPSA id n5sm17267949wrp.80.2021.07.20.08.32.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 08:32:50 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 16:32:49 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        "Andrew F. Davis" <afd@ti.com>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/3] mfd: tps65086: Make interrupt line optional
-Message-ID: <YPbsodxMk+VvU/3D@google.com>
-References: <20210625224744.1020108-1-kernel@esmil.dk>
- <20210625224744.1020108-3-kernel@esmil.dk>
- <YPbmmqfOuE5w6EgW@google.com>
- <CANBLGcy_28q23vRJk9=UZR_Feeqod-ETET=v4Ub=35edySH7SA@mail.gmail.com>
+        id S242243AbhGTPAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:00:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42532 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241892AbhGTOzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 10:55:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24149601FD;
+        Tue, 20 Jul 2021 15:35:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626795356;
+        bh=6WWbHG/Fa5709pODcaChGeaGj3p2RG9Qp8c92oe20zI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JQKtkHgtu6oCFgE8fW9thT3eytInZV3idh1LlWRc/P0FRUiv8NTrsAeqyvPR0tk/z
+         SDRabWk8G6xfWiZf36Rj0S2TFnEp3Ov1e+odU8Ld39pdfNN3ZmiSGlST3OvHnFtjx2
+         OY7l50V5VXFeqfqVhKMLPOoHsJU5yWsQdpboDBTH9exrO64daiyQtBpU/W8qJ7BMYb
+         c0ZyP8452/1RH3t7P70w8nDGP41Z7tlQOjutKH2mfwi5bkOW8Rx3wAeDcL7y8RbRhz
+         EcPGzNjnZF7cLbi7QT/jvxOBfsB0+0qYju73pgV88ubSipoKUbl/1JNMtAytQX8myD
+         SWCbbC145IMAg==
+Date:   Tue, 20 Jul 2021 18:35:50 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 000/138] Memory folios
+Message-ID: <YPbtVvnow+4I4ytS@kernel.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <YParbk8LxhrZMExc@kernel.org>
+ <YPbEax52N7OBQCZp@casper.infradead.org>
+ <YPbpBv30NqeQPqPK@kernel.org>
+ <YPbqcQ9i/Vi7ivEE@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANBLGcy_28q23vRJk9=UZR_Feeqod-ETET=v4Ub=35edySH7SA@mail.gmail.com>
+In-Reply-To: <YPbqcQ9i/Vi7ivEE@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021, Emil Renner Berthing wrote:
-
-> On Tue, 20 Jul 2021 at 17:07, Lee Jones <lee.jones@linaro.org> wrote:
-> > On Sat, 26 Jun 2021, Emil Renner Berthing wrote:
-> > > The BeagleV Starlight v0.9 board[1] doesn't have the IRQB line routed to
-> > > the SoC, but it is still useful to be able to reach the PMIC over I2C
-> > > for the other functionality it provides.
-> > >
-> > > [1] https://github.com/beagleboard/beaglev-starlight
-> > >
-> > > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> > > ---
-> > >  .../devicetree/bindings/mfd/ti,tps65086.yaml  |  3 ---
-> >
-> > This is not present in my current tree.
-> >
-> > Looks like it's still *.txt.
-> >
-> > Am I missing a patch?
+On Tue, Jul 20, 2021 at 04:23:29PM +0100, Matthew Wilcox wrote:
+> On Tue, Jul 20, 2021 at 06:17:26PM +0300, Mike Rapoport wrote:
+> > On Tue, Jul 20, 2021 at 01:41:15PM +0100, Matthew Wilcox wrote:
+> > > On Tue, Jul 20, 2021 at 01:54:38PM +0300, Mike Rapoport wrote:
+> > > > Most of the changelogs (at least at the first patches) mention reduction of
+> > > > the kernel size for your configuration on x86. I wonder, what happens if
+> > > > you build the kernel with "non-distro" configuration, e.g. defconfig or
+> > > > tiny.config?
+> > > 
+> > > I did an allnoconfig build and that reduced in size by ~2KiB.
+> > > 
+> > > > Also, what is the difference on !x86 builds?
+> > > 
+> > > I don't generally do non-x86 builds ... feel free to compare for
+> > > yourself!
+> > 
+> > I did allnoconfig and defconfig for arm64 and powerpc.
+> > 
+> > All execpt arm64::defconfig show decrease by ~1KiB, while arm64::defconfig
+> > was actually increased by ~500 bytes.
 > 
-> Yes, the first patch in the series converts that to yaml. I'm quite
-> sure I had the same list of recipients on all 4 mails in the series,
-> so don't know why that should be missing.
+> Which patch did you go up to for that?  If you're going past patch 50 or
+> so, then you're starting to add functionality (ie support for arbitrary
+> order pages), so a certain amount of extra code size might be expected.
+> I measured 6KB at patch 32 or so, then between patch 32 & 50 was pretty
+> much a wash.
 
-Oh, it's not marked as 'important' because it has open review comments
-on it.
+I've used folio_14 tag:
 
-Just have this for now then:
+commit 480552d0322d855d146c0fa6fdf1e89ca8569037 (HEAD, tag: folio_14)
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Wed Feb 5 11:27:01 2020 -0500
 
-For my own reference (apply this as-is to your sign-off block):
-
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-
+    mm/readahead: Add multi-page folio readahead
+ 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Sincerely yours,
+Mike.
