@@ -2,85 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D5F3CF2A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32003CF2B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237200AbhGTCwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 22:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244726AbhGTCr4 (ORCPT
+        id S243645AbhGTCxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 22:53:34 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:40618 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240515AbhGTCut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 22:47:56 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68820C061762;
-        Mon, 19 Jul 2021 20:28:34 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id j4so4601834pgk.5;
-        Mon, 19 Jul 2021 20:28:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=D86blkjNHKioN25R04XcYte58T6pb5DQYVQYgurli6Y=;
-        b=sZ83FT/uYsaywhpvb6rqo0lNjDavwpJ0/Id0igA1lKTbijfq+XEWHxqNAIRP91zn2Z
-         wPLiiJRPz98+vq7MGPOT8Ni2vjfd8pCwKR5n0/zI/kByD/2mRhJEacvwWjBAfVnBfC3s
-         qXMrVLfLlqsw+ajNmRwlCthwvcgg6n/nOKmdtgs1S5K3HJyOwCUe+hQDaegeXEqIL074
-         4+Gi6zJ2XvBGiAxfCLO6cfBnTSCPcQq5GygbP1kRd5yKTpvDhaOyHwCmfxMAP/PGsQD9
-         SUonr0Y6r7gmXl50jk21a+7YzWUM0bvuT9bddRYj0A4UU1KEjiwGTf0OLXLfCoEPpNlE
-         RvUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=D86blkjNHKioN25R04XcYte58T6pb5DQYVQYgurli6Y=;
-        b=DcfcwiGNPoUl/i4oc5XhAfjC//DL+HdVJ/kla52bc8dfGPT/Znzkc/zfUlzpIxjeXO
-         /o241HybXvGyJ3Hx05AxU7mj8g3A2PpK8VUXaIxKIlC9Ur93yxSXT1Oql6s09bmpG8g3
-         zlHj4GzZ349bOXbf3a4GFVgVQKjaqHcYUNC/Bixvmm7Y90QjEldN03sQBYKJCjOmDypw
-         uY7a4o4Y/fori38Le+Sv1pRfou5TykkwaHM/E0a4H7y4b+Jyi61jX40fA07xayS/MEzs
-         PqRaUUH58jeSrdNRu26JtR3srf53SYza8+YZp/rZGX47pjAnwKYx/C2oF1QnDXe7YASC
-         ed2Q==
-X-Gm-Message-State: AOAM530o8RNloHW1SRNV3x6vIiA5KSH1U4/VIMVMxy6FYGA90J2GUd1o
-        R+NsXssKb9Rp63HmC0AdJFzHzsn/qn7NRycL
-X-Google-Smtp-Source: ABdhPJxOqjtMd2iZm414Gw/g3s/4B6+7cGFr46qbXy9AAMu7ATkAd3WUwRgjNv88g3QcdMQ32rsUVg==
-X-Received: by 2002:a63:67c3:: with SMTP id b186mr7184478pgc.384.1626751713979;
-        Mon, 19 Jul 2021 20:28:33 -0700 (PDT)
-Received: from Likes-MacBook-Pro.local ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id g5sm1380557pfj.212.2021.07.19.20.28.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 20:28:33 -0700 (PDT)
-Subject: Re:
- 0001-perf-x86-amd-Do-not-touch-the-AMD64_EVENTSEL_HOSTONL.patchFrom
- 9f724a38754d3f99a1b332c11e72e9dd213289d7 Mon Sep 17 00:00:00 2001
-From:   Like Xu <like.xu.linux@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210720032048.90815-1-likexu@tencent.com>
-Message-ID: <38c206c9-ffc2-95f1-8590-5f14b7cdcfcf@gmail.com>
-Date:   Tue, 20 Jul 2021 11:28:23 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Mon, 19 Jul 2021 22:50:49 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id D1E5020B7178; Mon, 19 Jul 2021 20:31:23 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D1E5020B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1626751883;
+        bh=+yPMJaQtcLTsFBtRILqc6LXrWgm8NmSEzBdhbuZktUA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LFmorg5sZOIHyaC+PyRq9EbTsBjTNI7X10BXa7e9FoOQ3px+NYgeLeNUMhbWznrES
+         xlfh83t1UJU7oecoorR87Mg5lLBsmXPoOFtBIoCalbAatJYGTR8ICpfMgKohjfb5Dh
+         uiS17hOFRh0nmsBNcNIEvsjTGpQaHZqGGpF4k6ow=
+From:   longli@linuxonhyperv.com
+To:     linux-fs@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>
+Subject: [Patch v4 0/3] Introduce a driver to support host accelerated access to Microsoft Azure Blob
+Date:   Mon, 19 Jul 2021 20:31:03 -0700
+Message-Id: <1626751866-15765-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-In-Reply-To: <20210720032048.90815-1-likexu@tencent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The subject should be:
+From: Long Li <longli@microsoft.com>
 
-"perf/x86: Do not touch AMD64_EVENTSEL_HOSTONLY bit inside the guest"
+Microsoft Azure Blob storage service exposes a REST API to applications
+for data access.
+(https://docs.microsoft.com/en-us/rest/api/storageservices/blob-service-rest-api)
 
-Sorry for the noise.
+This patchset implements a VSC (Virtualization Service Consumer) that
+communicates with a VSP (Virtualization Service Provider) on the Hyper-V
+host to execute Blob storage access via native network stack on the host.
+This VSC doesn't implement the semantics of REST API. Those are implemented
+in user-space. The VSC provides a fast data path to VSP.
+
+Answers to some previous questions discussing the driver:
+
+Q: Why this driver doesn't use the block layer
+
+A: The Azure Blob is based on a model of object oriented storage. The
+storage object is not modeled in block sectors. While it's possible to
+present the storage object as a block device (assuming it makes sense to
+fake all the block device attributes), we lose the ability to express
+functionality that are defined in the REST API. 
+
+Q: You just lost all use of caching and io_uring and loads of other kernel
+infrastructure that has been developed and relied on for decades?
+
+A: The REST API is not designed to have caching at system level. This
+driver doesn't attempt to improve on this. There are discussions on
+supporting ioctl() on io_uring (https://lwn.net/Articles/844875/), that
+will benefit this driver. The block I/O scheduling is not helpful in this
+case, as the Blob application and Blob storage server have complete
+knowledge on the I/O pattern based on storage object type. This knowledge
+doesn't get easily consumed by the block layer.
+
+Q: You also just abandoned the POSIX model and forced people to use a
+random-custom-library just to access their storage devices, breaking all
+existing programs in the world?
+
+A: The existing Blob applications access storage via HTTP (REST API). They
+don't use POSIX interface. The interface for Azure Blob is not designed
+on POSIX.
+
+Q: What programs today use this new API?
+
+A: Currently none is released. But per above, there are also none using
+POSIX.
+
+Q: Where is the API published and what ensures that it will remain stable?
+
+A: Cloud based REST protocols have similar considerations to the kernel in
+terms of interface stability. Applications depend on cloud services via
+REST in much the same way as they depend on kernel services. Because
+applications can consume cloud APIs over the Internet, there is no
+opportunity to recompile applications to ensure compatibility. This causes
+the underlying APIs to be exceptionally stable, and Azure Blob has not
+removed support for an exposed API to date. This driver is supporting a
+pass-through model where requests in a guest process can be reflected to a
+VM host environment. Like the current REST interface, the goal is to ensure
+that each host provide a high degree of compatibility with each guest, but
+that task is largely outside the scope of this driver, which exists to
+communicate requests in the same way an HTTP stack would. Just like an HTTP
+stack does not require updates to add a new custom header or receive one
+from a server, this driver does not require updates for new functionality
+so long as the high level request/response model is retained.
+
+Q: What happens when it changes over time, do we have to rebuild all
+userspace applications?
+
+A: No. We don’t rebuild them all to talk HTTP either. In the current HTTP
+scheme, applications specify the version of the protocol they talk, and the
+storage backend responds with that version.
+
+Q: What happens to the kernel code over time, how do you handle changes to
+the API there?
+
+A: The goal of this driver is to get requests to the Hyper-V host, so the
+kernel isn’t involved in API changes, in the same way that HTTP
+implementations are robust to extra functionality being added to HTTP.
+
+Long Li (3):
+  Drivers: hv: vmbus: add support to ignore certain PCIE devices
+  Drivers: hv: add Azure Blob driver
+  Drivers: hv: Add to maintainer for Azure Blob driver
+
+Changes:
+
+v2:
+Refactored the code in vmbus to scan devices
+Reworked Azure Blob driver and moved user-mode interfaces to uapi
+
+v3:
+Changed licensing language
+Patch format passed "checkpatch --strict"
+debugfs and logging, module parameter cleanup
+General code clean up
+Fix device removal race conditions
+
+v4:
+addressed licencing issues
+changed to dynamic device model
+
+Long Li (3):
+  Drivers: hv: vmbus: add support to ignore certain PCIE devices
+  Drivers: hv: add Azure Blob driver
+  Drivers: hv: Add to maintainer for Hyper-V/Azure drivers
+
+ .../userspace-api/ioctl/ioctl-number.rst      |   2 +
+ MAINTAINERS                                   |   2 +
+ drivers/hv/Kconfig                            |  11 +
+ drivers/hv/Makefile                           |   1 +
+ drivers/hv/channel_mgmt.c                     |  55 +-
+ drivers/hv/hv_azure_blob.c                    | 628 ++++++++++++++++++
+ include/linux/hyperv.h                        |   9 +
+ include/uapi/misc/hv_azure_blob.h             |  34 +
+ 8 files changed, 736 insertions(+), 6 deletions(-)
+ create mode 100644 drivers/hv/hv_azure_blob.c
+ create mode 100644 include/uapi/misc/hv_azure_blob.h
+
+-- 
+2.25.1
+
