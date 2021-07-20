@@ -2,109 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97493CFBAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A223CFBA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236466AbhGTNa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 09:30:29 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58654 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237435AbhGTNSy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 09:18:54 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16KDpOKR179444;
-        Tue, 20 Jul 2021 09:59:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=3lvLu6cinEqw0FGFqRgYpcY/s9Dp4BHVAc9DtIAt19A=;
- b=RbM2fNe5tDmCsKZFLuxlrAzC+lSl2vj+AAbAxujBaC8mj0xT4PCHcA+A9YqTdRe9lg7Y
- DD5t2WT6orj7pZTvXaxrzer9hDm69gC1mCtDdQ2iD8O+7IDgrKzgsNJnzE+lOSBdTNOz
- QSbmvPBinT7VXXedz5sA4b7IUwamod+lIdeWPR31Qr9XxFuKw86mck5aT6uRPyui9+H8
- 0Jsn9NX2nvj3aeddcuNoEruHooCwTkSsv3NCAwvCTQmKWMOvg2if7XnaR/RZfHg85z/g
- s53lQT6BhOmGY8IGWFg+lV79i0IPVSdWS4X+fDPKXSIqr0y54qxJbOHgCwHoP3OaHb/O Gw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39wyr60b0s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 09:59:15 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16KDpXWw180372;
-        Tue, 20 Jul 2021 09:59:15 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39wyr60axt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 09:59:15 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16KDwrM7017121;
-        Tue, 20 Jul 2021 13:59:12 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 39upu89bu8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 13:59:12 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16KDx9ZM25559458
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Jul 2021 13:59:10 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B85E452073;
-        Tue, 20 Jul 2021 13:59:09 +0000 (GMT)
-Received: from sig-9-145-150-42.de.ibm.com (unknown [9.145.150.42])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 5BE7F52052;
-        Tue, 20 Jul 2021 13:59:09 +0000 (GMT)
-Message-ID: <a8fca09bb18174e21d641e9cda0727307ecf9b9d.camel@linux.ibm.com>
-Subject: Re: [PATCH v2] PCI: Move pci_dev_is/assign_added() to pci.h
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 20 Jul 2021 15:59:09 +0200
-In-Reply-To: <20210720095816.3660813-1-schnelle@linux.ibm.com>
-References: <20210720095816.3660813-1-schnelle@linux.ibm.com>
+        id S238963AbhGTNXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 09:23:47 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:34694 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239232AbhGTNKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 09:10:45 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 531AE49E49;
+        Tue, 20 Jul 2021 13:50:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-transfer-encoding:mime-version:user-agent:content-type
+        :content-type:organization:references:in-reply-to:date:date:from
+        :from:subject:subject:message-id:received:received:received; s=
+        mta-01; t=1626789048; x=1628603449; bh=qqKIsxqdrcNF/IKpkTk+z2h38
+        NvJz05bthgnU5UbwnE=; b=BuOt/l22UsVmsW/7GpB9fRgKo+wW8/1+ywe/WYk+4
+        5LJmV4/mcYJtxlQpe2YMJxYoxg16z5TWttpbDz35xbkGKLlN/Cgwxk0MddcNgKU8
+        ddsi44BlLVWTra3H+6aT9Za3bTt59PumRx8L9VNqpM22AUtGYEdF0XB+vUi8QcZz
+        nU=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id n03l0el1CeA3; Tue, 20 Jul 2021 16:50:48 +0300 (MSK)
+Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 34FBB49E6C;
+        Tue, 20 Jul 2021 16:50:48 +0300 (MSK)
+Received: from [10.199.0.81] (10.199.0.81) by T-EXCH-04.corp.yadro.com
+ (172.17.100.104) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Tue, 20
+ Jul 2021 16:50:47 +0300
+Message-ID: <10902992a9dfb5b1b4f1d7a9e17ff0e7b121b50b.camel@yadro.com>
+Subject: Re: [PATCH v2 0/3] net/ncsi: Add NCSI Intel OEM command to keep PHY
+ link up
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     Paul Fertser <fercerpav@gmail.com>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        "Joel Stanley" <joel@jms.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>
+Date:   Tue, 20 Jul 2021 17:00:40 +0300
+In-Reply-To: <20210720095320.GB4789@home.paul.comp>
+References: <20210708122754.555846-1-i.mikhaylov@yadro.com>
+         <20210720095320.GB4789@home.paul.comp>
+Organization: YADRO
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: HCLyOhtaq8QM3LWcyOg1rI6HxplqFhr9
-X-Proofpoint-GUID: OwpqnuiswPMkIsQPmC0YKJQDNIcnHprn
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-20_07:2021-07-19,2021-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 suspectscore=0
- clxscore=1015 mlxscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107200087
+X-Originating-IP: [10.199.0.81]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-04.corp.yadro.com (172.17.100.104)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-07-20 at 11:58 +0200, Niklas Schnelle wrote:
-> The helper function pci_dev_is_added() from drivers/pci/pci.h is used in
-> PCI arch code of both s390 and powerpc leading to awkward relative
-> includes. Move it to the global include/linux/pci.h and get rid of these
-> includes just for that one function.
+On Tue, 2021-07-20 at 12:53 +0300, Paul Fertser wrote:
+> Hello,
 > 
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> ---
-> Since v1:
-> - Fixed accidental removal of PCI_DPC_RECOVERED, PCI_DPC_RECOVERING
->   defines and also move these to include/linux/pci.h
+> On Thu, Jul 08, 2021 at 03:27:51PM +0300, Ivan Mikhaylov wrote:
+> > Add NCSI Intel OEM command to keep PHY link up and prevents any channel
+> > resets during the host load on i210.
+> 
+> There're multiple things to consider here and I have hesitations about
+> the way you propose to solve the issue.
+> 
+> While the host is booted up and fully functional it assumes it has
+> full proper control of network cards, and sometimes it really needs to
+> reset them to e.g. recover from crashed firmware. The PHY resets might
+> also make sense in certain cases, and so in general having this "link
+> up" bit set all the time might be breaking assumptions.
 
-Please disregard I actually sent the old patch ;-(
+Paul, what kind of assumption it would break? You know that you set that option
+in your kernel, anyways you can look at /proc/config.gz if you have hesitations.
+In other ways, if you're saying about possible runtime control, there is ncsi-
+netlink control and solution from phosphor-networkd which is on review stage.
+Joel proposed it as DTS option which may help at runtime. Some of those commands
+should be applied after channel probe as I think including phy reset control.
 
+> As far as I can tell the Intel developers assumed you would enable
+> this bit just prior to powering on the host and turn off after all the
+> POST codes are transferred and we can assume the host system is done
+> with the UEFI stage and the real OS took over.
 > 
->  arch/powerpc/platforms/powernv/pci-sriov.c |  3 ---
->  arch/powerpc/platforms/pseries/setup.c     |  1 -
->  arch/s390/pci/pci_sysfs.c                  |  2 --
->  drivers/pci/hotplug/acpiphp_glue.c         |  1 -
->  drivers/pci/pci.h                          | 15 ---------------
->  include/linux/pci.h                        | 13 +++++++++++++
->  6 files changed, 13 insertions(+), 22 deletions(-)
+> OpenBMC seems to have all the necessary hooks to do it that way, and
+> you have a netlink command to send whatever you need for that from the
+> userspace, e.g. with the "C version" ncsi-netlink command to set this
+> bit just run:
 > 
+> ncsi-netlink -l 3 -c 0 -p 0 -o 0x50 0x00 0x00 0x01 0x57 0x20 0x00 0x01
 > 
-... snip ..
+> https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-networkd/+/36592
+> would provide an OpenBMC-specific way too.
+
+I know about it, Eddie posted that link before.
+
+> There's another related thing to consider here: by default I210 has
+> power-saving modes enabled and so when BMC is booting the link is
+> established only in 100BASE-T mode. With this configuration and this
+> bit always set you'd be always stuck to that, never getting Gigabit
+> speeds.
+> 
+> For server motherboards I propose to configure I210 with this:
+> ./eeupdate64e /all /ww 0x13 0x0081 # disable Low Power Link Up
+> ./eeupdate64e /all /ww 0x20 0x2004 # enable 1000 in non-D0a
+> (it's a one-time operation that's best to be performed along with the
+> initial I210 flashing)
+
+Good to know, thanks.
+
+> Ivan, so far I have an impression that the user-space solution would
+> be much easier, flexible and manageable and that there's no need for
+> this command to be in Linux at all.
+
+You may not have such things on your image with suitable env which you can rely
+on. There is smaf for mellanox which is done in the same way for example.
+
+Thanks.
 
