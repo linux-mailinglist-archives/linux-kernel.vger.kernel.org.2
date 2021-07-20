@@ -2,83 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347043CF9D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1783CF9DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238269AbhGTMGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:06:36 -0400
-Received: from pop31.abv.bg ([194.153.145.221]:52826 "EHLO pop31.abv.bg"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238265AbhGTMGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:06:18 -0400
-Received: from smtp.abv.bg (localhost [127.0.0.1])
-        by pop31.abv.bg (Postfix) with ESMTP id 63D6A1805D3D;
-        Tue, 20 Jul 2021 15:46:33 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abv.bg; s=smtp-out;
-        t=1626785193; bh=3n+oId2CcuiY7DARlUQCYAgosiVIv3DRNqh5ePKuPW0=;
-        h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
-        b=VtfzwQisc+8A4Ov4xUN8PZpgmEG4NFE8oXQss9vBcGS3w5OOVAeD9ijRIUbrpcyTJ
-         dsYqs/CCU3Hu4RvY282vwL+DdPUVKxeOOtuI3v2ywSNVs0movGQO1cvUC56uefkqTY
-         xfmNlKD6D1JPjPFrCiVPNbPxHLMzE0gQTVBPNdR4=
-X-HELO: smtpclient.apple
-Authentication-Results: smtp.abv.bg; auth=pass (plain) smtp.auth=gvalkov@abv.bg
-Received: from 212-39-89-148.ip.btc-net.bg (HELO smtpclient.apple) (212.39.89.148)
- by smtp.abv.bg (qpsmtpd/0.96) with ESMTPSA (ECDHE-RSA-AES256-GCM-SHA384 encrypted); Tue, 20 Jul 2021 15:46:33 +0300
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: ipheth: fix EOVERFLOW in ipheth_rcvbulk_callback
-From:   Georgi Valkov <gvalkov@abv.bg>
-In-Reply-To: <YPa4ZelG2k8Z826E@kroah.com>
-Date:   Tue, 20 Jul 2021 15:46:11 +0300
-Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
-        mhabets@solarflare.com, luc.vanoostenryck@gmail.com,
-        snelson@pensando.io, mst@redhat.com, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        corsac@corsac.net, matti.vuorela@bitfactor.fi,
-        stable@vger.kernel.org,
-        =?utf-8?B?0JPQtdC+0YDQs9C4INCT0LXQvtGA0LPQuNC10LIg0JLRitC70LrQvtCy?= 
-        <gvalkov@abv.bg>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C6AA954F-8382-461D-835F-E5CA03363D84@abv.bg>
-References: <B60B8A4B-92A0-49B3-805D-809A2433B46C@abv.bg>
- <20210720122215.54abaf53@cakuba>
- <5D0CFF83-439B-4A10-A276-D2D17B037704@abv.bg> <YPa4ZelG2k8Z826E@kroah.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        id S238314AbhGTMHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:07:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51412 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhGTMHX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 08:07:23 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 16EB222425;
+        Tue, 20 Jul 2021 12:48:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626785281; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W1zCtGLplWApScXZ1uLwvVrRWFVgIRci4OmMqdayuVE=;
+        b=vkN3BTO/2QXkkbQ1s6QpiIBQHDzgm6xgRvLHLbtfT4qBR82xpCIl4r0CrlAvAwweIfiCuO
+        kl6dJfP88trk28PP3u/jYKXcFJoRAEJd8/hzF37jCnWvN41Ff+Robvk7GAh7gCHvbpy68n
+        mMJcLnk4Sydmks7HCmRRbPnOc/jMtwo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626785281;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W1zCtGLplWApScXZ1uLwvVrRWFVgIRci4OmMqdayuVE=;
+        b=HvuRSFGtw8pDIni1fa4Tztt3vw5dqqFZA6WILCWLMahiFoUNmf+J+8ZRixdg3PQXei8tLP
+        qLPdwNSSyk+JXGBg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id F29EF13AB8;
+        Tue, 20 Jul 2021 12:48:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 1mDHOgDG9mBoZQAAGKfGzw
+        (envelope-from <dwagner@suse.de>); Tue, 20 Jul 2021 12:48:00 +0000
+Date:   Tue, 20 Jul 2021 14:48:00 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH v3 0/6] Handle update hardware queues and queue freeze
+ more carefully
+Message-ID: <20210720124800.i2lo3hal7kjfc7rk@beryllium.lan>
+References: <20210720124353.127959-1-dwagner@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210720124353.127959-1-dwagner@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, I read it, and before my previous e-mail that I also read the link =
-from Jakub,
-which essentially provides the same information.
+On Tue, Jul 20, 2021 at 02:43:47PM +0200, Daniel Wagner wrote:
+> v1:
+>  - https://lore.kernel.org/linux-nvme/20210625101649.49296-1-dwagner@suse.de/
+> v2:
+>  - https://lore.kernel.org/linux-nvme/20210708092755.15660-1-dwagner@suse.de/
+>  - reviewed tags collected
+>  - added 'update hardware queues' for all transport
+>  - added fix for fc hanger in nvme_wait_freeze_timeout
+> v3:
+>  - dropped 'nvme-fc: Freeze queues before destroying them'
+>  - added James' two patches
 
-There is only one patch =
-0001-ipheth-fix-EOVERFLOW-in-ipheth_rcvbulk_callback.patch
-The command I used from the example also generated a 0000-cover-letter, =
-so
-I included it as well.
-
-I still have no clue what exactly I should do. Can you please help me?
-
-Georgi Valkov
-
-> On 2021-07-20, at 2:49 PM, Greg KH <gregkh@linuxfoundation.org> wrote:
->=20
-> On Tue, Jul 20, 2021 at 02:39:49PM +0300, Georgi Valkov wrote:
->> I am doing this for the first time, so any help would be appreciated!
->=20
-> Have you read Documentation/process/submitting-patches.rst yet?  If =
-not,
-> please do so.
->=20
-> And look at examples on this list, you have to send individual =
-patches,
-> not everything all crammed into one email.
->=20
-> thanks,
->=20
-> greg k-h
->=20
-
+Forgot to add Hannes' reviewed tag. Sorry!
