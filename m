@@ -2,473 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844E53CF680
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134C73CF667
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235642AbhGTIR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 04:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235117AbhGTINR (ORCPT
+        id S233946AbhGTIPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 04:15:18 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:43964 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234561AbhGTIJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:13:17 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA31C0613DB
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:46:08 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso1147948wmc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=sfnB6pEXfoigvkI+81/RrVPdT9Ty3Lcn3N9ErXDBwX0=;
-        b=RGuET55vDuE2nzwz1lXE4fGZZb8Pcy27Ybk+IR1rLdiQX5ghY1CU9nVJRsikmW3RIT
-         RXc7NPXx9mx/JrJMj2PUjBVNw4X1SXi8a6ybZ7GqMZp3amfgTCFB0eo6pC1E56H+iFLp
-         eyDdCrmLYJd2nzpyTuon3zLzzAByZokdin4zWZHrQBF8Hgyq4cSbLXm4gDUfvBqDfdy5
-         bhmr9//nwCI8h4vMD/M35gIkTQ4VdxnvsZ89q5WA1W76UOnRLwNgXOT8jGwxyKPleKDd
-         eLKbJ6TpDGNMu1pENi3/+JVaYvfTZvKl+oxUkjLbDq8idm6WERtRR4m9lLXD+dAIo3Cg
-         L30w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=sfnB6pEXfoigvkI+81/RrVPdT9Ty3Lcn3N9ErXDBwX0=;
-        b=iJjdeZwddGy9Nlem8xeQ9ibibwXB2ZQF1MTTPCT4SnMZ+PZN1x2rK362g9AnQRNNMo
-         lhaNW10S8YWxJTjZE9oYgKLr4lxWMDq7ZBdNW/F5W5EK0eG+3YcExmSDd2XeQbJuX0hX
-         e95Yj7NMNTF8sVuQPcmAWQkk6jRxKj2Jj8VyRWoRKnOeG6qx+3xdeSyewzi77j4rdmO9
-         GvUuQ7f0TCpIENSCkTfkNsJ68J1PtB8sWhTJ5uVbLhvHJwuNp/UZNWAlzg+Tnw8P4nrK
-         K3zqpKnWAZmZRKbvNU+fKzBQk9KEkDQ3CiaRaFBjMpfV9+2Uy4RgVDlolW2+qrq053/H
-         ywbQ==
-X-Gm-Message-State: AOAM532jY1tWalE6Oq5xbtl+CMPKMW4F0X7YFh/ME7gM/B50o9AmbrhA
-        Zx9YR6NCDRxq6Yt2gAxLZuyIIA==
-X-Google-Smtp-Source: ABdhPJwIYw5ttbPqKjD+YOlc7V1LBRa4PNSFy7pfGuMZWU+YqytnaSW5a5r3TbwdGhLLEk9Sh+JhRw==
-X-Received: by 2002:a05:600c:214a:: with SMTP id v10mr34897190wml.17.1626770767138;
-        Tue, 20 Jul 2021 01:46:07 -0700 (PDT)
-Received: from [10.1.4.104] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id g18sm18851572wmk.37.2021.07.20.01.46.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 01:46:06 -0700 (PDT)
-Subject: Re: [PATCH v2 2/4] remoteproc: Add a remoteproc driver for the
- MT8183's APU
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stephane.leprovost@mediatek.com, gpain@baylibre.com
-References: <20200910130148.8734-1-abailon@baylibre.com>
- <20200910130148.8734-3-abailon@baylibre.com> <20200929175214.GB124290@xps15>
-From:   Alexandre Bailon <abailon@baylibre.com>
-Message-ID: <59553610-3d88-7982-2a10-dec27d9c3fce@baylibre.com>
-Date:   Tue, 20 Jul 2021 10:47:33 +0200
+        Tue, 20 Jul 2021 04:09:15 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4C2C61FDD2;
+        Tue, 20 Jul 2021 08:49:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626770946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ckXDEBMr/vTwtF9tFReHFwT0g6pVt1MIhPU40Yw3dQU=;
+        b=ZQYRBNi2kHrCG0FzXXhIRIAOj9CC6ucRW82ykvqLaX1ctRNiYaCdZqnbuiziEUrYBbcdKE
+        Sxqbuu/hM+5N7U75q6VIC0Lyq1zKx9OFTlOQMK9Fsd1U9Yp0D1mr3/Q//Q/gVgAEqIkB/I
+        8Tz/fK9HKy+Xb81mBUu69sEoYAhF0CM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626770946;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ckXDEBMr/vTwtF9tFReHFwT0g6pVt1MIhPU40Yw3dQU=;
+        b=aUEyZ1Kr8PiNTHOC+gZT1n6J4NBv/admustoqHsJBtuCjEcKSRwRiu5k/LjJn726xxqqln
+        uNzQVpA+/ss7AJBA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 2112913A2E;
+        Tue, 20 Jul 2021 08:49:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id oTSRBgKO9mD9DwAAGKfGzw
+        (envelope-from <tzimmermann@suse.de>); Tue, 20 Jul 2021 08:49:06 +0000
+Subject: Re: [PATCH v5] drm/ast: Disable fast reset after DRAM initial
+To:     KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     airlied@linux.ie, jenmin_yuan@aspeedtech.com, airlied@redhat.com,
+        arc_sung@aspeedtech.com
+References: <bb505d06-bf46-237c-ed2f-15e3f23ec338@suse.de>
+ <20210709080900.4056-1-kuohsiang_chou@aspeedtech.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <70dc7c57-c952-583c-6b41-08b2c79e709c@suse.de>
+Date:   Tue, 20 Jul 2021 10:49:05 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200929175214.GB124290@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <20210709080900.4056-1-kuohsiang_chou@aspeedtech.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="MGmyhMfBhk4EGwh57ubk0ZxyEPVGvNphD"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
-> Hi Alexandre,
->
-> On Thu, Sep 10, 2020 at 03:01:46PM +0200, Alexandre Bailon wrote:
->> This adds a driver to control the APU present in the MT8183.
->> This loads the firmware and start the DSP.
->>
->> Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
->> ---
->>   drivers/remoteproc/Kconfig   |  10 ++
->>   drivers/remoteproc/Makefile  |   1 +
->>   drivers/remoteproc/mtk_apu.c | 288 +++++++++++++++++++++++++++++++++++
->>   3 files changed, 299 insertions(+)
->>   create mode 100644 drivers/remoteproc/mtk_apu.c
->>
->> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
->> index c6659dfea7c7..4ebea57bf4c8 100644
->> --- a/drivers/remoteproc/Kconfig
->> +++ b/drivers/remoteproc/Kconfig
->> @@ -51,6 +51,16 @@ config MTK_SCP
->>   
->>   	  It's safe to say N here.
->>   
->> +config MTK_APU
->> +	tristate "Mediatek APU remoteproc support"
->> +	depends on ARCH_MEDIATEK
->> +	depends on MTK_IOMMU
->> +	help
->> +	  Say y to support the Mediatek's Accelerated Processing Unit (APU) via
->> +	  the remote processor framework.
->> +
->> +	  It's safe to say N here.
->> +
->>   config OMAP_REMOTEPROC
->>   	tristate "OMAP remoteproc support"
->>   	depends on ARCH_OMAP4 || SOC_OMAP5 || SOC_DRA7XX
->> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
->> index 3dfa28e6c701..174644f38fda 100644
->> --- a/drivers/remoteproc/Makefile
->> +++ b/drivers/remoteproc/Makefile
->> @@ -14,6 +14,7 @@ obj-$(CONFIG_REMOTEPROC_CDEV)		+= remoteproc_cdev.o
->>   obj-$(CONFIG_IMX_REMOTEPROC)		+= imx_rproc.o
->>   obj-$(CONFIG_INGENIC_VPU_RPROC)		+= ingenic_rproc.o
->>   obj-$(CONFIG_MTK_SCP)			+= mtk_scp.o mtk_scp_ipi.o
->> +obj-$(CONFIG_MTK_APU)			+= mtk_apu.o
->>   obj-$(CONFIG_OMAP_REMOTEPROC)		+= omap_remoteproc.o
->>   obj-$(CONFIG_WKUP_M3_RPROC)		+= wkup_m3_rproc.o
->>   obj-$(CONFIG_DA8XX_REMOTEPROC)		+= da8xx_remoteproc.o
->> diff --git a/drivers/remoteproc/mtk_apu.c b/drivers/remoteproc/mtk_apu.c
->> new file mode 100644
->> index 000000000000..6d2f577cfde5
->> --- /dev/null
->> +++ b/drivers/remoteproc/mtk_apu.c
->> @@ -0,0 +1,288 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) 2020 BayLibre SAS
->> + */
->> +
->> +#include <linux/bitops.h>
->> +#include <linux/clk.h>
->> +#include <linux/delay.h>
->> +#include <linux/highmem.h>
-> Not sure what this is for
->
->> +#include <linux/interrupt.h>
->> +#include <linux/io.h>
->> +#include <linux/iommu.h>
->> +#include <linux/irq.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/of_reserved_mem.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/remoteproc.h>
->> +
->> +#include "remoteproc_internal.h"
->> +
->> +/* From MT8183 4.5 Vision Processor Unit (VPU).pdf datasheet */
->> +#define SW_RST					(0x0000000C)
->> +#define SW_RST_OCD_HALT_ON_RST			BIT(12)
->> +#define SW_RST_IPU_D_RST			BIT(8)
->> +#define SW_RST_IPU_B_RST			BIT(4)
->> +#define CORE_CTRL				(0x00000110)
->> +#define CORE_CTRL_PDEBUG_ENABLE			BIT(31)
->> +#define CORE_CTRL_SRAM_64K_iMEM			(0x00 << 27)
->> +#define CORE_CTRL_SRAM_96K_iMEM			(0x01 << 27)
->> +#define CORE_CTRL_SRAM_128K_iMEM		(0x02 << 27)
->> +#define CORE_CTRL_SRAM_192K_iMEM		(0x03 << 27)
->> +#define CORE_CTRL_SRAM_256K_iMEM		(0x04 << 27)
->> +#define CORE_CTRL_PBCLK_ENABLE			BIT(26)
->> +#define CORE_CTRL_RUN_STALL			BIT(23)
->> +#define CORE_CTRL_STATE_VECTOR_SELECT		BIT(19)
->> +#define CORE_CTRL_PIF_GATED			BIT(17)
->> +#define CORE_CTRL_NMI				BIT(0)
->> +#define CORE_XTENSA_INT				(0x00000114)
->> +#define CORE_CTL_XTENSA_INT			(0x00000118)
->> +#define CORE_DEFAULT0				(0x0000013C)
->> +#define CORE_DEFAULT0_QOS_SWAP_0		(0x00 << 28)
->> +#define CORE_DEFAULT0_QOS_SWAP_1		(0x01 << 28)
->> +#define CORE_DEFAULT0_QOS_SWAP_2		(0x02 << 28)
->> +#define CORE_DEFAULT0_QOS_SWAP_3		(0x03 << 28)
->> +#define CORE_DEFAULT0_ARUSER_USE_IOMMU		(0x10 << 23)
->> +#define CORE_DEFAULT0_AWUSER_USE_IOMMU		(0x10 << 18)
->> +#define CORE_DEFAULT1				(0x00000140)
->> +#define CORE_DEFAULT0_ARUSER_IDMA_USE_IOMMU	(0x10 << 0)
->> +#define CORE_DEFAULT0_AWUSER_IDMA_USE_IOMMU	(0x10 << 5)
->> +#define CORE_XTENSA_ALTRESETVEC			(0x000001F8)
->> +
->> +struct mtk_apu_rproc {
->> +	struct device *dev;
->> +	struct rproc *rproc;
-> As far as I can tell @rproc is only used in apu_jtag_probe(), but it could just
-> as easily be given as a parameter to the function instead of bloating the
-> structure.
->
->> +
-> Extra line
->
->> +	void __iomem *base;
->> +	int irq;
->> +	struct clk_bulk_data clks[3];
->> +};
->> +
->> +static int mtk_apu_rproc_prepare(struct rproc *rproc)
->> +{
->> +	struct mtk_apu_rproc *apu_rproc = rproc->priv;
->> +	int ret;
->> +
->> +	ret = clk_bulk_prepare_enable(ARRAY_SIZE(apu_rproc->clks),
->> +				      apu_rproc->clks);
->> +	if (ret)
->> +		dev_err(apu_rproc->dev, "Failed to enable clocks\n");
->> +
->> +	return ret;
->> +}
->> +
->> +static int mtk_apu_rproc_unprepare(struct rproc *rproc)
->> +{
->> +	struct mtk_apu_rproc *apu_rproc = rproc->priv;
->> +
->> +	clk_bulk_disable_unprepare(ARRAY_SIZE(apu_rproc->clks),
->> +				   apu_rproc->clks);
->> +
->> +	return 0;
->> +}
->> +
->> +static int mtk_apu_rproc_start(struct rproc *rproc)
->> +{
->> +	struct mtk_apu_rproc *apu_rproc = rproc->priv;
->> +	u32 core_ctrl;
->> +
->> +	/* Set reset vector of APU firmware boot address */
->> +	writel(rproc->bootaddr, apu_rproc->base + CORE_XTENSA_ALTRESETVEC);
->> +
->> +	/* Turn on the clocks and stall the APU */
->> +	core_ctrl = readl(apu_rproc->base + CORE_CTRL);
->> +	core_ctrl |= CORE_CTRL_PDEBUG_ENABLE | CORE_CTRL_PBCLK_ENABLE |
->> +		     CORE_CTRL_STATE_VECTOR_SELECT | CORE_CTRL_RUN_STALL |
->> +		     CORE_CTRL_PIF_GATED;
->> +	writel(core_ctrl, apu_rproc->base + CORE_CTRL);
->> +
->> +	/* Reset the APU */
->> +	writel(SW_RST_OCD_HALT_ON_RST | SW_RST_IPU_B_RST | SW_RST_IPU_D_RST,
->> +		apu_rproc->base + SW_RST);
->> +	ndelay(27);
-> What is this for and why 27 nanosecond precicely?  Is this a board specific
-> setting?  Are we sure it is the same value on all platform with a MT8183?
->
-> Matthias, what is your take on this?
-I have got the response recently from the HW team and this 27 nanosecond 
-delay
-is the minimum delay required to reset the APU, and that should work at 
-any frequency.
-This delay is supposed to work for the mt8183 but also for the other 
-platform
-including an APU.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--MGmyhMfBhk4EGwh57ubk0ZxyEPVGvNphD
+Content-Type: multipart/mixed; boundary="zvJbmwaJx4U0C7HouFHUu7u15GihqvSLy";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc: airlied@linux.ie, jenmin_yuan@aspeedtech.com, airlied@redhat.com,
+ arc_sung@aspeedtech.com
+Message-ID: <70dc7c57-c952-583c-6b41-08b2c79e709c@suse.de>
+Subject: Re: [PATCH v5] drm/ast: Disable fast reset after DRAM initial
+References: <bb505d06-bf46-237c-ed2f-15e3f23ec338@suse.de>
+ <20210709080900.4056-1-kuohsiang_chou@aspeedtech.com>
+In-Reply-To: <20210709080900.4056-1-kuohsiang_chou@aspeedtech.com>
 
-The HW also confirmed that there are no way to know if the reset has 
-been completed
-or not so we must way that delay.
+--zvJbmwaJx4U0C7HouFHUu7u15GihqvSLy
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Maybe I should create a define instead of using directly 27 here, and 
-also add some documentation
-to explain why we need this delay.
+Hi
 
-What do you think about it ?
->
->> +	writel(0, apu_rproc->base + SW_RST);
->> +
->> +	core_ctrl &= ~CORE_CTRL_PIF_GATED;
->> +	writel(core_ctrl, apu_rproc->base + CORE_CTRL);
->> +
->> +	/* Configure memory accesses to go through the IOMMU */
->> +	writel(CORE_DEFAULT0_AWUSER_USE_IOMMU | CORE_DEFAULT0_ARUSER_USE_IOMMU |
->> +	      CORE_DEFAULT0_QOS_SWAP_1, apu_rproc->base + CORE_DEFAULT0);
->> +	writel(CORE_DEFAULT0_AWUSER_IDMA_USE_IOMMU |
->> +		CORE_DEFAULT0_ARUSER_IDMA_USE_IOMMU,
->> +		apu_rproc->base + CORE_DEFAULT1);
->> +
->> +	/* Release the APU */
->> +	core_ctrl &= ~CORE_CTRL_RUN_STALL;
->> +	writel(core_ctrl, apu_rproc->base + CORE_CTRL);
->> +
->> +	return 0;
->> +}
->> +
->> +static int mtk_apu_rproc_stop(struct rproc *rproc)
->> +{
->> +	struct mtk_apu_rproc *apu_rproc = rproc->priv;
->> +	u32 core_ctrl;
->> +
->> +	core_ctrl = readl(apu_rproc->base + CORE_CTRL);
->> +	writel(core_ctrl | CORE_CTRL_RUN_STALL, apu_rproc->base + CORE_CTRL);
->> +
->> +	return 0;
->> +}
->> +
->> +static void mtk_apu_rproc_kick(struct rproc *rproc, int vqid)
->> +{
->> +	struct mtk_apu_rproc *apu_rproc = rproc->priv;
->> +
->> +	writel(1 << vqid, apu_rproc->base + CORE_CTL_XTENSA_INT);
->> +}
->> +
->> +static const struct rproc_ops mtk_apu_rproc_ops = {
->> +	.prepare	= mtk_apu_rproc_prepare,
->> +	.unprepare	= mtk_apu_rproc_unprepare,
->> +	.start		= mtk_apu_rproc_start,
->> +	.stop		= mtk_apu_rproc_stop,
->> +	.kick		= mtk_apu_rproc_kick,
->> +};
->> +
->> +static irqreturn_t mtk_apu_rproc_callback(int irq, void *data)
->> +{
->> +	struct rproc *rproc = data;
->> +	struct mtk_apu_rproc *apu_rproc = (struct mtk_apu_rproc *)rproc->priv;
->> +
->> +	writel(1, apu_rproc->base + CORE_XTENSA_INT);
->> +
->> +	return IRQ_WAKE_THREAD;
->> +}
->> +
->> +static irqreturn_t handle_event(int irq, void *data)
->> +{
->> +	struct rproc *rproc = data;
->> +
->> +	rproc_vq_interrupt(rproc, 0);
->> +	rproc_vq_interrupt(rproc, 1);
->> +
->> +	return IRQ_HANDLED;
->> +}
->> +
->> +static int mtk_apu_rproc_probe(struct platform_device *pdev)
->> +{
->> +	struct device *dev = &pdev->dev;
->> +	struct mtk_apu_rproc *apu_rproc;
->> +	struct rproc *rproc;
->> +	struct resource *res;
->> +	int ret;
->> +
->> +	rproc = rproc_alloc(dev, dev_name(dev), &mtk_apu_rproc_ops, NULL,
->> +			    sizeof(*apu_rproc));
->> +	if (!rproc)
->> +		return -ENOMEM;
->> +
->> +	rproc->recovery_disabled = true;
->> +	rproc->has_iommu = false;
->> +
->> +	apu_rproc = rproc->priv;
->> +	apu_rproc->rproc = rproc;
->> +	apu_rproc->dev = dev;
->> +
->> +	platform_set_drvdata(pdev, rproc);
->> +
->> +	rproc->domain = iommu_get_domain_for_dev(dev);
-> Any reason why iommu_get_domain_for_dev() is explicitly called rather than
-> setting ->has_iommu to true and let the remoteproc core get the domain for
-> you?
+Am 09.07.21 um 10:09 schrieb KuoHsiang Chou:
+> [Bug][AST2500]
+>=20
+> V1:
+> When AST2500 acts as stand-alone VGA so that DRAM and DVO initializatio=
+n
+> have to be achieved by VGA driver with P2A (PCI to AHB) enabling.
+> However, HW suggests disable Fast reset mode after DRAM initializaton,
+> because fast reset mode is mainly designed for ARM ICE debugger.
+> Once Fast reset is checked as enabling, WDT (Watch Dog Timer) should be=
 
-If I set ->has_iommu to true, the remoteproc framework will try to get a 
-unmanaged domain
-which is actually not supported by the iommu driver.
-I don't like that solution but when I sent this patch, it was the only 
-solution I had to make it work.
+> first enabled to avoid system deadlock before disable fast reset mode.
+>=20
+> V2:
+> Use to_pci_dev() to get revision of PCI configuration.
+>=20
+> V3:
+> If SCU00 is not unlocked, just enter its password again.
+> It is unnecessary to clear AHB lock condition and restore WDT default
+> setting again, before Fast-reset clearing.
+>=20
+> V4:
+> repatch after "error : could not build fake ancestor" resolved.
+>=20
+> V5:
+> Since CVE_2019_6260 item3, Most of AST2500 have disabled P2A(PCIe to AM=
+BA).
+> However, for backward compatibility, some patches about P2A, such as it=
+ems
+> of v5.2 and v5.3, are considered to be upstreamed with comments.
+> 1. Add define macro to improve source readability.
+> ast_drv.h, ast_main.c, ast_post.c
+> 2. Add comment about "Fast restet" is enabled for ARM-ICE debugger
+> ast_post.c
+> 3. Add comment about Reset USB port to patch USB unknown device issue
+> ast_post.c
+>=20
+> Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
 
-Now, I have to options:
-- I update the iommu driver to support unmanaged domain
-   (I made a PoC and this works but I am not sure that I made it correctly)
-- I don't let the remoteproc framework manage the iommu 
-(has_iommu=false, and domain=NULL)
-   and I manage the iommu in this driver.
-I have chosen the second options the v3 because this also make easier to 
-manage some hardware
-constraint.
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
 
-Best Regards,
-Alexandre
+Thanks! I'll merge your patch into drm-misc-next.
 
->
->> +	if (!rproc->domain) {
->> +		dev_err(dev, "Failed to get the IOMMU domain\n");
->> +		ret = -EINVAL;
->> +		goto free_rproc;
->> +	}
->> +
->> +
->> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	apu_rproc->base = devm_ioremap_resource(dev, res);
->> +	if (IS_ERR(apu_rproc->base)) {
->> +		dev_err(dev, "Failed to map mmio\n");
->> +		ret = PTR_ERR(apu_rproc->base);
->> +		goto free_rproc;
->> +	}
->> +
->> +	apu_rproc->irq = platform_get_irq(pdev, 0);
->> +	if (apu_rproc->irq < 0) {
->> +		ret = apu_rproc->irq;
->> +		goto free_rproc;
->> +	}
->> +
->> +	ret = devm_request_threaded_irq(dev, apu_rproc->irq,
->> +					mtk_apu_rproc_callback, handle_event,
->> +					IRQF_SHARED | IRQF_ONESHOT,
->> +					NULL, rproc);
->> +	if (ret) {
->> +		dev_err(dev, "devm_request_threaded_irq error: %d\n", ret);
->> +		goto free_rproc;
->> +	}
->> +
->> +	apu_rproc->clks[0].id = "ipu";
->> +	apu_rproc->clks[1].id = "axi";
->> +	apu_rproc->clks[1].id = "jtag";
->> +
->> +	ret = devm_clk_bulk_get(dev, ARRAY_SIZE(apu_rproc->clks),
->> +				apu_rproc->clks);
->> +	if (ret) {
->> +		dev_err(dev, "Failed to get clocks\n");
->> +		goto free_rproc;
->> +	}
->> +
->> +	ret = of_reserved_mem_device_init(dev);
->> +	if (ret) {
->> +		dev_err(dev, "device does not have specific CMA pool\n");
->> +		goto free_rproc;
->> +	}
->> +
->> +	ret = rproc_add(rproc);
->> +	if (ret) {
->> +		dev_err(dev, "rproc_add failed: %d\n", ret);
->> +		goto free_mem;
->> +	}
->> +
->> +	return 0;
->> +
->> +free_mem:
->> +	of_reserved_mem_device_release(dev);
->> +free_rproc:
->> +	rproc_free(rproc);
->> +
->> +	return ret;
->> +}
->> +
->> +static int mtk_apu_rproc_remove(struct platform_device *pdev)
->> +{
->> +	struct rproc *rproc = platform_get_drvdata(pdev);
->> +	struct mtk_apu_rproc *apu_rproc = (struct mtk_apu_rproc *)rproc->priv;
->> +	struct device *dev = &pdev->dev;
->> +
->> +	disable_irq(apu_rproc->irq);
->> +
->> +	rproc_del(rproc);
->> +	of_reserved_mem_device_release(dev);
->> +	rproc_free(rproc);
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct of_device_id mtk_apu_rproc_of_match[] = {
->> +	{ .compatible = "mediatek,mt8183-apu", },
->> +	{ /* sentinel */ },
->> +};
->> +MODULE_DEVICE_TABLE(of, mtk_apu_rproc_of_match);
->> +
->> +static struct platform_driver mtk_apu_rproc_driver = {
->> +	.probe = mtk_apu_rproc_probe,
->> +	.remove = mtk_apu_rproc_remove,
->> +	.driver = {
->> +		.name = "mtk_apu-rproc",
->> +		.of_match_table = of_match_ptr(mtk_apu_rproc_of_match),
->> +	},
->> +};
->> +module_platform_driver(mtk_apu_rproc_driver);
->> +
->> +MODULE_LICENSE("GPL v2");
->> +MODULE_AUTHOR("Alexandre Bailon");
->> +MODULE_DESCRIPTION("MTK APU Remote Processor control driver");
->> -- 
->> 2.26.2
->>
+Best regards
+Thomas
+
+> ---
+>   drivers/gpu/drm/ast/ast_drv.h  |  6 +++
+>   drivers/gpu/drm/ast/ast_main.c |  5 ++
+>   drivers/gpu/drm/ast/ast_post.c | 91 ++++++++++++++++++++++++---------=
+-
+>   3 files changed, 76 insertions(+), 26 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_dr=
+v.h
+> index 911f9f414..39ca338eb 100644
+> --- a/drivers/gpu/drm/ast/ast_drv.h
+> +++ b/drivers/gpu/drm/ast/ast_drv.h
+> @@ -337,6 +337,11 @@ int ast_mode_config_init(struct ast_private *ast);=
+
+>   #define AST_DP501_LINKRATE	0xf014
+>   #define AST_DP501_EDID_DATA	0xf020
+>=20
+> +/* Define for Soc scratched reg */
+> +#define AST_VRAM_INIT_STATUS_MASK	GENMASK(7, 6)
+> +//#define AST_VRAM_INIT_BY_BMC		BIT(7)
+> +//#define AST_VRAM_INIT_READY		BIT(6)
+> +
+>   int ast_mm_init(struct ast_private *ast);
+>=20
+>   /* ast post */
+> @@ -346,6 +351,7 @@ bool ast_is_vga_enabled(struct drm_device *dev);
+>   void ast_post_gpu(struct drm_device *dev);
+>   u32 ast_mindwm(struct ast_private *ast, u32 r);
+>   void ast_moutdwm(struct ast_private *ast, u32 r, u32 v);
+> +void ast_patch_ahb_2500(struct ast_private *ast);
+>   /* ast dp501 */
+>   void ast_set_dp501_video_output(struct drm_device *dev, u8 mode);
+>   bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size);
+> diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_m=
+ain.c
+> index 2aff2e6cf..79a361867 100644
+> --- a/drivers/gpu/drm/ast/ast_main.c
+> +++ b/drivers/gpu/drm/ast/ast_main.c
+> @@ -97,6 +97,11 @@ static void ast_detect_config_mode(struct drm_device=
+ *dev, u32 *scu_rev)
+>   	jregd0 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff)=
+;
+>   	jregd1 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd1, 0xff)=
+;
+>   	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
+> +		/* Patch AST2500 */
+> +		if (((pdev->revision & 0xF0) =3D=3D 0x40)
+> +			&& ((jregd0 & AST_VRAM_INIT_STATUS_MASK) =3D=3D 0))
+> +			ast_patch_ahb_2500(ast);
+> +
+>   		/* Double check it's actually working */
+>   		data =3D ast_read32(ast, 0xf004);
+>   		if ((data !=3D 0xFFFFFFFF) && (data !=3D 0x00)) {
+> diff --git a/drivers/gpu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_p=
+ost.c
+> index 0607658dd..b5d92f652 100644
+> --- a/drivers/gpu/drm/ast/ast_post.c
+> +++ b/drivers/gpu/drm/ast/ast_post.c
+> @@ -2028,6 +2028,40 @@ static bool ast_dram_init_2500(struct ast_privat=
+e *ast)
+>   	return true;
+>   }
+>=20
+> +void ast_patch_ahb_2500(struct ast_private *ast)
+> +{
+> +	u32	data;
+> +
+> +	/* Clear bus lock condition */
+> +	ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
+> +	ast_moutdwm(ast, 0x1e600084, 0x00010000);
+> +	ast_moutdwm(ast, 0x1e600088, 0x00000000);
+> +	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+> +	data =3D ast_mindwm(ast, 0x1e6e2070);
+> +	if (data & 0x08000000) {					/* check fast reset */
+> +		/*
+> +		 * If "Fast restet" is enabled for ARM-ICE debugger,
+> +		 * then WDT needs to enable, that
+> +		 * WDT04 is WDT#1 Reload reg.
+> +		 * WDT08 is WDT#1 counter restart reg to avoid system deadlock
+> +		 * WDT0C is WDT#1 control reg
+> +		 *	[6:5]:=3D 01:Full chip
+> +		 *	[4]:=3D 1:1MHz clock source
+> +		 *	[1]:=3D 1:WDT will be cleeared and disabled after timeout occurs
+> +		 *	[0]:=3D 1:WDT enable
+> +		 */
+> +		ast_moutdwm(ast, 0x1E785004, 0x00000010);
+> +		ast_moutdwm(ast, 0x1E785008, 0x00004755);
+> +		ast_moutdwm(ast, 0x1E78500c, 0x00000033);
+> +		udelay(1000);
+> +	}
+> +	do {
+> +		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+> +		data =3D ast_mindwm(ast, 0x1e6e2000);
+> +	}	while (data !=3D 1);
+> +	ast_moutdwm(ast, 0x1e6e207c, 0x08000000);	/* clear fast reset */
+> +}
+> +
+>   void ast_post_chip_2500(struct drm_device *dev)
+>   {
+>   	struct ast_private *ast =3D to_ast_private(dev);
+> @@ -2035,39 +2069,44 @@ void ast_post_chip_2500(struct drm_device *dev)=
+
+>   	u8 reg;
+>=20
+>   	reg =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
+> -	if ((reg & 0x80) =3D=3D 0) {/* vga only */
+> +	if ((reg & AST_VRAM_INIT_STATUS_MASK) =3D=3D 0) {/* vga only */
+>   		/* Clear bus lock condition */
+> -		ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
+> -		ast_moutdwm(ast, 0x1e600084, 0x00010000);
+> -		ast_moutdwm(ast, 0x1e600088, 0x00000000);
+> -		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+> -		ast_write32(ast, 0xf004, 0x1e6e0000);
+> -		ast_write32(ast, 0xf000, 0x1);
+> -		ast_write32(ast, 0x12000, 0x1688a8a8);
+> -		while (ast_read32(ast, 0x12000) !=3D 0x1)
+> -			;
+> -
+> -		ast_write32(ast, 0x10000, 0xfc600309);
+> -		while (ast_read32(ast, 0x10000) !=3D 0x1)
+> -			;
+> +		ast_patch_ahb_2500(ast);
+> +
+> +		/* Disable watchdog */
+> +		ast_moutdwm(ast, 0x1E78502C, 0x00000000);
+> +		ast_moutdwm(ast, 0x1E78504C, 0x00000000);
+> +
+> +		/*
+> +		 * Reset USB port to patch USB unknown device issue
+> +		 * SCU90 is Multi-function Pin Control #5
+> +		 *	[29]:=3D 1:Enable USB2.0 Host port#1 (that the mutually shared US=
+B2.0 Hub
+> +		 *				port).
+> +		 * SCU94 is Multi-function Pin Control #6
+> +		 *	[14:13]:=3D 1x:USB2.0 Host2 controller
+> +		 * SCU70 is Hardware Strap reg
+> +		 *	[23]:=3D 1:CLKIN is 25MHz and USBCK1 =3D 24/48 MHz (determined by=
+
+> +		 *				[18]: 0(24)/1(48) MHz)
+> +		 * SCU7C is Write clear reg to SCU70
+> +		 *	[23]:=3D write 1 and then SCU70[23] will be clear as 0b.
+> +		 */
+> +		ast_moutdwm(ast, 0x1E6E2090, 0x20000000);
+> +		ast_moutdwm(ast, 0x1E6E2094, 0x00004000);
+> +		if (ast_mindwm(ast, 0x1E6E2070) & 0x00800000) {
+> +			ast_moutdwm(ast, 0x1E6E207C, 0x00800000);
+> +			mdelay(100);
+> +			ast_moutdwm(ast, 0x1E6E2070, 0x00800000);
+> +		}
+> +		/* Modify eSPI reset pin */
+> +		temp =3D ast_mindwm(ast, 0x1E6E2070);
+> +		if (temp & 0x02000000)
+> +			ast_moutdwm(ast, 0x1E6E207C, 0x00004000);
+>=20
+>   		/* Slow down CPU/AHB CLK in VGA only mode */
+>   		temp =3D ast_read32(ast, 0x12008);
+>   		temp |=3D 0x73;
+>   		ast_write32(ast, 0x12008, temp);
+>=20
+> -		/* Reset USB port to patch USB unknown device issue */
+> -		ast_moutdwm(ast, 0x1e6e2090, 0x20000000);
+> -		temp  =3D ast_mindwm(ast, 0x1e6e2094);
+> -		temp |=3D 0x00004000;
+> -		ast_moutdwm(ast, 0x1e6e2094, temp);
+> -		temp  =3D ast_mindwm(ast, 0x1e6e2070);
+> -		if (temp & 0x00800000) {
+> -			ast_moutdwm(ast, 0x1e6e207c, 0x00800000);
+> -			mdelay(100);
+> -			ast_moutdwm(ast, 0x1e6e2070, 0x00800000);
+> -		}
+> -
+>   		if (!ast_dram_init_2500(ast))
+>   			drm_err(dev, "DRAM init failed !\n");
+>=20
+> --
+> 2.18.4
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--zvJbmwaJx4U0C7HouFHUu7u15GihqvSLy--
+
+--MGmyhMfBhk4EGwh57ubk0ZxyEPVGvNphD
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmD2jgEFAwAAAAAACgkQlh/E3EQov+Ar
+tA//SJ6qnoD57F+8ESIvLXtMfORLRBQOmi7xDstcH/zW2ZFzkj7c6zqayJ6MDWa074hsSmsoX5wH
+70QylKIiCGbFGyTMVoiClyBFIv8G0hYajashBuGh+LOzRis1+SUcoFW0PW6kJTM70YXmor2H+MJy
+xqBy7cxinlVuczLa0lak+Gw4Nz0XGng5RP/vjxKkAb7fLSttPrKbjPLlBCsKOrS8gVrKnbmKtz2a
+8Pfq4yZsg/TxfVOnBW0xNe0+0r3em0amgV6QfDIpLYWb+2ar3gHOvpHwUj+/fAMEdl4R5Wv7vTgh
+mjDNGmkjqz4FY8WdoHURPGJE05//wDVisKgHuS5RC1jmfxycyxOiJUMEQwusSlZkk92YKGRok41J
+QhzovpeMOLDzVW/rL1WGrkQkl9ZdTIgbF5gOUWFfAofVSYXPV0ViM6T3RcQHrxy3P0sl23sdRlnz
+ykFGxDYk6B8PXAwnO08UebcYwJf7bWGllBnaLKAmqilLctCq/iaI0fCmqnJMGdiWP2DamfnMuReZ
+EkVfzw+p6hJ7TZobI2gFzMFBOXLruSnrOYmuikT63jmBVcocOGIWP38r359fQkZ580jjvmX6zrmv
+PG72CkkQ5tYttw11b4NBM0VUcjQUgogHMifRNYjlw+TNKt4Pn8GXJPSzM+z7Nrswdz5XUBwt8wuo
+0No=
+=+dDF
+-----END PGP SIGNATURE-----
+
+--MGmyhMfBhk4EGwh57ubk0ZxyEPVGvNphD--
