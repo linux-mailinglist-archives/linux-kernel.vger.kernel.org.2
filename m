@@ -2,231 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481B33CF8E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8723CF8E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233406AbhGTKz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
+        id S234265AbhGTK4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236285AbhGTKyc (ORCPT
+        with ESMTP id S232210AbhGTKzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:54:32 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FB2C061574;
-        Tue, 20 Jul 2021 04:35:10 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id g22so23597594iom.1;
-        Tue, 20 Jul 2021 04:35:10 -0700 (PDT)
+        Tue, 20 Jul 2021 06:55:49 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECFC1C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:36:26 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id f9so25619784wrq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:36:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W00f0ANz3WrZGqMdQysCloQ6vLp/tHXNWmmPd6zJe0U=;
-        b=cJOAjNNO+m9zN0XNbTz3X4fk8STUtDi//3Yu/zRLr6C8sZVhauDsSAR/7Ub4rvyg8e
-         jhy4l34MkfMVpefHVgeR4mHMHFxMvPJlCW7q/1pzodeUkYNKtIujj4pr6GikeQJ7QBI2
-         8MeT0Oqtz/0BN3dYjuN29zqGAELS+8P4IrRdMvM0d9Lcoa3R1OOfl3sdP99sCaU304Y4
-         JGVuwd0xjrgK5P3IfbAabKZJ2TxD/WC0uyBm2l+ZMZ95T0dI2aYDYujgZfyWOhe/Pzso
-         tcr/XsaBtDcFojAElBHKW5au/54i3gxQVC/ulVrhgs/rtT/ss7xeb4EyoYjE6RZYKZTz
-         VfFA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d5WGGczUDQ+z5x6mRYmC5MZD9AX2DybKW9Ucl1ZZ5x4=;
+        b=GGHkZUBInNS2eawKVqyh2dZiBgqBA0ZAt6XqWzq6FhWyVhlXFPbnrSHWOAFPS8Z9ZR
+         dVibOwR1wemIROQr4YCp1xwVf64z1Rg6WMpiGmIbfEBFWPrx7MmRdjb8gV3/SgBP2ZFz
+         a9equnKu6rHXrtF1/q3vcbOQPyLeVxfwNuL+UDob2YQyCPEw22TnPSzcp86A1o8wmep8
+         1ovlB+LtfWokYN7bMc5KLPeyi/66y6j4HTX1EvxJshk2q4Z+Mrbh6HeBmZDHYOODRsRw
+         ktVTLWOHs/HMh+a+mLrAgjBio5S/1PCoIAKLdzp+GyxBK5Ra+Tjpp58IHq5VCMfwp/Vd
+         YXZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W00f0ANz3WrZGqMdQysCloQ6vLp/tHXNWmmPd6zJe0U=;
-        b=St0Or1sNVWv+sDjV+5lpQQ9QkLw6dknMGOmbZfoyU7SiOb+I/Gv/avkkhqleJesT5t
-         Cod42uE0TgwzBUPDylfiCvl5aCGoCwvGdzzWCa7JZWhQJBxpn9ry2gQiesF/bIO2Qsph
-         E5rBU/ONvs1IyGiuMzWFfus/B100behpdi96BrHnJHZbp9yhgIBTezrOuo4+qCPxO+6n
-         7UBmV48S47rsgEwSBU79ZXHixzNeHoFjiDOD2j6S1oNPCKXJgozh7nhTeHLqp0hOlfHg
-         Snc2qqSQM/aFWJM7unZ1iTq2K31rgsHdQmWVY28AHgZq4LdCvout6yUDEZ3AojJSP6bQ
-         foTQ==
-X-Gm-Message-State: AOAM530JpnfCr4ElQl7vgIpjmsLCfvBZqpE72osCb8+XQ7fDc9g0GtIt
-        ya5RTVU+XQg7DvM37qYmdVYuxsY15aR2qJc3Cto=
-X-Google-Smtp-Source: ABdhPJwqGEyizwyBwYlBCgp4IlLEfgl+nKlAQzLRY50FX2HkLOEGDEiHWz3+a06/FBfxpHmmcgrQwpjlNja0E3zaDQ8=
-X-Received: by 2002:a02:85a5:: with SMTP id d34mr25763258jai.132.1626780909646;
- Tue, 20 Jul 2021 04:35:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d5WGGczUDQ+z5x6mRYmC5MZD9AX2DybKW9Ucl1ZZ5x4=;
+        b=Jo3qOrDW+XT7cBaxgsY0Zkql3Ie95QMTqPpHxg+2P/U4ey9620Z5uIs+cY6bfAh+KQ
+         GhHvOxGkK2KvMaKQfdU0BNOHnnawiYLpDJ2TPYA/OJ0snoB2sr350XN2WuNWCmJW/9U9
+         AhvpnFnPtddlWCloNgbKz3JTt81tDmAwf+REkvoLVIV0qPpna/M0k57CXR022sngEkoN
+         z80o8o23tUDy/q0B2ebd/soxqHbIgNYduWAXBBp7rd0yLl78LImlSLKO7aSTE5lYKc0B
+         axfb2qyrzXzA+N0mcgfQFNeX5vNOwFQZ2SqcUEz9aZQg0ioYvScUXGKl5q/FxUNWTUb1
+         vUhw==
+X-Gm-Message-State: AOAM532U2dBskQqnXVilGx0vN8gTMzesfSqrTVr2Z7PpPj8cto1lOams
+        A/OdIe+pjo6OkIWHX/A2yqIhmQ==
+X-Google-Smtp-Source: ABdhPJxWCOn5XF/Z6Scsndh/Ax3SBXXxu2JEXA+6Z/V9aXahHy5B6KiYzK39pJgPk6HYOKcI6cp8rA==
+X-Received: by 2002:a5d:6589:: with SMTP id q9mr2297646wru.284.1626780985461;
+        Tue, 20 Jul 2021 04:36:25 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:83e0:11ac:c870:2b97])
+        by smtp.gmail.com with ESMTPSA id d9sm23135294wrx.76.2021.07.20.04.36.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 04:36:25 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 12:36:21 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
+        dbrazdil@google.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 03/16] KVM: arm64: Turn kvm_pgtable_stage2_set_owner into
+ kvm_pgtable_stage2_annotate
+Message-ID: <YPa1NfbEDY3kVHzr@google.com>
+References: <20210715163159.1480168-1-maz@kernel.org>
+ <20210715163159.1480168-4-maz@kernel.org>
+ <YPag0YQHB0nph5ji@google.com>
+ <871r7t9tgi.wl-maz@kernel.org>
+ <YPanmXfdr9rqnICK@google.com>
+ <87zguh8c4l.wl-maz@kernel.org>
 MIME-Version: 1.0
-References: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
-In-Reply-To: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
-From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date:   Tue, 20 Jul 2021 13:34:58 +0200
-Message-ID: <CAHpGcM+qhur4C2fLyR-dQx7CvumXVvMAM5NBCCXnL5ve-2qE8w@mail.gmail.com>
-Subject: Re: [PATCH v3] iomap: support tail packing inline read
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zguh8c4l.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mo., 19. Juli 2021 um 16:48 Uhr schrieb Gao Xiang
-<hsiangkao@linux.alibaba.com>:
-> This tries to add tail packing inline read to iomap, which can support
-> several inline tail blocks. Similar to the previous approach, it cleans
-> post-EOF in one iteration.
->
-> The write path remains untouched since EROFS cannot be used for testing.
-> It'd be better to be implemented if upcoming real users care rather than
-> leave untested dead code around.
->
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Darrick J. Wong <djwong@kernel.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> ---
-> v2: https://lore.kernel.org/r/YPLdSja%2F4FBsjss%2F@B-P7TQMD6M-0146.local/
-> changes since v2:
->  - update suggestion from Christoph:
->     https://lore.kernel.org/r/YPVe41YqpfGLNsBS@infradead.org/
->
-> Hi Andreas,
-> would you mind test on the gfs2 side? Thanks in advance!
->
-> Thanks,
-> Gao Xiang
->
->  fs/iomap/buffered-io.c | 50 ++++++++++++++++++++++++++----------------
->  fs/iomap/direct-io.c   | 11 ++++++----
->  2 files changed, 38 insertions(+), 23 deletions(-)
->
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 87ccb3438bec..cac8a88660d8 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -207,23 +207,22 @@ struct iomap_readpage_ctx {
->
->  static void
->  iomap_read_inline_data(struct inode *inode, struct page *page,
-> -               struct iomap *iomap)
-> +               struct iomap *iomap, loff_t pos)
->  {
-> -       size_t size = i_size_read(inode);
-> +       unsigned int size, poff = offset_in_page(pos);
->         void *addr;
->
-> -       if (PageUptodate(page))
-> -               return;
-> -
-> -       BUG_ON(page_has_private(page));
-> -       BUG_ON(page->index);
-> -       BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +       /* inline source data must be inside a single page */
-> +       BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +       /* handle tail-packing blocks cross the current page into the next */
-> +       size = min_t(unsigned int, iomap->length + pos - iomap->offset,
-> +                    PAGE_SIZE - poff);
->
->         addr = kmap_atomic(page);
-> -       memcpy(addr, iomap->inline_data, size);
-> -       memset(addr + size, 0, PAGE_SIZE - size);
-> +       memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
-> +       memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
->         kunmap_atomic(addr);
-> -       SetPageUptodate(page);
-> +       iomap_set_range_uptodate(page, poff, PAGE_SIZE - poff);
->  }
->
->  static inline bool iomap_block_needs_zeroing(struct inode *inode,
-> @@ -246,18 +245,19 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
->         unsigned poff, plen;
->         sector_t sector;
->
-> -       if (iomap->type == IOMAP_INLINE) {
-> -               WARN_ON_ONCE(pos);
-> -               iomap_read_inline_data(inode, page, iomap);
-> -               return PAGE_SIZE;
-> -       }
-> -
-> -       /* zero post-eof blocks as the page may be mapped */
->         iop = iomap_page_create(inode, page);
+On Tuesday 20 Jul 2021 at 12:20:58 (+0100), Marc Zyngier wrote:
+> On Tue, 20 Jul 2021 11:38:17 +0100,
+> Quentin Perret <qperret@google.com> wrote:
+> > 
+> > On Tuesday 20 Jul 2021 at 11:21:17 (+0100), Marc Zyngier wrote:
+> > > On Tue, 20 Jul 2021 11:09:21 +0100,
+> > > Quentin Perret <qperret@google.com> wrote:
+> > > > 
+> > > > On Thursday 15 Jul 2021 at 17:31:46 (+0100), Marc Zyngier wrote:
+> > > > > @@ -815,7 +807,7 @@ int kvm_pgtable_stage2_set_owner(struct kvm_pgtable *pgt, u64 addr, u64 size,
+> > > > >  		.arg		= &map_data,
+> > > > >  	};
+> > > > >  
+> > > > > -	if (owner_id > KVM_MAX_OWNER_ID)
+> > > > > +	if (!annotation || (annotation & PTE_VALID))
+> > > > >  		return -EINVAL;
+> > > > 
+> > > > Why do you consider annotation==0 invalid? The assumption so far has
+> > > > been that the owner_id for the host is 0, so annotating a range with 0s
+> > > > should be a valid operation -- this will be required when e.g.
+> > > > transferring ownership of a page back to the host.
+> > > 
+> > > How do you then distinguish it from an empty entry that doesn't map to
+> > > anything at all?
+> > 
+> > You don't, but that's beauty of it :)
+> > 
+> > The host starts with a PGD full of zeroes, which in terms of ownership
+> > means that it owns the entire (I)PA space. And it loses ownership of a
+> > page only when we explicitly annotate it with an owner id != 0.
+> 
+> Right. But this scheme doesn't apply to the guests, does it?
 
-We can skip creating the iop when reading the entire page.
+Right, the meaning of a NULL PTE in guests will clearly be something
+different, but I guess the interpretation of what invalid mappings mean
+is up to the caller.
 
-> +       /* needs to skip some leading uptodated blocks */
->         iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
->         if (plen == 0)
->                 goto done;
->
-> +       if (iomap->type == IOMAP_INLINE) {
-> +               iomap_read_inline_data(inode, page, iomap, pos);
-> +               plen = PAGE_SIZE - poff;
-> +               goto done;
-> +       }
-> +
-> +       /* zero post-eof blocks as the page may be mapped */
->         if (iomap_block_needs_zeroing(inode, iomap, pos)) {
->                 zero_user(page, poff, plen);
->                 iomap_set_range_uptodate(page, poff, plen);
-> @@ -589,6 +589,18 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
->         return 0;
->  }
->
-> +static int iomap_write_begin_inline(struct inode *inode, loff_t pos,
-> +               struct page *page, struct iomap *srcmap)
-> +{
-> +       /* needs more work for the tailpacking case, disable for now */
-> +       if (WARN_ON_ONCE(pos != 0))
-> +               return -EIO;
-> +       if (PageUptodate(page))
-> +               return 0;
-> +       iomap_read_inline_data(inode, page, srcmap, pos);
-> +       return 0;
-> +}
-> +
->  static int
->  iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
->                 struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-> @@ -618,7 +630,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
->         }
->
->         if (srcmap->type == IOMAP_INLINE)
-> -               iomap_read_inline_data(inode, page, srcmap);
-> +               status = iomap_write_begin_inline(inode, pos, page, srcmap);
->         else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
->                 status = __block_write_begin_int(page, pos, len, NULL, srcmap);
->         else
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 9398b8c31323..ee6309967b77 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -379,22 +379,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
->  {
->         struct iov_iter *iter = dio->submit.iter;
->         size_t copied;
-> +       void *dst = iomap->inline_data + pos - iomap->offset;
->
-> -       BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +       /* inline data must be inside a single page */
-> +       BUG_ON(length > PAGE_SIZE - offset_in_page(iomap->inline_data));
->
->         if (dio->flags & IOMAP_DIO_WRITE) {
->                 loff_t size = inode->i_size;
->
->                 if (pos > size)
-> -                       memset(iomap->inline_data + size, 0, pos - size);
-> -               copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-> +                       memset(iomap->inline_data + size - iomap->offset,
-> +                              0, pos - size);
-> +               copied = copy_from_iter(dst, length, iter);
->                 if (copied) {
->                         if (pos + copied > size)
->                                 i_size_write(inode, pos + copied);
->                         mark_inode_dirty(inode);
->                 }
->         } else {
-> -               copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-> +               copied = copy_to_iter(dst, length, iter);
->         }
->         dio->size += copied;
->         return copied;
-> --
-> 2.24.4
->
+> Don't we
+> need something that is non-null to preserve the table refcounting?
 
-Thanks,
-Andreas
+Sure, but do we care? If the table entry gets zeroed we're then
+basically using an 'invalid block' mapping to annotate the entire block
+range with '0', whatever that means. For guests it won't mean much, but
+for the host that would mean sole ownership of the entire range.
