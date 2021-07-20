@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3123CFC90
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E51C23CFCA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240383AbhGTOBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 10:01:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46994 "EHLO mail.kernel.org"
+        id S240909AbhGTOHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:07:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239410AbhGTNt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 09:49:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 899E061208;
-        Tue, 20 Jul 2021 14:30:04 +0000 (UTC)
+        id S239998AbhGTNup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 09:50:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 576B861241;
+        Tue, 20 Jul 2021 14:30:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626791404;
-        bh=OPHmHnyJ0nP1961Kc9LAota8nk5vdGTzoapkgpL+TpI=;
+        s=k20201202; t=1626791406;
+        bh=Mq8VZpG5vgU2S7Ar52dlla//NUzwbdhgnLFot/NGkNQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=p9E1s3S6Pz88gNjQKQ+/bL92wuqKts9qGjhvfeNFPYPgY37AH2DnCN2SNJ1HgLJqt
-         bBcE8yDHpjrtPie+bUSkhKEDdv/M0SjJQwvqowYYcqY/fpjkMpTbR/b6EZ0lttZezo
-         EArXMlNE558lM3oBXoi217B5vEJx/qdbgMfLD5m7AgDR7vDNIo/+t1z8noas521vZ5
-         Q82UqtoxzU9d7QHiw1j+3cEnSy+plQMgbuWl57KY97X3FpmUifLA5v0AoP5EGQ3+q8
-         X2ohPatFCnjiw+Avk64OHEv5qJEoIXeI2W8YiCI+EKgxVhXAbrjY4SGrfz+GW1gAzi
-         4dM0quZDkyjEg==
+        b=aquPh6K4HJMHQsns+Yy5DyL0VB7hrm3Xa8vhXxTg4iAg4F+iQXg3+0OTfgldI41Jm
+         bzIp+uUxCkjA3C99MZ9Y75XuKMnkl1ex2p6mx1OOfqF9+UavsZo0TISnJS7JFpxdt2
+         wFkJ6v2Syqh9Y4tRZakpAqWvFhhkHoY106OSpgoqqRP4Q/YIig+Y9854KwWwR49Ysn
+         CPyLG0cBnWZ85jO+jCFgNgu0lJB8yOaESniwGg8nWGNIlg1u54s3dAHRUmcAQurw4v
+         cqTTNkoFGz+nm4ngXU2o/zGgZarlWUb+ouGhp0RDT7GzYs0N99Yg46CTCxVZoHaRMn
+         RlNsz+zshEXjA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7823B60CD3;
-        Tue, 20 Jul 2021 14:30:04 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 47E3E60CCF;
+        Tue, 20 Jul 2021 14:30:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] Revert "qed: fix possible unpaired spin_{un}lock_bh in
- _qed_mcp_cmd_and_union()"
+Subject: Re: [PATCH net-next v7] net: phy: intel-xway: Add RGMII internal delay
+ configuration
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162679140448.23944.13061540500790783692.git-patchwork-notify@kernel.org>
-Date:   Tue, 20 Jul 2021 14:30:04 +0000
-References: <20210720132655.4704-1-justin.he@arm.com>
-In-Reply-To: <20210720132655.4704-1-justin.he@arm.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     aelior@marvell.com, GR-everest-linux-l2@marvell.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nd@arm.com, pkushwaha@marvell.com
+Message-Id: <162679140628.23944.4619317676188906245.git-patchwork-notify@kernel.org>
+Date:   Tue, 20 Jul 2021 14:30:06 +0000
+References: <20210720115647.15285-1-ms@dev.tdt.de>
+In-Reply-To: <20210720115647.15285-1-ms@dev.tdt.de>
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     hauke@hauke-m.de, martin.blumenstingl@googlemail.com,
+        f.fainelli@gmail.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue, 20 Jul 2021 21:26:55 +0800 you wrote:
-> This reverts commit 6206b7981a36476f4695d661ae139f7db36a802d.
+On Tue, 20 Jul 2021 13:56:47 +0200 you wrote:
+> This adds the possibility to configure the RGMII RX/TX clock skew via
+> devicetree.
 > 
-> That patch added additional spin_{un}lock_bh(), which was harmless
-> but pointless. The orginal code path has guaranteed the pair of
-> spin_{un}lock_bh().
-> 
-> We'd better revert it before we find the exact root cause of the
-> bug_on mentioned in that patch.
+> Simply set phy mode to "rgmii-id", "rgmii-rxid" or "rgmii-txid" and add
+> the "rx-internal-delay-ps" or "tx-internal-delay-ps" property to the
+> devicetree.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v2] Revert "qed: fix possible unpaired spin_{un}lock_bh in _qed_mcp_cmd_and_union()"
-    https://git.kernel.org/netdev/net/c/91bed5565bba
+  - [net-next,v7] net: phy: intel-xway: Add RGMII internal delay configuration
+    https://git.kernel.org/netdev/net-next/c/be393dd685d2
 
 You are awesome, thank you!
 --
