@@ -2,151 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D903D019A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD84C3D01B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbhGTRmS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Jul 2021 13:42:18 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:35866 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232589AbhGTRkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 13:40:42 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4GTn8p11xBzB61P;
-        Tue, 20 Jul 2021 20:21:14 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id azco6Acv840f; Tue, 20 Jul 2021 20:21:14 +0200 (CEST)
-Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4GTn8n6vwfzB61K;
-        Tue, 20 Jul 2021 20:21:13 +0200 (CEST)
-Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
-        id 182D3702; Tue, 20 Jul 2021 20:26:27 +0200 (CEST)
-Received: from 37-165-28-27.coucou-networks.fr
- (37-165-28-27.coucou-networks.fr [37.165.28.27]) by messagerie.c-s.fr (Horde
- Framework) with HTTP; Tue, 20 Jul 2021 20:26:27 +0200
-Date:   Tue, 20 Jul 2021 20:26:27 +0200
-Message-ID: <20210720202627.Horde.vlszNhxkKrLIg0-3Sn2ucw5@messagerie.c-s.fr>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, Marc Zyngier <maz@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Fix arm64 boot regression in 5.14
-In-Reply-To: <20210720123512.8740-1-will@kernel.org>
-User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
-Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
+        id S231381AbhGTRrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 13:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230046AbhGTRqK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 13:46:10 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6623BC061574;
+        Tue, 20 Jul 2021 11:26:46 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id n4so12814610wms.1;
+        Tue, 20 Jul 2021 11:26:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6pTsiDANPzE+73zIk+e131AENTpGYx6/K/T08KfKqSY=;
+        b=rJHFVliEPX28A8ivueoovRHJCaPLx1JYakGI+Kltutr3lDY7jcMM0dlibAXtgsSlxx
+         VNidQjxvWhTQSDem0TW46RIHJTCJfMcnIl9KgO77f4doAJuLSdJvRwR/MUaV8YWwZVJt
+         Ntl1JK05U8LhxeQJwa07Deb0fyazNlHhgcjf5dyF2QMjMCrY7Elo9n+ZhP6ppBwqHrDP
+         ByTvSHCMrXuF7YmWynnI2hl+1drw8/QUP2yjRR4bXZW9WschJmd3ggESfnAPMMaWShLh
+         DWkp6xdJoV31GVjmyCNVYfiNAsmk2J2H14dSuoRLWqAXw4amZ1f9aE+uSocks9ogetOa
+         ndug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6pTsiDANPzE+73zIk+e131AENTpGYx6/K/T08KfKqSY=;
+        b=GoVp6G9qS9CmuT4UXo+qNFhM763UeNAvIune2joQv3GF44fN7XCzE1Jou3Co7c3ZWT
+         IqdZ3L18ZYw37c4ti3Dm43gIXcnWtc9rfjt/NK4gBfmlVWGAIV49b3tZbWeO+fgVz+Lm
+         8SPf6xQD5wFBVhr/duDfBdrs9bmk1CAJcYakpMo21UKVeAKYoClm1w9iC0Y3ppzYQWs7
+         82mxAhv/MBaVzMvqCAbxL5Tyn/Zs3aTguk0mIu5MStodmg85I+6iHZzrxkAke9V+PKsE
+         XzpIPmUfNUV4R3+JvVQ89Qon8wWxBdoUhqeKcb4oEbY45LpRKxZLer8oT1RJZAD+h58s
+         rLaw==
+X-Gm-Message-State: AOAM531E9t72pQK68mB6+at7xahsw1LvL9Yr+Q8F3COHygs00ZCJlBl6
+        SJgnDCTiprYkg6rhLN5q6/AGQCYGfaSCdFBJiuw=
+X-Google-Smtp-Source: ABdhPJy1XY32wnst0FtwN54MJ1oMF78e5Su0jyufLkmfk9sQSnHd9sq8CidwadgCIEKN1YZgSPzBhcVIfLMz1Nyg8fU=
+X-Received: by 2002:a1c:7c05:: with SMTP id x5mr39566638wmc.123.1626805604844;
+ Tue, 20 Jul 2021 11:26:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
+References: <20210720150716.1213775-1-robdclark@gmail.com> <60ffb6f3-e932-d9af-3b90-81adf0c15250@gmail.com>
+In-Reply-To: <60ffb6f3-e932-d9af-3b90-81adf0c15250@gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 20 Jul 2021 11:30:53 -0700
+Message-ID: <CAF6AEGtOW3EjZWo36ij8U1om=gAqvg8CSkJJq2GkyHFGWUH4kQ@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH] drm/msm: Add fence->wait() op
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Sean Paul <sean@poorly.run>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Will Deacon <will@kernel.org> a écrit :
+On Tue, Jul 20, 2021 at 11:03 AM Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
+>
+> Hi Rob,
+>
+> Am 20.07.21 um 17:07 schrieb Rob Clark:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > Somehow we had neither ->wait() nor dma_fence_signal() calls, and no
+> > one noticed.  Oops.
+>
+>
+> I'm not sure if that is a good idea.
+>
+> The dma_fence->wait() callback is pretty much deprecated and should not
+> be used any more.
+>
+> What exactly do you need that for?
 
-> Hi folks,
->
-> Jonathan reports [1] that commit c742199a014d ("mm/pgtable: add stubs
-> for {pmd/pub}_{set/clear}_huge") breaks the boot on arm64 when huge
-> mappings are used to map the kernel linear map but the VA size is
-> configured such that PUDs are folded. This is because the non-functional
-> pud_set_huge() stub is used to create the linear map, which results in
-> 1GB holes and a fatal data abort when the kernel attemps to access them.
->
-> Digging further into the issue, it also transpired that huge-vmap is
-> silently disabled in these configurations as well [2], despite working
-> correctly in 5.13. The latter issue causes the pgtable selftests to
-> scream due to a failing consistency check [3].
->
-> Rather than leave mainline in a terminally broken state for arm64 while
-> we figure this out, revert the offending commit to get things working
-> again. Unfortunately, reverting the change in isolation causes a build
-> breakage for 32-bit PowerPC 8xx machines which recently started relying
-> on the problematic stubs to support pte-level huge-vmap entries [4].
-> Since Christophe is away at the moment, this series first reverts the
-> PowerPC 8xx change in order to avoid breaking the build.
->
-> I would really like this to land for -rc3 and I can take these via the
-> arm64 fixes queue if the PowerPC folks are alright with them.
->
+Well, the alternative is to track the set of fences which have
+signalling enabled, and then figure out which ones to signal, which
+seems like a lot more work, vs just re-purposing the wait
+implementation we already have for non-dma_fence cases ;-)
 
-If you can drop patch 1,
+Why is the ->wait() callback (pretty much) deprecated?
 
-Change patch 2 to add the two following functions in  
-arch/powerpc/mm/nohash/8xx.c :
+BR,
+-R
 
-int pud_clear_huge(pud_t *pud)
-{
-         return 0;
-}
-
-int pmd_clear_huge(pmd_t *pmd)
-{
-         return 0;
-}
-
-Then feel free to take it via ARM fixes with my acked-by as maintainer  
-of PPC8XX.
-
-Christophe
-
-
-> Cheers,
+> Regards,
+> Christian.
 >
-> Will
+> >
+> > Note that this removes the !timeout case, which has not been used in
+> > a long time.
 >
-> [1] https://lore.kernel.org/r/20210717160118.9855-1-jonathan@marek.ca
-> [2] https://lore.kernel.org/r/20210719104918.GA6440@willie-the-truck
-> [3]  
-> https://lore.kernel.org/r/CAMuHMdXShORDox-xxaeUfDW3wx2PeggFSqhVSHVZNKCGK-y_vQ@mail.gmail.com/
-> [4]  
-> https://lore.kernel.org/r/8b972f1c03fb6bd59953035f0a3e4d26659de4f8.1620795204.git.christophe.leroy@csgroup.eu/
 >
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Jonathan Marek <jonathan@marek.ca>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Nicholas Piggin <npiggin@gmail.com
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-arm-kernel@lists.infradead.org
+> >
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > ---
+> >   drivers/gpu/drm/msm/msm_fence.c | 59 +++++++++++++++++++-------------=
+-
+> >   1 file changed, 34 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_=
+fence.c
+> > index cd59a5918038..8ee96b90ded6 100644
+> > --- a/drivers/gpu/drm/msm/msm_fence.c
+> > +++ b/drivers/gpu/drm/msm/msm_fence.c
+> > @@ -38,11 +38,10 @@ static inline bool fence_completed(struct msm_fence=
+_context *fctx, uint32_t fenc
+> >       return (int32_t)(fctx->completed_fence - fence) >=3D 0;
+> >   }
+> >
+> > -/* legacy path for WAIT_FENCE ioctl: */
+> > -int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> > -             ktime_t *timeout, bool interruptible)
+> > +static signed long wait_fence(struct msm_fence_context *fctx, uint32_t=
+ fence,
+> > +             signed long remaining_jiffies, bool interruptible)
+> >   {
+> > -     int ret;
+> > +     signed long ret;
+> >
+> >       if (fence > fctx->last_fence) {
+> >               DRM_ERROR_RATELIMITED("%s: waiting on invalid fence: %u (=
+of %u)\n",
+> > @@ -50,33 +49,34 @@ int msm_wait_fence(struct msm_fence_context *fctx, =
+uint32_t fence,
+> >               return -EINVAL;
+> >       }
+> >
+> > -     if (!timeout) {
+> > -             /* no-wait: */
+> > -             ret =3D fence_completed(fctx, fence) ? 0 : -EBUSY;
+> > +     if (interruptible) {
+> > +             ret =3D wait_event_interruptible_timeout(fctx->event,
+> > +                     fence_completed(fctx, fence),
+> > +                     remaining_jiffies);
+> >       } else {
+> > -             unsigned long remaining_jiffies =3D timeout_to_jiffies(ti=
+meout);
+> > -
+> > -             if (interruptible)
+> > -                     ret =3D wait_event_interruptible_timeout(fctx->ev=
+ent,
+> > -                             fence_completed(fctx, fence),
+> > -                             remaining_jiffies);
+> > -             else
+> > -                     ret =3D wait_event_timeout(fctx->event,
+> > -                             fence_completed(fctx, fence),
+> > -                             remaining_jiffies);
+> > -
+> > -             if (ret =3D=3D 0) {
+> > -                     DBG("timeout waiting for fence: %u (completed: %u=
+)",
+> > -                                     fence, fctx->completed_fence);
+> > -                     ret =3D -ETIMEDOUT;
+> > -             } else if (ret !=3D -ERESTARTSYS) {
+> > -                     ret =3D 0;
+> > -             }
+> > +             ret =3D wait_event_timeout(fctx->event,
+> > +                     fence_completed(fctx, fence),
+> > +                     remaining_jiffies);
+> > +     }
+> > +
+> > +     if (ret =3D=3D 0) {
+> > +             DBG("timeout waiting for fence: %u (completed: %u)",
+> > +                             fence, fctx->completed_fence);
+> > +             ret =3D -ETIMEDOUT;
+> > +     } else if (ret !=3D -ERESTARTSYS) {
+> > +             ret =3D 0;
+> >       }
+> >
+> >       return ret;
+> >   }
+> >
+> > +/* legacy path for WAIT_FENCE ioctl: */
+> > +int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> > +             ktime_t *timeout, bool interruptible)
+> > +{
+> > +     return wait_fence(fctx, fence, timeout_to_jiffies(timeout), inter=
+ruptible);
+> > +}
+> > +
+> >   /* called from workqueue */
+> >   void msm_update_fence(struct msm_fence_context *fctx, uint32_t fence)
+> >   {
+> > @@ -114,10 +114,19 @@ static bool msm_fence_signaled(struct dma_fence *=
+fence)
+> >       return fence_completed(f->fctx, f->base.seqno);
+> >   }
+> >
+> > +static signed long msm_fence_wait(struct dma_fence *fence, bool intr,
+> > +             signed long timeout)
+> > +{
+> > +     struct msm_fence *f =3D to_msm_fence(fence);
+> > +
+> > +     return wait_fence(f->fctx, fence->seqno, timeout, intr);
+> > +}
+> > +
+> >   static const struct dma_fence_ops msm_fence_ops =3D {
+> >       .get_driver_name =3D msm_fence_get_driver_name,
+> >       .get_timeline_name =3D msm_fence_get_timeline_name,
+> >       .signaled =3D msm_fence_signaled,
+> > +     .wait =3D msm_fence_wait,
+> >   };
+> >
+> >   struct dma_fence *
 >
-> --->8
->
-> Jonathan Marek (1):
->   Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge"
->
-> Will Deacon (1):
->   Revert "powerpc/8xx: add support for huge pages on VMAP and VMALLOC"
->
->  arch/arm64/mm/mmu.c                          | 20 ++++-----
->  arch/powerpc/Kconfig                         |  2 +-
->  arch/powerpc/include/asm/nohash/32/mmu-8xx.h | 43 --------------------
->  arch/x86/mm/pgtable.c                        | 34 +++++++---------
->  include/linux/pgtable.h                      | 26 +-----------
->  5 files changed, 25 insertions(+), 100 deletions(-)
->
-> --
-> 2.32.0.402.g57bb445576-goog
-
-
