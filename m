@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1B53CFACE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4A33CFAD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237684AbhGTM5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:57:53 -0400
-Received: from mail-il1-f175.google.com ([209.85.166.175]:43647 "EHLO
-        mail-il1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239141AbhGTMyT (ORCPT
+        id S238178AbhGTM6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:58:16 -0400
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:46690 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239167AbhGTMyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:54:19 -0400
-Received: by mail-il1-f175.google.com with SMTP id w1so19107303ilg.10;
-        Tue, 20 Jul 2021 06:34:57 -0700 (PDT)
+        Tue, 20 Jul 2021 08:54:40 -0400
+Received: by mail-wm1-f45.google.com with SMTP id o30-20020a05600c511eb029022e0571d1a0so2059782wms.5;
+        Tue, 20 Jul 2021 06:35:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=iXVXQCvX+rDxAmIhcemQIg3BD3R+OAgKkEeUeDAOaWU=;
-        b=a+pAn7LxrDq+B3+ZhUOwd596Hs4hVs3kg19YlM2D/E0dz4O/MZwITyz/5ZsF6hnoL8
-         KHS69rxuWzwwMQvwHFsZ7cXmAqnII0TlJmpqIzk+P1xvsKp5Y+6uw2Pj+KbXmJm1Z7Po
-         +Ap0g3AGKYjHeN0+V0KWE+JXlz5E9o/s48UBv7EaXNvStfGvctRCVopAF6RlUspVHccv
-         m271FV/cNrjfs9zwHtEaHcXZWp4b8kWnxMrCOEL869WdNSxE8bcS6g62xZ0MJjNoZZxS
-         SQ5/PaE8V+rY57p6m2OoAvvqeofK/E/i28lEMn525cV/xeKksowbNjnxqbY0kh5YI3M8
-         1EFg==
-X-Gm-Message-State: AOAM5315wOdkCR6pksfdxihat4bHEVfICbW38MkdN5DG/Toqe14LrTmj
-        fG0Xav//U6NoZrqLa5B67w==
-X-Google-Smtp-Source: ABdhPJynuTGR01DW0qDQzAyJlxt9B4QibZ2YJFfotEtHfK6UrcGS8SIQSUwEVcONxP5BN2KDaz1dQg==
-X-Received: by 2002:a92:ad04:: with SMTP id w4mr20381626ilh.221.1626788097223;
-        Tue, 20 Jul 2021 06:34:57 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id 10sm2014932iln.39.2021.07.20.06.34.55
+        bh=QoG0e098CSVJM53LvmbZvNHBulV5BXavIcXXWl309i0=;
+        b=FJnT4+N5S0v+SDDOqbvtQyc5rUBxwD6CL+EXda3aKlqUeaV7MVOiXWmR/6T2FMJ3Z+
+         N0WK86EP9qfDQjz+++6/5g4r7GwANgSmM8Hwd9tO5kpbHgMSAJHj1E5WYE868s8KMkio
+         JoHfxIZftt0G/ky4ZH4Vgk1pJi9/sfEu95bdUkgQ0HCySTzjWkdtd9+RLjvHP4PgOzTl
+         dy6mAg8b3ZNLQy3KXfyJVmUXxK2K7O717BzIR8tADxh/igJ/oKFZ5pbPFzWWXcDrE1nK
+         f0cZ6/SR/sejL655J98/OtMXrLpR1o5EQRf5rWu+FqshNUD+0A6vn/sOSvCBV6VNUEbF
+         yopg==
+X-Gm-Message-State: AOAM533mFutnhwlJFMR1c+XW7oHHfBxkbIDUp3W1zmeUVMeVXtvDMLmX
+        +BJ9ELp9roYWaW6W985FDM0=
+X-Google-Smtp-Source: ABdhPJytGN+Gdm4grFjtPtQw9ml8TJC1/WOjpBANA4AxN72OAWidJpkNxMAMxuV9RFN74AiTrf+hxQ==
+X-Received: by 2002:a7b:c41a:: with SMTP id k26mr37800868wmi.117.1626788116253;
+        Tue, 20 Jul 2021 06:35:16 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id f15sm2440789wmj.15.2021.07.20.06.35.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 06:34:56 -0700 (PDT)
-Received: (nullmailer pid 4157543 invoked by uid 1000);
-        Tue, 20 Jul 2021 13:34:54 -0000
-Date:   Tue, 20 Jul 2021 07:34:54 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yangtao Li <tiny.windzz@gmail.com>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] dt-bindings: opp: Convert to DT schema
-Message-ID: <20210720133454.GA4147058@robh.at.kernel.org>
-References: <20210719202732.2490287-1-robh@kernel.org>
- <20210720043108.bmoydy3a2r3gqhnq@vireshk-i7>
+        Tue, 20 Jul 2021 06:35:15 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 13:35:14 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        nunodasneves@linux.microsoft.com
+Subject: Re: [PATCH] hyperv: root partition faults writing to VP ASSIST MSR
+ PAGE
+Message-ID: <20210720133514.lurmus2lgffcldnq@liuwe-devbox-debian-v2>
+References: <20210719185126.3740-1-kumarpraveen@linux.microsoft.com>
+ <20210720112011.7nxhiy6iyz4gz3j5@liuwe-devbox-debian-v2>
+ <fd70c8e5-f58c-640b-30b7-70c4e4a4861a@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210720043108.bmoydy3a2r3gqhnq@vireshk-i7>
+In-Reply-To: <fd70c8e5-f58c-640b-30b7-70c4e4a4861a@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 10:01:08AM +0530, Viresh Kumar wrote:
-> On 19-07-21, 14:27, Rob Herring wrote:
-> > Convert the OPP v1 and v2 bindings to DT schema format. As the OPPv2 binding
-> > can be extended by vendors, we need to split the common part out from the
-> > "operating-points-v2" conforming compatible.
+On Tue, Jul 20, 2021 at 06:55:56PM +0530, Praveen Kumar wrote:
+[...]
 > > 
-> > Cc: Yangtao Li <tiny.windzz@gmail.com>
-> > Cc: Nishanth Menon <nm@ti.com>
-> > Cc: Stephen Boyd <sboyd@kernel.org>
-> > Cc: Maxime Ripard <mripard@kernel.org>
-> > Cc: Chen-Yu Tsai <wens@csie.org>
-> > Cc: linux-pm@vger.kernel.org
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> > v2:
-> > - move opp-peak-kBps next to opp-avg-kBps. Also add a dependency schema.
-> > - Correct the opp-microamp schemas. It's always a single value for each
-> >   regulator.
-> > - Add missing type for '^opp-microamp-'
+> >> +	if (hv_root_partition &&
+> >> +	    ms_hyperv.features & HV_MSR_APIC_ACCESS_AVAILABLE) {
+> > 
+> > Is HV_MSR_APIC_ACCESS_AVAILABLE a root only flag? Shouldn't non-root
+> > kernel check this too?
 > 
-> Applied. Thanks.
+> Yes, you are right. Will update this in v2. thanks.
 
-I found some issues with it, can you drop it? 
+Please split adding this check to its own patch.
 
-Rob
+Ideally one patch only does one thing.
 
+Wei.
+
+> 
+> > 
+> > Wei.
+> > 
+> 
+> Regards,
+> 
+> ~Praveen.
