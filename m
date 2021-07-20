@@ -2,107 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449003CF6BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6B23CF6BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235496AbhGTIh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 04:37:57 -0400
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:42820 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234809AbhGTIgB (ORCPT
+        id S235436AbhGTIhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 04:37:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41752 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234864AbhGTIgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:36:01 -0400
-Received: by mail-vs1-f48.google.com with SMTP id u7so10867964vst.9;
-        Tue, 20 Jul 2021 02:16:39 -0700 (PDT)
+        Tue, 20 Jul 2021 04:36:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626772600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wwmuzr8AmgyRK7EVr2ih7+SXOXPmpw+O/q8g6/RyDT0=;
+        b=IGCcRXTt4rTY+FZAEeBJruB8K5VFNk8p9bRpQxfE48q5goKg2VKlaxWOFx676sQNzuYGtu
+        0+1a7oKi3gC+FvlcmjCLeocWQ/138zu9MH/wDoQ5HVmvcrPauIRt2Oj91JoD4F23LHOwbB
+        WFTUA4bGPQMmGBfyXTAvvfgXJhytHls=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-n3aD5Vv3M9ab7wnFViXDFw-1; Tue, 20 Jul 2021 05:16:39 -0400
+X-MC-Unique: n3aD5Vv3M9ab7wnFViXDFw-1
+Received: by mail-ed1-f71.google.com with SMTP id c21-20020aa7d6150000b02903ab03a06e86so10564082edr.14
+        for <Linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 02:16:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pGK4Y9q1wNdkFd2qkEzt4SoJHeKZj51kb/6+Vc2cCrE=;
-        b=HkD5FyjvnacsybfiyGgnoE3eHRIvRdfujN3HyK8qaCoRsGE3fv86T3BD3eGDe5EIPB
-         aruLvK9JsDCSPxttsJj2L2PN8TQpIPIet8e3mJIjEPuFAX/B3HrTwa3sZ4oMgOmlRuNC
-         mOAXdue1fcLLNF6haY5NvDMUw/GqFTFMlFP3r7NrtV0E/4oNY5Lv72+chzr2UiU4fKZm
-         e/uLXITaAj4jSoQ03oCh+/lqWnhnJZ0tqu5oKelJivOMl1cyDG1G5sykd6vMfixR+LIK
-         jAZjdUEpKfJCYIWk8TPPbmeB+apQ/ZwxdgmgZRcKWsfGZyO7aVFiz8T4lnL/LY26VO1b
-         vuyg==
-X-Gm-Message-State: AOAM530u1jWUVA32ugMUdtiDOoPBFsUQxqp+57ZWlOS80GatYk0A1kGV
-        f9d5zjsp0BqkZoBosdWTliGCClC+iwdi3xPTsps=
-X-Google-Smtp-Source: ABdhPJwoXV/bWgXqVc9IJcEEctt4YRmAEI9f2fx6tde3GwJo5sjH+AcIOE8BcMkUYIB6TTzpfyMnpZ0rvcI6B2cggsM=
-X-Received: by 2002:a67:3c2:: with SMTP id 185mr27684696vsd.42.1626772598880;
- Tue, 20 Jul 2021 02:16:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wwmuzr8AmgyRK7EVr2ih7+SXOXPmpw+O/q8g6/RyDT0=;
+        b=H0Nv363roEz1TNAjyEX7Xa+dVITwAErV/t/g71gb6fDCYuTZy6ZPYftOkaeTUxK1b+
+         1BwwMyatsA7Oh5Zyn/lGFY4jfTebukozZtPbjGHludQ2i/Jq0cl9mk6tsoEPfh/qQ5Ya
+         FAWqmkwCGi7eUBGH75PfxpYuBM2xqfS/sofdOQiGSViKgggACEPORXN9mdNMXR19DlHR
+         a//syMX1bK5DHCofgRQYrca17aQYoL1Rn3qno8QwV08F1g9R+aeLWoqg0lEe1dutwl6e
+         thyIZBmYlk+VysZmVUq+Nzs+x6lZc7PZRd6kSlTb5+moABWotWmN24wNa1hPb0FAKlZ6
+         6ecg==
+X-Gm-Message-State: AOAM533/UCZUPBSf+6I5HUepj6svTvul9sbdrO/IqMN+kLl2kwZG5Ydi
+        s94ikDnb/7y/Iv+vjBDqaonEJvLPcn7KbSVkRm8/DSwJe9ov/Np5qASvij8dB3bocfu+wtFu6NT
+        PIAsZP5pS1gtrl6OdOup1odEO
+X-Received: by 2002:a05:6402:1b06:: with SMTP id by6mr38822514edb.95.1626772598385;
+        Tue, 20 Jul 2021 02:16:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzDrAmbo6ANlymcQGs+SQHruUiSWgtvNqPSlFQywRs+deGFlzXhd7Tme6H/F4A3JjNsV5xdeA==
+X-Received: by 2002:a05:6402:1b06:: with SMTP id by6mr38822496edb.95.1626772598147;
+        Tue, 20 Jul 2021 02:16:38 -0700 (PDT)
+Received: from krava ([83.240.63.206])
+        by smtp.gmail.com with ESMTPSA id da23sm9062333edb.34.2021.07.20.02.16.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 02:16:37 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 11:16:35 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v3 3/3] perf tools: Enable on a list of CPUs for hybrid
+Message-ID: <YPaUc3iodIASdYRY@krava>
+References: <20210712071235.28533-1-yao.jin@linux.intel.com>
+ <20210712071235.28533-4-yao.jin@linux.intel.com>
+ <YPXUMTFbj2Tl3eBz@krava>
+ <ecf0e815-616f-0a08-cefd-baac93c0e47d@linux.intel.com>
 MIME-Version: 1.0
-References: <20210714145804.2530727-1-geert@linux-m68k.org>
- <20210714145804.2530727-5-geert@linux-m68k.org> <YPXQnlpWUa1QaZKd@ravnborg.org>
- <CAMuHMdVyuzQzXF0X3OA=PH4E4ifaT2TfHs76yGgRKk-XrEbwzw@mail.gmail.com>
-In-Reply-To: <CAMuHMdVyuzQzXF0X3OA=PH4E4ifaT2TfHs76yGgRKk-XrEbwzw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 20 Jul 2021 11:16:27 +0200
-Message-ID: <CAMuHMdVpxVJx8=aGasrop6soO011gby8Xxotr+Yomi9oBOTrpA@mail.gmail.com>
-Subject: Re: [PATCH resend 4/5] video: fbdev: ssd1307fb: Optimize screen updates
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Ripard <mripard@kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ecf0e815-616f-0a08-cefd-baac93c0e47d@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
+On Tue, Jul 20, 2021 at 03:07:02PM +0800, Jin, Yao wrote:
 
-On Tue, Jul 20, 2021 at 9:56 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Mon, Jul 19, 2021 at 9:21 PM Sam Ravnborg <sam@ravnborg.org> wrote:
-> > On Wed, Jul 14, 2021 at 04:58:03PM +0200, Geert Uytterhoeven wrote:
-> > > Currently, each screen update triggers an I2C transfer of all screen
-> > > data, up to 1 KiB of data for a 128x64 display, which takes at least 20
-> > > ms in Fast mode.
-> > >
-> > > Reduce the amount of transferred data by only updating the rectangle
-> > > that changed.  Remove the call to ssd1307fb_set_address_range() during
-> > > initialization, as ssd1307fb_update_rect() now takes care of that.
-> > >
-> > > Note that for now the optimized operation is only used for fillrect,
-> > > copyarea, and imageblit, which are used by fbcon.
-> > >
-> > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> > > --- a/drivers/video/fbdev/ssd1307fb.c
-> > > +++ b/drivers/video/fbdev/ssd1307fb.c
-> > > @@ -184,16 +184,18 @@ static int ssd1307fb_set_address_range(struct ssd1307fb_par *par, u8 col_start,
-> > >       return ssd1307fb_write_cmd(par->client, page_end);
-> > >  }
-> > >
-> > > -static int ssd1307fb_update_display(struct ssd1307fb_par *par)
-> > > +static int ssd1307fb_update_rect(struct ssd1307fb_par *par, unsigned int x,
-> > > +                              unsigned int y, unsigned int width,
-> > > +                              unsigned int height)
-> > >  {
-> > >       struct ssd1307fb_array *array;
-> > >       u8 *vmem = par->info->screen_buffer;
-> > >       unsigned int line_length = par->info->fix.line_length;
-> > > -     unsigned int pages = DIV_ROUND_UP(par->height, 8);
-> > > +     unsigned int pages = DIV_ROUND_UP(height + y % 8, 8);
-> >
-> > Add () like this - at least it helps me:
-> > > +     unsigned int pages = DIV_ROUND_UP((height + y) % 8, 8);
->
-> Thanks, that's actually a genuine bug.
+SNIP
 
-No it's not "(height + y) % 8" is wrong.
+> 
+> OK, evlist__fix_cpus() is better, use this name in v4.
+> 
+> > > +{
+> > > +	struct perf_cpu_map *cpus;
+> > > +	struct evsel *evsel, *tmp;
+> > > +	struct perf_pmu *pmu;
+> > > +	int ret, unmatched_count = 0, events_nr = 0;
+> > > +
+> > > +	if (!perf_pmu__has_hybrid() || !cpu_list)
+> > > +		return 0;
+> > > +
+> > > +	cpus = perf_cpu_map__new(cpu_list);
+> > > +	if (!cpus)
+> > > +		return -1;
+> > > +
+> > > +	evlist__for_each_entry_safe(evlist, tmp, evsel) {
+> > > +		struct perf_cpu_map *matched_cpus, *unmatched_cpus;
+> > > +		char buf1[128], buf2[128];
+> > > +
+> > > +		pmu = perf_pmu__find_hybrid_pmu(evsel->pmu_name);
+> > > +		if (!pmu)
+> > > +			continue;
+> > > +
+> > > +		ret = perf_pmu__cpus_match(pmu, cpus, &matched_cpus,
+> > > +					   &unmatched_cpus);
+> > > +		if (ret)
+> > > +			goto out;
+> > > +
+> > > +		events_nr++;
+> > > +
+> > > +		if (matched_cpus->nr > 0 && (unmatched_cpus->nr > 0 ||
+> > > +		    matched_cpus->nr < cpus->nr ||
+> > > +		    matched_cpus->nr < pmu->cpus->nr)) {
+> > > +			perf_cpu_map__put(evsel->core.cpus);
+> > > +			perf_cpu_map__put(evsel->core.own_cpus);
+> > > +			evsel->core.cpus = perf_cpu_map__get(matched_cpus);
+> > > +			evsel->core.own_cpus = perf_cpu_map__get(matched_cpus);
+> > 
+> > I'm bit confused in here.. AFAIUI there's 2 evsel objects create
+> > for hybrid 'cycles' ... should they have already proper cpus set?
+> > 
+> 
+> For 'cycles', yes two evsels are created automatically. One is for atom CPU
+> (e.g. 8-11), the other is for core CPU (e.g. 0-7). In this example, these 2
+> evsels have already the cpus set.
 
-Better if I reorder the operands like below?
+hum, so those evsels are created with pmu's cpus, right?
 
-    unsigned int pages = DIV_ROUND_UP(y % 8 + height, 8);
+> 
+> While the 'cpus' here is just the user specified cpu list.
+> cpus = perf_cpu_map__new(cpu_list);
 
-Gr{oetje,eeting}s,
+then I think they will be changed by evlist__create_maps
+with whatever user wants?
 
-                        Geert
+could we just change __perf_evlist__propagate_maps to follow
+pmu's cpus?
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+jirka
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+> We need to check that the cpu in 'cpus' is available on hybrid pmu or not
+> and adjust the evsel->core.cpus according the matching results.
+> 
+> > > +
+> > > +			if (unmatched_cpus->nr > 0) {
+> > > +				cpu_map__snprint(matched_cpus, buf1, sizeof(buf1));
+> > > +				pr_warning("WARNING: use %s in '%s' for '%s', skip other cpus in list.\n",
+> > > +					   buf1, pmu->name, evsel->name);
+> > > +			}
+> > > +		}
+> > > +
+> > > +		if (matched_cpus->nr == 0) {
+> > > +			evlist__remove(evlist, evsel);
+> > > +			evsel__delete(evsel);
+> > > +
+> > > +			cpu_map__snprint(cpus, buf1, sizeof(buf1));
+> > > +			cpu_map__snprint(pmu->cpus, buf2, sizeof(buf2));
+> > > +			pr_warning("WARNING: %s isn't a '%s', please use a CPU list in the '%s' range (%s)\n",
+> > > +				   buf1, pmu->name, pmu->name, buf2);
+> > > +			unmatched_count++;
+> > > +		}
+> > 
+> > hum, should we rather fail in here?
+> > 
+> 
+> perf stat -e cpu_core/cycles/,cpu_atom/instructions/ -C11
+> 
+> CPU11 is atom CPU so the evsel 'cpu_core/cycles/' is failed but cpu_atom/instructions/ is OK.
+> 
+> Don't we report the partially successful event?
+> 
+> Thanks
+> Jin Yao
+> 
+> > jirka
+> > 
+> 
+
