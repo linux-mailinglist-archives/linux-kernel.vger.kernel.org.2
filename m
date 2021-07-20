@@ -2,256 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1493C3CFE3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB3B3CFDB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240033AbhGTPKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240274AbhGTOgR (ORCPT
+        id S237473AbhGTOxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:53:21 -0400
+Received: from mail-pf1-f171.google.com ([209.85.210.171]:35341 "EHLO
+        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240016AbhGTOgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:36:17 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A009DC0613DC;
-        Tue, 20 Jul 2021 08:15:47 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id x192so33191424ybe.6;
-        Tue, 20 Jul 2021 08:15:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uaQPvq47KAC0e0Q736uuzY+FVBhHAhcKYYINkLHiZoE=;
-        b=Laz9/tp/dfCS4fjQUvlySWLHp2fuAlDtKgSMAcFKKKb8+DpPixU9AEdUXne9EThj0A
-         ZiyIRRE+Alp/kRfvHEav6GAAko5+aH1bgU26xPz9p0IUIjUszfRZLJWJQvsXsnDYYlF/
-         taEody36IDV5p3bdhiNAbRMv/66gz5w9DeRHDKEce3XWssHURxwVNpgXSbXxQ9CSE+up
-         Exl7Ofo3MN3xSTAeCenV+mCVhsKEf2OgUb8mOfvGuaNJCRx+ynCNGqra3fxQ78p22Z1I
-         oXzOSTkdg1+NZRkqWZW9hXnGqc3PwcAIoLReL/k/dfpaCk5iF2Cfk15JvDCGcTiVpu0v
-         h0iA==
+        Tue, 20 Jul 2021 10:36:14 -0400
+Received: by mail-pf1-f171.google.com with SMTP id d12so19855359pfj.2;
+        Tue, 20 Jul 2021 08:15:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uaQPvq47KAC0e0Q736uuzY+FVBhHAhcKYYINkLHiZoE=;
-        b=DZsDGMvLh4/wiJqvvaU5Rakzj3TSGfLdqx/C7XGLKxRp0qzm123yOlSJ0jsXy9J2e1
-         wVvOnfMUERM+wV4t8xsHKA9qkyY7hYb1wyyl89HRL+/LYW5BPBClIHD9CGPSRJSEMK56
-         0pJ+KNbXlQEcNtTymQSkbSmntUc5/tqkBAnNcnShIjs6mIzfMPH5uysli1uE0vNvUFKa
-         /WMkQx6GhVWgavTvAyerL0vTKr2NS7SAjbKNstYDApaUax28hTHbF0RqvJnjLNQXE24Z
-         Lap0MKW469dqzchlfw/d05kjz9FN9E/c4c4Ws/iQe7Ud6ST7EKlBXjKiOehr4JJIap13
-         eRwg==
-X-Gm-Message-State: AOAM533KxdyCIf04FLqtnInsDVcKI/gB9RA4Mzh9mbSx5GXWykYkKeDC
-        8ekR9R15G6Xd9d0Z4Fs6HaDRg/aRYPxPo6mo/J8=
-X-Google-Smtp-Source: ABdhPJyqufuskgWhbDx46oleIszFO/ZGvE4lcJf5djJEzqyAwn5fBvWyIl414WGgBeXzfRiRxYYlQ2QcBAtWdZzNk+I=
-X-Received: by 2002:a5b:94d:: with SMTP id x13mr36125505ybq.47.1626794145500;
- Tue, 20 Jul 2021 08:15:45 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FxHKIA6d476YSwGem4oYqSqtuJwfzxZyIwIAv3Y/bLc=;
+        b=cNWLJLJguton8860X+8Yfy8TPhGNLPdE+Ur2H/KNUTa0G/4TOgtQE5adQ9T1jxiONA
+         O+/XAiOGuUCWqPcFXr330V8B8BXsnEui5hFfPId9sRkCYBt1ng+u7ccIlvrky4nf83Ot
+         z/U32vnwus+Vb8Gh7SOoKPiLLD4kPxqF/eRkMNFyK0QMe7MAEWCAyG1wP6MnKz5g6+dd
+         qD6CW8XO1dGtTT2v3E+O685Xx04rvZjeXTaP9e2JYTqX20HaBEpcrO2L4l8Y+3Kr2JjW
+         5YyjDYPo4gMI1OFq+XRFHuy8G+3NHx7SiBg7oY/mwZP4rpBBK75FdJNaafH5KQh80BwJ
+         PGJA==
+X-Gm-Message-State: AOAM533h/TRUindxCnjylgoLD32VB01eWWfnLznrfyx/Y2ShXQAjJhAB
+        Hko/w99dJxZcJCeO3MzsiMQ=
+X-Google-Smtp-Source: ABdhPJy9ELkMjd5dPxR/F99Bfm30AEv+7kHZdDzhtxub0LmnQYuoV9ZE9dN82yJxawaDDQZBuJfcsA==
+X-Received: by 2002:a63:3dcb:: with SMTP id k194mr31004732pga.202.1626794133080;
+        Tue, 20 Jul 2021 08:15:33 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:9fa9:39d2:8b59:76ce? ([2601:647:4000:d7:9fa9:39d2:8b59:76ce])
+        by smtp.gmail.com with ESMTPSA id n12sm25307625pgr.2.2021.07.20.08.15.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jul 2021 08:15:32 -0700 (PDT)
+Subject: Re: [Patch v4 0/3] Introduce a driver to support host accelerated
+ access to Microsoft Azure Blob
+To:     Long Li <longli@microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        "linux-fs@vger.kernel.org" <linux-fs@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+References: <1626751866-15765-1-git-send-email-longli@linuxonhyperv.com>
+ <82e8bec6-4f6f-08d7-90db-9661f675749d@acm.org>
+ <YPZmtOmpK6+znL0I@infradead.org>
+ <DM6PR21MB15138B5D5C8647C92EA6AB99CEE29@DM6PR21MB1513.namprd21.prod.outlook.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <115d864c-46c2-2bc8-c392-fd63d34c9ed0@acm.org>
+Date:   Tue, 20 Jul 2021 08:15:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210719143811.2135-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXkPDaaRZZTCyn-Mwfakuzui69GWuiKUWYEOyhQmuFB=w@mail.gmail.com>
-In-Reply-To: <CAMuHMdXkPDaaRZZTCyn-Mwfakuzui69GWuiKUWYEOyhQmuFB=w@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 20 Jul 2021 16:15:19 +0100
-Message-ID: <CA+V-a8uge1Bn5BeuUjLR2+UkWN88uW99x92Ym3sgguiinbx=Ng@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] can: rcar_canfd: Add support for RZ/G2L family
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <DM6PR21MB15138B5D5C8647C92EA6AB99CEE29@DM6PR21MB1513.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On 7/20/21 12:05 AM, Long Li wrote:
+>> Subject: Re: [Patch v4 0/3] Introduce a driver to support host accelerated
+>> access to Microsoft Azure Blob
+>>
+>> On Mon, Jul 19, 2021 at 09:37:56PM -0700, Bart Van Assche wrote:
+>>> such that this object storage driver can be implemented as a
+>>> user-space library instead of as a kernel driver? As you may know vfio
+>>> users can either use eventfds for completion notifications or polling.
+>>> An interface like io_uring can be built easily on top of vfio.
+>>
+>> Yes.  Similar to say the NVMe K/V command set this does not look like a
+>> candidate for a kernel driver.
+> 
+> The driver is modeled to support multiple processes/users over a VMBUS
+> channel. I don't see a way that this can be implemented through VFIO? 
+> 
+> Even if it can be done, this exposes a security risk as the same VMBUS
+> channel is shared by multiple processes in user-mode.
 
-Thank you for the review.
+Sharing a VMBUS channel among processes is not necessary. I propose to
+assign one VMBUS channel to each process and to multiplex I/O submitted
+to channels associated with the same blob storage object inside e.g. the
+hypervisor. This is not a new idea. In the NVMe specification there is a
+diagram that shows that multiple NVMe controllers can provide access to
+the same NVMe namespace. See also diagram "Figure 416: NVM Subsystem
+with Three I/O Controllers" in version 1.4 of the NVMe specification.
 
-On Tue, Jul 20, 2021 at 11:31 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Mon, Jul 19, 2021 at 4:39 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > CANFD block on RZ/G2L SoC is almost identical to one found on
-> > R-Car Gen3 SoC's. On RZ/G2L SoC interrupt sources for each channel
-> > are split into different sources and the IP doesn't divide (1/2)
-> > CANFD clock within the IP.
-> >
-> > This patch adds compatible string for RZ/G2L family and registers
-> > the irq handlers required for CANFD operation. IRQ numbers are now
-> > fetched based on names instead of indices. For backward compatibility
-> > on non RZ/G2L SoC's we fallback reading based on indices.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> Thanks for your patch!
->
-> > --- a/drivers/net/can/rcar/rcar_canfd.c
-> > +++ b/drivers/net/can/rcar/rcar_canfd.c
-> > @@ -37,9 +37,15 @@
-> >  #include <linux/bitmap.h>
-> >  #include <linux/bitops.h>
-> >  #include <linux/iopoll.h>
-> > +#include <linux/reset.h>
-> >
-> >  #define RCANFD_DRV_NAME                        "rcar_canfd"
-> >
-> > +enum rcanfd_chip_id {
-> > +       RENESAS_RCAR_GEN3 = 0,
-> > +       RENESAS_RZG2L,
-> > +};
-> > +
-> >  /* Global register bits */
-> >
-> >  /* RSCFDnCFDGRMCFG */
-> > @@ -513,6 +519,9 @@ struct rcar_canfd_global {
-> >         enum rcar_canfd_fcanclk fcan;   /* CANFD or Ext clock */
-> >         unsigned long channels_mask;    /* Enabled channels mask */
-> >         bool fdmode;                    /* CAN FD or Classical CAN only mode */
-> > +       struct reset_control *rstc1;     /* Pointer to reset source1 */
-> > +       struct reset_control *rstc2;     /* Pointer to reset source2 */
->
-> Are these comments helpful? IMHO they're stating the obvious.
->
-No :D will drop those.
+Bart.
 
-> > +       enum rcanfd_chip_id chip_id;
-> >  };
-> >
-> >  /* CAN FD mode nominal rate constants */
-> > @@ -1577,6 +1586,45 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
-> >         priv->can.clock.freq = fcan_freq;
-> >         dev_info(&pdev->dev, "can_clk rate is %u\n", priv->can.clock.freq);
-> >
-> > +       if (gpriv->chip_id == RENESAS_RZG2L) {
-> > +               char *irq_name;
-> > +               int err_irq;
-> > +               int tx_irq;
-> > +
-> > +               err_irq = platform_get_irq_byname(pdev, ch == 0 ? "can0_error" : "can1_error");
-> > +               if (err_irq < 0) {
-> > +                       err = err_irq;
-> > +                       goto fail;
-> > +               }
-> > +
-> > +               tx_irq = platform_get_irq_byname(pdev, ch == 0 ? "can0_tx" : "can1_tx");
-> > +               if (tx_irq < 0) {
-> > +                       err = tx_irq;
-> > +                       goto fail;
-> > +               }
-> > +
-> > +               irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> > +                                         "canfd.chnerr%d", ch);
->
-> if (!irq_name) {
->     ret = -ENOMEM;
->     goto fail;
-> }
->
-> > +               err = devm_request_irq(&pdev->dev, err_irq,
-> > +                                      rcar_canfd_channel_interrupt, 0,
-> > +                                      irq_name, gpriv);
-> > +               if (err) {
-> > +                       dev_err(&pdev->dev, "devm_request_irq CH Err(%d) failed, error %d\n",
-> > +                               err_irq, err);
-> > +                       goto fail;
-> > +               }
-> > +               irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> > +                                         "canfd.chntx%d", ch);
->
-> Likewise.
->
-> > +               err = devm_request_irq(&pdev->dev, tx_irq,
-> > +                                      rcar_canfd_channel_interrupt, 0,
-> > +                                      irq_name, gpriv);
-> > +               if (err) {
-> > +                       dev_err(&pdev->dev, "devm_request_irq Tx (%d) failed, error %d\n",
-> > +                               tx_irq, err);
-> > +                       goto fail;
-> > +               }
-> > +       }
-> > +
-> >         if (gpriv->fdmode) {
-> >                 priv->can.bittiming_const = &rcar_canfd_nom_bittiming_const;
-> >                 priv->can.data_bittiming_const =
->
-> > @@ -1649,27 +1700,64 @@ static int rcar_canfd_probe(struct platform_device *pdev)
-> >         if (of_child && of_device_is_available(of_child))
-> >                 channels_mask |= BIT(1);        /* Channel 1 */
-> >
-> > -       ch_irq = platform_get_irq(pdev, 0);
-> > -       if (ch_irq < 0) {
-> > -               err = ch_irq;
-> > -               goto fail_dev;
-> > -       }
-> > +       if (chip_id == RENESAS_RCAR_GEN3) {
-> > +               ch_irq = platform_get_irq_byname(pdev, "ch_int");
->
-> platform_get_irq_byname_optional()?
-> Unless you want to urge people to update their DTB.
->
-Good point will change it to platform_get_irq_byname_optional().
 
-> > +               if (ch_irq < 0) {
-> > +                       /* For backward compatibility get irq by index */
-> > +                       ch_irq = platform_get_irq(pdev, 0);
-> > +                       if (ch_irq < 0)
-> > +                               return ch_irq;
-> > +               }
-> >
-> > -       g_irq = platform_get_irq(pdev, 1);
-> > -       if (g_irq < 0) {
-> > -               err = g_irq;
-> > -               goto fail_dev;
-> > +               g_irq = platform_get_irq_byname(pdev, "g_int");
->
-> Likewise,
->
-agreed
-
-Cheers,
-Prabhakar
-
-> > +               if (g_irq < 0) {
-> > +                       /* For backward compatibility get irq by index */
-> > +                       g_irq = platform_get_irq(pdev, 1);
-> > +                       if (g_irq < 0)
-> > +                               return g_irq;
-> > +               }
-> > +       } else {
-> > +               g_irq = platform_get_irq_byname(pdev, "g_error");
-> > +               if (g_irq < 0)
-> > +                       return g_irq;
-> > +
-> > +               g_rx_irq = platform_get_irq_byname(pdev, "g_rx_fifo");
-> > +               if (g_rx_irq < 0)
-> > +                       return g_rx_irq;
-> >         }
-> >
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
