@@ -2,87 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0CF3CFE47
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA603CFE4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237397AbhGTPN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60642 "EHLO
+        id S238953AbhGTPOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241378AbhGTPKw (ORCPT
+        with ESMTP id S242836AbhGTPMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:10:52 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91B5C0617AB;
-        Tue, 20 Jul 2021 08:47:07 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id b13so33362989ybk.4;
-        Tue, 20 Jul 2021 08:47:07 -0700 (PDT)
+        Tue, 20 Jul 2021 11:12:48 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5EEC0613DB
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:49:50 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id d12so26488708wre.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tn5GQG1impN/UmGoIUcAsteqIcWCQ+O6KpXk/KRYhHI=;
-        b=lNe/NW7lWDfERaztukADH3t7mRVDXv2pDELtmVvc07xZv0ICbm05BMThqPQSSUv9E/
-         ttK+/Sh+Ik06l3uIOR3N+963yTIAC4Jr540RdewFXARtj3ZPH3mx83ZF0PfmxpUIzAEO
-         f+K3h1ST0eiURDX0/B7REINx2adZcqjmEPH8MhKvj2qKm4+Qce7TFcpNo9+G1b10vLD7
-         ZgjNONkjZ12ykLi2WnADh5sjwt0frPhPXO3szciv99P9o7NJScVrPwzzfoeRUrAVJle0
-         rFTz0GvanUoQ/TiEUbktBBCFOmLWKHwuPYWHNfKSiQw4hC3zzF6BeqXmHXUvP7NryZDJ
-         BA5A==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eXamM+sMZZfyW2rB3syre/v13RlKOutdbrix8Hieb/Q=;
+        b=KXp0zKrUI/OXoRw6lXxx2SFUUXaOZwzGxopbvF0uAfHTw7ZmIku2LexAmSY8NEHCGQ
+         K5WN0Y8Jo3COz5c3QitqdFAQNczB2y0+XoewDy5ZSAI5R78/TdP4nbqPKFtoTSTfunVl
+         bYN8+t4/ZagWjaeYdraSMxMDpI8Hog34PDuKoXSZx9FX+J+2o6wqUoAD9MttLM/PKiro
+         OCwm/Cvoam/U9zF03GieeDkrvVkMT0/cqwSXZxbvvcGAbOXoUBAlCKlMWMmqAj7lHMtD
+         X5g2NJEkHfXzydWS8RU//uFnq6ZimmZw6TPCCxXOqcqeMnwLuORTvkgHMukdmC1e5bTB
+         emKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tn5GQG1impN/UmGoIUcAsteqIcWCQ+O6KpXk/KRYhHI=;
-        b=cxB1m470RYO4WcLZ2xTfZtuPt+5f1MXPfo8AaZShdc3j5F9eSV0noX+lE8J+ITSWMl
-         y331qmKNoKSDnPR/NY8aPHgwXrDgniFqwEU7iyvH+C4f5hvMktZFrU8gw9rVrTv6pq6V
-         MOPu7KLQLlv3lR2EEXaLDCLaxab10FS7iegmxLQ4hetdCYb6caICCOTo0LYLonQ5+qlJ
-         01j9xTKnRNGakuOJb5UTnFy5ngn9cZTcSDhWiCXMDcJAs1QoRb4XhUMFrRgUCvbOxZQs
-         9YsGjnIdAK9ax0X5CdN+UJDA14YAJ+2CEsJLKSxox+bTq3Gyusa8A3X/1aP9+9yJcJxE
-         DBDQ==
-X-Gm-Message-State: AOAM533QTvDTyu/qPdXGCLlsAPaBSnKV2MR3hgLU5mPQGYWcXJCVSRsH
-        x9MD16iXQVEiDFHOTIy1S9IzxHM2OU33vwoy5Tk=
-X-Google-Smtp-Source: ABdhPJwH+vPpHV3/iIL524Q2gUMiQvMFEi+ZeqvPtEb3SDgb0PiJRlrOt6Cqrtwu2GlZu4x42p3ivQ1b4BnSYyVDafM=
-X-Received: by 2002:a05:6902:114c:: with SMTP id p12mr40586981ybu.282.1626796027029;
- Tue, 20 Jul 2021 08:47:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eXamM+sMZZfyW2rB3syre/v13RlKOutdbrix8Hieb/Q=;
+        b=r6f2zW3SeoNs3XZRyh5FOeK/LzS1FP5ckVDRZKuvl6Dez7SECMmyugZvFIXBaWiH3j
+         wGDuVAjeSkxFi4628aNBE+nRfaoAkkKAHKoe1T815x0+4fYmAIU/F7SZtOe52yoeEQmc
+         KOuhI5qRvK83paty0RiNcqnruJFcZCjrj5zOCbEqNhwoiwBDfhsDf+5xhAwaysdOVLMk
+         noPj1WwJ3O/KSV8emcxGxWAJIYyaWmbeVwObzCp9tUSgyMS08HoBVWx3Z4a+Lmm5RZEq
+         U/9vVvcOKvC735wJLF2wuQhfRj4QdRQppdq5cxOh0mTe7Xz1/Oct+tUMg98zx6B2kRjT
+         Gebw==
+X-Gm-Message-State: AOAM532ApcGINDO37xEsAKRojs+wBWouGmSFRRuWjffqwqOfC9Y4rCXZ
+        bZE4hAqlxBCKXdvAgSB5Nkcbsg==
+X-Google-Smtp-Source: ABdhPJyzRWkzFreaGWXMPsTfkWs7PmiScWdF0pFWpbrQIca+q2nIlIPzY5Ms7/DYn3Ihu8xo8lE/SQ==
+X-Received: by 2002:adf:efc6:: with SMTP id i6mr36363480wrp.213.1626796189365;
+        Tue, 20 Jul 2021 08:49:49 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:ffa2:b757:e72a:11dd])
+        by smtp.gmail.com with ESMTPSA id c2sm23910164wrs.60.2021.07.20.08.49.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 08:49:48 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 16:49:45 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
+        dbrazdil@google.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 04/16] KVM: arm64: Add MMIO checking infrastructure
+Message-ID: <YPbwmVk1YD9+y7tr@google.com>
+References: <20210715163159.1480168-1-maz@kernel.org>
+ <20210715163159.1480168-5-maz@kernel.org>
+ <YPav0Hye5Dat/yoL@google.com>
+ <87wnpl86sz.wl-maz@kernel.org>
 MIME-Version: 1.0
-References: <20210719024937.9542-1-bobo.shaobowang@huawei.com>
- <20210719074829.2554-1-hdanton@sina.com> <97b64908-45d3-f074-bd9c-0bb04624bad1@huawei.com>
- <20210720021619.621-1-hdanton@sina.com> <CABBYNZLfFs86Hiej6C2EMVutf4ygyamifBJrXdQK97JpTLBqKg@mail.gmail.com>
- <20210720062100.819-1-hdanton@sina.com>
-In-Reply-To: <20210720062100.819-1-hdanton@sina.com>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Tue, 20 Jul 2021 08:46:55 -0700
-Message-ID: <CABBYNZKaNM=koHZ1X=D1_jD9NvEdYN4Be5mH5hAghHG2tkgCHA@mail.gmail.com>
-Subject: Re: [PATCH v2] Bluetooth: fix use-after-free error in lock_sock_nested()
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>,
-        cj.chengjian@huawei.com, Wei Yongjun <weiyongjun1@huawei.com>,
-        yuehaibing@huawei.com, huawei.libin@huawei.com,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzbot <syzbot+664818c59309176d03ee@syzkaller.appspotmail.com>,
-        syzbot <syzbot+9a0875bc1b2ca466b484@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wnpl86sz.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hillf,
+On Tuesday 20 Jul 2021 at 14:15:56 (+0100), Marc Zyngier wrote:
+> On Tue, 20 Jul 2021 12:13:20 +0100,
+> Quentin Perret <qperret@google.com> wrote:
+> > 
+> > On Thursday 15 Jul 2021 at 17:31:47 (+0100), Marc Zyngier wrote:
+> > > +struct s2_walk_data {
+> > > +	kvm_pte_t	pteval;
+> > > +	u32		level;
+> > > +};
+> > > +
+> > > +static int s2_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+> > > +		     enum kvm_pgtable_walk_flags flag, void * const arg)
+> > > +{
+> > > +	struct s2_walk_data *data = arg;
+> > > +
+> > > +	data->level = level;
+> > > +	data->pteval = *ptep;
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +/* Assumes mmu_lock taken */
+> > > +static bool __check_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa)
+> > > +{
+> > > +	struct s2_walk_data data;
+> > > +	struct kvm_pgtable_walker walker = {
+> > > +		.cb             = s2_walker,
+> > > +		.flags          = KVM_PGTABLE_WALK_LEAF,
+> > > +		.arg            = &data,
+> > > +	};
+> > > +
+> > > +	kvm_pgtable_walk(vcpu->arch.hw_mmu->pgt, ALIGN_DOWN(ipa, PAGE_SIZE),
+> > > +			 PAGE_SIZE, &walker);
+> > > +
+> > > +	/* Must be a PAGE_SIZE mapping with our annotation */
+> > > +	return (BIT(ARM64_HW_PGTABLE_LEVEL_SHIFT(data.level)) == PAGE_SIZE &&
+> > > +		data.pteval == MMIO_NOTE);
+> > 
+> > Nit: you could do this check in the walker directly and check the return
+> > value of kvm_pgtable_walk() instead. That would allow to get rid of
+> > struct s2_walk_data.
+> > 
+> > Also, though the compiler might be able to optimize, maybe simplify the
+> > level check to level == (KVM_PGTABLE_MAX_LEVELS - 1)?
+> 
+> Yup, all good points. I guess I could do the same in my other series
+> that parses the userspace PT to extract the level.
 
-On Mon, Jul 19, 2021 at 11:21 PM Hillf Danton <hdanton@sina.com> wrote:
->
-> On Mon, 19 Jul 2021 21:24:30 -0700 Luiz Augusto von Dentz wrote:
-> >
-> >While Im fine adding a destroy callback the kfree shall be still in
-> >l2cap_chan_destroy:
->
-> Then feel free to send a tiny patchset to linux-bluetooth@vger.
+Well, actually, let me take that back. I think something like you have
+would be useful, but in pgtable.c directly and re-usable for stage-1 and
+stage-2 walks. Maybe something like the below (totally untested)?
 
-What do you mean, we haven't applied your changes yet.
+I could use such a walker in several places as well in the memory
+ownership series:
 
+ - following the idea of [1], I could remove the
+   kvm_pgtable_stage2_find_range() function entirely;
 
--- 
-Luiz Augusto von Dentz
+ - [2] defines 2 custom walkers that do nothing but walk host stage-2
+   and hyp stage-1 page-tables to check permissions and such --  they
+   could be removed/re-implemented easily as well.
+
+And you seem to need something similar here, so clearly there is a need.
+WDYT?
+
+Thanks,
+Quentin
+
+[1] https://lore.kernel.org/kvmarm/20210719104735.3681732-3-qperret@google.com/
+[2] https://lore.kernel.org/kvmarm/20210719104735.3681732-14-qperret@google.com/
+
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index e0ae57dca827..bd6d26f27e1a 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -357,6 +357,38 @@ int kvm_pgtable_walk(struct kvm_pgtable *pgt, u64 addr, u64 size,
+        return _kvm_pgtable_walk(&walk_data);
+ }
+
++struct get_leaf_data {
++       kvm_pte_t *ptep;
++       u32 *level;
++};
++
++static int get_leaf_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
++                          enum kvm_pgtable_walk_flags flag, void * const arg)
++{
++       struct get_leaf_data *data = arg;
++
++       *(data->ptep) = *ptep;
++       *(data->level) = level;
++
++       return 0;
++}
++
++int kvm_pgtable_get_leaf(struct kvm_pgtable *pgt, u64 addr, kvm_pte_t *ptep,
++                        u32 *level)
++{
++       struct get_leaf_data data = {
++               .ptep = ptep,
++               .level = level,
++       };
++       struct kvm_pgtable_walker __get_leaf_walker = {
++               .cb             = get_leaf_walker,
++               .flags          = KVM_PGTABLE_WALK_LEAF,
++               .arg            = &data,
++       };
++
++       return kvm_pgtable_walk(pgt, addr, PAGE_SIZE, &__get_leaf_walker);
++}
++
+ struct hyp_map_data {
+        u64                             phys;
+        kvm_pte_t                       attr;
+
