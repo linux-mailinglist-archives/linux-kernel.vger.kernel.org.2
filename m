@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8853CFCFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A703CFD18
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239007AbhGTOZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 10:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48208 "EHLO
+        id S240375AbhGTOaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238960AbhGTORr (ORCPT
+        with ESMTP id S239251AbhGTOSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:17:47 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D89C0613DF;
-        Tue, 20 Jul 2021 07:54:25 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id l7so26314921wrv.7;
-        Tue, 20 Jul 2021 07:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eNycMokbRMwikeyoAHQCESJsyNbzXAEXdH5RzfLsN2g=;
-        b=sq2GfwkWgtJq/voM2yYyIl7B/T50wwQz6OkFIUVoW7ectnZBqU5cN2ZcHwAz+Q8DGg
-         Bqj9MCkHHHDcuj9KvjhrYo8zMX5ojzQ+CEU84XO3QVgYnuoPDbPWoP9U21nAfRAjKxg4
-         h23La1DzhffCKKGrhWgI91rYjBDrPd3W8Eu5jS7P2GcIZWvmLsYzU5g6B9MgT8aQg8hF
-         Ce/Ebju8OXMaHnlYM4EIRMun8RPfBgifdOayq2CJiF1Bz5TJQ91cgDl/edzf6V3jGZwP
-         3hDbXX/9MFDyOvSe/F5TvkinRowcv22n3fvinaduJfTVLds/gVpU4iexOExmiWAJPmmD
-         ugyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eNycMokbRMwikeyoAHQCESJsyNbzXAEXdH5RzfLsN2g=;
-        b=Wf/i/19ELOWn2+DCWfPKJs3OBYEVkGDrZ/2Z5Ibc3Ud9ACOiqeFUa6PTe1KRB8dsRl
-         2uhZylmCueGFQkBX1JR6jmV39ErNYVO4MgdQx2ifNgWAwnSYQ0CbRiworI+BAOq84yJr
-         kin3Incvjp/0O1jVhULDYyBDMqEKZstREyN06JYkFdNhMi27fMpJYHIRpYHDIImIioDK
-         NvuBd0aYl55erpEx2umGWEss84oUlBwLuPjkYwx3FVD1X2OlMwvoiC9munQaB0MvLmhh
-         bk6mG1/e1uM3na3vRgh++jhUXJXSsnFugetwO9SiqdMdLHOhIkAH/Lt7uCLFYr54204U
-         lmHA==
-X-Gm-Message-State: AOAM532bflsE8V3t8/8gEnln1yAbrck8l5SKOQojgMF3hon1Kx6HhEUd
-        97lIj+MGQ/iLrvZfT0RNnxJj+C+D6vmfIQbKIuc=
-X-Google-Smtp-Source: ABdhPJxUiK8/9zrhS7PhJr1vPsN8q52xT9V3GHC5gkdRzBXAs0Hlk0laq2XNR2wQYxS7ypkuk0cvkTtEGHp3+4IUY2c=
-X-Received: by 2002:adf:ed0f:: with SMTP id a15mr1877095wro.78.1626792863772;
- Tue, 20 Jul 2021 07:54:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210715141802.880911-1-daniel.baluta@oss.nxp.com>
- <20210715141802.880911-2-daniel.baluta@oss.nxp.com> <20210715143906.GD4590@sirena.org.uk>
- <CAEnQRZCdSLoaLVZ7-jtufgZCG6QshMwdfyJy_4oE6cXRbA5H8A@mail.gmail.com>
-In-Reply-To: <CAEnQRZCdSLoaLVZ7-jtufgZCG6QshMwdfyJy_4oE6cXRbA5H8A@mail.gmail.com>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Tue, 20 Jul 2021 17:54:11 +0300
-Message-ID: <CAEnQRZCiC5aGK6AsD0TN5fzN6AxFn6=f8hCrd2B9fhCYfCFOSg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: SOF: Parse fw/tplg filename from DT
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Tue, 20 Jul 2021 10:18:37 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DC5C0613E5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:55:02 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1m5r93-0005YD-P2; Tue, 20 Jul 2021 16:54:53 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:3120:e42a:5796:3403])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 85AC7653114;
+        Tue, 20 Jul 2021 14:54:52 +0000 (UTC)
+Date:   Tue, 20 Jul 2021 16:54:51 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH 3/6] arm64: dts: ti: k3-j721e: Add support for MCAN nodes
+Message-ID: <20210720145451.6eby7pbfocyyfi4e@pengutronix.de>
+References: <20210720141642.24999-1-a-govindraju@ti.com>
+ <20210720141642.24999-4-a-govindraju@ti.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6jwdpencjrsa3vlk"
+Content-Disposition: inline
+In-Reply-To: <20210720141642.24999-4-a-govindraju@ti.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre, Liam, Mark,
 
-On Fri, Jul 16, 2021 at 5:31 PM Daniel Baluta <daniel.baluta@gmail.com> wrote:
->
-> On Thu, Jul 15, 2021 at 5:39 PM Mark Brown <broonie@kernel.org> wrote:
-> >
-> > On Thu, Jul 15, 2021 at 05:18:00PM +0300, Daniel Baluta wrote:
-> >
-> > > Introduce two DT properties in dsp node:
-> > >       * fw-filename, optional property giving the firmware filename
-> > >       (if this is missing fw filename is read from board description)
-> > >       * tplg-filename, mandatory giving the topology filename.
-> >
-> > These sound entirely like operating system configuration which I'd
-> > expect to be inferred from the machine identification.  What happens if
-> > a system has multiple options for firmware files, or if the OS ships the
-> > topology and firmware bundled up in a single image to avoid them getting
-> > out of sync?  What's the benefit of putting them in the DT?
+--6jwdpencjrsa3vlk
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Can you help me with this, specifically for selecting topology name.
+On 20.07.2021 19:46:39, Aswath Govindraju wrote:
+> From: Faiz Abbas <faiz_abbas@ti.com>
+>=20
+> Add support for 14 MCAN controllers in main domain and 2 MCAN controllers
+> present in mcu domain. All the MCAN controllers support classic CAN
+> messages as well as CAN_FD messages.
+>=20
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 196 ++++++++++++++++++
+>  .../boot/dts/ti/k3-j721e-mcu-wakeup.dtsi      |  28 +++
+>  2 files changed, 224 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/=
+dts/ti/k3-j721e-main.dtsi
+> index cf3482376c1e..4215b8e6785a 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> @@ -1940,4 +1940,200 @@
+>  			bus_freq =3D <1000000>;
+>  		};
+>  	};
+> +
+> +	main_mcan0: can@2701000 {
+> +		compatible =3D "bosch,m_can";
+> +		reg =3D <0x00 0x02701000 0x00 0x200>,
+> +		      <0x00 0x02708000 0x00 0x8000>;
+> +		reg-names =3D "m_can", "message_ram";
+> +		power-domains =3D <&k3_pds 156 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks =3D <&k3_clks 156 1>, <&k3_clks 156 0>;
+> +		clock-names =3D "cclk", "hclk";
+> +		interrupts =3D <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
+> +		interrupt-names =3D "int0", "int1";
+> +		bosch,mram-cfg =3D <0x0 0 0 32 0 0 1 1>;
 
-I think I'm fine selecting a default value for SOF firmware name. It
-looks like even
-for Intel platforms there is no way of changing the firmware name.
+Are you intentionally only enabling 1 TX buffer?
 
-But how about selecting topology name? We have lots of audio scenarios
-that can run on the exact same hardware:
-- e.g
-   - Audio PCM playback + Post Processing
-   - Audio Compress playback
-   - Keyword detection
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-So, we need to use different topologies to select the scenario we want
-to demonstrate.
+--6jwdpencjrsa3vlk
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Would it be acceptable to add tplg_name as a module parameter?
+-----BEGIN PGP SIGNATURE-----
 
-thanks,
-Daniel.
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmD247kACgkQqclaivrt
+76lVTAf7BxARQemdI/grdAbkCnO19bcj3W8asUsVaoEEfO75JYMKeagw7B+D45me
+WDY/I0hbL28FlSdPqVIgaiz552y4/FjdlD7KOGT4m8L9WWKHpS8QD5R6kF2UmaRv
+7jr4Hsvb0ZbqkVPb5y1vr4e/EphaqaoCTuPEUqS+Mz+vK0vmyF38STY9+oEivUsW
+BrnGUSCTGAQjq0fkQlFx4JkSQ1MaboEIBgYbs0PlRFYwZ2JRn0zLFmqxKt9OLoNN
+ZjlPcGcqf0yP7T6ipBZreyICFdM5nbO5k+xNbrWFqzrVLiIV5OHLgZvczq9E+ZuI
+ie2MC9BVaMYFk2dL7DfktZXrCvEvsA==
+=/sqn
+-----END PGP SIGNATURE-----
+
+--6jwdpencjrsa3vlk--
