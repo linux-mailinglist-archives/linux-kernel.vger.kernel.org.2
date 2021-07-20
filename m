@@ -2,68 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A183CF89D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E683CF8A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237822AbhGTK00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:26:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237177AbhGTKZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:25:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8596C61107;
-        Tue, 20 Jul 2021 11:05:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626779161;
-        bh=+qOpfIZ2KxWKgu9KpXTV7Bv8qCzGPQfDmMztpoZHyv0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SEqqevoxN4NlJXodCzUzIjOChh5kcF15Gp82uUtrHgrXKWWK0tY41MNSNW+rufBBE
-         C3WYxcVyavA9BM6P01ftdsn0kl92lAUddMYDvrvgfERZ55zcccA5h1IGFaTV9kTGxD
-         qZ0Wa5YSpnyG4ZbPf+kHyNk1qyfKcJcFe2Kt8x6m5jLUq6LMTiUdUYCqoNghuolrfR
-         svT+DRKJzUTF7x6oCJCPLDtJuG/gdQzJatGJ5uESHopGjgRexa45mCXB6IKxW2+fnA
-         vdEJoUAJQ9zP2jWzK8gWqjbSga9iAFKWiXfHXRdWhaiL+UQgrt+eACDR6SQ+0Suwwb
-         5AbtFGUblPwtQ==
-Date:   Tue, 20 Jul 2021 13:05:54 +0200
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jia He <justin.he@arm.com>
-Cc:     Ariel Elior <aelior@marvell.com>, GR-everest-linux-l2@marvell.com,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nd@arm.com,
-        Prabhakar Kushwaha <pkushwaha@marvell.com>
-Subject: Re: [PATCH] Revert "qed: fix possible unpaired spin_{un}lock_bh in
- _qed_mcp_cmd_and_union()"
-Message-ID: <20210720130554.5c85b3e6@cakuba>
-In-Reply-To: <20210720092739.3539-1-justin.he@arm.com>
-References: <20210720092739.3539-1-justin.he@arm.com>
+        id S237652AbhGTKaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:30:18 -0400
+Received: from mail-ej1-f44.google.com ([209.85.218.44]:36749 "EHLO
+        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237340AbhGTK3a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 06:29:30 -0400
+Received: by mail-ej1-f44.google.com with SMTP id nd37so33746438ejc.3;
+        Tue, 20 Jul 2021 04:10:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OHZdckbNZ18VQSZzXQt5sEXQRuXvblwckqVY5aEQJWo=;
+        b=p3X3kWJFLRpFwit+vPYjYrEZG/SAvIPOpVPICShtXOxMWKAsGbB3Z873cZou8UUohc
+         qcKpsAxHmt+Y5+kNPvENE42/5OoyKEWCn1XIs/X4/+qmAz8uFg6l6do7+sI5W1KUfUkn
+         UoqPrjHnngBsyf/tV3EHVbjtaiEVA7KnYVxHqKVuISxYeeiOWInWgX1kZyJppQh6oXy9
+         VGkGQwoDMyEP+eie4vTtETEsXeOxZevx15AekugkSmXWpUjMuG0zmU9c+cCK1C8RaUVa
+         qMWa3zhS3C+EVw58LUvFa0Om+l9WEMMakw6ObxOIw1oYb51ABeNAPxTnhsrSA7zyVZ9B
+         3vdA==
+X-Gm-Message-State: AOAM531VA1JapqLMJaFSnItSHHXM5FJ7oHKhepQ7aT1EHubL7zLoGDwo
+        cvq6b5rwyctX0z4b2yCeIWXR8sHn9EXN5eSD
+X-Google-Smtp-Source: ABdhPJx/6R3BpTygKz5Na6aXvE85FbPPIeQekl7WrNh04jNUe66RpMaHk26/Qm3CWZXW6/lJHTCZSQ==
+X-Received: by 2002:a17:906:dc0f:: with SMTP id yy15mr31349098ejb.255.1626779406409;
+        Tue, 20 Jul 2021 04:10:06 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id u5sm9156243edv.64.2021.07.20.04.10.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jul 2021 04:10:05 -0700 (PDT)
+Subject: Re: [Patch v4 2/3] Drivers: hv: add Azure Blob driver
+To:     longli@linuxonhyperv.com, linux-fs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>, Jonathan Corbet <corbet@lwn.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>, linux-doc@vger.kernel.org
+References: <1626751866-15765-1-git-send-email-longli@linuxonhyperv.com>
+ <1626751866-15765-3-git-send-email-longli@linuxonhyperv.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <90ed52d3-5095-9789-53f0-477ba70edc3b@kernel.org>
+Date:   Tue, 20 Jul 2021 13:10:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1626751866-15765-3-git-send-email-longli@linuxonhyperv.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 17:27:39 +0800, Jia He wrote:
-> This reverts commit 2d2f5ded858a4f4659fc63e01dd55605598a8f05.
+On 20. 07. 21, 5:31, longli@linuxonhyperv.com wrote:
+> --- /dev/null
+> +++ b/include/uapi/misc/hv_azure_blob.h
+> @@ -0,0 +1,34 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+> +/* Copyright (c) 2021 Microsoft Corporation. */
+> +
+> +#ifndef _AZ_BLOB_H
+> +#define _AZ_BLOB_H
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/uuid.h>
 
-The hash looks wrong, the patch was applied to netdev/net AFAICT,
-and the ref there is: 6206b7981a36 ("qed: fix possible unpaired
-spin_{un}lock_bh in _qed_mcp_cmd_and_union()")
+Quoting from 
+https://lore.kernel.org/linux-doc/MWHPR21MB159375586D810EC5DCB66AF0D7039@MWHPR21MB1593.namprd21.prod.outlook.com/:
+=====
+Seems like a #include of asm/ioctl.h (or something similar)
+is needed so that _IOWR is defined.  Also, a #include
+is needed for __u32, __aligned_u64, guid_t, etc.
+=====
 
-Please tag the subject with "net":
+Why was no include added?
 
-[PATCH net] Revert ...
-
-> That patch added additional spin_{un}lock_bh(), which was harmless
-> but pointless. The orginal code path has guaranteed the pair of
-> spin_{un}lock_bh().
+> +
+> +/* user-mode sync request sent through ioctl */
+> +struct az_blob_request_sync_response {
+> +	__u32 status;
+> +	__u32 response_len;
+> +};
+> +
+> +struct az_blob_request_sync {
+> +	guid_t guid;
+> +	__u32 timeout;
+> +	__u32 request_len;
+> +	__u32 response_len;
+> +	__u32 data_len;
+> +	__u32 data_valid;
+> +	__aligned_u64 request_buffer;
+> +	__aligned_u64 response_buffer;
+> +	__aligned_u64 data_buffer;
+> +	struct az_blob_request_sync_response response;
+> +};
+> +
+> +#define AZ_BLOB_MAGIC_NUMBER	'R'
+> +#define IOCTL_AZ_BLOB_DRIVER_USER_REQUEST \
+> +		_IOWR(AZ_BLOB_MAGIC_NUMBER, 0xf0, \
+> +			struct az_blob_request_sync)
+> +
+> +#endif /* define _AZ_BLOB_H */
 > 
-> We'd better revert it before we find the exact root cause of the
-> bug_on mentioned in that patch.
-> 
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Prabhakar Kushwaha <pkushwaha@marvell.com>
-> Signed-off-by: Jia He <justin.he@arm.com>
 
-Please also add a Fixes tag.
-
-Fixes: 6206b7981a36 ("qed: fix possible unpaired spin_{un}lock_bh in _qed_mcp_cmd_and_union()")
+thanks,
+-- 
+js
+suse labs
