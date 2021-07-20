@@ -2,70 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61863CF631
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09E43CF63A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234822AbhGTHzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:55:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234561AbhGTHy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:54:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0A9B611EF;
-        Tue, 20 Jul 2021 08:35:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626770136;
-        bh=H9UUqQCl4PT+FM2yIrBMMn8pE51fXDZyIBexJTDkmw0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jW27i5qWAcE2S1OfDzCaQcAPQ2nJlgysjINsqpVeyDgQmY4cOnWLEx0pRar08s5Vy
-         mcB7ai7yBslk/xqFPZ9UnMiSgFmYDSJ5CzUjd5zotGoJtLaW5dOdBih0KpPrVqRKCP
-         KmT1xO+6WaLjdGYzb3nKHJaMUo0IMS86yVdHpmFShKQAF+5fJp+avBPD0HebBYYMyR
-         h15Y7Vwgey0HGnyhTWUAMe+0p6Wy53xgeNzSUQg3wufUlgLgAC4MI5/x5hQD2hgHbB
-         VzkpURFMXitzMHI3G6VIGHXI2c9ICAufytvu/QjppMJtHETSzodN9J7wNDSJks20z8
-         9UmQmPZZTa0Zw==
-Date:   Tue, 20 Jul 2021 09:35:31 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH 5/5] swiotlb: Free tbl memory in swiotlb_exit()
-Message-ID: <20210720083530.GA8089@willie-the-truck>
-References: <20210719123054.6844-1-will@kernel.org>
- <20210719123054.6844-6-will@kernel.org>
- <CALiNf2_Ubi9cynH1Rjy-o87V3MyvdTazv5rO=sggNai0WJZ81g@mail.gmail.com>
+        id S234879AbhGTH4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:56:30 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:47188 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233854AbhGTH4R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 03:56:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R671e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UgPIBvp_1626770213;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UgPIBvp_1626770213)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 20 Jul 2021 16:36:53 +0800
+Subject: Re: [PATCH v2] vsock/virtio: set vsock frontend ready in
+ virtio_vsock_probe()
+To:     Jason Wang <jasowang@redhat.com>, stefanha@redhat.com,
+        sgarzare@redhat.com, davem@davemloft.net, kuba@kernel.org
+Cc:     kvm@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210720071337.1995-1-xianting.tian@linux.alibaba.com>
+ <87deb4ff-c4f9-0a5e-e349-c1a8682a864e@redhat.com>
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+Message-ID: <56bae568-34fc-4377-77cd-d3cf9f38a772@linux.alibaba.com>
+Date:   Tue, 20 Jul 2021 16:36:53 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALiNf2_Ubi9cynH1Rjy-o87V3MyvdTazv5rO=sggNai0WJZ81g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87deb4ff-c4f9-0a5e-e349-c1a8682a864e@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 11:36:19AM +0800, Claire Chang wrote:
-> On Mon, Jul 19, 2021 at 8:31 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > Although swiotlb_exit() frees the 'slots' metadata array referenced by
-> > 'io_tlb_default_mem', it leaves the underlying buffer pages allocated
-> > despite no longer being usable.
-> >
-> > Extend swiotlb_exit() to free the buffer pages as well as the slots
-> > array.
-> >
-> > Cc: Claire Chang <tientzu@chromium.org>
-> > Cc: Christoph Hellwig <hch@lst.de>
-> > Cc: Robin Murphy <robin.murphy@arm.com>
-> > Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> > Tested-by: Nathan Chancellor <nathan@kernel.org>
-> 
-> Tested-by: Claire Chang <tientzu@chromium.org>
+thanks for the findings.
 
-Thanks, Claire!
+Let me make furture patches to make consistent.
 
-Will
+在 2021/7/20 下午3:54, Jason Wang 写道:
+>
+> 在 2021/7/20 下午3:13, Xianting Tian 写道:
+>> Add the missed virtio_device_ready() to set vsock frontend ready.
+>>
+>> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+>> ---
+>>   net/vmw_vsock/virtio_transport.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/net/vmw_vsock/virtio_transport.c 
+>> b/net/vmw_vsock/virtio_transport.c
+>> index e0c2c992a..dc834b8fd 100644
+>> --- a/net/vmw_vsock/virtio_transport.c
+>> +++ b/net/vmw_vsock/virtio_transport.c
+>> @@ -639,6 +639,8 @@ static int virtio_vsock_probe(struct 
+>> virtio_device *vdev)
+>>         mutex_unlock(&the_virtio_vsock_mutex);
+>>   +    virtio_device_ready(vdev);
+>> +
+>>       return 0;
+>>     out:
+>
+>
+> Just notice this:
+>
+> commit 5b40a7daf51812b35cf05d1601a779a7043f8414
+> Author: Rusty Russell <rusty@rustcorp.com.au>
+> Date:   Tue Feb 17 16:12:44 2015 +1030
+>
+>     virtio: don't set VIRTIO_CONFIG_S_DRIVER_OK twice.
+>
+>     I noticed this with the console device.  It's not *wrong*, just a bit
+>     weird.
+>
+>     Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+>
+> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> index b9f70dfc4751..5ce2aa48fc6e 100644
+> --- a/drivers/virtio/virtio.c
+> +++ b/drivers/virtio/virtio.c
+> @@ -236,7 +236,10 @@ static int virtio_dev_probe(struct device *_d)
+>         if (err)
+>                 goto err;
+>
+> -       add_status(dev, VIRTIO_CONFIG_S_DRIVER_OK);
+> +       /* If probe didn't do it, mark device DRIVER_OK ourselves. */
+> +       if (!(dev->config->get_status(dev) & VIRTIO_CONFIG_S_DRIVER_OK))
+> +               virtio_device_ready(dev);
+> +
+>         if (drv->scan)
+>                 drv->scan(dev);
+>
+> So I think we need to be consistent: switch to use 
+> virtio_device_ready() for all the drivers, and then we can remove this 
+> step and warn if (DRIVER_OK) is not set.
+>
+> Thanks
