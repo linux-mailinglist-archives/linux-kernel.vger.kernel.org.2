@@ -2,66 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 600053CF7E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D79E33CF7EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237487AbhGTJvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 05:51:09 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:50324 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237398AbhGTJtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 05:49:08 -0400
-X-UUID: a2fa50a6c4404291b4e25540da31ebec-20210720
-X-UUID: a2fa50a6c4404291b4e25540da31ebec-20210720
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 55608880; Tue, 20 Jul 2021 18:29:39 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 20 Jul 2021 18:29:37 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- MTKCAS06.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 20 Jul 2021 18:29:37 +0800
-From:   <guangming.cao@mediatek.com>
-To:     <christian.koenig@amd.com>
-CC:     <dri-devel@lists.freedesktop.org>, <guangming.cao@mediatek.com>,
-        <linaro-mm-sig@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
-        <sumit.semwal@linaro.org>, <wsd_upstream@mediatek.com>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: Re: [PATCH] dma_buf: remove dmabuf sysfs teardown before release/detach
-Date:   Tue, 20 Jul 2021 18:29:35 +0800
-Message-ID: <20210720102935.83187-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <8d7dfc78-aa85-48b5-2828-21ec6b463ac3@amd.com>
-References: <8d7dfc78-aa85-48b5-2828-21ec6b463ac3@amd.com>
+        id S237719AbhGTJv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 05:51:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237557AbhGTJt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 05:49:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8D5486101E;
+        Tue, 20 Jul 2021 10:30:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626777004;
+        bh=BM5wkoPMjRKGoktEBVz+5Rr7FRFAatjsayz8taHQU8k=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=VMZY2aPV5hrCbtiYUS939t1TgLXAaXWyoAm5vR2wkmr+qLHuSjiRD1l0zEka6nUfQ
+         D2fk/uVhnetZPPpEkYtuujS9drmp6M76fWyyessgtB3oJ//SqJwiVdTLEoqGauYw1X
+         ovWi9unfnHI/KMCNtkCkLqlTbMqz2VB32tfNXVOVqNhfPBQD6ohUYPkQCWjqj/jIdd
+         2bYqj9HdccOwOG0fKYoXHNogNnX0SxWluO3mb1wDRcjROdH3+rZIThEGNjfT7xTH1q
+         S95LD24GlxrN2U/5Dg5+ycZuE2X5KwaDD2T8UlpXh5p/nrojMds/oGETp6sMrCD/Qa
+         Gl640BdQJgJ8g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 801CD60C09;
+        Tue, 20 Jul 2021 10:30:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-MTK:  N
+Subject: Re: [PATCH net-next v3] net: Update MAINTAINERS for MediaTek switch
+ driver
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162677700451.29107.12570499893022239705.git-patchwork-notify@kernel.org>
+Date:   Tue, 20 Jul 2021 10:30:04 +0000
+References: <49e1aa8aac58dcbf1b5e036d09b3fa3bbb1d94d0.1626751861.git.landen.chao@mediatek.com>
+In-Reply-To: <49e1aa8aac58dcbf1b5e036d09b3fa3bbb1d94d0.1626751861.git.landen.chao@mediatek.com>
+To:     Landen Chao <landen.chao@mediatek.com>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, matthias.bgg@gmail.com,
+        dqfext@gmail.com, sean.wang@mediatek.com, p.zabel@pengutronix.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, frank-w@public-files.de,
+        steven.liu@mediatek.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangming Cao <Guangming.Cao@mediatek.com>
+Hello:
 
-On Tue, 2021-07-20 at 11:31 +0200, Christian König wrote:
-> Am 19.07.21 um 07:19 schrieb guangming.cao@mediatek.com:
-> > From: Guangming Cao <Guangming.Cao@mediatek.com>
-> > 
-> > Dmabuf sysfs stat is used for dmabuf info track.
-> > but these file maybe still use after buffer release/detach,
-> > should clear it before buffer release/detach.
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Tue, 20 Jul 2021 11:50:07 +0800 you wrote:
+> Update maintainers for MediaTek switch driver with Deng Qingfang who has
+> contributed many high-quality patches (interrupt, VLAN, GPIO, and etc.)
+> and will help maintenance.
 > 
-> Please rebase on current drm-misc-next. The attachment sysfs files
-> have 
-> been removed in the meantime.
+> Signed-off-by: Landen Chao <landen.chao@mediatek.com>
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> Acked-by: Vladimir Oltean <olteanv@gmail.com>
 > 
-> Thanks,
-> Christian.
-> 
-updated, thanks for your reminding.
+> [...]
+
+Here is the summary with links:
+  - [net-next,v3] net: Update MAINTAINERS for MediaTek switch driver
+    https://git.kernel.org/netdev/net/c/6c2d125823ae
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
