@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8C83CF761
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF68D3CF764
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236089AbhGTJYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 05:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38350 "EHLO
+        id S236323AbhGTJYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 05:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236301AbhGTJWf (ORCPT
+        with ESMTP id S236131AbhGTJW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 05:22:35 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8834C0613DE;
-        Tue, 20 Jul 2021 03:01:30 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 70so18636172pgh.2;
-        Tue, 20 Jul 2021 03:01:30 -0700 (PDT)
+        Tue, 20 Jul 2021 05:22:58 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C576BC061574;
+        Tue, 20 Jul 2021 03:03:36 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id f17so25361374wrt.6;
+        Tue, 20 Jul 2021 03:03:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p7JqjKw4ZgeUqcixNCroP1lhIkrtsuMs/VQXEPM5hRg=;
-        b=DxxZ4ytQrUZq6pfA1s91pu+YVSJ39hxGEzwCu8ieEunT2j2D7GzlvzW8hJ26bF88tU
-         WBk9Pke5xIabideKp4XQQvgj7sIZwCOegsD1M4YWT5Md/G44QIq4XvoUyCMBRpQAs3zf
-         XKqODqfk0COx+NivVfLyYnqD3nxi2WpCiqQTDA/I+znq5GNVfb3bDtEFTagFaS+n6pgm
-         X7+nymqJ1CCyc/O3rSuG9b4cF7AJw+qYs1VOuq8ekBfeGuctFc7WIU740Cha27HOEKf9
-         kMGAXHu1XA0ciHlPpGfLKWTshrGFp3Zt2js/9KLNAy3KFP0OUl2W8cXjPGUAFZGY0g4t
-         vkdw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OIcANxhJ7Hzi5kMQjOO6J+/K5pkPWuwTP7TNo7gfvhM=;
+        b=BN4HhCFX6r3RvdD9HkrUI0m2HGFcyIaskJVWLh+mCUuFZ1yM2Pe40gJWRyyqo2+Yc/
+         z7ppo45lcSsIcro3snXchWcf1zuwsaSlvt3pA8Wa0hA4UkFbkLm48cNdauqmn3bEtM5w
+         p5v7i9rphUPrqBCW6uyr7hdfH8qx3y6jaz4fXOypIYkpd+U6m/9YBd7tX8DnBhSNCq2b
+         MjREs6OBCst6OuYQbO2lBAPaMzivW8+apj+oIT+VHSmo5IKtpRNQAdBUL1W/4ryWcf4h
+         81UEi/X3BiDRtqN5C3PPOEGKxl+kO/NEjg8alNvsHHmvizajQqPOouSirOGULLPFBxsP
+         soOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p7JqjKw4ZgeUqcixNCroP1lhIkrtsuMs/VQXEPM5hRg=;
-        b=p3Sbi+8U/uRpVZkkTg2VOBF0kfWzZdY+onwy8WUm750x+Y5jFdgTqscd76/BMy26e1
-         8NUZueg6xEEJPhb2acuPaV8vNB8h+/UXGZS2JXaPucVX2H0q2yDjdshpixHegR/JgOPa
-         oEGZTewolsHc75ogupLItP5brJO/HbUC0isilB57iSSc4hgBFhKNTOvaJaT5d8HsXEPM
-         C5wu8Z9d1aaU1oCnBRdDDKsHg5KGDrxxxKu6MLGS4gIgNwfHFEmmdb7cqVLw3GNvvCgH
-         VS8juCYweAHAIpZxDhPtdlgnoQtQsz13VGdlVdr/KeUne+/mMAoivhiW8+zNoHL10nuI
-         YhmA==
-X-Gm-Message-State: AOAM5339IGfnKnpFZ66SqTt8F6KKl11PZdEID2IpHb2LEiFpx02bzpv3
-        VaUuysmuU7J6uiSKUAu5hno=
-X-Google-Smtp-Source: ABdhPJz0HRN2ARW3HNVlTQ/wea9NHB4NFkITtFecEKWrKWkwa/yPrJiCNeBNjbzYYRhz7+YHU+QzEw==
-X-Received: by 2002:a63:514c:: with SMTP id r12mr30438063pgl.70.1626775290352;
-        Tue, 20 Jul 2021 03:01:30 -0700 (PDT)
-Received: from localhost.localdomain ([154.16.166.191])
-        by smtp.gmail.com with ESMTPSA id y9sm2073966pgr.10.2021.07.20.03.01.26
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OIcANxhJ7Hzi5kMQjOO6J+/K5pkPWuwTP7TNo7gfvhM=;
+        b=dFtl8ZHVz3LjjeA9WVmR2pm7vOCfk5xDeYqAPf/YT+3Te9CyNPuPbIYt43vg7n3KX7
+         oHos5iF5ns0ShOOfv9c/X8sJF3YcoSzAN/1wUNT7NTkUKkgkpEDsU1CFdkNaiA9sety6
+         oex56VZrf6Ejc8sE82YxNwc00MtwJOYlQkyAAAGHerHYTbLalkVZjWKOCL1QgvgqvoGp
+         TI/2Igw8SCNspuTWph/Qs4T9LCO7xfdJ2/2S+QLsScsN4tiRU3OkbXLWz7p+Q0TngKpc
+         C4yOL/QbktQmkZ3Pui/rY7aQF9yyVXQqzKls2RlzODR4qmztBwiQyIwKrWroVJDiBvDf
+         oBTw==
+X-Gm-Message-State: AOAM532HA8CzIG41CFe1WcCG4/JesQRdF6nVLeK6qtyRV27OFU+/KgXA
+        Tq463iUykv728sSUsrUTa5k=
+X-Google-Smtp-Source: ABdhPJymlNUEsRSX0duvNslXrxGhgeqdClttsjpXYq9XvZQvcJjeUj9C2Qlv7GaGW8GCW5/wmqjXcA==
+X-Received: by 2002:a05:6000:1049:: with SMTP id c9mr15044384wrx.154.1626775415358;
+        Tue, 20 Jul 2021 03:03:35 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id c15sm18906633wmr.28.2021.07.20.03.03.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 03:01:29 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: meson-spicc: fix memory leak in meson_spicc_remove
-Date:   Tue, 20 Jul 2021 18:01:16 +0800
-Message-Id: <20210720100116.1438974-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 20 Jul 2021 03:03:35 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 11:03:33 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/239] 5.10.52-rc2 review
+Message-ID: <YPafdWDs6VgOeqEZ@debian>
+References: <20210719184320.888029606@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719184320.888029606@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In meson_spicc_probe, the error handling code needs to clean up master
-by calling spi_master_put, but the remove function does not have this
-function call. This will lead to memory leak of spicc->master.
+Hi Greg,
 
-Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Fixes: 454fa271bc4e("spi: Add Meson SPICC driver")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- drivers/spi/spi-meson-spicc.c | 2 ++
- 1 file changed, 2 insertions(+)
+On Mon, Jul 19, 2021 at 08:45:28PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.52 release.
+> There are 239 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 21 Jul 2021 18:42:46 +0000.
+> Anything received after that time might be too late.
 
-diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
-index b2c4621db34d..c208efeadd18 100644
---- a/drivers/spi/spi-meson-spicc.c
-+++ b/drivers/spi/spi-meson-spicc.c
-@@ -785,6 +785,8 @@ static int meson_spicc_remove(struct platform_device *pdev)
- 	clk_disable_unprepare(spicc->core);
- 	clk_disable_unprepare(spicc->pclk);
- 
-+	spi_master_put(spicc->master);
-+
- 	return 0;
- }
- 
--- 
-2.25.1
+Build test:
+mips (gcc version 11.1.1 20210702): 63 configs -> no failure
+arm (gcc version 11.1.1 20210702): 105 configs -> no new failure
+arm64 (gcc version 11.1.1 20210702): 3 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
+arm64: Booted on rpi4b (4GB model). No regression.
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
