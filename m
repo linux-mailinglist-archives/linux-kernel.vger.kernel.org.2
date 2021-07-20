@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1783CF9DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6EC3CF9E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238314AbhGTMHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:07:31 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51412 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhGTMHX (ORCPT
+        id S238330AbhGTMHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:07:51 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:37622
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238360AbhGTMHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:07:23 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        Tue, 20 Jul 2021 08:07:38 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 16EB222425;
-        Tue, 20 Jul 2021 12:48:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626785281; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W1zCtGLplWApScXZ1uLwvVrRWFVgIRci4OmMqdayuVE=;
-        b=vkN3BTO/2QXkkbQ1s6QpiIBQHDzgm6xgRvLHLbtfT4qBR82xpCIl4r0CrlAvAwweIfiCuO
-        kl6dJfP88trk28PP3u/jYKXcFJoRAEJd8/hzF37jCnWvN41Ff+Robvk7GAh7gCHvbpy68n
-        mMJcLnk4Sydmks7HCmRRbPnOc/jMtwo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626785281;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W1zCtGLplWApScXZ1uLwvVrRWFVgIRci4OmMqdayuVE=;
-        b=HvuRSFGtw8pDIni1fa4Tztt3vw5dqqFZA6WILCWLMahiFoUNmf+J+8ZRixdg3PQXei8tLP
-        qLPdwNSSyk+JXGBg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id F29EF13AB8;
-        Tue, 20 Jul 2021 12:48:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 1mDHOgDG9mBoZQAAGKfGzw
-        (envelope-from <dwagner@suse.de>); Tue, 20 Jul 2021 12:48:00 +0000
-Date:   Tue, 20 Jul 2021 14:48:00 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH v3 0/6] Handle update hardware queues and queue freeze
- more carefully
-Message-ID: <20210720124800.i2lo3hal7kjfc7rk@beryllium.lan>
-References: <20210720124353.127959-1-dwagner@suse.de>
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 665A4418F8;
+        Tue, 20 Jul 2021 12:48:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626785295;
+        bh=0ItI7io0GTWcShfB9OXndSkWcyxA3F74Ps+6kGgGN+g=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=Wr7zJECXlIJa89fP1PUCdovg3nBJTNJJHJmTEzVJ/ds/vH+WmeGEOfTiwF2C9QSuH
+         YDV3O+7+jpKKTVRxio39/vf0GQwXiyCjxXkQElA2myNiYpebcyvONf+1ug8MyKaKOB
+         BNy5GejUy8gzYUJSwOwNA+Ap96VdNa/2us8cSlDMzTBn9xed4p4uwv9qT76SB9bZ8H
+         kHE/QBgD/AQNcr9ZLHJHv9cHeOy5X3K29ufZ9v404NGPuIxXSTJA3uvMi3hCMlugr9
+         2DzjWYliXm96SqiBZM4mnl8RhknXoX810ziFLKZ+7soNViKh2RX2fLfFlNoz93LDtl
+         OdwHxza0lIdKw==
+From:   Colin King <colin.king@canonical.com>
+To:     Chas Williams <3chas3@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] atm: idt77252: clean up trigraph warning on ??) string
+Date:   Tue, 20 Jul 2021 13:48:13 +0100
+Message-Id: <20210720124813.59331-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210720124353.127959-1-dwagner@suse.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 02:43:47PM +0200, Daniel Wagner wrote:
-> v1:
->  - https://lore.kernel.org/linux-nvme/20210625101649.49296-1-dwagner@suse.de/
-> v2:
->  - https://lore.kernel.org/linux-nvme/20210708092755.15660-1-dwagner@suse.de/
->  - reviewed tags collected
->  - added 'update hardware queues' for all transport
->  - added fix for fc hanger in nvme_wait_freeze_timeout
-> v3:
->  - dropped 'nvme-fc: Freeze queues before destroying them'
->  - added James' two patches
+From: Colin Ian King <colin.king@canonical.com>
 
-Forgot to add Hannes' reviewed tag. Sorry!
+The character sequence ??) is a trigraph and causes the following
+clang warning:
+
+drivers/atm/idt77252.c:3544:35: warning: trigraph ignored [-Wtrigraphs]
+
+Clean this by replacing it with single ?.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/atm/idt77252.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/atm/idt77252.c b/drivers/atm/idt77252.c
+index 9e4bd751db79..81ce81a75fc6 100644
+--- a/drivers/atm/idt77252.c
++++ b/drivers/atm/idt77252.c
+@@ -3536,7 +3536,7 @@ static int idt77252_preset(struct idt77252_dev *card)
+ 		return -1;
+ 	}
+ 	if (!(pci_command & PCI_COMMAND_IO)) {
+-		printk("%s: PCI_COMMAND: %04x (???)\n",
++		printk("%s: PCI_COMMAND: %04x (?)\n",
+ 		       card->name, pci_command);
+ 		deinit_card(card);
+ 		return (-1);
+-- 
+2.31.1
+
