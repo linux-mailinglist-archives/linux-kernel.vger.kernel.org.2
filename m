@@ -2,155 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F5C3CFBAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97493CFBAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234333AbhGTNbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 09:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239552AbhGTNT0 (ORCPT
+        id S236466AbhGTNa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 09:30:29 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58654 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237435AbhGTNSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 09:19:26 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C27FC0613DE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:59:13 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id c15so2531690wrs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:59:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4PzjYhUEKqwf9rpMim3c4GSraf9DBD8+oBQWlOrJstY=;
-        b=AI35rGqFmoDtZhMThgKNFgUNoYDIf/Mv9ZklyKOQZalq+AMl7YLVcjrZWirr9cA4yo
-         sKbC4G1SWhrZuNvvWd/s+tASUCHW2urdvLdU/fGsg7m7gz4UJqkLwhSo75ZdBcWM5aan
-         ACfNWR23Qn0SiA+6OIT5YQxeAfXWZ5CXMJ0s8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=4PzjYhUEKqwf9rpMim3c4GSraf9DBD8+oBQWlOrJstY=;
-        b=BncrXl6p74r7tV2TnIgo8PLTDY+x7CWAIqtnCXxZY1wO3cjRlHFYljpVeQAZHOAkcD
-         LV5ReS3uLfXbEXbArs23awHA+iaLD6ZTv6XeCHRuzYBX7j7tcgSUDIdamyaafILYyn9f
-         0aPBM1J8XaVQKsFba7ZgOYOtDDqR5sRs7asvEoa6qYxAvLQy03gl41f/trZYcU70ioU8
-         d+vR4EubsDlRZOWR4ezGDC6EYetNKG6NUV5ZJRcnQeZob5h6Do3uj9QCqhx/AdanMCIh
-         YLLNWUs8Q+owB5tT5aGR+5WhMj/n1AMgzdlMWm66wbMB8IOIYdm0O/mh2F3+YGMvOwDO
-         Gpkw==
-X-Gm-Message-State: AOAM532rqKvzECwIIaDKmDG0m/f8INYS4QCbxv53UuNnEh3Mg9PJQF3X
-        QWr9nFKaP/NGTWe+cxfQzeSLBw==
-X-Google-Smtp-Source: ABdhPJwsdFs8q+1yTXrNA7AHfumD9vqplXTE6zNI6BrnjDfVy+jzMEAdzrUlq1Fu/ILnx4cnr5axUA==
-X-Received: by 2002:adf:f405:: with SMTP id g5mr17004193wro.277.1626789551781;
-        Tue, 20 Jul 2021 06:59:11 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id u2sm2632333wmm.37.2021.07.20.06.59.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 06:59:11 -0700 (PDT)
+        Tue, 20 Jul 2021 09:18:54 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16KDpOKR179444;
+        Tue, 20 Jul 2021 09:59:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=3lvLu6cinEqw0FGFqRgYpcY/s9Dp4BHVAc9DtIAt19A=;
+ b=RbM2fNe5tDmCsKZFLuxlrAzC+lSl2vj+AAbAxujBaC8mj0xT4PCHcA+A9YqTdRe9lg7Y
+ DD5t2WT6orj7pZTvXaxrzer9hDm69gC1mCtDdQ2iD8O+7IDgrKzgsNJnzE+lOSBdTNOz
+ QSbmvPBinT7VXXedz5sA4b7IUwamod+lIdeWPR31Qr9XxFuKw86mck5aT6uRPyui9+H8
+ 0Jsn9NX2nvj3aeddcuNoEruHooCwTkSsv3NCAwvCTQmKWMOvg2if7XnaR/RZfHg85z/g
+ s53lQT6BhOmGY8IGWFg+lV79i0IPVSdWS4X+fDPKXSIqr0y54qxJbOHgCwHoP3OaHb/O Gw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39wyr60b0s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 09:59:15 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16KDpXWw180372;
+        Tue, 20 Jul 2021 09:59:15 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39wyr60axt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 09:59:15 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16KDwrM7017121;
+        Tue, 20 Jul 2021 13:59:12 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 39upu89bu8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 13:59:12 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16KDx9ZM25559458
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Jul 2021 13:59:10 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B85E452073;
+        Tue, 20 Jul 2021 13:59:09 +0000 (GMT)
+Received: from sig-9-145-150-42.de.ibm.com (unknown [9.145.150.42])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 5BE7F52052;
+        Tue, 20 Jul 2021 13:59:09 +0000 (GMT)
+Message-ID: <a8fca09bb18174e21d641e9cda0727307ecf9b9d.camel@linux.ibm.com>
+Subject: Re: [PATCH v2] PCI: Move pci_dev_is/assign_added() to pci.h
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 Date:   Tue, 20 Jul 2021 15:59:09 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Dave Airlie <airlied@gmail.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Atish Patra <atish.patra@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Will Deacon <will@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Borislav Petkov <bp@suse.de>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH v3 0/2] allow simple{fb, drm} drivers to be used on
- non-x86 EFI platforms
-Message-ID: <YPbWrV/cIODdgu6A@phenom.ffwll.local>
-Mail-Followup-To: Javier Martinez Canillas <javierm@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Dave Airlie <airlied@gmail.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Atish Patra <atish.patra@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Will Deacon <will@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Robinson <pbrobinson@gmail.com>, Borislav Petkov <bp@suse.de>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-References: <20210625130947.1803678-1-javierm@redhat.com>
- <e61cf77c-6bff-dfcc-d3df-2fb6b48e5897@redhat.com>
- <8dd26141-a09c-39e2-5174-4cad8d21c49c@suse.de>
- <CAPM=9tyfNPa2f5PDBLm4w_H_riEQ5P3rEhX73YGE1y_ygRox+w@mail.gmail.com>
- <CAMj1kXErHteZ+MKYvp=yYmwVxV3A=vjtnG351hZHV+3BPwDQvw@mail.gmail.com>
- <YPbJJ/0tSO/fuW7a@phenom.ffwll.local>
- <03f0edef-e54e-8a2a-4b50-683d3d42e249@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <03f0edef-e54e-8a2a-4b50-683d3d42e249@redhat.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <20210720095816.3660813-1-schnelle@linux.ibm.com>
+References: <20210720095816.3660813-1-schnelle@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: HCLyOhtaq8QM3LWcyOg1rI6HxplqFhr9
+X-Proofpoint-GUID: OwpqnuiswPMkIsQPmC0YKJQDNIcnHprn
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-20_07:2021-07-19,2021-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ lowpriorityscore=0 priorityscore=1501 malwarescore=0 suspectscore=0
+ clxscore=1015 mlxscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107200087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 03:42:45PM +0200, Javier Martinez Canillas wrote:
-> On 7/20/21 3:01 PM, Daniel Vetter wrote:
-> > On Mon, Jul 19, 2021 at 09:10:52AM +0200, Ard Biesheuvel wrote:
-> >> On Mon, 19 Jul 2021 at 04:59, Dave Airlie <airlied@gmail.com> wrote:
+On Tue, 2021-07-20 at 11:58 +0200, Niklas Schnelle wrote:
+> The helper function pci_dev_is_added() from drivers/pci/pci.h is used in
+> PCI arch code of both s390 and powerpc leading to awkward relative
+> includes. Move it to the global include/linux/pci.h and get rid of these
+> includes just for that one function.
 > 
-> [snip]
-> 
-> >>>
-> >>> Can we just merge via drm-misc and make sure the acks are present and
-> >>> I'll deal with the fallout if any.
-> >>>
-> >>
-> >> Fine with me. Could you stick it on a separate branch so I can double
-> >> check whether there are any issues wrt the EFI tree?
-> > 
-> > It'll pop up in linux-next for integration testing or you can pick up the
-> > patch here for test-merge if you want.
-> >
-> 
-> Thanks a lot Dave and Daniel!
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> ---
+> Since v1:
+> - Fixed accidental removal of PCI_DPC_RECOVERED, PCI_DPC_RECOVERING
+>   defines and also move these to include/linux/pci.h
 
-Oh I haven't merged them, I'm assuming Thomas will do that. Just figured
-I'll throw my ack on top:
+Please disregard I actually sent the old patch ;-(
 
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> 
+>  arch/powerpc/platforms/powernv/pci-sriov.c |  3 ---
+>  arch/powerpc/platforms/pseries/setup.c     |  1 -
+>  arch/s390/pci/pci_sysfs.c                  |  2 --
+>  drivers/pci/hotplug/acpiphp_glue.c         |  1 -
+>  drivers/pci/pci.h                          | 15 ---------------
+>  include/linux/pci.h                        | 13 +++++++++++++
+>  6 files changed, 13 insertions(+), 22 deletions(-)
+> 
+> 
+... snip ..
 
-> > And since Dave has given a blanket cheque for handling fallout he'll deal
-> > with the need for fixups too if there's any.
-> 
-> I also plan to look at any regression that might had been introduced by these.
-> 
-> Best regards,
-> -- 
-> Javier Martinez Canillas
-> Linux Engineering
-> Red Hat
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
