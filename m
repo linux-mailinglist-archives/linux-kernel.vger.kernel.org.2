@@ -2,166 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19B43CF23F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC613CF247
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238181AbhGTCN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 22:13:27 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7398 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239830AbhGTCEP (ORCPT
+        id S1345227AbhGTCRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 22:17:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235860AbhGTCQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 22:04:15 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GTNJB45GZz7wx6;
-        Tue, 20 Jul 2021 10:41:14 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 10:44:32 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 10:44:32 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
-        <linux-mm@kvack.org>, Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 3/3] kasan: arm64: Fix pcpu_page_first_chunk crash with KASAN_VMALLOC
-Date:   Tue, 20 Jul 2021 10:51:05 +0800
-Message-ID: <20210720025105.103680-4-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210720025105.103680-1-wangkefeng.wang@huawei.com>
-References: <20210720025105.103680-1-wangkefeng.wang@huawei.com>
+        Mon, 19 Jul 2021 22:16:34 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88FC8C0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 19:57:12 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id dj21so26771416edb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 19:57:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ARkIuYATvHijD8XSWeM3n42afJoDm+rNzi1meXbXw5I=;
+        b=QL5FkO5N2icD8kCtOXcxxZ0Rqthk681wn1TgMqBfRKJUo0qUVbtLQXtPNA8G4sU0Ao
+         419DXq9TFx8RMxB+OCjTER5zC1tzWGSXirca7Jymsol+oeU0XtKu0XhLCH8qVT+sFgO0
+         MRpyYDucCxlRgfy/y5xusAG/6blF4Sze2o4s0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ARkIuYATvHijD8XSWeM3n42afJoDm+rNzi1meXbXw5I=;
+        b=eEvBZWIgcZDxtiwjeekh+Z1sNzaTQfcn30AaSD+1ilVcp3uJnsNm13a5apth8ygfqw
+         wSD6nBE/VxrLAfYXNQ6vMPd4nbKIKApmh4/Me/LRKQtEC0zaMgTM0RO6ACxbLZX06gb5
+         MgMYjQkPSkwZukqN9Z4xbtgWkiXdJJ1HxZ+9/dE+xRA3JQjGU97wNcKddLn4LEzH+gFm
+         rnDU81ej2hd0lyyM1fecmPMuua1gcESwugquKoeVytF85fJLJVqPJT3aLVreJxwiQWTh
+         leuIo2pJP+vacX6RhmnnHXeHtw9d3C2g723w7H/Tq3uRmHv+l+cYJPMGdCvjEJVdmWRT
+         Q07g==
+X-Gm-Message-State: AOAM531ES5du7vpY0OBcLrdOPmaRyGd9nnwB/6SySt3EeJVOdLfqo/xc
+        DYnLfAXFAWc2xaGVlH68MOWHnVosN+pBaCotrwIYF/N4tGwykQ==
+X-Google-Smtp-Source: ABdhPJwrixo2eV3JX8+zlh7Mcq5pmNkQuNd1/alqHfKOTAwf5VQFdznjgweS35WQ2IuK4mOUtlanjfGDsBWNBc166Hg=
+X-Received: by 2002:a05:6402:c13:: with SMTP id co19mr37911017edb.64.1626749831079;
+ Mon, 19 Jul 2021 19:57:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+References: <20210712060912.995381202@linuxfoundation.org> <20210712060916.499546891@linuxfoundation.org>
+ <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
+ <YPNavEl340mxcNVd@epycbox.lan> <CAFxkdApGaw30O2HEkTA8r6g4_dLZEbykVjnnDnfTiX=3hVQwvw@mail.gmail.com>
+In-Reply-To: <CAFxkdApGaw30O2HEkTA8r6g4_dLZEbykVjnnDnfTiX=3hVQwvw@mail.gmail.com>
+From:   Justin Forbes <jmforbes@linuxtx.org>
+Date:   Mon, 19 Jul 2021 21:57:00 -0500
+Message-ID: <CAFxkdAqd69oXdhUBEmMRvmfuk2YpWS7qsDKLjUEAEg8rhQkTyQ@mail.gmail.com>
+Subject: Re: [PATCH 5.13 024/800] usb: renesas-xhci: Fix handling of unknown
+ ROM state
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Vinod Koul <vkoul@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With KASAN_VMALLOC and NEED_PER_CPU_PAGE_FIRST_CHUNK, it crashs,
+On Mon, Jul 19, 2021 at 10:33 AM Justin Forbes <jmforbes@linuxtx.org> wrote:
+>
+> On Sat, Jul 17, 2021 at 5:33 PM Moritz Fischer <mdf@kernel.org> wrote:
+> >
+> > Justin,
+> >
+> > On Sat, Jul 17, 2021 at 08:39:19AM -0500, Justin Forbes wrote:
+> > > On Mon, Jul 12, 2021 at 2:31 AM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > From: Moritz Fischer <mdf@kernel.org>
+> > > >
+> > > > commit d143825baf15f204dac60acdf95e428182aa3374 upstream.
+> > > >
+> > > > The ROM load sometimes seems to return an unknown status
+> > > > (RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
+> > > >
+> > > > If the ROM load indeed failed this leads to failures when trying to
+> > > > communicate with the controller later on.
+> > > >
+> > > > Attempt to load firmware using RAM load in those cases.
+> > > >
+> > > > Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
+> > > > Cc: stable@vger.kernel.org
+> > > > Cc: Mathias Nyman <mathias.nyman@intel.com>
+> > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > Cc: Vinod Koul <vkoul@kernel.org>
+> > > > Tested-by: Vinod Koul <vkoul@kernel.org>
+> > > > Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> > > > Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> > > > Link: https://lore.kernel.org/r/20210615153758.253572-1-mdf@kernel.org
+> > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > >
+> > >
+> > > After sending out 5.12.17 for testing, we had a user complain that all
+> > > of their USB devices disappeared with the error:
+> > >
+> > > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: Direct firmware load
+> > > for renesas_usb_fw.mem failed with error -2
+> > > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: request_firmware failed: -2
+> > > Jul 15 23:18:53 kernel: xhci_hcd: probe of 0000:04:00.0 failed with error -2
+> >
+> > This looks like it fails finding the actual firmware file (ENOENT). Any
+> > chance you could give this a whirl on top of the original patch?
+> >
+>
+> Sure. test kernel building now, will let you know when the user reports back.
 
-Unable to handle kernel paging request at virtual address ffff7000028f2000
-...
-swapper pgtable: 64k pages, 48-bit VAs, pgdp=0000000042440000
-[ffff7000028f2000] pgd=000000063e7c0003, p4d=000000063e7c0003, pud=000000063e7c0003, pmd=000000063e7b0003, pte=0000000000000000
-Internal error: Oops: 96000007 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper Not tainted 5.13.0-rc4-00003-gc6e6e28f3f30-dirty #62
-Hardware name: linux,dummy-virt (DT)
-pstate: 200000c5 (nzCv daIF -PAN -UAO -TCO BTYPE=--)
-pc : kasan_check_range+0x90/0x1a0
-lr : memcpy+0x88/0xf4
-sp : ffff80001378fe20
-...
-Call trace:
- kasan_check_range+0x90/0x1a0
- pcpu_page_first_chunk+0x3f0/0x568
- setup_per_cpu_areas+0xb8/0x184
- start_kernel+0x8c/0x328
+The original user reports success with this patch on top of the original patch.
 
-The vm area used in vm_area_register_early() has no kasan shadow memory,
-Let's add a new kasan_populate_early_vm_area_shadow() function to populate
-the vm area shadow memory to fix the issue.
+Justin
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- arch/arm64/mm/kasan_init.c | 17 +++++++++++++++++
- include/linux/kasan.h      |  6 ++++++
- mm/kasan/init.c            |  5 +++++
- mm/vmalloc.c               |  1 +
- 4 files changed, 29 insertions(+)
-
-diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-index 61b52a92b8b6..46c1b3722901 100644
---- a/arch/arm64/mm/kasan_init.c
-+++ b/arch/arm64/mm/kasan_init.c
-@@ -287,6 +287,23 @@ static void __init kasan_init_depth(void)
- 	init_task.kasan_depth = 0;
- }
- 
-+#ifdef CONFIG_KASAN_VMALLOC
-+void __init kasan_populate_early_vm_area_shadow(void *start, unsigned long size)
-+{
-+	unsigned long shadow_start, shadow_end;
-+
-+	if (!is_vmalloc_or_module_addr(start))
-+		return;
-+
-+	shadow_start = (unsigned long)kasan_mem_to_shadow(start);
-+	shadow_start = ALIGN_DOWN(shadow_start, PAGE_SIZE);
-+	shadow_end = (unsigned long)kasan_mem_to_shadow(start + size);
-+	shadow_end = ALIGN(shadow_end, PAGE_SIZE);
-+	kasan_map_populate(shadow_start, shadow_end,
-+			   early_pfn_to_nid(virt_to_pfn(start)));
-+}
-+#endif
-+
- void __init kasan_init(void)
- {
- 	kasan_init_shadow();
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index dd874a1ee862..3f8c26d9ef82 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -133,6 +133,8 @@ struct kasan_cache {
- 	bool is_kmalloc;
- };
- 
-+void kasan_populate_early_vm_area_shadow(void *start, unsigned long size);
-+
- slab_flags_t __kasan_never_merge(void);
- static __always_inline slab_flags_t kasan_never_merge(void)
- {
-@@ -303,6 +305,10 @@ void kasan_restore_multi_shot(bool enabled);
- 
- #else /* CONFIG_KASAN */
- 
-+static inline void kasan_populate_early_vm_area_shadow(void *start,
-+						       unsigned long size)
-+{ }
-+
- static inline slab_flags_t kasan_never_merge(void)
- {
- 	return 0;
-diff --git a/mm/kasan/init.c b/mm/kasan/init.c
-index cc64ed6858c6..d39577d088a1 100644
---- a/mm/kasan/init.c
-+++ b/mm/kasan/init.c
-@@ -279,6 +279,11 @@ int __ref kasan_populate_early_shadow(const void *shadow_start,
- 	return 0;
- }
- 
-+void __init __weak kasan_populate_early_vm_area_shadow(void *start,
-+						       unsigned long size)
-+{
-+}
-+
- static void kasan_free_pte(pte_t *pte_start, pmd_t *pmd)
- {
- 	pte_t *pte;
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index a98cf97f032f..f19e07314ee5 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2249,6 +2249,7 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
- 	vm->addr = (void *)addr;
- 
- 	vm_area_add_early(vm);
-+	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
- }
- 
- static void vmap_init_free_space(void)
--- 
-2.26.2
-
+>
+> Justin
+>
+> > diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+> > index 18c2bbddf080..cde8f6f1ec5d 100644
+> > --- a/drivers/usb/host/xhci-pci.c
+> > +++ b/drivers/usb/host/xhci-pci.c
+> > @@ -379,7 +379,11 @@ static int xhci_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+> >         driver_data = (struct xhci_driver_data *)id->driver_data;
+> >         if (driver_data && driver_data->quirks & XHCI_RENESAS_FW_QUIRK) {
+> >                 retval = renesas_xhci_check_request_fw(dev, id);
+> > -               if (retval)
+> > +               /*
+> > +                * If firmware wasn't found there's still a chance this might work without
+> > +                * loading firmware on some systems, so let's try at least.
+> > +                */
+> > +               if (retval && retval != -ENOENT)
+> >                         return retval;
+> >         }
+> >
+> >
+> > Thanks,
+> > Moritz
