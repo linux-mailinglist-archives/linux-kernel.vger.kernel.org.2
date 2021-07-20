@@ -2,129 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89733CF8DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481B33CF8E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbhGTKtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
+        id S233406AbhGTKz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237780AbhGTKsh (ORCPT
+        with ESMTP id S236285AbhGTKyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:48:37 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585E1C061768
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:29:14 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id ec55so28034623edb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:29:14 -0700 (PDT)
+        Tue, 20 Jul 2021 06:54:32 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FB2C061574;
+        Tue, 20 Jul 2021 04:35:10 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id g22so23597594iom.1;
+        Tue, 20 Jul 2021 04:35:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=G7wkojPSMrqZHIAJp0+Umps/ntjt0k1BRPOgIjoyyXo=;
-        b=gd1Cfku3Ue3eszCew3EMHBk5hcPKjgUjJL07dN13W7f3dNiaeW9+hcY55TKM7CNwwJ
-         bC8k8kQDReW+C+Sle4P9DpgFKcAPlI1TZET1jYTRmZcrOC9eHxoBvny0KU3Cl3j1/C43
-         GtaVQxz/EFP+J+gW+iFGezqrsa4dcIJ/vN28WSzk741Wr/TVyj5B9BBuN/PYbqtYrm5M
-         yZz1Zg5aojaPjFBsQ3SgnAc66xV0wku/EIqGcu/HmF3ll4iV3z20QfOVCW4Scv7WBT6M
-         N60HrS8bvnD1Pc2ZtEWk6ITZkup4qxV3Gp8txWHLVAMeI96B9pL/m7t3IKvQ3gc9tEYZ
-         A4RQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W00f0ANz3WrZGqMdQysCloQ6vLp/tHXNWmmPd6zJe0U=;
+        b=cJOAjNNO+m9zN0XNbTz3X4fk8STUtDi//3Yu/zRLr6C8sZVhauDsSAR/7Ub4rvyg8e
+         jhy4l34MkfMVpefHVgeR4mHMHFxMvPJlCW7q/1pzodeUkYNKtIujj4pr6GikeQJ7QBI2
+         8MeT0Oqtz/0BN3dYjuN29zqGAELS+8P4IrRdMvM0d9Lcoa3R1OOfl3sdP99sCaU304Y4
+         JGVuwd0xjrgK5P3IfbAabKZJ2TxD/WC0uyBm2l+ZMZ95T0dI2aYDYujgZfyWOhe/Pzso
+         tcr/XsaBtDcFojAElBHKW5au/54i3gxQVC/ulVrhgs/rtT/ss7xeb4EyoYjE6RZYKZTz
+         VfFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=G7wkojPSMrqZHIAJp0+Umps/ntjt0k1BRPOgIjoyyXo=;
-        b=gmrmIYwLVxl908yedIAYd9440kEpZFOwA4qgIMcxr6EjYX70CjFUaMCx2zzmTZbEEs
-         iPZaP5FL+XIXGnr7M71QFOtoR5Z21wXHPzPffQbPxrclXxGIqjTwI051EFiSnCIu8kKV
-         cVDWEXdYuL+HF7Te5yv7obs185hGz7g/4+gLmBzdJixV2pEsaX6OTv+8Px9qPYf8Hbu4
-         Pa6MeW9HaGcIlI2zXymaxXsbXJBGFQcs6G1lviVGMpDErJbv0PTyj+qdMnBEXmbmsRMb
-         ehgDna4LCIRq9y7csXScI/hLhQU80pGT09l4dHG9DahS8n6hZOWqY3NYfHCCDy6OYtnU
-         asPQ==
-X-Gm-Message-State: AOAM5336qkOeGJ6ZgLfCveOl37R4MAGkNAyqLbvgOc+OIVIAGNlmQ3/8
-        yq9GKTjQneCHYlezx1fSfdo=
-X-Google-Smtp-Source: ABdhPJwImlJSPYKWVpuh9U8T9Mx0MLxz8gnFGfO6FCGYzNd68jzf5U1zp/9EinHurWlv8FJrGF5HOw==
-X-Received: by 2002:aa7:cb19:: with SMTP id s25mr40568203edt.194.1626780552924;
-        Tue, 20 Jul 2021 04:29:12 -0700 (PDT)
-Received: from localhost.localdomain ([5.176.2.85])
-        by smtp.gmail.com with ESMTPSA id q26sm2804672ejs.115.2021.07.20.04.29.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 04:29:12 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 14:29:08 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     syzbot <syzbot+d04950c1e97f51d0068a@syzkaller.appspotmail.com>
-Cc:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
-        longman@redhat.com, mingo@redhat.com, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, will@kernel.org
-Subject: Re: [syzbot] WARNING in pwq_unbound_release_workfn (2)
-Message-ID: <20210720142908.3bbb3b21@gmail.com>
-In-Reply-To: <00000000000015c36505c78382e0@google.com>
-References: <00000000000015c36505c78382e0@google.com>
-X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W00f0ANz3WrZGqMdQysCloQ6vLp/tHXNWmmPd6zJe0U=;
+        b=St0Or1sNVWv+sDjV+5lpQQ9QkLw6dknMGOmbZfoyU7SiOb+I/Gv/avkkhqleJesT5t
+         Cod42uE0TgwzBUPDylfiCvl5aCGoCwvGdzzWCa7JZWhQJBxpn9ry2gQiesF/bIO2Qsph
+         E5rBU/ONvs1IyGiuMzWFfus/B100behpdi96BrHnJHZbp9yhgIBTezrOuo4+qCPxO+6n
+         7UBmV48S47rsgEwSBU79ZXHixzNeHoFjiDOD2j6S1oNPCKXJgozh7nhTeHLqp0hOlfHg
+         Snc2qqSQM/aFWJM7unZ1iTq2K31rgsHdQmWVY28AHgZq4LdCvout6yUDEZ3AojJSP6bQ
+         foTQ==
+X-Gm-Message-State: AOAM530JpnfCr4ElQl7vgIpjmsLCfvBZqpE72osCb8+XQ7fDc9g0GtIt
+        ya5RTVU+XQg7DvM37qYmdVYuxsY15aR2qJc3Cto=
+X-Google-Smtp-Source: ABdhPJwqGEyizwyBwYlBCgp4IlLEfgl+nKlAQzLRY50FX2HkLOEGDEiHWz3+a06/FBfxpHmmcgrQwpjlNja0E3zaDQ8=
+X-Received: by 2002:a02:85a5:: with SMTP id d34mr25763258jai.132.1626780909646;
+ Tue, 20 Jul 2021 04:35:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
+In-Reply-To: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
+From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Date:   Tue, 20 Jul 2021 13:34:58 +0200
+Message-ID: <CAHpGcM+qhur4C2fLyR-dQx7CvumXVvMAM5NBCCXnL5ve-2qE8w@mail.gmail.com>
+Subject: Re: [PATCH v3] iomap: support tail packing inline read
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 17:55:20 -0700
-syzbot <syzbot+d04950c1e97f51d0068a@syzkaller.appspotmail.com> wrote:
+Am Mo., 19. Juli 2021 um 16:48 Uhr schrieb Gao Xiang
+<hsiangkao@linux.alibaba.com>:
+> This tries to add tail packing inline read to iomap, which can support
+> several inline tail blocks. Similar to the previous approach, it cleans
+> post-EOF in one iteration.
+>
+> The write path remains untouched since EROFS cannot be used for testing.
+> It'd be better to be implemented if upcoming real users care rather than
+> leave untested dead code around.
+>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Darrick J. Wong <djwong@kernel.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> ---
+> v2: https://lore.kernel.org/r/YPLdSja%2F4FBsjss%2F@B-P7TQMD6M-0146.local/
+> changes since v2:
+>  - update suggestion from Christoph:
+>     https://lore.kernel.org/r/YPVe41YqpfGLNsBS@infradead.org/
+>
+> Hi Andreas,
+> would you mind test on the gfs2 side? Thanks in advance!
+>
+> Thanks,
+> Gao Xiang
+>
+>  fs/iomap/buffered-io.c | 50 ++++++++++++++++++++++++++----------------
+>  fs/iomap/direct-io.c   | 11 ++++++----
+>  2 files changed, 38 insertions(+), 23 deletions(-)
+>
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 87ccb3438bec..cac8a88660d8 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -207,23 +207,22 @@ struct iomap_readpage_ctx {
+>
+>  static void
+>  iomap_read_inline_data(struct inode *inode, struct page *page,
+> -               struct iomap *iomap)
+> +               struct iomap *iomap, loff_t pos)
+>  {
+> -       size_t size = i_size_read(inode);
+> +       unsigned int size, poff = offset_in_page(pos);
+>         void *addr;
+>
+> -       if (PageUptodate(page))
+> -               return;
+> -
+> -       BUG_ON(page_has_private(page));
+> -       BUG_ON(page->index);
+> -       BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> +       /* inline source data must be inside a single page */
+> +       BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> +       /* handle tail-packing blocks cross the current page into the next */
+> +       size = min_t(unsigned int, iomap->length + pos - iomap->offset,
+> +                    PAGE_SIZE - poff);
+>
+>         addr = kmap_atomic(page);
+> -       memcpy(addr, iomap->inline_data, size);
+> -       memset(addr + size, 0, PAGE_SIZE - size);
+> +       memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
+> +       memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
+>         kunmap_atomic(addr);
+> -       SetPageUptodate(page);
+> +       iomap_set_range_uptodate(page, poff, PAGE_SIZE - poff);
+>  }
+>
+>  static inline bool iomap_block_needs_zeroing(struct inode *inode,
+> @@ -246,18 +245,19 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+>         unsigned poff, plen;
+>         sector_t sector;
+>
+> -       if (iomap->type == IOMAP_INLINE) {
+> -               WARN_ON_ONCE(pos);
+> -               iomap_read_inline_data(inode, page, iomap);
+> -               return PAGE_SIZE;
+> -       }
+> -
+> -       /* zero post-eof blocks as the page may be mapped */
+>         iop = iomap_page_create(inode, page);
 
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    2734d6c1b1a0 Linux 5.14-rc2
-> git tree:       upstream
-> console output:
-> https://syzkaller.appspot.com/x/log.txt?x=1518d3bc300000 kernel
-> config:  https://syzkaller.appspot.com/x/.config?x=f7dfeb6dfc05ea19
-> dashboard link:
-> https://syzkaller.appspot.com/bug?extid=d04950c1e97f51d0068a
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the
-> commit: Reported-by:
-> syzbot+d04950c1e97f51d0068a@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 3 PID: 32 at kernel/locking/lockdep.c:6305
-> lockdep_unregister_key+0x19a/0x250 kernel/locking/lockdep.c:6305
-> Modules linked in: CPU: 3 PID: 32 Comm: kworker/3:0 Not tainted
-> 5.14.0-rc2-syzkaller #0 Hardware name: QEMU Standard PC (Q35 + ICH9,
-> 2009), BIOS 1.14.0-2 04/01/2014 Workqueue: events
-> pwq_unbound_release_workfn RIP:
-> 0010:lockdep_unregister_key+0x19a/0x250 kernel/locking/lockdep.c:6305
-> Code: 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8f 00 00
-> 00 4d 89 7d 08 48 b8 22 01 00 00 00 00 ad de 48 89 43 08 eb 02 <0f>
-> 0b 4c 89 f7 ba 01 00 00 00 48 89 ee e8 44 fd ff ff 4c 89 f7 e8 RSP:
-> 0018:ffffc900007bfcb0 EFLAGS: 00010046 RAX: dffffc0000000000 RBX:
-> 0000000000000000 RCX: 1ffffffff1ad87cd RDX: 1ffffffff1fcad55 RSI:
-> 0000000000000004 RDI: ffffffff8fe56aa8 RBP: ffff88801416e928 R08:
-> 0000000000000001 R09: 0000000000000003 R10: fffff520000f7f8c R11:
-> 0000000000086088 R12: 0000000000000246 R13: dffffc0000000000 R14:
-> ffffffff8fcd1868 R15: ffff888047033870 FS:  0000000000000000(0000)
-> GS:ffff88802cd00000(0000) knlGS:0000000000000000 CS:  0010 DS: 0000
-> ES: 0000 CR0: 0000000080050033 CR2: 00000000014a53ad CR3:
-> 00000000479f1000 CR4: 0000000000150ee0 DR0: 0000000000000000 DR1:
-> 0000000000000000 DR2: 0000000000000000 DR3: 0000000000000000 DR6:
-> 00000000fffe0ff0 DR7: 0000000000000400 Call Trace:
-> wq_unregister_lockdep kernel/workqueue.c:3468 [inline]
-> pwq_unbound_release_workfn+0x223/0x2d0 kernel/workqueue.c:3700
-> process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
-> worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
-> kthread+0x3e5/0x4d0 kernel/kthread.c:319 ret_from_fork+0x1f/0x30
-> arch/x86/entry/entry_64.S:295
+We can skip creating the iop when reading the entire page.
 
+> +       /* needs to skip some leading uptodated blocks */
+>         iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
+>         if (plen == 0)
+>                 goto done;
+>
+> +       if (iomap->type == IOMAP_INLINE) {
+> +               iomap_read_inline_data(inode, page, iomap, pos);
+> +               plen = PAGE_SIZE - poff;
+> +               goto done;
+> +       }
+> +
+> +       /* zero post-eof blocks as the page may be mapped */
+>         if (iomap_block_needs_zeroing(inode, iomap, pos)) {
+>                 zero_user(page, poff, plen);
+>                 iomap_set_range_uptodate(page, poff, plen);
+> @@ -589,6 +589,18 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
+>         return 0;
+>  }
+>
+> +static int iomap_write_begin_inline(struct inode *inode, loff_t pos,
+> +               struct page *page, struct iomap *srcmap)
+> +{
+> +       /* needs more work for the tailpacking case, disable for now */
+> +       if (WARN_ON_ONCE(pos != 0))
+> +               return -EIO;
+> +       if (PageUptodate(page))
+> +               return 0;
+> +       iomap_read_inline_data(inode, page, srcmap, pos);
+> +       return 0;
+> +}
+> +
+>  static int
+>  iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+>                 struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
+> @@ -618,7 +630,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+>         }
+>
+>         if (srcmap->type == IOMAP_INLINE)
+> -               iomap_read_inline_data(inode, page, srcmap);
+> +               status = iomap_write_begin_inline(inode, pos, page, srcmap);
+>         else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
+>                 status = __block_write_begin_int(page, pos, len, NULL, srcmap);
+>         else
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index 9398b8c31323..ee6309967b77 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -379,22 +379,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
+>  {
+>         struct iov_iter *iter = dio->submit.iter;
+>         size_t copied;
+> +       void *dst = iomap->inline_data + pos - iomap->offset;
+>
+> -       BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> +       /* inline data must be inside a single page */
+> +       BUG_ON(length > PAGE_SIZE - offset_in_page(iomap->inline_data));
+>
+>         if (dio->flags & IOMAP_DIO_WRITE) {
+>                 loff_t size = inode->i_size;
+>
+>                 if (pos > size)
+> -                       memset(iomap->inline_data + size, 0, pos - size);
+> -               copied = copy_from_iter(iomap->inline_data + pos, length, iter);
+> +                       memset(iomap->inline_data + size - iomap->offset,
+> +                              0, pos - size);
+> +               copied = copy_from_iter(dst, length, iter);
+>                 if (copied) {
+>                         if (pos + copied > size)
+>                                 i_size_write(inode, pos + copied);
+>                         mark_inode_dirty(inode);
+>                 }
+>         } else {
+> -               copied = copy_to_iter(iomap->inline_data + pos, length, iter);
+> +               copied = copy_to_iter(dst, length, iter);
+>         }
+>         dio->size += copied;
+>         return copied;
+> --
+> 2.24.4
+>
 
-I think, this should be fixed by:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=a9a2e0482d647b07b4d45033f4be0854d3ea201e 
-
-Unfortunately, syzbot didn't provide any reproducer, so no chance to
-test it :(
-
- 
-
-With regards,
-Pavel Skripkin
+Thanks,
+Andreas
