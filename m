@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282FC3CF93E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E20633CF94B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236461AbhGTLQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 07:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36344 "EHLO
+        id S236430AbhGTLWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 07:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235524AbhGTLQV (ORCPT
+        with ESMTP id S233914AbhGTLWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:16:21 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C77EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:56:58 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id m11-20020a05600c3b0bb0290228f19cb433so1358385wms.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:56:58 -0700 (PDT)
+        Tue, 20 Jul 2021 07:22:04 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0215C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 05:02:35 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id d12so25678184wre.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 05:02:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chrisdown.name; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WheQ7fUX5EA867I+bv9cFye5SAD4lIhGyGX5hYkcj+M=;
-        b=vhIcOCOvy5Rai9IUroGOqHvmtz2lTrczf34W0vWXkqQkyInbPoQYwfN0oToFxuLqji
-         ir9eSpzqiHc4OYCUazxINKpDTodBu3AhlbpSxd7yywx03U7AmZ2V27Tz9BMu5d6Y4dqQ
-         4nQTxB8Ji3Ng/pegFcNH2Lwx7Evla81MoA0JPk4OFxMNXo6T6zsBd9rZy2w3QhMQq/Rb
-         /SEWgi8DzAYYNDXHhXGjJimRiuoL0wwvbGpG7AYgfjYuKeoSm2a9B6gvWOpYVLFIxC02
-         SocqIuB4fm7W3uVn4Leh6atXqmdtuTkkskx06YtjEMbA/2vDqNc3uNraOjezdjS8A6iz
-         V5Pw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=KSiJsnUuOX0r0Lgojs8G2Q91OzMNE5KM3tiGawrK5jM=;
+        b=sB1i15Ce4mTZPF8pEls4REDN1JgblW0KrPjRk9a575dmflajkUNmwvGU08arEdXPa6
+         M836nQUI2rRERB63mp7mhQEqJ7qTBkZLoZWL2THK5jCeLAGr4aGrzk+XPQ0yJYmMvkdt
+         z6YggE0HchTbTLLkqMouvusmXtqqQ2yX2pooI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WheQ7fUX5EA867I+bv9cFye5SAD4lIhGyGX5hYkcj+M=;
-        b=rnpxIORzoaMOevuEvY1OtZPb+HfFUIS1NNuQtYbyupqNWNF1QfuSovdTWZJwkgXXJ9
-         34pMewaScGsVsVzZZHIU54Q/3U9lfBord2USZazd6B2ywROR7UPx2FFyUNSQkSdNxP9j
-         F1xlk7qOhSQfzJoeGYvemaKbcvoSY1kS8jqvOgsQYlk7OHYi/20fCx3dsGkUl7BGRYmS
-         Ma23gqapF+WFBL+x3pX5lsFEvPxGD5W1N5InSJwj50uoKzil69rOqHxtqg8RFLDQPfEz
-         4b3f2ApgUaZ0wu5/hs6g1IgC1AoFArVW397SI/2bxi+DbR96R3uE6/V5pes/QU7piLpt
-         KxBg==
-X-Gm-Message-State: AOAM531/T8OEOUATbZwY+fWli57wO0zPZ4cudJYYln/G3iJn91Y0akPV
-        Thkq5TTRPZgQbpx6+IYLdRqM+g==
-X-Google-Smtp-Source: ABdhPJwJrV/b4HrNOBTUVc50mwLqlvQcj8GwTPDgrlDwpIuPjeOwLY1hcD8a9O+QoPfgfmLgXfG+yQ==
-X-Received: by 2002:a1c:1f47:: with SMTP id f68mr31394200wmf.58.1626782216570;
-        Tue, 20 Jul 2021 04:56:56 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:83e0:11ac:c870:2b97])
-        by smtp.gmail.com with ESMTPSA id j12sm23997076wrq.83.2021.07.20.04.56.55
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KSiJsnUuOX0r0Lgojs8G2Q91OzMNE5KM3tiGawrK5jM=;
+        b=GHB5eREclzJ+mZzmVGstcH5mH68QaoGxhAFwxpUSSq+9zYv8ZdWda4AElBeKNAMNZt
+         zhQIxA9rnwMlCZBdNvA/+U70QSi6FjUBs9YSfCfQ8QdZaoH342GyFnyztrbn07p3b9LV
+         Rb8/PvUtWLQ7r1ar7ApHgZ9NO6vxaQURe/sDNoA2+Qor/Ik9VfQZ7IOq6LvYOtMVx/L2
+         VXmxQ14YElVrrxhLcqq5/1NIEVV872s/VV3O7S6VNVwPXNm/+6FmVYwOi0OPuspPR/Cp
+         vk2BrA+0qIER5iG4b+rdtsv9gjHPLML61Ozlj62bnhFTJC5jLbtzq57i8Wb0N4VgNoF9
+         3zYQ==
+X-Gm-Message-State: AOAM530NTy9j8O4rEstjbmUUCqKsWP+HEelubRVX/s0K9SPpQL1wpEpO
+        zwstTGmgKA8QklygPY/KT9xbXQ==
+X-Google-Smtp-Source: ABdhPJyDxT66WmcNFlOB9EiOMeaSPCNrI54rGzoeAU2hvfC/PY2ATiwCEK7rQ4fJcTDn+7nQTNNPCQ==
+X-Received: by 2002:a5d:6506:: with SMTP id x6mr34427918wru.86.1626782554228;
+        Tue, 20 Jul 2021 05:02:34 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:d571])
+        by smtp.gmail.com with ESMTPSA id a8sm23585683wrt.61.2021.07.20.05.02.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 04:56:55 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 12:56:52 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        tabba@google.com, dbrazdil@google.com, kernel-team@android.com,
-        Yanan Wang <wangyanan55@huawei.com>
-Subject: Re: [PATCH 03/14] KVM: arm64: Continue stage-2 map when re-creating
- mappings
-Message-ID: <YPa6BGuUFjw8do+o@google.com>
-References: <20210719104735.3681732-1-qperret@google.com>
- <20210719104735.3681732-4-qperret@google.com>
- <87lf62jy9z.wl-maz@kernel.org>
- <YPV+2jQ/Q/ie14Fn@google.com>
- <875yx59ysd.wl-maz@kernel.org>
+        Tue, 20 Jul 2021 05:02:33 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 13:02:33 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: [printk:for-5.15-printk-index 4/5] kernel/printk/index.c:140:6:
+ warning: no previous prototype for 'pi_create_file'
+Message-ID: <YPa7WTw2rmYpI1uE@chrisdown.name>
+References: <202107192303.qeABbFBe-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <875yx59ysd.wl-maz@kernel.org>
+In-Reply-To: <202107192303.qeABbFBe-lkp@intel.com>
+User-Agent: Mutt/2.1 (4b100969) (2021-06-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 20 Jul 2021 at 09:26:10 (+0100), Marc Zyngier wrote:
-> Right, but this is on a different path, right? Guests can never fault
-> multiple mappings at once, and it takes you a host hypercall to
-> perform this "multiple leaves at once".
+kernel test robot writes:
+>tree:   https://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git for-5.15-printk-index
+>head:   ad7d61f159db73974f1b0352f21afe04b0bbd920
+>commit: 337015573718b161891a3473d25f59273f2e626b [4/5] printk: Userspace format indexing support
+>config: arc-allyesconfig (attached as .config)
+>compiler: arceb-elf-gcc (GCC) 10.3.0
+>reproduce (this is a W=1 build):
+>        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>        chmod +x ~/bin/make.cross
+>        # https://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git/commit/?id=337015573718b161891a3473d25f59273f2e626b
+>        git remote add printk https://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git
+>        git fetch --no-tags printk for-5.15-printk-index
+>        git checkout 337015573718b161891a3473d25f59273f2e626b
+>        # save the attached .config to linux build tree
+>        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross ARCH=arc
+>
+>If you fix the issue, kindly add following tag as appropriate
+>Reported-by: kernel test robot <lkp@intel.com>
+>
+>All warnings (new ones prefixed by >>):
+>
+>>> kernel/printk/index.c:140:6: warning: no previous prototype for 'pi_create_file' [-Wmissing-prototypes]
+>     140 | void pi_create_file(struct module *mod)
+>         |      ^~~~~~~~~~~~~~
+>>> kernel/printk/index.c:146:6: warning: no previous prototype for 'pi_remove_file' [-Wmissing-prototypes]
+>     146 | void pi_remove_file(struct module *mod)
+>         |      ^~~~~~~~~~~~~~
 
-Right.
+Ah, I missed `static inline', which causes the compiler to think we want to 
+export it even though we don't.
 
-> Is there any way we can restrict this to the hypercall? Or even
-> better, keep the hypercall as a "one page at a time" thing? I can't
-> imagine it being performance critical (it is a once-off, and only used
-> over a rather small region of memory). Then, the called doesn't have
-> to worry about the page already being mapped or not. This would also
-> match the behaviour of what I do on the MMIO side.
-> 
-> Or do you anticipate much gain from this being able to use block
-> mappings?
-
-Not really no, especially given that mappings of shared pages will be
-forced to page granularity thanks to the other patch we discussed in
-this series. I was just hoping to reduce the overhead a bit by reducing
-the number of hypercalls. But as you said, this probably doesn't matter
-all that much, so happy to rework that. I'll look into making the hcall
-use one page at a time, and hopefully that'll simplify a few other
-things in the check_host_share_hyp() path near the end of this series.
-
-Thanks,
-Quentin
+diff --git kernel/printk/index.c kernel/printk/index.c
+index ca062f5e1779..e340e0a8b847 100644
+--- kernel/printk/index.c
++++ kernel/printk/index.c
+@@ -137,13 +137,13 @@ static const char *pi_get_module_name(struct module *mod)
+  }
+  #endif
+  
+-void pi_create_file(struct module *mod)
++static inline void pi_create_file(struct module *mod)
+  {
+  	debugfs_create_file(pi_get_module_name(mod), 0444, dfs_index,
+  				       mod, &dfs_index_fops);
+  }
+  
+-void pi_remove_file(struct module *mod)
++static inline void pi_remove_file(struct module *mod)
+  {
+  	debugfs_remove(debugfs_lookup(pi_get_module_name(mod), dfs_index));
+  }
