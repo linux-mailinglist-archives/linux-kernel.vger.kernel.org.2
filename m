@@ -2,98 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517813D00CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DA33D00EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232830AbhGTRFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 13:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233513AbhGTREK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 13:04:10 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA239C0613DF;
-        Tue, 20 Jul 2021 10:44:44 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id h1so11781448plf.6;
-        Tue, 20 Jul 2021 10:44:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=q3HDnuffZuJhaxgw+kTfsNGvuoZSYcdRnWVcMLBuc9A=;
-        b=nG57TzCISECsz3+smnh3RhtNTXVjpYhFyX+Ez+txIPpJ81wpM0dsV4yplPL3HQr/Yk
-         3zOggitl249bkBd5b2dDWYeefwfJlFoZK6s2hlDtABRJrw8v5tIlh2D0jyHrRDpk6fbV
-         7SdQDuvjQcQwaxFHGV/i6ZBNuvGqgVDjJyt7k97crhu6CNk9IqqisvBaqY10z3LWZzyF
-         Nku0CTZlpK12hq2jOPl5FBG2qXC3xsQuJWKm+YP3rVzB5vI7Bg9p8wrs9JgTAQIkKq1V
-         nMG97yeL9MuEiKlKKA3F3G894TghKz2WsszX8pZNaJga+lIxV4tqbN/BfNkqpiDXNVFW
-         1M+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=q3HDnuffZuJhaxgw+kTfsNGvuoZSYcdRnWVcMLBuc9A=;
-        b=c76xEckEWSwnzzIQBNHWSDkR4Jny0mamomXfp4s8zQZvZt5n5p2jKl3jYekz9BfaTr
-         ZLesb9s8xVuGSaMsaQ9dJX3Ma2gu2EW1xB72wy/T62xRFP0t+ZXQn6zdBQcdppOdFsHJ
-         VfQb+LmFPVRjS6zc+aPi0dv5CAdNaeMI0xXollj0lRj5TitybMFDw4WDtLm4vdUhC6wZ
-         AlS80/auqFft3c+eVwnlkucWy7IXn/nMSe+Xl51QPpc8srXqyIyeRBHx37Bqj5myx0R3
-         +ApIJU5xMdNsSciQ+0dgayLDxVJtpeEMcuV7qyRV4BMa1Eef58PfyBiGrwEqAezRr2+H
-         3AGg==
-X-Gm-Message-State: AOAM532OlQLSTtRmB4S8ZDuOJAQDcOp3Yfn1XWECjM6e5Y6eaLOf8mU1
-        5XKzzEHWJsEQiAECcKJdvvgk1KRUMRAabw==
-X-Google-Smtp-Source: ABdhPJxvypR/CVhx27PnzeTXOEBxyuhW/3BDWEUYY6D6fZKuLMwQNssHGu7Z/BnO2y2+yUpZa50TcA==
-X-Received: by 2002:a17:90a:bd18:: with SMTP id y24mr36756135pjr.83.1626803083965;
-        Tue, 20 Jul 2021 10:44:43 -0700 (PDT)
-Received: from [10.69.75.79] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id g9sm27429168pgh.40.2021.07.20.10.44.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 10:44:43 -0700 (PDT)
-Subject: Re: [PATCH 5.13 000/349] 5.13.4-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210719184345.989046417@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <b2ae6f4d-3508-f275-ec3e-2a0cb2140750@gmail.com>
-Date:   Tue, 20 Jul 2021 10:44:42 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232076AbhGTRJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 13:09:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229536AbhGTRIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 13:08:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6C8361004;
+        Tue, 20 Jul 2021 17:49:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626803367;
+        bh=rr5DyOF74U0H7iKb0m9zjXCsuqsP8q1pI+d5NX2axk8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VEsgFDZvIXjcoaGpPEoA0Lu9YRxM0Dj90aWqsnbErQ2UUMNfFjiL3KKy2ihSuQKA8
+         DpJfkpmYcVJtchYg4JZ0xVl4g2Mg2o7fCdXq98nn/PAwMTFoWJ250/salXXOhJJg55
+         abW/iC3f5GUZpAEMSlUl/XMmPNxf0dbMFp9c17FIFUFh6aPXTQv17aO0FFf2m4m8ho
+         FzpeQH9QYcsgshAwYqEOKnzQKiefkbesH4vObWgtP6wKthPFfdBb/jqahxbI+okmue
+         fOLCT92FxMSaj5N+ZOIj1PAxbFu2Oagsxe6Rc6uhcjBjL97r/vUbkyUju8PW712k3f
+         K0QVogmSx6JEw==
+Date:   Tue, 20 Jul 2021 19:49:17 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
+        "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Dilip Kota <eswara.kota@linux.intel.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rtc@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH] dt-bindings: Remove "status" from schema examples
+Message-ID: <20210720194917.576b7d70@coco.lan>
+In-Reply-To: <20210720172025.363238-1-robh@kernel.org>
+References: <20210720172025.363238-1-robh@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210719184345.989046417@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Tue, 20 Jul 2021 11:20:25 -0600
+Rob Herring <robh@kernel.org> escreveu:
+
+> There's no reason to have "status" properties in examples. "okay" is the
+> default, and "disabled" turns off some schema checks ('required'
+> specifically).
+> 
+> Enabling qca,ar71xx causes a warning, so let's fix the node names:
+> 
+> Documentation/devicetree/bindings/net/qca,ar71xx.example.dt.yaml: phy@3: '#phy-cells' is a required property
+>         From schema: schemas/phy/phy-provider.yaml
+> 
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Cc: Rui Miguel Silva <rmfrfs@gmail.com>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Robert Marko <robert.marko@sartura.hr>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Alessandro Zummo <a.zummo@towertech.it>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Ramesh Shanmugasundaram <rashanmu@gmail.com>
+> Cc: "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+> Cc: ChiYuan Huang <cy_huang@richtek.com>
+> Cc: Wei Xu <xuwei5@hisilicon.com>
+> Cc: Dilip Kota <eswara.kota@linux.intel.com>
+> Cc: Karol Gugala <kgugala@antmicro.com>
+> Cc: Mateusz Holenko <mholenko@antmicro.com>
+> Cc: Olivier Moysan <olivier.moysan@st.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-rtc@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../display/allwinner,sun8i-a83t-dw-hdmi.yaml |  2 --
+>  .../display/panel/boe,tv101wum-nl6.yaml       |  1 -
+
+>  .../bindings/media/nxp,imx7-mipi-csi2.yaml    |  2 --
+>  .../bindings/media/renesas,drif.yaml          |  1 -
+
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org> # For media
 
 
-On 7/19/2021 11:44 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.4 release.
-> There are 349 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 21 Jul 2021 18:42:59 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.4-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
-
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Thanks,
+Mauro
