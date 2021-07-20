@@ -2,188 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA603CFE4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA6F3CFE78
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238953AbhGTPOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242836AbhGTPMs (ORCPT
+        id S232558AbhGTPSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:18:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42090 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242655AbhGTPLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:12:48 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5EEC0613DB
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:49:50 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id d12so26488708wre.13
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:49:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eXamM+sMZZfyW2rB3syre/v13RlKOutdbrix8Hieb/Q=;
-        b=KXp0zKrUI/OXoRw6lXxx2SFUUXaOZwzGxopbvF0uAfHTw7ZmIku2LexAmSY8NEHCGQ
-         K5WN0Y8Jo3COz5c3QitqdFAQNczB2y0+XoewDy5ZSAI5R78/TdP4nbqPKFtoTSTfunVl
-         bYN8+t4/ZagWjaeYdraSMxMDpI8Hog34PDuKoXSZx9FX+J+2o6wqUoAD9MttLM/PKiro
-         OCwm/Cvoam/U9zF03GieeDkrvVkMT0/cqwSXZxbvvcGAbOXoUBAlCKlMWMmqAj7lHMtD
-         X5g2NJEkHfXzydWS8RU//uFnq6ZimmZw6TPCCxXOqcqeMnwLuORTvkgHMukdmC1e5bTB
-         emKw==
+        Tue, 20 Jul 2021 11:11:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626796316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wvbgt8bgFi4UrfnwLKyGLkkhsgSh4h/OpNZ9UZYODgk=;
+        b=NoH0ewiKbg7b81flumBFSbzclg2r3QES7z+rtet5Ur0q36dVFCUxzFTs8RhMdvoAwgW2Mi
+        XpkLJG+hM7ch7DD+KLLrHZmEiJ6EDDW1KHK65byhNgcAZ96pbiioIAR/fvRReTrzdyQOuq
+        o57hbQ37edR987m4wpfgNPTaCh9xJ6E=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-140-SKfbbWMiNsOUOa3WX-94hA-1; Tue, 20 Jul 2021 11:51:55 -0400
+X-MC-Unique: SKfbbWMiNsOUOa3WX-94hA-1
+Received: by mail-qv1-f71.google.com with SMTP id l4-20020a0ce8440000b02902d89f797d08so19629362qvo.17
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:51:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eXamM+sMZZfyW2rB3syre/v13RlKOutdbrix8Hieb/Q=;
-        b=r6f2zW3SeoNs3XZRyh5FOeK/LzS1FP5ckVDRZKuvl6Dez7SECMmyugZvFIXBaWiH3j
-         wGDuVAjeSkxFi4628aNBE+nRfaoAkkKAHKoe1T815x0+4fYmAIU/F7SZtOe52yoeEQmc
-         KOuhI5qRvK83paty0RiNcqnruJFcZCjrj5zOCbEqNhwoiwBDfhsDf+5xhAwaysdOVLMk
-         noPj1WwJ3O/KSV8emcxGxWAJIYyaWmbeVwObzCp9tUSgyMS08HoBVWx3Z4a+Lmm5RZEq
-         U/9vVvcOKvC735wJLF2wuQhfRj4QdRQppdq5cxOh0mTe7Xz1/Oct+tUMg98zx6B2kRjT
-         Gebw==
-X-Gm-Message-State: AOAM532ApcGINDO37xEsAKRojs+wBWouGmSFRRuWjffqwqOfC9Y4rCXZ
-        bZE4hAqlxBCKXdvAgSB5Nkcbsg==
-X-Google-Smtp-Source: ABdhPJyzRWkzFreaGWXMPsTfkWs7PmiScWdF0pFWpbrQIca+q2nIlIPzY5Ms7/DYn3Ihu8xo8lE/SQ==
-X-Received: by 2002:adf:efc6:: with SMTP id i6mr36363480wrp.213.1626796189365;
-        Tue, 20 Jul 2021 08:49:49 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:ffa2:b757:e72a:11dd])
-        by smtp.gmail.com with ESMTPSA id c2sm23910164wrs.60.2021.07.20.08.49.48
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wvbgt8bgFi4UrfnwLKyGLkkhsgSh4h/OpNZ9UZYODgk=;
+        b=AYXajTZzQyZWSRoAqcOctqVlSHh7ebHy0zC+FyoTcU8jaArUkgtOxhYbl2NGC4iFq3
+         O0OH3xYdTj0eeFZtwkKYNce3Je+7UD5SyenvozlduBoT9D+US8mDjVS5gue9UcIy2KVs
+         VyudbL81u6cgD2peDcLkw2Kg4YbYfd4XErOwKIZGCOeuxrVaFyvsO6eiBTqJOnmCAAlh
+         LY72wWFKz0DBpWWDFIU2aiVk0FpRY/CwTTaKT0s3rmu2ZAXw4aZ9kmS4ZuFmxUYn8GSw
+         wRxWI98Mw4jzLuplM9FGz87HyN4rTYWJen79IrLMfaZgDHlorANDDtw3/BMu5VlZMAxX
+         U7xw==
+X-Gm-Message-State: AOAM533IodqF/GCMSSUn/WRxQhUmFFMeVRoyAMGKouqnKaE/v3mKW5Sf
+        6B97JyKua51IrUHiZdkXYGFf5BKYmUAPiZMB5oEqZv/LSPyEZRYHVuLHWBEPj7VC99NqaELGnxU
+        +A458IHCE8stJsWRpzOpKJ2xv
+X-Received: by 2002:a0c:d644:: with SMTP id e4mr30635655qvj.45.1626796314845;
+        Tue, 20 Jul 2021 08:51:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJymDLQmLR+blSgDutF8KFkpIvwzykam2LvSQx6L0vHZY/+hXiJy/TeBhG10JKapZoYVDhgeUQ==
+X-Received: by 2002:a0c:d644:: with SMTP id e4mr30635629qvj.45.1626796314654;
+        Tue, 20 Jul 2021 08:51:54 -0700 (PDT)
+Received: from localhost.localdomain (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id c15sm5467012qtc.37.2021.07.20.08.51.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 08:49:48 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 16:49:45 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        dbrazdil@google.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
-        Shanker R Donthineni <sdonthineni@nvidia.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 04/16] KVM: arm64: Add MMIO checking infrastructure
-Message-ID: <YPbwmVk1YD9+y7tr@google.com>
-References: <20210715163159.1480168-1-maz@kernel.org>
- <20210715163159.1480168-5-maz@kernel.org>
- <YPav0Hye5Dat/yoL@google.com>
- <87wnpl86sz.wl-maz@kernel.org>
+        Tue, 20 Jul 2021 08:51:53 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     stable@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Hugh Dickins <hughd@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
+        Hillf Danton <hdanton@sina.com>, Igor Raits <igor@gooddata.com>
+Subject: [PATCH stable 5.13.y/5.12.y 0/2] mm/thp: Fix uffd-wp with fork(); crash on pmd migration entry on fork
+Date:   Tue, 20 Jul 2021 11:51:48 -0400
+Message-Id: <20210720155150.497148-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com>
+References: <796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wnpl86sz.wl-maz@kernel.org>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 20 Jul 2021 at 14:15:56 (+0100), Marc Zyngier wrote:
-> On Tue, 20 Jul 2021 12:13:20 +0100,
-> Quentin Perret <qperret@google.com> wrote:
-> > 
-> > On Thursday 15 Jul 2021 at 17:31:47 (+0100), Marc Zyngier wrote:
-> > > +struct s2_walk_data {
-> > > +	kvm_pte_t	pteval;
-> > > +	u32		level;
-> > > +};
-> > > +
-> > > +static int s2_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
-> > > +		     enum kvm_pgtable_walk_flags flag, void * const arg)
-> > > +{
-> > > +	struct s2_walk_data *data = arg;
-> > > +
-> > > +	data->level = level;
-> > > +	data->pteval = *ptep;
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +/* Assumes mmu_lock taken */
-> > > +static bool __check_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa)
-> > > +{
-> > > +	struct s2_walk_data data;
-> > > +	struct kvm_pgtable_walker walker = {
-> > > +		.cb             = s2_walker,
-> > > +		.flags          = KVM_PGTABLE_WALK_LEAF,
-> > > +		.arg            = &data,
-> > > +	};
-> > > +
-> > > +	kvm_pgtable_walk(vcpu->arch.hw_mmu->pgt, ALIGN_DOWN(ipa, PAGE_SIZE),
-> > > +			 PAGE_SIZE, &walker);
-> > > +
-> > > +	/* Must be a PAGE_SIZE mapping with our annotation */
-> > > +	return (BIT(ARM64_HW_PGTABLE_LEVEL_SHIFT(data.level)) == PAGE_SIZE &&
-> > > +		data.pteval == MMIO_NOTE);
-> > 
-> > Nit: you could do this check in the walker directly and check the return
-> > value of kvm_pgtable_walk() instead. That would allow to get rid of
-> > struct s2_walk_data.
-> > 
-> > Also, though the compiler might be able to optimize, maybe simplify the
-> > level check to level == (KVM_PGTABLE_MAX_LEVELS - 1)?
-> 
-> Yup, all good points. I guess I could do the same in my other series
-> that parses the userspace PT to extract the level.
-
-Well, actually, let me take that back. I think something like you have
-would be useful, but in pgtable.c directly and re-usable for stage-1 and
-stage-2 walks. Maybe something like the below (totally untested)?
-
-I could use such a walker in several places as well in the memory
-ownership series:
-
- - following the idea of [1], I could remove the
-   kvm_pgtable_stage2_find_range() function entirely;
-
- - [2] defines 2 custom walkers that do nothing but walk host stage-2
-   and hyp stage-1 page-tables to check permissions and such --  they
-   could be removed/re-implemented easily as well.
-
-And you seem to need something similar here, so clearly there is a need.
-WDYT?
-
-Thanks,
-Quentin
-
-[1] https://lore.kernel.org/kvmarm/20210719104735.3681732-3-qperret@google.com/
-[2] https://lore.kernel.org/kvmarm/20210719104735.3681732-14-qperret@google.com/
-
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index e0ae57dca827..bd6d26f27e1a 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -357,6 +357,38 @@ int kvm_pgtable_walk(struct kvm_pgtable *pgt, u64 addr, u64 size,
-        return _kvm_pgtable_walk(&walk_data);
- }
-
-+struct get_leaf_data {
-+       kvm_pte_t *ptep;
-+       u32 *level;
-+};
-+
-+static int get_leaf_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
-+                          enum kvm_pgtable_walk_flags flag, void * const arg)
-+{
-+       struct get_leaf_data *data = arg;
-+
-+       *(data->ptep) = *ptep;
-+       *(data->level) = level;
-+
-+       return 0;
-+}
-+
-+int kvm_pgtable_get_leaf(struct kvm_pgtable *pgt, u64 addr, kvm_pte_t *ptep,
-+                        u32 *level)
-+{
-+       struct get_leaf_data data = {
-+               .ptep = ptep,
-+               .level = level,
-+       };
-+       struct kvm_pgtable_walker __get_leaf_walker = {
-+               .cb             = get_leaf_walker,
-+               .flags          = KVM_PGTABLE_WALK_LEAF,
-+               .arg            = &data,
-+       };
-+
-+       return kvm_pgtable_walk(pgt, addr, PAGE_SIZE, &__get_leaf_walker);
-+}
-+
- struct hyp_map_data {
-        u64                             phys;
-        kvm_pte_t                       attr;
+In summary: this series should be needed for 5.10/5.12/5.13. This is the=0D
+5.13.y/5.12.y backport of the series, and it should be able to be applied o=
+n=0D
+both of the branches.  Patch 1 is a dependency of patch 2, while patch 2 sh=
+ould=0D
+be the real fix.=0D
+=0D
+This series should be able to fix a rare race that mentioned in thread:=0D
+=0D
+https://lore.kernel.org/linux-mm/796cbb7-5a1c-1ba0-dde5-479aba8224f2@google=
+.com/=0D
+=0D
+This fact wasn't discovered when the fix got proposed and merged, because t=
+he=0D
+fix was originally about uffd-wp and its fork event.  However it turns out =
+that=0D
+the problematic commit b569a1760782f3d is also causing crashing on fork() o=
+f=0D
+pmd migration entries which is even more severe than the original uffd-wp=0D
+problem.=0D
+=0D
+Stable kernels at least on 5.12.y has the crash reproduced, and it's possib=
+le=0D
+5.13.y and 5.10.y could hit it due to having the problematic commit=0D
+b569a1760782f3d but lacking of the uffd-wp fix patch (8f34f1eac382, which i=
+s=0D
+also patch 2 of this series).=0D
+=0D
+The pmd entry crash problem was reported by Igor Raits <igor@gooddata.com> =
+and=0D
+debugged by Hugh Dickins <hughd@google.com>.=0D
+=0D
+Please review, thanks.=0D
+=0D
+Peter Xu (2):=0D
+  mm/thp: simplify copying of huge zero page pmd when fork=0D
+  mm/userfaultfd: fix uffd-wp special cases for fork()=0D
+=0D
+ include/linux/huge_mm.h |  2 +-=0D
+ include/linux/swapops.h |  2 ++=0D
+ mm/huge_memory.c        | 36 +++++++++++++++++-------------------=0D
+ mm/memory.c             | 25 +++++++++++++------------=0D
+ 4 files changed, 33 insertions(+), 32 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
 
