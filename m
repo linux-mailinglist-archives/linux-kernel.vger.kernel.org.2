@@ -2,103 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7BE3CF361
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AAD43CF371
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234533AbhGTDyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 23:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234127AbhGTDyB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 23:54:01 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF361C061574;
-        Mon, 19 Jul 2021 21:34:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=oJRAxrYs7RTt5lB7rIWFTEQlzeyXDUjCRcvLy4VcFz8=; b=VwF80pOG0We5K68BTjf8UT0qm1
-        OVXf7dYgS2OHZlKZ5EEyDErpf4zJy9CeqljknbuDR3peRB+97Iq9hoFJVZG/nzAZUljl5VzXcB2aL
-        lPO17ZCqyqCh4QGdLzN8dBUqp2tUWROKTT9EDOfNkscycEXHOqlRBzjgbxI3AfpeX3yK+gFxfSo/q
-        L3ynzUcFjs/PKHz59YiurQL3vksMBKgRhroSHFijNdmpjTckb7PJ6dhs3w7Wc1jVe/ar7j+89PlN7
-        0+f+6Nwmr3dxeWr/y4n0oQXc8B4Goo4Jc+ME9m6g86fEyWuKFwqamEBgJEABZ2udE37v4fqNvQtAr
-        dSrLGMvQ==;
-Received: from [2601:1c0:6280:3f0::a22f] (helo=smtpauth.infradead.org)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m5hSm-001Mf5-EW; Tue, 20 Jul 2021 04:34:36 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Ganesan Ramalingam <ganesanr@broadcom.com>,
-        John Crispin <blogic@openwrt.org>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: [PATCH] mips: netlogic: fix kernel-doc complaints in fmn-config.c
-Date:   Mon, 19 Jul 2021 21:34:32 -0700
-Message-Id: <20210720043432.1684-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1347741AbhGTD5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 23:57:39 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:39002 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346924AbhGTD47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 23:56:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626755858; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ZGzo7qtd5RMmOHJdMfl1iSfPpBIFAZ1rPzgtyoO52QI=; b=GnaWq7kMwOV8a8mhr7ycRaAGFtu5KyobihWMwoswe5t+JwXOJ8rxmlMGzo4SnObZrs4Au0mF
+ JH/LRA6oe7pzOR36AHqQzKUYoFWO0F/Yv7cJG5EjCUOpzwU5gzgPTYQfijV3YGCcOr+RecwH
+ cfoQjvezbVv1oCNxGpVVrotmymU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60f652fe56871ded7737fb90 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Jul 2021 04:37:18
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A3C68C4360C; Tue, 20 Jul 2021 04:37:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7E106C433D3;
+        Tue, 20 Jul 2021 04:37:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7E106C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     mka@chromium.org, swboyd@chromium.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org
+Cc:     ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
+        ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org, Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH v4 00/13] Use qmp_send to update co-processor load state
+Date:   Tue, 20 Jul 2021 10:06:34 +0530
+Message-Id: <1626755807-11865-1-git-send-email-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up kernel-doc warnings in netlogic/xlr/fmn-config.c by using
-correct kernel-doc format. Fixes these warnings:
+The power domains exposed by the AOSS QMP driver control the load state
+resources linked to modem, adsp, cdsp remoteprocs. These are used to
+notify the Always on Subsystem (AOSS) that a particular co-processor is
+up/down. AOSS uses this information to wait for the co-processors to
+suspend before starting its sleep sequence. These co-processors enter
+low-power modes independent to that of the application processor and
+the load state resources linked to them are expected to remain unaltered
+across system suspend/resume cycles. To achieve this behavior let's stop
+modeling them as power-domains and replace them with generic qmp_send
+interface instead.
 
-arch/mips/netlogic/xlr/fmn-config.c:106: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Configure bucket size and credits for a device. 'size' is the size of
-arch/mips/netlogic/xlr/fmn-config.c:181: warning: expecting prototype for Setup the FMN details for each devices according to the device available(). Prototype was for xlr_board_info_setup() instead
+https://lore.kernel.org/lkml/20200913034603.GV3715@yoga/
+Previous discussion on dropping power-domain support from AOSS QMP driver
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Ganesan Ramalingam <ganesanr@broadcom.com>
-Cc: John Crispin <blogic@openwrt.org>
-Cc: Aditya Srivastava <yashsri421@gmail.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
----
- arch/mips/netlogic/xlr/fmn-config.c |   15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+Depends on:
+aoss yaml: https://patchwork.kernel.org/project/linux-arm-msm/cover/20210709174142.1274554-1-bjorn.andersson@linaro.org/
+qmp_send: https://patchwork.kernel.org/project/linux-arm-msm/cover/1623237532-20829-1-git-send-email-sibis@codeaurora.org/
 
---- linux-next-20210719.orig/arch/mips/netlogic/xlr/fmn-config.c
-+++ linux-next-20210719/arch/mips/netlogic/xlr/fmn-config.c
-@@ -103,18 +103,19 @@ static void check_credit_distribution(vo
- }
- 
- /**
-- * Configure bucket size and credits for a device. 'size' is the size of
-- * the buckets for the device. This size is distributed among all the CPUs
-- * so that all of them can send messages to the device.
-- *
-- * The device is also given 'cpu_credits' to send messages to the CPUs
-- *
-+ * setup_fmn_cc -  Configure bucket size and credits for a device.
-  * @dev_info: FMN information structure for each devices
-  * @start_stn_id: Starting station id of dev_info
-  * @end_stn_id: End station id of dev_info
-  * @num_buckets: Total number of buckets for den_info
-  * @cpu_credits: Allowed credits to cpu for each devices pointing by dev_info
-  * @size: Size of the each buckets in the device station
-+ *
-+ * 'size' is the size of the buckets for the device. This size is
-+ * distributed among all the CPUs
-+ * so that all of them can send messages to the device.
-+ *
-+ * The device is also given 'cpu_credits' to send messages to the CPUs
-  */
- static void setup_fmn_cc(struct xlr_fmn_info *dev_info, int start_stn_id,
- 		int end_stn_id, int num_buckets, int cpu_credits, int size)
-@@ -174,6 +175,8 @@ static void setup_cpu_fmninfo(struct xlr
- }
- 
- /**
-+ * xlr_board_info_setup - Setup FMN details
-+ *
-  * Setup the FMN details for each devices according to the device available
-  * in each variant of XLR/XLS processor
-  */
+V4:
+ * Rebase patch 1 due to the aoss-qmp yaml conversion (Dropping Rb).
+ * Commit message change and sc8180x co-processor addition
+   to patch 2. [Rob/Bjorn]
+ * Drop unused pdev and kfree the load state string in q6v5_deinit
+   /probe path for patch 4. [Matthias]
+ * Replaced "binding" with "property" across the series. [Matthias]
+ * Commit message change and drop incorrect cleanup on cooling
+   device probe failures. [Matthias]
+
+V3:
+ * Misc. documentation fixes [patch 2]:
+  - Reduce power-domain maxItems due to load_state pd removal
+  - Combine compatibles where possible with the load_state pd removal
+  - Fixup the qcom,qmp ref to phandle type
+
+V2:
+ * load_state is currently broken on mainline so be safely dropped
+   without side-effects.
+ * Rebased on top of qmp_send v3 series.
+ * Dropped R-b from Stephen and Rob on patch 3 due to the yaml
+   conversion.
+ * New patch [12] to drop unused aoss-qmp header.
+ * Commit message update [patch 1] [Rob]
+ * Reorder the series [Stephen]
+
+Sibi Sankar (13):
+  dt-bindings: soc: qcom: aoss: Drop the load state power-domain
+  dt-bindings: remoteproc: qcom: pas: Add QMP property
+  dt-bindings: remoteproc: qcom: Add QMP property
+  remoteproc: qcom: q6v5: Use qmp_send to update co-processor load state
+  arm64: dts: qcom: sc7180: Use QMP property to control load state
+  arm64: dts: qcom: sc7280: Use QMP property to control load state
+  arm64: dts: qcom: sdm845: Use QMP property to control load state
+  arm64: dts: qcom: sm8150: Use QMP property to control load state
+  arm64: dts: qcom: sm8250: Use QMP property to control load state
+  arm64: dts: qcom: sm8350: Use QMP property to control load state
+  soc: qcom: aoss: Drop power domain support
+  dt-bindings: msm/dp: Remove aoss-qmp header
+  dt-bindings: soc: qcom: aoss: Delete unused power-domain definitions
+
+ .../bindings/display/msm/dp-controller.yaml        |   1 -
+ .../devicetree/bindings/remoteproc/qcom,adsp.yaml  |  65 +++++++------
+ .../devicetree/bindings/remoteproc/qcom,q6v5.txt   |   7 +-
+ .../bindings/soc/qcom/qcom,aoss-qmp.yaml           |  11 +--
+ arch/arm64/boot/dts/qcom/sc7180.dtsi               |   9 +-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |   2 -
+ arch/arm64/boot/dts/qcom/sdm845.dtsi               |   8 +-
+ arch/arm64/boot/dts/qcom/sm8150.dtsi               |  28 +++---
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               |  22 ++---
+ arch/arm64/boot/dts/qcom/sm8350.dtsi               |  30 +++---
+ drivers/remoteproc/qcom_q6v5.c                     |  57 ++++++++++-
+ drivers/remoteproc/qcom_q6v5.h                     |   7 +-
+ drivers/remoteproc/qcom_q6v5_adsp.c                |   7 +-
+ drivers/remoteproc/qcom_q6v5_mss.c                 |  44 ++-------
+ drivers/remoteproc/qcom_q6v5_pas.c                 |  85 ++++------------
+ drivers/remoteproc/qcom_q6v5_wcss.c                |   4 +-
+ drivers/soc/qcom/qcom_aoss.c                       | 107 ---------------------
+ include/dt-bindings/power/qcom-aoss-qmp.h          |  14 ---
+ 18 files changed, 185 insertions(+), 323 deletions(-)
+ delete mode 100644 include/dt-bindings/power/qcom-aoss-qmp.h
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
