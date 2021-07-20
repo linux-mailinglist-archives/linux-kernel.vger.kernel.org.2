@@ -2,122 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB303CF66F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FAC3CF671
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbhGTIQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 04:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50388 "EHLO
+        id S233899AbhGTIQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 04:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234817AbhGTIKU (ORCPT
+        with ESMTP id S234895AbhGTILV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:10:20 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D995C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:50:59 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d9so7781330pfv.4
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:50:59 -0700 (PDT)
+        Tue, 20 Jul 2021 04:11:21 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E415C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:51:58 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id h4so28856666ljo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:51:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=hyHfreQCGU1n08jflxUm3GD5Es1OvyJ8VlqC19lqeQY=;
-        b=FbegROJ90Iif54xm+O2OALn405pyfAJ8145JLRjkETF6hKetoYcN0nnEQ5/AjABZWW
-         6rZp7tgx2uBFBfBMrmRllXU0Igs7FKFLMVgxFexiOUiEs9sz3WKjb27K+zfbwjdMw4rI
-         kxKq92ERO02d7NXieZ6mDNNe514vyrET7Ju2BJX6rn4v1tsIXVmmB5bA16d0Nzg8ivYQ
-         4ijlXfz7a7lIuyF8spDdmsM5QHnnmUm17Rref03RXj6Yopo38nW+pqJdZSBgzyjXK1fH
-         O2ut3/96E27HBd4yokYh/917EnXg4GgTG/41FlbesLf+GrLDmLjZV35mSXMpxajqmFFm
-         RsNA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PsUh+Xo3UXeUh/L/SglgEjg4n0VzVvkirFWNfTZ+k28=;
+        b=iZu2AmkoDGQEAQHgqERSRwIb479YZ1JgKsIpPVQt0pv29/TLl+ORmGB6OMq3UdUaWz
+         0ip/wLx7rqgekjPDk35o4nkqDZsmZvU6xtuttUCylXinxK2ysdopomXyL064QfC1T9Ba
+         j4+QGdKxLbbCchEAMqVIqLFRcaygJc8azc2Y8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hyHfreQCGU1n08jflxUm3GD5Es1OvyJ8VlqC19lqeQY=;
-        b=rwtrbX3A+DBvf5t9kyzx5F3VWhnm8HqdKLf+i5prt2snu4hGKxbIxSrlmCZAZESKce
-         sYtx1Sr6MpQORcmKK2k8SLAJDQ/S3HfN/ymNW0n9nIzVQU+8bis/yYrtwKhtz2QnIgNN
-         fwM6MBQY+E0Re9CdgqMG6jMpYEr6SXBNm5cGgQhbJQeNyPpsQkWvO6fZPpOHxP1KGBWW
-         NozMDSIwTi4mY7HRwi2IR3FU7Q0wI/ZgP3y3JxIzM0Jc4L9zd8qSzuO4WwYdEHOsLrZY
-         yZL2hsAFAdgQbyGOIYu8ed+no30Jj594nHbPg4I14oBUFkLdlyUNGIrcMeeIDvXy1YYh
-         mgGQ==
-X-Gm-Message-State: AOAM530qCsVXJeSGAzwYgx/5uL+Fur2jZal2NdMr8w80zkspknAG/NJI
-        0LOfdJL/PGGYuROKA6cPXPlB8vYiJG4=
-X-Google-Smtp-Source: ABdhPJxq5NwFbLCn786YXAAZfvZ5Y0RKQPaxTlLcGvNw8E60U5x7oPuMNvXy8Z9gVpdSlWVx0bVXHw==
-X-Received: by 2002:a65:5284:: with SMTP id y4mr10889779pgp.19.1626771058139;
-        Tue, 20 Jul 2021 01:50:58 -0700 (PDT)
-Received: from [192.168.1.153] (M106072041033.v4.enabler.ne.jp. [106.72.41.33])
-        by smtp.gmail.com with ESMTPSA id n5sm22829381pfv.29.2021.07.20.01.50.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 01:50:57 -0700 (PDT)
-Subject: [PATCH 1/4] riscv: __asm_copy_to-from_user: Fix: overrun copy
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <37097718-c472-025a-2058-55667badc5b9@gmail.com>
-From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Message-ID: <415f9adf-8dd6-2467-8e74-0ed9d5cdfed9@gmail.com>
-Date:   Tue, 20 Jul 2021 17:50:52 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PsUh+Xo3UXeUh/L/SglgEjg4n0VzVvkirFWNfTZ+k28=;
+        b=DEOGJlLvRIwUYvCRl4s3gt+gtRksoek/Szp/rPFCSV9hE7ZALu/Ryo7nqe7/0bsB6k
+         GB2CfJYejM9ELP7Mnsgtu8AbVoOhcjFlzd49494s38Xm0euEqZZW91HiiXBIVcMzkJJB
+         iVenN6BEu0zEsP7UIPZh18tnMkp+4lz7nKgHEVgpx6MejnZFnrcSd2uoeyyMaiq+55oR
+         Ni+KXor37+895cSHS93SaJZD90PI1sRs/4k/ya1uzHqb13Ub8qCm+Fa2fcvcI4vv2GbM
+         UG5IHD6ESwRuZPnHI3u5WfCgmVPjjUuazSZ/h30bl+8ydImokmBiwI2ivVjbVAQz0Q+I
+         4CdA==
+X-Gm-Message-State: AOAM531oEo726jur8YYFyr823BgtPu+t2GKSDgj64hQfhvX4I1oyrRMa
+        wmBXDQzTLOyPKpXsG/3FudVNceYwg80HIIcRXCNWEw==
+X-Google-Smtp-Source: ABdhPJwWi+2x1iPbMUfnDYAyLrvt9O7AEvGDWG0YXC8JmRvcncgtLF7dWsZSFrZzPAF32XZ/8RuxDaifIqIlF77xnCY=
+X-Received: by 2002:a2e:5c42:: with SMTP id q63mr25163421ljb.23.1626771116910;
+ Tue, 20 Jul 2021 01:51:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <37097718-c472-025a-2058-55667badc5b9@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210705054111.4473-1-chun-jie.chen@mediatek.com> <20210705054111.4473-4-chun-jie.chen@mediatek.com>
+In-Reply-To: <20210705054111.4473-4-chun-jie.chen@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Tue, 20 Jul 2021 16:51:45 +0800
+Message-ID: <CAGXv+5EG00P4EzNjm=7nRNwYwEF9aXorhELsmbxtrYM20SW0KQ@mail.gmail.com>
+Subject: Re: [v3 3/5] soc: mediatek: pm-domains: Add support for mt8195
+To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+On Mon, Jul 5, 2021 at 1:42 PM Chun-Jie Chen <chun-jie.chen@mediatek.com> wrote:
+>
+> Add domain control data including bus protection data size
+> change due to more protection steps in mt8195.
+>
+> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> ---
+>  drivers/soc/mediatek/mt8195-pm-domains.h | 738 +++++++++++++++++++++++
+>  drivers/soc/mediatek/mtk-pm-domains.c    |   5 +
+>  drivers/soc/mediatek/mtk-pm-domains.h    |   2 +-
+>  include/linux/soc/mediatek/infracfg.h    | 103 ++++
+>  4 files changed, 847 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/soc/mediatek/mt8195-pm-domains.h
+>
+> diff --git a/drivers/soc/mediatek/mt8195-pm-domains.h b/drivers/soc/mediatek/mt8195-pm-domains.h
+> new file mode 100644
+> index 000000000000..54bb7af8e9a3
+> --- /dev/null
+> +++ b/drivers/soc/mediatek/mt8195-pm-domains.h
+> @@ -0,0 +1,738 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2021 MediaTek Inc.
+> + * Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> + */
+> +
+> +#ifndef __SOC_MEDIATEK_MT8195_PM_DOMAINS_H
+> +#define __SOC_MEDIATEK_MT8195_PM_DOMAINS_H
+> +
+> +#include "mtk-pm-domains.h"
+> +#include <dt-bindings/power/mt8195-power.h>
+> +
+> +/*
+> + * MT8195 power domain support
+> + */
+> +
+> +static const struct scpsys_domain_data scpsys_domain_data_mt8195[] = {
 
-There were two causes for the overrun memory access.
+The SCPSYS block is not documented in the datasheets available. However
+I did look at all the register and bit offsets and confirmed nothing
+overlapped.
 
-The threshold size was too small.
-The aligning dst require one SZREG and unrolling word copy requires
-8*SZREG, total have to be at least 9*SZREG.
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+> index 2689f02d7a41..12552c9996ac 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+> @@ -20,6 +20,7 @@
+>  #include "mt8173-pm-domains.h"
+>  #include "mt8183-pm-domains.h"
+>  #include "mt8192-pm-domains.h"
+> +#include "mt8195-pm-domains.h"
+>
+>  #define MTK_POLL_DELAY_US              10
+>  #define MTK_POLL_TIMEOUT               USEC_PER_SEC
+> @@ -576,6 +577,10 @@ static const struct of_device_id scpsys_of_match[] = {
+>                 .compatible = "mediatek,mt8192-power-controller",
+>                 .data = &mt8192_scpsys_data,
+>         },
+> +       {
+> +               .compatible = "mediatek,mt8195-power-controller",
+> +               .data = &mt8195_scpsys_data,
+> +       },
+>         { }
+>  };
+>
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
+> index 8b86ed22ca56..caaa38100093 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.h
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
+> @@ -37,7 +37,7 @@
+>  #define PWR_STATUS_AUDIO               BIT(24)
+>  #define PWR_STATUS_USB                 BIT(25)
+>
+> -#define SPM_MAX_BUS_PROT_DATA          5
+> +#define SPM_MAX_BUS_PROT_DATA          6
+>
+>  #define _BUS_PROT(_mask, _set, _clr, _sta, _update, _ignore) { \
+>                 .bus_prot_mask = (_mask),                       \
+> diff --git a/include/linux/soc/mediatek/infracfg.h b/include/linux/soc/mediatek/infracfg.h
+> index 4615a228da51..3e90fb9b926a 100644
+> --- a/include/linux/soc/mediatek/infracfg.h
+> +++ b/include/linux/soc/mediatek/infracfg.h
+> @@ -2,6 +2,109 @@
+>  #ifndef __SOC_MEDIATEK_INFRACFG_H
+>  #define __SOC_MEDIATEK_INFRACFG_H
+>
+> +#define MT8195_TOP_AXI_PROT_EN_STA1                     0x228
+> +#define MT8195_TOP_AXI_PROT_EN_1_STA1                   0x258
+> +#define MT8195_TOP_AXI_PROT_EN_SET                     0x2a0
+> +#define MT8195_TOP_AXI_PROT_EN_CLR                      0x2a4
+> +#define MT8195_TOP_AXI_PROT_EN_1_SET                    0x2a8
+> +#define MT8195_TOP_AXI_PROT_EN_1_CLR                    0x2ac
+> +#define MT8195_TOP_AXI_PROT_EN_MM_SET                   0x2d4
+> +#define MT8195_TOP_AXI_PROT_EN_MM_CLR                   0x2d8
+> +#define MT8195_TOP_AXI_PROT_EN_MM_STA1                  0x2ec
+> +#define MT8195_TOP_AXI_PROT_EN_2_SET                    0x714
+> +#define MT8195_TOP_AXI_PROT_EN_2_CLR                    0x718
+> +#define MT8195_TOP_AXI_PROT_EN_2_STA1                   0x724
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_SET                 0xb84
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_CLR                 0xb88
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_STA1                0xb90
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_1_SET               0xba4
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_1_CLR               0xba8
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_1_STA1              0xbb0
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_2_SET               0xbb8
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_2_CLR               0xbbc
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_2_STA1              0xbc4
+> +#define MT8195_TOP_AXI_PROT_EN_SUB_INFRA_VDNR_SET       0xbcc
+> +#define MT8195_TOP_AXI_PROT_EN_SUB_INFRA_VDNR_CLR       0xbd0
+> +#define MT8195_TOP_AXI_PROT_EN_SUB_INFRA_VDNR_STA1      0xbd8
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_SET                 0xdcc
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_CLR                 0xdd0
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_STA1                0xdd8
 
-Inside the unrolling copy, the subtracting -(8*SZREG-1) would make
-iteration happening one extra loop. Proper value is -(8*SZREG).
+These all look correct.
 
-Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
----
- arch/riscv/lib/uaccess.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> +#define MT8195_TOP_AXI_PROT_EN_NNA0                    BIT(1)
+> +#define MT8195_TOP_AXI_PROT_EN_NNA1                    BIT(2)
+> +#define MT8195_TOP_AXI_PROT_EN_NNA                     GENMASK(2, 1)
+> +#define MT8195_TOP_AXI_PROT_EN_VDOSYS0                 BIT(6)
+> +#define MT8195_TOP_AXI_PROT_EN_VPPSYS0                 BIT(10)
+> +#define MT8195_TOP_AXI_PROT_EN_MFG1                    BIT(11)
+> +#define MT8195_TOP_AXI_PROT_EN_MFG1_2ND                        GENMASK(22, 21)
+> +#define MT8195_TOP_AXI_PROT_EN_VPPSYS0_2ND             BIT(23)
+> +#define MT8195_TOP_AXI_PROT_EN_1_MFG1                  GENMASK(20, 19)
+> +#define MT8195_TOP_AXI_PROT_EN_1_CAM                   BIT(22)
+> +#define MT8195_TOP_AXI_PROT_EN_2_CAM                   BIT(0)
+> +#define MT8195_TOP_AXI_PROT_EN_2_MFG1_2ND              GENMASK(6, 5)
+> +#define MT8195_TOP_AXI_PROT_EN_2_MFG1                  BIT(7)
+> +#define MT8195_TOP_AXI_PROT_EN_2_AUDIO_ASRC            (BIT(8) | BIT(17))
+> +#define MT8195_TOP_AXI_PROT_EN_2_AUDIO                 (BIT(9) | BIT(11))
+> +#define MT8195_TOP_AXI_PROT_EN_2_ADSP                  (BIT(12) | GENMASK(16, 14))
+> +#define MT8195_TOP_AXI_PROT_EN_2_NNA0_2ND              BIT(19)
+> +#define MT8195_TOP_AXI_PROT_EN_2_NNA1_2ND              BIT(20)
+> +#define MT8195_TOP_AXI_PROT_EN_2_NNA_2ND               GENMASK(20, 19)
+> +#define MT8195_TOP_AXI_PROT_EN_2_NNA0                  BIT(21)
+> +#define MT8195_TOP_AXI_PROT_EN_2_NNA1                  BIT(22)
+> +#define MT8195_TOP_AXI_PROT_EN_2_NNA                   GENMASK(22, 21)
 
-diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
-index bceb0629e440..8bbeca89a93f 100644
---- a/arch/riscv/lib/uaccess.S
-+++ b/arch/riscv/lib/uaccess.S
-@@ -35,7 +35,7 @@ ENTRY(__asm_copy_from_user)
- 	/*
- 	 * Use byte copy only if too small.
- 	 */
--	li	a3, 8*SZREG /* size must be larger than size in word_copy */
-+	li	a3, 9*SZREG /* size must be larger than size in word_copy */
- 	bltu	a2, a3, .Lbyte_copy_tail
- 
- 	/*
-@@ -75,7 +75,7 @@ ENTRY(__asm_copy_from_user)
- 	 * a3 - a1 & mask:(SZREG-1)
- 	 * t0 - end of aligned dst
- 	 */
--	addi	t0, t0, -(8*SZREG-1) /* not to over run */
-+	addi	t0, t0, -(8*SZREG) /* not to over run */
- 2:
- 	fixup REG_L   a4,        0(a1), 10f
- 	fixup REG_L   a5,    SZREG(a1), 10f
-@@ -97,7 +97,7 @@ ENTRY(__asm_copy_from_user)
- 	addi	a1, a1, 8*SZREG
- 	bltu	a0, t0, 2b
- 
--	addi	t0, t0, 8*SZREG-1 /* revert to original value */
-+	addi	t0, t0, 8*SZREG /* revert to original value */
- 	j	.Lbyte_copy_tail
- 
- .Lshift_copy:
--- 
-2.17.1
+> +#define MT8195_TOP_AXI_PROT_EN_MM_CAM                  (BIT(0) | BIT(2) | BIT(4))
+> +#define MT8195_TOP_AXI_PROT_EN_MM_IPE                  BIT(1)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_IMG                  (BIT(1) | BIT(3))
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VPPSYS0              (GENMASK(2, 0) | GENMASK(8, 6) |        \
+> +                                                       GENMASK(12, 10) | GENMASK(21, 19) |     \
+> +                                                       BIT(31))
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VDOSYS0              (GENMASK(5, 3) | BIT(9) |       \
+> +                                                       GENMASK(14, 13) | GENMASK(21, 17) |     \
+> +                                                       BIT(30))
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VPPSYS1              GENMASK(8, 5)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VENC                 (BIT(9) | BIT(11))
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VENC_CORE1           (BIT(10) | BIT(12))
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VDEC0                        BIT(13)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VDEC1                        BIT(14)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VDOSYS1_2ND          BIT(22)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VPPSYS1_2ND          BIT(23)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_CAM_2ND              BIT(24)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_IMG_2ND              BIT(25)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VENC_2ND             BIT(26)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_WPESYS               BIT(27)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VDEC0_2ND            BIT(28)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VDEC1_2ND            BIT(29)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VDOSYS0_2ND          GENMASK(29, 22)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_VDOSYS1              GENMASK(31, 30)
+
+There's significant overlap within this block. This means when the base
+VDOSYS0 power domain is on, all the overlapped protection bits get turned
+off. I'm not sure that's correct.
+
+Same goes for IMG, which overlaps with IPE.
+
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_VPPSYS0_2ND                (GENMASK(7, 0) | GENMASK(18, 11))
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_VENC               BIT(2)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_VENC_CORE1         (BIT(3) | BIT(15))
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_CAM                        (BIT(5) | BIT(17))
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_VPPSYS1            (GENMASK(7, 6) | BIT(18))
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_VPPSYS0            (GENMASK(9, 8) | GENMASK(22, 21) | BIT(24))
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_VDOSYS1            BIT(10)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_VDEC2_2ND          BIT(12)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_VDEC0_2ND          BIT(13)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_WPESYS_2ND         BIT(14)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_IMG                        BIT(16)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_IPE                        BIT(16)
+
+And here, IMG and IPE are the same.
+
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_VDEC2              BIT(21)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_VDEC0              BIT(22)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_VDOSYS0            BIT(23)
+> +#define MT8195_TOP_AXI_PROT_EN_MM_2_WPESYS             GENMASK(24, 23)
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_1_EPD_TX           BIT(1)
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_1_DP_TX            BIT(2)
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_PCIE_MAC_P0                (BIT(11) | BIT(28))
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_PCIE_MAC_P1                (BIT(12) | BIT(29))
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_1_PCIE_MAC_P0      BIT(13)
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_1_PCIE_MAC_P1      BIT(14)
+> +#define MT8195_TOP_AXI_PROT_EN_SUB_INFRA_VDNR_MFG1     (BIT(17) | BIT(19))
+> +#define MT8195_TOP_AXI_PROT_EN_SUB_INFRA_VDNR_VPPSYS0  BIT(20)
+> +#define MT8195_TOP_AXI_PROT_EN_SUB_INFRA_VDNR_VDOSYS0  BIT(21)
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_2_NNA0             BIT(25)
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_2_NNA1             BIT(26)
+> +#define MT8195_TOP_AXI_PROT_EN_VDNR_2_NNA              GENMASK(26, 25)
+> +
+
+All these MT8195_TOP_AXI_PROT_EN_* bit offsets aren't documented. Besides
+the huge overlap above, it seems NNA also includes NNA0 and NNA1.
 
 
+Regards
+ChenYu
+
+
+>  #define MT8192_TOP_AXI_PROT_EN_STA1                    0x228
+>  #define MT8192_TOP_AXI_PROT_EN_1_STA1                  0x258
+>  #define MT8192_TOP_AXI_PROT_EN_SET                     0x2a0
+> --
+> 2.18.0
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
