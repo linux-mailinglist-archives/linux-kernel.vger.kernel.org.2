@@ -2,282 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CF83D0135
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8063D0139
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhGTRV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 13:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34908 "EHLO
+        id S231551AbhGTRX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 13:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhGTRVq (ORCPT
+        with ESMTP id S231579AbhGTRWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 13:21:46 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14730C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:02:24 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id k20so23243264pgg.7
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:02:24 -0700 (PDT)
+        Tue, 20 Jul 2021 13:22:46 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5044DC061574;
+        Tue, 20 Jul 2021 11:03:23 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id o30-20020a05600c511eb029022e0571d1a0so54403wms.5;
+        Tue, 20 Jul 2021 11:03:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M9MyM6SiQLZ5m3aBTaXSLwq/XGnRhh08/VcLgE/dXu0=;
-        b=STNATKcfH1avBpmTllo0BejrpE+zX75J13FmRFIATfMMH+ODZAEmHcUarX83AoF6E4
-         CCm9bro8RnZa4wVgDdnozFQnggMPUw/sucQh3JE/5zlmTB9UYuoE743sVGa31+KS2N5A
-         XtQOv5JnRkaKKyp/0AhP3l+ew8rMoVQr+9T+dZP9WDU9WEGJbu0VkOCqicPcFl8cHQAi
-         mJzSnKO+hkfhC4wVsD23n2VmibHbSG9HDT1aGu0RvrnBsAmHQFBQUot1BLzBhhDwoOKl
-         fqBqmjJ8O7lSuaa6Dv4/rACTMeCNfvkFJ1w6yI455+/K3WCCiXHNgR6Pqw3QbCxHZyg5
-         axKg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=gWH1mqA4+vapOJIXzh/ykRjP5f+XZ2ZAp8SGuGSrQSI=;
+        b=fVfUKBzrPupAmTZp1bqSebRkyIgFdKXx9/pqIavRXBzhAn0V5x0o60tiKSvXoozN90
+         mIAYHPwb9Q9IfKUH/hJj87newNyhE7k5Xp3q+LIg1IpN+he1gaZJ8fLWQcFBRdKtWVR4
+         yyPzodXkeISl3ZE1KrbhPisNXHTOtaiBkRuUpjdmMajXlwR/U20GYkg1a28q6JmFu4WM
+         5uO0dAF0c8Qv5fwGSzC0ouWb/N4HaYGXjyyp9HvfxNAeM7pCTVnURWy1xBDDi7vEbgTC
+         GoG4rL79j6Z9PcJvqUiHNPIpvVOh08rzub/xzFnogc9BPtNkZR1APlVlgVoIn+yXtcud
+         AdKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M9MyM6SiQLZ5m3aBTaXSLwq/XGnRhh08/VcLgE/dXu0=;
-        b=GLNEEk1al69rolkSso+KDuwmemUA/TBC0r84TeJDy8B3M1bnbTfqINEp8v2VQxoP3K
-         Qw0bF4s0iFP/XbM2z478SfwNLit0b7mjtkmQ0N49mrv7feKxuahLdCFubHiCfRTm0roo
-         NemUrCuO0ICRR/vTKv379bKQjf+KO9FzE2VmMdVs2Sl7eAdlV8fUHmLoHU5qkbLJ6m8p
-         cYRNe3ZrN4OFeLJWi3Cw1RibmUL+JIn97/3z7oW6mRWLspUf/sFEkmtPTHc6OvFNHH+1
-         DzlZQBiCIl8OLVPKCLsSaO7X3SiTOllAVDt9pfTIZd2oOKJJuHB0KDQVeC8rR3JI526n
-         //Gg==
-X-Gm-Message-State: AOAM532gWoX17x3tWfc51yPo8CapmcDfwTXgPhp1XZuMgpNG8UDD+dvP
-        U7PFCNimJqxjI6qcoLa03jZNaw==
-X-Google-Smtp-Source: ABdhPJztjb1vCs7OC4JfJwLTVUau3HVEAMypgjUcIXcXHaeykJbmgjHUQ20ZSm2OZU/jp51eFJFfyg==
-X-Received: by 2002:aa7:95a4:0:b029:332:f4e1:1dac with SMTP id a4-20020aa795a40000b0290332f4e11dacmr31607712pfk.34.1626804143248;
-        Tue, 20 Jul 2021 11:02:23 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id x6sm3444697pjr.5.2021.07.20.11.02.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 11:02:22 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 18:02:18 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 20/40] KVM: SVM: Make AVIC backing, VMSA and
- VMCB memory allocation SNP safe
-Message-ID: <YPcPqpqRju/QLoHI@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-21-brijesh.singh@amd.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=gWH1mqA4+vapOJIXzh/ykRjP5f+XZ2ZAp8SGuGSrQSI=;
+        b=s/k4GS7LWgAb0qi4itIaDH+YwrBXIu5RdPpO2Wv1Utc79pZWfZ1GFRjmsdh9ficSWQ
+         g/mn+/Px1M7mDVHnl9Y15Fb1GHJPapBgZCSTH36KOVenvb7QtdU+iHcll19bmcuBDFMo
+         Cz7PGbhGpk1LBgYamo3doDE4tz4y30v8mGd/l4AorUncfOuXXwy4XgQCqH8CqwA8u7Rj
+         JtJhoOY+RQhQsH1Frgf38O4alRhIjfki/6rk62GhzX9hUNjxDN93T4V4Cutd33vy+M+w
+         dUA4UUwuYejHN1DYGnVJQAkyqN7/kBOLwDaml/lJs+4eVR4kWPUiXhcrnxG/GyBC3D8/
+         XzRg==
+X-Gm-Message-State: AOAM532hcVEk6EFtjxS9HsaTWr18ji3EPpOaB0FyJIHWpL8hpjvC2HXf
+        aj2eJ7YuqHh/MIt2ud2rkQEXUW0ikto=
+X-Google-Smtp-Source: ABdhPJyn538Zosr+FfzjT/kpmsbXqWyORu74lS4tsG67xejxgZsAjrudUjsp+rUcHYDJqQOdWK3Nbg==
+X-Received: by 2002:a05:600c:a04:: with SMTP id z4mr32311002wmp.103.1626804201842;
+        Tue, 20 Jul 2021 11:03:21 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:2b66:b2d1:7649:7bbf? ([2a02:908:1252:fb60:2b66:b2d1:7649:7bbf])
+        by smtp.gmail.com with ESMTPSA id v11sm23924357wrs.4.2021.07.20.11.03.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jul 2021 11:03:21 -0700 (PDT)
+Subject: Re: [Linaro-mm-sig] [PATCH] drm/msm: Add fence->wait() op
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Sean Paul <sean@poorly.run>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+References: <20210720150716.1213775-1-robdclark@gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <60ffb6f3-e932-d9af-3b90-81adf0c15250@gmail.com>
+Date:   Tue, 20 Jul 2021 20:03:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-21-brijesh.singh@amd.com>
+In-Reply-To: <20210720150716.1213775-1-robdclark@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IMO, the CPU behavior is a bug, even if the behavior is working as intended for
-the microarchitecture.  I.e. this should be treated as an erratum.
+Hi Rob,
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> When SEV-SNP is globally enabled on a system, the VMRUN instruction
-> performs additional security checks on AVIC backing, VMSA, and VMCB page.
-> On a successful VMRUN, these pages are marked "in-use" by the
-> hardware in the RMP entry
+Am 20.07.21 um 17:07 schrieb Rob Clark:
+> From: Rob Clark <robdclark@chromium.org>
+>
+> Somehow we had neither ->wait() nor dma_fence_signal() calls, and no
+> one noticed.  Oops.
 
-There's a lot of "noise" in this intro.  That the CPU does additional checks at
-VMRUN isn't all that interesting, what's relevant is that the CPU tags the
-associated RMP entry with a special flag.  And IIUC, it does that for _all_ VMs,
-not just SNP VMs.
 
-Also, what happens if the pages aren't covered by the RMP?  Table 15-41 states
-that the VMCB, AVIC, and VMSA for non-SNP guests need to be Hypervisor-Owned,
-but doesn't explicitly require them to be RMP covered.  On the other hand, it
-does state that the VMSA for an SNP guest must be Guest-Owned and RMP-Covered.
-That implies that the Hypervisor-Owned pages do not need to contained within the
-RMP, but how does that work if the CPU is setting a magic flag in the RMP?  Does
-VMRUN explode?  Does the CPU corrupt random memory?
+I'm not sure if that is a good idea.
 
-Is the in-use flag visible to software?  We've already established that "struct
-rmpentry" is microarchitectural, so why not document it in the PPR?  It could be
-useful info for debugging unexpected RMP violations, even if the flag isn't stable.
+The dma_fence->wait() callback is pretty much deprecated and should not 
+be used any more.
 
-Are there other possible collisions with the in-use flag?  The APM states that
-the in-use flag results in RMPUPDATE failing with FAIL_INUSE.  That's the same
-error code that's returned if two CPUs attempt RMPUPDATE on the same entry.  That
-implies that the RMPUPDATE also sets the in-use flag.  If that's true, then isn't
-it possible that the spurious RMP violation #PF could happen if the kernel accesses
-a hugepage at the same time a CPU is doing RMPUPDATE on the associated 2mb-aligned
-entry?
+What exactly do you need that for?
 
-> and any attempt to modify the RMP entry for these pages will result in
-> page-fault (RMP violation check).
+Regards,
+Christian.
 
-Again, not that relevant since KVM isn't attempting to modify the RMP entry.
-I've no objection to mentioning this behavior in passing, but it should not be
-the focal point of the intro.
+>
+> Note that this removes the !timeout case, which has not been used in
+> a long time.
 
-> While performing the RMP check, hardware will try to create a 2MB TLB
-> entry for the large page accesses. When it does this, it first reads
-> the RMP for the base of 2MB region and verifies that all this memory is
-> safe. If AVIC backing, VMSA, and VMCB memory happen to be the base of
-> 2MB region, then RMP check will fail because of the "in-use" marking for
-> the base entry of this 2MB region.
 
-There's a critical piece missing here, which is why an RMP violation is thrown
-on "in-use" pages.  E.g. are any translations problematic, or just writable
-translations?  It may not affect the actual KVM workaround, but knowing exactly
-what goes awry is important.
-
-> e.g.
-> 
-> 1. A VMCB was allocated on 2MB-aligned address.
-> 2. The VMRUN instruction marks this RMP entry as "in-use".
-> 3. Another process allocated some other page of memory that happened to be
->    within the same 2MB region.
-> 4. That process tried to write its page using physmap.
-
-Please explicitly call out the relevance of the physmap.  IIUC, only the physmap,
-a.k.a. direct map, is problematic because that's the only scenario where a large
-page can overlap one of the magic pages.  That should be explicitly stated.
-
-> If the physmap entry in step #4 uses a large (1G/2M) page, then the
-
-Be consistent with 2MB vs. 2M, i.e. choose one.
-
-> hardware will attempt to create a 2M TLB entry. The hardware will find
-> that the "in-use" bit is set in the RMP entry (because it was a
-> VMCB page) and will cause an RMP violation check.
-
-So what happens if the problematic page isn't 2mb aligned?  The lack of an RMP
-violation on access implies that the hypervisor can bypass the in-use restriction
-and create a 2mb hugepage, i.e. access the in-use page.  Same question for if the
-TLB entry exists before the page is marked in-use, which also begs the question
-of why the in-use flag is being checked at all on RMP lookups.
-
-> See APM2 section 15.36.12 for more information on VMRUN checks when
-> SEV-SNP is globally active.
-> 
-> A generic allocator can return a page which are 2M aligned and will not
-> be safe to be used when SEV-SNP is globally enabled.
-
-> Add a snp_safe_alloc_page() helper that can be used for allocating the SNP
-> safe memory. The helper allocated 2 pages and splits them into order-1
-> allocation. It frees one page and keeps one of the page which is not 2M
-> aligned.
-
-I know it's personal preference as to whether to lead with the solution or the
-problem statement, but in this case it would be very helpful to at least provide
-a brief summary early on so that the reader has some idea of where the changelog
-is headed.  As is, the actual change is buried after a big pile of hardware
-details.
-
-E.g. something like this
-
-  Implement a workaround for an SNP erratum where the CPU will incorrectly
-  signal an RMP violation #PF if a hugepage (2mb or 1gb) collides with the
-  RMP entry of a VMCB, VMSA, or AVIC backing page.
-
-  When SEV-SNP is globally enabled, the CPU marks the VMCB, VMSA, and AVIC
-  backing   pages as "in-use" in the RMP after a successful VMRUN.  This is
-  done for _all_   VMs, not just SNP-Active VMs.
-
-  If the hypervisor accesses an in-use page through a writable translation,
-  the CPU will throw an RMP violation #PF.  On early SNP hardware, if an
-  in-use page is 2mb aligned and software accesses any part of the associated
-  2mb region with a hupage, the CPU will incorrectly treat the entire 2mb
-  region as in-use and signal a spurious RMP violation #PF.
-
-  <gory details on the workaround>
-
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 > ---
->  arch/x86/include/asm/kvm_host.h |  1 +
->  arch/x86/kvm/lapic.c            |  5 ++++-
->  arch/x86/kvm/svm/sev.c          | 27 +++++++++++++++++++++++++++
->  arch/x86/kvm/svm/svm.c          | 16 ++++++++++++++--
->  arch/x86/kvm/svm/svm.h          |  1 +
->  5 files changed, 47 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 55efbacfc244..188110ab2c02 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1383,6 +1383,7 @@ struct kvm_x86_ops {
->  	int (*complete_emulated_msr)(struct kvm_vcpu *vcpu, int err);
->  
->  	void (*vcpu_deliver_sipi_vector)(struct kvm_vcpu *vcpu, u8 vector);
-> +	void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
->  };
->  
->  struct kvm_x86_nested_ops {
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index c0ebef560bd1..d4c77f66d7d5 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2441,7 +2441,10 @@ int kvm_create_lapic(struct kvm_vcpu *vcpu, int timer_advance_ns)
->  
->  	vcpu->arch.apic = apic;
->  
-> -	apic->regs = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
-> +	if (kvm_x86_ops.alloc_apic_backing_page)
-> +		apic->regs = kvm_x86_ops.alloc_apic_backing_page(vcpu);
-
-This can be a static_call().
-
-> +	else
-> +		apic->regs = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
->  	if (!apic->regs) {
->  		printk(KERN_ERR "malloc apic regs error for vcpu %x\n",
->  		       vcpu->vcpu_id);
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index b8505710c36b..411ed72f63af 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -2692,3 +2692,30 @@ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
->  		break;
->  	}
->  }
-> +
-> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu)
-> +{
-> +	unsigned long pfn;
-> +	struct page *p;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +		return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> +
-> +	p = alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
-> +	if (!p)
-> +		return NULL;
-> +
-> +	/* split the page order */
-> +	split_page(p, 1);
-> +
-> +	/* Find a non-2M aligned page */
-
-This isn't "finding" anything, it's identifying which of the two pages is
-_guaranteed_ to be unaligned.  The whole function needs a much bigger comment to
-explain what's going on.
-
-> +	pfn = page_to_pfn(p);
-> +	if (IS_ALIGNED(__pfn_to_phys(pfn), PMD_SIZE)) {
-> +		pfn++;
-> +		__free_page(p);
-> +	} else {
-> +		__free_page(pfn_to_page(pfn + 1));
+>   drivers/gpu/drm/msm/msm_fence.c | 59 +++++++++++++++++++--------------
+>   1 file changed, 34 insertions(+), 25 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_fence.c
+> index cd59a5918038..8ee96b90ded6 100644
+> --- a/drivers/gpu/drm/msm/msm_fence.c
+> +++ b/drivers/gpu/drm/msm/msm_fence.c
+> @@ -38,11 +38,10 @@ static inline bool fence_completed(struct msm_fence_context *fctx, uint32_t fenc
+>   	return (int32_t)(fctx->completed_fence - fence) >= 0;
+>   }
+>   
+> -/* legacy path for WAIT_FENCE ioctl: */
+> -int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> -		ktime_t *timeout, bool interruptible)
+> +static signed long wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> +		signed long remaining_jiffies, bool interruptible)
+>   {
+> -	int ret;
+> +	signed long ret;
+>   
+>   	if (fence > fctx->last_fence) {
+>   		DRM_ERROR_RATELIMITED("%s: waiting on invalid fence: %u (of %u)\n",
+> @@ -50,33 +49,34 @@ int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+>   		return -EINVAL;
+>   	}
+>   
+> -	if (!timeout) {
+> -		/* no-wait: */
+> -		ret = fence_completed(fctx, fence) ? 0 : -EBUSY;
+> +	if (interruptible) {
+> +		ret = wait_event_interruptible_timeout(fctx->event,
+> +			fence_completed(fctx, fence),
+> +			remaining_jiffies);
+>   	} else {
+> -		unsigned long remaining_jiffies = timeout_to_jiffies(timeout);
+> -
+> -		if (interruptible)
+> -			ret = wait_event_interruptible_timeout(fctx->event,
+> -				fence_completed(fctx, fence),
+> -				remaining_jiffies);
+> -		else
+> -			ret = wait_event_timeout(fctx->event,
+> -				fence_completed(fctx, fence),
+> -				remaining_jiffies);
+> -
+> -		if (ret == 0) {
+> -			DBG("timeout waiting for fence: %u (completed: %u)",
+> -					fence, fctx->completed_fence);
+> -			ret = -ETIMEDOUT;
+> -		} else if (ret != -ERESTARTSYS) {
+> -			ret = 0;
+> -		}
+> +		ret = wait_event_timeout(fctx->event,
+> +			fence_completed(fctx, fence),
+> +			remaining_jiffies);
 > +	}
 > +
-> +	return pfn_to_page(pfn);
+> +	if (ret == 0) {
+> +		DBG("timeout waiting for fence: %u (completed: %u)",
+> +				fence, fctx->completed_fence);
+> +		ret = -ETIMEDOUT;
+> +	} else if (ret != -ERESTARTSYS) {
+> +		ret = 0;
+>   	}
+>   
+>   	return ret;
+>   }
+>   
+> +/* legacy path for WAIT_FENCE ioctl: */
+> +int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> +		ktime_t *timeout, bool interruptible)
+> +{
+> +	return wait_fence(fctx, fence, timeout_to_jiffies(timeout), interruptible);
 > +}
+> +
+>   /* called from workqueue */
+>   void msm_update_fence(struct msm_fence_context *fctx, uint32_t fence)
+>   {
+> @@ -114,10 +114,19 @@ static bool msm_fence_signaled(struct dma_fence *fence)
+>   	return fence_completed(f->fctx, f->base.seqno);
+>   }
+>   
+> +static signed long msm_fence_wait(struct dma_fence *fence, bool intr,
+> +		signed long timeout)
+> +{
+> +	struct msm_fence *f = to_msm_fence(fence);
+> +
+> +	return wait_fence(f->fctx, fence->seqno, timeout, intr);
+> +}
+> +
+>   static const struct dma_fence_ops msm_fence_ops = {
+>   	.get_driver_name = msm_fence_get_driver_name,
+>   	.get_timeline_name = msm_fence_get_timeline_name,
+>   	.signaled = msm_fence_signaled,
+> +	.wait = msm_fence_wait,
+>   };
+>   
+>   struct dma_fence *
+
