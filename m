@@ -2,247 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C783CF53E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364493CF544
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbhGTGmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 02:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhGTGmN (ORCPT
+        id S230337AbhGTGnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 02:43:21 -0400
+Received: from mail-vk1-f182.google.com ([209.85.221.182]:35575 "EHLO
+        mail-vk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229588AbhGTGnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:42:13 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1463C061574;
-        Tue, 20 Jul 2021 00:22:51 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id y4so18793374pfi.9;
-        Tue, 20 Jul 2021 00:22:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=czroiAAHyiLricTn382zGuj+7ArxacObZ2z97treVVI=;
-        b=goqNHO/ywWkfysZY2Ks+Uc1jQVpnXfpQTB7jeSvjNiTLdN6fjlr5XYYL0Rv9J3N1RU
-         3I8zgMSlUytHmiRiVacZVIY4eP8kFDv3aDIeqJHcpjQZfa1KEDZjUMHG/AVkZRuywKEi
-         O7u1XkwgQw1IDhrPCRSBoprYXwEIqbKLmLdEofucdmPtonCT7woecUCc7RwDXpcsFjtD
-         PP1hQBUURa2pED9hS532pbi3lWJfsM3xNvimNWn7MSig1/xs1nhk+0DR/UAUaer7IynW
-         h9YRBRPuPO1m3u4O/vWpxZTfFObJVTK3FvPCeVcDG+OdlGPVwyTvrxMITMYRNsW98wTQ
-         oT9Q==
+        Tue, 20 Jul 2021 02:43:14 -0400
+Received: by mail-vk1-f182.google.com with SMTP id d7so4377241vkf.2;
+        Tue, 20 Jul 2021 00:23:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=czroiAAHyiLricTn382zGuj+7ArxacObZ2z97treVVI=;
-        b=Y5AK5o6WQXcebsKdz/Yo17g4guqNaShBGQ2/0wwF0moGY6/aozXA6WSxY0ODLd2Ew2
-         4GZgaIWLI7CEe0Vdvn6JfHzxjPyR8ZQGcn2oLHKnfIcCzJsq2jbQjc9e2bM2t5hzjRag
-         6GXE8HOANqLTj/ag48kOJUjVeN1bXBP70zKILppQY+6/j24uAxdOP2PmPD/qMDkLDXXU
-         gwQZT4dpCdHAaevwKq55UJWWux+RslBFj9ake+5vahxiiyeX8a2ht7jaRjY2F5wN9L9P
-         YUUP42py6zBWcM7E7LVBDOdr0GcC+PHT6PBeKug2bNcho0uKe74byukAy3bCDj1IiAWs
-         w+4g==
-X-Gm-Message-State: AOAM530MSOHFKQ4BhrWQJEDQSb2WkUdi2hd67OszPrb18AwuoLcXIut/
-        BVQXosiNZXIE+W2dHSsFW79Df0fOvA5FpyJgs64=
-X-Google-Smtp-Source: ABdhPJwOtbGEmplIaAGdH14LMTrIabWM9ZPFl/u9J8RPc1XkXcIcK99bUvmxt7ivNiC0ACIPWB9EirkHeerOJYYMsHk=
-X-Received: by 2002:a63:170b:: with SMTP id x11mr29438326pgl.253.1626765771343;
- Tue, 20 Jul 2021 00:22:51 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=oHPiE5WIZuBAQynBajx7q1K/yloXb10bOcX9t96Cp50=;
+        b=KnFXXyfWOahRC/OPkdwWTGas9fNO6PJ9ZCFixbTCh5msK592/viR30M8sGZSFV/wu9
+         0z8hmqGYOGwgAvhpSMCUb7fopBmWPQ10DqkSWrbxJP2MnI7dqP+2x4+6HvmW135e0kaK
+         xy3ISfha37xEV5RAMpx1qSzVbtWnlZ80DIcV+jYCnvKSqtdCTlm6AUhBw0BRGL4fhcvZ
+         SBAxovkyilntokkenMjYq6aq+3i7Gui3U7x238ERdrXawdviPnVcKD4JTCDcJNs8L7FJ
+         EyQ1Y8yik1AKO1zxjAe9hoHpSOzfw+d8mtGvFTwcBlPa11YMGSQ45T1hnnpvt8qiuDd/
+         vU+g==
+X-Gm-Message-State: AOAM531IqGzpA795PgZEesE8hh3dOVywbl8wTvVoVzBWaD3UyuKuREJz
+        tcmQPRJ/046JYDOHQo7d/uOe/iUd+pkq+tt6mf0=
+X-Google-Smtp-Source: ABdhPJxf33tE/UC6sAZ53pbsOTH+XynQf1vrWzPcAah8VYz4w/NMs8y9Z6qAKLx4GP83D3FxP9bWIDXUegsSRZB+qCI=
+X-Received: by 2002:a1f:2746:: with SMTP id n67mr24782587vkn.5.1626765832884;
+ Tue, 20 Jul 2021 00:23:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210718203746.7159-1-theobf@usp.br> <CA+U=DspWmrWWsQDFPLycS2y-=8Q7TSn5NYMVgbQ42FccAy0=pw@mail.gmail.com>
- <CAD5vTa8gnQpZ8B4KQkA=-6Oo-YiN4J7pDp0HoUZgpHN99vJK_g@mail.gmail.com>
-In-Reply-To: <CAD5vTa8gnQpZ8B4KQkA=-6Oo-YiN4J7pDp0HoUZgpHN99vJK_g@mail.gmail.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Tue, 20 Jul 2021 10:22:40 +0300
-Message-ID: <CA+U=DsrU5iPBRexdUK3fx-PG3CbSoKouGWENVLJ5+h8L5-y_Og@mail.gmail.com>
-Subject: Re: [PATCH] iio: dac: max5821: convert device register to device
- managed function
-To:     =?UTF-8?Q?Th=C3=A9o_Bor=C3=A9m_Fabris?= <theobf@usp.br>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1626266516.git.geert+renesas@glider.be> <04c4d231fb03a3810d72a45c8a5bc2272c5975f3.1626266516.git.geert+renesas@glider.be>
+ <20210714135101.GB2441138@robh.at.kernel.org> <YPP06QG7hfypZgYg@kernel.org>
+ <CAMuHMdXfFhzm48U2Hvjz8yrjPsQbagW4aC_L-QE_Q6yx1Lo=tA@mail.gmail.com> <YPZh/IawtmwaYccQ@kernel.org>
+In-Reply-To: <YPZh/IawtmwaYccQ@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 20 Jul 2021 09:23:41 +0200
+Message-ID: <CAMuHMdXO2nYY252s-tOWANF4x2ch+adDx=GO5gwV6Jfw28drgA@mail.gmail.com>
+Subject: Re: [PATCH v4 02/10] memblock: Add variables for usable memory limitation
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        kexec@lists.infradead.org, Linux MM <linux-mm@kvack.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 6:25 PM Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.br>=
- wrote:
+Hi Mike,
+
+On Tue, Jul 20, 2021 at 7:41 AM Mike Rapoport <rppt@kernel.org> wrote:
+> On Mon, Jul 19, 2021 at 08:59:03AM +0200, Geert Uytterhoeven wrote:
+> > On Sun, Jul 18, 2021 at 11:31 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > On Wed, Jul 14, 2021 at 07:51:01AM -0600, Rob Herring wrote:
+> > > > On Wed, Jul 14, 2021 at 02:50:12PM +0200, Geert Uytterhoeven wrote:
+> > > > > Add two global variables (cap_mem_addr and cap_mem_size) for storing a
+> > > > > base address and size, describing a limited region in which memory may
+> > > > > be considered available for use by the kernel.  If enabled, memory
+> > > > > outside of this range is not available for use.
+> > > > >
+> > > > > These variables can by filled by firmware-specific code, and used in
+> > > > > calls to memblock_cap_memory_range() by architecture-specific code.
+> > > > > An example user is the parser of the "linux,usable-memory-range"
+> > > > > property in the DT "/chosen" node.
+> > > > >
+> > > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > > > ---
+> > > > > This is similar to how the initial ramdisk (phys_initrd_{start,size})
+> > > > > and ELF core headers (elfcorehdr_{addr,size})) are handled.
+> > > > >
+> > > > > Does there exist a suitable place in the common memblock code to call
+> > > > > "memblock_cap_memory_range(cap_mem_addr, cap_mem_size)", or does this
+> > > > > have to be done in architecture-specific code?
+> > > >
+> > > > Can't you just call it from early_init_dt_scan_usablemem? If the
+> > > > property is present, you want to call it. If the property is not
+> > > > present, nothing happens.
+> >
+> > I will have a look...
+> >
+> > > For memblock_cap_memory_range() to work properly it should be called after
+> > > memory is detected and added to memblock with memblock_add[_node]()
+> > >
+> > > I'm not huge fan of adding more globals to memblock so if such ordering can
+> > > be implemented on the DT side it would be great.
+> >
+> > Me neither ;-)
+> >
+> > > I don't see a way to actually enforce this ordering, so maybe we'd want to
+> > > add warning in memblock_cap_memory_range() if memblock.memory is empty.
+
+Sorry, I misread "if memblock.memory is empty" as "if capmem is empty".
+
+> > "linux,usable-memory-range" is optional, and typically used only in
+> > crashdump kernels, so it would be a bad idea to add such a warning.
 >
-> Hi, Alexandru.
->
-> Em seg., 19 de jul. de 2021 =C3=A0s 04:33, Alexandru Ardelean
-> <ardeleanalex@gmail.com> escreveu:
-> >
-> > On Sun, Jul 18, 2021 at 11:42 PM Th=C3=A9o Bor=C3=A9m Fabris <theobf@us=
-p.br> wrote:
-> > >
-> > > Add a device managed hook, via devm_add_action_or_reset() and
-> > > max5821_regulator_disable(), to disable voltage regulator on device
-> > > detach.
-> > > Replace iio_device_register() by devm_iio_device_register() and remov=
-e
-> > > the max5821_remove() function used to unregister the device and disab=
-le the
-> > > voltage regulator.
-> > > Remove i2c_set_clientdata() from the probe function, since
-> > > i2c_get_clientdata() is not used anymore.
-> >
-> > Looks good overall.
-> > A few comments inline.
-> >
-> > >
-> > > Signed-off-by: Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.br>
-> > > ---
-> > >  drivers/iio/dac/max5821.c | 30 ++++++++++++++++--------------
-> > >  1 file changed, 16 insertions(+), 14 deletions(-)
-> > >
-> > > diff --git a/drivers/iio/dac/max5821.c b/drivers/iio/dac/max5821.c
-> > > index bd6e75699a63..44c04ae70b32 100644
-> > > --- a/drivers/iio/dac/max5821.c
-> > > +++ b/drivers/iio/dac/max5821.c
-> > > @@ -294,6 +294,13 @@ static const struct iio_info max5821_info =3D {
-> > >         .write_raw =3D max5821_write_raw,
-> > >  };
-> > >
-> > > +static void max5821_regulator_disable(void *data)
-> > > +{
-> > > +       struct regulator *rdata =3D data;
-> > > +
-> > > +       regulator_disable(rdata);
-> >
-> > This can be simplified a bit:
-> >
-> > static void max5821_regulator_disable(void *reg)
-> > {
-> >       regulator_disable(reg);
-> > }
-> >
-> > I used to do explicit casting, but then I also figured that it's not ne=
-cessary.
-> >
-> Ok.
->
-> > > +}
-> > > +
-> > >  static int max5821_probe(struct i2c_client *client,
-> > >                         const struct i2c_device_id *id)
-> > >  {
-> > > @@ -306,7 +313,6 @@ static int max5821_probe(struct i2c_client *clien=
-t,
-> > >         if (!indio_dev)
-> > >                 return -ENOMEM;
-> > >         data =3D iio_priv(indio_dev);
-> > > -       i2c_set_clientdata(client, indio_dev);
-> > >         data->client =3D client;
-> > >         mutex_init(&data->lock);
-> > >
-> > > @@ -331,6 +337,14 @@ static int max5821_probe(struct i2c_client *clie=
-nt,
-> > >                 goto error_free_reg;
-> > >         }
-> > >
-> > > +       ret =3D devm_add_action_or_reset(&client->dev, max5821_regula=
-tor_disable,
-> > > +                                      data->vref_reg);
-> > > +       if (ret) {
-> > > +               dev_err(&client->dev,
-> > > +                       "Failed to add action to managed regulator: %=
-d\n", ret);
-> > > +               goto error_disable_reg;
-> >
-> > return ret;
-> >
-> > devm_add_action_or_reset() should call max5821_regulator_disable() in
-> > case of error
-> >
-> Ok.
->
-> > > +       }
-> > > +
-> > >         ret =3D regulator_get_voltage(data->vref_reg);
-> > >         if (ret < 0) {
-> > >                 dev_err(&client->dev,
-> > > @@ -346,7 +360,7 @@ static int max5821_probe(struct i2c_client *clien=
-t,
-> > >         indio_dev->modes =3D INDIO_DIRECT_MODE;
-> > >         indio_dev->info =3D &max5821_info;
-> > >
-> > > -       return iio_device_register(indio_dev);
-> > > +       return devm_iio_device_register(&client->dev, indio_dev);
-> > >
-> > >  error_disable_reg:
-> >
-> > This entire goto block should be removed.
-> > The idea of using only devm_ functions is to not have these goto statem=
-ents.
-> >
-> I thought the action added via devm_add_action (and devres_add) was calle=
-d only
-> on driver detach, thus the error_disable_reg label would be necessary
-> to handle the
+> If I remember correctly, memblock_cap_memory_range() was added to support
+> "linux,usable-memory-range" for crasdump kernels on arm64 and if it would
+> be called before memory is registered we may silently corrupt the memory
+> because the crash kernel will see all the memory as available.
+>"
+> So while WARN() maybe too much a pr_warn() seems to me quite appropriate.
 
-devm_add_action() yes
-this is devm_add_action_or_reset() which looks like this:
+Yes, makes perfect sense now.
 
-static inline int devm_add_action_or_reset(struct device *dev,
-                       void (*action)(void *), void *data)
-{
-    int ret;
+Gr{oetje,eeting}s,
 
-    ret =3D devm_add_action(dev, action, data);
-    if (ret)
-        action(data);
+                        Geert
 
-    return ret;
-}
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-it can be found in "include/linux/device.h"
-
-> possible error on regulator_get_voltage. Could you please clarify for
-> me when does
-> a driver detach happen?
-
-a driver detach happens when:
-* the kmod is unloaded (assuming the driver is running as a kmod)
-* manually unbinding the driver from sysfs ;
-   a quick article about this [it's for USB, but other interfaces use
-   the same mechanism]:
-   https://lwn.net/Articles/143397/
-   there should be something under /sys/bus/spi/drivers/xxxx/unbind
-* when the system powers down (reboots)
-* maybe there is some other new method to do this [that I don't know about]
-
->
-> Thanks for your reply,
-> Th=C3=A9o
->
-> > >         regulator_disable(data->vref_reg);
-> > > @@ -356,17 +370,6 @@ static int max5821_probe(struct i2c_client *clie=
-nt,
-> > >         return ret;
-> > >  }
-> > >
-> > > -static int max5821_remove(struct i2c_client *client)
-> > > -{
-> > > -       struct iio_dev *indio_dev =3D i2c_get_clientdata(client);
-> > > -       struct max5821_data *data =3D iio_priv(indio_dev);
-> > > -
-> > > -       iio_device_unregister(indio_dev);
-> > > -       regulator_disable(data->vref_reg);
-> > > -
-> > > -       return 0;
-> > > -}
-> > > -
-> > >  static const struct i2c_device_id max5821_id[] =3D {
-> > >         { "max5821", ID_MAX5821 },
-> > >         { }
-> > > @@ -386,7 +389,6 @@ static struct i2c_driver max5821_driver =3D {
-> > >                 .pm     =3D &max5821_pm_ops,
-> > >         },
-> > >         .probe          =3D max5821_probe,
-> > > -       .remove         =3D max5821_remove,
-> > >         .id_table       =3D max5821_id,
-> > >  };
-> > >  module_i2c_driver(max5821_driver);
-> > > --
-> > > 2.20.1
-> > >
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
