@@ -2,440 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00353D01D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F3F3D01DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhGTSAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 14:00:48 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:51467 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbhGTSAR (ORCPT
+        id S230513AbhGTSFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 14:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhGTSEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 14:00:17 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id BA49E20004;
-        Tue, 20 Jul 2021 18:40:42 +0000 (UTC)
-Date:   Tue, 20 Jul 2021 20:40:42 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Dilip Kota <eswara.kota@linux.intel.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rtc@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH] dt-bindings: Remove "status" from schema examples
-Message-ID: <YPcYqolGFpwbDsiv@piout.net>
-References: <20210720172025.363238-1-robh@kernel.org>
+        Tue, 20 Jul 2021 14:04:35 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170C4C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:45:06 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id m68so20989703qke.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:45:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h+5lhU7M8IjaNDliv1AGOCjbrZiTwbIiNZC3cRm5Ft4=;
+        b=kBNqGrqVO0AGRsiaL21hT9uj8jYrP1RH/zUuBTrpbBUb8A42hHHzVHzCvjT3dJ+Ty9
+         yVNDKRMFvYehXW+I9SqWnToG1znHK9qyAECiy7F0h2h5UkSiMrAyD1iqLfcHmIRzqBa3
+         3gLxomE2ztzKfdxeg1Dh4QidNGCiIfjBswBQkZ+D/owBOrYD/eqpSPrICPG/l2YXwhbz
+         5Isa8wx3gsFgKoqDQmVfhIzKAQrNd0RLyOctfy3RpnRQJNWfmIzPwCt+VZOzjvbzpTqB
+         PBkyGWSERoggfMqSRyQ2NYYmATiMWki7J0f+6OrXNWlGNm/0LPY1LZPNdt730Ui4K1R5
+         7yeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h+5lhU7M8IjaNDliv1AGOCjbrZiTwbIiNZC3cRm5Ft4=;
+        b=bnQDVK2Nk9QfgKRl2x/YHF6L4zXzDDqLPoDfepGMHYo1yCSofYm25khMhcwHPPQKmR
+         RxaOXShO7PhmFkoy6/dv68/px/Mkwdjdl5bkaKj7T2dblvOWusnDD+oo5yUtL8DPWLDi
+         AUfLMVEWSqaLBYPxEhldvIxqJzkP7dt803AkNgQC4n4sHy9TQTs7IiEQbil4czQtswqh
+         MBWz7Yc3esaY2P0hdcZw1+hh/TXYl7vhuFbFeEKlDIspBJJbulLQdWVeCNKkr1uEL523
+         skL22rJVA45OKU48+xAJO2xS0X6InmX6pklRlU4SV/215/e8vhuySgwo1V5K1kYrn047
+         /JCA==
+X-Gm-Message-State: AOAM532Ot7ypzpRch4hfhnHBN6cNTuY5tOF+Tp30bb7P6oY3A9HhuOni
+        8UBNuVZCXGVAewkisatTIrv+SkRH6aXFHvXLy1eM1Q==
+X-Google-Smtp-Source: ABdhPJz99PqGqDiAUjrgTCjXK83j0Ii/6/WjrhhzASEWUjObSqCXnA+g3kTJMOWUTIM3pS0bEje2lpMgJ/Z6UUAhjFU=
+X-Received: by 2002:a37:8f44:: with SMTP id r65mr31378302qkd.20.1626806704872;
+ Tue, 20 Jul 2021 11:45:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210720172025.363238-1-robh@kernel.org>
+References: <20210709043713.887098-1-senozhatsky@chromium.org>
+ <20210709043713.887098-5-senozhatsky@chromium.org> <874kcz33g5.wl-maz@kernel.org>
+In-Reply-To: <874kcz33g5.wl-maz@kernel.org>
+From:   Joel Fernandes <joelaf@google.com>
+Date:   Tue, 20 Jul 2021 14:44:53 -0400
+Message-ID: <CAJWu+oqCyj3H0=1KNo3c+crdcktYinFoTQJ5jHgU8gjeF4d2yA@mail.gmail.com>
+Subject: Re: [PATCHv2 4/4] arm64: add host pv-vcpu-state support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Will Deacon <will@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2021 11:20:25-0600, Rob Herring wrote:
-> There's no reason to have "status" properties in examples. "okay" is the
-> default, and "disabled" turns off some schema checks ('required'
-> specifically).
-> 
-> Enabling qca,ar71xx causes a warning, so let's fix the node names:
-> 
-> Documentation/devicetree/bindings/net/qca,ar71xx.example.dt.yaml: phy@3: '#phy-cells' is a required property
->         From schema: schemas/phy/phy-provider.yaml
-> 
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Rui Miguel Silva <rmfrfs@gmail.com>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Robert Marko <robert.marko@sartura.hr>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Alessandro Zummo <a.zummo@towertech.it>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Ramesh Shanmugasundaram <rashanmu@gmail.com>
-> Cc: "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> Cc: ChiYuan Huang <cy_huang@richtek.com>
-> Cc: Wei Xu <xuwei5@hisilicon.com>
-> Cc: Dilip Kota <eswara.kota@linux.intel.com>
-> Cc: Karol Gugala <kgugala@antmicro.com>
-> Cc: Mateusz Holenko <mholenko@antmicro.com>
-> Cc: Olivier Moysan <olivier.moysan@st.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-rtc@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+On Mon, Jul 12, 2021 at 12:24 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+[...]
+> > +}
+> > +
+> > +static inline bool
+> > +kvm_arm_is_vcpu_state_enabled(struct kvm_vcpu_arch *vcpu_arch)
+> > +{
+> > +     return (vcpu_arch->vcpu_state.base != GPA_INVALID);
+> > +}
+> > +
+> > +void kvm_update_vcpu_preempted(struct kvm_vcpu *vcpu, bool preempted);
+> > +
+> >  void kvm_set_sei_esr(struct kvm_vcpu *vcpu, u64 syndrome);
+> >
+> >  struct kvm_vcpu *kvm_mpidr_to_vcpu(struct kvm *kvm, unsigned long mpidr);
+> > diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
+> > index 989bb5dad2c8..2a3ee82c6d90 100644
+> > --- a/arch/arm64/kvm/Makefile
+> > +++ b/arch/arm64/kvm/Makefile
+> > @@ -12,7 +12,8 @@ obj-$(CONFIG_KVM) += hyp/
+> >
+> >  kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
+> >        $(KVM)/vfio.o $(KVM)/irqchip.o $(KVM)/binary_stats.o \
+> > -      arm.o mmu.o mmio.o psci.o perf.o hypercalls.o pvtime.o \
+> > +      arm.o mmu.o mmio.o psci.o perf.o hypercalls.o \
+> > +      pvtime.o pv-vcpu-state.o \
+> >        inject_fault.o va_layout.o handle_exit.o \
+> >        guest.o debug.o reset.o sys_regs.o \
+> >        vgic-sys-reg-v3.o fpsimd.o pmu.o \
+> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> > index e9a2b8f27792..43e995c9fddb 100644
+> > --- a/arch/arm64/kvm/arm.c
+> > +++ b/arch/arm64/kvm/arm.c
+> > @@ -332,6 +332,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+> >       kvm_arm_reset_debug_ptr(vcpu);
+> >
+> >       kvm_arm_pvtime_vcpu_init(&vcpu->arch);
+> > +     kvm_arm_vcpu_state_init(&vcpu->arch);
+> >
+> >       vcpu->arch.hw_mmu = &vcpu->kvm->arch.mmu;
+> >
+> > @@ -429,10 +430,12 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+> >       if (vcpu_has_ptrauth(vcpu))
+> >               vcpu_ptrauth_disable(vcpu);
+> >       kvm_arch_vcpu_load_debug_state_flags(vcpu);
+> > +     kvm_update_vcpu_preempted(vcpu, false);
+> >  }
+> >
+> >  void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+> >  {
+> > +     kvm_update_vcpu_preempted(vcpu, true);
+>
+> This doesn't look right. With this, you are now telling the guest that
+> a vcpu that is blocked on WFI is preempted. This really isn't the
+> case, as it has voluntarily entered a low-power mode while waiting for
+> an interrupt. Indeed, the vcpu isn't running. A physical CPU wouldn't
+> be running either.
 
-> ---
->  .../display/allwinner,sun8i-a83t-dw-hdmi.yaml |  2 --
->  .../display/panel/boe,tv101wum-nl6.yaml       |  1 -
->  .../bindings/media/nxp,imx7-mipi-csi2.yaml    |  2 --
->  .../bindings/media/renesas,drif.yaml          |  1 -
->  .../bindings/net/intel,dwmac-plat.yaml        |  2 --
->  .../bindings/net/intel,ixp4xx-ethernet.yaml   |  2 --
->  .../bindings/net/nfc/samsung,s3fwrn5.yaml     |  3 ---
->  .../devicetree/bindings/net/qca,ar71xx.yaml   | 25 ++++---------------
->  .../regulator/richtek,rt6245-regulator.yaml   |  1 -
->  .../regulator/vqmmc-ipq4019-regulator.yaml    |  1 -
->  .../reset/hisilicon,hi3660-reset.yaml         |  1 -
->  .../bindings/reset/intel,rcu-gw.yaml          |  1 -
->  .../bindings/rtc/microcrystal,rv3032.yaml     |  1 -
->  .../soc/litex/litex,soc-controller.yaml       |  1 -
->  .../bindings/sound/st,stm32-sai.yaml          |  2 --
->  .../bindings/sound/ti,j721e-cpb-audio.yaml    |  2 --
->  .../sound/ti,j721e-cpb-ivi-audio.yaml         |  2 --
->  17 files changed, 5 insertions(+), 45 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/allwinner,sun8i-a83t-dw-hdmi.yaml b/Documentation/devicetree/bindings/display/allwinner,sun8i-a83t-dw-hdmi.yaml
-> index 5d42d36608d9..4951b5ef5c6a 100644
-> --- a/Documentation/devicetree/bindings/display/allwinner,sun8i-a83t-dw-hdmi.yaml
-> +++ b/Documentation/devicetree/bindings/display/allwinner,sun8i-a83t-dw-hdmi.yaml
-> @@ -174,7 +174,6 @@ examples:
->          phy-names = "phy";
->          pinctrl-names = "default";
->          pinctrl-0 = <&hdmi_pins>;
-> -        status = "disabled";
->  
->          ports {
->              #address-cells = <1>;
-> @@ -233,7 +232,6 @@ examples:
->          phy-names = "phy";
->          pinctrl-names = "default";
->          pinctrl-0 = <&hdmi_pins>;
-> -        status = "disabled";
->  
->          ports {
->              #address-cells = <1>;
-> diff --git a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-> index 38bc1d1b511e..b87a2e28c866 100644
-> --- a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-> @@ -70,7 +70,6 @@ examples:
->              avee-supply = <&ppvarp_lcd>;
->              pp1800-supply = <&pp1800_lcd>;
->              backlight = <&backlight_lcd0>;
-> -            status = "okay";
->              port {
->                  panel_in: endpoint {
->                      remote-endpoint = <&dsi_out>;
-> diff --git a/Documentation/devicetree/bindings/media/nxp,imx7-mipi-csi2.yaml b/Documentation/devicetree/bindings/media/nxp,imx7-mipi-csi2.yaml
-> index 7c09eec78ce5..877183cf4278 100644
-> --- a/Documentation/devicetree/bindings/media/nxp,imx7-mipi-csi2.yaml
-> +++ b/Documentation/devicetree/bindings/media/nxp,imx7-mipi-csi2.yaml
-> @@ -200,8 +200,6 @@ examples:
->          clock-names = "pclk", "wrap", "phy", "axi";
->          power-domains = <&mipi_pd>;
->  
-> -        status = "disabled";
-> -
->          ports {
->              #address-cells = <1>;
->              #size-cells = <0>;
-> diff --git a/Documentation/devicetree/bindings/media/renesas,drif.yaml b/Documentation/devicetree/bindings/media/renesas,drif.yaml
-> index 2867d11fe156..9403b235e976 100644
-> --- a/Documentation/devicetree/bindings/media/renesas,drif.yaml
-> +++ b/Documentation/devicetree/bindings/media/renesas,drif.yaml
-> @@ -242,7 +242,6 @@ examples:
->                      power-domains = <&sysc R8A7795_PD_ALWAYS_ON>;
->                      resets = <&cpg 513>;
->                      renesas,bonding = <&drif11>;
-> -                    status = "disabled";
->              };
->  
->              drif11: rif@e6f70000 {
-> diff --git a/Documentation/devicetree/bindings/net/intel,dwmac-plat.yaml b/Documentation/devicetree/bindings/net/intel,dwmac-plat.yaml
-> index c1948ce00081..79fa04f5e40d 100644
-> --- a/Documentation/devicetree/bindings/net/intel,dwmac-plat.yaml
-> +++ b/Documentation/devicetree/bindings/net/intel,dwmac-plat.yaml
-> @@ -116,8 +116,6 @@ examples:
->          snps,mtl-rx-config = <&mtl_rx_setup>;
->          snps,mtl-tx-config = <&mtl_tx_setup>;
->          snps,tso;
-> -        status = "okay";
-> -
->          mdio0 {
->              #address-cells = <1>;
->              #size-cells = <0>;
-> diff --git a/Documentation/devicetree/bindings/net/intel,ixp4xx-ethernet.yaml b/Documentation/devicetree/bindings/net/intel,ixp4xx-ethernet.yaml
-> index f2e91d1bf7d7..378ed2d3b003 100644
-> --- a/Documentation/devicetree/bindings/net/intel,ixp4xx-ethernet.yaml
-> +++ b/Documentation/devicetree/bindings/net/intel,ixp4xx-ethernet.yaml
-> @@ -71,7 +71,6 @@ examples:
->      ethernet@c8009000 {
->        compatible = "intel,ixp4xx-ethernet";
->        reg = <0xc8009000 0x1000>;
-> -      status = "disabled";
->        queue-rx = <&qmgr 4>;
->        queue-txready = <&qmgr 21>;
->        intel,npe-handle = <&npe 1>;
-> @@ -82,7 +81,6 @@ examples:
->      ethernet@c800c000 {
->        compatible = "intel,ixp4xx-ethernet";
->        reg = <0xc800c000 0x1000>;
-> -      status = "disabled";
->        queue-rx = <&qmgr 3>;
->        queue-txready = <&qmgr 20>;
->        intel,npe-handle = <&npe 2>;
-> diff --git a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
-> index 081742c2b726..64995cbb0f97 100644
-> --- a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
-> +++ b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
-> @@ -90,14 +90,11 @@ examples:
->    # UART example on Raspberry Pi
->    - |
->      uart0 {
-> -        status = "okay";
-> -
->          nfc {
->              compatible = "samsung,s3fwrn82";
->  
->              en-gpios = <&gpio 20 GPIO_ACTIVE_HIGH>;
->              wake-gpios = <&gpio 16 GPIO_ACTIVE_HIGH>;
->  
-> -            status = "okay";
->          };
->      };
-> diff --git a/Documentation/devicetree/bindings/net/qca,ar71xx.yaml b/Documentation/devicetree/bindings/net/qca,ar71xx.yaml
-> index f0db22645d73..cf4d35edaa1b 100644
-> --- a/Documentation/devicetree/bindings/net/qca,ar71xx.yaml
-> +++ b/Documentation/devicetree/bindings/net/qca,ar71xx.yaml
-> @@ -101,8 +101,6 @@ examples:
->  
->          phy-mode = "gmii";
->  
-> -        status = "disabled";
-> -
->          fixed-link {
->              speed = <1000>;
->              full-duplex;
-> @@ -148,32 +146,24 @@ examples:
->                          reg = <0x1>;
->                          phy-handle = <&phy_port0>;
->                          phy-mode = "internal";
-> -
-> -                        status = "disabled";
->                      };
->  
->                      switch_port2: port@2 {
->                          reg = <0x2>;
->                          phy-handle = <&phy_port1>;
->                          phy-mode = "internal";
-> -
-> -                        status = "disabled";
->                      };
->  
->                      switch_port3: port@3 {
->                          reg = <0x3>;
->                          phy-handle = <&phy_port2>;
->                          phy-mode = "internal";
-> -
-> -                        status = "disabled";
->                      };
->  
->                      switch_port4: port@4 {
->                          reg = <0x4>;
->                          phy-handle = <&phy_port3>;
->                          phy-mode = "internal";
-> -
-> -                        status = "disabled";
->                      };
->                  };
->  
-> @@ -183,34 +173,29 @@ examples:
->  
->                      interrupt-parent = <&switch10>;
->  
-> -                    phy_port0: phy@0 {
-> +                    phy_port0: ethernet-phy@0 {
->                          reg = <0x0>;
->                          interrupts = <0>;
-> -                        status = "disabled";
->                      };
->  
-> -                    phy_port1: phy@1 {
-> +                    phy_port1: ethernet-phy@1 {
->                          reg = <0x1>;
->                          interrupts = <0>;
-> -                        status = "disabled";
->                      };
->  
-> -                    phy_port2: phy@2 {
-> +                    phy_port2: ethernet-phy@2 {
->                          reg = <0x2>;
->                          interrupts = <0>;
-> -                        status = "disabled";
->                      };
->  
-> -                    phy_port3: phy@3 {
-> +                    phy_port3: ethernet-phy@3 {
->                          reg = <0x3>;
->                          interrupts = <0>;
-> -                        status = "disabled";
->                      };
->  
-> -                    phy_port4: phy@4 {
-> +                    phy_port4: ethernet-phy@4 {
->                          reg = <0x4>;
->                          interrupts = <0>;
-> -                        status = "disabled";
->                      };
->                  };
->              };
-> diff --git a/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
-> index 796ceac87445..e983d0e70c9b 100644
-> --- a/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
-> +++ b/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
-> @@ -77,7 +77,6 @@ examples:
->  
->        rt6245@34 {
->          compatible = "richtek,rt6245";
-> -        status = "okay";
->          reg = <0x34>;
->          enable-gpios = <&gpio26 2 0>;
->  
-> diff --git a/Documentation/devicetree/bindings/regulator/vqmmc-ipq4019-regulator.yaml b/Documentation/devicetree/bindings/regulator/vqmmc-ipq4019-regulator.yaml
-> index 6f45582c914e..dd7a2f92634c 100644
-> --- a/Documentation/devicetree/bindings/regulator/vqmmc-ipq4019-regulator.yaml
-> +++ b/Documentation/devicetree/bindings/regulator/vqmmc-ipq4019-regulator.yaml
-> @@ -39,6 +39,5 @@ examples:
->        regulator-min-microvolt = <1500000>;
->        regulator-max-microvolt = <3000000>;
->        regulator-always-on;
-> -      status = "disabled";
->      };
->  ...
-> diff --git a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-> index 9bf40952e5b7..b0c41ab1a746 100644
-> --- a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-> +++ b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-> @@ -72,6 +72,5 @@ examples:
->          resets = <&iomcu_rst 0x20 3>;
->          pinctrl-names = "default";
->          pinctrl-0 = <&i2c0_pmx_func &i2c0_cfg_func>;
-> -        status = "disabled";
->      };
->  ...
-> diff --git a/Documentation/devicetree/bindings/reset/intel,rcu-gw.yaml b/Documentation/devicetree/bindings/reset/intel,rcu-gw.yaml
-> index 6b2d56cc3f38..13bf6bb3f097 100644
-> --- a/Documentation/devicetree/bindings/reset/intel,rcu-gw.yaml
-> +++ b/Documentation/devicetree/bindings/reset/intel,rcu-gw.yaml
-> @@ -57,7 +57,6 @@ examples:
->      };
->  
->      pwm: pwm@e0d00000 {
-> -        status = "disabled";
->          compatible = "intel,lgm-pwm";
->          reg = <0xe0d00000 0x30>;
->          clocks = <&cgu0 1>;
-> diff --git a/Documentation/devicetree/bindings/rtc/microcrystal,rv3032.yaml b/Documentation/devicetree/bindings/rtc/microcrystal,rv3032.yaml
-> index a2c55303810d..9593840a4a2b 100644
-> --- a/Documentation/devicetree/bindings/rtc/microcrystal,rv3032.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/microcrystal,rv3032.yaml
-> @@ -53,7 +53,6 @@ examples:
->          rtc@51 {
->              compatible = "microcrystal,rv3032";
->              reg = <0x51>;
-> -            status = "okay";
->              pinctrl-0 = <&rtc_nint_pins>;
->              interrupts-extended = <&gpio1 16 IRQ_TYPE_LEVEL_HIGH>;
->              trickle-resistor-ohms = <7000>;
-> diff --git a/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml b/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
-> index c8b57c7fd08c..ecae9fa8561b 100644
-> --- a/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
-> +++ b/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
-> @@ -35,7 +35,6 @@ examples:
->      soc_ctrl0: soc-controller@f0000000 {
->          compatible = "litex,soc-controller";
->          reg = <0xf0000000 0xc>;
-> -        status = "okay";
->      };
->  
->  ...
-> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-> index 06e83461705c..f97132400bb6 100644
-> --- a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-> +++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-> @@ -180,7 +180,6 @@ examples:
->        pinctrl-names = "default", "sleep";
->        pinctrl-0 = <&sai2a_pins_a>, <&sai2b_pins_b>;
->        pinctrl-1 = <&sai2a_sleep_pins_a>, <&sai2b_sleep_pins_b>;
-> -      status = "okay";
->  
->        sai2a: audio-controller@4400b004 {
->          #sound-dai-cells = <0>;
-> @@ -190,7 +189,6 @@ examples:
->          dma-names = "tx";
->          clocks = <&rcc SAI2_K>;
->          clock-names = "sai_ck";
-> -        status = "okay";
->        };
->      };
->  
-> diff --git a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-> index ec06789b21df..6806f53a4aed 100644
-> --- a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-> +++ b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-> @@ -127,8 +127,6 @@ examples:
->          compatible = "ti,j721e-cpb-audio";
->          model = "j721e-cpb";
->  
-> -        status = "okay";
-> -
->          ti,cpb-mcasp = <&mcasp10>;
->          ti,cpb-codec = <&pcm3168a_1>;
->  
-> diff --git a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-> index ee9f960de36b..859d369c71e2 100644
-> --- a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-> +++ b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-> @@ -119,8 +119,6 @@ examples:
->          compatible = "ti,j721e-cpb-ivi-audio";
->          model = "j721e-cpb-ivi";
->  
-> -        status = "okay";
-> -
->          ti,cpb-mcasp = <&mcasp10>;
->          ti,cpb-codec = <&pcm3168a_1>;
->  
-> -- 
-> 2.27.0
-> 
+Can that be cured by just checking vcpu->preempted before calling
+kvm_update_vcpu_preempted() ?
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+- Joel
