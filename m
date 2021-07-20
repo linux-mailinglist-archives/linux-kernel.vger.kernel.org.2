@@ -2,111 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE1D3CF638
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA953CF63E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234756AbhGTHzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:55:18 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:12279 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234547AbhGTHzB (ORCPT
+        id S234588AbhGTH5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhGTH5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:55:01 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GTX3d0Qf8z7wDb;
-        Tue, 20 Jul 2021 16:30:53 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 16:35:28 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 20 Jul
- 2021 16:35:27 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <io-uring@vger.kernel.org>
-CC:     <axboe@kernel.dk>, <asml.silence@gmail.com>
-Subject: [PATCH] io_uring: fix memleak in io_init_wq_offload()
+        Tue, 20 Jul 2021 03:57:44 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EB9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:38:22 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id p36so18929550pfw.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:38:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3UBl5TF7W4cPvNqAim0RfEGw+DwVCp3VD7zo3dPsAO4=;
+        b=AxYnmTUa9mJMyKG+S//JMm5wk6u5JQd/KNQQNLWgz2JMwFY3QFutVvP3KUAqPRTtCN
+         hlgaV10WPDrfmqcDbff8K2oL1b/9m47aGQqUELkxUMo+j2ygNQev+NPKm2jwrCbGXi2q
+         PNAevX7PNUDz6i5PcWzq3pyIEbhjQSXJoE6t+Ve/Qf0NSR8eUz6gaGXhtifwaw+UPj53
+         fON+OeteoHYwd1SfVQFm6LMK6RqilZtIvorM6Ir8EQq6cOXpMlKAI/6vPemKcrAycHzz
+         aLu55tmLrP+1KCVcQA4g3zVLY5t6EkrM/T8Mmy2HGauIE+2NCgtElZm3Txj7zAmIpyPj
+         +T9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3UBl5TF7W4cPvNqAim0RfEGw+DwVCp3VD7zo3dPsAO4=;
+        b=FeIw/vhAAZYH3RFuyEorXW3xUHhfOfXCuP2p0Wid0Dqc0k2syKCyS4c0ilcLru+XTj
+         3TElXSjGWddnkSIj5oaKV4D7WTx8P4pNZ3zY5r+pznlKfSoO7AGgd0anaW9MsTI0BKg3
+         osdNWmKxsZykSS4FHlWx6Gt4blZqBBQCWYUnQ73QI1jwtpEJUpypc2+6XYoKcKoxrXkc
+         GmiorZgCz+6tEtZ3XhIjbDUiWPno2E6aovqCWcMCrU24dxtBu0g4Q7B3Nw9cczil4MwW
+         tfW8IQYhapYiLcnyrI1Bw15FJMwFI80SdtYfuEUKZh09skCjIpYdwue5Jxv1KgtwtLym
+         +rOw==
+X-Gm-Message-State: AOAM532/pUb5s2G+7HrJ9IQ8P9kO15ANSoKVyweHPnaJRa+e8v4nP6tz
+        z25kPPME0LG2lQ8xXBkkzhs=
+X-Google-Smtp-Source: ABdhPJwbmDUIFg7L0Qvve0Kt66BxF7m1V1RDkA9poGcJD6T0SSb3dkt21JsOIQwSQEG1ASgFS0ZWrw==
+X-Received: by 2002:a63:db0e:: with SMTP id e14mr4805226pgg.188.1626770301656;
+        Tue, 20 Jul 2021 01:38:21 -0700 (PDT)
+Received: from localhost.localdomain ([154.16.166.191])
+        by smtp.gmail.com with ESMTPSA id x7sm23654193pfc.96.2021.07.20.01.38.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 01:38:21 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] tty: nozomi: change tty_unregister_device to tty_port_unregister_device
 Date:   Tue, 20 Jul 2021 16:38:05 +0800
-Message-ID: <20210720083805.3030730-1-yangyingliang@huawei.com>
+Message-Id: <20210720083805.1430892-1-mudongliangabcd@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got memory leak report when doing fuzz test:
+The pairwise api invocation of tty_port_register_device should be
+tty_port_unregister_device, other than tty_unregister_device.
 
-BUG: memory leak
-unreferenced object 0xffff888107310a80 (size 96):
-comm "syz-executor.6", pid 4610, jiffies 4295140240 (age 20.135s)
-hex dump (first 32 bytes):
-01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00 .....N..........
-backtrace:
-[<000000001974933b>] kmalloc include/linux/slab.h:591 [inline]
-[<000000001974933b>] kzalloc include/linux/slab.h:721 [inline]
-[<000000001974933b>] io_init_wq_offload fs/io_uring.c:7920 [inline]
-[<000000001974933b>] io_uring_alloc_task_context+0x466/0x640 fs/io_uring.c:7955
-[<0000000039d0800d>] __io_uring_add_tctx_node+0x256/0x360 fs/io_uring.c:9016
-[<000000008482e78c>] io_uring_add_tctx_node fs/io_uring.c:9052 [inline]
-[<000000008482e78c>] __do_sys_io_uring_enter fs/io_uring.c:9354 [inline]
-[<000000008482e78c>] __se_sys_io_uring_enter fs/io_uring.c:9301 [inline]
-[<000000008482e78c>] __x64_sys_io_uring_enter+0xabc/0xc20 fs/io_uring.c:9301
-[<00000000b875f18f>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-[<00000000b875f18f>] do_syscall_64+0x3b/0x90 arch/x86/entry/common.c:80
-[<000000006b0a8484>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-CPU0                          CPU1
-io_uring_enter                io_uring_enter
-io_uring_add_tctx_node        io_uring_add_tctx_node
-__io_uring_add_tctx_node      __io_uring_add_tctx_node
-io_uring_alloc_task_context   io_uring_alloc_task_context
-io_init_wq_offload            io_init_wq_offload
-hash = kzalloc                hash = kzalloc
-ctx->hash_map = hash          ctx->hash_map = hash <- one of the hash is leaked
-
-When calling io_uring_enter() in parallel, the 'hash_map' will be leaked, 
-add uring_lock to protect 'hash_map'.
-
-Fixes: e941894eae31 ("io-wq: make buffered file write hashed work map per-ctx")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 ---
- fs/io_uring.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/tty/nozomi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 0cac361bf6b8..63d3a9c2a2a6 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -7899,15 +7899,19 @@ static struct io_wq *io_init_wq_offload(struct io_ring_ctx *ctx,
- 	struct io_wq_data data;
- 	unsigned int concurrency;
+diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
+index 0c80f25c8c3d..08bdd82f60b5 100644
+--- a/drivers/tty/nozomi.c
++++ b/drivers/tty/nozomi.c
+@@ -1417,7 +1417,8 @@ static int nozomi_card_init(struct pci_dev *pdev,
  
-+	mutex_lock(&ctx->uring_lock);
- 	hash = ctx->hash_map;
- 	if (!hash) {
- 		hash = kzalloc(sizeof(*hash), GFP_KERNEL);
--		if (!hash)
-+		if (!hash) {
-+			mutex_unlock(&ctx->uring_lock);
- 			return ERR_PTR(-ENOMEM);
-+		}
- 		refcount_set(&hash->refs, 1);
- 		init_waitqueue_head(&hash->wait);
- 		ctx->hash_map = hash;
+ err_free_tty:
+ 	for (i--; i >= 0; i--) {
+-		tty_unregister_device(ntty_driver, dc->index_start + i);
++		tty_port_unregister_device(&dc->port[i].port, ntty_driver,
++				dc->index_start + i);
+ 		tty_port_destroy(&dc->port[i].port);
  	}
-+	mutex_unlock(&ctx->uring_lock);
- 
- 	data.hash = hash;
- 	data.task = task;
+ 	free_irq(pdev->irq, dc);
 -- 
 2.25.1
 
