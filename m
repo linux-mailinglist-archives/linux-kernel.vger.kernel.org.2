@@ -2,111 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879C03CFA05
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704673CFA0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237683AbhGTMVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:21:49 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63290 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230427AbhGTMVe (ORCPT
+        id S238349AbhGTMXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:23:25 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:53142
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231526AbhGTMWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:21:34 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16KCXB9h129580;
-        Tue, 20 Jul 2021 09:02:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Riwv19ZwdFbDzNPVPECbfy4YpeThSBLte5/J/rjnWZc=;
- b=JaVYWvl1BTl7VKakCcYH3/3F5qvcdSREEAF2/nxXcU465CjbGE8dAI7LrVPNbScl8oII
- h04Y7mMFYEGJ0d0G+ZbJ4Dz4uNj5lVI1qOlrdCZbB+0avoE7lTpyiFlGU/TuaT5ZwZHA
- LLHgRIT0L46+jzPbxSOKq3UsmFmI6AvTa6CbJLTs2jy2sdsr7a/f7nAolYCYMIP2smuk
- wCCxG+TgdqTkwlC12vm/0O/xpb4XcjaZJ0Kywu33porPjGN7hYE3R3sSK1HyiMCMVZ2i
- QhNkPA1uEto4R98y+yrS69SNAWGJ7KnagIiesdLxDHlEEq6zzLGKvoU1Ixk20+s0yfGW CQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39wwg632xj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 09:02:00 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16KCXDPO129704;
-        Tue, 20 Jul 2021 09:01:59 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39wwg632vv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 09:01:59 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16KCvOPR027500;
-        Tue, 20 Jul 2021 13:01:56 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06fra.de.ibm.com with ESMTP id 39upfh8rxs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 13:01:56 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16KD1sfh27132286
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Jul 2021 13:01:54 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2DCE0AE045;
-        Tue, 20 Jul 2021 13:01:54 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EDC8DAE04D;
-        Tue, 20 Jul 2021 13:01:51 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.56.226])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 20 Jul 2021 13:01:51 +0000 (GMT)
-Message-ID: <999c3297f71e5f7d69b555bc8c999729e8b1ae31.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 2/3] ima: Return int in the functions to measure a
- buffer
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "paul@paul-moore.com" <paul@paul-moore.com>
-Cc:     "stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>,
-        "prsriva02@gmail.com" <prsriva02@gmail.com>,
-        "tusharsu@linux.microsoft.com" <tusharsu@linux.microsoft.com>,
-        "nramas@linux.microsoft.com" <nramas@linux.microsoft.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Date:   Tue, 20 Jul 2021 09:01:50 -0400
-In-Reply-To: <bd953894da3041d5969da645db2f982e@huawei.com>
-References: <20210705090922.3321178-1-roberto.sassu@huawei.com>
-         <20210705090922.3321178-3-roberto.sassu@huawei.com>
-         <2f4920dbdb16156e1af5cf78f592a5cf07ec3176.camel@linux.ibm.com>
-         <bd953894da3041d5969da645db2f982e@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: HlskwCogQeEVE3B_1NA-ttdKagDUSF7_
-X-Proofpoint-ORIG-GUID: Ejs5htwOyDS0irQ8lIeHBY5vsVk1JFWD
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-20_07:2021-07-19,2021-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- impostorscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
- clxscore=1015 lowpriorityscore=0 priorityscore=1501 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107200081
+        Tue, 20 Jul 2021 08:22:47 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 5CD2940624;
+        Tue, 20 Jul 2021 13:03:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626786197;
+        bh=PQfJRURFWXwxKi9tGQBBw5EhD752Jp+9489PeReXm7s=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=DIklFQHYUL8u1LIL9v/eIds5ob53wIJfgg2kcQbHdHUWwq54qjHQcrHU0LORih4lB
+         F1v0X2UBbN5kkMhH0K4IPFhdI8YGtVInuN4KlpwOopyo/OnhDOLYER//RxFMCfSOCp
+         fyL2h5NqIdCPvm6N2OJFgP89tcNJebLWEDCFYkDguK2q89LiRVyItPduyBwVkmSFlk
+         vxQPzuU0qqBc6sfTJzhr0anr7Iy5sO4yO8U53xIgO1LlKxLlF9wW5XwBgJCUmKrXme
+         uiHN9jd3FgHWdv8TKmj6wCEMcO59hMBxDNqbEdm5ITEuIq1Q8xPNkoZECECSr0Ctus
+         lGpXwZAW2o1pQ==
+From:   Colin King <colin.king@canonical.com>
+To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        netdev@vger.kernel.org, clang-built-linux@googlegroups.com
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: marvell: clean up trigraph warning on ??! string
+Date:   Tue, 20 Jul 2021 14:03:11 +0100
+Message-Id: <20210720130311.59805-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-07-20 at 12:38 +0000, Roberto Sassu wrote:
-> > > This patch modifies the return type from void to int, and returns 0 if the
-> > > buffer has been successfully measured, a negative value otherwise.
-> > 
-> > Needed here is an explanation as to why ima_measure_critical_data() is
-> > special.
-> 
-> We don't want to unnecessarily calculate the digest twice.
+From: Colin Ian King <colin.king@canonical.com>
 
-That's what the "iint" cache is for.  .  This needs more a of an
-explaintion as to why  ima_measure_critical_data() is special.
+The character sequence ??! is a trigraph and causes the following
+clang warning:
 
-thanks,
+drivers/net/ethernet/marvell/mvneta.c:2604:39: warning: trigraph ignored [-Wtrigraphs]
 
-Mimi
+Clean this by replacing it with single ?.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/marvell/mvneta.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+index 76a7777c746d..fc4dbcc58f5f 100644
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -2666,7 +2666,7 @@ static int mvneta_tx_tso(struct sk_buff *skb, struct net_device *dev,
+ 		return 0;
+ 
+ 	if (skb_headlen(skb) < (skb_transport_offset(skb) + tcp_hdrlen(skb))) {
+-		pr_info("*** Is this even  possible???!?!?\n");
++		pr_info("*** Is this even possible?\n");
+ 		return 0;
+ 	}
+ 
+-- 
+2.31.1
 
