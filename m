@@ -2,92 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD873CFA50
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CCD93CFA79
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238800AbhGTMen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:34:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238415AbhGTMcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:32:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66AFB61106;
-        Tue, 20 Jul 2021 13:13:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626786787;
-        bh=al7tI0KVVLdEI4uEKfWFTCtxVhUgyhsr1HgYUh500/8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dlu6Q+ySyWZD/KOuzvnza5z39lV+sx/aVol9fNomcLzbau6nuEWQ4LKJ8WvHxRgFM
-         iAfLf4SxCoqV2s7L19ynzMrcOk4oPJzPfAK9bNwIEPMaotlhMhcqt9EyA4phEjyoA4
-         g5s1Qtgj9z53VBqvMQVhCRoQ6TmP7anJTwRknLd7W0o34WL4x5E3Aoa/Kv+PwkKXZz
-         hGW5yFzBGaDaAt48sLWTDNdN4hOwbJtfcHay+2TbXIKgMLJU4McVc2ddm4VvL1Nq2p
-         xSZSInGNJkpO77wcCmuWjyTqBeAdZUqVrenD8uEXl/dEIHR0q1Pn4wnd6JuFTjX6nx
-         gc2SAuESGV84g==
-Date:   Tue, 20 Jul 2021 14:13:03 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Eddie James' <eajames@linux.ibm.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH 1/2] spi: fsi: Reduce max transfer size to 8 bytes
-Message-ID: <20210720131303.GB5042@sirena.org.uk>
-References: <20210716133915.14697-1-eajames@linux.ibm.com>
- <20210716133915.14697-2-eajames@linux.ibm.com>
- <20210716171936.GB4137@sirena.org.uk>
- <81a40f8690d297ebfb6697dbea63279bcf2f24fa.camel@linux.ibm.com>
- <20210719152010.GB4174@sirena.org.uk>
- <d2e07f0beda57ffeaa31e8cf5bf28edfbd982e58.camel@linux.ibm.com>
- <0a637d7704df4303abe783215080578d@AcuMS.aculab.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="aM3YZ0Iwxop3KEKx"
-Content-Disposition: inline
-In-Reply-To: <0a637d7704df4303abe783215080578d@AcuMS.aculab.com>
-X-Cookie: Revenge is a meal best served cold.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S236519AbhGTMlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236221AbhGTMdv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 08:33:51 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682A9C061767;
+        Tue, 20 Jul 2021 06:14:28 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id o9so10057120qvu.5;
+        Tue, 20 Jul 2021 06:14:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=QWr2BUkC4vvi9PM11ezntCMBhcCSyWA7DgM4Q5kuaLU=;
+        b=Utq+RpuMRXgMXcdrvC6umPzmRtG3+auvypucw0Mh9V5KsDQKasPqaKQZhixrOKk1hJ
+         ZS7kXhz6SXpwJGP18CvVNsIsbd9UGqtsOS0mvqwodSY1bz5CNud6AvNz7A/R/kms7qD6
+         P+YiMKGadHslMcq4Z5RMuKRtVL61+M7kvkKGoaODW5vCwZnEdVA2ecB6LZClGKv/oW4a
+         ainJ7pgrwoSLp0trcw4w6KNiElr6L7G3EKqfU+wvgM/LIIezdbkKzQQCS+sVAlx6eeeT
+         yMb5d5oLL4Cui6iwx8cAAT4x8psgvyGQdSlQMxgx+21ctylM0GXxmNjZWfdX8oIZ0fX6
+         achA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=QWr2BUkC4vvi9PM11ezntCMBhcCSyWA7DgM4Q5kuaLU=;
+        b=de4Knogthtl5DDun+3naJKFuFBW/EGfDl5LbZd9c1dvSYkuY7Ut2jUP5hJYI/e45E9
+         TkZ55ygnJbz7MI4PtdtGz5X8FVi9TwiEldAfZlr3Ucz6lZyFD07J9PKkN/wJ87FzfXao
+         vysjyE/y6cXfT/XmITz3FJY/VAEK/6IvP2oH0acA/oWbHKxxlN3ZDHG+axTKNpgmJDyo
+         iQT2UwF/tr7pKxt5ZBqsDxqV6XfbgVGtpCdq1c22gHCg3yl9QxF6umSXPVSjp15ztUmH
+         /E68VpXVmYeOns2bFyf2TDSx9mVZZa5USqtxH+we7g+e96qLEZxHnJdI7UB8DAescNA7
+         GMRw==
+X-Gm-Message-State: AOAM532bL+neSfsQQJrtTfgN7CwCIggAnMJHbAe/Nokw6IfVmCQ2XiO2
+        xZGe2xtcNVZE6MPZi6qRBEk=
+X-Google-Smtp-Source: ABdhPJzU/oZsWMgvR36q8SniWa6pLaFlm6s2cnx4Cx9k+RudbNGPvCx5QEqWVowKYTRc2Qo3plfjng==
+X-Received: by 2002:a0c:fa08:: with SMTP id q8mr25163182qvn.8.1626786867608;
+        Tue, 20 Jul 2021 06:14:27 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id g17sm9701225qkm.34.2021.07.20.06.14.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 06:14:27 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        amit@kernel.org, benh@kernel.crashing.org,
+        brendanhiggins@google.com, corbet@lwn.net, david@redhat.com,
+        dwmw@amazon.com, elver@google.com, fan.du@intel.com,
+        foersleo@amazon.de, greg@kroah.com, gthelen@google.com,
+        guoju.fgj@alibaba-inc.com, jgowans@amazon.com, joe@perches.com,
+        mgorman@suse.de, mheyne@amazon.de, minchan@kernel.org,
+        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
+        riel@surriel.com, rientjes@google.com, rostedt@goodmis.org,
+        rppt@kernel.org, shakeelb@google.com, shuah@kernel.org,
+        sieberf@amazon.com, sj38.park@gmail.com, snu@zelle79.org,
+        vbabka@suse.cz, vdavydov.dev@gmail.com, zgf574564920@gmail.com,
+        linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC v3 09/15] mm/damon/dbgfs: Support prioritization weights
+Date:   Tue, 20 Jul 2021 13:13:03 +0000
+Message-Id: <20210720131309.22073-10-sj38.park@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210720131309.22073-1-sj38.park@gmail.com>
+References: <20210720131309.22073-1-sj38.park@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: SeongJae Park <sjpark@amazon.de>
 
---aM3YZ0Iwxop3KEKx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This commit allows DAMON debugfs interface users set the prioritization
+weights by putting three more numbers to the 'schemes' file.
 
-On Tue, Jul 20, 2021 at 01:04:38PM +0000, David Laight wrote:
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+ mm/damon/dbgfs.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-> Having said that, you might want a loop in the driver so that
-> application requests for longer transfers are implemented
-> with multiple hardware requests.
+diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+index 3cd253a07116..93ac15cb5786 100644
+--- a/mm/damon/dbgfs.c
++++ b/mm/damon/dbgfs.c
+@@ -227,13 +227,16 @@ static ssize_t sprint_schemes(struct damon_ctx *c, char *buf, ssize_t len)
+ 
+ 	damon_for_each_scheme(s, c) {
+ 		rc = scnprintf(&buf[written], len - written,
+-				"%lu %lu %u %u %u %u %d %lu %lu %lu %lu %lu\n",
++				"%lu %lu %u %u %u %u %d %lu %lu %lu %u %u %u %lu %lu\n",
+ 				s->min_sz_region, s->max_sz_region,
+ 				s->min_nr_accesses, s->max_nr_accesses,
+ 				s->min_age_region, s->max_age_region,
+ 				s->action,
+ 				s->quota.ms, s->quota.sz,
+ 				s->quota.reset_interval,
++				s->quota.weight_sz,
++				s->quota.weight_nr_accesses,
++				s->quota.weight_age,
+ 				s->stat_count, s->stat_sz);
+ 		if (!rc)
+ 			return -ENOMEM;
+@@ -315,11 +318,14 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
+ 	while (pos < len && *nr_schemes < max_nr_schemes) {
+ 		struct damos_quota quota = {};
+ 
+-		ret = sscanf(&str[pos], "%lu %lu %u %u %u %u %u %lu %lu %lu%n",
++		ret = sscanf(&str[pos],
++				"%lu %lu %u %u %u %u %u %lu %lu %lu %u %u %u%n",
+ 				&min_sz, &max_sz, &min_nr_a, &max_nr_a,
+ 				&min_age, &max_age, &action, &quota.ms,
+-				&quota.sz, &quota.reset_interval, &parsed);
+-		if (ret != 10)
++				&quota.sz, &quota.reset_interval,
++				&quota.weight_sz, &quota.weight_nr_accesses,
++				&quota.weight_age, &parsed);
++		if (ret != 13)
+ 			break;
+ 		if (!damos_action_valid(action)) {
+ 			pr_err("wrong action %d\n", action);
+@@ -1147,7 +1153,7 @@ static ssize_t dbgfs_monitor_on_write(struct file *file,
+ static ssize_t dbgfs_version_read(struct file *file,
+ 		char __user *buf, size_t count, loff_t *ppos)
+ {
+-	return simple_read_from_buffer(buf, count, ppos, "1\n", 2);
++	return simple_read_from_buffer(buf, count, ppos, "2\n", 2);
+ }
+ 
+ static const struct file_operations mk_contexts_fops = {
+-- 
+2.17.1
 
-No, that's something that should be and indeed is done in the core -
-this isn't the only hardware out there with some kind of restriction on
-length.
-
-> I do also wonder why there is support in the main kernel sources
-> for hardware that doesn't actually exist.
-
-We encourage vendors to get support for their devices upstream prior to
-hardware availability so that users are able to run upstream when they
-get access to hardware, this means users aren't forced to run out of
-tree code needlessly and greatly eases deployment.
-
---aM3YZ0Iwxop3KEKx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD2y94ACgkQJNaLcl1U
-h9CU5wf/TxYsQY9aTbblj5w4EVv8uLKbvy6PBj1SnrM4wfytzyTYihrRE6uCLTAS
-Nn9FkI1moqB5RREdDHk4HKQOiZQ2SD5FZn9jM5VV74hMRgyU70vk6DcgobQVYS2h
-YE23Evtq4wcxvTHbPHhZcYYj8NcoUbsbabuGB8smW5DU0qP8uVe8T1bTPcnBWE6g
-fXVdzjeRDykoTPTariCs1V02ZdqORUtSJF1TXJPaI2tLTqPEoBNPJzx2fgocdB7D
-jK1YKiTQV/TI+GED/c9cbvs+QW/uhBcJ7WVvqHrDcg8JnpRwVPp0K/x61vX0VeLq
-AN8yydmcf/WWsUCHBc1fwemQYA4WBQ==
-=Dkpn
------END PGP SIGNATURE-----
-
---aM3YZ0Iwxop3KEKx--
