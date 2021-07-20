@@ -2,109 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3060D3CFBA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FE83CFBC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233918AbhGTN2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 09:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239104AbhGTNLg (ORCPT
+        id S239226AbhGTNdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 09:33:00 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:11460 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239262AbhGTN1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 09:11:36 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414F5C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:52:11 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 70so19185712pgh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:52:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mg96Ac5h0FwYX7AHJlirtckZlaLSWupGqp2mVuP86C0=;
-        b=cHDkGdim5v/AoF0Ty4L+Z9X+fUgfhOIu3n+Eps0zUe/Wsmro3Bdh5S8IQFemUeyfwb
-         9bhKF/Xl+kCaIQTQ4LS9+XbkbALVxb4AcAC8bnxyysQsUgOMQKDmxyuQewJqLpcLH7cB
-         DAo2aSJjNPy4waQZNW4b2m0N2H15CUPqP5T3iT8kRhyJW0JUuG/1aQTQeF7lWwHWY0ar
-         c3+eYT9sUUnQcLEw7vRjflG1avQpPrz5lovoLi19QSTZgpqXJP2zieqe5paTmhOPCDPD
-         i+sgaj1U/+jDuAujkqpgqCQYekLn9rncMx1Xi6njlrqJPa0/87OCAysjBPWXTln8bbhM
-         jg/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mg96Ac5h0FwYX7AHJlirtckZlaLSWupGqp2mVuP86C0=;
-        b=IklYyfCRHvLdzJOcTspqPpV3JYZuA/9+fRjbNDGWUVRoWJYbwGzbFa347aYYSyFC+2
-         BZqMQZaScMF3WDOcBU9N2xLwSIZqR0SagmFbp+dlug12GeO7+GW2KeIzUh9fiknn99fe
-         Wvlxi1uuAyLGZMxoN2ii1czz3k6etd8Plsf1xhJ+I/wsJADBGHGwR1nHOuBduI6h/eP9
-         d8597NbDGJeNo4S8pTU99DdYBiK5dRupcmuZXCq133JwSDkOmDZjiyEC8eGa7i8o1ooL
-         Fi+Zbhd5RRdQrE96nkW2aGIyr0AX9o9C4WgpWu0V2NIPpZrVosqZ2BnHyuwsu75q4k7n
-         UNAw==
-X-Gm-Message-State: AOAM533lbDxh0AB0vF7pbIXg61KOar6dboTJaQcojcHdp+g/qrdcdk5Q
-        p1UNMr5R9Q1Ve2GGuIOkI+B89w==
-X-Google-Smtp-Source: ABdhPJzrJdVaaYE1SPojmpR4DYAxF+il6fg+MjegzvCVsYljtsjxNkJZwM+BhLiAgYgyFR6IjqGqnw==
-X-Received: by 2002:a63:4d61:: with SMTP id n33mr14230339pgl.219.1626789130776;
-        Tue, 20 Jul 2021 06:52:10 -0700 (PDT)
-Received: from [192.168.1.187] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id x6sm28325022pgq.67.2021.07.20.06.52.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 06:52:10 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: fix memleak in io_init_wq_offload()
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
-Cc:     asml.silence@gmail.com
-References: <20210720083805.3030730-1-yangyingliang@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <43a58f84-bd43-a644-bc8c-642147b354aa@kernel.dk>
-Date:   Tue, 20 Jul 2021 07:52:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 20 Jul 2021 09:27:08 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GTg3r6TChzcbXY;
+        Tue, 20 Jul 2021 21:46:32 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 21:49:55 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 20 Jul
+ 2021 21:49:54 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
+CC:     <tiwai@suse.com>, <perex@perex.cz>
+Subject: [PATCH -next] ALSA: nm256: Fix error return code in snd_nm256_create()
+Date:   Tue, 20 Jul 2021 21:52:37 +0800
+Message-ID: <20210720135237.3424521-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210720083805.3030730-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/21 2:38 AM, Yang Yingliang wrote:
-> I got memory leak report when doing fuzz test:
-> 
-> BUG: memory leak
-> unreferenced object 0xffff888107310a80 (size 96):
-> comm "syz-executor.6", pid 4610, jiffies 4295140240 (age 20.135s)
-> hex dump (first 32 bytes):
-> 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-> 00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00 .....N..........
-> backtrace:
-> [<000000001974933b>] kmalloc include/linux/slab.h:591 [inline]
-> [<000000001974933b>] kzalloc include/linux/slab.h:721 [inline]
-> [<000000001974933b>] io_init_wq_offload fs/io_uring.c:7920 [inline]
-> [<000000001974933b>] io_uring_alloc_task_context+0x466/0x640 fs/io_uring.c:7955
-> [<0000000039d0800d>] __io_uring_add_tctx_node+0x256/0x360 fs/io_uring.c:9016
-> [<000000008482e78c>] io_uring_add_tctx_node fs/io_uring.c:9052 [inline]
-> [<000000008482e78c>] __do_sys_io_uring_enter fs/io_uring.c:9354 [inline]
-> [<000000008482e78c>] __se_sys_io_uring_enter fs/io_uring.c:9301 [inline]
-> [<000000008482e78c>] __x64_sys_io_uring_enter+0xabc/0xc20 fs/io_uring.c:9301
-> [<00000000b875f18f>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> [<00000000b875f18f>] do_syscall_64+0x3b/0x90 arch/x86/entry/common.c:80
-> [<000000006b0a8484>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> CPU0                          CPU1
-> io_uring_enter                io_uring_enter
-> io_uring_add_tctx_node        io_uring_add_tctx_node
-> __io_uring_add_tctx_node      __io_uring_add_tctx_node
-> io_uring_alloc_task_context   io_uring_alloc_task_context
-> io_init_wq_offload            io_init_wq_offload
-> hash = kzalloc                hash = kzalloc
-> ctx->hash_map = hash          ctx->hash_map = hash <- one of the hash is leaked
-> 
-> When calling io_uring_enter() in parallel, the 'hash_map' will be leaked, 
-> add uring_lock to protect 'hash_map'.
+If pci_request_regions() fails, it should return error
+code in snd_nm256_create().
 
-Good catch! Applied, thanks.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ sound/pci/nm256/nm256.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/sound/pci/nm256/nm256.c b/sound/pci/nm256/nm256.c
+index a54b9b26a0c2..c9c178504959 100644
+--- a/sound/pci/nm256/nm256.c
++++ b/sound/pci/nm256/nm256.c
+@@ -1478,7 +1478,8 @@ snd_nm256_create(struct snd_card *card, struct pci_dev *pci)
+ 	chip->buffer_addr = pci_resource_start(pci, 0);
+ 	chip->cport_addr = pci_resource_start(pci, 1);
+ 
+-	if (pci_request_regions(pci, card->driver))
++	err = pci_request_regions(pci, card->driver);
++	if (err < 0)
+ 		return err;
+ 
+ 	/* Init the memory port info.  */
 -- 
-Jens Axboe
+2.25.1
 
