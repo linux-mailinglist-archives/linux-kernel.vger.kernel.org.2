@@ -2,81 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAAEB3CFE87
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED693CFE8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240209AbhGTPTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:19:18 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:38996
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234905AbhGTPRO (ORCPT
+        id S238846AbhGTPUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239812AbhGTPSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:17:14 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id EFFF2408B7;
-        Tue, 20 Jul 2021 15:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626796652;
-        bh=3II+PC97VCoKt9T8F7pnL4yTXL+6p6xVAwlLpzbPYU8=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=wamHC7s9ZUcpEsWL5kOnny8dJU+Awirb8oRm5Y/2RXgjZks+aV2HQ4AeH20sGvBfr
-         iKhGC44hNjMmWGN43/ATPYl6wJWfQAqCB1bdaCDGrSwlUgnRA0pblL5D5nAB+8lx8h
-         ywKKsN+sAyQDiz1SIGH8oUU9j74gI1yoP+kZoVT0WORkTjdVC5omewH8nZB+hmmtjr
-         jytKz61f4ZqLSA+xZa2XpSK1ppdU+nJEdGHkTggapNtj+tWO6bkIaWsPQcpyNRnPYD
-         0dkR4mBDPq3vhn4HA7FNTKggBMCUW3arWN1KeozryRPMx9AoC3FkjL70jdBLZNHz8R
-         tO8eAJ/BfoBzA==
-From:   Colin King <colin.king@canonical.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Anusha Srivatsa <anusha.srivatsa@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/i915/xelpd: Fix unsigned compared to less than zero error
-Date:   Tue, 20 Jul 2021 16:57:26 +0100
-Message-Id: <20210720155726.73628-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 20 Jul 2021 11:18:16 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46784C06127E;
+        Tue, 20 Jul 2021 08:56:56 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id c16so26655779ybl.9;
+        Tue, 20 Jul 2021 08:56:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WnvkgdxtoAemKPJLVMVY6hqBu9goS/fqMgfnJCN6o5Y=;
+        b=DfZdlfpB9mN4dbZ8DAGVh9rGPukd8Qb2dOC6nAI/GMp64aBSKlOxqoJqUkklal8mmi
+         Wxq0TdLtRv4zS9DMnK6gDuYxs9sSf/vJhRtvYvpO0Nfl1+aE0a6RGhxu3LvtSMttQoN3
+         iFguBYIF+scSIPVSo3OISIVSSb4yVuoVuWkvcbNsh6Uim+kPsJQC5e80kAjxIuIId/Ir
+         B53P/vRmrpKXB/RhM6KoO4WtmpEfA1lxOeafoCGY7vnC3622TEtWRaSfBHI3BKOtu9xx
+         3fOyeQTnCvtdz8N/2lfeLVhj49ecYt8XEEuIeo6Qzyw9oE0f5GTxOb8LYHTgKFCb138F
+         AoCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WnvkgdxtoAemKPJLVMVY6hqBu9goS/fqMgfnJCN6o5Y=;
+        b=g7Ivv75DOMtRyzRgbpTH85+KFfr5s/vxwpBd3Sgd6ve375bKs2HUTjYG6bUQGjDgCY
+         5BtWudR62qNBByk/Mdc+lH7bSREFn6NrFrhlJ7nOewQr5ldDuUbcfZqlMXaH/qD6zI8a
+         Q5O4yKeXXSuH/tFcZ2Z1XUQI6WxTQvQjGi0c0vXwTg2ZXcG586N8eU1/f9BzP7r+YoYF
+         2lfiCj4Y815uMoNm5lvmTtDj7USx5PZd1WiarP9HX5DbQ/AC+MBxgeHITir5ff/T4jx7
+         Z8wCwZvyDF6Sn+/b6YHyM1ekUSBx6/W21AV6IveGJE3/9oqRLE3VDJA3G9dr36vfUaPO
+         Oq9A==
+X-Gm-Message-State: AOAM5315RY58ssYhQkAl7sPoOw7V9f8bJl7jjKXPAxczjZM2m2YsfKs2
+        OVyz22RQewtR0VukljKHTSdEOEAAMepibegowH8=
+X-Google-Smtp-Source: ABdhPJwcLYTBQc1sWKW28kOeuJp5aYajJPTD3dd6Ctg+5bv2Sh4Mp1muP9ZdFeVJhMt1/OIu3K5lHGtHOJPD1wu06dA=
+X-Received: by 2002:a25:cc52:: with SMTP id l79mr39052227ybf.476.1626796615519;
+ Tue, 20 Jul 2021 08:56:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210719143811.2135-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <dc2de27b087c7030ea7e76dd31bb3d8bce18d97f.camel@pengutronix.de>
+ <CA+V-a8v-54QXtcT-gPy5vj9drqZ6Ntr0-3j=42Dedi-kojNtXQ@mail.gmail.com> <CAMuHMdVFarkF49=Vvcv-6NLhxbLUE33PXnqhAiPxpaCNN7u4Bw@mail.gmail.com>
+In-Reply-To: <CAMuHMdVFarkF49=Vvcv-6NLhxbLUE33PXnqhAiPxpaCNN7u4Bw@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 20 Jul 2021 16:56:29 +0100
+Message-ID: <CA+V-a8sKDGyBCYJnxH=_cJrbYFL1Ev4ETsjYEXx7fQsW-NYiYA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] dt-bindings: net: can: renesas,rcar-canfd:
+ Document RZ/G2L SoC
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi Geert,
 
-The subtraction of fw->size - offset is operating on two unsigned
-integers and the result is unsigned and hence the less than zero
-comparison will always to be false. Fix this by casting fw->size
-from a size_t to a ssize_t to ensure the result can be signed to
-allow a less than zero result.
+On Tue, Jul 20, 2021 at 4:11 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Tue, Jul 20, 2021 at 4:31 PM Lad, Prabhakar
+> <prabhakar.csengg@gmail.com> wrote:
+> > On Tue, Jul 20, 2021 at 11:22 AM Philipp Zabel <p.zabel@pengutronix.de> wrote:
+> > > On Mon, 2021-07-19 at 15:38 +0100, Lad Prabhakar wrote:
+> > > > Add CANFD binding documentation for Renesas RZ/G2L SoC.
+> > > >
+> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+>
+> > > > --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > > > +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+>
+> > > > +    resets:
+> > > > +      items:
+> > > > +        - description: CANFD_RSTP_N
+> > > > +        - description: CANFD_RSTC_N
+> > >
+> > > Do you know what the "P" and "C" stands for? It would be nice if the
+> > > description could tell us what the reset lines are used for.
+> > >
+> > unfortunately the HW manual does not mention  anything about "P" and "C" :(
+> >
+> > > I would prefer if you used these names (or shortened versions, for
+> > > example "rstp_n", "rstc_n") as "reset-names" and let the driver
+> > > reference the resets by name instead of by index.
+> > >
+> > OK will do that and maxItems:2 for resets.
+> >
+> > @Geert, for R-Car Gen3 does "canfd_rst" (as it's a module reset)
+> > sounds good for reset-names? Or do you have any other suggestions?
+>
+> I wouldn't bother with reset-names on R-Car, as there is only a
+> single reset.
+>
+OK will keep "description: CANFD reset" for R-Car as done in the
+current patch and just add reset-names only for RZ/G2L SoC.
 
-Addresses-Coverity: ("Unsigned compared against 0")
-Fixes: 3d5928a168a9 ("drm/i915/xelpd: Pipe A DMC plugging")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/i915/display/intel_dmc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> BTW, does there exist a generally-accepted reset-equivalent of "fck"
+> ("Functional ClocK")?
+>
+None that I am aware of (Couple of binding docs have "rst"), but maybe
+Philipp could have some suggestions.
 
-diff --git a/drivers/gpu/drm/i915/display/intel_dmc.c b/drivers/gpu/drm/i915/display/intel_dmc.c
-index f8789d4543bf..dde1f243d375 100644
---- a/drivers/gpu/drm/i915/display/intel_dmc.c
-+++ b/drivers/gpu/drm/i915/display/intel_dmc.c
-@@ -645,7 +645,7 @@ static void parse_dmc_fw(struct drm_i915_private *dev_priv,
- 			continue;
- 
- 		offset = readcount + dmc->dmc_info[id].dmc_offset * 4;
--		if (fw->size - offset < 0) {
-+		if ((ssize_t)fw->size - offset < 0) {
- 			drm_err(&dev_priv->drm, "Reading beyond the fw_size\n");
- 			continue;
- 		}
--- 
-2.31.1
+Cheers,
+Prabhakar
 
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
