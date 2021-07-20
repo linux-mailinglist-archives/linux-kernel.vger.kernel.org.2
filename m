@@ -2,86 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B8D3CF56D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FE93CF571
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232022AbhGTHCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhGTHC0 (ORCPT
+        id S235375AbhGTHES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:04:18 -0400
+Received: from mail-vs1-f54.google.com ([209.85.217.54]:35668 "EHLO
+        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234353AbhGTHCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:02:26 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9358EC061574;
-        Tue, 20 Jul 2021 00:43:03 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GTW0P26vKz9sWc;
-        Tue, 20 Jul 2021 17:43:01 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626766981;
-        bh=RARWhf4ZSC9Ozj2pfaOCwQxkKa6Ef3tlMfhU3u45YXI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ajccTfbj270wN/LvDm9nOoxhx/BiVC+W/VrXu8k3clJ4LFSf9x7fIh2WW8dfzWK3o
-         um598G2IydAgACKlis0daF1Cqp8yOGgY+cfgW2iowOqaeQbb/Xv/QQY2mJYBjjSVid
-         xzb+DSLJ6ZkMN9DP8o3leYOBr+mJjs/H6DVYdVSwGo92peAgM4cHqWsc5kWfN5YBVY
-         vaNaZGV5FWd9AGTf2RdVEis1VUJLFZPqlehIFDw3zfv5JF2MXnd5rsB4zoTBh9PNv6
-         yVagvIMnLnmu9foVDMDVqOYf6SY7xcky6WlhwnDSFbJHNTqnHCebvJm9Ocg/StCZoP
-         vs59ny/Xpu5bA==
-Date:   Tue, 20 Jul 2021 17:43:00 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Chris Down <chris@chrisdown.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the printk tree
-Message-ID: <20210720174300.018cc765@canb.auug.org.au>
+        Tue, 20 Jul 2021 03:02:55 -0400
+Received: by mail-vs1-f54.google.com with SMTP id r25so10839671vsk.2;
+        Tue, 20 Jul 2021 00:43:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HkbFPSCh7E2GNVgDLGmZQaSXqDJjyX+benlbPIfM6pQ=;
+        b=sOwwkhPpQgpEI1A/lLoowhm5e8t+j9cqWMiC1WMZ4xZtkjpJTPhC8aXvJ4iYPuvE1y
+         4nwxGfiZj7hvFcxoUqPfdH4fJkCUds0IagEhluxLrboCMb6dQRO8sVpJVdKnMvVVy0x4
+         GkVmL45tsd21oSJU6exDAJzN6CRLYB+lv9jvuM37gInqStN2LpwM95wSiLdd7aFOHAb7
+         fzBPquQDh0pTKmamSyWjieShJLI+aU7mcnRfoaBxKIfKcWBFs88dMqAyU3Gz/oCOCaCt
+         sVajZHeOUdtUJ9BvfHfl52GwFPVb0BfY3/WKoh3ITnjh7HZDd6V15hXER0FJwwrr9+Zy
+         Xcjw==
+X-Gm-Message-State: AOAM531b1RuRgsA7jzH71GdeBCiJWPxxUsbeT07ujNXyrgUjkh+6IDnN
+        RQ2yNSjCnuKd1l8u44PVeFxJGyXYS9S37B7qZoA=
+X-Google-Smtp-Source: ABdhPJyYlmc3X5ogaM2YCN+ZHjp31T159xYrBHR1iUCbkq8Cwh9HpbKTX06IJtME6LP+AGswyxAbmP74MJhqkDc7akg=
+X-Received: by 2002:a05:6102:321c:: with SMTP id r28mr28139380vsf.40.1626767013827;
+ Tue, 20 Jul 2021 00:43:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Q9NH0PMKN_+ylwuh.IrZz_/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210714145804.2530727-1-geert@linux-m68k.org>
+ <20210714145804.2530727-3-geert@linux-m68k.org> <YPXM8AXNje7GXf+i@ravnborg.org>
+In-Reply-To: <YPXM8AXNje7GXf+i@ravnborg.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 20 Jul 2021 09:43:22 +0200
+Message-ID: <CAMuHMdXgKkJeTstLdwh9h8ywe0a5=77izAW4eYyaOtk8ktSjWg@mail.gmail.com>
+Subject: Re: [PATCH resend 2/5] video: fbdev: ssd1307fb: Simplify ssd1307fb_update_display()
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Q9NH0PMKN_+ylwuh.IrZz_/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Sam,
 
-Hi all,
+On Mon, Jul 19, 2021 at 9:05 PM Sam Ravnborg <sam@ravnborg.org> wrote:
+> On Wed, Jul 14, 2021 at 04:58:01PM +0200, Geert Uytterhoeven wrote:
+> > Simplify the nested loops to handle conversion from linear frame buffer
+> > to ssd1307 page layout:
+> >   1. Move last page handling one level up, as the value of "m" is the
+> >      same inside a page,
+> >   2. array->data[] is filled linearly, so there is no need to
+> >      recalculate array_idx over and over again; a simple increment is
+> >      sufficient.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > ---
+> >  drivers/video/fbdev/ssd1307fb.c | 17 ++++++++++-------
+> >  1 file changed, 10 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/video/fbdev/ssd1307fb.c b/drivers/video/fbdev/ssd1307fb.c
+> > index e6b6263e3bef847f..6d7bd025bca1a175 100644
+> > --- a/drivers/video/fbdev/ssd1307fb.c
+> > +++ b/drivers/video/fbdev/ssd1307fb.c
+> > @@ -158,6 +158,7 @@ static int ssd1307fb_update_display(struct ssd1307fb_par *par)
+> >       u8 *vmem = par->info->screen_buffer;
+> >       unsigned int line_length = par->info->fix.line_length;
+> >       unsigned int pages = DIV_ROUND_UP(par->height, 8);
+> > +     u32 array_idx = 0;
+> >       int ret, i, j, k;
+> >
+> >       array = ssd1307fb_alloc_array(par->width * pages, SSD1307FB_DATA);
+> > @@ -194,19 +195,21 @@ static int ssd1307fb_update_display(struct ssd1307fb_par *par)
+> >        */
+> >
+> >       for (i = 0; i < pages; i++) {
+> > +             int m = 8;
+> > +
+> > +             /* Last page may be partial */
+> > +             if (i + 1 == pages && par->height % 8)
+> > +                     m = par->height % 8;
+> >               for (j = 0; j < par->width; j++) {
+> > -                     int m = 8;
+> > -                     u32 array_idx = i * par->width + j;
+> > -                     array->data[array_idx] = 0;
+> > -                     /* Last page may be partial */
+> > -                     if (i + 1 == pages && par->height % 8)
+> > -                             m = par->height % 8;
+> > +                     u8 data = 0;
+> > +
+> >                       for (k = 0; k < m; k++) {
+> If the last page is partial then m will be less than 8 for all bytes in
+> j = 0..par-width - but m should only be less than 8 for the last
+> iteration of the loop.
+>
+> Do I miss something or is the code buggy?
 
-After merging the printk tree, today's linux-next build (mips allnoconfig)
-failed like this:
+"the loop" is the j-loop?
+If m is less than 8 for the last page, it should be less than 8 for
+all iterations of j, as all last bytes in each "line" (visible
+row) are partial, cfr. the comments above the code, explaining the
+representation of the screen.
 
-arch/mips/kernel/genex.o: In function `handle_mcheck_int':
-(.text+0x190c): undefined reference to `printk'
-arch/mips/kernel/genex.o: In function `handle_reserved_int':
-(.text+0x1c8c): undefined reference to `printk'
+> >                               u8 byte = vmem[(8 * i + k) * line_length +
+> >                                              j / 8];
+> >                               u8 bit = (byte >> (j % 8)) & 1;
+> > -                             array->data[array_idx] |= bit << k;
+> > +                             data |= bit << k;
+> >                       }
+> > +                     array->data[array_idx++] = data;
+> >               }
+> >       }
 
-Caused by commit
+Gr{oetje,eeting}s,
 
-  337015573718 ("printk: Userspace format indexing support")
+                        Geert
 
---=20
-Cheers,
-Stephen Rothwell
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---Sig_/Q9NH0PMKN_+ylwuh.IrZz_/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD2foQACgkQAVBC80lX
-0GxZtwf/ZkCzAnHskULSEWdY6zbqljC9E2zDFGGLhLxbLbkYS7hOwLqvZBSQlqdy
-AkZpj2uKHYJd411rROEXc6MnCj8xh0uTvj4Vmkr9NY1lijByi2mZ1U4SXXlnljUz
-HOb71p8nKKCU6jY2mhsaPecj/GF8ybvzuPq/5TtH3j3V+plqL580uwME38cAzC99
-Q2zo/T7eGdBk4qwy4YPORJRBrH0ieEHDrtjyuHnusy4KXu5vXPDzGZdIl9XeL0qa
-GkOAapMj8ZLx1p1is9iCRYnZ8TJhqdGuFswM6tU9neLPVveXg6E/BG4BvhYlU7BA
-A/o4LS2+0NTLFguJSJREpQJ1k8FyPQ==
-=QZ9x
------END PGP SIGNATURE-----
-
---Sig_/Q9NH0PMKN_+ylwuh.IrZz_/--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
