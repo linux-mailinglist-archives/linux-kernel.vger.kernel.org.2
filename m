@@ -2,89 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FD93CF93B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BAB3CF941
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236174AbhGTLPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 07:15:10 -0400
-Received: from smtprelay0250.hostedemail.com ([216.40.44.250]:33724 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234417AbhGTLOz (ORCPT
+        id S237253AbhGTLQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 07:16:31 -0400
+Received: from mxout70.expurgate.net ([91.198.224.70]:61684 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236848AbhGTLQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:14:55 -0400
-Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id F1CD118482299;
-        Tue, 20 Jul 2021 11:55:32 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 4808120D772;
-        Tue, 20 Jul 2021 11:55:31 +0000 (UTC)
-Message-ID: <ea6c6a2b5482d62038d7d0a1d46b87665051222f.camel@perches.com>
-Subject: Re: [PREEMPT_RT][PATCH] printk: Enhance the condition check of
- msleep in pr_flush()
-From:   Joe Perches <joe@perches.com>
-To:     chao.qin@intel.com, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org, bigeasy@linutronix.de,
-        tglx@linutronix.de, john.ogness@linutronix.de, rostedt@goodmis.org
-Cc:     mgross@linux.intel.com, paul.mei@intel.com, lili.li@intel.com
-Date:   Tue, 20 Jul 2021 04:55:29 -0700
-In-Reply-To: <20210719022649.3444072-1-chao.qin@intel.com>
-References: <20210719022649.3444072-1-chao.qin@intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Tue, 20 Jul 2021 07:16:28 -0400
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1m5oMq-000HoU-30; Tue, 20 Jul 2021 13:56:56 +0200
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1m5oMp-000HoA-9v; Tue, 20 Jul 2021 13:56:55 +0200
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id E8E7B240041;
+        Tue, 20 Jul 2021 13:56:54 +0200 (CEST)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 49959240040;
+        Tue, 20 Jul 2021 13:56:54 +0200 (CEST)
+Received: from mschiller01.dev.tdt.de (unknown [10.2.3.20])
+        by mail.dev.tdt.de (Postfix) with ESMTPSA id B7917201A8;
+        Tue, 20 Jul 2021 13:56:52 +0200 (CEST)
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     hauke@hauke-m.de, martin.blumenstingl@googlemail.com,
+        f.fainelli@gmail.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Schiller <ms@dev.tdt.de>
+Subject: [PATCH net-next v7] net: phy: intel-xway: Add RGMII internal delay configuration
+Date:   Tue, 20 Jul 2021 13:56:47 +0200
+Message-ID: <20210720115647.15285-1-ms@dev.tdt.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: 3dgewkmzwze68eyrw5xr73gyy87o5dp7
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 4808120D772
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/EC7uj13DY6ao2cE/EXIkkovA/jyc+/1Y=
-X-HE-Tag: 1626782131-563332
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+Content-Transfer-Encoding: quoted-printable
+X-purgate-ID: 151534::1626782216-0001488F-78954459/0/0
+X-purgate-type: clean
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-07-19 at 10:26 +0800, chao.qin@intel.com wrote:
-> From: Chao Qin <chao.qin@intel.com>
-> 
-> There is msleep in pr_flush(). If call WARN() in the early boot
-> stage such as in early_initcall, pr_flush() will run into msleep
-> when process scheduler is not ready yet. And then the system will
-> sleep forever.
-> 
-> Before the system_state is SYSTEM_RUNNING, make sure DO NOT sleep
-> in pr_flush().
+This adds the possibility to configure the RGMII RX/TX clock skew via
+devicetree.
 
-Makes sense, thanks.
+Simply set phy mode to "rgmii-id", "rgmii-rxid" or "rgmii-txid" and add
+the "rx-internal-delay-ps" or "tx-internal-delay-ps" property to the
+devicetree.
 
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-[]
-> @@ -3620,7 +3620,8 @@ bool pr_flush(int timeout_ms, bool reset_on_progress)
->  	u64 diff;
->  	u64 seq;
-> 
-> -	may_sleep = (preemptible() && !in_softirq());
-> +	may_sleep = (preemptible() && !in_softirq()
-> +			&& (system_state >= SYSTEM_RUNNING));
+Furthermore, a warning is now issued if the phy mode is configured to
+"rgmii" and an internal delay is set in the phy (e.g. by pin-strapping),
+as in the dp83867 driver.
 
-trivial style note:
+Signed-off-by: Martin Schiller <ms@dev.tdt.de>
+---
 
-Logic continuations are typically at the end of the previous line.
-And there are few too many parentheses for my taste.
+Changes to v6:
+o remove warnings if [rx|tx]-internal-delay-ps property is missing
 
-Maybe exceed 80 columns in a single line
+Changes to v5:
+o remove #if IS_ENABLED(CONFIG_OF_MDIO) check
+o rename new function to xway_gphy_rgmii_init()
 
-	may_sleep = preemptible() && !in_softirq() && system_state >= SYSTEM_RUNNING;
+Changes to v4:
+o Fix Alignment to match open parenthesis
 
-or align the continuation
+Changes to v3:
+o Fix typo in commit message
+o use FIELD_PREP() and FIELD_GET() macros
+o further code cleanups
+o always mask rxskew AND txskew value in the register value
 
-	may_sleep = (preemptible() && !in_softirq() &&
-		     system_state >= SYSTEM_RUNNING);
+Changes to v2:
+o Fix missing whitespace in warning.
 
-or use individual lines
+Changes to v1:
+o code cleanup and use phy_modify().
+o use default of 2.0ns if delay property is absent instead of returning
+  an error.
 
-	may_sleep = (preemptible() &&
-		     !in_softirq() &&
-		     system_state >= SYSTEM_RUNNING);
+---
+ drivers/net/phy/intel-xway.c | 76 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 76 insertions(+)
 
-
+diff --git a/drivers/net/phy/intel-xway.c b/drivers/net/phy/intel-xway.c
+index d453ec016168..3c032868ef04 100644
+--- a/drivers/net/phy/intel-xway.c
++++ b/drivers/net/phy/intel-xway.c
+@@ -8,11 +8,16 @@
+ #include <linux/module.h>
+ #include <linux/phy.h>
+ #include <linux/of.h>
++#include <linux/bitfield.h>
+=20
++#define XWAY_MDIO_MIICTRL		0x17	/* mii control */
+ #define XWAY_MDIO_IMASK			0x19	/* interrupt mask */
+ #define XWAY_MDIO_ISTAT			0x1A	/* interrupt status */
+ #define XWAY_MDIO_LED			0x1B	/* led control */
+=20
++#define XWAY_MDIO_MIICTRL_RXSKEW_MASK	GENMASK(14, 12)
++#define XWAY_MDIO_MIICTRL_TXSKEW_MASK	GENMASK(10, 8)
++
+ /* bit 15:12 are reserved */
+ #define XWAY_MDIO_LED_LED3_EN		BIT(11)	/* Enable the integrated function=
+ of LED3 */
+ #define XWAY_MDIO_LED_LED2_EN		BIT(10)	/* Enable the integrated function=
+ of LED2 */
+@@ -157,6 +162,73 @@
+ #define PHY_ID_PHY11G_VR9_1_2		0xD565A409
+ #define PHY_ID_PHY22F_VR9_1_2		0xD565A419
+=20
++static const int xway_internal_delay[] =3D {0, 500, 1000, 1500, 2000, 25=
+00,
++					 3000, 3500};
++
++static int xway_gphy_rgmii_init(struct phy_device *phydev)
++{
++	struct device *dev =3D &phydev->mdio.dev;
++	unsigned int delay_size =3D ARRAY_SIZE(xway_internal_delay);
++	s32 int_delay;
++	int val =3D 0;
++
++	if (!phy_interface_is_rgmii(phydev))
++		return 0;
++
++	/* Existing behavior was to use default pin strapping delay in rgmii
++	 * mode, but rgmii should have meant no delay.  Warn existing users,
++	 * but do not change anything at the moment.
++	 */
++	if (phydev->interface =3D=3D PHY_INTERFACE_MODE_RGMII) {
++		u16 txskew, rxskew;
++
++		val =3D phy_read(phydev, XWAY_MDIO_MIICTRL);
++		if (val < 0)
++			return val;
++
++		txskew =3D FIELD_GET(XWAY_MDIO_MIICTRL_TXSKEW_MASK, val);
++		rxskew =3D FIELD_GET(XWAY_MDIO_MIICTRL_RXSKEW_MASK, val);
++
++		if (txskew > 0 || rxskew > 0)
++			phydev_warn(phydev,
++				    "PHY has delays (e.g. via pin strapping), but phy-mode =3D 'rgmi=
+i'\n"
++				    "Should be 'rgmii-id' to use internal delays txskew:%d ps rxskew=
+:%d ps\n",
++				    xway_internal_delay[txskew],
++				    xway_internal_delay[rxskew]);
++		return 0;
++	}
++
++	if (phydev->interface =3D=3D PHY_INTERFACE_MODE_RGMII_ID ||
++	    phydev->interface =3D=3D PHY_INTERFACE_MODE_RGMII_RXID) {
++		int_delay =3D phy_get_internal_delay(phydev, dev,
++						   xway_internal_delay,
++						   delay_size, true);
++
++		/* if rx-internal-delay-ps is missing, use default of 2.0 ns */
++		if (int_delay < 0)
++			int_delay =3D 4; /* 2000 ps */
++
++		val |=3D FIELD_PREP(XWAY_MDIO_MIICTRL_RXSKEW_MASK, int_delay);
++	}
++
++	if (phydev->interface =3D=3D PHY_INTERFACE_MODE_RGMII_ID ||
++	    phydev->interface =3D=3D PHY_INTERFACE_MODE_RGMII_TXID) {
++		int_delay =3D phy_get_internal_delay(phydev, dev,
++						   xway_internal_delay,
++						   delay_size, false);
++
++		/* if tx-internal-delay-ps is missing, use default of 2.0 ns */
++		if (int_delay < 0)
++			int_delay =3D 4; /* 2000 ps */
++
++		val |=3D FIELD_PREP(XWAY_MDIO_MIICTRL_TXSKEW_MASK, int_delay);
++	}
++
++	return phy_modify(phydev, XWAY_MDIO_MIICTRL,
++			  XWAY_MDIO_MIICTRL_RXSKEW_MASK |
++			  XWAY_MDIO_MIICTRL_TXSKEW_MASK, val);
++}
++
+ static int xway_gphy_config_init(struct phy_device *phydev)
+ {
+ 	int err;
+@@ -204,6 +276,10 @@ static int xway_gphy_config_init(struct phy_device *=
+phydev)
+ 	phy_write_mmd(phydev, MDIO_MMD_VEND2, XWAY_MMD_LED2H, ledxh);
+ 	phy_write_mmd(phydev, MDIO_MMD_VEND2, XWAY_MMD_LED2L, ledxl);
+=20
++	err =3D xway_gphy_rgmii_init(phydev);
++	if (err)
++		return err;
++
+ 	return 0;
+ }
+=20
+--=20
+2.20.1
 
