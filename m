@@ -2,129 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1613D0200
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 21:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0CF3D0202
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 21:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232056AbhGTSSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 14:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47682 "EHLO
+        id S233689AbhGTST7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 14:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhGTSSb (ORCPT
+        with ESMTP id S232933AbhGTSTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 14:18:31 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D42BC061574;
-        Tue, 20 Jul 2021 11:59:05 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id b2so7323020plx.1;
-        Tue, 20 Jul 2021 11:59:05 -0700 (PDT)
+        Tue, 20 Jul 2021 14:19:30 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41A1C061762;
+        Tue, 20 Jul 2021 12:00:00 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id y21-20020a7bc1950000b02902161fccabf1so2089050wmi.2;
+        Tue, 20 Jul 2021 12:00:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IAhbRYwjMmEqu25LoPbZlAoP67lU12MvAIcvWLy3jNU=;
-        b=pjU9fse7Cs6N7xm64l6i3UqU3PXkF0PDd8K7KKfftjfhl1E9Hp9iQDl0yWHTJ1llzf
-         PomNS4XmRllC50yH5TSb76JdWvCBQhzCc3ej4Lop+CP00z0Hc5HTU65LWGxD6V/+WiNi
-         gaaaqXI0NdL4g+RbqUzOM/ajTFR/FsJ6VI5L97Tv0GuzSdSjYexORn6yfAeN3dBHCvhS
-         7/wscvBAQ4awUYv+cuii+4ONBc4FEVNj59B92coJfANU6ufPoB1Wit+UxoP96KLc5EH4
-         i+MsJyqMKoYXHXmTG7fbGGNZYR7ncGSmpUAYg3/Q1mZ9m6un38iGfVY5gOLEEPEA1G2/
-         ZyGg==
+        h=from:to:subject:reply-to:date:message-id:mime-version;
+        bh=/bUwXiZRYg8MgLgXV7pvJkWpCdM7Ja9GEUJxuUU6+iQ=;
+        b=Z+g8IUwickDoq290gSRADSGBuDXm8WQjgbhj4IhP/VG2gpYFIQtDXNwOY4qnCHr+JV
+         dxSSYe8cfLui6Hz7xNVbANVPSlL63QK+9KbCJYPjDeaWWVJk+Emi1HJic5UdGkSe74TO
+         s2R+DD67Iog92jnIyXiIcVyEdDHiSA5rV3cbHmZegROjn0FlKgPo6k00K8BqwQEkY2nx
+         iXKhEc53GQ9c2d2u6C7NSQz26B+OcPiqHGdTXkIrSRgnNt3GTGoF2k1ZD+U+wqbL53gf
+         b92ftF/PLdkuqEcFMsDbvFO+an9VWcp+asMAYHf/QBF/sGT9rELiG/dWgRi6FZ6WfAHV
+         wP1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IAhbRYwjMmEqu25LoPbZlAoP67lU12MvAIcvWLy3jNU=;
-        b=PvjIKdqO1no3OMo8lNvvMV9LqCz9GxZ2uDVMoGJITwn8PU7gt4ZWJeBG74Jwq6EmKF
-         Z3C/hFVsGVOPq2PVvSp4prOUsuMTFgJYPcgsI60YJ74NGoiyaW+Qbqz9No7EzO5S1IbM
-         XHo7ORHw3FD9Op/AgZ/VJuXXRvR3PrSsHQv7TmZ0M8rfQmMjFSPKQLAMmd6K5pVPjwAO
-         av6xgRoOx1dGypzCnvJc9S+VJYtwz0iix0pbjpu6TU6NsZzN/xN3OThloyCqGDl6obXV
-         C+oOO0hvxTLcK1mP3luUt2eb7882QkvEoW3Qx1LIWVCDbkolaZp2iizPLhp00AnTAIpd
-         qzhA==
-X-Gm-Message-State: AOAM5315jYqmjaBB8lLTKBML6mizRWMaSwhsO/ktYxnfYSSyLJbAMSBd
-        8UJ4T9kwkAlp9DGxZ2IqQujxJKJew6VuZQ==
-X-Google-Smtp-Source: ABdhPJxAHOcEC2LyEECia9/kIZZivpfGTz+7IMZioqtyWrdCy9leyuIrUrLKKhjhl8+AQjH6Hgd6ig==
-X-Received: by 2002:a17:90b:1294:: with SMTP id fw20mr37237488pjb.100.1626807543849;
-        Tue, 20 Jul 2021 11:59:03 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id v15sm8758993pff.105.2021.07.20.11.59.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 11:59:03 -0700 (PDT)
-Subject: Re: [PATCH v5 8/8] firmware: tee_bnxt: Release TEE shm, session, and
- context during kexec
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210716022332.GC3232@sequoia>
- <CAHLZf_t5U1bh1H8sULbJz7xrZ-r3Dcmxuw9MMmG2fehS3C72uQ@mail.gmail.com>
- <CAHUa44EetPuA_5+UQLW-c=-_OApiRoiq+YjeFs6TRPj6=AJfHw@mail.gmail.com>
- <903824a6-7a2b-1514-5b71-a2db634e9abf@gmail.com>
- <bc3f4bdd-b833-d58c-f7d7-6670bcbd8ef8@gmail.com>
- <20210720181517.GF3232@sequoia>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <22e55ae6-3ecb-4f54-b9e6-1b902d4d4e20@gmail.com>
-Date:   Tue, 20 Jul 2021 11:59:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:subject:reply-to:date:message-id
+         :mime-version;
+        bh=/bUwXiZRYg8MgLgXV7pvJkWpCdM7Ja9GEUJxuUU6+iQ=;
+        b=XPqrPHlu1LqTR9+vIv4Sw3OODfjGwZm3TlhVNeEw7ZCr24rlXQgoYe8QVuEiODF89B
+         UaM3meCpsuCu3L7DwC4Dii/UcxkQAkVwuond9JftGx7tXcXGte4tJ2yVxwxswLJ9RNq5
+         eYQrNBjh3POTSRr+gEvI89haBkJSpCiNR6UK6PxpZtwSLsSnAZO/oM/qHOVYRxhvIjsl
+         KefWzdX9Ni3jKnfrpG1XcmWG/wvoCHhbBHYj3p4mqFtXwWEOmiUKhcuOp1We9+xU7wl4
+         1+UiAuJVa0YGikdMmG3gUy0tYxKTFbWk+uMPzl+3ySXXnSu4/bsHJCLHQKRKjkEkDTkr
+         PiVw==
+X-Gm-Message-State: AOAM530/TbRBk+csK6DCiPuhG5utv8ubJH/nEArngQvHtEA0KnFLy04s
+        A+njB45RRfEPqWMb2ivJ3pTiVdi2aGw=
+X-Google-Smtp-Source: ABdhPJw2GTxGDYLtjIBkklMZU3/uKTVEFO9zsWiZ0xe2P+uOd4Ws3QmgxYYriREv66AUcfBKlXE/fQ==
+X-Received: by 2002:a7b:cb91:: with SMTP id m17mr38375711wmi.159.1626807599541;
+        Tue, 20 Jul 2021 11:59:59 -0700 (PDT)
+Received: from jvdspc.jvds.net ([212.129.81.137])
+        by smtp.gmail.com with ESMTPSA id w16sm10605081wru.58.2021.07.20.11.59.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 11:59:58 -0700 (PDT)
+Received: from jvdspc.jvds.net (localhost [127.0.0.1])
+        by jvdspc.jvds.net (8.16.1/8.15.2) with ESMTPS id 16KIxv5H359196
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 19:59:57 +0100
+Received: (from jvd@localhost)
+        by jvdspc.jvds.net (8.16.1/8.16.1/Submit) id 16KIxv4f359195;
+        Tue, 20 Jul 2021 19:59:57 +0100
+X-Authentication-Warning: jvdspc.jvds.net: jvd set sender to jason.vas.dias@gmail.com using -f
+From:   "Jason Vas Dias" <jason.vas.dias@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-8086@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: re: /proc/net/{udp,tcp}{,6} : ip address format : RFC : need for
+ /proc/net/{udp,tcp}{,6}{{n,h},{le,be}} ?
+Reply-To: "Jason Vas Dias" <jason.vas.dias@gmail.com>
+Date:   Tue, 20 Jul 2021 19:59:57 +0100
+Message-ID: <hhlf60vmj6.fsf@jvdspc.jvds.net>
 MIME-Version: 1.0
-In-Reply-To: <20210720181517.GF3232@sequoia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/21 11:15 AM, Tyler Hicks wrote:
-> On 2021-07-20 10:57:18, Florian Fainelli wrote:
->>
->>
->> On 7/19/2021 7:32 PM, Florian Fainelli wrote:
->>>
->>>
->>> On 7/19/2021 3:49 AM, Jens Wiklander wrote:
->>>> Hi,
->>>>
->>>> On Fri, Jul 16, 2021 at 4:48 AM Vikas Gupta
->>>> <vikas.gupta@broadcom.com> wrote:
->>>>>
->>>>> Hi Allen/Tyler,
->>>>>   The patch looks good to me.
->>>>
->>>> Thanks.
->>>>
->>>> Rafal, is it OK if I include this patch together with the rest of the
->>>> patches in this patch set in a pull request to arm-soc?
->>>
->>> I can take those patches through the Broadcom ARM SoC pull request,
->>> Rafal would that work for you? We seem to have a bit of a maintainer
->>> coverage blind spot for that directory.
->>
->> Applied to drivers/fixes: https://github.com/Broadcom/stblinux/commit/4ecd797b7e16eb7f1b86fbfd7e4a7887b192535b
-> 
-> Thanks, Florian, but note that you won't be able to build that branch
-> since the commit uses a new function (tee_shm_alloc_kernel_buf()) that's
-> added earlier in the full series. It seems like it is going to be easier
-> for this to all go through Jens.
 
-I was grepping for the new functions added and could find all
-references, though it looks like I missed tee_shm_alloc_kernel_buf()
-somehow, so yes, having Jens merge that series all together would make
-more sense here. If you need it:
+RE:
+On 20/07/2021, Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 7/20/21 2:14 AM, Jason Vas Dias wrote:
+> ... 
+> Hi,
+> I suggest sending your email to  ndetdev@vger.kernel.org
+> g'day.
+>>> (he meant netdev@)
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Good day -
+
+ I noticed that /proc/net/{udp,tcp} files (bash expansion) - the IPv4
+ socket tables - contain IPv4 addresses in hex format like:
+
+   0100007F:0035
+
+  (Little-Endian IPv4 address 127.0.0.1 , Big Endian port 53)
+
+ I would have printed / expected the IPv4 address to be printed EITHER
+ like:
+   7F000001:0035  (Both Big-Endian)
+ OR
+   0100007F:3500  (Both Little-Endian)
+ .
+
+ It is rather idiosyncratic that Linux chooses
+ to print Little-Endian IPv4 addresses, but not
+ Little-Endian Ports , and where the other numbers
+ eg. (rx:tx) , (tr:tm/when) in those files are all
+ Big-Endian.  
+
+ Perhaps a later version of Linux could either
+ A) Print ALL IP addresses and Ports and numbers in network
+    (Big Endian) byte order, or as IP dotted-quad+port strings
+    ; OR:
+ B) Provide /proc/net/{udp,tcp}{,6}{n,be,h,le,ip} files
+    ( use shell : $ echo ^^
+      to expand
+    ) -
+    which print IPv4 addresses & Ports in formats indicated by suffix :
+     n: network: always Big Endian
+     h: host: native either Little-Endian (LE) or Big Endian (BE)
+     be: BE - alias for 'n'
+     le: LE - alias for 'h' on LE platforms, else LE
+     ip: as dotted-decimal-quad+':'decimal-port strings, with numbers in BE.
+     ; OR:
+ C) Provide /proc/net/{udp,tcp}{,6}bin memory mappable binary socket
+    table files
+    .
+ ?
+
+ Should I raise a bug on this ?
+
+ Rather than currently letting users discover this fact
+ by mis-converting IP addresses / ports initially as I did at first.
+
+ Just a thought / request for comments.
+
+ One would definitely want to inform the netstat + lsof + glibc
+ developers before choosing option A .
+
+ Option B allows users to choose which endianess to use (for ALL numbers)
+ by only adding new files, not changing existing ones.
+
+ Option C would obviate the need to choose an endianess file by
+ just providing one new memory-mappable binary representation
+ of the sockets table, of size an even multiple of the page-size,
+ but whose reported size would be (sizeof(some_linux_ip_socket_table_struct_t) *
+ n_sockets_in_table). It could be provided alongside option B.
+
+ I think options B and / or C would be nice to have - I might implement an
+ extension to the procfs code that prints these socket tables to
+ do this, maybe enabled by a new experimental 
+ '+rational-ip-socket-tables' boot option -
+ then at least it would be clear how the numbers in those files are
+ meant to be read / converted.
+
+All the best,
+Jason
+
+
+
+
+
+
+  
