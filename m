@@ -2,134 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2963CF6A2
+	by mail.lfdr.de (Postfix) with ESMTP id 738833CF6A3
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235996AbhGTI2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 04:28:51 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:55732 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235636AbhGTIZE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:25:04 -0400
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 6D05AB41E7E;
-        Tue, 20 Jul 2021 11:05:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1626771931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zTkNNItkMBlaqFMYurWQMqTjRu8UVH4wWx+Z1y3Sv9o=;
-        b=NsWnK6DIEsHFO/M0/bzgppZTDvUtPXdBU0oyQHXWoDFC+rtKa0p9TmNGrulekbWKkUGV22
-        wIwfi0LscB5GHq+4sJa8fi9yyKoY8CnOfMvQ/nq+BgNwkR8NtqjvetL8vTCFQzQG8Bx0LQ
-        ZM8huj4wu4W8qKswXrpe1JIxbSqrvB4=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org,
-        David Jeffery <djeffery@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: New warning in nvme_setup_discard
-Date:   Tue, 20 Jul 2021 11:05:29 +0200
-Message-ID: <2356877.Yf5hrMSTGe@natalenko.name>
-In-Reply-To: <2407736.Le3fEKZpXq@natalenko.name>
-References: <4729812.CpyZKHjjVO@natalenko.name> <YPTYGD1zeae1x7Yp@T590> <2407736.Le3fEKZpXq@natalenko.name>
+        id S236102AbhGTI3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 04:29:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234682AbhGTIZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 04:25:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9331861209;
+        Tue, 20 Jul 2021 09:06:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626771964;
+        bh=diGKLMeqjXqjUS3tPsz0KEw/bRr//coPwoJygHYsrZU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TW/4RO5KkzCIyUjFqOcZISnEURPXVuwwYbgntfPDnBvIs8s/BYk46tfvhT9kK2vAq
+         LkeGGPE4GpRRC8npg4cua3aI83XupA4HP75AqAaJscQmZsAfIb4o8vQX+lfBOV7n+5
+         yS3P+vR6nsyyQs9CDsbEEymb/dK51hwxegFVef4Jkz6PSYM0j1jfArq+yHRHdKHllY
+         n1dAezC+EAwfwjmpGiz2upc0nbP9Hut3Rx1fZTQe1UEu+bKLoLMILlR91NkyGzR5ij
+         bWkKMT3pZq2JLT4cEpv9Dlm1NQQBXqKP+FzAKo2i+e2/CWTiZTSf0qTq5HM+W3tNUO
+         rNZCVb12XSDgw==
+Date:   Tue, 20 Jul 2021 11:05:56 +0200
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Justin He <Justin.He@arm.com>
+Cc:     Prabhakar Kushwaha <prabhakar.pkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ariel Elior <aelior@marvell.com>,
+        "GR-everest-linux-l2@marvell.com" <GR-everest-linux-l2@marvell.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nd <nd@arm.com>, Shai Malin <malin1024@gmail.com>,
+        Shai Malin <smalin@marvell.com>,
+        Prabhakar Kushwaha <pkushwaha@marvell.com>
+Subject: Re: [PATCH] qed: fix possible unpaired spin_{un}lock_bh in
+ _qed_mcp_cmd_and_union()
+Message-ID: <20210720110556.24cf7f8e@cakuba>
+In-Reply-To: <AM6PR08MB4376CD003BF58F85E0121F39F7E29@AM6PR08MB4376.eurprd08.prod.outlook.com>
+References: <20210715080822.14575-1-justin.he@arm.com>
+        <CAJ2QiJLWgxw0X8rkMhKgAGgiFS5xhrhMF5Dct_J791Kt-ys7QQ@mail.gmail.com>
+        <AM6PR08MB4376894A46B47B024F50FBB3F7E19@AM6PR08MB4376.eurprd08.prod.outlook.com>
+        <CAJ2QiJJ8=jkbRVscnXM2m_n2RX2pNdJG4iA3tYiNGDYefb-hjA@mail.gmail.com>
+        <AM6PR08MB4376CD003BF58F85E0121F39F7E29@AM6PR08MB4376.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Ming.
+On Tue, 20 Jul 2021 02:02:26 +0000, Justin He wrote:
+> > > For instance:
+> > > _qed_mcp_cmd_and_union()
+> > >   In while loop
+> > >     spin_lock_bh()
+> > >     qed_mcp_has_pending_cmd() (assume false), will break the loop  
+> > 
+> > I agree till here.
+> >   
+> > >   if (cnt >= max_retries) {
+> > > ...
+> > >     return -EAGAIN; <-- here returns -EAGAIN without invoking bh unlock
+> > >   }
+> > >  
+> > 
+> > Because of break, cnt has not been increased.
+> >    - cnt is still less than max_retries.
+> >   - if (cnt >= max_retries) will not be *true*, leading to spin_unlock_bh().
+> > Hence pairing completed.  
+> 
+> Sorry, indeed. Let me check other possibilities.
+> @David S. Miller Sorry for the inconvenience, could you please revert it
+> in netdev tree?
 
-On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 8:27:29 CEST Oleksandr Natalenk=
-o wrote:
-> On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 3:40:40 CEST Ming Lei wrote:
-> > On Sat, Jul 17, 2021 at 02:35:14PM +0200, Oleksandr Natalenko wrote:
-> > > On sobota 17. =C4=8Dervence 2021 14:19:59 CEST Oleksandr Natalenko wr=
-ote:
-> > > > On sobota 17. =C4=8Dervence 2021 14:11:05 CEST Oleksandr Natalenko =
-wrote:
-> > > > > On sobota 17. =C4=8Dervence 2021 11:35:32 CEST Ming Lei wrote:
-> > > > > > Maybe you need to check if the build is OK, I can't reproduce it
-> > > > > > in
-> > > > > > my
-> > > > > > VM, and BFQ is still builtin:
-> > > > > >=20
-> > > > > > [root@ktest-01 ~]# uname -a
-> > > > > > Linux ktest-01 5.14.0-rc1+ #52 SMP Fri Jul 16 18:56:36 CST 2021
-> > > > > > x86_64
-> > > > > > x86_64 x86_64 GNU/Linux [root@ktest-01 ~]# cat
-> > > > > > /sys/block/nvme0n1/queue/scheduler
-> > > > > > [none] mq-deadline kyber bfq
-> > > > >=20
-> > > > > I don't think this is an issue with the build=E2=80=A6 BTW, with
-> > > > > `initcall_debug`:
-> > > > >=20
-> > > > > ```
-> > > > > [    0.902555] calling  bfq_init+0x0/0x8b @ 1
-> > > > > [    0.903448] initcall bfq_init+0x0/0x8b returned -28 after 507
-> > > > > usecs
-> > > > > ```
-> > > > >=20
-> > > > > -ENOSPC? Why? Also re-tested with the latest git tip, same result
-> > > > > :(.
-> > > >=20
-> > > > OK, one extra pr_info, and I see this:
-> > > >=20
-> > > > ```
-> > > > [    0.871180] blkcg_policy_register: BLKCG_MAX_POLS too small
-> > > > [    0.871612] blkcg_policy_register: -28
-> > > > ```
-> > > >=20
-> > > > What does it mean please :)? The value seems to be hard-coded:
-> > > >=20
-> > > > ```
-> > > > include/linux/blkdev.h
-> > > > 60:#define BLKCG_MAX_POLS               5
-> > > > ```
-> > >=20
-> > > OK, after increasing this to 6 I've got my BFQ back. Please see [1].
-> > >=20
-> > > [1]
-> > > https://lore.kernel.org/linux-block/20210717123328.945810-1-oleksandr=
-@na
-> > > t
-> > > alenko.name/
-> >=20
-> > OK, after you fixed the issue in blkcg_policy_register(), can you
-> > reproduce the discard issue on v5.14-rc1 with BFQ applied? If yes,
-> > can you test the patch I posted previously?
->=20
-> Yes, the issue is reproducible with both v5.13.2 and v5.14-rc1. I haven't
-> managed to reproduce it with v5.13.2+your patch. Now I will build v5.14-
-> rc2+your patch and test further.
-
-I'm still hammering v5.14-rc2 + your patch, and I cannot reproduce the issu=
-e.=20
-Given I do not have a reliable reproducer (I'm just firing up the kernel bu=
-ild,=20
-and the issue pops up eventually, sooner or later, but usually within a cou=
-ple=20
-of first tries), for how long I should hammer it for your fix to be conside=
-red=20
-proven?
-
-Thanks.
-
-=2D-=20
-Oleksandr Natalenko (post-factum)
-
-
+Please submit a revert patch with the conclusions from the discussion
+included in the commit message.
