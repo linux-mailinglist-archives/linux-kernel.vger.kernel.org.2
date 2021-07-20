@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52013CF4C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F1D3CF4C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhGTGIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 02:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50676 "EHLO
+        id S239760AbhGTGJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 02:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231891AbhGTGHm (ORCPT
+        with ESMTP id S237553AbhGTGHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:07:42 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB3BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 23:47:53 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id t2so26775362edd.13
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 23:47:53 -0700 (PDT)
+        Tue, 20 Jul 2021 02:07:51 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60FCC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 23:48:08 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d9so7560664pfv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 23:48:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=2gzwOcrNzq5ovIdw97A9Su7K29oDFRX3eXqBoQ79x6w=;
-        b=juQi7GMJ5MXSjzTSCvB5wbrOGuql5fmJ/bgcASd6sQr+iAl7iRhWD9Z/PcsaN3/AZv
-         3Tp/tKGsNIdwHx1GW+YTAv7PuvlY56HYrCal78wo068WTMKIokFz/w60MoI/efThHefB
-         I1nNVTYnRO+dYE12YDECvgFrM3iRfdPjTxrdRCQclnSFeEjeLeZUepBU+bJMrebLxa30
-         ZC1Nrp+DWpLu6NuudFk3ghU8FVPDBafzS9VVqELr5aAxJsCElauo2qaUDZDroNM0whz2
-         mbGoVm2Wb6MlO50oGFSSLfalapRpgFlinleYEwdeyGfyfW1+Cjbj+Og0yaUdeZuxP5Ez
-         avSg==
+        h=from:to:subject:date:message-id;
+        bh=s1uZNvfYU0GpljT1GvWNKfoOHLQiAyxeoEdgPFxn/sU=;
+        b=YP2gSP4GeBIWZ2DD34PTJuchrpSXDkpXWx8eZFMBXUAFdS8BMX3kkyu4jubuFOuFsf
+         yxXN0ibtl0SF5goswfSSyJhYdJK1PWUBm0zjSj8dgcacafV7TAsKztEetZTFbLVwHUpp
+         Df5yjMJ2iQlqkW6JDiPOLMUb3lkILU91h6ruLWu+1D82eQP+3CxQSmdkjEHjUPm+MTrk
+         mg7zUFvjqrqFO+TgcaWoAkuyEe+fjDSQkDkJ3lAGNxCP/PMQWHIxZvPVw10zMcDfR8CC
+         8jeMG2QHrPycx9bw6bqmim5i74rSJCyqUadFT/dSQO+qTSCW4nbJDodjs6ScOR7yhgp3
+         4sug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=2gzwOcrNzq5ovIdw97A9Su7K29oDFRX3eXqBoQ79x6w=;
-        b=LVzzYGQXFdD4ZRIdSnA9uwJO0W5HBhbBq+7w/PH7VV5ijSoTGhQbc8I3SJAUpPkTtc
-         egsRwsZK2IfwZ8e/CeFNWPadsZ0WHHrL9VS+R/RtiDplCB81jD//AJWdQcd8z8PQlHuF
-         aUK5lflLt8IEIIufblaLPW4bQ7+jr0Au+0Rhab8fixcSOdyjAugC4zC5cTrkLGeqEZ2a
-         A8VGOwdk5Df2P/aR0qLRplpSZmV+SiSD/tWvt1lnJ0FV69Oysrzdkh2Yq0aQXXG/KuvL
-         7jlYzR37sOHNRg7kdfw8IhCItDwa3fOEqMtqVU+AwP9Bif8kPjh82GyOtC0slf8V6kxw
-         HHjQ==
-X-Gm-Message-State: AOAM531CJe6dYJBDdqgVZRjdFDNDeSMbC4pdnbvrN4XDB0ZOVVlvJ64I
-        4oHJNBt375NZL5nOe1hLDRngq+GsV6lqlye0IVU=
-X-Google-Smtp-Source: ABdhPJwcmalFx/V4N0tyytW97xojfAuk3zMqBKK8zMqjD/pR0JVpDLUAdHaBx6BC/rqR1i1R11+hGjqDLPWU+8JgqP4=
-X-Received: by 2002:a05:6402:4c5:: with SMTP id n5mr38588659edw.322.1626763671622;
- Mon, 19 Jul 2021 23:47:51 -0700 (PDT)
-MIME-Version: 1.0
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 20 Jul 2021 14:47:23 +0800
-Message-ID: <CAD-N9QVFnhKGfRYDDjWb0o_ty57AbjfzEnFPHZxEC5NOKL1ecg@mail.gmail.com>
-Subject: Doubts about Patch "ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe"
-To:     lyl2019@mail.ustc.edu.cn, siglesias@igalia.com,
-        jens.taprogge@taprogge.org, Greg KH <gregkh@linuxfoundation.org>
-Cc:     industrypack-devel@lists.sourceforge.net,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=s1uZNvfYU0GpljT1GvWNKfoOHLQiAyxeoEdgPFxn/sU=;
+        b=XHUmV6vH5OiSQm2Gr5T1qgmxNc+4Pm+REzN8PI3f3SALDmeDr9cV3bGkbqj63g5Kl/
+         9afmXRyk0rB5gPNe32uzWVzCEzS+FIK5jNOOlo79VGiGtw482gyVD6GSJSr3F3uy0QqB
+         vpTB8fxoaoXhdAekZxqDAaugktKnP+N7+4xyKTxPqe8RJrf6lyaXN5IdCDZ5IJeWqU4Y
+         8skh1bXyYtFXipAs9WD/UAJXf6QZJaqQrjFC36GJ0p0j6yCjqnD2vnWeqXY36NII1Z2g
+         MkQfyI00hanrZh2NLWrq8tTljaOaKs2I5FVVo42n1jwlCcm61Uqp4ZvsyAj7ED6oAQRl
+         vh6g==
+X-Gm-Message-State: AOAM533p9HJQKiEvuNCPTkEOV6pWN4QhoX0E4ZqBeWYrAHy5FLwe66nx
+        G5pwfdAHEwLoc39NHyBrg3Q=
+X-Google-Smtp-Source: ABdhPJx8w9gFLgZZuYbzwzjexB4rjChaujMR3kJT2/1cdIcVHid5J3ryWhB8zAlRnhlkteIr7gdT+A==
+X-Received: by 2002:a63:4726:: with SMTP id u38mr28781872pga.275.1626763688503;
+        Mon, 19 Jul 2021 23:48:08 -0700 (PDT)
+Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id s7sm21379039pfk.12.2021.07.19.23.48.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 19 Jul 2021 23:48:08 -0700 (PDT)
+From:   Huangzhaoyang <huangzhaoyang@gmail.com>
+To:     Minchan Kim <minchan@kernel.org>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [PATCH] driver: zram: fix wrong counting on pages_store
+Date:   Tue, 20 Jul 2021 14:47:38 +0800
+Message-Id: <1626763658-27748-1-git-send-email-huangzhaoyang@gmail.com>
+X-Mailer: git-send-email 1.7.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-I have some doubts about the patch - "ipack/carriers/tpci200: Fix a
-double free in tpci200_pci_probe".
+It makes the statistic confused when counting pages_store in during writeback.
+pages_store should just reflect the swapped pages on ZRAM, while bd_writes be
+responsible for writeback things.
 
-> In the out_err_bus_register error branch of tpci200_pci_probe,
-> tpci200->info->cfg_regs is freed by tpci200_uninstall()->
-> tpci200_unregister()->pci_iounmap(..,tpci200->info->cfg_regs)
-> in the first time.
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+ drivers/block/zram/zram_drv.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-From my code review, although pci_iounmap takes
-"tpci200->info->cfg_regs" as its 2nd parameter, the implementation of
-pci_iounmap may not use this parameter.
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index cf8deec..6bdaa9d 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -765,7 +765,6 @@ static ssize_t writeback_store(struct device *dev,
+ 		zram_set_flag(zram, index, ZRAM_WB);
+ 		zram_set_element(zram, index, blk_idx);
+ 		blk_idx = 0;
+-		atomic64_inc(&zram->stats.pages_stored);
+ 		spin_lock(&zram->wb_limit_lock);
+ 		if (zram->wb_limit_enable && zram->bd_wb_limit > 0)
+ 			zram->bd_wb_limit -=  1UL << (PAGE_SHIFT - 12);
+-- 
+1.9.1
 
- Depending on if CONFIG_PCI defines, the "tpci200->info->cfg_regs" may
-not be freed.
-
-#ifdef CONFIG_PCI
-/* Destroy a virtual mapping cookie for a PCI BAR (memory or IO) */
-struct pci_dev;
-extern void pci_iounmap(struct pci_dev *dev, void __iomem *);
-#elif defined(CONFIG_GENERIC_IOMAP)
-struct pci_dev;
-static inline void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
-{ }
-#endif
-
-> But later, iounmap() is called to free tpci200->info->cfg_regs again.
-
-Even if CONFIG_PCI is undefined, it is possible that
-tpci200->info->cfg_regs is not freed at all. Therefore, this patch
-would cause memory leak. Take a look at the following code:
-
-void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
-{
-        IO_COND(addr, /* nothing */, iounmap(addr));
-}
-
-#define IO_COND(addr, is_pio, is_mmio) do {                     \
-        unsigned long port = (unsigned long __force)addr;       \
-        if (port >= PIO_RESERVED) {                             \
-                is_mmio;                                        \
-        } else if (port > PIO_OFFSET) {                         \
-                port &= PIO_MASK;                               \
-                is_pio;                                         \
-        } else                                                  \
-                bad_io_access(port, #is_pio );                  \
-} while (0)
-
-If I make any mistakes, please let me know.
-
---
-My best regards to you.
-
-     No System Is Safe!
-     Dongliang Mu
