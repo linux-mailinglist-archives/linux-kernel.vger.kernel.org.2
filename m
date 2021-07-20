@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A563CF203
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 731073CF218
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344631AbhGTBlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 21:41:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344437AbhGTBju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 21:39:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A48260C40;
-        Tue, 20 Jul 2021 02:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626747625;
-        bh=wJQJYy19JoNbPgnn5nAMu95up14zFfvr3My3xlcpouQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g27orC+9SZy5A5AyJwWySl1PbZkF4xBfGEyBSTEUOeFGKG8DWNejQVDq4Um65wCWy
-         q1XwZU5b7s3gk4fAXP2A7OFkWPq12rhBAZp+QAkiUd2QuEx08deGizr21VTaWmDAso
-         5FctEeNmHPZxozCzy7MWEZNfmK4nzesvRzKXU4rsq8knw7iXI1JVuo71GyFHYEsBJI
-         ysi2w0+hRSbDWuiWYmZfR5ZvPGhTRsxZREGO5Y2OTNJXlE7eolLT0G+2KZ56rK1Gvh
-         VNa2BHtw0o/c2Pwi5VC+M93L9rGi3MyvNjvV/oLhXDTrte1NPzkbMVIJw6ioV72t84
-         I++4eraSFOaKw==
-Date:   Mon, 19 Jul 2021 19:20:24 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>
-Subject: Re: [PATCH] xfs: Convert from atomic_t to refcount_t on
- xlog_ticket->t_ref
-Message-ID: <20210720022024.GI23236@magnolia>
-References: <1626517262-42986-1-git-send-email-xiyuyang19@fudan.edu.cn>
+        id S1345138AbhGTB60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 21:58:26 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7394 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344639AbhGTBmA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 21:42:00 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GTMpR6p73z7w3x;
+        Tue, 20 Jul 2021 10:18:55 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 10:22:34 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 10:22:33 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <mst@redhat.com>,
+        <jasowang@redhat.com>
+CC:     <nickhu@andestech.com>, <green.hu@gmail.com>,
+        <deanbo422@gmail.com>, <akpm@linux-foundation.org>,
+        <yury.norov@gmail.com>, <andriy.shevchenko@linux.intel.com>,
+        <ojeda@kernel.org>, <ndesaulniers@gooogle.com>, <joe@perches.com>,
+        <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linuxarm@openeuler.org>
+Subject: [PATCH v2 0/4] refactor the ringtest testing for ptr_ring
+Date:   Tue, 20 Jul 2021 10:21:45 +0800
+Message-ID: <1626747709-34013-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626517262-42986-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 06:21:02PM +0800, Xiyu Yang wrote:
-> refcount_t type and corresponding API can protect refcounters from
-> accidental underflow and overflow and further use-after-free situations.
-> 
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> ---
->  fs/xfs/xfs_log.c      | 10 +++++-----
->  fs/xfs/xfs_log_priv.h |  4 +++-
->  2 files changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
-> index 36fa2650b081..1da711f1a229 100644
-> --- a/fs/xfs/xfs_log.c
-> +++ b/fs/xfs/xfs_log.c
-> @@ -3347,8 +3347,8 @@ void
->  xfs_log_ticket_put(
->  	xlog_ticket_t	*ticket)
->  {
-> -	ASSERT(atomic_read(&ticket->t_ref) > 0);
-> -	if (atomic_dec_and_test(&ticket->t_ref))
-> +	ASSERT(refcount_read(&ticket->t_ref) > 0);
-> +	if (refcount_dec_and_test(&ticket->t_ref))
+tools/include/* has a lot of abstract layer for building
+kernel code from userspace, so reuse or add the abstract
+layer in tools/include/ to build the ptr_ring for ringtest
+testing.
 
-I thought the refcount functions already had code to warn about
-refcounts that get decremented below zero...
+The same abstract layer can be used to build the ptr_ring
+for ptr_ring benchmark app too, see [1].
 
->  		kmem_cache_free(xfs_log_ticket_zone, ticket);
->  }
->  
-> @@ -3356,8 +3356,8 @@ xlog_ticket_t *
->  xfs_log_ticket_get(
->  	xlog_ticket_t	*ticket)
->  {
-> -	ASSERT(atomic_read(&ticket->t_ref) > 0);
-> -	atomic_inc(&ticket->t_ref);
-> +	ASSERT(refcount_read(&ticket->t_ref) > 0);
+1. https://lkml.org/lkml/2021/7/1/275
 
-...and can't come back from the dead?  Also, how much of a performance
-impact does this have over the atomic_t functions?  The last time anyone
-proposed conversions similar to this, there were concerns about that.
+V2:
+1. rebased on the Eugenio's patchset and split patch 1 to
+   more reviewable ones.
+2. only add the interface used by ringtest, so that the
+   added code can be built and tested.
+3. cpu_relax() only support x86 and arm64 now.
+4. use 64 bytes as the default SMP_CACHE_BYTES.
 
---D
+Yunsheng Lin (4):
+  tools headers UAPI: add cache aligning related macro
+  tools headers UAPI: add kmalloc/vmalloc related interface
+  tools headers UAPI: add cpu_relax() implementation for x86 and arm64
+  tools/virtio: use common infrastructure to build ptr_ring.h
 
-> +	refcount_inc(&ticket->t_ref);
->  	return ticket;
->  }
->  
-> @@ -3477,7 +3477,7 @@ xlog_ticket_alloc(
->  
->  	unit_res = xlog_calc_unit_res(log, unit_bytes);
->  
-> -	atomic_set(&tic->t_ref, 1);
-> +	refcount_set(&tic->t_ref, 1);
->  	tic->t_task		= current;
->  	INIT_LIST_HEAD(&tic->t_queue);
->  	tic->t_unit_res		= unit_res;
-> diff --git a/fs/xfs/xfs_log_priv.h b/fs/xfs/xfs_log_priv.h
-> index 4c41bbfa33b0..c4157d87cea4 100644
-> --- a/fs/xfs/xfs_log_priv.h
-> +++ b/fs/xfs/xfs_log_priv.h
-> @@ -6,6 +6,8 @@
->  #ifndef	__XFS_LOG_PRIV_H__
->  #define __XFS_LOG_PRIV_H__
->  
-> +#include <linux/refcount.h>
-> +
->  struct xfs_buf;
->  struct xlog;
->  struct xlog_ticket;
-> @@ -163,7 +165,7 @@ typedef struct xlog_ticket {
->  	struct list_head   t_queue;	 /* reserve/write queue */
->  	struct task_struct *t_task;	 /* task that owns this ticket */
->  	xlog_tid_t	   t_tid;	 /* transaction identifier	 : 4  */
-> -	atomic_t	   t_ref;	 /* ticket reference count       : 4  */
-> +	refcount_t	   t_ref;	 /* ticket reference count       : 4  */
->  	int		   t_curr_res;	 /* current reservation in bytes : 4  */
->  	int		   t_unit_res;	 /* unit reservation in bytes    : 4  */
->  	char		   t_ocnt;	 /* original count		 : 1  */
-> -- 
-> 2.7.4
-> 
+ tools/include/asm/processor.h    |  26 ++++++++++
+ tools/include/linux/cache.h      |  25 ++++++++++
+ tools/include/linux/gfp.h        |   2 +
+ tools/include/linux/slab.h       |  46 ++++++++++++++++++
+ tools/virtio/ringtest/Makefile   |   2 +-
+ tools/virtio/ringtest/main.h     |  99 +++-----------------------------------
+ tools/virtio/ringtest/ptr_ring.c | 101 ++-------------------------------------
+ 7 files changed, 109 insertions(+), 192 deletions(-)
+ create mode 100644 tools/include/asm/processor.h
+ create mode 100644 tools/include/linux/cache.h
+ create mode 100644 tools/include/linux/slab.h
+
+-- 
+2.7.4
+
