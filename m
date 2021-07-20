@@ -2,98 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974C03CF985
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7800C3CF98D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237821AbhGTLnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 07:43:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33178 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236874AbhGTLmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:42:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E85661165;
-        Tue, 20 Jul 2021 12:23:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626783792;
-        bh=k3u8kVux9MZ9aUC3HoK/CusB+Yi3Q/t7dbfUVU7znNo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YAlToWw6aOZLePABIn2HAXF+uAnzv+QapStGGsYQegZtpptH1zLoy2hLFK+48tIlQ
-         wjYkxMwBn37OVQkBauBGy+aF7eh3th9UeG4AbmGbJVldn3wIZOqZ2vtsOVcH8mKbVO
-         cTQ3D1UbjtDGkyyiOwgU6o5TUDei8ZTEoXFrSUIRAkC87ebV8emtK0D4ZqxLL+US3h
-         X2weJd6lg4ru7eASwjqMCYf90P0wiSfe3Z4jDTt6MFXCojK+fA8gVjSg1Frepl76V/
-         6X8F4lhEoPMYhQA0/pG5J4kyZW7PEUjN/vXRjejSPSf2ojPFzZvT1gN0fIepm5fi0/
-         pjIWx66FzHMng==
-Date:   Tue, 20 Jul 2021 15:23:08 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/irdma: Improve the way 'cqp_request' structures are
- cleaned when they are recycled
-Message-ID: <YPbALA/P5+NsC7MO@unreal>
-References: <7f93f2a2c2fd18ddfeb99339d175b85ffd1c6398.1626713915.git.christophe.jaillet@wanadoo.fr>
+        id S238041AbhGTLoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 07:44:23 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:43779 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237691AbhGTLnZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 07:43:25 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UgQyUIj_1626783838;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgQyUIj_1626783838)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 20 Jul 2021 20:23:59 +0800
+Date:   Tue, 20 Jul 2021 20:23:57 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Andreas =?utf-8?Q?Gr=C3=BCnbacher?= 
+        <andreas.gruenbacher@gmail.com>
+Cc:     linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v3] iomap: support tail packing inline read
+Message-ID: <YPbAXVois1QpOu7X@B-P7TQMD6M-0146.local>
+Mail-Followup-To: Andreas =?utf-8?Q?Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>,
+        linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
+ <CAHpGcM+qhur4C2fLyR-dQx7CvumXVvMAM5NBCCXnL5ve-2qE8w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <7f93f2a2c2fd18ddfeb99339d175b85ffd1c6398.1626713915.git.christophe.jaillet@wanadoo.fr>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHpGcM+qhur4C2fLyR-dQx7CvumXVvMAM5NBCCXnL5ve-2qE8w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 07:02:15PM +0200, Christophe JAILLET wrote:
-> A set of IRDMA_CQP_SW_SQSIZE_2048 (i.e. 2048) 'cqp_request' are
-> pre-allocated and zeroed in 'irdma_create_cqp()' (hw.c).  These
-> structures are managed with the 'cqp->cqp_avail_reqs' list which keeps
-> track of available entries.
+On Tue, Jul 20, 2021 at 01:34:58PM +0200, Andreas Grünbacher wrote:
+> Am Mo., 19. Juli 2021 um 16:48 Uhr schrieb Gao Xiang
+> <hsiangkao@linux.alibaba.com>:
+> > This tries to add tail packing inline read to iomap, which can support
+> > several inline tail blocks. Similar to the previous approach, it cleans
+> > post-EOF in one iteration.
+> >
+> > The write path remains untouched since EROFS cannot be used for testing.
+> > It'd be better to be implemented if upcoming real users care rather than
+> > leave untested dead code around.
+> >
+> > Cc: Christoph Hellwig <hch@lst.de>
+> > Cc: Darrick J. Wong <djwong@kernel.org>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > ---
+> > v2: https://lore.kernel.org/r/YPLdSja%2F4FBsjss%2F@B-P7TQMD6M-0146.local/
+> > changes since v2:
+> >  - update suggestion from Christoph:
+> >     https://lore.kernel.org/r/YPVe41YqpfGLNsBS@infradead.org/
+> >
+> > Hi Andreas,
+> > would you mind test on the gfs2 side? Thanks in advance!
+> >
+> > Thanks,
+> > Gao Xiang
+> >
+> >  fs/iomap/buffered-io.c | 50 ++++++++++++++++++++++++++----------------
+> >  fs/iomap/direct-io.c   | 11 ++++++----
+> >  2 files changed, 38 insertions(+), 23 deletions(-)
+> >
+> > diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> > index 87ccb3438bec..cac8a88660d8 100644
+> > --- a/fs/iomap/buffered-io.c
+> > +++ b/fs/iomap/buffered-io.c
+> > @@ -207,23 +207,22 @@ struct iomap_readpage_ctx {
+> >
+> >  static void
+> >  iomap_read_inline_data(struct inode *inode, struct page *page,
+> > -               struct iomap *iomap)
+> > +               struct iomap *iomap, loff_t pos)
+> >  {
+> > -       size_t size = i_size_read(inode);
+> > +       unsigned int size, poff = offset_in_page(pos);
+> >         void *addr;
+> >
+> > -       if (PageUptodate(page))
+> > -               return;
+> > -
+> > -       BUG_ON(page_has_private(page));
+> > -       BUG_ON(page->index);
+> > -       BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> > +       /* inline source data must be inside a single page */
+> > +       BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> > +       /* handle tail-packing blocks cross the current page into the next */
+> > +       size = min_t(unsigned int, iomap->length + pos - iomap->offset,
+> > +                    PAGE_SIZE - poff);
+> >
+> >         addr = kmap_atomic(page);
+> > -       memcpy(addr, iomap->inline_data, size);
+> > -       memset(addr + size, 0, PAGE_SIZE - size);
+> > +       memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
+> > +       memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
+> >         kunmap_atomic(addr);
+> > -       SetPageUptodate(page);
+> > +       iomap_set_range_uptodate(page, poff, PAGE_SIZE - poff);
+> >  }
+> >
+> >  static inline bool iomap_block_needs_zeroing(struct inode *inode,
+> > @@ -246,18 +245,19 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+> >         unsigned poff, plen;
+> >         sector_t sector;
+> >
+> > -       if (iomap->type == IOMAP_INLINE) {
+> > -               WARN_ON_ONCE(pos);
+> > -               iomap_read_inline_data(inode, page, iomap);
+> > -               return PAGE_SIZE;
+> > -       }
+> > -
+> > -       /* zero post-eof blocks as the page may be mapped */
+> >         iop = iomap_page_create(inode, page);
 > 
-> In 'irdma_free_cqp_request()' (utils.c), when an entry is recycled and goes
-> back to the 'cqp_avail_reqs' list, some fields are reseted.
-> 
-> However, one of these fields, 'compl_info', is initialized within
-> 'irdma_alloc_and_get_cqp_request()'.
-> 
-> Move the corresponding memset to 'irdma_free_cqp_request()' so that the
-> clean-up is done in only one place. This makes the logic more easy to
-> understand.
+> We can skip creating the iop when reading the entire page.
 
-I'm not so sure. The function irdma_alloc_and_get_cqp_request() returns
-prepared cqp_request and all users expect that it will returned cleaned
-one. The reliance on some other place to clear part of the structure is
-prone to errors.
+As I said before, I think it can be in a separated patch like
+https://lore.kernel.org/r/YPMkKfegS+9KzEhK@casper.infradead.org/
+and Christoph said it should be careful:
+https://lore.kernel.org/r/YPVfxn6%2FoCPBZpKu@infradead.org/
 
-Thanks
-
-> 
-> This also saves this memset in the case that the 'cqp_avail_reqs' list is
-> empty and a new 'cqp_request' structure must be allocated. This memset is
-> useless, because the structure is already kzalloc'ed.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/infiniband/hw/irdma/utils.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
-> index 5bbe44e54f9a..66711024d38b 100644
-> --- a/drivers/infiniband/hw/irdma/utils.c
-> +++ b/drivers/infiniband/hw/irdma/utils.c
-> @@ -445,7 +445,6 @@ struct irdma_cqp_request *irdma_alloc_and_get_cqp_request(struct irdma_cqp *cqp,
->  
->  	cqp_request->waiting = wait;
->  	refcount_set(&cqp_request->refcnt, 1);
-> -	memset(&cqp_request->compl_info, 0, sizeof(cqp_request->compl_info));
->  
->  	return cqp_request;
->  }
-> @@ -475,6 +474,7 @@ void irdma_free_cqp_request(struct irdma_cqp *cqp,
->  		cqp_request->request_done = false;
->  		cqp_request->callback_fcn = NULL;
->  		cqp_request->waiting = false;
-> +		memset(&cqp_request->compl_info, 0, sizeof(cqp_request->compl_info));
->  
->  		spin_lock_irqsave(&cqp->req_lock, flags);
->  		list_add_tail(&cqp_request->list, &cqp->cqp_avail_reqs);
-> -- 
-> 2.30.2
-> 
+Thanks,
+Gao Xiang
