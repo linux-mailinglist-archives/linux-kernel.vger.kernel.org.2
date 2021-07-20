@@ -2,130 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D7E3CFE41
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE4A3CFE43
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242698AbhGTPLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
+        id S238434AbhGTPNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242519AbhGTPDM (ORCPT
+        with ESMTP id S240046AbhGTPFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:03:12 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5402BC061766
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:43:45 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d9so8712528pfv.4
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:43:45 -0700 (PDT)
+        Tue, 20 Jul 2021 11:05:14 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33705C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:45:43 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso2046317pjx.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:45:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pdh068ptiINg7vYsNON6+uw4KqAOssVbDMcwvukOGd0=;
-        b=dpe3XWqRXAgtIdDhfs39lSEhRtVR0xEzpdUzBAQqbnUbtk19yaGCwYaYYPltQcIhaA
-         WglRCqfVMuxfAI0AdKQeV45lkBvTHMiRUKOgjbca0BIWZkeQaCZ3uEn6yvotq6gP/XUL
-         9ODIV7iymwfcJrCvfuJiLLu6Q4xzQEVATdFRYO3GyWm4REbYYHOsOMBQqrvIR+tWGmEA
-         76vMqkk3IT48ZKlvOGfAYLNSKI+IEfwPTimCwG9xZSjh76iVONtsRdWg8tagak9hxFVT
-         RxE8iIgabG5Y+MfvGU/fANMRupaTYx2BbKiJvYj58kGG7idGGRJdUi7Y2qLOd46xi5tM
-         vcRQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NpNq7JDQIJsNXoJR8EGd3wRq6OdERgGrM4wiXizuMoU=;
+        b=RAuytij50B1HtqFlhb1ThqAgMNg6BilfhB9jx0mtyAl5MTDm6gG16mEu5rVsJzWSrQ
+         XPoh8svdvJkX3t4NrtKUmhgV0MZ5qwtj/qGZd9qJCLJS/A03WCGsFN+NY21PQBE3ecW2
+         xg3j6RUl5iRt1x2c20NK09b3Ji9uwdQSc0kLt9A4YONoQMVLsLD8ushCp4gwdY7nUX8G
+         ARHH5DPWnC//phZHPZm088DpkQE2+MI/mMMM2yCLzZylzalGflVUdYMyquY2cHRq/s54
+         3XTSHK6ECup1XMgZJAfcjSCj71kDYPo2r5c7OJR5EMduG1Ai6ab7kHC/hYaz0aOl8v0d
+         0GMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=pdh068ptiINg7vYsNON6+uw4KqAOssVbDMcwvukOGd0=;
-        b=I599oq4UL3QrPFUBLkiszXyb9jOh9D89ffoZmtOrZTGwJR+Mw/+8X2/el1rU4pwu1e
-         xQ5v1CGhPNd+WrNK2wPJdDD6w2QuhezA8RfGhnOTsWUUvWzTW2yQZavowCsIIoawmNlx
-         LChgIrRazX7RDUKSMTZkQcmmhrqMLRPYTkNn/8j2J6smO6TXtweV7JS0/oQGcFkvm00b
-         TUh+dzOLfZejYegRD/2bOWrGhr3TTPaF4BABZips1hwzaIJYSxYuLYbS6fb9L7lR8iKV
-         BgRkdY/grjriwwcbXwkPpCPGXUtygYJ9vaWCOY/d5UHzddVbofU2on6nLwRIv22aMs/2
-         iOLQ==
-X-Gm-Message-State: AOAM532jWTXNGz5q3vwRWgnPCVDbLR8IGDKk2AdiIYJPwvqPXx/HARzw
-        uIWOJ+HasUnzSF84NlGX7mcx3g==
-X-Google-Smtp-Source: ABdhPJwpGFV02DMIWb+tUmJStYOn7WgezVWEgx5CxO0+ooG8jBYIGIW/L25sLQ9lISd1D9b0VLjeYQ==
-X-Received: by 2002:aa7:9ae4:0:b029:32e:b1:78e8 with SMTP id y4-20020aa79ae40000b029032e00b178e8mr31996254pfp.46.1626795824423;
-        Tue, 20 Jul 2021 08:43:44 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id b7sm23833755pfl.195.2021.07.20.08.43.43
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NpNq7JDQIJsNXoJR8EGd3wRq6OdERgGrM4wiXizuMoU=;
+        b=f/Ez7djrDVSIXgYYDZl9yun7WLUOYrsFAQAx6Q7ETIJyiIvbD+ETUl+QX0fItWjXXE
+         LlSk0ex9y4LUo/s0Dl07pL4lZQdOHQHjUvlGCUsvsx0s0SvmHdNXgUDSJlgaxS4rwBkz
+         jJkCHLIerrYdASt3aLaYiDZRvTqhrwTdh3urhuYkyuoun1Pq0eTi+j84/CFnLzobTJFq
+         HEJt7gxMRszwIFXiHw6A1ItdNibHoXoQ5QPffdcrtwzTaOiaj89zMENBB624b9yg7zZV
+         F3t8420ET4aVNZ7nVFlrcy5s7BtsQcpoSM9zfpmIfBFViwbRH5w8w47HPhivjMJvKpMX
+         ZwOQ==
+X-Gm-Message-State: AOAM533m+25pZW77Tsj7wSP0lT4N6O6seI9HKvyfhG5eHNfDEhZeIo2V
+        n9OnWyc0QhQzApbSTsM/GXovfw==
+X-Google-Smtp-Source: ABdhPJytdcE+2qJMEZYiBxTfYvfrc6yNOaa3KyauvEf3q3eOuA1CJjXhvaLgmV4o2xw5yf21dCnZyw==
+X-Received: by 2002:a17:902:c204:b029:12b:25f7:9d51 with SMTP id 4-20020a170902c204b029012b25f79d51mr23880464pll.77.1626795942702;
+        Tue, 20 Jul 2021 08:45:42 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id m16sm24152897pfo.152.2021.07.20.08.45.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 08:43:43 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 08:43:43 -0700 (PDT)
-X-Google-Original-Date: Tue, 20 Jul 2021 08:43:39 PDT (-0700)
-Subject:     Re: [PATCH v4 06/10] riscv: Remove non-standard linux,elfcorehdr handling
-In-Reply-To: <170e7daa55aced148b8e57827f7c8fc65a0a8c7a.1626266516.git.geert+renesas@glider.be>
-CC:     robh+dt@kernel.org, linux@armlinux.org.uk, nico@fluxnic.net,
-        ardb@kernel.org, linus.walleij@linaro.org, catalin.marinas@arm.com,
-        will@kernel.org, mick@ics.forth.gr,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, frowand.list@gmail.com, dyoung@redhat.com,
-        rppt@kernel.org, bhe@redhat.com, vgoyal@redhat.com,
-        akpm@linux-foundation.org, devicetree@vger.kernel.org,
+        Tue, 20 Jul 2021 08:45:42 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 09:45:39 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     acme@kernel.org, coresight@lists.linaro.org, leo.yan@linaro.org,
+        al.grant@arm.com, branislav.rankov@arm.com, suzuki.poulose@arm.com,
+        anshuman.khandual@arm.com, Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
         linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
-        linux-mm@kvack.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, geert+renesas@glider.be
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     geert+renesas@glider.be
-Message-ID: <mhng-8deebbc6-f8aa-40e3-9e00-e99f12eaac92@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] perf cs-etm: Pass unformatted flag to decoder
+Message-ID: <20210720154539.GC2296792@p14s>
+References: <20210713154008.29656-1-james.clark@arm.com>
+ <20210713154008.29656-7-james.clark@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713154008.29656-7-james.clark@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 05:50:16 PDT (-0700), geert+renesas@glider.be wrote:
-> RISC-V uses platform-specific code to locate the elf core header in
-> memory.  However, this does not conform to the standard
-> "linux,elfcorehdr" DT bindings, as it relies on a reserved memory node
-> with the "linux,elfcorehdr" compatible value, instead of on a
-> "linux,elfcorehdr" property under the "/chosen" node.
->
-> The non-compliant code can just be removed, as the standard behavior is
-> already implemented by platform-agnostic handling in the FDT core code.
->
-> Fixes: 5640975003d0234d ("RISC-V: Add crash kernel support")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On Tue, Jul 13, 2021 at 04:40:08PM +0100, James Clark wrote:
+> The TRBE (Trace Buffer Extension) feature allows a separate trace buffer
+> for each trace source, therefore the trace wouldn't need to be
+> formatted. The driver was introduced in commit 3fbf7f011f24
+> ("coresight: sink: Add TRBE driver").
+> 
+> The formatted/unformatted mode is encoded in one of the flags of the
+> AUX record. The first AUX record encountered for each event is used to
+> determine the mode, and this will persist for the remaining trace that
+> is either decoded or dumped.
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
 > ---
-> v4:
->   - No changes.
-> ---
->  arch/riscv/mm/init.c | 20 --------------------
->  1 file changed, 20 deletions(-)
->
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 269fc648ef3d84b2..4aa4b6a034086df6 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -829,26 +829,6 @@ static void __init reserve_crashkernel(void)
+>  tools/perf/util/cs-etm.c | 42 +++++++++++++++++++++++++++-------------
+>  1 file changed, 29 insertions(+), 13 deletions(-)
+> 
+> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> index 760050ea936d..62769a84a53f 100644
+> --- a/tools/perf/util/cs-etm.c
+> +++ b/tools/perf/util/cs-etm.c
+> @@ -461,13 +461,14 @@ static void cs_etm__set_trace_param_etmv4(struct cs_etm_trace_params *t_params,
 >  }
->  #endif /* CONFIG_KEXEC_CORE */
->
-> -#ifdef CONFIG_CRASH_DUMP
-> -/*
-> - * We keep track of the ELF core header of the crashed
-> - * kernel with a reserved-memory region with compatible
-> - * string "linux,elfcorehdr". Here we register a callback
-> - * to populate elfcorehdr_addr/size when this region is
-> - * present. Note that this region will be marked as
-> - * reserved once we call early_init_fdt_scan_reserved_mem()
-> - * later on.
-> - */
-> -static int __init elfcore_hdr_setup(struct reserved_mem *rmem)
-> -{
-> -	elfcorehdr_addr = rmem->base;
-> -	elfcorehdr_size = rmem->size;
-> -	return 0;
-> -}
-> -
-> -RESERVEDMEM_OF_DECLARE(elfcorehdr, "linux,elfcorehdr", elfcore_hdr_setup);
-> -#endif
-> -
->  void __init paging_init(void)
+>  
+>  static int cs_etm__init_trace_params(struct cs_etm_trace_params *t_params,
+> -				     struct cs_etm_auxtrace *etm)
+> +				     struct cs_etm_auxtrace *etm,
+> +				     int decoders_per_cpu)
 >  {
->  	setup_bootmem();
+>  	int i;
+>  	u32 etmidr;
+>  	u64 architecture;
+>  
+> -	for (i = 0; i < etm->num_cpu; i++) {
+> +	for (i = 0; i < decoders_per_cpu; i++) {
+>  		architecture = etm->metadata[i][CS_ETM_MAGIC];
+>  
+>  		switch (architecture) {
+> @@ -488,7 +489,8 @@ static int cs_etm__init_trace_params(struct cs_etm_trace_params *t_params,
+>  
+>  static int cs_etm__init_decoder_params(struct cs_etm_decoder_params *d_params,
+>  				       struct cs_etm_queue *etmq,
+> -				       enum cs_etm_decoder_operation mode)
+> +				       enum cs_etm_decoder_operation mode,
+> +				       bool formatted)
+>  {
+>  	int ret = -EINVAL;
+>  
+> @@ -498,7 +500,7 @@ static int cs_etm__init_decoder_params(struct cs_etm_decoder_params *d_params,
+>  	d_params->packet_printer = cs_etm__packet_dump;
+>  	d_params->operation = mode;
+>  	d_params->data = etmq;
+> -	d_params->formatted = true;
+> +	d_params->formatted = formatted;
+>  	d_params->fsyncs = false;
+>  	d_params->hsyncs = false;
+>  	d_params->frame_aligned = true;
+> @@ -720,11 +722,13 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
+>  	return len;
+>  }
+>  
+> -static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
+> +static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm,
+> +						bool formatted)
+>  {
+>  	struct cs_etm_decoder_params d_params;
+>  	struct cs_etm_trace_params  *t_params = NULL;
+>  	struct cs_etm_queue *etmq;
+> +	int decoders_per_cpu = formatted ? etm->num_cpu : 1;
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+I really tripped on the name "decoders_per_cpu", to a point where I had to
+review the current code before looking at this patch.  I find the "_per_cpu"
+part especially puzzling.  In the end the variable determines the amount of
+decoders to instantiate for a specific queue...  
 
-LMK if you wanted me to take this series, otherwise I'm going to assume 
-it's going in via some other tree.
+Couldn't it be just "decoders"?  Or maybe it just needs a little comment to
+disambiguate things?
+
+Thanks,
+Mathieu
+
+>  
+>  	etmq = zalloc(sizeof(*etmq));
+>  	if (!etmq)
+> @@ -735,21 +739,23 @@ static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
+>  		goto out_free;
+>  
+>  	/* Use metadata to fill in trace parameters for trace decoder */
+> -	t_params = zalloc(sizeof(*t_params) * etm->num_cpu);
+> +	t_params = zalloc(sizeof(*t_params) * decoders_per_cpu);
+>  
+>  	if (!t_params)
+>  		goto out_free;
+>  
+> -	if (cs_etm__init_trace_params(t_params, etm))
+> +	if (cs_etm__init_trace_params(t_params, etm, decoders_per_cpu))
+>  		goto out_free;
+>  
+>  	/* Set decoder parameters to decode trace packets */
+>  	if (cs_etm__init_decoder_params(&d_params, etmq,
+>  					dump_trace ? CS_ETM_OPERATION_PRINT :
+> -						     CS_ETM_OPERATION_DECODE))
+> +						     CS_ETM_OPERATION_DECODE,
+> +					formatted))
+>  		goto out_free;
+>  
+> -	etmq->decoder = cs_etm_decoder__new(etm->num_cpu, &d_params, t_params);
+> +	etmq->decoder = cs_etm_decoder__new(decoders_per_cpu, &d_params,
+> +					    t_params);
+>  
+>  	if (!etmq->decoder)
+>  		goto out_free;
+> @@ -777,14 +783,15 @@ static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
+>  
+>  static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
+>  			       struct auxtrace_queue *queue,
+> -			       unsigned int queue_nr)
+> +			       unsigned int queue_nr,
+> +			       bool formatted)
+>  {
+>  	struct cs_etm_queue *etmq = queue->priv;
+>  
+>  	if (list_empty(&queue->head) || etmq)
+>  		return 0;
+>  
+> -	etmq = cs_etm__alloc_queue(etm);
+> +	etmq = cs_etm__alloc_queue(etm, formatted);
+>  
+>  	if (!etmq)
+>  		return -ENOMEM;
+> @@ -2430,8 +2437,14 @@ static int cs_etm__process_auxtrace_event(struct perf_session *session,
+>  		if (err)
+>  			return err;
+>  
+> +		/*
+> +		 * Knowing if the trace is formatted or not requires a lookup of
+> +		 * the aux record so only works in non-piped mode where data is
+> +		 * queued in cs_etm__queue_aux_records(). Always assume
+> +		 * formatted in piped mode (true).
+> +		 */
+>  		err = cs_etm__setup_queue(etm, &etm->queues.queue_array[idx],
+> -					  idx);
+> +					  idx, true);
+>  		if (err)
+>  			return err;
+>  
+> @@ -2678,6 +2691,7 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session, off_t file_o
+>  	union perf_event auxtrace_fragment;
+>  	__u64 aux_offset, aux_size;
+>  	__u32 idx;
+> +	bool formatted;
+>  
+>  	struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
+>  						   struct cs_etm_auxtrace,
+> @@ -2745,7 +2759,9 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session, off_t file_o
+>  			return err;
+>  
+>  		idx = auxtrace_event->idx;
+> -		return cs_etm__setup_queue(etm, &etm->queues.queue_array[idx], idx);
+> +		formatted = !(aux_event->flags & PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
+> +		return cs_etm__setup_queue(etm, &etm->queues.queue_array[idx],
+> +					   idx, formatted);
+>  	}
+>  
+>  	/* Wasn't inside this buffer, but there were no parse errors. 1 == 'not found' */
+> -- 
+> 2.28.0
+> 
