@@ -2,78 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738833CF6A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EAE3CF6A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236102AbhGTI3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 04:29:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234682AbhGTIZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:25:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9331861209;
-        Tue, 20 Jul 2021 09:06:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626771964;
-        bh=diGKLMeqjXqjUS3tPsz0KEw/bRr//coPwoJygHYsrZU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TW/4RO5KkzCIyUjFqOcZISnEURPXVuwwYbgntfPDnBvIs8s/BYk46tfvhT9kK2vAq
-         LkeGGPE4GpRRC8npg4cua3aI83XupA4HP75AqAaJscQmZsAfIb4o8vQX+lfBOV7n+5
-         yS3P+vR6nsyyQs9CDsbEEymb/dK51hwxegFVef4Jkz6PSYM0j1jfArq+yHRHdKHllY
-         n1dAezC+EAwfwjmpGiz2upc0nbP9Hut3Rx1fZTQe1UEu+bKLoLMILlR91NkyGzR5ij
-         bWkKMT3pZq2JLT4cEpv9Dlm1NQQBXqKP+FzAKo2i+e2/CWTiZTSf0qTq5HM+W3tNUO
-         rNZCVb12XSDgw==
-Date:   Tue, 20 Jul 2021 11:05:56 +0200
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Justin He <Justin.He@arm.com>
-Cc:     Prabhakar Kushwaha <prabhakar.pkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ariel Elior <aelior@marvell.com>,
-        "GR-everest-linux-l2@marvell.com" <GR-everest-linux-l2@marvell.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        nd <nd@arm.com>, Shai Malin <malin1024@gmail.com>,
-        Shai Malin <smalin@marvell.com>,
-        Prabhakar Kushwaha <pkushwaha@marvell.com>
-Subject: Re: [PATCH] qed: fix possible unpaired spin_{un}lock_bh in
- _qed_mcp_cmd_and_union()
-Message-ID: <20210720110556.24cf7f8e@cakuba>
-In-Reply-To: <AM6PR08MB4376CD003BF58F85E0121F39F7E29@AM6PR08MB4376.eurprd08.prod.outlook.com>
-References: <20210715080822.14575-1-justin.he@arm.com>
-        <CAJ2QiJLWgxw0X8rkMhKgAGgiFS5xhrhMF5Dct_J791Kt-ys7QQ@mail.gmail.com>
-        <AM6PR08MB4376894A46B47B024F50FBB3F7E19@AM6PR08MB4376.eurprd08.prod.outlook.com>
-        <CAJ2QiJJ8=jkbRVscnXM2m_n2RX2pNdJG4iA3tYiNGDYefb-hjA@mail.gmail.com>
-        <AM6PR08MB4376CD003BF58F85E0121F39F7E29@AM6PR08MB4376.eurprd08.prod.outlook.com>
+        id S235122AbhGTI3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 04:29:48 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46706 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235369AbhGTI0z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 04:26:55 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3F96F1FD3E;
+        Tue, 20 Jul 2021 09:07:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626772053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QfevtJ7CO69XvR/FgxUv0tcNBb6dOkmnHZF1Y+3ecPE=;
+        b=qPP+VPihQCLt5SbGo30Cs//xoYyzsjBqGVUjA1v7oynKA9Cpsold5dkRVWMNHDcSRlokhM
+        LCow4zT5u2rnHLYUO2ZSdDffdy0kluHmt+QDRZjUPkycsfob/l4ri3ItuHoA1M49cw+IO6
+        6tZ/1WMRGEGu9BMKvVp4Kr+7n7Rcpac=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626772053;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QfevtJ7CO69XvR/FgxUv0tcNBb6dOkmnHZF1Y+3ecPE=;
+        b=Cqa4nl1n11cdmVl8DLDjDwA/2gnzCV/ihRUyR8BgzbHvrr18EHskqB+DQPNMIsOG1Ft4ET
+        YFTG7BbQu9ai/GAA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 0403213A2E;
+        Tue, 20 Jul 2021 09:07:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id pTTIOVSS9mD+FgAAGKfGzw
+        (envelope-from <tzimmermann@suse.de>); Tue, 20 Jul 2021 09:07:32 +0000
+Subject: Re: [PATCH -next v2 resend] drm/bochs: Fix missing
+ pci_disable_device() on error in bochs_pci_probe()
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org
+Cc:     kraxel@redhat.com, airlied@linux.ie, daniel@ffwll.ch
+References: <20210715132845.2415619-1-yangyingliang@huawei.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <5c3f06d5-509a-0e59-7021-d25180f82de9@suse.de>
+Date:   Tue, 20 Jul 2021 11:07:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210715132845.2415619-1-yangyingliang@huawei.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="1tWaCOjUssnJCaas5KXmJJXzgakIpD6xl"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 02:02:26 +0000, Justin He wrote:
-> > > For instance:
-> > > _qed_mcp_cmd_and_union()
-> > >   In while loop
-> > >     spin_lock_bh()
-> > >     qed_mcp_has_pending_cmd() (assume false), will break the loop  
-> > 
-> > I agree till here.
-> >   
-> > >   if (cnt >= max_retries) {
-> > > ...
-> > >     return -EAGAIN; <-- here returns -EAGAIN without invoking bh unlock
-> > >   }
-> > >  
-> > 
-> > Because of break, cnt has not been increased.
-> >    - cnt is still less than max_retries.
-> >   - if (cnt >= max_retries) will not be *true*, leading to spin_unlock_bh().
-> > Hence pairing completed.  
-> 
-> Sorry, indeed. Let me check other possibilities.
-> @David S. Miller Sorry for the inconvenience, could you please revert it
-> in netdev tree?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--1tWaCOjUssnJCaas5KXmJJXzgakIpD6xl
+Content-Type: multipart/mixed; boundary="3UkehBvmd5mFqfwTL1h90To2blVmYbJVN";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org
+Cc: kraxel@redhat.com, airlied@linux.ie, daniel@ffwll.ch
+Message-ID: <5c3f06d5-509a-0e59-7021-d25180f82de9@suse.de>
+Subject: Re: [PATCH -next v2 resend] drm/bochs: Fix missing
+ pci_disable_device() on error in bochs_pci_probe()
+References: <20210715132845.2415619-1-yangyingliang@huawei.com>
+In-Reply-To: <20210715132845.2415619-1-yangyingliang@huawei.com>
 
-Please submit a revert patch with the conclusions from the discussion
-included in the commit message.
+--3UkehBvmd5mFqfwTL1h90To2blVmYbJVN
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+Am 15.07.21 um 15:28 schrieb Yang Yingliang:
+> Replace pci_enable_device() with pcim_enable_device(),
+> pci_disable_device() will be called in release automatically.
+>=20
+> v2:
+>    use pcim_enable_device()
+>=20
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+Thanks, I'll merge it into drm-misc-next as v3. I also had to update the =
+
+path to the bochs driver meanwhile.
+
+Best regards
+Thomas
+
+> ---
+>   drivers/gpu/drm/bochs/bochs_drv.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/bochs/bochs_drv.c b/drivers/gpu/drm/bochs/=
+bochs_drv.c
+> index c828cadbabff..8065c9537237 100644
+> --- a/drivers/gpu/drm/bochs/bochs_drv.c
+> +++ b/drivers/gpu/drm/bochs/bochs_drv.c
+> @@ -118,7 +118,7 @@ static int bochs_pci_probe(struct pci_dev *pdev,
+>   	if (IS_ERR(dev))
+>   		return PTR_ERR(dev);
+>  =20
+> -	ret =3D pci_enable_device(pdev);
+> +	ret =3D pcim_enable_device(pdev);
+>   	if (ret)
+>   		goto err_free_dev;
+>  =20
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--3UkehBvmd5mFqfwTL1h90To2blVmYbJVN--
+
+--1tWaCOjUssnJCaas5KXmJJXzgakIpD6xl
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmD2klQFAwAAAAAACgkQlh/E3EQov+Dn
+LRAAytKE28XZKTScOgeBjGLyb6I50t+nAoIMtve7Gc22yETMye3+lkQ8ulGWm8OC931jHub2Qz8v
+3VsC3q2YuJSdXLPpPRGe59bgtnzSqgvvmEYzGXJ/dB6yhS4DDbks885mZBg5HusB5hvpwyE29lki
+67RuwzuQQ1tXmxSSuPmI5kT2BtawUxvP1bbU/44xgmhfUP4YMm53eLV/ELRvyvDjFfSJOxF857hQ
+ijfX6xWc3i7zLES4EPIc0sqNj0PPrP2wnuzUf6X65phtbS276Ym7tG9vTuI18YTnk7On9boiFtDr
+ZWeTSEmBq4nTi+XRsY3JPRQaGOmzMVx8vjex6iht5Uf835wX1j3F7FOEac9vP+/XFSVv4hAJ2/cy
+n2kuvhhLbko1TDgquFTqBI2cYZofEe6kkHqi0SSrIKn7/K7bJehJIBAZcHyqpBB5S6P1BkiusACM
+cqgM6NZ5t1OwFm1YFM9Oop4Hj2Kyat6Ucuv6O1sOLCfvWFS16g0jaJBUPfEar58Ly6FFefRvPD5v
++3Ma64SwyLbRkVLxJjPYL2VuqDuVlTyGca8G42iHSi9P8gUTEJ797lWVLtKUi0HFxIPk75G6ctaU
+70sbjXHpsnIPS/+c6ekVJKDyDog2VBXAH7ip+tgDDxxYdlU1ssUGG5GqyETK65Y+bGqGTNcl0sJa
+rlI=
+=Sdka
+-----END PGP SIGNATURE-----
+
+--1tWaCOjUssnJCaas5KXmJJXzgakIpD6xl--
