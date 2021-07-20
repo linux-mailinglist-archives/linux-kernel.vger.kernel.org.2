@@ -2,135 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFB93CFBB6
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1643CFBB4
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238764AbhGTNcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 09:32:31 -0400
-Received: from verein.lst.de ([213.95.11.211]:55312 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239348AbhGTNOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 09:14:06 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C76616736F; Tue, 20 Jul 2021 15:54:37 +0200 (CEST)
-Date:   Tue, 20 Jul 2021 15:54:37 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        kirill.shutemov@linux.intel.com, akpm@linux-foundation.org,
-        rppt@kernel.org, Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
-        ardb@kernel.org, robh@kernel.org, nramas@linux.microsoft.com,
-        pgonda@google.com, martin.b.radev@gmail.com, david@redhat.com,
-        krish.sadhukhan@oracle.com, saravanand@fb.com,
-        xen-devel@lists.xenproject.org, keescook@chromium.org,
-        rientjes@google.com, hannes@cmpxchg.org,
-        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, brijesh.singh@amd.com,
-        anparri@microsoft.com
-Subject: Re: [Resend RFC PATCH V4 09/13] x86/Swiotlb/HV: Add Swiotlb bounce
- buffer remap function for HV IVM
-Message-ID: <20210720135437.GA13554@lst.de>
-References: <20210707154629.3977369-1-ltykernel@gmail.com> <20210707154629.3977369-10-ltykernel@gmail.com>
+        id S238776AbhGTNbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 09:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239389AbhGTNOQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 09:14:16 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F317C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:54:53 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id c23so2276444ljr.8
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:54:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=d+X4Q07MgeHYW8eCJj5YoBj1nYkhGjnbiHZEqthoXuw=;
+        b=hWgOOiHC1DPm4CD0bWFnEDG/qcM3MfkuXkskeBSyryxl8VruwN/+6X0WPj5NhE3DuV
+         XbCJwizjc0O3gDMkTGthoz/YtPk9SWFZMHsY97J+4gaPHVgpDbJAJ8rzyMJldJqFaQRf
+         VAxa+xkIUUPv+R90Qm1VgRZ13yJ7kNUKIeJk+9LLrsr8+lVpNQhtM0Zl1gse7/Nn6cNV
+         BfonwVRwHUkQuBOJm3V4lVk70H8GxWd1yMlMJrMiLbIzWOCvoMS8VcLzcMGFLCCzCXob
+         iInrfGf8dcvT8FoqXDOELMm6vCvwimUlJDJnOotePedFPFFkcUcG+7gbW0u6ZWcEcG4H
+         nORw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=d+X4Q07MgeHYW8eCJj5YoBj1nYkhGjnbiHZEqthoXuw=;
+        b=C2/4OQhZ+qD2Y6AVqxgy75DMsptoLWMQrmPfu29MDL3i5TKiBdOMkKO9ZZDKfG5FzD
+         1f8TfIeFB4bfn0RCSlty8CnvdDzGVKJkWVnmlYRCKJ1dpf5CjF97efWUI8dWRWeAxZQD
+         fido9Zio+BRMm83Tj3BHq/idiv9sYls55FHsTHZ655IubHHYBCbHSNIlp1pPGUyzIDaL
+         IwKGr6QR9igzuACeHMwqYXRjjVOhCmvkO4SBq4abwpHuBkFWqQeJObL5RXURd4P0zaSK
+         I30IlitlpWF6akZSgkC5xhh1b6HE+9S8PKhoWqPxZzmywQOu/8EkcePGzieoytJJA41D
+         CEow==
+X-Gm-Message-State: AOAM533b7LaataNe5aq3DSN7D7qm2xTS9tjCL3++ojLDM9MYKyEj1HI1
+        nArENaqDmwPhafrlYuR6/O8=
+X-Google-Smtp-Source: ABdhPJy4TnTO/KADjfeq45oGIZeLjmaF0iuw3S0A95gL94Hln0f36b7vpfQZwJDHneZb27GGGFn55A==
+X-Received: by 2002:a2e:9c54:: with SMTP id t20mr12193411ljj.87.1626789291527;
+        Tue, 20 Jul 2021 06:54:51 -0700 (PDT)
+Received: from grain.localdomain ([5.18.255.97])
+        by smtp.gmail.com with ESMTPSA id x10sm1427384ljn.27.2021.07.20.06.54.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 06:54:50 -0700 (PDT)
+Received: by grain.localdomain (Postfix, from userid 1000)
+        id 14FC65A001E; Tue, 20 Jul 2021 16:54:49 +0300 (MSK)
+Date:   Tue, 20 Jul 2021 16:54:49 +0300
+From:   Cyrill Gorcunov <gorcunov@gmail.com>
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: Re: [PATCH] prctl: allow to setup brk for et_dyn executables
+Message-ID: <YPbVqfRqXtj5olFO@grain>
+References: <20210121221207.GB2174@grain>
+ <CANaxB-zuh-TvODuQ9pdycqGUyXfO4rXXtyFmXFh905+es6AOXQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210707154629.3977369-10-ltykernel@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <CANaxB-zuh-TvODuQ9pdycqGUyXfO4rXXtyFmXFh905+es6AOXQ@mail.gmail.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 20, 2021 at 12:33:11AM -0700, Andrei Vagin wrote:
+> >
+> > Reported-by: Keno Fischer <keno@juliacomputing.com>
+> > Signed-off-by: Cyrill Gorcunov <gorcunov@gmail.com>
+> > CC: Andrew Morton <akpm@linux-foundation.org>
+> > CC: Dmitry Safonov <0x7f454c46@gmail.com>
+> > CC: Andrey Vagin <avagin@gmail.com>
+> 
+> Acked-by: Andrey Vagin <avagin@gmail.com>
+> Fixes: bbdc6076d2e5 ("binfmt_elf: move brk out of mmap when doing
+> direct loader exec")
 
-Please split the swiotlb changes into a separate patch from the
-consumer.
-
->  }
-> +
-> +/*
-> + * hv_map_memory - map memory to extra space in the AMD SEV-SNP Isolation VM.
-> + */
-> +unsigned long hv_map_memory(unsigned long addr, unsigned long size)
-> +{
-> +	unsigned long *pfns = kcalloc(size / HV_HYP_PAGE_SIZE,
-> +				      sizeof(unsigned long),
-> +		       GFP_KERNEL);
-> +	unsigned long vaddr;
-> +	int i;
-> +
-> +	if (!pfns)
-> +		return (unsigned long)NULL;
-> +
-> +	for (i = 0; i < size / HV_HYP_PAGE_SIZE; i++)
-> +		pfns[i] = virt_to_hvpfn((void *)addr + i * HV_HYP_PAGE_SIZE) +
-> +			(ms_hyperv.shared_gpa_boundary >> HV_HYP_PAGE_SHIFT);
-> +
-> +	vaddr = (unsigned long)vmap_pfn(pfns, size / HV_HYP_PAGE_SIZE,
-> +					PAGE_KERNEL_IO);
-> +	kfree(pfns);
-> +
-> +	return vaddr;
-
-This seems to miss a 'select VMAP_PFN'.  But more importantly I don't
-think this actually works.  Various DMA APIs do expect a struct page
-backing, so how is this going to work with say dma_mmap_attrs or
-dma_get_sgtable_attrs?
-
-> +static unsigned long __map_memory(unsigned long addr, unsigned long size)
-> +{
-> +	if (hv_is_isolation_supported())
-> +		return hv_map_memory(addr, size);
-> +
-> +	return addr;
-> +}
-> +
-> +static void __unmap_memory(unsigned long addr)
-> +{
-> +	if (hv_is_isolation_supported())
-> +		hv_unmap_memory(addr);
-> +}
-> +
-> +unsigned long set_memory_decrypted_map(unsigned long addr, unsigned long size)
-> +{
-> +	if (__set_memory_enc_dec(addr, size / PAGE_SIZE, false))
-> +		return (unsigned long)NULL;
-> +
-> +	return __map_memory(addr, size);
-> +}
-> +
-> +int set_memory_encrypted_unmap(unsigned long addr, unsigned long size)
-> +{
-> +	__unmap_memory(addr);
-> +	return __set_memory_enc_dec(addr, size / PAGE_SIZE, true);
-> +}
-
-Why this obsfucation into all kinds of strange helpers?  Also I think
-we want an ops vectors (or alternative calls) instead of the random
-if checks here.
-
-> + * @vstart:	The virtual start address of the swiotlb memory pool. The swiotlb
-> + *		memory pool may be remapped in the memory encrypted case and store
-
-Normall we'd call this vaddr or cpu_addr.
-
-> -	set_memory_decrypted((unsigned long)vaddr, bytes >> PAGE_SHIFT);
-> -	memset(vaddr, 0, bytes);
-> +	mem->vstart = (void *)set_memory_decrypted_map((unsigned long)vaddr, bytes);
-
-Please always pass kernel virtual addresses as pointers.
-
-And I think these APIs might need better names, e.g.
-
-arch_dma_map_decrypted and arch_dma_unmap_decrypted.
-
-Also these will need fallback versions for non-x86 architectures that
-currently use memory encryption.
+Thanks for review, Andrew! I reviseted this patch recently again and
+indeed we still need it.
