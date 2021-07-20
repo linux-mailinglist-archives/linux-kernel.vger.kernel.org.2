@@ -2,274 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9533D05D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EADC3D05E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhGTXGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 19:06:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230308AbhGTXGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 19:06:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA8AB61106;
-        Tue, 20 Jul 2021 23:46:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626824835;
-        bh=oN69miVSRyaML6+IUHqvCBLtsgOcDIuQKYun/dc9vbI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iV1XnoTgpBubZrPubTyOqte+EiVGYBIHQCQvbGYr0Bswkz9mneNYCegjzWH2A3q0n
-         6IvDPLJV8tBGZCWNbh3bztuydaPhHCGySqEDH/ae4l3Sod6h+4UCPxzuaxsiNB8hjm
-         5v6bp3/y4uEEx2l+0orKxa8XqeCqFVDibr2L+Wh7p9TG5OYhC5IucSAO+vj6sYJ+Bm
-         9H/9DP76Gq7bFNJYKh/FsfYUnn4pim18uWc2+ISbCjfkI4sPH22jwKz/n+ofaqmnlU
-         MSQ8+65PoKWCx5fvIxU5C/RMF2kLUUiIqSdxP+fuVHZx2b6Oq29ae6/aIpNfUPiS6V
-         uUkqm4takzirg==
-Date:   Wed, 21 Jul 2021 07:46:28 +0800
-From:   Gao Xiang <xiang@kernel.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v4] iomap: support tail packing inline read
-Message-ID: <20210720234620.GA15940@hsiangkao-HP-ZHAN-66-Pro-G1>
-Mail-Followup-To: "Darrick J. Wong" <djwong@kernel.org>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-References: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
- <20210720204224.GK23236@magnolia>
-MIME-Version: 1.0
+        id S232265AbhGTXM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 19:12:56 -0400
+Received: from mail-dm6nam08on2088.outbound.protection.outlook.com ([40.107.102.88]:44033
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230383AbhGTXMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 19:12:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MWxDjh4Iw71yKXfGq79L0FCdVGIOAmWFLy9AB5h6TjjlJNEWt7GaoDlm9JHFZzCJOzlNHxXWvoc82kP0NPUuG8DuACQtefUuSk+LGpPaqiqdr9DqEQaOJ/Yya8cuB8F9/lWYTUMXlBnThDxwLRoahmon/kOjZHvsCUT1Ly6mj9TLVK9rmAOsuph7Ar2W3FfVEKFDL9REqStm+fN7v8d6WLLYmrMB5kXlNsJYkSpYU7J7GyGzAlC9AEHXjXcB1mXivkNRb5OBidFOlbuU8LdBDvgl7+Bw0hTTj1Ia3JKSHS4hz7WMfUuhRLwRhzuvxhyQ89ECTiVDbSMipnIQJPK6kQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uqi6hA6GlWZwmb6PE6UCZHsbIuCwg84vAs6NM+hJDtY=;
+ b=BbVe7pD8nMdwqon5JyY4XonA50WfWad52cYD48TO5DGY6rPTpTPn7uGRPkFLvjBW8hTUHGc6sm/xEWvvacF1Jd7havsSkoMtR3OvhkH6dlSUHMTW61pqVh+tM+Jpz6scgcPr0cZz9oH/knqjZA6kusOtHXksm+mTburVkFLYNog0Amou1twJFpDXZSkGHnfGqHISb6Hr8xNpUuv/GjPHH9bk0lf9mGaWNwQ1SGa3pw5kxXYLQtNj/9jZzYlGFDB5HE1bE4ytcMm4rAl/rip3voHdf0f5EfgSGq2cjGnu7/1YjjNTaxEHicpGhCbpsfR1H00sRXXrcLmxwHlcKLAFUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uqi6hA6GlWZwmb6PE6UCZHsbIuCwg84vAs6NM+hJDtY=;
+ b=T4JgpmwepzFZwxAieQLGdB77nOcB4yhAsbK0mGzrypAYFoiaze4Dm1QdWFZ706ZKTvO9bLmUoiga70XQuiwiyFnz+EEBAZOJkjuCgnMmnvQTIxDPG3QOPLWRuEWrRLfYFxWg6lmpu7yA1xOe6ZE3kYIq2QQqBXYtUcbeMDfTgXg=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4429.namprd12.prod.outlook.com (2603:10b6:806:73::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Tue, 20 Jul
+ 2021 23:53:16 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4331.034; Tue, 20 Jul 2021
+ 23:53:16 +0000
+Cc:     brijesh.singh@amd.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 37/40] KVM: SVM: Add support to handle the
+ RMP nested page fault
+To:     Sean Christopherson <seanjc@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-38-brijesh.singh@amd.com> <YPYUe8hAz5/c7IW9@google.com>
+ <bff43050-aed7-011c-89e5-9899bd1df414@amd.com> <YPdOxrIA6o3uymq2@google.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <03f42d61-fa32-38d0-7e14-17ee6f1d7dad@amd.com>
+Date:   Tue, 20 Jul 2021 18:53:08 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
+In-Reply-To: <YPdOxrIA6o3uymq2@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210720204224.GK23236@magnolia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: SN4PR0401CA0017.namprd04.prod.outlook.com
+ (2603:10b6:803:21::27) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN4PR0401CA0017.namprd04.prod.outlook.com (2603:10b6:803:21::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22 via Frontend Transport; Tue, 20 Jul 2021 23:53:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7d48b269-5d7b-4081-d29c-08d94bd98b02
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4429:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB442920155B664A09A39B14CAE5E29@SA0PR12MB4429.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CkeSHZke28T/JiMe8jL9jrAV30wag/2p7EmP9gNQrAe4eSpmJoNCupAG2sNcTcEMTO8W6okg8dOeLFrjIdiH4ly1DA8EEX8//KzQXdntMmJH4blGQw8yK94M1Rso+cNWw1BSXk1TgCoRLDf9DMqC/M08wYTbNXRafWMvdDGhb5oqvKXSmGnLYc+i3LOJlEadM/Kbg8BKYRZoMZRJ1WZderLlPR/nJ1avNkgRV1CMfRDpqE1cPJjd6npOsnUN6iaT44bwCj/jk7scqUcis/Tn31LuOHAjgkzD4YYQMCUdlATvjFxby4CX4zUMv0yzz7t7lbQlCM2GW8od+4lAY5wb0W7nhCwYw6VMnB+4FW/r2UKa+kQe5gHMLSbjDbAh/xddDKuYYRBY14fjD2MLu6DjyvuMLCDMzN+H65WL/AyhAaSzJ7EYzwZpqtfsDWiiSX0smCsvAr7IuPrn387VPMvqPHpl8Ks+jbmdK1Ld2n/L65dc3mybYRwqBR1pW3nB1I5WvJjt2Kf9zgl8hdBCeG8Mk2Pqb3yWfPWh1CnPkXm9iuue8kKfV/mzy0pB2Ic6Mv2S6x9y2Fu6vy5kbl78Sxzpi2T4J7LkGVOOEXf51A3vBls4vApjWNT4j+L8g8PcbPZUmDWtCR6W5nYiChg5Fg7d4VLmCp5tQTWD+FzRMVGAViGhrBIyEfuNeqMe+zINZLnunTj4dQ3OQvbQr2ml8wjjpVZ77zEPt04ZUfivdXsPLBmf/y9gcN8dO37YepWqTQRmg244eFcQRyxFrKh9R07hyw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(346002)(366004)(376002)(136003)(396003)(31686004)(31696002)(6486002)(5660300002)(316002)(86362001)(478600001)(6512007)(36756003)(83380400001)(52116002)(53546011)(956004)(8676002)(44832011)(7406005)(6506007)(8936002)(2906002)(2616005)(54906003)(6916009)(4326008)(66556008)(66476007)(38100700002)(7416002)(186003)(26005)(38350700002)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NnVmcTBOUlFwRkdMWG1iTGdSOGtXS1Z0T0dqMVNFaVZQWjdPSlluQlJkbDBa?=
+ =?utf-8?B?eExyQWZTTTVPNmNVOU9IUXBMcU5uU2FuK2NscllTMEN5V2o3TWRRYjJEWnpV?=
+ =?utf-8?B?bGxSTThNQU9Tc0FPcld2dzMxL2pDRXdvbTNKVzlsS2FEVFEva1dPQ0djV2g0?=
+ =?utf-8?B?MTZ6TGYwdzd5RXFxNFFqTUFEY2RoNHpTL0pYNmtLaG8wMGw5UnNUVDM0Rmpn?=
+ =?utf-8?B?aTE5cjNBNzRjTEQ0Q1A2eGt3RXRqdG4wYjZYWUFhUzJsbkRJbEtGWEhUdkow?=
+ =?utf-8?B?Y2N5WmE5QkdnT1RFbnlrVUQrS2Y4WVRiUlovRjRQTXlpWk1CQ3NmdWFjV1Zt?=
+ =?utf-8?B?dUdiWVFWNjRjbUJ6bnN1U2VwWmp1VG9FaVpkN0M4Z0ExSitNaHZETTZkWllk?=
+ =?utf-8?B?bUl3WXNseHZpVUdVdzRiMXQ3VXJOZkF1UitRQzRRV2dwb0lBalhnNndoRXFm?=
+ =?utf-8?B?UUFiK1hJbkxhVndla2kzVmJQWXQ0Z1pudUF3bGJLV1I3Z0NZc2NqM3NYQ0RP?=
+ =?utf-8?B?MTUzYWI2Yk10Zk1FaTNLeFNGcTh5V216L1hOR2tadDJZM05vVE9mem9iZXdu?=
+ =?utf-8?B?S1dWWE5RRk8vUzlBNXRNUWdCMXh3RjNiM0c1c2dMWTA3NkVoYU1PeVlwR1F5?=
+ =?utf-8?B?L296VlN2RWliV29PWUN6N3NCMVpIVWlacS9SaU8yRTBaRUVYN2RhQnR1Y2RT?=
+ =?utf-8?B?NThPblc2dEZDSU4rOWJFWXZqN1pqYkpxSkRrcysrNlpFb3BuNTFNcjd6WS9j?=
+ =?utf-8?B?V1JSZmZtODFjb0tkLzhPa2JXUEZjWmVvUDRlQ0o1Z3JTa1AvdzZ1N1c1enhh?=
+ =?utf-8?B?SHNRcTE3NDk3Sk1TTWZzOUU4dEFtSkIrdHZWOGdpOHFhejlBT1VwYjhoUU5h?=
+ =?utf-8?B?K21YUEkxZVVZcE1RTmdLaUlJaE05dkRia2tsYkRtU1RqMEw0UzVnNTFpRnVR?=
+ =?utf-8?B?enVDLy9VZFh4bDhhWnJkUlhrZzg5N0N3Z1Q2bU9HdjE1YnZ5TnQyZDB5SXJi?=
+ =?utf-8?B?UG13b1FhTTk1alpIOWZBWmt1SHF5TXBUYmJYbE9sTmsrUitIZjFoeCtGZDg3?=
+ =?utf-8?B?cEdsNFdnUmVHdy9yWkZ1QS8vT0lmRUg4cnJYV1ZIbytmYmt2UmVCY3ZTNU52?=
+ =?utf-8?B?QlNGdzBYVUZvT0xWVEtOUDdPVXdlQ292UlMrOTlsSEZKeGdXV3A3RGZxbVZk?=
+ =?utf-8?B?V21XSWdQMm1YVmJDS3dsRjh1SFdDWWw1eGkzSTdCZ2hDemp2Q05kenVSeEcy?=
+ =?utf-8?B?Z1lsaVZUem1EUEc0VlNpUm4yYWhGZVFla0o0emdzekdBcE9jRDJqRGVDRkUr?=
+ =?utf-8?B?OHo5VzU2U2lPVmhQVVVmcSt4eiswRGw1VXBrV3hmcWdaZmZaVllZTnUwUXdr?=
+ =?utf-8?B?U1gzUGpvK21FaDZ5M1JqVXViRi84ckF3WnQ4OXlGUGxYWjZRTTFEVjE5cmtn?=
+ =?utf-8?B?SitObk0zVjdlWWdQN2kyNVdlc1JGQkpNc2RFVFc4YTVRWWNTTkxEbVBOcEQv?=
+ =?utf-8?B?UE85MDdJeU1Cb3RES1ZsT3cyVG8zY3RGMUZhT3E2L2N0Q2xwY0JsNmFmTE5i?=
+ =?utf-8?B?QlNZUFJDOWdmMzVveG9uc2ttTEhublhLTFRITk1aS01YanVyVXU3YjhxOXhN?=
+ =?utf-8?B?cU9tUnd4R0k5WFJpTjhIVXJKamZhZ3BjeG9rTUJ5eURtWldreXRTWXhwaDdD?=
+ =?utf-8?B?SVpYaG9wU0JmRVp5NUtlYUVmbVlab2xLSkRMeUQxU3cxWVNOUGJNeFRNSGU2?=
+ =?utf-8?Q?HxE/bqraLur73U6/qXsInEuFkA2gnTgJDspekSc?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d48b269-5d7b-4081-d29c-08d94bd98b02
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2021 23:53:16.4428
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: h0yeGJrey17HwB8FpCVX9TOMejUmuyN/cDASnqqN2yqXS3lHx0k6jMkEJGSB+wfX4c9FGFJwi2IIKqeZ3145uA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4429
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Darrick,
 
-On Tue, Jul 20, 2021 at 01:42:24PM -0700, Darrick J. Wong wrote:
-> On Tue, Jul 20, 2021 at 09:35:54PM +0800, Gao Xiang wrote:
-> > This tries to add tail packing inline read to iomap, which can support
-> > several inline tail blocks. Similar to the previous approach, it cleans
-> > post-EOF in one iteration.
-> > 
-> > The write path remains untouched since EROFS cannot be used for testing.
-> > It'd be better to be implemented if upcoming real users care rather than
-> > leave untested dead code around.
-> > 
-> > Cc: Christoph Hellwig <hch@lst.de>
-> > Cc: Darrick J. Wong <djwong@kernel.org>
-> > Cc: Matthew Wilcox <willy@infradead.org>
-> > Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> > ---
-> > v3: https://lore.kernel.org/r/20210719144747.189634-1-hsiangkao@linux.alibaba.com
-> > changes since v3:
-> >  - update return value type of iomap_read_inline_data to int;
-> >  - fix iomap_write_begin_inline() pointed out by Andreas.
-> > 
-> >  fs/iomap/buffered-io.c | 52 ++++++++++++++++++++++++++----------------
-> >  fs/iomap/direct-io.c   | 11 +++++----
-> >  2 files changed, 39 insertions(+), 24 deletions(-)
-> > 
-> > diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> > index 87ccb3438bec..0edc8bbb35d1 100644
-> > --- a/fs/iomap/buffered-io.c
-> > +++ b/fs/iomap/buffered-io.c
-> > @@ -205,25 +205,25 @@ struct iomap_readpage_ctx {
-> >  	struct readahead_control *rac;
-> >  };
-> >  
-> > -static void
-> > +static int
-> >  iomap_read_inline_data(struct inode *inode, struct page *page,
-> > -		struct iomap *iomap)
-> > +		struct iomap *iomap, loff_t pos)
-> >  {
-> > -	size_t size = i_size_read(inode);
-> > +	unsigned int size, poff = offset_in_page(pos);
-> >  	void *addr;
-> >  
-> > -	if (PageUptodate(page))
-> > -		return;
-> > -
-> > -	BUG_ON(page_has_private(page));
-> > -	BUG_ON(page->index);
-> > -	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> > +	/* inline source data must be inside a single page */
-> > +	BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> 
-> Can we reduce the strength of these checks to a warning and an -EIO
-> return?
+On 7/20/21 5:31 PM, Sean Christopherson wrote:
+...
+>> This is a good question, the GHCB spec does not enforce that a guest *must*
+>> use page state. If the page state changes is not done by the guest then it
+>> will cause #NPF and its up to the hypervisor to decide on what it wants to
+>> do.
+> Drat.  Is there any hope of pushing through a GHCB change to require the guest
+> to use PSC?
 
-Ok, will update it.
+Well, I am not sure if we can push it through GHCB. Other hypervisor
+also need to agree to it. We need to define them some architectural way
+for hypervisor to detect the violation and notify guest about it.
 
-> 
-> > +	/* handle tail-packing blocks cross the current page into the next */
-> > +	size = min_t(unsigned int, iomap->length + pos - iomap->offset,
-> > +		     PAGE_SIZE - poff);
-> >  
-> >  	addr = kmap_atomic(page);
-> > -	memcpy(addr, iomap->inline_data, size);
-> > -	memset(addr + size, 0, PAGE_SIZE - size);
-> > +	memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
-> > +	memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
-> 
-> Hmm, so I guess the point of this is to support reading data from a
-> tail-packing block, where each file gets some arbitrary byte range
-> within the tp-block, and the range isn't aligned to an fs block?  Hence
-> you have to use the inline data code to read the relevant bytes and copy
-> them into the pagecache?
 
-Yes, the source data isn't aligned to an fs block.
+>>> It would simplify KVM (albeit not much of a simplificiation) and would also
+>>> make debugging easier since transitions would require an explicit guest
+>>> request and guest bugs would result in errors instead of random
+>>> corruption/weirdness.
+>> I am good with enforcing this from the KVM. But the question is, what fault
+>> we should inject in the guest when KVM detects that guest has issued the
+>> page state change.
+> Injecting a fault, at least from KVM, isn't an option since there's no architectural
+> behavior we can leverage.  E.g. a guest that isn't enlightened enough to properly
+> use PSC isn't going to do anything useful with a #MC or #VC.
+>
+> Sadly, as is I think our only options are to either automatically convert RMP
+> entries as need, or to punt the exit to userspace.  Maybe we could do both, e.g.
+> have a module param to control the behavior?  The problem with punting to userspace
+> is that KVM would also need a way for userspace to fix the issue, otherwise we're
+> just taking longer to kill the guest :-/
+>
+I think we should automatically convert the RMP entries at time, its
+possible that non Linux guest may access the page without going through
+the PSC.
 
-> 
-> Aka this thing from the v3 discussion:
-> 
-> > The other one is actual file tail blocks, I think it can cross pages due
-> > to multiple tail inline blocks.
-> >
-> >                             |<---------- inline data ------------->|
-> >   _________________________________________________________________
-> >   | file block | file block | file block | file block | file block |
-> >   |<----------------    page   ---------------------->|<---  page
-> 
-> Except ... is this diagram a little misleading?  Each of these "file
-> blocks" isn't i_blocksize bytes in size, right?  Because if they were,
-> you could use the standard iomap codepaths?
+thanks
 
-The disgram above describe logical file extents.
-
-The real physical layout is like this:
-  _________________________________________________________
- | ... | inode |     inline data     | other inodes | .... |
-               |<- arbitary length ->|
-> 
-> So the real layout might look a bit more like this?
-> 
->                                 |<--- inline data ---->|
->   _________________________________________________________________
->   | file1 |     file2     |file3|  file4  |   file4    |
->   |<-------------   page   -------------->|<---  page ----...
-> 
-> (Sorry, /me isn't all that familiar with erofs layout...)
-
-Nope, that is what erofs is like, erofs tail packing data inline with
-inode itself, so when reading inode, the cache page itself can read
-the tail blocks as well. When it read tail blocks again, it can save
-I/O due to buffered before. Also this approach can save storage space
-since it saves entire tail blocks as well.
-
-> 
-> >  	kunmap_atomic(addr);
-> > -	SetPageUptodate(page);
-> > +	iomap_set_range_uptodate(page, poff, PAGE_SIZE - poff);
-> > +	return PAGE_SIZE - poff;
-> >  }
-> >  
-> >  static inline bool iomap_block_needs_zeroing(struct inode *inode,
-> > @@ -246,18 +246,18 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
-> >  	unsigned poff, plen;
-> >  	sector_t sector;
-> >  
-> > -	if (iomap->type == IOMAP_INLINE) {
-> > -		WARN_ON_ONCE(pos);
-> > -		iomap_read_inline_data(inode, page, iomap);
-> > -		return PAGE_SIZE;
-> > -	}
-> > -
-> > -	/* zero post-eof blocks as the page may be mapped */
-> >  	iop = iomap_page_create(inode, page);
-> > +	/* needs to skip some leading uptodate blocks */
-> >  	iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
-> >  	if (plen == 0)
-> >  		goto done;
-> >  
-> > +	if (iomap->type == IOMAP_INLINE) {
-> > +		plen = iomap_read_inline_data(inode, page, iomap, pos);
-> > +		goto done;
-> > +	}
-> > +
-> > +	/* zero post-eof blocks as the page may be mapped */
-> >  	if (iomap_block_needs_zeroing(inode, iomap, pos)) {
-> >  		zero_user(page, poff, plen);
-> >  		iomap_set_range_uptodate(page, poff, plen);
-> > @@ -589,6 +589,18 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
-> >  	return 0;
-> >  }
-> >  
-> > +static int iomap_write_begin_inline(struct inode *inode, loff_t pos,
-> > +		struct page *page, struct iomap *srcmap)
-> > +{
-> > +	/* needs more work for the tailpacking case, disable for now */
-> > +	if (WARN_ON_ONCE(srcmap->offset != 0))
-> > +		return -EIO;
-> > +	if (PageUptodate(page))
-> > +		return 0;
-> > +	iomap_read_inline_data(inode, page, srcmap, 0);
-> > +	return 0;
-> > +}
-> > +
-> >  static int
-> >  iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
-> >  		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-> > @@ -618,7 +630,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
-> >  	}
-> >  
-> >  	if (srcmap->type == IOMAP_INLINE)
-> > -		iomap_read_inline_data(inode, page, srcmap);
-> > +		status = iomap_write_begin_inline(inode, pos, page, srcmap);
-> >  	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
-> >  		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
-> >  	else
-> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > index 9398b8c31323..ee6309967b77 100644
-> > --- a/fs/iomap/direct-io.c
-> > +++ b/fs/iomap/direct-io.c
-> > @@ -379,22 +379,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
-> >  {
-> >  	struct iov_iter *iter = dio->submit.iter;
-> >  	size_t copied;
-> > +	void *dst = iomap->inline_data + pos - iomap->offset;
-> >  
-> > -	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> > +	/* inline data must be inside a single page */
-> > +	BUG_ON(length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> 
-> Same here, can we convert these to warnings + EIO return?
-
-Sure, I could update it as well.
-
-Thanks,
-Gao Xiang
-
-> 
-> --D
-> 
-> >  	if (dio->flags & IOMAP_DIO_WRITE) {
-> >  		loff_t size = inode->i_size;
-> >  
-> >  		if (pos > size)
-> > -			memset(iomap->inline_data + size, 0, pos - size);
-> > -		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-> > +			memset(iomap->inline_data + size - iomap->offset,
-> > +			       0, pos - size);
-> > +		copied = copy_from_iter(dst, length, iter);
-> >  		if (copied) {
-> >  			if (pos + copied > size)
-> >  				i_size_write(inode, pos + copied);
-> >  			mark_inode_dirty(inode);
-> >  		}
-> >  	} else {
-> > -		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-> > +		copied = copy_to_iter(dst, length, iter);
-> >  	}
-> >  	dio->size += copied;
-> >  	return copied;
-> > -- 
-> > 2.24.4
-> > 
