@@ -2,217 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5E43D0034
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F7F3D0038
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhGTQrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 12:47:09 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:40792 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbhGTQqr (ORCPT
+        id S230331AbhGTQrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 12:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230427AbhGTQrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 12:46:47 -0400
-Received: by mail-wm1-f47.google.com with SMTP id f8-20020a1c1f080000b029022d4c6cfc37so1929983wmf.5;
-        Tue, 20 Jul 2021 10:27:24 -0700 (PDT)
+        Tue, 20 Jul 2021 12:47:25 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA74C0613DC
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 10:28:02 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id qb4so35436111ejc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 10:28:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MRDTut5sIr1YAD+wWycEAbZH48ThMpXHAJu6uzoLBOY=;
+        b=KeQiUz7V65d8hsHZx4TqWydXGejkLlKH+ZKykQ+Ut60Miksk6ErxTnwudR93YozvUp
+         6OgCwoKIvtvLKkxZL17Hx+Nf5KkxLZLVlO2d/TRJndOt6kHyWjsCzADoWHz3g3GXnutj
+         8aMquGAkknQ5EltXZoFc38W924cqlI4Qh160X/WE1fgfRUATIWfHyrasZYc+REtWH19T
+         XsgQ/2zK1z1MFfekUHieoCPkonYvQ0uc178wVZBKpQZh5VFWsjt/dM4voDbrUDd4mg+w
+         mAtbfRIVEKqF8Cgqq0W9Z4WRUj6Z/eQNoLj9DRB+nLWrhjk+aEfX8ym5Fe7BAOAf0MnL
+         t7fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version;
-        bh=N7iOkDTbFVkcyMX6wYcSBGgYmLYjg2HzoM77/UPDOg4=;
-        b=dyiL8nOUQLkjNy+1XWARapEwXMgTiXAgwiCo8tjJDnKnHmdnvG24dZ3wsUybe0WRNW
-         AKthGJE7351b5TZbmGPqwee19MrPa8iKfHIBLWhst7uH5jN/qQHiJGNuXxNkrNeCWWxs
-         RFFrHAHW8DNOw5nX6kReyoNrDOM5bfd18Z4iQLGALw2AhxYclWc8y8LBtP8TrKhTMa9U
-         UTYNKB7HwDwtu9yarSrRjXcKpIg52LKHtg2Z8dPNOMZzPfoDs1jG9V6w8U5LXtEIJAAv
-         Lk2/PqBdwAMDmKF6pLIk6M7+wz3y/jP8/YUbTZ1hDIkSoiv5uY0X+ZvkP7a3/bHMCF1e
-         +PdA==
-X-Gm-Message-State: AOAM531vFJcGqhR3gUayb3Z27qpGIrvYIh27EIIBWWwSW7A6SmL8wzop
-        tiisCAY2Wk/vLgVMUv4yPzA=
-X-Google-Smtp-Source: ABdhPJzSvRKefzCend6nJFQAsS0uaCa1fK90wXmtgi8iW/HukxV3TCuQkr/LPawh1sUR5jy9AFko3g==
-X-Received: by 2002:a05:600c:4656:: with SMTP id n22mr27973928wmo.37.1626802043421;
-        Tue, 20 Jul 2021 10:27:23 -0700 (PDT)
-Received: from localhost ([137.220.125.106])
-        by smtp.gmail.com with ESMTPSA id y16sm3000360wmq.1.2021.07.20.10.27.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 10:27:21 -0700 (PDT)
-Message-ID: <3ca56654449b53814a22e3f06179292bc959ae72.camel@debian.org>
-Subject: Re: [PATCH v5 0/5] block: add a sequence number to disks
-From:   Luca Boccassi <bluca@debian.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier =?ISO-8859-1?Q?Gonz=E1lez?= <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-Date:   Tue, 20 Jul 2021 18:27:19 +0100
-In-Reply-To: <20210712230530.29323-1-mcroce@linux.microsoft.com>
-References: <20210712230530.29323-1-mcroce@linux.microsoft.com>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-l95ld3mPlgVO7/HvtvnM"
-User-Agent: Evolution 3.30.5-1.2 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MRDTut5sIr1YAD+wWycEAbZH48ThMpXHAJu6uzoLBOY=;
+        b=i9LMkvk5h0jqN5IRcDxs3oAkeD5Bg1L8sq3RqqjLix5c2Qf62Bcx2UpxezyObU9IRU
+         uFZ2cZAzC9IEZTkx1LfBrVsOZs3LFC2yjKkMI9jTQEH1aK0DECh8GiED7T9FF4Ahgo9+
+         vEBk5vPtKxNUcNpSw3SOf9LCK9l4gpefQLtuy9vcVB7yNWJ0mbhMdXkEPLu10f7cawpl
+         fovazBsuxrO31ccCJCzhlWwHgDb4l2t+M2mdzE7dW4aXvkIcKMicDL7grs7o98ARyqX4
+         vOMN8saSlCw9YWXib1KaDZP10nOeL3zVGRReilS+GbK7l0pZuN+zgY9AjCDgkjomecqL
+         BOTQ==
+X-Gm-Message-State: AOAM531WKS38VrXnXyNLf2o24QjPS5aegtkx80YgX8yNb3Tq7vOq1DtV
+        2bB+U5iQhfxm1LWY/d5tHAEl2M5/xIPPu4r0AeNeWA==
+X-Google-Smtp-Source: ABdhPJxlKIwqBIkfBNplXV0/yEFsoTHAXsk0pUCJPTFBTuS2Xn3d5CpWDTSC/Z+nE7YOEL6pEmdzvoHMKJHeWBBtrvA=
+X-Received: by 2002:a17:906:cec1:: with SMTP id si1mr34170651ejb.18.1626802080721;
+ Tue, 20 Jul 2021 10:28:00 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210719183557.768945788@linuxfoundation.org>
+In-Reply-To: <20210719183557.768945788@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 20 Jul 2021 22:57:49 +0530
+Message-ID: <CA+G9fYtJ=H7-pGMSjSDT-ZTFdCru9WAVAmtz6sYM2m61x=3Piw@mail.gmail.com>
+Subject: Re: [PATCH 5.12 000/289] 5.12.19-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 20 Jul 2021 at 00:06, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.12.19 release.
+> There are 289 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 21 Jul 2021 18:35:15 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.12.19-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.12.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
---=-l95ld3mPlgVO7/HvtvnM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2021-07-13 at 01:05 +0200, Matteo Croce wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
->=20
-> Associating uevents with block devices in userspace is difficult and racy=
-:
-> the uevent netlink socket is lossy, and on slow and overloaded systems ha=
-s
-> a very high latency. Block devices do not have exclusive owners in
-> userspace, any process can set one up (e.g. loop devices). Moreover, devi=
-ce
-> names can be reused (e.g. loop0 can be reused again and again). A userspa=
-ce
-> process setting up a block device and watching for its events cannot thus
-> reliably tell whether an event relates to the device it just set up or
-> another earlier instance with the same name.
->=20
-> Being able to set a UUID on a loop device would solve the race conditions=
-.
-> But it does not allow to derive orderings from uevents: if you see a ueve=
-nt
-> with a UUID that does not match the device you are waiting for, you canno=
-t
-> tell whether it's because the right uevent has not arrived yet, or it was
-> already sent and you missed it. So you cannot tell whether you should wai=
-t
-> for it or not.
->=20
-> Being able to set devices up in a namespace would solve the race conditio=
-ns
-> too, but it can work only if being namespaced is feasible in the first
-> place. Many userspace processes need to set devices up for the root
-> namespace, so this solution cannot always work.
->=20
-> Changing the loop devices naming implementation to always use
-> monotonically increasing device numbers, instead of reusing the lowest
-> free number, would also solve the problem, but it would be very disruptiv=
-e
-> to userspace and likely break many existing use cases. It would also be
-> quite awkward to use on long-running machines, as the loop device name
-> would quickly grow to many-digits length.
->=20
-> Furthermore, this problem does not affect only loop devices - partition
-> probing is asynchronous and very slow on busy systems. It is very easy to
-> enter races when using LO_FLAGS_PARTSCAN and watching for the partitions =
-to
-> show up, as it can take a long time for the uevents to be delivered after
-> setting them up.
->=20
-> Associating a unique, monotonically increasing sequential number to the
-> lifetime of each block device, which can be retrieved with an ioctl
-> immediately upon setting it up, allows to solve the race conditions with
-> uevents, and also allows userspace processes to know whether they should
-> wait for the uevent they need or if it was dropped and thus they should
-> move on.
->=20
-> This does not benefit only loop devices and block devices with multiple
-> partitions, but for example also removable media such as USB sticks or
-> cdroms/dvdroms/etc.
->=20
-> The first patch is the core one, the 2..4 expose the information in
-> different ways, and the last one makes the loop device generate a media
-> changed event upon attach, detach or reconfigure, so the sequence number
-> is increased.
->=20
-> If merged, this feature will immediately used by the userspace:
-> https://github.com/systemd/systemd/issues/17469#issuecomment-762919781
->=20
-> v4 -> v5:
-> - introduce a helper to raise media changed events
-> - use the new helper in loop instead of the full event code
-> - unexport inc_diskseq() which is only used by the block code now
-> - rebase on top of 5.14-rc1
->=20
-> v3 -> v4:
-> - rebased on top of 5.13
-> - hook the seqnum increase into the media change event
-> - make the loop device raise media change events
-> - merge 1/6 and 5/6
-> - move the uevent part of 1/6 into a separate one
-> - drop the now unneeded sysfs refactor
-> - change 'diskseq' to a global static variable
-> - add more comments
-> - refactor commit messages
->=20
-> v2 -> v3:
-> - rebased on top of 5.13-rc7
-> - resend because it appeared archived on patchwork
->=20
-> v1 -> v2:
-> - increase seqnum on media change
-> - increase on loop detach
->=20
-> Matteo Croce (6):
->   block: add disk sequence number
->   block: export the diskseq in uevents
->   block: add ioctl to read the disk sequence number
->   block: export diskseq in sysfs
->   block: add a helper to raise a media changed event
->   loop: raise media_change event
->=20
->  Documentation/ABI/testing/sysfs-block | 12 ++++++
->  block/disk-events.c                   | 62 +++++++++++++++++++++------
->  block/genhd.c                         | 43 +++++++++++++++++++
->  block/ioctl.c                         |  2 +
->  drivers/block/loop.c                  |  5 +++
->  include/linux/genhd.h                 |  3 ++
->  include/uapi/linux/fs.h               |  1 +
->  7 files changed, 114 insertions(+), 14 deletions(-)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-For the series:
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Tested-by: Luca Boccassi <bluca@debian.org>
+## Build
+* kernel: 5.12.19-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.12.y
+* git commit: aa783473cf1e00e4344531089962861c6bbbb818
+* git describe: v5.12.18-288-gaa783473cf1e
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
+.18-288-gaa783473cf1e
 
-I have implemented the basic systemd support for this (ioctl + uevent,
-sysfs will be done later), and tested with this series on x86_64 and
-Debian 11 userspace, everything seems to work great. Thanks Matteo!
+## No regressions (compared to v5.12.18-293-g825db1d6b9e2)
 
-Here's the implementation, in draft state until the kernel side is
-merged:
+## No fixes (compared to v5.12.18-293-g825db1d6b9e2)
 
-https://github.com/systemd/systemd/pull/20257
+## Test result summary
+ total: 81358, pass: 66831, fail: 1848, skip: 11427, xfail: 1252,
 
---=20
-Kind regards,
-Luca Boccassi
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
 
---=-l95ld3mPlgVO7/HvtvnM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEErCSqx93EIPGOymuRKGv37813JB4FAmD3B3cACgkQKGv37813
-JB5IIw//fwCAii36DiHJM7gFX5uokIF0r76YmrdkwIEVLWoKf2WoipYmVctA/NcF
-Q6lyI/jrGr+0QqdmJJWvyzZRLFUid63eITUEmKPTlk5g9FPXH+kmmPqS4ROMkrBO
-AzG+znOh4HuOGo/HTp3J8AKzFLE5xi0+99Rzu3KKeCMAeJ6DWjLHYek+9KkgzSCl
-kawr2hOlCcCUDbtcOVT792DUNLtrSx66SFbwe65PA7D7TipxXDieCyIVpFHZ/j3N
-OHEthOHzijQVUOFnyZ/6HEYmYzr/D+wPd0bJW9d0+c4kdqU3eTEMXbZazDMGZdit
-XP7PfPWirYFHXPxjzBhn7DsrgIxvOHLU/JDGZsCsgTqOCNpcypV8Q+B62hR6btzt
-TBwQK5QpEE05XVwj6E6szfyczo95t8U1mde3RGmXQ9ES1MAPtsx1GzrT969vXHaA
-YIt4VtUxLiv/tiNIhDt7IwnyHuv68upoRS0Ok5BJTRjZqxCekpOeEBHLghTxlNX+
-Lii0YJOTD6ns4e2WYerlYm/Ij5Bs+eRY3Pkx3U+akEdAuyfpR8HzaWcJnVMVyoVQ
-MF/Cmc2XAOO6sdgtfxh65op3y/y7o5A0AMnRFmWNtzlqyzsQLJpLceYrI6YAxmbK
-GAc0WGsulvjb4PXBiR0v7Z5npikfgF5amkVW97S77qTRebbnmQ4=
-=nAxS
------END PGP SIGNATURE-----
-
---=-l95ld3mPlgVO7/HvtvnM--
+--
+Linaro LKFT
+https://lkft.linaro.org
