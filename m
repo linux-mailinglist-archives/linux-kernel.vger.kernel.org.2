@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48A93CF188
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 03:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF673CF164
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 03:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238934AbhGTA7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 20:59:38 -0400
-Received: from mga17.intel.com ([192.55.52.151]:28428 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350483AbhGTAL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 20:11:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="191435160"
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="191435160"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 17:42:14 -0700
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="660970683"
-Received: from ywei11-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.138.31])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 17:42:14 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 11/11] x86/tdx: Handle CPUID via #VE
-Date:   Mon, 19 Jul 2021 17:40:57 -0700
-Message-Id: <20210720004057.2112666-12-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210720004057.2112666-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210720004057.2112666-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S237947AbhGTAw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 20:52:26 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:39834 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1379599AbhGTAP3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 20:15:29 -0400
+Received: by mail-il1-f199.google.com with SMTP id o8-20020a92c6880000b0290214927ba4d8so7153409ilg.6
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 17:55:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=DahNEueMdXzD/TbootP2xlB++bWqnxgrOSnxxyUIBoM=;
+        b=oXQNXPE9K6FgqEK0GeC+cAGis6IGJMcc+DBSeK8KO5L0Aoyd4/E02lbAa8+dd42EF8
+         0hLtlIY5zpKCC4t0xLhzPYR6sndodcQDZRgqLPoj/XghA7xF9oBq9wzJmqEUnfWyqIMn
+         YtCg5gI7l6EIpsJ1I7dm5C9VY7OQBN61mYU2bjteZGARwy+lsQZaba+IzsxIcjpaqolg
+         vCnFZp9/GV+zl1MQz6iQDDKeHZncSsfrnL6faHsMN/5+KrXM8PA/9CNPkGO/Go83sY1A
+         TDrLCgAz0g4CH8Ewp6jM6MIQYglXDxCRfc95BhR9oH9h2jle1RZqLmmxVzWoijapEToQ
+         Dwbg==
+X-Gm-Message-State: AOAM531bpsrQaOJJi433DIpYU8kP6kMCGdk3kran6zBen3OJRcBo0uA0
+        D4N8fH/SCSRf9fHtd6WiP94a75M4rGTavL+6zXNnNjL6h+H3
+X-Google-Smtp-Source: ABdhPJw8fCIkkMwZxm4OwCd1ZfS9Ki9oE9tDLDBGryXCgqz38G2jxHec4aYFzsHawrGtr+hDg+/ouAfcPwdLaUKxvgKL00u4+/oq
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a6b:fe03:: with SMTP id x3mr1460958ioh.120.1626742520659;
+ Mon, 19 Jul 2021 17:55:20 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 17:55:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000015c36505c78382e0@google.com>
+Subject: [syzbot] WARNING in pwq_unbound_release_workfn (2)
+From:   syzbot <syzbot+d04950c1e97f51d0068a@syzkaller.appspotmail.com>
+To:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
+        longman@redhat.com, mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Hello,
 
-TDX has three classes of CPUID leaves: some CPUID leaves
-are always handled by the CPU, others are handled by the TDX module,
-and some others are handled by the VMM. Since the VMM cannot directly
-intercept the instruction these are reflected with a #VE exception
-to the guest, which then converts it into a hypercall to the VMM,
-or handled directly.
+syzbot found the following issue on:
 
-The TDX module EAS has a full list of CPUID leaves which are handled
-natively or by the TDX module in 16.2. Only unknown CPUIDs are handled by
-the #VE method. In practice this typically only applies to the
-hypervisor specific CPUIDs unknown to the native CPU.
+HEAD commit:    2734d6c1b1a0 Linux 5.14-rc2
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1518d3bc300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f7dfeb6dfc05ea19
+dashboard link: https://syzkaller.appspot.com/bug?extid=d04950c1e97f51d0068a
 
-Therefore there is no risk of causing this in early CPUID code which
-runs before the #VE handler is set up because it will never access
-those exotic CPUID leaves.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d04950c1e97f51d0068a@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 32 at kernel/locking/lockdep.c:6305 lockdep_unregister_key+0x19a/0x250 kernel/locking/lockdep.c:6305
+Modules linked in:
+CPU: 3 PID: 32 Comm: kworker/3:0 Not tainted 5.14.0-rc2-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Workqueue: events pwq_unbound_release_workfn
+RIP: 0010:lockdep_unregister_key+0x19a/0x250 kernel/locking/lockdep.c:6305
+Code: 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8f 00 00 00 4d 89 7d 08 48 b8 22 01 00 00 00 00 ad de 48 89 43 08 eb 02 <0f> 0b 4c 89 f7 ba 01 00 00 00 48 89 ee e8 44 fd ff ff 4c 89 f7 e8
+RSP: 0018:ffffc900007bfcb0 EFLAGS: 00010046
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 1ffffffff1ad87cd
+RDX: 1ffffffff1fcad55 RSI: 0000000000000004 RDI: ffffffff8fe56aa8
+RBP: ffff88801416e928 R08: 0000000000000001 R09: 0000000000000003
+R10: fffff520000f7f8c R11: 0000000000086088 R12: 0000000000000246
+R13: dffffc0000000000 R14: ffffffff8fcd1868 R15: ffff888047033870
+FS:  0000000000000000(0000) GS:ffff88802cd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000014a53ad CR3: 00000000479f1000 CR4: 0000000000150ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ wq_unregister_lockdep kernel/workqueue.c:3468 [inline]
+ pwq_unbound_release_workfn+0x223/0x2d0 kernel/workqueue.c:3700
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+
 ---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Changes since v3:
- * None
-
- arch/x86/kernel/tdx.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index 50a8d363b581..7847771ba701 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -157,6 +157,21 @@ static int tdg_write_msr_safe(unsigned int msr, unsigned int low,
- 	return ret ? -EIO : 0;
- }
- 
-+static void tdg_handle_cpuid(struct pt_regs *regs)
-+{
-+	u64 ret;
-+	struct tdx_hypercall_output out = {0};
-+
-+	ret = _tdx_hypercall(EXIT_REASON_CPUID, regs->ax, regs->cx, 0, 0, &out);
-+
-+	WARN_ON(ret);
-+
-+	regs->ax = out.r12;
-+	regs->bx = out.r13;
-+	regs->cx = out.r14;
-+	regs->dx = out.r15;
-+}
-+
- unsigned long tdg_get_ve_info(struct ve_info *ve)
- {
- 	u64 ret;
-@@ -200,6 +215,9 @@ int tdg_handle_virtualization_exception(struct pt_regs *regs,
- 	case EXIT_REASON_MSR_WRITE:
- 		ret = tdg_write_msr_safe(regs->cx, regs->ax, regs->dx);
- 		break;
-+	case EXIT_REASON_CPUID:
-+		tdg_handle_cpuid(regs);
-+		break;
- 	default:
- 		pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
- 		return -EFAULT;
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
