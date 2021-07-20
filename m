@@ -2,134 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8108F3CFDAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CD13CFDBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241831AbhGTOy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 10:54:26 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:33570 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241138AbhGTOk2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:40:28 -0400
-Received: by mail-io1-f72.google.com with SMTP id i9-20020a0566021349b02904df6556dad4so15631960iov.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:21:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=wHPu2v3g0CljzOh50ecL5zxxf0iqTJp1J2cw3INOhJ4=;
-        b=plMszMk634qmEVbyV2wbzIIqMKCOWsLyyopcfkg7XXiH4NMTpbcUpx11atlEwzfd2P
-         /kmX89QaqbaU5Kt54/H79BTaIIDE3qK2M93qwrbV9odxgooItFafhZjaKwmvMxnYuGaU
-         /ocBnEaxVowSedvTNfBDWAIyqVkaMxAqWbaThERS9rG4/uMFkztCvN2c10jdoAle7cdn
-         b8Ns1nMSuahfjuWhvKpROEwv7fYyGAGlAAgmuDJR5p9DfZlBTPwVpVO0Hu3CcBmBfZ3P
-         wfPYYgO5D1Q1xdBcRz/S2NVKDjLHWusb4kQudBEv2WIARUD3hBfgKdwOBAz0HbKoq6Cq
-         TaFg==
-X-Gm-Message-State: AOAM531njOewHSLg0F+M6ybs8WAtmRFGjfgS9J3Qrtdc+vGPleyMtf/r
-        9AWH6G+12aAmrps7qSM0NO3UQtr8hIMG2YqSdoQOEtts/z8w
-X-Google-Smtp-Source: ABdhPJxNN5WzS3+MS/DmBMOGx4BXlYJjcrxkNPDyxEBAZ4SrLe6u0BnnfwNSpq3H6hywNEbfBE47dCP+UUETIzeCCNZGta4vCKQk
-MIME-Version: 1.0
-X-Received: by 2002:a5d:938a:: with SMTP id c10mr7334142iol.0.1626794466197;
- Tue, 20 Jul 2021 08:21:06 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 08:21:06 -0700
-In-Reply-To: <20210720141039.3d4ddcfe@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000047c76a05c78f9ab1@google.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in do_wait_for_common
-From:   syzbot <syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com>
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, hridayhegde1999@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        paskripkin@gmail.com, rkovhaev@gmail.com, straube.linux@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S242069AbhGTO7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:59:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:33272 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241596AbhGTOvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 10:51:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A83D1042;
+        Tue, 20 Jul 2021 08:22:37 -0700 (PDT)
+Received: from localhost.localdomain (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4BF753F694;
+        Tue, 20 Jul 2021 08:22:35 -0700 (PDT)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>,
+        Ali Saidi <alisaidi@amazon.com>,
+        Jon Nettleton <jon@solid-run.com>
+Subject: [PATCH v2] hwrng: Add Arm SMCCC TRNG based driver
+Date:   Tue, 20 Jul 2021 16:21:58 +0100
+Message-Id: <20210720152158.31804-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.14.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The "Arm True Random Number Generator Firmware Interface"[1] provides
+an SMCCC based interface to a true hardware random number generator.
+So far we are using that in arch_get_random_seed(), but it might be
+useful to expose the entropy through the /dev/hwrng device as well. This
+allows to assess the quality of the implementation, by using "rngtest"
+from the rng-tools package, for example.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-possible deadlock in flush_workqueue
+Add a simple platform driver implementing the hw_random interface.
+We unconditionally instantiate the platform device in the driver file,
+then probe for the existence of the SMCCC TRNG implementation in the
+driver's probe routine.
+Since the firmware takes care about serialisation, this can happily
+coexist with the arch_get_random_seed() bits.
 
-usb 6-1: r8712u: Loading firmware from "rtlwifi/rtl8712u.bin"
-usb 6-1: Direct firmware load for rtlwifi/rtl8712u.bin failed with error -2
-usb 6-1: Falling back to sysfs fallback for: rtlwifi/rtl8712u.bin
-usb 6-1: r8712u: Firmware request failed
-============================================
-WARNING: possible recursive locking detected
-5.14.0-rc2-syzkaller #0 Not tainted
---------------------------------------------
-kworker/0:3/3159 is trying to acquire lock:
-ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: flush_workqueue+0x15c/0x1750 kernel/workqueue.c:2787
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 
-but task is already holding lock:
-ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x7aa/0x10c0 kernel/workqueue.c:2249
+[1] https://developer.arm.com/documentation/den0098/latest/
+---
+Changelog v1 ... v2:
+- fix building as a module
+- de-register device upon exit
+- mention module name in Kconfig
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+ drivers/char/hw_random/Kconfig          |  14 ++
+ drivers/char/hw_random/Makefile         |   1 +
+ drivers/char/hw_random/arm_smccc_trng.c | 171 ++++++++++++++++++++++++
+ 3 files changed, 186 insertions(+)
+ create mode 100644 drivers/char/hw_random/arm_smccc_trng.c
 
-       CPU0
-       ----
-  lock((wq_completion)events);
-  lock((wq_completion)events);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-5 locks held by kworker/0:3/3159:
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x7aa/0x10c0 kernel/workqueue.c:2249
- #1: ffffc900021d7d20 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x7e8/0x10c0 kernel/workqueue.c:2251
- #2: ffff8881467d4220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
- #2: ffff8881467d4220 (&dev->mutex){....}-{3:3}, at: rtl871x_load_fw_fail drivers/staging/rtl8712/hal_init.c:43 [inline]
- #2: ffff8881467d4220 (&dev->mutex){....}-{3:3}, at: rtl871x_load_fw_cb+0x102/0x130 drivers/staging/rtl8712/hal_init.c:56
- #3: ffff8880363da220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
- #3: ffff8880363da220 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:1028 [inline]
- #3: ffff8880363da220 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal+0xc1/0x7b0 drivers/base/dd.c:1229
- #4: ffff8880308211a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
- #4: ffff8880308211a8 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:1028 [inline]
- #4: ffff8880308211a8 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal+0xc1/0x7b0 drivers/base/dd.c:1229
-
-stack backtrace:
-CPU: 0 PID: 3159 Comm: kworker/0:3 Not tainted 5.14.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events request_firmware_work_func
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:105
- __lock_acquire+0x2615/0x6100 kernel/locking/lockdep.c:4853
- lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
- flush_workqueue+0x178/0x1750 kernel/workqueue.c:2787
- flush_scheduled_work include/linux/workqueue.h:597 [inline]
- r871xu_dev_remove+0x159/0x420 drivers/staging/rtl8712/usb_intf.c:604
- usb_unbind_interface+0x1f2/0x860 drivers/usb/core/driver.c:458
- __device_release_driver drivers/base/dd.c:1201 [inline]
- device_release_driver_internal+0x51e/0x7b0 drivers/base/dd.c:1232
- bus_remove_device+0x2fd/0x410 drivers/base/bus.c:529
- device_del+0x6e1/0xc10 drivers/base/core.c:3540
- usb_disable_device+0x407/0x800 drivers/usb/core/message.c:1419
- usb_set_configuration+0x42b/0x2100 drivers/usb/core/message.c:2027
- usb_unbind_device+0x6b/0x170 drivers/usb/core/driver.c:309
- __device_release_driver drivers/base/dd.c:1201 [inline]
- device_release_driver_internal+0x51e/0x7b0 drivers/base/dd.c:1232
- rtl871x_load_fw_fail drivers/staging/rtl8712/hal_init.c:45 [inline]
- rtl871x_load_fw_cb+0x10a/0x130 drivers/staging/rtl8712/hal_init.c:56
- request_firmware_work_func+0x175/0x250 drivers/base/firmware_loader/main.c:1081
- process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
- worker_thread+0xac1/0x1320 kernel/workqueue.c:2422
- kthread+0x453/0x480 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-
-Tested on:
-
-commit:         8cae8cd8 seq_file: disallow extremely large seq buffer..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=149905f2300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=300aea483211c875
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc699626e48a6ebaf295
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15737b4a300000
+diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+index 3f166c8a4099..239eca4d6805 100644
+--- a/drivers/char/hw_random/Kconfig
++++ b/drivers/char/hw_random/Kconfig
+@@ -524,6 +524,20 @@ config HW_RANDOM_XIPHERA
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called xiphera-trng.
+ 
++config HW_RANDOM_ARM_SMCCC_TRNG
++	tristate "Arm SMCCC TRNG firmware interface support"
++	depends on HAVE_ARM_SMCCC_DISCOVERY
++	default HW_RANDOM
++	help
++	  Say 'Y' to enable the True Random Number Generator driver using
++	  the Arm SMCCC TRNG firmware interface. This reads entropy from
++	  higher exception levels (firmware, hypervisor). Uses SMCCC for
++	  communicating with the firmware:
++	  https://developer.arm.com/documentation/den0098/latest/
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called arm_smccc_trng.
++
+ endif # HW_RANDOM
+ 
+ config UML_RANDOM
+diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
+index 8933fada74f2..a5a1c765a394 100644
+--- a/drivers/char/hw_random/Makefile
++++ b/drivers/char/hw_random/Makefile
+@@ -45,3 +45,4 @@ obj-$(CONFIG_HW_RANDOM_OPTEE) += optee-rng.o
+ obj-$(CONFIG_HW_RANDOM_NPCM) += npcm-rng.o
+ obj-$(CONFIG_HW_RANDOM_CCTRNG) += cctrng.o
+ obj-$(CONFIG_HW_RANDOM_XIPHERA) += xiphera-trng.o
++obj-$(CONFIG_HW_RANDOM_ARM_SMCCC_TRNG) += arm_smccc_trng.o
+diff --git a/drivers/char/hw_random/arm_smccc_trng.c b/drivers/char/hw_random/arm_smccc_trng.c
+new file mode 100644
+index 000000000000..3bd510a98882
+--- /dev/null
++++ b/drivers/char/hw_random/arm_smccc_trng.c
+@@ -0,0 +1,171 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Randomness driver for the ARM SMCCC TRNG Firmware Interface
++ * https://developer.arm.com/documentation/den0098/latest/
++ *
++ *  Copyright (C) 2020 Arm Ltd.
++ *
++ * The ARM TRNG firmware interface specifies a protocol to read entropy
++ * from a higher exception level, to abstract from any machine specific
++ * implemenations and allow easier use in hypervisors.
++ *
++ * The firmware interface is realised using the SMCCC specification.
++ */
++
++#include <linux/bits.h>
++#include <linux/device.h>
++#include <linux/hw_random.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/arm-smccc.h>
++
++#ifdef CONFIG_ARM64
++#define ARM_SMCCC_TRNG_RND	ARM_SMCCC_TRNG_RND64
++#define MAX_BITS_PER_CALL	(3 * 64UL)
++#else
++#define ARM_SMCCC_TRNG_RND	ARM_SMCCC_TRNG_RND32
++#define MAX_BITS_PER_CALL	(3 * 32UL)
++#endif
++
++/* We don't want to allow the firmware to stall us forever. */
++#define SMCCC_TRNG_MAX_TRIES	20
++
++#define SMCCC_RET_TRNG_INVALID_PARAMETER	-2
++#define SMCCC_RET_TRNG_NO_ENTROPY		-3
++
++static struct platform_device *smccc_trng_pdev;
++
++static int smccc_trng_init(struct hwrng *rng)
++{
++	return 0;
++}
++
++static int copy_from_registers(char *buf, struct arm_smccc_res *res,
++			       size_t bytes)
++{
++	unsigned int chunk, copied;
++
++	if (bytes == 0)
++		return 0;
++
++	chunk = min(bytes, sizeof(long));
++	memcpy(buf, &res->a3, chunk);
++	copied = chunk;
++	if (copied >= bytes)
++		return copied;
++
++	chunk = min((bytes - copied), sizeof(long));
++	memcpy(&buf[copied], &res->a2, chunk);
++	copied += chunk;
++	if (copied >= bytes)
++		return copied;
++
++	chunk = min((bytes - copied), sizeof(long));
++	memcpy(&buf[copied], &res->a1, chunk);
++
++	return copied + chunk;
++}
++
++static int smccc_trng_read(struct hwrng *rng, void *data, size_t max, bool wait)
++{
++	struct arm_smccc_res res;
++	u8 *buf = data;
++	unsigned int copied = 0;
++	int tries = 0;
++
++	while (copied < max) {
++		size_t bits = min_t(size_t, (max - copied) * BITS_PER_BYTE,
++				  MAX_BITS_PER_CALL);
++
++		arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_RND, bits, &res);
++		if ((int)res.a0 < 0)
++			return (int)res.a0;
++
++		switch ((int)res.a0) {
++		case SMCCC_RET_SUCCESS:
++			copied += copy_from_registers(buf + copied, &res,
++						      bits / BITS_PER_BYTE);
++			tries = 0;
++			break;
++		case SMCCC_RET_TRNG_NO_ENTROPY:
++			if (!wait)
++				return copied;
++			tries++;
++			if (tries >= SMCCC_TRNG_MAX_TRIES)
++				return copied;
++			cond_resched();
++			break;
++		}
++	}
++
++	return copied;
++}
++
++static int smccc_trng_probe(struct platform_device *pdev)
++{
++	struct arm_smccc_res res;
++	struct hwrng *trng;
++	u32 version;
++	int ret;
++
++	/* We need ARM SMCCC v1.1, with its autodetection feature. */
++	if (arm_smccc_get_version() < ARM_SMCCC_VERSION_1_1)
++		return -ENODEV;
++
++	arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_VERSION, &res);
++	if ((int)res.a0 < 0)
++		return -ENODEV;
++	version = res.a0;
++
++	arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_FEATURES,
++			     ARM_SMCCC_TRNG_RND, &res);
++	if ((int)res.a0 < 0)
++		return -ENODEV;
++
++	trng = devm_kzalloc(&pdev->dev, sizeof(*trng), GFP_KERNEL);
++	if (!trng)
++		return -ENOMEM;
++
++	trng->name = "smccc_trng";
++	trng->init = smccc_trng_init;
++	trng->read = smccc_trng_read;
++
++	platform_set_drvdata(pdev, trng);
++	ret = devm_hwrng_register(&pdev->dev, trng);
++	if (ret)
++		return -ENOENT;
++
++	dev_info(&pdev->dev,
++		 "ARM SMCCC TRNG firmware random number generator v%d.%d\n",
++		 version >> 16, version & 0xffff);
++
++	return 0;
++}
++
++static struct platform_driver smccc_trng_driver = {
++	.driver = {
++		.name		= "smccc_trng",
++	},
++	.probe		= smccc_trng_probe,
++};
++
++static int __init smccc_trng_driver_init(void)
++{
++	smccc_trng_pdev = platform_device_register_simple("smccc_trng",
++							  -1, NULL, 0);
++	if (IS_ERR(smccc_trng_pdev))
++		return PTR_ERR(smccc_trng_pdev);
++
++	return platform_driver_register(&smccc_trng_driver);
++}
++module_init(smccc_trng_driver_init);
++
++static void __exit smccc_trng_driver_exit(void)
++{
++	platform_driver_unregister(&smccc_trng_driver);
++	platform_device_unregister(smccc_trng_pdev);
++}
++module_exit(smccc_trng_driver_exit);
++
++MODULE_AUTHOR("Andre Przywara");
++MODULE_LICENSE("GPL");
+-- 
+2.17.6
 
