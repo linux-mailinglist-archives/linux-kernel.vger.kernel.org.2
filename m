@@ -2,129 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EF23CFA42
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7653CFA47
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235863AbhGTMdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:33:00 -0400
-Received: from mail-io1-f54.google.com ([209.85.166.54]:37477 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234942AbhGTMb3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:31:29 -0400
-Received: by mail-io1-f54.google.com with SMTP id r18so12756553iot.4;
-        Tue, 20 Jul 2021 06:12:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=3uaiIA266oYzcSw5ViiNhUOcSHy5KGVbduxtAyiJ2M4=;
-        b=l1tWZ6ch5T16FJKcP2NGOCubyZTcfKqqfdJDGVnBsyotEw90fIynBrJ9xn5fzxbOpA
-         yWRWtmpL5SwD6k2CdiD6m9mttkJ8kQUDa0cgKIKA1Gky3gRGFR2V0/lAt1RNotzPAFfn
-         /LI7C2OAxH3BRipPJ8lh1j0tfHGx3B1Gy8T6ssQs4A1JtsDz5EWClX59sUxhpJSOCDzZ
-         p98rRykAT+4Neqe+Ig8YFUAAvNWkStsHXO6cMFMY0d4C+cDch1pO6/FPeC4eBUiPSrby
-         l15leE+jz0rr4MTou9E9+OH4IOm5JXCvPX+s7yjCGu+1TsCJbprExfg6dCsTzW0oB17K
-         rVcA==
-X-Gm-Message-State: AOAM532k4YaPYlcaJhwmwt4cb0oZHrMc7gLn95Dao1B8BfA8P5ph7JYd
-        OHfOTYad8jbUIuBLuleUQQ==
-X-Google-Smtp-Source: ABdhPJx3i7k89YrlM+ySkipECLjV8CBmT6J7j7w9kGYMYmrse6KfxDaHEo/SSOE0vZW49na1EM3A6A==
-X-Received: by 2002:a02:2382:: with SMTP id u124mr26150014jau.138.1626786720858;
-        Tue, 20 Jul 2021 06:12:00 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id h6sm11993036iop.40.2021.07.20.06.11.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 06:12:00 -0700 (PDT)
-Received: (nullmailer pid 4121601 invoked by uid 1000);
-        Tue, 20 Jul 2021 13:11:58 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        devicetree@vger.kernel.org, michal.simek@xilinx.com,
-        linux-pwm@vger.kernel.org
-In-Reply-To: <20210719221322.3723009-1-sean.anderson@seco.com>
-References: <20210719221322.3723009-1-sean.anderson@seco.com>
-Subject: Re: [PATCH v5 1/3] dt-bindings: pwm: Add Xilinx AXI Timer
-Date:   Tue, 20 Jul 2021 07:11:58 -0600
-Message-Id: <1626786718.716987.4121600.nullmailer@robh.at.kernel.org>
+        id S238486AbhGTMdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:33:24 -0400
+Received: from pop31.abv.bg ([194.153.145.221]:56286 "EHLO pop31.abv.bg"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235536AbhGTMb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 08:31:58 -0400
+Received: from smtp.abv.bg (localhost [127.0.0.1])
+        by pop31.abv.bg (Postfix) with ESMTP id 83F2B1805D3C;
+        Tue, 20 Jul 2021 16:12:20 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abv.bg; s=smtp-out;
+        t=1626786740; bh=OT9jddZ9IbYhmTj9W47jx8pGykD1QbU01xlL+GH6IY8=;
+        h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
+        b=Zl8rqIHN8lVTpewuQsOlMos1iBHzyWpCq+LDlUaMP1bh+T9kkBOYDVDfYnKMatArm
+         VD4vp0IRZgaVXqLFTq3RvyRRZdy+xwccwd5U+Rrp1D11uZE+tB+MXJ+zV85puHAMLg
+         d74L/C+wKOWqazhzGCS8ejDQ3Lyznt8OFTDQtjlw=
+X-HELO: smtpclient.apple
+Authentication-Results: smtp.abv.bg; auth=pass (plain) smtp.auth=gvalkov@abv.bg
+Received: from 212-39-89-148.ip.btc-net.bg (HELO smtpclient.apple) (212.39.89.148)
+ by smtp.abv.bg (qpsmtpd/0.96) with ESMTPSA (ECDHE-RSA-AES256-GCM-SHA384 encrypted); Tue, 20 Jul 2021 16:12:20 +0300
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: ipheth: fix EOVERFLOW in ipheth_rcvbulk_callback
+From:   Georgi Valkov <gvalkov@abv.bg>
+In-Reply-To: <YPbHoScEo8ZJyox6@kroah.com>
+Date:   Tue, 20 Jul 2021 16:12:06 +0300
+Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        mhabets@solarflare.com, luc.vanoostenryck@gmail.com,
+        snelson@pensando.io, mst@redhat.com, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corsac@corsac.net, matti.vuorela@bitfactor.fi,
+        stable@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <AEC79E3B-FA7F-4A36-95CE-B6D0F3063DF8@abv.bg>
+References: <B60B8A4B-92A0-49B3-805D-809A2433B46C@abv.bg>
+ <20210720122215.54abaf53@cakuba>
+ <5D0CFF83-439B-4A10-A276-D2D17B037704@abv.bg> <YPa4ZelG2k8Z826E@kroah.com>
+ <C6AA954F-8382-461D-835F-E5CA03363D84@abv.bg> <YPbHoScEo8ZJyox6@kroah.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 18:13:20 -0400, Sean Anderson wrote:
-> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is a
-> "soft" block, so it has some parameters which would not be configurable in
-> most hardware. This binding is usually automatically generated by Xilinx's
-> tools, so the names and values of some properties should be kept as they
-> are, if possible. In addition, this binding is already in the kernel at
-> arch/microblaze/boot/dts/system.dts, and in user software such as QEMU.
-> 
-> The existing driver uses the clock-frequency property, or alternatively the
-> /cpus/timebase-frequency property as its frequency input. Because these
-> properties are deprecated, they have not been included with this schema.
-> All new bindings should use the clocks/clock-names properties to specify
-> the parent clock.
-> 
-> Because we need to init timer devices so early in boot, we determine if we
-> should use the PWM driver or the clocksource/clockevent driver by the
-> presence/absence, respectively, of #pwm-cells. Because both counters are
-> used by the PWM, there is no need for a separate property specifying which
-> counters are to be used for the PWM.
-> 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-> ---
-> 
-> Changes in v5:
-> - Update commit message to reflect revisions
-> - Fix indentation lint
-> - Add example for timer binding
-> - Remove xlnx,axi-timer-2.0 compatible string
-> - Move schema into the timer directory
-> 
-> Changes in v4:
-> - Remove references to generate polarity so this can get merged
-> - Predicate PWM driver on the presence of #pwm-cells
-> - Make some properties optional for clocksource drivers
-> 
-> Changes in v3:
-> - Mark all boolean-as-int properties as deprecated
-> - Add xlnx,pwm and xlnx,gen?-active-low properties.
-> - Make newer replacement properties mutually-exclusive with what they
->   replace
-> - Add an example with non-deprecated properties only.
-> 
-> Changes in v2:
-> - Use 32-bit addresses for example binding
-> 
->  .../bindings/timer/xlnx,xps-timer.yaml        | 91 +++++++++++++++++++
->  1 file changed, 91 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
-> 
+Thank you, Greg!
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+git send-email =
+drivers/net/0001-ipheth-fix-EOVERFLOW-in-ipheth_rcvbulk_callback.patch
+...
+Result: OK
 
-yamllint warnings/errors:
+I hope I got right. I added most of the e-mail addresses, and also tried =
+adding Message-Id.
+I have not received the e-mail yet, so I cannot confirm if it worked or =
+not.
 
-dtschema/dtc warnings/errors:
-./Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/timer/xlnx,xps-timer.yaml#
-\ndoc reference errors (make refcheckdocs):
+Georgi Valkov
 
-See https://patchwork.ozlabs.org/patch/1507329
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+> On 2021-07-20, at 3:54 PM, Greg KH <gregkh@linuxfoundation.org> wrote:
+>=20
+> On Tue, Jul 20, 2021 at 03:46:11PM +0300, Georgi Valkov wrote:
+>> Yes, I read it, and before my previous e-mail that I also read the =
+link from Jakub,
+>> which essentially provides the same information.
+>>=20
+>> There is only one patch =
+0001-ipheth-fix-EOVERFLOW-in-ipheth_rcvbulk_callback.patch
+>=20
+> Great, send that using 'git send-email' and all is good.
+>=20
+>> The command I used from the example also generated a =
+0000-cover-letter, so
+>> I included it as well.
+>=20
+> Why do you need a cover letter for 1 patch?
+>=20
+> thanks,
+>=20
+> greg k-h
+>=20
 
