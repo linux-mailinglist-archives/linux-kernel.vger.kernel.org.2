@@ -2,98 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901873D0326
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 22:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16553D032A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 22:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234156AbhGTUBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 16:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235104AbhGTThj (ORCPT
+        id S235197AbhGTUCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 16:02:34 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55974 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236896AbhGTTpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 15:37:39 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079F6C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:18:15 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id y42so37667630lfa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:18:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A9yhnAOKnkpaIpXwQ4S44wQp2Z5wbSnHNxsdlMsfhZg=;
-        b=AkPrJswLeZIna9xYH5/IZ7Y2Iixa+rSYTNzJ/f5zTdwVI5FoEcHarhzMeDCDwwAJOW
-         cuFEzaqi6+MLh3aA8xCnACXzvsvlp3dU9g7J7rkKGBk4ksNd/76c/JRmSBSQLN7KHraZ
-         aRoyqHGje3w6i2EySEFAhaMdNo8zJPYjziyj7wTIWFSNgsiCN6oihCzLg6Azc0t3hAJN
-         bvnOIDX+koQ3nH4EQBRYv/uZfoVyF55xpz7J46jejt5xzdYF3i3c41lePR9gPDYyzfKz
-         afnkxLZBeA0bifxPzLD0QpyTpfyQEleZdUrcAXl3xT7YjkJId6anWJs67J+SOmYMCRbA
-         HlTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A9yhnAOKnkpaIpXwQ4S44wQp2Z5wbSnHNxsdlMsfhZg=;
-        b=Wd8GqWH3rocTEgwSdNqZY+a2oUBTkD3jev12kX4PvdXV2qmVsWL9HLfGNj1NJsn/Yy
-         BgOU/qPitRuJnFDYX5ZkxS39LIlwLfB2eqXZcVRpRKBBuOWBROTnxViLfBjQSWmtkEFn
-         qasKcmz+hFXTzOClQvxeXgZ1dbfXOU1pbidHUh3wnZqp61e109p8YpCyFZyYN7VjP/zl
-         JeKs6zf6XCOluS653jn6XJATBjshFNrtOeF+RK4BqlGOUdi7pto03MlH41j7qTCXLDiA
-         g0Hx97TaZWOCezKWltCnbjart/XG9Zq8DjD3ErznCaaPvquDslY8VQnXH4uaclKdZuZo
-         3a4w==
-X-Gm-Message-State: AOAM532Y6jbQIM2J9skCf0dBpopY6kpSRBDpUQ2dx6VVFKVrRIyoecEP
-        9Ek5TIWGlGRMMLwek3Id/1k9p0N2Ew6UyCHBNE69doL91ZI=
-X-Google-Smtp-Source: ABdhPJySetWCDgaJU6+K2rRIahVT3YVfnnSgHpEEMLcXaFJUGdU2bQU2g+SNnqYrUYICdy5652MEKxCSG6bUd/MJ2i4=
-X-Received: by 2002:ac2:59db:: with SMTP id x27mr23163928lfn.547.1626812292943;
- Tue, 20 Jul 2021 13:18:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210708232522.3118208-1-ndesaulniers@google.com>
- <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
- <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com> <CAK8P3a3=JBQow-Ws6tt81k93aw+OCV5C2CtSWxASkv=iQZPGUw@mail.gmail.com>
-In-Reply-To: <CAK8P3a3=JBQow-Ws6tt81k93aw+OCV5C2CtSWxASkv=iQZPGUw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 20 Jul 2021 13:18:02 -0700
-Message-ID: <CAKwvOdm6yK3jK45AV2FULQAw614nfJi17RVAESH+wV11i+pMLw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
- LLVM=1 LLVM_IAS=1
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 20 Jul 2021 15:45:16 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16KK4bK2023434;
+        Tue, 20 Jul 2021 16:24:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=6d0AvtuBA/mdM+Xm+jajpNkrlEgOYj7D9PlUbi2xZB4=;
+ b=V4zOHp+W0kVwdjd25UFD8InNd5+irwbyCnzI9y3RmjFPUQ12T41Kpwozn5isTwnh7pQq
+ +ra/ibOqCusdT8/wYLkkUMjdk1cAOuBfLcuD6F+q7iS/Mwpr9alu4WiMU7QmFVH5Cjpx
+ V8Vc9lCAQ/gkzrB3regmEONyJjMZVbeAMpyAK7jBq1hCbWWEpdjesgO9C2KqZRHx2uik
+ oacNlYSIedCv5ldJqIqOIE3C72zhbuCy/hfm4/Zn0nEowT+iKHg6d4XPWcW/duPwUQcz
+ 3Bbt1pHc/Cvo4bJIBsnxHu0udqNeYNW/tdB3o3X7JvAD2JjrquSAoKWJ3Yc6994l+mRT 0Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39wy71wjmh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 16:24:59 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16KK6Adj032512;
+        Tue, 20 Jul 2021 16:24:58 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39wy71wjkw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 16:24:58 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16KKCqSp012806;
+        Tue, 20 Jul 2021 20:24:56 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 39vng714qm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 20:24:55 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16KKOrF527066780
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Jul 2021 20:24:53 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F24BA42047;
+        Tue, 20 Jul 2021 20:24:52 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A1E5D42042;
+        Tue, 20 Jul 2021 20:24:47 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.68.252])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Jul 2021 20:24:47 +0000 (GMT)
+Message-ID: <40e167cca7b59fc4e11f45ba807486e11eade419.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 6/6] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Richard Weinberger <richard.weinberger@gmail.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        horia geanta <horia.geanta@nxp.com>,
+        aymen sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>, Udit Agarwal <udit.agarwal@nxp.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        david <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+Date:   Tue, 20 Jul 2021 16:24:46 -0400
+In-Reply-To: <CAFLxGvxr94apP2jaT0tB6JRDtv_ivrguXK2Ykd3zer_4xtJ+2w@mail.gmail.com>
+References: <cover.1dfbb73645d917b3c76d01290804a3410bd9932e.1624364386.git-series.a.fatoum@pengutronix.de>
+         <39e6d65ca5d2a0a35fb71d6c1f85add8ee489a19.1624364386.git-series.a.fatoum@pengutronix.de>
+         <1850833581.13438.1625172175436.JavaMail.zimbra@nod.at>
+         <2f608e5a-5a12-6db1-b9bd-a2cd9e3e3671@pengutronix.de>
+         <783613027.15909.1625223222889.JavaMail.zimbra@nod.at>
+         <ac8ef66f-4d57-ead0-d1b3-e97220463241@pengutronix.de>
+         <CAFLxGvxr94apP2jaT0tB6JRDtv_ivrguXK2Ykd3zer_4xtJ+2w@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: IEFJRJOHfvwOngpKt1XIsPonFtReajLI
+X-Proofpoint-ORIG-GUID: wkYED_fW-_xDkCD6flgnu-e43ZxxTkI5
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-20_13:2021-07-19,2021-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1011 suspectscore=0 mlxlogscore=999
+ spamscore=0 mlxscore=0 malwarescore=0 adultscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2107200128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 12:58 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Tue, Jul 20, 2021 at 7:43 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> > On Tue, Jul 20, 2021 at 1:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > We do most of the other heavy lifting in this area in Kconfig anyway,
-> > why not add that compiler choice?
-> >
-> > Obviously it would be gated by the tests to see which compilers are
-> > _installed_ (and that they are valid versions), so that it doesn't ask
-> > stupid things ("do you want gcc or clang" when only one of them is
-> > installed and/or viable).
->
-> I don't see a good way of making Kconfig options both select the
-> compiler and defining variables based on the compiler, since that
-> would mean teaching Kconfig about re-evaluating all compiler
-> dependent settings whenever the first option changes.
+HI -
 
-Right, there are many Kconfigs that are predicated on knowing whether
-the user is building with gcc vs clang.  We probably could note the
-users preference in Kconfig, but we would need to guarantee that we
-evaluate that ASAP and before most other Kconfigs were checked.
--- 
-Thanks,
-~Nick Desaulniers
+On Tue, 2021-07-20 at 21:19 +0200, Richard Weinberger wrote:
+> On Fri, Jul 2, 2021 at 2:37 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+> > > Both is possible. If the string starts with "0x" it needs to be decoded to a
+> > > 128 bit key. Otherwise it has to be a up to 16 byte string.
+> >
+> > Fine by me. Looking forward to your patches. :-)
+> 
+> I'm not sure how to proceed.  Should I base my changes on this series
+> or do you plan to send an updated
+> version soon?
+> Maybe it makes also sense to base my DCP patch set on yours.
+> 
+> Trusted Keys maintainers, what do you prefer?
+
+Jarkko sent an email saying he is on vacation for 2 weeks.   James was
+on vacation as well.   If there is something that needs immediate
+attention, please let me know.
+
+thanks,
+
+Mimi
+
