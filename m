@@ -2,166 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027953CFA01
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879C03CFA05
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237255AbhGTMVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234417AbhGTMUz (ORCPT
+        id S237683AbhGTMVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:21:49 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63290 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230427AbhGTMVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:20:55 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306D3C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:01:32 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id b14-20020a1c1b0e0000b02901fc3a62af78so1446308wmb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:01:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aT7B7aLtrHA38WRCCkcWibI+OBLuTfXFqvYRJ204kL8=;
-        b=WQOOu9EUP4QZrBDWS9EctGVO+GmPjrxym15Qbs5R69qSSEdvCHmpIY1/pk31fA69bp
-         3bhC+HD4e8CKzboAfJ+pob2QA2TRhC1Np5OjjzICbqkxEwpGsaSp5RJW4pQU+z0OC23I
-         0sG4uqigJR5y1K6AdXcTXz1r+jHYxj5pVPrh8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=aT7B7aLtrHA38WRCCkcWibI+OBLuTfXFqvYRJ204kL8=;
-        b=f+o71pg2p4IyTXO+2DUggZIJBHmKUFooH5Pu/A3gaXCzopj3gAcEGbIYFxbK8u/GjI
-         yWXx+tAoOmMOvG06L3tHEYy4BdRuL2BI5n8GGcn07ksFzzj3zwtvKd93fo0LhSMTf3LK
-         q+7nHw/GA79gVGLBCGScm4JpdRGZgCCm7yO2jIlzUBsaqrGtvEOmEOhrPqrMW11Xe16j
-         Afd+X039erpiVSaU6p3g4iAc37wwFHLsP8vCm6KcGsCIoqieMfKoO6uiyxTMDL/9R3lh
-         7722r/F/RHkfKPWza23/TNb+KOjqxaqJbietfqtuDP/UsjzzM8z1b15gQYBSPiJKRy1n
-         9mAQ==
-X-Gm-Message-State: AOAM532Vb/lCeeraS9x4YYUX7w05428WLAdBteHT8cAFo86Ub6HPaiNl
-        t6kWr+M/xWx2BRAv75lVRF9Y3A==
-X-Google-Smtp-Source: ABdhPJwyy66JJKeYq0Mz7cYqrI/HK2CM9a/YOzkD7Z06g/Y6R4UrwQlWLQ5wT2w19Z/rHR9fxuhTcg==
-X-Received: by 2002:a05:600c:2948:: with SMTP id n8mr32984505wmd.11.1626786090699;
-        Tue, 20 Jul 2021 06:01:30 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id g18sm19422048wmk.37.2021.07.20.06.01.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 06:01:30 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 15:01:27 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Atish Patra <atish.patra@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Will Deacon <will@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Borislav Petkov <bp@suse.de>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH v3 0/2] allow simple{fb, drm} drivers to be used on
- non-x86 EFI platforms
-Message-ID: <YPbJJ/0tSO/fuW7a@phenom.ffwll.local>
-Mail-Followup-To: Ard Biesheuvel <ardb@kernel.org>,
-        Dave Airlie <airlied@gmail.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Atish Patra <atish.patra@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Will Deacon <will@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Robinson <pbrobinson@gmail.com>, Borislav Petkov <bp@suse.de>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-References: <20210625130947.1803678-1-javierm@redhat.com>
- <e61cf77c-6bff-dfcc-d3df-2fb6b48e5897@redhat.com>
- <8dd26141-a09c-39e2-5174-4cad8d21c49c@suse.de>
- <CAPM=9tyfNPa2f5PDBLm4w_H_riEQ5P3rEhX73YGE1y_ygRox+w@mail.gmail.com>
- <CAMj1kXErHteZ+MKYvp=yYmwVxV3A=vjtnG351hZHV+3BPwDQvw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXErHteZ+MKYvp=yYmwVxV3A=vjtnG351hZHV+3BPwDQvw@mail.gmail.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+        Tue, 20 Jul 2021 08:21:34 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16KCXB9h129580;
+        Tue, 20 Jul 2021 09:02:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=Riwv19ZwdFbDzNPVPECbfy4YpeThSBLte5/J/rjnWZc=;
+ b=JaVYWvl1BTl7VKakCcYH3/3F5qvcdSREEAF2/nxXcU465CjbGE8dAI7LrVPNbScl8oII
+ h04Y7mMFYEGJ0d0G+ZbJ4Dz4uNj5lVI1qOlrdCZbB+0avoE7lTpyiFlGU/TuaT5ZwZHA
+ LLHgRIT0L46+jzPbxSOKq3UsmFmI6AvTa6CbJLTs2jy2sdsr7a/f7nAolYCYMIP2smuk
+ wCCxG+TgdqTkwlC12vm/0O/xpb4XcjaZJ0Kywu33porPjGN7hYE3R3sSK1HyiMCMVZ2i
+ QhNkPA1uEto4R98y+yrS69SNAWGJ7KnagIiesdLxDHlEEq6zzLGKvoU1Ixk20+s0yfGW CQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39wwg632xj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 09:02:00 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16KCXDPO129704;
+        Tue, 20 Jul 2021 09:01:59 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39wwg632vv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 09:01:59 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16KCvOPR027500;
+        Tue, 20 Jul 2021 13:01:56 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06fra.de.ibm.com with ESMTP id 39upfh8rxs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 13:01:56 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16KD1sfh27132286
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Jul 2021 13:01:54 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2DCE0AE045;
+        Tue, 20 Jul 2021 13:01:54 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EDC8DAE04D;
+        Tue, 20 Jul 2021 13:01:51 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.56.226])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Jul 2021 13:01:51 +0000 (GMT)
+Message-ID: <999c3297f71e5f7d69b555bc8c999729e8b1ae31.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 2/3] ima: Return int in the functions to measure a
+ buffer
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "paul@paul-moore.com" <paul@paul-moore.com>
+Cc:     "stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>,
+        "prsriva02@gmail.com" <prsriva02@gmail.com>,
+        "tusharsu@linux.microsoft.com" <tusharsu@linux.microsoft.com>,
+        "nramas@linux.microsoft.com" <nramas@linux.microsoft.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
+Date:   Tue, 20 Jul 2021 09:01:50 -0400
+In-Reply-To: <bd953894da3041d5969da645db2f982e@huawei.com>
+References: <20210705090922.3321178-1-roberto.sassu@huawei.com>
+         <20210705090922.3321178-3-roberto.sassu@huawei.com>
+         <2f4920dbdb16156e1af5cf78f592a5cf07ec3176.camel@linux.ibm.com>
+         <bd953894da3041d5969da645db2f982e@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: HlskwCogQeEVE3B_1NA-ttdKagDUSF7_
+X-Proofpoint-ORIG-GUID: Ejs5htwOyDS0irQ8lIeHBY5vsVk1JFWD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-20_07:2021-07-19,2021-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ impostorscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ clxscore=1015 lowpriorityscore=0 priorityscore=1501 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107200081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 09:10:52AM +0200, Ard Biesheuvel wrote:
-> On Mon, 19 Jul 2021 at 04:59, Dave Airlie <airlied@gmail.com> wrote:
-> >
-> > On Thu, 15 Jul 2021 at 18:11, Thomas Zimmermann <tzimmermann@suse.de> wrote:
-> > >
-> > > Hi
-> > >
-> > > Am 13.07.21 um 18:59 schrieb Javier Martinez Canillas:
-> > > > On 6/25/21 3:09 PM, Javier Martinez Canillas wrote:
-> > > >> The simplefb and simpledrm drivers match against a "simple-framebuffer"
-> > > >> device, but for aarch64 this is only registered when using Device Trees
-> > > >> and there's a node with a "simple-framebuffer" compatible string.
-> > > >>
-> > > >> There is no code to register a "simple-framebuffer" platform device when
-> > > >> using EFI instead. In fact, the only platform device that's registered in
-> > > >> this case is an "efi-framebuffer", which means that the efifb driver is
-> > > >> the only driver supported to have an early console with EFI on aarch64.
-> > > >>
-> > > >> The x86 architecture platform has a Generic System Framebuffers (sysfb)
-> > > >> support, that register a system frambuffer platform device. It either
-> > > >> registers a "simple-framebuffer" for the simple{fb,drm} drivers or legacy
-> > > >> VGA/EFI FB devices for the vgafb/efifb drivers.
-> > > >>
-> > > >> The sysfb is generic enough to be reused by other architectures and can be
-> > > >> moved out of the arch/x86 directory to drivers/firmware, allowing the EFI
-> > > >> logic used by non-x86 architectures to be folded into sysfb as well.
-> > > >>
-> > > >
-> > > > Any more comments on this series? It would be nice for this to land so the
-> > > > simpledrm driver could be used on aarch64 EFI systems as well.
-> > > >
-> > > > The patches have already been acked by x86 and DRM folks.
-> > >
-> > > Time to get this merged, I'd say. People are asking for these patches
-> > > already.
-> >
-> > Can we just merge via drm-misc and make sure the acks are present and
-> > I'll deal with the fallout if any.
-> >
+On Tue, 2021-07-20 at 12:38 +0000, Roberto Sassu wrote:
+> > > This patch modifies the return type from void to int, and returns 0 if the
+> > > buffer has been successfully measured, a negative value otherwise.
+> > 
+> > Needed here is an explanation as to why ima_measure_critical_data() is
+> > special.
 > 
-> Fine with me. Could you stick it on a separate branch so I can double
-> check whether there are any issues wrt the EFI tree?
+> We don't want to unnecessarily calculate the digest twice.
 
-It'll pop up in linux-next for integration testing or you can pick up the
-patch here for test-merge if you want.
+That's what the "iint" cache is for.  .  This needs more a of an
+explaintion as to why  ima_measure_critical_data() is special.
 
-And since Dave has given a blanket cheque for handling fallout he'll deal
-with the need for fixups too if there's any.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+thanks,
+
+Mimi
+
