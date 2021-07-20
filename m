@@ -2,88 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B182D3CF45D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153B93CF466
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239004AbhGTFfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 01:35:52 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:58926 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S238702AbhGTFcH (ORCPT
+        id S240488AbhGTFiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 01:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241086AbhGTFhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 01:32:07 -0400
-X-UUID: 908b03c036554bc3806d1b4408be7acf-20210720
-X-UUID: 908b03c036554bc3806d1b4408be7acf-20210720
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 614020704; Tue, 20 Jul 2021 14:12:33 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 20 Jul 2021 14:12:31 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 20 Jul 2021 14:12:30 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: [PATCH v4] drm/mediatek: add dither 6 setting
-Date:   Tue, 20 Jul 2021 14:12:27 +0800
-Message-ID: <1626761547-5897-2-git-send-email-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1626761547-5897-1-git-send-email-yongqiang.niu@mediatek.com>
-References: <1626761547-5897-1-git-send-email-yongqiang.niu@mediatek.com>
+        Tue, 20 Jul 2021 01:37:40 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A658FC0613E1;
+        Mon, 19 Jul 2021 23:18:02 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id ca14so27129918edb.2;
+        Mon, 19 Jul 2021 23:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=i0kMgSuHZ4kPt4sP1uRhzPOM7Gd+u7oji/d01Xfy6CI=;
+        b=JN4hdVZX4kVjpEa2ZUVU46PqVLYNHzXlDz6vh8HxpEVP4n6GlVPer5Vm0zzRm+Og7U
+         znr42WF/93H00R0SFA/Qmi50tfGItf8ENCn+XUZ+BeRdtA2JQ2bPplCqJtVvkpMrWlnI
+         79d8dzSKR3IwP/cbOvmjbFjrRHaTN6IbpmrkBxJYTuEJ7nstVhhJSSl1tPG4LTXtEdNV
+         DeTpaKZuahpiFUsuLQOHmRJqq7gMn1vlXB7X05G6bdEpvaS0+VFTmODa8NCj2foTHHVj
+         sBdBYyYZuYz1GvR1nI4P+5U5+PVPRLP0j9OZbN2OhhSDgb6K7tUcqzy4KWPg4qvnqdrr
+         QcsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=i0kMgSuHZ4kPt4sP1uRhzPOM7Gd+u7oji/d01Xfy6CI=;
+        b=sdunnJqf+pVx419Kr/gvObzUwkX0gMi8FQpANXgtN1MIM+Al5D+5RWKraS9GvAuZKI
+         WkATo2Jxwlgm4hbyIR9756Wm6GnOsrnE6AvamXEDESvtSpG7NB4BP9KLrewvGZeV8gJC
+         af8EgHXBaewKLDodd4ahsNQpqPxVecbymFtTVWKyur5whOp4PxugfsBMsyMIIBHac7m+
+         FMeIWAHjCFOY2/WCVXzvVEULjBjspJWouSV/OuRog9ZuxigcyPKbv9tgljFXx/biZXu0
+         SOYBgtBi4sCegzUHNHhxCduWWFiLAWMY99OnaZfTMuE8+JcCq+00m7foWa0CRn+LLY5i
+         EVJw==
+X-Gm-Message-State: AOAM532UzJu+suePz0fdeBf+SPF2bSI4mCa8vqwYKNoPea0b3u2t2CFQ
+        hwSex+FHYWShwbqu8rtPWOFEuGhhJUkPwNni3E0=
+X-Google-Smtp-Source: ABdhPJy6k0BPgBjkY1GjQMzqFi44EyZ3OU0v6LZ8PrYAbhFp7ALdrGWVXIkwNCfOmdT6Uhq8PtDLdGyUso1rul1NT9k=
+X-Received: by 2002:a05:6402:270d:: with SMTP id y13mr39156656edd.66.1626761881202;
+ Mon, 19 Jul 2021 23:18:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
+ <YPGojf7hX//Wn5su@kroah.com> <568938486.33366.1626452816917.JavaMail.zimbra@nod.at>
+ <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com> <1458549943.44607.1626686894648.JavaMail.zimbra@nod.at>
+In-Reply-To: <1458549943.44607.1626686894648.JavaMail.zimbra@nod.at>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Tue, 20 Jul 2021 11:47:49 +0530
+Message-ID: <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
+Subject: Re: MTD: How to get actual image size from MTD partition
+To:     Richard Weinberger <richard@nod.at>
+Cc:     Greg KH <greg@kroah.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Sean Nyekjaer <sean@geanix.com>,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes: a6b7c98afdca(drm/mediatek: add mtk_dither_set_common()
-dither 6 setting is missed in a6b7c98afdca
-bit 1 is lfsr_en( "Enables LFSR-type dithering"), need enable
-bit 2 is rdither_en(Enables running order dithering), need disable
+On Mon, 19 Jul 2021 at 14:58, Richard Weinberger <richard@nod.at> wrote:
+>
+> ----- Urspr=C3=BCngliche Mail -----
+> > Von: "Pintu Agarwal" <pintu.ping@gmail.com>
+> > An: "richard" <richard@nod.at>
+> > CC: "Greg KH" <greg@kroah.com>, "linux-kernel" <linux-kernel@vger.kerne=
+l.org>, "linux-mtd"
+> > <linux-mtd@lists.infradead.org>, "linux-fsdevel" <linux-fsdevel@vger.ke=
+rnel.org>, "Phillip Lougher"
+> > <phillip@squashfs.org.uk>, "Sean Nyekjaer" <sean@geanix.com>, "Kernelne=
+wbies" <kernelnewbies@kernelnewbies.org>
+> > Gesendet: Montag, 19. Juli 2021 11:09:46
+> > Betreff: Re: MTD: How to get actual image size from MTD partition
+>
+> > On Fri, 16 Jul 2021 at 21:56, Richard Weinberger <richard@nod.at> wrote=
+:
+> >
+> >> >> My requirement:
+> >> >> To find the checksum of a real image in runtime which is flashed in=
+ an
+> >> >> MTD partition.
+> >> >
+> >> > Try using the dm-verity module for ensuring that a block device real=
+ly
+> >> > is properly signed before mounting it.  That's what it was designed =
+for
+> >> > and is independent of the block device type.
+> >>
+> >> MTDs are not block devices. :-)
+> >>
+> > Is it possible to use dm-verity with squashfs ?
+> > We are using squashfs for our rootfs which is an MTD block /dev/mtdbloc=
+k44
+>
+> Well, if you emulate a block device using mtdblock, you can use dm-verity=
+ and friends.
+> Also consider using ubiblock. It offers better performance and wear level=
+ing support.
+>
+Okay thank you.
+We have tried dm-verity with squashfs (for our rootfs) but we are
+facing some mounting issues.
+[...]
+[    4.697757] device-mapper: init: adding target '0 96160 verity 1
+/dev/mtdblock34 /dev/mtdblock39 4096 4096 12020 8 sha256
+d7b8a7d0c01b9aec888930841313a81603a50a2a7be44631c4c813197a50d681
+aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7'
+[    4.704771] device-mapper: verity: sha256 using implementation
+"sha256-generic"
+[...]
+[    4.727366] device-mapper: init: dm-0 is ready
+[    4.912558] VFS: Cannot open root device "dm-0" or
+unknown-block(253,0): error -5
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 2 ++
- 1 file changed, 2 insertions(+)
+The same works with ext4 emulation.
+So, not sure if there are any changes missing w.r.t. squashfs on 4.14 kerne=
+l ?
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-index 99cbf44..7dd8e05 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-@@ -26,6 +26,7 @@
- #define DISP_OD_CFG				0x0020
- #define DISP_OD_SIZE				0x0030
- #define DISP_DITHER_5				0x0114
-+#define DISP_DITHER_6				0x0118
- #define DISP_DITHER_7				0x011c
- #define DISP_DITHER_15				0x013c
- #define DISP_DITHER_16				0x0140
-@@ -135,6 +136,7 @@ void mtk_dither_set_common(void __iomem *regs, struct cmdq_client_reg *cmdq_reg,
- 
- 	if (bpc >= MTK_MIN_BPC) {
- 		mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_5);
-+		mtk_ddp_write(cmdq_pkt, 0x3002, cmdq_reg, regs, DISP_DITHER_6);
- 		mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_7);
- 		mtk_ddp_write(cmdq_pkt,
- 			      DITHER_LSB_ERR_SHIFT_R(MTK_MAX_BPC - bpc) |
--- 
-1.8.1.1.dirty
+Anyways, I will create a separate thread for dm-verity issue and keep
+this thread still open for UBI image size issue.
+We may use dm-verify for rootfs during booting, but still we need to
+perform integrity check for other nand partitions and UBI volumes.
 
+So, instead of calculating the checksum for the entire partition, is
+it possible to perform checksum only based on the image size ?
+Right now, we are still exploring what are the best possible
+mechanisms available for this.
+
+Thanks,
+Pintu
