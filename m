@@ -2,116 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CEC3CF8A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074B63CF8AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236859AbhGTKc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
+        id S236961AbhGTKeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231442AbhGTKcr (ORCPT
+        with ESMTP id S231442AbhGTKeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:32:47 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822D5C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:13:25 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id d12so25525611wre.13
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:13:25 -0700 (PDT)
+        Tue, 20 Jul 2021 06:34:17 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9D5C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:14:55 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id g8-20020a1c9d080000b02901f13dd1672aso1381676wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:14:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=rssW9MvuSrY18dvpw7amkf+MYjvhgV8BCmj8r2D+edQ=;
-        b=K7vq3dVJv9e19grP2qCy6RAOZY+bX+Abe2GwleQgCAThD/Ktphh7T6Hk8e+U7dOn5Q
-         ymRWUaww5B0nvzeT//Q1p6BowVr0oYbwsyreIyOlK5N8DlZfrIu1zZ9o2opKWlKnBrnk
-         LUCsiCUbO1X92FsH9QqgOFn2KjjXTQLsmYrpMUzxGFAZ/jOUz4jDfZzKO9QRDCm+1dEQ
-         GVPLQBeAySBxe19MQruR5u16/OFBNBl8de3UVr0Z42Ef1FQxlvPify25KeQg4iRdsigB
-         Lo4yVb2io4tvTVln2XGFG39wJoQ/PpjT9OhOUm+uJojX6OCXNmOmMF/3IjDmn6neevRp
-         om0A==
+        bh=Scwye6C+1Um7vvUcoTZkRoyEhyT2SXL6uA5lCU/qAvo=;
+        b=LMlxufPUPb2baVXBQ3VbdR5xUqZGe2i72q3p54Pd5N2AVVhCquwFd4vXoKMg94uLVz
+         /DBufDYbJzPrm5yrCS7IHjx3emOa9cb1Q0XM2TNV21BgR6KoqX8NA7w21Ha2Cb8Bd+hV
+         lYjoz7AFqJBKqgDZ1an+6fpOGpIp7utuszeDBxbe9tnYmbci25MtjjS1Z0BA9D7tUugc
+         K+XnVi6J14aPrCi7ed8GeyQkKM6l5EkOw0hkLlsLXvhfBYVtPkFnZCVPZ08omY+DF4JU
+         K5NO5ElFz242783F1DGmAGs4XfB2LfvVZcGvHX1zo46qXqGaitIlyqU1ZFEg27srQi13
+         DbPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=rssW9MvuSrY18dvpw7amkf+MYjvhgV8BCmj8r2D+edQ=;
-        b=t/JQnmrIVz+myKV/6tKk8fDLs4b5L+1Wotl4hepQLcRHEpeDFLxhKy/R1JQFVHjz+b
-         gQqd3eKxSDjEgq5W65EWUV8+o/3Lllsdfwah2FsH3fCu6/EuV4Jyo8Ut0i4X+brD75Nq
-         pBmewceqXMywODwg3dQQQ3cbIHCwrp3dIxn8LYAT3nEcrceDBCo2jtFjIBVgCwYqNz6a
-         /PQPaeiLvqH0nmV62PruDF2Ff4cbvfphKdhdTXnAp/dwSTJuugC+5G1s5zc8/CaWRG/d
-         iJThWF3Ktmup/oy6IOJXTw88lp7iDQtda0EE8ut0u8OZa2IysMziiZdSH8Q2Pb3orwN+
-         ukSQ==
-X-Gm-Message-State: AOAM533GTz0XTvx1pTA5w8rrXofw9rB2ndRuNNBJd4FYl1NHGnt0umnS
-        9bSaGMkoig+RrMtJZbK1k6lOPQ==
-X-Google-Smtp-Source: ABdhPJxucLoq3tJ6ywks6cNiyi6pYtOe5W3MkGbCfwenZlNTGXHtenBEwmkjoTj+HN+TgHpbImyIYQ==
-X-Received: by 2002:adf:f74f:: with SMTP id z15mr35360657wrp.54.1626779603785;
-        Tue, 20 Jul 2021 04:13:23 -0700 (PDT)
+        bh=Scwye6C+1Um7vvUcoTZkRoyEhyT2SXL6uA5lCU/qAvo=;
+        b=lkglPl78oZulWwyCvSwu4dMW+r6T3fMIhs+FH7s95NijCsepNydlvM3BXnwSrpCx+o
+         lcWOb0P1DNZCR/fEVGA3RJCLULwBvTyOA8IEADKZTmtxu5lztbAwWkkOSgwzoc7T6/tm
+         IsMvumSEW/yF6F/rETqbGQlhBuY1ay5ykGbasGoo9EHAsCuHMoPUXj1PhNjL34dR2Pg8
+         EZLiYWa6HX4osaupYl09zb9O7w81/IiE4i7nYKIVTk8xGYbIFp9hwi8Sv74uMOvV0YGW
+         ZxBZ1MMgqBe1640G6Darew4Ms7pANgqSZQUXc/u4F5NuZKNY1piYDfjY8RpAovWn35b6
+         VMhg==
+X-Gm-Message-State: AOAM531hWN/kDO1TNCjzSOhUYokI1DkjQKYig+dTu6EjLZozYcQEjVE2
+        RX5DyBE+5gJyCyd+thDBN2TeSw==
+X-Google-Smtp-Source: ABdhPJzLUrGFdy1juyhle9qtZp590ppxip5Hwthbwjk+yQgROG4vDqXreJVzBkI8J/0J3xXVMKtb6Q==
+X-Received: by 2002:a1c:7314:: with SMTP id d20mr30516940wmb.167.1626779693865;
+        Tue, 20 Jul 2021 04:14:53 -0700 (PDT)
 Received: from google.com ([2a00:79e0:d:210:83e0:11ac:c870:2b97])
-        by smtp.gmail.com with ESMTPSA id y3sm23651964wrh.16.2021.07.20.04.13.23
+        by smtp.gmail.com with ESMTPSA id s13sm23219117wrm.13.2021.07.20.04.14.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 04:13:23 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 12:13:20 +0100
+        Tue, 20 Jul 2021 04:14:53 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 12:14:50 +0100
 From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        dbrazdil@google.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
-        Shanker R Donthineni <sdonthineni@nvidia.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 04/16] KVM: arm64: Add MMIO checking infrastructure
-Message-ID: <YPav0Hye5Dat/yoL@google.com>
-References: <20210715163159.1480168-1-maz@kernel.org>
- <20210715163159.1480168-5-maz@kernel.org>
+To:     Fuad Tabba <tabba@google.com>
+Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        dbrazdil@google.com, kernel-team@android.com
+Subject: Re: [PATCH 06/14] KVM: arm64: Tolerate re-creating hyp mappings to
+ set ignored bits
+Message-ID: <YPawKkT2ZdVzQbM6@google.com>
+References: <20210719104735.3681732-1-qperret@google.com>
+ <20210719104735.3681732-7-qperret@google.com>
+ <CA+EHjTzjT2iv=9jsTNquSAD-_AWqpyCKVPiuCBWGzpxcAkWf9w@mail.gmail.com>
+ <YPalr09gA6tGYVtl@google.com>
+ <CA+EHjTz__zjYY2D8+nEPq2F8__saxC0kApnn7_rs0r2VCR2Nzg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210715163159.1480168-5-maz@kernel.org>
+In-Reply-To: <CA+EHjTz__zjYY2D8+nEPq2F8__saxC0kApnn7_rs0r2VCR2Nzg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 15 Jul 2021 at 17:31:47 (+0100), Marc Zyngier wrote:
-> +struct s2_walk_data {
-> +	kvm_pte_t	pteval;
-> +	u32		level;
-> +};
-> +
-> +static int s2_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
-> +		     enum kvm_pgtable_walk_flags flag, void * const arg)
-> +{
-> +	struct s2_walk_data *data = arg;
-> +
-> +	data->level = level;
-> +	data->pteval = *ptep;
-> +	return 0;
-> +}
-> +
-> +/* Assumes mmu_lock taken */
-> +static bool __check_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa)
-> +{
-> +	struct s2_walk_data data;
-> +	struct kvm_pgtable_walker walker = {
-> +		.cb             = s2_walker,
-> +		.flags          = KVM_PGTABLE_WALK_LEAF,
-> +		.arg            = &data,
-> +	};
-> +
-> +	kvm_pgtable_walk(vcpu->arch.hw_mmu->pgt, ALIGN_DOWN(ipa, PAGE_SIZE),
-> +			 PAGE_SIZE, &walker);
-> +
-> +	/* Must be a PAGE_SIZE mapping with our annotation */
-> +	return (BIT(ARM64_HW_PGTABLE_LEVEL_SHIFT(data.level)) == PAGE_SIZE &&
-> +		data.pteval == MMIO_NOTE);
+On Tuesday 20 Jul 2021 at 11:59:27 (+0100), Fuad Tabba wrote:
+> Thanks for the clarification. It makes sense to preserve the existing
+> behavior, but I was wondering if a comment would be good, describing
+> what merits a "needs update"?
 
-Nit: you could do this check in the walker directly and check the return
-value of kvm_pgtable_walk() instead. That would allow to get rid of
-struct s2_walk_data.
+Sure thing, I'll add something for v2.
 
-Also, though the compiler might be able to optimize, maybe simplify the
-level check to level == (KVM_PGTABLE_MAX_LEVELS - 1)?
-
-Thanks,
+Cheers,
 Quentin
-
-> +}
