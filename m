@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F30D3CF568
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BB43CF56F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbhGTG55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 02:57:57 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15041 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235079AbhGTG4m (ORCPT
+        id S234031AbhGTHCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231464AbhGTHCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:56:42 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GTVnt4YJNzZqrn;
-        Tue, 20 Jul 2021 15:33:54 +0800 (CST)
-Received: from dggeme756-chm.china.huawei.com (10.3.19.102) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 20 Jul 2021 15:37:16 +0800
-Received: from dggeme756-chm.china.huawei.com ([10.6.80.68]) by
- dggeme756-chm.china.huawei.com ([10.6.80.68]) with mapi id 15.01.2176.012;
- Tue, 20 Jul 2021 15:37:16 +0800
-From:   "wangliang (C)" <wangliang101@huawei.com>
-To:     "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Wangle (RTOS FAE)" <wangle6@huawei.com>,
-        "Chenxin (RTOS)" <kepler.chenxin@huawei.com>,
-        Nixiaoming <nixiaoming@huawei.com>,
-        "Wangkefeng (OS Kernel Lab)" <wangkefeng.wang@huawei.com>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIXSBhcm06bW1hcDogZml4IHBoeXNpY2FsIGFkZHJlc3Mg?=
- =?gb2312?B?b3ZlcmZsb3cgd2hlbiBDT05GSUdfQVJNX0xQQUU9eQ==?=
-Thread-Topic: [PATCH] arm:mmap: fix physical address overflow when
- CONFIG_ARM_LPAE=y
-Thread-Index: AQHXeXUt7ahQu+mGnUGYPTbmKJayAqtLgAsA
-Date:   Tue, 20 Jul 2021 07:37:16 +0000
-Message-ID: <133369ed88a54e40a3ebbc667763f5b1@huawei.com>
-References: <20210715123012.61215-1-wangliang101@huawei.com>
-In-Reply-To: <20210715123012.61215-1-wangliang101@huawei.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.101.54]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Tue, 20 Jul 2021 03:02:40 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09D9C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 00:43:15 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id x13-20020a17090a46cdb0290175cf22899cso1972663pjg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 00:43:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2RbqEZiSX0zvCsFSti0Yf2rZCpDWl6bafaeM5yD8kWg=;
+        b=F5TizzOVyuUWukuBy50Pzl3IBoCLaNbweMj41op+sKYZz1UA1gk7ORcJSm6Tgb4O5b
+         teQYFTNRS5ugXJMrD2QxvILumNQCRyb4BRchqVB5mD1lNTLxLDW3g3wTYj2nfB6r6ab3
+         fZ42rDMP42/nvHHnIib9dwgSoiSRGD/Wf6NFcSvh1h+iSx+zkQWnwm/dVZXrjXV8G7kG
+         iv/ceUrEzq4frV36qm61WUPCGPxj7Z7Jj1iX0lMvP+H+XDLrI41PFp92dspI1B+BO1Ci
+         b8U5B64i5en12UNolDEKlAC3BpMqQ4ksOqxW4BbOkpPFAwzEi0vkGNIO/5mYE+9pWKDH
+         9sMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2RbqEZiSX0zvCsFSti0Yf2rZCpDWl6bafaeM5yD8kWg=;
+        b=dgozY71ALeNgop1J5AcABRvi81exwE37sn3rrP8gq1ak32kbq0tth2/IZZsZxy+GzF
+         +8lp+z3FNqp7xV5ZZCN+ZixIo7dkqppz8fbaCRNzyXxGyNZIta93G5/+QLbFC6D75CNT
+         CFQtctWQ6ZxfSag0V6glmu/brBKbAK9pokctGb+IPdvJTdsKD5Oi2Y/3h6Wmw1514R0B
+         aMPDa4GETXJ+x4AAVzwr0sSWU7ce6JjHsVdM3SeabC3NgL+ziwElKkAodtvwypP0bv5y
+         dIEgvcM7xYDQgXXn8sueteZ6OJdOJPj5YbQNDaszMY02zNh9n+UfPJ3luwYvr3BKSzai
+         mQxQ==
+X-Gm-Message-State: AOAM530I0/nEL1y43iba082whz9bxdfEkZLe3eg5OP08BdeKWhADK5Cl
+        vcxLGiZncIZQunRAE/VrIe9Iqw==
+X-Google-Smtp-Source: ABdhPJyqls0EZ62wnwCkV7V/qwtCLnrwr6TDsvBPWB0tyUZZ1kOvpthnLenpcx9ICAOtryy6saU1/A==
+X-Received: by 2002:a17:90a:62ca:: with SMTP id k10mr27871740pjs.133.1626766995375;
+        Tue, 20 Jul 2021 00:43:15 -0700 (PDT)
+Received: from localhost.localdomain ([61.120.150.70])
+        by smtp.gmail.com with ESMTPSA id c2sm24214505pgh.82.2021.07.20.00.43.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Jul 2021 00:43:14 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        shy828301@gmail.com, cuibixuan@huawei.com, vbabka@suse.cz
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] mm: mmap_lock: fix disabling preemption directly
+Date:   Tue, 20 Jul 2021 15:42:28 +0800
+Message-Id: <20210720074228.76342-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-YWRkIGFybSBsaXN0DQoNCi0tLS0t08q8/tStvP4tLS0tLQ0Kt6K8/sjLOiB3YW5nbGlhbmcgKEMp
-IA0Kt6LLzcqxvOQ6IDIwMjHE6jfUwjE1yNUgMjA6MzANCsrVvP7IyzogcGFsbWVyZGFiYmVsdEBn
-b29nbGUuY29tOyBtY2dyb2ZAa2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
-ZzsgZ3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc7IGxpbnV4QGFybWxpbnV4Lm9yZy51aw0Ks63L
-zTogc3RhYmxlQHZnZXIua2VybmVsLm9yZzsgd2FuZ2xpYW5nIChDKSA8d2FuZ2xpYW5nMTAxQGh1
-YXdlaS5jb20+OyBXYW5nbGUgKFJUT1MgRkFFKSA8d2FuZ2xlNkBodWF3ZWkuY29tPjsgQ2hlbnhp
-biAoUlRPUykgPGtlcGxlci5jaGVueGluQGh1YXdlaS5jb20+OyBOaXhpYW9taW5nIDxuaXhpYW9t
-aW5nQGh1YXdlaS5jb20+DQrW98ziOiBbUEFUQ0hdIGFybTptbWFwOiBmaXggcGh5c2ljYWwgYWRk
-cmVzcyBvdmVyZmxvdyB3aGVuIENPTkZJR19BUk1fTFBBRT15DQoNCldoZW4gdGhlIENPTkZJR19B
-Uk1fTFBBRSBpcyBlbmFibGVkIG9uIGFybTMyLCB0aGUgcGh5c2ljYWwgYWRkcmVzcyBtYXkgZXhj
-ZWVkIDMyIGJpdHMuIEluIHRoZSBkZXZtZW1faXNfYWxsb3dlZCBmdW5jdGlvbiwgdGhlIHBoeXNp
-Y2FsIGFkZHJlc3MgaXMgb2J0YWluZWQgdGhyb3VnaCBkaXNwbGFjZW1lbnQgb2YgdGhlIHBoeXNp
-Y2FsIHBhZ2UgbnVtYmVyLldpdGhvdXQgZXhwbGljaXQgdHJhbnNsYXRpb24sIHRoZSBwaHlzaWNh
-bCBhZGRyZXNzIG1heSBvdmVyZmxvdyBhbmQgYmUgdHJ1bmNhdGVkLg0KVXNlIHRoZSBQRk5fUEhZ
-UyBtYWNybyB0byBmaXggdGhpcyBidWcuDQoNClRoaXMgYnVnIHdhcyBpbml0aWFsbHkgaW50cm9k
-dWNlZCBpbiB2Mi42LjM3IHdpdGggY29tbWl0OjA4N2FhZmZjZGY5YzkxLg0KSW4gdjUuMTAsIHRo
-aXMgY29kZSBoYXMgYmVlbiBtb2RpZmllZCBieSBjb21taXQ6NTI3NzAxZWRhNWYxOTYuDQoNCkZp
-eGVzOiA1Mjc3MDFlZGE1ZjE5NiAoImxpYjogQWRkIGEgZ2VuZXJpYyB2ZXJzaW9uIG9mIGRldm1l
-bV9pc19hbGxvd2VkIikNCkZpeGVzOiAwODdhYWZmY2RmOWM5MSAoIkFSTTogaW1wbGVtZW50IENP
-TkZJR19TVFJJQ1RfREVWTUVNIGJ5IGRpc2FibGluZyBhY2Nlc3MgdG8gUkFNIHZpYSAvZGV2L21l
-bSIpDQpDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZyAjIHYyLjYuMzcNClNpZ25lZC1vZmYtYnk6
-IExpYW5nIFdhbmcgPHdhbmdsaWFuZzEwMUBodWF3ZWkuY29tPg0KLS0tDQogbGliL2Rldm1lbV9p
-c19hbGxvd2VkLmMgfCAyICstDQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRl
-bGV0aW9uKC0pDQoNCmRpZmYgLS1naXQgYS9saWIvZGV2bWVtX2lzX2FsbG93ZWQuYyBiL2xpYi9k
-ZXZtZW1faXNfYWxsb3dlZC5jIGluZGV4IGMwZDY3YzU0MTg0OS4uNjBiZTllMjRiZDU3IDEwMDY0
-NA0KLS0tIGEvbGliL2Rldm1lbV9pc19hbGxvd2VkLmMNCisrKyBiL2xpYi9kZXZtZW1faXNfYWxs
-b3dlZC5jDQpAQCAtMTksNyArMTksNyBAQA0KICAqLw0KIGludCBkZXZtZW1faXNfYWxsb3dlZCh1
-bnNpZ25lZCBsb25nIHBmbikgIHsNCi0JaWYgKGlvbWVtX2lzX2V4Y2x1c2l2ZShwZm4gPDwgUEFH
-RV9TSElGVCkpDQorCWlmIChpb21lbV9pc19leGNsdXNpdmUoUEZOX1BIWVMocGZuKSkpDQogCQly
-ZXR1cm4gMDsNCiAJaWYgKCFwYWdlX2lzX3JhbShwZm4pKQ0KIAkJcmV0dXJuIDE7DQotLQ0KMi4z
-Mi4wDQoNCg==
+The commit 832b50725373 ("mm: mmap_lock: use local locks instead of
+disabling preemption") fix a bug by using local locks. But commit
+d01079f3d0c0 ("mm/mmap_lock: remove dead code for !CONFIG_TRACING
+configurations") changes those lines to original version. I guess
+it is introduced by the conflicts fixing on merging.
+
+Fixes: d01079f3d0c0 ("mm/mmap_lock: remove dead code for !CONFIG_TRACING configurations")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ mm/mmap_lock.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mm/mmap_lock.c b/mm/mmap_lock.c
+index f5852a058ce0..1854850b4b89 100644
+--- a/mm/mmap_lock.c
++++ b/mm/mmap_lock.c
+@@ -156,14 +156,14 @@ static inline void put_memcg_path_buf(void)
+ #define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
+ 	do {                                                                   \
+ 		const char *memcg_path;                                        \
+-		preempt_disable();                                             \
++		local_lock(&memcg_paths.lock);                                 \
+ 		memcg_path = get_mm_memcg_path(mm);                            \
+ 		trace_mmap_lock_##type(mm,                                     \
+ 				       memcg_path != NULL ? memcg_path : "",   \
+ 				       ##__VA_ARGS__);                         \
+ 		if (likely(memcg_path != NULL))                                \
+ 			put_memcg_path_buf();                                  \
+-		preempt_enable();                                              \
++		local_unlock(&memcg_paths.lock);                               \
+ 	} while (0)
+ 
+ #else /* !CONFIG_MEMCG */
+-- 
+2.11.0
+
