@@ -2,96 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6063CF553
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12513CF554
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234541AbhGTGwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 02:52:03 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:35685 "EHLO ozlabs.org"
+        id S234919AbhGTGwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 02:52:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229684AbhGTGvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:51:15 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GTVlM5fyfz9s1l;
-        Tue, 20 Jul 2021 17:31:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626766304;
-        bh=Qur8bvvIU6iEx0EgzbfwK+Fesw2hd8eOYcHRg1aHBVs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GLtZrB2z6VTiFEh2gG06hnEBj2YNDg9zcZ4vbDEyXdoGD9fzKt8yeuWMcrGsp/jXC
-         wf++mT1NZx9YxRzsoYkguey0oVdmp0rSo4facknW00+dhlbC6IqGY2Hqt6crfcXhVc
-         uZZxQYOxts+WI0lhusCVKzyPLEcKdDTb6hk/6T86vLViJxw/svltM8Ya4r8Hiz2neK
-         4UpYxYRZlIVf4tahN+q2WifmxP6IfjwwdX6obT0MM3X9o4T+mdIclrcCCZqUQWpd5s
-         AXh5IPJCnFjzoV4ALY/u+4ivOGplukQRvsHmWY3QsuA1Qujlqmsiqey0lOPU8IbQuI
-         Qh2fuzonPgfzQ==
-Date:   Tue, 20 Jul 2021 17:31:42 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        "William A. Kennington III" <wak@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning from Linus' tree
-Message-ID: <20210720173142.00a375c5@canb.auug.org.au>
-In-Reply-To: <20210708122544.011171b3@canb.auug.org.au>
-References: <20210601172026.6bc0a96f@canb.auug.org.au>
-        <20210708122544.011171b3@canb.auug.org.au>
+        id S232391AbhGTGvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 02:51:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C5D561165;
+        Tue, 20 Jul 2021 07:32:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626766339;
+        bh=TtvpaEMsR3u6EKkMoDAPlGks7XH8v1RQa5GXSq+xLzg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hzGV7n6Vb2Kk2wd7nEyRxlpj31JiqUtV7JxckRkQ/BH0ePMyCA47cZnE9ZfTpP6ms
+         DbjweKsg3027diPn/JoiokG33elbsrq5eGrkfF4DDgF7JAsGIGk1d/x0Bh2zeEOUCp
+         GtJM1sC/KSDLa3KDNNF1q5yDW+Spd4NxR9an2O9BLcumnDNPEK+fVLJ/DQqxTYj0wS
+         dg83oBPbZVURfYfQydVvsmAQ/mtny+ALw3A/RaMJcy7UqBvBfnGbgM/ias/YedC8Xa
+         I0sZtZFssaNYhesS9H6UCCciowXUMH8NRRSTaaGpMeTrOkhlKFh5Q8OA55O3ThqlgK
+         eTuxx3GvPWKPQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1m5kEL-00079E-Eq; Tue, 20 Jul 2021 09:31:53 +0200
+Date:   Tue, 20 Jul 2021 09:31:53 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, Ian Ray <ian.ray@ge.com>
+Subject: Re: [PATCH] USB: serial: cp210x: fix comments for GE CS1000
+Message-ID: <YPZ76YwLdm/0heDz@hovoldconsulting.com>
+References: <20210719164349.137402-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nxr6C.gUKUXygzOV9CnfzPk";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719164349.137402-1-sebastian.reichel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nxr6C.gUKUXygzOV9CnfzPk
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jul 19, 2021 at 06:43:49PM +0200, Sebastian Reichel wrote:
+> From: Ian Ray <ian.ray@ge.com>
+> 
+> Fix comments for GE CS1000 CP210x USB ID assignments.
+> 
+> Fixes: 42213a0190b5 ("USB: serial: cp210x: add some more GE USB IDs")
+> Signed-off-by: Ian Ray <ian.ray@ge.com>
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-Hi all,
+Now applied with a stable tag to make it easier for the stable
+maintainers. Thanks.
 
-On Thu, 8 Jul 2021 12:25:44 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> On Tue, 1 Jun 2021 17:20:26 +1000 Stephen Rothwell <sfr@canb.auug.org.au>=
- wrote:
-> >
-> > When building Linus' tree, today's linux-next build (htmldocs) produced
-> > this warning:
-> >=20
-> > include/linux/spi/spi.h:671: warning: Function parameter or member 'dev=
-m_allocated' not described in 'spi_controller'
-> >=20
-> > Introduced by commit
-> >=20
-> >   794aaf01444d ("spi: Fix use-after-free with devm_spi_alloc_*")
-> >=20
-> > This has been around for a while (at least v5.13-rc1 and next-20210409).
-> > Sorry I did not report it earlier. =20
->=20
-> I am still getting this warning.
-
-I am still getting this warning.  It is now on line 675.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/nxr6C.gUKUXygzOV9CnfzPk
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD2e98ACgkQAVBC80lX
-0GwY/AgApe05ioTeshM0yuIV4rgiX56kgCa+OIH3rTCCni/Lv5KMIf1LU+gF88H3
-lAmXjXp3h7PGeRjb9SPN/ryt0cbWR9l3rOcFEg1Euomh+mLn1vOZhJHPZiktVV8K
-CBNTbkD/6QMrEbb8536EohWpYRmYWP1F8ta2X9yKQdIL94Xjy9SLLbkoKixxYhbd
-UpxEVR1Xo51+Zf1t2HZXJnusaZLYG3Zfm7T1E7zW72EZKJ+mg4hwePTJ/yNTj2Iw
-Xs1MMOK/eiWyeodf5YELaUaqDNi3zVzUM+SkFYtTht6VBkaK6dMwmSk1MhAX/FY7
-ZrsrNtjVmAo0KpeJIlZjNwNj6/+5cQ==
-=Vgnl
------END PGP SIGNATURE-----
-
---Sig_/nxr6C.gUKUXygzOV9CnfzPk--
+Johan
