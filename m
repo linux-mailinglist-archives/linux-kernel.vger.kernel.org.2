@@ -2,159 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F543CF3AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5468F3CF3AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349079AbhGTEG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 00:06:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42621 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347058AbhGTEBy (ORCPT
+        id S237111AbhGTEJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 00:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230252AbhGTEJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 00:01:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626756141;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=fKQJw44KnWWw6kFQEoZm4t5SzBRdmsu+r00ClxkZDTU=;
-        b=bkjI4SRosP9ZyBqbDAqKPvHhDrV2c640m6tPnLkAfdA89KquV92+aMaSLnAPSBVudKcV7d
-        pDBLqndNZVQ8foMAlw6pE3QK9ehiYKAj0gzSW1bLyNd7gKf0DJ3G9fdZgr01SZbRY9a3pD
-        //b1n5fOam+LXAJYSJlC/s/6LXrvFs4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-306-z2E0QqyCN_2Q9H9fHiqZ4A-1; Tue, 20 Jul 2021 00:42:19 -0400
-X-MC-Unique: z2E0QqyCN_2Q9H9fHiqZ4A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ABDBB800050;
-        Tue, 20 Jul 2021 04:42:18 +0000 (UTC)
-Received: from localhost (ovpn-12-178.pek2.redhat.com [10.72.12.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 260D860938;
-        Tue, 20 Jul 2021 04:42:13 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH V2] genirq/affinity: add helper of irq_affinity_calc_sets
-Date:   Tue, 20 Jul 2021 12:42:09 +0800
-Message-Id: <20210720044209.851141-1-ming.lei@redhat.com>
+        Tue, 20 Jul 2021 00:09:27 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFA5C061574;
+        Mon, 19 Jul 2021 21:50:05 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id m13so6302765qvh.8;
+        Mon, 19 Jul 2021 21:50:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0KCwtqt8RPVa9Eso0xhcH4+MB0ahASHIwEqiB7n7a5w=;
+        b=ExI7ENB8ukgzr77elToDWB2SrFD+/7IpNkujhpKZ/NwPI8Cj/HIfW3NlevvRab/BoT
+         w1fXFkSe2SfyzTTPSXu+ZQpdENhH6mRNVmg7VgyQI3v9kL0ei/WdXVIArAeTVhI6XIV8
+         L3ykF77PVYLT1sbvYUUkyyLO4urakqbXLQ4sL5kL94Vpu0hMLqG1v136oP8R/HfGBB9j
+         TB+jm4PbHkxwxmkUjQvUHDzMp7fhXYre81tkRGiepga+k1DUhPOomBNm+TzSzhWErtFG
+         Awhvix0xUFYKmBdp+MTlvHtv+mwFCZ4XNITdjy6+XJ72hwlvoXxxFhCZUiX6qFagV6ho
+         nCMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0KCwtqt8RPVa9Eso0xhcH4+MB0ahASHIwEqiB7n7a5w=;
+        b=R5e3BU+0MpNFOHDtOuryN/2lvES5Y2GegKmrgnqWA/8bNV64jhToEppsdZu/0lweLb
+         HHfO96lQahT7zGtwPH1NvtglHOjDr8UNAoj9n80X07d30/4Z9v+mYmpX3OgjXEuUyV6s
+         JXQr0PXIG4wknV9jam+/Dp8amjo3kei31MBwCtKCoD7r3tfabTxXFxcKkFv7TcI1FfZz
+         SHtaILZZkEFOcpbOUsB+i8NWQgShEBPFHgFiItu5YjBwAWCw6kaGJk5OHuyOtHpWe8CM
+         MWMG6yo7/y8zkwQvBg0ggLsJNYOCcLzN3kiCVbLWd5SHg9gfKyV5kyi8xSsHA43DX5y5
+         rwbw==
+X-Gm-Message-State: AOAM532ZeQBkx1GTBcRAUCkcFZu46bNKl5OiXaw5m1VSR5l6/oM5WyOt
+        OPzxvwf2OP5i32NYkAItxg==
+X-Google-Smtp-Source: ABdhPJzJ/HSVQtDEoPufiQVTlUd2sIL/teMWpjnl+pDgn+wffBEi8kgB5TVz4FpJRbcttbM1qHq6ew==
+X-Received: by 2002:a0c:db8a:: with SMTP id m10mr28459995qvk.29.1626756604256;
+        Mon, 19 Jul 2021 21:50:04 -0700 (PDT)
+Received: from PWN (104-9-124-193.lightspeed.sntcca.sbcglobal.net. [104.9.124.193])
+        by smtp.gmail.com with ESMTPSA id h66sm2791863qkc.47.2021.07.19.21.50.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 21:50:03 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 00:50:00 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Zefang Han <hanzefang@gmail.com>,
+        Wei Lin Chang <r09922117@csie.ntu.edu.tw>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] docs: x86: Remove obsolete information about x86_64
+ vmalloc() faulting
+Message-ID: <20210720045000.GA2211@PWN>
+References: <20210622031910.141262-1-yepeilin.cs@gmail.com>
+ <20210716060958.GA2197@PWN>
+ <YPVxV/KdDBqgTaqE@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPVxV/KdDBqgTaqE@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When driver requests to allocate irq affinity managed vectors,
-pci_alloc_irq_vectors_affinity() may fallback to single vector
-allocation. In this situation, we don't need to call
-irq_create_affinity_masks for calling into ->calc_sets() for
-avoiding potential memory leak, so add the helper for this purpose.
+Hi Joerg,
 
-Fixes: c66d4bd110a1 ("genirq/affinity: Add new callback for (re)calculating interrupt sets")
-Reported-by: Bjorn Helgaas <helgaas@kernel.org>
-Cc: linux-pci@vger.kernel.org
-Cc: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
-V2:
-	- move WARN_ON_ONCE() into irq_affinity_calc_sets
-	- don't install default calc_sets() callback as suggested by
-	  Christoph
+On Mon, Jul 19, 2021 at 02:34:31PM +0200, Joerg Roedel wrote:
+> On Fri, Jul 16, 2021 at 02:09:58AM -0400, Peilin Ye wrote:
+> > This information is out-of-date, and it took me quite some time of
+> > ftrace'ing before I figured it out...  I think it would be beneficial to
+> > update, or at least remove it.
+> > 
+> > As a proof that I understand what I am talking about, on my x86_64 box:
+> > 
+> >   1. I allocated a vmalloc() area containing linear address `addr`;
+> >   2. I manually pagewalked `addr` in different page tables, including
+> >      `init_mm.pgd`;
+> >   3. The corresponding PGD entries for `addr` in different page tables,
+> >      they all immediately pointed at the same PUD table (my box uses
+> >      4-level paging), at the same physical address;
+> >   4. No "lazy synchronization" via page fault handling happened at all,
+> >      since it is the same PUD table pre-allocated by
+> >      preallocate_vmalloc_pages() during boot time.
+> 
+> Yes, this is the story for x86-64, because all PUD/P4D pages for the vmalloc
+> area are pre-allocated at boot. So no faulting or synchronization needs
+> to happen.
+> 
+> On x86-32 this is a bit different. Pre-allocation of PMD/PTE pages is
+> not an option there (even less when 4MB large-pages with 2-level paging
+> come into the picture).
+> 
+> So what happens there is that vmalloc related changes to the init_mm.pgd
+> are synchronized to all page-tables in the system. But this
+> synchronization is subject to race conditions in a way that another CPU
+> might vmalloc an area below a PMD which is not fully synchronized yet.
+> 
+> When this happens there is a fault, which is handled as a vmalloc()
+> fault on x86-32 just as before. So vmalloc faults still exist on 32-bit,
+> they are just less likely as they used to be.
 
- drivers/pci/msi.c         |  3 ++-
- include/linux/interrupt.h |  7 +++++++
- kernel/irq/affinity.c     | 28 +++++++++++++++++-----------
- 3 files changed, 26 insertions(+), 12 deletions(-)
+Thanks a lot for the information!  I will improve my commit message and
+send a v2 soon.
 
-diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-index 9232255c8515..4e6fbdf0741c 100644
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -1224,7 +1224,8 @@ int pci_alloc_irq_vectors_affinity(struct pci_dev *dev, unsigned int min_vecs,
- 			 * for the single interrupt case.
- 			 */
- 			if (affd)
--				irq_create_affinity_masks(1, affd);
-+				irq_affinity_calc_sets(1, affd);
-+
- 			pci_intx(dev, 1);
- 			return 1;
- 		}
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 2ed65b01c961..c7ff84d60465 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -340,6 +340,7 @@ irq_create_affinity_masks(unsigned int nvec, struct irq_affinity *affd);
- 
- unsigned int irq_calc_affinity_vectors(unsigned int minvec, unsigned int maxvec,
- 				       const struct irq_affinity *affd);
-+int irq_affinity_calc_sets(unsigned int affvecs, struct irq_affinity *affd);
- 
- #else /* CONFIG_SMP */
- 
-@@ -391,6 +392,12 @@ irq_calc_affinity_vectors(unsigned int minvec, unsigned int maxvec,
- 	return maxvec;
- }
- 
-+static inline int irq_affinity_calc_sets(unsigned int affvecs,
-+					 struct irq_affinity *affd)
-+{
-+	return 0;
-+}
-+
- #endif /* CONFIG_SMP */
- 
- /*
-diff --git a/kernel/irq/affinity.c b/kernel/irq/affinity.c
-index 4d89ad4fae3b..addd04d68d42 100644
---- a/kernel/irq/affinity.c
-+++ b/kernel/irq/affinity.c
-@@ -405,6 +405,22 @@ static void default_calc_sets(struct irq_affinity *affd, unsigned int affvecs)
- 	affd->set_size[0] = affvecs;
- }
- 
-+int irq_affinity_calc_sets(unsigned int affvecs, struct irq_affinity *affd)
-+{
-+	/*
-+	 * Simple invocations do not provide a calc_sets() callback. Call
-+	 * the generic one.
-+	 */
-+	if (!affd->calc_sets)
-+		default_calc_sets(affd, affvecs);
-+	else
-+		affd->calc_sets(affd, affvecs);
-+
-+	if (WARN_ON_ONCE(affd->nr_sets > IRQ_AFFINITY_MAX_SETS))
-+		return -ERANGE;
-+	return 0;
-+}
-+
- /**
-  * irq_create_affinity_masks - Create affinity masks for multiqueue spreading
-  * @nvecs:	The total number of vectors
-@@ -429,17 +445,7 @@ irq_create_affinity_masks(unsigned int nvecs, struct irq_affinity *affd)
- 	else
- 		affvecs = 0;
- 
--	/*
--	 * Simple invocations do not provide a calc_sets() callback. Install
--	 * the generic one.
--	 */
--	if (!affd->calc_sets)
--		affd->calc_sets = default_calc_sets;
--
--	/* Recalculate the sets */
--	affd->calc_sets(affd, affvecs);
--
--	if (WARN_ON_ONCE(affd->nr_sets > IRQ_AFFINITY_MAX_SETS))
-+	if (irq_affinity_calc_sets(affvecs, affd))
- 		return NULL;
- 
- 	/* Nothing to assign? */
--- 
-2.31.1
+I think for this patch, removing that out-of-date statement is
+sufficient, since mm.rst is x86-64-specific, but maybe we should
+document this behavior for x86-32 somewhere as well...
+
+Thank you,
+Peilin Ye
 
