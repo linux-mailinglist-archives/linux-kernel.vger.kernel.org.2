@@ -2,147 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988F23CF1E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 971423CF1EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235176AbhGTBaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 21:30:02 -0400
-Received: from mga12.intel.com ([192.55.52.136]:12590 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242605AbhGTB2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 21:28:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="190749826"
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="190749826"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 19:08:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="453891974"
-Received: from allen-box.sh.intel.com ([10.239.159.118])
-  by orsmga007.jf.intel.com with ESMTP; 19 Jul 2021 19:08:34 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     will@kernel.org, robin.murphy@arm.com,
-        Georgi Djakov <quic_c_gdjako@quicinc.com>,
-        chenxiang <chenxiang66@hisilicon.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 3/3] iommu/vt-d: Move clflush'es from iotlb_sync_map() to map_pages()
-Date:   Tue, 20 Jul 2021 10:06:15 +0800
-Message-Id: <20210720020615.4144323-4-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210720020615.4144323-1-baolu.lu@linux.intel.com>
-References: <20210720020615.4144323-1-baolu.lu@linux.intel.com>
+        id S241504AbhGTBac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 21:30:32 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:35672 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S242083AbhGTB1A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 21:27:00 -0400
+X-UUID: 77655248267e4d199c82af3a1ebba31a-20210720
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ttqP5SP7Nx2GRTcelHSglyFAHET3dzB0AdI8DouZgsc=;
+        b=azURQ8psTBxX5dAqnrmtcCh0YJGlpJ0PweS3R6SxkwoHH+G8GILROLOK+Wn1d9bFY8z59IDCvJBs3A1SUH9IAQl+BGOaURM7/5PbLLZketKy011L0on43Ghi8tmu3fKtCGXwgvLe85j0C3Qxy825Z4Ooyairm94ctNMzKhBKafE=;
+X-UUID: 77655248267e4d199c82af3a1ebba31a-20210720
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <chuanjia.liu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1464592333; Tue, 20 Jul 2021 10:07:26 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 20 Jul 2021 10:07:24 +0800
+Received: from [10.17.3.153] (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 20 Jul 2021 10:07:24 +0800
+Message-ID: <1626746843.2466.10.camel@mhfsdcap03>
+Subject: Re: [PATCH v11 1/4] dt-bindings: PCI: mediatek: Update the Device
+ tree bindings
+From:   Chuanjia Liu <chuanjia.liu@mediatek.com>
+To:     Rob Herring <robh@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     <linux-kernel@vger.kernel.org>, <jianjun.wang@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <ryder.lee@mediatek.com>,
+        <linux-pci@vger.kernel.org>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        <devicetree@vger.kernel.org>, <yong.wu@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 20 Jul 2021 10:07:23 +0800
+In-Reply-To: <20210719224718.GA2766057@robh.at.kernel.org>
+References: <20210719073456.28666-1-chuanjia.liu@mediatek.com>
+         <20210719073456.28666-2-chuanjia.liu@mediatek.com>
+         <20210719224718.GA2766057@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the Intel VT-d driver has switched to use the iommu_ops.map_pages()
-callback, multiple pages of the same size will be mapped in a call.
-There's no need to put the clflush'es in iotlb_sync_map() callback.
-Move them back into __domain_mapping() to simplify the code.
-
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/iommu.c | 48 ++++++-------------------------------
- 1 file changed, 7 insertions(+), 41 deletions(-)
-
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 6114dac8777d..8c116fe071a2 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2331,9 +2331,9 @@ static int
- __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
- 		 unsigned long phys_pfn, unsigned long nr_pages, int prot)
- {
-+	struct dma_pte *first_pte = NULL, *pte = NULL;
- 	unsigned int largepage_lvl = 0;
- 	unsigned long lvl_pages = 0;
--	struct dma_pte *pte = NULL;
- 	phys_addr_t pteval;
- 	u64 attr;
- 
-@@ -2366,6 +2366,8 @@ __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
- 			pte = pfn_to_dma_pte(domain, iov_pfn, &largepage_lvl);
- 			if (!pte)
- 				return -ENOMEM;
-+			first_pte = pte;
-+
- 			/* It is large page*/
- 			if (largepage_lvl > 1) {
- 				unsigned long end_pfn;
-@@ -2413,14 +2415,14 @@ __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
- 		 * recalculate 'pte' and switch back to smaller pages for the
- 		 * end of the mapping, if the trailing size is not enough to
- 		 * use another superpage (i.e. nr_pages < lvl_pages).
--		 *
--		 * We leave clflush for the leaf pte changes to iotlb_sync_map()
--		 * callback.
- 		 */
- 		pte++;
- 		if (!nr_pages || first_pte_in_page(pte) ||
--		    (largepage_lvl > 1 && nr_pages < lvl_pages))
-+		    (largepage_lvl > 1 && nr_pages < lvl_pages)) {
-+			domain_flush_cache(domain, first_pte,
-+					   (void *)pte - (void *)first_pte);
- 			pte = NULL;
-+		}
- 	}
- 
- 	return 0;
-@@ -5561,39 +5563,6 @@ static bool risky_device(struct pci_dev *pdev)
- 	return false;
- }
- 
--static void clflush_sync_map(struct dmar_domain *domain, unsigned long clf_pfn,
--			     unsigned long clf_pages)
--{
--	struct dma_pte *first_pte = NULL, *pte = NULL;
--	unsigned long lvl_pages = 0;
--	int level = 0;
--
--	while (clf_pages > 0) {
--		if (!pte) {
--			level = 0;
--			pte = pfn_to_dma_pte(domain, clf_pfn, &level);
--			if (WARN_ON(!pte))
--				return;
--			first_pte = pte;
--			lvl_pages = lvl_to_nr_pages(level);
--		}
--
--		if (WARN_ON(!lvl_pages || clf_pages < lvl_pages))
--			return;
--
--		clf_pages -= lvl_pages;
--		clf_pfn += lvl_pages;
--		pte++;
--
--		if (!clf_pages || first_pte_in_page(pte) ||
--		    (level > 1 && clf_pages < lvl_pages)) {
--			domain_flush_cache(domain, first_pte,
--					   (void *)pte - (void *)first_pte);
--			pte = NULL;
--		}
--	}
--}
--
- static void intel_iommu_iotlb_sync_map(struct iommu_domain *domain,
- 				       unsigned long iova, size_t size)
- {
-@@ -5603,9 +5572,6 @@ static void intel_iommu_iotlb_sync_map(struct iommu_domain *domain,
- 	struct intel_iommu *iommu;
- 	int iommu_id;
- 
--	if (!dmar_domain->iommu_coherency)
--		clflush_sync_map(dmar_domain, pfn, pages);
--
- 	for_each_domain_iommu(iommu_id, dmar_domain) {
- 		iommu = g_iommus[iommu_id];
- 		__mapping_notify_one(iommu, dmar_domain, pfn, pages);
--- 
-2.25.1
+T24gTW9uLCAyMDIxLTA3LTE5IGF0IDE2OjQ3IC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gTW9uLCAxOSBKdWwgMjAyMSAxNTozNDo1MyArMDgwMCwgQ2h1YW5qaWEgTGl1IHdyb3RlOg0K
+PiA+IFRoZXJlIGFyZSB0d28gaW5kZXBlbmRlbnQgUENJZSBjb250cm9sbGVycyBpbiBNVDI3MTIg
+YW5kIE1UNzYyMg0KPiA+IHBsYXRmb3JtLiBFYWNoIG9mIHRoZW0gc2hvdWxkIGNvbnRhaW4gYW4g
+aW5kZXBlbmRlbnQgTVNJIGRvbWFpbi4NCj4gPiANCj4gPiBJbiBvbGQgZHRzIGFyY2hpdGVjdHVy
+ZSwgTVNJIGRvbWFpbiB3aWxsIGJlIGluaGVyaXRlZCBmcm9tIHRoZSByb290DQo+ID4gYnJpZGdl
+LCBhbmQgYWxsIG9mIHRoZSBkZXZpY2VzIHdpbGwgc2hhcmUgdGhlIHNhbWUgTVNJIGRvbWFpbi4N
+Cj4gPiBIZW5jZSB0aGF0LCB0aGUgUENJZSBkZXZpY2VzIHdpbGwgbm90IHdvcmsgcHJvcGVybHkg
+aWYgdGhlIGlycSBudW1iZXINCj4gPiB3aGljaCByZXF1aXJlZCBpcyBtb3JlIHRoYW4gMzIuDQo+
+ID4gDQo+ID4gU3BsaXQgdGhlIFBDSWUgbm9kZSBmb3IgTVQyNzEyIGFuZCBNVDc2MjIgcGxhdGZv
+cm0gdG8gY29tcGx5IHdpdGgNCj4gPiB0aGUgaGFyZHdhcmUgZGVzaWduIGFuZCBmaXggTVNJIGlz
+c3VlLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IENodWFuamlhIExpdSA8Y2h1YW5qaWEubGl1
+QG1lZGlhdGVrLmNvbT4NCj4gPiBBY2tlZC1ieTogUnlkZXIgTGVlIDxyeWRlci5sZWVAbWVkaWF0
+ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAuLi4vYmluZGluZ3MvcGNpL21lZGlhdGVrLXBjaWUtY2Zn
+LnlhbWwgICAgICAgfCAgMzkgKysrKw0KPiA+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9wY2kv
+bWVkaWF0ZWstcGNpZS50eHQgfCAyMDYgKysrKysrKysrKy0tLS0tLS0tDQo+ID4gIDIgZmlsZXMg
+Y2hhbmdlZCwgMTUwIGluc2VydGlvbnMoKyksIDk1IGRlbGV0aW9ucygtKQ0KPiA+ICBjcmVhdGUg
+bW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9tZWRpYXRl
+ay1wY2llLWNmZy55YW1sDQo+ID4gDQo+IA0KPiANCj4gUGxlYXNlIGFkZCBBY2tlZC1ieS9SZXZp
+ZXdlZC1ieSB0YWdzIHdoZW4gcG9zdGluZyBuZXcgdmVyc2lvbnMuIEhvd2V2ZXIsDQo+IHRoZXJl
+J3Mgbm8gbmVlZCB0byByZXBvc3QgcGF0Y2hlcyAqb25seSogdG8gYWRkIHRoZSB0YWdzLiBUaGUg
+dXBzdHJlYW0NCj4gbWFpbnRhaW5lciB3aWxsIGRvIHRoYXQgZm9yIGFja3MgcmVjZWl2ZWQgb24g
+dGhlIHZlcnNpb24gdGhleSBhcHBseS4NCj4gDQo+IElmIGEgdGFnIHdhcyBub3QgYWRkZWQgb24g
+cHVycG9zZSwgcGxlYXNlIHN0YXRlIHdoeSBhbmQgd2hhdCBjaGFuZ2VkLg0KPiANCkhpLFJvYg0K
+SSBoYXZlIGRlc2NyaWJlZCBpbiB0aGUgY292ZXIgbGV0dGVyOg0KdjExOlJlYmFzZSBmb3IgNS4x
+NC1yYzEgYW5kIGFkZCAiaW50ZXJydXB0LW5hbWVzIiwgImxpbnV4LHBjaS1kb21haW4iIA0KICAg
+IGRlc2NyaXB0aW9uIGluIGJpbmRpbmcgZmlsZS4gTm8gY29kZSBjaGFuZ2UuDQppZiB5b3Ugc3Rp
+bGwgb2sgZm9yIHRoaXMsIEkgd2lsbCBhZGQgUi1iIGluIG5leHQgdmVyc2lvbi4NCg0KQmVzdCBy
+ZWdhcmRzDQo+IA0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXw0KPiBMaW51eC1tZWRpYXRlayBtYWlsaW5nIGxpc3QNCj4gTGludXgtbWVkaWF0ZWtAbGlz
+dHMuaW5mcmFkZWFkLm9yZw0KPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW1lZGlhdGVrDQoNCg==
 
