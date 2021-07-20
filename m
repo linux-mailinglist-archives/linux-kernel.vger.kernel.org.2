@@ -2,105 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789D73CF9C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA6F3CF9C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbhGTL6L convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Jul 2021 07:58:11 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3437 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhGTL6I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:58:08 -0400
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GTdJN0CSYz6J7CM;
-        Tue, 20 Jul 2021 20:27:16 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 14:38:43 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Tue, 20 Jul 2021 14:38:43 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        "paul@paul-moore.com" <paul@paul-moore.com>
-CC:     "stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>,
-        "prsriva02@gmail.com" <prsriva02@gmail.com>,
-        "tusharsu@linux.microsoft.com" <tusharsu@linux.microsoft.com>,
-        "nramas@linux.microsoft.com" <nramas@linux.microsoft.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Subject: RE: [PATCH v3 2/3] ima: Return int in the functions to measure a
- buffer
-Thread-Topic: [PATCH v3 2/3] ima: Return int in the functions to measure a
- buffer
-Thread-Index: AQHXcX2Ei9vr21t1tkWOaZ1ebtrZQatKtK2AgAEtQtA=
-Date:   Tue, 20 Jul 2021 12:38:43 +0000
-Message-ID: <bd953894da3041d5969da645db2f982e@huawei.com>
-References: <20210705090922.3321178-1-roberto.sassu@huawei.com>
-         <20210705090922.3321178-3-roberto.sassu@huawei.com>
- <2f4920dbdb16156e1af5cf78f592a5cf07ec3176.camel@linux.ibm.com>
-In-Reply-To: <2f4920dbdb16156e1af5cf78f592a5cf07ec3176.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S238284AbhGTMAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:00:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236193AbhGTL72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 07:59:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14A2E61209
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 12:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626784807;
+        bh=j5yVgUcbPHo9edWrwfukxKJRljArTBYReyh1q8GZdBs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=i2UbOfBgZahLU5oZHcy8xfhCmwtSLiE38CoeUbTaM7a0Qyjd+lynHPFItMnu+awu2
+         XPzU9u6C83A5j/HsVvQKQM7NGPcMdlKhWJmInEsgppF4iKBbxGE3gxWxyQ+TAZ0+If
+         rzulp6ApCaalvE6Z/fiO9gNNPW/QTEXXv00ezjjs9JpQv6wN3h11+G5hqBcNM/LLWN
+         kL1beiTmW3cS7Fydh4+JQTM6YEYmhGXH5DvL8BZugsu604aShJQjQbB9aeFeRNaSPb
+         5zv8b0pAXQiagXtKsl353tcPqUb7zO2Z57pLVdG5q6eRmUHgxRy1ZzwHpokaXcgy9H
+         zdgGmMK98H4cA==
+Received: by mail-oi1-f172.google.com with SMTP id y66so14908876oie.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 05:40:07 -0700 (PDT)
+X-Gm-Message-State: AOAM533BVzqrPk5oM7vty8lEz6xvO9snHk7rBJftsdVT4SwzvllkhpNV
+        4poX4kfZ3KbRBIzEUjNVffTCz0y3wZmWvjGYwmM=
+X-Google-Smtp-Source: ABdhPJznCVFG5AVEcej6pWCLuP8cHM9+9oqtLT/DitSVAeRRS1AIHXu2wfgZgjTZstv04lK9BZUf9hoBKzTnupH4WmE=
+X-Received: by 2002:aca:4c49:: with SMTP id z70mr20356509oia.174.1626784806378;
+ Tue, 20 Jul 2021 05:40:06 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210720123512.8740-1-will@kernel.org>
+In-Reply-To: <20210720123512.8740-1-will@kernel.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 20 Jul 2021 14:39:55 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXECb+yvrCegNUu35=K0Drbr6hDoM1_or9b13QPPiCW4fw@mail.gmail.com>
+Message-ID: <CAMj1kXECb+yvrCegNUu35=K0Drbr6hDoM1_or9b13QPPiCW4fw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Fix arm64 boot regression in 5.14
+To:     Will Deacon <will@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Marc Zyngier <maz@kernel.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Monday, July 19, 2021 10:28 PM
-> Hi Roberto,
-> 
-> On Mon, 2021-07-05 at 11:09 +0200, Roberto Sassu wrote:
-> > ima_measure_critical_data() and process_buffer_measurement() currently
-> > don't return a result. A caller wouldn't be able to know whether those
-> > functions were executed successfully.
-> 
-> Missing is an explanation as to why these functions aren't currently
-> returning a result.   The LSM/IMA hooks only return a negative result
-> for failure to appraise a file's integrity, not measure a file.  Only
-> failure to appraise a file's integrity results in preventing the file
-> from being read/executed/mmaped.  Other failures are only audited.
+On Tue, 20 Jul 2021 at 14:35, Will Deacon <will@kernel.org> wrote:
+>
+> Hi folks,
+>
+> Jonathan reports [1] that commit c742199a014d ("mm/pgtable: add stubs
+> for {pmd/pub}_{set/clear}_huge") breaks the boot on arm64 when huge
+> mappings are used to map the kernel linear map but the VA size is
+> configured such that PUDs are folded. This is because the non-functional
+> pud_set_huge() stub is used to create the linear map, which results in
+> 1GB holes and a fatal data abort when the kernel attemps to access them.
+>
+> Digging further into the issue, it also transpired that huge-vmap is
+> silently disabled in these configurations as well [2], despite working
+> correctly in 5.13. The latter issue causes the pgtable selftests to
+> scream due to a failing consistency check [3].
+>
+> Rather than leave mainline in a terminally broken state for arm64 while
+> we figure this out, revert the offending commit to get things working
+> again. Unfortunately, reverting the change in isolation causes a build
+> breakage for 32-bit PowerPC 8xx machines which recently started relying
+> on the problematic stubs to support pte-level huge-vmap entries [4].
+> Since Christophe is away at the moment, this series first reverts the
+> PowerPC 8xx change in order to avoid breaking the build.
+>
+> I would really like this to land for -rc3 and I can take these via the
+> arm64 fixes queue if the PowerPC folks are alright with them.
+>
+> Cheers,
+>
+> Will
+>
+> [1] https://lore.kernel.org/r/20210717160118.9855-1-jonathan@marek.ca
+> [2] https://lore.kernel.org/r/20210719104918.GA6440@willie-the-truck
+> [3] https://lore.kernel.org/r/CAMuHMdXShORDox-xxaeUfDW3wx2PeggFSqhVSHVZNKCGK-y_vQ@mail.gmail.com/
+> [4] https://lore.kernel.org/r/8b972f1c03fb6bd59953035f0a3e4d26659de4f8.1620795204.git.christophe.leroy@csgroup.eu/
+>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Jonathan Marek <jonathan@marek.ca>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Nicholas Piggin <npiggin@gmail.com
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-arm-kernel@lists.infradead.org
+>
+> --->8
+>
+> Jonathan Marek (1):
+>   Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge"
+>
+> Will Deacon (1):
+>   Revert "powerpc/8xx: add support for huge pages on VMAP and VMALLOC"
+>
 
-Hi Mimi
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 
-ok, will add it.
 
-> > This patch modifies the return type from void to int, and returns 0 if the
-> > buffer has been successfully measured, a negative value otherwise.
-> 
-> Needed here is an explanation as to why ima_measure_critical_data() is
-> special.
-
-We don't want to unnecessarily calculate the digest twice.
-
-> > Also, this patch does not modify the behavior of existing callers by
-> > processing the returned value. For those, the return value is ignored.
-> 
-> I agree that the existing behavior shouldn't change, but will this
-> result in the bots complaining?
-
-If I remember correctly, I didn't get any error even with W=1.
-
-Thanks
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> thanks,
-> 
-> Mimi
-
+>  arch/arm64/mm/mmu.c                          | 20 ++++-----
+>  arch/powerpc/Kconfig                         |  2 +-
+>  arch/powerpc/include/asm/nohash/32/mmu-8xx.h | 43 --------------------
+>  arch/x86/mm/pgtable.c                        | 34 +++++++---------
+>  include/linux/pgtable.h                      | 26 +-----------
+>  5 files changed, 25 insertions(+), 100 deletions(-)
+>
+> --
+> 2.32.0.402.g57bb445576-goog
+>
