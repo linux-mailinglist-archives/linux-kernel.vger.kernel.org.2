@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494AE3CF7F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5243CF826
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237754AbhGTJw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 05:52:57 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:39334 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237496AbhGTJvm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 05:51:42 -0400
-X-UUID: 5c065068862d4c1aad0d01e95df3bc07-20210720
-X-UUID: 5c065068862d4c1aad0d01e95df3bc07-20210720
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 468062627; Tue, 20 Jul 2021 18:32:15 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 20 Jul 2021 18:32:08 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- MTKCAS06.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 20 Jul 2021 18:32:01 +0800
-From:   <guangming.cao@mediatek.com>
-To:     <christian.koenig@amd.com>
-CC:     <dri-devel@lists.freedesktop.org>, <guangming.cao@mediatek.com>,
-        <linaro-mm-sig@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
-        <sumit.semwal@linaro.org>, <wsd_upstream@mediatek.com>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: [PATCH v2] dma_buf: remove dmabuf sysfs teardown before release
-Date:   Tue, 20 Jul 2021 18:31:58 +0800
-Message-ID: <20210720103158.83439-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <8d7dfc78-aa85-48b5-2828-21ec6b463ac3@amd.com>
-References: <8d7dfc78-aa85-48b5-2828-21ec6b463ac3@amd.com>
+        id S236679AbhGTKCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:02:15 -0400
+Received: from mail.wangsu.com ([123.103.51.227]:53411 "EHLO wangsu.com"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237492AbhGTKAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 06:00:54 -0400
+X-Greylist: delayed 492 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Jul 2021 06:00:47 EDT
+Received: from fedora33.wangsu.com (unknown [59.61.78.138])
+        by app2 (Coremail) with SMTP id 4zNnewC3vflPpvZgeSECAA--.2921S2;
+        Tue, 20 Jul 2021 18:32:53 +0800 (CST)
+From:   Lin Feng <linf@wangsu.com>
+To:     colyli@suse.de
+Cc:     axboe@kernel.dk, linf@wangsu.com, linux-kernel@vger.kernel.org,
+        linux-bcache@vger.kernel.org
+Subject: [PATCH] bcache: fix wrong BITMASK offset value for BDEV_CACHE_MODE
+Date:   Tue, 20 Jul 2021 18:32:46 +0800
+Message-Id: <20210720103246.112027-1-linf@wangsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: 4zNnewC3vflPpvZgeSECAA--.2921S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF4xXw45GF48JF4rtr4ruFg_yoW8GrW3pF
+        yDAr4rtFW0qa4Iyw4kAFy7Wws5Zry3GasayayUW3W5u34xtw1Fq34rua1jyr95C34vkrsI
+        yF1DK3yUGa4UuF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnUUvcSsGvfC2KfnxnUUI43ZEXa7xR_UUUUUUUUU==
+X-CM-SenderInfo: holqwq5zdqw23xof0z/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangming Cao <Guangming.Cao@mediatek.com>
+Original codes:
+BITMASK(CACHE_SYNC,			struct cache_sb, flags, 0, 1);
+BITMASK(CACHE_DISCARD,			struct cache_sb, flags, 1, 1);
+BITMASK(CACHE_REPLACEMENT,		struct cache_sb, flags, 2, 3);
+...
+BITMASK(BDEV_CACHE_MODE,		struct cache_sb, flags, 0, 4);
 
-Dmabuf sysfs stat is used for dmabuf info track.
-But these file maybe still in use after buffer released,
-should clear it before buffer release.
+Should BDEV_CACHE_MODE bits start from bit-nr 5(2+3) else it overlaps
+with previous defined bit chunks, since we have 4 types of cache modes,
+BDEV_CACHE_MODE will overwrite CACHE_SYNC and CACHE_DISCARD bits.
 
-Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+This bug stays there since first upstream version of bcache, don't know
+why it lives so long, or am i missing something, please point me out
+if I'm wrong, thanks!
+
+Signed-off-by: Lin Feng <linf@wangsu.com>
 ---
- drivers/dma-buf/dma-buf.c | 2 +-
+ include/uapi/linux/bcache.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index b1a6db71c656..63d32261b63f 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -76,12 +76,12 @@ static void dma_buf_release(struct dentry *dentry)
- 	 */
- 	BUG_ON(dmabuf->cb_shared.active || dmabuf->cb_excl.active);
+diff --git a/include/uapi/linux/bcache.h b/include/uapi/linux/bcache.h
+index cf7399f03b71..dccd89756451 100644
+--- a/include/uapi/linux/bcache.h
++++ b/include/uapi/linux/bcache.h
+@@ -288,7 +288,7 @@ BITMASK(CACHE_REPLACEMENT,		struct cache_sb, flags, 2, 3);
+ #define CACHE_REPLACEMENT_FIFO		1U
+ #define CACHE_REPLACEMENT_RANDOM	2U
  
-+	dma_buf_stats_teardown(dmabuf);
- 	dmabuf->ops->release(dmabuf);
- 
- 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
- 		dma_resv_fini(dmabuf->resv);
- 
--	dma_buf_stats_teardown(dmabuf);
- 	module_put(dmabuf->owner);
- 	kfree(dmabuf->name);
- 	kfree(dmabuf);
+-BITMASK(BDEV_CACHE_MODE,		struct cache_sb, flags, 0, 4);
++BITMASK(BDEV_CACHE_MODE,		struct cache_sb, flags, 5, 4);
+ #define CACHE_MODE_WRITETHROUGH		0U
+ #define CACHE_MODE_WRITEBACK		1U
+ #define CACHE_MODE_WRITEAROUND		2U
 -- 
-2.17.1
+2.31.1
 
