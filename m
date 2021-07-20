@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16F73CF4B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC0E3CF4B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242893AbhGTGFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 02:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        id S242837AbhGTGFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 02:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242781AbhGTGFF (ORCPT
+        with ESMTP id S233172AbhGTGE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:05:05 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D5EC061574;
-        Mon, 19 Jul 2021 23:45:39 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id j1-20020a0568302701b02904d1f8b9db81so1049038otu.12;
-        Mon, 19 Jul 2021 23:45:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YnlclGx2H59akXwZYD6azkaNZJHqKAqqdcjQ+BfTMl0=;
-        b=EOriryfrZ2broDhPz9Rod56TA0R/dMqA1FgkTHBiSvm/zwHcoHuQnQbSTPUplzgMqE
-         6NGE1tuTNxY5k5rSiaH03Vq6oPn716sjjDEWQL64kuDx968CDuL3h+tCZ9a0DJtiFxKf
-         gmzCRr7/+UJCvCnKebfcy0owVygXkPGaBVGMxLE+Z60JpF14wVmZsa3BQ7JRqhimPRRh
-         ab3atrUiJdBnOd9yJKckKZyyCsJ4rdcNyyZZzMLSaItwbwYPA/UBsbN0vV9GDuFeUFsw
-         qwNgyU8Vl/n6OHt+jnOcLNplJRenDHUEpK0gNQaUK91RX00WVaTo1YOnpLTXSQhgq3j8
-         zNXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YnlclGx2H59akXwZYD6azkaNZJHqKAqqdcjQ+BfTMl0=;
-        b=gR2KCvqlXT+mUM8O2nw99vOq724HW0R17DzMKwp57+p+MUO2RdkeBmdKu6mgHVJFg5
-         cbcJVtwYKawewO5pt7mGqHjUkzNJ5jiGumeLlOU/W5axd/NJsNVDwEwwiDR6cWr2Zq1J
-         ULjUVdyrZAkmzBOV5dStmIi2H2Ufv8xUtF5Ll6DsVr8hFu78BT+ev3MEiAhQ3gDSmppZ
-         +DPjnxWnuQ56UnbGZECUQcLVyDfpA0sUJEHRDTMZ8IHjYDg7lFNpQBXm0fXC6XdzkqLU
-         Tf1eRyO19+629zgiUk6BFoqM741KJYm2DGJkG2/SImATviUk/Otr4N9fwjcGA19eZMoz
-         9S2g==
-X-Gm-Message-State: AOAM531v8+QZCyyLs5TpnKXfV8Cn5IOU0ziHofIfbY7WunmiYRYJmKW9
-        P/xZBovAtmZ9XrWDjhp7OjKrDUr4c4AYGlhafzLEnzdhBC6aLcI=
-X-Google-Smtp-Source: ABdhPJy4rXeOXr3aSDOKhPbHWEJWZV7pqAFvI/x6R1yMP1VISKGJ65cl5P0jd+oum/KevJu9IRS+OvfbNiRipMNR3lY=
-X-Received: by 2002:a05:6830:1dfc:: with SMTP id b28mr21199807otj.282.1626763538753;
- Mon, 19 Jul 2021 23:45:38 -0700 (PDT)
+        Tue, 20 Jul 2021 02:04:59 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCB4C061574;
+        Mon, 19 Jul 2021 23:45:36 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GTTk51m7tz9sWc;
+        Tue, 20 Jul 2021 16:45:32 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626763534;
+        bh=A3vTUNzLQ/dSKpV+4mS7Ecw8d5D8VBPyIwlPcuGY6+g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tMhFlZygkcppI5W6KEnKyB6lFw641jqSfZD0w1visFPNGDCCnZH+xuDvviFVLAGcY
+         dfr64gb2yfqGSQjZG8/U6FM4/VfctC7GZNvEaE+OmebHTYjGtkGwpHdDtUOmHUoQ3N
+         CGCi/nu/+iHwquggcq2o3uRQjFNzLxzQKQNAR+AXFvg1hwhc7cILV0Xmx3YYeiHn3b
+         lEqYp0EPAhEOu+ydjwkLCL4aNrgAhU9Qg2CDL/Ts6bL9oImd1KydXpFujIpQtdqiY1
+         dwIzrodGVan6kLua+qxZWvAy5w+y0KVWKX1U8KFo7Iyac6Q4xwUSqGZRwt1Xnb1sBg
+         dbg8fekdvDpbw==
+Date:   Tue, 20 Jul 2021 16:45:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: linux-next: build failure in Linus' tree
+Message-ID: <20210720164531.3f122a89@canb.auug.org.au>
+In-Reply-To: <20210715095032.6897f1f6@canb.auug.org.au>
+References: <20210715095032.6897f1f6@canb.auug.org.au>
 MIME-Version: 1.0
-References: <1626235762-2590-1-git-send-email-zheyuma97@gmail.com> <YPXJW9N66U2gm2CD@ravnborg.org>
-In-Reply-To: <YPXJW9N66U2gm2CD@ravnborg.org>
-From:   Zheyu Ma <zheyuma97@gmail.com>
-Date:   Tue, 20 Jul 2021 14:45:27 +0800
-Message-ID: <CAMhUBjmjncenfiaH55NYRNVZOaWQXNjyaBBnudLfpz+GnGP6Nw@mail.gmail.com>
-Subject: Re: [PATCH v2] video: fbdev: kyro: fix a DoS bug by restricting user input
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/lT48fSUp7ookLJZB0iiHQ+E";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 2:50 AM Sam Ravnborg <sam@ravnborg.org> wrote:
->
-> Hi Zheyu,
-> On Wed, Jul 14, 2021 at 04:09:22AM +0000, Zheyu Ma wrote:
-> > The user can pass in any value to the driver through the 'ioctl'
-> > interface. The driver dost not check, which may cause DoS bugs.
-> >
-> > The following log reveals it:
-> >
-> > divide error: 0000 [#1] PREEMPT SMP KASAN PTI
-> > RIP: 0010:SetOverlayViewPort+0x133/0x5f0 drivers/video/fbdev/kyro/STG4000OverlayDevice.c:476
-> > Call Trace:
-> >  kyro_dev_overlay_viewport_set drivers/video/fbdev/kyro/fbdev.c:378 [inline]
-> >  kyrofb_ioctl+0x2eb/0x330 drivers/video/fbdev/kyro/fbdev.c:603
-> >  do_fb_ioctl+0x1f3/0x700 drivers/video/fbdev/core/fbmem.c:1171
-> >  fb_ioctl+0xeb/0x130 drivers/video/fbdev/core/fbmem.c:1185
-> >  vfs_ioctl fs/ioctl.c:48 [inline]
-> >  __do_sys_ioctl fs/ioctl.c:753 [inline]
-> >  __se_sys_ioctl fs/ioctl.c:739 [inline]
-> >  __x64_sys_ioctl+0x19b/0x220 fs/ioctl.c:739
-> >  do_syscall_64+0x32/0x80 arch/x86/entry/common.c:46
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >
-> > Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-> > ---
-> > Changes in v2:
-> >     - Validate the inputs on a higher level
->
-> Much better, thanks.
-> When a line is continued like here the statement shall aling with the
-> opening brace. I fixed it up when applying the patch to drm-misc-next so
-> no need to do anything this time.
+--Sig_/lT48fSUp7ookLJZB0iiHQ+E
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your kind reminder, I will pay attention next time.
+Hi all,
 
-Regards,
-Zheyu Ma
+On Thu, 15 Jul 2021 09:50:32 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> While compiling Linus' tree, a powerpc-allmodconfig build (and others)
+> with gcc 4.9 failed like this:
+>=20
+> drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c: In function 'ifh_e=
+ncode_bitfield':
+> include/linux/compiler_types.h:328:38: error: call to '__compiletime_asse=
+rt_431' declared with attribute error: Unsupported width, must be <=3D 40
+>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>                                       ^
+> include/linux/compiler_types.h:309:4: note: in definition of macro '__com=
+piletime_assert'
+>     prefix ## suffix();    \
+>     ^
+> include/linux/compiler_types.h:328:2: note: in expansion of macro '_compi=
+letime_assert'
+>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>   ^
+> drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c:28:2: note: in expa=
+nsion of macro 'compiletime_assert'
+>   compiletime_assert(width <=3D 40, "Unsupported width, must be <=3D 40");
+>   ^
+>=20
+> Caused by commit
+>=20
+>   f3cad2611a77 ("net: sparx5: add hostmode with phylink support")
+>=20
+> I guess this is caused by the call to ifh_encode_bitfield() not being
+> inlined.
+
+I am still getting these failures.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/lT48fSUp7ookLJZB0iiHQ+E
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD2cQsACgkQAVBC80lX
+0Gy7cgf/XEQ1Z1IfJzG1mFqFnRZkSpqiX1sy7/P1OyK6W4Sa8SkIzBEBRcTQwGoc
+0RGaqwRdhSocX1rZaaQ2sO1xjzceHeWM2HCMbt2Toy+xJl+tGvyJRf6/YMuII/hS
+CX08QjZNxjNm5RnNWlY2vf9cjIkgi/tY5WNbf3GLnDWxKLlgnO3fTaNr0qZqeHqu
+W4NwQYeUoPkyZMB5tTvc78pe+UE3l+DtfBWYx9BwIzuP5ahJqGj9yaEk5+vu+byh
+DkFFuqN9ooKR4OXriIPxy/y//C0bGTxbMN/Ts1M7hVoujpHrTk9nl2w4Z0SqUcD0
+j95bo38K3CVAaxlpJLYJ6m6TdCejQw==
+=Etnj
+-----END PGP SIGNATURE-----
+
+--Sig_/lT48fSUp7ookLJZB0iiHQ+E--
