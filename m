@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFEA3CF630
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1163CF637
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234562AbhGTHy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:54:59 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15850 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234314AbhGTHyX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:54:23 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16K8X8nm082229;
-        Tue, 20 Jul 2021 04:34:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Kmd0NCneQRO+ciEUF6cKsoYHvG4BwX5CNaYsPFWuCUo=;
- b=EfaApuk3JH7dlqLqYcfhNN6Fz0oJdpSCGrfchAzBOXmhejt/Jyz0+vKgh8OcbFxuxZcS
- 0owW5r9cUqsybMwL771Xm9Jquwwf1T84gpe3t8S6igyxfeWflG9VxRpo8yUyLRarrK0+
- c/seHPFzmZijsNALCoOer84jsaIbM3tFfU4u38llLJtA6V7wEZtSrFA6ej+aKLncO6lz
- nyn9moQaQ44RC0LZKAolEk42rQotp64MTyAc1KKL13CHHaU7VVLStieS1LWBJrAEOfYx
- BO5/12RYjQ+b9+q1Qaa+wbHV+4DGi+2112cBh1ITlcMc5QGiiZTiJTzDYnWKNqAbGstd /g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39wr5d53hk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 04:34:54 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16K8YHE9087688;
-        Tue, 20 Jul 2021 04:34:53 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39wr5d53gk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 04:34:53 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16K8YThI027499;
-        Tue, 20 Jul 2021 08:34:52 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 39upu88ntg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 08:34:51 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16K8YnR717105304
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Jul 2021 08:34:49 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 550F8A4051;
-        Tue, 20 Jul 2021 08:34:49 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F3509A4040;
-        Tue, 20 Jul 2021 08:34:48 +0000 (GMT)
-Received: from sig-9-145-150-42.de.ibm.com (unknown [9.145.150.42])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 20 Jul 2021 08:34:48 +0000 (GMT)
-Message-ID: <bd731ed627344a3a2eaeffabff21d499c4e2c3fd.camel@linux.ibm.com>
-Subject: Re: [PATCH] PCI: Move pci_dev_is/assign_added() to pci.h
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-arch@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 20 Jul 2021 10:34:48 +0200
-In-Reply-To: <20210719121148.2403239-1-schnelle@linux.ibm.com>
-References: <20210719121148.2403239-1-schnelle@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: NH8bXqJo4bUpl19zSPOzUDOvoHBldX6w
-X-Proofpoint-ORIG-GUID: 5VMbc7ngO_SRBHdTLdoT6EIGkyIDvx33
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-20_04:2021-07-19,2021-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 mlxlogscore=999 priorityscore=1501 bulkscore=0
- malwarescore=0 mlxscore=0 spamscore=0 adultscore=0 suspectscore=0
- phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2107200051
+        id S234700AbhGTHzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:55:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234420AbhGTHyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 03:54:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFB3C611EF;
+        Tue, 20 Jul 2021 08:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626770110;
+        bh=vNxMCTznwpbJiAUJa7hf9jYlEIb/HWnfH0bHXTkY6mk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cxxH0ysLvCEQiQ21zHOTlgwbCv5MDJ+DAr1Bbx32hRq4sMs1LTyxXil2sAq6EUeFM
+         xGo92BzY3o3I3dHibAv//UeZ0j5HmSgeXpP36InStUXHZt+sVpCCzoLOKaZx6SU2L9
+         WRmUwlTFuALS/7+agLOpSxEwi9IH4pTum4u/t4PybjNeJ70Urd7JhTwn5WN1JceF9D
+         RbUs3luPZLKFFoxPn5bpqd3VdCui+8mYoWFB2YYGczwhbEnwe99R/Dc5UuYdZ93CUQ
+         GvAo6SpYTrBwqN26i1SNjFjU5EuwhKlLAe7RhHvv9doVjedJFobezj2hWFWv/9Z3ZB
+         KmKJl3zWs7m9w==
+Date:   Tue, 20 Jul 2021 11:35:07 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Wenpeng Liang <liangwenpeng@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next 8/9] RDMA: Globally allocate and release QP
+ memory
+Message-ID: <YPaKu4ppS0Bz6fW1@unreal>
+References: <cover.1626609283.git.leonro@nvidia.com>
+ <5b3bff16da4b6f925c872594262cd8ed72b301cd.1626609283.git.leonro@nvidia.com>
+ <abfc0d32-eab8-97d4-5734-508b6c46fe98@amazon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <abfc0d32-eab8-97d4-5734-508b6c46fe98@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-07-19 at 14:11 +0200, Niklas Schnelle wrote:
-> The helper function pci_dev_is_added() from drivers/pci/pci.h is used in
-> PCI arch code of both s390 and powerpc leading to awkward relative
-> includes. Move it to the global include/linux/pci.h and get rid of these
-> includes just for that one function.
+On Mon, Jul 19, 2021 at 04:42:11PM +0300, Gal Pressman wrote:
+> On 18/07/2021 15:00, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > Convert QP object to follow IB/core general allocation scheme.
+> > That change allows us to make sure that restrack properly kref
+> > the memory.
+> > 
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 > 
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> ---
-> 
-... snip ...
->  
->  static LIST_HEAD(bridge_list);
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 93dcdd431072..a159cd0f6f05 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -383,21 +383,6 @@ static inline bool pci_dev_is_disconnected(const struct pci_dev *dev)
->  	return dev->error_state == pci_channel_io_perm_failure;
->  }
->  
-> -/* pci_dev priv_flags */
-> -#define PCI_DEV_ADDED 0
-> -#define PCI_DPC_RECOVERED 1
-> -#define PCI_DPC_RECOVERING 2
+> EFA and core parts look good to me.
+> Reviewed-by: Gal Pressman <galpress@amazon.com>
+> Tested-by: Gal Pressman <galpress@amazon.com>
 
-Sorry, the above two PCI_DPC_* lines should remain in drivers/pci/pci.h
-I messed this up on rebasing to v5.14-rc1 and it didn't lead to
-problems on either s390x defconfig, nor pp64_defconfig but breaks ppc
-allyesconfig. Will resend a fixed version.
+Thanks a lot.
 
 > 
+> > +static inline void *rdma_zalloc_obj(struct ib_device *dev, size_t size,
+> > +				    gfp_t gfp, bool is_numa_aware)
+> > +{
+> > +	if (is_numa_aware && dev->ops.get_numa_node)
+> 
+> Honestly I think it's better to return an error if a numa aware allocation is
+> requested and get_numa_node is not provided.
 
-.. snip ..
+We don't want any driver to use and implement ".get_numa_node()" callback.
 
+Initially, I thought about adding WARN_ON(driver_id != HFI && .get_numa_node)
+to the device.c, but decided to stay with comment in ib_verbs.h only.
+
+> 
+> > +		return kzalloc_node(size, gfp, dev->ops.get_numa_node(dev));
+> > +
+> > +	return kzalloc(size, gfp);
+> > +}
