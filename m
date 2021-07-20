@@ -2,141 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EC33D04A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 00:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF0E3D04AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 00:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhGTVv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 17:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
+        id S231378AbhGTVvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 17:51:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbhGTVvD (ORCPT
+        with ESMTP id S229886AbhGTVvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 17:51:03 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26A8C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 15:31:39 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id y4so725793pfi.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 15:31:39 -0700 (PDT)
+        Tue, 20 Jul 2021 17:51:32 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7FCC061574;
+        Tue, 20 Jul 2021 15:32:08 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id n1so49094wri.10;
+        Tue, 20 Jul 2021 15:32:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AUrpqM7EFCXw9fZsFBephub57NHu0f56SMcR8ChIC2w=;
-        b=Xf67p1gIpTUa0N9bF53hw4Pso0MHOTykJkzRFBpE6Liqej39JSMiNH/yQGUIUlvrlq
-         BIXMpPa7XCxUib8ZcXcNx8kghXf0V3BijM/fTIGAzWNk45BB2s0ZQ4pkvWM8oxYYhfYL
-         4+unUB5lFyqAW183cAe1BcUGRmzWZU8tBCzK3VC47os2coH4Lb/Os99Fo9i/2uAmevrk
-         TzLsFgcQg0DSOnqLzToknLUTZrAA3BMRS4A1fHCLsRZtGT1XX0znha6Aja3xonwxm0pv
-         BYYbRNzfFe1iXBpuuhSQauwXaHJYY58Ml8gw6j3skd4C1vsEYU9AcuHBUQVQnjVAtVMF
-         tj8w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=AUq62xTOdEE9yZyZ9SmyAw/53N8FF+p9iTgcqqLGQAc=;
+        b=Xjb45xC/ATHW+Ja5+SAtaovYI7YvU3BVBREZpvHqi2Yr36Ug5CxT2Jh9jHTQ+rO4Wk
+         a1dEGmIcFSKewgblnu3ieGcW5eAdwzbnQEyK5YiC5xoDqz9Y2kQTOFpYSEKDj39l9oHb
+         qsxvHJI/jTpQ1do86Tv8jXattuEFUhdgiLT7Zuaodl9GhsCb/rlxyTLnC4t6AItH06D4
+         Cv6/rUqLqW7oUYjUoNPccMLs+AqQwXB/FBK3SPaymFuYwEWimmJ/0001IEd277kUFi1W
+         derIw/mOzJQhUQhR/TNjaRsNAK+DxgHfEAmqtfIPWjlk4Pfj7fh9g+shZ2+cfPL1McEG
+         aa9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AUrpqM7EFCXw9fZsFBephub57NHu0f56SMcR8ChIC2w=;
-        b=C88MUNzWt1KEipscN+nWFRT6mzBhplPAKxz5ROVtS0l5ukGgvIrrwTB4WH9FDG3s1R
-         BZ6EA2IR2r9wze9Ll2pIcQfA+OsTrP/T+W6ag6EhP7yzvdJgovSkARynQhY/81LK0/+O
-         XqwZm6kIkDwwMkfqS09/111sYqTasfzWg2vD+SY0tx6pZrA7l0Pz9b5BNWYMgD0fgKp0
-         C5V/0/9B7kJ6KOOXB46mwXWfLTBQmFq9Q04u1IupPX80ZWI/EkFmfJDrsUhOboBsoAiZ
-         8ashYmKZEewogmCdIFYDIeOXKA1JAACvgp5PiRxfrVba3G5frfslQp/FygMM8QTblQDY
-         BOnQ==
-X-Gm-Message-State: AOAM533W5/m0r5wuIZlxGQfb0I2J0l04pQTUptnVNnq8sQmNGrOZvjdO
-        KW+gJfWQ3VOlM1EdvLSdips6sw==
-X-Google-Smtp-Source: ABdhPJyGCIJWkhxVxYTObBcNLjwnF+6O7AyjvJyweoOlaa1ix7nfiAIzNUmYXM3xG7qIUTl6T+uQxg==
-X-Received: by 2002:aa7:804f:0:b029:334:4951:da88 with SMTP id y15-20020aa7804f0000b02903344951da88mr27399387pfm.29.1626820298460;
-        Tue, 20 Jul 2021 15:31:38 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 202sm27151546pfy.198.2021.07.20.15.31.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 15:31:37 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 22:31:34 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 37/40] KVM: SVM: Add support to handle the
- RMP nested page fault
-Message-ID: <YPdOxrIA6o3uymq2@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-38-brijesh.singh@amd.com>
- <YPYUe8hAz5/c7IW9@google.com>
- <bff43050-aed7-011c-89e5-9899bd1df414@amd.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AUq62xTOdEE9yZyZ9SmyAw/53N8FF+p9iTgcqqLGQAc=;
+        b=YnZE5Ln1K+AgRPMDczZVE2oRhNw9qXRpm4n34KXC2tk6mSJ4BAgDXB2v3l3uHVTUpI
+         Uxv/COtB5qe2aHM5cf4wKFjEEnnMlAg+3YaQUSoDqWkVlIYwvBBPxHNpgkGElZrnBmfx
+         7Pujycg5yRe189HVZZUC3SAJWgfSCuiu8XH8IwX00MIj0CdTOFsMQWaj4TS0LVdYsleC
+         A4C6rM2GnIV27XAqyan4iy7rcqdoBoQoPG4U6IilPs2dDWXEm0bchNCytGL5C+mdeVrV
+         ur2khKHV8RNIc5HrzYXhY+wj9eMihqFcBK5YYe0RR2pgEwQNA4nk7PyuQql9/ExZ7BN0
+         1n7Q==
+X-Gm-Message-State: AOAM5303aV+mVnYZx1fJRXu1jfCxYj06NH6r/fF6NGa/698YmqBYzwb+
+        SCxzjYzAqtKbNBKHxR+1p1rNpp0LMSHPKrrzjeE=
+X-Google-Smtp-Source: ABdhPJxRCaU0mgbRBKXCUtmzHce0yeXRyivNRpNTgJgdzNX98VwZiuLceogME2jUho6sOGR5XAEUBw+FRtjqHARE+DE=
+X-Received: by 2002:a5d:4e43:: with SMTP id r3mr38668459wrt.132.1626820326738;
+ Tue, 20 Jul 2021 15:32:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bff43050-aed7-011c-89e5-9899bd1df414@amd.com>
+References: <20210720150716.1213775-1-robdclark@gmail.com> <60ffb6f3-e932-d9af-3b90-81adf0c15250@gmail.com>
+ <CAF6AEGtOW3EjZWo36ij8U1om=gAqvg8CSkJJq2GkyHFGWUH4kQ@mail.gmail.com> <CAKMK7uF1=Y6_9znGoWG8GrteXBBRmyW8C3bFE+eJQqOj0A1buA@mail.gmail.com>
+In-Reply-To: <CAKMK7uF1=Y6_9znGoWG8GrteXBBRmyW8C3bFE+eJQqOj0A1buA@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 20 Jul 2021 15:36:14 -0700
+Message-ID: <CAF6AEGsOVPdMkXwU9C+nDfQpPThveJ2A0jbXi43RRkkJKtnz3w@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH] drm/msm: Add fence->wait() op
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Sean Paul <sean@poorly.run>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021, Brijesh Singh wrote:
-> 
-> On 7/19/21 7:10 PM, Sean Christopherson wrote:
-> > On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> > > Follow the recommendation from APM2 section 15.36.10 and 15.36.11 to
-> > > resolve the RMP violation encountered during the NPT table walk.
-> > 
-> > Heh, please elaborate on exactly what that recommendation is.  A recommendation
-> > isn't exactly architectural, i.e. is subject to change :-)
-> 
-> I will try to expand it :)
-> 
-> > 
-> > And, do we have to follow the APM's recommendation?
-> 
-> Yes, unless we want to be very strict on what a guest can do.
-> 
-> > Specifically, can KVM treat #NPF RMP violations as guest errors, or is that
-> > not allowed by the GHCB spec?
-> 
-> The GHCB spec does not say anything about the #NPF RMP violation error. And
-> not all #NPF RMP is a guest error (mainly those size mismatch etc).
-> 
-> > I.e. can we mandate accesses be preceded by page state change requests?
-> 
-> This is a good question, the GHCB spec does not enforce that a guest *must*
-> use page state. If the page state changes is not done by the guest then it
-> will cause #NPF and its up to the hypervisor to decide on what it wants to
-> do.
+On Tue, Jul 20, 2021 at 1:55 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Tue, Jul 20, 2021 at 8:26 PM Rob Clark <robdclark@gmail.com> wrote:
+> >
+> > On Tue, Jul 20, 2021 at 11:03 AM Christian K=C3=B6nig
+> > <ckoenig.leichtzumerken@gmail.com> wrote:
+> > >
+> > > Hi Rob,
+> > >
+> > > Am 20.07.21 um 17:07 schrieb Rob Clark:
+> > > > From: Rob Clark <robdclark@chromium.org>
+> > > >
+> > > > Somehow we had neither ->wait() nor dma_fence_signal() calls, and n=
+o
+> > > > one noticed.  Oops.
+> > >
+> > >
+> > > I'm not sure if that is a good idea.
+> > >
+> > > The dma_fence->wait() callback is pretty much deprecated and should n=
+ot
+> > > be used any more.
+> > >
+> > > What exactly do you need that for?
+> >
+> > Well, the alternative is to track the set of fences which have
+> > signalling enabled, and then figure out which ones to signal, which
+> > seems like a lot more work, vs just re-purposing the wait
+> > implementation we already have for non-dma_fence cases ;-)
+> >
+> > Why is the ->wait() callback (pretty much) deprecated?
+>
+> Because if you need it that means for your driver dma_fence_add_cb is
+> broken, which means a _lot_ of things don't work. Like dma_buf poll
+> (compositors have patches to start using that), and I think
+> drm/scheduler also becomes rather unhappy.
 
-Drat.  Is there any hope of pushing through a GHCB change to require the guest
-to use PSC?
+I'm starting to page back in how this works.. fence cb's aren't broken
+(which is also why dma_fence_wait() was not completely broken),
+because in retire_submits() we call
+dma_fence_is_signaled(submit->hw_fence).
 
-> > It would simplify KVM (albeit not much of a simplificiation) and would also
-> > make debugging easier since transitions would require an explicit guest
-> > request and guest bugs would result in errors instead of random
-> > corruption/weirdness.
-> 
-> I am good with enforcing this from the KVM. But the question is, what fault
-> we should inject in the guest when KVM detects that guest has issued the
-> page state change.
+But the reason that the custom wait function cleans up a tiny bit of
+jank is that the wait_queue_head_t gets signaled earlier, before we
+start iterating the submits and doing all that retire_submit() stuff
+(unpin/unref bo's, etc).  I suppose I could just split things up to
+call dma_fence_signal() earlier, and *then* do the retire_submits()
+stuff.
 
-Injecting a fault, at least from KVM, isn't an option since there's no architectural
-behavior we can leverage.  E.g. a guest that isn't enlightened enough to properly
-use PSC isn't going to do anything useful with a #MC or #VC.
+BR,
+-R
 
-Sadly, as is I think our only options are to either automatically convert RMP
-entries as need, or to punt the exit to userspace.  Maybe we could do both, e.g.
-have a module param to control the behavior?  The problem with punting to userspace
-is that KVM would also need a way for userspace to fix the issue, otherwise we're
-just taking longer to kill the guest :-/
+> It essentially exists only for old drivers where ->enable_signalling
+> is unreliable and we paper over that with a retry loop in ->wait and
+> pray no one notices that it's too butchered. The proper fix is to have
+> a driver thread to guarantee that ->enable_signalling works reliable,
+> so you don't need a ->wait.
+>
+> Can you type up a kerneldoc patch for dma_fence_ops->wait to hammer
+> this in please?
+> -Daniel
+>
+> >
+> > BR,
+> > -R
+> >
+> > > Regards,
+> > > Christian.
+> > >
+> > > >
+> > > > Note that this removes the !timeout case, which has not been used i=
+n
+> > > > a long time.
+> > >
+> > >
+> > > >
+> > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > ---
+> > > >   drivers/gpu/drm/msm/msm_fence.c | 59 +++++++++++++++++++---------=
+-----
+> > > >   1 file changed, 34 insertions(+), 25 deletions(-)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/=
+msm_fence.c
+> > > > index cd59a5918038..8ee96b90ded6 100644
+> > > > --- a/drivers/gpu/drm/msm/msm_fence.c
+> > > > +++ b/drivers/gpu/drm/msm/msm_fence.c
+> > > > @@ -38,11 +38,10 @@ static inline bool fence_completed(struct msm_f=
+ence_context *fctx, uint32_t fenc
+> > > >       return (int32_t)(fctx->completed_fence - fence) >=3D 0;
+> > > >   }
+> > > >
+> > > > -/* legacy path for WAIT_FENCE ioctl: */
+> > > > -int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> > > > -             ktime_t *timeout, bool interruptible)
+> > > > +static signed long wait_fence(struct msm_fence_context *fctx, uint=
+32_t fence,
+> > > > +             signed long remaining_jiffies, bool interruptible)
+> > > >   {
+> > > > -     int ret;
+> > > > +     signed long ret;
+> > > >
+> > > >       if (fence > fctx->last_fence) {
+> > > >               DRM_ERROR_RATELIMITED("%s: waiting on invalid fence: =
+%u (of %u)\n",
+> > > > @@ -50,33 +49,34 @@ int msm_wait_fence(struct msm_fence_context *fc=
+tx, uint32_t fence,
+> > > >               return -EINVAL;
+> > > >       }
+> > > >
+> > > > -     if (!timeout) {
+> > > > -             /* no-wait: */
+> > > > -             ret =3D fence_completed(fctx, fence) ? 0 : -EBUSY;
+> > > > +     if (interruptible) {
+> > > > +             ret =3D wait_event_interruptible_timeout(fctx->event,
+> > > > +                     fence_completed(fctx, fence),
+> > > > +                     remaining_jiffies);
+> > > >       } else {
+> > > > -             unsigned long remaining_jiffies =3D timeout_to_jiffie=
+s(timeout);
+> > > > -
+> > > > -             if (interruptible)
+> > > > -                     ret =3D wait_event_interruptible_timeout(fctx=
+->event,
+> > > > -                             fence_completed(fctx, fence),
+> > > > -                             remaining_jiffies);
+> > > > -             else
+> > > > -                     ret =3D wait_event_timeout(fctx->event,
+> > > > -                             fence_completed(fctx, fence),
+> > > > -                             remaining_jiffies);
+> > > > -
+> > > > -             if (ret =3D=3D 0) {
+> > > > -                     DBG("timeout waiting for fence: %u (completed=
+: %u)",
+> > > > -                                     fence, fctx->completed_fence)=
+;
+> > > > -                     ret =3D -ETIMEDOUT;
+> > > > -             } else if (ret !=3D -ERESTARTSYS) {
+> > > > -                     ret =3D 0;
+> > > > -             }
+> > > > +             ret =3D wait_event_timeout(fctx->event,
+> > > > +                     fence_completed(fctx, fence),
+> > > > +                     remaining_jiffies);
+> > > > +     }
+> > > > +
+> > > > +     if (ret =3D=3D 0) {
+> > > > +             DBG("timeout waiting for fence: %u (completed: %u)",
+> > > > +                             fence, fctx->completed_fence);
+> > > > +             ret =3D -ETIMEDOUT;
+> > > > +     } else if (ret !=3D -ERESTARTSYS) {
+> > > > +             ret =3D 0;
+> > > >       }
+> > > >
+> > > >       return ret;
+> > > >   }
+> > > >
+> > > > +/* legacy path for WAIT_FENCE ioctl: */
+> > > > +int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> > > > +             ktime_t *timeout, bool interruptible)
+> > > > +{
+> > > > +     return wait_fence(fctx, fence, timeout_to_jiffies(timeout), i=
+nterruptible);
+> > > > +}
+> > > > +
+> > > >   /* called from workqueue */
+> > > >   void msm_update_fence(struct msm_fence_context *fctx, uint32_t fe=
+nce)
+> > > >   {
+> > > > @@ -114,10 +114,19 @@ static bool msm_fence_signaled(struct dma_fen=
+ce *fence)
+> > > >       return fence_completed(f->fctx, f->base.seqno);
+> > > >   }
+> > > >
+> > > > +static signed long msm_fence_wait(struct dma_fence *fence, bool in=
+tr,
+> > > > +             signed long timeout)
+> > > > +{
+> > > > +     struct msm_fence *f =3D to_msm_fence(fence);
+> > > > +
+> > > > +     return wait_fence(f->fctx, fence->seqno, timeout, intr);
+> > > > +}
+> > > > +
+> > > >   static const struct dma_fence_ops msm_fence_ops =3D {
+> > > >       .get_driver_name =3D msm_fence_get_driver_name,
+> > > >       .get_timeline_name =3D msm_fence_get_timeline_name,
+> > > >       .signaled =3D msm_fence_signaled,
+> > > > +     .wait =3D msm_fence_wait,
+> > > >   };
+> > > >
+> > > >   struct dma_fence *
+> > >
+>
+>
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
