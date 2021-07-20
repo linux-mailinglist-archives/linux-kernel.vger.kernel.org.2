@@ -2,81 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5313CF9AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF843CF9AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238261AbhGTLxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 07:53:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238023AbhGTLxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:53:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A260660E0C;
-        Tue, 20 Jul 2021 12:33:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626784417;
-        bh=qSaJndvw0eSPzb1gW9yIAvb9Vq6Nk50WPF3Eeahy8xI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lWEXZznuBByWEWzal9juxO4tCbTpRVgRt2IjaADVVKtIt04801gWWyA5y3l92/yKY
-         I+O2F/oI5fzngTDM4/nXsP8pwdgs9XlNA8foJ5Jw+Vch+GEVZg5dqXHbovzl4WlX2n
-         E2FjuLsBUC7HkPpaioprFRYyn7hfbiyZk8hcDPgrs3qZ47n22yK2pD1BTwWlDn93Mb
-         aAqlmNE24nlUmSMrtZCMzkAD//zwk319AthEwYIdfV/KeBWC71sqcsk4kIhOXsULnP
-         wdLK+lfpHn1oExM8R7xCt1gRANMc2rtfauoKFGmZeLvJbE5ECylm9c5FF1jmtEHrKj
-         mtwR13LjcQQQQ==
-Date:   Tue, 20 Jul 2021 13:33:32 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     alexandru.tachici@analog.com
-Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        nuno.sa@analog.com, bootc@bootc.net, swarren@wwwdotorg.org,
-        bcm-kernel-feedback-list@broadcom.com, rjui@broadcom.com,
-        f.fainelli@gmail.com, nsaenz@kernel.org
-Subject: Re: [PATCH 0/1] spi: spi-bcm2835: Fix deadlock
-Message-ID: <20210720123332.GA5042@sirena.org.uk>
-References: <20210716210245.13240-1-alexandru.tachici@analog.com>
+        id S238319AbhGTLyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 07:54:09 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:12281 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236193AbhGTLxR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 07:53:17 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GTdLg6mXSz7tB7;
+        Tue, 20 Jul 2021 20:29:15 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 20:33:51 +0800
+Received: from [10.174.176.221] (10.174.176.221) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 20:33:50 +0800
+Subject: Re: [PATCH 0/3] optimize the queue idle judgment
+To:     <paolo.valente@linaro.org>, <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20210714094529.758808-1-yukuai3@huawei.com>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <bad3d311-b232-1969-bb16-00ab6a64a951@huawei.com>
+Date:   Tue, 20 Jul 2021 20:33:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FL5UXtIhxfXey3p5"
-Content-Disposition: inline
-In-Reply-To: <20210716210245.13240-1-alexandru.tachici@analog.com>
-X-Cookie: Revenge is a meal best served cold.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210714094529.758808-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.221]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/07/14 17:45, Yu Kuai wrote:
+> bfqq might plug I/O dispatch when it remains temporarily empty while
+> being served, this will benefit for both sequence io bandwidth and relative
+> sync io control.
+> 
+> This path set tries to extend the two special cases that idle is not
+> needed, and can get better bandwidth.
+> 
+> 1) only one group is activated.
+> 2) when more than one groups are activated, all queues are issuring
+> requests with same size.
+> 
+> Yu Kuai (3):
+>    block, bfq: do not idle if only one cgroup is activated
+>    block, bfq: add support to record request size information
+>    block, bfq: consider request size in bfq_asymmetric_scenario()
+> 
+>   block/bfq-iosched.c | 50 +++++++++++++++++++++++++++++++++++++--------
+>   block/bfq-iosched.h | 16 +++++++++++++++
+>   2 files changed, 57 insertions(+), 9 deletions(-)
+> 
 
---FL5UXtIhxfXey3p5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Jul 17, 2021 at 12:02:44AM +0300, alexandru.tachici@analog.com wrot=
-e:
-> From: Alexandru Tachici <alexandru.tachici@analog.com>
->=20
-> The bcm2835_spi_transfer_one function can create a deadlock
-> if it is called while another thread already has the
-> CCF lock.
-
-Please don't send cover letters for single patches, if there is anything
-that needs saying put it in the changelog of the patch or after the ---
-if it's administrative stuff.  This reduces mail volume and ensures that=20
-any important information is recorded in the changelog rather than being
-lost.=20
-
---FL5UXtIhxfXey3p5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD2wpsACgkQJNaLcl1U
-h9DVKwf/QCjmRsWnwf3OJAbQXENQAPS5Wn3HZaxmBJRq58r7GSxewpaGSlqIeeB0
-xuDUtWVB6l0TLkCbpI2gr/P7JmR+LuCZHOlGHCO/kwRqbf4oFThl1bB74uXhXEPi
-7IH9lZfJE8ScAh6yr8Ji6Iw5Y3RmI62DAgFqC/Oslq1U5MNUX9R5RqcmG9bOrdIw
-X2fSoNQ+6gWvJeMyT77iu6eskYhtacgBn8pt/A/PUivlmi5Dw5UCtZVmB3EU4rFz
-IcH6kYYQmoe+Wj+LxHhzxTecAvQOAuJXW7dbsmfWIIQ06LC8JV3BarrhTQ3xVQ9q
-bG3VVV+Azk+vyGfPj+yr3P6W4aKOOg==
-=hQzo
------END PGP SIGNATURE-----
-
---FL5UXtIhxfXey3p5--
+ping ...
