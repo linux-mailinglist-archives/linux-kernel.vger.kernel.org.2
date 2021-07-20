@@ -2,126 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6583B3CF988
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF983CF984
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237775AbhGTLoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 07:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235590AbhGTLmf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:42:35 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9634C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 05:22:31 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id r11so25761353wro.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 05:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ksJ7uSYre48A5Z7zQktjRchxiOL4w4I/1HgeIzUItlA=;
-        b=ndCld4jhIDxVjs7HgMEcmj8aOHrSU7apEUj9+c/96MWypPqQ4DLLaudBAdx8qDhjRU
-         EnRWhNj1hjJNySeadR7468x5WNDTfkLGjY9fyOxDAwabhSDmI7GZT8RKj4HAqxOVy5eb
-         V7JXw3ikiwb85gB7i2wWWB3wOVNTE/B7cWPDU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ksJ7uSYre48A5Z7zQktjRchxiOL4w4I/1HgeIzUItlA=;
-        b=I6mCeodj4WwHktkcer/awHGTiLxZOCjrK7fW8Sy0gbSeuEVofcJ2XrWC1FCkSJL7VX
-         IakMv5Vyci2qheLkjmwDvFa2Ahs+13pQrWjRUR71Uu//YjENGMq9bg4IFXigZcabhLzX
-         0JGsyu8Ioj5zaxOBvHw9Y8EpOqKfQSx1zdtDWlQ9ahK6bnhXMXzsFiTrYqaVFI0R1OYY
-         F4409Yh4/L9wmFGq9mm2AecSxwla3LUtNH7bKjvs0ch9gUMFRP8dHwKfUnSU+O/Fe37+
-         sbgkDEZcBAPGizt3aDgT7p4qJ+SSGTIKkWqgeRUtEtDLfJh3f8A5H490WmBnlObMgFCa
-         HJew==
-X-Gm-Message-State: AOAM531hOxVsrYzgRmNKQzMZv7dvESZJftrV7zJdCZKV+TrhD08DjJEZ
-        RkNWTGh27GFQRs/cW8T2C8/nJw==
-X-Google-Smtp-Source: ABdhPJw2SeFJ5qG/3zEIy1OkLFkh1ex3OXzZCiHOaa9CuK4hdVjKWkggxbglKSNW/nta4pdn7+Cu0A==
-X-Received: by 2002:a5d:504d:: with SMTP id h13mr35468419wrt.46.1626783750329;
-        Tue, 20 Jul 2021 05:22:30 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:d571])
-        by smtp.gmail.com with ESMTPSA id b6sm2296488wmj.34.2021.07.20.05.22.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 05:22:29 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 13:22:28 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Petr Mladek <pmladek@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the printk tree
-Message-ID: <YPbABBSTkN+xNY0w@chrisdown.name>
-References: <20210720162423.75f61ce0@canb.auug.org.au>
- <YPa/D8tSyk7dw1/l@chrisdown.name>
+        id S237687AbhGTLnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 07:43:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235407AbhGTLmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 07:42:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9668861164;
+        Tue, 20 Jul 2021 12:22:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626783765;
+        bh=YRLjcBlqPGxnu3xGSqaltTSQ92aKXDwWqXW2BW/djd8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NPZ4cfCH2/QnEkLnTe8nyWmaJD9PRK01bggfFSdcQBzmdqrKZEkJs84HG06yA+Qwd
+         epd5Q81sv2+8nfQ9/P5i4cQ/bBWC3FLNbfQbR7Fo1KrAxojWJJoXDZh0L3ElTxDZVh
+         aa5nNQ+9uzOCULt8kH4XhVBQXyNJyy+Rvtvo5KT5FJtfPD5MU3ygCZgau6i7WNY0OY
+         U3zWyFLnzawiOAflK1CGrptof3SA1JPp+HLDML80ZxG5r/sXGbKHjp3NznQRW5qglh
+         ReVpCNq8ETRcQVJVaYAPUrOyCY/RZMZM3Jzxg1zTsAXyhn+oc5T5fDs3u3ok9GETtW
+         m6kTbN5xFADeQ==
+Date:   Tue, 20 Jul 2021 17:52:41 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     Robin Gong <yibin.gong@nxp.com>, broonie@kernel.org,
+        shawnguo@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        mark.rutland@arm.com, robh+dt@kernel.org, catalin.marinas@arm.com,
+        will.deacon@arm.com, festevam@gmail.com, s.hauer@pengutronix.de,
+        martin.fuzzey@flowbird.group, u.kleine-koenig@pengutronix.de,
+        dan.j.williams@intel.com, matthias.schiffer@ew.tq-group.com,
+        frieder.schrempf@kontron.de, m.felsch@pengutronix.de,
+        xiaoning.wang@nxp.com
+Subject: Re: [PATCH v16 00/12] add ecspi ERR009165 for i.mx6/7 soc family
+Message-ID: <YPbAEbcOzBrK2KfB@matsya>
+References: <1626258052-22198-1-git-send-email-yibin.gong@nxp.com>
+ <8f8a307a2dc99ca3beab2767ac3188b4ba1a394f.camel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6qWCzA76C1K43s0/"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YPa/D8tSyk7dw1/l@chrisdown.name>
-User-Agent: Mutt/2.1 (4b100969) (2021-06-12)
+In-Reply-To: <8f8a307a2dc99ca3beab2767ac3188b4ba1a394f.camel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14-07-21, 11:05, Lucas Stach wrote:
+> Hi Vinod, Mark, Shawn,
+> 
+> with this revision I think this series is ready to be picked up, at
+> least I couldn't spot any blockers anymore.
+> 
+> How would you like to deal with this? While the complete series is
+> needed to fix the issues and restore proper DMA functionality on
+> unaffected SoCs, there are no dependencies between the patches
+> targeting different subsystems.
+> Do you prefer to pick dma/spi/dt patches from this series in your
+> respective trees, or do you want the whole series to go through the imx
+> tree? AFAICS all dma and spi patches are already acked, so taking them
+> through one tree would be possible, I think.
 
---6qWCzA76C1K43s0/
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sure, since you have acks, feel free to merge thru imx6 tree
 
-Chris Down writes:
->+Cc: Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-
-Well, let's actually Cc them this time...
-
->Stephen Rothwell writes:
->>After merging the printk tree, today's linux-next build (htmldocs)
->>produced this warning:
->>
->>kernel/printk/printk.c:1: warning: 'printk' not found
->>
->>Introduced by commit
->>
->> 337015573718 ("printk: Userspace format indexing support")
->>
->>I presume that "printk" is referred to elsewhere in the documentation
->>as being in this file.
->
->Hmm, this is an interesting one, because I think we still generally=20
->just want to refer to the API as being `printk()`. Changing it all=20
->over the place seems wrong. As you'd imagine, there are quite a few=20
->references to this name, so it requires a lot of noise all over the=20
->docs and inline comments.
->
->Jonathan and other docs folks, how can one tell Sphinx that when it=20
->sees printk() it's referring to a function-like macro, or otherwise=20
->squelch this reasonably? :-)
-
-
-
---6qWCzA76C1K43s0/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQKTBAEBCgB9FiEECEkprPvCOwsaJqhB340hthYRgHAFAmD2wARfFIAAAAAALgAo
-aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldDA4
-NDkyOUFDRkJDMjNCMEIxQTI2QTg0MURGOEQyMUI2MTYxMTgwNzAACgkQ340hthYR
-gHBJPg/9FofzESIRIFMJw31dlL3MkNdldr6Q3dhJOOcB5y9OazjDUv8wZjVaoyor
-feQz6IsjdtcWLYRzzq+42CsQEyLfRChPOBUKWJw9aQrlDlLv9bZfLGYaYlNNc77H
-naEq+gX4pNWepLcg5rFE8gVh9cQzlCYJHLIqHl/EJhN2Ql3yu34JowtTeOfbEBV8
-s4LX55PvjHbjpODD40WtENJB9t9PsT038QkoJNtRSn5TIwtoh+pyYT+jhVDBX7OV
-lhQPz8g7XUB44JdVinjX1KTfzQ1hxhycXjnh8JDqkdeeQEA7yJeGfC4rUZJVqQBe
-CcQg7Z+NJZhvySqDULxk9nvaep3r6wT1EabO6DcXmOLUfVW2MNfwLuyvnBq6cUxL
-YOE2/Annbr+YudIamxW6xoz2SndnP5RpwAOy1odqpaVDEtWi0UuWY1RD8Jo+NRUn
-sieFrKlssa6khSnGhsTok8bUqut249XKYOmVxA/wAfY6pgrXqVwoEEygombE+GLQ
-6xSn5otVN4u7KX266joNvuglAlrRBvnNiSA3u1JvlTBRkQBtSAvjfKwkEfcqGcTJ
-bpWJP3/1cx0qoXo75ldhAM1A+ItI8iQ6ndcWLwXFXqw1xCzm2rtCO1o3ovbAuFBz
-eqVd8AxOw12bSeEpZLjmtlIGNmW9G9hzq8xpsii4URyjMAu/k2Q=
-=52+O
------END PGP SIGNATURE-----
-
---6qWCzA76C1K43s0/--
+-- 
+~Vinod
