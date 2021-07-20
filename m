@@ -2,260 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017F13D0278
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 22:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAE63D028A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 22:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233821AbhGTTVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 15:21:20 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:37877 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbhGTTVC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 15:21:02 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id D0275240007;
-        Tue, 20 Jul 2021 20:01:37 +0000 (UTC)
-Date:   Tue, 20 Jul 2021 22:01:37 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Romain Perier <romain.perier@gmail.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/3] rtc: Add support for the MSTAR MSC313 RTC
-Message-ID: <YPcroRmHYEV9BWaJ@piout.net>
-References: <20210720172251.4504-1-romain.perier@gmail.com>
- <20210720172251.4504-3-romain.perier@gmail.com>
+        id S233279AbhGTT0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 15:26:32 -0400
+Received: from mail-mw2nam10on2043.outbound.protection.outlook.com ([40.107.94.43]:60768
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229554AbhGTTZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 15:25:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a2Tg41tTwexHWhLxvgT1KuurmLIe+BeOdHRbtCvhYqzS5MHP6FIYexuQcGjYszmlud0vODK4e9l/bgiIhaF8Mwmr1mgsYIP1IqVnuv+PT/ZDGvidjunBjk4aA1JTJtJKiDk75kLz+zUVYGvMkluvRc0nG7rM1ixBCE+X+N9mOs2JdZoB3AXPc9KmyGGKEXunBZ1DIGI1KkP7QKa3GbubKZmaLBLDNqErq450fmHQZQA2Vi1RMahj0tFyHALhoM6mPLpiCQhL6wcBjz9Mdf3iIT/npdu74ijVw34QaTn8EXtGKL8jG2igSu/Q+QoAcuDUjF16bnFBo0Z0A5eBsqPt9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q+SeTQNPSG5lVB6kD2qA1GHg+mKjGMSM1+9wnMYn2Fg=;
+ b=bJQxPeg4vM4bFVaonrgMtnqmiyXwjjH3tKiV5stSGc86x1TAwtVozbVmcq+9qeJdKbJWWP2OtzoTmutJLm1FveB0Y+VT4DVMpEvY70DF1Q1uoLv1hVijqnO8mSkYoXwvpdEP6rgmb/jjb7mDroWuh2C+pYIkR5jLEr0ohj5y6nV7G7C8sqJM1N1JYLoSLDdM8Mo/FSgAIBN09j/oNMALDad9drQdgs0DHXS6kxWnxSLYP4POkg/FUdD+bqPA/Tqb2d1E1/jKq+9JEjQW0F/3GxvBCMUrIdhsLM/Lq+KPhXjLSllKlnJzyukDg5jDNsLpU7eik2W4joDZmzIE7Umtpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q+SeTQNPSG5lVB6kD2qA1GHg+mKjGMSM1+9wnMYn2Fg=;
+ b=UREJsggq2CgYH8wJI1SeBPEJvB6Jjg3fEyPuRvZgRXs+7QP1lUjDWvot31rIU6kijmYK2o0kfE8e62/q4fBRzLubgJMBXsaoolJkeajOHm2LYQZQAcxD9Mwz2ilU0LrXQNBoJwfv/CsGh/XGLE+WgFKEOkYL/m1SIvhex4jC1aE=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SN1PR12MB2368.namprd12.prod.outlook.com (2603:10b6:802:32::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Tue, 20 Jul
+ 2021 20:06:02 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4331.034; Tue, 20 Jul 2021
+ 20:06:02 +0000
+Cc:     brijesh.singh@amd.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 27/40] KVM: X86: Add kvm_x86_ops to get the
+ max page level for the TDP
+To:     Sean Christopherson <seanjc@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-28-brijesh.singh@amd.com> <YPHbxAVbuFk6Xtkj@google.com>
+ <1ed3c439-a02c-7182-b140-32cddd5e4f34@amd.com> <YPcmJuKHFYjCgpqd@google.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <afa7bd42-ce18-c89e-3f54-cbf197143678@amd.com>
+Date:   Tue, 20 Jul 2021 15:06:00 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <YPcmJuKHFYjCgpqd@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9PR11CA0017.namprd11.prod.outlook.com
+ (2603:10b6:806:6e::22) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210720172251.4504-3-romain.perier@gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.95] (165.204.77.1) by SA9PR11CA0017.namprd11.prod.outlook.com (2603:10b6:806:6e::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Tue, 20 Jul 2021 20:06:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 59c0da7f-26e9-45e8-b7ba-08d94bb9cc76
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2368:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB2368AA507D75DABEBFAE8349E5E29@SN1PR12MB2368.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fqtE5AB1POCPOaQZ3bFRMae/5mC+yByn6wrfaMoZ+19Hqe+orM3RXC6kn8JlEosucKFttdTmBVT2YmvMT8kKIJNf3n+vrv641YQfZjSQrHUia0cEpfiK5PS69k3MRVLL52mtsGJYvNbcJJebTqg1CJ9EW4sTtG27DJfsgmazEYoYMUZtnc+xAOoLqzcIRu3bhZelesqY+9pV1+HRxKay4RxXhY/OWWIad/fZx5kV5V1tyQuxywOF8DwRE+rLwK3IZNUAla8uwtIPj44mrYyLRVzKrpY6yO3KnP5C1z734hzILKnWu1+TVreq0NPfkgOoKAdupo6Dz+lMPtgj8JapAlMJ3AdHi5WMT/0LHTdMuVYhOhnXVPPA/bTvP0mkJn+H66UMpZdMi9iZS4VwmcRw5iGpqe0HGvBnhkMkX1z45pfYYxL77VrebyBFVQ3UMjcQdZ2XEoNL8YE1/8xVz8isu2IzZuFFiDXGBs25CGQZzDutuM0PIqRlPAaz5rB+M3ZJHUgWU8C0DWDNBluTRbRMCHgTOMKVwsw0MakPdu/k9ok5SwnT9f4gBGWpzBiG/jfOzx8qXmIRi2AE/xAShtBFH5GiKp51cHUL+7+H3jW/OOAVnogQ2dRG6jp6nMUxeCrYm08D3pyXwIQcL2VnelcrhJ4qpJEjqLegZaniFjMhuDAssnb3P/xMm9mOercgkbTv8o2Z1lUfr5EEErfJCCvSmoxYKlWnQrkqVirFXrq7sDyvthWxj6nQEd4lnh1z7AdN/RkoUf8ohhdUJOaOTbxtoB9udvmhxCHNjxyAQenwMkQ0Dip1KGZXAhyYLpE7LcX383knreUWnFK1x1/Efub8dULhk1cNVWQC9+ShemjOssENZxV7dxZr65/hk4zse0Ub
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(396003)(366004)(136003)(54906003)(31686004)(956004)(186003)(26005)(66556008)(86362001)(44832011)(66476007)(7406005)(31696002)(66946007)(8676002)(966005)(52116002)(2616005)(53546011)(7416002)(6486002)(4326008)(478600001)(16576012)(83380400001)(36756003)(38100700002)(5660300002)(316002)(45080400002)(2906002)(8936002)(38350700002)(6916009)(15583001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R3dyUHBmdWJBTWE2Wkk3SEU2djZOVzZNd0FxSitJVkpZR3g4azB1STFhRlRP?=
+ =?utf-8?B?OUdDVDIyUldmbXZIOVhzVUFQbUcyTFlrakhUa0Y4bVVIOW1iZ2FEcEdxbW85?=
+ =?utf-8?B?S0UySmxNeXYwVWptNDFIQ2hibG9tYm1qZlBEaEFmS1RZVExzbE55RGliOENU?=
+ =?utf-8?B?L2xlaXBHa3RtazBVd3ZyamViWjAya2oxRmRCTkF0RUdoTzlhUjZEYjV2ZXZZ?=
+ =?utf-8?B?SVZHODVCREwyNXNyanVqVzdvR3NoSXJlQnBvUkRSMmlWOEFOL2NyWk9GVWFM?=
+ =?utf-8?B?Y2xlYzBXOVVSbm0rb1QrVHRCazVIbEs4b3dub0dTOFEwMG9UZndFWE5Yc0h0?=
+ =?utf-8?B?MTd6WTcrbk1RcEUyRmJhK3ZCVGgwTkxKZ3ZuaWpGYkx5d1FaRlg5RmxFVVRF?=
+ =?utf-8?B?a3ByWUhITEJXbGRPTjJ5YURvMVFncXJXM3F1Wkl5NDEzNDZPK2tBdHZTNDFU?=
+ =?utf-8?B?ZmJaaG1kcGY3N0dOc1RHNHh6SjJrb2E1R3c5TW4xdmx6SExrOGNUd2laakEy?=
+ =?utf-8?B?QXlrcW5YcHQ2a0x3VkJWbjhVZUhwTTZranhYVkdJSFhYeVZUOTdoNTJoQ29n?=
+ =?utf-8?B?dEFSb0NYZjdrVWZhTWM3bHJmdEx1SFlIakM5RkQ1dmhZWVBZeHg2dFNYd2dk?=
+ =?utf-8?B?bDkxMm1kODZldW5uUG5DaUdMdFFzdktuSExOMVVCSEtBTS95cnFhbXVza1Z4?=
+ =?utf-8?B?RU1hRzJSdDE0VFBwWEthZ21IY3hCakwwSHF6NzZPU1RjaTU2ekpOc1FiVXM5?=
+ =?utf-8?B?Wkdzb042OFJwd0grekJ0d00rd3IzbTBsQzV3aFpUS1B5VEZWWjZ4TVdkRFZP?=
+ =?utf-8?B?Y1dSUmFycFgzRVBSdmhpczVxUUIxWHplWTJIMVUzZ2VXdUFqOGpIRFI3UWNx?=
+ =?utf-8?B?TEd4TDFhTHhPSGxKVTFYaGdWeWswTTdEQzdzRjBWREdSWjNUSkdXL0tBSHlq?=
+ =?utf-8?B?aVJYVVFyVnphcjk4S3VpVWZwZHBjS0grVWVxbjRJTkdXcHB4YWFBN0ZrRmlS?=
+ =?utf-8?B?ZHNBaGlCeG9MdHhQcTEvOWRLWHdJYmhyTmtKV2txK2JBZEhIaVJGSnJYZFF6?=
+ =?utf-8?B?ajRGNXkvay9xOTFudHVZQTRTMFlVYVpmclJXTmdHcEJBZWxTTGttUDZGVnU2?=
+ =?utf-8?B?ZE1Wcy9mV2Zmbzd1YXBVTlBRRWhFa0NFSXFieVhLOXNvb25iUWVUMXRqdUM2?=
+ =?utf-8?B?OUdlNFowaGJ3NTM1T0xod1dSRldobmVlRVdFekhNZ1dpQkVUSUNxL2NXU0w1?=
+ =?utf-8?B?U0pxNG9aZFl6TkxFZkdQRmpVZ0sxZm1UWjQxdlRZTVpQa3J3bVE3SHJLMzVv?=
+ =?utf-8?B?OW9LV2ZtVVo5aitDRHlGUDVjZEVuMEZKNlZPRTNuM01mVG1NUWlMcGZuU0lK?=
+ =?utf-8?B?K1U1U2w3M2gxVXl1MzBCWXlrSzIzRnozQVRPM1UybWNXVUlXQzV6UUw4VGEy?=
+ =?utf-8?B?Ull1WXdMTEhKV0JMbWRVWWRwdVZYR3BBOWNlQTg4Y2dEYmM4ZWMza21NL2xl?=
+ =?utf-8?B?REczVklxZitnL2d2UEg4RTIzODExZXI5SFdnYVlDUEF5UVhZeFJVS2hQNU5T?=
+ =?utf-8?B?U0hzZUs0ZlBaUktsa1Y1WWNsQnl4UVNBVjVkaW1RZ3A3aUtQSHJaZ29PYlRC?=
+ =?utf-8?B?ZmtyanRiQVhBZU85M1kzaUV2Um1hTXc0MDhVVi9JcVo2YzBWTnZpTlJRQ0E2?=
+ =?utf-8?B?ZUdpMVpMekR1ZXladWlWdW9ON1ZQWWlsZUc1SUh4SCtGd2l6c3RDSDZJMUhm?=
+ =?utf-8?Q?qRM1v3YMvGKcqifWHzBa5yQ0i2sHO1WG/cSKc7P?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59c0da7f-26e9-45e8-b7ba-08d94bb9cc76
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2021 20:06:02.4539
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dQxtMvWqoHP6oU+UcxhCsHxlE2b7XCgXXQo6SAmkw02/YWQrUKqdJs6lJjBZNDdjcCcvkWTjRwSa4uRvCVioeg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2368
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Romain,
 
-On 20/07/2021 19:22:50+0200, Romain Perier wrote:
-> From: Daniel Palmer <daniel@0x0f.com>
+
+On 7/20/21 2:38 PM, Sean Christopherson wrote:
+...
+
 > 
-> This adds support for the RTC block on the Mstar MSC313e SoCs and newer.
+> The other option is to use vm_type, which TDX is already planning on leveraging.
+> Paolo raised the question of whether or not the TDX type could be reused for SNP.
+> We should definitely sort that out before merging either series.  I'm personally
+> in favor of separating TDX and SNP, it seems inevitable that common code will
+> want to differentiate between the two.
+
+Yes, I did saw that and it seems much better.
+
 > 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-> Co-developed-by: Romain Perier <romain.perier@gmail.com>
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> ---
->  MAINTAINERS              |   1 +
->  drivers/rtc/Kconfig      |  10 ++
->  drivers/rtc/Makefile     |   1 +
->  drivers/rtc/rtc-msc313.c | 246 +++++++++++++++++++++++++++++++++++++++
->  4 files changed, 258 insertions(+)
->  create mode 100644 drivers/rtc/rtc-msc313.c
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flkml.kernel.org%2Fr%2F8eb87cd52a89d957af03f93a9ece5634426a7757.1625186503.git.isaku.yamahata%40intel.com&amp;data=04%7C01%7Cbrijesh.singh%40amd.com%7Cb658fcf339234fd9030d08d94bb5edf1%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637624067039647374%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=tdVALNsQGer0Z69%2FyYaRqWYZvH27k%2BmgHdslQlJ7qlU%3D&amp;reserved=0
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 6c8be735cc91..7e8d1a375e0d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2220,6 +2220,7 @@ F:	arch/arm/boot/dts/mstar-*
->  F:	arch/arm/mach-mstar/
->  F:	drivers/clk/mstar/
->  F:	drivers/gpio/gpio-msc313.c
-> +F:	drivers/rtc/rtc-msc313.c
->  F:	drivers/watchdog/msc313e_wdt.c
->  F:	include/dt-bindings/clock/mstar-*
->  F:	include/dt-bindings/gpio/msc313-gpio.h
-> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-> index 12153d5801ce..67870b422bc5 100644
-> --- a/drivers/rtc/Kconfig
-> +++ b/drivers/rtc/Kconfig
-> @@ -1925,4 +1925,14 @@ config RTC_DRV_WILCO_EC
->  	  This can also be built as a module. If so, the module will
->  	  be named "rtc_wilco_ec".
->  
-> +config RTC_DRV_MSC313
-> +	tristate "MStar MSC313 RTC"
-> +        depends on ARCH_MSTARV7
 
-|| COMPILE_TEST maybe ?
+...
 
-> +	help
-> +	  If you say yes here you get support for the Mstar MSC313e On-Chip
-> +	  Real Time Clock.
-> +
-> +	  This driver can also be built as a module, if so, the module
-> +	  will be called "rtc-msc313".
-> +
->  endif # RTC_CLASS
+>>
+>> There is yet another reason why we can't avoid the PSMASH after doing
+>> everything to ensure that NPT and RMP are in sync. e.g if NPT and RMP
+>> are programmed with 2mb size but the guest tries to PVALIDATE the page
+>> as a 4k. In that case, we will see #NPF with page size mismatch and have
+>> to perform psmash.
+> 
+> Boo, there's no way to communicate to the guest that it's doing PVALIDATE wrong
+> is there?
+> 
 
+if the guest chooses smaller page-size then we don't have any means to 
+notify the guest; the hardware will cause an #NPF and its up to the 
+hypervisor to resolve the fault.
 
-> +static int msc313_rtc_read_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	struct msc313_rtc *priv = dev_get_drvdata(dev);
-> +	u32 seconds;
-> +	u16 reg;
-> +
-> +	reg = readw(priv->rtc_base + REG_RTC_CTRL);
-> +	writew(reg | READ_EN_BIT, priv->rtc_base + REG_RTC_CTRL);
-> +
-> +	/* Wait for HW latch done */
-> +	while (readw(priv->rtc_base + REG_RTC_CTRL) & READ_EN_BIT)
-> +		udelay(1);
-> +
-> +	seconds = readw(priv->rtc_base + REG_RTC_CNT_VAL_L)
-> +			| (readw(priv->rtc_base + REG_RTC_CNT_VAL_H) << 16);
-> +
-> +	rtc_time64_to_tm(seconds, tm);
-> +
-> +	return rtc_valid_tm(tm);
+However, if the guest attempts to validate with the larger page-level 
+(e.g guest using 2mb and RMP entry was 4k) then PVALIDATE will return 
+SIZEMISMATCH error to the guest.
 
-This is not necessary, tm is valid at that point (and the core will
-check anyway).
-
-> +}
-> +
-> +static int msc313_rtc_set_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	struct msc313_rtc *priv = dev_get_drvdata(dev);
-> +	unsigned long seconds;
-> +	u16 reg;
-> +
-> +	seconds = rtc_tm_to_time64(tm);
-> +	writew(seconds & 0xFFFF, priv->rtc_base + REG_RTC_LOAD_VAL_L);
-> +	writew((seconds >> 16) & 0xFFFF, priv->rtc_base + REG_RTC_LOAD_VAL_H);
-> +	reg = readw(priv->rtc_base + REG_RTC_CTRL);
-> +	writew(reg | LOAD_EN_BIT, priv->rtc_base + REG_RTC_CTRL);
-> +
-> +	/* need to check carefully if we want to clear REG_RTC_LOAD_VAL_H for customer*/
-> +	while (readw(priv->rtc_base + REG_RTC_CTRL) & LOAD_EN_BIT)
-> +		udelay(1);
-> +	writew(0, priv->rtc_base + REG_RTC_LOAD_VAL_H);
-
-Why is that necessary? The comment is not super useful here.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct rtc_class_ops msc313_rtc_ops = {
-> +	.read_time = msc313_rtc_read_time,
-> +	.set_time = msc313_rtc_set_time,
-> +	.read_alarm = msc313_rtc_read_alarm,
-> +	.set_alarm = msc313_rtc_set_alarm,
-> +	.alarm_irq_enable = msc313_rtc_alarm_irq_enable,
-> +};
-> +
-> +static irqreturn_t msc313_rtc_interrupt(s32 irq, void *dev_id)
-> +{
-> +	struct msc313_rtc *priv = dev_get_drvdata(dev_id);
-> +	u16 reg;
-> +
-> +	reg = readw_relaxed(priv->rtc_base + REG_RTC_CTRL);
-> +	reg |= INT_CLEAR_BIT;
-> +	reg &= ~INT_FORCE_BIT;
-> +	writew_relaxed(reg, priv->rtc_base + REG_RTC_CTRL);
-> +
-
-I'm not convinced the _relaxed functions are doing the right thing here.
-Also, shouldn't you check the alarm actually fired?
-
-> +	rtc_update_irq(priv->rtc_dev, 1, RTC_IRQF | RTC_AF);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int msc313_rtc_remove(struct platform_device *pdev)
-> +{
-> +	struct msc313_rtc *priv = platform_get_drvdata(pdev);
-> +
-> +	clk_disable_unprepare(priv->clk);
-
-With a nice devm_add_action_or_reset() in the probe, you can remove the
-need for msc313_rtc_remove().
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int msc313_rtc_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct msc313_rtc *priv;
-> +	int ret;
-> +	int irq;
-> +	unsigned long rate;
-> +	u16 reg;
-> +
-> +	priv = devm_kzalloc(&pdev->dev, sizeof(struct msc313_rtc), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->rtc_base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(priv->rtc_base))
-> +		return PTR_ERR(priv->rtc_base);
-> +
-> +	irq = platform_get_irq(pdev, 0);
-> +	if (irq < 0)
-> +		return -EINVAL;
-> +
-> +	ret = devm_request_irq(dev, irq, msc313_rtc_interrupt, IRQF_SHARED,
-> +			       dev_name(&pdev->dev), &pdev->dev);
-> +	if (ret) {
-> +		dev_err(dev, "Unable to request irq\n");
-> +		return ret;
-> +	}
-> +
-> +	priv->clk = devm_clk_get(dev, NULL);
-> +	if (IS_ERR(priv->clk)) {
-> +		dev_err(dev, "No input reference clock\n");
-> +		return PTR_ERR(priv->clk);
-> +	}
-> +
-> +	ret = clk_prepare_enable(priv->clk);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to enable the reference clock, %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	rate = clk_get_rate(priv->clk);
-> +
-> +	reg = readw(priv->rtc_base + REG_RTC_CTRL);
-> +	if (!(reg & SOFT_RSTZ_BIT)) {
-> +		reg |= SOFT_RSTZ_BIT;
-> +		writew(reg, priv->rtc_base + REG_RTC_CTRL);
-> +	}
-
-What is the meaning of this bit? I would think it is better to use that
-to know whether the RTC holds the correct time instead of killing the
-info here.
-
-> +
-> +	writew(rate & 0xFFFF, priv->rtc_base + REG_RTC_FREQ_CW_L);
-> +	writew((rate >> 16) & 0xFFFF, priv->rtc_base + REG_RTC_FREQ_CW_H);
-> +
-> +	reg |= CNT_EN_BIT;
-> +	writew(reg, priv->rtc_base + REG_RTC_CTRL);
-> +
-> +	platform_set_drvdata(pdev, priv);
-> +
-> +	priv->rtc_dev = devm_rtc_device_register(dev, dev_name(dev), &msc313_rtc_ops, THIS_MODULE);
-> +	if (IS_ERR(priv->rtc_dev)) {
-> +		dev_err(dev, "Failed to register rtc device\n");
-> +		return PTR_ERR(priv->rtc_dev);
-> +	}
-
-Please switch to devm_rtc_allocate_device and devm_rtc_register_device.
-Also drop the error message, it is not necessary.
-
-You must also set the RTC range. To help you, you can use:
-https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/rtc-tools.git/tree/rtc-range.c
-then you must update the DT bindings as the RTC will support the
-start-year property
-
-You must also run rtctest and should include the results.
-
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+thanks
