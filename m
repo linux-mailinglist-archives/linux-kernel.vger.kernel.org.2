@@ -2,284 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0689D3CFA46
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AEFA3CFA8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237868AbhGTMdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:33:10 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:59554 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234665AbhGTMbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:31:55 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id 9A1F049E66;
-        Tue, 20 Jul 2021 13:12:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-transfer-encoding:mime-version:user-agent:content-type
-        :content-type:organization:references:in-reply-to:date:date:from
-        :from:subject:subject:message-id:received:received:received; s=
-        mta-01; t=1626786733; x=1628601134; bh=LuLCNzNGfwt8kUnjnEU2g04t0
-        RI3nJrdJh13nMXTK8A=; b=ksN3YhX+Fg/zsZANJD6UiHWdKmjSTDlGAtQ1dP0L7
-        XIdazaxIRVXB9IZscT2IzpjYCmzlkzRi7z1JEgo6pWS3ukKCkII9+TWs/lvGN8+h
-        Slo1iNCgYOP6BnV/6P3vfynPyoCnZ7AmR3An2VabO5s2iqqmx6ElXWBglVmM95+V
-        UY=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id DrbFyumWL7I5; Tue, 20 Jul 2021 16:12:13 +0300 (MSK)
-Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id D81FA49E35;
-        Tue, 20 Jul 2021 16:12:09 +0300 (MSK)
-Received: from [10.199.0.81] (10.199.0.81) by T-EXCH-04.corp.yadro.com
- (172.17.100.104) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Tue, 20
- Jul 2021 16:12:09 +0300
-Message-ID: <b1da28a76c249637d6f094b046d851c7622e71d4.camel@yadro.com>
-Subject: Re: [PATCH v2 3/3] net/ncsi: add dummy response handler for Intel
- boards
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     Paul Fertser <fercerpav@gmail.com>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        "Joel Stanley" <joel@jms.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>
-Date:   Tue, 20 Jul 2021 16:21:31 +0300
-In-Reply-To: <20210720094113.GA4789@home.paul.comp>
-References: <20210708122754.555846-1-i.mikhaylov@yadro.com>
-         <20210708122754.555846-4-i.mikhaylov@yadro.com>
-         <20210720094113.GA4789@home.paul.comp>
-Organization: YADRO
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.199.0.81]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-04.corp.yadro.com (172.17.100.104)
+        id S238714AbhGTMtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238530AbhGTMd1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 08:33:27 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9CCEC0613E1;
+        Tue, 20 Jul 2021 06:14:01 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id q15so10332893qtp.0;
+        Tue, 20 Jul 2021 06:14:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=d+FN8BCXq1Njo+3jWyl699IvNI4knnaapCBiI4jANDs=;
+        b=sKV3Sub0ZWw3J1A9H/aM4MCg5TP6Cvdgb2f7j3O/vH1twUs7qUxGwfjlPc0VoLhBhf
+         2S3YMwYU+fYaMmkQNYqu6QhhxGxlprKZxcsoJ22fQ11snxI27MW2ZXHJJ3neqsKVeuIH
+         zvkcT5OIscQO/gbb9s48YC+nIUdo8hh7dEqm9htIbKh1bW/jTrqZr726zllpFT9yRspS
+         2IFTgDPtJt2075MHXgPyv5K1a2C6NuShpJ5v72Cpmp838BXVuFtabI3s8TQjHghL6K78
+         ukovvHU4whQsk5WpK0lihTKtn4eKBwysGwHFlEI8DHeVsSR3ryLtVE2YaWMRq8gt/bOD
+         mIrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=d+FN8BCXq1Njo+3jWyl699IvNI4knnaapCBiI4jANDs=;
+        b=SEOflCUIfvN351FF9g376dyGots2Uds1djylUBXTyahqR6ZkwabHX2pTOPAVTlkQHP
+         6fkfrDejOYz0AvoQahVaW5zM8Es240f4VYNd0KFKJv6y0+oqGplBsK26l+yunFWyFPBp
+         SkIL9ibDswrBodb5pye6aDy1Ly/b7PhYqrs+uMBXgkauZPKDfNqPQSZKzS4ZH5/mIRG/
+         Kyhai86J6fV9drLB9RoZs/FNox+AXRkJ24xTV/ppkvV4sXAMru+PsYbkE6t/giH1fetv
+         XIF4h8LfFBSvMWdIBrQtkejnuIRLPpa3EWMH7/Y8vt6EZGbCyFXIJZoMCkNSQLTULi5+
+         nRmA==
+X-Gm-Message-State: AOAM530/7uV0egHY1EB3AR0DJ/MyQwSYgcEjFMFr+CA4DJVhx4GhKOqi
+        a4BHGy0lxX9YksJNmIE8Yxo=
+X-Google-Smtp-Source: ABdhPJya1WocZ2Abu2uH1JFsFZnGgG+TUYEiCkCCCkaOrXAB7pUilYbjSriLMVokCmVpZDpmD3CNpw==
+X-Received: by 2002:a05:622a:207:: with SMTP id b7mr19490392qtx.377.1626786840957;
+        Tue, 20 Jul 2021 06:14:00 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id g17sm9701225qkm.34.2021.07.20.06.13.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 06:14:00 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        amit@kernel.org, benh@kernel.crashing.org,
+        brendanhiggins@google.com, corbet@lwn.net, david@redhat.com,
+        dwmw@amazon.com, elver@google.com, fan.du@intel.com,
+        foersleo@amazon.de, greg@kroah.com, gthelen@google.com,
+        guoju.fgj@alibaba-inc.com, jgowans@amazon.com, joe@perches.com,
+        mgorman@suse.de, mheyne@amazon.de, minchan@kernel.org,
+        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
+        riel@surriel.com, rientjes@google.com, rostedt@goodmis.org,
+        rppt@kernel.org, shakeelb@google.com, shuah@kernel.org,
+        sieberf@amazon.com, sj38.park@gmail.com, snu@zelle79.org,
+        vbabka@suse.cz, vdavydov.dev@gmail.com, zgf574564920@gmail.com,
+        linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC v3 03/15] damon/core/schemes: Skip already charged targets and regions
+Date:   Tue, 20 Jul 2021 13:12:57 +0000
+Message-Id: <20210720131309.22073-4-sj38.park@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210720131309.22073-1-sj38.park@gmail.com>
+References: <20210720131309.22073-1-sj38.park@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-07-20 at 12:41 +0300, Paul Fertser wrote:
-> Hello,
-> 
-> On Thu, Jul 08, 2021 at 03:27:54PM +0300, Ivan Mikhaylov wrote:
-> > Add the dummy response handler for Intel boards to prevent incorrect
-> > handling of OEM commands.
-> 
-> It would be much nicer if it wasn't dummy but provide means of
-> obtaining the MAC properly, in a similar way to the other supported
-> network cards.
-> 
-> I have a patch I can share but not ready to send for proper mainlining
-> due to time constraints. Feel free to take it over and send as part of
-> your patch series.
-> 
-> From 6c717bbb75442c83bd11b37b7644f9ce187ee7e9 Mon Sep 17 00:00:00 2001
-> From: Brad Ho <Brad_Ho@phoenix.com>
-> Date: Thu, 25 Feb 2021 00:53:03 -0800
-> Subject: [PATCH] Add get MAC address through NCSI command to get INTEL i210
->  MAC address
-> 
-> Signed-off-by: Brad Ho <Brad_Ho@phoenix.com>
-> Signed-off-by: Paul Fertser <fercerpav@gmail.com>
-> ---
->  net/ncsi/internal.h    |  5 ++++
->  net/ncsi/ncsi-manage.c | 25 ++++++++++++++++-
->  net/ncsi/ncsi-pkt.h    |  6 ++++
->  net/ncsi/ncsi-rsp.c    | 62 +++++++++++++++++++++++++++++++++++++++++-
->  4 files changed, 96 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/ncsi/internal.h b/net/ncsi/internal.h
-> index e37102546be6..8a6a8127156b 100644
-> --- a/net/ncsi/internal.h
-> +++ b/net/ncsi/internal.h
-> @@ -78,6 +78,7 @@ enum {
->  /* OEM Vendor Manufacture ID */
->  #define NCSI_OEM_MFR_MLX_ID             0x8119
->  #define NCSI_OEM_MFR_BCM_ID             0x113d
-> +#define NCSI_OEM_MFR_INTEL_ID           0x0157
->  /* Broadcom specific OEM Command */
->  #define NCSI_OEM_BCM_CMD_GMA            0x01   /* CMD ID for Get MAC */
->  /* Mellanox specific OEM Command */
-> @@ -85,16 +86,20 @@ enum {
->  #define NCSI_OEM_MLX_CMD_GMA_PARAM      0x1b   /* Parameter for GMA  */
->  #define NCSI_OEM_MLX_CMD_SMAF           0x01   /* CMD ID for Set MC Affinity
-> */
->  #define NCSI_OEM_MLX_CMD_SMAF_PARAM     0x07   /* Parameter for SMAF        
-> */
-> +/* Intel specific OEM Command */
-> +#define NCSI_OEM_INTEL_CMD_GMA          0x06   /* CMD ID for Get MAC */
->  /* OEM Command payload lengths*/
->  #define NCSI_OEM_BCM_CMD_GMA_LEN        12
->  #define NCSI_OEM_MLX_CMD_GMA_LEN        8
->  #define NCSI_OEM_MLX_CMD_SMAF_LEN        60
-> +#define NCSI_OEM_INTEL_CMD_GMA_LEN      5
->  /* Offset in OEM request */
->  #define MLX_SMAF_MAC_ADDR_OFFSET         8     /* Offset for MAC in SMAF   
-> */
->  #define MLX_SMAF_MED_SUPPORT_OFFSET      14    /* Offset for medium in SMAF
-> */
->  /* Mac address offset in OEM response */
->  #define BCM_MAC_ADDR_OFFSET             28
->  #define MLX_MAC_ADDR_OFFSET             8
-> +#define INTEL_MAC_ADDR_OFFSET           1
->  
->  
->  struct ncsi_channel_version {
-> diff --git a/net/ncsi/ncsi-manage.c b/net/ncsi/ncsi-manage.c
-> index 1f387be7827b..fb25ae22ea3d 100644
-> --- a/net/ncsi/ncsi-manage.c
-> +++ b/net/ncsi/ncsi-manage.c
-> @@ -760,13 +760,36 @@ static int ncsi_oem_smaf_mlx(struct ncsi_cmd_arg *nca)
->         return ret;
->  }
->  
-> +static int ncsi_oem_gma_handler_intel(struct ncsi_cmd_arg *nca)
-> +{
-> +       unsigned char data[NCSI_OEM_INTEL_CMD_GMA_LEN];
-> +       int ret = 0;
-> +
-> +       nca->payload = NCSI_OEM_INTEL_CMD_GMA_LEN;
-> +
-> +       memset(data, 0, NCSI_OEM_INTEL_CMD_GMA_LEN);
-> +       *(unsigned int *)data = ntohl(NCSI_OEM_MFR_INTEL_ID);
-> +       data[4] = NCSI_OEM_INTEL_CMD_GMA;
-> +
-> +       nca->data = data;
-> +
-> +       ret = ncsi_xmit_cmd(nca);
-> +       if (ret)
-> +               netdev_err(nca->ndp->ndev.dev,
-> +                          "NCSI: Failed to transmit cmd 0x%x during
-> configure\n",
-> +                          nca->type);
-> +
-> +       return ret;
-> +}
-> +
->  /* OEM Command handlers initialization */
->  static struct ncsi_oem_gma_handler {
->         unsigned int    mfr_id;
->         int             (*handler)(struct ncsi_cmd_arg *nca);
->  } ncsi_oem_gma_handlers[] = {
->         { NCSI_OEM_MFR_BCM_ID, ncsi_oem_gma_handler_bcm },
-> -       { NCSI_OEM_MFR_MLX_ID, ncsi_oem_gma_handler_mlx }
-> +       { NCSI_OEM_MFR_MLX_ID, ncsi_oem_gma_handler_mlx },
-> +       { NCSI_OEM_MFR_INTEL_ID, ncsi_oem_gma_handler_intel }
->  };
->  
->  static int ncsi_gma_handler(struct ncsi_cmd_arg *nca, unsigned int mf_id)
-> diff --git a/net/ncsi/ncsi-pkt.h b/net/ncsi/ncsi-pkt.h
-> index 80938b338fee..ba66c7dc3a21 100644
-> --- a/net/ncsi/ncsi-pkt.h
-> +++ b/net/ncsi/ncsi-pkt.h
-> @@ -178,6 +178,12 @@ struct ncsi_rsp_oem_bcm_pkt {
->         unsigned char           data[];      /* Cmd specific Data */
->  };
->  
-> +/* Intel Response Data */
-> +struct ncsi_rsp_oem_intel_pkt {
-> +       unsigned char           cmd;         /* OEM Command ID    */
-> +       unsigned char           data[];      /* Cmd specific Data */
-> +};
-> +
->  /* Get Link Status */
->  struct ncsi_rsp_gls_pkt {
->         struct ncsi_rsp_pkt_hdr rsp;        /* Response header   */
-> diff --git a/net/ncsi/ncsi-rsp.c b/net/ncsi/ncsi-rsp.c
-> index a94bb59793f0..b36c22ec4c3f 100644
-> --- a/net/ncsi/ncsi-rsp.c
-> +++ b/net/ncsi/ncsi-rsp.c
-> @@ -699,12 +699,72 @@ static int ncsi_rsp_handler_oem_bcm(struct ncsi_request
-> *nr)
->         return 0;
->  }
->  
-> +/* Response handler for Intel command Get Mac Address */
-> +static int ncsi_rsp_handler_oem_intel_gma(struct ncsi_request *nr)
-> +{
-> +       struct ncsi_dev_priv *ndp = nr->ndp;
-> +       struct net_device *ndev = ndp->ndev.dev;
-> +       const struct net_device_ops *ops = ndev->netdev_ops;
-> +       struct ncsi_rsp_oem_pkt *rsp;
-> +       struct sockaddr saddr;
-> +       int ret = 0;
-> +
-> +       /* Get the response header */
-> +       rsp = (struct ncsi_rsp_oem_pkt *)skb_network_header(nr->rsp);
-> +
-> +       saddr.sa_family = ndev->type;
-> +       ndev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
-> +       memcpy(saddr.sa_data, &rsp->data[INTEL_MAC_ADDR_OFFSET], ETH_ALEN);
-> +       /* Increase mac address by 1 for BMC's address */
-> +       eth_addr_inc((u8 *)saddr.sa_data);
-> +       if (!is_valid_ether_addr((const u8 *)saddr.sa_data))
-> +               return -ENXIO;
-> +
-> +       /* Set the flag for GMA command which should only be called once */
-> +       ndp->gma_flag = 1;
-> +
-> +       ret = ops->ndo_set_mac_address(ndev, &saddr);
-> +       if (ret < 0)
-> +               netdev_warn(ndev, "NCSI: 'Writing mac address to device
-> failed\n");
-> +
-> +       return ret;
-> +}
-> +
-> +/* Response handler for Intel card */
-> +static int ncsi_rsp_handler_oem_intel(struct ncsi_request *nr)
-> +{
-> +       struct ncsi_rsp_oem_intel_pkt *intel;
-> +       struct ncsi_rsp_oem_pkt *rsp;
-> +
-> +       /* Get the response header */
-> +       rsp = (struct ncsi_rsp_oem_pkt *)skb_network_header(nr->rsp);
-> +       intel = (struct ncsi_rsp_oem_intel_pkt *)(rsp->data);
-> +
-> +#if 0 //For debug use
-> +    #define NCSI_INTEL_GMA_LEN 6
-> +    int i = 0;
-> +
-> +    printk("[Error] %s, %d, intel->cmd = %x\n", __func__, __LINE__, intel-
-> >cmd);
-> +    for(i ; i < NCSI_INTEL_GMA_LEN; i++)
-> +    {
-> +        printk("[Error] %s, %d, rsp->data[%d] = %x\n", __func__, __LINE__, i,
-> rsp->data[i]);
-> +        printk("[Error] %s, %d, intel_rsp->data[%d] = %x\n", __func__,
-> __LINE__, i, intel->data[i]);
-> +    }
-> +#endif
-> +    
-> +       if (intel->cmd == NCSI_OEM_INTEL_CMD_GMA)
-> +               return ncsi_rsp_handler_oem_intel_gma(nr);
-> +
-> +       return 0;
-> +}
-> +
->  static struct ncsi_rsp_oem_handler {
->         unsigned int    mfr_id;
->         int             (*handler)(struct ncsi_request *nr);
->  } ncsi_rsp_oem_handlers[] = {
->         { NCSI_OEM_MFR_MLX_ID, ncsi_rsp_handler_oem_mlx },
-> -       { NCSI_OEM_MFR_BCM_ID, ncsi_rsp_handler_oem_bcm }
-> +       { NCSI_OEM_MFR_BCM_ID, ncsi_rsp_handler_oem_bcm },
-> +       { NCSI_OEM_MFR_INTEL_ID, ncsi_rsp_handler_oem_intel }
->  };
->  
->  /* Response handler for OEM command */
-> 
+From: SeongJae Park <sjpark@amazon.de>
 
-Paul, I know about 'get mac address' and it was in my todo list. You can put it
-before or after this patch series whenever you want, it doesn't interfere with
-this one. Anyways, thanks for sharing it.
+If DAMOS stopped applying action to memory regions due to the speed
+limit, it does nothing until next charge window starts.  Then, it starts
+the work from the beginning of the address space.  If there is a huge
+memory region at the beginning of the address space and it fulfills the
+scheme target data access pattern, the action will applied to only the
+region.
 
-Thanks.
+This commit mitigates the case by skipping memory regions that charged
+in previous charge window at the beginning of current charge window.
+
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+ include/linux/damon.h |  5 +++++
+ mm/damon/core.c       | 37 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 42 insertions(+)
+
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index 9c996adb02b8..7b1fa506e7a6 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -107,6 +107,8 @@ struct damos_quota {
+ /* private: For charging the quota */
+ 	unsigned long charged_sz;
+ 	unsigned long charged_from;
++	struct damon_target *charge_target_from;
++	unsigned long charge_addr_from;
+ };
+ 
+ /**
+@@ -335,6 +337,9 @@ struct damon_ctx {
+ #define damon_prev_region(r) \
+ 	(container_of(r->list.prev, struct damon_region, list))
+ 
++#define damon_last_region(t) \
++	(list_last_entry(&t->regions_list, struct damon_region, list))
++
+ #define damon_for_each_region(r, t) \
+ 	list_for_each_entry(r, &t->regions_list, list)
+ 
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index 00804a1e5e2a..a41eb9d885bb 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -111,6 +111,8 @@ struct damos *damon_new_scheme(
+ 	scheme->quota.reset_interval = quota->reset_interval;
+ 	scheme->quota.charged_sz = 0;
+ 	scheme->quota.charged_from = 0;
++	scheme->quota.charge_target_from = NULL;
++	scheme->quota.charge_addr_from = 0;
+ 
+ 	return scheme;
+ }
+@@ -558,6 +560,37 @@ static void damon_do_apply_schemes(struct damon_ctx *c,
+ 		if (quota->sz && quota->charged_sz >= quota->sz)
+ 			continue;
+ 
++		/* Skip previously charged regions */
++		if (quota->charge_target_from) {
++			if (t != quota->charge_target_from)
++				continue;
++			if (r == damon_last_region(t)) {
++				quota->charge_target_from = NULL;
++				quota->charge_addr_from = 0;
++				continue;
++			}
++			if (quota->charge_addr_from &&
++					r->ar.end <= quota->charge_addr_from)
++				continue;
++
++			if (quota->charge_addr_from && r->ar.start <
++					quota->charge_addr_from) {
++				sz = ALIGN_DOWN(quota->charge_addr_from -
++						r->ar.start, DAMON_MIN_REGION);
++				if (!sz) {
++					if (r->ar.end - r->ar.start <=
++							DAMON_MIN_REGION)
++						continue;
++					sz = DAMON_MIN_REGION;
++				}
++				damon_split_region_at(c, t, r, sz);
++				r = damon_next_region(r);
++				sz = r->ar.end - r->ar.start;
++			}
++			quota->charge_target_from = NULL;
++			quota->charge_addr_from = 0;
++		}
++
+ 		/* Check the target regions condition */
+ 		if (sz < s->min_sz_region || s->max_sz_region < sz)
+ 			continue;
+@@ -578,6 +611,10 @@ static void damon_do_apply_schemes(struct damon_ctx *c,
+ 			}
+ 			c->primitive.apply_scheme(c, t, r, s);
+ 			quota->charged_sz += sz;
++			if (quota->sz && quota->charged_sz >= quota->sz) {
++				quota->charge_target_from = t;
++				quota->charge_addr_from = r->ar.end + 1;
++			}
+ 		}
+ 		if (s->action != DAMOS_STAT)
+ 			r->age = 0;
+-- 
+2.17.1
 
