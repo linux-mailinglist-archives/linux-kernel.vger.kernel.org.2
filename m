@@ -2,107 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BCD3D044D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 00:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E776E3D0452
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 00:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbhGTVaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 17:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbhGTV3C (ORCPT
+        id S230347AbhGTVbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 17:31:19 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:50044 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232345AbhGTV3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 17:29:02 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBEDC0613DE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 15:09:33 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id c1so666436pfc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 15:09:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g1KpDtcbagCdJ8ZcB9ERipK82kYWQJWAaZ7siOAOkMw=;
-        b=iC5/q3Dl6pQ0rDuXXIFsUAbTTQ6Y1iAmt2YRVwiDFilqazfKQ9eEEPIayC2+XoUaT9
-         usur5pgbsW0fNlZwnXjGODqmC21M5aICjnd0qHR+a8GO8IcdohO4/jlCmYaIlbW9IpQ/
-         9icYBfvLFjmRAGsIv2RA8ekw4kWlpmiVwY66u3OydYL7Z53+N5wZpVGiQAecWFBlLpLe
-         sL9R9oq4gKRFUvlIZCwk423cdnRZmAN89qaHYNxWqXrQ1h70ThRegG+2GEW+VV4D7E6W
-         We1DWyHavLAYbXFybe4gmSLh43r2YhL50quM4zqfHfvjJeqPygE3Sbq/iA1L8bSDsgIo
-         MW0w==
+        Tue, 20 Jul 2021 17:29:30 -0400
+Received: by mail-io1-f69.google.com with SMTP id h7-20020a6bb7070000b0290525efa1b760so82050iof.16
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 15:10:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g1KpDtcbagCdJ8ZcB9ERipK82kYWQJWAaZ7siOAOkMw=;
-        b=ROKQUnTouhx3nOM2ELMbxg9ys7hQUasZMQvDF2d0YFxJvgwev7pSm2y8coIG13U9Yu
-         8JG+n8OMnZWmwTXzqVefMD/bGzZm66ph2Ec/FX5VcAGPa2yB0nHyjnsE07hm+hp1z4Yh
-         VIQgXpU91/m6T/caOCABiaSOCnl7YsrNffTwRfEitSJE3M0h8aAy1yn7wFE4zEIWIlwh
-         Rg8U3vpuiUGDRoEW1u9Fs5SVcFoZPqZ+xunFNzBTxVvakAnCUGxQznOC1R0m3VH4R0dw
-         MLGyfamfM7PbL8M4VHjzmbZJGtJ4eLRj+D+J3og9/ORoYwpb+cND3X82SwcDKKUQoMv2
-         XL7Q==
-X-Gm-Message-State: AOAM533jVYaJTBS2OGSCO8APnkiB6j3rWEJI8t0EmzEGe1SerML+E3Xf
-        KSwGGGUT/KlHeVrxYt9lN6k72wk5sloDIQ==
-X-Google-Smtp-Source: ABdhPJx8WtrWjs7nIJb96K+K/6fJyf4kxrPOkag79GDpR0/USJYJ5ph8uncx7oovExjawasHg85EEw==
-X-Received: by 2002:a63:5059:: with SMTP id q25mr32834341pgl.9.1626818972887;
-        Tue, 20 Jul 2021 15:09:32 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p5sm24369675pfn.46.2021.07.20.15.09.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 15:09:32 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 22:09:28 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 38/40] KVM: SVM: Provide support for
- SNP_GUEST_REQUEST NAE event
-Message-ID: <YPdJmKXhXKOZdlld@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-39-brijesh.singh@amd.com>
- <YPYBmlCuERUIO5+M@google.com>
- <68ea014c-51bc-6ed4-a77e-dd7ce1a09aaf@amd.com>
- <YPb5yfKEyJjvDbOl@google.com>
- <0641fdec-48a0-b3b7-9926-3ce5a6e53eb0@amd.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=su0ZDiChfXsok14gNrh34ghXNW9Yz7pmB2Wte3vJIIU=;
+        b=NuUeR/bX5HrUE6Br0QXoIag0NeKDMHgkwIoMd8US8W/CF2WwS/LcNzYgQkeGUGvscl
+         3/J4D5i4QCvT1snm6mxCJXf3/ictibfx6gBxG5NDjeVWu0sGufBJQApplJ48Rx7sHS5f
+         rrCOwSOk3sVvccawcA6qrh1G2JzksP72Nib7rw9XrsbsCRlOPLf8J7/C+Y9Pyyrak7aU
+         fIkZQ5hDNyGFxPSSN5+CybHd+i/jdfE/9p0o0HtVzkBxQZ6OKXePwv0qHUnbyX7TPstE
+         68wefPL0eU4PbMY9208zQQndQf1ygZEfLyTsYqn+Yvbb3ZJxy2Twd1624Z7mwoMtrAzB
+         SqFA==
+X-Gm-Message-State: AOAM530o802QGRH5JlwtJFWEbEVamjQJ20oCUlsqEMMJpiP4ODEfNHjK
+        64xIpxpbi/KiCoJirQZ+CmtwePV8Gi0iKxvKxBohnqa2Qxof
+X-Google-Smtp-Source: ABdhPJw7gKJqBfPZhtoEW17TY2o5NwcXqOloYEoHUj5de29DbsZwtbAHDlVohsYHSOXNqd2gHkTi+g1IngNnrlUzrBL6/KYKWFuG
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0641fdec-48a0-b3b7-9926-3ce5a6e53eb0@amd.com>
+X-Received: by 2002:a05:6602:10e:: with SMTP id s14mr25137569iot.52.1626819008218;
+ Tue, 20 Jul 2021 15:10:08 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 15:10:08 -0700
+In-Reply-To: <20210720221445.7d022a9e@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001950a705c795515d@google.com>
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in do_wait_for_common
+From:   syzbot <syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org, hridayhegde1999@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        paskripkin@gmail.com, rkovhaev@gmail.com, straube.linux@gmail.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021, Brijesh Singh wrote:
-> 
-> On 7/20/21 11:28 AM, Sean Christopherson wrote:
-> > Out of curiosity, why 4 VMPCKs?  It seems completely arbitrary.
-> > 
-> 
-> I believe the thought process was by providing 4 keys it can provide
-> flexibility for each VMPL levels to use a different keys (if they wish). The
-> firmware does not care about the vmpl level during the guest request
-> handling, it just want to know which key is used for encrypting the payload
-> so that he can decrypt and provide the  response for it.
+Hello,
 
-Ah, I forgot about VMPLs.  That makes sense.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+BUG: sleeping function called from invalid context in lock_sock_nested
 
-Thanks!
+BUG: sleeping function called from invalid context at net/core/sock.c:3161
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 8824, name: syz-executor.2
+1 lock held by syz-executor.2/8824:
+ #0: ffffffff8d89c920 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev_event+0x2b6/0x630 net/bluetooth/hci_sock.c:763
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 0 PID: 8824 Comm: syz-executor.2 Not tainted 5.14.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1d3/0x29f lib/dump_stack.c:105
+ ___might_sleep+0x4e5/0x6b0 kernel/sched/core.c:9154
+ lock_sock_nested+0x34/0x110 net/core/sock.c:3161
+ lock_sock include/net/sock.h:1613 [inline]
+ hci_sock_dev_event+0x30a/0x630 net/bluetooth/hci_sock.c:765
+ hci_unregister_dev+0x487/0x19b0 net/bluetooth/hci_core.c:4033
+ vhci_release+0x73/0xc0 drivers/bluetooth/hci_vhci.c:340
+ __fput+0x352/0x7b0 fs/file_table.c:280
+ task_work_run+0x146/0x1c0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0x72b/0x2510 kernel/exit.c:825
+ do_group_exit+0x168/0x2d0 kernel/exit.c:922
+ __do_sys_exit_group+0x13/0x20 kernel/exit.c:933
+ __se_sys_exit_group+0x10/0x10 kernel/exit.c:931
+ __x64_sys_exit_group+0x37/0x40 kernel/exit.c:931
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: Unable to access opcode bytes at RIP 0x4665af.
+RSP: 002b:00007ffe15e4abc8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007ffe15e4b388 RCX: 00000000004665d9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000043
+RBP: 0000000000000000 R08: 0000000000000025 R09: 00007ffe15e4b388
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00000000004bef54
+R13: 0000000000000010 R14: 0000000000000000 R15: 0000000000400538
+
+======================================================
+
+
+Tested on:
+
+commit:         8cae8cd8 seq_file: disallow extremely large seq buffer..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=161182ea300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=300aea483211c875
+dashboard link: https://syzkaller.appspot.com/bug?extid=cc699626e48a6ebaf295
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=13c31a5a300000
+
