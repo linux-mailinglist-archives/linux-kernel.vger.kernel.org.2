@@ -2,113 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853FB3D01F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1613D0200
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 21:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhGTSNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 14:13:13 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:52208 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbhGTSMt (ORCPT
+        id S232056AbhGTSSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 14:18:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhGTSSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 14:12:49 -0400
-Received: by mail-io1-f69.google.com with SMTP id x21-20020a5d99150000b02904e00bb129f0so16018029iol.18
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:53:27 -0700 (PDT)
+        Tue, 20 Jul 2021 14:18:31 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D42BC061574;
+        Tue, 20 Jul 2021 11:59:05 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id b2so7323020plx.1;
+        Tue, 20 Jul 2021 11:59:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IAhbRYwjMmEqu25LoPbZlAoP67lU12MvAIcvWLy3jNU=;
+        b=pjU9fse7Cs6N7xm64l6i3UqU3PXkF0PDd8K7KKfftjfhl1E9Hp9iQDl0yWHTJ1llzf
+         PomNS4XmRllC50yH5TSb76JdWvCBQhzCc3ej4Lop+CP00z0Hc5HTU65LWGxD6V/+WiNi
+         gaaaqXI0NdL4g+RbqUzOM/ajTFR/FsJ6VI5L97Tv0GuzSdSjYexORn6yfAeN3dBHCvhS
+         7/wscvBAQ4awUYv+cuii+4ONBc4FEVNj59B92coJfANU6ufPoB1Wit+UxoP96KLc5EH4
+         i+MsJyqMKoYXHXmTG7fbGGNZYR7ncGSmpUAYg3/Q1mZ9m6un38iGfVY5gOLEEPEA1G2/
+         ZyGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=c29Zpmh2drA8z9f2QtsKjTAhAT7jxLXKxt7SJBDG2Jo=;
-        b=UbOZ0nGwTRnTlQnSy5xB9TUS0n2gwFMk6gd5qsknMjDSaQjDGxsFahE/lBd6Y9+1kB
-         XlEhjGDiX35qkokYPyCt16kekHRbxcw0TJYDDtTZvrvcMpkIMRnEhStjYD6Tummw0Pui
-         4kr5hl0DqMJXttZnQqNAlMM4nvFhPa2sGaj2UR6Hrmp+Wd9deSQCqFuyIUyfOuAsiDIs
-         CjxTdEG0SRYJNxp2Yk3yFNdgDZCjPXj2cUkBr3zS0VrO/ypS3te2eit6sKilvt1ruiAQ
-         AKo6UOU8DmF65LhnocvNQ49NRzr3vTiAcUcOuc56UtdrvplRuVKlaz7w8BVbY4CBJr3D
-         9n9Q==
-X-Gm-Message-State: AOAM532OIHsBvHBjBe3amERfXs/XC0MSDOGMkAOsihDB/MtPoi4QqRoX
-        S+KLblXWfK+uDnyBED3QU/FsRByhgZohQOh2yj7MOXcJuWXL
-X-Google-Smtp-Source: ABdhPJyuuBSvc3bEeyJo8/ukJQWb+JSE1ZZZoNDNav3znZClfoY07Px7daak/CZAwkaykpim8yzoCWNddCanUtBC2tLUBIDotPJN
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IAhbRYwjMmEqu25LoPbZlAoP67lU12MvAIcvWLy3jNU=;
+        b=PvjIKdqO1no3OMo8lNvvMV9LqCz9GxZ2uDVMoGJITwn8PU7gt4ZWJeBG74Jwq6EmKF
+         Z3C/hFVsGVOPq2PVvSp4prOUsuMTFgJYPcgsI60YJ74NGoiyaW+Qbqz9No7EzO5S1IbM
+         XHo7ORHw3FD9Op/AgZ/VJuXXRvR3PrSsHQv7TmZ0M8rfQmMjFSPKQLAMmd6K5pVPjwAO
+         av6xgRoOx1dGypzCnvJc9S+VJYtwz0iix0pbjpu6TU6NsZzN/xN3OThloyCqGDl6obXV
+         C+oOO0hvxTLcK1mP3luUt2eb7882QkvEoW3Qx1LIWVCDbkolaZp2iizPLhp00AnTAIpd
+         qzhA==
+X-Gm-Message-State: AOAM5315jYqmjaBB8lLTKBML6mizRWMaSwhsO/ktYxnfYSSyLJbAMSBd
+        8UJ4T9kwkAlp9DGxZ2IqQujxJKJew6VuZQ==
+X-Google-Smtp-Source: ABdhPJxAHOcEC2LyEECia9/kIZZivpfGTz+7IMZioqtyWrdCy9leyuIrUrLKKhjhl8+AQjH6Hgd6ig==
+X-Received: by 2002:a17:90b:1294:: with SMTP id fw20mr37237488pjb.100.1626807543849;
+        Tue, 20 Jul 2021 11:59:03 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id v15sm8758993pff.105.2021.07.20.11.59.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jul 2021 11:59:03 -0700 (PDT)
+Subject: Re: [PATCH v5 8/8] firmware: tee_bnxt: Release TEE shm, session, and
+ context during kexec
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210716022332.GC3232@sequoia>
+ <CAHLZf_t5U1bh1H8sULbJz7xrZ-r3Dcmxuw9MMmG2fehS3C72uQ@mail.gmail.com>
+ <CAHUa44EetPuA_5+UQLW-c=-_OApiRoiq+YjeFs6TRPj6=AJfHw@mail.gmail.com>
+ <903824a6-7a2b-1514-5b71-a2db634e9abf@gmail.com>
+ <bc3f4bdd-b833-d58c-f7d7-6670bcbd8ef8@gmail.com>
+ <20210720181517.GF3232@sequoia>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <22e55ae6-3ecb-4f54-b9e6-1b902d4d4e20@gmail.com>
+Date:   Tue, 20 Jul 2021 11:59:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:dd82:: with SMTP id g2mr283024iln.279.1626807207540;
- Tue, 20 Jul 2021 11:53:27 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 11:53:27 -0700
-In-Reply-To: <000000000000bd7c8a05c719ecf2@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b93ea105c7929192@google.com>
-Subject: Re: [syzbot] WARNING in internal_create_group
-From:   syzbot <syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, rafael@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210720181517.GF3232@sequoia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On 7/20/21 11:15 AM, Tyler Hicks wrote:
+> On 2021-07-20 10:57:18, Florian Fainelli wrote:
+>>
+>>
+>> On 7/19/2021 7:32 PM, Florian Fainelli wrote:
+>>>
+>>>
+>>> On 7/19/2021 3:49 AM, Jens Wiklander wrote:
+>>>> Hi,
+>>>>
+>>>> On Fri, Jul 16, 2021 at 4:48 AM Vikas Gupta
+>>>> <vikas.gupta@broadcom.com> wrote:
+>>>>>
+>>>>> Hi Allen/Tyler,
+>>>>>   The patch looks good to me.
+>>>>
+>>>> Thanks.
+>>>>
+>>>> Rafal, is it OK if I include this patch together with the rest of the
+>>>> patches in this patch set in a pull request to arm-soc?
+>>>
+>>> I can take those patches through the Broadcom ARM SoC pull request,
+>>> Rafal would that work for you? We seem to have a bit of a maintainer
+>>> coverage blind spot for that directory.
+>>
+>> Applied to drivers/fixes: https://github.com/Broadcom/stblinux/commit/4ecd797b7e16eb7f1b86fbfd7e4a7887b192535b
+> 
+> Thanks, Florian, but note that you won't be able to build that branch
+> since the commit uses a new function (tee_shm_alloc_kernel_buf()) that's
+> added earlier in the full series. It seems like it is going to be easier
+> for this to all go through Jens.
 
-HEAD commit:    8cae8cd89f05 seq_file: disallow extremely large seq buffer..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=116f92ec300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7273c75708b55890
-dashboard link: https://syzkaller.appspot.com/bug?extid=9937dc42271cd87d4b98
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fc287c300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=178cbf6a300000
+I was grepping for the new functions added and could find all
+references, though it looks like I missed tee_shm_alloc_kernel_buf()
+somehow, so yes, having Jens merge that series all together would make
+more sense here. If you need it:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com
-
-RSP: 002b:00007ffd8de69d18 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 000000000043fa49
-RDX: 0000000000000000 RSI: 00000000200002c0 RDI: 0000000000000004
-RBP: 00000000004034b0 R08: 0000000000000000 R09: 00000000004004a0
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403540
-R13: 0000000000000000 R14: 00000000004ad018 R15: 00000000004004a0
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8435 at fs/sysfs/group.c:116 internal_create_group+0x911/0xb20 fs/sysfs/group.c:116
-Modules linked in:
-CPU: 0 PID: 8435 Comm: syz-executor570 Not tainted 5.14.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:internal_create_group+0x911/0xb20 fs/sysfs/group.c:116
-Code: 0f 85 e8 f7 ff ff 41 bd ea ff ff ff e9 34 fd ff ff e8 53 3b 82 ff 48 8b 7c 24 08 e8 89 11 ff ff e9 20 fd ff ff e8 3f 3b 82 ff <0f> 0b 41 bd ea ff ff ff e9 0e fd ff ff e8 2d 3b 82 ff 48 8b 14 24
-RSP: 0018:ffffc900010ff2a8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff8880284f0000 RSI: ffffffff81f34d91 RDI: 0000000000000003
-RBP: ffff88801fd7b9a8 R08: 0000000000000000 R09: ffff88801fd7b9af
-R10: ffffffff81f3453e R11: 0000000000000000 R12: 0000000000000000
-R13: ffff8881455db770 R14: 0000000000000000 R15: ffff8881455db77c
-FS:  0000000000990300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f56bbe93740 CR3: 000000001dd48000 CR4: 0000000000350ef0
-Call Trace:
- blk_register_queue+0xda/0x570 block/blk-sysfs.c:871
- __device_add_disk+0x7b5/0xd10 block/genhd.c:529
- add_disk include/linux/genhd.h:217 [inline]
- nbd_dev_add+0x73f/0x940 drivers/block/nbd.c:1733
- nbd_genl_connect+0x551/0x1820 drivers/block/nbd.c:1842
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:703 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:723
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2392
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2446
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2475
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43fa49
-Code: 28 c3 e8 5a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd8de69d18 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 000000000043fa49
-RDX: 0000000000000000 RSI: 00000000200002c0 RDI: 0000000000000004
-RBP: 00000000004034b0 R08: 0000000000000000 R09: 00000000004004a0
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403540
-R13: 0000000000000000 R14: 00000000004ad018 R15: 00000000004004a0
-
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
