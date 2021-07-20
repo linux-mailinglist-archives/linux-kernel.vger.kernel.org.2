@@ -2,98 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F183CF8CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21C13CF8BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237661AbhGTKqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:46:03 -0400
-Received: from mout.gmx.net ([212.227.17.21]:52417 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236776AbhGTKpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:45:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626780375;
-        bh=VBJRenTT6RN9XSmQwODnOnF5iGF5GDQ+g+X9lepK264=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=IBNwf0HB34I5hK6V1LeWpyR76CPLlO0/YHjKekKwQVB1oTV3VClBpVl5QRTLksOkk
-         ZspucokawawZVvgeYu/DUKnk6LJZ8kGuD1dWP3GbjAbKccPWffTLhJZtl4gwokfCqk
-         0QXp2S5vKEijAHyOjWlp0ghndjp/BXvy8ywdSrtA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.151.10]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MS3mt-1lhN7s03ch-00TU8S; Tue, 20
- Jul 2021 13:26:15 +0200
-Message-ID: <f16b78bd3bb8fecf734017d40274e4c3294554ab.camel@gmx.de>
-Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
- exclusion scope
-From:   Mike Galbraith <efault@gmx.de>
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-rt-users@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Date:   Tue, 20 Jul 2021 13:26:14 +0200
-In-Reply-To: <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
-References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
-         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
-         <878s2fnv79.ffs@nanos.tec.linutronix.de>
-         <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
-         <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
-         <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S237572AbhGTKjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:39:43 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:11456 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237176AbhGTKjb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 06:39:31 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GTbkz2KWTzcgSR;
+        Tue, 20 Jul 2021 19:16:43 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 19:20:05 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 19:20:04 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>, <rjw@rjwysocki.net>,
+        <viresh.kumar@linaro.org>, <sudeep.holla@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <guohanjun@huawei.com>, <wangxiongfeng2@huawei.com>
+Subject: [PATCH] ACPI / PPTT: get PPTT table in the first beginning
+Date:   Tue, 20 Jul 2021 19:26:35 +0800
+Message-ID: <20210720112635.38565-1-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:CDuvJn7v4dobctxVEtrJxuNY6SIKiGtXkG4dR8+5E07JtGIsHYy
- CqOb3fRwijDGslHtbZEtwh/rEDmZA+9PkIwCO0kDx0IeAxEEb2jEbVsMj/tX0NX+PRWgtm5
- JRUeLyFGtRLn5TlOK/V2v1LxfOy782XpDyl8rvgS+7Wy0NMERXWRHb+Gy2Qzr2XE8XcXKrk
- nCSnd9v8Qa41ApOYuStwg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:K0nDJyu4qmw=:z119RK8wBzXX7kTPr1M6gq
- cmZ9QesJWP0UWvfmFYqnehyWqiY0t4xO04Hz/boBWGMKXbZpZkdaEMYTQ9NIGgJzk4HLxXsh3
- NiCWBgTqX0/MwuXBlUHiIfmYdXnRN/9BTxcNPC92IwIkGkHn32m9jCIsE+koUBl2RKGDzDRLx
- pvcge7/kdwxTXdVbeWVHPOhFNgXeh643xD4rzrm5+Qtn1UUvXuVFqF0n23Gg+pay4UkUYpS2H
- Lj5NOsIAsH54mTR8u8g3vRNBpbiCQhr5THjhVPAwMVQhicjdRn4EAUPQAnkPYrrXuLyd2bZKB
- LjHPvoNM0QzQNxqPP6KPP8RLLXB1PwszLAUg68DwU/dVPP/v7/KL1odvYzb1PnNxrgGe3NWqn
- TIG8wKeSReI79I1dv01D+ABLTP+CGsXQ83gWDhBn+At4RI6mDPgo1DrogoJ3Opqr+q1tyzICf
- v9CHqgTizGTJXexQgSV9EvYo4fd6a8LXAsPzuMjFysyCGJq8qOxgqRiN2T755Zrj2Mk/5wTW+
- /zY2LkBiMM3dBXQKHQhzxodj5m2RyfbBYa5pauj/lg7Gmlp8eAG02/qtplkOqmeskvQyQvW5X
- qyUWMR6mayagDKFkI0zdS+rKHe8UG602fPO74hWjUsZCvqiE81fvvqUGxkbTYsBKBEfiUs5cs
- adncS29Ey0AH8nOCM0YohFOhircW9xdxDTQUuAyiob7VkSOBe9qh4aMOnWSvzeBI3KAbVcmnz
- d+fdMjhKcXtD0fvrSr0CkqAo31RK6jCG5VQtMo7g3kdFsKrEfeZhnGuxxFD1p+u11fCgX7KH8
- g0klCKOp16SazArbZTDW5roEyAkHZZiZCLqvRz9xmuYSCEkTssslsdp+lz7aIrchPAO9jTSbz
- uerzx5TcashbGN6dE/qodj5ZzJaUzWJi6byllwTCeVJIB+p6ksdDIIwRTAFrozGcuGopIsFax
- +CizjUjLamd23b0wSLjwwgrWLjmE7E0391v/c607OISUnlDubMi8KNyYhNwP/Ovrau4GAwreJ
- eudpvyxzdiFQiRUMz/ZcIJqs/CeXIK0UE0sDLuQkjOEA+UjTL8ckQVqk1Ik1hcQbnI17rjwY4
- 1Pf/HDH7lgrw/JIlid0IzhtAO6NpHQb4qmu
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-07-20 at 10:56 +0200, Vlastimil Babka wrote:
->
-> > crash> bt -sx
-> > PID: 18761  TASK: ffff88812fff0000  CPU: 0   COMMAND: "hackbench"
-> >  #0 [ffff88818f8ff980] machine_kexec+0x14f at ffffffff81051c8f
-> >  #1 [ffff88818f8ff9c8] __crash_kexec+0xd2 at ffffffff8111ef72
-> >  #2 [ffff88818f8ffa88] crash_kexec+0x30 at ffffffff8111fd10
-> >  #3 [ffff88818f8ffa98] oops_end+0xd3 at ffffffff810267e3
-> >  #4 [ffff88818f8ffab8] exc_general_protection+0x195 at ffffffff8179fdb=
-5
-> >  #5 [ffff88818f8ffb50] asm_exc_general_protection+0x1e at ffffffff8180=
-0a0e
-> >     [exception RIP: __unfreeze_partials+156]
->
-> Hm going back to this report...
+When I added might_sleep() in down_timeout(), I got the following
+Calltrace:
 
-> So could it be that it was stillput_cpu_partial() preempting
-> __slab_alloc() messing the partial list, but for some reason the
-> put_cpu_partial() side crashed this time?
+[    8.775671] BUG: sleeping function called from invalid context at kernel/locking/semaphore.c:160
+[    8.777070] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 14, name: cpuhp/0
+[    8.778474] CPU: 0 PID: 14 Comm: cpuhp/0 Not tainted 5.10.0-06616-g1fcfee258bd9-dirty #416
+[    8.782067] Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+[    8.783452] Call trace:
+[    8.783878]  dump_backtrace+0x0/0x1c0
+[    8.784512]  show_stack+0x18/0x68
+[    8.784976]  dump_stack+0xd8/0x134
+[    8.785428]  ___might_sleep+0x108/0x170
+[    8.785928]  __might_sleep+0x54/0x90
+[    8.786425]  down_timeout+0x30/0x88
+[    8.786918]  acpi_os_wait_semaphore+0x70/0xb8
+[    8.787483]  acpi_ut_acquire_mutex+0x4c/0xb8
+[    8.788016]  acpi_get_table+0x38/0xc4
+[    8.788521]  acpi_find_last_cache_level+0x94/0x178
+[    8.789088]  _init_cache_level+0xd0/0xe0
+[    8.789563]  generic_exec_single+0xa0/0x100
+[    8.790122]  smp_call_function_single+0x160/0x1e0
+[    8.790714]  init_cache_level+0x38/0x60
+[    8.791247]  cacheinfo_cpu_online+0x30/0x898
+[    8.791880]  cpuhp_invoke_callback+0x88/0x258
+[    8.792707]  cpuhp_thread_fun+0xd8/0x170
+[    8.793231]  smpboot_thread_fn+0x194/0x290
+[    8.793838]  kthread+0x15c/0x160
+[    8.794273]  ret_from_fork+0x10/0x34
 
-Thinking this bug is toast, I emptied the trash bin, so no can peek.
+It is because generic_exec_single() will disable local irq before
+calling _init_cache_level(). _init_cache_level() use acpi_get_table() to
+get the PPTT table, but this function could schedule out.
 
-If need be, and nobody beats me to it (which ~guarantees nobody will
-beat me to it;), I can make the thing go boom again easily enough.
+To fix this issue, we use a static pointer to record the mapped PPTT
+table in the first beginning. Later, we use that pointer to reference
+the PPTT table in acpi_find_last_cache_level(). We also modify other
+functions in pptt.c to use the pointer to reference PPTT table.
 
-	-Mike
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+---
+ arch/arm64/kernel/topology.c |  6 ++-
+ drivers/acpi/pptt.c          | 83 +++++++++++++++---------------------
+ include/linux/acpi.h         |  1 +
+ 3 files changed, 41 insertions(+), 49 deletions(-)
+
+diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+index 4dd14a6620c1..401854bd8c48 100644
+--- a/arch/arm64/kernel/topology.c
++++ b/arch/arm64/kernel/topology.c
+@@ -83,11 +83,15 @@ static bool __init acpi_cpu_is_threaded(int cpu)
+  */
+ int __init parse_acpi_topology(void)
+ {
+-	int cpu, topology_id;
++	int cpu, topology_id, ret;
+ 
+ 	if (acpi_disabled)
+ 		return 0;
+ 
++	ret = acpi_pptt_init();
++	if (ret)
++		return ret;
++
+ 	for_each_possible_cpu(cpu) {
+ 		int i, cache_id;
+ 
+diff --git a/drivers/acpi/pptt.c b/drivers/acpi/pptt.c
+index fe69dc518f31..a4c7af9e9369 100644
+--- a/drivers/acpi/pptt.c
++++ b/drivers/acpi/pptt.c
+@@ -21,6 +21,9 @@
+ #include <linux/cacheinfo.h>
+ #include <acpi/processor.h>
+ 
++/* Root pointer to the mapped PPTT table */
++static struct acpi_table_header *pptt_table;
++
+ static struct acpi_subtable_header *fetch_pptt_subtable(struct acpi_table_header *table_hdr,
+ 							u32 pptt_ref)
+ {
+@@ -534,19 +537,13 @@ static int topology_get_acpi_cpu_tag(struct acpi_table_header *table,
+ 
+ static int find_acpi_cpu_topology_tag(unsigned int cpu, int level, int flag)
+ {
+-	struct acpi_table_header *table;
+-	acpi_status status;
+ 	int retval;
+ 
+-	status = acpi_get_table(ACPI_SIG_PPTT, 0, &table);
+-	if (ACPI_FAILURE(status)) {
+-		acpi_pptt_warn_missing();
++	if (!pptt_table)
+ 		return -ENOENT;
+-	}
+-	retval = topology_get_acpi_cpu_tag(table, cpu, level, flag);
++	retval = topology_get_acpi_cpu_tag(pptt_table, cpu, level, flag);
+ 	pr_debug("Topology Setup ACPI CPU %d, level %d ret = %d\n",
+ 		 cpu, level, retval);
+-	acpi_put_table(table);
+ 
+ 	return retval;
+ }
+@@ -566,26 +563,19 @@ static int find_acpi_cpu_topology_tag(unsigned int cpu, int level, int flag)
+  */
+ static int check_acpi_cpu_flag(unsigned int cpu, int rev, u32 flag)
+ {
+-	struct acpi_table_header *table;
+-	acpi_status status;
+ 	u32 acpi_cpu_id = get_acpi_id_for_cpu(cpu);
+ 	struct acpi_pptt_processor *cpu_node = NULL;
+ 	int ret = -ENOENT;
+ 
+-	status = acpi_get_table(ACPI_SIG_PPTT, 0, &table);
+-	if (ACPI_FAILURE(status)) {
+-		acpi_pptt_warn_missing();
+-		return ret;
+-	}
++	if (!pptt_table)
++		return -ENOENT;
+ 
+-	if (table->revision >= rev)
+-		cpu_node = acpi_find_processor_node(table, acpi_cpu_id);
++	if (pptt_table->revision >= rev)
++		cpu_node = acpi_find_processor_node(pptt_table, acpi_cpu_id);
+ 
+ 	if (cpu_node)
+ 		ret = (cpu_node->flags & flag) != 0;
+ 
+-	acpi_put_table(table);
+-
+ 	return ret;
+ }
+ 
+@@ -602,20 +592,14 @@ static int check_acpi_cpu_flag(unsigned int cpu, int rev, u32 flag)
+ int acpi_find_last_cache_level(unsigned int cpu)
+ {
+ 	u32 acpi_cpu_id;
+-	struct acpi_table_header *table;
+ 	int number_of_levels = 0;
+-	acpi_status status;
+ 
+ 	pr_debug("Cache Setup find last level CPU=%d\n", cpu);
+ 
+ 	acpi_cpu_id = get_acpi_id_for_cpu(cpu);
+-	status = acpi_get_table(ACPI_SIG_PPTT, 0, &table);
+-	if (ACPI_FAILURE(status)) {
+-		acpi_pptt_warn_missing();
+-	} else {
+-		number_of_levels = acpi_find_cache_levels(table, acpi_cpu_id);
+-		acpi_put_table(table);
+-	}
++	if (pptt_table)
++		number_of_levels = acpi_find_cache_levels(pptt_table, acpi_cpu_id);
++
+ 	pr_debug("Cache Setup find last level level=%d\n", number_of_levels);
+ 
+ 	return number_of_levels;
+@@ -636,21 +620,14 @@ int acpi_find_last_cache_level(unsigned int cpu)
+  */
+ int cache_setup_acpi(unsigned int cpu)
+ {
+-	struct acpi_table_header *table;
+-	acpi_status status;
+-
+ 	pr_debug("Cache Setup ACPI CPU %d\n", cpu);
+ 
+-	status = acpi_get_table(ACPI_SIG_PPTT, 0, &table);
+-	if (ACPI_FAILURE(status)) {
+-		acpi_pptt_warn_missing();
++	if (!pptt_table)
+ 		return -ENOENT;
+-	}
+ 
+-	cache_setup_acpi_cpu(table, cpu);
+-	acpi_put_table(table);
++	cache_setup_acpi_cpu(pptt_table, cpu);
+ 
+-	return status;
++	return 0;
+ }
+ 
+ /**
+@@ -702,27 +679,20 @@ int find_acpi_cpu_topology(unsigned int cpu, int level)
+  */
+ int find_acpi_cpu_cache_topology(unsigned int cpu, int level)
+ {
+-	struct acpi_table_header *table;
+ 	struct acpi_pptt_cache *found_cache;
+-	acpi_status status;
+ 	u32 acpi_cpu_id = get_acpi_id_for_cpu(cpu);
+ 	struct acpi_pptt_processor *cpu_node = NULL;
+ 	int ret = -1;
+ 
+-	status = acpi_get_table(ACPI_SIG_PPTT, 0, &table);
+-	if (ACPI_FAILURE(status)) {
+-		acpi_pptt_warn_missing();
++	if (!pptt_table)
+ 		return -ENOENT;
+-	}
+ 
+-	found_cache = acpi_find_cache_node(table, acpi_cpu_id,
++	found_cache = acpi_find_cache_node(pptt_table, acpi_cpu_id,
+ 					   CACHE_TYPE_UNIFIED,
+ 					   level,
+ 					   &cpu_node);
+ 	if (found_cache)
+-		ret = ACPI_PTR_DIFF(cpu_node, table);
+-
+-	acpi_put_table(table);
++		ret = ACPI_PTR_DIFF(cpu_node, pptt_table);
+ 
+ 	return ret;
+ }
+@@ -771,3 +741,20 @@ int find_acpi_cpu_topology_hetero_id(unsigned int cpu)
+ 	return find_acpi_cpu_topology_tag(cpu, PPTT_ABORT_PACKAGE,
+ 					  ACPI_PPTT_ACPI_IDENTICAL);
+ }
++
++int __init acpi_pptt_init(void)
++{
++	acpi_status status;
++
++	/*
++	 * pptt_table will be used at runtime after acpi_pptt_init, so we don't
++	 * need to call acpi_put_table() to release the PPTT table mapping.
++	 */
++	status = acpi_get_table(ACPI_SIG_PPTT, 0, &pptt_table);
++	if (ACPI_FAILURE(status)) {
++		acpi_pptt_warn_missing();
++		return -ENOENT;
++	}
++
++	return 0;
++}
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 72e4f7fd268c..9263dc03dfb4 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -1351,6 +1351,7 @@ static inline int lpit_read_residency_count_address(u64 *address)
+ #endif
+ 
+ #ifdef CONFIG_ACPI_PPTT
++int acpi_pptt_init(void);
+ int acpi_pptt_cpu_is_thread(unsigned int cpu);
+ int find_acpi_cpu_topology(unsigned int cpu, int level);
+ int find_acpi_cpu_topology_package(unsigned int cpu);
+-- 
+2.20.1
 
