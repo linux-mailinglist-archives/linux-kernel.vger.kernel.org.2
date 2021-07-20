@@ -2,211 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D224E3CF8D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89733CF8DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236743AbhGTKtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:49:02 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:52678 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237203AbhGTKsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:48:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626780539; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=4qeavdXtXyl2WU+HnaSqzbijV0jvPvZSQil59/8Hj3g=;
- b=exfKCJ3Be9a42gyTD2YV6IaKCKkQet74IjsidmW4GLEZhLrQrFmi40XCuBFPNOIpaylIbjpY
- /Z5VYqhVoGWUtcI5uFLgd3woclp3YKgz4WStDyb9fHNgSC02Sf6aOmBWXkhsqHo5ZojHrC8n
- RLwcbx/TR3Ls9H+lUbi2vN/8dBU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60f6b36ac923fb7e09eb7400 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Jul 2021 11:28:42
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id ABF49C4323A; Tue, 20 Jul 2021 11:28:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7117EC433D3;
-        Tue, 20 Jul 2021 11:28:39 +0000 (UTC)
+        id S230219AbhGTKtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237780AbhGTKsh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 06:48:37 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585E1C061768
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:29:14 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id ec55so28034623edb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:29:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=G7wkojPSMrqZHIAJp0+Umps/ntjt0k1BRPOgIjoyyXo=;
+        b=gd1Cfku3Ue3eszCew3EMHBk5hcPKjgUjJL07dN13W7f3dNiaeW9+hcY55TKM7CNwwJ
+         bC8k8kQDReW+C+Sle4P9DpgFKcAPlI1TZET1jYTRmZcrOC9eHxoBvny0KU3Cl3j1/C43
+         GtaVQxz/EFP+J+gW+iFGezqrsa4dcIJ/vN28WSzk741Wr/TVyj5B9BBuN/PYbqtYrm5M
+         yZz1Zg5aojaPjFBsQ3SgnAc66xV0wku/EIqGcu/HmF3ll4iV3z20QfOVCW4Scv7WBT6M
+         N60HrS8bvnD1Pc2ZtEWk6ITZkup4qxV3Gp8txWHLVAMeI96B9pL/m7t3IKvQ3gc9tEYZ
+         A4RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=G7wkojPSMrqZHIAJp0+Umps/ntjt0k1BRPOgIjoyyXo=;
+        b=gmrmIYwLVxl908yedIAYd9440kEpZFOwA4qgIMcxr6EjYX70CjFUaMCx2zzmTZbEEs
+         iPZaP5FL+XIXGnr7M71QFOtoR5Z21wXHPzPffQbPxrclXxGIqjTwI051EFiSnCIu8kKV
+         cVDWEXdYuL+HF7Te5yv7obs185hGz7g/4+gLmBzdJixV2pEsaX6OTv+8Px9qPYf8Hbu4
+         Pa6MeW9HaGcIlI2zXymaxXsbXJBGFQcs6G1lviVGMpDErJbv0PTyj+qdMnBEXmbmsRMb
+         ehgDna4LCIRq9y7csXScI/hLhQU80pGT09l4dHG9DahS8n6hZOWqY3NYfHCCDy6OYtnU
+         asPQ==
+X-Gm-Message-State: AOAM5336qkOeGJ6ZgLfCveOl37R4MAGkNAyqLbvgOc+OIVIAGNlmQ3/8
+        yq9GKTjQneCHYlezx1fSfdo=
+X-Google-Smtp-Source: ABdhPJwImlJSPYKWVpuh9U8T9Mx0MLxz8gnFGfO6FCGYzNd68jzf5U1zp/9EinHurWlv8FJrGF5HOw==
+X-Received: by 2002:aa7:cb19:: with SMTP id s25mr40568203edt.194.1626780552924;
+        Tue, 20 Jul 2021 04:29:12 -0700 (PDT)
+Received: from localhost.localdomain ([5.176.2.85])
+        by smtp.gmail.com with ESMTPSA id q26sm2804672ejs.115.2021.07.20.04.29.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 04:29:12 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 14:29:08 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     syzbot <syzbot+d04950c1e97f51d0068a@syzkaller.appspotmail.com>
+Cc:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
+        longman@redhat.com, mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, will@kernel.org
+Subject: Re: [syzbot] WARNING in pwq_unbound_release_workfn (2)
+Message-ID: <20210720142908.3bbb3b21@gmail.com>
+In-Reply-To: <00000000000015c36505c78382e0@google.com>
+References: <00000000000015c36505c78382e0@google.com>
+X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 20 Jul 2021 16:58:39 +0530
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, agross@kernel.org,
-        bhelgaas@google.com, robh+dt@kernel.org, swboyd@chromium.org,
-        lorenzo.pieralisi@arm.com, svarbanov@mm-sol.com,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org
-Subject: Re: [PATCH v4 4/4] PCIe: qcom: Add support to control pipe clk src
-In-Reply-To: <YPHuWudai/FO6SMN@yoga>
-References: <1626443927-32028-5-git-send-email-pmaliset@codeaurora.org>
- <20210716150646.GA2098485@bjorn-Precision-5520> <YPHuWudai/FO6SMN@yoga>
-Message-ID: <f5defd3c9f710d3b52d51657467367ac@codeaurora.org>
-X-Sender: pmaliset@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-17 02:08, Bjorn Andersson wrote:
-> On Fri 16 Jul 10:06 CDT 2021, Bjorn Helgaas wrote:
-> 
->> Run this:
->> 
->>   $ git log --oneline drivers/pci/controller/dwc/pcie-qcom.c
->> 
->> and make your subject match the style and structure (in particular,
->> s/PCIe/PCI/).  In this case, maybe something like this?
->> 
->>   PCI: qcom: Switch sc7280 gcc_pcie_1_pipe_clk_src after PHY init
->> 
->> On Fri, Jul 16, 2021 at 07:28:47PM +0530, Prasad Malisetty wrote:
->> > This is a new requirement for sc7280 SoC.
->> > To enable gdsc gcc_pcie_1_pipe_clk_src should be TCXO.
->> > after PHY initialization gcc_pcie_1_pipe_clk_src needs
->> > to switch from TCXO to gcc_pcie_1_pipe_clk.
->> 
->> This says what *needs* to happen, but it doesn't actually say what
->> this patch *does*.  I think it's something like:
->> 
->>   On the sc7280 SoC, the clock source for pcie_1_pipe must be the TCXO
->>   while gdsc is enabled.  But after the PHY is initialized, the clock
->>   source must be switched to gcc_pcie_1_pipe_clk.
->> 
->>   On sc7280, switch gcc_pcie_1_pipe_clk_src from TCXO to
->>   gcc_pcie_1_pipe_clk after the PHY has been initialized.
->> 
->> Nits: Rewrap to fill 75 columns or so.  Add blank lines between
->> paragraphs.  Start sentences with capital letter.
->> 
-Agree, looks good. will add more details and update the commit message 
-in next version.
+On Mon, 19 Jul 2021 17:55:20 -0700
+syzbot <syzbot+d04950c1e97f51d0068a@syzkaller.appspotmail.com> wrote:
 
->> > Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
->> > ---
->> >  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++++++++++++++++
->> >  1 file changed, 22 insertions(+)
->> >
->> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
->> > index 8a7a300..9e0e4ab 100644
->> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
->> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
->> > @@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
->> >  	struct regulator_bulk_data supplies[2];
->> >  	struct reset_control *pci_reset;
->> >  	struct clk *pipe_clk;
->> > +	struct clk *gcc_pcie_1_pipe_clk_src;
->> > +	struct clk *phy_pipe_clk;
->> > +	struct clk *ref_clk_src;
->> >  };
->> >
->> >  union qcom_pcie_resources {
->> > @@ -1167,6 +1170,20 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
->> >  	if (ret < 0)
->> >  		return ret;
->> >
->> > +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
->> > +		res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
->> > +		if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
->> > +			return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
->> > +
->> > +		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
->> > +		if (IS_ERR(res->phy_pipe_clk))
->> > +			return PTR_ERR(res->phy_pipe_clk);
->> > +
->> > +		res->ref_clk_src = devm_clk_get(dev, "ref");
->> > +		if (IS_ERR(res->ref_clk_src))
->> > +			return PTR_ERR(res->ref_clk_src);
->> 
->> Not clear why ref_clk_src is here, since it's not used anywhere.  If
->> it's not necessary here, drop it and add it in a future patch that
->> uses it.
->> 
-Its more useful in suspend /resume patch set. as of now we will move to 
-suspend/resume patch set.
->> > +	}
->> > +
->> >  	res->pipe_clk = devm_clk_get(dev, "pipe");
->> >  	return PTR_ERR_OR_ZERO(res->pipe_clk);
->> >  }
->> > @@ -1255,6 +1272,11 @@ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
->> >  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
->> >  {
->> >  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
->> > +	struct dw_pcie *pci = pcie->pci;
->> > +	struct device *dev = pci->dev;
->> > +
->> > +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
->> 
->> Using of_device_is_compatible() follows existing style in the driver,
->> which is good.  But I'm not sure that's good style in general because
->> it's a little repetitious and wasteful.
->> 
+> Hello,
 > 
-> Following the style is good, but up until the recent sm8250 addition it
-> was just a hack to deal with legacy platforms that we don't know the
-> exact details about.
+> syzbot found the following issue on:
 > 
-> But, all platforms I know of has the pipe_clk from the PHY fed into the
-> pipe_clk_src mux in the gcc block and then ends up in the PCIe
-> controller. As such, I suspect that the pipe_clk handling should be 
-> moved
-> to the common code path of the driver and there's definitely no harm in
-> making sure that the pipe_clk_src mux is explicitly configured on
-> existing platforms (at least all 2.7.0 based ones).
+> HEAD commit:    2734d6c1b1a0 Linux 5.14-rc2
+> git tree:       upstream
+> console output:
+> https://syzkaller.appspot.com/x/log.txt?x=1518d3bc300000 kernel
+> config:  https://syzkaller.appspot.com/x/.config?x=f7dfeb6dfc05ea19
+> dashboard link:
+> https://syzkaller.appspot.com/bug?extid=d04950c1e97f51d0068a
 > 
->> qcom_pcie_probe() already calls of_device_get_match_data(), which does
->> basically the same thing as of_device_is_compatible(), so I think we
->> could take better advantage of that by augmenting struct qcom_pcie_ops
->> with these device-specific details.
->> 
+> Unfortunately, I don't have any reproducer for this issue yet.
 > 
-> I agree.
+> IMPORTANT: if you fix the issue, please add the following tag to the
+> commit: Reported-by:
+> syzbot+d04950c1e97f51d0068a@syzkaller.appspotmail.com
 > 
-> Regards,
-> Bjorn
-> 
->> Some drivers that use this strategy:
->> 
->>   drivers/pci/controller/cadence/pci-j721e.c
->>   drivers/pci/controller/dwc/pci-imx6.c
->>   drivers/pci/controller/dwc/pci-layerscape.c
->>   drivers/pci/controller/dwc/pci-layerscape-ep.c
->>   drivers/pci/controller/dwc/pcie-tegra194.c
->>   drivers/pci/controller/pci-ftpci100.c
->>   drivers/pci/controller/pcie-brcmstb.c
->>   drivers/pci/controller/pcie-mediatek.c
->> 
->> > +		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
->> >
->> >  	return clk_prepare_enable(res->pipe_clk);
->> >  }
+> ------------[ cut here ]------------
+> WARNING: CPU: 3 PID: 32 at kernel/locking/lockdep.c:6305
+> lockdep_unregister_key+0x19a/0x250 kernel/locking/lockdep.c:6305
+> Modules linked in: CPU: 3 PID: 32 Comm: kworker/3:0 Not tainted
+> 5.14.0-rc2-syzkaller #0 Hardware name: QEMU Standard PC (Q35 + ICH9,
+> 2009), BIOS 1.14.0-2 04/01/2014 Workqueue: events
+> pwq_unbound_release_workfn RIP:
+> 0010:lockdep_unregister_key+0x19a/0x250 kernel/locking/lockdep.c:6305
+> Code: 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8f 00 00
+> 00 4d 89 7d 08 48 b8 22 01 00 00 00 00 ad de 48 89 43 08 eb 02 <0f>
+> 0b 4c 89 f7 ba 01 00 00 00 48 89 ee e8 44 fd ff ff 4c 89 f7 e8 RSP:
+> 0018:ffffc900007bfcb0 EFLAGS: 00010046 RAX: dffffc0000000000 RBX:
+> 0000000000000000 RCX: 1ffffffff1ad87cd RDX: 1ffffffff1fcad55 RSI:
+> 0000000000000004 RDI: ffffffff8fe56aa8 RBP: ffff88801416e928 R08:
+> 0000000000000001 R09: 0000000000000003 R10: fffff520000f7f8c R11:
+> 0000000000086088 R12: 0000000000000246 R13: dffffc0000000000 R14:
+> ffffffff8fcd1868 R15: ffff888047033870 FS:  0000000000000000(0000)
+> GS:ffff88802cd00000(0000) knlGS:0000000000000000 CS:  0010 DS: 0000
+> ES: 0000 CR0: 0000000080050033 CR2: 00000000014a53ad CR3:
+> 00000000479f1000 CR4: 0000000000150ee0 DR0: 0000000000000000 DR1:
+> 0000000000000000 DR2: 0000000000000000 DR3: 0000000000000000 DR6:
+> 00000000fffe0ff0 DR7: 0000000000000400 Call Trace:
+> wq_unregister_lockdep kernel/workqueue.c:3468 [inline]
+> pwq_unbound_release_workfn+0x223/0x2d0 kernel/workqueue.c:3700
+> process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+> worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+> kthread+0x3e5/0x4d0 kernel/kthread.c:319 ret_from_fork+0x1f/0x30
+> arch/x86/entry/entry_64.S:295
 
-Sure, we will make use of struct qcom_pcie_ops and add a new callback to 
-configure pipe clk src.
-In coming platforms, if the platform doesn't need to configure pipe clk 
-src, it will return as callback not defined.
 
-We will incorporate the changes in next release.
+I think, this should be fixed by:
 
->> > --
->> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->> > a Linux Foundation Collaborative Project
->> >
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=a9a2e0482d647b07b4d45033f4be0854d3ea201e 
+
+Unfortunately, syzbot didn't provide any reproducer, so no chance to
+test it :(
+
+ 
+
+With regards,
+Pavel Skripkin
