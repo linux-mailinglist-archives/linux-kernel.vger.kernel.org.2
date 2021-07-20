@@ -2,89 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3627A3D0171
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49ED53D0174
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbhGTRgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 13:36:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232512AbhGTRfP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 13:35:15 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8340CC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:15:53 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id x5-20020a0569021025b029055b9b68cd3eso31400091ybt.8
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:15:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=mN7rCkcALbLQM/R7NDnSDNWf3cZq+FCXJCfkRrG6i3w=;
-        b=PP5iqiNfyXblKuaLLoCAetm52GHEE7uQ20id6SefOeBNOqrrzT7274qyfPpEcHcGzv
-         OkvITWDzGg1yCIo4ACov/UNvwqS1kG2LK7JjkHm35aA8WHFF2IBogkSL9EWd3VLYQmEg
-         EjLcWUZRglqN/JQ2GCmBEFvw14JjtWrItcxIJwXAnVYqF3jboTn52GtOXXeFVUPk5XlN
-         4ecVp3tQi70Ad16gqOZG5QTRpeXYR/sGjKoOlHBuakSvKsJvuzWYqD75z+rVFR74MsQB
-         IkEmOgS77jrPkLAjwwtoWxwg7YDujn+/C9LMtJsB/4PEZfx0XDoZfIkSH4Hr1YJ6v85l
-         jQtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=mN7rCkcALbLQM/R7NDnSDNWf3cZq+FCXJCfkRrG6i3w=;
-        b=n6oOKBF2eoeqL0grtSDcuzcGh6eduuxctCkvUfzhaxqzPuIrCBaE54KIFPQFVSyhSj
-         eWcSsevC+0nIDD05upa6a4HHkJL3RdZI6gSI/OKuAC3vP0Q1BWuBEKmrU5fiSsf//z0i
-         vnYbcjllh5IENxCryvePak3tUs6uXN5O/2cEArb+MQg6qElwZ3pL/AX2C9rtu4IazLqq
-         gf3EGay2MhodoQ+PJU+Zfz59NukXJVQY2DpnDs9736m1D8UnE53Wu6w3rcWOqKyzjjVk
-         2gdm6iGMv75JwTDfZuQh7l98pOY/CdJ1qbMBzCTYM1V1Xeh783glcmyM9s1k9YiN3Tcp
-         0Kqw==
-X-Gm-Message-State: AOAM531YnPlxUZSdgx+g0H2/VKsZ7Q/Xw/HCAOwNsiHcibZKtcPqwoDN
-        KGnXnQZXLGtU6Vyng1HvQHxzaKW8ekW4KuccuFI=
-X-Google-Smtp-Source: ABdhPJxM9GiZsc3G1CcZqJQC+vnvDw65kDgmxJDIh0biAymz08yGN0PArhHN5jFJ70cbVTE5h0GJmv9hWLuFj1baxIU=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:cf0d:433d:7377:6a13])
- (user=ndesaulniers job=sendgmr) by 2002:a25:c708:: with SMTP id
- w8mr43132005ybe.246.1626804952750; Tue, 20 Jul 2021 11:15:52 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 11:15:42 -0700
-Message-Id: <20210720181542.2896262-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
-Subject: [PATCH] MAINTAINERS: add Nick as Reviewer for compiler_attributes.h
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S232273AbhGTRgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 13:36:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232555AbhGTRf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 13:35:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 106746101B;
+        Tue, 20 Jul 2021 18:16:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626804966;
+        bh=qtVSgG+A7D7xSwJx0othdtiD/Ap1K//pwigS721/SdY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=exWEcznwBv5PYBDFJUMGm142uvKdPXgvphn/JOQbPq9biO7F1Sp1tkKcA9EqPNXjz
+         7DGjpoKu4TVGCrgAnwCGCp/0oekEAZ1nktojKVGGkC62l5dyKgZZyFWA9xtO/Lwkcb
+         bkMiOzAeu0IY4pP90uGwbK739Fa/1Y1sasmy7tZc=
+Date:   Tue, 20 Jul 2021 20:16:03 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Long Li <longli@microsoft.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        "linux-fs@vger.kernel.org" <linux-fs@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: Re: [Patch v4 0/3] Introduce a driver to support host accelerated
+ access to Microsoft Azure Blob
+Message-ID: <YPcS41v9x6+VlQXt@kroah.com>
+References: <1626751866-15765-1-git-send-email-longli@linuxonhyperv.com>
+ <82e8bec6-4f6f-08d7-90db-9661f675749d@acm.org>
+ <YPZmtOmpK6+znL0I@infradead.org>
+ <DM6PR21MB15138B5D5C8647C92EA6AB99CEE29@DM6PR21MB1513.namprd21.prod.outlook.com>
+ <115d864c-46c2-2bc8-c392-fd63d34c9ed0@acm.org>
+ <BY5PR21MB1506822C71ED70366E1B1BCBCEE29@BY5PR21MB1506.namprd21.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BY5PR21MB1506822C71ED70366E1B1BCBCEE29@BY5PR21MB1506.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-$ ./scripts/get_maintainer.pl --rolestats --git-blame -f \
-  include/linux/compiler_attributes.h
-...
-Nick Desaulniers <ndesaulniers@google.com> (supporter:CLANG/LLVM BUILD
-SUPPORT,authored lines:43/331=13%,commits:8/15=53%)
+On Tue, Jul 20, 2021 at 05:33:47PM +0000, Long Li wrote:
+> > Subject: Re: [Patch v4 0/3] Introduce a driver to support host accelerated
+> > access to Microsoft Azure Blob
+> > 
+> > On 7/20/21 12:05 AM, Long Li wrote:
+> > >> Subject: Re: [Patch v4 0/3] Introduce a driver to support host
+> > >> accelerated access to Microsoft Azure Blob
+> > >>
+> > >> On Mon, Jul 19, 2021 at 09:37:56PM -0700, Bart Van Assche wrote:
+> > >>> such that this object storage driver can be implemented as a
+> > >>> user-space library instead of as a kernel driver? As you may know
+> > >>> vfio users can either use eventfds for completion notifications or polling.
+> > >>> An interface like io_uring can be built easily on top of vfio.
+> > >>
+> > >> Yes.  Similar to say the NVMe K/V command set this does not look like
+> > >> a candidate for a kernel driver.
+> > >
+> > > The driver is modeled to support multiple processes/users over a VMBUS
+> > > channel. I don't see a way that this can be implemented through VFIO?
+> > >
+> > > Even if it can be done, this exposes a security risk as the same VMBUS
+> > > channel is shared by multiple processes in user-mode.
+> > 
+> > Sharing a VMBUS channel among processes is not necessary. I propose to
+> > assign one VMBUS channel to each process and to multiplex I/O submitted to
+> > channels associated with the same blob storage object inside e.g. the
+> > hypervisor. This is not a new idea. In the NVMe specification there is a
+> > diagram that shows that multiple NVMe controllers can provide access to the
+> > same NVMe namespace. See also diagram "Figure 416: NVM Subsystem with
+> > Three I/O Controllers" in version 1.4 of the NVMe specification.
+> > 
+> > Bart.
+> 
+> Currently, the Hyper-V is not designed to have one VMBUS channel for each process.
 
-It's also important for me to stay up on which compiler attributes clang
-is missing.
+So it's a slow interface :(
 
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+> In Hyper-V, a channel is offered from the host to the guest VM. The host doesn't
+> know in advance how many processes are going to use this service so it can't
+> offer those channels in advance. There is no mechanism to offer dynamic
+> per-process allocated channels based on guest needs. Some devices (e.g.
+> network and storage) use multiple channels for scalability but they are not
+> for serving individual processes.
+> 
+> Assigning one VMBUS channel per process needs significant change on the Hyper-V side.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 548783bf6505..fe9b2ab45402 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4658,6 +4658,7 @@ F:	drivers/platform/x86/compal-laptop.c
- 
- COMPILER ATTRIBUTES
- M:	Miguel Ojeda <ojeda@kernel.org>
-+R:	Nick Desaulniers <ndesaulniers@google.com>
- S:	Maintained
- F:	include/linux/compiler_attributes.h
- 
--- 
-2.32.0.402.g57bb445576-goog
+What is the throughput of a single channel as-is?  You provided no
+benchmarks or numbers at all in this patchset which would justify this
+new kernel driver :(
 
+thanks,
+
+greg k-h
