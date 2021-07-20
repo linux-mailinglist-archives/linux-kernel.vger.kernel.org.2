@@ -2,137 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DBE3CF897
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1593CF894
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238201AbhGTKZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238457AbhGTKT0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:19:26 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257AFC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:00:05 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id s23so8357629oiw.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:00:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FVn1SYmkQB3M7v69VF2he/NUlW4fKKcfsWY+DKqff6A=;
-        b=Wy82mBov5LjHgcaRRiO3uSMxaLw2FeoKQvcia10TJnBdtBGL9IZSGjxDGX5omGEgDT
-         nJh+G6Jfrn8+kvbeqa0NNd4uBsEq6fmqDFBP3pSD0fKZVNjsIB+SGAEEDPxzzPltefb4
-         TbrGVgW+jrLjVChYoTUTA01fM0N3fPz6u2SHtPCZaKkDO9XgnJAZlGRfrhShxAb3WRcA
-         KoGRFzcIC1HYR8G0Pv8fyy5KMFGFTqWbp33gLJ1HMxfFP3D1OVrjOReZ0PoE23EjMw/P
-         BnIsWaeoQZSOTrN7575vP0mrGMcF3D62Z1G684aC+T1NcM5IS6FFk1MvgttlPpmbWWec
-         edlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FVn1SYmkQB3M7v69VF2he/NUlW4fKKcfsWY+DKqff6A=;
-        b=KfDm3XsBs8LcGRKb43xnfhg0SjkKKZPQMb++qILkQ+OSSMslZqxYsG7ap6m6hthMPZ
-         /oAQexB7mLWDn4TJnB+Bw0CPRioqbrBJz8swzNNeY3UqQCZivMvnS1oCJy3PbsC7TG6J
-         CKNH0rPlrDk0RrbW4xelzngifJVm2BWK0OlnglJheRNzvEOew1LbMtz9fecWPrmFQ3ph
-         3OniarWMmb+OXjz92AnC/qx7prp2ar2KZp850wm1c1TirZn94Osqbu4pDmLdlV7l3IgT
-         bJdDCo4cR7N+ehvICl9dty76ZkcZP/U5+3NMgTDRtoqVexGsJrIal5SvbVqQHZjQGPhZ
-         4gpw==
-X-Gm-Message-State: AOAM5339ltD04IedTDeLiJXH2u2LinJIEi8vzlAcmYNITY953BV15xnR
-        RxqBbyIyDdZ9PXJgknsaq2NgiRk5rVQ0pB1x1N0UAw==
-X-Google-Smtp-Source: ABdhPJwifz6pu5NBhio7NwidX7Z1fxHFB/vsZ48ZpYgUwL+dzCzouBKLdEAxyuGStD1hj4hu7q+1YBk4sq1EMVSS+wg=
-X-Received: by 2002:a05:6808:5a:: with SMTP id v26mr11589545oic.90.1626778803869;
- Tue, 20 Jul 2021 04:00:03 -0700 (PDT)
+        id S238137AbhGTKYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:24:09 -0400
+Received: from mail-dm6nam08on2080.outbound.protection.outlook.com ([40.107.102.80]:27820
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238506AbhGTKUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 06:20:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HrIim88j1tuepynqupZvAXB0P+0UpaDyWK6VoQG3W8GknjlcqPLRcMrr0iF66kNz89w2EhD2uLdi0XvwWLl5Um+Yw/ADn6TIcFE8TjYfgPOmZOEgOIgV5pZyQ8hPumUzM44k0Npb20swye9hrv921hVFeyZxDoYXbRykTwYBrjIco6YA552vn0b2b881BbahyTC+rWEL0186xSJCB6I8QRbOL5NoGXqY7un3uDLQQImqJ0+xC3NWDdUv9tYA8FdaNPLKFoOYYOrKGgg0GkXLVHlSLwxPY6f0WtmSODhI11aGAD1Q7ijBeUZXwSNtPXOl3zHYd195vf7xlsZxuofoIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PvaE8AtmHGcKjsyBBUGafXkOuJRv4aBKMcqGzECqITY=;
+ b=fx6rw7GifFdK5Q8sxkfF2WXrB4Jv31W45J+ag/gFWYXfTzvCxNaTmh571svXRnWNVk8Pz8wii/8OGYq2sieTF6A4W3Vo2zrV3UijxvLJEtLStYRIC/WIMN4umqA1dNcPIF8/iEk0uqLlr2TB36QyjYaCtXoSkRW3aljtx5vBFAap+45enDjLAmwDww2fMk8iIaFaFAMam7VYE7lqyWF9lwIJJsxkKR8qvuJmmdqEAm9iyicOPym0rUQVhmpdt8BEHCiO12UOMFV5V2xntnPIhBW16AhXUvEvCjLZv3cGRFh/4nUfxDukdWBg5kHb+jhwWIRtnQ4l3xR+20I0D97+Bg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PvaE8AtmHGcKjsyBBUGafXkOuJRv4aBKMcqGzECqITY=;
+ b=0gfxrXBh5PnYOaIB7d+MKhnK3LUcvPpoN6E6vCIGK9AG60iitW+gc/0hXWGssDueNkOAget9BsMpiXn6ruvSWdrSQDoAAJK6w2BHMlBIzXI0srys+XohSU8eF4zwT7vnX3JHKIGpsx8Fj2QmtOMfNLiyarNPeY2X/tuZnB/ks5E=
+Authentication-Results: mediatek.com; dkim=none (message not signed)
+ header.d=none;mediatek.com; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB3902.namprd12.prod.outlook.com (2603:10b6:208:169::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Tue, 20 Jul
+ 2021 11:00:51 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4331.034; Tue, 20 Jul 2021
+ 11:00:50 +0000
+Subject: Re: [PATCH v2] dma_buf: remove dmabuf sysfs teardown before release
+To:     guangming.cao@mediatek.com
+Cc:     dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        matthias.bgg@gmail.com, sumit.semwal@linaro.org,
+        wsd_upstream@mediatek.com
+References: <8d7dfc78-aa85-48b5-2828-21ec6b463ac3@amd.com>
+ <20210720103158.83439-1-guangming.cao@mediatek.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <a12fc0c7-ed60-0724-fa56-097cb9a694ee@amd.com>
+Date:   Tue, 20 Jul 2021 13:00:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210720103158.83439-1-guangming.cao@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: PR0P264CA0238.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1e::34) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-References: <20210719104735.3681732-1-qperret@google.com> <20210719104735.3681732-7-qperret@google.com>
- <CA+EHjTzjT2iv=9jsTNquSAD-_AWqpyCKVPiuCBWGzpxcAkWf9w@mail.gmail.com> <YPalr09gA6tGYVtl@google.com>
-In-Reply-To: <YPalr09gA6tGYVtl@google.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Tue, 20 Jul 2021 11:59:27 +0100
-Message-ID: <CA+EHjTz__zjYY2D8+nEPq2F8__saxC0kApnn7_rs0r2VCR2Nzg@mail.gmail.com>
-Subject: Re: [PATCH 06/14] KVM: arm64: Tolerate re-creating hyp mappings to
- set ignored bits
-To:     Quentin Perret <qperret@google.com>
-Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        dbrazdil@google.com, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:8651:5b5e:8648:2fd0] (2a02:908:1252:fb60:8651:5b5e:8648:2fd0) by PR0P264CA0238.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1e::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23 via Frontend Transport; Tue, 20 Jul 2021 11:00:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3769e975-0835-47ec-af06-08d94b6da2a0
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3902:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB390202C74762B2AF6D2F8EBE83E29@MN2PR12MB3902.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MWS337TOR35i1gKd05DkAsSvzaE+7nsunCre3xgmLBHuka6WFh/4N+ac3ymqcY82I+qGWXCmoIz1b3/dcJjnpOXl7y2/a0InZnN03SoesbRom+dfkkG+PLInmbWEej3FGpsxwKKlAIHk/WdWLv2edLbMdgL9QcDgYVhRVaqX4rD3Rnq/w67h/HHfCtiU3AeLWCIJ5EOMMWIYtOnnd865acEEU0Ve0KGNntEiSHjLrG0ZzTlz/LgQ/3xKVJdCE9OfUXg4f5vcZ8C/rtLuxqbcnFLUM0o78R53AfK+TV36eHZKKPy1XoWzvvNL3JdT+5JKOvqQ2ngx9nKgMnD8+w4qRAS9XGDaprfo3QjOiV4HOumMrXmN9kb8Qq3XgletmX66zcJdyHwFDcnDBdkyGCKgBltMooBUjXjUsPc5Jeph8vB1V8r0LaXPwQu5vr87VM9pr2hGuL4DQljwySpRdWzG9f+VP8OYxs5lTDQ42vzvcEGXUqOXY3fb5xDvqh+hNX0oys7bxF5KsGK0guljqNh1FaG+XGfpiQ/eWdyoNfcebW9zTN3jh3Iiw0+aghcqsv9DXqNIfz0TAzs+xTHCjRreP8EECCpOGimDen7DGS8oFV9yALq3GcrBbd8ehXhdYoYxiwUrWoU/ZMhRXxcw0GMir7q2cKtqfIZEDLswwKn6lib88wmd/JKDFzRJKAK7lL4KDRnAhKdt7U5VAS9MV2bTALXxG5Mv9fNO6YbbWxqb87I6irMG2FtjLYFbgFwtl6nE
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31686004)(6486002)(31696002)(36756003)(5660300002)(86362001)(508600001)(83380400001)(8936002)(2906002)(6916009)(6666004)(2616005)(66556008)(4326008)(66476007)(8676002)(66946007)(38100700002)(7416002)(186003)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cnRmK254azhVaklWMHJKTkQzOUcwS2ErVXNuVlo3YkxkTzNGZmRsSGpTQjNR?=
+ =?utf-8?B?UE1rZU1xa25nT2R6ak1aeGY5NGdvVFJ4eHExM25ENjFsenBsc2g3NW5UTVg4?=
+ =?utf-8?B?djZTazhYRnozbm4yU3pIYmtKUnlTZHFOYkZKMTloU2p5YksvU3dvM0dZQXhn?=
+ =?utf-8?B?dFROWTJXNFcvWFlyblB0SFFnZ2p2S2VtSUl4WDdmaFpHTlIyTXlOL3JIU0w0?=
+ =?utf-8?B?dmRZWjA2RFByeW1EOURrNjNwbmVIWmhGVGlDYWtDcHpjWDl5WEVNdVAyYkt3?=
+ =?utf-8?B?OUNnNGtPRTlBcHh1bEpqcThveGFtdnBCdzZXWWJ2Mk92bysxak9YNGQ0cFNk?=
+ =?utf-8?B?N2p1ckdZaEUrTTB1MU5VWHRoMGFjcmMyK0RYTEY3Z0tPMVFGSE1yckY2bkJu?=
+ =?utf-8?B?OFRWWmdtNFlVdWhrWDhWWGsvd0dFMUdQbW9IUmdqL3NBZnFIS0lWeWRyVTZq?=
+ =?utf-8?B?WmN3cmVFVkhQOGlleXk0WXhjWGhYRUFaMEdwNjNOa1h4bDJWN0l2QUQrTGxz?=
+ =?utf-8?B?clRRV3FnWUhvcmFHUUdvdUc4SklYSTNKQ3pPbitSOUpSN2gzQ1Rvbmw1dzBQ?=
+ =?utf-8?B?ZkIrR0ZONjJiTmluWnRMUDVjbzdnc2orNGJDUEhaKzNJMExOTjd3ZVNjSHlZ?=
+ =?utf-8?B?TTVEV01rMTNIK2VVYTdCOXhiR1grTVAyTmhISVhmMHZCMnlrSzQ5NVVPbWl6?=
+ =?utf-8?B?bGlhQ2gxNmFxejJOWmttMUlLRDRuNXdmZ2w0SlBOaHhRMU9wM1gzcldKd3hF?=
+ =?utf-8?B?aUhZTzBIQWk3di95WmllblNBa3czOHg1Tyt1Q1U0MDQzYTJkdWVUSUFzWGF6?=
+ =?utf-8?B?S2F2QXN2NGd0dlpncTRMUVZaWlVLaHplMWttTzMxanFTVFZ0dzJSc2FlaVFH?=
+ =?utf-8?B?cTBIQ1lYUnU4Rml0OFg0RVZrTlVwS1A2T09sRUIwSkpsN0R6V3VWOW0xbFJo?=
+ =?utf-8?B?OVA4cUovMkpIZjF1ZDBkNEU1VUJLK2Z5ZlJtOFRlMmpWc2FCQWh2S21VYjNq?=
+ =?utf-8?B?c3VYbmo1eHErWldmQm1TOGhKZGdXL2taV3k1RDdYblhFSGFXdWFrNU5lT2tO?=
+ =?utf-8?B?eG0rSTUzKzVYc2dJc0JjQnBSUkZCNzBWMjJUVUY5dWtDdXQ5eGFwbDR5TVBX?=
+ =?utf-8?B?OXRqSWNpTVI3U1Fjb1hZcEl0c3pjZ1M5dEpnTmxpNW15b1RET3FBRzdQM0U5?=
+ =?utf-8?B?Y3FEUDhwUVFPbWR6RnBpNktIdFdrOTA4Tit3RUJVSE02WnJHSlZFdUlBRkcx?=
+ =?utf-8?B?VVl6bXh3YW95QWtkM21SZm5wWFRhYVA4M1RtMVhxTnpsc25vYTVDRW5FQ3BR?=
+ =?utf-8?B?UU50ZjRSV3kzYzJuYzF0bDZ6UXhLa01HR3RqQ1MvZjJZZmZ2ZzQ0TEs3MENR?=
+ =?utf-8?B?ZUdEaXdQNWxpTUdGYXlTaWN0WDFmKzh1S2ZvY251MjVPOEg1Qkh1Yi9DYjBW?=
+ =?utf-8?B?bjQ3L2xaZ1AzTU85NjFMT0E2R2E5QzZwM2RKeHFML2lQVVY0Wll3Z0ZXc0xx?=
+ =?utf-8?B?RzZraGhwelpoa0F4UXNYc2N6VzlTTkpNN2hvYyszVW1QY3FHbVA1WG5ubFRB?=
+ =?utf-8?B?THZUVTB1NG9GLzB0SU1sZm0rYU9XdVZkQllVeUhCOU1iUXYwYkNpdUVLNXR1?=
+ =?utf-8?B?bU1yQTZCVVFSeEpZYnpjZk5VMmlnVmpEcjFXTkVyKzQzVjhJVVBXTTk3V1RI?=
+ =?utf-8?B?U1hXeDNXRmxPZGxuVEgyQ0VDT29NOXpSYlNCTDM5WGd2Y0dnK1V3NWlnYjF2?=
+ =?utf-8?B?ZVIrbnRBUUtQVGtIOG1HQ3ArQTdMYWZnSnZiTHB2ZUJtUGc5anQ3ek1mNWJI?=
+ =?utf-8?B?QUNuUjFoeW92dE5Nb3p2QlRoWDdOZ3FQWE5oaDQxaGZzZ3doVEJxYWNvd1Fu?=
+ =?utf-8?Q?gmGJnlbc3bSry?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3769e975-0835-47ec-af06-08d94b6da2a0
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2021 11:00:50.8749
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j1T3tPMMO0eankp8XxZQOepBzbmmKhlVGdxrVHa3JV+WclUpGlEGz4f53ZPyJqHJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3902
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
+Am 20.07.21 um 12:31 schrieb guangming.cao@mediatek.com:
+> From: Guangming Cao <Guangming.Cao@mediatek.com>
+>
+> Dmabuf sysfs stat is used for dmabuf info track.
+> But these file maybe still in use after buffer released,
+> should clear it before buffer release.
+>
+> Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
 
-On Tue, Jul 20, 2021 at 11:30 AM 'Quentin Perret' via kernel-team
-<kernel-team@android.com> wrote:
->
-> Hi Fuad,
->
-> On Tuesday 20 Jul 2021 at 11:17:03 (+0100), Fuad Tabba wrote:
-> > Hi Quentin,
-> >
-> >
-> > On Mon, Jul 19, 2021 at 11:47 AM Quentin Perret <qperret@google.com> wrote:
-> > >
-> > > The current hypervisor stage-1 mapping code doesn't allow changing an
-> > > existing valid mapping. Relax this condition by allowing changes that
-> > > only target ignored bits, as that will soon be needed to annotate shared
-> > > pages.
-> > >
-> > > Signed-off-by: Quentin Perret <qperret@google.com>
-> > > ---
-> > >  arch/arm64/kvm/hyp/pgtable.c | 18 ++++++++++++++++--
-> > >  1 file changed, 16 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> > > index a0ac8c2bc174..34cf67997a82 100644
-> > > --- a/arch/arm64/kvm/hyp/pgtable.c
-> > > +++ b/arch/arm64/kvm/hyp/pgtable.c
-> > > @@ -362,6 +362,17 @@ static int hyp_set_prot_attr(enum kvm_pgtable_prot prot, kvm_pte_t *ptep)
-> > >         return 0;
-> > >  }
-> > >
-> > > +static bool hyp_pte_needs_update(kvm_pte_t old, kvm_pte_t new)
-> > > +{
-> > > +       if (old == new)
-> > > +               return false;
-> > > +
-> > > +       if (!kvm_pte_valid(old))
-> > > +               return true;
-> > > +
-> > > +       return !WARN_ON((old ^ new) & ~KVM_PTE_LEAF_ATTR_IGNORED);
-> >
-> > Wouldn't this return false if both ignored and non-ignored bits were
-> > different, or is that not possible (judging by the WARN_ON)?
->
-> Correct, but that is intentional, see below ;)
->
-> > If it is, then it would need an update, wouldn't it?
->
-> Maybe, but if you look at what the existing code does, we do skip the
-> update if the old mapping is valid and not equal to new. So I kept the
-> behaviour as close as possible to this -- if you change any bits outside
-> of SW bits you get a WARN and we skip the update, as we already do
-> today. But if you touch only SW bits and nothing else, then I let the
-> update go through.
->
-> That said, I don't think warning and then proceeding to update would be
-> terribly wrong, it's just that a change of behaviour felt a bit
-> unnecessary for this particular patch.
+Reviewed and pushed to drm-misc-next.
 
-Thanks for the clarification. It makes sense to preserve the existing
-behavior, but I was wondering if a comment would be good, describing
-what merits a "needs update"?
+Thanks,
+Christian.
 
-Cheers,
-/fuad
+> ---
+>   drivers/dma-buf/dma-buf.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index b1a6db71c656..63d32261b63f 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -76,12 +76,12 @@ static void dma_buf_release(struct dentry *dentry)
+>   	 */
+>   	BUG_ON(dmabuf->cb_shared.active || dmabuf->cb_excl.active);
+>   
+> +	dma_buf_stats_teardown(dmabuf);
+>   	dmabuf->ops->release(dmabuf);
+>   
+>   	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+>   		dma_resv_fini(dmabuf->resv);
+>   
+> -	dma_buf_stats_teardown(dmabuf);
+>   	module_put(dmabuf->owner);
+>   	kfree(dmabuf->name);
+>   	kfree(dmabuf);
 
-> Thanks,
-> Quentin
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
