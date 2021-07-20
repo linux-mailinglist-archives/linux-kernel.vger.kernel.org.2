@@ -2,251 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5A63CF34A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D7E3CF34F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233140AbhGTDpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 23:45:05 -0400
-Received: from mga06.intel.com ([134.134.136.31]:35128 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232252AbhGTDox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 23:44:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="272288708"
-X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="272288708"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 21:25:28 -0700
-X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="494528464"
-Received: from ywei11-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.138.31])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 21:25:27 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Rafael J Wysocki <rjw@rjwysocki.net>,
-        H Peter Anvin <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Len Brown <lenb@kernel.org>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH v7 1/1] x86/acpi, x86/boot: Add multiprocessor wake-up support
-Date:   Mon, 19 Jul 2021 21:25:06 -0700
-Message-Id: <20210720042506.2123009-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S233793AbhGTDsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 23:48:46 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:64247 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229906AbhGTDsk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 23:48:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626755359; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=msSy1SY6hbAs1o6cBCTFy9D9LB4qWd97QuLc6JXLcQ8=; b=OXgk7kgxmvKapglUbGDj/F+c2blCNIFqYM4GDGWV6J32DWASyHOJ+O+iReZGgbDSdl+ImOUY
+ myp+m/qagFkGizkl/Oe+5Uz0Gu2sfHiEcz/9AFjJBZcXSnMxb297JSC3JQpBrm8MQ0jnfKNf
+ M9E0w/VJDHt7ldOWBIvw2i9hcJM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60f6511d4815712f3a5a6c83 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Jul 2021 04:29:17
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B6A39C43217; Tue, 20 Jul 2021 04:29:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.50.42.221] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A2B06C433D3;
+        Tue, 20 Jul 2021 04:29:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A2B06C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v4 2/2] arm64: dts: sc7180: Add required-opps for i2c
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>, ulf.hansson@linaro.org,
+        viresh.kumar@linaro.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, rojay@codeaurora.org,
+        stephan@gerhold.net
+References: <1626429658-18961-1-git-send-email-rnayak@codeaurora.org>
+ <1626429658-18961-3-git-send-email-rnayak@codeaurora.org>
+ <YPHpsO5LlQRQxj9y@yoga>
+ <CAE-0n53CHD8c7C4ETWRgzmZmFSCcBw46wSs4pKbYMRjA_tD3yg@mail.gmail.com>
+ <YPHxfHPC/faq/y+J@yoga>
+ <CAE-0n50qx80cMFPJ1x9rc+EMR1L+j2CUMyDjWAbnE9mPHjf-TQ@mail.gmail.com>
+ <YPIBK/NJgBNZVI8Y@yoga> <12711a61-e16c-d2bc-6e04-ab94c7551abe@codeaurora.org>
+ <YPXQNFYKfH/xZxFY@yoga>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <bc79ea3e-4981-8f9b-f9a7-59cb972047a7@codeaurora.org>
+Date:   Tue, 20 Jul 2021 09:59:09 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YPXQNFYKfH/xZxFY@yoga>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per ACPI specification r6.4, sec 5.2.12.19, a new sub
-structure – multiprocessor wake-up structure - is added to the
-ACPI Multiple APIC Description Table (MADT) to describe the
-information of the mailbox. If a platform firmware produces the
-multiprocessor wake-up structure, then OS may use this new
-mailbox-based mechanism to wake up the APs.
 
-Add ACPI MADT wake table parsing support for x86 platform and if
-MADT wake table is present, update apic->wakeup_secondary_cpu with
-new API which uses MADT wake mailbox to wake-up CPU.
 
-Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
+On 7/20/2021 12:49 AM, Bjorn Andersson wrote:
+> On Mon 19 Jul 04:37 CDT 2021, Rajendra Nayak wrote:
+> 
+>>
+>>
+>> On 7/17/2021 3:29 AM, Bjorn Andersson wrote:
+>>> On Fri 16 Jul 16:49 CDT 2021, Stephen Boyd wrote:
+>>>
+>>>> Quoting Bjorn Andersson (2021-07-16 13:52:12)
+>>>>> On Fri 16 Jul 15:21 CDT 2021, Stephen Boyd wrote:
+>>>>>
+>>>>>> Quoting Bjorn Andersson (2021-07-16 13:18:56)
+>>>>>>> On Fri 16 Jul 05:00 CDT 2021, Rajendra Nayak wrote:
+>>>>>>>
+>>>>>>>> qup-i2c devices on sc7180 are clocked with a fixed clock (19.2 MHz)
+>>>>>>>> Though qup-i2c does not support DVFS, it still needs to vote for a
+>>>>>>>> performance state on 'CX' to satisfy the 19.2 Mhz clock frequency
+>>>>>>>> requirement.
+>>>>>>>>
+>>>>>>>
+>>>>>>> Sounds good, but...
+>>>>>>>
+>>>>>>>> Use 'required-opps' to pass this information from
+>>>>>>>> device tree, and also add the power-domains property to specify
+>>>>>>>> the CX power-domain.
+>>>>>>>>
+>>>>>>>
+>>>>>>> ..is the required-opps really needed with my rpmhpd patch in place?
+>>>>>>>
+>>>>>>
+>>>>>> Yes? Because rpmhpd_opp_low_svs is not the lowest performance state for
+>>>>>> CX.
+>>>>>
+>>>>> On e.g. sm8250 the first available non-zero corner presented in cmd-db
+>>>>> is low_svs.
+>>
+>> what rail is this? the mmcx? Perhaps it does not support RET.
+>> cx usually supports both collapse state and RET.
+>>
+> 
+> That was the one I was specifically looking at for the MDSS_GDSC->MMCX
+> issue, so it's likely I didn't look elsewhere.
+> 
+>>>>
+>>>> Indeed. On sc7180 it's not the first non-zero corner. I suppose
+>>>> retention for CX isn't actually used when the SoC is awake so your
+>>>> rpmhpd patch is putting in a vote for something that doesn't do anything
+>>>> at runtime for CX? I imagine that rpmh only sets the aggregate corner to
+>>>> retention when the whole SoC is suspended/sleeping, otherwise things
+>>>> wouldn't go very well. Similarly, min_svs may be VDD minimization? If
+>>>> so, those first two states are basically states that shouldn't be used
+>>>> at runtime, almost like sleep states.
+>>>>
+>>>
+>>> But if that's the case, I don't think it's appropriate for the "enabled
+>>> state" of the domain to use any of those corners.
+>>
+>> I rechecked the downstream kernels where all this voting happens from within
+>> the clock drivers, and I do see votes to min_svs for some clocks, but Stephen is
+>> right that RET is not something that's voted on while in active state.
+>>
+>> But always going with something just above the ret level while active will also
+>> not work for all devices, for instance for i2c on 7180, it needs a cx vote of
+>> low svs while the rail (cx) does support something lower than that which is min svs.
+>> (why can't it just work with min svs?, I don't know, these values and recommendations
+>> come in from the voltage plans published by HW teams for every SoC and we just end up
+>> using them in SW, perhaps something to dig further and understand which I will try and
+>> do but these are the values in voltage plans and downstream kernels which work for now)
+>>
+> 
+> So to some degree this invalidates my argumentation about the
+> enabled_corner in rpmhpd, given that "enabled" means a different corner
+> for each rail - not just the one with lowest non-zero value.
 
-Changes since v6:
- * Rebased on top of v5.14-rc1.
+Right, it might work in some cases but might not work for all.
 
-Changes since v5:
- * None ( CCed ACPI list)
+> 
+> So perhaps instead of introducing the enabled_corner we need to
+> introduce your patch and slap a WARN_ON(corner == 0) in
+> rpmhpd_power_on() - to ensure that all clients that uses a rpmhpd domain
+> actually do vote for a high enough corner?
 
-Changes since v4:
- * Used smp_store_release() in place of WRITE_ONCE().
- * Addressed some checkpatch warnings.
+So this would mean the expectation is that the clients set the perf state/corner
+before they call power_on? I don;t think that's the case today with most clients,
+infact its the opposite, we power on first and then make a call to set the perf
+state of the domain.
 
-Changes since v3:
- * Removed acpi_mp_wake_mailbox_init() and moved init code to
-   acpi_wakeup_cpu().
- * Removed redundant NULL pointer check for acpi_mp_wake_mailbox.
- * Added comments/debug prints as per Rafael's suggestion.
- * Removed MADT/SVKL ACPI patches from this patchset. It will be
-   merged via ACPICA submission.
+> 
+> Regards,
+> Bjorn
+> 
+>>>
+>>> As this means that anyone who needs any of the rpmhpd domains active
+>>> also needs to specify required-opps, which wouldn't be needed for any
+>>> other power domain provider.
+>>>
+>>> And more importantly it means that a device sitting in a GDSC, which
+>>> would be parented by a rpmhpd domain has no way to specify the GDSC and
+>>> trickle the minimum-vote up to the rpmhpd domain. (And I know that we
+>>> don't describe the parentship of the GDSCs today, but this patch
+>>> tells me that it's around the corner - for more than MMCX)
+>>>
+>>> Regards,
+>>> Bjorn
+>>>
+>>>>>
+>>>>> And if this (which?) clock requires a higher corner than the lowest
+>>>>> possible in order to tick at this "lowest" frequency, I'm certainly
+>>>>> interested in some more details.
+>>>>>
+>>
+>> -- 
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+>> of Code Aurora Forum, hosted by The Linux Foundation
 
- arch/x86/include/asm/apic.h |  3 ++
- arch/x86/kernel/acpi/boot.c | 96 +++++++++++++++++++++++++++++++++++++
- arch/x86/kernel/apic/apic.c |  8 ++++
- 3 files changed, 107 insertions(+)
-
-diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index 48067af94678..463905172cd0 100644
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -488,6 +488,9 @@ static inline unsigned int read_apic_id(void)
- 	return apic->get_apic_id(reg);
- }
- 
-+typedef int (*wakeup_cpu_handler)(int apicid, unsigned long start_eip);
-+extern void acpi_wake_cpu_handler_update(wakeup_cpu_handler handler);
-+
- extern int default_apic_id_valid(u32 apicid);
- extern int default_acpi_madt_oem_check(char *, char *);
- extern void default_setup_apic_routing(void);
-diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-index e55e0c1fad8c..c2df8843950d 100644
---- a/arch/x86/kernel/acpi/boot.c
-+++ b/arch/x86/kernel/acpi/boot.c
-@@ -64,6 +64,10 @@ int acpi_fix_pin2_polarity __initdata;
- static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
- #endif
- 
-+static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
-+static u64 acpi_mp_wake_mailbox_paddr;
-+static physid_mask_t apic_id_wakemap = PHYSID_MASK_NONE;
-+
- #ifdef CONFIG_X86_IO_APIC
- /*
-  * Locks related to IOAPIC hotplug
-@@ -327,6 +331,68 @@ acpi_parse_lapic_nmi(union acpi_subtable_headers * header, const unsigned long e
- 	return 0;
- }
- 
-+static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
-+{
-+	u8 timeout = 0xFF;
-+
-+	/* Remap mailbox memory only for the first call to acpi_wakeup_cpu() */
-+	if (physids_empty(apic_id_wakemap)) {
-+		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
-+						sizeof(*acpi_mp_wake_mailbox),
-+						MEMREMAP_WB);
-+	}
-+
-+	/*
-+	 * According to the ACPI specification r6.4, sec 5.2.12.19, the
-+	 * mailbox-based wakeup mechanism cannot be used more than once
-+	 * for the same CPU, so skip sending wake commands to already
-+	 * awake CPU.
-+	 */
-+	if (physid_isset(apicid, apic_id_wakemap)) {
-+		pr_err("CPU already awake (APIC ID %x), skipping wakeup\n",
-+		       apicid);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Mailbox memory is shared between firmware and OS. Firmware will
-+	 * listen on mailbox command address, and once it receives the wakeup
-+	 * command, CPU associated with the given apicid will be booted. So,
-+	 * the value of apic_id and wakeup_vector has to be set before updating
-+	 * the wakeup command. So use smp_store_release to let the compiler know
-+	 * about it and preserve the order of writes.
-+	 */
-+	smp_store_release(&acpi_mp_wake_mailbox->apic_id, apicid);
-+	smp_store_release(&acpi_mp_wake_mailbox->wakeup_vector, start_ip);
-+	smp_store_release(&acpi_mp_wake_mailbox->command,
-+			  ACPI_MP_WAKE_COMMAND_WAKEUP);
-+
-+	/*
-+	 * After writing wakeup command, wait for maximum timeout of 0xFF
-+	 * for firmware to reset the command address back zero to indicate
-+	 * the successful reception of command.
-+	 * NOTE: 255 as timeout value is decided based on our experiments.
-+	 *
-+	 * XXX: Change the timeout once ACPI specification comes up with
-+	 *      standard maximum timeout value.
-+	 */
-+	while (READ_ONCE(acpi_mp_wake_mailbox->command) && timeout--)
-+		cpu_relax();
-+
-+	if (timeout) {
-+		/*
-+		 * If the CPU wakeup process is successful, store the
-+		 * status in apic_id_wakemap to prevent re-wakeup
-+		 * requests.
-+		 */
-+		physid_set(apicid, apic_id_wakemap);
-+		return 0;
-+	}
-+
-+	/* If timed out (timeout == 0), return error */
-+	return -EIO;
-+}
-+
- #endif				/*CONFIG_X86_LOCAL_APIC */
- 
- #ifdef CONFIG_X86_IO_APIC
-@@ -1074,6 +1140,30 @@ static int __init acpi_parse_madt_lapic_entries(void)
- 	}
- 	return 0;
- }
-+
-+static int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
-+				      const unsigned long end)
-+{
-+	struct acpi_madt_multiproc_wakeup *mp_wake;
-+
-+	if (acpi_mp_wake_mailbox)
-+		return -EINVAL;
-+
-+	if (!IS_ENABLED(CONFIG_SMP))
-+		return -ENODEV;
-+
-+	mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
-+	if (BAD_MADT_ENTRY(mp_wake, end))
-+		return -EINVAL;
-+
-+	acpi_table_print_madt_entry(&header->common);
-+
-+	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
-+
-+	acpi_wake_cpu_handler_update(acpi_wakeup_cpu);
-+
-+	return 0;
-+}
- #endif				/* CONFIG_X86_LOCAL_APIC */
- 
- #ifdef	CONFIG_X86_IO_APIC
-@@ -1269,6 +1359,12 @@ static void __init acpi_process_madt(void)
- 
- 				smp_found_config = 1;
- 			}
-+
-+			/*
-+			 * Parse MADT MP Wake entry.
-+			 */
-+			acpi_table_parse_madt(ACPI_MADT_TYPE_MULTIPROC_WAKEUP,
-+					      acpi_parse_mp_wake, 1);
- 		}
- 		if (error == -EINVAL) {
- 			/*
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index d262811ce14b..2a5b0bd16846 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2554,6 +2554,14 @@ u32 x86_msi_msg_get_destid(struct msi_msg *msg, bool extid)
- }
- EXPORT_SYMBOL_GPL(x86_msi_msg_get_destid);
- 
-+void __init acpi_wake_cpu_handler_update(wakeup_cpu_handler handler)
-+{
-+	struct apic **drv;
-+
-+	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++)
-+		(*drv)->wakeup_secondary_cpu = handler;
-+}
-+
- /*
-  * Override the generic EOI implementation with an optimized version.
-  * Only called during early boot when only one CPU is active and with
 -- 
-2.25.1
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
