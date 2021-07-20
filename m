@@ -2,240 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F7F3D0038
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E1A3D003F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhGTQrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 12:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbhGTQrZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 12:47:25 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA74C0613DC
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 10:28:02 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id qb4so35436111ejc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 10:28:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MRDTut5sIr1YAD+wWycEAbZH48ThMpXHAJu6uzoLBOY=;
-        b=KeQiUz7V65d8hsHZx4TqWydXGejkLlKH+ZKykQ+Ut60Miksk6ErxTnwudR93YozvUp
-         6OgCwoKIvtvLKkxZL17Hx+Nf5KkxLZLVlO2d/TRJndOt6kHyWjsCzADoWHz3g3GXnutj
-         8aMquGAkknQ5EltXZoFc38W924cqlI4Qh160X/WE1fgfRUATIWfHyrasZYc+REtWH19T
-         XsgQ/2zK1z1MFfekUHieoCPkonYvQ0uc178wVZBKpQZh5VFWsjt/dM4voDbrUDd4mg+w
-         mAtbfRIVEKqF8Cgqq0W9Z4WRUj6Z/eQNoLj9DRB+nLWrhjk+aEfX8ym5Fe7BAOAf0MnL
-         t7fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MRDTut5sIr1YAD+wWycEAbZH48ThMpXHAJu6uzoLBOY=;
-        b=i9LMkvk5h0jqN5IRcDxs3oAkeD5Bg1L8sq3RqqjLix5c2Qf62Bcx2UpxezyObU9IRU
-         uFZ2cZAzC9IEZTkx1LfBrVsOZs3LFC2yjKkMI9jTQEH1aK0DECh8GiED7T9FF4Ahgo9+
-         vEBk5vPtKxNUcNpSw3SOf9LCK9l4gpefQLtuy9vcVB7yNWJ0mbhMdXkEPLu10f7cawpl
-         fovazBsuxrO31ccCJCzhlWwHgDb4l2t+M2mdzE7dW4aXvkIcKMicDL7grs7o98ARyqX4
-         vOMN8saSlCw9YWXib1KaDZP10nOeL3zVGRReilS+GbK7l0pZuN+zgY9AjCDgkjomecqL
-         BOTQ==
-X-Gm-Message-State: AOAM531WKS38VrXnXyNLf2o24QjPS5aegtkx80YgX8yNb3Tq7vOq1DtV
-        2bB+U5iQhfxm1LWY/d5tHAEl2M5/xIPPu4r0AeNeWA==
-X-Google-Smtp-Source: ABdhPJxlKIwqBIkfBNplXV0/yEFsoTHAXsk0pUCJPTFBTuS2Xn3d5CpWDTSC/Z+nE7YOEL6pEmdzvoHMKJHeWBBtrvA=
-X-Received: by 2002:a17:906:cec1:: with SMTP id si1mr34170651ejb.18.1626802080721;
- Tue, 20 Jul 2021 10:28:00 -0700 (PDT)
+        id S229923AbhGTQtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 12:49:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229627AbhGTQtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 12:49:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B198600D4;
+        Tue, 20 Jul 2021 17:29:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626802186;
+        bh=dQ6r/chbOgykjGAd23iEH80jHjtf0Qtrm8TBrM0+oPg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=h//eQ0MpXU8d/CgDmQfQz/MYnx0cKNqQTcfCM8ar22itSA1O5Xihy6N9/8lEShRGV
+         CJTjqen/MKr8ItMYdZLvn+ywUQE/0hecv0cnC7u6aTluj0N6Q/Y2N30/oxrADheGfa
+         xwhwh3iFezb/QgtPLJO2GM4yFhwyrmtIHX3JrIKpLN2ixAyeEbPyGgJ6X5Urg7gCyl
+         3j5nu0QbePUvMid8Rx//IkaxcXURUs+D8omSdzFTtDuZzDdBFG3G2Pc926Z67e8R00
+         ih+1mMj/HyMGlrBg7d3tKVlOe+1nHqGwKtEM5SWpbEgeJC7WvN7bbs4vwwzsVmV6Qp
+         5UTMzx0/Ymt3A==
+Subject: Re: [PATCH v3 2/3] dt-bindings: Clean-up OPP binding node names in
+ examples
+To:     Rob Herring <robh@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Tony Lindgren <tony@atomide.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
+        linux-omap@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        dri-devel@lists.freedesktop.org, linux-pm@vger.kernel.org
+References: <20210720144121.66713-1-robh@kernel.org>
+ <20210720144121.66713-2-robh@kernel.org>
+From:   Georgi Djakov <djakov@kernel.org>
+Message-ID: <b30f82df-86f3-51b7-df78-607d4f83f1ab@kernel.org>
+Date:   Tue, 20 Jul 2021 20:29:40 +0300
 MIME-Version: 1.0
-References: <20210719183557.768945788@linuxfoundation.org>
-In-Reply-To: <20210719183557.768945788@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 20 Jul 2021 22:57:49 +0530
-Message-ID: <CA+G9fYtJ=H7-pGMSjSDT-ZTFdCru9WAVAmtz6sYM2m61x=3Piw@mail.gmail.com>
-Subject: Re: [PATCH 5.12 000/289] 5.12.19-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210720144121.66713-2-robh@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 at 00:06, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.12.19 release.
-> There are 289 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 21 Jul 2021 18:35:15 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.12.19-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.12.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 20.07.21 17:41, Rob Herring wrote:
+> In preparation to convert OPP bindings to DT schema, clean-up a few OPP
+> binding node names in the binding examples.
+> 
+> Cc: Georgi Djakov <djakov@kernel.org>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: Leonard Crestez <leonard.crestez@nxp.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-pm@vger.kernel.org
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
+Acked-by: Georgi Djakov <djakov@kernel.org>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> ---
+>   Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml   | 2 +-
+>   Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml   | 2 +-
+>   .../devicetree/bindings/interconnect/fsl,imx8m-noc.yaml       | 4 ++--
+>   3 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml b/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
+> index 0f73f436bea7..4bea51d1e7ea 100644
+> --- a/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
+> +++ b/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
+> @@ -136,7 +136,7 @@ examples:
+>         resets = <&reset 0>, <&reset 1>;
+>       };
+>   
+> -    gpu_opp_table: opp_table0 {
+> +    gpu_opp_table: opp-table {
+>         compatible = "operating-points-v2";
+>   
+>         opp-533000000 {
+> diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml b/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
+> index 696c17aedbbe..d209f272625d 100644
+> --- a/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
+> +++ b/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
+> @@ -160,7 +160,7 @@ examples:
+>         #cooling-cells = <2>;
+>       };
+>   
+> -    gpu_opp_table: opp_table0 {
+> +    gpu_opp_table: opp-table {
+>         compatible = "operating-points-v2";
+>   
+>         opp-533000000 {
+> diff --git a/Documentation/devicetree/bindings/interconnect/fsl,imx8m-noc.yaml b/Documentation/devicetree/bindings/interconnect/fsl,imx8m-noc.yaml
+> index a8873739d61a..b8204ed22dd5 100644
+> --- a/Documentation/devicetree/bindings/interconnect/fsl,imx8m-noc.yaml
+> +++ b/Documentation/devicetree/bindings/interconnect/fsl,imx8m-noc.yaml
+> @@ -81,10 +81,10 @@ examples:
+>           noc_opp_table: opp-table {
+>               compatible = "operating-points-v2";
+>   
+> -            opp-133M {
+> +            opp-133333333 {
+>                   opp-hz = /bits/ 64 <133333333>;
+>               };
+> -            opp-800M {
+> +            opp-800000000 {
+>                   opp-hz = /bits/ 64 <800000000>;
+>               };
+>           };
+> 
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.12.19-rc2
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.12.y
-* git commit: aa783473cf1e00e4344531089962861c6bbbb818
-* git describe: v5.12.18-288-gaa783473cf1e
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
-.18-288-gaa783473cf1e
-
-## No regressions (compared to v5.12.18-293-g825db1d6b9e2)
-
-## No fixes (compared to v5.12.18-293-g825db1d6b9e2)
-
-## Test result summary
- total: 81358, pass: 66831, fail: 1848, skip: 11427, xfail: 1252,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 0 passed, 1 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
