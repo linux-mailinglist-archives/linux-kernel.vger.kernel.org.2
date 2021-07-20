@@ -2,117 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C618F3CF6D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1553CF725
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235563AbhGTIsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 04:48:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:54448 "EHLO foss.arm.com"
+        id S234696AbhGTJFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 05:05:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235243AbhGTIrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:47:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA6626D;
-        Tue, 20 Jul 2021 02:27:41 -0700 (PDT)
-Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1AC333F73D;
-        Tue, 20 Jul 2021 02:27:38 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     Ariel Elior <aelior@marvell.com>, GR-everest-linux-l2@marvell.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org, nd@arm.com,
-        Jia He <justin.he@arm.com>,
-        Prabhakar Kushwaha <pkushwaha@marvell.com>
-Subject: [PATCH] Revert "qed: fix possible unpaired spin_{un}lock_bh in _qed_mcp_cmd_and_union()"
-Date:   Tue, 20 Jul 2021 17:27:39 +0800
-Message-Id: <20210720092739.3539-1-justin.he@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S231491AbhGTJFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 05:05:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53DE660230;
+        Tue, 20 Jul 2021 09:45:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626774345;
+        bh=GzkEUvsF5I5Iycp8XGCl9JHLEk0fziZZjrZebdcBdS4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BHk1PR2WKGPlC01tvbAK5JcCGeBmZIyL3xY0HhPCKsiCgP0oSU/fYN48n7gfvWos8
+         wBhCWul17l02+z/Ob+8+UIVcBTaQmwBNJCchE2NvrB+BkaoHgjdhiFRCFaHsol7Yyc
+         Q3cJzR/E1/0kjSZ+lQScy3+ZsbIdT5YyOgLpMdns=
+Date:   Tue, 20 Jul 2021 09:34:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     longli@linuxonhyperv.com
+Cc:     linux-fs@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        Long Li <longli@microsoft.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>, linux-doc@vger.kernel.org
+Subject: Re: [Patch v4 2/3] Drivers: hv: add Azure Blob driver
+Message-ID: <YPZ8hX7sx1RFL0c5@kroah.com>
+References: <1626751866-15765-1-git-send-email-longli@linuxonhyperv.com>
+ <1626751866-15765-3-git-send-email-longli@linuxonhyperv.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626751866-15765-3-git-send-email-longli@linuxonhyperv.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 2d2f5ded858a4f4659fc63e01dd55605598a8f05.
+On Mon, Jul 19, 2021 at 08:31:05PM -0700, longli@linuxonhyperv.com wrote:
+> +struct az_blob_device {
+> +	struct hv_device *device;
+> +
+> +	/* Opened files maintained by this device */
+> +	struct list_head file_list;
+> +	/* Lock for protecting file_list */
+> +	spinlock_t file_lock;
+> +
+> +	/* The refcount for this device */
+> +	refcount_t count;
 
-That patch added additional spin_{un}lock_bh(), which was harmless
-but pointless. The orginal code path has guaranteed the pair of
-spin_{un}lock_bh().
+Just use a kref please if you really need this.  Are you sure you do?
+You already have 2 other reference counted objects being used here, why
+make it 3?
 
-We'd better revert it before we find the exact root cause of the
-bug_on mentioned in that patch.
+> +	/* Pending requests to VSP */
+> +	atomic_t pending;
 
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Prabhakar Kushwaha <pkushwaha@marvell.com>
-Signed-off-by: Jia He <justin.he@arm.com>
----
- drivers/net/ethernet/qlogic/qed/qed_mcp.c | 23 ++++++-----------------
- 1 file changed, 6 insertions(+), 17 deletions(-)
+Why does this need to be atomic?
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_mcp.c b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
-index 79d879a5d663..4387292c37e2 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_mcp.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
-@@ -474,18 +474,14 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
- 
- 		spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
- 
--		if (!qed_mcp_has_pending_cmd(p_hwfn)) {
--			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
-+		if (!qed_mcp_has_pending_cmd(p_hwfn))
- 			break;
--		}
- 
- 		rc = qed_mcp_update_pending_cmd(p_hwfn, p_ptt);
--		if (!rc) {
--			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
-+		if (!rc)
- 			break;
--		} else if (rc != -EAGAIN) {
-+		else if (rc != -EAGAIN)
- 			goto err;
--		}
- 
- 		spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
- 
-@@ -502,8 +498,6 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
- 		return -EAGAIN;
- 	}
- 
--	spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
--
- 	/* Send the mailbox command */
- 	qed_mcp_reread_offsets(p_hwfn, p_ptt);
- 	seq_num = ++p_hwfn->mcp_info->drv_mb_seq;
-@@ -530,18 +524,14 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
- 
- 		spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
- 
--		if (p_cmd_elem->b_is_completed) {
--			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
-+		if (p_cmd_elem->b_is_completed)
- 			break;
--		}
- 
- 		rc = qed_mcp_update_pending_cmd(p_hwfn, p_ptt);
--		if (!rc) {
--			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
-+		if (!rc)
- 			break;
--		} else if (rc != -EAGAIN) {
-+		else if (rc != -EAGAIN)
- 			goto err;
--		}
- 
- 		spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
- 	} while (++cnt < max_retries);
-@@ -564,7 +554,6 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
- 		return -EAGAIN;
- 	}
- 
--	spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
- 	qed_mcp_cmd_del_elem(p_hwfn, p_cmd_elem);
- 	spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
- 
--- 
-2.17.1
 
+> +	wait_queue_head_t waiting_to_drain;
+> +
+> +	bool removing;
+
+Are you sure this actually works properly?  Why is it needed vs. any
+other misc device?
+
+
+> +/* VSC->VSP request */
+> +struct az_blob_vsp_request {
+> +	u32 version;
+> +	u32 timeout_ms;
+> +	u32 data_buffer_offset;
+> +	u32 data_buffer_length;
+> +	u32 data_buffer_valid;
+> +	u32 operation_type;
+> +	u32 request_buffer_offset;
+> +	u32 request_buffer_length;
+> +	u32 response_buffer_offset;
+> +	u32 response_buffer_length;
+> +	guid_t transaction_id;
+> +} __packed;
+
+Why packed?  If this is going across the wire somewhere, you need to
+specify the endian-ness of these values, right?  If this is not going
+across the wire, no need for it to be packed.
+
+> +
+> +/* VSP->VSC response */
+> +struct az_blob_vsp_response {
+> +	u32 length;
+> +	u32 error;
+> +	u32 response_len;
+> +} __packed;
+
+Same here.
+
+> +
+> +struct az_blob_vsp_request_ctx {
+> +	struct list_head list;
+> +	struct completion wait_vsp;
+> +	struct az_blob_request_sync *request;
+> +};
+> +
+> +struct az_blob_file_ctx {
+> +	struct list_head list;
+> +
+> +	/* List of pending requests to VSP */
+> +	struct list_head vsp_pending_requests;
+> +	/* Lock for protecting vsp_pending_requests */
+> +	spinlock_t vsp_pending_lock;
+> +	wait_queue_head_t wait_vsp_pending;
+> +
+> +	pid_t pid;
+
+Why do you need a pid?  What namespace is this pid in?
+
+> +static int az_blob_probe(struct hv_device *device,
+> +			 const struct hv_vmbus_device_id *dev_id)
+> +{
+> +	int ret;
+> +	struct az_blob_device *dev;
+> +
+> +	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+> +	if (!dev)
+> +		return -ENOMEM;
+> +
+> +	spin_lock_init(&dev->file_lock);
+> +	INIT_LIST_HEAD(&dev->file_list);
+> +	atomic_set(&dev->pending, 0);
+> +	init_waitqueue_head(&dev->waiting_to_drain);
+> +
+> +	ret = az_blob_connect_to_vsp(device, dev, AZ_BLOB_RING_SIZE);
+> +	if (ret)
+> +		goto fail;
+> +
+> +	refcount_set(&dev->count, 1);
+> +	az_blob_dev = dev;
+> +
+> +	// create user-mode client library facing device
+> +	ret = az_blob_create_device(dev);
+> +	if (ret) {
+> +		dev_err(AZ_DEV, "failed to create device ret=%d\n", ret);
+> +		az_blob_remove_vmbus(device);
+> +		goto fail;
+> +	}
+> +
+> +	dev_info(AZ_DEV, "successfully probed device\n");
+
+When drivers are working properly, they should be quiet.
+
+And what is with the AZ_DEV macro mess?
+
+And can you handle more than one device in the system at one time?  I
+think your debugfs logic will get really confused.
+
+thanks,
+
+greg k-h
