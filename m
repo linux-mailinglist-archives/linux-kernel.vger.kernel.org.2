@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB953CF2E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC8C3CF2E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348092AbhGTDHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 23:07:11 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:54122 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348042AbhGTDGJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 23:06:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UgNap9n_1626752804;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UgNap9n_1626752804)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 20 Jul 2021 11:46:45 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Markku-Juhani O . Saarinen" <mjos@iki.fi>,
-        Jussi Kivilinna <jussi.kivilinna@iki.fi>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S1348694AbhGTDLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 23:11:52 -0400
+Received: from mga03.intel.com ([134.134.136.65]:24179 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348005AbhGTDJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 23:09:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="211229334"
+X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
+   d="scan'208";a="211229334"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 20:49:23 -0700
+X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
+   d="scan'208";a="661006621"
+Received: from ywei11-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.138.31])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 20:49:23 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>,
-        "YiLin . Li" <YiLin.Li@linux.alibaba.com>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH v3 4/4] crypto: tcrypt - add the asynchronous speed test for SM4
-Date:   Tue, 20 Jul 2021 11:46:42 +0800
-Message-Id: <20210720034642.19230-5-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
-In-Reply-To: <20210720034642.19230-1-tianjia.zhang@linux.alibaba.com>
-References: <20210720034642.19230-1-tianjia.zhang@linux.alibaba.com>
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/10] Add TDX Guest Support (#VE handler support)
+Date:   Mon, 19 Jul 2021 20:48:51 -0700
+Message-Id: <20210720034901.2120205-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tcrypt supports testing of SM4 cipher algorithms that use avx
-instruction set acceleration. The implementation of sm4 instruction
-set acceleration supports up to 8 blocks in parallel encryption and
-decryption, which is 128 bytes. Therefore, the 128-byte block size
-is also added to block_sizes.
+Hi All,
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- crypto/tcrypt.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+hosts and some physical attacks. This series adds #VE handler support,
+for port I/O, MMIO and MWAIT/MONITOR features in TDX guest.
 
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index f8d06da78e4f..d73a42fdaa9b 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -77,7 +77,7 @@ static const char *check[] = {
- 	NULL
- };
- 
--static const int block_sizes[] = { 16, 64, 256, 1024, 1420, 4096, 0 };
-+static const int block_sizes[] = { 16, 64, 128, 256, 1024, 1420, 4096, 0 };
- static const int aead_sizes[] = { 16, 64, 256, 512, 1024, 1420, 4096, 8192, 0 };
- 
- #define XBUFSIZE 8
-@@ -2031,6 +2031,7 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 	case 191:
- 		ret += tcrypt_test("ecb(sm4)");
- 		ret += tcrypt_test("cbc(sm4)");
-+		ret += tcrypt_test("cfb(sm4)");
- 		ret += tcrypt_test("ctr(sm4)");
- 		break;
- 	case 200:
-@@ -2289,6 +2290,10 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 				speed_template_16);
- 		test_cipher_speed("cbc(sm4)", DECRYPT, sec, NULL, 0,
- 				speed_template_16);
-+		test_cipher_speed("cfb(sm4)", ENCRYPT, sec, NULL, 0,
-+				speed_template_16);
-+		test_cipher_speed("cfb(sm4)", DECRYPT, sec, NULL, 0,
-+				speed_template_16);
- 		test_cipher_speed("ctr(sm4)", ENCRYPT, sec, NULL, 0,
- 				speed_template_16);
- 		test_cipher_speed("ctr(sm4)", DECRYPT, sec, NULL, 0,
-@@ -2757,6 +2762,25 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 				   speed_template_8_32);
- 		break;
- 
-+	case 518:
-+		test_acipher_speed("ecb(sm4)", ENCRYPT, sec, NULL, 0,
-+				speed_template_16);
-+		test_acipher_speed("ecb(sm4)", DECRYPT, sec, NULL, 0,
-+				speed_template_16);
-+		test_acipher_speed("cbc(sm4)", ENCRYPT, sec, NULL, 0,
-+				speed_template_16);
-+		test_acipher_speed("cbc(sm4)", DECRYPT, sec, NULL, 0,
-+				speed_template_16);
-+		test_acipher_speed("cfb(sm4)", ENCRYPT, sec, NULL, 0,
-+				speed_template_16);
-+		test_acipher_speed("cfb(sm4)", DECRYPT, sec, NULL, 0,
-+				speed_template_16);
-+		test_acipher_speed("ctr(sm4)", ENCRYPT, sec, NULL, 0,
-+				speed_template_16);
-+		test_acipher_speed("ctr(sm4)", DECRYPT, sec, NULL, 0,
-+				speed_template_16);
-+		break;
-+
- 	case 600:
- 		test_mb_skcipher_speed("ecb(aes)", ENCRYPT, sec, NULL, 0,
- 				       speed_template_16_24_32, num_mb);
+This series is the continuation of the patch series titled "Add TDX Guest
+Support (Initial support)" which added initial support for TDX guests. You
+can find the patchset in the following link.
+
+[set 1] - https://lore.kernel.org/patchwork/project/lkml/list/?series=508773
+
+Also please note that this series alone is not necessarily fully
+functional.
+
+You can find TDX related documents in the following link.
+
+https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
+
+Changes since v2:
+ * Rebased on top of v5.14-rc1.
+ * Rest of changelogs are included in patches in-line.
+
+Changes since v1:
+ * Rebased on top of TDX guest set 1 patches (which had some core API changes).
+ * Moved "x86/tdx: Add early_is_tdx_guest() interface" patch from set 1 patch
+   series to this patchset (since it is only used in early I/O support case).
+ * Rest of changelogs are included in patches in-line.
+
+Andi Kleen (1):
+  x86/tdx: Handle early IO operations
+
+Kirill A. Shutemov (6):
+  x86/io: Allow to override inX() and outX() implementation
+  x86/tdx: Handle port I/O
+  x86/insn-eval: Introduce insn_get_modrm_reg_ptr()
+  x86/insn-eval: Introduce insn_decode_mmio()
+  x86/sev-es: Use insn_decode_mmio() for MMIO implementation
+  x86/tdx: Handle in-kernel MMIO
+
+Kuppuswamy Sathyanarayanan (3):
+  x86/tdx: Add early_is_tdx_guest() interface
+  x86/tdx: Handle port I/O in decompression code
+  x86/tdx: Handle MWAIT and MONITOR
+
+ arch/x86/boot/compressed/Makefile |   2 +
+ arch/x86/boot/compressed/tdcall.S |   3 +
+ arch/x86/boot/compressed/tdx.c    |  31 +++++
+ arch/x86/boot/cpuflags.c          |  12 +-
+ arch/x86/boot/cpuflags.h          |   2 +
+ arch/x86/include/asm/insn-eval.h  |  13 ++
+ arch/x86/include/asm/io.h         |  23 +++-
+ arch/x86/include/asm/tdx.h        |  66 ++++++++++
+ arch/x86/kernel/head64.c          |   3 +
+ arch/x86/kernel/sev.c             | 171 ++++++-------------------
+ arch/x86/kernel/tdx.c             | 204 ++++++++++++++++++++++++++++++
+ arch/x86/lib/insn-eval.c          | 102 +++++++++++++++
+ 12 files changed, 493 insertions(+), 139 deletions(-)
+ create mode 100644 arch/x86/boot/compressed/tdcall.S
+ create mode 100644 arch/x86/boot/compressed/tdx.c
+
 -- 
-2.19.1.3.ge56e4f7
+2.25.1
 
