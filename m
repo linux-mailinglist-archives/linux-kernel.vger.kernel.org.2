@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4429B3CFF2F
+	by mail.lfdr.de (Postfix) with ESMTP id 46F8C3CFF30
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235369AbhGTPiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:38:50 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:40910
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235368AbhGTPgf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:36:35 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 42B8B40605;
-        Tue, 20 Jul 2021 16:17:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626797831;
-        bh=ovWvZYpFeH2hDUTYYPI0Dy/ZjyO3fV33Wt5GPE9ZRIo=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=O1Js6ANgPeOxlDdF/qT7ORtEBigap9LaPwaPQbw+228N0cQf8XW6H/kf55Cb4NwSD
-         HQwUfqt58DrJ0lVKwzmGONK4pEE31xHdWRxsuhxUgXyB2MBODlcYdH8+DsLRYCi09X
-         YtCWOn+DbOd/zowSeBO0nrrACQGGtwaS8pxEjj1m/Lj4EPYrx0UxBHn8NdGX70+qpp
-         7ZhM1rotaaYpb/zwU8G7HFXE7rsSvSRAzV5J6pXHaOpKt5ygGiHarzeRdci1n+MSaB
-         3T/7bQSyzAsegfCy48MB3/WTu/1VkboUsKGbEl97PoC2bzdx1jgClSmePuvN/m7uGK
-         z1zNCzLYOE2ug==
-From:   Colin King <colin.king@canonical.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ALSA: sc6000: Fix incorrect sizeof operator
-Date:   Tue, 20 Jul 2021 17:17:07 +0100
-Message-Id: <20210720161707.74197-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S235158AbhGTPlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:41:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:34212 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234561AbhGTPhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 11:37:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F09631B;
+        Tue, 20 Jul 2021 09:18:15 -0700 (PDT)
+Received: from localhost.localdomain (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 023673F694;
+        Tue, 20 Jul 2021 09:18:13 -0700 (PDT)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Heiner Kallweit <hkallweit1@gmail.com>, nic_swsd@realtek.com
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+Subject: [PATCH net v3] r8169: Avoid duplicate sysfs entry creation error
+Date:   Tue, 20 Jul 2021 17:17:40 +0100
+Message-Id: <20210720161740.5214-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.14.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
 
-Static analysis is warning that the sizeof being used is should be
-of *vport and not vport. Although these are the same size it is not
-a portable assumption to assume this is true for all cases.  Fix this
-by using sizeof(*vport).
+When registering the MDIO bus for a r8169 device, we use the PCI
+bus/device specifier as a (seemingly) unique device identifier.
+However the very same BDF number can be used on another PCI segment,
+which makes the driver fail probing:
 
-Addresses-Coverity: ("Sizeof not portable")
-Fixes: 111601ff76e9 ("ALSA: sc6000: Allocate resources with device-managed APIs")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+[ 27.544136] r8169 0002:07:00.0: enabling device (0000 -> 0003)
+[ 27.559734] sysfs: cannot create duplicate filename '/class/mdio_bus/r8169-700'
+....
+[ 27.684858] libphy: mii_bus r8169-700 failed to register
+[ 27.695602] r8169: probe of 0002:07:00.0 failed with error -22
+
+Add the segment number to the device name to make it more unique.
+
+This fixes operation on ARM N1SDP boards, with two boards connected
+together to form an SMP system, and all on-board devices showing up
+twice, just on different PCI segments. A similar issue would occur on
+large systems with many PCI slots and multiple RTL8169 NICs.
+
+Fixes: f1e911d5d0dfd ("r8169: add basic phylib support")
+Signed-off-by: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+[Andre: expand commit message, use pci_domain_nr()]
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 ---
- sound/isa/sc6000.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Compile-tested on ARM, arm64, ppc64, sparc64, mips64, hppa, x86-64,
+i386. Tested on an AMD system with an on-board RTL8111 chip.
 
-diff --git a/sound/isa/sc6000.c b/sound/isa/sc6000.c
-index 6236c4fa766a..44c05b55fc15 100644
---- a/sound/isa/sc6000.c
-+++ b/sound/isa/sc6000.c
-@@ -552,7 +552,7 @@ static int snd_sc6000_probe(struct device *devptr, unsigned int dev)
+Changes v2 ... v3:
+- Resent with Fixes tag and proper net: annotation
+
+Changes v1 ... v2:
+- use pci_domain_nr() wrapper to fix compilation on various arches
+
+ drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index f744557c33a3..c7af5bc3b8af 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -5084,7 +5084,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
+ 	new_bus->priv = tp;
+ 	new_bus->parent = &pdev->dev;
+ 	new_bus->irq[0] = PHY_MAC_INTERRUPT;
+-	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
++	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x-%x",
++		 pci_domain_nr(pdev->bus), pci_dev_id(pdev));
  
- 
- 	err = snd_devm_card_new(devptr, index[dev], id[dev], THIS_MODULE,
--				sizeof(vport), &card);
-+				sizeof(*vport), &card);
- 	if (err < 0)
- 		return err;
- 
+ 	new_bus->read = r8169_mdio_read_reg;
+ 	new_bus->write = r8169_mdio_write_reg;
 -- 
-2.31.1
+2.17.6
 
