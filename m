@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD1D3CF197
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 03:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED273CF18D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 03:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244160AbhGTBFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 21:05:42 -0400
-Received: from mga03.intel.com ([134.134.136.65]:17245 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240688AbhGTBAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 21:00:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="211219378"
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="211219378"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 18:41:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="453887573"
-Received: from allen-box.sh.intel.com ([10.239.159.118])
-  by orsmga007.jf.intel.com with ESMTP; 19 Jul 2021 18:41:30 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>,
-        Sanjay Kumar <sanjay.k.kumar@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 5/5] iommu/vt-d: Allow devices to have more than 32 outstanding PRs
-Date:   Tue, 20 Jul 2021 09:38:56 +0800
-Message-Id: <20210720013856.4143880-6-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210720013856.4143880-1-baolu.lu@linux.intel.com>
-References: <20210720013856.4143880-1-baolu.lu@linux.intel.com>
+        id S241240AbhGTBCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 21:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238685AbhGTA7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 20:59:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2596AC061767;
+        Mon, 19 Jul 2021 18:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=VPslFF/zeZEn4JJOEfZN5MEgA42KT6C8T7MZnexgON8=; b=kS6uL8x4SfuJQcn28GfFZN3joa
+        nydiNdvKdcQhwKwzRBH3jo154/gB2yr+6O7GTp8pt/aqn6PelFCC6+9SKXK6zyRGsTHqfKxAzYhpI
+        3rD/xiPufvdUI+q0d8ufOpVtjaQpw8Hutp7XR+chfZTUjB4iWpj6QpVKaALRDzAxVWziIZBzLULjw
+        OBiIMCnvRiYvhRlIoeKsT+TnxeVkAMMTPlOuT6330SR+CvI/H4CpLwvT7/j5TTfwocQe+kOOPfGf1
+        uvsqbc1ouZ0oTMGYVEdPgN2AkfmKie+JcX5nPSf6drVpmtARzv4yXB21tfbegTMUmnYr8C1uw/zlr
+        ZsfhUYFw==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5ej9-00Ba0z-KP; Tue, 20 Jul 2021 01:39:19 +0000
+Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
+To:     paulmck@kernel.org, Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        rostedt <rostedt@goodmis.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, apw@canonical.com,
+        joe@perches.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        mingo@kernel.org
+References: <20210713005645.8565-1-zhouzhouyi@gmail.com>
+ <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
+ <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
+ <20210713131812.GV4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210713151908.GW4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
+ <20210715035149.GI4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2xDNtjZew=Rr7QvEDX7jnVCcE+JFpSDxiQ4yNPUE6kj-g@mail.gmail.com>
+ <20210715180941.GK4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2wuWtGAGRqWJb3Gewm5VLZdZ_C=LRZsFbaG3jcQabO3qA@mail.gmail.com>
+ <20210718210854.GP4397@paulmck-ThinkPad-P17-Gen-1>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <de4785f8-8a9f-c32e-7642-d5bb08bff343@infradead.org>
+Date:   Mon, 19 Jul 2021 18:39:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210718210854.GP4397@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The minimum per-IOMMU PRQ queue size is one 4K page, this is more entries
-than the hardcoded limit of 32 in the current VT-d code. Some devices can
-support up to 512 outstanding PRQs but underutilized by this limit of 32.
-Although, 32 gives some rough fairness when multiple devices share the same
-IOMMU PRQ queue, but far from optimal for customized use case. This extends
-the per-IOMMU PRQ queue size to four 4K pages and let the devices have as
-many outstanding page requests as they can.
+On 7/18/21 2:08 PM, Paul E. McKenney wrote:
+> On Sun, Jul 18, 2021 at 06:03:34AM +0800, Zhouyi Zhou wrote:
+>> Hi Paul
+>> During the research, I found a already existing tool to detect
+>> undefined Kconfig macro:
+>> scripts/checkkconfigsymbols.py. It is marvellous!
+> 
+> Nice!  Maybe I should add this to torture.sh.
+> 
 
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- include/linux/intel-svm.h   | 5 +++++
- drivers/iommu/intel/iommu.c | 3 ++-
- drivers/iommu/intel/svm.c   | 4 ----
- 3 files changed, 7 insertions(+), 5 deletions(-)
+Paul, I believe that subsystems should take care of themselves,
+so you can do that for RCU, e.g., but at the same time, I think that
+some CI should be running that script (and other relevant scripts)
+on the entire kernel tree and reporting problems that are found.
 
-diff --git a/include/linux/intel-svm.h b/include/linux/intel-svm.h
-index 10fa80eef13a..57cceecbe37f 100644
---- a/include/linux/intel-svm.h
-+++ b/include/linux/intel-svm.h
-@@ -14,6 +14,11 @@
- #define SVM_REQ_EXEC	(1<<1)
- #define SVM_REQ_PRIV	(1<<0)
- 
-+/* Page Request Queue depth */
-+#define PRQ_ORDER	2
-+#define PRQ_RING_MASK	((0x1000 << PRQ_ORDER) - 0x20)
-+#define PRQ_DEPTH	((0x1000 << PRQ_ORDER) >> 5)
-+
- /*
-  * The SVM_FLAG_SUPERVISOR_MODE flag requests a PASID which can be used only
-  * for access to kernel addresses. No IOTLB flushes are automatically done
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index f3cca1dd384d..97d65839236c 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -33,6 +33,7 @@
- #include <linux/iommu.h>
- #include <linux/dma-iommu.h>
- #include <linux/intel-iommu.h>
-+#include <linux/intel-svm.h>
- #include <linux/syscore_ops.h>
- #include <linux/tboot.h>
- #include <linux/dmi.h>
-@@ -1542,7 +1543,7 @@ static void iommu_enable_dev_iotlb(struct device_domain_info *info)
- 
- 	if (info->pri_supported &&
- 	    (info->pasid_enabled ? pci_prg_resp_pasid_required(pdev) : 1)  &&
--	    !pci_reset_pri(pdev) && !pci_enable_pri(pdev, 32))
-+	    !pci_reset_pri(pdev) && !pci_enable_pri(pdev, PRQ_DEPTH))
- 		info->pri_enabled = 1;
- #endif
- 	if (info->ats_supported && pci_ats_page_aligned(pdev) &&
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 9b0f22bc0514..813438a07b62 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -31,8 +31,6 @@ static irqreturn_t prq_event_thread(int irq, void *d);
- static void intel_svm_drain_prq(struct device *dev, u32 pasid);
- #define to_intel_svm_dev(handle) container_of(handle, struct intel_svm_dev, sva)
- 
--#define PRQ_ORDER 0
--
- static DEFINE_XARRAY_ALLOC(pasid_private_array);
- static int pasid_private_add(ioasid_t pasid, void *priv)
- {
-@@ -724,8 +722,6 @@ struct page_req_dsc {
- 	u64 priv_data[2];
- };
- 
--#define PRQ_RING_MASK	((0x1000 << PRQ_ORDER) - 0x20)
--
- static bool is_canonical_address(u64 addr)
- {
- 	int shift = 64 - (__VIRTUAL_MASK_SHIFT + 1);
 -- 
-2.25.1
+~Randy
 
