@@ -2,141 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED693CFE8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F0C3CFE8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238846AbhGTPUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239812AbhGTPSQ (ORCPT
+        id S240387AbhGTPVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:21:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22436 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237091AbhGTPRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:18:16 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46784C06127E;
-        Tue, 20 Jul 2021 08:56:56 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id c16so26655779ybl.9;
-        Tue, 20 Jul 2021 08:56:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WnvkgdxtoAemKPJLVMVY6hqBu9goS/fqMgfnJCN6o5Y=;
-        b=DfZdlfpB9mN4dbZ8DAGVh9rGPukd8Qb2dOC6nAI/GMp64aBSKlOxqoJqUkklal8mmi
-         Wxq0TdLtRv4zS9DMnK6gDuYxs9sSf/vJhRtvYvpO0Nfl1+aE0a6RGhxu3LvtSMttQoN3
-         iFguBYIF+scSIPVSo3OISIVSSb4yVuoVuWkvcbNsh6Uim+kPsJQC5e80kAjxIuIId/Ir
-         B53P/vRmrpKXB/RhM6KoO4WtmpEfA1lxOeafoCGY7vnC3622TEtWRaSfBHI3BKOtu9xx
-         3fOyeQTnCvtdz8N/2lfeLVhj49ecYt8XEEuIeo6Qzyw9oE0f5GTxOb8LYHTgKFCb138F
-         AoCA==
+        Tue, 20 Jul 2021 11:17:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626796623;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4Lwb/S+J+gslC2Y28b3P4zMlQmindrrr+LZzI9LinPc=;
+        b=d4CcEfZiGWpfbK9ozp9WthWqFQvygaQBuevq37gyEfkY8LhowDSn9UaG2prDgPAdRKC3+0
+        mvHA/Jl8qfwwPSRwPceWcpL1Qc1ZLj+vX3T9J9v1wtTukQFemdD7H9abSejGaQRQVIhd3O
+        7/+Y00B1TFvWPhai32WwndmtqWWX/Lg=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-495-J4Yrp6weMsiyRnwpi_gq1w-1; Tue, 20 Jul 2021 11:57:01 -0400
+X-MC-Unique: J4Yrp6weMsiyRnwpi_gq1w-1
+Received: by mail-qt1-f199.google.com with SMTP id e7-20020ac84e470000b029025ca4fbcc12so12471541qtw.18
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:57:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WnvkgdxtoAemKPJLVMVY6hqBu9goS/fqMgfnJCN6o5Y=;
-        b=g7Ivv75DOMtRyzRgbpTH85+KFfr5s/vxwpBd3Sgd6ve375bKs2HUTjYG6bUQGjDgCY
-         5BtWudR62qNBByk/Mdc+lH7bSREFn6NrFrhlJ7nOewQr5ldDuUbcfZqlMXaH/qD6zI8a
-         Q5O4yKeXXSuH/tFcZ2Z1XUQI6WxTQvQjGi0c0vXwTg2ZXcG586N8eU1/f9BzP7r+YoYF
-         2lfiCj4Y815uMoNm5lvmTtDj7USx5PZd1WiarP9HX5DbQ/AC+MBxgeHITir5ff/T4jx7
-         Z8wCwZvyDF6Sn+/b6YHyM1ekUSBx6/W21AV6IveGJE3/9oqRLE3VDJA3G9dr36vfUaPO
-         Oq9A==
-X-Gm-Message-State: AOAM5315RY58ssYhQkAl7sPoOw7V9f8bJl7jjKXPAxczjZM2m2YsfKs2
-        OVyz22RQewtR0VukljKHTSdEOEAAMepibegowH8=
-X-Google-Smtp-Source: ABdhPJwcLYTBQc1sWKW28kOeuJp5aYajJPTD3dd6Ctg+5bv2Sh4Mp1muP9ZdFeVJhMt1/OIu3K5lHGtHOJPD1wu06dA=
-X-Received: by 2002:a25:cc52:: with SMTP id l79mr39052227ybf.476.1626796615519;
- Tue, 20 Jul 2021 08:56:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4Lwb/S+J+gslC2Y28b3P4zMlQmindrrr+LZzI9LinPc=;
+        b=WjWIQcKuZqbiINchTZsa1j7Xb6MxthmBxnqNHXzZeqYImsPcjW+XkYAu90Bywqqb3i
+         tJ3xmbxDeRE1j/IEeOYhRgPl6L5oWxyfOZOdOzKR+nCkYDE0ss5xwY1eFWLN3BSRZ/Wc
+         UJRUER4a1Sd6d1VBQq9qaKdm7izUmbB3/hLnt2VCtKuIXKub9SiyrQ+0neTiihoAEmxC
+         2EtSxLCi8cLUEzSH/CnpwKiwjFLiExb68beSXwpPtt1nlUENVjS5h08R55oj3GECvElu
+         HSJK4qOFbONc6YE/RPyHckC2f94WPXHPbm3F91xl6ch1Ql8jRi0l5MDaJZEeL5GHuH0F
+         nREA==
+X-Gm-Message-State: AOAM5323UnbJ95Rz/4dEUbKXMFn3yJf5R+jbDNCvIM5R6rZFH9g0bqZh
+        qmmBzmlMCfFx1HneWTYszajd+5zdTSaQA8LePwi0szU0ElOASi/hjkEDnyAUzPmuFE0Y9H8ogDV
+        4JEFrvII0p6/2PG6yYYFtLkrQ
+X-Received: by 2002:ac8:5ac3:: with SMTP id d3mr27100968qtd.257.1626796621457;
+        Tue, 20 Jul 2021 08:57:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwE0JZxI8C6H+JP4haDAXSMgAMN5qTlpp01szfWOjLU+DL8S7l+xGlXl6hHUCHSo3cqzozHRQ==
+X-Received: by 2002:ac8:5ac3:: with SMTP id d3mr27100943qtd.257.1626796621218;
+        Tue, 20 Jul 2021 08:57:01 -0700 (PDT)
+Received: from localhost.localdomain (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id 74sm5298585qkh.42.2021.07.20.08.57.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 08:57:00 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Igor Raits <igor@gooddata.com>, peterx@redhat.com,
+        Hillf Danton <hdanton@sina.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH stable 5.10.y 0/2] mm/thp: Fix uffd-wp with fork(); crash on pmd migration entry on fork
+Date:   Tue, 20 Jul 2021 11:56:55 -0400
+Message-Id: <20210720155657.499127-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com>
+References: <796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210719143811.2135-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <dc2de27b087c7030ea7e76dd31bb3d8bce18d97f.camel@pengutronix.de>
- <CA+V-a8v-54QXtcT-gPy5vj9drqZ6Ntr0-3j=42Dedi-kojNtXQ@mail.gmail.com> <CAMuHMdVFarkF49=Vvcv-6NLhxbLUE33PXnqhAiPxpaCNN7u4Bw@mail.gmail.com>
-In-Reply-To: <CAMuHMdVFarkF49=Vvcv-6NLhxbLUE33PXnqhAiPxpaCNN7u4Bw@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 20 Jul 2021 16:56:29 +0100
-Message-ID: <CA+V-a8sKDGyBCYJnxH=_cJrbYFL1Ev4ETsjYEXx7fQsW-NYiYA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] dt-bindings: net: can: renesas,rcar-canfd:
- Document RZ/G2L SoC
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+In summary, this series should be needed for 5.10/5.12/5.13. This is the 5.=
+10.y=0D
+backport of the series.  Patch 1 is a dependency of patch 2, while patch 2=
+=0D
+should be the real fix.=0D
+=0D
+There's a minor conflict on patch 2 when cherry pick due to not having the =
+new=0D
+helper called page_needs_cow_for_dma().  It's also mentioned at the entry o=
+f=0D
+patch 2.=0D
+=0D
+This series should be able to fix a rare race that mentioned in thread:=0D
+=0D
+https://lore.kernel.org/linux-mm/796cbb7-5a1c-1ba0-dde5-479aba8224f2@google=
+.com/=0D
+=0D
+This fact wasn't discovered when the fix got proposed and merged, because t=
+he=0D
+fix was originally about uffd-wp and its fork event.  However it turns out =
+that=0D
+the problematic commit b569a1760782f3d is also causing crashing on fork() o=
+f=0D
+pmd migration entries which is even more severe than the original uffd-wp=0D
+problem.=0D
+=0D
+Stable kernels at least on 5.12.y has the crash reproduced, and it's possib=
+le=0D
+5.13.y and 5.10.y could hit it due to having the problematic commit=0D
+b569a1760782f3d but lacking of the uffd-wp fix patch (8f34f1eac382, which i=
+s=0D
+also patch 2 of this series).=0D
+=0D
+The pmd entry crash problem was reported by Igor Raits <igor@gooddata.com> =
+and=0D
+debugged by Hugh Dickins <hughd@google.com>.=0D
+=0D
+Please review, thanks.=0D
+=0D
+Peter Xu (2):=0D
+  mm/thp: simplify copying of huge zero page pmd when fork=0D
+  mm/userfaultfd: fix uffd-wp special cases for fork()=0D
+=0D
+ include/linux/huge_mm.h |  2 +-=0D
+ include/linux/swapops.h |  2 ++=0D
+ mm/huge_memory.c        | 36 +++++++++++++++++-------------------=0D
+ mm/memory.c             | 25 +++++++++++++------------=0D
+ 4 files changed, 33 insertions(+), 32 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
 
-On Tue, Jul 20, 2021 at 4:11 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Tue, Jul 20, 2021 at 4:31 PM Lad, Prabhakar
-> <prabhakar.csengg@gmail.com> wrote:
-> > On Tue, Jul 20, 2021 at 11:22 AM Philipp Zabel <p.zabel@pengutronix.de> wrote:
-> > > On Mon, 2021-07-19 at 15:38 +0100, Lad Prabhakar wrote:
-> > > > Add CANFD binding documentation for Renesas RZ/G2L SoC.
-> > > >
-> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> > > > --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> > > > +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
->
-> > > > +    resets:
-> > > > +      items:
-> > > > +        - description: CANFD_RSTP_N
-> > > > +        - description: CANFD_RSTC_N
-> > >
-> > > Do you know what the "P" and "C" stands for? It would be nice if the
-> > > description could tell us what the reset lines are used for.
-> > >
-> > unfortunately the HW manual does not mention  anything about "P" and "C" :(
-> >
-> > > I would prefer if you used these names (or shortened versions, for
-> > > example "rstp_n", "rstc_n") as "reset-names" and let the driver
-> > > reference the resets by name instead of by index.
-> > >
-> > OK will do that and maxItems:2 for resets.
-> >
-> > @Geert, for R-Car Gen3 does "canfd_rst" (as it's a module reset)
-> > sounds good for reset-names? Or do you have any other suggestions?
->
-> I wouldn't bother with reset-names on R-Car, as there is only a
-> single reset.
->
-OK will keep "description: CANFD reset" for R-Car as done in the
-current patch and just add reset-names only for RZ/G2L SoC.
-
-> BTW, does there exist a generally-accepted reset-equivalent of "fck"
-> ("Functional ClocK")?
->
-None that I am aware of (Couple of binding docs have "rst"), but maybe
-Philipp could have some suggestions.
-
-Cheers,
-Prabhakar
-
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
