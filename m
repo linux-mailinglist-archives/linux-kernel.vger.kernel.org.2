@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA5C3CFBDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115173CFC44
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239800AbhGTNgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 09:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239130AbhGTN3s (ORCPT
+        id S239073AbhGTNr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 09:47:28 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:55324 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237435AbhGTNdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 09:29:48 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C16C0613DC
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:10:23 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so21646466otl.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:10:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=42n8AUfejZCoSZP1zlU4yzWCvv9+BKRABgiQJHGXXN0=;
-        b=jfU+UKYmz7ZvNk8E4yppuybYbg1dMiAKJnrVwSkdJoGooMtIiq5WpmdsljtbN8T2NC
-         DTATs5lbdHXYKG9RmIMZciw98/eVxZGBop+B1OZBRnMHW1sEgzjNSlSE9RUodcaw9JBj
-         EtEzlP3Fe6MB8j/a/skNf1lX8sFLDurmDhdIN2GV7+2qKMcIUX2TiUYbOEiNniV4k8dW
-         nmNQol1INz0pAJ38195XkPMEoCnaYEG7aKowZX74nVEY5N9mFmKPOXqU8F9ULAtIrsqL
-         bzVT90ZIJk/kJ9ifS2Zk9sok7jxa/Q70sxltg4KAWMiOJocYPQGLjyeEE76JmzIVp+qm
-         AG0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=42n8AUfejZCoSZP1zlU4yzWCvv9+BKRABgiQJHGXXN0=;
-        b=RUSIZpCPlSFZX/si8TpKN6Onhk6UbCJpmVuvtp8LsTDxPhW+QRD2qFGUZzT6qZpkGq
-         IxPT8gAWQPUJ3MbF0XSVkHpdudWsnJ634mj2BTBHpgMhOjB7csRaaieauGrOGThJu/UX
-         z2gvMrOt0IUmqZfEUobIwuK8w0UuoQJ5A23epiRNsC/lHdxnWmI88p4MkD2SnRTUE+yn
-         ReBHovJigOSyGq487S4rgi3bzMcf2JxdJcrWB9cjgPjYHK+6Pp/BRVky6qTBH5aqpQik
-         POMH4Syg9mOQxSK9/9SsLAcRCLFnReu93a2iVWesmLs235xSBv0/N2keBiHD5IGrRs3u
-         tVMw==
-X-Gm-Message-State: AOAM533YUzl1pXjge04td/49mHH9FjA53PPNj1e+j06qwegKWZC29Dkr
-        HhvHv+M0dEsFQFQ20fbYdr6CUIdi8x1zau30IOyFHQ==
-X-Google-Smtp-Source: ABdhPJyNj9vUKtohuCcMwspzMCx3K2PIYUsi1rCjUkfya4HiykM7YjQmiiwSaAA+f6FLwNsjOacWsh2pKIWR2E9tXUg=
-X-Received: by 2002:a9d:d04:: with SMTP id 4mr23481504oti.251.1626790222226;
- Tue, 20 Jul 2021 07:10:22 -0700 (PDT)
+        Tue, 20 Jul 2021 09:33:19 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16KEDbRn089496;
+        Tue, 20 Jul 2021 09:13:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1626790417;
+        bh=iiYeMeyFkrKOch2McMFiTZRBVD68ZbhGYOg+JJfCxuw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ZBWJ0R4ELhDtxzGEWOwO3tMwTCPzOiue4Wwr2Z19xjCvDG1UYq75fcVZsmiAQ6//Q
+         fXcCg79kI8XZ10q4cyhOMOUHsPqoANFEV7W0FYB/OG3v86tKjrIMZTwlHF3+OCJFyI
+         P8I1NMF2c6PeEh1Urr85TeKCO2ifFyAfMFBBVUL0=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16KEDbuu115074
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 20 Jul 2021 09:13:37 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 20
+ Jul 2021 09:13:36 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 20 Jul 2021 09:13:36 -0500
+Received: from [10.250.234.142] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16KEDWI6098672;
+        Tue, 20 Jul 2021 09:13:33 -0500
+Subject: Re: [PATCH] dt-bindings: mtd: spi-nand: Convert to DT schema format
+To:     Rob Herring <robh@kernel.org>
+CC:     Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210718004125.733-1-a-nandan@ti.com>
+ <1626702448.437777.1811203.nullmailer@robh.at.kernel.org>
+From:   "Nandan, Apurva" <a-nandan@ti.com>
+Message-ID: <18c17c21-82de-32d5-912b-3158a037ec8c@ti.com>
+Date:   Tue, 20 Jul 2021 19:43:30 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <00000000000080403805c6ef586d@google.com> <CANpmjNPx2b+W2OZxNROTWfGcU92bwqyDe-=vxgnV9MEurjyqzQ@mail.gmail.com>
- <20210720131851.GE4397@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210720131851.GE4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 20 Jul 2021 16:10:10 +0200
-Message-ID: <CANpmjNPR3FTMRa9zyb3Pd+f7EXfvjxBUmPVKOaKodn8JJt9raQ@mail.gmail.com>
-Subject: Re: [syzbot] KCSAN: data-race in call_rcu / rcu_gp_kthread
-To:     paulmck@kernel.org
-Cc:     syzbot <syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1626702448.437777.1811203.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 at 15:18, Paul E. McKenney <paulmck@kernel.org> wrote:
-[...]
-> Good catch!  And yes, this would be hard to reproduce.
->
-> How about as shown below?
 
-Acked-by: Marco Elver <elver@google.com>
 
-I was merely a little surprised syzbot was able to exercise RCU in a
-way that resulted in a data race your torture runs hadn't found yet
-(or perhaps it did and missed?).
+On 19-Jul-21 7:17 PM, Rob Herring wrote:
+> On Sun, 18 Jul 2021 00:41:25 +0000, Apurva Nandan wrote:
+>> Convert spi-nand.txt binding to YAML format with an added example.
+>>
+>> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+>> ---
+>>  .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
+>>  .../devicetree/bindings/mtd/spi-nand.yaml     | 74 +++++++++++++++++++
+>>  2 files changed, 74 insertions(+), 5 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+>>  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
+>>
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml: spi-flash@1: $nodename:0: 'spi-flash@1' does not match '^flash(@.*)?$'
+
+I propose to change the nodename in snps,dw-apb-ssi.yaml from
+'spi-flash@1' to 'flash@1', making it similar to the convention followed
+by jedec,spi-nor.yaml. Currently, there is no user of snps,dw-apb-ssi
+with a spi-nand as child node, so let's make the node name uniform
+across different types of flashes i.e. 'flash@*'. What do you suggest?
+
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml: spi-flash@1: 'rx-sample-delay-ns' does not match any of the regexes: '^otp(-[0-9]+)?$', '^partition@', 'pinctrl-[0-9]+'
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> \ndoc reference errors (make refcheckdocs):
+> 
+> See https://patchwork.ozlabs.org/patch/1506558
+> 
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
+> 
+
+Yes, yamllint was not installed. I will correct them and send as v2.
 
 Thanks,
--- Marco
-
->                                                         Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> commit 43e0f01f3b6f510dbe31d02a8f4c909c45deff04
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Tue Jul 20 06:16:27 2021 -0700
->
->     rcu: Mark accesses to rcu_state.n_force_qs
->
->     This commit marks accesses to the rcu_state.n_force_qs.  These data
->     races are hard to make happen, but syzkaller was equal to the task.
->
->     Reported-by: syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index a7379c44a2366..245bca7cdf6ee 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1913,7 +1913,7 @@ static void rcu_gp_fqs(bool first_time)
->         struct rcu_node *rnp = rcu_get_root();
->
->         WRITE_ONCE(rcu_state.gp_activity, jiffies);
-> -       rcu_state.n_force_qs++;
-> +       WRITE_ONCE(rcu_state.n_force_qs, rcu_state.n_force_qs + 1);
->         if (first_time) {
->                 /* Collect dyntick-idle snapshots. */
->                 force_qs_rnp(dyntick_save_progress_counter);
-> @@ -2556,7 +2556,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
->         /* Reset ->qlen_last_fqs_check trigger if enough CBs have drained. */
->         if (count == 0 && rdp->qlen_last_fqs_check != 0) {
->                 rdp->qlen_last_fqs_check = 0;
-> -               rdp->n_force_qs_snap = rcu_state.n_force_qs;
-> +               rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
->         } else if (count < rdp->qlen_last_fqs_check - qhimark)
->                 rdp->qlen_last_fqs_check = count;
->
-> @@ -2904,10 +2904,10 @@ static void __call_rcu_core(struct rcu_data *rdp, struct rcu_head *head,
->                 } else {
->                         /* Give the grace period a kick. */
->                         rdp->blimit = DEFAULT_MAX_RCU_BLIMIT;
-> -                       if (rcu_state.n_force_qs == rdp->n_force_qs_snap &&
-> +                       if (READ_ONCE(rcu_state.n_force_qs) == rdp->n_force_qs_snap &&
->                             rcu_segcblist_first_pend_cb(&rdp->cblist) != head)
->                                 rcu_force_quiescent_state();
-> -                       rdp->n_force_qs_snap = rcu_state.n_force_qs;
-> +                       rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
->                         rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
->                 }
->         }
-> @@ -4134,7 +4134,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
->         /* Set up local state, ensuring consistent view of global state. */
->         raw_spin_lock_irqsave_rcu_node(rnp, flags);
->         rdp->qlen_last_fqs_check = 0;
-> -       rdp->n_force_qs_snap = rcu_state.n_force_qs;
-> +       rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
->         rdp->blimit = blimit;
->         rdp->dynticks_nesting = 1;      /* CPU not up, no tearing. */
->         rcu_dynticks_eqs_online();
+Apurva Nandan
