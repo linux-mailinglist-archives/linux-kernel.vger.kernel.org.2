@@ -2,121 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5468F3CF3AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAC93CF3B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237111AbhGTEJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 00:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhGTEJ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 00:09:27 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFA5C061574;
-        Mon, 19 Jul 2021 21:50:05 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id m13so6302765qvh.8;
-        Mon, 19 Jul 2021 21:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0KCwtqt8RPVa9Eso0xhcH4+MB0ahASHIwEqiB7n7a5w=;
-        b=ExI7ENB8ukgzr77elToDWB2SrFD+/7IpNkujhpKZ/NwPI8Cj/HIfW3NlevvRab/BoT
-         w1fXFkSe2SfyzTTPSXu+ZQpdENhH6mRNVmg7VgyQI3v9kL0ei/WdXVIArAeTVhI6XIV8
-         L3ykF77PVYLT1sbvYUUkyyLO4urakqbXLQ4sL5kL94Vpu0hMLqG1v136oP8R/HfGBB9j
-         TB+jm4PbHkxwxmkUjQvUHDzMp7fhXYre81tkRGiepga+k1DUhPOomBNm+TzSzhWErtFG
-         Awhvix0xUFYKmBdp+MTlvHtv+mwFCZ4XNITdjy6+XJ72hwlvoXxxFhCZUiX6qFagV6ho
-         nCMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0KCwtqt8RPVa9Eso0xhcH4+MB0ahASHIwEqiB7n7a5w=;
-        b=R5e3BU+0MpNFOHDtOuryN/2lvES5Y2GegKmrgnqWA/8bNV64jhToEppsdZu/0lweLb
-         HHfO96lQahT7zGtwPH1NvtglHOjDr8UNAoj9n80X07d30/4Z9v+mYmpX3OgjXEuUyV6s
-         JXQr0PXIG4wknV9jam+/Dp8amjo3kei31MBwCtKCoD7r3tfabTxXFxcKkFv7TcI1FfZz
-         SHtaILZZkEFOcpbOUsB+i8NWQgShEBPFHgFiItu5YjBwAWCw6kaGJk5OHuyOtHpWe8CM
-         MWMG6yo7/y8zkwQvBg0ggLsJNYOCcLzN3kiCVbLWd5SHg9gfKyV5kyi8xSsHA43DX5y5
-         rwbw==
-X-Gm-Message-State: AOAM532ZeQBkx1GTBcRAUCkcFZu46bNKl5OiXaw5m1VSR5l6/oM5WyOt
-        OPzxvwf2OP5i32NYkAItxg==
-X-Google-Smtp-Source: ABdhPJzJ/HSVQtDEoPufiQVTlUd2sIL/teMWpjnl+pDgn+wffBEi8kgB5TVz4FpJRbcttbM1qHq6ew==
-X-Received: by 2002:a0c:db8a:: with SMTP id m10mr28459995qvk.29.1626756604256;
-        Mon, 19 Jul 2021 21:50:04 -0700 (PDT)
-Received: from PWN (104-9-124-193.lightspeed.sntcca.sbcglobal.net. [104.9.124.193])
-        by smtp.gmail.com with ESMTPSA id h66sm2791863qkc.47.2021.07.19.21.50.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 21:50:03 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 00:50:00 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        id S241974AbhGTEPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 00:15:25 -0400
+Received: from mga14.intel.com ([192.55.52.115]:51770 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235192AbhGTEPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 00:15:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="210897301"
+X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
+   d="scan'208";a="210897301"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 21:55:54 -0700
+X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
+   d="scan'208";a="431923322"
+Received: from ywei11-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.138.31])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 21:55:53 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Zefang Han <hanzefang@gmail.com>,
-        Wei Lin Chang <r09922117@csie.ntu.edu.tw>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] docs: x86: Remove obsolete information about x86_64
- vmalloc() faulting
-Message-ID: <20210720045000.GA2211@PWN>
-References: <20210622031910.141262-1-yepeilin.cs@gmail.com>
- <20210716060958.GA2197@PWN>
- <YPVxV/KdDBqgTaqE@suse.de>
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v3 0/6] Add TDX Guest Support (Attestation support)
+Date:   Mon, 19 Jul 2021 21:55:46 -0700
+Message-Id: <20210720045552.2124688-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPVxV/KdDBqgTaqE@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
+Hi All,
 
-On Mon, Jul 19, 2021 at 02:34:31PM +0200, Joerg Roedel wrote:
-> On Fri, Jul 16, 2021 at 02:09:58AM -0400, Peilin Ye wrote:
-> > This information is out-of-date, and it took me quite some time of
-> > ftrace'ing before I figured it out...  I think it would be beneficial to
-> > update, or at least remove it.
-> > 
-> > As a proof that I understand what I am talking about, on my x86_64 box:
-> > 
-> >   1. I allocated a vmalloc() area containing linear address `addr`;
-> >   2. I manually pagewalked `addr` in different page tables, including
-> >      `init_mm.pgd`;
-> >   3. The corresponding PGD entries for `addr` in different page tables,
-> >      they all immediately pointed at the same PUD table (my box uses
-> >      4-level paging), at the same physical address;
-> >   4. No "lazy synchronization" via page fault handling happened at all,
-> >      since it is the same PUD table pre-allocated by
-> >      preallocate_vmalloc_pages() during boot time.
-> 
-> Yes, this is the story for x86-64, because all PUD/P4D pages for the vmalloc
-> area are pre-allocated at boot. So no faulting or synchronization needs
-> to happen.
-> 
-> On x86-32 this is a bit different. Pre-allocation of PMD/PTE pages is
-> not an option there (even less when 4MB large-pages with 2-level paging
-> come into the picture).
-> 
-> So what happens there is that vmalloc related changes to the init_mm.pgd
-> are synchronized to all page-tables in the system. But this
-> synchronization is subject to race conditions in a way that another CPU
-> might vmalloc an area below a PMD which is not fully synchronized yet.
-> 
-> When this happens there is a fault, which is handled as a vmalloc()
-> fault on x86-32 just as before. So vmalloc faults still exist on 32-bit,
-> they are just less likely as they used to be.
+Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+hosts and some physical attacks. VM guest with TDX support is called
+as TD Guest.
 
-Thanks a lot for the information!  I will improve my commit message and
-send a v2 soon.
+In TD Guest, the attestation process is used to verify the 
+trustworthiness of TD guest to the 3rd party servers. Such attestation
+process is required by 3rd party servers before sending sensitive
+information to TD guests. One usage example is to get encryption keys
+from the key server for mounting the encrypted rootfs or secondary drive.
+    
+Following patches adds the attestation support to TDX guest which
+includes attestation user interface driver, user agent example, and
+related hypercall support.
 
-I think for this patch, removing that out-of-date statement is
-sufficient, since mm.rst is x86-64-specific, but maybe we should
-document this behavior for x86-32 somewhere as well...
+In this series, only following patches are in arch/x86 and are
+intended for x86 maintainers review.
 
-Thank you,
-Peilin Ye
+* x86/tdx: Add TDREPORT TDX Module call support
+* x86/tdx: Add GetQuote TDX hypercall support
+* x86/tdx: Add SetupEventNotifyInterrupt TDX hypercall support
+
+Patch titled "platform/x86: intel_tdx_attest: Add TDX Guest attestation
+interface driver" adds the attestation driver support. This is supposed
+to be reviewed by platform-x86 maintainers.
+
+Also, patch titled "tools/tdx: Add a sample attestation user app" adds
+a testing app for attestation feature which needs review from
+bpf@vger.kernel.org.
+
+This series is the continuation of the following TDX patch series which
+added basic TDX guest support.
+
+[set 1] - https://lore.kernel.org/patchwork/project/lkml/list/?series=508773
+[set 2] - https://lore.kernel.org/patchwork/project/lkml/list/?series=508792
+[set 3] - https://lore.kernel.org/patchwork/project/lkml/list/?series=508794
+[set 4] - https://lore.kernel.org/patchwork/project/lkml/list/?series=508795
+[set 5] - https://lore.kernel.org/patchwork/project/lkml/list/?series=508798
+
+Also please note that this series alone is not necessarily fully
+functional.
+
+You can find TDX related documents in the following link.
+
+https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
+
+Changes since v2:
+ * Rebased on top of v5.14-rc1.
+ * Rest of the history is included in individual patches.
+
+Changes since v1:
+ * Included platform-x86 and test tool maintainers in recipient list.
+ * Fixed commit log and comments in attestation driver as per Han's comments.
+
+
+Kuppuswamy Sathyanarayanan (6):
+  x86/tdx: Add TDREPORT TDX Module call support
+  x86/tdx: Add GetQuote TDX hypercall support
+  x86/tdx: Add SetupEventNotifyInterrupt TDX hypercall support
+  x86/tdx: Add TDX Guest event notify interrupt vector support
+  platform/x86: intel_tdx_attest: Add TDX Guest attestation interface
+    driver
+  tools/tdx: Add a sample attestation user app
+
+ arch/x86/include/asm/hardirq.h          |   1 +
+ arch/x86/include/asm/idtentry.h         |   4 +
+ arch/x86/include/asm/irq_vectors.h      |   7 +-
+ arch/x86/include/asm/tdx.h              |   6 +
+ arch/x86/kernel/irq.c                   |   7 +
+ arch/x86/kernel/tdx.c                   | 137 ++++++++++++++
+ drivers/platform/x86/Kconfig            |   9 +
+ drivers/platform/x86/Makefile           |   1 +
+ drivers/platform/x86/intel_tdx_attest.c | 208 +++++++++++++++++++++
+ include/uapi/misc/tdx.h                 |  37 ++++
+ tools/Makefile                          |  13 +-
+ tools/tdx/Makefile                      |  19 ++
+ tools/tdx/attest/.gitignore             |   2 +
+ tools/tdx/attest/Makefile               |  24 +++
+ tools/tdx/attest/tdx-attest-test.c      | 232 ++++++++++++++++++++++++
+ 15 files changed, 700 insertions(+), 7 deletions(-)
+ create mode 100644 drivers/platform/x86/intel_tdx_attest.c
+ create mode 100644 include/uapi/misc/tdx.h
+ create mode 100644 tools/tdx/Makefile
+ create mode 100644 tools/tdx/attest/.gitignore
+ create mode 100644 tools/tdx/attest/Makefile
+ create mode 100644 tools/tdx/attest/tdx-attest-test.c
+
+-- 
+2.25.1
 
