@@ -2,94 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E95B3CF6C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54183CF6CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235037AbhGTIoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 04:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbhGTIn5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:43:57 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AEEC061574;
-        Tue, 20 Jul 2021 02:24:35 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id s18so21934079pgg.8;
-        Tue, 20 Jul 2021 02:24:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LIC3VJ/7p/RfZqSca9kn+/FaUQpa8Xxxwn9zVExpIq4=;
-        b=B2ZfSmEsNpuJv7WF3/tPy9fbOJIqR9fGdqNgjqFEh/AFq4VbjHBb4OPqSQZYWv+Du9
-         v72Av9UlwCzedGdiEAJUvlMIaPFussRW/e//Am8qP5rm+iN3mpDVQ7vw0pE7pOwPNWii
-         9XyHrnuuiHSYR59mw9zfpxu65D7q6mxAWhJRZp26hOFUrCrK1p4c/IzR1mq2Dqfe2UCD
-         J1tM8Y2Ukz0qgBQVj9D5e+NWfum2Y0guDPDMXD2uTbmOEWPK8dm7lmWPMvwhktxDlQ9w
-         N2dlNkyEHrc/Pgb0UCHsOlU15SLhJYC9WWtnty6NgHfOWwJiT8F1aD0dHvzl/O5DQVBA
-         YC8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LIC3VJ/7p/RfZqSca9kn+/FaUQpa8Xxxwn9zVExpIq4=;
-        b=FBBRfhsIfdos6irt9kuuk5dHbUxxWU17jYu+GFPUnagQofSbw6S4rFu40VcCMUVAcG
-         Ty+qPPY/uwsE/4g8vrxWqfFbO/tQFjIuaELS+N7K5i8VmlToW5FH7YBNMei5PmSYD0gv
-         3dk3SeId+EWzgVpGE+/jtrNcfByjPPXPvoGfgyjlqj+o7I6WrdNvfNZv2KnoDpLkolTb
-         jZBCgdqoKJBP8QBjp1ia0VXlBxNOheBjXlGOrfTsl8SikOjGrBG0XH0IUwY0ZYSK5mWx
-         RYUNiFZTxmJ8pwVemuNp2bPXkjJiYNCGCpYSyInUy2Yd+/ZA2Qrwb4dHSVY3gJHUOR1D
-         C1Lg==
-X-Gm-Message-State: AOAM531+WybNAJXzOMCWOXq/Zhs24cWdt/NjEdcrSlPcwuaRukmn1U+3
-        FmcMZs1MdueIuK4F95iC0+c=
-X-Google-Smtp-Source: ABdhPJx0pzz9q7hxyJSIGIlOv/KQ5D/4MDmV3CDvymj/WKCbzzNhmZqdObLgGdjRI6wFqjVALqLc4A==
-X-Received: by 2002:a63:e841:: with SMTP id a1mr29768144pgk.197.1626773074830;
-        Tue, 20 Jul 2021 02:24:34 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id u62sm11353937pfb.19.2021.07.20.02.24.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 02:24:34 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net] net: dsa: mv88e6xxx: check for address type in port_db_load_purge
-Date:   Tue, 20 Jul 2021 17:24:26 +0800
-Message-Id: <20210720092426.1998666-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S234923AbhGTIqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 04:46:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:54430 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229903AbhGTIqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 04:46:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4BD656D;
+        Tue, 20 Jul 2021 02:27:23 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C684C3F73D;
+        Tue, 20 Jul 2021 02:27:21 -0700 (PDT)
+Subject: Re: [PATCH 4/5] iommu/vt-d: Disallow SVA if devices don't support
+ 64-bit address
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sanjay Kumar <sanjay.k.kumar@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210720013856.4143880-1-baolu.lu@linux.intel.com>
+ <20210720013856.4143880-5-baolu.lu@linux.intel.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <22302277-0470-db41-7a19-41b5f73bd2c5@arm.com>
+Date:   Tue, 20 Jul 2021 10:27:16 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210720013856.4143880-5-baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The same state value of an ATU entry can mean different states,
-depending on the entry's address type.
-Check for its address type instead of state, to determine if its
-portvec should be overridden.
+On 2021-07-20 02:38, Lu Baolu wrote:
+> When the device and CPU share an address space (such as SVA), the device
+> must support the same addressing capability as the CPU. The CPU does not
+> consider the addressing ability of any device when managing the page table
+> of a process, so the device must have enough addressing ability to bind
+> the page table of the process.
+> 
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>   drivers/iommu/intel/iommu.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index f45c80ce2381..f3cca1dd384d 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -5372,6 +5372,9 @@ static int intel_iommu_enable_sva(struct device *dev)
+>   	if (!(iommu->flags & VTD_FLAG_SVM_CAPABLE))
+>   		return -ENODEV;
+>   
+> +	if (!dev->dma_mask || *dev->dma_mask != DMA_BIT_MASK(64))
 
-Fixes: f72f2fb8fb6b ("net: dsa: mv88e6xxx: override existent unicast portvec in port_fdb_add")
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
----
- drivers/net/dsa/mv88e6xxx/chip.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Careful - VFIO doesn't set DMA masks (since it doesn't use the DMA API), 
+so this appears to be relying on another driver having bound previously, 
+otherwise the mask would still be the default 32-bit one from 
+pci_setup_device(). I'm not sure that's an entirely robust assumption.
 
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index beb41572d04e..dd4d7fa0da8e 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -1741,7 +1741,7 @@ static int mv88e6xxx_port_db_load_purge(struct mv88e6xxx_chip *chip, int port,
- 		if (!entry.portvec)
- 			entry.state = 0;
- 	} else {
--		if (state == MV88E6XXX_G1_ATU_DATA_STATE_UC_STATIC)
-+		if (is_unicast_ether_addr(addr))
- 			entry.portvec = BIT(port);
- 		else
- 			entry.portvec |= BIT(port);
--- 
-2.25.1
+Robin.
 
+> +		return -ENODEV;
+> +
+>   	if (intel_iommu_enable_pasid(iommu, dev))
+>   		return -ENODEV;
+>   
+> 
