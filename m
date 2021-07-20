@@ -2,97 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DD53CF48E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A313CF494
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241904AbhGTFv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 01:51:57 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:51047 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242010AbhGTFvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 01:51:42 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GTTQn5dDwz9sX1;
-        Tue, 20 Jul 2021 16:32:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626762740;
-        bh=KzjgF2y5aBYeBDObwr2SaY7dstWwB7n9nlqKcUb/nHc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=R6W9LU1fBtB+fjh9QKteMVQDrpLvKZpWZkzXEveFkr+ieFvm140gTTRUDROpT15zp
-         66vQhkIx5PNwkyReOlWDHveSymOL2sxOYPHj2d0BIRQLE7Jk2j3vkhPIdlecPtJDwp
-         2lEqJ2meWzv6N5kXC3u8n8LTFC4L3RzsT8Jhnc2rGlHXQoOxJkekSeCvvkA2PraLsl
-         +SXX1ZpymQCFlhwo7BBC9PngG2tEbqXxAtSnOrA1yAgSxQlFUAUA4aCnHmRb9xVtgu
-         2dBZLLag2pRCPnCyXDesxNKmOQbHQzAV5uAOVdIwIzXOhp4uf+xS4IVnTTyaoIUB4G
-         4nmPlJyM+zATA==
-Date:   Tue, 20 Jul 2021 16:32:16 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Jason Ekstrand <jason@jlekstrand.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drm-intel-fixes tree
-Message-ID: <20210720163216.2b639d0d@canb.auug.org.au>
+        id S242088AbhGTFyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 01:54:37 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:38896 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S242043AbhGTFyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 01:54:21 -0400
+Received: from BJHW-Mail-Ex01.internal.baidu.com (unknown [10.127.64.11])
+        by Forcepoint Email with ESMTPS id 969EAFD35FF82B9BC42D;
+        Tue, 20 Jul 2021 14:34:42 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BJHW-Mail-Ex01.internal.baidu.com (10.127.64.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 20 Jul 2021 14:34:42 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 20 Jul 2021 14:34:41 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <Felix.Kuehling@amd.com>, <alexander.deucher@amd.com>,
+        <christian.koenig@amd.com>, <Xinhui.Pan@amd.com>,
+        <airlied@linux.ie>, <daniel@ffwll.ch>
+CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, Cai Huoqing <caihuoqing@baidu.com>
+Subject: [PATCH] drm/amdkfd: move PTR_ERR under IS_ERR() condition
+Date:   Tue, 20 Jul 2021 14:34:35 +0800
+Message-ID: <20210720063435.373-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sgTT+lRhMW2dTzwoUP1m3pV";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex14.internal.baidu.com (172.31.51.54) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sgTT+lRhMW2dTzwoUP1m3pV
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+no need to get error code when IS_ERR is false
 
-Hi all,
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/gpu/drm/amd/amdkfd/kfd_chardev.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-After merging the drm-intel-fixes tree, today's linux-next build
-(htmldocs) produced this warning:
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c b/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
+index e48acdd03c1a..710659b3c1f0 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
+@@ -72,16 +72,18 @@ int kfd_chardev_init(void)
+                goto err_register_chrdev;
 
-drivers/gpu/drm/i915/i915_cmd_parser.c:1436: warning: Excess function param=
-eter 'jump_whitelist' description in 'intel_engine_cmd_parser'
-drivers/gpu/drm/i915/i915_cmd_parser.c:1436: warning: Excess function param=
-eter 'shadow_map' description in 'intel_engine_cmd_parser'
-drivers/gpu/drm/i915/i915_cmd_parser.c:1436: warning: Excess function param=
-eter 'batch_map' description in 'intel_engine_cmd_parser'
-drivers/gpu/drm/i915/i915_cmd_parser.c:1436: warning: Function parameter or=
- member 'trampoline' not described in 'intel_engine_cmd_parser'
-drivers/gpu/drm/i915/i915_cmd_parser.c:1436: warning: Excess function param=
-eter 'jump_whitelist' description in 'intel_engine_cmd_parser'
-drivers/gpu/drm/i915/i915_cmd_parser.c:1436: warning: Excess function param=
-eter 'shadow_map' description in 'intel_engine_cmd_parser'
-drivers/gpu/drm/i915/i915_cmd_parser.c:1436: warning: Excess function param=
-eter 'batch_map' description in 'intel_engine_cmd_parser'
+        kfd_class = class_create(THIS_MODULE, kfd_dev_name);
+-       err = PTR_ERR(kfd_class);
+-       if (IS_ERR(kfd_class))
++       if (IS_ERR(kfd_class)) {
++               err = PTR_ERR(kfd_class);
+                goto err_class_create;
++       }
 
-Introduced by commit
+        kfd_device = device_create(kfd_class, NULL,
+                                        MKDEV(kfd_char_dev_major, 0),
+                                        NULL, kfd_dev_name);
+-       err = PTR_ERR(kfd_device);
+-       if (IS_ERR(kfd_device))
++       if (IS_ERR(kfd_device)) {
++               err = PTR_ERR(kfd_device);
+                goto err_device_create;
++       }
 
-  c9d9fdbc108a ("drm/i915: Revert "drm/i915/gem: Asynchronous cmdparser"")
+        return 0;
 
---=20
-Cheers,
-Stephen Rothwell
+--
+2.25.1
 
---Sig_/sgTT+lRhMW2dTzwoUP1m3pV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD2bfAACgkQAVBC80lX
-0GzpewgAlFCUL4HwCtTIOPN7HMd1F3qrv5hX0xWcZ1wcaCD3x0Zcx148curbt7mR
-OpCi1tNkPxLeqsjq9zcnnRwVokcxST2RXZNy3wWVdYYoOOaa/DO6lqZwzlNRThR7
-6RKUn7bckFx1HKQAs+PLxHaXConfxaKhYf7b9u15199WGm2CLJ6JVHSvy1e8b4kU
-m89OleovF8GepmH6t2gh0fWtKnm/9zFdknOIpbrI1QbUt5rbbPOA6WjpbVRzrUXA
-8dHUE7V3l4FSAufBeOZ0+erP7Da8e68+q+f8suvpH5MpJvq+rquIVvCRF1GJ6ED5
-dJ0ejKB2opUePOBNMddOaRMHSpq2qg==
-=j8Ep
------END PGP SIGNATURE-----
-
---Sig_/sgTT+lRhMW2dTzwoUP1m3pV--
