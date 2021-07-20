@@ -2,255 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3167F3CF9A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3343CF9A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237956AbhGTLxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 07:53:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237862AbhGTLwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:52:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C673F61246
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 12:33:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626784396;
-        bh=KQg2v/CW3pKrFhdKhxhTrULtunXY7ZG5Y+37MBHLN30=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=u6sJ+ZpAffmKE/Mt50u3yIUwSR3Q/6pk5UjG1UeRy6jbbnOgzIAJ9sKwNB/M10pFD
-         tDnVgcrB1X3HI3STfr+iH/5cA4udwqmczFxUD9DnjBgImGy+MXKvidySWHeuT/HUmz
-         GNoElzYOtQiBmXQScK4SALqY7yOLy5gQV0Le4yOiqVJsI0XG6lqGO54kyrCrHC1LzB
-         KgRvlUMB0Lf/cR0TLUvRtpw+OeS5LMYXYJbtflE79PUAb9mSmu/V+2E5fvPT7yUUVa
-         /1OWRI7LBGEupSJcSi9HI0yBaLpMoub8F2QH22zwswUcvIYDHXQCJdxowLhJiqG4jL
-         /jNNxd6ui9crw==
-Received: by mail-oo1-f41.google.com with SMTP id 128-20020a4a11860000b029024b19a4d98eso5237682ooc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 05:33:16 -0700 (PDT)
-X-Gm-Message-State: AOAM530Ep3afEKYOveMl2mo3EBJth55bg5v2WCQpowFTgRNhoPFiah8N
-        nXtfH6jDFUoiLiQvqtodKNGcMu7csVrKViu9deI=
-X-Google-Smtp-Source: ABdhPJyYYhDKVdZ56iWRSbCA9KrycHVWRf4eS6oUeQOLYTjpJZZvjabwaqdSnfgGPMBmxI2QkjM1McCetjGLzh920lE=
-X-Received: by 2002:a4a:8241:: with SMTP id t1mr20609277oog.13.1626784395911;
- Tue, 20 Jul 2021 05:33:15 -0700 (PDT)
+        id S238133AbhGTLx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 07:53:28 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:11457 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237657AbhGTLwl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 07:52:41 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GTdMP0t5Nzcg0Q;
+        Tue, 20 Jul 2021 20:29:53 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 20:33:15 +0800
+Received: from [10.174.176.221] (10.174.176.221) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 20:33:14 +0800
+Subject: Re: [PATCH] blk-mq: allow hardware queue to get more tag while
+ sharing a tag set
+To:     <axboe@kernel.dk>, <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20210712031818.31918-1-yukuai3@huawei.com>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <ce3aa33f-3b13-5047-60ac-dee910ae6184@huawei.com>
+Date:   Tue, 20 Jul 2021 20:33:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20210717160118.9855-1-jonathan@marek.ca>
-In-Reply-To: <20210717160118.9855-1-jonathan@marek.ca>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 20 Jul 2021 14:33:04 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXH=PgUeU7xMNq5EcW=ivYtXhd7nnFqH=TOFS6mpfu-isg@mail.gmail.com>
-Message-ID: <CAMj1kXH=PgUeU7xMNq5EcW=ivYtXhd7nnFqH=TOFS6mpfu-isg@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge"
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Axtens <dja@axtens.net>,
-        Huang Pei <huangpei@loongson.cn>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210712031818.31918-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.221]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 17 Jul 2021 at 18:06, Jonathan Marek <jonathan@marek.ca> wrote:
->
-> c742199a breaks arm64 for some configs because it stubs out functions which
-> should not have been stubbed out.
->
-> With 4K pages and ARM64_VA_BITS_39=y, the kernel crashes early on unmapped
-> 1G pages in the linear map caused by pud_set_huge() in alloc_init_pud()
-> being stubbed out. Reverting c742199a fixes the crash.
->
-> Fixes: c742199a ("mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-
-(replying here because some cc'ees were dropped from Christophe's
-reply and the thread that followed it - unfortunately, lore does not
-seem to have captured any of that discussion either)
-
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-
+On 2021/07/12 11:18, Yu Kuai wrote:
+> If there are multiple active queues while sharing a tag set, it's not
+> necessary to limit the available tags as same share for each active queue
+> if no one ever failed to get driver tag. And fall back to same share if
+> someone do failed to get driver tag.
+> 
+> This modification will be beneficial if total queue_depth of disks
+> on the same host is less than total tags.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > ---
->  arch/arm64/mm/mmu.c     | 20 ++++++++------------
->  arch/x86/mm/pgtable.c   | 34 +++++++++++++++-------------------
->  include/linux/pgtable.h | 26 +-------------------------
->  3 files changed, 24 insertions(+), 56 deletions(-)
->
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index d745865084488..9ff0de1b2b93c 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -1339,7 +1339,6 @@ void *__init fixmap_remap_fdt(phys_addr_t dt_phys, int *size, pgprot_t prot)
->         return dt_virt;
->  }
->
-> -#if CONFIG_PGTABLE_LEVELS > 3
->  int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
->  {
->         pud_t new_pud = pfn_pud(__phys_to_pfn(phys), mk_pud_sect_prot(prot));
-> @@ -1354,16 +1353,6 @@ int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
->         return 1;
->  }
->
-> -int pud_clear_huge(pud_t *pudp)
-> -{
-> -       if (!pud_sect(READ_ONCE(*pudp)))
-> -               return 0;
-> -       pud_clear(pudp);
-> -       return 1;
-> -}
-> -#endif
-> -
-> -#if CONFIG_PGTABLE_LEVELS > 2
->  int pmd_set_huge(pmd_t *pmdp, phys_addr_t phys, pgprot_t prot)
->  {
->         pmd_t new_pmd = pfn_pmd(__phys_to_pfn(phys), mk_pmd_sect_prot(prot));
-> @@ -1378,6 +1367,14 @@ int pmd_set_huge(pmd_t *pmdp, phys_addr_t phys, pgprot_t prot)
->         return 1;
->  }
->
-> +int pud_clear_huge(pud_t *pudp)
+>   block/blk-mq-debugfs.c |  2 ++
+>   block/blk-mq-tag.c     | 43 +++++++++++++++++++++++++++++++++++++++++-
+>   block/blk-mq-tag.h     | 27 ++++++++++++++++++++++++--
+>   block/blk-mq.c         | 13 ++++++++++---
+>   block/blk-mq.h         |  8 ++++++++
+>   include/linux/blk-mq.h |  4 ++++
+>   include/linux/blkdev.h |  1 +
+>   7 files changed, 92 insertions(+), 6 deletions(-)
+> 
+> diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
+> index 4b66d2776eda..35f1f01d93ae 100644
+> --- a/block/blk-mq-debugfs.c
+> +++ b/block/blk-mq-debugfs.c
+> @@ -450,6 +450,8 @@ static void blk_mq_debugfs_tags_show(struct seq_file *m,
+>   	seq_printf(m, "nr_reserved_tags=%u\n", tags->nr_reserved_tags);
+>   	seq_printf(m, "active_queues=%d\n",
+>   		   atomic_read(&tags->active_queues));
+> +	seq_printf(m, "pending_queues=%d\n",
+> +		   atomic_read(&tags->pending_queues));
+>   
+>   	seq_puts(m, "\nbitmap_tags:\n");
+>   	sbitmap_queue_show(tags->bitmap_tags, m);
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> index 86f87346232a..618624b359d6 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -40,6 +40,22 @@ bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>   	return true;
+>   }
+>   
+> +void __blk_mq_dtag_busy(struct blk_mq_hw_ctx *hctx)
 > +{
-> +       if (!pud_sect(READ_ONCE(*pudp)))
-> +               return 0;
-> +       pud_clear(pudp);
-> +       return 1;
+> +	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+> +		struct request_queue *q = hctx->queue;
+> +		struct blk_mq_tag_set *set = q->tag_set;
+> +
+> +		if (!test_bit(QUEUE_FLAG_HCTX_WAIT, &q->queue_flags) &&
+> +		    !test_and_set_bit(QUEUE_FLAG_HCTX_WAIT, &q->queue_flags))
+> +			atomic_inc(&set->pending_queues_shared_sbitmap);
+> +	} else {
+> +		if (!test_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state) &&
+> +		    !test_and_set_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state))
+> +			atomic_inc(&hctx->tags->pending_queues);
+> +	}
 > +}
 > +
->  int pmd_clear_huge(pmd_t *pmdp)
->  {
->         if (!pmd_sect(READ_ONCE(*pmdp)))
-> @@ -1385,7 +1382,6 @@ int pmd_clear_huge(pmd_t *pmdp)
->         pmd_clear(pmdp);
->         return 1;
->  }
-> -#endif
->
->  int pmd_free_pte_page(pmd_t *pmdp, unsigned long addr)
->  {
-> diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-> index 3364fe62b9037..3481b35cb4ec7 100644
-> --- a/arch/x86/mm/pgtable.c
-> +++ b/arch/x86/mm/pgtable.c
-> @@ -682,7 +682,6 @@ int p4d_clear_huge(p4d_t *p4d)
->  }
->  #endif
->
-> -#if CONFIG_PGTABLE_LEVELS > 3
->  /**
->   * pud_set_huge - setup kernel PUD mapping
->   *
-> @@ -721,23 +720,6 @@ int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
->         return 1;
->  }
->
-> -/**
-> - * pud_clear_huge - clear kernel PUD mapping when it is set
-> - *
-> - * Returns 1 on success and 0 on failure (no PUD map is found).
-> - */
-> -int pud_clear_huge(pud_t *pud)
-> -{
-> -       if (pud_large(*pud)) {
-> -               pud_clear(pud);
-> -               return 1;
-> -       }
-> -
-> -       return 0;
-> -}
-> -#endif
-> -
-> -#if CONFIG_PGTABLE_LEVELS > 2
->  /**
->   * pmd_set_huge - setup kernel PMD mapping
->   *
-> @@ -768,6 +750,21 @@ int pmd_set_huge(pmd_t *pmd, phys_addr_t addr, pgprot_t prot)
->         return 1;
->  }
->
-> +/**
-> + * pud_clear_huge - clear kernel PUD mapping when it is set
-> + *
-> + * Returns 1 on success and 0 on failure (no PUD map is found).
-> + */
-> +int pud_clear_huge(pud_t *pud)
+>   /*
+>    * Wakeup all potentially sleeping on tags
+>    */
+> @@ -74,6 +90,24 @@ void __blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
+>   	blk_mq_tag_wakeup_all(tags, false);
+>   }
+>   
+> +void __blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx)
 > +{
-> +       if (pud_large(*pud)) {
-> +               pud_clear(pud);
-> +               return 1;
-> +       }
+> +	struct blk_mq_tags *tags = hctx->tags;
+> +	struct request_queue *q = hctx->queue;
+> +	struct blk_mq_tag_set *set = q->tag_set;
 > +
-> +       return 0;
+> +	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+> +		if (!test_and_clear_bit(QUEUE_FLAG_HCTX_WAIT,
+> +					&q->queue_flags))
+> +			return;
+> +		atomic_dec(&set->pending_queues_shared_sbitmap);
+> +	} else {
+> +		if (!test_and_clear_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state))
+> +			return;
+> +		atomic_dec(&tags->pending_queues);
+> +	}
 > +}
 > +
->  /**
->   * pmd_clear_huge - clear kernel PMD mapping when it is set
->   *
-> @@ -782,7 +779,6 @@ int pmd_clear_huge(pmd_t *pmd)
->
->         return 0;
->  }
-> -#endif
->
->  #ifdef CONFIG_X86_64
->  /**
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index d147480cdefc7..e24d2c992b112 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -1397,34 +1397,10 @@ static inline int p4d_clear_huge(p4d_t *p4d)
->  }
->  #endif /* !__PAGETABLE_P4D_FOLDED */
->
-> -#ifndef __PAGETABLE_PUD_FOLDED
->  int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot);
-> -int pud_clear_huge(pud_t *pud);
-> -#else
-> -static inline int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
-> -{
-> -       return 0;
-> -}
-> -static inline int pud_clear_huge(pud_t *pud)
-> -{
-> -       return 0;
-> -}
-> -#endif /* !__PAGETABLE_PUD_FOLDED */
-> -
-> -#ifndef __PAGETABLE_PMD_FOLDED
->  int pmd_set_huge(pmd_t *pmd, phys_addr_t addr, pgprot_t prot);
-> +int pud_clear_huge(pud_t *pud);
->  int pmd_clear_huge(pmd_t *pmd);
-> -#else
-> -static inline int pmd_set_huge(pmd_t *pmd, phys_addr_t addr, pgprot_t prot)
-> -{
-> -       return 0;
-> -}
-> -static inline int pmd_clear_huge(pmd_t *pmd)
-> -{
-> -       return 0;
-> -}
-> -#endif /* !__PAGETABLE_PMD_FOLDED */
-> -
->  int p4d_free_pud_page(p4d_t *p4d, unsigned long addr);
->  int pud_free_pmd_page(pud_t *pud, unsigned long addr);
->  int pmd_free_pte_page(pmd_t *pmd, unsigned long addr);
-> --
-> 2.26.1
->
+>   static int __blk_mq_get_tag(struct blk_mq_alloc_data *data,
+>   			    struct sbitmap_queue *bt)
+>   {
+> @@ -112,8 +146,12 @@ unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
+>   	if (tag != BLK_MQ_NO_TAG)
+>   		goto found_tag;
+>   
+> -	if (data->flags & BLK_MQ_REQ_NOWAIT)
+> +	if (data->flags & BLK_MQ_REQ_NOWAIT) {
+> +		if (!data->q->elevator)
+> +			blk_mq_dtag_busy(data->hctx);
+> +
+>   		return BLK_MQ_NO_TAG;
+> +	}
+>   
+>   	ws = bt_wait_ptr(bt, data->hctx);
+>   	do {
+> @@ -140,6 +178,9 @@ unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
+>   		if (tag != BLK_MQ_NO_TAG)
+>   			break;
+>   
+> +		if (!data->q->elevator)
+> +			blk_mq_dtag_busy(data->hctx);
+> +
+>   		bt_prev = bt;
+>   		io_schedule();
+>   
+> diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+> index 8ed55af08427..badcf3693749 100644
+> --- a/block/blk-mq-tag.h
+> +++ b/block/blk-mq-tag.h
+> @@ -10,6 +10,11 @@ struct blk_mq_tags {
+>   	unsigned int nr_reserved_tags;
+>   
+>   	atomic_t active_queues;
+> +	/*
+> +	 * if multiple queues share a tag set, pending_queues record the
+> +	 * number of queues that can't get driver tag.
+> +	 */
+> +	atomic_t pending_queues;
+>   
+>   	struct sbitmap_queue *bitmap_tags;
+>   	struct sbitmap_queue *breserved_tags;
+> @@ -69,8 +74,10 @@ enum {
+>   	BLK_MQ_TAG_MAX		= BLK_MQ_NO_TAG - 1,
+>   };
+>   
+> -extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
+> -extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *);
+> +extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx);
+> +extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx);
+> +extern void __blk_mq_dtag_busy(struct blk_mq_hw_ctx *hctx);
+> +extern void __blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx);
+>   
+>   static inline bool blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>   {
+> @@ -88,6 +95,22 @@ static inline void blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
+>   	__blk_mq_tag_idle(hctx);
+>   }
+>   
+> +static inline void blk_mq_dtag_busy(struct blk_mq_hw_ctx *hctx)
+> +{
+> +	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
+> +		return;
+> +
+> +	__blk_mq_dtag_busy(hctx);
+> +}
+> +
+> +static inline void blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx)
+> +{
+> +	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
+> +		return;
+> +
+> +	__blk_mq_dtag_idle(hctx);
+> +}
+> +
+>   static inline bool blk_mq_tag_is_reserved(struct blk_mq_tags *tags,
+>   					  unsigned int tag)
+>   {
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index 2c4ac51e54eb..1bb52bd71da8 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -991,8 +991,10 @@ static void blk_mq_timeout_work(struct work_struct *work)
+>   		 */
+>   		queue_for_each_hw_ctx(q, hctx, i) {
+>   			/* the hctx may be unmapped, so check it here */
+> -			if (blk_mq_hw_queue_mapped(hctx))
+> +			if (blk_mq_hw_queue_mapped(hctx)) {
+>   				blk_mq_tag_idle(hctx);
+> +				blk_mq_dtag_idle(hctx);
+> +			}
+>   		}
+>   	}
+>   	blk_queue_exit(q);
+> @@ -1097,8 +1099,10 @@ static bool __blk_mq_get_driver_tag(struct request *rq)
+>   	}
+>   
+>   	tag = __sbitmap_queue_get(bt);
+> -	if (tag == BLK_MQ_NO_TAG)
+> +	if (tag == BLK_MQ_NO_TAG) {
+> +		blk_mq_dtag_busy(rq->mq_hctx);
+>   		return false;
+> +	}
+>   
+>   	rq->tag = tag + tag_offset;
+>   	return true;
+> @@ -2676,8 +2680,10 @@ static void blk_mq_exit_hctx(struct request_queue *q,
+>   {
+>   	struct request *flush_rq = hctx->fq->flush_rq;
+>   
+> -	if (blk_mq_hw_queue_mapped(hctx))
+> +	if (blk_mq_hw_queue_mapped(hctx)) {
+>   		blk_mq_tag_idle(hctx);
+> +		blk_mq_dtag_idle(hctx);
+> +	}
+>   
+>   	blk_mq_clear_flush_rq_mapping(set->tags[hctx_idx],
+>   			set->queue_depth, flush_rq);
+> @@ -3536,6 +3542,7 @@ int blk_mq_alloc_tag_set(struct blk_mq_tag_set *set)
+>   
+>   	if (blk_mq_is_sbitmap_shared(set->flags)) {
+>   		atomic_set(&set->active_queues_shared_sbitmap, 0);
+> +		atomic_set(&set->pending_queues_shared_sbitmap, 0);
+>   
+>   		if (blk_mq_init_shared_sbitmap(set)) {
+>   			ret = -ENOMEM;
+> diff --git a/block/blk-mq.h b/block/blk-mq.h
+> index d08779f77a26..9e646ade81a8 100644
+> --- a/block/blk-mq.h
+> +++ b/block/blk-mq.h
+> @@ -337,10 +337,18 @@ static inline bool hctx_may_queue(struct blk_mq_hw_ctx *hctx,
+>   
+>   		if (!test_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags))
+>   			return true;
+> +
+> +		if (!atomic_read(&set->pending_queues_shared_sbitmap))
+> +			return true;
+> +
+>   		users = atomic_read(&set->active_queues_shared_sbitmap);
+>   	} else {
+>   		if (!test_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
+>   			return true;
+> +
+> +		if (!atomic_read(&hctx->tags->pending_queues))
+> +			return true;
+> +
+>   		users = atomic_read(&hctx->tags->active_queues);
+>   	}
+>   
+> diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+> index 1d18447ebebc..3bc0faf0e2cf 100644
+> --- a/include/linux/blk-mq.h
+> +++ b/include/linux/blk-mq.h
+> @@ -256,6 +256,7 @@ struct blk_mq_tag_set {
+>   	unsigned int		flags;
+>   	void			*driver_data;
+>   	atomic_t		active_queues_shared_sbitmap;
+> +	atomic_t		pending_queues_shared_sbitmap;
+>   
+>   	struct sbitmap_queue	__bitmap_tags;
+>   	struct sbitmap_queue	__breserved_tags;
+> @@ -415,6 +416,9 @@ enum {
+>   	/* hw queue is inactive after all its CPUs become offline */
+>   	BLK_MQ_S_INACTIVE	= 3,
+>   
+> +	/* hw queue is waiting for driver tag */
+> +	BLK_MQ_S_DTAG_WAIT	= 1,
+> +
+>   	BLK_MQ_MAX_DEPTH	= 10240,
+>   
+>   	BLK_MQ_CPU_WORK_BATCH	= 8,
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index 3177181c4326..55e0965c9c3c 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -603,6 +603,7 @@ struct request_queue {
+>   #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
+>   #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
+>   #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
+> +#define QUEUE_FLAG_HCTX_WAIT	30	/* at least one blk-mq hctx can't get driver tag */
+>   
+>   #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
+>   				 (1 << QUEUE_FLAG_SAME_COMP) |		\
+> 
+
+ping ...
