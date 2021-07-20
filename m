@@ -2,54 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9706B3CF592
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259733CF58C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhGTHLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:11:31 -0400
-Received: from verein.lst.de ([213.95.11.211]:54106 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229825AbhGTHJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:09:50 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 638E16736F; Tue, 20 Jul 2021 09:50:25 +0200 (CEST)
-Date:   Tue, 20 Jul 2021 09:50:25 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH V2] genirq/affinity: add helper of
- irq_affinity_calc_sets
-Message-ID: <20210720075025.GA17565@lst.de>
-References: <20210720044209.851141-1-ming.lei@redhat.com>
+        id S230222AbhGTHLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:11:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231126AbhGTHKL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 03:10:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626767450;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=31b1F8Fs9meCS0LWk72Ne5IXkpfxV4uBGgF8zXGM3V4=;
+        b=Q4INDxQkNmdXslclB7pFiKiA/U8felzDncAnd0pXEBIDND+Ucqy3zhk91UcF4ON0VDdqex
+        /aBcGRCDFMqLDAxUAxgWeY7ds0CUoakuZIOi2L8rWZlYunlVc5cjdrIbCh+9aSE0SKNi0v
+        Uf3PDH9H8ACyCR9GWAEHC8MK+p1DE34=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-d-TlirZ1NjmM2LMdE6L2HA-1; Tue, 20 Jul 2021 03:50:47 -0400
+X-MC-Unique: d-TlirZ1NjmM2LMdE6L2HA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92D581966320;
+        Tue, 20 Jul 2021 07:50:46 +0000 (UTC)
+Received: from T590 (ovpn-13-101.pek2.redhat.com [10.72.13.101])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 30A895C1C5;
+        Tue, 20 Jul 2021 07:50:32 +0000 (UTC)
+Date:   Tue, 20 Jul 2021 15:50:28 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kashyap.desai@broadcom.com, hare@suse.de
+Subject: Re: [PATCH 3/9] blk-mq: Relocate shared sbitmap resize in
+ blk_mq_update_nr_requests()
+Message-ID: <YPaARLPPZxcbat8H@T590>
+References: <1626275195-215652-1-git-send-email-john.garry@huawei.com>
+ <1626275195-215652-4-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210720044209.851141-1-ming.lei@redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <1626275195-215652-4-git-send-email-john.garry@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +int irq_affinity_calc_sets(unsigned int affvecs, struct irq_affinity *affd)
-> +{
-> +	/*
-> +	 * Simple invocations do not provide a calc_sets() callback. Call
-> +	 * the generic one.
-> +	 */
-> +	if (!affd->calc_sets)
-> +		default_calc_sets(affd, affvecs);
-> +	else
-> +		affd->calc_sets(affd, affvecs);
+On Wed, Jul 14, 2021 at 11:06:29PM +0800, John Garry wrote:
+> For shared sbitmap, if the call to blk_mq_tag_update_depth() was
+> successful for any hctx when hctx->sched_tags is not set, then it would be
+> successful for all (due to nature in which blk_mq_tag_update_depth()
+> fails).
+> 
+> As such, there is no need to call blk_mq_tag_resize_shared_sbitmap() for
+> each hctx. So relocate the call until after the hctx iteration under the
+> !q->elevator check, which is equivalent (to !hctx->sched_tags).
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>  block/blk-mq.c | 13 ++++++++-----
+>  1 file changed, 8 insertions(+), 5 deletions(-)
+> 
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index ae28f470893c..56e3c6fdba60 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -3624,8 +3624,6 @@ int blk_mq_update_nr_requests(struct request_queue *q, unsigned int nr)
+>  		if (!hctx->sched_tags) {
+>  			ret = blk_mq_tag_update_depth(hctx, &hctx->tags, nr,
+>  							false);
+> -			if (!ret && blk_mq_is_sbitmap_shared(set->flags))
+> -				blk_mq_tag_resize_shared_sbitmap(set, nr);
+>  		} else {
+>  			ret = blk_mq_tag_update_depth(hctx, &hctx->sched_tags,
+>  							nr, true);
+> @@ -3643,9 +3641,14 @@ int blk_mq_update_nr_requests(struct request_queue *q, unsigned int nr)
+>  	}
+>  	if (!ret) {
+>  		q->nr_requests = nr;
+> -		if (q->elevator && blk_mq_is_sbitmap_shared(set->flags))
+> -			sbitmap_queue_resize(&q->sched_bitmap_tags,
+> -					     nr - set->reserved_tags);
+> +		if (blk_mq_is_sbitmap_shared(set->flags)) {
+> +			if (q->elevator) {
+> +				sbitmap_queue_resize(&q->sched_bitmap_tags,
+> +						     nr - set->reserved_tags);
+> +			} else {
+> +				blk_mq_tag_resize_shared_sbitmap(set, nr);
+> +			}
 
-Nit: avoid pointless negations:
+The above two {} can be removed.
 
-	if (affd->calc_sets)
-		affd->calc_sets(affd, affvecs);
-	else
-		default_calc_sets(affd, affvecs);
+-- 
+Ming
 
-Otherwise looks good:
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
