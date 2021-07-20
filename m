@@ -2,551 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BD93CF6B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8009C3CF6B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234857AbhGTIgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 04:36:01 -0400
-Received: from mail-co1nam11on2061.outbound.protection.outlook.com ([40.107.220.61]:53473
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234394AbhGTIbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:31:19 -0400
+        id S234664AbhGTIhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 04:37:15 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:47794 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232246AbhGTIeS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 04:34:18 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16K9CIcU010269;
+        Tue, 20 Jul 2021 09:14:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=Foc0GOAo+GPaVqP1pYscO0GE6mWGHXrpR2pZCFT46oM=;
+ b=PVcw1kElTcmryC8TjWDoARGKpt3acb84SLyNjfkhvMwfAZzUSkZzdiRXMu4Oh1xCkNEN
+ c9QQjpdKBdi7jbbO/dooW9EhkOcvwWTpuK5VUuZ6lGxIDPyqQlsRMEOs6p4ISuuiRW51
+ ruCFILNqbnJ8J0tJIA9fmXoRTaRuL2zkEucK2i8XjvlMKPnFYzN/gBz39/hLq73l+x8O
+ xWBMdP+eS3Tzwv6rTnaJ3MELFtkSTqLBuv43D5gEjWLsyvFzyq+Eozq6u0OER4qcwW9R
+ pMIcTINGUc3yYlW/gTiA/zybjWmnKOjyPtOvdveXAt3Qm30gO2+OwU8QImupwQFbkN7t Jw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=Foc0GOAo+GPaVqP1pYscO0GE6mWGHXrpR2pZCFT46oM=;
+ b=gnCVYmOVbFX5qMug6jTE9PY1nmGPmCOvQcwH2QAk2hMg7rXo3hEQ8mp91xgPOdMbQ9At
+ CYQ1Cuq3eBrYV1/TjekIaTI5BUQF9U5eNsIAKEybkB/KUQZ2GuKInZdp8Mj+9MwkXe/T
+ 2nLuRHytArNRLSFVPWNZGWWCnv/BEgK/rW4s1KVn+OHV+mr4r0xULtSYws9fUHS3r6h1
+ lQAckUjjRS8X/qqPj5xYi+JjrdGtZCC8sQygeOEdlV/MxrAYaqL5VxSjoKqCAJPj53YQ
+ zLs4wjKl4JWkS0N3gp2mwK5zDL8kCpkHT52z4a81xTWjRmyDSV+cOkhzd1TwxPtmtOlL mg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39w9hft67y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Jul 2021 09:14:38 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16K9ASaR079337;
+        Tue, 20 Jul 2021 09:14:36 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
+        by userp3030.oracle.com with ESMTP id 39umayv3fw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Jul 2021 09:14:36 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H/+uJeik87yG5cSkTGJiuwUs28TKRhJ8PSKmRQhJEJoqz6wE52RK1vjGfeGlYF2wPkHI+eCamDTVSCNrAD7eY/CUe3qS/UT9GOEQLQWHWfKxCCudAO8vbCPp0mcWP8GdaQxj7iAGOOBiJpo4G9N+/HCMhoxxisGCRKTeXqAHykRwRwOKIlEd1jmSDLhDuCw42cDLu57oBej4MOquN7WcmJY5hZ490PlVHuiAobWcnleeHL7f8FjG25i8g7h5s8Lq+GAoirRSr2V3kpFs8tl/6qvhTrgEkqDr/z3lLjDdT+sA+V0//kqomiCH+R7NAfX2pQCTYbxD0OqbgDRwuTN6fw==
+ b=IOxWvcQbV/OdFmeQnQ2rK2ah3xwx4tDde8DogvIEEgvEQ5Hiwz8L4ITA6hhDEDKu7zzPqxsPWv9/Er/IJmGFJACNPymgcrC82a6Civdr88bW2sqTBmoRoXus6MBp9Ck7fNpviCxbwyszWlXy71ywXkB95Pwx9yS1p2ScaE156rkWRH3WCemJlLC0aK3vzEXK3DatMmkEloFDgC/7MVs0+UwHbqblP2GYapWshXx/a51LAa3VpYdJfWbp5Noq2HHQHqfkVDO2ibMndCggJI/YxhmVIoCHLMW4ch8p2UOAtFgUEZTM1nu7R3flEI/ck8npw3eDZJKaa5V7kLT9GjB6qA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VP5Uh7B0WBB1Q5Luhf+WTjIIDZWtiGb1EzxPRcerhds=;
- b=iier/3iti4SBYJzkXcGUHOM49DsZkn401J6C2Oro0+a/BjmTqd7yhvDvMzCFCQ4Aa8MakKRtKVBH9P/qKf8E8w1BhITnPTLWOS0zxjCgB8o7vaGAS4/qh/PCXusKI4WTX7EZJB+0HcVoN0P5NBEVVzfZGdV3pwc6PyQh5VuGep8pAf8Z7AC7vjQMdtDB2k31y5lRNSqawrAQmTMY3agH6verNW0wnLA5TF9tSmu35BfBLbzk2Bu2ew3HXMvpnwd0KaZPKXstRxfXV0iOXBrRyJEZQ4t9E/tMRDNnt2MvLJEEHu9jLqMHCIvlDhAS+O3btCWC0masOr5uLzHXW2kPDA==
+ bh=Foc0GOAo+GPaVqP1pYscO0GE6mWGHXrpR2pZCFT46oM=;
+ b=KFGEgrFIO5ynJC5ZAW919q4p6wt59HtK68Tw5rUccK0l/zdqwma9MmX1b6dIteNJ/BaClTDslkn7FJrtVVCdJegazgqGc5EBn2yQV2wGJ8E1hN6XZtVWEfqRgeM5WHkpqsirzE1FYR3RrbwyB9/yUej9ksURBoPUg8ILKZ7MVp4mYM9pcIhCQAMta+SSapxAXk1qBl4xJUP/N1SrrK1iK/fQiDLYMEPrB97tuqdNYRxp2cBsGCSh3jYTTeNDeXMdUQ1g2ShtfZxRJB0MXMJArfo3WHtQDi6IkqQJNJiSNMnl3oprV68IBEdvjXrlApb68Tgr/x3zO2vnjewz6EMX2A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VP5Uh7B0WBB1Q5Luhf+WTjIIDZWtiGb1EzxPRcerhds=;
- b=oIJVKEGHEFwlTkohIAh9DN6aSfCoMZIOcozarYG0w0Fa9XVYoIR7DswIJH93htOlehxRbJmqqaX2prVEkdvsSo3V8lyXbRWEiCm4AiIs5XZHL6VjaVGFxRQbSmJySGeGLDVOD/3N8QcIpUqKmHPKOqrZZ8uXnmJKgqxNYoV/mcI=
-Authentication-Results: ffwll.ch; dkim=none (message not signed)
- header.d=none;ffwll.ch; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4205.namprd12.prod.outlook.com (2603:10b6:208:198::10) with
+ bh=Foc0GOAo+GPaVqP1pYscO0GE6mWGHXrpR2pZCFT46oM=;
+ b=fdGFTrJ+r0KdPr7tpBSR4Yj1rEFjh30rI05BwrxNR6fjwimvHikHCW88wKM1afkd+8uAIpSEud7bNYaE/8VCrnZhXcGALHLWntPUinP9IwbOlgiYF0JjZyItOpi3uQSG237KkEQBwj9xwH0NWZfx7326KM2cVxPOwbYdvublENI=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by MN2PR10MB3693.namprd10.prod.outlook.com (2603:10b6:208:111::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Tue, 20 Jul
- 2021 09:11:50 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4331.034; Tue, 20 Jul 2021
- 09:11:50 +0000
-Subject: Re: [PATCH v2] dma-buf: Delete the DMA-BUF attachment sysfs
- statistics
-To:     Hridya Valsaraju <hridya@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Cc:     kernel-team@android.com, john.stultz@linaro.org, surenb@google.com,
-        daniel@ffwll.ch
-References: <20210713040742.2680135-1-hridya@google.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <35bf2a85-f699-7179-402e-c39ddf0d9106@amd.com>
-Date:   Tue, 20 Jul 2021 11:11:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210713040742.2680135-1-hridya@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: FR3P281CA0055.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:4b::18) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Tue, 20 Jul
+ 2021 09:14:32 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::39e8:94ec:fc2d:5a56]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::39e8:94ec:fc2d:5a56%9]) with mapi id 15.20.4331.034; Tue, 20 Jul 2021
+ 09:14:32 +0000
+Date:   Tue, 20 Jul 2021 10:13:48 +0100 (IST)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/3] libbpf: avoid use of __int128 in typed dump
+ display
+In-Reply-To: <CAEf4BzYUf_zgmJQ_3z=oYAiGOypYsAhvoaePQMB34P==4EOLbg@mail.gmail.com>
+Message-ID: <alpine.LRH.2.23.451.2107201002170.11590@localhost>
+References: <1626730889-5658-1-git-send-email-alan.maguire@oracle.com> <1626730889-5658-2-git-send-email-alan.maguire@oracle.com> <CAEf4BzYUf_zgmJQ_3z=oYAiGOypYsAhvoaePQMB34P==4EOLbg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+X-ClientProxiedBy: DBBPR09CA0013.eurprd09.prod.outlook.com
+ (2603:10a6:10:c0::25) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:8651:5b5e:8648:2fd0] (2a02:908:1252:fb60:8651:5b5e:8648:2fd0) by FR3P281CA0055.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:4b::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.10 via Frontend Transport; Tue, 20 Jul 2021 09:11:48 +0000
+Received: from localhost.localdomain (2001:bb6:18f3:2e58:2fc8:ca6f:4a81:b0d) by DBBPR09CA0013.eurprd09.prod.outlook.com (2603:10a6:10:c0::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Tue, 20 Jul 2021 09:14:31 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2f72a437-6c8c-4577-fd4c-08d94b5e6860
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4205:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4205C1C8892E92DCCEDE99BC83E29@MN2PR12MB4205.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Office365-Filtering-Correlation-Id: db39df0c-4e96-442f-266e-08d94b5ec94e
+X-MS-TrafficTypeDiagnostic: MN2PR10MB3693:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR10MB3693E2E05021AC89839F743AEFE29@MN2PR10MB3693.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VTKv/9LGUWyW0oz0R7HEyNbh+i58en4s0nQ/erNJjB6s3rEikZx+bOYpyalC0yeNtBVhyJCPPo8/EzPCfj0hZhmspy781bPfZR537P+F1l1E0TIbMtfCVJBsP3QVCOhUzlttQYeTI7VcI0pgeih2FoDD4sLtb3uKeazF9MinMf+1srkkbHBny3vWM9YggKgB8BfKxmbJxckxvhZT8AcyBLBFZsczuvzTKo0Y/wvEACh2eUC4iVieA1NuFQyAqwfBZrufrcl23ZX0JPS/DNmkOP+Cre2tayO8TiCUAL2MGfZQ/wI78rQNr8BFROvZAtcg/ICooMW+WFQFPuM1G4Tb2iPMsW4NggJQrGAIDUFmXlVhhNonyO5gpI10ssEzM+QTYfcZdsqgHUmuZMT++W42xsgag0HBY/Q6X9IdprgRhw/BZzkgp4DaXydaUAAsSCQi/WWfY35k8WJ8/Onz2xalV2EXfMm0XiQo8qRLt956gGqfp+7MCX2Rum6aO3+kHtjXdz3ijVpsEFJYkhYsQGvJqktb4lFEwroJRn571MbkEwthlFTlWSlRgH0STLvRmTRLsGK0PUo8YajajXuuLMIJY783J/ryNY8xOlWt7pMkgzl1SOfM7ucMxn7N1Srq0rfhnm61PfjNCQaZ3+zt9wxL8X+XMrMQIR3k8d85eQ8KzrUjR9OF7imDGqbv//StaEU1rX0ZtJ524UpdDnAnA1KWlCDt3kGlsuX8K+ImojA97OUBGV8wqlVm91LKqVTdy6Tp
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(39860400002)(396003)(136003)(31696002)(7416002)(86362001)(31686004)(110136005)(316002)(36756003)(30864003)(5660300002)(186003)(83380400001)(66574015)(6486002)(66946007)(66476007)(8936002)(2906002)(4326008)(38100700002)(66556008)(8676002)(6666004)(2616005)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Rd4Xk5owqwdDlNq9OJlyUk9YC1uEy8zdsT70HR+7xynM+oBD1hjV6LVcCm8IaZfUqP4HQ6pPxgsdTyWgSBcygAct1qxR2UTFxs0ecvUlS+IJu8RYKh/an+sdn8zBg4hHfAutxpv2BM31uTtsbAQYvWn/GEn1LgbVYhQcxSBZZJCDMXmfgJBspQ/Mm+8FH5Z+prmLQWhQaC1kE/pVOC+D/bFUEDnX/9NK4iRfHb1aCkNeYFqApwK85VmKCKrfJexkv7mMVS/qY7UjfBc1/HLIFNbM93wzJJILFFDk4SYlwGbsYJfQEOwvdMgeK6if6LX6H+puk5+YmYAgJtQ9tuHosxoZDv9cNPmGsZ/0rlE0sYYwdyMAPvxr7i1UoRSM0wGi4k5N8ubH/bPy4SjKs8+2U+5u0HTOoL13p+tIljcChGBXTyvXCy2MVa7j7FHPNXfF2JDQclGtmu1RSZvOna6IajBXXfbbOGBMVM6qTEXV/6FJtkGSNB9h+cebGy3YMLhF44pP/nQNH7c9kEbcpukfX01AKlKxUWXurf9AMPs2LjQ6aR6ap4MHmAgayD5iyM9dB0ExQrm0E2kvFHJoZc6fR6Urppd2ROVCenJ3Zv+7kGxDHiIAlZ2dqMia3T8ugKAv78ZsyuHyxwFJvFnVH8E73g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(39860400002)(366004)(376002)(346002)(9686003)(66946007)(6512007)(478600001)(9576002)(6666004)(66556008)(52116002)(8936002)(44832011)(38100700002)(4326008)(53546011)(33716001)(66476007)(5660300002)(7416002)(186003)(316002)(2906002)(86362001)(8676002)(6506007)(6486002)(6916009)(54906003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bk4xN0k3TmxxaGZIcGFNSlF1dWZBOCtLRHd5aStxR2VsUFNFTUhGODk1SHN3?=
- =?utf-8?B?dDNCVnYwSCtTcVlUQjE3K2Y2Wk5BZkcvMFBJRzRvNGROUEVacHo5VDZ0NG5j?=
- =?utf-8?B?RHB2WGxmeDM2QU1FMStjaWFXSUUzTUpCRzVGUThlaVBnVEpCU0JkOXJmZFkv?=
- =?utf-8?B?ZDM2V2tsL2FlSnkwN3RLWU1xdjBudTZMd3BGZGkrczBDNlNhRVJYQmI1ZmMr?=
- =?utf-8?B?MFo1VHlEQ0t0Z0JVb25DL1RBYTByNUpURmdUc1AwdUlXam5KamtxV0labmdz?=
- =?utf-8?B?NXZMazlCdEhOTDkyMi8xVVlOREdCejRaMGdRTFgyUHVqOW9hVjU3VXVEWjVZ?=
- =?utf-8?B?bUU1UnpZK1ltTWt0VXVNeGxWZzFiTU8zUmVIMGd0M05MWlBvQzhhU0ZGS20z?=
- =?utf-8?B?VHNoQ1dHc1NWMEd3SEJTUFZnZUk5NTBNNEgyQTVDRlBrQ2twN3cyRkNCTE1I?=
- =?utf-8?B?OXE5ZHpUT1NlUWxZdERmcEUzRjVjNGV0d01jNjcrWXl4VGRmNVRNOU4vMzNE?=
- =?utf-8?B?U3RuQTcrekhBYVZWM2dPckFNek1pL2tTMXhLRlREblVHdklNUlZ3OFRpajVK?=
- =?utf-8?B?dXgyUTliYmRjNEF5OU1SQ2xJakRieUo3em1oWVBKTzI1ajA5ZWZpWHBibTRS?=
- =?utf-8?B?QndabXI0SnF2RVduc0J2aXJUZXBXUkNoUGpjOHFhakZ2TXMzbUlPRDRGcDhl?=
- =?utf-8?B?L3VjWTFhNFRaMzZZVmJzOXlYRmorRDdZU1h0TXJINjRTZTdtZGRsN2J1Ky96?=
- =?utf-8?B?NDdkSjlWNEdSelp3Vm9TbnZ5QTNqcjhMMHNBczFHR0ttSW9NbkhEc3owQldx?=
- =?utf-8?B?QlBLbEp4SWI4b1dxcXkzZm1BUld6b3hWdENvcVhrYWdRbEM4TEQ3bXZTWUp5?=
- =?utf-8?B?NkxyYjhqdWpiU0QrbDJNNytCQWx6TVZnQUxhcmt6VS96cEdxbTFHaE81dE1x?=
- =?utf-8?B?LzM2Um11K0IrSTdhTk9BalgvaGw4eEJGQ1dlS09LenY5TTIxb3Z3QmpiejRo?=
- =?utf-8?B?YTlidXd0WmF0NVlUSjk5c1JzR3dLWWo1MmYwK25vazlhWDZVZlB1OG1HQnpy?=
- =?utf-8?B?dGxOcTQ0cHM5c2t4ZDhzYklha0tFbGxrSjYrbzVPZDYxRHpITGJPRjhSczlF?=
- =?utf-8?B?ZjlPVkZSRU9nU29IQ2p4Zm1sUG40NjZJY2szQzJ0VnpibDRxaGZ2MFJiZnVn?=
- =?utf-8?B?ZTBpYnZxZWhwYk1RNHpMbGtoZlZEeXZzMzk2SGVseFBHTi81M2JDdytyQ2ZK?=
- =?utf-8?B?QVBoQVc4MjQvZWZKNTRKV3VxNDRNRVhzVTFJcE1nektkTGs5aGpUUTk5N1ZK?=
- =?utf-8?B?bk5zRmhLQUFiYnhROWd1VzZKdGthN09nRlh4ZUlCZkR1eFllWHFtWDNUbVNy?=
- =?utf-8?B?cjRMVm5KRVNINmtHb0JCZHRUbk5uOWpKT1R1eFhVK1VyVHc1cXVFcDBNRUp6?=
- =?utf-8?B?S1BSQlkyNHpzQ3dhcDFrYTFSbnlZUjRIUEhpeUtRZ1U3MjU0TEZyenoyN0dx?=
- =?utf-8?B?MC93MzFVNDl6T1M2RGE0VmNuN1ZlcGlCR05TVUozQnMrMTZQRkNnaVZBVysx?=
- =?utf-8?B?bXJxYTMwbE9UbXluVnRVRWhtR0xab1ByM3VaT21lcUFCN3lVclZlZTRxcWYx?=
- =?utf-8?B?WDBKUHl3LzI2ZkJlUzhwTjIwK21XQUlUMWV5cnpKWEZQdEJzMjVLdVlnS0lV?=
- =?utf-8?B?aDZ2MkxKNlA1V2w2VU15T3NwVWRuRE9XQi9MMFVtQWlhbDU5YTZ0c0N3Y2tE?=
- =?utf-8?B?YURVcVN6WWdUQm50K0hHNE9BcTZoRlczM3hVSVRqaEpVdDV1d1VPRWZJQmVX?=
- =?utf-8?B?dTBBS3pMZmZOZUVjUlc1Ulc0MUxCeHVLbXBUWlRUaFZ3QlhDalhsc1hlMklQ?=
- =?utf-8?Q?GP+KcZlLXj90z?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f72a437-6c8c-4577-fd4c-08d94b5e6860
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BvAGb6WME0MH6qI8xNFtK9fIM6nobrl4mSyh/3aVpmhSVxqMyhvuxI178HWX?=
+ =?us-ascii?Q?KS3WBp1Z2dYuqSmAwAOnmMPkG0CnhYerUOzmVS8WiaRRsvRrZsgCekp6FFLo?=
+ =?us-ascii?Q?dJJhrIqvm5rEAEil3sYxVmc/W374J7z7cMPQTa4q+TQdmOYAdka5PfakpAQq?=
+ =?us-ascii?Q?QaNM2DUEYFG5Y3WjlwKRh5qDZTkaHFiCHS+FolpMrPWxuj58dzFses0pAQH/?=
+ =?us-ascii?Q?YQutz+j2+/dVGQ2sGheTrGlfCb2Hzt5KoBS+AUCCUEIOHQlNpLgHYHhM5/gr?=
+ =?us-ascii?Q?EVpCwboUMvOst6rx0R66SDy2R0afEgMlQX1g3aeEV0Unx7plQOy9Akpxcf7/?=
+ =?us-ascii?Q?pz2gjfMnhYI5bUqpmSSiaU3jWu9D4U9kpHazgU7ZvAxyh/a3U/oiI2uBbXi0?=
+ =?us-ascii?Q?FNENN6snxH7BfKZ/oQX+8V6PdiOajD3bVyBKSIWpIiLV/FWzv9JW2cAZlpE8?=
+ =?us-ascii?Q?1Eh5PKiDtZ/ZuGxo/Jg/UBHLMPCWEyu2o8zJ2KQ4wTc/eKlzZ2IWtNkGVX7z?=
+ =?us-ascii?Q?Xy7lDCLUg39dkHjRFnpQSk9MhW5maY8j3ubID09J1xp+SqbaQx/GfSsTcshz?=
+ =?us-ascii?Q?wJ6rS1I2C659BTSVdGa67hhEbP3eKFlO72Rt+AkNuzxMmFngXiTESzvUlDU6?=
+ =?us-ascii?Q?xkp6dhyg84suYFY68ZeH4dPvqA2hij+Mzgzsjhs4j5eTkkoKPPf1pbrW4Y0Q?=
+ =?us-ascii?Q?Mq/ROBq7bxh1NhlJMXgDLkJ8R/MtOGvYuP3Y8+S5zhYw8x7pERhkrBWgeJdI?=
+ =?us-ascii?Q?pLxEZ8UAhFOlQDTrlu3SLqo5ozfaIyN9RgRB4od6YY0aPV7Mrr2AXP37WGIt?=
+ =?us-ascii?Q?ViRJdorjWM4ucWy2zakM/78zZUarhN0Dy12JVjBEY7DERAZgFesrtgFyiMMV?=
+ =?us-ascii?Q?9AIbVS28FTfuBCDBksEjQMl3n/i3tTV35Lw1cVt8ycpfESQtGrHNU3UXCiVA?=
+ =?us-ascii?Q?5edef9lj3vS2PnmSu3kmfxj/P9bXYQ7YUVbh7txU38wtRR0qJV9B/uNqXbS+?=
+ =?us-ascii?Q?MBnvYinIYLE+pL1SfGki+WXpN6L9Jh94nkIM3CTKs/oFaaWSM2ZoV7trdgUu?=
+ =?us-ascii?Q?r9nMIJiidGpsSWSPv+dJiG5yfsDkoI3D0lcrZ56Ozs30v39aaxapmTzyvGf9?=
+ =?us-ascii?Q?QpHmtrgq3Wb3Q4otXwGuP22ui8Mh8kevFI3sP7ug9ghwK1FD02dMItqhIhzE?=
+ =?us-ascii?Q?x/bbFDh4Ta4/VL92oHQ1r7IA+R2o5SAV5ZJQiFrUteduOzBvBVp65gMDG9JF?=
+ =?us-ascii?Q?a4rfRE/kBaBwEqgLKPD4j9qCD97UGaAU041tzRsTKESdfc+qGiqMROY116+x?=
+ =?us-ascii?Q?TxeqWxTyFDkWtgFCn8uoQU0emJ1emRte7FvBRw4HsLxZfeRjqWT4sZshkkhF?=
+ =?us-ascii?Q?IWuX97RGlylc7ycPkf/QE7MY5Jd0?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: db39df0c-4e96-442f-266e-08d94b5ec94e
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2021 09:11:50.2899
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2021 09:14:32.8336
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kZRpzQYOcl0OmWGCDlg9d5IZkOuwKdipuitUE2TmH+XZheeCz27Igc6ypkvXk3Cx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4205
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZYUNKzw/2hOfiyZE/aNuOVZ4qBiJdUQhVkZ1yoFiCet+EVq2oEt4LccMEg23zPiHDb1Kzc7VapyiAnRZgE771w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3693
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10050 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107200056
+X-Proofpoint-GUID: 6vcK5WiWu5BLyJGRGRLhbZe8dEfCGAPJ
+X-Proofpoint-ORIG-GUID: 6vcK5WiWu5BLyJGRGRLhbZe8dEfCGAPJ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 13.07.21 um 06:07 schrieb Hridya Valsaraju:
-> The DMA-BUF attachment statistics form a subset of the DMA-BUF
-> sysfs statistics that recently merged to the drm-misc tree. They are not
-> UABI yet since they have not merged to the upstream Linux kernel.
->
-> Since there has been a reported a performance regression due to the
-> overhead of sysfs directory creation/teardown during
-> dma_buf_attach()/dma_buf_detach(), this patch deletes the DMA-BUF
-> attachment statistics from sysfs.
->
-> Fixes: bdb8d06dfefd (dmabuf: Add the capability to expose DMA-BUF stats
-> in sysfs)
-> Signed-off-by: Hridya Valsaraju <hridya@google.com>
-> Reviewed-by: Christian König <christian.koenig@amd.com>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->
-> Changes in v2:
-> Updated commit message to clarify that the sysfs files being removed
-> have not yet merged to upstream Linux and are hence not ABI.
->
-> Hi Christian,
->
-> I have updated the commit message as per your suggestion. Please do take
-> another look when you get a chance.
+On Mon, 19 Jul 2021, Andrii Nakryiko wrote:
 
-I've just pushed that one to drm-misc-next. Sorry for the delay.
-
-Regards,
-Christian.
-
+> On Mon, Jul 19, 2021 at 2:41 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+> >
+> > __int128 is not supported for some 32-bit platforms (arm and i386).
+> > __int128 was used in carrying out computations on bitfields which
+> > aid display, but the same calculations could be done with __u64
+> > with the small effect of not supporting 128-bit bitfields.
+> >
+> > With these changes, a big-endian issue with casting 128-bit integers
+> > to 64-bit for enum bitfields is solved also, as we now use 64-bit
+> > integers for bitfield calculations.
+> >
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> > ---
+> 
+> Changes look good to me, thanks. But they didn't appear in patchworks
+> yet so I can't easily test and apply them. It might be because of
+> patchworks delay or due to a very long CC list. Try trimming the cc
+> list down and re-submit?
 >
-> Thanks,
-> Hridya
->
->   .../ABI/testing/sysfs-kernel-dmabuf-buffers   |  28 ----
->   drivers/dma-buf/dma-buf-sysfs-stats.c         | 140 +-----------------
->   drivers/dma-buf/dma-buf-sysfs-stats.h         |  27 ----
->   drivers/dma-buf/dma-buf.c                     |  16 --
->   include/linux/dma-buf.h                       |  17 ---
->   5 files changed, 4 insertions(+), 224 deletions(-)
->
-> diff --git a/Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers b/Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers
-> index a243984ed420..5d3bc997dc64 100644
-> --- a/Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers
-> +++ b/Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers
-> @@ -22,31 +22,3 @@ KernelVersion:	v5.13
->   Contact:	Hridya Valsaraju <hridya@google.com>
->   Description:	This file is read-only and specifies the size of the DMA-BUF in
->   		bytes.
-> -
-> -What:		/sys/kernel/dmabuf/buffers/<inode_number>/attachments
-> -Date:		May 2021
-> -KernelVersion:	v5.13
-> -Contact:	Hridya Valsaraju <hridya@google.com>
-> -Description:	This directory will contain subdirectories representing every
-> -		attachment of the DMA-BUF.
-> -
-> -What:		/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attachment_uid>
-> -Date:		May 2021
-> -KernelVersion:	v5.13
-> -Contact:	Hridya Valsaraju <hridya@google.com>
-> -Description:	This directory will contain information on the attached device
-> -		and the number of current distinct device mappings.
-> -
-> -What:		/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attachment_uid>/device
-> -Date:		May 2021
-> -KernelVersion:	v5.13
-> -Contact:	Hridya Valsaraju <hridya@google.com>
-> -Description:	This file is read-only and is a symlink to the attached device's
-> -		sysfs entry.
-> -
-> -What:		/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attachment_uid>/map_counter
-> -Date:		May 2021
-> -KernelVersion:	v5.13
-> -Contact:	Hridya Valsaraju <hridya@google.com>
-> -Description:	This file is read-only and contains a map_counter indicating the
-> -		number of distinct device mappings of the attachment.
-> diff --git a/drivers/dma-buf/dma-buf-sysfs-stats.c b/drivers/dma-buf/dma-buf-sysfs-stats.c
-> index a2638e84199c..053baadcada9 100644
-> --- a/drivers/dma-buf/dma-buf-sysfs-stats.c
-> +++ b/drivers/dma-buf/dma-buf-sysfs-stats.c
-> @@ -40,14 +40,11 @@
->    *
->    * * ``/sys/kernel/dmabuf/buffers/<inode_number>/exporter_name``
->    * * ``/sys/kernel/dmabuf/buffers/<inode_number>/size``
-> - * * ``/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/device``
-> - * * ``/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/map_counter``
->    *
-> - * The information in the interface can also be used to derive per-exporter and
-> - * per-device usage statistics. The data from the interface can be gathered
-> - * on error conditions or other important events to provide a snapshot of
-> - * DMA-BUF usage. It can also be collected periodically by telemetry to monitor
-> - * various metrics.
-> + * The information in the interface can also be used to derive per-exporter
-> + * statistics. The data from the interface can be gathered on error conditions
-> + * or other important events to provide a snapshot of DMA-BUF usage.
-> + * It can also be collected periodically by telemetry to monitor various metrics.
->    *
->    * Detailed documentation about the interface is present in
->    * Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers.
-> @@ -121,120 +118,6 @@ static struct kobj_type dma_buf_ktype = {
->   	.default_groups = dma_buf_stats_default_groups,
->   };
->   
-> -#define to_dma_buf_attach_entry_from_kobj(x) container_of(x, struct dma_buf_attach_sysfs_entry, kobj)
-> -
-> -struct dma_buf_attach_stats_attribute {
-> -	struct attribute attr;
-> -	ssize_t (*show)(struct dma_buf_attach_sysfs_entry *sysfs_entry,
-> -			struct dma_buf_attach_stats_attribute *attr, char *buf);
-> -};
-> -#define to_dma_buf_attach_stats_attr(x) container_of(x, struct dma_buf_attach_stats_attribute, attr)
-> -
-> -static ssize_t dma_buf_attach_stats_attribute_show(struct kobject *kobj,
-> -						   struct attribute *attr,
-> -						   char *buf)
-> -{
-> -	struct dma_buf_attach_stats_attribute *attribute;
-> -	struct dma_buf_attach_sysfs_entry *sysfs_entry;
-> -
-> -	attribute = to_dma_buf_attach_stats_attr(attr);
-> -	sysfs_entry = to_dma_buf_attach_entry_from_kobj(kobj);
-> -
-> -	if (!attribute->show)
-> -		return -EIO;
-> -
-> -	return attribute->show(sysfs_entry, attribute, buf);
-> -}
-> -
-> -static const struct sysfs_ops dma_buf_attach_stats_sysfs_ops = {
-> -	.show = dma_buf_attach_stats_attribute_show,
-> -};
-> -
-> -static ssize_t map_counter_show(struct dma_buf_attach_sysfs_entry *sysfs_entry,
-> -				struct dma_buf_attach_stats_attribute *attr,
-> -				char *buf)
-> -{
-> -	return sysfs_emit(buf, "%u\n", sysfs_entry->map_counter);
-> -}
-> -
-> -static struct dma_buf_attach_stats_attribute map_counter_attribute =
-> -	__ATTR_RO(map_counter);
-> -
-> -static struct attribute *dma_buf_attach_stats_default_attrs[] = {
-> -	&map_counter_attribute.attr,
-> -	NULL,
-> -};
-> -ATTRIBUTE_GROUPS(dma_buf_attach_stats_default);
-> -
-> -static void dma_buf_attach_sysfs_release(struct kobject *kobj)
-> -{
-> -	struct dma_buf_attach_sysfs_entry *sysfs_entry;
-> -
-> -	sysfs_entry = to_dma_buf_attach_entry_from_kobj(kobj);
-> -	kfree(sysfs_entry);
-> -}
-> -
-> -static struct kobj_type dma_buf_attach_ktype = {
-> -	.sysfs_ops = &dma_buf_attach_stats_sysfs_ops,
-> -	.release = dma_buf_attach_sysfs_release,
-> -	.default_groups = dma_buf_attach_stats_default_groups,
-> -};
-> -
-> -void dma_buf_attach_stats_teardown(struct dma_buf_attachment *attach)
-> -{
-> -	struct dma_buf_attach_sysfs_entry *sysfs_entry;
-> -
-> -	sysfs_entry = attach->sysfs_entry;
-> -	if (!sysfs_entry)
-> -		return;
-> -
-> -	sysfs_delete_link(&sysfs_entry->kobj, &attach->dev->kobj, "device");
-> -
-> -	kobject_del(&sysfs_entry->kobj);
-> -	kobject_put(&sysfs_entry->kobj);
-> -}
-> -
-> -int dma_buf_attach_stats_setup(struct dma_buf_attachment *attach,
-> -			       unsigned int uid)
-> -{
-> -	struct dma_buf_attach_sysfs_entry *sysfs_entry;
-> -	int ret;
-> -	struct dma_buf *dmabuf;
-> -
-> -	if (!attach)
-> -		return -EINVAL;
-> -
-> -	dmabuf = attach->dmabuf;
-> -
-> -	sysfs_entry = kzalloc(sizeof(struct dma_buf_attach_sysfs_entry),
-> -			      GFP_KERNEL);
-> -	if (!sysfs_entry)
-> -		return -ENOMEM;
-> -
-> -	sysfs_entry->kobj.kset = dmabuf->sysfs_entry->attach_stats_kset;
-> -
-> -	attach->sysfs_entry = sysfs_entry;
-> -
-> -	ret = kobject_init_and_add(&sysfs_entry->kobj, &dma_buf_attach_ktype,
-> -				   NULL, "%u", uid);
-> -	if (ret)
-> -		goto kobj_err;
-> -
-> -	ret = sysfs_create_link(&sysfs_entry->kobj, &attach->dev->kobj,
-> -				"device");
-> -	if (ret)
-> -		goto link_err;
-> -
-> -	return 0;
-> -
-> -link_err:
-> -	kobject_del(&sysfs_entry->kobj);
-> -kobj_err:
-> -	kobject_put(&sysfs_entry->kobj);
-> -	attach->sysfs_entry = NULL;
-> -
-> -	return ret;
-> -}
->   void dma_buf_stats_teardown(struct dma_buf *dmabuf)
->   {
->   	struct dma_buf_sysfs_entry *sysfs_entry;
-> @@ -243,7 +126,6 @@ void dma_buf_stats_teardown(struct dma_buf *dmabuf)
->   	if (!sysfs_entry)
->   		return;
->   
-> -	kset_unregister(sysfs_entry->attach_stats_kset);
->   	kobject_del(&sysfs_entry->kobj);
->   	kobject_put(&sysfs_entry->kobj);
->   }
-> @@ -290,7 +172,6 @@ int dma_buf_stats_setup(struct dma_buf *dmabuf)
->   {
->   	struct dma_buf_sysfs_entry *sysfs_entry;
->   	int ret;
-> -	struct kset *attach_stats_kset;
->   
->   	if (!dmabuf || !dmabuf->file)
->   		return -EINVAL;
-> @@ -315,21 +196,8 @@ int dma_buf_stats_setup(struct dma_buf *dmabuf)
->   	if (ret)
->   		goto err_sysfs_dmabuf;
->   
-> -	/* create the directory for attachment stats */
-> -	attach_stats_kset = kset_create_and_add("attachments",
-> -						&dmabuf_sysfs_no_uevent_ops,
-> -						&sysfs_entry->kobj);
-> -	if (!attach_stats_kset) {
-> -		ret = -ENOMEM;
-> -		goto err_sysfs_attach;
-> -	}
-> -
-> -	sysfs_entry->attach_stats_kset = attach_stats_kset;
-> -
->   	return 0;
->   
-> -err_sysfs_attach:
-> -	kobject_del(&sysfs_entry->kobj);
->   err_sysfs_dmabuf:
->   	kobject_put(&sysfs_entry->kobj);
->   	dmabuf->sysfs_entry = NULL;
-> diff --git a/drivers/dma-buf/dma-buf-sysfs-stats.h b/drivers/dma-buf/dma-buf-sysfs-stats.h
-> index 5f4703249117..a49c6e2650cc 100644
-> --- a/drivers/dma-buf/dma-buf-sysfs-stats.h
-> +++ b/drivers/dma-buf/dma-buf-sysfs-stats.h
-> @@ -14,23 +14,8 @@ int dma_buf_init_sysfs_statistics(void);
->   void dma_buf_uninit_sysfs_statistics(void);
->   
->   int dma_buf_stats_setup(struct dma_buf *dmabuf);
-> -int dma_buf_attach_stats_setup(struct dma_buf_attachment *attach,
-> -			       unsigned int uid);
-> -static inline void dma_buf_update_attachment_map_count(struct dma_buf_attachment *attach,
-> -						       int delta)
-> -{
-> -	struct dma_buf_attach_sysfs_entry *entry = attach->sysfs_entry;
->   
-> -	entry->map_counter += delta;
-> -}
->   void dma_buf_stats_teardown(struct dma_buf *dmabuf);
-> -void dma_buf_attach_stats_teardown(struct dma_buf_attachment *attach);
-> -static inline unsigned int dma_buf_update_attach_uid(struct dma_buf *dmabuf)
-> -{
-> -	struct dma_buf_sysfs_entry *entry = dmabuf->sysfs_entry;
-> -
-> -	return entry->attachment_uid++;
-> -}
->   #else
->   
->   static inline int dma_buf_init_sysfs_statistics(void)
-> @@ -44,19 +29,7 @@ static inline int dma_buf_stats_setup(struct dma_buf *dmabuf)
->   {
->   	return 0;
->   }
-> -static inline int dma_buf_attach_stats_setup(struct dma_buf_attachment *attach,
-> -					     unsigned int uid)
-> -{
-> -	return 0;
-> -}
->   
->   static inline void dma_buf_stats_teardown(struct dma_buf *dmabuf) {}
-> -static inline void dma_buf_attach_stats_teardown(struct dma_buf_attachment *attach) {}
-> -static inline void dma_buf_update_attachment_map_count(struct dma_buf_attachment *attach,
-> -						       int delta) {}
-> -static inline unsigned int dma_buf_update_attach_uid(struct dma_buf *dmabuf)
-> -{
-> -	return 0;
-> -}
->   #endif
->   #endif // _DMA_BUF_SYSFS_STATS_H
-> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> index 510b42771974..b1a6db71c656 100644
-> --- a/drivers/dma-buf/dma-buf.c
-> +++ b/drivers/dma-buf/dma-buf.c
-> @@ -738,7 +738,6 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
->   {
->   	struct dma_buf_attachment *attach;
->   	int ret;
-> -	unsigned int attach_uid;
->   
->   	if (WARN_ON(!dmabuf || !dev))
->   		return ERR_PTR(-EINVAL);
-> @@ -764,13 +763,8 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
->   	}
->   	dma_resv_lock(dmabuf->resv, NULL);
->   	list_add(&attach->node, &dmabuf->attachments);
-> -	attach_uid = dma_buf_update_attach_uid(dmabuf);
->   	dma_resv_unlock(dmabuf->resv);
->   
-> -	ret = dma_buf_attach_stats_setup(attach, attach_uid);
-> -	if (ret)
-> -		goto err_sysfs;
-> -
->   	/* When either the importer or the exporter can't handle dynamic
->   	 * mappings we cache the mapping here to avoid issues with the
->   	 * reservation object lock.
-> @@ -797,7 +791,6 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
->   			dma_resv_unlock(attach->dmabuf->resv);
->   		attach->sgt = sgt;
->   		attach->dir = DMA_BIDIRECTIONAL;
-> -		dma_buf_update_attachment_map_count(attach, 1 /* delta */);
->   	}
->   
->   	return attach;
-> @@ -814,7 +807,6 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
->   	if (dma_buf_is_dynamic(attach->dmabuf))
->   		dma_resv_unlock(attach->dmabuf->resv);
->   
-> -err_sysfs:
->   	dma_buf_detach(dmabuf, attach);
->   	return ERR_PTR(ret);
->   }
-> @@ -864,7 +856,6 @@ void dma_buf_detach(struct dma_buf *dmabuf, struct dma_buf_attachment *attach)
->   			dma_resv_lock(attach->dmabuf->resv, NULL);
->   
->   		__unmap_dma_buf(attach, attach->sgt, attach->dir);
-> -		dma_buf_update_attachment_map_count(attach, -1 /* delta */);
->   
->   		if (dma_buf_is_dynamic(attach->dmabuf)) {
->   			dmabuf->ops->unpin(attach);
-> @@ -878,7 +869,6 @@ void dma_buf_detach(struct dma_buf *dmabuf, struct dma_buf_attachment *attach)
->   	if (dmabuf->ops->detach)
->   		dmabuf->ops->detach(dmabuf, attach);
->   
-> -	dma_buf_attach_stats_teardown(attach);
->   	kfree(attach);
->   }
->   EXPORT_SYMBOL_GPL(dma_buf_detach);
-> @@ -1020,10 +1010,6 @@ struct sg_table *dma_buf_map_attachment(struct dma_buf_attachment *attach,
->   		}
->   	}
->   #endif /* CONFIG_DMA_API_DEBUG */
-> -
-> -	if (!IS_ERR(sg_table))
-> -		dma_buf_update_attachment_map_count(attach, 1 /* delta */);
-> -
->   	return sg_table;
->   }
->   EXPORT_SYMBOL_GPL(dma_buf_map_attachment);
-> @@ -1061,8 +1047,6 @@ void dma_buf_unmap_attachment(struct dma_buf_attachment *attach,
->   	if (dma_buf_is_dynamic(attach->dmabuf) &&
->   	    !IS_ENABLED(CONFIG_DMABUF_MOVE_NOTIFY))
->   		dma_buf_unpin(attach);
-> -
-> -	dma_buf_update_attachment_map_count(attach, -1 /* delta */);
->   }
->   EXPORT_SYMBOL_GPL(dma_buf_unmap_attachment);
->   
-> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-> index 2b814fde0d11..678b2006be78 100644
-> --- a/include/linux/dma-buf.h
-> +++ b/include/linux/dma-buf.h
-> @@ -444,15 +444,6 @@ struct dma_buf {
->   	struct dma_buf_sysfs_entry {
->   		struct kobject kobj;
->   		struct dma_buf *dmabuf;
-> -
-> -		/**
-> -		 * @sysfs_entry.attachment_uid:
-> -		 *
-> -		 * This is protected by the dma_resv_lock() on @resv and is
-> -		 * incremented on each attach.
-> -		 */
-> -		unsigned int attachment_uid;
-> -		struct kset *attach_stats_kset;
->   	} *sysfs_entry;
->   #endif
->   };
-> @@ -504,7 +495,6 @@ struct dma_buf_attach_ops {
->    * @importer_ops: importer operations for this attachment, if provided
->    * dma_buf_map/unmap_attachment() must be called with the dma_resv lock held.
->    * @importer_priv: importer specific attachment data.
-> - * @sysfs_entry: For exposing information about this attachment in sysfs.
->    *
->    * This structure holds the attachment information between the dma_buf buffer
->    * and its user device(s). The list contains one attachment struct per device
-> @@ -525,13 +515,6 @@ struct dma_buf_attachment {
->   	const struct dma_buf_attach_ops *importer_ops;
->   	void *importer_priv;
->   	void *priv;
-> -#ifdef CONFIG_DMABUF_SYSFS_STATS
-> -	/* for sysfs stats */
-> -	struct dma_buf_attach_sysfs_entry {
-> -		struct kobject kobj;
-> -		unsigned int map_counter;
-> -	} *sysfs_entry;
-> -#endif
->   };
->   
->   /**
 
+Done, looks like the v2 with the trimmed cc list made it into patchwork 
+this time.
+ 
+> Also, while I agree that supporting 128-bit bitfields isn't important,
+> I wonder if we should warn/error on that (instead of shifting by
+> negative amount and reporting some garbage value), what do you think?
+> Is there one place in the code where we can error out early if the
+> type actually has bitfield with > 64 bits? I'd prefer to keep
+> btf_dump_bitfield_get_data() itself non-failing though.
+> 
+
+Sorry, I missed the last part and made that function fail since
+it's probably the easiest place to capture too-large bitfields.
+I renamed it to btf_dump_get_bitfield_value() to match
+btf_dump_get_enum_value() which as a similar function signature
+(return int, pass in a pointer to the value we want to retrieve).
+
+We can't localize bitfield size checking to 
+btf_dump_type_data_check_zero() because - depending on flags -
+the associated checks might not be carried out.  So duplication
+of bitfield size checks between the zero checking and bitfield/enum 
+bitfield display seems inevitable, and that being the case, the
+extra error checking required around btf_dump_get_bitfield_value()
+seems to be required.
+
+I might be missing a better approach here of course; let me know what you 
+think. Thanks again!
+
+Alan
