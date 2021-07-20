@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8863CFE17
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4923CFDC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240721AbhGTPFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240077AbhGTOph (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:45:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3A5C0613DB;
-        Tue, 20 Jul 2021 08:23:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YMJtZl0zXHIg/quYkGxZ124m2IPJSkonaupGUSsz4Eg=; b=LmHCNdtnyQmWHaZa+nyfYJ9TbM
-        hlWkq/nRtQ+gQeZBatFJyw8v5ISxlLOHOrPJOZGpGTscR2vBu0ynTY3otLp/O+0DYdo8AHvH9U1OZ
-        CexnBvS9QvhGiyRDsimnFgbK0ffkcFhiBi2Nd/J3FW3NMJVoA1HoCZm+gXjwm92SEfPQDFlGEXviJ
-        pGMDTHuSUXpsgvPaE8lGNpGaIJO1+MGDWFs0FYYGgjWcj4IJVs7dkg2h16lwDhXQivyHSMclIAm7I
-        289weZ1G+Pa2nUUXhyiKPNb7YoHelS2rbxk2G76taXCJ3U0GT1/o6oJz/VyD1GcaLXsgjEuAiLOFb
-        5ihwf5wA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m5raj-008Feq-29; Tue, 20 Jul 2021 15:23:41 +0000
-Date:   Tue, 20 Jul 2021 16:23:29 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 000/138] Memory folios
-Message-ID: <YPbqcQ9i/Vi7ivEE@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <YParbk8LxhrZMExc@kernel.org>
- <YPbEax52N7OBQCZp@casper.infradead.org>
- <YPbpBv30NqeQPqPK@kernel.org>
+        id S242119AbhGTO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:59:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240986AbhGTOxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 10:53:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1251F610CC;
+        Tue, 20 Jul 2021 15:23:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626794635;
+        bh=stC0BzA+DYwcXTiLCi+t5d7+76Ta1ZpDociH/Lgci/g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mlMP31/TRk2qMDaVki+1wjeieqAMpB5eSZ2KSre2/ooBHAEjHoGx6MbWGTYaZudTC
+         cgNP8utSKmpyOlQVSPFGjujijBk8U6m9JpJlTsRCIyXdfYCRj+7YC6ZVk7pd6xPKsh
+         WH1PTU4R+uJ26RA4XF4HQwpfRHDoYG/f+JZfoHGL1rWj+cezhxXQBgj65VGlb8l1cY
+         e4VL9fI7CG7NIDW4x+h5erkNPHkzZlsDn3lfrK53XuOJ5tqckZ2W+DdKly+5lsJtjh
+         sr9CAASEX4v+5nuJGqBw6zKopEbBMCKwWwcpeD98Un33lOVRldVRxDN+S5TBIVucYn
+         EzIdOpQ9jShbg==
+Date:   Tue, 20 Jul 2021 16:23:51 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Alistair Francis <alistair@alistair23.me>, robh+dt@kernel.org,
+        lgirdwood@gmail.com, linux-imx@nxp.com, kernel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v7 1/6] mfd: sy7636a: Initial commit
+Message-ID: <20210720152351.GC5042@sirena.org.uk>
+References: <20210708115804.212-1-alistair@alistair23.me>
+ <YPbjZdu7T9wFcvNz@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Sr1nOIr3CvdE5hEN"
 Content-Disposition: inline
-In-Reply-To: <YPbpBv30NqeQPqPK@kernel.org>
+In-Reply-To: <YPbjZdu7T9wFcvNz@google.com>
+X-Cookie: Revenge is a meal best served cold.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 06:17:26PM +0300, Mike Rapoport wrote:
-> On Tue, Jul 20, 2021 at 01:41:15PM +0100, Matthew Wilcox wrote:
-> > On Tue, Jul 20, 2021 at 01:54:38PM +0300, Mike Rapoport wrote:
-> > > Most of the changelogs (at least at the first patches) mention reduction of
-> > > the kernel size for your configuration on x86. I wonder, what happens if
-> > > you build the kernel with "non-distro" configuration, e.g. defconfig or
-> > > tiny.config?
-> > 
-> > I did an allnoconfig build and that reduced in size by ~2KiB.
-> > 
-> > > Also, what is the difference on !x86 builds?
-> > 
-> > I don't generally do non-x86 builds ... feel free to compare for
-> > yourself!
-> 
-> I did allnoconfig and defconfig for arm64 and powerpc.
-> 
-> All execpt arm64::defconfig show decrease by ~1KiB, while arm64::defconfig
-> was actually increased by ~500 bytes.
 
-Which patch did you go up to for that?  If you're going past patch 50 or
-so, then you're starting to add functionality (ie support for arbitrary
-order pages), so a certain amount of extra code size might be expected.
-I measured 6KB at patch 32 or so, then between patch 32 & 50 was pretty
-much a wash.
+--Sr1nOIr3CvdE5hEN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> I didn't dig into objdumps yet.
-> 
-> I also tried to build arm but it failed with:
-> 
->   CC      fs/remap_range.o
-> fs/remap_range.c: In function 'vfs_dedupe_file_range_compare':
-> fs/remap_range.c:250:3: error: implicit declaration of function 'flush_dcache_folio'; did you mean 'flush_cache_louis'? [-Werror=implicit-function-declaration]
->   250 |   flush_dcache_folio(src_folio);
->       |   ^~~~~~~~~~~~~~~~~~
->       |   flush_cache_louis
-> cc1: some warnings being treated as errors
+On Tue, Jul 20, 2021 at 03:53:25PM +0100, Lee Jones wrote:
+> On Thu, 08 Jul 2021, Alistair Francis wrote:
 
-Already complained about by the build bot; already fixed.  You should
-maybe look at the git tree if you're doing more than code review.
+> > +static const struct mfd_cell sy7636a_cells[] = {
+> > +	{ .name = "sy7636a-regulator", },
+> > +	{ .name = "sy7636a-temperature", },
+> > +	{ .name = "sy7636a-thermal", },
+> > +};
+
+> If you put these in the Device Tree, you can use "simple-mfd-i2c"
+
+At least the regulator probably shouldn't be - this is just a Linux
+specific grouping of devices, it's not really directly a block in the
+hardware in a way that's platform independent.
+
+--Sr1nOIr3CvdE5hEN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD26oYACgkQJNaLcl1U
+h9CyzAf/afWZvdO1BI74mZ+EtbyLufn+rfykBtoUCaBT4mi7ryweoZTiZaL4UM4/
+X1RVHOveN2kQvVLZD56iknuPgbaK6e8nAkjJ34tcH3Js/VfW00sEbq3ZVoajXCdj
+m1mApf1Yc5RLluqMBJKAVL6Jvb3JgAhObWeoy6G4nrymlCMcfOI2FqeKVweZ3+K4
+Ir2n6cHuvVOtJiM9CylMHhwul5idLZgQRy7ICNnsRZuKu6snRFG4t17PouSdhQd4
+/n1VFL+NnxWDLZSIRoG3l6RmVUdGf6+QQlIbN5WkNsWD5NLf+FnqhVh/iVo3hCt3
+LWLUD78Xz0aFHtLFa56+s6scFjAw2A==
+=oEMs
+-----END PGP SIGNATURE-----
+
+--Sr1nOIr3CvdE5hEN--
