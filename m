@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBFB3CF9D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347043CF9D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238452AbhGTMEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:04:38 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51764 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238089AbhGTMDV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:03:21 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E226F202DD;
-        Tue, 20 Jul 2021 12:43:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626785038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5k7XNc5+yPEatIcV2+Rzvnk7tPH3TwekV1DDGT6cYwk=;
-        b=BUHtxkYh5vULvVX1wWG9DVxV3O5daCs1I888sVXWnOqRPya6jvu7pJ0pdFFz0NX5De+XqF
-        XJfo4wqjicz++ZDXU1VaMck7xmM0wZjCJyzCMoUxsXtjeX4vma6fW6FeEqQ8nOnIUUPCTF
-        pjRvv+dKUNtNlpFBRVXyyAyJb9wG13c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626785038;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5k7XNc5+yPEatIcV2+Rzvnk7tPH3TwekV1DDGT6cYwk=;
-        b=iWR0LBvFla0McKz4TeyppaZ8OAgaHEp6CfjYHrJLZYQWdZ0JUGfJHiNNyPkhDIuNEiDm4U
-        bFuJDzhqiidK3wAQ==
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id D1DDFA3BAD;
-        Tue, 20 Jul 2021 12:43:58 +0000 (UTC)
-Received: by adalid.arch.suse.de (Postfix, from userid 17828)
-        id 18D1E5171932; Tue, 20 Jul 2021 14:43:58 +0200 (CEST)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        James Smart <jsmart2021@gmail.com>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v3 6/6] nvme-fc: fix controller reset hang during traffic
-Date:   Tue, 20 Jul 2021 14:43:53 +0200
-Message-Id: <20210720124353.127959-7-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210720124353.127959-1-dwagner@suse.de>
-References: <20210720124353.127959-1-dwagner@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S238269AbhGTMGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:06:36 -0400
+Received: from pop31.abv.bg ([194.153.145.221]:52826 "EHLO pop31.abv.bg"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238265AbhGTMGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 08:06:18 -0400
+Received: from smtp.abv.bg (localhost [127.0.0.1])
+        by pop31.abv.bg (Postfix) with ESMTP id 63D6A1805D3D;
+        Tue, 20 Jul 2021 15:46:33 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abv.bg; s=smtp-out;
+        t=1626785193; bh=3n+oId2CcuiY7DARlUQCYAgosiVIv3DRNqh5ePKuPW0=;
+        h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
+        b=VtfzwQisc+8A4Ov4xUN8PZpgmEG4NFE8oXQss9vBcGS3w5OOVAeD9ijRIUbrpcyTJ
+         dsYqs/CCU3Hu4RvY282vwL+DdPUVKxeOOtuI3v2ywSNVs0movGQO1cvUC56uefkqTY
+         xfmNlKD6D1JPjPFrCiVPNbPxHLMzE0gQTVBPNdR4=
+X-HELO: smtpclient.apple
+Authentication-Results: smtp.abv.bg; auth=pass (plain) smtp.auth=gvalkov@abv.bg
+Received: from 212-39-89-148.ip.btc-net.bg (HELO smtpclient.apple) (212.39.89.148)
+ by smtp.abv.bg (qpsmtpd/0.96) with ESMTPSA (ECDHE-RSA-AES256-GCM-SHA384 encrypted); Tue, 20 Jul 2021 15:46:33 +0300
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: ipheth: fix EOVERFLOW in ipheth_rcvbulk_callback
+From:   Georgi Valkov <gvalkov@abv.bg>
+In-Reply-To: <YPa4ZelG2k8Z826E@kroah.com>
+Date:   Tue, 20 Jul 2021 15:46:11 +0300
+Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        mhabets@solarflare.com, luc.vanoostenryck@gmail.com,
+        snelson@pensando.io, mst@redhat.com, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corsac@corsac.net, matti.vuorela@bitfactor.fi,
+        stable@vger.kernel.org,
+        =?utf-8?B?0JPQtdC+0YDQs9C4INCT0LXQvtGA0LPQuNC10LIg0JLRitC70LrQvtCy?= 
+        <gvalkov@abv.bg>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C6AA954F-8382-461D-835F-E5CA03363D84@abv.bg>
+References: <B60B8A4B-92A0-49B3-805D-809A2433B46C@abv.bg>
+ <20210720122215.54abaf53@cakuba>
+ <5D0CFF83-439B-4A10-A276-D2D17B037704@abv.bg> <YPa4ZelG2k8Z826E@kroah.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+Yes, I read it, and before my previous e-mail that I also read the link =
+from Jakub,
+which essentially provides the same information.
 
-commit fe35ec58f0d3 ("block: update hctx map when use multiple maps")
-exposed an issue where we may hang trying to wait for queue freeze
-during I/O. We call blk_mq_update_nr_hw_queues which may attempt to freeze
-the queue. However we never started queue freeze when starting the
-reset, which means that we have inflight pending requests that entered the
-queue that we will not complete once the queue is quiesced.
+There is only one patch =
+0001-ipheth-fix-EOVERFLOW-in-ipheth_rcvbulk_callback.patch
+The command I used from the example also generated a 0000-cover-letter, =
+so
+I included it as well.
 
-So start a freeze before we quiesce the queue, and unfreeze the queue
-after we successfully connected the I/O queues (the unfreeze is already
-present in the code). blk_mq_update_nr_hw_queues will be called only
-after we are sure that the queue was already frozen.
+I still have no clue what exactly I should do. Can you please help me?
 
-This follows to how the pci driver handles resets.
+Georgi Valkov
 
-This patch added logic introduced in commit 9f98772ba307 "nvme-rdma: fix
-controller reset hang during traffic".
-
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-CC: Sagi Grimberg <sagi@grimberg.me>
-Tested-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
----
- drivers/nvme/host/fc.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-index 112e62cd8a2a..ad3344f6048d 100644
---- a/drivers/nvme/host/fc.c
-+++ b/drivers/nvme/host/fc.c
-@@ -2486,6 +2486,7 @@ __nvme_fc_abort_outstanding_ios(struct nvme_fc_ctrl *ctrl, bool start_queues)
- 	 * (but with error status).
- 	 */
- 	if (ctrl->ctrl.queue_count > 1) {
-+		nvme_start_freeze(&ctrl->ctrl);
- 		nvme_stop_queues(&ctrl->ctrl);
- 		nvme_sync_io_queues(&ctrl->ctrl);
- 		blk_mq_tagset_busy_iter(&ctrl->tag_set,
--- 
-2.29.2
+> On 2021-07-20, at 2:49 PM, Greg KH <gregkh@linuxfoundation.org> wrote:
+>=20
+> On Tue, Jul 20, 2021 at 02:39:49PM +0300, Georgi Valkov wrote:
+>> I am doing this for the first time, so any help would be appreciated!
+>=20
+> Have you read Documentation/process/submitting-patches.rst yet?  If =
+not,
+> please do so.
+>=20
+> And look at examples on this list, you have to send individual =
+patches,
+> not everything all crammed into one email.
+>=20
+> thanks,
+>=20
+> greg k-h
+>=20
 
