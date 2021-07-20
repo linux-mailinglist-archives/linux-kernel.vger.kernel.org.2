@@ -2,98 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4923D3CFBD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5723CFBCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239868AbhGTNfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 09:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
+        id S239155AbhGTNeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 09:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239333AbhGTN2A (ORCPT
+        with ESMTP id S239339AbhGTN2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Jul 2021 09:28:00 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DB2C061574;
-        Tue, 20 Jul 2021 07:08:13 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id n11so11484423plc.2;
-        Tue, 20 Jul 2021 07:08:13 -0700 (PDT)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4C1C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:08:36 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id o30-20020a05600c511eb029022e0571d1a0so2125255wms.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:08:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PkAUSa8iO+7WteRWzJzZbVWHxdXWutFxMQnYCPT03FA=;
-        b=CXXbqsq/+4Uai+DmJMRIR7PpNVY4/MeKGB04RdhVWil0uMU607jC2kcpJbANpSHaGj
-         32ciUW4H9ieKAG5jczZ0Eu/Ls36kDRJCFsuUhLJzagBoQXak7j/fkyvn7JzrtpNlLGRn
-         QFuBtS/wu/2xbu8OoDoaWx+aKazVvuojOMQOCCimIy3qWAPDXLSNn8rjjt+HX3/80DcZ
-         0uRP85MisKdG0p2GRorbt5vwoE9DiE1rmYow/FTczt1nWJItWJB61iiLXxguWbPhbBCD
-         3BcC4Dlwqk2IJTe9Up7Fkon5b+CYG+J1Ukab7utwSZb3kGibyzI91m/05DGdgaYQFMZV
-         IIkw==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vdj/876kbj9otjV0SXLMGMJadLoRz/MWE+rabeKCiRs=;
+        b=ez54kYqit1kD8uQyQxcQe8M9Z5tOkNmZnsUiOZGUePvnwGXLbG946Dkr03BbDFCQpf
+         s8/LFEKMgoxoja8qKu2j/lNl53l/KhEzxNacpIh4zg1yF6wm3BbMo2EjzOu7JKkpGMPn
+         Ye0fDTd99UcNVzQ9C+eWxJhBhNj1sn4lZIbr4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PkAUSa8iO+7WteRWzJzZbVWHxdXWutFxMQnYCPT03FA=;
-        b=t0TQMQLmMcKrCmGFGpdGVXSFQ7CkoGuWNxktltwfiYrMcCGt37PfjqX8nAw2Gzvd7k
-         LmRRSfxK9N9bi5WIaiEfSePbMR8pBuzEizRo38VZrvjRa0I348N2AhGPY846j8xiNZ7S
-         R0g0SaX+NsmMOFDe4v89XR+r36h+sb0uVu+pvZirNLmJIwxuMwS3TZr4g0ew4t80bee7
-         43vXtLpSzhLAsZXkFanP9a5HyLmNFKFUOOS2NauWGIGUVByhsEgp70dRMAV6KAoUTXiY
-         tQ3SVgmq4pdEH48tERmEMstt2NoYHvFfZnnd0cesFeEgsMUw+GIbubVgcCHCBo8d7LqA
-         jtew==
-X-Gm-Message-State: AOAM533K/mb5e0HwQTu4Nle/F/ZcZJOXzJj+fhGKZXqYKbop/ozphpnO
-        jtf2S7PKQC8E/l3n0rHcOT251etZxOzq+Hy1pwA=
-X-Google-Smtp-Source: ABdhPJwNJvdBAkDBLZMGoPuyB5XVo2FQOgd2tik+AdOrm0UcV9m1VW/T03iaej4iyooKEh45AWMbXBcjnIWeG/UYZao=
-X-Received: by 2002:a17:902:b198:b029:11b:2246:e374 with SMTP id
- s24-20020a170902b198b029011b2246e374mr23684180plr.17.1626790092873; Tue, 20
- Jul 2021 07:08:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=vdj/876kbj9otjV0SXLMGMJadLoRz/MWE+rabeKCiRs=;
+        b=ZIxi9HVHIEsKgRS+WDUkZ3EiQ5RskdFYlqveMkoRnMJ9wYllDPcC/KeOEduiDwsGpg
+         1PD+JObg/nEphB7AHNJBziMuUx3SJHqJTR3TUUNjWitZ+oPF7gnyB/jt9njCzQZby8/e
+         p2KqAA239iXVDWYiXl3Ho5kV1jkfqELbLayrR3QjmYVX189g7k1ZNfg2dEN2KVkLtHFq
+         qaLPXicq6xnAQgFRd/JgEu1awuDLiolDImqJU0g1bj2hBbmFjBpdtRruBSHvoQ586Vny
+         Omh897OCBx4KappPitSCZ03YGlT4siKKuj4ToxhNsE+GAaT3L+v5jYX/2EELbmyc2jyZ
+         +iNA==
+X-Gm-Message-State: AOAM532oO5kQEx/4+SECsGfYyCx59Dzx/8PEhv52mLLg3INgaWmxei82
+        XKkOT31TXCYUZqtroEYFDGdxTwLWjuucAA==
+X-Google-Smtp-Source: ABdhPJxMU++IY5nRb5dHWOBB6cPsmCpD91+OygobkfIENh5fKb+3nWKdQaWO6CUlP10eV7boXeOv2Q==
+X-Received: by 2002:a05:600c:35c1:: with SMTP id r1mr31996863wmq.0.1626790115511;
+        Tue, 20 Jul 2021 07:08:35 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id a207sm3004661wme.27.2021.07.20.07.08.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 07:08:35 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 16:08:33 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 04/11] drm: Drop drm_gem_object_put_locked()
+Message-ID: <YPbY4RG2VV+5Cd65@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210717202924.987514-1-robdclark@gmail.com>
+ <20210717202924.987514-5-robdclark@gmail.com>
 MIME-Version: 1.0
-References: <20210716114210.141560-1-antoniu.miclaus@analog.com>
- <CAHp75VcNhJrp4YGZQu1ZB2J4ARtuT2T2p-72H1qn4F+KtZDVoQ@mail.gmail.com> <CY4PR03MB3399083DDE3A03C55D3153FE9BE29@CY4PR03MB3399.namprd03.prod.outlook.com>
-In-Reply-To: <CY4PR03MB3399083DDE3A03C55D3153FE9BE29@CY4PR03MB3399.namprd03.prod.outlook.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 20 Jul 2021 17:07:31 +0300
-Message-ID: <CAHp75VcN2fjVDMfkpgyE2tqu=21ku4KBowNDKJxvpbKzwuEPew@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] iio: frequency: adrf6780: add support for ADRF6780
-To:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
-Cc:     "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jic23@kernel.org" <jic23@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210717202924.987514-5-robdclark@gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 4:17 PM Miclaus, Antoniu
-<Antoniu.Miclaus@analog.com> wrote:
-> > From: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > Sent: Friday, July 16, 2021 5:53 PM
-> > On Fri, Jul 16, 2021 at 2:43 PM Antoniu Miclaus
-> > <antoniu.miclaus@analog.com> wrote:
+On Sat, Jul 17, 2021 at 01:29:06PM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> Now that no one is using it, remove it.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 
-...
+Yay!
 
-> > First question is why not to use the regmap API (I have heard it has
-> > gained support of 17 bit)?
->
-> Initially that was the plan, but after this patch:
-> https://github.com/torvalds/linux/commit/4191f19792bf91267835eb090d970e9cd6277a65
-> the custom write formats for regmap allow the read only via cached registers.
->
-> Therefore, I preferred using spi transfers for write/read to/from the device.
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-Not sure I follow you. That patch is upstream. Does it prevent you
-from switching to regmap SPI API?
+> ---
+>  drivers/gpu/drm/drm_gem.c | 22 ----------------------
+>  include/drm/drm_gem.h     |  2 --
+>  2 files changed, 24 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
+> index 9989425e9875..c8866788b761 100644
+> --- a/drivers/gpu/drm/drm_gem.c
+> +++ b/drivers/gpu/drm/drm_gem.c
+> @@ -974,28 +974,6 @@ drm_gem_object_free(struct kref *kref)
+>  }
+>  EXPORT_SYMBOL(drm_gem_object_free);
+>  
+> -/**
+> - * drm_gem_object_put_locked - release a GEM buffer object reference
+> - * @obj: GEM buffer object
+> - *
+> - * This releases a reference to @obj. Callers must hold the
+> - * &drm_device.struct_mutex lock when calling this function, even when the
+> - * driver doesn't use &drm_device.struct_mutex for anything.
+> - *
+> - * For drivers not encumbered with legacy locking use
+> - * drm_gem_object_put() instead.
+> - */
+> -void
+> -drm_gem_object_put_locked(struct drm_gem_object *obj)
+> -{
+> -	if (obj) {
+> -		WARN_ON(!mutex_is_locked(&obj->dev->struct_mutex));
+> -
+> -		kref_put(&obj->refcount, drm_gem_object_free);
+> -	}
+> -}
+> -EXPORT_SYMBOL(drm_gem_object_put_locked);
+> -
+>  /**
+>   * drm_gem_vm_open - vma->ops->open implementation for GEM
+>   * @vma: VM area structure
+> diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
+> index 240049566592..35e7f44c2a75 100644
+> --- a/include/drm/drm_gem.h
+> +++ b/include/drm/drm_gem.h
+> @@ -384,8 +384,6 @@ drm_gem_object_put(struct drm_gem_object *obj)
+>  		__drm_gem_object_put(obj);
+>  }
+>  
+> -void drm_gem_object_put_locked(struct drm_gem_object *obj);
+> -
+>  int drm_gem_handle_create(struct drm_file *file_priv,
+>  			  struct drm_gem_object *obj,
+>  			  u32 *handlep);
+> -- 
+> 2.31.1
+> 
 
-...
-
-> > > +        depends on COMMON_CLK
-> >
-> > Is it mandatory for any function inside the device?
->
-> Yes. It will serve as LO input to the device.
-
-But can the device work without it (with limited functionality)?
-
---
-With Best Regards,
-Andy Shevchenko
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
