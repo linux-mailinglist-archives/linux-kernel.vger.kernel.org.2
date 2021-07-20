@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFB23CF563
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F30D3CF568
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbhGTGzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 02:55:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51319 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230452AbhGTGz2 (ORCPT
+        id S232963AbhGTG55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 02:57:57 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:15041 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235079AbhGTG4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:55:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626766566;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bwk3k2wx0IZIOTkk2y1tBpILQ9MBq3XAZ55579Rk21k=;
-        b=K8d8fa+x5OazV7G3ywF3D1IVxSKuAu0SL1AYz+/98tVJx3a2s/4DcLN+11hVrsBWjUdBLn
-        EimMcJl+cwG0Kfsw4XaKM5X4Df5SMKxhOMttPcSxJWETqqkvXrUrgrAt78rbm76yojB0bA
-        pOKnLX3o+IcAo2XjIcshmERBRjmXAjg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-384-sV3iDM7GOQCTVkNVuA9gQw-1; Tue, 20 Jul 2021 03:36:05 -0400
-X-MC-Unique: sV3iDM7GOQCTVkNVuA9gQw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75FA6100C662;
-        Tue, 20 Jul 2021 07:36:03 +0000 (UTC)
-Received: from T590 (ovpn-13-101.pek2.redhat.com [10.72.13.101])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A79E05D9F0;
-        Tue, 20 Jul 2021 07:35:53 +0000 (UTC)
-Date:   Tue, 20 Jul 2021 15:35:48 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kashyap.desai@broadcom.com, hare@suse.de
-Subject: Re: [PATCH 1/9] blk-mq: Change rqs check in blk_mq_free_rqs()
-Message-ID: <YPZ81HsYnyxBpQwu@T590>
-References: <1626275195-215652-1-git-send-email-john.garry@huawei.com>
- <1626275195-215652-2-git-send-email-john.garry@huawei.com>
+        Tue, 20 Jul 2021 02:56:42 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GTVnt4YJNzZqrn;
+        Tue, 20 Jul 2021 15:33:54 +0800 (CST)
+Received: from dggeme756-chm.china.huawei.com (10.3.19.102) by
+ dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 15:37:16 +0800
+Received: from dggeme756-chm.china.huawei.com ([10.6.80.68]) by
+ dggeme756-chm.china.huawei.com ([10.6.80.68]) with mapi id 15.01.2176.012;
+ Tue, 20 Jul 2021 15:37:16 +0800
+From:   "wangliang (C)" <wangliang101@huawei.com>
+To:     "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "Wangle (RTOS FAE)" <wangle6@huawei.com>,
+        "Chenxin (RTOS)" <kepler.chenxin@huawei.com>,
+        Nixiaoming <nixiaoming@huawei.com>,
+        "Wangkefeng (OS Kernel Lab)" <wangkefeng.wang@huawei.com>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIXSBhcm06bW1hcDogZml4IHBoeXNpY2FsIGFkZHJlc3Mg?=
+ =?gb2312?B?b3ZlcmZsb3cgd2hlbiBDT05GSUdfQVJNX0xQQUU9eQ==?=
+Thread-Topic: [PATCH] arm:mmap: fix physical address overflow when
+ CONFIG_ARM_LPAE=y
+Thread-Index: AQHXeXUt7ahQu+mGnUGYPTbmKJayAqtLgAsA
+Date:   Tue, 20 Jul 2021 07:37:16 +0000
+Message-ID: <133369ed88a54e40a3ebbc667763f5b1@huawei.com>
+References: <20210715123012.61215-1-wangliang101@huawei.com>
+In-Reply-To: <20210715123012.61215-1-wangliang101@huawei.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.101.54]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626275195-215652-2-git-send-email-john.garry@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 11:06:27PM +0800, John Garry wrote:
-> The original code in commit 24d2f90309b23 ("blk-mq: split out tag
-> initialization, support shared tags") would check tags->rqs is non-NULL and
-> then dereference tags->rqs[].
-> 
-> Then in commit 2af8cbe30531 ("blk-mq: split tag ->rqs[] into two"), we
-> started to dereference tags->static_rqs[], but continued to check non-NULL
-> tags->rqs.
-> 
-> Check tags->static_rqs as non-NULL instead, which is more logical.
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->  block/blk-mq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index 2c4ac51e54eb..ae28f470893c 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -2348,7 +2348,7 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
->  {
->  	struct page *page;
->  
-> -	if (tags->rqs && set->ops->exit_request) {
-> +	if (tags->static_rqs && set->ops->exit_request) {
-
-Yeah, it is reasonable to check ->static_rqs since both ->init_request()
-and ->exit_request() operate on request from ->static_rqs[]:
-
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-
--- 
-Ming
-
+YWRkIGFybSBsaXN0DQoNCi0tLS0t08q8/tStvP4tLS0tLQ0Kt6K8/sjLOiB3YW5nbGlhbmcgKEMp
+IA0Kt6LLzcqxvOQ6IDIwMjHE6jfUwjE1yNUgMjA6MzANCsrVvP7IyzogcGFsbWVyZGFiYmVsdEBn
+b29nbGUuY29tOyBtY2dyb2ZAa2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
+ZzsgZ3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc7IGxpbnV4QGFybWxpbnV4Lm9yZy51aw0Ks63L
+zTogc3RhYmxlQHZnZXIua2VybmVsLm9yZzsgd2FuZ2xpYW5nIChDKSA8d2FuZ2xpYW5nMTAxQGh1
+YXdlaS5jb20+OyBXYW5nbGUgKFJUT1MgRkFFKSA8d2FuZ2xlNkBodWF3ZWkuY29tPjsgQ2hlbnhp
+biAoUlRPUykgPGtlcGxlci5jaGVueGluQGh1YXdlaS5jb20+OyBOaXhpYW9taW5nIDxuaXhpYW9t
+aW5nQGh1YXdlaS5jb20+DQrW98ziOiBbUEFUQ0hdIGFybTptbWFwOiBmaXggcGh5c2ljYWwgYWRk
+cmVzcyBvdmVyZmxvdyB3aGVuIENPTkZJR19BUk1fTFBBRT15DQoNCldoZW4gdGhlIENPTkZJR19B
+Uk1fTFBBRSBpcyBlbmFibGVkIG9uIGFybTMyLCB0aGUgcGh5c2ljYWwgYWRkcmVzcyBtYXkgZXhj
+ZWVkIDMyIGJpdHMuIEluIHRoZSBkZXZtZW1faXNfYWxsb3dlZCBmdW5jdGlvbiwgdGhlIHBoeXNp
+Y2FsIGFkZHJlc3MgaXMgb2J0YWluZWQgdGhyb3VnaCBkaXNwbGFjZW1lbnQgb2YgdGhlIHBoeXNp
+Y2FsIHBhZ2UgbnVtYmVyLldpdGhvdXQgZXhwbGljaXQgdHJhbnNsYXRpb24sIHRoZSBwaHlzaWNh
+bCBhZGRyZXNzIG1heSBvdmVyZmxvdyBhbmQgYmUgdHJ1bmNhdGVkLg0KVXNlIHRoZSBQRk5fUEhZ
+UyBtYWNybyB0byBmaXggdGhpcyBidWcuDQoNClRoaXMgYnVnIHdhcyBpbml0aWFsbHkgaW50cm9k
+dWNlZCBpbiB2Mi42LjM3IHdpdGggY29tbWl0OjA4N2FhZmZjZGY5YzkxLg0KSW4gdjUuMTAsIHRo
+aXMgY29kZSBoYXMgYmVlbiBtb2RpZmllZCBieSBjb21taXQ6NTI3NzAxZWRhNWYxOTYuDQoNCkZp
+eGVzOiA1Mjc3MDFlZGE1ZjE5NiAoImxpYjogQWRkIGEgZ2VuZXJpYyB2ZXJzaW9uIG9mIGRldm1l
+bV9pc19hbGxvd2VkIikNCkZpeGVzOiAwODdhYWZmY2RmOWM5MSAoIkFSTTogaW1wbGVtZW50IENP
+TkZJR19TVFJJQ1RfREVWTUVNIGJ5IGRpc2FibGluZyBhY2Nlc3MgdG8gUkFNIHZpYSAvZGV2L21l
+bSIpDQpDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZyAjIHYyLjYuMzcNClNpZ25lZC1vZmYtYnk6
+IExpYW5nIFdhbmcgPHdhbmdsaWFuZzEwMUBodWF3ZWkuY29tPg0KLS0tDQogbGliL2Rldm1lbV9p
+c19hbGxvd2VkLmMgfCAyICstDQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRl
+bGV0aW9uKC0pDQoNCmRpZmYgLS1naXQgYS9saWIvZGV2bWVtX2lzX2FsbG93ZWQuYyBiL2xpYi9k
+ZXZtZW1faXNfYWxsb3dlZC5jIGluZGV4IGMwZDY3YzU0MTg0OS4uNjBiZTllMjRiZDU3IDEwMDY0
+NA0KLS0tIGEvbGliL2Rldm1lbV9pc19hbGxvd2VkLmMNCisrKyBiL2xpYi9kZXZtZW1faXNfYWxs
+b3dlZC5jDQpAQCAtMTksNyArMTksNyBAQA0KICAqLw0KIGludCBkZXZtZW1faXNfYWxsb3dlZCh1
+bnNpZ25lZCBsb25nIHBmbikgIHsNCi0JaWYgKGlvbWVtX2lzX2V4Y2x1c2l2ZShwZm4gPDwgUEFH
+RV9TSElGVCkpDQorCWlmIChpb21lbV9pc19leGNsdXNpdmUoUEZOX1BIWVMocGZuKSkpDQogCQly
+ZXR1cm4gMDsNCiAJaWYgKCFwYWdlX2lzX3JhbShwZm4pKQ0KIAkJcmV0dXJuIDE7DQotLQ0KMi4z
+Mi4wDQoNCg==
