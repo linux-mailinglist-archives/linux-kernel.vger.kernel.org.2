@@ -2,124 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDBA3D05A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 277623D05BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236494AbhGTWwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 18:52:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42670 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233421AbhGTWs6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 18:48:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626823775;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uTqg20WbE9gq4F17Yo+qpQ8PdWyA4fi/jLu09X5Zs0U=;
-        b=U5trjkHgEid4Ae2fLNEQgq7aFrMz5c1DqQYER7eayqr8eRwt8vZrhHvOcQ0Ya1iUIy3093
-        0zNLmaCFliaaDnAY1txq4gOmSL3vJOeK9CZ9EuQaiuOX7xame7TslEwM2u1ZQ8WptutPHG
-        sSVaQ6vESCB7/gio6HBFTNFkHwgS3KU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-HjSFoRXSMlqFdx9I2L3GFQ-1; Tue, 20 Jul 2021 19:29:31 -0400
-X-MC-Unique: HjSFoRXSMlqFdx9I2L3GFQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6273C362F8;
-        Tue, 20 Jul 2021 23:29:30 +0000 (UTC)
-Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5551B19C59;
-        Tue, 20 Jul 2021 23:29:27 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v2 01/12] mm/debug_vm_pgtable: Introduce struct
- pgtable_debug_args
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210719054138.198373-1-gshan@redhat.com>
- <20210719054138.198373-2-gshan@redhat.com>
- <8d754894-5c21-1287-82b6-7ac3b064af3d@redhat.com>
- <ff9766a5-3f4e-f821-daf1-b2779a8c81fc@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <1d8c1b0f-3102-5a4a-f3fb-a0fc50d281cc@redhat.com>
-Date:   Wed, 21 Jul 2021 09:29:43 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        id S232366AbhGTW5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 18:57:40 -0400
+Received: from mga07.intel.com ([134.134.136.100]:35779 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237366AbhGTWzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 18:55:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="275164033"
+X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
+   d="scan'208";a="275164033"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 16:35:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
+   d="scan'208";a="495074165"
+Received: from lkp-server02.sh.intel.com (HELO 1b5a72ed9419) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Jul 2021 16:35:40 -0700
+Received: from kbuild by 1b5a72ed9419 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m5zH1-0000SF-OW; Tue, 20 Jul 2021 23:35:39 +0000
+Date:   Wed, 21 Jul 2021 07:34:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     kbuild-all@lists.01.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org
+Subject: [djwong-xfs:vectorized-scrub 131/306] fs/xfs/scrub/repair.c:
+ xfs_attr.h is included more than once.
+Message-ID: <202107210749.wUgH8E0i-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <ff9766a5-3f4e-f821-daf1-b2779a8c81fc@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/21 4:42 PM, Anshuman Khandual wrote:
-> On 7/19/21 6:31 PM, Gavin Shan wrote:
->>> +    if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
->>> +        has_transparent_hugepage()) {
->>> +        page = alloc_pages(GFP_KERNEL, HPAGE_PMD_ORDER);
->>> +        if (page) {
->>> +            args->pmd_pfn = page_to_pfn(page);
->>> +            args->pte_pfn = args->pmd_pfn;
->>> +            return 0;
->>> +        }
->>> +    }
->>> +
->>
->> As syzbot reported against v1 series, we could allocate pages larger than (1 << (MAX_ORDER - 1)) here.
->> So __GFP_NOWARN is needed here. I will fix it in v3 series.
-> 
-> I could find the following build error reported from lkp on V2.
-> 
-> mm/debug_vm_pgtable.c:445:8: warning: variable 'pud' set but not used [-Wunused-but-set-variable]
-> 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git vectorized-scrub
+head:   a2c23a2a858e9b051820071d6411c151656328e4
+commit: 25c7e7491838fb83bd474ef59a4d5abfa92f4f98 [131/306] xfs: repair extended attributes
+compiler: gcc-10 (Ubuntu 10.3.0-1ubuntu1~20.04) 10.3.0
 
-Yes, The following line is missed in PATCH[v2 09/12] and fixed in
-PATCH[v3 09/12]: WARN_ON(!pud_none(pud)). With this line added,
-the variable @pud is used in v3.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-> Could you please point to the syzbot reported problem on V1 as you
-> have mentioned above. Are there configs where HPAGE_[PMD|PUD]_ORDER
-> is greater than (MAX_ORDER - 1) ? If yes, how adding __GFP_NOWARN
-> solves the problem ?
-> 
 
-https://syzkaller.appspot.com/bug?extid=8730ec44a441a434a2c8
-https://syzkaller.appspot.com/x/.config?x=29a82c885e192046
+includecheck warnings: (new ones prefixed by >>)
+>> fs/xfs/scrub/repair.c: xfs_attr.h is included more than once.
 
-The kernel config has the following options:
+Please review and possibly fold the followup patch.
 
-CONFIG_X86_64=y
-CONFIG_TRANSPARENT_HUGEPAGE=y
-CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD=y
-#define PUD_SHIFT        30
-#define PMD_SHIFT        21
-
-CONFIG_FORCE_MAX_ZONEORDER=n
-#define MAX_ORDER	11
-
-(HPAGE_PUD_SHIFT - PAGE_SHIFT) >= (1 << MAX_ORDER)
-(HPAGE_PMD_ORDER)              <  (1 << MAX_ORDER)
-
-The warning is triggered in the following path, __GFP_NOWARN helps to
-avoid the WARNING_ON_ONCE(), but NULL is returned as expected.
-
-    alloc_pages
-      __alloc_pages
-
-        if (unlikely(order >= MAX_ORDER)) {
-                 WARN_ON_ONCE(!(gfp & __GFP_NOWARN));
-                 return NULL;
-         }
-
-Thanks,
-Gavin
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
