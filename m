@@ -2,451 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBD13CF3CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765A53CF3D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237680AbhGTESk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 00:18:40 -0400
-Received: from mga14.intel.com ([192.55.52.115]:51770 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241125AbhGTEPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 00:15:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="210897317"
-X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="210897317"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 21:55:59 -0700
-X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="431923383"
-Received: from ywei11-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.138.31])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 21:55:59 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v3 6/6] tools/tdx: Add a sample attestation user app
-Date:   Mon, 19 Jul 2021 21:55:52 -0700
-Message-Id: <20210720045552.2124688-7-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210720045552.2124688-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210720045552.2124688-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S241125AbhGTEWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 00:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244560AbhGTEUl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 00:20:41 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E01DC061767
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 22:01:15 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id j5so18117676ilk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 22:01:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sdFmRaMOmgHuGWvIA23Uxlb55xudqfFv81rs6+IjDL8=;
+        b=ev1KPypUlq3y0Q4/dy0N6VoE6A7j4QNY+od7m8kBCzEroX+XGVjvgM4EjjxV9Tse0k
+         tYpASYDiB4O80BGdwAp9NKlwF1WBPnoLL5GIw4wqt6OimddHmlmr/PD4S03FNEeHnsDq
+         ns9+32yAu01J8lLJKvy5Tt42o2zvu2IMmYY/0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sdFmRaMOmgHuGWvIA23Uxlb55xudqfFv81rs6+IjDL8=;
+        b=gSx7qkx3y7GxWzjJ5Hk8sT0i7ziVQMBFDoVYDRHnDJZ5348dCj/ga2GUyaGBgHg6Vm
+         Z9Gf0Jz8/jFOOnvE9ldt81Cim8R2hisXEmwf+n4TQNZ4w7Qf+1nlOonXEyyW3PNt0yTX
+         CPOoMhJyEhZD4KeOpYdUlmwVuOlVP1pcoblkUubs0d9M3Xe0LJbG6Ss1YRS5N0R+k4Nh
+         ckmWyYBj1QaVpoZf9nUgbT0WiM3haKJwlH0ZhgA/z/bu3RtZtlRWqWH3ZlL68z9jw1On
+         w5zHp89TA+rAXQ7S6zfexVqrPIXqoUWWlcgIHNFbuqZdqzckzLr2KMh7zzXhxZsRAt8X
+         bLpA==
+X-Gm-Message-State: AOAM533y9udnhJvu73CNUyfrUWp7WhYYj8m89UdHyMoBLxNV+/GxAb/q
+        DmChOLHMLKZ+Cr+OSN/H1E+gcrmNYOoRxac0oBAZFw==
+X-Google-Smtp-Source: ABdhPJxvZdJx3bv0pe2kdZh0PN0L4BVAX2MZFdn/Gb2Ux/JNOFo8roz4c1a5MLWVtRCFH1YMiTt1HHEqW3KZXcnUX08=
+X-Received: by 2002:a92:d305:: with SMTP id x5mr20065108ila.150.1626757274018;
+ Mon, 19 Jul 2021 22:01:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1626683082-29570-1-git-send-email-yongqiang.niu@mediatek.com> <1626683082-29570-2-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1626683082-29570-2-git-send-email-yongqiang.niu@mediatek.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Tue, 20 Jul 2021 13:00:48 +0800
+Message-ID: <CAJMQK-jsbudDCj2TjS13_z--5j+2heUgLYsCTQ23Xd7T4wUZYQ@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/mediatek: add dither 6 setting
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This application uses the misc device /dev/tdx-attest to get TDREPORT
-from the TDX Module or request quote from the VMM.
+On Mon, Jul 19, 2021 at 4:24 PM Yongqiang Niu
+<yongqiang.niu@mediatek.com> wrote:
+>
+> in the first version dither patch
+> https://patchwork.kernel.org/project/linux-mediatek/patch/1553667561-25447-13-git-send-email-yongqiang.niu@mediatek.com/
+> dither 6 setting is included in that patch
+I think you don't need to link the first version here.
 
-It tests following attestation features:
+> bit 1 is lfsr_en( "Enables LFSR-type dithering"), need enable
+> bit 2 is rdither_en(Enables running order dithering), need disable
+> in this issue
+> https://partnerissuetracker.corp.google.com/issues/190643544
+Can you describe the issue in text instead of pasting a link that is
+not accessible to everyone?
 
-  - Get report using TDX_CMD_GET_TDREPORT IOCTL.
-  - Using report data request quote from VMM using TDX_CMD_GEN_QUOTE IOCTL.
-  - Get the quote size using TDX_CMD_GET_QUOTE_SIZE IOCTL.
+>
+> dither 6 setting missed in set dither common patch
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c?h=next-20210430&id=a6b7c98afdcad0f149010ae028b24f2d0dc24cdb
 
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
+If this is fixing a previous patch, please add Fixes: tag instead of
+pasting a link here.
 
-Changes since v1:
- * Removed MMIO reference in gen_quote().
 
- tools/Makefile                     |  13 +-
- tools/tdx/Makefile                 |  19 +++
- tools/tdx/attest/.gitignore        |   2 +
- tools/tdx/attest/Makefile          |  24 +++
- tools/tdx/attest/tdx-attest-test.c | 232 +++++++++++++++++++++++++++++
- 5 files changed, 284 insertions(+), 6 deletions(-)
- create mode 100644 tools/tdx/Makefile
- create mode 100644 tools/tdx/attest/.gitignore
- create mode 100644 tools/tdx/attest/Makefile
- create mode 100644 tools/tdx/attest/tdx-attest-test.c
-
-diff --git a/tools/Makefile b/tools/Makefile
-index 7e9d34ddd74c..5d68084511cb 100644
---- a/tools/Makefile
-+++ b/tools/Makefile
-@@ -30,6 +30,7 @@ help:
- 	@echo '  selftests              - various kernel selftests'
- 	@echo '  bootconfig             - boot config tool'
- 	@echo '  spi                    - spi tools'
-+	@echo '  tdx                    - TDX related test tools'
- 	@echo '  tmon                   - thermal monitoring and tuning tool'
- 	@echo '  tracing                - misc tracing tools'
- 	@echo '  turbostat              - Intel CPU idle stats and freq reporting tool'
-@@ -65,7 +66,7 @@ acpi: FORCE
- cpupower: FORCE
- 	$(call descend,power/$@)
- 
--cgroup firewire hv guest bootconfig spi usb virtio vm bpf iio gpio objtool leds wmi pci firmware debugging tracing: FORCE
-+cgroup firewire hv guest bootconfig spi usb virtio vm bpf iio gpio objtool leds wmi pci firmware debugging tracing tdx: FORCE
- 	$(call descend,$@)
- 
- bpf/%: FORCE
-@@ -104,7 +105,7 @@ all: acpi cgroup cpupower gpio hv firewire liblockdep \
- 		perf selftests bootconfig spi turbostat usb \
- 		virtio vm bpf x86_energy_perf_policy \
- 		tmon freefall iio objtool kvm_stat wmi \
--		pci debugging tracing
-+		pci debugging tracing tdx
- 
- acpi_install:
- 	$(call descend,power/$(@:_install=),install)
-@@ -112,7 +113,7 @@ acpi_install:
- cpupower_install:
- 	$(call descend,power/$(@:_install=),install)
- 
--cgroup_install firewire_install gpio_install hv_install iio_install perf_install bootconfig_install spi_install usb_install virtio_install vm_install bpf_install objtool_install wmi_install pci_install debugging_install tracing_install:
-+cgroup_install firewire_install gpio_install hv_install iio_install perf_install bootconfig_install spi_install usb_install virtio_install vm_install bpf_install objtool_install wmi_install pci_install debugging_install tracing_install tdx_install:
- 	$(call descend,$(@:_install=),install)
- 
- liblockdep_install:
-@@ -139,7 +140,7 @@ install: acpi_install cgroup_install cpupower_install gpio_install \
- 		virtio_install vm_install bpf_install x86_energy_perf_policy_install \
- 		tmon_install freefall_install objtool_install kvm_stat_install \
- 		wmi_install pci_install debugging_install intel-speed-select_install \
--		tracing_install
-+		tracing_install tdx_install
- 
- acpi_clean:
- 	$(call descend,power/acpi,clean)
-@@ -147,7 +148,7 @@ acpi_clean:
- cpupower_clean:
- 	$(call descend,power/cpupower,clean)
- 
--cgroup_clean hv_clean firewire_clean bootconfig_clean spi_clean usb_clean virtio_clean vm_clean wmi_clean bpf_clean iio_clean gpio_clean objtool_clean leds_clean pci_clean firmware_clean debugging_clean tracing_clean:
-+cgroup_clean hv_clean firewire_clean bootconfig_clean spi_clean usb_clean virtio_clean vm_clean wmi_clean bpf_clean iio_clean gpio_clean objtool_clean leds_clean pci_clean firmware_clean debugging_clean tracing_clean tdx_clean:
- 	$(call descend,$(@:_clean=),clean)
- 
- liblockdep_clean:
-@@ -186,6 +187,6 @@ clean: acpi_clean cgroup_clean cpupower_clean hv_clean firewire_clean \
- 		vm_clean bpf_clean iio_clean x86_energy_perf_policy_clean tmon_clean \
- 		freefall_clean build_clean libbpf_clean libsubcmd_clean liblockdep_clean \
- 		gpio_clean objtool_clean leds_clean wmi_clean pci_clean firmware_clean debugging_clean \
--		intel-speed-select_clean tracing_clean
-+		intel-speed-select_clean tracing_clean tdx_clean
- 
- .PHONY: FORCE
-diff --git a/tools/tdx/Makefile b/tools/tdx/Makefile
-new file mode 100644
-index 000000000000..e2564557d463
---- /dev/null
-+++ b/tools/tdx/Makefile
-@@ -0,0 +1,19 @@
-+# SPDX-License-Identifier: GPL-2.0
-+include ../scripts/Makefile.include
-+
-+all: attest
-+
-+clean: attest_clean
-+
-+install: attest_install
-+
-+attest:
-+	$(call descend,attest)
-+
-+attest_install:
-+	$(call descend,attest,install)
-+
-+attest_clean:
-+	$(call descend,attest,clean)
-+
-+.PHONY: all install clean attest latency_install latency_clean
-diff --git a/tools/tdx/attest/.gitignore b/tools/tdx/attest/.gitignore
-new file mode 100644
-index 000000000000..5f819a8a6c49
---- /dev/null
-+++ b/tools/tdx/attest/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+tdx-attest-test
-diff --git a/tools/tdx/attest/Makefile b/tools/tdx/attest/Makefile
-new file mode 100644
-index 000000000000..bf47ba718386
---- /dev/null
-+++ b/tools/tdx/attest/Makefile
-@@ -0,0 +1,24 @@
-+# SPDX-License-Identifier: GPL-2.0
-+# Makefile for vm tools
-+#
-+VAR_CFLAGS := $(shell pkg-config --cflags libtracefs 2>/dev/null)
-+VAR_LDLIBS := $(shell pkg-config --libs libtracefs 2>/dev/null)
-+
-+TARGETS = tdx-attest-test
-+CFLAGS = -static -Wall -Wextra -g -O2 $(VAR_CFLAGS)
-+LDFLAGS = -lpthread $(VAR_LDLIBS)
-+
-+all: $(TARGETS)
-+
-+%: %.c
-+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
-+
-+clean:
-+	$(RM) tdx-attest-test
-+
-+prefix ?= /usr/local
-+sbindir ?= ${prefix}/sbin
-+
-+install: all
-+	install -d $(DESTDIR)$(sbindir)
-+	install -m 755 -p $(TARGETS) $(DESTDIR)$(sbindir)
-diff --git a/tools/tdx/attest/tdx-attest-test.c b/tools/tdx/attest/tdx-attest-test.c
-new file mode 100644
-index 000000000000..cff33c3a0c32
---- /dev/null
-+++ b/tools/tdx/attest/tdx-attest-test.c
-@@ -0,0 +1,232 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * tdx-attest-test.c - utility to test TDX attestation feature.
-+ *
-+ * Copyright (C) 2020 - 2021 Intel Corporation. All rights reserved.
-+ *
-+ * Author: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-+ *
-+ */
-+
-+#include <linux/types.h>
-+#include <linux/ioctl.h>
-+#include <sys/ioctl.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <stdio.h>
-+#include <ctype.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <limits.h>
-+#include <stdbool.h>
-+#include <getopt.h>
-+#include <stdint.h> /* uintmax_t */
-+#include <sys/mman.h>
-+#include <unistd.h> /* sysconf */
-+#include <time.h>
-+
-+#include "../../../include/uapi/misc/tdx.h"
-+
-+#define devname		"/dev/tdx-attest"
-+
-+#define HEX_DUMP_SIZE	16
-+#define MAX_ROW_SIZE	70
-+
-+#define ATTESTATION_TEST_BIN_VERSION "0.1"
-+
-+struct tdx_attest_args {
-+	bool is_dump_data;
-+	bool is_get_tdreport;
-+	bool is_get_quote_size;
-+	bool is_gen_quote;
-+	bool debug_mode;
-+	char *out_file;
-+};
-+
-+static void print_hex_dump(const char *title, const char *prefix_str,
-+			   const void *buf, int len)
-+{
-+	const __u8 *ptr = buf;
-+	int i, rowsize = HEX_DUMP_SIZE;
-+
-+	if (!len || !buf)
-+		return;
-+
-+	printf("\t\t%s", title);
-+
-+	for (i = 0; i < len; i++) {
-+		if (!(i % rowsize))
-+			printf("\n%s%.8x:", prefix_str, i);
-+		printf(" %.2x", ptr[i]);
-+	}
-+
-+	printf("\n");
-+}
-+
-+static void gen_report_data(__u8 *report_data, bool dump_data)
-+{
-+	int i;
-+
-+	srand(time(NULL));
-+
-+	for (i = 0; i < TDX_REPORT_DATA_LEN; i++)
-+		report_data[i] = rand();
-+
-+	if (dump_data)
-+		print_hex_dump("\n\t\tTDX report data\n", " ",
-+			       report_data, TDX_REPORT_DATA_LEN);
-+}
-+
-+static int get_tdreport(int devfd, bool dump_data, __u8 *report_data)
-+{
-+	__u8 tdrdata[TDX_TDREPORT_LEN] = {0};
-+	int ret;
-+
-+	if (!report_data)
-+		report_data = tdrdata;
-+
-+	gen_report_data(report_data, dump_data);
-+
-+	ret = ioctl(devfd, TDX_CMD_GET_TDREPORT, report_data);
-+	if (ret) {
-+		printf("TDX_CMD_GET_TDREPORT ioctl() %d failed\n", ret);
-+		return -EIO;
-+	}
-+
-+	if (dump_data)
-+		print_hex_dump("\n\t\tTDX tdreport data\n", " ", report_data,
-+			       TDX_TDREPORT_LEN);
-+
-+	return 0;
-+}
-+
-+static __u64 get_quote_size(int devfd)
-+{
-+	int ret;
-+	__u64 quote_size;
-+
-+	ret = ioctl(devfd, TDX_CMD_GET_QUOTE_SIZE, &quote_size);
-+	if (ret) {
-+		printf("TDX_CMD_GET_QUOTE_SIZE ioctl() %d failed\n", ret);
-+		return -EIO;
-+	}
-+
-+	printf("Quote size: %lld\n", quote_size);
-+
-+	return quote_size;
-+}
-+
-+static int gen_quote(int devfd, bool dump_data)
-+{
-+	__u8 *quote_data;
-+	__u64 quote_size;
-+	int ret;
-+
-+	quote_size = get_quote_size(devfd);
-+
-+	quote_data = malloc(sizeof(char) * quote_size);
-+	if (!quote_data) {
-+		printf("%s queue data alloc failed\n", devname);
-+		return -ENOMEM;
-+	}
-+
-+	ret = get_tdreport(devfd, dump_data, quote_data);
-+	if (ret) {
-+		printf("TDX_CMD_GET_TDREPORT ioctl() %d failed\n", ret);
-+		goto done;
-+	}
-+
-+	ret = ioctl(devfd, TDX_CMD_GEN_QUOTE, quote_data);
-+	if (ret) {
-+		printf("TDX_CMD_GEN_QUOTE ioctl() %d failed\n", ret);
-+		goto done;
-+	}
-+
-+	print_hex_dump("\n\t\tTDX Quote data\n", " ", quote_data,
-+		       quote_size);
-+
-+done:
-+	free(quote_data);
-+
-+	return ret;
-+}
-+
-+static void usage(void)
-+{
-+	puts("\nUsage:\n");
-+	puts("tdx_attest [options] \n");
-+
-+	puts("Attestation device test utility.");
-+
-+	puts("\nOptions:\n");
-+	puts(" -d, --dump                Dump tdreport/tdquote data");
-+	puts(" -r, --get-tdreport        Get TDREPORT data");
-+	puts(" -g, --gen-quote           Generate TDQUOTE");
-+	puts(" -s, --get-quote-size      Get TDQUOTE size");
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int ret, devfd;
-+	struct tdx_attest_args args = {0};
-+
-+	static const struct option longopts[] = {
-+		{ "dump",           no_argument,       NULL, 'd' },
-+		{ "get-tdreport",   required_argument, NULL, 'r' },
-+		{ "gen-quote",      required_argument, NULL, 'g' },
-+		{ "gen-quote-size", required_argument, NULL, 's' },
-+		{ "version",        no_argument,       NULL, 'V' },
-+		{ NULL,             0, NULL, 0 }
-+	};
-+
-+	while ((ret = getopt_long(argc, argv, "hdrgsV", longopts,
-+				  NULL)) != -1) {
-+		switch (ret) {
-+		case 'd':
-+			args.is_dump_data = true;
-+			break;
-+		case 'r':
-+			args.is_get_tdreport = true;
-+			break;
-+		case 'g':
-+			args.is_gen_quote = true;
-+			break;
-+		case 's':
-+			args.is_get_quote_size = true;
-+			break;
-+		case 'h':
-+			usage();
-+			return 0;
-+		case 'V':
-+			printf("Version: %s\n", ATTESTATION_TEST_BIN_VERSION);
-+			return 0;
-+		default:
-+			printf("Invalid options\n");
-+			usage();
-+			return -EINVAL;
-+		}
-+	}
-+
-+	devfd = open(devname, O_RDWR | O_SYNC);
-+	if (devfd < 0) {
-+		printf("%s open() failed\n", devname);
-+		return -ENODEV;
-+	}
-+
-+	if (args.is_get_quote_size)
-+		get_quote_size(devfd);
-+
-+	if (args.is_get_tdreport)
-+		get_tdreport(devfd, args.is_dump_data, NULL);
-+
-+	if (args.is_gen_quote)
-+		gen_quote(devfd, args.is_dump_data);
-+
-+	close(devfd);
-+
-+	return 0;
-+}
--- 
-2.25.1
-
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> index 99cbf44..7dd8e05 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> @@ -26,6 +26,7 @@
+>  #define DISP_OD_CFG                            0x0020
+>  #define DISP_OD_SIZE                           0x0030
+>  #define DISP_DITHER_5                          0x0114
+> +#define DISP_DITHER_6                          0x0118
+>  #define DISP_DITHER_7                          0x011c
+>  #define DISP_DITHER_15                         0x013c
+>  #define DISP_DITHER_16                         0x0140
+> @@ -135,6 +136,7 @@ void mtk_dither_set_common(void __iomem *regs, struct cmdq_client_reg *cmdq_reg,
+>
+>         if (bpc >= MTK_MIN_BPC) {
+>                 mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_5);
+> +               mtk_ddp_write(cmdq_pkt, 0x3002, cmdq_reg, regs, DISP_DITHER_6);
+>                 mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_7);
+>                 mtk_ddp_write(cmdq_pkt,
+>                               DITHER_LSB_ERR_SHIFT_R(MTK_MAX_BPC - bpc) |
+> --
+> 1.8.1.1.dirty
+>
