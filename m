@@ -2,134 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5383D041F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 23:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA183D042C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 00:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbhGTVO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 17:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
+        id S231236AbhGTVUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 17:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhGTVOS (ORCPT
+        with ESMTP id S230039AbhGTVT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 17:14:18 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248BBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 14:54:56 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id d17so287999ljq.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 14:54:56 -0700 (PDT)
+        Tue, 20 Jul 2021 17:19:26 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582BDC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 15:00:03 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id cu14so531340pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 15:00:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zMjMAmAMmxLkKR5KIrE39H+YkRtqEnHl/ne2WjpAkBU=;
-        b=IAAqv6WWi0bCq9BdRpO54IgGQEqqW+iZuKmNQNeXPt7o3yRa20Xq4+PpqNjmyJqYP3
-         a2wi9BHpUjnKnN6nxb+sSVMuSgnLHU5ILKHAkHZEFgBhW4lR0j7iV1+spwakKBGSnszc
-         TiXcVTDpTSwrJ3G+KTaC9yqZBTVi4UgmOLAOE=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WyxGUW8l0i1+27gVKNpxMIuSdpPKu6kJDnkVFPaL1B8=;
+        b=CvGYL7R+ixxU/JIlmN6/TJdMXXXXBl4WApNx0WZ/sQ60gmly7rRjWn5rEs/7RcgL8+
+         48a66pvoeTtIOcO4Yj/ISKAz00K3YYrzUYzvTtWhiQMdzEx0SMkmZvjNddi27ZygyNgz
+         VF3+NsdsEEmtRvjR7ZOmSMnN7Cylp8rFHYI5U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zMjMAmAMmxLkKR5KIrE39H+YkRtqEnHl/ne2WjpAkBU=;
-        b=mOqyJ7QRU0dMA4Fv0rKLKhcTcgF5GSIf7Nrr5jc7e3fJqePRINJ3y9X/odQjrogY+A
-         W2iqIA/REHcdBFzT0d6dByAvxBMuMc+geqa+tWMOPrO/+zi17M1FbeGTo1yTUMD1jYcp
-         YnJ16cU8aYBByNDcaNNPSuFCx7KknmRDhvLOsiJHtTZlVd6tlwihc8RT8GKZ/NE++AO9
-         T0qvqttmgoZTgHfQxdBJtUdShmyFqMonyjtsE60x0hkonynVO9uLai/tthrqHEKOrYAs
-         40GDoVv6os7QpDMey+4tzKkGWgALQASurSHV0aRGbC1q6rHx3p2VWGHXLJv2uW08AGsy
-         JMGw==
-X-Gm-Message-State: AOAM5311fdMN2g81A5/XApDzYjxQXnjAJgEVghV+Ao3r7Zew8Gm6XRuB
-        /IG8peedRn0+ilBN0FyQJhFrBanMA5cPSOax
-X-Google-Smtp-Source: ABdhPJwip2usIrBYCeQDTI6rofE+CeIldIGtxM+nctqOBUih5lL9oT+M2wk1BI6jfunz5MXndnsm4Q==
-X-Received: by 2002:a2e:9c19:: with SMTP id s25mr29304967lji.478.1626818094004;
-        Tue, 20 Jul 2021 14:54:54 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id o7sm880815lfi.59.2021.07.20.14.54.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 14:54:52 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id y42so200660lfa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 14:54:52 -0700 (PDT)
-X-Received: by 2002:ac2:42d6:: with SMTP id n22mr23066024lfl.41.1626818091856;
- Tue, 20 Jul 2021 14:54:51 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WyxGUW8l0i1+27gVKNpxMIuSdpPKu6kJDnkVFPaL1B8=;
+        b=HKu5eCqEX46en+GLknD8GRvV0AmvoRWKnEtk+h6soxWxVf4tgMJ9yB42VwkT+WZUte
+         joIbUCGD1w4zWwRBU0xleoeeZAYlHJxQ5YbE2NYdchOTnJ9xlUIYAXwylJuXm8FSYKTP
+         xp2Fc9WCwZ0IQxCXGqRfs5JLLlDg/89wR/yFoQBowWD0QoRg0BV9rhXPxbPIeyKZr8my
+         fqSWr9wMTeh2M23schU8n8fSztNhROWrpVw69ANsmv3IZpNjPhsEjUEUL9t1Itmw4UZf
+         DNFVOKefLyvL55krkh5CapzL1lS04HafC1VOyMNGtEse2XuoDAUoJ3BmsJL+7+QG7c7h
+         S7UA==
+X-Gm-Message-State: AOAM531Yza22OzWjA15mEDeX5X9+zxTCeLRj5xDmhKg3+TfztzNPwW6y
+        YBpBEBgfS3Xb7RIxGtTKQZnJmQ==
+X-Google-Smtp-Source: ABdhPJwZLJrQEIugeNEH1We9YX0Ow3bcRiVxxx12v0TxyrOgmHcmdg1t2SI0sqWzHQWp/tQIRiaZ4g==
+X-Received: by 2002:a17:90a:c8b:: with SMTP id v11mr505781pja.114.1626818401485;
+        Tue, 20 Jul 2021 15:00:01 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e16sm28694557pgl.54.2021.07.20.15.00.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 15:00:00 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-hardening@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>, glider@google.com,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] hardening: Clarify Kconfig text for auto-var-init
+Date:   Tue, 20 Jul 2021 14:59:57 -0700
+Message-Id: <20210720215957.3446719-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210708232522.3118208-1-ndesaulniers@google.com>
- <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
- <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com> <CAKwvOdkvju7heeNpk87brsjkhXHbdKFsUgf63KWhXox9rDkQsA@mail.gmail.com>
-In-Reply-To: <CAKwvOdkvju7heeNpk87brsjkhXHbdKFsUgf63KWhXox9rDkQsA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 20 Jul 2021 14:54:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiZe2FuiAOwhbKR_VMmFBKekz0NFREm4fvik25PEdcK_g@mail.gmail.com>
-Message-ID: <CAHk-=wiZe2FuiAOwhbKR_VMmFBKekz0NFREm4fvik25PEdcK_g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
- LLVM=1 LLVM_IAS=1
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4689; h=from:subject; bh=Z2jIdIqSWFjGjbsnH0q1H4OQWdcOHIzxX0E/vHpuz2Y=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBg90dclov0B+zGzREFyMibbwv9l5oqr9QJrpcMBRsN hb++VKyJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYPdHXAAKCRCJcvTf3G3AJvpfD/ 48Gq6fxhiEccbjQyQe+7IJXzIsYGWv+awOpA5DqwDe5ctfyYW5icxUSVx+Clzkn60bS8MOF5HK64Zs zu2EN8WIVWI53o/I7n8yieURnaJhOWRaodHPfz6sO8dvn3ddQAG2LF18ckn+L532AKdvPnDGhGHFDR Ez7EcJQoM2jNCTffA+Z7joyraqV4sL590QVJ6mB6CWtxsy2rB8JRIv73xRyHtajtELy3TJ9fExNdDZ ZIA26rgLKetjgMSKtz45O4khEwF0biQzfJw/pev0HXIzTOs5LZ+oxWMKyMM5dU9/77VKgTx6FDd9OE /Un9lPGCZKWTkGdyOUTXo4LNX2DYldun1e7zJ6Y73mo0HY//kluFhjJx/A84aNfge+v8JufRdH7ymD woQcwoMBkyRAWQFy4Jd/S91LPhyp1NA1uXoc4M8ZXvePbBtG201Awb2fCaYEAuXm7TiR18GmAtRqsB XR3rfGyHFvi/qRNpjBfAnvgOL2UY/r9TYrKZhNBEsMcIWpGLKjT6Jtlqf8MmXHsuNVElcnIPRCgom9 wdrabjtlA41UUFPBGhgsEF76FSR3UPI2v3gL/T+jL7RjJp++1nTkK5M38G1RKo8Zfda0wK3qcLIaVU vs2ym4j9tzZ8qvAreuqUY7R+rhMNrO4+Iyo4eQ8M6ZhUT9i1aYIRpPQ0uhQw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 2:29 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> There's still some that we can eliminate for BOTH configure and actual
-> build, like CROSS_COMPILE. :^)
+Clarify the details around the automatic variable initialization modes
+available. Specifically this details the values used for pattern init
+and expands on the rationale for zero init safety. Additionally makes
+zero init the default when available.
 
-I have this (perhaps odd) model where I use separate trees for
-different things, which is something git obviously is partly designed
-for.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ security/Kconfig.hardening | 52 +++++++++++++++++++++++---------------
+ 1 file changed, 32 insertions(+), 20 deletions(-)
 
-So when I create a source tree, I usually create it for one particular
-use - whether it be for one particular configuration (ie "build with
-clang" or "set up a tree for a 32-bit cross compile" or whatever), or
-whether it be for some particular development issue ("long-term branch
-for testing asm goto with inputs").
+diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
+index 023aea5e117c..90cbaff86e13 100644
+--- a/security/Kconfig.hardening
++++ b/security/Kconfig.hardening
+@@ -29,6 +29,7 @@ choice
+ 	prompt "Initialize kernel stack variables at function entry"
+ 	default GCC_PLUGIN_STRUCTLEAK_BYREF_ALL if COMPILE_TEST && GCC_PLUGINS
+ 	default INIT_STACK_ALL_PATTERN if COMPILE_TEST && CC_HAS_AUTO_VAR_INIT_PATTERN
++	default INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_PATTERN
+ 	default INIT_STACK_NONE
+ 	help
+ 	  This option enables initialization of stack variables at
+@@ -39,11 +40,11 @@ choice
+ 	  syscalls.
+ 
+ 	  This chooses the level of coverage over classes of potentially
+-	  uninitialized variables. The selected class will be
++	  uninitialized variables. The selected class of variable will be
+ 	  initialized before use in a function.
+ 
+ 	config INIT_STACK_NONE
+-		bool "no automatic initialization (weakest)"
++		bool "no automatic stack variable initialization (weakest)"
+ 		help
+ 		  Disable automatic stack variable initialization.
+ 		  This leaves the kernel vulnerable to the standard
+@@ -80,7 +81,7 @@ choice
+ 		  and is disallowed.
+ 
+ 	config GCC_PLUGIN_STRUCTLEAK_BYREF_ALL
+-		bool "zero-init anything passed by reference (very strong)"
++		bool "zero-init everything passed by reference (very strong)"
+ 		depends on GCC_PLUGINS
+ 		depends on !(KASAN && KASAN_STACK)
+ 		select GCC_PLUGIN_STRUCTLEAK
+@@ -91,33 +92,44 @@ choice
+ 		  of uninitialized stack variable exploits and information
+ 		  exposures.
+ 
++		  As a side-effect, this keeps a lot of variables on the
++		  stack that can otherwise be optimized out, so combining
++		  this with CONFIG_KASAN_STACK can lead to a stack overflow
++		  and is disallowed.
++
+ 	config INIT_STACK_ALL_PATTERN
+-		bool "0xAA-init everything on the stack (strongest)"
++		bool "pattern-init everything (strongest)"
+ 		depends on CC_HAS_AUTO_VAR_INIT_PATTERN
+ 		help
+-		  Initializes everything on the stack with a 0xAA
+-		  pattern. This is intended to eliminate all classes
+-		  of uninitialized stack variable exploits and information
+-		  exposures, even variables that were warned to have been
+-		  left uninitialized.
++		  Initializes everything on the stack (including padding)
++		  with a specific debug value. This is intended to eliminate
++		  all classes of uninitialized stack variable exploits and
++		  information exposures, even variables that were warned about
++		  having been left uninitialized.
+ 
+ 		  Pattern initialization is known to provoke many existing bugs
+ 		  related to uninitialized locals, e.g. pointers receive
+-		  non-NULL values, buffer sizes and indices are very big.
++		  non-NULL values, buffer sizes and indices are very big. The
++		  pattern is situation-specific; Clang on 64-bit uses 0xAA
++		  repeating for all types and padding except float and double
++		  which use 0xFF repeating (-NaN). Clang on 32-bit uses 0xFF
++		  repeating for all types and padding.
+ 
+ 	config INIT_STACK_ALL_ZERO
+-		bool "zero-init everything on the stack (strongest and safest)"
++		bool "zero-init everything (strongest and safest)"
+ 		depends on CC_HAS_AUTO_VAR_INIT_ZERO
+ 		help
+-		  Initializes everything on the stack with a zero
+-		  value. This is intended to eliminate all classes
+-		  of uninitialized stack variable exploits and information
+-		  exposures, even variables that were warned to have been
+-		  left uninitialized.
+-
+-		  Zero initialization provides safe defaults for strings,
+-		  pointers, indices and sizes, and is therefore
+-		  more suitable as a security mitigation measure.
++		  Initializes everything on the stack (including padding)
++		  with a zero value. This is intended to eliminate all
++		  classes of uninitialized stack variable exploits and
++		  information exposures, even variables that were warned
++		  about having been left uninitialized.
++
++		  Zero initialization provides safe defaults for strings
++		  (immediately NUL-terminated), pointers (NULL), indices
++		  (index 0), and sizes (0 length), so it is therefore more
++		  suitable as a production security mitigation than pattern
++		  initialization.
+ 
+ endchoice
+ 
+-- 
+2.30.2
 
-Yeah, sometimes I use multiple git branches in the same tree for
-things - but I tend to do that mainly for short-term things where I
-don't expect to keep working on it over time.
-
-End result: I find 'make' command line flags to be really really
-annoying, because then I have to match them to whatever tree I'm in.
-
-I'd much rather have a local per-tree configuration that just sticks
-around. It's why ".config" works fairly well for me.
-
-But there are other things that stick around. In particular, I have
-considered simply using git config variables for that.
-
-Something like this in the main Makefile:
-
-    ARCH=$(shell git config build.arch)
-    CC=$(shell git config --default=gcc build.cc)
-
-would actually be optimal for what _I_ do. Then for my clang build tree, I'd do
-
-    git config build.cc clang
-
-and it would stick in that tree. If you don't set the option, it would use gcc.
-
-Maybe that would be an acceptable model these days? We've used git
-long enough that non-git worries aren't a big deal any more, and I
-guess people could use the old-fashioned
-
-    make CC=clang
-
-if they don't use git.
-
-We could get rid of all the CROSS_COMPILE etc garbage that way,
-because you'd just set it in the .git/config file. Those are really
-convenient and easy to edit.
-
-Would people hate that kind of model?
-
-                   Linus
