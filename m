@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3307D3CF5D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD8B3CF5DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234028AbhGTHak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:30:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49270 "EHLO mail.kernel.org"
+        id S231690AbhGTHb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:31:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233384AbhGTH2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233320AbhGTH2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Jul 2021 03:28:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B27761208;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E1296120D;
         Tue, 20 Jul 2021 08:09:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626768559;
-        bh=3mi8QxdBGafRmH7589wIkhaE/fpfuICdMXjq8jNzItw=;
+        bh=Xude9cwci3VpqzmecTiQj1FEp3C3XgXWTqdJsqWC8u4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cg+AxSF+80mTF0MXOti0yWHl9mN9DQMm2zXzRilG8fn2I50oKregIpSFKt64LskuB
-         HRCVhAHoWqxFBko8jdbulsEeToVl2L6jphmCltdzswXck7S8bC4PJfZQw2J1UtRb0+
-         Y4xGodgKE+7J3HkKhjh5Px6BchfBsPCzai3zu6F++op1J9teu/PJ/HCMfkmYsq7Kih
-         zSVhbozIiB/HCDJ4BDSvYlARqHzea0EFfWbjuc3495IB4JtZSlnAXzPO6uYNbqVkAl
-         B66kWpNkczDUfkchae7+uYYBUkd4t0qHeRXt4GIOuDWPdDxbmigqJ1qz4uivRCNVeV
-         lTBMTMKVCD63A==
+        b=EDw8M4Dow7htjwcfh13nNwkd5p0ECDSfU+jaYepYUqsSghERSH1C492/l8DHX5vqe
+         6dKADV4PdZL0y5+2txYgdTohJZG+qZh4+NLKBMWhoGdD1661+tdxlk5hq6CTndw+bx
+         v3l1J+MUf2TXFG73R9NqiEzJqwXS1wTWixhx8lVF3SvwHHJnmMZ6jC2vLLMvq17k9m
+         FxysrU0j03D+cPoH62eo3urAa/yMwHO/J8wBYNx3dYjqe/CeIA/M9mCI9mZSR8YpFL
+         Ivvt7NLQG9K9CUEUI6BbGRcPoU4hWxyeUD86SuOaPi8bmZ2eCP4O3RjIIBx3GDVm2x
+         XC1HezMf44pCQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1m5koX-000eTd-QK; Tue, 20 Jul 2021 10:09:17 +0200
+        id 1m5koX-000eTh-SC; Tue, 20 Jul 2021 10:09:17 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Bjorn Helgaas <helgaas@kernel.org>, Rob Herring <robh@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH v6 8/9] dt-bindings: PCI: kirin-pcie.txt: Convert it to yaml
-Date:   Tue, 20 Jul 2021 10:09:10 +0200
-Message-Id: <b755cdb5ff08a3df1e1f94cdb3372e58cd946117.1626768323.git.mchehab+huawei@kernel.org>
+        Vinod Koul <vkoul@kernel.org>, Wei Xu <xuwei5@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
+Subject: [PATCH v6 9/9] phy-hi3670-pcie: move reset-gpios to the PCIe DT schema
+Date:   Tue, 20 Jul 2021 10:09:11 +0200
+Message-Id: <c15993e6c75735161be9ba97a6857ab29926320a.1626768323.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1626768323.git.mchehab+huawei@kernel.org>
 References: <cover.1626768323.git.mchehab+huawei@kernel.org>
@@ -51,193 +49,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the file into a JSON description at the yaml format.
+The PHY interface as found on HiKey 970 uses 4 reset-gpios
+instead of just one. That seems to be due to electrical
+requirements, as, on HiKey 970, the PERST# signal is
+provided via one GPIO per connected/available PCIe device:
+
+- GPIO 56 has a pullup logic from 1V8 to 2V5
+  connected to a PCIe bridge chip (PEX 8606);
+- GPIO 25 has a pullup logic from 1V8 to 3V3
+  connected to the PERST# pin at the M.2 slot;
+- GPIO 220 has a pullup logic from 1V8 to 3V3
+  connected to the PERST# pin at the PCIe mini slot;
+- GPIO 203 has a pullup logic from 1V8 to 3V3
+  connected to the PERST# pin at the Ethernet chipset.
+
+Originally, this was mapped via the PHY interface, but, as such
+design may also be used with different hardware, remap this
+to use the pcie-bus DT schema.
+
+This patch depends on a DT schema patch submitted at:
+	https://github.com/devicetree-org/dt-schema/pull/56
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../bindings/pci/hisilicon,kirin-pcie.yaml    | 87 +++++++++++++++++++
- .../devicetree/bindings/pci/kirin-pcie.txt    | 50 -----------
- .../devicetree/bindings/pci/snps,dw-pcie.yaml |  2 +-
- MAINTAINERS                                   |  2 +-
- 4 files changed, 89 insertions(+), 52 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
- delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
+ .../phy/hisilicon,phy-hi3670-pcie.yaml        |  4 --
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  5 +-
+ drivers/phy/hisilicon/phy-hi3670-pcie.c       | 54 ++++++++++---------
+ 3 files changed, 31 insertions(+), 32 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-new file mode 100644
-index 000000000000..eabc651c9766
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-@@ -0,0 +1,87 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pci/hisilicon,kirin-pcie.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: HiSilicon Kirin SoCs PCIe host DT description
-+
-+maintainers:
-+  - Xiaowei Song <songxiaowei@hisilicon.com>
-+  - Binghui Wang <wangbinghui@hisilicon.com>
-+
-+description: |
-+  Kirin PCIe host controller is based on the Synopsys DesignWare PCI core.
-+  It shares common functions with the PCIe DesignWare core driver and
-+  inherits common properties defined in
-+  Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml.
-+
-+allOf:
-+  - $ref: /schemas/pci/snps,dw-pcie.yaml#
-+
-+properties:
-+  compatible:
-+    contains:
-+      enum:
-+        - hisilicon,kirin960-pcie
-+        - hisilicon,kirin970-pcie
-+
-+  reg:
-+    description: |
-+      Should contain rc_dbi, apb, config registers location and length.
-+    minItems: 3
-+    maxItems: 4
-+
-+  reg-names:
-+    items:
-+      - const: dbi          # controller configuration registers
-+      - const: apb          # apb Ctrl register defined by Kirin
-+      - const: config       # PCIe configuration space registers
-+      - const: phy          # apb PHY register used on Kirin 960 PHY
-+    minItems: 3
-+    maxItems: 4
-+
-+  reset-gpios:
-+    description: The GPIO(s) to generate PCIe PERST# assert and deassert signal.
-+    minItems: 1
-+    maxItems: 4
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    soc {
-+      #address-cells = <2>;
-+      #size-cells = <2>;
-+
-+      pcie: pcie@f4000000 {
-+        compatible = "hisilicon,kirin970-pcie";
-+        reg = <0x0 0xf4000000 0x0 0x1000>,
-+              <0x0 0xff3fe000 0x0 0x1000>,
-+              <0x0 0xf4000000 0 0x2000>;
-+        reg-names = "dbi", "apb", "config";
-+        bus-range = <0x0  0x1>;
-+        #address-cells = <3>;
-+        #size-cells = <2>;
-+        device_type = "pci";
-+        ranges = <0x02000000 0x0 0x00000000 0x0 0xf5000000 0x0 0x2000000>;
-+        num-lanes = <1>;
-+        #interrupt-cells = <1>;
-+        interrupts = <0 283 4>;
-+        interrupt-names = "msi";
-+        interrupt-map-mask = <0xf800 0 0 7>;
-+        interrupt-map = <0x0 0 0 1 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0x0 0 0 2 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0x0 0 0 3 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0x0 0 0 4 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
-+        reset-gpios = <&gpio7 0 0 >, <&gpio25 2 0 >,
-+                      <&gpio3 1 0 >, <&gpio27 4 0 >;
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/pci/kirin-pcie.txt b/Documentation/devicetree/bindings/pci/kirin-pcie.txt
-deleted file mode 100644
-index 7adab8999a6a..000000000000
---- a/Documentation/devicetree/bindings/pci/kirin-pcie.txt
-+++ /dev/null
-@@ -1,50 +0,0 @@
--HiSilicon Kirin SoCs PCIe host DT description
--
--Kirin PCIe host controller is based on the Synopsys DesignWare PCI core.
--It shares common functions with the PCIe DesignWare core driver and
--inherits common properties defined in
--Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml.
--
--Additional properties are described here:
--
--Required properties
--- compatible:
--	"hisilicon,kirin960-pcie"
--- reg: Should contain rc_dbi, apb, phy, config registers location and length.
--- reg-names: Must include the following entries:
--  "dbi": controller configuration registers;
--  "apb": apb Ctrl register defined by Kirin;
--  "phy": apb PHY register defined by Kirin;
--  "config": PCIe configuration space registers.
--- reset-gpios: The GPIO to generate PCIe PERST# assert and deassert signal.
--
--Optional properties:
--
--Example based on kirin960:
--
--	pcie@f4000000 {
--		compatible = "hisilicon,kirin960-pcie";
--		reg = <0x0 0xf4000000 0x0 0x1000>, <0x0 0xff3fe000 0x0 0x1000>,
--		      <0x0 0xf3f20000 0x0 0x40000>, <0x0 0xF4000000 0 0x2000>;
--		reg-names = "dbi","apb","phy", "config";
--		bus-range = <0x0  0x1>;
--		#address-cells = <3>;
--		#size-cells = <2>;
--		device_type = "pci";
--		ranges = <0x02000000 0x0 0x00000000 0x0 0xf5000000 0x0 0x2000000>;
--		num-lanes = <1>;
--		#interrupt-cells = <1>;
--		interrupt-map-mask = <0xf800 0 0 7>;
--		interrupt-map = <0x0 0 0 1 &gic 0 0 0  282 4>,
--				<0x0 0 0 2 &gic 0 0 0  283 4>,
--				<0x0 0 0 3 &gic 0 0 0  284 4>,
--				<0x0 0 0 4 &gic 0 0 0  285 4>;
--		clocks = <&crg_ctrl HI3660_PCIEPHY_REF>,
--			 <&crg_ctrl HI3660_CLK_GATE_PCIEAUX>,
--			 <&crg_ctrl HI3660_PCLK_GATE_PCIE_PHY>,
--			 <&crg_ctrl HI3660_PCLK_GATE_PCIE_SYS>,
--			 <&crg_ctrl HI3660_ACLK_GATE_PCIE>;
--		clock-names = "pcie_phy_ref", "pcie_aux",
--			      "pcie_apb_phy", "pcie_apb_sys", "pcie_aclk";
--		reset-gpios = <&gpio11 1 0 >;
--	};
-diff --git a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
-index a8c1db879fb9..d80894a5abf5 100644
---- a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
-+++ b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
-@@ -34,7 +34,7 @@ properties:
-     minItems: 2
-     maxItems: 5
-     items:
--      enum: [dbi, dbi2, config, atu, app, elbi, mgmt, ctrl, parf, cfg, link]
-+      enum: [dbi, dbi2, config, atu, apb, app, elbi, mgmt, ctrl, parf, cfg, link]
+diff --git a/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+index f88b6b7496bb..112a982ee258 100644
+--- a/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
++++ b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+@@ -42,10 +42,6 @@ properties:
+       - const: apb_sys
+       - const: aclk
  
-   num-lanes:
-     description: |
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b54bd9dd07ec..d5f53b2d3f9c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14420,7 +14420,7 @@ M:	Xiaowei Song <songxiaowei@hisilicon.com>
- M:	Binghui Wang <wangbinghui@hisilicon.com>
- L:	linux-pci@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/pci/kirin-pcie.txt
-+F:	Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
- F:	drivers/pci/controller/dwc/pcie-kirin.c
+-  reset-gpios:
+-    description: PCI PERST reset GPIOs
+-    maxItems: 4
+-
+   clkreq-gpios:
+     description: Clock request GPIOs
+     maxItems: 3
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+index 6dfcfcfeedae..a07790c76b72 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+@@ -687,9 +687,6 @@ pcie_phy: pcie-phy@fc000000 {
+ 				      "apb_phy", "apb_sys",
+ 				      "aclk";
  
- PCIE DRIVER FOR HISILICON STB
+-			reset-gpios = <&gpio7 0 0 >, <&gpio25 2 0 >,
+-				      <&gpio3 1 0 >, <&gpio27 4 0 >;
+-
+ 			clkreq-gpios = <&gpio20 6 0 >, <&gpio27 3 0 >,
+ 				       <&gpio17 0 0 >;
+ 
+@@ -729,6 +726,8 @@ &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
+ 					 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
+ 					<0x0 0 0 4
+ 					 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
++			reset-gpios = <&gpio7 0 0 >, <&gpio25 2 0 >,
++				      <&gpio3 1 0 >, <&gpio27 4 0 >;
+ 		};
+ 
+ 		/* UFS */
+diff --git a/drivers/phy/hisilicon/phy-hi3670-pcie.c b/drivers/phy/hisilicon/phy-hi3670-pcie.c
+index e80143df0217..77bf5bb07ba2 100644
+--- a/drivers/phy/hisilicon/phy-hi3670-pcie.c
++++ b/drivers/phy/hisilicon/phy-hi3670-pcie.c
+@@ -553,11 +553,13 @@ static int hi3670_pcie_noc_power(struct hi3670_pcie_phy *phy, bool enable)
+ 	return 0;
+ }
+ 
+-static int hi3670_pcie_get_apb(struct hi3670_pcie_phy *phy)
++static int hi3670_pcie_get_resources_from_pcie(struct hi3670_pcie_phy *phy)
+ {
+ 	struct device_node *pcie_port;
+ 	struct device *dev = phy->dev;
+ 	struct device *pcie_dev;
++	char name[32];
++	int i;
+ 
+ 	pcie_port = of_get_child_by_name(dev->parent->of_node, "pcie");
+ 	if (!pcie_port) {
+@@ -586,6 +588,27 @@ static int hi3670_pcie_get_apb(struct hi3670_pcie_phy *phy)
+ 		return -ENODEV;
+ 	}
+ 
++	/* perst reset gpios */
++	phy->n_gpio_resets = of_gpio_named_count(pcie_dev->of_node,
++						 "reset-gpios");
++	if (phy->n_gpio_resets > MAX_GPIO_RESETS) {
++		dev_err(dev, "Too many GPIO resets!\n");
++		return -EINVAL;
++	}
++	for (i = 0; i < phy->n_gpio_resets; i++) {
++		phy->gpio_id_reset[i] = of_get_named_gpio(pcie_dev->of_node,
++							  "reset-gpios", i);
++		if (phy->gpio_id_reset[i] < 0)
++			return phy->gpio_id_reset[i];
++
++		sprintf(name, "pcie_perst_%d", i);
++
++		phy->reset_names[i] = devm_kstrdup_const(dev, name,
++							 GFP_KERNEL);
++		if (!phy->reset_names[i])
++			return -ENOMEM;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -644,16 +667,17 @@ static int hi3670_pcie_phy_init(struct phy *generic_phy)
+ 	int ret;
+ 
+ 	/*
+-	 * The code under hi3670_pcie_get_apb() need to access the
+-	 * DWC APB registers. So, get them from
+-	 * the pcie driver's regmap (see pcie-kirin regmap).
++	 * The code under hi3670_pcie_get_resources_from_pcie() need to
++	 * access the reset-gpios and the APB registers, both from the
++	 * pcie-kirin driver.
+ 	 *
++	 * The APB is obtained via the pcie driver's regmap
+ 	 * Such kind of resource can only be obtained during the PCIe
+ 	 * power_on sequence, as the code inside pcie-kirin needs to
+ 	 * be already probed, as it needs to register the APB regmap.
+ 	 */
+ 
+-	ret = hi3670_pcie_get_apb(phy);
++	ret = hi3670_pcie_get_resources_from_pcie(phy);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -800,26 +824,6 @@ static int hi3670_pcie_phy_get_resources(struct hi3670_pcie_phy *phy,
+ 	if (IS_ERR(phy->base))
+ 		return PTR_ERR(phy->base);
+ 
+-	/* perst reset gpios */
+-	phy->n_gpio_resets = of_gpio_named_count(np, "reset-gpios");
+-	if (phy->n_gpio_resets > MAX_GPIO_RESETS) {
+-		dev_err(dev, "Too many GPIO resets!\n");
+-		return -EINVAL;
+-	}
+-	for (i = 0; i < phy->n_gpio_resets; i++) {
+-		phy->gpio_id_reset[i] = of_get_named_gpio(dev->of_node,
+-							  "reset-gpios", i);
+-		if (phy->gpio_id_reset[i] < 0)
+-			return phy->gpio_id_reset[i];
+-
+-		sprintf(name, "pcie_perst_%d", i);
+-
+-		phy->reset_names[i] = devm_kstrdup_const(dev, name,
+-							 GFP_KERNEL);
+-		if (!phy->reset_names[i])
+-			return -ENOMEM;
+-	}
+-
+ 	/* clock request gpios */
+ 	phy->n_gpio_clkreq = of_gpio_named_count(np, "clkreq-gpios");
+ 	if (phy->n_gpio_clkreq > MAX_GPIO_CLKREQ) {
 -- 
 2.31.1
 
