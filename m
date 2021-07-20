@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F8C3CFF30
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273B93CFF42
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235158AbhGTPlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:41:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:34212 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234561AbhGTPhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:37:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F09631B;
-        Tue, 20 Jul 2021 09:18:15 -0700 (PDT)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 023673F694;
-        Tue, 20 Jul 2021 09:18:13 -0700 (PDT)
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Heiner Kallweit <hkallweit1@gmail.com>, nic_swsd@realtek.com
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sayanta Pattanayak <sayanta.pattanayak@arm.com>
-Subject: [PATCH net v3] r8169: Avoid duplicate sysfs entry creation error
-Date:   Tue, 20 Jul 2021 17:17:40 +0100
-Message-Id: <20210720161740.5214-1-andre.przywara@arm.com>
-X-Mailer: git-send-email 2.14.1
+        id S238259AbhGTPoj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Jul 2021 11:44:39 -0400
+Received: from mail-yb1-f177.google.com ([209.85.219.177]:43838 "EHLO
+        mail-yb1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236015AbhGTPi1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 11:38:27 -0400
+Received: by mail-yb1-f177.google.com with SMTP id g5so33465840ybu.10;
+        Tue, 20 Jul 2021 09:18:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/tuAsxTxs6Rvi+p/wTgyJYt239TXDSVXz4z8meprIB8=;
+        b=Flc1hNQ2hJTokwYt0luyhAsrM54qONlLKvkuN6Ey9xndOzZDv78xx1lVhYu15HXDQJ
+         3cJElfYiC2eldE0Zw8x9l/PGqim5eflgwUXiFsJ1wSI1mlLdVjoOFOGUhQm3YEyxnbld
+         EPoJORRM+WKaLVXk9+Qj+poC0r719+Xocce2y7qDBvRnP7L1rmBMgXgf1IeCJxGDz+d7
+         +VhB1ivnFXNqXimv+2huhZM7dSBzbejEOvgc4esyNzZm/E4sKej1ykgJiZ36gH9G8a6G
+         pWdOuug+my2MHE+vDx3xHDbvsBwATnMrKzf0xAEvt1QnjwWuH0Ao0/v5k4eWRUzZSiBV
+         wP/g==
+X-Gm-Message-State: AOAM532cxjRCjxJR4JL1iLie1XDzBovGu3IXwny2WvYw8tw0Rx6zYvYk
+        pPzBpMqVMY1P/c8VsNK9BL3NXxacEsMRVsfbkbeDSpVz+CY=
+X-Google-Smtp-Source: ABdhPJxA0p1LFiovnlzCLhOM3BMb+zZCYel0Rs/78DAXbTtc6CexG5mqz2t4YEFShmlfIzJScEtvGDaqocUjB2HR8ms=
+X-Received: by 2002:a25:4102:: with SMTP id o2mr38143044yba.23.1626797931250;
+ Tue, 20 Jul 2021 09:18:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210625224744.1020108-1-kernel@esmil.dk> <20210625224744.1020108-3-kernel@esmil.dk>
+ <YPbmmqfOuE5w6EgW@google.com> <CANBLGcy_28q23vRJk9=UZR_Feeqod-ETET=v4Ub=35edySH7SA@mail.gmail.com>
+ <YPbsodxMk+VvU/3D@google.com> <CANBLGcx08XajR8khJmKARBjy7bQ5ebbgO+RRqRu=bvyMx7LuKA@mail.gmail.com>
+ <YPb0spKPvEvuuMWc@google.com>
+In-Reply-To: <YPb0spKPvEvuuMWc@google.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Tue, 20 Jul 2021 18:18:40 +0200
+Message-ID: <CANBLGcx2R4xuyoLHJUNbqiJeRrqTD1oL7X1K0RKzOPD_9xnMdw@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] mfd: tps65086: Make interrupt line optional
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+On Tue, 20 Jul 2021 at 18:07, Lee Jones <lee.jones@linaro.org> wrote:
+> On Tue, 20 Jul 2021, Emil Renner Berthing wrote:
+> > On Tue, 20 Jul 2021 at 17:32, Lee Jones <lee.jones@linaro.org> wrote:
+> > > On Tue, 20 Jul 2021, Emil Renner Berthing wrote:
+> > > > On Tue, 20 Jul 2021 at 17:07, Lee Jones <lee.jones@linaro.org> wrote:
+> > > > > On Sat, 26 Jun 2021, Emil Renner Berthing wrote:
+> > > > > > The BeagleV Starlight v0.9 board[1] doesn't have the IRQB line routed to
+> > > > > > the SoC, but it is still useful to be able to reach the PMIC over I2C
+> > > > > > for the other functionality it provides.
+> > > > > >
+> > > > > > [1] https://github.com/beagleboard/beaglev-starlight
+> > > > > >
+> > > > > > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> > > > > > ---
+> > > > > >  .../devicetree/bindings/mfd/ti,tps65086.yaml  |  3 ---
+> > > > >
+> > > > > This is not present in my current tree.
+> > > > >
+> > > > > Looks like it's still *.txt.
+> > > > >
+> > > > > Am I missing a patch?
+> > > >
+> > > > Yes, the first patch in the series converts that to yaml. I'm quite
+> > > > sure I had the same list of recipients on all 4 mails in the series,
+> > > > so don't know why that should be missing.
+> > >
+> > > Oh, it's not marked as 'important' because it has open review comments
+> > > on it.
+> > >
+> > > Just have this for now then:
+> > >
+> > > For my own reference (apply this as-is to your sign-off block):
+> > >
+> > >   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> >
+> > Thanks! Do you want to have a look at 3/3 or should I just send a v2
+> > to fix the yaml conversion now?
+>
+> Patch 3 should be split.
 
-When registering the MDIO bus for a r8169 device, we use the PCI
-bus/device specifier as a (seemingly) unique device identifier.
-However the very same BDF number can be used on another PCI segment,
-which makes the driver fail probing:
+Oh, how split? Split off the series or split into adding the "driver"
+and then add the cell to the parent?
 
-[ 27.544136] r8169 0002:07:00.0: enabling device (0000 -> 0003)
-[ 27.559734] sysfs: cannot create duplicate filename '/class/mdio_bus/r8169-700'
-....
-[ 27.684858] libphy: mii_bus r8169-700 failed to register
-[ 27.695602] r8169: probe of 0002:07:00.0 failed with error -22
+> I think it should also s/restart/reset/.
 
-Add the segment number to the device name to make it more unique.
+Oh right yes. You mean the cell name needs to be .name =
+"tps65086-reset", right?
+I'll fix that anyway.
 
-This fixes operation on ARM N1SDP boards, with two boards connected
-together to form an SMP system, and all on-board devices showing up
-twice, just on different PCI segments. A similar issue would occur on
-large systems with many PCI slots and multiple RTL8169 NICs.
-
-Fixes: f1e911d5d0dfd ("r8169: add basic phylib support")
-Signed-off-by: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
-[Andre: expand commit message, use pci_domain_nr()]
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
----
-Compile-tested on ARM, arm64, ppc64, sparc64, mips64, hppa, x86-64,
-i386. Tested on an AMD system with an on-board RTL8111 chip.
-
-Changes v2 ... v3:
-- Resent with Fixes tag and proper net: annotation
-
-Changes v1 ... v2:
-- use pci_domain_nr() wrapper to fix compilation on various arches
-
- drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index f744557c33a3..c7af5bc3b8af 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -5084,7 +5084,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
- 	new_bus->priv = tp;
- 	new_bus->parent = &pdev->dev;
- 	new_bus->irq[0] = PHY_MAC_INTERRUPT;
--	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
-+	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x-%x",
-+		 pci_domain_nr(pdev->bus), pci_dev_id(pdev));
- 
- 	new_bus->read = r8169_mdio_read_reg;
- 	new_bus->write = r8169_mdio_write_reg;
--- 
-2.17.6
-
+> --
+> Lee Jones [李琼斯]
+> Senior Technical Lead - Developer Services
+> Linaro.org │ Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
