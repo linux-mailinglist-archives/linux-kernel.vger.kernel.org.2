@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6993CFEFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F123CFEFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234146AbhGTPdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36760 "EHLO
+        id S233450AbhGTPc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234708AbhGTP1j (ORCPT
+        with ESMTP id S234812AbhGTP1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:27:39 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22447C0613E6
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 09:07:18 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id g8-20020a1c9d080000b02901f13dd1672aso1824628wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 09:07:18 -0700 (PDT)
+        Tue, 20 Jul 2021 11:27:38 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC1DC061787
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 09:08:14 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id c15so11636674pls.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 09:08:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Gj6/MjwS+J4keCNnFYk1TQ+l4VVmRSXxrXDi5n5Ny3A=;
-        b=gRT05Pn+DjxRaYaQ3SNjK87ik5viYwcI+vEQBGYCJKXp+85XrKT1fQplwtyoDLjGg2
-         6Qm1OYymAU0bFf7C3NOz5mLcuRMvVUreToOlOhkwBKzwWP5gor6/M/h5rfroSNCyLdFv
-         PdyTRd9/r9cNphQ/KVfSF6jMtjyOt9/P2R+lpJqsSZz4BSdR4Hpl5xase7lCGIH5fmTD
-         ZUkiTdNmOeyUmvJ8y+l6qXiIuj+wgfJC7MoxsFp8ZrF2vJL9bdWgREeDXCjzUD3KgT79
-         DDXJU0Krj1Oz9JiTidP6+M5sFyX3FKllpYMs/4nxZEIK7f5i9q6u2eCFN1v3fEojfJXx
-         Odcg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YJQlCsE07lUcHWxp+SqEVtxXbwI1qVhseuzBIbE4s9o=;
+        b=aah3byr5l7ysi3eRrhX+vLvuZk2/uvwgIc078RaQJqMypWHGyj8JTz+uA403X0sCh4
+         TvDY760OfOfvfR69IFlQMu/DW7ttgsrjlrO31GNY82TnoW1QNIQAwjt6L1mk+T6o2puI
+         mzCdqi6e9vrOc/9B0DYIquAkMSt0B1RRtSoVc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Gj6/MjwS+J4keCNnFYk1TQ+l4VVmRSXxrXDi5n5Ny3A=;
-        b=lE2aim24h/edawfn1o80zfqA/5nGO0kHSC3WXed8+YFgTzyf1lAgxNyVhNViRE6tpo
-         xFrUtVfnSDxLcQPKSF9DxXAWbO9Oz48EBK7R52MIu9e92tDUgpXgCKXAcKi7mUHMJzUM
-         49WVd+wkNFnUUXtDsqxP6EYfaF+H0JYmKEwCcjZGcMvEMU2TONGbXL2OQ+IlUVRywzk4
-         Ce3Q/0/3DFdLtJZe/56gIXejwi1+mWH4X6GnP5FSsRYaeLADBax+8etRrcmqNVjPVAp8
-         NNRbdoOXcnt4SxgCjHhoO7EdmRAhHcNpVYnlKtEZ0IidkeDgWAYMibmJcAUQHKoe2EJh
-         tdnA==
-X-Gm-Message-State: AOAM5334xQt5EF0HHDw2jt6SNDi1scnBQfZnK8C1FD5SEAQywcCqyWkf
-        VjsmG4RvpmPL7OSaWl6jEiFu1w==
-X-Google-Smtp-Source: ABdhPJwkPXNxyIOEI1iwTxTrl+7ksvGsjQ9ocmdf90SP7jwdElbWhOPHa6fxSUo60olZC1ffA0K8nw==
-X-Received: by 2002:a05:600c:47c4:: with SMTP id l4mr3865020wmo.125.1626797236726;
-        Tue, 20 Jul 2021 09:07:16 -0700 (PDT)
-Received: from google.com ([31.124.24.141])
-        by smtp.gmail.com with ESMTPSA id w18sm26022717wrg.68.2021.07.20.09.07.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YJQlCsE07lUcHWxp+SqEVtxXbwI1qVhseuzBIbE4s9o=;
+        b=M9jx3a6PllJICFYGWOL6KGO64T/Ifoqo1O8kGQMLeOomu7Sri5RX/PybB3jwz+feHe
+         T1AWa+R2/vbvIYDj8kuho3WxqqJSojvITuZT1cnYBE9l97/f8XH3FbzqxiId0s1zP/ti
+         q1CPwMZrctGcNVItcF72Jl+fp6EY5gVNTnVozCj+SaKWB4vg4mVL8cg8HbiFhmSXIK3B
+         RPSGs6G4L2YXGVASVEYXQOwlnac/K5AC9cNlklXYry1M6lW0xO9NoVT08ykJgz4HCHH5
+         yCXMXXJrXH/cVHBCN81U7i3sDRypUzl5soiPI959yDwSumGrruJ4etH42s8tCG9/IIl3
+         IpHA==
+X-Gm-Message-State: AOAM530PO4W8LlBgu9Wab9QizhEv7qkODQR9tGGTYs/qVzHIJeEhDtuC
+        BoZJfdB+lyUG/ReIfAxEVYjzeQ==
+X-Google-Smtp-Source: ABdhPJxX0v5I5TjjNBymCDBalC7ggAVi8GV2ei6MQrgctbG/4AETRH7BmSko8YmTRKF7qmfrWGTlKw==
+X-Received: by 2002:a17:902:9688:b029:129:183a:2a61 with SMTP id n8-20020a1709029688b0290129183a2a61mr23812097plp.27.1626797293805;
+        Tue, 20 Jul 2021 09:08:13 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:a3c3:c989:fdd2:555f])
+        by smtp.gmail.com with ESMTPSA id o3sm3132961pjr.49.2021.07.20.09.08.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 09:07:16 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 17:07:14 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/3] mfd: tps65086: Make interrupt line optional
-Message-ID: <YPb0spKPvEvuuMWc@google.com>
-References: <20210625224744.1020108-1-kernel@esmil.dk>
- <20210625224744.1020108-3-kernel@esmil.dk>
- <YPbmmqfOuE5w6EgW@google.com>
- <CANBLGcy_28q23vRJk9=UZR_Feeqod-ETET=v4Ub=35edySH7SA@mail.gmail.com>
- <YPbsodxMk+VvU/3D@google.com>
- <CANBLGcx08XajR8khJmKARBjy7bQ5ebbgO+RRqRu=bvyMx7LuKA@mail.gmail.com>
+        Tue, 20 Jul 2021 09:08:13 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: i2c-hid: goodix: Use the devm variant of regulator_register_notifier()
+Date:   Tue, 20 Jul 2021 09:07:49 -0700
+Message-Id: <20210720090736.1.Idc6db7d0f2c2ecc6e533e5b918a651a66f337b2f@changeid>
+X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANBLGcx08XajR8khJmKARBjy7bQ5ebbgO+RRqRu=bvyMx7LuKA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021, Emil Renner Berthing wrote:
+In commit 18eeef46d359 ("HID: i2c-hid: goodix: Tie the reset line to
+true state of the regulator") I added a call to
+regulator_register_notifier() but no call to unregister. That's a
+bug. Let's use the devm variant to handle the unregistering.
 
-> On Tue, 20 Jul 2021 at 17:32, Lee Jones <lee.jones@linaro.org> wrote:
-> > On Tue, 20 Jul 2021, Emil Renner Berthing wrote:
-> > > On Tue, 20 Jul 2021 at 17:07, Lee Jones <lee.jones@linaro.org> wrote:
-> > > > On Sat, 26 Jun 2021, Emil Renner Berthing wrote:
-> > > > > The BeagleV Starlight v0.9 board[1] doesn't have the IRQB line routed to
-> > > > > the SoC, but it is still useful to be able to reach the PMIC over I2C
-> > > > > for the other functionality it provides.
-> > > > >
-> > > > > [1] https://github.com/beagleboard/beaglev-starlight
-> > > > >
-> > > > > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> > > > > ---
-> > > > >  .../devicetree/bindings/mfd/ti,tps65086.yaml  |  3 ---
-> > > >
-> > > > This is not present in my current tree.
-> > > >
-> > > > Looks like it's still *.txt.
-> > > >
-> > > > Am I missing a patch?
-> > >
-> > > Yes, the first patch in the series converts that to yaml. I'm quite
-> > > sure I had the same list of recipients on all 4 mails in the series,
-> > > so don't know why that should be missing.
-> >
-> > Oh, it's not marked as 'important' because it has open review comments
-> > on it.
-> >
-> > Just have this for now then:
-> >
-> > For my own reference (apply this as-is to your sign-off block):
-> >
-> >   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> 
-> Thanks! Do you want to have a look at 3/3 or should I just send a v2
-> to fix the yaml conversion now?
+Fixes: 18eeef46d359 ("HID: i2c-hid: goodix: Tie the reset line to true state of the regulator")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-Patch 3 should be split.
+ drivers/hid/i2c-hid/i2c-hid-of-goodix.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I think it should also s/restart/reset/.
-
+diff --git a/drivers/hid/i2c-hid/i2c-hid-of-goodix.c b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
+index 31a4c229fdb7..52674149a275 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
++++ b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
+@@ -132,7 +132,7 @@ static int i2c_hid_of_goodix_probe(struct i2c_client *client,
+ 	 */
+ 	mutex_lock(&ihid_goodix->regulator_mutex);
+ 	ihid_goodix->nb.notifier_call = ihid_goodix_vdd_notify;
+-	ret = regulator_register_notifier(ihid_goodix->vdd, &ihid_goodix->nb);
++	ret = devm_regulator_register_notifier(ihid_goodix->vdd, &ihid_goodix->nb);
+ 	if (ret) {
+ 		mutex_unlock(&ihid_goodix->regulator_mutex);
+ 		return dev_err_probe(&client->dev, ret,
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.32.0.402.g57bb445576-goog
+
