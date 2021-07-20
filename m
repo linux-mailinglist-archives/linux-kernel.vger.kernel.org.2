@@ -2,141 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596D23CF550
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6063CF553
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232824AbhGTGvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 02:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhGTGvM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:51:12 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9840AC061574;
-        Tue, 20 Jul 2021 00:31:30 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id i16so4171507pgi.9;
-        Tue, 20 Jul 2021 00:31:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gUHafvxPwffprBDYSwA9wJOKwLPsSD3F5l3zpE9j23w=;
-        b=TLIfURQuaAwET7qHx0eINAHcT6VgTFPGuK1mPbLHdOkC6Ub8DYvVNHLxW8LYhsoyEI
-         JK9+c/b6pbiHiphOWE58UgnCm5isMU3X2OtkTIvHpl12n0I+UQLkIb3L7GOKEfqfG2Wg
-         5zW+tcfWcNBmzaQUSSLvJfuxNaADOaux4+oWc/h49SMk1HSynpe6pYTICvcr20oRwCBl
-         hx/Pq79rvGmWyK7ePuppPX/0nbECiiXYgipeDYdy5PKj/Bw5xMMcx19DWncN6UlpoJ0n
-         rU4C7Eue5gN9anBxKIIZs1aPaB7cd6DqcUKRO2uiNAagaTyzbnVI/ro9rmr7Ctjux/4i
-         97VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gUHafvxPwffprBDYSwA9wJOKwLPsSD3F5l3zpE9j23w=;
-        b=bI85eO1o2/vcKGzXS0KU1HqMeg0ykg0uaVv13ZkKp3x9p9b08+LR0fii/pHzJltSNI
-         dtRa0N3Dm8gDHi0n8mZFPdSUDIfxo5Ze/CNYAvBCVyYtxMB96MP332M8CupXhNZjy1Yj
-         DmXxh2aoz6vhp110zKvg3Sv3LsFG5OB9B73DEYw8jddIv6sXyYlvhuWB/SpssldjWbln
-         gDdwz6VBbVNFrEwqoHxiXhpWboNy+C+gGiA0AU/sLKvUl4HgVPTBKlZlcO6Ch0gQi8r4
-         ZyoigoXuY+BgSGf/L2RLNmLf1Dk2MCcNCKKwm7FLKPduXAEvQwq3Ko2ddaG2NOto6qAh
-         FLTA==
-X-Gm-Message-State: AOAM532lM6KH3Mn7g5wgmNFK/HPpOTjvqk7XfbO5uSLEwqXcdATHI+xK
-        LnZ0hGvqKkErBRB7IUuHqX0=
-X-Google-Smtp-Source: ABdhPJy0E3PpBYiE60jtHr3AaOU7l+Jv6W2YX4OPx5IYjmOMFsermYCNNkl5mOSOZgOpdYOFvV7DrA==
-X-Received: by 2002:a65:67d6:: with SMTP id b22mr29409530pgs.271.1626766289867;
-        Tue, 20 Jul 2021 00:31:29 -0700 (PDT)
-Received: from fedora ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
-        by smtp.gmail.com with ESMTPSA id y9sm20036732pfn.182.2021.07.20.00.31.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 00:31:29 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 13:01:25 +0530
-From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-To:     rkovhaev@gmail.com, jack@suse.cz
-Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+c31a48e6702ccb3d64c9@syzkaller.appspotmail.com
-Subject: Re: [PATCH] reiserfs: check directry items on read from disk
-Message-ID: <YPZ7zUVAedCkx3IQ@fedora>
-References: <20210709152929.766363-1-chouhan.shreyansh630@gmail.com>
+        id S234541AbhGTGwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 02:52:03 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:35685 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229684AbhGTGvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 02:51:15 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GTVlM5fyfz9s1l;
+        Tue, 20 Jul 2021 17:31:43 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626766304;
+        bh=Qur8bvvIU6iEx0EgzbfwK+Fesw2hd8eOYcHRg1aHBVs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GLtZrB2z6VTiFEh2gG06hnEBj2YNDg9zcZ4vbDEyXdoGD9fzKt8yeuWMcrGsp/jXC
+         wf++mT1NZx9YxRzsoYkguey0oVdmp0rSo4facknW00+dhlbC6IqGY2Hqt6crfcXhVc
+         uZZxQYOxts+WI0lhusCVKzyPLEcKdDTb6hk/6T86vLViJxw/svltM8Ya4r8Hiz2neK
+         4UpYxYRZlIVf4tahN+q2WifmxP6IfjwwdX6obT0MM3X9o4T+mdIclrcCCZqUQWpd5s
+         AXh5IPJCnFjzoV4ALY/u+4ivOGplukQRvsHmWY3QsuA1Qujlqmsiqey0lOPU8IbQuI
+         Qh2fuzonPgfzQ==
+Date:   Tue, 20 Jul 2021 17:31:42 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>,
+        "William A. Kennington III" <wak@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning from Linus' tree
+Message-ID: <20210720173142.00a375c5@canb.auug.org.au>
+In-Reply-To: <20210708122544.011171b3@canb.auug.org.au>
+References: <20210601172026.6bc0a96f@canb.auug.org.au>
+        <20210708122544.011171b3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709152929.766363-1-chouhan.shreyansh630@gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/nxr6C.gUKUXygzOV9CnfzPk";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/nxr6C.gUKUXygzOV9CnfzPk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Just a ping for reviews/merge since there has been no activity on this patch.
+Hi all,
 
-Thank you,
-Shreyansh Chouhan
+On Thu, 8 Jul 2021 12:25:44 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> On Tue, 1 Jun 2021 17:20:26 +1000 Stephen Rothwell <sfr@canb.auug.org.au>=
+ wrote:
+> >
+> > When building Linus' tree, today's linux-next build (htmldocs) produced
+> > this warning:
+> >=20
+> > include/linux/spi/spi.h:671: warning: Function parameter or member 'dev=
+m_allocated' not described in 'spi_controller'
+> >=20
+> > Introduced by commit
+> >=20
+> >   794aaf01444d ("spi: Fix use-after-free with devm_spi_alloc_*")
+> >=20
+> > This has been around for a while (at least v5.13-rc1 and next-20210409).
+> > Sorry I did not report it earlier. =20
+>=20
+> I am still getting this warning.
 
-On Fri, Jul 09, 2021 at 08:59:29PM +0530, Shreyansh Chouhan wrote:
-> 
-> While verifying the leaf item that we read from the disk, reiserfs
-> doesn't check the directory items, this could cause a crash when we
-> read a directory item from the disk that has an invalid deh_location.
-> 
-> This patch adds a check to the directory items read from the disk that
-> does a bounds check on deh_location for the directory entries. Any
-> directory entry header with a directory entry offset greater than the
-> item length is considered invalid.
-> 
-> Reported-by: syzbot+c31a48e6702ccb3d64c9@syzkaller.appspotmail.com
-> Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-> ---
->  fs/reiserfs/stree.c | 31 ++++++++++++++++++++++++++-----
->  1 file changed, 26 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/reiserfs/stree.c b/fs/reiserfs/stree.c
-> index 476a7ff49482..ef42729216d1 100644
-> --- a/fs/reiserfs/stree.c
-> +++ b/fs/reiserfs/stree.c
-> @@ -387,6 +387,24 @@ void pathrelse(struct treepath *search_path)
->  	search_path->path_length = ILLEGAL_PATH_ELEMENT_OFFSET;
->  }
->  
-> +static int has_valid_deh_location(struct buffer_head *bh, struct item_head *ih)
-> +{
-> +	struct reiserfs_de_head *deh;
-> +	int i;
-> +
-> +	deh = B_I_DEH(bh, ih);
-> +	for (i = 0; i < ih_entry_count(ih); i++) {
-> +		if (deh_location(&deh[i]) > ih_item_len(ih)) {
-> +			reiserfs_warning(NULL, "reiserfs-5094",
-> +					 "directory entry location seems wrong %h",
-> +					 &deh[i]);
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	return 1;
-> +}
-> +
->  static int is_leaf(char *buf, int blocksize, struct buffer_head *bh)
->  {
->  	struct block_head *blkh;
-> @@ -454,11 +472,14 @@ static int is_leaf(char *buf, int blocksize, struct buffer_head *bh)
->  					 "(second one): %h", ih);
->  			return 0;
->  		}
-> -		if (is_direntry_le_ih(ih) && (ih_item_len(ih) < (ih_entry_count(ih) * IH_SIZE))) {
-> -			reiserfs_warning(NULL, "reiserfs-5093",
-> -					 "item entry count seems wrong %h",
-> -					 ih);
-> -			return 0;
-> +		if (is_direntry_le_ih(ih)) {
-> +			if (ih_item_len(ih) < (ih_entry_count(ih) * IH_SIZE)) {
-> +				reiserfs_warning(NULL, "reiserfs-5093",
-> +						 "item entry count seems wrong %h",
-> +						 ih);
-> +				return 0;
-> +			}
-> +			return has_valid_deh_location(bh, ih);
->  		}
->  		prev_location = ih_location(ih);
->  	}
-> -- 
-> 2.31.1
-> 
+I am still getting this warning.  It is now on line 675.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/nxr6C.gUKUXygzOV9CnfzPk
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD2e98ACgkQAVBC80lX
+0GwY/AgApe05ioTeshM0yuIV4rgiX56kgCa+OIH3rTCCni/Lv5KMIf1LU+gF88H3
+lAmXjXp3h7PGeRjb9SPN/ryt0cbWR9l3rOcFEg1Euomh+mLn1vOZhJHPZiktVV8K
+CBNTbkD/6QMrEbb8536EohWpYRmYWP1F8ta2X9yKQdIL94Xjy9SLLbkoKixxYhbd
+UpxEVR1Xo51+Zf1t2HZXJnusaZLYG3Zfm7T1E7zW72EZKJ+mg4hwePTJ/yNTj2Iw
+Xs1MMOK/eiWyeodf5YELaUaqDNi3zVzUM+SkFYtTht6VBkaK6dMwmSk1MhAX/FY7
+ZrsrNtjVmAo0KpeJIlZjNwNj6/+5cQ==
+=Vgnl
+-----END PGP SIGNATURE-----
+
+--Sig_/nxr6C.gUKUXygzOV9CnfzPk--
