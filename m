@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AB73D05B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F113D05AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhGTWxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 18:53:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236298AbhGTWrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 18:47:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 125C661165;
-        Tue, 20 Jul 2021 23:28:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1626823692;
-        bh=pZ4VoRnokIR9onzVreo9fLmob6Y3sBGkp5Ds0EVJjhM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EdBQodRejK5wyrYq6wz0piYROUp3iT+9dF45XPFy0WI1yovjAjDI+hqIkKGatheg4
-         gcKjOQMvS9xBmleIESd4gZKxIvF/lYjjsQMSMEsP6tHz0dXWhmirIvQK1S5meOSqCp
-         eRDoig4pKc/LzI07o+djctGoZj3GTL7Aa5SPdG/o=
-Date:   Tue, 20 Jul 2021 16:28:10 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Chen Wandun <chenwandun@huawei.com>
-Cc:     <0x7f454c46@gmail.com>, <wangkefeng.wang@huawei.com>,
-        <weiyongjun1@huawei.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm/mremap: fix memory account on do_munmap() failure
-Message-Id: <20210720162810.e4710eebca48e9dc8ce2fa4d@linux-foundation.org>
-In-Reply-To: <20210717101942.120607-1-chenwandun@huawei.com>
-References: <20210717101942.120607-1-chenwandun@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S237046AbhGTWww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 18:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236622AbhGTWtl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 18:49:41 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2156C0613E6;
+        Tue, 20 Jul 2021 16:29:24 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id a127so806022pfa.10;
+        Tue, 20 Jul 2021 16:29:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yXTkTmuny/F5ybcYYjxfeJY3HO6uZ+FEd6FMbHwKSms=;
+        b=GCXcviTFW7S78Ev6I0At3AKjSKt5TGb/r6jL6ATW+uOdJf3eAYtjY53nu/9YNUgoMX
+         Ei2KGGftuYNhvdJFOriZZJB97Q20QlS2gMJyKqgQfgfYgcBuAhFWHFJ5B8RvnxxnOE/8
+         3fZelZ3igBe2ABygeS0dEHCi06EB7aVQ/HeexF0dDPgVgw+BMWIZ5X0Q+Oda+ZjjStj1
+         7Gr+2YTDOuXQNMeaddKmbLksZE2BaY2bFTEfBzNiV99g+xfifQ+4Pb6lB0+g4GB7D4Ym
+         BdHUv3BgGEAJnpQZt34+1ijZf6UIpk3JwF+oHn4q1sl3LrZaA8YtGabPWwCKY0Lei1TC
+         hwJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yXTkTmuny/F5ybcYYjxfeJY3HO6uZ+FEd6FMbHwKSms=;
+        b=ugWgBDxRdk8oQY/3dJ1m+C6YpixD6oDHF7bn/a2+Hwd0vdN8EPgsw8IwDLScVIsJzH
+         ngL4C0YEM7JZIKWUEEkS6UJbBaB586ZoyTW0P3qIlhyfzjP92XxtYmGeFE8H9SXi7ZxZ
+         R80Qf3bVS+OgxyhCQF9Nuv/BG6s3zXAB8OKpvGGAXVrbSp7mATpmCdgG8gLAlYMT49ul
+         YGGaV81umW+Rw17Y2HHfuQ5kdwDGdMxIVsuwT7j2e0F8IPpgA/g2LPvQkEMdr1olsJcd
+         Rfj2JvSHqppJQxW3CoqEBiV2gkG/Oqfq9AlwAky03dVVSnF+4H0VmPFYkjRk5aBCSR89
+         2xew==
+X-Gm-Message-State: AOAM530Uh//eomSa4BnFJ3wiqRxDxDOYRO53IpU8sx7bat8QTNNpdDK5
+        rJPxGXosSB3Vef0gEi8ghr0=
+X-Google-Smtp-Source: ABdhPJyUjdCP2bjsSZ8zVaIL7MREf3ygbzRPbhSp8Dk20L1iZ962hdLT+jESGTHyC7EXJjhX6rZI2g==
+X-Received: by 2002:a05:6a00:158e:b029:32b:9de5:a199 with SMTP id u14-20020a056a00158eb029032b9de5a199mr33271341pfk.76.1626823763853;
+        Tue, 20 Jul 2021 16:29:23 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:6f70:be34:681b:b1e9:776f])
+        by smtp.gmail.com with ESMTPSA id d13sm24532683pfn.136.2021.07.20.16.29.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 16:29:23 -0700 (PDT)
+From:   Moritz Fischer <moritz.fischer.private@gmail.com>
+X-Google-Original-From: Moritz Fischer <moritzf@epycbox.lan>
+Date:   Tue, 20 Jul 2021 16:29:22 -0700
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Moritz Fischer <mdf@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: REGRESSION: Renesas USB host broken after commit d143825baf15
+Message-ID: <YPdcUrR5J6vA2Glr@epycbox.lan>
+References: <s5h7dhkoaa2.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5h7dhkoaa2.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 17 Jul 2021 18:19:42 +0800 Chen Wandun <chenwandun@huawei.com> wrote:
+Hi Takashi,
 
-> mremap will account the delta between new_len and old_len in
-> vma_to_resize, and then call move_vma when expanding an existing
-> memory mapping. In function move_vma, there are two scenarios when
-> calling do_munmap:
-> 1. move_page_tables from old_addr to new_addr success
-> 2. move_page_tables from old_addr to new_addr fail
+On Wed, Jul 21, 2021 at 01:06:29AM +0200, Takashi Iwai wrote:
+> Hi,
 > 
-> In first scenario, it should account old_len if do_munmap fail,
-> because the delta has already been accounted.
+> the recent patch landed in 5.13.2 stable tree from the upstream commit
+> d143825baf15 ("usb: renesas-xhci: Fix handling of unknown ROM state")
+> seems causing a regression on a few machines, as reported on openSUSE
+> Bugzilla:
+>   https://bugzilla.opensuse.org/show_bug.cgi?id=1188485
+>   https://bugzilla.opensuse.org/show_bug.cgi?id=1188515
 > 
-> In second scenario, new_addr/new_len will assign to old_addr/old_len
-> if move_page_table fail, so do_munmap is try to unmap new_addr actually,
-> if do_munmap fail, it should account the new_len, because error code
-> will be return from move_vma, and delta will be unaccounted.
-> What'more, because of new_len == old_len, so account old_len also is
-> OK.
-> 
-> In summary, account old_len will be correct if do_munmap fail.
+> Reverting it on top of 5.13.3 fixed the problem, so it's likely the
+> cause.  Could you guys take a look?
 
-Sorry, but I'm having trouble following that description.  Dmitry, could
-you please review this change and then assist in clarifying the
-changelog text?
+I've sent out a revert patch.
 
-Also, could it be argued that we're doing this in the wrong place? 
-Should it be the responsibility of do_munmap() to fix up the accounting
-if it is going to return an error?  Rather than expecting the
-do_munmap() caller to fix up do_munmap()'s mess?
+https://lore.kernel.org/linux-usb/20210719070519.41114-1-mdf@kernel.org/T/#u
 
-Thirdly, is the comment in there true?  Does this accounting error only
-occur due to ENOMEM?  If that is the case then I am inclined not to
-backport this fix into -stable kernels, as the error is so unlikely to
-be triggered.  Thoughts on this?
+I think the driver has more problems but I'll tackle that in a follow up
+patch, lets get this unbricked, first.
 
+Sorry for the inconvenience,
+
+Moritz
