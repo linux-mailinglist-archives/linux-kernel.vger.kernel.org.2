@@ -2,124 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B093CFFEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9CB3CFFED
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhGTQbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 12:31:02 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57284 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234988AbhGTQ0z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 12:26:55 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id E657D1F43318
-Subject: Re: [PATCH v2 6/7] soc: mediatek: mmsys: Add reset controller support
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org
-Cc:     chunkuang.hu@kernel.org, hsinyi@chromium.org, kernel@collabora.com,
-        drinkcat@chromium.org, eizan@chromium.org,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        jitao.shi@mediatek.com, linux-arm-kernel@lists.infradead.org
-References: <20210714101141.2089082-1-enric.balletbo@collabora.com>
- <20210714121116.v2.6.I15e2419141a69b2e5c7e700c34d92a69df47e04d@changeid>
- <039151e1f17676a101fb9c0682f5ee9fb8ad502d.camel@pengutronix.de>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <a3227633-626d-10f5-c190-86dbf36a469c@collabora.com>
-Date:   Tue, 20 Jul 2021 19:07:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <039151e1f17676a101fb9c0682f5ee9fb8ad502d.camel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S229771AbhGTQb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 12:31:57 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:46434 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233590AbhGTQ3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 12:29:01 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626800978; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=JiHpBkjeEADT7ngmunMJ4OWuRk8tkxvtakVHFLJJdo4=; b=DZ4ABp3/fGEREfAbf7hfPOmQh9ifzJaJ4eTOtPNT1g3pOXWSR/Dwoy4ZRpBY84JAzUcXRR8V
+ XQYSoVx6IbpMyxrv8m5oZ718lzy74zRnaDx4ZsXbUvu+Tvs6H/I6Bwn8j6SNQdrbjQBVJTK1
+ +IWKISOzyCY9ZsqRkcr+m3NPIvw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60f7035025e5663278832b07 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Jul 2021 17:09:36
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 530EAC43217; Tue, 20 Jul 2021 17:09:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A5C7FC433D3;
+        Tue, 20 Jul 2021 17:09:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A5C7FC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org, mka@chromium.org, tdas@codeaurora.org
+Cc:     agross@kernel.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sc7280: Fixup cpufreq domain info for cpu7
+Date:   Tue, 20 Jul 2021 22:39:13 +0530
+Message-Id: <1626800953-613-1-git-send-email-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+The SC7280 SoC supports a 4-Silver/3-Gold/1-Gold+ configuration and hence
+the cpu7 node should point to cpufreq domain 2 instead.
 
-Thank you to take a look
+Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+Cc: stable@vger.kernel.org
+---
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 20/7/21 12:52, Philipp Zabel wrote:
-> Hi Enric,
-> 
-> On Wed, 2021-07-14 at 12:11 +0200, Enric Balletbo i Serra wrote:
->> Among other features the mmsys driver should implement a reset
->> controller to be able to reset different bits from their space.
->>
->> Cc: Jitao Shi <jitao.shi@mediatek.com>
->> Suggested-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
->> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> 
-> The reset controller driver looks fine, just two questions below.
-> 
->> ---
->>
->> (no changes since v1)
->>
->>  drivers/soc/mediatek/mtk-mmsys.c | 69 ++++++++++++++++++++++++++++++++
->>  drivers/soc/mediatek/mtk-mmsys.h |  2 +
->>  2 files changed, 71 insertions(+)
->>
->> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
->> index e681029fe804..6ac4deff0164 100644
->> --- a/drivers/soc/mediatek/mtk-mmsys.c
->> +++ b/drivers/soc/mediatek/mtk-mmsys.c
-> [...]
->> @@ -91,6 +95,59 @@ void mtk_mmsys_ddp_disconnect(struct device *dev,
-> [...]
->> +static int mtk_mmsys_reset(struct reset_controller_dev *rcdev, unsigned long id)
->> +{
->> +	int ret;
->> +
->> +	ret = mtk_mmsys_reset_assert(rcdev, id);
->> +	if (ret)
->> +		return ret;
->> +
->> +	usleep_range(1000, 1100);
-> 
-> Is this known to be enough for all IP cores that can be reset by this
-> controller?
-> 
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index a8c274ad74c4..188c5768a55a 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -200,7 +200,7 @@
+ 					   &BIG_CPU_SLEEP_1
+ 					   &CLUSTER_SLEEP_0>;
+ 			next-level-cache = <&L2_700>;
+-			qcom,freq-domain = <&cpufreq_hw 1>;
++			qcom,freq-domain = <&cpufreq_hw 2>;
+ 			#cooling-cells = <2>;
+ 			L2_700: l2-cache {
+ 				compatible = "cache";
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-This time is copied from the downstream kernel, so, tbh, I am not totally sure
-is enough or needed. Let me try to reach the Mediatek people for if they can
-answer this.
-
-
->> +	return mtk_mmsys_reset_deassert(rcdev, id);
->> +}
->> +
->> +static const struct reset_control_ops mtk_mmsys_reset_ops = {
->> +	.assert = mtk_mmsys_reset_assert,
->> +	.deassert = mtk_mmsys_reset_deassert,
->> +	.reset = mtk_mmsys_reset,
->> +};
->> +
->>  static int mtk_mmsys_probe(struct platform_device *pdev)
->>  {
->>  	struct device *dev = &pdev->dev;
->> @@ -111,6 +168,18 @@ static int mtk_mmsys_probe(struct platform_device *pdev)
->>  		return ret;
->>  	}
->>  
->> +	spin_lock_init(&mmsys->lock);
->> +
->> +	mmsys->rcdev.owner = THIS_MODULE;
->> +	mmsys->rcdev.nr_resets = 32;
-> 
-> Are all bits in the MMSYS_SW0_RST_B register individual reset controls?
-
-Yes, all are individual reset controls, mostly related to display but not all
-(i.e dsi, dpi ...)
-
-Thanks,
-  Enric
-
-> 
-> regards
-> Philipp
-> 
