@@ -2,134 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEB13CF7A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735F13CF77E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235311AbhGTJfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 05:35:52 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:29164 "EHLO m43-7.mailgun.net"
+        id S231809AbhGTJdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 05:33:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236431AbhGTJdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 05:33:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626776069; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=iaqWHZmgS8Lu3MlAqmI7Z55aQR1Dhk3as4p++438MG0=; b=G2m4ETOiHVC3OtL4GUAJehq8hTvRnd4ufo3o6+pi52Oi5sThEMhFCqIO0p7zvi8/XNo9hmJp
- Ec4EhRLct+vkRnoJ/R6UJz1eFMHrdFNFbZNAuyTSlibchUBnARIRpuPRslB2kI1UUahe/rAB
- dZKenxU1YV06gH/3zeGKXpW/49M=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60f6a2001d1afe585eee94c0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Jul 2021 10:14:24
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8BDFFC43460; Tue, 20 Jul 2021 10:14:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S233914AbhGTJc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 05:32:59 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9DBCEC4360C;
-        Tue, 20 Jul 2021 10:14:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9DBCEC4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
-        saiprakash.ranjan@codeaurora.org, mka@chromium.org
-Cc:     ohad@wizery.com, agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org, swboyd@chromium.org,
-        Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH v2 10/10] arm64: dts: qcom: sc7280: Update Q6V5 MSS node
-Date:   Tue, 20 Jul 2021 15:43:00 +0530
-Message-Id: <1626775980-28637-11-git-send-email-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1626775980-28637-1-git-send-email-sibis@codeaurora.org>
-References: <1626775980-28637-1-git-send-email-sibis@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B0D0610C7;
+        Tue, 20 Jul 2021 10:13:33 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m5mkl-00EU1u-Gx; Tue, 20 Jul 2021 11:13:31 +0100
+Date:   Tue, 20 Jul 2021 11:13:31 +0100
+Message-ID: <8735s99ttg.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        tabba@google.com, dbrazdil@google.com, kernel-team@android.com
+Subject: Re: [PATCH 08/14] KVM: arm64: Add support for tagging shared pages in page-table
+In-Reply-To: <YPWe+W3QmeYHqre/@google.com>
+References: <20210719104735.3681732-1-qperret@google.com>
+        <20210719104735.3681732-9-qperret@google.com>
+        <87fswajre1.wl-maz@kernel.org>
+        <YPWe+W3QmeYHqre/@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: qperret@google.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com, tabba@google.com, dbrazdil@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update MSS node to support MSA based modem boot on SC7280 SoCs.
+On Mon, 19 Jul 2021 16:49:13 +0100,
+Quentin Perret <qperret@google.com> wrote:
+> 
+> On Monday 19 Jul 2021 at 15:43:34 (+0100), Marc Zyngier wrote:
+> > On Mon, 19 Jul 2021 11:47:29 +0100,
+> > Quentin Perret <qperret@google.com> wrote:
+> > > 
+> > > The hypervisor will soon be in charge of tracking ownership of all
+> > > memory pages in the system. The current page-tracking infrastructure at
+> > > EL2 only allows binary states: a page is either owned or not by an
+> > > entity. But a number of use-cases will require more complex states for
+> > > pages that are shared between two entities (host, hypervisor, or guests).
+> > > 
+> > > In preparation for supporting these use-cases, introduce in the KVM
+> > > page-table library some infrastructure allowing to tag shared pages
+> > > using ignored bits (a.k.a. software bits) in PTEs.
+> > > 
+> > > Signed-off-by: Quentin Perret <qperret@google.com>
+> > > ---
+> > >  arch/arm64/include/asm/kvm_pgtable.h |  5 +++++
+> > >  arch/arm64/kvm/hyp/pgtable.c         | 25 +++++++++++++++++++++++++
+> > >  2 files changed, 30 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> > > index dd72653314c7..f6d3d5c8910d 100644
+> > > --- a/arch/arm64/include/asm/kvm_pgtable.h
+> > > +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> > > @@ -81,6 +81,8 @@ enum kvm_pgtable_stage2_flags {
+> > >   * @KVM_PGTABLE_PROT_W:		Write permission.
+> > >   * @KVM_PGTABLE_PROT_R:		Read permission.
+> > >   * @KVM_PGTABLE_PROT_DEVICE:	Device attributes.
+> > > + * @KVM_PGTABLE_STATE_SHARED:	Page shared with another entity.
+> > > + * @KVM_PGTABLE_STATE_BORROWED:	Page borrowed from another entity.
+> > >   */
+> > >  enum kvm_pgtable_prot {
+> > >  	KVM_PGTABLE_PROT_X			= BIT(0),
+> > > @@ -88,6 +90,9 @@ enum kvm_pgtable_prot {
+> > >  	KVM_PGTABLE_PROT_R			= BIT(2),
+> > >  
+> > >  	KVM_PGTABLE_PROT_DEVICE			= BIT(3),
+> > > +
+> > > +	KVM_PGTABLE_STATE_SHARED		= BIT(4),
+> > > +	KVM_PGTABLE_STATE_BORROWED		= BIT(5),
+> > 
+> > I'd rather have some indirection here, as we have other potential
+> > users for the SW bits outside of pKVM (see the NV series, which uses
+> > some of these SW bits as the backend for TTL-based TLB invalidation).
+> > 
+> > Can we instead only describe the SW bit states in this enum, and let
+> > the users map the semantic they require onto that state? See [1] for
+> > what I carry in the NV branch.
+> 
+> Works for me -- I just wanted to make sure we don't have users in
+> different places that use the same bits without knowing, but no strong
+> opinions, so happy to change.
+> 
+> > >  };
+> > >  
+> > >  #define KVM_PGTABLE_PROT_RW	(KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W)
+> > > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> > > index 5bdbe7a31551..51598b79dafc 100644
+> > > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > > @@ -211,6 +211,29 @@ static kvm_pte_t kvm_init_invalid_leaf_owner(u8 owner_id)
+> > >  	return FIELD_PREP(KVM_INVALID_PTE_OWNER_MASK, owner_id);
+> > >  }
+> > >  
+> > > +static kvm_pte_t pte_ignored_bit_prot(enum kvm_pgtable_prot prot)
+> > 
+> > Can we call these sw rather than ignored?
+> 
+> Sure.
+> 
+> > > +{
+> > > +	kvm_pte_t ignored_bits = 0;
+> > > +
+> > > +	/*
+> > > +	 * Ignored bits 0 and 1 are reserved to track the memory ownership
+> > > +	 * state of each page:
+> > > +	 *   00: The page is owned solely by the page-table owner.
+> > > +	 *   01: The page is owned by the page-table owner, but is shared
+> > > +	 *       with another entity.
+> > > +	 *   10: The page is shared with, but not owned by the page-table owner.
+> > > +	 *   11: Reserved for future use (lending).
+> > > +	 */
+> > > +	if (prot & KVM_PGTABLE_STATE_SHARED) {
+> > > +		if (prot & KVM_PGTABLE_STATE_BORROWED)
+> > > +			ignored_bits |= BIT(1);
+> > > +		else
+> > > +			ignored_bits |= BIT(0);
+> > > +	}
+> > > +
+> > > +	return FIELD_PREP(KVM_PTE_LEAF_ATTR_IGNORED, ignored_bits);
+> > > +}
+> > > +
+> > >  static int kvm_pgtable_visitor_cb(struct kvm_pgtable_walk_data *data, u64 addr,
+> > >  				  u32 level, kvm_pte_t *ptep,
+> > >  				  enum kvm_pgtable_walk_flags flag)
+> > > @@ -357,6 +380,7 @@ static int hyp_set_prot_attr(enum kvm_pgtable_prot prot, kvm_pte_t *ptep)
+> > >  	attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S1_AP, ap);
+> > >  	attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S1_SH, sh);
+> > >  	attr |= KVM_PTE_LEAF_ATTR_LO_S1_AF;
+> > > +	attr |= pte_ignored_bit_prot(prot);
+> > >  	*ptep = attr;
+> > >  
+> > >  	return 0;
+> > > @@ -558,6 +582,7 @@ static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot p
+> > >  
+> > >  	attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S2_SH, sh);
+> > >  	attr |= KVM_PTE_LEAF_ATTR_LO_S2_AF;
+> > > +	attr |= pte_ignored_bit_prot(prot);
+> > >  	*ptep = attr;
+> > >  
+> > >  	return 0;
+> > 
+> > How about kvm_pgtable_stage2_relax_perms()?
+> 
+> It should leave SW bits untouched, and it really felt like a path were
+> we want to change permissions and nothing else. What did you have in
+> mind?
 
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7280-idp.dts |  7 +++++++
- arch/arm64/boot/dts/qcom/sc7280.dtsi    | 19 ++++++++++++++++---
- 2 files changed, 23 insertions(+), 3 deletions(-)
+It isn't clear to me that it would not (cannot?) be used to change
+other bits, given that it takes an arbitrary 'prot' set. If there is
+such an intended restriction, we definitely should document it.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-index 191e8a92d153..d66e3ca42ad5 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-@@ -343,3 +343,10 @@
- 		bias-pull-up;
- 	};
- };
-+
-+&remoteproc_mpss {
-+	status = "okay";
-+	compatible = "qcom,sc7280-mss-pil";
-+	iommus = <&apps_smmu 0x124 0x0>, <&apps_smmu 0x488 0x7>;
-+	memory-region = <&mba_mem &mpss_mem>;
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 56ea172f641f..6d3687744440 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -586,7 +586,8 @@
- 
- 		remoteproc_mpss: remoteproc@4080000 {
- 			compatible = "qcom,sc7280-mpss-pas";
--			reg = <0 0x04080000 0 0x10000>;
-+			reg = <0 0x04080000 0 0x10000>, <0 0x04180000 0 0x48>;
-+			reg-names = "qdsp6", "rmb";
- 
- 			interrupts-extended = <&intc GIC_SPI 264 IRQ_TYPE_EDGE_RISING>,
- 					      <&modem_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
-@@ -597,8 +598,11 @@
- 			interrupt-names = "wdog", "fatal", "ready", "handover",
- 					  "stop-ack", "shutdown-ack";
- 
--			clocks = <&rpmhcc RPMH_CXO_CLK>;
--			clock-names = "xo";
-+			clocks = <&gcc GCC_MSS_CFG_AHB_CLK>,
-+				 <&gcc GCC_MSS_OFFLINE_AXI_CLK>,
-+				 <&gcc GCC_MSS_SNOC_AXI_CLK>,
-+				 <&rpmhcc RPMH_CXO_CLK>;
-+			clock-names = "iface", "offline", "snoc_axi", "xo";
- 
- 			power-domains = <&rpmhpd SC7280_CX>,
- 					<&rpmhpd SC7280_MSS>;
-@@ -611,6 +615,15 @@
- 			qcom,smem-states = <&modem_smp2p_out 0>;
- 			qcom,smem-state-names = "stop";
- 
-+			resets = <&aoss_reset AOSS_CC_MSS_RESTART>,
-+				 <&pdc_reset PDC_MODEM_SYNC_RESET>;
-+			reset-names = "mss_restart", "pdc_reset";
-+
-+			qcom,halt-regs = <&tcsr_mutex 0x23000 0x25000 0x28000 0x33000>;
-+			qcom,ext-regs = <&tcsr_regs 0x10000 0x10004
-+					 &tcsr_mutex 0x26004 0x26008>;
-+			qcom,qaccept-regs = <&tcsr_mutex 0x23030 0x23040 0x23020>;
-+
- 			status = "disabled";
- 
- 			glink-edge {
+	M.
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Without deviation from the norm, progress is not possible.
