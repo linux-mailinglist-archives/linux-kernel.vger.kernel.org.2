@@ -2,46 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4A03CF8EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0053CF8F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235544AbhGTK5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:57:14 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40344 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236401AbhGTK4w (ORCPT
+        id S235892AbhGTK6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234895AbhGTK45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:56:52 -0400
-Date:   Tue, 20 Jul 2021 11:37:18 -0000
+        Tue, 20 Jul 2021 06:56:57 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FD4C0613DC;
+        Tue, 20 Jul 2021 04:37:22 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 11:37:19 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626781039;
+        s=2020; t=1626781040;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=BzdAJmqWFDGPlX1pCwG3w6m/UxKMwlRCAmulfK4Lda0=;
-        b=VfTaw4vCRUogxm6IuOVS7RfACbHr1NrIAfLDujMp5pjJHjyacKQ8uVd2ojO2G+3XYgS/Up
-        aG5OLLMwVhSWs7JDskDoHUunuRUVxCIKTX51zrSIJF+q7NyarOWQOz7aImnzmOWnHcBpGU
-        VHdbXMTSPWkb3cLUb2Kyh+BHTKJDnGkJsyumh8U61GA0MjJ07zhteT+2d6nBflUqWGbFiJ
-        bY8ldke/gdBKrbj/cmejzNXNeN5aoDt4ze93GgYTLDHseh46DTAzR3dRnO6kHQM7k8nNRQ
-        yDTVKyz+H0ygLff/lPqsDuP+DT+UFQZ3QppXj0yfMJDSQMJTE/9tZAyZl2qV1A==
+        bh=MDGMmPbtbF5/H2yZEINtmGA18N7ewwPqc7Ot/cO5wR4=;
+        b=3uEAyQctMglA9Y8tUO8SASl8SVGABTGrkFFoLCJNo2cwiu/LGtZhYTzHaa1nJfXbFafJdl
+        TrI2WHmk71tP/JaDznyVM4Jy/NWASYqVU7+Dlu+mt6xTSCDhawOuyw7IfMYaByFfqEu5Q9
+        n64BUdvXxBKQlrwqsa9JwLa1JEpJgMklCe6QkrFSGzMuC+AoFptKcDBRRHUgP/E2Ep7nms
+        MTDdVRv0fzvxU9vDV2MdNOXtY+ywa9O8nZsrccnpEQxkEjZ+2Q6z4Puf/uHzkhvTuQesG8
+        pgpm8sIFwrTbS3GPLsz2wfJCR9RW5hnbz9xSqIrtI8HhOnKiVmSu/hkdP6wV9g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626781039;
+        s=2020e; t=1626781040;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=BzdAJmqWFDGPlX1pCwG3w6m/UxKMwlRCAmulfK4Lda0=;
-        b=I3P0q0ADBRPiwveRpCpYtoU+hN9QH5mZRQeHvQMt8vUUFITrpk4toU8RX65/Sw19L0dQSL
-        GMB6h2tuxNfA9BCg==
-From:   "tip-bot2 for Atish Patra" <tip-bot2@linutronix.de>
+        bh=MDGMmPbtbF5/H2yZEINtmGA18N7ewwPqc7Ot/cO5wR4=;
+        b=NeDyEnVuQdMWPO1Aur9cOsCXyiOHhE1drc9liEzhu0n7W5o7n9kfw4Z8YSIl6LKErzl/JQ
+        JmVOx4Rtkwbd3bDA==
+From:   "tip-bot2 for Michal Suchanek" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/urgent] efi/libstub: Fix the efi_load_initrd function description
-Cc:     Atish Patra <atish.patra@wdc.com>,
+Subject: [tip: efi/urgent] efi/tpm: Differentiate missing and invalid final
+ event log table.
+Cc:     Michal Suchanek <msuchanek@suse.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
         Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <162678103854.395.2517207053400940703.tip-bot2@tip-bot2>
+Message-ID: <162678103984.395.15219402725448409606.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -52,40 +57,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the efi/urgent branch of tip:
 
-Commit-ID:     947228cb9f1a2c69a5da5279c48f02bb4f49ce32
-Gitweb:        https://git.kernel.org/tip/947228cb9f1a2c69a5da5279c48f02bb4f49ce32
-Author:        Atish Patra <atish.patra@wdc.com>
-AuthorDate:    Fri, 02 Jul 2021 12:10:44 -07:00
+Commit-ID:     674a9f1f6815849bfb5bf385e7da8fc198aaaba9
+Gitweb:        https://git.kernel.org/tip/674a9f1f6815849bfb5bf385e7da8fc198aaaba9
+Author:        Michal Suchanek <msuchanek@suse.de>
+AuthorDate:    Thu, 08 Jul 2021 11:46:54 +02:00
 Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Fri, 16 Jul 2021 18:18:15 +02:00
+CommitterDate: Fri, 16 Jul 2021 18:04:55 +02:00
 
-efi/libstub: Fix the efi_load_initrd function description
+efi/tpm: Differentiate missing and invalid final event log table.
 
-The soft_limit and hard_limit in the function efi_load_initrd describes
-the preferred and max address of initrd loading location respectively.
-However, the description wrongly describes it as the size of the
-allocated memory.
+Missing TPM final event log table is not a firmware bug.
 
-Fix the function description.
+Clearly if providing event log in the old format makes the final event
+log invalid it should not be provided at least in that case.
 
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
+Fixes: b4f1874c6216 ("tpm: check event log version before reading final events")
+Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- drivers/firmware/efi/libstub/efi-stub-helper.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/firmware/efi/tpm.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
-index aa8da0a..ae87dde 100644
---- a/drivers/firmware/efi/libstub/efi-stub-helper.c
-+++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
-@@ -630,8 +630,8 @@ efi_status_t efi_load_initrd_cmdline(efi_loaded_image_t *image,
-  * @image:	EFI loaded image protocol
-  * @load_addr:	pointer to loaded initrd
-  * @load_size:	size of loaded initrd
-- * @soft_limit:	preferred size of allocated memory for loading the initrd
-- * @hard_limit:	minimum size of allocated memory
-+ * @soft_limit:	preferred address for loading the initrd
-+ * @hard_limit:	upper limit address for loading the initrd
-  *
-  * Return:	status code
-  */
+diff --git a/drivers/firmware/efi/tpm.c b/drivers/firmware/efi/tpm.c
+index c1955d3..8f66567 100644
+--- a/drivers/firmware/efi/tpm.c
++++ b/drivers/firmware/efi/tpm.c
+@@ -62,9 +62,11 @@ int __init efi_tpm_eventlog_init(void)
+ 	tbl_size = sizeof(*log_tbl) + log_tbl->size;
+ 	memblock_reserve(efi.tpm_log, tbl_size);
+ 
+-	if (efi.tpm_final_log == EFI_INVALID_TABLE_ADDR ||
+-	    log_tbl->version != EFI_TCG2_EVENT_LOG_FORMAT_TCG_2) {
+-		pr_warn(FW_BUG "TPM Final Events table missing or invalid\n");
++	if (efi.tpm_final_log == EFI_INVALID_TABLE_ADDR) {
++		pr_info("TPM Final Events table not present\n");
++		goto out;
++	} else if (log_tbl->version != EFI_TCG2_EVENT_LOG_FORMAT_TCG_2) {
++		pr_warn(FW_BUG "TPM Final Events table invalid\n");
+ 		goto out;
+ 	}
+ 
