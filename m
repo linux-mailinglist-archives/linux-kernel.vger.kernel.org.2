@@ -2,233 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156FB3CFF73
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C533CFF80
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhGTPtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:49:07 -0400
-Received: from mail-co1nam11on2063.outbound.protection.outlook.com ([40.107.220.63]:35579
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237696AbhGTPlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:41:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DB4+CQVm3eftPe/P8OoBPJcLLbIrCsuQL28nzw+V6cbwEmWVTSe9JnmHPklB+xR0YfjH6t0A8C2RETiEaClRju6/8pWLi80c0x5aurQWlgBVHeYfBdmLeW6d5BifsKPWZgzRySx9HeTvj7fF+u+9cDbAx4jY30/c9GlrnmWguvmi+gTqA+/MXd2fvErHUBJLPR5pgWysDFsySf98I2PBKYX8cUryEVbb0/4IlQfrIKroj7DagcO8vP4XAwlwKcvwYzWsh4lj9dHO06wNOUKY0PRKYKUfyFjeq/gzNxofH148rmwwwdlKieypkzFQSvIFaVvK5mgXZtZ5hLud3zHL7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R24IyrcLXC4EOQrKNoLsLOydMVGnJ5VoiKBgjj8ZTmY=;
- b=ZX5H9flwBkAmLSQuP9nQWvSwCdKCgT9FQe2U97caTlzRZpY1jwxKgiP9faEpwtuVheG1+MYBVwLhK5XWeZudy/BGKFELaaiHWXCMhHsk8JT5vTRwAVedPf7NAqS67wkztJvR0oP15PnY+E+n9BhoVnqnLxhxTkdVLEdKa4YXnOXu22YoG4ug5YaXz3D6aOeruB4WpA9SZZ4zyms9qqRo1LL2S6R9XUl741Q++Fiv260K7fMuUMr9+5VCa3y20k58nGRTPo9AkwYLOPDy/8fb0U2TAv3yFjuNmZVCiwhUxRNAJ4ye6NOZ6+ZICKFisqG5g+DlI3nLmUSYyNmsVa5cSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R24IyrcLXC4EOQrKNoLsLOydMVGnJ5VoiKBgjj8ZTmY=;
- b=dfidu0wDMVG11ndX4gz2Xl2lD16lH1UUDYBQH1nYqEW+EJvIGxnxGsL0ePkKNvzYX9jw1GY7X9CtsyFw/YyzLYqRCCIFmX/IttbcEKT7VrNY0FhQZqy7M08I2LxrFl5qWOkiH+1uGVce10K2Gj3eieHfjA8XZAD0Q4/uq1B11jU=
-Received: from MW2PR16CA0010.namprd16.prod.outlook.com (2603:10b6:907::23) by
- BY5PR12MB3650.namprd12.prod.outlook.com (2603:10b6:a03:1a3::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Tue, 20 Jul
- 2021 16:21:55 +0000
-Received: from CO1NAM11FT056.eop-nam11.prod.protection.outlook.com
- (2603:10b6:907:0:cafe::1e) by MW2PR16CA0010.outlook.office365.com
- (2603:10b6:907::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
- Transport; Tue, 20 Jul 2021 16:21:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CO1NAM11FT056.mail.protection.outlook.com (10.13.175.107) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4331.21 via Frontend Transport; Tue, 20 Jul 2021 16:21:55 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 20 Jul
- 2021 11:21:53 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 20 Jul
- 2021 11:21:53 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Tue, 20 Jul 2021 11:21:49 -0500
-From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <Alexander.Deucher@amd.com>, <Sunil-kumar.Dommati@amd.com>,
-        <krisman@collabora.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        "Takashi Iwai" <tiwai@suse.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 11/12] ASoC: amd: add vangogh i2s dma driver pm ops
-Date:   Tue, 20 Jul 2021 22:07:31 +0530
-Message-ID: <20210720163732.23003-12-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210720163732.23003-1-Vijendar.Mukunda@amd.com>
-References: <20210720163732.23003-1-Vijendar.Mukunda@amd.com>
+        id S234613AbhGTPvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236583AbhGTPjp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 11:39:45 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33242C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 09:18:51 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id r132so33516705yba.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 09:18:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BF4wPFMGvJMx+e9zXgrbf4Lj5+O/3oIlVh3I/7nAW28=;
+        b=ebloSyKUKkgIs+5bbIXrcys7dZ7H0YEYo0N3DdxsuSL9UXqyZuvkKRH2OU/kRrCCzc
+         nrHXcBFtkbYxBzYRNuWL+IQ+SNmmEGc3glpp8pV3QGWQIwWHD1P5RjuFU3lUoNKle/xW
+         2pT/H/qKUo3Qg57gz+9bpwPRICh5bZWXv2dZYQMo7iZZh6AJiO3oZE6Tz8A4q2xumRpW
+         HvfY0IfHo37kn+xkdC6mbcZBYXo0KQBV/2KsgF6D9gGPLeKp3bb/DeuwLjQYu8j0KI0k
+         bnx5lMqWKM09WiuKJPZnqa1CqxIA54VJgk/9w7ICvF8ivLOEgtbXlQZ+k6ffUB4g7pH/
+         FrZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BF4wPFMGvJMx+e9zXgrbf4Lj5+O/3oIlVh3I/7nAW28=;
+        b=Jg2lccTW+U/jgIHQmCJrGTUanztb1Axxzl+JsrZ6peGANA8A5cbjf3L+XtQzkiwJYX
+         49Mg/2LFaovxWXZvHdEPLiJ4ZpeWirwSLurJEu1zHcq+Ssz0bo0PyEZhxUTXL/IdOxAi
+         XWINKLNLan9fLUCaFMyttuk/6oqVUIuwIwbnTQLnoI4IqGZxmOCQPeNzSBhkpxK1J0Y5
+         IrofirEo1tsplmhpct8TslLyP8tPlD9RJdPkmOXCwk9/zkyAiYCZ/IAKL7b3snrTdHUy
+         gzf8Z923VUTJQGrZPysEAIn8IxvKARxrbPBgV/kCa6zEWl0L2Y0v52O2tX+imZRMQI1N
+         K4og==
+X-Gm-Message-State: AOAM531xnuzF9gDkixyMFP2/RTUGv6aZxn/610B4zLTWIU1CHAi28EM0
+        qp6tJbUE1FwIxK/hUyzoH5VmfVRE5AH/vWZEuKzKSQ==
+X-Google-Smtp-Source: ABdhPJzYpjDzF/VTmmB9Zr65reHxTvduNEHmYOd+EstkNRz17MA1cqBnwnCKvsbHziUq9ZfkgYN06+i9RPZ43L1s9Yk=
+X-Received: by 2002:a25:2341:: with SMTP id j62mr39877955ybj.190.1626797930203;
+ Tue, 20 Jul 2021 09:18:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4c7e97d3-227d-4075-db3b-08d94b9a7d8b
-X-MS-TrafficTypeDiagnostic: BY5PR12MB3650:
-X-Microsoft-Antispam-PRVS: <BY5PR12MB365086D0AE8CC2F4B9C7C15397E29@BY5PR12MB3650.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:346;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Rdsuyy0WUX1jeDuXAP6twW0wbmhbFk+cZO42LnLVxWag/75W9j7+yTlmV6GRDmqjChwTCfQVStXW8jGpXEHjqKvS1Qj7qRGDP1wlgV988rXBlaAcHzn8bg2Zhml2rrnurVy08sweKwUr2JjQLppmVqT9NZHdP/l9Z/uokY0yu8aKISK6JS1hQhNuLoyFWbn18yV1lbFlzimr5yQthf/xDJwDsxpTX0IlAgAb2r1yn1H4A1sBICKNAGtTm+0fVlRL2jGXb79VHRqIPAd9l1zytz/k3RZWyw0SGH8c3DHTA0uNwqJDEJh0cqRXHi9NABM+s/niWYU5R+U1Ux8bnsQuKz2ahu8ZUqLj0dORSFdglSiCqM+qgcTHgVgTv/eXc0SNpo2hoZ+50MCe2xGZ296rQakBjGUKrZ2yWCH/7kzzvGpEv+pFAn737ZYAkw77jSCj/dCwcd5AWXNPeHfK2Uqj0+MaZDA/uPMUyAnyhxV0mukDiYceuRoBNatpBw0BfAHqz4EAkY2mDCxDKAN81AfVFd+KMMFRB5C/6OaFtZUnJQs4bsYjLSdqlZ7Yesxyei11ycmw4dZIXYpbhOktSfiG1Rh5RigJ0eiQYuRYe4jNIYj/uaJF4FaQLFU0783RujYlb9r9szxyGfJgBbcgyRWp9222Tg4OkcHK0XL931UpzTvM7ElFeuXJqfoFeSLq44PM+gQd6I1+mPfvKHgG9XCcH8xuStsQ5ZNfV/TKdsebjw8=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(396003)(376002)(46966006)(36840700001)(5660300002)(81166007)(316002)(82740400003)(82310400003)(356005)(186003)(54906003)(36860700001)(8936002)(7696005)(26005)(86362001)(83380400001)(4326008)(110136005)(478600001)(426003)(1076003)(8676002)(6666004)(47076005)(70206006)(70586007)(36756003)(336012)(2616005)(2906002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2021 16:21:55.0441
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c7e97d3-227d-4075-db3b-08d94b9a7d8b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT056.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3650
+References: <20210718214134.2619099-1-surenb@google.com> <7eb17da6-03a6-5eaf-16e6-97b53ba163d8@redhat.com>
+In-Reply-To: <7eb17da6-03a6-5eaf-16e6-97b53ba163d8@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 20 Jul 2021 09:18:39 -0700
+Message-ID: <CAJuCfpHRm8HshtVSgVQAOdttL4=25qC=sEEgKU2mN1FP4dFJKA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] mm, oom: move task_will_free_mem up in the file to
+ be used in process_mrelease
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Vangogh i2s dma driver pm ops
+On Tue, Jul 20, 2021 at 5:44 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 18.07.21 23:41, Suren Baghdasaryan wrote:
+> > process_mrelease needs to be added in the CONFIG_MMU-dependent block which
+> > comes before __task_will_free_mem and task_will_free_mem. Move these
+> > functions before this block so that new process_mrelease syscall can use
+> > them.
+> >
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > ---
+> > changes in v2:
+> > - Fixed build error when CONFIG_MMU=n, reported by kernel test robot. This
+> > required moving task_will_free_mem implemented in the first patch
+> > - Renamed process_reap to process_mrelease, per majority of votes
+> > - Replaced "dying process" with "process which was sent a SIGKILL signal" in
+> > the manual page text, per Florian Weimer
+> > - Added ERRORS section in the manual page text
+> > - Resolved conflicts in syscall numbers caused by the new memfd_secret syscall
+> > - Separated boilerplate code wiring-up the new syscall into a separate patch
+> > to facilitate the review process
+> >
+> >   mm/oom_kill.c | 150 +++++++++++++++++++++++++-------------------------
+> >   1 file changed, 75 insertions(+), 75 deletions(-)
+>
+> TBH, I really dislike this move as it makes git blame a lot harder with
+> any real benefit.
+>
+> Can't you just use prototypes to avoid the move for now in patch #2?
+>
+> static bool task_will_free_mem(struct task_struct *task);
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/vangogh/acp5x-pcm-dma.c | 96 ++++++++++++++++++++++++++-
- 1 file changed, 94 insertions(+), 2 deletions(-)
+Sure, I can use a forward-declaration. Just thought this would be
+cleaner. Will change in the next rev. Thanks!
 
-diff --git a/sound/soc/amd/vangogh/acp5x-pcm-dma.c b/sound/soc/amd/vangogh/acp5x-pcm-dma.c
-index 57a1a1f54155..cad640ea0fff 100644
---- a/sound/soc/amd/vangogh/acp5x-pcm-dma.c
-+++ b/sound/soc/amd/vangogh/acp5x-pcm-dma.c
-@@ -8,6 +8,7 @@
- #include <linux/module.h>
- #include <linux/err.h>
- #include <linux/io.h>
-+#include <linux/pm_runtime.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -411,16 +412,107 @@ static int acp5x_audio_probe(struct platform_device *pdev)
- 	}
- 	status = devm_request_irq(&pdev->dev, adata->i2s_irq, i2s_irq_handler,
- 				  irqflags, "ACP5x_I2S_IRQ", adata);
--	if (status)
-+	if (status) {
- 		dev_err(&pdev->dev, "ACP5x I2S IRQ request failed\n");
-+		return status;
-+	}
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, 2000);
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_allow(&pdev->dev);
-+
-+	return 0;
-+}
- 
--	return status;
-+static int acp5x_audio_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+	return 0;
- }
- 
-+static int __maybe_unused acp5x_pcm_resume(struct device *dev)
-+{
-+	struct i2s_dev_data *adata;
-+	u32 val, reg_val, frmt_val;
-+
-+	reg_val = 0;
-+	frmt_val = 0;
-+	adata = dev_get_drvdata(dev);
-+
-+	if (adata->play_stream && adata->play_stream->runtime) {
-+		struct i2s_stream_instance *rtd =
-+			adata->play_stream->runtime->private_data;
-+		config_acp5x_dma(rtd, SNDRV_PCM_STREAM_PLAYBACK);
-+		switch (rtd->i2s_instance) {
-+		case I2S_HS_INSTANCE:
-+			reg_val = ACP_HSTDM_ITER;
-+			frmt_val = ACP_HSTDM_TXFRMT;
-+			break;
-+		case I2S_SP_INSTANCE:
-+		default:
-+			reg_val = ACP_I2STDM_ITER;
-+			frmt_val = ACP_I2STDM_TXFRMT;
-+		}
-+		acp_writel((rtd->xfer_resolution  << 3),
-+			   rtd->acp5x_base + reg_val);
-+	}
-+
-+	if (adata->capture_stream && adata->capture_stream->runtime) {
-+		struct i2s_stream_instance *rtd =
-+			adata->capture_stream->runtime->private_data;
-+		config_acp5x_dma(rtd, SNDRV_PCM_STREAM_CAPTURE);
-+		switch (rtd->i2s_instance) {
-+		case I2S_HS_INSTANCE:
-+			reg_val = ACP_HSTDM_IRER;
-+			frmt_val = ACP_HSTDM_RXFRMT;
-+			break;
-+		case I2S_SP_INSTANCE:
-+		default:
-+			reg_val = ACP_I2STDM_IRER;
-+			frmt_val = ACP_I2STDM_RXFRMT;
-+		}
-+		acp_writel((rtd->xfer_resolution  << 3),
-+			   rtd->acp5x_base + reg_val);
-+	}
-+	if (adata->tdm_mode == TDM_ENABLE) {
-+		acp_writel(adata->tdm_fmt, adata->acp5x_base + frmt_val);
-+		val = acp_readl(adata->acp5x_base + reg_val);
-+		acp_writel(val | 0x2, adata->acp5x_base + reg_val);
-+	}
-+	acp_writel(1, adata->acp5x_base + ACP_EXTERNAL_INTR_ENB);
-+	return 0;
-+}
-+
-+static int __maybe_unused acp5x_pcm_suspend(struct device *dev)
-+{
-+	struct i2s_dev_data *adata;
-+
-+	adata = dev_get_drvdata(dev);
-+	acp_writel(0, adata->acp5x_base + ACP_EXTERNAL_INTR_ENB);
-+	return 0;
-+}
-+
-+static int __maybe_unused acp5x_pcm_runtime_resume(struct device *dev)
-+{
-+	struct i2s_dev_data *adata;
-+
-+	adata = dev_get_drvdata(dev);
-+	acp_writel(1, adata->acp5x_base + ACP_EXTERNAL_INTR_ENB);
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops acp5x_pm_ops = {
-+	SET_RUNTIME_PM_OPS(acp5x_pcm_suspend,
-+			   acp5x_pcm_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(acp5x_pcm_suspend, acp5x_pcm_resume)
-+};
-+
- static struct platform_driver acp5x_dma_driver = {
- 	.probe = acp5x_audio_probe,
-+	.remove = acp5x_audio_remove,
- 	.driver = {
- 		.name = "acp5x_i2s_dma",
-+		.pm = &acp5x_pm_ops,
- 	},
- };
- 
--- 
-2.17.1
-
+>
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
