@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59513CF274
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9213CF280
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346075AbhGTCeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 22:34:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54023 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344816AbhGTCcg (ORCPT
+        id S1346426AbhGTCor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 22:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346409AbhGTCkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 22:32:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626750787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DoLEcT33LRgRDL/zFFgtY3SrFi92a7SIbwIG491oqAU=;
-        b=TZ9y26hoA1kGNVSEQq2witH4pTK6mFVXEjbtkfKdmgmZGeY3L8hQ6lTpEINHLffKqP4WsQ
-        0s/JpeGxnbV/DVQOrZTVxIyLqVxpp+igI0xHL9iyrVBK1Pq5+yKx9VEItkrAWRAN2rC9HQ
-        Di076hTGO8RFBQAdeVfqmAcTAE5fhnA=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-174-ngTSAMGUNTy1yvLW9SQo4g-1; Mon, 19 Jul 2021 23:13:06 -0400
-X-MC-Unique: ngTSAMGUNTy1yvLW9SQo4g-1
-Received: by mail-pf1-f198.google.com with SMTP id g8-20020aa781880000b029034c3e4a41edso2475554pfi.14
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 20:13:06 -0700 (PDT)
+        Mon, 19 Jul 2021 22:40:22 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1483DC061762;
+        Mon, 19 Jul 2021 20:21:01 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id s18so21257889pgg.8;
+        Mon, 19 Jul 2021 20:21:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gjZSaF3RXySa1uirQyy8STm6C8ddpC3urY/fbzCQUXc=;
+        b=XseHADv0++kRb+kSNwrb3v0X4VVhmQ4uSd1tnGhlh18VmYAjeGz1/kTi+jaQJ9AdsJ
+         SertRRPrsL+Wkb373CVhz4BDOmvsP90wYEYWyjaEZzcpFzyG6ecIm72fZtNT+WMHV1D8
+         cog6vS6VNHJYL/5t1wFMQ0rcczKN3neLIyhBX7N4ScwWlBmE6R0eV9EaOmwdeL+3eBSD
+         qcHhgKgBwyre6neBpjrhkrg5xT05kikmQJ0tJN9r+jSbZpD9d6cA/wok1TBBNJTjMkjC
+         P1PBRFP5ew2GFjlmrLvYhKWrjv3gpM2bjpNwV5/Lhnq/Cdtmf2tXh71aVv9BYEoqV5IG
+         VifA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=DoLEcT33LRgRDL/zFFgtY3SrFi92a7SIbwIG491oqAU=;
-        b=XgsMbTxa0lJke54zmXseieRm/3SOPPqxsauvOsqVPYvLdqY998m36x9uuQrEoAb4iC
-         AYkJQRduLAsdPIGnPeO4A2hs9EZRrKB8P4GHXx1haI1j8TUHrxwXxeJydedA53lw5wjt
-         vT7DR5pjEo1tSO8STmhnnv2eKmaiDPjn5oI0APYPc1Zg98RCEUWUN7wDkKTY5Jfh4baK
-         +WMjGFVfxb9vV7vWwa6J4OxeKHQp9yA0A8wfzM3ybHJ/caQub9QTAlmOs65mkysLwqqV
-         LXJ1CZX2unduA8XHv8QigvyZqXwabXAp+7qMt+2X6UxH8m9DfEuETcewEa9CYzLQjzzl
-         mdCw==
-X-Gm-Message-State: AOAM532C5nW9ZgOxPOmy8S7r1HI4+r0evXjsi2WxN3nAZ/Dr8lfy7+6B
-        IEUyGiQYjqAO0p/IdKslzTuioMnHmcKV2U2KutykVV+4RmYU0VyjFqbVs0GuNL+o9Z3JOdpuh77
-        YA/Wr0dp6Ir9Dg3HCGGdUjyVgThjyzoD+r9deb3pExooct+8vluxr+N82H9yMlEKhggAp0htU5b
-        IC
-X-Received: by 2002:a17:902:ea07:b029:129:ade2:1b05 with SMTP id s7-20020a170902ea07b0290129ade21b05mr21629485plg.31.1626750785044;
-        Mon, 19 Jul 2021 20:13:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx+4DvQ+yNCHTnf+mLnJP+rqdTfJp4hrhDj9VtzG/Y3UP2/HCHBpsXpxIocOrKbBFUaJ1HO4g==
-X-Received: by 2002:a17:902:ea07:b029:129:ade2:1b05 with SMTP id s7-20020a170902ea07b0290129ade21b05mr21629458plg.31.1626750784644;
-        Mon, 19 Jul 2021 20:13:04 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id x10sm13865584pfh.56.2021.07.19.20.13.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 20:13:04 -0700 (PDT)
-Subject: Re: [PATCH] vdpa/vdpa_sim: Use the negotiated features when calling
- vringh_init_iotlb
-To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com, sgarzare@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210719134407.175884-1-elic@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <970569fc-80bc-b0ef-b163-c59650796515@redhat.com>
-Date:   Tue, 20 Jul 2021 11:13:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gjZSaF3RXySa1uirQyy8STm6C8ddpC3urY/fbzCQUXc=;
+        b=kjy6UmD9ign1vKZuRYETUD+tvEVdZ3yqSa14v4gRGy/AOLQ/8H2+9TZyA+BHwhZVwx
+         lG0ELjK/lTg25dvo4G/J8zWApvCVZtPKR0wqWTxF3waxwnf0FJ/I/1QN7xMIituwiixQ
+         /namVjdavSxmKJKaMyXGGfbxJ3Mmr6wgnC8KVz66J2VhvVoBoMb7fs/PNc6voHkFTYP4
+         he94tKUqyaCe3tmgpEG//eLZIgBS9BBu1Tvz3qbE3gHJRYkRBvHEPO8vxbWV2sP6r5sF
+         o4bLfJxYQTecdp0JpocT33q/9gmaG4w7HhjXsjWJ4RdRhpdkIvMJJ5QqocQBkUk7ZhPo
+         v6ug==
+X-Gm-Message-State: AOAM533Uhe+ncSTa1rLJyzL2tw0/ko10MTmehCFUMHD7o/7FcgUti5m3
+        x6Wu8qNx71es7Ik0PttIJlQ=
+X-Google-Smtp-Source: ABdhPJyzJvpYTOYuIWrFwJI+qv5A0h900M++L6KlKXy25fOba4f/yYi5GNtEYVkLuy/XcXQ5gH+XEw==
+X-Received: by 2002:a05:6a00:1c6d:b029:338:322:137d with SMTP id s45-20020a056a001c6db02903380322137dmr19547938pfw.38.1626751260573;
+        Mon, 19 Jul 2021 20:21:00 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id i8sm947324pjh.36.2021.07.19.20.20.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 19 Jul 2021 20:21:00 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: 0001-perf-x86-amd-Do-not-touch-the-AMD64_EVENTSEL_HOSTONL.patchFrom 9f724a38754d3f99a1b332c11e72e9dd213289d7 Mon Sep 17 00:00:00 2001
+Date:   Tue, 20 Jul 2021 11:20:48 +0800
+Message-Id: <20210720032048.90815-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210719134407.175884-1-elic@nvidia.com>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Like Xu <likexu@tencent.com>
 
-ÔÚ 2021/7/19 ÏÂÎç9:44, Eli Cohen Ð´µÀ:
-> When calling vringh_init_iotlb(), use the negotiated features which
-> might be different than the supported features.
->
-> Fixes: 011c35bac5ef ("vdpa_sim: add supported_features field in vdpasim_dev_attr)
+If we use "perf record" in an AMD Milan guest, dmesg reports a #GP warning
+from an unchecked MSR access error on MSR_F15H_PERF_CTLx:
 
+[] unchecked MSR access error: WRMSR to 0xc0010200 (tried to write
+0x0000020000110076) at rIP: 0xffffffff8106ddb4 (native_write_msr+0x4/0x20)
+[] Call Trace:
+[]  amd_pmu_disable_event+0x22/0x90
+[]  x86_pmu_stop+0x4c/0xa0
+[]  x86_pmu_del+0x3a/0x140
 
-As Stefano said.
+The AMD64_EVENTSEL_HOSTONLY bit is defined and used on the host,
+while the guest perf driver should avoid such use.
 
-It should be 2c53d0f64c06f ("vdpasim: vDPA device simulator")
+Signed-off-by: Like Xu <likexu@tencent.com>
+---
+ arch/x86/events/perf_event.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Other than this
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> Signed-off-by: Eli Cohen <elic@nvidia.com>
-> ---
->   drivers/vdpa/vdpa_sim/vdpa_sim.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index 14e024de5cbf..89a474c7a096 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -66,7 +66,7 @@ static void vdpasim_queue_ready(struct vdpasim *vdpasim, unsigned int idx)
->   {
->   	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
->   
-> -	vringh_init_iotlb(&vq->vring, vdpasim->dev_attr.supported_features,
-> +	vringh_init_iotlb(&vq->vring, vdpasim->features,
->   			  VDPASIM_QUEUE_MAX, false,
->   			  (struct vring_desc *)(uintptr_t)vq->desc_addr,
->   			  (struct vring_avail *)
-> @@ -86,7 +86,7 @@ static void vdpasim_vq_reset(struct vdpasim *vdpasim,
->   	vq->device_addr = 0;
->   	vq->cb = NULL;
->   	vq->private = NULL;
-> -	vringh_init_iotlb(&vq->vring, vdpasim->dev_attr.supported_features,
-> +	vringh_init_iotlb(&vq->vring, vdpasim->features,
->   			  VDPASIM_QUEUE_MAX, false, NULL, NULL, NULL);
->   
->   	vq->vring.notify = NULL;
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 2bf1c7ea2758..795f4779023c 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -1116,8 +1116,9 @@ void x86_pmu_stop(struct perf_event *event, int flags);
+ static inline void x86_pmu_disable_event(struct perf_event *event)
+ {
+ 	struct hw_perf_event *hwc = &event->hw;
++	u64 disable_mask = __this_cpu_read(cpu_hw_events.perf_ctr_virt_mask);
+ 
+-	wrmsrl(hwc->config_base, hwc->config);
++	wrmsrl(hwc->config_base, hwc->config & ~disable_mask);
+ 
+ 	if (is_counter_pair(hwc))
+ 		wrmsrl(x86_pmu_config_addr(hwc->idx + 1), 0);
+-- 
+2.32.0
 
