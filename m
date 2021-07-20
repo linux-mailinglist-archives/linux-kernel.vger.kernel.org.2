@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F113D05AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDBA3D05A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237046AbhGTWww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 18:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236622AbhGTWtl (ORCPT
+        id S236494AbhGTWwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 18:52:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42670 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233421AbhGTWs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 18:49:41 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2156C0613E6;
-        Tue, 20 Jul 2021 16:29:24 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id a127so806022pfa.10;
-        Tue, 20 Jul 2021 16:29:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yXTkTmuny/F5ybcYYjxfeJY3HO6uZ+FEd6FMbHwKSms=;
-        b=GCXcviTFW7S78Ev6I0At3AKjSKt5TGb/r6jL6ATW+uOdJf3eAYtjY53nu/9YNUgoMX
-         Ei2KGGftuYNhvdJFOriZZJB97Q20QlS2gMJyKqgQfgfYgcBuAhFWHFJ5B8RvnxxnOE/8
-         3fZelZ3igBe2ABygeS0dEHCi06EB7aVQ/HeexF0dDPgVgw+BMWIZ5X0Q+Oda+ZjjStj1
-         7Gr+2YTDOuXQNMeaddKmbLksZE2BaY2bFTEfBzNiV99g+xfifQ+4Pb6lB0+g4GB7D4Ym
-         BdHUv3BgGEAJnpQZt34+1ijZf6UIpk3JwF+oHn4q1sl3LrZaA8YtGabPWwCKY0Lei1TC
-         hwJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yXTkTmuny/F5ybcYYjxfeJY3HO6uZ+FEd6FMbHwKSms=;
-        b=ugWgBDxRdk8oQY/3dJ1m+C6YpixD6oDHF7bn/a2+Hwd0vdN8EPgsw8IwDLScVIsJzH
-         ngL4C0YEM7JZIKWUEEkS6UJbBaB586ZoyTW0P3qIlhyfzjP92XxtYmGeFE8H9SXi7ZxZ
-         R80Qf3bVS+OgxyhCQF9Nuv/BG6s3zXAB8OKpvGGAXVrbSp7mATpmCdgG8gLAlYMT49ul
-         YGGaV81umW+Rw17Y2HHfuQ5kdwDGdMxIVsuwT7j2e0F8IPpgA/g2LPvQkEMdr1olsJcd
-         Rfj2JvSHqppJQxW3CoqEBiV2gkG/Oqfq9AlwAky03dVVSnF+4H0VmPFYkjRk5aBCSR89
-         2xew==
-X-Gm-Message-State: AOAM530Uh//eomSa4BnFJ3wiqRxDxDOYRO53IpU8sx7bat8QTNNpdDK5
-        rJPxGXosSB3Vef0gEi8ghr0=
-X-Google-Smtp-Source: ABdhPJyUjdCP2bjsSZ8zVaIL7MREf3ygbzRPbhSp8Dk20L1iZ962hdLT+jESGTHyC7EXJjhX6rZI2g==
-X-Received: by 2002:a05:6a00:158e:b029:32b:9de5:a199 with SMTP id u14-20020a056a00158eb029032b9de5a199mr33271341pfk.76.1626823763853;
-        Tue, 20 Jul 2021 16:29:23 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:6f70:be34:681b:b1e9:776f])
-        by smtp.gmail.com with ESMTPSA id d13sm24532683pfn.136.2021.07.20.16.29.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 16:29:23 -0700 (PDT)
-From:   Moritz Fischer <moritz.fischer.private@gmail.com>
-X-Google-Original-From: Moritz Fischer <moritzf@epycbox.lan>
-Date:   Tue, 20 Jul 2021 16:29:22 -0700
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Moritz Fischer <mdf@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: REGRESSION: Renesas USB host broken after commit d143825baf15
-Message-ID: <YPdcUrR5J6vA2Glr@epycbox.lan>
-References: <s5h7dhkoaa2.wl-tiwai@suse.de>
+        Tue, 20 Jul 2021 18:48:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626823775;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uTqg20WbE9gq4F17Yo+qpQ8PdWyA4fi/jLu09X5Zs0U=;
+        b=U5trjkHgEid4Ae2fLNEQgq7aFrMz5c1DqQYER7eayqr8eRwt8vZrhHvOcQ0Ya1iUIy3093
+        0zNLmaCFliaaDnAY1txq4gOmSL3vJOeK9CZ9EuQaiuOX7xame7TslEwM2u1ZQ8WptutPHG
+        sSVaQ6vESCB7/gio6HBFTNFkHwgS3KU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-429-HjSFoRXSMlqFdx9I2L3GFQ-1; Tue, 20 Jul 2021 19:29:31 -0400
+X-MC-Unique: HjSFoRXSMlqFdx9I2L3GFQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6273C362F8;
+        Tue, 20 Jul 2021 23:29:30 +0000 (UTC)
+Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5551B19C59;
+        Tue, 20 Jul 2021 23:29:27 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v2 01/12] mm/debug_vm_pgtable: Introduce struct
+ pgtable_debug_args
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+References: <20210719054138.198373-1-gshan@redhat.com>
+ <20210719054138.198373-2-gshan@redhat.com>
+ <8d754894-5c21-1287-82b6-7ac3b064af3d@redhat.com>
+ <ff9766a5-3f4e-f821-daf1-b2779a8c81fc@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <1d8c1b0f-3102-5a4a-f3fb-a0fc50d281cc@redhat.com>
+Date:   Wed, 21 Jul 2021 09:29:43 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5h7dhkoaa2.wl-tiwai@suse.de>
+In-Reply-To: <ff9766a5-3f4e-f821-daf1-b2779a8c81fc@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Takashi,
-
-On Wed, Jul 21, 2021 at 01:06:29AM +0200, Takashi Iwai wrote:
-> Hi,
+On 7/20/21 4:42 PM, Anshuman Khandual wrote:
+> On 7/19/21 6:31 PM, Gavin Shan wrote:
+>>> +    if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>>> +        has_transparent_hugepage()) {
+>>> +        page = alloc_pages(GFP_KERNEL, HPAGE_PMD_ORDER);
+>>> +        if (page) {
+>>> +            args->pmd_pfn = page_to_pfn(page);
+>>> +            args->pte_pfn = args->pmd_pfn;
+>>> +            return 0;
+>>> +        }
+>>> +    }
+>>> +
+>>
+>> As syzbot reported against v1 series, we could allocate pages larger than (1 << (MAX_ORDER - 1)) here.
+>> So __GFP_NOWARN is needed here. I will fix it in v3 series.
 > 
-> the recent patch landed in 5.13.2 stable tree from the upstream commit
-> d143825baf15 ("usb: renesas-xhci: Fix handling of unknown ROM state")
-> seems causing a regression on a few machines, as reported on openSUSE
-> Bugzilla:
->   https://bugzilla.opensuse.org/show_bug.cgi?id=1188485
->   https://bugzilla.opensuse.org/show_bug.cgi?id=1188515
+> I could find the following build error reported from lkp on V2.
 > 
-> Reverting it on top of 5.13.3 fixed the problem, so it's likely the
-> cause.  Could you guys take a look?
+> mm/debug_vm_pgtable.c:445:8: warning: variable 'pud' set but not used [-Wunused-but-set-variable]
+> 
 
-I've sent out a revert patch.
+Yes, The following line is missed in PATCH[v2 09/12] and fixed in
+PATCH[v3 09/12]: WARN_ON(!pud_none(pud)). With this line added,
+the variable @pud is used in v3.
 
-https://lore.kernel.org/linux-usb/20210719070519.41114-1-mdf@kernel.org/T/#u
+> Could you please point to the syzbot reported problem on V1 as you
+> have mentioned above. Are there configs where HPAGE_[PMD|PUD]_ORDER
+> is greater than (MAX_ORDER - 1) ? If yes, how adding __GFP_NOWARN
+> solves the problem ?
+> 
 
-I think the driver has more problems but I'll tackle that in a follow up
-patch, lets get this unbricked, first.
+https://syzkaller.appspot.com/bug?extid=8730ec44a441a434a2c8
+https://syzkaller.appspot.com/x/.config?x=29a82c885e192046
 
-Sorry for the inconvenience,
+The kernel config has the following options:
 
-Moritz
+CONFIG_X86_64=y
+CONFIG_TRANSPARENT_HUGEPAGE=y
+CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD=y
+#define PUD_SHIFT        30
+#define PMD_SHIFT        21
+
+CONFIG_FORCE_MAX_ZONEORDER=n
+#define MAX_ORDER	11
+
+(HPAGE_PUD_SHIFT - PAGE_SHIFT) >= (1 << MAX_ORDER)
+(HPAGE_PMD_ORDER)              <  (1 << MAX_ORDER)
+
+The warning is triggered in the following path, __GFP_NOWARN helps to
+avoid the WARNING_ON_ONCE(), but NULL is returned as expected.
+
+    alloc_pages
+      __alloc_pages
+
+        if (unlikely(order >= MAX_ORDER)) {
+                 WARN_ON_ONCE(!(gfp & __GFP_NOWARN));
+                 return NULL;
+         }
+
+Thanks,
+Gavin
+
