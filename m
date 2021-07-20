@@ -2,101 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6803D0221
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 21:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E013D022B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 21:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233889AbhGTSkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 14:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52326 "EHLO
+        id S232404AbhGTSqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 14:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232735AbhGTSjg (ORCPT
+        with ESMTP id S229750AbhGTSq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 14:39:36 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F374C061574;
-        Tue, 20 Jul 2021 12:20:08 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d15so293672qte.13;
-        Tue, 20 Jul 2021 12:20:08 -0700 (PDT)
+        Tue, 20 Jul 2021 14:46:29 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9C3C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 12:27:02 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id t3so2320308ljc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 12:27:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zFuzNBIJ3SOuNszQPtdyxiTi9yoIw9/CFgzpID1S2XU=;
-        b=gp7M1QghoO41WNBVmXuuTneI1Vq3cIRZrRygM7/0rnzOtNhjGFBpPckaBnDsYpz2/J
-         uQOZ9shSUn/+MPbMg3ZzbO2VD77Pt1tcALFBRn12Uwh7wHtAD3sWOhaQYgAUkhDzb2W7
-         kV8KK10Wz9W/YsAXeAShXJlQVRowN33Tyd03Nfz2ud3LllXPJ4zFmFhduNExqhAz2UY3
-         u6yLQnJWJDZbUsOt+NbQP/V+hM/YYvVt1ycnQJB1oGKnFSLCu4U1MYawVnfCjTl8yQfZ
-         g3ixrsadSGTvcu8Wk9XVHeLXMPf9llKChDxC7aW0Zy3pVty51zt6w/HY0j1t12BQGUbs
-         b5Jw==
+        bh=EI2a6CePBuQR5Qmt/hIAg9BsSGRZLvCH1L7dvlW0uiw=;
+        b=C/IMoejLQ3TpAwWYMjgZegIoM3Ljsd0fchCpMbLPN0uYHEs1jmSCEBv6KPLLzExal4
+         0LbYsqLNPRLzA3+wLI5TdzUtmrYg6vZAes3ebz8vsJgXKaIBilRm2/xQWyTTGjN5PzDK
+         cMPnwUPZDMkvN5llO6UyNuK/a5D5WQectAgzehBqPkcz/Ac4EsX30+MR84+gFOaI1gzR
+         4J2I88iq7Y2E2mq4ewAltFyL+qCLUXcBCmbCKDitSeGnYei1G843MWztVnuwFXYr6gX2
+         2woprX0y3Iar4L4M24OgoI/JiMLIH+m199zJtJF6zCHRfxY5ijhU1s3YEHwnYB7coF6M
+         Hxwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zFuzNBIJ3SOuNszQPtdyxiTi9yoIw9/CFgzpID1S2XU=;
-        b=BMygT8rqHUeqRWOmwYncvq7du60Vxu8O2yC9xV4Q2jWs9qZNWZUs9YKaFp3YXI8eZK
-         MARrgB3XO8nI9grGoRPqUWNLU5E668QUSZy9n0H5gz6pjMbklI9dO2WgKo050wAVKEms
-         EyyV0J3YTkSorfvu0GyQ7I/GOijK2CR8Rx8RjVwjNAihCMsbnYv2Xmzc9D3vNXlTZCT6
-         RGI/KqhDenBYxrbZ86mJJK/EnwKIdJoJMv0di27S7PvDRWL2dNpu+Mif5QwXQSMeGBRQ
-         B3uqoVBltaI3XFnENr0wYhSfSYkTxLb5vsNtYlg+7A1iURCPUnYuGttDQQCjA4g7jCRo
-         QXaQ==
-X-Gm-Message-State: AOAM532TJ+WFy5yTcu3BsbYnZ9AuULpZnVJZqKqqZSW8fq+NYYD5JrDf
-        /1cFA1ZSISJLZJOojq7mXhKaT7X7VMUznuHNn6aigh166l8=
-X-Google-Smtp-Source: ABdhPJyjmHyDnctsEMKBkZr9phS/9jJZ60CBbfNFwXeQRHc/Wl9jbZ6ktVF6XY6s6JAzaTOSk28akcrADfNwmOUSenM=
-X-Received: by 2002:a05:622a:138d:: with SMTP id o13mr27796695qtk.245.1626808807804;
- Tue, 20 Jul 2021 12:20:07 -0700 (PDT)
+        bh=EI2a6CePBuQR5Qmt/hIAg9BsSGRZLvCH1L7dvlW0uiw=;
+        b=DusirgD/RtcHB3ZjDHF72eMiswGscobx2h9kFOCHzxoZjQN1VKAvw3RMTdxKr3TvJg
+         wwAn6G9p+wlDM6szbDxOoC4SRilXVfCLw13rBu9rDVr2rF0jKtHmLu1iToHAvNQ4UwgL
+         YiLh8poxxFgvHnujmoAjs8ygF8VTbWQFPPsU227EvHQnj7EQ8/32vAI88aWArkdenbQw
+         LGgFxpm5WlH6FT/wiPevBc5KHNrz4qRLJcSL7R264R8pDUXIwYNU403/2nx10yBYqB9e
+         wQiGn7ekikqGScjCBtX7YF4HNc0qlzPvZFEhZur/ue9dvw/R1QRxABLyQG+bPC+wwklj
+         tAcA==
+X-Gm-Message-State: AOAM533WXja2F0j0qFyMcegscXJ8w+/g2K/ovZHlvgfsIhOOXIfPmTK1
+        Lk7Dg0lfCrrv09CGyQaihRd9XqfrU27KR5laSMukKw==
+X-Google-Smtp-Source: ABdhPJxSeCQrtKMGm2Qo3jOi9yp1Cpkh4gfKZo13daPxhKFclCpddl5nYSSjG2kXt4QMPJSwPWOccgx8xgttFS5DF8I=
+X-Received: by 2002:a05:651c:1213:: with SMTP id i19mr22636901lja.81.1626809220205;
+ Tue, 20 Jul 2021 12:27:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1dfbb73645d917b3c76d01290804a3410bd9932e.1624364386.git-series.a.fatoum@pengutronix.de>
- <39e6d65ca5d2a0a35fb71d6c1f85add8ee489a19.1624364386.git-series.a.fatoum@pengutronix.de>
- <1850833581.13438.1625172175436.JavaMail.zimbra@nod.at> <2f608e5a-5a12-6db1-b9bd-a2cd9e3e3671@pengutronix.de>
- <783613027.15909.1625223222889.JavaMail.zimbra@nod.at> <ac8ef66f-4d57-ead0-d1b3-e97220463241@pengutronix.de>
-In-Reply-To: <ac8ef66f-4d57-ead0-d1b3-e97220463241@pengutronix.de>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Tue, 20 Jul 2021 21:19:56 +0200
-Message-ID: <CAFLxGvxr94apP2jaT0tB6JRDtv_ivrguXK2Ykd3zer_4xtJ+2w@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        horia geanta <horia.geanta@nxp.com>,
-        aymen sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>, Udit Agarwal <udit.agarwal@nxp.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        david <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
+References: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
+ <cover.1626688654.git.vvs@virtuozzo.com> <9123bca3-23bb-1361-c48f-e468c81ad4f6@virtuozzo.com>
+In-Reply-To: <9123bca3-23bb-1361-c48f-e468c81ad4f6@virtuozzo.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 20 Jul 2021 12:26:48 -0700
+Message-ID: <CALvZod4HCRHpPJtGE=8tU1Yj=WsWHpocP0q0JU3r4F2fMmAw5w@mail.gmail.com>
+Subject: Re: [PATCH v5 02/16] memcg: enable accounting for IP address and
+ routing-related objects
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 2:37 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> > Both is possible. If the string starts with "0x" it needs to be decoded to a
-> > 128 bit key. Otherwise it has to be a up to 16 byte string.
+On Mon, Jul 19, 2021 at 3:44 AM Vasily Averin <vvs@virtuozzo.com> wrote:
 >
-> Fine by me. Looking forward to your patches. :-)
+> An netadmin inside container can use 'ip a a' and 'ip r a'
+> to assign a large number of ipv4/ipv6 addresses and routing entries
+> and force kernel to allocate megabytes of unaccounted memory
+> for long-lived per-netdevice related kernel objects:
+> 'struct in_ifaddr', 'struct inet6_ifaddr', 'struct fib6_node',
+> 'struct rt6_info', 'struct fib_rules' and ip_fib caches.
+>
+> These objects can be manually removed, though usually they lives
+> in memory till destroy of its net namespace.
+>
+> It makes sense to account for them to restrict the host's memory
+> consumption from inside the memcg-limited container.
+>
+> One of such objects is the 'struct fib6_node' mostly allocated in
+> net/ipv6/route.c::__ip6_ins_rt() inside the lock_bh()/unlock_bh() section:
+>
+>  write_lock_bh(&table->tb6_lock);
+>  err = fib6_add(&table->tb6_root, rt, info, mxc);
+>  write_unlock_bh(&table->tb6_lock);
+>
+> In this case it is not enough to simply add SLAB_ACCOUNT to corresponding
+> kmem cache. The proper memory cgroup still cannot be found due to the
+> incorrect 'in_interrupt()' check used in memcg_kmem_bypass().
+>
+> Obsoleted in_interrupt() does not describe real execution context properly.
+> From include/linux/preempt.h:
+>
+>  The following macros are deprecated and should not be used in new code:
+>  in_interrupt() - We're in NMI,IRQ,SoftIRQ context or have BH disabled
+>
+> To verify the current execution context new macro should be used instead:
+>  in_task()      - We're in task context
+>
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> ---
+>  mm/memcontrol.c      | 2 +-
+>  net/core/fib_rules.c | 4 ++--
+>  net/ipv4/devinet.c   | 2 +-
+>  net/ipv4/fib_trie.c  | 4 ++--
+>  net/ipv6/addrconf.c  | 2 +-
+>  net/ipv6/ip6_fib.c   | 4 ++--
+>  net/ipv6/route.c     | 2 +-
+>  7 files changed, 10 insertions(+), 10 deletions(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index ae1f5d0..1bbf239 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -968,7 +968,7 @@ static __always_inline bool memcg_kmem_bypass(void)
+>                 return false;
+>
+>         /* Memcg to charge can't be determined. */
+> -       if (in_interrupt() || !current->mm || (current->flags & PF_KTHREAD))
+> +       if (!in_task() || !current->mm || (current->flags & PF_KTHREAD))
+>                 return true;
+>
+>         return false;
 
-I'm not sure how to proceed.  Should I base my changes on this series
-or do you plan to send an updated
-version soon?
-Maybe it makes also sense to base my DCP patch set on yours.
-
-Trusted Keys maintainers, what do you prefer?
-
--- 
-Thanks,
-//richard
+Can you please also change in_interrupt() in active_memcg() as well?
+There are other unrelated in_interrupt() in that file but the one in
+active_memcg() should be coupled with this change.
