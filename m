@@ -2,151 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CF33CFFD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4293CFFE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbhGTQSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 12:18:01 -0400
-Received: from mail-eopbgr1410128.outbound.protection.outlook.com ([40.107.141.128]:62016
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229655AbhGTQRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 12:17:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SzzEhxgQzn6IJHepNLtXyWbTMz4Axv248SUpBe4La3YqVkjGjESlGa7OK82OZzpaoPRAYkjlDKd5SV6FlB21fPhb+ufMIiRFlqrXKji9IFYeZxIYqCguNUNQKCKfPc0uA/mhdpscGTkca8d1yS00fmDGH7F0CStxvsH59AOFtI+Z7XwVL3EED6/S/ziRmqJhWiqsg5cRZKsCTW8tPJ+OnUvtunhlQ/C7jmEnKaQiB+qZ90S23DRrs7yZObvVKx48W9GXiGMCZK0Xzr1qDrT98WmXmE58R9421sk5MC96HqQyjnLgnn5mbu6OG9JVujagCAYMnMLZob8bUUzVuiGvLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jFIRXJlc0Wec6Q+456bMLlma9VoypRBv9n99E1BkId8=;
- b=OuDhbpRQt+u3fuIbFauTHIVIAm9uZsf27nCuOWCshPH9beQqTln8+M6Weg2ip2/XCBfkPz+W8HZHXvxheWztpI8XJcaprHQ9PZW6v5hfRbMxAARa7GsPP55KoztwONItJykImw2iat8Hk3LE8J44P8Wo/TjoJtEXyQaxQRs54rD+EpUL1NUp3jRm4zLAgCglGIiN0Mr64C6w+6/zBrw+rU/be27PQvgNbRPM4rBh7m1ZRAyFcXxPupMI2hMBTYjF8Opgxz6bnuOHzpSM1jInMf/7bQ5TnFPNZo9igFSdaJcKvHO0T5+4GEMde5lK4cukeJh5btYFjZ+na5hNMBy0GA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jFIRXJlc0Wec6Q+456bMLlma9VoypRBv9n99E1BkId8=;
- b=V27H3Rdkv/2I0hiwprCH4EcJN7/E4i79gouojgiPrDcdVtao1i/2s+X9FjZROrf2ksKsXG4v1RybY1z6QGzkPVJ3w4LXGh+kmz7A84R0DxB1Qi4oH5srBkN4/9nyF/KjyJUeY2GX+3dXMSbYdZ1RJpp734yPpBDuf0zxLtxj3ao=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=renesas.com;
-Received: from OSAPR01MB3892.jpnprd01.prod.outlook.com (2603:1096:604:5b::23)
- by OS3PR01MB5959.jpnprd01.prod.outlook.com (2603:1096:604:d9::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.24; Tue, 20 Jul
- 2021 16:58:17 +0000
-Received: from OSAPR01MB3892.jpnprd01.prod.outlook.com
- ([fe80::e1ee:a98a:2ba3:aee4]) by OSAPR01MB3892.jpnprd01.prod.outlook.com
- ([fe80::e1ee:a98a:2ba3:aee4%7]) with mapi id 15.20.4331.034; Tue, 20 Jul 2021
- 16:58:17 +0000
-Subject: Re: [PATCH v5 1/2] dt-bindings: Add binding for Renesas 8T49N241
-To:     Rob Herring <robh@kernel.org>
-Cc:     robh+dt@kernel.org, geert+renesas@glider.be,
-        mturquette@baylibre.com, linux-renesas-soc@vger.kernel.org,
-        david.cater.jc@renesas.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sboyd@kernel.org,
-        michal.simek@xilinx.com, linux-clk@vger.kernel.org
-References: <20210719182001.1573-1-alexander.helms.jy@renesas.com>
- <20210719182001.1573-2-alexander.helms.jy@renesas.com>
- <20210719224804.GA2768983@robh.at.kernel.org>
-In-Reply-To: <20210719224804.GA2768983@robh.at.kernel.org>
-From:   Alex Helms <alexander.helms.jy@renesas.com>
-Message-ID: <6fbb307e-8835-224e-7912-2b956985a713@renesas.com>
-Date:   Tue, 20 Jul 2021 09:58:10 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-Content-Type: text/plain; charset=utf-8
+        id S231993AbhGTQ0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 12:26:13 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3439 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229790AbhGTQZI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 12:25:08 -0400
+Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GTlHW1hQMz6FD8P;
+        Wed, 21 Jul 2021 00:56:55 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 19:05:44 +0200
+Received: from [10.47.85.214] (10.47.85.214) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 20 Jul
+ 2021 18:05:43 +0100
+Subject: Re: [PATCH 0/9] blk-mq: Reduce static requests memory footprint for
+ shared sbitmap
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "kashyap.desai@broadcom.com" <kashyap.desai@broadcom.com>,
+        "hare@suse.de" <hare@suse.de>
+References: <1626275195-215652-1-git-send-email-john.garry@huawei.com>
+ <YPbqMSjZIA8l0jHQ@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <22a23f4d-9d6b-308d-7a32-75c5adffe8d2@huawei.com>
+Date:   Tue, 20 Jul 2021 18:05:42 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <YPbqMSjZIA8l0jHQ@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0164.namprd05.prod.outlook.com
- (2603:10b6:a03:339::19) To OSAPR01MB3892.jpnprd01.prod.outlook.com
- (2603:1096:604:5b::23)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [132.158.153.82] (68.225.135.226) by SJ0PR05CA0164.namprd05.prod.outlook.com (2603:10b6:a03:339::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.9 via Frontend Transport; Tue, 20 Jul 2021 16:58:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6276ade4-c9d8-43c3-d3b8-08d94b9f91ce
-X-MS-TrafficTypeDiagnostic: OS3PR01MB5959:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <OS3PR01MB59592697431E90D024EA09FAC8E29@OS3PR01MB5959.jpnprd01.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZqbfwUQG4AMGa1iU1AGzdZSJABcPr3Gn4m7eZjULUKdIOWckD3DoKF3ohveU9/W9BdX+SJ4x6WfWAI3vay0irKtiEIIbELXyW/tKLKxfOatrgj9aObDXDWyUtsSNc35Q0nAo8buwDXzUZNS0KEaz4Fv1cLvAWuplnkfQDl0N0VbDk2HCBqqGVhCpADMpYG7INwY7APhXCLacLEXdtuypnUxB94OUz8p0fXoZyuLnc35R8alPXkwA22+to4yMchX25eTfVPSOm8X+ebcz/tZzvxQuAhaL+ecgsziVPU6x+op1c+9Gxw39UNIWIOEnv90AhCSUTWzLXrzJiLDQlC8QWE/dVsl9BJ6VE+vKoXwswbo/Ljpz6vMQ7AqdGUu8D8ePpVWdVkVr+V5r+ILtiUFwGsgSqHaYIYwjQJi4Hok5SKE1GqMLMF1q/eFFIiPjWpdsLhCgeeRDagnB/UGN/cyF602mTKeMIDX58Degu7SCTcroXDp2YlByv7uwk6zz+hqhEzyDAhC07Idgyn19FeO7PHAtckTozxdTnmg3Ogoh2IVq0+/9UQpdXTryhlL1gmiOjKCGLt6bLzWVhxTpRJBKDg2P9xf0UW/AEDict+zf4NmiVr+YF2VuMzzS6vKtFKohAjaERxDMOfav/gJXZTszegt5h7GH38eXYPXl7FSNBgfhQoyvmYpw/e57hRtJfp63EQA8n+W0ZArBsnpZidgSB/2boepEYwxRdJGz8hTTE23pwp8LdXmIwOlfAHZ+OoYOFMsHc/KICA/Kn9PhO5TUSbEFanx0+z16/lIrnTMsRqM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB3892.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7416002)(186003)(31696002)(52116002)(4326008)(6486002)(31686004)(53546011)(2906002)(38100700002)(83380400001)(86362001)(38350700002)(316002)(956004)(26005)(2616005)(5660300002)(8936002)(6706004)(66556008)(66476007)(6916009)(8676002)(36756003)(508600001)(6666004)(16576012)(66946007)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YmhoOHNwSzZRWkZ2SGVxNzBoZ0xGSDZmRWlCQjk4Z1kraWE4ZnFhemdSVDlY?=
- =?utf-8?B?RmNXYUlRdzg1TGFhOHdSSW1jZ1lOcFNKTzNnNVF2Mk9DVTdGVG9wRitsSkF1?=
- =?utf-8?B?Zm5QWFZTWEoxNWJYS0NVbXUvU0pCUW1lZ0dSN2RNNHYyTnYzL2s2QzcvQ080?=
- =?utf-8?B?TTNZTFdpYkRsWWduNHNURUoxTFQ1WWk1UmVWUDVES0lKVnBDeTFsMms1cE5t?=
- =?utf-8?B?Z3FqdSs0QWdNUFBLa1Fic0t6Ukh3eFVlUmswczZZWWU0WjlpVTkxUTJpZGph?=
- =?utf-8?B?Qkt2cHBZOVpHMU9iLzEyam0rdGRDZXRaNVNHNmRocTJFSVBFNUJDWW1LaW5G?=
- =?utf-8?B?ZmVoQ1BpQ1FzK2NWcHJ6aWFaalRpK3pPWmVxOVpEQ3c5NTExdGhybGNZdVA4?=
- =?utf-8?B?eGdaTnlzWmlZNHZsZjZRQXJra1gzTFBnM0t3L3A2VlpTc292RXlreWZoeVVB?=
- =?utf-8?B?Y21vK21xMTQyZ0lTV0E2THp6WVdkUTVnK2lBMDVhUWRBWXFPdXcybE52Z1pu?=
- =?utf-8?B?c3A0QktPdUdPSlV5aFpGMGhxZTNMK1Z6NEgvK3pDZzlhdTNMaU43R29Lc2NW?=
- =?utf-8?B?RXRmd21tVldWOTMvQjZTcHdOSW1QQjhuQy9iVWFleDd6QWNTd1h4NjZNZ2VB?=
- =?utf-8?B?aDhEbVBUa0FHVXh2SU9EYnFLa1ZhZGlqSml4dG9wSDFsNmFDbkhveEtha2JL?=
- =?utf-8?B?UWZEaGdKRXdZYXpWRVRaUlZIRml4TkJIcHBKMkpZUk9EVXNGSlFONzZ4Wkhj?=
- =?utf-8?B?U01JTEd6N3lZTExiSlJBWFcreTE5b1ZqZ2lldy9pQTRaU0FLclhqUnhLRVVV?=
- =?utf-8?B?YTdLZVFrUWo1ZmN6Q2hRZ2ovYW85T3c0eVBrdThVQjRDSDBhOGpMNnFoM0NM?=
- =?utf-8?B?c2hCWWNIK3hBY3VkY2E5NWxUYkVQNXg0b29iQzJsRjNvUEJ4eXRBU0djUGpY?=
- =?utf-8?B?TEtKdWZkWG9uRjZyd09pMlRzaHZWRC8rVUFyY04xWm5iRWlrVjNwVmdqSjNK?=
- =?utf-8?B?cTQ2U0J0a3J0bXlhejYyc0g3SVl5bW5Rc1h3cm9KUlhhcmM2bS9XaEkvQi9p?=
- =?utf-8?B?dStoTHhjcmNkUmhiUWVZN01Hb1gxTjk1VFE1YnNqZHMxNzBvbmtaZnNVWlEy?=
- =?utf-8?B?di8yajRnRzE0ODBWbzY0RmJOWlJwNElIdVFYMDU1MEVCK2laV05ZMEJ3RlpW?=
- =?utf-8?B?UW1Pa3o2UHRVM0tQUysxVkFMSzZqNEZPR1JBOW5VVWlNZnhvOEl6M0k2alBK?=
- =?utf-8?B?UloyVTY0UExNTWFDMTd0L1A4Z2RXeHl4UGdEY0JZR1Mxd1FtK3dWektZK3ls?=
- =?utf-8?B?UDA3OUpnMmkzSWFpb2kwb21pWmNNaHdXZFRJSlM3eG9RZ2xTNWl2UWViMi9D?=
- =?utf-8?B?TzVFajVxZk11cnVITnFvOEVpbWlKZVNJZGpNR1JWWTg4WS91a1ZKWFplWkQ0?=
- =?utf-8?B?WUpVUlp0SmtLRFdMOUJCT2F6aDNDbVZGSlhuaXR2VnJBSXdLUHlyeTQ0OXE0?=
- =?utf-8?B?NjZ6UDg3Y3grK1BSaTNCeWpncGQvdjFvNnhXckFEQ1M3UncyZ1dtbkowcFZh?=
- =?utf-8?B?YUU4NFZISWZGaEtFNkE3TTRKUytnd21DZVZwRWI3TEl5U1ZRbFA3RElURWNm?=
- =?utf-8?B?amlDSkJELzdHL2c3NEE3OTJqYkk4U2hMZGNpdUp2aVkyNDFGVUcwcldQLzZL?=
- =?utf-8?B?SjczQTErZHMzczEvM2luRHZ4ZnRoQzNTNFZmYW5MdE1qZWt4VmN4ZzhxT2lz?=
- =?utf-8?Q?TDiVHBVd7I1Sfm/Q/u0dBg18F47cfxzZLt0DhJY?=
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6276ade4-c9d8-43c3-d3b8-08d94b9f91ce
-X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB3892.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2021 16:58:16.9718
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O+oIxZTxpEyHlB26Es/jW0UoE5kWF590RcVhsA/j553G5dUknDTbtOC9FWjLBDG6AFSTItscl8KihWQ79Kyz1CmBNmKO6lnE395rFcShpss=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB5959
+X-Originating-IP: [10.47.85.214]
+X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/2021 3:48 PM, Rob Herring wrote:
-> On Mon, 19 Jul 2021 11:20:00 -0700, Alex Helms wrote:
->> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
->> The 8T49N241 accepts up to two differential or single-ended input clocks
->> and a fundamental-mode crystal input. The internal PLL can lock to either
->> of the input reference clocks or to the crystal to behave as a frequency
->> synthesizer.
+On 20/07/2021 16:22, Ming Lei wrote:
+> On Wed, Jul 14, 2021 at 11:06:26PM +0800, John Garry wrote:
+>> Currently a full set of static requests are allocated per hw queue per
+>> tagset when shared sbitmap is used.
 >>
->> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
->> ---
->>  .../bindings/clock/renesas,8t49n241.yaml      | 190 ++++++++++++++++++
->>  MAINTAINERS                                   |   6 +
->>  2 files changed, 196 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
+>> However, only tagset->queue_depth number of requests may be active at
+>> any given time. As such, only tagset->queue_depth number of static
+>> requests are required.
 >>
+>> The same goes for using an IO scheduler, which allocates a full set of
+>> static requests per hw queue per request queue.
+>>
+>> This series very significantly reduces memory usage in both scenarios by
+>> allocating static rqs per tagset and per request queue, respectively,
+>> rather than per hw queue per tagset and per request queue.
+>>
+>> For megaraid sas driver on my 128-CPU arm64 system with 1x SATA disk, we
+>> save approx. 300MB(!) [370MB -> 60MB]
+>>
+>> A couple of patches are marked as RFC, as maybe there is a better
+>> implementation approach.
+
+Hi Ming,
+
+To be clear, my concerns with my implementation were:
+a. Interface of __blk_mq_{alloc,free}_rqs was a bit strange in passing a 
+struct list_head * and struct request ** . But maybe it's ok.
+b. We need to ensure that the host should not expect a set of static rqs 
+per hw queue, i.e. should not use blk_mq_ops.init_request hctx_idx 
+argument. The guard I have added is effectively useless against that. I 
+am thinking that we should have a variant of blk_mq_ops.init_request 
+without a hctx_idx argument, which needs to be used for shared sbitmap.
+
 > 
+> There is another candidate for addressing this issue, and looks simpler:
+
+Thanks, I think that this solution does not deal with b., above, either.
+
 > 
-> Please add Acked-by/Reviewed-by tags when posting new versions. However,
-> there's no need to repost patches *only* to add the tags. The upstream
-> maintainer will do that for acks received on the version they apply.
+>   block/blk-mq-sched.c |  4 ++++
+>   block/blk-mq-tag.c   |  4 ++++
+>   block/blk-mq-tag.h   |  3 +++
+>   block/blk-mq.c       | 18 ++++++++++++++++++
+>   block/blk-mq.h       | 11 +++++++++++
+>   5 files changed, 40 insertions(+)
 > 
-> If a tag was not added on purpose, please state why and what changed.
+> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+> index c838d81ac058..b9236ee0fe4e 100644
+> --- a/block/blk-mq-sched.c
+> +++ b/block/blk-mq-sched.c
+> @@ -538,6 +538,10 @@ static int blk_mq_sched_alloc_tags(struct request_queue *q,
+>   	if (!hctx->sched_tags)
+>   		return -ENOMEM;
+>   
+> +	blk_mq_set_master_tags(hctx->sched_tags,
+> +			q->queue_hw_ctx[0]->sched_tags, hctx->flags,
+> +			hctx_idx);
+> +
+>   	ret = blk_mq_alloc_rqs(set, hctx->sched_tags, hctx_idx, q->nr_requests);
+>   	if (ret)
+>   		blk_mq_sched_free_tags(set, hctx, hctx_idx);
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> index 86f87346232a..c471a073234d 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -608,6 +608,10 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
+>   				tags->nr_reserved_tags, set->flags);
+>   		if (!new)
+>   			return -ENOMEM;
+> +
+> +		blk_mq_set_master_tags(new,
+> +			hctx->queue->queue_hw_ctx[0]->sched_tags, set->flags,
+> +			hctx->queue_num);
+>   		ret = blk_mq_alloc_rqs(set, new, hctx->queue_num, tdepth);
+>   		if (ret) {
+>   			blk_mq_free_rq_map(new, set->flags);
+> diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+> index 8ed55af08427..0a3fbbc61e06 100644
+> --- a/block/blk-mq-tag.h
+> +++ b/block/blk-mq-tag.h
+> @@ -21,6 +21,9 @@ struct blk_mq_tags {
+>   	struct request **static_rqs;
+>   	struct list_head page_list;
+>   
+> +	/* only used for blk_mq_is_sbitmap_shared() */
+> +	struct blk_mq_tags	*master;
+
+It is a bit odd to have a pointer to struct blk_mq_tags in struct 
+blk_mq_tags like this
+
+> +
+>   	/*
+>   	 * used to clear request reference in rqs[] before freeing one
+>   	 * request pool
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index 2c4ac51e54eb..ef8a6a7e5f7c 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -2348,6 +2348,15 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+>   {
+>   	struct page *page;
+>   
+> +	if (blk_mq_is_sbitmap_shared(set->flags)) {
+> +		if (tags->master)
+> +			tags = tags->master;
+> +		if (hctx_idx < set->nr_hw_queues - 1) {
+> +			blk_mq_clear_rq_mapping(set, tags, hctx_idx);
+> +			return;
+> +		}
+> +	}
+> +
+>   	if (tags->rqs && set->ops->exit_request) {
+>   		int i;
+>   
+> @@ -2444,6 +2453,12 @@ int blk_mq_alloc_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+>   	size_t rq_size, left;
+>   	int node;
+>   
+> +	if (blk_mq_is_sbitmap_shared(set->flags) && tags->master) {
+> +		memcpy(tags->static_rqs, tags->master->static_rqs,
+> +		       sizeof(tags->static_rqs[0]) * tags->nr_tags);
+> +		return 0;
+> +	}
+> +
+>   	node = blk_mq_hw_queue_to_node(&set->map[HCTX_TYPE_DEFAULT], hctx_idx);
+>   	if (node == NUMA_NO_NODE)
+>   		node = set->numa_node;
+> @@ -2860,6 +2875,9 @@ static bool __blk_mq_alloc_map_and_request(struct blk_mq_tag_set *set,
+>   	if (!set->tags[hctx_idx])
+>   		return false;
+>   
+> +	blk_mq_set_master_tags(set->tags[hctx_idx], set->tags[0], flags,
+> +			       hctx_idx);
+> +
+>   	ret = blk_mq_alloc_rqs(set, set->tags[hctx_idx], hctx_idx,
+>   				set->queue_depth);
+>   	if (!ret)
+> diff --git a/block/blk-mq.h b/block/blk-mq.h
+> index d08779f77a26..a08b89be6acc 100644
+> --- a/block/blk-mq.h
+> +++ b/block/blk-mq.h
+> @@ -354,5 +354,16 @@ static inline bool hctx_may_queue(struct blk_mq_hw_ctx *hctx,
+>   	return __blk_mq_active_requests(hctx) < depth;
+>   }
+>   
+> +static inline void blk_mq_set_master_tags(struct blk_mq_tags *tags,
+> +		struct blk_mq_tags *master_tags, unsigned int flags,
+> +		unsigned int hctx_idx)
+> +{
+> +	if (blk_mq_is_sbitmap_shared(flags)) {
+> +		if (hctx_idx)
+> +			tags->master = master_tags;
+> +		else
+> +			tags->master = NULL;
+> +	}
+> +}
+>   
+>   #endif
 > 
 
-Thank you for the info. I'm new to the kernel process and appreciate your advice.
+I'll check this solution a bit further.
 
-I felt uncomfortable adding your Reviewed-By tag but since there were no changes to the dt
-portion of the patch, in retrospect I guess I should have added it. I'll keep this in mind
-for the future. Is there anything I need to do for this patch?
+Thanks,
+John
