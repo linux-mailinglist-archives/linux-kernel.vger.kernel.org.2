@@ -2,231 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41643CFD47
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DB63CFD7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240364AbhGTOgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 10:36:18 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:48472 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240289AbhGTOZI (ORCPT
+        id S239936AbhGTOob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239820AbhGTO0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:25:08 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16KF2Ajn013562;
-        Tue, 20 Jul 2021 15:05:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2021-07-09; bh=XHmxsUl9g+d7dhLrYyAFS4aNyiQgF+jZz2NOvT7dDs4=;
- b=bvyyLFfNGsKod+QzS/Pg4c91w+wd+wbfH+kQLt6kLOehxXUjUiAkfnyVgE3DncH4Az+K
- ToayeLU9LcjYV57xe33RrwtsNWxJ+RnzjdYKTNwE4KuSlIeH0vcE/cq37LrtQh1E/rFQ
- rUzH1RtVVp/VGG9zB8+Lk7lYO/kG7r5wPqXmtoeagoz/Bo6cqRhOYNWpKsqpJjQB9s87
- j5OBE7KtKj6ILxktyma/luJJMkzLUaPqHeofEEvs0k4Cotij/T/59g+SuD6T+5O9IABF
- CGorXauKR8IT3eO+R1WoF3ErZuRBtWdgWwLLnaJnDX9e7AWrV/MNcG87aQ+XyBZhm9Uv hQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2020-01-29; bh=XHmxsUl9g+d7dhLrYyAFS4aNyiQgF+jZz2NOvT7dDs4=;
- b=PVfKLftiUU4dUdoEAGSlzdi7zftSWHbleiqSN3sk/KYKWxiEfitbKGcKg+F+0smSobTh
- ZzpUyFnMxnwzlNgpJPQIxUNmhQh6VHPJP7FLpdg36O1FHokjrguyR9OdvUlIRLZE3zxl
- aWai/4MpiJZi1DS4FvoNwRDA4VHVLlt+/vCg7Csgdj2sDflZINtjWx3CZHG3mdusMcDQ
- dNGBJbQQ4E+vWuqonfWv+XdfHbDRlS7eemc1sGHUcZPiiUvCDmgulcGef9cHkBNcwSI1
- b55LtiEJ/ebtcCzA4PWWmn2E+dReg0/dQOzB9yT3y0bMBcAXTpZqtWXLXCW9i2O7aoE0 wQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39w9hftyf3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Jul 2021 15:05:28 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16KEtKSE001151;
-        Tue, 20 Jul 2021 15:05:27 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2175.outbound.protection.outlook.com [104.47.55.175])
-        by aserp3030.oracle.com with ESMTP id 39wunhudv1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Jul 2021 15:05:26 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AcY1v33n8FeOFd5UQqgDGQkkLSMI5K3B1aRvJf1c4sw6C40aCEMhgfePKHsjviTX0eK3/IiC7cuJHYro5YBCvDpumo1snPUNhHU0XajiMrjDXQoPWvxW5Q/SHviHiISy6jbuhiyrQfrtL+3Bc4HjjInZaOvxTumKenoFT1dkSSDyGyr7gs5TB4GmMnHLwf5HUfelGyPjsGETglXJ94piVT5S95SbZfocgDqq1mx/0TNqY0275GXMHHVjrSHau7EQXzqgkAoHz96Y126akElLEh6s1HG2Vj4I/E7xyHF1DBq8g5ZkdBjQA/3pS3Us0/7urgHFNLPCg7u8g0gbppi6Gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XHmxsUl9g+d7dhLrYyAFS4aNyiQgF+jZz2NOvT7dDs4=;
- b=R/diZlQ9+wKU3NZAIwbfd+dnxdviaNpG4+3yvFKw9Bp4yfLAI8LzppmM4r9e8MQNVTs+SpsHCa4xZeA63nlRdgUNKdW2j2CT6a8rLHhhgqbtZvKtUQC8cWUVJq+FDVU+0r5xlaGwP7TARv8pUgpIgiu8VxjFtYYHYJkPdUqVZRkLO9PuYJNWCZLbycoPVcqRk+kmBjeMppBee1/HCguAN9URG+H+eL3sZ5yFIQ1Y5/ZNAB04rP8rEu29OW6rN5MLBovui+Y54NcWaQU9qyBvZ+5SsES4Hc2erQMHwY7OJAWLpDuIwZeg2cKeUQ2AX+TfWciHixkAzTt961s4BNSs0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 20 Jul 2021 10:26:32 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF1CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:07:10 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id c17so5427432wmb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:07:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XHmxsUl9g+d7dhLrYyAFS4aNyiQgF+jZz2NOvT7dDs4=;
- b=mCTMWSjn8CAoRaPQuytzo9Ve4B32MpwY6vLIPpG0GH4aZBOC/1Myfn0AklqEnpm2BwmL/MFLrbLmrSk7r+YcNBSpO9l1SPS4eLLoLEFzQZZJCAWTYMCHnP0CeIeq2NUyEOwXxIIyn2KPo8VVwWccGJfl7NOR3BMwsIv34vMpyTI=
-Authentication-Results: gondor.apana.org.au; dkim=none (message not signed)
- header.d=none;gondor.apana.org.au; dmarc=none action=none
- header.from=oracle.com;
-Received: from BYAPR10MB2966.namprd10.prod.outlook.com (2603:10b6:a03:8c::27)
- by SJ0PR10MB4653.namprd10.prod.outlook.com (2603:10b6:a03:2d7::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22; Tue, 20 Jul
- 2021 15:05:25 +0000
-Received: from BYAPR10MB2966.namprd10.prod.outlook.com
- ([fe80::9478:368e:93b4:6b48]) by BYAPR10MB2966.namprd10.prod.outlook.com
- ([fe80::9478:368e:93b4:6b48%4]) with mapi id 15.20.4331.034; Tue, 20 Jul 2021
- 15:05:25 +0000
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>, yuanxzhang@fudan.edu.cn,
-        Xin Tan <tanxin.ctf@gmail.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] padata: Convert from atomic_t to refcount_t on parallel_data->refcnt
-Date:   Tue, 20 Jul 2021 11:05:11 -0400
-Message-Id: <20210720150511.877668-1-daniel.m.jordan@oracle.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719214649.w65ifdp2hriryrsc@oracle.com>
-References: <20210719214649.w65ifdp2hriryrsc@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BL1PR13CA0403.namprd13.prod.outlook.com
- (2603:10b6:208:2c2::18) To BYAPR10MB2966.namprd10.prod.outlook.com
- (2603:10b6:a03:8c::27)
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ZchSkqqeZHzePVYsbmpNPWMr8AHwfOK/Nimhsgdw20k=;
+        b=wceYh3thBth6Xa62fuP1K5Ul4BsCMcJuj9jMyeBMI6EHhauuhkeYgIbSNH2GW+adn6
+         h1QXKDD3eaiBN2uG2HgonalMI1tAPXtvf8XvdcGNz+kHmAE0myT8VjKY1qNxXTKovdig
+         CSs7hHT9M+/UaDqrofrtU+uxzOaqaiA+t/rTOr3v+wcxs9IKFEuJUAdiNSbbIX8Z5JQI
+         Gp3LOOxJ1N5MkQmFkogou6Bk06IHNXmqqcnzbS4xL5oNc4ZBBps0exNOWkVVdjGyLvob
+         cUBIVOi1M3MTj5fMeS6Xc/DrirM0Wm9dwbUl1D5DH8Mciyy5ALWoTqZaZ7q0CV3e4ExP
+         Lm0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ZchSkqqeZHzePVYsbmpNPWMr8AHwfOK/Nimhsgdw20k=;
+        b=QSKA7ne6ZcJmn7HlL8pq94YDc9ovvA0HyUyoXou47K0VHmDdiU9uKCWPrOMB/Qspab
+         ssgxHWs73W6vbrWN5H51CvjiujQKaJhGQGyJc4Q4qJXyyRQTSkAVxx/VWwoxzMv3+Xov
+         DaYpOtkW6bhQ81Oop5LCbql4+xbf2JFfsOkKYBCHsktcJ98P0E8YPUO2FN6lpIjDJPEX
+         r/rkE1ZCNQ2tpz254zgHiYH3VTqLBIs5T17hp5ESJNgP7G01oDd8bZAgM83H03LCelZ/
+         ajfl7W6pO9mmJbUDVaWxgMEgyrA6rBb6lqkLY1XAkZJt2jQXSEBSL5ron3Kf+luY0iyU
+         YcdA==
+X-Gm-Message-State: AOAM530g4zsmvo9bS+WSbk5HxsmXXLwK77Zrp1JTZMnaF1SGPPNZeJ70
+        vxsHyZP2JI1zfh3i3te3ntC+9w==
+X-Google-Smtp-Source: ABdhPJz4swRydDEinMuj8EVyfy7S6E0iFeWjbsF6RSRqUQMZ4nsjJslx2T3fEkUS2AtZ6FigTFlw/Q==
+X-Received: by 2002:a1c:f70b:: with SMTP id v11mr32300209wmh.186.1626793629290;
+        Tue, 20 Jul 2021 08:07:09 -0700 (PDT)
+Received: from google.com ([31.124.24.141])
+        by smtp.gmail.com with ESMTPSA id b12sm24216314wro.1.2021.07.20.08.07.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 08:07:08 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 16:07:06 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        "Andrew F. Davis" <afd@ti.com>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/3] mfd: tps65086: Make interrupt line optional
+Message-ID: <YPbmmqfOuE5w6EgW@google.com>
+References: <20210625224744.1020108-1-kernel@esmil.dk>
+ <20210625224744.1020108-3-kernel@esmil.dk>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (98.229.125.203) by BL1PR13CA0403.namprd13.prod.outlook.com (2603:10b6:208:2c2::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.11 via Frontend Transport; Tue, 20 Jul 2021 15:05:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7f77071e-77af-46fa-0e4f-08d94b8fcd66
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4653:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB46535EEC477AAF5EEF5F6906D9E29@SJ0PR10MB4653.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6BVk6xCMa3WUOOIXDelPIMad+N224aKM1HJq6RMaZBV2zlD81C0eB+uTtIy+KOIELMTkae7xoNkk9RwJRTdboOUKqa1qaz+l9Nd2XexhqZsSF1Lr0RGSWa9o37lca5cGhJ5JF+GmHhPxIR+Eqjg7h6z8yNCXcS4NsD+/Ip+/nD11IR/Hi83sE0JQnuGAGxF8xPlEZ/+0XaYeh1cCv/pj2khelVbhLYI5LJKeOyPla6InLMc4dpJWymJDSZH1hgHfEJSdBQO30oX/xVHbg6SPgeT/BvTVMrylaORKOy6NG72bx/CkEt/B4MUZEUZvJ4uw4SuJfSPUYFdT6Ivucv1lYKji68Bt0IqVA2J0YZHWPc7Es0lRlflAEzgiNbI1439La+2uJK8dbkrljKMut9eXfgkEzFivBJxhK2opU7pSt4OsIpm8TjbfA/iHkC9EFImTUJOjBGcbBueS4jy5MjHqNlsxDOhO0htA2rC35+cpHxNKJKeyk49RShO89j2f6zGADMlnxD/gLxRERWu5D8EVVW/oHxR1qv1J2H+Mrac752PO63iXUN4P6L/GFq1MvuBtl6dC8+BEZg0bOY63/FmRd1YG7xKhyuFKQKsqhK6rUsxHv69J9jguacUBLjo/htJJDy5MPoqi9SjO9kGqftulmBtdq7fkbbxO58KFNWuXtVpUqa4emyOM9fJhGJxP2qAL438nYo3PGfK1q4YVpwqcKA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2966.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6486002)(54906003)(52116002)(6506007)(186003)(2616005)(38350700002)(6512007)(1076003)(38100700002)(2906002)(110136005)(316002)(86362001)(66556008)(66946007)(66476007)(26005)(508600001)(5660300002)(8936002)(6666004)(8676002)(4326008)(83380400001)(36756003)(7049001)(956004)(103116003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WQhbIkW3qayHM0pxG3bly4vU2X7Bh8/Bu0TPjctKNf173mB4a0u5hDjXIw49?=
- =?us-ascii?Q?UfwUTkDuLxRrqPlaQgdIKQG/xUOKW4WGz+Ap05YzJfzBRQxAl2JMheiG8bWv?=
- =?us-ascii?Q?EwYo940PUGzGKTgUSo3C5xoQt/x7UpNaSM42ouHzhLal1QqeW4msyGjVtyKB?=
- =?us-ascii?Q?BH5IX2VUwhMyVx3Z28QlMIej4KViNmJerxcTOaYo+lbi4cL0X+xR4XGNu8Ro?=
- =?us-ascii?Q?31ceQSIAPOqzAHDGQDkJd80LkbZI7wc0QSaFmBp944qWFoLCRX1PcVveWvIp?=
- =?us-ascii?Q?pdBPn2aPdUyxEF49H8+DzqaCzY812dVYudpXfOpOjZvXxiEXjcYVN2kZ1lTp?=
- =?us-ascii?Q?E/GvAkGCmFNCwU7T1qXTX/RAVY0IIWMOgE8M47yQdYZwgUxq9mu3pgC8Dqif?=
- =?us-ascii?Q?xnRUid8zRX4gek1UoJDVMGdUVfTOYv6hCwrCdK27437Iv/Z61hla1D7Qyght?=
- =?us-ascii?Q?inyy0PHg0nq8b4ZNnRammi8L6SmnJr78UFIPvgaaW/6PprEt9uswHm3nwOI6?=
- =?us-ascii?Q?5AAII6/Z1fAO68OwTdZK3l7bexpO5X7RNT0sUioiJ1bvN6UyotLXpoF9OfE8?=
- =?us-ascii?Q?nS5Q2lICvzzElQf7ZwKCsGivvIWxAIAT/0BI6UeRDAdCa6dtDKUBcm+lwN7f?=
- =?us-ascii?Q?Dg+jZ+hzU7ZFE3hDUVTy+yukgp7Ympq5Q5vAFYeqs0THwtRb/UHwyykqojjK?=
- =?us-ascii?Q?QESb63lqArB1baTBEfCp/I8Loev/VN7fdgRi6j/t9CVoBIgaAtli1vA3hGrA?=
- =?us-ascii?Q?DuVh+DSRfx9X9YPGfTTJOKudJIbMk8BDnBRON6Fc3K5fKJfQ3hjYepuCGAJP?=
- =?us-ascii?Q?/AQREmtxGH8TZ/0zzTGfYGI3PH7+FruZk5oRE/pwi8vcvjGXsBglxEtnm2Sq?=
- =?us-ascii?Q?Hf/4n6DevWUj5RW9zEciiwlz2VLcHt8crnPbovThmWxEAUFvx3vNbsLfNe71?=
- =?us-ascii?Q?OOAEihyb0VmkaEubS5p7AdzTWa2D7dAWOCtebhSGo1oOJwKDwt3057aQhkDV?=
- =?us-ascii?Q?jDVHub0Js383xCNrLh7kZ6JjEZU7143n9XuiwvK2XOrrHWpb/vWzoPHoauLt?=
- =?us-ascii?Q?9SN9odR9LkhJFWu8N06aVW2PeAxlaLyJr0hxyI/pvj40SO+gRL2oTILbMO0J?=
- =?us-ascii?Q?rmDbD61sKfoJh3QbWPLSZ9c6ICo55mE/2LOd9mbqxgNeH5COLMaQymsNWUvC?=
- =?us-ascii?Q?arERPlpRw5I6/ZMByrh+CbY/oH6kxc14YuP+KHrkyL1MRAX3CO3k96utwyWx?=
- =?us-ascii?Q?eOD86c4TXZ3Y69PwjGO+M4f2cscpfv+sg71B2ztxiZeAkQkIgD+IBg8hyu6U?=
- =?us-ascii?Q?gbqNuHrmb0w94R5G41XscF/F?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f77071e-77af-46fa-0e4f-08d94b8fcd66
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2966.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2021 15:05:24.9818
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rlN9UAfEZDAsiUMnGuIZ0x/vaN2OUEYZQ9kPzy4I9tL6ldcjtZjvilXlbuETbAJWj6jByWzOMPLsNtqyBDsnWSirjmldUM6bFcqTy5XlPXo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4653
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10050 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107200094
-X-Proofpoint-GUID: S65owtAH7k3jY1Js-usTE2VOSZusxDef
-X-Proofpoint-ORIG-GUID: S65owtAH7k3jY1Js-usTE2VOSZusxDef
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210625224744.1020108-3-kernel@esmil.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+On Sat, 26 Jun 2021, Emil Renner Berthing wrote:
 
-refcount_t type and corresponding API can protect refcounters from
-accidental underflow and overflow and further use-after-free situations.
+> The BeagleV Starlight v0.9 board[1] doesn't have the IRQB line routed to
+> the SoC, but it is still useful to be able to reach the PMIC over I2C
+> for the other functionality it provides.
+> 
+> [1] https://github.com/beagleboard/beaglev-starlight
+> 
+> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> ---
+>  .../devicetree/bindings/mfd/ti,tps65086.yaml  |  3 ---
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Acked-by: Daniel Jordan <daniel.m.jordan@oracle.com>
----
+This is not present in my current tree.
 
-This seems not to have made it to the lists even though they were
-originally cc'd.  Reposting.
+Looks like it's still *.txt.
 
- include/linux/padata.h | 3 ++-
- kernel/padata.c        | 8 ++++----
- 2 files changed, 6 insertions(+), 5 deletions(-)
+Am I missing a patch?
 
-diff --git a/include/linux/padata.h b/include/linux/padata.h
-index a433f13fc4bf..495b16b6b4d7 100644
---- a/include/linux/padata.h
-+++ b/include/linux/padata.h
-@@ -12,6 +12,7 @@
- #ifndef PADATA_H
- #define PADATA_H
- 
-+#include <linux/refcount.h>
- #include <linux/compiler_types.h>
- #include <linux/workqueue.h>
- #include <linux/spinlock.h>
-@@ -96,7 +97,7 @@ struct parallel_data {
- 	struct padata_shell		*ps;
- 	struct padata_list		__percpu *reorder_list;
- 	struct padata_serial_queue	__percpu *squeue;
--	atomic_t			refcnt;
-+	refcount_t			refcnt;
- 	unsigned int			seq_nr;
- 	unsigned int			processed;
- 	int				cpu;
-diff --git a/kernel/padata.c b/kernel/padata.c
-index d4d3ba6e1728..378c36080781 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -211,7 +211,7 @@ int padata_do_parallel(struct padata_shell *ps,
- 	if ((pinst->flags & PADATA_RESET))
- 		goto out;
- 
--	atomic_inc(&pd->refcnt);
-+	refcount_inc(&pd->refcnt);
- 	padata->pd = pd;
- 	padata->cb_cpu = *cb_cpu;
- 
-@@ -383,7 +383,7 @@ static void padata_serial_worker(struct work_struct *serial_work)
- 	}
- 	local_bh_enable();
- 
--	if (atomic_sub_and_test(cnt, &pd->refcnt))
-+	if (refcount_sub_and_test(cnt, &pd->refcnt))
- 		padata_free_pd(pd);
- }
- 
-@@ -593,7 +593,7 @@ static struct parallel_data *padata_alloc_pd(struct padata_shell *ps)
- 	padata_init_reorder_list(pd);
- 	padata_init_squeues(pd);
- 	pd->seq_nr = -1;
--	atomic_set(&pd->refcnt, 1);
-+	refcount_set(&pd->refcnt, 1);
- 	spin_lock_init(&pd->lock);
- 	pd->cpu = cpumask_first(pd->cpumask.pcpu);
- 	INIT_WORK(&pd->reorder_work, invoke_padata_reorder);
-@@ -667,7 +667,7 @@ static int padata_replace(struct padata_instance *pinst)
- 	synchronize_rcu();
- 
- 	list_for_each_entry_continue_reverse(ps, &pinst->pslist, list)
--		if (atomic_dec_and_test(&ps->opd->refcnt))
-+		if (refcount_dec_and_test(&ps->opd->refcnt))
- 			padata_free_pd(ps->opd);
- 
- 	pinst->flags &= ~PADATA_RESET;
+>  drivers/mfd/tps65086.c                        | 21 ++++++++++---------
+>  2 files changed, 11 insertions(+), 13 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml b/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
+> index ba638bd10a58..4b629fcc0df9 100644
+> --- a/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
+> @@ -87,9 +87,6 @@ additionalProperties: false
+>  required:
+>    - compatible
+>    - reg
+> -  - interrupts
+> -  - interrupt-controller
+> -  - '#interrupt-cells'
+>    - gpio-controller
+>    - '#gpio-cells'
+>    - regulators
+> diff --git a/drivers/mfd/tps65086.c b/drivers/mfd/tps65086.c
+> index 341466ef20cc..cc3478ee9a64 100644
+> --- a/drivers/mfd/tps65086.c
+> +++ b/drivers/mfd/tps65086.c
+> @@ -100,29 +100,30 @@ static int tps65086_probe(struct i2c_client *client,
+>  		 (char)((version & TPS65086_DEVICEID_OTP_MASK) >> 4) + 'A',
+>  		 (version & TPS65086_DEVICEID_REV_MASK) >> 6);
+>  
+> -	ret = regmap_add_irq_chip(tps->regmap, tps->irq, IRQF_ONESHOT, 0,
+> -				  &tps65086_irq_chip, &tps->irq_data);
+> -	if (ret) {
+> -		dev_err(tps->dev, "Failed to register IRQ chip\n");
+> -		return ret;
+> +	if (tps->irq > 0) {
+> +		ret = regmap_add_irq_chip(tps->regmap, tps->irq, IRQF_ONESHOT, 0,
+> +					  &tps65086_irq_chip, &tps->irq_data);
+> +		if (ret) {
+> +			dev_err(tps->dev, "Failed to register IRQ chip\n");
+> +			return ret;
+> +		}
+>  	}
+>  
+>  	ret = mfd_add_devices(tps->dev, PLATFORM_DEVID_AUTO, tps65086_cells,
+>  			      ARRAY_SIZE(tps65086_cells), NULL, 0,
+>  			      regmap_irq_get_domain(tps->irq_data));
+> -	if (ret) {
+> +	if (ret && tps->irq > 0)
+>  		regmap_del_irq_chip(tps->irq, tps->irq_data);
+> -		return ret;
+> -	}
+>  
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  static int tps65086_remove(struct i2c_client *client)
+>  {
+>  	struct tps65086 *tps = i2c_get_clientdata(client);
+>  
+> -	regmap_del_irq_chip(tps->irq, tps->irq_data);
+> +	if (tps->irq > 0)
+> +		regmap_del_irq_chip(tps->irq, tps->irq_data);
+>  
+>  	return 0;
+>  }
+
 -- 
-2.32.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
