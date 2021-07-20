@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CC23D01ED
+	by mail.lfdr.de (Postfix) with ESMTP id 92E2A3D01EE
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbhGTSIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 14:08:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33936 "EHLO mail.kernel.org"
+        id S233495AbhGTSJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 14:09:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232512AbhGTSHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 14:07:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFC7A61009;
-        Tue, 20 Jul 2021 18:48:22 +0000 (UTC)
+        id S232902AbhGTSHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 14:07:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6139D60720;
+        Tue, 20 Jul 2021 18:48:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626806903;
-        bh=pDnPWStFctmWL6EDjvYaPuRJTNwmF3Oh0LAPMY0O398=;
+        s=k20201202; t=1626806905;
+        bh=rCMKjEq6C3ShAT0LkuSu2FyDBlSMQ9aLoYabnytcWZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KE/UGNHvwnMLz4mEYnFJqcoeVEZnQYbzw68vzjo+7M+zdtVm8i89Kz3AbdMIamM8U
-         4wd2WGXgFln6d8jHKycs0eu/6BWnION81zZDcFe3j/yvNGdvvAN0GC/MMQmbVp2sE6
-         vlncgFgx9u2wBcLe+yK+WtwYN2dTFMkjnYo8WhyP9IipEofzJlJtUVN8+yT4QGc/hS
-         VBcbmB2cKRj5VM+eV69UCzQJCrO5AhwvjgQWUlMMA2nZCLEGf/6SLCWxdSFWctNXHk
-         gGWGORsDmO60BuqfwlKcOE3aF5QIUOrO9yM1OoymyYY/KT/aWzfQHNKiktlgpIBpcc
-         6FSLiw6c/bGDA==
+        b=AhauWUxMX8UMxiVxECw0b5xOU30vcxuoRz8kZFSzcp3D2YpplLjr3pppEg7BQb1jM
+         VJedVNkYQkkFt3RMgnvse68VOrwG1MEojIbmsHUvKLfSoFcRGwi5a9gr2fGIfQ/Aeh
+         SkTEwSQJ+NDuZO3Qsk7q4szxB/cMsCkxSM3Y+JHMTbXNqfT7AHHR3T20iwCbVo9qcr
+         Sk4/mu8geal5aTTa0xaALnR9IdBAM6bJBuAtBjq/JKF0naMPnG0p3nFGOaSpOrx0B+
+         qKezjftxZlj0C93g1yIZJeM5+f/7pamKd3lMj9G+wEigETrHKStX0kInyHP4VUIOHq
+         JM52IZX0Q2lqQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     alexandru.tachici@analog.com, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, nsaenz@kernel.org,
-        f.fainelli@gmail.com, rjui@broadcom.com, swarren@wwwdotorg.org,
-        bcm-kernel-feedback-list@broadcom.com, bootc@bootc.net,
-        nuno.sa@analog.com
-Subject: Re: [PATCH 0/1] spi: spi-bcm2835: Fix deadlock
-Date:   Tue, 20 Jul 2021 19:48:16 +0100
-Message-Id: <162680680557.11423.14003826010912823109.b4-ty@kernel.org>
+To:     cy_huang <u0084500@gmail.com>, robh+dt@kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, cy_huang@richtek.com,
+        devicetree@vger.kernel.org, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] regulator: rtq2134: Add binding document for Richtek RTQ2134 SubPMIC
+Date:   Tue, 20 Jul 2021 19:48:17 +0100
+Message-Id: <162680666036.11349.4601537863555148106.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210716210245.13240-1-alexandru.tachici@analog.com>
-References: <20210716210245.13240-1-alexandru.tachici@analog.com>
+In-Reply-To: <1626422636-29458-1-git-send-email-u0084500@gmail.com>
+References: <1626422636-29458-1-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,26 +41,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 17 Jul 2021 00:02:44 +0300, alexandru.tachici@analog.com wrote:
-> The bcm2835_spi_transfer_one function can create a deadlock
-> if it is called while another thread already has the
-> CCF lock.
-> 
-> This behavior was observed at boot and when trying to
-> print the clk_summary debugfs. I had registered
-> at the time multiple clocks of AD9545 through the CCF.
-> Tested this using an RPi 4 connected to AD9545 through SPI.
-> 
-> [...]
+On Fri, 16 Jul 2021 16:03:55 +0800, cy_huang wrote:
+> Add binding document for Richtek RTQ2134 SubPMIC.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] spi: spi-bcm2835: Fix deadlock
-      commit: c45c1e82bba130db4f19d9dbc1deefcf4ea994ed
+[1/2] regulator: rtq2134: Add binding document for Richtek RTQ2134 SubPMIC
+      commit: 4c922fd3d6fa4d51e1f5bb845548cbefd5de3d14
+[2/2] regulator: rtq2134: Add support for Richtek RTQ2134 SubPMIC
+      commit: 0555d41497de66d2f07ae36dcb46a32f0ff90d8d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
