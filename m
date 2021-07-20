@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0343CFDEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC71A3CFDC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242011AbhGTO6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 10:58:55 -0400
-Received: from mga01.intel.com ([192.55.52.88]:51153 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234579AbhGTOs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:48:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="233040558"
-X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; 
-   d="scan'208";a="233040558"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 08:29:01 -0700
-X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; 
-   d="scan'208";a="462083552"
-Received: from aremenni-mobl.amr.corp.intel.com (HELO [10.209.130.10]) ([10.209.130.10])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 08:28:59 -0700
-Subject: Re: [PATCH 1/3] ASoC: SOF: Parse fw/tplg filename from DT
-To:     Daniel Baluta <daniel.baluta@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Devicetree List <devicetree@vger.kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-References: <20210715141802.880911-1-daniel.baluta@oss.nxp.com>
- <20210715141802.880911-2-daniel.baluta@oss.nxp.com>
- <20210715143906.GD4590@sirena.org.uk>
- <CAEnQRZCdSLoaLVZ7-jtufgZCG6QshMwdfyJy_4oE6cXRbA5H8A@mail.gmail.com>
- <CAEnQRZCiC5aGK6AsD0TN5fzN6AxFn6=f8hCrd2B9fhCYfCFOSg@mail.gmail.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <bd85ea7c-e9b5-de67-07ce-7104a1e19805@linux.intel.com>
-Date:   Tue, 20 Jul 2021 10:28:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S242184AbhGTO7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241274AbhGTOw3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 10:52:29 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9D0C0613E8
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:32:52 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id d2so26532773wrn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:32:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=y06R/0eT64/snTUFHobmbHosiuAMtQLzFtaIF77YTug=;
+        b=YhYegMtKNYPb7xq7sv3ppy3oiIKVCixO01NeWUBaUCvktmA/r28jh/UYGiTC30w9OW
+         u+olDDmVVJbncoluIzTY5pqBNfNkb5rw3L6lzXWNJ2aJqf0sx2+Wuolzv1Vez+o68gvg
+         I+AoXvaAAf2nu4p2lNyAI+PbiTtL4hVL7GzRXT+j7wTJCi6MwJkPxOSqiSuP5+G92EIe
+         25TaKZQnh1IAbRw3uRbxlKg0JgytouGJFe8DWmtDJbrtIXyO4Pyvfr977HypsmNvlXX5
+         etuGC6Rm8TJwBC/bNv0dgy/1C19Kj4oDL9delpu6Swc8MavFKkkyKqNDSTYE2JOgbGxM
+         JSWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=y06R/0eT64/snTUFHobmbHosiuAMtQLzFtaIF77YTug=;
+        b=qxWbHcB2R+9s4qGJR7wdCQVLENxyZKI/5vMObjXpx2106piEIw3ZrTVVca8FDyrp+j
+         h18Icgd/EXyMjn6sv2+UujQiQkpQSlGhgvMyZSDZEsTufrjHwEkFVCjNQDRiwn8S/Wit
+         pEznrGpDTkf625DvQQIUxLn9o27Ri1tazdFtx4enEYGelm0McdtKWwNZh+7ybtib/859
+         EgTZmbTSceo9akgrZvObz5B5g3WJDXtV3tnu78/D/KLVTE5RZszKBHP0ypU0UcTkcVy7
+         E/zyWf2EgiLzr0GL/357wH0DqKm/uIlf6IGhGutuo8zLrhlJAyskje2APZaQraOw0X1K
+         3lxA==
+X-Gm-Message-State: AOAM530Vb9EGIbiWATvT4lOC5E5lQGGJFjqdO6jR2Y/hSR2mJevfzFsc
+        7SRa0DXNquBHh1tSaKOaI2ZItw==
+X-Google-Smtp-Source: ABdhPJxrEYEfOCZ7X2e5jEkeAnhzsFbTZ1DrJExNijXr3c/wQ4kPbqkKIBgFJjoUjTybBXyidIHz3w==
+X-Received: by 2002:adf:f949:: with SMTP id q9mr35442776wrr.178.1626795171435;
+        Tue, 20 Jul 2021 08:32:51 -0700 (PDT)
+Received: from google.com ([31.124.24.141])
+        by smtp.gmail.com with ESMTPSA id n5sm17267949wrp.80.2021.07.20.08.32.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 08:32:50 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 16:32:49 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        "Andrew F. Davis" <afd@ti.com>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 2/3] mfd: tps65086: Make interrupt line optional
+Message-ID: <YPbsodxMk+VvU/3D@google.com>
+References: <20210625224744.1020108-1-kernel@esmil.dk>
+ <20210625224744.1020108-3-kernel@esmil.dk>
+ <YPbmmqfOuE5w6EgW@google.com>
+ <CANBLGcy_28q23vRJk9=UZR_Feeqod-ETET=v4Ub=35edySH7SA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAEnQRZCiC5aGK6AsD0TN5fzN6AxFn6=f8hCrd2B9fhCYfCFOSg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANBLGcy_28q23vRJk9=UZR_Feeqod-ETET=v4Ub=35edySH7SA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 20 Jul 2021, Emil Renner Berthing wrote:
 
-
-
->>>> Introduce two DT properties in dsp node:
->>>>       * fw-filename, optional property giving the firmware filename
->>>>       (if this is missing fw filename is read from board description)
->>>>       * tplg-filename, mandatory giving the topology filename.
->>>
->>> These sound entirely like operating system configuration which I'd
->>> expect to be inferred from the machine identification.  What happens if
->>> a system has multiple options for firmware files, or if the OS ships the
->>> topology and firmware bundled up in a single image to avoid them getting
->>> out of sync?  What's the benefit of putting them in the DT?
+> On Tue, 20 Jul 2021 at 17:07, Lee Jones <lee.jones@linaro.org> wrote:
+> > On Sat, 26 Jun 2021, Emil Renner Berthing wrote:
+> > > The BeagleV Starlight v0.9 board[1] doesn't have the IRQB line routed to
+> > > the SoC, but it is still useful to be able to reach the PMIC over I2C
+> > > for the other functionality it provides.
+> > >
+> > > [1] https://github.com/beagleboard/beaglev-starlight
+> > >
+> > > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> > > ---
+> > >  .../devicetree/bindings/mfd/ti,tps65086.yaml  |  3 ---
+> >
+> > This is not present in my current tree.
+> >
+> > Looks like it's still *.txt.
+> >
+> > Am I missing a patch?
 > 
-> Can you help me with this, specifically for selecting topology name.
-> 
-> I think I'm fine selecting a default value for SOF firmware name. It
-> looks like even
-> for Intel platforms there is no way of changing the firmware name.
-> 
-> But how about selecting topology name? We have lots of audio scenarios
-> that can run on the exact same hardware:
-> - e.g
->    - Audio PCM playback + Post Processing
->    - Audio Compress playback
->    - Keyword detection
-> 
-> 
-> So, we need to use different topologies to select the scenario we want
-> to demonstrate.
-> 
-> Would it be acceptable to add tplg_name as a module parameter?
+> Yes, the first patch in the series converts that to yaml. I'm quite
+> sure I had the same list of recipients on all 4 mails in the series,
+> so don't know why that should be missing.
 
-we already have a "tplg_path" module parameter which was intended to differentiate between product skews/versions using the same hardware and firmware version. A typical example would be an OEM using 'public' firmware + topology for basic audio support, distributed through sof-bin and packaged by distros, and 3rd-party/closed sources firmware modules in more advanced packages distributed separately by the OEM. In the latter case you do want the same path for firmware and topology, otherwise you'd have a risk of using a topology making references to a library not bundled in the firmware.
+Oh, it's not marked as 'important' because it has open review comments
+on it.
 
-There was an initial ask from Curtis to have the ability to override the firmware/topology names, but they've been able to work with the path parameters - set with udev rules for specific models.
+Just have this for now then:
 
-If you wanted to demonstrate 'scenarios', you could use the same approach?
+For my own reference (apply this as-is to your sign-off block):
 
-Two other points to reply to Mark:
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 
-- we currently don't support 'shipping the topology and firmware bundled up in a single image to avoid them getting out of sync'. No idea how that might work.
-
-- if the machine driver is specified in DeviceTree, then the topology used is *required* to be aligned with the machine driver. The rules are that a topology may not make references to a BE dailink exposed in the machine driver, but conversely if the topology makes a reference to a BE dailink that is not exposed in the machine driver the topology parsing will fail. It's one of the current weaknesses of topology-based solutions, we have non-configurable hardware-related things that are described in topology but should really be described in platform firmware, be it ACPI or DT, and provided to the topology.
-
-
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
