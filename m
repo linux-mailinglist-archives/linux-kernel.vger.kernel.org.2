@@ -2,128 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A503CFB12
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B683CFB76
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238988AbhGTNGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 09:06:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47917 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238700AbhGTNCp (ORCPT
+        id S239422AbhGTNSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 09:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239057AbhGTNGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 09:02:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626788570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wm1/1+rm0pNTec68SF0ULMEoMpPgTZgtvpTbWM+bk38=;
-        b=fG+LIy8oP1CN1RjxGLffxzgglVKC1l4Zx7+1f/r/Aik039kNwmQn5rtXoGGSFVyKQEMoyx
-        2oCLF742VwGBFDuwj22DjX7z9YGxPIMUq9eXbVd1MRhzg+y8AbAI8AEgeU8lPWmcQZ83UF
-        3wQ/vDC2VBpH7Qvx0td5OghcJDsHLQI=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-478-fJM9WJsLMkap7nBr6KifyA-1; Tue, 20 Jul 2021 09:42:49 -0400
-X-MC-Unique: fJM9WJsLMkap7nBr6KifyA-1
-Received: by mail-wm1-f72.google.com with SMTP id m6-20020a05600c4f46b0290205f5e73b37so1271005wmq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:42:48 -0700 (PDT)
+        Tue, 20 Jul 2021 09:06:36 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0193CC061767;
+        Tue, 20 Jul 2021 06:46:35 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id l5so24021971iok.7;
+        Tue, 20 Jul 2021 06:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KHaue8/q0L/XgtITbxmFTSs2meF6bSyeVDHAyfwq3qQ=;
+        b=EUs+7cDYQ2twuXBGcgJ3ID54nrlxwVRhd2/fJu+QbiO784ZQobUF+WYU5yGivOZIr5
+         Fe+Nt9tAF10wZb4Irfro//jmDtlX83g8lUuzbYzvfFQPoHZC2JidrWui4H2Izf9wbwNg
+         S2cN2xTbiFxrq8mwfHLkjowKF2yt0zd6zP+RmmW7aB+IkWEa4gAa7HJdBGnKJS8Uo89U
+         l2A9ooAKaVksbatALCJSaimnH95rgu56IFMfYXxtaYiOjiGNQimbe9fvHMMD+HJNWigK
+         dBvDpkAnStfFNuBemWOJ+EQ/O34aK6kfhcnuV/ocmaa7sCHBNJGwEesG18jZKtSD41H1
+         i7sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Wm1/1+rm0pNTec68SF0ULMEoMpPgTZgtvpTbWM+bk38=;
-        b=ae5W/U7UYW81A/dUQ0EiaaGQ7TvTlp1/iaUqtqg5bCszPNSLPFPdT3I2xzO9e4gmY6
-         wJvWStSYUwAoyYolbXP0hUE9bgxsaSyPKfrZ3ylFaHMXf9jO/VRvCRsfqUDX2h8mzvXo
-         dhY+O58sfLT9hH0P5DJm8naUX9vYNRgBuPDbiSmBXBxFYLHbDoijCyNWstFs15VjEvuj
-         qnh7pbXzTeP4wlSYCn1nHgw6e3wIEhe6CEND7vdMzlwXhJM+Gjn3W9g6aeJkDu98fNSI
-         gqzp3B5aP+D5U/giPoemWBHSQRwoTDqll0S7ME/hvhelXg5PHcQQ7/BoUniGWE+1PYFw
-         WLPQ==
-X-Gm-Message-State: AOAM530v+bvwa2auHTQearo88EK4G1DsJzZAmPg/Sy7DAf+MoyLWWCDJ
-        u7kBoQeQ+1NXpqY0bimvUgnCwopxrt2jR1yxqdW5dEKMvuibOgGVg45tny0bAlLr3HhxjXzmLXk
-        CpRRTddZyNt7jOyQTCJqn9dfJ
-X-Received: by 2002:a7b:c844:: with SMTP id c4mr37859296wml.107.1626788567976;
-        Tue, 20 Jul 2021 06:42:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPDFoW1ztyceGEmsvaxxt+vRNnwbErZ3TkLOyCXvoT5YQ2hwIH+j61ex10oljV9GpyUb7Cpw==
-X-Received: by 2002:a7b:c844:: with SMTP id c4mr37859268wml.107.1626788567798;
-        Tue, 20 Jul 2021 06:42:47 -0700 (PDT)
-Received: from [192.168.1.101] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id g15sm19533112wmh.44.2021.07.20.06.42.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 06:42:47 -0700 (PDT)
-Subject: Re: [PATCH v3 0/2] allow simple{fb, drm} drivers to be used on
- non-x86 EFI platforms
-To:     Ard Biesheuvel <ardb@kernel.org>, Dave Airlie <airlied@gmail.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Atish Patra <atish.patra@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KHaue8/q0L/XgtITbxmFTSs2meF6bSyeVDHAyfwq3qQ=;
+        b=R9xdAELYqy+ToYUTS/O5BNyZF92mhW9JXtgD05/PuUQZu25gl4CSaA7QPWER89sVsc
+         hIll9GY6r7TzraxyVdw/WpXoSB0gCVm2VGsTi909la7/byyPLU8K09lOGz+tdKnCWRBN
+         ZWgQ3oeqjvogGXVpVjP5xiR77gz2L7XHSfyG/DVB40GN1AEFvHBRI8QQaWSLAfepxi7C
+         mAEkE0JmgwfmGQRFp1/YYstfxQ2Ppb5ITqebWi5xEelu7Ft/d/tUC3Obh7SPKfxeS+LN
+         U8bSsOJomZ8jp5HKDA8/SRK8ow1h0EbIK3T2lt/nMqUF268QVNjuinS4gdeN5VwsZewP
+         hhrQ==
+X-Gm-Message-State: AOAM530fCqb02Sr0wV0Lh7bTZUa+34Nt/TgUHhoVSydN0pbnWSqjzZ+U
+        U14VKpuzHWndQr1rhmU3XP4YEayhuTsm+Q==
+X-Google-Smtp-Source: ABdhPJw+oXm9AEsLFIoRyHMm+CxOfL8zZA7wUOGTA3d9buaMX1aXsUIyODDeHj9Gnn0IhiyrjH4bpg==
+X-Received: by 2002:a02:cc19:: with SMTP id n25mr26569885jap.140.1626788795137;
+        Tue, 20 Jul 2021 06:46:35 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id u10sm7576791iop.15.2021.07.20.06.46.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 06:46:34 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id C28C427C005A;
+        Tue, 20 Jul 2021 09:46:33 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 20 Jul 2021 09:46:33 -0400
+X-ME-Sender: <xms:udP2YARpfw46bzdw4GbIguYHxcd7fscLicS7OaWkRopvQRVLi3X1pA>
+    <xme:udP2YNxqPzTDXwmmKYWhAR4bye15vHwMGJlNPeKjw703jIlLInwtmf0DPU1QmGRKp
+    Vus-T3RoAMGa3Kcnw>
+X-ME-Received: <xmr:udP2YN1_MnvTKDTcFfrG07vdVXgNcoDc_DPDcecQ8cR4YTPLY5R5EBMHkik>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfedvgdeikecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpeehvdevteefgfeiudettdefvedvvdelkeejueffffelgeeuhffhjeetkeeiueeu
+    leenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:udP2YEBrAJ6sx8FcmP6Yu31o91n8LTrLWZ9ipZjEdwLsoljdE2ivxg>
+    <xmx:udP2YJjuzEHdREvjynTjlT4XMxk0eVviXbP670uJf6O60u-MJsZs7A>
+    <xmx:udP2YArDpGfsuAFQbsSBlOG66dstt8AapKcDceLw4OM-JPKhFwgnkw>
+    <xmx:udP2YCb_stVgTvtuz6WryxyjhSFA0sb04DpFXn52NPLd-8DXE5WbZigx9Z8>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 20 Jul 2021 09:46:33 -0400 (EDT)
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Borislav Petkov <bp@suse.de>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-References: <20210625130947.1803678-1-javierm@redhat.com>
- <e61cf77c-6bff-dfcc-d3df-2fb6b48e5897@redhat.com>
- <8dd26141-a09c-39e2-5174-4cad8d21c49c@suse.de>
- <CAPM=9tyfNPa2f5PDBLm4w_H_riEQ5P3rEhX73YGE1y_ygRox+w@mail.gmail.com>
- <CAMj1kXErHteZ+MKYvp=yYmwVxV3A=vjtnG351hZHV+3BPwDQvw@mail.gmail.com>
- <YPbJJ/0tSO/fuW7a@phenom.ffwll.local>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-Message-ID: <03f0edef-e54e-8a2a-4b50-683d3d42e249@redhat.com>
-Date:   Tue, 20 Jul 2021 15:42:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: [RFC v5 3/8] arm64: PCI: Restructure pcibios_root_bridge_prepare()
+Date:   Tue, 20 Jul 2021 21:44:24 +0800
+Message-Id: <20210720134429.511541-4-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210720134429.511541-1-boqun.feng@gmail.com>
+References: <20210720134429.511541-1-boqun.feng@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YPbJJ/0tSO/fuW7a@phenom.ffwll.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/21 3:01 PM, Daniel Vetter wrote:
-> On Mon, Jul 19, 2021 at 09:10:52AM +0200, Ard Biesheuvel wrote:
->> On Mon, 19 Jul 2021 at 04:59, Dave Airlie <airlied@gmail.com> wrote:
+Restructure the pcibios_root_bridge_prepare() as the preparation for
+supporting cases when no real ACPI device is related to the PCI host
+bridge.
 
-[snip]
+No functional change.
 
->>>
->>> Can we just merge via drm-misc and make sure the acks are present and
->>> I'll deal with the fallout if any.
->>>
->>
->> Fine with me. Could you stick it on a separate branch so I can double
->> check whether there are any issues wrt the EFI tree?
-> 
-> It'll pop up in linux-next for integration testing or you can pick up the
-> patch here for test-merge if you want.
->
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+---
+ arch/arm64/kernel/pci.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-Thanks a lot Dave and Daniel!
+diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
+index 1006ed2d7c60..5148ae242780 100644
+--- a/arch/arm64/kernel/pci.c
++++ b/arch/arm64/kernel/pci.c
+@@ -82,14 +82,19 @@ int acpi_pci_bus_find_domain_nr(struct pci_bus *bus)
  
-> And since Dave has given a blanket cheque for handling fallout he'll deal
-> with the need for fixups too if there's any.
-
-I also plan to look at any regression that might had been introduced by these.
-
-Best regards,
+ int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
+ {
+-	if (!acpi_disabled) {
+-		struct pci_config_window *cfg = bridge->bus->sysdata;
+-		struct acpi_device *adev = to_acpi_device(cfg->parent);
+-		struct device *bus_dev = &bridge->bus->dev;
++	struct pci_config_window *cfg;
++	struct acpi_device *adev;
++	struct device *bus_dev;
+ 
+-		ACPI_COMPANION_SET(&bridge->dev, adev);
+-		set_dev_node(bus_dev, acpi_get_node(acpi_device_handle(adev)));
+-	}
++	if (acpi_disabled)
++		return 0;
++
++	cfg = bridge->bus->sysdata;
++	adev = to_acpi_device(cfg->parent);
++	bus_dev = &bridge->bus->dev;
++
++	ACPI_COMPANION_SET(&bridge->dev, adev);
++	set_dev_node(bus_dev, acpi_get_node(acpi_device_handle(adev)));
+ 
+ 	return 0;
+ }
 -- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+2.30.2
 
