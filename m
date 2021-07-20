@@ -2,71 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E713CF356
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543E53CF357
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241852AbhGTDuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 23:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48438 "EHLO
+        id S233576AbhGTDvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 23:51:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242192AbhGTDuZ (ORCPT
+        with ESMTP id S238367AbhGTDuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 23:50:25 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA0A4C061768
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 21:30:52 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id 109so7649457uar.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 21:30:52 -0700 (PDT)
+        Mon, 19 Jul 2021 23:50:37 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77390C0613DC
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 21:31:11 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id t9so21393169pgn.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 21:31:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MNkK6dRLcnq07OlRkiuGoaq/j3YT8TX30B8mHnfH7IU=;
-        b=kgyhBzJkSeA6bOB0iA3Gq3xBZRnmfJW4OdCrRLOtu1mQHXjIUUwAk3m0/2ZjDpyzT1
-         Utt9+el96WcGbdle505BVX3JHO0Yj6U22WHHRSgTPz98n6KLaO0qdsAQbS+ZNhFttzo0
-         GbTBB2jyBm2HM41UK7+pdBYwV/F5k6RA7CaL8=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mcvcTNKU/F2RKt/RmkG+At3l4CoJejuKhB7w1RypCN8=;
+        b=Sx/gJA9HcbmCmuQGmp62XskYmYz4CywjWF19PpEZRNKyEOrQ6iJT87aEwyPwXz0LfX
+         w04jtUsW2BaHdzi8gwh1XgIqD79qOWo0OrR9c1VCNwH4Ew74CB+bPlVenFjPxAnbLbO4
+         Mdwg+4wq686xdcHmOSY4y59ZFDvX6Ig5cAQscZuNarTLdRqpMQQOKKsBXb4O3gmflAhZ
+         zdkum0rWN+uP8cMKejWLjQ1D88NfmhuYBMBVNb0dMJt12z/xEHp0qvH9D+AJ4znZErsc
+         bYApMy2mo0TVnSKh6rwdqcZT9SJ4zusfB0Los1xsdgkLmEWL4qhRt0fDNluSnpc6cZ3b
+         LH3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MNkK6dRLcnq07OlRkiuGoaq/j3YT8TX30B8mHnfH7IU=;
-        b=ISSKctebJVcbGXew4JAE55qU7hG5KcOEgg/9xwpn2rYOIV4tt8VB95mfLqR2dat88I
-         9xGYw9kyUnuoIM3zcjS8jq7CAOP/ufT1n3u9r3EO3zfLtUPyQiS3k0r0F5F/3zENbzE/
-         u98XixNqx+9C1sZ0+pBpW1SidHHtba6QbE3MJmYX3fQaHErSF9ZEPWcxLxXCodhjWKX4
-         ycP/5aU1AY1GJk02swqoPAq1d/AUhFc2/RE7c+MuGEWHx+BjnpnY8ngFFUsmE/YcDvLF
-         gH465k0SYKDBGCh5TLSdF7BEji9wd8a+2i9ktVbkRPHBHnmbvjVFxlTpWcTdXABZa8eF
-         k4Og==
-X-Gm-Message-State: AOAM533ukTs+w4Mrb0yz4Se3691FDHAwjvpGxzZqn+Zdnazi5DLewGmO
-        rcGazjSEPx+vuXut8HZyciBcqG7IZCq35GP4PZJHePCVBAo3xw==
-X-Google-Smtp-Source: ABdhPJx8ZPLMRe3p1Y6wZoF01TMyFtxC9BT9V1MeKGxozlthoHSXxFtIuVpI4A115CKyPuX052vtv2n4LJyOpp+2M9o=
-X-Received: by 2002:ab0:2690:: with SMTP id t16mr29157373uao.9.1626755451926;
- Mon, 19 Jul 2021 21:30:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mcvcTNKU/F2RKt/RmkG+At3l4CoJejuKhB7w1RypCN8=;
+        b=CNokb7knRmoP8scBNJO6m6W5vJRe9X4VfLChcqkZ9mN97QIFesTfOVWtimHMLk55Lc
+         JDF6aHbrM23F8BycYZitHUvRIZ0rFiqt1Xxnal2xVc6XxNXVHt8bt7rswkxfSgyG4Lw1
+         gk7MYr5n1SheJBhh8Ap8g6AQ6oHWSnYjfBqDi+HwKtX6Xxx6Fh8LMmCFQ8A0gaRcqEdS
+         DFL10CN1At0tz9EE2Xy9YRsxfWBCmmW3x3X1fTcktKSCaDLl5vGz+B4jixUcFmvf69iP
+         U72IRjq90j0ilm8L7vRU+OCrOKWlleCnkVy8qnLXORkFiCWiuw6gjqzpve5YHPuKX4PN
+         5jpA==
+X-Gm-Message-State: AOAM533K3YxbazJ8GDpPPH/+P+PWgdvcmfJL8dfKUGih0lV5NuXPbUNy
+        r59qsGaJ5j1xmV88Uke8dy6Urg==
+X-Google-Smtp-Source: ABdhPJysz1iW7BlxcGrZOzQHEEHs+B6gk0BAxURN9YRsRRV3t6/jJRke+sTMnGh3PxII2EGDluQHDw==
+X-Received: by 2002:a65:62da:: with SMTP id m26mr28616661pgv.370.1626755470972;
+        Mon, 19 Jul 2021 21:31:10 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id g18sm21192639pfi.199.2021.07.19.21.31.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 21:31:10 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 10:01:08 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yangtao Li <tiny.windzz@gmail.com>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] dt-bindings: opp: Convert to DT schema
+Message-ID: <20210720043108.bmoydy3a2r3gqhnq@vireshk-i7>
+References: <20210719202732.2490287-1-robh@kernel.org>
 MIME-Version: 1.0
-References: <20210720090415.279cbb19@canb.auug.org.au>
-In-Reply-To: <20210720090415.279cbb19@canb.auug.org.au>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 20 Jul 2021 06:30:41 +0200
-Message-ID: <CAJfpegsD9DNE0z_VHekjhhpECKM_tZcFKSLJSBKij1ZSbQeRNg@mail.gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commits in the overlayfs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719202732.2490287-1-robh@kernel.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 at 01:04, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Commits
->
->   3132b5adad49 ("ovl: pass ovl_fs to ovl_check_setxattr()")
->   d1e717e0032c ("fs: add generic helper for filling statx attribute flags")
->
-> are missing a Signed-off-by from their committer.
+On 19-07-21, 14:27, Rob Herring wrote:
+> Convert the OPP v1 and v2 bindings to DT schema format. As the OPPv2 binding
+> can be extended by vendors, we need to split the common part out from the
+> "operating-points-v2" conforming compatible.
+> 
+> Cc: Yangtao Li <tiny.windzz@gmail.com>
+> Cc: Nishanth Menon <nm@ti.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> v2:
+> - move opp-peak-kBps next to opp-avg-kBps. Also add a dependency schema.
+> - Correct the opp-microamp schemas. It's always a single value for each
+>   regulator.
+> - Add missing type for '^opp-microamp-'
 
-Thanks, fixed.
+Applied. Thanks.
 
-Miklos
+-- 
+viresh
