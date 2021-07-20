@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C9A3D0007
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406093D0012
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhGTQid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 12:38:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229790AbhGTQhQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 12:37:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3387610D2;
-        Tue, 20 Jul 2021 17:17:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626801467;
-        bh=MgbhYLSjcMKKNs8xjxBsytwleBUXjDkbtocX0dAcJrM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=VzQLszJyQAmQTrFwb/w+CXuenh/YNiHdaV7SmqZgVbCa3YcbhxOlydPrRth4aTdHJ
-         3eM7r4jw0pHffWKyFgFCBQ+lZ/BK7Zxfizj1ArUKsavjer/GsCCQgqaspjW2kZ3y/Q
-         /cNt/roMxdRdIWspMYANXqmSlqMf2TZKIJO1I8hOX08UQ9BgFhXcRdu54IaHgyvf71
-         HZroGnAnh7C5BmlVfDMacpzYYfj1h61uIxeO9tLXzumrYpO6Q+8dHBxlIU71vQoZP8
-         3nd48RkyuqceEpxJwiORRdbh8920r7ZGGt1S2qQhf3LX4yQS4HR8K8gCthO+8QppAf
-         dCi5qYLems+vA==
-Subject: Re: [PATCH] atm: idt77252: clean up trigraph warning on ??) string
-To:     Colin King <colin.king@canonical.com>,
-        Chas Williams <3chas3@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210720124813.59331-1-colin.king@canonical.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <fd4f465b-86bd-129d-c6d9-e802b7c4815e@kernel.org>
-Date:   Tue, 20 Jul 2021 10:17:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S233785AbhGTQj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 12:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230474AbhGTQiJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 12:38:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E339BC061574;
+        Tue, 20 Jul 2021 10:18:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nIUPbWmLSj16v4fdAmjxUh4nxogfx1bpU0hHVWTHTvI=; b=nAMqbSKWqbj/Ac8oc6FDFmgton
+        RWU7nDnH8HrY85pFnG7w+Znd8kqgpgYH6kGrc0ZS0U4Rj3cgtOVkZ9CQVcSB3AvQJmFeaBpDg+AHQ
+        3h17EK9hTAwPtE9UQjVBjT9mYQ+kKPofbajFnmisOvdG3HmquACGcZSlEszqrCdkAGjDlyt+lkrQI
+        LluCGBk2OL/UMvMOhPbeJDLHHibCxk6RvoNSe81nNjIfrVuvZizcHHWE5F9fKbAYiLEXwW3tPSiYx
+        WWVglYjmfJGXd1ANfpypqnnW2wcjiJp4xM99heruNQkZJtVfWHzadyV2PUALLWwC3WAXgisP+MSTT
+        i9ru9xuA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5tNl-008LUQ-99; Tue, 20 Jul 2021 17:18:17 +0000
+Date:   Tue, 20 Jul 2021 18:18:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 000/138] Memory folios
+Message-ID: <YPcFVScLa2GGY2RP@casper.infradead.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <YParbk8LxhrZMExc@kernel.org>
+ <YPbEax52N7OBQCZp@casper.infradead.org>
+ <YPbpBv30NqeQPqPK@kernel.org>
+ <YPbqcQ9i/Vi7ivEE@casper.infradead.org>
+ <YPbtVvnow+4I4ytS@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210720124813.59331-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPbtVvnow+4I4ytS@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/2021 5:48 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Tue, Jul 20, 2021 at 06:35:50PM +0300, Mike Rapoport wrote:
+> On Tue, Jul 20, 2021 at 04:23:29PM +0100, Matthew Wilcox wrote:
+> > Which patch did you go up to for that?  If you're going past patch 50 or
+> > so, then you're starting to add functionality (ie support for arbitrary
+> > order pages), so a certain amount of extra code size might be expected.
+> > I measured 6KB at patch 32 or so, then between patch 32 & 50 was pretty
+> > much a wash.
 > 
-> The character sequence ??) is a trigraph and causes the following
-> clang warning:
+> I've used folio_14 tag:
 > 
-> drivers/atm/idt77252.c:3544:35: warning: trigraph ignored [-Wtrigraphs]
+> commit 480552d0322d855d146c0fa6fdf1e89ca8569037 (HEAD, tag: folio_14)
+> Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Date:   Wed Feb 5 11:27:01 2020 -0500
 > 
-> Clean this by replacing it with single ?.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>     mm/readahead: Add multi-page folio readahead
 
-This looks good to me but I am curious how you say this warning in the 
-first place since the main Makefile disables this unconditionally. Did 
-you just pass -Wtrigraphs via KCFLAGS or something similar?
+Probably worth trying the for-next tag instead to get a meaningful
+comparison of how much using folios saves over pages.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-> ---
->   drivers/atm/idt77252.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/atm/idt77252.c b/drivers/atm/idt77252.c
-> index 9e4bd751db79..81ce81a75fc6 100644
-> --- a/drivers/atm/idt77252.c
-> +++ b/drivers/atm/idt77252.c
-> @@ -3536,7 +3536,7 @@ static int idt77252_preset(struct idt77252_dev *card)
->   		return -1;
->   	}
->   	if (!(pci_command & PCI_COMMAND_IO)) {
-> -		printk("%s: PCI_COMMAND: %04x (???)\n",
-> +		printk("%s: PCI_COMMAND: %04x (?)\n",
->   		       card->name, pci_command);
->   		deinit_card(card);
->   		return (-1);
-> 
+I don't want to give the impression that this is all that can be
+saved by switching to folios.  There are still hundreds of places that
+call PageFoo(), SetPageFoo(), ClearPageFoo(), put_page(), get_page(),
+lock_page() and so on.  There's probably another 20KB of code that can
+be removed that way.
