@@ -2,121 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180EC3D0339
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 22:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 301A43D037D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 22:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbhGTUEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 16:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233242AbhGTT6q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 15:58:46 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A44C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:39:22 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id a23-20020a05600c2257b0290236ec98bebaso290607wmm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:39:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BsY+NKv/XZi+6q8ALHCEokwQlprML2szGEsHbP7dUDo=;
-        b=im/y0024Xt7uIk9rdJ9nEf9Flwqy6RP+EMxki/pwkYCD4BQ6ByyJ0trjzJOu8uTZAe
-         PTjTRs0CGUZ9SXGI021qmwbl+TTgYBY45hEgF3MKgeCvlopbdpAYpc0cVXonAWEL5LtO
-         iedT8rcx+onhhCcPYYrNp7DxA0H/WYwqJLDwjnGe06CGoMfqFIZjuFJLMLaQD2Aur+Pw
-         +klfZUsBQpxY9nKDrDwdJkNiG7VLCth/Iayf9tE09FDdOZx89jVgZxVVOpt7BolQZvl2
-         2jZ69uFEEZf+Ngptqn/W4cxpq2ODZk5FwMnmcwowDsHhf4gxNY7HmU+qFFS4NdILmdBo
-         DFYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BsY+NKv/XZi+6q8ALHCEokwQlprML2szGEsHbP7dUDo=;
-        b=YrMNk+APni9wTMj/NAxjBWi8HIVBQkHcnvvJ84EpRGeSoIToxtzNisnfwPgYvFLMfI
-         Tw//PP67yp5CDHt0xAz5CXQexfAQ/XHMFhc/1dYnphU/kYTftRFdStmIMeazbdfofwRt
-         4aECK48/FSEbAcOCZuex4bQTB4T12T7sHaO3Drj9hMHXfjSgWLlFi9sdXWQt7vH8MG+F
-         HJc98vR4/vmRYRuLYTqaiDLnd/bKcKzy3/xKfSQBRw7rrSnGxjU3tFHefJS0ZXQCfw7v
-         3sbYevAOQrd0kEjabuMKz/en+GUA+/0ZL/Tkma+0Kpm2IE6Yw8W0muy+XvSkbL1no6Z3
-         +liw==
-X-Gm-Message-State: AOAM530qDoDbCEyXHu+rQ7uY0UicwUQTwPLbJr/9Hy5qD2eAxqC+p6nT
-        s/l5/C/tDcPY8thVzSV9dL+kIQxuPV57/prZFXgYTA==
-X-Google-Smtp-Source: ABdhPJyFRM+FJuP84u9RfB5JCpLF0nd1AqQLHes34ffj0vZDREJluGzPfvMQprHdnNcX/mCbnu6aOkxZmjNtDQ3SnZo=
-X-Received: by 2002:a7b:c5d2:: with SMTP id n18mr290768wmk.97.1626813561085;
- Tue, 20 Jul 2021 13:39:21 -0700 (PDT)
+        id S234894AbhGTUQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 16:16:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234912AbhGTUBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 16:01:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBE5E60FEA;
+        Tue, 20 Jul 2021 20:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626813744;
+        bh=P1J28ss1PScW+PP+ZVuOa5wOA5aC5yz4+UYz8kAQIMA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aCga28067OZrAYiB+IuEUjo1sFVbQnJYPQyh5qf5Cc50s+WJx21SdPlv8RwJdzpNd
+         Ac/G4FNacPybVxP6XYtUhkZnxuwEiCqb02XxcaZGPblP+ZHM4epAWrOxrnSDJz37Pv
+         O40LT/ANJf9P7Hsj4QCPoKw7Oy2WvJYMolaiRDJysevYVJH7+mCq8sImEvzMBhnfte
+         oMTMbSuOJ0N+iPWwS6HHHYhvioWSYysc7C6kr4kKpK30be6exGqiInitWrMlHnd/BH
+         lXaK+jxGDNX0zaGXXNhGrH5k4y36OH+Yo9yBlbE+/7oDlvq1VIwQgin+iRsOZVDb9d
+         POWnX8AG5FFrQ==
+Date:   Tue, 20 Jul 2021 13:42:24 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Subject: Re: [PATCH v4] iomap: support tail packing inline read
+Message-ID: <20210720204224.GK23236@magnolia>
+References: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
 MIME-Version: 1.0
-References: <796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com> <20210720155657.499127-1-peterx@redhat.com>
-In-Reply-To: <20210720155657.499127-1-peterx@redhat.com>
-From:   Hugh Dickins <hughd@google.com>
-Date:   Tue, 20 Jul 2021 13:38:53 -0700
-Message-ID: <CANsGZ6a6DxnviD3ZPoHCXEEktXguOjNxPuUjjh=v8h0xD3bhvQ@mail.gmail.com>
-Subject: Re: [PATCH stable 5.10.y 0/2] mm/thp: Fix uffd-wp with fork(); crash
- on pmd migration entry on fork
-To:     Peter Xu <peterx@redhat.com>
-Cc:     stable <stable@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Igor Raits <igor@gooddata.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 8:57 AM Peter Xu <peterx@redhat.com> wrote:
->
-> In summary, this series should be needed for 5.10/5.12/5.13. This is the 5.10.y
-> backport of the series.  Patch 1 is a dependency of patch 2, while patch 2
-> should be the real fix.
->
-> There's a minor conflict on patch 2 when cherry pick due to not having the new
-> helper called page_needs_cow_for_dma().  It's also mentioned at the entry of
-> patch 2.
->
-> This series should be able to fix a rare race that mentioned in thread:
->
-> https://lore.kernel.org/linux-mm/796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com/
->
-> This fact wasn't discovered when the fix got proposed and merged, because the
-> fix was originally about uffd-wp and its fork event.  However it turns out that
-> the problematic commit b569a1760782f3d is also causing crashing on fork() of
-> pmd migration entries which is even more severe than the original uffd-wp
-> problem.
->
-> Stable kernels at least on 5.12.y has the crash reproduced, and it's possible
-> 5.13.y and 5.10.y could hit it due to having the problematic commit
-> b569a1760782f3d but lacking of the uffd-wp fix patch (8f34f1eac382, which is
-> also patch 2 of this series).
->
-> The pmd entry crash problem was reported by Igor Raits <igor@gooddata.com> and
-> debugged by Hugh Dickins <hughd@google.com>.
->
-> Please review, thanks.
+On Tue, Jul 20, 2021 at 09:35:54PM +0800, Gao Xiang wrote:
+> This tries to add tail packing inline read to iomap, which can support
+> several inline tail blocks. Similar to the previous approach, it cleans
+> post-EOF in one iteration.
+> 
+> The write path remains untouched since EROFS cannot be used for testing.
+> It'd be better to be implemented if upcoming real users care rather than
+> leave untested dead code around.
+> 
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Darrick J. Wong <djwong@kernel.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> ---
+> v3: https://lore.kernel.org/r/20210719144747.189634-1-hsiangkao@linux.alibaba.com
+> changes since v3:
+>  - update return value type of iomap_read_inline_data to int;
+>  - fix iomap_write_begin_inline() pointed out by Andreas.
+> 
+>  fs/iomap/buffered-io.c | 52 ++++++++++++++++++++++++++----------------
+>  fs/iomap/direct-io.c   | 11 +++++----
+>  2 files changed, 39 insertions(+), 24 deletions(-)
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 87ccb3438bec..0edc8bbb35d1 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -205,25 +205,25 @@ struct iomap_readpage_ctx {
+>  	struct readahead_control *rac;
+>  };
+>  
+> -static void
+> +static int
+>  iomap_read_inline_data(struct inode *inode, struct page *page,
+> -		struct iomap *iomap)
+> +		struct iomap *iomap, loff_t pos)
+>  {
+> -	size_t size = i_size_read(inode);
+> +	unsigned int size, poff = offset_in_page(pos);
+>  	void *addr;
+>  
+> -	if (PageUptodate(page))
+> -		return;
+> -
+> -	BUG_ON(page_has_private(page));
+> -	BUG_ON(page->index);
+> -	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> +	/* inline source data must be inside a single page */
+> +	BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
 
-And these two for 5.10.y look good to me also: I'm glad you decided in
-the end to keep 5.10's support for uffd-wp-fork.
-The first is just a straight cherry-pick of
-5fc7a5f6fd04bc18f309d9f979b32ef7d1d0a997, but as you noted above,
-8f34f1eac3820fc2722e5159acceb22545b30b0d needed one line of fixup for
-that tree.
+Can we reduce the strength of these checks to a warning and an -EIO
+return?
 
-Thank you Peter,
-Hugh
+> +	/* handle tail-packing blocks cross the current page into the next */
+> +	size = min_t(unsigned int, iomap->length + pos - iomap->offset,
+> +		     PAGE_SIZE - poff);
+>  
+>  	addr = kmap_atomic(page);
+> -	memcpy(addr, iomap->inline_data, size);
+> -	memset(addr + size, 0, PAGE_SIZE - size);
+> +	memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
+> +	memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
 
+Hmm, so I guess the point of this is to support reading data from a
+tail-packing block, where each file gets some arbitrary byte range
+within the tp-block, and the range isn't aligned to an fs block?  Hence
+you have to use the inline data code to read the relevant bytes and copy
+them into the pagecache?
 
+Aka this thing from the v3 discussion:
+
+> The other one is actual file tail blocks, I think it can cross pages due
+> to multiple tail inline blocks.
 >
-> Peter Xu (2):
->   mm/thp: simplify copying of huge zero page pmd when fork
->   mm/userfaultfd: fix uffd-wp special cases for fork()
->
->  include/linux/huge_mm.h |  2 +-
->  include/linux/swapops.h |  2 ++
->  mm/huge_memory.c        | 36 +++++++++++++++++-------------------
->  mm/memory.c             | 25 +++++++++++++------------
->  4 files changed, 33 insertions(+), 32 deletions(-)
->
-> --
-> 2.31.1
->
->
+>                             |<---------- inline data ------------->|
+>   _________________________________________________________________
+>   | file block | file block | file block | file block | file block |
+>   |<----------------    page   ---------------------->|<---  page
+
+Except ... is this diagram a little misleading?  Each of these "file
+blocks" isn't i_blocksize bytes in size, right?  Because if they were,
+you could use the standard iomap codepaths?
+
+So the real layout might look a bit more like this?
+
+                                |<--- inline data ---->|
+  _________________________________________________________________
+  | file1 |     file2     |file3|  file4  |   file4    |
+  |<-------------   page   -------------->|<---  page ----...
+
+(Sorry, /me isn't all that familiar with erofs layout...)
+
+>  	kunmap_atomic(addr);
+> -	SetPageUptodate(page);
+> +	iomap_set_range_uptodate(page, poff, PAGE_SIZE - poff);
+> +	return PAGE_SIZE - poff;
+>  }
+>  
+>  static inline bool iomap_block_needs_zeroing(struct inode *inode,
+> @@ -246,18 +246,18 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+>  	unsigned poff, plen;
+>  	sector_t sector;
+>  
+> -	if (iomap->type == IOMAP_INLINE) {
+> -		WARN_ON_ONCE(pos);
+> -		iomap_read_inline_data(inode, page, iomap);
+> -		return PAGE_SIZE;
+> -	}
+> -
+> -	/* zero post-eof blocks as the page may be mapped */
+>  	iop = iomap_page_create(inode, page);
+> +	/* needs to skip some leading uptodate blocks */
+>  	iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
+>  	if (plen == 0)
+>  		goto done;
+>  
+> +	if (iomap->type == IOMAP_INLINE) {
+> +		plen = iomap_read_inline_data(inode, page, iomap, pos);
+> +		goto done;
+> +	}
+> +
+> +	/* zero post-eof blocks as the page may be mapped */
+>  	if (iomap_block_needs_zeroing(inode, iomap, pos)) {
+>  		zero_user(page, poff, plen);
+>  		iomap_set_range_uptodate(page, poff, plen);
+> @@ -589,6 +589,18 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
+>  	return 0;
+>  }
+>  
+> +static int iomap_write_begin_inline(struct inode *inode, loff_t pos,
+> +		struct page *page, struct iomap *srcmap)
+> +{
+> +	/* needs more work for the tailpacking case, disable for now */
+> +	if (WARN_ON_ONCE(srcmap->offset != 0))
+> +		return -EIO;
+> +	if (PageUptodate(page))
+> +		return 0;
+> +	iomap_read_inline_data(inode, page, srcmap, 0);
+> +	return 0;
+> +}
+> +
+>  static int
+>  iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+>  		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
+> @@ -618,7 +630,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+>  	}
+>  
+>  	if (srcmap->type == IOMAP_INLINE)
+> -		iomap_read_inline_data(inode, page, srcmap);
+> +		status = iomap_write_begin_inline(inode, pos, page, srcmap);
+>  	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
+>  		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
+>  	else
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index 9398b8c31323..ee6309967b77 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -379,22 +379,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
+>  {
+>  	struct iov_iter *iter = dio->submit.iter;
+>  	size_t copied;
+> +	void *dst = iomap->inline_data + pos - iomap->offset;
+>  
+> -	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> +	/* inline data must be inside a single page */
+> +	BUG_ON(length > PAGE_SIZE - offset_in_page(iomap->inline_data));
+
+Same here, can we convert these to warnings + EIO return?
+
+--D
+
+>  	if (dio->flags & IOMAP_DIO_WRITE) {
+>  		loff_t size = inode->i_size;
+>  
+>  		if (pos > size)
+> -			memset(iomap->inline_data + size, 0, pos - size);
+> -		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
+> +			memset(iomap->inline_data + size - iomap->offset,
+> +			       0, pos - size);
+> +		copied = copy_from_iter(dst, length, iter);
+>  		if (copied) {
+>  			if (pos + copied > size)
+>  				i_size_write(inode, pos + copied);
+>  			mark_inode_dirty(inode);
+>  		}
+>  	} else {
+> -		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
+> +		copied = copy_to_iter(dst, length, iter);
+>  	}
+>  	dio->size += copied;
+>  	return copied;
+> -- 
+> 2.24.4
+> 
