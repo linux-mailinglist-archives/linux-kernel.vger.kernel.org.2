@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343673CFE6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EF93CFE65
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238183AbhGTPRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:17:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44593 "EHLO
+        id S237442AbhGTPRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:17:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39060 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242667AbhGTPL0 (ORCPT
+        by vger.kernel.org with ESMTP id S242670AbhGTPL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Jul 2021 11:11:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626796318;
+        s=mimecast20190719; t=1626796322;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7D01Sf7WyFpDy5iBOSB8keAwNmDOKVpIqWY7HiG+shw=;
-        b=B4rHv74MMGdmEukvxqcrtcs2Al8hJkEhv2r7yZ1lWdK8CE5VHdpoB8+WbruE8Qh9d6Ymbm
-        Mq6iGTtIfq7W91IzOOLVGLiW7bM2ilO0vdnYQpsrbi2lS0d6H748SEpgYt7E8lN0MMA1D2
-        K+GA14HnjYdsxIGgdrct0Nkl0xz4Ea4=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-35-YBDt462POcm-FIpoY3xtyQ-1; Tue, 20 Jul 2021 11:51:56 -0400
-X-MC-Unique: YBDt462POcm-FIpoY3xtyQ-1
-Received: by mail-qv1-f71.google.com with SMTP id c22-20020a0ca9d60000b02902e60d75210eso19698551qvb.19
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:51:56 -0700 (PDT)
+        bh=O9a/fbeKGsRCaGbj0GjFx29XZTyn9/xl+mDovWeTZmg=;
+        b=d6uS8CyqWt6yYmvDHTwTGha9enCRxxbP+kHamUfH7cL6zASPJLp6bvU22zqVSWAqMi4n2h
+        7p5QSHJK1AWh9D29XvQi03zl5fm92noshKN4YuPlDTZlgE0VdcPllBfAcobTkYwajAxLUx
+        9vGXzCXwJPPvnCWboQq/Jkm65r1ZZsw=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-Cu-GqvySO2CFhNqUX9_khg-1; Tue, 20 Jul 2021 11:51:58 -0400
+X-MC-Unique: Cu-GqvySO2CFhNqUX9_khg-1
+Received: by mail-qv1-f72.google.com with SMTP id m17-20020a0cbf110000b0290314f06eb130so5138394qvi.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:51:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7D01Sf7WyFpDy5iBOSB8keAwNmDOKVpIqWY7HiG+shw=;
-        b=JCz/owUTUDeWz/PSIpXxFT+1if1pZMvrqbFT4tyiN5ftRWiSYeiH7CHEYiOM8LwUXS
-         mUu7waj6fiTFz11L5ROZEnfwPwkz8IE4aPreMrSQy5MpqcFheGjpsjKEWSmaRa9P/vbF
-         TKYA0j9IYmsH8FI7jWpvYmEv5MI8uy+Kqtlir+9ijybHY0ZpJcoUquB/Uf1Umc5Ni07F
-         Zd8dUyrGUBtZwtgodChamybfkKsEtk8PC8bEwuh9fHQQ2Tq+rIRPw6OXBQbDbYjQOmi5
-         6qwzsQfx9xaLXNwxWTS84y2XRO5iDaf5iNMECMHnN7uj5wM8OVAt+gUxFGWKZd8HQiNW
-         lNNw==
-X-Gm-Message-State: AOAM532h9v6i7BKnSblJJ5MX684R9WCmog6JpwwV2cKucUHd0SLhisWM
-        gHuyOx+uJ7Og6oIQfmec6RVV2dyX0I57Ay6cD5LENgpFkymD29U3EUW/v1Fjoq/Vv1IsNciqYpE
-        QjUvLeixRlYGd+siMgCyke8m9
-X-Received: by 2002:a37:dcc2:: with SMTP id v185mr29847461qki.167.1626796316444;
-        Tue, 20 Jul 2021 08:51:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx9NUWZkskDEWU7mGn9bqckF/hMB20JHvsawHIkAgaxaveiacbm2PLft2c6YquFp8IjnR6I+Q==
-X-Received: by 2002:a37:dcc2:: with SMTP id v185mr29847443qki.167.1626796316237;
-        Tue, 20 Jul 2021 08:51:56 -0700 (PDT)
+        bh=O9a/fbeKGsRCaGbj0GjFx29XZTyn9/xl+mDovWeTZmg=;
+        b=YHqxY7mwQYDWMaJpqErpHWZgUa7O7cWJ4euT5jDG0cJ1JPqIjl5hQmxO0nS6ahfCzm
+         mk+NQnwfNnX99+pRkxPxseMdzeYV2hXZW91mJOJcCgVJZZXYpo/yPrj+pO0jNNzIwx8k
+         cYIO+cphAaafTbNtQLA8dJfU2drPRlRcBA5gACXgiLkGT0IAJZxJtQrozu3Zbh+6hjm8
+         eb/4VRATLMgcW4GPkBBYugc2hgsunyhY4omlDzbwD8ndTzetz9WMEvqhhZr7X9/TWrzE
+         3iuSVXwVALpEihXZ9XP2r1NUi9XStE73QLdemGql7EdRztzdNwmT+E+BRjGh64XQJe0T
+         xs+w==
+X-Gm-Message-State: AOAM531aQHT9ehBWgm4qJVZj7FHAzv/Ow3/2CSGAr/9GKhj6KkCBh+4T
+        Hx4+zS1UynVB/aytpq4pPCIVZ8MrOsOOqThFX7EgVvUfGTTrulbwECvlzveGVYZb0yq3KO6Jy4L
+        kv4cvv+vu2w9eh2Y7noSFdoh5
+X-Received: by 2002:ae9:eb97:: with SMTP id b145mr29483685qkg.111.1626796318170;
+        Tue, 20 Jul 2021 08:51:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzM7UZgHaImiiimyOrNJGtSVevcrLmOKEvzTT9ExNnVNqev9TqLlnVV2THRD6LFzI+PQnpSqw==
+X-Received: by 2002:ae9:eb97:: with SMTP id b145mr29483662qkg.111.1626796317942;
+        Tue, 20 Jul 2021 08:51:57 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id c15sm5467012qtc.37.2021.07.20.08.51.54
+        by smtp.gmail.com with ESMTPSA id c15sm5467012qtc.37.2021.07.20.08.51.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 08:51:55 -0700 (PDT)
+        Tue, 20 Jul 2021 08:51:57 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     stable@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc:     Hugh Dickins <hughd@google.com>,
         Axel Rasmussen <axelrasmussen@google.com>,
         Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
         Hillf Danton <hdanton@sina.com>, Igor Raits <igor@gooddata.com>
-Subject: [PATCH stable 5.13.y/5.12.y 1/2] mm/thp: simplify copying of huge zero page pmd when fork
-Date:   Tue, 20 Jul 2021 11:51:49 -0400
-Message-Id: <20210720155150.497148-2-peterx@redhat.com>
+Subject: [PATCH stable 5.13.y/5.12.y 2/2] mm/userfaultfd: fix uffd-wp special cases for fork()
+Date:   Tue, 20 Jul 2021 11:51:50 -0400
+Message-Id: <20210720155150.497148-3-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210720155150.497148-1-peterx@redhat.com>
 References: <796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com>
@@ -71,57 +71,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch series "mm/uffd: Misc fix for uffd-wp and one more test".
+We tried to do something similar in b569a1760782 ("userfaultfd: wp: drop
+_PAGE_UFFD_WP properly when fork") previously, but it's not doing it all
+right..  A few fixes around the code path:
 
-This series tries to fix some corner case bugs for uffd-wp on either thp
-or fork().  Then it introduced a new test with pagemap/pageout.
+1. We were referencing VM_UFFD_WP vm_flags on the _old_ vma rather
+   than the new vma.  That's overlooked in b569a1760782, so it won't work
+   as expected.  Thanks to the recent rework on fork code
+   (7a4830c380f3a8b3), we can easily get the new vma now, so switch the
+   checks to that.
 
-Patch layout:
+2. Dropping the uffd-wp bit in copy_huge_pmd() could be wrong if the
+   huge pmd is a migration huge pmd.  When it happens, instead of using
+   pmd_uffd_wp(), we should use pmd_swp_uffd_wp().  The fix is simply to
+   handle them separately.
 
-Patch 1:    cleanup for THP, it'll slightly simplify the follow up patches
-Patch 2-4:  misc fixes for uffd-wp here and there; please refer to each patch
-Patch 5:    add pagemap support for uffd-wp
-Patch 6:    add pagemap/pageout test for uffd-wp
+3. Forget to carry over uffd-wp bit for a write migration huge pmd
+   entry.  This also happens in copy_huge_pmd(), where we converted a
+   write huge migration entry into a read one.
 
-The last test introduced can also verify some of the fixes in previous
-patches, as the test will fail without the fixes.  However it's not easy
-to verify all the changes in patch 2-4, but hopefully they can still be
-properly reviewed.
+4. In copy_nonpresent_pte(), drop uffd-wp if necessary for swap ptes.
 
-Note that if considering the ongoing uffd-wp shmem & hugetlbfs work, patch
-5 will be incomplete as it's missing e.g.  hugetlbfs part or the special
-swap pte detection.  However that's not needed in this series, and since
-that series is still during review, this series does not depend on that
-one (the last test only runs with anonymous memory, not file-backed).  So
-this series can be merged even before that series.
+5. In copy_present_page() when COW is enforced when fork(), we also
+   need to pass over the uffd-wp bit if VM_UFFD_WP is armed on the new
+   vma, and when the pte to be copied has uffd-wp bit set.
 
-This patch (of 6):
+Remove the comment in copy_present_pte() about this.  It won't help a huge
+lot to only comment there, but comment everywhere would be an overkill.
+Let's assume the commit messages would help.
 
-Huge zero page is handled in a special path in copy_huge_pmd(), however it
-should share most codes with a normal thp page.  Trying to share more code
-with it by removing the special path.  The only leftover so far is the
-huge zero page refcounting (mm_get_huge_zero_page()), because that's
-separately done with a global counter.
+[peterx@redhat.com: fix a few thp pmd missing uffd-wp bit]
+  Link: https://lkml.kernel.org/r/20210428225030.9708-4-peterx@redhat.com
 
-This prepares for a future patch to modify the huge pmd to be installed,
-so that we don't need to duplicate it explicitly into huge zero page case
-too.
-
-Link: https://lkml.kernel.org/r/20210428225030.9708-1-peterx@redhat.com
-Link: https://lkml.kernel.org/r/20210428225030.9708-2-peterx@redhat.com
+Link: https://lkml.kernel.org/r/20210428225030.9708-3-peterx@redhat.com
+Fixes: b569a1760782f ("userfaultfd: wp: drop _PAGE_UFFD_WP properly when fork")
 Signed-off-by: Peter Xu <peterx@redhat.com>
-Cc: Kirill A. Shutemov <kirill@shutemov.name>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>, peterx@redhat.com
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Cc: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Hugh Dickins <hughd@google.com>
 Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
 Cc: Brian Geffon <bgeffon@google.com>
 Cc: "Dr . David Alan Gilbert" <dgilbert@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
 Cc: Joe Perches <joe@perches.com>
+Cc: Kirill A. Shutemov <kirill@shutemov.name>
 Cc: Lokesh Gidra <lokeshgidra@google.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mina Almasry <almasrymina@google.com>
 Cc: Oliver Upton <oupton@google.com>
 Cc: Shaohua Li <shli@fb.com>
@@ -130,44 +126,209 @@ Cc: Stephen Rothwell <sfr@canb.auug.org.au>
 Cc: Wang Qing <wangqing@vivo.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-(cherry picked from commit 5fc7a5f6fd04bc18f309d9f979b32ef7d1d0a997)
+(cherry picked from commit 8f34f1eac3820fc2722e5159acceb22545b30b0d)
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/huge_memory.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ include/linux/huge_mm.h |  2 +-
+ include/linux/swapops.h |  2 ++
+ mm/huge_memory.c        | 27 ++++++++++++++-------------
+ mm/memory.c             | 25 +++++++++++++------------
+ 4 files changed, 30 insertions(+), 26 deletions(-)
 
+diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+index b4e1ebaae825..939f21b69ead 100644
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -10,7 +10,7 @@
+ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf);
+ int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 		  pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
+-		  struct vm_area_struct *vma);
++		  struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma);
+ void huge_pmd_set_accessed(struct vm_fault *vmf, pmd_t orig_pmd);
+ int copy_huge_pud(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 		  pud_t *dst_pud, pud_t *src_pud, unsigned long addr,
+diff --git a/include/linux/swapops.h b/include/linux/swapops.h
+index 6430a94c6981..0d429a102d41 100644
+--- a/include/linux/swapops.h
++++ b/include/linux/swapops.h
+@@ -265,6 +265,8 @@ static inline swp_entry_t pmd_to_swp_entry(pmd_t pmd)
+ 
+ 	if (pmd_swp_soft_dirty(pmd))
+ 		pmd = pmd_swp_clear_soft_dirty(pmd);
++	if (pmd_swp_uffd_wp(pmd))
++		pmd = pmd_swp_clear_uffd_wp(pmd);
+ 	arch_entry = __pmd_to_swp_entry(pmd);
+ 	return swp_entry(__swp_type(arch_entry), __swp_offset(arch_entry));
+ }
 diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 8857ef1543eb..4cea1e218b48 100644
+index 4cea1e218b48..9aaf4a8ebeeb 100644
 --- a/mm/huge_memory.c
 +++ b/mm/huge_memory.c
-@@ -1088,17 +1088,13 @@ int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 	 * a page table.
+@@ -1026,7 +1026,7 @@ struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
+ 
+ int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 		  pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
+-		  struct vm_area_struct *vma)
++		  struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
+ {
+ 	spinlock_t *dst_ptl, *src_ptl;
+ 	struct page *src_page;
+@@ -1035,7 +1035,7 @@ int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 	int ret = -ENOMEM;
+ 
+ 	/* Skip if can be re-fill on fault */
+-	if (!vma_is_anonymous(vma))
++	if (!vma_is_anonymous(dst_vma))
+ 		return 0;
+ 
+ 	pgtable = pte_alloc_one(dst_mm);
+@@ -1049,14 +1049,6 @@ int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 	ret = -EAGAIN;
+ 	pmd = *src_pmd;
+ 
+-	/*
+-	 * Make sure the _PAGE_UFFD_WP bit is cleared if the new VMA
+-	 * does not have the VM_UFFD_WP, which means that the uffd
+-	 * fork event is not enabled.
+-	 */
+-	if (!(vma->vm_flags & VM_UFFD_WP))
+-		pmd = pmd_clear_uffd_wp(pmd);
+-
+ #ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
+ 	if (unlikely(is_swap_pmd(pmd))) {
+ 		swp_entry_t entry = pmd_to_swp_entry(pmd);
+@@ -1067,11 +1059,15 @@ int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 			pmd = swp_entry_to_pmd(entry);
+ 			if (pmd_swp_soft_dirty(*src_pmd))
+ 				pmd = pmd_swp_mksoft_dirty(pmd);
++			if (pmd_swp_uffd_wp(*src_pmd))
++				pmd = pmd_swp_mkuffd_wp(pmd);
+ 			set_pmd_at(src_mm, addr, src_pmd, pmd);
+ 		}
+ 		add_mm_counter(dst_mm, MM_ANONPAGES, HPAGE_PMD_NR);
+ 		mm_inc_nr_ptes(dst_mm);
+ 		pgtable_trans_huge_deposit(dst_mm, dst_pmd, pgtable);
++		if (!userfaultfd_wp(dst_vma))
++			pmd = pmd_swp_clear_uffd_wp(pmd);
+ 		set_pmd_at(dst_mm, addr, dst_pmd, pmd);
+ 		ret = 0;
+ 		goto out_unlock;
+@@ -1107,11 +1103,11 @@ int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 	 * best effort that the pinned pages won't be replaced by another
+ 	 * random page during the coming copy-on-write.
  	 */
- 	if (is_huge_zero_pmd(pmd)) {
--		struct page *zero_page;
- 		/*
- 		 * get_huge_zero_page() will never allocate a new page here,
- 		 * since we already have a zero page to copy. It just takes a
- 		 * reference.
- 		 */
--		zero_page = mm_get_huge_zero_page(dst_mm);
--		set_huge_zero_page(pgtable, dst_mm, vma, addr, dst_pmd,
--				zero_page);
--		ret = 0;
--		goto out_unlock;
-+		mm_get_huge_zero_page(dst_mm);
-+		goto out_zero_page;
+-	if (unlikely(page_needs_cow_for_dma(vma, src_page))) {
++	if (unlikely(page_needs_cow_for_dma(src_vma, src_page))) {
+ 		pte_free(dst_mm, pgtable);
+ 		spin_unlock(src_ptl);
+ 		spin_unlock(dst_ptl);
+-		__split_huge_pmd(vma, src_pmd, addr, false, NULL);
++		__split_huge_pmd(src_vma, src_pmd, addr, false, NULL);
+ 		return -EAGAIN;
  	}
  
- 	src_page = pmd_page(pmd);
-@@ -1122,6 +1118,7 @@ int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 	get_page(src_page);
- 	page_dup_rmap(src_page, true);
- 	add_mm_counter(dst_mm, MM_ANONPAGES, HPAGE_PMD_NR);
-+out_zero_page:
+@@ -1121,8 +1117,9 @@ int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ out_zero_page:
  	mm_inc_nr_ptes(dst_mm);
  	pgtable_trans_huge_deposit(dst_mm, dst_pmd, pgtable);
+-
+ 	pmdp_set_wrprotect(src_mm, addr, src_pmd);
++	if (!userfaultfd_wp(dst_vma))
++		pmd = pmd_clear_uffd_wp(pmd);
+ 	pmd = pmd_mkold(pmd_wrprotect(pmd));
+ 	set_pmd_at(dst_mm, addr, dst_pmd, pmd);
  
+@@ -1838,6 +1835,8 @@ int change_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
+ 			newpmd = swp_entry_to_pmd(entry);
+ 			if (pmd_swp_soft_dirty(*pmd))
+ 				newpmd = pmd_swp_mksoft_dirty(newpmd);
++			if (pmd_swp_uffd_wp(*pmd))
++				newpmd = pmd_swp_mkuffd_wp(newpmd);
+ 			set_pmd_at(mm, addr, pmd, newpmd);
+ 		}
+ 		goto unlock;
+@@ -3248,6 +3247,8 @@ void remove_migration_pmd(struct page_vma_mapped_walk *pvmw, struct page *new)
+ 		pmde = pmd_mksoft_dirty(pmde);
+ 	if (is_write_migration_entry(entry))
+ 		pmde = maybe_pmd_mkwrite(pmde, vma);
++	if (pmd_swp_uffd_wp(*pvmw->pmd))
++		pmde = pmd_wrprotect(pmd_mkuffd_wp(pmde));
+ 
+ 	flush_cache_range(vma, mmun_start, mmun_start + HPAGE_PMD_SIZE);
+ 	if (PageAnon(new))
+diff --git a/mm/memory.c b/mm/memory.c
+index b15367c285bd..f8e8c99bba73 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -708,10 +708,10 @@ struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
+ 
+ static unsigned long
+ copy_nonpresent_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+-		pte_t *dst_pte, pte_t *src_pte, struct vm_area_struct *vma,
+-		unsigned long addr, int *rss)
++		pte_t *dst_pte, pte_t *src_pte, struct vm_area_struct *dst_vma,
++		struct vm_area_struct *src_vma, unsigned long addr, int *rss)
+ {
+-	unsigned long vm_flags = vma->vm_flags;
++	unsigned long vm_flags = dst_vma->vm_flags;
+ 	pte_t pte = *src_pte;
+ 	struct page *page;
+ 	swp_entry_t entry = pte_to_swp_entry(pte);
+@@ -780,6 +780,8 @@ copy_nonpresent_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 			set_pte_at(src_mm, addr, src_pte, pte);
+ 		}
+ 	}
++	if (!userfaultfd_wp(dst_vma))
++		pte = pte_swp_clear_uffd_wp(pte);
+ 	set_pte_at(dst_mm, addr, dst_pte, pte);
+ 	return 0;
+ }
+@@ -845,6 +847,9 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+ 	/* All done, just insert the new page copy in the child */
+ 	pte = mk_pte(new_page, dst_vma->vm_page_prot);
+ 	pte = maybe_mkwrite(pte_mkdirty(pte), dst_vma);
++	if (userfaultfd_pte_wp(dst_vma, *src_pte))
++		/* Uffd-wp needs to be delivered to dest pte as well */
++		pte = pte_wrprotect(pte_mkuffd_wp(pte));
+ 	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
+ 	return 0;
+ }
+@@ -894,12 +899,7 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+ 		pte = pte_mkclean(pte);
+ 	pte = pte_mkold(pte);
+ 
+-	/*
+-	 * Make sure the _PAGE_UFFD_WP bit is cleared if the new VMA
+-	 * does not have the VM_UFFD_WP, which means that the uffd
+-	 * fork event is not enabled.
+-	 */
+-	if (!(vm_flags & VM_UFFD_WP))
++	if (!userfaultfd_wp(dst_vma))
+ 		pte = pte_clear_uffd_wp(pte);
+ 
+ 	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
+@@ -974,7 +974,8 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+ 		if (unlikely(!pte_present(*src_pte))) {
+ 			entry.val = copy_nonpresent_pte(dst_mm, src_mm,
+ 							dst_pte, src_pte,
+-							src_vma, addr, rss);
++							dst_vma, src_vma,
++							addr, rss);
+ 			if (entry.val)
+ 				break;
+ 			progress += 8;
+@@ -1051,8 +1052,8 @@ copy_pmd_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+ 			|| pmd_devmap(*src_pmd)) {
+ 			int err;
+ 			VM_BUG_ON_VMA(next-addr != HPAGE_PMD_SIZE, src_vma);
+-			err = copy_huge_pmd(dst_mm, src_mm,
+-					    dst_pmd, src_pmd, addr, src_vma);
++			err = copy_huge_pmd(dst_mm, src_mm, dst_pmd, src_pmd,
++					    addr, dst_vma, src_vma);
+ 			if (err == -ENOMEM)
+ 				return -ENOMEM;
+ 			if (!err)
 -- 
 2.31.1
 
