@@ -2,279 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9843CF687
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A928D3CF69F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235467AbhGTITB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 04:19:01 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:24894 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235185AbhGTIPX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:15:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1626771363; x=1658307363;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=6okpyKayPNfv5CWGaMmRljBALKEZq5fiLqgkdNmsZkc=;
-  b=yfZex7Aop+Z9Yd/MnJl2w1D+W0uq2Dbz8xKnabhYaAcUDXLVDaaGuXQZ
-   ta09HAtlKrHw1Z7JwDYjP7Y4rawSpjVGm3lfmoa5pd6j88t9ABOVRe5PR
-   wOskNdEkZjolNjoKy9gFpUnkHVWxL8J+nq0WWo7XCYZ43RmuQAfKVhouN
-   gyPC8FAPgM00duQVMvVHnfYNSvl6sbri2d23xNovxDI1PKuMWdkI+2LHx
-   jD3oSdzR3hbCUZnhHu79ujdXBCXlSINj3GQzszWUtVhYa8eTYA0izaO6t
-   wp61i7soMC3ptKrIvkTfe6iU+3/DZaGiom17WO3nreqalO7Mmnrtg03J6
-   g==;
-IronPort-SDR: ZFrbeC1aqkfdUG1aHUGKSs3E3Bc6KiXwpUFz18HJEL99UqQ8cemYIS1clXLJyMGVFF7D/slSVK
- Uy9x8DzM0rUuCuKy5TOLUPouwnB8xgoH6RF2WnqTMweyivNZHXlCGG41Nz5X64ePri9GaHX60y
- f4hPhFZ4jvWgtCTK+GLaUW6gElvv01KZ2C4C3Bi4W16POaENkapDrPRhinhjCdYwY3wGoP1PUE
- YBvSzHEDTiJ++pfeH6LFlRMiEWRz+djmRIcPoGq8hMN5KMV4pGa9Ak1XLjaDT2QFK7t2dnkfJI
- qbCiyK4vX5Q1Jqah0Jwz1m0u
-X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="128973649"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Jul 2021 01:56:02 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 01:56:01 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Tue, 20 Jul 2021 01:55:59 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <linux-crypto@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Tudor Ambarus" <tudor.ambarus@microchip.com>
-Subject: [PATCH 9/9] crypto: atmel-aes: Allocate aes dev at tfm init time
-Date:   Tue, 20 Jul 2021 11:55:35 +0300
-Message-ID: <20210720085535.141486-10-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210720085535.141486-1-tudor.ambarus@microchip.com>
-References: <20210720085535.141486-1-tudor.ambarus@microchip.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        id S232287AbhGTI2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 04:28:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235466AbhGTIXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 04:23:46 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8EFC8611F2;
+        Tue, 20 Jul 2021 08:46:53 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m5lOt-00ETCj-Lq; Tue, 20 Jul 2021 09:46:51 +0100
+Date:   Tue, 20 Jul 2021 09:46:51 +0100
+Message-ID: <874kcp9xtw.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        tabba@google.com, dbrazdil@google.com, kernel-team@android.com
+Subject: Re: [PATCH 05/14] KVM: arm64: Don't overwrite ignored bits with owner id
+In-Reply-To: <YPWAeTJMWJ+A7W2c@google.com>
+References: <20210719104735.3681732-1-qperret@google.com>
+        <20210719104735.3681732-6-qperret@google.com>
+        <87im16jwe6.wl-maz@kernel.org>
+        <YPWAeTJMWJ+A7W2c@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: qperret@google.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com, tabba@google.com, dbrazdil@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocate the atmel_aes_dev data at tfm init time, and not for
-each crypt request.
-There's a single AES IP per SoC, clarify that in the code.
+On Mon, 19 Jul 2021 14:39:05 +0100,
+Quentin Perret <qperret@google.com> wrote:
+> 
+> On Monday 19 Jul 2021 at 13:55:29 (+0100), Marc Zyngier wrote:
+> > On Mon, 19 Jul 2021 11:47:26 +0100,
+> > Quentin Perret <qperret@google.com> wrote:
+> > > 
+> > > The nVHE protected mode uses invalid mappings in the host stage-2
+> > > page-table to track the owner of each page in the system. In order to
+> > > allow the usage of ignored bits (a.k.a. software bits) in these
+> > > mappings, move the owner encoding away from the top bits.
+> > 
+> > But that's exactly what the current situation is allowing: the use of
+> > the SW bits. I am guessing that what you really mean is that you want
+> > to *preserve* the SW bits from an existing mapping and use other bits
+> > when the mapping is invalid?
+> 
+> Yes, this is really just forward looking, but I think it might be useful
+> to allow annotating invalid mappings with both an owner id _and_
+> additional flags for e.g. shared pages and such. And using bits [58-55]
+> to store those flags just like we do for valid mappings should make
+> things easier, but no big deal.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/crypto/atmel-aes.c | 76 +++++++++++++++++++++-----------------
- 1 file changed, 43 insertions(+), 33 deletions(-)
+Right, so maybe worth calling that out.
 
-diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
-index e74fcaac551e..d0f387674d32 100644
---- a/drivers/crypto/atmel-aes.c
-+++ b/drivers/crypto/atmel-aes.c
-@@ -420,24 +420,15 @@ static inline size_t atmel_aes_padlen(size_t len, size_t block_size)
- 	return len ? block_size - len : 0;
- }
- 
--static struct atmel_aes_dev *atmel_aes_find_dev(struct atmel_aes_base_ctx *ctx)
-+static struct atmel_aes_dev *atmel_aes_dev_alloc(struct atmel_aes_base_ctx *ctx)
- {
--	struct atmel_aes_dev *aes_dd = NULL;
--	struct atmel_aes_dev *tmp;
-+	struct atmel_aes_dev *aes_dd;
- 
- 	spin_lock_bh(&atmel_aes.lock);
--	if (!ctx->dd) {
--		list_for_each_entry(tmp, &atmel_aes.dev_list, list) {
--			aes_dd = tmp;
--			break;
--		}
--		ctx->dd = aes_dd;
--	} else {
--		aes_dd = ctx->dd;
--	}
--
-+	/* One AES IP per SoC. */
-+	aes_dd = list_first_entry_or_null(&atmel_aes.dev_list,
-+					  struct atmel_aes_dev, list);
- 	spin_unlock_bh(&atmel_aes.lock);
--
- 	return aes_dd;
- }
- 
-@@ -969,7 +960,6 @@ static int atmel_aes_handle_queue(struct atmel_aes_dev *dd,
- 	ctx = crypto_tfm_ctx(areq->tfm);
- 
- 	dd->areq = areq;
--	dd->ctx = ctx;
- 	start_async = (areq != new_areq);
- 	dd->is_async = start_async;
- 
-@@ -1106,7 +1096,6 @@ static int atmel_aes_crypt(struct skcipher_request *req, unsigned long mode)
- 	struct crypto_skcipher *skcipher = crypto_skcipher_reqtfm(req);
- 	struct atmel_aes_base_ctx *ctx = crypto_skcipher_ctx(skcipher);
- 	struct atmel_aes_reqctx *rctx;
--	struct atmel_aes_dev *dd;
- 	u32 opmode = mode & AES_FLAGS_OPMODE_MASK;
- 
- 	if (opmode == AES_FLAGS_XTS) {
-@@ -1152,10 +1141,6 @@ static int atmel_aes_crypt(struct skcipher_request *req, unsigned long mode)
- 	}
- 	ctx->is_aead = false;
- 
--	dd = atmel_aes_find_dev(ctx);
--	if (!dd)
--		return -ENODEV;
--
- 	rctx = skcipher_request_ctx(req);
- 	rctx->mode = mode;
- 
-@@ -1169,7 +1154,7 @@ static int atmel_aes_crypt(struct skcipher_request *req, unsigned long mode)
- 						 ivsize, 0);
- 	}
- 
--	return atmel_aes_handle_queue(dd, &req->base);
-+	return atmel_aes_handle_queue(ctx->dd, &req->base);
- }
- 
- static int atmel_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
-@@ -1281,8 +1266,15 @@ static int atmel_aes_ctr_decrypt(struct skcipher_request *req)
- static int atmel_aes_init_tfm(struct crypto_skcipher *tfm)
- {
- 	struct atmel_aes_ctx *ctx = crypto_skcipher_ctx(tfm);
-+	struct atmel_aes_dev *dd;
-+
-+	dd = atmel_aes_dev_alloc(&ctx->base);
-+	if (!dd)
-+		return -ENODEV;
- 
- 	crypto_skcipher_set_reqsize(tfm, sizeof(struct atmel_aes_reqctx));
-+	ctx->base.dd = dd;
-+	ctx->base.dd->ctx = &ctx->base;
- 	ctx->base.start = atmel_aes_start;
- 
- 	return 0;
-@@ -1291,8 +1283,15 @@ static int atmel_aes_init_tfm(struct crypto_skcipher *tfm)
- static int atmel_aes_ctr_init_tfm(struct crypto_skcipher *tfm)
- {
- 	struct atmel_aes_ctx *ctx = crypto_skcipher_ctx(tfm);
-+	struct atmel_aes_dev *dd;
-+
-+	dd = atmel_aes_dev_alloc(&ctx->base);
-+	if (!dd)
-+		return -ENODEV;
- 
- 	crypto_skcipher_set_reqsize(tfm, sizeof(struct atmel_aes_reqctx));
-+	ctx->base.dd = dd;
-+	ctx->base.dd->ctx = &ctx->base;
- 	ctx->base.start = atmel_aes_ctr_start;
- 
- 	return 0;
-@@ -1730,20 +1729,15 @@ static int atmel_aes_gcm_crypt(struct aead_request *req,
- {
- 	struct atmel_aes_base_ctx *ctx;
- 	struct atmel_aes_reqctx *rctx;
--	struct atmel_aes_dev *dd;
- 
- 	ctx = crypto_aead_ctx(crypto_aead_reqtfm(req));
- 	ctx->block_size = AES_BLOCK_SIZE;
- 	ctx->is_aead = true;
- 
--	dd = atmel_aes_find_dev(ctx);
--	if (!dd)
--		return -ENODEV;
--
- 	rctx = aead_request_ctx(req);
- 	rctx->mode = AES_FLAGS_GCM | mode;
- 
--	return atmel_aes_handle_queue(dd, &req->base);
-+	return atmel_aes_handle_queue(ctx->dd, &req->base);
- }
- 
- static int atmel_aes_gcm_setkey(struct crypto_aead *tfm, const u8 *key,
-@@ -1781,8 +1775,15 @@ static int atmel_aes_gcm_decrypt(struct aead_request *req)
- static int atmel_aes_gcm_init(struct crypto_aead *tfm)
- {
- 	struct atmel_aes_gcm_ctx *ctx = crypto_aead_ctx(tfm);
-+	struct atmel_aes_dev *dd;
-+
-+	dd = atmel_aes_dev_alloc(&ctx->base);
-+	if (!dd)
-+		return -ENODEV;
- 
- 	crypto_aead_set_reqsize(tfm, sizeof(struct atmel_aes_reqctx));
-+	ctx->base.dd = dd;
-+	ctx->base.dd->ctx = &ctx->base;
- 	ctx->base.start = atmel_aes_gcm_start;
- 
- 	return 0;
-@@ -1915,8 +1916,13 @@ static int atmel_aes_xts_decrypt(struct skcipher_request *req)
- static int atmel_aes_xts_init_tfm(struct crypto_skcipher *tfm)
- {
- 	struct atmel_aes_xts_ctx *ctx = crypto_skcipher_ctx(tfm);
-+	struct atmel_aes_dev *dd;
- 	const char *tfm_name = crypto_tfm_alg_name(&tfm->base);
- 
-+	dd = atmel_aes_dev_alloc(&ctx->base);
-+	if (!dd)
-+		return -ENODEV;
-+
- 	ctx->fallback_tfm = crypto_alloc_skcipher(tfm_name, 0,
- 						  CRYPTO_ALG_NEED_FALLBACK);
- 	if (IS_ERR(ctx->fallback_tfm))
-@@ -1924,6 +1930,8 @@ static int atmel_aes_xts_init_tfm(struct crypto_skcipher *tfm)
- 
- 	crypto_skcipher_set_reqsize(tfm, sizeof(struct atmel_aes_reqctx) +
- 				    crypto_skcipher_reqsize(ctx->fallback_tfm));
-+	ctx->base.dd = dd;
-+	ctx->base.dd->ctx = &ctx->base;
- 	ctx->base.start = atmel_aes_xts_start;
- 
- 	return 0;
-@@ -2137,6 +2145,11 @@ static int atmel_aes_authenc_init_tfm(struct crypto_aead *tfm,
- {
- 	struct atmel_aes_authenc_ctx *ctx = crypto_aead_ctx(tfm);
- 	unsigned int auth_reqsize = atmel_sha_authenc_get_reqsize();
-+	struct atmel_aes_dev *dd;
-+
-+	dd = atmel_aes_dev_alloc(&ctx->base);
-+	if (!dd)
-+		return -ENODEV;
- 
- 	ctx->auth = atmel_sha_authenc_spawn(auth_mode);
- 	if (IS_ERR(ctx->auth))
-@@ -2144,6 +2157,8 @@ static int atmel_aes_authenc_init_tfm(struct crypto_aead *tfm,
- 
- 	crypto_aead_set_reqsize(tfm, (sizeof(struct atmel_aes_authenc_reqctx) +
- 				      auth_reqsize));
-+	ctx->base.dd = dd;
-+	ctx->base.dd->ctx = &ctx->base;
- 	ctx->base.start = atmel_aes_authenc_start;
- 
- 	return 0;
-@@ -2189,7 +2204,6 @@ static int atmel_aes_authenc_crypt(struct aead_request *req,
- 	struct atmel_aes_base_ctx *ctx = crypto_aead_ctx(tfm);
- 	u32 authsize = crypto_aead_authsize(tfm);
- 	bool enc = (mode & AES_FLAGS_ENCRYPT);
--	struct atmel_aes_dev *dd;
- 
- 	/* Compute text length. */
- 	if (!enc && req->cryptlen < authsize)
-@@ -2208,11 +2222,7 @@ static int atmel_aes_authenc_crypt(struct aead_request *req,
- 	ctx->block_size = AES_BLOCK_SIZE;
- 	ctx->is_aead = true;
- 
--	dd = atmel_aes_find_dev(ctx);
--	if (!dd)
--		return -ENODEV;
--
--	return atmel_aes_handle_queue(dd, &req->base);
-+	return atmel_aes_handle_queue(ctx->dd, &req->base);
- }
- 
- static int atmel_aes_authenc_cbc_aes_encrypt(struct aead_request *req)
+> I see how this is going to conflict with kvm_pgtable_stage2_annotate()
+> from your series though, so maybe I should just drop this patch and
+> leave the encoding 'issue' to the caller -- the rest of the series
+> doesn't depend on this anyway, this was just small cleanup.
+
+I'm not too worried about that for now. We can always rewrite one in
+terms of the other, but I wanted to understand exactly this change was
+about.
+
+Thanks,
+
+	M.
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
