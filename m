@@ -2,95 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E7B3CF4A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3913B3CF4AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242503AbhGTGAD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Jul 2021 02:00:03 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:40882 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236659AbhGTF7j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 01:59:39 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 38E546169BC2;
-        Tue, 20 Jul 2021 08:40:16 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 2vmFpKXdmr5S; Tue, 20 Jul 2021 08:40:15 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id C12B36169BD2;
-        Tue, 20 Jul 2021 08:40:15 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id NPuSyuIQ7j5f; Tue, 20 Jul 2021 08:40:15 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 88A5B6169BC2;
-        Tue, 20 Jul 2021 08:40:15 +0200 (CEST)
-Date:   Tue, 20 Jul 2021 08:40:15 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Pintu Agarwal <pintu.ping@gmail.com>
-Cc:     Greg KH <greg@kroah.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>
-Message-ID: <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at>
-In-Reply-To: <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
-References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com> <YPGojf7hX//Wn5su@kroah.com> <568938486.33366.1626452816917.JavaMail.zimbra@nod.at> <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com> <1458549943.44607.1626686894648.JavaMail.zimbra@nod.at> <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
-Subject: Re: MTD: How to get actual image size from MTD partition
+        id S242529AbhGTGBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 02:01:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:51492 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236403AbhGTGBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 02:01:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E75DD1FB;
+        Mon, 19 Jul 2021 23:41:48 -0700 (PDT)
+Received: from [10.163.66.175] (unknown [10.163.66.175])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F1CA3F73D;
+        Mon, 19 Jul 2021 23:41:46 -0700 (PDT)
+Subject: Re: [PATCH v2 01/12] mm/debug_vm_pgtable: Introduce struct
+ pgtable_debug_args
+To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+References: <20210719054138.198373-1-gshan@redhat.com>
+ <20210719054138.198373-2-gshan@redhat.com>
+ <8d754894-5c21-1287-82b6-7ac3b064af3d@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <ff9766a5-3f4e-f821-daf1-b2779a8c81fc@arm.com>
+Date:   Tue, 20 Jul 2021 12:12:35 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <8d754894-5c21-1287-82b6-7ac3b064af3d@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF90 (Linux)/8.8.12_GA_3809)
-Thread-Topic: How to get actual image size from MTD partition
-Thread-Index: c6zZTS0QxRlvwgld28+UkRfD2UKnsA==
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
-> Von: "Pintu Agarwal" <pintu.ping@gmail.com>
-> Okay thank you.
-> We have tried dm-verity with squashfs (for our rootfs) but we are
-> facing some mounting issues.
-> [...]
-> [    4.697757] device-mapper: init: adding target '0 96160 verity 1
-> /dev/mtdblock34 /dev/mtdblock39 4096 4096 12020 8 sha256
-> d7b8a7d0c01b9aec888930841313a81603a50a2a7be44631c4c813197a50d681
-> aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7'
-> [    4.704771] device-mapper: verity: sha256 using implementation
-> "sha256-generic"
-> [...]
-> [    4.727366] device-mapper: init: dm-0 is ready
-> [    4.912558] VFS: Cannot open root device "dm-0" or
-> unknown-block(253,0): error -5
+
+
+On 7/19/21 6:31 PM, Gavin Shan wrote:
+>> +    if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>> +        has_transparent_hugepage()) {
+>> +        page = alloc_pages(GFP_KERNEL, HPAGE_PMD_ORDER);
+>> +        if (page) {
+>> +            args->pmd_pfn = page_to_pfn(page);
+>> +            args->pte_pfn = args->pmd_pfn;
+>> +            return 0;
+>> +        }
+>> +    }
+>> +
 > 
-> The same works with ext4 emulation.
-> So, not sure if there are any changes missing w.r.t. squashfs on 4.14 kernel ?
+> As syzbot reported against v1 series, we could allocate pages larger than (1 << (MAX_ORDER - 1)) here.
+> So __GFP_NOWARN is needed here. I will fix it in v3 series.
 
-I don't know.
+I could find the following build error reported from lkp on V2.
 
-> Anyways, I will create a separate thread for dm-verity issue and keep
-> this thread still open for UBI image size issue.
-> We may use dm-verify for rootfs during booting, but still we need to
-> perform integrity check for other nand partitions and UBI volumes.
-> 
-> So, instead of calculating the checksum for the entire partition, is
-> it possible to perform checksum only based on the image size ?
-> Right now, we are still exploring what are the best possible
-> mechanisms available for this.
+mm/debug_vm_pgtable.c:445:8: warning: variable 'pud' set but not used [-Wunused-but-set-variable]
 
-I still don't fully understand what you are trying to achieve.
-Is it about cryptographic integrity of your storage or detecting
-errors after the flashing process?
-
-But let me advertise ubiblock a second time. If you place your squashfs on
-a UBI static volume, UBI knows the exact length and you can checksum it
-more easily.
-
-Thanks,
-//richard
+Could you please point to the syzbot reported problem on V1 as you
+have mentioned above. Are there configs where HPAGE_[PMD|PUD]_ORDER
+is greater than (MAX_ORDER - 1) ? If yes, how adding __GFP_NOWARN
+solves the problem ?
