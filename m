@@ -2,172 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05EAC3D01AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D903D019A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbhGTRrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 13:47:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231315AbhGTRoG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 13:44:06 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E754DC061766
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:24:37 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id b14-20020a1c1b0e0000b02901fc3a62af78so2032555wmb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fZortMfUJ6sP9V4mv+JXrwjkFsuKqC8sCrT1IfxE2IQ=;
-        b=XUVux13s5c4XE3la6sNsDVnV5wsJPDf/esKROaTiOV8tSVRTmYXOJTY8JKuikYyZZy
-         XNq6hOye5f5dgGbDzB+YonO8zlet92Ln7TuqPcypBNArxSXUeL0ON7mgBEcnbSwB8z+o
-         Y/YfhB3M9AvmOGssbFid8ROltS8CDgfGo1RHw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=fZortMfUJ6sP9V4mv+JXrwjkFsuKqC8sCrT1IfxE2IQ=;
-        b=Y1uUq65I9PnmNq8Da2NLJx6eAq4LciQx+HmHJSw+/n3Eg6wVn48RGGwA6fcVSoHdLj
-         7KhLCdCdJS0LIM/f8o0aP/ReafIupkT6F1V06szl2kansalay3c+FqBYRv3AMleuRvVS
-         Xo6h8DDT23OHh5OZ6azxOPSXrexmRzgBTzFW0KzAsS6jQLsBhodGFrJq2pz3BuKWQq66
-         IfVVh5cQw5EJcl6yXDYwH1EGMygnIA90ZjQXDb4gQJTL4+XP18feXbOw3Te/g+W50y3m
-         rMfgOYN62JstvsblK7QmvOiz+ursh58Ou+Kc2evXDhaPwooW0xKFA6rFUtJMkuZBA9qY
-         TAKw==
-X-Gm-Message-State: AOAM533j8UBGlL8fHK6/C1zjHYqz8lclhVT6DQhBsb1ma1sUlbaah058
-        qABha4r91BHKb0mto1oTWhl6JA==
-X-Google-Smtp-Source: ABdhPJxJxuXAAbG2g8VfRjxtITgkDdi2Iec/QZfgBKKrqV+PIsMHUm2HQjbGOW/zVNRBi991fnD58w==
-X-Received: by 2002:a05:600c:2f1a:: with SMTP id r26mr38841077wmn.41.1626805476463;
-        Tue, 20 Jul 2021 11:24:36 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id q19sm2943917wmq.38.2021.07.20.11.24.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 11:24:33 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 20:24:31 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        emil.l.velikov@gmail.com
-Subject: Re: [PATCH v8 0/5] drm: address potential UAF bugs with drm_master
- ptrs
-Message-ID: <YPcU3wJK7kC5b7kv@phenom.ffwll.local>
-Mail-Followup-To: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        emil.l.velikov@gmail.com
-References: <20210712043508.11584-1-desmondcheongzx@gmail.com>
+        id S231977AbhGTRmS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Jul 2021 13:42:18 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:35866 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232589AbhGTRkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 13:40:42 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GTn8p11xBzB61P;
+        Tue, 20 Jul 2021 20:21:14 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id azco6Acv840f; Tue, 20 Jul 2021 20:21:14 +0200 (CEST)
+Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GTn8n6vwfzB61K;
+        Tue, 20 Jul 2021 20:21:13 +0200 (CEST)
+Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
+        id 182D3702; Tue, 20 Jul 2021 20:26:27 +0200 (CEST)
+Received: from 37-165-28-27.coucou-networks.fr
+ (37-165-28-27.coucou-networks.fr [37.165.28.27]) by messagerie.c-s.fr (Horde
+ Framework) with HTTP; Tue, 20 Jul 2021 20:26:27 +0200
+Date:   Tue, 20 Jul 2021 20:26:27 +0200
+Message-ID: <20210720202627.Horde.vlszNhxkKrLIg0-3Sn2ucw5@messagerie.c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, Marc Zyngier <maz@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Fix arm64 boot regression in 5.14
+In-Reply-To: <20210720123512.8740-1-will@kernel.org>
+User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210712043508.11584-1-desmondcheongzx@gmail.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 12:35:03PM +0800, Desmond Cheong Zhi Xi wrote:
-> Hi,
-> 
-> In the previous thread on this series we decided to remove a patch that was violating a lockdep requirement in drm_lease. In addition to this change, I took a closer look at the CI logs for the Basic Acceptance Tests and noticed that another regression was introduced. The new patch 2 is a response to this.
-> 
-> Overall, this series addresses potential use-after-free errors when dereferencing pointers to struct drm_master. These were identified after one such bug was caught by Syzbot in drm_getunique():
-> https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
-> 
-> The series is broken up into five patches:
-> 
-> 1. Move a call to drm_is_current_master() out from a section locked by &dev->mode_config.mutex in drm_mode_getconnector(). This patch does not apply to stable.
-> 
-> 2. Move a call to drm_is_current_master() out from the RCU read-side critical section in drm_clients_info().
-> 
-> 3. Implement a locked version of drm_is_current_master() function that's used within drm_auth.c.
-> 
-> 4. Serialize drm_file.master by introducing a new spinlock that's held whenever the value of drm_file.master changes.
-> 
-> 5. Identify areas in drm_lease.c where pointers to struct drm_master are dereferenced, and ensure that the master pointers are not freed during use.
-> 
-> v7 -> v8:
-> - Remove the patch that moves the call to _drm_lease_held out from the section locked by &dev->mode_config.idr_mutex in __drm_mode_object_find. This patch violated an existing lockdep requirement as reported by the intel-gfx CI.
-> - Added a new patch that moves a call to drm_is_current_master out from the RCU critical section in drm_clients_info. This was reported by the intel-gfx CI.
-> 
-> v6 -> v7:
-> - Modify code alignment as suggested by the intel-gfx CI.
-> - Add a new patch to the series that adds a new lock to serialize drm_file.master, in response to the lockdep splat by the intel-gfx CI.
-> - Update drm_file_get_master to use the new drm_file.master_lock instead of drm_device.master_mutex, in response to the lockdep splat by the intel-gfx CI.
-> 
-> v5 -> v6:
-> - Add a new patch to the series that moves the call to _drm_lease_held out from the section locked by &dev->mode_config.idr_mutex in __drm_mode_object_find.
-> - Clarify the kerneldoc for dereferencing drm_file.master, as suggested by Daniel Vetter.
-> - Refactor error paths with goto labels so that each function only has a single drm_master_put(), as suggested by Emil Velikov.
-> - Modify comparisons to NULL into "!master", as suggested by the intel-gfx CI.
-> 
-> v4 -> v5:
-> - Add a new patch to the series that moves the call to drm_is_current_master in drm_mode_getconnector out from the section locked by &dev->mode_config.mutex.
-> - Additionally, added a missing semicolon to the patch, caught by the intel-gfx CI.
-> 
-> v3 -> v4:
-> - Move the call to drm_is_current_master in drm_mode_getconnector out from the section locked by &dev->mode_config.mutex. As suggested by Daniel Vetter. This avoids a circular lock lock dependency as reported here https://patchwork.freedesktop.org/patch/440406/
-> - Inside drm_is_current_master, instead of grabbing &fpriv->master->dev->master_mutex, we grab &fpriv->minor->dev->master_mutex to avoid dereferencing a null ptr if fpriv->master is not set.
-> - Modify kerneldoc formatting for drm_file.master, as suggested by Daniel Vetter.
-> - Additionally, add a file_priv->master NULL check inside drm_file_get_master, and handle the NULL result accordingly in drm_lease.c. As suggested by Daniel Vetter.
-> 
-> v2 -> v3:
-> - Move the definition of drm_is_current_master and the _locked version higher up in drm_auth.c to avoid needing a forward declaration of drm_is_current_master_locked. As suggested by Daniel Vetter.
-> - Instead of leaking drm_device.master_mutex into drm_lease.c to protect drm_master pointers, add a new drm_file_get_master() function that returns drm_file->master while increasing its reference count, to prevent drm_file->master from being freed. As suggested by Daniel Vetter.
-> 
-> v1 -> v2:
-> - Move the lock and assignment before the DRM_DEBUG_LEASE in drm_mode_get_lease_ioctl, as suggested by Emil Velikov.
+Will Deacon <will@kernel.org> a écrit :
 
-Apologies for the delay, I missed your series. Maybe just ping next time
-around there's silence.
+> Hi folks,
+>
+> Jonathan reports [1] that commit c742199a014d ("mm/pgtable: add stubs
+> for {pmd/pub}_{set/clear}_huge") breaks the boot on arm64 when huge
+> mappings are used to map the kernel linear map but the VA size is
+> configured such that PUDs are folded. This is because the non-functional
+> pud_set_huge() stub is used to create the linear map, which results in
+> 1GB holes and a fatal data abort when the kernel attemps to access them.
+>
+> Digging further into the issue, it also transpired that huge-vmap is
+> silently disabled in these configurations as well [2], despite working
+> correctly in 5.13. The latter issue causes the pgtable selftests to
+> scream due to a failing consistency check [3].
+>
+> Rather than leave mainline in a terminally broken state for arm64 while
+> we figure this out, revert the offending commit to get things working
+> again. Unfortunately, reverting the change in isolation causes a build
+> breakage for 32-bit PowerPC 8xx machines which recently started relying
+> on the problematic stubs to support pte-level huge-vmap entries [4].
+> Since Christophe is away at the moment, this series first reverts the
+> PowerPC 8xx change in order to avoid breaking the build.
+>
+> I would really like this to land for -rc3 and I can take these via the
+> arm64 fixes queue if the PowerPC folks are alright with them.
+>
 
-Looks all great, merged to drm-misc-next. Given how complex this was I'm
-vary of just pushing this to -fixes without some solid testing.
+If you can drop patch 1,
 
-One thing I noticed is that drm_is_current_master could just use the
-spinlock, since it's only doing a read access. Care to type up that patch?
+Change patch 2 to add the two following functions in  
+arch/powerpc/mm/nohash/8xx.c :
 
-Also, do you plan to look into that idea we've discussed to flush pending
-access when we revoke a master or a lease? I think that would be really
-nice improvement here.
--Daniel
+int pud_clear_huge(pud_t *pud)
+{
+         return 0;
+}
 
-> 
-> Desmond Cheong Zhi Xi (5):
->   drm: avoid circular locks in drm_mode_getconnector
->   drm: avoid blocking in drm_clients_info's rcu section
->   drm: add a locked version of drm_is_current_master
->   drm: serialize drm_file.master with a new spinlock
->   drm: protect drm_master pointers in drm_lease.c
-> 
->  drivers/gpu/drm/drm_auth.c      | 93 ++++++++++++++++++++++++---------
->  drivers/gpu/drm/drm_connector.c |  5 +-
->  drivers/gpu/drm/drm_debugfs.c   |  3 +-
->  drivers/gpu/drm/drm_file.c      |  1 +
->  drivers/gpu/drm/drm_lease.c     | 81 +++++++++++++++++++++-------
->  include/drm/drm_auth.h          |  1 +
->  include/drm/drm_file.h          | 18 +++++--
->  7 files changed, 152 insertions(+), 50 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
+int pmd_clear_huge(pmd_t *pmd)
+{
+         return 0;
+}
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Then feel free to take it via ARM fixes with my acked-by as maintainer  
+of PPC8XX.
+
+Christophe
+
+
+> Cheers,
+>
+> Will
+>
+> [1] https://lore.kernel.org/r/20210717160118.9855-1-jonathan@marek.ca
+> [2] https://lore.kernel.org/r/20210719104918.GA6440@willie-the-truck
+> [3]  
+> https://lore.kernel.org/r/CAMuHMdXShORDox-xxaeUfDW3wx2PeggFSqhVSHVZNKCGK-y_vQ@mail.gmail.com/
+> [4]  
+> https://lore.kernel.org/r/8b972f1c03fb6bd59953035f0a3e4d26659de4f8.1620795204.git.christophe.leroy@csgroup.eu/
+>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Jonathan Marek <jonathan@marek.ca>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Nicholas Piggin <npiggin@gmail.com
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-arm-kernel@lists.infradead.org
+>
+> --->8
+>
+> Jonathan Marek (1):
+>   Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge"
+>
+> Will Deacon (1):
+>   Revert "powerpc/8xx: add support for huge pages on VMAP and VMALLOC"
+>
+>  arch/arm64/mm/mmu.c                          | 20 ++++-----
+>  arch/powerpc/Kconfig                         |  2 +-
+>  arch/powerpc/include/asm/nohash/32/mmu-8xx.h | 43 --------------------
+>  arch/x86/mm/pgtable.c                        | 34 +++++++---------
+>  include/linux/pgtable.h                      | 26 +-----------
+>  5 files changed, 25 insertions(+), 100 deletions(-)
+>
+> --
+> 2.32.0.402.g57bb445576-goog
+
+
