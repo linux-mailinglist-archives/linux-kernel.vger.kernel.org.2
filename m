@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C4A3D0517
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BCC3D0531
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhGTWeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 18:34:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44466 "EHLO mail.kernel.org"
+        id S234445AbhGTWip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 18:38:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:40802 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229726AbhGTWdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 18:33:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46CB760FE7;
-        Tue, 20 Jul 2021 23:14:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1626822862;
-        bh=nEnjKOxUloIQfSQL7a+2WVoIz2kHnvdbpqmipDdcQII=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=asJZYUWGeUCXEMHNcgGFRAG/YdCc5ucna4fYThfnH6elAMAExzgEYCremlJelES1R
-         H5xyNCRFILz36ZhahLc4oktKOkbnRMklrUbRAAoEoF0z7gFZAq+pw8H77B9yvDx1zw
-         /nukVTRmXzzte9RPc7RrDPONIP+pA3r9KNH85Loo=
-Date:   Tue, 20 Jul 2021 16:14:21 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>, tglx@linutronix.de,
-        hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com
-Subject: Re: [PATCH 1/7] mm: fix the deadlock in finish_fault()
-Message-Id: <20210720161421.f4874db77e0b13192d0ab895@linux-foundation.org>
-In-Reply-To: <9e97cedc-9fd7-4290-9f44-04b96acea15d@bytedance.com>
-References: <20210718043034.76431-1-zhengqi.arch@bytedance.com>
-        <20210718043034.76431-2-zhengqi.arch@bytedance.com>
-        <20210718212814.suvziikndiyezi6m@box.shutemov.name>
-        <9e97cedc-9fd7-4290-9f44-04b96acea15d@bytedance.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        id S234240AbhGTWiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 18:38:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22F281FB;
+        Tue, 20 Jul 2021 16:18:40 -0700 (PDT)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 855D03F694;
+        Tue, 20 Jul 2021 16:18:38 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 00:18:03 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>,
+        Ali Saidi <alisaidi@amazon.com>,
+        Jon Nettleton <jon@solid-run.com>
+Subject: Re: [PATCH v2] hwrng: Add Arm SMCCC TRNG based driver
+Message-ID: <20210721001803.303dfba1@slackpad.fritz.box>
+In-Reply-To: <e494866f38e9dcd2834971d3867244fb1d7e6ceb.camel@kernel.crashing.org>
+References: <20210720152158.31804-1-andre.przywara@arm.com>
+        <CAMj1kXEW7DT3P3FuV+poFykf6wwm4FTJuV6emGSWabCp7UZX9A@mail.gmail.com>
+        <20210720171631.071f84f5@slackpad.fritz.box>
+        <e494866f38e9dcd2834971d3867244fb1d7e6ceb.camel@kernel.crashing.org>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 17:53:12 +0800 Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+On Wed, 21 Jul 2021 08:02:42 +1000
+Benjamin Herrenschmidt <benh@kernel.crashing.org> wrote:
 
+Hi,
+
+> On Tue, 2021-07-20 at 17:16 +0100, Andre Przywara wrote:
+> > Yes, a similar idea was already brought up before. I think there is even
+> > the potential for something like an artificial SMCCC "bus", where those
+> > services presentable as devices could be auto-detected (by checking
+> > known function IDs), the respective drivers would then probe
+> > automatically?  
 > 
-> 
-> On 7/19/21 5:28 AM, Kirill A. Shutemov wrote:
-> > On Sun, Jul 18, 2021 at 12:30:27PM +0800, Qi Zheng wrote:
-> >> The commit 63f3655f9501(mm, memcg: fix reclaim deadlock with writeback)
-> >> fix a deadlock bug by pre-allocating the pte page table outside of the
-> >> page lock, the commit f9ce0be71d1f(mm: Cleanup faultaround and
-> >> finish_fault() codepaths) rework the relevant code but ignore this race,
-> >> fix it.
-> >>
-> >> Fixes: f9ce0be71d1f(mm: Cleanup faultaround and finish_fault() codepaths)
-> >> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> > 
-> > Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > 
-> > and add stable@, please.
-> > 
-> 
-> OK, I will add these in the patch v2, thanks.
+> Sounds like a boot time killer...
 
-Please send this as a separate standalone patch, not as a part of the
-main series.
+How so? To be clear, at the moment there is basically just the TRNG
+service we would probe for, maybe FF-A, then adding as we go. But in
+any case it would be just a handful, and querying is very quick
+(SMC/HVC, then just a switch/case on the other side, and ERET).
+Is there any particular scenario you are concerned about? Quick
+starting guests?
 
-Also, please include in the changelog a description of the user-visible
-impact of the bug which is being fixed.
+> can we instead describe them in DT and/or ACPI ?
 
+I think part of the idea of SMCCC is that it does NOT need firmware
+advertisement, but can instead be discovered, through a safe interface.
+
+Cheers,
+Andre
