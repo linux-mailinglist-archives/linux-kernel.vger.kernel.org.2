@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406093D0012
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7690A3D0030
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbhGTQj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 12:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbhGTQiJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 12:38:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E339BC061574;
-        Tue, 20 Jul 2021 10:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nIUPbWmLSj16v4fdAmjxUh4nxogfx1bpU0hHVWTHTvI=; b=nAMqbSKWqbj/Ac8oc6FDFmgton
-        RWU7nDnH8HrY85pFnG7w+Znd8kqgpgYH6kGrc0ZS0U4Rj3cgtOVkZ9CQVcSB3AvQJmFeaBpDg+AHQ
-        3h17EK9hTAwPtE9UQjVBjT9mYQ+kKPofbajFnmisOvdG3HmquACGcZSlEszqrCdkAGjDlyt+lkrQI
-        LluCGBk2OL/UMvMOhPbeJDLHHibCxk6RvoNSe81nNjIfrVuvZizcHHWE5F9fKbAYiLEXwW3tPSiYx
-        WWVglYjmfJGXd1ANfpypqnnW2wcjiJp4xM99heruNQkZJtVfWHzadyV2PUALLWwC3WAXgisP+MSTT
-        i9ru9xuA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m5tNl-008LUQ-99; Tue, 20 Jul 2021 17:18:17 +0000
-Date:   Tue, 20 Jul 2021 18:18:13 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 000/138] Memory folios
-Message-ID: <YPcFVScLa2GGY2RP@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <YParbk8LxhrZMExc@kernel.org>
- <YPbEax52N7OBQCZp@casper.infradead.org>
- <YPbpBv30NqeQPqPK@kernel.org>
- <YPbqcQ9i/Vi7ivEE@casper.infradead.org>
- <YPbtVvnow+4I4ytS@kernel.org>
+        id S231309AbhGTQq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 12:46:28 -0400
+Received: from mga09.intel.com ([134.134.136.24]:23531 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231910AbhGTQmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 12:42:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="211286204"
+X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; 
+   d="scan'208";a="211286204"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 10:19:31 -0700
+X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; 
+   d="scan'208";a="462117412"
+Received: from tjathaud-mobl.amr.corp.intel.com (HELO ldmartin-desk2) ([10.255.230.66])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 10:19:27 -0700
+Date:   Tue, 20 Jul 2021 10:19:27 -0700
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Anusha Srivatsa <anusha.srivatsa@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] drm/i915/xelpd: Fix unsigned compared to less than
+ zero error
+Message-ID: <20210720171927.joohdb6lykm7j64t@ldmartin-desk2>
+X-Patchwork-Hint: comment
+References: <20210720155726.73628-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <YPbtVvnow+4I4ytS@kernel.org>
+In-Reply-To: <20210720155726.73628-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 06:35:50PM +0300, Mike Rapoport wrote:
-> On Tue, Jul 20, 2021 at 04:23:29PM +0100, Matthew Wilcox wrote:
-> > Which patch did you go up to for that?  If you're going past patch 50 or
-> > so, then you're starting to add functionality (ie support for arbitrary
-> > order pages), so a certain amount of extra code size might be expected.
-> > I measured 6KB at patch 32 or so, then between patch 32 & 50 was pretty
-> > much a wash.
-> 
-> I've used folio_14 tag:
-> 
-> commit 480552d0322d855d146c0fa6fdf1e89ca8569037 (HEAD, tag: folio_14)
-> Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Date:   Wed Feb 5 11:27:01 2020 -0500
-> 
->     mm/readahead: Add multi-page folio readahead
+On Tue, Jul 20, 2021 at 04:57:26PM +0100, Colin King wrote:
+>From: Colin Ian King <colin.king@canonical.com>
+>
+>The subtraction of fw->size - offset is operating on two unsigned
+>integers and the result is unsigned and hence the less than zero
+>comparison will always to be false. Fix this by casting fw->size
+>from a size_t to a ssize_t to ensure the result can be signed to
+>allow a less than zero result.
+>
+>Addresses-Coverity: ("Unsigned compared against 0")
+>Fixes: 3d5928a168a9 ("drm/i915/xelpd: Pipe A DMC plugging")
+>Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Probably worth trying the for-next tag instead to get a meaningful
-comparison of how much using folios saves over pages.
 
-I don't want to give the impression that this is all that can be
-saved by switching to folios.  There are still hundreds of places that
-call PageFoo(), SetPageFoo(), ClearPageFoo(), put_page(), get_page(),
-lock_page() and so on.  There's probably another 20KB of code that can
-be removed that way.
+Reviewed-by: Lucas De Marchi <lucas.demarchi@intel.com>
+
+thanks
+Lucas De Marchi
+
+>---
+> drivers/gpu/drm/i915/display/intel_dmc.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/drivers/gpu/drm/i915/display/intel_dmc.c b/drivers/gpu/drm/i915/display/intel_dmc.c
+>index f8789d4543bf..dde1f243d375 100644
+>--- a/drivers/gpu/drm/i915/display/intel_dmc.c
+>+++ b/drivers/gpu/drm/i915/display/intel_dmc.c
+>@@ -645,7 +645,7 @@ static void parse_dmc_fw(struct drm_i915_private *dev_priv,
+> 			continue;
+>
+> 		offset = readcount + dmc->dmc_info[id].dmc_offset * 4;
+>-		if (fw->size - offset < 0) {
+>+		if ((ssize_t)fw->size - offset < 0) {
+> 			drm_err(&dev_priv->drm, "Reading beyond the fw_size\n");
+> 			continue;
+> 		}
+>-- 
+>2.31.1
+>
