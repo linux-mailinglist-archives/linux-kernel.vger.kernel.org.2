@@ -2,260 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2DF3D00F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DCA3D00EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhGTRLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 13:11:32 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61178 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232354AbhGTRKA (ORCPT
+        id S231833AbhGTRLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 13:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232339AbhGTRJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 13:10:00 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16KHYOYT083755;
-        Tue, 20 Jul 2021 13:50:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=M+k/THqYmQioCQfI+vvQ675Vl3gkL6U2pMThTBk09aQ=;
- b=iq7FHtV1CAfdF+tx2uzC5LJtaxFdI3ijk8fH4SSe6IFqB4+5AE2bXLgHocd1BhLQMPmf
- hQhcSITOtCFEMHY01Vcbd90RPMwj3cwKPZH9ckXWz8W/mj0PmOUaxIPjnPz8dSLEUMWv
- Xmj2VE47ufz2Kz1ekSF8jRLN8XQAPoj41SVqrIS8YvfsjSj7o2bE8xkLVFRhDqe9yaeU
- aK8QUUe0i0OLLYjscPAUZG5ElaPF+lVHis3JblaqybWr4YZwkMt3lIQ/vSLn//pm9OHV
- vy1Wm/+ooIvVWcm0e6PUnuyDDuBU/ltTv8gU+EmA/FGPmVOBgT4JoEGtYrKT3rLxr4A3 XA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39x2u1gpbq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 13:50:12 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16KHZeMK088052;
-        Tue, 20 Jul 2021 13:50:12 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39x2u1gpaw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 13:50:12 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16KHhBsO021985;
-        Tue, 20 Jul 2021 17:50:10 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 39upu89f3q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 17:50:10 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16KHo7D927394502
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Jul 2021 17:50:07 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B5EBC4C058;
-        Tue, 20 Jul 2021 17:50:07 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5A44F4C046;
-        Tue, 20 Jul 2021 17:50:07 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.178.12])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 20 Jul 2021 17:50:07 +0000 (GMT)
-Subject: Re: [PATCH v5 07/11] powerpc/pseries/iommu: Reorganize
- iommu_table_setparms*() with new helper
-To:     Leonardo Bras <leobras.c@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        kernel test robot <lkp@intel.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210716082755.428187-1-leobras.c@gmail.com>
- <20210716082755.428187-8-leobras.c@gmail.com>
-From:   Frederic Barrat <fbarrat@linux.ibm.com>
-Message-ID: <b1cdc216-31e3-a0ca-7b52-22cf4fa5579a@linux.ibm.com>
-Date:   Tue, 20 Jul 2021 19:50:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 20 Jul 2021 13:09:55 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157D5C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 10:50:34 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id o201so176022pfd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 10:50:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bVpGcCJNxzJz4xn8B9EL3oLPPEWacI7v/ruWv61Q000=;
+        b=Y7yJNDAFs6xZpBBXdJ+56blM+/eQeYeXvl3vCk27oQKpwXjLGQFEex3+MqziTV6Vnm
+         tl7NccrMvXMiBGQJsXgEHwOM/ulY1UcrE3JhwUI6MS6X64+cZ49wJM30wPAMobI4ixp0
+         XnSx8G0Jo/6dmBGnCj0wFAKIKTa/DS35E7vlg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bVpGcCJNxzJz4xn8B9EL3oLPPEWacI7v/ruWv61Q000=;
+        b=GTSuBibSpEHEpLMj/aCtLEnW7kSLPoomduPxqwYSfbKyCPvbsE7zooBMCRxB1Olqm2
+         5MIyyMBD87rbMvLUNSzaUKGabPejNUTeGEDjwL7oT0tE+UunFbG8ciwI5slhRSmwQ5Wj
+         IVWCp7DEFjkP+Yi4Q7KnL0+WwerKYcObK7VBYLlr7xfx7gd70+AFoxCH/+mD7jb6QlP2
+         tI6rr1ngFxKtQC1if55xRecHumm5Ofq6o8FBYa/5LOOYW6Wvi0IIrzWKx9k8ULxqJZQw
+         CPEBSlcEe3+w0Kg6//abZQgBWlHJes6HpY4cVETB4Hybv6DjcYbELnmF++wYNiTzyUGm
+         hGSg==
+X-Gm-Message-State: AOAM532LOgah99fRMWdLGSikkBNQpU5LxgdmTJNevrUpOastnRRlyrky
+        6WZELHPT/c8qPDgenv4PPlud5g==
+X-Google-Smtp-Source: ABdhPJw+3aILAs44wxCIgv56bChOz7Y3d9mZXQ9GF5TniuDGef+oZzkVcX6tuZc4Va86+BDDWA3x6A==
+X-Received: by 2002:a63:d757:: with SMTP id w23mr5870300pgi.434.1626803433510;
+        Tue, 20 Jul 2021 10:50:33 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:4d0:bf5f:b8cd:2d67])
+        by smtp.gmail.com with UTF8SMTPSA id d191sm28036023pga.27.2021.07.20.10.50.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jul 2021 10:50:33 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 10:50:31 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, tdas@codeaurora.org, agross@kernel.org,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Fixup cpufreq domain info for
+ cpu7
+Message-ID: <YPcM5w60c5s+mZ4Y@google.com>
+References: <1626800953-613-1-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210716082755.428187-8-leobras.c@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qwHudOO9SoRziUdczZVY9b1MU1MAyvGs
-X-Proofpoint-GUID: 5f5KeENN8SKx9n7LfIX9zixWbCbqa4vL
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-20_12:2021-07-19,2021-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 clxscore=1015 impostorscore=0 bulkscore=0
- mlxlogscore=999 malwarescore=0 phishscore=0 lowpriorityscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107200115
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1626800953-613-1-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 16/07/2021 10:27, Leonardo Bras wrote:
-> Add a new helper _iommu_table_setparms(), and use it in
-> iommu_table_setparms() and iommu_table_setparms_lpar() to avoid duplicated
-> code.
+On Tue, Jul 20, 2021 at 10:39:13PM +0530, Sibi Sankar wrote:
+> The SC7280 SoC supports a 4-Silver/3-Gold/1-Gold+ configuration and hence
+> the cpu7 node should point to cpufreq domain 2 instead.
 > 
-> Also, setting tbl->it_ops was happening outsite iommu_table_setparms*(),
-> so move it to the new helper. Since we need the iommu_table_ops to be
-> declared before used, declare iommu_table_lpar_multi_ops and
-> iommu_table_pseries_ops to before their respective iommu_table_setparms*().
-> 
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> Cc: stable@vger.kernel.org
 > ---
-
-
-Looks good
-Reviewed-by: Frederic Barrat <fbarrat@linux.ibm.com>
-
-
-
->   arch/powerpc/platforms/pseries/iommu.c | 72 ++++++++++++++------------
->   1 file changed, 38 insertions(+), 34 deletions(-)
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-> index 7ca79a04fa52..108c3dcca686 100644
-> --- a/arch/powerpc/platforms/pseries/iommu.c
-> +++ b/arch/powerpc/platforms/pseries/iommu.c
-> @@ -501,6 +501,24 @@ static int tce_setrange_multi_pSeriesLP_walk(unsigned long start_pfn,
->   	return tce_setrange_multi_pSeriesLP(start_pfn, num_pfn, arg);
->   }
->   
-> +static void iommu_table_setparms_common(struct iommu_table *tbl, unsigned long busno,
-> +					unsigned long liobn, unsigned long win_addr,
-> +					unsigned long window_size, unsigned long page_shift,
-> +					void *base, struct iommu_table_ops *table_ops)
-> +{
-> +	tbl->it_busno = busno;
-> +	tbl->it_index = liobn;
-> +	tbl->it_offset = win_addr >> page_shift;
-> +	tbl->it_size = window_size >> page_shift;
-> +	tbl->it_page_shift = page_shift;
-> +	tbl->it_base = (unsigned long)base;
-> +	tbl->it_blocksize = 16;
-> +	tbl->it_type = TCE_PCI;
-> +	tbl->it_ops = table_ops;
-> +}
-> +
-> +struct iommu_table_ops iommu_table_pseries_ops;
-> +
->   static void iommu_table_setparms(struct pci_controller *phb,
->   				 struct device_node *dn,
->   				 struct iommu_table *tbl)
-> @@ -509,8 +527,13 @@ static void iommu_table_setparms(struct pci_controller *phb,
->   	const unsigned long *basep;
->   	const u32 *sizep;
->   
-> -	node = phb->dn;
-> +	/* Test if we are going over 2GB of DMA space */
-> +	if (phb->dma_window_base_cur + phb->dma_window_size > SZ_2G) {
-> +		udbg_printf("PCI_DMA: Unexpected number of IOAs under this PHB.\n");
-> +		panic("PCI_DMA: Unexpected number of IOAs under this PHB.\n");
-> +	}
->   
-> +	node = phb->dn;
->   	basep = of_get_property(node, "linux,tce-base", NULL);
->   	sizep = of_get_property(node, "linux,tce-size", NULL);
->   	if (basep == NULL || sizep == NULL) {
-> @@ -519,33 +542,18 @@ static void iommu_table_setparms(struct pci_controller *phb,
->   		return;
->   	}
->   
-> -	tbl->it_base = (unsigned long)__va(*basep);
-> +	iommu_table_setparms_common(tbl, phb->bus->number, 0, phb->dma_window_base_cur,
-> +				    phb->dma_window_size, IOMMU_PAGE_SHIFT_4K,
-> +				    __va(*basep), &iommu_table_pseries_ops);
->   
->   	if (!is_kdump_kernel())
->   		memset((void *)tbl->it_base, 0, *sizep);
->   
-> -	tbl->it_busno = phb->bus->number;
-> -	tbl->it_page_shift = IOMMU_PAGE_SHIFT_4K;
-> -
-> -	/* Units of tce entries */
-> -	tbl->it_offset = phb->dma_window_base_cur >> tbl->it_page_shift;
-> -
-> -	/* Test if we are going over 2GB of DMA space */
-> -	if (phb->dma_window_base_cur + phb->dma_window_size > 0x80000000ul) {
-> -		udbg_printf("PCI_DMA: Unexpected number of IOAs under this PHB.\n");
-> -		panic("PCI_DMA: Unexpected number of IOAs under this PHB.\n");
-> -	}
-> -
->   	phb->dma_window_base_cur += phb->dma_window_size;
-> -
-> -	/* Set the tce table size - measured in entries */
-> -	tbl->it_size = phb->dma_window_size >> tbl->it_page_shift;
-> -
-> -	tbl->it_index = 0;
-> -	tbl->it_blocksize = 16;
-> -	tbl->it_type = TCE_PCI;
->   }
->   
-> +struct iommu_table_ops iommu_table_lpar_multi_ops;
-> +
->   /*
->    * iommu_table_setparms_lpar
->    *
-> @@ -557,17 +565,13 @@ static void iommu_table_setparms_lpar(struct pci_controller *phb,
->   				      struct iommu_table_group *table_group,
->   				      const __be32 *dma_window)
->   {
-> -	unsigned long offset, size;
-> +	unsigned long offset, size, liobn;
->   
-> -	of_parse_dma_window(dn, dma_window, &tbl->it_index, &offset, &size);
-> +	of_parse_dma_window(dn, dma_window, &liobn, &offset, &size);
-> +
-> +	iommu_table_setparms_common(tbl, phb->bus->number, liobn, offset, size, IOMMU_PAGE_SHIFT_4K, NULL,
-> +				    &iommu_table_lpar_multi_ops);
->   
-> -	tbl->it_busno = phb->bus->number;
-> -	tbl->it_page_shift = IOMMU_PAGE_SHIFT_4K;
-> -	tbl->it_base   = 0;
-> -	tbl->it_blocksize  = 16;
-> -	tbl->it_type = TCE_PCI;
-> -	tbl->it_offset = offset >> tbl->it_page_shift;
-> -	tbl->it_size = size >> tbl->it_page_shift;
->   
->   	table_group->tce32_start = offset;
->   	table_group->tce32_size = size;
-> @@ -647,7 +651,7 @@ static void pci_dma_bus_setup_pSeries(struct pci_bus *bus)
->   	tbl = pci->table_group->tables[0];
->   
->   	iommu_table_setparms(pci->phb, dn, tbl);
-> -	tbl->it_ops = &iommu_table_pseries_ops;
-> +
->   	if (!iommu_init_table(tbl, pci->phb->node, 0, 0))
->   		panic("Failed to initialize iommu table");
->   
-> @@ -730,7 +734,7 @@ static void pci_dma_bus_setup_pSeriesLP(struct pci_bus *bus)
->   		tbl = ppci->table_group->tables[0];
->   		iommu_table_setparms_lpar(ppci->phb, pdn, tbl,
->   				ppci->table_group, dma_window);
-> -		tbl->it_ops = &iommu_table_lpar_multi_ops;
-> +
->   		if (!iommu_init_table(tbl, ppci->phb->node, 0, 0))
->   			panic("Failed to initialize iommu table");
->   		iommu_register_group(ppci->table_group,
-> @@ -760,7 +764,7 @@ static void pci_dma_dev_setup_pSeries(struct pci_dev *dev)
->   		PCI_DN(dn)->table_group = iommu_pseries_alloc_group(phb->node);
->   		tbl = PCI_DN(dn)->table_group->tables[0];
->   		iommu_table_setparms(phb, dn, tbl);
-> -		tbl->it_ops = &iommu_table_pseries_ops;
-> +
->   		if (!iommu_init_table(tbl, phb->node, 0, 0))
->   			panic("Failed to initialize iommu table");
->   
-> @@ -1443,7 +1447,7 @@ static void pci_dma_dev_setup_pSeriesLP(struct pci_dev *dev)
->   		tbl = pci->table_group->tables[0];
->   		iommu_table_setparms_lpar(pci->phb, pdn, tbl,
->   				pci->table_group, dma_window);
-> -		tbl->it_ops = &iommu_table_lpar_multi_ops;
-> +
->   		iommu_init_table(tbl, pci->phb->node, 0, 0);
->   		iommu_register_group(pci->table_group,
->   				pci_domain_nr(pci->phb->bus), 0);
-> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index a8c274ad74c4..188c5768a55a 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -200,7 +200,7 @@
+>  					   &BIG_CPU_SLEEP_1
+>  					   &CLUSTER_SLEEP_0>;
+>  			next-level-cache = <&L2_700>;
+> -			qcom,freq-domain = <&cpufreq_hw 1>;
+> +			qcom,freq-domain = <&cpufreq_hw 2>;
+>  			#cooling-cells = <2>;
+>  			L2_700: l2-cache {
+>  				compatible = "cache";
+
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
