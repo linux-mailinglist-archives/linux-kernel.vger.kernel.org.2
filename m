@@ -2,205 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D853D0514
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C4A3D0517
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhGTWba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 18:31:30 -0400
-Received: from mga11.intel.com ([192.55.52.93]:5614 "EHLO mga11.intel.com"
+        id S232005AbhGTWeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 18:34:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233607AbhGTWbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 18:31:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="208224572"
-X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
-   d="scan'208";a="208224572"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 16:11:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
-   d="scan'208";a="469930495"
-Received: from lkp-server02.sh.intel.com (HELO 1b5a72ed9419) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 20 Jul 2021 16:11:34 -0700
-Received: from kbuild by 1b5a72ed9419 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m5yth-0000RX-VG; Tue, 20 Jul 2021 23:11:33 +0000
-Date:   Wed, 21 Jul 2021 07:11:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/urgent] BUILD SUCCESS
- ff5a6a3550cef4a272fee19520a13699343b6a47
-Message-ID: <60f75815.yhi2/WbphmMS3S1x%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S229726AbhGTWdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 18:33:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46CB760FE7;
+        Tue, 20 Jul 2021 23:14:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1626822862;
+        bh=nEnjKOxUloIQfSQL7a+2WVoIz2kHnvdbpqmipDdcQII=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=asJZYUWGeUCXEMHNcgGFRAG/YdCc5ucna4fYThfnH6elAMAExzgEYCremlJelES1R
+         H5xyNCRFILz36ZhahLc4oktKOkbnRMklrUbRAAoEoF0z7gFZAq+pw8H77B9yvDx1zw
+         /nukVTRmXzzte9RPc7RrDPONIP+pA3r9KNH85Loo=
+Date:   Tue, 20 Jul 2021 16:14:21 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>, tglx@linutronix.de,
+        hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com
+Subject: Re: [PATCH 1/7] mm: fix the deadlock in finish_fault()
+Message-Id: <20210720161421.f4874db77e0b13192d0ab895@linux-foundation.org>
+In-Reply-To: <9e97cedc-9fd7-4290-9f44-04b96acea15d@bytedance.com>
+References: <20210718043034.76431-1-zhengqi.arch@bytedance.com>
+        <20210718043034.76431-2-zhengqi.arch@bytedance.com>
+        <20210718212814.suvziikndiyezi6m@box.shutemov.name>
+        <9e97cedc-9fd7-4290-9f44-04b96acea15d@bytedance.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/urgent
-branch HEAD: ff5a6a3550cef4a272fee19520a13699343b6a47  Merge branch 'timers/urgent' of git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks into timers/urgent
+On Mon, 19 Jul 2021 17:53:12 +0800 Qi Zheng <zhengqi.arch@bytedance.com> wrote:
 
-elapsed time: 724m
+> 
+> 
+> On 7/19/21 5:28 AM, Kirill A. Shutemov wrote:
+> > On Sun, Jul 18, 2021 at 12:30:27PM +0800, Qi Zheng wrote:
+> >> The commit 63f3655f9501(mm, memcg: fix reclaim deadlock with writeback)
+> >> fix a deadlock bug by pre-allocating the pte page table outside of the
+> >> page lock, the commit f9ce0be71d1f(mm: Cleanup faultaround and
+> >> finish_fault() codepaths) rework the relevant code but ignore this race,
+> >> fix it.
+> >>
+> >> Fixes: f9ce0be71d1f(mm: Cleanup faultaround and finish_fault() codepaths)
+> >> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> > 
+> > Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > 
+> > and add stable@, please.
+> > 
+> 
+> OK, I will add these in the patch v2, thanks.
 
-configs tested: 147
-configs skipped: 4
+Please send this as a separate standalone patch, not as a part of the
+main series.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Also, please include in the changelog a description of the user-visible
+impact of the bug which is being fixed.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         cm_x300_defconfig
-sh                          rsk7264_defconfig
-sh                           se7724_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                     pseries_defconfig
-powerpc                 mpc834x_mds_defconfig
-arm                  colibri_pxa300_defconfig
-arm                       netwinder_defconfig
-powerpc                    gamecube_defconfig
-riscv                               defconfig
-m68k                           sun3_defconfig
-sh                            hp6xx_defconfig
-arm                         lpc18xx_defconfig
-x86_64                           allyesconfig
-powerpc                      acadia_defconfig
-mips                      pistachio_defconfig
-mips                             allmodconfig
-sh                           se7343_defconfig
-powerpc                     stx_gp3_defconfig
-mips                           ci20_defconfig
-powerpc                  storcenter_defconfig
-powerpc                     tqm8548_defconfig
-arm                        multi_v5_defconfig
-mips                          ath25_defconfig
-sh                           se7721_defconfig
-ia64                             allmodconfig
-arm                           corgi_defconfig
-powerpc                 linkstation_defconfig
-m68k                        m5407c3_defconfig
-sh                   secureedge5410_defconfig
-powerpc                     sequoia_defconfig
-arm                        mvebu_v5_defconfig
-arm                         lubbock_defconfig
-arm                   milbeaut_m10v_defconfig
-um                               alldefconfig
-powerpc                  iss476-smp_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                      chrp32_defconfig
-mips                           gcw0_defconfig
-sh                          rsk7203_defconfig
-arm                         lpc32xx_defconfig
-sh                              ul2_defconfig
-sh                          urquell_defconfig
-sh                          r7780mp_defconfig
-powerpc                     rainier_defconfig
-powerpc                         wii_defconfig
-sh                          rsk7201_defconfig
-powerpc                 xes_mpc85xx_defconfig
-sh                               j2_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                            mmp2_defconfig
-arm                     eseries_pxa_defconfig
-powerpc                 mpc8540_ads_defconfig
-arc                      axs103_smp_defconfig
-xtensa                       common_defconfig
-powerpc                     kilauea_defconfig
-powerpc                   motionpro_defconfig
-m68k                          atari_defconfig
-sh                ecovec24-romimage_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                        trizeps4_defconfig
-mips                         tb0287_defconfig
-sh                          landisk_defconfig
-arm                         socfpga_defconfig
-powerpc64                           defconfig
-powerpc                      cm5200_defconfig
-arm                         palmz72_defconfig
-x86_64                            allnoconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210720
-x86_64               randconfig-a006-20210720
-x86_64               randconfig-a001-20210720
-x86_64               randconfig-a005-20210720
-x86_64               randconfig-a004-20210720
-x86_64               randconfig-a002-20210720
-i386                 randconfig-a005-20210720
-i386                 randconfig-a003-20210720
-i386                 randconfig-a004-20210720
-i386                 randconfig-a002-20210720
-i386                 randconfig-a001-20210720
-i386                 randconfig-a006-20210720
-i386                 randconfig-a005-20210719
-i386                 randconfig-a004-20210719
-i386                 randconfig-a006-20210719
-i386                 randconfig-a001-20210719
-i386                 randconfig-a003-20210719
-i386                 randconfig-a002-20210719
-i386                 randconfig-a016-20210720
-i386                 randconfig-a013-20210720
-i386                 randconfig-a012-20210720
-i386                 randconfig-a014-20210720
-i386                 randconfig-a011-20210720
-i386                 randconfig-a015-20210720
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210720
-x86_64               randconfig-a011-20210720
-x86_64               randconfig-a016-20210720
-x86_64               randconfig-a013-20210720
-x86_64               randconfig-a014-20210720
-x86_64               randconfig-a012-20210720
-x86_64               randconfig-a015-20210720
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
