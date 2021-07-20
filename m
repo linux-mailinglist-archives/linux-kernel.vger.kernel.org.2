@@ -2,90 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E983D0102
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A18ED3D010B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhGTRO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 13:14:26 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58942 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhGTROR (ORCPT
+        id S232938AbhGTRPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 13:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232159AbhGTRPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 13:14:17 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3C6ED202F0;
-        Tue, 20 Jul 2021 17:54:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626803693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dpRzxjBR15aVpBT84U5St6uEXHRtmrkDNyaHcqlpRxU=;
-        b=aJc6vcnXTypljSasNQrNi7jUVzYz6kXF3wNqGyFc1w3cxqPXtDh21qSVKINqjNoRd2vdda
-        KwIzvGHvEXrQw6TRdlWxVEQHepHfpToGVGqGpmYicJWtJapSSIXxzejp+cEMCeAAPNINR5
-        q3ggYtohYIr0FEbY83TcCAmU2Hp+s2Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626803693;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dpRzxjBR15aVpBT84U5St6uEXHRtmrkDNyaHcqlpRxU=;
-        b=5Fp85cA8D+JIkL8mBigq7LA7PgkQQHBD0qQFSf+Kwz4NQnSgT2bSGfQ/YGgzAWyK8XpvPX
-        2uYrdt2nDH7GKODQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 88A0613B9D;
-        Tue, 20 Jul 2021 17:54:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id xr7KFOwN92AbUgAAGKfGzw
-        (envelope-from <hare@suse.de>); Tue, 20 Jul 2021 17:54:52 +0000
-Subject: Re: [PATCH v3 3/6] nvme-rdma: Update number of hardware queues before
- using them
-To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-References: <20210720124353.127959-1-dwagner@suse.de>
- <20210720124353.127959-4-dwagner@suse.de>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <90ab8cc1-a900-9869-3a65-acf69ebc08fb@suse.de>
-Date:   Tue, 20 Jul 2021 19:54:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 20 Jul 2021 13:15:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DBAC061574;
+        Tue, 20 Jul 2021 10:55:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oDAJ42dv5UM7XR2QM94ynNYpWgzAJSt3LgUls9TMDrA=; b=iI3D7zk0Eux8BZ3+/5gXEBCIkU
+        V7ksq2N37ISwvTSZKYLGaQKxw4tVV1OfJ0mQ2pr88p2jBqzQoovqGyH+UaJGpH3PeMpuoc4thidA+
+        2hQX3PjKZBfcT9hGj5YsnVjFlBRk0njEXAXTRZVZmiqwbvcUgnQLg4fEcz0HDsRtsfgxGYh00OF67
+        R2a3e4Uu9husSNqcuY1qYLWMQOqYfohQtodkDq9js4MCWvx5hbLvDVmxPhcPkgDXJTj9JmtM3qNYh
+        EIMRIxMepEYobhn9xutI0g4wN9naS/UA1wyHe62gx3U43WMKZ3G9IAj+xF5z03QFg3RoR48GUpkFy
+        JVFVl1Uw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5txY-008NQ7-FL; Tue, 20 Jul 2021 17:55:17 +0000
+Date:   Tue, 20 Jul 2021 18:55:12 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH v14 014/138] mm/filemap: Add folio_next_index()
+Message-ID: <YPcOAADVC2ta+7Zh@casper.infradead.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-15-willy@infradead.org>
+ <YPaog6FqCWY+JQLk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210720124353.127959-4-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPaog6FqCWY+JQLk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/21 2:43 PM, Daniel Wagner wrote:
-> When the number of hardware queues changes during resetting we should
-> update the tagset first before using it.
+On Tue, Jul 20, 2021 at 01:42:11PM +0300, Mike Rapoport wrote:
+> > diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> > index f7c165b5991f..bd0e7e91bfd4 100644
+> > --- a/include/linux/pagemap.h
+> > +++ b/include/linux/pagemap.h
+> > @@ -406,6 +406,17 @@ static inline pgoff_t folio_index(struct folio *folio)
+> >          return folio->index;
+> >  }
+> >  
+> > +/**
+> > + * folio_next_index - Get the index of the next folio.
+> > + * @folio: The current folio.
+> > + *
+> > + * Return: The index of the folio which follows this folio in the file.
+> > + */
 > 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->   drivers/nvme/host/rdma.c | 13 ++++++-------
->   1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+> Maybe note that index is in units of pages?
 
-Cheers,
+I don't think this is the place to explain that.  Remember, we already
+have:
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+ * @index: Offset within the file, in units of pages.  For anonymous pages,
+ *    this is the index from the beginning of the mmap.
+
+and I don't want to explain every term of art in every function
+description.  I think if you're reading this, you can follow the
+link to the struct folio description and see what an index is.
