@@ -2,169 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4878F3D0381
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 23:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDBA3D0382
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 23:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235068AbhGTURS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 16:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        id S235060AbhGTURg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 16:17:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235910AbhGTUIh (ORCPT
+        with ESMTP id S236896AbhGTUKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 16:08:37 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E12C061768
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:49:02 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id nd37so36284054ejc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:49:02 -0700 (PDT)
+        Tue, 20 Jul 2021 16:10:03 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F068BC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:50:37 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id t2so29716023edd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:50:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AboetzlMBZEQFYyVq02sIsGWJx/JjBRI37re6kVn+AM=;
-        b=WMiyPulpA0yNVIE1CU5GjpG4+1PLhkQ2dzox7fjiM1rGEzfYvvYzfYmhMjS3f8ShbR
-         RW3oSaI6QVNXk+ziX7uVpMO49OSf0jnwHct3788yjnSeaF5SgdtIqIqdX4djCsK4i2Sy
-         5mr7RJyXNjiARSzGBqzk5l+/zblMhQgdhHjdLBfRtZJgra+oP7SRcUXwauR8fj0UYpR8
-         F7V0Eg/+zQpz/bmaQvXE10l0O+2flHYzD2SbH34ufoT6HQu2l7jhlMbHfe5CCmn5e2gO
-         MR2vnmxX9PZpbRsVTvUAqCegWibE2VGFJsDYJNWGCMyRDbJSTVmTZX3vnoly40YwxVTT
-         GXaQ==
+        bh=PXmPAgOyL+BBz09jacg1aZLHANboewgCvjK3IRp37+M=;
+        b=CexM0fobFkGeZKt/XDFgzC2uVpyPQQkeYkBPEn4PuXSAEw2GL+zOXHNg3/fcNAlcBD
+         b1R4ZHzVfR8tIlrik/Pt4MmPSNPJGGD1dAidUcNFNsxZgegUvgPvqYoEc2VcBCwkw257
+         JFDZCRBAFhLIoC7NA8qfKohAtRn5E7MIFHrOIWZ+35RYBZPFjYk0TzBCAfIZ6Yfir0o0
+         z8r9epJyBC+9MJ0jB0rAgZk3fsZkdAn8BHLj0GDjQz6leQ7CspjbQdNgbV65L8OXr4+n
+         6naoI/EIGRyCH4CzNMG3M812r/3d59iT4tRWd+L5HjhwWjt0elyAI9hqR28y/ODj9X31
+         fYyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AboetzlMBZEQFYyVq02sIsGWJx/JjBRI37re6kVn+AM=;
-        b=fAjf1CaEnU9P1ek/isupV5AJfsnguegPreqdgTu9vTdWYLkWOBT9LlaW4ewfauLJuS
-         hB+cn543/IeEDC4oxDD16QrNRc3m314jG4RZgfA5PHSbCOhBH7jzSJPcHHLTxQoCJw6e
-         MxHp5uNMMisW/tXIsPW2m5EUc8Y5ySjJo5w20qAZbfPXCHGki391oFR5xi2nwkKHSs56
-         jisjbqADlVxSyvO+h8pVQLE21w4rJX6e33gUc29HoZcgv5NZ7zn+w7g3tZ/f4R3e8Cjx
-         UXnmp3+ti7mq07lbJkIjGljuGrz5V6NlBH4t26DqrNttaNXgtyUTgoL3qKA3/Q/MpDPB
-         bgUA==
-X-Gm-Message-State: AOAM532S5+ul2715DcSZsCb6cbz6mcb8DS1bW7v+SN3X8n8TyBra7HnW
-        b3L/j/HuQzQfrM6nSHy8VS/FVM26ydY/fylzdVpUsuus6STS1Q==
-X-Google-Smtp-Source: ABdhPJz0PQe4hlWMAq/5Aby4AGhK3rR89n4lgC8rV+phSIG7e85X5lT4q7jq1tMnWMvwv7BlD++GL+GLIVwq45qY3co=
-X-Received: by 2002:a17:907:20c6:: with SMTP id qq6mr10939524ejb.25.1626814140990;
- Tue, 20 Jul 2021 13:49:00 -0700 (PDT)
+        bh=PXmPAgOyL+BBz09jacg1aZLHANboewgCvjK3IRp37+M=;
+        b=lJPML5yUOobmvNXKhQmY8C1dAX/NH79pjUd2AyBusFyOqiiIBKnmqSYoAxxXZ/u4TV
+         9l3taHazXAqqez7YqnpaNAdRKQbjlYMLs7Fi1BC8f/pPL/HKH/tUWcabFS/I57XtEzJW
+         /XCZ1vQEUMfANXPtNJmqSliJcEVeDNijhZWsNJD9A/Dlk9ci+gIcPW+bNA47cqz+BZ2v
+         V+XnQAOWwg2zIaTi1Ji3ISyw0fAqxNedKCWg0vpPg67dy5qUvlehhYwVos+vx4jfqGXx
+         LZM8vqapKYf1klelAPKqvBHuVQhLBBTDleF74qeLnsqpIc+00+dhoBrLYl8TK7qxE+XV
+         iVyQ==
+X-Gm-Message-State: AOAM532/n9HKvSUhYkS9eO7Pejl6WS0SqEp2PAZiC/k/cz01woX+OyxD
+        W/IhP0mjn8wYvhHyALVPJA5G/VC3MLseGbqDBEI=
+X-Google-Smtp-Source: ABdhPJx4b2v04XUMMAS3ZJEBCkn8DGU8Gu+gQabTwKgzsJIPBP+7A/UUswQQjcBHFLndqKM/h6j88El19hqEI1QxVbo=
+X-Received: by 2002:a50:954c:: with SMTP id v12mr39330637eda.313.1626814236512;
+ Tue, 20 Jul 2021 13:50:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210720065529.716031-1-ying.huang@intel.com>
-In-Reply-To: <20210720065529.716031-1-ying.huang@intel.com>
+References: <20210720074228.76342-1-songmuchun@bytedance.com>
+In-Reply-To: <20210720074228.76342-1-songmuchun@bytedance.com>
 From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 20 Jul 2021 13:48:47 -0700
-Message-ID: <CAHbLzkrKZNT1MwrCp0SOzZ43C12DZzNmPKXLwxKZ=j+YgOaW=g@mail.gmail.com>
-Subject: Re: [PATCH] mm,do_huge_pmd_numa_page: remove unnecessary TLB flushing code
-To:     Huang Ying <ying.huang@intel.com>
+Date:   Tue, 20 Jul 2021 13:50:24 -0700
+Message-ID: <CAHbLzko=p0dA=TmTWqT1mrRm1rsvrBYpEOB=hZfq_S-ho5S5AQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: mmap_lock: fix disabling preemption directly
+To:     Muchun Song <songmuchun@bytedance.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>, cuibixuan@huawei.com,
+        Vlastimil Babka <vbabka@suse.cz>,
         Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, Zi Yan <ziy@nvidia.com>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 11:56 PM Huang Ying <ying.huang@intel.com> wrote:
+On Tue, Jul 20, 2021 at 12:43 AM Muchun Song <songmuchun@bytedance.com> wrote:
 >
-> Before the commit c5b5a3dd2c1f ("mm: thp: refactor NUMA fault
-> handling"), the TLB flushing is done in do_huge_pmd_numa_page() itself
-> via flush_tlb_range().
+> The commit 832b50725373 ("mm: mmap_lock: use local locks instead of
+> disabling preemption") fix a bug by using local locks. But commit
+> d01079f3d0c0 ("mm/mmap_lock: remove dead code for !CONFIG_TRACING
+> configurations") changes those lines to original version. I guess
+> it is introduced by the conflicts fixing on merging.
 >
-> But after commit c5b5a3dd2c1f ("mm: thp: refactor NUMA fault
-> handling"), the TLB flushing is done in migrate_pages() as in the
-> following code path anyway.
->
-> do_huge_pmd_numa_page
->   migrate_misplaced_page
->     migrate_pages
->
-> So now, the TLB flushing code in do_huge_pmd_numa_page() becomes
-> unnecessary.  So the code is deleted in this patch to simplify the
-> code.  This is only code cleanup, there's no visible performance
-> difference.
+> Fixes: d01079f3d0c0 ("mm/mmap_lock: remove dead code for !CONFIG_TRACING configurations")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Yes, there is tlb flush in try_to_migrate(), but it seems mmu notifier
-invalidate is missed for the THP migration case. I'm not quite sure
-why it is not needed, maybe just missed?
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 
-So, you may need the below change too:
-
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 2d29a57d29e8..e1c8b654563d 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1749,6 +1749,8 @@ static bool try_to_migrate_one(struct page
-*page, struct vm_area_struct *vma,
-                                       !PageTransCompound(page), page);
-
-                        set_pmd_migration_entry(&pvmw, page);
-+                       mmu_notifier_invalidate_range(mm, range.start,
-+                                                     range.end);
-                        continue;
-                }
- #endif
-
->
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Yang Shi <shy828301@gmail.com>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Zi Yan <ziy@nvidia.com>
 > ---
->  mm/huge_memory.c | 26 --------------------------
->  1 file changed, 26 deletions(-)
+>  mm/mmap_lock.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index afff3ac87067..9f21e44c9030 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -1440,32 +1440,6 @@ vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf)
->                 goto out;
->         }
+> diff --git a/mm/mmap_lock.c b/mm/mmap_lock.c
+> index f5852a058ce0..1854850b4b89 100644
+> --- a/mm/mmap_lock.c
+> +++ b/mm/mmap_lock.c
+> @@ -156,14 +156,14 @@ static inline void put_memcg_path_buf(void)
+>  #define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
+>         do {                                                                   \
+>                 const char *memcg_path;                                        \
+> -               preempt_disable();                                             \
+> +               local_lock(&memcg_paths.lock);                                 \
+>                 memcg_path = get_mm_memcg_path(mm);                            \
+>                 trace_mmap_lock_##type(mm,                                     \
+>                                        memcg_path != NULL ? memcg_path : "",   \
+>                                        ##__VA_ARGS__);                         \
+>                 if (likely(memcg_path != NULL))                                \
+>                         put_memcg_path_buf();                                  \
+> -               preempt_enable();                                              \
+> +               local_unlock(&memcg_paths.lock);                               \
+>         } while (0)
 >
-> -       /*
-> -        * Since we took the NUMA fault, we must have observed the !accessible
-> -        * bit. Make sure all other CPUs agree with that, to avoid them
-> -        * modifying the page we're about to migrate.
-> -        *
-> -        * Must be done under PTL such that we'll observe the relevant
-> -        * inc_tlb_flush_pending().
-> -        *
-> -        * We are not sure a pending tlb flush here is for a huge page
-> -        * mapping or not. Hence use the tlb range variant
-> -        */
-> -       if (mm_tlb_flush_pending(vma->vm_mm)) {
-> -               flush_tlb_range(vma, haddr, haddr + HPAGE_PMD_SIZE);
-> -               /*
-> -                * change_huge_pmd() released the pmd lock before
-> -                * invalidating the secondary MMUs sharing the primary
-> -                * MMU pagetables (with ->invalidate_range()). The
-> -                * mmu_notifier_invalidate_range_end() (which
-> -                * internally calls ->invalidate_range()) in
-> -                * change_pmd_range() will run after us, so we can't
-> -                * rely on it here and we need an explicit invalidate.
-> -                */
-> -               mmu_notifier_invalidate_range(vma->vm_mm, haddr,
-> -                                             haddr + HPAGE_PMD_SIZE);
-> -       }
-> -
->         pmd = pmd_modify(oldpmd, vma->vm_page_prot);
->         page = vm_normal_page_pmd(vma, haddr, pmd);
->         if (!page)
+>  #else /* !CONFIG_MEMCG */
 > --
-> 2.30.2
+> 2.11.0
 >
