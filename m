@@ -2,90 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672743CF99E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3167F3CF9A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237893AbhGTLvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 07:51:24 -0400
-Received: from mail-m17652.qiye.163.com ([59.111.176.52]:28934 "EHLO
-        mail-m17652.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237290AbhGTLvS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:51:18 -0400
-DKIM-Signature: a=rsa-sha256;
-        b=fYXXoAplvpuwubi+JVYieORa2vHlU3KQKPKtIdrHxZj76ootDvb8xC29OkoZBC0+GeJGUvkW+UJClW5Wwjjm5LeGhTxPSBsfJ4XrHCYNk9OVYl0+Kp9a1eA3p4bKHGrJbnknUbJgEqMfscOcq8Yzn26c9D4LboleZn0q2C4RmPI=;
-        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
-        bh=3aSGc8E9xaopmoIEkqKrpHEuNNn6z/u06t690RBGZ5k=;
-        h=date:mime-version:subject:message-id:from;
-Received: from vivo.com (localhost [127.0.0.1])
-        by mail-m17652.qiye.163.com (Hmail) with ESMTP id 4EF533C01E5;
-        Tue, 20 Jul 2021 20:31:55 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AJcAmwDXD1QzgUCoyu2cQKql.3.1626784315314.Hmail.frank.li@vivo.com>
-To:     Chao Yu <chao@kernel.org>
-Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCB2M10gZjJmczogUmVkdWNlIHRoZSBzY29wZSBvZiBzZXR0aW5nIGZzY2sgdGFnIHdoZW4gZGUtPm5hbWVfbGVuIGlzIHplcm8=?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 59.36.4.5
-In-Reply-To: <9f221a92-6c95-8f2f-a3d9-1d7abf5a6a6e@kernel.org>
+        id S237956AbhGTLxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 07:53:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237862AbhGTLwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 07:52:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C673F61246
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 12:33:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626784396;
+        bh=KQg2v/CW3pKrFhdKhxhTrULtunXY7ZG5Y+37MBHLN30=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=u6sJ+ZpAffmKE/Mt50u3yIUwSR3Q/6pk5UjG1UeRy6jbbnOgzIAJ9sKwNB/M10pFD
+         tDnVgcrB1X3HI3STfr+iH/5cA4udwqmczFxUD9DnjBgImGy+MXKvidySWHeuT/HUmz
+         GNoElzYOtQiBmXQScK4SALqY7yOLy5gQV0Le4yOiqVJsI0XG6lqGO54kyrCrHC1LzB
+         KgRvlUMB0Lf/cR0TLUvRtpw+OeS5LMYXYJbtflE79PUAb9mSmu/V+2E5fvPT7yUUVa
+         /1OWRI7LBGEupSJcSi9HI0yBaLpMoub8F2QH22zwswUcvIYDHXQCJdxowLhJiqG4jL
+         /jNNxd6ui9crw==
+Received: by mail-oo1-f41.google.com with SMTP id 128-20020a4a11860000b029024b19a4d98eso5237682ooc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 05:33:16 -0700 (PDT)
+X-Gm-Message-State: AOAM530Ep3afEKYOveMl2mo3EBJth55bg5v2WCQpowFTgRNhoPFiah8N
+        nXtfH6jDFUoiLiQvqtodKNGcMu7csVrKViu9deI=
+X-Google-Smtp-Source: ABdhPJyYYhDKVdZ56iWRSbCA9KrycHVWRf4eS6oUeQOLYTjpJZZvjabwaqdSnfgGPMBmxI2QkjM1McCetjGLzh920lE=
+X-Received: by 2002:a4a:8241:: with SMTP id t1mr20609277oog.13.1626784395911;
+ Tue, 20 Jul 2021 05:33:15 -0700 (PDT)
 MIME-Version: 1.0
-Received: from frank.li@vivo.com( [59.36.4.5) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 20 Jul 2021 20:31:55 +0800 (GMT+08:00)
-From:   =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
-Date:   Tue, 20 Jul 2021 20:31:55 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRlNT0tWGBpOTx4ZSR9CGk
-        sYVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1OSUNIT0JJSExMN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6MRg6Fgw*Iz9KKgEcLjgUAg5JGCowChdVSFVKTUlNTENPSEpOTkxLVTMWGhIXVR0JGhUQVRcS
-        Ow0SDRRVGBQWRVlXWRILWUFZTkJVSE1VT1VOWVdZCAFZQU5KSEg3Bg++
-X-HM-Tid: 0a7ac3e6b7bdd9fckuws4ef533c01e5
+References: <20210717160118.9855-1-jonathan@marek.ca>
+In-Reply-To: <20210717160118.9855-1-jonathan@marek.ca>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 20 Jul 2021 14:33:04 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXH=PgUeU7xMNq5EcW=ivYtXhd7nnFqH=TOFS6mpfu-isg@mail.gmail.com>
+Message-ID: <CAMj1kXH=PgUeU7xMNq5EcW=ivYtXhd7nnFqH=TOFS6mpfu-isg@mail.gmail.com>
+Subject: Re: [PATCH] Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge"
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Axtens <dja@axtens.net>,
+        Huang Pei <huangpei@loongson.cn>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SEkgQ2hhb++8jAoKRnJvbTogQ2hhbyBZdSA8Y2hhb0BrZXJuZWwub3JnPgpEYXRlOiAyMDIxLTA3
-LTIwIDE4OjIzOjE1ClRvOiAgWWFuZ3RhbyBMaSA8ZnJhbmsubGlAdml2by5jb20+LGphZWdldWtA
-a2VybmVsLm9yZwpDYzogIGxpbnV4LWYyZnMtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0LGxp
-bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcKU3ViamVjdDogUmU6IFtQQVRDSCB2M10gZjJmczog
-UmVkdWNlIHRoZSBzY29wZSBvZiBzZXR0aW5nIGZzY2sgdGFnIHdoZW4gZGUtPm5hbWVfbGVuIGlz
-IHplcm8+T24gMjAyMS83LzIwIDE1OjA2LCBZYW5ndGFvIExpIHdyb3RlOgo+PiBJIHJlY2VudGx5
-IGZvdW5kIGEgY2FzZSB3aGVyZSBkZS0+bmFtZV9sZW4gaXMgMCBpbiBmMmZzX2ZpbGxfZGVudHJp
-ZXMoKSBlYXNpbHkgcmVwcm9kdWNlZCwKPj4gYW5kIGZpbmFsbHkgc2V0IHRoZSBmc2NrIGZsYWcu
-Cj4+IAo+PiBUaHJlYWQgQQkJCQkJVGhyZWFkIEIKPj4gCj4+IGYyZnNfcmVhZGRpcgo+PiAJZjJm
-c19yZWFkX2lubGluZV9kaXIKPj4gCQljdHgtPnBvcyA9IGQubWF4Cj4+IAkJCQkJCWYyZnNfYWRk
-X2RlbnRyeQo+PiAJCQkJCQkJZjJmc19hZGRfaW5saW5lX2VudHJ5Cj4+IAkJCQkJCQkJZG9fY29u
-dmVydF9pbmxpbmVfZGlyCj4+IAkJCQkJCQlmMmZzX2FkZF9yZWd1bGFyX2VudHJ5Cj4+IGYyZnNf
-cmVhZGRpcgo+PiAJZjJmc19maWxsX2RlbnRyaWVzCj4+IAkJc2V0X3NiaV9mbGFnKHNiaSwgU0JJ
-X05FRURfRlNDSykKPj4gCj4+IFByb2Nlc3MgQSBvcGVucyB0aGUgZm9sZGVyLCBhbmQgaGFzIGJl
-ZW4gcmVhZGluZyB3aXRob3V0IGNsb3NpbmcgaXQuIER1cmluZyB0aGlzIHBlcmlvZCwKPj4gUHJv
-Y2VzcyBCIGNyZWF0ZWQgYSBmaWxlIHVuZGVyIHRoZSBmb2xkZXIgKG9jY3VweWluZyBtdWx0aXBs
-ZSBmMmZzX2Rpcl9lbnRyeSwgZXhjZWVkaW5nCj4+IHRoZSBkLm1heCBvZiB0aGUgaW5saW5lIGRp
-cikuIEFmdGVyIGNyZWF0aW9uLCBwcm9jZXNzIEEgdXNlcyB0aGUgZC5tYXggb2YgaW5saW5lIGRp
-ciB0bwo+PiByZWFkIGl0IGFnYWluLCBhbmQgaXQgd2lsbCByZWFkIHRoYXQgZGUtPm5hbWVfbGVu
-IGlzIDAuCj4+IAo+PiBBbmQgQ2hhbyBwb2ludGVkIG91dCB0aGF0IHcvbyBpbmxpbmUgY29udmVy
-c2lvbiwgdGhlIHJhY2UgY29uZGl0aW9uIHN0aWxsIGNhbiBoYXBwZW4gYXMgYmVsb3cKPj4gCj4+
-IGRpcl9lbnRyeTE6IEEKPj4gZGlyX2VudHJ5MjogQgo+PiBkaXJfZW50cnkzOiBDCj4+IGZyZWUg
-c2xvdDogXwo+PiBjdHgtPnBvczogXgo+PiAKPj4gQmVmb3JlOgo+PiBBQUFBQkJCQl9fXwo+PiAJ
-IF4KPgo+cGxlYXNlIHVzZSBibGFuayBpbnN0ZWFkIG9mIHRhYiBiZWZvcmUgJ14nCgpJIGRvbid0
-IGtub3cgZXhhY3RseSB3aGF0IGhhcHBlbmVkLiBJbiBmYWN0LCBpbiB2Miwgc3BhY2VzIHdlcmUg
-dXNlZC4gVGhlbiBpdCB3YXMgY2hhbmdlZCB0byB0YWIgaW4gdjMuCgo+Cj4+IFRocmVhZCBCIGRl
-bGV0ZSBkaXJfZW50cnkyLCBhbmQgY3JlYXRlIGRpcl9lbnRyeTMuCj4+IAo+PiBBZnRlcjoKPj4g
-QUFBQUNDQ0NDX18KPj4gCSBeCj4KPkRpdHRvCj4KPj4gCj4+IEluIHRoZXNlIHNjZW5hcmlvcywg
-dGhlIGZpbGUgc3lzdGVtIGlzIG5vdCBkYW1hZ2VkLCBhbmQgaXQncyBoYXJkIHRvIGF2b2lkIGl0
-LiBCdXQgd2UgY2FuIGJ5cGFzcwo+PiB0YWdnaW5nIEZTQ0sgZmxhZyBpZjoKPj4gYSkgYml0X3Bv
-cyAoOj0gY3R4LT5wb3MgJSBkLT5tYXgpIGlzIG5vbi16ZXJvICYgYikgYmVmb3JlIGJpdF9wb3Mg
-bW92ZXMgdG8gZmlyc3QKPj4gdmFsaWQgZGlyX2VudHJ5Lgo+PiAKPj4gU2lnbmVkLW9mZi1ieTog
-WWFuZ3RhbyBMaSA8ZnJhbmsubGlAdml2by5jb20+Cj4+IC0tLQo+PiAgIGZzL2YyZnMvZGlyLmMg
-fCAxNCArKysrKysrKystLS0tLQo+PiAgIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyks
-IDUgZGVsZXRpb25zKC0pCj4+IAo+PiBkaWZmIC0tZ2l0IGEvZnMvZjJmcy9kaXIuYyBiL2ZzL2Yy
-ZnMvZGlyLmMKPj4gaW5kZXggNDU2NjUxNjgyZGFmLi5iZmU5NDI3MzNiNWUgMTAwNjQ0Cj4+IC0t
-LSBhL2ZzL2YyZnMvZGlyLmMKPj4gKysrIGIvZnMvZjJmcy9kaXIuYwo+PiBAQCAtMTAwMCw2ICsx
-MDAwLDcgQEAgaW50IGYyZnNfZmlsbF9kZW50cmllcyhzdHJ1Y3QgZGlyX2NvbnRleHQgKmN0eCwg
-c3RydWN0IGYyZnNfZGVudHJ5X3B0ciAqZCwKPj4gICAJc3RydWN0IGYyZnNfc2JfaW5mbyAqc2Jp
-ID0gRjJGU19JX1NCKGQtPmlub2RlKTsKPj4gICAJc3RydWN0IGJsa19wbHVnIHBsdWc7Cj4+ICAg
-CWJvb2wgcmVhZGRpcl9yYSA9IHNiaS0+cmVhZGRpcl9yYSA9PSAxOwo+PiArCWJvb2wgZm91bmRf
-dmFsaWRfZGlyZW50ICA9IGZhbHNlOwo+Cj5PbmUgbW9yZSBibGFuayBiZWZvcmUgJz0nLgo+Cj5i
-b29sIGZvdW5kX3ZhbGlkX2RpcmVudCA9IGZhbHNlOwo+CgpPSy4KClRoeO+8jAoKDQoNCg==
+On Sat, 17 Jul 2021 at 18:06, Jonathan Marek <jonathan@marek.ca> wrote:
+>
+> c742199a breaks arm64 for some configs because it stubs out functions which
+> should not have been stubbed out.
+>
+> With 4K pages and ARM64_VA_BITS_39=y, the kernel crashes early on unmapped
+> 1G pages in the linear map caused by pud_set_huge() in alloc_init_pud()
+> being stubbed out. Reverting c742199a fixes the crash.
+>
+> Fixes: c742199a ("mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge")
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+
+(replying here because some cc'ees were dropped from Christophe's
+reply and the thread that followed it - unfortunately, lore does not
+seem to have captured any of that discussion either)
+
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+> ---
+>  arch/arm64/mm/mmu.c     | 20 ++++++++------------
+>  arch/x86/mm/pgtable.c   | 34 +++++++++++++++-------------------
+>  include/linux/pgtable.h | 26 +-------------------------
+>  3 files changed, 24 insertions(+), 56 deletions(-)
+>
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index d745865084488..9ff0de1b2b93c 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -1339,7 +1339,6 @@ void *__init fixmap_remap_fdt(phys_addr_t dt_phys, int *size, pgprot_t prot)
+>         return dt_virt;
+>  }
+>
+> -#if CONFIG_PGTABLE_LEVELS > 3
+>  int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
+>  {
+>         pud_t new_pud = pfn_pud(__phys_to_pfn(phys), mk_pud_sect_prot(prot));
+> @@ -1354,16 +1353,6 @@ int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
+>         return 1;
+>  }
+>
+> -int pud_clear_huge(pud_t *pudp)
+> -{
+> -       if (!pud_sect(READ_ONCE(*pudp)))
+> -               return 0;
+> -       pud_clear(pudp);
+> -       return 1;
+> -}
+> -#endif
+> -
+> -#if CONFIG_PGTABLE_LEVELS > 2
+>  int pmd_set_huge(pmd_t *pmdp, phys_addr_t phys, pgprot_t prot)
+>  {
+>         pmd_t new_pmd = pfn_pmd(__phys_to_pfn(phys), mk_pmd_sect_prot(prot));
+> @@ -1378,6 +1367,14 @@ int pmd_set_huge(pmd_t *pmdp, phys_addr_t phys, pgprot_t prot)
+>         return 1;
+>  }
+>
+> +int pud_clear_huge(pud_t *pudp)
+> +{
+> +       if (!pud_sect(READ_ONCE(*pudp)))
+> +               return 0;
+> +       pud_clear(pudp);
+> +       return 1;
+> +}
+> +
+>  int pmd_clear_huge(pmd_t *pmdp)
+>  {
+>         if (!pmd_sect(READ_ONCE(*pmdp)))
+> @@ -1385,7 +1382,6 @@ int pmd_clear_huge(pmd_t *pmdp)
+>         pmd_clear(pmdp);
+>         return 1;
+>  }
+> -#endif
+>
+>  int pmd_free_pte_page(pmd_t *pmdp, unsigned long addr)
+>  {
+> diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+> index 3364fe62b9037..3481b35cb4ec7 100644
+> --- a/arch/x86/mm/pgtable.c
+> +++ b/arch/x86/mm/pgtable.c
+> @@ -682,7 +682,6 @@ int p4d_clear_huge(p4d_t *p4d)
+>  }
+>  #endif
+>
+> -#if CONFIG_PGTABLE_LEVELS > 3
+>  /**
+>   * pud_set_huge - setup kernel PUD mapping
+>   *
+> @@ -721,23 +720,6 @@ int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
+>         return 1;
+>  }
+>
+> -/**
+> - * pud_clear_huge - clear kernel PUD mapping when it is set
+> - *
+> - * Returns 1 on success and 0 on failure (no PUD map is found).
+> - */
+> -int pud_clear_huge(pud_t *pud)
+> -{
+> -       if (pud_large(*pud)) {
+> -               pud_clear(pud);
+> -               return 1;
+> -       }
+> -
+> -       return 0;
+> -}
+> -#endif
+> -
+> -#if CONFIG_PGTABLE_LEVELS > 2
+>  /**
+>   * pmd_set_huge - setup kernel PMD mapping
+>   *
+> @@ -768,6 +750,21 @@ int pmd_set_huge(pmd_t *pmd, phys_addr_t addr, pgprot_t prot)
+>         return 1;
+>  }
+>
+> +/**
+> + * pud_clear_huge - clear kernel PUD mapping when it is set
+> + *
+> + * Returns 1 on success and 0 on failure (no PUD map is found).
+> + */
+> +int pud_clear_huge(pud_t *pud)
+> +{
+> +       if (pud_large(*pud)) {
+> +               pud_clear(pud);
+> +               return 1;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  /**
+>   * pmd_clear_huge - clear kernel PMD mapping when it is set
+>   *
+> @@ -782,7 +779,6 @@ int pmd_clear_huge(pmd_t *pmd)
+>
+>         return 0;
+>  }
+> -#endif
+>
+>  #ifdef CONFIG_X86_64
+>  /**
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index d147480cdefc7..e24d2c992b112 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -1397,34 +1397,10 @@ static inline int p4d_clear_huge(p4d_t *p4d)
+>  }
+>  #endif /* !__PAGETABLE_P4D_FOLDED */
+>
+> -#ifndef __PAGETABLE_PUD_FOLDED
+>  int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot);
+> -int pud_clear_huge(pud_t *pud);
+> -#else
+> -static inline int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
+> -{
+> -       return 0;
+> -}
+> -static inline int pud_clear_huge(pud_t *pud)
+> -{
+> -       return 0;
+> -}
+> -#endif /* !__PAGETABLE_PUD_FOLDED */
+> -
+> -#ifndef __PAGETABLE_PMD_FOLDED
+>  int pmd_set_huge(pmd_t *pmd, phys_addr_t addr, pgprot_t prot);
+> +int pud_clear_huge(pud_t *pud);
+>  int pmd_clear_huge(pmd_t *pmd);
+> -#else
+> -static inline int pmd_set_huge(pmd_t *pmd, phys_addr_t addr, pgprot_t prot)
+> -{
+> -       return 0;
+> -}
+> -static inline int pmd_clear_huge(pmd_t *pmd)
+> -{
+> -       return 0;
+> -}
+> -#endif /* !__PAGETABLE_PMD_FOLDED */
+> -
+>  int p4d_free_pud_page(p4d_t *p4d, unsigned long addr);
+>  int pud_free_pmd_page(pud_t *pud, unsigned long addr);
+>  int pmd_free_pte_page(pmd_t *pmd, unsigned long addr);
+> --
+> 2.26.1
+>
