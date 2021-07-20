@@ -2,170 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D84BC3CF114
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 03:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596BE3CF117
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 03:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357374AbhGTAYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 20:24:13 -0400
-Received: from mga17.intel.com ([192.55.52.151]:28521 "EHLO mga17.intel.com"
+        id S1355467AbhGTA0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 20:26:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244107AbhGTALV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 20:11:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="191435159"
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="191435159"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 17:42:14 -0700
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="660970680"
-Received: from ywei11-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.138.31])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 17:42:13 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 10/11] x86/tdx: Add MSR support for TDX guest
-Date:   Mon, 19 Jul 2021 17:40:56 -0700
-Message-Id: <20210720004057.2112666-11-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210720004057.2112666-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210720004057.2112666-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S240609AbhGTAXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 20:23:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAD4A6108B;
+        Tue, 20 Jul 2021 01:03:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626743019;
+        bh=pW7dgvX8qNpOLEnDjntqz8ri5q5ehXQ54m1Yym7YAoU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HMZkCFsbIHvDiufTmXl4sfDXppA63ordedFTPOo5V9twOlfKNpYi4iOrKZpeyvSVM
+         k5HESN425dyjLwuC43TMlu7h9Dq9Tr7LtTSPCuBAyBriSghPiDFDLiRgBUHjq30gWD
+         IiRpEuJMq3OISvet0p2Bd0bBK1v2/p4LaQ+DtG63f5N5vxDjHDkh/FYxp6KREYgpJh
+         lEEV4VfeSQev5m5dydFuLeYooMMmcTWIlScvYJR9tiWobKh1EfJLeoUNoUXDbJiZqS
+         Jpq+Bx1pweKPbfruWdg0txB/X8j2338n8L7Uz+tv7OiM1IBzc+9jfqaJujCEb45o1c
+         mQNlrNTCQ815A==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
+        Chao Yu <chao@kernel.org>
+Subject: [PATCH v3] f2fs: fix to force keeping write barrier for strict fsync mode
+Date:   Tue, 20 Jul 2021 09:03:29 +0800
+Message-Id: <20210720010329.3975-1-chao@kernel.org>
+X-Mailer: git-send-email 2.22.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+[1] https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg15126.html
 
-Operations on context-switched MSRs can be run natively. The rest of
-MSRs should be handled through TDVMCALLs.
+As [1] reported, if lower device doesn't support write barrier, in below
+case:
 
-TDVMCALL[Instruction.RDMSR] and TDVMCALL[Instruction.WRMSR] provide
-MSR oprations.
+- write page #0; persist
+- overwrite page #0
+- fsync
+ - write data page #0 OPU into device's cache
+ - write inode page into device's cache
+ - issue flush
 
-You can find RDMSR and WRMSR details in Guest-Host-Communication
-Interface (GHCI) for Intel Trust Domain Extensions (Intel TDX)
-specification, sec 3.10, 3.11.
+If SPO is triggered during flush command, inode page can be persisted
+before data page #0, so that after recovery, inode page can be recovered
+with new physical block address of data page #0, however there may
+contains dummy data in new physical block address.
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Then what user will see is: after overwrite & fsync + SPO, old data in
+file was corrupted, if any user do care about such case, we can suggest
+user to use STRICT fsync mode, in this mode, we will force to use atomic
+write sematics to keep write order in between data/node and last node,
+so that it avoids potential data corruption during fsync().
+
+Signed-off-by: Chao Yu <chao@kernel.org>
 ---
+ fs/f2fs/file.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Changes since v3:
- * None
-
- arch/x86/kernel/tdx.c | 67 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 65 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index b6e744a5521a..50a8d363b581 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -108,6 +108,55 @@ static __cpuidle void tdg_safe_halt(void)
- 	BUG_ON(ret);
- }
- 
-+static bool tdg_is_context_switched_msr(unsigned int msr)
-+{
-+	switch (msr) {
-+	case MSR_EFER:
-+	case MSR_IA32_CR_PAT:
-+	case MSR_FS_BASE:
-+	case MSR_GS_BASE:
-+	case MSR_KERNEL_GS_BASE:
-+	case MSR_IA32_SYSENTER_CS:
-+	case MSR_IA32_SYSENTER_EIP:
-+	case MSR_IA32_SYSENTER_ESP:
-+	case MSR_STAR:
-+	case MSR_LSTAR:
-+	case MSR_SYSCALL_MASK:
-+	case MSR_IA32_XSS:
-+	case MSR_TSC_AUX:
-+	case MSR_IA32_BNDCFGS:
-+		return true;
-+	}
-+	return false;
-+}
-+
-+static u64 tdg_read_msr_safe(unsigned int msr, int *err)
-+{
-+	u64 ret;
-+	struct tdx_hypercall_output out = {0};
-+
-+	WARN_ON_ONCE(tdg_is_context_switched_msr(msr));
-+
-+	ret = _tdx_hypercall(EXIT_REASON_MSR_READ, msr, 0, 0, 0, &out);
-+
-+	*err = ret ? -EIO : 0;
-+
-+	return out.r11;
-+}
-+
-+static int tdg_write_msr_safe(unsigned int msr, unsigned int low,
-+			      unsigned int high)
-+{
-+	u64 ret;
-+
-+	WARN_ON_ONCE(tdg_is_context_switched_msr(msr));
-+
-+	ret = _tdx_hypercall(EXIT_REASON_MSR_WRITE, msr, (u64)high << 32 | low,
-+			     0, 0, NULL);
-+
-+	return ret ? -EIO : 0;
-+}
-+
- unsigned long tdg_get_ve_info(struct ve_info *ve)
- {
- 	u64 ret;
-@@ -134,19 +183,33 @@ unsigned long tdg_get_ve_info(struct ve_info *ve)
- int tdg_handle_virtualization_exception(struct pt_regs *regs,
- 					struct ve_info *ve)
- {
-+	unsigned long val;
-+	int ret = 0;
-+
- 	switch (ve->exit_reason) {
- 	case EXIT_REASON_HLT:
- 		tdg_halt();
- 		break;
-+	case EXIT_REASON_MSR_READ:
-+		val = tdg_read_msr_safe(regs->cx, (unsigned int *)&ret);
-+		if (!ret) {
-+			regs->ax = val & UINT_MAX;
-+			regs->dx = val >> 32;
-+		}
-+		break;
-+	case EXIT_REASON_MSR_WRITE:
-+		ret = tdg_write_msr_safe(regs->cx, regs->ax, regs->dx);
-+		break;
- 	default:
- 		pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
- 		return -EFAULT;
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 6afd4562335f..00b45876eaa1 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -301,6 +301,18 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
+ 				f2fs_exist_written_data(sbi, ino, UPDATE_INO))
+ 			goto flush_out;
+ 		goto out;
++	} else {
++		/*
++		 * for OPU case, during fsync(), node can be persisted before
++		 * data when lower device doesn't support write barrier, result
++		 * in data corruption after SPO.
++		 * So for strict fsync mode, force to use atomic write sematics
++		 * to keep write order in between data/node and last node to
++		 * avoid potential data corruption.
++		 */
++		if (F2FS_OPTION(sbi).fsync_mode ==
++				FSYNC_MODE_STRICT && !atomic)
++			atomic = true;
  	}
- 
- 	/* After successful #VE handling, move the IP */
--	regs->ip += ve->instr_len;
-+	if (!ret)
-+		regs->ip += ve->instr_len;
- 
--	return 0;
-+	return ret;
- }
- 
- void __init tdx_early_init(void)
+ go_write:
+ 	/*
 -- 
-2.25.1
+2.22.1
 
