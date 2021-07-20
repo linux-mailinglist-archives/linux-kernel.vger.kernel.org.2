@@ -2,156 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DB63CFD7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFB83CFD56
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239936AbhGTOob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 10:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
+        id S238981AbhGTOit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239820AbhGTO0c (ORCPT
+        with ESMTP id S240273AbhGTOYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:26:32 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF1CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:07:10 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id c17so5427432wmb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:07:10 -0700 (PDT)
+        Tue, 20 Jul 2021 10:24:49 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD45C061794;
+        Tue, 20 Jul 2021 08:03:09 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id v14so11548788plg.9;
+        Tue, 20 Jul 2021 08:03:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ZchSkqqeZHzePVYsbmpNPWMr8AHwfOK/Nimhsgdw20k=;
-        b=wceYh3thBth6Xa62fuP1K5Ul4BsCMcJuj9jMyeBMI6EHhauuhkeYgIbSNH2GW+adn6
-         h1QXKDD3eaiBN2uG2HgonalMI1tAPXtvf8XvdcGNz+kHmAE0myT8VjKY1qNxXTKovdig
-         CSs7hHT9M+/UaDqrofrtU+uxzOaqaiA+t/rTOr3v+wcxs9IKFEuJUAdiNSbbIX8Z5JQI
-         Gp3LOOxJ1N5MkQmFkogou6Bk06IHNXmqqcnzbS4xL5oNc4ZBBps0exNOWkVVdjGyLvob
-         cUBIVOi1M3MTj5fMeS6Xc/DrirM0Wm9dwbUl1D5DH8Mciyy5ALWoTqZaZ7q0CV3e4ExP
-         Lm0g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YjsQqg/cyLrvH6AHlxUB+OYVHKKVa13wNGyeIOclLuU=;
+        b=Bwya6iL1RBmmeGnDLmxE++cJ04phd36pitzI5Fg/6+79njD2oyBhzaQONWmikFuB3v
+         sWOWXVU3XANaWQj6Mi6PD79h7wIzAVu1HT5fHWRFBtYKzK/VsiyBK8irALWIFOIiPfxe
+         SumHHYYFE/6VlsrVL32MklAzmYQxlvTV8x+UX/RKxN55gzSmbxS8xlL4D7T69pZKCxbR
+         3hYVNceHlNyb9ju3HO0FaWK5vUkOa2sK4hDRDzVTPA6C74H9YQRSKcZpzQ6vKkwD7Vc1
+         wKRMpVzAniHaoAw89XEZFEc1YserHm/AzRtW2TvB5ztJbmXl6LqeWx5XcSyxPYcY6teZ
+         VvQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ZchSkqqeZHzePVYsbmpNPWMr8AHwfOK/Nimhsgdw20k=;
-        b=QSKA7ne6ZcJmn7HlL8pq94YDc9ovvA0HyUyoXou47K0VHmDdiU9uKCWPrOMB/Qspab
-         ssgxHWs73W6vbrWN5H51CvjiujQKaJhGQGyJc4Q4qJXyyRQTSkAVxx/VWwoxzMv3+Xov
-         DaYpOtkW6bhQ81Oop5LCbql4+xbf2JFfsOkKYBCHsktcJ98P0E8YPUO2FN6lpIjDJPEX
-         r/rkE1ZCNQ2tpz254zgHiYH3VTqLBIs5T17hp5ESJNgP7G01oDd8bZAgM83H03LCelZ/
-         ajfl7W6pO9mmJbUDVaWxgMEgyrA6rBb6lqkLY1XAkZJt2jQXSEBSL5ron3Kf+luY0iyU
-         YcdA==
-X-Gm-Message-State: AOAM530g4zsmvo9bS+WSbk5HxsmXXLwK77Zrp1JTZMnaF1SGPPNZeJ70
-        vxsHyZP2JI1zfh3i3te3ntC+9w==
-X-Google-Smtp-Source: ABdhPJz4swRydDEinMuj8EVyfy7S6E0iFeWjbsF6RSRqUQMZ4nsjJslx2T3fEkUS2AtZ6FigTFlw/Q==
-X-Received: by 2002:a1c:f70b:: with SMTP id v11mr32300209wmh.186.1626793629290;
-        Tue, 20 Jul 2021 08:07:09 -0700 (PDT)
-Received: from google.com ([31.124.24.141])
-        by smtp.gmail.com with ESMTPSA id b12sm24216314wro.1.2021.07.20.08.07.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YjsQqg/cyLrvH6AHlxUB+OYVHKKVa13wNGyeIOclLuU=;
+        b=Kkw3/vWGJwy0H/qFNM4WtuMvBvSrY19P4zmkaJL3aD4XW32nh+Sl9IgvPxgruRxBCs
+         7Jxv20YBxxIqBFQI1fImR6buDrkLk5XVH2mhW3Jetu8e7MJi8vjUiyANHTky4fa4B6yz
+         LQY+BC3XXxauCQxXrQwYsdwmxkx8qK5nGqUmtwVc7C7fcFEDw8X9BKkfHC1oAAJNk6XY
+         Ee9ExCb/xya0U7gtfOjeeQ6jnKenBFYObgTOHsrFQEv/SolA2MrCLm2rFWplhApZeV6g
+         fCHT+gC8X9I1WcqvmOSWazZmXqHZxYiIoe2cIqpa6gP2Z38v+HOHEMmP/HnM9YgdZANK
+         C5qg==
+X-Gm-Message-State: AOAM532GkekWl9I7KYK5+JHs4t7Nv6wEiKpQmrWGpbTfPs+xsJRg6uah
+        gjG6Az5xBM3zl4m8f8saPlA=
+X-Google-Smtp-Source: ABdhPJwocdDotiRQoMrd8AmM4D5t8eT0K3LGBIo2EKCjfzv73zaEHoy2PrNocwn0na8156wCs4B80g==
+X-Received: by 2002:a17:903:2309:b029:12a:965b:333 with SMTP id d9-20020a1709032309b029012a965b0333mr23822909plh.31.1626793388619;
+        Tue, 20 Jul 2021 08:03:08 -0700 (PDT)
+Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
+        by smtp.gmail.com with ESMTPSA id k19sm20330779pji.32.2021.07.20.08.03.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 08:07:08 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 16:07:06 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        "Andrew F. Davis" <afd@ti.com>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/3] mfd: tps65086: Make interrupt line optional
-Message-ID: <YPbmmqfOuE5w6EgW@google.com>
-References: <20210625224744.1020108-1-kernel@esmil.dk>
- <20210625224744.1020108-3-kernel@esmil.dk>
+        Tue, 20 Jul 2021 08:03:06 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list),
+        linux-media@vger.kernel.org (open list:DMA BUFFER SHARING FRAMEWORK),
+        linaro-mm-sig@lists.linaro.org (moderated list:DMA BUFFER SHARING
+        FRAMEWORK)
+Subject: [PATCH] drm/msm: Add fence->wait() op
+Date:   Tue, 20 Jul 2021 08:07:15 -0700
+Message-Id: <20210720150716.1213775-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210625224744.1020108-3-kernel@esmil.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Jun 2021, Emil Renner Berthing wrote:
+From: Rob Clark <robdclark@chromium.org>
 
-> The BeagleV Starlight v0.9 board[1] doesn't have the IRQB line routed to
-> the SoC, but it is still useful to be able to reach the PMIC over I2C
-> for the other functionality it provides.
-> 
-> [1] https://github.com/beagleboard/beaglev-starlight
-> 
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> ---
->  .../devicetree/bindings/mfd/ti,tps65086.yaml  |  3 ---
+Somehow we had neither ->wait() nor dma_fence_signal() calls, and no
+one noticed.  Oops.
 
-This is not present in my current tree.
+Note that this removes the !timeout case, which has not been used in
+a long time.
 
-Looks like it's still *.txt.
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_fence.c | 59 +++++++++++++++++++--------------
+ 1 file changed, 34 insertions(+), 25 deletions(-)
 
-Am I missing a patch?
-
->  drivers/mfd/tps65086.c                        | 21 ++++++++++---------
->  2 files changed, 11 insertions(+), 13 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml b/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
-> index ba638bd10a58..4b629fcc0df9 100644
-> --- a/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
-> @@ -87,9 +87,6 @@ additionalProperties: false
->  required:
->    - compatible
->    - reg
-> -  - interrupts
-> -  - interrupt-controller
-> -  - '#interrupt-cells'
->    - gpio-controller
->    - '#gpio-cells'
->    - regulators
-> diff --git a/drivers/mfd/tps65086.c b/drivers/mfd/tps65086.c
-> index 341466ef20cc..cc3478ee9a64 100644
-> --- a/drivers/mfd/tps65086.c
-> +++ b/drivers/mfd/tps65086.c
-> @@ -100,29 +100,30 @@ static int tps65086_probe(struct i2c_client *client,
->  		 (char)((version & TPS65086_DEVICEID_OTP_MASK) >> 4) + 'A',
->  		 (version & TPS65086_DEVICEID_REV_MASK) >> 6);
->  
-> -	ret = regmap_add_irq_chip(tps->regmap, tps->irq, IRQF_ONESHOT, 0,
-> -				  &tps65086_irq_chip, &tps->irq_data);
-> -	if (ret) {
-> -		dev_err(tps->dev, "Failed to register IRQ chip\n");
-> -		return ret;
-> +	if (tps->irq > 0) {
-> +		ret = regmap_add_irq_chip(tps->regmap, tps->irq, IRQF_ONESHOT, 0,
-> +					  &tps65086_irq_chip, &tps->irq_data);
-> +		if (ret) {
-> +			dev_err(tps->dev, "Failed to register IRQ chip\n");
-> +			return ret;
-> +		}
->  	}
->  
->  	ret = mfd_add_devices(tps->dev, PLATFORM_DEVID_AUTO, tps65086_cells,
->  			      ARRAY_SIZE(tps65086_cells), NULL, 0,
->  			      regmap_irq_get_domain(tps->irq_data));
-> -	if (ret) {
-> +	if (ret && tps->irq > 0)
->  		regmap_del_irq_chip(tps->irq, tps->irq_data);
-> -		return ret;
-> -	}
->  
-> -	return 0;
-> +	return ret;
->  }
->  
->  static int tps65086_remove(struct i2c_client *client)
->  {
->  	struct tps65086 *tps = i2c_get_clientdata(client);
->  
-> -	regmap_del_irq_chip(tps->irq, tps->irq_data);
-> +	if (tps->irq > 0)
-> +		regmap_del_irq_chip(tps->irq, tps->irq_data);
->  
->  	return 0;
->  }
-
+diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_fence.c
+index cd59a5918038..8ee96b90ded6 100644
+--- a/drivers/gpu/drm/msm/msm_fence.c
++++ b/drivers/gpu/drm/msm/msm_fence.c
+@@ -38,11 +38,10 @@ static inline bool fence_completed(struct msm_fence_context *fctx, uint32_t fenc
+ 	return (int32_t)(fctx->completed_fence - fence) >= 0;
+ }
+ 
+-/* legacy path for WAIT_FENCE ioctl: */
+-int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+-		ktime_t *timeout, bool interruptible)
++static signed long wait_fence(struct msm_fence_context *fctx, uint32_t fence,
++		signed long remaining_jiffies, bool interruptible)
+ {
+-	int ret;
++	signed long ret;
+ 
+ 	if (fence > fctx->last_fence) {
+ 		DRM_ERROR_RATELIMITED("%s: waiting on invalid fence: %u (of %u)\n",
+@@ -50,33 +49,34 @@ int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (!timeout) {
+-		/* no-wait: */
+-		ret = fence_completed(fctx, fence) ? 0 : -EBUSY;
++	if (interruptible) {
++		ret = wait_event_interruptible_timeout(fctx->event,
++			fence_completed(fctx, fence),
++			remaining_jiffies);
+ 	} else {
+-		unsigned long remaining_jiffies = timeout_to_jiffies(timeout);
+-
+-		if (interruptible)
+-			ret = wait_event_interruptible_timeout(fctx->event,
+-				fence_completed(fctx, fence),
+-				remaining_jiffies);
+-		else
+-			ret = wait_event_timeout(fctx->event,
+-				fence_completed(fctx, fence),
+-				remaining_jiffies);
+-
+-		if (ret == 0) {
+-			DBG("timeout waiting for fence: %u (completed: %u)",
+-					fence, fctx->completed_fence);
+-			ret = -ETIMEDOUT;
+-		} else if (ret != -ERESTARTSYS) {
+-			ret = 0;
+-		}
++		ret = wait_event_timeout(fctx->event,
++			fence_completed(fctx, fence),
++			remaining_jiffies);
++	}
++
++	if (ret == 0) {
++		DBG("timeout waiting for fence: %u (completed: %u)",
++				fence, fctx->completed_fence);
++		ret = -ETIMEDOUT;
++	} else if (ret != -ERESTARTSYS) {
++		ret = 0;
+ 	}
+ 
+ 	return ret;
+ }
+ 
++/* legacy path for WAIT_FENCE ioctl: */
++int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
++		ktime_t *timeout, bool interruptible)
++{
++	return wait_fence(fctx, fence, timeout_to_jiffies(timeout), interruptible);
++}
++
+ /* called from workqueue */
+ void msm_update_fence(struct msm_fence_context *fctx, uint32_t fence)
+ {
+@@ -114,10 +114,19 @@ static bool msm_fence_signaled(struct dma_fence *fence)
+ 	return fence_completed(f->fctx, f->base.seqno);
+ }
+ 
++static signed long msm_fence_wait(struct dma_fence *fence, bool intr,
++		signed long timeout)
++{
++	struct msm_fence *f = to_msm_fence(fence);
++
++	return wait_fence(f->fctx, fence->seqno, timeout, intr);
++}
++
+ static const struct dma_fence_ops msm_fence_ops = {
+ 	.get_driver_name = msm_fence_get_driver_name,
+ 	.get_timeline_name = msm_fence_get_timeline_name,
+ 	.signaled = msm_fence_signaled,
++	.wait = msm_fence_wait,
+ };
+ 
+ struct dma_fence *
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.31.1
+
