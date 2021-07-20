@@ -2,238 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA263D00FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 880E33D0101
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhGTRNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 13:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232572AbhGTRMw (ORCPT
+        id S230481AbhGTRNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 13:13:38 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54610 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231919AbhGTRNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 13:12:52 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01219C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 10:53:30 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id nd37so35594015ejc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 10:53:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kkVa9gzCIySm8E5xjowRQ3dsQcjUh9dPvc+KNu/VY8M=;
-        b=Fp7toN3fMQhPk15C9ae375VyUJH+L+cMObBy4sWVLdAHgnePD+IolgQWW9eSlsDz35
-         jwSqV+BAmPmT7t4c+DFgtxHN2j2hjlCJj8aZLuBIv1GwNLickoARNfOisDKyNhgiAuqv
-         +AKuUjgvlLJeyM6iRelLQEkAaotZwoq96MjGB4XUXil1+RSBnOAvKdDa8/vti6e6/cFR
-         D7w3+nQNIKPaty5uyJNNUrGu/4X79IZ0TBFk34fLpOyNFpy+60TpEBQDHlimAAVJ+wvj
-         66Q19yN/J29f6WaE5BnQDvhWEah3Qx+wv38qfdGdhx2XeC8rGOkof8CD9YBR/cIoaJdw
-         2yYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kkVa9gzCIySm8E5xjowRQ3dsQcjUh9dPvc+KNu/VY8M=;
-        b=CYZpWNzODzg3r2CqkYruHJoE7tWuXKLQnzIH570FbEIwPipzG8Zt5rC51bR2yoEw02
-         dqlqY09J0cLqHvy34z5IXsqhUIErCTyx5k9jxYasw1wP9y16t1qkBq5g3wMIPgYz4288
-         0Lh0Q6I2u4gBuQi0JrW0T6GPrrBoyb3IUBHCr7BiCg1GwT84AB3ayEgJthWKUGOnpw6t
-         i5Ue1hQpaiZG9MZ2VyVYCLbH4GVnbVXHk3M2aTwCMCc4sEmLKULRQbK13h2y01MlBS46
-         GCGhb/HO2R/PVEcqteICwfnhu8yZWvty06fVfBsL9Nd7shVFTRqANtoKwa/c0NJ2aAFF
-         nUKw==
-X-Gm-Message-State: AOAM531/mfHlxrBCmaiT1rmpLSsp+Jxm58YZinWZWs4d6Q/OM8d+tZHG
-        b8Yj+AWATpZI3tO7ZbLQPXOpsBFJcgZNhUsFIsx7jA==
-X-Google-Smtp-Source: ABdhPJyI+/WSe9Qr2WczZtcqLUSwAez5JjRteiN4jGxzjtE2ui55mBIuimc7a1SHFyC9a+Rw9fZi2KQVS5VBd1BZfSQ=
-X-Received: by 2002:a17:907:76b8:: with SMTP id jw24mr33490243ejc.375.1626803608362;
- Tue, 20 Jul 2021 10:53:28 -0700 (PDT)
+        Tue, 20 Jul 2021 13:13:32 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9603E2248A;
+        Tue, 20 Jul 2021 17:54:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626803648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DnDWskgkWQt/GvciTz2020D0iW0F1STVTtgzDGjV76w=;
+        b=qM7j4R+w8XO/HOCrVombPH/1omsfOH1ctONU31B7qXF3vsHvIUQBEJ38997Ulajhrwtbzp
+        qEqHJ+Z2zUdl4OzweECKCwS0PuoQSVPLF0eo9LO7KyJQo4HB1pI3CXitpVF7ygc75OFmbS
+        BCV4l9QabcZlc6Tf5TBP94e81GX/Nog=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626803648;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DnDWskgkWQt/GvciTz2020D0iW0F1STVTtgzDGjV76w=;
+        b=jmrm3pM49HfPncdYFKTQtJEgC7Sc3p8azACh8dqpix2yIHAADLdn4W141NYiezfuP/OjHC
+        cJf4lVepSMTNsWCQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 5507F13B9D;
+        Tue, 20 Jul 2021 17:54:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id jgDDE8AN92DkUQAAGKfGzw
+        (envelope-from <hare@suse.de>); Tue, 20 Jul 2021 17:54:08 +0000
+Subject: Re: [PATCH v3 1/6] nvme-fc: Update hardware queues before using them
+To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        James Smart <jsmart2021@gmail.com>
+References: <20210720124353.127959-1-dwagner@suse.de>
+ <20210720124353.127959-2-dwagner@suse.de>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <4480bd40-fb5d-7fba-ce1e-78c6fe393d43@suse.de>
+Date:   Tue, 20 Jul 2021 19:54:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210719184320.888029606@linuxfoundation.org>
-In-Reply-To: <20210719184320.888029606@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 20 Jul 2021 23:23:17 +0530
-Message-ID: <CA+G9fYu0J32Xjv9bdaoiXEyjhRtLce=GMLfE8xzogsB4mR4eEA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/239] 5.10.52-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210720124353.127959-2-dwagner@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 at 00:15, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.52 release.
-> There are 239 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 21 Jul 2021 18:42:46 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.52-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 7/20/21 2:43 PM, Daniel Wagner wrote:
+> In case the number of hardware queues changes, do the update the
+> tagset and ctx to hctx first before using the mapping to recreate and
+> connnect the IO queues.
+> 
+> Reviewed-by: James Smart <jsmart2021@gmail.com>
+> Reviewed-by: Ming Lei <ming.lei@redhat.com>
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+>   drivers/nvme/host/fc.c | 16 ++++++++--------
+>   1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Cheers,
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.10.52-rc2
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: cf38e62a0dbb761f5733ccb0906c619421631e57
-* git describe: v5.10.51-239-gcf38e62a0dbb
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.51-239-gcf38e62a0dbb
-
-## No regressions (compared to v5.10.51-244-g36694d0b92d3)
-
-## No fixes (compared to v5.10.51-244-g36694d0b92d3)
-
-## Test result summary
- total: 76296, pass: 63258, fail: 1503, skip: 10390, xfail: 1145,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
