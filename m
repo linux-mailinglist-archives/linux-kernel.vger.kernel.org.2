@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AB33CF135
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 03:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7AF3CF14B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 03:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350549AbhGTAed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 20:34:33 -0400
-Received: from mx.socionext.com ([202.248.49.38]:10511 "EHLO mx.socionext.com"
+        id S1349790AbhGTAoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 20:44:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381046AbhGTA2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 20:28:25 -0400
-Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 20 Jul 2021 10:08:53 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id 8647A205902A;
-        Tue, 20 Jul 2021 10:08:53 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Tue, 20 Jul 2021 10:08:53 +0900
-Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
-        by iyokan2.css.socionext.com (Postfix) with ESMTP id 52BE7B638F;
-        Tue, 20 Jul 2021 10:08:53 +0900 (JST)
-Received: from [10.212.31.2] (unknown [10.212.31.2])
-        by yuzu2.css.socionext.com (Postfix) with ESMTP id 161D9B1D52;
-        Tue, 20 Jul 2021 10:08:52 +0900 (JST)
-Subject: Re: [PATCH] PCI: endpoint: Use sysfs_emit() in "show" functions
-To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1626662666-15798-1-git-send-email-hayashi.kunihiko@socionext.com>
- <20210719034313.GA274232@rocinante>
- <af1d4c61-53ff-f4e9-a708-33251b7e6470@socionext.com>
- <20210719151837.GA473693@rocinante>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <6d10e89b-3518-faff-e320-6d03013567a1@socionext.com>
-Date:   Tue, 20 Jul 2021 10:08:51 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1351779AbhGTAfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 20:35:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3809760C3D;
+        Tue, 20 Jul 2021 01:15:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626743758;
+        bh=N/z62KgUlt70d52qf0rQy17/x6qmmv7qYd3KMzJ6Nxg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZETCTxX3OAOwFWGQcAzjbIPD/I1COv1rC7ci3sYpkEutIAjvPhjnXpZDg2g7o29Bt
+         Vt6B8webbLluQGNANjX8IIGFxzupJzKSPCEN3z8dIdGga4f3YW2hqfrSNQiGjPhHmo
+         LplsivAg9j9p95fPsnRu1DmuT+lm8o9XFKKnAXIoPb79Oaj+UjsK1CX58F71rrejZf
+         Px3xJGnNpDGoSaId7+kEI364GMbEn7SpW3YSUV4a+/buy5onnZss84riksSR33t1SW
+         YTEQz0IBDmW734BTktjPW6KThIJhvT0d9xVGPWLz4Dp3jb0f8kw65Z9LLrVTAXM9l+
+         9Hpg4MW98X0Jg==
+Date:   Mon, 19 Jul 2021 18:15:56 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>
+Subject: Re: [PATCH v3] f2fs: fix to force keeping write barrier for strict
+ fsync mode
+Message-ID: <YPYjzAVq04LfUO2Y@google.com>
+References: <20210720010329.3975-1-chao@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210719151837.GA473693@rocinante>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210720010329.3975-1-chao@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Wasn't it supposed to be v1?
 
-On 2021/07/20 0:18, Krzysztof Wilczy?ski wrote:
- > [+cc Sasha for visibility]
- >
- > Hi!
- >
- > [...]
- >>> Nice catch!
- >>
- >> I actually executed "cat" against configfs to meet the issue and found
- >> your solution in pci-sysfs.
- >
- > Oh!  That's not good...  I am curious, which attribute caused this?
-
-Sorry I misunderstood.
-
-I found this "cat" issue on next-20210713 and all configfs attribues had
-the same issue.
-
-However, my patch wasn't the solution for the issue. This has been fixed by
-7fe1e79b59ba ("configfs: implement the .read_iter and .write_iter methods").
-
-The function replacement was found in the process of finding the issue.
-
- > Also, if this is fixing a bug, then it might warrant letting the folks who look
- > after the long-term and stable kernels know.  I also wonder if there would be
- > something to add for the "Fixes:" tag, if there is a previous commit this
- > change fixes.
-
-So my patch doesn't fix any issues.
-
-Thank you,
-
----
-Best Regards
-Kunihiko Hayashi
+On 07/20, Chao Yu wrote:
+> [1] https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg15126.html
+> 
+> As [1] reported, if lower device doesn't support write barrier, in below
+> case:
+> 
+> - write page #0; persist
+> - overwrite page #0
+> - fsync
+>  - write data page #0 OPU into device's cache
+>  - write inode page into device's cache
+>  - issue flush
+> 
+> If SPO is triggered during flush command, inode page can be persisted
+> before data page #0, so that after recovery, inode page can be recovered
+> with new physical block address of data page #0, however there may
+> contains dummy data in new physical block address.
+> 
+> Then what user will see is: after overwrite & fsync + SPO, old data in
+> file was corrupted, if any user do care about such case, we can suggest
+> user to use STRICT fsync mode, in this mode, we will force to use atomic
+> write sematics to keep write order in between data/node and last node,
+> so that it avoids potential data corruption during fsync().
+> 
+> Signed-off-by: Chao Yu <chao@kernel.org>
+> ---
+>  fs/f2fs/file.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 6afd4562335f..00b45876eaa1 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -301,6 +301,18 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
+>  				f2fs_exist_written_data(sbi, ino, UPDATE_INO))
+>  			goto flush_out;
+>  		goto out;
+> +	} else {
+> +		/*
+> +		 * for OPU case, during fsync(), node can be persisted before
+> +		 * data when lower device doesn't support write barrier, result
+> +		 * in data corruption after SPO.
+> +		 * So for strict fsync mode, force to use atomic write sematics
+> +		 * to keep write order in between data/node and last node to
+> +		 * avoid potential data corruption.
+> +		 */
+> +		if (F2FS_OPTION(sbi).fsync_mode ==
+> +				FSYNC_MODE_STRICT && !atomic)
+> +			atomic = true;
+>  	}
+>  go_write:
+>  	/*
+> -- 
+> 2.22.1
