@@ -2,66 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A283CF888
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D9C3CF886
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236974AbhGTKUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:20:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:55878 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237769AbhGTKGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:06:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3896C6D;
-        Tue, 20 Jul 2021 03:47:27 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 557303F73D;
-        Tue, 20 Jul 2021 03:47:26 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] sched/fair: Trigger nohz.next_balance updates when
- a CPU goes NOHZ-idle
-To:     Valentin Schneider <valentin.schneider@arm.com>,
+        id S238305AbhGTKTQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Jul 2021 06:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238267AbhGTKLu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 06:11:50 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF5AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 03:52:21 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1m5nMK-0005E8-1J; Tue, 20 Jul 2021 12:52:20 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1m5nMH-0003Ys-FO; Tue, 20 Jul 2021 12:52:17 +0200
+Message-ID: <039151e1f17676a101fb9c0682f5ee9fb8ad502d.camel@pengutronix.de>
+Subject: Re: [PATCH v2 6/7] soc: mediatek: mmsys: Add reset controller
+ support
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <20210719103117.3624936-1-valentin.schneider@arm.com>
- <20210719103117.3624936-3-valentin.schneider@arm.com>
- <e8dffbaf-71cb-d3b3-04e8-64fc8e6256af@arm.com> <878s22mfnn.mognet@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <dce1c131-d52d-4eec-276b-3a2eeefabb3d@arm.com>
-Date:   Tue, 20 Jul 2021 12:47:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Cc:     chunkuang.hu@kernel.org, hsinyi@chromium.org, kernel@collabora.com,
+        drinkcat@chromium.org, eizan@chromium.org,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        jitao.shi@mediatek.com, linux-arm-kernel@lists.infradead.org
+Date:   Tue, 20 Jul 2021 12:52:17 +0200
+In-Reply-To: <20210714121116.v2.6.I15e2419141a69b2e5c7e700c34d92a69df47e04d@changeid>
+References: <20210714101141.2089082-1-enric.balletbo@collabora.com>
+         <20210714121116.v2.6.I15e2419141a69b2e5c7e700c34d92a69df47e04d@changeid>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-In-Reply-To: <878s22mfnn.mognet@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2021 18:28, Valentin Schneider wrote:
-> On 19/07/21 17:24, Dietmar Eggemann wrote:
->> On 19/07/2021 12:31, Valentin Schneider wrote:
+Hi Enric,
 
-[...]
-
->>>       * Ensures that if we miss the CPU, we must see the has_blocked
->>> @@ -10531,6 +10540,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
->>>              if (need_resched()) {
->>>                      if (flags & NOHZ_STATS_KICK)
->>>                              has_blocked_load = true;
->>
->> This looks weird now? 'has_blocked_load = true' vs
->> 'WRITE_ONCE(nohz.needs_update, 1)'.
->>
+On Wed, 2021-07-14 at 12:11 +0200, Enric Balletbo i Serra wrote:
+> Among other features the mmsys driver should implement a reset
+> controller to be able to reset different bits from their space.
 > 
-> Well, has_blocked_load lets us factorize the nohz.has_blocked write
-> (one is needed either when aborting or at the tail of the cpumask
-> iteration), whereas there is just a single write for nohz.needs_update
-> (when aborting).
+> Cc: Jitao Shi <jitao.shi@mediatek.com>
+> Suggested-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-You're right. Looks good then.
+The reset controller driver looks fine, just two questions below.
 
+> ---
+> 
+> (no changes since v1)
+> 
+>  drivers/soc/mediatek/mtk-mmsys.c | 69 ++++++++++++++++++++++++++++++++
+>  drivers/soc/mediatek/mtk-mmsys.h |  2 +
+>  2 files changed, 71 insertions(+)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
+> index e681029fe804..6ac4deff0164 100644
+> --- a/drivers/soc/mediatek/mtk-mmsys.c
+> +++ b/drivers/soc/mediatek/mtk-mmsys.c
 [...]
+> @@ -91,6 +95,59 @@ void mtk_mmsys_ddp_disconnect(struct device *dev,
+[...]
+> +static int mtk_mmsys_reset(struct reset_controller_dev *rcdev, unsigned long id)
+> +{
+> +	int ret;
+> +
+> +	ret = mtk_mmsys_reset_assert(rcdev, id);
+> +	if (ret)
+> +		return ret;
+> +
+> +	usleep_range(1000, 1100);
+
+Is this known to be enough for all IP cores that can be reset by this
+controller?
+
+> +	return mtk_mmsys_reset_deassert(rcdev, id);
+> +}
+> +
+> +static const struct reset_control_ops mtk_mmsys_reset_ops = {
+> +	.assert = mtk_mmsys_reset_assert,
+> +	.deassert = mtk_mmsys_reset_deassert,
+> +	.reset = mtk_mmsys_reset,
+> +};
+> +
+>  static int mtk_mmsys_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+> @@ -111,6 +168,18 @@ static int mtk_mmsys_probe(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> +	spin_lock_init(&mmsys->lock);
+> +
+> +	mmsys->rcdev.owner = THIS_MODULE;
+> +	mmsys->rcdev.nr_resets = 32;
+
+Are all bits in the MMSYS_SW0_RST_B register individual reset controls?
+
+regards
+Philipp
