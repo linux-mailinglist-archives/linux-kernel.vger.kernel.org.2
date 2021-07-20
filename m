@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF673CF164
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 03:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D9B3CF18C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 03:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237947AbhGTAw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 20:52:26 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:39834 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379599AbhGTAP3 (ORCPT
+        id S233344AbhGTBBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 21:01:02 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7036 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238235AbhGTAzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 20:15:29 -0400
-Received: by mail-il1-f199.google.com with SMTP id o8-20020a92c6880000b0290214927ba4d8so7153409ilg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 17:55:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=DahNEueMdXzD/TbootP2xlB++bWqnxgrOSnxxyUIBoM=;
-        b=oXQNXPE9K6FgqEK0GeC+cAGis6IGJMcc+DBSeK8KO5L0Aoyd4/E02lbAa8+dd42EF8
-         0hLtlIY5zpKCC4t0xLhzPYR6sndodcQDZRgqLPoj/XghA7xF9oBq9wzJmqEUnfWyqIMn
-         YtCg5gI7l6EIpsJ1I7dm5C9VY7OQBN61mYU2bjteZGARwy+lsQZaba+IzsxIcjpaqolg
-         vCnFZp9/GV+zl1MQz6iQDDKeHZncSsfrnL6faHsMN/5+KrXM8PA/9CNPkGO/Go83sY1A
-         TDrLCgAz0g4CH8Ewp6jM6MIQYglXDxCRfc95BhR9oH9h2jle1RZqLmmxVzWoijapEToQ
-         Dwbg==
-X-Gm-Message-State: AOAM531bpsrQaOJJi433DIpYU8kP6kMCGdk3kran6zBen3OJRcBo0uA0
-        D4N8fH/SCSRf9fHtd6WiP94a75M4rGTavL+6zXNnNjL6h+H3
-X-Google-Smtp-Source: ABdhPJw8fCIkkMwZxm4OwCd1ZfS9Ki9oE9tDLDBGryXCgqz38G2jxHec4aYFzsHawrGtr+hDg+/ouAfcPwdLaUKxvgKL00u4+/oq
+        Mon, 19 Jul 2021 20:55:07 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GTLjt6nwFzYcrx;
+        Tue, 20 Jul 2021 09:29:54 +0800 (CST)
+Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 09:35:40 +0800
+Received: from [10.67.77.175] (10.67.77.175) by dggpeml500023.china.huawei.com
+ (7.185.36.114) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 20 Jul
+ 2021 09:35:39 +0800
+Subject: Re: [PATCH v2] irqchip/irq-gic-v3-its: Add the checking of ITS
+ version for KVM
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, wangwudi <wangwudi@hisilicon.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>
+References: <1624342353-24595-1-git-send-email-zhangshaokun@hisilicon.com>
+ <6a2aaa52-ef36-f462-5108-6ac53bc497d9@hisilicon.com>
+ <87mtqik2o9.wl-maz@kernel.org>
+From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
+Message-ID: <16aebf04-dab3-8fc1-22b8-f0c61e01bda9@hisilicon.com>
+Date:   Tue, 20 Jul 2021 09:35:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:fe03:: with SMTP id x3mr1460958ioh.120.1626742520659;
- Mon, 19 Jul 2021 17:55:20 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 17:55:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000015c36505c78382e0@google.com>
-Subject: [syzbot] WARNING in pwq_unbound_release_workfn (2)
-From:   syzbot <syzbot+d04950c1e97f51d0068a@syzkaller.appspotmail.com>
-To:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
-        longman@redhat.com, mingo@redhat.com, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87mtqik2o9.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.77.175]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500023.china.huawei.com (7.185.36.114)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Marc,
 
-syzbot found the following issue on:
+On 2021/7/19 18:39, Marc Zyngier wrote:
+> On Mon, 19 Jul 2021 06:39:50 +0100,
+> Shaokun Zhang <zhangshaokun@hisilicon.com> wrote:
+>>
+>> Hi Marc,
+>>
+>> A gentle ping.
+>>
+>> Thanks,
+>> Shaokun
+>>
+>> On 2021/6/22 14:12, Shaokun Zhang wrote:
+>>> From: wangwudi <wangwudi@hisilicon.com>
+>>>
+>>> The version of GIC used by KVM is provided by gic_v3_kvm_info. The
+>>> KVM that supports GICv4 or GICv4.1 only checks GIC version. Actually,
+>>> the GIC and ITS need to work together. If we have multiple ITSs and
+>>> GIC supports v4, there are two cases:
+>>> 1. None of the ITS supports GICv4, gic_v3_kvm_info.has_v4is false,
+>>> so the KVM will use GICv3;
+>>> 2. At least one ITS supports GICv4, gic_v3_kvm_info has_v4 is true,
+>>> so the KVM can use GICv4;
+>>>
+>>> It is the same as GICv4.1. For the first case that the KVM can use
+>>> GICv4, it seems non-sensible. If we do check the ITS version, it
+>>> will give correct version for KVM. So add the checking of ITS
+>>> version for KVM: If and only if both GIC & ITS support GICv4,
+>>> gic_kvm_info.has_v4 is true. If and only if both GIC & ITS support
+>>> GICv4.1, gic_kvm_info.has_v4_1 is true.
+> 
+> What you don't explain here is what goes wrong. If there is no ITS
 
-HEAD commit:    2734d6c1b1a0 Linux 5.14-rc2
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1518d3bc300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f7dfeb6dfc05ea19
-dashboard link: https://syzkaller.appspot.com/bug?extid=d04950c1e97f51d0068a
+That's not completely wrong, we only want to make it more reasonable as
+we said that in commit log.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> that supports GICv4.1 while the CPU interfaces and the RDs are
+> advertising this support, so be it.
+> 
+> So please explain what goes wrong, and whether there is any platform
+> in the wild that is showing this problem.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d04950c1e97f51d0068a@syzkaller.appspotmail.com
+To be honest, I'm not sure that some platform has this issue. It is
+detected by code reading.
 
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 32 at kernel/locking/lockdep.c:6305 lockdep_unregister_key+0x19a/0x250 kernel/locking/lockdep.c:6305
-Modules linked in:
-CPU: 3 PID: 32 Comm: kworker/3:0 Not tainted 5.14.0-rc2-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Workqueue: events pwq_unbound_release_workfn
-RIP: 0010:lockdep_unregister_key+0x19a/0x250 kernel/locking/lockdep.c:6305
-Code: 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8f 00 00 00 4d 89 7d 08 48 b8 22 01 00 00 00 00 ad de 48 89 43 08 eb 02 <0f> 0b 4c 89 f7 ba 01 00 00 00 48 89 ee e8 44 fd ff ff 4c 89 f7 e8
-RSP: 0018:ffffc900007bfcb0 EFLAGS: 00010046
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 1ffffffff1ad87cd
-RDX: 1ffffffff1fcad55 RSI: 0000000000000004 RDI: ffffffff8fe56aa8
-RBP: ffff88801416e928 R08: 0000000000000001 R09: 0000000000000003
-R10: fffff520000f7f8c R11: 0000000000086088 R12: 0000000000000246
-R13: dffffc0000000000 R14: ffffffff8fcd1868 R15: ffff888047033870
-FS:  0000000000000000(0000) GS:ffff88802cd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000014a53ad CR3: 00000000479f1000 CR4: 0000000000150ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- wq_unregister_lockdep kernel/workqueue.c:3468 [inline]
- pwq_unbound_release_workfn+0x223/0x2d0 kernel/workqueue.c:3700
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Thanks,
+Shaokun
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> Thanks,
+> 
+> 	M.
+> 
