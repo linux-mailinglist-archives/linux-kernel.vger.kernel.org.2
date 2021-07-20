@@ -2,140 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8CE3CFDF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010E93CFE04
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234510AbhGTPA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:00:29 -0400
-Received: from mga12.intel.com ([192.55.52.136]:15550 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241911AbhGTO5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:57:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="190846215"
-X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; 
-   d="scan'208";a="190846215"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 08:37:05 -0700
-X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; 
-   d="scan'208";a="469799017"
-Received: from lesliemu-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.136.56])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 08:37:04 -0700
-Date:   Tue, 20 Jul 2021 08:37:00 -0700
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Feng Tang <feng.tang@intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Yanfei Xu <yanfei.xu@windriver.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>
-Subject: Re: [PATCH] mm/mempolicy: Convert from atomic_t to refcount_t on
- mempolicy->refcnt
-Message-ID: <20210720153700.tqq4d7fronda42ro@intel.com>
-Mail-Followup-To: Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        id S242451AbhGTPB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241951AbhGTO56 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 10:57:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3677DC061574;
+        Tue, 20 Jul 2021 08:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3Wj/HwXFX2bmhHvOuLlpR0gcFs8JOAD2ucTx8ZSKbwk=; b=OWbp/EA8gH0ewGwF5iqYwn5hMZ
+        vMDMXsuoD6H9phlC+ZhkDCZzwsfSVfIPhbzgu1VHaodfMejY18ovrGF8pyA/qBkB7Aae/a3VVXLhR
+        882WX4HufAjKw/JXXwH/UTB3Potsl4nWzOMh738U1VQyRnonmYv8dXdBIsZpck6BEj1C/Ez5HQg2R
+        8OJnKbUmyAQ5WCzy/dJvEo0/ax8wHUAYMyvmYRXrSbn3FqDcGi9u28MlWgi69H9L2VuO+c5ERVPr6
+        o6MdOsT7qT9yeU6t7LT9CBNmxtq/zUJYkDZl2Mno8eLVZssU+knw4fvRhuJ0KT6MK4z1WXXfHWY6Z
+        /txM1gJQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5ro9-008GZ6-4O; Tue, 20 Jul 2021 15:37:28 +0000
+Date:   Tue, 20 Jul 2021 16:37:21 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Feng Tang <feng.tang@intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Yanfei Xu <yanfei.xu@windriver.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, yuanxzhang@fudan.edu.cn,
-        Xin Tan <tanxin.ctf@gmail.com>
-References: <1626683671-64407-1-git-send-email-xiyuyang19@fudan.edu.cn>
+        Borislav Petkov <bp@alien8.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH v4 1/4] kexec: avoid compat_alloc_user_space
+Message-ID: <YPbtsU4GX6PL7/42@infradead.org>
+References: <20210720150950.3669610-1-arnd@kernel.org>
+ <20210720150950.3669610-2-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1626683671-64407-1-git-send-email-xiyuyang19@fudan.edu.cn>
+In-Reply-To: <20210720150950.3669610-2-arnd@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-07-19 16:34:28, Xiyu Yang wrote:
-> refcount_t type and corresponding API can protect refcounters from
-> accidental underflow and overflow and further use-after-free situations.
-> 
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+This can be simplified a little more by killing off
+copy_user_segment_list entirely, using memdup_user and dropping the
+not really required _locked wrapper.  The locking move might make
+most sense as a separate prep patch.
 
-lgtm
+diff --git a/kernel/kexec.c b/kernel/kexec.c
+index c82c6c06f051..3140fe7af801 100644
+--- a/kernel/kexec.c
++++ b/kernel/kexec.c
+@@ -19,26 +19,9 @@
+ 
+ #include "kexec_internal.h"
+ 
+-static int copy_user_segment_list(struct kimage *image,
+-				  unsigned long nr_segments,
+-				  struct kexec_segment __user *segments)
+-{
+-	int ret;
+-	size_t segment_bytes;
+-
+-	/* Read in the segments */
+-	image->nr_segments = nr_segments;
+-	segment_bytes = nr_segments * sizeof(*segments);
+-	ret = copy_from_user(image->segment, segments, segment_bytes);
+-	if (ret)
+-		ret = -EFAULT;
+-
+-	return ret;
+-}
+-
+ static int kimage_alloc_init(struct kimage **rimage, unsigned long entry,
+ 			     unsigned long nr_segments,
+-			     struct kexec_segment __user *segments,
++			     struct kexec_segment *segments,
+ 			     unsigned long flags)
+ {
+ 	int ret;
+@@ -58,10 +41,8 @@ static int kimage_alloc_init(struct kimage **rimage, unsigned long entry,
+ 		return -ENOMEM;
+ 
+ 	image->start = entry;
+-
+-	ret = copy_user_segment_list(image, nr_segments, segments);
+-	if (ret)
+-		goto out_free_image;
++	image->nr_segments = nr_segments;
++	memcpy(image->segment, segments, nr_segments * sizeof(*segments));
+ 
+ 	if (kexec_on_panic) {
+ 		/* Enable special crash kernel control page alloc policy. */
+@@ -104,11 +85,22 @@ static int kimage_alloc_init(struct kimage **rimage, unsigned long entry,
+ }
+ 
+ static int do_kexec_load(unsigned long entry, unsigned long nr_segments,
+-		struct kexec_segment __user *segments, unsigned long flags)
++		struct kexec_segment *segments, unsigned long flags)
+ {
+ 	struct kimage **dest_image, *image;
+ 	unsigned long i;
+-	int ret;
++	int ret = 0;
++
++	/*
++	 * Because we write directly to the reserved memory region when loading
++	 * crash kernels we need a mutex here to prevent multiple crash kernels
++	 * from attempting to load simultaneously, and to prevent a crash kernel
++	 * from loading over the top of a in use crash kernel.
++	 *
++	 * KISS: always take the mutex.
++	 */
++	if (!mutex_trylock(&kexec_mutex))
++		return -EBUSY;
+ 
+ 	if (flags & KEXEC_ON_CRASH) {
+ 		dest_image = &kexec_crash_image;
+@@ -121,7 +113,7 @@ static int do_kexec_load(unsigned long entry, unsigned long nr_segments,
+ 	if (nr_segments == 0) {
+ 		/* Uninstall image */
+ 		kimage_free(xchg(dest_image, NULL));
+-		return 0;
++		goto out_unlock;
+ 	}
+ 	if (flags & KEXEC_ON_CRASH) {
+ 		/*
+@@ -134,7 +126,7 @@ static int do_kexec_load(unsigned long entry, unsigned long nr_segments,
+ 
+ 	ret = kimage_alloc_init(&image, entry, nr_segments, segments, flags);
+ 	if (ret)
+-		return ret;
++		goto out_unlock;
+ 
+ 	if (flags & KEXEC_PRESERVE_CONTEXT)
+ 		image->preserve_context = 1;
+@@ -171,6 +163,8 @@ static int do_kexec_load(unsigned long entry, unsigned long nr_segments,
+ 		arch_kexec_protect_crashkres();
+ 
+ 	kimage_free(image);
++out_unlock:
++	mutex_unlock(&kexec_mutex);
+ 	return ret;
+ }
+ 
+@@ -236,7 +230,8 @@ static inline int kexec_load_check(unsigned long nr_segments,
+ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+ 		struct kexec_segment __user *, segments, unsigned long, flags)
+ {
+-	int result;
++	struct kexec_segment *ksegments;
++	unsigned long result;
+ 
+ 	result = kexec_load_check(nr_segments, flags);
+ 	if (result)
+@@ -247,21 +242,11 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+ 		((flags & KEXEC_ARCH_MASK) != KEXEC_ARCH_DEFAULT))
+ 		return -EINVAL;
+ 
+-	/* Because we write directly to the reserved memory
+-	 * region when loading crash kernels we need a mutex here to
+-	 * prevent multiple crash  kernels from attempting to load
+-	 * simultaneously, and to prevent a crash kernel from loading
+-	 * over the top of a in use crash kernel.
+-	 *
+-	 * KISS: always take the mutex.
+-	 */
+-	if (!mutex_trylock(&kexec_mutex))
+-		return -EBUSY;
+-
+-	result = do_kexec_load(entry, nr_segments, segments, flags);
+-
+-	mutex_unlock(&kexec_mutex);
+-
++	ksegments = memdup_user(segments, nr_segments * sizeof(ksegments[0]));
++	if (IS_ERR(ksegments))
++		return PTR_ERR(ksegments);
++	result = do_kexec_load(entry, nr_segments, ksegments, flags);
++	kfree(ksegments);
+ 	return result;
+ }
+ 
+@@ -272,7 +257,7 @@ COMPAT_SYSCALL_DEFINE4(kexec_load, compat_ulong_t, entry,
+ 		       compat_ulong_t, flags)
+ {
+ 	struct compat_kexec_segment in;
+-	struct kexec_segment out, __user *ksegments;
++	struct kexec_segment *ksegments;
+ 	unsigned long i, result;
+ 
+ 	result = kexec_load_check(nr_segments, flags);
+@@ -285,37 +270,24 @@ COMPAT_SYSCALL_DEFINE4(kexec_load, compat_ulong_t, entry,
+ 	if ((flags & KEXEC_ARCH_MASK) == KEXEC_ARCH_DEFAULT)
+ 		return -EINVAL;
+ 
+-	ksegments = compat_alloc_user_space(nr_segments * sizeof(out));
++	ksegments = kmalloc_array(nr_segments, sizeof(ksegments[0]),
++			GFP_KERNEL);
++	if (!ksegments)
++		return -ENOMEM;
++
+ 	for (i = 0; i < nr_segments; i++) {
+ 		result = copy_from_user(&in, &segments[i], sizeof(in));
+ 		if (result)
+-			return -EFAULT;
+-
+-		out.buf   = compat_ptr(in.buf);
+-		out.bufsz = in.bufsz;
+-		out.mem   = in.mem;
+-		out.memsz = in.memsz;
+-
+-		result = copy_to_user(&ksegments[i], &out, sizeof(out));
+-		if (result)
+-			return -EFAULT;
++			goto fail;
++		ksegments[i].buf   = compat_ptr(in.buf);
++		ksegments[i].bufsz = in.bufsz;
++		ksegments[i].mem   = in.mem;
++		ksegments[i].memsz = in.memsz;
+ 	}
+ 
+-	/* Because we write directly to the reserved memory
+-	 * region when loading crash kernels we need a mutex here to
+-	 * prevent multiple crash  kernels from attempting to load
+-	 * simultaneously, and to prevent a crash kernel from loading
+-	 * over the top of a in use crash kernel.
+-	 *
+-	 * KISS: always take the mutex.
+-	 */
+-	if (!mutex_trylock(&kexec_mutex))
+-		return -EBUSY;
+-
+ 	result = do_kexec_load(entry, nr_segments, ksegments, flags);
+-
+-	mutex_unlock(&kexec_mutex);
+-
++fail:
++	kfree(ksegments);
+ 	return result;
+ }
+ #endif
 
-Acked-by: Ben Widawsky <ben.widawsky@intel.com>
-
-> ---
->  include/linux/mempolicy.h | 5 +++--
->  mm/mempolicy.c            | 8 ++++----
->  2 files changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-> index 0aaf91b496e2..faec94994eb7 100644
-> --- a/include/linux/mempolicy.h
-> +++ b/include/linux/mempolicy.h
-> @@ -6,6 +6,7 @@
->  #ifndef _LINUX_MEMPOLICY_H
->  #define _LINUX_MEMPOLICY_H 1
->  
-> +#include <linux/refcount.h>
->  #include <linux/sched.h>
->  #include <linux/mmzone.h>
->  #include <linux/dax.h>
-> @@ -43,7 +44,7 @@ struct mm_struct;
->   * to 1, representing the caller of mpol_dup().
->   */
->  struct mempolicy {
-> -	atomic_t refcnt;
-> +	refcount_t refcnt;
->  	unsigned short mode; 	/* See MPOL_* above */
->  	unsigned short flags;	/* See set_mempolicy() MPOL_F_* above */
->  	nodemask_t nodes;	/* interleave/bind/perfer */
-> @@ -94,7 +95,7 @@ static inline struct mempolicy *mpol_dup(struct mempolicy *pol)
->  static inline void mpol_get(struct mempolicy *pol)
->  {
->  	if (pol)
-> -		atomic_inc(&pol->refcnt);
-> +		refcount_inc(&pol->refcnt);
->  }
->  
->  extern bool __mpol_equal(struct mempolicy *a, struct mempolicy *b);
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index e32360e90274..829a14f34b43 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -298,7 +298,7 @@ static struct mempolicy *mpol_new(unsigned short mode, unsigned short flags,
->  	policy = kmem_cache_alloc(policy_cache, GFP_KERNEL);
->  	if (!policy)
->  		return ERR_PTR(-ENOMEM);
-> -	atomic_set(&policy->refcnt, 1);
-> +	refcount_set(&policy->refcnt, 1);
->  	policy->mode = mode;
->  	policy->flags = flags;
->  
-> @@ -308,7 +308,7 @@ static struct mempolicy *mpol_new(unsigned short mode, unsigned short flags,
->  /* Slow path of a mpol destructor. */
->  void __mpol_put(struct mempolicy *p)
->  {
-> -	if (!atomic_dec_and_test(&p->refcnt))
-> +	if (!refcount_dec_and_test(&p->refcnt))
->  		return;
->  	kmem_cache_free(policy_cache, p);
->  }
-> @@ -2290,7 +2290,7 @@ struct mempolicy *__mpol_dup(struct mempolicy *old)
->  		nodemask_t mems = cpuset_mems_allowed(current);
->  		mpol_rebind_policy(new, &mems);
->  	}
-> -	atomic_set(&new->refcnt, 1);
-> +	refcount_set(&new->refcnt, 1);
->  	return new;
->  }
->  
-> @@ -2581,7 +2581,7 @@ static int shared_policy_replace(struct shared_policy *sp, unsigned long start,
->  					goto alloc_new;
->  
->  				*mpol_new = *n->policy;
-> -				atomic_set(&mpol_new->refcnt, 1);
-> +				refcount_set(&mpol_new->refcnt, 1);
->  				sp_node_init(n_new, end, n->end, mpol_new);
->  				n->end = start;
->  				sp_insert(sp, n_new);
-> -- 
-> 2.7.4
-> 
