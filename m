@@ -2,110 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892153CFCF7
+	by mail.lfdr.de (Postfix) with ESMTP id 404F83CFCF6
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240216AbhGTOYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 10:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47206 "EHLO
+        id S239601AbhGTOY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239246AbhGTONm (ORCPT
+        with ESMTP id S239272AbhGTONr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:13:42 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE61C0613F0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:49:42 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1m5r3u-0004tk-QQ; Tue, 20 Jul 2021 16:49:34 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:3120:e42a:5796:3403])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 73D13653103;
-        Tue, 20 Jul 2021 14:49:33 +0000 (UTC)
-Date:   Tue, 20 Jul 2021 16:49:32 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nishanth Menon <nm@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: Re: [PATCH 1/6] arm64: dts: ti: k3-am65-mcu: Add Support for MCAN
-Message-ID: <20210720144932.5rtvpkmjooma7zae@pengutronix.de>
-References: <20210720141642.24999-1-a-govindraju@ti.com>
- <20210720141642.24999-2-a-govindraju@ti.com>
- <20210720142047.mfqssyj4lwh3yi2k@pengutronix.de>
- <f3560ac8-8ffe-87d6-a21f-87f6251f1750@ti.com>
+        Tue, 20 Jul 2021 10:13:47 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FD2C061786;
+        Tue, 20 Jul 2021 07:50:07 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id ee25so28755990edb.5;
+        Tue, 20 Jul 2021 07:50:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DfaYjaAQWD7iw8jrijr5uZKZKd1db+DgTG/cmZm1AoU=;
+        b=rfezC5dL7JwoDTyXVJMplYPp7NimB1xesQl2PaOTxXk13s7kDmCnCAfywwPd28wZX2
+         9TDa9akJR/eMHMFiK/5mLlNHDwS1bQzlQ8xC9OmmyPlVX6d2V2afKWOpLJrThSQorLHT
+         7WvJ0klPF7M7MUUDqRA/Df/N7n4BWJkAwgt6pqcdfOfMJd5wqfnfYHFZZjBl8LWSIp0t
+         6o1jCMxWs1Vwkzhj3seqgKcSOUdRpzgSgqQP3JdBA00eJO1lafaxKX+5cVZjTersw+h8
+         U0ylwPPLZaZ4dUYs8FnLlYZTiluTNNHGc3nz4IviEafuIuEsaNJmQGwYijfe7VJWJcFQ
+         kENA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DfaYjaAQWD7iw8jrijr5uZKZKd1db+DgTG/cmZm1AoU=;
+        b=X3MHt1QdFKtgsyZYg+ceU8aUcEMRHKEcJXVvnI2XGYBIrAd2YMmPQj+sQ7XdDHnvLZ
+         0sXZF49gMYJyBpwC1G3l+lAXwqWPdvp7LLVNBUqzWnU+xRWgq5RlJ5zKgA4nVonO3+kQ
+         hVZfxR5IRbiZpv5uOTUPk9/1IPllUQJk80rzGKnaaiprxiVSKgdm4Z53U69sMBtSfCdw
+         cbk6+++VpvH+zaUFRZdZdcD34V0DSOjEQGW1sb84fjTqc+W6UbM3shRr7ri3Ixc5pYzH
+         ulz7/Y7odqiFV/JNY1x5UPwTrxf9h3sb/fKuXAS+y5acYDDPbszxRzsIkWuMgdSmaveJ
+         qVqg==
+X-Gm-Message-State: AOAM532HRe6xRaAhLwjxfWyrOBCyuhncn7L9ahL9R0ZJ+GHqkxsELMXE
+        BcTBKYtnWHWqFLVdCCIUg1VD0mWpB76c6P0FYQc=
+X-Google-Smtp-Source: ABdhPJw88j9PXuncQg+libg07ckFW1eeacVNT7ZHohEgh6T49pi57vahmjem4mbdgcSh4CwVvTdldg==
+X-Received: by 2002:a05:6402:1011:: with SMTP id c17mr13780157edu.144.1626792605965;
+        Tue, 20 Jul 2021 07:50:05 -0700 (PDT)
+Received: from localhost.localdomain (cbl217-132-240-31.bb.netvision.net.il. [217.132.240.31])
+        by smtp.googlemail.com with ESMTPSA id n13sm4876600eda.36.2021.07.20.07.50.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 07:50:05 -0700 (PDT)
+From:   Michael Zaidman <michael.zaidman@gmail.com>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        aaron.jones@ftdichip.com
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org,
+        Michael Zaidman <michael.zaidman@gmail.com>
+Subject: [PATCH v1] HID: ft260: fix device removal due to USB disconnect
+Date:   Tue, 20 Jul 2021 17:49:54 +0300
+Message-Id: <20210720144954.5392-1-michael.zaidman@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hpvarmjcpm2ogbfr"
-Content-Disposition: inline
-In-Reply-To: <f3560ac8-8ffe-87d6-a21f-87f6251f1750@ti.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This commit fixes a regression introduced by the commit 82f09a637dd3
+("HID: ft260: improve error handling of ft260_hid_feature_report_get()")
+when upon USB disconnect, the ft260 i2c device is still available within
+the /dev folder.
 
---hpvarmjcpm2ogbfr
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
+Acked-by: Aaron Jones (FTDI-UK) <aaron.jones@ftdichip.com>
+---
+ drivers/hid/hid-ft260.c | 25 ++++++++-----------------
+ 1 file changed, 8 insertions(+), 17 deletions(-)
 
-On 20.07.2021 20:00:32, Aswath Govindraju wrote:
-> Hi Marc,
->=20
-> On 20/07/21 7:50 pm, Marc Kleine-Budde wrote:
-> > On 20.07.2021 19:46:37, Aswath Govindraju wrote:
-> >> From: Faiz Abbas <faiz_abbas@ti.com>
-> >>
-> >> Add Support for two MCAN controllers present on the am65x SOC. Both su=
-pport
-> >> classic CAN messages as well as CAN-FD.
-> >=20
-> > Thanks for the patch!
-> >=20
-> > Why don't you disable the CAN cores by default in the dtsi?
->=20
-> As far as I know, in the dtsi file we mention all the subsystems or
-> periherals present in the SoC and in the specific board dts file we
-> enable or disable the DT nodes depending on whether the  pins are
-> brought out.
+diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
+index f43a8406cb9a..fa73a35aaf98 100644
+--- a/drivers/hid/hid-ft260.c
++++ b/drivers/hid/hid-ft260.c
+@@ -742,8 +742,8 @@ static int ft260_is_interface_enabled(struct hid_device *hdev)
+ 	int ret;
+ 
+ 	ret = ft260_get_system_config(hdev, &cfg);
+-	if (ret)
+-		return ret;
++	if (ret < 0)
++		return 0;
+ 
+ 	ft260_dbg("interface:  0x%02x\n", interface);
+ 	ft260_dbg("chip mode:  0x%02x\n", cfg.chip_mode);
+@@ -754,23 +754,16 @@ static int ft260_is_interface_enabled(struct hid_device *hdev)
+ 	switch (cfg.chip_mode) {
+ 	case FT260_MODE_ALL:
+ 	case FT260_MODE_BOTH:
+-		if (interface == 1) {
++		if (interface == 1)
+ 			hid_info(hdev, "uart interface is not supported\n");
+-			return 0;
+-		}
+-		ret = 1;
++		else
++			ret = 1;
+ 		break;
+ 	case FT260_MODE_UART:
+-		if (interface == 0) {
+-			hid_info(hdev, "uart is unsupported on interface 0\n");
+-			ret = 0;
+-		}
++		hid_info(hdev, "uart interface is not supported\n");
+ 		break;
+ 	case FT260_MODE_I2C:
+-		if (interface == 1) {
+-			hid_info(hdev, "i2c is unsupported on interface 1\n");
+-			ret = 0;
+-		}
++		ret = 1;
+ 		break;
+ 	}
+ 	return ret;
+@@ -1004,11 +997,9 @@ static int ft260_probe(struct hid_device *hdev, const struct hid_device_id *id)
+ 
+ static void ft260_remove(struct hid_device *hdev)
+ {
+-	int ret;
+ 	struct ft260_device *dev = hid_get_drvdata(hdev);
+ 
+-	ret = ft260_is_interface_enabled(hdev);
+-	if (ret <= 0)
++	if (!dev)
+ 		return;
+ 
+ 	sysfs_remove_group(&hdev->dev.kobj, &ft260_attr_group);
+-- 
+2.25.1
 
-If you disable the subsystems (that need pins) by default, you only have
-to list and configure only the used subsystems and not disable the
-unused ones. But it seems in the TI land you're following the rule you
-outlined above, so go ahead.
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---hpvarmjcpm2ogbfr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmD24noACgkQqclaivrt
-76n/7Qf+PEg9CDe1udrXT9AkQwMz291wPkLCnJ1ovwadeNE9O2Ntj0lqsFsdJikZ
-Q6LXdiePRSKNgG0QaWasd4fU4sUOdBOXLvKCfvssW5GA1UfsMRYT+gECt4XaVdJ7
-iGK+3T8PcygTvoalU8FrISpysm42BErouKENRQMa59yYJtAszH/RnB5VdtoM3M7u
-x/NRGqcof/YZlx+UmtHhMsK2Tq1KdaUH+xH9B7Qi6HGcEXPFTTRehMhKZf5Re8hK
-Ho91ZVWJfGQVPwHjP4C1MgXY8injX4Ib0ETYT4Psa8KPwE44YM0FrPq/ThwNR+Ff
-97NPOogt5LaeAZXkztY32U7f5CgDkA==
-=mTBU
------END PGP SIGNATURE-----
-
---hpvarmjcpm2ogbfr--
