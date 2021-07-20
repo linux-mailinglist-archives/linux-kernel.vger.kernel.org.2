@@ -2,165 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4ED3D04EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 00:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BA03D04CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 00:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhGTWSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 18:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhGTWRx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 18:17:53 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D84DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 15:58:29 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id f9so93953wrq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 15:58:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TNPEMMUgoiehFtzKXEoJ63hPg6Ju+Bf/SAUPrXK8URU=;
-        b=Cs7v4oCkpaQVlNpFvJz/H4CatVDhrRD/txMcHw+Ggu3rnfnZm5ioTVTuzoJr6w3QDD
-         34cdVg46l5mADjlN+8D/h/GYDOA7xjt6NtD5/e0aYb3ti5RpIHPDOTmNCo+W97W11Hs9
-         NyXArsKruE88y6y8srWfOp4q/hu95q8wMHSuv2xCl2wB658G2SP+mVT6Zp5ziet/U40c
-         5DTy9IrQI9lPltIZ5Yi2cEaYmbIl5mS6XxmDW5acgZuk/6rC2+KOq7+ngM9ju/WOmn/5
-         9fholoH9jNhQjQlrKK4/ciixttMy7+/hwh5J0gTB4lwYgpb1FuttPFYflvlp4zA/OH3d
-         PN4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TNPEMMUgoiehFtzKXEoJ63hPg6Ju+Bf/SAUPrXK8URU=;
-        b=Z87Qw8ju3CfNPqhaPDi9TbL4NDRDLMajZPDyKHR29hw+5IPWdYRXMa5i/RitjQe5dG
-         xBMS75IPIT/j0FyFaoWq7iPZZ3MoFb6SZ9R6xJO/MmKU2yv+0Dmf47XYbmX1aJRnFy6l
-         sdwyRKL8YGW8uac9Pot/pjVsdWp9zPUcmW8ng5ao377q4ROZbc4REOZ1qoXJtX32loY3
-         XHSZwrGBgoHKjW922JIhvLOrvyIddk05XTy9iaZ9qaZDLsirP0GRqOv2FAcN2t0DKuiQ
-         B7vZzvV1QqCmqRxcCnhMYFvGWiIWbqIMPISZVVrMwpVb4xJ9bSuCFNQSPGtGsu5AN0Ot
-         B+Yw==
-X-Gm-Message-State: AOAM531ue3rvC+6Qw7GA7I0GjDOJFvfH2Hy41RI9wWcuhmQNe1gTM9S8
-        l1R8aPg49gaqgQyIJPGKQx0lkw==
-X-Google-Smtp-Source: ABdhPJwWaA4jL2qnQ/MSpRxdH5K35wL4UQ4HDISUQ873rKnIipmE5PgkAA77m1UIfcQXYgPWX4+FQQ==
-X-Received: by 2002:a5d:5606:: with SMTP id l6mr38647106wrv.190.1626821907738;
-        Tue, 20 Jul 2021 15:58:27 -0700 (PDT)
-Received: from localhost.localdomain (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id t15sm24354653wrx.17.2021.07.20.15.58.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 15:58:27 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     fabioaiuto83@gmail.com, Larry.Finger@lwfinger.net,
-        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: [PATCH] staging: rtl8188eu: move hal/mac_cfg.c and rename function and array
-Date:   Tue, 20 Jul 2021 23:58:26 +0100
-Message-Id: <20210720225826.454516-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
+        id S230521AbhGTWIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 18:08:43 -0400
+Received: from mail-mw2nam10on2043.outbound.protection.outlook.com ([40.107.94.43]:44640
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230030AbhGTWIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 18:08:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XLRhumO6K5tF6wonSoFv2v/AMFl9PTIKDMfvv4qMhNcTpL4yfFKXR/jNMRPXlyJVCBXSrHt51oEs7aHVwoeRIeRKwaZ8NztDxULjzLKs/IPUqTDtRd2efaYNLir76NEKQweinLZ2ogEbMucR8wlQNTsiiAkijXLU+WcNfRyN29f0diWCf3EdVx2x+7/oiVKH+SGfmyI09NTBA53NMe2c+R4DneiUnRLFt94Q8HpQyNQDTZ/RildBGfaV32NSq2ltJmwJY559QctOCjQWAwLC21izSqWGR1cSNz8GWoXfxik8HzkQr3E4LfKXyg/knJjOrDJHKF4DNq8FWC0R8mC9gQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Wokj85fNIzIFCI9UGqx23wWKoYl3K3yHyZbJcD56UlQ=;
+ b=XuCSgEKsxJl81SKvkf8BCqARjgx8+PYfj7KFSwcEGNdEOCasYV2P8pqWwSAX9hyb1dWrHZQjArbHATKbkqzE5z83/s4LL5LqqRv3Wq8zkBADgdgWvCG+UiGZcK++v7zIyzzty4HjH5HvzbjyoW8BGx2r0gH4jPbzQ6myxi2mGPkp3B3bDOPJHwglBVHDUPllUQUsxSy0+XxZzVtMKmf5FkWj6N9Ct6cFjmv7OFKNBBVZDwD2g158ETeItEbJtGxu4T29yJrHDBidPzfPs/BjrVaLlgtY+oZjDXj/kIt3/evt97/Vep+OiEygV0LuOjXj9vQP4ggroe2cFNKlXWC+ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Wokj85fNIzIFCI9UGqx23wWKoYl3K3yHyZbJcD56UlQ=;
+ b=bxV+PFswKE2JzL/JG3q07ew2V5GTIDVF99aFRhJ5Jl2p7zQyiJWnsv/0Cvj66rHbMYj25TRtNwGHHYzvk9hLul9rESFBF0EdUc6LxEeqJODMFPHiaWTnOyTfAiDsWjZ57uJE0S/+KoAsGpbWVqEgUYYNatKECYbNXy1FDWeknOo=
+Authentication-Results: collabora.com; dkim=none (message not signed)
+ header.d=none;collabora.com; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23) by MW2PR12MB2507.namprd12.prod.outlook.com
+ (2603:10b6:907:c::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.24; Tue, 20 Jul
+ 2021 22:49:08 +0000
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::d0a9:a5f1:ca5a:b439]) by MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::d0a9:a5f1:ca5a:b439%11]) with mapi id 15.20.4331.034; Tue, 20 Jul
+ 2021 22:49:08 +0000
+Subject: Re: [PATCH v4 12/12] ASoC: amd: enable vangogh acp5x driver build
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        broonie@kernel.org, alsa-devel@alsa-project.org
+Cc:     Sunil-kumar.Dommati@amd.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Alexander.Deucher@amd.com,
+        krisman@collabora.com
+References: <20210720163732.23003-1-Vijendar.Mukunda@amd.com>
+ <20210720163732.23003-13-Vijendar.Mukunda@amd.com>
+ <76ac28ba-8965-f757-974e-1e70729207da@linux.intel.com>
+From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Message-ID: <e04658e9-d3af-9416-f7bf-e91bd205dc34@amd.com>
+Date:   Wed, 21 Jul 2021 04:36:41 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <76ac28ba-8965-f757-974e-1e70729207da@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SGXP274CA0024.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::36)
+ To MWHPR1201MB2557.namprd12.prod.outlook.com (2603:10b6:300:e4::23)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.93.39] (165.204.159.242) by SGXP274CA0024.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22 via Frontend Transport; Tue, 20 Jul 2021 22:49:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6f56d023-fb04-460f-76c2-08d94bd0954c
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2507:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW2PR12MB250758711A6990EEFABF5B8D97E29@MW2PR12MB2507.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1775;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SAmbvuWXNDDk6T/T2galpWdtpMzQ03awE7penD8KVwI95oVeJKhYEMhkEZhKj6WU+lcDU9MJ5n2jvbY0rjjwInnL3B8EUZkxbwkOijrjheDe9TZw3bBxGZ+fXFrCutFYRIRn125ZFeSWHAU6dFNkTsFpkibUcge1iQUUApcfwAEw9p0WmYFpsi1FJU4OMFocp9jCnGl+xDeoFSAlcAuyA+4ft2m+1iMqxXqDPp4iHoDuL/jFCjR+ouC0TPW+Nvy71Ss7YbhV7a5j4tDrEpvfS8cAEv/CSk0PCFlv6lNundWv/PCULgciOWOe2IXpae/WTlnYy0iKFyA5yUDgrXNuGpjIt93Ob73h9erVmp+RISP84szyJZQ24qRlIsjl5Ms5vWfCN54RRW3XzEA7yAtDH70o4hmCHvrbtV18xgF27S7SsVy5VW6Q6AIvE0OQRujLgX1kLJqhc/5LpFJWwh/mCRGccX/ajuJ/f1iRTgMi83uMnL4jaR94qvoJSi1n2IqYH8Y8d84JNIUtVe1nXmZ5o9JV7xwvs3Ld1DwrZLFkfEkhYrEmjzC0sZLforKRHuYLzMrLPc9Bk6AJKrCGSXDD5hpNHz3wxQ8A6f4BmXzhdgUZhmACeMe0qQ0TrIhnH8B+gDEeYFtn7D6JlhCCw3KR42tcwioVJjq+X1QbkN60hX0u4EE0q2Q+SHIIFrPJW11pwMYPR50hI1hE8TLwRHqv3eqbbJvlHbir8UmU5rYZKzAXAzE9MQYLY/R5TdAC3X0OrSPs8xczLB5mYpLDF1RfTQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(366004)(376002)(136003)(346002)(396003)(2616005)(956004)(6486002)(31696002)(316002)(16576012)(54906003)(66946007)(186003)(8936002)(8676002)(66556008)(53546011)(4326008)(478600001)(31686004)(6666004)(36756003)(66476007)(86362001)(38100700002)(5660300002)(26005)(2906002)(4744005)(42413003)(32563001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YWx1dmg2RGxvOWt0bVVCbFpZa2ZVZmlidlozbWlSZW1nMitmUjZ2VzJZT1dF?=
+ =?utf-8?B?Z1pvWW0zMnZWR04rc1NHRE1oanVwTkJZdFlxbldDVVNobmk2SmpaYXZaMWNF?=
+ =?utf-8?B?Q3l5QStKdmFiQVlhQU5zR3J0WlY1Vzl0QjFXTDIwUVNiN1YyOFl1U2U4Rm9p?=
+ =?utf-8?B?MzRxdEo3cTFUY0lDRnk5N0NPTnZuM0l5NWpsaEQwcytjM1ZaSmhra3dKSXRN?=
+ =?utf-8?B?VlFwbFk1NUQ3OWdidFR1NDlTMDBlOGN4bUlmYXB3UFIrU2tVR2ZzdmhzUWQ2?=
+ =?utf-8?B?aDVGdGxaNFAvRll5Y21nd1VUVzVoSHlVeTJWSU9VNkEzdUVyeVdBeUs5ZFh2?=
+ =?utf-8?B?emVqMU1UTXZhZStlRFErMnQvOWFMSVlGYS95WjhzdHlGTStZZlp4Ri9CbTB4?=
+ =?utf-8?B?VmhpcUdzUG1sN01VRlNrdjN6aGFzK0pxdTNwVVp3dVNhWEVKandWNWpDUUpF?=
+ =?utf-8?B?Ny9ISmNib1A3Wkp5dWlselJGcVlhcjQrM0FrMDB5VzZNVkFuVzlOcFNJWExF?=
+ =?utf-8?B?ME9TZFk3aW9MWFdxMWx5L2JRTk9jNm53ZVNJMnM4SFhrRzR6Ny9KRGhrUklm?=
+ =?utf-8?B?Nk5Db29ER1o1VzMrd09DSjBQcGFRMzZWUVlvSmQwQ3c2b1lXZCtYVGpOTEFF?=
+ =?utf-8?B?OWM2SFdwY09iZ3lMRklhV3FoaEZDb2ZEcnJtcC9SYm5OTXp3OTIxMmJkalM1?=
+ =?utf-8?B?MjI2SThUTTdCRU5aTnhmdEdvbzBlSnFwZ3NwVDZpNFEyU0xmZW1tMXlHY01h?=
+ =?utf-8?B?b21JNSswQ1d3ajcyM1NsdmRyS0RieExHcml4NndXZ0FFNWt3WGpXNUNkcSt3?=
+ =?utf-8?B?WldNOS9nMC9VK2VNVUJjLzUrVlFsUEZFSTAybXVxdFpEdjhNZTUyVU1lRDF4?=
+ =?utf-8?B?V1d4cFcyQkMyd0FGSGZwMCs3dFlaY29CbGh5SzRoMnI0eWc0MktxQTFEZXl3?=
+ =?utf-8?B?VjFrYlVUWlc0YzlTcHd5Smx4eGpLY295b0NoWmZlcWVDbkp1SStqY2xpQTJo?=
+ =?utf-8?B?MGxKVEJ3cWpJTHprR0pLQzJRb0VWbGdIdjErbEdtcWJuMUxvNFp6Z0RBbkFI?=
+ =?utf-8?B?cTNFUUdrNWZJRndkdnRvTEo3TjZ3RmtSYkdDTm5JNmMyRnNVYUs0dFhvdG9i?=
+ =?utf-8?B?WEtCell2K005cWlxVlNXRU1TZVVvY1RJSXl6UVNPeG82VmppWFhuY1JtS3Yw?=
+ =?utf-8?B?VXJtRzlmbDZZcjd5Z0czRkowYVE2UC8xMC9QeGNGV0hmV3lKNWdzNDVvVWdt?=
+ =?utf-8?B?cHRsdXcrdFVuOFJOYnlMZGxMWlZUdTVXRm13TUk1OEEyQXEzYUVSOFlsRWtO?=
+ =?utf-8?B?aFEzYUx4YlY1WERDQkM5MzY0aUVFQnV1d3oyNlBwTlJSYkhpTUJjODFUZHdZ?=
+ =?utf-8?B?bW9QQko2TnRjOUZkaFc4aFVPVUlndmpXTHdqOFRzRUNaY3cvOTJZUkpRUVFj?=
+ =?utf-8?B?YVgxS2hDUjY5YjFPM2lSWEQrcXJFVHlCQ2dVa1locERXMks4bHBGVFpRZDBW?=
+ =?utf-8?B?b3JtbVpWYmczMzgvSGtFV1h5SUtjMGwrTk5BQll2eVVDbStJMHF3UkhKNTdW?=
+ =?utf-8?B?NnBJcG1BQTJNLy82NXJPQVVaMFhLc0tiUUREK1VWZUxEUkZteE51cURGQTY4?=
+ =?utf-8?B?UDhMcnJURUNrR3JPZEtLSEMxM3hvbkV3bUZQeWpWSTQwcENvdE5CY281Qjlq?=
+ =?utf-8?B?bHZ5TnV5K0JXTlNLaHQwcW9nVDROV3dDZis2SVAwRVRFV3grZ3krN3VXUk0r?=
+ =?utf-8?Q?pqf44VnMjLuM82XoRssAUpiBtjZHXTGWHcybU10?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6f56d023-fb04-460f-76c2-08d94bd0954c
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2021 22:49:08.3861
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CB10mQ12uWbclGE52zRXYYGicN/R9ZwZE6TMxzVn2WBigBxbxtpamkLq6vxfK1m7nIEvOVeMMH+W8xHTsDnVMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2507
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move source file hal/mac_cfg.c to the 'core' driver directory, and also
-rename its array from array_MAC_REG_8188E to array_MAC_REG, as well as
-renaming the function rtl88eu_phy_mac_config to phy_mac_config. Also
-modify single call-site for this function to reflect new name.
-
-This file contains no code which touches the adapter's HalData structure,
-and is a good candidate for therefore moving out of 'hal'. Also, no
-need for these signatures to include the model number as this driver
-only supports RTL8188eu.
-
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/staging/rtl8188eu/Makefile                | 2 +-
- drivers/staging/rtl8188eu/{hal => core}/mac_cfg.c | 8 ++++----
- drivers/staging/rtl8188eu/hal/usb_halinit.c       | 2 +-
- drivers/staging/rtl8188eu/include/phy.h           | 2 +-
- 4 files changed, 7 insertions(+), 7 deletions(-)
- rename drivers/staging/rtl8188eu/{hal => core}/mac_cfg.c (93%)
-
-diff --git a/drivers/staging/rtl8188eu/Makefile b/drivers/staging/rtl8188eu/Makefile
-index 28b936e8be0a..2799ec5a7fda 100644
---- a/drivers/staging/rtl8188eu/Makefile
-+++ b/drivers/staging/rtl8188eu/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- r8188eu-y :=				\
-+		core/mac_cfg.o		\
- 		core/rtw_ap.o		\
- 		core/rtw_cmd.o		\
- 		core/rtw_efuse.o	\
-@@ -18,7 +19,6 @@ r8188eu-y :=				\
- 		core/rtw_wlan_util.o	\
- 		core/rtw_xmit.o		\
- 		hal/fw.o	\
--		hal/mac_cfg.o \
- 		hal/bb_cfg.o \
- 		hal/rf_cfg.o \
- 		hal/pwrseqcmd.o \
-diff --git a/drivers/staging/rtl8188eu/hal/mac_cfg.c b/drivers/staging/rtl8188eu/core/mac_cfg.c
-similarity index 93%
-rename from drivers/staging/rtl8188eu/hal/mac_cfg.c
-rename to drivers/staging/rtl8188eu/core/mac_cfg.c
-index 370aa5cc55a7..a94c6ad472c5 100644
---- a/drivers/staging/rtl8188eu/hal/mac_cfg.c
-+++ b/drivers/staging/rtl8188eu/core/mac_cfg.c
-@@ -10,7 +10,7 @@
- 
- /* MAC_REG.TXT */
- 
--static u32 array_MAC_REG_8188E[] = {
-+static u32 array_MAC_REG[] = {
- 		0x026, 0x00000041,
- 		0x027, 0x00000035,
- 		0x428, 0x0000000A,
-@@ -103,14 +103,14 @@ static u32 array_MAC_REG_8188E[] = {
- 		0x70B, 0x00000087,
- };
- 
--bool rtl88eu_phy_mac_config(struct adapter *adapt)
-+bool phy_mac_config(struct adapter *adapt)
- {
- 	u32 i;
- 	u32 arraylength;
- 	u32 *ptrarray;
- 
--	arraylength = ARRAY_SIZE(array_MAC_REG_8188E);
--	ptrarray = array_MAC_REG_8188E;
-+	arraylength = ARRAY_SIZE(array_MAC_REG);
-+	ptrarray = array_MAC_REG;
- 
- 	for (i = 0; i < arraylength; i += 2)
- 		usb_write8(adapt, ptrarray[i], (u8)ptrarray[i + 1]);
-diff --git a/drivers/staging/rtl8188eu/hal/usb_halinit.c b/drivers/staging/rtl8188eu/hal/usb_halinit.c
-index 05c67e7d23ad..2a47e9b444d5 100644
---- a/drivers/staging/rtl8188eu/hal/usb_halinit.c
-+++ b/drivers/staging/rtl8188eu/hal/usb_halinit.c
-@@ -684,7 +684,7 @@ u32 rtl8188eu_hal_init(struct adapter *Adapter)
- 	}
- 	rtl8188e_InitializeFirmwareVars(Adapter);
- 
--	rtl88eu_phy_mac_config(Adapter);
-+	phy_mac_config(Adapter);
- 
- 	rtl88eu_phy_bb_config(Adapter);
- 
-diff --git a/drivers/staging/rtl8188eu/include/phy.h b/drivers/staging/rtl8188eu/include/phy.h
-index 40901d6dcaf5..8ee13eb68a5a 100644
---- a/drivers/staging/rtl8188eu/include/phy.h
-+++ b/drivers/staging/rtl8188eu/include/phy.h
-@@ -5,7 +5,7 @@
- #define index_mapping_NUM_88E	    15
- #define AVG_THERMAL_NUM_88E	    4
- 
--bool rtl88eu_phy_mac_config(struct adapter *adapt);
-+bool phy_mac_config(struct adapter *adapt);
- bool rtl88eu_phy_rf_config(struct adapter *adapt);
- bool rtl88eu_phy_bb_config(struct adapter *adapt);
- 
--- 
-2.31.1
+On 7/21/21 12:01 AM, Pierre-Louis Bossart wrote:
+> 
+>> +config SND_SOC_AMD_ACP5x
+>> +	tristate "AMD Audio Coprocessor-v5.x I2S support"
+>> +	depends on X86 && PCI
+>> +	help
+>> +	 This option enables ACP v5.x support on AMD platform
+>> +
+>> +	 By enabling this flag build will trigger for ACP PCI driver,
+>> +	 ACP DMA drvier, CPU DAI driver.
+> 
+> typo: driver
+>  
+> 
+Will fix it and post the new version.
 
