@@ -2,200 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D593D05CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9533D05D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 01:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236242AbhGTXCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 19:02:38 -0400
-Received: from mga17.intel.com ([192.55.52.151]:25067 "EHLO mga17.intel.com"
+        id S231421AbhGTXGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 19:06:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234411AbhGTXAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 19:00:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="191622370"
-X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
-   d="scan'208";a="191622370"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 16:40:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
-   d="scan'208";a="657884689"
-Received: from lkp-server02.sh.intel.com (HELO 1b5a72ed9419) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 20 Jul 2021 16:40:40 -0700
-Received: from kbuild by 1b5a72ed9419 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m5zLr-0000SR-Qe; Tue, 20 Jul 2021 23:40:39 +0000
-Date:   Wed, 21 Jul 2021 07:39:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:efi/urgent] BUILD SUCCESS
- ddab1e71d2df3513ed6029435b97dcd83fbaa372
-Message-ID: <60f75ec0.C16q4FoqB8GVqpBs%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230308AbhGTXGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 19:06:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA8AB61106;
+        Tue, 20 Jul 2021 23:46:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626824835;
+        bh=oN69miVSRyaML6+IUHqvCBLtsgOcDIuQKYun/dc9vbI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iV1XnoTgpBubZrPubTyOqte+EiVGYBIHQCQvbGYr0Bswkz9mneNYCegjzWH2A3q0n
+         6IvDPLJV8tBGZCWNbh3bztuydaPhHCGySqEDH/ae4l3Sod6h+4UCPxzuaxsiNB8hjm
+         5v6bp3/y4uEEx2l+0orKxa8XqeCqFVDibr2L+Wh7p9TG5OYhC5IucSAO+vj6sYJ+Bm
+         9H/9DP76Gq7bFNJYKh/FsfYUnn4pim18uWc2+ISbCjfkI4sPH22jwKz/n+ofaqmnlU
+         MSQ8+65PoKWCx5fvIxU5C/RMF2kLUUiIqSdxP+fuVHZx2b6Oq29ae6/aIpNfUPiS6V
+         uUkqm4takzirg==
+Date:   Wed, 21 Jul 2021 07:46:28 +0800
+From:   Gao Xiang <xiang@kernel.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Subject: Re: [PATCH v4] iomap: support tail packing inline read
+Message-ID: <20210720234620.GA15940@hsiangkao-HP-ZHAN-66-Pro-G1>
+Mail-Followup-To: "Darrick J. Wong" <djwong@kernel.org>,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+References: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
+ <20210720204224.GK23236@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210720204224.GK23236@magnolia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi/urgent
-branch HEAD: ddab1e71d2df3513ed6029435b97dcd83fbaa372  Merge tag 'efi-urgent-for-v5.14-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi into efi/urgent
+Hi Darrick,
 
-elapsed time: 722m
+On Tue, Jul 20, 2021 at 01:42:24PM -0700, Darrick J. Wong wrote:
+> On Tue, Jul 20, 2021 at 09:35:54PM +0800, Gao Xiang wrote:
+> > This tries to add tail packing inline read to iomap, which can support
+> > several inline tail blocks. Similar to the previous approach, it cleans
+> > post-EOF in one iteration.
+> > 
+> > The write path remains untouched since EROFS cannot be used for testing.
+> > It'd be better to be implemented if upcoming real users care rather than
+> > leave untested dead code around.
+> > 
+> > Cc: Christoph Hellwig <hch@lst.de>
+> > Cc: Darrick J. Wong <djwong@kernel.org>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > ---
+> > v3: https://lore.kernel.org/r/20210719144747.189634-1-hsiangkao@linux.alibaba.com
+> > changes since v3:
+> >  - update return value type of iomap_read_inline_data to int;
+> >  - fix iomap_write_begin_inline() pointed out by Andreas.
+> > 
+> >  fs/iomap/buffered-io.c | 52 ++++++++++++++++++++++++++----------------
+> >  fs/iomap/direct-io.c   | 11 +++++----
+> >  2 files changed, 39 insertions(+), 24 deletions(-)
+> > 
+> > diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> > index 87ccb3438bec..0edc8bbb35d1 100644
+> > --- a/fs/iomap/buffered-io.c
+> > +++ b/fs/iomap/buffered-io.c
+> > @@ -205,25 +205,25 @@ struct iomap_readpage_ctx {
+> >  	struct readahead_control *rac;
+> >  };
+> >  
+> > -static void
+> > +static int
+> >  iomap_read_inline_data(struct inode *inode, struct page *page,
+> > -		struct iomap *iomap)
+> > +		struct iomap *iomap, loff_t pos)
+> >  {
+> > -	size_t size = i_size_read(inode);
+> > +	unsigned int size, poff = offset_in_page(pos);
+> >  	void *addr;
+> >  
+> > -	if (PageUptodate(page))
+> > -		return;
+> > -
+> > -	BUG_ON(page_has_private(page));
+> > -	BUG_ON(page->index);
+> > -	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> > +	/* inline source data must be inside a single page */
+> > +	BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> 
+> Can we reduce the strength of these checks to a warning and an -EIO
+> return?
 
-configs tested: 142
-configs skipped: 4
+Ok, will update it.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> 
+> > +	/* handle tail-packing blocks cross the current page into the next */
+> > +	size = min_t(unsigned int, iomap->length + pos - iomap->offset,
+> > +		     PAGE_SIZE - poff);
+> >  
+> >  	addr = kmap_atomic(page);
+> > -	memcpy(addr, iomap->inline_data, size);
+> > -	memset(addr + size, 0, PAGE_SIZE - size);
+> > +	memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
+> > +	memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
+> 
+> Hmm, so I guess the point of this is to support reading data from a
+> tail-packing block, where each file gets some arbitrary byte range
+> within the tp-block, and the range isn't aligned to an fs block?  Hence
+> you have to use the inline data code to read the relevant bytes and copy
+> them into the pagecache?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                  colibri_pxa300_defconfig
-arm                       netwinder_defconfig
-powerpc                    gamecube_defconfig
-riscv                               defconfig
-m68k                           sun3_defconfig
-sh                            hp6xx_defconfig
-arm                         lpc18xx_defconfig
-x86_64                           allyesconfig
-sh                           se7724_defconfig
-powerpc                      acadia_defconfig
-mips                      pistachio_defconfig
-powerpc                     ep8248e_defconfig
-mips                             allmodconfig
-sh                           se7343_defconfig
-powerpc                     stx_gp3_defconfig
-mips                           ci20_defconfig
-arm                             pxa_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                     tqm8555_defconfig
-arm                        keystone_defconfig
-riscv                             allnoconfig
-m68k                        stmark2_defconfig
-powerpc                  storcenter_defconfig
-powerpc                     tqm8548_defconfig
-arm                        multi_v5_defconfig
-mips                          ath25_defconfig
-sh                           se7721_defconfig
-ia64                             allmodconfig
-arm                           corgi_defconfig
-powerpc                 linkstation_defconfig
-m68k                        m5407c3_defconfig
-sh                   secureedge5410_defconfig
-powerpc                     sequoia_defconfig
-arm                        mvebu_v5_defconfig
-arm                         lubbock_defconfig
-arm                   milbeaut_m10v_defconfig
-um                               alldefconfig
-powerpc                  iss476-smp_defconfig
-sh                          urquell_defconfig
-sh                          r7780mp_defconfig
-powerpc                     rainier_defconfig
-powerpc                         wii_defconfig
-sh                          rsk7201_defconfig
-powerpc                 xes_mpc85xx_defconfig
-sh                               j2_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                            mmp2_defconfig
-arm                     eseries_pxa_defconfig
-powerpc                 mpc8540_ads_defconfig
-arc                      axs103_smp_defconfig
-xtensa                       common_defconfig
-powerpc                     kilauea_defconfig
-powerpc                   motionpro_defconfig
-m68k                          atari_defconfig
-sh                ecovec24-romimage_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                        trizeps4_defconfig
-mips                         tb0287_defconfig
-sh                          landisk_defconfig
-arm                         socfpga_defconfig
-powerpc64                           defconfig
-powerpc                      cm5200_defconfig
-arm                         palmz72_defconfig
-x86_64                            allnoconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210720
-x86_64               randconfig-a006-20210720
-x86_64               randconfig-a001-20210720
-x86_64               randconfig-a005-20210720
-x86_64               randconfig-a004-20210720
-x86_64               randconfig-a002-20210720
-i386                 randconfig-a005-20210720
-i386                 randconfig-a003-20210720
-i386                 randconfig-a004-20210720
-i386                 randconfig-a002-20210720
-i386                 randconfig-a001-20210720
-i386                 randconfig-a006-20210720
-i386                 randconfig-a005-20210719
-i386                 randconfig-a004-20210719
-i386                 randconfig-a006-20210719
-i386                 randconfig-a001-20210719
-i386                 randconfig-a003-20210719
-i386                 randconfig-a002-20210719
-i386                 randconfig-a016-20210720
-i386                 randconfig-a013-20210720
-i386                 randconfig-a012-20210720
-i386                 randconfig-a014-20210720
-i386                 randconfig-a011-20210720
-i386                 randconfig-a015-20210720
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Yes, the source data isn't aligned to an fs block.
 
-clang tested configs:
-x86_64               randconfig-b001-20210720
-x86_64               randconfig-a011-20210720
-x86_64               randconfig-a016-20210720
-x86_64               randconfig-a013-20210720
-x86_64               randconfig-a014-20210720
-x86_64               randconfig-a012-20210720
-x86_64               randconfig-a015-20210720
+> 
+> Aka this thing from the v3 discussion:
+> 
+> > The other one is actual file tail blocks, I think it can cross pages due
+> > to multiple tail inline blocks.
+> >
+> >                             |<---------- inline data ------------->|
+> >   _________________________________________________________________
+> >   | file block | file block | file block | file block | file block |
+> >   |<----------------    page   ---------------------->|<---  page
+> 
+> Except ... is this diagram a little misleading?  Each of these "file
+> blocks" isn't i_blocksize bytes in size, right?  Because if they were,
+> you could use the standard iomap codepaths?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+The disgram above describe logical file extents.
+
+The real physical layout is like this:
+  _________________________________________________________
+ | ... | inode |     inline data     | other inodes | .... |
+               |<- arbitary length ->|
+> 
+> So the real layout might look a bit more like this?
+> 
+>                                 |<--- inline data ---->|
+>   _________________________________________________________________
+>   | file1 |     file2     |file3|  file4  |   file4    |
+>   |<-------------   page   -------------->|<---  page ----...
+> 
+> (Sorry, /me isn't all that familiar with erofs layout...)
+
+Nope, that is what erofs is like, erofs tail packing data inline with
+inode itself, so when reading inode, the cache page itself can read
+the tail blocks as well. When it read tail blocks again, it can save
+I/O due to buffered before. Also this approach can save storage space
+since it saves entire tail blocks as well.
+
+> 
+> >  	kunmap_atomic(addr);
+> > -	SetPageUptodate(page);
+> > +	iomap_set_range_uptodate(page, poff, PAGE_SIZE - poff);
+> > +	return PAGE_SIZE - poff;
+> >  }
+> >  
+> >  static inline bool iomap_block_needs_zeroing(struct inode *inode,
+> > @@ -246,18 +246,18 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+> >  	unsigned poff, plen;
+> >  	sector_t sector;
+> >  
+> > -	if (iomap->type == IOMAP_INLINE) {
+> > -		WARN_ON_ONCE(pos);
+> > -		iomap_read_inline_data(inode, page, iomap);
+> > -		return PAGE_SIZE;
+> > -	}
+> > -
+> > -	/* zero post-eof blocks as the page may be mapped */
+> >  	iop = iomap_page_create(inode, page);
+> > +	/* needs to skip some leading uptodate blocks */
+> >  	iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
+> >  	if (plen == 0)
+> >  		goto done;
+> >  
+> > +	if (iomap->type == IOMAP_INLINE) {
+> > +		plen = iomap_read_inline_data(inode, page, iomap, pos);
+> > +		goto done;
+> > +	}
+> > +
+> > +	/* zero post-eof blocks as the page may be mapped */
+> >  	if (iomap_block_needs_zeroing(inode, iomap, pos)) {
+> >  		zero_user(page, poff, plen);
+> >  		iomap_set_range_uptodate(page, poff, plen);
+> > @@ -589,6 +589,18 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
+> >  	return 0;
+> >  }
+> >  
+> > +static int iomap_write_begin_inline(struct inode *inode, loff_t pos,
+> > +		struct page *page, struct iomap *srcmap)
+> > +{
+> > +	/* needs more work for the tailpacking case, disable for now */
+> > +	if (WARN_ON_ONCE(srcmap->offset != 0))
+> > +		return -EIO;
+> > +	if (PageUptodate(page))
+> > +		return 0;
+> > +	iomap_read_inline_data(inode, page, srcmap, 0);
+> > +	return 0;
+> > +}
+> > +
+> >  static int
+> >  iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+> >  		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
+> > @@ -618,7 +630,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+> >  	}
+> >  
+> >  	if (srcmap->type == IOMAP_INLINE)
+> > -		iomap_read_inline_data(inode, page, srcmap);
+> > +		status = iomap_write_begin_inline(inode, pos, page, srcmap);
+> >  	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
+> >  		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
+> >  	else
+> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > index 9398b8c31323..ee6309967b77 100644
+> > --- a/fs/iomap/direct-io.c
+> > +++ b/fs/iomap/direct-io.c
+> > @@ -379,22 +379,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
+> >  {
+> >  	struct iov_iter *iter = dio->submit.iter;
+> >  	size_t copied;
+> > +	void *dst = iomap->inline_data + pos - iomap->offset;
+> >  
+> > -	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> > +	/* inline data must be inside a single page */
+> > +	BUG_ON(length > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> 
+> Same here, can we convert these to warnings + EIO return?
+
+Sure, I could update it as well.
+
+Thanks,
+Gao Xiang
+
+> 
+> --D
+> 
+> >  	if (dio->flags & IOMAP_DIO_WRITE) {
+> >  		loff_t size = inode->i_size;
+> >  
+> >  		if (pos > size)
+> > -			memset(iomap->inline_data + size, 0, pos - size);
+> > -		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
+> > +			memset(iomap->inline_data + size - iomap->offset,
+> > +			       0, pos - size);
+> > +		copied = copy_from_iter(dst, length, iter);
+> >  		if (copied) {
+> >  			if (pos + copied > size)
+> >  				i_size_write(inode, pos + copied);
+> >  			mark_inode_dirty(inode);
+> >  		}
+> >  	} else {
+> > -		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
+> > +		copied = copy_to_iter(dst, length, iter);
+> >  	}
+> >  	dio->size += copied;
+> >  	return copied;
+> > -- 
+> > 2.24.4
+> > 
