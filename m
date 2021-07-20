@@ -2,98 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28313CF5F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963063CF617
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbhGTHhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232795AbhGTHhA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:37:00 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B19AC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:17:38 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id go30so33075576ejc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:17:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v2gsQnzIST0gsjN3UJrcLe/t2Tw7WtqJWLfqcGrUyzU=;
-        b=qfrwvKcsvCXv0OESA+8RRYb7WSVVu4AfzsV3nuOa9Q9CjH4T1NVnWAfHmEErE0ve/q
-         Tl7W2dd7fkoIotTprcdm/apYaZz7befwiEzfxZcU5SCfqdl6uRTNU1z9JZIDtiNTfGaA
-         9PCd5OGhMHTEpfxtbx18A9defDJgJAtNSFt4zDxnG+E/juIvSon9dvw+LmgAFkBi7dBt
-         g+7M8F0ojESOmKmZ1vSLpO38Pqlwt6rrABUsjVCzmWqtISNgyeiRy3SH4v92iho/BU2M
-         H854FWZE+0zyuXbPkFkJizx75kVv59dgJ77yFCWqZWBn/Pzb1wQ/QhOErneyDCVwaX8u
-         d2+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v2gsQnzIST0gsjN3UJrcLe/t2Tw7WtqJWLfqcGrUyzU=;
-        b=SWCPUOfyZTAPv0rc8cCcEFZvB3/QlW+X8mKtD5lpgS7s7ehSog4sbqYKr/POv4il0L
-         w4+6Zpgjn27L42OL3sxv5d7ZyVEgnUf2e/HoOcW64r852kerL/ZtmSIrXF3WI5+D4csa
-         rov3ar8IV7ZU9lImXAIKkuQio9KdhyM2EsM29ivaif7oqzAE4GMpEGUbbW0CaLSO3/ms
-         R1YiBdDrjYPYZigZfl592nESHpJD8RKurtPGcaTEVeIZTRNXbsyL8vMGwCZkV21TT5se
-         z4+qy/MWndjqeuuJ7dCiTFxoHiVdLrjhWLys4rRfQuLm/wzwfw7z60w1J2anRljqjTCy
-         L0Qg==
-X-Gm-Message-State: AOAM531i08DXpUxIt+6qEEifF26gku9z503YoxD9LNyayz5zIfJOnUq5
-        8/hRfj+cyBGff3KZJyhx3KBaGeeEuD7/CmQt24FBgHW0j2SN5ywM
-X-Google-Smtp-Source: ABdhPJzh5NZqbV6DMl/3IzLzdFeNMJYE+oTceH2715CwSYBA7iRhUu1kXrBQ0LaNs4QVN8ZF43XJv3ua51o4ERugzfc=
-X-Received: by 2002:a17:906:844d:: with SMTP id e13mr31351133ejy.503.1626769056841;
- Tue, 20 Jul 2021 01:17:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210720174300.018cc765@canb.auug.org.au>
-In-Reply-To: <20210720174300.018cc765@canb.auug.org.au>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 20 Jul 2021 13:47:25 +0530
-Message-ID: <CA+G9fYs2ApGkrJHL5HOO1jEJZ714itVp+Tdj7fWzkG+JWc=pOA@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the printk tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Petr Mladek <pmladek@suse.com>, Chris Down <chris@chrisdown.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234505AbhGTHnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:43:24 -0400
+Received: from mga18.intel.com ([134.134.136.126]:51765 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231295AbhGTHm3 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 03:42:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="198469894"
+X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
+   d="scan'208";a="198469894"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 01:22:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
+   d="scan'208";a="453985379"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by orsmga007.jf.intel.com with ESMTP; 20 Jul 2021 01:22:18 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
+        john.garry@huawei.com, Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf pmu: Create x86 specific perf_pmu__valid_suffix
+Date:   Tue, 20 Jul 2021 16:20:44 +0800
+Message-Id: <20210720082044.5380-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 at 13:13, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the printk tree, today's linux-next build (mips allnoconfig)
-> failed like this:
->
-> arch/mips/kernel/genex.o: In function `handle_mcheck_int':
-> (.text+0x190c): undefined reference to `printk'
-> arch/mips/kernel/genex.o: In function `handle_reserved_int':
-> (.text+0x1c8c): undefined reference to `printk'
->
-> Caused by commit
->
->   337015573718 ("printk: Userspace format indexing support")
+The commit c47a5599eda3 ("perf tools: Fix pattern matching for same
+substring in different PMU type") breaks arm64 system because it
+assumes the first token must be followed by a '_', but it is
+possibly a numeric on arm64.
 
-Following MIPS builds failed at our end due the reported problem.
+For example, perf_pmu__valid_suffix("hisi_sccl3_l3c7", "hisi_sccl")
+fails. "hisi_sccl3_l3c7" is pmu name and "hisi_sccl" is token.
+"hisi_sccl" is followed by a digit but not followed by a '_'
+('3' in this example).
 
- - build/gcc-10-allnoconfig
- - build/gcc-10-ar7_defconfig
- - build/gcc-10-ath79_defconfig
- - build/gcc-10-bcm47xx_defconfig
- - build/gcc-10-bcm63xx_defconfig
- - build/gcc-10-cavium_octeon_defconfig
- - build/gcc-10-defconfig
- - build/gcc-10-e55_defconfig
- - build/gcc-10-malta_defconfig
- - build/gcc-10-nlm_xlp_defconfig
- - build/gcc-10-rt305x_defconfig
+Since the PMU alias format on arm64 has difference than the format
+on x86. Create a x86 specific perf_pmu__valid_suffix. For other arch,
+the weak function always returns true to keep original behavior
+unchanged.
 
+Fixes: c47a5599eda3 ("perf tools: Fix pattern matching for same substring in different PMU type")
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Reported-by: John Garry <john.garry@huawei.com>
+---
+ tools/perf/arch/x86/util/pmu.c | 22 ++++++++++++++++++++++
+ tools/perf/util/pmu.c          | 27 ++++++---------------------
+ tools/perf/util/pmu.h          |  1 +
+ 3 files changed, 29 insertions(+), 21 deletions(-)
 
->
-> --
-> Cheers,
-> Stephen Rothwell
+diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
+index d48d608517fd..519da0811308 100644
+--- a/tools/perf/arch/x86/util/pmu.c
++++ b/tools/perf/arch/x86/util/pmu.c
+@@ -3,6 +3,7 @@
+ 
+ #include <linux/stddef.h>
+ #include <linux/perf_event.h>
++#include <linux/ctype.h>
+ 
+ #include "../../../util/intel-pt.h"
+ #include "../../../util/intel-bts.h"
+@@ -18,3 +19,24 @@ struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __mayb
+ #endif
+ 	return NULL;
+ }
++
++bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
++{
++	char *p;
++
++	if (strncmp(pmu_name, tok, strlen(tok)))
++		return false;
++
++	p = pmu_name + strlen(tok);
++	if (*p == 0)
++		return true;
++
++	if (*p != '_')
++		return false;
++
++	++p;
++	if (*p == 0 || !isdigit(*p))
++		return false;
++
++	return true;
++}
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 44b90d638ad5..a671b16f2d3e 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -742,27 +742,6 @@ struct pmu_events_map *__weak pmu_events_map__find(void)
+ 	return perf_pmu__find_map(NULL);
+ }
+ 
+-static bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
+-{
+-	char *p;
+-
+-	if (strncmp(pmu_name, tok, strlen(tok)))
+-		return false;
+-
+-	p = pmu_name + strlen(tok);
+-	if (*p == 0)
+-		return true;
+-
+-	if (*p != '_')
+-		return false;
+-
+-	++p;
+-	if (*p == 0 || !isdigit(*p))
+-		return false;
+-
+-	return true;
+-}
+-
+ bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
+ {
+ 	char *tmp = NULL, *tok, *str;
+@@ -1906,3 +1885,9 @@ int perf_pmu__match(char *pattern, char *name, char *tok)
+ 
+ 	return 0;
+ }
++
++bool __weak perf_pmu__valid_suffix(char *pmu_name __maybe_unused,
++				   char *tok __maybe_unused)
++{
++	return true;
++}
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index 926da483a141..901812987b79 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -134,5 +134,6 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
+ 
+ bool perf_pmu__has_hybrid(void);
+ int perf_pmu__match(char *pattern, char *name, char *tok);
++bool perf_pmu__valid_suffix(char *pmu_name, char *tok);
+ 
+ #endif /* __PMU_H */
+-- 
+2.17.1
 
-- Naresh
