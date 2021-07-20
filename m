@@ -2,148 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1253F3CF727
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F7E3CF72F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbhGTJF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 05:05:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233602AbhGTJFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 05:05:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 419FC60230;
-        Tue, 20 Jul 2021 09:45:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626774350;
-        bh=FrOkYivcAO96cYhGi2qpCO+Jdfg8pb5DTqTaS7rbcpI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MrN52bq+Pn0IVXQI0rH/5ELEh+Vdqhf3o0BpOG33XDIbFgLtyW5ZBi65tFpfjSiXP
-         vlb8Snm/wmXn3s3ybYjqsW6PLa1DxCFYRuTXCjSfIye1MXnM4YUmIto0timK1r3W4A
-         QplaQBegBFQVmHZthFxyP+9Qt2p3hRDw/aYt3AOo=
-Date:   Tue, 20 Jul 2021 11:45:43 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, Chris.Redpath@arm.com,
-        dietmar.eggemann@arm.com, morten.rasmussen@arm.com,
-        qperret@google.com, linux-pm@vger.kernel.org,
-        stable@vger.kernel.org, peterz@infradead.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, vincent.guittot@linaro.org,
-        mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
-        segall@google.com, mgorman@suse.de, bristot@redhat.com,
-        CCj.Yeh@mediatek.com
-Subject: Re: [PATCH v2 1/1] PM: EM: Increase energy calculation precision
-Message-ID: <YPabR/dfllPVZbzu@kroah.com>
-References: <20210720094153.31097-1-lukasz.luba@arm.com>
- <20210720094153.31097-2-lukasz.luba@arm.com>
+        id S235152AbhGTJI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 05:08:57 -0400
+Received: from mail-vs1-f50.google.com ([209.85.217.50]:42537 "EHLO
+        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233653AbhGTJIw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 05:08:52 -0400
+Received: by mail-vs1-f50.google.com with SMTP id u7so10905870vst.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 02:49:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X7Rrow7QuzFGdlxPoYmznnIEE3mNavblrdx/pok5ctM=;
+        b=mwrH95GEkrTFHVRoNS5FJpqNF8K+Le8XnF9WHIkyaTfzBwCZezdRaVSKxLI/qSWHMM
+         Yj1aVRZUxudGA+Qqs4yo2tkabvsTQRx34bRkBr3ys0Qxzl880LtIEFqwSO6uDJBpRokT
+         HmF16H2CjvEaVA0LbdbljrYxNeS6/nu1z8Yg8QRGs8iACmUEel31tyYwhCFkWs/58nfV
+         wcK9h5cGpS/Yl5cqIT343OnFjQefDW8pq2zhnqaIKy9z4ULATXg2G+7m/1X2Rloed60N
+         1L+BWRuPvi0dU2WWLB6ekh+cLpFSKEdkC6zHd6csP97GhoPwTnBYO3w+GYTVevX0qEw5
+         /LQg==
+X-Gm-Message-State: AOAM530toAwmoszx1KQMhOmw0J1JSs4QB0Hp7rC23JSzuQ2a+G5ZMKL7
+        DKG1+BMYr3tbRTbAA+wI0IX0XAEZglCao9+8ll0=
+X-Google-Smtp-Source: ABdhPJx6LeiuuZovJDBYwh5S5IVVbdCs9y03T5Nz2Hn82i70Tf8ig1LjFS3chKv5D7mo1ez7diN4cdECYpSeBh14oXU=
+X-Received: by 2002:a05:6102:2828:: with SMTP id ba8mr28356150vsb.18.1626774569916;
+ Tue, 20 Jul 2021 02:49:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210720094153.31097-2-lukasz.luba@arm.com>
+References: <37097718-c472-025a-2058-55667badc5b9@gmail.com> <93a6ae3b-3271-5edb-0a1b-260ba789f3f1@gmail.com>
+In-Reply-To: <93a6ae3b-3271-5edb-0a1b-260ba789f3f1@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 20 Jul 2021 11:49:18 +0200
+Message-ID: <CAMuHMdUnD58W6qAbxnT3y-BMTHb+De+z29YNGYVA3mWD0B-37g@mail.gmail.com>
+Subject: Re: [PATCH 2/4] riscv: __asm_copy_to-from_user: Fix: fail on RV32
+To:     Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 10:41:53AM +0100, Lukasz Luba wrote:
-> The Energy Model (EM) provides useful information about device power in
-> each performance state to other subsystems like: Energy Aware Scheduler
-> (EAS). The energy calculation in EAS does arithmetic operation based on
-> the EM em_cpu_energy(). Current implementation of that function uses
-> em_perf_state::cost as a pre-computed cost coefficient equal to:
-> cost = power * max_frequency / frequency.
-> The 'power' is expressed in milli-Watts (or in abstract scale).
-> 
-> There are corner cases when the EAS energy calculation for two Performance
-> Domains (PDs) return the same value. The EAS compares these values to
-> choose smaller one. It might happen that this values are equal due to
-> rounding error. In such scenario, we need better resolution, e.g. 1000
-> times better. To provide this possibility increase the resolution in the
-> em_perf_state::cost for 64-bit architectures. The costs for increasing
-> resolution in 32-bit architectures are pretty high (64-bit division) and
-> the returns do not justify the increased costs.
-> 
-> This patch allows to avoid the rounding to milli-Watt errors, which might
-> occur in EAS energy estimation for each Performance Domains (PD). The
-> rounding error is common for small tasks which have small utilization
-> value.
-> 
-> There are two places in the code where it makes a difference:
-> 1. In the find_energy_efficient_cpu() where we are searching for
-> best_delta. We might suffer there when two PDs return the same result,
-> like in the example below.
-> 
-> Scenario:
-> Low utilized system e.g. ~200 sum_util for PD0 and ~220 for PD1. There
-> are quite a few small tasks ~10-15 util. These tasks would suffer for
-> the rounding error. Such system utilization has been seen while playing
-> some simple games. In such condition our partner reported 5..10mA less
-> battery drain.
-> 
-> Some details:
-> We have two Perf Domains (PDs): PD0 (big) and PD1 (little)
-> Let's compare w/o patch set ('old') and w/ patch set ('new')
-> We are comparing energy w/ task and w/o task placed in the PDs
-> 
-> a) 'old' w/o patch set, PD0
-> task_util = 13
-> cost = 480
-> sum_util_w/o_task = 215
-> sum_util_w_task = 228
-> scale_cpu = 1024
-> energy_w/o_task = 480 * 215 / 1024 = 100.78 => 100
-> energy_w_task = 480 * 228 / 1024 = 106.87 => 106
-> energy_diff = 106 - 100 = 6
-> (this is equal to 'old' PD1's energy_diff in 'c)')
-> 
-> b) 'new' w/ patch set, PD0
-> task_util = 13
-> cost = 480 * 1000 = 480000
-> sum_util_w/o_task = 215
-> sum_util_w_task = 228
-> energy_w/o_task = 480000 * 215 / 1024 = 100781
-> energy_w_task = 480000 * 228 / 1024  = 106875
-> energy_diff = 106875 - 100781 = 6094
-> (this is not equal to 'new' PD1's energy_diff in 'd)')
-> 
-> c) 'old' w/o patch set, PD1
-> task_util = 13
-> cost = 160
-> sum_util_w/o_task = 283
-> sum_util_w_task = 293
-> scale_cpu = 355
-> energy_w/o_task = 160 * 283 / 355 = 127.55 => 127
-> energy_w_task = 160 * 296 / 355 = 133.41 => 133
-> energy_diff = 133 - 127 = 6
-> (this is equal to 'old' PD0's energy_diff in 'a)')
-> 
-> d) 'new' w/ patch set, PD1
-> task_util = 13
-> cost = 160 * 1000 = 160000
-> sum_util_w/o_task = 283
-> sum_util_w_task = 293
-> scale_cpu = 355
-> energy_w/o_task = 160000 * 283 / 355 = 127549
-> energy_w_task = 160000 * 296 / 355 =   133408
-> energy_diff = 133408 - 127549 = 5859
-> (this is not equal to 'new' PD0's energy_diff in 'b)')
-> 
-> 2. Difference in the the last find_energy_efficient_cpu(): margin filter.
-> With this patch the margin comparison also has better resolution,
-> so it's possible to have better task placement thanks to that.
-> 
-> Fixes: 27871f7a8a341ef ("PM: Introduce an Energy Model management framework")
-> Reported-by: CCJ Yeh <CCj.Yeh@mediatek.com>
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  include/linux/energy_model.h | 16 ++++++++++++++++
->  kernel/power/energy_model.c  |  3 ++-
->  2 files changed, 18 insertions(+), 1 deletion(-)
-> 
+Hi Tsukamoto-san,
 
-<formletter>
+Thanks for your patch!
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+On Tue, Jul 20, 2021 at 10:51 AM Akira Tsukamoto
+<akira.tsukamoto@gmail.com> wrote:
+> Had a bug when converting bytes to bits when the cpu was rv32.
+>
+> The a3 contains the number of bytes and multiple of 8
+> would be the bits. The LGREG is holding 2 for RV32 and 3 for
+> RV32, so to achieve multiple of 8 it must always be constant 3.
 
-</formletter>
+RV64
+
+> The 2 was mistakenly used for rv32.
+>
+> Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
