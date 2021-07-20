@@ -2,112 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DC53CFBC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 942943CFBD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238353AbhGTNdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 09:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37634 "EHLO
+        id S239882AbhGTNfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 09:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239264AbhGTN1H (ORCPT
+        with ESMTP id S239298AbhGTN1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 09:27:07 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CECC0613DB
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:06:51 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id u1so26206972wrs.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:06:51 -0700 (PDT)
+        Tue, 20 Jul 2021 09:27:09 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC818C0613DC
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:07:29 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id a23-20020a05600c2257b0290236ec98bebaso2141196wmm.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:07:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4Y7wO3FmEg9E/e/M3ZFiJFbsJXbUsTlhUr/Aisk4F7w=;
-        b=lu1K4wCxmYTUEOAY0h4I+WRyY+GjDf9LqwrVn+apJAj+WQ78hw81zzGUFuz1g6DyzD
-         3qjJUaBpmVOpkjVoLyrsJ2/Kc4LH4ZGWlBAJBu8wuvbeO9zuoda9yFQQPBdkmxhJI57J
-         9VQmX8jPbHoZj/VB7XrOzE3R+N9O+zOSAI7IxpF0zzQLSaRhHjq8GzHtSuJWqOGYohS5
-         iImsZnRyOb/OjnPNtGHUwhR/fTpzZYbAWb8D6BlLVXBC2tA6VvwBF6tRNsDr7dRJvWtC
-         LPJTPTIGzM5jGa8K4Ylulif0sIoiFM/LeO/syFCA9ksIL6oJCzEirXmlegbA9itahNlu
-         HDMA==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=NhiaQkSCHPQx+ne2ETdlu6yODY4PxPdrO6TLTCHDEvo=;
+        b=AbV7T8HvSTYfx7yF5o/wHZ6AbP9cbbnHR6simTxT5F2QgalLEh3Zv7zaCsj+iLKyB+
+         Pj86CpN7A4sNSRwvVjPdfaX8QWev0o9Y3SuETieOM3yAYO1hPR17h/6YHdLKCBfpYqOq
+         0xanI2HXzwfifg0mxPZDCYmHVwhR3CiSIXtXU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4Y7wO3FmEg9E/e/M3ZFiJFbsJXbUsTlhUr/Aisk4F7w=;
-        b=g/3BZE2hNCiLe4GN/NfZw9aSA4/tJvBpZh98J5/JPwtyW+Zy5tOZfTyWH+leSR7sIk
-         3VGXNiQO/r7sJTa8DkE9KjFwJwuna6zLohpAscKcSBIh8HaIp2AafwdA+SeXZSLsgK9+
-         M5glPcigONnNVMLXkEMauSt2N4AylzOM45AqWu3hpzwc8SehefJiZfl+BWcxR0dSXn+m
-         A376fJylg2n+wwytpG8D27D4NAI18+urltkskwyl1G8+E2xCwPHMkSYNPzfNs3iYrQHv
-         4RrAcXPJD9QH7y5Rwh5KF5Q94jXEM0ZBpD5D2lC/7Ujog0FAA5Ozv+HRSEwC1KATS9NB
-         X9BA==
-X-Gm-Message-State: AOAM53250oFkLEaKuBQwgei2XVz+qDm9RDxO0c8ETjmRrkl2oAWtN/Ld
-        mcx1cm585FZRpjkPCjg4jXm1dA==
-X-Google-Smtp-Source: ABdhPJxjEWqFqQoktHsVZL6arngMcaaXABAJUgOrUrQFloZHgHwZpBl3SXOVE0HVVWN1F/G91ZiY9Q==
-X-Received: by 2002:a05:6000:154c:: with SMTP id 12mr36606989wry.393.1626790009958;
-        Tue, 20 Jul 2021 07:06:49 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:ffa2:b757:e72a:11dd])
-        by smtp.gmail.com with ESMTPSA id d8sm24562783wrv.20.2021.07.20.07.06.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=NhiaQkSCHPQx+ne2ETdlu6yODY4PxPdrO6TLTCHDEvo=;
+        b=T2YsvPq5IqcFOhiqDv9ViimVhs2+BCILTFitzraF+kZk6/0fSSIa/iQjnIvCogUwBL
+         ogGrXEfee82Jtq6aqnIIZ2vS7KrSE4KqO6By5UtYjXT95ELeyBVx7q3/CzW4Cnd8GXJK
+         kROI+8U2nHtxwnylC0dE04VGCdyQMngYSxgU80iJWsrXfX332JFiLXTUgZAUQtpCLoP3
+         oi83fAzlLaMHsQ7CBsR7Tj08j2fhqve/xNlNArmiAke8oex0rBtcy3cfTR+uF3WXlLMS
+         HQJE289P3PJqwS8X8fHJG77tSEE+rWSA4Vczq3F6SXplxt7wws1vdofsoJECYuFWUIUR
+         lfig==
+X-Gm-Message-State: AOAM532blomX5x8tZ6W7FbmdFcuhGAfsCdhFEJqVba1POeCEG7n6Z4T7
+        ePgMtwzuS9IevqU6Fk7dqxlruQ==
+X-Google-Smtp-Source: ABdhPJympAVWx+89WOJs70xZyzGidYkvS7+zE+nPVH5Jqu38ByIK/jJxawzGearAHIs1mQR4Vm9qng==
+X-Received: by 2002:a05:600c:20b:: with SMTP id 11mr39063501wmi.112.1626790048280;
+        Tue, 20 Jul 2021 07:07:28 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id s17sm24408502wrv.2.2021.07.20.07.07.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 07:06:49 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 15:06:46 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Fuad Tabba <tabba@google.com>
-Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        dbrazdil@google.com, kernel-team@android.com
-Subject: Re: [PATCH 08/14] KVM: arm64: Add support for tagging shared pages
- in page-table
-Message-ID: <YPbYdtRx6dMH52oO@google.com>
-References: <20210719104735.3681732-1-qperret@google.com>
- <20210719104735.3681732-9-qperret@google.com>
- <CA+EHjTwmmV6EooG+Ykbso3G6nkjq=sbRzXH3vetazzPF5mO02g@mail.gmail.com>
+        Tue, 20 Jul 2021 07:07:26 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 16:07:24 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>
+Cc:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno@lists.freedesktop.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Emma Anholt <emma@anholt.net>, Bernard Zhao <bernard@vivo.com>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Dave Airlie <airlied@redhat.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH 00/11] drm/msm: drm scheduler conversion
+ and cleanups
+Message-ID: <YPbYnLBin9N4weiC@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>, freedreno@lists.freedesktop.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>, Emma Anholt <emma@anholt.net>,
+        Bernard Zhao <bernard@vivo.com>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Lee Jones <lee.jones@linaro.org>, Dave Airlie <airlied@redhat.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>
+References: <20210717202924.987514-1-robdclark@gmail.com>
+ <582b8869-f370-3803-60a8-df31088f8088@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CA+EHjTwmmV6EooG+Ykbso3G6nkjq=sbRzXH3vetazzPF5mO02g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <582b8869-f370-3803-60a8-df31088f8088@gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 20 Jul 2021 at 14:48:09 (+0100), Fuad Tabba wrote:
-> This might tie in to Marc's comments for using enums, but
-> consolidating the translation between prot and ignored/software bits
-> in one place would be good: thinking about patch 10 as well, where you
-> get the prot from the ignored bits. Even though you have documented
-> it, I'm finding the part where a field can be borrowed and shared as
-> opposed to being only shared not very intuitive, and I need to reread
-> the comment here to remember the difference while going through the
-> code.
+On Mon, Jul 19, 2021 at 10:40:57AM +0200, Christian König wrote:
+> Am 17.07.21 um 22:29 schrieb Rob Clark:
+> > From: Rob Clark <robdclark@chromium.org>
+> > 
+> > Conversion to gpu_scheduler, and bonus removal of
+> > drm_gem_object_put_locked()
 > 
-> You also mention lending as potentially reserved for the future, but I
-> think that lending is the other side of borrowing (depends on who's
-> doing the giving/taking). I wonder if in this case it would be clearer
-> to describe it in terms of whether it's exclusively owned vs owned but
-> shared (for the owner), and just shared for the sharer...
+> Oh yes please!
+> 
+> If I'm not completely mistaken that was the last puzzle piece missing to
+> unify TTMs and GEMs refcount of objects.
 
-Argh so I actually found the encoding pretty neat :/
-The idea is the following:
+Why does drm/msm, a driver not using ttm at all, block ttm refactorings?
+We can just check whether the TTM using driver is potentially using locked
+final unref and have a special version of
+drm_gem_object_put_guaranteed_unlocked or whatever the bikeshed will look
+like, which doesn't have the migth_lock.
 
-  - an entity that has a page mapped as SHARED in its PT means it
-    doesn't have exclusive access to the page;
+Anyway, deed is done now :-)
+-Daniel
 
-  - an entity that has a page mapped as BORROWED in its PT means it has
-    access to a page it doesn't own;
+> 
+> Only problem is that I only see patch 7 and 9 in my inbox. Where is the
+> rest?
+> 
+> Thanks,
+> Christian.
+> 
+> > 
+> > Rob Clark (11):
+> >    drm/msm: Docs and misc cleanup
+> >    drm/msm: Small submitqueue creation cleanup
+> >    drm/msm: drop drm_gem_object_put_locked()
+> >    drm: Drop drm_gem_object_put_locked()
+> >    drm/msm/submit: Simplify out-fence-fd handling
+> >    drm/msm: Consolidate submit bo state
+> >    drm/msm: Track "seqno" fences by idr
+> >    drm/msm: Return ERR_PTR() from submit_create()
+> >    drm/msm: Conversion to drm scheduler
+> >    drm/msm: Drop struct_mutex in submit path
+> >    drm/msm: Utilize gpu scheduler priorities
+> > 
+> >   drivers/gpu/drm/drm_gem.c                   |  22 --
+> >   drivers/gpu/drm/msm/Kconfig                 |   1 +
+> >   drivers/gpu/drm/msm/adreno/a5xx_debugfs.c   |   4 +-
+> >   drivers/gpu/drm/msm/adreno/a5xx_gpu.c       |   6 +-
+> >   drivers/gpu/drm/msm/adreno/a5xx_power.c     |   2 +-
+> >   drivers/gpu/drm/msm/adreno/a5xx_preempt.c   |   7 +-
+> >   drivers/gpu/drm/msm/adreno/a6xx_gmu.c       |  12 +-
+> >   drivers/gpu/drm/msm/adreno/a6xx_gpu.c       |   2 +-
+> >   drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c |   4 +-
+> >   drivers/gpu/drm/msm/adreno/adreno_gpu.c     |   6 +-
+> >   drivers/gpu/drm/msm/msm_drv.c               |  30 +-
+> >   drivers/gpu/drm/msm/msm_fence.c             |  39 ---
+> >   drivers/gpu/drm/msm/msm_fence.h             |   2 -
+> >   drivers/gpu/drm/msm/msm_gem.c               |  91 +-----
+> >   drivers/gpu/drm/msm/msm_gem.h               |  37 ++-
+> >   drivers/gpu/drm/msm/msm_gem_submit.c        | 300 ++++++++++++--------
+> >   drivers/gpu/drm/msm/msm_gpu.c               |  50 +---
+> >   drivers/gpu/drm/msm/msm_gpu.h               |  41 ++-
+> >   drivers/gpu/drm/msm/msm_ringbuffer.c        |  70 ++++-
+> >   drivers/gpu/drm/msm/msm_ringbuffer.h        |  12 +
+> >   drivers/gpu/drm/msm/msm_submitqueue.c       |  49 +++-
+> >   include/drm/drm_gem.h                       |   2 -
+> >   include/uapi/drm/msm_drm.h                  |  10 +-
+> >   23 files changed, 440 insertions(+), 359 deletions(-)
+> > 
+> 
 
-From that we can build the states we need:
-
-  - when an entity shares a page with another, the original owner gets a
-    SHARED mapping, and the recipient a SHARED+BORROWED mapping.
-
-  - and in the future when/if we implement lending (which means an
-    entity gives exclusive access to a page to another entity, but
-    retains ownership) we can map the page in the recipient as
-    'BORROWED' only, but not 'SHARED'. And the original owner will have
-    an invalid mapping with a new state 'LENT', which is encoded with
-    both SW bits set.
-
-How does that sound? Did you have something else in mind?
-
-Thanks,
-Quentin
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
