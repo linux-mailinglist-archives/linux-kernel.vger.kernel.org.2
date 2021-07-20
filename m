@@ -2,222 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1E33D0332
+	by mail.lfdr.de (Postfix) with ESMTP id D89193D0333
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 22:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbhGTUDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 16:03:39 -0400
-Received: from todd.t-8ch.de ([159.69.126.157]:53587 "EHLO todd.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237106AbhGTTqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 15:46:51 -0400
-From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1626812837;
-        bh=rr3Jhg9Eu5FI/LbMQvi3n8hESvKsVt21H82ii3qV3V4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Df2a8dT//jJda2CxcNAVoEm/Iodr+jU3kwKzDpF750e/Opim+rnZ3mlVgg/10zbsv
-         NsYyC6+YReaA8O6YqwjJ0Owj6A7C7ymnopK+CWsmPc+dkgjBKTM8CNp6FurcsYBjsU
-         c1aM8lp97cVCuXgN+3z95yhXXPAM2DFk/aTFFt8Q=
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, Ben Chen <ben_chen@bizlinktech.com>
-Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] HID: cmedia: add support for HS-100B mute button
-Date:   Tue, 20 Jul 2021 22:27:08 +0200
-Message-Id: <20210720202708.341057-1-linux@weissschuh.net>
-X-Mailer: git-send-email 2.32.0
+        id S231927AbhGTUDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 16:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237639AbhGTTwL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 15:52:11 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58ACBC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:32:48 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id r11so27330891wro.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AIWk5BKdHIXkOStxfUF7zNtVWR8PXbbd7J5me9z4RZE=;
+        b=Vqe0E33hZAiq5rO4tkECZ2RNv4SKNV35O5vhgqgSxDZC2zxfsszv1ni6QOvhafBAhQ
+         npz0nXmOzv9H6qCSMYJXeGZEaWGPxyVknU+Ny47YyxAYZRrIYYapnWghw5ZKdmU0hnPu
+         b7JUrDsrufoQAj7OCdJj0NCdxT60hWuVXucLgrFpdeFYZAdbOflFD1AH5lG+ihDVZ85v
+         Od9dE0Ad7ifBl7PAJR4qyidOPaixtVTZTw5d4zCBZUJcd/X8vj65605ytoN2zH9Dkth6
+         YibwHVxdHRobRZrPKTNpK31Wr2qBW63WoJKhtQlgzcxHQDj1NfuDWADmODRDzqlIlHdc
+         65wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AIWk5BKdHIXkOStxfUF7zNtVWR8PXbbd7J5me9z4RZE=;
+        b=iL1fW+lNRR35eCvFDjD28rxYANVjM7SuBtVD5O8RqWjNAvUYQkppUXx7i4NV479K4T
+         pgDNMHOZuVLkB20fMgGHawF0f6XN6DnWsQvgWfkP6kJKh/WFiyRQjMQ5HPxx1OO7S076
+         5CCjKltr0XXFuspTn50guDFXoO/7Vt5VxppGBXOD3YUlt13DTRysk8YHbcLbrJ3CXLAI
+         e7XVmvpx5NUSzTo14zgZbcinkPQFLhXl4Zt0Iem/9gMEE7mGJnRTsPQs5m+1xK0BUojP
+         /FIm6ej9Z6Jm5ASM67qcKGoofH8S4saF1X95aT9mxp336voe7qzn/spw0Pu8Y7M1SH0U
+         sCog==
+X-Gm-Message-State: AOAM5311akBoNFrUVjX4qbqwxJNKMKGWmNABTxdChLCkhFPIRUtwjXxq
+        eSyCAnTV8RA9BpUsw8m8vX10wk3on/hWhNNyzEPv5g==
+X-Google-Smtp-Source: ABdhPJzrhB5zVHMUs5Co+5EcZK8Y4nLQ9oRLi9EZKRUaMJmk/QBvPOmssls+DKWeTB4xv4TAXpAMHJQKtwP0WDQ9b4Y=
+X-Received: by 2002:adf:ea8c:: with SMTP id s12mr39508206wrm.404.1626813166651;
+ Tue, 20 Jul 2021 13:32:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com> <20210720155150.497148-1-peterx@redhat.com>
+In-Reply-To: <20210720155150.497148-1-peterx@redhat.com>
+From:   Hugh Dickins <hughd@google.com>
+Date:   Tue, 20 Jul 2021 13:32:19 -0700
+Message-ID: <CANsGZ6aEW8pEncdoh_mGxKF-Se0_-O=E124EywULWvJ3qC0aVA@mail.gmail.com>
+Subject: Re: [PATCH stable 5.13.y/5.12.y 0/2] mm/thp: Fix uffd-wp with fork();
+ crash on pmd migration entry on fork
+To:     Peter Xu <peterx@redhat.com>
+Cc:     stable <stable@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hillf Danton <hdanton@sina.com>, Igor Raits <igor@gooddata.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These chips report mute button events in bit 4 of their report without it
-being part of the report descriptor.
-Use a custom descriptor that maps this bit.
+On Tue, Jul 20, 2021 at 8:52 AM Peter Xu <peterx@redhat.com> wrote:
+>
+> In summary: this series should be needed for 5.10/5.12/5.13. This is the
+> 5.13.y/5.12.y backport of the series, and it should be able to be applied on
+> both of the branches.  Patch 1 is a dependency of patch 2, while patch 2 should
+> be the real fix.
+>
+> This series should be able to fix a rare race that mentioned in thread:
+>
+> https://lore.kernel.org/linux-mm/796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com/
+>
+> This fact wasn't discovered when the fix got proposed and merged, because the
+> fix was originally about uffd-wp and its fork event.  However it turns out that
+> the problematic commit b569a1760782f3d is also causing crashing on fork() of
+> pmd migration entries which is even more severe than the original uffd-wp
+> problem.
+>
+> Stable kernels at least on 5.12.y has the crash reproduced, and it's possible
+> 5.13.y and 5.10.y could hit it due to having the problematic commit
+> b569a1760782f3d but lacking of the uffd-wp fix patch (8f34f1eac382, which is
+> also patch 2 of this series).
+>
+> The pmd entry crash problem was reported by Igor Raits <igor@gooddata.com> and
+> debugged by Hugh Dickins <hughd@google.com>.
+>
+> Please review, thanks.
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
+These two 5.13.y patches look just right to me, thank you Peter (and
+5.12.19 announced EOL overnight, so nothing more wanted for that).
 
-v1: https://lore.kernel.org/linux-input/a769ae40-6d0c-47c4-803f-2c8dbc362f24@t-8ch.de/
+But these do just amount to asking stable@vger.kernel.org to
+cherry-pick the two commits
+5fc7a5f6fd04bc18f309d9f979b32ef7d1d0a997
+8f34f1eac3820fc2722e5159acceb22545b30b0d
 
-v1 -> v2:
- * Merged into the existing cmedia driver instead of creating a dedicated
-   driver.
+Hugh
 
-v2: https://lore.kernel.org/linux-input/20210716160659.154779-1-linux@weissschuh.net/
+(I'd usually reply with alpine rather than gmail, but I see extra
+blank lines on these 0/2s that way; but the patches themselves are
+good.)
 
-v2 -> v3:
- * Fixed cosmetic checkpatch warnings
- * CC-ed Ben Chen who is the original author of hid-cmedia.c
-
-v3: https://lore.kernel.org/linux-input/20210719110911.310701-1-linux@weissschuh.net/
-
-v3 -> v4:
- * Create a dedicated struct hid_driver, leaving the existing intact
- * Drop entry in hid-quirks.c
-
- drivers/hid/Kconfig      |  5 ++-
- drivers/hid/hid-cmedia.c | 90 +++++++++++++++++++++++++++++++++++++++-
- drivers/hid/hid-ids.h    |  1 +
- 3 files changed, 92 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
-index 160554903ef9..6f72ecd79db0 100644
---- a/drivers/hid/Kconfig
-+++ b/drivers/hid/Kconfig
-@@ -259,10 +259,11 @@ config HID_PRODIKEYS
- 	  and some additional multimedia keys.
- 
- config HID_CMEDIA
--	tristate "CMedia CM6533 HID audio jack controls"
-+	tristate "CMedia audio chips"
- 	depends on HID
- 	help
--	Support for CMedia CM6533 HID audio jack controls.
-+	Support for CMedia CM6533 HID audio jack controls
-+        and HS100B mute buttons.
- 
- config HID_CP2112
- 	tristate "Silicon Labs CP2112 HID USB-to-SMBus Bridge support"
-diff --git a/drivers/hid/hid-cmedia.c b/drivers/hid/hid-cmedia.c
-index 3296c5050264..cab42047bc99 100644
---- a/drivers/hid/hid-cmedia.c
-+++ b/drivers/hid/hid-cmedia.c
-@@ -1,8 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-  * HID driver for CMedia CM6533 audio jack controls
-+ * and HS100B mute buttons
-  *
-  * Copyright (C) 2015 Ben Chen <ben_chen@bizlinktech.com>
-+ * Copyright (C) 2021 Thomas Weißschuh <linux@weissschuh.net>
-  */
- 
- #include <linux/device.h>
-@@ -11,13 +13,53 @@
- #include "hid-ids.h"
- 
- MODULE_AUTHOR("Ben Chen");
--MODULE_DESCRIPTION("CM6533 HID jack controls");
-+MODULE_AUTHOR("Thomas Weißschuh");
-+MODULE_DESCRIPTION("CM6533 HID jack controls and HS100B mute button");
- MODULE_LICENSE("GPL");
- 
- #define CM6533_JD_TYPE_COUNT      1
- #define CM6533_JD_RAWEV_LEN	 16
- #define CM6533_JD_SFX_OFFSET	  8
- 
-+#define HS100B_RDESC_ORIG_SIZE   60
-+
-+/* Fixed report descriptor of HS-100B audio chip
-+ * Bit 4 is an abolute Microphone mute usage instead of being unassigned.
-+ */
-+static __u8 hs100b_rdesc_fixed[] = {
-+	0x05, 0x0C,         /*  Usage Page (Consumer),          */
-+	0x09, 0x01,         /*  Usage (Consumer Control),       */
-+	0xA1, 0x01,         /*  Collection (Application),       */
-+	0x15, 0x00,         /*      Logical Minimum (0),        */
-+	0x25, 0x01,         /*      Logical Maximum (1),        */
-+	0x09, 0xE9,         /*      Usage (Volume Inc),         */
-+	0x09, 0xEA,         /*      Usage (Volume Dec),         */
-+	0x75, 0x01,         /*      Report Size (1),            */
-+	0x95, 0x02,         /*      Report Count (2),           */
-+	0x81, 0x02,         /*      Input (Variable),           */
-+	0x09, 0xE2,         /*      Usage (Mute),               */
-+	0x95, 0x01,         /*      Report Count (1),           */
-+	0x81, 0x06,         /*      Input (Variable, Relative), */
-+	0x05, 0x0B,         /*      Usage Page (Telephony),     */
-+	0x09, 0x2F,         /*      Usage (2Fh),                */
-+	0x81, 0x02,         /*      Input (Variable),           */
-+	0x09, 0x20,         /*      Usage (20h),                */
-+	0x81, 0x06,         /*      Input (Variable, Relative), */
-+	0x05, 0x0C,         /*      Usage Page (Consumer),      */
-+	0x09, 0x00,         /*      Usage (00h),                */
-+	0x95, 0x03,         /*      Report Count (3),           */
-+	0x81, 0x02,         /*      Input (Variable),           */
-+	0x26, 0xFF, 0x00,   /*      Logical Maximum (255),      */
-+	0x09, 0x00,         /*      Usage (00h),                */
-+	0x75, 0x08,         /*      Report Size (8),            */
-+	0x95, 0x03,         /*      Report Count (3),           */
-+	0x81, 0x02,         /*      Input (Variable),           */
-+	0x09, 0x00,         /*      Usage (00h),                */
-+	0x95, 0x04,         /*      Report Count (4),           */
-+	0x91, 0x02,         /*      Output (Variable),          */
-+	0xC0                /*  End Collection                  */
-+};
-+
- /*
- *
- *CM6533 audio jack HID raw events:
-@@ -156,5 +198,49 @@ static struct hid_driver cmhid_driver = {
- 	.remove = cmhid_remove,
- 	.input_mapping = cmhid_input_mapping,
- };
--module_hid_driver(cmhid_driver);
- 
-+static __u8 *cmhid_hs100b_report_fixup(struct hid_device *hid, __u8 *rdesc,
-+				       unsigned int *rsize)
-+{
-+	if (*rsize == HS100B_RDESC_ORIG_SIZE) {
-+		hid_info(hid, "Fixing CMedia HS-100B report descriptor\n");
-+		rdesc = hs100b_rdesc_fixed;
-+		*rsize = sizeof(hs100b_rdesc_fixed);
-+	}
-+	return rdesc;
-+}
-+
-+static const struct hid_device_id cmhid_hs100b_devices[] = {
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_CMEDIA, USB_DEVICE_ID_CMEDIA_HS100B) },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(hid, cmhid_hs100b_devices);
-+
-+static struct hid_driver cmhid_hs100b_driver = {
-+	.name = "cmedia_hs100b",
-+	.id_table = cmhid_hs100b_devices,
-+	.report_fixup = cmhid_hs100b_report_fixup,
-+};
-+
-+static int cmedia_init(void)
-+{
-+	int ret;
-+
-+	ret = hid_register_driver(&cmhid_driver);
-+	if (ret)
-+		return ret;
-+
-+	ret = hid_register_driver(&cmhid_hs100b_driver);
-+	if (ret)
-+		hid_unregister_driver(&cmhid_driver);
-+
-+	return ret;
-+}
-+module_init(cmedia_init);
-+
-+static void cmedia_exit(void)
-+{
-+		hid_unregister_driver(&cmhid_driver);
-+		hid_unregister_driver(&cmhid_hs100b_driver);
-+}
-+module_exit(cmedia_exit);
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 8f1893e68112..6864e4e6ac8b 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -292,6 +292,7 @@
- 
- #define USB_VENDOR_ID_CMEDIA		0x0d8c
- #define USB_DEVICE_ID_CM109		0x000e
-+#define USB_DEVICE_ID_CMEDIA_HS100B	0x0014
- #define USB_DEVICE_ID_CM6533		0x0022
- 
- #define USB_VENDOR_ID_CODEMERCS		0x07c0
-
-base-commit: 1b97ec646386cea5b4be139f7685b4a4b4d3799a
--- 
-2.32.0
-
+>
+> Peter Xu (2):
+>   mm/thp: simplify copying of huge zero page pmd when fork
+>   mm/userfaultfd: fix uffd-wp special cases for fork()
+>
+>  include/linux/huge_mm.h |  2 +-
+>  include/linux/swapops.h |  2 ++
+>  mm/huge_memory.c        | 36 +++++++++++++++++-------------------
+>  mm/memory.c             | 25 +++++++++++++------------
+>  4 files changed, 33 insertions(+), 32 deletions(-)
+>
+> --
+> 2.31.1
+>
+>
