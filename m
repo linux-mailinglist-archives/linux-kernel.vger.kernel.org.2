@@ -2,147 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 163C53CF39A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F543CF3AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348754AbhGTEB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 00:01:58 -0400
-Received: from mail-pj1-f41.google.com ([209.85.216.41]:35572 "EHLO
-        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347437AbhGTD5W (ORCPT
+        id S1349079AbhGTEG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 00:06:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42621 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347058AbhGTEBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 23:57:22 -0400
-Received: by mail-pj1-f41.google.com with SMTP id gp5-20020a17090adf05b0290175c085e7a5so1226350pjb.0;
-        Mon, 19 Jul 2021 21:37:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UuFXwQNY/mN4t/E3n/ofLi3p4GNt3VYtvsh7leO3MBk=;
-        b=K/CvLIZc5igxgZ1XwZEEyEMUVvryVb65SGp0klHNkDmrJKJCkaG0XXo+sbLIc5/APv
-         QSswyFzfTqIa0mKkypB0dG5cjLF/hUsJPIFEyssz1GTZ1I8eFtmn34HZJ2m7eX6BdXn8
-         4rP+GtvDBbxcNsh3h6vwDIH3INX9HN/zM0qA/OSKthAZehxv3y1s2s2+91ZmjKtpo23I
-         1eqdeI5ipnSG/R8buD72M08Yejf5ed0xoWJ2IWi6M9hEYqyqMImXU8/Ek9n9XtdyUKnJ
-         eKqXT2H8YwqAz9HmEjuJT/TGS+5aKuJ0SZCOuTIviFxDoY4aFzFxAZMJp1fpbgg2qBoC
-         QLpw==
-X-Gm-Message-State: AOAM531WRuHoJlQojlJu/B4ysKmytt2Bf0yX1CQ8+Ffa79BiapGbxe6G
-        qi97viuXuCvhi2RMBb3FtJM=
-X-Google-Smtp-Source: ABdhPJwghXuAtRgwfuKMsWiX0/I4sQpP6yUDq/43HEyffI2/FALbrl6Buza/NqHT0VhhuSmduOFdeQ==
-X-Received: by 2002:a17:90a:bc83:: with SMTP id x3mr27733053pjr.17.1626755879221;
-        Mon, 19 Jul 2021 21:37:59 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:3cca:2c81:f459:847a? ([2601:647:4000:d7:3cca:2c81:f459:847a])
-        by smtp.gmail.com with ESMTPSA id n32sm21455123pfv.59.2021.07.19.21.37.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 21:37:58 -0700 (PDT)
-Subject: Re: [Patch v4 0/3] Introduce a driver to support host accelerated
- access to Microsoft Azure Blob
-To:     longli@linuxonhyperv.com, linux-fs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>
-References: <1626751866-15765-1-git-send-email-longli@linuxonhyperv.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <82e8bec6-4f6f-08d7-90db-9661f675749d@acm.org>
-Date:   Mon, 19 Jul 2021 21:37:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 20 Jul 2021 00:01:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626756141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fKQJw44KnWWw6kFQEoZm4t5SzBRdmsu+r00ClxkZDTU=;
+        b=bkjI4SRosP9ZyBqbDAqKPvHhDrV2c640m6tPnLkAfdA89KquV92+aMaSLnAPSBVudKcV7d
+        pDBLqndNZVQ8foMAlw6pE3QK9ehiYKAj0gzSW1bLyNd7gKf0DJ3G9fdZgr01SZbRY9a3pD
+        //b1n5fOam+LXAJYSJlC/s/6LXrvFs4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-306-z2E0QqyCN_2Q9H9fHiqZ4A-1; Tue, 20 Jul 2021 00:42:19 -0400
+X-MC-Unique: z2E0QqyCN_2Q9H9fHiqZ4A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ABDBB800050;
+        Tue, 20 Jul 2021 04:42:18 +0000 (UTC)
+Received: from localhost (ovpn-12-178.pek2.redhat.com [10.72.12.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 260D860938;
+        Tue, 20 Jul 2021 04:42:13 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH V2] genirq/affinity: add helper of irq_affinity_calc_sets
+Date:   Tue, 20 Jul 2021 12:42:09 +0800
+Message-Id: <20210720044209.851141-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1626751866-15765-1-git-send-email-longli@linuxonhyperv.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/21 8:31 PM, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
-> 
-> Microsoft Azure Blob storage service exposes a REST API to applications
-> for data access.
-> (https://docs.microsoft.com/en-us/rest/api/storageservices/blob-service-rest-api)
-> 
-> This patchset implements a VSC (Virtualization Service Consumer) that
-> communicates with a VSP (Virtualization Service Provider) on the Hyper-V
-> host to execute Blob storage access via native network stack on the host.
-> This VSC doesn't implement the semantics of REST API. Those are implemented
-> in user-space. The VSC provides a fast data path to VSP.
-> 
-> Answers to some previous questions discussing the driver:
-> 
-> Q: Why this driver doesn't use the block layer
-> 
-> A: The Azure Blob is based on a model of object oriented storage. The
-> storage object is not modeled in block sectors. While it's possible to
-> present the storage object as a block device (assuming it makes sense to
-> fake all the block device attributes), we lose the ability to express
-> functionality that are defined in the REST API. 
-> 
-> Q: You just lost all use of caching and io_uring and loads of other kernel
-> infrastructure that has been developed and relied on for decades?
-> 
-> A: The REST API is not designed to have caching at system level. This
-> driver doesn't attempt to improve on this. There are discussions on
-> supporting ioctl() on io_uring (https://lwn.net/Articles/844875/), that
-> will benefit this driver. The block I/O scheduling is not helpful in this
-> case, as the Blob application and Blob storage server have complete
-> knowledge on the I/O pattern based on storage object type. This knowledge
-> doesn't get easily consumed by the block layer.
-> 
-> Q: You also just abandoned the POSIX model and forced people to use a
-> random-custom-library just to access their storage devices, breaking all
-> existing programs in the world?
-> 
-> A: The existing Blob applications access storage via HTTP (REST API). They
-> don't use POSIX interface. The interface for Azure Blob is not designed
-> on POSIX.
-> 
-> Q: What programs today use this new API?
-> 
-> A: Currently none is released. But per above, there are also none using
-> POSIX.
-> 
-> Q: Where is the API published and what ensures that it will remain stable?
-> 
-> A: Cloud based REST protocols have similar considerations to the kernel in
-> terms of interface stability. Applications depend on cloud services via
-> REST in much the same way as they depend on kernel services. Because
-> applications can consume cloud APIs over the Internet, there is no
-> opportunity to recompile applications to ensure compatibility. This causes
-> the underlying APIs to be exceptionally stable, and Azure Blob has not
-> removed support for an exposed API to date. This driver is supporting a
-> pass-through model where requests in a guest process can be reflected to a
-> VM host environment. Like the current REST interface, the goal is to ensure
-> that each host provide a high degree of compatibility with each guest, but
-> that task is largely outside the scope of this driver, which exists to
-> communicate requests in the same way an HTTP stack would. Just like an HTTP
-> stack does not require updates to add a new custom header or receive one
-> from a server, this driver does not require updates for new functionality
-> so long as the high level request/response model is retained.
-> 
-> Q: What happens when it changes over time, do we have to rebuild all
-> userspace applications?
-> 
-> A: No. We don’t rebuild them all to talk HTTP either. In the current HTTP
-> scheme, applications specify the version of the protocol they talk, and the
-> storage backend responds with that version.
-> 
-> Q: What happens to the kernel code over time, how do you handle changes to
-> the API there?
-> 
-> A: The goal of this driver is to get requests to the Hyper-V host, so the
-> kernel isn’t involved in API changes, in the same way that HTTP
-> implementations are robust to extra functionality being added to HTTP.
+When driver requests to allocate irq affinity managed vectors,
+pci_alloc_irq_vectors_affinity() may fallback to single vector
+allocation. In this situation, we don't need to call
+irq_create_affinity_masks for calling into ->calc_sets() for
+avoiding potential memory leak, so add the helper for this purpose.
 
-Another question is why do we need this in the kernel? Has it been
-considered to provide a driver similar to vfio on top of the Hyper-V bus
-such that this object storage driver can be implemented as a user-space
-library instead of as a kernel driver? As you may know vfio users can
-either use eventfds for completion notifications or polling. An
-interface like io_uring can be built easily on top of vfio.
+Fixes: c66d4bd110a1 ("genirq/affinity: Add new callback for (re)calculating interrupt sets")
+Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+Cc: linux-pci@vger.kernel.org
+Cc: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+---
+V2:
+	- move WARN_ON_ONCE() into irq_affinity_calc_sets
+	- don't install default calc_sets() callback as suggested by
+	  Christoph
 
-Thanks,
+ drivers/pci/msi.c         |  3 ++-
+ include/linux/interrupt.h |  7 +++++++
+ kernel/irq/affinity.c     | 28 +++++++++++++++++-----------
+ 3 files changed, 26 insertions(+), 12 deletions(-)
 
-Bart.
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 9232255c8515..4e6fbdf0741c 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -1224,7 +1224,8 @@ int pci_alloc_irq_vectors_affinity(struct pci_dev *dev, unsigned int min_vecs,
+ 			 * for the single interrupt case.
+ 			 */
+ 			if (affd)
+-				irq_create_affinity_masks(1, affd);
++				irq_affinity_calc_sets(1, affd);
++
+ 			pci_intx(dev, 1);
+ 			return 1;
+ 		}
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index 2ed65b01c961..c7ff84d60465 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -340,6 +340,7 @@ irq_create_affinity_masks(unsigned int nvec, struct irq_affinity *affd);
+ 
+ unsigned int irq_calc_affinity_vectors(unsigned int minvec, unsigned int maxvec,
+ 				       const struct irq_affinity *affd);
++int irq_affinity_calc_sets(unsigned int affvecs, struct irq_affinity *affd);
+ 
+ #else /* CONFIG_SMP */
+ 
+@@ -391,6 +392,12 @@ irq_calc_affinity_vectors(unsigned int minvec, unsigned int maxvec,
+ 	return maxvec;
+ }
+ 
++static inline int irq_affinity_calc_sets(unsigned int affvecs,
++					 struct irq_affinity *affd)
++{
++	return 0;
++}
++
+ #endif /* CONFIG_SMP */
+ 
+ /*
+diff --git a/kernel/irq/affinity.c b/kernel/irq/affinity.c
+index 4d89ad4fae3b..addd04d68d42 100644
+--- a/kernel/irq/affinity.c
++++ b/kernel/irq/affinity.c
+@@ -405,6 +405,22 @@ static void default_calc_sets(struct irq_affinity *affd, unsigned int affvecs)
+ 	affd->set_size[0] = affvecs;
+ }
+ 
++int irq_affinity_calc_sets(unsigned int affvecs, struct irq_affinity *affd)
++{
++	/*
++	 * Simple invocations do not provide a calc_sets() callback. Call
++	 * the generic one.
++	 */
++	if (!affd->calc_sets)
++		default_calc_sets(affd, affvecs);
++	else
++		affd->calc_sets(affd, affvecs);
++
++	if (WARN_ON_ONCE(affd->nr_sets > IRQ_AFFINITY_MAX_SETS))
++		return -ERANGE;
++	return 0;
++}
++
+ /**
+  * irq_create_affinity_masks - Create affinity masks for multiqueue spreading
+  * @nvecs:	The total number of vectors
+@@ -429,17 +445,7 @@ irq_create_affinity_masks(unsigned int nvecs, struct irq_affinity *affd)
+ 	else
+ 		affvecs = 0;
+ 
+-	/*
+-	 * Simple invocations do not provide a calc_sets() callback. Install
+-	 * the generic one.
+-	 */
+-	if (!affd->calc_sets)
+-		affd->calc_sets = default_calc_sets;
+-
+-	/* Recalculate the sets */
+-	affd->calc_sets(affd, affvecs);
+-
+-	if (WARN_ON_ONCE(affd->nr_sets > IRQ_AFFINITY_MAX_SETS))
++	if (irq_affinity_calc_sets(affvecs, affd))
+ 		return NULL;
+ 
+ 	/* Nothing to assign? */
+-- 
+2.31.1
 
