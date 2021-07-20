@@ -2,199 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB273CF7B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E273CF7BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236886AbhGTJkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 05:40:15 -0400
-Received: from mga04.intel.com ([192.55.52.120]:26013 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236018AbhGTJhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 05:37:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="209307263"
-X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="209307263"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 03:17:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="661446038"
-Received: from lkp-server02.sh.intel.com (HELO 1b5a72ed9419) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 20 Jul 2021 03:17:57 -0700
-Received: from kbuild by 1b5a72ed9419 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m5mp2-0000A1-Gn; Tue, 20 Jul 2021 10:17:56 +0000
-Date:   Tue, 20 Jul 2021 18:17:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/clang-fallthrough] BUILD SUCCESS
- 044cf851abcdb562eff678a9d455b0b74046c1e1
-Message-ID: <60f6a2a0.xYvxobE6ZCvVOnpO%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S236631AbhGTJkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 05:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236846AbhGTJjH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 05:39:07 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979DCC0613E1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 03:18:40 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so2157271pjo.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 03:18:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pjGXHhlsJXpMCFuAdGKhMv/rBK1kCdyMKVIj/X10+qU=;
+        b=OgMYs9wdRGDVFn92Cde46FS6HH/GLxa9ZfDpj0LDOb/LlyAk4NiJMLagfMvjuQXhld
+         bbEzaAOM5GZVAyMlN5owyX6H9AOevEu+LdEex+lJ/gCqA+kQHhNELg1LK1ds1OmbwCPV
+         YHUd6koNim1cPqx407RenfEoKPDfR9ckvI7cXlBdwTIELlXTFoSzgp0eXqu5PriqmC79
+         /lZGjilHrGbh2he7slmtTfvl4G/9oFvpu9C3HqspM8lwBIX8R8g6hh7h53Kp3cplyyCH
+         PKZ6naph/JES0YtELdXN8XkrdeoG6l3vHitnqkRha7egJYDx7Q5lVEL0zeh63Uel2NY9
+         aegw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pjGXHhlsJXpMCFuAdGKhMv/rBK1kCdyMKVIj/X10+qU=;
+        b=NMZQ75milJtIW//BC7lkqfgS0GmVBPa9owlGYZjVRB/tK41aE6CQXr+pR3jvbCOmeq
+         a9eJs7Tzmw60b0Rev8t6mqzDpGbTeG/qKZYDcSclNtIpbzZ76SNCukLSZKWWpCipwrd+
+         IovYP+IpSo5yHmT8UhmCfCcfIlKkXVykjPXV724buzws3IwsCe1nSuchrGtazpVIqh7u
+         nj63WVehhYweG2BuRMCBzEM1CcUKF5vaYapuYP8ibrOY40mp1z30dDcbnIUlHP/Q2xPc
+         knnISUXYGhkczginpMGy+XS7dlgJO9a9NJ8Zm5gDTOSquTSlMFJ7U8WKzO6dGGYhrcm/
+         vvaQ==
+X-Gm-Message-State: AOAM532KIG5NpAwIHZ4QsRua9DbKgZvyR4hWF9GF5XqLoNK8pkh7GkmS
+        /Cz66u0poJAs94wIdqCLKWORgveKPx9Trg==
+X-Google-Smtp-Source: ABdhPJz0teYPmNQHBdbGCNYldG1/FoD32crh2/voQ9Zgt5lnx9h6hzVS3/YS2b6hLl+U15a5jYFfvw==
+X-Received: by 2002:a17:90a:510d:: with SMTP id t13mr34487868pjh.28.1626776319022;
+        Tue, 20 Jul 2021 03:18:39 -0700 (PDT)
+Received: from [10.252.1.51] (ec2-52-196-129-95.ap-northeast-1.compute.amazonaws.com. [52.196.129.95])
+        by smtp.gmail.com with ESMTPSA id u37sm23843190pfg.140.2021.07.20.03.18.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jul 2021 03:18:38 -0700 (PDT)
+Cc:     akira.tsukamoto@gmail.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/4] riscv: __asm_copy_to-from_user: Fix: fail on RV32
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <37097718-c472-025a-2058-55667badc5b9@gmail.com>
+ <93a6ae3b-3271-5edb-0a1b-260ba789f3f1@gmail.com>
+ <CAMuHMdUnD58W6qAbxnT3y-BMTHb+De+z29YNGYVA3mWD0B-37g@mail.gmail.com>
+From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Message-ID: <9b2bff0b-7ebd-80f4-47be-9844aaed1393@gmail.com>
+Date:   Tue, 20 Jul 2021 19:18:34 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <CAMuHMdUnD58W6qAbxnT3y-BMTHb+De+z29YNGYVA3mWD0B-37g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/clang-fallthrough
-branch HEAD: 044cf851abcdb562eff678a9d455b0b74046c1e1  Revert "Revert "Makefile: Enable -Wimplicit-fallthrough for Clang""
+Hi Geert,
 
-elapsed time: 723m
+On 7/20/2021 6:49 PM, Geert Uytterhoeven wrote:
+> Hi Tsukamoto-san,
+> 
+> Thanks for your patch!
+> 
+> On Tue, Jul 20, 2021 at 10:51 AM Akira Tsukamoto
+> <akira.tsukamoto@gmail.com> wrote:
+>> Had a bug when converting bytes to bits when the cpu was rv32.
+>>
+>> The a3 contains the number of bytes and multiple of 8
+>> would be the bits. The LGREG is holding 2 for RV32 and 3 for
+>> RV32, so to achieve multiple of 8 it must always be constant 3.
+> 
+> RV64
 
-configs tested: 141
-configs skipped: 16
+Thanks, the LGREG is holding 2 for RV32 and 3 for RV64 (not RV32).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                  colibri_pxa300_defconfig
-arm                       netwinder_defconfig
-powerpc                    gamecube_defconfig
-riscv                               defconfig
-m68k                           sun3_defconfig
-sh                            hp6xx_defconfig
-arm                       aspeed_g4_defconfig
-arc                           tb10x_defconfig
-xtensa                           alldefconfig
-powerpc                  iss476-smp_defconfig
-arc                          axs103_defconfig
-sh                           se7206_defconfig
-mips                        jmr3927_defconfig
-powerpc                        warp_defconfig
-arm                        cerfcube_defconfig
-microblaze                          defconfig
-nds32                            alldefconfig
-arm                        clps711x_defconfig
-arm                         bcm2835_defconfig
-arm                             rpc_defconfig
-mips                  decstation_64_defconfig
-openrisc                    or1ksim_defconfig
-arm                        mvebu_v5_defconfig
-arm                         lubbock_defconfig
-arm                   milbeaut_m10v_defconfig
-um                               alldefconfig
-powerpc                 xes_mpc85xx_defconfig
-sh                               j2_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                            mmp2_defconfig
-arm                     eseries_pxa_defconfig
-powerpc                 mpc8540_ads_defconfig
-arc                      axs103_smp_defconfig
-xtensa                       common_defconfig
-powerpc                     kilauea_defconfig
-sh                           se7722_defconfig
-sh                               alldefconfig
-sh                          sdk7786_defconfig
-powerpc                      bamboo_defconfig
-arm                      footbridge_defconfig
-powerpc                   motionpro_defconfig
-m68k                          atari_defconfig
-sh                ecovec24-romimage_defconfig
-sh                               allmodconfig
-h8300                            allyesconfig
-h8300                     edosk2674_defconfig
-powerpc                     tqm8548_defconfig
-sh                   rts7751r2dplus_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210720
-x86_64               randconfig-a006-20210720
-x86_64               randconfig-a001-20210720
-x86_64               randconfig-a005-20210720
-x86_64               randconfig-a004-20210720
-x86_64               randconfig-a002-20210720
-i386                 randconfig-a005-20210719
-i386                 randconfig-a004-20210719
-i386                 randconfig-a006-20210719
-i386                 randconfig-a001-20210719
-i386                 randconfig-a003-20210719
-i386                 randconfig-a002-20210719
-i386                 randconfig-a005-20210720
-i386                 randconfig-a003-20210720
-i386                 randconfig-a004-20210720
-i386                 randconfig-a002-20210720
-i386                 randconfig-a001-20210720
-i386                 randconfig-a006-20210720
-x86_64               randconfig-a013-20210719
-x86_64               randconfig-a012-20210719
-x86_64               randconfig-a015-20210719
-x86_64               randconfig-a014-20210719
-x86_64               randconfig-a011-20210719
-x86_64               randconfig-a016-20210719
-i386                 randconfig-a016-20210720
-i386                 randconfig-a013-20210720
-i386                 randconfig-a012-20210720
-i386                 randconfig-a014-20210720
-i386                 randconfig-a011-20210720
-i386                 randconfig-a015-20210720
-x86_64               randconfig-a005-20210718
-x86_64               randconfig-a004-20210718
-x86_64               randconfig-a002-20210718
-x86_64               randconfig-a003-20210718
-x86_64               randconfig-a006-20210718
-x86_64               randconfig-a001-20210718
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210720
-x86_64               randconfig-a011-20210720
-x86_64               randconfig-a016-20210720
-x86_64               randconfig-a013-20210720
-x86_64               randconfig-a014-20210720
-x86_64               randconfig-a012-20210720
-x86_64               randconfig-a015-20210720
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Akira
