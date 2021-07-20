@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1700F3CFA1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1AD3CFA1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237831AbhGTMZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:25:48 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:31871 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238361AbhGTMYU (ORCPT
+        id S238292AbhGTM0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:26:09 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:20306 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238456AbhGTMZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:24:20 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-142-ZznYomwVPdSR4LXY_KNiYA-1; Tue, 20 Jul 2021 14:04:39 +0100
-X-MC-Unique: ZznYomwVPdSR4LXY_KNiYA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Tue, 20 Jul 2021 14:04:39 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Tue, 20 Jul 2021 14:04:39 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Eddie James' <eajames@linux.ibm.com>,
-        Mark Brown <broonie@kernel.org>
-CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Subject: RE: [PATCH 1/2] spi: fsi: Reduce max transfer size to 8 bytes
-Thread-Topic: [PATCH 1/2] spi: fsi: Reduce max transfer size to 8 bytes
-Thread-Index: AQHXfL3Ikg6avb1lOkyp/qlhiL4746tL1OlQ
-Date:   Tue, 20 Jul 2021 13:04:38 +0000
-Message-ID: <0a637d7704df4303abe783215080578d@AcuMS.aculab.com>
-References: <20210716133915.14697-1-eajames@linux.ibm.com>
-         <20210716133915.14697-2-eajames@linux.ibm.com>
-         <20210716171936.GB4137@sirena.org.uk>
-         <81a40f8690d297ebfb6697dbea63279bcf2f24fa.camel@linux.ibm.com>
-         <20210719152010.GB4174@sirena.org.uk>
- <d2e07f0beda57ffeaa31e8cf5bf28edfbd982e58.camel@linux.ibm.com>
-In-Reply-To: <d2e07f0beda57ffeaa31e8cf5bf28edfbd982e58.camel@linux.ibm.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 20 Jul 2021 08:25:23 -0400
+Received: from [192.168.1.102] ([80.15.159.30])
+        by mwinf5d34 with ME
+        id XR5v2500f0feRjk03R5wRC; Tue, 20 Jul 2021 15:05:57 +0200
+X-ME-Helo: [192.168.1.102]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 20 Jul 2021 15:05:57 +0200
+X-ME-IP: 80.15.159.30
+Subject: Re: [PATCH] RDMA/irdma: Improve the way 'cqp_request' structures are
+ cleaned when they are recycled
+To:     leon@kernel.org
+Cc:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
+        dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        christophe.jaillet@wanadoo.fr
+References: <7f93f2a2c2fd18ddfeb99339d175b85ffd1c6398.1626713915.git.christophe.jaillet@wanadoo.fr>
+ <YPbALA/P5+NsC7MO@unreal>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <629bc34e-ef41-9af6-9ed7-71865251a62c@wanadoo.fr>
+Date:   Tue, 20 Jul 2021 15:05:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <YPbALA/P5+NsC7MO@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRWRkaWUgSmFtZXMgPGVhamFtZXNAbGludXguaWJtLmNvbT4NCj4gU2VudDogMTkgSnVs
-eSAyMDIxIDE2OjQ3DQo+IFRvOiBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+DQo+IENj
-OiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgb3BlbmJtY0BsaXN0cy5vemxhYnMub3JnOyBy
-b2JoK2R0QGtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51
-eC1zcGlAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMS8yXSBzcGk6IGZz
-aTogUmVkdWNlIG1heCB0cmFuc2ZlciBzaXplIHRvIDggYnl0ZXMNCj4gDQo+IE9uIE1vbiwgMjAy
-MS0wNy0xOSBhdCAxNjoyMCArMDEwMCwgTWFyayBCcm93biB3cm90ZToNCj4gPiBPbiBGcmksIEp1
-bCAxNiwgMjAyMSBhdCAwMTozNDozOFBNIC0wNTAwLCBFZGRpZSBKYW1lcyB3cm90ZToNCj4gPg0K
-PiA+ID4gU2VjdXJpdHkgY2hhbmdlcyBpbiB0aGUgU1BJIGNvbnRyb2xsZXIgLSBpbiB0aGUgZGV2
-aWNlIG1pY3JvY29kZS4gSQ0KPiA+ID4gY2FuDQo+ID4gPiByZXdvcmQgdGhlIGNvbW1pdCBpZiB5
-b3UgbGlrZS4NCj4gPg0KPiA+IEhvdyB3aWxsIHBlb3BsZSBlbmQgdXAgcnVubmluZyB0aGlzIGRl
-dmljZSBtaWNyb2NvZGU/ICBJcyB0aGlzIGEgYnVnDQo+ID4gZml4LCBvciBpcyB0aGlzIGdvaW5n
-IHRvIG5lZWRsZXNzbHkgcmVkdWNlIHBlcmZvcm1hbmNlIGZvciBwZW9wbGUNCj4gPiB3aXRoDQo+
-ID4gZXhpc3RpbmcgaGFyZHdhcmU/DQo+IA0KPiBUaGUgaGFyZHdhcmUgaXMgc3RpbGwgaW4gZGV2
-ZWxvcG1lbnQuIEFzIHBhcnQgb2YgdGhlIGRldmVsb3BtZW50LCB0aGUNCj4gZGV2aWNlIG1pY3Jv
-Y29kZSB3YXMgY2hhbmdlZCB0byByZXN0cmljdCB0cmFuc2ZlcnMuIFRoZSByZWFzb24gZm9yIHRo
-aXMNCj4gcmVzdHJpY3Rpb24gd2FzICJzZWN1cml0eSBjb25jZXJucyIuIFRoaXMgcmVzdHJpY3Rp
-b24gZGlzYWxsb3dzIHRoZQ0KPiBsb29wIChvciBicmFuY2gtaWYtbm90LWVxdWFsLWFuZC1pbmNy
-ZW1lbnQpIHNlcXVlbmNlciBjb21tYW5kLiBJdCBhbHNvDQo+IGRvZXMgbm90IGFsbG93IHRoZSBy
-ZWFkIChvciBzaGlmdCBpbiBpZiB5b3UgcHJlZmVyKSBjb21tYW5kIHRvIHNwZWNpZnkNCj4gdGhl
-IG51bWJlciBvZiBieXRlcyBpbiB0aGUgY29tbWFuZCBpdHNlbGYuIFJhdGhlciwgdGhlIG51bWJl
-ciBvZiBiaXRzDQo+IHRvIHNoaWZ0IGluIG11c3QgYmUgc3BlY2lmaWVkIGluIGEgc2VwYXJhdGUg
-Y29udHJvbCByZWdpc3Rlci4gVGhpcw0KPiBlZmZlY3RpdmVseSBtZWFucyB0aGF0IHRoZSBjb250
-cm9sbGVyIGNhbm5vdCB0cmFuc2ZlciBtb3JlIHRoYW4gOCBieXRlcw0KPiBhdCBhIHRpbWUuDQo+
-IFRoZXJlZm9yZSBJIHN1cHBvc2UgdGhpcyBpcyBlZmZlY3RpdmVseSBhIGJ1ZyBmaXguIFRoZXJl
-IHdpbGwgYmUgbm8NCj4gaGFyZHdhcmUgYXZhaWxhYmxlIHdpdGhvdXQgdGhlc2UgcmVzdHJpY3Rp
-b25zLCBzbyBpdCBpcyBub3QgYSBuZWVkbGVzcw0KPiByZWR1Y3Rpb24gaW4gcGVyZm9ybWFuY2Uu
-IEV2ZXJ5IHN5c3RlbSB0aGF0IGNhbiBydW4gdGhpcyBkcml2ZXIgd2lsbA0KPiBydW4gdGhlIG1v
-cmUgcmVzdHJpY3RpdmUgZGV2aWNlIG1pY3JvY29kZS4NCg0KU28ganVzdCBzYXkgdGhhdCByZWxl
-YXNlIHZlcnNpb25zIG9mIHRoZSBoYXJkd2FyZSB3b24ndCBzdXBwb3J0DQptb3JlIHRoYW4gOCBi
-eXRlIHRyYW5zZmVycy4NCg0KSGF2aW5nIHNhaWQgdGhhdCwgeW91IG1pZ2h0IHdhbnQgYSBsb29w
-IGluIHRoZSBkcml2ZXIgc28gdGhhdA0KYXBwbGljYXRpb24gcmVxdWVzdHMgZm9yIGxvbmdlciB0
-cmFuc2ZlcnMgYXJlIGltcGxlbWVudGVkDQp3aXRoIG11bHRpcGxlIGhhcmR3YXJlIHJlcXVlc3Rz
-Lg0KDQpJIGRvIGFsc28gd29uZGVyIHdoeSB0aGVyZSBpcyBzdXBwb3J0IGluIHRoZSBtYWluIGtl
-cm5lbCBzb3VyY2VzDQpmb3IgaGFyZHdhcmUgdGhhdCBkb2Vzbid0IGFjdHVhbGx5IGV4aXN0Lg0K
-DQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQs
-IE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86
-IDEzOTczODYgKFdhbGVzKQ0K
+Le 20/07/2021 à 14:23, Leon Romanovsky a écrit :
+> On Mon, Jul 19, 2021 at 07:02:15PM +0200, Christophe JAILLET wrote:
+>> A set of IRDMA_CQP_SW_SQSIZE_2048 (i.e. 2048) 'cqp_request' are
+>> pre-allocated and zeroed in 'irdma_create_cqp()' (hw.c).  These
+>> structures are managed with the 'cqp->cqp_avail_reqs' list which keeps
+>> track of available entries.
+>>
+>> In 'irdma_free_cqp_request()' (utils.c), when an entry is recycled and goes
+>> back to the 'cqp_avail_reqs' list, some fields are reseted.
+>>
+>> However, one of these fields, 'compl_info', is initialized within
+>> 'irdma_alloc_and_get_cqp_request()'.
+>>
+>> Move the corresponding memset to 'irdma_free_cqp_request()' so that the
+>> clean-up is done in only one place. This makes the logic more easy to
+>> understand.
+> 
+> I'm not so sure. The function irdma_alloc_and_get_cqp_request() returns
+> prepared cqp_request and all users expect that it will returned cleaned
+> one. The reliance on some other place to clear part of the structure is
+> prone to errors.
+
+Ok, so maybe, moving:
+	cqp_request->request_done = false;
+	cqp_request->callback_fcn = NULL;
+	cqp_request->waiting = false;
+from 'irdma_free_cqp_request()' to 'irdma_alloc_and_get_cqp_request()' 
+to make explicit what is reseted makes more sense?
+
+ From my point of view, it is same same: all (re)initialization are done 
+at 1 place only.
+
+This would also avoid setting 'waiting' twice (once to false in 
+'irdma_free_cqp_request()' and one to 'wait' 
+'irdma_alloc_and_get_cqp_request()')
+
+
+CJ
+> 
+> Thanks
+> 
+>>
+>> This also saves this memset in the case that the 'cqp_avail_reqs' list is
+>> empty and a new 'cqp_request' structure must be allocated. This memset is
+>> useless, because the structure is already kzalloc'ed.
+>>
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet-39ZsbGIQGT5GWvitb5QawA@public.gmane.org>
+>> ---
+>>   drivers/infiniband/hw/irdma/utils.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
+>> index 5bbe44e54f9a..66711024d38b 100644
+>> --- a/drivers/infiniband/hw/irdma/utils.c
+>> +++ b/drivers/infiniband/hw/irdma/utils.c
+>> @@ -445,7 +445,6 @@ struct irdma_cqp_request *irdma_alloc_and_get_cqp_request(struct irdma_cqp *cqp,
+>>   
+>>   	cqp_request->waiting = wait;
+>>   	refcount_set(&cqp_request->refcnt, 1);
+>> -	memset(&cqp_request->compl_info, 0, sizeof(cqp_request->compl_info));
+>>   
+>>   	return cqp_request;
+>>   }
+>> @@ -475,6 +474,7 @@ void irdma_free_cqp_request(struct irdma_cqp *cqp,
+>>   		cqp_request->request_done = false;
+>>   		cqp_request->callback_fcn = NULL;
+>>   		cqp_request->waiting = false;
+>> +		memset(&cqp_request->compl_info, 0, sizeof(cqp_request->compl_info));
+>>   
+>>   		spin_lock_irqsave(&cqp->req_lock, flags);
+>>   		list_add_tail(&cqp_request->list, &cqp->cqp_avail_reqs);
+>> -- 
+>> 2.30.2
+>>
+> 
 
