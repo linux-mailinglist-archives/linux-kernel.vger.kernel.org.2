@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927203CF424
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9353CF42D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236381AbhGTFQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 01:16:26 -0400
-Received: from mga03.intel.com ([134.134.136.65]:7710 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232431AbhGTFQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 01:16:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="211240200"
-X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="211240200"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 22:56:54 -0700
-X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="500513712"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 22:56:51 -0700
-Subject: Re: [bug report] Patch "perf tools: Fix pattern matching for same
- substring in different pmu type" broken
-To:     John Garry <john.garry@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        Zhangshaokun <zhangshaokun@hisilicon.com>,
-        "liuqi (BA)" <liuqi115@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>, "Jin, Yao" <yao.jin@intel.com>
-References: <44e25825-5f23-c641-9f1c-72268d895f75@huawei.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <1522c39e-5658-d030-2e1e-f6e5d849d29b@linux.intel.com>
-Date:   Tue, 20 Jul 2021 13:56:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237765AbhGTFUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 01:20:22 -0400
+Received: from regular1.263xmail.com ([211.150.70.197]:60530 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234601AbhGTFUJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 01:20:09 -0400
+Received: from localhost (unknown [192.168.167.13])
+        by regular1.263xmail.com (Postfix) with ESMTP id 6F0061BFD;
+        Tue, 20 Jul 2021 14:00:36 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [111.207.172.18])
+        by smtp.263.net (postfix) whith ESMTP id P30160T139874264110848S1626760826533946_;
+        Tue, 20 Jul 2021 14:00:36 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <b85de854ca89f4566868732de4f340b9>
+X-RL-SENDER: zhaoxiao@uniontech.com
+X-SENDER: zhaoxiao@uniontech.com
+X-LOGIN-NAME: zhaoxiao@uniontech.com
+X-FST-TO: airlied@linux.ie
+X-RCPT-COUNT: 7
+X-SENDER-IP: 111.207.172.18
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     airlied@linux.ie, daniel@ffwll.ch
+Cc:     bskeggs@redhat.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH] drivers/gpu/drm/nouveau/nouveau_bo: Remove a bunch of unused variables
+Date:   Tue, 20 Jul 2021 14:00:25 +0800
+Message-Id: <20210720060025.25492-1-zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <44e25825-5f23-c641-9f1c-72268d895f75@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John, Hi Arnaldo,
+Fixes the following W=1 kernel build warning(s):
 
-On 7/19/2021 10:13 PM, John Garry wrote:
-> Hi guys,
-> 
-> The named patch has broken PMU alias matching on my arm64 system.
-> 
-> Specifically it is broken for when multiple tokens are used in the alias. For example, alias 
-> "hisi_sccl,l3c" would previously match for PMU "hisi_sccl3_l3c7", but that no longer works.
-> 
-> In my example, in looking at the code, the callchain pmu_uncore_alias_match("hisi_sccl,l3c", 
-> "hisi_sccl3_l3c7") -> per_pmu__valid_suffix("hisi_sccl3_l3c7", "hisi_sccl") fails in the following 
-> check:
-> 
-> static bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
-> {
->      char *p;
->      ...
->      p = pmu_name + strlen(tok);
->      ...
->      if (*p != '_') //here
->          return false;
-> }
-> 
-> This check assumes the first token must be followed by a '_', but it is possibly a numeric.
-> 
+drivers/gpu/drm/nouveau/nouveau_bo.c: In function ‘nouveau_ttm_tt_populate’:
+drivers/gpu/drm/nouveau/nouveau_bo.c:1245:17: warning: variable ‘dev’ set but not used [-Wunused-but-set-variable]
+  struct device *dev;
+                 ^~~
+drivers/gpu/drm/nouveau/nouveau_bo.c: In function ‘nouveau_ttm_tt_unpopulate’:
+drivers/gpu/drm/nouveau/nouveau_bo.c:1268:17: warning: variable ‘dev’ set but not used [-Wunused-but-set-variable]
+  struct device *dev;
+                 ^~~
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_bo.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-It looks that the PMU alias format on arm64 has big difference than the format on x86. My new idea 
-is we create a x86 specific perf_pmu__valid_suffix, and for other arch, the weak function always 
-returns true. That will not change original behavior.
+diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
+index 4f3a5357dd56..692d63d08b5a 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_bo.c
++++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
+@@ -1242,7 +1242,7 @@ nouveau_ttm_tt_populate(struct ttm_device *bdev,
+ {
+ 	struct ttm_tt *ttm_dma = (void *)ttm;
+ 	struct nouveau_drm *drm;
+-	struct device *dev;
++
+ 	bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
+ 
+ 	if (ttm_tt_is_populated(ttm))
+@@ -1255,7 +1255,6 @@ nouveau_ttm_tt_populate(struct ttm_device *bdev,
+ 	}
+ 
+ 	drm = nouveau_bdev(bdev);
+-	dev = drm->dev->dev;
+ 
+ 	return ttm_pool_alloc(&drm->ttm.bdev.pool, ttm, ctx);
+ }
+@@ -1265,14 +1264,12 @@ nouveau_ttm_tt_unpopulate(struct ttm_device *bdev,
+ 			  struct ttm_tt *ttm)
+ {
+ 	struct nouveau_drm *drm;
+-	struct device *dev;
+ 	bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
+ 
+ 	if (slave)
+ 		return;
+ 
+ 	drm = nouveau_bdev(bdev);
+-	dev = drm->dev->dev;
+ 
+ 	return ttm_pool_free(&drm->ttm.bdev.pool, ttm);
+ }
+-- 
+2.20.1
 
-What do you think?
 
-> Please let me know how this should work. Previously it would match on the tokens, ignoring numerics 
-> and '_'.
-> 
-> As an aside, I'll look at why our testcases don't cover this scenario and look to add a test if 
-> necessary.
-> 
-> Thanks,
-> john
-> 
-> Ps, please cc linux-perf-users@vger.kernel.org as in the MAINTAINERS file in future, as not all 
-> subscribe to the open kernel list (and so cannot easily reply directly).
-> 
 
-Sorry about that! I will remember that, cc linux-perf-users@vger.kernel.org in next patch.
-
-Thanks
-Jin Yao
