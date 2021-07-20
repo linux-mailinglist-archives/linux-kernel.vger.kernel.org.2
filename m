@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9213CF280
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FF23CF281
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346426AbhGTCor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 22:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346409AbhGTCkW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 22:40:22 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1483DC061762;
-        Mon, 19 Jul 2021 20:21:01 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id s18so21257889pgg.8;
-        Mon, 19 Jul 2021 20:21:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gjZSaF3RXySa1uirQyy8STm6C8ddpC3urY/fbzCQUXc=;
-        b=XseHADv0++kRb+kSNwrb3v0X4VVhmQ4uSd1tnGhlh18VmYAjeGz1/kTi+jaQJ9AdsJ
-         SertRRPrsL+Wkb373CVhz4BDOmvsP90wYEYWyjaEZzcpFzyG6ecIm72fZtNT+WMHV1D8
-         cog6vS6VNHJYL/5t1wFMQ0rcczKN3neLIyhBX7N4ScwWlBmE6R0eV9EaOmwdeL+3eBSD
-         qcHhgKgBwyre6neBpjrhkrg5xT05kikmQJ0tJN9r+jSbZpD9d6cA/wok1TBBNJTjMkjC
-         P1PBRFP5ew2GFjlmrLvYhKWrjv3gpM2bjpNwV5/Lhnq/Cdtmf2tXh71aVv9BYEoqV5IG
-         VifA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gjZSaF3RXySa1uirQyy8STm6C8ddpC3urY/fbzCQUXc=;
-        b=kjy6UmD9ign1vKZuRYETUD+tvEVdZ3yqSa14v4gRGy/AOLQ/8H2+9TZyA+BHwhZVwx
-         lG0ELjK/lTg25dvo4G/J8zWApvCVZtPKR0wqWTxF3waxwnf0FJ/I/1QN7xMIituwiixQ
-         /namVjdavSxmKJKaMyXGGfbxJ3Mmr6wgnC8KVz66J2VhvVoBoMb7fs/PNc6voHkFTYP4
-         he94tKUqyaCe3tmgpEG//eLZIgBS9BBu1Tvz3qbE3gHJRYkRBvHEPO8vxbWV2sP6r5sF
-         o4bLfJxYQTecdp0JpocT33q/9gmaG4w7HhjXsjWJ4RdRhpdkIvMJJ5QqocQBkUk7ZhPo
-         v6ug==
-X-Gm-Message-State: AOAM533Uhe+ncSTa1rLJyzL2tw0/ko10MTmehCFUMHD7o/7FcgUti5m3
-        x6Wu8qNx71es7Ik0PttIJlQ=
-X-Google-Smtp-Source: ABdhPJyzJvpYTOYuIWrFwJI+qv5A0h900M++L6KlKXy25fOba4f/yYi5GNtEYVkLuy/XcXQ5gH+XEw==
-X-Received: by 2002:a05:6a00:1c6d:b029:338:322:137d with SMTP id s45-20020a056a001c6db02903380322137dmr19547938pfw.38.1626751260573;
-        Mon, 19 Jul 2021 20:21:00 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id i8sm947324pjh.36.2021.07.19.20.20.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 19 Jul 2021 20:21:00 -0700 (PDT)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: 0001-perf-x86-amd-Do-not-touch-the-AMD64_EVENTSEL_HOSTONL.patchFrom 9f724a38754d3f99a1b332c11e72e9dd213289d7 Mon Sep 17 00:00:00 2001
-Date:   Tue, 20 Jul 2021 11:20:48 +0800
-Message-Id: <20210720032048.90815-1-likexu@tencent.com>
-X-Mailer: git-send-email 2.32.0
+        id S1346527AbhGTCpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 22:45:03 -0400
+Received: from out0.migadu.com ([94.23.1.103]:25517 "EHLO out0.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232711AbhGTClN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 22:41:13 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1626751308;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vu7b9z6fy5eQBUVOgQ3fNILEElmkneJNf7Gu+XNQsCQ=;
+        b=pGcDszR2Unl5wBJKs0Gzt/L2N7kNLJGriJr+6Vu0vJ79r9R9g7X4krgnSGtrZbqnSSd8H5
+        1TBetA/cAf5q/OzkXirf3xrNSitKO8jALzb0ixVGMkyuyE7avu5OcCnA49OJEws7Jw6vHG
+        4U6RcrRz4c1R0xSJnxuFDpaNBSRvarU=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     courmisch@gmail.com, remi@remlab.net
+Cc:     linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH 0/4] Remove rtnetlink_send() in rtnetlink
+Date:   Tue, 20 Jul 2021 11:21:35 +0800
+Message-Id: <20210720032135.2255-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
+rtnetlink_send() is similar to rtnl_notify(), there is no need for two 
+functions to do the same thing. we can remove rtnetlink_send() and 
+modify rtnl_notify() to adapt more case.
 
-If we use "perf record" in an AMD Milan guest, dmesg reports a #GP warning
-from an unchecked MSR access error on MSR_F15H_PERF_CTLx:
+Patch1: remove rtnetlink_send() modify rtnl_notify() to adapt 
+more case in rtnetlink.
+Path2,Patch3: Adjustment parameters in rtnl_notify().
+Path4: rtnetlink_send() already removed, use rtnl_notify() instead 
+of rtnetlink_send().
 
-[] unchecked MSR access error: WRMSR to 0xc0010200 (tried to write
-0x0000020000110076) at rIP: 0xffffffff8106ddb4 (native_write_msr+0x4/0x20)
-[] Call Trace:
-[]  amd_pmu_disable_event+0x22/0x90
-[]  x86_pmu_stop+0x4c/0xa0
-[]  x86_pmu_del+0x3a/0x140
+Yajun Deng (4):
+  rtnetlink: remove rtnetlink_send() in rtnetlink
+  net: Adjustment parameters in rtnl_notify()
+  vxlan: Adjustment parameters in rtnl_notify()
+  net/sched: use rtnl_notify() instead of rtnetlink_send()
 
-The AMD64_EVENTSEL_HOSTONLY bit is defined and used on the host,
-while the guest perf driver should avoid such use.
+ drivers/net/vxlan.c       |  2 +-
+ include/linux/rtnetlink.h |  7 +++----
+ include/net/netlink.h     |  5 ++---
+ net/bridge/br_fdb.c       |  2 +-
+ net/bridge/br_mdb.c       |  4 ++--
+ net/bridge/br_netlink.c   |  2 +-
+ net/bridge/br_vlan.c      |  2 +-
+ net/core/fib_rules.c      |  2 +-
+ net/core/neighbour.c      |  2 +-
+ net/core/net_namespace.c  |  2 +-
+ net/core/rtnetlink.c      | 27 ++++++++-------------------
+ net/dcb/dcbnl.c           |  2 +-
+ net/decnet/dn_dev.c       |  2 +-
+ net/decnet/dn_table.c     |  2 +-
+ net/ipv4/devinet.c        |  4 ++--
+ net/ipv4/fib_semantics.c  |  2 +-
+ net/ipv4/fib_trie.c       |  2 +-
+ net/ipv4/ipmr.c           |  4 ++--
+ net/ipv4/nexthop.c        |  4 ++--
+ net/ipv6/addrconf.c       |  8 ++++----
+ net/ipv6/ip6mr.c          |  4 ++--
+ net/ipv6/ndisc.c          |  2 +-
+ net/ipv6/route.c          |  9 +++++----
+ net/mpls/af_mpls.c        |  4 ++--
+ net/phonet/pn_netlink.c   |  4 ++--
+ net/sched/act_api.c       | 13 ++++++-------
+ net/sched/cls_api.c       | 14 +++++++-------
+ net/sched/sch_api.c       | 13 ++++++-------
+ net/wireless/wext-core.c  |  2 +-
+ 29 files changed, 69 insertions(+), 83 deletions(-)
 
-Signed-off-by: Like Xu <likexu@tencent.com>
----
- arch/x86/events/perf_event.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 2bf1c7ea2758..795f4779023c 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -1116,8 +1116,9 @@ void x86_pmu_stop(struct perf_event *event, int flags);
- static inline void x86_pmu_disable_event(struct perf_event *event)
- {
- 	struct hw_perf_event *hwc = &event->hw;
-+	u64 disable_mask = __this_cpu_read(cpu_hw_events.perf_ctr_virt_mask);
- 
--	wrmsrl(hwc->config_base, hwc->config);
-+	wrmsrl(hwc->config_base, hwc->config & ~disable_mask);
- 
- 	if (is_counter_pair(hwc))
- 		wrmsrl(x86_pmu_config_addr(hwc->idx + 1), 0);
 -- 
 2.32.0
 
