@@ -2,115 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C32E3CF9CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBFB3CF9D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238167AbhGTMDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:03:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24258 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229712AbhGTMDT (ORCPT
+        id S238452AbhGTMEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:04:38 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51764 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238089AbhGTMDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:03:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626785036;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 20 Jul 2021 08:03:21 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E226F202DD;
+        Tue, 20 Jul 2021 12:43:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626785038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Mlh8/IK5dN0L12USluWCom7PdCFpvByjpknGOWTGI3o=;
-        b=CydMWymWpONdRmZngj+vNhV7uqCdMLIePrkItBMq7KFPrJCktyaKlSgM2Pi8nIQikJAuw2
-        COtYlQxy6pHNfDuS+Yrw9i/O/aeFMSqWJiA0prTODP4qizqJcfAYuKlm62HlKiVPr/5z30
-        wL5PEtASzf/3jbGW5cpIoCRnOKO9iio=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-344-oP6RlVx1MjWqvB7zy-R22Q-1; Tue, 20 Jul 2021 08:43:55 -0400
-X-MC-Unique: oP6RlVx1MjWqvB7zy-R22Q-1
-Received: by mail-wm1-f69.google.com with SMTP id j42-20020a05600c1c2ab0290238db573ab7so452591wms.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 05:43:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Mlh8/IK5dN0L12USluWCom7PdCFpvByjpknGOWTGI3o=;
-        b=dFvdzbH3z5QpGrqZQ4JB1+3ppna5TRL6cDVerRWYLpm9NJVjAMUMcRQqqIvghtSoPv
-         C65qMuTkZjfd40URr55ytUU6CylIxQ9E6afhODLnIbKNwLsLq4LIG/WFWSCTchb9uO1l
-         yH7Z7EpDoEKZJBm+WKjQNjUazuA4lqKTZg/jAwwcrLy4Y/b/HrzXITBHVajlXMVlw776
-         3L8jp9x6YKiURd/jk1OjYxGq2NyqzYayEy0HGcgQYx/6lpPRpd3azxuJl/UwG1ziB4Wn
-         /PgONRkMJm56Q5fKy0wp6J+LNTRb81xlIlPVWA12doZjvDqxkO9TZcZqk/HSKu7pqlzJ
-         kA3g==
-X-Gm-Message-State: AOAM5304QQHhLGGYLVbUc/Ex33B0IrqN18pu5wcLpN5cZcgeR1qnKKmX
-        D61myZLhRjYmthQUldpBO3TC2NtdMqkPR0HRhT1k2Q3FZWNHnIbYpmP8p8neh1+d+7NZg7LYHH/
-        A0b6ka2B+eZ3hQZ5IZCaLXnOz
-X-Received: by 2002:adf:fe0d:: with SMTP id n13mr35178426wrr.73.1626785034427;
-        Tue, 20 Jul 2021 05:43:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx6XwfO0fQdP6c0wgLWHhcaNPUfqxWbaQGxVdEQ4qzR+9F2QOopKHond5XZSIPHgCH02hHk1Q==
-X-Received: by 2002:adf:fe0d:: with SMTP id n13mr35178414wrr.73.1626785034301;
-        Tue, 20 Jul 2021 05:43:54 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id n23sm19827869wmc.38.2021.07.20.05.43.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 05:43:53 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] mm, oom: move task_will_free_mem up in the file to
- be used in process_mrelease
-To:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
-        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
-        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
-        hch@infradead.org, oleg@redhat.com, jannh@google.com,
-        shakeelb@google.com, luto@kernel.org, christian.brauner@ubuntu.com,
-        fweimer@redhat.com, jengelh@inai.de, timmurray@google.com,
-        linux-api@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-References: <20210718214134.2619099-1-surenb@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <7eb17da6-03a6-5eaf-16e6-97b53ba163d8@redhat.com>
-Date:   Tue, 20 Jul 2021 14:43:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=5k7XNc5+yPEatIcV2+Rzvnk7tPH3TwekV1DDGT6cYwk=;
+        b=BUHtxkYh5vULvVX1wWG9DVxV3O5daCs1I888sVXWnOqRPya6jvu7pJ0pdFFz0NX5De+XqF
+        XJfo4wqjicz++ZDXU1VaMck7xmM0wZjCJyzCMoUxsXtjeX4vma6fW6FeEqQ8nOnIUUPCTF
+        pjRvv+dKUNtNlpFBRVXyyAyJb9wG13c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626785038;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5k7XNc5+yPEatIcV2+Rzvnk7tPH3TwekV1DDGT6cYwk=;
+        b=iWR0LBvFla0McKz4TeyppaZ8OAgaHEp6CfjYHrJLZYQWdZ0JUGfJHiNNyPkhDIuNEiDm4U
+        bFuJDzhqiidK3wAQ==
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id D1DDFA3BAD;
+        Tue, 20 Jul 2021 12:43:58 +0000 (UTC)
+Received: by adalid.arch.suse.de (Postfix, from userid 17828)
+        id 18D1E5171932; Tue, 20 Jul 2021 14:43:58 +0200 (CEST)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        James Smart <jsmart2021@gmail.com>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v3 6/6] nvme-fc: fix controller reset hang during traffic
+Date:   Tue, 20 Jul 2021 14:43:53 +0200
+Message-Id: <20210720124353.127959-7-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210720124353.127959-1-dwagner@suse.de>
+References: <20210720124353.127959-1-dwagner@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20210718214134.2619099-1-surenb@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.07.21 23:41, Suren Baghdasaryan wrote:
-> process_mrelease needs to be added in the CONFIG_MMU-dependent block which
-> comes before __task_will_free_mem and task_will_free_mem. Move these
-> functions before this block so that new process_mrelease syscall can use
-> them.
-> 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
-> changes in v2:
-> - Fixed build error when CONFIG_MMU=n, reported by kernel test robot. This
-> required moving task_will_free_mem implemented in the first patch
-> - Renamed process_reap to process_mrelease, per majority of votes
-> - Replaced "dying process" with "process which was sent a SIGKILL signal" in
-> the manual page text, per Florian Weimer
-> - Added ERRORS section in the manual page text
-> - Resolved conflicts in syscall numbers caused by the new memfd_secret syscall
-> - Separated boilerplate code wiring-up the new syscall into a separate patch
-> to facilitate the review process
-> 
->   mm/oom_kill.c | 150 +++++++++++++++++++++++++-------------------------
->   1 file changed, 75 insertions(+), 75 deletions(-)
+From: James Smart <jsmart2021@gmail.com>
 
-TBH, I really dislike this move as it makes git blame a lot harder with 
-any real benefit.
+commit fe35ec58f0d3 ("block: update hctx map when use multiple maps")
+exposed an issue where we may hang trying to wait for queue freeze
+during I/O. We call blk_mq_update_nr_hw_queues which may attempt to freeze
+the queue. However we never started queue freeze when starting the
+reset, which means that we have inflight pending requests that entered the
+queue that we will not complete once the queue is quiesced.
 
-Can't you just use prototypes to avoid the move for now in patch #2?
+So start a freeze before we quiesce the queue, and unfreeze the queue
+after we successfully connected the I/O queues (the unfreeze is already
+present in the code). blk_mq_update_nr_hw_queues will be called only
+after we are sure that the queue was already frozen.
 
-static bool task_will_free_mem(struct task_struct *task);
+This follows to how the pci driver handles resets.
 
+This patch added logic introduced in commit 9f98772ba307 "nvme-rdma: fix
+controller reset hang during traffic".
 
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+CC: Sagi Grimberg <sagi@grimberg.me>
+Tested-by: Daniel Wagner <dwagner@suse.de>
+Reviewed-by: Daniel Wagner <dwagner@suse.de>
+---
+ drivers/nvme/host/fc.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index 112e62cd8a2a..ad3344f6048d 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -2486,6 +2486,7 @@ __nvme_fc_abort_outstanding_ios(struct nvme_fc_ctrl *ctrl, bool start_queues)
+ 	 * (but with error status).
+ 	 */
+ 	if (ctrl->ctrl.queue_count > 1) {
++		nvme_start_freeze(&ctrl->ctrl);
+ 		nvme_stop_queues(&ctrl->ctrl);
+ 		nvme_sync_io_queues(&ctrl->ctrl);
+ 		blk_mq_tagset_busy_iter(&ctrl->tag_set,
 -- 
-Thanks,
-
-David / dhildenb
+2.29.2
 
