@@ -2,198 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5D63CF588
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 09:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5063CF5A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbhGTHKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:10:24 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7403 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbhGTHJd (ORCPT
+        id S231408AbhGTHU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:20:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45563 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229675AbhGTHUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:09:33 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GTW4R2pSrz7xBj;
-        Tue, 20 Jul 2021 15:46:31 +0800 (CST)
-Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 15:50:09 +0800
-Received: from huawei.com (10.175.113.32) by dggpemm000001.china.huawei.com
- (7.185.36.245) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 20 Jul
- 2021 15:50:08 +0800
-From:   Nanyong Sun <sunnanyong@huawei.com>
-To:     <songmuchun@bytedance.com>, <cl@linux.com>, <penberg@kernel.org>,
-        <rientjes@google.com>, <iamjoonsoo.kim@lge.com>,
-        <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-Subject: [PATCH v4.19.y,v5.4.y] mm: slab: fix kmem_cache_create failed when sysfs node not destroyed
-Date:   Tue, 20 Jul 2021 16:20:48 +0800
-Message-ID: <20210720082048.2797315-1-sunnanyong@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
+        Tue, 20 Jul 2021 03:20:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626768094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LTrV5RbVeDNyG1pYgWpiiRkaajyN4AH34gq6Sc1Ja5U=;
+        b=NnU2ZAi7Fgxdq1HPF8do9QLB25YnmCnNYvVftLS/Zw6RvH/lizgAfEvds++Jy7YiLXW1EL
+        P4RtDsN9QAlyHWY26MJtDEsDGeR4eLE67jvgKr5hjqaV2IhxkuWzkKREEsNWZYZLG8eCti
+        A9Yet7Zfi1+LfEfoQSCTY8nyxI53cdg=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-530-GTZjbMMZOZyqJa8T3g3FDw-1; Tue, 20 Jul 2021 04:01:32 -0400
+X-MC-Unique: GTZjbMMZOZyqJa8T3g3FDw-1
+Received: by mail-pj1-f70.google.com with SMTP id j11-20020a17090a840bb029017582e03c3bso1389401pjn.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:01:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LTrV5RbVeDNyG1pYgWpiiRkaajyN4AH34gq6Sc1Ja5U=;
+        b=TYF/Zs5u7IFM8cng7qjwpMFfjLbC/rMJ8CZDZI70mo6vVz0riI0jHfn11eNfLHCf0y
+         opC7BfLuMUZm8c2GrAe3mjskkwuDTSixSTxN53Nk/FeE6J+ni2DKXRbUzwpb4hkITspA
+         a/awRP6eEDD9O18ArqChxGh96He6lWWMRNd7BHTSZ/dzUFVBfeGl2Tr/81Inpj2MGJ4D
+         toE6/Z75reTl+ssb0QjiNARFeR7Bdl23jI3CV3UYigOrzcuj1I7BE8hDGxq1DZ68895t
+         CWB61PFSxN9qg4CT6Xm/m+vdSRJ60HHqRtTN++fxBOTAajHOnb53IR+3eRqWw+a5CgqJ
+         2jWw==
+X-Gm-Message-State: AOAM530ztbEJ7sBCZS5P8IRidbjjP+RwY8yYqHXHPREp35THzGfQoI5l
+        IKXMm476JzZexgCxOSL0C6O3OWW6SAY1XABIuEC6DMrCQK5Pf828PklcgH/MKSoeiqMGquBzaQb
+        xrV9gGuZuj34XMkbZ9ZDa6FPaa0wZKlEIlvc2iSeA
+X-Received: by 2002:aa7:9687:0:b029:337:3b49:df24 with SMTP id f7-20020aa796870000b02903373b49df24mr21001798pfk.35.1626768091743;
+        Tue, 20 Jul 2021 01:01:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/lz7xyoR5XNVuKo5OpMeCS8ZcA7bhLmy40KWtYzX4iPv/i5bUyo43tpWf+jLShuoE3NzooQDIy9RWJTynEGk=
+X-Received: by 2002:aa7:9687:0:b029:337:3b49:df24 with SMTP id
+ f7-20020aa796870000b02903373b49df24mr21001779pfk.35.1626768091519; Tue, 20
+ Jul 2021 01:01:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm000001.china.huawei.com (7.185.36.245)
-X-CFilter-Loop: Reflected
+References: <20210625081818.v2.1.I358cae5e33f742765fd38485d6ddf1a4a978644d@changeid>
+ <nycvar.YFH.7.76.2107152150060.8253@cbobk.fhfr.pm>
+In-Reply-To: <nycvar.YFH.7.76.2107152150060.8253@cbobk.fhfr.pm>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Tue, 20 Jul 2021 10:01:20 +0200
+Message-ID: <CAO-hwJJp-qg0pRZNk1PKhha6S=Zd2_r1UDjZUgm9Yq0MFL69MQ@mail.gmail.com>
+Subject: Re: [PATCH v2] HID: i2c-hid: goodix: Tie the reset line to true state
+ of the regulator
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit d38a2b7a9c93 ("mm: memcg/slab: fix memory leak at non-root
-kmem_cache destroy") introduced a problem: If one thread destroy a
-kmem_cache A and another thread concurrently create a kmem_cache B,
-which is mergeable with A and has same size with A, the B may fail to
-create due to the duplicate sysfs node.
-The scenario in detail:
-1) Thread 1 uses kmem_cache_destroy() to destroy kmem_cache A which is
-mergeable, it decreases A's refcount and if refcount is 0, then call
-memcg_set_kmem_cache_dying() which set A->memcg_params.dying = true,
-then unlock the slab_mutex and call flush_memcg_workqueue(), it may cost
-a while.
-Note: now the sysfs node(like '/kernel/slab/:0000248') of A is still
-present, it will be deleted in shutdown_cache() which will be called
-after flush_memcg_workqueue() is done and lock the slab_mutex again.
-2) Now if thread 2 is coming, it use kmem_cache_create() to create B, which
-is mergeable with A(their size is same), it gain the lock of slab_mutex,
-then call __kmem_cache_alias() trying to find a mergeable node, because
-of the below added code in commit d38a2b7a9c93 ("mm: memcg/slab: fix
-memory leak at non-root kmem_cache destroy"), B is not mergeable with
-A whose memcg_params.dying is true.
+On Thu, Jul 15, 2021 at 9:50 PM Jiri Kosina <jikos@kernel.org> wrote:
+>
+> On Fri, 25 Jun 2021, Douglas Anderson wrote:
+>
+> > The regulator for the touchscreen could be:
+> > * A dedicated regulator just for the touchscreen.
+> > * A regulator shared with something else in the system.
+> > * An always-on regulator.
+> >
+> > How we want the "reset" line to behave depends a bit on which of those
+> > three cases we're in. Currently the code is written with the
+> > assumption that it has a dedicated regulator, but that's not really
+> > guaranteed to be the case.
+> >
+> > The problem we run into is that if we leave the touchscreen powered on
+> > (because someone else is requesting the regulator or it's an always-on
+> > regulator) and we assert reset then we apparently burn an extra 67 mW
+> > of power. That's not great.
+> >
+> > Let's instead tie the control of the reset line to the true state of
+> > the regulator as reported by regulator notifiers. If we have an
+> > always-on regulator our notifier will never be called. If we have a
+> > shared regulator then our notifier will be called when the touchscreen
+> > is truly turned on or truly turned off.
+> >
+> > Using notifiers like this nicely handles all the cases without
+> > resorting to hacks like pretending that there is no "reset" GPIO if we
+> > have an always-on regulator.
+> >
+> > NOTE: if the regulator is on a shared line it's still possible that
+> > things could be a little off. Specifically, this case is not handled
+> > even after this patch:
+> > 1. Suspend goodix (send "sleep", goodix stops requesting regulator on)
+> > 2. Other regulator user turns off (regulator fully turns off).
+> > 3. Goodix driver gets notified and asserts reset.
+> > 4. Other regulator user turns on.
+> > 5. Goodix driver gets notified and deasserts reset.
+> > 6. Nobody resumes goodix.
+> >
+> > With that set of steps we'll have reset deasserted but we will have
+> > lost the results of the I2C_HID_PWR_SLEEP from the suspend path. That
+> > means we might be in higher power than we could be even if the goodix
+> > driver thinks things are suspended. Presumably, however, we're still
+> > in better shape than if we were asserting "reset" the whole time. If
+> > somehow the above situation is actually affecting someone and we want
+> > to do better we can deal with it when we have a real use case.
+> >
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>
+> Applied, thanks Doug.
 
-int slab_unmergeable(struct kmem_cache *s)
- 	if (s->refcount < 0)
- 		return 1;
+Thanks Jiri for taking this one in.
 
-	/*
-	 * Skip the dying kmem_cache.
-	 */
-	if (s->memcg_params.dying)
-		return 1;
+FWIW, I am really glad Doug made the effort of splitting i2c-hid-core
+and i2c-hid-goodix, because this is the kind of patch that would have
+been a nightmare to make it generic :)
 
- 	return 0;
- }
+Cheers,
+Benjamin
 
-So B has to create its own sysfs node by calling:
- create_cache->
-	__kmem_cache_create->
-		sysfs_slab_add->
-			kobject_init_and_add
-Because B is mergeable itself, its filename of sysfs node is based on its size,
-like '/kernel/slab/:0000248', which is duplicate with A, and the sysfs
-node of A is still present now, so kobject_init_and_add() will return
-fail and result in kmem_cache_create() fail.
-
-Concurrently modprobe and rmmod the two modules below can reproduce the issue
-quickly: nf_conntrack_expect, se_sess_cache. See call trace in the end.
-
-LTS versions of v4.19.y and v5.4.y have this problem, whereas linux versions after
-v5.9 do not have this problem because the patchset: ("The new cgroup slab memory
-controller") almost refactored memcg slab.
-
-A potential solution(this patch belongs): Just let the dying kmem_cache be mergeable,
-the slab_mutex lock can prevent the race between alias kmem_cache creating thread
-and root kmem_cache destroying thread. In the destroying thread, after
-flush_memcg_workqueue() is done, judge the refcount again, if someone
-reference it again during un-lock time, we don't need to destroy the kmem_cache
-completely, we can reuse it.
-
-Another potential solution: revert the commit d38a2b7a9c93 ("mm: memcg/slab:
-fix memory leak at non-root kmem_cache destroy"), compare to the fail of
-kmem_cache_create, the memory leak in special scenario seems less harmful.
-
-Call trace:
- sysfs: cannot create duplicate filename '/kernel/slab/:0000248'
- Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/06/2015
- Call trace:
-  dump_backtrace+0x0/0x198
-  show_stack+0x24/0x30
-  dump_stack+0xb0/0x100
-  sysfs_warn_dup+0x6c/0x88
-  sysfs_create_dir_ns+0x104/0x120
-  kobject_add_internal+0xd0/0x378
-  kobject_init_and_add+0x90/0xd8
-  sysfs_slab_add+0x16c/0x2d0
-  __kmem_cache_create+0x16c/0x1d8
-  create_cache+0xbc/0x1f8
-  kmem_cache_create_usercopy+0x1a0/0x230
-  kmem_cache_create+0x50/0x68
-  init_se_kmem_caches+0x38/0x258 [target_core_mod]
-  target_core_init_configfs+0x8c/0x390 [target_core_mod]
-  do_one_initcall+0x54/0x230
-  do_init_module+0x64/0x1ec
-  load_module+0x150c/0x16f0
-  __se_sys_finit_module+0xf0/0x108
-  __arm64_sys_finit_module+0x24/0x30
-  el0_svc_common+0x80/0x1c0
-  el0_svc_handler+0x78/0xe0
-  el0_svc+0x10/0x260
- kobject_add_internal failed for :0000248 with -EEXIST, don't try to register things with the same name in the same directory.
- kmem_cache_create(se_sess_cache) failed with error -17
- Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/06/2015
- Call trace:
-  dump_backtrace+0x0/0x198
-  show_stack+0x24/0x30
-  dump_stack+0xb0/0x100
-  kmem_cache_create_usercopy+0xa8/0x230
-  kmem_cache_create+0x50/0x68
-  init_se_kmem_caches+0x38/0x258 [target_core_mod]
-  target_core_init_configfs+0x8c/0x390 [target_core_mod]
-  do_one_initcall+0x54/0x230
-  do_init_module+0x64/0x1ec
-  load_module+0x150c/0x16f0
-  __se_sys_finit_module+0xf0/0x108
-  __arm64_sys_finit_module+0x24/0x30
-  el0_svc_common+0x80/0x1c0
-  el0_svc_handler+0x78/0xe0
-  el0_svc+0x10/0x260
-
-Fixes: d38a2b7a9c93 ("mm: memcg/slab: fix memory leak at non-root kmem_cache destroy")
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
-Cc: stable@vger.kernel.org
----
- mm/slab_common.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index d208b47e01a8..acc743315bb5 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -326,14 +326,6 @@ int slab_unmergeable(struct kmem_cache *s)
- 	if (s->refcount < 0)
- 		return 1;
- 
--#ifdef CONFIG_MEMCG_KMEM
--	/*
--	 * Skip the dying kmem_cache.
--	 */
--	if (s->memcg_params.dying)
--		return 1;
--#endif
--
- 	return 0;
- }
- 
-@@ -947,6 +939,16 @@ void kmem_cache_destroy(struct kmem_cache *s)
- 	get_online_mems();
- 
- 	mutex_lock(&slab_mutex);
-+
-+	/*
-+	 *Another thread referenced it again
-+	 */
-+	if (READ_ONCE(s->refcount)) {
-+		spin_lock_irq(&memcg_kmem_wq_lock);
-+		s->memcg_params.dying = false;
-+		spin_unlock_irq(&memcg_kmem_wq_lock);
-+		goto out_unlock;
-+	}
- #endif
- 
- 	err = shutdown_memcg_caches(s);
--- 
-2.18.0.huawei.25
+>
+> --
+> Jiri Kosina
+> SUSE Labs
+>
 
