@@ -2,66 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3913B3CF4AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16F73CF4B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 08:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242529AbhGTGBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 02:01:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:51492 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236403AbhGTGBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:01:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E75DD1FB;
-        Mon, 19 Jul 2021 23:41:48 -0700 (PDT)
-Received: from [10.163.66.175] (unknown [10.163.66.175])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F1CA3F73D;
-        Mon, 19 Jul 2021 23:41:46 -0700 (PDT)
-Subject: Re: [PATCH v2 01/12] mm/debug_vm_pgtable: Introduce struct
- pgtable_debug_args
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210719054138.198373-1-gshan@redhat.com>
- <20210719054138.198373-2-gshan@redhat.com>
- <8d754894-5c21-1287-82b6-7ac3b064af3d@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <ff9766a5-3f4e-f821-daf1-b2779a8c81fc@arm.com>
-Date:   Tue, 20 Jul 2021 12:12:35 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S242893AbhGTGFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 02:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242781AbhGTGFF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 02:05:05 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D5EC061574;
+        Mon, 19 Jul 2021 23:45:39 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id j1-20020a0568302701b02904d1f8b9db81so1049038otu.12;
+        Mon, 19 Jul 2021 23:45:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YnlclGx2H59akXwZYD6azkaNZJHqKAqqdcjQ+BfTMl0=;
+        b=EOriryfrZ2broDhPz9Rod56TA0R/dMqA1FgkTHBiSvm/zwHcoHuQnQbSTPUplzgMqE
+         6NGE1tuTNxY5k5rSiaH03Vq6oPn716sjjDEWQL64kuDx968CDuL3h+tCZ9a0DJtiFxKf
+         gmzCRr7/+UJCvCnKebfcy0owVygXkPGaBVGMxLE+Z60JpF14wVmZsa3BQ7JRqhimPRRh
+         ab3atrUiJdBnOd9yJKckKZyyCsJ4rdcNyyZZzMLSaItwbwYPA/UBsbN0vV9GDuFeUFsw
+         qwNgyU8Vl/n6OHt+jnOcLNplJRenDHUEpK0gNQaUK91RX00WVaTo1YOnpLTXSQhgq3j8
+         zNXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YnlclGx2H59akXwZYD6azkaNZJHqKAqqdcjQ+BfTMl0=;
+        b=gR2KCvqlXT+mUM8O2nw99vOq724HW0R17DzMKwp57+p+MUO2RdkeBmdKu6mgHVJFg5
+         cbcJVtwYKawewO5pt7mGqHjUkzNJ5jiGumeLlOU/W5axd/NJsNVDwEwwiDR6cWr2Zq1J
+         ULjUVdyrZAkmzBOV5dStmIi2H2Ufv8xUtF5Ll6DsVr8hFu78BT+ev3MEiAhQ3gDSmppZ
+         +DPjnxWnuQ56UnbGZECUQcLVyDfpA0sUJEHRDTMZ8IHjYDg7lFNpQBXm0fXC6XdzkqLU
+         Tf1eRyO19+629zgiUk6BFoqM741KJYm2DGJkG2/SImATviUk/Otr4N9fwjcGA19eZMoz
+         9S2g==
+X-Gm-Message-State: AOAM531v8+QZCyyLs5TpnKXfV8Cn5IOU0ziHofIfbY7WunmiYRYJmKW9
+        P/xZBovAtmZ9XrWDjhp7OjKrDUr4c4AYGlhafzLEnzdhBC6aLcI=
+X-Google-Smtp-Source: ABdhPJy4rXeOXr3aSDOKhPbHWEJWZV7pqAFvI/x6R1yMP1VISKGJ65cl5P0jd+oum/KevJu9IRS+OvfbNiRipMNR3lY=
+X-Received: by 2002:a05:6830:1dfc:: with SMTP id b28mr21199807otj.282.1626763538753;
+ Mon, 19 Jul 2021 23:45:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8d754894-5c21-1287-82b6-7ac3b064af3d@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1626235762-2590-1-git-send-email-zheyuma97@gmail.com> <YPXJW9N66U2gm2CD@ravnborg.org>
+In-Reply-To: <YPXJW9N66U2gm2CD@ravnborg.org>
+From:   Zheyu Ma <zheyuma97@gmail.com>
+Date:   Tue, 20 Jul 2021 14:45:27 +0800
+Message-ID: <CAMhUBjmjncenfiaH55NYRNVZOaWQXNjyaBBnudLfpz+GnGP6Nw@mail.gmail.com>
+Subject: Re: [PATCH v2] video: fbdev: kyro: fix a DoS bug by restricting user input
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 20, 2021 at 2:50 AM Sam Ravnborg <sam@ravnborg.org> wrote:
+>
+> Hi Zheyu,
+> On Wed, Jul 14, 2021 at 04:09:22AM +0000, Zheyu Ma wrote:
+> > The user can pass in any value to the driver through the 'ioctl'
+> > interface. The driver dost not check, which may cause DoS bugs.
+> >
+> > The following log reveals it:
+> >
+> > divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+> > RIP: 0010:SetOverlayViewPort+0x133/0x5f0 drivers/video/fbdev/kyro/STG4000OverlayDevice.c:476
+> > Call Trace:
+> >  kyro_dev_overlay_viewport_set drivers/video/fbdev/kyro/fbdev.c:378 [inline]
+> >  kyrofb_ioctl+0x2eb/0x330 drivers/video/fbdev/kyro/fbdev.c:603
+> >  do_fb_ioctl+0x1f3/0x700 drivers/video/fbdev/core/fbmem.c:1171
+> >  fb_ioctl+0xeb/0x130 drivers/video/fbdev/core/fbmem.c:1185
+> >  vfs_ioctl fs/ioctl.c:48 [inline]
+> >  __do_sys_ioctl fs/ioctl.c:753 [inline]
+> >  __se_sys_ioctl fs/ioctl.c:739 [inline]
+> >  __x64_sys_ioctl+0x19b/0x220 fs/ioctl.c:739
+> >  do_syscall_64+0x32/0x80 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >
+> > Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+> > ---
+> > Changes in v2:
+> >     - Validate the inputs on a higher level
+>
+> Much better, thanks.
+> When a line is continued like here the statement shall aling with the
+> opening brace. I fixed it up when applying the patch to drm-misc-next so
+> no need to do anything this time.
 
+Thanks for your kind reminder, I will pay attention next time.
 
-On 7/19/21 6:31 PM, Gavin Shan wrote:
->> +    if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
->> +        has_transparent_hugepage()) {
->> +        page = alloc_pages(GFP_KERNEL, HPAGE_PMD_ORDER);
->> +        if (page) {
->> +            args->pmd_pfn = page_to_pfn(page);
->> +            args->pte_pfn = args->pmd_pfn;
->> +            return 0;
->> +        }
->> +    }
->> +
-> 
-> As syzbot reported against v1 series, we could allocate pages larger than (1 << (MAX_ORDER - 1)) here.
-> So __GFP_NOWARN is needed here. I will fix it in v3 series.
-
-I could find the following build error reported from lkp on V2.
-
-mm/debug_vm_pgtable.c:445:8: warning: variable 'pud' set but not used [-Wunused-but-set-variable]
-
-Could you please point to the syzbot reported problem on V1 as you
-have mentioned above. Are there configs where HPAGE_[PMD|PUD]_ORDER
-is greater than (MAX_ORDER - 1) ? If yes, how adding __GFP_NOWARN
-solves the problem ?
+Regards,
+Zheyu Ma
