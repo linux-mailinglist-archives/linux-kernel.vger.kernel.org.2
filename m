@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42703CFAAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D2E3CFA94
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238530AbhGTMxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:53:17 -0400
-Received: from mga17.intel.com ([192.55.52.151]:38971 "EHLO mga17.intel.com"
+        id S237261AbhGTMvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:51:50 -0400
+Received: from mga01.intel.com ([192.55.52.88]:39516 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238622AbhGTMnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:43:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="191512047"
+        id S238616AbhGTMnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 08:43:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="233014785"
 X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="191512047"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 06:23:20 -0700
+   d="scan'208";a="233014785"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 06:23:20 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="661510499"
+   d="scan'208";a="510757259"
 Received: from lkp-server02.sh.intel.com (HELO 1b5a72ed9419) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 20 Jul 2021 06:23:19 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 20 Jul 2021 06:23:19 -0700
 Received: from kbuild by 1b5a72ed9419 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1m5piR-0000E2-3D; Tue, 20 Jul 2021 13:23:19 +0000
-Date:   Tue, 20 Jul 2021 21:22:21 +0800
+        id 1m5piQ-0000Dy-VA; Tue, 20 Jul 2021 13:23:18 +0000
+Date:   Tue, 20 Jul 2021 21:22:25 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/array-bounds] BUILD SUCCESS
- 8d4abca95ecc82fc8c41912fa0085281f19cc29f
-Message-ID: <60f6ce0d.LwDAG/RAKCePaeXL%lkp@intel.com>
+Subject: [gustavoars-linux:for-next/kspp] BUILD SUCCESS
+ 802dad70a535ee5c804fe96e449031a9e6f0589a
+Message-ID: <60f6ce11.Kos2FzgVRwDoy5Li%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,8 +39,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/array-bounds
-branch HEAD: 8d4abca95ecc82fc8c41912fa0085281f19cc29f  media: ngene: Fix out-of-bounds bug in ngene_command_config_free_buf()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp
+branch HEAD: 802dad70a535ee5c804fe96e449031a9e6f0589a  Merge branch 'for-next/array-bounds' into for-next/kspp
 
 elapsed time: 722m
 
