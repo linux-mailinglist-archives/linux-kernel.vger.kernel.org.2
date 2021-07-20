@@ -2,238 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301A43D037D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 22:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4878F3D0381
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 23:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234894AbhGTUQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 16:16:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42650 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234912AbhGTUBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 16:01:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBE5E60FEA;
-        Tue, 20 Jul 2021 20:42:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626813744;
-        bh=P1J28ss1PScW+PP+ZVuOa5wOA5aC5yz4+UYz8kAQIMA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aCga28067OZrAYiB+IuEUjo1sFVbQnJYPQyh5qf5Cc50s+WJx21SdPlv8RwJdzpNd
-         Ac/G4FNacPybVxP6XYtUhkZnxuwEiCqb02XxcaZGPblP+ZHM4epAWrOxrnSDJz37Pv
-         O40LT/ANJf9P7Hsj4QCPoKw7Oy2WvJYMolaiRDJysevYVJH7+mCq8sImEvzMBhnfte
-         oMTMbSuOJ0N+iPWwS6HHHYhvioWSYysc7C6kr4kKpK30be6exGqiInitWrMlHnd/BH
-         lXaK+jxGDNX0zaGXXNhGrH5k4y36OH+Yo9yBlbE+/7oDlvq1VIwQgin+iRsOZVDb9d
-         POWnX8AG5FFrQ==
-Date:   Tue, 20 Jul 2021 13:42:24 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v4] iomap: support tail packing inline read
-Message-ID: <20210720204224.GK23236@magnolia>
-References: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
+        id S235068AbhGTURS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 16:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235910AbhGTUIh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 16:08:37 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E12C061768
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:49:02 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id nd37so36284054ejc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:49:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AboetzlMBZEQFYyVq02sIsGWJx/JjBRI37re6kVn+AM=;
+        b=WMiyPulpA0yNVIE1CU5GjpG4+1PLhkQ2dzox7fjiM1rGEzfYvvYzfYmhMjS3f8ShbR
+         RW3oSaI6QVNXk+ziX7uVpMO49OSf0jnwHct3788yjnSeaF5SgdtIqIqdX4djCsK4i2Sy
+         5mr7RJyXNjiARSzGBqzk5l+/zblMhQgdhHjdLBfRtZJgra+oP7SRcUXwauR8fj0UYpR8
+         F7V0Eg/+zQpz/bmaQvXE10l0O+2flHYzD2SbH34ufoT6HQu2l7jhlMbHfe5CCmn5e2gO
+         MR2vnmxX9PZpbRsVTvUAqCegWibE2VGFJsDYJNWGCMyRDbJSTVmTZX3vnoly40YwxVTT
+         GXaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AboetzlMBZEQFYyVq02sIsGWJx/JjBRI37re6kVn+AM=;
+        b=fAjf1CaEnU9P1ek/isupV5AJfsnguegPreqdgTu9vTdWYLkWOBT9LlaW4ewfauLJuS
+         hB+cn543/IeEDC4oxDD16QrNRc3m314jG4RZgfA5PHSbCOhBH7jzSJPcHHLTxQoCJw6e
+         MxHp5uNMMisW/tXIsPW2m5EUc8Y5ySjJo5w20qAZbfPXCHGki391oFR5xi2nwkKHSs56
+         jisjbqADlVxSyvO+h8pVQLE21w4rJX6e33gUc29HoZcgv5NZ7zn+w7g3tZ/f4R3e8Cjx
+         UXnmp3+ti7mq07lbJkIjGljuGrz5V6NlBH4t26DqrNttaNXgtyUTgoL3qKA3/Q/MpDPB
+         bgUA==
+X-Gm-Message-State: AOAM532S5+ul2715DcSZsCb6cbz6mcb8DS1bW7v+SN3X8n8TyBra7HnW
+        b3L/j/HuQzQfrM6nSHy8VS/FVM26ydY/fylzdVpUsuus6STS1Q==
+X-Google-Smtp-Source: ABdhPJz0PQe4hlWMAq/5Aby4AGhK3rR89n4lgC8rV+phSIG7e85X5lT4q7jq1tMnWMvwv7BlD++GL+GLIVwq45qY3co=
+X-Received: by 2002:a17:907:20c6:: with SMTP id qq6mr10939524ejb.25.1626814140990;
+ Tue, 20 Jul 2021 13:49:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
+References: <20210720065529.716031-1-ying.huang@intel.com>
+In-Reply-To: <20210720065529.716031-1-ying.huang@intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 20 Jul 2021 13:48:47 -0700
+Message-ID: <CAHbLzkrKZNT1MwrCp0SOzZ43C12DZzNmPKXLwxKZ=j+YgOaW=g@mail.gmail.com>
+Subject: Re: [PATCH] mm,do_huge_pmd_numa_page: remove unnecessary TLB flushing code
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, Zi Yan <ziy@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 09:35:54PM +0800, Gao Xiang wrote:
-> This tries to add tail packing inline read to iomap, which can support
-> several inline tail blocks. Similar to the previous approach, it cleans
-> post-EOF in one iteration.
-> 
-> The write path remains untouched since EROFS cannot be used for testing.
-> It'd be better to be implemented if upcoming real users care rather than
-> leave untested dead code around.
-> 
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Darrick J. Wong <djwong@kernel.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> ---
-> v3: https://lore.kernel.org/r/20210719144747.189634-1-hsiangkao@linux.alibaba.com
-> changes since v3:
->  - update return value type of iomap_read_inline_data to int;
->  - fix iomap_write_begin_inline() pointed out by Andreas.
-> 
->  fs/iomap/buffered-io.c | 52 ++++++++++++++++++++++++++----------------
->  fs/iomap/direct-io.c   | 11 +++++----
->  2 files changed, 39 insertions(+), 24 deletions(-)
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 87ccb3438bec..0edc8bbb35d1 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -205,25 +205,25 @@ struct iomap_readpage_ctx {
->  	struct readahead_control *rac;
->  };
->  
-> -static void
-> +static int
->  iomap_read_inline_data(struct inode *inode, struct page *page,
-> -		struct iomap *iomap)
-> +		struct iomap *iomap, loff_t pos)
->  {
-> -	size_t size = i_size_read(inode);
-> +	unsigned int size, poff = offset_in_page(pos);
->  	void *addr;
->  
-> -	if (PageUptodate(page))
-> -		return;
-> -
-> -	BUG_ON(page_has_private(page));
-> -	BUG_ON(page->index);
-> -	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +	/* inline source data must be inside a single page */
-> +	BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-
-Can we reduce the strength of these checks to a warning and an -EIO
-return?
-
-> +	/* handle tail-packing blocks cross the current page into the next */
-> +	size = min_t(unsigned int, iomap->length + pos - iomap->offset,
-> +		     PAGE_SIZE - poff);
->  
->  	addr = kmap_atomic(page);
-> -	memcpy(addr, iomap->inline_data, size);
-> -	memset(addr + size, 0, PAGE_SIZE - size);
-> +	memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
-> +	memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
-
-Hmm, so I guess the point of this is to support reading data from a
-tail-packing block, where each file gets some arbitrary byte range
-within the tp-block, and the range isn't aligned to an fs block?  Hence
-you have to use the inline data code to read the relevant bytes and copy
-them into the pagecache?
-
-Aka this thing from the v3 discussion:
-
-> The other one is actual file tail blocks, I think it can cross pages due
-> to multiple tail inline blocks.
+On Mon, Jul 19, 2021 at 11:56 PM Huang Ying <ying.huang@intel.com> wrote:
 >
->                             |<---------- inline data ------------->|
->   _________________________________________________________________
->   | file block | file block | file block | file block | file block |
->   |<----------------    page   ---------------------->|<---  page
+> Before the commit c5b5a3dd2c1f ("mm: thp: refactor NUMA fault
+> handling"), the TLB flushing is done in do_huge_pmd_numa_page() itself
+> via flush_tlb_range().
+>
+> But after commit c5b5a3dd2c1f ("mm: thp: refactor NUMA fault
+> handling"), the TLB flushing is done in migrate_pages() as in the
+> following code path anyway.
+>
+> do_huge_pmd_numa_page
+>   migrate_misplaced_page
+>     migrate_pages
+>
+> So now, the TLB flushing code in do_huge_pmd_numa_page() becomes
+> unnecessary.  So the code is deleted in this patch to simplify the
+> code.  This is only code cleanup, there's no visible performance
+> difference.
 
-Except ... is this diagram a little misleading?  Each of these "file
-blocks" isn't i_blocksize bytes in size, right?  Because if they were,
-you could use the standard iomap codepaths?
+Yes, there is tlb flush in try_to_migrate(), but it seems mmu notifier
+invalidate is missed for the THP migration case. I'm not quite sure
+why it is not needed, maybe just missed?
 
-So the real layout might look a bit more like this?
+So, you may need the below change too:
 
-                                |<--- inline data ---->|
-  _________________________________________________________________
-  | file1 |     file2     |file3|  file4  |   file4    |
-  |<-------------   page   -------------->|<---  page ----...
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 2d29a57d29e8..e1c8b654563d 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1749,6 +1749,8 @@ static bool try_to_migrate_one(struct page
+*page, struct vm_area_struct *vma,
+                                       !PageTransCompound(page), page);
 
-(Sorry, /me isn't all that familiar with erofs layout...)
+                        set_pmd_migration_entry(&pvmw, page);
++                       mmu_notifier_invalidate_range(mm, range.start,
++                                                     range.end);
+                        continue;
+                }
+ #endif
 
->  	kunmap_atomic(addr);
-> -	SetPageUptodate(page);
-> +	iomap_set_range_uptodate(page, poff, PAGE_SIZE - poff);
-> +	return PAGE_SIZE - poff;
->  }
->  
->  static inline bool iomap_block_needs_zeroing(struct inode *inode,
-> @@ -246,18 +246,18 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
->  	unsigned poff, plen;
->  	sector_t sector;
->  
-> -	if (iomap->type == IOMAP_INLINE) {
-> -		WARN_ON_ONCE(pos);
-> -		iomap_read_inline_data(inode, page, iomap);
-> -		return PAGE_SIZE;
-> -	}
+>
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Yang Shi <shy828301@gmail.com>
+> Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Zi Yan <ziy@nvidia.com>
+> ---
+>  mm/huge_memory.c | 26 --------------------------
+>  1 file changed, 26 deletions(-)
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index afff3ac87067..9f21e44c9030 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -1440,32 +1440,6 @@ vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf)
+>                 goto out;
+>         }
+>
+> -       /*
+> -        * Since we took the NUMA fault, we must have observed the !accessible
+> -        * bit. Make sure all other CPUs agree with that, to avoid them
+> -        * modifying the page we're about to migrate.
+> -        *
+> -        * Must be done under PTL such that we'll observe the relevant
+> -        * inc_tlb_flush_pending().
+> -        *
+> -        * We are not sure a pending tlb flush here is for a huge page
+> -        * mapping or not. Hence use the tlb range variant
+> -        */
+> -       if (mm_tlb_flush_pending(vma->vm_mm)) {
+> -               flush_tlb_range(vma, haddr, haddr + HPAGE_PMD_SIZE);
+> -               /*
+> -                * change_huge_pmd() released the pmd lock before
+> -                * invalidating the secondary MMUs sharing the primary
+> -                * MMU pagetables (with ->invalidate_range()). The
+> -                * mmu_notifier_invalidate_range_end() (which
+> -                * internally calls ->invalidate_range()) in
+> -                * change_pmd_range() will run after us, so we can't
+> -                * rely on it here and we need an explicit invalidate.
+> -                */
+> -               mmu_notifier_invalidate_range(vma->vm_mm, haddr,
+> -                                             haddr + HPAGE_PMD_SIZE);
+> -       }
 > -
-> -	/* zero post-eof blocks as the page may be mapped */
->  	iop = iomap_page_create(inode, page);
-> +	/* needs to skip some leading uptodate blocks */
->  	iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
->  	if (plen == 0)
->  		goto done;
->  
-> +	if (iomap->type == IOMAP_INLINE) {
-> +		plen = iomap_read_inline_data(inode, page, iomap, pos);
-> +		goto done;
-> +	}
-> +
-> +	/* zero post-eof blocks as the page may be mapped */
->  	if (iomap_block_needs_zeroing(inode, iomap, pos)) {
->  		zero_user(page, poff, plen);
->  		iomap_set_range_uptodate(page, poff, plen);
-> @@ -589,6 +589,18 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
->  	return 0;
->  }
->  
-> +static int iomap_write_begin_inline(struct inode *inode, loff_t pos,
-> +		struct page *page, struct iomap *srcmap)
-> +{
-> +	/* needs more work for the tailpacking case, disable for now */
-> +	if (WARN_ON_ONCE(srcmap->offset != 0))
-> +		return -EIO;
-> +	if (PageUptodate(page))
-> +		return 0;
-> +	iomap_read_inline_data(inode, page, srcmap, 0);
-> +	return 0;
-> +}
-> +
->  static int
->  iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
->  		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-> @@ -618,7 +630,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
->  	}
->  
->  	if (srcmap->type == IOMAP_INLINE)
-> -		iomap_read_inline_data(inode, page, srcmap);
-> +		status = iomap_write_begin_inline(inode, pos, page, srcmap);
->  	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
->  		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
->  	else
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 9398b8c31323..ee6309967b77 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -379,22 +379,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
->  {
->  	struct iov_iter *iter = dio->submit.iter;
->  	size_t copied;
-> +	void *dst = iomap->inline_data + pos - iomap->offset;
->  
-> -	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +	/* inline data must be inside a single page */
-> +	BUG_ON(length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-
-Same here, can we convert these to warnings + EIO return?
-
---D
-
->  	if (dio->flags & IOMAP_DIO_WRITE) {
->  		loff_t size = inode->i_size;
->  
->  		if (pos > size)
-> -			memset(iomap->inline_data + size, 0, pos - size);
-> -		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-> +			memset(iomap->inline_data + size - iomap->offset,
-> +			       0, pos - size);
-> +		copied = copy_from_iter(dst, length, iter);
->  		if (copied) {
->  			if (pos + copied > size)
->  				i_size_write(inode, pos + copied);
->  			mark_inode_dirty(inode);
->  		}
->  	} else {
-> -		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-> +		copied = copy_to_iter(dst, length, iter);
->  	}
->  	dio->size += copied;
->  	return copied;
-> -- 
-> 2.24.4
-> 
+>         pmd = pmd_modify(oldpmd, vma->vm_page_prot);
+>         page = vm_normal_page_pmd(vma, haddr, pmd);
+>         if (!page)
+> --
+> 2.30.2
+>
