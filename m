@@ -2,109 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989373CF71B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E6D3CF703
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 11:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbhGTJEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 05:04:23 -0400
-Received: from pop36.abv.bg ([194.153.145.227]:33928 "EHLO pop36.abv.bg"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234806AbhGTJEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 05:04:21 -0400
-X-Greylist: delayed 419 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Jul 2021 05:04:19 EDT
-Received: from smtp.abv.bg (localhost [127.0.0.1])
-        by pop36.abv.bg (Postfix) with ESMTP id 16953180AA90;
-        Tue, 20 Jul 2021 12:37:48 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abv.bg; s=smtp-out;
-        t=1626773868; bh=mPlI6hgEp7grsSif9s2vkTZdz6gtzjPUEOp/oqiK5UI=;
-        h=From:Subject:Date:Cc:To:From;
-        b=svJWeBryW3FrNGb9165p1tCW8zASIGZ97zrAJc8f3I+/ASFCZU5ZzLQbsRsVazTcb
-         RY2FG8Sr0Zq32szO8+1FjFgeWYFs4QgMgOyhvjHQ37maKKqyqPQBrB0do+CESvWiwh
-         jkAAoUlXynzSByzMxYu1yufo+WH4WsEP1S6t5x2Y=
-X-HELO: smtpclient.apple
-Authentication-Results: smtp.abv.bg; auth=pass (plain) smtp.auth=gvalkov@abv.bg
-Received: from 212-39-89-148.ip.btc-net.bg (HELO smtpclient.apple) (212.39.89.148)
- by smtp.abv.bg (qpsmtpd/0.96) with ESMTPSA (ECDHE-RSA-AES256-GCM-SHA384 encrypted); Tue, 20 Jul 2021 12:37:48 +0300
-From:   Georgi Valkov <gvalkov@abv.bg>
-Content-Type: text/plain;
-        charset=us-ascii
+        id S232294AbhGTI6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 04:58:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhGTI6J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 04:58:09 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4494BC061574;
+        Tue, 20 Jul 2021 02:38:47 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id t3so27631839edc.7;
+        Tue, 20 Jul 2021 02:38:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ob2cL9xsCuqI2PtZCWk4ZnfruGA/KtiWAaZc2Xrr4AE=;
+        b=goq6yCQPn/6AnEsFbyX2k+3qh8cv1+Kn3s6p2QPPbSaOJTqpkvxalHq2CtwvJ/x9NH
+         MaPHlgNqCVgT0yrQoPQxlanIWryDj5GNQkebvgmavNwAyt/sLhZiRD2uU5/FshixSweE
+         tRXovwpnIBJCdOuFamWmlVnIT1wMpzyAMwBvzlS+a9nGB1U9InErKigu4UuRtbMWEgej
+         +1URvihDMERpFLKHK+LbEJWBuGdVDbsLAVEZiMgl502Je1yTiPvO/TPBJmegUQ5BMwH8
+         0j0F8SxJQwBCpjDjI3gJ60pAY8W7DKaVDx/cwN+afAu/BiQoS3u8r++tINTjkE9mR8aP
+         o7LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ob2cL9xsCuqI2PtZCWk4ZnfruGA/KtiWAaZc2Xrr4AE=;
+        b=db74qaueC+i+2fxS1k4Vc+ARBjFxr7aOJodBw8tUS8tt6vji8HrUTMd8DywYUAa0KH
+         IbMVmGM5BMvzXV5c9af4Bqov2djL5xJrCnoUbQKLVvC1BctR8MFDQV/ne4KqecOv081/
+         FVJP6edrSbNFJpoEbOYYsy9sL8KU4aLBe+2csbTXIeYiCPMs7SmJMGVRfNA6nwqogmdM
+         0CR8ANqdTfDHWDJZZi10vgm44uHpsT3m3UJsPXmDZj8mx348plMkao7U+mt//Cd+i8+o
+         yCdqX/bZjGn05on7fLGPz8ZTwvRBCc+w55DcuBL0R/BsmeMtMl9MRY/2stL1OtS2A6jX
+         uJqQ==
+X-Gm-Message-State: AOAM532MEBdDz6ZVGXEAhbqQX9GoMqw6/JLAtvGb7nqYKl1qeWgc/6++
+        Lb8CSKwGp/SR7Qag/3+5KvDTskmeWeEKV3LaaEDzoFMSS7HTyQ==
+X-Google-Smtp-Source: ABdhPJyFYULltN0VLmruKU6gln2nBG30ldbFf2khnefL2E+dRSChweVniLR25706q27205hxMP3yUCyt6LutA6yXFB8=
+X-Received: by 2002:a05:6402:5209:: with SMTP id s9mr30408240edd.92.1626773925557;
+ Tue, 20 Jul 2021 02:38:45 -0700 (PDT)
+MIME-Version: 1.0
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Tue, 20 Jul 2021 15:08:34 +0530
+Message-ID: <CAOuPNLhqSpaTm3u4kFsnuZ0PLDKuX8wsxuF=vUJ1TEG0EP+L1g@mail.gmail.com>
+Subject: Kernel 4.14: Using dm-verity with squashfs rootfs - mounting issue
+To:     open list <linux-kernel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>, dm-devel@redhat.com,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>, agk@redhat.com,
+        snitzer@redhat.com, shli@kernel.org, mpatocka@redhat.com,
+        samitolvanen@google.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: ipheth: fix EOVERFLOW in ipheth_rcvbulk_callback
-Message-Id: <B60B8A4B-92A0-49B3-805D-809A2433B46C@abv.bg>
-Date:   Tue, 20 Jul 2021 12:37:43 +0300
-Cc:     =?utf-8?B?0JPQtdC+0YDQs9C4INCT0LXQvtGA0LPQuNC10LIg0JLRitC70LrQvtCy?= 
-        <gvalkov@abv.bg>, corsac@corsac.net, matti.vuorela@bitfactor.fi,
-        stable@vger.kernel.org
-To:     davem@davemloft.net, kuba@kernel.org, mhabets@solarflare.com,
-        luc.vanoostenryck@gmail.com, snelson@pensando.io, mst@redhat.com,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ipheth: fix EOVERFLOW in ipheth_rcvbulk_callback
-https://github.com/openwrt/openwrt/pull/4084
+Hi,
+
+Our ARM32 Linux embedded system consists of these:
+* Linux Kernel: 4.14
+* Processor: Qualcomm Arm32 Cortex-A7
+* Storage: NAND 512MB
+* Platform: Simple busybox
+* Filesystem: UBIFS, Squashfs
+* Consists of nand raw partitions, squashfs ubi volumes.
+
+My requirement:
+We wanted to use dm-verity at boot time to check the integrity of
+squashfs-rootfs before mounting.
+
+Problem:
+dm-0 is not able to locate and mount the squash fs rootfs block.
+The same approach is working when emulating with ext4 but fails with squash=
+fs.
+
+Logs:
+[....]
+[    0.000000] Kernel command line: [...] verity=3D"96160 12020
+d7b8a7d0c01b9aec888930841313a81603a50a2a7be44631c4c813197a50d681 0 "
+rootfstype=3Dsquashfs root=3D/dev/mtdblock34 ubi.mtd=3D30,0,30 [...]
+root=3D/dev/dm-0 dm=3D"system none ro,0 96160 verity 1 /dev/mtdblock34
+/dev/mtdblock39 4096 4096 12020 8 sha256
+d7b8a7d0c01b9aec888930841313a81603a50a2a7be44631c4c813197a50d681
+aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7"
+[....]
+[    4.693620] vreg_conn_pa: disa=E2=96=92[    4.700662] md: Skipping
+autodetection of RAID arrays. (raid=3Dautodetect will force)
+[    4.700713] device-mapper: init: attempting early device configuration.
+[    4.708224] device-mapper: init: adding target '0 96160 verity 1
+/dev/mtdblock34 /dev/mtdblock39 4096 4096 12020 8 sha256
+d7b8a7d0c01b9aec888930841313a81603a50a2a7be44631c4c813197a50d681
+aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7'
+[    4.714979] device-mapper: verity: sha256 using implementation
+"sha256-generic"
+[    4.737808] device-mapper: init: dm-0 is ready
+[....]
+[    5.278103] No filesystem could mount root, tried:
+[    5.278107]  squashfs
+[    5.280477]
+[    5.287627] Kernel panic - not syncing: VFS: Unable to mount root
+fs on unknown-block(253,0)
+[...]
+
+Not sure, why is it still locating block "253" here which seems like a
+MAJOR number ?
+
+Working logs on ext4:
+[....]
+[    4.529822] v=E2=96=92[    4.534035] md: Skipping autodetection of RAID
+arrays. (raid=3Dautodetect will force)
+[    4.534087] device-mapper: init: attempting early device configuration.
+[    4.550316] device-mapper: init: adding target '0 384440 verity 1
+/dev/ubiblock0_0 /dev/ubiblock0_0 4096 4096 48055 48063 sha256
+a02e0c13afb31e99b999c64aae6f4644c24addbc58db5689902cc5ba0be2d15b
+aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 10
+restart_on_corruption ignore_zero_blocks use_fec_from_device
+/dev/ubiblock0_0 fec_roots 2 fec_blocks 48443 fec_start 48443'
+[    4.572215] device-mapper: verity: sha256 using implementation
+"sha256-generic"
+[    4.610692] device-mapper: init: dm-0 is ready
+[    4.720174] EXT4-fs (dm-0): mounted filesystem with ordered data
+mode. Opts: (null)
+[    4.720438] VFS: Mounted root (ext4 filesystem) readonly on device 253:0=
+.
+[    4.737256] devtmpfs: mounted
+[....]
+
+Questions:
+a) Is dm-verity supposed to work on squashfs block devices ?
+b) Are there any known issues with dm-verity on Kernel 4.14 ?
+c) Are there any patches that we are missing ?
 
 
-=46rom dd109ded2b526636fff438d33433ab64ffd21583 Mon Sep 17 00:00:00 2001
-From: Georgi Valkov <gvalkov@abv.bg>
-Date: Fri, 16 Apr 2021 20:44:36 +0300
-Subject: [PATCH] ipheth: fix EOVERFLOW in ipheth_rcvbulk_callback
-
-When rx_buf is allocated we need to account for IPHETH_IP_ALIGN,
-which reduces the usable size by 2 bytes. Otherwise we have 1512
-bytes usable instead of 1514, and if we receive more than 1512
-bytes, ipheth_rcvbulk_callback is called with status -EOVERFLOW,
-after which the driver malfunctiones and all communication stops.
-
-Fixes: ipheth 2-1:4.2: ipheth_rcvbulk_callback: urb status: -75
-
-Signed-off-by: Georgi Valkov <gvalkov@abv.bg>
----
- drivers/net/usb/ipheth.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/usb/ipheth.c b/drivers/net/usb/ipheth.c
-index 207e59e74935..06d9f19ca142 100644
---- a/drivers/net/usb/ipheth.c
-+++ b/drivers/net/usb/ipheth.c
-@@ -121,7 +121,7 @@ static int ipheth_alloc_urbs(struct ipheth_device =
-*iphone)
- 	if (tx_buf =3D=3D NULL)
- 		goto free_rx_urb;
-=20
--	rx_buf =3D usb_alloc_coherent(iphone->udev, IPHETH_BUF_SIZE,
-+	rx_buf =3D usb_alloc_coherent(iphone->udev, IPHETH_BUF_SIZE + =
-IPHETH_IP_ALIGN,
- 				    GFP_KERNEL, &rx_urb->transfer_dma);
- 	if (rx_buf =3D=3D NULL)
- 		goto free_tx_buf;
-@@ -146,7 +146,7 @@ static int ipheth_alloc_urbs(struct ipheth_device =
-*iphone)
-=20
- static void ipheth_free_urbs(struct ipheth_device *iphone)
- {
--	usb_free_coherent(iphone->udev, IPHETH_BUF_SIZE, iphone->rx_buf,
-+	usb_free_coherent(iphone->udev, IPHETH_BUF_SIZE + =
-IPHETH_IP_ALIGN, iphone->rx_buf,
- 			  iphone->rx_urb->transfer_dma);
- 	usb_free_coherent(iphone->udev, IPHETH_BUF_SIZE, iphone->tx_buf,
- 			  iphone->tx_urb->transfer_dma);
-@@ -317,7 +317,7 @@ static int ipheth_rx_submit(struct ipheth_device =
-*dev, gfp_t mem_flags)
-=20
- 	usb_fill_bulk_urb(dev->rx_urb, udev,
- 			  usb_rcvbulkpipe(udev, dev->bulk_in),
--			  dev->rx_buf, IPHETH_BUF_SIZE,
-+			  dev->rx_buf, IPHETH_BUF_SIZE + =
-IPHETH_IP_ALIGN,
- 			  ipheth_rcvbulk_callback,
- 			  dev);
- 	dev->rx_urb->transfer_flags |=3D URB_NO_TRANSFER_DMA_MAP;
---=20
-2.31.1
-
-
+Thanks,
+Pintu
