@@ -2,178 +2,516 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83FB3CF101
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4C23CF102
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355668AbhGTALl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 20:11:41 -0400
-Received: from gateway30.websitewelcome.com ([192.185.193.11]:12540 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237024AbhGSXyI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 19:54:08 -0400
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id AD358C08A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 19:34:29 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id 5diPmwlSUuMjb5diPmhOhy; Mon, 19 Jul 2021 19:34:29 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=nW0eV1Ts9Idn1vqEBQVZi/l1xO20XSwEQFJm3xKZUSk=; b=OWST1RtCmqW2E+qNpLEcXgKHPn
-        2nQ3Jj6ZkOiJ0pnImB633q+ECV+aJGoEnYPUpIPP3z9U4AvLwEvMparH+Ei2blHjythXiK3hLcXHj
-        8u+QA5EkvY/K7rRDCZL3sDzVkvXQUS4S03TjBe3sJwZqVi2DzFl1ATHvJh2l/RCaJKjYcTHIPqqMv
-        Lkz2Au0fNxfWLOlotGgbnBSzSGk3NoOieRquLnaU3W6aEUSykoEmmPR0Ye9V/VmHi2dd+1KlYGgfI
-        k4QNOl1X16vHYwPyNMjODjAw+9A8JrS/BLv8o/IlTAgMI7b5sY7Xoj7b9L6MzQj090kKMbKJlaUru
-        BQdFllBA==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:50338 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1m5diM-0017RG-68; Mon, 19 Jul 2021 19:34:26 -0500
-Subject: Re: [PATCH] media: ngene: Fix out-of-bounds bug in
- ngene_command_config_free_buf()
-To:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ralph Metzler <rjkm@metzlerbros.de>,
-        Matthias Benesch <twoof7@freenet.de>,
-        Oliver Endriss <o.endriss@gmx.de>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210420001631.GA45456@embeddedor>
- <202104211039.31E9785@keescook>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <70836714-f419-8d85-a490-190bc91ba5ae@embeddedor.com>
-Date:   Mon, 19 Jul 2021 19:36:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1356775AbhGTALw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 20:11:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355236AbhGSX7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 19:59:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 247E361073;
+        Tue, 20 Jul 2021 00:39:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626741581;
+        bh=PhewyX8kFMOCguoJ2klDvCIvxgTpqQl+stm2qcfX5j4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=j6o8OKg/2MgpHNDDQiZHgHuXvqT8sJka66Fie0k8stjJ3nkajmwcVRp0EszNzKRX/
+         L7i8sltGhuuuR994pAB0ScsIjC47YDEIhanZBNsOEt5SCFKLJyaJx6n2PxRAqsekgi
+         d+npWFLAetxw2z3zMdbzT6nxYXie+6Gx2Z5Ke2WoJfQcJD5nmRkBHlffd5xW7JFgAe
+         8xO0uXhhgaH85w5QUZ8iOt1zQsmMomXsZcl5NOw3icTBRFM3TL822zD8tkdLL3s45+
+         ulpsVCy29He+FGfXGuC8P61hxdKddpTt/3eRlpEjUysLvUWpilq4R11WYgY9nJFn/X
+         Kmj/2DPyjijNA==
+Subject: Re: [RFC NO MERGE] f2fs: extent cache: support unaligned extent
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>
+References: <20210707015815.1978-1-chao@kernel.org>
+ <YPXGLOhWyiXk74Ka@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <d00102d0-846c-ce4e-c667-496cbd52cc1f@kernel.org>
+Date:   Tue, 20 Jul 2021 08:39:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <202104211039.31E9785@keescook>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YPXGLOhWyiXk74Ka@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1m5diM-0017RG-68
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:50338
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 8
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-I'm taking this in my tree[1] for 5.14-rc3.
-
-Thanks
---
-Gustavo
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/array-bounds
-
-On 4/21/21 12:40, Kees Cook wrote:
-> On Mon, Apr 19, 2021 at 07:16:31PM -0500, Gustavo A. R. Silva wrote:
->> Fix an 11-year old bug in ngene_command_config_free_buf() while
->> addressing the following warnings caught with -Warray-bounds:
+On 2021/7/20 2:36, Jaegeuk Kim wrote:
+> On 07/07, Chao Yu wrote:
+>> Compressed inode may suffer read performance issue due to it can not
+>> use extent cache, so I propose to add this unaligned extent support
+>> to improve it.
 >>
->> arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
->> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
+>> Currently, it only works in readonly format f2fs image.
 >>
->> The problem is that the original code is trying to copy 6 bytes of
->> data into a one-byte size member _config_ of the wrong structue
->> FW_CONFIGURE_BUFFERS, in a single call to memcpy(). This causes a
->> legitimate compiler warning because memcpy() overruns the length
->> of &com.cmd.ConfigureBuffers.config. It seems that the right
->> structure is FW_CONFIGURE_FREE_BUFFERS, instead, because it contains
->> 6 more members apart from the header _hdr_. Also, the name of
->> the function ngene_command_config_free_buf() suggests that the actual
->> intention is to ConfigureFreeBuffers, instead of ConfigureBuffers
->> (which configuration takes place in the function ngene_command_config_buf(),
->> above).
+>> Unaligned extent: in one compressed cluster, physical block number
+>> will be less than logical block number, so we add an extra physical
+>> block length in extent info in order to indicate such extent status.
 >>
->> Fix this by enclosing those 6 members of struct FW_CONFIGURE_FREE_BUFFERS
->> into new struct config, and use &com.cmd.ConfigureFreeBuffers.config as
->> the destination address, instead of &com.cmd.ConfigureBuffers.config,
->> when calling memcpy().
->>
->> This also helps with the ongoing efforts to globally enable
->> -Warray-bounds and get us closer to being able to tighten the
->> FORTIFY_SOURCE routines on memcpy().
->>
->> Link: https://github.com/KSPP/linux/issues/109
->> Fixes: dae52d009fc9 ("V4L/DVB: ngene: Initial check-in")
->> Cc: stable@vger.kernel.org
->> Reported-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> The idea is if one whole cluster blocks are contiguous physically,
+>> once its mapping info was readed at first time, we will cache an
+>> unaligned (or aligned) extent info entry in extent cache, it expects
+>> that the mapping info will be hitted when rereading cluster.
 > 
-> Nice find! Yeah, this looks like a copy/paste bug but it went unnoticed
-> because it's occupying the same memory via the union. Heh.
+> How about just modifying to handle COMPRESS_ADDR when modifying the extent_cache
+> like RO case?
+
+IIUC, update_largest_extent() in sload tries to find largest non-compressed cluster,
+and persist its extent into inode, for a compressed file, non-compressed cluster is
+not a common case, so I guess it's valuable to handle compressed cluster mapping
+in extent cache to enhance read performance, especially for inode which has large
+sized cluster.
+
+Let me if I misunderstood what you mean.
+
+Thanks,
+
 > 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
-> -Kees
-> 
+>>
+>> Merge policy:
+>> - Aligned extents can be merged.
+>> - Aligned extent and unaligned extent can not be merged.
+>>
+>> Signed-off-by: Chao Yu <chao@kernel.org>
 >> ---
->>  drivers/media/pci/ngene/ngene-core.c |  2 +-
->>  drivers/media/pci/ngene/ngene.h      | 14 ++++++++------
->>  2 files changed, 9 insertions(+), 7 deletions(-)
 >>
->> diff --git a/drivers/media/pci/ngene/ngene-core.c b/drivers/media/pci/ngene/ngene-core.c
->> index 07f342db6701..7481f553f959 100644
->> --- a/drivers/media/pci/ngene/ngene-core.c
->> +++ b/drivers/media/pci/ngene/ngene-core.c
->> @@ -385,7 +385,7 @@ static int ngene_command_config_free_buf(struct ngene *dev, u8 *config)
->>  
->>  	com.cmd.hdr.Opcode = CMD_CONFIGURE_FREE_BUFFER;
->>  	com.cmd.hdr.Length = 6;
->> -	memcpy(&com.cmd.ConfigureBuffers.config, config, 6);
->> +	memcpy(&com.cmd.ConfigureFreeBuffers.config, config, 6);
->>  	com.in_len = 6;
->>  	com.out_len = 0;
->>  
->> diff --git a/drivers/media/pci/ngene/ngene.h b/drivers/media/pci/ngene/ngene.h
->> index 84f04e0e0cb9..3d296f1998a1 100644
->> --- a/drivers/media/pci/ngene/ngene.h
->> +++ b/drivers/media/pci/ngene/ngene.h
->> @@ -407,12 +407,14 @@ enum _BUFFER_CONFIGS {
->>  
->>  struct FW_CONFIGURE_FREE_BUFFERS {
->>  	struct FW_HEADER hdr;
->> -	u8   UVI1_BufferLength;
->> -	u8   UVI2_BufferLength;
->> -	u8   TVO_BufferLength;
->> -	u8   AUD1_BufferLength;
->> -	u8   AUD2_BufferLength;
->> -	u8   TVA_BufferLength;
->> +	struct {
->> +		u8   UVI1_BufferLength;
->> +		u8   UVI2_BufferLength;
->> +		u8   TVO_BufferLength;
->> +		u8   AUD1_BufferLength;
->> +		u8   AUD2_BufferLength;
->> +		u8   TVA_BufferLength;
->> +	} __packed config;
->>  } __attribute__ ((__packed__));
->>  
->>  struct FW_CONFIGURE_UART {
+>> I just post this for comments, it passes compiling, w/o any test.
+>>
+>>   fs/f2fs/compress.c     | 25 ++++++++++++
+>>   fs/f2fs/data.c         | 38 +++++++++++++-----
+>>   fs/f2fs/extent_cache.c | 90 +++++++++++++++++++++++++++++++++++++-----
+>>   fs/f2fs/f2fs.h         | 33 +++++++++++++---
+>>   fs/f2fs/node.c         | 20 ++++++++++
+>>   5 files changed, 181 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+>> index 455561826c7d..f072ac33eba5 100644
+>> --- a/fs/f2fs/compress.c
+>> +++ b/fs/f2fs/compress.c
+>> @@ -1666,6 +1666,31 @@ void f2fs_put_page_dic(struct page *page)
+>>   	f2fs_put_dic(dic);
+>>   }
+>>   
+>> +/*
+>> + * check whether cluster blocks are contiguous, and add extent cache entry
+>> + * only if cluster blocks are logically and physically contiguous.
+>> + */
+>> +int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn)
+>> +{
+>> +	bool compressed = f2fs_data_blkaddr(dn) == COMPRESS_ADDR;
+>> +	int i = compressed ? 1 : 0;
+>> +	block_t first_blkaddr = data_blkaddr(dn->inode, dn->node_page,
+>> +						dn->ofs_in_node + i);
+>> +
+>> +	for (i += 1; i < F2FS_I(dn->inode)->i_cluster_size; i++) {
+>> +		block_t blkaddr = data_blkaddr(dn->inode, dn->node_page,
+>> +						dn->ofs_in_node + i);
+>> +
+>> +		if (!__is_valid_data_blkaddr(blkaddr))
+>> +			break;
+>> +		if (first_blkaddr + i - 1 != blkaddr)
+>> +			return 0;
+>> +	}
+>> +
+>> +	return compressed ? i - 1 : i;
+>> +}
+>> +
+>> +
+>>   const struct address_space_operations f2fs_compress_aops = {
+>>   	.releasepage = f2fs_release_page,
+>>   	.invalidatepage = f2fs_invalidate_page,
+>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>> index d2cf48c5a2e4..9572d78da4d7 100644
+>> --- a/fs/f2fs/data.c
+>> +++ b/fs/f2fs/data.c
+>> @@ -2115,6 +2115,8 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+>>   	sector_t last_block_in_file;
+>>   	const unsigned blocksize = blks_to_bytes(inode, 1);
+>>   	struct decompress_io_ctx *dic = NULL;
+>> +	struct extent_info_unaligned eiu;
+>> +	bool extent_cache = false;
+>>   	int i;
+>>   	int ret = 0;
+>>   
+>> @@ -2145,18 +2147,26 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+>>   	if (f2fs_cluster_is_empty(cc))
+>>   		goto out;
+>>   
+>> -	set_new_dnode(&dn, inode, NULL, NULL, 0);
+>> -	ret = f2fs_get_dnode_of_data(&dn, start_idx, LOOKUP_NODE);
+>> -	if (ret)
+>> -		goto out;
+>> +	if (f2fs_lookup_extent_cache_unaligned(inode, start_idx, &eiu))
+>> +		extent_cache = true;
+>>   
+>> -	f2fs_bug_on(sbi, dn.data_blkaddr != COMPRESS_ADDR);
+>> +	if (!extent_cache) {
+>> +		set_new_dnode(&dn, inode, NULL, NULL, 0);
+>> +		ret = f2fs_get_dnode_of_data(&dn, start_idx, LOOKUP_NODE);
+>> +		if (ret)
+>> +			goto out;
+>> +
+>> +		f2fs_bug_on(sbi, dn.data_blkaddr != COMPRESS_ADDR);
+>> +	}
+>>   
+>>   	for (i = 1; i < cc->cluster_size; i++) {
+>>   		block_t blkaddr;
+>>   
+>> -		blkaddr = data_blkaddr(dn.inode, dn.node_page,
+>> -						dn.ofs_in_node + i);
+>> +		if (extent_cache)
+>> +			blkaddr = eiu.ei.blk + i;
+>> +		else
+>> +			blkaddr = data_blkaddr(dn.inode, dn.node_page,
+>> +							dn.ofs_in_node + i);
+>>   
+>>   		if (!__is_valid_data_blkaddr(blkaddr))
+>>   			break;
+>> @@ -2166,6 +2176,9 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+>>   			goto out_put_dnode;
+>>   		}
+>>   		cc->nr_cpages++;
+>> +
+>> +		if (extent_cache && i >= eiu.plen)
+>> +			break;
+>>   	}
+>>   
+>>   	/* nothing to decompress */
+>> @@ -2185,7 +2198,10 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+>>   		block_t blkaddr;
+>>   		struct bio_post_read_ctx *ctx;
+>>   
+>> -		blkaddr = data_blkaddr(dn.inode, dn.node_page,
+>> +		if (extent_cache)
+>> +			blkaddr = eiu.plen + i + 1;
+>> +		else
+>> +			blkaddr = data_blkaddr(dn.inode, dn.node_page,
+>>   						dn.ofs_in_node + i + 1);
+>>   
+>>   		f2fs_wait_on_block_writeback(inode, blkaddr);
+>> @@ -2231,13 +2247,15 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+>>   		*last_block_in_bio = blkaddr;
+>>   	}
+>>   
+>> -	f2fs_put_dnode(&dn);
+>> +	if (!extent_cache)
+>> +		f2fs_put_dnode(&dn);
+>>   
+>>   	*bio_ret = bio;
+>>   	return 0;
+>>   
+>>   out_put_dnode:
+>> -	f2fs_put_dnode(&dn);
+>> +	if (!extent_cache)
+>> +		f2fs_put_dnode(&dn);
+>>   out:
+>>   	for (i = 0; i < cc->cluster_size; i++) {
+>>   		if (cc->rpages[i]) {
+>> diff --git a/fs/f2fs/extent_cache.c b/fs/f2fs/extent_cache.c
+>> index 3ebf976a682d..db9de95f90dc 100644
+>> --- a/fs/f2fs/extent_cache.c
+>> +++ b/fs/f2fs/extent_cache.c
+>> @@ -235,7 +235,7 @@ static struct kmem_cache *extent_node_slab;
+>>   static struct extent_node *__attach_extent_node(struct f2fs_sb_info *sbi,
+>>   				struct extent_tree *et, struct extent_info *ei,
+>>   				struct rb_node *parent, struct rb_node **p,
+>> -				bool leftmost)
+>> +				bool leftmost, bool unaligned)
+>>   {
+>>   	struct extent_node *en;
+>>   
+>> @@ -247,6 +247,11 @@ static struct extent_node *__attach_extent_node(struct f2fs_sb_info *sbi,
+>>   	INIT_LIST_HEAD(&en->list);
+>>   	en->et = et;
+>>   
+>> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+>> +	if (unaligned)
+>> +		en->plen = ((struct extent_info_unaligned *)ei)->plen;
+>> +#endif
+>> +
+>>   	rb_link_node(&en->rb_node, parent, p);
+>>   	rb_insert_color_cached(&en->rb_node, &et->root, leftmost);
+>>   	atomic_inc(&et->node_cnt);
+>> @@ -320,7 +325,7 @@ static struct extent_node *__init_extent_tree(struct f2fs_sb_info *sbi,
+>>   	struct rb_node **p = &et->root.rb_root.rb_node;
+>>   	struct extent_node *en;
+>>   
+>> -	en = __attach_extent_node(sbi, et, ei, NULL, p, true);
+>> +	en = __attach_extent_node(sbi, et, ei, NULL, p, true, false);
+>>   	if (!en)
+>>   		return NULL;
+>>   
+>> @@ -439,6 +444,17 @@ static bool f2fs_lookup_extent_tree(struct inode *inode, pgoff_t pgofs,
+>>   		stat_inc_rbtree_node_hit(sbi);
+>>   
+>>   	*ei = en->ei;
+>> +
+>> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+>> +	if (is_inode_flag_set(inode, FI_COMPRESSED_FILE) &&
+>> +				!f2fs_sb_has_readonly(sbi)) {
+>> +		struct extent_info_unaligned *eiu =
+>> +				(struct extent_info_unaligned *)ei;
+>> +
+>> +		eiu->plen = en->plen;
+>> +	}
+>> +#endif
+>> +
+>>   	spin_lock(&sbi->extent_lock);
+>>   	if (!list_empty(&en->list)) {
+>>   		list_move_tail(&en->list, &sbi->extent_list);
+>> @@ -457,17 +473,18 @@ static bool f2fs_lookup_extent_tree(struct inode *inode, pgoff_t pgofs,
+>>   static struct extent_node *__try_merge_extent_node(struct f2fs_sb_info *sbi,
+>>   				struct extent_tree *et, struct extent_info *ei,
+>>   				struct extent_node *prev_ex,
+>> -				struct extent_node *next_ex)
+>> +				struct extent_node *next_ex,
+>> +				bool unaligned)
+>>   {
+>>   	struct extent_node *en = NULL;
+>>   
+>> -	if (prev_ex && __is_back_mergeable(ei, &prev_ex->ei)) {
+>> +	if (prev_ex && __is_back_mergeable(ei, &prev_ex->ei, unaligned)) {
+>>   		prev_ex->ei.len += ei->len;
+>>   		ei = &prev_ex->ei;
+>>   		en = prev_ex;
+>>   	}
+>>   
+>> -	if (next_ex && __is_front_mergeable(ei, &next_ex->ei)) {
+>> +	if (next_ex && __is_front_mergeable(ei, &next_ex->ei, unaligned)) {
+>>   		next_ex->ei.fofs = ei->fofs;
+>>   		next_ex->ei.blk = ei->blk;
+>>   		next_ex->ei.len += ei->len;
+>> @@ -495,7 +512,7 @@ static struct extent_node *__insert_extent_tree(struct f2fs_sb_info *sbi,
+>>   				struct extent_tree *et, struct extent_info *ei,
+>>   				struct rb_node **insert_p,
+>>   				struct rb_node *insert_parent,
+>> -				bool leftmost)
+>> +				bool leftmost, bool unaligned)
+>>   {
+>>   	struct rb_node **p;
+>>   	struct rb_node *parent = NULL;
+>> @@ -512,7 +529,7 @@ static struct extent_node *__insert_extent_tree(struct f2fs_sb_info *sbi,
+>>   	p = f2fs_lookup_rb_tree_for_insert(sbi, &et->root, &parent,
+>>   						ei->fofs, &leftmost);
+>>   do_insert:
+>> -	en = __attach_extent_node(sbi, et, ei, parent, p, leftmost);
+>> +	en = __attach_extent_node(sbi, et, ei, parent, p, leftmost, unaligned);
+>>   	if (!en)
+>>   		return NULL;
+>>   
+>> @@ -594,7 +611,7 @@ static void f2fs_update_extent_tree_range(struct inode *inode,
+>>   						end - dei.fofs + dei.blk,
+>>   						org_end - end);
+>>   				en1 = __insert_extent_tree(sbi, et, &ei,
+>> -							NULL, NULL, true);
+>> +						NULL, NULL, true, false);
+>>   				next_en = en1;
+>>   			} else {
+>>   				en->ei.fofs = end;
+>> @@ -633,9 +650,10 @@ static void f2fs_update_extent_tree_range(struct inode *inode,
+>>   	if (blkaddr) {
+>>   
+>>   		set_extent_info(&ei, fofs, blkaddr, len);
+>> -		if (!__try_merge_extent_node(sbi, et, &ei, prev_en, next_en))
+>> +		if (!__try_merge_extent_node(sbi, et, &ei,
+>> +					prev_en, next_en, false))
+>>   			__insert_extent_tree(sbi, et, &ei,
+>> -					insert_p, insert_parent, leftmost);
+>> +				insert_p, insert_parent, leftmost, false);
+>>   
+>>   		/* give up extent_cache, if split and small updates happen */
+>>   		if (dei.len >= 1 &&
+>> @@ -661,6 +679,47 @@ static void f2fs_update_extent_tree_range(struct inode *inode,
+>>   		f2fs_mark_inode_dirty_sync(inode, true);
+>>   }
+>>   
+>> +void f2fs_update_extent_tree_range_unaligned(struct inode *inode,
+>> +				pgoff_t fofs, block_t blkaddr, unsigned int llen,
+>> +				unsigned int plen)
+>> +{
+>> +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>> +	struct extent_tree *et = F2FS_I(inode)->extent_tree;
+>> +	struct extent_node *en = NULL;
+>> +	struct extent_node *prev_en = NULL, *next_en = NULL;
+>> +	struct extent_info_unaligned eiu;
+>> +	struct rb_node **insert_p = NULL, *insert_parent = NULL;
+>> +	bool leftmost = false;
+>> +
+>> +	trace_f2fs_update_extent_tree_range(inode, fofs, blkaddr, llen);
+>> +
+>> +	write_lock(&et->lock);
+>> +
+>> +	if (is_inode_flag_set(inode, FI_NO_EXTENT)) {
+>> +		write_unlock(&et->lock);
+>> +		return;
+>> +	}
+>> +
+>> +	en = (struct extent_node *)f2fs_lookup_rb_tree_ret(&et->root,
+>> +				(struct rb_entry *)et->cached_en, fofs,
+>> +				(struct rb_entry **)&prev_en,
+>> +				(struct rb_entry **)&next_en,
+>> +				&insert_p, &insert_parent, false,
+>> +				&leftmost);
+>> +	f2fs_bug_on(sbi, en);
+>> +
+>> +	set_extent_info(&eiu.ei, fofs, blkaddr, llen);
+>> +	eiu.plen = plen;
+>> +
+>> +	if (!__try_merge_extent_node(sbi, et, (struct extent_info *)&eiu,
+>> +				prev_en, next_en, true))
+>> +		__insert_extent_tree(sbi, et, (struct extent_info *)&eiu,
+>> +				insert_p, insert_parent, leftmost, true);
+>> +
+>> +	write_unlock(&et->lock);
+>> +}
+>> +
+>> +
+>>   unsigned int f2fs_shrink_extent_tree(struct f2fs_sb_info *sbi, int nr_shrink)
+>>   {
+>>   	struct extent_tree *et, *next;
+>> @@ -818,6 +877,17 @@ bool f2fs_lookup_extent_cache(struct inode *inode, pgoff_t pgofs,
+>>   	return f2fs_lookup_extent_tree(inode, pgofs, ei);
+>>   }
+>>   
+>> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+>> +bool f2fs_lookup_extent_cache_unaligned(struct inode *inode, pgoff_t pgofs,
+>> +					struct extent_info_unaligned *eiu)
+>> +{
+>> +	if (!f2fs_may_extent_tree(inode))
+>> +		return false;
+>> +
+>> +	return f2fs_lookup_extent_tree(inode, pgofs, (struct extent_info *)eiu);
+>> +}
+>> +#endif
+>> +
+>>   void f2fs_update_extent_cache(struct dnode_of_data *dn)
+>>   {
+>>   	pgoff_t fofs;
+>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>> index 0fe239dd50f4..3a02642a26d4 100644
+>> --- a/fs/f2fs/f2fs.h
+>> +++ b/fs/f2fs/f2fs.h
+>> @@ -578,11 +578,21 @@ struct extent_info {
+>>   	u32 blk;			/* start block address of the extent */
+>>   };
+>>   
+>> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+>> +struct extent_info_unaligned {
+>> +	struct extent_info ei;		/* extent info */
+>> +	unsigned int plen;		/* physical extent length of compressed blocks */
+>> +};
+>> +#endif
+>> +
+>>   struct extent_node {
+>>   	struct rb_node rb_node;		/* rb node located in rb-tree */
+>>   	struct extent_info ei;		/* extent info */
+>>   	struct list_head list;		/* node in global extent list of sbi */
+>>   	struct extent_tree *et;		/* extent tree pointer */
+>> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+>> +	unsigned int plen;		/* physical extent length of compressed blocks */
+>> +#endif
+>>   };
+>>   
+>>   struct extent_tree {
+>> @@ -817,22 +827,29 @@ static inline bool __is_discard_front_mergeable(struct discard_info *cur,
+>>   }
+>>   
+>>   static inline bool __is_extent_mergeable(struct extent_info *back,
+>> -						struct extent_info *front)
+>> +				struct extent_info *front, bool unaligned)
+>>   {
+>> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+>> +	struct extent_info_unaligned *be = (struct extent_info_unaligned *)back;
+>> +	struct extent_info_unaligned *fe = (struct extent_info_unaligned *)front;
+>> +
+>> +	if (!unaligned || be->ei.len != be->plen || fe->ei.len != fe->plen)
+>> +		return false;
+>> +#endif
+>>   	return (back->fofs + back->len == front->fofs &&
+>>   			back->blk + back->len == front->blk);
+>>   }
+>>   
+>>   static inline bool __is_back_mergeable(struct extent_info *cur,
+>> -						struct extent_info *back)
+>> +				struct extent_info *back, bool unaligned)
+>>   {
+>> -	return __is_extent_mergeable(back, cur);
+>> +	return __is_extent_mergeable(back, cur, unaligned);
+>>   }
+>>   
+>>   static inline bool __is_front_mergeable(struct extent_info *cur,
+>> -						struct extent_info *front)
+>> +				struct extent_info *front, bool unaligned)
+>>   {
+>> -	return __is_extent_mergeable(cur, front);
+>> +	return __is_extent_mergeable(cur, front, unaligned);
+>>   }
+>>   
+>>   extern void f2fs_mark_inode_dirty_sync(struct inode *inode, bool sync);
+>> @@ -3972,6 +3989,9 @@ struct rb_entry *f2fs_lookup_rb_tree_ret(struct rb_root_cached *root,
+>>   		bool force, bool *leftmost);
+>>   bool f2fs_check_rb_tree_consistence(struct f2fs_sb_info *sbi,
+>>   				struct rb_root_cached *root, bool check_key);
+>> +void f2fs_update_extent_tree_range_unaligned(struct inode *inode,
+>> +				pgoff_t fofs, block_t blkaddr, unsigned int llen,
+>> +				unsigned int plen);
+>>   unsigned int f2fs_shrink_extent_tree(struct f2fs_sb_info *sbi, int nr_shrink);
+>>   void f2fs_init_extent_tree(struct inode *inode, struct page *ipage);
+>>   void f2fs_drop_extent_tree(struct inode *inode);
+>> @@ -3979,6 +3999,8 @@ unsigned int f2fs_destroy_extent_node(struct inode *inode);
+>>   void f2fs_destroy_extent_tree(struct inode *inode);
+>>   bool f2fs_lookup_extent_cache(struct inode *inode, pgoff_t pgofs,
+>>   			struct extent_info *ei);
+>> +bool f2fs_lookup_extent_cache_unaligned(struct inode *inode, pgoff_t pgofs,
+>> +					struct extent_info_unaligned *eiu);
+>>   void f2fs_update_extent_cache(struct dnode_of_data *dn);
+>>   void f2fs_update_extent_cache_range(struct dnode_of_data *dn,
+>>   			pgoff_t fofs, block_t blkaddr, unsigned int len);
+>> @@ -4055,6 +4077,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+>>   struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc);
+>>   void f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed);
+>>   void f2fs_put_page_dic(struct page *page);
+>> +int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn);
+>>   int f2fs_init_compress_ctx(struct compress_ctx *cc);
+>>   void f2fs_destroy_compress_ctx(struct compress_ctx *cc, bool reuse);
+>>   void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
+>> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+>> index dd611efa8aa4..7be2b01caa2a 100644
+>> --- a/fs/f2fs/node.c
+>> +++ b/fs/f2fs/node.c
+>> @@ -832,6 +832,26 @@ int f2fs_get_dnode_of_data(struct dnode_of_data *dn, pgoff_t index, int mode)
+>>   	dn->ofs_in_node = offset[level];
+>>   	dn->node_page = npage[level];
+>>   	dn->data_blkaddr = f2fs_data_blkaddr(dn);
+>> +
+>> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+>> +	if (is_inode_flag_set(dn->inode, FI_COMPRESSED_FILE) &&
+>> +			!f2fs_sb_has_readonly(sbi)) {
+>> +		int blknum = f2fs_cluster_blocks_are_contiguous(dn);
+>> +
+>> +		if (blknum) {
+>> +			block_t blkaddr = f2fs_data_blkaddr(dn);
+>> +
+>> +			if (blkaddr == COMPRESS_ADDR)
+>> +				blkaddr = data_blkaddr(dn->inode, dn->node_page,
+>> +							dn->ofs_in_node + 1);
+>> +
+>> +			f2fs_update_extent_tree_range_unaligned(dn->inode,
+>> +					index, blkaddr,
+>> +					F2FS_I(dn->inode)->i_cluster_size,
+>> +					blknum);
+>> +		}
+>> +	}
+>> +#endif
+>>   	return 0;
+>>   
+>>   release_pages:
 >> -- 
->> 2.27.0
->>
-> 
+>> 2.22.1
