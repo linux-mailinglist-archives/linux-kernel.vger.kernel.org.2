@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E243CF9AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F88D3CF9B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237691AbhGTLzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 07:55:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38880 "EHLO mail.kernel.org"
+        id S237943AbhGTLzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 07:55:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229659AbhGTLzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:55:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6E0860E0C;
-        Tue, 20 Jul 2021 12:35:36 +0000 (UTC)
+        id S229632AbhGTLzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 07:55:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5F6E61186;
+        Tue, 20 Jul 2021 12:35:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626784539;
-        bh=asA6l4h5KrepX/z50UVRSC8Q3OvPiGjAUceJKgcJbl0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YvNKATWOtShf7swN0mmf2C6ONDPu8XOlH7q70SOroQM5S/MpCDM0YB8g1cad/xpAt
-         DZdsiQnk9tGg0td/isJJ2XQ1/izSNXzsQN45DxDXpz3NNJvEIbKKxsa5dpOtaaE+8a
-         CdUdXNFjOfsTHCg3WDra+78eNlhSkoOiYmB+mUHEqgyNu/swwAMbVxkpPUHjFZxtCn
-         vLm4cfaJXBXxlkBtTY64lP3t/wN/Yd0rcIjowQ8w8CxqZOrgoc7dZgOU7csRBpJ8Qp
-         XwqCbdeJMFNQXPGd6+z/3CyrU8g1IAnFcjFSPbUNOMUwmLmsvloD6mVhIG+b4t3vXa
-         Qo/vh5hYZ98XQ==
+        s=k20201202; t=1626784542;
+        bh=F9par1LOdZWcaYEp+Fsm6nACHy0sgpjKC7cEQSSN6Kk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IsWzOQWgeCT1AYKwtELp1TXCDgnOLCVvxD7X75XcFQe5PScLYsCySiEhWrWsNzIFy
+         NU1eCxY9+EtVnyEeY8mYhtZYNtWKq6pwEnYIuUmhq+Xra94KKBJJODpnH81/4MF4Pl
+         7uyzd4SqeuJM8/Gemg06n3sL8LVi+LGWAdi3y+rn3xvIoCxR4j6ia9WzfgB8kl+oM5
+         2ykDSrOi/oG3+IA+5TyQEfXk1QR+3NhmU29GozMF0aqkga4B/tubtAa6SESVqo3Yru
+         cEZWb51tqxOvMK7ctZtnfU8yKwalKFMh4knEqIyj+OBhWfD/KGtJxAT0MoPOPtTKR0
+         ibGilJFyngZYg==
 From:   Will Deacon <will@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
@@ -39,57 +39,56 @@ Cc:     Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Marc Zyngier <maz@kernel.org>, linuxppc-dev@lists.ozlabs.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 0/2] Fix arm64 boot regression in 5.14
-Date:   Tue, 20 Jul 2021 13:35:10 +0100
-Message-Id: <20210720123512.8740-1-will@kernel.org>
+Subject: [PATCH 1/2] Revert "powerpc/8xx: add support for huge pages on VMAP and VMALLOC"
+Date:   Tue, 20 Jul 2021 13:35:11 +0100
+Message-Id: <20210720123512.8740-2-will@kernel.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210720123512.8740-1-will@kernel.org>
+References: <20210720123512.8740-1-will@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
+This reverts commit a6a8f7c4aa7eb50304b5c4e68eccd24313f3a785.
 
-Jonathan reports [1] that commit c742199a014d ("mm/pgtable: add stubs
-for {pmd/pub}_{set/clear}_huge") breaks the boot on arm64 when huge
-mappings are used to map the kernel linear map but the VA size is
-configured such that PUDs are folded. This is because the non-functional
-pud_set_huge() stub is used to create the linear map, which results in
-1GB holes and a fatal data abort when the kernel attemps to access them.
+Commit c742199a014d ("mm/pgtable: add stubs for
+{pmd/pub}_{set/clear}_huge") breaks the boot for arm64 when block
+mappings are used to create the linear map, as this relies on a working
+implementation of pXd_set_huge() even if the corresponding page-table
+levels have been folded.
 
-Digging further into the issue, it also transpired that huge-vmap is
-silently disabled in these configurations as well [2], despite working
-correctly in 5.13. The latter issue causes the pgtable selftests to
-scream due to a failing consistency check [3].
+Although the problematic patch reverts cleanly, doing so breaks the
+build for 32-bit PowerPC 8xx machines, which rely on the default
+function definitions when the corresponding page-table levels are
+folded:
 
-Rather than leave mainline in a terminally broken state for arm64 while
-we figure this out, revert the offending commit to get things working
-again. Unfortunately, reverting the change in isolation causes a build
-breakage for 32-bit PowerPC 8xx machines which recently started relying
-on the problematic stubs to support pte-level huge-vmap entries [4].
-Since Christophe is away at the moment, this series first reverts the
-PowerPC 8xx change in order to avoid breaking the build.
+ | powerpc64-linux-ld: mm/vmalloc.o: in function `vunmap_pud_range':
+ | linux/mm/vmalloc.c:362: undefined reference to `pud_clear_huge'
+ | powerpc64-linux-ld: mm/vmalloc.o: in function `vunmap_pmd_range':
+ | linux/mm/vmalloc.c:337: undefined reference to `pmd_clear_huge'
+ | powerpc64-linux-ld: mm/vmalloc.o: in function `vunmap_pud_range':
+ | linux/mm/vmalloc.c:362: undefined reference to `pud_clear_huge'
+ | powerpc64-linux-ld: mm/vmalloc.o: in function `vunmap_pmd_range':
+ | linux/mm/vmalloc.c:337: undefined reference to `pmd_clear_huge'
+ | make: *** [Makefile:1177: vmlinux] Error 1
 
-I would really like this to land for -rc3 and I can take these via the
-arm64 fixes queue if the PowerPC folks are alright with them.
+Although Christophe has kindly offered to look into the arm64 breakage,
+he's on holiday for another 10 days and there isn't an obvious fix on
+the arm64 side which allows us to continue using huge-vmap for affected
+configurations.
 
-Cheers,
-
-Will
-
-[1] https://lore.kernel.org/r/20210717160118.9855-1-jonathan@marek.ca
-[2] https://lore.kernel.org/r/20210719104918.GA6440@willie-the-truck
-[3] https://lore.kernel.org/r/CAMuHMdXShORDox-xxaeUfDW3wx2PeggFSqhVSHVZNKCGK-y_vQ@mail.gmail.com/
-[4] https://lore.kernel.org/r/8b972f1c03fb6bd59953035f0a3e4d26659de4f8.1620795204.git.christophe.leroy@csgroup.eu/
+In the interest of quickly getting things back to a working state as
+they were in 5.13, revert the huge-vmap changes for PowerPC 8xx prior to
+reverting the change which breaks arm64. We can then work on this
+together for 5.15 once Christophe is back.
 
 Cc: Ard Biesheuvel <ardb@kernel.org>
 Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
 Cc: Paul Mackerras <paulus@samba.org>
-Cc: Jonathan Marek <jonathan@marek.ca>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Nicholas Piggin <npiggin@gmail.com
@@ -97,24 +96,87 @@ Cc: Mike Rapoport <rppt@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Marc Zyngier <maz@kernel.org>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-arm-kernel@lists.infradead.org
-
---->8
-
-Jonathan Marek (1):
-  Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge"
-
-Will Deacon (1):
-  Revert "powerpc/8xx: add support for huge pages on VMAP and VMALLOC"
-
- arch/arm64/mm/mmu.c                          | 20 ++++-----
+Link: https://lore.kernel.org/r/20210719170615.Horde.Qio1wp3k5ebLo-d9xXHdOg1@messagerie.c-s.fr
+Signed-off-by: Will Deacon <will@kernel.org>
+---
  arch/powerpc/Kconfig                         |  2 +-
  arch/powerpc/include/asm/nohash/32/mmu-8xx.h | 43 --------------------
- arch/x86/mm/pgtable.c                        | 34 +++++++---------
- include/linux/pgtable.h                      | 26 +-----------
- 5 files changed, 25 insertions(+), 100 deletions(-)
+ 2 files changed, 1 insertion(+), 44 deletions(-)
 
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index d01e3401581d..5fc19ac62cb9 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -189,7 +189,7 @@ config PPC
+ 	select GENERIC_VDSO_TIME_NS
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_HUGE_VMALLOC		if HAVE_ARCH_HUGE_VMAP
+-	select HAVE_ARCH_HUGE_VMAP		if PPC_RADIX_MMU || PPC_8xx
++	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
+ 	select HAVE_ARCH_JUMP_LABEL
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ 	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
+diff --git a/arch/powerpc/include/asm/nohash/32/mmu-8xx.h b/arch/powerpc/include/asm/nohash/32/mmu-8xx.h
+index 997cec973406..6e4faa0a9b35 100644
+--- a/arch/powerpc/include/asm/nohash/32/mmu-8xx.h
++++ b/arch/powerpc/include/asm/nohash/32/mmu-8xx.h
+@@ -178,7 +178,6 @@
+ #ifndef __ASSEMBLY__
+ 
+ #include <linux/mmdebug.h>
+-#include <linux/sizes.h>
+ 
+ void mmu_pin_tlb(unsigned long top, bool readonly);
+ 
+@@ -226,48 +225,6 @@ static inline unsigned int mmu_psize_to_shift(unsigned int mmu_psize)
+ 	BUG();
+ }
+ 
+-static inline bool arch_vmap_try_size(unsigned long addr, unsigned long end, u64 pfn,
+-				      unsigned int max_page_shift, unsigned long size)
+-{
+-	if (end - addr < size)
+-		return false;
+-
+-	if ((1UL << max_page_shift) < size)
+-		return false;
+-
+-	if (!IS_ALIGNED(addr, size))
+-		return false;
+-
+-	if (!IS_ALIGNED(PFN_PHYS(pfn), size))
+-		return false;
+-
+-	return true;
+-}
+-
+-static inline unsigned long arch_vmap_pte_range_map_size(unsigned long addr, unsigned long end,
+-							 u64 pfn, unsigned int max_page_shift)
+-{
+-	if (arch_vmap_try_size(addr, end, pfn, max_page_shift, SZ_512K))
+-		return SZ_512K;
+-	if (PAGE_SIZE == SZ_16K)
+-		return SZ_16K;
+-	if (arch_vmap_try_size(addr, end, pfn, max_page_shift, SZ_16K))
+-		return SZ_16K;
+-	return PAGE_SIZE;
+-}
+-#define arch_vmap_pte_range_map_size arch_vmap_pte_range_map_size
+-
+-static inline int arch_vmap_pte_supported_shift(unsigned long size)
+-{
+-	if (size >= SZ_512K)
+-		return 19;
+-	else if (size >= SZ_16K)
+-		return 14;
+-	else
+-		return PAGE_SHIFT;
+-}
+-#define arch_vmap_pte_supported_shift arch_vmap_pte_supported_shift
+-
+ /* patch sites */
+ extern s32 patch__itlbmiss_exit_1, patch__dtlbmiss_exit_1;
+ extern s32 patch__itlbmiss_perf, patch__dtlbmiss_perf;
 -- 
 2.32.0.402.g57bb445576-goog
 
