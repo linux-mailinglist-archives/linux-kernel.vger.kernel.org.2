@@ -2,107 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAC33CF896
+	by mail.lfdr.de (Postfix) with ESMTP id D6DBE3CF897
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237756AbhGTKZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:25:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237949AbhGTKRI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:17:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B18F600D4;
-        Tue, 20 Jul 2021 10:57:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626778648;
-        bh=bdf2hozCtuEnUqdMt6xaxcdfnjHriJn7RXww2E+/On4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=baWqsIyGT5V+m7oB/FnRFSDTAAXKSNw++0r/WdXfyfYRvIFT/6dyYSNmTmjKCh36K
-         /ddI3a9+S5yiNai4CFsMlrrcPLR0BVIml6H6tzPIrxDTYSiQCyX45dwrM6xGcjXWo0
-         zZK4GnLqAVACej9JZ27JM0oyMJjwFOu9YwwEO4cV7Hn88/3E0IybTVfiX6leFUlZSo
-         21L9a6H3CBo3JBWllXxZyLHTaaqPyTOP0OgndmFAjpmkdkamH2zmacjnAuMAsJRIgS
-         hglf0VIX7+Ias8+nX1j2knvYpTHsBa96RAAcIFR0s1J0A8KIXDuoAWXyvMf7jEjEys
-         6T1Gk3fetpLPA==
-Date:   Tue, 20 Jul 2021 12:57:02 +0200
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
-        tglx@linutronix.de, jesse.brandeburg@intel.com,
-        robin.murphy@arm.com, mtosatti@redhat.com, mingo@kernel.org,
-        jbrandeb@kernel.org, frederic@kernel.org, juri.lelli@redhat.com,
-        abelits@marvell.com, bhelgaas@google.com, rostedt@goodmis.org,
-        peterz@infradead.org, davem@davemloft.net,
-        akpm@linux-foundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        chris.friesen@windriver.com, maz@kernel.org, nhorman@tuxdriver.com,
-        pjwaskiewicz@gmail.com, sassmann@redhat.com, thenzl@redhat.com,
-        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
-        shivasharan.srikanteshwara@broadcom.com,
-        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
-        dick.kennedy@broadcom.com, jkc@redhat.com, faisal.latif@intel.com,
-        shiraz.saleem@intel.com, tariqt@nvidia.com, ahleihel@redhat.com,
-        kheib@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
-        benve@cisco.com, govind@gmx.com, jassisinghbrar@gmail.com,
-        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
-        somnath.kotur@broadcom.com, nilal@redhat.com,
-        tatyana.e.nikolova@intel.com, mustafa.ismail@intel.com,
-        ahs3@redhat.com, leonro@nvidia.com,
-        chandrakanth.patil@broadcom.com, bjorn.andersson@linaro.org,
-        chunkuang.hu@kernel.org, yongqiang.niu@mediatek.com,
-        baolin.wang7@gmail.com, poros@redhat.com, minlei@redhat.com,
-        emilne@redhat.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        _govind@gmx.com, ley.foon.tan@intel.com, kabel@kernel.org,
-        viresh.kumar@linaro.org, Tushar.Khandelwal@arm.com,
-        luobin9@huawei.com
-Subject: Re: [PATCH v4 01/14] genirq: Provide new interfaces for affinity
- hints
-Message-ID: <20210720125702.28053dd6@cakuba>
-In-Reply-To: <20210719180746.1008665-2-nitesh@redhat.com>
-References: <20210719180746.1008665-1-nitesh@redhat.com>
-        <20210719180746.1008665-2-nitesh@redhat.com>
+        id S238201AbhGTKZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238457AbhGTKT0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 06:19:26 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257AFC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:00:05 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id s23so8357629oiw.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 04:00:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FVn1SYmkQB3M7v69VF2he/NUlW4fKKcfsWY+DKqff6A=;
+        b=Wy82mBov5LjHgcaRRiO3uSMxaLw2FeoKQvcia10TJnBdtBGL9IZSGjxDGX5omGEgDT
+         nJh+G6Jfrn8+kvbeqa0NNd4uBsEq6fmqDFBP3pSD0fKZVNjsIB+SGAEEDPxzzPltefb4
+         TbrGVgW+jrLjVChYoTUTA01fM0N3fPz6u2SHtPCZaKkDO9XgnJAZlGRfrhShxAb3WRcA
+         KoGRFzcIC1HYR8G0Pv8fyy5KMFGFTqWbp33gLJ1HMxfFP3D1OVrjOReZ0PoE23EjMw/P
+         BnIsWaeoQZSOTrN7575vP0mrGMcF3D62Z1G684aC+T1NcM5IS6FFk1MvgttlPpmbWWec
+         edlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FVn1SYmkQB3M7v69VF2he/NUlW4fKKcfsWY+DKqff6A=;
+        b=KfDm3XsBs8LcGRKb43xnfhg0SjkKKZPQMb++qILkQ+OSSMslZqxYsG7ap6m6hthMPZ
+         /oAQexB7mLWDn4TJnB+Bw0CPRioqbrBJz8swzNNeY3UqQCZivMvnS1oCJy3PbsC7TG6J
+         CKNH0rPlrDk0RrbW4xelzngifJVm2BWK0OlnglJheRNzvEOew1LbMtz9fecWPrmFQ3ph
+         3OniarWMmb+OXjz92AnC/qx7prp2ar2KZp850wm1c1TirZn94Osqbu4pDmLdlV7l3IgT
+         bJdDCo4cR7N+ehvICl9dty76ZkcZP/U5+3NMgTDRtoqVexGsJrIal5SvbVqQHZjQGPhZ
+         4gpw==
+X-Gm-Message-State: AOAM5339ltD04IedTDeLiJXH2u2LinJIEi8vzlAcmYNITY953BV15xnR
+        RxqBbyIyDdZ9PXJgknsaq2NgiRk5rVQ0pB1x1N0UAw==
+X-Google-Smtp-Source: ABdhPJwifz6pu5NBhio7NwidX7Z1fxHFB/vsZ48ZpYgUwL+dzCzouBKLdEAxyuGStD1hj4hu7q+1YBk4sq1EMVSS+wg=
+X-Received: by 2002:a05:6808:5a:: with SMTP id v26mr11589545oic.90.1626778803869;
+ Tue, 20 Jul 2021 04:00:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210719104735.3681732-1-qperret@google.com> <20210719104735.3681732-7-qperret@google.com>
+ <CA+EHjTzjT2iv=9jsTNquSAD-_AWqpyCKVPiuCBWGzpxcAkWf9w@mail.gmail.com> <YPalr09gA6tGYVtl@google.com>
+In-Reply-To: <YPalr09gA6tGYVtl@google.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Tue, 20 Jul 2021 11:59:27 +0100
+Message-ID: <CA+EHjTz__zjYY2D8+nEPq2F8__saxC0kApnn7_rs0r2VCR2Nzg@mail.gmail.com>
+Subject: Re: [PATCH 06/14] KVM: arm64: Tolerate re-creating hyp mappings to
+ set ignored bits
+To:     Quentin Perret <qperret@google.com>
+Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        dbrazdil@google.com, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 14:07:33 -0400, Nitesh Narayan Lal wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> The discussion about removing the side effect of irq_set_affinity_hint() of
-> actually applying the cpumask (if not NULL) as affinity to the interrupt,
-> unearthed a few unpleasantries:
-> 
->   1) The modular perf drivers rely on the current behaviour for the very
->      wrong reasons.
-> 
->   2) While none of the other drivers prevents user space from changing
->      the affinity, a cursorily inspection shows that there are at least
->      expectations in some drivers.
-> 
-> #1 needs to be cleaned up anyway, so that's not a problem
-> 
-> #2 might result in subtle regressions especially when irqbalanced (which
->    nowadays ignores the affinity hint) is disabled.
-> 
-> Provide new interfaces:
-> 
->   irq_update_affinity_hint()  - Only sets the affinity hint pointer
->   irq_set_affinity_and_hint() - Set the pointer and apply the affinity to
->                                 the interrupt
-> 
-> Make irq_set_affinity_hint() a wrapper around irq_apply_affinity_hint() and
-> document it to be phased out.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> Link: https://lore.kernel.org/r/20210501021832.743094-1-jesse.brandeburg@intel.com
+Hi Quentin,
 
-include/linux/interrupt.h:343: warning: Function parameter or member 'm' not described in 'irq_update_affinity_hint'
-include/linux/interrupt.h:343: warning: Excess function parameter 'cpumask' description in 'irq_update_affinity_hint'
-include/linux/interrupt.h:358: warning: Function parameter or member 'm' not described in 'irq_set_affinity_and_hint'
-include/linux/interrupt.h:358: warning: Excess function parameter 'cpumask' description in 'irq_set_affinity_and_hint'
+On Tue, Jul 20, 2021 at 11:30 AM 'Quentin Perret' via kernel-team
+<kernel-team@android.com> wrote:
+>
+> Hi Fuad,
+>
+> On Tuesday 20 Jul 2021 at 11:17:03 (+0100), Fuad Tabba wrote:
+> > Hi Quentin,
+> >
+> >
+> > On Mon, Jul 19, 2021 at 11:47 AM Quentin Perret <qperret@google.com> wrote:
+> > >
+> > > The current hypervisor stage-1 mapping code doesn't allow changing an
+> > > existing valid mapping. Relax this condition by allowing changes that
+> > > only target ignored bits, as that will soon be needed to annotate shared
+> > > pages.
+> > >
+> > > Signed-off-by: Quentin Perret <qperret@google.com>
+> > > ---
+> > >  arch/arm64/kvm/hyp/pgtable.c | 18 ++++++++++++++++--
+> > >  1 file changed, 16 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> > > index a0ac8c2bc174..34cf67997a82 100644
+> > > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > > @@ -362,6 +362,17 @@ static int hyp_set_prot_attr(enum kvm_pgtable_prot prot, kvm_pte_t *ptep)
+> > >         return 0;
+> > >  }
+> > >
+> > > +static bool hyp_pte_needs_update(kvm_pte_t old, kvm_pte_t new)
+> > > +{
+> > > +       if (old == new)
+> > > +               return false;
+> > > +
+> > > +       if (!kvm_pte_valid(old))
+> > > +               return true;
+> > > +
+> > > +       return !WARN_ON((old ^ new) & ~KVM_PTE_LEAF_ATTR_IGNORED);
+> >
+> > Wouldn't this return false if both ignored and non-ignored bits were
+> > different, or is that not possible (judging by the WARN_ON)?
+>
+> Correct, but that is intentional, see below ;)
+>
+> > If it is, then it would need an update, wouldn't it?
+>
+> Maybe, but if you look at what the existing code does, we do skip the
+> update if the old mapping is valid and not equal to new. So I kept the
+> behaviour as close as possible to this -- if you change any bits outside
+> of SW bits you get a WARN and we skip the update, as we already do
+> today. But if you touch only SW bits and nothing else, then I let the
+> update go through.
+>
+> That said, I don't think warning and then proceeding to update would be
+> terribly wrong, it's just that a change of behaviour felt a bit
+> unnecessary for this particular patch.
+
+Thanks for the clarification. It makes sense to preserve the existing
+behavior, but I was wondering if a comment would be good, describing
+what merits a "needs update"?
+
+Cheers,
+/fuad
+
+> Thanks,
+> Quentin
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
