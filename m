@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020643CFCF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8853CFCFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240242AbhGTOYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 10:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48204 "EHLO
+        id S239007AbhGTOZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237293AbhGTORU (ORCPT
+        with ESMTP id S238960AbhGTORr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:17:20 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725B0C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:53:41 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id b18-20020a0568303112b02904cf73f54f4bso8200393ots.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:53:41 -0700 (PDT)
+        Tue, 20 Jul 2021 10:17:47 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D89C0613DF;
+        Tue, 20 Jul 2021 07:54:25 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id l7so26314921wrv.7;
+        Tue, 20 Jul 2021 07:54:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=j09lu3sICtnVWYbFQVf04X58J7J9DzrYfN54qh1JeP8=;
-        b=ImwZmUTbQ1ngxEuIoZFjF/bP/zahZJ+7NJ9/6qY4DJQB/hYLzUuloIM75qHIeXH6dV
-         Q6AOIDxTD7W9bj6TOp1x4KTmlk0CDYTUrLVPn/k8bkZR9FDj0tjR9d+g/WuRjiF65llR
-         nEuw6sCuWe9aKfWNnjgUEPREI/MT4WRg85yTo=
+        bh=eNycMokbRMwikeyoAHQCESJsyNbzXAEXdH5RzfLsN2g=;
+        b=sq2GfwkWgtJq/voM2yYyIl7B/T50wwQz6OkFIUVoW7ectnZBqU5cN2ZcHwAz+Q8DGg
+         Bqj9MCkHHHDcuj9KvjhrYo8zMX5ojzQ+CEU84XO3QVgYnuoPDbPWoP9U21nAfRAjKxg4
+         h23La1DzhffCKKGrhWgI91rYjBDrPd3W8Eu5jS7P2GcIZWvmLsYzU5g6B9MgT8aQg8hF
+         Ce/Ebju8OXMaHnlYM4EIRMun8RPfBgifdOayq2CJiF1Bz5TJQ91cgDl/edzf6V3jGZwP
+         3hDbXX/9MFDyOvSe/F5TvkinRowcv22n3fvinaduJfTVLds/gVpU4iexOExmiWAJPmmD
+         ugyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=j09lu3sICtnVWYbFQVf04X58J7J9DzrYfN54qh1JeP8=;
-        b=uC4XyopNaORkEuuZ57ZL24LSe2Ql6mTCRDK6qVFZaqJRUKrrygnVLgqP1LzxrKP4DX
-         uSoBzWLMrK/IfpmoaQ/UHp7ZwSZ+kUDPPwUC7B46GZi/pfxBh79PFrVu5btR1gBpf6xf
-         /PvHKzCjn0JiCXo0MxwqvrmEZ+nMvO+xZTPUZw/Q2UhyybNoVheHy7alfv7+CcClvWux
-         W3B0yka9m0F4D3+RuLcH0S72dKIrBu2LvW4lIhWVRY5suDZ03ozc6/pbcBKMcayDMFzE
-         E2NNk9VXjO0Rljq4icZ+hM0xXfVotZk9QD8NRBCUWMTjuHSYUBHl7g2H+/9Q+cfSyeKe
-         SE5A==
-X-Gm-Message-State: AOAM5320j/3SbMPGEN3ToC/t6qhRh391zPE65lRwWSbQQKL3oU9CQY7d
-        UNv73mH54oU5tslBttk6x53JnME54clO/owo8jWY8k5JXeU=
-X-Google-Smtp-Source: ABdhPJzl9J0lkEu4CIIjY+U4b76K2eGMh6WUo5jGAXXEoYBh2685zCiCh40ygbBUtWz6N55Q1gllGQQLiVPua84eQ6A=
-X-Received: by 2002:a05:6830:2802:: with SMTP id w2mr21307426otu.303.1626792820912;
- Tue, 20 Jul 2021 07:53:40 -0700 (PDT)
+        bh=eNycMokbRMwikeyoAHQCESJsyNbzXAEXdH5RzfLsN2g=;
+        b=Wf/i/19ELOWn2+DCWfPKJs3OBYEVkGDrZ/2Z5Ibc3Ud9ACOiqeFUa6PTe1KRB8dsRl
+         2uhZylmCueGFQkBX1JR6jmV39ErNYVO4MgdQx2ifNgWAwnSYQ0CbRiworI+BAOq84yJr
+         kin3Incvjp/0O1jVhULDYyBDMqEKZstREyN06JYkFdNhMi27fMpJYHIRpYHDIImIioDK
+         NvuBd0aYl55erpEx2umGWEss84oUlBwLuPjkYwx3FVD1X2OlMwvoiC9munQaB0MvLmhh
+         bk6mG1/e1uM3na3vRgh++jhUXJXSsnFugetwO9SiqdMdLHOhIkAH/Lt7uCLFYr54204U
+         lmHA==
+X-Gm-Message-State: AOAM532bflsE8V3t8/8gEnln1yAbrck8l5SKOQojgMF3hon1Kx6HhEUd
+        97lIj+MGQ/iLrvZfT0RNnxJj+C+D6vmfIQbKIuc=
+X-Google-Smtp-Source: ABdhPJxUiK8/9zrhS7PhJr1vPsN8q52xT9V3GHC5gkdRzBXAs0Hlk0laq2XNR2wQYxS7ypkuk0cvkTtEGHp3+4IUY2c=
+X-Received: by 2002:adf:ed0f:: with SMTP id a15mr1877095wro.78.1626792863772;
+ Tue, 20 Jul 2021 07:54:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210714145804.2530727-1-geert@linux-m68k.org>
- <YO8CT+Hcw1wfhnH5@ravnborg.org> <CAMuHMdVjXhTE2x8mRrinmh9CCrdXQr+BYPfP-peaZ4AsLwsaaA@mail.gmail.com>
-In-Reply-To: <CAMuHMdVjXhTE2x8mRrinmh9CCrdXQr+BYPfP-peaZ4AsLwsaaA@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 20 Jul 2021 16:53:29 +0200
-Message-ID: <CAKMK7uGpmQ3=OB52RYFgJoH7FWwhgx1t-TcSwpwjHPMWcyRd0w@mail.gmail.com>
-Subject: Re: [PATCH resend 0/5] video: fbdev: ssd1307fb: Optimizations and improvements
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
-        Maxime Ripard <mripard@kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+References: <20210715141802.880911-1-daniel.baluta@oss.nxp.com>
+ <20210715141802.880911-2-daniel.baluta@oss.nxp.com> <20210715143906.GD4590@sirena.org.uk>
+ <CAEnQRZCdSLoaLVZ7-jtufgZCG6QshMwdfyJy_4oE6cXRbA5H8A@mail.gmail.com>
+In-Reply-To: <CAEnQRZCdSLoaLVZ7-jtufgZCG6QshMwdfyJy_4oE6cXRbA5H8A@mail.gmail.com>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Tue, 20 Jul 2021 17:54:11 +0300
+Message-ID: <CAEnQRZCiC5aGK6AsD0TN5fzN6AxFn6=f8hCrd2B9fhCYfCFOSg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: SOF: Parse fw/tplg filename from DT
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 8:54 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+Hi Pierre, Liam, Mark,
+
+On Fri, Jul 16, 2021 at 5:31 PM Daniel Baluta <daniel.baluta@gmail.com> wrote:
 >
-> Hi Sam,
->
-> On Wed, Jul 14, 2021 at 5:27 PM Sam Ravnborg <sam@ravnborg.org> wrote:
-> > On Wed, Jul 14, 2021 at 04:57:59PM +0200, Geert Uytterhoeven wrote:
-> > > This patch series optimizes console operations on ssd1307fb, after the
-> > > customary fixes and cleanups.
+> On Thu, Jul 15, 2021 at 5:39 PM Mark Brown <broonie@kernel.org> wrote:
 > >
-> > What is required to to have a drm driver that could do the same?
->
-> Add monochrome support to DRM?
+> > On Thu, Jul 15, 2021 at 05:18:00PM +0300, Daniel Baluta wrote:
+> >
+> > > Introduce two DT properties in dsp node:
+> > >       * fw-filename, optional property giving the firmware filename
+> > >       (if this is missing fw filename is read from board description)
+> > >       * tplg-filename, mandatory giving the topology filename.
+> >
+> > These sound entirely like operating system configuration which I'd
+> > expect to be inferred from the machine identification.  What happens if
+> > a system has multiple options for firmware files, or if the OS ships the
+> > topology and firmware bundled up in a single image to avoid them getting
+> > out of sync?  What's the benefit of putting them in the DT?
 
-I think the bits that are missing for that are
-- wiring up the conversion from R* formats to their fbdev counterparts
-in the emulation helper (if you want to support userspace sending the
-native format directly through fbdev
+Can you help me with this, specifically for selecting topology name.
 
-Everything else is there and we have drivers doing this, e.g.
-drm/tiny/repaper.c.
--Daniel
+I think I'm fine selecting a default value for SOF firmware name. It
+looks like even
+for Intel platforms there is no way of changing the firmware name.
 
->
-> > Note: I will take a look at the patches a bit later.
->
-> TIA!
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+But how about selecting topology name? We have lots of audio scenarios
+that can run on the exact same hardware:
+- e.g
+   - Audio PCM playback + Post Processing
+   - Audio Compress playback
+   - Keyword detection
 
 
+So, we need to use different topologies to select the scenario we want
+to demonstrate.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Would it be acceptable to add tplg_name as a module parameter?
+
+thanks,
+Daniel.
