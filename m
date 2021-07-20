@@ -2,89 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67483CFCA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40053CFC9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 16:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhGTOFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 10:05:17 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:43290 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239910AbhGTNuF (ORCPT
+        id S240739AbhGTOIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240192AbhGTNvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 09:50:05 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16KEUb0g022980;
-        Tue, 20 Jul 2021 09:30:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1626791437;
-        bh=xqLs4uPBmopprys6+rZE0nVDkXI9dp1oo6bfI2FiNyk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=fZk122/CtJawBzCPjnk7EIheu92Lm+RR0+cgBP2I3Bj2pUiSN0csjPHLzPE+oQouZ
-         wbR0rkPPpyf8V9HP3tP83GgSAYd6pnKcGeCcb6oz3cT1K+Pcr4hASyBCnEbNbHRU5E
-         HS5qlcM6YJDY4jGgWAJCb8GaeTw8+K/fY/bP5Jzo=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16KEUbgu119593
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 20 Jul 2021 09:30:37 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 20
- Jul 2021 09:30:37 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 20 Jul 2021 09:30:36 -0500
-Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16KEUX4X130354;
-        Tue, 20 Jul 2021 09:30:34 -0500
-Subject: Re: [PATCH 1/6] arm64: dts: ti: k3-am65-mcu: Add Support for MCAN
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-References: <20210720141642.24999-1-a-govindraju@ti.com>
- <20210720141642.24999-2-a-govindraju@ti.com>
- <20210720142047.mfqssyj4lwh3yi2k@pengutronix.de>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <f3560ac8-8ffe-87d6-a21f-87f6251f1750@ti.com>
-Date:   Tue, 20 Jul 2021 20:00:32 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 20 Jul 2021 09:51:51 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C53C0613DF;
+        Tue, 20 Jul 2021 07:31:55 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id a16so32973852ybt.8;
+        Tue, 20 Jul 2021 07:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ed1Y4Okvup8k5YO3/YT98hea6PEaLzb9sqfNLq78+zk=;
+        b=Nsx7ArD4Rci3ff1BKmU44+pNxlsryzBPiY/+GGrWoPNgzQMO45zmwSS7EWmAuj6eJ7
+         PIzgY44+bOmKaNtipp5eOFBN51JrZpY1v5XTSxLlPFF6BtDHFD40Vwh4pGaUw54jLZe+
+         Z9xAQdxwAUZFCqrQf4QIwowjSg7duc1XKn31MzT6DOEJSDYAldiszwIw3jHL5v4xZrtj
+         Yd1gSUUvgW56j/idv2JoNsqQOmAMOrKuXE3bJq5b2RkZFkc6Ejs2qZJsUPumEMCgJfen
+         kVQoR7tZIQBFjhRVXBAzYvwrFSleTiHkP45mpzp+0pNfJXdv7vMqpHlIqU3ISpDCzpc8
+         Muvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ed1Y4Okvup8k5YO3/YT98hea6PEaLzb9sqfNLq78+zk=;
+        b=VV31NDf80k+7zOZ8VQe6x3Lep29luZdyH5nO2JrOyc95DErTJ3UA6kSpxeqFJeEjXv
+         ZcAI3e9/8NIF4ucYK+1ohx8wf/vpBIUfP0eM+R0LqfkTY95JUra/AL47s4xRmJxjiwhk
+         SqHk6k+kn7xANd0ZIiwBNifX7x8fv7GEyQgPtaLIGNT+BsPS3ZJJVID9NYUl2XI68ntr
+         VKlzE+VvIL8uaQLeS+gpw0F92EzaTBcB2FKFZgc7UtFkBsK6KWdQUByy8h5u5ZY2Rl1K
+         nbREVNXYMNN3b0RFluBiuX9GdYNRTer7iCdVvw1n2U0Yco+7rJ7m45ey4if+AG8VdNBk
+         9KFQ==
+X-Gm-Message-State: AOAM5315EKYHEz5zqMllcsYclb0+T3kwD7L7Ruq6Pbh2prknq2yLdtcD
+        EWBkGeVzmEyCBwcdGDOGC8eCrHjii2KFU11le80=
+X-Google-Smtp-Source: ABdhPJwCf11Hq0YHSufyO0M1ZyMgmaPERHtjCoh9hI/YsFZqZm99LxXr558BP9gkYHMaHwj1/Wbfm3/vyZdZ6xp33OI=
+X-Received: by 2002:a25:7e86:: with SMTP id z128mr38612042ybc.222.1626791514490;
+ Tue, 20 Jul 2021 07:31:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210720142047.mfqssyj4lwh3yi2k@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210719143811.2135-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <dc2de27b087c7030ea7e76dd31bb3d8bce18d97f.camel@pengutronix.de>
+In-Reply-To: <dc2de27b087c7030ea7e76dd31bb3d8bce18d97f.camel@pengutronix.de>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 20 Jul 2021 15:31:28 +0100
+Message-ID: <CA+V-a8v-54QXtcT-gPy5vj9drqZ6Ntr0-3j=42Dedi-kojNtXQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] dt-bindings: net: can: renesas,rcar-canfd:
+ Document RZ/G2L SoC
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Hi Philipp,
 
-On 20/07/21 7:50 pm, Marc Kleine-Budde wrote:
-> On 20.07.2021 19:46:37, Aswath Govindraju wrote:
->> From: Faiz Abbas <faiz_abbas@ti.com>
->>
->> Add Support for two MCAN controllers present on the am65x SOC. Both support
->> classic CAN messages as well as CAN-FD.
-> 
-> Thanks for the patch!
-> 
-> Why don't you disable the CAN cores by default in the dtsi?
+Thank you for the review.
 
-As far as I know, in the dtsi file we mention all the subsystems or
-periherals present in the SoC and in the specific board dts file we
-enable or disable the DT nodes depending on whether the  pins are
-brought out.
+On Tue, Jul 20, 2021 at 11:22 AM Philipp Zabel <p.zabel@pengutronix.de> wrote:
+>
+> Hi Lad,
+>
+> On Mon, 2021-07-19 at 15:38 +0100, Lad Prabhakar wrote:
+> > Add CANFD binding documentation for Renesas RZ/G2L SoC.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > ---
+> >  .../bindings/net/can/renesas,rcar-canfd.yaml  | 66 +++++++++++++++++--
+> >  1 file changed, 60 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > index 0b33ba9ccb47..4fb6dd370904 100644
+> > --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > @@ -30,13 +30,15 @@ properties:
+> >                - renesas,r8a77995-canfd     # R-Car D3
+> >            - const: renesas,rcar-gen3-canfd # R-Car Gen3 and RZ/G2
+> >
+> > +      - items:
+> > +          - enum:
+> > +              - renesas,r9a07g044-canfd    # RZ/G2{L,LC}
+> > +          - const: renesas,rzg2l-canfd     # RZ/G2L family
+> > +
+> >    reg:
+> >      maxItems: 1
+> >
+> > -  interrupts:
+> > -    items:
+> > -      - description: Channel interrupt
+> > -      - description: Global interrupt
+> > +  interrupts: true
+> >
+> >    clocks:
+> >      maxItems: 3
+> > @@ -50,8 +52,7 @@ properties:
+> >    power-domains:
+> >      maxItems: 1
+> >
+> > -  resets:
+> > -    maxItems: 1
+> > +  resets: true
+> >
+> >    renesas,no-can-fd:
+> >      $ref: /schemas/types.yaml#/definitions/flag
+> > @@ -91,6 +92,59 @@ required:
+> >    - channel0
+> >    - channel1
+> >
+> > +if:
+> > +  properties:
+> > +    compatible:
+> > +      contains:
+> > +        enum:
+> > +          - renesas,rzg2l-canfd
+> > +then:
+> > +  properties:
+> > +    interrupts:
+> > +      items:
+> > +        - description: CAN global error interrupt
+> > +        - description: CAN receive FIFO interrupt
+> > +        - description: CAN0 error interrupt
+> > +        - description: CAN0 transmit interrupt
+> > +        - description: CAN0 transmit/receive FIFO receive completion interrupt
+> > +        - description: CAN1 error interrupt
+> > +        - description: CAN1 transmit interrupt
+> > +        - description: CAN1 transmit/receive FIFO receive completion interrupt
+> > +
+> > +    interrupt-names:
+> > +      items:
+> > +        - const: g_error
+> > +        - const: g_rx_fifo
+> > +        - const: can0_error
+> > +        - const: can0_tx
+> > +        - const: can0_tx_rx_fifo_receive_completion
+> > +        - const: can1_error
+> > +        - const: can1_tx
+> > +        - const: can1_tx_rx_fifo_receive_completion
+> > +
+> > +    resets:
+> > +      items:
+> > +        - description: CANFD_RSTP_N
+> > +        - description: CANFD_RSTC_N
+>
+> Do you know what the "P" and "C" stands for? It would be nice if the
+> description could tell us what the reset lines are used for.
+>
+unfortunately the HW manual does not mention  anything about "P" and "C" :(
 
-Thanks,
-Aswath
+> I would prefer if you used these names (or shortened versions, for
+> example "rstp_n", "rstc_n") as "reset-names" and let the driver
+> reference the resets by name instead of by index.
+>
+OK will do that and maxItems:2 for resets.
 
-> 
-> regards,
-> Marc
-> 
+@Geert, for R-Car Gen3 does "canfd_rst" (as it's a module reset)
+sounds good for reset-names? Or do you have any other suggestions?
 
+Cheers,
+Prabhakar
