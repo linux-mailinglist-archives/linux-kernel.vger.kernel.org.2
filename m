@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6603CFF48
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940D13CFF76
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235727AbhGTPo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:44:56 -0400
-Received: from mail-bn8nam12on2043.outbound.protection.outlook.com ([40.107.237.43]:26593
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        id S232227AbhGTPtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:49:46 -0400
+Received: from mail-sn1anam02on2065.outbound.protection.outlook.com ([40.107.96.65]:2643
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237317AbhGTPkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:40:52 -0400
+        id S237659AbhGTPlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 11:41:16 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P940TQDOjBIxtQ9r0JHW6bRpobN8I1abGo7+K3Rk4odqBNfE5r+FGNlzHU69SZGnXbqggakt6G8wh5AqN5OETYjVAbXLs8OzgxJYGVPmPILvkiqHDaJ0aOeW0A05OUNRqeYOEIOWffVP1T092t5jCSEcUWnc9ojE0B5mnjNDSdJRCIbT1s3jxEjJKISlQdJ9TZsuO+zRkZa1fnO8Aj6OP6xupoIoMsJCiE8H87cx5Fy1Wr5Wcqitrp51zPqL0/4lGJmMDsZ15iJanOsQC+ftqMI5MmxKtkjYQ1R5WK/+dvEbzJDKGuBjaUY79mLrxujL4iGraS3SJ12VoaGCwfL5qQ==
+ b=RQiNO4lyntc7hbp3YRKv+3sCVCSI02n0GhODIwalMCXjy7KHVe307RyCq/zVR6sJQmeoQooX3/S5PYhHCIPdrle0c2zL9+kVuFokMOzs/S33cqHzT5uoT7ooQp5Putz0MJD+vjl1n5MDFecEpIylYDUUKxb6HKVS293FEUFc0uIPwvdxnUfzfiHqavHUyIa/02I6y679W5Dyjsd52K5zztxWY2q9rOpoaiS0/vFlaQVH8kV10/KOACuDuG64zBUH1lDMpw4WgwipvpSOrPfjIy21YZ1UBEUKpMbSykVWEqANAnILgh/jXZTmTP6s0puxrq1QPf9Wp7GjZ+i6183fgw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tG6KcD+mdjzGtNUGOAjy00ESLHlnDLyIRS8d/XmXQH4=;
- b=iyVzo6P4L7tR3vyavuNmiMk2KTY7QShShjJ5UHDgnToqDNMNWln/o3JICMDHfWELiJUJ6rrLSrFHIcXdR7DD4sI8AtZ/lbKfY18a01OIthJ87BA6kiZ+IecqBiI1IIUD2eqyIHdejy457y5qxXZswsKWgolbN2cym8ghYFr0kobfmLrwtL2iKeEhs3C4c3NtKVJ9+ZhQ1nhcGgJTcaLDLG5Dz2i9bTM+/sqHFkR8vnNIgKbf90Bzm4nM/Qg/LmXuvKfoIVs1KYnrtjcGr2YX+Slij142rleqIz3AdU47JzfM7KI29Yoc8rTH0gVMyDD6iHexQ7hiVS65KGAWK8XZig==
+ bh=XobA1l++vrxesg4ZMRqffclUjEnXwpXU4R6ua2fJh5k=;
+ b=fjHD9jw8lREUuqtwbOpDdJD0/2KW1iT2vaaXGTMWdzObyTEcjtInH7RalJD/3s2d5ZGEE7KLe9Jd47mLhUYZrVFq3zDN0xjdtOPt4ubm9VLZbg9ByUSa3qyUlRjJNDBkvIGRWWpc+7BiAwGUt0yMesvJfeIk49+ECRLSOEp1LW+nJMxd+aEjYcFM1AOkiQKiZ7MptCRLJBYrbF4LJABp2C4jIGj4pdzcpGlRmuhbZqZzDNAGxfDYG9CbMop6WUsuQlz7p+dAQBCTYpY7EzdL/hNjg4U+MqFi5UV5ZXZ8fqTnf81uDSZLZWNExhROM1TLVYuFmHqXmKycctakZXv6jw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tG6KcD+mdjzGtNUGOAjy00ESLHlnDLyIRS8d/XmXQH4=;
- b=daVYTwiRlrerJwA2DYVG0m7m0YYS2Oa2miqTZiUrrCIntplWLnpe2B0COWNZh2gQEThU8PugZlb1CXn+bHubqQUeBulWipPWw0tMjVO6hjRzrMCzV4ZMWf/WSUqx0hdqHzcam/yA5xwYmDejRPuxqFHm/oPXOeWguzzbV46y4RE=
-Received: from MWHPR15CA0027.namprd15.prod.outlook.com (2603:10b6:300:ad::13)
- by MWHPR1201MB0015.namprd12.prod.outlook.com (2603:10b6:300:df::21) with
+ bh=XobA1l++vrxesg4ZMRqffclUjEnXwpXU4R6ua2fJh5k=;
+ b=ZufyGcAGhok9ffM2tygpbNUU4mdrS0mAJoWTPwDTJqRaEOTEF7aJ/zWe5OoyGmS38pfIQgzd83cwYIRYVGyimyyOXQq1z72LR1NGlVxrRCrMWROd7k0xza1xRdka3NamWNoaumNhr2jUzr8nh0OUC2dWx+GoGDu6kghc1BGun1k=
+Received: from MW4PR04CA0193.namprd04.prod.outlook.com (2603:10b6:303:86::18)
+ by MWHPR12MB1488.namprd12.prod.outlook.com (2603:10b6:301:f::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22; Tue, 20 Jul
- 2021 16:21:26 +0000
-Received: from CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:ad:cafe::bc) by MWHPR15CA0027.outlook.office365.com
- (2603:10b6:300:ad::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
- Transport; Tue, 20 Jul 2021 16:21:26 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Tue, 20 Jul
+ 2021 16:21:46 +0000
+Received: from CO1NAM11FT029.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:86:cafe::14) by MW4PR04CA0193.outlook.office365.com
+ (2603:10b6:303:86::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.24 via Frontend
+ Transport; Tue, 20 Jul 2021 16:21:46 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
@@ -44,20 +44,20 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT061.mail.protection.outlook.com (10.13.175.200) with Microsoft SMTP
+ CO1NAM11FT029.mail.protection.outlook.com (10.13.174.214) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4331.21 via Frontend Transport; Tue, 20 Jul 2021 16:21:26 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
+ 15.20.4331.21 via Frontend Transport; Tue, 20 Jul 2021 16:21:46 +0000
+Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 20 Jul
- 2021 11:21:25 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ 2021 11:21:45 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
+ (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 20 Jul
- 2021 11:21:25 -0500
+ 2021 09:21:45 -0700
 Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Tue, 20 Jul 2021 11:21:22 -0500
+ Transport; Tue, 20 Jul 2021 11:21:41 -0500
 From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
 CC:     <Alexander.Deucher@amd.com>, <Sunil-kumar.Dommati@amd.com>,
@@ -67,9 +67,9 @@ CC:     <Alexander.Deucher@amd.com>, <Sunil-kumar.Dommati@amd.com>,
         Jaroslav Kysela <perex@perex.cz>,
         "Takashi Iwai" <tiwai@suse.com>,
         open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 08/12] ASoC: amd: add vangogh i2s controller driver
-Date:   Tue, 20 Jul 2021 22:07:28 +0530
-Message-ID: <20210720163732.23003-9-Vijendar.Mukunda@amd.com>
+Subject: [PATCH v4 10/12] ASoC: amd: add vangogh pci driver pm ops
+Date:   Tue, 20 Jul 2021 22:07:30 +0530
+Message-ID: <20210720163732.23003-11-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210720163732.23003-1-Vijendar.Mukunda@amd.com>
 References: <20210720163732.23003-1-Vijendar.Mukunda@amd.com>
@@ -77,149 +77,120 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d99c11fc-03fc-441c-5311-08d94b9a6c93
-X-MS-TrafficTypeDiagnostic: MWHPR1201MB0015:
-X-Microsoft-Antispam-PRVS: <MWHPR1201MB001546798341BE164BADCA7A97E29@MWHPR1201MB0015.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:14;
+X-MS-Office365-Filtering-Correlation-Id: ada2f880-510d-4287-7bf2-08d94b9a7843
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1488:
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1488EEB3428367AE2A7057E497E29@MWHPR12MB1488.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:346;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RmRTSByPzHFYDDHWlyIl96lkGdjyE/AdCf10VcmWsMrMeVyg6Gwb+f71+ZOagjt1l0qoD3nyY2n7wsDn+xd+kBvZ9o60nw1M2RhRclqIIjGHFGtIdHFosJT/4q82dgLfUmvbBT8/6JPyM1L22GfhJ2Jjeh+T6Wu/LlHjIQ5MJqBldyDs57R9tpJSkAzmENDrR/RZoZkCmZo2xykJtYWR9G+TSZHcMUqsuVY9uYUk6wK5/9z/U9oFxED8zNgZTF1mSS+VX/zP1mghUKQHrO8014RrRh4N8mxKYDiYn7Uak8sDr0Zn7lTJ4bIaNwZI6Rpe8aGU+7qsUQmo1E8t3X87hox6fGRfuAC/AtWHV9jyV3XFL1DBQhpSOeziDOLyhI6Hp+Lu9FT/QLKkk3SdoOEQah4B0gh6Lim7mFIbkEMIC0+BZlhDuqkz1rWysnbUtiUqVMD/rlT8259ii19s01DiFMvaKWHMjc6AsRzhNzPUc8bBbmvPsMll2qNw9fiHJZLkSXC+R9GLpqPcjz652eutMZuQNxpEe9Yu/F9gOlVcfNca5X7Lw0WDafLcrL085HfglNhj+5UL5yc/u93lH+IXqhKmHPwFUQUECAm6MJKUZqJ0pYLxEWhbyuVZuOl3ES/vAypuECJ9NGD0dqbFdhyEzgkwh29vGgKZBK9DaUxR+jtd4JzYnjOGoMD+S/hDinBZ1zTLim+Zr/kS6xrrGGC0RLCqFKsFHK3M9kpRdOyytK4=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(346002)(396003)(46966006)(36840700001)(8676002)(8936002)(7696005)(186003)(54906003)(36756003)(26005)(5660300002)(70586007)(81166007)(110136005)(2906002)(316002)(356005)(1076003)(86362001)(82740400003)(4326008)(70206006)(47076005)(82310400003)(336012)(2616005)(426003)(478600001)(36860700001)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: wgVsedyyt60S8NnJlH9fBL51/Y3FObhy0s94zutJQYhHszcEUnvPoisF/ltzDpw7TkmNIxG2b0D+mjnt1UIMQJ6LFN7rrNaZNsHFMqQBlayej51m2q6ODwL6sCwntaJVSYuX/c8M+VU7BcpNV6J90NF3wI7yauai2tWVkIZzprvfko5bsV4cKz6DQ7NiBEzgePZ9A7/mOHBSb5H+PPcx7JkUCXeMIdpEum0h0l0ckjEEl/LknKjWVhzZE2z8wYJ4foL4unrvzJpO3i94OrGaZQM5eyBwWj7Ul0Chi98t0zC5f/BFnVLCmxZfPxagmbaZgHBWZ3xbOGUuYxKvUpr5TVWUo3eQOewhtVdwhw0VaS071svJVlk1wi8yo85Kxmbhvbp6QfB9NtCVY6IdlDLXp+9EEHbfIa4E9fS2wClAKwhuCp44B0LJGGwT9lC23pQPSC0drv5vIgbw7hgRiX7wwIPmxaAeh4locEDvzGOko00TSKvWM2MOlDsiPP2jbTehrYhTfFp6hEsaB2YLt6148rJkJ742tuN5mY2EQxjdDbTC2F6CTkDHP4ASDlzZkn7+iMXGLV48d17bpEKkJTfvryrUx/g/92Q3NNXb6q/wrmDPA/9Nq3uFlUAzC2151Rv1XJNAdrzWdo6fr8qh8N7dQXqUZGHzwDvBX02/n13lRZSoA3YKC9PB8KvyZiEPxXNJYo4XI/ARa3jWb9JCU+rYuUCTU04L5w+rupalBNrPsbA=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(7696005)(82310400003)(2906002)(356005)(5660300002)(47076005)(426003)(186003)(70586007)(2616005)(4326008)(36756003)(8676002)(6666004)(83380400001)(110136005)(54906003)(8936002)(336012)(36860700001)(1076003)(86362001)(70206006)(316002)(81166007)(508600001)(26005)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2021 16:21:26.6548
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2021 16:21:46.2652
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d99c11fc-03fc-441c-5311-08d94b9a6c93
+X-MS-Exchange-CrossTenant-Network-Message-Id: ada2f880-510d-4287-7bf2-08d94b9a7843
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT029.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0015
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1488
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Vangogh I2S controller driver to support two I2S controller
-instances.
+Add Vangogh acp pci driver pm ops.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- sound/soc/amd/vangogh/acp5x-i2s.c | 88 +++++++++++++++++++++++++++++++
- sound/soc/amd/vangogh/acp5x.h     |  4 ++
- 2 files changed, 92 insertions(+)
- create mode 100644 sound/soc/amd/vangogh/acp5x-i2s.c
+ sound/soc/amd/vangogh/pci-acp5x.c | 45 +++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/sound/soc/amd/vangogh/acp5x-i2s.c b/sound/soc/amd/vangogh/acp5x-i2s.c
-new file mode 100644
-index 000000000000..30b651035042
---- /dev/null
-+++ b/sound/soc/amd/vangogh/acp5x-i2s.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// AMD ALSA SoC PCM Driver
-+//
-+// Copyright (C) 2021 Advanced Micro Devices, Inc. All rights reserved.
-+
-+#include <linux/platform_device.h>
-+#include <linux/module.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+#include <linux/dma-mapping.h>
-+
-+#include "acp5x.h"
-+
-+#define DRV_NAME "acp5x_i2s_playcap"
-+
-+static const struct snd_soc_component_driver acp5x_dai_component = {
-+	.name = "acp5x-i2s",
-+};
-+
-+static struct snd_soc_dai_driver acp5x_i2s_dai = {
-+	.playback = {
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8 |
-+			SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S32_LE,
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rate_min = 8000,
-+		.rate_max = 96000,
-+	},
-+	.capture = {
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8 |
-+			SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S32_LE,
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rate_min = 8000,
-+		.rate_max = 96000,
-+	},
-+};
-+
-+static int acp5x_dai_probe(struct platform_device *pdev)
+diff --git a/sound/soc/amd/vangogh/pci-acp5x.c b/sound/soc/amd/vangogh/pci-acp5x.c
+index 25b42a37ad3a..a57b762d9f2e 100644
+--- a/sound/soc/amd/vangogh/pci-acp5x.c
++++ b/sound/soc/amd/vangogh/pci-acp5x.c
+@@ -10,6 +10,7 @@
+ #include <linux/delay.h>
+ #include <linux/platform_device.h>
+ #include <linux/interrupt.h>
++#include <linux/pm_runtime.h>
+ 
+ #include "acp5x.h"
+ 
+@@ -226,6 +227,10 @@ static int snd_acp5x_probe(struct pci_dev *pci,
+ 	default:
+ 		dev_info(&pci->dev, "ACP audio mode : %d\n", val);
+ 	}
++	pm_runtime_set_autosuspend_delay(&pci->dev, 2000);
++	pm_runtime_use_autosuspend(&pci->dev);
++	pm_runtime_put_noidle(&pci->dev);
++	pm_runtime_allow(&pci->dev);
+ 	return 0;
+ 
+ unregister_devs:
+@@ -242,6 +247,41 @@ static int snd_acp5x_probe(struct pci_dev *pci,
+ 	return ret;
+ }
+ 
++static int __maybe_unused snd_acp5x_suspend(struct device *dev)
 +{
-+	struct resource *res;
-+	struct i2s_dev_data *adata;
 +	int ret;
++	struct acp5x_dev_data *adata;
 +
-+	adata = devm_kzalloc(&pdev->dev, sizeof(struct i2s_dev_data),
-+			     GFP_KERNEL);
-+	if (!adata)
-+		return -ENOMEM;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
-+		return -ENOMEM;
-+	}
-+	adata->acp5x_base = devm_ioremap(&pdev->dev, res->start,
-+					 resource_size(res));
-+	if (IS_ERR(adata->acp5x_base))
-+		return PTR_ERR(adata->acp5x_base);
-+
-+	adata->master_mode = I2S_MASTER_MODE_ENABLE;
-+	dev_set_drvdata(&pdev->dev, adata);
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+					      &acp5x_dai_component,
-+					      &acp5x_i2s_dai, 1);
++	adata = dev_get_drvdata(dev);
++	ret = acp5x_deinit(adata->acp5x_base);
 +	if (ret)
-+		dev_err(&pdev->dev, "Fail to register acp i2s dai\n");
++		dev_err(dev, "ACP de-init failed\n");
++	else
++		dev_dbg(dev, "ACP de-initialized\n");
++
 +	return ret;
 +}
 +
-+static struct platform_driver acp5x_dai_driver = {
-+	.probe = acp5x_dai_probe,
-+	.driver = {
-+		.name = "acp5x_i2s_playcap",
-+	},
++static int __maybe_unused snd_acp5x_resume(struct device *dev)
++{
++	int ret;
++	struct acp5x_dev_data *adata;
++
++	adata = dev_get_drvdata(dev);
++	ret = acp5x_init(adata->acp5x_base);
++	if (ret) {
++		dev_err(dev, "ACP init failed\n");
++		return ret;
++	}
++	return 0;
++}
++
++static const struct dev_pm_ops acp5x_pm = {
++	SET_RUNTIME_PM_OPS(snd_acp5x_suspend,
++			   snd_acp5x_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(snd_acp5x_suspend, snd_acp5x_resume)
 +};
 +
-+module_platform_driver(acp5x_dai_driver);
-+
-+MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
-+MODULE_DESCRIPTION("AMD ACP5.x CPU DAI Driver");
-+MODULE_ALIAS("platform:" DRV_NAME);
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/amd/vangogh/acp5x.h b/sound/soc/amd/vangogh/acp5x.h
-index 929be9905e8e..2300e63534e7 100644
---- a/sound/soc/amd/vangogh/acp5x.h
-+++ b/sound/soc/amd/vangogh/acp5x.h
-@@ -71,7 +71,11 @@
- #define DMA_SIZE 0x40
- #define FRM_LEN 0x100
+ static void snd_acp5x_remove(struct pci_dev *pci)
+ {
+ 	struct acp5x_dev_data *adata;
+@@ -255,6 +295,8 @@ static void snd_acp5x_remove(struct pci_dev *pci)
+ 	ret = acp5x_deinit(adata->acp5x_base);
+ 	if (ret)
+ 		dev_err(&pci->dev, "ACP de-init failed\n");
++	pm_runtime_forbid(&pci->dev);
++	pm_runtime_get_noresume(&pci->dev);
+ 	pci_release_regions(pci);
+ 	pci_disable_device(pci);
+ }
+@@ -272,6 +314,9 @@ static struct pci_driver acp5x_driver  = {
+ 	.id_table = snd_acp5x_ids,
+ 	.probe = snd_acp5x_probe,
+ 	.remove = snd_acp5x_remove,
++	.driver = {
++		.pm = &acp5x_pm,
++	}
+ };
  
-+#define I2S_MASTER_MODE_ENABLE 0x01
-+#define I2S_MASTER_MODE_DISABLE 0x00
-+
- struct i2s_dev_data {
-+	bool master_mode;
- 	unsigned int i2s_irq;
- 	void __iomem *acp5x_base;
- 	struct snd_pcm_substream *play_stream;
+ module_pci_driver(acp5x_driver);
 -- 
 2.17.1
 
