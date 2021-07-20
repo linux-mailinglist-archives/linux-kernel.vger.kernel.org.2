@@ -2,262 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826573CFD1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B0C3CFCE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240562AbhGTObQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 10:31:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239954AbhGTOVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:21:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D65DC613BA;
-        Tue, 20 Jul 2021 14:49:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626792598;
-        bh=/O1trl2cpSrUUNPJzYFGtWGZ4vLIkFeXcgJorL+cXmc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lU1AOC72fNUgyRq7LZeoUEEli1h2WuWOdzzybddaLyK1tueDTg13FeDebRHgi8DKd
-         oLlVl71qlHvcttv5/tAo1pigMrM3PS7jU/OEqKZUcq2j42U/qjrUEzvLBgx59TtYyV
-         iHf3E0K+hkti0FW+VOtG9F/9jyDdneSgrFrnf2nnnCmhpLmwJpWYwhUsr4oVh8BdXr
-         IYvI+5WFgWraFuPcM6SxD9owCTAC3cctFElH+9TpLMrYXURO48pyY7CCkSaDOsSrBf
-         ACOn1y4lMCblwqBvJ91ekbg8KMF9gZcol5XLfxcCm3JQzTUhVclA6+chk8YW9s1ZX1
-         HYnhtFPtqPD8w==
-Received: by pali.im (Postfix)
-        id 6CFD5765; Tue, 20 Jul 2021 16:49:55 +0200 (CEST)
-Date:   Tue, 20 Jul 2021 16:49:55 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH 2/3] PCI: aardvark: Fix checking for PIO status
-Message-ID: <20210720144955.eq564e756ghtpkfo@pali>
-References: <20210625110429.GA17337@lpieralisi>
- <20210719231227.GA32839@bjorn-Precision-5520>
+        id S238327AbhGTOWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239559AbhGTOPU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 10:15:20 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1809C0617A7;
+        Tue, 20 Jul 2021 07:52:42 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id s18so22727193pgg.8;
+        Tue, 20 Jul 2021 07:52:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P7LMpW5XzWUvxMXqbWYSmu2pjZJM72dfTIn65I782GM=;
+        b=n+wWRzMYO/1gyDJXN5G/60cdAWJH5Yr/7yj6VsIKzZJnyzhbYVVBijDepJmljmhzTJ
+         h5zBbl83UFS38rCqoSZOLNW7O4jyqBXPCgY8UbJ/ltHylbX25bEBKrKBCiKjIVvpKvml
+         IzK8oARt0PMAYUBsfsjK9GUd0Y+UYJrDWmP1DeVMZjrlsiiUfDM4pbhTGx1oGulY7Nbo
+         QQyHBn0ADzUMxarjYtZkw0nI+IT6qweW2fOFudck6UEXWCxSEXLlqIYmbp4kpp9zJAyX
+         oPTw+BRvKSgFTcYbN7wZwkVN7cOnTAcNZM44NOo2yi2j9RnTY9XunRB2aBopy99kxg+r
+         vmrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P7LMpW5XzWUvxMXqbWYSmu2pjZJM72dfTIn65I782GM=;
+        b=pJPMKmQIH1/yUz4SAxbDSJlydT7n2uZUGKeNrOA4CaYn12VDQlywCNwNAfnr5+HEIg
+         0UERl/O+6pDMq20KxOoIAQb4DcZx6xyM2XnvDx4LH7YLDG1LeUgZ2XRNq4L3gMBIVGuU
+         2VrbVSrBwy+2sK9lJI6T3zQ0N22IKuZxh99dF8gOTOfuS7iwxoR+sz1QGs0AyLT4kB1g
+         04phXQE37Gb+5I8kGny9pbHqN22YOx3NFBcWoSpb8UmFsc8iz8Togmun8IdTPpkKA2B9
+         PicxgoSO9rO7lrepfUVjHsRJmqJxSnoI/zrE7LS9Yp/SNk+R+XPzPlp/lKoUFR7S57Iz
+         ar8g==
+X-Gm-Message-State: AOAM532myAdhvCDTjd819pHu79dfn0UAmblSscRv1iu3FtQA2Z4586vZ
+        +nF/Lk2wJBL1Xj58g+4a5Ky5/clHgyIfqPmqi+s=
+X-Google-Smtp-Source: ABdhPJxVf49szxJIXAodhwcL8PVRy/A2HS2ce+aYz72ayuXwkJizuBtMsvwgt56shChZm6zOtQCG0Qz20cdwt8yx8Tw=
+X-Received: by 2002:aa7:8a04:0:b029:332:950e:d976 with SMTP id
+ m4-20020aa78a040000b0290332950ed976mr32334962pfa.40.1626792762291; Tue, 20
+ Jul 2021 07:52:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210719231227.GA32839@bjorn-Precision-5520>
-User-Agent: NeoMutt/20180716
+References: <20210716114210.141560-1-antoniu.miclaus@analog.com>
+ <CAHp75VcNhJrp4YGZQu1ZB2J4ARtuT2T2p-72H1qn4F+KtZDVoQ@mail.gmail.com>
+ <CY4PR03MB3399083DDE3A03C55D3153FE9BE29@CY4PR03MB3399.namprd03.prod.outlook.com>
+ <CAHp75VcN2fjVDMfkpgyE2tqu=21ku4KBowNDKJxvpbKzwuEPew@mail.gmail.com> <CY4PR03MB339939479450FC5F3E8172D39BE29@CY4PR03MB3399.namprd03.prod.outlook.com>
+In-Reply-To: <CY4PR03MB339939479450FC5F3E8172D39BE29@CY4PR03MB3399.namprd03.prod.outlook.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 20 Jul 2021 17:52:02 +0300
+Message-ID: <CAHp75VfS64KmnLwiRB9+oFne+LD5+O5PSSQDD=9gnAg=zVeMEg@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] iio: frequency: adrf6780: add support for ADRF6780
+To:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
+Cc:     "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 19 July 2021 18:12:27 Bjorn Helgaas wrote:
-> On Fri, Jun 25, 2021 at 12:04:29PM +0100, Lorenzo Pieralisi wrote:
-> > On Thu, Jun 24, 2021 at 11:33:44PM +0200, Pali Rohár wrote:
+On Tue, Jul 20, 2021 at 5:33 PM Miclaus, Antoniu
+<Antoniu.Miclaus@analog.com> wrote:
+> > From: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > Sent: Tuesday, July 20, 2021 5:08 PM
+> > On Tue, Jul 20, 2021 at 4:17 PM Miclaus, Antoniu
+> > <Antoniu.Miclaus@analog.com> wrote:
+> > > > From: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > > > Sent: Friday, July 16, 2021 5:53 PM
+> > > > On Fri, Jul 16, 2021 at 2:43 PM Antoniu Miclaus
+> > > > <antoniu.miclaus@analog.com> wrote:
+
+...
+
+> > > > First question is why not to use the regmap API (I have heard it has
+> > > > gained support of 17 bit)?
+> > >
+> > > Initially that was the plan, but after this patch:
+> > >
+> > https://urldefense.com/v3/__https://github.com/torvalds/linux/commit/41
+> > 91f19792bf91267835eb090d970e9cd6277a65__;!!A3Ni8CS0y2Y!ptUV0YC2nfD
+> > 6AdH_y5U0ziyELl4B9pDL0ubkdpFHFtrFNE_NqUS_TWm_gE-SlHV315Ak$
+> > > the custom write formats for regmap allow the read only via cached
+> > registers.
+> > >
+> > > Therefore, I preferred using spi transfers for write/read to/from the
+> > device.
 > >
-> > [...]
-> > 
-> > > -static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-> > > +static int advk_pcie_check_pio_status(struct advk_pcie *pcie, u32 *val)
-> > >  {
-> > >  	struct device *dev = &pcie->pdev->dev;
-> > >  	u32 reg;
-> > > @@ -472,15 +476,50 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-> > >  	status = (reg & PIO_COMPLETION_STATUS_MASK) >>
-> > >  		PIO_COMPLETION_STATUS_SHIFT;
-> > >  
-> > > -	if (!status)
-> > > -		return;
-> > > -
-> > > +	/*
-> > > +	 * According to HW spec, the PIO status check sequence as below:
-> > > +	 * 1) even if COMPLETION_STATUS(bit9:7) indicates successful,
-> > > +	 *    it still needs to check Error Status(bit11), only when this bit
-> > > +	 *    indicates no error happen, the operation is successful.
-> > > +	 * 2) value Unsupported Request(1) of COMPLETION_STATUS(bit9:7) only
-> > > +	 *    means a PIO write error, and for PIO read it is successful with
-> > > +	 *    a read value of 0xFFFFFFFF.
-> > > +	 * 3) value Completion Retry Status(CRS) of COMPLETION_STATUS(bit9:7)
-> > > +	 *    only means a PIO write error, and for PIO read it is successful
-> > > +	 *    with a read value of 0xFFFF0001.
-> > > +	 * 4) value Completer Abort (CA) of COMPLETION_STATUS(bit9:7) means
-> > > +	 *    error for both PIO read and PIO write operation.
-> > > +	 * 5) other errors are indicated as 'unknown'.
-> > > +	 */
-> > >  	switch (status) {
-> > > +	case PIO_COMPLETION_STATUS_OK:
-> > > +		if (reg & PIO_ERR_STATUS) {
-> > > +			strcomp_status = "COMP_ERR";
-> > > +			break;
-> > > +		}
-> > > +		/* Get the read result */
-> > > +		if (val)
-> > > +			*val = advk_readl(pcie, PIO_RD_DATA);
-> > > +		/* No error */
-> > > +		strcomp_status = NULL;
-> > > +		break;
-> > >  	case PIO_COMPLETION_STATUS_UR:
-> > > -		strcomp_status = "UR";
-> > > +		if (val) {
-> > > +			/* For reading, UR is not an error status */
-> > > +			*val = CFG_RD_UR_VAL;
-> 
-> I think the comment is incorrect.  Unsupported Request *is* an error
-> status.  But most platforms log it and fabricate ~0 data
-> (CFG_RD_UR_VAL) to return to the CPU, and I think that's what you're
-> doing here.  So I think the code is fine, but the "not an error
-> status" comment is wrong.
+> > Not sure I follow you. That patch is upstream. Does it prevent you
+> > from switching to regmap SPI API?
+>
+> It does not prevent me from switching to regmap SPI API.
+> It will prevent me from using regmap_read to read directly from device.
+> https://github.com/torvalds/linux/commit/4191f19792bf91267835eb090d970e9cd6277a65#diff-3e0b7d2f0a55adb6573693a514cb8024a81a55da848cb22632ab5fd4dd6dd4e4R39
 
-Ok, and what we should driver set as return value for pci_ops.read
-callback in this case?
+How? If it's the case it's a huge regression in the API and must be fixed ASAP.
 
-> Per the flowchart in PCIe r5.0, sec 6.2.5., fig 6-2, I think the
-> hardware should be setting the "Unsupported Request Detected" bit in
-> the Device Status register when this occurs.
-
-Yes there is register in kernel's emulated PCIe bridge which at bit 19
-has: Unsupported Request Detected - The core sets this bit to 1 when an
-unsupported request is received. Write this bit to 1 to clear.
-
-> > > +			strcomp_status = NULL;
-> > > +		} else {
-> > > +			strcomp_status = "UR";
-> > > +		}
-> > >  		break;
-> > >  	case PIO_COMPLETION_STATUS_CRS:
-> > > -		strcomp_status = "CRS";
-> > > +		if (val) {
-> > > +			/* For reading, CRS is not an error status */
-> > > +			*val = CFG_RD_CRS_VAL;
-> > 
-> > Need Bjorn's input on this. I don't think this is what is expected from
-> > from a root complex according to the PCI specifications (depending on
-> > whether CSR software visibility is supported or not).
-> > 
-> > Here we are fabricating a CRS completion value for all PCI config read
-> > transactions that are hitting a CRS completion status (and that's not
-> > the expected behaviour according to the PCI specifications and I don't
-> > think that's correct).
-> 
-> Right.  I think any config access (read or write) can be completed
-> with a CRS completion (sec 2.3.1).
-> 
-> Per sec 2.3.2, when CRS SV (in Root Control register, sec 7.5.3.12) is
-> enabled and a config read that includes both bytes of the Vendor ID
-> receives a CRS completion, we must return 0x0001 for the Vendor ID and
-> 0xff for any additional bytes.  Note that a config read of only the
-> two Vendor ID bytes is legal and should receive 0x0001 data.
-> 
-> But if CRS SV is disabled, I think config reads that receive CRS
-> completions should fail the normal way, i.e., fabricate ~0 data.
-
-In PCIe base 2.0 is:
-
-For other Configuration Requests, or when CRS Software Visibility is not
-enabled, the Root Complex will generally re-issue the Configuration
-Request until it completes with a status other than CRS as described in
-Section 2.3.2.
-
-So what should pci-aardvark driver in this case do? Return ~0 or re-send
-this config read request (and how many times)?
-
-Also this relates to previous discussion about PCI_EXP_RTCTL_CRSSVE:
-https://lore.kernel.org/linux-pci/20210507152542.sd54lk7bk56qapf3@pali/
-
-> > > +			strcomp_status = NULL;
-> > > +		} else {
-> > > +			strcomp_status = "CRS";
-> > > +		}
-> > >  		break;
-> > >  	case PIO_COMPLETION_STATUS_CA:
-> > >  		strcomp_status = "CA";
-> > > @@ -490,6 +529,9 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-> > >  		break;
-> > >  	}
-> > >  
-> > > +	if (!strcomp_status)
-> > > +		return 0;
-> > > +
-> > >  	if (reg & PIO_NON_POSTED_REQ)
-> > >  		str_posted = "Non-posted";
-> > >  	else
-> > > @@ -497,6 +539,8 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-> > >  
-> > >  	dev_err(dev, "%s PIO Response Status: %s, %#x @ %#x\n",
-> > >  		str_posted, strcomp_status, reg, advk_readl(pcie, PIO_ADDR_LS));
-> > > +
-> > > +	return -EFAULT;
-> > >  }
-> > >  
-> > >  static int advk_pcie_wait_pio(struct advk_pcie *pcie)
-> > > @@ -703,8 +747,17 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
-> > >  						 size, val);
-> > >  
-> > >  	if (advk_pcie_pio_is_running(pcie)) {
-> > > -		*val = 0xffffffff;
-> > > -		return PCIBIOS_SET_FAILED;
-> > > +		/*
-> > > +		 * For PCI_VENDOR_ID register, return Completion Retry Status
-> > > +		 * so caller tries to issue the request again insted of failing
-> > > +		 */
-> > > +		if (where == PCI_VENDOR_ID) {
-> > > +			*val = CFG_RD_CRS_VAL;
-> > > +			return PCIBIOS_SUCCESSFUL;
-> > 
-> > Mmmm..here we are faking a CRS completion value to coerce the kernel
-> > into believing a CRS completion was received (which is not necessarily
-> > true) ?
-> > 
-> > if advk_pcie_pio_is_running(pcie) == true, is that an HW error ?
-> > 
-> > Lorenzo
-> > 
-> > > +		} else {
-> > > +			*val = 0xffffffff;
-> > > +			return PCIBIOS_SET_FAILED;
-> > > +		}
-> > >  	}
-> > >  
-> > >  	/* Program the control register */
-> > > @@ -729,15 +782,27 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
-> > >  	advk_writel(pcie, 1, PIO_START);
-> > >  
-> > >  	ret = advk_pcie_wait_pio(pcie);
-> > > +	if (ret < 0) {
-> > > +		/*
-> > > +		 * For PCI_VENDOR_ID register, return Completion Retry Status
-> > > +		 * so caller tries to issue the request again instead of failing
-> > > +		 */
-> > > +		if (where == PCI_VENDOR_ID) {
-> > > +			*val = CFG_RD_CRS_VAL;
-> > > +			return PCIBIOS_SUCCESSFUL;
-> > > +		} else {
-> > > +			*val = 0xffffffff;
-> > > +			return PCIBIOS_SET_FAILED;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	/* Check PIO status and get the read result */
-> > > +	ret = advk_pcie_check_pio_status(pcie, val);
-> > >  	if (ret < 0) {
-> > >  		*val = 0xffffffff;
-> > >  		return PCIBIOS_SET_FAILED;
-> > >  	}
-> > >  
-> > > -	advk_pcie_check_pio_status(pcie);
-> > > -
-> > > -	/* Get the read result */
-> > > -	*val = advk_readl(pcie, PIO_RD_DATA);
-> > >  	if (size == 1)
-> > >  		*val = (*val >> (8 * (where & 3))) & 0xff;
-> > >  	else if (size == 2)
-> > > @@ -801,7 +866,9 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
-> > >  	if (ret < 0)
-> > >  		return PCIBIOS_SET_FAILED;
-> > >  
-> > > -	advk_pcie_check_pio_status(pcie);
-> > > +	ret = advk_pcie_check_pio_status(pcie, NULL);
-> > > +	if (ret < 0)
-> > > +		return PCIBIOS_SET_FAILED;
-> > >  
-> > >  	return PCIBIOS_SUCCESSFUL;
-> > >  }
-> > > -- 
-> > > 2.20.1
-> > > 
+-- 
+With Best Regards,
+Andy Shevchenko
