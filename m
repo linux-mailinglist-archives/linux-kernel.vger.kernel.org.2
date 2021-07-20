@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C69A3CF3A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE0A3CF363
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 06:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349500AbhGTEEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 00:04:30 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:12007 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245360AbhGTD67 (ORCPT
+        id S245421AbhGTD4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 23:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239282AbhGTD43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 23:58:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626755978; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=Ja0ch2BKFqV8Z+kWiGBFMXL83Jhiecq8a/U0GuvQfuI=; b=nNefjZON4vvdkqAo0AOwkt+gZlDluUO1z6RujhbPYkI399qFp6+zetRxFu0inqDdp6lADf0h
- yE7ucwFi9KTRwhWyhC5Hw2Xdy9+eWr3HdllAROtpTf8+MSST9J4My5J4iwY27FwXtfB/Q1Hw
- 0cVUiB/mA6tGRQuRzQMhfO9ORN0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60f6536856871ded7738df62 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Jul 2021 04:39:04
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9CFEBC433D3; Tue, 20 Jul 2021 04:39:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 84E89C4323A;
-        Tue, 20 Jul 2021 04:38:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 84E89C4323A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     mka@chromium.org, swboyd@chromium.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org
-Cc:     ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
-        ohad@wizery.com, mathieu.poirier@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, rishabhb@codeaurora.org,
-        sidgup@codeaurora.org, Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH v4 13/13] dt-bindings: soc: qcom: aoss: Delete unused power-domain definitions
-Date:   Tue, 20 Jul 2021 10:06:47 +0530
-Message-Id: <1626755807-11865-14-git-send-email-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1626755807-11865-1-git-send-email-sibis@codeaurora.org>
-References: <1626755807-11865-1-git-send-email-sibis@codeaurora.org>
+        Mon, 19 Jul 2021 23:56:29 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7402C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 21:37:04 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id gx2so1905025pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 21:37:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BbJ5l/mzifntQdZgcoAMozoV8xnurm7BXOSvdrIxbhg=;
+        b=mq949U1s2+kAYZI0X3lgUoNXTGjhIZkrl7UOL0sPaK2QLJ/i/YLoHlNHs/Kasexq9o
+         aonmjdVagasMfgKQ7UHxzTrkrwCiIIsnXbg9DfmeDxLkHUkV37XBWcNWfZj0Swx9vqWi
+         ELkbuloc5D29K6er/zFevAbSakKTLFOqO24nHFIql+8yx+A8Wn06QH0MMn3AeD2dL+nb
+         /IXgREyPLNTEf7yoCCZ3ltix3nR2xw2/zeoNg6ioFHOxGt5XBwvD1Kk0pA2IqKJUo75O
+         23yfUcc9Eu7N1aV1wduxNTFPcCd6d70zGzujjMQMG3URPmmx+2KUYp+U0Z7mcdzLYXl6
+         iBhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BbJ5l/mzifntQdZgcoAMozoV8xnurm7BXOSvdrIxbhg=;
+        b=LmPXKzHr9FeMFbfNW4cXRxL4px8D0NF1AnkiQQ/P1IJYdyWd70HgVAh/lvKEzc5KwT
+         vSmR7Ezdlxuveq5pM6+Zdh4B6a5A6i1oOlDxPrkSmLvSCu5omjdaaAzI/fDOCVqCJd2g
+         ZU14NYTyiCG+cZLzS2g+WsleGTGFbOWeFNPdfj2UUMkW06PuOcu3CollFDyONpLbR++F
+         nDTA1mGWNTId4IfbQFy8+MzaZIsPbQacL/pk3Jngq1hIVVZ/LmSfRJrM6bnft1+NAzr0
+         evq/HUaf4OllTegiQH9z/znfCVFL7zL9ED8X5mVEjeonMeq5wgq4nAG3VJHjyrmsDyhm
+         YWQg==
+X-Gm-Message-State: AOAM532pKAEHKT/orJwi9nNLQD4Uh2gD250n6epoBOYmD7pijMuBUFfe
+        b6Su+DrrEGPH4Y4CrpKAY0ySNqdKQeAisxWw72VeQw==
+X-Google-Smtp-Source: ABdhPJxVYzjLwg+WrH2DJ++AV1AOi2rqP2W42mIUyF1Blf/p9WzgLzJ4wqRstvUbJYWqQh3FCWDRx57OJD7EJ8N01dM=
+X-Received: by 2002:a17:902:8484:b029:101:7016:fb7b with SMTP id
+ c4-20020a1709028484b02901017016fb7bmr21740363plo.23.1626755824154; Mon, 19
+ Jul 2021 21:37:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210713163324.627647-1-seanjc@google.com> <20210713163324.627647-46-seanjc@google.com>
+In-Reply-To: <20210713163324.627647-46-seanjc@google.com>
+From:   Reiji Watanabe <reijiw@google.com>
+Date:   Mon, 19 Jul 2021 21:36:48 -0700
+Message-ID: <CAAeT=Fy_x6ziS2BE+fYigm_i-UxPyGz=QQ7yuB2HA1TtXBSD7w@mail.gmail.com>
+Subject: Re: [PATCH v2 45/46] KVM: SVM: Drop redundant clearing of
+ vcpu->arch.hflags at INIT/RESET
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete unused power-domain definitions exposed by AOSS QMP.
+On Tue, Jul 13, 2021 at 9:35 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Drop redundant clears of vcpu->arch.hflags in init_vmcb() now that
+> init_vmcb() is invoked only through kvm_vcpu_reset(), which always clears
+> hflags.  And of course, the second clearing in init_vmcb() was always
+> redundant.
+>
+> Suggested-by: Reiji Watanabe <reijiw@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Acked-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
----
- include/dt-bindings/power/qcom-aoss-qmp.h | 14 --------------
- 1 file changed, 14 deletions(-)
- delete mode 100644 include/dt-bindings/power/qcom-aoss-qmp.h
+Reviewed-by: Reiji Watanabe <reijiw@google.com>
 
-diff --git a/include/dt-bindings/power/qcom-aoss-qmp.h b/include/dt-bindings/power/qcom-aoss-qmp.h
-deleted file mode 100644
-index ec336d31dee4..000000000000
---- a/include/dt-bindings/power/qcom-aoss-qmp.h
-+++ /dev/null
-@@ -1,14 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/* Copyright (c) 2018, Linaro Ltd. */
--
--#ifndef __DT_BINDINGS_POWER_QCOM_AOSS_QMP_H
--#define __DT_BINDINGS_POWER_QCOM_AOSS_QMP_H
--
--#define AOSS_QMP_LS_CDSP		0
--#define AOSS_QMP_LS_LPASS	1
--#define AOSS_QMP_LS_MODEM	2
--#define AOSS_QMP_LS_SLPI		3
--#define AOSS_QMP_LS_SPSS		4
--#define AOSS_QMP_LS_VENUS	5
--
--#endif
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Thank you for removing the redundant code.
 
+Regards,
+Reiji
