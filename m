@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FF23CF281
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAB43CF282
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346527AbhGTCpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 22:45:03 -0400
-Received: from out0.migadu.com ([94.23.1.103]:25517 "EHLO out0.migadu.com"
+        id S1346566AbhGTCpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 22:45:23 -0400
+Received: from out2.migadu.com ([188.165.223.204]:62265 "EHLO out2.migadu.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232711AbhGTClN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 22:41:13 -0400
+        id S236420AbhGTCln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 22:41:43 -0400
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1626751308;
+        t=1626751335;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
-        bh=vu7b9z6fy5eQBUVOgQ3fNILEElmkneJNf7Gu+XNQsCQ=;
-        b=pGcDszR2Unl5wBJKs0Gzt/L2N7kNLJGriJr+6Vu0vJ79r9R9g7X4krgnSGtrZbqnSSd8H5
-        1TBetA/cAf5q/OzkXirf3xrNSitKO8jALzb0ixVGMkyuyE7avu5OcCnA49OJEws7Jw6vHG
-        4U6RcrRz4c1R0xSJnxuFDpaNBSRvarU=
+        bh=ymvuQOiwKUSpANGmy6VygBcyGlRswj0psccsffBvtok=;
+        b=o3OIYjC1X/lsNU8INdO6c0welkJ6wQHvZ7wvmvEA21ALB63D20hPelkRtY98uB31BsFsRl
+        yjFgCgM+DR3UcHGhAVxRL54WMX7yd/8+WGy2D+wUAM5oSXwkct04yKb3RvKytiDrX3r+7g
+        ES+hE6zqChub6KZFJzUM7tDUJiUxLeM=
 From:   Yajun Deng <yajun.deng@linux.dev>
 To:     courmisch@gmail.com, remi@remlab.net
 Cc:     linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH 0/4] Remove rtnetlink_send() in rtnetlink
-Date:   Tue, 20 Jul 2021 11:21:35 +0800
-Message-Id: <20210720032135.2255-1-yajun.deng@linux.dev>
+Subject: [PATCH 1/4] rtnetlink: remove rtnetlink_send() in rtnetlink
+Date:   Tue, 20 Jul 2021 11:22:02 +0800
+Message-Id: <20210720032202.2348-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -35,53 +35,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rtnetlink_send() is similar to rtnl_notify(), there is no need for two 
-functions to do the same thing. we can remove rtnetlink_send() and 
-modify rtnl_notify() to adapt more case.
+rtnetlink_send() is similar to rtnl_notify(), so remove rtnetlink_send().
+Modify the fifth parameter from 'struct nlmsghdr *nlh' to 'int report'
+in rtnl_notify(). This will do well for the caller havn't nlh variable.
+And modify the return value to integer, Some caller may be need the
+return value.
 
-Patch1: remove rtnetlink_send() modify rtnl_notify() to adapt 
-more case in rtnetlink.
-Path2,Patch3: Adjustment parameters in rtnl_notify().
-Path4: rtnetlink_send() already removed, use rtnl_notify() instead 
-of rtnetlink_send().
+Rename pid to portid to avoid confusion in rtnl_{unicast, notify}.
 
-Yajun Deng (4):
-  rtnetlink: remove rtnetlink_send() in rtnetlink
-  net: Adjustment parameters in rtnl_notify()
-  vxlan: Adjustment parameters in rtnl_notify()
-  net/sched: use rtnl_notify() instead of rtnetlink_send()
-
- drivers/net/vxlan.c       |  2 +-
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
  include/linux/rtnetlink.h |  7 +++----
- include/net/netlink.h     |  5 ++---
- net/bridge/br_fdb.c       |  2 +-
- net/bridge/br_mdb.c       |  4 ++--
- net/bridge/br_netlink.c   |  2 +-
- net/bridge/br_vlan.c      |  2 +-
- net/core/fib_rules.c      |  2 +-
- net/core/neighbour.c      |  2 +-
- net/core/net_namespace.c  |  2 +-
- net/core/rtnetlink.c      | 27 ++++++++-------------------
- net/dcb/dcbnl.c           |  2 +-
- net/decnet/dn_dev.c       |  2 +-
- net/decnet/dn_table.c     |  2 +-
- net/ipv4/devinet.c        |  4 ++--
- net/ipv4/fib_semantics.c  |  2 +-
- net/ipv4/fib_trie.c       |  2 +-
- net/ipv4/ipmr.c           |  4 ++--
- net/ipv4/nexthop.c        |  4 ++--
- net/ipv6/addrconf.c       |  8 ++++----
- net/ipv6/ip6mr.c          |  4 ++--
- net/ipv6/ndisc.c          |  2 +-
- net/ipv6/route.c          |  9 +++++----
- net/mpls/af_mpls.c        |  4 ++--
- net/phonet/pn_netlink.c   |  4 ++--
- net/sched/act_api.c       | 13 ++++++-------
- net/sched/cls_api.c       | 14 +++++++-------
- net/sched/sch_api.c       | 13 ++++++-------
- net/wireless/wext-core.c  |  2 +-
- 29 files changed, 69 insertions(+), 83 deletions(-)
+ net/core/rtnetlink.c      | 21 +++++----------------
+ 2 files changed, 8 insertions(+), 20 deletions(-)
 
+diff --git a/include/linux/rtnetlink.h b/include/linux/rtnetlink.h
+index bb9cb84114c1..409c334746a6 100644
+--- a/include/linux/rtnetlink.h
++++ b/include/linux/rtnetlink.h
+@@ -9,10 +9,9 @@
+ #include <linux/refcount.h>
+ #include <uapi/linux/rtnetlink.h>
+ 
+-extern int rtnetlink_send(struct sk_buff *skb, struct net *net, u32 pid, u32 group, int echo);
+-extern int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 pid);
+-extern void rtnl_notify(struct sk_buff *skb, struct net *net, u32 pid,
+-			u32 group, struct nlmsghdr *nlh, gfp_t flags);
++extern int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 portid);
++extern int rtnl_notify(struct sk_buff *skb, struct net *net, u32 portid,
++		       u32 group, int report, gfp_t flags);
+ extern void rtnl_set_sk_err(struct net *net, u32 group, int error);
+ extern int rtnetlink_put_metrics(struct sk_buff *skb, u32 *metrics);
+ extern int rtnl_put_cacheinfo(struct sk_buff *skb, struct dst_entry *dst,
+diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+index 670d74ab91ae..48bb9dc6f06f 100644
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -707,31 +707,20 @@ static int rtnl_link_fill(struct sk_buff *skb, const struct net_device *dev)
+ 	return err;
+ }
+ 
+-int rtnetlink_send(struct sk_buff *skb, struct net *net, u32 pid, unsigned int group, int echo)
++int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 portid)
+ {
+ 	struct sock *rtnl = net->rtnl;
+ 
+-	return nlmsg_notify(rtnl, skb, pid, group, echo, GFP_KERNEL);
+-}
+-
+-int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 pid)
+-{
+-	struct sock *rtnl = net->rtnl;
+-
+-	return nlmsg_unicast(rtnl, skb, pid);
++	return nlmsg_unicast(rtnl, skb, portid);
+ }
+ EXPORT_SYMBOL(rtnl_unicast);
+ 
+-void rtnl_notify(struct sk_buff *skb, struct net *net, u32 pid, u32 group,
+-		 struct nlmsghdr *nlh, gfp_t flags)
++int rtnl_notify(struct sk_buff *skb, struct net *net, u32 portid,
++		u32 group, int report, gfp_t flags)
+ {
+ 	struct sock *rtnl = net->rtnl;
+-	int report = 0;
+-
+-	if (nlh)
+-		report = nlmsg_report(nlh);
+ 
+-	nlmsg_notify(rtnl, skb, pid, group, report, flags);
++	return nlmsg_notify(rtnl, skb, portid, group, report, flags);
+ }
+ EXPORT_SYMBOL(rtnl_notify);
+ 
 -- 
 2.32.0
 
