@@ -2,135 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3A03CFD1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 009B73CFD40
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 17:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240743AbhGTObd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 10:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49764 "EHLO
+        id S239872AbhGTOef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 10:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239758AbhGTOUf (ORCPT
+        with ESMTP id S240008AbhGTOXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:20:35 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC79C06178C;
-        Tue, 20 Jul 2021 07:58:07 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id a16so33089252ybt.8;
-        Tue, 20 Jul 2021 07:58:07 -0700 (PDT)
+        Tue, 20 Jul 2021 10:23:19 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFB7C0613BB
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:59:31 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id r11so26322869wro.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 07:59:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XEVu3hZadiQ0WDLAIZgrzrDxA6oJ53H3vgdnVOEPrQ8=;
-        b=n9M8ng2msIt5IVVUGfaXSWpXav+TDZEIagymTXBbK6NB9K94HWizCRAthlQJvmliKm
-         Gzdtvxx/uufYsp8+M6u4ZBSTDOeIsPPbGz30DYhJykCGoWAT1cTP7ZrU2W7P35Y6Cfj8
-         hxp1Zx51G1hOifLvPpPbEB9TAjFdusIJPxObM1q498JKWUxjpWIM5janJxbg2623gxdU
-         0HpzCE5gefwU3sua2Eq/86zqj4o6ZzkkdaEbZf62d3LyE5JZ44DGjW1qdPXRb7e8UtNx
-         IsCPErg8XaT3cxTj2mGv/WuW4TKVZvg+CfR5crFWdKhY8STF2RhBpJAg1b7aPj8Jv9k1
-         Om+A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=yFw9eCa6Yne8aD7x0KVLhGUOTjvf7zj2sXgUNOQ7EoQ=;
+        b=lnDwOFP/w4qRNu7DKYbiNcOut8iXuRqZdeZrF1qP4BUKqaZXjlUecicSzRGKJuiYcZ
+         BGQQpv2AlY+oXDuEfa+JVJdYtG46bgeoUGeLAs37MquPIdgW1LlsJo98ZUYhN5Nfm+xp
+         4bVaudt5ocNibBhKlDcqs49Is8TklSbz3JU/Lf8SPUnU/DSF5so1NTpoEy6DVGrpyvoC
+         WPrpyDEiL46FQlNshftNuyRYzrx/c1uXXgmLdjCUdkojMMU3tLFxpHF0CHn/UHDsG3t3
+         vA95JUUARAfD3fC0gH9GEVPTDYbnYLoH4xhx754eYrrgJcse2gxFJetCcJ/FghTsLurZ
+         4FBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XEVu3hZadiQ0WDLAIZgrzrDxA6oJ53H3vgdnVOEPrQ8=;
-        b=OTJSGm4m3Dld+aruncoMhti/8ApBprSz7u8Rm8tv8wLieXmqxyYXbQQux7+NcCwggW
-         AWz2nqv6bz4Mu++NZ+61n/i7H5MOTlwJDr6n/1mF9rKIhWIjbVpCY2FgrACfCg5DYUBU
-         JApBWhEnYXAFjTOYttZ+nsE8voibLavsn9Gn5Ty4j+hQiFkruRb9I1hpU/78QmuizKkT
-         pdEKGBlEjWm8QMVnh5snJLVMrStyqx1s2PSJPJr16bTxh8XxrqMJ6yOuqw/EfAMVNOWv
-         zupNbCJCatqmg5bCF83HQiAXyQxLXJkcJ6kef1kkcThEdV9ihndM1lGCjjGzO2R6bG+G
-         l+nw==
-X-Gm-Message-State: AOAM533CUD9nJfXqE+ltwZToYQtHIh6IG6wTnpQGJKYiwtq6e7aFr0e7
-        0+RPXUVo4ZyfY4J9H7u5CKh3ZBthZ6YVhK6/+eA=
-X-Google-Smtp-Source: ABdhPJxZZZwLPoyYOzEhes1wmyLaTcvkDSmkoB9Xggix4AffH0qsiSVQQQq6OFTNnq4iakaROVUT1p49GBa/uUhSbxo=
-X-Received: by 2002:a25:e404:: with SMTP id b4mr40451306ybh.426.1626793087054;
- Tue, 20 Jul 2021 07:58:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yFw9eCa6Yne8aD7x0KVLhGUOTjvf7zj2sXgUNOQ7EoQ=;
+        b=fNjIR7Q27NnJFdgd9m/Iyt18/+gSJLCJa3D6KUM9tYfkmqsYjsaTXHRHYlF8IJmwds
+         C+29ToLiej+wQ1fszOEGUWhiXFm/obCnP/csAa1o9LVtxvY4ob5LyQiBKC5AFetivrwn
+         4PNW2QATEacGuj3NU59GiCDdpIqtpTlZTdDHYI9M72q/DaQ3D6rcrUDvmy5aiOr9fsXW
+         LRTw5vXP1/mWBaIQUoCbZu5pt7uusemRYBk4D9DQBkZikg69OuG7oHEBan0hEtFQcyQQ
+         QIGwwkfcSuO/NyaRy28/QKtD+peMJ2JgqFdJSpniTSDnq+J9/Jm1dy5r8DWgMpYNCBV6
+         SZSA==
+X-Gm-Message-State: AOAM530+giahZmYSIucIC1Hyj3kjf94+VJM/4NLlnacfa3SgPr9wvB56
+        bSB6dViRjY/QeUS99rJ2FwtHRQ==
+X-Google-Smtp-Source: ABdhPJzRAEg73fsmlXd91uCR2B7OKhXw45WsCeVgHpVLIyBMX6mbzxqxHGKXWadi45wr3PMXehrDsg==
+X-Received: by 2002:a05:6000:1b8d:: with SMTP id r13mr18813197wru.311.1626793169935;
+        Tue, 20 Jul 2021 07:59:29 -0700 (PDT)
+Received: from google.com ([31.124.24.141])
+        by smtp.gmail.com with ESMTPSA id u16sm28890639wrw.36.2021.07.20.07.59.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 07:59:29 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 15:59:27 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v7 3/6] hwmon: sy7636a: Add temperature driver for sy7636a
+Message-ID: <YPbkz/qpgWe8rvi5@google.com>
+References: <20210708115804.212-1-alistair@alistair23.me>
+ <20210708115804.212-3-alistair@alistair23.me>
 MIME-Version: 1.0
-References: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210719143811.2135-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <c8ec5fe0c8eb86898416edb7c68dcf0eeeaccf54.camel@pengutronix.de>
-In-Reply-To: <c8ec5fe0c8eb86898416edb7c68dcf0eeeaccf54.camel@pengutronix.de>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 20 Jul 2021 15:57:40 +0100
-Message-ID: <CA+V-a8vgQ1-tUOw2o3E39reZmnLGFVN_HEvZeH-x5cj01x-Pzg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] can: rcar_canfd: Add support for RZ/G2L family
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210708115804.212-3-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+On Thu, 08 Jul 2021, Alistair Francis wrote:
 
-Thank you for the review.
+> This is a multi-function device to interface with the sy7636a
+> EPD PMIC chip from Silergy.
+> 
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  arch/arm/configs/imx_v6_v7_defconfig |   1 +
+>  drivers/hwmon/Kconfig                |  10 +++
+>  drivers/hwmon/Makefile               |   1 +
+>  drivers/hwmon/sy7636a-hwmon.c        | 106 +++++++++++++++++++++++++++
+>  4 files changed, 118 insertions(+)
+>  create mode 100644 drivers/hwmon/sy7636a-hwmon.c
+> 
+> diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
+> index cd80e85d37cf..e9c0be5629c6 100644
+> --- a/arch/arm/configs/imx_v6_v7_defconfig
+> +++ b/arch/arm/configs/imx_v6_v7_defconfig
+> @@ -227,6 +227,7 @@ CONFIG_RN5T618_POWER=m
+>  CONFIG_SENSORS_MC13783_ADC=y
+>  CONFIG_SENSORS_GPIO_FAN=y
+>  CONFIG_SENSORS_IIO_HWMON=y
+> +CONFIG_SENSORS_SY7636A=y
+>  CONFIG_THERMAL_STATISTICS=y
+>  CONFIG_THERMAL_WRITABLE_TRIPS=y
+>  CONFIG_CPU_THERMAL=y
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index e3675377bc5d..6cae12de59cd 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1631,6 +1631,16 @@ config SENSORS_SIS5595
+>  	  This driver can also be built as a module. If so, the module
+>  	  will be called sis5595.
+>  
+> +config SENSORS_SY7636A
+> +	tristate "Silergy SY7636A"
+> +	depends on I2C
+> +	help
+> +	  If you say yes here you get support for the thermistor readout of
+> +	  the Silergy SY7636A PMIC.
+> +
+> +	  This driver can also be built as a module.  If so, the module
+> +	  will be called sy7636a-hwmon.
+> +
+>  config SENSORS_DME1737
+>  	tristate "SMSC DME1737, SCH311x and compatibles"
+>  	depends on I2C && !PPC
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index d712c61c1f5e..8b2e09e25b24 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -180,6 +180,7 @@ obj-$(CONFIG_SENSORS_SMSC47M1)	+= smsc47m1.o
+>  obj-$(CONFIG_SENSORS_SMSC47M192)+= smsc47m192.o
+>  obj-$(CONFIG_SENSORS_SPARX5)	+= sparx5-temp.o
+>  obj-$(CONFIG_SENSORS_STTS751)	+= stts751.o
+> +obj-$(CONFIG_SENSORS_SY7636A)	+= sy7636a-hwmon.o
+>  obj-$(CONFIG_SENSORS_AMC6821)	+= amc6821.o
+>  obj-$(CONFIG_SENSORS_TC74)	+= tc74.o
+>  obj-$(CONFIG_SENSORS_THMC50)	+= thmc50.o
+> diff --git a/drivers/hwmon/sy7636a-hwmon.c b/drivers/hwmon/sy7636a-hwmon.c
+> new file mode 100644
+> index 000000000000..4edbee99b693
+> --- /dev/null
+> +++ b/drivers/hwmon/sy7636a-hwmon.c
+> @@ -0,0 +1,106 @@
+> +/*
+> + * Functions to access SY3686A power management chip temperature
+> + *
+> + * Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
+> + *
+> + * Author: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation version 2.
+> + *
+> + * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+> + * kind, whether express or implied; without even the implied warranty
+> + * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
 
-On Tue, Jul 20, 2021 at 11:23 AM Philipp Zabel <p.zabel@pengutronix.de> wrote:
->
-> On Mon, 2021-07-19 at 15:38 +0100, Lad Prabhakar wrote:
-> > CANFD block on RZ/G2L SoC is almost identical to one found on
-> > R-Car Gen3 SoC's. On RZ/G2L SoC interrupt sources for each channel
-> > are split into different sources and the IP doesn't divide (1/2)
-> > CANFD clock within the IP.
-> >
-> > This patch adds compatible string for RZ/G2L family and registers
-> > the irq handlers required for CANFD operation. IRQ numbers are now
-> > fetched based on names instead of indices. For backward compatibility
-> > on non RZ/G2L SoC's we fallback reading based on indices.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > ---
-> >  drivers/net/can/rcar/rcar_canfd.c | 178 ++++++++++++++++++++++++------
-> >  1 file changed, 147 insertions(+), 31 deletions(-)
-> >
-> > diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-> > index 311e6ca3bdc4..d4affc002fb3 100644
-> > --- a/drivers/net/can/rcar/rcar_canfd.c
-> > +++ b/drivers/net/can/rcar/rcar_canfd.c
-> > @@ -37,9 +37,15 @@
-> [...]
-> > +     if (gpriv->chip_id == RENESAS_RZG2L) {
-> > +             gpriv->rstc1 = devm_reset_control_get_exclusive_by_index(&pdev->dev, 0);
-> > +             if (IS_ERR(gpriv->rstc1)) {
-> > +                     dev_err(&pdev->dev, "failed to get reset index 0\n");
->
-> Please consider requesting the reset controls by name instead of by
-> index. See also my reply to the binding patch.
->
-Will do.
+The long form isn't usually accepted anymore.
 
-> > +                     return PTR_ERR(gpriv->rstc1);
-> > +             }
-> > +
-> > +             err = reset_control_reset(gpriv->rstc1);
-> > +             if (err)
-> > +                     return err;
->
-> I suggest to wait until after all resource requests have succeeded
-> before triggering the resets, i.e. first get all reset controls and
-> clocks, etc., and only then trigger resets, enable clocks, and so on.
->
-> That way there will be no spurious resets in case of probe deferrals.
->
-Agreed, will update the code.
+Please replace with SPDX.
 
-Cheers,
-Prabhakar
+> + */
+> +
+> +
+> +#include <linux/module.h>
+> +#include <linux/init.h>
+> +#include <linux/slab.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/hwmon-sysfs.h>
+> +#include <linux/err.h>
+> +#include <linux/sysfs.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include <linux/mfd/sy7636a.h>
+> +
+> +struct sy7636a_data {
+> +	struct sy7636a *sy7636a;
+> +	struct device *hwmon_dev;
+> +};
+> +
+> +static ssize_t show_temp(struct device *dev,
+> +	struct device_attribute *attr, char *buf)
+> +{
+> +	unsigned int reg_val;
+> +	signed char temp;
+> +	int ret;
+> +	struct sy7636a_data *data = dev_get_drvdata(dev);
+> +
+> +	ret = regmap_read(data->sy7636a->regmap,
+> +			SY7636A_REG_TERMISTOR_READOUT, &reg_val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	temp = *((signed char*)&reg_val);
 
-> regards
-> Philipp
+Whoa!  What's going on here?
+
+You also need to run checkpatch.pl.
+
+> +	return snprintf(buf, PAGE_SIZE, "%d\n", temp);
+> +}
+> +
+> +static SENSOR_DEVICE_ATTR(temp0, S_IRUGO, show_temp, NULL, 0);
+> +
+> +static struct attribute *sy7636a_attrs[] = {
+> +	&sensor_dev_attr_temp0.dev_attr.attr,
+> +	NULL
+> +};
+> +
+> +ATTRIBUTE_GROUPS(sy7636a);
+> +
+> +static int sy7636a_sensor_probe(struct platform_device *pdev)
+> +{
+> +	struct sy7636a *sy7636a = dev_get_drvdata(pdev->dev.parent);
+> +	struct sy7636a_data *data;
+> +	int err;
+> +
+> +	if (!sy7636a)
+> +		return -EPROBE_DEFER;
+> +
+> +	data = devm_kzalloc(&pdev->dev, sizeof(struct sy7636a_data), GFP_KERNEL);
+
+Where is this used, outside of this function?
+
+Not sure I see a good reason for having it around?
+
+> +	if (!data) {
+> +		return -ENOMEM;
+> +	}
+> +
+> +	data->sy7636a = sy7636a;
+> +	data->hwmon_dev = devm_hwmon_device_register_with_groups(&pdev->dev,
+
+Why is this being stored into a struct?
+
+> +			"sy7636a_temperature", data, sy7636a_groups);
+> +	if (IS_ERR(data->hwmon_dev)) {
+> +		err = PTR_ERR(data->hwmon_dev);
+> +		dev_err(&pdev->dev, "Unable to register hwmon device, returned %d", err);
+> +		return err;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct platform_device_id sy7636a_sensor_id[] = {
+> +	{ "sy7636a-temperature", 0},
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(platform, sy7636a_sensor_id);
+> +
+> +static struct platform_driver sy7636a_sensor_driver = {
+> +	.probe = sy7636a_sensor_probe,
+> +	.id_table = sy7636a_sensor_id,
+
+What does this do?
+
+Where is the 'device' being registered?
+
+> +	.driver = {
+> +		.name = "sy7636a-temperature",
+> +	},
+> +};
+> +module_platform_driver(sy7636a_sensor_driver);
+> +
+> +MODULE_DESCRIPTION("SY7636A sensor driver");
+> +MODULE_LICENSE("GPL");
+> +
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
