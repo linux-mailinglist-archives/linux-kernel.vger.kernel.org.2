@@ -2,247 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57EF3D00F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0AF3D00FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 19:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhGTRMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 13:12:19 -0400
-Received: from mga07.intel.com ([134.134.136.100]:11538 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231757AbhGTRLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 13:11:45 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="275121349"
-X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; 
-   d="scan'208";a="275121349"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 10:52:05 -0700
-X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; 
-   d="scan'208";a="657629833"
-Received: from devenlop-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.156.160])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 10:52:04 -0700
-Subject: Re: [PATCH v3 5/6] platform/x86: intel_tdx_attest: Add TDX Guest
- attestation interface driver
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210720045552.2124688-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210720045552.2124688-6-sathyanarayanan.kuppuswamy@linux.intel.com>
- <eddc318e-e9c9-546d-6cff-b3c40062aecd@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <4c43dfe4-e44b-9d6d-b012-63790bb47b19@linux.intel.com>
-Date:   Tue, 20 Jul 2021 10:52:02 -0700
+        id S229608AbhGTRMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 13:12:40 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38840 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231757AbhGTRM0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 13:12:26 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16KHd2cU086407;
+        Tue, 20 Jul 2021 13:52:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pZ2BLSFfZ3iD9iqUnEeFuqBjhm6IoN58pwjgZXuLho4=;
+ b=alpgRWSJbXAsNWYu/lG585zyfgLXrMt0nQM5/82Pt86aZDYOe27yGuR+c+cz7n16gHHj
+ gwkyFHvmJ0+TsgnPk3DejO831p6nCyBI6Sy9UZi6gQtLYW+yNWB/mDCNL3Xdw29Exmle
+ Xurx/IQwURp0WRC3p2EdU+XhRGbX7VsBmnZwvGkb1DRgUzeFfDv4QyJFKxnVqBTrT7sW
+ H3JIR8DUO7hq8HT9FQpevkBboJjxLRS52Jz0B9wzyiNSgu3n82gIye/pJmjltzVovNEO
+ J8f+mrhA+VRh/OUxE/vNWcaMVYH579IyyrUW0WvSChPIFENEqj1fNX1mfmk8GHCpgD5A 0w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39x2kk12a8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 13:52:44 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16KHd9S6087607;
+        Tue, 20 Jul 2021 13:52:44 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39x2kk129k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 13:52:44 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16KHj0ji008010;
+        Tue, 20 Jul 2021 17:52:41 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 39upfh8ut8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 17:52:41 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16KHoHGn23396732
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Jul 2021 17:50:17 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BEB574C040;
+        Tue, 20 Jul 2021 17:52:38 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 673734C046;
+        Tue, 20 Jul 2021 17:52:38 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.178.12])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Jul 2021 17:52:38 +0000 (GMT)
+Subject: Re: [PATCH v5 09/11] powerpc/pseries/iommu: Find existing DDW with
+ given property name
+To:     Leonardo Bras <leobras.c@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        kernel test robot <lkp@intel.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210716082755.428187-1-leobras.c@gmail.com>
+ <20210716082755.428187-10-leobras.c@gmail.com>
+From:   Frederic Barrat <fbarrat@linux.ibm.com>
+Message-ID: <ada48b13-1de5-cb38-680f-71c9ca530e5a@linux.ibm.com>
+Date:   Tue, 20 Jul 2021 19:52:38 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <eddc318e-e9c9-546d-6cff-b3c40062aecd@intel.com>
+In-Reply-To: <20210716082755.428187-10-leobras.c@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: K_uMRQOx9Xz77linXJCLpf03qAv-4His
+X-Proofpoint-GUID: lm9D8xb3EeGYQV2lhtWUMzdblCsrDzyN
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-20_12:2021-07-19,2021-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ suspectscore=0 mlxlogscore=999 spamscore=0 impostorscore=0 clxscore=1015
+ adultscore=0 lowpriorityscore=0 priorityscore=1501 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107200115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 7/20/21 9:53 AM, Dave Hansen wrote:
->> +/* Used in Quote memory allocation */
->> +#define QUOTE_SIZE			(2 * PAGE_SIZE)
->> +/* Get Quote timeout in msec */
->> +#define GET_QUOTE_TIMEOUT		(5000)
+On 16/07/2021 10:27, Leonardo Bras wrote:
+> At the moment pseries stores information about created directly mapped
+> DDW window in DIRECT64_PROPNAME.
 > 
-> The comment is good, but even better would be to call this:
+> With the objective of implementing indirect DMA mapping with DDW, it's
+> necessary to have another propriety name to make sure kexec'ing into older
+> kernels does not break, as it would if we reuse DIRECT64_PROPNAME.
 > 
-> 	GET_QUOTE_TIMEOUT_MS
-
-I can change it to GET_QUOTE_TIMEOUT_MS.
-
+> In order to have this, find_existing_ddw_windows() needs to be able to
+> look for different property names.
 > 
->> +/* Mutex to synchronize attestation requests */
->> +static DEFINE_MUTEX(attestation_lock);
->> +/* Completion object to track attestation status */
->> +static DECLARE_COMPLETION(attestation_done);
->> +/* Buffer used to copy report data in attestation handler */
->> +static u8 report_data[TDX_REPORT_DATA_LEN];
->> +/* Data pointer used to get TD Quote data in attestation handler */
->> +static void *tdquote_data;
->> +/* Data pointer used to get TDREPORT data in attestation handler */
->> +static void *tdreport_data;
+> Extract find_existing_ddw_windows() into find_existing_ddw_windows_named()
+> and calls it with current property name.
 > 
-> Are these *really* totally unknown, opaque blobs?  Why not give them an
+> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> ---
 
- From this driver perspective, they are opaque blobs. We don't have any
-need to access it. Once this data is passed back to user-agent,
-it can decode it appropriately. The data format of this blob is defined
-by TDX Module spec.
 
-> actual data type?
+Reviewed-by: Frederic Barrat <fbarrat@linux.ibm.com>
 
-If void * is not good, may be we can use u8*. But we really don't access it.
 
+
+
+>   arch/powerpc/platforms/pseries/iommu.c | 25 +++++++++++++++----------
+>   1 file changed, 15 insertions(+), 10 deletions(-)
 > 
->> +/* DMA handle used to allocate and free tdquote DMA buffer */
->> +dma_addr_t tdquote_dma_handle;
+> diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
+> index 17c6f4706e76..22d251e15b61 100644
+> --- a/arch/powerpc/platforms/pseries/iommu.c
+> +++ b/arch/powerpc/platforms/pseries/iommu.c
+> @@ -895,24 +895,21 @@ static struct direct_window *ddw_list_new_entry(struct device_node *pdn,
+>   	return window;
+>   }
+>   
+> -static int find_existing_ddw_windows(void)
+> +static void find_existing_ddw_windows_named(const char *name)
+>   {
+>   	int len;
+>   	struct device_node *pdn;
+>   	struct direct_window *window;
+> -	const struct dynamic_dma_window_prop *direct64;
+> -
+> -	if (!firmware_has_feature(FW_FEATURE_LPAR))
+> -		return 0;
+> +	const struct dynamic_dma_window_prop *dma64;
+>   
+> -	for_each_node_with_property(pdn, DIRECT64_PROPNAME) {
+> -		direct64 = of_get_property(pdn, DIRECT64_PROPNAME, &len);
+> -		if (!direct64 || len < sizeof(*direct64)) {
+> -			remove_ddw(pdn, true, DIRECT64_PROPNAME);
+> +	for_each_node_with_property(pdn, name) {
+> +		dma64 = of_get_property(pdn, name, &len);
+> +		if (!dma64 || len < sizeof(*dma64)) {
+> +			remove_ddw(pdn, true, name);
+>   			continue;
+>   		}
+>   
+> -		window = ddw_list_new_entry(pdn, direct64);
+> +		window = ddw_list_new_entry(pdn, dma64);
+>   		if (!window)
+>   			break;
+>   
+> @@ -920,6 +917,14 @@ static int find_existing_ddw_windows(void)
+>   		list_add(&window->list, &direct_window_list);
+>   		spin_unlock(&direct_window_list_lock);
+>   	}
+> +}
+> +
+> +static int find_existing_ddw_windows(void)
+> +{
+> +	if (!firmware_has_feature(FW_FEATURE_LPAR))
+> +		return 0;
+> +
+> +	find_existing_ddw_windows_named(DIRECT64_PROPNAME);
+>   
+>   	return 0;
+>   }
 > 
-> That's an unreadable jumble.  Please add some line breaks and try to
-> logically group those.
-
-Ok.
-
-> 
->> +static void attestation_callback_handler(void)
->> +{
->> +	complete(&attestation_done);
->> +}
->> +
->> +static long tdg_attest_ioctl(struct file *file, unsigned int cmd,
->> +			     unsigned long arg)
->> +{
->> +	void __user *argp = (void __user *)arg;
->> +	long ret = 0;
->> +
->> +	mutex_lock(&attestation_lock);
->> +
->> +	switch (cmd) {
->> +	case TDX_CMD_GET_TDREPORT:
->> +		if (copy_from_user(report_data, argp, TDX_REPORT_DATA_LEN)) {
->> +			ret = -EFAULT;
->> +			break;
->> +		}
->> +
->> +		/* Generate TDREPORT_STRUCT */
->> +		if (tdx_mcall_tdreport(virt_to_phys(tdreport_data),
->> +				       virt_to_phys(report_data))) {
-> 
-> Having that take a physical address seems like a mistake.  Why not just
-> do the virt_to_phys() inside the helper?
-
-Both are same. But, if this makes it easier to understand, I can move the
-virt_to_phys() inside the tdx_mcall_tdreport() helper function.
-
-> 
-> Also, this isn't very clear that there is an input and an output.  Can
-> you rename these to make that more clear?
-
-Ok. I can rename them as tdreport_data -> tdreport_output and report_data ->
-report_input.
-
-> 
->> +			ret = -EIO;
->> +			break;
->> +		}
->> +
->> +		if (copy_to_user(argp, tdreport_data, TDX_TDREPORT_LEN))
->> +			ret = -EFAULT;
->> +		break;
->> +	case TDX_CMD_GEN_QUOTE:
->> +		/* Copy TDREPORT data from user buffer */
->> +		if (copy_from_user(tdquote_data, argp, TDX_TDREPORT_LEN)) {
->> +			ret = -EFAULT;
->> +			break;
->> +		}
->> +
->> +		/* Submit GetQuote Request */
->> +		if (tdx_hcall_get_quote(virt_to_phys(tdquote_data))) {
->> +			ret = -EIO;
->> +			break;
->> +		}
->> +
->> +		/* Wait for attestation completion */
->> +		ret = wait_for_completion_interruptible_timeout(
->> +				&attestation_done,
->> +				msecs_to_jiffies(GET_QUOTE_TIMEOUT));
->> +		if (ret <= 0) {
->> +			ret = -EIO;
->> +			break;
->> +		}
->> +
->> +		if (copy_to_user(argp, tdquote_data, QUOTE_SIZE))
->> +			ret = -EFAULT;
->> +
->> +		break;
->> +	case TDX_CMD_GET_QUOTE_SIZE:
->> +		ret = put_user(QUOTE_SIZE, (u64 __user *)argp);
->> +		break;
->> +	default:
->> +		pr_err("cmd %d not supported\n", cmd);
->> +		break;
-> 
-> First of all, drivers shouldn't pollute the kernel log on bad input.
-> Second, won't this inherit the ret=0 value and return success?
-
-Good catch. I need to set ret=-EIO here. I will also remove the pr_err.
-
-> 
->> +	}
->> +
->> +	mutex_unlock(&attestation_lock);
->> +
->> +	return ret;
->> +}
->> +
->> +static const struct file_operations tdg_attest_fops = {
->> +	.owner		= THIS_MODULE,
->> +	.unlocked_ioctl	= tdg_attest_ioctl,
->> +	.llseek		= no_llseek,
->> +};
->> +
->> +static struct miscdevice tdg_attest_device = {
->> +	.minor          = MISC_DYNAMIC_MINOR,
->> +	.name           = "tdx-attest",
->> +	.fops           = &tdg_attest_fops,
->> +};
->> +
->> +static int __init tdg_attest_init(void)
->> +{
->> +	dma_addr_t handle;
->> +	long ret = 0;
-> 
-> The function returns 'int', yet 'ret' is a long.  Why?
-
-It doesn't need to be long. I will change it to int.
-
-> 
->> +	ret = misc_register(&tdg_attest_device);
->> +	if (ret) {
->> +		pr_err("misc device registration failed\n");
->> +		return ret;
->> +	}
->> +
->> +	tdreport_data = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 0);
->> +	if (!tdreport_data) {
->> +		ret = -ENOMEM;
->> +		goto failed;
->> +	}
-> 
-> Why does this need to use the page allocator directly?  Why does it need
-> to zero the memory?  Why does it need to get a whole page?  If it really
-
-I have zeroed out the memory to make it easier to test whether
-TDX_CMD_GET_TDREPORT module call works or not. Not a TDX module requirement.
-
-I will remove _GFP_ZERO flag in next version.
-
-> only needs a single page, why not use __get_free_page()?
-
-Yes, I only need one page. I will use __get_free_page().
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
