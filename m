@@ -2,173 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E588C3CF675
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B61ED3CF683
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234867AbhGTIQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 04:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233414AbhGTIMu (ORCPT
+        id S235709AbhGTIR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 04:17:57 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:24883 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234494AbhGTIPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:12:50 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7F1C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:53:29 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id c15so11095942pls.13
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 01:53:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=iZ11XlQ/7LpvSWqpfLjYjm5v/1yKJ1MGXqTuOdCwXh4=;
-        b=Sd2kIfTvXXfKi0494oKwDhzLl9t6+qHQ0y9S6DpyTVWMiJ20Mr8LG2sRSNXFo+aPax
-         EBmAJ22daE/xFihfPX1dqF4A6Av6BMFF2M1mML3NzEMu88A9cV6eyMBSoZjVUT3YkKSb
-         lfcKRx51h3aanM7YhezfUXC9JU+DEv1v9K4s8/dLB1TsEtFBoUq5ItmLuCAW7C35c3kB
-         YLd3i8+Kr4EdAl/OHnIFSpV1mx4TDXrYpzhwE1ICm8ZPvrhgm0tB+ZoxHDGTyxKbU1Eb
-         LS36UzpBcXKte4R6z8sH+i5WjiS8Jous+gXC5HFWlRbmBC15tx3S4MBOOdZQXUUoGCJa
-         WapA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iZ11XlQ/7LpvSWqpfLjYjm5v/1yKJ1MGXqTuOdCwXh4=;
-        b=ugSN1M7js5kLMV6IQqWRFzoxt4dfxQjQV9insTK1TRfkpHKEKLab1y+A9dE0IJi6JY
-         TKbkuKeq3V1h8Yv1DXKgQSP2WfKxZ/jblVJn0GXwrVQH/+vbbMPq6uNAJLYf2bz1Oory
-         3vPSSoIOCU9Wv7F6anoCKjDFIZsppzKkgt9i0NtWA2KmXgBxg8yROGP8Q1Z9Lex6GN/0
-         rzZA5rPAnt+0R3iHSadEFWt0MXu5nekEtFcKTdPsxT3VarpleGdmRtxfcksQhHTCvX8n
-         2MArBkw+/YjQBp6qjRHoH8RCOrxc1P8c3WyZf4hx/+fZ9oc9W4AyvJQXE6w5Uv99B5Gj
-         waAw==
-X-Gm-Message-State: AOAM531aU1k9fhVn0GE2FqU0C8o4Iy/RgnJklDDdLlo1ea0vx3CehhgM
-        NTg/gTJKFimQoe/V8W51GivggYKWwTU=
-X-Google-Smtp-Source: ABdhPJwOvzonlcX/HWjjXzujzIEk+xCMC3woFJ4KKx1NW8wFFacD8C/pXaILCf05nRSjHuiVCUuhRA==
-X-Received: by 2002:a17:90b:1d84:: with SMTP id pf4mr28729285pjb.166.1626771208547;
-        Tue, 20 Jul 2021 01:53:28 -0700 (PDT)
-Received: from [192.168.1.153] (M106072041033.v4.enabler.ne.jp. [106.72.41.33])
-        by smtp.gmail.com with ESMTPSA id z15sm25461191pgc.13.2021.07.20.01.53.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 01:53:28 -0700 (PDT)
-Subject: [PATCH 4/4] riscv: __asm_copy_to-from_user: Fix: Typos in comments
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <37097718-c472-025a-2058-55667badc5b9@gmail.com>
-From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Message-ID: <23960a08-22aa-c0dd-57aa-80e73d6859ab@gmail.com>
-Date:   Tue, 20 Jul 2021 17:53:23 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 20 Jul 2021 04:15:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1626771353; x=1658307353;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=4K8bV3JW1qimCrMpXoHJsQZL134CQa/zIp1gnXlYhGc=;
+  b=mmfMubMHmg0PHSf8kkH2lTsesccCzutpCkZRz6FSH/JyUG5JYF1nZJBa
+   3ecJbLf27VoPKmn2QCgJcpWVtWlXBTWCUKtGaSKUsu2D2OIR75M4cAt60
+   XFFR1MXIvSYIVt4i+XkxPpvHeAjTgQkMMgC0+evoYUTvWwazvPewvHPhE
+   q8MU9bqZCahayiLL684hfq3GWN/G7+uA5nxYqdChh0LHIVpX5qabLaDq+
+   B1116tk8oQ0qIDcqIwY80ovzKnWqFJuMeXM9tO1jWtY+yE0ikdAx9MvO8
+   u/uRsYHyKKwso9z3h9wAdGBGMDX2EkfhPH8H9MHJipRbjMSJCSVWBqtc8
+   g==;
+IronPort-SDR: I4q7+Z6fn3oYhuvcx0Dx4rbfidh3/JIABjGawph2ZZgTmLayyT5c1+DMaR4X5hzvz4bRuOUMp7
+ nOKDdGCKzwFsSstHvKBpmVvMHGRVQKugJvFtVwWLpHgpd6CZlTJW1QBj2b1Ju/i4hO0fvEcc9g
+ d3i/F9gO8exC60K19JVbvXPjLXsXrgVvn5cNfqiqRgRhdcjD8b8X95Zu9Q+Y4PHPvcss49zIKH
+ oSlCo/TwDBjr8f5+I8onQZpyN9Lbopo2RbyrJ9WN/++cuuwBcVVLYX46k4vYFGV2jZLXo/G20d
+ aXgb4u/tl7qeQrUKQVWZ9ub/
+X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
+   d="scan'208";a="128973603"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Jul 2021 01:55:42 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 01:55:41 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 20 Jul 2021 01:55:39 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <linux-crypto@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Tudor Ambarus" <tudor.ambarus@microchip.com>
+Subject: [PATCH 1/9] crypto: atmel-tdes: Clarify how tdes dev gets allocated to the tfm
+Date:   Tue, 20 Jul 2021 11:55:27 +0300
+Message-ID: <20210720085535.141486-2-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210720085535.141486-1-tudor.ambarus@microchip.com>
+References: <20210720085535.141486-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <37097718-c472-025a-2058-55667badc5b9@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The tdes dev gets allocated to the tfm at alg->init time, there's no
+need to overwrite the pointer to tdes_dd afterwards.
+There's a single IP per SoC anyway, the first entry from the
+atmel_tdes.dev_list is chosen without counting for tfms for example,
+in case one thinks of an even distribution of tfms across the TDES
+IPs: there's only one. At alg->init time the ctx->dd should already
+be NULL, there's no need to check its value before requesting for a
+tdes dev.
 
-Fixing typos and grammar mistakes and using more intuitive label
-name.
-
-Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- arch/riscv/lib/uaccess.S | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/crypto/atmel-tdes.c | 28 +++++++++-------------------
+ 1 file changed, 9 insertions(+), 19 deletions(-)
 
-diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
-index 54d497a03164..63bc691cff91 100644
---- a/arch/riscv/lib/uaccess.S
-+++ b/arch/riscv/lib/uaccess.S
-@@ -33,19 +33,20 @@ ENTRY(__asm_copy_from_user)
+diff --git a/drivers/crypto/atmel-tdes.c b/drivers/crypto/atmel-tdes.c
+index 6f01c51e3c37..dda70dbe0838 100644
+--- a/drivers/crypto/atmel-tdes.c
++++ b/drivers/crypto/atmel-tdes.c
+@@ -196,23 +196,15 @@ static void atmel_tdes_write_n(struct atmel_tdes_dev *dd, u32 offset,
+ 		atmel_tdes_write(dd, offset, *value);
+ }
  
- 	/*
- 	 * Use byte copy only if too small.
-+	 * SZREG holds 4 for RV32 and 8 for RV64
- 	 */
- 	li	a3, 9*SZREG /* size must be larger than size in word_copy */
- 	bltu	a2, a3, .Lbyte_copy_tail
+-static struct atmel_tdes_dev *atmel_tdes_find_dev(struct atmel_tdes_ctx *ctx)
++static struct atmel_tdes_dev *atmel_tdes_dev_alloc(void)
+ {
+-	struct atmel_tdes_dev *tdes_dd = NULL;
+-	struct atmel_tdes_dev *tmp;
++	struct atmel_tdes_dev *tdes_dd;
  
- 	/*
--	 * Copy first bytes until dst is align to word boundary.
-+	 * Copy first bytes until dst is aligned to word boundary.
- 	 * a0 - start of dst
- 	 * t1 - start of aligned dst
- 	 */
- 	addi	t1, a0, SZREG-1
- 	andi	t1, t1, ~(SZREG-1)
- 	/* dst is already aligned, skip */
--	beq	a0, t1, .Lskip_first_bytes
-+	beq	a0, t1, .Lskip_align_dst
- 1:
- 	/* a5 - one byte for copying data */
- 	fixup lb      a5, 0(a1), 10f
-@@ -54,7 +55,7 @@ ENTRY(__asm_copy_from_user)
- 	addi	a0, a0, 1	/* dst */
- 	bltu	a0, t1, 1b	/* t1 - start of aligned dst */
+ 	spin_lock_bh(&atmel_tdes.lock);
+-	if (!ctx->dd) {
+-		list_for_each_entry(tmp, &atmel_tdes.dev_list, list) {
+-			tdes_dd = tmp;
+-			break;
+-		}
+-		ctx->dd = tdes_dd;
+-	} else {
+-		tdes_dd = ctx->dd;
+-	}
++	/* One TDES IP per SoC. */
++	tdes_dd = list_first_entry_or_null(&atmel_tdes.dev_list,
++					   struct atmel_tdes_dev, list);
+ 	spin_unlock_bh(&atmel_tdes.lock);
+-
+ 	return tdes_dd;
+ }
  
--.Lskip_first_bytes:
-+.Lskip_align_dst:
- 	/*
- 	 * Now dst is aligned.
- 	 * Use shift-copy if src is misaligned.
-@@ -71,7 +72,6 @@ ENTRY(__asm_copy_from_user)
- 	 *
- 	 * a0 - start of aligned dst
- 	 * a1 - start of aligned src
--	 * a3 - a1 & mask:(SZREG-1)
- 	 * t0 - end of aligned dst
- 	 */
- 	addi	t0, t0, -(8*SZREG) /* not to over run */
-@@ -106,7 +106,7 @@ ENTRY(__asm_copy_from_user)
- 	 * For misaligned copy we still perform aligned word copy, but
- 	 * we need to use the value fetched from the previous iteration and
- 	 * do some shifts.
--	 * This is safe because reading less than a word size.
-+	 * This is safe because reading is less than a word size.
- 	 *
- 	 * a0 - start of aligned dst
- 	 * a1 - start of src
-@@ -116,7 +116,7 @@ ENTRY(__asm_copy_from_user)
- 	 */
- 	/* calculating aligned word boundary for dst */
- 	andi	t1, t0, ~(SZREG-1)
--	/* Converting unaligned src to aligned arc */
-+	/* Converting unaligned src to aligned src */
- 	andi	a1, a1, ~(SZREG-1)
+@@ -646,7 +638,6 @@ static int atmel_tdes_handle_queue(struct atmel_tdes_dev *dd,
+ 	rctx->mode &= TDES_FLAGS_MODE_MASK;
+ 	dd->flags = (dd->flags & ~TDES_FLAGS_MODE_MASK) | rctx->mode;
+ 	dd->ctx = ctx;
+-	ctx->dd = dd;
  
- 	/*
-@@ -128,7 +128,7 @@ ENTRY(__asm_copy_from_user)
- 	li	a5, SZREG*8
- 	sub	t4, a5, t3
+ 	err = atmel_tdes_write_ctrl(dd);
+ 	if (!err)
+@@ -897,14 +888,13 @@ static int atmel_tdes_ofb_decrypt(struct skcipher_request *req)
+ static int atmel_tdes_init_tfm(struct crypto_skcipher *tfm)
+ {
+ 	struct atmel_tdes_ctx *ctx = crypto_skcipher_ctx(tfm);
+-	struct atmel_tdes_dev *dd;
+-
+-	crypto_skcipher_set_reqsize(tfm, sizeof(struct atmel_tdes_reqctx));
  
--	/* Load the first word to combine with seceond word */
-+	/* Load the first word to combine with second word */
- 	fixup REG_L   a5, 0(a1), 10f
+-	dd = atmel_tdes_find_dev(ctx);
+-	if (!dd)
++	ctx->dd = atmel_tdes_dev_alloc();
++	if (!ctx->dd)
+ 		return -ENODEV;
  
- 3:
-@@ -160,7 +160,7 @@ ENTRY(__asm_copy_from_user)
- 	 * a1 - start of remaining src
- 	 * t0 - end of remaining dst
- 	 */
--	bgeu	a0, t0, 5f
-+	bgeu	a0, t0, .Lout_copy_user  /* check if end of copy */
- 4:
- 	fixup lb      a5, 0(a1), 10f
- 	addi	a1, a1, 1	/* src */
-@@ -168,7 +168,7 @@ ENTRY(__asm_copy_from_user)
- 	addi	a0, a0, 1	/* dst */
- 	bltu	a0, t0, 4b	/* t0 - end of dst */
++	crypto_skcipher_set_reqsize(tfm, sizeof(struct atmel_tdes_reqctx));
++
+ 	return 0;
+ }
  
--5:
-+.Lout_copy_user:
- 	/* Disable access to user memory */
- 	csrc CSR_STATUS, t6
- 	li	a0, 0
 -- 
-2.17.1
+2.25.1
 
