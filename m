@@ -2,249 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835333CF8C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A36F3CF8C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237367AbhGTKnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
+        id S237427AbhGTKpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 06:45:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231442AbhGTKnP (ORCPT
+        with ESMTP id S231442AbhGTKpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:43:15 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F98C061574;
-        Tue, 20 Jul 2021 04:23:53 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id a11so18840387ilf.2;
-        Tue, 20 Jul 2021 04:23:53 -0700 (PDT)
+        Tue, 20 Jul 2021 06:45:36 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B70EC061574;
+        Tue, 20 Jul 2021 04:26:15 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id u126so11578677pfb.8;
+        Tue, 20 Jul 2021 04:26:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dVnkGAPBzNUrDjo/vYV+V2SBEEyGsdjuUedWnsOzsis=;
-        b=HhpzAjl09BeOsEUIHpVHWdklJxETeRFiANMBco0ll1FiBP/oqIp82Rp0IOuN4qVKf/
-         qQnawPRP13Mt3ys+cZH7IYKZctRhluI109OvPpL4CRWr6teTA70+/oNb8BsdxyU63WHT
-         hrG0rGLPRP2Jw46212Qk9eKPUTmtXFuZZ4SAmmSOfhJNiT38qdLD2BYccDeS8kZLk/I7
-         XGrNwkZYwR4sP84muKsPDF6xLTxQ7OdUNrbC0O3LDULWEYeC2bq54/6iTi8y86jmCK6g
-         kaII1t+FF7+XEDeZ8dFoloGAxGDqZxcTXvquESb2qtIbnU94CVRLN5/j5ulZPZU7FwXm
-         DP4A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GYswrRmNXFnD7iaIAgBbcYDCMDGk0Lr5a5LmLLvQOT0=;
+        b=pmXini3fllAe6dKP0sa3VGlf6kqajhL2LCwoTOEz6al3xca1jUYdD7g7epBILaFbQo
+         OxbyEItpTqVNcYDT9yw1Ns3D3LfUc615MbQtNwfACVr+gefsprNjIe8qYW74ozWeIqoZ
+         8R4tGgP8XsgaxsjPcFjbTTgEuQSGFOP2JbtNgIlP6jpo959NSADOLy7uIHf3DTNVCNuE
+         Vl5xtwk6Xy4AFzUdx7lcR0v5Y+GKa/R0YPLB0nBONlh/DBfB6n4yTdrXSmtsR8cs+5Cj
+         68SYJ72fsIZMk+kBv9oHtncAMv7CziEImdwUnH8JZN5jaP0BplVUH+tw0o4V2QGIPRqC
+         NPSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dVnkGAPBzNUrDjo/vYV+V2SBEEyGsdjuUedWnsOzsis=;
-        b=FpgEEIclCgEtvWrjfbEBemMHzehQl7lb9ynuQFs0AG83n6SRT9JhF4gI3OGul4Kor4
-         iZtNLb5hssmSNYE9aDed8HzpQl4bwXm1gpLmjpIwxf+3uCx3WQcKpmH9eCcc7vSHT0oz
-         44S4dQkPW/ii9MsejrTl8921W/rSRmK5Tgjhm/HibDivcX+HG78hB/xgML4TCc41nUUX
-         s9HajtUsAjobCUhieHUtEx7WZd9Xd/DGeJnb0IDjl1EiPZ8+ZYuUybz4a9yj70+zAD0m
-         5OsIMtrzJW1mSV0YzUT9sRqsP4L1mfFYiWc+cAr+oucd/oj4xUvQsBax1W0D780huiqa
-         6hrA==
-X-Gm-Message-State: AOAM533l35Ba5GX0iLyuucIua8Z6NrXTYCSolB38UFX4D7ioCxFQRAv1
-        NanMwuNDwq6APzvXFlLAZzzWfR3IPtczewMBb1A=
-X-Google-Smtp-Source: ABdhPJwvarTz9JB1YULDF9dibEw4xDmSKLba/T9RKxu2zqIT7IO1azlWgD4aPruTDh16Glzxq3MtzUk2SIEVDAghRYo=
-X-Received: by 2002:a05:6e02:c73:: with SMTP id f19mr19729417ilj.291.1626780232988;
- Tue, 20 Jul 2021 04:23:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GYswrRmNXFnD7iaIAgBbcYDCMDGk0Lr5a5LmLLvQOT0=;
+        b=EFLdW7mZWzMrkRbUrH3r7IISeQtR1tRWINkitpGY6liDTEmmewiHnthua0Ok52wib2
+         GpmsYdfo/mdzLPkKTsjxK1YGFC889XvuDQtlVnugvFe/iv5dFl+fhncZ0jCkty+4mTK0
+         qYVIl4CT/WmGHqyWqziwamOaJmi2NoJ4unBJYbKpSLKWdxDmmn6fvZWf7G2oburMPnqh
+         ElbqZnb9kNPC9Ge15zmO8KpRD9vEvGgNSWZA4cQhaRlOzXB5Hge5HjSbLnAiii2WAGXo
+         KS2sXUUG+vtBh2Ufpu1et5YFlrQcvF3juKz81uPii0TFngmbkCvkiWqqnFfVRf8Putu0
+         K4OA==
+X-Gm-Message-State: AOAM533vn0L7X0vSLyMJ8hMWYoBki9e0OtSm9PCizUmR5ikwFYhwrFil
+        vA7f9fhJB9hq6aYqkCqYLqw=
+X-Google-Smtp-Source: ABdhPJw5md11+Ii1G8Bhy3jUs93vi7NkgN2xfyQ0lWdTsDFleJsGtbOnjfPFHcuGgR0fM0ZPg7iqeg==
+X-Received: by 2002:a62:8283:0:b029:336:6e7a:9c73 with SMTP id w125-20020a6282830000b02903366e7a9c73mr22325718pfd.45.1626780374946;
+        Tue, 20 Jul 2021 04:26:14 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id b22sm19215688pje.1.2021.07.20.04.26.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Jul 2021 04:26:14 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH] perf/x86/amd: Do not touch the AMD64_EVENTSEL_HOSTONLY bit inside the guest
+Date:   Tue, 20 Jul 2021 19:26:05 +0800
+Message-Id: <20210720112605.63286-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
-In-Reply-To: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
-From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date:   Tue, 20 Jul 2021 13:23:41 +0200
-Message-ID: <CAHpGcMJ4T6byxqmO6zZF78wuw01twaEvSW5N6s90qWm0q_jCXQ@mail.gmail.com>
-Subject: Re: [PATCH v3] iomap: support tail packing inline read
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mo., 19. Juli 2021 um 16:48 Uhr schrieb Gao Xiang
-<hsiangkao@linux.alibaba.com>:
-> This tries to add tail packing inline read to iomap, which can support
-> several inline tail blocks. Similar to the previous approach, it cleans
-> post-EOF in one iteration.
->
-> The write path remains untouched since EROFS cannot be used for testing.
-> It'd be better to be implemented if upcoming real users care rather than
-> leave untested dead code around.
->
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Darrick J. Wong <djwong@kernel.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> ---
-> v2: https://lore.kernel.org/r/YPLdSja%2F4FBsjss%2F@B-P7TQMD6M-0146.local/
-> changes since v2:
->  - update suggestion from Christoph:
->     https://lore.kernel.org/r/YPVe41YqpfGLNsBS@infradead.org/
->
-> Hi Andreas,
-> would you mind test on the gfs2 side? Thanks in advance!
->
-> Thanks,
-> Gao Xiang
->
->  fs/iomap/buffered-io.c | 50 ++++++++++++++++++++++++++----------------
->  fs/iomap/direct-io.c   | 11 ++++++----
->  2 files changed, 38 insertions(+), 23 deletions(-)
->
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 87ccb3438bec..cac8a88660d8 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -207,23 +207,22 @@ struct iomap_readpage_ctx {
->
->  static void
->  iomap_read_inline_data(struct inode *inode, struct page *page,
-> -               struct iomap *iomap)
-> +               struct iomap *iomap, loff_t pos)
->  {
-> -       size_t size = i_size_read(inode);
-> +       unsigned int size, poff = offset_in_page(pos);
->         void *addr;
->
-> -       if (PageUptodate(page))
-> -               return;
-> -
-> -       BUG_ON(page_has_private(page));
-> -       BUG_ON(page->index);
-> -       BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +       /* inline source data must be inside a single page */
-> +       BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +       /* handle tail-packing blocks cross the current page into the next */
-> +       size = min_t(unsigned int, iomap->length + pos - iomap->offset,
-> +                    PAGE_SIZE - poff);
+From: Like Xu <likexu@tencent.com>
 
-Hmm, so EROFS really does multi-page tail packing? This contradicts
-the comment and code in iomap_dio_inline_actor.
+If we use "perf record" in an AMD Milan guest, dmesg reports a #GP
+warning from an unchecked MSR access error on MSR_F15H_PERF_CTLx:
 
->         addr = kmap_atomic(page);
-> -       memcpy(addr, iomap->inline_data, size);
-> -       memset(addr + size, 0, PAGE_SIZE - size);
-> +       memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
-> +       memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
->         kunmap_atomic(addr);
-> -       SetPageUptodate(page);
-> +       iomap_set_range_uptodate(page, poff, PAGE_SIZE - poff);
->  }
+[] unchecked MSR access error: WRMSR to 0xc0010200 (tried to write
+0x0000020000110076) at rIP: 0xffffffff8106ddb4 (native_write_msr+0x4/0x20)
+[] Call Trace:
+[]  amd_pmu_disable_event+0x22/0x90
+[]  x86_pmu_stop+0x4c/0xa0
+[]  x86_pmu_del+0x3a/0x140
 
-It's been said before, but iomap_read_inline_data should return
-PAGE_SIZE - poff, and no (void) casting when the return value is
-ignored.
+The AMD64_EVENTSEL_HOSTONLY bit is defined and used on the host,
+while the guest perf driver should avoid such use.
 
->  static inline bool iomap_block_needs_zeroing(struct inode *inode,
-> @@ -246,18 +245,19 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
->         unsigned poff, plen;
->         sector_t sector;
->
-> -       if (iomap->type == IOMAP_INLINE) {
-> -               WARN_ON_ONCE(pos);
-> -               iomap_read_inline_data(inode, page, iomap);
-> -               return PAGE_SIZE;
-> -       }
-> -
-> -       /* zero post-eof blocks as the page may be mapped */
->         iop = iomap_page_create(inode, page);
-> +       /* needs to skip some leading uptodated blocks */
+Signed-off-by: Like Xu <likexu@tencent.com>
+---
+ arch/x86/events/perf_event.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-"needs to skip some leading uptodate blocks"
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 2bf1c7ea2758..795f4779023c 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -1116,8 +1116,9 @@ void x86_pmu_stop(struct perf_event *event, int flags);
+ static inline void x86_pmu_disable_event(struct perf_event *event)
+ {
+ 	struct hw_perf_event *hwc = &event->hw;
++	u64 disable_mask = __this_cpu_read(cpu_hw_events.perf_ctr_virt_mask);
+ 
+-	wrmsrl(hwc->config_base, hwc->config);
++	wrmsrl(hwc->config_base, hwc->config & ~disable_mask);
+ 
+ 	if (is_counter_pair(hwc))
+ 		wrmsrl(x86_pmu_config_addr(hwc->idx + 1), 0);
+-- 
+2.32.0
 
->         iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
->         if (plen == 0)
->                 goto done;
->
-> +       if (iomap->type == IOMAP_INLINE) {
-> +               iomap_read_inline_data(inode, page, iomap, pos);
-> +               plen = PAGE_SIZE - poff;
-> +               goto done;
-> +       }
-> +
-> +       /* zero post-eof blocks as the page may be mapped */
->         if (iomap_block_needs_zeroing(inode, iomap, pos)) {
->                 zero_user(page, poff, plen);
->                 iomap_set_range_uptodate(page, poff, plen);
-> @@ -589,6 +589,18 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
->         return 0;
->  }
->
-> +static int iomap_write_begin_inline(struct inode *inode, loff_t pos,
-> +               struct page *page, struct iomap *srcmap)
-> +{
-> +       /* needs more work for the tailpacking case, disable for now */
-> +       if (WARN_ON_ONCE(pos != 0))
-
-This should be a WARN_ON_ONCE(srcmap->offset != 0). Otherwise, something like:
-
-  xfs_io -ft -c 'pwrite 1 2'
-
-will fail because pos will be 1.
-
-> +               return -EIO;
-> +       if (PageUptodate(page))
-> +               return 0;
-> +       iomap_read_inline_data(inode, page, srcmap, pos);
-
-The above means that passing pos to iomap_read_inline_data here won't
-do the right thing, either.
-
-> +       return 0;
-> +}
-> +
->  static int
->  iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
->                 struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-> @@ -618,7 +630,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
->         }
->
->         if (srcmap->type == IOMAP_INLINE)
-> -               iomap_read_inline_data(inode, page, srcmap);
-> +               status = iomap_write_begin_inline(inode, pos, page, srcmap);
->         else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
->                 status = __block_write_begin_int(page, pos, len, NULL, srcmap);
->         else
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 9398b8c31323..ee6309967b77 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -379,22 +379,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
->  {
->         struct iov_iter *iter = dio->submit.iter;
->         size_t copied;
-> +       void *dst = iomap->inline_data + pos - iomap->offset;
->
-> -       BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +       /* inline data must be inside a single page */
-> +       BUG_ON(length > PAGE_SIZE - offset_in_page(iomap->inline_data));
->
->         if (dio->flags & IOMAP_DIO_WRITE) {
->                 loff_t size = inode->i_size;
->
->                 if (pos > size)
-> -                       memset(iomap->inline_data + size, 0, pos - size);
-> -               copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-> +                       memset(iomap->inline_data + size - iomap->offset,
-> +                              0, pos - size);
-> +               copied = copy_from_iter(dst, length, iter);
->                 if (copied) {
->                         if (pos + copied > size)
->                                 i_size_write(inode, pos + copied);
->                         mark_inode_dirty(inode);
->                 }
->         } else {
-> -               copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-> +               copied = copy_to_iter(dst, length, iter);
->         }
->         dio->size += copied;
->         return copied;
-> --
-> 2.24.4
->
-
-Thanks,
-Andreas
