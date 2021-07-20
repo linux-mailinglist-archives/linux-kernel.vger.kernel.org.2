@@ -2,72 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5243CF826
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8253CF7FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 12:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236679AbhGTKCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:02:15 -0400
-Received: from mail.wangsu.com ([123.103.51.227]:53411 "EHLO wangsu.com"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237492AbhGTKAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:00:54 -0400
-X-Greylist: delayed 492 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Jul 2021 06:00:47 EDT
-Received: from fedora33.wangsu.com (unknown [59.61.78.138])
-        by app2 (Coremail) with SMTP id 4zNnewC3vflPpvZgeSECAA--.2921S2;
-        Tue, 20 Jul 2021 18:32:53 +0800 (CST)
-From:   Lin Feng <linf@wangsu.com>
-To:     colyli@suse.de
-Cc:     axboe@kernel.dk, linf@wangsu.com, linux-kernel@vger.kernel.org,
-        linux-bcache@vger.kernel.org
-Subject: [PATCH] bcache: fix wrong BITMASK offset value for BDEV_CACHE_MODE
-Date:   Tue, 20 Jul 2021 18:32:46 +0800
-Message-Id: <20210720103246.112027-1-linf@wangsu.com>
-X-Mailer: git-send-email 2.31.1
+        id S236741AbhGTJzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 05:55:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237352AbhGTJy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 05:54:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00943610F7;
+        Tue, 20 Jul 2021 10:35:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626777324;
+        bh=RYG5u04jOFhHEELWkGlORZlrGjhovJ3g71bY1CkTWOE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TLNPMZ4GtPBXI0Soxg5cR+bV9o8znecg8edikg64Had5iRpJhZnTYGw9RBUO17s/W
+         Df7BYeAtuFZhRex6RnDbIIb6bzU7rGpleaNLevaRi/63ZJf8Gvn/ihrRwUlojnmp6x
+         6AvoKn6w9+zNi44oCXNSgVdoq7+wXAHVQH49AdGBtW7x+/qTM9+HzkAOHywx5Otvvk
+         0aDDuV+ngrSgsenYbtMc4UfkQYyDxfpkeWlDEeuyRtK33X4RxJcfHa+w2DjI/XFb1Q
+         xVlYndOidhVxm+AC9m/k/NRbDIQucqbcwJDwZzoy0LjLG+oBCdK2zKxVBJZ5w1eJUa
+         HZjvjJHNf+hCw==
+Date:   Tue, 20 Jul 2021 16:05:20 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: phy: qcom,qmp: Add sc8180x PCIe
+ compatible
+Message-ID: <YPam6Bmvmj/4H0rQ@matsya>
+References: <20210629004509.1788286-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: 4zNnewC3vflPpvZgeSECAA--.2921S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF4xXw45GF48JF4rtr4ruFg_yoW8GrW3pF
-        yDAr4rtFW0qa4Iyw4kAFy7Wws5Zry3GasayayUW3W5u34xtw1Fq34rua1jyr95C34vkrsI
-        yF1DK3yUGa4UuF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnUUvcSsGvfC2KfnxnUUI43ZEXa7xR_UUUUUUUUU==
-X-CM-SenderInfo: holqwq5zdqw23xof0z/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210629004509.1788286-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Original codes:
-BITMASK(CACHE_SYNC,			struct cache_sb, flags, 0, 1);
-BITMASK(CACHE_DISCARD,			struct cache_sb, flags, 1, 1);
-BITMASK(CACHE_REPLACEMENT,		struct cache_sb, flags, 2, 3);
-...
-BITMASK(BDEV_CACHE_MODE,		struct cache_sb, flags, 0, 4);
+On 28-06-21, 17:45, Bjorn Andersson wrote:
+> Add a compatible for the sc8180x PCIe PHY.
 
-Should BDEV_CACHE_MODE bits start from bit-nr 5(2+3) else it overlaps
-with previous defined bit chunks, since we have 4 types of cache modes,
-BDEV_CACHE_MODE will overwrite CACHE_SYNC and CACHE_DISCARD bits.
+Applied both, thanks
 
-This bug stays there since first upstream version of bcache, don't know
-why it lives so long, or am i missing something, please point me out
-if I'm wrong, thanks!
-
-Signed-off-by: Lin Feng <linf@wangsu.com>
----
- include/uapi/linux/bcache.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/bcache.h b/include/uapi/linux/bcache.h
-index cf7399f03b71..dccd89756451 100644
---- a/include/uapi/linux/bcache.h
-+++ b/include/uapi/linux/bcache.h
-@@ -288,7 +288,7 @@ BITMASK(CACHE_REPLACEMENT,		struct cache_sb, flags, 2, 3);
- #define CACHE_REPLACEMENT_FIFO		1U
- #define CACHE_REPLACEMENT_RANDOM	2U
- 
--BITMASK(BDEV_CACHE_MODE,		struct cache_sb, flags, 0, 4);
-+BITMASK(BDEV_CACHE_MODE,		struct cache_sb, flags, 5, 4);
- #define CACHE_MODE_WRITETHROUGH		0U
- #define CACHE_MODE_WRITEBACK		1U
- #define CACHE_MODE_WRITEAROUND		2U
 -- 
-2.31.1
-
+~Vinod
