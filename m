@@ -2,114 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF3D3CFE96
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA1C3CFEEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 18:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240433AbhGTPYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 11:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240158AbhGTPSv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 11:18:51 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BA4C061768
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:59:28 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id y66so15578877oie.7
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 08:59:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3bYYSvolabqesH6HHzk8H0SMsuQoJjQhMgS236zxUEQ=;
-        b=AvTz0BF73p7p7q+iRZ6q+1CbYpehl5FXWoRXcFlyd2NXzKLW8WWVq38f6M8n+E1bDW
-         npnGidT02q0MPXKnbEfQgPd0dlOW3iuMFfVmYUuytTXxgKPaAIRvM48UkySf8ktoCTmS
-         3B1AW8idb6ilSO3l1Vo1nAqKknvqmzWvyKBIR7HWr2xPL2QiIG+sJPwimq3GWj231k2f
-         L7HdeSuE3uVdqTMCJtPCFLnL9TFUzVwlsAZhbcu+9tFV3tgt8TiZbC2gO9wUZuWh1xEu
-         RFe/4UyJFpFnjcsJ/5ZdBdY2qjiZ2hDO2M/xFXKKYdVvE4uFwt3eHJ7cc4LheszoeMwh
-         l5GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3bYYSvolabqesH6HHzk8H0SMsuQoJjQhMgS236zxUEQ=;
-        b=PxN+O4vUi0Ifgj6ElXf/R7ClCyjCTR5/qQNFn9OphiaTLYfw4n6qQbpTl0IVmx9fA8
-         CE7BYAuZ0UryRZrTyw3wWpiuy7Didllef7ADpMBAJGs/T5JW07m+WOSnZG6uwMyvxzIb
-         zzCtOicKTHwmRXYpRQoEdHb1v2GBN6WAFVRr+rohBL0d1kvEXXUgIXWZVcjRYakVlliz
-         Ab1osxH37BKGjM0/zoVSSPyNovEX3IJj006g3GcT5DCXQx5EPz/KQjKXsMfR+o0tQGBi
-         V7SYJzxwesZ4gQ1pFALD646KAgmcZbZzY3VavpFthg/tJjCzvgtRqkfQqGS4fofRkgAm
-         2UMw==
-X-Gm-Message-State: AOAM530cD4ptsvNCoqjrzh8Gzmrnp0cnXg0XswtHIsLkoiyCFBv/Aj/6
-        NIUXLJ+cB0/tNtpSbXyt2a8ZDQ==
-X-Google-Smtp-Source: ABdhPJxDvfL0NyoM90fcGCn8H+ACZoTlz62ASCTNkVWnQ5pADpi8QHChB5kbAY5iOVJ8knWxzsbjYw==
-X-Received: by 2002:aca:fdc1:: with SMTP id b184mr21581758oii.101.1626796767607;
-        Tue, 20 Jul 2021 08:59:27 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o26sm4252216otk.77.2021.07.20.08.59.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 08:59:27 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 10:59:25 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     Alex Elder <elder@linaro.org>, agross@kernel.org,
-        robh+dt@kernel.org, evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org,
-        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 0/3] arm64: dts: qcom: DTS updates
-Message-ID: <YPby3eJmDmNlESC8@yoga>
-References: <20210719212456.3176086-1-elder@linaro.org>
- <162679080524.18101.16626774349145809936.git-patchwork-notify@kernel.org>
+        id S229871AbhGTPbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 11:31:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238910AbhGTPYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 11:24:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37FD9611F2;
+        Tue, 20 Jul 2021 16:03:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626797029;
+        bh=RexYduiDyrByGI4q6reTkJMpr04SvMZQpUi8H7SBH+o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QiO4CnaqE9D2HYAyNkK8eZ+GZx4c+yijYGdskzyMM9yTni00bXUHbj3nkg0gmUBMJ
+         /8fL2Q2nVzrY61xHPkgFnRBojIdsjGid34rLtlc9GaSmHmbvVyxtanzq+Vj8lRpVCD
+         fiE3EVD3bF01UEIngsiW42jKFCbuGLh1/blQdm3DHPe5Q/bR8i/fIAJyEK+AtTXk/l
+         e2SjX87ah54hWBZA+TXbEAUvST/HpVHtfJKuXsiHrlwAyimRCSKwiDAhHgahLauWd+
+         bxuROpQGl4jwmjCrELjl55v4x8aw39oby3nlL3Cc/glxqx4u1HhmDuqIqbDsqjITNh
+         TphhSdN15te7A==
+Received: by mail-ot1-f54.google.com with SMTP id t4-20020a05683014c4b02904cd671b911bso13921343otq.1;
+        Tue, 20 Jul 2021 09:03:49 -0700 (PDT)
+X-Gm-Message-State: AOAM5332+b1FH126FAK2/v42D3jl2inC4BsDujTfEk1+PeoHp70h/7gU
+        02kWHbXjBnwPMvPOj4NNNhXJL9R+5S6FmhceDuc=
+X-Google-Smtp-Source: ABdhPJzRNqdOIoGbkEPrqqfA+1oR7N57WveTD+UPP5rN3Wm3eqyw7ggW6+PXoHkDHlZVVIM+uifkV39I7ABzS3BfQFI=
+X-Received: by 2002:a9d:2625:: with SMTP id a34mr17608761otb.77.1626797028466;
+ Tue, 20 Jul 2021 09:03:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162679080524.18101.16626774349145809936.git-patchwork-notify@kernel.org>
+References: <20210720152158.31804-1-andre.przywara@arm.com>
+In-Reply-To: <20210720152158.31804-1-andre.przywara@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 20 Jul 2021 18:03:37 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEW7DT3P3FuV+poFykf6wwm4FTJuV6emGSWabCp7UZX9A@mail.gmail.com>
+Message-ID: <CAMj1kXEW7DT3P3FuV+poFykf6wwm4FTJuV6emGSWabCp7UZX9A@mail.gmail.com>
+Subject: Re: [PATCH v2] hwrng: Add Arm SMCCC TRNG based driver
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>,
+        Ali Saidi <alisaidi@amazon.com>,
+        Jon Nettleton <jon@solid-run.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 20 Jul 09:20 CDT 2021, patchwork-bot+netdevbpf@kernel.org wrote:
+On Tue, 20 Jul 2021 at 17:22, Andre Przywara <andre.przywara@arm.com> wrote:
+>
+> The "Arm True Random Number Generator Firmware Interface"[1] provides
+> an SMCCC based interface to a true hardware random number generator.
+> So far we are using that in arch_get_random_seed(), but it might be
+> useful to expose the entropy through the /dev/hwrng device as well. This
+> allows to assess the quality of the implementation, by using "rngtest"
+> from the rng-tools package, for example.
+>
+> Add a simple platform driver implementing the hw_random interface.
+> We unconditionally instantiate the platform device in the driver file,
+> then probe for the existence of the SMCCC TRNG implementation in the
+> driver's probe routine.
+> Since the firmware takes care about serialisation, this can happily
+> coexist with the arch_get_random_seed() bits.
+>
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+>
+> [1] https://developer.arm.com/documentation/den0098/latest/
+> ---
+> Changelog v1 ... v2:
+> - fix building as a module
+> - de-register device upon exit
+> - mention module name in Kconfig
+>
+>  drivers/char/hw_random/Kconfig          |  14 ++
+>  drivers/char/hw_random/Makefile         |   1 +
+>  drivers/char/hw_random/arm_smccc_trng.c | 171 ++++++++++++++++++++++++
+>  3 files changed, 186 insertions(+)
+>  create mode 100644 drivers/char/hw_random/arm_smccc_trng.c
+>
+> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+> index 3f166c8a4099..239eca4d6805 100644
+> --- a/drivers/char/hw_random/Kconfig
+> +++ b/drivers/char/hw_random/Kconfig
+> @@ -524,6 +524,20 @@ config HW_RANDOM_XIPHERA
+>           To compile this driver as a module, choose M here: the
+>           module will be called xiphera-trng.
+>
+> +config HW_RANDOM_ARM_SMCCC_TRNG
+> +       tristate "Arm SMCCC TRNG firmware interface support"
+> +       depends on HAVE_ARM_SMCCC_DISCOVERY
+> +       default HW_RANDOM
+> +       help
+> +         Say 'Y' to enable the True Random Number Generator driver using
+> +         the Arm SMCCC TRNG firmware interface. This reads entropy from
+> +         higher exception levels (firmware, hypervisor). Uses SMCCC for
+> +         communicating with the firmware:
+> +         https://developer.arm.com/documentation/den0098/latest/
+> +
+> +         To compile this driver as a module, choose M here: the
+> +         module will be called arm_smccc_trng.
+> +
+>  endif # HW_RANDOM
+>
+>  config UML_RANDOM
+> diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
+> index 8933fada74f2..a5a1c765a394 100644
+> --- a/drivers/char/hw_random/Makefile
+> +++ b/drivers/char/hw_random/Makefile
+> @@ -45,3 +45,4 @@ obj-$(CONFIG_HW_RANDOM_OPTEE) += optee-rng.o
+>  obj-$(CONFIG_HW_RANDOM_NPCM) += npcm-rng.o
+>  obj-$(CONFIG_HW_RANDOM_CCTRNG) += cctrng.o
+>  obj-$(CONFIG_HW_RANDOM_XIPHERA) += xiphera-trng.o
+> +obj-$(CONFIG_HW_RANDOM_ARM_SMCCC_TRNG) += arm_smccc_trng.o
+> diff --git a/drivers/char/hw_random/arm_smccc_trng.c b/drivers/char/hw_random/arm_smccc_trng.c
+> new file mode 100644
+> index 000000000000..3bd510a98882
+> --- /dev/null
+> +++ b/drivers/char/hw_random/arm_smccc_trng.c
+> @@ -0,0 +1,171 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Randomness driver for the ARM SMCCC TRNG Firmware Interface
+> + * https://developer.arm.com/documentation/den0098/latest/
+> + *
+> + *  Copyright (C) 2020 Arm Ltd.
+> + *
+> + * The ARM TRNG firmware interface specifies a protocol to read entropy
+> + * from a higher exception level, to abstract from any machine specific
+> + * implemenations and allow easier use in hypervisors.
+> + *
+> + * The firmware interface is realised using the SMCCC specification.
+> + */
+> +
+> +#include <linux/bits.h>
+> +#include <linux/device.h>
+> +#include <linux/hw_random.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/arm-smccc.h>
+> +
+> +#ifdef CONFIG_ARM64
+> +#define ARM_SMCCC_TRNG_RND     ARM_SMCCC_TRNG_RND64
+> +#define MAX_BITS_PER_CALL      (3 * 64UL)
+> +#else
+> +#define ARM_SMCCC_TRNG_RND     ARM_SMCCC_TRNG_RND32
+> +#define MAX_BITS_PER_CALL      (3 * 32UL)
+> +#endif
+> +
+> +/* We don't want to allow the firmware to stall us forever. */
+> +#define SMCCC_TRNG_MAX_TRIES   20
+> +
+> +#define SMCCC_RET_TRNG_INVALID_PARAMETER       -2
+> +#define SMCCC_RET_TRNG_NO_ENTROPY              -3
+> +
+> +static struct platform_device *smccc_trng_pdev;
+> +
 
-> Hello:
-> 
-> This series was applied to netdev/net-next.git (refs/heads/master):
-> 
+Can we split the platform device and the platform driver? The platform
+device should be registered by the core code once it discovers the
+SMCCC TRNG availabily. The platform driver can then use ordinary
+module alias autoloading etc based on the platform device availabilty.
 
-David, Jakub, can you please revert/drop the two "arm64: dts" patches
-from the net-next tree?
+This requires the following to be added though
 
-DTS patches are generally merged through the qcom and ultimately soc
-tree and I have a number of patches queued up in both sc7180 and sc7280
-that will cause merge conflicts down the road, so I would prefer to pick
-these up as well.
+MODULE_ALIAS("platform: smccc_trng")
 
-Regards,
-Bjorn
+but all the smccc calls could be dropped from the probe function in that case.
 
-> On Mon, 19 Jul 2021 16:24:53 -0500 you wrote:
-> > This series updates some IPA-related DT nodes.
-> > 
-> > Newer versions of IPA do not require an interconnect between IPA
-> > and SoC internal memory.  The first patch updates the DT binding
-> > to reflect this.
-> > 
-> > The second patch adds IPA information to "sc7280.dtsi", using only
-> > two interconnects.  It includes the definition of the reserved
-> > memory area used to hold IPA firmware.
-> > 
-> > [...]
-> 
-> Here is the summary with links:
->   - [net-next,1/3] dt-bindings: net: qcom,ipa: make imem interconnect optional
->     https://git.kernel.org/netdev/net-next/c/6a0eb6c9d934
->   - [net-next,2/3] arm64: dts: qcom: sc7280: add IPA information
->     https://git.kernel.org/netdev/net-next/c/f8bd3c82bf7d
->   - [net-next,3/3] arm64: dts: qcom: sc7180: define ipa_fw_mem node
->     https://git.kernel.org/netdev/net-next/c/fd0f72c34bd9
-> 
-> You are awesome, thank you!
+
+
+> +static int smccc_trng_init(struct hwrng *rng)
+> +{
+> +       return 0;
+> +}
+> +
+> +static int copy_from_registers(char *buf, struct arm_smccc_res *res,
+> +                              size_t bytes)
+> +{
+> +       unsigned int chunk, copied;
+> +
+> +       if (bytes == 0)
+> +               return 0;
+> +
+> +       chunk = min(bytes, sizeof(long));
+> +       memcpy(buf, &res->a3, chunk);
+> +       copied = chunk;
+> +       if (copied >= bytes)
+> +               return copied;
+> +
+> +       chunk = min((bytes - copied), sizeof(long));
+> +       memcpy(&buf[copied], &res->a2, chunk);
+> +       copied += chunk;
+> +       if (copied >= bytes)
+> +               return copied;
+> +
+> +       chunk = min((bytes - copied), sizeof(long));
+> +       memcpy(&buf[copied], &res->a1, chunk);
+> +
+> +       return copied + chunk;
+> +}
+> +
+> +static int smccc_trng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+> +{
+> +       struct arm_smccc_res res;
+> +       u8 *buf = data;
+> +       unsigned int copied = 0;
+> +       int tries = 0;
+> +
+> +       while (copied < max) {
+> +               size_t bits = min_t(size_t, (max - copied) * BITS_PER_BYTE,
+> +                                 MAX_BITS_PER_CALL);
+> +
+> +               arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_RND, bits, &res);
+> +               if ((int)res.a0 < 0)
+> +                       return (int)res.a0;
+> +
+> +               switch ((int)res.a0) {
+> +               case SMCCC_RET_SUCCESS:
+> +                       copied += copy_from_registers(buf + copied, &res,
+> +                                                     bits / BITS_PER_BYTE);
+> +                       tries = 0;
+> +                       break;
+> +               case SMCCC_RET_TRNG_NO_ENTROPY:
+> +                       if (!wait)
+> +                               return copied;
+> +                       tries++;
+> +                       if (tries >= SMCCC_TRNG_MAX_TRIES)
+> +                               return copied;
+> +                       cond_resched();
+> +                       break;
+> +               }
+> +       }
+> +
+> +       return copied;
+> +}
+> +
+> +static int smccc_trng_probe(struct platform_device *pdev)
+> +{
+> +       struct arm_smccc_res res;
+> +       struct hwrng *trng;
+> +       u32 version;
+> +       int ret;
+> +
+> +       /* We need ARM SMCCC v1.1, with its autodetection feature. */
+> +       if (arm_smccc_get_version() < ARM_SMCCC_VERSION_1_1)
+> +               return -ENODEV;
+> +
+> +       arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_VERSION, &res);
+> +       if ((int)res.a0 < 0)
+> +               return -ENODEV;
+> +       version = res.a0;
+> +
+> +       arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_FEATURES,
+> +                            ARM_SMCCC_TRNG_RND, &res);
+> +       if ((int)res.a0 < 0)
+> +               return -ENODEV;
+> +
+> +       trng = devm_kzalloc(&pdev->dev, sizeof(*trng), GFP_KERNEL);
+> +       if (!trng)
+> +               return -ENOMEM;
+> +
+> +       trng->name = "smccc_trng";
+> +       trng->init = smccc_trng_init;
+> +       trng->read = smccc_trng_read;
+> +
+> +       platform_set_drvdata(pdev, trng);
+> +       ret = devm_hwrng_register(&pdev->dev, trng);
+> +       if (ret)
+> +               return -ENOENT;
+> +
+> +       dev_info(&pdev->dev,
+> +                "ARM SMCCC TRNG firmware random number generator v%d.%d\n",
+> +                version >> 16, version & 0xffff);
+> +
+> +       return 0;
+> +}
+> +
+> +static struct platform_driver smccc_trng_driver = {
+> +       .driver = {
+> +               .name           = "smccc_trng",
+> +       },
+> +       .probe          = smccc_trng_probe,
+> +};
+> +
+> +static int __init smccc_trng_driver_init(void)
+> +{
+> +       smccc_trng_pdev = platform_device_register_simple("smccc_trng",
+> +                                                         -1, NULL, 0);
+> +       if (IS_ERR(smccc_trng_pdev))
+> +               return PTR_ERR(smccc_trng_pdev);
+> +
+> +       return platform_driver_register(&smccc_trng_driver);
+> +}
+> +module_init(smccc_trng_driver_init);
+> +
+> +static void __exit smccc_trng_driver_exit(void)
+> +{
+> +       platform_driver_unregister(&smccc_trng_driver);
+> +       platform_device_unregister(smccc_trng_pdev);
+> +}
+> +module_exit(smccc_trng_driver_exit);
+> +
+> +MODULE_AUTHOR("Andre Przywara");
+> +MODULE_LICENSE("GPL");
 > --
-> Deet-doot-dot, I am a bot.
-> https://korg.docs.kernel.org/patchwork/pwbot.html
-> 
-> 
+> 2.17.6
+>
