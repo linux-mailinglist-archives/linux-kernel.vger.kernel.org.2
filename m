@@ -2,122 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9ADF3CF40F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FCD3CF411
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238359AbhGTFA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 01:00:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235944AbhGTFAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 01:00:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F8BA6113A;
-        Tue, 20 Jul 2021 05:41:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626759688;
-        bh=2GuyoMxAkXwIEuz4kB/1FJuahjlvs/F+Am1H8l4oZ6o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LRXfAAm56gnQU5zTzJQzg6qkcSv7yw0kl4yYFk/21Z9WHHCS/YfSY1upoAtwKv5bT
-         V2O7oZHWj0fOK1IGM3v79BAcuYxOjoQhqUOKopcwlgQBrVFYG0G449b4T5r51t4r2s
-         npYhouHieUp13RGQWPuxEopMBsodExxP0CTY5MFrJgxjN/YwdfA01vcaOtK+AEq1Yd
-         ORUPos0vJHv62sSB0+yra/zR5L77thXGC2iAERObefhp+jMpFNa8tjsBcsiHoIdhtY
-         VF31HzwBbHUtc22fybXpvdYc58q6NvDcq/5I5KrSiYstSR+a3kuydNUqoSMsfU84YV
-         3qV/JLV27J/DQ==
-Date:   Tue, 20 Jul 2021 08:41:16 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
+        id S237846AbhGTFDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 01:03:21 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38092 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230477AbhGTFDB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 01:03:01 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16K5YhL2072274;
+        Tue, 20 Jul 2021 01:43:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : content-type :
+ mime-version; s=pp1; bh=f7Q5yspJe6r0GqwG/nqAUZN5kcItfRIYBbEwe620rc4=;
+ b=JeDNi3bmnJR8nIPEvfMD5SxoZUMz/M9DZ/OYfq7JH3uCrgh1Mc/XhoK24+RFb+PITBkS
+ UYCXnOZsx9v8eriLFza9ZLrwgGYtQDdCDI4/axao3xCHnj6rm/ufr7ySolyfM4zmJ9Ug
+ PUEMZPvBEHDaqjnMkXXbGa6QxyiYkVnRaujJaXRXFXD2prkcz7VBKf+1NZS9cNOSzHs2
+ 0Em6e4s+q5Aa1jxu0/LMEkZmDiuLecr4dnqXtlPOOhU4jykjSqXx+xzFzrXLZ/t1JS2/
+ ygEXLbVDuy4IzNUhikwk9jI4D0XcsoAnR8KjcAu1ohOPA0+1JWgTsCWHqWY8lJsnztcS bQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39wngubydy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 01:43:18 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16K5ZEP5075470;
+        Tue, 20 Jul 2021 01:43:18 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39wngubydd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 01:43:17 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16K5b29F006997;
+        Tue, 20 Jul 2021 05:43:16 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06fra.de.ibm.com with ESMTP id 39upfh8m7a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Jul 2021 05:43:15 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16K5hDKR21889510
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Jul 2021 05:43:13 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A8A9611C04A;
+        Tue, 20 Jul 2021 05:43:13 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2172511C054;
+        Tue, 20 Jul 2021 05:43:13 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 20 Jul 2021 05:43:13 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Daniel =?utf-8?Q?D=C3=ADaz?= <daniel.diaz@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        kexec@lists.infradead.org, Linux MM <linux-mm@kvack.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 02/10] memblock: Add variables for usable memory
- limitation
-Message-ID: <YPZh/IawtmwaYccQ@kernel.org>
-References: <cover.1626266516.git.geert+renesas@glider.be>
- <04c4d231fb03a3810d72a45c8a5bc2272c5975f3.1626266516.git.geert+renesas@glider.be>
- <20210714135101.GB2441138@robh.at.kernel.org>
- <YPP06QG7hfypZgYg@kernel.org>
- <CAMuHMdXfFhzm48U2Hvjz8yrjPsQbagW4aC_L-QE_Q6yx1Lo=tA@mail.gmail.com>
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        linux- stable <stable@vger.kernel.org>, hca@linux.ibm.com
+Subject: Re: [PATCH 5.12 000/242] 5.12.18-rc1 review
+References: <20210715182551.731989182@linuxfoundation.org>
+        <CAEUSe7_+8fQZ=1+jcxJVTRw0DYttGmR-aBdobZ0GWYQi3Vg97w@mail.gmail.com>
+        <yt9dim16lv3u.fsf@linux.ibm.com> <YPUXPEiTrpKoKf+t@kroah.com>
+Date:   Tue, 20 Jul 2021 07:43:12 +0200
+In-Reply-To: <YPUXPEiTrpKoKf+t@kroah.com> (Greg Kroah-Hartman's message of
+        "Mon, 19 Jul 2021 08:10:04 +0200")
+Message-ID: <yt9d4kcp1qxb.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: SXYwiLKqLJLZYYD1-cHgywxYB8wqlGx5
+X-Proofpoint-GUID: T9LCOnltkCscTYODk6h6WUIIWTlF-WHY
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXfFhzm48U2Hvjz8yrjPsQbagW4aC_L-QE_Q6yx1Lo=tA@mail.gmail.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-20_01:2021-07-19,2021-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1015 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 spamscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107200030
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi Greg,
 
-On Mon, Jul 19, 2021 at 08:59:03AM +0200, Geert Uytterhoeven wrote:
-> Hi Mike,
-> 
-> On Sun, Jul 18, 2021 at 11:31 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > On Wed, Jul 14, 2021 at 07:51:01AM -0600, Rob Herring wrote:
-> > > On Wed, Jul 14, 2021 at 02:50:12PM +0200, Geert Uytterhoeven wrote:
-> > > > Add two global variables (cap_mem_addr and cap_mem_size) for storing a
-> > > > base address and size, describing a limited region in which memory may
-> > > > be considered available for use by the kernel.  If enabled, memory
-> > > > outside of this range is not available for use.
-> > > >
-> > > > These variables can by filled by firmware-specific code, and used in
-> > > > calls to memblock_cap_memory_range() by architecture-specific code.
-> > > > An example user is the parser of the "linux,usable-memory-range"
-> > > > property in the DT "/chosen" node.
-> > > >
-> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > > ---
-> > > > This is similar to how the initial ramdisk (phys_initrd_{start,size})
-> > > > and ELF core headers (elfcorehdr_{addr,size})) are handled.
-> > > >
-> > > > Does there exist a suitable place in the common memblock code to call
-> > > > "memblock_cap_memory_range(cap_mem_addr, cap_mem_size)", or does this
-> > > > have to be done in architecture-specific code?
-> > >
-> > > Can't you just call it from early_init_dt_scan_usablemem? If the
-> > > property is present, you want to call it. If the property is not
-> > > present, nothing happens.
-> 
-> I will have a look...
-> 
-> > For memblock_cap_memory_range() to work properly it should be called after
-> > memory is detected and added to memblock with memblock_add[_node]()
-> >
-> > I'm not huge fan of adding more globals to memblock so if such ordering can
-> > be implemented on the DT side it would be great.
-> 
-> Me neither ;-)
-> 
-> > I don't see a way to actually enforce this ordering, so maybe we'd want to
-> > add warning in memblock_cap_memory_range() if memblock.memory is empty.
-> 
-> "linux,usable-memory-range" is optional, and typically used only in
-> crashdump kernels, so it would be a bad idea to add such a warning.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
 
-If I remember correctly, memblock_cap_memory_range() was added to support
-"linux,usable-memory-range" for crasdump kernels on arm64 and if it would
-be called before memory is registered we may silently corrupt the memory
-because the crash kernel will see all the memory as available.
+> On Mon, Jul 19, 2021 at 07:40:21AM +0200, Sven Schnelle wrote:
+>> If https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1428532107
+>> is the logfile for this problem, than i see the following in the log:
+>> 
+>> make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=s390 CROSS_COMPILE=s390x-linux-gnu- 'CC=sccache s390x-linux-gnu-gcc' 'HOSTCC=sccache gcc'
+>> /bin/sh: 1: /builds/linux/arch/s390/kernel/vdso64/gen_vdso_offsets.sh: Permission denied
+>> 
+>> However, in the patch this script is 755, and other architecture are
+>> using this for a while now - can you check what the permission are when
+>> you're trying to build the kernel?
+>
+> Yes, the problem is that when handling patches, we can not change the
+> permissions on files.  That causes this file to not be added with
+> execute permissions.  This has generally been considered a bad thing
+> anyway, and other scripts that relied on being executable have been
+> changed over time to not be that way and be explicitly run by the
+> calling script.
 
-So while WARN() maybe too much a pr_warn() seems to me quite appropriate.
- 
--- 
-Sincerely yours,
-Mike.
+Hmm, right. I didn't thought about patches. So i'll adjust the patch and
+sent it again. I guess prefixing it with $(CONFIG_SHELL) is then the way
+to do it, at least i see a lot of location doing it that way.
+
+> But it looks like th gen_vdso_offsets.sh script has not been changed on
+> any arch to do that yet.  It is one of the few hold outs.
+>
+> Also, this feels like a HUGE change for a stable tree, adding new
+> features like this, are you sure it's all needed?
+
+Yes. This fixes syscall restarting in combination with signals coming in
+on s390, which is broken since the conversion to generic entry. There's
+no easy way to fix that, and we don't want to introduce another
+workaround that is userspace visible, as we would have to carry that
+forever.
+
+Sven
