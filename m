@@ -2,87 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2DD3CF41E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5323CF423
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 07:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237154AbhGTFLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 01:11:13 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53838 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236413AbhGTFKw (ORCPT
+        id S235365AbhGTFPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 01:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229916AbhGTFO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 01:10:52 -0400
-X-UUID: 602f117abfb342b0b1afcd043fe3ba5a-20210720
-X-UUID: 602f117abfb342b0b1afcd043fe3ba5a-20210720
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1274704372; Tue, 20 Jul 2021 13:51:22 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 20 Jul 2021 13:51:20 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 20 Jul 2021 13:51:20 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: [PATCH v3] Fixes: a6b7c98afdca(drm/mediatek: add mtk_dither_set_common() function)
-Date:   Tue, 20 Jul 2021 13:51:17 +0800
-Message-ID: <1626760277-5733-2-git-send-email-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1626760277-5733-1-git-send-email-yongqiang.niu@mediatek.com>
-References: <1626760277-5733-1-git-send-email-yongqiang.niu@mediatek.com>
+        Tue, 20 Jul 2021 01:14:56 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5A6C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 22:55:35 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id h8so27075565eds.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 22:55:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W+eCdobjn3+ulB5NKygDiZMliBbGEgLHHiAuMSuNm64=;
+        b=jx0WhC+Qq5yZySQNzp4alTyVk+wJPmhKKMji4+PDuJC07+xX+GmAXtN4vN7nWFCpvo
+         i2ssSret5TX0qeToyf8gMQ+eWhA4v05eZLCosJFtjFFgeaWdLcE7NqjSEfNYiRKIpZ10
+         LFW+88TtPi3vrrjByxYUQifxp91Li2eNmszWGQA1nTQ/tIhTQ+2V5FAnwwfKIbLs2enm
+         o5NLuCyhSUFKJNFt0vtSYlE/z0WA1wfcxrGrLoU17nOlB/F6cK9I4kb0glTTawC38an9
+         l3wyt/aqXzEaO/aetwZjPaaT/g52rK4BKsxVejWPA2BxsKN/7HvuxcslaKxO8H7gPGrE
+         o0ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W+eCdobjn3+ulB5NKygDiZMliBbGEgLHHiAuMSuNm64=;
+        b=jSrp0GIANRtZeawt8Jrkut+I982unNTVNaV5yJ549co87Q8fCOH0CXJxiG4lmDNNiT
+         ZDue8dB2lW7X50OebTpHYIIozjrfdA/nMfKKrnSq0cqqHfWrxHNNRgZyC5wWMm6Syn4w
+         wC21hYLsAhWXfpSaDFAtbcGEufDOYJjECC+hSahTsA/5axji6aYRqVQIbLZaT1ZCXVUT
+         IO7cAbSrcfcTHLoeXZZOaL1cDSa/Q1gp4zHYKVFxs8TDESTk5uDvRYWC2LWSnFWuu7e5
+         fwH7iEXe2kAFFs6Bcas+z1f0VrraJYEikzVW4EOQr8L7SyHtdTCvalbUfmv7vqxPU4RJ
+         aJ3w==
+X-Gm-Message-State: AOAM531QnQgNqNYv7jYOophYyMhL4SKN5aXSfjTkDOj2stu0BPpPBh+j
+        BivIcFupMyb5o9r0fZBSF4VDf/lkEI2pqPwazWvx+g==
+X-Google-Smtp-Source: ABdhPJzyXpQN+izTAyFJ9JUPxr3rEHure5nCgtKyRzus+QckOhGYE5oXxwOr7hjftM0k4cNfxQyG86a1Wt0Y8mDvvDE=
+X-Received: by 2002:a05:6402:1771:: with SMTP id da17mr38850996edb.23.1626760533288;
+ Mon, 19 Jul 2021 22:55:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20210719184335.198051502@linuxfoundation.org>
+In-Reply-To: <20210719184335.198051502@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 20 Jul 2021 11:25:22 +0530
+Message-ID: <CA+G9fYtAN7y5Z82nO59daxD=AtYOyu2J7ECFjY2P64JR9Fqifg@mail.gmail.com>
+Subject: Re: [PATCH 4.19 000/420] 4.19.198-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dither 6 setting is missed in a6b7c98afdca
-bit 1 is lfsr_en( "Enables LFSR-type dithering"), need enable
-bit 2 is rdither_en(Enables running order dithering), need disable
+On Tue, 20 Jul 2021 at 00:15, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.198 release.
+> There are 420 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 21 Jul 2021 18:42:43 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.198-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 2 ++
- 1 file changed, 2 insertions(+)
+Perf fails to compile in 4.19 on Arm, Arm64, i386 and x86 with gcc 7.3
+It was also reported on 5.4.134-rc2.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-index 99cbf44..7dd8e05 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-@@ -26,6 +26,7 @@
- #define DISP_OD_CFG				0x0020
- #define DISP_OD_SIZE				0x0030
- #define DISP_DITHER_5				0x0114
-+#define DISP_DITHER_6				0x0118
- #define DISP_DITHER_7				0x011c
- #define DISP_DITHER_15				0x013c
- #define DISP_DITHER_16				0x0140
-@@ -135,6 +136,7 @@ void mtk_dither_set_common(void __iomem *regs, struct cmdq_client_reg *cmdq_reg,
- 
- 	if (bpc >= MTK_MIN_BPC) {
- 		mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_5);
-+		mtk_ddp_write(cmdq_pkt, 0x3002, cmdq_reg, regs, DISP_DITHER_6);
- 		mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_7);
- 		mtk_ddp_write(cmdq_pkt,
- 			      DITHER_LSB_ERR_SHIFT_R(MTK_MAX_BPC - bpc) |
--- 
-1.8.1.1.dirty
+  perf-1.0/perf-in.o: In function `tasks_setup':
+  tools/perf/builtin-report.c:664: undefined reference to `process_attr'
+  perf-in.o: In function `stats_setup':
+  tools/perf/builtin-report.c:644: undefined reference to `process_attr'
 
+Bisection points to ee7531fb817c ("perf report: Fix --task and --stat
+with pipe input" [upstream commit
+892ba7f18621a02af4428c58d97451f64685dba4]).
+
+
+> Namhyung Kim <namhyung@kernel.org>
+>     perf report: Fix --task and --stat with pipe input
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+--
+Linaro LKFT
+https://lkft.linaro.org
