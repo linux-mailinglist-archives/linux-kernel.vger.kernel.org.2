@@ -2,181 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F05AC3CF8F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446023CF90C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237082AbhGTK7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 06:59:55 -0400
-Received: from pop31.abv.bg ([194.153.145.221]:39728 "EHLO pop31.abv.bg"
+        id S237978AbhGTLE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 07:04:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233914AbhGTK7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 06:59:23 -0400
-Received: from smtp.abv.bg (localhost [127.0.0.1])
-        by pop31.abv.bg (Postfix) with ESMTP id 76F091805D3B;
-        Tue, 20 Jul 2021 14:39:58 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abv.bg; s=smtp-out;
-        t=1626781198; bh=dD4UUjFyJU+H/nb01M25DvrioANn5x42FGEb+GYWFec=;
-        h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
-        b=YpDAr2e9D4CHrBEEh8SvLFnRo/6hoaj61G3Zd5Fy330sn60N1DnTqgq/67pmkceLz
-         tFX562mWxO9Kx1Hqj9C+K73CzCqHevqyvaWo7Np48reZiFHTcQldLl6VPWldDAElmc
-         6jQisT3nxYJQNSgFUhkbTWFTaT83C9jZBmQwawok=
-X-HELO: smtpclient.apple
-Authentication-Results: smtp.abv.bg; auth=pass (plain) smtp.auth=gvalkov@abv.bg
-Received: from 212-39-89-148.ip.btc-net.bg (HELO smtpclient.apple) (212.39.89.148)
- by smtp.abv.bg (qpsmtpd/0.96) with ESMTPSA (ECDHE-RSA-AES256-GCM-SHA384 encrypted); Tue, 20 Jul 2021 14:39:58 +0300
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: ipheth: fix EOVERFLOW in ipheth_rcvbulk_callback
-From:   Georgi Valkov <gvalkov@abv.bg>
-In-Reply-To: <20210720122215.54abaf53@cakuba>
-Date:   Tue, 20 Jul 2021 14:39:49 +0300
-Cc:     davem@davemloft.net, mhabets@solarflare.com,
-        luc.vanoostenryck@gmail.com, snelson@pensando.io, mst@redhat.com,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, corsac@corsac.net,
-        matti.vuorela@bitfactor.fi, stable@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <5D0CFF83-439B-4A10-A276-D2D17B037704@abv.bg>
-References: <B60B8A4B-92A0-49B3-805D-809A2433B46C@abv.bg>
- <20210720122215.54abaf53@cakuba>
-To:     Jakub Kicinski <kuba@kernel.org>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        id S237255AbhGTLB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 07:01:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D52C61029;
+        Tue, 20 Jul 2021 11:41:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626781283;
+        bh=PG0tu/4uqGOvHH15ANqr2Muvuf7Y5q6HFJHr/FyecDs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zscox8jNph++6sZDK4wA5sYW6EGSRVtVL+LSZ2d753xAmHd2qQI9uIWkhRBs+kRwR
+         nOX5NWibEBaal6O5c0krrwez4RUai6ENwBI6mnLoqteSd6JCKsUSs5rx8YiSwtAPYy
+         fXNPygPlphRy5W3Tma6OlXurRqBnOnQAxFItmtNQ=
+Date:   Tue, 20 Jul 2021 13:41:20 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "frowand.list@gmail.com" <frowand.list@gmail.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "jackp@codeaurora.org" <jackp@codeaurora.org>
+Subject: Re: [PATCH v14 3/6] usb: dwc3: Resize TX FIFOs to meet EP bursting
+ requirements
+Message-ID: <YPa2YL2mfffiz4i4@kroah.com>
+References: <1625908395-5498-1-git-send-email-wcheng@codeaurora.org>
+ <1625908395-5498-4-git-send-email-wcheng@codeaurora.org>
+ <b65463e9-3a8d-1ee5-3e26-09990aa8ec53@synopsys.com>
+ <87czrmzjym.fsf@kernel.org>
+ <e08dac42-e999-fd97-21ab-34cd70429f03@synopsys.com>
+ <877dhtz9de.fsf@kernel.org>
+ <6bc35b95-8386-1a6b-46dd-f33035e6dee5@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6bc35b95-8386-1a6b-46dd-f33035e6dee5@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am doing this for the first time, so any help would be appreciated!
-What is to rebase on the netdev/net tree? The patch from my previous =
-e-mail was
-generated by `git format-patch -1`. I can=E2=80=99t notice any =
-difference when compared to
-to the newly generated patch, which I rebased on the latest master.
+On Wed, Jul 14, 2021 at 12:30:07AM -0700, Wesley Cheng wrote:
+> 
+> 
+> On 7/13/2021 11:40 PM, Felipe Balbi wrote:
+> > 
+> > Hi,
+> > 
+> > Thinh Nguyen <Thinh.Nguyen@synopsys.com> writes:
+> >>> Thinh Nguyen <Thinh.Nguyen@synopsys.com> writes:
+> >>>> Wesley Cheng wrote:
+> >>>>> Some devices have USB compositions which may require multiple endpoints
+> >>>>> that support EP bursting.  HW defined TX FIFO sizes may not always be
+> >>>>> sufficient for these compositions.  By utilizing flexible TX FIFO
+> >>>>> allocation, this allows for endpoints to request the required FIFO depth to
+> >>>>> achieve higher bandwidth.  With some higher bMaxBurst configurations, using
+> >>>>> a larger TX FIFO size results in better TX throughput.
+> >>>>>
+> >>>>> By introducing the check_config() callback, the resizing logic can fetch
+> >>>>> the maximum number of endpoints used in the USB composition (can contain
+> >>>>> multiple configurations), which helps ensure that the resizing logic can
+> >>>>> fulfill the configuration(s), or return an error to the gadget layer
+> >>>>> otherwise during bind time.
+> >>>>>
+> >>>>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> >>>>> ---
+> >>>>>  drivers/usb/dwc3/core.c   |  15 +++
+> >>>>>  drivers/usb/dwc3/core.h   |  16 ++++
+> >>>>>  drivers/usb/dwc3/ep0.c    |   2 +
+> >>>>>  drivers/usb/dwc3/gadget.c | 232 ++++++++++++++++++++++++++++++++++++++++++++++
+> >>>>>  4 files changed, 265 insertions(+)
+> >>>>>
+> >>>>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+> >>>>> index ba74ad7..b194aecd 100644
+> >>>>> --- a/drivers/usb/dwc3/core.c
+> >>>>> +++ b/drivers/usb/dwc3/core.c
+> >>>>> @@ -1267,6 +1267,7 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+> >>>>>  	u8			rx_max_burst_prd;
+> >>>>>  	u8			tx_thr_num_pkt_prd;
+> >>>>>  	u8			tx_max_burst_prd;
+> >>>>> +	u8			tx_fifo_resize_max_num;
+> >>>>>  	const char		*usb_psy_name;
+> >>>>>  	int			ret;
+> >>>>>  
+> >>>>> @@ -1282,6 +1283,13 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+> >>>>>  	 */
+> >>>>>  	hird_threshold = 12;
+> >>>>>  
+> >>>>> +	/*
+> >>>>> +	 * default to a TXFIFO size large enough to fit 6 max packets.  This
+> >>>>> +	 * allows for systems with larger bus latencies to have some headroom
+> >>>>> +	 * for endpoints that have a large bMaxBurst value.
+> >>>>> +	 */
+> >>>>> +	tx_fifo_resize_max_num = 6;
+> >>>>> +
+> >>>>>  	dwc->maximum_speed = usb_get_maximum_speed(dev);
+> >>>>>  	dwc->max_ssp_rate = usb_get_maximum_ssp_rate(dev);
+> >>>>>  	dwc->dr_mode = usb_get_dr_mode(dev);
+> >>>>> @@ -1325,6 +1333,11 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+> >>>>>  				&tx_thr_num_pkt_prd);
+> >>>>>  	device_property_read_u8(dev, "snps,tx-max-burst-prd",
+> >>>>>  				&tx_max_burst_prd);
+> >>>>> +	dwc->do_fifo_resize = device_property_read_bool(dev,
+> >>>>> +							"tx-fifo-resize");
+> >>>>> +	if (dwc->do_fifo_resize)
+> >>>>> +		device_property_read_u8(dev, "tx-fifo-max-num",
+> >>>>> +					&tx_fifo_resize_max_num);
+> >>>>
+> >>>> Why is this check here? The dwc->tx_fifo_resize_max_num should store
+> >>>> whatever property the user sets. Whether the driver wants to use this
+> >>>
+> >>> Ack!
+> >>>
+> >>>> property should depend on "dwc->do_fifo_resize". Also why don't we have
+> >>>> "snps," prefix to be consistent with the other properties?
+> >>>
+> >>> Ack!
+> >>>
+> >>>> Can we enforce to a single property? If the designer wants to enable
+> >>>> this feature, he/she can to provide the tx-fifo-max-num. This would
+> >>>> simplify the driver a bit. Since this is to optimize for performance,
+> >>>> the user should know/want/test the specific value if they want to set
+> >>>> for their setup and not hoping that the default setting not break their
+> >>>> setup. So we can remove the "do_fifo_resize" property and just check
+> >>>> whether tx_fifo_resize_max_num is set.
+> >>>
+> >>> Ack!
+> >>>
+> >>> All very valid points :-)
+> >>>
+> 
+> Hi Thinh/Felipe,
+> 
+> >>
+> >> Looks like this series already landed in Greg's testing branch. Not sure
+> >> how we usually handle this to address some of our concerns. Add fix
+> >> patches on top of Greg's testing branch?
+> > 
+> > yup, no choice anymore :-(
+> > 
+> 
+> Let me review your feedback, which had some good points.  We can add a
+> change addressing everything on top of what is merged on Greg's branch.
 
-According to the description from the link below, I ran the following =
-commands:
-=
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#pro=
-viding-base-tree-information
+Any hint as to when these fixups will be sent?
 
-git clone =
-git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-cd linux
-git checkout -t -b ipheth-fix-RX-EOVERFLOW master
-git am --signoff < =
-0001-ipheth-fix-EOVERFLOW-in-ipheth_rcvbulk_callback.patch
-git format-patch --base=3Dauto --cover-letter -o drivers/net/ master
+thanks,
 
-
-drivers/net/0000-cover-letter.patch
-
-=46rom cd18496373e28af570dc382f618edd442d705252 Mon Sep 17 00:00:00 2001
-From: Georgi Valkov <gvalkov@abv.bg>
-Date: Tue, 20 Jul 2021 14:15:58 +0300
-Subject: [PATCH 0/1] *** SUBJECT HERE ***
-
-*** BLURB HERE ***
-
-Georgi Valkov (1):
-  ipheth: fix EOVERFLOW in ipheth_rcvbulk_callback
-
- drivers/net/usb/ipheth.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-
-base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
---=20
-2.32.0
-
-
-drivers/net/0001-ipheth-fix-EOVERFLOW-in-ipheth_rcvbulk_callback.patch
-
-=46rom cd18496373e28af570dc382f618edd442d705252 Mon Sep 17 00:00:00 2001
-From: Georgi Valkov <gvalkov@abv.bg>
-Date: Fri, 16 Apr 2021 20:44:36 +0300
-Subject: [PATCH 1/1] ipheth: fix EOVERFLOW in ipheth_rcvbulk_callback
-
-When rx_buf is allocated we need to account for IPHETH_IP_ALIGN,
-which reduces the usable size by 2 bytes. Otherwise we have 1512
-bytes usable instead of 1514, and if we receive more than 1512
-bytes, ipheth_rcvbulk_callback is called with status -EOVERFLOW,
-after which the driver malfunctiones and all communication stops.
-
-Fixes: ipheth 2-1:4.2: ipheth_rcvbulk_callback: urb status: -75
-
-Signed-off-by: Georgi Valkov <gvalkov@abv.bg>
----
- drivers/net/usb/ipheth.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/usb/ipheth.c b/drivers/net/usb/ipheth.c
-index 207e59e74935..06d9f19ca142 100644
---- a/drivers/net/usb/ipheth.c
-+++ b/drivers/net/usb/ipheth.c
-@@ -121,7 +121,7 @@ static int ipheth_alloc_urbs(struct ipheth_device =
-*iphone)
- 	if (tx_buf =3D=3D NULL)
- 		goto free_rx_urb;
-=20
--	rx_buf =3D usb_alloc_coherent(iphone->udev, IPHETH_BUF_SIZE,
-+	rx_buf =3D usb_alloc_coherent(iphone->udev, IPHETH_BUF_SIZE + =
-IPHETH_IP_ALIGN,
- 				    GFP_KERNEL, &rx_urb->transfer_dma);
- 	if (rx_buf =3D=3D NULL)
- 		goto free_tx_buf;
-@@ -146,7 +146,7 @@ static int ipheth_alloc_urbs(struct ipheth_device =
-*iphone)
-=20
- static void ipheth_free_urbs(struct ipheth_device *iphone)
- {
--	usb_free_coherent(iphone->udev, IPHETH_BUF_SIZE, iphone->rx_buf,
-+	usb_free_coherent(iphone->udev, IPHETH_BUF_SIZE + =
-IPHETH_IP_ALIGN, iphone->rx_buf,
- 			  iphone->rx_urb->transfer_dma);
- 	usb_free_coherent(iphone->udev, IPHETH_BUF_SIZE, iphone->tx_buf,
- 			  iphone->tx_urb->transfer_dma);
-@@ -317,7 +317,7 @@ static int ipheth_rx_submit(struct ipheth_device =
-*dev, gfp_t mem_flags)
-=20
- 	usb_fill_bulk_urb(dev->rx_urb, udev,
- 			  usb_rcvbulkpipe(udev, dev->bulk_in),
--			  dev->rx_buf, IPHETH_BUF_SIZE,
-+			  dev->rx_buf, IPHETH_BUF_SIZE + =
-IPHETH_IP_ALIGN,
- 			  ipheth_rcvbulk_callback,
- 			  dev);
- 	dev->rx_urb->transfer_flags |=3D URB_NO_TRANSFER_DMA_MAP;
---=20
-2.32.0
-
-
-
-My patch corrects the following commit, which changes IPHETH_BUF_SIZE =
-from 1516 to 1514:
-=
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/=
-drivers/net/usb/ipheth.c?id=3Df33d9e2b48a34e1558b67a473a1fc1d6e793f93c
-
-
-
-> On 2021-07-20, at 1:22 PM, Jakub Kicinski <kuba@kernel.org> wrote:
->=20
-> On Tue, 20 Jul 2021 12:37:43 +0300, Georgi Valkov wrote:
->> ipheth: fix EOVERFLOW in ipheth_rcvbulk_callback
->> https://github.com/openwrt/openwrt/pull/4084
->>=20
->>=20
->> =46rom dd109ded2b526636fff438d33433ab64ffd21583 Mon Sep 17 00:00:00 =
-2001
->> From: Georgi Valkov <gvalkov@abv.bg>
->> Date: Fri, 16 Apr 2021 20:44:36 +0300
->> Subject: [PATCH] ipheth: fix EOVERFLOW in ipheth_rcvbulk_callback
->=20
-> This is all unnecessary, IIUC you're submitting this patch for =
-upstream
-> inclusion, please rebase it on the netdev/net tree, and try git
-> send-email on a file generated by git format-patch. Before that please
-> correct the fixes tag to the common format (you'll find it in docs or
-> follow what others do).
->=20
-
+greg k-h
