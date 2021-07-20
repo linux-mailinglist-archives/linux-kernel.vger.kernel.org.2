@@ -2,92 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E3F3CFA36
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027953CFA01
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237108AbhGTMcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:32:00 -0400
-Received: from smtpbg126.qq.com ([106.55.201.22]:26786 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232473AbhGTMba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:31:30 -0400
-X-Greylist: delayed 506 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Jul 2021 08:31:29 EDT
-X-QQ-mid: bizesmtp48t1626786092tzpucwkl
-Received: from localhost.localdomain (unknown [125.70.163.19])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 20 Jul 2021 21:01:30 +0800 (CST)
-X-QQ-SSF: 0100000000400080B000B00A0000000
-X-QQ-FEAT: QiB9IW2pbdELcbxTZh3ALvEfJuv/cKfiB1Sgs9+zAap2LDX7uELg/zrJw7mXo
-        LCArt9ZnyYCpMPfPv84aIAqD1PFZcLqJ1pAn7juYQxgZgvNAecBHTMMvZuUMvAjZIxTiwtF
-        3v3HeJgZP1hQuec3h1mof2XoCuV849eJ8C08AS+gQ3cCEEcXwcljoQf1kCZvXBWWjHukv6s
-        25JZ9nq32sO7m2hswDQUeQE6RMo2MipAFDuKzwyGmkrPSEOTjWwQ1cPPQ9JRgP1bdhspvK4
-        mTst0UxBugvg0ubqNmo8v6xk7sLBExUEUU+aP2B8re5w3hfUKLPnC1OOmwyks3cIcI/Q==
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     herbert@gondor.apana.org.au
-Cc:     clabbe.montjoie@gmail.com, davem@davemloft.net, mripard@kernel.org,
-        wens@csie.org, jernej.skrabec@gmail.com, colin.king@canonical.com,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] crypto: sun8i-ss - Use kfree_sensitive
-Date:   Tue, 20 Jul 2021 21:01:04 +0800
-Message-Id: <20210720130104.42867-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
+        id S237255AbhGTMVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234417AbhGTMUz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 08:20:55 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306D3C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:01:32 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id b14-20020a1c1b0e0000b02901fc3a62af78so1446308wmb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:01:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aT7B7aLtrHA38WRCCkcWibI+OBLuTfXFqvYRJ204kL8=;
+        b=WQOOu9EUP4QZrBDWS9EctGVO+GmPjrxym15Qbs5R69qSSEdvCHmpIY1/pk31fA69bp
+         3bhC+HD4e8CKzboAfJ+pob2QA2TRhC1Np5OjjzICbqkxEwpGsaSp5RJW4pQU+z0OC23I
+         0sG4uqigJR5y1K6AdXcTXz1r+jHYxj5pVPrh8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=aT7B7aLtrHA38WRCCkcWibI+OBLuTfXFqvYRJ204kL8=;
+        b=f+o71pg2p4IyTXO+2DUggZIJBHmKUFooH5Pu/A3gaXCzopj3gAcEGbIYFxbK8u/GjI
+         yWXx+tAoOmMOvG06L3tHEYy4BdRuL2BI5n8GGcn07ksFzzj3zwtvKd93fo0LhSMTf3LK
+         q+7nHw/GA79gVGLBCGScm4JpdRGZgCCm7yO2jIlzUBsaqrGtvEOmEOhrPqrMW11Xe16j
+         Afd+X039erpiVSaU6p3g4iAc37wwFHLsP8vCm6KcGsCIoqieMfKoO6uiyxTMDL/9R3lh
+         7722r/F/RHkfKPWza23/TNb+KOjqxaqJbietfqtuDP/UsjzzM8z1b15gQYBSPiJKRy1n
+         9mAQ==
+X-Gm-Message-State: AOAM532Vb/lCeeraS9x4YYUX7w05428WLAdBteHT8cAFo86Ub6HPaiNl
+        t6kWr+M/xWx2BRAv75lVRF9Y3A==
+X-Google-Smtp-Source: ABdhPJwyy66JJKeYq0Mz7cYqrI/HK2CM9a/YOzkD7Z06g/Y6R4UrwQlWLQ5wT2w19Z/rHR9fxuhTcg==
+X-Received: by 2002:a05:600c:2948:: with SMTP id n8mr32984505wmd.11.1626786090699;
+        Tue, 20 Jul 2021 06:01:30 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id g18sm19422048wmk.37.2021.07.20.06.01.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 06:01:30 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 15:01:27 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Dave Airlie <airlied@gmail.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Borislav Petkov <bp@suse.de>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH v3 0/2] allow simple{fb, drm} drivers to be used on
+ non-x86 EFI platforms
+Message-ID: <YPbJJ/0tSO/fuW7a@phenom.ffwll.local>
+Mail-Followup-To: Ard Biesheuvel <ardb@kernel.org>,
+        Dave Airlie <airlied@gmail.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Robinson <pbrobinson@gmail.com>, Borislav Petkov <bp@suse.de>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20210625130947.1803678-1-javierm@redhat.com>
+ <e61cf77c-6bff-dfcc-d3df-2fb6b48e5897@redhat.com>
+ <8dd26141-a09c-39e2-5174-4cad8d21c49c@suse.de>
+ <CAPM=9tyfNPa2f5PDBLm4w_H_riEQ5P3rEhX73YGE1y_ygRox+w@mail.gmail.com>
+ <CAMj1kXErHteZ+MKYvp=yYmwVxV3A=vjtnG351hZHV+3BPwDQvw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXErHteZ+MKYvp=yYmwVxV3A=vjtnG351hZHV+3BPwDQvw@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kfree_sensitive is a kernel API to clear sensitive information
-that should not be leaked to other future users of the same memory
-objects and free the memory. Its function is the same as the
-combination of memzero_explicit and kfree. Thus, we can replace the
-combination APIs with the single kfree_sensitive API.
+On Mon, Jul 19, 2021 at 09:10:52AM +0200, Ard Biesheuvel wrote:
+> On Mon, 19 Jul 2021 at 04:59, Dave Airlie <airlied@gmail.com> wrote:
+> >
+> > On Thu, 15 Jul 2021 at 18:11, Thomas Zimmermann <tzimmermann@suse.de> wrote:
+> > >
+> > > Hi
+> > >
+> > > Am 13.07.21 um 18:59 schrieb Javier Martinez Canillas:
+> > > > On 6/25/21 3:09 PM, Javier Martinez Canillas wrote:
+> > > >> The simplefb and simpledrm drivers match against a "simple-framebuffer"
+> > > >> device, but for aarch64 this is only registered when using Device Trees
+> > > >> and there's a node with a "simple-framebuffer" compatible string.
+> > > >>
+> > > >> There is no code to register a "simple-framebuffer" platform device when
+> > > >> using EFI instead. In fact, the only platform device that's registered in
+> > > >> this case is an "efi-framebuffer", which means that the efifb driver is
+> > > >> the only driver supported to have an early console with EFI on aarch64.
+> > > >>
+> > > >> The x86 architecture platform has a Generic System Framebuffers (sysfb)
+> > > >> support, that register a system frambuffer platform device. It either
+> > > >> registers a "simple-framebuffer" for the simple{fb,drm} drivers or legacy
+> > > >> VGA/EFI FB devices for the vgafb/efifb drivers.
+> > > >>
+> > > >> The sysfb is generic enough to be reused by other architectures and can be
+> > > >> moved out of the arch/x86 directory to drivers/firmware, allowing the EFI
+> > > >> logic used by non-x86 architectures to be folded into sysfb as well.
+> > > >>
+> > > >
+> > > > Any more comments on this series? It would be nice for this to land so the
+> > > > simpledrm driver could be used on aarch64 EFI systems as well.
+> > > >
+> > > > The patches have already been acked by x86 and DRM folks.
+> > >
+> > > Time to get this merged, I'd say. People are asking for these patches
+> > > already.
+> >
+> > Can we just merge via drm-misc and make sure the acks are present and
+> > I'll deal with the fallout if any.
+> >
+> 
+> Fine with me. Could you stick it on a separate branch so I can double
+> check whether there are any issues wrt the EFI tree?
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+It'll pop up in linux-next for integration testing or you can pick up the
+patch here for test-merge if you want.
 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
-index 3191527928e4..246a6782674c 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
-@@ -20,8 +20,7 @@ int sun8i_ss_prng_seed(struct crypto_rng *tfm, const u8 *seed,
- 	struct sun8i_ss_rng_tfm_ctx *ctx = crypto_rng_ctx(tfm);
- 
- 	if (ctx->seed && ctx->slen != slen) {
--		memzero_explicit(ctx->seed, ctx->slen);
--		kfree(ctx->seed);
-+		kfree_sensitive(ctx->seed);
- 		ctx->slen = 0;
- 		ctx->seed = NULL;
- 	}
-@@ -48,8 +47,7 @@ void sun8i_ss_prng_exit(struct crypto_tfm *tfm)
- {
- 	struct sun8i_ss_rng_tfm_ctx *ctx = crypto_tfm_ctx(tfm);
- 
--	memzero_explicit(ctx->seed, ctx->slen);
--	kfree(ctx->seed);
-+	kfree_sensitive(ctx->seed);
- 	ctx->seed = NULL;
- 	ctx->slen = 0;
- }
-@@ -167,9 +165,8 @@ int sun8i_ss_prng_generate(struct crypto_rng *tfm, const u8 *src,
- 		/* Update seed */
- 		memcpy(ctx->seed, d + dlen, ctx->slen);
- 	}
--	memzero_explicit(d, todo);
- err_free:
--	kfree(d);
-+	kfree_sensitive(d);
- 
- 	return err;
- }
+And since Dave has given a blanket cheque for handling fallout he'll deal
+with the need for fixups too if there's any.
+-Daniel
 -- 
-2.32.0
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
