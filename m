@@ -2,136 +2,398 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357F63CFA53
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C1B3CFA51
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238617AbhGTMdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 08:33:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46044 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238362AbhGTMcS (ORCPT
+        id S238740AbhGTMe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 08:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236898AbhGTMdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 08:32:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626786774;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9nf1v6P0JlGIoFjMRuRD5r+S7g6x4hJlGGenaSoSM68=;
-        b=T4zzYBXQtVFlKWltPSuANPjcUSbGkrWIaZ9yMXrjteIwSEF+Z5g1qDLBukataLiYL/jOzC
-        nxOtISRWRfUbebE9jNNSyvamm/DL2UZZR1i12v+5ETTfW2BYYM6feHQjYklON/5zW10H/M
-        2WWlW3+6TVo8hgQqIAVhqJvi4awEe2I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-24-fR5MrqLFMlC5Xp2S6MrlEw-1; Tue, 20 Jul 2021 09:12:52 -0400
-X-MC-Unique: fR5MrqLFMlC5Xp2S6MrlEw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5A6F0100C660;
-        Tue, 20 Jul 2021 13:12:51 +0000 (UTC)
-Received: from localhost (ovpn-114-103.ams2.redhat.com [10.36.114.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 011C560C82;
-        Tue, 20 Jul 2021 13:12:50 +0000 (UTC)
-Date:   Tue, 20 Jul 2021 14:12:49 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Xianting Tian <xianting.tian@linux.alibaba.com>
-Cc:     sgarzare@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        jasowang@redhat.com, kvm@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] vsock/virtio: set vsock frontend ready in
- virtio_vsock_probe()
-Message-ID: <YPbL0QIgbAh/PBuC@stefanha-x1.localdomain>
-References: <20210720071337.1995-1-xianting.tian@linux.alibaba.com>
- <YPakBTVDbgVcTGQX@stefanha-x1.localdomain>
- <b48bd02d-9514-ec0c-3779-fd5ddc5c2d3d@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ECpNC9XLSuXAI6rm"
-Content-Disposition: inline
-In-Reply-To: <b48bd02d-9514-ec0c-3779-fd5ddc5c2d3d@linux.alibaba.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Tue, 20 Jul 2021 08:33:01 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCABC0613DF;
+        Tue, 20 Jul 2021 06:13:31 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id m68so19932644qke.7;
+        Tue, 20 Jul 2021 06:13:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=F87JheAXP6YMvreTg0y/CXHA919FM8aHiWKkv9UNv6Q=;
+        b=Mmmmj0zfG8Cyxp2rYg+CuJJljm0h6g8ybrmuCB/diIDlQq87rqL34Bt5aOLOp6z771
+         54YAhptzkxUNkJarA5XjlA+/5G8+/r08Pv454duE8X+FgNCKNy1IcJFHBB4vM1xUwkkA
+         1nBCb8Y02xMaGmJarcpF1zK2RQG8wUKESe9AigQbvaqcIIQk2+nhtEy8HewuOY2Qi0zH
+         8mq8DAGn6fDrBNhAq0Qe9XMAKXZF8fh76xttV185jve+6NWKJiWqeyiMvUU3bcg+XELZ
+         mT+KSG9h77zmzjgybYl1seOrfe9jHe8rpEt2SO3+IL4cDuBOMAWGS6XXgDT2AQ1A/RfQ
+         n2UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=F87JheAXP6YMvreTg0y/CXHA919FM8aHiWKkv9UNv6Q=;
+        b=f7eR2rk3W5/+f/4V/LWc8rNB5FvY59kD9nKKYKndMFyw6NMNyKbm5aKmS0H+suuwOh
+         pUPM8nOlyPKWm+l0YRnow1EA9OgQtQcbwz2LhQC4v1Kjti9Y1B6UuvoHtLsLHCYdPBzZ
+         ZSsCcEyKZDT+s8Rx/V28Nr2wpKcUHd7XgwgV33OuCAQqY8zdj/h71dF9hc/GpPbuQ0+d
+         7r1/THmGlCGtR5zlwYz1NGOx5pZ3z8HI2d0QskY0QED0GXhkU0e8x2sPCfZtx7L5leq9
+         sGLDgTP18Qc5YjOvHCtKkYU9PzLsshqJH79aJH2QYOyMEmZe083wt4+PNuNAJNzhGSrV
+         cljw==
+X-Gm-Message-State: AOAM5325nU2lgD9ZDRQinQstyKXHNpRyB8YmtCg/6z12ZxAsNDI8O17o
+        XNZ62hrT6Ts8D40hm3GYGUM=
+X-Google-Smtp-Source: ABdhPJxts/b1FYhvQABhh9SbTT6SBiVA5lXvAzES/LHKPWXhg5Tby9rWs7YyZenKei1yuL61vFhCug==
+X-Received: by 2002:a05:620a:d42:: with SMTP id o2mr28973848qkl.233.1626786810530;
+        Tue, 20 Jul 2021 06:13:30 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id g17sm9701225qkm.34.2021.07.20.06.13.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 06:13:29 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        amit@kernel.org, benh@kernel.crashing.org,
+        brendanhiggins@google.com, corbet@lwn.net, david@redhat.com,
+        dwmw@amazon.com, elver@google.com, fan.du@intel.com,
+        foersleo@amazon.de, greg@kroah.com, gthelen@google.com,
+        guoju.fgj@alibaba-inc.com, jgowans@amazon.com, joe@perches.com,
+        mgorman@suse.de, mheyne@amazon.de, minchan@kernel.org,
+        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
+        riel@surriel.com, rientjes@google.com, rostedt@goodmis.org,
+        rppt@kernel.org, shakeelb@google.com, shuah@kernel.org,
+        sieberf@amazon.com, sj38.park@gmail.com, snu@zelle79.org,
+        vbabka@suse.cz, vdavydov.dev@gmail.com, zgf574564920@gmail.com,
+        linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC v3 00/15] Introduce DAMON-based Proactive Reclamation
+Date:   Tue, 20 Jul 2021 13:12:54 +0000
+Message-Id: <20210720131309.22073-1-sj38.park@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: SeongJae Park <sjpark@amazon.de>
 
---ECpNC9XLSuXAI6rm
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+NOTE: This is only an RFC for future features of DAMON patchset[1], which is
+not merged in the mainline yet.  The aim of this RFC is to show how DAMON would
+be evolved once it is merged in.  So, if you have some interest here, please
+consider reviewing the DAMON patchset, either.
 
-On Tue, Jul 20, 2021 at 07:05:39PM +0800, Xianting Tian wrote:
->=20
-> =E5=9C=A8 2021/7/20 =E4=B8=8B=E5=8D=886:23, Stefan Hajnoczi =E5=86=99=E9=
-=81=93:
-> > On Tue, Jul 20, 2021 at 03:13:37PM +0800, Xianting Tian wrote:
-> > > Add the missed virtio_device_ready() to set vsock frontend ready.
-> > >=20
-> > > Signed-off-by: Xianting Tian<xianting.tian@linux.alibaba.com>
-> > > ---
-> > >   net/vmw_vsock/virtio_transport.c | 2 ++
-> > >   1 file changed, 2 insertions(+)
-> > Please include a changelog when you send v2, v3, etc patches.
-> OK, thanks.
-> > > diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_=
-transport.c
-> > > index e0c2c992a..dc834b8fd 100644
-> > > --- a/net/vmw_vsock/virtio_transport.c
-> > > +++ b/net/vmw_vsock/virtio_transport.c
-> > > @@ -639,6 +639,8 @@ static int virtio_vsock_probe(struct virtio_devic=
-e *vdev)
-> > >   	mutex_unlock(&the_virtio_vsock_mutex);
-> > > +	virtio_device_ready(vdev);
-> > Why is this patch necessary?
->=20
-> Sorry, I didn't notice the check in virtio_dev_probe(),
->=20
-> As Jason comment,=C2=A0 I alsoe think we need to be consistent: switch to=
- use
-> virtio_device_ready() for all the drivers. What's opinion about this?
+[1] https://lore.kernel.org/linux-mm/20210716081449.22187-1-sj38.park@gmail.com/
 
-According to the documentation the virtio_device_read() API is optional:
+Changes from Previous Version (RFC v2)
+======================================
 
-  /**
-   * virtio_device_ready - enable vq use in probe function
-   * @vdev: the device
-   *
-   * Driver must call this to use vqs in the probe function.
-     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   *
-   * Note: vqs are enabled automatically after probe returns.
-     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   */
+Compared to the RFC v2
+(https://lore.kernel.org/linux-mm/20210608115254.11930-1-sj38.park@gmail.com/),
+this version contains below changes.
 
-Many drivers do not use vqs during the ->probe() function. They don't
-need to call virtio_device_ready(). That's why the virtio_vsock driver
-doesn't call it.
+- Rebase on latest -mm tree (v5.14-rc1-mmots-2021-07-15-18-47)
+- Implement a time quota (limits the time for trying reclamation of cold pages)
+- Make reclamation restarts from exactly the point it stopped due to the limit
 
-But if a ->probe() function needs to send virtqueue buffers, e.g. to
-query the device or activate some device feature, then the driver will
-need to call it explicitly.
+Introduction
+============
 
-The documentation is clear and this design is less error-prone than
-relying on all drivers to call it manually. I suggest leaving things
-unchanged.
+In short, this patchset 1) makes the engine for general data access
+pattern-oriented memory management be useful for production environments, and
+2) implements a static kernel module for lightweight proactive reclamation
+using the engine.
 
-Stefan
+Proactive Reclamation
+---------------------
 
---ECpNC9XLSuXAI6rm
-Content-Type: application/pgp-signature; name="signature.asc"
+On general memory over-committed systems, proactively reclaiming cold pages
+helps saving memory and reducing latency spikes that incurred by the direct
+reclaim or the CPU consumption of kswapd, while incurring only minimal
+performance degradation[2].
 
------BEGIN PGP SIGNATURE-----
+Particularly, a Free Pages Reporting[9] based memory over-commit virtualization
+system would be one of such use cases.  In the system, the guest VMs reports
+their free memory to host, and the host reallocates the reported memory to
+other guests.  As a result, the system's memory can be fully utilized.
+However, the guests could be not so memory-frugal, mainly because some kernel
+subsystems and user-space applications are designed to use as much memory as
+available.  Then, guests would report only small amount of free memory to host,
+and results in poor memory utilization.  Running the proactive reclamation in
+guests could help mitigating this problem.
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmD2y9EACgkQnKSrs4Gr
-c8jrqgf/S6HrkKdnFqfK+QSbiUl+UXuX9y6rWg6umKeM+V6GAOPrPw/+WZd1dM9Q
-AdhHLvjaR4MNNIQj7Vm8gG7aBs4s0FO2QTH4atfH6E3bEOXBWn1sB+lduzEk87Bf
-5Y/tUog1kjgiU0eTkwLAYgXs9D8dA7SkJunRPjM+prsdvYDdWo5ulpEiLsexjPSy
-ye84Yg5CMWDTPCmk9yvcXBxAQaHu3jaZQChJsT72GgO4s11DgjLFqgWAMc/vs6X1
-bYfP0oDKHQiJ7ag81nYxdyyNcUcf2xaX1tvfg54WwdM+oMP6vk6FqFOYuksvA8PP
-Lj+uqiNg4gqv2n6SDm0v+mYH9g2QpA==
-=I41d
------END PGP SIGNATURE-----
+Google has implemented the general idea and using it in their data center.
+They further proposed upstreaming it in LSFMM'19, and "the general consensus
+was that, while this sort of proactive reclaim would be useful for a number of
+users, the cost of this particular solution was too high to consider merging it
+upstream"[3].  The cost mainly comes from the coldness tracking.  Roughly
+speaking, the implementation periodically scans the 'Accessed' bit of each
+page.  For the reason, the overhead linearly increases as the size of the
+memory and the scanning frequency grows.  As a result, Google is known to
+dedicating one CPU for the work.  That's a reasonable option to someone like
+Google, but it wouldn't be so to some others.
 
---ECpNC9XLSuXAI6rm--
+DAMON and DAMOS: An engine for data access pattern-oriented memory management
+-----------------------------------------------------------------------------
+
+DAMON[4] is a framework for general data access monitoring.  Its adaptive
+monitoring overhead control feature minimizes its monitoring overhead.  It also
+let the upper-bounded of the overhead be configurable by clients, regardless of
+the size of the monitoring target memory.  While monitoring 70 GB memory of a
+production system every 5 milliseconds, it consumes less than 1% single CPU
+time.  For this, it could sacrify some of the quality of the monitoring
+results.  Nevertheless, the lower-bound of the quality is configurable, and it
+uses a best-effort algorithm for better quality.  Our test results[5] show the
+quality is practical enough.  From the production system monitoring, we were
+able to find a 4 KB region in the 70 GB memory that shows highest access
+frequency.  For people having different requirements, the features can
+selectively turned off, and DAMON supports the page-granularity monitoring[6],
+though it makes the overhead higher and proportional to the memory size again.
+
+We normally don't monitor the data access pattern just for fun but to improve
+something like memory management.  Proactive reclamation is one such usage.
+For such general cases, DAMON provides a feature called DAMon-based Operation
+Schemes (DAMOS)[7].  It makes DAMON an engine for general data access pattern
+oriented memory management.  Using this, clients can ask DAMON to find memory
+regions of specific data access pattern and apply some memory management action
+(e.g., page out, move to head of the LRU list, use huge page, ...).  We call
+the request 'scheme'.
+
+Proactive Reclamation on top of DAMON/DAMOS
+-------------------------------------------
+
+Therefore, by using DAMON for the cold pages detection, the proactive
+reclamation's monitoring overhead issue could be solved.  If someone like
+Google is ok to dedicate some CPUs for the monitoring and wants
+page-granularity monitoring, they can configure DAMON so.
+
+Actually, we previously implemented a version of proactive reclamation using
+DAMOS and achieved noticeable improvements with our evaluation setup[5].
+Nevertheless, it was only for a proof-of-concept.  It supports only virtual
+address spaces of processes, and require additional tuning efforts for given
+workloads and the hardware.  For the tuning, we recently introduced a simple
+auto-tuning user space tool[8].  Google is also known to using a ML-based
+similar approach for their fleets[2].  But, making it just works in the kernel
+would be more convenient for general users.
+
+To this end, this patchset improves DAMOS to be ready for such production
+usages, and implements another version of the proactive reclamation, namely
+DAMON_RECLAIM, on top of it.
+
+DAMOS Improvements: Speed Limit, Prioritization, and Watermarks
+---------------------------------------------------------------
+
+First of all, the current version of DAMOS supports only virtual address
+spaces.  This patchset makes it supports the physical address space for the
+page out action.
+
+One major problem of the current version of DAMOS is the lack of the
+aggressiveness control, which can results in arbitrary overhead.  For example,
+if huge memory regions having the data access pattern of interest are found,
+applying the requested action to all of the regions could incur significant
+overhead.  It can be controlled by modifying the target data access pattern
+with manual or automated approaches[2,8].  But, some people would prefer the
+kernel to just work with only intuitive tuning or default values.
+
+For this, this patchset implements a safeguard time/size quota.  Using this,
+the clients can specify up to how much time can be used for applying the
+action, and/or up to how much memory regions the action can be applied within
+specific time duration.  A followup question is, to which memory regions should
+the action applied within the limits?  We implement a simple regions
+prioritization mechanism for each action and make DAMOS to apply the action to
+high priority regions first.  It also allows clients tune the prioritization
+mechanism to use different weights for region's size, access frequency, and
+age.  This means we could use not only LRU but also LFU or some fancy
+algorithms like CAR[10] with lightweight overhead.
+
+Though DAMON is lightweight, someone would want to remove even the overhead
+when it is unnecessary.  Currently, it should manually turned on and off by
+clients, but some clients would simply want to turn it on and off based on some
+metrics like free memory ratio or memory fragmentation.  For such cases, this
+patchset implements a watermarks-based automatic activation feature.  It allows
+the clients configure the metric of their interest, and three watermarks of the
+metric.  If the metric is higher than the high watermark or lower than the low
+watermark, the scheme is deactivated.  If the metric is lower than the mid
+watermark but higher than the low watermark, the scheme is activated.
+
+DAMON-based Reclaim
+-------------------
+
+Using the improved DAMOS, this patchset implements a static kernel module
+called 'damon_reclaim'.  It finds memory regions that didn't accessed for
+specific time duration and page out.  Consuming too much CPU for the paging out
+operations, or invoking it too frequently can be critical for systems
+configuring its swap devices with software-defined in-memory block devices like
+zram or total number of writes limited devices like SSDs, respectively.  To
+avoid the problems, the time and/or size quotas can be configured.  Under the
+quotas, it pages out memory regions that didn't accessed longer first.  Also,
+to remove the monitoring overhead under peaceful situation, and to fall back to
+the LRU-list based page granularity reclamation when it doesn't make progress,
+the three watermarks based activation mechanism is used, with the free memory
+ratio as the watermark metric.
+
+For convenient configurations, it provides several module parameters.  Using
+these, sysadmins can enable/disable it and tune the coldness identification
+time threshold, the time/size quotas, and the three watermarks.  In detail,
+sysadmins can use the kernel command line for a boot time tuning, or the sysfs
+('/sys/modules/damon_reclaimparameters/') for overriding those in runtime.
+
+Evaluation
+==========
+
+In short, DAMON_RECLAIM on v5.13 Linux kernel with ZRAM swap device and 50ms/s
+time quota achieves 40.34% memory saving with only 3.38% runtime overhead.  For
+this, DAMON_RECLAIM consumes only 5.16% of single CPU time.  Among the CPU
+consumption, only up to about 1.448% of single CPU time is expected to be used
+for the access pattern monitoring.
+
+Setup
+-----
+
+We evaluate DAMON_RECLAIM to show how each of the DAMOS improvements make
+effect.  For this, we measure entire system memory footprint and runtime of 24
+realistic workloads in PARSEC3 and SPLASH-2X benchmark suites on my QEMU/KVM
+based virtual machine.  The virtual machine runs on an i3.metal AWS instance
+and has 130GiB memory.  It also utilizes a 4 GiB ZRAM swap device.  We do the
+measurement 5 times and use averages.  We also measure the CPU consumption of
+DAMON_RECLAIM.
+
+Detailed Results
+----------------
+
+The result numbers are shown in below table.
+
+DAMON_RECLAIM without the speed limit achieves 47.16% memory saving, but incur
+5.4% runtime slowdown to the workloads on average.  For this, DAMON_RECLAIM
+consumes about 11.62% single CPU time.
+
+Applying 10ms/s, 50ms/s, and 200ms/s time quotas without the regions
+prioritization reduces the slowdown to 2.51%, 4.53%, and 4.69%, respectively.
+DAMON_RECLAIM's CPU utilization also similarly reduced: 1.78%, 5.7%, and 10.92%
+of single CPU time.  That is, the overhead is proportional to the speed limit.
+Nevertheless, it also reduces the memory saving because it becomes less
+aggressive.  In detail, the three variants show 4.55%, 40.84%, and 48.42%
+memory saving, respectively.
+
+Applying the regions prioritization (page out regions that not accessed longer
+first within the time quota) further reduces the performance degradation.
+Runtime slowdowns has been 2.51% -> 1.84% (10ms/s), 4.53% -> 3.38% (50ms/s), and
+4.69% -> 5.1% (200ms/s).  Interestingly, prioritization also reduced memory
+saving a little bit.  I think that's because already paged out regions are
+prioritized again.
+
+    time quota   prioritization  memory_saving  cpu_util  slowdown
+    N            N               47.16%         11.62%    5.4%
+    10ms/s       N               4.55%          1.78%     2.51%
+    50ms/s       N               40.84%         5.7%      4.53%
+    200ms/s      N               48.42%         10.92%    4.69%
+    10ms/s       Y               0.77%          1.37%     1.84%
+    50ms/s       Y               40.34%         5.16%     3.38%
+    200ms/s      Y               47.99%         10.41%    5.1%
+
+Baseline and Complete Git Trees
+===============================
+
+The patches are based on the latest -mm tree (v5.14-rc1-mmots-2021-07-15-18-47)
+plus DAMON patchset[1], DAMOS patchset[7], and physical address space support
+patchset[6].  You can also clone the complete git tree from:
+
+    $ git clone git://github.com/sjp38/linux -b damon_reclaim/rfc/v3
+
+The web is also available:
+https://github.com/sjp38/linux/releases/tag/damon_reclaim/rfc/v3
+
+Development Trees
+-----------------
+
+There are a couple of trees for entire DAMON patchset series and
+features for future release.
+
+- For latest release: https://github.com/sjp38/linux/tree/damon/master
+- For next release: https://github.com/sjp38/linux/tree/damon/next
+
+Long-term Support Trees
+-----------------------
+
+For people who want to test DAMON patchset series but using only LTS kernels,
+there are another couple of trees based on two latest LTS kernels respectively
+and containing the 'damon/master' backports.
+
+- For v5.4.y: https://github.com/sjp38/linux/tree/damon/for-v5.4.y
+- For v5.10.y: https://github.com/sjp38/linux/tree/damon/for-v5.10.y
+
+Sequence Of Patches
+===================
+
+The first patch makes DAMOS to support the physical address space for the page
+out action.  Following five patches (patches 2-6) implement the time/size
+quotas.  Next four patches (patches 7-10) implement the memory regions
+prioritization within the limit.  Then, three following patches (patches 11-13)
+implement the watermarks-based schemes activation.  Finally, the last two
+patches (patches 14-15) implement and document the DAMON-based reclamation on
+top of the advanced DAMOS.
+
+[1] https://lore.kernel.org/linux-mm/20210716081449.22187-1-sj38.park@gmail.com/
+[2] https://research.google/pubs/pub48551/
+[3] https://lwn.net/Articles/787611/
+[4] https://damonitor.github.io
+[5] https://damonitor.github.io/doc/html/latest/vm/damon/eval.html
+[6] https://lore.kernel.org/linux-mm/20201216094221.11898-1-sjpark@amazon.com/
+[7] https://lore.kernel.org/linux-mm/20201216084404.23183-1-sjpark@amazon.com/
+[8] https://github.com/awslabs/damoos
+[9] https://www.kernel.org/doc/html/latest/vm/free_page_reporting.html
+[10] https://www.usenix.org/conference/fast-04/car-clock-adaptive-replacement
+
+Patch History
+=============
+
+Changes from RFC v2
+(https://lore.kernel.org/linux-mm/20210608115254.11930-1-sj38.park@gmail.com/)
+- Rebase on latest -mm tree (v5.14-rc1-mmots-2021-07-15-18-47)
+- Make reclamation restarts from exactly the point it stopped due to the limit
+- Implement a time quota (limits the time for trying reclamation of cold pages)
+
+[1] https://lore.kernel.org/linux-mm/20210716081449.22187-1-sj38.park@gmail.com/
+
+Changes from RFC v1
+(https://lore.kernel.org/linux-mm/20210531133816.12689-1-sj38.park@gmail.com/)
+- Avoid fake I/O load reporting (James Gowans)
+- Remove kernel configs for the build time enabling and the parameters setting
+- Export kdamond pid via a readonly parameter file
+- Elaborate coverletter, especially for evaluation and DAMON_RECLAIM interface
+- Add documentation
+- Rebase on -mm tree
+- Cleanup code
+
+SeongJae Park (15):
+  mm/damon/paddr: Support the pageout scheme
+  mm/damon/damos: Make schemes aggressiveness controllable
+  damon/core/schemes: Skip already charged targets and regions
+  mm/damon/schemes: Implement time quota
+  mm/damon/dbgfs: Support schemes' time/IO quotas
+  mm/damon/selftests: Support schemes quotas
+  mm/damon/schemes: Prioritize regions within the quotas
+  mm/damon/vaddr,paddr: Support pageout prioritization
+  mm/damon/dbgfs: Support prioritization weights
+  tools/selftests/damon: Update for regions prioritization of schemes
+  mm/damon/schemes: Activate schemes based on a watermarks mechanism
+  mm/damon/dbgfs: Support watermarks
+  selftests/damon: Support watermarks
+  mm/damon: Introduce DAMON-based reclamation
+  Documentation/admin-guide/mm/damon: Add a document for DAMON_RECLAIM
+
+ Documentation/admin-guide/mm/damon/index.rst  |   1 +
+ .../admin-guide/mm/damon/reclaim.rst          | 233 ++++++++++++
+ include/linux/damon.h                         | 136 ++++++-
+ mm/damon/Kconfig                              |  12 +
+ mm/damon/Makefile                             |   1 +
+ mm/damon/core.c                               | 283 +++++++++++++-
+ mm/damon/dbgfs.c                              |  47 ++-
+ mm/damon/paddr.c                              |  52 ++-
+ mm/damon/prmtv-common.c                       |  48 ++-
+ mm/damon/prmtv-common.h                       |   5 +
+ mm/damon/reclaim.c                            | 354 ++++++++++++++++++
+ mm/damon/vaddr.c                              |  15 +
+ .../testing/selftests/damon/debugfs_attrs.sh  |   4 +-
+ 13 files changed, 1163 insertions(+), 28 deletions(-)
+ create mode 100644 Documentation/admin-guide/mm/damon/reclaim.rst
+ create mode 100644 mm/damon/reclaim.c
+
+-- 
+2.17.1
 
