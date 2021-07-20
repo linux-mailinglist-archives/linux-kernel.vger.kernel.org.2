@@ -2,276 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C5E3CF2CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D803CF2C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347578AbhGTC7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 22:59:48 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:12278 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347107AbhGTC4A (ORCPT
+        id S1347001AbhGTC53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 22:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347071AbhGTCz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 22:56:00 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GTPQh5K0tz7vYq;
-        Tue, 20 Jul 2021 11:31:56 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 11:36:31 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 11:36:31 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
-        <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: [PATCH rfc v6 4/4] net: hns3: support skb's frag page recycling based on page pool
-Date:   Tue, 20 Jul 2021 11:35:45 +0800
-Message-ID: <1626752145-27266-5-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
-References: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
+        Mon, 19 Jul 2021 22:55:27 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF1BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 20:36:05 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id z11so22573556iow.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 20:36:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jfs1xv5cKWVRJ1qtbdS51k1USQ3B8wtm35pXmmoKryU=;
+        b=LFeTgoRuKZnHD0GvA1dTYaAuabVcP5fN21a9fEHVx9PnauoUp1lue+RNhnBFBte+AR
+         M8imBX5vwCVTIIpu3Snmd7ZWwJSJezCeJwCyYgvVO4q11y3dGW6DSqYaR0aqyaHWO0zl
+         H2KKj6kOlThtwW3DoQDowJuUB9H2dQdi3eM3w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jfs1xv5cKWVRJ1qtbdS51k1USQ3B8wtm35pXmmoKryU=;
+        b=QJe89pNjordeDae/A7hGgCWJsu35//cyI5IMqDVrNTruohWvLNNvLiAXZ1GRrslTah
+         cUnB8QUPwimfQEYRFJzzVWcJN8QDbuyvYJuV5kdVKwpIU2qXvbs1gawJOJ1a8ZzB7w1A
+         Xjk89wjCw7xAawShYU1SiZ+gadFUHFUxedQpSEDpHsp+R5JFova/das0Anb2Zn4hJif5
+         G8zx27DFj+JZYuPwyXm2uDn7iw+IoYKMx/t5d6AO6hc4IYg4Ro/u/PYd8bvlUiVwgZJ+
+         k9vymiBWgLZl71QaspY8FQUJVBFH7eDYjsLbSNr6XRo6FWz6svemo5i8If79s2KyQRnY
+         AMKg==
+X-Gm-Message-State: AOAM5337k02iwmG6o7zE8MFowin+dWvuwGecMjXAhtSGj1W20lzs3O5M
+        2HdpYN2tMplKDjRYcTtueVzxele1mrz31w==
+X-Google-Smtp-Source: ABdhPJyk4Mz9zhUSGsTVpX6STtD26T+hUf2uVN5+uqmD+b9WPJZai1YXVPypFexLBYYOC/kxPgVbvA==
+X-Received: by 2002:a5e:8208:: with SMTP id l8mr21378474iom.197.1626752164182;
+        Mon, 19 Jul 2021 20:36:04 -0700 (PDT)
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
+        by smtp.gmail.com with ESMTPSA id l5sm11586348ion.44.2021.07.19.20.36.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 20:36:03 -0700 (PDT)
+Received: by mail-io1-f48.google.com with SMTP id w22so14344144ioc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 20:36:03 -0700 (PDT)
+X-Received: by 2002:a5d:97c6:: with SMTP id k6mr18707977ios.69.1626752163074;
+ Mon, 19 Jul 2021 20:36:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <20210719123054.6844-1-will@kernel.org> <20210719123054.6844-4-will@kernel.org>
+In-Reply-To: <20210719123054.6844-4-will@kernel.org>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Tue, 20 Jul 2021 11:35:52 +0800
+X-Gmail-Original-Message-ID: <CALiNf28WYFs9ayvWp4XsK8YFL_=sy7Djb5_Mpj-egYjfRh4BEw@mail.gmail.com>
+Message-ID: <CALiNf28WYFs9ayvWp4XsK8YFL_=sy7Djb5_Mpj-egYjfRh4BEw@mail.gmail.com>
+Subject: Re: [PATCH 3/5] swiotlb: Remove io_tlb_default_mem indirection
+To:     Will Deacon <will@kernel.org>
+Cc:     "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds skb's frag page recycling support based on
-the frag page support in page pool.
+On Mon, Jul 19, 2021 at 8:31 PM Will Deacon <will@kernel.org> wrote:
+>
+> The indirection from the global 'io_tlb_default_mem' pointer to the
+> static '_io_tlb_default_mem' structure is ugly and unnecessary.
+>
+> Convert all users to reference the static structure directly, using the
+> 'nslabs' field to determine whether swiotlb has been initialised.
+>
+> Cc: Claire Chang <tientzu@chromium.org>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-The performance improves above 10~20% for single thread iperf
-TCP flow with IOMMU disabled when iperf server and irq/NAPI
-have a different CPU.
+Tested-by: Claire Chang <tientzu@chromium.org>
 
-The performance improves about 135%(14Gbit to 33Gbit) for single
-thread iperf TCP flow IOMMU is in strict mode and iperf server
-shares the same cpu with irq/NAPI.
-
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 82 +++++++++++++++++++++++--
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |  3 +
- 2 files changed, 80 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index cdb5f14..f3f9b13 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -3205,6 +3205,21 @@ static int hns3_alloc_buffer(struct hns3_enet_ring *ring,
- 	unsigned int order = hns3_page_order(ring);
- 	struct page *p;
- 
-+	if (ring->page_pool) {
-+		p = page_pool_dev_alloc_frag(ring->page_pool,
-+					     &cb->page_offset,
-+					     hns3_buf_size(ring));
-+		if (unlikely(!p))
-+			return -ENOMEM;
-+
-+		cb->priv = p;
-+		cb->buf = page_address(p);
-+		cb->dma = page_pool_get_dma_addr(p);
-+		cb->type = DESC_TYPE_FRAG;
-+		cb->reuse_flag = 0;
-+		return 0;
-+	}
-+
- 	p = dev_alloc_pages(order);
- 	if (!p)
- 		return -ENOMEM;
-@@ -3227,8 +3242,13 @@ static void hns3_free_buffer(struct hns3_enet_ring *ring,
- 	if (cb->type & (DESC_TYPE_SKB | DESC_TYPE_BOUNCE_HEAD |
- 			DESC_TYPE_BOUNCE_ALL | DESC_TYPE_SGL_SKB))
- 		napi_consume_skb(cb->priv, budget);
--	else if (!HNAE3_IS_TX_RING(ring) && cb->pagecnt_bias)
--		__page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
-+	else if (!HNAE3_IS_TX_RING(ring)) {
-+		if (cb->type & DESC_TYPE_PAGE && cb->pagecnt_bias)
-+			__page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
-+		else if (cb->type & DESC_TYPE_FRAG)
-+			page_pool_put_full_page(ring->page_pool, cb->priv,
-+						false);
-+	}
- 	memset(cb, 0, sizeof(*cb));
- }
- 
-@@ -3315,7 +3335,7 @@ static int hns3_alloc_and_map_buffer(struct hns3_enet_ring *ring,
- 	int ret;
- 
- 	ret = hns3_alloc_buffer(ring, cb);
--	if (ret)
-+	if (ret || ring->page_pool)
- 		goto out;
- 
- 	ret = hns3_map_buffer(ring, cb);
-@@ -3337,7 +3357,8 @@ static int hns3_alloc_and_attach_buffer(struct hns3_enet_ring *ring, int i)
- 	if (ret)
- 		return ret;
- 
--	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
-+	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
-+					 ring->desc_cb[i].page_offset);
- 
- 	return 0;
- }
-@@ -3367,7 +3388,8 @@ static void hns3_replace_buffer(struct hns3_enet_ring *ring, int i,
- {
- 	hns3_unmap_buffer(ring, &ring->desc_cb[i]);
- 	ring->desc_cb[i] = *res_cb;
--	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
-+	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
-+					 ring->desc_cb[i].page_offset);
- 	ring->desc[i].rx.bd_base_info = 0;
- }
- 
-@@ -3539,6 +3561,12 @@ static void hns3_nic_reuse_page(struct sk_buff *skb, int i,
- 	u32 frag_size = size - pull_len;
- 	bool reused;
- 
-+	if (ring->page_pool) {
-+		skb_add_rx_frag(skb, i, desc_cb->priv, frag_offset,
-+				frag_size, truesize);
-+		return;
-+	}
-+
- 	/* Avoid re-using remote or pfmem page */
- 	if (unlikely(!dev_page_is_reusable(desc_cb->priv)))
- 		goto out;
-@@ -3856,6 +3884,9 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring, unsigned int length,
- 		/* We can reuse buffer as-is, just make sure it is reusable */
- 		if (dev_page_is_reusable(desc_cb->priv))
- 			desc_cb->reuse_flag = 1;
-+		else if (desc_cb->type & DESC_TYPE_FRAG)
-+			page_pool_put_full_page(ring->page_pool, desc_cb->priv,
-+						false);
- 		else /* This page cannot be reused so discard it */
- 			__page_frag_cache_drain(desc_cb->priv,
- 						desc_cb->pagecnt_bias);
-@@ -3863,6 +3894,10 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring, unsigned int length,
- 		hns3_rx_ring_move_fw(ring);
- 		return 0;
- 	}
-+
-+	if (ring->page_pool)
-+		skb_mark_for_recycle(skb);
-+
- 	u64_stats_update_begin(&ring->syncp);
- 	ring->stats.seg_pkt_cnt++;
- 	u64_stats_update_end(&ring->syncp);
-@@ -3901,6 +3936,10 @@ static int hns3_add_frag(struct hns3_enet_ring *ring)
- 					    "alloc rx fraglist skb fail\n");
- 				return -ENXIO;
- 			}
-+
-+			if (ring->page_pool)
-+				skb_mark_for_recycle(new_skb);
-+
- 			ring->frag_num = 0;
- 
- 			if (ring->tail_skb) {
-@@ -4705,6 +4744,31 @@ static void hns3_put_ring_config(struct hns3_nic_priv *priv)
- 	priv->ring = NULL;
- }
- 
-+static void hns3_alloc_page_pool(struct hns3_enet_ring *ring)
-+{
-+	struct page_pool_params pp_params = {
-+		.flags = PP_FLAG_DMA_MAP | PP_FLAG_PAGE_FRAG |
-+				PP_FLAG_DMA_SYNC_DEV,
-+		.order = hns3_page_order(ring),
-+		.pool_size = ring->desc_num * hns3_buf_size(ring) /
-+				(PAGE_SIZE << hns3_page_order(ring)),
-+		.nid = dev_to_node(ring_to_dev(ring)),
-+		.dev = ring_to_dev(ring),
-+		.dma_dir = DMA_FROM_DEVICE,
-+		.offset = 0,
-+		.max_len = PAGE_SIZE << hns3_page_order(ring),
-+	};
-+
-+	ring->page_pool = page_pool_create(&pp_params);
-+	if (IS_ERR(ring->page_pool)) {
-+		dev_warn(ring_to_dev(ring), "page pool creation failed: %ld\n",
-+			 PTR_ERR(ring->page_pool));
-+		ring->page_pool = NULL;
-+	} else {
-+		dev_info(ring_to_dev(ring), "page pool creation succeeded\n");
-+	}
-+}
-+
- static int hns3_alloc_ring_memory(struct hns3_enet_ring *ring)
- {
- 	int ret;
-@@ -4724,6 +4788,8 @@ static int hns3_alloc_ring_memory(struct hns3_enet_ring *ring)
- 		goto out_with_desc_cb;
- 
- 	if (!HNAE3_IS_TX_RING(ring)) {
-+		hns3_alloc_page_pool(ring);
-+
- 		ret = hns3_alloc_ring_buffers(ring);
- 		if (ret)
- 			goto out_with_desc;
-@@ -4764,6 +4830,12 @@ void hns3_fini_ring(struct hns3_enet_ring *ring)
- 		devm_kfree(ring_to_dev(ring), tx_spare);
- 		ring->tx_spare = NULL;
- 	}
-+
-+	if (!HNAE3_IS_TX_RING(ring) && ring->page_pool) {
-+		page_pool_destroy(ring->page_pool);
-+		ring->page_pool = NULL;
-+		dev_info(ring_to_dev(ring), "page pool destroyed\n");
-+	}
- }
- 
- static int hns3_buf_size2type(u32 buf_size)
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-index 15af3d9..115c0ce 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-@@ -6,6 +6,7 @@
- 
- #include <linux/dim.h>
- #include <linux/if_vlan.h>
-+#include <net/page_pool.h>
- 
- #include "hnae3.h"
- 
-@@ -307,6 +308,7 @@ enum hns3_desc_type {
- 	DESC_TYPE_BOUNCE_ALL		= 1 << 3,
- 	DESC_TYPE_BOUNCE_HEAD		= 1 << 4,
- 	DESC_TYPE_SGL_SKB		= 1 << 5,
-+	DESC_TYPE_FRAG			= 1 << 6,
- };
- 
- struct hns3_desc_cb {
-@@ -451,6 +453,7 @@ struct hns3_enet_ring {
- 	struct hnae3_queue *tqp;
- 	int queue_index;
- 	struct device *dev; /* will be used for DMA mapping of descriptors */
-+	struct page_pool *page_pool;
- 
- 	/* statistic */
- 	struct ring_stats stats;
--- 
-2.7.4
-
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  drivers/base/core.c       |  2 +-
+>  drivers/xen/swiotlb-xen.c |  4 ++--
+>  include/linux/swiotlb.h   |  2 +-
+>  kernel/dma/swiotlb.c      | 38 ++++++++++++++++++--------------------
+>  4 files changed, 22 insertions(+), 24 deletions(-)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index ea5b85354526..b49824001cfa 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -2848,7 +2848,7 @@ void device_initialize(struct device *dev)
+>         dev->dma_coherent = dma_default_coherent;
+>  #endif
+>  #ifdef CONFIG_SWIOTLB
+> -       dev->dma_io_tlb_mem = io_tlb_default_mem;
+> +       dev->dma_io_tlb_mem = &io_tlb_default_mem;
+>  #endif
+>  }
+>  EXPORT_SYMBOL_GPL(device_initialize);
+> diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+> index 785ec7e8be01..f06d9b4f1e0f 100644
+> --- a/drivers/xen/swiotlb-xen.c
+> +++ b/drivers/xen/swiotlb-xen.c
+> @@ -164,7 +164,7 @@ int __ref xen_swiotlb_init(void)
+>         int rc = -ENOMEM;
+>         char *start;
+>
+> -       if (io_tlb_default_mem != NULL) {
+> +       if (io_tlb_default_mem.nslabs) {
+>                 pr_warn("swiotlb buffer already initialized\n");
+>                 return -EEXIST;
+>         }
+> @@ -547,7 +547,7 @@ xen_swiotlb_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
+>  static int
+>  xen_swiotlb_dma_supported(struct device *hwdev, u64 mask)
+>  {
+> -       return xen_phys_to_dma(hwdev, io_tlb_default_mem->end - 1) <= mask;
+> +       return xen_phys_to_dma(hwdev, io_tlb_default_mem.end - 1) <= mask;
+>  }
+>
+>  const struct dma_map_ops xen_swiotlb_dma_ops = {
+> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> index d3b617c19045..b0cb2a9973f4 100644
+> --- a/include/linux/swiotlb.h
+> +++ b/include/linux/swiotlb.h
+> @@ -105,7 +105,7 @@ struct io_tlb_mem {
+>                 unsigned int list;
+>         } *slots;
+>  };
+> -extern struct io_tlb_mem *io_tlb_default_mem;
+> +extern struct io_tlb_mem io_tlb_default_mem;
+>
+>  static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+>  {
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index 992d73cdc944..7948f274f9bb 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -70,8 +70,7 @@
+>
+>  enum swiotlb_force swiotlb_force;
+>
+> -struct io_tlb_mem *io_tlb_default_mem;
+> -static struct io_tlb_mem _io_tlb_default_mem;
+> +struct io_tlb_mem io_tlb_default_mem;
+>
+>  /*
+>   * Max segment that we can provide which (if pages are contingous) will
+> @@ -102,7 +101,7 @@ early_param("swiotlb", setup_io_tlb_npages);
+>
+>  unsigned int swiotlb_max_segment(void)
+>  {
+> -       return io_tlb_default_mem ? max_segment : 0;
+> +       return io_tlb_default_mem.nslabs ? max_segment : 0;
+>  }
+>  EXPORT_SYMBOL_GPL(swiotlb_max_segment);
+>
+> @@ -135,9 +134,9 @@ void __init swiotlb_adjust_size(unsigned long size)
+>
+>  void swiotlb_print_info(void)
+>  {
+> -       struct io_tlb_mem *mem = io_tlb_default_mem;
+> +       struct io_tlb_mem *mem = &io_tlb_default_mem;
+>
+> -       if (!mem) {
+> +       if (!mem->nslabs) {
+>                 pr_warn("No low mem\n");
+>                 return;
+>         }
+> @@ -164,11 +163,11 @@ static inline unsigned long nr_slots(u64 val)
+>   */
+>  void __init swiotlb_update_mem_attributes(void)
+>  {
+> -       struct io_tlb_mem *mem = io_tlb_default_mem;
+> +       struct io_tlb_mem *mem = &io_tlb_default_mem;
+>         void *vaddr;
+>         unsigned long bytes;
+>
+> -       if (!mem || mem->late_alloc)
+> +       if (!mem->nslabs || mem->late_alloc)
+>                 return;
+>         vaddr = phys_to_virt(mem->start);
+>         bytes = PAGE_ALIGN(mem->nslabs << IO_TLB_SHIFT);
+> @@ -202,14 +201,14 @@ static void swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
+>
+>  int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+>  {
+> -       struct io_tlb_mem *mem = &_io_tlb_default_mem;
+> +       struct io_tlb_mem *mem = &io_tlb_default_mem;
+>         size_t alloc_size;
+>
+>         if (swiotlb_force == SWIOTLB_NO_FORCE)
+>                 return 0;
+>
+>         /* protect against double initialization */
+> -       if (WARN_ON_ONCE(io_tlb_default_mem))
+> +       if (WARN_ON_ONCE(mem->nslabs))
+>                 return -ENOMEM;
+>
+>         alloc_size = PAGE_ALIGN(array_size(sizeof(*mem->slots), nslabs));
+> @@ -220,7 +219,6 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+>
+>         swiotlb_init_io_tlb_mem(mem, __pa(tlb), nslabs, false);
+>
+> -       io_tlb_default_mem = mem;
+>         if (verbose)
+>                 swiotlb_print_info();
+>         swiotlb_set_max_segment(mem->nslabs << IO_TLB_SHIFT);
+> @@ -305,14 +303,14 @@ swiotlb_late_init_with_default_size(size_t default_size)
+>  int
+>  swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
+>  {
+> -       struct io_tlb_mem *mem = &_io_tlb_default_mem;
+> +       struct io_tlb_mem *mem = &io_tlb_default_mem;
+>         unsigned long bytes = nslabs << IO_TLB_SHIFT;
+>
+>         if (swiotlb_force == SWIOTLB_NO_FORCE)
+>                 return 0;
+>
+>         /* protect against double initialization */
+> -       if (WARN_ON_ONCE(io_tlb_default_mem))
+> +       if (WARN_ON_ONCE(mem->nslabs))
+>                 return -ENOMEM;
+>
+>         mem->slots = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
+> @@ -323,7 +321,6 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
+>         set_memory_decrypted((unsigned long)tlb, bytes >> PAGE_SHIFT);
+>         swiotlb_init_io_tlb_mem(mem, virt_to_phys(tlb), nslabs, true);
+>
+> -       io_tlb_default_mem = mem;
+>         swiotlb_print_info();
+>         swiotlb_set_max_segment(mem->nslabs << IO_TLB_SHIFT);
+>         return 0;
+> @@ -331,10 +328,10 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
+>
+>  void __init swiotlb_exit(void)
+>  {
+> -       struct io_tlb_mem *mem = io_tlb_default_mem;
+>         size_t size;
+> +       struct io_tlb_mem *mem = &io_tlb_default_mem;
+>
+> -       if (!mem)
+> +       if (!mem->nslabs)
+>                 return;
+>
+>         size = array_size(sizeof(*mem->slots), mem->nslabs);
+> @@ -342,7 +339,6 @@ void __init swiotlb_exit(void)
+>                 free_pages((unsigned long)mem->slots, get_order(size));
+>         else
+>                 memblock_free_late(__pa(mem->slots), PAGE_ALIGN(size));
+> -       io_tlb_default_mem = NULL;
+>         memset(mem, 0, sizeof(*mem));
+>  }
+>
+> @@ -697,7 +693,9 @@ size_t swiotlb_max_mapping_size(struct device *dev)
+>
+>  bool is_swiotlb_active(struct device *dev)
+>  {
+> -       return dev->dma_io_tlb_mem != NULL;
+> +       struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
+> +
+> +       return mem && mem->nslabs;
+>  }
+>  EXPORT_SYMBOL_GPL(is_swiotlb_active);
+>
+> @@ -712,10 +710,10 @@ static void swiotlb_create_debugfs_files(struct io_tlb_mem *mem)
+>
+>  static int __init swiotlb_create_default_debugfs(void)
+>  {
+> -       struct io_tlb_mem *mem = io_tlb_default_mem;
+> +       struct io_tlb_mem *mem = &io_tlb_default_mem;
+>
+>         debugfs_dir = debugfs_create_dir("swiotlb", NULL);
+> -       if (mem) {
+> +       if (mem->nslabs) {
+>                 mem->debugfs = debugfs_dir;
+>                 swiotlb_create_debugfs_files(mem);
+>         }
+> @@ -814,7 +812,7 @@ static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
+>  static void rmem_swiotlb_device_release(struct reserved_mem *rmem,
+>                                         struct device *dev)
+>  {
+> -       dev->dma_io_tlb_mem = io_tlb_default_mem;
+> +       dev->dma_io_tlb_mem = &io_tlb_default_mem;
+>  }
+>
+>  static const struct reserved_mem_ops rmem_swiotlb_ops = {
+> --
+> 2.32.0.402.g57bb445576-goog
+>
