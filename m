@@ -2,88 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DFF3CF92B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC60D3CF92A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 13:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238020AbhGTLJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 07:09:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49660 "EHLO mail.kernel.org"
+        id S238246AbhGTLKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 07:10:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237648AbhGTLIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:08:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0E0E600D1;
-        Tue, 20 Jul 2021 11:48:50 +0000 (UTC)
+        id S237868AbhGTLJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 07:09:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D6EC610FB;
+        Tue, 20 Jul 2021 11:49:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626781731;
-        bh=OBvLrQnyZF2Svj2jZQUersvmOrA/Ciz1z2w++07BYns=;
+        s=korg; t=1626781799;
+        bh=+U/MIESQRO2gMig9c7DN9708dMtV66+bXh8Vfx/UCcE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZmlaK3l5Sw3ZxBWCkPqBM/dD8n+JvI/23hhA77y6YbAP8/jrZXeEXkrIzSZLon5Ot
-         cm0QyoRBh/zfMXbQzQ3/XcbqjCFoeTPzuy9aPu8T5sbsniB6Tg98xbyg9KZn5asHlE
-         e5HhEaTWV6TCCjLRD4QcrD5DJUhIq8BIGag5YcBw=
-Date:   Tue, 20 Jul 2021 13:48:48 +0200
+        b=Pqhtb/soU95i+VSG6yDruSM7s1IwbqbF0W2/ZgmS4SzfNqHxNCfweKqehlhSi3Nt+
+         EYNLPIBaVPV41+1is8uMoKcNEvzTofTsETx9BhFqHSNYe6bGpgM8SqQnxmFEsLeTPE
+         yG49N8TPHpQxdnBPDDIHCXz1yp0MrQYU0OtY+H8k=
+Date:   Tue, 20 Jul 2021 13:49:57 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kelvin Cheung <keguang.zhang@gmail.com>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V5] dmaengine: Loongson1: Add Loongson1 dmaengine driver
-Message-ID: <YPa4IAk3sh7bai15@kroah.com>
-References: <20210704153314.6995-1-keguang.zhang@gmail.com>
- <YO5yo8v/tRZLGEdo@matsya>
- <CAJhJPsUNCSK4VYv9Z4ZNDxC03F4CxQoAXCCf+TJmmbdUe4XNNA@mail.gmail.com>
- <YPLrsXEmmHPtbZ+N@matsya>
- <YPMVyYoBojHYsMbJ@kroah.com>
- <YPa2+TsdL0PrR3hR@matsya>
+To:     Georgi Valkov <gvalkov@abv.bg>
+Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        mhabets@solarflare.com, luc.vanoostenryck@gmail.com,
+        snelson@pensando.io, mst@redhat.com, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corsac@corsac.net, matti.vuorela@bitfactor.fi,
+        stable@vger.kernel.org
+Subject: Re: ipheth: fix EOVERFLOW in ipheth_rcvbulk_callback
+Message-ID: <YPa4ZelG2k8Z826E@kroah.com>
+References: <B60B8A4B-92A0-49B3-805D-809A2433B46C@abv.bg>
+ <20210720122215.54abaf53@cakuba>
+ <5D0CFF83-439B-4A10-A276-D2D17B037704@abv.bg>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YPa2+TsdL0PrR3hR@matsya>
+In-Reply-To: <5D0CFF83-439B-4A10-A276-D2D17B037704@abv.bg>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 05:13:53PM +0530, Vinod Koul wrote:
-> On 17-07-21, 19:39, Greg KH wrote:
-> > On Sat, Jul 17, 2021 at 08:09:45PM +0530, Vinod Koul wrote:
-> > > On 17-07-21, 18:57, Kelvin Cheung wrote:
-> > > > Vinod Koul <vkoul@kernel.org> 于2021年7月14日周三 下午1:14写道：
-> > > > >
-> > > > > On 04-07-21, 23:33, Keguang Zhang wrote:
-> > > > >
-> > > > > > +static struct platform_driver ls1x_dma_driver = {
-> > > > > > +     .probe  = ls1x_dma_probe,
-> > > > > > +     .remove = ls1x_dma_remove,
-> > > > > > +     .driver = {
-> > > > > > +             .name   = "ls1x-dma",
-> > > > > > +     },
-> > > > > > +};
-> > > > > > +
-> > > > > > +module_platform_driver(ls1x_dma_driver);
-> > > > >
-> > > > > so my comment was left unanswered, who creates this device!
-> > > > 
-> > > > Sorry!
-> > > > This patch will create the device: https://patchwork.kernel.org/patch/12281691
-> > > 
-> > > Greg, looks like the above patch creates platform devices in mips, is
-> > > that the right way..?
-> > 
-> > I do not understand, what exactly is the question?
-> 
-> So this patch was adding Loongson1 dmaengine driver which is a platform
-> device. I asked about the platform device and was told that [1] creates
-> the platform device. I am not sure if that is the recommended way given
-> that you have been asking people to not use platform devices.
+On Tue, Jul 20, 2021 at 02:39:49PM +0300, Georgi Valkov wrote:
+> I am doing this for the first time, so any help would be appreciated!
 
-Yes, but this link:
+Have you read Documentation/process/submitting-patches.rst yet?  If not,
+please do so.
 
-> [1]: https://patchwork.kernel.org/patch/12281691
-
-Does look like a "real" platform device in that you have fixed resources
-for the device and no way to discover it on your own.
-
-But why are you not using DT for this?  That looks like the old platform
-data files.
+And look at examples on this list, you have to send individual patches,
+not everything all crammed into one email.
 
 thanks,
 
