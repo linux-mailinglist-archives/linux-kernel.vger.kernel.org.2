@@ -2,186 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109843D01AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05EAC3D01AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 20:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234366AbhGTRqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 13:46:25 -0400
-Received: from mail-dm6nam10on2053.outbound.protection.outlook.com ([40.107.93.53]:64770
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232712AbhGTRnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 13:43:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JgXHkWtceAUkaihY2GgB1E9GUY4Ou234TmWL5jyR9MHM9GY135Rzqpz1D4siofn0qBN6Gsaw/tPLhtcTOEjz1m0HeAWT76LK4kKUxauySus28yRGmFVdATbCNSRZ8W+LH8BDVkO1BdRbi/H3OGuAd3pBMaqJaa45+10M6NA248VaO/tmxfQYy7eSoKJTEq4ZjlG5C7BXhGOS0r77KqtidkrQeSzMnZVuANrPejvJ9IM0I1/zcZQqyayMv0zVBmjcIAaF7zKgoZQ77Df6Rc3I7oyRIkKbQk2bR7MWCve6p6V0HUpng7aNzi/b6EeZ+oL4WomgIJyZA6IHDsgR43uClQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9a0/cKIDyMRzYX5tDAnUYR5KSNbdQ8LxgbQ1puTkxf0=;
- b=V+cdumQqwx+2ioq+f2epiqcf1wbj1Gr+HyOG3ZrA4PVqo1j+IiVRQptHrpIZLMyS5NC64TgiHi6XPPrsfqG9kXAZNAefr04JVNlwUsWTw6iYkBkOgC5NIPyZmb+bBZdyrRS4XQGB2FQqe9LB4tQmA1L7oOjrzpCoiQGU4sAqE+fdWG4R+4X/Opiq9nxHXny0v+p8yZYsskp/Zph2jMmyZrlVv0AmPplIhHLvlsgX2c5gDeUsvMUpTckZCuXPXGN+7p7RBx7ZBhLPWJCs2+SWTsh7qCm9U3o5KP2TocrrEf7b0usqoxocVlAMkgqJN+4NsxRSjJXFZ97t52vKttUTqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9a0/cKIDyMRzYX5tDAnUYR5KSNbdQ8LxgbQ1puTkxf0=;
- b=Xb1IzUiPyQdV5h9fPXNSFDtmCEcO3j8ZGtq9TSc7Az27doFcqKpmS9S1S4Vh/LZ6WcWISrPiDGCX94auC35BFOfoY92XXQ5M90NJ6HC9atLa3Fm1JiPcyddIoUt7HMn+C66S2nkkhIwKAV5W3Nfn4SW8hY4cdhl6ZbI+T8KsLNw=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN6PR12MB2768.namprd12.prod.outlook.com (2603:10b6:805:72::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Tue, 20 Jul
- 2021 18:23:36 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4331.034; Tue, 20 Jul 2021
- 18:23:36 +0000
-Cc:     brijesh.singh@amd.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 25/40] KVM: SVM: Reclaim the guest pages when
- SEV-SNP VM terminates
-To:     Sean Christopherson <seanjc@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-26-brijesh.singh@amd.com> <YPHnb5pW9IoTcwWU@google.com>
- <2711d9f9-21a0-7baa-d0ff-2c0f69ca6949@amd.com> <YPIoaoDCjNVzn2ZM@google.com>
- <e1cc1e21-e7b7-5930-1c01-8f4bb6e43b3a@amd.com> <YPWz6YwjDZcla5/+@google.com>
- <912c929c-06ba-a391-36bb-050384907d81@amd.com> <YPXMas+9O1Y5910b@google.com>
- <96154428-4c18-9e5f-3742-d0446a8d9848@amd.com> <YPb8c5qlZ6JuDR05@google.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <1e9ea39d-ed68-ad91-63f8-661245b62dfe@amd.com>
-Date:   Tue, 20 Jul 2021 13:23:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YPb8c5qlZ6JuDR05@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR11CA0075.namprd11.prod.outlook.com
- (2603:10b6:806:d2::20) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        id S232607AbhGTRrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 13:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231315AbhGTRoG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 13:44:06 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E754DC061766
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:24:37 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id b14-20020a1c1b0e0000b02901fc3a62af78so2032555wmb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 11:24:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fZortMfUJ6sP9V4mv+JXrwjkFsuKqC8sCrT1IfxE2IQ=;
+        b=XUVux13s5c4XE3la6sNsDVnV5wsJPDf/esKROaTiOV8tSVRTmYXOJTY8JKuikYyZZy
+         XNq6hOye5f5dgGbDzB+YonO8zlet92Ln7TuqPcypBNArxSXUeL0ON7mgBEcnbSwB8z+o
+         Y/YfhB3M9AvmOGssbFid8ROltS8CDgfGo1RHw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=fZortMfUJ6sP9V4mv+JXrwjkFsuKqC8sCrT1IfxE2IQ=;
+        b=Y1uUq65I9PnmNq8Da2NLJx6eAq4LciQx+HmHJSw+/n3Eg6wVn48RGGwA6fcVSoHdLj
+         7KhLCdCdJS0LIM/f8o0aP/ReafIupkT6F1V06szl2kansalay3c+FqBYRv3AMleuRvVS
+         Xo6h8DDT23OHh5OZ6azxOPSXrexmRzgBTzFW0KzAsS6jQLsBhodGFrJq2pz3BuKWQq66
+         IfVVh5cQw5EJcl6yXDYwH1EGMygnIA90ZjQXDb4gQJTL4+XP18feXbOw3Te/g+W50y3m
+         rMfgOYN62JstvsblK7QmvOiz+ursh58Ou+Kc2evXDhaPwooW0xKFA6rFUtJMkuZBA9qY
+         TAKw==
+X-Gm-Message-State: AOAM533j8UBGlL8fHK6/C1zjHYqz8lclhVT6DQhBsb1ma1sUlbaah058
+        qABha4r91BHKb0mto1oTWhl6JA==
+X-Google-Smtp-Source: ABdhPJxJxuXAAbG2g8VfRjxtITgkDdi2Iec/QZfgBKKrqV+PIsMHUm2HQjbGOW/zVNRBi991fnD58w==
+X-Received: by 2002:a05:600c:2f1a:: with SMTP id r26mr38841077wmn.41.1626805476463;
+        Tue, 20 Jul 2021 11:24:36 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q19sm2943917wmq.38.2021.07.20.11.24.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 11:24:33 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 20:24:31 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        emil.l.velikov@gmail.com
+Subject: Re: [PATCH v8 0/5] drm: address potential UAF bugs with drm_master
+ ptrs
+Message-ID: <YPcU3wJK7kC5b7kv@phenom.ffwll.local>
+Mail-Followup-To: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        emil.l.velikov@gmail.com
+References: <20210712043508.11584-1-desmondcheongzx@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.31.95] (165.204.77.1) by SA0PR11CA0075.namprd11.prod.outlook.com (2603:10b6:806:d2::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23 via Frontend Transport; Tue, 20 Jul 2021 18:23:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 54a19ea7-506a-4436-5ae7-08d94bab7ce6
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2768:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB2768E879D8D979825B71501EE5E29@SN6PR12MB2768.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OiLMB738Lw5cn3x8mXUCMVEmGIhyfkiydVfADvOF2HJfRZtqu8Gk5LP7iQkAPqXzSqdAM3YhW1tKR5RAwq2mdidh/oN5598iFfspJLrIk7yMTV7BRixb2qRhCudTxIdG2B+bnG+8o1u6veS09ts5zsGvKWsprzehqK5ePio7+7XtBFeuZxcCll5JarUkQuvkamQYTXsvNIBNs42tbV7LryG7tFfr8Zjj8wIWt2FMGTV5JapusDJ3A06Aa8T1Z1OxOXMqRY4+n2M+ToJB8hg3q8N876tNu/SZi9Whv0pW02lua/yPB7HyxHZXfrxWoctFnkGb6izH662fIoWlSoU/oWUayHjgwuKdSfdsGJO3wZLE393vMdLQ4ofEBPTTj4Kmwhq069PjzJNDJERPQwg6Zro2w04hTH1Lm0yI0bkrz//bSCryVvo/azPSXigbjImFb+6eVsRNAz+0IoKK03rDf5myshhE82VLCesTohGnEmZ3uP7x8Xt0HIZtYq5EoLe6lWUFWdy8CzsaweTgBJj2PGgrCeJeOjtN/aO73NjuCnKocE7WpxpqR9Fiv0lyNxQkG11UUDLecPuYgOqYIVGftDkNdxcTS5kWAHDHVlVMsQS/WmcGQ0rdqz5P+CDWgTwElUrz9gM1WxPR161U09nygw+AI0MoP1HhlQJ0aQGQtxgGeA5+7Knw3/B4KslG7e3sFK/HMcHhCLHZGJxLjzbha3W519JAsqLYMV2PFaW4/tPW6idOiqHdHtP6fcdFdy4G/e+gvgQSk3K7twxQCNHAxQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(366004)(396003)(2616005)(8936002)(66946007)(83380400001)(53546011)(956004)(5660300002)(26005)(31696002)(4326008)(66556008)(86362001)(2906002)(36756003)(66476007)(52116002)(44832011)(7406005)(16576012)(38350700002)(6916009)(38100700002)(54906003)(8676002)(316002)(31686004)(6486002)(478600001)(7416002)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZUs3YmtZMWVhTjNVYkVwL0NnMFBSQS9uUWhXOVFaRVFmSEkyRlYzNFE1Rzg5?=
- =?utf-8?B?NVB1dDBMaHR0N3QvL05lZFcxQ2ZyOEloS2RvRWlmU0l6YzE2cHhuU3c5Qjgv?=
- =?utf-8?B?bFN5cUk4R0FNMGw1QkVPTU5JbVpadkN4ZVVuQm9uUnJoYkJFb2hWelZOckZk?=
- =?utf-8?B?eG02azcvRG1VYVIwQXRVdFp4U0ZNMGpTSGtOMUxldWxTUGtoQW1YSXdqQ2dk?=
- =?utf-8?B?U1lrUUMzTWxjbjhuelBQTU1OS01IVWYvS2E3MXRONFZHbXM5dWo5V0lUbnJK?=
- =?utf-8?B?OExyTmloWGR3VlowUTFkd3grc0F0aWhvSU1qRlUxcGpHVHc3SmViU0x5RGkx?=
- =?utf-8?B?d1kxUjdTQ1dMWkNVMDhLRU90d3VxRkljNitkWmk1RXhsM3lXejhxOTdrYTdD?=
- =?utf-8?B?eERnbytWSk9ZWkdhZXgzWmJDd0w1NXZLTkdVdXFFK3ZPZEdEaVArSzVxYzFO?=
- =?utf-8?B?L1VPV2FMdnNOMnlBc3BCM1RxSzgwdjFPb1VKdFhybWNhNTZuaU44eE5rUlBy?=
- =?utf-8?B?SGNqamtDdmY4QnBYV0lBUjZ2RUhseDVqWEdRWWNzbmtwQ3MzSWtjbGxZTFVk?=
- =?utf-8?B?SFlld2MxVGFHK1RsckJ0N29OK0Q5Qk5HU2JObVJ4dGVmbjMrN3JqZ2duelRs?=
- =?utf-8?B?TlJ6OU1DUURybnFaYVB0UzdHU0g3eGgxMGNBZzVrS1B5cXN4ZEpMbndBTkNL?=
- =?utf-8?B?RENxYS9GeWh0NWJpeS8vZlVWUDVyME4zclBlVjBEdVd6TTlGMUxNOUFCZlFw?=
- =?utf-8?B?Y0J1YjR6bUxWVWRycUN5MEZkRCtvMlB1NHY2clBXU1RUWllJanBXS1BvdlFx?=
- =?utf-8?B?c2ZFcWZ6eHV2L3dXNTNjMkYxZ2RCNUtNemRTVGJUWFBtZTJabjdENFZRMHQ2?=
- =?utf-8?B?MmxaeTJxQ0hWaEFKMjBIelZ2cGQ1bkZNM0NhOHoxNGFaNHV1NlNMZHJUSVJU?=
- =?utf-8?B?SElwbGtBbnR5a24vMUl5N3JURFZOWUhUdUo2ZnN3RVIraklaVEFZM01IaTF2?=
- =?utf-8?B?RUpIZjVZNlZ0MUQyNmVYV3ZXZUxJclVXeTVXK0wvNEIrU2I1WHpTL0NwR21B?=
- =?utf-8?B?VkYrRC95TlhlQjFGL3RxQ2c3cVhCVGxXRHNSWEZ5SkE2VjlYeFhvS3kyRDh3?=
- =?utf-8?B?UHFrY25ONTlOSHFBcnFSNDN6Si9VbG5JakQzZUpESnRIZW1MenBsL1RhWUYw?=
- =?utf-8?B?cE50T0RJV0JlaWNBUlN4R2F1dDU5dXdCL05kNWJTSG92aFhjTFNyU1M2ejBv?=
- =?utf-8?B?Vi9HOTBaM3RJMXBwbEtEM3RpN2NVdFAxYjdKZ0MwUDNOdDhPWXBqT2kxUmo5?=
- =?utf-8?B?MVl2aUZwdk5mOEU5MDhWN3BIQlJ6RC9sZjZVdDBwK0VpanA3MTlMdEg5bWJw?=
- =?utf-8?B?QVUwQjJjVk1keDRxTTFSNzdMTjQyNWdTSEEzSWFDQVQyTjA2RWxQQlVadDFp?=
- =?utf-8?B?cDc2eVJIYWk5dW1NYWFHanp3V1JVbXdoOWJQSHlSTjMrTm1pYjBUVUtNZ1Ja?=
- =?utf-8?B?aUJZajlJd3lDOFNXckp2SE1EVmtIRXo2ME1wU0F0c2J3aUxsVW9uRWtqRExq?=
- =?utf-8?B?NlhIaU1OM080Y01nZlVIT2RPaVJIQkxEOUdFY2VHRFhMTGdkaWZUNkNSV2M3?=
- =?utf-8?B?akl1WFFOYzJGVnplNUtkaFdiWGI1QzRxQjQwTkM2UE8wc2l0QlFiam9OTW9V?=
- =?utf-8?B?ZGxhQWtydW9TMkFnS2pyWDlBS1c1aHhvTDNrODdJT2k4ZmlvZlBBcFduU0Jp?=
- =?utf-8?Q?PDAmwWPkBplEAanHhXWvJmE6CTrtUQLbtOx6aqZ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54a19ea7-506a-4436-5ae7-08d94bab7ce6
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2021 18:23:35.9216
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: izex9SjX89OUWCAeXD78qQiGwHH/b8O4uZN2GDI5WsNU1HFkLAA3ICZHMsu5RdRtx7a7/mD6VC+a5N1WJ57Bew==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2768
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712043508.11584-1-desmondcheongzx@gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 12, 2021 at 12:35:03PM +0800, Desmond Cheong Zhi Xi wrote:
+> Hi,
+> 
+> In the previous thread on this series we decided to remove a patch that was violating a lockdep requirement in drm_lease. In addition to this change, I took a closer look at the CI logs for the Basic Acceptance Tests and noticed that another regression was introduced. The new patch 2 is a response to this.
+> 
+> Overall, this series addresses potential use-after-free errors when dereferencing pointers to struct drm_master. These were identified after one such bug was caught by Syzbot in drm_getunique():
+> https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
+> 
+> The series is broken up into five patches:
+> 
+> 1. Move a call to drm_is_current_master() out from a section locked by &dev->mode_config.mutex in drm_mode_getconnector(). This patch does not apply to stable.
+> 
+> 2. Move a call to drm_is_current_master() out from the RCU read-side critical section in drm_clients_info().
+> 
+> 3. Implement a locked version of drm_is_current_master() function that's used within drm_auth.c.
+> 
+> 4. Serialize drm_file.master by introducing a new spinlock that's held whenever the value of drm_file.master changes.
+> 
+> 5. Identify areas in drm_lease.c where pointers to struct drm_master are dereferenced, and ensure that the master pointers are not freed during use.
+> 
+> v7 -> v8:
+> - Remove the patch that moves the call to _drm_lease_held out from the section locked by &dev->mode_config.idr_mutex in __drm_mode_object_find. This patch violated an existing lockdep requirement as reported by the intel-gfx CI.
+> - Added a new patch that moves a call to drm_is_current_master out from the RCU critical section in drm_clients_info. This was reported by the intel-gfx CI.
+> 
+> v6 -> v7:
+> - Modify code alignment as suggested by the intel-gfx CI.
+> - Add a new patch to the series that adds a new lock to serialize drm_file.master, in response to the lockdep splat by the intel-gfx CI.
+> - Update drm_file_get_master to use the new drm_file.master_lock instead of drm_device.master_mutex, in response to the lockdep splat by the intel-gfx CI.
+> 
+> v5 -> v6:
+> - Add a new patch to the series that moves the call to _drm_lease_held out from the section locked by &dev->mode_config.idr_mutex in __drm_mode_object_find.
+> - Clarify the kerneldoc for dereferencing drm_file.master, as suggested by Daniel Vetter.
+> - Refactor error paths with goto labels so that each function only has a single drm_master_put(), as suggested by Emil Velikov.
+> - Modify comparisons to NULL into "!master", as suggested by the intel-gfx CI.
+> 
+> v4 -> v5:
+> - Add a new patch to the series that moves the call to drm_is_current_master in drm_mode_getconnector out from the section locked by &dev->mode_config.mutex.
+> - Additionally, added a missing semicolon to the patch, caught by the intel-gfx CI.
+> 
+> v3 -> v4:
+> - Move the call to drm_is_current_master in drm_mode_getconnector out from the section locked by &dev->mode_config.mutex. As suggested by Daniel Vetter. This avoids a circular lock lock dependency as reported here https://patchwork.freedesktop.org/patch/440406/
+> - Inside drm_is_current_master, instead of grabbing &fpriv->master->dev->master_mutex, we grab &fpriv->minor->dev->master_mutex to avoid dereferencing a null ptr if fpriv->master is not set.
+> - Modify kerneldoc formatting for drm_file.master, as suggested by Daniel Vetter.
+> - Additionally, add a file_priv->master NULL check inside drm_file_get_master, and handle the NULL result accordingly in drm_lease.c. As suggested by Daniel Vetter.
+> 
+> v2 -> v3:
+> - Move the definition of drm_is_current_master and the _locked version higher up in drm_auth.c to avoid needing a forward declaration of drm_is_current_master_locked. As suggested by Daniel Vetter.
+> - Instead of leaking drm_device.master_mutex into drm_lease.c to protect drm_master pointers, add a new drm_file_get_master() function that returns drm_file->master while increasing its reference count, to prevent drm_file->master from being freed. As suggested by Daniel Vetter.
+> 
+> v1 -> v2:
+> - Move the lock and assignment before the DRM_DEBUG_LEASE in drm_mode_get_lease_ioctl, as suggested by Emil Velikov.
 
+Apologies for the delay, I missed your series. Maybe just ping next time
+around there's silence.
 
-On 7/20/21 11:40 AM, Sean Christopherson wrote:
-> On Mon, Jul 19, 2021, Brijesh Singh wrote:
->>
->> On 7/19/21 2:03 PM, Sean Christopherson wrote:
->>> On Mon, Jul 19, 2021, Brijesh Singh wrote:
->>> Ah, not firmwrare, gotcha.  But we can still use a helper, e.g. an inner
->>> double-underscore helper, __rmp_make_private().
->>
->> In that case we are basically passing the all the fields defined in the
->> 'struct rmpupdate' as individual arguments.
-> 
-> Yes, but (a) not _all_ fields, (b) it would allow hiding "struct rmpupdate", and
-> (c) this is much friendlier to readers:
-> 
-> 	__rmp_make_private(pfn, gpa, PG_LEVEL_4K, svm->asid, true);
-> 
-> than:
-> 
-> 	rmpupdate(&rmpupdate);
-> 
+Looks all great, merged to drm-misc-next. Given how complex this was I'm
+vary of just pushing this to -fixes without some solid testing.
 
-Ok.
+One thing I noticed is that drm_is_current_master could just use the
+spinlock, since it's only doing a read access. Care to type up that patch?
 
-> For the former, I can see in a single line of code that KVM is creating a 4k
-> private, immutable guest page.  With the latter, I need to go hunt down all code
-> that modifies rmpupdate to understand what the code is doing.
+Also, do you plan to look into that idea we've discussed to flush pending
+access when we revoke a master or a lease? I think that would be really
+nice improvement here.
+-Daniel
+
 > 
->> How about something like this:
->>
->> * core kernel exports the rmpupdate()
->> * the include/linux/sev.h header file defines the helper functions
->>
->>    int rmp_make_private(u64 pfn, u64 gpa, int psize, int asid)
+> Desmond Cheong Zhi Xi (5):
+>   drm: avoid circular locks in drm_mode_getconnector
+>   drm: avoid blocking in drm_clients_info's rcu section
+>   drm: add a locked version of drm_is_current_master
+>   drm: serialize drm_file.master with a new spinlock
+>   drm: protect drm_master pointers in drm_lease.c
 > 
-> I think we'll want s/psize/level, i.e. make it more obvious clear that the input
-> is PG_LEVEL_*.
+>  drivers/gpu/drm/drm_auth.c      | 93 ++++++++++++++++++++++++---------
+>  drivers/gpu/drm/drm_connector.c |  5 +-
+>  drivers/gpu/drm/drm_debugfs.c   |  3 +-
+>  drivers/gpu/drm/drm_file.c      |  1 +
+>  drivers/gpu/drm/drm_lease.c     | 81 +++++++++++++++++++++-------
+>  include/drm/drm_auth.h          |  1 +
+>  include/drm/drm_file.h          | 18 +++++--
+>  7 files changed, 152 insertions(+), 50 deletions(-)
+> 
+> -- 
+> 2.25.1
 > 
 
-ok, I will stick to x86 PG_LEVEL_*
-
-thanks
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
