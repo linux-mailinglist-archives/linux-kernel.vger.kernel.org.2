@@ -2,113 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E183CFB10
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A503CFB12
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 15:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238659AbhGTNGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 09:06:11 -0400
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:33375 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238724AbhGTNDQ (ORCPT
+        id S238988AbhGTNGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 09:06:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47917 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238700AbhGTNCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 09:03:16 -0400
-Received: by mail-ua1-f43.google.com with SMTP id d2so8096365uan.0;
-        Tue, 20 Jul 2021 06:42:53 -0700 (PDT)
+        Tue, 20 Jul 2021 09:02:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626788570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wm1/1+rm0pNTec68SF0ULMEoMpPgTZgtvpTbWM+bk38=;
+        b=fG+LIy8oP1CN1RjxGLffxzgglVKC1l4Zx7+1f/r/Aik039kNwmQn5rtXoGGSFVyKQEMoyx
+        2oCLF742VwGBFDuwj22DjX7z9YGxPIMUq9eXbVd1MRhzg+y8AbAI8AEgeU8lPWmcQZ83UF
+        3wQ/vDC2VBpH7Qvx0td5OghcJDsHLQI=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-fJM9WJsLMkap7nBr6KifyA-1; Tue, 20 Jul 2021 09:42:49 -0400
+X-MC-Unique: fJM9WJsLMkap7nBr6KifyA-1
+Received: by mail-wm1-f72.google.com with SMTP id m6-20020a05600c4f46b0290205f5e73b37so1271005wmq.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 06:42:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E38sRFpfg4Nl0TXtXxQVL6c3M9xpf/OZLQC/AmFnhX0=;
-        b=dqQPL7GHgGkeYBs26JfHFUN+3BqbjRqvvbC4ldBJCMhMMBGpKeXw+NSDKoGAhVNGQ6
-         JpJSKPCQyDi+qL81hIl8GQ2mGBSQOOxzNsVd6T3z5jbbmNHzbf/vT8uWKj/C6p9/mGyV
-         /Ers3PdKcpedqzS5aoCY29saSiyDjrJ/Bz26r3xplfHdkr0WGhGeUEGh9wz3F9g5553E
-         stoTRwBTfiulgIDggbG4BkuBl7j8IUYnjHVGTT0AGCuoCvBFwHxXZoaWB/SMO/TOCVV3
-         izOz9BwF+i9XbzuzSJjFfkslZquHfWPjiN2N786O6Kynl9/qjtaYMiKkMIYMZmiXMv18
-         hHAA==
-X-Gm-Message-State: AOAM531W3ocV5OJdFAYhrSvkm3DDbduozXM9xa/glRx0sE0+LDirx3T9
-        Kb/mPYvLDoRElLDI4qxyEoN6CISt0xuUk41aIEI=
-X-Google-Smtp-Source: ABdhPJwCPd8kUzwD4M0vusPzxjBGVt7Tt8dDccfy425PNDwzZ7QrhhWXBCo5/qJmiDl2wf2MHdf6UYSUh7yINyuR0AM=
-X-Received: by 2002:ab0:5a2e:: with SMTP id l43mr31027655uad.4.1626788572878;
- Tue, 20 Jul 2021 06:42:52 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Wm1/1+rm0pNTec68SF0ULMEoMpPgTZgtvpTbWM+bk38=;
+        b=ae5W/U7UYW81A/dUQ0EiaaGQ7TvTlp1/iaUqtqg5bCszPNSLPFPdT3I2xzO9e4gmY6
+         wJvWStSYUwAoyYolbXP0hUE9bgxsaSyPKfrZ3ylFaHMXf9jO/VRvCRsfqUDX2h8mzvXo
+         dhY+O58sfLT9hH0P5DJm8naUX9vYNRgBuPDbiSmBXBxFYLHbDoijCyNWstFs15VjEvuj
+         qnh7pbXzTeP4wlSYCn1nHgw6e3wIEhe6CEND7vdMzlwXhJM+Gjn3W9g6aeJkDu98fNSI
+         gqzp3B5aP+D5U/giPoemWBHSQRwoTDqll0S7ME/hvhelXg5PHcQQ7/BoUniGWE+1PYFw
+         WLPQ==
+X-Gm-Message-State: AOAM530v+bvwa2auHTQearo88EK4G1DsJzZAmPg/Sy7DAf+MoyLWWCDJ
+        u7kBoQeQ+1NXpqY0bimvUgnCwopxrt2jR1yxqdW5dEKMvuibOgGVg45tny0bAlLr3HhxjXzmLXk
+        CpRRTddZyNt7jOyQTCJqn9dfJ
+X-Received: by 2002:a7b:c844:: with SMTP id c4mr37859296wml.107.1626788567976;
+        Tue, 20 Jul 2021 06:42:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyPDFoW1ztyceGEmsvaxxt+vRNnwbErZ3TkLOyCXvoT5YQ2hwIH+j61ex10oljV9GpyUb7Cpw==
+X-Received: by 2002:a7b:c844:: with SMTP id c4mr37859268wml.107.1626788567798;
+        Tue, 20 Jul 2021 06:42:47 -0700 (PDT)
+Received: from [192.168.1.101] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id g15sm19533112wmh.44.2021.07.20.06.42.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jul 2021 06:42:47 -0700 (PDT)
+Subject: Re: [PATCH v3 0/2] allow simple{fb, drm} drivers to be used on
+ non-x86 EFI platforms
+To:     Ard Biesheuvel <ardb@kernel.org>, Dave Airlie <airlied@gmail.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Borislav Petkov <bp@suse.de>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20210625130947.1803678-1-javierm@redhat.com>
+ <e61cf77c-6bff-dfcc-d3df-2fb6b48e5897@redhat.com>
+ <8dd26141-a09c-39e2-5174-4cad8d21c49c@suse.de>
+ <CAPM=9tyfNPa2f5PDBLm4w_H_riEQ5P3rEhX73YGE1y_ygRox+w@mail.gmail.com>
+ <CAMj1kXErHteZ+MKYvp=yYmwVxV3A=vjtnG351hZHV+3BPwDQvw@mail.gmail.com>
+ <YPbJJ/0tSO/fuW7a@phenom.ffwll.local>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+Message-ID: <03f0edef-e54e-8a2a-4b50-683d3d42e249@redhat.com>
+Date:   Tue, 20 Jul 2021 15:42:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210712194422.12405-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210712194422.12405-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210712194422.12405-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 20 Jul 2021 15:42:41 +0200
-Message-ID: <CAMuHMdVGN+6AiEtkAiHso5=FVsQYSbd0xD3LULsdbMPsXPkc+Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] dt-bindings: pinctrl: renesas,rzg2l-pinctrl: Add
- DT bindings for RZ/G2L pinctrl
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YPbJJ/0tSO/fuW7a@phenom.ffwll.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On 7/20/21 3:01 PM, Daniel Vetter wrote:
+> On Mon, Jul 19, 2021 at 09:10:52AM +0200, Ard Biesheuvel wrote:
+>> On Mon, 19 Jul 2021 at 04:59, Dave Airlie <airlied@gmail.com> wrote:
 
-On Mon, Jul 12, 2021 at 9:44 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add device tree binding documentation and header file for Renesas
-> RZ/G2L pinctrl.
+[snip]
+
+>>>
+>>> Can we just merge via drm-misc and make sure the acks are present and
+>>> I'll deal with the fallout if any.
+>>>
+>>
+>> Fine with me. Could you stick it on a separate branch so I can double
+>> check whether there are any issues wrt the EFI tree?
+> 
+> It'll pop up in linux-next for integration testing or you can pick up the
+> patch here for test-merge if you want.
 >
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Thanks for your patch!
+Thanks a lot Dave and Daniel!
+ 
+> And since Dave has given a blanket cheque for handling fallout he'll deal
+> with the need for fixups too if there's any.
 
-> --- /dev/null
-> +++ b/include/dt-bindings/pinctrl/rzg2l-pinctrl.h
-> @@ -0,0 +1,23 @@
-> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-> +/*
-> + * This header provides constants for Renesas RZ/G2L family pinctrl bindings.
-> + *
-> + * Copyright (C) 2021 Renesas Electronics Corp.
-> + *
-> + */
-> +
-> +#ifndef __DT_BINDINGS_RZG2L_PINCTRL_H
-> +#define __DT_BINDINGS_RZG2L_PINCTRL_H
-> +
-> +#define RZG2L_PINS_PER_PORT    8
-> +
-> +/*
-> + * Create the pin index from its bank and position numbers and store in
-> + * the upper 16 bits the alternate function identifier
-> + */
-> +#define RZG2L_PORT_PINMUX(b, p, f)     ((b) * RZG2L_PINS_PER_PORT + (p) | ((f) << 16))
-> +
-> +/* Convert a port and pin label to its global pin index */
-> + #define RZG2L_GPIO(port, pin) ((port) * RZG2L_PINS_PER_PORT + (pin))
+I also plan to look at any regression that might had been introduced by these.
 
-I know this was copied from RZ/A2, but some consistency in the naming
-(b or bank vs. port, p vs. pin) would be nice to have.
-
-> +
-> +#endif /* __DT_BINDINGS_RZG2L_PINCTRL_H */
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+Best regards,
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
