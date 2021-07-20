@@ -2,133 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58333D0383
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 23:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680C03D0384
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 23:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235565AbhGTUS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 16:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
+        id S231452AbhGTUSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 16:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237360AbhGTUKq (ORCPT
+        with ESMTP id S234902AbhGTUMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 16:10:46 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D99FC061766;
-        Tue, 20 Jul 2021 13:51:22 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id r135so420174ybc.0;
-        Tue, 20 Jul 2021 13:51:22 -0700 (PDT)
+        Tue, 20 Jul 2021 16:12:42 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACCEC0613E2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:52:52 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id h4so146310ljo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 13:52:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LOCFerhLALJkLkgurC4cJf0k5DwwTiLLAewdaQFoXoA=;
-        b=GVAran7hwjB0HtulhTTZoPrLKek6kJzV4qpHSykgSJvJUNsVXud2Tyhf1Tx4UUi94Z
-         SY6NuTxDVSovYDoxSPWcmfq9QYz3OpztWWpGQUExRRZXFY+fE6kynXixFMR0ul1j0x55
-         6KaSyjXEj1wbcb9ykDfy29j3qjPYIVLjfWpsMZPdw5aQ52loUHEqLG7CPDDRnUwSg+sE
-         JOzcZHw9ooRzykNkhhprSKvy73zif2ezGMAhwiGR9QjB8nhwQBW+ccmhd0KZlcJVQwj1
-         JCCB9zkQe8miq52f0zu3NgH3Pq1dqqfJwCsesCrNH35oXJ/LfDvnNYA+Tyj0Bgk0hGsJ
-         wB7A==
+        bh=SbK6o7K/EkXUAGGxjZp7cQsvPy5H+b1sgULKd5tuIl8=;
+        b=RZrjkrspMlyjhNfo8C2mQdLOvr7mkdUI4sM5tGIno3VN2G/g9g9xRd9ju+RP62eh6E
+         bUueDNj0aBrWk0OwADCCXZ5OjPY6DtaZB6JTVxIgotjf2Duygyli7h0/9UuDF1pQk1JE
+         HYEmV2qZC+4H/O2fjmBMyCgAWyJfDDYDpv6wPDVAotBqoNjehS88/YaRfL+hpJSYPPQf
+         KzsQfjeE34J+kYZXTHCbLzJzQkA8BEyhWQHk1ok6eWaGyRJv0XuDFBo/SMu9rw5EjAcl
+         PgfratM3omlSEVece2KEdYBAXuf03kx+c2v/8grGQ56/utkw5aodZN9yjw6uAULuWydf
+         PKKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LOCFerhLALJkLkgurC4cJf0k5DwwTiLLAewdaQFoXoA=;
-        b=G0kO5PbwHajFCr1HHFaRmGmERN+iCMpdIdfikr3ycXqWc/9mgpysn8/O3MMK51GKdB
-         OkkH8tbb1q4iVe7Cs+6cYotUG/veubkCD+dr74iBCkQTxCplVWo/KMCrflcqU4l49czN
-         J0Bh/WniF+CiBBhoR4VvuVxrJHfvhkdFJwfCkGodMGH6SDc0kLRVmgS484Gj2KuiZmi2
-         7lxMwDbm6KwJ7L2Vk9QUqCXepLG0RDKuVDi6eyxeffadWKo+TMxDhqaM89GVufI7Bo/a
-         gCzoaU8udsE0iWnmKiJrYHoff2Ce2wuchzI0RjE4PfZTTvzlDENKiriQFcp764kAqe0R
-         ej8A==
-X-Gm-Message-State: AOAM532ZrwSU24DtVzDAbC3W232HUY+ocqj8wIcxk3umFYvjMQ/OfYEh
-        mmr9ixnuhipqtdzWkmnGx3JLUNioqdnO7lWVX9I=
-X-Google-Smtp-Source: ABdhPJwuCeaUDqOmG4ItAxwl+DFCV1uw43ppWLZb2x96pxpaAC953O6I1aK7StIiWvzu+pWLNFNhWf5sUHOIZIhrt6o=
-X-Received: by 2002:a25:b741:: with SMTP id e1mr41857262ybm.347.1626814281317;
- Tue, 20 Jul 2021 13:51:21 -0700 (PDT)
+        bh=SbK6o7K/EkXUAGGxjZp7cQsvPy5H+b1sgULKd5tuIl8=;
+        b=OdZ9QyCiK0iIFnLjW5zHvARuV2aMFcWMHkr5VVOikydbkdbax/yqFc/fyAhc6fLt3F
+         hJBIuSy6KGgIJ3Zw0TgVAaaX2zwm09aYwZOQsexLFtmmFGOtAYrHpYY5F2gq0cQXzhYF
+         ol50hpGEXIkHrfLEPxTGkwQAcgTGqj4Yub5RybcDbiepD9Yj2yCi/zS5ZEx1iNDKr0Xg
+         RawvcUrNvbkN6abaAv0Ic0LHu3AOAIBbLu9AxnQL2K8JDltHZdA4w4sw7IK1T74+Bg8T
+         lHe3iuO3oZlsjZkgb2gKhywjqygd/pijgOsuE/TamkV6knd2aIcmZV8EHhpPjrbDDtBg
+         7M4w==
+X-Gm-Message-State: AOAM532+HTbHDN/brl5NaIK3Mah+c0wxVSRNYagEcCNdan1mcY+nORWn
+        lEfNl325pWQannmQc9ker0ANzgvEUBWrWNY7HqfHFg==
+X-Google-Smtp-Source: ABdhPJxUrCzDCNF950Lm9K1xwPMluhTK+m0aWC4jD/Zo3lLp96xSbocy0Qg4lRGWmVCM/qKJpab/khbXJyRtpxcsc64=
+X-Received: by 2002:a2e:a911:: with SMTP id j17mr28057523ljq.341.1626814370202;
+ Tue, 20 Jul 2021 13:52:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <1626730889-5658-1-git-send-email-alan.maguire@oracle.com>
- <1626730889-5658-2-git-send-email-alan.maguire@oracle.com>
- <CAEf4BzYUf_zgmJQ_3z=oYAiGOypYsAhvoaePQMB34P==4EOLbg@mail.gmail.com> <alpine.LRH.2.23.451.2107201002170.11590@localhost>
-In-Reply-To: <alpine.LRH.2.23.451.2107201002170.11590@localhost>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 20 Jul 2021 13:51:10 -0700
-Message-ID: <CAEf4BzY+c8WMJAPTELOikxDLJvC4S0w532bZGGNMjWGeA2WpVg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] libbpf: avoid use of __int128 in typed dump display
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Bill Wendling <morbo@google.com>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210708232522.3118208-1-ndesaulniers@google.com>
+ <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
+ <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 20 Jul 2021 13:52:39 -0700
+Message-ID: <CAKwvOdn065OJpow=7VF=ujagFoyN4sYMKAA_E2_39ZC7uThchg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ LLVM=1 LLVM_IAS=1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 2:14 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Tue, Jul 20, 2021 at 10:43 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On Mon, 19 Jul 2021, Andrii Nakryiko wrote:
->
-> > On Mon, Jul 19, 2021 at 2:41 PM Alan Maguire <alan.maguire@oracle.com> wrote:
-> > >
-> > > __int128 is not supported for some 32-bit platforms (arm and i386).
-> > > __int128 was used in carrying out computations on bitfields which
-> > > aid display, but the same calculations could be done with __u64
-> > > with the small effect of not supporting 128-bit bitfields.
-> > >
-> > > With these changes, a big-endian issue with casting 128-bit integers
-> > > to 64-bit for enum bitfields is solved also, as we now use 64-bit
-> > > integers for bitfield calculations.
-> > >
-> > > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> > > ---
+> On Tue, Jul 20, 2021 at 1:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 > >
-> > Changes look good to me, thanks. But they didn't appear in patchworks
-> > yet so I can't easily test and apply them. It might be because of
-> > patchworks delay or due to a very long CC list. Try trimming the cc
-> > list down and re-submit?
-> >
+> > LLVM=1 is a convenient switch to change all the
+> > defaults, but yet you can flip each tool individually.
 >
-> Done, looks like the v2 with the trimmed cc list made it into patchwork
-> this time.
+> Actually, I'd argue that "LLVM=1" is *not* a convenient switch.
 
-v1 also made it to the list right after I wrote the email :)
+Compared to the old way of CC=clang LD=ld.lld OBJCOPY=.... it certainly is.
 
->
-> > Also, while I agree that supporting 128-bit bitfields isn't important,
-> > I wonder if we should warn/error on that (instead of shifting by
-> > negative amount and reporting some garbage value), what do you think?
-> > Is there one place in the code where we can error out early if the
-> > type actually has bitfield with > 64 bits? I'd prefer to keep
-> > btf_dump_bitfield_get_data() itself non-failing though.
-> >
->
-> Sorry, I missed the last part and made that function fail since
-> it's probably the easiest place to capture too-large bitfields.
-> I renamed it to btf_dump_get_bitfield_value() to match
-> btf_dump_get_enum_value() which as a similar function signature
-> (return int, pass in a pointer to the value we want to retrieve).
->
-> We can't localize bitfield size checking to
-> btf_dump_type_data_check_zero() because - depending on flags -
-> the associated checks might not be carried out.  So duplication
-> of bitfield size checks between the zero checking and bitfield/enum
-> bitfield display seems inevitable, and that being the case, the
-> extra error checking required around btf_dump_get_bitfield_value()
-> seems to be required.
->
-> I might be missing a better approach here of course; let me know what you
-> think. Thanks again!
+> Neither are the individual other command line settings.
 
-Nah, that's fine. Looks good. Testing and pushing in a few minutes. Thanks.
+Agreed, but we needed flexibility until we could get all of the
+command line tools working for each architecture.  They're still
+useful when there's a regression and we need to fall back.  So I
+wouldn't be in favor of removing them (not that that's been proposed).
 
+> When clang was the odd man out, and special, it all made sense.
+> Changing the path to CC was similar to changing the path to AWK. And
+> that's obviously why we have what we have.
 >
-> Alan
+> But clang has become a primary compiler for some kernel communities,
+> and I think it might be time to just re-visit that entirely.
+
+:^)
+
+> In particular, I think we should just make it a Kconfig option. I hate
+> the command flag stuff so much, that my clang tree literally has this
+> patch in it:
+>
+>     -CC = $(CROSS_COMPILE)gcc
+>     +CC = $(CROSS_COMPILE)clang
+>
+> so that I can just do the same "make -j128" in both my gcc tree and my
+> clang tree.
+
+So you haven't been using LLD... :( (imagine using more than one
+thread to link, and being faster than ld.gold)  If anything you should
+be hard coding LLVM=1 in that tree.  Also, please be careful you don't
+accidentally commit that! 0:-)
+
+> But each build tree already has its own .config file, so it would be a
+> lot more convenient if that was how the compiler was chosen, and then
+> "make oldconfig" would just DTRT.
+>
+> We do most of the other heavy lifting in this area in Kconfig anyway,
+> why not add that compiler choice?
+>
+> Obviously it would be gated by the tests to see which compilers are
+> _installed_ (and that they are valid versions), so that it doesn't ask
+> stupid things ("do you want gcc or clang" when only one of them is
+> installed and/or viable).
+>
+> Hmm? So then any "LLVM=1" thing would be about the "make config"
+> stage, not the actual build stage.
+>
+> (It has annoyed me for years that if you want to cross-compile, you
+> first have to do "make ARCH=xyz config" and then remember to do "make
+> ARCH=xyz" for the build too, but I cross-compile so seldom that I've
+> never really cared).
+>
+> Let the flame wars^H^Hpolite discussions ensue..
+
+I agree with you.  Overall the command line invocation of make when
+cross compiling, or when using LLVM is too long.  You even call out
+LLVM=1 and ARCH separately.  Each one of these had good reasons to
+exist for years.
+
+But I disagree that all needs to be sorted out together, or right now.
+And I'd much rather tackle them separately, one by one, than try to
+completely rewrite how we cross compile the kernel today.
+
+Right now, we have:
+$ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make LLVM=1 LLVM_IAS=1 -j72
+
+This series is concerned with just CROSS_COMPILE (and just for LLVM=1).
+Next I plan to default on LLVM_IAS=1 for all architectures we support,
+minus ppc and s390 where we still have some assembler bugs.
+Your/Arnd's ideas about LLVM=1 or not via Kconfig, or pre-Kconfig is a
+good idea for eliminating LLVM=1.
+Then that just leaves ARCH.
+Arnd's idea about helping you install a toolchain from kernel.org is
+one I support, but orthogonal to the above somewhat.  Do you allow
+someone to have a config that denotes intent to build with clang then
+prompt if they don't have clang installed to download it? Or do you
+prevent someone from selecting building with clang because it's not in
+the $PATH?
+Your/Arnd's idea about detecting which toolchains are installed is one
+I support, but orthogonal to the above somewhat.  (For that, I'm
+curious for our build servers if that means having to put tools in
+certain locations; I prefer we reference $PATH when possible. Or if
+.configs can no longer be shared if tools are in different locations.
+But perhaps that's a non-issue).  I'm also curious how many stat calls
+we'll need to test/probe/find these, and how we prioritize which tools
+are selected when there's more than one version installed.
+
+I encourage us to make steps in the right direction; but I think this
+series is ready to go for at least one of the command line variables.
+I don't think we need to wait for some probing machinery to eliminate
+CROSS_COMPILE when LLVM=1; and if we ever get such machinery we can
+revisit whether that helps this case at all.
+-- 
+Thanks,
+~Nick Desaulniers
