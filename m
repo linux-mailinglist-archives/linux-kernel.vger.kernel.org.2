@@ -2,101 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A2A3CF97A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6583B3CF988
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 14:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237585AbhGTLkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 07:40:42 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7404 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235590AbhGTLkK (ORCPT
+        id S237775AbhGTLoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 07:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235590AbhGTLmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:40:10 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GTd4d4FHSz7w4x;
-        Tue, 20 Jul 2021 20:17:05 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 20:20:44 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 20 Jul 2021 20:20:43 +0800
-Subject: Re: [PATCH 4.19 000/420] 4.19.198-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210719184335.198051502@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <de52d937-fd3f-7b19-9976-724614ae9c64@huawei.com>
-Date:   Tue, 20 Jul 2021 20:20:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 20 Jul 2021 07:42:35 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9634C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 05:22:31 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id r11so25761353wro.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 05:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ksJ7uSYre48A5Z7zQktjRchxiOL4w4I/1HgeIzUItlA=;
+        b=ndCld4jhIDxVjs7HgMEcmj8aOHrSU7apEUj9+c/96MWypPqQ4DLLaudBAdx8qDhjRU
+         EnRWhNj1hjJNySeadR7468x5WNDTfkLGjY9fyOxDAwabhSDmI7GZT8RKj4HAqxOVy5eb
+         V7JXw3ikiwb85gB7i2wWWB3wOVNTE/B7cWPDU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ksJ7uSYre48A5Z7zQktjRchxiOL4w4I/1HgeIzUItlA=;
+        b=I6mCeodj4WwHktkcer/awHGTiLxZOCjrK7fW8Sy0gbSeuEVofcJ2XrWC1FCkSJL7VX
+         IakMv5Vyci2qheLkjmwDvFa2Ahs+13pQrWjRUR71Uu//YjENGMq9bg4IFXigZcabhLzX
+         0JGsyu8Ioj5zaxOBvHw9Y8EpOqKfQSx1zdtDWlQ9ahK6bnhXMXzsFiTrYqaVFI0R1OYY
+         F4409Yh4/L9wmFGq9mm2AecSxwla3LUtNH7bKjvs0ch9gUMFRP8dHwKfUnSU+O/Fe37+
+         sbgkDEZcBAPGizt3aDgT7p4qJ+SSGTIKkWqgeRUtEtDLfJh3f8A5H490WmBnlObMgFCa
+         HJew==
+X-Gm-Message-State: AOAM531hOxVsrYzgRmNKQzMZv7dvESZJftrV7zJdCZKV+TrhD08DjJEZ
+        RkNWTGh27GFQRs/cW8T2C8/nJw==
+X-Google-Smtp-Source: ABdhPJw2SeFJ5qG/3zEIy1OkLFkh1ex3OXzZCiHOaa9CuK4hdVjKWkggxbglKSNW/nta4pdn7+Cu0A==
+X-Received: by 2002:a5d:504d:: with SMTP id h13mr35468419wrt.46.1626783750329;
+        Tue, 20 Jul 2021 05:22:30 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:d571])
+        by smtp.gmail.com with ESMTPSA id b6sm2296488wmj.34.2021.07.20.05.22.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 05:22:29 -0700 (PDT)
+Date:   Tue, 20 Jul 2021 13:22:28 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the printk tree
+Message-ID: <YPbABBSTkN+xNY0w@chrisdown.name>
+References: <20210720162423.75f61ce0@canb.auug.org.au>
+ <YPa/D8tSyk7dw1/l@chrisdown.name>
 MIME-Version: 1.0
-In-Reply-To: <20210719184335.198051502@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6qWCzA76C1K43s0/"
+Content-Disposition: inline
+In-Reply-To: <YPa/D8tSyk7dw1/l@chrisdown.name>
+User-Agent: Mutt/2.1 (4b100969) (2021-06-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--6qWCzA76C1K43s0/
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/7/20 2:45, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.198 release.
-> There are 420 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 21 Jul 2021 18:42:43 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.198-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Chris Down writes:
+>+Cc: Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
 
-Tested on arm64 and x86 for 4.19.198-rc2,
+Well, let's actually Cc them this time...
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.19.y
-Version: 4.19.198-rc2
-Commit: dfee0ece72748f6e5a717edb5eaedcb8fa3060ed
-Compiler: gcc version 7.3.0 (GCC)
+>Stephen Rothwell writes:
+>>After merging the printk tree, today's linux-next build (htmldocs)
+>>produced this warning:
+>>
+>>kernel/printk/printk.c:1: warning: 'printk' not found
+>>
+>>Introduced by commit
+>>
+>> 337015573718 ("printk: Userspace format indexing support")
+>>
+>>I presume that "printk" is referred to elsewhere in the documentation
+>>as being in this file.
+>
+>Hmm, this is an interesting one, because I think we still generally=20
+>just want to refer to the API as being `printk()`. Changing it all=20
+>over the place seems wrong. As you'd imagine, there are quite a few=20
+>references to this name, so it requires a lot of noise all over the=20
+>docs and inline comments.
+>
+>Jonathan and other docs folks, how can one tell Sphinx that when it=20
+>sees printk() it's referring to a function-like macro, or otherwise=20
+>squelch this reasonably? :-)
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8858
-passed: 8858
-failed: 0
-timeout: 0
---------------------------------------------------------------------
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8858
-passed: 8858
-failed: 0
-timeout: 0
---------------------------------------------------------------------
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+--6qWCzA76C1K43s0/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQKTBAEBCgB9FiEECEkprPvCOwsaJqhB340hthYRgHAFAmD2wARfFIAAAAAALgAo
+aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldDA4
+NDkyOUFDRkJDMjNCMEIxQTI2QTg0MURGOEQyMUI2MTYxMTgwNzAACgkQ340hthYR
+gHBJPg/9FofzESIRIFMJw31dlL3MkNdldr6Q3dhJOOcB5y9OazjDUv8wZjVaoyor
+feQz6IsjdtcWLYRzzq+42CsQEyLfRChPOBUKWJw9aQrlDlLv9bZfLGYaYlNNc77H
+naEq+gX4pNWepLcg5rFE8gVh9cQzlCYJHLIqHl/EJhN2Ql3yu34JowtTeOfbEBV8
+s4LX55PvjHbjpODD40WtENJB9t9PsT038QkoJNtRSn5TIwtoh+pyYT+jhVDBX7OV
+lhQPz8g7XUB44JdVinjX1KTfzQ1hxhycXjnh8JDqkdeeQEA7yJeGfC4rUZJVqQBe
+CcQg7Z+NJZhvySqDULxk9nvaep3r6wT1EabO6DcXmOLUfVW2MNfwLuyvnBq6cUxL
+YOE2/Annbr+YudIamxW6xoz2SndnP5RpwAOy1odqpaVDEtWi0UuWY1RD8Jo+NRUn
+sieFrKlssa6khSnGhsTok8bUqut249XKYOmVxA/wAfY6pgrXqVwoEEygombE+GLQ
+6xSn5otVN4u7KX266joNvuglAlrRBvnNiSA3u1JvlTBRkQBtSAvjfKwkEfcqGcTJ
+bpWJP3/1cx0qoXo75ldhAM1A+ItI8iQ6ndcWLwXFXqw1xCzm2rtCO1o3ovbAuFBz
+eqVd8AxOw12bSeEpZLjmtlIGNmW9G9hzq8xpsii4URyjMAu/k2Q=
+=52+O
+-----END PGP SIGNATURE-----
+
+--6qWCzA76C1K43s0/--
