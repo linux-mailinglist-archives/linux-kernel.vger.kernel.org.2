@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1163CF637
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2423C3CF63D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 10:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbhGTHzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 03:55:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58918 "EHLO mail.kernel.org"
+        id S234420AbhGTH5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 03:57:06 -0400
+Received: from relay.sw.ru ([185.231.240.75]:47922 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234420AbhGTHyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:54:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFB3C611EF;
-        Tue, 20 Jul 2021 08:35:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626770110;
-        bh=vNxMCTznwpbJiAUJa7hf9jYlEIb/HWnfH0bHXTkY6mk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cxxH0ysLvCEQiQ21zHOTlgwbCv5MDJ+DAr1Bbx32hRq4sMs1LTyxXil2sAq6EUeFM
-         xGo92BzY3o3I3dHibAv//UeZ0j5HmSgeXpP36InStUXHZt+sVpCCzoLOKaZx6SU2L9
-         WRmUwlTFuALS/7+agLOpSxEwi9IH4pTum4u/t4PybjNeJ70Urd7JhTwn5WN1JceF9D
-         RbUs3luPZLKFFoxPn5bpqd3VdCui+8mYoWFB2YYGczwhbEnwe99R/Dc5UuYdZ93CUQ
-         GvAo6SpYTrBwqN26i1SNjFjU5EuwhKlLAe7RhHvv9doVjedJFobezj2hWFWv/9Z3ZB
-         KmKJl3zWs7m9w==
-Date:   Tue, 20 Jul 2021 11:35:07 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Steve Wise <larrystevenwise@gmail.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next 8/9] RDMA: Globally allocate and release QP
- memory
-Message-ID: <YPaKu4ppS0Bz6fW1@unreal>
-References: <cover.1626609283.git.leonro@nvidia.com>
- <5b3bff16da4b6f925c872594262cd8ed72b301cd.1626609283.git.leonro@nvidia.com>
- <abfc0d32-eab8-97d4-5734-508b6c46fe98@amazon.com>
+        id S234449AbhGTHzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 03:55:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=GCfwuXuzQlyWhoFqI2bAb5C2O3u0V1H4t9sAk8gyaiU=; b=o2x2uM9kxU9Ii8mcM
+        ngv33zeb7qweb0P3mK2R8eAhFqaxQt6ZcEaksmqdwoZYzXdctpdlMovEX+oZSjSFpM8uxJ6gLHMkO
+        Mu0Ncl43GqGbeSSpHpKFig1cIERZbIr86yVht+RnKUlNXocFFbYkh9yY1cEeu5YE7PC2U+Mx7Foi8
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m5lDk-004YDr-BU; Tue, 20 Jul 2021 11:35:20 +0300
+Subject: Re: [PATCH v5 13/16] memcg: enable accounting for signals
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Jens Axboe <axboe@kernel.dk>,
+        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org
+References: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
+ <cover.1626688654.git.vvs@virtuozzo.com>
+ <b19f065e-f3c9-2b20-2798-b60f0fc6b05f@virtuozzo.com>
+ <87k0lmryyp.fsf@disp2133>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <56816a9d-c2e5-127d-4d90-5d7d17782c8a@virtuozzo.com>
+Date:   Tue, 20 Jul 2021 11:35:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <abfc0d32-eab8-97d4-5734-508b6c46fe98@amazon.com>
+In-Reply-To: <87k0lmryyp.fsf@disp2133>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 04:42:11PM +0300, Gal Pressman wrote:
-> On 18/07/2021 15:00, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > Convert QP object to follow IB/core general allocation scheme.
-> > That change allows us to make sure that restrack properly kref
-> > the memory.
-> > 
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+On 7/19/21 8:32 PM, Eric W. Biederman wrote:
+> Vasily Averin <vvs@virtuozzo.com> writes:
 > 
-> EFA and core parts look good to me.
-> Reviewed-by: Gal Pressman <galpress@amazon.com>
-> Tested-by: Gal Pressman <galpress@amazon.com>
-
-Thanks a lot.
-
+>> When a user send a signal to any another processes it forces the kernel
+>> to allocate memory for 'struct sigqueue' objects. The number of signals
+>> is limited by RLIMIT_SIGPENDING resource limit, but even the default
+>> settings allow each user to consume up to several megabytes of memory.
+>> Moreover, an untrusted admin inside container can increase the limit or
+>> create new fake users and force them to sent signals.
 > 
-> > +static inline void *rdma_zalloc_obj(struct ib_device *dev, size_t size,
-> > +				    gfp_t gfp, bool is_numa_aware)
-> > +{
-> > +	if (is_numa_aware && dev->ops.get_numa_node)
+> Not any more.  Currently the number of sigqueue objects is limited
+> by the rlimit of the creator of the user namespace of the container.
 > 
-> Honestly I think it's better to return an error if a numa aware allocation is
-> requested and get_numa_node is not provided.
-
-We don't want any driver to use and implement ".get_numa_node()" callback.
-
-Initially, I thought about adding WARN_ON(driver_id != HFI && .get_numa_node)
-to the device.c, but decided to stay with comment in ib_verbs.h only.
-
+>> It makes sense to account for these allocations to restrict the host's
+>> memory consumption from inside the memcg-limited container.
 > 
-> > +		return kzalloc_node(size, gfp, dev->ops.get_numa_node(dev));
-> > +
-> > +	return kzalloc(size, gfp);
-> > +}
+> Does it?  Why?  The given justification appears to have bit-rotted
+> since -rc1.
+
+Could you please explain what was changed in rc1?
+From my POV accounting is required to help OOM-killer to select proper target.
+
+> I know a lot of these things only really need a limit just to catch a
+> program that starts malfunctioning.  If that is indeed the case
+> reasonable per-resource limits are probably better than some great big
+> group limit that can be exhausted with any single resource in the group.
+> 
+> Is there a reason I am not aware of that where it makes sense to group
+> all of the resources together and only count the number of bytes
+> consumed?
+
+Any new limits:
+a) should be set properly depending on huge number of incoming parameters.
+b) should properly notify about hits
+c) should be updated properly after b) 
+d) do a)-c) automatically if possible
+
+In past OpenVz had own accounting subsystem, user beancounters (UBC).
+It accounted and limited 20+ resources  per-container: numfiles, file locks,
+signals, netfilter rules, socket buffers and so on.
+I assume you want to do something similar, so let me share our experience. 
+
+We had a lot of problems with UBC:
+- it's quite hard to set up the limit. 
+  Why it's good to consume N entities of some resource but it's bad to consume N+1 ones? 
+  per-process? per-user? per-thread? per-task? per-namespace? if nested? per-container? per-host?
+  To answer the questions host admin should have additional knowledge and skills.
+
+- Ok, we have set all limits. Some application hits it and fails.
+  It's quite hard to understand that application hits the limit, and failed due to this reason.
+  From users point of view, if some application does not work (stable enough)
+  inside container => containers are guilty.
+
+- It's quite hard to understand that failed application just want to increase limit X up to N entities.
+
+As result both host admins and container users was unhappy.
+So after years of such fights we decided just to limit accounted memory instead.
+
+Anyway, OOM-killer must know who consumed memory to select proper target.
+
+Thank you,
+	vasily Averin
+ 
