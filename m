@@ -2,80 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D0C3D1503
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193813D150C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235331AbhGUQjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:39:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25957 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229978AbhGUQjv (ORCPT
+        id S235386AbhGUQnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhGUQnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:39:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626888027;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BIt0Yb9H5DHJEMvOYSUbKkxcwoKM/Ncp4O7tCakc/1Q=;
-        b=eXyLgZrSPve50INxI3GJEvydet7VfEqLZPm7S1AIsNpq2WLQ7lu0V25UdMMjQTmjNFH0VG
-        C/7cxK4HNxa4mM0JIQ326fMU4OPhrh+U/zKFBQ4Xar4i+cvhyS7oFBXbGeXgSkwWFtsiks
-        5lWvUmM5YOQ/bkonkZkUbgIYMvqVNPY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-GhHEOI8XMz2fV-_JkEc7ng-1; Wed, 21 Jul 2021 13:20:25 -0400
-X-MC-Unique: GhHEOI8XMz2fV-_JkEc7ng-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0FF0C192CC46;
-        Wed, 21 Jul 2021 17:20:23 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-62.rdu2.redhat.com [10.10.112.62])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A7BD35D9DD;
-        Wed, 21 Jul 2021 17:20:15 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <0555748529d483fb9b69eceb56bf9ebc1efceaf1.camel@redhat.com>
-References: <0555748529d483fb9b69eceb56bf9ebc1efceaf1.camel@redhat.com> <162687506932.276387.14456718890524355509.stgit@warthog.procyon.org.uk> <162687509306.276387.7579641363406546284.stgit@warthog.procyon.org.uk>
-To:     Jeff Layton <jlayton@redhat.com>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Mike Marshall <hubcap@omnibond.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 02/12] netfs: Add an iov_iter to the read subreq for the network fs/cache to use
+        Wed, 21 Jul 2021 12:43:39 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5511CC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:24:14 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id h9so3958363ljm.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:24:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/geap+n06qADP8bUUkTvJg1+GbqYMe8lt6RpcUMxI18=;
+        b=Hdt2KFh5xvg+QlcJKKcwzWITxdiB3zzWrNsSCi3yAmz5xkPmKzqnF9Vf88sIJjyPDe
+         Ja3BG8LkZkNqMVYCmyfVmPjbmoWDHNC6HgfHZY9miAffsE8USRj45txPlXOHFqcKntP3
+         JjG7JeL0LVCQRQFaqy6JOIaGkcz2XECZ3STKTmPSSK0EKewRHEkllDmMhuIPT0uEdT52
+         UwELbIZsRCf9PI/reTR9o+ZG02ZzwTKnr65Pk5ZvQwTvMOL5yV5Q6QklhTuJftyhkSuM
+         MNeB8hArE2/Uhg1XW/oqWLr9/271h+/O24cYDoBKJOPLkn+OgMrJxb73TsB4kCB0PkhA
+         PB9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/geap+n06qADP8bUUkTvJg1+GbqYMe8lt6RpcUMxI18=;
+        b=nkWxsP90J/pEV0w1W8lOrX3QSuP6J0O6yoKN9IBfNR+r1et/7SiOqcqtb4aVsygp59
+         Z0fhu4bkU5yDENKf1iDxeiMnLtvaTtHHYzvhm5IcsAUJYR/RRSMIG4HnCXEGK2zIkIW+
+         edRsnel8jDdaa/dX9PE8ohbMc9Jes/40PaAm9vmeBcS0NwEl0zPYv9R7lVtAzDyyYNLX
+         dg5VYcYikAgyU7QcUD9Rai65O0LvB9XKFQ0j4LpgFup+uGnno6mwoLs4YNwxfoNgaLtF
+         rFlUCIqTLGNqOG337aGjK8dhopwe0NeptbeTth3pq+J9uj8nFAR4FJ9W2JIGOTcy/sp0
+         b/yg==
+X-Gm-Message-State: AOAM533Dazgl8UwhuQI2LAlYPvzmZmEtVRvgMEimQOOKB2R1lfq7JxrE
+        8eWLAIs4Dw7V6pTE/2JNsbKNXEk29IbxFvncexbJBg==
+X-Google-Smtp-Source: ABdhPJws9ZMve7X1DBmsQqOrLOBnsRl56RypIYvLQcQu3Pn14yEsYIeMebFKy7cEHM6l5RgopE5mNsBgOpWsXYjmmQY=
+X-Received: by 2002:a2e:a54b:: with SMTP id e11mr24488402ljn.503.1626888252628;
+ Wed, 21 Jul 2021 10:24:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <289703.1626888014.1@warthog.procyon.org.uk>
-Date:   Wed, 21 Jul 2021 18:20:14 +0100
-Message-ID: <289704.1626888014@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210707045320.529186-1-john.stultz@linaro.org> <YPgK50dmV7Z69WsL@kroah.com>
+In-Reply-To: <YPgK50dmV7Z69WsL@kroah.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 21 Jul 2021 10:24:01 -0700
+Message-ID: <CALAqxLUVgUT+1DyDGsFbF0138S0OYzpKADk__PsYbR4B4mbMhw@mail.gmail.com>
+Subject: Re: [PATCH] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable
+ as a permenent module
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff Layton <jlayton@redhat.com> wrote:
+On Wed, Jul 21, 2021 at 4:54 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Jul 07, 2021 at 04:53:20AM +0000, John Stultz wrote:
+> > Allow the qcom_scm driver to be loadable as a permenent module.
+>
+> This feels like a regression, it should be allowed to be a module.
 
-> > -	iov_iter_xarray(&iter, WRITE, &subreq->rreq->mapping->i_pages,
-> > +	iov_iter_xarray(&iter, READ, &subreq->rreq->mapping->i_pages,
-> 
-> What's up with the WRITE -> READ change here? Was that a preexisting
-> bug?
+I'm sorry, I'm not sure I'm following you, Greg.  This patch is trying
+to enable the driver to be able to be loaded as a module.
 
-Actually, yes - I need to split that out and send it to Linus.
+> > This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
+> > ensure that drivers that call into the qcom_scm driver are
+> > also built as modules. While not ideal in some cases its the
+> > only safe way I can find to avoid build errors without having
+> > those drivers select QCOM_SCM and have to force it on (as
+> > QCOM_SCM=n can be valid for those drivers).
+> >
+> > Reviving this now that Saravana's fw_devlink defaults to on,
+> > which should avoid loading troubles seen before.
+>
+> fw_devlink was supposed to resolve these issues and _allow_ code to be
+> built as modules and not forced to be built into the kernel.
 
-David
+Right. I'm re-submitting this patch to enable a driver to work as a
+module, because earlier attempts to submit it ran into boot trouble
+because fw_devlink wasn't yet enabled.
 
+I worry something in my description made it seem otherwise, so let me
+know how you read it and I'll try to avoid such confusion in the
+future.
+
+thanks
+-john
