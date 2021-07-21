@@ -2,77 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828493D1272
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0644F3D1276
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239807AbhGUOur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
+        id S239903AbhGUOxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238585AbhGUOuq (ORCPT
+        with ESMTP id S239819AbhGUOxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:50:46 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26A4C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:31:21 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id qa36so3829454ejc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:31:21 -0700 (PDT)
+        Wed, 21 Jul 2021 10:53:34 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F06C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:34:08 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id x192so3816007ybe.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:34:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=npBTNtth64784Swm+ecPNmUdwO9+AOQ0+inX3vZ7kvA=;
-        b=dSwx/4D7DraIZkK9jRugxs4mYM1BryTtv1wlMvQf4iExeZyNg9u7ojOxxYVPhNXt8k
-         xbGi+QWCJYrov0xwLBhrQaxMf3h8QYp9gOe7QjiOAzWv+S1cTwjzSfpCjIN86QxetJym
-         8DbhjzVN3vpL2FpRSQiF9srQeFwGDIWc3Xgc0QpyR+SrnCEGWhz43+UbB2tzeDbfoQjz
-         D04vWwkR5r34XVLMNqJTttbfDyJuvZLeqbM24n7EwZDhMlm+jMoaj5el4i+rrIvBY+Mr
-         yskETxK6wjpzc/srmYtsf/sCQ+C5eYqV7BEsfJBtpTXiRqTKenhOh6Ny7qI9ZjFmrBa4
-         YKyw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tOE3NPRB7X+kOfCSnwgM1RAUX3A4OJ/1KLMM54dafzU=;
+        b=vll2DpaSlntmS7LILP0YtMfKDyAnqJL2dlBVgLqgMHk6eZkoMY6Ewx06Vv73253V0+
+         EiC0sLFG4nJibo2AQyD5kcA8Ca8FL7EKVKLPgxnVa6lGCrI53j4zeXIoCEwOjsL5ZpLp
+         4g/aKw3zN3BLMelpjGCbtHlT2gPNNfPPfgNcJn8IKK8nfE1ZlbimXiWiRCrXCqHmyeN/
+         Iw76LTIJ8rFYtVcuUNkDpfR2GO/k14MilQCvqg+vQRpNSWxQ/k6Q26NGHwwrD0ogaP9T
+         hccwChHYLDuXRVWtyvzBAYGTs6dVMF1ty2zVlDgR1HUSGI8aOQzMWgLddDTXl5NgxbHN
+         CG8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=npBTNtth64784Swm+ecPNmUdwO9+AOQ0+inX3vZ7kvA=;
-        b=UxhE0ABEIcE/BA57a7vEAEzbMZxRxb6oUA9fKTVtaQ1xn6xJLNb1dnI7wBNblhGJDL
-         SI6/VrzSiLVT55wWO52q16n9kRvvHELaljaCQMWY3kwNsmlMT7NB8Pvv5fNTXmflNO9F
-         cRsbrXcS9Eg0aBHfLQaR2sWt3CNhoCi8WcJwJbi43BGElCRl5IuOF2hyPB8GE1zkG7H4
-         mu70jYuvjWA8ryvNdNNVTCKKLFoI9/MqhSD0Gc3qpMu/xWb64Gx8+dIciK6pKy6+NwtG
-         0shBi1iKgGvmfHyPDcQJn4NfCxilsp2CTI16O8AN4b9AFYB2L08PCmOgtnmuKVK5Dh5P
-         yWZg==
-X-Gm-Message-State: AOAM530vAoFYgJnaqIliPrDqoZMvjcTeJEpTmvU12QgsvVouaNcjPQqM
-        oem1vHv+PUNhDe72gNKyaVLms9rvusp89mFqVPM=
-X-Google-Smtp-Source: ABdhPJwBRIfAEE/lsfibIleDUjjVo9Ea3B1l3ZGGu/huP8QNC5XAxU2hRfsmPvSd/3DDx/f8Ogz3z0bPNEGHWITeLEM=
-X-Received: by 2002:a17:906:546:: with SMTP id k6mr38630111eja.53.1626881480186;
- Wed, 21 Jul 2021 08:31:20 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tOE3NPRB7X+kOfCSnwgM1RAUX3A4OJ/1KLMM54dafzU=;
+        b=qdbLXv9QOdhY/AayvJ1hJ85ujkMA8+AmpGcjcdPbBvhGCLV6ypv/Bukr+DXDt0zj9j
+         4pB5bcoJkGRxy35JCrTWS7OsOzguu7AClp572JiuCQZa+U4yjZWgcYHiRVDTE0qWojGm
+         4bvDjKk3MbXci5tmqMoTnpxgk0zhHFjLRO/U0kXNtnBxJZcLZ43bhczhD0fRYaK4y8p5
+         Gdkm4m4H6uT08t2I1aZeDNYu1oQm2YYjqbflYKxz9JEhx95cCkNLAY3E80QLmUw2hVxc
+         JFwDHPgUKEc0jk3+SmObq73LiXmkSManqKigyXLW3uD3bdynjE0Hmw+9YyqPhVqgox3A
+         LKCQ==
+X-Gm-Message-State: AOAM530Y1yRsfVNuN1yJtISqD6acQNClMjKRQYbnqL0p4JMPA+SB6lbK
+        7ADjNd98Q2WOBNZVdQ19UsXXJn57IyGeBzTkkKYoTg==
+X-Google-Smtp-Source: ABdhPJyyTCPunnRzKWFhKCFsefVcfi2KAxUStCwy/XNh/S1k9zdtFicTPgnjha+Im/baQZ6P245+qmjJfROyxCqPch8=
+X-Received: by 2002:a25:2e49:: with SMTP id b9mr48225098ybn.250.1626881647614;
+ Wed, 21 Jul 2021 08:34:07 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a54:2d0c:0:0:0:0:0 with HTTP; Wed, 21 Jul 2021 08:31:19
- -0700 (PDT)
-Reply-To: ouedraogoahmed@outlook.com
-From:   mr ahmed <devoobrown@gmail.com>
-Date:   Wed, 21 Jul 2021 15:31:19 +0000
-Message-ID: <CALi_6kNv8URWMSCHR1gjihF5H3ux5dAdut30ZNBtW9mnkZ9syA@mail.gmail.com>
-Subject: Hello Dear.
-To:     undisclosed-recipients:;
+References: <20210718214134.2619099-1-surenb@google.com> <7eb17da6-03a6-5eaf-16e6-97b53ba163d8@redhat.com>
+ <20210720160707.2332738708948f7d865d67c1@linux-foundation.org> <ba763ed3-9ad1-9502-1ffc-3175446570d1@redhat.com>
+In-Reply-To: <ba763ed3-9ad1-9502-1ffc-3175446570d1@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 21 Jul 2021 08:33:56 -0700
+Message-ID: <CAJuCfpEB994Xj3FcmzyH1p3yOdLVf6EwZaGaRj7NJi_c9hbsRQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] mm, oom: move task_will_free_mem up in the file to
+ be used in process_mrelease
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+On Wed, Jul 21, 2021 at 12:30 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 21.07.21 01:07, Andrew Morton wrote:
+> > On Tue, 20 Jul 2021 14:43:52 +0200 David Hildenbrand <david@redhat.com> wrote:
+> >
+> >> On 18.07.21 23:41, Suren Baghdasaryan wrote:
+> >>> process_mrelease needs to be added in the CONFIG_MMU-dependent block which
+> >>> comes before __task_will_free_mem and task_will_free_mem. Move these
+> >>> functions before this block so that new process_mrelease syscall can use
+> >>> them.
+> >>>
+> >>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> >>> ---
+> >>> changes in v2:
+> >>> - Fixed build error when CONFIG_MMU=n, reported by kernel test robot. This
+> >>> required moving task_will_free_mem implemented in the first patch
+> >>> - Renamed process_reap to process_mrelease, per majority of votes
+> >>> - Replaced "dying process" with "process which was sent a SIGKILL signal" in
+> >>> the manual page text, per Florian Weimer
+> >>> - Added ERRORS section in the manual page text
+> >>> - Resolved conflicts in syscall numbers caused by the new memfd_secret syscall
+> >>> - Separated boilerplate code wiring-up the new syscall into a separate patch
+> >>> to facilitate the review process
+> >>>
+> >>>    mm/oom_kill.c | 150 +++++++++++++++++++++++++-------------------------
+> >>>    1 file changed, 75 insertions(+), 75 deletions(-)
+> >>
+> >> TBH, I really dislike this move as it makes git blame a lot harder with
+> >> any real benefit.
+> >>
+> >> Can't you just use prototypes to avoid the move for now in patch #2?
+> >>
+> >> static bool task_will_free_mem(struct task_struct *task);
+> >
+> > This change makes the code better - it's silly to be adding forward
+> > declarations just because the functions are in the wrong place.
+>
+> I'd really love to learn what "better" here means and if it's rather
+> subjective. When it comes to navigating the code, we do have established
+> tools for that (ctags), and personally I couldn't care less where
+> exactly in a file the code is located.
+>
+> Sure, ending up with a forward-declaration for every function might not
+> be what we want ;)
+>
+> >
+> > If that messes up git-blame then let's come up with better tooling
+> > rather than suffering poorer kernel code because the tools aren't doing
+> > what we want of them.  Surely?
+>
+> I don't agree that what we get is "poorer kernel code" in this very
+> instance; I can understand that we avoid forward-declarations when
+> moving smallish functions. But moving two functions with 75 LOC is a bit
+> too much for my taste at least -- speaking as someone who cares about
+> easy backports and git-blame.
 
-With due respect to your person. I need your assistance in
-transferring the sum of $11.3million to your private account. The
-money has been here in our Bank lying dormant for years without
-anybody coming for the claim. I want to release the money to you as
-the relative to our deceased customer (the account owner) who died a
-long with his family since October 2005.
+There is a third alternative here to have process_mrelease() at the
+end of the file with its own #ifdef CONFIG_MMU block, maybe even
+embedded in the function like this:
 
-The Banking law and guideline here stipulates that if such money
-remains unclaimed after 16 years, the money will be transferred into
-the bank treasury as an unclaimed fund. that is the reason why i want
-to release the money to you for our mutual benefit.
+ int process_mrelease(int pidfd, unsigned int flags)
+{
+#ifdef CONFIG_MMU
+        ...
+#else
+        return ENOSYS;
+#endif
+}
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
+This would not require moving other functions.
+Would that be better than the current approach or the forward declaration?
 
-Best Regards,
-Ahmed Ouedraogo.
+>
+> Anyhow, just my 2 cents.
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
