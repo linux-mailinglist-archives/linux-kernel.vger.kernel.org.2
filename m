@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADF93D1A53
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 01:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DF43D1A5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 01:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbhGUWf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 18:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36572 "EHLO
+        id S231157AbhGUWmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 18:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbhGUWf1 (ORCPT
+        with ESMTP id S230091AbhGUWmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 18:35:27 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53859C061575;
-        Wed, 21 Jul 2021 16:16:02 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id n10so3713670qke.12;
-        Wed, 21 Jul 2021 16:16:02 -0700 (PDT)
+        Wed, 21 Jul 2021 18:42:17 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FA9C061575;
+        Wed, 21 Jul 2021 16:22:53 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id j7so3072844qtj.6;
+        Wed, 21 Jul 2021 16:22:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8kBHltz3fpi5tJOBHoxxMlZNZl2yFO4paDm36raK100=;
-        b=J1AIz/EIQ87onxU71lAQ7/9TBEUOW4aEBpScIqH9TibBu7A3/rNhvMuU0nX5lxUfG/
-         4k9TzQC12UEOFGm6p3SZsZenae9URnES5GwGWmeRK1PxIN+e8KFg4v02R7IjPcoO4/YI
-         2ec9XH1NQ9cTG4OajtQdjUeFTAQZWiFXzdyUdGVr2NvaGA9wCjyEO/YEsrIbn8DSuFId
-         QY2Wb9IhMWES4ItmWy5dvq2wxN4rfd6Ona7fKOkoM168yui8N2Ntr0F4EpfbEzRbz6YV
-         V4vVyj4DV/22pH/dy+2pUcSRVN5Rh+vxl5yLNi32hdmFmqEsGJjIJCajb+5h8mqvLPjq
-         OIvQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pozbzGVzs8EDjWr/Isfr8VZlmmrHC7hULWqF8mz9+Xo=;
+        b=azUZRQH7bhfATqyNF86v4JQHKEKaObrAlMHQ8FX5Ck2jdYXcCdz11mIJ05zSiFFoq3
+         S7ZuuR5mAXoEo8j58afrfe9sge5kCcc+A5F/KRDViziVUsKPDDwt6N5MLJwhngsy2hpn
+         9L4Ot5h46sqVeVPk9iclYmhev4QnIV4Lq219+uPYRhpqrG5XOFEcfYu6Ep6qynefk+L/
+         1wHRhrBfELR7kd2GMGVl4Ay1P6p+SrpN5ZwtQ5INx1qCX4QDLN0ZIht1kAwbSn77AR1w
+         E7jIQiSPsbgrtZj8fO5zlLfpuNFslZJNxtlEs4IVJ1jcDBmAnmBtvs7OBadcb0Nrm6fs
+         mkTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8kBHltz3fpi5tJOBHoxxMlZNZl2yFO4paDm36raK100=;
-        b=B76QvmrcjxCrq+Y7hMLTS6mXG+Qzesu/thwhn/6KDyk9AEyMKEDjn5VPMQdUTfaaYT
-         s4Kxb3cj8pfRR4UNnPFK1ocGzOK1dldgFM4x0wz5IIf0AU6t19L8idgV0HgPT+L/SpYh
-         KRDdAuzQDGBryKvuEMJuiOB9Z1Idaw+xZ5YQpgKHqHpWY6THqBgsInkBWxSGHKOLi/x7
-         RtHgSWYwjMlqSTzPWWXRdSRzK06/C9xE2X26f+MsIMS+N7FpQoiBe3JIM9qzBTNpje5R
-         lrp5HM6Aid/vQycX8mFUkFa0DK370VDr3a1fjiLFP3267v3bOvXmWrbs0fupo0ZyvJqJ
-         nZMw==
-X-Gm-Message-State: AOAM533q3330x2fq+dMC0R0MfICX9/WtG4vS5f+H89SxjqR7vWTpUwTw
-        92ODKJRB/ffuBzJlnGL5ig==
-X-Google-Smtp-Source: ABdhPJzzBmHQ+Sn4JRrVsfAq41FRZTA8DxFCmeNHoYQkN1hG2JZMNdjGgz7EKW3m6mYTRjjYw1AsbA==
-X-Received: by 2002:a37:a154:: with SMTP id k81mr38215797qke.202.1626909360600;
-        Wed, 21 Jul 2021 16:16:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pozbzGVzs8EDjWr/Isfr8VZlmmrHC7hULWqF8mz9+Xo=;
+        b=mC+QFgL6xm9ZnN93VhBLT3ufQuZrYKX5AyiAV+RLW4v9GkRLys/2+bntQeIFa1K1dI
+         IkiEokhLOors6aLl8yxDDS3aTuhdagFPSNERGMWEH4nYVAObf1WyCTSe73kfC7noi9On
+         UnpYA0HN2VfYws65AryMtgY1RvyIYXQSldZpBtDk549OQH+k+vUYGN/aIYFa3Jn9/O1q
+         mpRI4YfMpNzYBituQeyOGTLcll3oOYs8JwvINkWc9ejI/yoR3q+EhmEaTctje2BxcxBK
+         q4r4OvbzgGG43FHyEFQvvYEZHRGThoVgUQStl8Na9f+INIdTMezBYYqsOtqSmv25UtwR
+         TXrg==
+X-Gm-Message-State: AOAM533bPZslqzqw0YN3WVjGF42I9tz8iWeaIVG8vv80+xhYwS9jiWRP
+        BTLyUErqWd7nAHt8K6d/1A==
+X-Google-Smtp-Source: ABdhPJzQ8SJgmO30XBcBnvfbnsCN4ckh2jCVvOvrbZ4ELmKOrnjoJ5I8BNDeE6oJE2rPVdbt5w2Ofg==
+X-Received: by 2002:a05:622a:1342:: with SMTP id w2mr33443452qtk.310.1626909772739;
+        Wed, 21 Jul 2021 16:22:52 -0700 (PDT)
 Received: from bytedance.attlocal.net (ec2-52-52-7-82.us-west-1.compute.amazonaws.com. [52.52.7.82])
-        by smtp.gmail.com with ESMTPSA id k14sm9875038qtm.18.2021.07.21.16.15.58
+        by smtp.gmail.com with ESMTPSA id k9sm6531563qti.88.2021.07.21.16.22.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 16:16:00 -0700 (PDT)
+        Wed, 21 Jul 2021 16:22:52 -0700 (PDT)
 From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Jamal Hadi Salim <jhs@mojatatu.com>,
+To:     Shuah Khan <shuah@kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
         Cong Wang <xiyou.wangcong@gmail.com>,
         Jiri Pirko <jiri@resnulli.us>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Cong Wang <cong.wang@bytedance.com>,
         Peilin Ye <peilin.ye@bytedance.com>,
         Peilin Ye <yepeilin.cs@gmail.com>
-Subject: [PATCH net-next 1/2] net/sched: act_skbmod: Add SKBMOD_F_ECN option support
-Date:   Wed, 21 Jul 2021 16:15:47 -0700
-Message-Id: <f5c5a81d6674a8f4838684ac52ed66da83f92499.1626899889.git.peilin.ye@bytedance.com>
+Subject: [PATCH net-next 2/2] tc-testing: Add control-plane selftest for skbmod SKBMOD_F_ECN option
+Date:   Wed, 21 Jul 2021 16:22:44 -0700
+Message-Id: <21ca3638f09c55d0e1deb439f82a1124aff80144.1626899889.git.peilin.ye@bytedance.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <f5c5a81d6674a8f4838684ac52ed66da83f92499.1626899889.git.peilin.ye@bytedance.com>
+References: <f5c5a81d6674a8f4838684ac52ed66da83f92499.1626899889.git.peilin.ye@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -69,177 +72,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peilin Ye <peilin.ye@bytedance.com>
 
-Currently, when doing rate limiting using the tc-police(8) action, the
-easiest way is to simply drop the packets which exceed or conform the
-configured bandwidth limit.  Add a new option to tc-skbmod(8), so that
-users may use the ECN [1] extension to explicitly inform the receiver
-about the congestion instead of dropping packets "on the floor".
+Recently we added a new option, SKBMOD_F_ECN, to tc-skbmod(8).  Add a
+control-plane selftest for it.
 
-The 2 least significant bits of the Traffic Class field in IPv4 and IPv6
-headers are used to represent different ECN states [2]:
-
-	0b00: "Non ECN-Capable Transport", Non-ECT
-	0b10: "ECN Capable Transport", ECT(0)
-	0b01: "ECN Capable Transport", ECT(1)
-	0b11: "Congestion Encountered", CE
-
-As an example:
-
-	$ tc filter add dev eth0 parent 1: protocol ip prio 10 \
-		matchall action skbmod ecn
-
-Doing the above marks all ECT(0) and ECT(1) packets as CE.  It does NOT
-affect Non-ECT or non-IP packets.  In the tc-police scenario mentioned
-above, users may pipe a tc-police action and a tc-skbmod "ecn" action
-together to achieve ECN-based rate limiting.
-
-For TCP connections, upon receiving a CE packet, the receiver will respond
-with an ECE packet, asking the sender to reduce their congestion window.
-However ECN also works with other L4 protocols e.g. DCCP and SCTP [2], and
-our implementation does not touch or care about L4 headers.
-
-The updated tc-skbmod SYNOPSIS looks like the following:
-
-	tc ... action skbmod { set SETTABLE | swap SWAPPABLE | ecn } ...
-
-Only one of "set", "swap" or "ecn" shall be used in a single tc-skbmod
-command.  Trying to use more than one of them at a time is considered
-undefined behavior; pipe multiple tc-skbmod commands together instead.
-"set" and "swap" only affect Ethernet packets, while "ecn" only affects
-IPv{4,6} packets.
-
-It is also worth mentioning that, in theory, the same effect could be
-achieved by piping a "police" action and a "bpf" action using the
-bpf_skb_ecn_set_ce() helper, but this requires eBPF programming from the
-user, thus impractical.
-
-Depends on patch "net/sched: act_skbmod: Skip non-Ethernet packets".
-
-[1] https://datatracker.ietf.org/doc/html/rfc3168
-[2] https://en.wikipedia.org/wiki/Explicit_Congestion_Notification
+Depends on kernel patch "net/sched: act_skbmod: Add SKBMOD_F_ECN option
+support", as well as iproute2 patch "tc/skbmod: Introduce SKBMOD_F_ECN
+option".
 
 Reviewed-by: Cong Wang <cong.wang@bytedance.com>
 Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
 ---
 Hi all,
 
-This patch depends on the following commit, which is in net, but not in
-net-next yet:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=727d6a8b7ef3d25080fad228b2c4a1d4da5999c6
+The corresponding iproute2-next patch is here:
+https://lore.kernel.org/netdev/20210721232053.39077-1-yepeilin.cs@gmail.com/
 
 Thanks,
 Peilin Ye
 
- include/uapi/linux/tc_act/tc_skbmod.h |  1 +
- net/sched/act_skbmod.c                | 44 +++++++++++++++++++--------
- 2 files changed, 33 insertions(+), 12 deletions(-)
+ .../tc-testing/tc-tests/actions/skbmod.json   | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/include/uapi/linux/tc_act/tc_skbmod.h b/include/uapi/linux/tc_act/tc_skbmod.h
-index c525b3503797..af6ef2cfbf3d 100644
---- a/include/uapi/linux/tc_act/tc_skbmod.h
-+++ b/include/uapi/linux/tc_act/tc_skbmod.h
-@@ -17,6 +17,7 @@
- #define SKBMOD_F_SMAC	0x2
- #define SKBMOD_F_ETYPE	0x4
- #define SKBMOD_F_SWAPMAC 0x8
-+#define SKBMOD_F_ECN	0x10
- 
- struct tc_skbmod {
- 	tc_gen;
-diff --git a/net/sched/act_skbmod.c b/net/sched/act_skbmod.c
-index 8d17a543cc9f..762ceec3e6f6 100644
---- a/net/sched/act_skbmod.c
-+++ b/net/sched/act_skbmod.c
-@@ -11,6 +11,7 @@
- #include <linux/kernel.h>
- #include <linux/skbuff.h>
- #include <linux/rtnetlink.h>
-+#include <net/inet_ecn.h>
- #include <net/netlink.h>
- #include <net/pkt_sched.h>
- #include <net/pkt_cls.h>
-@@ -21,15 +22,13 @@
- static unsigned int skbmod_net_id;
- static struct tc_action_ops act_skbmod_ops;
- 
--#define MAX_EDIT_LEN ETH_HLEN
- static int tcf_skbmod_act(struct sk_buff *skb, const struct tc_action *a,
- 			  struct tcf_result *res)
- {
- 	struct tcf_skbmod *d = to_skbmod(a);
--	int action;
-+	int action, max_edit_len, err;
- 	struct tcf_skbmod_params *p;
- 	u64 flags;
--	int err;
- 
- 	tcf_lastuse_update(&d->tcf_tm);
- 	bstats_cpu_update(this_cpu_ptr(d->common.cpu_bstats), skb);
-@@ -38,19 +37,34 @@ static int tcf_skbmod_act(struct sk_buff *skb, const struct tc_action *a,
- 	if (unlikely(action == TC_ACT_SHOT))
- 		goto drop;
- 
--	if (!skb->dev || skb->dev->type != ARPHRD_ETHER)
--		return action;
-+	max_edit_len = skb_mac_header_len(skb);
-+	p = rcu_dereference_bh(d->skbmod_p);
-+	flags = p->flags;
-+
-+	/* tcf_skbmod_init() guarantees "flags" to be one of the following:
-+	 *	1. a combination of SKBMOD_F_{DMAC,SMAC,ETYPE}
-+	 *	2. SKBMOD_F_SWAPMAC
-+	 *	3. SKBMOD_F_ECN
-+	 * SKBMOD_F_ECN only works with IP packets; all other flags only work with Ethernet
-+	 * packets.
-+	 */
-+	if (flags == SKBMOD_F_ECN) {
-+		switch (skb_protocol(skb, true)) {
-+		case cpu_to_be16(ETH_P_IP):
-+		case cpu_to_be16(ETH_P_IPV6):
-+			max_edit_len += skb_network_header_len(skb);
-+			break;
-+		default:
-+			goto out;
-+		}
-+	} else if (!skb->dev || skb->dev->type != ARPHRD_ETHER) {
-+		goto out;
-+	}
- 
--	/* XXX: if you are going to edit more fields beyond ethernet header
--	 * (example when you add IP header replacement or vlan swap)
--	 * then MAX_EDIT_LEN needs to change appropriately
--	*/
--	err = skb_ensure_writable(skb, MAX_EDIT_LEN);
-+	err = skb_ensure_writable(skb, max_edit_len);
- 	if (unlikely(err)) /* best policy is to drop on the floor */
- 		goto drop;
- 
--	p = rcu_dereference_bh(d->skbmod_p);
--	flags = p->flags;
- 	if (flags & SKBMOD_F_DMAC)
- 		ether_addr_copy(eth_hdr(skb)->h_dest, p->eth_dst);
- 	if (flags & SKBMOD_F_SMAC)
-@@ -66,6 +80,10 @@ static int tcf_skbmod_act(struct sk_buff *skb, const struct tc_action *a,
- 		ether_addr_copy(eth_hdr(skb)->h_source, (u8 *)tmpaddr);
- 	}
- 
-+	if (flags & SKBMOD_F_ECN)
-+		INET_ECN_set_ce(skb);
-+
-+out:
- 	return action;
- 
- drop:
-@@ -129,6 +147,8 @@ static int tcf_skbmod_init(struct net *net, struct nlattr *nla,
- 	index = parm->index;
- 	if (parm->flags & SKBMOD_F_SWAPMAC)
- 		lflags = SKBMOD_F_SWAPMAC;
-+	if (parm->flags & SKBMOD_F_ECN)
-+		lflags = SKBMOD_F_ECN;
- 
- 	err = tcf_idr_check_alloc(tn, &index, a, bind);
- 	if (err < 0)
+diff --git a/tools/testing/selftests/tc-testing/tc-tests/actions/skbmod.json b/tools/testing/selftests/tc-testing/tc-tests/actions/skbmod.json
+index 6eb4c4f97060..742f2290973e 100644
+--- a/tools/testing/selftests/tc-testing/tc-tests/actions/skbmod.json
++++ b/tools/testing/selftests/tc-testing/tc-tests/actions/skbmod.json
+@@ -417,5 +417,29 @@
+         "teardown": [
+             "$TC actions flush action skbmod"
+         ]
++    },
++    {
++        "id": "fe09",
++        "name": "Add skbmod action to mark ECN bits",
++        "category": [
++            "actions",
++            "skbmod"
++        ],
++        "setup": [
++            [
++                "$TC actions flush action skbmod",
++                0,
++                1,
++                255
++            ]
++        ],
++        "cmdUnderTest": "$TC actions add action skbmod ecn",
++        "expExitCode": "0",
++        "verifyCmd": "$TC actions get action skbmod index 1",
++        "matchPattern": "action order [0-9]*: skbmod pipe ecn",
++        "matchCount": "1",
++        "teardown": [
++            "$TC actions flush action skbmod"
++        ]
+     }
+ ]
 -- 
 2.20.1
 
