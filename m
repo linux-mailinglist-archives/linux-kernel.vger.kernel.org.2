@@ -2,205 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91B43D1736
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CB03D1738
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbhGUSyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 14:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240334AbhGUSyR (ORCPT
+        id S232231AbhGUS5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 14:57:16 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56356 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231218AbhGUS5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 14:54:17 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5519C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:34:52 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id ec55so3847460edb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:34:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3bRunNWeW2lfZZup5nSB82DUjrIpt/jOFnUYQ8vwPzs=;
-        b=mPEsradvTXokovjNTjxeaxkEJuooGFpr8pYrtJEJoFrLrz1ogklIfS57bWdTkeC6GY
-         Vb7j9U+SaULLpyQKPeQF9SnCHmMD9zPfSFumct0FLMM3AAakDTRb0qNG+XsqqONl4z8s
-         Klbrk/wcouG3ZjphxOnW4aG5+8DfGm2JmZX5iZIyuacOs30psHaARI99hhWvi8Rl41DB
-         jFFUEPp+2A2P0b2b1DbgLZNLXwdwZ9X3Is3G19YTybTtf18PJ5p3OKbhHcMznpgTDsCa
-         iCArVsZWOWG2F6BpNN12uCt3CA95VtM2sftgnzsQMTHjUtxxc5ZnVjuqysyiSr6WUH5x
-         6y9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3bRunNWeW2lfZZup5nSB82DUjrIpt/jOFnUYQ8vwPzs=;
-        b=SzNATfP0miUX7pI7vGhpVN5oa5CaMvwcNrrfDzw0jpQN+YupEQP7xm4RyzsGNNBVXz
-         O6tudeOEia/MnY0m6Oxw+1rsR1/gafGVHBWMpCQg14NatglYkg50vcoAOL+8bUcQTjRw
-         wbaR/+P9hKdc5ilgK/mRTOaRKTIAzM8INzQh2+vybEg7IUaqolgi16ceNSMAz6S+IY8z
-         jh4dPthn7qc54HWPE1sQE+fUJnJoPFz4y2O0KN63MAdvXWc29JC7xDZpQLlI82B7uMul
-         TOJr0mxxAchCqCaKopzfPKTYZhXoF/bBpOd6Czs0cmMfQtYExSwVytTnKADkR1Svu+m1
-         MAIQ==
-X-Gm-Message-State: AOAM532L8fJafVrSkLqFJz9D0Ag9FoSgQVvSXuWEyjfHlZv1XMLgPpW9
-        4OKVA/ia+P4dhMok18lcPDs=
-X-Google-Smtp-Source: ABdhPJwdL+U/6cyKpLjuzg9kEYtvs5aedL260p2p0iwSzRmBRCzLQng2pdNplLP05MfQVyo67NATfQ==
-X-Received: by 2002:a05:6402:4d1:: with SMTP id n17mr49197362edw.337.1626896091243;
-        Wed, 21 Jul 2021 12:34:51 -0700 (PDT)
-Received: from localhost.localdomain ([176.30.239.20])
-        by smtp.gmail.com with ESMTPSA id f22sm11142723edr.16.2021.07.21.12.34.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 12:34:50 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, zhansayabagdaulet@gmail.com,
-        straube.linux@gmail.com
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+5872a520e0ce0a7c7230@syzkaller.appspotmail.com,
-        syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com
-Subject: [PATCH 2/2] staging: rtl8712: error handling refactoring
-Date:   Wed, 21 Jul 2021 22:34:47 +0300
-Message-Id: <d49ecc56e97c4df181d7bd4d240b031f315eacc3.1626895918.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1626895918.git.paskripkin@gmail.com>
-References: <cover.1626895918.git.paskripkin@gmail.com>
+        Wed, 21 Jul 2021 14:57:15 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LJXRcP015721;
+        Wed, 21 Jul 2021 15:37:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=reply-to : subject : to
+ : cc : references : from : message-id : date : mime-version : in-reply-to
+ : content-type : content-transfer-encoding; s=pp1;
+ bh=AzHhZKFYYciWklt6q5wFtY8MduXCET7U8bwUZdVRyHA=;
+ b=WRKtsHukCX5C700Xgl+MzSO7BmnCedQTLRj4lXmyerTOzLHPS+i+E4MMN3PQYhM3kEZt
+ QLMRnKi/e9eNEZN1R0w0NUs8W3ECJYy1900PPq3ntNDhYdSSJxlXU5N/mq2Dr1lpG6Mo
+ NQKlxmujkUaoKsYPpSK3PCB8OOTJqBKdgAU2cF8RDRnUNZU0zUCL/daIhfdHV8Cq5Zaa
+ /ZvHHmtjjLNS/ooirCwp4ZJ/kk4jNP/Ln7ySpOIv89jLtRw+lV+FcXL2Og/wmDrGxril
+ BO1Ps/DcuwcwG/JuFaTnMheuR+FE9mcfeZf5vnQLyeH6/BDfHqo4u5EBekpftGEEG5gu 3A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39xsbarvfg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Jul 2021 15:37:49 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16LJXu5i016435;
+        Wed, 21 Jul 2021 15:37:49 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39xsbarvey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Jul 2021 15:37:49 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16LJbguY015847;
+        Wed, 21 Jul 2021 19:37:48 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma04wdc.us.ibm.com with ESMTP id 39upucfybh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Jul 2021 19:37:48 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16LJblHI35783042
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Jul 2021 19:37:47 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6814912405A;
+        Wed, 21 Jul 2021 19:37:47 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0DE30124058;
+        Wed, 21 Jul 2021 19:37:47 +0000 (GMT)
+Received: from [9.85.196.19] (unknown [9.85.196.19])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Jul 2021 19:37:46 +0000 (GMT)
+Reply-To: jjherne@linux.ibm.com
+Subject: Re: [PATCH 2/2] s390/vfio-ap: replace open coded locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
+References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
+ <20210719193503.793910-3-akrowiak@linux.ibm.com>
+From:   "Jason J. Herne" <jjherne@linux.ibm.com>
+Organization: IBM
+Message-ID: <6c7244b5-be7b-1566-f406-4c4c37f06fd7@linux.ibm.com>
+Date:   Wed, 21 Jul 2021 15:37:46 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210719193503.793910-3-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: wVRSy_cQFyMzWp19k-xCBl9_vW6GLn_7
+X-Proofpoint-GUID: XGeCKfeXCAd2uDkKHH70TBoa1M0kFP7P
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-21_10:2021-07-21,2021-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0
+ suspectscore=0 spamscore=0 priorityscore=1501 mlxscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107210115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There was strange error handling logic in case of fw load failure. For
-some reason fw loader callback was doing clean up stuff when fw is not
-available. I don't see any reason behind doing this. Since this driver
-doesn't have EEPROM firmware let's just disconnect it in case of fw load
-failure. Doing clean up stuff in 2 different place which can run
-concurently is not good idea and syzbot found 2 bugs related to this
-strange approach.
+On 7/19/21 3:35 PM, Tony Krowiak wrote:
+> It was pointed out during an unrelated patch review that locks should not
+> be open coded - i.e., writing the algorithm of a standard lock in a
+> function instead of using a lock from the standard library. The setting and
+> testing of a busy flag and sleeping on a wait_event is the same thing
+> a lock does. The open coded locks are invisible to lockdep, so potential
+> locking problems are not detected.
+> 
+> This patch removes the open coded locks used during
+> VFIO_GROUP_NOTIFY_SET_KVM notification. The busy flag
+> and wait queue were introduced to resolve a possible circular locking
+> dependency reported by lockdep when starting a secure execution guest
+> configured with AP adapters and domains. Reversing the order in which
+> the kvm->lock mutex and matrix_dev->lock mutex are locked resolves the
+> issue reported by lockdep, thus enabling the removal of the open coded
+> locks.
+> 
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> ---
+>   arch/s390/kvm/kvm-s390.c              |  27 +++++-
+>   drivers/s390/crypto/vfio_ap_ops.c     | 132 ++++++++------------------
+>   drivers/s390/crypto/vfio_ap_private.h |   2 -
+>   3 files changed, 63 insertions(+), 98 deletions(-)
+> 
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index a08f242a9f27..4d2ef3a3286e 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -2559,12 +2559,24 @@ static void kvm_s390_set_crycb_format(struct kvm *kvm)
+>   		kvm->arch.crypto.crycbd |= CRYCB_FORMAT1;
+>   }
+>   
+> +/*
+> + * kvm_arch_crypto_set_masks
+> + *
+> + * @kvm: a pointer to the object containing the crypto masks
 
-So, in this pacth I deleted all clean up code from fw callback and made
-a call to device_release_driver() under device_lock(parent) in case of fw
-load failure. This approach is more generic and it defend driver from UAF
-bugs, since all clean up code is moved to one place.
+This should probably say "a pointer to the target guest's KVM struct" or something to that 
+effect. Same comment for the comment above kvm_arch_crypto_clear_masks.
 
-Fixes: e02a3b945816 ("staging: rtl8712: fix memory leak in rtl871x_load_fw_cb")
-Fixes: 8c213fa59199 ("staging: r8712u: Use asynchronous firmware loading")
-Reported-and-tested-by: syzbot+5872a520e0ce0a7c7230@syzkaller.appspotmail.com
-Reported-and-tested-by: syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/staging/rtl8712/hal_init.c | 30 +++++++++++------
- drivers/staging/rtl8712/usb_intf.c | 52 +++++++++++++-----------------
- 2 files changed, 43 insertions(+), 39 deletions(-)
+> + * @apm: the mask identifying the accessible AP adapters
+> + * @aqm: the mask identifying the accessible AP domains
+> + * @adm: the mask identifying the accessible AP control domains
+> + *
+> + * Set the masks that identify the adapters, domains and control domains to
+> + * which the KVM guest is granted access.
+> + *
+> + * Note: The kvm->lock mutex must be locked by the caller.
+> + */
+>   void kvm_arch_crypto_set_masks(struct kvm *kvm, unsigned long *apm,
+>   			       unsigned long *aqm, unsigned long *adm)
+>   {
+>   	struct kvm_s390_crypto_cb *crycb = kvm->arch.crypto.crycb;
+>   
+> -	mutex_lock(&kvm->lock);
+>   	kvm_s390_vcpu_block_all(kvm);
+>   
+>   	switch (kvm->arch.crypto.crycbd & CRYCB_FORMAT_MASK) {
+> @@ -2595,13 +2607,21 @@ void kvm_arch_crypto_set_masks(struct kvm *kvm, unsigned long *apm,
+>   	/* recreate the shadow crycb for each vcpu */
+>   	kvm_s390_sync_request_broadcast(kvm, KVM_REQ_VSIE_RESTART);
+>   	kvm_s390_vcpu_unblock_all(kvm);
+> -	mutex_unlock(&kvm->lock);
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_arch_crypto_set_masks);
+>   
+> +/*
+> + * kvm_arch_crypto_set_masks
 
-diff --git a/drivers/staging/rtl8712/hal_init.c b/drivers/staging/rtl8712/hal_init.c
-index 22974277afa0..4eff3fdecdb8 100644
---- a/drivers/staging/rtl8712/hal_init.c
-+++ b/drivers/staging/rtl8712/hal_init.c
-@@ -29,21 +29,31 @@
- #define FWBUFF_ALIGN_SZ 512
- #define MAX_DUMP_FWSZ (48 * 1024)
- 
-+static void rtl871x_load_fw_fail(struct _adapter *adapter)
-+{
-+	struct usb_device *udev = adapter->dvobjpriv.pusbdev;
-+	struct device *dev = &udev->dev;
-+	struct device *parent = dev->parent;
-+
-+	complete(&adapter->rtl8712_fw_ready);
-+
-+	dev_err(&udev->dev, "r8712u: Firmware request failed\n");
-+
-+	if (parent)
-+		device_lock(parent);
-+
-+	device_release_driver(dev);
-+
-+	if (parent)
-+		device_unlock(parent);
-+}
-+
- static void rtl871x_load_fw_cb(const struct firmware *firmware, void *context)
- {
- 	struct _adapter *adapter = context;
- 
- 	if (!firmware) {
--		struct usb_device *udev = adapter->dvobjpriv.pusbdev;
--		struct usb_interface *usb_intf = adapter->pusb_intf;
--
--		dev_err(&udev->dev, "r8712u: Firmware request failed\n");
--		usb_put_dev(udev);
--		usb_set_intfdata(usb_intf, NULL);
--		r8712_free_drv_sw(adapter);
--		adapter->dvobj_deinit(adapter);
--		complete(&adapter->rtl8712_fw_ready);
--		free_netdev(adapter->pnetdev);
-+		rtl871x_load_fw_fail(adapter);
- 		return;
- 	}
- 	adapter->fw = firmware;
-diff --git a/drivers/staging/rtl8712/usb_intf.c b/drivers/staging/rtl8712/usb_intf.c
-index 643f21eb1128..505ebeb643dc 100644
---- a/drivers/staging/rtl8712/usb_intf.c
-+++ b/drivers/staging/rtl8712/usb_intf.c
-@@ -591,36 +591,30 @@ static void r871xu_dev_remove(struct usb_interface *pusb_intf)
- {
- 	struct net_device *pnetdev = usb_get_intfdata(pusb_intf);
- 	struct usb_device *udev = interface_to_usbdev(pusb_intf);
-+	struct _adapter *padapter = netdev_priv(pnetdev);
-+
-+	/* never exit with a firmware callback pending */
-+	wait_for_completion(&padapter->rtl8712_fw_ready);
-+	usb_set_intfdata(pusb_intf, NULL);
-+	release_firmware(padapter->fw);
-+	if (drvpriv.drv_registered)
-+		padapter->surprise_removed = true;
-+	if (pnetdev->reg_state != NETREG_UNINITIALIZED)
-+		unregister_netdev(pnetdev); /* will call netdev_close() */
-+	r8712_flush_rwctrl_works(padapter);
-+	r8712_flush_led_works(padapter);
-+	udelay(1);
-+	/* Stop driver mlme relation timer */
-+	r8712_stop_drv_timers(padapter);
-+	r871x_dev_unload(padapter);
-+	r8712_free_drv_sw(padapter);
-+	free_netdev(pnetdev);
-+
-+	/* decrease the reference count of the usb device structure
-+	 * when disconnect
-+	 */
-+	usb_put_dev(udev);
- 
--	if (pnetdev) {
--		struct _adapter *padapter = netdev_priv(pnetdev);
--
--		/* never exit with a firmware callback pending */
--		wait_for_completion(&padapter->rtl8712_fw_ready);
--		pnetdev = usb_get_intfdata(pusb_intf);
--		usb_set_intfdata(pusb_intf, NULL);
--		if (!pnetdev)
--			goto firmware_load_fail;
--		release_firmware(padapter->fw);
--		if (drvpriv.drv_registered)
--			padapter->surprise_removed = true;
--		if (pnetdev->reg_state != NETREG_UNINITIALIZED)
--			unregister_netdev(pnetdev); /* will call netdev_close() */
--		r8712_flush_rwctrl_works(padapter);
--		r8712_flush_led_works(padapter);
--		udelay(1);
--		/* Stop driver mlme relation timer */
--		r8712_stop_drv_timers(padapter);
--		r871x_dev_unload(padapter);
--		r8712_free_drv_sw(padapter);
--		free_netdev(pnetdev);
--
--		/* decrease the reference count of the usb device structure
--		 * when disconnect
--		 */
--		usb_put_dev(udev);
--	}
--firmware_load_fail:
- 	/* If we didn't unplug usb dongle and remove/insert module, driver
- 	 * fails on sitesurvey for the first time when device is up.
- 	 * Reset usb port for sitesurvey fail issue.
+Copy/paste error here. Rename to kvm_arch_crypto_CLEAR_masks
+
+I did not find anything else in my review. However, I'm still very new to this code, so 
+take that with a grain of salt :).
+
+Also, I could not apply this to master. If there is a next version do you mind rebasing? 
+Seeing the patch in full context would be helpful.
+
+
 -- 
-2.32.0
-
+-- Jason J. Herne (jjherne@linux.ibm.com)
