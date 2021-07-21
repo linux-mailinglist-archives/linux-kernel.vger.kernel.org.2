@@ -2,113 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29BA3D08F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 08:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E6E3D090D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 08:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234001AbhGUFys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 01:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234063AbhGUFyW (ORCPT
+        id S234069AbhGUF6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 01:58:44 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:17440 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230057AbhGUF6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 01:54:22 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9826CC0613DD;
-        Tue, 20 Jul 2021 23:33:44 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id u14so1647673ljh.0;
-        Tue, 20 Jul 2021 23:33:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vgZ3yjomTzlMCFEBY2QOLzdcWRgyC4eVhW9WC+FWjOI=;
-        b=tQ8qIzLK6bqfVALG6GEQIfaZ1m2r/Tt4OX9AAorqyfmfoAwESt4rRHHYH0nAgWXreX
-         E2KEoOx7x+Rhh2FpIqFlWiShWxY4PF6BxxXHhR9FWt5NADi5LtM0j7RSYef6HUAWrQ0A
-         yAUdS0e4zRfrVDi97stCd4s35iRLaQriRr4i6hBE3DRw0TTgVFYLqnitHUsAIgjpJo6d
-         aYobLw59ffWcESJoaSaBgyc7RfHLWj11PRqyhEXU/trsyv9lY2wSEzmPraBWS65tsnAR
-         V9L+Ayhxlw/BOSY1QCg5YVU4EQKvYx8vtXYW0PiySFH21XLCgRlI/6hDVYtOS1uB8NyO
-         KktA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vgZ3yjomTzlMCFEBY2QOLzdcWRgyC4eVhW9WC+FWjOI=;
-        b=jKVc7tHngy9DBb9sS6qgspAMuv3uZPZvR4NxtBO2SOBcn29ubRBXwlToxK47KcBpYs
-         KziNZq2xymjZlszcl70AlgMZv0Q+jyiOvpzmwGnpSQ0F6+qNekmUEc+XYCwLi5xA+3bP
-         nChF4dnADXbkG1xwlk+aORUv0zQIwVxAMz6w9J8P0+SGK2D++RBDoH+2unMGPVrNlFLl
-         LqI0fx0qoQvp3OnXiHHuPpcdyPaQ1fOhKqEBAufG1cJesuragI5lOQg6MD+R3Z7kwyRx
-         /EhVcRAm5FpKO3AbYiQnxAgS95p1COKiKoF5HUC9g9Fzxct2PggtuElFNECpXlJLKnFd
-         Ee/A==
-X-Gm-Message-State: AOAM533tHVddIycFDvFizFe+RwrRagjJL6944RcPCm5m4x9Axu5MJZrT
-        ehu8LNLNqdK5DuZPrLf5bIEod0ISGR6hjczH0BY=
-X-Google-Smtp-Source: ABdhPJy8FqL1N/64ODDDPq+8rZqX7KUcnsar0gsoAGKviKNVxsjmkj4HPXdXyveyZFbgQ4idXyq8IYk94UXyBJ7iC28=
-X-Received: by 2002:a2e:a5c6:: with SMTP id n6mr29681111ljp.204.1626849222792;
- Tue, 20 Jul 2021 23:33:42 -0700 (PDT)
+        Wed, 21 Jul 2021 01:58:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1626849371;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=cDL+Qxpfo8dnpcKpwhAPSLAJkfmvr0sIzPJKut3kggE=;
+    b=J/m4Uz5lpdI/lYza5ofWPANSqZqpyQqGGLD6ZgoiyHDqjOYoNTm+a/K3lSI7y1BTc8
+    aSm9tlIXlHvmsNQssJoDVecEMj+uTlEDtZowLllrJ5+8P7mVb9FdftNyI6zjoxVIRTAD
+    nEASYhKq1NRqvu+XltYIEVSmFlM5Vu1udX5alOMD/dLipHq4FxBXw4T0Q8o4YhJscUyd
+    l4caPwMkDx6VB53woy6Wl00yB3iHKz1ZbhOtKw0mbgGh8ToouOBXe6AoC2/3RODtqMAw
+    vXlHFRub8JNv5XqPjNJo+Kw1nCgzF6aoOPDqUzunKsUsLGdBB5APCkk4C1GiSPQ1omIG
+    ylIA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3htNmYasgbo6AhaFdcg=="
+X-RZG-CLASS-ID: mo00
+Received: from [IPv6:2a00:6020:1cee:8300::b82]
+    by smtp.strato.de (RZmta 47.28.1 AUTH)
+    with ESMTPSA id Z03199x6L6aAGW7
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 21 Jul 2021 08:36:10 +0200 (CEST)
+Subject: Re: [PATCH net] can: raw: fix raw_rcv panic for sock UAF
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Ziyang Xuan <william.xuanziyang@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, mkl@pengutronix.de,
+        netdev@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20210721010937.670275-1-william.xuanziyang@huawei.com>
+ <YPeoQG19PSh3B3Dc@kroah.com>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <44c3e0e2-03c5-80e5-001c-03e7e9758bca@hartkopp.net>
+Date:   Wed, 21 Jul 2021 08:35:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
- <20210720204224.GK23236@magnolia> <YPc9viRAKm6cf2Ey@casper.infradead.org>
-In-Reply-To: <YPc9viRAKm6cf2Ey@casper.infradead.org>
-From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date:   Wed, 21 Jul 2021 08:33:30 +0200
-Message-ID: <CAHpGcMJ-E5LYz1E7Qf9=LQES=jB0V-Pjq1rSg=7GxXwJ1mh2Gw@mail.gmail.com>
-Subject: Re: [PATCH v4] iomap: support tail packing inline read
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YPeoQG19PSh3B3Dc@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Di., 20. Juli 2021 um 23:19 Uhr schrieb Matthew Wilcox <willy@infradead.org>:
-> On Tue, Jul 20, 2021 at 01:42:24PM -0700, Darrick J. Wong wrote:
-> > > -   BUG_ON(page_has_private(page));
-> > > -   BUG_ON(page->index);
-> > > -   BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> > > +   /* inline source data must be inside a single page */
-> > > +   BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> >
-> > Can we reduce the strength of these checks to a warning and an -EIO
-> > return?
 
-Yes, we could do that.
 
-> I'm not entirely sure that we need this check, tbh.
+On 21.07.21 06:53, Greg KH wrote:
+> On Wed, Jul 21, 2021 at 09:09:37AM +0800, Ziyang Xuan wrote:
+>> We get a bug during ltp can_filter test as following.
+>>
+>> ===========================================
+>> [60919.264984] BUG: unable to handle kernel NULL pointer dereference at 0000000000000010
+>> [60919.265223] PGD 8000003dda726067 P4D 8000003dda726067 PUD 3dda727067 PMD 0
+>> [60919.265443] Oops: 0000 [#1] SMP PTI
+>> [60919.265550] CPU: 30 PID: 3638365 Comm: can_filter Kdump: loaded Tainted: G        W         4.19.90+ #1
 
-I wanted to make sure the memcpy / memset won't corrupt random kernel
-memory when the filesystem gets the iomap_begin wrong.
+This kernel version 4.19.90 is definitely outdated.
 
-> > > +   /* handle tail-packing blocks cross the current page into the next */
-> > > +   size = min_t(unsigned int, iomap->length + pos - iomap->offset,
-> > > +                PAGE_SIZE - poff);
-> > >
-> > >     addr = kmap_atomic(page);
-> > > -   memcpy(addr, iomap->inline_data, size);
-> > > -   memset(addr + size, 0, PAGE_SIZE - size);
-> > > +   memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
-> > > +   memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
-> >
-> > Hmm, so I guess the point of this is to support reading data from a
-> > tail-packing block, where each file gets some arbitrary byte range
-> > within the tp-block, and the range isn't aligned to an fs block?  Hence
-> > you have to use the inline data code to read the relevant bytes and copy
-> > them into the pagecache?
->
-> I think there are two distinct cases for IOMAP_INLINE.  One is
-> where the tail of the file is literally embedded into the inode.
-> Like ext4 fast symbolic links.  Taking the ext4 i_blocks layout
-> as an example, you could have a 4kB block stored in i_block[0]
-> and then store bytes 4096-4151 in i_block[1-14] (although reading
-> https://www.kernel.org/doc/html/latest/filesystems/ext4/dynamic.html
-> makes me think that ext4 only supports storing 0-59 in the i_blocks;
-> it doesn't support 0-4095 in i_block[0] and then 4096-4151 in i_blocks)
->
-> The other is what I think erofs is doing where, for example, you'd
-> specify in i_block[1] the block which contains the tail and then in
-> i_block[2] what offset of the block the tail starts at.
+Can you please check your issue with the latest uptream kernel as this 
+problem should have been fixed with this patch:
 
-Andreas
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8d0caedb759683041d9db82069937525999ada53
+("can: bcm/raw/isotp: use per module netdevice notifier")
+
+Thanks!
+
+>> [60919.266068] RIP: 0010:selinux_socket_sock_rcv_skb+0x3e/0x200
+>> [60919.293289] RSP: 0018:ffff8d53bfc03cf8 EFLAGS: 00010246
+>> [60919.307140] RAX: 0000000000000000 RBX: 000000000000001d RCX: 0000000000000007
+>> [60919.320756] RDX: 0000000000000001 RSI: ffff8d5104a8ed00 RDI: ffff8d53bfc03d30
+>> [60919.334319] RBP: ffff8d9338056800 R08: ffff8d53bfc29d80 R09: 0000000000000001
+>> [60919.347969] R10: ffff8d53bfc03ec0 R11: ffffb8526ef47c98 R12: ffff8d53bfc03d30
+>> [60919.350320] perf: interrupt took too long (3063 > 2500), lowering kernel.perf_event_max_sample_rate to 65000
+>> [60919.361148] R13: 0000000000000001 R14: ffff8d53bcf90000 R15: 0000000000000000
+>> [60919.361151] FS:  00007fb78b6b3600(0000) GS:ffff8d53bfc00000(0000) knlGS:0000000000000000
+>> [60919.400812] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [60919.413730] CR2: 0000000000000010 CR3: 0000003e3f784006 CR4: 00000000007606e0
+>> [60919.426479] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> [60919.439339] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>> [60919.451608] PKRU: 55555554
+>> [60919.463622] Call Trace:
+>> [60919.475617]  <IRQ>
+>> [60919.487122]  ? update_load_avg+0x89/0x5d0
+>> [60919.498478]  ? update_load_avg+0x89/0x5d0
+>> [60919.509822]  ? account_entity_enqueue+0xc5/0xf0
+>> [60919.520709]  security_sock_rcv_skb+0x2a/0x40
+>> [60919.531413]  sk_filter_trim_cap+0x47/0x1b0
+>> [60919.542178]  ? kmem_cache_alloc+0x38/0x1b0
+>> [60919.552444]  sock_queue_rcv_skb+0x17/0x30
+>> [60919.562477]  raw_rcv+0x110/0x190 [can_raw]
+>> [60919.572539]  can_rcv_filter+0xbc/0x1b0 [can]
+>> [60919.582173]  can_receive+0x6b/0xb0 [can]
+>> [60919.591595]  can_rcv+0x31/0x70 [can]
+>> [60919.600783]  __netif_receive_skb_one_core+0x5a/0x80
+>> [60919.609864]  process_backlog+0x9b/0x150
+>> [60919.618691]  net_rx_action+0x156/0x400
+>> [60919.627310]  ? sched_clock_cpu+0xc/0xa0
+>> [60919.635714]  __do_softirq+0xe8/0x2e9
+>> [60919.644161]  do_softirq_own_stack+0x2a/0x40
+>> [60919.652154]  </IRQ>
+>> [60919.659899]  do_softirq.part.17+0x4f/0x60
+>> [60919.667475]  __local_bh_enable_ip+0x60/0x70
+>> [60919.675089]  __dev_queue_xmit+0x539/0x920
+>> [60919.682267]  ? finish_wait+0x80/0x80
+>> [60919.689218]  ? finish_wait+0x80/0x80
+>> [60919.695886]  ? sock_alloc_send_pskb+0x211/0x230
+>> [60919.702395]  ? can_send+0xe5/0x1f0 [can]
+>> [60919.708882]  can_send+0xe5/0x1f0 [can]
+>> [60919.715037]  raw_sendmsg+0x16d/0x268 [can_raw]
+>>
+>> It's because raw_setsockopt() concurrently with
+>> unregister_netdevice_many(). Concurrent scenario as following.
+>>
+>> 	cpu0						cpu1
+>> raw_bind
+>> raw_setsockopt					unregister_netdevice_many
+>> 						unlist_netdevice
+>> dev_get_by_index				raw_notifier
+>> raw_enable_filters				......
+>> can_rx_register
+>> can_rcv_list_find(..., net->can.rx_alldev_list)
+>>
+>> ......
+>>
+>> sock_close
+>> raw_release(sock_a)
+>>
+>> ......
+>>
+>> can_receive
+>> can_rcv_filter(net->can.rx_alldev_list, ...)
+>> raw_rcv(skb, sock_a)
+>> BUG
+>>
+>> After unlist_netdevice(), dev_get_by_index() return NULL in
+>> raw_setsockopt(). Function raw_enable_filters() will add sock
+>> and can_filter to net->can.rx_alldev_list. Then the sock is closed.
+>> Followed by, we sock_sendmsg() to a new vcan device use the same
+>> can_filter. Protocol stack match the old receiver whose sock has
+>> been released on net->can.rx_alldev_list in can_rcv_filter().
+>> Function raw_rcv() uses the freed sock. UAF BUG is triggered.
+>>
+>> We can find that the key issue is that net_device has not been
+>> protected in raw_setsockopt(). Use rtnl_lock to protect net_device
+>> in raw_setsockopt().
+>>
+>> Fixes: c18ce101f2e4 ("[CAN]: Add raw protocol")
+>> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+>> ---
+>>   net/can/raw.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/net/can/raw.c b/net/can/raw.c
+>> index ed4fcb7ab0c3..a63e9915c66a 100644
+>> --- a/net/can/raw.c
+>> +++ b/net/can/raw.c
+>> @@ -546,6 +546,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>>   				return -EFAULT;
+>>   		}
+>>   
+>> +		rtnl_lock();
+>>   		lock_sock(sk);
+>>   
+>>   		if (ro->bound && ro->ifindex)
+>> @@ -588,6 +589,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>>   			dev_put(dev);
+>>   
+>>   		release_sock(sk);
+>> +		rtnl_unlock();
+>>   
+>>   		break;
+>>   
+>> @@ -600,6 +602,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>>   
+>>   		err_mask &= CAN_ERR_MASK;
+>>   
+>> +		rtnl_lock();
+>>   		lock_sock(sk);
+>>   
+>>   		if (ro->bound && ro->ifindex)
+>> @@ -627,6 +630,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>>   			dev_put(dev);
+>>   
+>>   		release_sock(sk);
+>> +		rtnl_unlock();
+>>   
+>>   		break;
+>>   
+>> -- 
+>> 2.25.1
+>>
+> 
+> 
+> <formletter>
+> 
+> This is not the correct way to submit patches for inclusion in the
+> stable kernel tree.  Please read:
+>      https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> for how to do this properly.
+> 
+> </formletter>
+> 
