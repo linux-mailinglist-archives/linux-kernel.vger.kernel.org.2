@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA153D155A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB473D155C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236476AbhGURFo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Jul 2021 13:05:44 -0400
-Received: from aposti.net ([89.234.176.197]:46128 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229943AbhGURFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:05:41 -0400
-Date:   Wed, 21 Jul 2021 18:46:03 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 1/6] iio/adc: ingenic: rename has_aux2 to has_aux_md
-To:     citral23 <cbranchereau@gmail.com>
-Cc:     jic23@kernel.org, lars@metafoo.de, linux-mips@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net,
-        contact@artur-rojek.eu
-Message-Id: <R0WLWQ.W9AI9L33KSD33@crapouillou.net>
-In-Reply-To: <20210721105317.36742-2-cbranchereau@gmail.com>
-References: <20210721105317.36742-1-cbranchereau@gmail.com>
-        <20210721105317.36742-2-cbranchereau@gmail.com>
+        id S236583AbhGURGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236498AbhGURGV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 13:06:21 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04332C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:46:57 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id gb6so4479841ejc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:46:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AxTvururg15eAgQqT/Vw3IaCmq/AtpICOLNE7tzoQWM=;
+        b=s0WASEAsAruBpiL/ESXJp2VeA5h+VTH0uEnk+LjAD3MHgy72GUAmI0zBPcvrD8s0SA
+         BWd9ei0B8Hv1rK7VYNbIu6CBlaBhnbfO64qTWXLIdQniLZyup1q2j9Bl5Ub6BeGijcX8
+         o2GowuJAhyePRBqL1PylmSGGCsNgtoGiloJFlPnxkrNT2U81r5Mxayn2fG2GDKvW/6Wr
+         JHGyMNfwDGxoCXuUwC54Cph9OIE9di/Zn5VNuNjuxY1xSE8IY6oZOFZOwV1+s5UgN5EL
+         WdegzQ2TXCJbEAUWTyI+Nys4iqZoAnBRb0CZnuj1SZTVekfvqquMS7B2ygo0sDqp4kYi
+         SlKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AxTvururg15eAgQqT/Vw3IaCmq/AtpICOLNE7tzoQWM=;
+        b=Hi04sIyZqKnU2I3DuS6CQ6atJnG92VOhKB+Si2dUTPZgVZEJGJniHk8nVuxGJw0fTA
+         zquEJRax92k3+V0asWG1LRbyBu6rBrEJc72TxDmwDcgE28RtcJ+FktBNplgfeshxrsIs
+         8y9Fww7+J6gVabei9JvoUJjhr0i3OhdirBPSb6na7rxHglF3gDDZmfJUgUOVYGZB+D39
+         qnoXxV1ShzSLcw/iph+QtSdOE24Q+UnFdi7AUxJYfhf56S76jvg3mIcoXlz6QeaRe0Zz
+         pPSUaXfp5pd3yO3YFFWyBQHMtgtp5AyHwqzDUX4Z2U1CUFaLfpD8dhGj5wmoV00qMXJJ
+         PyGg==
+X-Gm-Message-State: AOAM531Po77/NxgFvgmKdtjq16IPEcAGgmv2BcX2rYlKcef7vYhIfk4U
+        dP2uP0idPzzNepffj6SZkAEo/A==
+X-Google-Smtp-Source: ABdhPJy4TQnKuFecqxFoIlEfztLPuXcjzFwaiFkqmvuxoQO+VS6qVLl59Uri6H53MV/Z29iViIl6mw==
+X-Received: by 2002:a17:907:170c:: with SMTP id le12mr41029420ejc.288.1626889615495;
+        Wed, 21 Jul 2021 10:46:55 -0700 (PDT)
+Received: from myrica (adsl-84-226-111-173.adslplus.ch. [84.226.111.173])
+        by smtp.gmail.com with ESMTPSA id qo6sm8570087ejb.122.2021.07.21.10.46.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 10:46:55 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 19:46:34 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Oliver Upton <oupton@google.com>
+Cc:     Alexandru Elisei <Alexandru.Elisei@arm.com>,
+        salil.mehta@huawei.com, lorenzo.pieralisi@arm.com,
+        kvm@vger.kernel.org, corbet@lwn.net, maz@kernel.org,
+        linux-kernel@vger.kernel.org, jonathan.cameron@huawei.com,
+        catalin.marinas@arm.com, pbonzini@redhat.com, will@kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH 0/5] KVM: arm64: Pass PSCI to userspace
+Message-ID: <YPhdehJ2m/EEGkdT@myrica>
+References: <20210608154805.216869-1-jean-philippe@linaro.org>
+ <c29ff5c8-9c94-6a6c-6142-3bed440676bf@arm.com>
+ <YPW+Hv3r586zKxpY@myrica>
+ <CAOQ_QsjyP0PMGOorTss2Fpn011mHPwVqQ72x26Gs2L0bg2amsQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ_QsjyP0PMGOorTss2Fpn011mHPwVqQ72x26Gs2L0bg2amsQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
-
-Le mer., juil. 21 2021 at 12:53:12 +0200, citral23 
-<cbranchereau@gmail.com> a écrit :
-> The purpose of this property is to set the AUX_MD bits if true, no to 
-> describe the hardware.
-> Rename it to a more appropriate name.
-
-You could add that this change is needed to support the JZ4760 which 
-has three AUX channels.
-
-> Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
-
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-
-Cheers,
--Paul
-
-> ---
->  drivers/iio/adc/ingenic-adc.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+On Mon, Jul 19, 2021 at 12:37:52PM -0700, Oliver Upton wrote:
+> On Mon, Jul 19, 2021 at 11:02 AM Jean-Philippe Brucker
+> <jean-philippe@linaro.org> wrote:
+> > We forward the whole PSCI function range, so it's either KVM or userspace.
+> > If KVM manages PSCI and the guest calls an unimplemented function, that
+> > returns directly to the guest without going to userspace.
+> >
+> > The concern is valid for any other range, though. If userspace enables the
+> > HVC cap it receives function calls that at some point KVM might need to
+> > handle itself. So we need some negotiation between user and KVM about the
+> > specific HVC ranges that userspace can and will handle.
 > 
-> diff --git a/drivers/iio/adc/ingenic-adc.c 
-> b/drivers/iio/adc/ingenic-adc.c
-> index 34c03a264f74..40f2d8c2cf72 100644
-> --- a/drivers/iio/adc/ingenic-adc.c
-> +++ b/drivers/iio/adc/ingenic-adc.c
-> @@ -92,7 +92,7 @@ struct ingenic_adc_soc_data {
->  	const int *battery_scale_avail;
->  	size_t battery_scale_avail_size;
->  	unsigned int battery_vref_mode: 1;
-> -	unsigned int has_aux2: 1;
-> +	unsigned int has_aux_md: 1;
->  	const struct iio_chan_spec *channels;
->  	unsigned int num_channels;
->  	int (*init_clk_div)(struct device *dev, struct ingenic_adc *adc);
-> @@ -506,7 +506,7 @@ static const struct ingenic_adc_soc_data 
-> jz4725b_adc_soc_data = {
->  	.battery_scale_avail = jz4725b_adc_battery_scale_avail,
->  	.battery_scale_avail_size = 
-> ARRAY_SIZE(jz4725b_adc_battery_scale_avail),
->  	.battery_vref_mode = true,
-> -	.has_aux2 = false,
-> +	.has_aux_md = false,
->  	.channels = jz4740_channels,
->  	.num_channels = ARRAY_SIZE(jz4740_channels),
->  	.init_clk_div = jz4725b_adc_init_clk_div,
-> @@ -520,7 +520,7 @@ static const struct ingenic_adc_soc_data 
-> jz4740_adc_soc_data = {
->  	.battery_scale_avail = jz4740_adc_battery_scale_avail,
->  	.battery_scale_avail_size = 
-> ARRAY_SIZE(jz4740_adc_battery_scale_avail),
->  	.battery_vref_mode = true,
-> -	.has_aux2 = false,
-> +	.has_aux_md = false,
->  	.channels = jz4740_channels,
->  	.num_channels = ARRAY_SIZE(jz4740_channels),
->  	.init_clk_div = NULL, /* no ADCLK register on JZ4740 */
-> @@ -534,7 +534,7 @@ static const struct ingenic_adc_soc_data 
-> jz4770_adc_soc_data = {
->  	.battery_scale_avail = jz4770_adc_battery_scale_avail,
->  	.battery_scale_avail_size = 
-> ARRAY_SIZE(jz4770_adc_battery_scale_avail),
->  	.battery_vref_mode = false,
-> -	.has_aux2 = true,
-> +	.has_aux_md = true,
->  	.channels = jz4770_channels,
->  	.num_channels = ARRAY_SIZE(jz4770_channels),
->  	.init_clk_div = jz4770_adc_init_clk_div,
-> @@ -581,7 +581,7 @@ static int ingenic_adc_read_chan_info_raw(struct 
-> iio_dev *iio_dev,
+> Are we going to use KVM_CAPs for every interesting HVC range that
+> userspace may want to trap? I wonder if a more generic interface for
+> hypercall filtering would have merit to handle the aforementioned
+> cases, and whatever else a VMM will want to intercept down the line.
 > 
->  	/* We cannot sample AUX/AUX2 in parallel. */
->  	mutex_lock(&adc->aux_lock);
-> -	if (adc->soc_data->has_aux2 && engine == 0) {
-> +	if (adc->soc_data->has_aux_md && engine == 0) {
->  		bit = BIT(chan->channel == INGENIC_ADC_AUX2);
->  		ingenic_adc_set_config(adc, JZ_ADC_REG_CFG_AUX_MD, bit);
->  	}
-> --
-> 2.30.2
-> 
+> For example, x86 has the concept of 'MSR filtering', wherein userspace
+> can specify a set of registers that it wants to intercept. Doing
+> something similar for HVCs would avoid the need for a kernel change
+> each time a VMM wishes to intercept a new hypercall.
 
+Yes we could introduce a VM device group for this:
+* User reads attribute KVM_ARM_VM_HVC_NR_SLOTS, which defines the number
+  of available HVC ranges.
+* User writes attribute KVM_ARM_VM_HVC_SET_RANGE with one range
+  struct kvm_arm_hvc_range {
+          __u32 slot;
+  #define KVM_ARM_HVC_USER (1 << 0) /* Enable range. 0 disables it */
+          __u16 flags;
+	  __u16 imm;
+          __u32 fn_start;
+          __u32 fn_end;
+  };
+* KVM forwards any HVC within this range to userspace.
+* If one of the ranges is PSCI functions, disable KVM PSCI.
 
+Since it's more work for KVM to keep track of ranges, I didn't include it
+in the RFC, and I'm going to leave it to the next person dealing with this
+stuff :)
+
+Thanks,
+Jean
