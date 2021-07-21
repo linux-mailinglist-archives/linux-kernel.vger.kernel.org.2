@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2D33D1993
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 00:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26AC3D1997
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 00:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhGUV2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 17:28:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229608AbhGUV2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 17:28:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1768560FD7;
-        Wed, 21 Jul 2021 22:09:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1626905368;
-        bh=vXdm+vn+XFhJA3Kvx7SiR6QB9bWzL6cufqSZNd0/ZjI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CzFN5nvRhWnOXfFa5pKgVVGsOSxFkTBYZkbC8+GFmLi1HGIoXOYxLTcl0z+yBibG7
-         guR6c260lMY+0YTCtGCn5RNmBDCVQl/XBtkgbYmTB4l8DnrXDgsCggDZifbf19Mtp/
-         jF9KM70Xr74hrDPINGcTMCrBuSTZCsYTcMFg2eu8=
-Date:   Wed, 21 Jul 2021 15:09:26 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Evan Green <evgreen@chromium.org>
-Cc:     linux-api@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, Pavel Machek <pavel@ucw.cz>,
-        Alex Shi <alexs@kernel.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v3] mm: Enable suspend-only swap spaces
-Message-Id: <20210721150926.ce56fb8b5fa733d9727bd37e@linux-foundation.org>
-In-Reply-To: <20210721143946.v3.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
-References: <20210721143946.v3.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229994AbhGUVb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 17:31:27 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:56636
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229608AbhGUVb0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 17:31:26 -0400
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net [80.193.200.194])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 0FE4A3F235;
+        Wed, 21 Jul 2021 22:11:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626905521;
+        bh=J0x7Mk1L5wZTTEhmdsCR4xaxJH/q6r74SfQ+T3WO81M=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=F6JXIqyfwgCM+QUxviWiUftXatS9E5+eLjw7iO0ub1ji0ezhfiSrm/+fL3OmjxjSE
+         vyEfMYJhtGrNJysNmegfjHqnvckALkM6ag2h0aLI0CjJFiRd36oLI4mJ9C4QlFb996
+         +8kIO/BsfR7N+mbTmoOoVRuBCuLQTv2eNFE0SeyXMCcEK6BwkN9V3jXL6RfPjLtnXt
+         nZgb7r3MLubAJu3kX5JYA+VX6xsMhnt5DsftPh3j8AWsYY2ZLx7MJaYwiQ3oXIP15j
+         UdFubKABTdh8XFwCJxDW/5xHmHyVHKF1A7BpmBkJWLlJVuG0xCvqKx8YfAd2w3pThw
+         c56ujzTWR35ow==
+From:   Colin King <colin.king@canonical.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm: Fix space indentations, replace with tabs
+Date:   Wed, 21 Jul 2021 23:11:48 +0100
+Message-Id: <20210721221148.18127-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Jul 2021 14:40:28 -0700 Evan Green <evgreen@chromium.org> wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> Currently it's not possible to enable hibernation without also enabling
-> generic swap for a given swap area. These two use cases are not the
-> same. For example there may be users who want to enable hibernation,
-> but whose drives don't have the write endurance for generic swap
-> activities. Swap and hibernate also have different security/integrity
-> requirements, prompting folks to possibly set up something like block-level
-> integrity for swap and image-level integrity for hibernate. Keeping swap
-> and hibernate separate in these cases becomes not just a matter of
-> preference, but correctness.
-> 
-> Add a new SWAP_FLAG_NOSWAP that adds a swap region but refuses to allow
-> generic swapping to it. This region can still be wired up for use in
-> suspend-to-disk activities, but will never have regular pages swapped to
-> it. This flag will be passed in by utilities like swapon(8), usage would
-> probably look something like: swapon -o noswap /dev/sda2.
+A couple of statements are indented with spaces, clean this up
+by replacing spaces with tabs.
 
-Will patches to swapon and its manpage be prepared?
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/drm_ioctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Swap regions with SWAP_FLAG_NOSWAP set will not appear in /proc/meminfo
-> under SwapTotal and SwapFree, since they are not usable as general swap.
-> 
+diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
+index f454e0424086..c023da67ca7a 100644
+--- a/drivers/gpu/drm/drm_ioctl.c
++++ b/drivers/gpu/drm/drm_ioctl.c
+@@ -834,8 +834,8 @@ long drm_ioctl(struct file *filp,
+ 	if (drm_dev_is_unplugged(dev))
+ 		return -ENODEV;
+ 
+-       if (DRM_IOCTL_TYPE(cmd) != DRM_IOCTL_BASE)
+-               return -ENOTTY;
++	if (DRM_IOCTL_TYPE(cmd) != DRM_IOCTL_BASE)
++		return -ENOTTY;
+ 
+ 	is_driver_ioctl = nr >= DRM_COMMAND_BASE && nr < DRM_COMMAND_END;
+ 
+-- 
+2.31.1
 
