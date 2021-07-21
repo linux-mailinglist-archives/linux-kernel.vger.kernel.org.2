@@ -2,50 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337D63D0CD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BCE3D0CD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236361AbhGUJ7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 05:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238354AbhGUJoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:44:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 736DC60FF2;
-        Wed, 21 Jul 2021 10:24:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626863082;
-        bh=v7yZ8xV80HOEBTn2SFFA+dDJTXTW5xOIzqd96tmaslI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AtWncSmH+F9ILFW07QHj6hhuo+Si0pQUqDvhDi73d+8N6zbB2NgE17CBGKblPZ8DL
-         PUCCPr1Ak0wtvPSTwmb4xhwxrr8cBM0gN0N2QmARS0IcnW0JGWULs1tgTq1sFphkR4
-         MLq3mdHTbHK9KFL1/7cHiizVr0K8rIa1VLv3lENA=
-Date:   Wed, 21 Jul 2021 12:24:40 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zhenguo Zhao <zhenguo6858@gmail.com>
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] tty: n_gsm: add some instructions and code for
- requester
-Message-ID: <YPf16Kr/jUhqxGDM@kroah.com>
-References: <1624850430-28015-1-git-send-email-zhenguo6858@gmail.com>
+        id S238694AbhGUJ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 05:57:32 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:59866
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238773AbhGUJpc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 05:45:32 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 69AD13F227;
+        Wed, 21 Jul 2021 10:26:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626863168;
+        bh=zZPrblOdlGr4apLUsC5WZiWZpIfxrwea/Xu2+T9Z6Cg=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=AAwxA67lC0LtBTzqHe8QGxeEHc1zvXp5tbpA5diArC9pNsw7yid5qZnnZhp24YQpl
+         4gaSve7Oanm03ahuGnDFnIZ78UETA/XPQZ49G1f9bzbMyweW9ART0K++1E7tla0eBW
+         oeP1lq74eQVv1U+M6Cbtiq3HsJhsDBNuvj6Kp+0y8n7LHo/Ugi76GzM+2IFCtg2lKs
+         PsMijxnD1IpWU9+fhEGs6LL62QNUhbhTLtmBbcZs+yT57dHPG95hY9xSQlCqO1R/sJ
+         JyQUIC4TOfYkyfTIBTd0RJUWAZFh0Ra7vF+6DcWvw1sNv9w9jNwkiJVMiLyBpdk/uz
+         LSO7ofi0g3dkg==
+From:   Colin King <colin.king@canonical.com>
+To:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] video: fbdev: arcfb: remove redundant initialization of variable err
+Date:   Wed, 21 Jul 2021 11:26:08 +0100
+Message-Id: <20210721102608.42694-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624850430-28015-1-git-send-email-zhenguo6858@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 11:20:30AM +0800, Zhenguo Zhao wrote:
-> From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
-> 
-> The gsm driver can configure initiator or requester by parameter
-> initiator,but the config code and using are different ,the doc has
-> initiator instructions only,it should be add instructions for requester.
-> 
+From: Colin Ian King <colin.king@canonical.com>
 
-Again, make this a patch series please.
+The variable err is being initialized with a value that is never
+read, the assignment is redundant and can be removed.
 
-thanks,
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/video/fbdev/arcfb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/drivers/video/fbdev/arcfb.c b/drivers/video/fbdev/arcfb.c
+index 1447324ed0b6..45e64016db32 100644
+--- a/drivers/video/fbdev/arcfb.c
++++ b/drivers/video/fbdev/arcfb.c
+@@ -446,7 +446,7 @@ static ssize_t arcfb_write(struct fb_info *info, const char __user *buf,
+ 	/* modded from epson 1355 */
+ 
+ 	unsigned long p;
+-	int err=-EINVAL;
++	int err;
+ 	unsigned int fbmemlength,x,y,w,h, bitppos, startpos, endpos, bitcount;
+ 	struct arcfb_par *par;
+ 	unsigned int xres;
+-- 
+2.31.1
+
