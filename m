@@ -2,207 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C513D0CD8
+	by mail.lfdr.de (Postfix) with ESMTP id DDA0A3D0CDB
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238973AbhGUKBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
+        id S238308AbhGUKCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238399AbhGUJtQ (ORCPT
+        with ESMTP id S238917AbhGUJus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:49:16 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7E0C0613DE;
-        Wed, 21 Jul 2021 03:29:05 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id y4so1876672pfi.9;
-        Wed, 21 Jul 2021 03:29:05 -0700 (PDT)
+        Wed, 21 Jul 2021 05:50:48 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FCBCC0613E3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 03:29:16 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so1587816otq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 03:29:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=crPkDkWQEoNERdMjzIoNvDVdZYJX2jUbiteH/e0Of1o=;
-        b=dpQF0qK/cZ1PBWjC1lNEtBNPQIY0ndTZOqudg/5nG+laJtg1EvtFbUy2df++wHmiLi
-         c6BCC2uROfhvdYwDWYWD1jecOacp6hyTQ93iH+xQCYDh0nO8befGldO1/+g9lnr74Jsv
-         CmOUB7aNlqIYBSVTdBy1KAz3fTJhPWw+/jwvvEOOadVZwZ+pWi0tv3SIK/XfCdM4Yw0C
-         CMWaIHisnetIQUkh+1i2GqoZdEdpLDithfUWVY4II/1DHvEJRJ2d7y6Gld4xfxrZsKbY
-         6Msig5LVrt5yFu08e+wuLM0X3juclFNnUEU2LztUJ2yenbExU+zvtkxD1pUa0R4LM97z
-         RFOw==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=h417+5Nn2Pgd6WA/rkzrOB7f5qZl0K/oFZRySnon6fM=;
+        b=dP5y0SRwrB1hjw/MVYi14vnTeaxW3RWgNT4XKLVwLQTSLYGNhUM8B/5tUKn/AjmG/e
+         87Dgni6usuZj0Gwd26LtGaiVnfb+Nb3LcfIks58zLNCluPjUgZ07/vDQPpH5UsVcLJnm
+         DUBHIuwtqCITyO6+jd9Nl3a1Uz9J2CkocvlKU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=crPkDkWQEoNERdMjzIoNvDVdZYJX2jUbiteH/e0Of1o=;
-        b=BGoM8rWEoFRz3ZFStBFzvULs6PV+o0kMohNo8Q/+wbZxq/+Iqn0SLdGDUEqFXz66mw
-         vn29lhlCQYArzWBu/CcKbQ049PV5TJka1Oi7qdjh4D6BAJl334EzbW78ivZIRz03CoUg
-         xZSfAwMCkgkKt0nI4ywk7xoFRtusPyf2+6ZtFaldppntdmr6Eh0LNBlK6lPXfa2fkK93
-         m28UOubUIa6tzvnhIfYPr4ZQTmjRdZaeOjmzz7E3i1xQQ193DkJ/EEcMjlQanc6lTtaZ
-         OPfLwEwK4m9zriep0PHsf6AFLKIiqdfeAIilHguwCzg5dYhY/Q5qD/LfpqbXJP+VXyva
-         dzPQ==
-X-Gm-Message-State: AOAM532DS6SvJ2XDxwRhiIR1Mu+lFnJE0dO86GxK8lbh5LD2kxGXTUGZ
-        ckgTnEP8QFEAvL4uepBJ57s=
-X-Google-Smtp-Source: ABdhPJwGK1w7GFZui+UX4nxgbHVeI56Iu2D5hjeSldD82+ip3NkTL1jWcNoRnxoO7LnJTjwfoGvugw==
-X-Received: by 2002:a65:6187:: with SMTP id c7mr35068030pgv.349.1626863345481;
-        Wed, 21 Jul 2021 03:29:05 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:18:efec::4b1])
-        by smtp.gmail.com with ESMTPSA id t37sm26803912pfg.14.2021.07.21.03.28.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 03:29:05 -0700 (PDT)
-From:   Tianyu Lan <ltykernel@gmail.com>
-Subject: Re: [Resend RFC PATCH V4 09/13] x86/Swiotlb/HV: Add Swiotlb bounce
- buffer remap function for HV IVM
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        kirill.shutemov@linux.intel.com, akpm@linux-foundation.org,
-        rppt@kernel.org, Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
-        ardb@kernel.org, robh@kernel.org, nramas@linux.microsoft.com,
-        pgonda@google.com, martin.b.radev@gmail.com, david@redhat.com,
-        krish.sadhukhan@oracle.com, saravanand@fb.com,
-        xen-devel@lists.xenproject.org, keescook@chromium.org,
-        rientjes@google.com, hannes@cmpxchg.org,
-        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, brijesh.singh@amd.com,
-        anparri@microsoft.com
-References: <20210707154629.3977369-1-ltykernel@gmail.com>
- <20210707154629.3977369-10-ltykernel@gmail.com>
- <20210720135437.GA13554@lst.de>
-Message-ID: <8f1a285d-4b67-8041-d326-af565b2756c0@gmail.com>
-Date:   Wed, 21 Jul 2021 18:28:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=h417+5Nn2Pgd6WA/rkzrOB7f5qZl0K/oFZRySnon6fM=;
+        b=TCkkIQX7yQQZRyG1XfI7qYBk9wEcrv0GLOEB6Wu/3V1aKove2dOU2jPtQ48Sw/FC+o
+         2RbJshO0JHAHJa9mL4IlC+6WnLMW4CbiJziM7ndFaDRrCkYGm0oK42WsLfc/PCnSTN2a
+         2qJ152icihxnES3wzEPO0m/hX8CuN8sM6bpKqK/xsvmRa9dnH8Uvr4ZwRUwcL/8ueXHe
+         /ltvCL1Q/LK8FFjoWhoVpbscM+x/GcCZWKuIOmsYMFxBr7BQqprLbLyRqcK8AhFlhIsS
+         2xdYZtMD6N1j3gusfeRWIJTAgIs1xoeV0wsa3MiSuI0CyUafneMNXWV2nHUL/t2j5I/e
+         ptFg==
+X-Gm-Message-State: AOAM530BGeqa0nvl8uSvPeSKexqWtVVaO60wq6B2jrX4WpURrpXKWJgk
+        ZtIXysZTcwxbpZJr5vHapa7GFDJ46Hdoh7RgSFRSGV2UvJ4=
+X-Google-Smtp-Source: ABdhPJxnsfA3n87/jWpR0qUhPsWBSfRhmjyGwC0ANDR9tMSbPA64GLPwtsPMaBOTIwvd+I7FHsCQ2NOVZZiPWLN/Uko=
+X-Received: by 2002:a05:6830:2802:: with SMTP id w2mr24416395otu.303.1626863355405;
+ Wed, 21 Jul 2021 03:29:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210720135437.GA13554@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210712043508.11584-1-desmondcheongzx@gmail.com>
+ <YPcU3wJK7kC5b7kv@phenom.ffwll.local> <50c5582b-c674-4ef8-585f-7a3d78a49f85@gmail.com>
+In-Reply-To: <50c5582b-c674-4ef8-585f-7a3d78a49f85@gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 21 Jul 2021 12:29:04 +0200
+Message-ID: <CAKMK7uGvb3O9Ypd73xZf6bdMcXJyGJw4C7GXGprkZLpN9Gx7qQ@mail.gmail.com>
+Subject: Re: [PATCH v8 0/5] drm: address potential UAF bugs with drm_master ptrs
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@linux.ie>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Emil Velikov <emil.l.velikov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for review.
+On Wed, Jul 21, 2021 at 6:12 AM Desmond Cheong Zhi Xi
+<desmondcheongzx@gmail.com> wrote:
+> On 21/7/21 2:24 am, Daniel Vetter wrote:
+> > On Mon, Jul 12, 2021 at 12:35:03PM +0800, Desmond Cheong Zhi Xi wrote:
+> >> Hi,
+> >>
+> >> In the previous thread on this series we decided to remove a patch tha=
+t was violating a lockdep requirement in drm_lease. In addition to this cha=
+nge, I took a closer look at the CI logs for the Basic Acceptance Tests and=
+ noticed that another regression was introduced. The new patch 2 is a respo=
+nse to this.
+> >>
+> >> Overall, this series addresses potential use-after-free errors when de=
+referencing pointers to struct drm_master. These were identified after one =
+such bug was caught by Syzbot in drm_getunique():
+> >> https://syzkaller.appspot.com/bug?id=3D148d2f1dfac64af52ffd27b661981a5=
+40724f803
+> >>
+> >> The series is broken up into five patches:
+> >>
+> >> 1. Move a call to drm_is_current_master() out from a section locked by=
+ &dev->mode_config.mutex in drm_mode_getconnector(). This patch does not ap=
+ply to stable.
+> >>
+> >> 2. Move a call to drm_is_current_master() out from the RCU read-side c=
+ritical section in drm_clients_info().
+> >>
+> >> 3. Implement a locked version of drm_is_current_master() function that=
+'s used within drm_auth.c.
+> >>
+> >> 4. Serialize drm_file.master by introducing a new spinlock that's held=
+ whenever the value of drm_file.master changes.
+> >>
+> >> 5. Identify areas in drm_lease.c where pointers to struct drm_master a=
+re dereferenced, and ensure that the master pointers are not freed during u=
+se.
+> >>
+> >> v7 -> v8:
+> >> - Remove the patch that moves the call to _drm_lease_held out from the=
+ section locked by &dev->mode_config.idr_mutex in __drm_mode_object_find. T=
+his patch violated an existing lockdep requirement as reported by the intel=
+-gfx CI.
+> >> - Added a new patch that moves a call to drm_is_current_master out fro=
+m the RCU critical section in drm_clients_info. This was reported by the in=
+tel-gfx CI.
+> >>
+> >> v6 -> v7:
+> >> - Modify code alignment as suggested by the intel-gfx CI.
+> >> - Add a new patch to the series that adds a new lock to serialize drm_=
+file.master, in response to the lockdep splat by the intel-gfx CI.
+> >> - Update drm_file_get_master to use the new drm_file.master_lock inste=
+ad of drm_device.master_mutex, in response to the lockdep splat by the inte=
+l-gfx CI.
+> >>
+> >> v5 -> v6:
+> >> - Add a new patch to the series that moves the call to _drm_lease_held=
+ out from the section locked by &dev->mode_config.idr_mutex in __drm_mode_o=
+bject_find.
+> >> - Clarify the kerneldoc for dereferencing drm_file.master, as suggeste=
+d by Daniel Vetter.
+> >> - Refactor error paths with goto labels so that each function only has=
+ a single drm_master_put(), as suggested by Emil Velikov.
+> >> - Modify comparisons to NULL into "!master", as suggested by the intel=
+-gfx CI.
+> >>
+> >> v4 -> v5:
+> >> - Add a new patch to the series that moves the call to drm_is_current_=
+master in drm_mode_getconnector out from the section locked by &dev->mode_c=
+onfig.mutex.
+> >> - Additionally, added a missing semicolon to the patch, caught by the =
+intel-gfx CI.
+> >>
+> >> v3 -> v4:
+> >> - Move the call to drm_is_current_master in drm_mode_getconnector out =
+from the section locked by &dev->mode_config.mutex. As suggested by Daniel =
+Vetter. This avoids a circular lock lock dependency as reported here https:=
+//patchwork.freedesktop.org/patch/440406/
+> >> - Inside drm_is_current_master, instead of grabbing &fpriv->master->de=
+v->master_mutex, we grab &fpriv->minor->dev->master_mutex to avoid derefere=
+ncing a null ptr if fpriv->master is not set.
+> >> - Modify kerneldoc formatting for drm_file.master, as suggested by Dan=
+iel Vetter.
+> >> - Additionally, add a file_priv->master NULL check inside drm_file_get=
+_master, and handle the NULL result accordingly in drm_lease.c. As suggeste=
+d by Daniel Vetter.
+> >>
+> >> v2 -> v3:
+> >> - Move the definition of drm_is_current_master and the _locked version=
+ higher up in drm_auth.c to avoid needing a forward declaration of drm_is_c=
+urrent_master_locked. As suggested by Daniel Vetter.
+> >> - Instead of leaking drm_device.master_mutex into drm_lease.c to prote=
+ct drm_master pointers, add a new drm_file_get_master() function that retur=
+ns drm_file->master while increasing its reference count, to prevent drm_fi=
+le->master from being freed. As suggested by Daniel Vetter.
+> >>
+> >> v1 -> v2:
+> >> - Move the lock and assignment before the DRM_DEBUG_LEASE in drm_mode_=
+get_lease_ioctl, as suggested by Emil Velikov.
+> >
+> > Apologies for the delay, I missed your series. Maybe just ping next tim=
+e
+> > around there's silence.
+> >
+> > Looks all great, merged to drm-misc-next. Given how complex this was I'=
+m
+> > vary of just pushing this to -fixes without some solid testing.
+> >
+>
+> Hi Daniel,
+>
+> Thanks for merging, more testing definitely sounds good to me.
+>
+> > One thing I noticed is that drm_is_current_master could just use the
+> > spinlock, since it's only doing a read access. Care to type up that pat=
+ch?
+> >
+>
+> I thought about this too, but I'm not sure if that's the best solution.
+>
+> drm_is_current_master calls drm_lease_owner which then walks up the tree
+> of master lessors. The spinlock protects the master of the current drm
+> file, but subsequent lessors aren't protected without holding the
+> device's master mutex.
 
-On 7/20/2021 9:54 PM, Christoph Hellwig wrote:
-> 
-> Please split the swiotlb changes into a separate patch from the
-> consumer.
+But this isn't a fpriv->master pointer, but a master->lessor pointer.
+Which should never ever be able to change (we'd have tons of uaf bugs
+around drm_lease_owner otherwise). So I don't think there's anything
+that dev->master_lock protects here that fpriv->master_lookup_lock
+doesn't protect already?
 
-OK. Will update.
+Or am I missing something?
 
-> 
->>   }
->> +
->> +/*
->> + * hv_map_memory - map memory to extra space in the AMD SEV-SNP Isolation VM.
->> + */
->> +unsigned long hv_map_memory(unsigned long addr, unsigned long size)
->> +{
->> +	unsigned long *pfns = kcalloc(size / HV_HYP_PAGE_SIZE,
->> +				      sizeof(unsigned long),
->> +		       GFP_KERNEL);
->> +	unsigned long vaddr;
->> +	int i;
->> +
->> +	if (!pfns)
->> +		return (unsigned long)NULL;
->> +
->> +	for (i = 0; i < size / HV_HYP_PAGE_SIZE; i++)
->> +		pfns[i] = virt_to_hvpfn((void *)addr + i * HV_HYP_PAGE_SIZE) +
->> +			(ms_hyperv.shared_gpa_boundary >> HV_HYP_PAGE_SHIFT);
->> +
->> +	vaddr = (unsigned long)vmap_pfn(pfns, size / HV_HYP_PAGE_SIZE,
->> +					PAGE_KERNEL_IO);
->> +	kfree(pfns);
->> +
->> +	return vaddr;
-> 
-> This seems to miss a 'select VMAP_PFN'. 
+The comment in the struct drm_master says it's protected by
+mode_config.idr_mutex, but that only applies to the idrs and lists I
+think.
 
-VMAP_PFN has been selected in the previous patch "RFC PATCH V4 08/13]
-HV/Vmbus: Initialize VMbus ring buffer for Isolation VM"
+> > Also, do you plan to look into that idea we've discussed to flush pendi=
+ng
+> > access when we revoke a master or a lease? I think that would be really
+> > nice improvement here.
+> > -Daniel
+> >
+>
+> Yup, now that the potential UAFs are addressed (hopefully), I'll take a
+> closer look and propose a patch for this.
 
-> But more importantly I don't
-> think this actually works.  Various DMA APIs do expect a struct page
-> backing, so how is this going to work with say dma_mmap_attrs or
-> dma_get_sgtable_attrs?
+Thanks a lot.
+-Daniel
 
-dma_mmap_attrs() and dma_get_sgtable_attrs() get input virtual address
-belonging to backing memory with struct page and returns bounce buffer
-dma physical address which is below shared_gpa_boundary(vTOM) and passed
-to Hyper-V via vmbus protocol.
+>
+> Best wishes,
+> Desmond
+>
+> >>
+> >> Desmond Cheong Zhi Xi (5):
+> >>    drm: avoid circular locks in drm_mode_getconnector
+> >>    drm: avoid blocking in drm_clients_info's rcu section
+> >>    drm: add a locked version of drm_is_current_master
+> >>    drm: serialize drm_file.master with a new spinlock
+> >>    drm: protect drm_master pointers in drm_lease.c
+> >>
+> >>   drivers/gpu/drm/drm_auth.c      | 93 ++++++++++++++++++++++++-------=
+--
+> >>   drivers/gpu/drm/drm_connector.c |  5 +-
+> >>   drivers/gpu/drm/drm_debugfs.c   |  3 +-
+> >>   drivers/gpu/drm/drm_file.c      |  1 +
+> >>   drivers/gpu/drm/drm_lease.c     | 81 +++++++++++++++++++++-------
+> >>   include/drm/drm_auth.h          |  1 +
+> >>   include/drm/drm_file.h          | 18 +++++--
+> >>   7 files changed, 152 insertions(+), 50 deletions(-)
+> >>
+> >> --
+> >> 2.25.1
+> >>
+> >
+>
 
-The new map virtual address is only to access bounce buffer in swiotlb
-code and will not be used other places. It's stored in the mem->vstart.
-So the new API set_memory_decrypted_map() in this series is only called
-in the swiotlb code. Other platforms may replace set_memory_decrypted()
-with set_memory_decrypted_map() as requested.
 
-> 
->> +static unsigned long __map_memory(unsigned long addr, unsigned long size)
->> +{
->> +	if (hv_is_isolation_supported())
->> +		return hv_map_memory(addr, size);
->> +
->> +	return addr;
->> +}
->> +
->> +static void __unmap_memory(unsigned long addr)
->> +{
->> +	if (hv_is_isolation_supported())
->> +		hv_unmap_memory(addr);
->> +}
->> +
->> +unsigned long set_memory_decrypted_map(unsigned long addr, unsigned long size)
->> +{
->> +	if (__set_memory_enc_dec(addr, size / PAGE_SIZE, false))
->> +		return (unsigned long)NULL;
->> +
->> +	return __map_memory(addr, size);
->> +}
->> +
->> +int set_memory_encrypted_unmap(unsigned long addr, unsigned long size)
->> +{
->> +	__unmap_memory(addr);
->> +	return __set_memory_enc_dec(addr, size / PAGE_SIZE, true);
->> +}
-> 
-> Why this obsfucation into all kinds of strange helpers?  Also I think
-> we want an ops vectors (or alternative calls) instead of the random
-> if checks here.
-
-Yes, agree and will add ops for different platforms to map/unmap memory.
-
-> 
->> + * @vstart:	The virtual start address of the swiotlb memory pool. The swiotlb
->> + *		memory pool may be remapped in the memory encrypted case and store
-> 
-> Normall we'd call this vaddr or cpu_addr.
-
-OK. Will update.
-
-> 
->> -	set_memory_decrypted((unsigned long)vaddr, bytes >> PAGE_SHIFT);
->> -	memset(vaddr, 0, bytes);
->> +	mem->vstart = (void *)set_memory_decrypted_map((unsigned long)vaddr, bytes);
-> 
-> Please always pass kernel virtual addresses as pointers.
-> 
-> And I think these APIs might need better names, e.g.
-> 
-> arch_dma_map_decrypted and arch_dma_unmap_decrypted.
-> 
-> Also these will need fallback versions for non-x86 architectures that
-> currently use memory encryption.
-
-Sure. Will update in the next version.
-
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
