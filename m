@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A833D1839
+	by mail.lfdr.de (Postfix) with ESMTP id DFF483D183B
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232676AbhGUT5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:57:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
+        id S233136AbhGUT5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:57:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230465AbhGUT5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231344AbhGUT5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 15:57:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C1DE61003;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DB8A61222;
         Wed, 21 Jul 2021 20:38:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626899901;
-        bh=YmBLYBxzI0vMAZMzEd2rQpdpJpi5+nzi5i79rBSEKfE=;
+        bh=oKLPW9M7jcs30XzmVmiWriCs3Z6UUgtAL+H/Eg8hXHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NRUilrOpdQSgjt3Wjg/YI0tKcZnzS0ey3WaCgEMEGFYdC94xH21S3fpiK39S4cfLV
-         oU/Lr+20sfJrWh+cp+f/gQ4jkDTdyPCFeEm5IQK2t25O+ocszu5rDsXhMt0RNKY8Gj
-         eHlAw2gAyEvE09ZC0tg572oaGIaYsUrbSEEQ+SGKEQ4aT97IF6wV3vmAfBaP6BuLzt
-         C8yfxJwNmMvadm/XsJ88Hw2dQzZFXrqmeS1q7fvJmHOQfQ+JL8tggNX72kL/kDj+h1
-         2b3n3xcFdSnIaHYsbcnZJzYVQoUxLTUA/dwnG8JezPD+BM2+zDghRg+ZZmd9tnAtjZ
-         EtSmqzRkgwwzg==
+        b=R60aWChv4EEBRGiUmWFcSTDQlTJAvcDqblg5wLQk+Yh4GAORoLG0I7WaPsuuFFbrm
+         9h4jcyu0+nb4B2/z+LUSekzGIXv1EO8N5qG77co8Fwx5zdPv7hBADEFkXsGytYjAux
+         yj+VoW2EY6d/lnjpi/z4XoVNVSrawXfDpL7OL38HsYsdqfS3hUcKRjyWVphHHbImq9
+         l/AnydfmLKlAM6hasNyHR3ohSLgecZgiMU9as5seDbumyZ3KATy0wYDVkH4PfOfv/y
+         vuVVrKTKJRPS4Ij/s32Y2VVWXhi2Eub4inym3SVlRaRU51c84EU+NDDvGOF918n3OY
+         LypBPwWiGLjHQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 51CDA5C09A4; Wed, 21 Jul 2021 13:38:21 -0700 (PDT)
+        id 550E55C0A03; Wed, 21 Jul 2021 13:38:21 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 1/5] rcu-tasks: Add comments explaining task_struct strategy
-Date:   Wed, 21 Jul 2021 13:38:14 -0700
-Message-Id: <20210721203818.3398345-1-paulmck@kernel.org>
+Subject: [PATCH rcu 2/5] rcu-tasks: Mark ->trc_reader_nesting data races
+Date:   Wed, 21 Jul 2021 13:38:15 -0700
+Message-Id: <20210721203818.3398345-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721203758.GA3386731@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721203758.GA3386731@paulmck-ThinkPad-P17-Gen-1>
@@ -46,45 +46,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Accesses to task_struct structures must be either protected by RCU
-or by get_task_struct().  Tasks trace RCU uses these in a non-obvious
-combination, in conjunction with an IPI handler.  This commit therefore
-adds comments explaining this usage.
+There are several ->trc_reader_nesting data races that are too
+low-probability for KCSAN to notice, but which will happen sooner or
+later.  This commit therefore marks these accesses, and comments one
+that cannot race.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ kernel/rcu/tasks.h | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 8536c55df5142..6a117375a62a1 100644
+index 6a117375a62a1..f6b5320c44849 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -785,7 +785,10 @@ EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
- //	set that task's .need_qs flag so that task's next outermost
- //	rcu_read_unlock_trace() will report the quiescent state (in which
- //	case the count of readers is incremented).  If both attempts fail,
--//	the task is added to a "holdout" list.
-+//	the task is added to a "holdout" list.  Note that IPIs are used
-+//	to invoke trc_read_check_handler() in the context of running tasks
-+//	in order to avoid ordering overhead on common-case shared-variable
-+//	accessses.
- // rcu_tasks_trace_postscan():
- //	Initialize state and attempt to identify an immediate quiescent
- //	state as above (but only for idle tasks), unblock CPU-hotplug
-@@ -994,6 +997,12 @@ static void trc_wait_for_one_reader(struct task_struct *t,
- 	}
- 	put_task_struct(t);
+@@ -897,7 +897,7 @@ static void trc_read_check_handler(void *t_in)
  
-+	// If this task is not yet on the holdout list, then we are in
-+	// an RCU read-side critical section.  Otherwise, the invocation of
-+	// rcu_add_holdout() that added it to the list did the necessary
-+	// get_task_struct().  Either way, the task cannot be freed out
-+	// from under this code.
-+
- 	// If currently running, send an IPI, either way, add to list.
- 	trc_add_holdout(t, bhp);
- 	if (task_curr(t) &&
+ 	// If the task is not in a read-side critical section, and
+ 	// if this is the last reader, awaken the grace-period kthread.
+-	if (likely(!t->trc_reader_nesting)) {
++	if (likely(!READ_ONCE(t->trc_reader_nesting))) {
+ 		if (WARN_ON_ONCE(atomic_dec_and_test(&trc_n_readers_need_end)))
+ 			wake_up(&trc_wait);
+ 		// Mark as checked after decrement to avoid false
+@@ -906,7 +906,7 @@ static void trc_read_check_handler(void *t_in)
+ 		goto reset_ipi;
+ 	}
+ 	// If we are racing with an rcu_read_unlock_trace(), try again later.
+-	if (unlikely(t->trc_reader_nesting < 0)) {
++	if (unlikely(READ_ONCE(t->trc_reader_nesting) < 0)) {
+ 		if (WARN_ON_ONCE(atomic_dec_and_test(&trc_n_readers_need_end)))
+ 			wake_up(&trc_wait);
+ 		goto reset_ipi;
+@@ -953,6 +953,7 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
+ 			n_heavy_reader_ofl_updates++;
+ 		in_qs = true;
+ 	} else {
++		// The task is not running, so C-language access is safe.
+ 		in_qs = likely(!t->trc_reader_nesting);
+ 	}
+ 
+@@ -985,7 +986,7 @@ static void trc_wait_for_one_reader(struct task_struct *t,
+ 	// The current task had better be in a quiescent state.
+ 	if (t == current) {
+ 		t->trc_reader_checked = true;
+-		WARN_ON_ONCE(t->trc_reader_nesting);
++		WARN_ON_ONCE(READ_ONCE(t->trc_reader_nesting));
+ 		return;
+ 	}
+ 
+@@ -1101,7 +1102,7 @@ static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
+ 		 ".I"[READ_ONCE(t->trc_ipi_to_cpu) > 0],
+ 		 ".i"[is_idle_task(t)],
+ 		 ".N"[cpu > 0 && tick_nohz_full_cpu(cpu)],
+-		 t->trc_reader_nesting,
++		 READ_ONCE(t->trc_reader_nesting),
+ 		 " N"[!!t->trc_reader_special.b.need_qs],
+ 		 cpu);
+ 	sched_show_task(t);
+@@ -1196,7 +1197,7 @@ static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
+ static void exit_tasks_rcu_finish_trace(struct task_struct *t)
+ {
+ 	WRITE_ONCE(t->trc_reader_checked, true);
+-	WARN_ON_ONCE(t->trc_reader_nesting);
++	WARN_ON_ONCE(READ_ONCE(t->trc_reader_nesting));
+ 	WRITE_ONCE(t->trc_reader_nesting, 0);
+ 	if (WARN_ON_ONCE(READ_ONCE(t->trc_reader_special.b.need_qs)))
+ 		rcu_read_unlock_trace_special(t, 0);
 -- 
 2.31.1.189.g2e36527f23
 
