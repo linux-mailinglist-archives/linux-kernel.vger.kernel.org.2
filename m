@@ -2,123 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EBC3D1771
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152BC3D177F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239972AbhGUTP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:15:28 -0400
-Received: from esa.hc503-62.ca.iphmx.com ([216.71.131.47]:56842 "EHLO
-        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238151AbhGUTP1 (ORCPT
+        id S232554AbhGUTZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232338AbhGUTZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:15:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
-  t=1626897363; x=1658433363;
-  h=subject:to:cc:references:in-reply-to:from:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=wByW4kQoNce1t766GDEbqdfp/u97yFN+31QKN2jPBsQ=;
-  b=vOHXJI3ZSwXAjw35WMwDVjMUKRFym0aTQFlZYY+xuv5RY2dY2oSoqMde
-   PhNOlO+XpEHr1278+4DGlvcZ4w4pv3HgXo/ikLOeREV+z5Pn2OksH4OlZ
-   +sLryW5B1bcFM7RXkioSHXrBHQTiOxhwcEyZXOgjyNKsuLO4eBr8lxhUy
-   I=;
-Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
-  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Jul 2021 15:56:01 -0400
-Received: from [10.42.0.123] (10.32.139.159) by connhm04.connect.uwaterloo.ca
- (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 21
- Jul 2021 15:56:00 -0400
-Subject: Re: [RFC PATCH 4/4 v0.3] sched/umcg: RFC: implement UMCG syscalls
-To:     Peter Oskolkov <posk@posk.io>
-CC:     Peter Oskolkov <posk@google.com>, Andrei Vagin <avagin@google.com>,
-        Ben Segall <bsegall@google.com>, Jann Horn <jannh@google.com>,
-        Jim Newsome <jnewsome@torproject.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        <linux-api@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul Turner <pjt@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Buhr <pabuhr@uwaterloo.ca>
-References: <20210716184719.269033-5-posk@google.com>
- <2c971806-b8f6-50b9-491f-e1ede4a33579@uwaterloo.ca>
- <CAPNVh5cmhFEWr4bmODkDDFhV=mHLcO0DZJ432GEL=OitzPP80g@mail.gmail.com>
- <c8ea4892-51e5-0dc2-86c6-b705e8a23cde@uwaterloo.ca>
- <CAFTs51XW0H1UJKv0t2tq+5VLfgPMtZmDcxQVUQ5HkgDe38jHpw@mail.gmail.com>
-In-Reply-To: <CAFTs51XW0H1UJKv0t2tq+5VLfgPMtZmDcxQVUQ5HkgDe38jHpw@mail.gmail.com>
-From:   Thierry Delisle <tdelisle@uwaterloo.ca>
-Message-ID: <5790661b-869c-68bd-86fa-62f580e84be1@uwaterloo.ca>
-Date:   Wed, 21 Jul 2021 15:55:59 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 21 Jul 2021 15:25:51 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1849DC061575;
+        Wed, 21 Jul 2021 13:06:27 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id j8-20020a17090aeb08b0290173bac8b9c9so551855pjz.3;
+        Wed, 21 Jul 2021 13:06:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/AaS5KY/bo1OIoNKCjxhZJGyqFcDDWuLo00WRrLsa/Y=;
+        b=Mg3/Rj5afIxOy+l05SmTRU7jEajYS0jZmYJdGL4IuakOsiEyy/ILv3wOdeEfSRjdhz
+         jujfRnMRvlonm31+5pgem11mGp6yLoJeNMCArJg1A9eRI0l/G3+8Rk1QhfTlWTvcTxAA
+         onCPNG/YGfZuvvHJMEpFxezxdQZw8IMX7SrqhLW9F8VjxObascjceXgqYGegTdpw0SSf
+         rQ97XSeV7+MNOEsB86GqMndm65lbCm+JD0WvMQ7IsQgepf3hop3TLJY1Op3b1n6lLIym
+         FYainSqflnnHCOe1Do2kiJ/LJCXW2yGkPlDEO5OUsDXOe/zcd6MNDorjd+dlI0ciSe9k
+         ZhCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/AaS5KY/bo1OIoNKCjxhZJGyqFcDDWuLo00WRrLsa/Y=;
+        b=F/c1suw2h8utEW5x+JC5cI5SdiH1R2K6yMCTz/LnDPCSrlxo81QVBOxqRehnJKN4Yz
+         QyvfPkXL0O0L7DuXA9fUKwLMWHkYZ0lzW9sa1Ef/Sue4ZcFMoTtUMmuUTKQK/wTeM5bn
+         sH5q7vBouVU1LlbYJwmlsGs58NE8T7R20zpvRHOmaQaCwpqzoc6GiMK7vARcs46aWcUa
+         LVJlyJoIrRrKXmpNqrZwqFQtlWJe5oiBeu/4HiN+4yyVYvRVPvvG5niTSK0O0vzX1WOJ
+         Bt0cjWKa3c1CsifSBvHn2NY7iP59qXdGl7LD2TeXdV/MKUnjPeJT/+KkhMgMdlYVPRls
+         mIsQ==
+X-Gm-Message-State: AOAM532jGJSPpVZgWwFEh6B4KSNrjRiU6yycpEchqBj6nyCwJFSjQRJW
+        VZBoH1l5o+rIkrvudQKV943Vagm4woV+c++BHrs=
+X-Google-Smtp-Source: ABdhPJzbp8o/mdExhTOAtvDecgv14SGtgQwIBCFnzz8vuEb5lFWK7wToC21bZAGt4lm7WFsyFsXzwjl2xuRxOf9/UWk=
+X-Received: by 2002:a63:5a5b:: with SMTP id k27mr37865362pgm.74.1626897986596;
+ Wed, 21 Jul 2021 13:06:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.32.139.159]
-X-ClientProxiedBy: connhm04.connect.uwaterloo.ca (172.16.137.68) To
- connhm04.connect.uwaterloo.ca (172.16.137.68)
+References: <mvmtukn6bmu.fsf@suse.de> <YPgwHcbK7XoXL/mD@smile.fi.intel.com>
+ <mvmpmvb68cg.fsf@suse.de> <YPg3VS/Ure6VRsuJ@smile.fi.intel.com>
+ <mvmlf5z66l9.fsf@suse.de> <CAHp75VeFKn=--PuF6deOp6H-j7z8PXgkXA5PeSftiK5LWX30Qw@mail.gmail.com>
+ <mvmh7gn649v.fsf@suse.de> <YPhT1APE8QweDCoP@smile.fi.intel.com> <87lf5zo34l.fsf@igel.home>
+In-Reply-To: <87lf5zo34l.fsf@igel.home>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 21 Jul 2021 23:05:50 +0300
+Message-ID: <CAHp75VcWfqZLGv9N9k6bUhJ3zyDS=y_L93BcbsbRO=Gsu---Pg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
+To:     Andreas Schwab <schwab@suse.de>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- > Yes, this is naturally supported in the current patchset on the kernel
- > side, and is supported in libumcg (to be posted, later when the kernel
- > side is settled); internally at Google, some applications use
- > different "groups" of workers/servers per NUMA node.
+On Wed, Jul 21, 2021 at 10:53 PM Andreas Schwab <schwab@suse.de> wrote:
+>
+> On Jul 21 2021, Andy Shevchenko wrote:
+>
+> > I have counted 89 device drivers in the kernel that have OF ID table without
+> > SPI ID table. I'm wondering if all of them need to be fixed.
+>
+> How does a SPI ID table look like?
 
-Good to know. Cforall has the same feature, where we refer to these groups
-as "clusters". https://doi.org/10.1002/spe.2925 (Section 7)
+Plenty examples [1], like [2].
 
- > Please see the attached atomic_stack.h file - I use it in my tests,
- > things seem to be working. Specifically, atomic_stack_gc does the
- > cleanup. For the kernel side of things, see the third patch in this
- > patchset.
+[1]: https://elixir.bootlin.com/linux/latest/A/ident/spi_device_id
+[2]: https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/tiny/mi0283qt.c#L174
 
-I don't believe the atomic_stack_gc function is robust enough to be 
-offering
-any guarantee. I believe that once a node is unlinked, its next pointer 
-should
-be reset immediately, e.g., by writing 0xDEADDEADDEADDEAD. Do your tests 
-work
-if the next pointer is reset immediately on reclaimed nodes?
-
-As far as I can tell, the reclaimed nodes in atomic_stack_gc still contain
-valid next fields. I believe there is a race which can lead to the kernel
-reading reclaimed nodes. If atomic_stack_gc does not reset the fields, 
-this bug
-could be hidden in the testing.
-
-An more aggressive test is to put each node in a different page and 
-remove read
-permissions when the node is reclaimed. I'm not sure this applies when the
-kernel is the one reading.
-
-
- > To keep the kernel side light and simple. To also protect the kernel
- > from spinning if userspace misbehaves. Basically, the overall approach
- > is to delegate most of the work to the userspace, and keep the bare
- > minimum in the kernel.
-
-I'll try to keep this in mind then.
-
-
-After some thought, I'll suggest a scheme to significantly reduce 
-complexity.
-As I understand, the idle_workers_ptr are linked to form one or more
-Multi-Producer Single-Consumer queues. If each head is augmented with a 
-single
-volatile tid-sized word, servers that want to go idle can simply write 
-their id
-in the word. When the kernel adds something to the idle_workers_ptr 
-list, it
-simply does an XCHG with 0 or any INVALID_TID. This scheme only supports 
-one
-server blocking per idle_workers_ptr list. To keep the "kernel side 
-light and
-simple", you can simply ask that any extra servers must synchronize 
-among each
-other to pick which server is responsible for wait on behalf of everyone.
-
-
+-- 
+With Best Regards,
+Andy Shevchenko
