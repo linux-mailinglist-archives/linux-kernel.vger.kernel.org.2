@@ -2,144 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7BE3D0C49
+	by mail.lfdr.de (Postfix) with ESMTP id A71D93D0C4A
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 12:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237138AbhGUJaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 05:30:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237708AbhGUJRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:17:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3A1460FDA;
-        Wed, 21 Jul 2021 09:58:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626861511;
-        bh=yg3A/XmekVR8rLDWBTeMI77jnMmj6hE4tX8618Ab1AM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O5pD51VgqSxVDtDIsF+crC5cK4JdD4w5vGuB4cg2Qx1A+lKK1Ii2MkpkYNqWXx8gB
-         mA/murD3q0BRVdiGxJobSXxrz/t0/1lnq96EVnBp8b+o3vR/yIvJXhdf0l4N+OuaUW
-         8qfxMBqET0ONx/GL2ymdZ8FaX14y8HTtsvWXP1xwcx6T/8liR7h+qmdaNokh/UQq7t
-         QL+9WgLjQrQfK6kQWeS6N70LWc/eA7PF1wX9I6LVVgVa7bMmZcUcBRu2MXychIcxu6
-         4bS6OAHm0/Mu9B7Bbmtti0THfrFA5CGxMrOGTbrC14+m4R/6Lm4G8pJKFHHp7/Sy4f
-         amsbLLuqfpSKw==
-Date:   Wed, 21 Jul 2021 12:58:24 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 054/138] mm: Add kmap_local_folio()
-Message-ID: <YPfvwNHk6H9dOCKK@kernel.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-55-willy@infradead.org>
+        id S237384AbhGUJaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 05:30:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33637 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236720AbhGUJTH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 05:19:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626861584;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3NEHt8cctnmAx7xk3wK9xWSkrUlp4CC4dKGzkyQQ8Yw=;
+        b=hljZqMZPzyhI1zYvOWJNISBpTKfYW3k65i6zG5gwRGugAqL/VsxuWr3IAPoeQtaIkJU+t0
+        cpmt0//Mt5U8Ryx8rneaCnQXRs76ElhvexWOOHY4dCN1T9H7iNtnFoP4N0s1PIFt9Wt0b6
+        HuO5spQUUWNOhoEn7NeTluVUkLC8/EY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-484-SJTRjZVnNn6qQpwZLzi5uw-1; Wed, 21 Jul 2021 05:59:42 -0400
+X-MC-Unique: SJTRjZVnNn6qQpwZLzi5uw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97276423C7;
+        Wed, 21 Jul 2021 09:59:41 +0000 (UTC)
+Received: from T590 (ovpn-13-178.pek2.redhat.com [10.72.13.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2AB3319D7C;
+        Wed, 21 Jul 2021 09:59:32 +0000 (UTC)
+Date:   Wed, 21 Jul 2021 17:59:28 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
+ from remote numa node
+Message-ID: <YPfwAN1onpSKoeBj@T590>
+References: <YOgK8fdv7dOQtkET@T590>
+ <23e7956b-f3b5-b585-3c18-724165994051@arm.com>
+ <YOhcOv1oOwm6fco+@T590>
+ <ad5bc549-d83f-bee0-9a9f-03a5afd7f3d9@huawei.com>
+ <YPd7IGFZrsTRfUxE@T590>
+ <74537f9c-af5f-cd84-60ab-49ca6220310e@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210715033704.692967-55-willy@infradead.org>
+In-Reply-To: <74537f9c-af5f-cd84-60ab-49ca6220310e@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:35:40AM +0100, Matthew Wilcox (Oracle) wrote:
-> This allows us to map a portion of a folio.  Callers can only expect
-> to access up to the next page boundary.
+On Wed, Jul 21, 2021 at 10:23:38AM +0100, John Garry wrote:
+> On 21/07/2021 02:40, Ming Lei wrote:
+> > > I think that you should see a significant performance boost.
+> > There is build issue, please check your tree:
+> > 
+> >    MODPOST vmlinux.symvers
+> >    MODINFO modules.builtin.modinfo
+> >    GEN     modules.builtin
+> >    LD      .tmp_vmlinux.btf
+> > ld: Unexpected GOT/PLT entries detected!
+> > ld: Unexpected run-time procedure linkages detected!
+> > ld: drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.o: in function `smmu_test_store':
+> > /root/git/linux/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:3892: undefined reference to `smmu_test_core'
+> >    BTF     .btf.vmlinux.bin.o
+> > pahole: .tmp_vmlinux.btf: No such file or directory
+> >    LD      .tmp_vmlinux.kallsyms1
+> > .btf.vmlinux.bin.o: file not recognized: file format not recognized
+> > make: *** [Makefile:1177: vmlinux] Error 1
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> ---
->  include/linux/highmem-internal.h | 11 +++++++++
->  include/linux/highmem.h          | 38 ++++++++++++++++++++++++++++++++
->  2 files changed, 49 insertions(+)
+> Ah, sorry. I had some test code which was not properly guarded with
+> necessary build switches.
 > 
-> diff --git a/include/linux/highmem-internal.h b/include/linux/highmem-internal.h
-> index 7902c7d8b55f..d5d6f930ae1d 100644
-> --- a/include/linux/highmem-internal.h
-> +++ b/include/linux/highmem-internal.h
-> @@ -73,6 +73,12 @@ static inline void *kmap_local_page(struct page *page)
->  	return __kmap_local_page_prot(page, kmap_prot);
->  }
->  
-> +static inline void *kmap_local_folio(struct folio *folio, size_t offset)
-> +{
-> +	struct page *page = folio_page(folio, offset / PAGE_SIZE);
-> +	return __kmap_local_page_prot(page, kmap_prot) + offset % PAGE_SIZE;
-> +}
-> +
->  static inline void *kmap_local_page_prot(struct page *page, pgprot_t prot)
->  {
->  	return __kmap_local_page_prot(page, prot);
-> @@ -160,6 +166,11 @@ static inline void *kmap_local_page(struct page *page)
->  	return page_address(page);
->  }
->  
-> +static inline void *kmap_local_folio(struct folio *folio, size_t offset)
-> +{
-> +	return page_address(&folio->page) + offset;
-> +}
-> +
->  static inline void *kmap_local_page_prot(struct page *page, pgprot_t prot)
->  {
->  	return kmap_local_page(page);
-> diff --git a/include/linux/highmem.h b/include/linux/highmem.h
-> index 8c6e8e996c87..85de3bd0b47d 100644
-> --- a/include/linux/highmem.h
-> +++ b/include/linux/highmem.h
-> @@ -96,6 +96,44 @@ static inline void kmap_flush_unused(void);
->   */
->  static inline void *kmap_local_page(struct page *page);
->  
-> +/**
-> + * kmap_local_folio - Map a page in this folio for temporary usage
-> + * @folio:	The folio to be mapped.
-> + * @offset:	The byte offset within the folio.
-> + *
-> + * Returns: The virtual address of the mapping
-> + *
-> + * Can be invoked from any context.
+> I have now removed that from the tree, so please re-pull.
 
-Context: Can be invoked from any context.
+Now the kernel can be built successfully, but not see obvious improvement
+on the reported issue:
 
-> + *
-> + * Requires careful handling when nesting multiple mappings because the map
-> + * management is stack based. The unmap has to be in the reverse order of
-> + * the map operation:
-> + *
-> + * addr1 = kmap_local_folio(page1, offset1);
-> + * addr2 = kmap_local_folio(page2, offset2);
+[root@ampere-mtjade-04 ~]# uname -a
+Linux ampere-mtjade-04.khw4.lab.eng.bos.redhat.com 5.14.0-rc2_smmu_fix+ #2 SMP Wed Jul 21 05:49:03 EDT 2021 aarch64 aarch64 aarch64 GNU/Linux
 
-Please s/page/folio/g here and in the description below
+[root@ampere-mtjade-04 ~]# taskset -c 0 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
++ fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
+test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=io_uring, iodepth=64
+fio-3.27
+Starting 1 process
+Jobs: 1 (f=1): [r(1)][100.0%][r=1503MiB/s][r=385k IOPS][eta 00m:00s]
+test: (groupid=0, jobs=1): err= 0: pid=3143: Wed Jul 21 05:58:14 2021
+  read: IOPS=384k, BW=1501MiB/s (1573MB/s)(14.7GiB/10001msec)
 
-> + * ...
-> + * kunmap_local(addr2);
-> + * kunmap_local(addr1);
-> + *
-> + * Unmapping addr1 before addr2 is invalid and causes malfunction.
-> + *
-> + * Contrary to kmap() mappings the mapping is only valid in the context of
-> + * the caller and cannot be handed to other contexts.
-> + *
-> + * On CONFIG_HIGHMEM=n kernels and for low memory pages this returns the
-> + * virtual address of the direct mapping. Only real highmem pages are
-> + * temporarily mapped.
-> + *
-> + * While it is significantly faster than kmap() for the higmem case it
-> + * comes with restrictions about the pointer validity. Only use when really
-> + * necessary.
-> + *
-> + * On HIGHMEM enabled systems mapping a highmem page has the side effect of
-> + * disabling migration in order to keep the virtual address stable across
-> + * preemption. No caller of kmap_local_folio() can rely on this side effect.
-> + */
-> +static inline void *kmap_local_folio(struct folio *folio, size_t offset);
-> +
->  /**
->   * kmap_atomic - Atomically map a page for temporary usage - Deprecated!
->   * @page:	Pointer to the page to be mapped
-> -- 
-> 2.30.2
-> 
-> 
+[root@ampere-mtjade-04 ~]# taskset -c 80 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
++ fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
+test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=io_uring, iodepth=64
+fio-3.27
+Starting 1 process
+Jobs: 1 (f=1): [r(1)][100.0%][r=138MiB/s][r=35.4k IOPS][eta 00m:00s]
+test: (groupid=0, jobs=1): err= 0: pid=3063: Wed Jul 21 05:55:31 2021
+  read: IOPS=35.4k, BW=138MiB/s (145MB/s)(1383MiB/10001msec)
 
--- 
-Sincerely yours,
-Mike.
+
+Thanks, 
+Ming
+
