@@ -2,212 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F89C3D18E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2AA3D18EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhGUUhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:37:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36572 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230026AbhGUUhN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 16:37:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626902268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xS7zB88wP1Ct8tl3wZJBYvmGfA8uHUm0YRA5Jgo14nI=;
-        b=ClAqKbgyO5HD9JCMouZvHML1KjxMxp2XLFa/bDP04Ue+UFTDPznZpzM3YqxaVjmSXERr6K
-        8HOlCwinhsPe/gaZsZdSZyKPJDS0d1Pz7w+Uh1rQyAD+xB5U5t3GDTaZz7nJ0MDDIXqLXe
-        bg44uv0v5+KN67NyDXmFanq7hgbob4c=
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-2C8LrbiNPRW-kPvo__XYCg-1; Wed, 21 Jul 2021 17:17:47 -0400
-X-MC-Unique: 2C8LrbiNPRW-kPvo__XYCg-1
-Received: by mail-il1-f198.google.com with SMTP id f13-20020a056e0204cdb02902087dbca2b6so2269857ils.16
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 14:17:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xS7zB88wP1Ct8tl3wZJBYvmGfA8uHUm0YRA5Jgo14nI=;
-        b=KbqK++JhgNOqRHHbm0K6nPerzahbbarDgl/0zunDkIliM0ZKM8MPpvl5m5NqmA9BxV
-         pgbgl46yUXn6ujf3eQ771FYDeZQ0hZbxUmYn1Zr4ZVDzREEASWSHyxh/vHYEyaf60z90
-         3sKee/0OB781zqz5G62qFkjUL2DyEE3o2pz+auHwwQ6m1eMP8VelYT7Z/GXsbH7MrUUK
-         Q+oyf+QzstePjsKd6XDeFuM3ZvhdeFPKR5gpEZa5Xcgf7hBh25SRT7TmdZOKk7/JsHxE
-         ESMLTAA1z/TRFYswylFb0vZfrA4J714RzFgf9rstllzZii3hFIYzslRm9gMXIWVf5srS
-         WFOg==
-X-Gm-Message-State: AOAM530AXPg9t/NWplee8dg5/2Mv2757rK59J1k7HaJo4EQgPXgequ5i
-        ZcVpK078qA1QSV+7BzS5USdDo5/CYWRuSHrpPC5acXC0s2ISWdel/ax3+W7O+mbtg22wWP2kllq
-        d9dtf5YpriLrvlEieCPjqOTGI
-X-Received: by 2002:a05:6638:240c:: with SMTP id z12mr32205855jat.41.1626902266820;
-        Wed, 21 Jul 2021 14:17:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzBlvz5/fIzXCPHPyLAiDDc3sODGKzE5IDkrPThRVZQuX/uKMDGuLWG9b8A3eweAr3W8umHRw==
-X-Received: by 2002:a05:6638:240c:: with SMTP id z12mr32205837jat.41.1626902266587;
-        Wed, 21 Jul 2021 14:17:46 -0700 (PDT)
-Received: from gator ([140.82.166.162])
-        by smtp.gmail.com with ESMTPSA id w21sm14507636iol.52.2021.07.21.14.17.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 14:17:45 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 23:17:43 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
-        Shanker R Donthineni <sdonthineni@nvidia.com>,
-        will@kernel.org
-Subject: Re: [PATCH 10/16] KVM: arm64: Add some documentation for the MMIO
- guard feature
-Message-ID: <20210721211743.hb2cxghhwl2y22yh@gator>
-References: <20210715163159.1480168-1-maz@kernel.org>
- <20210715163159.1480168-11-maz@kernel.org>
+        id S229626AbhGUUji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:39:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229463AbhGUUjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 16:39:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86E8D61001;
+        Wed, 21 Jul 2021 21:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626902412;
+        bh=nY7Q2Gu53XreSpv2eK6K9Pj/0kb0Rlq6C4OieN5DwQk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LWKs+DgVJAeoupL65lsFCr9W/4KeKzZM6w1XYmJEJy3Yv2Z9MYKWFYKKMCvwHLwAf
+         37BiKFx71vtqGrKyvLRnX8unHnCHtrP2GesNagye3UcWw9b+vMvjw7z2X8Rq6hUge8
+         O+WW0wFYs1+5lmqhA1VTDce+kROdetBaEehU/o7wIYwKLYuBIKttU5X6h0+vu9xBiM
+         knP3x2Y848olxZ6USAXysygTeU5ygRwcK0QqQbCohpH17cu+mu7EhEr+Xw05PM2+oX
+         tWGSWEWXQRmAR4Kuto+GUgdYZee9MG+cXV7N0ELH0ebHseWQEXa01mvPGNWWfq7x6k
+         yHAcczawcZKFw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Alan Maguire <alan.maguire@oracle.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] bpf: fix pointer cast warning
+Date:   Wed, 21 Jul 2021 23:19:45 +0200
+Message-Id: <20210721212007.3876595-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715163159.1480168-11-maz@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 05:31:53PM +0100, Marc Zyngier wrote:
-> Document the hypercalls user for the MMIO guard infrastructure.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  Documentation/virt/kvm/arm/index.rst      |  1 +
->  Documentation/virt/kvm/arm/mmio-guard.rst | 73 +++++++++++++++++++++++
->  2 files changed, 74 insertions(+)
->  create mode 100644 Documentation/virt/kvm/arm/mmio-guard.rst
-> 
-> diff --git a/Documentation/virt/kvm/arm/index.rst b/Documentation/virt/kvm/arm/index.rst
-> index 78a9b670aafe..e77a0ee2e2d4 100644
-> --- a/Documentation/virt/kvm/arm/index.rst
-> +++ b/Documentation/virt/kvm/arm/index.rst
-> @@ -11,3 +11,4 @@ ARM
->     psci
->     pvtime
->     ptp_kvm
-> +   mmio-guard
-> diff --git a/Documentation/virt/kvm/arm/mmio-guard.rst b/Documentation/virt/kvm/arm/mmio-guard.rst
-> new file mode 100644
-> index 000000000000..a5563a3e12cc
-> --- /dev/null
-> +++ b/Documentation/virt/kvm/arm/mmio-guard.rst
-> @@ -0,0 +1,73 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +==============
-> +KVM MMIO guard
-> +==============
-> +
-> +KVM implements device emulation by handling translation faults to any
-> +IPA range that is not contained a memory slot. Such translation fault
-                                  ^ in                ^ a
+From: Arnd Bergmann <arnd@arndb.de>
 
-> +is in most cases passed on to userspace (or in rare cases to the host
-> +kernel) with the address, size and possibly data of the access for
-> +emulation.
-> +
-> +Should the guest exit with an address that is not one that corresponds
-> +to an emulatable device, userspace may take measures that are not the
-> +most graceful as far as the guest is concerned (such as terminating it
-> +or delivering a fatal exception).
-> +
-> +There is also an element of trust: by forwarding the request to
-> +userspace, the kernel asumes that the guest trusts userspace to do the
+kp->addr is a pointer, so it cannot be cast directly to a 'u64'
+when it gets interpreted as an integer value:
 
-assumes
-  
-> +right thing.
-> +
-> +The KVM MMIO guard offers a way to mitigate this last point: a guest
-> +can request that only certainly regions of the IPA space are valid as
+kernel/trace/bpf_trace.c: In function '____bpf_get_func_ip_kprobe':
+kernel/trace/bpf_trace.c:968:21: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+  968 |         return kp ? (u64) kp->addr : 0;
 
-certain
+Use the uintptr_t type instead.
 
-> +MMIO. Only these regions will be handled as an MMIO, and any other
-> +will result in an exception being delivered to the guest.
-> +
-> +This relies on a set of hypercalls defined in the KVM-specific range,
-> +using the HVC64 calling convention.
-> +
-> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_INFO
-> +
-> +    ==============    ========    ================================
-> +    Function ID:      (uint32)    0xC6000002
-> +    Arguments:        none
-> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
-> +                      (uint64)    Protection Granule (PG) size in
-> +		                  bytes (r0)
-> +    ==============    ========    ================================
-> +
-> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_ENROLL
-> +
-> +    ==============    ========    ==============================
-> +    Function ID:      (uint32)    0xC6000003
-> +    Arguments:        none
-> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
-> +                                  RET_SUCCESS(0) (r0)
-> +    ==============    ========    ==============================
-> +
-> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_MAP
-> +
-> +    ==============    ========    ======================================
-> +    Function ID:      (uint32)    0xC6000004
-> +    Arguments:        (uint64)    The base of the PG-sized IPA range
-> +                                  that is allowed to be accessed as
-> +				  MMIO. Must aligned to the PG size (r1)
+Fixes: 9ffd9f3ff719 ("bpf: Add bpf_get_func_ip helper for kprobe programs")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ kernel/trace/bpf_trace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-align
-
-> +                      (uint64)    Index in the MAIR_EL1 register
-> +		                  providing the memory attribute that
-> +				  is used by the guest (r2)
-> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
-> +                                  RET_SUCCESS(0) (r0)
-> +    ==============    ========    ======================================
-> +
-> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_UNMAP
-> +
-> +    ==============    ========    ======================================
-> +    Function ID:      (uint32)    0xC6000004
-
-copy+paste error, should be 0xC6000005
-
-> +    Arguments:        (uint64)    The base of the PG-sized IPA range
-> +                                  that is forbidden to be accessed as
-
-is now forbidden
-
-or
-
-was allowed
-
-or just drop that part of the sentence because its covered by the "and
-have been previously mapped" part. Something like
-
-PG-sized IPA range aligned to the PG size which has been previously mapped
-(r1)
-
-> +				  MMIO. Must aligned to the PG size
-
-align
-
-> +				  and have been previously mapped (r1)
-> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
-> +                                  RET_SUCCESS(0) (r0)
-> +    ==============    ========    ======================================
-> -- 
-> 2.30.2
-> 
-> _______________________________________________
-> kvmarm mailing list
-> kvmarm@lists.cs.columbia.edu
-> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
-> 
-
-Thanks,
-drew
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 0de09f068697..a428d1ef0085 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -965,7 +965,7 @@ BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
+ {
+ 	struct kprobe *kp = kprobe_running();
+ 
+-	return kp ? (u64) kp->addr : 0;
++	return kp ? (uintptr_t)kp->addr : 0;
+ }
+ 
+ static const struct bpf_func_proto bpf_get_func_ip_proto_kprobe = {
+-- 
+2.29.2
 
