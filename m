@@ -2,57 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088EF3D13AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311413D13EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233006AbhGUPg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 11:36:56 -0400
-Received: from elvis.franken.de ([193.175.24.41]:43886 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232785AbhGUPgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:36:55 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1m6EuY-00011A-00; Wed, 21 Jul 2021 18:17:30 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 29583C0EF7; Wed, 21 Jul 2021 18:17:19 +0200 (CEST)
-Date:   Wed, 21 Jul 2021 18:17:19 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        list@opendingux.net, Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] MIPS: Avoid macro redefinitions
-Message-ID: <20210721161719.GA9805@alpha.franken.de>
-References: <20210718130748.230758-1-paul@crapouillou.net>
- <CAKwvOdkVEa-CxbVschn5Tnh7-Ynvzcz+zChhP3LL3Q745wE7_A@mail.gmail.com>
- <7YIIWQ.1TU3IBLL4KNC2@crapouillou.net>
+        id S234280AbhGUPia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 11:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234359AbhGUPiT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 11:38:19 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACADC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:18:54 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id t9so2373868pgn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:18:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jlmR2FOonmL/63pitZehwQRYMbA6yhFj8rYQ3kGrZEU=;
+        b=eERMJWoVCwQq7vzCp2h2L4u/l2Dbh92XhsPYNxRqSp+TANc2GKl/AT6hkZ7ojAEPkT
+         tawMnFE6vYyiQ/KJJHuCBiwK4gubkcZmtjwEIx1oUjyEk2dakeOR7ObH0ozBjK4usQBH
+         /zFi2nzhqH4JSAAIUyWeFSwR/y7RPZXwQvW7NwMvhuPEkRczlP2zsxB4ivRpxe+davpW
+         mzmDUVAVuhL+8735q+I8RQ4KIkyW0wOZg5ZpwQxrhtUSVkHmXr6nwG37bwtGUjDWbsvY
+         xiIPWi4rHBryhy97/DNZXGiS62bVpZLbz3nICb5/dtMnPB5kRGkpJ02WG02K8bnyIILL
+         i9VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jlmR2FOonmL/63pitZehwQRYMbA6yhFj8rYQ3kGrZEU=;
+        b=pD0h6raa/dxoNAAa7uV8jAnErKMifVEJjchqiWuKptl5bJfXU7QGAdZVNeVA79JWfL
+         kBzhboNSiROTHWEl3eBYS1gJXvE6vlcOL4rAg7Tllp9W5hU8j/3ZCEVeZa4KAmQvY2g1
+         Fm5VWpazJVDWc9Dbnc0HkYp4gJ1I2BLFGjOZZb2Ra0WiYm9ixZGACbagUe3+szZzAtg4
+         3wftAiNoDJ5IJKtFYaFagzQU/VUWUd6SXvYwga4vjO8uqLQZ9lzTRBIe/1wMB4qHUJeK
+         W8O03wL4aHR+rtXcm9YBoJr6gu0luTXaTk61nRLV8wTtY9DH3IwSYXM+nfTFu+OXACz4
+         in3Q==
+X-Gm-Message-State: AOAM531/e54IlSJLZU9GPUbYkfwJT5HPRT83IxFI+1R33cVw7KgfxAZi
+        P5t6JGqr+q0n09rCBHUb4fAR0A==
+X-Google-Smtp-Source: ABdhPJwu8EMHORLpQ830hmtLewIMD4KzJnBIqmBF2yvCCsegIA/zYboFShntBB7PCCxumgWRDD4QNQ==
+X-Received: by 2002:a65:5186:: with SMTP id h6mr36710306pgq.62.1626884333648;
+        Wed, 21 Jul 2021 09:18:53 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z12sm22075927pjd.39.2021.07.21.09.18.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 09:18:53 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 16:18:49 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Hu, Robert" <robert.hu@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Robert Hoo <robert.hu@linux.intel.com>
+Subject: Re: [PATCH] KVM: nVMX: Dynamically compute max VMCS index for vmcs12
+Message-ID: <YPhI6en2031rLpVT@google.com>
+References: <20210618214658.2700765-1-seanjc@google.com>
+ <c847e00a-e422-cdc9-3317-fbbd82b6e418@redhat.com>
+ <YNDHfX0cntj72sk6@google.com>
+ <DM4PR11MB5453A57DAAC025417C22BCA4E0E39@DM4PR11MB5453.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7YIIWQ.1TU3IBLL4KNC2@crapouillou.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <DM4PR11MB5453A57DAAC025417C22BCA4E0E39@DM4PR11MB5453.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 11:10:55PM +0100, Paul Cercueil wrote:
-> > >   #ifndef TOOLCHAIN_SUPPORTS_VIRT
+On Wed, Jul 21, 2021, Hu, Robert wrote:
+> > > Queued, thanks.  Without having checked the kvm-unit-tests sources
+> > > very thoroughly, this might be a configuration issue in
+> > > kvm-unit-tests; in theory "-cpu host" (unlike "-cpu
+> > > host,migratable=no") should not enable TSC scaling.
 > > 
-> > Same question for GAS version support for virt?
-> > Documentation/process/changes.rst
-> > says GNU binutils 2.23+ is required for building the kernel.
-> > If we still need to support, have you tested this change on such an
-> > older version of GNU binutils?
+> > As noted in the code comments, KVM allows VMREAD/VMWRITE to all defined
+> > fields, whether or not the field should actually exist for the vCPU model doesn't
+> > enter into the equation.  That's technically wrong as there are a number of
+> > fields that the SDM explicitly states exist iff a certain feature is supported.  
+>
+> It's right that a number of fields' existence depends on some certain feature.
+> Meanwhile, "IA32_VMX_VMCS_ENUM indicates to software the highest index
+> value used in the encoding of any field *supported* by the processor", rather than
+> *existed*.
+
+Yes.
+
+> So my understanding is no matter what VMCS exec control field's value is set,
+> value of IA32_VMX_VMCS_ENUM shall not be affected, as it reports the physical
+> CPU's capability rather than runtime VMCS configuration.
+
+Yes.
+
+> Back to nested case, L1's VMCS configuration lays the "physical" capability
+> for L2, right?
+
+Yes. 
+
+> nested_vmx_msrs or at least nested_vmx_msrs.vmcs_enum shall be put to vcpu
+> scope, rather than current kvm global.
+>
+> Current nested_vmx_calc_vmcs_enum_msr() is invoked at early stage, before
+> vcpu features are settled. I think should be moved to later stage as well.
+
+Just moving the helper (or adding another call) wouldn't fix the underlying
+problem that KVM doesn't correctly model the interplay between VMX features and
+VMCS fields.  It's arguably less wrong than letting userspace stuff an incorrect
+value, but it's not 100% correct and ignoring/overriding userspace is sketchy at
+best.  As suggested below, the full fix is to fail VMREAD/VMWRITE to fields that
+shouldn't exist given the vCPU model.
+
+> > To fix that we'd need to add a "feature flag" to vmcs_field_to_offset_table
+> > that is checked against the vCPU model, though updating the MSR would
+> > probably fall onto userspace's shoulders?
+> > 
+> > And FWIW, this is the QEMU code:
+> > 
+> >   #define VMCS12_MAX_FIELD_INDEX (0x17)
+> > 
+> >   static void kvm_msr_entry_add_vmx(X86CPU *cpu, FeatureWordArray f)
+> >   {
+> >       ...
+> > 
+> >       /*
+> >        * Just to be safe, write these with constant values.  The CRn_FIXED1
+> >        * MSRs are generated by KVM based on the vCPU's CPUID.
+> >        */
+> >       kvm_msr_entry_add(cpu, MSR_IA32_VMX_CR0_FIXED0,
+> >                         CR0_PE_MASK | CR0_PG_MASK | CR0_NE_MASK);
+> >       kvm_msr_entry_add(cpu, MSR_IA32_VMX_CR4_FIXED0,
+> >                         CR4_VMXE_MASK);
+> >       kvm_msr_entry_add(cpu, MSR_IA32_VMX_VMCS_ENUM,
+> >                         VMCS12_MAX_FIELD_INDEX << 1);
+> >   }
 > 
-> I have no idea about virt support - I hope Thomas can answer this.
-
-virt support was added in 2.24 and xpa in 2.25. So we still need the
-TOOLCHAIN defines for it.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
