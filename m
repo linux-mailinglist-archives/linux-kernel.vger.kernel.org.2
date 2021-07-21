@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A9B3D0853
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 323953D0852
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232714AbhGUEwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 00:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46910 "EHLO
+        id S232514AbhGUEvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 00:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbhGUEvr (ORCPT
+        with ESMTP id S232677AbhGUEvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 00:51:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9EBC061574;
-        Tue, 20 Jul 2021 22:32:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UIe3t7U9ttMqTuOm5HTkTK76a1TyJwwc0+hE6h3VkC4=; b=awd14+cLFPTgHWZF5axFBezG9F
-        +D5ie/GWOlOI0peJ8ORqGb/YcqfuXmD6lHdkS1yIFubBw+Xs4PgUqAQnb4CW6qBqvWe0NcC3zQRTR
-        Ruh6mTXE/7reHGLTMhoVERl6SBk8R1bo5nAATE8wMb8nkEh5kmTZ1KgGkqZU7UHfJIJSKhAkCCdih
-        xy6NDh9Gs2K9aiE8lqnOU7cxXdGOUnqtycxm+yyZiXjlcmJqJ1C+b//G8Y3BToU8XZ7LI7hmi6izK
-        DJq+i5c7KvCb7xzN0mIHIT70bINQw/5sAEX196faFlLokH/sCfLzNWdx9nonM0SiH5aTGGu4veuWi
-        WqRSe+Sw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m64pe-008pi3-Bh; Wed, 21 Jul 2021 05:31:49 +0000
-Date:   Wed, 21 Jul 2021 06:31:46 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, hare@suse.de, bvanassche@acm.org,
-        ming.lei@redhat.com, hch@infradead.org, jack@suse.cz,
-        osandov@fb.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        sagi@grimberg.me, kbusch@kernel.org
-Subject: Re: [PATCH 4/5] nvme: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED
-Message-ID: <YPexQv88hGXxBoLE@infradead.org>
-References: <20210720182048.1906526-1-mcgrof@kernel.org>
- <20210720182048.1906526-5-mcgrof@kernel.org>
+        Wed, 21 Jul 2021 00:51:36 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E94C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 22:31:49 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id m14-20020a4a240e0000b029025e4d9b0a3dso311778oof.6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 22:31:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=iRPUyrruWY5GwoLCx2fyzi5QyJrWlyLr3Fr1E55Ngd8=;
+        b=EpcA5f3AHsurgT6qqruahYyDxEmLckPfsqTtDMJ1DaZ/LLtjF0nHZXQx4E7JyPuOpG
+         q6DX0VFKM7uI5ak8eqMnjYLd8bJMW8O3hHh4wCy2DDZcovcVqUYBPozeMaahUyk0L8jk
+         H7QN+up8rw+cRxD5LV1c0A5sNEdBRJIsm6c2E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=iRPUyrruWY5GwoLCx2fyzi5QyJrWlyLr3Fr1E55Ngd8=;
+        b=BkNurL+V6VepY6dIZsKKy8cvsfxsmvfMOoy4ggUj81jStAnT5TncSpPPHm5Gx7eqq0
+         ngtuHUADvOcxjG2qtpgJQrBisILEsBs8Znkce0j3I0lIe2mfq7y/iAi6V4XL6VGXEvln
+         kjBuHmeaFjvelowyc/BX8unu6JK0K4RiUru04ZDxEBA1SLdQ7o401CELrtysvbrLu8Rn
+         MilmGpadmEl1J/7y2O+6UNuZ800bLtBEQme7OwNy5e54S0rwqbiz80BysX994ttDXb8o
+         Vc4Vo169Nu7kNSfcXNioQY2sfKuVHE959KEsiRKMzWudjGeCAgYE4YNXBj0rxwgBhI06
+         j8XQ==
+X-Gm-Message-State: AOAM531i32ePhV6kuLSzRxjTbNv60LQr8JzUDCrQMrK1jBcxzg5w+atM
+        2fgwFDDSANeAUiy/hQ5w/0/voVjMYZLzN5qdDuL+9A==
+X-Google-Smtp-Source: ABdhPJxEN4rB7s7W8R+0MjeKeH9tRLHXIQkKLHUFOBtwz9Bh4/yLDdVVegY5XDhlBibHzB6n0GbWiPdws64KBoYnmQU=
+X-Received: by 2002:a4a:e206:: with SMTP id b6mr23349411oot.16.1626845509094;
+ Tue, 20 Jul 2021 22:31:49 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 21 Jul 2021 05:31:48 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210720182048.1906526-5-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1626755807-11865-2-git-send-email-sibis@codeaurora.org>
+References: <1626755807-11865-1-git-send-email-sibis@codeaurora.org> <1626755807-11865-2-git-send-email-sibis@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 21 Jul 2021 05:31:48 +0000
+Message-ID: <CAE-0n51G-gYm=yjkF_rzCRFmhCVhxws-FtgGNbtetrJZHJwU-A@mail.gmail.com>
+Subject: Re: [PATCH v4 01/13] dt-bindings: soc: qcom: aoss: Drop the load
+ state power-domain
+To:     Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org,
+        mka@chromium.org, robh+dt@kernel.org
+Cc:     ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
+        ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 11:20:47AM -0700, Luis Chamberlain wrote:
-> The GENHD_FL_DISK_ADDED flag is what we really want, as the
-> flag GENHD_FL_UP could be set on a semi-initialized device.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  drivers/nvme/host/core.c      | 4 ++--
->  drivers/nvme/host/multipath.c | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> index 11779be42186..7be78491c838 100644
-> --- a/drivers/nvme/host/core.c
-> +++ b/drivers/nvme/host/core.c
-> @@ -1819,7 +1819,7 @@ static void nvme_update_disk_info(struct gendisk *disk,
->  static inline bool nvme_first_scan(struct gendisk *disk)
->  {
->  	/* nvme_alloc_ns() scans the disk prior to adding it */
-> -	return !(disk->flags & GENHD_FL_UP);
-> +	return !(blk_disk_added(disk));
->  }
-
-So this on is obviously right as it wants to check for the probe
-time scan.  Although we don't need the braces.
-
+Quoting Sibi Sankar (2021-07-19 21:36:35)
+> The power-domains exposed by AOSS QMP node are used to notify the Always
+> on Subsystem (AOSS) that a particular co-processor is up/down. These
+> co-processors enter low-power modes independent to that of the application
+> processor and their states are expected to remain unaltered across system
+> suspend/resume cycles. To achieve this behavior let's drop the load
+> power-domain and replace them with generic qmp_send interface instead.
 >
->  
->  static void nvme_set_chunk_sectors(struct nvme_ns *ns, struct nvme_id_ns *id)
-> @@ -3823,7 +3823,7 @@ static void nvme_ns_remove(struct nvme_ns *ns)
->  	nvme_mpath_clear_current_path(ns);
->  	synchronize_srcu(&ns->head->srcu); /* wait for concurrent submissions */
->  
-> -	if (ns->disk->flags & GENHD_FL_UP) {
-> +	if (blk_disk_added(ns->disk)) {
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
 
-This is something that goes back to before the damn of time, but I do
-not think we actually need it.  All the errors paths before alloc_disk
-and add_disk just directly free the ns and never end up here.
-
->  		if (!nvme_ns_head_multipath(ns->head))
->  			nvme_cdev_del(&ns->cdev, &ns->cdev_device);
->  		del_gendisk(ns->disk);
-> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-> index 0ea5298469c3..f77bd2d5c1a9 100644
-> --- a/drivers/nvme/host/multipath.c
-> +++ b/drivers/nvme/host/multipath.c
-> @@ -764,7 +764,7 @@ void nvme_mpath_remove_disk(struct nvme_ns_head *head)
->  {
->  	if (!head->disk)
->  		return;
-> -	if (head->disk->flags & GENHD_FL_UP) {
-> +	if (blk_disk_added(head->disk)) {
->  		nvme_cdev_del(&head->cdev, &head->cdev_device);
->  		del_gendisk(head->disk);
->  	}
-
-This one is sort of correct due to the lazy disk addition.  But we
-could and probably should check for NVME_NSHEAD_DISK_LIVE instead.
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
