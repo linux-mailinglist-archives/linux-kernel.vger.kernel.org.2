@@ -2,122 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A293D11AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0C53D11A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239292AbhGUONV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239254AbhGUONU (ORCPT
+        id S239223AbhGUONA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:13:00 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:33782 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232939AbhGUOM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:13:20 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3863C061575;
-        Wed, 21 Jul 2021 07:53:55 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id r16so2499897ilt.11;
-        Wed, 21 Jul 2021 07:53:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=39/icZ4895+m49O8ui8jK8s2YjESquae62yWMw3Ir4c=;
-        b=Guo73mZ6yKHiZEmwWSRxAODeMC+83TtcsfX8BJAhI48v2UJRUUcF4upLXHb4Lrdb0L
-         po+YJuoSUpi2NwBBE3sZFLrMxQriAhcPhsuh1k9Gq5omgHSlp66KafL9ziJNC79uDngy
-         ZyKAutlVy3QInJurrVKEbXqCfox2pN99kwZFSqRzCSAwszGcpPsEZKaUNFZUE3srjo8j
-         Cwh2xWPhdGSluOIWtQgDV4HpSDaDWW2Au3wN/ro0nsCwaGZAl+YgkP8afmA+HuRWIrC7
-         7Kcnq1gSYbXqBKU4TQ0RG+YwrVrrhlGdWAtXigdm3hiyQiB7dCoyWF6bXUJDxrx0lHwZ
-         efhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=39/icZ4895+m49O8ui8jK8s2YjESquae62yWMw3Ir4c=;
-        b=Gs2ipof5Y/ry6vahZcd27E7rXePJh1SeV0o+U+o3GcNdK+hB8JuLHZuQ9MsqpPTzxl
-         jGV0cCiHDyCd6+5FHWne0sILUPFl6t4EClWbEdfBR0lh00hMNS3D/yv4FWKV6ICPbB1+
-         3V0wCLulnCy85XsyT0WBY6kvx2q/KxvMnbbpYZL3EovmxPbVrpvP7xIDEbaVZv2N3t0h
-         94EYwzkt6c/js99U/iRzFKqdJdZ3u0O4JqHIk73ov7mRxSIyw7qeWba86x5nFiuhMPQ0
-         5CRszDHCT0az6U3aa2HAKbCdi/7s+b+0a/OyrQU81jHHefJbSwehRTFt2Uohnfso/Abx
-         ezqw==
-X-Gm-Message-State: AOAM531OFfesRdUTqVUPcYpcR01TOVC7Gq83BBHdXSNvdrAylBfzdbKG
-        Lt38fyPI/Hfca9FPFRFTEZrKwTE7i8Knrg2SoiU=
-X-Google-Smtp-Source: ABdhPJw1i62IODwqJG85RIGShGbX/nNmMKibJ4lq9B3eoCKP4Zhoh2+aEP3HFa6R+ujOCRWL8PdWXsy8PnQESunRSag=
-X-Received: by 2002:a05:6e02:e82:: with SMTP id t2mr24437728ilj.218.1626879235022;
- Wed, 21 Jul 2021 07:53:55 -0700 (PDT)
+        Wed, 21 Jul 2021 10:12:58 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16LErYuV063063;
+        Wed, 21 Jul 2021 09:53:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1626879214;
+        bh=AxRFfl1KWtjGMwXpDCKTpUH0BCBjea+MCAKLdEJs7nE=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=c7Kp0re0DOtlmDe0ZbBk+1vHrfHw0FReJ1Wd4p5lr2Wre3tsPpscP1qhi+aBeIvY1
+         8+uar3qNzjKq8WHIGZJdtpVlLuFXwaSXNLKpn/BQu1ZeZYSPsHF3dyuWJFYwYIU4j2
+         s49mbozb9wXGMQ7lU8Eq4WZWFDkvLE0h1HrAjafw=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16LErYaN090166
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 21 Jul 2021 09:53:34 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 21
+ Jul 2021 09:53:33 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 21 Jul 2021 09:53:33 -0500
+Received: from [10.250.234.142] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16LErV8C105095;
+        Wed, 21 Jul 2021 09:53:32 -0500
+Subject: Re: [PATCH v2 2/2] spi: cadence-quadspi: Fix check condition for DTR
+ ops
+To:     Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Pratyush Yadav <p.yadav@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+References: <20210716232504.182-1-a-nandan@ti.com>
+ <20210716232504.182-3-a-nandan@ti.com>
+From:   "Nandan, Apurva" <a-nandan@ti.com>
+Message-ID: <c6bb03ff-1192-5276-4034-4a021e4f6923@ti.com>
+Date:   Wed, 21 Jul 2021 20:23:30 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <1626853288-31223-1-git-send-email-dillon.minfei@gmail.com> <1626853288-31223-3-git-send-email-dillon.minfei@gmail.com>
-In-Reply-To: <1626853288-31223-3-git-send-email-dillon.minfei@gmail.com>
-From:   Dillon Min <dillon.minfei@gmail.com>
-Date:   Wed, 21 Jul 2021 22:53:19 +0800
-Message-ID: <CAL9mu0J=Z5je9GJP8karYL=aaeMyQF5pCP7pU-c4QAr7eApUmg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] ARM: dts: stm32: fix dtbs_check warning on ili9341
- dts binding
-To:     thierry.reding@gmail.com, Sam Ravnborg <sam@ravnborg.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     =?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210716232504.182-3-a-nandan@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
 
-I suppose you will going to review this patch,
-I forgot to add the Fixes tag in v2, just add it.
-I will submit v3 to add this tag in case necessary.
 
-Thanks, Best Regards.
-Dillon
-
-On Wed, 21 Jul 2021 at 15:41, <dillon.minfei@gmail.com> wrote:
->
-> From: Dillon Min <dillon.minfei@gmail.com>
->
-> Since the compatible string defined from ilitek,ili9341.yaml is
-> "st,sf-tc240t-9370-t", "ilitek,ili9341"
->
-> so, append "ilitek,ili9341" to avoid below dtbs_check warning.
->
-> arch/arm/boot/dts/stm32f429-disco.dt.yaml: display@1: compatible:
-> ['st,sf-tc240t-9370-t'] is too short
->
-
-It's should be a Fixes tag here.
-
-Fixes: a726e2f000ec ("ARM: dts: stm32: enable ltdc binding with
-ili9341, gyro l3gd20 on stm32429-disco board")
-
-> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> Reported-by: kernel test robot <lkp@intel.com>
+On 17-Jul-21 4:55 AM, Apurva Nandan wrote:
+> buswidth and dtr fields in spi_mem_op are only valid when the
+> corresponding spi_mem_op phase has a non-zero length. For example,
+> SPI NAND core doesn't set buswidth when using SPI_MEM_OP_NO_ADDR
+> phase.
+> 
+> Fix the dtr checks in set_protocol() and suppports_mem_op() to
+> ignore empty spi_mem_op phases, as checking for dtr field in
+> empty phase will result in false negatives.
+> 
+> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
 > ---
->  arch/arm/boot/dts/stm32f429-disco.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm/boot/dts/stm32f429-disco.dts b/arch/arm/boot/dts/stm32f429-disco.dts
-> index 075ac57d0bf4..6435e099c632 100644
-> --- a/arch/arm/boot/dts/stm32f429-disco.dts
-> +++ b/arch/arm/boot/dts/stm32f429-disco.dts
-> @@ -192,7 +192,7 @@
->
->         display: display@1{
->                 /* Connect panel-ilitek-9341 to ltdc */
-> -               compatible = "st,sf-tc240t-9370-t";
-> +               compatible = "st,sf-tc240t-9370-t", "ilitek,ili9341";
->                 reg = <1>;
->                 spi-3wire;
->                 spi-max-frequency = <10000000>;
-> --
-> 2.7.4
->
+>  drivers/spi/spi-cadence-quadspi.c | 21 ++++++++++++++++++---
+>  1 file changed, 18 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+> index a2de23516553..1cec1c179a94 100644
+> --- a/drivers/spi/spi-cadence-quadspi.c
+> +++ b/drivers/spi/spi-cadence-quadspi.c
+> @@ -325,7 +325,15 @@ static int cqspi_set_protocol(struct cqspi_flash_pdata *f_pdata,
+>  	f_pdata->inst_width = CQSPI_INST_TYPE_SINGLE;
+>  	f_pdata->addr_width = CQSPI_INST_TYPE_SINGLE;
+>  	f_pdata->data_width = CQSPI_INST_TYPE_SINGLE;
+> -	f_pdata->dtr = op->data.dtr && op->cmd.dtr && op->addr.dtr;
+> +
+> +	/*
+> +	 * For an op to be DTR, cmd phase along with every other non-empty
+> +	 * phase should have dtr field set to 1. If an op phase has zero
+> +	 * nbytes, ignore its dtr field; otherwise, check its dtr field.
+> +	 */
+> +	f_pdata->dtr = op->cmd.dtr &&
+> +		       (!op->addr.nbytes || op->addr.dtr) &&
+> +		       (!op->data.nbytes || op->data.dtr);
+>  
+>  	switch (op->data.buswidth) {
+>  	case 0:
+> @@ -1228,8 +1236,15 @@ static bool cqspi_supports_mem_op(struct spi_mem *mem,
+>  {
+>  	bool all_true, all_false;
+>  
+> -	all_true = op->cmd.dtr && op->addr.dtr && op->dummy.dtr &&
+> -		   op->data.dtr;
+> +	/*
+> +	 * op->dummy.dtr is required for converting nbytes into ncycles.
+> +	 * Also, don't check the dtr field of the op phase having zero nbytes.
+> +	 */
+> +	all_true = op->cmd.dtr &&
+> +		   (!op->addr.nbytes || op->addr.dtr) &&
+> +		   (!op->dummy.nbytes || op->dummy.dtr) &&
+> +		   (!op->data.nbytes || op->data.dtr);
+> +
+>  	all_false = !op->cmd.dtr && !op->addr.dtr && !op->dummy.dtr &&
+>  		    !op->data.dtr;
+>  
+> 
+
+Hi Mark,
+
+Could you please have a look, I fixed the comments as you suggested.
+
+Thanks and regards,
+Apurva Nandan
