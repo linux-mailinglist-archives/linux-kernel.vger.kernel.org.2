@@ -2,139 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A6B3D0EA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C426B3D0EA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237189AbhGUL36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:29:58 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25054 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236765AbhGUL34 (ORCPT
+        id S236144AbhGULdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:33:09 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:36155 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232079AbhGULdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:29:56 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LC2siw105881;
-        Wed, 21 Jul 2021 08:10:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=j4u8BqA42tjXeh/DryDQIP/SBRVwP+9xAMLbvz0lXuc=;
- b=VgO3UPGe3/AoJXNckNFKUyQ3VhYRzmzwqzZm/Xuw6zx9dilgBbo/ydLTT4OG4AUv5kYT
- TCJIvTcIp/4TcYv+E9d0v7eXsFkSJ2xz2lGxFeRpgsvLnjEt2mcoxw3Ezt6SqganksTF
- kZoJ0GO4MVp4i1bmvcdZ2Vq1nICwD2ie9kivT4MpRy/5SpHIe0eF66Nsih/lIVOcAJdW
- KTU+CqDXp0S6E75GNr+qvAAl+N2dbF3jJ4qQYLzyCVMtGCkVFbyV7LNX9EB2u0hO/aNr
- CXxBrqCz7+0SFZwx2C0l5K4Rvk1qlq/aiKeAEx3lCyTSNlF/z3PhaMa4pG+8GL9RWqq7 GA== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39xjrk12ec-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 08:10:22 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16LC3kNs009841;
-        Wed, 21 Jul 2021 12:10:22 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma03dal.us.ibm.com with ESMTP id 39upudm8aj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 12:10:21 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16LCALed53936462
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 12:10:21 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0F28FAC05F;
-        Wed, 21 Jul 2021 12:10:21 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DE279AC066;
-        Wed, 21 Jul 2021 12:10:20 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Jul 2021 12:10:20 +0000 (GMT)
-Subject: Re: [PATCH] crypto: ecc: handle unaligned input buffer in
- ecc_swap_digits
-To:     Mian Yousaf Kaukab <ykaukab@suse.de>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     davem@davemloft.net, herbert@gondor.apana.org.au, tiwai@suse.de,
-        guillaume.gardet@arm.com
-References: <20210721083905.15144-1-ykaukab@suse.de>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <1662e2df-34e9-d8fa-4a24-e579618f635e@linux.ibm.com>
-Date:   Wed, 21 Jul 2021 08:10:20 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210721083905.15144-1-ykaukab@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: N4ujAXeTq72On5MSSCq_jwEuR8auDImn
-X-Proofpoint-ORIG-GUID: N4ujAXeTq72On5MSSCq_jwEuR8auDImn
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-21_05:2021-07-21,2021-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
- mlxscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 adultscore=0
- spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107210069
+        Wed, 21 Jul 2021 07:33:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626869624; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=9ORgIVwVR1hRA3DPeFL9fUMvBLk6pAhPJpSd8Q2TU54=; b=AJiAptwRrO3et1YquBNRj/RFjGX/Ie9bb8oqhyGae2xpkfboqHG+GE7sP8/RgqhLsuhkTEOZ
+ MGhBj2fE5/XYHV30m4way19NTOwKsEhAeU3Cemcicup47TX3RdKu+kUoE3GVmNx2vxDYiVjL
+ DF/HE6ruotaMfAdcIZ3UuBKATHc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60f80f6cb653fbdaddc41e9c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 12:13:32
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6CBD6C43460; Wed, 21 Jul 2021 12:13:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-charante-hyd.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ED701C433D3;
+        Wed, 21 Jul 2021 12:13:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ED701C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+From:   Charan Teja Reddy <charante@codeaurora.org>
+To:     akpm@linux-foundation.org, vbabka@suse.cz, rientjes@google.com,
+        nigupta@nvidia.com, khalid.aziz@oracle.com
+Cc:     vinmenon@codeaurora.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>
+Subject: [PATCH resend] mm: compaction: optimize proactive compaction deferrals
+Date:   Wed, 21 Jul 2021 17:43:19 +0530
+Message-Id: <1626869599-25412-1-git-send-email-charante@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Vlastimil Babka figured out that when fragmentation score didn't go down
+across the proactive compaction i.e. when no progress is made, next wake
+up for proactive compaction is deferred for 1 <<
+COMPACT_MAX_DEFER_SHIFT, i.e. 64 times, with each wakeup interval of
+HPAGE_FRAG_CHECK_INTERVAL_MSEC(=500). In each of this wakeup, it just
+decrement 'proactive_defer' counter and goes sleep i.e. it is getting
+woken to just decrement a counter. The same deferral time can also
+achieved by simply doing the HPAGE_FRAG_CHECK_INTERVAL_MSEC <<
+COMPACT_MAX_DEFER_SHIFT thus unnecessary wakeup of kcompact thread is
+avoided thus also removes the need of 'proactive_defer' thread counter.
 
-On 7/21/21 4:39 AM, Mian Yousaf Kaukab wrote:
-> ecdsa_set_pub_key() makes an u64 pointer at 1 byte offset of the key.
-> This results in an unaligned u64 pointer. This pointer is passed to
-> ecc_swap_digits() which assumes natural alignment.
->
-> This causes a kernel crash on an armv7 platform:
-> [    0.409022] Unhandled fault: alignment exception (0x001) at 0xc2a0a6a9
-> ...
-> [    0.416982] PC is at ecdsa_set_pub_key+0xdc/0x120
-> ...
-> [    0.491492] Backtrace:
-> [    0.492059] [<c07c266c>] (ecdsa_set_pub_key) from [<c07c75d4>] (test_akcipher_one+0xf4/0x6c0)
->
-> Handle unaligned input buffer in ecc_swap_digits() by replacing
-> be64_to_cpu() to get_unaligned_be64(). Change type of in pointer to
-> void to reflect it doesn’t necessarily need to be aligned.
->
-> Fixes: 4e6602916bc6 ("crypto: ecdsa - Add support for ECDSA signature verification")
-> Reported-by: Guillaume Gardet <guillaume.gardet@arm.com>
-> Suggested-by: Takashi Iwai <tiwai@suse.de>
-> Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+Link: https://lore.kernel.org/linux-fsdevel/88abfdb6-2c13-b5a6-5b46-742d12d1c910@suse.cz/
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+---
+ Changes in V1:
+    o Removed the 'proactive_defer' thread counter by optimizing proactive
+    o This is a resend as earlier it was clubbed with other changes posted
+      at https://lore.kernel.org/patchwork/patch/1448789/	
 
+ mm/compaction.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-Tested-by: Stefan Berger <stefanb@linux.ibm.com>
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 621508e..db00dbf 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -2885,7 +2885,8 @@ static int kcompactd(void *p)
+ {
+ 	pg_data_t *pgdat = (pg_data_t *)p;
+ 	struct task_struct *tsk = current;
+-	unsigned int proactive_defer = 0;
++	long default_timeout = msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC);
++	long timeout = default_timeout;
+ 
+ 	const struct cpumask *cpumask = cpumask_of_node(pgdat->node_id);
+ 
+@@ -2902,23 +2903,30 @@ static int kcompactd(void *p)
+ 
+ 		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
+ 		if (wait_event_freezable_timeout(pgdat->kcompactd_wait,
+-			kcompactd_work_requested(pgdat),
+-			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC))) {
++			kcompactd_work_requested(pgdat), timeout)) {
+ 
+ 			psi_memstall_enter(&pflags);
+ 			kcompactd_do_work(pgdat);
+ 			psi_memstall_leave(&pflags);
++			/*
++			 * Reset the timeout value. The defer timeout by
++			 * proactive compaction can effectively lost
++			 * here but that is fine as the condition of the
++			 * zone changed substantionally and carrying on
++			 * with the previous defer is not useful.
++			 */
++			timeout = default_timeout;
+ 			continue;
+ 		}
+ 
+-		/* kcompactd wait timeout */
++		/*
++		 * Start the proactive work with default timeout. Based
++		 * on the fragmentation score, this timeout is updated.
++		 */
++		timeout = default_timeout;
+ 		if (should_proactive_compact_node(pgdat)) {
+ 			unsigned int prev_score, score;
+ 
+-			if (proactive_defer) {
+-				proactive_defer--;
+-				continue;
+-			}
+ 			prev_score = fragmentation_score_node(pgdat);
+ 			proactive_compact_node(pgdat);
+ 			score = fragmentation_score_node(pgdat);
+@@ -2926,8 +2934,9 @@ static int kcompactd(void *p)
+ 			 * Defer proactive compaction if the fragmentation
+ 			 * score did not go down i.e. no progress made.
+ 			 */
+-			proactive_defer = score < prev_score ?
+-					0 : 1 << COMPACT_MAX_DEFER_SHIFT;
++			if (unlikely(score >= prev_score))
++				timeout =
++				   default_timeout << COMPACT_MAX_DEFER_SHIFT;
+ 		}
+ 	}
+ 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
 
-
-> ---
->   crypto/ecc.h | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/crypto/ecc.h b/crypto/ecc.h
-> index a006132646a4..1350e8eb6ac2 100644
-> --- a/crypto/ecc.h
-> +++ b/crypto/ecc.h
-> @@ -27,6 +27,7 @@
->   #define _CRYPTO_ECC_H
->   
->   #include <crypto/ecc_curve.h>
-> +#include <asm/unaligned.h>
->   
->   /* One digit is u64 qword. */
->   #define ECC_CURVE_NIST_P192_DIGITS  3
-> @@ -46,13 +47,13 @@
->    * @out:      Output array
->    * @ndigits:  Number of digits to copy
->    */
-> -static inline void ecc_swap_digits(const u64 *in, u64 *out, unsigned int ndigits)
-> +static inline void ecc_swap_digits(const void *in, u64 *out, unsigned int ndigits)
->   {
->   	const __be64 *src = (__force __be64 *)in;
->   	int i;
->   
->   	for (i = 0; i < ndigits; i++)
-> -		out[i] = be64_to_cpu(src[ndigits - 1 - i]);
-> +		out[i] = get_unaligned_be64(&src[ndigits - 1 - i]);
->   }
->   
->   /**
