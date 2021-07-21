@@ -2,429 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C196F3D1672
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98B13D167D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhGURy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbhGURyZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:54:25 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C943C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 11:35:01 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id i16-20020a17090acf90b02901736d9d2218so1612829pju.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 11:35:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tohiAbuGWIEuKKnflan8OJz8nWOrrCsg3KVTwWO0TPA=;
-        b=E/e8czsvrju7cn0Pw0Rmc4k1XcQqP90RPZGBrD5ri2YWGgy/s3GgwEGbfCJlKzcsjm
-         ccNRMhmzrmdfcQCxRm7oRkODMPne2vQYe9LcLOWgBG0SiptZYDHyen+V5eTALTajVdtP
-         2aro2ynhiZR0niq4cxIaSK0+zsfXQMyIb5k5ipMMRYozeqGLMfKELIMrb3yFWDjDaJxK
-         QaEpnBfzfe8USXu5fwuGYFwz73iJsz49B/2XOiIXTVbXKO6VWDlWZBABBlmqRuvZwmsM
-         2MG7/rFu2GY2K1cULWQOJarFPl6c97esEVCHfBo/moNRwuURz6RFdFMVwk2TLjkLhezr
-         v49g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tohiAbuGWIEuKKnflan8OJz8nWOrrCsg3KVTwWO0TPA=;
-        b=Emv2nWp60Fy08KxHJnGjc07nR7m5r59j/3YUUMid7kpPtm3e1pljSnYJrf+YDjGpqN
-         hHRkP9TnQxMp1ORUFU3cOD2vYBsIZ1X+bBiPJ4Mpl+mBJ8kFPU4aGN6TtsYZjiCuXtOt
-         EisXrWcvZJ9DgAbNiZ4uVHkEQs/o+X5aaa4Fy3/eAhPe+Y6+Dj9Nh4tvwwG3aBM/1krr
-         eZ/dc9A9hwXM08biocbmcfEqQYQmbfDxPGWiFZenFPQWUaukeZl4N+VmTiQzf/+9Y57S
-         LgB+xWHda8SKC75bSPR3skGge9XdtzJ14jL6TxFQZSOoTaG55NrRiVVVjftFT8IQ4emY
-         w2vg==
-X-Gm-Message-State: AOAM5333+IPV9NLSRMqdUNqcDNf9YW6Q1iDyzsIPa/Rpz/rK8cDdDkC0
-        1GMNgQuQDin+jlzVXbYhaHNbkQ==
-X-Google-Smtp-Source: ABdhPJylpeWoIHMeyAAVwdUYMnK7rcY5liuhfcwHbd5L0OzMHaMlcTGEPA9tGMsEUTUjDWeiPc2UZA==
-X-Received: by 2002:a17:90a:fa86:: with SMTP id cu6mr5205794pjb.68.1626892500310;
-        Wed, 21 Jul 2021 11:35:00 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id d6sm28922475pgq.88.2021.07.21.11.34.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 11:34:59 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 18:34:56 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH 2/2] kvm: mmu/x86: Add detailed page size stats
-Message-ID: <YPho0ME5pSjqRSoc@google.com>
-References: <20210721051247.355435-1-mizhang@google.com>
- <20210721051247.355435-3-mizhang@google.com>
+        id S236998AbhGUR5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:57:37 -0400
+Received: from mga05.intel.com ([192.55.52.43]:28452 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230269AbhGUR52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 13:57:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="297055867"
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="297055867"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 11:38:04 -0700
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="576781537"
+Received: from aannamal-mobl.amr.corp.intel.com (HELO [10.212.140.253]) ([10.212.140.253])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 11:38:02 -0700
+Subject: Re: [PATCH v27 24/31] x86/cet/shstk: Handle thread shadow stack
+To:     John Allen <john.allen@amd.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210521221211.29077-1-yu-cheng.yu@intel.com>
+ <20210521221211.29077-25-yu-cheng.yu@intel.com>
+ <YPhkIHJ0guc4UNoO@AUS-LX-JohALLEN.amd.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <cd064202-2c5f-b1d5-2970-9bff0a762a95@intel.com>
+Date:   Wed, 21 Jul 2021 11:37:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210721051247.355435-3-mizhang@google.com>
+In-Reply-To: <YPhkIHJ0guc4UNoO@AUS-LX-JohALLEN.amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021, Mingwei Zhang wrote:
-> Existing KVM code tracks the number of large pages regardless of their
-> sizes. Therefore, when large page of 1GB (or larger) is adopted, the
-> information becomes less useful because lpages counts a mix of 1G and 2M
-> pages.
-> 
-> So bridge the gap and provide a comprehensive page stats of all sizes from
-> 4K to 512G.
-> 
-> Suggested-by: Ben Gardon <bgardon@google.com>
-> Suggested-by: Jing Zhang <jingzhangos@google.com>
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> ---
->  arch/x86/include/asm/kvm_host.h | 11 ++++++++-
->  arch/x86/kvm/mmu.h              |  2 ++
->  arch/x86/kvm/mmu/mmu.c          | 43 +++++++++++++++++++++++----------
->  arch/x86/kvm/mmu/tdp_mmu.c      | 10 +++-----
->  arch/x86/kvm/x86.c              |  6 ++++-
->  5 files changed, 51 insertions(+), 21 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 974cbfb1eefe..1b7b024f9573 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1206,9 +1206,18 @@ struct kvm_vm_stat {
->  	u64 mmu_recycled;
->  	u64 mmu_cache_miss;
->  	u64 mmu_unsync;
-> -	u64 lpages;
-> +	atomic64_t lpages;
+On 7/21/21 11:14 AM, John Allen wrote:
+>> +int shstk_alloc_thread_stack(struct task_struct *tsk, unsigned long clone_flags,
+>> +			     unsigned long stack_size)
+>> +{
+>> +	struct thread_shstk *shstk = &tsk->thread.shstk;
+>> +	struct cet_user_state *state;
+>> +	unsigned long addr;
+>> +
+>> +	if (!stack_size)
+>> +		return -EINVAL;
+> I've been doing some light testing on AMD hardware and I've found that
+> this version of the patchset doesn't boot for me. It appears that when
+> systemd processes start spawning, they hit the above case, return
+> -EINVAL, and the fork fails. In these cases, copy_thread has been passed
+> 0 for both sp and stack_size.
 
-What's the point of keeping lpages if the individual page sizes are tracked?  It
-should be trivial for userspace to aggregate the data.  The two counts are also
-not updated atomically (as a pair), e.g. userspace could see a discrepancy between
-lpages and the sum of 1g+2m pages.
+A few tangential things I noticed:
 
->  	u64 nx_lpage_splits;
->  	u64 max_mmu_page_hash_collisions;
-> +	union {
-> +		struct {
-> +			atomic64_t pages_4k;
-> +			atomic64_t pages_2m;
-> +			atomic64_t pages_1g;
-> +			atomic64_t pages_512g;
-> +		};
-> +		atomic64_t pages[4];
-> +	} page_stats;
->  };
->  
->  struct kvm_vcpu_stat {
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 83e6c6965f1e..56d9c947a0cd 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -240,4 +240,6 @@ static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
->  	return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
->  }
->  
-> +void kvm_update_page_stats(struct kvm *kvm, u64 spte, int level, int delta);
-> +
->  #endif
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index c45ddd2c964f..9ba25f00ca2b 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -588,16 +588,33 @@ static bool mmu_spte_update(u64 *sptep, u64 new_spte)
->  	return flush;
->  }
->  
-> +void kvm_update_page_stats(struct kvm *kvm, u64 spte, int level, int count)
-> +{
-> +	if (!is_last_spte(spte, level))
-> +		return;
-> +	/*
-> +	 * If the backing page is a large page, update the lpages stat first,
-> +	 * then log the specific type of backing page. Only log pages at highter
+This hunk is not mentioned in the version changelog at all.  I also
+don't see any feedback that might have prompted it.  This is one reason
+per-patch changelogs are preferred.
 
-s/highter/higher
+As a general rule, new features should strive to be implemented in a way
+that it's *obvious* that they won't break old code.
+shstk_alloc_thread_stack() fails that test for me.  If it had:
 
-> +	 * levels if they are marked as large pages. (As opposed to simply
-> +	 * pointing to another level of page tables.).
-> +	 */
+	if (!cpu_feature_enabled(X86_FEATURE_SHSTK)) // or whatever
+		return 0;
 
-IMO, this whole comment is unnecessary.  It never explains the "why", just the
-"what", and the "what" is obvious from the code.
+in the function, it would be obviously harmless.  Better yet would be
+doing the feature check at the shstk_alloc_thread_stack() call site,
+that way even the function call can be optimized out.
 
-> +	if (is_large_pte(spte))
-> +		atomic64_add(count, (atomic64_t *)&kvm->stat.lpages);
-> +	atomic64_add(count,
-> +		(atomic64_t *)&kvm->stat.page_stats.pages[level-1]);
-
-The cast is unnecessary, pages[] is already an atomit64_t array.
-
-Spaces in "[level - 1]".
-
-Align indentation, e.g.:
-
-	atomic64_add(count,
-		     (atomic64_t *)&kvm->stat.page_stats.pages[level-1]);
-
-But that's a moot point, because the 80 char wrap is not a hard rule.  Readability
-is paramount, and in this case I think most people would find this easier to read.
-
-	atomic64_add(count, (atomic64_t *)&kvm->stat.page_stats.pages[level - 1]);
-
-And _that's_ a moot point because dropping the unnecessary cast makes this fit
-nicely under 80 chars.
-
-> +}
-> +
-
-...
-
-> @@ -2690,10 +2707,10 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
->  
->  	pgprintk("%s: setting spte %llx\n", __func__, *sptep);
->  	trace_kvm_mmu_set_spte(level, gfn, sptep);
-> -	if (!was_rmapped && is_large_pte(*sptep))
-> -		++vcpu->kvm->stat.lpages;
->  
->  	if (!was_rmapped) {
-> +		kvm_update_page_stats(vcpu->kvm, *sptep,
-> +			sptep_to_sp(sptep)->role.level, 1);
-
-mmu_set_spte() takes @level, no need to retrieve it from the shadow page.
-
->  		rmap_count = rmap_add(vcpu, sptep, gfn);
->  		if (rmap_count > RMAP_RECYCLE_THRESHOLD)
->  			rmap_recycle(vcpu, sptep, gfn);
-> @@ -5669,7 +5686,7 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
->  		if (sp->role.direct && !kvm_is_reserved_pfn(pfn) &&
->  		    sp->role.level < kvm_mmu_max_mapping_level(kvm, slot, sp->gfn,
->  							       pfn, PG_LEVEL_NUM)) {
-> -			pte_list_remove(rmap_head, sptep);
-> +			pte_list_remove(kvm, rmap_head, sptep);
->  
->  			if (kvm_available_flush_tlb_with_range())
->  				kvm_flush_remote_tlbs_with_address(kvm, sp->gfn,
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index caac4ddb46df..24bd7f03248c 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -446,12 +446,10 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
->  
->  	trace_kvm_tdp_mmu_spte_changed(as_id, gfn, level, old_spte, new_spte);
->  
-> -	if (is_large_pte(old_spte) != is_large_pte(new_spte)) {
-> -		if (is_large_pte(old_spte))
-> -			atomic64_sub(1, (atomic64_t*)&kvm->stat.lpages);
-> -		else
-> -			atomic64_add(1, (atomic64_t*)&kvm->stat.lpages);
-> -	}
-
-Hmm, the existing code is flawed.  is_large_pte() doesn't check that the PTE is
-shadow-present, it only checks the page size bit.  That means we could get a
-false positive on an MMIO SPTE if the MMIO generation happens to set bit 7, or
-on a REMOVED_SPTE, which sets bit 7 in its magic value.
-
-Patch at the bottom is compile tested only.
-
-> +	if (is_large_pte(old_spte) && !is_large_pte(new_spte))
-> +		kvm_update_page_stats(kvm, old_spte, level, -1);
-> +	else if (!is_large_pte(old_spte) && is_large_pte(new_spte))
-> +		kvm_update_page_stats(kvm, new_spte, level, 1);
-
-And back to this code, it fails to account 4kb pages.  The other thing of note
-is that passing the SPTE value to kvm_update_page_stats() is confusing and error
-prone, e.g. in some cases it's the old SPTE, in others it's the new SPTE.
-Happily, we don't actually need the SPTE value since the caller can and should
-check that the SPTE being modified is a leaf SPTE.  This case is easy to handle
-via "was_leaf != is_leaf", the legacy MMU "was_rmapped" handles adding a page,
-and the legacy MMU zap case can explicitly check is_last_spte().
-
-The partial diff (on top of the bug fix below) would be something like:
-
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 83e6c6965f1e..ced396685be7 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -240,4 +240,9 @@ static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
-        return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
- }
-
-+static inline void kvm_update_page_stats(struct kvm *kvm, int level, int count)
-+{
-+       atomic64_add(count, &kvm->stat.page_stats.pages[level - 1]);
-+}
-+
- #endif
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index c45ddd2c964f..13cb2f4c4df4 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -594,10 +594,11 @@ static bool mmu_spte_update(u64 *sptep, u64 new_spte)
-  * state bits, it is used to clear the last level sptep.
-  * Returns non-zero if the PTE was previously valid.
-  */
--static int mmu_spte_clear_track_bits(u64 *sptep)
-+static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
- {
-        kvm_pfn_t pfn;
-        u64 old_spte = *sptep;
-+       int level = sptep_to_sp(sptep)->role.level;
- 
-        if (!spte_has_volatile_bits(old_spte))
-                __update_clear_spte_fast(sptep, 0ull);
-@@ -607,6 +608,9 @@ static int mmu_spte_clear_track_bits(u64 *sptep)
-        if (!is_shadow_present_pte(old_spte))
-                return 0;
- 
-+       if (is_last_spte(old_spte, level))
-+               kvm_update_page_stats(kvm, level, -1);
-+
-        pfn = spte_to_pfn(old_spte);
- 
-        /*
-@@ -2692,8 +2694,7 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
-        trace_kvm_mmu_set_spte(level, gfn, sptep);
- 
-        if (!was_rmapped) {
--               if (is_large_pte(*sptep))
--                       ++vcpu->kvm->stat.lpages;
-+               kvm_update_page_stats(vcpu->kvm, level, 1);
- 
-                rmap_count = rmap_add(vcpu, sptep, gfn);
-                if (rmap_count > RMAP_RECYCLE_THRESHOLD)
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 65715156625b..b6447947af98 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -413,7 +413,6 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
-        bool was_leaf = was_present && is_last_spte(old_spte, level);
-        bool is_leaf = is_present && is_last_spte(new_spte, level);
-        bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
--       bool was_large, is_large;
- 
-        WARN_ON(level > PT64_ROOT_MAX_LEVEL);
-        WARN_ON(level < PG_LEVEL_4K);
-@@ -476,14 +475,8 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
-         * Update large page stats if a large page is being zapped, created, or
-         * is replacing an existing shadow page.
-         */
--       was_large = was_leaf && is_large_pte(old_spte);
--       is_large = is_leaf && is_large_pte(new_spte);
--       if (was_large != is_large) {
--               if (was_large)
--                       atomic64_sub(1, (atomic64_t*)&kvm->stat.lpages);
--               else
--                       atomic64_add(1, (atomic64_t*)&kvm->stat.lpages);
--       }
-+       if (is_leaf != was_leaf)
-+               kvm_update_page_stats(kvm, level, is_leaf ? 1 : -1);
- 
-        if (was_leaf && is_dirty_spte(old_spte) &&
-            (!is_present || !is_dirty_spte(new_spte) || pfn_changed))
-
-
-
-From 081bb53be76271d7e1117bc406c75aad77202e82 Mon Sep 17 00:00:00 2001
-From: Sean Christopherson <seanjc@google.com>
-Date: Wed, 21 Jul 2021 10:57:18 -0700
-Subject: [PATCH] KVM: x86/mmu: Avoid collision with !PRESENT SPTEs in TDP MMU
- lpage stats
-
-Factor in whether or not the old/new SPTEs are shadow-present when
-adjusting the large page stats in the TDP MMU.  A modified MMIO SPTE can
-toggle the page size bit, as bit 7 is used to store the MMIO generation,
-i.e. is_large_pte() can get a false positive when called on a MMIO SPTE.
-Ditto for nuking SPTEs with REMOVED_SPTE, which sets bit 7 in its magic
-value.
-
-Opportunistically move the logic below the check to verify at least one
-of the old/new SPTEs is shadow present.
-
-Use is/was_leaf even though is/was_present would suffice.  The code
-generation is roughly equivalent since all flags need to be computed
-prior to the code in question, and using the *_leaf flags will minimize
-the diff in a future enhancement to account all pages, i.e. will change
-the check to "is_leaf != was_leaf".
-
-Fixes: 1699f65c8b65 ("kvm/x86: Fix 'lpages' kvm stat for TDM MMU")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/tdp_mmu.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index caac4ddb46df..65715156625b 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -413,6 +413,7 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 	bool was_leaf = was_present && is_last_spte(old_spte, level);
- 	bool is_leaf = is_present && is_last_spte(new_spte, level);
- 	bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
-+	bool was_large, is_large;
-
- 	WARN_ON(level > PT64_ROOT_MAX_LEVEL);
- 	WARN_ON(level < PG_LEVEL_4K);
-@@ -446,13 +447,6 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
-
- 	trace_kvm_tdp_mmu_spte_changed(as_id, gfn, level, old_spte, new_spte);
-
--	if (is_large_pte(old_spte) != is_large_pte(new_spte)) {
--		if (is_large_pte(old_spte))
--			atomic64_sub(1, (atomic64_t*)&kvm->stat.lpages);
--		else
--			atomic64_add(1, (atomic64_t*)&kvm->stat.lpages);
--	}
--
- 	/*
- 	 * The only times a SPTE should be changed from a non-present to
- 	 * non-present state is when an MMIO entry is installed/modified/
-@@ -478,6 +472,18 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 		return;
- 	}
-
-+	/*
-+	 * Update large page stats if a large page is being zapped, created, or
-+	 * is replacing an existing shadow page.
-+	 */
-+	was_large = was_leaf && is_large_pte(old_spte);
-+	is_large = is_leaf && is_large_pte(new_spte);
-+	if (was_large != is_large) {
-+		if (was_large)
-+			atomic64_sub(1, (atomic64_t*)&kvm->stat.lpages);
-+		else
-+			atomic64_add(1, (atomic64_t*)&kvm->stat.lpages);
-+	}
-
- 	if (was_leaf && is_dirty_spte(old_spte) &&
- 	    (!is_present || !is_dirty_spte(new_spte) || pfn_changed))
---
-2.32.0.402.g57bb445576-goog
-
-
->  	/*
->  	 * The only times a SPTE should be changed from a non-present to
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 8166ad113fb2..23444257fcbd 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -237,7 +237,11 @@ const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
->  	STATS_DESC_ICOUNTER(VM, mmu_unsync),
->  	STATS_DESC_ICOUNTER(VM, lpages),
->  	STATS_DESC_ICOUNTER(VM, nx_lpage_splits),
-> -	STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions)
-> +	STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions),
-> +	STATS_DESC_ICOUNTER(VM, page_stats.pages_4k),
-> +	STATS_DESC_ICOUNTER(VM, page_stats.pages_2m),
-> +	STATS_DESC_ICOUNTER(VM, page_stats.pages_1g),
-> +	STATS_DESC_ICOUNTER(VM, page_stats.pages_512g)
->  };
->  static_assert(ARRAY_SIZE(kvm_vm_stats_desc) ==
->  		sizeof(struct kvm_vm_stat) / sizeof(u64));
-> -- 
-> 2.32.0.402.g57bb445576-goog
-> 
+Further, this confused me because the changelog didn't even mention the
+arg -> stack_size rename.  That would have been nice for another patch,
+or an extra sentence in the changelog.
