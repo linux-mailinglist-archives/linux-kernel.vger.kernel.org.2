@@ -2,222 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43EE3D0EA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A6B3D0EA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236602AbhGUL3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233692AbhGUL3q (ORCPT
+        id S237189AbhGUL36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:29:58 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25054 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236765AbhGUL34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:29:46 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E73C061574;
-        Wed, 21 Jul 2021 05:10:23 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id g24so1528306pji.4;
-        Wed, 21 Jul 2021 05:10:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1ik8G/1vteSJbfR+LBOlD27tSJ2iU7J9ntHCUgQlrJQ=;
-        b=HKUBYR4jF9tk3KU3jxUqcjq2lY9UxmO4b1Z26y9VH2DQZKoDJvOnl608BSCnSTo0nL
-         T0p2cgN5opHiNqFyWC3Qg+XlTrwihLkeTB4ep3widZzrwr0yFtH/BQQvDr4kDMEmejUl
-         /NcRw4zeBWxKC743BtpeRba3BVyFU5T+n7PtZpb77yBWxRj1zkTct3XaLeE+aPVrpQ4z
-         ZXneIXbeJOFjyGGOWNiOiGsHn6KiCIpGOPfqu/HGQgoPncenZRiJYw1Ly3JKYStZ8Rhv
-         hLF4J6wurSkTNwnw3rOTKBXxe2RmcmUVctQE/zUMPFtEanVNRvruz7nBnoLjLuMFyNZ+
-         rxOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1ik8G/1vteSJbfR+LBOlD27tSJ2iU7J9ntHCUgQlrJQ=;
-        b=JGLx9xmRSranZMUBKY+9JAcPO5CrLT/o85LdNAMiTV8I5A432NgwKrp2gohhgTD4oW
-         XiiFnLv9rUeY2n7KX5xvVSjoOk9womjKLZ3FY11FW+PGuXvBqpVlzTHf+UK+n7kQluGd
-         AyF5kTYgVL3nNmeTwFTGybO2Xlo9TdqJw84kvx9ME0DlbdNJktv0kubu3ETC4Dl2v+c4
-         /Je0+y1wcvQ2H5u0YOk0GC6dYmwHR8KeBqeLBYZyXqBeujjTWEze6iFbU+/52p+WiKmI
-         bDpy3O8gwz+UEFmqkQeDelu3YhVS4zQ5h5e+mH3fhJoydrFCaAtxFoYFDla98EibKjRo
-         GL+w==
-X-Gm-Message-State: AOAM530vqf1Gomc5BlP5vnobSD1WS9VzDhBbYGH5MUe/SK8vIUKg5Jl4
-        vkX5N1Lh4hQc6nEbw4wUIV0=
-X-Google-Smtp-Source: ABdhPJwegrQgdhVtK7JZrptFsAqrZodnPUMs5MR0fpEGOhPAqO9AFyuS688DoZ2NZ459ufZUPd80iQ==
-X-Received: by 2002:a17:90a:aa14:: with SMTP id k20mr3563327pjq.88.1626869422556;
-        Wed, 21 Jul 2021 05:10:22 -0700 (PDT)
-Received: from Likes-MacBook-Pro.local ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id y2sm9350282pfe.146.2021.07.21.05.10.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 05:10:21 -0700 (PDT)
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Zhu Lingshan <lingshan.zhu@intel.com>, peterz@infradead.org,
-        pbonzini@redhat.com, bp@alien8.de, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, joro@8bytes.org,
-        ak@linux.intel.com, wei.w.wang@intel.com, eranian@google.com,
-        liuxiangdong5@huawei.com, linux-kernel@vger.kernel.org,
-        x86@kernel.org, kvm@vger.kernel.org, boris.ostrvsky@oracle.com,
-        "Liang, Kan" <kan.liang@linux.intel.com>
-References: <20210716085325.10300-1-lingshan.zhu@intel.com>
- <CALMp9eSz6RPN=spjN6zdD5iQY2ZZDwM2bHJ2R4qWijOt1A_6aw@mail.gmail.com>
- <b6568241-02e3-faf6-7507-c7ad1c4db281@linux.intel.com>
- <CALMp9eT48THXwEG23Kb0-QExyA8qZAtkXxrxc+6+pdvtvVVN0A@mail.gmail.com>
- <7c3d3ab5-191f-bd5b-f801-de5ebf68cfee@linux.intel.com>
-From:   Like Xu <like.xu.linux@gmail.com>
-Subject: Re: [PATCH V8 00/18] KVM: x86/pmu: Add *basic* support to enable
- guest PEBS via DS
-Message-ID: <713471d3-ab05-7884-66fd-1efff9f6aeea@gmail.com>
-Date:   Wed, 21 Jul 2021 20:10:11 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Wed, 21 Jul 2021 07:29:56 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LC2siw105881;
+        Wed, 21 Jul 2021 08:10:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=j4u8BqA42tjXeh/DryDQIP/SBRVwP+9xAMLbvz0lXuc=;
+ b=VgO3UPGe3/AoJXNckNFKUyQ3VhYRzmzwqzZm/Xuw6zx9dilgBbo/ydLTT4OG4AUv5kYT
+ TCJIvTcIp/4TcYv+E9d0v7eXsFkSJ2xz2lGxFeRpgsvLnjEt2mcoxw3Ezt6SqganksTF
+ kZoJ0GO4MVp4i1bmvcdZ2Vq1nICwD2ie9kivT4MpRy/5SpHIe0eF66Nsih/lIVOcAJdW
+ KTU+CqDXp0S6E75GNr+qvAAl+N2dbF3jJ4qQYLzyCVMtGCkVFbyV7LNX9EB2u0hO/aNr
+ CXxBrqCz7+0SFZwx2C0l5K4Rvk1qlq/aiKeAEx3lCyTSNlF/z3PhaMa4pG+8GL9RWqq7 GA== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39xjrk12ec-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Jul 2021 08:10:22 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16LC3kNs009841;
+        Wed, 21 Jul 2021 12:10:22 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma03dal.us.ibm.com with ESMTP id 39upudm8aj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Jul 2021 12:10:21 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16LCALed53936462
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Jul 2021 12:10:21 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F28FAC05F;
+        Wed, 21 Jul 2021 12:10:21 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE279AC066;
+        Wed, 21 Jul 2021 12:10:20 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Jul 2021 12:10:20 +0000 (GMT)
+Subject: Re: [PATCH] crypto: ecc: handle unaligned input buffer in
+ ecc_swap_digits
+To:     Mian Yousaf Kaukab <ykaukab@suse.de>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au, tiwai@suse.de,
+        guillaume.gardet@arm.com
+References: <20210721083905.15144-1-ykaukab@suse.de>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <1662e2df-34e9-d8fa-4a24-e579618f635e@linux.ibm.com>
+Date:   Wed, 21 Jul 2021 08:10:20 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <7c3d3ab5-191f-bd5b-f801-de5ebf68cfee@linux.intel.com>
+In-Reply-To: <20210721083905.15144-1-ykaukab@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: N4ujAXeTq72On5MSSCq_jwEuR8auDImn
+X-Proofpoint-ORIG-GUID: N4ujAXeTq72On5MSSCq_jwEuR8auDImn
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-21_05:2021-07-21,2021-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
+ mlxscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
+ mlxlogscore=999 priorityscore=1501 impostorscore=0 adultscore=0
+ spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107210069
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/7/2021 8:41 am, Liang, Kan wrote:
-> 
-> 
-> On 7/16/2021 5:07 PM, Jim Mattson wrote:
->> On Fri, Jul 16, 2021 at 12:00 PM Liang, Kan 
->> <kan.liang@linux.intel.com> wrote:
->>>
->>>
->>>
->>> On 7/16/2021 1:02 PM, Jim Mattson wrote:
->>>> On Fri, Jul 16, 2021 at 1:54 AM Zhu Lingshan 
->>>> <lingshan.zhu@intel.com> wrote:
->>>>>
->>>>> The guest Precise Event Based Sampling (PEBS) feature can provide an
->>>>> architectural state of the instruction executed after the guest 
->>>>> instruction
->>>>> that exactly caused the event. It needs new hardware facility only 
->>>>> available
->>>>> on Intel Ice Lake Server platforms. This patch set enables the 
->>>>> basic PEBS
->>>>> feature for KVM guests on ICX.
->>>>>
->>>>> We can use PEBS feature on the Linux guest like native:
->>>>>
->>>>>      # echo 0 > /proc/sys/kernel/watchdog (on the host)
->>>>>      # perf record -e instructions:ppp ./br_instr a
->>>>>      # perf record -c 100000 -e instructions:pp ./br_instr a
->>>>>
->>>>> To emulate guest PEBS facility for the above perf usages,
->>>>> we need to implement 2 code paths:
->>>>>
->>>>> 1) Fast path
->>>>>
->>>>> This is when the host assigned physical PMC has an identical index 
->>>>> as the
->>>>> virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
->>>>> This path is used in most common use cases.
->>>>>
->>>>> 2) Slow path
->>>>>
->>>>> This is when the host assigned physical PMC has a different index 
->>>>> from the
->>>>> virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0) In 
->>>>> this case,
->>>>> KVM needs to rewrite the PEBS records to change the applicable 
->>>>> counter indexes
->>>>> to the virtual PMC indexes, which would otherwise contain the 
->>>>> physical counter
->>>>> index written by PEBS facility, and switch the counter reset values 
->>>>> to the
->>>>> offset corresponding to the physical counter indexes in the DS data 
->>>>> structure.
->>>>>
->>>>> The previous version [0] enables both fast path and slow path, 
->>>>> which seems
->>>>> a bit more complex as the first step. In this patchset, we want to 
->>>>> start with
->>>>> the fast path to get the basic guest PEBS enabled while keeping the 
->>>>> slow path
->>>>> disabled. More focused discussion on the slow path [1] is planned 
->>>>> to be put to
->>>>> another patchset in the next step.
->>>>>
->>>>> Compared to later versions in subsequent steps, the functionality 
->>>>> to support
->>>>> host-guest PEBS both enabled and the functionality to emulate guest 
->>>>> PEBS when
->>>>> the counter is cross-mapped are missing in this patch set
->>>>> (neither of these are typical scenarios).
->>>>
->>>> I'm not sure exactly what scenarios you're ruling out here. In our
->>>> environment, we always have to be able to support host-level
->>>> profiling, whether or not the guest is using the PMU (for PEBS or
->>>> anything else). Hence, for our *basic* vPMU offering, we only expose
->>>> two general purpose counters to the guest, so that we can keep two
->>>> general purpose counters for the host. In this scenario, I would
->>>> expect cross-mapped counters to be common. Are we going to be able to
->>>> use this implementation?
->>>>
->>>
->>> Let's say we have 4 GP counters in HW.
->>> Do you mean that the host owns 2 GP counters (counter 0 & 1) and the
->>> guest own the other 2 GP counters (counter 2 & 3) in your envirinment?
->>> We did a similar implementation in V1, but the proposal has been denied.
->>> https://lore.kernel.org/kvm/20200306135317.GD12561@hirez.programming.kicks-ass.net/ 
->>>
->>
->> It's the other way around. AFAIK, there is no architectural way to
->> specify that only counters 2 and 3 are available, so we have to give
->> the guest counters 0 and 1.
-> 
-> How about the host? Can the host see all 4 counters?
-> 
->>
->>> For the current proposal, both guest and host can see all 4 GP counters.
->>> The counters are shared.
->>
->> I don't understand how that can work. If the host programs two
->> counters, how can you give the guest four counters?
->>
->>> The guest cannot know the availability of the counters. It may requires
->>> a counter (e.g., counter 0) which may has been used by the host. Host
->>> may provides another counter (e.g., counter 1) to the guest. This is the
->>> case described in the slow path. For this case, we have to modify the
->>> guest PEBS record. Because the counter index in the PEBS record is 1,
->>> while the guest perf driver expects 0.
->>
->> If we reserve counters 0 and 1 for the guest, this is not a problem
->> (assuming we tell the guest it only has two counters). If we don't
->> statically partition the counters, I don't see how you can ensure that
->> the guest behaves as architected. For example, what do you do when the
->> guest programs four counters and the host programs two?
-> 
-> Ideally, we should do multiplexing if the guest requires four and the 
-> host requires two. But I doubt this patch set implements the 
-> multiplexing, because the multiplexing should be part of the slow path, 
-> which will be supported in the next step.
-> 
-> Could you please share more details regarding your environment?
 
-Jim, would you mind sharing more details about the statically
-partitioned hardware counters in your virtualization scenario ?
+On 7/21/21 4:39 AM, Mian Yousaf Kaukab wrote:
+> ecdsa_set_pub_key() makes an u64 pointer at 1 byte offset of the key.
+> This results in an unaligned u64 pointer. This pointer is passed to
+> ecc_swap_digits() which assumes natural alignment.
+>
+> This causes a kernel crash on an armv7 platform:
+> [    0.409022] Unhandled fault: alignment exception (0x001) at 0xc2a0a6a9
+> ...
+> [    0.416982] PC is at ecdsa_set_pub_key+0xdc/0x120
+> ...
+> [    0.491492] Backtrace:
+> [    0.492059] [<c07c266c>] (ecdsa_set_pub_key) from [<c07c75d4>] (test_akcipher_one+0xf4/0x6c0)
+>
+> Handle unaligned input buffer in ecc_swap_digits() by replacing
+> be64_to_cpu() to get_unaligned_be64(). Change type of in pointer to
+> void to reflect it doesn’t necessarily need to be aligned.
+>
+> Fixes: 4e6602916bc6 ("crypto: ecdsa - Add support for ECDSA signature verification")
+> Reported-by: Guillaume Gardet <guillaume.gardet@arm.com>
+> Suggested-by: Takashi Iwai <tiwai@suse.de>
+> Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
 
-It may be useful for subsequent designs for advanced PEBS features.
-Otherwise we will follow the sharing rules defined by perf subsystem.
 
-> How do you handle the case that guest programs two counters and the host 
-> programs four counters?
-> 
->>
->>> If counter 0 is available, guests can use counter 0. That's the fast
->>> path. I think the fast path should be more common even both host and
->>> guest are profiling. Because except for some specific events, we may
->>> move the host event to the counters which are not required by guest if
->>> we have enough resources.
->>
->> And if you don't have enough resources? 
-> 
-> As my understanding, multiplexing should be the only choice if we don't 
-> have enough resources.
-> 
-> Thanks,
-> Kan
+Tested-by: Stefan Berger <stefanb@linux.ibm.com>
+
+
+> ---
+>   crypto/ecc.h | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/crypto/ecc.h b/crypto/ecc.h
+> index a006132646a4..1350e8eb6ac2 100644
+> --- a/crypto/ecc.h
+> +++ b/crypto/ecc.h
+> @@ -27,6 +27,7 @@
+>   #define _CRYPTO_ECC_H
+>   
+>   #include <crypto/ecc_curve.h>
+> +#include <asm/unaligned.h>
+>   
+>   /* One digit is u64 qword. */
+>   #define ECC_CURVE_NIST_P192_DIGITS  3
+> @@ -46,13 +47,13 @@
+>    * @out:      Output array
+>    * @ndigits:  Number of digits to copy
+>    */
+> -static inline void ecc_swap_digits(const u64 *in, u64 *out, unsigned int ndigits)
+> +static inline void ecc_swap_digits(const void *in, u64 *out, unsigned int ndigits)
+>   {
+>   	const __be64 *src = (__force __be64 *)in;
+>   	int i;
+>   
+>   	for (i = 0; i < ndigits; i++)
+> -		out[i] = be64_to_cpu(src[ndigits - 1 - i]);
+> +		out[i] = get_unaligned_be64(&src[ndigits - 1 - i]);
+>   }
+>   
+>   /**
