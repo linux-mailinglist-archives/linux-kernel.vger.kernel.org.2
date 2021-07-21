@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16593D1805
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D883D1812
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240474AbhGUTlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:41:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50108 "EHLO mail.kernel.org"
+        id S240543AbhGUTlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:41:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237346AbhGUTkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240379AbhGUTkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 15:40:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A76E861357;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E032C61279;
         Wed, 21 Jul 2021 20:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626898889;
-        bh=QhuNcsunZD2QYw6aN/2PjhF7hYYh0BTHMfQNysrs8x4=;
+        bh=BsMVES/4pOvZzzTWNbQuBOd0AUGBlVJkPvguuj5ByGE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g+azx71pU4jAYLhP++cXgQ7IP6GXrStmWvO5i03OCs6y5OoAb2KzDvBrEysUj1Ihb
-         8Zi1yKpGXzjR07p7cM50EnZApUW0l9pt2uGI8ngoiIgPRTv0YGcKZWvzbR+jocozHM
-         031cVGWeKaNmK5ECRzk4PBGWaZpItdfcQsfxuy1x5u6UiO6etZhwSt5cVpYiNNs1PY
-         V8/V154E9bL9wik18M/u4KJ0GZ3BvNXOvJ/L1UizNQEFzLBU4jSdKWHEBCfygQokMO
-         rVfp+w30LueQkMTHShz1EtwK0Ham3NSgHwV5A6rRy2k8oUPSwyzXTWNHPSmRXGWU2m
-         GDhEQBOiCGJTg==
+        b=a4wV1bMxLAnON3LUOonogDOSRTjL1mT9c330TUXOpkylBmoYkb9pMZPY32magCquF
+         WIV1J2T+PJCNq1XepoKLN+xKtHXbJMiyZCnuFuabIU9QDzOtBGHkqGl14T3skJvLNB
+         GiA8JRwTZWTu6gYS4NkmY5dpyqetAWKtSmQJXo6bwJyqdNTyI6oYtWj7/5FWWxpZP6
+         +y/cn1EqxKUrpNXAuOUumu76sYrNACQxC0aUoXOI9xox57Cxg+7IbC7RS6NQvjJ4Fi
+         Vm1nXdfdmFzxp2bOjvn5C9L+fbi13u6YxGMY8ZLFhmhL47VZ+LaK4YzweMm9XiCmd4
+         2W0dQNDgZNXUw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 26D025C0E45; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
+        id 4BB0E5C0F64; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,11 +33,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH rcu 09/18] rcu: Start timing stall repetitions after warning complete
-Date:   Wed, 21 Jul 2021 13:21:17 -0700
-Message-Id: <20210721202127.2129660-9-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 10/18] srcutiny: Mark read-side data races
+Date:   Wed, 21 Jul 2021 13:21:18 -0700
+Message-Id: <20210721202127.2129660-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
@@ -47,60 +46,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Systems with low-bandwidth consoles can have very large printk()
-latencies, and on such systems it makes no sense to have the next RCU CPU
-stall warning message start output before the prior message completed.
-This commit therefore sets the time of the next stall only after the
-prints have completed.  While printing, the time of the next stall
-message is set to ULONG_MAX/2 jiffies into the future.
+This commit marks some interrupt-induced read-side data races in
+__srcu_read_lock(), __srcu_read_unlock(), and srcu_torture_stats_print().
 
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ include/linux/srcutiny.h | 8 ++++----
+ kernel/rcu/srcutiny.c    | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index e199022dce9dc..42847caa3909b 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -647,6 +647,7 @@ static void print_cpu_stall(unsigned long gps)
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 0e0cf4d6a72a0..6cfaa0a9a9b96 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -61,7 +61,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
+ 	int idx;
  
- static void check_cpu_stall(struct rcu_data *rdp)
- {
-+	bool didstall = false;
- 	unsigned long gs1;
- 	unsigned long gs2;
- 	unsigned long gps;
-@@ -692,7 +693,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 	    ULONG_CMP_GE(gps, js))
- 		return; /* No stall or GP completed since entering function. */
- 	rnp = rdp->mynode;
--	jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
-+	jn = jiffies + ULONG_MAX / 2;
- 	if (rcu_gp_in_progress() &&
- 	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
- 	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
-@@ -709,6 +710,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 		print_cpu_stall(gps);
- 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
- 			rcu_ftrace_dump(DUMP_ALL);
-+		didstall = true;
- 
- 	} else if (rcu_gp_in_progress() &&
- 		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
-@@ -726,6 +728,11 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 		print_other_cpu_stall(gs2, gps);
- 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
- 			rcu_ftrace_dump(DUMP_ALL);
-+		didstall = true;
-+	}
-+	if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {
-+		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
-+		WRITE_ONCE(rcu_state.jiffies_stall, jn);
- 	}
+ 	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+-	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
++	WRITE_ONCE(ssp->srcu_lock_nesting[idx], READ_ONCE(ssp->srcu_lock_nesting[idx]) + 1);
+ 	return idx;
  }
  
+@@ -81,11 +81,11 @@ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
+ {
+ 	int idx;
+ 
+-	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
++	idx = ((data_race(READ_ONCE(ssp->srcu_idx)) + 1) & 0x2) >> 1;
+ 	pr_alert("%s%s Tiny SRCU per-CPU(idx=%d): (%hd,%hd)\n",
+ 		 tt, tf, idx,
+-		 READ_ONCE(ssp->srcu_lock_nesting[!idx]),
+-		 READ_ONCE(ssp->srcu_lock_nesting[idx]));
++		 data_race(READ_ONCE(ssp->srcu_lock_nesting[!idx])),
++		 data_race(READ_ONCE(ssp->srcu_lock_nesting[idx])));
+ }
+ 
+ #endif
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 26344dc6483b0..a0ba2ed49bc61 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -96,7 +96,7 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
+  */
+ void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
+ {
+-	int newval = ssp->srcu_lock_nesting[idx] - 1;
++	int newval = READ_ONCE(ssp->srcu_lock_nesting[idx]) - 1;
+ 
+ 	WRITE_ONCE(ssp->srcu_lock_nesting[idx], newval);
+ 	if (!newval && READ_ONCE(ssp->srcu_gp_waiting))
 -- 
 2.31.1.189.g2e36527f23
 
