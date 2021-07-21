@@ -2,73 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF623D0DE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FAC13D0DE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236784AbhGUK4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
+        id S233183AbhGUK6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239152AbhGUKlo (ORCPT
+        with ESMTP id S238015AbhGUKmn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 06:41:44 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86FCC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 04:22:20 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id g12so1109461wme.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 04:22:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=s3GF73Lo2TCfel8Jh3jPdwfp8WqBMWjIbQRtP4xAOVQ=;
-        b=vSuh/kpmcgmAPNOLZdNi9QN2JyjuioX++aaux9htcSklXhVoQ+2OCwLQTd+zgS3awq
-         9mVnaFoXqqODl2RknRqerQNnBkJfTduQYIZP7sSczysVSw1dWjXse9hduPodpSt+mjOm
-         jwOP+N7oDsSIbkaKFUB8Ytc0fnNBEm91IJXMg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=s3GF73Lo2TCfel8Jh3jPdwfp8WqBMWjIbQRtP4xAOVQ=;
-        b=osBg5EFf6gsr2di2dCbNy16/rVOdmBT2U1M87IGQPhdSUUCgx8IkSx6Ul6fhVaAgko
-         id5xGa12+NmfGumTsV72UHkT/juT7Wv0kg++CYsejyveE6GkzlOrJ5S0GOpCzchIjxae
-         Oa0vj+93Hg7gWW5jHHKb/jpSq4E2nDkaC4GfHw8TL9RIajiT1ES3VKVVG1P7NffyB8nT
-         nfkbmqHdHnbBHXYjhXxHPXH8MXNWrqIP4U7dbCagc4WtdwcuAH2wfLDJxdZlTlIuO2ZB
-         SyH6vgaeHzXZZ2/VZlANS/Q38+m/BYLUCN2hIRHTbn+675eEHHtZz9EYddEEywlfg7jC
-         P2LQ==
-X-Gm-Message-State: AOAM5318zSojcnLV6q8MUuCNtphOOHSLZ2AW18llC+EnuTTYy9JoO2se
-        IYnYRV8U2brqLYeVStSLgabAVw==
-X-Google-Smtp-Source: ABdhPJy4fwnKUQQjwGClhWwQwHLYI5LPnIxVIfjSXKUeBkGOMtl6vmeUufL8PnjipscLhUSyecvgew==
-X-Received: by 2002:a7b:c2fa:: with SMTP id e26mr3579721wmk.84.1626866539458;
-        Wed, 21 Jul 2021 04:22:19 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:d571])
-        by smtp.gmail.com with ESMTPSA id n5sm4777841wmd.4.2021.07.21.04.22.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 04:22:18 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 12:22:18 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the printk tree
-Message-ID: <YPgDahcOZn6QNz1r@chrisdown.name>
-References: <20210720174300.018cc765@canb.auug.org.au>
- <CA+G9fYs2ApGkrJHL5HOO1jEJZ714itVp+Tdj7fWzkG+JWc=pOA@mail.gmail.com>
- <YPbBfdz9srIpI+bb@chrisdown.name>
- <20210721085705.fy6hrc5n3qtlwehq@pathway.suse.cz>
+        Wed, 21 Jul 2021 06:42:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A898DC061574;
+        Wed, 21 Jul 2021 04:23:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tjKLXf0Ng52UH5nHxMTM/eP+9xIaqoGvYekhvlgulkU=; b=ml92iat7e/0Z0zUSXyBKWCFT/T
+        +LyfOBlYqxlteYRIYhfLZunuiaY0K4ewec4QNxKTsAhIvGnLKyEVhhQanm/af+BF2OtFcRhk4GElJ
+        5a3qkimaAA9z/UuwPVhjWwfSHWIRErSBHjJL2JkvMkmBc4Ceclrfn77wnaYSomg+bKyW7LR23ZWw5
+        SfrPRbkNbOVXp2zoGMtiZYFHSqjVuP96NiR3So0JPPEWP/nd/By1Hku3hx2ymY4pO1kMLzEYCbI9Q
+        LI5fLcJlj77T+vGjXJtV8j+oeZfRQ1PDsGlSIZCUVZStjZsZeWA0daIESAeCtuBMJlF/PReDVvnGc
+        fQJ7Kptw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m6AJh-0097oC-3n; Wed, 21 Jul 2021 11:23:10 +0000
+Date:   Wed, 21 Jul 2021 12:23:09 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v14 011/138] mm/lru: Add folio LRU functions
+Message-ID: <YPgDne2ORs+tJsk2@casper.infradead.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-12-willy@infradead.org>
+ <YPao+syEWXGhDxay@kernel.org>
+ <YPedzMQi+h/q0sRU@casper.infradead.org>
+ <YPfdM9dLEsFXZJgf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210721085705.fy6hrc5n3qtlwehq@pathway.suse.cz>
-User-Agent: Mutt/2.1 (4b100969) (2021-06-12)
+In-Reply-To: <YPfdM9dLEsFXZJgf@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Petr Mladek writes:
->Chris, could you please send it as a proper patch?
+On Wed, Jul 21, 2021 at 11:39:15AM +0300, Mike Rapoport wrote:
+> On Wed, Jul 21, 2021 at 05:08:44AM +0100, Matthew Wilcox wrote:
+> > I wanted to turn those last two sentences into a list, but my
+> > kernel-doc-fu abandoned me.  Feel free to submit a follow-on patch to
+> > fix that ;-)
+> 
+> Here it is ;-)
 
-Sure thing -- just to confirm, resend the whole series to you with these fixes 
-squashed in, right? :-)
+Did you try it?  Here's what that turns into with htmldoc:
+
+Description
+
+We would like to get this info without a page flag, but the state needs
+to survive until the folio is last deleted from the LRU, which could be
+as far down as __page_cache_release.
+
+ * 1 if folio is a regular filesystem backed page cache folio or a
+   lazily freed anonymous folio (e.g. via MADV_FREE).
+ * 0 if folio is a normal anonymous folio, a tmpfs folio or otherwise
+   ram or swap backed folio.
+
+Return
+
+An integer (not a boolean!) used to sort a folio onto the right LRU list
+and to account folios correctly.
+
+Yes, we get a bulleted list, but it's placed in the wrong section!
+
+Adding linux-doc for additional insight into this problem.
+For their reference, here's the input:
+
+/**
+ * folio_is_file_lru - Should the folio be on a file LRU or anon LRU?
+ * @folio: The folio to test.
+ *
+ * We would like to get this info without a page flag, but the state
+ * needs to survive until the folio is last deleted from the LRU, which
+ * could be as far down as __page_cache_release.
+ *
+ * Return: An integer (not a boolean!) used to sort a folio onto the
+ * right LRU list and to account folios correctly.
+ *
+ * - 1 if @folio is a regular filesystem backed page cache folio
+ *   or a lazily freed anonymous folio (e.g. via MADV_FREE).
+ * - 0 if @folio is a normal anonymous folio, a tmpfs folio or otherwise
+ *   ram or swap backed folio.
+ */
+static inline int folio_is_file_lru(struct folio *folio)
+
