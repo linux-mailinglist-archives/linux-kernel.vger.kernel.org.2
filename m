@@ -2,69 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F21C3D1239
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3673D123F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239816AbhGUOms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:42:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239706AbhGUOmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:42:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4F0760E0C;
-        Wed, 21 Jul 2021 15:23:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626881002;
-        bh=vw/HFFq3ue6OhFPtK7AmM0dhhlH17poo8NmNf3OwAe4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gmWQQW3v5zvmdC4TABkeAnsNhe9Xy5wySrMj8XF7F5XvrENYnNj7kNTViTQe9qUxP
-         PwUTTYo6WAhFJ2TFh5MKKKRNF5zcDHB3mSLksdOTEp9dhVc7q5QNSjVLBU8azJYxsY
-         Ql23Ok5xhdHi3hoZHlf//rFMlpZVyIstVS/4zC5PZxAWu1j0qKtbmhKDphxv0fZHeF
-         RWQUqAJBFfYixZ8LmdFLHGj9rD84i15E/9WTimBZu2WEmVRnBphn7tU8V7SANXsmpG
-         yKTT92NLrUExXCGOWkf+QDp0bAzc97wSfJ6XX+uDYByca7A8Gw/dyHRP/Y53nr1Ab+
-         aIOZV5kwc05hg==
-Date:   Wed, 21 Jul 2021 16:23:17 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, maz@kernel.org,
-        catalin.marinas@arm.com, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        jean-philippe@linaro.org, Alexandru.Elisei@arm.com,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v2 1/3] arch/arm64: Introduce a capability to tell
- whether 16-bit VMID is available
-Message-ID: <20210721152316.GB11003@willie-the-truck>
-References: <20210616155606.2806-1-shameerali.kolothum.thodi@huawei.com>
- <20210616155606.2806-2-shameerali.kolothum.thodi@huawei.com>
+        id S239742AbhGUOng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237983AbhGUOnc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 10:43:32 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B96AC061575;
+        Wed, 21 Jul 2021 08:24:07 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id p15-20020a05600c358fb0290245467f26a4so1211474wmq.0;
+        Wed, 21 Jul 2021 08:24:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Oi/kmLG+yo834vJn/MBYQrG1NfEUwztJBaDA0SorlMw=;
+        b=GPPygBoG0okZabi4k2zvS5PJYSyAiI3ZvpEMup6Ewo21SE5tPZ9ry+/FdFaeISL7Bc
+         6C60RiG56Ta8ZNUw6wo5CcrGvXvfzuHkf3VoixI1dsM6B0m7OVMA4Wv5B/gJhKBbCVkC
+         0d39uqHuQrS5YlATH1NFNKwUIS1Ne5KcvDwzjOf6a1foUQuBzkKg0IlGbs59zzJlbugF
+         g+1xoep1MxZevYMn9EoqWmp9RVieSWDnJfYE5b2MCo9v/Pa9fWtaLuwk6lkqjlTcjdWs
+         9wdH7hO+KBjL0VqQugznvQINceZLeeog51Lhh3dTJhsAUstG3ZIk7MuD2meazqGYLiI1
+         85lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Oi/kmLG+yo834vJn/MBYQrG1NfEUwztJBaDA0SorlMw=;
+        b=U8NXoktdBSJ3QlbNlOdAL1ZA22FzBvuzQLoA3HeR7Jvq1GlQjvAn4ScO6kMuOIyQ1j
+         OcZLBma+vVXdbjXrJcRqXbx+LIci6dT36KApNW01G0cHEOTPfKTu/Xi0HTsOV12gFcIC
+         HHxXSzOBFsgtRw+DeEDK9Cp3SrKUzKuxu0EUMoeks9vrZ6T94qpwTNgHKemgJheFSHj/
+         5Tp3Y4v4Pc/d3Vbo85nXelTl7QZwkbjxqvG9a2yMqvNzltrBthb5M4kPIo393FoYoXp9
+         0UkA7Jbsl7J54hha0rSuicICdCrqwE5kii2Wz8Fu7SEOze9N1mgXec9EUUKzEsdXZKwH
+         H/Hw==
+X-Gm-Message-State: AOAM532a0aNf0MmyJR3LOb8tVZlLmHwnM7m0Xtect9nwkyaPLECstPG+
+        +kHa8ZwPrKJQ34F4rYtZADw=
+X-Google-Smtp-Source: ABdhPJzUR2AgoD7KuBHSGj82WNYdT6Fbt0Qdp5E+r2m1Na+R4fuxAFwmQtgBNtidSvW66hH1r3tBLQ==
+X-Received: by 2002:a05:600c:350b:: with SMTP id h11mr4543981wmq.20.1626881046170;
+        Wed, 21 Jul 2021 08:24:06 -0700 (PDT)
+Received: from chgm-pc-linux.bachmann.at ([185.67.228.2])
+        by smtp.gmail.com with ESMTPSA id b8sm221299wmb.20.2021.07.21.08.24.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 08:24:05 -0700 (PDT)
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+To:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI: dwc: do not ignore link errors
+Date:   Wed, 21 Jul 2021 17:23:47 +0200
+Message-Id: <20210721152347.2965403-1-christian.gmeiner@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616155606.2806-2-shameerali.kolothum.thodi@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 04:56:04PM +0100, Shameer Kolothum wrote:
-> From: Julien Grall <julien.grall@arm.com>
-> 
-> At the moment, the function kvm_get_vmid_bits() is looking up for the
-> sanitized value of ID_AA64MMFR1_EL1 and extract the information
-> regarding the number of VMID bits supported.
-> 
-> This is fine as the function is mainly used during VMID roll-over. New
-> use in a follow-up patch will require the function to be called a every
-> context switch so we want the function to be more efficient.
-> 
-> A new capability is introduced to tell whether 16-bit VMID is
-> available.
+This fixes long boot delays of about 10 seconds.
 
-I don't really buy this rationale. The VMID allocator introduced later on
-caches this value in the static 'vmid_bits' variable, and that gets used
-on vCPU enter via vmid_gen_match() in the kvm_arm_update_vmid() fastpath.
+I am working on a device powered by an TI am65 SoC where
+we have a PCIe expansion slot. If there is no PCIe device
+connected I see boot delays caused by pci_host_probe(..).
 
-So I would prefer that we just expose an accessor for that than introduce
-a static key and new cpufeature just for kvm_get_vttbr().
+Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+---
+ drivers/pci/controller/dwc/pcie-designware-host.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Will
+diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+index a608ae1fad57..82ba429246f8 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -408,8 +408,9 @@ int dw_pcie_host_init(struct pcie_port *pp)
+ 			goto err_free_msi;
+ 	}
+ 
+-	/* Ignore errors, the link may come up later */
+-	dw_pcie_wait_for_link(pci);
++	int ret = dw_pcie_wait_for_link(pci);
++	if (ret)
++		goto err_free_msi;
+ 
+ 	bridge->sysdata = pp;
+ 
+-- 
+2.31.1
+
