@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9D03D1523
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9BE3D1522
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236092AbhGUQxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234914AbhGUQxL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:53:11 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1405FC061575;
-        Wed, 21 Jul 2021 10:33:46 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id nt18-20020a17090b2492b02901765d605e14so506414pjb.5;
-        Wed, 21 Jul 2021 10:33:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oXUQWH6HmtXfpfz+pg25s2FSI+kvsYhIjDKLLY5hzig=;
-        b=q8DEvYroo4XqbTKEr7fs8MlxIT7xT3gVcq5HyrOGAvZMOxHfY7NCTCYsIqjLTmnJ/Z
-         0WAChNXy0W3DZ1VMJxhe2qVXzk0S+Adqx0VWBq+LIFZbcYNBBk2y45B2Gu1L9doGPCfV
-         Rt7GPx6k4DI6BBA9RUu/lHyT36Ji7wbKuhYGDUjJqkBidCgssyUBrFtBGoB+o5hh1gcJ
-         wOAwwaZkBtKwXRR/FNAiUtKdcIwb1geK0a3Qov0t+TQ1C3/+3zNWL1wvIBzVutNv+VEE
-         Q5AS6/eNgRVxjpTzRIXORZHq0FiojBUiQEtJN3nygWnty12gnCZdwfNT0EwUO854PZJr
-         A1Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oXUQWH6HmtXfpfz+pg25s2FSI+kvsYhIjDKLLY5hzig=;
-        b=s+05+KdXbVAJDiffT0PtBkkWNZqAA1zSifqDcNHNeeU1KBvr7M3SgckI4CKLYqNFtb
-         33LmzQWJcTvWj8azT+oBKbFlYa/4Zc6y+aSgJdtW9yKTOqXxt8tsuP1Kc3tyuAs6S603
-         Wb+nhNxnfYQYWev3I4ZlINpQT/eB4ISquguq8iGzFZeNKSMidqdqKMq/l2cEaTA/cR3f
-         41zi3ckjkmy7BJdUStjeNzGsRz9GdNVU6xIxkEriEGgW5cT+gk0eLhxJ8atFEUEB8H/F
-         LO8jU5AMDIPvXZWYZKsCwyXAyFFcy6gIfFPLoGPVWzLou6waWpE6+CFCR4YCHW1Ik059
-         wKyA==
-X-Gm-Message-State: AOAM533YoZhFRSPfMpXfRNERO7OtS/sI2OWZTd7DMUZlwvvF3MDfWNrL
-        Uog+GgnlRygnURaufs+VYBoY8ZhETtwMnBCZf20=
-X-Google-Smtp-Source: ABdhPJyW8PfcFLwQfUJQUVe9CsxL3hRfqVgHDdLZkYLQsE8cN9friKPr6qtcxDzeEeKc3UJBGF4HGo77xavdz4umStU=
-X-Received: by 2002:a17:90b:1194:: with SMTP id gk20mr4866507pjb.181.1626888825591;
- Wed, 21 Jul 2021 10:33:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210721151330.2176653-1-arnd@kernel.org> <CAHp75VeWSfBek+m6hQoc6G7wP+JNN-V3S0kfcGBESZLR+6QAxg@mail.gmail.com>
- <CAK8P3a0wU+yAm0X_URFVuM=GragqQnvz2Reto5e09fzqCVrUqQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a0wU+yAm0X_URFVuM=GragqQnvz2Reto5e09fzqCVrUqQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 21 Jul 2021 20:33:05 +0300
-Message-ID: <CAHp75VfQLGX4ir8XxMZBMkPaK2SoazJwr3axsk-5p1ok6uf6jg@mail.gmail.com>
-Subject: Re: [PATCH] iio: accel: fxls8962af: fix i2c dependency
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Sean Nyekjaer <sean@geanix.com>, Arnd Bergmann <arnd@arndb.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Tomas Melin <tomas.melin@vaisala.com>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-iio@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234455AbhGUQxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:53:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233799AbhGUQxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 12:53:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C04176023B;
+        Wed, 21 Jul 2021 17:33:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626888824;
+        bh=uewDra+cFkYZ2VimETNWlkhVuCFnLS3szDDCo3c1O1c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cU7U6nueFjNLLKHuI5F1yoqqsFUzaoDF1xJ8VWwFFnbqTG0MIn3JIwyQNlQxzMYLx
+         BSyafbMKEsAimaMZS+fwZ5YCm2Prrpqu5fWqH7luRu31UKt3NtVtAIWxDZJJmKlAyc
+         fmVnjxT9kQJCsZbinPpFFcEOXy1KUpUa+F62Wx1SesNeqa8nW03wtm2PJK2/LCfG8U
+         qp2CHzEzumIS2ifztHenovaFdxoNqZVsp37e3rsWWVG+sQLobuPK2f74ji8LxoksdU
+         qfKrIf2NusELVT5JpvXPxe/LiPIwVv+tKgmWL6JQjBNQUVHrRpP8qLP0mbfKf2isw9
+         uYViNmxlGtTWw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] regulator fixes for v5.14-rc2
+Date:   Wed, 21 Jul 2021 18:33:22 +0100
+Message-Id: <20210721173343.C04176023B@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 7:12 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> On Wed, Jul 21, 2021 at 5:52 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Wed, Jul 21, 2021 at 6:13 PM Arnd Bergmann <arnd@kernel.org> wrote:
+The following changes since commit ddf275b219ab22bc07c14ac88c290694089dced0:
 
-...
+  regulator: bd9576: Fix uninitializes variable may_have_irqs (2021-06-23 12:34:42 +0100)
 
-> > >  config FXLS8962AF
-> > >         tristate
-> > > +       depends on I2C || !I2C # cannot be built-in for modular I2C
-> >
-> > Can you enlighten me how this will not be a no-op?
->
-> This part does nothing, it only causes a warning when FXLS8962AF
-> gets selected =y when I2C=m.
+are available in the Git repository at:
 
-This is something new to me. But shouldn't the other chunk guarantee
-that warning won't happen?
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.14-rc2
 
-> The important bit is the other hunk that adds the same dependency
-> to the FXLS8962AF_SPI symbol, which enforces that either I2C
-> is completely disabled, or treated as a dependency that prevents
-> the user from setting FXLS8962AF_SPI=y when that would cause
-> a link failure.
+for you to fetch changes up to 1c73daee4bf30ccdff5e86dc400daa6f74735da5:
 
-This part I understand and neither object to nor comment on.
+  regulator: hi6421: Fix getting wrong drvdata (2021-07-11 23:44:37 +0100)
 
-> The effect is similar to a 'depends on SND_SOC_I2C_AND_SPI',
-> except we only need it on the SPI symbol here because the SPI
-> core cannot be in a module itself.
+----------------------------------------------------------------
+regulator: Fixes for v5.14
 
-I see. Thanks for elaboration.
+A few driver specific fixes that came in since the merge window, plus a
+change to mark the regulator-fixed-domain DT binding as deprecated in
+order to try to to discourage any new users while a better solution is
+put in place.
 
--- 
-With Best Regards,
-Andy Shevchenko
+----------------------------------------------------------------
+Axel Lin (5):
+      regulator: rt5033: Fix n_voltages settings for BUCK and LDO
+      regulator: hi6421v600: Fix getting wrong drvdata that causes boot failure
+      regulator: bd9576: Fix testing wrong flag in check_temp_flag_mismatch
+      regulator: mtk-dvfsrc: Fix wrong dev pointer for devm_regulator_register
+      regulator: hi6421: Fix getting wrong drvdata
+
+ChiYuan Huang (1):
+      regulator: rtmv20: Fix wrong mask for strobe-polarity-high
+
+Ulf Hansson (1):
+      regulator: fixed: Mark regulator-fixed-domain as deprecated
+
+ .../bindings/regulator/fixed-regulator.yaml        |  2 ++
+ drivers/regulator/bd9576-regulator.c               |  4 ++--
+ drivers/regulator/hi6421-regulator.c               | 22 +++++++++++++---------
+ drivers/regulator/hi6421v600-regulator.c           | 16 +++++++++-------
+ drivers/regulator/mtk-dvfsrc-regulator.c           |  3 +--
+ drivers/regulator/rtmv20-regulator.c               |  2 +-
+ include/linux/mfd/rt5033-private.h                 |  4 ++--
+ 7 files changed, 30 insertions(+), 23 deletions(-)
