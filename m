@@ -2,324 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EF53D0C48
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7BE3D0C49
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 12:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237912AbhGUJaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 05:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236824AbhGUJQl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:16:41 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391B6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 02:57:18 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id hr1so2386314ejc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 02:57:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=NuNIkqlCWjta6X7v6jKsSLzY0Zy0Zo+62taPcEqLl7Y=;
-        b=FNdG8UlYUk87fGjJMjmIJkHHjmV+wBlUPKw02udlD/20pEvKDqCT1Dmoqf4XkA/IOD
-         +GS0I98Jmmu33Q4I1dMTkJVxGtvtFw2NFbu7r31N5tqZsmYZkAmynZ+BXFcKdLcTMwE/
-         iINv+U4/OMS7At2dxBzmtIMzapI26yNdsXjLrO2tw98+ygerchdK82YQ8YFyT15WPnKf
-         YElDlRbbWeGmDdOC/jSJlb0tvSy7Iv89c28Xisr18uJzwAB4rhwTGa7FPfsnh2HaTKyA
-         UdNKNmuFTeoFUb8Ns+4y5DdK5Cdr1j8p0CReMqORm6WsZkihuq/yS5c4bQQCm8bT1O2U
-         1CTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=NuNIkqlCWjta6X7v6jKsSLzY0Zy0Zo+62taPcEqLl7Y=;
-        b=srYhlmbzdg5st84SokGTTNU2dRyLwDa4ttwZ8q1py7ehXtzDCUuPY65Z3N721CoeAW
-         7Y+tWhdyrEN21EpLoF/em/YlYSuvHHw+OuWPXTxUnvNNu3BULydmQHrB/jUQ3oUYFmUI
-         IB/frGqblSI3bkfLT19Wu2RX0CZKjcjrT06A5Tmeok9koBkVdPEQ6OHbuHyfjdpQ1PZH
-         ZCzAJaTYOYIAZCTiYtK18lE5GI9rrKC9s2PpdMAZZWGjhhJkn9RF8EDrQuXqUhU88iLO
-         Lact4bgT3WP/Dzr/spbJJnDS2LAWwwZ4x7kX7wEaCrjQr27rMNcJ2y1hubhGlw6Ep847
-         bDDw==
-X-Gm-Message-State: AOAM530g8vQPnllG8CMw2XRMC5sVN1OiUjJhSH7K8NyY6xV3gRt8FJ9n
-        i1CMigjjaX1XRYWUBMIX1/o=
-X-Google-Smtp-Source: ABdhPJwyZ36Q+t7teA75/OrxZdqBeMUVgKbEWHOzP0iGcp0jlXUsqouFbUzjyJxhksBDm8ji96eKFA==
-X-Received: by 2002:a17:907:a079:: with SMTP id ia25mr9624559ejc.515.1626861436618;
-        Wed, 21 Jul 2021 02:57:16 -0700 (PDT)
-Received: from localhost.localdomain ([176.30.109.247])
-        by smtp.gmail.com with ESMTPSA id n11sm8286283ejg.111.2021.07.21.02.57.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 02:57:16 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 12:57:10 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     syzbot <syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com>
-Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, hridayhegde1999@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        rkovhaev@gmail.com, straube.linux@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in do_wait_for_common
-Message-ID: <20210721125710.1a1c041f@gmail.com>
-In-Reply-To: <0000000000001950a705c795515d@google.com>
-References: <20210720221445.7d022a9e@gmail.com>
-        <0000000000001950a705c795515d@google.com>
-X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        id S237138AbhGUJaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 05:30:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237708AbhGUJRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 05:17:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3A1460FDA;
+        Wed, 21 Jul 2021 09:58:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626861511;
+        bh=yg3A/XmekVR8rLDWBTeMI77jnMmj6hE4tX8618Ab1AM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O5pD51VgqSxVDtDIsF+crC5cK4JdD4w5vGuB4cg2Qx1A+lKK1Ii2MkpkYNqWXx8gB
+         mA/murD3q0BRVdiGxJobSXxrz/t0/1lnq96EVnBp8b+o3vR/yIvJXhdf0l4N+OuaUW
+         8qfxMBqET0ONx/GL2ymdZ8FaX14y8HTtsvWXP1xwcx6T/8liR7h+qmdaNokh/UQq7t
+         QL+9WgLjQrQfK6kQWeS6N70LWc/eA7PF1wX9I6LVVgVa7bMmZcUcBRu2MXychIcxu6
+         4bS6OAHm0/Mu9B7Bbmtti0THfrFA5CGxMrOGTbrC14+m4R/6Lm4G8pJKFHHp7/Sy4f
+         amsbLLuqfpSKw==
+Date:   Wed, 21 Jul 2021 12:58:24 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 054/138] mm: Add kmap_local_folio()
+Message-ID: <YPfvwNHk6H9dOCKK@kernel.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-55-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/aiVyBEGmZlfOaj=Rqpq3zFn"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715033704.692967-55-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/aiVyBEGmZlfOaj=Rqpq3zFn
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Tue, 20 Jul 2021 15:10:08 -0700
-syzbot <syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com> wrote:
-
-> Hello,
+On Thu, Jul 15, 2021 at 04:35:40AM +0100, Matthew Wilcox (Oracle) wrote:
+> This allows us to map a portion of a folio.  Callers can only expect
+> to access up to the next page boundary.
 > 
-> syzbot has tested the proposed patch but the reproducer is still
-> triggering an issue: BUG: sleeping function called from invalid
-> context in lock_sock_nested
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  include/linux/highmem-internal.h | 11 +++++++++
+>  include/linux/highmem.h          | 38 ++++++++++++++++++++++++++++++++
+>  2 files changed, 49 insertions(+)
 > 
-> BUG: sleeping function called from invalid context at
-> net/core/sock.c:3161 in_atomic(): 1, irqs_disabled(): 0, non_block:
-> 0, pid: 8824, name: syz-executor.2 1 lock held by syz-executor.2/8824:
->  #0: ffffffff8d89c920 (hci_sk_list.lock){++++}-{2:2}, at:
-> hci_sock_dev_event+0x2b6/0x630 net/bluetooth/hci_sock.c:763
+> diff --git a/include/linux/highmem-internal.h b/include/linux/highmem-internal.h
+> index 7902c7d8b55f..d5d6f930ae1d 100644
+> --- a/include/linux/highmem-internal.h
+> +++ b/include/linux/highmem-internal.h
+> @@ -73,6 +73,12 @@ static inline void *kmap_local_page(struct page *page)
+>  	return __kmap_local_page_prot(page, kmap_prot);
+>  }
+>  
+> +static inline void *kmap_local_folio(struct folio *folio, size_t offset)
+> +{
+> +	struct page *page = folio_page(folio, offset / PAGE_SIZE);
+> +	return __kmap_local_page_prot(page, kmap_prot) + offset % PAGE_SIZE;
+> +}
+> +
+>  static inline void *kmap_local_page_prot(struct page *page, pgprot_t prot)
+>  {
+>  	return __kmap_local_page_prot(page, prot);
+> @@ -160,6 +166,11 @@ static inline void *kmap_local_page(struct page *page)
+>  	return page_address(page);
+>  }
+>  
+> +static inline void *kmap_local_folio(struct folio *folio, size_t offset)
+> +{
+> +	return page_address(&folio->page) + offset;
+> +}
+> +
+>  static inline void *kmap_local_page_prot(struct page *page, pgprot_t prot)
+>  {
+>  	return kmap_local_page(page);
+> diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+> index 8c6e8e996c87..85de3bd0b47d 100644
+> --- a/include/linux/highmem.h
+> +++ b/include/linux/highmem.h
+> @@ -96,6 +96,44 @@ static inline void kmap_flush_unused(void);
+>   */
+>  static inline void *kmap_local_page(struct page *page);
+>  
+> +/**
+> + * kmap_local_folio - Map a page in this folio for temporary usage
+> + * @folio:	The folio to be mapped.
+> + * @offset:	The byte offset within the folio.
+> + *
+> + * Returns: The virtual address of the mapping
+> + *
+> + * Can be invoked from any context.
 
+Context: Can be invoked from any context.
 
-Ok, it is not related to my fix. Picking up Tetsuo patch to get
-Reported-and-tested tag. 
+> + *
+> + * Requires careful handling when nesting multiple mappings because the map
+> + * management is stack based. The unmap has to be in the reverse order of
+> + * the map operation:
+> + *
+> + * addr1 = kmap_local_folio(page1, offset1);
+> + * addr2 = kmap_local_folio(page2, offset2);
 
+Please s/page/folio/g here and in the description below
 
-#syz test
-git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> + * ...
+> + * kunmap_local(addr2);
+> + * kunmap_local(addr1);
+> + *
+> + * Unmapping addr1 before addr2 is invalid and causes malfunction.
+> + *
+> + * Contrary to kmap() mappings the mapping is only valid in the context of
+> + * the caller and cannot be handed to other contexts.
+> + *
+> + * On CONFIG_HIGHMEM=n kernels and for low memory pages this returns the
+> + * virtual address of the direct mapping. Only real highmem pages are
+> + * temporarily mapped.
+> + *
+> + * While it is significantly faster than kmap() for the higmem case it
+> + * comes with restrictions about the pointer validity. Only use when really
+> + * necessary.
+> + *
+> + * On HIGHMEM enabled systems mapping a highmem page has the side effect of
+> + * disabling migration in order to keep the virtual address stable across
+> + * preemption. No caller of kmap_local_folio() can rely on this side effect.
+> + */
+> +static inline void *kmap_local_folio(struct folio *folio, size_t offset);
+> +
+>  /**
+>   * kmap_atomic - Atomically map a page for temporary usage - Deprecated!
+>   * @page:	Pointer to the page to be mapped
+> -- 
+> 2.30.2
+> 
+> 
 
-
-With regards,
-Pavel Skripkin
-
---MP_/aiVyBEGmZlfOaj=Rqpq3zFn
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=2patches.patch
-
-diff --git a/drivers/staging/rtl8712/hal_init.c b/drivers/staging/rtl8712/hal_init.c
-index 22974277afa0..4eff3fdecdb8 100644
---- a/drivers/staging/rtl8712/hal_init.c
-+++ b/drivers/staging/rtl8712/hal_init.c
-@@ -29,21 +29,31 @@
- #define FWBUFF_ALIGN_SZ 512
- #define MAX_DUMP_FWSZ (48 * 1024)
- 
-+static void rtl871x_load_fw_fail(struct _adapter *adapter)
-+{
-+	struct usb_device *udev = adapter->dvobjpriv.pusbdev;
-+	struct device *dev = &udev->dev;
-+	struct device *parent = dev->parent;
-+
-+	complete(&adapter->rtl8712_fw_ready);
-+
-+	dev_err(&udev->dev, "r8712u: Firmware request failed\n");
-+
-+	if (parent)
-+		device_lock(parent);
-+
-+	device_release_driver(dev);
-+
-+	if (parent)
-+		device_unlock(parent);
-+}
-+
- static void rtl871x_load_fw_cb(const struct firmware *firmware, void *context)
- {
- 	struct _adapter *adapter = context;
- 
- 	if (!firmware) {
--		struct usb_device *udev = adapter->dvobjpriv.pusbdev;
--		struct usb_interface *usb_intf = adapter->pusb_intf;
--
--		dev_err(&udev->dev, "r8712u: Firmware request failed\n");
--		usb_put_dev(udev);
--		usb_set_intfdata(usb_intf, NULL);
--		r8712_free_drv_sw(adapter);
--		adapter->dvobj_deinit(adapter);
--		complete(&adapter->rtl8712_fw_ready);
--		free_netdev(adapter->pnetdev);
-+		rtl871x_load_fw_fail(adapter);
- 		return;
- 	}
- 	adapter->fw = firmware;
-diff --git a/drivers/staging/rtl8712/rtl8712_led.c b/drivers/staging/rtl8712/rtl8712_led.c
-index 5901026949f2..d5fc9026b036 100644
---- a/drivers/staging/rtl8712/rtl8712_led.c
-+++ b/drivers/staging/rtl8712/rtl8712_led.c
-@@ -1820,3 +1820,11 @@ void LedControl871x(struct _adapter *padapter, enum LED_CTL_MODE LedAction)
- 		break;
- 	}
- }
-+
-+void r8712_flush_led_works(struct _adapter *padapter)
-+{
-+	struct led_priv *pledpriv = &padapter->ledpriv;
-+
-+	flush_work(&pledpriv->SwLed0.BlinkWorkItem);
-+	flush_work(&pledpriv->SwLed1.BlinkWorkItem);
-+}
-diff --git a/drivers/staging/rtl8712/rtl871x_led.h b/drivers/staging/rtl8712/rtl871x_led.h
-index ee19c873cf01..2f0768132ad8 100644
---- a/drivers/staging/rtl8712/rtl871x_led.h
-+++ b/drivers/staging/rtl8712/rtl871x_led.h
-@@ -112,6 +112,7 @@ struct led_priv {
- void r8712_InitSwLeds(struct _adapter *padapter);
- void r8712_DeInitSwLeds(struct _adapter *padapter);
- void LedControl871x(struct _adapter *padapter, enum LED_CTL_MODE LedAction);
-+void r8712_flush_led_works(struct _adapter *padapter);
- 
- #endif
- 
-diff --git a/drivers/staging/rtl8712/rtl871x_pwrctrl.c b/drivers/staging/rtl8712/rtl871x_pwrctrl.c
-index 23cff43437e2..cd6d9ff0bebc 100644
---- a/drivers/staging/rtl8712/rtl871x_pwrctrl.c
-+++ b/drivers/staging/rtl8712/rtl871x_pwrctrl.c
-@@ -224,3 +224,11 @@ void r8712_unregister_cmd_alive(struct _adapter *padapter)
- 	}
- 	mutex_unlock(&pwrctrl->mutex_lock);
- }
-+
-+void r8712_flush_rwctrl_works(struct _adapter *padapter)
-+{
-+	struct pwrctrl_priv *pwrctrl = &padapter->pwrctrlpriv;
-+
-+	flush_work(&pwrctrl->SetPSModeWorkItem);
-+	flush_work(&pwrctrl->rpwm_workitem);
-+}
-diff --git a/drivers/staging/rtl8712/rtl871x_pwrctrl.h b/drivers/staging/rtl8712/rtl871x_pwrctrl.h
-index bf6623cfaf27..b35b9c7920eb 100644
---- a/drivers/staging/rtl8712/rtl871x_pwrctrl.h
-+++ b/drivers/staging/rtl8712/rtl871x_pwrctrl.h
-@@ -108,5 +108,6 @@ void r8712_cpwm_int_hdl(struct _adapter *padapter,
- void r8712_set_ps_mode(struct _adapter *padapter, uint ps_mode,
- 			uint smart_ps);
- void r8712_set_rpwm(struct _adapter *padapter, u8 val8);
-+void r8712_flush_rwctrl_works(struct _adapter *padapter);
- 
- #endif  /* __RTL871X_PWRCTRL_H_ */
-diff --git a/drivers/staging/rtl8712/usb_intf.c b/drivers/staging/rtl8712/usb_intf.c
-index 2434b13c8b12..505ebeb643dc 100644
---- a/drivers/staging/rtl8712/usb_intf.c
-+++ b/drivers/staging/rtl8712/usb_intf.c
-@@ -591,35 +591,30 @@ static void r871xu_dev_remove(struct usb_interface *pusb_intf)
- {
- 	struct net_device *pnetdev = usb_get_intfdata(pusb_intf);
- 	struct usb_device *udev = interface_to_usbdev(pusb_intf);
-+	struct _adapter *padapter = netdev_priv(pnetdev);
-+
-+	/* never exit with a firmware callback pending */
-+	wait_for_completion(&padapter->rtl8712_fw_ready);
-+	usb_set_intfdata(pusb_intf, NULL);
-+	release_firmware(padapter->fw);
-+	if (drvpriv.drv_registered)
-+		padapter->surprise_removed = true;
-+	if (pnetdev->reg_state != NETREG_UNINITIALIZED)
-+		unregister_netdev(pnetdev); /* will call netdev_close() */
-+	r8712_flush_rwctrl_works(padapter);
-+	r8712_flush_led_works(padapter);
-+	udelay(1);
-+	/* Stop driver mlme relation timer */
-+	r8712_stop_drv_timers(padapter);
-+	r871x_dev_unload(padapter);
-+	r8712_free_drv_sw(padapter);
-+	free_netdev(pnetdev);
-+
-+	/* decrease the reference count of the usb device structure
-+	 * when disconnect
-+	 */
-+	usb_put_dev(udev);
- 
--	if (pnetdev) {
--		struct _adapter *padapter = netdev_priv(pnetdev);
--
--		/* never exit with a firmware callback pending */
--		wait_for_completion(&padapter->rtl8712_fw_ready);
--		pnetdev = usb_get_intfdata(pusb_intf);
--		usb_set_intfdata(pusb_intf, NULL);
--		if (!pnetdev)
--			goto firmware_load_fail;
--		release_firmware(padapter->fw);
--		if (drvpriv.drv_registered)
--			padapter->surprise_removed = true;
--		if (pnetdev->reg_state != NETREG_UNINITIALIZED)
--			unregister_netdev(pnetdev); /* will call netdev_close() */
--		flush_scheduled_work();
--		udelay(1);
--		/* Stop driver mlme relation timer */
--		r8712_stop_drv_timers(padapter);
--		r871x_dev_unload(padapter);
--		r8712_free_drv_sw(padapter);
--		free_netdev(pnetdev);
--
--		/* decrease the reference count of the usb device structure
--		 * when disconnect
--		 */
--		usb_put_dev(udev);
--	}
--firmware_load_fail:
- 	/* If we didn't unplug usb dongle and remove/insert module, driver
- 	 * fails on sitesurvey for the first time when device is up.
- 	 * Reset usb port for sitesurvey fail issue.
-diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
-index b04a5a02ecf3..786a06a232fd 100644
---- a/net/bluetooth/hci_sock.c
-+++ b/net/bluetooth/hci_sock.c
-@@ -760,10 +760,18 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
- 		struct sock *sk;
- 
- 		/* Detach sockets from device */
-+restart:
- 		read_lock(&hci_sk_list.lock);
- 		sk_for_each(sk, &hci_sk_list.head) {
-+			/* This sock_hold(sk) is safe, for bt_sock_unlink(sk)
-+			 * is not called yet.
-+			 */
-+			sock_hold(sk);
-+			read_unlock(&hci_sk_list.lock);
- 			lock_sock(sk);
--			if (hci_pi(sk)->hdev == hdev) {
-+			write_lock(&hci_sk_list.lock);
-+			/* Check that bt_sock_unlink(sk) is not called yet. */
-+			if (sk_hashed(sk) && hci_pi(sk)->hdev == hdev) {
- 				hci_pi(sk)->hdev = NULL;
- 				sk->sk_err = EPIPE;
- 				sk->sk_state = BT_OPEN;
-@@ -771,7 +779,27 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
- 
- 				hci_dev_put(hdev);
- 			}
-+			write_unlock(&hci_sk_list.lock);
- 			release_sock(sk);
-+			read_lock(&hci_sk_list.lock);
-+			/* If bt_sock_unlink(sk) is not called yet, we can
-+			 * continue iteration. We can use __sock_put(sk) here
-+			 * because hci_sock_release() will call sock_put(sk)
-+			 * after bt_sock_unlink(sk).
-+			 */
-+			if (sk_hashed(sk)) {
-+				__sock_put(sk);
-+				continue;
-+			}
-+			/* Otherwise, we need to restart iteration, for the
-+			 * next socket pointed by sk->next might be already
-+			 * gone. We can't use __sock_put(sk) here because
-+			 * hci_sock_release() might have already called
-+			 * sock_put(sk) after bt_sock_unlink(sk).
-+			 */
-+			read_unlock(&hci_sk_list.lock);
-+			sock_put(sk);
-+			goto restart;
- 		}
- 		read_unlock(&hci_sk_list.lock);
- 	}
-
---MP_/aiVyBEGmZlfOaj=Rqpq3zFn--
+-- 
+Sincerely yours,
+Mike.
