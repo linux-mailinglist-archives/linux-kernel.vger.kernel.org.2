@@ -2,115 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF9E3D0CEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED9B3D0CFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239010AbhGUKJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239664AbhGUKGP (ORCPT
+        id S238741AbhGUKSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:18:04 -0400
+Received: from mail-ed1-f51.google.com ([209.85.208.51]:36462 "EHLO
+        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239337AbhGUKE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 06:06:15 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858DEC0617A9
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 03:45:35 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id me13-20020a17090b17cdb0290173bac8b9c9so3748707pjb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 03:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3lABi16nL4MQbRpp+EfVh/1lUieQouz0Mt1Eq3+g03o=;
-        b=e1Kye+SB7N4WedVaQMXh+r+XKa4tTEZMwHQLriWWLC4r29k6eiqa6TbO3ygi1pNDw/
-         KPESXu1ee6k4rudQCQ4a16OyvOBhEPMAWpvD1pwyncIeyJx+5+Q2MIyDjKLI2HAJ0DR2
-         OTMAk4Hr+4D+jMX8+ll/bSXIJHTyOuqNsX2Q8=
+        Wed, 21 Jul 2021 06:04:59 -0400
+Received: by mail-ed1-f51.google.com with SMTP id h2so1824690edt.3;
+        Wed, 21 Jul 2021 03:45:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3lABi16nL4MQbRpp+EfVh/1lUieQouz0Mt1Eq3+g03o=;
-        b=ZJu7X2GUzLCw0KkeleRBlhwI5zKf48QYePap6mkeW6YNC6lp6M/Jrnwcm96t/Yn+4I
-         QHItV7iKbO4CDPerPvQ5hHJ9Mg2e1s2/Zn5wU55wfI1DZ8iLg4n1kwb4S5beOyTxXeh4
-         jQeUI3u6Z974doDimyBbe5rOuP62lmQvzQrlHjCWvbe4NhCeNXqfRghN/cKbXVp/JW7K
-         +2Y7bkHdyluN38kh9zwhMTvcqhFHlpKq8mRBAf17EMJVIfSfLsI7TCajmJWd2vAowphF
-         nnuCe9aJFwiAsLiYPW3HZyvP7cKqmMmtL5TUDyWabhS5+ZGmkZo+BrnrcWpLenq7n7hM
-         UcXQ==
-X-Gm-Message-State: AOAM531vHndGN3phrpZ7oymslTSp5DBRgYs2wbOqrz0HVwY/RR6cq+sr
-        AtZLsEzYj0iwkwWtUCrubWixq4eKtTdLfdsHZjzNRA==
-X-Google-Smtp-Source: ABdhPJwseMcBhtA89/xVOfkSjI8Er/1b+WzAHYlvJAI5MGItY7qPIiQanSoTGq6Tkh3CF9f6U0apmV9yj3pMNUucrsU=
-X-Received: by 2002:a17:90a:f3cb:: with SMTP id ha11mr3173568pjb.144.1626864335082;
- Wed, 21 Jul 2021 03:45:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210715121209.31024-1-yong.wu@mediatek.com> <20210715121209.31024-7-yong.wu@mediatek.com>
-In-Reply-To: <20210715121209.31024-7-yong.wu@mediatek.com>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Wed, 21 Jul 2021 18:45:23 +0800
-Message-ID: <CAATdQgCPunSYpxCE4ZfMBtbmyGik-AbxX+yh+F4m9EYDnCMObg@mail.gmail.com>
-Subject: Re: [PATCH v2 06/11] memory: mtk-smi: Add error handle for smi_probe
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        open list <linux-kernel@vger.kernel.org>,
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CsZM1CfjhLJfO+t2snLUwKYMUTmPfGepMKzYin3Vu1E=;
+        b=gSVdr4TJ/lklGYfK05WidslHIgI8EkYtjmQDnbv8fvB510kE6QFaP3abr1QelJN70I
+         Tdevr+Jjhb50LnrrgiHnrRgpNseF2+rExlyOxD2TqOkNJorZ2AFccDzRLPIl9sWDMC5J
+         uynhOyMhczQHfNRy85xnl8vQTeuiPT4JYLVxsUIGOjTZIoce8VzLSqAQxOYEHgRPurTJ
+         Zz5s0W55eyqWFltkwc/6bxwdVBiFU8l3A+vMi8HUbwO3n3IS6Y8PZC70A1BM4So3l+1O
+         28TFB6Ia6FKxxcDvdG5VrosigWIOoPyCezcin1lwUDMVf08QPTNYwP6CEcsZUnuUX0yV
+         HbDw==
+X-Gm-Message-State: AOAM533IIp9D9kmTdGhUVdMTmWmIcb8FgwGzoM6j4mO0kd7WUvRZqVaA
+        yOoJdP8cGSOXEZiS6KUweJ4=
+X-Google-Smtp-Source: ABdhPJy/C2t5Jq8nueMNq08HKDpGrkfsGKnVJn4GHRfVKb7DJDMRWcKg3bmraPoKmeLkt0JQEr585Q==
+X-Received: by 2002:aa7:dc55:: with SMTP id g21mr38319448edu.129.1626864335334;
+        Wed, 21 Jul 2021 03:45:35 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.47.9])
+        by smtp.googlemail.com with ESMTPSA id b10sm10415810edd.91.2021.07.21.03.45.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Jul 2021 03:45:34 -0700 (PDT)
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Serge Semin <fancer.lancer@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        John Stultz <john.stultz@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        anan.sun@mediatek.com, ming-fan.chen@mediatek.com,
-        yi.kuo@mediatek.com, anthony.huang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
+ <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
+ <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
+ <20210714124807.o22mottsrg3tv6nt@mobilestation> <YPfPDqJhfzbvDLvB@kroah.com>
+ <20210721100220.ddfxwugivsndsedv@mobilestation> <YPf29+ewbrYgHxRP@kroah.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
+Message-ID: <0064cb2c-5ca6-e693-2e89-8f045c8f7502@kernel.org>
+Date:   Wed, 21 Jul 2021 12:45:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YPf29+ewbrYgHxRP@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 8:23 PM Yong Wu <yong.wu@mediatek.com> wrote:
->
-> Add error handle while component_add fail.
->
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+On 21/07/2021 12:29, Greg Kroah-Hartman wrote:
+> On Wed, Jul 21, 2021 at 01:02:20PM +0300, Serge Semin wrote:
+>> Hi Greg,
+>> @Krzysztof, @Rob, please join the discussion so to finally get done
+>> with the concerned issue.
+>>
+>> On Wed, Jul 21, 2021 at 09:38:54AM +0200, Greg Kroah-Hartman wrote:
+>>> On Wed, Jul 14, 2021 at 03:48:07PM +0300, Serge Semin wrote:
+>>>> Hello John,
+>>>>
+>>>> On Tue, Jul 13, 2021 at 05:07:00PM -0700, John Stultz wrote:
+>>>>> On Tue, Oct 20, 2020 at 5:10 AM Serge Semin
+>>>>> <Sergey.Semin@baikalelectronics.ru> wrote:
+>>>>>>
+>>>>>> In accordance with the DWC USB3 bindings the corresponding node
+>>>>>> name is suppose to comply with the Generic USB HCD DT schema, which
+>>>>>> requires the USB nodes to have the name acceptable by the regexp:
+>>>>>> "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
+>>>>>> named.
+>>>>>>
+>>>>>> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+>>>>>
+>>>>
+>>>>> I know folks like to ignore this, but this patch breaks AOSP on db845c. :(
+>>>>
+>>>> Sorry to hear that. Alas there is no much can be done about it.
+>>>
+>>> Yes there is, we can revert the change.  We do not break existing
+>>> configurations, sorry.
+>>
+>> By reverting this patch we'll get back to the broken dt-bindings
+>> since it won't comply to the current USB DT-nodes requirements
+>> which at this state well describe the latest DT spec:
+>> https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
+>> Thus the dtbs_check will fail for these nodes.
+>>
+>> Originally this whole patchset was connected with finally getting the
+>> DT-node names in order to comply with the standard requirement and it
+>> was successful mostly except a few patches which still haven't been
+>> merged in.
+>>
+>> Anyway @Krzysztof has already responded to the complain regarding this
+>> issue here:
+>> https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
+>> but noone cared to respond on his reasonable questions in order to
+>> get to a suitable solution for everyone. Instead we are
+>> getting another email with the same request to revert the changes.
+>> Here is the quote from the Krzysztof email so we could continue the
+>> discussion:
+>>
+>> On Mon, 21 Dec 2020 13:04:27 -0800 (PST), Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>>> On Mon, Dec 21, 2020 at 12:24:11PM -0800, John Stultz wrote:
+>>>> On Sat, Dec 19, 2020 at 3:06 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>>>>> ...
+>>>>>
+>>>>> The node names are not part of an ABI, are they? I expect only
+>>>>> compatibles and properties to be stable. If user-space looks for
+>>>>> something by name, it's a user-space's mistake.  Not mentioning that you
+>>>>> also look for specific address... Imagine remapping of addresses with
+>>>>> ranges (for whatever reason) - AOSP also would be broken? Addresses are
+>>>>> definitely not an ABI.
+>>>>
+>>>> Though that is how it's exported through sysfs.
+>>>
+>>> The ABI is the format of sysfs file for example in /sys/devices. However
+>>> the ABI is not the exact address or node name of each device.
+>>>
+>>>> In AOSP it is then used to setup the configfs gadget by writing that
+>>>> value into /config/usb_gadget/g1/UDC.
+>>>>
+>>>> Given there may be multiple controllers on a device, or even if its
+>>>> just one and the dummy hcd driver is enabled, I'm not sure how folks
+>>>> reference the "right" one without the node name?
+>>>
+>>> I think it is the same type of problem as for all other subsystems, e.g.
+>>> mmc, hwmon/iio.  They usually solve it either with aliases or with
+>>> special property with the name/label.
+>>>
+>>>> I understand the fuzziness with sysfs ABI, and I get that having
+>>>> consistent naming is important, but like the eth0 -> enp3s0 changes,
+>>>> it seems like this is going to break things.
+>>>
+>>> One could argue whether interface name is or is not ABI. But please tell
+>>> me how the address of a device in one's representation (for example DT)
+>>> is a part of a stable interface?
+>>>
+>>>> Greg? Is there some better way AOSP should be doing this?
+>>>
+>>> If you need to find specific device, maybe go through the given bus and
+>>> check compatibles?
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>
+>> So the main question is how is the DT-node really connected with ABI
+>> and is supposed to be stable in that concern?
+>>
+>> As I see it even if it affects the configfs node name, then we may
+>> either need to break that connection and somehow deliver DT-node-name
+>> independent interface to the user-space or we have no choice but to
+>> export the node with an updated name and ask of user-space to deal
+>> with it. In both suggested cases the DT-node name will still conform
+>> to the USB-node name DT spec. Currently we are at the second one.
+> 
+> I really do not care what you all decide on, but you CAN NOT break
+> existing working systems, sorry.  That is why I have reverted this
+> change in my tree and will send it to Linus soon.
 
-Reviewed-by: Ikjoon Jang <ikjn@chromium.org>
+I had impression that kernel defines interfaces which should be used and
+are stable (e.g. syscalls, sysfs and so on). This case is example of
+user-space relying on something not being marked as part of ABI. Instead
+they found something working for them and now it is being used in "we
+cannot break existing systems". Basically, AOSP unilaterally created a
+stable ABI and now kernel has to stick to it.
 
-> ---
-> It don't have the error handle when v1. it is not a fatal error.
-> thus don't add fix tags.
-> ---
->  drivers/memory/mtk-smi.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/memory/mtk-smi.c b/drivers/memory/mtk-smi.c
-> index 6f8e582bace5..e68cbb51dd12 100644
-> --- a/drivers/memory/mtk-smi.c
-> +++ b/drivers/memory/mtk-smi.c
-> @@ -330,7 +330,15 @@ static int mtk_smi_larb_probe(struct platform_device *pdev)
->
->         pm_runtime_enable(dev);
->         platform_set_drvdata(pdev, larb);
-> -       return component_add(dev, &mtk_smi_larb_component_ops);
-> +       ret = component_add(dev, &mtk_smi_larb_component_ops);
-> +       if (ret)
-> +               goto err_pm_disable;
-> +       return 0;
-> +
-> +err_pm_disable:
-> +       pm_runtime_disable(dev);
-> +       device_link_remove(dev, larb->smi_common_dev);
-> +       return ret;
->  }
->
->  static int mtk_smi_larb_remove(struct platform_device *pdev)
-> --
-> 2.18.0
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Really, all normal systems depend on aliases or names and here we have
+dependency on device address. I proposed way how AOSP should be fixed.
+Anything happened? Nope.
+
+The device address can change. The node name can change. Reverting such
+changes is incorrect but my arguments why we can break existing systems
+who use weird, incorrect and not stable interfaces were not accepted and
+I do not have anything new in this matter.
+
+Greg,
+You also did not join the discussion but use simple revert. It's not
+cooperative... what next? Serge sends the same patch to SoC tree and it
+gets merged and then you revert it again?
+
+Best regards,
+Krzysztof
