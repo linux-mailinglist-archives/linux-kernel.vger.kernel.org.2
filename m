@@ -2,202 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0773D13F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173C13D13FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235967AbhGUPkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 11:40:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40916 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235949AbhGUPkJ (ORCPT
+        id S234359AbhGUPkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 11:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232908AbhGUPko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:40:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626884446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YkZTscC6KpmV7ZPZQ/arpngaCqGBZg3nbQ0knfcsigA=;
-        b=OoNHUArlPziuidJkqum5NZbzWl39kZjrq4df41R5oo6znE6t+yLYc7yQp+RG/+GR/O3JGL
-        i4A+KrgqRY9y6V+MOcv+m5i9kIoMjtMX0RYriMvGWgiNuPci8UQwpf51MkFl21mJgESsH4
-        ob8TyMIRz1KtdFpJc6sqena2XP/IT7o=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-254--awQt1I0PFWF-JgsBac_cQ-1; Wed, 21 Jul 2021 12:20:45 -0400
-X-MC-Unique: -awQt1I0PFWF-JgsBac_cQ-1
-Received: by mail-qv1-f71.google.com with SMTP id kj25-20020a0562145299b02902fbda5d4988so1871706qvb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:20:44 -0700 (PDT)
+        Wed, 21 Jul 2021 11:40:44 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FADFC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:21:20 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id o201so2612326pfd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wfihw5vcbXFixYEyu3107hsiuCejF8uRx6y/SePajmw=;
+        b=tbVCQwqRZb3xhEMcZ9kLY+1IVVouRY9tXs6Rl4ekyBejDdtSM0U6rjkPFY1iwP4e/c
+         5jthu5nvI2j3re94YzfiEFH2WlCz9Xie1Y160I+QFCGVKBh4QHifFpMQTZ5bKctPxVHI
+         kvbyYH5ULKzkToxKnV4lt4/9gHp5rxseOP8+uVE6Jc2+3yEKmVsz4K8w3d9i5cZAfgFU
+         Lzgn4oXWVAZukm/+FbXLwE2fwa8w3uSSyBr/Fx/EXFar1s70JG3DsCSaqS0JBGRW2vYe
+         F5yTPfKmRb66HPX8z7BsARx1ndix8SaOgExCbhAIrRmiGK+gEfYQ606LjuRRcRG0A+Ll
+         T1jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=YkZTscC6KpmV7ZPZQ/arpngaCqGBZg3nbQ0knfcsigA=;
-        b=oBdK3ruNnq+nVi8+Fht2B5fuPvMvcqxHi969Hd3liaHtaw5SQg3e3KgYzxSEp1FyU5
-         pQj99mnHgzEI1KUaPctEFR7cyOmz5Y1lX4y2c9e22YKwB4bp0gSlwvUlsVqnbaRhM9AD
-         nZdBLLXqFMK62EE0A4ESrmVsc+vWDQHirrefi9Xyf6QDLeU72aqVV6QejBK6Ahj+i0E6
-         +ignBo8aUfNGi2UXZwqFzmnZhxlmpXXqYIzuWC/ibI1lVCuWQBfWpWT50AS2Cx1g3h2U
-         1JlBMxxgltRODeRFKWQ7yPoyf1QZQ+VXg+jw4tIYLodLzbMyRcFwOGV9lj2mq1hzNZ3/
-         1qaQ==
-X-Gm-Message-State: AOAM532YoD4t9HN75Om8MyoEHjKAAVREoevUK0/ISrNSpBx/D+soY55L
-        mj4odZhiiBbMk6YyvV2kfYeoB7YnPXwTo1lv/3d5Ttp/0AsVztkSgxRo04tkeXw8Oloc3TAj5nc
-        dht1KKTk5PZWS6Zg70cC60cYl
-X-Received: by 2002:a0c:a223:: with SMTP id f32mr37104016qva.8.1626884444601;
-        Wed, 21 Jul 2021 09:20:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+t6fxG/ixd7o7dlSLuaUhbdIrVbCJpvX027HWNZq9vT5wDnkVq2oxjwvDHG0JV/G1ddMkig==
-X-Received: by 2002:a0c:a223:: with SMTP id f32mr37103999qva.8.1626884444411;
-        Wed, 21 Jul 2021 09:20:44 -0700 (PDT)
-Received: from [192.168.1.3] (68-20-15-154.lightspeed.rlghnc.sbcglobal.net. [68.20.15.154])
-        by smtp.gmail.com with ESMTPSA id i4sm9475118qka.130.2021.07.21.09.20.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wfihw5vcbXFixYEyu3107hsiuCejF8uRx6y/SePajmw=;
+        b=OSiaXr/wT70epV8twABfiUa3PzJjjHt2U0kP/euTA6+y4ryABf24+TCBsqpfoUS+n4
+         WjMTRhPC+p308tftX/ddriitpreIujGIQcCGvitB8ArU0e6NY6BCUr7GqP7aUBEWUthB
+         X6t2JaN+QgcA3+1UrVsvTSXqq7Dsw/zsLD5q5sg4/XA6qClktIkSoU/HtFkd+L3e6Td2
+         wj7H7SP6RjgvrH/kWKf6/rh7J9PnHr9LaGWvUFdxEZOZfFutZ3NuEnQuuNXh3owGM/jZ
+         knRVzErjQNrEVsxepBpzb1QVCaRVQNl9ctFhOnJ7u61XG9WbDwyermEYb5yy2sPHoOOi
+         awKQ==
+X-Gm-Message-State: AOAM533L9lrXdx/DQTaPIzxDXhOA3KYwtNmmwW/cFXcttAW29Ej53ZFu
+        kV2NrPdo8SGeC3XDwX9cKak=
+X-Google-Smtp-Source: ABdhPJzUdZLTOl8wsS8QTCjlq7wqHJqyEdEigh67lI78uBVhYimW1o5Mr9SVnhi2jFdrHxMJBGyFvg==
+X-Received: by 2002:a63:df14:: with SMTP id u20mr36675457pgg.348.1626884480181;
+        Wed, 21 Jul 2021 09:21:20 -0700 (PDT)
+Received: from localhost.localdomain ([122.161.48.33])
+        by smtp.googlemail.com with ESMTPSA id s21sm3013459pfw.69.2021.07.21.09.21.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 09:20:43 -0700 (PDT)
-Message-ID: <35ecb577315f486f1636b2316c2051ad004f6f7b.camel@redhat.com>
-Subject: Re: [RFC PATCH 01/12] afs: Sort out symlink reading
-From:   Jeff Layton <jlayton@redhat.com>
-To:     David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Mike Marshall <hubcap@omnibond.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 21 Jul 2021 12:20:42 -0400
-In-Reply-To: <162687508008.276387.6418924257569297305.stgit@warthog.procyon.org.uk>
-References: <162687506932.276387.14456718890524355509.stgit@warthog.procyon.org.uk>
-         <162687508008.276387.6418924257569297305.stgit@warthog.procyon.org.uk>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        Wed, 21 Jul 2021 09:21:19 -0700 (PDT)
+From:   Ojaswin Mujoo <ojaswin98@gmail.com>
+To:     nsaenz@kernel.org
+Cc:     Ojaswin Mujoo <ojaswin98@gmail.com>, gregkh@linuxfoundation.org,
+        stefan.wahren@i2se.com, dan.carpenter@oracle.com,
+        phil@raspberrypi.com, linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/5] vchiq: Patch to separate platform and cdev code
+Date:   Wed, 21 Jul 2021 21:50:48 +0530
+Message-Id: <cover.1626882325.git.ojaswin98@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-07-21 at 14:44 +0100, David Howells wrote:
-> afs_readpage() doesn't get a file pointer when called for a symlink, so
-> separate it from regular file pointer handling.
-> 
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> ---
-> 
->  fs/afs/file.c     |   14 +++++++++-----
->  fs/afs/inode.c    |    6 +++---
->  fs/afs/internal.h |    3 ++-
->  3 files changed, 14 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/afs/file.c b/fs/afs/file.c
-> index ca0d993add65..c9c21ad0e7c9 100644
-> --- a/fs/afs/file.c
-> +++ b/fs/afs/file.c
-> @@ -19,6 +19,7 @@
->  
->  static int afs_file_mmap(struct file *file, struct vm_area_struct *vma);
->  static int afs_readpage(struct file *file, struct page *page);
-> +static int afs_symlink_readpage(struct file *file, struct page *page);
->  static void afs_invalidatepage(struct page *page, unsigned int offset,
->  			       unsigned int length);
->  static int afs_releasepage(struct page *page, gfp_t gfp_flags);
-> @@ -46,7 +47,7 @@ const struct inode_operations afs_file_inode_operations = {
->  	.permission	= afs_permission,
->  };
->  
-> -const struct address_space_operations afs_fs_aops = {
-> +const struct address_space_operations afs_file_aops = {
->  	.readpage	= afs_readpage,
->  	.readahead	= afs_readahead,
->  	.set_page_dirty	= afs_set_page_dirty,
-> @@ -60,6 +61,12 @@ const struct address_space_operations afs_fs_aops = {
->  	.writepages	= afs_writepages,
->  };
->  
-> +const struct address_space_operations afs_symlink_aops = {
-> +	.readpage	= afs_symlink_readpage,
-> +	.releasepage	= afs_releasepage,
-> +	.invalidatepage	= afs_invalidatepage,
-> +};
-> +
->  static const struct vm_operations_struct afs_vm_ops = {
->  	.fault		= filemap_fault,
->  	.map_pages	= filemap_map_pages,
-> @@ -321,7 +328,7 @@ static void afs_req_issue_op(struct netfs_read_subrequest *subreq)
->  	afs_fetch_data(fsreq->vnode, fsreq);
->  }
->  
-> -static int afs_symlink_readpage(struct page *page)
-> +static int afs_symlink_readpage(struct file *file, struct page *page)
->  {
->  	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
->  	struct afs_read *fsreq;
+Hello,
 
+This patchset adderesses the TODO item number 10 specified at:
 
-I wonder...would you be better served here by not using page_readlink
-for symlinks and instead use simple_get_link and roll your own readlink
-operation. It seems a bit more direct, and AFS seems to be the only
-caller of page_readlink.
+    drivers/staging/vc04-services/interface/TODO
 
-> @@ -386,9 +393,6 @@ const struct netfs_read_request_ops afs_req_ops = {
->  
->  static int afs_readpage(struct file *file, struct page *page)
->  {
-> -	if (!file)
-> -		return afs_symlink_readpage(page);
-> -
->  	return netfs_readpage(file, page, &afs_req_ops, NULL);
->  }
->  
-> diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-> index bef6f5ccfb09..cf7b66957c6f 100644
-> --- a/fs/afs/inode.c
-> +++ b/fs/afs/inode.c
-> @@ -105,7 +105,7 @@ static int afs_inode_init_from_status(struct afs_operation *op,
->  		inode->i_mode	= S_IFREG | (status->mode & S_IALLUGO);
->  		inode->i_op	= &afs_file_inode_operations;
->  		inode->i_fop	= &afs_file_operations;
-> -		inode->i_mapping->a_ops	= &afs_fs_aops;
-> +		inode->i_mapping->a_ops	= &afs_file_aops;
->  		break;
->  	case AFS_FTYPE_DIR:
->  		inode->i_mode	= S_IFDIR |  (status->mode & S_IALLUGO);
-> @@ -123,11 +123,11 @@ static int afs_inode_init_from_status(struct afs_operation *op,
->  			inode->i_mode	= S_IFDIR | 0555;
->  			inode->i_op	= &afs_mntpt_inode_operations;
->  			inode->i_fop	= &afs_mntpt_file_operations;
-> -			inode->i_mapping->a_ops	= &afs_fs_aops;
-> +			inode->i_mapping->a_ops	= &afs_symlink_aops;
->  		} else {
->  			inode->i_mode	= S_IFLNK | status->mode;
->  			inode->i_op	= &afs_symlink_inode_operations;
-> -			inode->i_mapping->a_ops	= &afs_fs_aops;
-> +			inode->i_mapping->a_ops	= &afs_symlink_aops;
->  		}
->  		inode_nohighmem(inode);
->  		break;
-> diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-> index 791cf02e5696..ccdde00ada8a 100644
-> --- a/fs/afs/internal.h
-> +++ b/fs/afs/internal.h
-> @@ -1050,7 +1050,8 @@ extern void afs_dynroot_depopulate(struct super_block *);
->  /*
->   * file.c
->   */
-> -extern const struct address_space_operations afs_fs_aops;
-> +extern const struct address_space_operations afs_file_aops;
-> +extern const struct address_space_operations afs_symlink_aops;
->  extern const struct inode_operations afs_file_inode_operations;
->  extern const struct file_operations afs_file_operations;
->  extern const struct netfs_read_request_ops afs_req_ops;
-> 
-> 
+For reference, the task is:
 
-Regardless, this is more reasonable than what's there now.
+    10) Reorganize file structure: Move char driver to it's own file and join
+    both platform files
 
-Reviewed-by: Jeff Layton <jlayton@redhat.com>
+    The cdev is defined alongside with the platform code in vchiq_arm.c. It
+    would be nice to completely decouple it from the actual core code. For
+    instance to be able to use bcm2835-audio without having /dev/vchiq created.
+    One could argue it's better for security reasons or general cleanliness. It
+    could even be interesting to create two different kernel modules, something
+    the likes of vchiq-core.ko and vchiq-dev.ko. This would also ease the
+    upstreaming process.
+
+A summary of the patches is as follows:
+
+- Patch 1: Move cdev init code into a function
+- Patch 2: Shift some devlarations from vchiq_arm.c to vchiq_arm.h for
+           sharing
+- Patch 3: Move vchiq cdev init code from vchiq_arm.c into vchiq_dev.c
+- Patch 4: Decouple cdev code by defining a Kconfig entry to allow
+           optional compilation of it.
+- Patch 5: Merge code in vchiq_2835_arm.c to vchiq_arm.c
+
+Changes since v3 [2]:
+
+* In Patch 5, replace forward declarations of some of the functions with
+  function definition 
+
+Changes since v2 [1]:
+
+* In Patch 1, as suggested, I have added error handling code back to
+  ensure the driver exits when there is an error in creating vchiq cdev
+  
+* I have built this patch against the right kernel (gregkh/staging,
+  staging-next branch) to avoid introducing any unwanted inconsistencies
+  like whitespace changes
+
+I have tested the patch using vchiq_test utility on RPi 3B+.
+
+Regards,
+Ojaswin
+
+[1] v2: https://lore.kernel.org/patchwork/cover/1449117/
+[2] v3: https://lore.kernel.org/patchwork/cover/1453915/
+
+Ojaswin Mujoo (5):
+  staging: vchiq: Refactor vchiq cdev code
+  staging: vchiq: Move certain declarations to vchiq_arm.h
+  staging: vchiq: Move vchiq char driver to its own file
+  staging: vchiq: Make creation of vchiq cdev optional
+  staging: vchiq: Combine vchiq platform code into single file
+
+ drivers/staging/vc04_services/Kconfig         |   10 +
+ drivers/staging/vc04_services/Makefile        |    5 +-
+ .../interface/vchiq_arm/vchiq_2835_arm.c      |  564 ----
+ .../interface/vchiq_arm/vchiq_arm.c           | 2330 +++++------------
+ .../interface/vchiq_arm/vchiq_arm.h           |   82 +
+ .../interface/vchiq_arm/vchiq_dev.c           | 1440 ++++++++++
+ 6 files changed, 2251 insertions(+), 2180 deletions(-)
+ delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
+ create mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_dev.c
+
+-- 
+2.25.1
 
