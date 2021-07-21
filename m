@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95EC3D158E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22633D1593
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhGURMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:12:39 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:11321 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230004AbhGURMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:12:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626889995; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=qUdIzWljvoAu6Q0xSwu5Hv2nkeUMg2KGdalrIFbC+kQ=;
- b=ciYXNMGwHt0TV7WA2AAEPwmGUR8F2B7OtWa7r50CxD3xHjzk6nPrvUx7mVzQRm/2ll+f6ISd
- iiP3Bj99bH8lMNXZJoqiMfWWQXIzzGTKB8GwKwOVTl6u6RJck6MAx1ZI/ykO4tDrJ/GBz/lb
- G89EAbWf5GVBz6OHJm+oe+Ph+24=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60f85ee0b653fbdaddae28c6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 17:52:32
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 488B1C4338A; Wed, 21 Jul 2021 17:52:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C7E32C433D3;
-        Wed, 21 Jul 2021 17:52:30 +0000 (UTC)
+        id S234468AbhGURM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229983AbhGURM6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 13:12:58 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D33C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:53:34 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id m68so2860499qke.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6yFvLCK83EARCEJW2USL66XPk2Snwg9rOn4V8eQnKq4=;
+        b=LmYH4vBpP8tsrP/2QQX/a4c4LvuM1+b4/24JikG+Eg3ffRRWq1sLdvVWqmdZSpffFs
+         zYMHn1k1Y7JSxueTKglktRFPafjcur+BGgT8Ux3LXzZB1CNjBqPF55WMoTS3UHR/naUy
+         5HN4fHlgHkJlsYXgo1YafStP4kmIs1l/2txFBajcHQd5DgvTLQTHypzSg1u2dEsyWtNa
+         1Gnt5R/qqXAZ4zGACvt2zRiwgMwtDzYJEII9SZ5Ev6ztWv9+tg0z29/yQFcibOFahdej
+         SPDfQhV5wiSgG/WdTlqfqtvyXLh0cVDvfnKvx7ZZJF7FSQsGy43aezRKof8MJZkcTPGM
+         o0VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6yFvLCK83EARCEJW2USL66XPk2Snwg9rOn4V8eQnKq4=;
+        b=dNVyRP3HAWwtuKGxhVPaIz002LC0u8RPL5NHOpQ6IyrSaufi+3+JSIgAZc/HDVmm1o
+         2vIdamRsTtP5BTZFzXlnt/mY6t6KnuZAvK9gICm4PIySXtEvPCVn+IMWOjofzjhxweOq
+         ayzrTjsvq83Sp2iujnQmr8MwMhK+Cxei6v2NSjE9z6ynAGdc3sBCxj2mmZL5xW3jIeNP
+         8cSCzBD7mpwMVkBOyQN9dkYU65cAmTnvoU4iDRF/0sYPSOJuIoyHXA7/xaqQOW3yu62x
+         SjRcRpyaNhA35uJl+EQ9FTD5hDoSMxSchYLOdbY3yQr5uHFNhWaLD/OCteUNP6dQG5G+
+         BnNw==
+X-Gm-Message-State: AOAM533wi/C3ZcI2WYKOWYMEdS0ifbcZFhdoMtAcc0ZxaJGW+jfkgWtL
+        2J6/dUxj3nM4DgxnflJqW1mNRQMcJDhG0RBqVe7EAyA3IPPbsw==
+X-Google-Smtp-Source: ABdhPJzkyyOAFQakNLKPpJl5joOFjae/AcNTO5l2I8TPcjJJXSsAIKXc+xGIz33Gsbm9HQbKLCjKhxqfB9nnHVogi3Y=
+X-Received: by 2002:a37:8044:: with SMTP id b65mr22312539qkd.150.1626890013396;
+ Wed, 21 Jul 2021 10:53:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 21 Jul 2021 10:52:30 -0700
-From:   hemantk@codeaurora.org
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     manivannan.sadhasivam@linaro.org, bqiang@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, clew@codeaurora.org,
-        linux-kernel@vger.kernel.org, bbhatt=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] net: qrtr: mhi: synchronize qrtr and mhi preparation
-In-Reply-To: <1626831778-31796-1-git-send-email-bbhatt@codeaurora.org>
-References: <1626831778-31796-1-git-send-email-bbhatt@codeaurora.org>
-Message-ID: <4214f00fa8cbcced4f389125b392f3b3@codeaurora.org>
-X-Sender: hemantk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210707183616.5620-1-brijesh.singh@amd.com> <20210707183616.5620-27-brijesh.singh@amd.com>
+ <YPHpk3RFSmE13ZXz@google.com> <9ee5a991-3e43-3489-5ee1-ff8c66cfabc1@amd.com> <YPWuVY+rKU2/DVUS@google.com>
+In-Reply-To: <YPWuVY+rKU2/DVUS@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Wed, 21 Jul 2021 10:53:22 -0700
+Message-ID: <CAA03e5EW1HUZW7xWbMyYMC1Q+A18G=91qfKT-ew=X0XNGHbVtg@mail.gmail.com>
+Subject: Re: [PATCH Part2 RFC v4 26/40] KVM: SVM: Add KVM_SEV_SNP_LAUNCH_FINISH
+ command
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-20 18:42, Bhaumik Bhatt wrote:
-> A dl callback can be received anytime after mhi_prepare_for_transfer
-> has been called. There is a window where the callback may happen
-> before the probe initializes the qrtr_mhi_dev state. Move the
-> mhi_prepare_for_transfer call after the registering the endpoint.
-> 
-> Once moved, the reverse can happen where qrtr will try to send a packet
-> before the channels are prepared. Add a wait in the sending path to
-> ensure the channels are prepared before trying to do a ul transfer.
-> 
-> Fixes: a2e2cc0dbb11 ("net: qrtr: Start MHI channels during init")
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->  net/qrtr/mhi.c | 20 +++++++++++++++-----
->  1 file changed, 15 insertions(+), 5 deletions(-)
-> 
-> diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
-> index 29b4fa3..22b0395 100644
-> --- a/net/qrtr/mhi.c
-> +++ b/net/qrtr/mhi.c
-> @@ -15,6 +15,7 @@ struct qrtr_mhi_dev {
->  	struct qrtr_endpoint ep;
->  	struct mhi_device *mhi_dev;
->  	struct device *dev;
-> +	struct completion ready;
->  };
-> 
->  /* From MHI to QRTR */
-> @@ -50,6 +51,10 @@ static int qcom_mhi_qrtr_send(struct qrtr_endpoint
-> *ep, struct sk_buff *skb)
->  	struct qrtr_mhi_dev *qdev = container_of(ep, struct qrtr_mhi_dev, 
-> ep);
->  	int rc;
-> 
-> +	rc = wait_for_completion_interruptible(&qdev->ready);
-> +	if (rc)
-> +		goto free_skb;
-> +
->  	if (skb->sk)
->  		sock_hold(skb->sk);
-> 
-> @@ -78,11 +83,6 @@ static int qcom_mhi_qrtr_probe(struct mhi_device 
-> *mhi_dev,
->  	struct qrtr_mhi_dev *qdev;
->  	int rc;
-> 
-> -	/* start channels */
-> -	rc = mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
-> -	if (rc)
-> -		return rc;
-> -
->  	qdev = devm_kzalloc(&mhi_dev->dev, sizeof(*qdev), GFP_KERNEL);
->  	if (!qdev)
->  		return -ENOMEM;
-would it be good to init completion variable here (call init_completion) 
-?
-> @@ -90,12 +90,22 @@ static int qcom_mhi_qrtr_probe(struct mhi_device 
-> *mhi_dev,
->  	qdev->mhi_dev = mhi_dev;
->  	qdev->dev = &mhi_dev->dev;
->  	qdev->ep.xmit = qcom_mhi_qrtr_send;
-> +	init_completion(&qdev->ready);
-> 
+On Mon, Jul 19, 2021 at 9:54 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Fri, Jul 16, 2021, Brijesh Singh wrote:
+> >
+> > On 7/16/21 3:18 PM, Sean Christopherson wrote:
+> > > On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> > >> +  data->gctx_paddr = __psp_pa(sev->snp_context);
+> > >> +  ret = sev_issue_cmd(kvm, SEV_CMD_SNP_LAUNCH_FINISH, data, &argp->error);
+> > > Shouldn't KVM unwind everything it did if LAUNCH_FINISH fails?  And if that's
+> > > not possible, take steps to make the VM unusable?
+> >
+> > Well, I am not sure if VM need to unwind. If the command fail but VMM decide
+> > to ignore the error then VMRUN will probably fail and user will get the KVM
+> > shutdown event. The LAUNCH_FINISH command finalizes the VM launch process,
+> > the firmware will probably not load the memory encryption keys until it moves
+> > to the running state.
+>
+> Within reason, KVM needs to provide consistent, deterministic behavior.  Yes, more
+> than likely failure at this point will be fatal to the VM, but that doesn't justify
+> leaving the VM in a random/bogus state.  In addition to being a poor ABI, it also
+> makes it more difficult to reason about what is/isn't possible in KVM.
 
-> 
->  	return 0;
++1 to Sean's feedback to unwind everything here properly here.
+Comments of the nature of "XYZ should happen" -- without a test (e.g.,
+selftest or kvm-unit-test) to ensure the XYZ _does_ happen -- are a
+time bomb waiting to happen.
+
+Also, I wonder if we leave pages, RMPUPDATE'd to immutable in previous
+loop iterations, is it possible for them to remain as immutable and be
+reused later on (after this guest is destroyed)? And if this happens,
+will we get an RMP violation? Even if the answer is no -- go read this
+code 2,000 lines away -- it handles this case. That's still not a very
+satisfying answer. I'd rather see things cleaned up ASAP as soon as
+the code starts to go off the rails.
