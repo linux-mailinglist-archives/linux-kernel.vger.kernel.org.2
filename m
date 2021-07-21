@@ -2,171 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CB03D1738
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F7F3D173B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhGUS5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 14:57:16 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56356 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231218AbhGUS5P (ORCPT
+        id S232452AbhGUTCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229803AbhGUTCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 14:57:15 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LJXRcP015721;
-        Wed, 21 Jul 2021 15:37:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=reply-to : subject : to
- : cc : references : from : message-id : date : mime-version : in-reply-to
- : content-type : content-transfer-encoding; s=pp1;
- bh=AzHhZKFYYciWklt6q5wFtY8MduXCET7U8bwUZdVRyHA=;
- b=WRKtsHukCX5C700Xgl+MzSO7BmnCedQTLRj4lXmyerTOzLHPS+i+E4MMN3PQYhM3kEZt
- QLMRnKi/e9eNEZN1R0w0NUs8W3ECJYy1900PPq3ntNDhYdSSJxlXU5N/mq2Dr1lpG6Mo
- NQKlxmujkUaoKsYPpSK3PCB8OOTJqBKdgAU2cF8RDRnUNZU0zUCL/daIhfdHV8Cq5Zaa
- /ZvHHmtjjLNS/ooirCwp4ZJ/kk4jNP/Ln7ySpOIv89jLtRw+lV+FcXL2Og/wmDrGxril
- BO1Ps/DcuwcwG/JuFaTnMheuR+FE9mcfeZf5vnQLyeH6/BDfHqo4u5EBekpftGEEG5gu 3A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39xsbarvfg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 15:37:49 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16LJXu5i016435;
-        Wed, 21 Jul 2021 15:37:49 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39xsbarvey-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 15:37:49 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16LJbguY015847;
-        Wed, 21 Jul 2021 19:37:48 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma04wdc.us.ibm.com with ESMTP id 39upucfybh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 19:37:48 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16LJblHI35783042
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 19:37:47 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6814912405A;
-        Wed, 21 Jul 2021 19:37:47 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0DE30124058;
-        Wed, 21 Jul 2021 19:37:47 +0000 (GMT)
-Received: from [9.85.196.19] (unknown [9.85.196.19])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Jul 2021 19:37:46 +0000 (GMT)
-Reply-To: jjherne@linux.ibm.com
-Subject: Re: [PATCH 2/2] s390/vfio-ap: replace open coded locks for
- VFIO_GROUP_NOTIFY_SET_KVM notification
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
- <20210719193503.793910-3-akrowiak@linux.ibm.com>
-From:   "Jason J. Herne" <jjherne@linux.ibm.com>
-Organization: IBM
-Message-ID: <6c7244b5-be7b-1566-f406-4c4c37f06fd7@linux.ibm.com>
-Date:   Wed, 21 Jul 2021 15:37:46 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        Wed, 21 Jul 2021 15:02:42 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46913C061575;
+        Wed, 21 Jul 2021 12:43:18 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id l1so3828369edr.11;
+        Wed, 21 Jul 2021 12:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9DyEqM+ou6CvfIYyiIpmWP6ULsbRUlC6gxSHlAoCFBo=;
+        b=IkxPBT6rYUeFD3pEnM0sR3iFySrR1W3ZseLvmrpZbAyDqLlLg9IcdS1SU8DhRtOgNh
+         OknnZj8BoE7E7a91lZajImSqdYLV1HCRfkgyrhNNcrySFUx4xi1muiQpWmsEzDCVX1J1
+         xS1Iho82An6eAZ7qmJIz99QDzwl1qMedorINlJq5aNolbDC7ay81ddXAG6KKERaYdzjP
+         wIasTLoMOfx1Q6ItaRFQtkPoRcSz4YWw/iihaxNT4DB3t3RjiSiypXmDmR5u++UwW+8e
+         7Q1xd4NvUrX5Lv1QTGVtdFUdlbTMmiYWSQlBldH4b3r8Ud8s/UyNsNblTSgnIFXGuARb
+         H79g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9DyEqM+ou6CvfIYyiIpmWP6ULsbRUlC6gxSHlAoCFBo=;
+        b=h36Pbc4kJdVxBVjQ9hhkLwBd0mM7h1flpH1TP4iNkW3AcDQnVt3R1SK+RJkykQuoT/
+         /N9d03rYu19h8Wh1AcX7ILwQ/6nP6ggHkt98zT1Ft8G10ff2mAQfhn577onizCkddSjX
+         KJtASkO7kX6/Y17dMrwxcrsqhcXczhdemjYbgdb6Ta6wycMOdNu52PUaLmJtv9it4/VF
+         72NYjf+43KqmdcaQatUDBHbzdarID7ujEKnA/9GE6lPUhqoZrcYmbLkp3NcRlbkS7znQ
+         tOXdAvwdWE+z4vhmBssgbnvIwsQ5kd6XrcRddWpuTQdD8EOlMyg7AwBACdFL1NQpHwT2
+         Jbeg==
+X-Gm-Message-State: AOAM533Rpp/DUS08O3ap/0IGU81AQTqpp41qrZl1QgQM0cNn2e9v5YiC
+        mZffSABdG0/Zd+1xH89u+VI=
+X-Google-Smtp-Source: ABdhPJzTKu7cz1ySoc1NAfQGF10UNkUqZ5dLAqZTNwJXUWdSrOpQp0HuayD57Qbo2FjQbbdEeqXkQQ==
+X-Received: by 2002:a05:6402:26c5:: with SMTP id x5mr33434396edd.237.1626896596810;
+        Wed, 21 Jul 2021 12:43:16 -0700 (PDT)
+Received: from localhost.localdomain ([176.30.239.20])
+        by smtp.gmail.com with ESMTPSA id j21sm11219926edq.76.2021.07.21.12.43.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 12:43:16 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     mchehab@kernel.org, hverkuil@xs4all.nl
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
+Subject: [PATCH v2] media: em28xx: add missing em28xx_close_extension
+Date:   Wed, 21 Jul 2021 22:43:07 +0300
+Message-Id: <20210721194307.12155-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <7df1705e-b2c7-ddfc-9cc5-582fb1a304e5@xs4all.nl>
+References: <7df1705e-b2c7-ddfc-9cc5-582fb1a304e5@xs4all.nl>
 MIME-Version: 1.0
-In-Reply-To: <20210719193503.793910-3-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: wVRSy_cQFyMzWp19k-xCBl9_vW6GLn_7
-X-Proofpoint-GUID: XGeCKfeXCAd2uDkKHH70TBoa1M0kFP7P
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-21_10:2021-07-21,2021-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0
- suspectscore=0 spamscore=0 priorityscore=1501 mlxscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107210115
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/21 3:35 PM, Tony Krowiak wrote:
-> It was pointed out during an unrelated patch review that locks should not
-> be open coded - i.e., writing the algorithm of a standard lock in a
-> function instead of using a lock from the standard library. The setting and
-> testing of a busy flag and sleeping on a wait_event is the same thing
-> a lock does. The open coded locks are invisible to lockdep, so potential
-> locking problems are not detected.
-> 
-> This patch removes the open coded locks used during
-> VFIO_GROUP_NOTIFY_SET_KVM notification. The busy flag
-> and wait queue were introduced to resolve a possible circular locking
-> dependency reported by lockdep when starting a secure execution guest
-> configured with AP adapters and domains. Reversing the order in which
-> the kvm->lock mutex and matrix_dev->lock mutex are locked resolves the
-> issue reported by lockdep, thus enabling the removal of the open coded
-> locks.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->   arch/s390/kvm/kvm-s390.c              |  27 +++++-
->   drivers/s390/crypto/vfio_ap_ops.c     | 132 ++++++++------------------
->   drivers/s390/crypto/vfio_ap_private.h |   2 -
->   3 files changed, 63 insertions(+), 98 deletions(-)
-> 
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index a08f242a9f27..4d2ef3a3286e 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -2559,12 +2559,24 @@ static void kvm_s390_set_crycb_format(struct kvm *kvm)
->   		kvm->arch.crypto.crycbd |= CRYCB_FORMAT1;
->   }
->   
-> +/*
-> + * kvm_arch_crypto_set_masks
-> + *
-> + * @kvm: a pointer to the object containing the crypto masks
+If em28xx dev has ->dev_next pointer, we need to delete dev_next list node
+from em28xx_extension_devlist on disconnect to avoid UAF bugs and
+corrupted list bugs, since driver frees this pointer on disconnect.
 
-This should probably say "a pointer to the target guest's KVM struct" or something to that 
-effect. Same comment for the comment above kvm_arch_crypto_clear_masks.
+Fixes: 1a23f81b7dc3 ("V4L/DVB (9979): em28xx: move usb probe code to a proper place")
+Reported-and-tested-by: syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
 
-> + * @apm: the mask identifying the accessible AP adapters
-> + * @aqm: the mask identifying the accessible AP domains
-> + * @adm: the mask identifying the accessible AP control domains
-> + *
-> + * Set the masks that identify the adapters, domains and control domains to
-> + * which the KVM guest is granted access.
-> + *
-> + * Note: The kvm->lock mutex must be locked by the caller.
-> + */
->   void kvm_arch_crypto_set_masks(struct kvm *kvm, unsigned long *apm,
->   			       unsigned long *aqm, unsigned long *adm)
->   {
->   	struct kvm_s390_crypto_cb *crycb = kvm->arch.crypto.crycb;
->   
-> -	mutex_lock(&kvm->lock);
->   	kvm_s390_vcpu_block_all(kvm);
->   
->   	switch (kvm->arch.crypto.crycbd & CRYCB_FORMAT_MASK) {
-> @@ -2595,13 +2607,21 @@ void kvm_arch_crypto_set_masks(struct kvm *kvm, unsigned long *apm,
->   	/* recreate the shadow crycb for each vcpu */
->   	kvm_s390_sync_request_broadcast(kvm, KVM_REQ_VSIE_RESTART);
->   	kvm_s390_vcpu_unblock_all(kvm);
-> -	mutex_unlock(&kvm->lock);
->   }
->   EXPORT_SYMBOL_GPL(kvm_arch_crypto_set_masks);
->   
-> +/*
-> + * kvm_arch_crypto_set_masks
+Changes in v2:
+	Previous patch was completely broken. I've done some debugging
+	again and found true root case of the reported bug.
 
-Copy/paste error here. Rename to kvm_arch_crypto_CLEAR_masks
+---
+ drivers/media/usb/em28xx/em28xx-cards.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-I did not find anything else in my review. However, I'm still very new to this code, so 
-take that with a grain of salt :).
-
-Also, I could not apply this to master. If there is a next version do you mind rebasing? 
-Seeing the patch in full context would be helpful.
-
-
+diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+index c1e0dccb7408..d56b040e1bd7 100644
+--- a/drivers/media/usb/em28xx/em28xx-cards.c
++++ b/drivers/media/usb/em28xx/em28xx-cards.c
+@@ -4139,8 +4139,10 @@ static void em28xx_usb_disconnect(struct usb_interface *intf)
+ 
+ 	em28xx_close_extension(dev);
+ 
+-	if (dev->dev_next)
++	if (dev->dev_next) {
+ 		em28xx_release_resources(dev->dev_next);
++		em28xx_close_extension(dev->dev_next);
++	}
+ 	em28xx_release_resources(dev);
+ 
+ 	if (dev->dev_next) {
 -- 
--- Jason J. Herne (jjherne@linux.ibm.com)
+2.32.0
+
