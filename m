@@ -2,95 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9E23D14DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E523D14E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231739AbhGUQbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:31:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhGUQbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:31:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A930F61222;
-        Wed, 21 Jul 2021 17:11:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626887505;
-        bh=AilQ46pk+2fIUx3ol9DVGFG0IMAI8bKWvoJej1mBTDY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=JZBH5p2/I6tnBBYPmppaaMdzLEeyoueUbkDMHEmwNTSac4kmMsdlv8Xzhg2ayUNfn
-         ZMdqCJHCzoe08mLJPdx41/2RA3eMnIyqtxtjsOW0uB7RHoAfAhHHqt5zpdmbhXVGTN
-         9H69at2PaRgOYVqwmgYIiQsl0nG7G5xlC4ZfkqMGohQU1vgzqQFumFIexQpx+agXrA
-         75Q5FBQ5u1VOc9HECTS0hLfhoneoTjyTjveSfsmT5FKJvWyYvmsGxj7kl1c6sA2eTf
-         yacL3jFNU4/uVK4w7x/ab51b2wcOpC0p1ilcsm9olodqpNCgArVHBxKfGUKw1xQzQu
-         ki0I1YXSh8I+A==
-Date:   Wed, 21 Jul 2021 12:11:42 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Christian Gmeiner <christian.gmeiner@gmail.com>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] PCI: dwc: do not ignore link errors
-Message-ID: <20210721171142.GA189373@bjorn-Precision-5520>
+        id S232488AbhGUQbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:31:34 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:38523 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhGUQbd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 12:31:33 -0400
+Received: by mail-io1-f70.google.com with SMTP id s203-20020a6b2cd40000b0290528db19d5b3so2043340ios.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:12:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Y6Y4vaAAE0NKEq1EsKmEUMtdOo6howUC6ShUJPK7rvY=;
+        b=gEPZx3wgyVJtWZicnNCGxR0ztn7ngEtpa6m6bqzVui1VMA/KY+71CbPtIiyWddIL5y
+         m6iQUV1NvDlLLdsORSy1NF063tPUeb9mmcsHljqSpEyLLPj37nnpcNzUJ+9qcL/IvYbN
+         Zm49jYdGbDQedc5iZ+9BmX5QXc6Izp50a+gm8csnsiF7kadTZ/y6ynJb4Pr7MdBp4tII
+         gdInJg99Yshy3lSpvMbc+H7YH9SYeMrK1Ve7vbxE+jiUrnXsAKiXf5oVPZgODgr5lgPk
+         gfHPX3EUl76lFlr0ZcYOoEeNWvtWvF24P6i/4Wi7FSfo7jukmPY0pkgVM8lTuagywDWO
+         WlbQ==
+X-Gm-Message-State: AOAM5331sGcGReBetTgDXkmA7bTvZUKNhrOnhTDaVZ0IH+VcjHklp+F9
+        13v4j/AnakftZCIn3mdHxpiS/Exd/FZxTy2KsHeEqAvP2XFh
+X-Google-Smtp-Source: ABdhPJwOcoCWNrFNs7X5bO4INkmOxb/0VbZ+2JV+gC5QQQzrnTq80EKiEfN0a6IyAyRs0n40t/rA5mYatxazN77t71VCI4vUJf0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210721152821.2967356-1-christian.gmeiner@gmail.com>
+X-Received: by 2002:a05:6638:538:: with SMTP id j24mr22358891jar.59.1626887529635;
+ Wed, 21 Jul 2021 10:12:09 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 10:12:09 -0700
+In-Reply-To: <20210721130143.396c1626@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004b212a05c7a545a7@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in r871xu_dev_remove
+From:   syzbot <syzbot+5872a520e0ce0a7c7230@syzkaller.appspotmail.com>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org, hridayhegde1999@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        paskripkin@gmail.com, rkovhaev@gmail.com, straube.linux@gmail.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 05:28:21PM +0200, Christian Gmeiner wrote:
-> This fixes long boot delays of about 10 seconds.
-> 
-> I am working on a device powered by an TI am65 SoC where
-> we have a PCIe expansion slot. If there is no PCIe device
-> connected I see boot delays caused by pci_host_probe(..).
+Hello,
 
-I agree this is problematic.  Surely the controller can generate an
-interrupt when the link comes up?  If so, can we make an interrupt
-handler for that "Link Up" interrupt that calls or schedules
-pci_host_probe(), and get rid of dw_pcie_wait_for_link() altogether?
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-I doubt we want to just return failure here if the link doesn't come
-up right away, because then we can never hot-add a device later.
+Reported-and-tested-by: syzbot+5872a520e0ce0a7c7230@syzkaller.appspotmail.com
 
-886a9c134755 ("PCI: dwc: Move link handling into common code")
-addresses this in the commit log:
+Tested on:
 
-  The behavior for a link down was inconsistent as some drivers would
-  fail probe in that case while others succeed. Let's standardize this
-  to succeed as there are usecases where devices (and the link) appear
-  later even without hotplug. For example, a reconfigured FPGA device.
+commit:         8cae8cd8 seq_file: disallow extremely large seq buffer..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f7dfeb6dfc05ea19
+dashboard link: https://syzkaller.appspot.com/bug?extid=5872a520e0ce0a7c7230
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=11291aa2300000
 
-> Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
-> ---
-> 
-> V2: fix compile
-> 
-> ---
->  drivers/pci/controller/dwc/pcie-designware-host.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index a608ae1fad57..ce7d3a6f9a03 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -408,8 +408,9 @@ int dw_pcie_host_init(struct pcie_port *pp)
->  			goto err_free_msi;
->  	}
->  
-> -	/* Ignore errors, the link may come up later */
-> -	dw_pcie_wait_for_link(pci);
-> +	ret = dw_pcie_wait_for_link(pci);
-> +	if (ret)
-> +		goto err_free_msi;
->  
->  	bridge->sysdata = pp;
->  
-> -- 
-> 2.31.1
-> 
+Note: testing is done by a robot and is best-effort only.
