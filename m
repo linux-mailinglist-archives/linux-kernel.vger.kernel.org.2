@@ -2,141 +2,497 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA393D0907
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 08:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515F93D0912
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 08:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbhGUF4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 01:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233625AbhGUF40 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 01:56:26 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AE5C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 23:37:02 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id t143so1832285oie.8
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 23:37:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=xg3baJSSBULP8s6ey/O8ReuSv+AoFJkVvjtwGenuU0k=;
-        b=kXGmni1VKYHTUVqZGBpShBqHRT1NGxkYWjaeE4Yoz8Yf9Sxt8zaXvYUsWwtorXQlvl
-         GxIK3bAsQQh+eUoDIHprCtQoNNQRGEFr2uKUeAtpBRf2HOBlpw7KJeeydqV6mvMjHGMk
-         oAQi1upFx/Y7Y8W8mwKo4LaL33mM4XFxbW57M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=xg3baJSSBULP8s6ey/O8ReuSv+AoFJkVvjtwGenuU0k=;
-        b=lIVF/hNsSI63O2R70+tNtf2osANj1WmFY3ONlPW6ZhnUKIpZ6KCOmKhy2ihIOML6s5
-         VoMOe9pCvkJ26WaI1GXAgEywJn77BtWgj1xaaqbdxYs2HobHu9+2AxsJ9XxZ+rf1JQtQ
-         hetqYgbXLGEwjkOohampE90WUHB1IUHm53eWnGBFKkGw8mkheJt9J2TO68WSYAHw8SfZ
-         JjBXyx6rvv/MllhgnzdEa+gQZuNz2VdDzabnkuz5uVgEebbzFXMhT5P7j33lq00vx6yu
-         k7GBzmqyWCIuCHvrY3fENWHmTF+c9iaPd3rLZuFXFAkot78uQU5WivxLPD42Lxqe+UaN
-         JnGQ==
-X-Gm-Message-State: AOAM533EDymOlU2Lvuta2b6YOkL6tjR9483cwuh4pGfDeTejxTZ6sNdr
-        sEJv8JM/ZyVEh3AKUZWAut0B7ZsGtIp/zaiLivi54Q==
-X-Google-Smtp-Source: ABdhPJzcNJtXaU4mxLcOiKcsBbqckZF4qM/fa1zRB0il4/3/dBl84zA90FB2mCHkJmTOT1Oe1lq8zvGKyevhIyNv99E=
-X-Received: by 2002:a05:6808:114a:: with SMTP id u10mr4916864oiu.19.1626849421461;
- Tue, 20 Jul 2021 23:37:01 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 21 Jul 2021 06:37:01 +0000
+        id S234310AbhGUF76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 01:59:58 -0400
+Received: from mga18.intel.com ([134.134.136.126]:64547 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234144AbhGUF7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 01:59:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="198653175"
+X-IronPort-AV: E=Sophos;i="5.84,257,1620716400"; 
+   d="scan'208";a="198653175"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 23:39:35 -0700
+X-IronPort-AV: E=Sophos;i="5.84,257,1620716400"; 
+   d="scan'208";a="511389969"
+Received: from yhuang6-desk2.sh.intel.com ([10.239.159.119])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 23:39:31 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Greg Thelen <gthelen@google.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>
+Subject: [PATCH -V11 1/9] mm/numa: automatically generate node migration order
+Date:   Wed, 21 Jul 2021 14:39:18 +0800
+Message-Id: <20210721063926.3024591-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <1623237532-20829-2-git-send-email-sibis@codeaurora.org>
-References: <1623237532-20829-1-git-send-email-sibis@codeaurora.org> <1623237532-20829-2-git-send-email-sibis@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 21 Jul 2021 06:37:00 +0000
-Message-ID: <CAE-0n506v5cmyUb+Ge-H7t1HsqNatgxDmq28rqdyGZDbsM4pXg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] soc: qcom: aoss: Expose send for generic usecase
-To:     Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Chris Lew <clew@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sibi Sankar (2021-06-09 04:18:51)
-> From: Deepak Kumar Singh <deesin@codeaurora.org>
->
-> Not all upcoming usecases will have an interface to allow the aoss
-> driver to hook onto. Expose the send api and create a get function to
-> enable drivers to send their own messages to aoss.
->
-> Signed-off-by: Chris Lew <clew@codeaurora.org>
-> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
->
-> v4:
->  * Fix compilation error due to missing qmp_put
->  * Minor typos [s/tarcks/tracks]
->
->  drivers/soc/qcom/qcom_aoss.c       | 70 ++++++++++++++++++++++++++++++++++++--
->  include/linux/soc/qcom/qcom_aoss.h | 36 ++++++++++++++++++++
->  2 files changed, 104 insertions(+), 2 deletions(-)
->  create mode 100644 include/linux/soc/qcom/qcom_aoss.h
->
-> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-> index 934fcc4d2b05..e8f48760bac8 100644
-> --- a/drivers/soc/qcom/qcom_aoss.c
-> +++ b/drivers/soc/qcom/qcom_aoss.c
-> @@ -522,13 +582,14 @@ static int qmp_probe(struct platform_device *pdev)
->         int irq;
->         int ret;
->
-> -       qmp = devm_kzalloc(&pdev->dev, sizeof(*qmp), GFP_KERNEL);
-> +       qmp = kzalloc(sizeof(*qmp), GFP_KERNEL);
->         if (!qmp)
->                 return -ENOMEM;
->
->         qmp->dev = &pdev->dev;
->         init_waitqueue_head(&qmp->event);
->         mutex_init(&qmp->tx_lock);
-> +       kref_init(&qmp->refcount);
->
->         res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->         qmp->msgram = devm_ioremap_resource(&pdev->dev, res);
-> @@ -569,6 +630,8 @@ static int qmp_probe(struct platform_device *pdev)
->
->         platform_set_drvdata(pdev, qmp);
->
-> +       atomic_set(&qmp->orphan, 0);
-> +
->         return 0;
->
->  err_remove_qdss_clk:
-> @@ -577,6 +640,7 @@ static int qmp_probe(struct platform_device *pdev)
->         qmp_close(qmp);
->  err_free_mbox:
->         mbox_free_channel(qmp->mbox_chan);
-> +       kfree(qmp);
->
->         return ret;
->  }
-> @@ -590,7 +654,9 @@ static int qmp_remove(struct platform_device *pdev)
->         qmp_cooling_devices_remove(qmp);
->
->         qmp_close(qmp);
-> +       atomic_set(&qmp->orphan, 1);
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-This looks odd. Why are we letting the device be removed while it is in
-use by other drivers? Can't we pin the device with get_device() so it
-can't be removed and then prevent the driver from being removed until
-all the consumer drivers drop the reference, i.e. suppress sysfs unbind?
+This patchset is generated via
 
-Otherwise it looks like a generic problem that all provider devices,
-clks, regulators, gpios, etc. have to deal with and thus this
-hand-rolled mechanism can't be right.
+- `git format-patch` the V10 patchset in the mmots tree of 2021-07-15
 
->         mbox_free_channel(qmp->mbox_chan);
-> +       kref_put(&qmp->refcount, qmp_handle_release);
->
->         return 0;
->  }
+The changes are as follows,
+
+- Revise the patch description of [1/9] based on the previous discussion
+
+- Rename can_demote_anon_pages() to can_demote() to reflect the fact
+  that the function is for anon and file pages.
+
+--
+
+Patch series "Migrate Pages in lieu of discard", v11.
+
+We're starting to see systems with more and more kinds of memory such as
+Intel's implementation of persistent memory.
+
+Let's say you have a system with some DRAM and some persistent memory.
+Today, once DRAM fills up, reclaim will start and some of the DRAM
+contents will be thrown out.  Allocations will, at some point, start
+falling over to the slower persistent memory.
+
+That has two nasty properties.  First, the newer allocations can end up in
+the slower persistent memory.  Second, reclaimed data in DRAM are just
+discarded even if there are gobs of space in persistent memory that could
+be used.
+
+This patchset implements a solution to these problems.  At the end of the
+reclaim process in shrink_page_list() just before the last page refcount
+is dropped, the page is migrated to persistent memory instead of being
+dropped.
+
+While I've talked about a DRAM/PMEM pairing, this approach would function
+in any environment where memory tiers exist.
+
+This is not perfect.  It "strands" pages in slower memory and never brings
+them back to fast DRAM.  Huang Ying has follow-on work which repurposes
+NUMA balancing to promote hot pages back to DRAM.
+
+This is also all based on an upstream mechanism that allows persistent
+memory to be onlined and used as if it were volatile:
+
+	http://lkml.kernel.org/r/20190124231441.37A4A305@viggo.jf.intel.com
+
+With that, the DRAM and PMEM in each socket will be represented as 2
+separate NUMA nodes, with the CPUs sit in the DRAM node.  So the
+general inter-NUMA demotion mechanism introduced in the patchset can
+migrate the cold DRAM pages to the PMEM node.
+
+We have tested the patchset with the postgresql and pgbench.  On a
+2-socket server machine with DRAM and PMEM, the kernel with the patchset
+can improve the score of pgbench up to 22.1% compared with that of the
+DRAM only + disk case.  This comes from the reduced disk read throughput
+(which reduces up to 70.8%).
+
+== Open Issues ==
+
+ * Memory policies and cpusets that, for instance, restrict allocations
+   to DRAM can be demoted to PMEM whenever they opt in to this
+   new mechanism.  A cgroup-level API to opt-in or opt-out of
+   these migrations will likely be required as a follow-on.
+ * Could be more aggressive about where anon LRU scanning occurs
+   since it no longer necessarily involves I/O.  get_scan_count()
+   for instance says: "If we have no swap space, do not bother
+   scanning anon pages"
+
+
+This patch (of 9):
+
+Prepare for the kernel to auto-migrate pages to other memory nodes with a
+node migration table.  This allows creating single migration target for
+each NUMA node to enable the kernel to do NUMA page migrations instead of
+simply discarding colder pages.  A node with no target is a "terminal
+node", so reclaim acts normally there.  The migration target does not
+fundamentally _need_ to be a single node, but this implementation starts
+there to limit complexity.
+
+When memory fills up on a node, memory contents can be automatically
+migrated to another node.  The biggest problems are knowing when to
+migrate and to where the migration should be targeted.
+
+The most straightforward way to generate the "to where" list would be to
+follow the page allocator fallback lists.  Those lists already tell us if
+memory is full where to look next.  It would also be logical to move
+memory in that order.
+
+But, the allocator fallback lists have a fatal flaw: most nodes appear in
+all the lists.  This would potentially lead to migration cycles (A->B,
+B->A, A->B, ...).
+
+Instead of using the allocator fallback lists directly, keep a separate
+node migration ordering.  But, reuse the same data used to generate page
+allocator fallback in the first place: find_next_best_node().
+
+This means that the firmware data used to populate node distances
+essentially dictates the ordering for now.  It should also be
+architecture-neutral since all NUMA architectures have a working
+find_next_best_node().
+
+RCU is used to allow lock-less read of node_demotion[] and prevent
+demotion cycles been observed.  If multiple reads of node_demotion[] are
+performed, a single rcu_read_lock() must be held over all reads to ensure
+no cycles are observed.  Details are as follows.
+
+=== What does RCU provide? ===
+
+Imagine a simple loop which walks down the demotion path looking
+for the last node:
+
+        terminal_node = start_node;
+        while (node_demotion[terminal_node] != NUMA_NO_NODE) {
+                terminal_node = node_demotion[terminal_node];
+        }
+
+The initial values are:
+
+        node_demotion[0] = 1;
+        node_demotion[1] = NUMA_NO_NODE;
+
+and are updated to:
+
+        node_demotion[0] = NUMA_NO_NODE;
+        node_demotion[1] = 0;
+
+What guarantees that the cycle is not observed:
+
+        node_demotion[0] = 1;
+        node_demotion[1] = 0;
+
+and would loop forever?
+
+With RCU, a rcu_read_lock/unlock() can be placed around the loop.  Since
+the write side does a synchronize_rcu(), the loop that observed the old
+contents is known to be complete before the synchronize_rcu() has
+completed.
+
+RCU, combined with disable_all_migrate_targets(), ensures that the old
+migration state is not visible by the time __set_migration_target_nodes()
+is called.
+
+=== What does READ_ONCE() provide? ===
+
+READ_ONCE() forbids the compiler from merging or reordering successive
+reads of node_demotion[].  This ensures that any updates are *eventually*
+observed.
+
+Consider the above loop again.  The compiler could theoretically read the
+entirety of node_demotion[] into local storage (registers) and never go
+back to memory, and *permanently* observe bad values for node_demotion[].
+
+Note: RCU does not provide any universal compiler-ordering
+guarantees:
+
+	https://lore.kernel.org/lkml/20150921204327.GH4029@linux.vnet.ibm.com/
+
+This code is unused for now.  It will be called later in the
+series.
+
+Link: https://lkml.kernel.org/r/20210715055145.195411-1-ying.huang@intel.com
+Link: https://lkml.kernel.org/r/20210715055145.195411-2-ying.huang@intel.com
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Reviewed-by: Zi Yan <ziy@nvidia.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Wei Xu <weixugc@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Keith Busch <kbusch@kernel.org>
+Cc: Yang Shi <yang.shi@linux.alibaba.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+ mm/internal.h   |   5 ++
+ mm/migrate.c    | 216 ++++++++++++++++++++++++++++++++++++++++++++++++
+ mm/page_alloc.c |   2 +-
+ 3 files changed, 222 insertions(+), 1 deletion(-)
+
+diff --git a/mm/internal.h b/mm/internal.h
+index 57e28261a3b1..cf3cb933eba3 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -543,12 +543,17 @@ static inline void mminit_validate_memmodel_limits(unsigned long *start_pfn,
+ 
+ #ifdef CONFIG_NUMA
+ extern int node_reclaim(struct pglist_data *, gfp_t, unsigned int);
++extern int find_next_best_node(int node, nodemask_t *used_node_mask);
+ #else
+ static inline int node_reclaim(struct pglist_data *pgdat, gfp_t mask,
+ 				unsigned int order)
+ {
+ 	return NODE_RECLAIM_NOSCAN;
+ }
++static inline int find_next_best_node(int node, nodemask_t *used_node_mask)
++{
++	return NUMA_NO_NODE;
++}
+ #endif
+ 
+ extern int hwpoison_filter(struct page *p);
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 34a9ad3e0a4f..b7a40ab47648 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1099,6 +1099,80 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+ 	return rc;
+ }
+ 
++
++/*
++ * node_demotion[] example:
++ *
++ * Consider a system with two sockets.  Each socket has
++ * three classes of memory attached: fast, medium and slow.
++ * Each memory class is placed in its own NUMA node.  The
++ * CPUs are placed in the node with the "fast" memory.  The
++ * 6 NUMA nodes (0-5) might be split among the sockets like
++ * this:
++ *
++ *	Socket A: 0, 1, 2
++ *	Socket B: 3, 4, 5
++ *
++ * When Node 0 fills up, its memory should be migrated to
++ * Node 1.  When Node 1 fills up, it should be migrated to
++ * Node 2.  The migration path start on the nodes with the
++ * processors (since allocations default to this node) and
++ * fast memory, progress through medium and end with the
++ * slow memory:
++ *
++ *	0 -> 1 -> 2 -> stop
++ *	3 -> 4 -> 5 -> stop
++ *
++ * This is represented in the node_demotion[] like this:
++ *
++ *	{  1, // Node 0 migrates to 1
++ *	   2, // Node 1 migrates to 2
++ *	  -1, // Node 2 does not migrate
++ *	   4, // Node 3 migrates to 4
++ *	   5, // Node 4 migrates to 5
++ *	  -1} // Node 5 does not migrate
++ */
++
++/*
++ * Writes to this array occur without locking.  Cycles are
++ * not allowed: Node X demotes to Y which demotes to X...
++ *
++ * If multiple reads are performed, a single rcu_read_lock()
++ * must be held over all reads to ensure that no cycles are
++ * observed.
++ */
++static int node_demotion[MAX_NUMNODES] __read_mostly =
++	{[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
++
++/**
++ * next_demotion_node() - Get the next node in the demotion path
++ * @node: The starting node to lookup the next node
++ *
++ * @returns: node id for next memory node in the demotion path hierarchy
++ * from @node; NUMA_NO_NODE if @node is terminal.  This does not keep
++ * @node online or guarantee that it *continues* to be the next demotion
++ * target.
++ */
++int next_demotion_node(int node)
++{
++	int target;
++
++	/*
++	 * node_demotion[] is updated without excluding this
++	 * function from running.  RCU doesn't provide any
++	 * compiler barriers, so the READ_ONCE() is required
++	 * to avoid compiler reordering or read merging.
++	 *
++	 * Make sure to use RCU over entire code blocks if
++	 * node_demotion[] reads need to be consistent.
++	 */
++	rcu_read_lock();
++	target = READ_ONCE(node_demotion[node]);
++	rcu_read_unlock();
++
++	return target;
++}
++
+ /*
+  * Obtain the lock on page, remove all ptes and migrate the page
+  * to the newly allocated page in newpage.
+@@ -2982,3 +3056,145 @@ void migrate_vma_finalize(struct migrate_vma *migrate)
+ }
+ EXPORT_SYMBOL(migrate_vma_finalize);
+ #endif /* CONFIG_DEVICE_PRIVATE */
++
++/* Disable reclaim-based migration. */
++static void __disable_all_migrate_targets(void)
++{
++	int node;
++
++	for_each_online_node(node)
++		node_demotion[node] = NUMA_NO_NODE;
++}
++
++static void disable_all_migrate_targets(void)
++{
++	__disable_all_migrate_targets();
++
++	/*
++	 * Ensure that the "disable" is visible across the system.
++	 * Readers will see either a combination of before+disable
++	 * state or disable+after.  They will never see before and
++	 * after state together.
++	 *
++	 * The before+after state together might have cycles and
++	 * could cause readers to do things like loop until this
++	 * function finishes.  This ensures they can only see a
++	 * single "bad" read and would, for instance, only loop
++	 * once.
++	 */
++	synchronize_rcu();
++}
++
++/*
++ * Find an automatic demotion target for 'node'.
++ * Failing here is OK.  It might just indicate
++ * being at the end of a chain.
++ */
++static int establish_migrate_target(int node, nodemask_t *used)
++{
++	int migration_target;
++
++	/*
++	 * Can not set a migration target on a
++	 * node with it already set.
++	 *
++	 * No need for READ_ONCE() here since this
++	 * in the write path for node_demotion[].
++	 * This should be the only thread writing.
++	 */
++	if (node_demotion[node] != NUMA_NO_NODE)
++		return NUMA_NO_NODE;
++
++	migration_target = find_next_best_node(node, used);
++	if (migration_target == NUMA_NO_NODE)
++		return NUMA_NO_NODE;
++
++	node_demotion[node] = migration_target;
++
++	return migration_target;
++}
++
++/*
++ * When memory fills up on a node, memory contents can be
++ * automatically migrated to another node instead of
++ * discarded at reclaim.
++ *
++ * Establish a "migration path" which will start at nodes
++ * with CPUs and will follow the priorities used to build the
++ * page allocator zonelists.
++ *
++ * The difference here is that cycles must be avoided.  If
++ * node0 migrates to node1, then neither node1, nor anything
++ * node1 migrates to can migrate to node0.
++ *
++ * This function can run simultaneously with readers of
++ * node_demotion[].  However, it can not run simultaneously
++ * with itself.  Exclusion is provided by memory hotplug events
++ * being single-threaded.
++ */
++static void __set_migration_target_nodes(void)
++{
++	nodemask_t next_pass	= NODE_MASK_NONE;
++	nodemask_t this_pass	= NODE_MASK_NONE;
++	nodemask_t used_targets = NODE_MASK_NONE;
++	int node;
++
++	/*
++	 * Avoid any oddities like cycles that could occur
++	 * from changes in the topology.  This will leave
++	 * a momentary gap when migration is disabled.
++	 */
++	disable_all_migrate_targets();
++
++	/*
++	 * Allocations go close to CPUs, first.  Assume that
++	 * the migration path starts at the nodes with CPUs.
++	 */
++	next_pass = node_states[N_CPU];
++again:
++	this_pass = next_pass;
++	next_pass = NODE_MASK_NONE;
++	/*
++	 * To avoid cycles in the migration "graph", ensure
++	 * that migration sources are not future targets by
++	 * setting them in 'used_targets'.  Do this only
++	 * once per pass so that multiple source nodes can
++	 * share a target node.
++	 *
++	 * 'used_targets' will become unavailable in future
++	 * passes.  This limits some opportunities for
++	 * multiple source nodes to share a destination.
++	 */
++	nodes_or(used_targets, used_targets, this_pass);
++	for_each_node_mask(node, this_pass) {
++		int target_node = establish_migrate_target(node, &used_targets);
++
++		if (target_node == NUMA_NO_NODE)
++			continue;
++
++		/*
++		 * Visit targets from this pass in the next pass.
++		 * Eventually, every node will have been part of
++		 * a pass, and will become set in 'used_targets'.
++		 */
++		node_set(target_node, next_pass);
++	}
++	/*
++	 * 'next_pass' contains nodes which became migration
++	 * targets in this pass.  Make additional passes until
++	 * no more migrations targets are available.
++	 */
++	if (!nodes_empty(next_pass))
++		goto again;
++}
++
++/*
++ * For callers that do not hold get_online_mems() already.
++ */
++__maybe_unused // <- temporay to prevent warnings during bisects
++static void set_migration_target_nodes(void)
++{
++	get_online_mems();
++	__set_migration_target_nodes();
++	put_online_mems();
++}
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 29f41d095002..942417c78a8a 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6139,7 +6139,7 @@ static int node_load[MAX_NUMNODES];
+  *
+  * Return: node id of the found node or %NUMA_NO_NODE if no node is found.
+  */
+-static int find_next_best_node(int node, nodemask_t *used_node_mask)
++int find_next_best_node(int node, nodemask_t *used_node_mask)
+ {
+ 	int n, val;
+ 	int min_val = INT_MAX;
+-- 
+2.30.2
+
