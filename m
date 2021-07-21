@@ -2,141 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195F53D074D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 05:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA303D074F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 05:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhGUChU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 22:37:20 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:45092 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230338AbhGUChQ (ORCPT
+        id S231445AbhGUCjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 22:39:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhGUCi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 22:37:16 -0400
-X-UUID: c117cace960f4552bcb0052495e7eed6-20210721
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=zmxQjGdFqyA3uAn2rxS3iv5n86oQfg1uYDVx+P9Idkw=;
-        b=dCrK3PEuV/ySoCzadrRvVWS8ZzeqDGMbyiU+yI2yPC5/wuneOvT/lD6TctsTrLWbOpkUG1jeU3b/P/MTfDHtmvb+Y0E1uyhD1nk9KxqBLkw/ymxurTFK8FM6b/jts4aj8FnbC7LWkqDTCpfdnunh0H8JAVwaKbpBuGZHSx6w0Ds=;
-X-UUID: c117cace960f4552bcb0052495e7eed6-20210721
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 468878292; Wed, 21 Jul 2021 11:17:51 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs06n1.mediatek.inc
- (172.21.101.129) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 21 Jul
- 2021 11:17:49 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 21 Jul 2021 11:17:48 +0800
-Message-ID: <1626837468.4247.3.camel@mhfsdcap03>
-Subject: Re: [PATCH v3 3/3] phy: phy-mtk-tphy: add support mt8195
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Date:   Wed, 21 Jul 2021 11:17:48 +0800
-In-Reply-To: <YPaIYI70823rK68w@matsya>
-References: <1626331702-27825-1-git-send-email-chunfeng.yun@mediatek.com>
-         <1626331702-27825-3-git-send-email-chunfeng.yun@mediatek.com>
-         <YPaIYI70823rK68w@matsya>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 20 Jul 2021 22:38:58 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4FFC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 20:19:36 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id x16so286180plg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 20:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e9+wIJMSoz3bWq2JYWBjZyZXlwOkY3lYjFKTKlDMrfM=;
+        b=W4z9powBmBd9ZAlHfbGJ2zXJGXn+mPsE2G8UiL/ADun/Ic4d6jmEY+lQFI3RLx7LgE
+         cWoS7//JkQGN7zGcrbiqigQIPOcSnMWXLYF7HcNYPvNfTgwviJDKnFiEPfBA8CX3jk5F
+         xgMvBwu3UW4iyQJo6MqQd4nf0BAsCzHJPY/cmBPEPEBwSXbSq3Nmg9F4zUe6z9EfvLgB
+         1s7e3HGkfe1mXDyBcACpwpuoKowdppS6dK5HpGpkx1ynobEsCv/ogIt9qx+0CD3G48gF
+         OeQiHqDdaZx3GT+SwkynAEOirp7gEB2IgBPlks2qeCKxAgoZh4RSCZ9Mnb6hLDwkvW+f
+         DxfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e9+wIJMSoz3bWq2JYWBjZyZXlwOkY3lYjFKTKlDMrfM=;
+        b=uVVvyYCdgVE2AIJ/gZZfCyu6RriLckQ6VFFbboMpGx2AEMWRnFHF5yBIFjvoTN+xBg
+         6+Gorxw9K+PO3fR85vK61WLmJsolwI5ISigEAsPt0bCuAR9oj+Y5PGLYWSlZ+gQNJw7V
+         QM9xAuPUvVYN274Mi/Ki3c9QEqFRJf0rxvzlfqT7Ny67HgQ58upkTujVt7uEtLZUevTq
+         m014n3YZYPP/m7E++b0tH5EuhBH3hIM1VRoFAqm1czi/p0xybCvyocK/3r8kng99ytsw
+         GUWpKnDbSfRV8dDgnxOjVP6zsoGYS01+Tii8MnF9eGM6UkEfFcvEQObfXlX5+cAbyjr0
+         2pNw==
+X-Gm-Message-State: AOAM531zgFdwn4mEx7LrjpUnL4jfz1JaOAgS28uPonbaG1wG1FwFNKC+
+        04glwysc23SmtAPPV49eV4jatj6pMTfW3GD2PvbemA==
+X-Google-Smtp-Source: ABdhPJzesoHmQb19adjMNNR2Oi/k9zrmsZ6Ll3l4VZcnQgG1m0XVJC0ii26fEs8PPG08dNMebdso+Rii165naxphtQM=
+X-Received: by 2002:a17:90b:1d84:: with SMTP id pf4mr32768550pjb.166.1626837575462;
+ Tue, 20 Jul 2021 20:19:35 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <1583733592-22873-1-git-send-email-vincent.chen@sifive.com>
+ <1583733592-22873-3-git-send-email-vincent.chen@sifive.com> <1257037909.25426.1626705790861.JavaMail.zimbra@efficios.com>
+In-Reply-To: <1257037909.25426.1626705790861.JavaMail.zimbra@efficios.com>
+From:   Vincent Chen <vincent.chen@sifive.com>
+Date:   Wed, 21 Jul 2021 11:19:24 +0800
+Message-ID: <CABvJ_xgLgk0woE-X2mjtSUzO5ykzmu+qKkToDiskOrCQ1u=Pog@mail.gmail.com>
+Subject: Re: [PATCH V2 2/3] riscv: Add support for restartable sequence
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Guo Ren <guoren@linux.alibaba.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA3LTIwIGF0IDEzOjU1ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOg0KPiBP
-biAxNS0wNy0yMSwgMTQ6NDgsIENodW5mZW5nIFl1biB3cm90ZToNCj4gPiBUaGUgY29udHJvbGxl
-ciBpcyBkZXNpZ25lZCB0byB1c2UgdXNlIFBMTCBpbnRlZ2VyIG1vZGUsIGJ1dA0KPiA+IGluIGZh
-Y3QgdXNlZCBmcmFjdGlvbmFsIG1vZGUgZm9yIHNvbWUgb25lcyBvbiBtdDgxOTUsIHRoaXMNCj4g
-PiBjYXVzZXMgc2lnbmFsIGRlZ3JhZGF0aW9uIChlLmcuIGV5ZSBkaWFncmFtIHRlc3QgZmFpbCks
-IGZpeA0KPiA+IGl0IGJ5IHN3aXRjaGluZyBQTEwgdG8gMjZNaHogZnJvbSBkZWZhdWx0IDQ4TWh6
-IHRvIGltcHJvdmUNCj4gPiBzaWduYWwgcXVhbGl0eS4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4g
-djJ+Mzogbm8gY2hhbmdlcw0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3BoeS9tZWRpYXRlay9waHkt
-bXRrLXRwaHkuYyB8IDUyICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmls
-ZSBjaGFuZ2VkLCA1MiBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvcGh5L21lZGlhdGVrL3BoeS1tdGstdHBoeS5jIGIvZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5
-LW10ay10cGh5LmMNCj4gPiBpbmRleCA0MmExMTc0ZGE2Y2MuLmMzZGMxNzYzYTdlYiAxMDA2NDQN
-Cj4gPiAtLS0gYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLXRwaHkuYw0KPiA+ICsrKyBi
-L2RyaXZlcnMvcGh5L21lZGlhdGVrL3BoeS1tdGstdHBoeS5jDQo+ID4gQEAgLTQxLDYgKzQxLDgg
-QEANCj4gPiAgDQo+ID4gICNkZWZpbmUgVTNQX1VTQlBIWUFDUjAJCTB4MDAwDQo+ID4gICNkZWZp
-bmUgUEEwX1JHX1UyUExMX0ZPUkNFX09OCQlCSVQoMTUpDQo+ID4gKyNkZWZpbmUgUEEwX1VTQjIw
-X1BMTF9QUkVESVYJCUdFTk1BU0soNywgNikNCj4gPiArI2RlZmluZSBQQTBfVVNCMjBfUExMX1BS
-RURJVl9WQUwoeCkJKCgweDMgJiAoeCkpIDw8IDYpDQo+ID4gICNkZWZpbmUgUEEwX1JHX1VTQjIw
-X0lOVFJfRU4JCUJJVCg1KQ0KPiA+ICANCj4gPiAgI2RlZmluZSBVM1BfVVNCUEhZQUNSMQkJMHgw
-MDQNCj4gPiBAQCAtNTIsNiArNTQsOCBAQA0KPiA+ICAjZGVmaW5lIFBBMV9SR19URVJNX1NFTF9W
-QUwoeCkJKCgweDcgJiAoeCkpIDw8IDgpDQo+ID4gIA0KPiA+ICAjZGVmaW5lIFUzUF9VU0JQSFlB
-Q1IyCQkweDAwOA0KPiA+ICsjZGVmaW5lIFBBMl9SR19VMlBMTF9CVwkJCUdFTk1BU0soMjEsIDE5
-KQ0KPiA+ICsjZGVmaW5lIFBBMl9SR19VMlBMTF9CV19WQUwoeCkJCSgoMHg3ICYgKHgpKSA8PCAx
-OSkNCj4gPiAgI2RlZmluZSBQQTJfUkdfU0lGX1UyUExMX0ZPUkNFX0VOCUJJVCgxOCkNCj4gPiAg
-DQo+ID4gICNkZWZpbmUgVTNQX1VTQlBIWUFDUjUJCTB4MDE0DQo+ID4gQEAgLTczLDYgKzc3LDE0
-IEBADQo+ID4gICNkZWZpbmUgUDJDX1VTQjIwX0dQSU9fTU9ERQkJQklUKDgpDQo+ID4gICNkZWZp
-bmUgUDJDX1UyX0dQSU9fQ1RSX01TSwkoUDJDX1JHX1VTQjIwX0dQSU9fQ1RMIHwgUDJDX1VTQjIw
-X0dQSU9fTU9ERSkNCj4gPiAgDQo+ID4gKyNkZWZpbmUgVTNQX1UyUEhZQV9SRVNWCQkweDAzMA0K
-PiA+ICsjZGVmaW5lIFAyUl9SR19VMlBMTF9GQkRJVl8yNk0JCTB4MWJiMTNiDQo+ID4gKyNkZWZp
-bmUgUDJSX1JHX1UyUExMX0ZCRElWXzQ4TQkJMHgzYzAwMDANCj4gPiArDQo+ID4gKyNkZWZpbmUg
-VTNQX1UyUEhZQV9SRVNWMQkweDA0NA0KPiA+ICsjZGVmaW5lIFAyUl9SR19VMlBMTF9SRUZDTEtf
-U0VMCUJJVCg1KQ0KPiA+ICsjZGVmaW5lIFAyUl9SR19VMlBMTF9GUkFfRU4JCUJJVCgzKQ0KPiA+
-ICsNCj4gPiAgI2RlZmluZSBVM0RfVTJQSFlEQ1IwCQkweDA2MA0KPiA+ICAjZGVmaW5lIFAyQ19S
-R19TSUZfVTJQTExfRk9SQ0VfT04JQklUKDI0KQ0KPiA+ICANCj4gPiBAQCAtMjc3LDYgKzI4OSwx
-MiBAQCBlbnVtIG10a19waHlfdmVyc2lvbiB7DQo+ID4gIHN0cnVjdCBtdGtfcGh5X3BkYXRhIHsN
-Cj4gPiAgCS8qIGF2b2lkIFJYIHNlbnNpdGl2aXR5IGxldmVsIGRlZ3JhZGF0aW9uIG9ubHkgZm9y
-IG10ODE3MyAqLw0KPiA+ICAJYm9vbCBhdm9pZF9yeF9zZW5fZGVncmFkYXRpb247DQo+ID4gKwkv
-Kg0KPiA+ICsJICogdTJwaHkgc2hvdWxkIHVzZSBpbnRlZ2VyIG1vZGUgaW5zdGVhZCBvZiBmcmFj
-dGlvbmFsIG1vZGUgb2YNCj4gPiArCSAqIDQ4TSBQTEwsIGZpeCBpdCBieSBzd2l0Y2hpbmcgUExM
-IHRvIDI2TSBmcm9tIGRlZmF1bHQgNDhNDQo+ID4gKwkgKiBmb3IgbXQ4MTk1DQo+ID4gKwkgKi8N
-Cj4gPiArCWJvb2wgc3dfcGxsXzQ4bV90b18yNm07DQo+ID4gIAllbnVtIG10a19waHlfdmVyc2lv
-biB2ZXJzaW9uOw0KPiA+ICB9Ow0KPiA+ICANCj4gPiBAQCAtNDU2LDYgKzQ3NCwzMyBAQCBzdGF0
-aWMgdm9pZCB1M19waHlfaW5zdGFuY2VfaW5pdChzdHJ1Y3QgbXRrX3RwaHkgKnRwaHksDQo+ID4g
-IAlkZXZfZGJnKHRwaHktPmRldiwgIiVzKCVkKVxuIiwgX19mdW5jX18sIGluc3RhbmNlLT5pbmRl
-eCk7DQo+ID4gIH0NCj4gPiAgDQo+ID4gK3N0YXRpYyB2b2lkIHUyX3BoeV9wbGxfMjZtX3NldChz
-dHJ1Y3QgbXRrX3RwaHkgKnRwaHksDQo+ID4gKwlzdHJ1Y3QgbXRrX3BoeV9pbnN0YW5jZSAqaW5z
-dGFuY2UpDQo+ID4gK3sNCj4gPiArCXN0cnVjdCB1MnBoeV9iYW5rcyAqdTJfYmFua3MgPSAmaW5z
-dGFuY2UtPnUyX2JhbmtzOw0KPiA+ICsJdm9pZCBfX2lvbWVtICpjb20gPSB1Ml9iYW5rcy0+Y29t
-Ow0KPiA+ICsJdTMyIHRtcDsNCj4gPiArDQo+ID4gKwlpZiAoIXRwaHktPnBkYXRhLT5zd19wbGxf
-NDhtX3RvXzI2bSkNCj4gPiArCQlyZXR1cm47DQo+ID4gKw0KPiA+ICsJdG1wID0gcmVhZGwoY29t
-ICsgVTNQX1VTQlBIWUFDUjApOw0KPiA+ICsJdG1wICY9IH5QQTBfVVNCMjBfUExMX1BSRURJVjsN
-Cj4gPiArCXRtcCB8PSBQQTBfVVNCMjBfUExMX1BSRURJVl9WQUwoMCk7DQo+ID4gKwl3cml0ZWwo
-dG1wLCBjb20gKyBVM1BfVVNCUEhZQUNSMCk7DQo+ID4gKw0KPiA+ICsJdG1wID0gcmVhZGwoY29t
-ICsgVTNQX1VTQlBIWUFDUjIpOw0KPiA+ICsJdG1wICY9IH5QQTJfUkdfVTJQTExfQlc7DQo+ID4g
-Kwl0bXAgfD0gUEEyX1JHX1UyUExMX0JXX1ZBTCgzKTsNCj4gPiArCXdyaXRlbCh0bXAsIGNvbSAr
-IFUzUF9VU0JQSFlBQ1IyKTsNCj4gPiArDQo+ID4gKwl3cml0ZWwoUDJSX1JHX1UyUExMX0ZCRElW
-XzI2TSwgY29tICsgVTNQX1UyUEhZQV9SRVNWKTsNCj4gPiArDQo+ID4gKwl0bXAgPSByZWFkbChj
-b20gKyBVM1BfVTJQSFlBX1JFU1YxKTsNCj4gPiArCXRtcCB8PSBQMlJfUkdfVTJQTExfRlJBX0VO
-IHwgUDJSX1JHX1UyUExMX1JFRkNMS19TRUw7DQo+ID4gKwl3cml0ZWwodG1wLCBjb20gKyBVM1Bf
-VTJQSFlBX1JFU1YxKTsNCj4gPiArfQ0KPiA+ICsNCj4gPiAgc3RhdGljIHZvaWQgdTJfcGh5X2lu
-c3RhbmNlX2luaXQoc3RydWN0IG10a190cGh5ICp0cGh5LA0KPiA+ICAJc3RydWN0IG10a19waHlf
-aW5zdGFuY2UgKmluc3RhbmNlKQ0KPiA+ICB7DQo+ID4gQEAgLTk0MSw2ICs5ODYsNyBAQCBzdGF0
-aWMgaW50IG10a19waHlfaW5pdChzdHJ1Y3QgcGh5ICpwaHkpDQo+ID4gIA0KPiA+ICAJc3dpdGNo
-IChpbnN0YW5jZS0+dHlwZSkgew0KPiA+ICAJY2FzZSBQSFlfVFlQRV9VU0IyOg0KPiA+ICsJCXUy
-X3BoeV9wbGxfMjZtX3NldCh0cGh5LCBpbnN0YW5jZSk7DQo+IA0KPiBzaG91bGQgdGhpcyBub3Qg
-YmUgc2V0IG9ubHkgZm9yIE1US19QSFlfVjM/DQpXb3JrYXJvdW5kIG9ubHkgZm9yIG10ODE5NSwg
-SFcgd2lsbCBmaXggaXQgZm9yIG90aGVycyAoVjMpDQoNClRoYW5rcw0KDQo+IA0KPiA+ICAJCXUy
-X3BoeV9pbnN0YW5jZV9pbml0KHRwaHksIGluc3RhbmNlKTsNCj4gPiAgCQl1Ml9waHlfcHJvcHNf
-c2V0KHRwaHksIGluc3RhbmNlKTsNCj4gPiAgCQlicmVhazsNCj4gPiBAQCAtMTA5NCwxMCArMTE0
-MCwxNiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG10a19waHlfcGRhdGEgbXQ4MTczX3BkYXRhID0g
-ew0KPiA+ICAJLnZlcnNpb24gPSBNVEtfUEhZX1YxLA0KPiA+ICB9Ow0KPiA+ICANCj4gPiArc3Rh
-dGljIGNvbnN0IHN0cnVjdCBtdGtfcGh5X3BkYXRhIG10ODE5NV9wZGF0YSA9IHsNCj4gPiArCS5z
-d19wbGxfNDhtX3RvXzI2bSA9IHRydWUsDQo+ID4gKwkudmVyc2lvbiA9IE1US19QSFlfVjMsDQo+
-ID4gK307DQo+ID4gKw0KPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBtdGtf
-dHBoeV9pZF90YWJsZVtdID0gew0KPiA+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDI3
-MDEtdTNwaHkiLCAuZGF0YSA9ICZ0cGh5X3YxX3BkYXRhIH0sDQo+ID4gIAl7IC5jb21wYXRpYmxl
-ID0gIm1lZGlhdGVrLG10MjcxMi11M3BoeSIsIC5kYXRhID0gJnRwaHlfdjJfcGRhdGEgfSwNCj4g
-PiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLXUzcGh5IiwgLmRhdGEgPSAmbXQ4
-MTczX3BkYXRhIH0sDQo+ID4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5NS10cGh5
-IiwgLmRhdGEgPSAmbXQ4MTk1X3BkYXRhIH0sDQo+ID4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlh
-dGVrLGdlbmVyaWMtdHBoeS12MSIsIC5kYXRhID0gJnRwaHlfdjFfcGRhdGEgfSwNCj4gPiAgCXsg
-LmNvbXBhdGlibGUgPSAibWVkaWF0ZWssZ2VuZXJpYy10cGh5LXYyIiwgLmRhdGEgPSAmdHBoeV92
-Ml9wZGF0YSB9LA0KPiA+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxnZW5lcmljLXRwaHkt
-djMiLCAuZGF0YSA9ICZ0cGh5X3YzX3BkYXRhIH0sDQo+ID4gLS0gDQo+ID4gMi4xOC4wDQo+IA0K
-DQo=
+On Mon, Jul 19, 2021 at 10:43 PM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> ----- On Mar 9, 2020, at 1:59 AM, Vincent Chen vincent.chen@sifive.com wrote:
+> [...]
+> > --- a/arch/riscv/kernel/signal.c
+> > +++ b/arch/riscv/kernel/signal.c
+> > @@ -234,6 +234,7 @@ static void handle_signal(struct ksignal *ksig, struct
+> > pt_regs *regs)
+> >       sigset_t *oldset = sigmask_to_save();
+> >       int ret;
+> >
+> > +     rseq_signal_deliver(ksig, regs);
+> >       /* Are we from a system call? */
+> >       if (regs->cause == EXC_SYSCALL) {
+>
+> [...]
+>
+> As Al Viro pointed out on IRC, the rseq_signal_deliver() should go after syscall
+> restart handling, similarly to what is done on every other supported architecture.
 
+Thanks for the notification. I will adjust the porting and try to send
+the patch again for review.
+
+
+>
+> Note that there is already an upstream commit derived on this non-upstream patch:
+>
+> commit 9866d141a097 ("csky: Add support for restartable sequence")
+>
+> which is broken in the same way.
+>
+> I'm not sure why I was never CC'd on the csky patch. Considering that nobody
+> bothered to implement the rseq selftests for csky, I don't see how any of
+> this is tested. I would favor a revert of that commit until the testing glue
+> is contributed. Unfortunately, the csky commit has been upstream since v5.7.
+>
+> Thanks,
+>
+> Mathieu
+>
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
