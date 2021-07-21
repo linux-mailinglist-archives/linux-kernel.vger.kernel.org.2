@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD6A3D1803
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652E43D1807
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240463AbhGUTlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:41:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49946 "EHLO mail.kernel.org"
+        id S240458AbhGUTlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233186AbhGUTkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237548AbhGUTkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 15:40:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6448A61263;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A691A61355;
         Wed, 21 Jul 2021 20:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626898889;
-        bh=eUi+q1NWFL0Tq7O9JeG4neU/i2jqbGZaXS8sKdAZc90=;
+        bh=wTmbqBY9AqPvVPQt3asLMeVulJpVoLicw5TeHOv8ij8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HoXT+VFXdf1G/k+VUY9k4gjh3n716dNBAHz8R6Yq6SZMxd0CPGfZdb3dlmDE4W1E6
-         xtNgOQERlXlufPDRKbVMadzbYx9QCklVDhvjIgC9j5h73oSGR4p6WfwpgvgRAT0lk/
-         n2iiiWuXD25YqOJvVpD22LxxoyFeU4BnZhxYL89g5m5qb2vGpmcyKQWh4GXlNlNkq8
-         7/EM0KvoLxhY99NNVQwA6bbtB12wZr85evv8/VHoFkqWJOJloq4vQrfXb5xlMJWFro
-         0XdyA/EQGyPgt6izjcLRWfVX2MArOLKgykf7AD3vDJJA3Fb56cHFEQqzuaFkRiszGW
-         2sU4cJLgRF2cw==
+        b=MBLKLMsLTHOEmPJeBMobuXM0/6i2rpN3SW3IX7B8C8b4OsdvSMmR9uVJbVfE/+JzH
+         EWDlrwUTWhnAVr2p8NVxarsssmiJ8Y7a7LeylsgAPZvzxHdFlBk9Hp6uN22iFQYQWj
+         NkJ9Erj9D+/+eLyznmWeHxxl8sa8w7hOUWh/bEEYKEtKhiWlwiucRk0sCTvz6ddSSb
+         tXoTi36UtD75miFtkFMDqq0qAmjISgiE/8pOR5g8adXcSKcK4t2vioOUFy3sTtO4Eb
+         TkD4xgSPJA6rCyuKl/42fizJe9SmqlCKrPEG8wx1y5ecMlEKhlCdC5kD3ISCYV2hq8
+         4L+ur6ZYmAjKQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1A73E5C0BF4; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
+        id 1D87B5C0017; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,10 +33,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 05/18] rcu: Mark accesses to ->rcu_read_lock_nesting
-Date:   Wed, 21 Jul 2021 13:21:13 -0700
-Message-Id: <20210721202127.2129660-5-paulmck@kernel.org>
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 06/18] rculist: Unify documentation about missing list_empty_rcu()
+Date:   Wed, 21 Jul 2021 13:21:14 -0700
+Message-Id: <20210721202127.2129660-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
@@ -46,76 +47,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KCSAN flags accesses to ->rcu_read_lock_nesting as data races, but
-in the past, the overhead of marked accesses was excessive.  However,
-that was long ago, and much has changed since then, both in terms of
-hardware and of compilers.  Here is data taken on an eight-core laptop
-using Intel(R) Core(TM) i9-10885H CPU @ 2.40GHz with a kernel built
-using gcc version 9.3.0, with all data in nanoseconds.
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-Unmarked accesses (status quo), measured by three refscale runs:
+We have two separate sections that talk about why list_empty_rcu()
+is not needed, so this commit consolidates them.
 
-	Minimum reader duration:  3.286  2.851  3.395
-	Median reader duration:   3.698  3.531  3.4695
-	Maximum reader duration:  4.481  5.215  5.157
-
-Marked accesses, also measured by three refscale runs:
-
-	Minimum reader duration:  3.501  3.677  3.580
-	Median reader duration:   4.053  3.723  3.895
-	Maximum reader duration:  7.307  4.999  5.511
-
-This focused microbenhmark shows only sub-nanosecond differences which
-are unlikely to be visible at the system level.  This commit therefore
-marks data-racing accesses to ->rcu_read_lock_nesting.
-
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+[ paulmck: The usual wordsmithing. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h | 2 +-
- kernel/rcu/tree_plugin.h | 9 ++++++---
- 2 files changed, 7 insertions(+), 4 deletions(-)
+ include/linux/rculist.h | 35 +++++++++++++++++------------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index d9680b798b211..cfeb43bfc719e 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -53,7 +53,7 @@ void __rcu_read_unlock(void);
-  * nesting depth, but makes sense only if CONFIG_PREEMPT_RCU -- in other
-  * types of kernel builds, the rcu_read_lock() nesting depth is unknowable.
-  */
--#define rcu_preempt_depth() (current->rcu_read_lock_nesting)
-+#define rcu_preempt_depth() READ_ONCE(current->rcu_read_lock_nesting)
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index f8633d37e3581..d29740be4833e 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -10,15 +10,6 @@
+ #include <linux/list.h>
+ #include <linux/rcupdate.h>
  
- #else /* #ifdef CONFIG_PREEMPT_RCU */
- 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index de1dc3bb7f701..83a702a4e2963 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -405,17 +405,20 @@ static int rcu_preempt_blocked_readers_cgp(struct rcu_node *rnp)
- 
- static void rcu_preempt_read_enter(void)
- {
--	current->rcu_read_lock_nesting++;
-+	WRITE_ONCE(current->rcu_read_lock_nesting, READ_ONCE(current->rcu_read_lock_nesting) + 1);
- }
- 
- static int rcu_preempt_read_exit(void)
- {
--	return --current->rcu_read_lock_nesting;
-+	int ret = READ_ONCE(current->rcu_read_lock_nesting) - 1;
-+
-+	WRITE_ONCE(current->rcu_read_lock_nesting, ret);
-+	return ret;
- }
- 
- static void rcu_preempt_depth_set(int val)
- {
--	current->rcu_read_lock_nesting = val;
-+	WRITE_ONCE(current->rcu_read_lock_nesting, val);
- }
- 
+-/*
+- * Why is there no list_empty_rcu()?  Because list_empty() serves this
+- * purpose.  The list_empty() function fetches the RCU-protected pointer
+- * and compares it to the address of the list head, but neither dereferences
+- * this pointer itself nor provides this pointer to the caller.  Therefore,
+- * it is not necessary to use rcu_dereference(), so that list_empty() can
+- * be used anywhere you would want to use a list_empty_rcu().
+- */
+-
  /*
+  * INIT_LIST_HEAD_RCU - Initialize a list_head visible to RCU readers
+  * @list: list to be initialized
+@@ -318,21 +309,29 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
+ /*
+  * Where are list_empty_rcu() and list_first_entry_rcu()?
+  *
+- * Implementing those functions following their counterparts list_empty() and
+- * list_first_entry() is not advisable because they lead to subtle race
+- * conditions as the following snippet shows:
++ * They do not exist because they would lead to subtle race conditions:
+  *
+  * if (!list_empty_rcu(mylist)) {
+  *	struct foo *bar = list_first_entry_rcu(mylist, struct foo, list_member);
+  *	do_something(bar);
+  * }
+  *
+- * The list may not be empty when list_empty_rcu checks it, but it may be when
+- * list_first_entry_rcu rereads the ->next pointer.
+- *
+- * Rereading the ->next pointer is not a problem for list_empty() and
+- * list_first_entry() because they would be protected by a lock that blocks
+- * writers.
++ * The list might be non-empty when list_empty_rcu() checks it, but it
++ * might have become empty by the time that list_first_entry_rcu() rereads
++ * the ->next pointer, which would result in a SEGV.
++ *
++ * When not using RCU, it is OK for list_first_entry() to re-read that
++ * pointer because both functions should be protected by some lock that
++ * blocks writers.
++ *
++ * When using RCU, list_empty() uses READ_ONCE() to fetch the
++ * RCU-protected ->next pointer and then compares it to the address of the
++ * list head.  However, it neither dereferences this pointer nor provides
++ * this pointer to its caller.  Thus, READ_ONCE() suffices (that is,
++ * rcu_dereference() is not needed), which means that list_empty() can be
++ * used anywhere you would want to use list_empty_rcu().  Just don't
++ * expect anything useful to happen if you do a subsequent lockless
++ * call to list_first_entry_rcu()!!!
+  *
+  * See list_first_or_null_rcu for an alternative.
+  */
 -- 
 2.31.1.189.g2e36527f23
 
