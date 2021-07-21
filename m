@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C5C3D1A2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 01:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9333E3D1A2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 01:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhGUWZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 18:25:26 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:40554 "EHLO
+        id S230433AbhGUWZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 18:25:31 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:42648 "EHLO
         mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230429AbhGUWZS (ORCPT
+        by vger.kernel.org with ESMTP id S230367AbhGUWZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 18:25:18 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LMvDcM009325;
+        Wed, 21 Jul 2021 18:25:20 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LMvPNG003370;
+        Wed, 21 Jul 2021 23:05:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2021-07-09; bh=JvqKnCWQpghkClE9kLMTl3jAzhYt2NXfJ3KJieza1Sk=;
+ b=qWynysMrLY2cpevrKmwk2vrQFNEFKGtrSbNdwhi5XeYAfGMG3qjw4k3A6hQbSzgprsbg
+ /ruorWdvTtJxdX012E/d/L+clYrgehYn0xXb+mp3VrhzBrkxicotLNWmd3ePuF7xZpbS
+ 7wHeZmOQ1BH6ALhs8M7aEM6HznR2tHXtwnzvc3PK4/dWzBXy4gFhaTWJ9b1Wueee9HQy
+ EWD1kW5ryR4nqT1ZNTYVrp8WoL7uOEb38RsVMD/UCtm4h6kmY3SC5vA8K060pj/79Sz1
+ yrW76GA43FugLd1wSsBMSIPWwRkvX/qqGZk7mtho6WSruSWoJZFPZhm4A452AWQN3dn+ zg== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2020-01-29; bh=JvqKnCWQpghkClE9kLMTl3jAzhYt2NXfJ3KJieza1Sk=;
+ b=qOFKH6Dja0B86MXTz3RJPLmIluRHnLm5wK24wg6gVzs6TqfcA+Ag45b1yMFEWVxrWmhB
+ pfYC53eI6hoDNgDoCCwP8LypLyYoDHJX7laHHE9HIKHHhrYzD8zDPQAaGxmkEf5U5ndX
+ pPLOgKEirsBajvVxme0EJ44Kpa4oCGEOWWwJJLgxe/Blww+Ufdtmo+/2P8t7euLSvyKX
+ MFm1SeATYujEjLUhLY0LkeNe4d/IDtVdtLSwckBpTpeAsPxQ59kmPlmNIrL0Gux+EUym
+ j2lhulUuve/URebS5buNROv7gVg8EFds/nHZqv0dff2vr2tdTnAIllqQJDXJ3b87bVsZ XQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39wyq0uqqh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Jul 2021 23:05:39 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16LN59eQ058644;
         Wed, 21 Jul 2021 23:05:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2021-07-09; bh=MIxRDmB8nzh0QgtoXqdcIgpuGwLwYMo24Dc9amAPQRU=;
- b=GOxLJ5Uy8KAS0ltujil3lUmhkt9DLfbwkfuyz9HSqEtSamy4Hd1bRKLHYRF0c8C1havw
- FIjocxvusNChP4/LDK4leorzU/d8gEcwHZBcGmLNH+okYzTcJdWSH4GHASkM35fIpmnj
- QS+E/uBeRCp5TjA5eNnMJb1l+ox4/iFiiNA4uAkAnpgexFDFK9E30zDPt/vkL9HiX5Hq
- VIxAy+Y6lf/MMtorCq1ur7s//kPYjz8Mcc47yFyF5/NfLlt96zqTEOEWif+bwUoe9B/J
- z51Kk11xHG1JJegzDrrcjWQ0gHzgkLDc+Ka2FHMLZULfkGNMNfyS3BToU0x/1+s0yDoU WA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2020-01-29; bh=MIxRDmB8nzh0QgtoXqdcIgpuGwLwYMo24Dc9amAPQRU=;
- b=sF+mi86m7x+7klhRkbAiTsU7KXFVZmk8gXSXF98W3uxX/ZN8PSnwaB3BHpaA6/3xNEa0
- GnI4oLcFHDXcnIuS5LJi+bLHhA1jImcEhR1iVW+R212nEQ1eWlNKGZLsjIN8vKGoJvLh
- T6X7IvA9dSeOL+KYeLDKA8HmcNQWVnqKlrkWNa0hmJxvLUllcxLLL5C6km/BDILkvPt3
- tHZL+WVyQ3f2YI1Gjdof56ydFMs7vfk6rBgWJwcXgCLbmpA/gc2lwAZusmOVHS/B0RAT
- 7Q1DOWFdDEMlZbyT5jgbzRM9GzQ6ac8A/291H9Bili21c+p/viXuSIkCRH4eVsmbusZw lw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39xu2fr5wr-1
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2041.outbound.protection.outlook.com [104.47.73.41])
+        by aserp3020.oracle.com with ESMTP id 39uq1a3wgp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Wed, 21 Jul 2021 23:05:37 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16LN0ZqG143586;
-        Wed, 21 Jul 2021 23:05:36 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2042.outbound.protection.outlook.com [104.47.73.42])
-        by userp3030.oracle.com with ESMTP id 39umb3qe17-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 23:05:36 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TKX++ncLI05qY2xt2tYwGhZoVkocEzGyL6v+MRLKI7pIStAa50FbZU/r15B/Tmhastf0yHr/pM9ROAdLSkcMMRGbx82jbZtdmvMXK4WnrYqU7yi14S/MoYdfA0kMdbb287eEWhOqjR5RdY8DHVGIduNMTfcV9R5+HLty9vNxiKmo8XZe7rBXbaVRcEB5sjyWvdj0vvC2ca/zYw6LVk6pWL1Bn7QammDOKjecbRqKcULHfjgUH80hK8hlLgdjOEuU8T4t80TmKR2xrw1JSQcbV52UABGoSPd9BBQ0+jy9rpiuNZwGtiN9OKTSpEoh9cZblAHxozWUwRisHqXFtV9vZg==
+ b=hbmXM0GCvfhlDm1zsMxXsePWR7lL5lTjK7yX7m3RzzmsGWvOiOPonwKRffgLR2rLYPyzf8fs0PmAZx/1Eczt1EE33DxPm6i+zqrlDPEndBs6R+MSvvPQTRcUxJkKeMeDOJ/th67um0Cs56eqxTczFXst3R7arYYfYdvN36l6rTq/vmMrLHbp24Cn+MtQV5CGGoUhJ64ngZD/neC4Kks7GmK7FHBc3JtfINSJ+Ws9Zaks814fGH1GOXoasv1MgrIC3bNovReZ2h+ECJI47XApbanYczrz+BARknobimFOeP8VBHi/5EYgblpnjAaRnjVk4eQG5/Xyipw69TdyFmNWCg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MIxRDmB8nzh0QgtoXqdcIgpuGwLwYMo24Dc9amAPQRU=;
- b=dSh3VwM4o9nH9dvwiyS2LklbEjIaZNSq2P1Y0K7+F5LliEwhvu4mRVcYwEiY0pVNaagevvJD7mM2OrDOdY4hpMiiJUT0lfdzSF08SiTz8V9gKylmAbH+fp2SuZGKWc/pfzRuA9ALYw+7g4ZvkJ3Re1ntnlSFbz2SyoB7ioxQytJZb6XJIsB5mIQ37SUUY5T5FGZ7Uq6tDgL3lleRht7lJ9QT4VPJhx6zwopUO2qJQbczLNwrOc439fIv87DDmamzmUccJBwkR+wRO3vZFqYS7uBIo423EQfxdgipODNayPchd7/9WOtxaHdTYjO9giv629noNOl7sZHxXBA86BxKRQ==
+ bh=JvqKnCWQpghkClE9kLMTl3jAzhYt2NXfJ3KJieza1Sk=;
+ b=Rls9mM0IDLY5m9IyNXrS92wANgxqnoLZk/+ei3n6IF4AQbWJbGvaw7hHBbZItPmKWmAFKJtcbEcNib+76Nm5Y4Xvk+J5sUYpjpTsPgOS8X6mUim2/ggJGYhF8v0/sFx2BgfYPia5OK2c5roydJNtYyOiMUtCeJChnTyvbC1XLdkDQ6QBnFFxse/rfsGgQTixs7WpJo/Le3mjyow381OB/yIiWrvgKIVmC1fh1FHv3facD0HiQHR5/1h1QwqpAJjRRU53wzhkTz/Nr3qJQ+wBZpeN1v59rIIek/KrSuLbGi9kJjrktYwCyf3RjyG1dp7otIARAt3I2Gvz4pY+2hCN/g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MIxRDmB8nzh0QgtoXqdcIgpuGwLwYMo24Dc9amAPQRU=;
- b=dihowa4tBlV0ceufeFGsKj29cZ0flQ/uHoTtoxph44cowHrTJQ/3OEhlkZ/4rvVNDyIquP1ysG1JIC3RTKE5Rw0zhXGQpYFmAhNeZCW8RmVDySwmYabKkLdEJWMf7yk8espE+SxhlFIXj9QYefl7odA3rVn7i8373nkOao3e1+s=
+ bh=JvqKnCWQpghkClE9kLMTl3jAzhYt2NXfJ3KJieza1Sk=;
+ b=jl9y8U0QS9w6HnBbK4FAATki+pxbAxGhspEmQpIF1NGM2YbNOnlEkFmiBBLEnjy+ykKeoUZ/8jkIEkkrU1k9sjf2H1W/j55QLtPpTpVdXKdOx6F6Ty7sQb6oJBnA1VYB49N7HdZju5oJdWYNmFrg+yd4Mcro6H3lXzPLJ3TVgzY=
 Authentication-Results: kvack.org; dkim=none (message not signed)
  header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
  by BYAPR10MB3735.namprd10.prod.outlook.com (2603:10b6:a03:11e::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.26; Wed, 21 Jul
- 2021 23:05:34 +0000
+ 2021 23:05:36 +0000
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::8d2a:558d:ab4a:9c2a]) by BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::8d2a:558d:ab4a:9c2a%5]) with mapi id 15.20.4331.034; Wed, 21 Jul 2021
- 23:05:34 +0000
+ 23:05:36 +0000
 From:   Mike Kravetz <mike.kravetz@oracle.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     David Hildenbrand <david@redhat.com>,
@@ -80,9 +80,9 @@ Cc:     David Hildenbrand <david@redhat.com>,
         David Rientjes <rientjes@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH 6/8] hugetlb: vmemmap optimizations when demoting hugetlb pages
-Date:   Wed, 21 Jul 2021 16:05:09 -0700
-Message-Id: <20210721230511.201823-7-mike.kravetz@oracle.com>
+Subject: [PATCH 7/8] hugetlb: prepare destroy and prep routines for vmemmap optimized pages
+Date:   Wed, 21 Jul 2021 16:05:10 -0700
+Message-Id: <20210721230511.201823-8-mike.kravetz@oracle.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210721230511.201823-1-mike.kravetz@oracle.com>
 References: <20210721230511.201823-1-mike.kravetz@oracle.com>
@@ -93,379 +93,199 @@ X-ClientProxiedBy: MWHPR1201CA0021.namprd12.prod.outlook.com
  (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from monkey.oracle.com (50.38.35.18) by MWHPR1201CA0021.namprd12.prod.outlook.com (2603:10b6:301:4a::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22 via Frontend Transport; Wed, 21 Jul 2021 23:05:33 +0000
+Received: from monkey.oracle.com (50.38.35.18) by MWHPR1201CA0021.namprd12.prod.outlook.com (2603:10b6:301:4a::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22 via Frontend Transport; Wed, 21 Jul 2021 23:05:35 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: abf508e1-0f52-4e57-cdd9-08d94c9c0b4e
+X-MS-Office365-Filtering-Correlation-Id: c96bdbdb-4815-488b-ec5f-08d94c9c0c6e
 X-MS-TrafficTypeDiagnostic: BYAPR10MB3735:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB373544C45514AAA2A08EF314E2E39@BYAPR10MB3735.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-Microsoft-Antispam-PRVS: <BYAPR10MB373522E960F248EFFC4A97C0E2E39@BYAPR10MB3735.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1091;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UtSVaq29R2H7e6Lhe416hhMcRakCjyUwt+8B6nX+pWXV6PpHEoiG73TPdwZ1a6x5gIkuX6fW8jibHmxCmjx3vyLsfpJ0kmRb0sRwbplVb+pG5V5UUuZ0X2ppH15CuyZF1kLbko5OLcWtyIR8opHbLHbwkvHMiDNbDdaQ4WwlTha2JxAG0vEgxOjhNVC0ZwPOfkIRncxdjbOo93t4sS2d/DmlJ2twaZ6O48j4XaVsrjMCJykrPNSMRthQi3+tg/PJYEA9RTiRrAJ7ESoLjOIAmSwMKedypUFTGVZPLxKM5iLCV4YaxAUAiXDhcCWW9iSZPO+i+mw75Riwg/5ZQXBAU9ITOMpT5Bi45YxXnj8TLwF9aWahfAG49Oh6CkrRNfqCGGEAu/DBSGFgEHYRwmW5rB6tHXDMnHG9eoPzQcarywdos7wKSyw+3bDEdaAhX99XIpvA6/CY9YDHEdFKF9tnP+ufW+P4nStPBtdOB48F1Z6vjLtv9JvA5kP0BgJqjC4sPcI94utqOUh9lqY2MrGMrTTmiPMI/ntrvoiOmki20qbjzM9/+uhzbfJrs8J5tVsDcHcRbGzbdWOY390fmykK4Yg/PgTf//90s4d3cS+d+8tXr4OE1nxwmcWck0zrqeDsLV0COWg7tgL+RlYHvFk1PlWGSSfDin7gybIt3NcMRuhlscfAqCu3/UF85vGXeMXtUfdC+Rv2QJLjx1QdExImaA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(39860400002)(396003)(136003)(376002)(186003)(66556008)(478600001)(52116002)(86362001)(2616005)(107886003)(8936002)(5660300002)(1076003)(4326008)(6486002)(2906002)(66946007)(66476007)(956004)(6666004)(26005)(316002)(38350700002)(38100700002)(7416002)(36756003)(83380400001)(7696005)(54906003)(30864003)(8676002)(44832011);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 8sU5BlFyuYBRECT8s60d5X5P857ud51bIAgm2W/Y5yt8TMTXpJFSWyYaFl1+aSh67+n988glZFZc6a7b2a/J2LFMtDfEsiMbGLRQ5h0Tc6NB8p7N8UCs7G0TgoNvSZnAvttv4kykZK0ekSw77zpGTdOjaeCi7TCRpStRtPXrkJcCqf9yBhPq5MpFyb2VDVomQTXEZcr9hiQVKQ4Wi6XUvSAu9naMsafHADLVDz5ITxy+Ax7R5nhoKpCOQzdZWlE+N7utnR86rqz2tWu6TGifrxRYwq45EnktV6TEzXaNKnQQR0OoE76nMAaNWnvBgap32I9U4tyDnAwfzWUR8r4cr9Og5vOnkHTssa+HcX/5pQhpJgqbpbQP9+BDOwiTQ8+9WW1DbTNmnBsBrBSak9RrleC2abqHui/EAjbfu1YDjCImwyOoq/TQkUZ9RfHBzNOiXSCLi5QrK6kDG1Z29hghPejnYmPusiAN3WMGOaDJORKyOsA1wltd8UEwFBA9aytYmGr04UZ1lz+vmi3MAvrf7e75cb9G04bkHmW8DZKuXvcOCzaacuBIUti5gCNc4bB1cZLUkhDDLchap70TdDpXvJCaetnCD8+IvUQaZ8QI8xFbZnYCbBMI+s6QJv1lbpo/X1j81SX7mgTk4j0LYoTusbA+bobfKNLsmXrQ+sHJZbutgRPzU8DVxhD14CehNheWsQOXUIexxqyxbklVt+APYA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(39860400002)(396003)(136003)(376002)(186003)(66556008)(478600001)(52116002)(86362001)(2616005)(107886003)(8936002)(5660300002)(1076003)(4326008)(6486002)(2906002)(66946007)(66476007)(956004)(6666004)(26005)(316002)(38350700002)(38100700002)(7416002)(36756003)(83380400001)(7696005)(54906003)(8676002)(44832011);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XIVWhSapFP0sga6CMAaCIqCGZhnWqy7Gw2/qWdtCbfsQ5JSJU8sbckPokcas?=
- =?us-ascii?Q?Px3lrX0DtVp9VDpPGxqF71YHbD0loxBS2hulDB1UIk4GgiU46pHXnJpjXItv?=
- =?us-ascii?Q?hZWi7HNS2FNhC4Bv189oR17es63IW9us/ApLUppgntEC0CiaJZvmk3+b9akD?=
- =?us-ascii?Q?Fgx+ztwj6PM+lMcbwTaZVtWQ/iXbQR6jBfQRh90QmWYsUxPjAa/86w+HVzyz?=
- =?us-ascii?Q?I/JRowq1QLdjwyttwkvMiah0LgCwEhSy53iOH00wzzVKyEdtimLgjbajfr4c?=
- =?us-ascii?Q?6Dlasyv9+5PyrFgxpMty+qMh3+aL/0UaWcqVqWMqi0cljs1fjXVomXELA/4d?=
- =?us-ascii?Q?86Z9Nvvjr8c/bARvoqkZcqwTw606kxn6Dt0g34R4mbPl/g+2VtG3E8uJ5kVm?=
- =?us-ascii?Q?Iki0dGI1i5eJ5wx7ZhAJcQDrKejLB1y/Yc20toYVL8SfXhIZQvG+V73+IbPk?=
- =?us-ascii?Q?1moa2oUD4QAopOZyYxyNDWT1fWwzbFc0kqp1lYOX1Hj8BYvdA57vyi3BOSXN?=
- =?us-ascii?Q?kj2ylPuzgX7pZJ4WXU/SPo4jLP/+Ks9xL6+PTnw+q4z+FT4hG/jnOYBk6qyF?=
- =?us-ascii?Q?54MC5NBl5aFQbn/SkLITmFI4JERvtYtpXKHYeU5B29MXaE23CvM1whvpl6YT?=
- =?us-ascii?Q?KDKIWgPWkRTgvLyCRltrgDgx8PxF6DzzkdY2lNnb5efLAbv9Bfy9r9W1VaNJ?=
- =?us-ascii?Q?8o1ctxe7Lgku/imseVoNCOLFPWD1x0mOjDr8glg7t7Dd2vlbQ4Wf2s3AYjBr?=
- =?us-ascii?Q?79j/+FzkU9ddEcK7P4aeMwFEOtJ0chR8VcRm6a0GNMG6fLmSmoxe+GR8zQ/+?=
- =?us-ascii?Q?VZCWeF7ZHseQFAEBtpILIn4XZXyUE2iR1xvVIrKKJ7CwmVGp1pBVIi5Cud8o?=
- =?us-ascii?Q?qUvOqSxxtod5jdG17pSm9G2sLNGtpDJQCMTt9tyyBQ4NoFw3p9AWpB/0M/t+?=
- =?us-ascii?Q?BSFhrkIHDnfg5vhR4St0iQav5tlH0tyweEVyz6kfO1rWYNA4t96IgQB9JKXe?=
- =?us-ascii?Q?w8jeKqb5wa9xNKFq4GcuQEqRS3c1aLn3SVcYH1VtFoiWUSgqRNAbBNSoXeGY?=
- =?us-ascii?Q?WzJpKb1tncmYtDMcXr82Ecd1TD8DSS4iRfB6KwfIfjpI1POKuTnFBc8hsOn7?=
- =?us-ascii?Q?nQTtnxk5rIaY7sOY4kymWIJXnna0ir2oyne+d2O/QdeCfeR9mIVi4co5/tkb?=
- =?us-ascii?Q?h3eSRQAv5y/LVWUqwfTPhchC73gzAfbTXxvYRB4ce6JwXdmJE7SxVWQ8Myuz?=
- =?us-ascii?Q?tWJMfgbigQDcXUcUrQLNppUNU5v8QcFFzOZhroYjPR+htZbZDfJvxd7kLsZ2?=
- =?us-ascii?Q?kHD9uJh8JF0M/030QlXrDiXJ?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?28tmU5xpXiYvCMJgwQK5H14eXlyvRM53eEDBL+YrJRM5JXDB+9cxJBMzBybw?=
+ =?us-ascii?Q?VRgk8I832KFW1qzapryEs5F0Z5zF5l2xmPbyM4ZChlC5xUPH3vSJikqMudfv?=
+ =?us-ascii?Q?iuXZabah3JQyMXXcJ7ZyQgnFXVqMdXjtYiHL3SFIijvSXfwxuzd4qyl9kgq4?=
+ =?us-ascii?Q?kTBAKwVpNZSgfowXA+OJ3Ov8OlyjoPL3WHMDiNcwjp0OUrJmZQP5bTVOY5xr?=
+ =?us-ascii?Q?U/PA+HRpVwSmtfN7JSuxIWA+wVl9+3vfnSSR3xfsmVEl6a8tX4mwyYKSQftn?=
+ =?us-ascii?Q?qzwJc5nXDOzO8J+hxFJEoUaIqSS2exACvdZDPyoqmJvsi71tLvolgCA87qMT?=
+ =?us-ascii?Q?Rj7Ap0nUmzFuUOxXLRHqiZhS/ISZ/VJzK6UfNdhtpjeo+KblWGT517sw5izj?=
+ =?us-ascii?Q?VviZPddokZQkt+l0XdQCoiYmsGnsIs6l0N4OcKdPMBymtEhOdsZs3H1dqG3h?=
+ =?us-ascii?Q?GWpHY9amBZghmPslb9owKfkL9BlPv4dv9uxUOc25/Vn4vDIy28c3k+NDR91O?=
+ =?us-ascii?Q?9prncbohWs8aPx8PWBFmHaEi77Z7zkVhYLyGDCmpHfCMf0sWre1uxseshRJE?=
+ =?us-ascii?Q?bwPe7wAfPYy1jOCbyvbGiL0IbXcSj7ne3GFHE6n1zTephT/uvYFFIbMSRxOr?=
+ =?us-ascii?Q?KGMLijiXBtSve+QlxXZ4efqf+3xa4eZGScwAyVCGyagg8E8+iOfvPf1bs+/+?=
+ =?us-ascii?Q?rNMvIkvCWuNWQG3MngRglotlzfyKjGQ8NBxU4P0/GQRJGKZfamG3/Lr9KVwm?=
+ =?us-ascii?Q?GNHhJghqrjokJgf5+DjHa7INJZf9lfEyYPrfEqJtxgn0tfO8zjGMsagMz591?=
+ =?us-ascii?Q?3Vkr/h8/i8gaOFk5sprWPHttuj9MAvDxBzf3gMJiB5o/Mc2UeBvXb7NDkubc?=
+ =?us-ascii?Q?NkQJSDN31iBVfKoWqIRnGXHib9ZlESPM28ieg3dHhM/Hg0Usu6Vq//LIVTs7?=
+ =?us-ascii?Q?44dojVUKy7uSe27a01+uxrQYpC8FTLX/kuJH2OV8VScTn0G3J+B9VFcTiHD1?=
+ =?us-ascii?Q?7SuaLzZ/ICvsDHfkKtO7C8dkKb4iKwV/YiKBxDhQK2hXbfFtauncpiIYuvhP?=
+ =?us-ascii?Q?w1u/juD14o8xfylRzw4P/Y8uGBP1eA6wsAXBhAnb7xqRiQRElUypyJpvUqiS?=
+ =?us-ascii?Q?7J6OMwk71oQ3R8pw9vnZ6FUFSs4+IP75qFsC/OdwXjy5X7IHSUgldgemmfzN?=
+ =?us-ascii?Q?Rn4jJdqUAyEWkJEMBnQkMhvcWogAw2Hjyx4rrFA13fSjfE63lGs+QpMM1a6n?=
+ =?us-ascii?Q?k+57yu+OHYzwgYFhKJPjSiKVNQiQgAyxhpjk7HqmzOjDyo0C3PAwK20NmS1b?=
+ =?us-ascii?Q?Gtf2xjui7rnaPT+3kCHf2B5H?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: abf508e1-0f52-4e57-cdd9-08d94c9c0b4e
+X-MS-Exchange-CrossTenant-Network-Message-Id: c96bdbdb-4815-488b-ec5f-08d94c9c0c6e
 X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 23:05:34.0751
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 23:05:36.1525
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: K5fW3Ys/lwaf+eytBHiz20vs84O6dlkvTbXklTYGzYwxdXhBcVK6kzlmLBq5U/Q71foeIzRgNGEtZmen5aFICg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: uC3bd4u0O4hLDGSWtROcCiOx0XuO4alBofrtwXWI+CKvOihTtNYG6H2xS1I99UhE6Zz6WX2eyu4nmOI2jxJOuw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3735
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10052 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
- mlxscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107210137
-X-Proofpoint-ORIG-GUID: SI4Vrv7gCgMFVQL_iyJnfJ7rX6OI_OLH
-X-Proofpoint-GUID: SI4Vrv7gCgMFVQL_iyJnfJ7rX6OI_OLH
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ mlxlogscore=999 suspectscore=0 bulkscore=0 spamscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107210138
+X-Proofpoint-GUID: YPvNgFB6bkiZhgYIUnFiOWh-9rQVDfoZ
+X-Proofpoint-ORIG-GUID: YPvNgFB6bkiZhgYIUnFiOWh-9rQVDfoZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When demoting a hugetlb page with optimized vmemmap, we allocate vmemmap
-for the entire address range represented by the huge page.  Then, we
-split the huge page into huge pages of a smaller size.  When preparing
-these smaller huge pages for use, we optimize vmemmap for their
-associated address range and free vmemmap pages.
+When optimally demoting huge pages with vmemmap optimizations, the
+routines which destroy and prep hugetlb pages need to be modified.
+Currently, these routines expect all vmemmap pages to be present as
+they will write to all page structs for tail pages.  To optimallly
+handle demotion of huge pages not all vmemmap pages will be present.
+Only those pages required for the demoted pages will be present.
+Therefore, the destroy and prep routines must only write to struct pages
+for which vmammap pages are present.
 
-It is sub-optimal to allocate all the vmemmap pages associated with the
-original page and then free most of those pages when preparing the
-smaller huge pages after the split.  Instead, calculate the number of
-vmemmap pages needed after the split and just allocate that number of
-pages.  Then, only populate those areas of the vmmap required for the
-smaller huge pages.
+Modify destroy_compound_gigantic_page_for_demote and
+prep_compound_gigantic_page_for_demote to take vmemmap optimized pages
+into account.  Use the hugetlb specific flag HPageVmemmapOptimized to
+determine of this special processing is needed.
 
-Introduce two new routines:
-- demote_huge_page_vmemmap - This has knowledge of the hugetlb demote
-  process and will calculate the number of huge pages needed for the
-  smaller huge pages after the split.  It also creates a 'demote_mask'
-  that is used to indicate where within the address range of the
-  original huge page the smaller huge pages will reside.  This mask is
-  used to map vmemmap pages within the range.
-- vmemmap_remap_demote - This is the routine which actually allocates
-  the vmemmap pages and performs vmemmap manipulations based on the
-  passed demote_mask.
+These modifications will be used in subsequent patches where vmemmap
+optimizations for demote are fully enabled.
 
-These routines will be used in a subsequent patch.
+Also modify the routine free_huge_page_vmemmap to immediately return if
+the passed page is already optimized.  With demotion, prep_new_huge_page
+can be called for vmemmap optimized pages.
 
 Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
- include/linux/mm.h   |   4 ++
- mm/hugetlb_vmemmap.c |  60 +++++++++++++++++++++
- mm/hugetlb_vmemmap.h |   6 +++
- mm/sparse-vmemmap.c  | 123 +++++++++++++++++++++++++++++++++++++++++--
- 4 files changed, 189 insertions(+), 4 deletions(-)
+ mm/hugetlb.c         | 17 +++++++++++++++--
+ mm/hugetlb_vmemmap.c | 12 ++----------
+ mm/hugetlb_vmemmap.h | 10 ++++++++++
+ 3 files changed, 27 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 7ca22e6e694a..269b135489e6 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3080,6 +3080,10 @@ int vmemmap_remap_free(unsigned long start, unsigned long end,
- 		       unsigned long reuse);
- int vmemmap_remap_alloc(unsigned long start, unsigned long end,
- 			unsigned long reuse, gfp_t gfp_mask);
-+int vmemmap_remap_demote(unsigned long start, unsigned long end,
-+			unsigned long reuse, unsigned long demote_nr_pages,
-+			unsigned long demote_mask,
-+			unsigned long demote_map_pages, gfp_t gfp_mask);
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 9bbfeba3e1ae..4040dd3c6fe3 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1255,12 +1255,18 @@ static void __destroy_compound_gigantic_page(struct page *page,
+ 					unsigned int order, bool demote)
+ {
+ 	int i;
+-	int nr_pages = 1 << order;
++	int nr_pages;
+ 	struct page *p = page + 1;
  
- void *sparse_buffer_alloc(unsigned long size);
- struct page * __populate_section_memmap(unsigned long pfn,
+ 	atomic_set(compound_mapcount_ptr(page), 0);
+ 	atomic_set(compound_pincount_ptr(page), 0);
+ 
++	if (demote && HPageVmemmapOptimized(page)) {
++		clear_compound_head(page);
++		nr_pages = RESERVE_VMEMMAP_SIZE / sizeof(struct page);
++	} else
++		nr_pages = 1 << order;
++
+ 	for (i = 1; i < nr_pages; i++, p = mem_map_next(p, page, i)) {
+ 		p->mapping = NULL;
+ 		clear_compound_head(p);
+@@ -1517,6 +1523,7 @@ static void __update_and_free_page(struct hstate *h, struct page *page)
+ 			return;
+ 		}
+ #endif
++		prep_compound_page(page, huge_page_order(h));
+ 		__free_pages(page, huge_page_order(h));
+ 	}
+ }
+@@ -1705,9 +1712,14 @@ static bool __prep_compound_gigantic_page(struct page *page, unsigned int order,
+ 								bool demote)
+ {
+ 	int i, j;
+-	int nr_pages = 1 << order;
++	int nr_pages;
+ 	struct page *p = page + 1;
+ 
++	if (demote && HPageVmemmapOptimized(page))
++		nr_pages = RESERVE_VMEMMAP_SIZE / sizeof(struct page);
++	else
++		nr_pages = 1 << order;
++
+ 	/* we rely on prep_new_huge_page to set the destructor */
+ 	set_compound_order(page, order);
+ 	__ClearPageReserved(page);
+@@ -1749,6 +1761,7 @@ static bool __prep_compound_gigantic_page(struct page *page, unsigned int order,
+ 		} else {
+ 			VM_BUG_ON_PAGE(page_count(p), p);
+ 		}
++		p->mapping = TAIL_MAPPING;
+ 		set_compound_head(p, page);
+ 	}
+ 	atomic_set(compound_mapcount_ptr(page), -1);
 diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index c540c21e26f5..c82d60398c16 100644
+index c82d60398c16..01c2cc959824 100644
 --- a/mm/hugetlb_vmemmap.c
 +++ b/mm/hugetlb_vmemmap.c
-@@ -264,6 +264,66 @@ void free_huge_page_vmemmap(struct hstate *h, struct page *head)
- 		SetHPageVmemmapOptimized(head);
- }
+@@ -172,16 +172,6 @@
  
-+/*
-+ * vmammap pages will be allocated and mapped such that this range which
-+ * previously represented a single huge page will now represent a set of
-+ * pages of a smaller size.
-+ */
-+int demote_huge_page_vmemmap(struct hstate *h, struct page *head)
-+{
-+	int ret;
-+	unsigned long vmemmap_addr = (unsigned long)head;
-+	unsigned long vmemmap_end, vmemmap_reuse;
-+	unsigned long demote_mask;
-+	unsigned long demote_nr_pages;
-+	struct hstate *target;
-+
-+	VM_BUG_ON(!h->demote_order);
-+	if (!HPageVmemmapOptimized(head))
-+		return 0;
-+
-+	target = size_to_hstate(PAGE_SIZE << h->demote_order);
-+
-+	/* Number of vmemmap pages required to demote page */
-+	demote_nr_pages = pages_per_huge_page(h) / pages_per_huge_page(target);
-+	demote_nr_pages *= RESERVE_VMEMMAP_NR;
-+	demote_nr_pages -= RESERVE_VMEMMAP_NR;	/* pages currently present */
-+
-+	/*
-+	 * mask to identify where within the range new smaller pages will
-+	 * reside.  This will be used to map new vmemmap pages.
-+	 */
-+	demote_mask = ((unsigned long) pages_per_huge_page(target) *
-+			sizeof(struct page)) - 1;
-+
-+	vmemmap_addr += RESERVE_VMEMMAP_SIZE;
-+	vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
-+	vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
-+	/*
-+	 * The range [@vmemmap_addr, @vmemmap_end) represents a single huge
-+	 * page of size h->order.  It is vmemmap optimized and is only mapped
-+	 * with RESERVE_VMEMMAP_NR pages.  The huge page will be split into
-+	 * multiple pages of a smaller size (h->demote_order).  vmemmap pages
-+	 * must be callocated for each of these smaller size pages and
-+	 * appropriately mapped.
-+	 */
-+	ret = vmemmap_remap_demote(vmemmap_addr, vmemmap_end, vmemmap_reuse,
-+				  demote_nr_pages, demote_mask,
-+				  RESERVE_VMEMMAP_NR,
-+				  GFP_KERNEL | __GFP_NORETRY | __GFP_THISNODE);
-+
-+	if (!ret) {
-+		int i;
-+
-+		for (i = pages_per_huge_page(target);
-+					i < pages_per_huge_page(h);
-+					i += pages_per_huge_page(target))
-+			SetHPageVmemmapOptimized(head + i);
-+	}
-+
-+	return ret;
-+}
-+
- void __init hugetlb_vmemmap_init(struct hstate *h)
- {
- 	unsigned int nr_pages = pages_per_huge_page(h);
+ #include "hugetlb_vmemmap.h"
+ 
+-/*
+- * There are a lot of struct page structures associated with each HugeTLB page.
+- * For tail pages, the value of compound_head is the same. So we can reuse first
+- * page of tail page structures. We map the virtual addresses of the remaining
+- * pages of tail page structures to the first tail page struct, and then free
+- * these page frames. Therefore, we need to reserve two pages as vmemmap areas.
+- */
+-#define RESERVE_VMEMMAP_NR		2U
+-#define RESERVE_VMEMMAP_SIZE		(RESERVE_VMEMMAP_NR << PAGE_SHIFT)
+-
+ bool hugetlb_free_vmemmap_enabled = IS_ENABLED(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON);
+ 
+ static int __init early_hugetlb_free_vmemmap_param(char *buf)
+@@ -250,6 +240,8 @@ void free_huge_page_vmemmap(struct hstate *h, struct page *head)
+ 
+ 	if (!free_vmemmap_pages_per_hpage(h))
+ 		return;
++	if (HPageVmemmapOptimized(head))	/* possible for demote */
++		return;
+ 
+ 	vmemmap_addr += RESERVE_VMEMMAP_SIZE;
+ 	vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
 diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-index cb2bef8f9e73..44382504efc3 100644
+index 44382504efc3..36274bf0256c 100644
 --- a/mm/hugetlb_vmemmap.h
 +++ b/mm/hugetlb_vmemmap.h
-@@ -13,6 +13,7 @@
+@@ -10,6 +10,16 @@
+ #define _LINUX_HUGETLB_VMEMMAP_H
+ #include <linux/hugetlb.h>
+ 
++/*
++ * There are a lot of struct page structures associated with each HugeTLB page.
++ * For tail pages, the value of compound_head is the same. So we can reuse first
++ * page of tail page structures. We map the virtual addresses of the remaining
++ * pages of tail page structures to the first tail page struct, and then free
++ * these page frames. Therefore, we need to reserve two pages as vmemmap areas.
++ */
++#define RESERVE_VMEMMAP_NR		2U
++#define RESERVE_VMEMMAP_SIZE		(RESERVE_VMEMMAP_NR << PAGE_SHIFT)
++
  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
  int alloc_huge_page_vmemmap(struct hstate *h, struct page *head);
  void free_huge_page_vmemmap(struct hstate *h, struct page *head);
-+int demote_huge_page_vmemmap(struct hstate *h, struct page *head);
- void hugetlb_vmemmap_init(struct hstate *h);
- 
- /*
-@@ -33,6 +34,11 @@ static inline void free_huge_page_vmemmap(struct hstate *h, struct page *head)
- {
- }
- 
-+static inline int demote_huge_page_vmemmap(struct hstate *h, struct page *head)
-+{
-+	return 0;
-+}
-+
- static inline void hugetlb_vmemmap_init(struct hstate *h)
- {
- }
-diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-index bdce883f9286..ac2681bf006b 100644
---- a/mm/sparse-vmemmap.c
-+++ b/mm/sparse-vmemmap.c
-@@ -43,6 +43,15 @@
-  * @reuse_addr:		the virtual address of the @reuse_page page.
-  * @vmemmap_pages:	the list head of the vmemmap pages that can be freed
-  *			or is mapped from.
-+ * @demote_mask		demote specific.  mask to know virtual address of
-+ *			where to start mapping pages during a demote operation.
-+ * @demote_map_pages	demote specific.  number of pages which mapped for
-+ *			each demoted page.
-+ * @demote_tmp_count	demote specific.  counter for the number of pages
-+ *			mapped per page.
-+ * @demote_tmp_addr	demote specific.  when more then one page must be
-+ *			mapped for each demoted size page, virtual address
-+ *			of the next page to be mapped.
-  */
- struct vmemmap_remap_walk {
- 	void (*remap_pte)(pte_t *pte, unsigned long addr,
-@@ -51,6 +60,10 @@ struct vmemmap_remap_walk {
- 	struct page *reuse_page;
- 	unsigned long reuse_addr;
- 	struct list_head *vmemmap_pages;
-+	unsigned long demote_mask;
-+	unsigned long demote_map_pages;
-+	unsigned long demote_tmp_count;
-+	unsigned long demote_tmp_addr;
- };
- 
- static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start,
-@@ -262,6 +275,51 @@ static void vmemmap_restore_pte(pte_t *pte, unsigned long addr,
- 	set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
- }
- 
-+static void vmemmap_demote_pte(pte_t *pte, unsigned long addr,
-+				struct vmemmap_remap_walk *walk)
-+{
-+	pgprot_t pgprot = PAGE_KERNEL;
-+	struct page *page;
-+	void *to;
-+
-+	if (!(addr & walk->demote_mask)) {
-+		/* head page */
-+		page = list_first_entry(walk->vmemmap_pages, struct page, lru);
-+		list_del(&page->lru);
-+		to = page_to_virt(page);
-+		copy_page(to, (void *)walk->reuse_addr);
-+		set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
-+		/*
-+		 * after mapping head page, set demote_tmp_reuse for
-+		 * the following tail page to be mapped (if any).
-+		 */
-+		walk->demote_tmp_count = walk->demote_map_pages;
-+		if (--walk->demote_tmp_count)
-+			walk->demote_tmp_addr = addr + PAGE_SIZE;
-+	} else if (addr == walk->demote_tmp_addr) {
-+		/* first tall page */
-+		page = list_first_entry(walk->vmemmap_pages, struct page, lru);
-+		list_del(&page->lru);
-+		to = page_to_virt(page);
-+		copy_page(to, (void *)walk->reuse_addr);
-+		set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
-+		if (--walk->demote_tmp_count) {
-+			walk->demote_tmp_addr = addr + PAGE_SIZE;
-+		} else {
-+			walk->demote_tmp_addr = 0UL;
-+			/* remaining tail pages mapped to this page */
-+			walk->reuse_page = page;
-+		}
-+	} else {
-+		/* remaining tail pages */
-+		pgprot_t pgprot = PAGE_KERNEL_RO;
-+		pte_t entry = mk_pte(walk->reuse_page, pgprot);
-+
-+		page = pte_page(*pte);
-+		set_pte_at(&init_mm, addr, pte, entry);
-+	}
-+}
-+
- /**
-  * vmemmap_remap_free - remap the vmemmap virtual address range [@start, @end)
-  *			to the page which @reuse is mapped to, then free vmemmap
-@@ -327,11 +385,9 @@ int vmemmap_remap_free(unsigned long start, unsigned long end,
- 	return ret;
- }
- 
--static int alloc_vmemmap_page_list(unsigned long start, unsigned long end,
-+static int __alloc_vmemmap_pages(unsigned long nr_pages, int nid,
- 				   gfp_t gfp_mask, struct list_head *list)
- {
--	unsigned long nr_pages = (end - start) >> PAGE_SHIFT;
--	int nid = page_to_nid((struct page *)start);
- 	struct page *page, *next;
- 
- 	while (nr_pages--) {
-@@ -348,6 +404,21 @@ static int alloc_vmemmap_page_list(unsigned long start, unsigned long end,
- 	return -ENOMEM;
- }
- 
-+static int alloc_vmemmap_pages(unsigned long nr_pages, int nid,
-+				   gfp_t gfp_mask, struct list_head *list)
-+{
-+	return __alloc_vmemmap_pages(nr_pages, nid, gfp_mask, list);
-+}
-+
-+static int alloc_vmemmap_range(unsigned long start, unsigned long end,
-+				   gfp_t gfp_mask, struct list_head *list)
-+{
-+	unsigned long nr_pages = (end - start) >> PAGE_SHIFT;
-+	int nid = page_to_nid((struct page *)start);
-+
-+	return __alloc_vmemmap_pages(nr_pages, nid, gfp_mask, list);
-+}
-+
- /**
-  * vmemmap_remap_alloc - remap the vmemmap virtual address range [@start, end)
-  *			 to the page which is from the @vmemmap_pages
-@@ -374,7 +445,51 @@ int vmemmap_remap_alloc(unsigned long start, unsigned long end,
- 	/* See the comment in the vmemmap_remap_free(). */
- 	BUG_ON(start - reuse != PAGE_SIZE);
- 
--	if (alloc_vmemmap_page_list(start, end, gfp_mask, &vmemmap_pages))
-+	if (alloc_vmemmap_range(start, end, gfp_mask, &vmemmap_pages))
-+		return -ENOMEM;
-+
-+	mmap_read_lock(&init_mm);
-+	vmemmap_remap_range(reuse, end, &walk);
-+	mmap_read_unlock(&init_mm);
-+
-+	return 0;
-+}
-+
-+/**
-+ * vmemmap_remap_demote - remap the optimized vmemmap virtual address range
-+ *		for a huge page to accommodate splitting that huge
-+ *		page into pages of a smaller size.  That smaller size
-+ *		is specified by demote_mask.
-+ * @start:	start address of the vmemmap virtual address range to remap
-+ *		for smaller pages.
-+ * @end:	end address of the vmemmap virtual address range to remap.
-+ * @reuse:	reuse address.
-+ * @demote_nr_pages: number of vmammap pages to allocate for remapping.
-+ * @demote_mask: mask specifying where to perform remapping within the passed
-+ *		 range.
-+ * @demote_map_pages: number of pages to map for each demoted page
-+ * @gfp_mask:	GFP flag for allocating vmemmap pages.
-+ *
-+ * Return: %0 on success, negative error code otherwise.
-+ */
-+int vmemmap_remap_demote(unsigned long start, unsigned long end,
-+			unsigned long reuse, unsigned long demote_nr_pages,
-+			unsigned long demote_mask,
-+			unsigned long demote_map_pages, gfp_t gfp_mask)
-+{
-+	LIST_HEAD(vmemmap_pages);
-+	int nid = page_to_nid((struct page *)start);
-+	struct vmemmap_remap_walk walk = {
-+		.remap_pte	= vmemmap_demote_pte,
-+		.reuse_addr	= reuse,
-+		.vmemmap_pages	= &vmemmap_pages,
-+		.demote_mask	= demote_mask,
-+		.demote_map_pages = demote_map_pages,
-+	};
-+
-+	might_sleep_if(gfpflags_allow_blocking(gfp_mask));
-+
-+	if (alloc_vmemmap_pages(demote_nr_pages, nid, gfp_mask, &vmemmap_pages))
- 		return -ENOMEM;
- 
- 	mmap_read_lock(&init_mm);
 -- 
 2.31.1
 
