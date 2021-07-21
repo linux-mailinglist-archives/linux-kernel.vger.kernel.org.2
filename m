@@ -2,119 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE053D0804
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 06:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE863D0808
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232590AbhGUESs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 00:18:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232359AbhGUESh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 00:18:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19772611C1;
-        Wed, 21 Jul 2021 04:59:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626843554;
-        bh=b6IDKKSTuET5UbImwi5gnCTWu3F5j9/wKXMyH1lizOw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fYCKH6IZ0XCf/I+eSPBPKisIl6CfLr+SjsaBUudlWdY8HOyFC4ym65221NMExS0TN
-         m+JR8LWk+9w6pJOFkE1FAtLcGy4Ic82ZKlTdhFvbELpnSGnumibJJ/+2HWd4CS0Sr7
-         UiHXtO8O7lIS58Fa8RWC5nZvlQ7soKtSMmuQxcuc=
-Date:   Wed, 21 Jul 2021 06:59:12 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Michael Broadfoot <msbroadf@gmail.com>
-Cc:     valentina.manea.m@gmail.com, shuah@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] A reset can be sent anytime and so the vhcd Root Hub
- should renable the port always on a virtual reset
-Message-ID: <YPepoOjwX9WSjJYG@kroah.com>
-References: <YPd1FhI/ASlQ2K9o@michael-gitpc>
+        id S232701AbhGUEUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 00:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232359AbhGUETi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 00:19:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B714EC061574;
+        Tue, 20 Jul 2021 22:00:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IctsTVrtwipEv00mkrFyUnMJXKowudn2hKnX1KBUBjo=; b=IXImCDQ2qlkdgYwRnUusz3CUhb
+        x3Uir6PJDYrIuiJWCCbQXFXPwpEh8Ygz9na3CmtqFlPzGL7QyppNWm2BPlCToQ+A8xvJAk9vE5uh5
+        SmXfvm9o7alqEz7CzZ9hE+WCFs8/IRthEYy0GhaTwoi2aByAbp4fIOzC1OtpxtElaeI182YIe5yyr
+        2otH1MtdwlbtYQ3ZpnEB691t+X9zOoV3WzOESfm2kC81aZxjog/LnuaMAZ75Bhf+6xdE1dox/IBgG
+        X23ZNHb9LrkQ+bWZ9FMOdPlIpuAefmEUeqKDp4krHV4W4ZEpvuJy2WUsRNRemRf6CGm7/0nHH6VRD
+        KxmAJmOw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m64KU-008o8T-0m; Wed, 21 Jul 2021 04:59:39 +0000
+Date:   Wed, 21 Jul 2021 05:59:34 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, hare@suse.de, bvanassche@acm.org,
+        ming.lei@redhat.com, hch@infradead.org, jack@suse.cz,
+        osandov@fb.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] block: add flag for add_disk() completion notation
+Message-ID: <YPeptlG19sdu18jD@infradead.org>
+References: <20210720182048.1906526-1-mcgrof@kernel.org>
+ <20210720182048.1906526-2-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YPd1FhI/ASlQ2K9o@michael-gitpc>
+In-Reply-To: <20210720182048.1906526-2-mcgrof@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 11:15:02AM +1000, Michael Broadfoot wrote:
-> And if the HIGH and LOW flags are not set on the port
-> status that means FULL speed and is not an
-> error (see 11.24.2.7.1 Port Status Bits)
+On Tue, Jul 20, 2021 at 11:20:44AM -0700, Luis Chamberlain wrote:
+> Often drivers may have complex setups where it is not
+> clear if their disk completed their respective *add_disk*()
+> call. They either have to invent a setting or, they
+> incorrectly use GENHD_FL_UP. Using GENHD_FL_UP however is
+> used internally so we know when we can add / remove
+> partitions safely. We can easily fail along the way
+> prior to add_disk() completing and still have
+> GENHD_FL_UP set, so it would not be correct in that case
+> to call del_gendisk() on the disk.
+> 
+> Provide a new flag then which allows us to check if
+> *add_disk*() completed, and conversely just make
+> del_gendisk() check for this for drivers so that
+> they can safely call del_gendisk() and we'll figure
+> it out if it is safe for you to call this.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 > ---
->  drivers/usb/usbip/vhci_hcd.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
+>  block/genhd.c         |  8 ++++++++
+>  include/linux/genhd.h | 11 ++++++++++-
+>  2 files changed, 18 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-> index 4ba6bcdaa8e9..3ea76dcdc8e2 100644
-> --- a/drivers/usb/usbip/vhci_hcd.c
-> +++ b/drivers/usb/usbip/vhci_hcd.c
-> @@ -455,15 +455,12 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
->  			vhci_hcd->port_status[rhport] &= ~(1 << USB_PORT_FEAT_RESET);
->  			vhci_hcd->re_timeout = 0;
+> diff --git a/block/genhd.c b/block/genhd.c
+> index af4d2ab4a633..a858eed05e55 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -539,6 +539,8 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
 >  
-> -			if (vhci_hcd->vdev[rhport].ud.status ==
-> -			    VDEV_ST_NOTASSIGNED) {
->  				usbip_dbg_vhci_rh(
->  					" enable rhport %d (status %u)\n",
->  					rhport,
->  					vhci_hcd->vdev[rhport].ud.status);
->  				vhci_hcd->port_status[rhport] |=
->  					USB_PORT_STAT_ENABLE;
-> -			}
+>  	disk_add_events(disk);
+>  	blk_integrity_add(disk);
+> +
+> +	disk->flags |= GENHD_FL_DISK_ADDED;
+
+I guess I failed to mention it last time - but I think this needs
+to go into disk->state as dynamic state.
+
+> + * Drivers can safely call this even if they are not sure if the respective
+> + * __device_add_disk() call succeeded.
+> + *
+>   * Drivers exist which depend on the release of the gendisk to be synchronous,
+>   * it should not be deferred.
+>   *
+> @@ -578,6 +583,9 @@ void del_gendisk(struct gendisk *disk)
+>  {
+>  	might_sleep();
 >  
->  			if (hcd->speed < HCD_USB3) {
->  				switch (vhci_hcd->vdev[rhport].speed) {
-> @@ -475,8 +472,7 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
->  					vhci_hcd->port_status[rhport] |=
->  						USB_PORT_STAT_LOW_SPEED;
->  					break;
-> -				default:
-> -					pr_err("vhci_device speed not set\n");
-> +				default: // FULL speed
->  					break;
->  				}
->  			}
-> -- 
-> 2.30.2
-> 
+> +	if (!blk_disk_added(disk))
+> +		return;
 
-Hi,
+I still very much disagree with this check.  It just leads to really
+bad driver code.  In genral we need to _fix_ the existing abuses of
+the UP check in drivers, not spread this kind of sloppyness further.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- Your patch does not have a Signed-off-by: line.  Please read the
-  kernel file, Documentation/SubmittingPatches and resend it after
-  adding that line.  Note, the line needs to be in the body of the
-  email, before the patch, not at the bottom of the patch or in the
-  email signature.
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what a proper Subject: line should
-  look like.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
