@@ -2,96 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21AF93D06D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 04:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A573D06F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 05:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhGUCN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 22:13:59 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:44349 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229903AbhGUCNf (ORCPT
+        id S231392AbhGUCWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 22:22:09 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:35791 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230451AbhGUCVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 22:13:35 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UgTuycl_1626836038;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgTuycl_1626836038)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 21 Jul 2021 10:53:59 +0800
-Date:   Wed, 21 Jul 2021 10:53:58 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Andreas =?utf-8?Q?Gr=C3=BCnbacher?= 
-        <andreas.gruenbacher@gmail.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v4] iomap: support tail packing inline read
-Message-ID: <YPeMRsJwELjoWLFs@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Andreas =?utf-8?Q?Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>
-References: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
- <20210720204224.GK23236@magnolia>
- <YPc9viRAKm6cf2Ey@casper.infradead.org>
- <YPdkYFSjFHDOU4AV@B-P7TQMD6M-0146.local>
- <20210721001720.GS22357@magnolia>
- <YPdrSN6Vso98bLzB@B-P7TQMD6M-0146.local>
- <CAHpGcM+8cp81=bkzFf3sZfKREM9VbXfePpXrswNJOLVcwEnK7A@mail.gmail.com>
+        Tue, 20 Jul 2021 22:21:22 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id 830012B004FC;
+        Tue, 20 Jul 2021 23:01:54 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 20 Jul 2021 23:01:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=GohC1Xd2UWQStJhSae6I3++vzG
+        AiFbgghmNjmKdy6j0=; b=WkXI/MCbn1fdpcTgR+wb7KadJo2Vm9HCph5shcJ5fw
+        LYRDLfRigLkGW0a0D0eca5+Io5zoJ+3AcC+MFGyAhfR580IPuGevvY+cCdjxUeH3
+        upWSTgr1WxW1Bi7FuN7NuHWCGaNTTfzAAuGjP9uHLvHwoXYgLtL8eyfw6x0RKQr3
+        HwjDppjmKqICiVBQtS/FUzGnQpzUH2rtQhEE6vLV46mDZC3Qfqr5dl3f4jFl2BLp
+        7s1G41F1pKrT22dEqdDOb9wjED8koMRZMYO3U7yrJ1Z3MDIrSxAgEjDBAQAQy7Om
+        hOUcsg4TfyB59O4hW+4o1/bEnEo4yUViVUQOMkiZOrJA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=GohC1Xd2UWQStJhSa
+        e6I3++vzGAiFbgghmNjmKdy6j0=; b=d1SIOQXhNs3X+miPCQAPoOp2/pnho2Uy1
+        pYjs9EtfY5f/oVC3b+pZ8LjDAoLHZd8yx1S2JbTPGJFEc+CeLidtYfYFlIena/Rs
+        /8RVhnvd2gS0GAyhrUmbTEopQhKfeLS4k+FA0iuxTHiPcm28OVGA0gSjBFD2ALCI
+        /RQCxalysJMESF6nAdXfJBLRRjAlPLUNHqU1MINCmYUvfuRbUvki0ADsg6AGURga
+        6jdBvAUPbq4E+c3+hXT5kobyO/QpwI+j60qdu1CAfgirEjivU6Ld1PjmwwS6Gw/w
+        WFfsSkcCFjpssqJ6P1zhmsdHnwzEUh9+j5tlb1oUb/kPRbkgbHXoQ==
+X-ME-Sender: <xms:II73YGW0qEDVTEvZ2GJHRq1-sRxJyYBvZVvXVk6dLNFF2d8ADMJzrA>
+    <xme:II73YCmp-UQ2Boiz39sGD21Sd4vdp37WhODwXIde9Zi4BtD0WVxZwMHKCtj770zIg
+    yxsykfd9mer8ar6Cm8>
+X-ME-Received: <xmr:II73YKY0dCPWU2gOMNBRy-WqIBuOScgs8xiFvT4FKQIhQirKFYBJ5g0vtHjmtPlOflyilZ3nj_8S>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeefgdehiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhl
+    hihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhephfejtdektdeuhedtieefteekve
+    ffteejteefgeekveegffetvddugfeliefhtddunecuvehluhhsthgvrhfuihiivgeptden
+    ucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrth
+    drtghomh
+X-ME-Proxy: <xmx:II73YNX6skF8MxyWwDXkQV8EfMmJxDsAl5ACgjkilBL17nw0xtUh9g>
+    <xmx:II73YAnvL_WmV8ybFDoPOz9DzLNbUG6BmiEPVdTrtFfD1qn1kszHJw>
+    <xmx:II73YCd5XSHw6t3T1ojDmj_xC_0U4jFhgLbZQAONJHr3z8p704WP6A>
+    <xmx:Io73YJdVhOEQzb6RKtplBhWoAxZeJyLLIUAKuJusIX0M5ja15XCCsfTCXhc>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 20 Jul 2021 23:01:48 -0400 (EDT)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
+        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
+        vkoul@kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [PATCH v3 0/9] MIPS: Migrate pistachio to generic kernel
+Date:   Wed, 21 Jul 2021 11:01:25 +0800
+Message-Id: <20210721030134.10562-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHpGcM+8cp81=bkzFf3sZfKREM9VbXfePpXrswNJOLVcwEnK7A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas,
+I'm lucky enough to get a Creator CI40 board from dusts.
+This patchset move it to gerneic kernel to reduce maintenance burden.
+It have been tested with SD Card boot.
 
-On Wed, Jul 21, 2021 at 04:26:47AM +0200, Andreas Grünbacher wrote:
-> Am Mi., 21. Juli 2021 um 02:33 Uhr schrieb Gao Xiang
-> <hsiangkao@linux.alibaba.com>:
-> > > And since you can only kmap one page at a time, an inline read grabs the
-> > > first part of the data in "page one" and then we have to call
-> > > iomap_begin a second time get a new address so that we can read the rest
-> > > from "page two"?
-> >
-> > Nope, currently EROFS inline data won't cross page like this.
-> >
-> > But in principle, yes, I don't want to limit it to the current
-> > EROFS or gfs2 usage. I think we could make this iomap function
-> > more generally (I mean, I'd like to make the INLINE extent
-> > functionity as general as possible,
-> 
-> Nono. Can we please limit this patch what we actually need right now,
-> and worry about extending it later?
+--
+v2: Minor fixes
+v3: Typo fixes and 0day testbot warning fix (Thanks to Sergei!)
 
-Can you elaborate what it will benefit us if we only support one tail
-block for iomap_read_inline_data()? (I mean it has similar LOC changes,
-similar implementation / complexity.) The only concern I think is if
-it causes gfs2 regression, so that is what I'd like to confirm.
+Jiaxun Yang (9):
+  MIPS: generic: Allow generating FIT image for Marduk board
+  MIPS: DTS: Pistachio add missing cpc and cdmm
+  clk: pistachio: Make it selectable for generic MIPS kernel
+  clocksource/drivers/pistachio: Make it selectable for MIPS
+  phy: pistachio-usb: Depend on MIPS || COMPILE_TEST
+  pinctrl: pistachio: Make it as an option
+  MIPS: config: generic: Add config for Marduk board
+  MIPS: Retire MACH_PISTACHIO
+  MIPS: Make a alias for pistachio_defconfig
 
-In contrast, I'd like to avoid iomap_write_begin() tail-packing because
-it's complex and no fs user interests in it for now. So I leave it
-untouched for now.
+ arch/mips/Kbuild.platforms                    |   1 -
+ arch/mips/Kconfig                             |  29 --
+ arch/mips/Makefile                            |   3 +
+ arch/mips/boot/dts/Makefile                   |   2 +-
+ arch/mips/boot/dts/img/Makefile               |   3 +-
+ arch/mips/boot/dts/img/pistachio.dtsi         |  10 +
+ arch/mips/configs/generic/board-marduk.config |  53 +++
+ arch/mips/configs/pistachio_defconfig         | 316 ------------------
+ arch/mips/generic/Kconfig                     |   6 +
+ arch/mips/generic/Platform                    |   1 +
+ arch/mips/generic/board-marduk.its.S          |  22 ++
+ arch/mips/pistachio/Kconfig                   |  14 -
+ arch/mips/pistachio/Makefile                  |   2 -
+ arch/mips/pistachio/Platform                  |   6 -
+ arch/mips/pistachio/init.c                    | 125 -------
+ arch/mips/pistachio/irq.c                     |  24 --
+ arch/mips/pistachio/time.c                    |  55 ---
+ drivers/clk/Kconfig                           |   1 +
+ drivers/clk/Makefile                          |   2 +-
+ drivers/clk/pistachio/Kconfig                 |   8 +
+ drivers/clocksource/Kconfig                   |   3 +-
+ drivers/phy/Kconfig                           |   2 +-
+ drivers/pinctrl/Kconfig                       |   5 +-
+ 23 files changed, 114 insertions(+), 579 deletions(-)
+ create mode 100644 arch/mips/configs/generic/board-marduk.config
+ delete mode 100644 arch/mips/configs/pistachio_defconfig
+ create mode 100644 arch/mips/generic/board-marduk.its.S
+ delete mode 100644 arch/mips/pistachio/Kconfig
+ delete mode 100644 arch/mips/pistachio/Makefile
+ delete mode 100644 arch/mips/pistachio/Platform
+ delete mode 100644 arch/mips/pistachio/init.c
+ delete mode 100644 arch/mips/pistachio/irq.c
+ delete mode 100644 arch/mips/pistachio/time.c
+ create mode 100644 drivers/clk/pistachio/Kconfig
 
-Another concern I really like to convert EROFS to iomap is I'd like to
-support sub-page blocksize for EROFS after converting. I don't want to
-touch iomap inline code again like this since it interacts 2 directories
-thus cause too much coupling.
+-- 
+2.32.0
 
-Thanks,
-Gao Xiang
-
-> 
-> > my v1 original approach
-> > in principle can support any inline extent in the middle of
-> > file rather than just tail blocks, but zeroing out post-EOF
-> > needs another iteration) and I don't see it add more code and
-> > complexity.
-> 
-> Thanks,
-> Andreas
