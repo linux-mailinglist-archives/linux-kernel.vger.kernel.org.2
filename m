@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2A53D1261
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CA93D1268
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239862AbhGUOru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239858AbhGUOrt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:47:49 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A176C061575;
-        Wed, 21 Jul 2021 08:28:25 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id n4so1578196wms.1;
-        Wed, 21 Jul 2021 08:28:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ShmnrtYGbhLvt22QXVCWVyM3Ev7W7+sJbBBqrGHgNQQ=;
-        b=rKxZB1pvS/SvuENep/NcTB0hlQLeTtAsfDdhBfWv9zZDUYMJgP9XosuhZD+dUtfYRC
-         3MagxQonVNhKfjtqfIMQI8CfFgaJsx+dAnvnlPiGKndkxmjGY5/teW36DS+BhOEZdXQ7
-         NUgPEkwnVxwQKDjQthRcKjZnAy26sBfDO0HQuyKcpx7wdUFz6L+GnmYfsxvtH2B7gubZ
-         CgjjjK07gUA8PrSFXA1gSzVygwhxXo/EaNst+9eo/BEWxE5C0Soub1ij+SfVy7uJL7Qq
-         XF9GGMjHH55BtOb8KOC060G7uSI3IBCHgjBSKTzuR5pPEBjvSAiuq9w5taINfQ7NciUK
-         0bWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ShmnrtYGbhLvt22QXVCWVyM3Ev7W7+sJbBBqrGHgNQQ=;
-        b=a89WpQI/xXfOoaSuJmgrMGtRFHInQY6XDf6QjMrG2m3ypuGP9OnvjR3e7aC/s0Xny8
-         JoLyEoggNvBaIIWMwn7d0pasBqP3vXUlTMRmq2WFagpccEyU1oHS+rhLw9cgUurS64fH
-         aqidUxZ/vJG/lUdVKBmUoyy/RSjzBnDE87tOIKF3CHJQtanA5FHBa225hFvhR96CtWhK
-         G4wwrrbccyG8rV//ERRvKBNqIUXI/aL0n4SB5u/1OMGLiTdYgbEwSTbuhx0MVRLa1wRM
-         OIvr9zbGAB50iB4Arf1VXJFUEVEB1FYvsJQbJbr9WbCzli4cBKkhmAzZzBWdtAqEeaye
-         bSYw==
-X-Gm-Message-State: AOAM5301JnRW6HOp28ncA7qZ/K8EOPeTPd+6uqjVWuLDwFlSCacLbLAk
-        X7ld9br1bz2zsa/0ukqFQbA=
-X-Google-Smtp-Source: ABdhPJxq6WnJ0ScT/U0gui5UDZtIP0bWtXf1gkONTpXPOq6fx3yZGEZjlicl8D48BY3ZwFtJuYMn7A==
-X-Received: by 2002:a1c:7e53:: with SMTP id z80mr1675182wmc.153.1626881303722;
-        Wed, 21 Jul 2021 08:28:23 -0700 (PDT)
-Received: from chgm-pc-linux.bachmann.at ([185.67.228.2])
-        by smtp.gmail.com with ESMTPSA id y16sm246913wmq.1.2021.07.21.08.28.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 08:28:23 -0700 (PDT)
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-To:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] PCI: dwc: do not ignore link errors
-Date:   Wed, 21 Jul 2021 17:28:21 +0200
-Message-Id: <20210721152821.2967356-1-christian.gmeiner@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S239879AbhGUOsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:48:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238083AbhGUOsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 10:48:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68F3361019;
+        Wed, 21 Jul 2021 15:29:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626881363;
+        bh=6Z3/WQ4Gk2tsFmqm7hmsYlmSZnfofpUun0bNut/JX3U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lat3ZQjeyVszUvAcZF4IkW/6EYcIVqgM9NKp3aE/kn3oxkU8/OAPMCCfDuhU6pXWa
+         RN27s+sJxIt17yXIPxK7UzPe9A4YBpGntM3xbvNWmxFg6+UGR9tWBvzjze5PS2EGqr
+         HND7b7dqZrSEK8v3VWBdfPJI4HqCleCc8aPCiQxE=
+Date:   Wed, 21 Jul 2021 17:29:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 1/2] driver core: Prevent warning when removing a
+ device link from unregistered consumer
+Message-ID: <YPg9TBLElQqcn3PS@kroah.com>
+References: <20210716114408.17320-1-adrian.hunter@intel.com>
+ <20210716114408.17320-2-adrian.hunter@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716114408.17320-2-adrian.hunter@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes long boot delays of about 10 seconds.
+On Fri, Jul 16, 2021 at 02:44:07PM +0300, Adrian Hunter wrote:
+> sysfs_remove_link() causes a warning if the parent directory does not
+> exist. That can happen if the device link consumer has not been registered.
+> So do not attempt sysfs_remove_link() in that case.
+> 
+> Fixes: 287905e68dd29 ("driver core: Expose device link details in sysfs")
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: stable@vger.kernel.org # 5.9+
+> Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
+> ---
+>  drivers/base/core.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index ea5b85354526..2de8f7d8cf54 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -575,8 +575,10 @@ static void devlink_remove_symlinks(struct device *dev,
+>  		return;
+>  	}
+>  
+> -	snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
+> -	sysfs_remove_link(&con->kobj, buf);
+> +	if (device_is_registered(con)) {
+> +		snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
+> +		sysfs_remove_link(&con->kobj, buf);
+> +	}
+>  	snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
+>  	sysfs_remove_link(&sup->kobj, buf);
+>  	kfree(buf);
+> -- 
+> 2.17.1
+> 
 
-I am working on a device powered by an TI am65 SoC where
-we have a PCIe expansion slot. If there is no PCIe device
-connected I see boot delays caused by pci_host_probe(..).
+I've applied this patch to my tree now.
 
-Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
----
+thanks,
 
-V2: fix compile
-
----
- drivers/pci/controller/dwc/pcie-designware-host.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index a608ae1fad57..ce7d3a6f9a03 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -408,8 +408,9 @@ int dw_pcie_host_init(struct pcie_port *pp)
- 			goto err_free_msi;
- 	}
- 
--	/* Ignore errors, the link may come up later */
--	dw_pcie_wait_for_link(pci);
-+	ret = dw_pcie_wait_for_link(pci);
-+	if (ret)
-+		goto err_free_msi;
- 
- 	bridge->sysdata = pp;
- 
--- 
-2.31.1
-
+greg k-h
