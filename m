@@ -2,97 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBA23D0E90
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 400D83D0E91
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238473AbhGULYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:24:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41552 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238672AbhGULWx (ORCPT
+        id S237116AbhGULY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237994AbhGULXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:22:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626869010;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lIoWBvZyQ1nQ5eQbYUUlt0BMPpJi6szuMaY9eqlGLvI=;
-        b=KPAd5gKUOSj5/qqCLVI8byUYEbsrI50VKu9QRHtZmxHdCv/2BevVYD2hxNZ3OLQn0lRFjo
-        mKfVW7BeaNCSMCPNDWeCuNyRQDpl0YAJKE7V5wiok6lOQjaf5jDxY3QQgUlsYx+Wbx2XRu
-        pGaFHVfrQrQGTEIDRB+2HF2u9qpp9Ms=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-vSzVV2NFMBureCNAwWT2rg-1; Wed, 21 Jul 2021 08:03:27 -0400
-X-MC-Unique: vSzVV2NFMBureCNAwWT2rg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B465E1084F55;
-        Wed, 21 Jul 2021 12:03:25 +0000 (UTC)
-Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 33E235C1BB;
-        Wed, 21 Jul 2021 12:03:21 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v3 12/12] mm/debug_vm_pgtable: Fix corrupted page flag
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210719130613.334901-1-gshan@redhat.com>
- <20210719130613.334901-13-gshan@redhat.com>
- <57cb2f04-b3f2-2df4-3d9b-0b430b9c9f3e@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <8157142c-58e0-44c4-5cdb-76fff4a07210@redhat.com>
-Date:   Wed, 21 Jul 2021 22:03:39 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Wed, 21 Jul 2021 07:23:36 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082D0C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 05:04:12 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id b26so2790694lfo.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 05:04:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=EFccNbGOeVeNmqyc7A1t/dlHK3ZH8zvwXmcl7s+D+Eo=;
+        b=rzkJIIxM0y09Uoq4gj3qb/3BgJlaZwmbMJJEuDYuH1KKPAnM/tPmL2WMA6QwoJVNjv
+         I+9F/meLp40bLhh1KlziMvsxNGkTO8SJwoc4hX32+SZQp+C35p2eCu4EgbFpZxwf7T2Z
+         qENQRilWTx+8OzE2Hpg3WXnwit54T4vVeGLyINGGBU6rZp2qR1f/QDzsltpnEvtZkS6W
+         ROXbuC5iNASv4wM5sjQVj8hrYaQ6fxGoGVS5SfZZaIVwVIGuwU9dblEtUeA593jKX6eB
+         OFCOjA8Qn+MzE9W3WOX6SEzvEQ9qzCg64MPmuJSlVZSIe3ZhtyZvFiqgQu7DzbeDfxuQ
+         yIkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=EFccNbGOeVeNmqyc7A1t/dlHK3ZH8zvwXmcl7s+D+Eo=;
+        b=W2lrA1/nbHxRoibwXT5ProRNugelF3VV4tV55PGMoSCiu9duUld4cYJHpXmif423dK
+         NKb4XHX5w3Vc1vXr5FTJfITow3URVGcZ9RHHY7JTdW4gOsJuaX81AFiAkJ1iojRX59kv
+         N/Hxys0qGCoBK76Yr5vYasF6sHa3pi9IwJQrEZGElf+d9n0pRSwJQZ5n8z1i+GARkIio
+         Ka0SvpazQE+mUV9r3WuxifbowDy2K8HL8OuuLaLcNxFWIJQBFvrq9k3+3/s/5J5IezC+
+         cCld1GyhA/BrIXTUSY6BpVvgod84toMzwIXd/Q9ZzvSR9UpygEp5DF0g4jW8GrIQjK26
+         99/w==
+X-Gm-Message-State: AOAM530TLY9iNtZSeN2CKprQDI5bmVA/AGzA4jPGO9xwnoKeKehWhUnA
+        rwbA/n7i50zJ0aNVH0tjb/4+Wl6rl9QuFm1TP4s3IMMRjKf+Fw==
+X-Google-Smtp-Source: ABdhPJwp1j1dFzY6c65BrDxh3tXvjgb7wKAuok29IQ/6FXIxQGaaI3Z+hxOBFWPowgoEtyjWg3Oq3WRlvpJxV07SV+A=
+X-Received: by 2002:a05:6512:322a:: with SMTP id f10mr14635912lfe.625.1626869050155;
+ Wed, 21 Jul 2021 05:04:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <57cb2f04-b3f2-2df4-3d9b-0b430b9c9f3e@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Received: by 2002:ac2:490f:0:0:0:0:0 with HTTP; Wed, 21 Jul 2021 05:04:09
+ -0700 (PDT)
+Reply-To: keenjrichardon82@yahoo.com
+From:   "Keen J . Richardon" <chiboy062@gmail.com>
+Date:   Wed, 21 Jul 2021 12:04:09 +0000
+Message-ID: <CACA_eyO1=9ombmBgQkZ44zDPe+Hshc+zEnA7rNSkORUpsYrFrQ@mail.gmail.com>
+Subject: Get back to me
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
+Hi dear friend,
 
-On 7/21/21 8:18 PM, Anshuman Khandual wrote:
-> On 7/19/21 6:36 PM, Gavin Shan wrote:
->> In page table entry modifying tests, set_xxx_at() are used to populate
->> the page table entries. On ARM64, PG_arch_1 is set to the target page
->> flag if execution permission is given. The page flag is kept when the
->> page is free'd to buddy's free area list. However, it will trigger page
->> checking failure when it's pulled from the buddy's free area list, as
->> the following warning messages indicate.
->>
->>     BUG: Bad page state in process memhog  pfn:08000
->>     page:0000000015c0a628 refcount:0 mapcount:0 \
->>          mapping:0000000000000000 index:0x1 pfn:0x8000
->>     flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
->>     raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
->>     raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
->>     page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
->>
->> This fixes the issue by clearing PG_arch_1 through flush_dcache_page()
->> after set_xxx_at() is called.
-> 
-> Could you please add comments before each flush_dcache_page() instance
-> explaining why this is needed for arm64 platforms with relevant PG_arch_1
-> context and how this does not have any adverse effect on other platforms ?
-> It should be easy for some one looking at this code after a while to figure
-> out from where flush_dcache_page() came from.
-> 
+I'm Keen J. Richardson from the United States. Please, I would wish to
+have a communication with you. I will be waiting for your response.
 
-Good point. I will improve chage log to include the commit ID in v4 where the
-page flag (PG_arch_1) is used and explain how. In that case, it's much clearer
-to understand the reason why we need flush_dcache_page() after set_xxx_at() on
-ARM64.
-
-Thanks,
-Gavin
-
+Keen.
