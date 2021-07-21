@@ -2,118 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FF73D0823
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DBA3D0820
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbhGUEdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 00:33:13 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:51943 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232616AbhGUEcn (ORCPT
+        id S233001AbhGUEcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 00:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232526AbhGUEci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 00:32:43 -0400
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 16L5D055008461;
-        Wed, 21 Jul 2021 14:13:01 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 16L5D055008461
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1626844381;
-        bh=3xx/KdE6CtGmtNN/L+TIdcy1e+9LgHIW8BuUFAscNmg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GFgnK6g6+r0QRE4QG0eo3yO1zerMqcZ7OckDP+uJIok1uKhmZwMj9J8OGpjZq7jaZ
-         trXv/4Qt0CrUp/pVuMJYMm1SdT3T0dUeI3uqxt3BmWx86QY+8OSDkHZv5YcWw2AOjG
-         TswefaiTJGK5BSbEu7BzpxALtGHxnT3gsmya58P3FRgjNRIG4lKpwVwVvgm6ysJbSN
-         /P4XrGyv0Wifm0WIe+1rK7COcP0O40SwGaDDi20mDqYF0VCCzdCo++ZNjAbr4lWuBG
-         Jf1pmGBQaLJ4evRkEaQSS9f9s6iWErepVYxszzEMdA7Ci+FKfdZW8phKakGFtk4AxJ
-         5K1MB3f5W97dA==
-X-Nifty-SrcIP: [209.85.210.181]
-Received: by mail-pf1-f181.google.com with SMTP id o201so1374499pfd.1;
-        Tue, 20 Jul 2021 22:13:01 -0700 (PDT)
-X-Gm-Message-State: AOAM530CZAue9BwGXPLA1K9r6cYeOUe5n/zA7CNLTjeJZ6UN1XTDXPy4
-        Q8uhiVZXxqjFip8OUiDb2VR/MAeZxBC4C9VEDhc=
-X-Google-Smtp-Source: ABdhPJzGcRQrkB41PoKaGV95KmcWhuCzOWZ0/Xn6gUMiVmgy3gEPga8Ar0Ai0mdgL7N3y2ZR1YLRh2OGvbhlJKIQseQ=
-X-Received: by 2002:a62:1d84:0:b029:304:5af1:65f6 with SMTP id
- d126-20020a621d840000b02903045af165f6mr34202636pfd.80.1626844380426; Tue, 20
- Jul 2021 22:13:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210708232522.3118208-1-ndesaulniers@google.com>
- <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
- <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com>
- <CAKwvOdkvju7heeNpk87brsjkhXHbdKFsUgf63KWhXox9rDkQsA@mail.gmail.com>
- <CAHk-=wiZe2FuiAOwhbKR_VMmFBKekz0NFREm4fvik25PEdcK_g@mail.gmail.com> <CAHk-=whS1zBU=uhDTk2M1LwkqG7AKLsR0_+XG+saY_s2FHZr-A@mail.gmail.com>
-In-Reply-To: <CAHk-=whS1zBU=uhDTk2M1LwkqG7AKLsR0_+XG+saY_s2FHZr-A@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 21 Jul 2021 14:12:23 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAROLTHfz7d93xNx-MWj1-dsxD+7=OFGd8z078kdSRigPA@mail.gmail.com>
-Message-ID: <CAK7LNAROLTHfz7d93xNx-MWj1-dsxD+7=OFGd8z078kdSRigPA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
- LLVM=1 LLVM_IAS=1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>
+        Wed, 21 Jul 2021 00:32:38 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38BE8C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 22:13:15 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id u8-20020a0562141c08b02902e82df307f0so723966qvc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 22:13:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=dPPqwC9VgrNwWEvLtt1usx0UZWr/+TNKPVKEDUalWg8=;
+        b=EhS8oT4rzPymoogP0OnMeN6fyNgPO9u7q9nBDl2JA9w5V0XNfHI9R3XvGYxV7U4h90
+         WZL00WkrnAfkzBWn27CEynX0AvwjG1a+xpmV2dQDZoePS/2rvPRde/hNdPSPTnkW5G3h
+         ZcplIkcMPWcQLKLJ3v59KmnnH4k6YIZXC8IWTBIpXnfudh1+Nsf8xPYhFcXmV160rxSf
+         RPBSc/tXPd9oRKWJcl5xtSwcH9cXi1Jup0dw/LoJtY2+hkUxmu1/cx5Vm4+J5lZ1XDfz
+         EgmeYTr4czgg85tA4blI7Eo+9LviJTQhaKBaYmSnH1Fyioptsxlks2+yhVT6GwCKW3gL
+         8zvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=dPPqwC9VgrNwWEvLtt1usx0UZWr/+TNKPVKEDUalWg8=;
+        b=SC3Ctthk5z3bhct84brQO4jY+T4i04aL+NaROiQFBHcrUcuq6jIu68wQ3Rl+to2sti
+         qp9oc8lSucvhnnvJrxrbnVRCGjOtiu41ADqWqJiYXNl1NrfSwBf+LEyFrpGuDSpNINze
+         jm7D6+bJvYhD9Jsc5JQDPqSHaB/6ft2AVPF6BMsSEUqi3W+tXB/qmo0GDuKNnS3kbL/n
+         yz/6wdpiWcaFJT9QBk9nZkYA8kvM3+TASZdD1jbi/ju7h51H5uCUJfjavJ3tHc+UD3LL
+         NuyK6rjq2TZAoSsqj5f9hKBauYtLIQg2RFgdo0tIbm2wqZgHab1xt0b91c6rBi06X2mU
+         o8pA==
+X-Gm-Message-State: AOAM531LPy3wo+92s2tn4ZsJyEEvpxXT79KmbxAFPxRZUX6bfAJLBjPA
+        rGwyWH+k05q25kBY9ijj2W4qUOl9kTmF
+X-Google-Smtp-Source: ABdhPJwQIqM/AQsXKND5pCeLrQ6op99HQjuCZqaj55ZQhJ7MB5VMXzi1/rJr37TVqlAhnnkSVwsMvvWcbBWO
+X-Received: from mihenry-linux-desktop.kir.corp.google.com ([2620:15c:29:204:4b06:fd20:8c22:9df1])
+ (user=mizhang job=sendgmr) by 2002:a05:6214:401e:: with SMTP id
+ kd30mr34598769qvb.43.1626844394132; Tue, 20 Jul 2021 22:13:14 -0700 (PDT)
+Reply-To: Mingwei Zhang <mizhang@google.com>
+Date:   Tue, 20 Jul 2021 22:12:45 -0700
+Message-Id: <20210721051247.355435-1-mizhang@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
+Subject: [PATCH 0/2] Add detailed page size stats in KVM stats
+From:   Mingwei Zhang <mizhang@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Jing Zhang <jingzhangos@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 8:20 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Tue, Jul 20, 2021 at 2:54 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > But there are other things that stick around. In particular, I have
-> > considered simply using git config variables for that.
-> >
-> > Something like this in the main Makefile:
->
-> A slightly more fleshed-out patch to do this just to see if somebody
-> wants to work on something like this.
->
-> It really would seem to make it very easy to set up any random build
-> environment, and not have to remember it once it's done.
->
-> There are probably better ways to do this, I normally try to avoid
-> doing Makefile magic, since others have taken it over. Masahiro?
+This commit basically adds detailed (large and regular) page size info to
+KVM stats while preserves the existing metric: lpages.
 
+To support legacy MMU and TDP mmu, we use atomic type for all page stats.
 
-The patch would uglify the Makefile.
+pre-v1 (internal reviewers):
+ - use atomic in all page stats and use 'level' as index. [sean]
+ - use an extra argument in kvm_update_page_stats for atomic/non-atomic.
+   [bgardon]
+ - should be careful on the difference between legacy mmu and tdp mmu.
+   [jingzhangos]
 
-If git is not installed, $(shell git config  ...)
-will spit an error message, so '2>/dev/null' is needed.
+Mingwei Zhang (2):
+  kvm: mmu/x86: Remove redundant spte present check in mmu_set_spte
+  kvm: mmu/x86: Add detailed page size stats
 
-Actually, I believe we should be able to build the kernel
-from a source tarball without relying on git in any way.
+ arch/x86/include/asm/kvm_host.h |  9 ++++++
+ arch/x86/kvm/mmu.h              |  2 ++
+ arch/x86/kvm/mmu/mmu.c          | 53 +++++++++++++++++++++------------
+ arch/x86/kvm/mmu/tdp_mmu.c      | 10 +++----
+ arch/x86/kvm/x86.c              |  6 +++-
+ 5 files changed, 54 insertions(+), 26 deletions(-)
 
-In fact, we rely on git in some places, for example,
-scripts/setlocalversion can add commit hash to the release
-string, but I want to minimize the git-dependent code.
+--
+2.32.0.402.g57bb445576-goog
 
-
-
-
-
-
-
-
->              Linus
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAHk-%3DwhS1zBU%3DuhDTk2M1LwkqG7AKLsR0_%2BXG%2BsaY_s2FHZr-A%40mail.gmail.com.
-
-
-
--- 
-Best Regards
-Masahiro Yamada
