@@ -2,169 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBB13D16D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4623D16CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239935AbhGUSWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 14:22:31 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19064 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S239648AbhGUSWX (ORCPT
+        id S239573AbhGUSWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 14:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231740AbhGUSWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 14:22:23 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LIiaVf161742;
-        Wed, 21 Jul 2021 15:02:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=5IvjcOj259HEtQZTVgIU1isdo2v0xtwkHBcRBlTVp94=;
- b=Zqj0t/LTxtzdxPhV+rKBamHSDN92XfK5BL7jqG5AvJeQo/fgTdUgFYqHyEPp8xrH6DP3
- xpSdsXz5WgBXRV0z6gEjWCoe87mkaVxwSCRoX+5L3zm9uC0V3uEZYWireH+ZnLNXUQoq
- gtE/6dgVEao7oozflVlNRsx866M9DuIziFmeJBJnrit01mstEb7hS6m/ZU2xVwLmAPhJ
- RKcEVW8e1kHI5wUuMEp3YXtem5ZexecaZEfZIwjPQ6VVbJgyZSm4drXvjsdRfUHbi4DT
- Fat1GuUBSbXNP52bFN/oJ6p6GNQ/XrkHZTpJSfxN/3OI7orjvjoRhYMwOqtK2fBNjlnn yw== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39xs4j8e8e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 15:02:37 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16LIvJOf024665;
-        Wed, 21 Jul 2021 19:02:36 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma03dal.us.ibm.com with ESMTP id 39upue3tnh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 19:02:36 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16LJ2aiE42533216
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 19:02:36 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E538228068;
-        Wed, 21 Jul 2021 19:02:35 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 005082805A;
-        Wed, 21 Jul 2021 19:02:35 +0000 (GMT)
-Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.211.68.240])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Jul 2021 19:02:34 +0000 (GMT)
-From:   Eddie James <eajames@linux.ibm.com>
-To:     linux-fsi@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        jdelvare@suse.com, linux@roeck-us.net, jk@ozlabs.org,
-        alistair@popple.id.au, joel@jms.id.au, openbmc@lists.ozlabs.org,
-        eajames@linux.ibm.com
-Subject: [PATCH v2 3/3] fsi: occ: Add dynamic debug to dump command and response
-Date:   Wed, 21 Jul 2021 14:02:31 -0500
-Message-Id: <20210721190231.117185-4-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210721190231.117185-1-eajames@linux.ibm.com>
-References: <20210721190231.117185-1-eajames@linux.ibm.com>
+        Wed, 21 Jul 2021 14:22:20 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07581C061575;
+        Wed, 21 Jul 2021 12:02:56 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id qa36so4747238ejc.10;
+        Wed, 21 Jul 2021 12:02:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bz+gGGTDR08X+AO/SbVQCNhU2kG51Ah3ryQBTD5eMuQ=;
+        b=kXdFVki2Ry0Qh5deswzLJ0S8JSGB7N79Iy5ClQbvjmPZUJ0pDYTYM6eat85V8zdO//
+         aeLllkfCgdoe76xPh2iolTABrqdqH3DwbVoeuq2z6Inwq3zwPB6pQN4OcG7OTcTea03i
+         4VjCgQLHmtKvWYydflL1lWSyPEWDMJOeUEHEeJTQGFzqHosjVu/ztZF3WykSE0txnFuV
+         yugJsktvXpU0P7nmitRTxtgegWIHoNsPWih6Hh88W2fILhGUgR6FeC1mhQ92n9mKN6Mc
+         qjqnmnpzNW5n9BaLnos0bOft7NR784TuS2O8XdJAdBzV/tJIZ5+sW2A3M+bI1uHJs9KY
+         f5Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bz+gGGTDR08X+AO/SbVQCNhU2kG51Ah3ryQBTD5eMuQ=;
+        b=pi9o8BEMWuOj6f8qE/fPNkkmLZgp/QpuMX1N87FkSqnM6UrDW3MJ4rmY5feSc1mMvf
+         Ub7GLF/a/b6kfsGd2Fla81hfaKZSp6L9R/hJyBpGSBaCaBhwPkKTkVi2c0ySS91116xR
+         F1P8XfB1H4I+o2HC1gCTxa236Uel5DbPid+GnXoWBPt1WM+eWQzPV6zD4xi7aTj1cvWu
+         DtTVxO1mvjGHi0rrQThOy1NlfH3N6Njtml5r/uJEjAgNjLhYog1x95bbaBWGNju+2CDG
+         Dz5YHQu07VORGJt2I98TzVOoiy4Cn9I47cJvuye1bb9SZAIWlcyVOjnaSqAPY930DBGP
+         tPWQ==
+X-Gm-Message-State: AOAM530oSHTMwyAooTD9IQGb49JgmRCKH9yydpECDO2qWSbYUAKR0KhF
+        eR7NIK/rsQ4edTkYFfKk3pQ=
+X-Google-Smtp-Source: ABdhPJywpZBOxUrcAA2ibda5nc6sB+szMz9PR3oDWSgdBzdM4+N7PEtUr/LYJyqBrD34NKnA4HfnRQ==
+X-Received: by 2002:a17:906:c302:: with SMTP id s2mr39661610ejz.151.1626894174613;
+        Wed, 21 Jul 2021 12:02:54 -0700 (PDT)
+Received: from localhost.localdomain (host-79-27-97-200.retail.telecomitalia.it. [79.27.97.200])
+        by smtp.gmail.com with ESMTPSA id a25sm11130868edr.21.2021.07.21.12.02.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 12:02:54 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Vineeth Pillai <Vineeth.Pillai@microsoft.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] admin-guide/hw-vuln: Rephrase a section of core-scheduling.rst
+Date:   Wed, 21 Jul 2021 21:02:50 +0200
+Message-Id: <20210721190250.26095-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -CO4dprFmbMcVejaZhyFrI-q1z96Zcey
-X-Proofpoint-ORIG-GUID: -CO4dprFmbMcVejaZhyFrI-q1z96Zcey
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-21_10:2021-07-21,2021-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
- clxscore=1015 malwarescore=0 bulkscore=0 suspectscore=0 priorityscore=1501
- impostorscore=0 spamscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107210109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the dynamic branching capability of the dynamic debug subsystem
-to dump the command and response with the correct OCC device name.
+Rephrase the "For MDS" section in core-scheduling.rst for the purpose of
+making it clearer what is meant by "kernel memory is still considered
+untrusted".
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Suggested-by: Vineeth Pillai <Vineeth.Pillai@microsoft.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
-Changes since v1:
- - include dynamic_debug to make sure the dynamic branching stuff is
-   included on all platforms/configs
+ Documentation/admin-guide/hw-vuln/core-scheduling.rst | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
- drivers/fsi/fsi-occ.c | 45 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
-
-diff --git a/drivers/fsi/fsi-occ.c b/drivers/fsi/fsi-occ.c
-index ecf738411fe2..2bc53ea8f54f 100644
---- a/drivers/fsi/fsi-occ.c
-+++ b/drivers/fsi/fsi-occ.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
+diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+index 7b410aef9c5c..e6b5ceb219ec 100644
+--- a/Documentation/admin-guide/hw-vuln/core-scheduling.rst
++++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+@@ -181,10 +181,11 @@ Open cross-HT issues that core scheduling does not solve
+ --------------------------------------------------------
+ 1. For MDS
+ ~~~~~~~~~~
+-Core scheduling cannot protect against MDS attacks between an HT running in
+-user mode and another running in kernel mode. Even though both HTs run tasks
+-which trust each other, kernel memory is still considered untrusted. Such
+-attacks are possible for any combination of sibling CPU modes (host or guest mode).
++Core scheduling cannot protect against MDS attacks between the siblings running in
++user mode and the others running in kernel mode. Even though all siblings run tasks
++which trust each other, when the kernel is executing code on behalf of a task, it
++cannot trust the code running in the sibling. Such attacks are possible for any
++combination of sibling CPU modes (host or guest mode).
  
- #include <linux/device.h>
-+#include <linux/dynamic_debug.h>
- #include <linux/err.h>
- #include <linux/errno.h>
- #include <linux/fs.h>
-@@ -21,6 +22,15 @@
- #include <linux/uaccess.h>
- #include <asm/unaligned.h>
- 
-+#if !defined(CONFIG_DYNAMIC_DEBUG_CORE)
-+#define DEFINE_DYNAMIC_DEBUG_METADATA(name, fmt)
-+#if defined(DEBUG)
-+#define DYNAMIC_DEBUG_BRANCH(descriptor) true
-+#else /* DEBUG */
-+#define DYNAMIC_DEBUG_BRANCH(descriptor) false
-+#endif /* DEBUG */
-+#endif /* CONFIG_DYNAMIC_DEBUG_CORE */
-+
- #define OCC_SRAM_BYTES		4096
- #define OCC_CMD_DATA_BYTES	4090
- #define OCC_RESP_DATA_BYTES	4089
-@@ -359,6 +369,20 @@ static int occ_putsram(struct occ *occ, const void *data, ssize_t len,
- 	byte_buf[len - 2] = checksum >> 8;
- 	byte_buf[len - 1] = checksum & 0xff;
- 
-+	{
-+		DEFINE_DYNAMIC_DEBUG_METADATA(ddm_occ_cmd, "OCC command");
-+
-+		if (DYNAMIC_DEBUG_BRANCH(ddm_occ_cmd)) {
-+			char prefix[64];
-+
-+			snprintf(prefix, sizeof(prefix), "%s %s: cmd ",
-+				 dev_driver_string(occ->dev),
-+				 dev_name(occ->dev));
-+			print_hex_dump(KERN_DEBUG, prefix, DUMP_PREFIX_OFFSET,
-+				       16, 4, byte_buf, len, false);
-+		}
-+	}
-+
- 	rc = sbefifo_submit(occ->sbefifo, buf, cmd_len, buf, &resp_len);
- 	if (rc)
- 		goto free;
-@@ -556,6 +580,27 @@ int fsi_occ_submit(struct device *dev, const void *request, size_t req_len,
- 	}
- 
- 	*resp_len = resp_data_length + 7;
-+
-+	{
-+		DEFINE_DYNAMIC_DEBUG_METADATA(ddm_occ_rsp,
-+					      "OCC response");
-+		DEFINE_DYNAMIC_DEBUG_METADATA(ddm_occ_full_rsp,
-+					      "OCC full response");
-+
-+		if (DYNAMIC_DEBUG_BRANCH(ddm_occ_full_rsp) ||
-+		    DYNAMIC_DEBUG_BRANCH(ddm_occ_rsp)) {
-+			char prefix[64];
-+			size_t l = DYNAMIC_DEBUG_BRANCH(ddm_occ_full_rsp) ?
-+				*resp_len : 16;
-+
-+			snprintf(prefix, sizeof(prefix), "%s %s: rsp ",
-+				 dev_driver_string(occ->dev),
-+				 dev_name(occ->dev));
-+			print_hex_dump(KERN_DEBUG, prefix, DUMP_PREFIX_OFFSET,
-+				       16, 4, resp, l, false);
-+		}
-+	}
-+
- 	rc = occ_verify_checksum(occ, resp, resp_data_length);
- 
-  done:
+ 2. For L1TF
+ ~~~~~~~~~~~
 -- 
-2.27.0
+2.32.0
 
