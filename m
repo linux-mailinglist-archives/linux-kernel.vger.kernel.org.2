@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2098E3D178E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566273D1793
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240081AbhGUT23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:28:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232774AbhGUT2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:28:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF46F6124C;
-        Wed, 21 Jul 2021 20:08:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626898134;
-        bh=4u/Or69/PlQhSEBH0Eaic+1vZVEPAHlTAjiIyX9drlo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GcGf50oDo6wcb0No1eBJgK8ID5oDhIGw56IHM4XaZBRNAD0eIFOoKTYhI+RNEdgsn
-         LNTEGBbBYECczPoHn8wmrX0M5p8yFX28QoDDntWEhObRrd8/dLAYEOKykXAbz2Uk7B
-         kVGBNHf1U3FFfU9XeQ45ENP9QMUMMKRl76atadmfLHYUZpdeCsi6gn4ER9O5EvHiXR
-         iA9p1l3ukgjrozFf2e9W6jNHUpJF9TfAhFmdW/ox7XRx0JD+IdrIXbJJrkwd/j+8lb
-         PzUlj6KyXXLuRMy6eHGhvldjMD9w3dPvTQOd8SuwgU1rjAzvFh2e35kJgDUL/a/l+h
-         zfzrKWOT1+DIA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8DB9B5C0BF4; Wed, 21 Jul 2021 13:08:54 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: [PATCH rcu 5/5] doc: Update stallwarn.rst with recent changes
-Date:   Wed, 21 Jul 2021 13:08:53 -0700
-Message-Id: <20210721200853.1175189-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210721200806.GA950569@paulmck-ThinkPad-P17-Gen-1>
-References: <20210721200806.GA950569@paulmck-ThinkPad-P17-Gen-1>
+        id S240327AbhGUT2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232638AbhGUT20 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 15:28:26 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20521C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:09:02 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id x14-20020a7bc20e0000b0290249f2904453so1423017wmi.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:09:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=76LcptXaCIBejIMohO/LEgsjJoJqDRg1CGid93g9aNU=;
+        b=K66wTEVV/HKjdw4XC6QRH6POs57CuuHsGM774+hcpDZH9fD9M6Dj2LxSH0SbT8aRnq
+         B1ibvRAfhcddG3bXFBtprIAwfp4I99C6ho/kWlqjglH8nnfaTjCJEWju37B+FQvp5Wy8
+         l0U/bZ1t0V4r7DtFEywTaqyyng/v/TddB8Ac+BL9Wd3aJ3EHuMNxhdz9VhFeBteTQPJN
+         Xj9Qaw1DUljFQfmaW0O4+vs9yj9uhYTpWcM4fyCph6vfN67ROG8f5vHgl6E5TUJv0gTN
+         MgbJnL1drSu/b8GhxAuSMC4CvDUVoz5dcTrfNIX4kafrxPvdUpTqW4nOOwFHLuMKalLC
+         c1Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=76LcptXaCIBejIMohO/LEgsjJoJqDRg1CGid93g9aNU=;
+        b=AqS3MQv3P1sd0ZNd5do4v7BmgFlXpjLw2y5971thWfGQSSFrwNSFSrcDVuejh33/8U
+         1QWgIa/rcrOcJNxIkldYag7yxjSO5DXCqMPwa5i4Xw8jy7uESnlJiY1Z6hQsswH1/rZm
+         YTqTvOnsrFBsiU57lVcyPd18809JCEuLSaOd4G9ymPTRpy5eeYlPuxcf/f5t7utGZfW3
+         JswkxOtkLHe9BzSHw7nndt0V4SpOpQx6xoD9Z3hTRyHG/PtYL3nB8a5YGyyJk4hORFSL
+         2qF5D2gr64aN77WWN++MguxditPDDlpwuQxEDMhOxt4lwO3+5nT/8IezqBDcXMES15WR
+         g9+g==
+X-Gm-Message-State: AOAM533lPzaVDUjujsOLkBpMDWEMEZ4I0E/K5Qgbd7fvpEDHd08R4Jfq
+        W+A7rkffVO0WTUdTuSvVVJ4OkA==
+X-Google-Smtp-Source: ABdhPJykxruQgTfE7LQQlzBXrCb6qyPmIgTO9JfrChX/lHBfD0agh2VMnbsf4NldB1TpRdMJ4aMqCQ==
+X-Received: by 2002:a05:600c:b42:: with SMTP id k2mr5901314wmr.45.1626898140701;
+        Wed, 21 Jul 2021 13:09:00 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id z7sm14712541wrt.94.2021.07.21.13.08.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Jul 2021 13:09:00 -0700 (PDT)
+Subject: Re: [PATCH v2] mm/mremap: Don't account pages in vma_to_resize()
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Geffon <bgeffon@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chen Wandun <chenwandun@huawei.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Will Deacon <will@kernel.org>
+References: <20210721131320.522061-1-dima@arista.com>
+ <77e28552-7a13-0981-f921-cd027cb73525@gmail.com>
+ <20210721130551.bbdeae56ca3ec2d0f28b0bac@linux-foundation.org>
+From:   Dmitry Safonov <dima@arista.com>
+Message-ID: <48ba72b8-3da2-e438-6148-5ec22172d475@arista.com>
+Date:   Wed, 21 Jul 2021 21:08:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210721130551.bbdeae56ca3ec2d0f28b0bac@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit calls out the possibility of self-detected stalls, adds new
-messages, and calls out the use for stack traces.
+On 7/21/21 9:05 PM, Andrew Morton wrote:
+> On Wed, 21 Jul 2021 14:21:54 +0100 Dmitry Safonov <0x7f454c46@gmail.com> wrote:
+> 
+>>> Let's not do this.
+>>> Account memory in mremap() fast-path for growing VMAs or in move_vma()
+>>> for actually moving things. The same simpler way as it's done by
+>>> vm_stat_account(), but with a difference to call
+>>> security_vm_enough_memory_mm() before copying/adjusting VMA.
+>>>
+>>> Originally noticed by Chen Wandun:
+>>> https://lkml.kernel.org/r/20210717101942.120607-1-chenwandun@huawei.com
+>>
+>> The patch by Chen Wandun still makes sense with this v2.
+>> Heh :-)
+> 
+> Should
+> https://lkml.kernel.org/r/20210717101942.120607-1-chenwandun@huawei.com
+> still be applied then?  Did you ack it?
+> 
 
-Reported-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- Documentation/RCU/stallwarn.rst | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+Yes, please keep that patch with
+Acked-by: Dmitry Safonov <dima@arista.com>
 
-diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-index f1c49c626e934..5036df24ae61c 100644
---- a/Documentation/RCU/stallwarn.rst
-+++ b/Documentation/RCU/stallwarn.rst
-@@ -189,8 +189,8 @@ rcupdate.rcu_task_stall_timeout
- Interpreting RCU's CPU Stall-Detector "Splats"
- ==============================================
- 
--For non-RCU-tasks flavors of RCU, when a CPU detects that it is stalling,
--it will print a message similar to the following::
-+For non-RCU-tasks flavors of RCU, when a CPU detects that some other
-+CPU is stalling, it will print a message similar to the following::
- 
- 	INFO: rcu_sched detected stalls on CPUs/tasks:
- 	2-...: (3 GPs behind) idle=06c/0/0 softirq=1453/1455 fqs=0
-@@ -204,6 +204,8 @@ PREEMPT_RCU builds can be stalled by tasks as well as by CPUs, and that
- the tasks will be indicated by PID, for example, "P3421".  It is even
- possible for an rcu_state stall to be caused by both CPUs *and* tasks,
- in which case the offending CPUs and tasks will all be called out in the list.
-+In some cases, CPUs will detect themselves stalling, which will result
-+in a self-detected stall.
- 
- CPU 2's "(3 GPs behind)" indicates that this CPU has not interacted with
- the RCU core for the past three grace periods.  In contrast, CPU 16's "(0
-@@ -283,7 +285,8 @@ If the relevant grace-period kthread has been unable to run prior to
- the stall warning, as was the case in the "All QSes seen" line above,
- the following additional line is printed::
- 
--	kthread starved for 23807 jiffies! g7075 f0x0 RCU_GP_WAIT_FQS(3) ->state=0x1 ->cpu=5
-+	rcu_sched kthread starved for 23807 jiffies! g7075 f0x0 RCU_GP_WAIT_FQS(3) ->state=0x1 ->cpu=5
-+	Unless rcu_sched kthread gets sufficient CPU time, OOM is now expected behavior.
- 
- Starving the grace-period kthreads of CPU time can of course result
- in RCU CPU stall warnings even when all CPUs and tasks have passed
-@@ -313,15 +316,21 @@ is the current ``TIMER_SOFTIRQ`` count on cpu 4.  If this value does not
- change on successive RCU CPU stall warnings, there is further reason to
- suspect a timer problem.
- 
-+These messages are usually followed by stack dumps of the CPUs and tasks
-+involved in the stall.  These stack traces can help you locate the cause
-+of the stall, keeping in mind that the CPU detecting the stall will have
-+an interrupt frame that is mainly devoted to detecting the stall.
-+
- 
- Multiple Warnings From One Stall
- ================================
- 
--If a stall lasts long enough, multiple stall-warning messages will be
--printed for it.  The second and subsequent messages are printed at
-+If a stall lasts long enough, multiple stall-warning messages will
-+be printed for it.  The second and subsequent messages are printed at
- longer intervals, so that the time between (say) the first and second
- message will be about three times the interval between the beginning
--of the stall and the first message.
-+of the stall and the first message.  It can be helpful to compare the
-+stack dumps for the different messages for the same stalled grace period.
- 
- 
- Stall Warnings for Expedited Grace Periods
--- 
-2.31.1.189.g2e36527f23
+This one comes on the top to correct accounting for MREMAP_DONTUNMAP.
 
+Thanks,
+          Dmitry
