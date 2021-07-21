@@ -2,60 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333853D09BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4123D09BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234600AbhGUGt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 02:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235067AbhGUGrK (ORCPT
+        id S235016AbhGUGtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 02:49:11 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:59771 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234659AbhGUGsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 02:47:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F672C0613E9
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 00:25:35 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626852333;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Iu8+bQKCo8fNCNG9lQPM1PkkNDG5So9x/kh82HBSRlM=;
-        b=Bkpm9S2PbfJJh74tkCirVKMg+Sh+JsPXbVc/xBHOGltswQxUpTNB0bTYv3zmZkN2YOhowB
-        nbYVottReMSEiT5KI17lWv8btg12+cEZhAOwM4SYwqO0hI+F0fCHMFPE0fjOiKJzDEg3JX
-        iL1EQXoQU0rk5Tn8B+57eVDG9teriWiS4mBYsBI1rTSa1VdX3kkVDMQcFBdbmCcglodg1B
-        qt72GUaLquMN6RiFFraO1t6Q0ot1wihdAFbVS2vH4hQwJMxU3H6J0Ynbtzq+nv9ij/dbEn
-        n4aK6i5C8AZb9bbVCG+VkoeadMVokPOhGJxRc3kWykJmywDL2aN5dFdiRWVtvQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626852333;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Iu8+bQKCo8fNCNG9lQPM1PkkNDG5So9x/kh82HBSRlM=;
-        b=nnQ2D9TRJGpZEPuOd1RjNTWxPdMR2VDZ0XaJKCPV+5C+OL/nRo/TQUWWcZHIR/+IVUg7LE
-        RoP//CRDPGyHIwBw==
-To:     Hillf Danton <hdanton@sina.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>, linux-mm@kvack.org,
+        Wed, 21 Jul 2021 02:48:24 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UgVICqi_1626852531;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgVICqi_1626852531)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 21 Jul 2021 15:28:52 +0800
+Date:   Wed, 21 Jul 2021 15:28:51 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Andreas =?utf-8?Q?Gr=C3=BCnbacher?= 
+        <andreas.gruenbacher@gmail.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
-In-Reply-To: <20210721070452.1008-1-hdanton@sina.com>
-References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com> <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com> <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com> <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com> <20210715102249.2205-1-hdanton@sina.com> <20210716020611.2288-1-hdanton@sina.com> <20210716075539.2376-1-hdanton@sina.com> <20210716093725.2438-1-hdanton@sina.com> <20210718124219.1521-1-hdanton@sina.com> <20210721070452.1008-1-hdanton@sina.com>
-Date:   Wed, 21 Jul 2021 09:25:32 +0200
-Message-ID: <87im14cemr.ffs@nanos.tec.linutronix.de>
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v4] iomap: support tail packing inline read
+Message-ID: <YPfMs2OxIwFb8QW8@B-P7TQMD6M-0146.local>
+Mail-Followup-To: Andreas =?utf-8?Q?Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>, linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>
+References: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
+ <20210720204224.GK23236@magnolia>
+ <YPc9viRAKm6cf2Ey@casper.infradead.org>
+ <YPdkYFSjFHDOU4AV@B-P7TQMD6M-0146.local>
+ <20210721001720.GS22357@magnolia>
+ <YPdrSN6Vso98bLzB@B-P7TQMD6M-0146.local>
+ <CAHpGcM+8cp81=bkzFf3sZfKREM9VbXfePpXrswNJOLVcwEnK7A@mail.gmail.com>
+ <YPeMRsJwELjoWLFs@B-P7TQMD6M-0146.local>
+ <CAHpGcMJg5TOhexLdN8HgGoFhB8kbn1FdAD8Z2XEK9C7oHptFwA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHpGcMJg5TOhexLdN8HgGoFhB8kbn1FdAD8Z2XEK9C7oHptFwA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21 2021 at 15:04, Hillf Danton wrote:
->
-> But the preempting waker can not make sense without the waiter who is bloody
-> special. Why is it so in the first place? Or it is not at all but the race
-> existing from Monday to Friday.
+On Wed, Jul 21, 2021 at 08:43:00AM +0200, Andreas Grünbacher wrote:
+> Am Mi., 21. Juli 2021 um 04:54 Uhr schrieb Gao Xiang
+> <hsiangkao@linux.alibaba.com>:
+> > Hi Andreas,
+> >
+> > On Wed, Jul 21, 2021 at 04:26:47AM +0200, Andreas Grünbacher wrote:
+> > > Am Mi., 21. Juli 2021 um 02:33 Uhr schrieb Gao Xiang
+> > > <hsiangkao@linux.alibaba.com>:
+> > > > > And since you can only kmap one page at a time, an inline read grabs the
+> > > > > first part of the data in "page one" and then we have to call
+> > > > > iomap_begin a second time get a new address so that we can read the rest
+> > > > > from "page two"?
+> > > >
+> > > > Nope, currently EROFS inline data won't cross page like this.
+> > > >
+> > > > But in principle, yes, I don't want to limit it to the current
+> > > > EROFS or gfs2 usage. I think we could make this iomap function
+> > > > more generally (I mean, I'd like to make the INLINE extent
+> > > > functionity as general as possible,
+> > >
+> > > Nono. Can we please limit this patch what we actually need right now,
+> > > and worry about extending it later?
+> >
+> > Can you elaborate what it will benefit us if we only support one tail
+> > block for iomap_read_inline_data()? (I mean it has similar LOC changes,
+> > similar implementation / complexity.) The only concern I think is if
+> > it causes gfs2 regression, so that is what I'd like to confirm.
+> 
+> iomap_read_inline_data supports one inline page now (i.e., from the
+> beginning of the file). It seems that you don't need more than one
+> tail page in EROFS, right?
+> 
+> You were speculating about inline data in the middle of a file. That
+> sounds like a really, really bad idea to me, and I don't think we
+> should waste any time on it.
 
-See the large comment in eventfd_poll().
+Huh? why do you think it's a bad idea? I could give real example to you.
+
+At least, it can be used for some encoded data or repeated pattern (such
+as AABBAABBAABB...) in a packed way (marked in extent metadata).
+Is that enough?
+
+Again, I don't see what the benefits if limiting it to one tail block,
+it (maybe) just modifies:
++	/* handle tail-packing blocks cross the current page into the next */
++	size = min_t(unsigned int, iomap->length + pos - iomap->offset,
++		     PAGE_SIZE - poff);
+
+to
++	size = min_t(unsigned int, i_blocksize(inode),
++		     PAGE_SIZE - poff);
+
+And which has the similar complexity, so why not using iomap->length
+here instead?
+
+Thanks,
+Gao Xiang
