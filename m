@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C003F3D0741
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 05:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141F03D0742
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 05:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbhGUCda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 22:33:30 -0400
-Received: from mga05.intel.com ([192.55.52.43]:40963 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232187AbhGUC24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 22:28:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="296924415"
-X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
-   d="scan'208";a="296924415"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 20:08:04 -0700
-X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
-   d="scan'208";a="501122354"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 20:08:02 -0700
-Subject: Re: [PATCH] perf pmu: Fix alias matching
-To:     John Garry <john.garry@huawei.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        jolsa@redhat.com, namhyung@kernel.org, kjain@linux.ibm.com,
-        alexander.shishkin@linux.intel.com, irogers@google.com
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1626793819-79090-1-git-send-email-john.garry@huawei.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <0b57fa9b-fba4-8143-bef6-b7c4f2987635@linux.intel.com>
-Date:   Wed, 21 Jul 2021 11:07:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232241AbhGUCdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 22:33:36 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:41684 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232447AbhGUCbF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 22:31:05 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UgTMv32_1626837044;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UgTMv32_1626837044)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 21 Jul 2021 11:10:44 +0800
+Subject: Re: [PATCH] Smack: Fix wrong semantics in smk_access_entry()
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210715091724.45768-1-tianjia.zhang@linux.alibaba.com>
+ <ae938c7b-2f7a-27ec-7077-ceeb517ba97f@schaufler-ca.com>
+ <20b7bc36-89fa-d004-74f0-629a42595f86@schaufler-ca.com>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <f1bc2ac3-2ad3-d854-9b35-ca35cda825da@linux.alibaba.com>
+Date:   Wed, 21 Jul 2021 11:10:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <1626793819-79090-1-git-send-email-john.garry@huawei.com>
+In-Reply-To: <20b7bc36-89fa-d004-74f0-629a42595f86@schaufler-ca.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -41,128 +38,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Garry,
 
-On 7/20/2021 11:10 PM, John Garry wrote:
-> Commit c47a5599eda32 ("perf tools: Fix pattern matching for same substring
-> in different PMU type"), may have fixed some alias matching, but has broken
-> some others.
+
+On 7/21/21 12:32 AM, Casey Schaufler wrote:
+> On 7/15/2021 8:15 AM, Casey Schaufler wrote:
+>> On 7/15/2021 2:17 AM, Tianjia Zhang wrote:
+>>> In the smk_access_entry() function, if no matching rule is found
+>>> in the rust_list, a negative error code will be used to perform bit
+>>> operations with the MAY_ enumeration value. This is semantically
+>>> wrong. This patch fixes this issue.
+>> Indeed, the code as written is functioning correctly by
+>> sheer luck. I will take this patch. Thank you.
+>>
+>>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 > 
-> Firstly it cannot handle the simple scenario of PMU name in form
-> pmu_name{digits} - it can only handle pmu_name_{digits}.
-> 
-> Secondly it cannot handle more complex matching in the case where we have
-> multiple tokens. In this scenario, the code failed to realise that we
-> may examine multiple substrings in the PMU name.
-> 
-> Fix in two ways:
-> - Change perf_pmu__valid_suffix() to accept a PMU name without '_' in the
->    suffix
-> - Only pay attention to perf_pmu__valid_suffix() for the final token
-> 
-> Also add const qualifiers as necessary to avoid casting.
-> 
-> Fixes: c47a5599eda3 ("perf tools: Fix pattern matching for same substring in different PMU type")
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
-> @Jin Yao, please test for your scenarios
+> Added to the Smack next branch.
 > 
 
-For x86, the form uncore_pmu_{digits} or the uncore_pmu itself are supported. We don't have more 
-complex case such as the name in the form aaa_bbbX_cccY. So my test didn't cover that complex form.
+Great, Thanks.
 
-For my test, your patch works, thanks! :)
-
-> Note:
-> About any effect in perf_pmu__match() -> perf_pmu__valid_suffix()
-> callchain, this seems to be called for wildcard in PMU names in metric
-> expressions. We don't have any metrics for arm64 which use feature.
-> However, I hacked an existing metric to use a wildcard and it looks ok.
-> Also the "DRAM_BW_Use" metric on my broadwell uses this feature, and it
-> looks ok.
-> 
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index a1bd7007a8b4..fc683bc41715 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -742,9 +742,13 @@ struct pmu_events_map *__weak pmu_events_map__find(void)
->   	return perf_pmu__find_map(NULL);
->   }
->   
-> -static bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
-> +/*
-> + * Suffix must be in form tok_{digits}, or tok{digits}, or same as pmu_name
-> + * to be valid.
-> + */
-> +static bool perf_pmu__valid_suffix(const char *pmu_name, char *tok)
->   {
-> -	char *p;
-> +	const char *p;
->   
->   	if (strncmp(pmu_name, tok, strlen(tok)))
->   		return false;
-> @@ -753,12 +757,16 @@ static bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
->   	if (*p == 0)
->   		return true;
->   
-> -	if (*p != '_')
-> -		return false;
-> +	if (*p == '_')
-> +		++p;
->   
-> -	++p;
-> -	if (*p == 0 || !isdigit(*p))
-> -		return false;
-> +	/* Ensure we end in a number */
-> +	while (1) {
-> +		if (!isdigit(*p))
-> +			return false;
-> +		if (*(++p) == 0)
-> +			break;
-> +	}
->   
-
-Do we check *p before first isdigit? For example,
-
-if (*p == 0)
-	return false;
-
-While (*p) {
-	if (!isdigit(*p)
-		return false;
-	++p;
-}
-
-But maybe isdigit can handle the null string well. I'm just feeling a bit unsure.
-
->   	return true;
->   }
-> @@ -789,12 +797,19 @@ bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
->   	 *	    match "socket" in "socketX_pmunameY" and then "pmuname" in
->   	 *	    "pmunameY".
->   	 */
-> -	for (; tok; name += strlen(tok), tok = strtok_r(NULL, ",", &tmp)) {
-> +	while (1) {
-> +		char *next_tok = strtok_r(NULL, ",", &tmp);
-> +
->   		name = strstr(name, tok);
-> -		if (!name || !perf_pmu__valid_suffix((char *)name, tok)) {
-> +		if (!name ||
-> +		    (!next_tok && !perf_pmu__valid_suffix(name, tok))) {
->   			res = false;
->   			goto out;
->   		}
-> +		if (!next_tok)
-> +			break;
-> +		tok = next_tok;
-> +		name += strlen(tok);
->   	}
->   
->   	res = true;
-> 
-
-My test didn't cover the tokens which were delimited by ','. I assume you have tested that on arm64 
-system. :)
-
-Thanks
-Jin Yao
+Tianjia
