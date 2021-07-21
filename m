@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9279F3D1890
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5203D188B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhGUUVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:21:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33242 "EHLO mail.kernel.org"
+        id S230237AbhGUUVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:21:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229756AbhGUUVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229699AbhGUUVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 16:21:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBC416139A;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8A9F61369;
         Wed, 21 Jul 2021 21:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626901303;
-        bh=WR0JBuJJ4v+AueQNLDr+YNS6ogvipX34EYylSqPkD0Y=;
+        bh=h7y1IPoLKf0WIKi0qVEuaafWd+uFwVuM9gFNWPdggCg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lX87yJKfIgN9Ef5f5YkrnrTFUdlFnmFpLezjzarGliAnz+QIHhg0SEV1CKua9RBrT
-         S6tWsbFpAuHLfBtK60BGuZP4Uh7lh/LGtqZQyyGYyy1XzdxD4/GKHBsY3FFKHoog24
-         I+ZU4PmkLesXGSrbYkdz8wUoc+2qpnBGzwwzn3BW7ve/5p/UC2FLYNTH3OeZ1kxqeJ
-         dmGYjMrW5ZSNRZwuiPh9/RUOtkTKpwKG5/9eqFtCWnnnV7Y+jU9kr2aZcc0JxdKp6X
-         imY+0TwGZaH/vuR2NYLRTEnNkkGChBsjzwNPVVuDEjdk6G4OeYM7L5j+tH5xCHmSV2
-         5Xo9xX34GQr4Q==
+        b=I6Yu8g68h4bq+QmdnbJUdYy894h8kvm38BLltUd6lW3BTpDiJ7oCH2AHHG9OzEd5n
+         aIFVvaVJWhYk/QpnWKCNfezU05G3WbUnZKufCPKPIblpUlCOPq/AkqYLLqx312rUBv
+         5NevXEjJSNL1CwFctehGtghCXMJiC5EbZglhV0JqBiDthS9xGSaOyECk5a1qTe4ia9
+         l9R+IVoZ+IrGFckD3xiDaLogA4IRE7KERSk2x7EAnNytcxVrXJpLSP3A9Iqo3Qtu7o
+         rs0Qw2luJJfMkZK6BuFz2vu+zkZojnXeVN5VIc9xF3N4CrtEx2rHCMnxTA7dsyqdQ2
+         UcGeTud/BImuA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E44A55C22E5; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
+        id E65295C22F7; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 15/21] rcutorture: Upgrade two-CPU scenarios to four CPUs
-Date:   Wed, 21 Jul 2021 14:01:34 -0700
-Message-Id: <20210721210140.787717-15-paulmck@kernel.org>
+Subject: [PATCH rcu 16/21] torture: Use numeric taskset argument in jitter.sh
+Date:   Wed, 21 Jul 2021 14:01:35 -0700
+Message-Id: <20210721210140.787717-16-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
@@ -46,50 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no way to place the vCPUs in a two-CPU rcutorture scenario to
-get variable memory latency.  This commit therefore upgrades the current
-two-CPU rcutorture scenarios to four CPUs.
+The jitter.sh script has some entertaining awk code to generate a
+hex mask from a randomly selected CPU number, which is handed to the
+"taskset" command.  Except that this command has a "-c" parameter to
+take a comma/dash-separated list of CPU numbers.  This commit therefore
+saves a few lines of awk by switching to a single-number CPU list.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/RUDE01  | 2 +-
- tools/testing/selftests/rcutorture/configs/rcu/TASKS01 | 2 +-
- tools/testing/selftests/rcutorture/configs/rcu/TASKS03 | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/rcutorture/bin/jitter.sh | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/RUDE01 b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01
-index bafe94cbd7390..3ca112444ce77 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/RUDE01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01
-@@ -1,5 +1,5 @@
- CONFIG_SMP=y
--CONFIG_NR_CPUS=2
-+CONFIG_NR_CPUS=4
- CONFIG_HOTPLUG_CPU=y
- CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TASKS01 b/tools/testing/selftests/rcutorture/configs/rcu/TASKS01
-index bafe94cbd7390..3ca112444ce77 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TASKS01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TASKS01
-@@ -1,5 +1,5 @@
- CONFIG_SMP=y
--CONFIG_NR_CPUS=2
-+CONFIG_NR_CPUS=4
- CONFIG_HOTPLUG_CPU=y
- CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TASKS03 b/tools/testing/selftests/rcutorture/configs/rcu/TASKS03
-index ea4399020c6c1..dc02083803ce5 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TASKS03
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TASKS03
-@@ -1,5 +1,5 @@
- CONFIG_SMP=y
--CONFIG_NR_CPUS=2
-+CONFIG_NR_CPUS=4
- CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=y
+diff --git a/tools/testing/selftests/rcutorture/bin/jitter.sh b/tools/testing/selftests/rcutorture/bin/jitter.sh
+index 15d937ba96cad..fd1ffaa5a1358 100755
+--- a/tools/testing/selftests/rcutorture/bin/jitter.sh
++++ b/tools/testing/selftests/rcutorture/bin/jitter.sh
+@@ -68,16 +68,12 @@ do
+ 	cpumask=`awk -v cpus="$cpus" -v me=$me -v n=$n 'BEGIN {
+ 		srand(n + me + systime());
+ 		ncpus = split(cpus, ca);
+-		curcpu = ca[int(rand() * ncpus + 1)];
+-		z = "";
+-		for (i = 1; 4 * i <= curcpu; i++)
+-			z = z "0";
+-		print "0x" 2 ^ (curcpu % 4) z;
++		print ca[int(rand() * ncpus + 1)];
+ 	}' < /dev/null`
+ 	n=$(($n+1))
+-	if ! taskset -p $cpumask $$ > /dev/null 2>&1
++	if ! taskset -c -p $cpumask $$ > /dev/null 2>&1
+ 	then
+-		echo taskset failure: '"taskset -p ' $cpumask $$ '"'
++		echo taskset failure: '"taskset -c -p ' $cpumask $$ '"'
+ 		exit 1
+ 	fi
+ 
 -- 
 2.31.1.189.g2e36527f23
 
