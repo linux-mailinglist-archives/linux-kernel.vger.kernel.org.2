@@ -2,127 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C0A3D0FB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C4B3D0FA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238459AbhGUM7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:59:48 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44698 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238302AbhGUM5I (ORCPT
+        id S238087AbhGUM5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238176AbhGUMzv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:57:08 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 7DD981FEA7;
-        Wed, 21 Jul 2021 13:36:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626874614;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ACSOqLjxdKypbguvriIn2aNR3FddUn7knx9Dv2QbmwE=;
-        b=n/b1fl3ecyHZMi/6WIbjgf5cls+zJemQ1MOUkGfSdnHaytU9XIQntu0Nxx76h3BnwHIHQ1
-        Ik6PEVpV89wDn7XahUFoLRcGmvvoHpdwtFSLRnojtE87LjWLl70r2auHHewAwYQURaVO0U
-        0CqrL77M+5kM5XLds90DyZTX1YQz8X8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626874614;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ACSOqLjxdKypbguvriIn2aNR3FddUn7knx9Dv2QbmwE=;
-        b=FH1MGv0VUqlII3Qv7nLEnjfyHdjMsKsmnpuQ3t+FpBT4BNp8YQBKXwk7fHRDr+fYoSVw68
-        86TtUebrHBXSGmAw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 64FC0A3B87;
-        Wed, 21 Jul 2021 13:36:54 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 482F7DA704; Wed, 21 Jul 2021 15:34:13 +0200 (CEST)
-Date:   Wed, 21 Jul 2021 15:34:13 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-Subject: Re: [PATCH] btrfs: fix rw device counting in
- __btrfs_free_extra_devids
-Message-ID: <20210721133412.GE19710@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Nikolay Borisov <nborisov@suse.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-References: <20210715103403.176695-1-desmondcheongzx@gmail.com>
- <7ae7a858-9893-c41c-ed96-10651c295087@suse.com>
- <b8fe8fa5-c022-187f-b10d-3f73e668008a@gmail.com>
+        Wed, 21 Jul 2021 08:55:51 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F11C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:35:36 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id u8-20020a7bcb080000b02901e44e9caa2aso998608wmj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:35:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=THtvL95+Wdg5XKa0Q6wjHIENl0Y9TZHt3CwdcuBkgF8=;
+        b=dYzzqSbTcHoAKX52adHhFah33UAvJMaxB1AIimYVp8/ShQNJyvzpQuyW4v9H9wQS7C
+         9oUflpJc11rRJeujwNJ/0OaIN7oOBEwVF7hMZpgJorzEtN81xw7UznEeWpFXOCMU+9Yf
+         vvlCvBwEaXtKD+Mit2oA1qgc2x2cQOCvdQD8ad6Jmyx3IV+U1K1ht0zp7+FRoLComa9z
+         7nyg//dnCxl4r1LGd2OmqdUp+AIhctUAyBKbvsw/8+fgpsxlsGVuOTjFWbitTHU3+qua
+         iXTTZxxsP4ssGpvdcORzQIsJquYp1mYs6zK7WvpK/a82z1I5x6mBKwGwDf4o5qiqrpRR
+         CN8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=THtvL95+Wdg5XKa0Q6wjHIENl0Y9TZHt3CwdcuBkgF8=;
+        b=JzKW+kpNgaZ4XGKuRNR7rH0Nt+z7NaI7MMZs8N0Zs4v1+2M/gRBX3LQZv7a98yZ72b
+         gMJFH2nrcPeAmS4955mi0Uoi/cJTdxKTxrC+wzhj/bA5feCF6BgY1/AiLXgGRY+fISUW
+         o6whZgLLXvq5iKixL++0qp0/nc+r2qJ7+r27fax65zXDZSI6NXYFnsQCb51CXI2jtnRj
+         h5wKy0vq+MGTDk4/dgl8rmBEbpyO2xQkjN+Obo3GxWXNiuoDCKc2kTEQI9URgZl7uFOY
+         wbtserPtIRFEpdYV1t8cW2Nux1+vZFcBIR27eymXzX9cZghk7QJbYG/qVV80z77Z202y
+         WELA==
+X-Gm-Message-State: AOAM530oceHcWFn2+7GiGJ3Iop3zXeuZDB3N+1TajA8qIgu67N5tBfap
+        dvPHubvvxuW67IMaBUshLoRxwQ==
+X-Google-Smtp-Source: ABdhPJyciOXfOFa9KQ+iYzD+QsJY74g96fGc86hUOZHCThYzhTYjYByChhSiI5DH0qDjIx7s8PRrdA==
+X-Received: by 2002:a1c:1bc3:: with SMTP id b186mr4197684wmb.27.1626874534544;
+        Wed, 21 Jul 2021 06:35:34 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:efb1:2fcc:e84:52ad])
+        by smtp.gmail.com with ESMTPSA id e11sm33189602wrt.0.2021.07.21.06.35.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 06:35:34 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 14:35:30 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Fuad Tabba <tabba@google.com>
+Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        dbrazdil@google.com, kernel-team@android.com
+Subject: Re: [PATCH 13/14] KVM: arm64: Restrict hyp stage-1 manipulation in
+ protected mode
+Message-ID: <YPgion9+okAtvkr4@google.com>
+References: <20210719104735.3681732-1-qperret@google.com>
+ <20210719104735.3681732-14-qperret@google.com>
+ <CA+EHjTzpoX+rLQHwUbR3BVY_XJEWERiG4AGk7SW6GDtDFC_cuQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b8fe8fa5-c022-187f-b10d-3f73e668008a@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <CA+EHjTzpoX+rLQHwUbR3BVY_XJEWERiG4AGk7SW6GDtDFC_cuQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 09:11:43PM +0800, Desmond Cheong Zhi Xi wrote:
-> On 15/7/21 7:55 pm, Nikolay Borisov wrote:
-> > 
-> > 
-> > On 15.07.21 г. 13:34, Desmond Cheong Zhi Xi wrote:
-> >> Syzbot reports a warning in close_fs_devices that happens because
-> >> fs_devices->rw_devices is not 0 after calling btrfs_close_one_device
-> >> on each device.
-> >>
-> >> This happens when a writeable device is removed in
-> >> __btrfs_free_extra_devids, but the rw device count is not decremented
-> >> accordingly. So when close_fs_devices is called, the removed device is
-> >> still counted and we get an off by 1 error.
-> >>
-> >> Here is one call trace that was observed:
-> >>    btrfs_mount_root():
-> >>      btrfs_scan_one_device():
-> >>        device_list_add();   <---------------- device added
-> >>      btrfs_open_devices():
-> >>        open_fs_devices():
-> >>          btrfs_open_one_device();   <-------- rw device count ++
-> >>      btrfs_fill_super():
-> >>        open_ctree():
-> >>          btrfs_free_extra_devids():
-> >> 	  __btrfs_free_extra_devids();  <--- device removed
-> >> 	  fail_tree_roots:
-> >> 	    btrfs_close_devices():
-> >> 	      close_fs_devices();   <------- rw device count off by 1
-> >>
-> >> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
-> >> Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-> >> Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-> >> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> > 
-> > Is there a reliable reproducer from syzbot? Can this be turned into an
-> > xfstest?
-> > 
-> 
-> Syzbot has some reliable reproducers here:
-> https://syzkaller.appspot.com/bug?id=113d9a01cbe0af3e291633ba7a7a3e983b86c3c0
-> 
-> Seems like it constructs two images in-memory then mounts them. I'm not 
-> sure if that's amenable to be converted into an xfstest?
+Hi Fuad,
 
-It would need to be an image from the time the warning is reproduced,
-I'm not sure how much timing is also important. But iirc adding raw test
-images to fstests was not welcome, so it would have to be a reproducer
-and given that the syzkaller source is not human readable I'm not sure
-it would be welcome either.
+On Wednesday 21 Jul 2021 at 11:45:53 (+0100), Fuad Tabba wrote:
+> > +static int hyp_range_is_shared_walker(u64 addr, u64 end, u32 level,
+> > +                                     kvm_pte_t *ptep,
+> > +                                     enum kvm_pgtable_walk_flags flag,
+> > +                                     void * const arg)
+> > +{
+> > +       enum kvm_pgtable_prot prot;
+> > +       kvm_pte_t pte = *ptep;
+> > +
+> > +       if (!kvm_pte_valid(pte))
+> > +               return -EPERM;
+> > +
+> > +       prot = kvm_pgtable_hyp_pte_prot(pte);
+> > +       if (!prot)
+> > +               return -EPERM;
+> nit: is this check necessary?
 
-Maybe there's some middle ground when the image is created by mkfs and
-filled with the data and then the mount loop is started from shell. But
-that means to untangle the C reproducer.
+I guess not, the next one should do, I'll remove :)
+
+> > +       /* Check that the page has been shared with the hypervisor before */
+> > +       if (prot != (PAGE_HYP | KVM_PGTABLE_STATE_SHARED | KVM_PGTABLE_STATE_BORROWED))
+> > +               return -EPERM;
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static int hyp_range_is_shared(phys_addr_t start, phys_addr_t end)
+> > +{
+> > +       struct kvm_pgtable_walker walker = {
+> > +               .cb = hyp_range_is_shared_walker,
+> > +               .flags = KVM_PGTABLE_WALK_LEAF,
+> > +       };
+> > +
+> > +       return kvm_pgtable_walk(&pkvm_pgtable, (u64)__hyp_va(start),
+> > +                               end - start, &walker);
+> > +}
+> > +
+> > +static int check_host_share_hyp_walker(u64 addr, u64 end, u32 level,
+> 
+> nit: It seems the convention is usually addr,size or start,end. Here
+> you're using addr,end.
+
+Well for some reason all the walkers in pgtable.c follow the addr,end
+convention, so I followed that. But in fact, as per [1] I might actually
+get rid of this walker in v2, so hopefully that'll make the issue go
+away.
+
+[1] https://lore.kernel.org/kvmarm/YPbwmVk1YD9+y7tr@google.com/
+
+> > +                                      kvm_pte_t *ptep,
+> > +                                      enum kvm_pgtable_walk_flags flag,
+> > +                                      void * const arg)
+> > +{
+> > +       enum kvm_pgtable_prot prot;
+> > +       kvm_pte_t pte = *ptep;
+> > +
+> > +       /* If invalid, only allow to share pristine pages */
+> > +       if (!kvm_pte_valid(pte))
+> > +               return pte ? -EPERM : 0;
+> > +
+> > +       prot = kvm_pgtable_stage2_pte_prot(pte);
+> > +       if (!prot)
+> > +               return -EPERM;
+> > +
+> > +       /* Cannot share a page that is not owned */
+> > +       if (prot & KVM_PGTABLE_STATE_BORROWED)
+> > +               return -EPERM;
+> > +
+> > +       /* Cannot share a page with restricted access */
+> > +       if ((prot & KVM_PGTABLE_PROT_RWX) ^ KVM_PGTABLE_PROT_RWX)
+> nit: isn't this clearer as
+> 
+> if ((prot & KVM_PGTABLE_PROT_RWX) != KVM_PGTABLE_PROT_RWX)
+
+I guess it would be, I'll fix it up.
+
+> > +               return -EPERM;
+> > +
+> > +       /* Allow double-sharing (requires cross-checking the hyp stage-1) */
+> > +       if (prot & KVM_PGTABLE_STATE_SHARED)
+> > +               return hyp_range_is_shared(addr, addr + 1);
+> 
+> Why addr+1, rather than end?
+
+Because 'end' here is the 'end' that was passed to kvm_pgtable_walk()
+IIRC. What I want to do here is check if the page I'm currently visiting
+is already shared and if so, that it is shared with the hypervisor. But
+it's possible that only one page in the range of pages passed to
+__pkvm_host_share_hyp is already shared, so I need to check them one by
+one.
+
+Anyways, as per the discussion with Marc on [2], I'll probably switch to
+only accept sharing one page at a time, so all these issues should just
+go away as well!
+
+[2] https://lore.kernel.org/kvmarm/YPa6BGuUFjw8do+o@google.com/
+
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static int check_host_share_hyp(phys_addr_t start, phys_addr_t end)
+> > +{
+> > +       struct kvm_pgtable_walker walker = {
+> > +               .cb = check_host_share_hyp_walker,
+> > +               .flags = KVM_PGTABLE_WALK_LEAF,
+> > +       };
+> > +
+> > +       return kvm_pgtable_walk(&host_kvm.pgt, start, end - start, &walker);
+> > +}
+> > +
+> > +int __pkvm_host_share_hyp(phys_addr_t start, phys_addr_t end)
+> > +{
+> > +       enum kvm_pgtable_prot prot;
+> > +       int ret;
+> > +
+> > +       if (!range_is_memory(start, end))
+> > +               return -EINVAL;
+> > +
+> > +       hyp_spin_lock(&host_kvm.lock);
+> > +       hyp_spin_lock(&pkvm_pgd_lock);
+> > +
+> > +       ret = check_host_share_hyp(start, end);
+> > +       if (ret)
+> > +               goto unlock;
+> > +
+> > +       prot = KVM_PGTABLE_PROT_RWX | KVM_PGTABLE_STATE_SHARED;
+> > +       ret = host_stage2_idmap_locked(start, end, prot);
+> 
+> Just for me to understand this better. The id mapping here, which
+> wasn't taking place before this patch, is for tracking, right?
+
+Yes, exactly, I want to make sure to mark the page as shared (and
+borrowed) in the relevant page-tables to not forget about it :)
+
+Cheers,
+Quentin
