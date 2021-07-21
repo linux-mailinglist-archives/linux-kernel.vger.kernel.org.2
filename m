@@ -2,165 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF1D3D0EC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB323D0EC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237335AbhGULl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
+        id S237424AbhGULlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:41:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbhGULlY (ORCPT
+        with ESMTP id S231680AbhGULls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:41:24 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F77C061574;
-        Wed, 21 Jul 2021 05:22:00 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id dt7so2895515ejc.12;
-        Wed, 21 Jul 2021 05:22:00 -0700 (PDT)
+        Wed, 21 Jul 2021 07:41:48 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F94C061574;
+        Wed, 21 Jul 2021 05:22:24 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id v6so2848678lfp.6;
+        Wed, 21 Jul 2021 05:22:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JXhJq/LmVudsVenUjd6F9TiOla6qbxeUF5Sbd3Fur1A=;
-        b=ug9niw6keprpwO2RL8rEqsFpnNIcIbuoD3BjnB0WnlnFLkgdqz+uARsWWP/tN46Vsv
-         5IFJXr/81n5kYRZEu/dDHpuDnw+yBWgsO91CFaJ12l4639cFRtxbxe2ybLyyrEwlRHXO
-         TmMwH8m+ZoFd7nwiipmsv7wO6QRbuTWpq1+edjcPQHymrpsddMkc6ZT4cK9zoDCiIGcY
-         lEzp7GfVuzcbxk1p/6Redb/gdMShp6lIGfJuPSkHhTM8NotRKQMMeLUXm7hufqcBXQN9
-         Z0JOqt2eUEorDh43bWPQo9bc3ICji29UcLMO55fu0jf/9n2xfR4tWcA8DmNm6gczNGjW
-         tqtQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Pg7bD+390UpqjI+zQBvxj/TSzQC4X2004JklWBEs0bY=;
+        b=LUib2WexrgHs6dHS2ImFFSKnys6Z4IfUNURmd3L3rcrbu/qM2k/pxZk6isFvvjjtO9
+         Rx6VnzE7dnFUW6klXr879NaXvYj98sDikoJPMv3vKcslqo7FjDHw0l0jkfzjKRruIcXY
+         JC5TGQa3SEby+2Wzl98tK8rfo71NEu9livn5zu8+5h7YUqeg8hXgYc99TOsBGPVCA7Ev
+         yYYmXOzcp7Ifr30MYgAKAYIdALKMyYliOaGMGo4IWC9BiFhQuxqq+PeUdG9bxLq6WV/v
+         CQB//583m0ixI9tuMz29LCRx5NkppMsfr0+mbwBzT/Pyy+8GYv01TSnWsD1Z2EJOG46r
+         F/9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JXhJq/LmVudsVenUjd6F9TiOla6qbxeUF5Sbd3Fur1A=;
-        b=YLbtWC0DVlOc0mivKcYiJ245MrIajwXYijKD99R/jsM2Wf//JNCksqN+Bxn8H67x4/
-         dGzIHq4lNph5y0jXtfmKmn7ALnbdJzRIVZgFX3NVPxRCkjFCTbyXInwEnF3NXfgSd/xj
-         GRSiSBMhlOGDP+z/ujVaC5Ly5zgH23zc/kt2w/VJo1PobF98hPQPIl3Sso7m2bqm02SM
-         fN03aWqpZk6ub3hT/1oYvkqFE+3VZ0zfN/b5alTwAbkwoesCqgBCexTjvQJUaRny8jii
-         EqPBuk2f1GFFDjw+0/8otxVFqJccoUHD/x9oPfV16Yz91S1ADeprgv6S1VHbTf5OXmWe
-         +stA==
-X-Gm-Message-State: AOAM532oQqpnjBZUSbBNXs5afu/I96S0EIcmuUObvlmXBxHgBCbnprkh
-        y+yPSCm+m4omDZpLBiRugUM=
-X-Google-Smtp-Source: ABdhPJxIM6N9pcojHe1rA3JZ3zZ9F1m0hQuUr7vM1XQMo9cpCCYprhkWVsINRgnY28mUgwc/BoF2vQ==
-X-Received: by 2002:a17:906:3948:: with SMTP id g8mr37488946eje.282.1626870118407;
-        Wed, 21 Jul 2021 05:21:58 -0700 (PDT)
-Received: from localhost.localdomain ([176.30.109.247])
-        by smtp.gmail.com with ESMTPSA id u5sm10770113edv.64.2021.07.21.05.21.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 05:21:58 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 15:21:54 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
-Subject: Re: [PATCH] media: em28xx: fix corrupted list
-Message-ID: <20210721152154.6b1a4e68@gmail.com>
-In-Reply-To: <c6bb9cd0-2a8d-99c3-a14d-51c6364ba92d@xs4all.nl>
-References: <20210706145025.25776-1-paskripkin@gmail.com>
-        <c6bb9cd0-2a8d-99c3-a14d-51c6364ba92d@xs4all.nl>
-X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Pg7bD+390UpqjI+zQBvxj/TSzQC4X2004JklWBEs0bY=;
+        b=pGZ3F25F45EuaxHb50MItReJkV0Db5mFtkaczvPaNxwhaRMaU1IfxxQnUDiRYtRU6x
+         vWegiGz0UOZAk58KaOM6EqX1IVC5bLDtbmBTJO5t1HALx5TX6n88oOivQ0NPFiAFc8By
+         t78+FE9IeGSVp7fxTyzpv8wZg/QLuSaLi69P6Km/nTJq+atnnvl7wowf6tr1xqYH3DG3
+         7idnKDubhuIxKmkXOvvI2ZDa0nxhtoZJKRL/x6+wvP51Wsz9l/g/NGQpMZCZyXKZ11Ns
+         GCeEz2febfXjyNowLJF/ZbnEaZtk2a2boimgGcDD6JO+rTKy1d7RWv1agdo0dMkpuXsD
+         bnSg==
+X-Gm-Message-State: AOAM530TN/+zTMiuJL5zz9Wsw01aQD+soqRZ+4Oe7w3CiVtioHM8TzXr
+        JxmN9hbePMrpFBQmWgelLQPchr1tvNMWpXT9anQ=
+X-Google-Smtp-Source: ABdhPJx4EF5xnEFx9vKv2ALcD1ZOdgQU3l5QRL1R03YNWeU5AazWr4HjIsELUaOh9e+0QKlMJBe3lnzqtYx9BFb/ulE=
+X-Received: by 2002:a05:6512:33af:: with SMTP id i15mr26072779lfg.25.1626870142549;
+ Wed, 21 Jul 2021 05:22:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210704153314.6995-1-keguang.zhang@gmail.com>
+ <YO5yo8v/tRZLGEdo@matsya> <CAJhJPsUNCSK4VYv9Z4ZNDxC03F4CxQoAXCCf+TJmmbdUe4XNNA@mail.gmail.com>
+ <YPLrsXEmmHPtbZ+N@matsya> <YPMVyYoBojHYsMbJ@kroah.com> <YPa2+TsdL0PrR3hR@matsya>
+ <YPa4IAk3sh7bai15@kroah.com> <YPa/DsO1vWcXKJKd@matsya>
+In-Reply-To: <YPa/DsO1vWcXKJKd@matsya>
+From:   Kelvin Cheung <keguang.zhang@gmail.com>
+Date:   Wed, 21 Jul 2021 20:22:10 +0800
+Message-ID: <CAJhJPsV211=Y_wrXqaiWz7Tqhvbj-ETwSNWqLcbt8PHi8=JMLA@mail.gmail.com>
+Subject: Re: [PATCH V5] dmaengine: Loongson1: Add Loongson1 dmaengine driver
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 14:13:13 +0200
-Hans Verkuil <hverkuil@xs4all.nl> wrote:
+Hi Vinod, Greg,
 
-> On 06/07/2021 16:50, Pavel Skripkin wrote:
-> > Syzbot reported corrupted list in em28xx driver. The problem was in
-> > non-reinitialized lists on disconnect. Since all 2 lists are global
-> > variables and driver can be connected and disconnected many times we
-> > should call INIT_LIST_HEAD() in .disconnect method to prevent
-> > corrupted list entries.
-> > 
-> > Fixes: 1a23f81b7dc3 ("V4L/DVB (9979): em28xx: move usb probe code
-> > to a proper place") Reported-by:
-> > syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
-> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com> ---
-> >  drivers/media/usb/em28xx/em28xx-cards.c | 2 ++
-> >  drivers/media/usb/em28xx/em28xx-core.c  | 6 ++++++
-> >  drivers/media/usb/em28xx/em28xx.h       | 1 +
-> >  3 files changed, 9 insertions(+)
-> > 
-> > diff --git a/drivers/media/usb/em28xx/em28xx-cards.c
-> > b/drivers/media/usb/em28xx/em28xx-cards.c index
-> > ba9292e2a587..8b1ff79c37a0 100644 ---
-> > a/drivers/media/usb/em28xx/em28xx-cards.c +++
-> > b/drivers/media/usb/em28xx/em28xx-cards.c @@ -4148,6 +4148,8 @@
-> > static void em28xx_usb_disconnect(struct usb_interface *intf)
-> > dev->dev_next = NULL; }
-> >  	kref_put(&dev->ref, em28xx_free_device);
-> > +
-> > +	em28xx_reset_lists();
-> >  }
-> >  
-> >  static int em28xx_usb_suspend(struct usb_interface *intf,
-> > diff --git a/drivers/media/usb/em28xx/em28xx-core.c
-> > b/drivers/media/usb/em28xx/em28xx-core.c index
-> > 584fa400cd7d..03970ed00dba 100644 ---
-> > a/drivers/media/usb/em28xx/em28xx-core.c +++
-> > b/drivers/media/usb/em28xx/em28xx-core.c @@ -1131,6 +1131,12 @@
-> > void em28xx_init_extension(struct em28xx *dev)
-> > mutex_unlock(&em28xx_devlist_mutex); }
-> >  
-> > +void em28xx_reset_lists(void)
-> > +{
-> > +	INIT_LIST_HEAD(&em28xx_devlist);
-> > +	INIT_LIST_HEAD(&em28xx_extension_devlist);
-> 
-> This needs a mutex_lock(&em28xx_devlist_mutex);
-> 
-> But actually, I don't think this is right: if there are multiple
-> em28xx devices, then I think if you disconnect one, then the other is
-> - with this code - also removed from the list.
-> 
-> Can you give a link to the actual syzbot bug? I'm not at all sure you
-> are fixing the right thing here.
+Vinod Koul <vkoul@kernel.org> =E4=BA=8E2021=E5=B9=B47=E6=9C=8820=E6=97=A5=
+=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=888:18=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On 20-07-21, 13:48, Greg KH wrote:
+> > On Tue, Jul 20, 2021 at 05:13:53PM +0530, Vinod Koul wrote:
+> > > On 17-07-21, 19:39, Greg KH wrote:
+> > > > On Sat, Jul 17, 2021 at 08:09:45PM +0530, Vinod Koul wrote:
+> > > > > On 17-07-21, 18:57, Kelvin Cheung wrote:
+> > > > > > Vinod Koul <vkoul@kernel.org> =E4=BA=8E2021=E5=B9=B47=E6=9C=881=
+4=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=881:14=E5=86=99=E9=81=93=EF=BC=
+=9A
+> > > > > > >
+> > > > > > > On 04-07-21, 23:33, Keguang Zhang wrote:
+> > > > > > >
+> > > > > > > > +static struct platform_driver ls1x_dma_driver =3D {
+> > > > > > > > +     .probe  =3D ls1x_dma_probe,
+> > > > > > > > +     .remove =3D ls1x_dma_remove,
+> > > > > > > > +     .driver =3D {
+> > > > > > > > +             .name   =3D "ls1x-dma",
+> > > > > > > > +     },
+> > > > > > > > +};
+> > > > > > > > +
+> > > > > > > > +module_platform_driver(ls1x_dma_driver);
+> > > > > > >
+> > > > > > > so my comment was left unanswered, who creates this device!
+> > > > > >
+> > > > > > Sorry!
+> > > > > > This patch will create the device: https://patchwork.kernel.org=
+/patch/12281691
+> > > > >
+> > > > > Greg, looks like the above patch creates platform devices in mips=
+, is
+> > > > > that the right way..?
+> > > >
+> > > > I do not understand, what exactly is the question?
+> > >
+> > > So this patch was adding Loongson1 dmaengine driver which is a platfo=
+rm
+> > > device. I asked about the platform device and was told that [1] creat=
+es
+> > > the platform device. I am not sure if that is the recommended way giv=
+en
+> > > that you have been asking people to not use platform devices.
+> >
+> > Yes, but this link:
+> >
+> > > [1]: https://patchwork.kernel.org/patch/12281691
+> >
+> > Does look like a "real" platform device in that you have fixed resource=
+s
+> > for the device and no way to discover it on your own.
+> >
+> > But why are you not using DT for this?  That looks like the old platfor=
+m
+> > data files.
+>
+> Apparently I was told that this platform does not use DT :( Looking at
+> it it should.. Maybe Kelvin can explain why..
 
-Hi, Hans!
+Yes, the DT support of Loongson32 is still on the way.
+Therefore, I have to use the old way to let the driver work.
+I will update this driver once this platform supports DT.
 
-I guess, I missed my coffee that morning, sorry :) This patch looks
-complety wrong, of course.
-
-I've took a close look at this bug one more time, and I found the true
-root case of this bug.
-
-If em28xx dev has dev_next pointer we need to close dev->next extension
-on disconnect to avoid UAF and corrupted list bug. So, something like
-this should work:
-
-diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index c1e0dccb7408..d56b040e1bd7 100644
---- a/drivers/media/usb/em28xx/em28xx-cards.c
-+++ b/drivers/media/usb/em28xx/em28xx-cards.c
-@@ -4139,8 +4139,10 @@ static void em28xx_usb_disconnect(struct usb_interface *intf)
- 
- 	em28xx_close_extension(dev);
- 
--	if (dev->dev_next)
-+	if (dev->dev_next) {
- 		em28xx_release_resources(dev->dev_next);
-+		em28xx_close_extension(dev->dev_next);
-+	}
- 	em28xx_release_resources(dev);
- 
- 	if (dev->dev_next) {
-
-How to You feel about it? I am going to send this patch for syzbot
-testing
+>
+> --
+> ~Vinod
 
 
-Syzbot link:
-https://syzkaller.appspot.com/bug?id=3609bbf45bf63a8f6032f330eb3d34f51cc81493
 
+--=20
+Best regards,
 
-Again, sorry for v1 patch, I don't know how I came up with this fix :(
- 
-
-
-With regards,
-Pavel Skripkin
+Kelvin Cheung
