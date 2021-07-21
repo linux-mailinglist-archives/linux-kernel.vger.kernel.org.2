@@ -2,47 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D653D1161
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C12A53D1165
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238279AbhGUNwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbhGUNwK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:52:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFFFC061575;
-        Wed, 21 Jul 2021 07:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WbAy6DqFkDK/H1Tdt40cNZWRwcSg1s+aS3yHsxK8yvo=; b=oDO1Y7Ya8lGL9a/LT4NBBFY+RY
-        SGEQzZ/bQoVHouF+q/n2uiDwq0kYHeS+VX3y4aYfTJR9JxGfLCB6mszyLx7EdekRg7fbJ7NIgN7RK
-        ykLLh8lvJkAXJqXOT4VO6HDVpRb/1K5I0+ClWcBrfXyPduomBe+KXE8QcQnhAE821rI+sifsjh00i
-        b5U6ORy7MUf1EdBkWe1FCfofGt7i/cqoM9AOAE3SbLHsgDnQUnYsvq+Slf+rW09K0aQBqNoR8xIY2
-        AFm62AFyiH+a0TV80BGaHHqZZrqxMa1qx3Xb0g2Wwly4TpwUKFL9upHkhYpSVJSUNBNyiaUHg5dZ5
-        4oOouCfw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6DGz-009HqA-5R; Wed, 21 Jul 2021 14:32:37 +0000
-Date:   Wed, 21 Jul 2021 15:32:33 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-kernel@vger.kernel.org, ndesaulniers@google.com,
-        torvalds@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        david@fromorbit.com
-Subject: Re: [PATCH] lib/string: Bring optimized memcmp from glibc
-Message-ID: <YPgwATAQBfU2eeOk@infradead.org>
-References: <20210721135926.602840-1-nborisov@suse.com>
+        id S238525AbhGUNwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:52:34 -0400
+Received: from mga14.intel.com ([192.55.52.115]:31256 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237524AbhGUNwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 09:52:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="211164945"
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="211164945"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 07:33:09 -0700
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="662135822"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 07:33:08 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m6DHR-00Gg1v-SR; Wed, 21 Jul 2021 17:33:01 +0300
+Date:   Wed, 21 Jul 2021 17:33:01 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andreas Schwab <schwab@suse.de>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
+Message-ID: <YPgwHcbK7XoXL/mD@smile.fi.intel.com>
+References: <mvmtukn6bmu.fsf@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210721135926.602840-1-nborisov@suse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <mvmtukn6bmu.fsf@suse.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This seems to have lost the copyright notices from glibc.
+On Wed, Jul 21, 2021 at 03:26:49PM +0200, Andreas Schwab wrote:
+> This allows the driver to be auto loaded.
+
+Can you elaborate a bit?
+
+The driver has OF compatible strings and should be loaded automatically.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
