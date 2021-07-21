@@ -2,217 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A913D1438
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9750B3D1439
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232920AbhGUPtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 11:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233137AbhGUPsJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:48:09 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E01CC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:28:41 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id o8so1204647plg.11
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:28:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oceMWhTM8pobryjzYykKcZBCBssTqtoQ2RDgOWPDaSM=;
-        b=frQWdy6smOC4tSb8cgSKRfasM4BbzBm+CUpryiWZHxreVCh4LjOqnqk/OmBAiwygUy
-         yADpoaAT5ZiXE5Bp/ekyYhT9pAh49FSsmAAoeWyviZGGlxXIOhIv7izEkJZttVsM2pA2
-         BrWKePglp2+HHFoYfYpR5AXXJ82/YGaFHSZmf/zZFod+Ll+56zNuCJWr1rQbyEO/GuD8
-         ZhSRbFXpfP792V7Y2f2jv8xydy2ksrimhs8iJEd6Oz8meLlqli8kYj0udk2HndpQCrlD
-         enSkSNvnXEd/HqQVV8gYSM1+yoWyLUzxJ46vdamFZ4n+xoBRqq9LQzPYw1BlCtA+2yli
-         15jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oceMWhTM8pobryjzYykKcZBCBssTqtoQ2RDgOWPDaSM=;
-        b=BrvZij0rJoEJf/YXgXiv1kaAH6roOJRrbrFqyuNsUvAMwUbpG/RqVFEIDhR9ykM1LI
-         fmSMU9ElmEKQgcS36oOew6V36zL2j13mqxdcJxntFapVR1yM/hPmrkh/5WtC7aL7A18O
-         goNfqteer4ppoRB+wLekBdEjuemCsVgnfjHju1mO2HRduaNqYpsW1SK/FWBMDFqAf4tG
-         BO8+qAsZBiK1MQrCT3b20WU3u/fkwxf5hYkPbtaUQnq1Vei6FRtX7MZeR8lhQ/73rMjp
-         bEdO2jsK2VVKXHOobWvxWsyVrYw/wvjjAu8LTlP+magPtLrxRg8HgGVoN+442o+i5XXk
-         q8UQ==
-X-Gm-Message-State: AOAM533BudEiu89Hd6ucKOyf3w2sAHvh+6BodTfbzks+3wXgNqyIqmDf
-        Q5RIo/QWl3yuEOLGleZwlnU=
-X-Google-Smtp-Source: ABdhPJyx1/9u66mEIQ7tlhhwr7cvM3LxmaRRWwYlE7BhD3irRBHX0V0gqBqJI+qOdPWc07O/FYW1tQ==
-X-Received: by 2002:a17:90a:9b03:: with SMTP id f3mr34535008pjp.184.1626884920747;
-        Wed, 21 Jul 2021 09:28:40 -0700 (PDT)
-Received: from ojas ([122.161.48.33])
-        by smtp.gmail.com with ESMTPSA id l11sm23057834pjw.45.2021.07.21.09.28.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 09:28:40 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 21:58:25 +0530
-From:   Ojaswin Mujoo <ojaswin98@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Stefan Wahren <stefan.wahren@i2se.com>, nsaenz@kernel.org,
-        arnd@arndb.de, dan.carpenter@oracle.com, phil@raspberrypi.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] staging: vchiq: Combine vchiq platform code into
- single file
-Message-ID: <20210721162825.GA188355@ojas>
-References: <cover.1625401927.git.ojaswin98@gmail.com>
- <b2e9eaee3e6d8f278a3277aaa284c5ca8b76d756.1625401928.git.ojaswin98@gmail.com>
- <b1b867c1-476c-8a5d-721b-ac19854efcbc@i2se.com>
- <20210711112821.GA5049@ojas>
- <YPfZW0k563kuuHnx@kroah.com>
+        id S233682AbhGUPty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 11:49:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235501AbhGUPt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 11:49:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7678F61242;
+        Wed, 21 Jul 2021 16:30:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626885005;
+        bh=/yc+E0kAuhJRP5Rh3EmC/tYRFWNCrNcyKuD79ykVRyg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fyoek8Bqt1r6Z9RyyoyDYkx2SLZbxehZG0+ZpXG+dhtohk48n5YRCHWCTv22aqBpb
+         VMNxImCHyu8s0asowGbJhIyevh6mfA3oobRdRne9ttQRpiTNCddxhU3QIX4ROYx8+O
+         v8QhFy+YxssLxfvgpqaSkXbL3R/gl4aLnhyDdpKd/As9AuD4wRSa6T5ijR8Qp7STkY
+         ICoqkA5i5l7bcW5lVmn+zea1xNvx1w9lKg+DSlCKww2PssF5xpFNQztWbgC7yQ7gzP
+         LurS9Y/St4SxcR21Xl3GI/V2/c7OC9UVAIVEGVLg+4PVq3ZcABaPYhX5D9d74MWsQ4
+         GJD7fXFFVChsQ==
+Received: by mail-ed1-f48.google.com with SMTP id ee25so3145395edb.5;
+        Wed, 21 Jul 2021 09:30:05 -0700 (PDT)
+X-Gm-Message-State: AOAM5308FcPqmoslHCXpkq6ss6T7Z9LNyI8zRpXPg3zf9+XIRmXT9m4Q
+        Xr0QVvnFMIoASPJv7Bi4H2CfyLunVllb9Lhadg==
+X-Google-Smtp-Source: ABdhPJzEtVFObrsQpwr41HgLxTFwCfKhI/yLs9CyoCDtGBoAde4UHndoYEelcI1LxE6gOLfzns97J7HSCIC59jQJbZ8=
+X-Received: by 2002:aa7:df12:: with SMTP id c18mr49131896edy.62.1626885004024;
+ Wed, 21 Jul 2021 09:30:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPfZW0k563kuuHnx@kroah.com>
+References: <20210721151839.2484245-1-arnd@kernel.org>
+In-Reply-To: <20210721151839.2484245-1-arnd@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 21 Jul 2021 10:29:52 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKu=08VvrkP7hWeW=Sr0oYoDUsEZGKCQmTMgtPc9gxHkg@mail.gmail.com>
+Message-ID: <CAL_JsqKu=08VvrkP7hWeW=Sr0oYoDUsEZGKCQmTMgtPc9gxHkg@mail.gmail.com>
+Subject: Re: [PATCH] fbdev: simplefb: fix Kconfig dependencies
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 10:22:51AM +0200, Greg KH wrote:
-> On Sun, Jul 11, 2021 at 04:58:21PM +0530, Ojaswin Mujoo wrote:
-> > On Sun, Jul 11, 2021 at 12:49:35PM +0200, Stefan Wahren wrote:
-> > > Am 04.07.21 um 17:59 schrieb Ojaswin Mujoo:
-> > > > Combine the vchiq platform initialization code into a single file by
-> > > > merging vchiq_2835_arm.c into vchiq_arm.c
-> > > >
-> > > > Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
-> > > > ---
-> > > >  drivers/staging/vc04_services/Makefile        |   1 -
-> > > >  .../interface/vchiq_arm/vchiq_2835_arm.c      | 564 ------------------
-> > > >  .../interface/vchiq_arm/vchiq_arm.c           | 549 +++++++++++++++++
-> > > >  3 files changed, 549 insertions(+), 565 deletions(-)
-> > > >  delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
-> > > >
-> > > > diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
-> > > > index 0a04338fc962..1fd191e2e2a5 100644
-> > > > --- a/drivers/staging/vc04_services/Makefile
-> > > > +++ b/drivers/staging/vc04_services/Makefile
-> > > > @@ -4,7 +4,6 @@ obj-$(CONFIG_BCM2835_VCHIQ)	+= vchiq.o
-> > > >  vchiq-objs := \
-> > > >     interface/vchiq_arm/vchiq_core.o  \
-> > > >     interface/vchiq_arm/vchiq_arm.o \
-> > > > -   interface/vchiq_arm/vchiq_2835_arm.o \
-> > > >     interface/vchiq_arm/vchiq_debugfs.o \
-> > > >     interface/vchiq_arm/vchiq_connected.o \
-> > > >  
-> > > ...
-> > > > diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> > > > index 0f2de571eba7..9057d01ffd48 100644
-> > > > --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> > > > +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> > > > @@ -25,15 +25,32 @@
-> > > >  #include <linux/rcupdate.h>
-> > > >  #include <linux/delay.h>
-> > > >  #include <linux/slab.h>
-> > > > +#include <linux/interrupt.h>
-> > > > +#include <linux/io.h>
-> > > > +#include <linux/uaccess.h>
-> > > >  #include <soc/bcm2835/raspberrypi-firmware.h>
-> > > >  
-> > > >  #include "vchiq_core.h"
-> > > >  #include "vchiq_ioctl.h"
-> > > >  #include "vchiq_arm.h"
-> > > >  #include "vchiq_debugfs.h"
-> > > > +#include "vchiq_connected.h"
-> > > > +#include "vchiq_pagelist.h"
-> > > >  
-> > > >  #define DEVICE_NAME "vchiq"
-> > > >  
-> > > > +#define TOTAL_SLOTS (VCHIQ_SLOT_ZERO_SLOTS + 2 * 32)
-> > > > +
-> > > > +#define MAX_FRAGMENTS (VCHIQ_NUM_CURRENT_BULKS * 2)
-> > > > +
-> > > > +#define VCHIQ_PLATFORM_FRAGMENTS_OFFSET_IDX 0
-> > > > +#define VCHIQ_PLATFORM_FRAGMENTS_COUNT_IDX  1
-> > > > +
-> > > > +#define BELL0	0x00
-> > > > +#define BELL2	0x08
-> > > > +
-> > > > +#define ARM_DS_ACTIVE	BIT(2)
-> > > > +
-> > > >  /* Override the default prefix, which would be vchiq_arm (from the filename) */
-> > > >  #undef MODULE_PARAM_PREFIX
-> > > >  #define MODULE_PARAM_PREFIX DEVICE_NAME "."
-> > > > @@ -59,10 +76,542 @@ static struct vchiq_drvdata bcm2836_drvdata = {
-> > > >  	.cache_line_size = 64,
-> > > >  };
-> > > >  
-> > > > +struct vchiq_2835_state {
-> > > > +	int inited;
-> > > > +	struct vchiq_arm_state arm_state;
-> > > > +};
-> > > > +
-> > > > +struct vchiq_pagelist_info {
-> > > > +	struct pagelist *pagelist;
-> > > > +	size_t pagelist_buffer_size;
-> > > > +	dma_addr_t dma_addr;
-> > > > +	enum dma_data_direction dma_dir;
-> > > > +	unsigned int num_pages;
-> > > > +	unsigned int pages_need_release;
-> > > > +	struct page **pages;
-> > > > +	struct scatterlist *scatterlist;
-> > > > +	unsigned int scatterlist_mapped;
-> > > > +};
-> > > > +
-> > > > +static void __iomem *g_regs;
-> > > > +/* This value is the size of the L2 cache lines as understood by the
-> > > > + * VPU firmware, which determines the required alignment of the
-> > > > + * offsets/sizes in pagelists.
-> > > > + *
-> > > > + * Modern VPU firmware looks for a DT "cache-line-size" property in
-> > > > + * the VCHIQ node and will overwrite it with the actual L2 cache size,
-> > > > + * which the kernel must then respect.  That property was rejected
-> > > > + * upstream, so we have to use the VPU firmware's compatibility value
-> > > > + * of 32.
-> > > > + */
-> > > > +static unsigned int g_cache_line_size = 32;
-> > > > +static unsigned int g_fragments_size;
-> > > > +static char *g_fragments_base;
-> > > > +static char *g_free_fragments;
-> > > > +static struct semaphore g_free_fragments_sema;
-> > > > +static struct device *g_dev;
-> > > > +
-> > > > +static DEFINE_SEMAPHORE(g_free_fragments_mutex);
-> > > > +
-> > > > +static irqreturn_t
-> > > > +vchiq_doorbell_irq(int irq, void *dev_id);
-> > > > +
-> > > > +static struct vchiq_pagelist_info *
-> > > > +create_pagelist(char *buf, char __user *ubuf, size_t count, unsigned short type);
-> > > > +
-> > > > +static void
-> > > > +free_pagelist(struct vchiq_pagelist_info *pagelistinfo,
-> > > > +	      int actual);
-> > > 
-> > > please no forward declarations of these 3 functions. Put them into the
-> > > right order instead ...
-> > > 
-> > > Since this patch is independent from the other ones from the series,
-> > > maybe Greg can merg the rest of the series.
-> > > 
-> > > 
-> > > 
-> > 
-> > Hello Stefan,
-> > 
-> > Thanks for the review. As for the forward declerations, sure I can fix
-> > these 3 functions and send an independent patch for this.
-> 
-> Please fix up and resend the whole series properly so that I can apply
-> them that way.
-> 
-> thanks,
-> 
-> greg k-h
-Hello,
+On Wed, Jul 21, 2021 at 9:18 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Configurations with both CONFIG_FB_SIMPLE=y and CONFIG_DRM_SIMPLEDRM=m
+> are allowed by Kconfig because the 'depends on !DRM_SIMPLEDRM' dependency
+> does not disallow FB_SIMPLE as long as SIMPLEDRM is not built-in. This
 
-I have just sent a revised patchset with requested changes. [1]
+Double negative. How about:
 
-[1] https://lore.kernel.org/patchwork/cover/1465322/
+allows FB_SIMPLE as long as SIMPLEDRM is not built-in.
 
-Thank you,
-Ojaswin
+> can however result in a build failure when cfb_fillrect() etc are then
+> also in loadable modules:
+>
+> x86_64-linux-ld: drivers/video/fbdev/simplefb.o:(.rodata+0x1f8): undefined reference to `cfb_fillrect'
+> x86_64-linux-ld: drivers/video/fbdev/simplefb.o:(.rodata+0x200): undefined reference to `cfb_copyarea'
+> x86_64-linux-ld: drivers/video/fbdev/simplefb.o:(.rodata+0x208): undefined reference to `cfb_imageblit'
+>
+> To work around this, change FB_SIMPLE to be a 'tristate' symbol,
+> which still allows both to be =m together, but not one of them to
+> be =y if the other one is =m. If a distro kernel picks this
+> configuration, it can be determined by local policy which of
+> the two modules gets loaded. The 'of_chosen' export is needed
+> as this is the first loadable module referencing it.
+>
+> Alternatively, the Kconfig dependency could be changed to
+> 'depends on DRM_SIMPLEDRM=n', which would forbid the configuration
+> with both drivers.
+>
+> Fixes: 11e8f5fd223b ("drm: Add simpledrm driver")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/of/base.c           | 1 +
+>  drivers/video/fbdev/Kconfig | 5 +++--
+>  2 files changed, 4 insertions(+), 2 deletions(-)
+
+For the DT change:
+
+Acked-by: Rob Herring <robh@kernel.org>
