@@ -2,149 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A203D0EEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491313D0EEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236061AbhGUL7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234331AbhGUL7K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:59:10 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62739C061767
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 05:39:42 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id x13-20020a17090a46cdb0290175cf22899cso947632pjg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 05:39:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QEkEthW7CKgy/or0VKIC3NeiSwizxj3OuVxfIG0VkUM=;
-        b=HSwP1Zll/dPKdP3vrbbcEcVkhx/jcMPX3H7ajHXoSwKOPW+SuuBbZWuMjK5d0IvNt6
-         bUWR+IarJUShSq8/4Y4ZqPCNqV+Nb9C/YIRUJqW2jpOs8ycmClELT6yzWkawxONQWZYG
-         NDq/jPElYJ19nDgdHBtVsnlcLc+P6LA8juEuE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QEkEthW7CKgy/or0VKIC3NeiSwizxj3OuVxfIG0VkUM=;
-        b=bL79w6/641zfG7Jd3xnBuQQVe3oJfcG05Qii+jLEE2wTc522fnbqkzf9YyZUgNJceA
-         28BW9Wap0qlVQulKN6D5clqGAZkP2apSWm2qagrxpuBsGs6Rhwih1bPgJc0KXv8e9W6r
-         B4g77olZd+YDdvK0VS6kCJr1IsZbKZSzmZ6P1zUglZbBgw+rtLY3a83BVlRbGfugn39f
-         dfSnh34s8gDPXPz9jRPA+OuNJGwd12lyHbTOGfrIZISeGBdEPXj6D6Sh1D4aWXWJkCOz
-         FqLz/P8NrTkGJ5BItVdpRPVP5TP16C/FCd+pHKiF31K2EAv70ftHnImuuPgjpCPAM4sn
-         ec5w==
-X-Gm-Message-State: AOAM532ZjYgHhkFJ6+YKbxlUvXb8F2ScUVCX/fQvB+BuC73dAhfHnfRa
-        7yc+qfFplqr4W3gCXwiGYo4Yqn9ML+pDP/U74ArE8Q==
-X-Google-Smtp-Source: ABdhPJyTnNfx5pORTNjVkzxDDgtUXvJakKiVASRPKj5kfSEKa5DHdCM0Rau3Ti5Cohe2pje9E1RCRyGbz9nE8qdnWDg=
-X-Received: by 2002:a17:903:22d0:b029:12b:1215:5e73 with SMTP id
- y16-20020a17090322d0b029012b12155e73mr27536794plg.60.1626871181882; Wed, 21
- Jul 2021 05:39:41 -0700 (PDT)
+        id S232690AbhGUL7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:59:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235330AbhGUL7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 07:59:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B34496120C;
+        Wed, 21 Jul 2021 12:39:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626871189;
+        bh=k+dVNJh5z43KdObG8GTDGe49OrDPmvX8GDjb/agtr2M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JG0D/McuaXACyq1qjGXq+xJ+Ejywo0LeSvNeSckTJEUnua5hkhC2r5xS7L912dtc6
+         NPWWv9jvlGDU1tvkZRWsjXqVIipvNe6EQAzTTrwZpcm40gPpyefA/Znxng0Yulnpdv
+         Nt2CKHGRxEgJQ0ovqRgL/wzmZMtYQXP74YmJ0upmObFhJoQfAlsN9vHZfvuBirfCNj
+         jdDvCmBlmQr5Kz0K942tfHN6hiUkpq1ArouhkpAce1au6ev9kTjrmkg9Mz+akLRLlq
+         zgd9WORikcOJOvauU/R7DGehHY3ayJfXt7R4o/GsdF2fCKRT38K0xqr4uoFjB6JG6j
+         4oI6/sE1gYwPg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shannon Nelson <snelson@pensando.io>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, drivers@pensando.io,
+        linux-kernel@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
+        netdev@vger.kernel.org
+Subject: [PATCH net-next] ionic: cleanly release devlink instance
+Date:   Wed, 21 Jul 2021 15:39:44 +0300
+Message-Id: <956213a5c415c30e7e9f9c20bb50bc5b50ba4d18.1626870761.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210715121209.31024-1-yong.wu@mediatek.com> <20210715121209.31024-10-yong.wu@mediatek.com>
-In-Reply-To: <20210715121209.31024-10-yong.wu@mediatek.com>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Wed, 21 Jul 2021 20:39:31 +0800
-Message-ID: <CAATdQgCwWDp9D-aFHNGVvOuojJeYH=yAq+tce4vUbQ=kiYa59w@mail.gmail.com>
-Subject: Re: [PATCH v2 09/11] memory: mtk-smi: mt8195: Add smi support
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        anan.sun@mediatek.com, ming-fan.chen@mediatek.com,
-        yi.kuo@mediatek.com, anthony.huang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 8:22 PM Yong Wu <yong.wu@mediatek.com> wrote:
->
-> MT8195 has two smi-common, their IP are the same. Only the larbs that
-> connect with the smi-common are different. thus the bus_sel are different
-> for the two smi-common.
->
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Reviewed-by: Ikjoon Jang <ikjn@chromium.org>
+The failure to register devlink will leave the system with dangled
+devlink resource, which is not cleaned if devlink_port_register() fails.
 
-> ---
->  drivers/memory/mtk-smi.c | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
->
-> diff --git a/drivers/memory/mtk-smi.c b/drivers/memory/mtk-smi.c
-> index e5a34b3952a0..3c288716a378 100644
-> --- a/drivers/memory/mtk-smi.c
-> +++ b/drivers/memory/mtk-smi.c
-> @@ -250,6 +250,10 @@ static const struct mtk_smi_larb_gen mtk_smi_larb_mt8192 = {
->         .config_port                = mtk_smi_larb_config_port_gen2_general,
->  };
->
-> +static const struct mtk_smi_larb_gen mtk_smi_larb_mt8195 = {
-> +       .config_port                = mtk_smi_larb_config_port_gen2_general,
-> +};
-> +
->  static const struct of_device_id mtk_smi_larb_of_ids[] = {
->         {.compatible = "mediatek,mt2701-smi-larb", .data = &mtk_smi_larb_mt2701},
->         {.compatible = "mediatek,mt2712-smi-larb", .data = &mtk_smi_larb_mt2712},
-> @@ -258,6 +262,7 @@ static const struct of_device_id mtk_smi_larb_of_ids[] = {
->         {.compatible = "mediatek,mt8173-smi-larb", .data = &mtk_smi_larb_mt8173},
->         {.compatible = "mediatek,mt8183-smi-larb", .data = &mtk_smi_larb_mt8183},
->         {.compatible = "mediatek,mt8192-smi-larb", .data = &mtk_smi_larb_mt8192},
-> +       {.compatible = "mediatek,mt8195-smi-larb", .data = &mtk_smi_larb_mt8195},
->         {}
->  };
->
-> @@ -430,6 +435,21 @@ static const struct mtk_smi_common_plat mtk_smi_common_mt8192 = {
->                     F_MMU1_LARB(6),
->  };
->
-> +static const struct mtk_smi_common_plat mtk_smi_common_mt8195_vdo = {
-> +       .type     = MTK_SMI_GEN2,
-> +       .bus_sel  = F_MMU1_LARB(1) | F_MMU1_LARB(3) | F_MMU1_LARB(5) |
-> +                   F_MMU1_LARB(7),
-> +};
-> +
-> +static const struct mtk_smi_common_plat mtk_smi_common_mt8195_vpp = {
-> +       .type     = MTK_SMI_GEN2,
-> +       .bus_sel  = F_MMU1_LARB(1) | F_MMU1_LARB(2) | F_MMU1_LARB(7),
-> +};
-> +
-> +static const struct mtk_smi_common_plat mtk_smi_sub_common_mt8195 = {
-> +       .type     = MTK_SMI_GEN2_SUB_COMM,
-> +};
-> +
->  static const struct of_device_id mtk_smi_common_of_ids[] = {
->         {.compatible = "mediatek,mt2701-smi-common", .data = &mtk_smi_common_gen1},
->         {.compatible = "mediatek,mt2712-smi-common", .data = &mtk_smi_common_gen2},
-> @@ -438,6 +458,9 @@ static const struct of_device_id mtk_smi_common_of_ids[] = {
->         {.compatible = "mediatek,mt8173-smi-common", .data = &mtk_smi_common_gen2},
->         {.compatible = "mediatek,mt8183-smi-common", .data = &mtk_smi_common_mt8183},
->         {.compatible = "mediatek,mt8192-smi-common", .data = &mtk_smi_common_mt8192},
-> +       {.compatible = "mediatek,mt8195-smi-common-vdo", .data = &mtk_smi_common_mt8195_vdo},
-> +       {.compatible = "mediatek,mt8195-smi-common-vpp", .data = &mtk_smi_common_mt8195_vpp},
-> +       {.compatible = "mediatek,mt8195-smi-sub-common", .data = &mtk_smi_sub_common_mt8195},
->         {}
->  };
->
-> --
-> 2.18.0
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+In order to remove access to ".registered" field of struct devlink_port,
+require both devlink_register and devlink_port_register to success and
+check it through device pointer.
+
+Fixes: fbfb8031533c ("ionic: Add hardware init and device commands")
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+Future series will remove .registered field from the devlink.
+---
+ .../net/ethernet/pensando/ionic/ionic_devlink.c    | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_devlink.c b/drivers/net/ethernet/pensando/ionic/ionic_devlink.c
+index b41301a5b0df..cd520e4c5522 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_devlink.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_devlink.c
+@@ -91,20 +91,20 @@ int ionic_devlink_register(struct ionic *ionic)
+ 	attrs.flavour = DEVLINK_PORT_FLAVOUR_PHYSICAL;
+ 	devlink_port_attrs_set(&ionic->dl_port, &attrs);
+ 	err = devlink_port_register(dl, &ionic->dl_port, 0);
+-	if (err)
++	if (err) {
+ 		dev_err(ionic->dev, "devlink_port_register failed: %d\n", err);
+-	else
+-		devlink_port_type_eth_set(&ionic->dl_port,
+-					  ionic->lif->netdev);
++		devlink_unregister(dl);
++		return err;
++	}
+ 
+-	return err;
++	devlink_port_type_eth_set(&ionic->dl_port, ionic->lif->netdev);
++	return 0;
+ }
+ 
+ void ionic_devlink_unregister(struct ionic *ionic)
+ {
+ 	struct devlink *dl = priv_to_devlink(ionic);
+ 
+-	if (ionic->dl_port.registered)
+-		devlink_port_unregister(&ionic->dl_port);
++	devlink_port_unregister(&ionic->dl_port);
+ 	devlink_unregister(dl);
+ }
+-- 
+2.31.1
+
