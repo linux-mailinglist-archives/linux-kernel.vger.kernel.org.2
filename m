@@ -2,59 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06E33D0C19
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 12:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BDA3D0C1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 12:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238170AbhGUJIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 05:08:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237494AbhGUJFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:05:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A76AA6120E;
-        Wed, 21 Jul 2021 09:45:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626860713;
-        bh=NPPjP0YI9hcbn/DRxmERl+FeN/dkyYWqw8VdjUAOmnU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cgUPz7vGwqoyO+MN5GsqsX8C1w4JsiELjW/7dob09Bw0MtU0Yi9suw6hbSMiAph20
-         wBLXVd1shBHHu4FHzEMl0PKAwno6y0QQYcp+Fgqf7oD+Ld1YwjELYevulsKtEiaP8w
-         1/BqhK4UuDiMxZSv0/QRLIJs6QThvy9XVrSVbjNQGDS+luyKjOZOE5FrKxgCJeIHeD
-         BQuk1Lc4rgfel0DMnVEVT+pO6UP24oPkx8CbPSbhzL48EDxwyUclyXmqsUOa1U2AFb
-         AQeyoPakejg03lXS4DAvDKZB0NeamUnts0efpEAToEWeG3ssJDzSLtrVvxGmVG9hNo
-         pf8nsitoR8F5g==
-Date:   Wed, 21 Jul 2021 12:45:07 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 045/138] mm/memcg: Add folio_memcg_lock() and
- folio_memcg_unlock()
-Message-ID: <YPfso9ApUu2K8DXj@kernel.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-46-willy@infradead.org>
+        id S236423AbhGUJQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 05:16:36 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.166]:23941 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237306AbhGUJFR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 05:05:17 -0400
+X-Greylist: delayed 11355 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Jul 2021 05:05:16 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1626860714;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=lHplhRl0hkb8uudRlEZcdLXXxlm5Jp61m2gLulf4k6E=;
+    b=nP62UfZ7YNpBZJ3TN3lGUhPIVmtF/uVbn5NzJh4JmxfLibJYRObztKEOLNXh+tSVSP
+    ZYm9e0lKDRgz4x6CNPJPyCGP4PNFiCyQuuG0+iQgeYwyDp0lOAlie2en3MWnRpq2sHgf
+    OLsQujeTqEWq31OlAJLkfl4eVEQNnf6LTiEIJgR+LAuaZWxat5FXw0oRDEpVPI47auvf
+    xR9hEuqZw+pIIC3lO0Pjjpa0a4xP50ztIx4MSUkqcV8NAyzuuMFw360t2GKTKHrIl0aQ
+    6IqU0RtQl/Xr5kyMvw9Rq/8XocxjzYRJzhU7zvzyoLmXQaq15ZrnCNL2SjYR/3FTwgW9
+    00/A==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3htNmYasgbo6AhaFdcg=="
+X-RZG-CLASS-ID: mo00
+Received: from [IPv6:2a00:6020:1cee:8300::b82]
+    by smtp.strato.de (RZmta 47.28.1 AUTH)
+    with ESMTPSA id Z03199x6L9jDHLB
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 21 Jul 2021 11:45:13 +0200 (CEST)
+Subject: Re: [PATCH net] can: raw: fix raw_rcv panic for sock UAF
+To:     "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, mkl@pengutronix.de,
+        netdev@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20210721010937.670275-1-william.xuanziyang@huawei.com>
+ <YPeoQG19PSh3B3Dc@kroah.com>
+ <44c3e0e2-03c5-80e5-001c-03e7e9758bca@hartkopp.net>
+ <e3f56f35-00ca-e8f9-ba41-fdc87dc9bfd4@huawei.com>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <4d91f7bd-eef2-0b1a-f44f-d2006c465422@hartkopp.net>
+Date:   Wed, 21 Jul 2021 11:45:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715033704.692967-46-willy@infradead.org>
+In-Reply-To: <e3f56f35-00ca-e8f9-ba41-fdc87dc9bfd4@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:35:31AM +0100, Matthew Wilcox (Oracle) wrote:
-> These are the folio equivalents of lock_page_memcg() and
-> unlock_page_memcg().
-> 
-> lock_page_memcg() and unlock_page_memcg() have too many callers to be
-> easily replaced in a single patch, so reimplement them as wrappers for
-> now to be cleaned up later when enough callers have been converted to
-> use folios.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> ---
->  include/linux/memcontrol.h | 10 +++++++++
->  mm/memcontrol.c            | 45 ++++++++++++++++++++++++--------------
->  2 files changed, 39 insertions(+), 16 deletions(-)
 
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+
+On 21.07.21 11:29, Ziyang Xuan (William) wrote:
+> On 7/21/2021 2:35 PM, Oliver Hartkopp wrote:
+>>
+>>
+>> On 21.07.21 06:53, Greg KH wrote:
+>>> On Wed, Jul 21, 2021 at 09:09:37AM +0800, Ziyang Xuan wrote:
+>>>> We get a bug during ltp can_filter test as following.
+>>>>
+>>>> ===========================================
+>>>> [60919.264984] BUG: unable to handle kernel NULL pointer dereference at 0000000000000010
+>>>> [60919.265223] PGD 8000003dda726067 P4D 8000003dda726067 PUD 3dda727067 PMD 0
+>>>> [60919.265443] Oops: 0000 [#1] SMP PTI
+>>>> [60919.265550] CPU: 30 PID: 3638365 Comm: can_filter Kdump: loaded Tainted: G        W         4.19.90+ #1
+>>
+>> This kernel version 4.19.90 is definitely outdated.
+>>
+>> Can you please check your issue with the latest uptream kernel as this problem should have been fixed with this patch:
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8d0caedb759683041d9db82069937525999ada53
+>> ("can: bcm/raw/isotp: use per module netdevice notifier")
+>>
+>> Thanks!
+> 
+> I have tested it under the latest 5.14-rc2 kernel version which includes commit 8d0caedb7596 before I submit the patch.
+> Although I failed to get the vmcore-dmesg file after updating the kernel version to 5.14-rc2 to display here.
+> But we can get the conclusion according to the following debug messages and my problem analysis.
+> 
+> ==========================================
+> [ 1048.953574] unlist_netdevice name[vcan0]
+> [ 1048.953661] raw_notify 283: enter, waiting
+> [ 1050.950967] raw_setsockopt 552: ro->bound[1] ro->ifindex[8] sk[ffff9420c5699800]
+> [ 1053.956002] can: receive list entry not found for dev any, id 000, mask 000
+> [ 1053.961989] can: receive list entry not found for dev vcan0, id 123, mask 7FF
+> 
+> raw_setsockopt() executes after unlist_netdevice() and before raw_notify().
+> The problem always exists.
+> 
+
+You are right!
+
+In the meantime I sent a new reply to your original patch here:
+
+https://lore.kernel.org/linux-can/11822417-5931-b2d8-ae77-ec4a84b8b895@hartkopp.net/
+
+Thanks!
