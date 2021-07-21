@@ -2,115 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8154C3D117D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49B83D1187
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239151AbhGUNzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:55:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231139AbhGUNzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:55:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1C1D6121F;
-        Wed, 21 Jul 2021 14:36:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626878174;
-        bh=OoSIb5rdAAyByaIH7juDwMpDP+yfFGAa/j+nu8lp9ZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LU8Bd2+gTsPqudTVI86lm3Oh/Qzy07FrWI+64sn8Kx1kZwH3mcW+yyRDK65iO2SUF
-         bCZgf1XqQMgHdpn1+VUN3LbvMkivGTSjApejKMjMpIm7059FVpFgyMpGd7vKdrld6n
-         +TV3al+pid0aP/b6/Vyw2Q/Nn0B2+aROfZRqmAYpCMNC0CtBk+oc0TJO3dhRUbaOBK
-         vThI48NXQuOLknNVAX3MZ/jWLR+ZUHWkJEIyS1vHFF9IWy6/OKzBGPbWwFDNO39jLR
-         xZjGxD/IEQjnqpT8iFblS+y/59EIaFKnF3/JDGsqwg+0/bSS3Wb2C9HaruyUftPxOh
-         RwJKhAm3Vfv5w==
-Date:   Wed, 21 Jul 2021 17:36:08 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v14 011/138] mm/lru: Add folio LRU functions
-Message-ID: <YPgw2AVMuK2YkCIT@kernel.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-12-willy@infradead.org>
- <YPao+syEWXGhDxay@kernel.org>
- <YPedzMQi+h/q0sRU@casper.infradead.org>
- <YPfdM9dLEsFXZJgf@kernel.org>
- <YPgDne2ORs+tJsk2@casper.infradead.org>
+        id S239243AbhGUN5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:57:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56586 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233064AbhGUN5Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 09:57:16 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D788A2255A;
+        Wed, 21 Jul 2021 14:37:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626878271; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eN44dIX8eTpjHono1WIQrZzm8Y1UwDC5+yNmFTgedG4=;
+        b=wwkkTZicIkiUQYWl35KTgyWCTCMUwwUy9vZAPSLbLIK0lF4mO9+JdHpcSjlE3KcyZUYtzL
+        5w2iPtrPd4fjWhEtXnmd065QALviRwUtxEErW2xC8Yv9h+PvSvmKAYk4LEMZqjgKqSwbRt
+        eW0UhD2EECW4nr3emPQ8VT+9w7CjZg0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626878271;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eN44dIX8eTpjHono1WIQrZzm8Y1UwDC5+yNmFTgedG4=;
+        b=kTKu7JQBgwLtaB2FnfyImXgleYuL9s6zE3rnn3mV+A1YPiCms9y7e/kXNZJ6bRbFyfB1Oh
+        gvBoRt3Uevw1itAA==
+Received: from hawking.suse.de (hawking.suse.de [10.160.4.0])
+        by relay2.suse.de (Postfix) with ESMTP id D00B0A3B87;
+        Wed, 21 Jul 2021 14:37:51 +0000 (UTC)
+Received: by hawking.suse.de (Postfix, from userid 17005)
+        id BCD22446119; Wed, 21 Jul 2021 16:37:51 +0200 (CEST)
+From:   Andreas Schwab <schwab@suse.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
+References: <mvmtukn6bmu.fsf@suse.de> <YPgwHcbK7XoXL/mD@smile.fi.intel.com>
+X-Yow:  How's the wife?  Is she at home enjoying capitalism?
+Date:   Wed, 21 Jul 2021 16:37:51 +0200
+In-Reply-To: <YPgwHcbK7XoXL/mD@smile.fi.intel.com> (Andy Shevchenko's message
+        of "Wed, 21 Jul 2021 17:33:01 +0300")
+Message-ID: <mvmpmvb68cg.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPgDne2ORs+tJsk2@casper.infradead.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 12:23:09PM +0100, Matthew Wilcox wrote:
-> On Wed, Jul 21, 2021 at 11:39:15AM +0300, Mike Rapoport wrote:
-> > On Wed, Jul 21, 2021 at 05:08:44AM +0100, Matthew Wilcox wrote:
-> > > I wanted to turn those last two sentences into a list, but my
-> > > kernel-doc-fu abandoned me.  Feel free to submit a follow-on patch to
-> > > fix that ;-)
-> > 
-> > Here it is ;-)
-> 
-> Did you try it?  Here's what that turns into with htmldoc:
+On Jul 21 2021, Andy Shevchenko wrote:
 
-Yes, but I was so happy to see bullets that I missed the fact they are in
-the wrong section :(
- 
-> Description
-> 
-> We would like to get this info without a page flag, but the state needs
-> to survive until the folio is last deleted from the LRU, which could be
-> as far down as __page_cache_release.
-> 
->  * 1 if folio is a regular filesystem backed page cache folio or a
->    lazily freed anonymous folio (e.g. via MADV_FREE).
->  * 0 if folio is a normal anonymous folio, a tmpfs folio or otherwise
->    ram or swap backed folio.
-> 
-> Return
-> 
-> An integer (not a boolean!) used to sort a folio onto the right LRU list
-> and to account folios correctly.
-> 
-> Yes, we get a bulleted list, but it's placed in the wrong section!
-> 
-> Adding linux-doc for additional insight into this problem.
-> For their reference, here's the input:
->
-> /**
->  * folio_is_file_lru - Should the folio be on a file LRU or anon LRU?
->  * @folio: The folio to test.
->  *
->  * We would like to get this info without a page flag, but the state
->  * needs to survive until the folio is last deleted from the LRU, which
->  * could be as far down as __page_cache_release.
->  *
->  * Return: An integer (not a boolean!) used to sort a folio onto the
->  * right LRU list and to account folios correctly.
->  *
->  * - 1 if @folio is a regular filesystem backed page cache folio
->  *   or a lazily freed anonymous folio (e.g. via MADV_FREE).
->  * - 0 if @folio is a normal anonymous folio, a tmpfs folio or otherwise
->  *   ram or swap backed folio.
->  */
-> static inline int folio_is_file_lru(struct folio *folio)
+> The driver has OF compatible strings and should be loaded automatically.
 
-Hmm, there is some contradiction between kernel-doc assumption that
-anything after a blank line is the default (i.e. Description) section and
-the sphynx ideas where empty blank lines should be:
+They are never being used.
 
+# udevadm info /sys/devices/platform/soc/10050000.spi/spi_master/spi1/spi1.0
+P: /devices/platform/soc/10050000.spi/spi_master/spi1/spi1.0
+L: 0
+E: DEVPATH=/devices/platform/soc/10050000.spi/spi_master/spi1/spi1.0
+E: DRIVER=mmc_spi
+E: OF_NAME=mmc
+E: OF_FULLNAME=/soc/spi@10050000/mmc@0
+E: OF_COMPATIBLE_0=mmc-spi-slot
+E: OF_COMPATIBLE_N=1
+E: MODALIAS=spi:mmc-spi-slot
+E: SUBSYSTEM=spi
 
-	if ($state == STATE_BODY_WITH_BLANK_LINE && /^\s*\*\s?\S/) {
-		dump_section($file, $section, $contents);
-		$section = $section_default;
-		$new_start_line = $.;
-		$contents = "";
-	}
-
-(from scripts/kernel-doc::process_body())
+Andreas.
 
 -- 
-Sincerely yours,
-Mike.
+Andreas Schwab, SUSE Labs, schwab@suse.de
+GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
+"And now for something completely different."
