@@ -2,173 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663213D0FCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C423D0FCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238596AbhGUNDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:03:02 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60062 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235869AbhGUNB0 (ORCPT
+        id S238579AbhGUNCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:02:03 -0400
+Received: from mail-io1-f43.google.com ([209.85.166.43]:37843 "EHLO
+        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238587AbhGUNBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:01:26 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LDWq0i138992;
-        Wed, 21 Jul 2021 09:41:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=5tfzKCPK20zh/0tlMtLLaUhtAC6OBisxnQ9Ig6KzjqA=;
- b=hO9td72A2MwybKbpL1gmKTPv4JdpbQ1flrWQg9JhmcDX04SAOvrEAWmb4I2/rY3Tj8vS
- lwQnDYd4dK9jYE/IRtHBZqmUml2R3HG+mVY0sTCA29CITPt5/H8aeXYICWb45zGD+J3R
- habnYIIfF8aEqbG5Xenebm+Mko1SiAcNaj37zoxiifBEwK+uns8TNz3IXVv0sEDDZcjz
- Y47hOli2bdnEoc50j4Ns3tSoPTAXBewasHa/WYl0rZRWpVC+/gneoyISOLNYh47czGbZ
- 7r14HrwNMMXz+GbP77NxfRrJhHQAEjAv6V9aVqbspmiUsis57HQDh7o93Kiu9mwOIj1D Cw== 
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39xm9agubd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 09:41:30 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16LDYBOx007114;
-        Wed, 21 Jul 2021 13:41:29 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma05wdc.us.ibm.com with ESMTP id 39upuc5s1x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 13:41:29 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16LDfSdg33948080
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 13:41:28 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8113AAC06B;
-        Wed, 21 Jul 2021 13:41:28 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C16B0AC069;
-        Wed, 21 Jul 2021 13:41:27 +0000 (GMT)
-Received: from v0005c16 (unknown [9.211.68.240])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Jul 2021 13:41:27 +0000 (GMT)
-Message-ID: <455d75f7f21d8561df68eaa052f6cb0245b96c36.camel@linux.ibm.com>
-Subject: Re: [PATCH 2/3] hwmon: (occ) Remove sequence numbering and checksum
- calculation
-From:   Eddie James <eajames@linux.ibm.com>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-fsi@lists.ozlabs.org
-Date:   Wed, 21 Jul 2021 08:41:27 -0500
-In-Reply-To: <CACPK8XcgF7i+b8P1AUDRYtWZeMDwG7Mjw74pFpVKVx6ZdJJKzw@mail.gmail.com>
-References: <20210716151850.28973-1-eajames@linux.ibm.com>
-         <20210716151850.28973-3-eajames@linux.ibm.com>
-         <CACPK8XcgF7i+b8P1AUDRYtWZeMDwG7Mjw74pFpVKVx6ZdJJKzw@mail.gmail.com>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ZJE2W32vgqBCiC9D3ehSMqIr94559YXO
-X-Proofpoint-ORIG-GUID: ZJE2W32vgqBCiC9D3ehSMqIr94559YXO
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-21_08:2021-07-21,2021-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- impostorscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
- adultscore=0 bulkscore=0 phishscore=0 malwarescore=0 spamscore=0
- clxscore=1015 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2107210078
+        Wed, 21 Jul 2021 09:01:10 -0400
+Received: by mail-io1-f43.google.com with SMTP id r18so2389800iot.4;
+        Wed, 21 Jul 2021 06:41:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=KEcNM05hAV/bUpQFjkQJfyPHgSoI0NrQQwwCVIQKpSI=;
+        b=H2OdpDdiBmG89qhcyO13IWRISCB0KKehfi2gw1oLUPDdzi3qLg3rF2+9jyKp4LGtDE
+         nLEw/VxBRaus9hiY5Nn90J6m0yeL66n8hbJdC8SdpZlVv5tCYfInab6NeyuEtRW+Rlez
+         Nnrmxn2b2O3OE17qgN4C92hBM6VW/B9IxTNDV6NIaboE5m7VKHT5jSmYTCuKNHvuUpRc
+         a436I0Ir8aNNnuBQsHcJvRzNL6ST5MeC5pro4bdUMWW5AhMUgGMPWUHFhbuRPOVWsHnV
+         vmrQkAQrA/o5F8vCn5mc6/UFHVdReisLPaQ5dr9ud0XTgKoozAyedKFq7Ve9XstCgTip
+         dpGA==
+X-Gm-Message-State: AOAM533c9qXNwbBvMv4e945iaqtwM8/CgvfbX9U8cZeCHqGRQwVKI2Jq
+        7HqAdV+KBTpY/fDDdzF+mg==
+X-Google-Smtp-Source: ABdhPJxzRF5CTTIes7TdGyv5ZT/q6dcuiCWSwD4gd9FEJkUAjaXUzxiU/o0bwQ1dNmuQg5mOv5C1ag==
+X-Received: by 2002:a6b:b2d7:: with SMTP id b206mr26848213iof.155.1626874906364;
+        Wed, 21 Jul 2021 06:41:46 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id m184sm14330857ioa.17.2021.07.21.06.41.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 06:41:45 -0700 (PDT)
+Received: (nullmailer pid 2187177 invoked by uid 1000);
+        Wed, 21 Jul 2021 13:41:42 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Romain Perier <romain.perier@gmail.com>
+Cc:     devicetree@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>,
+        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20210720172251.4504-2-romain.perier@gmail.com>
+References: <20210720172251.4504-1-romain.perier@gmail.com> <20210720172251.4504-2-romain.perier@gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: rtc: Add Mstar MSC313e RTC devicetree bindings documentation
+Date:   Wed, 21 Jul 2021 07:41:42 -0600
+Message-Id: <1626874902.819807.2187176.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-07-21 at 02:43 +0000, Joel Stanley wrote:
-> On Fri, 16 Jul 2021 at 15:19, Eddie James <eajames@linux.ibm.com>
-> wrote:
-> > Checksumming of the request and sequence numbering is now done in
-> > the
-> > OCC interface driver in order to keep unique sequence numbers. So
-> > remove those in the hwmon driver.
-> > 
-> > Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> > ---
-> >  drivers/hwmon/occ/common.c | 30 ++++++++++++------------------
-> >  drivers/hwmon/occ/common.h |  3 +--
-> >  drivers/hwmon/occ/p8_i2c.c | 15 +++++++++------
-> >  drivers/hwmon/occ/p9_sbe.c |  4 ++--
-> >  4 files changed, 24 insertions(+), 28 deletions(-)
-> > 
-> > diff --git a/drivers/hwmon/occ/common.c
-> > b/drivers/hwmon/occ/common.c
-> > index 0d68a78be980..fc298268c89e 100644
-> > --- a/drivers/hwmon/occ/common.c
-> > +++ b/drivers/hwmon/occ/common.c
-> > @@ -132,22 +132,20 @@ struct extended_sensor {
-> >  static int occ_poll(struct occ *occ)
-> >  {
-> >         int rc;
-> > -       u16 checksum = occ->poll_cmd_data + occ->seq_no + 1;
-> > -       u8 cmd[8];
-> > +       u8 cmd[7];
+On Tue, 20 Jul 2021 19:22:49 +0200, Romain Perier wrote:
+> This adds the documentation for the devicetree bindings of the Mstar
+> MSC313e RTC driver, found from MSC313e SoCs and newer.
 > 
-> The shortening of the command seems unrelated?
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> ---
+>  .../bindings/rtc/mstar,msc313-rtc.yaml        | 46 +++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rtc/mstar,msc313-rtc.yaml
 > 
-> If you leave it at 8 then you avoid the special casing below. Is
-> there
-> any downside to sending the extra 0 byte at the end?
 
-Yes, it would break the checksumming unfortunately. The checksum is
-calculated and added at the last two bytes, so if you send more than
-your command actually is, the checksum will be in the wrong spot.
-> 
-> >         struct occ_poll_response_header *header;
-> > 
-> >         /* big endian */
-> > -       cmd[0] = occ->seq_no++;         /* sequence number */
-> > +       cmd[0] = 0;                     /* sequence number */
-> >         cmd[1] = 0;                     /* cmd type */
-> >         cmd[2] = 0;                     /* data length msb */
-> >         cmd[3] = 1;                     /* data length lsb */
-> >         cmd[4] = occ->poll_cmd_data;    /* data */
-> > -       cmd[5] = checksum >> 8;         /* checksum msb */
-> > -       cmd[6] = checksum & 0xFF;       /* checksum lsb */
-> > -       cmd[7] = 0;
-> > +       cmd[5] = 0;                     /* checksum msb */
-> > +       cmd[6] = 0;                     /* checksum lsb */
-> > --- a/drivers/hwmon/occ/p8_i2c.c> +++ b/drivers/hwmon/occ/p8_i2c.c
-> > @@ -97,18 +97,21 @@ static int p8_i2c_occ_putscom_u32(struct
-> > i2c_client *client, u32 address,
-> >  }
-> > 
-> >  static int p8_i2c_occ_putscom_be(struct i2c_client *client, u32
-> > address,
-> > -                                u8 *data)
-> > +                                u8 *data, size_t len)
-> >  {
-> > -       __be32 data0, data1;
-> > +       __be32 data0 = 0, data1 = 0;
-> > 
-> > -       memcpy(&data0, data, 4);
-> > -       memcpy(&data1, data + 4, 4);
-> > +       memcpy(&data0, data, min(len, 4UL));
-> 
-> The UL here seems unnecessary (and dropping it should fix your 0day
-> bot warnings).
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Yea, I think I just need min_t
+yamllint warnings/errors:
 
-Thanks for the review!
-Eddie
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/rtc/mstar,msc313-rtc.example.dts:23.46-47 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/rtc/mstar,msc313-rtc.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1418: dt_binding_check] Error 2
+\ndoc reference errors (make refcheckdocs):
 
-> 
-> But I think it would be simpler to go back to a fixed length of 8.
-> 
-> > +       if (len > 4UL) {
-> > +               len -= 4;
-> > +               memcpy(&data1, data + 4, min(len, 4UL));
-> > +       }
-> > 
-> >         return p8_i2c_occ_putscom_u32(client, address,
-> > be32_to_cpu(data0),
-> >                                       be32_to_cpu(data1));
-> >  }
+See https://patchwork.ozlabs.org/patch/1507685
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
