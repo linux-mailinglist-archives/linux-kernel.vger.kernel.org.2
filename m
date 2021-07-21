@@ -2,55 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12A53D1165
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABA53D116B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238525AbhGUNwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:52:34 -0400
-Received: from mga14.intel.com ([192.55.52.115]:31256 "EHLO mga14.intel.com"
+        id S238588AbhGUNx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:53:27 -0400
+Received: from verein.lst.de ([213.95.11.211]:58979 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237524AbhGUNwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:52:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="211164945"
-X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
-   d="scan'208";a="211164945"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 07:33:09 -0700
-X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
-   d="scan'208";a="662135822"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 07:33:08 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m6DHR-00Gg1v-SR; Wed, 21 Jul 2021 17:33:01 +0300
-Date:   Wed, 21 Jul 2021 17:33:01 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andreas Schwab <schwab@suse.de>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Tobias Schramm <t.schramm@manjaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
-Message-ID: <YPgwHcbK7XoXL/mD@smile.fi.intel.com>
-References: <mvmtukn6bmu.fsf@suse.de>
+        id S232825AbhGUNxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 09:53:24 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 089B867373; Wed, 21 Jul 2021 16:33:56 +0200 (CEST)
+Date:   Wed, 21 Jul 2021 16:33:55 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tianyu Lan <ltykernel@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        kirill.shutemov@linux.intel.com, akpm@linux-foundation.org,
+        rppt@kernel.org, Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
+        ardb@kernel.org, robh@kernel.org, nramas@linux.microsoft.com,
+        pgonda@google.com, martin.b.radev@gmail.com, david@redhat.com,
+        krish.sadhukhan@oracle.com, saravanand@fb.com,
+        xen-devel@lists.xenproject.org, keescook@chromium.org,
+        rientjes@google.com, hannes@cmpxchg.org,
+        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
+        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com, brijesh.singh@amd.com,
+        anparri@microsoft.com
+Subject: Re: [Resend RFC PATCH V4 09/13] x86/Swiotlb/HV: Add Swiotlb bounce
+ buffer remap function for HV IVM
+Message-ID: <20210721143355.GA10848@lst.de>
+References: <20210707154629.3977369-1-ltykernel@gmail.com> <20210707154629.3977369-10-ltykernel@gmail.com> <20210720135437.GA13554@lst.de> <8f1a285d-4b67-8041-d326-af565b2756c0@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <mvmtukn6bmu.fsf@suse.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <8f1a285d-4b67-8041-d326-af565b2756c0@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 03:26:49PM +0200, Andreas Schwab wrote:
-> This allows the driver to be auto loaded.
+On Wed, Jul 21, 2021 at 06:28:48PM +0800, Tianyu Lan wrote:
+> dma_mmap_attrs() and dma_get_sgtable_attrs() get input virtual address
+> belonging to backing memory with struct page and returns bounce buffer
+> dma physical address which is below shared_gpa_boundary(vTOM) and passed
+> to Hyper-V via vmbus protocol.
+>
+> The new map virtual address is only to access bounce buffer in swiotlb
+> code and will not be used other places. It's stored in the mem->vstart.
+> So the new API set_memory_decrypted_map() in this series is only called
+> in the swiotlb code. Other platforms may replace set_memory_decrypted()
+> with set_memory_decrypted_map() as requested.
 
-Can you elaborate a bit?
-
-The driver has OF compatible strings and should be loaded automatically.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+It seems like you are indeed not using these new helpers in
+dma_direct_alloc.  How is dma_alloc_attrs/dma_alloc_coherent going to
+work on these systems?
