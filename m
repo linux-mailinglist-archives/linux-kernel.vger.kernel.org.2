@@ -2,164 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06863D1440
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8F73D144D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbhGUPvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 11:51:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60720 "EHLO mail.kernel.org"
+        id S232228AbhGUP4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 11:56:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231219AbhGUPvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:51:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94EDF60FF3;
-        Wed, 21 Jul 2021 16:31:42 +0000 (UTC)
+        id S232058AbhGUP4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 11:56:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 231E960FF3;
+        Wed, 21 Jul 2021 16:36:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626885104;
-        bh=b+eyZKwXabnVt+UjMV9OoFipdi6nkiIvKOjz34qdmyU=;
+        s=k20201202; t=1626885397;
+        bh=WsjJBo4afn/pkXwR0TGBYswKrxFtVdVbtqvGm7KtQkU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q/Kp5r04BDGIq0tKftkH8+P/tDazAi/vkiZ2bx3TbNLkTUpGZ5KqFK6XlqETvPGWs
-         tECA1E08WuXB81889LUTDQAPms55KzycEkQi3Eiz6UsRKYAYF6eaO9+7d+QXM9v4ge
-         yeFk1WMgoR/sKFTjLAq56pZ48rr823kk70dDlUfCnIYBMV1Q5snj42ZeIRsyYV6Dxw
-         f45/atVNb/rrxq0QpBqxh+7FzLsE5zq14324k7tKcq2NjGZbE4gQIOZjFP6841Pnih
-         7mQBBxS1XMuXc4BAh+t6nxG8cPh9v7Uz2CcXsVu8WYRj7RMu2feJqqJWYvA2Hid+mK
-         b42QWSiMRdL9Q==
-Date:   Wed, 21 Jul 2021 17:31:39 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, maz@kernel.org,
-        catalin.marinas@arm.com, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        jean-philippe@linaro.org, Alexandru.Elisei@arm.com,
-        linuxarm@huawei.com, qperret@google.com
-Subject: Re: [PATCH v2 3/3] kvm/arm: Align the VMID allocation with the arm64
- ASID one
-Message-ID: <20210721163138.GD11003@willie-the-truck>
-References: <20210616155606.2806-1-shameerali.kolothum.thodi@huawei.com>
- <20210616155606.2806-4-shameerali.kolothum.thodi@huawei.com>
+        b=GQSTx+64qYrOdGqcdj/Wj4m+Ahchdgab8p5JRbQcFZRRoPUowGYpLyH5JzZscM/8K
+         c2+VUHOhxQ+PNd8b33CGRJ0Y8BsT8fFeGeOAM/sjA0F8ExWJV1DGMoDzjEcGUSAKsJ
+         0ukEP5ENiMpy5cFh+srH4vFT3YKeQwC1aqvRJfKaiYC3PXNk6Ju3WuzDOmnNNqqpnR
+         0bW7gl53ocg1+X3PGSxtBnT0zqnqACaYOABcNXng7Zs0DAkKp4AH3Tyd01azqM79sx
+         mH9+d56vjrKl8SHaTKxgB4qZNRes1eSFFtK5Cq5Y/6XQA3IZ2lX4nA+V83JC/exY9P
+         3WaK0Cg+IVXkA==
+Date:   Wed, 21 Jul 2021 17:36:32 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Nandan, Apurva" <a-nandan@ti.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v2 2/2] spi: cadence-quadspi: Fix check condition for DTR
+ ops
+Message-ID: <20210721163632.GG4259@sirena.org.uk>
+References: <20210716232504.182-1-a-nandan@ti.com>
+ <20210716232504.182-3-a-nandan@ti.com>
+ <c6bb03ff-1192-5276-4034-4a021e4f6923@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vJguvTgX93MxBIIe"
 Content-Disposition: inline
-In-Reply-To: <20210616155606.2806-4-shameerali.kolothum.thodi@huawei.com>
+In-Reply-To: <c6bb03ff-1192-5276-4034-4a021e4f6923@ti.com>
+X-Cookie: Many pages make a thick book.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Quentin]
 
-On Wed, Jun 16, 2021 at 04:56:06PM +0100, Shameer Kolothum wrote:
-> From: Julien Grall <julien.grall@arm.com>
-> 
-> At the moment, the VMID algorithm will send an SGI to all the CPUs to
-> force an exit and then broadcast a full TLB flush and I-Cache
-> invalidation.
-> 
-> This patch use the new VMID allocator. The
-> benefits are:
->     - CPUs are not forced to exit at roll-over. Instead the VMID will be
->     marked reserved and the context will be flushed at next exit. This
->     will reduce the IPIs traffic.
->     - Context invalidation is now per-CPU rather than broadcasted.
->     - Catalin has a formal model of the ASID allocator.
-> 
-> With the new algo, the code is now adapted:
->     - The function __kvm_flush_vm_context() has been renamed to
->     __kvm_tlb_flush_local_all() and now only flushing the current CPU
->     context.
->     - The call to update_vmid() will be done with preemption disabled
->     as the new algo requires to store information per-CPU.
->     - The TLBs associated to EL1 will be flushed when booting a CPU to
->     deal with stale information. This was previously done on the
->     allocation of the first VMID of a new generation.
-> 
-> Signed-off-by: Julien Grall <julien.grall@arm.com>
-> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-> ---
->  arch/arm64/include/asm/kvm_asm.h      |   4 +-
->  arch/arm64/include/asm/kvm_host.h     |   6 +-
->  arch/arm64/include/asm/kvm_mmu.h      |   3 +-
->  arch/arm64/kvm/Makefile               |   2 +-
->  arch/arm64/kvm/arm.c                  | 115 +++++++-------------------
->  arch/arm64/kvm/hyp/nvhe/hyp-main.c    |   6 +-
->  arch/arm64/kvm/hyp/nvhe/mem_protect.c |   3 +-
->  arch/arm64/kvm/hyp/nvhe/tlb.c         |  10 +--
->  arch/arm64/kvm/hyp/vhe/tlb.c          |  10 +--
->  arch/arm64/kvm/mmu.c                  |   1 -
->  10 files changed, 52 insertions(+), 108 deletions(-)
+--vJguvTgX93MxBIIe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+On Wed, Jul 21, 2021 at 08:23:30PM +0530, Nandan, Apurva wrote:
 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 75a7e8071012..d96284da8571 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -70,9 +70,7 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu);
->  void kvm_arm_vcpu_destroy(struct kvm_vcpu *vcpu);
->  
->  struct kvm_vmid {
-> -	/* The VMID generation used for the virt. memory system */
-> -	u64    vmid_gen;
-> -	u32    vmid;
-> +	atomic64_t id;
+> Could you please have a look, I fixed the comments as you suggested.
 
-Maybe a typedef would be better if this is the only member of the structure?
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
 
-> diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> index 4b60c0056c04..a02c4877a055 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> @@ -106,8 +106,7 @@ int kvm_host_prepare_stage2(void *mem_pgt_pool, void *dev_pgt_pool)
->  	mmu->pgd_phys = __hyp_pa(host_kvm.pgt.pgd);
->  	mmu->arch = &host_kvm.arch;
->  	mmu->pgt = &host_kvm.pgt;
-> -	mmu->vmid.vmid_gen = 0;
-> -	mmu->vmid.vmid = 0;
-> +	atomic64_set(&mmu->vmid.id, 0);
+Sending content free pings adds to the mail volume (if they are seen at
+all) which is often the problem and since they can't be reviewed
+directly if something has gone wrong you'll have to resend the patches
+anyway, so sending again is generally a better approach though there are
+some other maintainers who like them - if in doubt look at how patches
+for the subsystem are normally handled.
 
-I think this is the first atomic64 use in the EL2 object, which may pull in
-some fatal KCSAN instrumentation. Quentin, have you run into this before?
+--vJguvTgX93MxBIIe
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Might be simple just to zero-initialise mmu for now, if it isn't already.
+-----BEGIN PGP SIGNATURE-----
 
-> diff --git a/arch/arm64/kvm/hyp/nvhe/tlb.c b/arch/arm64/kvm/hyp/nvhe/tlb.c
-> index 83dc3b271bc5..42df9931ed9a 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/tlb.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/tlb.c
-> @@ -140,10 +140,10 @@ void __kvm_flush_cpu_context(struct kvm_s2_mmu *mmu)
->  	__tlb_switch_to_host(&cxt);
->  }
->  
-> -void __kvm_flush_vm_context(void)
-> +void __kvm_tlb_flush_local_all(void)
->  {
-> -	dsb(ishst);
-> -	__tlbi(alle1is);
-> +	dsb(nshst);
-> +	__tlbi(alle1);
->  
->  	/*
->  	 * VIPT and PIPT caches are not affected by VMID, so no maintenance
-> @@ -155,7 +155,7 @@ void __kvm_flush_vm_context(void)
->  	 *
->  	 */
->  	if (icache_is_vpipt())
-> -		asm volatile("ic ialluis");
-> +		asm volatile("ic iallu" : : );
->  
-> -	dsb(ish);
-> +	dsb(nsh);
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD4TQ8ACgkQJNaLcl1U
+h9CgOAf/fOLQf4WweqflaqQwEyqHq4ElWpi+VgTktiz4cCeRbScuI6RQ9aBa70pb
+s3GXbBLogiJ6f4AP4JZytkcNvemBVRuupxsJVd11brVfzYoycHf1Gib1PQXpugPH
+L/OgmpOPYGXuWmbZdv1mM8ZbPMAte36h0WqDo9bThesjqgUlrfAnKHQLrlm2CcQ7
+iAAPGYbl9008YJEEySbFNkH6sHqXug0RntFzk33Z1yHqrwoVP3PRnyEI+3Z+PChZ
+BWKPt73K5uBIasssP/EldVzjy5q60QHl3FSpF9zkmyZ7cDx2CKZQZ384Qq4ezDQ1
+GGHjywJHFYFFkYelxphw80cFAvvpLQ==
+=Unbc
+-----END PGP SIGNATURE-----
 
-Hmm, I'm wondering whether having this local stuff really makes sense for
-VMIDs. For ASIDs, where rollover can be frequent and TLBI could result in
-IPI on 32-bit, the local option was important, but here rollover is less
-frequent, DVM is relied upon to work and the cost of a hypercall is
-significant with nVHE.
-
-So I do think you could simplify patch 2 slightly to drop the
-flush_pending and just issue inner-shareable invalidation on rollover.
-With that, it might also make it straightforward to clear active_asids
-when scheduling out a vCPU, which would solve the other problem I mentioned
-about unnecessarily reserving a bunch of the VMID space.
-
-Will
+--vJguvTgX93MxBIIe--
