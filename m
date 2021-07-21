@@ -2,166 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D9F3D0CAE
+	by mail.lfdr.de (Postfix) with ESMTP id C2DB33D0CAF
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238929AbhGUJjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 05:39:24 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:36647 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238751AbhGUJ3x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:29:53 -0400
-Received: by mail-wm1-f52.google.com with SMTP id l17-20020a05600c1d11b029021f84fcaf75so3099488wms.1;
-        Wed, 21 Jul 2021 03:10:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LGOZ0CCJk1xISndjbgUHFvSngWpzz+50b0eJ0QnZMjI=;
-        b=W/kOvwY065HGsCWg743fxeSOFWPbh/FR34ZAH9A1p2oHuufZYn3pcRPOtH3hzXLXrJ
-         uhwIDGv4T1enLESjgpbe7zb2wmJVhe1XS0mq57Gh/F0ntXzSJ0+8ORJC7AgD93RYoO9V
-         970OcuYBCf9a5N3DzOEaZ22uGvLYsbu/N0JbpVPfzYnQagixWl2sVODj6bEXG0JN1kGO
-         lHoAhezbKa125T+Fm+JwO0QvrPXiN7/RqhOh9t9msZiOeBjOS+u7T7z0b8DFUZE/zz+s
-         oe5GOSc6pCYTBzT9teZiNIcg/3fQpjvWpQCEUKdla0udizCX+8lamiuQ5/H8uRIlN5Qg
-         sP5w==
-X-Gm-Message-State: AOAM530G/ZG4qsJQMKeMg1diWtGC5tcqxrkE4iEMHigP7xuxLtZH8AjR
-        UFqOKwkr+eH3aql4j2sDwkk=
-X-Google-Smtp-Source: ABdhPJwAYYhAAIXec9Vo9y6rCL5ag9JTdcByujK/Xmr1EKfbOj2RYSId+IK87GxQM5owHTAf8dulDw==
-X-Received: by 2002:a1c:3942:: with SMTP id g63mr37370396wma.64.1626862228400;
-        Wed, 21 Jul 2021 03:10:28 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id f17sm5247550wrr.81.2021.07.21.03.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 03:10:28 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 10:10:26 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Cc:     Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        "nunodasneves@linux.microsoft.com" <nunodasneves@linux.microsoft.com>
-Subject: Re: [PATCH] hyperv: root partition faults writing to VP ASSIST MSR
- PAGE
-Message-ID: <20210721101026.3tujagjag5umqejh@liuwe-devbox-debian-v2>
-References: <20210719185126.3740-1-kumarpraveen@linux.microsoft.com>
- <20210720112011.7nxhiy6iyz4gz3j5@liuwe-devbox-debian-v2>
- <fd70c8e5-f58c-640b-30b7-70c4e4a4861a@linux.microsoft.com>
- <20210720133514.lurmus2lgffcldnq@liuwe-devbox-debian-v2>
- <MWHPR21MB15938E4E72E1A3EB3744AD53D7E29@MWHPR21MB1593.namprd21.prod.outlook.com>
- <20210720162923.rsbl24v5lujbiddj@liuwe-devbox-debian-v2>
- <MWHPR21MB159302588AD32CA605192398D7E39@MWHPR21MB1593.namprd21.prod.outlook.com>
- <d8bd9c00-4eb5-187f-e31b-cba2ecec565b@linux.microsoft.com>
+        id S238985AbhGUJkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 05:40:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236370AbhGUJaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 05:30:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFE3F6108B;
+        Wed, 21 Jul 2021 10:10:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626862238;
+        bh=xlNP5a4uduYvyMqVF4Oq/f5D4uaNQN51y0PLueC06Os=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EBo9p2yYYcIhOINxDz4pJjeRD+z/tvNLVzQoC71kmOBTNtDVF1poAeRj3Sq412JxZ
+         v5JSyAmYQbmMUNybwD0NkPlWVAJZksPNP3tmLoY1JhdcrM09uQGXcRS4/WerD7E7Ir
+         6NfeqeFPiKiQa6pFzZBdGAZDw/KPsrbkRCAxUhQmEAov0iJzWY5PRfZ4w289WDGo7Y
+         sOPiPKHoH7ky9ICLk+BFTRnAGx7KSwnzmzncT57T3S7lZB0uaWYYCyg0/XakErPiW8
+         HIgqzNZ23c6AKgTIaKiXK8ZqauPAOOv9m3ChJFm7JY4UGUBKbuJ3krSU0UfHy+Qh4w
+         VNHnn4IT99Rjg==
+Date:   Wed, 21 Jul 2021 12:10:31 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v14 5/9] staging: hi6421-spmi-pmic: cleanup drvdata
+Message-ID: <20210721121031.04bcadcc@coco.lan>
+In-Reply-To: <YPfoGzCtS7sBFESm@kroah.com>
+References: <cover.1626515862.git.mchehab+huawei@kernel.org>
+        <723edefbb2e9ce0b70d9c7bce95f288e3ea1f5b1.1626515862.git.mchehab+huawei@kernel.org>
+        <YPfoGzCtS7sBFESm@kroah.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d8bd9c00-4eb5-187f-e31b-cba2ecec565b@linux.microsoft.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 12:42:52PM +0530, Praveen Kumar wrote:
-> On 21-07-2021 09:40, Michael Kelley wrote:
-> > From: Wei Liu <wei.liu@kernel.org> Sent: Tuesday, July 20, 2021 9:29 AM
-> >>
-> >> On Tue, Jul 20, 2021 at 04:20:44PM +0000, Michael Kelley wrote:
-> >>> From: Wei Liu <wei.liu@kernel.org> Sent: Tuesday, July 20, 2021 6:35 AM
-> >>>>
-> >>>> On Tue, Jul 20, 2021 at 06:55:56PM +0530, Praveen Kumar wrote:
-> >>>> [...]
-> >>>>>>
-> >>>>>>> +	if (hv_root_partition &&
-> >>>>>>> +	    ms_hyperv.features & HV_MSR_APIC_ACCESS_AVAILABLE) {
-> >>>>>>
-> >>>>>> Is HV_MSR_APIC_ACCESS_AVAILABLE a root only flag? Shouldn't non-root
-> >>>>>> kernel check this too?
-> >>>>>
-> >>>>> Yes, you are right. Will update this in v2. thanks.
-> >>>>
-> >>>> Please split adding this check to its own patch.
-> >>>>
-> >>>> Ideally one patch only does one thing.
-> >>>>
-> >>>> Wei.
-> >>>>
-> >>>
-> >>> I was just looking around in the Hyper-V TLFS, and I didn't see
-> >>> anywhere that the ability to set up a VP Assist page is dependent
-> >>> on HV_MSR_APIC_ACCESS_AVAILABLE.  Or did I just miss it?
-> >>
-> >> The feature bit Praveen used is wrong and should be fixed.
-> >>
-> >> Per internal discussion this is gated by the AccessIntrCtrlRegs bit.
-> >>
-> >> Wei.
-> >>
+Em Wed, 21 Jul 2021 11:25:47 +0200
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+
+> On Sat, Jul 17, 2021 at 11:58:16AM +0200, Mauro Carvalho Chehab wrote:
+> > There are lots of fields at struct hi6421_spmi_pmic that aren't
+> > used. In a matter of fact, only regmap is needed.
 > > 
-> > The AccessIntrCtrlRegs bit *is* HV_MSR_APIC_ACCESS_AVAILABLE.
-> > Both are defined as bit 4 of the Partition Privilege flags.  :-)   I don't
-> > know why the names don't line up.   Even so, it's not clear to me that
-> > AccessIntrCtrlRegs has any bearing on the VP Assist page.  I see this
-> > description of AccessIntrCtrlRegs:
+> > So, drop the struct as a hole, and set just the regmap as
+> > the drvdata.
 > > 
-> 
-> Yup, what I understood as well, this is the one required one for Partition Privilege Flags (4th bit), however, cannot comment on the naming convention.
-> 
->      5 /* Virtual APIC assist and VP assist page registers available */
->      4 #define HV_MSR_APIC_ACCESS_AVAILABLE            BIT(4)
-> 
-
-Urgh, okay. It is my fault for not reading the code closely. Sorry for
-the confusion.
-
-> > The partition has access to the synthetic MSRs associated with the
-> > APIC (HV_X64_MSR_EOI, HV_X64_MSR_ICR and HV_X64_MSR_TPR).
-> > If this flag is cleared, accesses to these MSRs results in a #GP fault if
-> > the MSR intercept is not installed.
+> > While here, add a missing dot at the Huawei's copyrights.
 > > 
+> > Acked-by: Mark Brown <broonie@kernel.org>
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  drivers/misc/hi6421v600-irq.c               |  9 ++++----
+> >  drivers/regulator/hi6421v600-regulator.c    | 10 ++++-----
+> >  drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 16 +++++--------
+> >  include/linux/mfd/hi6421-spmi-pmic.h        | 25 ---------------------
+> >  4 files changed, 14 insertions(+), 46 deletions(-)
+> >  delete mode 100644 include/linux/mfd/hi6421-spmi-pmic.h  
 > 
-> As per what I also understood from the TLFS doc,that we let partition
-> access the MSR and do a fault.  However, the point is, does it make
-> sense to allocate page for vp assist and perform action which is meant
-> to fail when the flag is cleared ?
+> This patch fails to apply to my 5.14-rc2 tree, it gets a failure in the
+> regulator portion of the patch.
 
-Like Michael said, there are some other things that are not tied to that
-particular bit. We should get more clarity on what gates what.  Perhaps
-that privilege bit only controls access to the EOI assist bit and the
-other things in the VP assist page are gated by other privilege bits.
-This basically means we should setup the page when there is at least one
-thing in that page can be used.
+Hi Greg,
 
-This is mostly an orthogonal issue from the one we want to fix. In
-the interest of making progress we can drop the new check for now and
-just add a root specific path for setting up and tearing down the VP
-assist pages.
+This one depends on a regression-fix patch merged via this branch:
 
-How does that sound?
+	https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-Wei.
+The patch is this one[1]:
 
-> 
-> > But maybe you have additional info that applies to the root
-> > partition that is not in the TLFS.
-> > 
-> 
-> As per what discussed internally and I understood, the root partition
-> shares the vp assist page provided by hypervisor and its read only for
-> Root kernel.
-> 
-> > Michael
-> > 
-> 
-> Regards,
-> 
-> ~Praveen.
+	https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git/commit/drivers/regulator/hi6421v600-regulator.c?id=5db5dd5be70eaf808d9fd90174b957fc5c2912cb
+
+Mark,
+
+Is this branch stable or do you rebase it? 
+
+If the branch is stable, then perhaps Greg could merge from it before
+applying the remaining patches from this series.
+
+-
+
+[1] There's no need of backporting the fix to stable, as the driver
+    won't work with upstream Kernels without patches 8 and 9 from 
+    this series containing the Open Firmware data needed to probe it.
+
+Thanks,
+Mauro
