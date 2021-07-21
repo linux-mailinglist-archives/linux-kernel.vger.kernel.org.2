@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378963D07ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 06:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D2D3D07F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 06:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhGUEJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 00:09:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:44934 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232549AbhGUEIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 00:08:42 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9CCFC1FB;
-        Tue, 20 Jul 2021 21:49:16 -0700 (PDT)
-Received: from [10.163.64.235] (unknown [10.163.64.235])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 098023F66F;
-        Tue, 20 Jul 2021 21:49:13 -0700 (PDT)
-Subject: Re: [PATCH v2 01/12] mm/debug_vm_pgtable: Introduce struct
- pgtable_debug_args
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210719054138.198373-1-gshan@redhat.com>
- <20210719054138.198373-2-gshan@redhat.com>
- <8d754894-5c21-1287-82b6-7ac3b064af3d@redhat.com>
- <ff9766a5-3f4e-f821-daf1-b2779a8c81fc@arm.com>
- <1d8c1b0f-3102-5a4a-f3fb-a0fc50d281cc@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <aba5506f-5777-6e57-10f3-c414eb012b01@arm.com>
-Date:   Wed, 21 Jul 2021 10:20:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232492AbhGUENJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 00:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231849AbhGUEMh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 00:12:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E9DC061574;
+        Tue, 20 Jul 2021 21:53:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SCwobZ2ergcsP/KBco/dD0SaEMf5ddis2wZxVwFwdGI=; b=te/y9365s06WaIS3mt4ElzUv+J
+        S2UFUTT/lrPVCOxnrj3MvKsXeePPPdbccDq08r7qe9OWPsaaPtLbKmGXWWzo3jJsSSJA5DnAc3B7q
+        rIV0MRhU5+YUR1+PZtzJfqCU7d3fsKXmp+mBqKKNJe0kd0eT0CZlG6cNe9tVVoHI6R+La+ydqr8IP
+        mTOAubjo2r5lWOl3P2p84Dbr7OJubAyHVHu2tVQfm4EX5jpWVrDrFLOcUb6wmV93e9et6lECN5dAT
+        qMsk8eCGDErlWIsy1dZ8YigRyFVikL4KPnGo2lliQCmVwXcROJIrGc9hJfr4+0R+jLwYevTrrxtMe
+        kDzeBSTA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m64Dq-008no6-Fc; Wed, 21 Jul 2021 04:52:45 +0000
+Date:   Wed, 21 Jul 2021 05:52:42 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ LLVM=1 LLVM_IAS=1
+Message-ID: <YPeoGucPDzFcmJ7p@infradead.org>
+References: <20210708232522.3118208-1-ndesaulniers@google.com>
+ <20210708232522.3118208-3-ndesaulniers@google.com>
+ <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
+ <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com>
+ <CAKwvOdkvju7heeNpk87brsjkhXHbdKFsUgf63KWhXox9rDkQsA@mail.gmail.com>
+ <CAHk-=wiZe2FuiAOwhbKR_VMmFBKekz0NFREm4fvik25PEdcK_g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1d8c1b0f-3102-5a4a-f3fb-a0fc50d281cc@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiZe2FuiAOwhbKR_VMmFBKekz0NFREm4fvik25PEdcK_g@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 20, 2021 at 02:54:35PM -0700, Linus Torvalds wrote:
+> But there are other things that stick around. In particular, I have
+> considered simply using git config variables for that.
+> 
+> Something like this in the main Makefile:
+> 
+>     ARCH=$(shell git config build.arch)
+>     CC=$(shell git config --default=gcc build.cc)
+> 
+> would actually be optimal for what _I_ do. Then for my clang build tree, I'd do
+> 
+>     git config build.cc clang
+> 
+> and it would stick in that tree. If you don't set the option, it would use gcc.
+> 
+> Maybe that would be an acceptable model these days? We've used git
+> long enough that non-git worries aren't a big deal any more, and I
+> guess people could use the old-fashioned
 
+I still this only papers around the fact that the architecture is
+fundamentally part of the kernel config and should come from .config,
+and the toolchain probably as well.
 
-On 7/21/21 4:59 AM, Gavin Shan wrote:
-> On 7/20/21 4:42 PM, Anshuman Khandual wrote:
->> On 7/19/21 6:31 PM, Gavin Shan wrote:
->>>> +    if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
->>>> +        has_transparent_hugepage()) {
->>>> +        page = alloc_pages(GFP_KERNEL, HPAGE_PMD_ORDER);
->>>> +        if (page) {
->>>> +            args->pmd_pfn = page_to_pfn(page);
->>>> +            args->pte_pfn = args->pmd_pfn;
->>>> +            return 0;
->>>> +        }
->>>> +    }
->>>> +
->>>
->>> As syzbot reported against v1 series, we could allocate pages larger than (1 << (MAX_ORDER - 1)) here.
->>> So __GFP_NOWARN is needed here. I will fix it in v3 series.
->>
->> I could find the following build error reported from lkp on V2.
->>
->> mm/debug_vm_pgtable.c:445:8: warning: variable 'pud' set but not used [-Wunused-but-set-variable]
->>
-> 
-> Yes, The following line is missed in PATCH[v2 09/12] and fixed in
-> PATCH[v3 09/12]: WARN_ON(!pud_none(pud)). With this line added,
-> the variable @pud is used in v3.
-> 
->> Could you please point to the syzbot reported problem on V1 as you
->> have mentioned above. Are there configs where HPAGE_[PMD|PUD]_ORDER
->> is greater than (MAX_ORDER - 1) ? If yes, how adding __GFP_NOWARN
->> solves the problem ?
->>
-> 
-> https://syzkaller.appspot.com/bug?extid=8730ec44a441a434a2c8
-> https://syzkaller.appspot.com/x/.config?x=29a82c885e192046
-> 
-> The kernel config has the following options:
-> 
-> CONFIG_X86_64=y
-> CONFIG_TRANSPARENT_HUGEPAGE=y
-> CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD=y
-> #define PUD_SHIFT        30
-> #define PMD_SHIFT        21
-> 
-> CONFIG_FORCE_MAX_ZONEORDER=n
-> #define MAX_ORDER    11
-> 
-> (HPAGE_PUD_SHIFT - PAGE_SHIFT) >= (1 << MAX_ORDER)
-> (HPAGE_PMD_ORDER)              <  (1 << MAX_ORDER)
-> 
-> The warning is triggered in the following path, __GFP_NOWARN helps to
-> avoid the WARNING_ON_ONCE(), but NULL is returned as expected.
-> 
->    alloc_pages
->      __alloc_pages
-> 
->        if (unlikely(order >= MAX_ORDER)) {
->                 WARN_ON_ONCE(!(gfp & __GFP_NOWARN));
->                 return NULL;
->         }
+I for one do have a few different tree for different projects, but
+need to try cross compiles in each of them.  And unfortunately sometimes
+with clang (nothing against clang itself [1], just that having to deal
+with multiple toolchains is a pain)
 
-But then that does not allocate the PUD element for the test which
-subsequently will be skipped. Isn't it ? So if the order is greater
-than MAX_ORDER, allocation needs to happen via alloc_contig_pages()
-or something similar.
+[1] well, except for the sometimes idiotic diagnostics..
