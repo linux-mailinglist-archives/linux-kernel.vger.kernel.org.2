@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466533D091B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 08:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573B83D0915
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 08:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233902AbhGUGCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 02:02:55 -0400
-Received: from mga06.intel.com ([134.134.136.31]:44371 "EHLO mga06.intel.com"
+        id S234155AbhGUGBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 02:01:37 -0400
+Received: from mga06.intel.com ([134.134.136.31]:44375 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234182AbhGUF7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 01:59:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="272496363"
+        id S234215AbhGUF7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 01:59:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="272496372"
 X-IronPort-AV: E=Sophos;i="5.84,257,1620716400"; 
-   d="scan'208";a="272496363"
+   d="scan'208";a="272496372"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 23:39:39 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 23:39:42 -0700
 X-IronPort-AV: E=Sophos;i="5.84,257,1620716400"; 
-   d="scan'208";a="511389983"
+   d="scan'208";a="511389991"
 Received: from yhuang6-desk2.sh.intel.com ([10.239.159.119])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 23:39:35 -0700
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 23:39:39 -0700
 From:   Huang Ying <ying.huang@intel.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yang Shi <yang.shi@linux.alibaba.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Huang, Ying" <ying.huang@intel.com>,
+        Oscar Salvador <osalvador@suse.de>,
         Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
         Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Rientjes <rientjes@google.com>,
         Dan Williams <dan.j.williams@intel.com>,
         David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
         Greg Thelen <gthelen@google.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>
-Subject: [PATCH -V11 2/9] mm/migrate: update node demotion order on hotplug events
-Date:   Wed, 21 Jul 2021 14:39:19 +0800
-Message-Id: <20210721063926.3024591-2-ying.huang@intel.com>
+        Keith Busch <kbusch@kernel.org>
+Subject: [PATCH -V11 3/9] mm/migrate: enable returning precise migrate_pages() success count
+Date:   Wed, 21 Jul 2021 14:39:20 +0800
+Message-Id: <20210721063926.3024591-3-ying.huang@intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210721063926.3024591-1-ying.huang@intel.com>
 References: <20210721063926.3024591-1-ying.huang@intel.com>
@@ -46,160 +46,203 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+From: Yang Shi <yang.shi@linux.alibaba.com>
 
-Reclaim-based migration is attempting to optimize data placement in memory
-based on the system topology.  If the system changes, so must the
-migration ordering.
+Under normal circumstances, migrate_pages() returns the number of pages
+migrated.  In error conditions, it returns an error code.  When returning
+an error code, there is no way to know how many pages were migrated or not
+migrated.
 
-The implementation is conceptually simple and entirely unoptimized.  On
-any memory or CPU hotplug events, assume that a node was added or removed
-and recalculate all migration targets.  This ensures that the
-node_demotion[] array is always ready to be used in case the new reclaim
-mode is enabled.
+Make migrate_pages() return how many pages are demoted successfully for
+all cases, including when encountering errors.  Page reclaim behavior will
+depend on this in subsequent patches.
 
-This recalculation is far from optimal, most glaringly that it does not
-even attempt to figure out the hotplug event would have some *actual*
-effect on the demotion order.  But, given the expected paucity of hotplug
-events, this should be fine.
-
-Link: https://lkml.kernel.org/r/20210715055145.195411-3-ying.huang@intel.com
+Link: https://lkml.kernel.org/r/20210715055145.195411-4-ying.huang@intel.com
+Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Suggested-by: Oscar Salvador <osalvador@suse.de> [optional parameter]
 Reviewed-by: Yang Shi <shy828301@gmail.com>
 Reviewed-by: Zi Yan <ziy@nvidia.com>
 Cc: Michal Hocko <mhocko@suse.com>
 Cc: Wei Xu <weixugc@google.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: David Rientjes <rientjes@google.com>
 Cc: Dan Williams <dan.j.williams@intel.com>
 Cc: David Hildenbrand <david@redhat.com>
+Cc: David Rientjes <rientjes@google.com>
 Cc: Greg Thelen <gthelen@google.com>
 Cc: Keith Busch <kbusch@kernel.org>
-Cc: Yang Shi <yang.shi@linux.alibaba.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- mm/migrate.c | 90 +++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 89 insertions(+), 1 deletion(-)
+ include/linux/migrate.h |  5 +++--
+ mm/compaction.c         |  2 +-
+ mm/gup.c                |  2 +-
+ mm/memory-failure.c     |  2 +-
+ mm/memory_hotplug.c     |  2 +-
+ mm/mempolicy.c          |  4 ++--
+ mm/migrate.c            | 11 ++++++++---
+ mm/page_alloc.c         |  2 +-
+ 8 files changed, 18 insertions(+), 12 deletions(-)
 
+diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+index 23dadf7aeba8..8ab88d46318e 100644
+--- a/include/linux/migrate.h
++++ b/include/linux/migrate.h
+@@ -41,7 +41,8 @@ extern int migrate_page(struct address_space *mapping,
+ 			struct page *newpage, struct page *page,
+ 			enum migrate_mode mode);
+ extern int migrate_pages(struct list_head *l, new_page_t new, free_page_t free,
+-		unsigned long private, enum migrate_mode mode, int reason);
++		unsigned long private, enum migrate_mode mode, int reason,
++		unsigned int *ret_succeeded);
+ extern struct page *alloc_migration_target(struct page *page, unsigned long private);
+ extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
+ 
+@@ -56,7 +57,7 @@ extern int migrate_page_move_mapping(struct address_space *mapping,
+ static inline void putback_movable_pages(struct list_head *l) {}
+ static inline int migrate_pages(struct list_head *l, new_page_t new,
+ 		free_page_t free, unsigned long private, enum migrate_mode mode,
+-		int reason)
++		int reason, unsigned int *ret_succeeded)
+ 	{ return -ENOSYS; }
+ static inline struct page *alloc_migration_target(struct page *page,
+ 		unsigned long private)
+diff --git a/mm/compaction.c b/mm/compaction.c
+index ed37e1cb4369..79aaf21058da 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -2392,7 +2392,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+ 
+ 		err = migrate_pages(&cc->migratepages, compaction_alloc,
+ 				compaction_free, (unsigned long)cc, cc->mode,
+-				MR_COMPACTION);
++				MR_COMPACTION, NULL);
+ 
+ 		trace_mm_compaction_migratepages(cc->nr_migratepages, err,
+ 							&cc->migratepages);
+diff --git a/mm/gup.c b/mm/gup.c
+index 42b8b1fa6521..c4441fc4cfba 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1772,7 +1772,7 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
+ 	if (!list_empty(&movable_page_list)) {
+ 		ret = migrate_pages(&movable_page_list, alloc_migration_target,
+ 				    NULL, (unsigned long)&mtc, MIGRATE_SYNC,
+-				    MR_LONGTERM_PIN);
++				    MR_LONGTERM_PIN, NULL);
+ 		if (ret && !list_empty(&movable_page_list))
+ 			putback_movable_pages(&movable_page_list);
+ 	}
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index eefd823deb67..3eed65e56f93 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -2093,7 +2093,7 @@ static int __soft_offline_page(struct page *page)
+ 
+ 	if (isolate_page(hpage, &pagelist)) {
+ 		ret = migrate_pages(&pagelist, alloc_migration_target, NULL,
+-			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_FAILURE);
++			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_FAILURE, NULL);
+ 		if (!ret) {
+ 			bool release = !huge;
+ 
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 0bb73fd1035a..d45c69d78b83 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -1462,7 +1462,7 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
+ 		if (nodes_empty(nmask))
+ 			node_set(mtc.nid, nmask);
+ 		ret = migrate_pages(&source, alloc_migration_target, NULL,
+-			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
++			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG, NULL);
+ 		if (ret) {
+ 			list_for_each_entry(page, &source, lru) {
+ 				if (__ratelimit(&migrate_rs)) {
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index e5ce5a7e8d92..f58c38ea1e83 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -1084,7 +1084,7 @@ static int migrate_to_node(struct mm_struct *mm, int source, int dest,
+ 
+ 	if (!list_empty(&pagelist)) {
+ 		err = migrate_pages(&pagelist, alloc_migration_target, NULL,
+-				(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL);
++				(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL, NULL);
+ 		if (err)
+ 			putback_movable_pages(&pagelist);
+ 	}
+@@ -1338,7 +1338,7 @@ static long do_mbind(unsigned long start, unsigned long len,
+ 		if (!list_empty(&pagelist)) {
+ 			WARN_ON_ONCE(flags & MPOL_MF_LAZY);
+ 			nr_failed = migrate_pages(&pagelist, new_page, NULL,
+-				start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND);
++				start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND, NULL);
+ 			if (nr_failed)
+ 				putback_movable_pages(&pagelist);
+ 		}
 diff --git a/mm/migrate.c b/mm/migrate.c
-index b7a40ab47648..a40c391f9ca7 100644
+index a40c391f9ca7..35d34ef837ed 100644
 --- a/mm/migrate.c
 +++ b/mm/migrate.c
-@@ -49,6 +49,7 @@
- #include <linux/sched/mm.h>
- #include <linux/ptrace.h>
- #include <linux/oom.h>
-+#include <linux/memory.h>
- 
- #include <asm/tlbflush.h>
- 
-@@ -3057,6 +3058,7 @@ void migrate_vma_finalize(struct migrate_vma *migrate)
- EXPORT_SYMBOL(migrate_vma_finalize);
- #endif /* CONFIG_DEVICE_PRIVATE */
- 
-+#if defined(CONFIG_MEMORY_HOTPLUG)
- /* Disable reclaim-based migration. */
- static void __disable_all_migrate_targets(void)
- {
-@@ -3191,10 +3193,96 @@ static void __set_migration_target_nodes(void)
- /*
-  * For callers that do not hold get_online_mems() already.
+@@ -1429,6 +1429,8 @@ static inline int try_split_thp(struct page *page, struct page **page2,
+  * @mode:		The migration mode that specifies the constraints for
+  *			page migration, if any.
+  * @reason:		The reason for page migration.
++ * @ret_succeeded:	Set to the number of pages migrated successfully if
++ *			the caller passes a non-NULL pointer.
+  *
+  * The function returns after 10 attempts or if no pages are movable any more
+  * because the list has become empty or no retryable pages exist any more.
+@@ -1439,7 +1441,7 @@ static inline int try_split_thp(struct page *page, struct page **page2,
   */
--__maybe_unused // <- temporay to prevent warnings during bisects
- static void set_migration_target_nodes(void)
+ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 		free_page_t put_new_page, unsigned long private,
+-		enum migrate_mode mode, int reason)
++		enum migrate_mode mode, int reason, unsigned int *ret_succeeded)
  {
- 	get_online_mems();
- 	__set_migration_target_nodes();
- 	put_online_mems();
+ 	int retry = 1;
+ 	int thp_retry = 1;
+@@ -1594,6 +1596,9 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 	if (!swapwrite)
+ 		current->flags &= ~PF_SWAPWRITE;
+ 
++	if (ret_succeeded)
++		*ret_succeeded = nr_succeeded;
++
+ 	return rc;
  }
-+
-+/*
-+ * React to hotplug events that might affect the migration targets
-+ * like events that online or offline NUMA nodes.
-+ *
-+ * The ordering is also currently dependent on which nodes have
-+ * CPUs.  That means we need CPU on/offline notification too.
-+ */
-+static int migration_online_cpu(unsigned int cpu)
-+{
-+	set_migration_target_nodes();
-+	return 0;
-+}
-+
-+static int migration_offline_cpu(unsigned int cpu)
-+{
-+	set_migration_target_nodes();
-+	return 0;
-+}
-+
-+/*
-+ * This leaves migrate-on-reclaim transiently disabled between
-+ * the MEM_GOING_OFFLINE and MEM_OFFLINE events.  This runs
-+ * whether reclaim-based migration is enabled or not, which
-+ * ensures that the user can turn reclaim-based migration at
-+ * any time without needing to recalculate migration targets.
-+ *
-+ * These callbacks already hold get_online_mems().  That is why
-+ * __set_migration_target_nodes() can be used as opposed to
-+ * set_migration_target_nodes().
-+ */
-+static int __meminit migrate_on_reclaim_callback(struct notifier_block *self,
-+						 unsigned long action, void *arg)
-+{
-+	switch (action) {
-+	case MEM_GOING_OFFLINE:
-+		/*
-+		 * Make sure there are not transient states where
-+		 * an offline node is a migration target.  This
-+		 * will leave migration disabled until the offline
-+		 * completes and the MEM_OFFLINE case below runs.
-+		 */
-+		disable_all_migrate_targets();
-+		break;
-+	case MEM_OFFLINE:
-+	case MEM_ONLINE:
-+		/*
-+		 * Recalculate the target nodes once the node
-+		 * reaches its final state (online or offline).
-+		 */
-+		__set_migration_target_nodes();
-+		break;
-+	case MEM_CANCEL_OFFLINE:
-+		/*
-+		 * MEM_GOING_OFFLINE disabled all the migration
-+		 * targets.  Reenable them.
-+		 */
-+		__set_migration_target_nodes();
-+		break;
-+	case MEM_GOING_ONLINE:
-+	case MEM_CANCEL_ONLINE:
-+		break;
-+	}
-+
-+	return notifier_from_errno(0);
-+}
-+
-+static int __init migrate_on_reclaim_init(void)
-+{
-+	int ret;
-+
-+	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "migrate on reclaim",
-+				migration_online_cpu,
-+				migration_offline_cpu);
-+	/*
-+	 * In the unlikely case that this fails, the automatic
-+	 * migration targets may become suboptimal for nodes
-+	 * where N_CPU changes.  With such a small impact in a
-+	 * rare case, do not bother trying to do anything special.
-+	 */
-+	WARN_ON(ret < 0);
-+
-+	hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
-+	return 0;
-+}
-+late_initcall(migrate_on_reclaim_init);
-+#endif /* CONFIG_MEMORY_HOTPLUG */
+ 
+@@ -1663,7 +1668,7 @@ static int do_move_pages_to_node(struct mm_struct *mm,
+ 	};
+ 
+ 	err = migrate_pages(pagelist, alloc_migration_target, NULL,
+-			(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL);
++		(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL, NULL);
+ 	if (err)
+ 		putback_movable_pages(pagelist);
+ 	return err;
+@@ -2178,7 +2183,7 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
+ 
+ 	list_add(&page->lru, &migratepages);
+ 	nr_remaining = migrate_pages(&migratepages, *new, NULL, node,
+-				     MIGRATE_ASYNC, MR_NUMA_MISPLACED);
++				     MIGRATE_ASYNC, MR_NUMA_MISPLACED, NULL);
+ 	if (nr_remaining) {
+ 		if (!list_empty(&migratepages)) {
+ 			list_del(&page->lru);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 942417c78a8a..62dc229c1dd1 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8969,7 +8969,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 		cc->nr_migratepages -= nr_reclaimed;
+ 
+ 		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
+-				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
++			NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE, NULL);
+ 
+ 		/*
+ 		 * On -ENOMEM, migrate_pages() bails out right away. It is pointless
 -- 
 2.30.2
 
