@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8F73D144D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906B13D1455
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232228AbhGUP4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 11:56:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33310 "EHLO mail.kernel.org"
+        id S232742AbhGUQCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:02:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232058AbhGUP4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:56:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 231E960FF3;
-        Wed, 21 Jul 2021 16:36:36 +0000 (UTC)
+        id S229750AbhGUQCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 12:02:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD87361245;
+        Wed, 21 Jul 2021 16:42:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626885397;
-        bh=WsjJBo4afn/pkXwR0TGBYswKrxFtVdVbtqvGm7KtQkU=;
+        s=k20201202; t=1626885771;
+        bh=7Ck9rmVTo0t8tKebV85ikRdarggjaTaFgG9+KzhlPfM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GQSTx+64qYrOdGqcdj/Wj4m+Ahchdgab8p5JRbQcFZRRoPUowGYpLyH5JzZscM/8K
-         c2+VUHOhxQ+PNd8b33CGRJ0Y8BsT8fFeGeOAM/sjA0F8ExWJV1DGMoDzjEcGUSAKsJ
-         0ukEP5ENiMpy5cFh+srH4vFT3YKeQwC1aqvRJfKaiYC3PXNk6Ju3WuzDOmnNNqqpnR
-         0bW7gl53ocg1+X3PGSxtBnT0zqnqACaYOABcNXng7Zs0DAkKp4AH3Tyd01azqM79sx
-         mH9+d56vjrKl8SHaTKxgB4qZNRes1eSFFtK5Cq5Y/6XQA3IZ2lX4nA+V83JC/exY9P
-         3WaK0Cg+IVXkA==
-Date:   Wed, 21 Jul 2021 17:36:32 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Nandan, Apurva" <a-nandan@ti.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v2 2/2] spi: cadence-quadspi: Fix check condition for DTR
- ops
-Message-ID: <20210721163632.GG4259@sirena.org.uk>
-References: <20210716232504.182-1-a-nandan@ti.com>
- <20210716232504.182-3-a-nandan@ti.com>
- <c6bb03ff-1192-5276-4034-4a021e4f6923@ti.com>
+        b=tEmHwzxBsUjnSAXt2vJ8e4mCZv5m3gwjhIliEOoWRX2M0d/zw4yTMTUMTBkKLsmpW
+         zhINgPE9/Le84ZnGk3qcxQvMbSjFabOPJhN6h/51r6PJLfHnbSJErryzih7tm7Vnl/
+         5eZp1FI+rlL6NVTx7t+fB53FVV9mUwVy3sGwuSuxMOjLnReHG8nh+qB8g5zFmVWQYn
+         960R7mhklWCUVtH8Pm9mkjxfyyHT811REVn2sX3Y2TDmq3oeqLYiUbe/PPXG7aaVA8
+         KQ8rG65IgqXiqT6AeGoTz8tGHKGsq4rHi1BHlN1tjksNS6nIHVqjPpG3x+qUjznxOr
+         SJvkXYfuExqPA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1m6FIh-0001Y8-Le; Wed, 21 Jul 2021 18:42:27 +0200
+Date:   Wed, 21 Jul 2021 18:42:27 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Rustam Kovhaev <rkovhaev@gmail.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com,
+        YueHaibing <yuehaibing@huawei.com>, linux-usb@vger.kernel.org,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] usb: hso: fix error handling code of
+ hso_create_net_device
+Message-ID: <YPhOcwiEUW+cchJ1@hovoldconsulting.com>
+References: <20210714091327.677458-1-mudongliangabcd@gmail.com>
+ <YPfOZp7YoagbE+Mh@kroah.com>
+ <CAD-N9QVi=TvS6sM+jcOf=Y5esECtRgTMgdFW+dqB-R_BuNv6AQ@mail.gmail.com>
+ <YPgwkEHzmxSPSLVA@hovoldconsulting.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vJguvTgX93MxBIIe"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c6bb03ff-1192-5276-4034-4a021e4f6923@ti.com>
-X-Cookie: Many pages make a thick book.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YPgwkEHzmxSPSLVA@hovoldconsulting.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 21, 2021 at 04:34:56PM +0200, Johan Hovold wrote:
+> On Wed, Jul 21, 2021 at 04:17:01PM +0800, Dongliang Mu wrote:
+> > On Wed, Jul 21, 2021 at 3:36 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Wed, Jul 14, 2021 at 05:13:22PM +0800, Dongliang Mu wrote:
+> > > > The current error handling code of hso_create_net_device is
+> > > > hso_free_net_device, no matter which errors lead to. For example,
+> > > > WARNING in hso_free_net_device [1].
+> > > >
+> > > > Fix this by refactoring the error handling code of
+> > > > hso_create_net_device by handling different errors by different code.
+> > > >
+> > > > [1] https://syzkaller.appspot.com/bug?id=66eff8d49af1b28370ad342787413e35bbe76efe
+> > > >
+> > > > Reported-by: syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com
+> > > > Fixes: 5fcfb6d0bfcd ("hso: fix bailout in error case of probe")
+> > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > > > ---
+> > > > v1->v2: change labels according to the comment of Dan Carpenter
+> > > > v2->v3: change the style of error handling labels
+> > > >  drivers/net/usb/hso.c | 33 +++++++++++++++++++++++----------
+> > > >  1 file changed, 23 insertions(+), 10 deletions(-)
+> > >
+> > > Please resend the whole series, not just one patch of the series.
+> > > Otherwise it makes it impossible to determine what patch from what
+> > > series should be applied in what order.
+> > >
+> > 
+> > Done. Please review the resend v3 patches.
+> > 
+> > > All of these are now dropped from my queue, please fix up and resend.
+> 
+> A version of this patch has already been applied to net-next.
 
---vJguvTgX93MxBIIe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That was apparently net (not net-next).
 
-On Wed, Jul 21, 2021 at 08:23:30PM +0530, Nandan, Apurva wrote:
+> No idea which version that was or why the second patch hasn't been
+> applied yet.
+> 
+> Dongliang, if you're resending something here it should first be rebased
+> on linux-next (net-next).
 
-> Could you please have a look, I fixed the comments as you suggested.
+And the resend of v3 of both patches has now also been applied to
+net-next.
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
+Hopefully there are no conflicts between v2 and v3 but we'll see soon.
 
-Sending content free pings adds to the mail volume (if they are seen at
-all) which is often the problem and since they can't be reviewed
-directly if something has gone wrong you'll have to resend the patches
-anyway, so sending again is generally a better approach though there are
-some other maintainers who like them - if in doubt look at how patches
-for the subsystem are normally handled.
-
---vJguvTgX93MxBIIe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD4TQ8ACgkQJNaLcl1U
-h9CgOAf/fOLQf4WweqflaqQwEyqHq4ElWpi+VgTktiz4cCeRbScuI6RQ9aBa70pb
-s3GXbBLogiJ6f4AP4JZytkcNvemBVRuupxsJVd11brVfzYoycHf1Gib1PQXpugPH
-L/OgmpOPYGXuWmbZdv1mM8ZbPMAte36h0WqDo9bThesjqgUlrfAnKHQLrlm2CcQ7
-iAAPGYbl9008YJEEySbFNkH6sHqXug0RntFzk33Z1yHqrwoVP3PRnyEI+3Z+PChZ
-BWKPt73K5uBIasssP/EldVzjy5q60QHl3FSpF9zkmyZ7cDx2CKZQZ384Qq4ezDQ1
-GGHjywJHFYFFkYelxphw80cFAvvpLQ==
-=Unbc
------END PGP SIGNATURE-----
-
---vJguvTgX93MxBIIe--
+Johan
