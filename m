@@ -2,77 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7083D10D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3B93D10DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239185AbhGUN0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:26:19 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50654 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239166AbhGUN0R (ORCPT
+        id S238635AbhGUN1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:27:54 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52990 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233543AbhGUN1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:26:17 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 56BD722542;
-        Wed, 21 Jul 2021 14:06:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626876413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        Wed, 21 Jul 2021 09:27:43 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9C16620341;
+        Wed, 21 Jul 2021 14:08:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626876499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=XsBzF8jN6NkkFCtTA12oeFWwTLn6/eVWsX76X7VzP+U=;
-        b=rkv4HriYmi/G6EV+FgmomCR0saofJFi/1sJHoVk2OVGerczwdVgjPMq4FJ5CUOtJOTfVHC
-        0m5U8ulPfqOHo6inPq6PxKAjmnC+fte+d1vkOf+7MBHeSRQ1fnWylHzCIyeWjFgtefP5HU
-        Ri7WRjG6BZUSlMV6N08TgCP/+w7rId4=
-Received: from suse.cz (pathway.suse.cz [10.100.12.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        bh=Q55yZIwgrOMLI8+g0CE8a6c06nPPqRsHLKQZ5mZTjAc=;
+        b=ms0MdtnSy8eMy3ZAo6AcdziLloi7t3ZNZv94tgEvBvDjFanP2grZFYGt1cQ3SPCzuVq5Nj
+        63qZJyXCiUWT06zJyOGiump5ew0qG5WtYlvjAnYm8myg6xl9vcPtqOE/KkaRQA55ZzpnVP
+        +y8WoJjKOnlSbOSkNgkxNWCL1y/LJ6w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626876499;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q55yZIwgrOMLI8+g0CE8a6c06nPPqRsHLKQZ5mZTjAc=;
+        b=2Cr6OZg2Ox8T/S4EehiZkei0sWAfcq7Lvk1LDxpOT6nvLMcmA10KBSSh0Lug5CGZ7ZwgE0
+        Or2YhAHbmDwdV4Dg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 45390A3B8B;
-        Wed, 21 Jul 2021 14:06:52 +0000 (UTC)
-Date:   Wed, 21 Jul 2021 16:06:49 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd@arm.com
-Subject: Re: [PATCH v7 5/5] lib/test_printf.c: add test cases for '%pD'
-Message-ID: <20210721140649.6luuiujudf7snoi6@pathway.suse.cz>
-References: <20210715011407.7449-1-justin.he@arm.com>
- <20210715011407.7449-6-justin.he@arm.com>
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 64DA113BE8;
+        Wed, 21 Jul 2021 14:08:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id s9OyFlMq+GC3HAAAGKfGzw
+        (envelope-from <ykaukab@suse.de>); Wed, 21 Jul 2021 14:08:19 +0000
+Date:   Wed, 21 Jul 2021 16:08:17 +0200
+From:   Mian Yousaf Kaukab <ykaukab@suse.de>
+To:     Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] misc: sram: Only map reserved areas in Tegra SYSRAM
+Message-ID: <20210721140817.GA140161@suse.de>
+References: <20210715103423.1811101-1-mperttunen@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210715011407.7449-6-justin.he@arm.com>
-User-Agent: NeoMutt/20170912 (1.9.0)
+In-Reply-To: <20210715103423.1811101-1-mperttunen@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-07-15 09:14:07, Jia He wrote:
-> After the behaviour of specifier '%pD' is changed to print the full path
-> of struct file, the related test cases are also updated.
+On Thu, Jul 15, 2021 at 01:34:23PM +0300, Mikko Perttunen wrote:
+> On Tegra186 and later, a portion of the SYSRAM may be reserved for use
+> by TZ. Non-TZ memory accesses to this portion, including speculative
+> accesses, trigger SErrors that bring down the system. This does also
+> happen in practice occasionally (due to speculative accesses).
 > 
-> Given the full path string of '%pD' is prepended from the end of the scratch
-> buffer, the check of "wrote beyond the nul-terminator" should be skipped
-> for '%pD'.
+> To fix the issue, add a flag to the SRAM driver to only map the
+> device tree-specified reserved areas depending on a flag set
+> based on the compatibility string. This would not affect non-Tegra
+> systems that rely on the entire thing being memory mapped.
 > 
-> Parameterize the new using_scratch_space in __test(), do_test() and wrapper
-> macros to skip the test case mentioned above,
+> If 64K pages are being used, we cannot exactly map the 4K regions
+> that are placed in SYSRAM - ioremap code instead aligns to closest
+> 64K pages. However, since in practice the non-accessible memory area
+> is 64K aligned, these mappings do not overlap with the non-accessible
+> memory area and things work out.
 > 
-> Signed-off-by: Jia He <justin.he@arm.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
+Reviewed-by: Mian Yousaf Kaukab <ykaukab@suse.de>
