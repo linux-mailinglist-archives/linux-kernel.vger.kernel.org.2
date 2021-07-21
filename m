@@ -2,175 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0233D14EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174153D14F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233815AbhGUQgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:36:06 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:26330 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231950AbhGUQgE (ORCPT
+        id S234987AbhGUQg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:36:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24378 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233994AbhGUQgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:36:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626887801; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Aryz9BE7KQB5j7/QPvZiX2ovpmVP0IZNZkEvie8KRCM=;
- b=WazRerZpbZnoV8zDXRvLReu3JLxPZHBwUUwJTCv3qFJj/4w5wLF4Z/QpCNA4v2QJt267iJY3
- jHSOZapnIQPwvLOSNCHnRZGQ2sokhCosPWAFrMAWzcbyugpe/ub2GUx1AMVw8z5+uY2LF7ni
- 25P0/Gzv4a+UrEwR0VQFc7mm/Ss=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60f85661e31d882d18196c6b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 17:16:17
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 191EBC4338A; Wed, 21 Jul 2021 17:16:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B9900C433D3;
-        Wed, 21 Jul 2021 17:16:14 +0000 (UTC)
+        Wed, 21 Jul 2021 12:36:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626887821;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=45Nv4CwiblR8FGtkBjhkDjeZeYsNgqMrzsXCoaXKlcs=;
+        b=Ic9L2YT1Yo4hu8O6cqAmQBQFtkcRA0BWkkM7R/eNsfOFEsbX8yMattnlpQMrOUv4k3sMrz
+        MGYcuDEaLOvB913+Qijt7bwItca2V+UoCWL+8jhuhUoGT2stlRGp63q0M46/suDaI+HyCO
+        5HBHKbPCcSDWVoi5Vzqa4CNwCVk00TI=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-110-UDbx34Z_NUGHUGV0a8agbA-1; Wed, 21 Jul 2021 13:16:59 -0400
+X-MC-Unique: UDbx34Z_NUGHUGV0a8agbA-1
+Received: by mail-qv1-f70.google.com with SMTP id z93-20020a0ca5e60000b02902e558bb7a04so1993302qvz.10
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:16:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=45Nv4CwiblR8FGtkBjhkDjeZeYsNgqMrzsXCoaXKlcs=;
+        b=ama+w/ZrevQRVAGjcJyGygdKsJo12+Ww8gfdjOGUAdFzhQGAjfYQXoBqm7IyHqnZ2q
+         EOL8T3Lr/StUZQtjiJmfxdwXJ/5j1h6eEqy3m3FpgbbpbDHt41Tc3haVHgNR3rqny4gK
+         6haKkU9jBvivEoxQ6KR3yhC9XnWJYLJJi6bze+klNDqduRRkhMgPk3S6xAszqUsRae2d
+         pv43zsMm+0gte6ygltDQ9brEQMlbQJvmQ+vbJ0tYha+q7kOPyz1pXUny/5oWBzfjHLeJ
+         QQ7X40jtjxoQI+n7OJGWZ01Z86i6qE6eTkOCeykX4AXvGPXrDPYoasM7bnK3gif816bS
+         HjpA==
+X-Gm-Message-State: AOAM530b35qfwhp7W15qaFosSUXlBtiGkjv+0bt9uBT4qBaKg/jU9qAX
+        XIqBRWZ/GjM4RjtWpEuuUtjxRAcgsjMvmlfqf5l3gLpUXdbdodjGyW30FD22W9BJtejQJogmCtJ
+        EWiVLdGxnIUMAVlK8Oa802Eey
+X-Received: by 2002:ad4:45a6:: with SMTP id y6mr36933566qvu.1.1626887817698;
+        Wed, 21 Jul 2021 10:16:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwroCy17a7YpgGcviCUSg3J+GVy+n4E5MAqofjS2RsLBi/0nF/2omAf2j+swlCqTU83eT+04Q==
+X-Received: by 2002:ad4:45a6:: with SMTP id y6mr36933536qvu.1.1626887817521;
+        Wed, 21 Jul 2021 10:16:57 -0700 (PDT)
+Received: from [192.168.1.3] (68-20-15-154.lightspeed.rlghnc.sbcglobal.net. [68.20.15.154])
+        by smtp.gmail.com with ESMTPSA id t6sm1744741qkg.75.2021.07.21.10.16.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 10:16:57 -0700 (PDT)
+Message-ID: <0555748529d483fb9b69eceb56bf9ebc1efceaf1.camel@redhat.com>
+Subject: Re: [RFC PATCH 02/12] netfs: Add an iov_iter to the read subreq for
+ the network fs/cache to use
+From:   Jeff Layton <jlayton@redhat.com>
+To:     David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Mike Marshall <hubcap@omnibond.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        devel@lists.orangefs.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 21 Jul 2021 13:16:56 -0400
+In-Reply-To: <162687509306.276387.7579641363406546284.stgit@warthog.procyon.org.uk>
+References: <162687506932.276387.14456718890524355509.stgit@warthog.procyon.org.uk>
+         <162687509306.276387.7579641363406546284.stgit@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 21 Jul 2021 22:46:14 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     bjorn.andersson@linaro.org, mka@chromium.org, robh+dt@kernel.org,
-        saiprakash.ranjan@codeaurora.org, will@kernel.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org
-Subject: Re: [PATCH v2 10/10] arm64: dts: qcom: sc7280: Update Q6V5 MSS node
-In-Reply-To: <CAE-0n53bRGouiycpcukPYB_+Gyz_Dr=rCAnb2MH64=+Q899aOA@mail.gmail.com>
-References: <1626775980-28637-1-git-send-email-sibis@codeaurora.org>
- <1626775980-28637-11-git-send-email-sibis@codeaurora.org>
- <CAE-0n53bRGouiycpcukPYB_+Gyz_Dr=rCAnb2MH64=+Q899aOA@mail.gmail.com>
-Message-ID: <a021012616af266905099e0563d0fff5@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-21 11:17, Stephen Boyd wrote:
-> Quoting Sibi Sankar (2021-07-20 03:13:00)
->> Update MSS node to support MSA based modem boot on SC7280 SoCs.
->> 
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  7 +++++++
->>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 19 ++++++++++++++++---
->>  2 files changed, 23 insertions(+), 3 deletions(-)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
->> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> index 191e8a92d153..d66e3ca42ad5 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> @@ -343,3 +343,10 @@
->>                 bias-pull-up;
->>         };
->>  };
->> +
->> +&remoteproc_mpss {
->> +       status = "okay";
->> +       compatible = "qcom,sc7280-mss-pil";
->> +       iommus = <&apps_smmu 0x124 0x0>, <&apps_smmu 0x488 0x7>;
->> +       memory-region = <&mba_mem &mpss_mem>;
->> +};
+On Wed, 2021-07-21 at 14:44 +0100, David Howells wrote:
+> Add an iov_iter to the read subrequest and set it up to define the
+> destination buffer to write into.  This will allow future patches to point
+> to a bounce buffer instead for purposes of handling oversize writes,
+> decryption (where we want to save the encrypted data to the cache) and
+> decompression.
 > 
-> Can this go above the pinctrl zone in this file? Preferably sorted
-> alphabetically by phandle.
-
-Sure, looks like I just added
-it based on sort order. Didn't
-notice that it fell below the
-pinctrl zone.
-
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> ---
 > 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 56ea172f641f..6d3687744440 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -586,7 +586,8 @@
->> 
->>                 remoteproc_mpss: remoteproc@4080000 {
->>                         compatible = "qcom,sc7280-mpss-pas";
->> -                       reg = <0 0x04080000 0 0x10000>;
->> +                       reg = <0 0x04080000 0 0x10000>, <0 0x04180000 
->> 0 0x48>;
->> +                       reg-names = "qdsp6", "rmb";
->> 
->>                         interrupts-extended = <&intc GIC_SPI 264 
->> IRQ_TYPE_EDGE_RISING>,
->>                                               <&modem_smp2p_in 0 
->> IRQ_TYPE_EDGE_RISING>,
->> @@ -597,8 +598,11 @@
->>                         interrupt-names = "wdog", "fatal", "ready", 
->> "handover",
->>                                           "stop-ack", "shutdown-ack";
->> 
->> -                       clocks = <&rpmhcc RPMH_CXO_CLK>;
->> -                       clock-names = "xo";
->> +                       clocks = <&gcc GCC_MSS_CFG_AHB_CLK>,
->> +                                <&gcc GCC_MSS_OFFLINE_AXI_CLK>,
->> +                                <&gcc GCC_MSS_SNOC_AXI_CLK>,
->> +                                <&rpmhcc RPMH_CXO_CLK>;
->> +                       clock-names = "iface", "offline", "snoc_axi", 
->> "xo";
->> 
->>                         power-domains = <&rpmhpd SC7280_CX>,
->>                                         <&rpmhpd SC7280_MSS>;
->> @@ -611,6 +615,15 @@
->>                         qcom,smem-states = <&modem_smp2p_out 0>;
->>                         qcom,smem-state-names = "stop";
->> 
->> +                       resets = <&aoss_reset AOSS_CC_MSS_RESTART>,
->> +                                <&pdc_reset PDC_MODEM_SYNC_RESET>;
->> +                       reset-names = "mss_restart", "pdc_reset";
->> +
->> +                       qcom,halt-regs = <&tcsr_mutex 0x23000 0x25000 
->> 0x28000 0x33000>;
->> +                       qcom,ext-regs = <&tcsr_regs 0x10000 0x10004
->> +                                        &tcsr_mutex 0x26004 0x26008>;
->> +                       qcom,qaccept-regs = <&tcsr_mutex 0x23030 
->> 0x23040 0x23020>;
->> +
->>                         status = "disabled";
->> 
->>                         glink-edge {
+>  fs/afs/file.c          |    6 +-----
+>  fs/netfs/read_helper.c |    5 ++++-
+>  include/linux/netfs.h  |    2 ++
+>  3 files changed, 7 insertions(+), 6 deletions(-)
 > 
-> Any reason to not combine this stuff with the previous patch?
+> diff --git a/fs/afs/file.c b/fs/afs/file.c
+> index c9c21ad0e7c9..ca529f23515a 100644
+> --- a/fs/afs/file.c
+> +++ b/fs/afs/file.c
+> @@ -319,11 +319,7 @@ static void afs_req_issue_op(struct netfs_read_subrequest *subreq)
+>  	fsreq->len	= subreq->len   - subreq->transferred;
+>  	fsreq->key	= subreq->rreq->netfs_priv;
+>  	fsreq->vnode	= vnode;
+> -	fsreq->iter	= &fsreq->def_iter;
+> -
+> -	iov_iter_xarray(&fsreq->def_iter, READ,
+> -			&fsreq->vnode->vfs_inode.i_mapping->i_pages,
+> -			fsreq->pos, fsreq->len);
+> +	fsreq->iter	= &subreq->iter;
+>  
+>  	afs_fetch_data(fsreq->vnode, fsreq);
+>  }
+> diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
+> index 0b6cd3b8734c..715f3e9c380d 100644
+> --- a/fs/netfs/read_helper.c
+> +++ b/fs/netfs/read_helper.c
+> @@ -150,7 +150,7 @@ static void netfs_clear_unread(struct netfs_read_subrequest *subreq)
+>  {
+>  	struct iov_iter iter;
+>  
+> -	iov_iter_xarray(&iter, WRITE, &subreq->rreq->mapping->i_pages,
+> +	iov_iter_xarray(&iter, READ, &subreq->rreq->mapping->i_pages,
 
-I split it into two separate
-patches just to show that sc7280
-supports two ways of bringing
-modem out of reset and method
-used is determined by the platform.
+What's up with the WRITE -> READ change here? Was that a preexisting
+bug?
 
+>  			subreq->start + subreq->transferred,
+>  			subreq->len   - subreq->transferred);
+>  	iov_iter_zero(iov_iter_count(&iter), &iter);
+> @@ -745,6 +745,9 @@ netfs_rreq_prepare_read(struct netfs_read_request *rreq,
+>  	if (WARN_ON(subreq->len == 0))
+>  		source = NETFS_INVALID_READ;
+>  
+> +	iov_iter_xarray(&subreq->iter, READ, &rreq->mapping->i_pages,
+> +			subreq->start, subreq->len);
+> +
+>  out:
+>  	subreq->source = source;
+>  	trace_netfs_sreq(subreq, netfs_sreq_trace_prepare);
+> diff --git a/include/linux/netfs.h b/include/linux/netfs.h
+> index fe9887768292..5e4fafcc9480 100644
+> --- a/include/linux/netfs.h
+> +++ b/include/linux/netfs.h
+> @@ -17,6 +17,7 @@
+>  #include <linux/workqueue.h>
+>  #include <linux/fs.h>
+>  #include <linux/pagemap.h>
+> +#include <linux/uio.h>
+>  
+>  /*
+>   * Overload PG_private_2 to give us PG_fscache - this is used to indicate that
+> @@ -112,6 +113,7 @@ struct netfs_cache_resources {
+>  struct netfs_read_subrequest {
+>  	struct netfs_read_request *rreq;	/* Supervising read request */
+>  	struct list_head	rreq_link;	/* Link in rreq->subrequests */
+> +	struct iov_iter		iter;		/* Iterator for this subrequest */
+>  	loff_t			start;		/* Where to start the I/O */
+>  	size_t			len;		/* Size of the I/O */
+>  	size_t			transferred;	/* Amount of data transferred */
 > 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
 
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Jeff Layton <jlayton@redhat.com>
+
