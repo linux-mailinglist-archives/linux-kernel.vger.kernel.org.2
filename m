@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27053D125C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2A53D1261
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239854AbhGUOqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
+        id S239862AbhGUOru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238948AbhGUOqj (ORCPT
+        with ESMTP id S239858AbhGUOrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:46:39 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD10FC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:27:14 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id a22so1645934vso.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:27:14 -0700 (PDT)
+        Wed, 21 Jul 2021 10:47:49 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A176C061575;
+        Wed, 21 Jul 2021 08:28:25 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id n4so1578196wms.1;
+        Wed, 21 Jul 2021 08:28:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z+G3Vv4B1XazSc4gX4wiFgRgrHQ34F/awuea1pT1nKk=;
-        b=FTb1NMduBfSAFMwVExJiFCVoQxRqCQcCQW6kpI0C7rpfB/MokLphIaTraL/H+IG1Pu
-         0983bvNl5MZU6WHpzdrOGHl2rGyZf7kerto33svOS8jHphkEFisuAiUNgFyp4DwF7wCh
-         r5d4XsJPVY8bkYvgYUxbmfLrVIMQNQwDYCc1U=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ShmnrtYGbhLvt22QXVCWVyM3Ev7W7+sJbBBqrGHgNQQ=;
+        b=rKxZB1pvS/SvuENep/NcTB0hlQLeTtAsfDdhBfWv9zZDUYMJgP9XosuhZD+dUtfYRC
+         3MagxQonVNhKfjtqfIMQI8CfFgaJsx+dAnvnlPiGKndkxmjGY5/teW36DS+BhOEZdXQ7
+         NUgPEkwnVxwQKDjQthRcKjZnAy26sBfDO0HQuyKcpx7wdUFz6L+GnmYfsxvtH2B7gubZ
+         CgjjjK07gUA8PrSFXA1gSzVygwhxXo/EaNst+9eo/BEWxE5C0Soub1ij+SfVy7uJL7Qq
+         XF9GGMjHH55BtOb8KOC060G7uSI3IBCHgjBSKTzuR5pPEBjvSAiuq9w5taINfQ7NciUK
+         0bWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z+G3Vv4B1XazSc4gX4wiFgRgrHQ34F/awuea1pT1nKk=;
-        b=tRFhnyCdYY04TP7IJkCT7dp6XrZbKr9PvDR1nmJiOg7/xikfk8JfrmLbDa3btPm7Je
-         aEp+c3SQFasiQ4OrXoaW6MUtReOw6DIA8XmWiEraBFmqSTuTKSal2xtvpvI5wDtFSwtZ
-         nUNAr1K41bN0Aa6RUqPh2jwvZYHNvqMEH7EDFe3uuppbCqkjInpYfHGRU0LLQzhTko1i
-         /Hvgb63z2PCs/D7GPt2VCIio9axuAnIC4OWJeu1D+bMHKWu3X1rD2lHn4wdsdc90Rz2T
-         y24JXXkUdamuHqGK4mua1Z5v1VV///TYZP/RrgeAYP+GLZGbseZSsOMEKdjdqNZBG7Md
-         1Smg==
-X-Gm-Message-State: AOAM531CmEEi5Z3PQarEPKFuAqDsxxuZNendYK7VXbHxqQTAOB/cwXxd
-        coMTdXGmCoWCxJZoVoiM4Rxi6aPoLC+eOg==
-X-Google-Smtp-Source: ABdhPJzgDCJVwubaOIvoZB/xkdTPRn09OyOmxyHm1H/jmyfVXwTBdUtu4U0Hfh6zGEseriQzLVPlsg==
-X-Received: by 2002:a67:5e42:: with SMTP id s63mr13579871vsb.21.1626881234090;
-        Wed, 21 Jul 2021 08:27:14 -0700 (PDT)
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
-        by smtp.gmail.com with ESMTPSA id n7sm3388692vso.4.2021.07.21.08.27.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 08:27:14 -0700 (PDT)
-Received: by mail-ua1-f42.google.com with SMTP id f11so970922uan.6
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:27:12 -0700 (PDT)
-X-Received: by 2002:ab0:c07:: with SMTP id a7mr37239648uak.120.1626881232268;
- Wed, 21 Jul 2021 08:27:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ShmnrtYGbhLvt22QXVCWVyM3Ev7W7+sJbBBqrGHgNQQ=;
+        b=a89WpQI/xXfOoaSuJmgrMGtRFHInQY6XDf6QjMrG2m3ypuGP9OnvjR3e7aC/s0Xny8
+         JoLyEoggNvBaIIWMwn7d0pasBqP3vXUlTMRmq2WFagpccEyU1oHS+rhLw9cgUurS64fH
+         aqidUxZ/vJG/lUdVKBmUoyy/RSjzBnDE87tOIKF3CHJQtanA5FHBa225hFvhR96CtWhK
+         G4wwrrbccyG8rV//ERRvKBNqIUXI/aL0n4SB5u/1OMGLiTdYgbEwSTbuhx0MVRLa1wRM
+         OIvr9zbGAB50iB4Arf1VXJFUEVEB1FYvsJQbJbr9WbCzli4cBKkhmAzZzBWdtAqEeaye
+         bSYw==
+X-Gm-Message-State: AOAM5301JnRW6HOp28ncA7qZ/K8EOPeTPd+6uqjVWuLDwFlSCacLbLAk
+        X7ld9br1bz2zsa/0ukqFQbA=
+X-Google-Smtp-Source: ABdhPJxq6WnJ0ScT/U0gui5UDZtIP0bWtXf1gkONTpXPOq6fx3yZGEZjlicl8D48BY3ZwFtJuYMn7A==
+X-Received: by 2002:a1c:7e53:: with SMTP id z80mr1675182wmc.153.1626881303722;
+        Wed, 21 Jul 2021 08:28:23 -0700 (PDT)
+Received: from chgm-pc-linux.bachmann.at ([185.67.228.2])
+        by smtp.gmail.com with ESMTPSA id y16sm246913wmq.1.2021.07.21.08.28.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 08:28:23 -0700 (PDT)
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+To:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] PCI: dwc: do not ignore link errors
+Date:   Wed, 21 Jul 2021 17:28:21 +0200
+Message-Id: <20210721152821.2967356-1-christian.gmeiner@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210625045010.2914289-1-judyhsiao@chromium.org>
-In-Reply-To: <20210625045010.2914289-1-judyhsiao@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 21 Jul 2021 08:27:00 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VXULSZXqt-wjMWC4YqehGJsoeC0G=Kuut0xPPKo9AEWQ@mail.gmail.com>
-Message-ID: <CAD=FV=VXULSZXqt-wjMWC4YqehGJsoeC0G=Kuut0xPPKo9AEWQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: trogdor: Update audio codec to Max98360A
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Dylan Reid <dgreid@chromium.org>,
-        Jimmy Cheng-Yi Chiang <cychiang@google.com>,
-        Judy Hsiao <judyhsiao@google.com>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Judy Hsiao <judyhsiao@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+This fixes long boot delays of about 10 seconds.
 
-On Thu, Jun 24, 2021 at 9:50 PM Judy Hsiao <judyhsiao@chromium.org> wrote:
->
-> Use max98360a dts node to correctly describe the hardware.
->
-> Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+I am working on a device powered by an TI am65 SoC where
+we have a PCIe expansion slot. If there is no PCIe device
+connected I see boot delays caused by pci_host_probe(..).
 
-I noticed that you landed several dts changes recently (thanks!) but I
-didn't see this one. Was there a problem with it, or did it just slip
-through the cracks?
+Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+---
 
-Thanks!
+V2: fix compile
 
--Doug
+---
+ drivers/pci/controller/dwc/pcie-designware-host.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+index a608ae1fad57..ce7d3a6f9a03 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -408,8 +408,9 @@ int dw_pcie_host_init(struct pcie_port *pp)
+ 			goto err_free_msi;
+ 	}
+ 
+-	/* Ignore errors, the link may come up later */
+-	dw_pcie_wait_for_link(pci);
++	ret = dw_pcie_wait_for_link(pci);
++	if (ret)
++		goto err_free_msi;
+ 
+ 	bridge->sysdata = pp;
+ 
+-- 
+2.31.1
+
