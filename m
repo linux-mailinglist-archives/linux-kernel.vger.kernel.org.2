@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBE13D177A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED753D177C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbhGUTZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:25:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229461AbhGUTZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:25:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9195560FF1;
-        Wed, 21 Jul 2021 20:05:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1626897954;
-        bh=PH79dhvbA5ifENRBFeVP2SQ13AevDDS80mZd2iiPTEM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=W3AQFpo3D0BD21GopJUVmtm9u0VFSvoJBl61g98i1Z7FJFfyUuAchEXZ/0lspitFD
-         W9LoSeCkQGXNSG9lfavh6YUqI+eVMQmAlygHKCZFO8Dk9ZGK0iAK7h2OEJkeDzCsjg
-         5aOsWXQ+LsXFzyaxM4p83oP0z+fe6E+yMny6Lvg0=
-Date:   Wed, 21 Jul 2021 13:05:51 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Dmitry Safonov <0x7f454c46@gmail.com>
-Cc:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Geffon <bgeffon@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chen Wandun <chenwandun@huawei.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2] mm/mremap: Don't account pages in vma_to_resize()
-Message-Id: <20210721130551.bbdeae56ca3ec2d0f28b0bac@linux-foundation.org>
-In-Reply-To: <77e28552-7a13-0981-f921-cd027cb73525@gmail.com>
-References: <20210721131320.522061-1-dima@arista.com>
-        <77e28552-7a13-0981-f921-cd027cb73525@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S232412AbhGUTZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229461AbhGUTZi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 15:25:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E1EC061575;
+        Wed, 21 Jul 2021 13:06:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=bDhvQ5YCOhcXTke9r+u6SsmUS3hGfHOc7ntSpGhNKLg=; b=3Rv/FfjlP3R98vmcNifWRESui9
+        Jfe+4cJRBjgGEuVzc1OdMlfV1CQ7ev49jyz5i5CwSEoyJZ8m76jORYARGu75dIE7nFL9rHK8Ogp/A
+        nQibJ2Gs9ELzCFy/w0v9bXiRlRBfsRZLPflXMcWwwBtTYFpH9CKByxusXHhDYJP8CwGfo6mpK16Qu
+        XQXBX71gMSAIYDc7/aOIozF7f3dSDfcmMr/YRPHkowu+Pe3TN9/0WIQ8C0OQg47pUQJo8hlQoB6Qs
+        9EHVE2Q7ntA5+UMpLl1Nq+XB77pCnKMSZgyIkAOJjXWmAzPFBEWAtHfEGBtMTGDxginicnsnQqpou
+        xEMpmEPQ==;
+Received: from [2601:1c0:6280:3f0:7629:afff:fe72:e49d]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m6ITp-00H42X-Or; Wed, 21 Jul 2021 20:06:09 +0000
+Subject: Re: [PATCH] clk: hisilicon: hi3559A: select CONFIG_RESET_HISI
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dongjiu Geng <gengdongjiu@huawei.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210721151136.2060107-1-arnd@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <721190b5-2a72-2ef1-b76c-65d311813fc0@infradead.org>
+Date:   Wed, 21 Jul 2021 13:06:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210721151136.2060107-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Jul 2021 14:21:54 +0100 Dmitry Safonov <0x7f454c46@gmail.com> wrote:
-
-> > Let's not do this.
-> > Account memory in mremap() fast-path for growing VMAs or in move_vma()
-> > for actually moving things. The same simpler way as it's done by
-> > vm_stat_account(), but with a difference to call
-> > security_vm_enough_memory_mm() before copying/adjusting VMA.
-> > 
-> > Originally noticed by Chen Wandun:
-> > https://lkml.kernel.org/r/20210717101942.120607-1-chenwandun@huawei.com
+On 7/21/21 8:11 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> The patch by Chen Wandun still makes sense with this v2.
-> Heh :-)
+> The reset functions are in a library that has to be selected
+> for each driver using them:
+> 
+> aarch64-linux-ld: drivers/clk/hisilicon/clk-hi3559a.o: in function `hi3559av100_crg_remove':
+> clk-hi3559a.c:(.text+0x1c8): undefined reference to `hisi_reset_exit'
+> clk-hi3559a.c:(.text+0x1c8): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `hisi_reset_exit'
+> aarch64-linux-ld: drivers/clk/hisilicon/clk-hi3559a.o: in function `hi3559av100_crg_probe':
+> clk-hi3559a.c:(.text+0x284): undefined reference to `hisi_reset_init'
+> clk-hi3559a.c:(.text+0x284): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `hisi_reset_init'
+> aarch64-linux-ld: clk-hi3559a.c:(.text+0x2e8): undefined reference to `hisi_reset_exit'
+> clk-hi3559a.c:(.text+0x2e8): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `hisi_reset_exit'
+> 
+> Add the select to 3559 as well.
+> 
+> Fixes: 6c81966107dc ("clk: hisilicon: Add clock driver for hi3559A SoC")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/clk/hisilicon/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/clk/hisilicon/Kconfig b/drivers/clk/hisilicon/Kconfig
+> index 5ecc37aaa118..c1ec75aa4ccd 100644
+> --- a/drivers/clk/hisilicon/Kconfig
+> +++ b/drivers/clk/hisilicon/Kconfig
+> @@ -18,6 +18,7 @@ config COMMON_CLK_HI3519
+>  config COMMON_CLK_HI3559A
+>  	bool "Hi3559A Clock Driver"
+>  	depends on ARCH_HISI || COMPILE_TEST
+> +	select RESET_HISI
+>  	default ARCH_HISI
+>  	help
+>  	  Build the clock driver for hi3559a.
+> 
 
-Should
-https://lkml.kernel.org/r/20210717101942.120607-1-chenwandun@huawei.com
-still be applied then?  Did you ack it?
+https://lore.kernel.org/lkml/20210717043159.12566-1-rdunlap@infradead.org/
+
+
+-- 
+~Randy
+
