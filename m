@@ -2,152 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CD63D0BEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 12:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712203D0BF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 12:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236870AbhGUIxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 04:53:07 -0400
-Received: from mail-bn8nam12on2079.outbound.protection.outlook.com ([40.107.237.79]:10017
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238076AbhGUIpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 04:45:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UfwDnShgIdY2LLuc7qMfRIafRCw7Fb+Ur/SbTJWfH7V34/U7JPsuOdfDwDnnyVMzf0gMdYAsttFlUkJrvOAtCZow+6zKovHZ9jwSaTHYCfkk7MYyY5HOxQOIINaRIu73CxVrC4b89kNOsPVCSTONNM/S5799m59X70oTLVvzTroEMIgWeczZ2tfWdA96LzRR1VwRyj7Ag94uj55s1NeE83wp1NN6VKNvS1DS3EOUifjnwROBBsDXm9MmcF97D4qy8mesa5qLBP8PEyKFxlUYqApPgECkyyD27FR3QRqPZg1XEER3hyeqaZnQzjAsJffnnQ9sIOt2/fN6h/QAVgOBmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rptB4eWJTuxIv4Ug9+5e0lHIeNMQFLajYOsLk57gVKQ=;
- b=UWXabw4LDqCKMAwyV/R3ppbaYhSjvBhmvLNg3YEdRne4XAZP6+GFRzgBJ1Vgd0+OhcdjpW3eYpW2ZZbIVfikkdlt4HivJztzTr13L9Pm8E9IXAL9Sp8X4XcHODkSScKRKpaNrXmxjo1lEWP3LJeEPlSBjzcL2PUFY7C9l1/+qjU2SOAUlJAHzaR/BPp38jMhC7oC7QUsik9QMOzJnsxh9iWe+E/lqWrzZX5uq+YMp1UZbfdn+yeGt9zr/S6IDG8cEHvhfVgAKgoPiyMQSBpt3+wh+QFIE4ugmxGn+FDoRMPMe7ZzIbF8bFsocRGIJdZypMgxtg5StEsB8kj4tHhAmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rptB4eWJTuxIv4Ug9+5e0lHIeNMQFLajYOsLk57gVKQ=;
- b=EGNTEejrpZ/Fe1BkLE1EciDqcYqHazqb0xg/998iHL2rQktkWuG2ZVPz30iYb5kB4ExZP0QXRQgPOIsMLHEWlftFCcRYa4hphT4GRIj1P74A95/nenkUOL81N9lGXZDk9E5QME79kcNHrFrpuw2FHe+MYzIh9lDKmvLyiQowVVw=
-Received: from DM5PR05MB3452.namprd05.prod.outlook.com (2603:10b6:4:41::11) by
- DM6PR05MB4731.namprd05.prod.outlook.com (2603:10b6:5:17::28) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4352.17; Wed, 21 Jul 2021 09:26:15 +0000
-Received: from DM5PR05MB3452.namprd05.prod.outlook.com
- ([fe80::94c0:39f7:9695:56ea]) by DM5PR05MB3452.namprd05.prod.outlook.com
- ([fe80::94c0:39f7:9695:56ea%3]) with mapi id 15.20.4352.024; Wed, 21 Jul 2021
- 09:26:15 +0000
-From:   Jorgen Hansen <jhansen@vmware.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Pv-drivers <Pv-drivers@vmware.com>
-Subject: Re: [PATCH] MAINTAINERS: Update for VMCI driver
-Thread-Topic: [PATCH] MAINTAINERS: Update for VMCI driver
-Thread-Index: AQHXfVIP+6abVM7c7EmQXyuZ/FLCiatLrFmAgAFyvYCAAAQFAIAABycA
-Date:   Wed, 21 Jul 2021 09:26:15 +0000
-Message-ID: <6344A6B0-F7B7-450C-9BDF-AF9056D211F3@vmware.com>
-References: <1626776941-9163-1-git-send-email-jhansen@vmware.com>
- <YPan14jucU9/u6JL@kroah.com>
- <0C3493F7-AF29-417B-94EA-26871283E65A@vmware.com>
- <YPfiNuKonyTIKcDL@kroah.com>
-In-Reply-To: <YPfiNuKonyTIKcDL@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.7)
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=vmware.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3a70e299-a291-40a8-7b42-08d94c29969f
-x-ms-traffictypediagnostic: DM6PR05MB4731:
-x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR05MB473124774F108D8AA132D591DAE39@DM6PR05MB4731.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vUFmjQzKc/sAEzD89JWkWPaaiKdsVtcovWHt6G9EFGVdl0hLDm4DersRg4n92kjYjLJx6NR6/R6j0hWLLn/ISq7CWggN0yeylpZmIFjPBvSg+wp2rXGnGPMCESX9v/JOTiTw4Ow6Cc5E2WQiDK5I23fs6t5q69s18E80QxEzeMISLnNEjsCrupANxjV2+Nn1DAnhh68es+jIKS+pMdyimRkm4SeBsq+c/rS+FsNZIMPuMjAjAZwx/6Ur1cGs35vPSfqAUPzbZPn59/M0+kXw+gYqblYuxsUJ7SqFMq7QynwfQtIj1qFJMV52YP3LV3DJ5PH0usDZOySWLgiRjEz96yKREtgR6a2ryUZRzouiIViA9FNTTUCehVISnnFEVQNreqtTxsXInlK1XKygib339MaUJJAJ3gysKoJsbhdvQr17sqaY9ZIPeWtxZ+JL0Zh+C9AIJ1vESV5DSXM8cpWzfmegiweCN9SMMYhYkNPyOmgUdFO/Hh2oTGdTEPTlqTXUlY4o0PlVfgkMO0LdbrVj8IBBMycdjDtyOkdTSt3y0nr32+V7iu9O0o83tMSas2n91g2UgCH75/kTDsdSeg2elYDChv6+Lj0zAz8hjHYJhW0w7GHIwYgWfI0y/1kSyDPmnVn2XCYIgGZDGXLWWNzHrYyspXzspHGkOXyW4bIYPNGAYlIK9r7M/skmm4NOd7q8K/HVb6UgxRwQCXVLlkBuq4gTWj3NQDMowu8GTLrSUdJaPTUgeYI/PB2Vp0AzzCUJ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR05MB3452.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(6512007)(122000001)(76116006)(66556008)(38100700002)(91956017)(26005)(186003)(8676002)(66946007)(66476007)(107886003)(64756008)(36756003)(8936002)(6486002)(54906003)(66446008)(2616005)(71200400001)(86362001)(6916009)(4326008)(6506007)(33656002)(2906002)(508600001)(53546011)(316002)(45980500001)(38070700004);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OTlPbDdDTkxBVlo4eEthZHhtM29BNi9lVkhvN1dwVEVwSURZTGc5TEE3eHpW?=
- =?utf-8?B?TjZUS2MzYTdyU3NFQm0rTjZxOGN0YVBNRUU0OUZYY2xkdndCVjhEZU02dVNp?=
- =?utf-8?B?azArWUxmNG1Ya2YrekFqcE11ZWVacklhRGs4UUtJSW5BeFk2ZWduUTFwaE1p?=
- =?utf-8?B?TjQ3MFNFMG0yY0JKR2NQY1VuUzBQMjVySmFJUXFvUDdBR2NRaTJybXp0bWdh?=
- =?utf-8?B?QmFVSXMxL1dvdWdUYVI2N3BSR1l2TUxJa0pZYnFiajBnZ3kweFRvbXRIZldw?=
- =?utf-8?B?VFpsYnQ4cm5DU09OQ296bWo0N0FaZWIrajVRcU9XMkJiZ1Y4L0U2K09KbHZs?=
- =?utf-8?B?NnBXSUkyRmtTY3ovTjlUVzdSQnE1VmdKankxL0tsNnBDTWRkNm8yU09LWmxj?=
- =?utf-8?B?UG9ZU2liYzhUUmFDZlMrVkIwL0J6UllIVUNYR0hNS1YrYXl6RVdVSHZsNlBZ?=
- =?utf-8?B?dUttSFhUVXYzdEpyOTlBd1VUdzliQlI0U01ram12cmsyeGlPcXFIZmcralFG?=
- =?utf-8?B?V2JVTXJScmxKVFkwT041cnIwTFNtMFEvaW1saUlqWUtQOVhXeDNXVVZZSDFq?=
- =?utf-8?B?YWk3UWM0OEEvakpuUXZKZVJBUHVFRzJtVTdYdjRRWVdZZFFUaXFtK1hKRlha?=
- =?utf-8?B?WTZTcEZHNzFyNVE5NGg4UnRRL0dnYlpHUmg1UWQxMUxtZUlXT1I4bUJPSVR4?=
- =?utf-8?B?Rk8yLzFBSjRMOXBjTEtSK1UxZStVdDBGM1Azcy91eGJHTklJY2dvdXdvMmkz?=
- =?utf-8?B?L1hDdVhqZ1Q2SStTbk1ZMXNsTU5TSGNaZWdDRHhJWk9aQmZEckVZU0MxWkVB?=
- =?utf-8?B?d2cySWp6UExLTTdNd1RsOWN4RWwraHpLNWx0U0t0dXp3eUVoSUVlSis3NFpK?=
- =?utf-8?B?TVJWZGcrblZENE5CZGp0SzhDTCtmb1JYaDlqMlY4MWlSVUhDKyt0RXFtWTBv?=
- =?utf-8?B?dW5pMkNGeVZRZ240cHJkZFg0Qnh5dXUrdzZ4WThEK01raW5nNVZlaUdjQzdX?=
- =?utf-8?B?ZHYyZlgzM1AwQTBRRnVxalc4RFRHbE9RYlErZjlyeERSYmsvWWp6NEJNcU1u?=
- =?utf-8?B?UDlvanlycHQxTjY0UWxpZW5TY0hWbVc5MUptUER2YjZJWnYzK0VLMjdFMVQy?=
- =?utf-8?B?NXNRT3g5STdRWVZtdGJKY1lzbkphZ3lsZ2R5RDdzbE43RkRrWWptSnk1eCta?=
- =?utf-8?B?akg1ZERZamRQb2ZFMXlnVzVMSG0rZVJLSk9ocU9vWmFMc2pTQnNlSzZLNVVZ?=
- =?utf-8?B?ZmNKNC9HOFNEcUlLbitxeVJ4cHBoUFV2NkNBWVE2UXArRnRmWGJlQTZ1Q3Iy?=
- =?utf-8?B?aG1TM0pSanZVZEFqdHIwRjhjVU0zc3NTNEw2YlNyaERPR3M0RHBtOHB6L1Zs?=
- =?utf-8?B?VFpzeU95QnRlUFlDOFVYNWI0eDhSUnlxOEl1NGJpUU84UHpNa293WmlETU1Y?=
- =?utf-8?B?ZWFDdnpnRHZRY1V3TVBoUHJrQllTbk9qOVJ6ZDF6dlFIdHNkUEVZNnJhWDNI?=
- =?utf-8?B?MFJzLys3cFdXWk91ZXZIVEsvbXlmd0tRUXdOTDlJTVVYZmNTMzdWTmpLbnlP?=
- =?utf-8?B?V014MU1pRFVLL2d3UjJsb2JoZTVZRkIxKzViOEVKaStQSFRCZ3FKN1Q2R2NS?=
- =?utf-8?B?UWlhVEtnZnVZTkZzbkVSNU9PMFVtRkp3ZHExWWVmNGpyZjFyNmZ2ZTZLaFVp?=
- =?utf-8?B?VHAycHpBWGpoeW0xMUVPdlp4ZGszU3FUVjg1NDcwRWFoZzNDOHlYQ0hIR05R?=
- =?utf-8?Q?lBQ+CQfWUfEjN6g+/WleSvM2hYGLhFuBtdp5515?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1555F89F7BE0E44C8E4EACBE64B6AB3C@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S237817AbhGUI6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 04:58:41 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7408 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237295AbhGUIvL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 04:51:11 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GV9F86LLtz7xbt;
+        Wed, 21 Jul 2021 17:26:20 +0800 (CST)
+Received: from [10.174.179.200] (10.174.179.200) by
+ dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 21 Jul 2021 17:29:59 +0800
+Subject: Re: [PATCH net] can: raw: fix raw_rcv panic for sock UAF
+To:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        Greg KH <gregkh@linuxfoundation.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <mkl@pengutronix.de>,
+        <netdev@vger.kernel.org>, <linux-can@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20210721010937.670275-1-william.xuanziyang@huawei.com>
+ <YPeoQG19PSh3B3Dc@kroah.com>
+ <44c3e0e2-03c5-80e5-001c-03e7e9758bca@hartkopp.net>
+From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Message-ID: <e3f56f35-00ca-e8f9-ba41-fdc87dc9bfd4@huawei.com>
+Date:   Wed, 21 Jul 2021 17:29:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR05MB3452.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a70e299-a291-40a8-7b42-08d94c29969f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2021 09:26:15.2930
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SYOBr3z9OspPzaBdo0IbIrDna7i9JT6R0UiElaJXIeZOIF6+JSa5H4kBjT7gNjFjoAc9n/OKgC/mAwTJgNge5g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR05MB4731
+In-Reply-To: <44c3e0e2-03c5-80e5-001c-03e7e9758bca@hartkopp.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.200]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gT24gMjEgSnVsIDIwMjEsIGF0IDExOjAwLCBHcmVnIEtIIDxncmVna2hAbGludXhmb3Vu
-ZGF0aW9uLm9yZz4gd3JvdGU6DQo+IA0KPiBPbiBXZWQsIEp1bCAyMSwgMjAyMSBhdCAwODo0Njox
-NUFNICswMDAwLCBKb3JnZW4gSGFuc2VuIHdyb3RlOg0KPj4gDQo+PiANCj4+PiBPbiAyMCBKdWwg
-MjAyMSwgYXQgMTI6MzksIEdyZWcgS0ggPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPiB3cm90
-ZToNCj4+PiANCj4+PiBPbiBUdWUsIEp1bCAyMCwgMjAyMSBhdCAwMzoyOTowMUFNIC0wNzAwLCBK
-b3JnZW4gSGFuc2VuIHdyb3RlOg0KPj4+PiBBZGQgbWFpbnRhaW5lciBpbmZvIGZvciB0aGUgVk13
-YXJlIFZNQ0kgZHJpdmVyLg0KPj4+PiANCj4+Pj4gU2lnbmVkLW9mZi1ieTogSm9yZ2VuIEhhbnNl
-biA8amhhbnNlbkB2bXdhcmUuY29tPg0KPj4+PiAtLS0NCj4+Pj4gTUFJTlRBSU5FUlMgfCA4ICsr
-KysrKysrDQo+Pj4+IDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKykNCj4+Pj4gDQo+Pj4+
-IGRpZmYgLS1naXQgYS9NQUlOVEFJTkVSUyBiL01BSU5UQUlORVJTDQo+Pj4+IGluZGV4IGE2MWY0
-ZjMuLjdlN2M2ZmEgMTAwNjQ0DQo+Pj4+IC0tLSBhL01BSU5UQUlORVJTDQo+Pj4+ICsrKyBiL01B
-SU5UQUlORVJTDQo+Pj4+IEBAIC0xOTc5Miw2ICsxOTc5MiwxNCBAQCBMOgluZXRkZXZAdmdlci5r
-ZXJuZWwub3JnDQo+Pj4+IFM6CVN1cHBvcnRlZA0KPj4+PiBGOglkcml2ZXJzL3B0cC9wdHBfdm13
-LmMNCj4+Pj4gDQo+Pj4+ICtWTVdBUkUgVk1DSSBEUklWRVINCj4+Pj4gK006CUpvcmdlbiBIYW5z
-ZW4gPGpoYW5zZW5Adm13YXJlLmNvbT4NCj4+Pj4gK006CVZpc2hudSBEYXNhIDx2ZGFzYUB2bXdh
-cmUuY29tPg0KPj4+PiArTToJIlZNd2FyZSwgSW5jLiIgPHB2LWRyaXZlcnNAdm13YXJlLmNvbT4N
-Cj4+PiANCj4+PiBQbGVhc2UgZG8gbm90IHVzZSBnZW5lcmljIGFsaWFzZXMgYXMgdGhleSBwcm92
-aWRlIG5vIHBlcnNvbmFsDQo+Pj4gcmVzcG9uc2liaWxpdHkuICBKdXN0IHN0aWNrIHdpdGggcmVh
-bCBwZW9wbGUuDQo+PiANCj4+IFRoYXQgbWFrZXMgc2Vuc2UuIEhvd2V2ZXIsIHRoZSBwdi1kcml2
-ZXJzIGxpc3QgaXMgdXNlZCBmb3Iga2VlcGluZyBtYW5hZ2Vycw0KPj4gYW5kIHBlb3BsZSBoZWxw
-aW5nIHdpdGggdGVzdGluZyBpbiB0aGUgbG9vcC4gU28gd291bGQgYWRkaW5nIHB2LWRyaXZlcnMg
-YXMgYQ0KPj4gc2Vjb25kIEw6IGVudHJ5IGJlIE9LPw0KPiANCj4gSXMgaXQgcmVhbGx5IGEgbGlz
-dD8gIElmIG5vdCwgdGhlbiB0aGF0IHdvdWxkIG5vdCBtYWtlIG11Y2ggc2Vuc2UuDQoNCkl0IGlz
-IC0gd2l0aCBWTXdhcmUgc3Vic2NyaWJlcnMgb25seSBidXQgYW55b25lIGNhbiBwb3N0IHRvIGl0
-LiBJZiB0aGUgaW50ZW50IG9mIHRoZQ0KTDogZW50cmllcyBpcyB0byBhbGxvdyBmb2xrcyB0byBz
-dWJzY3JpYmUgdG8gcmVsZXZhbnQgaW5mb3JtYXRpb24sIHRoZW4gaXQgaXNu4oCZdA0KYXBwcm9w
-cmlhdGUuDQoNCkFsbCBleGlzdGluZyB2bXcgZHJpdmVyIG1haW50YWluZXIgZW50cmllcyBoYXZl
-IHB2LWRyaXZlcnMgYXMgYW4gTTogZW50cnksDQpzbyBoYXMgdGhlcmUgYmVlbiBhIGNoYW5nZSBp
-biBwb2xpY3kgcmVnYXJkaW5nIHRoaXM/IFRoZSBhcHByb2FjaCBoYXMNCmJlZW4gcXVpdGUgdXNl
-ZnVsIGZvciB1cy4=
+On 7/21/2021 2:35 PM, Oliver Hartkopp wrote:
+> 
+> 
+> On 21.07.21 06:53, Greg KH wrote:
+>> On Wed, Jul 21, 2021 at 09:09:37AM +0800, Ziyang Xuan wrote:
+>>> We get a bug during ltp can_filter test as following.
+>>>
+>>> ===========================================
+>>> [60919.264984] BUG: unable to handle kernel NULL pointer dereference at 0000000000000010
+>>> [60919.265223] PGD 8000003dda726067 P4D 8000003dda726067 PUD 3dda727067 PMD 0
+>>> [60919.265443] Oops: 0000 [#1] SMP PTI
+>>> [60919.265550] CPU: 30 PID: 3638365 Comm: can_filter Kdump: loaded Tainted: G        W         4.19.90+ #1
+> 
+> This kernel version 4.19.90 is definitely outdated.
+> 
+> Can you please check your issue with the latest uptream kernel as this problem should have been fixed with this patch:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8d0caedb759683041d9db82069937525999ada53
+> ("can: bcm/raw/isotp: use per module netdevice notifier")
+> 
+> Thanks!
+
+I have tested it under the latest 5.14-rc2 kernel version which includes commit 8d0caedb7596 before I submit the patch.
+Although I failed to get the vmcore-dmesg file after updating the kernel version to 5.14-rc2 to display here.
+But we can get the conclusion according to the following debug messages and my problem analysis.
+
+==========================================
+[ 1048.953574] unlist_netdevice name[vcan0]
+[ 1048.953661] raw_notify 283: enter, waiting
+[ 1050.950967] raw_setsockopt 552: ro->bound[1] ro->ifindex[8] sk[ffff9420c5699800]
+[ 1053.956002] can: receive list entry not found for dev any, id 000, mask 000
+[ 1053.961989] can: receive list entry not found for dev vcan0, id 123, mask 7FF
+
+raw_setsockopt() executes after unlist_netdevice() and before raw_notify().
+The problem always exists.
+
+> 
+>>> [60919.266068] RIP: 0010:selinux_socket_sock_rcv_skb+0x3e/0x200
+>>> [60919.293289] RSP: 0018:ffff8d53bfc03cf8 EFLAGS: 00010246
+>>> [60919.307140] RAX: 0000000000000000 RBX: 000000000000001d RCX: 0000000000000007
+>>> [60919.320756] RDX: 0000000000000001 RSI: ffff8d5104a8ed00 RDI: ffff8d53bfc03d30
+>>> [60919.334319] RBP: ffff8d9338056800 R08: ffff8d53bfc29d80 R09: 0000000000000001
+>>> [60919.347969] R10: ffff8d53bfc03ec0 R11: ffffb8526ef47c98 R12: ffff8d53bfc03d30
+>>> [60919.350320] perf: interrupt took too long (3063 > 2500), lowering kernel.perf_event_max_sample_rate to 65000
+>>> [60919.361148] R13: 0000000000000001 R14: ffff8d53bcf90000 R15: 0000000000000000
+>>> [60919.361151] FS:  00007fb78b6b3600(0000) GS:ffff8d53bfc00000(0000) knlGS:0000000000000000
+>>> [60919.400812] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [60919.413730] CR2: 0000000000000010 CR3: 0000003e3f784006 CR4: 00000000007606e0
+>>> [60919.426479] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>> [60919.439339] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>> [60919.451608] PKRU: 55555554
+>>> [60919.463622] Call Trace:
+>>> [60919.475617]  <IRQ>
+>>> [60919.487122]  ? update_load_avg+0x89/0x5d0
+>>> [60919.498478]  ? update_load_avg+0x89/0x5d0
+>>> [60919.509822]  ? account_entity_enqueue+0xc5/0xf0
+>>> [60919.520709]  security_sock_rcv_skb+0x2a/0x40
+>>> [60919.531413]  sk_filter_trim_cap+0x47/0x1b0
+>>> [60919.542178]  ? kmem_cache_alloc+0x38/0x1b0
+>>> [60919.552444]  sock_queue_rcv_skb+0x17/0x30
+>>> [60919.562477]  raw_rcv+0x110/0x190 [can_raw]
+>>> [60919.572539]  can_rcv_filter+0xbc/0x1b0 [can]
+>>> [60919.582173]  can_receive+0x6b/0xb0 [can]
+>>> [60919.591595]  can_rcv+0x31/0x70 [can]
+>>> [60919.600783]  __netif_receive_skb_one_core+0x5a/0x80
+>>> [60919.609864]  process_backlog+0x9b/0x150
+>>> [60919.618691]  net_rx_action+0x156/0x400
+>>> [60919.627310]  ? sched_clock_cpu+0xc/0xa0
+>>> [60919.635714]  __do_softirq+0xe8/0x2e9
+>>> [60919.644161]  do_softirq_own_stack+0x2a/0x40
+>>> [60919.652154]  </IRQ>
+>>> [60919.659899]  do_softirq.part.17+0x4f/0x60
+>>> [60919.667475]  __local_bh_enable_ip+0x60/0x70
+>>> [60919.675089]  __dev_queue_xmit+0x539/0x920
+>>> [60919.682267]  ? finish_wait+0x80/0x80
+>>> [60919.689218]  ? finish_wait+0x80/0x80
+>>> [60919.695886]  ? sock_alloc_send_pskb+0x211/0x230
+>>> [60919.702395]  ? can_send+0xe5/0x1f0 [can]
+>>> [60919.708882]  can_send+0xe5/0x1f0 [can]
+>>> [60919.715037]  raw_sendmsg+0x16d/0x268 [can_raw]
+>>>
+>>> It's because raw_setsockopt() concurrently with
+>>> unregister_netdevice_many(). Concurrent scenario as following.
+>>>
+>>>     cpu0                        cpu1
+>>> raw_bind
+>>> raw_setsockopt                    unregister_netdevice_many
+>>>                         unlist_netdevice
+>>> dev_get_by_index                raw_notifier
+>>> raw_enable_filters                ......
+>>> can_rx_register
+>>> can_rcv_list_find(..., net->can.rx_alldev_list)
+>>>
+>>> ......
+>>>
+>>> sock_close
+>>> raw_release(sock_a)
+>>>
+>>> ......
+>>>
+>>> can_receive
+>>> can_rcv_filter(net->can.rx_alldev_list, ...)
+>>> raw_rcv(skb, sock_a)
+>>> BUG
+>>>
+>>> After unlist_netdevice(), dev_get_by_index() return NULL in
+>>> raw_setsockopt(). Function raw_enable_filters() will add sock
+>>> and can_filter to net->can.rx_alldev_list. Then the sock is closed.
+>>> Followed by, we sock_sendmsg() to a new vcan device use the same
+>>> can_filter. Protocol stack match the old receiver whose sock has
+>>> been released on net->can.rx_alldev_list in can_rcv_filter().
+>>> Function raw_rcv() uses the freed sock. UAF BUG is triggered.
+>>>
+>>> We can find that the key issue is that net_device has not been
+>>> protected in raw_setsockopt(). Use rtnl_lock to protect net_device
+>>> in raw_setsockopt().
+>>>
+>>> Fixes: c18ce101f2e4 ("[CAN]: Add raw protocol")
+>>> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+>>> ---
+>>>   net/can/raw.c | 4 ++++
+>>>   1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/net/can/raw.c b/net/can/raw.c
+>>> index ed4fcb7ab0c3..a63e9915c66a 100644
+>>> --- a/net/can/raw.c
+>>> +++ b/net/can/raw.c
+>>> @@ -546,6 +546,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>>>                   return -EFAULT;
+>>>           }
+>>>   +        rtnl_lock();
+>>>           lock_sock(sk);
+>>>             if (ro->bound && ro->ifindex)
+>>> @@ -588,6 +589,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>>>               dev_put(dev);
+>>>             release_sock(sk);
+>>> +        rtnl_unlock();
+>>>             break;
+>>>   @@ -600,6 +602,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>>>             err_mask &= CAN_ERR_MASK;
+>>>   +        rtnl_lock();
+>>>           lock_sock(sk);
+>>>             if (ro->bound && ro->ifindex)
+>>> @@ -627,6 +630,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>>>               dev_put(dev);
+>>>             release_sock(sk);
+>>> +        rtnl_unlock();
+>>>             break;
+>>>   -- 
+>>> 2.25.1
+>>>
+>>
+>>
+>> <formletter>
+>>
+>> This is not the correct way to submit patches for inclusion in the
+>> stable kernel tree.  Please read:
+>>      https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+>> for how to do this properly.
+>>
+>> </formletter>
+>>
+> .
