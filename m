@@ -2,203 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512803D17CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA1B3D17CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhGUTes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:34:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51130 "EHLO
+        id S232440AbhGUTex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhGUTej (ORCPT
+        with ESMTP id S229911AbhGUTep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:34:39 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF68C061575;
-        Wed, 21 Jul 2021 13:15:14 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id k4-20020a17090a5144b02901731c776526so579977pjm.4;
-        Wed, 21 Jul 2021 13:15:14 -0700 (PDT)
+        Wed, 21 Jul 2021 15:34:45 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE62C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:15:22 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id jx7-20020a17090b46c7b02901757deaf2c8so2025625pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:15:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SOGnEDYj6+aPEFG0m6p/HdJZ6lLy+2oB11LH/GMIPe8=;
-        b=DQfgQO3uCJmeqfPd4GrrnMGsak6ZUiMipZ5qwGZtq+Y4GnbN+3ZveORbh7uh+P7+E5
-         Ku/Q0UMDjt7U15df32VENimOMh3ZwtrJcN0sYnZvDr+UbOp39zxNBXTzGgEeIORNtAXY
-         1Ye1OkKig6CHdJD/D5zeG4cOXQodWG4c90noX+n+xKnNY3so0BtSPU6o8pWYlVHiN3B3
-         ENX5NV2ASXhgf6aPSywQx8ik2OzP6OW+ni11VnAaLtdMavEltJs0/pz1h1E2SViLf8SV
-         uxLJfKNjZM7W0PMTRmpnPtaH3PSFofI4UyzIRQwKlnFTHOvaN/+kU7pndu/ledNmiCC3
-         GZGA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JYgF6/pkTp1ByHMaAngGJCR/bmJodLde5csRbzkM0r4=;
+        b=UhVUzEOtC4uWKpgp+8WrUnRj1KkG0NU0qXSw6K31wuPNQzTvnMNYXNk0eEmIJ/deHp
+         4urTjpJN9QlonhLvFzYlpUnuaGRNEo+n8pboDfPEBiftxqMsxcSi9fVEIq95RLJ4G1C5
+         epEUNX99hjz9o/cShG6PGS+S/7maU+ahD19VoTNjj9dlslgE/D3EzMiMs21uwSzAIjt+
+         6lsdpmyaBa04q38/Faqo8JjVQP6rzU+ED4+vprLPalQdgDC/HYqfMyRd5NW9hxUEdkTZ
+         Tky/uifJKxgKmBQfc46OSY7qMfNDkxQJ/Jz78Z2rYwL7c8D3jJXBrrRWMuAjkEO6jZIo
+         3NLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SOGnEDYj6+aPEFG0m6p/HdJZ6lLy+2oB11LH/GMIPe8=;
-        b=U7MyZGcKOsr/FTrVDzvkIku2RCnfehlz9zRML6VGeJPc0mNolX+dpJCwLtkuEGZRXv
-         4FwdjuwVfcVALIgJe+cgDN9l6BtSpx+jk2+E2ma0D6Qq81XqQRemluoK8hSXgdExYc0I
-         GUzx63VjeH4wFhg/o7HW79OBV765KLyLKQfKnV540iZoo95loijPP972OYLp1mHdoUGA
-         MxT0/Mlhgab/z5xMMpuVPJTwKJjpJVLAbI+gF4x7PyLNej2hJwc2kAmO5Hwxh8Ai4QYy
-         pSVl7oMterHS0S59l0AUSvSoSPfBNf1VJ7jwH44MOveA9HsCFBt0MyQhCffQdBPRvxYn
-         zJZA==
-X-Gm-Message-State: AOAM530gK3pgkSnG9aEu+9JEImScTh1akb8YThC68WoC7+cIJVz/x/Ub
-        JsxhnwdCr1Im7r3s5q4tUpywNgQKa8Btu8h29dQ=
-X-Google-Smtp-Source: ABdhPJx640ylm2KAYp8SewF8Z1tD2mQcn3QMu2iUcvhaFtOAx0ZMixA4m1wVyyq0Dg6aSdjc6BVMPAJP4hkVR2M1HcU=
-X-Received: by 2002:a63:58e:: with SMTP id 136mr6723399pgf.37.1626898513639;
- Wed, 21 Jul 2021 13:15:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210521221211.29077-1-yu-cheng.yu@intel.com> <20210521221211.29077-25-yu-cheng.yu@intel.com>
- <YPhkIHJ0guc4UNoO@AUS-LX-JohALLEN.amd.com>
-In-Reply-To: <YPhkIHJ0guc4UNoO@AUS-LX-JohALLEN.amd.com>
-From:   "H.J. Lu" <hjl.tools@gmail.com>
-Date:   Wed, 21 Jul 2021 13:14:37 -0700
-Message-ID: <CAMe9rOqwe8Mr2pkf0yopWj_F7yZLj9_nmz97+AmFkkmd2U=-fg@mail.gmail.com>
-Subject: Re: [PATCH v27 24/31] x86/cet/shstk: Handle thread shadow stack
-To:     John Allen <john.allen@amd.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JYgF6/pkTp1ByHMaAngGJCR/bmJodLde5csRbzkM0r4=;
+        b=XDH4ar0pQrBe0NnTJMEGFp2Sgwql1yP6FtK9bDrVxjmn7f77TjQKOQrLKN7SGeZRrY
+         UMmR95hOp1FMwmNoZuZ/V9NUYGlE4pwPBCSd89/5KvcE9GrYFq3bCi/z+itx6ubLBf7z
+         fDgGv1oGqfSDhsIkkfmKQ0g4k2wnspBbLwBoHMADqOp1edyhGas8F5ei3IDumA1dsnUU
+         atyS39i2saVErPOOmOK6LxDJUe+TblyPB+oNG9gXuhqLUuBX0nDNDYPduqhRbdKYObJr
+         80+ww6f5eIknbfVBqm81SQ3sNWg4bWQt4zjzqiX+UA99c83ZvO1ql3xpjp9HxaW12NaX
+         CY8w==
+X-Gm-Message-State: AOAM531bMKlW9enOrfTdZh6ecQuqgHMt0X2jtGVC6i2xnH2ospZdhjUt
+        XuQk6cpdnTs7ZlgkJzfs1IErCg==
+X-Google-Smtp-Source: ABdhPJwl1I+ugWhiFqcmskmLa+S1KfP1gCUBBWpNkdILi0W0UrSnBIhERqyC8NYVuMxc+aNo5sruIA==
+X-Received: by 2002:a05:6a00:d53:b029:32a:2db6:1be3 with SMTP id n19-20020a056a000d53b029032a2db61be3mr37731045pfv.71.1626898521394;
+        Wed, 21 Jul 2021 13:15:21 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id q18sm27746006pfj.178.2021.07.21.13.15.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 13:15:20 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 20:15:16 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
         Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 37/40] KVM: SVM: Add support to handle the
+ RMP nested page fault
+Message-ID: <YPiAVEuAuDS3neyx@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-38-brijesh.singh@amd.com>
+ <YPYUe8hAz5/c7IW9@google.com>
+ <bff43050-aed7-011c-89e5-9899bd1df414@amd.com>
+ <YPdOxrIA6o3uymq2@google.com>
+ <03f42d61-fa32-38d0-7e14-17ee6f1d7dad@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <03f42d61-fa32-38d0-7e14-17ee6f1d7dad@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 11:15 AM John Allen <john.allen@amd.com> wrote:
->
-> On Fri, May 21, 2021 at 03:12:04PM -0700, Yu-cheng Yu wrote:
-> > diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
-> > index 5ea2b494e9f9..8e5f772181b9 100644
-> > --- a/arch/x86/kernel/shstk.c
-> > +++ b/arch/x86/kernel/shstk.c
-> > @@ -71,6 +71,53 @@ int shstk_setup(void)
-> >       return 0;
-> >  }
+On Tue, Jul 20, 2021, Brijesh Singh wrote:
+> 
+> On 7/20/21 5:31 PM, Sean Christopherson wrote:
+> ...
+> >> This is a good question, the GHCB spec does not enforce that a guest *must*
+> >> use page state. If the page state changes is not done by the guest then it
+> >> will cause #NPF and its up to the hypervisor to decide on what it wants to
+> >> do.
+> > Drat.  Is there any hope of pushing through a GHCB change to require the guest
+> > to use PSC?
+> 
+> Well, I am not sure if we can push it through GHCB. Other hypervisor
+> also need to agree to it. We need to define them some architectural way
+> for hypervisor to detect the violation and notify guest about it.
+
+And other guest's, too :-/
+
+> >>> It would simplify KVM (albeit not much of a simplificiation) and would also
+> >>> make debugging easier since transitions would require an explicit guest
+> >>> request and guest bugs would result in errors instead of random
+> >>> corruption/weirdness.
+> >> I am good with enforcing this from the KVM. But the question is, what fault
+> >> we should inject in the guest when KVM detects that guest has issued the
+> >> page state change.
+> > Injecting a fault, at least from KVM, isn't an option since there's no architectural
+> > behavior we can leverage.  E.g. a guest that isn't enlightened enough to properly
+> > use PSC isn't going to do anything useful with a #MC or #VC.
 > >
-> > +int shstk_alloc_thread_stack(struct task_struct *tsk, unsigned long clone_flags,
-> > +                          unsigned long stack_size)
-> > +{
-> > +     struct thread_shstk *shstk = &tsk->thread.shstk;
-> > +     struct cet_user_state *state;
-> > +     unsigned long addr;
-> > +
-> > +     if (!stack_size)
-> > +             return -EINVAL;
->
-> I've been doing some light testing on AMD hardware and I've found that
-> this version of the patchset doesn't boot for me. It appears that when
-> systemd processes start spawning, they hit the above case, return
-> -EINVAL, and the fork fails. In these cases, copy_thread has been passed
-> 0 for both sp and stack_size.
->
-> For previous versions of the patchset, I can still boot. When the
-> stack_size check was last, the function would always return before
-> completing the check, hitting one of the two cases below.
->
-> At the very least, it would seem that on some systems, it isn't valid to
-> rely on the stack_size passed from clone3, though I'm unsure what the
-> correct behavior should be here. If the passed stack_size == 0 and sp ==
-> 0, is this a case where we want to alloc a shadow stack for this thread
-> with some capped size? Alternatively, is this a case that isn't valid to
-> alloc a shadow stack and we should simply return 0 instead of -EINVAL?
->
-> I'm running Fedora 34 which satisfies the required versions of gcc,
-> binutils, and glibc.
->
-> Please let me know if there is any additional information I can provide.
-
-FWIW, I have been maintaining stable CET kernels at:
-
-https://github.com/hjl-tools/linux/
-
-The current CET kernel is on hjl/cet/linux-5.13.y branch.
-
-> Thanks,
-> John
->
-> > +
-> > +     if (!shstk->size)
-> > +             return 0;
-> > +
-> > +     /*
-> > +      * For CLONE_VM, except vfork, the child needs a separate shadow
-> > +      * stack.
-> > +      */
-> > +     if ((clone_flags & (CLONE_VFORK | CLONE_VM)) != CLONE_VM)
-> > +             return 0;
-> > +
-> > +     state = get_xsave_addr(&tsk->thread.fpu.state.xsave, XFEATURE_CET_USER);
-> > +     if (!state)
-> > +             return -EINVAL;
-> > +
-> > +     /*
-> > +      * Compat-mode pthreads share a limited address space.
-> > +      * If each function call takes an average of four slots
-> > +      * stack space, allocate 1/4 of stack size for shadow stack.
-> > +      */
-> > +     if (in_compat_syscall())
-> > +             stack_size /= 4;
-> > +
-> > +     stack_size = round_up(stack_size, PAGE_SIZE);
-> > +     addr = alloc_shstk(stack_size);
-> > +     if (IS_ERR_VALUE(addr)) {
-> > +             shstk->base = 0;
-> > +             shstk->size = 0;
-> > +             return PTR_ERR((void *)addr);
-> > +     }
-> > +
-> > +     fpu__prepare_write(&tsk->thread.fpu);
-> > +     state->user_ssp = (u64)(addr + stack_size);
-> > +     shstk->base = addr;
-> > +     shstk->size = stack_size;
-> > +     return 0;
-> > +}
-> > +
-> >  void shstk_free(struct task_struct *tsk)
-> >  {
-> >       struct thread_shstk *shstk = &tsk->thread.shstk;
-> > @@ -80,7 +127,13 @@ void shstk_free(struct task_struct *tsk)
-> >           !shstk->base)
-> >               return;
+> > Sadly, as is I think our only options are to either automatically convert RMP
+> > entries as need, or to punt the exit to userspace.  Maybe we could do both, e.g.
+> > have a module param to control the behavior?  The problem with punting to userspace
+> > is that KVM would also need a way for userspace to fix the issue, otherwise we're
+> > just taking longer to kill the guest :-/
 > >
-> > -     if (!tsk->mm)
-> > +     /*
-> > +      * When fork() with CLONE_VM fails, the child (tsk) already has a
-> > +      * shadow stack allocated, and exit_thread() calls this function to
-> > +      * free it.  In this case the parent (current) and the child share
-> > +      * the same mm struct.
-> > +      */
-> > +     if (!tsk->mm || tsk->mm != current->mm)
-> >               return;
-> >
-> >       while (1) {
+> I think we should automatically convert the RMP entries at time, its
+> possible that non Linux guest may access the page without going through
+> the PSC.
 
+Agreed.  I don't love that KVM will disallow automatic conversions when the host
+is accessing guest memory, but not when the guest is accessing memory.  On the
+other hand, auto-converting when accessing from the host is far, far worse.
 
-
--- 
-H.J.
+And FWIW, IIRC this is also aligns with the expected/proposed TDX behavior, so
+that's a plus.
