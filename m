@@ -2,205 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB6E3D1799
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7EF3D17A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240395AbhGUT3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:29:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240379AbhGUT3F (ORCPT
+        id S231727AbhGUTco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:32:44 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39506 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229742AbhGUTch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:29:05 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82834C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:09:40 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id j1-20020a0568302701b02904d1f8b9db81so3174141otu.12
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ryhmjqV2eKLpoirk/rnB/jmjc8Sw5eUN/kn6KkHMSG8=;
-        b=f0V8sZc4aqzvTzm9SSyhFzpvTL6ZdbVxPHsnzMtxQXlcraRxoiKzAZYUxg1zQwSw0L
-         0t4aBZCwG3QntHJ9LRlAimJWvfxMAU79KZMV6rNopHZb+wI3BjQxhxb6zZ9MbyMmLz/K
-         5puTHinQ8S3T01ksLF63skMaFBcnizWmH9zM0DUWtkZ/I5qRcjVXZQfuFGP1nr9I4kCk
-         h9l9QMx8FExuaYAHmgnlfrOxarqJ1RNdIjLP01lXcV3Qherns4JHvRqCam3cwqEk5JSf
-         wLuGPWm+XbxRoEEVkPbJb5r0jR6y8KTtPriJAR6NomLoou0BKAiRUdAqCS40y9o7qSwi
-         L2Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ryhmjqV2eKLpoirk/rnB/jmjc8Sw5eUN/kn6KkHMSG8=;
-        b=r/8ye1x4QDnqJeM7ssD0hPzB9wb4FhPIoVO5tbylUFQUqeUyHObHpOnxCrObb41/P2
-         oRBtbPuJ5Q9wsWeX2VsDtkrAkhvkWoTvqVQ3ck4Ae7/67gyzamdzWb9un/8b9Gco5/LJ
-         kGU7/iNJl5/8GBP3afGWCPFyYv9ln3cdxiket/rQd5puEZMzjjRVUKZwRPSGeEG1zHqh
-         HCD56wdQyeZfCjnuvIh/En5+8MkatYTf5sH60xhWTGN4UqpzWIylu/Cnz6Dz/4Ubyjip
-         h5I1dOQC5CoL3MyRX1bVVKO7r1NsppJUtJV6qtPBRqs2qE+s0hcwUbKyGAQIFPr5m+ZF
-         pRDg==
-X-Gm-Message-State: AOAM533Tk2yojJldpW2CzNHrA3f9UZyvfxKWWmh63wzaC7kj5TTtfeic
-        fLVi+qZbEf1NHGO0Iq5w8vlyrA==
-X-Google-Smtp-Source: ABdhPJx/FxM5/zumxzNaWfIehVZW2nKUlw7DpxOp2p3sgrCBOL4NDneF4Gn+AdrfqtxLQvtaMfgcJw==
-X-Received: by 2002:a9d:5e15:: with SMTP id d21mr28331811oti.280.1626898179791;
-        Wed, 21 Jul 2021 13:09:39 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o26sm4900456otk.77.2021.07.21.13.09.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 13:09:39 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 15:09:37 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        John Stultz <john.stultz@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Amit Pundir <amit.pundir@linaro.org>
-Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-Message-ID: <YPh/AS5svBk+gddY@yoga>
-References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
- <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
- <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
- <20210714124807.o22mottsrg3tv6nt@mobilestation>
- <YPfPDqJhfzbvDLvB@kroah.com>
- <20210721100220.ddfxwugivsndsedv@mobilestation>
- <YPf29+ewbrYgHxRP@kroah.com>
+        Wed, 21 Jul 2021 15:32:37 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 565512258A;
+        Wed, 21 Jul 2021 20:13:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626898392;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DnugCTEBu/3zdvXcY55icg8lMm81MI8TLb/CodM5bQ4=;
+        b=Q3dgsvHCULcJ/SqVmQxhIrkMuUCDzdLhFmrnDGcZNqkr1xgEy4QK7yHLVfABgJtYUUer54
+        jz62fd45a7ax5Z7G87TQRg350dZfoMia9EFD5kHKVfBu/aJWy21zRZaCiyVGX21E84WorC
+        ph13hTPc6uWv72rfmRD2i0p/A5PundI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626898392;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DnugCTEBu/3zdvXcY55icg8lMm81MI8TLb/CodM5bQ4=;
+        b=i77W9cAZ6xZdrQcCdPf5TLuSIGRu7hT3cO+1QLjU8gPMujSJyBm94BUhf3i5V0qKexTICD
+        N/XC57je7LvTQHAw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 46C59A3B85;
+        Wed, 21 Jul 2021 20:13:12 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id CA8AEDA701; Wed, 21 Jul 2021 22:10:29 +0200 (CEST)
+Date:   Wed, 21 Jul 2021 22:10:29 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH] lib/string: Bring optimized memcmp from glibc
+Message-ID: <20210721201029.GQ19710@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>
+References: <20210721135926.602840-1-nborisov@suse.com>
+ <CAHk-=whqJKKc9wUacLEkvTzXYfYOUDt=kHKX6Fa8Kb4kQftbbQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YPf29+ewbrYgHxRP@kroah.com>
+In-Reply-To: <CAHk-=whqJKKc9wUacLEkvTzXYfYOUDt=kHKX6Fa8Kb4kQftbbQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 21 Jul 05:29 CDT 2021, Greg Kroah-Hartman wrote:
-
-> On Wed, Jul 21, 2021 at 01:02:20PM +0300, Serge Semin wrote:
-> > Hi Greg,
-> > @Krzysztof, @Rob, please join the discussion so to finally get done
-> > with the concerned issue.
-> > 
-> > On Wed, Jul 21, 2021 at 09:38:54AM +0200, Greg Kroah-Hartman wrote:
-> > > On Wed, Jul 14, 2021 at 03:48:07PM +0300, Serge Semin wrote:
-> > > > Hello John,
-> > > > 
-> > > > On Tue, Jul 13, 2021 at 05:07:00PM -0700, John Stultz wrote:
-> > > > > On Tue, Oct 20, 2020 at 5:10 AM Serge Semin
-> > > > > <Sergey.Semin@baikalelectronics.ru> wrote:
-> > > > > >
-> > > > > > In accordance with the DWC USB3 bindings the corresponding node
-> > > > > > name is suppose to comply with the Generic USB HCD DT schema, which
-> > > > > > requires the USB nodes to have the name acceptable by the regexp:
-> > > > > > "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-> > > > > > named.
-> > > > > >
-> > > > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > > > > 
-> > > > 
-> > > > > I know folks like to ignore this, but this patch breaks AOSP on db845c. :(
-> > > > 
-> > > > Sorry to hear that. Alas there is no much can be done about it.
-> > > 
-> > > Yes there is, we can revert the change.  We do not break existing
-> > > configurations, sorry.
-> > 
-> > By reverting this patch we'll get back to the broken dt-bindings
-> > since it won't comply to the current USB DT-nodes requirements
-> > which at this state well describe the latest DT spec:
-> > https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
-> > Thus the dtbs_check will fail for these nodes.
-> > 
-> > Originally this whole patchset was connected with finally getting the
-> > DT-node names in order to comply with the standard requirement and it
-> > was successful mostly except a few patches which still haven't been
-> > merged in.
-> > 
-> > Anyway @Krzysztof has already responded to the complain regarding this
-> > issue here:
-> > https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
-> > but noone cared to respond on his reasonable questions in order to
-> > get to a suitable solution for everyone. Instead we are
-> > getting another email with the same request to revert the changes.
-> > Here is the quote from the Krzysztof email so we could continue the
-> > discussion:
-> > 
-> > On Mon, 21 Dec 2020 13:04:27 -0800 (PST), Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > > On Mon, Dec 21, 2020 at 12:24:11PM -0800, John Stultz wrote:
-> > > > On Sat, Dec 19, 2020 at 3:06 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > > > > ...
-> > > > >
-> > > > > The node names are not part of an ABI, are they? I expect only
-> > > > > compatibles and properties to be stable. If user-space looks for
-> > > > > something by name, it's a user-space's mistake.  Not mentioning that you
-> > > > > also look for specific address... Imagine remapping of addresses with
-> > > > > ranges (for whatever reason) - AOSP also would be broken? Addresses are
-> > > > > definitely not an ABI.
-> > > > 
-> > > > Though that is how it's exported through sysfs.
-> > > 
-> > > The ABI is the format of sysfs file for example in /sys/devices. However
-> > > the ABI is not the exact address or node name of each device.
-> > > 
-> > > > In AOSP it is then used to setup the configfs gadget by writing that
-> > > > value into /config/usb_gadget/g1/UDC.
-> > > > 
-> > > > Given there may be multiple controllers on a device, or even if its
-> > > > just one and the dummy hcd driver is enabled, I'm not sure how folks
-> > > > reference the "right" one without the node name?
-> > > 
-> > > I think it is the same type of problem as for all other subsystems, e.g.
-> > > mmc, hwmon/iio.  They usually solve it either with aliases or with
-> > > special property with the name/label.
-> > > 
-> > > > I understand the fuzziness with sysfs ABI, and I get that having
-> > > > consistent naming is important, but like the eth0 -> enp3s0 changes,
-> > > > it seems like this is going to break things.
-> > > 
-> > > One could argue whether interface name is or is not ABI. But please tell
-> > > me how the address of a device in one's representation (for example DT)
-> > > is a part of a stable interface?
-> > > 
-> > > > Greg? Is there some better way AOSP should be doing this?
-> > > 
-> > > If you need to find specific device, maybe go through the given bus and
-> > > check compatibles?
-> > > 
-> > > Best regards,
-> > > Krzysztof
-> > 
-> > So the main question is how is the DT-node really connected with ABI
-> > and is supposed to be stable in that concern?
-> > 
-> > As I see it even if it affects the configfs node name, then we may
-> > either need to break that connection and somehow deliver DT-node-name
-> > independent interface to the user-space or we have no choice but to
-> > export the node with an updated name and ask of user-space to deal
-> > with it. In both suggested cases the DT-node name will still conform
-> > to the USB-node name DT spec. Currently we are at the second one.
+On Wed, Jul 21, 2021 at 11:00:59AM -0700, Linus Torvalds wrote:
+> On Wed, Jul 21, 2021 at 6:59 AM Nikolay Borisov <nborisov@suse.com> wrote:
+> >
+> > This is glibc's memcmp version. The upside is that for architectures
+> > which don't have an optimized version the kernel can provide some
+> > solace in the form of a generic, word-sized optimized memcmp. I tested
+> > this with a heavy IOCTL_FIDEDUPERANGE(2) workload and here are the
+> > results I got:
 > 
-> I really do not care what you all decide on, but you CAN NOT break
-> existing working systems, sorry.  That is why I have reverted this
-> change in my tree and will send it to Linus soon.
+> Hmm. I suspect the usual kernel use of memcmp() is _very_ skewed to
+> very small memcmp calls, and I don't think I've ever seen that
+> (horribly bad) byte-wise default memcmp in most profiles.
 > 
+> I suspect that FIDEDUPERANGE thing is most likely a very special case.
+> 
+> So I don't think you're wrong to look at this, but I think you've gone
+> from our old "spend no effort at all" to "look at one special case".
 
-Which tree did you revert this in? 5.13.stable?)
+The memcmp in question is fs/remap_range.c:vfs_dedupe_file_range_compare
 
-I'm onboard with us reverting this, but for any 5.14-rc and 5.15 this
-will conflict badly with the qcom tree, so I much rather take the revert
-in my tree - than have Linus run into this mess down the road.
+   253                  src_addr = kmap_atomic(src_page);
+   254                  dest_addr = kmap_atomic(dest_page);
+   ...
+   259                  if (memcmp(src_addr + src_poff, dest_addr + dest_poff, cmp_len))
+   260                          same = false;
+   261  
+   262                  kunmap_atomic(dest_addr);
+   263                  kunmap_atomic(src_addr);
 
-For stable, I don't mind if you merge something...Perhaps you can point
-me to your revert and I can pick it up in my tree?
-
-Regards,
-Bjorn
+so adding a memcmp_large that compares by native words or u64 could be
+the best option. There's some alignment of the starting offset and
+length but that can be special cased and fall back to standard memcmp.
+The dedupe ioctl is typically called on ranges spanning many pages so
+the overhead of the non-paged portions should be insignificant.
