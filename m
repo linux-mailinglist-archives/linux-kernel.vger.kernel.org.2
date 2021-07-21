@@ -2,136 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756243D113B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DB93D1144
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbhGUNpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239276AbhGUNkY (ORCPT
+        id S239308AbhGUNpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:45:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31359 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239331AbhGUNmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:40:24 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12576C0613CF;
-        Wed, 21 Jul 2021 07:21:00 -0700 (PDT)
-Received: from cap.home.8bytes.org (p4ff2b1ea.dip0.t-ipconnect.de [79.242.177.234])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Wed, 21 Jul 2021 09:42:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626877336;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qxdAEr2YRqU2Aqy0XvfKttwJTSza/9Yda5xfUDXe0eg=;
+        b=fFBZcncjK+39eEXGb2OLY+8arbmJzfUnBp7H1f6NDmxoLpEOYvl35UQWHd1gI1LGq/1guX
+        rJaxFCTYr/7A5N3yia9HgbxfL//ryd0BU64afqzPN6MNbRe0SjiOpf9IAarVQPHe8aiII1
+        b3NZ/nMcmWQqzhcoHjRdYjf7jeeMN1o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-xax8cnLwMW-3dri9F1qkGw-1; Wed, 21 Jul 2021 10:22:13 -0400
+X-MC-Unique: xax8cnLwMW-3dri9F1qkGw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 9990CC5E;
-        Wed, 21 Jul 2021 16:20:34 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org, Eric Biederman <ebiederm@xmission.com>
-Cc:     kexec@lists.infradead.org, Joerg Roedel <jroedel@suse.de>,
-        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joerg Roedel <joro@8bytes.org>, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH 12/12] x86/sev: Support kexec under SEV-ES with AP Jump Table blob
-Date:   Wed, 21 Jul 2021 16:20:15 +0200
-Message-Id: <20210721142015.1401-13-joro@8bytes.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210721142015.1401-1-joro@8bytes.org>
-References: <20210721142015.1401-1-joro@8bytes.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1ACCE3E743;
+        Wed, 21 Jul 2021 14:22:11 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-62.rdu2.redhat.com [10.10.112.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A1F715D9DD;
+        Wed, 21 Jul 2021 14:22:07 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Tom Rix <trix@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        "Alexey Dobriyan (SK hynix)" <adobriyan@gmail.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] afs: Miscellaneous fixes
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <281334.1626877326.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 21 Jul 2021 15:22:06 +0100
+Message-ID: <281335.1626877326@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+Hi Linus,
 
-When the AP Jump Table blob is installed the kernel can hand over the
-APs from the old to the new kernel. Enable kexec when the AP Jump
-Table blob has been installed.
+Can you pull these miscellaneous fixes for afs please?
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+ (1) Fix a tracepoint that causes one of the tracing subsystem query files
+     to crash if the module is loaded[1].
+
+ (2) Fix afs_writepages() to take account of whether the storage rpc
+     actually succeeded when updating the cyclic writeback counter[2].
+
+ (3) Fix some error code propagation/handling[3].
+
+ (4) Fix place where afs_writepages() was setting writeback_index to a fil=
+e
+     position rather than a page index[4].
+
+Changes
+=3D=3D=3D=3D=3D=3D=3D
+
+ver #2:
+   - Fix an additional case of afs_writepages() setting writeback_index on
+     error[4].
+   - Fix afs_writepages() setting writeback_index to a file pos[4].
+
+Thanks,
+David
+
+Link: https://lore.kernel.org/r/162430903582.2896199.6098150063997983353.s=
+tgit@warthog.procyon.org.uk/ [1]
+Link: https://lore.kernel.org/r/20210430155031.3287870-1-trix@redhat.com [=
+2]
+Link: https://lore.kernel.org/r/1619691492-83866-1-git-send-email-jiapeng.=
+chong@linux.alibaba.com [3]
+Link: https://lore.kernel.org/r/CAB9dFdvHsLsw7CMnB+4cgciWDSqVjuij4mH3TaXnH=
+QB8sz5rHw@mail.gmail.com/ [4]
+Link: https://lore.kernel.org/r/162609463116.3133237.11899334298425929820.=
+stgit@warthog.procyon.org.uk/ # v1
+Link: https://lore.kernel.org/r/162610726011.3408253.2771348573083023654.s=
+tgit@warthog.procyon.org.uk/ # v2
+
 ---
- arch/x86/include/asm/sev.h         |  2 ++
- arch/x86/kernel/machine_kexec_64.c |  6 +++++-
- arch/x86/kernel/sev.c              | 12 ++++++++++++
- 3 files changed, 19 insertions(+), 1 deletion(-)
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d=
+3:
 
-diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-index cd14b6e10f12..61910caf2a0d 100644
---- a/arch/x86/include/asm/sev.h
-+++ b/arch/x86/include/asm/sev.h
-@@ -87,6 +87,7 @@ static __always_inline void sev_es_stop_this_cpu(void)
- 	if (static_branch_unlikely(&sev_es_enable_key))
- 		__sev_es_stop_this_cpu();
- }
-+bool sev_kexec_supported(void);
- #else
- static inline void sev_es_ist_enter(struct pt_regs *regs) { }
- static inline void sev_es_ist_exit(void) { }
-@@ -94,6 +95,7 @@ static inline int sev_es_setup_ap_jump_table(struct real_mode_header *rmh) { ret
- static inline void sev_es_nmi_complete(void) { }
- static inline int sev_es_efi_map_ghcbs(pgd_t *pgd) { return 0; }
- static inline void sev_es_stop_this_cpu(void) { }
-+static bool sev_kexec_supported(void) { return true; }
- #endif
- 
- #endif
-diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
-index a8e16a411b40..06ff51b2b3fb 100644
---- a/arch/x86/kernel/machine_kexec_64.c
-+++ b/arch/x86/kernel/machine_kexec_64.c
-@@ -26,6 +26,7 @@
- #include <asm/kexec-bzimage64.h>
- #include <asm/setup.h>
- #include <asm/set_memory.h>
-+#include <asm/sev.h>
- 
- #ifdef CONFIG_ACPI
- /*
-@@ -597,5 +598,8 @@ void arch_kexec_pre_free_pages(void *vaddr, unsigned int pages)
-  */
- bool arch_kexec_supported(void)
- {
--	return !sev_es_active();
-+	if (!sev_kexec_supported())
-+		return false;
-+
-+	return true;
- }
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 5d4b1d317317..8c7f1ad69185 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -901,6 +901,18 @@ static int __init sev_es_setup_ap_jump_table_blob(void)
- }
- core_initcall(sev_es_setup_ap_jump_table_blob);
- 
-+bool sev_kexec_supported(void)
-+{
-+	/*
-+	 * KEXEC with SEV-ES and more than one CPU is only supported
-+	 * when the AP Jump Table is installed.
-+	 */
-+	if (num_possible_cpus() > 1)
-+		return !sev_es_active() || sev_ap_jumptable_blob_installed;
-+	else
-+		return true;
-+}
-+
- static void __init alloc_runtime_data(int cpu)
- {
- 	struct sev_es_runtime_data *data;
--- 
-2.31.1
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
+/afs-fixes-20210721
+
+for you to fetch changes up to b428081282f85db8a0d4ae6206a8c39db9c8341b:
+
+  afs: Remove redundant assignment to ret (2021-07-21 15:11:22 +0100)
+
+----------------------------------------------------------------
+AFS fixes
+
+----------------------------------------------------------------
+David Howells (2):
+      afs: Fix tracepoint string placement with built-in AFS
+      afs: Fix setting of writeback_index
+
+Jiapeng Chong (1):
+      afs: Remove redundant assignment to ret
+
+Tom Rix (1):
+      afs: check function return
+
+ fs/afs/cmservice.c         | 25 +++++------------
+ fs/afs/dir.c               | 10 ++++---
+ fs/afs/write.c             | 18 ++++++++-----
+ include/trace/events/afs.h | 67 +++++++++++++++++++++++++++++++++++++++++=
++----
+ 4 files changed, 87 insertions(+), 33 deletions(-)
 
