@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B59C3D183D
+	by mail.lfdr.de (Postfix) with ESMTP id C30B33D183E
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhGUT56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233434AbhGUT6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229630AbhGUT56 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 15:57:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231989AbhGUT5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:57:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B6A76124B;
-        Wed, 21 Jul 2021 20:38:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626899901;
-        bh=GigiSkqXTDy+QkyYs7Y/oDOjKdcjT/+3+R3H9fSvMOA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VR/mXfWqTQUi9xVyVpjTWkROpuiANmjgWANZtEIAB49b2+F0aZVWKg3zczTsoWWqx
-         aXAvm0iCAR98vHKJcKVXf+qSkqLPrQRY2wbIWGUuD4j55XV79agfJjH7HwoZakR2Xa
-         JGEiK/xZ4JL8ehZ1G8ut4hFpQIP2laT97Z04uGxFhneKwaznANROIwwF0atRpWUW53
-         yVhByrde4bzO5D2ZqU14QhsJ3OWcFJI0FRxQsSdmoo1EF5M8iKm+RixpeOQVoGtGq0
-         Y0fccOyDT8pNRY6DPNBpb2qFg7X9KWJ+JH+xWFSiyFxuCIOmv6z2zLujo68YPv9CgZ
-         kWPGLUQH+TvPQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 60CFD5C0BF4; Wed, 21 Jul 2021 13:38:21 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/5] rcu: Fix macro name CONFIG_TASKS_RCU_TRACE
-Date:   Wed, 21 Jul 2021 13:38:18 -0700
-Message-Id: <20210721203818.3398345-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210721203758.GA3386731@paulmck-ThinkPad-P17-Gen-1>
-References: <20210721203758.GA3386731@paulmck-ThinkPad-P17-Gen-1>
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385E8C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:38:34 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1626899912;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kx33BaNtRMi/Cr+LubGcPaYEfYoSSN2sEnv6KnS7qMs=;
+        b=eBJOtFTXoJzBZ7w4E9OiFnqCpxQRZVLf5Vl6y40eePTheoSDa0PN+NWf7rLUnZ/9bB41z9
+        xoUPkK4DvSEyXMHukUNv7AsI5g8eN1WfOxBHz6xLoaDUzejPBdZr6kxFEzCZLY0F8RFhN9
+        rU9tX3/bayBDkRZHvb3HyVo8fKjWgmUu9s2LdGpjXuk3ataPa/hVS59ikSCdm3XUeuDDWh
+        QUnT6rGUepfx8pGF5yRJsZJEL5eYgHGiwcj0tSdObbPRCNAGkyZ/r3kvBq77teBUOCGWO1
+        JrxOA/LSmEsBd1GrNbVTzGibDMKVUPnfSOcnjfhc5rTdRuKd2uuIPeaMGHofjg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1626899912;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kx33BaNtRMi/Cr+LubGcPaYEfYoSSN2sEnv6KnS7qMs=;
+        b=TAmdBeDymkFnwWDvrbqCpYOigTJmEG3cWdnZqf3iQBAAVmUmCWVIGmpTBq2quMXBvEuMIk
+        VGCDzv1W+rYUNZDw==
+To:     Rik van Riel <riel@surriel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, kernel-team@fb.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Subject: Re: [PATCH] x86,mm: print likely CPU at segfault time
+In-Reply-To: <a9f568139f0bd82cc8460c2c4f831f03a74f2a89.camel@surriel.com>
+References: <20210719150041.3c719c94@imladris.surriel.com> <c8e023cb-6f50-36f5-65d4-c5e25b264029@intel.com> <a9f568139f0bd82cc8460c2c4f831f03a74f2a89.camel@surriel.com>
+Date:   Wed, 21 Jul 2021 22:38:32 +0200
+Message-ID: <87pmvbpflj.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+On Mon, Jul 19 2021 at 15:34, Rik van Riel wrote:
 
-This commit fixes several typos where CONFIG_TASKS_RCU_TRACE should
-instead be CONFIG_TASKS_TRACE_RCU.  Among other things, these typos
-could cause CONFIG_TASKS_TRACE_RCU_READ_MB=y kernels to suffer from
-memory-ordering bugs that could result in false-positive quiescent
-states and too-short grace periods.
+> On Mon, 2021-07-19 at 12:20 -0700, Dave Hansen wrote:
+>
+>> If it's as trivial as:
+>>=20
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0printk(KERN_CONT " on cp=
+u/core %d/%d",
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0raw_smp_processor_id(),
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0topology_core_id(raw_smp_processor_id()));
+>>=20
+>> it would be handy.=C2=A0 But, it's also not hard to look at 10 segfaults,
+>> see
+>> that they happened only on 2 CPUs and realize that hyperthreading is
+>> enabled.
+>
+> One problem with topology_core_id() is that that, on a
+> multi-socket system, the core number may not be unique.
 
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- include/linux/rcupdate.h | 2 +-
- kernel/rcu/tree_plugin.h | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+Just add topology_physical_package_id() and you have a complete picture.
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index d9680b798b211..955c82b4737c5 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -167,7 +167,7 @@ void synchronize_rcu_tasks(void);
- # define synchronize_rcu_tasks synchronize_rcu
- # endif
- 
--# ifdef CONFIG_TASKS_RCU_TRACE
-+# ifdef CONFIG_TASKS_TRACE_RCU
- # define rcu_tasks_trace_qs(t)						\
- 	do {								\
- 		if (!likely(READ_ONCE((t)->trc_reader_checked)) &&	\
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index de1dc3bb7f701..6ce104242b23d 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2982,17 +2982,17 @@ static void noinstr rcu_dynticks_task_exit(void)
- /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
- static void rcu_dynticks_task_trace_enter(void)
- {
--#ifdef CONFIG_TASKS_RCU_TRACE
-+#ifdef CONFIG_TASKS_TRACE_RCU
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
- 		current->trc_reader_special.b.need_mb = true;
--#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
-+#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
- }
- 
- /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
- static void rcu_dynticks_task_trace_exit(void)
- {
--#ifdef CONFIG_TASKS_RCU_TRACE
-+#ifdef CONFIG_TASKS_TRACE_RCU
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
- 		current->trc_reader_special.b.need_mb = false;
--#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
-+#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
- }
--- 
-2.31.1.189.g2e36527f23
+Thanks,
 
+        tglx
