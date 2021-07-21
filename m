@@ -2,72 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF7D3D19F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 00:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B957E3D19F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 00:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhGUWKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 18:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
+        id S230300AbhGUWLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 18:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbhGUWKI (ORCPT
+        with ESMTP id S230261AbhGUWK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 18:10:08 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B128C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 15:50:43 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id s2-20020a0568301e02b02904ce2c1a843eso3550884otr.13
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 15:50:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=5xM5LC3DBMWzVTMMqFAn/LJTjsxukGbXpBFfvyuIhlU=;
-        b=dDf0YyKO/nEbuOsDRdxBOgatG10uRUjazTXhhknIx+mEF54w5XR/oqiAGZY9QXe6Kc
-         7pbPMihun6D3VLm+R6e1yBYymeNrfZaZJlIY7AshNgyIqht1A+4ZDKFI/vDLdTxF14rW
-         Y2zWkYvnXzfmMi67JpO7ziqtZT7qz1Aq0qTx0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=5xM5LC3DBMWzVTMMqFAn/LJTjsxukGbXpBFfvyuIhlU=;
-        b=XD849Ygg1RkKzVFD/4gW8ngVOwu72WxE62gLuZibJiE+UBSHU3r3idkLwLRL0flEvc
-         cmZ8NRklaYah5GYngUNUWISodJ3sHy/8fbs6Cibg01KGphuYm2oBHvtpPlJIPO1OolT+
-         0ZuZcU6xSWstnsV7oLjE0RycHOfVaKgIW+O+CpMYFxdhjxM71sPjp5trmks/S0Bq+WSD
-         kVPHhERRMiJ+bT/AiTFjD910FyYyKhWGjYd1wC+SYg0Bo8ZHNr5dSLURLuSI8G1bzxuK
-         MXCDvYCOYi22GNjy/oi/Uu5Y7xPs1BH0ideGCjHzFW/z9qc+KQBcQ5ZsbCsa4OTF/6Ns
-         MweA==
-X-Gm-Message-State: AOAM532Yqxpjmp/92x7vJLvh88svE+4LDM9HkTcOjaVNC7KUf+k/p4FO
-        99qqjBqkwjAi9nt82d65G3ZOsToMcpvZQRNJ67zayg==
-X-Google-Smtp-Source: ABdhPJzVfIaBfEdnFWZgfS1UtIImHipxZJcc5EzVSfrdE7wsv99QD/sxbtvoCTbEdGJYQhN7Qq2zjvGW92OrsMAltzI=
-X-Received: by 2002:a9d:1b6e:: with SMTP id l101mr12625333otl.34.1626907842775;
- Wed, 21 Jul 2021 15:50:42 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 21 Jul 2021 22:50:42 +0000
+        Wed, 21 Jul 2021 18:10:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E945C061575;
+        Wed, 21 Jul 2021 15:51:34 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1626907888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yXIuGKgrtndxLbEbLM1La0ZRahqh+qguRksSddZBObU=;
+        b=FQhaaaHQvCqQHYzWEm7po6vb1f3efVKgampOXn8woHV3VktYXx8pJozVPE1YwnMNtvDJd8
+        7Mt/mMj9pjqF3eWQZXZJbEQDy+Ifng4b54A7Ahb1wOOVcCQQuXrDEIJ9mpRxDZKXNDW7y3
+        ic4eLTcu6Q0dLYX38ahJuJrSIV51C99m3xZmp6BXwTpMh3/v95uQZgOFFPq1j+zQTGe+x9
+        tMyjJs1D1LtjI/HvkBrTCmXYBoDleJGM41Yxoz5OIOgJwAWblz0G9KoV/Bj/c02oDZz26b
+        jZA8ynIUyOsVWf5t/8pwEnxIo0YVbW8f21zwk6x/qhUXgfcOWDHe8R3CAGnz2g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1626907888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yXIuGKgrtndxLbEbLM1La0ZRahqh+qguRksSddZBObU=;
+        b=i1kPckcGM/EskWoovmQA7XEkQKJRf2UHVEXpt4PEmU94W6iYB4E4hT4XOcobA9xy3tzJ5O
+        4KFi9hWzqHdCzhCg==
+To:     "Raj\, Ashok" <ashok.raj@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Kevin Tian <kevin.tian@intel.com>,
+        Marc Zyngier <maz@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [patch 1/8] PCI/MSI: Enable and mask MSIX early
+In-Reply-To: <20210721213813.GB676232@otc-nc-03>
+References: <20210721191126.274946280@linutronix.de> <20210721192650.106154171@linutronix.de> <20210721213813.GB676232@otc-nc-03>
+Date:   Thu, 22 Jul 2021 00:51:23 +0200
+Message-ID: <8735s7p9g4.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1626800953-613-1-git-send-email-sibis@codeaurora.org>
-References: <1626800953-613-1-git-send-email-sibis@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 21 Jul 2021 22:50:42 +0000
-Message-ID: <CAE-0n50jTvX1vVkv-UqNaX7O9AFj9J-qAiKkz7pKLf=wPcT9PA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Fixup cpufreq domain info for cpu7
-To:     Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org,
-        mka@chromium.org, tdas@codeaurora.org
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sibi Sankar (2021-07-20 10:09:13)
-> The SC7280 SoC supports a 4-Silver/3-Gold/1-Gold+ configuration and hence
-> the cpu7 node should point to cpufreq domain 2 instead.
->
-> Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> Cc: stable@vger.kernel.org
-> ---
+On Wed, Jul 21 2021 at 14:38, Ashok Raj wrote:
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> On Wed, Jul 21, 2021 at 09:11:27PM +0200, Thomas Gleixner wrote:
+>> The ordering of MSI-X enable in hardware is disfunctional:
+>> 
+>>  1) MSI-X is disabled in the control register
+>>  2) Various setup functions
+>>  3) pci_msi_setup_msi_irqs() is invoked which ends up accessing
+>>     the MSI-X table entries
+>>  4) MSI-X is enabled and masked in the control register with the
+>>     comment that enabling is required for some hardware to access
+>>     the MSI-X table
+>> 
+>> #4 obviously contradicts #3. The history of this is an issue with the NIU
+>> hardware. When #4 was introduced the table access actually happened in
+>> msix_program_entries() which was invoked after enabling and masking MSI-X.
+>> 
+>> This was changed in commit d71d6432e105 ("PCI/MSI: Kill redundant call of
+>> irq_set_msi_desc() for MSI-X interrupts") which removed the table write
+>> from msix_program_entries().
+>> 
+>> Interestingly enough nobody noticed and either NIU still works or it did
+>> not get any testing with a kernel 3.19 or later.
+>> 
+>> Nevertheless this is inconsistent and there is no reason why MSI-X can't be
+>> enabled and masked in the control register early on, i.e. move #4 above to
+>
+> Does the above comment also apply to legacy MSI when it support per-vector
+> masking capability? Probably not interesting since without IR, we only give
+> 1 vector to MSI. 
+
+No MSI is completely different as the MSI configuration is purely in PCI
+config space while the MSI-X table is separately mapped.
+
+Thanks,
+
+        tglx
