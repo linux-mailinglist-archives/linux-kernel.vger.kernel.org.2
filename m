@@ -2,182 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2860B3D1515
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F22A3D151B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233994AbhGUQqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:46:55 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:54865 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbhGUQqy (ORCPT
+        id S235551AbhGUQtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229943AbhGUQtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:46:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626888450; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=swMqGV8m/Wr6ICPtIzEUe798ROYia+lHDqkNbchZrz0=;
- b=cZsuuBQyNJCHmTrJ7X7CQRrelsWgLgjhwcbglRAjnNjma3HBqMBDWk4ZAHklIm8gVzn2Fi9l
- z8qhUd8M3Uu8KLZTtog+MiZS/dWRp/EbPxmfbcAjqt/uJFGIaMXElfm4sjLPpZEYRLlTXd1k
- JZe1vYQCbNk8kyXs1/cjier3pHY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60f858fa1dd16c8788226ec2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 17:27:22
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4C198C4314A; Wed, 21 Jul 2021 17:27:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 52912C433F1;
-        Wed, 21 Jul 2021 17:27:20 +0000 (UTC)
+        Wed, 21 Jul 2021 12:49:11 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B14C061575;
+        Wed, 21 Jul 2021 10:29:46 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id bu12so4482179ejb.0;
+        Wed, 21 Jul 2021 10:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XP0iAPTzXCS6/hXN5afn3pCSvhDsfbRfFxq+vdKUGU8=;
+        b=TWWXO8Wznrfh3IEb+hXEjiNusl0FD/72xovtttyL5WjrF/Ze4BgxjMwxkP2/KJB6Y8
+         m2dHFVKSV7yt1eRra8XALcC9TGq+9kJ97VYMxIsW4EIdmRBKJqMPhsf+aeB9vzl4MCcQ
+         g41p8gXVEk51SiDFzZ5DpUxLteBk48kOLOMLHiy2mlSDJdD6qJgB0a0+fgSw/Qb/sKhF
+         DaH3TG9QNVSHHSm1pOHI7yNP2csO37NZv8yguDkDVZELfc05Cl1r13sG58hnLI1vhnhZ
+         92Uoyj884HVys25GJ2canrGoL0tpmS+CYhOKNTtJ1ssWIgAPTSMjcDba/h0+sgCarVXA
+         DS2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XP0iAPTzXCS6/hXN5afn3pCSvhDsfbRfFxq+vdKUGU8=;
+        b=M2Z0GaHxQouinZiYZ+GOy1+1UdhfEzZGPdmqLzDQxGn8j2yOjrkWxrHRUZYSEnm7Jm
+         p1e2AyqcMS8HfLX1qP+eVRDjMrknCsEmBgmmD7GtsCau3e7lcDdjNWEmHWLZ4RECFLJV
+         QWQW4hzGU2BfosySzW8MFyRaUHLBWdAIeo10pdp88c/GA/tR6IAPrLDcIYPDQsg6e29e
+         /hGNVnFAn6mrxEs+5uig90XRXv2ZD0F9m3EQPonBlS9xyvGvklo1w7ecIwQE0rMkLeI7
+         c4ZV03rpRVLFiXXUgBN/UzzuMBaS9ZfWPR3+x04Uj6LOdpfZKaKgQi6BrioV+zInyc4o
+         AjVQ==
+X-Gm-Message-State: AOAM530YIoMDpD3FvcDnTKQca3xWMVD+DWR5SXRKG/EbYriGMPXRbMAV
+        73Xjj+3TBWaKXK6UrR2JWGWY4QCyRupHTcxCGcE=
+X-Google-Smtp-Source: ABdhPJxVd/rBQsk/2obbH5UlqtV4a0WbF0Li9IC6O9OpXl6Zt+WB0yfa2RTbxjYDls2VAOQ7rBIZWAci0SlwjWWDCjc=
+X-Received: by 2002:a17:907:2125:: with SMTP id qo5mr39615957ejb.252.1626888585194;
+ Wed, 21 Jul 2021 10:29:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 21 Jul 2021 22:57:20 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     bjorn.andersson@linaro.org, mka@chromium.org, robh+dt@kernel.org,
-        ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
-        ohad@wizery.com, mathieu.poirier@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, rishabhb@codeaurora.org,
-        sidgup@codeaurora.org
-Subject: Re: [PATCH v4 04/13] remoteproc: qcom: q6v5: Use qmp_send to update
- co-processor load state
-In-Reply-To: <CAE-0n518x-W8kCdtrLjw0kwsbEnLzk9OmnKara_B=et0j9+ScA@mail.gmail.com>
-References: <1626755807-11865-1-git-send-email-sibis@codeaurora.org>
- <1626755807-11865-5-git-send-email-sibis@codeaurora.org>
- <CAE-0n518x-W8kCdtrLjw0kwsbEnLzk9OmnKara_B=et0j9+ScA@mail.gmail.com>
-Message-ID: <a2c8d6e237e9b7f63ed1d3d4eda43ad8@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <CAOuPNLhqSpaTm3u4kFsnuZ0PLDKuX8wsxuF=vUJ1TEG0EP+L1g@mail.gmail.com>
+ <alpine.LRH.2.02.2107200737510.19984@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAOuPNLhh_LkLQ8mSA4eoUDLCLzHo5zHXsiQZXUB_-T_F1_v6-g@mail.gmail.com> <alpine.LRH.2.02.2107211300520.10897@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <alpine.LRH.2.02.2107211300520.10897@file01.intranet.prod.int.rdu2.redhat.com>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Wed, 21 Jul 2021 22:59:33 +0530
+Message-ID: <CAOuPNLi-xz_4P+v45CHLx00ztbSwU3_maf4tuuyso5RHyeOytg@mail.gmail.com>
+Subject: Re: Kernel 4.14: Using dm-verity with squashfs rootfs - mounting issue
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>, dm-devel@redhat.com,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>, agk@redhat.com,
+        snitzer@redhat.com, shli@kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-21 10:56, Stephen Boyd wrote:
-> Quoting Sibi Sankar (2021-07-19 21:36:38)
->> diff --git a/drivers/remoteproc/qcom_q6v5.c 
->> b/drivers/remoteproc/qcom_q6v5.c
->> index 7e9244c748da..997ff21271f7 100644
->> --- a/drivers/remoteproc/qcom_q6v5.c
->> +++ b/drivers/remoteproc/qcom_q6v5.c
->> @@ -16,8 +16,28 @@
->>  #include "qcom_common.h"
->>  #include "qcom_q6v5.h"
->> 
->> +#define Q6V5_LOAD_STATE_MSG_LEN        64
->>  #define Q6V5_PANIC_DELAY_MS    200
->> 
->> +static int q6v5_load_state_toggle(struct qcom_q6v5 *q6v5, bool 
->> enable)
->> +{
->> +       char buf[Q6V5_LOAD_STATE_MSG_LEN] = {};
-> 
-> Just to confirm, we want to set the whole buffer to zero before writing
-> it? Sounds good to not send stack junk over to to the other side but
-> maybe we could skip initializing to zero for the first part of the
-> buffer that isn't used?
+On Wed, 21 Jul 2021 at 22:40, Mikulas Patocka <mpatocka@redhat.com> wrote:
 
-Sure, it makes sense to incorporate
-a warn_on and memset the remainder
-of the buffer after populating it.
+> > >
+> > > Try to set up dm-verity with block size 512 bytes.
+> > >
+> > > I don't know what block size does squashfs use, but if the filesystem
+> > > block size is smaller than dm-verity block size, it doesn't work.
+> > >
+> > Okay thank you so much for this clue,
+> > It seems we are using 65536 as the squashfs block size:
+>
+> 65536 is the compression block size - it is unrelated to I/O block size.
+>
+> There's a config option SQUASHFS_4K_DEVBLK_SIZE. The documentation says
+> that it uses by default 1K block size and if you enable this option, it
+> uses 4K block size.
+>
+Okay it seems this config is set in our case:
+CONFIG_SQUASHFS_4K_DEVBLK_SIZE=y
+So, with this the squashfs and dm-verity block size exactly matches (4K)
 
-> 
->> +       int ret;
->> +
->> +       if (IS_ERR(q6v5->qmp))
->> +               return 0;
->> +
->> +       snprintf(buf, sizeof(buf),
->> +                "{class: image, res: load_state, name: %s, val: %s}",
->> +                q6v5->load_state, enable ? "on" : "off");
-> 
-> Should we WARN_ON() if the message doesn't fit into the 64-bytes?
-> 
->> +
->> +       ret = qmp_send(q6v5->qmp, buf, sizeof(buf));
->> +       if (ret)
->> +               dev_err(q6v5->dev, "failed to toggle load state\n");
->> +
->> +       return ret;
->> +}
->> +
->>  /**
->>   * qcom_q6v5_prepare() - reinitialize the qcom_q6v5 context before 
->> start
->>   * @q6v5:      reference to qcom_q6v5 context to be reinitialized
->> @@ -196,12 +223,13 @@ EXPORT_SYMBOL_GPL(qcom_q6v5_panic);
->>   * @pdev:      platform_device reference for acquiring resources
->>   * @rproc:     associated remoteproc instance
->>   * @crash_reason: SMEM id for crash reason string, or 0 if none
->> + * @load_state: load state resource string
->>   * @handover:  function to be called when proxy resources should be 
->> released
->>   *
->>   * Return: 0 on success, negative errno on failure
->>   */
->>  int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct platform_device 
->> *pdev,
->> -                  struct rproc *rproc, int crash_reason,
->> +                  struct rproc *rproc, int crash_reason, const char 
->> *load_state,
->>                    void (*handover)(struct qcom_q6v5 *q6v5))
->>  {
->>         int ret;
->> @@ -286,9 +314,36 @@ int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct 
->> platform_device *pdev,
->>                 return PTR_ERR(q6v5->state);
->>         }
->> 
->> +       q6v5->load_state = kstrdup_const(load_state, GFP_KERNEL);
->> +       q6v5->qmp = qmp_get(&pdev->dev);
->> +       if (IS_ERR(q6v5->qmp)) {
->> +               if (PTR_ERR(q6v5->qmp) != -ENODEV) {
->> +                       if (PTR_ERR(q6v5->qmp) != -EPROBE_DEFER)
->> +                               dev_err(&pdev->dev, "failed to acquire 
->> load state\n");
-> 
-> Use dev_err_probe()?
+> So, try to set it. Or try to reduce dm-verity block size down to 1K.
+>
+Okay we are trying this.
+Thank you so much!!
 
-sure I'll use it.
-
-> 
->> +                       kfree_const(q6v5->load_state);
->> +                       return PTR_ERR(q6v5->qmp);
->> +               }
->> +       } else {
->> +               if (!q6v5->load_state) {
-> 
-> Use else if and deindent?
-
-lol, my bad.
-
-> 
->> +                       dev_err(&pdev->dev, "load state resource 
->> string empty\n");
->> +                       return -EINVAL;
->> +               }
->> +       }
->> +
->>         return 0;
->>  }
->>  EXPORT_SYMBOL_GPL(qcom_q6v5_init);
->> 
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Regards,
+Pintu
