@@ -2,243 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF013D0D49
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D18A3D0D4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237233AbhGUKdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236804AbhGUKV0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 06:21:26 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EDCC061762;
-        Wed, 21 Jul 2021 04:01:42 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id s23so2393437oiw.12;
-        Wed, 21 Jul 2021 04:01:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XWPf/+CJJGxtNs51Z0OKBEat1OtXBiGmD0zndSXh3DA=;
-        b=Cq78ZM2u9FWWJoAkNw6CuDQt8f/b1sxs2pKtSJSVr5Y222SFhH1B+0lkHtPHbrt1Z1
-         qCpmTfPc0XHpwy9boBmSDloREXojuK9ebif3G+qrTGKlndHNj1bX/nqLNQh1iPB5zNnt
-         gJDD1ucMjHDaD7zmvnmxwbQLMbt2jFZdysuUFqKTjQbfYTQRJaJuyOAf9R6k9CVS0iWw
-         3F1s1mlofU1dB2O4c1BD2ucybggNQYH1jdbv4gA9NepuNVNz360DBeUAi6CKa5TVv2Fx
-         oAzYiVoJ1lpPe2jN7ZNXp9xGfmiEjGSQXAo0qIA1ihCSK2eqpbVmfVQ0IbKeV7txUTm7
-         8mwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XWPf/+CJJGxtNs51Z0OKBEat1OtXBiGmD0zndSXh3DA=;
-        b=QXbpS07on6cVhGeGzBB8ELGjbSL7B/4ZIWxJslaLjFCfQTCfiI1JHxY62jcjPbLEMl
-         mX1ryAo6YCKnO+jM4b1Y7HSjp5y70Et36Pu1bSwBQtsp0JUA6hiLIrdsuPktoKCLiQlO
-         kQ/GiwBHMYTo/Ldg7D6uws/yp/jKY5oIBWZdZskBq672RPq9Ubm+T28/cmQ36GwwR5Sz
-         B+V5PwlAeECtZEv/dOMN1o6a6eQo3OhZVuHCYYyU/5vn+fk2/tPGQCfqYlQC7H/qn3Wb
-         vqIsvmJv4kRzqxiFkjX/aZr1N7h7NZPLiXs1yDGyaERNVItPOxmnSPBpD1l2eU/2piqH
-         iKyg==
-X-Gm-Message-State: AOAM531xUR+QoFGefDZrh42wXGSiJKq1f1NqmR+T1jbIMy8DHMJ3i8Hr
-        +BwQB8PAtLxzn5kTenI+Cd4rGPsJd89AslERf/8=
-X-Google-Smtp-Source: ABdhPJyfKuFt2xk1BaDSAtm7kABppX4tSQuEHbEDuUON4kUr0V8u7jRiOSYTeAdKIw53117/WT7ehq1B7c3uwJSagzs=
-X-Received: by 2002:aca:c6c9:: with SMTP id w192mr23797287oif.47.1626865302269;
- Wed, 21 Jul 2021 04:01:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210719074640.25058-1-moudy.ho@mediatek.com> <20210719074640.25058-3-moudy.ho@mediatek.com>
-In-Reply-To: <20210719074640.25058-3-moudy.ho@mediatek.com>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Wed, 21 Jul 2021 13:01:30 +0200
-Message-ID: <CAFqH_52sJC=Ey6VUMLgAiFz0x0z+9=Y6r-Ueg8U=4kBdAnXNNw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/3] dts: arm64: mt8183: Add Mediatek MDP3 nodes
-To:     Moudy Ho <moudy.ho@mediatek.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        id S236789AbhGUKgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:36:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237659AbhGUKVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 06:21:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D6106024A;
+        Wed, 21 Jul 2021 11:02:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626865333;
+        bh=tCb4GE+RH5JJXigheL2fRVqHYXoco4HDd0fKFHuRF0w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EwUre0hmByB+gIkkciZSiADoDDnqKUYGhsv3FvrDO7oeeGsJrNt9iGezmJphCKZu9
+         Xjo4xgFo47Ayxu+oElLMUXTxx3EwfqiR1Ve1yD43xvf1Quf5B7EQLxH6HML35XnVs+
+         BWYZebNWBkIYD4FQKtIYKRRpQh028B+/+OhWMXBk=
+Date:   Wed, 21 Jul 2021 13:02:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Landley <rob@landley.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>, menghui.lin@mediatek.com,
-        sj.huang@mediatek.com, ben.lok@mediatek.com, randy.wu@mediatek.com,
-        srv_heupstream <srv_heupstream@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        John Stultz <john.stultz@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
+Message-ID: <YPf+shNM6cXb3mfe@kroah.com>
+References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
+ <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
+ <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
+ <20210714124807.o22mottsrg3tv6nt@mobilestation>
+ <YPfPDqJhfzbvDLvB@kroah.com>
+ <20210721100220.ddfxwugivsndsedv@mobilestation>
+ <YPf29+ewbrYgHxRP@kroah.com>
+ <0064cb2c-5ca6-e693-2e89-8f045c8f7502@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0064cb2c-5ca6-e693-2e89-8f045c8f7502@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Moudy Ho,
+On Wed, Jul 21, 2021 at 12:45:32PM +0200, Krzysztof Kozlowski wrote:
+> On 21/07/2021 12:29, Greg Kroah-Hartman wrote:
+> > On Wed, Jul 21, 2021 at 01:02:20PM +0300, Serge Semin wrote:
+> >> Hi Greg,
+> >> @Krzysztof, @Rob, please join the discussion so to finally get done
+> >> with the concerned issue.
+> >>
+> >> On Wed, Jul 21, 2021 at 09:38:54AM +0200, Greg Kroah-Hartman wrote:
+> >>> On Wed, Jul 14, 2021 at 03:48:07PM +0300, Serge Semin wrote:
+> >>>> Hello John,
+> >>>>
+> >>>> On Tue, Jul 13, 2021 at 05:07:00PM -0700, John Stultz wrote:
+> >>>>> On Tue, Oct 20, 2020 at 5:10 AM Serge Semin
+> >>>>> <Sergey.Semin@baikalelectronics.ru> wrote:
+> >>>>>>
+> >>>>>> In accordance with the DWC USB3 bindings the corresponding node
+> >>>>>> name is suppose to comply with the Generic USB HCD DT schema, which
+> >>>>>> requires the USB nodes to have the name acceptable by the regexp:
+> >>>>>> "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
+> >>>>>> named.
+> >>>>>>
+> >>>>>> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> >>>>>
+> >>>>
+> >>>>> I know folks like to ignore this, but this patch breaks AOSP on db845c. :(
+> >>>>
+> >>>> Sorry to hear that. Alas there is no much can be done about it.
+> >>>
+> >>> Yes there is, we can revert the change.  We do not break existing
+> >>> configurations, sorry.
+> >>
+> >> By reverting this patch we'll get back to the broken dt-bindings
+> >> since it won't comply to the current USB DT-nodes requirements
+> >> which at this state well describe the latest DT spec:
+> >> https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
+> >> Thus the dtbs_check will fail for these nodes.
+> >>
+> >> Originally this whole patchset was connected with finally getting the
+> >> DT-node names in order to comply with the standard requirement and it
+> >> was successful mostly except a few patches which still haven't been
+> >> merged in.
+> >>
+> >> Anyway @Krzysztof has already responded to the complain regarding this
+> >> issue here:
+> >> https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
+> >> but noone cared to respond on his reasonable questions in order to
+> >> get to a suitable solution for everyone. Instead we are
+> >> getting another email with the same request to revert the changes.
+> >> Here is the quote from the Krzysztof email so we could continue the
+> >> discussion:
+> >>
+> >> On Mon, 21 Dec 2020 13:04:27 -0800 (PST), Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> >>> On Mon, Dec 21, 2020 at 12:24:11PM -0800, John Stultz wrote:
+> >>>> On Sat, Dec 19, 2020 at 3:06 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> >>>>> ...
+> >>>>>
+> >>>>> The node names are not part of an ABI, are they? I expect only
+> >>>>> compatibles and properties to be stable. If user-space looks for
+> >>>>> something by name, it's a user-space's mistake.  Not mentioning that you
+> >>>>> also look for specific address... Imagine remapping of addresses with
+> >>>>> ranges (for whatever reason) - AOSP also would be broken? Addresses are
+> >>>>> definitely not an ABI.
+> >>>>
+> >>>> Though that is how it's exported through sysfs.
+> >>>
+> >>> The ABI is the format of sysfs file for example in /sys/devices. However
+> >>> the ABI is not the exact address or node name of each device.
+> >>>
+> >>>> In AOSP it is then used to setup the configfs gadget by writing that
+> >>>> value into /config/usb_gadget/g1/UDC.
+> >>>>
+> >>>> Given there may be multiple controllers on a device, or even if its
+> >>>> just one and the dummy hcd driver is enabled, I'm not sure how folks
+> >>>> reference the "right" one without the node name?
+> >>>
+> >>> I think it is the same type of problem as for all other subsystems, e.g.
+> >>> mmc, hwmon/iio.  They usually solve it either with aliases or with
+> >>> special property with the name/label.
+> >>>
+> >>>> I understand the fuzziness with sysfs ABI, and I get that having
+> >>>> consistent naming is important, but like the eth0 -> enp3s0 changes,
+> >>>> it seems like this is going to break things.
+> >>>
+> >>> One could argue whether interface name is or is not ABI. But please tell
+> >>> me how the address of a device in one's representation (for example DT)
+> >>> is a part of a stable interface?
+> >>>
+> >>>> Greg? Is there some better way AOSP should be doing this?
+> >>>
+> >>> If you need to find specific device, maybe go through the given bus and
+> >>> check compatibles?
+> >>>
+> >>> Best regards,
+> >>> Krzysztof
+> >>
+> >> So the main question is how is the DT-node really connected with ABI
+> >> and is supposed to be stable in that concern?
+> >>
+> >> As I see it even if it affects the configfs node name, then we may
+> >> either need to break that connection and somehow deliver DT-node-name
+> >> independent interface to the user-space or we have no choice but to
+> >> export the node with an updated name and ask of user-space to deal
+> >> with it. In both suggested cases the DT-node name will still conform
+> >> to the USB-node name DT spec. Currently we are at the second one.
+> > 
+> > I really do not care what you all decide on, but you CAN NOT break
+> > existing working systems, sorry.  That is why I have reverted this
+> > change in my tree and will send it to Linus soon.
+> 
+> I had impression that kernel defines interfaces which should be used and
+> are stable (e.g. syscalls, sysfs and so on). This case is example of
+> user-space relying on something not being marked as part of ABI. Instead
+> they found something working for them and now it is being used in "we
+> cannot break existing systems". Basically, AOSP unilaterally created a
+> stable ABI and now kernel has to stick to it.
 
-Thank you for your patch.
+Since when are configfs names NOT a user-visable api?
 
-Missatge de Moudy Ho <moudy.ho@mediatek.com> del dia dl., 19 de jul.
-2021 a les 9:47:
->
-> Add device nodes for Media Data Path 3 (MDP3) modules.
->
-> Signed-off-by: Ping-Hsun Wu <ping-hsun.wu@mediatek.com>
-> Signed-off-by: daoyuan huang <daoyuan.huang@mediatek.com>
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> ---
-> Depend on:
->    [1] https://lore.kernel.org/patchwork/patch/1164746/
->    [2] https://patchwork.kernel.org/patch/11703299/
->    [3] https://patchwork.kernel.org/patch/11283773/
+Why would you not depend on them?
 
-I think all these patches are old, some of them already landed in
-other forms, like the first one. I don't think these dependencies are
-still valid, so please review and remove them if they are not needed.
+> Really, all normal systems depend on aliases or names and here we have
+> dependency on device address. I proposed way how AOSP should be fixed.
+> Anything happened? Nope.
 
+Please work with the Android developers to fix this in their tree.  I
+know they take patches quite easily if sent to them.  If this gets fixed
+in their tree I will gladly revert this change.
 
-> ---
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 114 +++++++++++++++++++++++
->  1 file changed, 114 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> index c5e822b6b77a..30920d6ce7d2 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> @@ -1127,6 +1127,112 @@
->                         mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0 0x1000>;
->                 };
->
-> +               mdp3_rdma0: mdp3_rdma0@14001000 {
-> +                       compatible = "mediatek,mt8183-mdp3",
-> +                                    "mediatek,mt8183-mdp3-rdma";
-> +                       mediatek,scp = <&scp>;
-> +                       mediatek,mdp3-id = <0>;
-> +                       mdp3-comps = "mediatek,mt8183-mdp3-dl", "mediatek,mt8183-mdp3-dl",
-> +                                    "mediatek,mt8183-mdp3-imgi", "mediatek,mt8183-mdp3-exto";
-> +                       mdp3-comp-ids = <0 1 0 1>;
-> +                       reg = <0 0x14001000 0 0x1000>,
-> +                             <0 0x14000000 0 0x1000>,
-> +                             <0 0x15020000 0 0x1000>;
-> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x1000 0x1000>,
-> +                                                 <&gce SUBSYS_1400XXXX 0 0x1000>,
-> +                                                 <&gce SUBSYS_1502XXXX 0 0x1000>;
-> +                       power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
-> +                       clocks = <&mmsys CLK_MM_MDP_RDMA0>,
-> +                                <&mmsys CLK_MM_MDP_RSZ1>,
-> +                                <&mmsys CLK_MM_MDP_DL_TXCK>,
-> +                                <&mmsys CLK_MM_MDP_DL_RX>,
-> +                                <&mmsys CLK_MM_IPU_DL_TXCK>,
-> +                                <&mmsys CLK_MM_IPU_DL_RX>;
-> +                       iommus = <&iommu M4U_PORT_MDP_RDMA0>;
-> +                       mediatek,mmsys = <&mmsys>;
-> +                       mediatek,mm-mutex = <&mutex>;
-> +                       mediatek,mailbox-gce = <&gce>;
-> +                       mboxes = <&gce 20 CMDQ_THR_PRIO_LOWEST 0>,
-> +                                <&gce 21 CMDQ_THR_PRIO_LOWEST 0>,
-> +                                <&gce 22 CMDQ_THR_PRIO_LOWEST 0>,
-> +                                <&gce 23 CMDQ_THR_PRIO_LOWEST 0>;
-> +                       mdp3-rsz0 = <&mdp3_rsz0>; /* debug only */
-> +                       mdp3-rsz1 = <&mdp3_rsz1>; /* debug only */
-> +                       mdp3-wrot0 = <&mdp3_wrot0>; /* debug only */
-> +                       mdp3-wdma0 = <&mdp3_wdma>; /* debug only */
-> +                       mdp3-ccorr0 = <&mdp3_ccorr>; /* debug only */
-> +                       gce-subsys = <&gce 0x14000000 SUBSYS_1400XXXX>,
-> +                                    <&gce 0x14010000 SUBSYS_1401XXXX>,
-> +                                    <&gce 0x14020000 SUBSYS_1402XXXX>,
-> +                                    <&gce 0x15020000 SUBSYS_1502XXXX>;
-> +                       mediatek,gce-events = <CMDQ_EVENT_MDP_RDMA0_SOF>,
-> +                                             <CMDQ_EVENT_MDP_RDMA0_EOF>,
-> +                                             <CMDQ_EVENT_MDP_RSZ0_SOF>,
-> +                                             <CMDQ_EVENT_MDP_RSZ1_SOF>,
-> +                                             <CMDQ_EVENT_MDP_TDSHP_SOF>,
-> +                                             <CMDQ_EVENT_MDP_WROT0_SOF>,
-> +                                             <CMDQ_EVENT_MDP_WROT0_EOF>,
-> +                                             <CMDQ_EVENT_MDP_WDMA0_SOF>,
-> +                                             <CMDQ_EVENT_MDP_WDMA0_EOF>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_0>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_1>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_2>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_3>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_4>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_5>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_6>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_7>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_8>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_9>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_10>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_11>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_12>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_13>,
-> +                                             <CMDQ_EVENT_ISP_FRAME_DONE_P2_14>,
-> +                                             <CMDQ_EVENT_WPE_A_DONE>,
-> +                                             <CMDQ_EVENT_SPE_B_DONE>;
-> +               };
-> +
-> +               mdp3_rsz0: mdp3_rsz0@14003000 {
-> +                       compatible = "mediatek,mt8183-mdp3-rsz";
-> +                       mediatek,mdp3-id = <0>;
-> +                       reg = <0 0x14003000 0 0x1000>;
-> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x3000 0x1000>;
-> +                       clocks = <&mmsys CLK_MM_MDP_RSZ0>;
-> +               };
-> +
-> +               mdp3_rsz1: mdp3_rsz1@14004000 {
-> +                       compatible = "mediatek,mt8183-mdp3-rsz";
-> +                       mediatek,mdp3-id = <1>;
-> +                       reg = <0 0x14004000 0 0x1000>;
-> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x4000 0x1000>;
-> +                       clocks = <&mmsys CLK_MM_MDP_RSZ1>;
-> +               };
-> +
-> +               mdp3_wrot0: mdp3_wrot0@14005000 {
-> +                       compatible = "mediatek,mt8183-mdp3-wrot";
-> +                       mediatek,mdp3-id = <0>;
-> +                       mdp3-comps = "mediatek,mt8183-mdp3-path";
-> +                       mdp3-comp-ids = <0>;
-> +                       reg = <0 0x14005000 0 0x1000>;
-> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x5000 0x1000>;
-> +                       power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
-> +                       clocks = <&mmsys CLK_MM_MDP_WROT0>;
-> +                       iommus = <&iommu M4U_PORT_MDP_WROT0>;
-> +               };
-> +
-> +               mdp3_wdma: mdp3_wdma@14006000 {
-> +                       compatible = "mediatek,mt8183-mdp3-wdma";
-> +                       mediatek,mdp3-id = <0>;
-> +                       mdp3-comps = "mediatek,mt8183-mdp3-path";
-> +                       mdp3-comp-ids = <1>;
-> +                       reg = <0 0x14006000 0 0x1000>;
-> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x6000 0x1000>;
-> +                       power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
-> +                       clocks = <&mmsys CLK_MM_MDP_WDMA0>;
-> +                       iommus = <&iommu M4U_PORT_MDP_WDMA0>;
-> +               };
-> +
->                 ovl0: ovl@14008000 {
->                         compatible = "mediatek,mt8183-disp-ovl";
->                         reg = <0 0x14008000 0 0x1000>;
-> @@ -1272,6 +1378,14 @@
->                         clock-names = "apb", "smi", "gals0", "gals1";
->                 };
->
-> +               mdp3_ccorr: mdp3_ccorr@1401c000 {
-> +                       compatible = "mediatek,mt8183-mdp3-ccorr";
-> +                       mediatek,mdp3-id = <0>;
-> +                       reg = <0 0x1401c000 0 0x1000>;
-> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0xc000 0x1000>;
-> +                       clocks = <&mmsys CLK_MM_MDP_CCORR>;
-> +               };
-> +
->                 imgsys: syscon@15020000 {
->                         compatible = "mediatek,mt8183-imgsys", "syscon";
->                         reg = <0 0x15020000 0 0x1000>;
-> --
-> 2.18.0
->
+> The device address can change. The node name can change. Reverting such
+> changes is incorrect but my arguments why we can break existing systems
+> who use weird, incorrect and not stable interfaces were not accepted and
+> I do not have anything new in this matter.
+> 
+> Greg,
+> You also did not join the discussion but use simple revert. It's not
+> cooperative... what next? Serge sends the same patch to SoC tree and it
+> gets merged and then you revert it again?
+
+Yup, I can do this all day :)
+
+Again, do NOT break working systems please, that's pretty much the ONLY
+rule we have in kernel development.  It's not that complex of a rule...
+
+thanks,
+
+greg k-h
