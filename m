@@ -2,192 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9943D08E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 08:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99C63D08E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 08:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbhGUFtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 01:49:52 -0400
-Received: from mail-sn1anam02on2066.outbound.protection.outlook.com ([40.107.96.66]:17232
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233851AbhGUFtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 01:49:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BU9E0hxz+uYDEl++AJ2Abzhm+Eg6/GqNHTLeDAFexaEUxroIFu6EWZjOM/0gBYDzPKmbDx/7d91EdDYH26POuZ6GhbqHyZR6/YJOJn7vpLhzU7NkFrPxclrAbyUVyi+8rk3E1Ussn4ccOdcabWou8zIJ1VFOXdPOuQII0m/lk9ZNEO83yZO2O2ZfYe0729oR3xOGqH99YejHR+7wwFDzmzK76Oet8xIkUmWe+f/83qI0uXaQ8si7VjfEQlLa8bD0uVro1nz5agQk12Tb3wkehYzZlxgTkw6uMTvOleXnPZgCLJYDv7w9mb4Jdyv0ognFuicF7kRKJcIy2OtIBLuPXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0L3NYfxl7Jh+Aqaji4qWsO3N/pEbycEakUpEpBnKwIs=;
- b=VVZH755dUS+UVxTADN10jvF4tYl/hTXayqIP+H4VVov8yG1lNp0cvJczvngIwu5mmYBecd7ZZLqQT7zTjA+iUPB8kXDtS2dLKoONy+CHyAsLQJhnUtlHaCiTZqPJNG2DwUgE8s+pEYb4sSFERkdU+kuQCSgDLH09XKZoHXHOnEiSfpPRpb2zfMdng1rH2sxpzraaPHJpgQBoXeiifWZHfbfBXFB+2GcMIedZnzhKJUQaSJ8M5lY1J+BnSkX9f4WP7ZAp6D21NTcvKdH85cfnt+G2jYl4CFvXWh7vdf61zgr4bqEp12kQvaSOP8bMJ3uw7R0oDXXGjSZSbgSDKcRY+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0L3NYfxl7Jh+Aqaji4qWsO3N/pEbycEakUpEpBnKwIs=;
- b=rbYf5/VV9GZlaxBgyEcciIQW2qUrH9jY3wkHpX16+PSHmA9P/xw0E8hLMVRdjPdKPBEKxYtnLzO6OnxwFU8lvSjslHaem0M7/6Vew8POFfbeDcZEf0cjDREX78gke2Q1m/8J/BNz7/e0ScULE3mrc9ump9ClXHKdn32fRTwghyw=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB4900.namprd12.prod.outlook.com (2603:10b6:208:1c1::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Wed, 21 Jul
- 2021 06:29:52 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4331.034; Wed, 21 Jul 2021
- 06:29:51 +0000
-Subject: Re: [RFC v2 2/2] drm/amd/display: Use PPC FPU functions
-To:     Anson Jacob <Anson.Jacob@amd.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        christophe.leroy@csgroup.eu, linuxppc-dev@lists.ozlabs.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Harry.Wentland@amd.com, Sunpeng.Li@amd.com,
-        Bhawanpreet.Lakha@amd.com, Rodrigo.Siqueira@amd.com,
-        Aurabindo.Pillai@amd.com, qingqing.zhuo@amd.com, bindu.r@amd.com,
-        roman.li@amd.com, Christoph Hellwig <hch@infradead.org>
-References: <20210721044801.840501-1-Anson.Jacob@amd.com>
- <20210721044801.840501-3-Anson.Jacob@amd.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <9094cea1-602e-6e71-4ff7-c06fd04af6c5@amd.com>
-Date:   Wed, 21 Jul 2021 08:29:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210721044801.840501-3-Anson.Jacob@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: PR3P191CA0048.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:102:55::23) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S233912AbhGUFuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 01:50:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233627AbhGUFuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 01:50:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD7FF61009;
+        Wed, 21 Jul 2021 06:30:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626849045;
+        bh=LMgiDG+AUmFohhoLx005Uu8y4csMp/qVbebolLVz2K4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=aozV/IdCSbNc1QJH5GXe9w84mFC6pY+NBGw+/atE2J1+Pvn8rvD8kY71jTicR/2TA
+         +sKBXwcwi4DCIMPLkEJZkMwtGuP92fXj0zDdQ7SMqLoH9hiGXRjjVAj50VgPdPyOom
+         jK+JRJbA7hA4aq6WX9f6oROpQiUguCRJyKy0BC+kMM0MAjjTIjFeHStfulr6k+4qeC
+         DQ8K1+CSMOfgGBljWriI1n8ddKyUuWomWaEzbN1sXkmWuoVesN+PQbDa5mm6sNfFM4
+         QfAl7kSJIOLfXFrGWs9O74aiolyKawuck5eCwE2qa68fXvFRqz5Ym3VPsLWYHT6gIC
+         D9s5CQVuO/gWg==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>, gregkh@linuxfoundation.org,
+        peter.chen@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org
+Subject: Re: [PATCH v2] usb: dwc3: gadget: Replace
+ list_for_each_entry_safe() if using giveback
+In-Reply-To: <fc346f3c-6e3d-b96c-d64a-2ae4cf4218d4@codeaurora.org>
+References: <1620716636-12422-1-git-send-email-wcheng@codeaurora.org>
+ <87tun9g01v.fsf@kernel.org>
+ <2675db9e-0cab-06b5-2986-0b4456a1f040@codeaurora.org>
+ <5156238d-c1d8-a0d3-47af-8b52467fd071@codeaurora.org>
+ <fc346f3c-6e3d-b96c-d64a-2ae4cf4218d4@codeaurora.org>
+Date:   Wed, 21 Jul 2021 09:30:36 +0300
+Message-ID: <87v954xjoz.fsf@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:9bcf:837a:d18c:dc66] (2a02:908:1252:fb60:9bcf:837a:d18c:dc66) by PR3P191CA0048.EURP191.PROD.OUTLOOK.COM (2603:10a6:102:55::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22 via Frontend Transport; Wed, 21 Jul 2021 06:29:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f18e7f81-4500-447b-248e-08d94c10f21a
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4900:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB4900E41270466B9D4CF3E6F483E39@BL0PR12MB4900.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: d3zUN2NI8QRMRyNReMs6ZzpRD3UTuY6vfbFiAoOsmMblbuMWPwevqkOTrk8GYEHeyZFmDbFq1kXT8wWxyvUawfij6ePhEt1nw0jixcXeq1HdJFJmGU1VBzm7oP/948NkZEUU0QIngTSLhmPENyxNcUpShoGGpagQjIPWsNNGiFCSaRT5WNfCvCqZ8Srh4ftkHrwDJjul+peCUfLPvY2rT+Kb+T4LqYu7jYzMmwzCnCd6M9unOmGrS0u7BRUQRmRjwTDR11CHs5tqZ6apn5mjAUP4a6/1M7LAXZZsotEEPvBL7NFMkEB0kggKHJNTk0znXCu4HEuqXD/7prw7lQUxBTJjHd5F4Jv2FGJLJFSoBPrahGgsxK7m/k6pioZY0n/GBYjNq0EBq302heXM7jNPtvznqwmeHuwAgJ4CqZrNlWvJQGesiaOWGOXLmf1vBhnGO3w48yAX4RkDTjnSTkZrZ4HJev4CF4G3tXv+pBtMYsw/xQGWraa8wBJGtdjAJ4gdUqM9xWcMLut7y2tq5kB5b09ZWllhmm76m2CF1Ct+VUIYcdmUjsS2YaRtjR2VWZRh8O9P2Xv6pRepmRNrsyjRde1IxZ6j8TZ4csN4ofFgzSLIvHjMda6qLPsGR2lTU1Fggs2gy5FzG+MdiEV2FhJoHyw4boBqeUl6nXjr3JAZ4CqCjICYt7HeWLJvwUHPDsNTrUyUbf1Wf5Mrp81VOJW4EzIegWBdfSPB3QBaiqKr0Jo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(346002)(396003)(136003)(31686004)(8936002)(5660300002)(316002)(478600001)(2906002)(6666004)(8676002)(66556008)(66476007)(66946007)(83380400001)(36756003)(4326008)(2616005)(6486002)(186003)(86362001)(31696002)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZDlaYng4bFNhN1c2MzhxQ2ptWU9MQzU5UDlJek5ITU5laHNRQ3d5T05TcFhs?=
- =?utf-8?B?b0Y2dlY4YklwRDRHdVp4Q0ZDOUprd1RzTmw0VktkK3FoUitmVzUxSUhVbWpY?=
- =?utf-8?B?cGlEUmRZUG9NdUhybEtCNFBJazZLZTlMSWpYRGYxVUFuQ1QxY3VKRmlSTXlF?=
- =?utf-8?B?Lyt1UFlYdEtUc0hUZUpCdHVITEZIdFhLM2dSdENlbWJzdExTWWlrb0pVODJ3?=
- =?utf-8?B?bFhmUG96Ukd5SzVGUGh3UStaRWk3M1IyMldxVWZlVjJ1c2JadjJXWEU0Ylk5?=
- =?utf-8?B?YTR2YzJsRmduVCs1OUFFenVIUkdpV2dQZ1lwZW9qczBSaHVmRkNMN04rdFlu?=
- =?utf-8?B?Ny9hRlBCWVFyc1FjZ0RGY2hBWjE2SDA4dnduaGVsTzFBbElxUTV6U3NhQXN2?=
- =?utf-8?B?ODQ0cEp1U3lIL0UwWlJVa3MvRlIzQytzVVBxNlk2YzlMUjlZVmhqa3lrS2FT?=
- =?utf-8?B?SzFvOUdtUU1jQ2FmUnVVV3ZQRFd0M2IxZFRIbnZDaSt2b2NOY3ZDRnFZL0ha?=
- =?utf-8?B?Wmo2NW1ncUFFbHBlU2laQlFzZldJYU93VzRRNWF3ZElEdDBUUHBqeHh2aGtw?=
- =?utf-8?B?MG13ZlRoSUdWaFhXaHNPUjZvWFhXQURHbXR0UVZXTUk0bE15cHl2bEEzRFg2?=
- =?utf-8?B?ZXJaK3F6dElhUHZtNkJ2RmxxZmtXTDdyRElObnFCSjdOck1wbkZsS2VJTUZh?=
- =?utf-8?B?SnVNK1dpRkt6dC9aQ0I4eEtyclhhTTRvbXZ1YWxpcThNZEZBQUdUK1RTTTNs?=
- =?utf-8?B?ajY2U0RXUkN0cittbDBMWXJ2QTl5dmdRUFBmMFV0NmZyUnVHckRDSmk0MURx?=
- =?utf-8?B?eDF6dkl4d2dIcit4aGVMTnU3SmNoazhZNzF0RWNmWUMzZWJtOUpzNWRPNmpH?=
- =?utf-8?B?bGpnOHBvZ1BiYlJZdnpmejRNcFlZbkc3dGdCWW1nam9nQ1N6V2NDZmtsZVZ0?=
- =?utf-8?B?VUgxQ1N1M0JuRjZqL3ZlQ3g0RjY1ak9CbzN2ZzFoTWVEYUNFYWZBbS9YNzZl?=
- =?utf-8?B?Y2hUTk5UMXRvcFJnMlM1T2tlMVpBYnJzS1ovSjVkK1R1d2dEZXZaNFNxMnRX?=
- =?utf-8?B?RitiS1ozWFBNUVJFMnJjb212dGxxenhtTjBQWDZEczNkNWVWQm1oZU5iaEVQ?=
- =?utf-8?B?MGY5aGIyRkRHUWRYa3hkS3lNMUNvdk05KzhRc0hxR3RvRGUvdFFYQ3lBMHo1?=
- =?utf-8?B?cHoralFJbXZLSTlSenZ0ak9nQlUzUldLNWpqZVRSbUpucDFjM2tLcENta3Ju?=
- =?utf-8?B?ejh3dVB2QWtySmZiWEpjMzNGRUdXbjc2VUVMVjltOEdFaWQreGtXYkF0N0lz?=
- =?utf-8?B?STFCcFZoNGFnSXh1SC9ZWXg4SDZCZ01qV0xHa3pKdGkvOHVnQm1YSTdRNTF0?=
- =?utf-8?B?RFVJYXExK0lsRlVvdS9xa1lXVnd5SzArS3k0ajl5aFVSQ0VZQWpDUmdkM0pX?=
- =?utf-8?B?cXlYbThoUnNxcUVIVEdhOEFhNU5Ia1d5Y2Z6ZVd6UlN0YVpvd0ZNODFnRVJH?=
- =?utf-8?B?SVhRem5FcFVsWHpVb1VhS0JJY0RtT1JDK0w5TW93SVhleEV6WWVYRGtjMlZ4?=
- =?utf-8?B?SXJTYStEMDVsYXFTc1JOdUhVL2YvMnJoaDIxOXNhYk4vRXFhMGN0akh1Smtm?=
- =?utf-8?B?WFpRYXphZXc0dTdwNitiY2xBZUxuM1phS0NTZ0JlYy9INDVzeWRDSklkSER0?=
- =?utf-8?B?OHcxY20vQno1MG4xUUVYdXNiWWNyNDNaQ29WWjhzV3RQVktWRng2dlBBUlB2?=
- =?utf-8?B?YVBhSHhIY3BnWnFlSGRvUERxV2RZRkJVeTVmTFErSFF4N2NPU3J2U0xZenAw?=
- =?utf-8?B?U1hIekpLTmVJVDZLNHpwVWgwYVZVM2ozMjRiNFBKb2dpcVh5eUtLMGxaNzZR?=
- =?utf-8?Q?VQlRUShQxBpWv?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f18e7f81-4500-447b-248e-08d94c10f21a
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 06:29:51.6372
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n3sqKnhZ0gTjmw/XeINTeYnN8TEXJHK2tsJTwLEKmzSE3ESanNMI8GfnDIFXgeTf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4900
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 21.07.21 um 06:48 schrieb Anson Jacob:
-> Use kernel_fpu_begin & kernel_fpu_end for PPC
->
-> Depends on "ppc/fpu: Add generic FPU api similar to x86"
->
-> v2:
-> - Got rid of macro switch for PPC as header file with same
->    name as x86 is added by previous patch in the series
->
-> Signed-off-by: Anson Jacob <Anson.Jacob@amd.com>
-> CC: Christoph Hellwig <hch@infradead.org>
-> CC: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-> CC: Harry Wentland <harry.wentland@amd.com>
-> CC: Christian König <christian.koenig@amd.com>
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Looks good in general, but question is what about other architectures 
-like ARM?
 
-Regards,
-Christian.
+Hi Wesley,
 
-> ---
->   drivers/gpu/drm/amd/display/dc/os_types.h | 29 -----------------------
->   1 file changed, 29 deletions(-)
+(first of all, sorry for the super long delay. This really fell through
+the cracks)
+
+Wesley Cheng <wcheng@codeaurora.org> writes:
+> Hi Felipe,
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/os_types.h b/drivers/gpu/drm/amd/display/dc/os_types.h
-> index 126c2f3a4dd3..47ef434f93d8 100644
-> --- a/drivers/gpu/drm/amd/display/dc/os_types.h
-> +++ b/drivers/gpu/drm/amd/display/dc/os_types.h
-> @@ -51,38 +51,9 @@
->   #define dm_error(fmt, ...) DRM_ERROR(fmt, ##__VA_ARGS__)
->   
->   #if defined(CONFIG_DRM_AMD_DC_DCN)
-> -#if defined(CONFIG_X86)
->   #include <asm/fpu/api.h>
->   #define DC_FP_START() kernel_fpu_begin()
->   #define DC_FP_END() kernel_fpu_end()
-> -#elif defined(CONFIG_PPC64)
-> -#include <asm/switch_to.h>
-> -#include <asm/cputable.h>
-> -#define DC_FP_START() { \
-> -	if (cpu_has_feature(CPU_FTR_VSX_COMP)) { \
-> -		preempt_disable(); \
-> -		enable_kernel_vsx(); \
-> -	} else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP)) { \
-> -		preempt_disable(); \
-> -		enable_kernel_altivec(); \
-> -	} else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE)) { \
-> -		preempt_disable(); \
-> -		enable_kernel_fp(); \
-> -	} \
-> -}
-> -#define DC_FP_END() { \
-> -	if (cpu_has_feature(CPU_FTR_VSX_COMP)) { \
-> -		disable_kernel_vsx(); \
-> -		preempt_enable(); \
-> -	} else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP)) { \
-> -		disable_kernel_altivec(); \
-> -		preempt_enable(); \
-> -	} else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE)) { \
-> -		disable_kernel_fp(); \
-> -		preempt_enable(); \
-> -	} \
-> -}
-> -#endif
->   #endif
->   
->   /*
+> On 6/9/2021 1:57 PM, Wesley Cheng wrote:
+>> Hi Felipe,
+>>=20
+>> On 5/19/2021 1:52 AM, Wesley Cheng wrote:
+>>>
+>>>
+>>> On 5/11/2021 1:13 AM, Felipe Balbi wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> Wesley Cheng <wcheng@codeaurora.org> writes:
+>>>>> The list_for_each_entry_safe() macro saves the current item (n) and
+>>>>> the item after (n+1), so that n can be safely removed without
+>>>>> corrupting the list.  However, when traversing the list and removing
+>>>>> items using gadget giveback, the DWC3 lock is briefly released,
+>>>>> allowing other routines to execute.  There is a situation where, while
+>>>>> items are being removed from the cancelled_list using
+>>>>> dwc3_gadget_ep_cleanup_cancelled_requests(), the pullup disable
+>>>>> routine is running in parallel (due to UDC unbind).  As the cleanup
+>>>>> routine removes n, and the pullup disable removes n+1, once the
+>>>>> cleanup retakes the DWC3 lock, it references a request who was already
+>>>>> removed/handled.  With list debug enabled, this leads to a panic.
+>>>>> Ensure all instances of the macro are replaced where gadget giveback
+>>>>> is used.
+>>>>>
+>>>>> Example call stack:
+>>>>>
+>>>>> Thread#1:
+>>>>> __dwc3_gadget_ep_set_halt() - CLEAR HALT
+>>>>>   -> dwc3_gadget_ep_cleanup_cancelled_requests()
+>>>>>     ->list_for_each_entry_safe()
+>>>>>     ->dwc3_gadget_giveback(n)
+>>>>>       ->dwc3_gadget_del_and_unmap_request()- n deleted[cancelled_list]
+>>>>>       ->spin_unlock
+>>>>>       ->Thread#2 executes
+>>>>>       ...
+>>>>>     ->dwc3_gadget_giveback(n+1)
+>>>>>       ->Already removed!
+>>>>>
+>>>>> Thread#2:
+>>>>> dwc3_gadget_pullup()
+>>>>>   ->waiting for dwc3 spin_lock
+>>>>>   ...
+>>>>>   ->Thread#1 released lock
+>>>>>   ->dwc3_stop_active_transfers()
+>>>>>     ->dwc3_remove_requests()
+>>>>>       ->fetches n+1 item from cancelled_list (n removed by Thread#1)
+>>>>>       ->dwc3_gadget_giveback()
+>>>>>         ->dwc3_gadget_del_and_unmap_request()- n+1 deleted[cancelled_=
+list]
+>>>>>         ->spin_unlock
+>>>>>
+>>>>> Fixes: d4f1afe5e896 ("usb: dwc3: gadget: move requests to cancelled_l=
+ist")
+>>>>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>>>>> Reviewed-by: Peter Chen <peter.chen@kernel.org>
+>>>>> ---
+>>>>> Changes in v2:
+>>>>>  - Updated commit message with context call stack of an example scena=
+rio
+>>>>>    seen on device.
+>>>>>
+>>>>>  drivers/usb/dwc3/gadget.c | 8 ++++----
+>>>>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>>>>> index dd80e5c..efa939b 100644
+>>>>> --- a/drivers/usb/dwc3/gadget.c
+>>>>> +++ b/drivers/usb/dwc3/gadget.c
+>>>>> @@ -1737,10 +1737,10 @@ static void dwc3_gadget_ep_skip_trbs(struct d=
+wc3_ep *dep, struct dwc3_request *r
+>>>>>  static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep=
+ *dep)
+>>>>>  {
+>>>>>  	struct dwc3_request		*req;
+>>>>> -	struct dwc3_request		*tmp;
+>>>>>  	struct dwc3			*dwc =3D dep->dwc;
+>>>>>=20=20
+>>>>> -	list_for_each_entry_safe(req, tmp, &dep->cancelled_list, list) {
+>>>>> +	while (!list_empty(&dep->cancelled_list)) {
+>>>>> +		req =3D next_request(&dep->cancelled_list);
+>>>>
+>>>> couldn't this be solved list_replace_init() instead? Then we can keep
+>>>> using the regular list_for_each_entry_safe() which has an added semant=
+ic
+>>>> meaning due to its name.
+>>>>
+>>>
+>>> Hi Felipe,
+>>>
+>>> Sorry for the late response.  So I tried with a list_replace_init() to
+>>> within the list_for_each_entry_safe() loop to update tmp w/ the
+>>> cancelled_list list head, but the issue was still observed.  This is
+>>> because we can't replace the reference the loop already has stored in
+>>> tmp, which is simply updated as the current item on the next iteration.
+>>>
+>>> I believe this is what you were trying to achieve?
+>>>
+>> Was wondering if you had any further inputs on this change?  As
+>> mentioned, I tried a few things with list_replace_init(), which did not
+>> work.
+>>=20
+>
+> Sorry for the ping.  Is this change OK to add as is?  We've been running
+> into this instance pretty frequently during our testing, so just wanted
+> to close on the proper changes being merged upstream.
 
+The idea is this:
+
+	struct list_head	local;
+
+        spin_lock_irq(&lock);
+        list_replace_init(&dwc->cancelled_list, &local);
+        spin_unlock_irq(&lock);
+
+	list_for_each_entry_safe(req, tmp, &local, list) {
+        	/* ... */
+	}
+
+It looks to me this should work fine, no? You can also follow what
+drivers/usb/core/hcd.c is doing in usb_giveback_urb_bh() and restarting
+if dwc->cancelled_list is not empty after list_for_each_entry_safe().
+
+Can you give that one a shot?
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmD3vwwRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUh8gAf8C4yEtZxAbGgVPHxn/ZCyJOgrbOXvuGX/
+UoZg/65o8qKIFTwhP/+15Oyr59Bdnk2GJnTGRHhf2wOXLKUN5piybUxlXrqRK7Ey
+ueD0PQz/1T/AuWS49pNz6L79qgj9Eab+meYl3usfT8C7HR8Nwh6OzTdBYC21delx
+zW3eqkWI2czDParWXChpdP3n3prsv46hMM8yT8LEhKXPSjZkj+K2aRxOMqyDKsOL
++QfIAxwAGaYRFCH6inJo/bpYjZbR3wtugqu5JyoGwgiXgtJwNK4j3KbcP02wg3uJ
+DLo1L1Xc+5V7egCl73SPhs7fjPxoPcE4SW/hawzKlTDaGgO7FK2Rqg==
+=9pZO
+-----END PGP SIGNATURE-----
+--=-=-=--
