@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82E63D178D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2098E3D178E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240048AbhGUT20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:28:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43786 "EHLO mail.kernel.org"
+        id S240081AbhGUT23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:28:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232757AbhGUT2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232774AbhGUT2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 15:28:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC716124B;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF46F6124C;
         Wed, 21 Jul 2021 20:08:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626898134;
-        bh=6g92C+wAvL9J1SYNRz3QrTrQRktobpS9wHiznuq1Lqs=;
+        bh=4u/Or69/PlQhSEBH0Eaic+1vZVEPAHlTAjiIyX9drlo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TapG03q3WN1+LsRa7qqdx7Wz5Mghpp+SRsWJdwZNUrPYqjpPfDe6SgjR6iS/3LgFy
-         8tPEz3i3w3vSXQnRfDkxYotB2oG+CJaeT9WnEgcI6VVLXohwpMag3XZXnvx5Lo/uFw
-         C6X0X8L4ZrFlWPZWwDf5URLNAGpzTIHHtOUrX3O2jCdE+UpQrwJWGIn4AE0CsPQBB/
-         bqPZxmyOZlgUxCaH8S8ieAq3I9FihfGHM4hhRVf2R4Nlj5Vm/CCKssbLI7S8v1eOBm
-         MTIp+iP0b3J1nlTm8EqI4JGhnKZ4WJQc9bsJeFWz+L+iWMs/3SCT+y9QpG3toP5P9A
-         0pnIgvDwRWidQ==
+        b=GcGf50oDo6wcb0No1eBJgK8ID5oDhIGw56IHM4XaZBRNAD0eIFOoKTYhI+RNEdgsn
+         LNTEGBbBYECczPoHn8wmrX0M5p8yFX28QoDDntWEhObRrd8/dLAYEOKykXAbz2Uk7B
+         kVGBNHf1U3FFfU9XeQ45ENP9QMUMMKRl76atadmfLHYUZpdeCsi6gn4ER9O5EvHiXR
+         iA9p1l3ukgjrozFf2e9W6jNHUpJF9TfAhFmdW/ox7XRx0JD+IdrIXbJJrkwd/j+8lb
+         PzUlj6KyXXLuRMy6eHGhvldjMD9w3dPvTQOd8SuwgU1rjAzvFh2e35kJgDUL/a/l+h
+         zfzrKWOT1+DIA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8B91E5C0A2D; Wed, 21 Jul 2021 13:08:54 -0700 (PDT)
+        id 8DB9B5C0BF4; Wed, 21 Jul 2021 13:08:54 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,14 +33,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 4/5] rcu/doc: Add a quick quiz to explain further why we need smp_mb__after_unlock_lock()
-Date:   Wed, 21 Jul 2021 13:08:52 -0700
-Message-Id: <20210721200853.1175189-4-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH rcu 5/5] doc: Update stallwarn.rst with recent changes
+Date:   Wed, 21 Jul 2021 13:08:53 -0700
+Message-Id: <20210721200853.1175189-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721200806.GA950569@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721200806.GA950569@paulmck-ThinkPad-P17-Gen-1>
@@ -50,63 +47,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+This commit calls out the possibility of self-detected stalls, adds new
+messages, and calls out the use for stack traces.
 
-Add some missing critical pieces of explanation to understand the need
-for full memory barriers throughout the whole grace period state machine,
-thanks to Paul's explanations.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-[ paulmck: Adjust code block per Akira Yokosawa. ]
+Reported-by: Jeff Layton <jlayton@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../Tree-RCU-Memory-Ordering.rst              | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ Documentation/RCU/stallwarn.rst | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-index 11cdab037bff6..eeb351296df11 100644
---- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-+++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-@@ -112,6 +112,35 @@ on PowerPC.
- The ``smp_mb__after_unlock_lock()`` invocations prevent this
- ``WARN_ON()`` from triggering.
+diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
+index f1c49c626e934..5036df24ae61c 100644
+--- a/Documentation/RCU/stallwarn.rst
++++ b/Documentation/RCU/stallwarn.rst
+@@ -189,8 +189,8 @@ rcupdate.rcu_task_stall_timeout
+ Interpreting RCU's CPU Stall-Detector "Splats"
+ ==============================================
  
-++-----------------------------------------------------------------------+
-+| **Quick Quiz**:                                                       |
-++-----------------------------------------------------------------------+
-+| But the chain of rcu_node-structure lock acquisitions guarantees      |
-+| that new readers will see all of the updater's pre-grace-period       |
-+| accesses and also guarantees that the updater's post-grace-period     |
-+| accesses will see all of the old reader's accesses.  So why do we     |
-+| need all of those calls to smp_mb__after_unlock_lock()?               |
-++-----------------------------------------------------------------------+
-+| **Answer**:                                                           |
-++-----------------------------------------------------------------------+
-+| Because we must provide ordering for RCU's polling grace-period       |
-+| primitives, for example, get_state_synchronize_rcu() and              |
-+| poll_state_synchronize_rcu().  Consider this code::                   |
-+|                                                                       |
-+|  CPU 0                                     CPU 1                      |
-+|  ----                                      ----                       |
-+|  WRITE_ONCE(X, 1)                          WRITE_ONCE(Y, 1)           |
-+|  g = get_state_synchronize_rcu()           smp_mb()                   |
-+|  while (!poll_state_synchronize_rcu(g))    r1 = READ_ONCE(X)          |
-+|          continue;                                                    |
-+|  r0 = READ_ONCE(Y)                                                    |
-+|                                                                       |
-+| RCU guarantees that the outcome r0 == 0 && r1 == 0 will not           |
-+| happen, even if CPU 1 is in an RCU extended quiescent state           |
-+| (idle or offline) and thus won't interact directly with the RCU       |
-+| core processing at all.                                               |
-++-----------------------------------------------------------------------+
+-For non-RCU-tasks flavors of RCU, when a CPU detects that it is stalling,
+-it will print a message similar to the following::
++For non-RCU-tasks flavors of RCU, when a CPU detects that some other
++CPU is stalling, it will print a message similar to the following::
+ 
+ 	INFO: rcu_sched detected stalls on CPUs/tasks:
+ 	2-...: (3 GPs behind) idle=06c/0/0 softirq=1453/1455 fqs=0
+@@ -204,6 +204,8 @@ PREEMPT_RCU builds can be stalled by tasks as well as by CPUs, and that
+ the tasks will be indicated by PID, for example, "P3421".  It is even
+ possible for an rcu_state stall to be caused by both CPUs *and* tasks,
+ in which case the offending CPUs and tasks will all be called out in the list.
++In some cases, CPUs will detect themselves stalling, which will result
++in a self-detected stall.
+ 
+ CPU 2's "(3 GPs behind)" indicates that this CPU has not interacted with
+ the RCU core for the past three grace periods.  In contrast, CPU 16's "(0
+@@ -283,7 +285,8 @@ If the relevant grace-period kthread has been unable to run prior to
+ the stall warning, as was the case in the "All QSes seen" line above,
+ the following additional line is printed::
+ 
+-	kthread starved for 23807 jiffies! g7075 f0x0 RCU_GP_WAIT_FQS(3) ->state=0x1 ->cpu=5
++	rcu_sched kthread starved for 23807 jiffies! g7075 f0x0 RCU_GP_WAIT_FQS(3) ->state=0x1 ->cpu=5
++	Unless rcu_sched kthread gets sufficient CPU time, OOM is now expected behavior.
+ 
+ Starving the grace-period kthreads of CPU time can of course result
+ in RCU CPU stall warnings even when all CPUs and tasks have passed
+@@ -313,15 +316,21 @@ is the current ``TIMER_SOFTIRQ`` count on cpu 4.  If this value does not
+ change on successive RCU CPU stall warnings, there is further reason to
+ suspect a timer problem.
+ 
++These messages are usually followed by stack dumps of the CPUs and tasks
++involved in the stall.  These stack traces can help you locate the cause
++of the stall, keeping in mind that the CPU detecting the stall will have
++an interrupt frame that is mainly devoted to detecting the stall.
 +
- This approach must be extended to include idle CPUs, which need
- RCU's grace-period memory ordering guarantee to extend to any
- RCU read-side critical sections preceding and following the current
+ 
+ Multiple Warnings From One Stall
+ ================================
+ 
+-If a stall lasts long enough, multiple stall-warning messages will be
+-printed for it.  The second and subsequent messages are printed at
++If a stall lasts long enough, multiple stall-warning messages will
++be printed for it.  The second and subsequent messages are printed at
+ longer intervals, so that the time between (say) the first and second
+ message will be about three times the interval between the beginning
+-of the stall and the first message.
++of the stall and the first message.  It can be helpful to compare the
++stack dumps for the different messages for the same stalled grace period.
+ 
+ 
+ Stall Warnings for Expedited Grace Periods
 -- 
 2.31.1.189.g2e36527f23
 
