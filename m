@@ -2,196 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BB53D194E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF253D1951
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhGUU6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:58:18 -0400
-Received: from mail-mw2nam10on2082.outbound.protection.outlook.com ([40.107.94.82]:51680
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229597AbhGUU6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 16:58:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S3P66cibWR6PN9Hatt3Cyn+3DlJHynmgpNjyOKrYPfzYKR4siYoAaS6wIn0/pifcdw1/AJ1oSb8SuxB7UioJKmOz7CAXIV7TCj5T2puhwMXSvOWuQzXAW9nukx64biMnRy3R5MQubNo4czcw305ba0ku77iF/t8Ow8KccTPYoqLSjDKdgKhClIuqv/pY34zig8ixpYjy0/0ozzUhZrlLjaOQoGNqhiy59f2YTebjTkK0Ujf9sxzjerXuLBmtq6qJtZRapO2i0zA26Fc1NdQVexO+hby/evmeox0tQ4I247BBBx6BCixYkKQwtbdOpAtqER1oEY/cph43Tm+r4HPTog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ybxPnST5HuEFuD1BlDX7aqWGQqMruSdLkSlZeHMM01M=;
- b=kEKDUWA4tlF7PQ80eCQGUt8AVw2ojacynguczy1ss+GfmQ1bklheVDYsB2CKLo7MM25MtC0iGBrBKooxLLEc8UR3KCzumeevlQjmOqNO6akrKI9cmk4U+uZ2rrIuSbqL/h5087Toz2t2yMNFmskqIsOV8uAuryHtzjIQLcGuqJt0ilfg8gBh+yzb1ektQOWNIZrlPIDUaYkw86jl8oDPpyR3qPAnCQ3imCwe62ULhMd+qTVbV/IomQMANt7yojKlsUQule8fYTwfBWpcF6NJSQgGsvbn40ebNSGM7DZbGUzVHq0NuZvv9x4I+o1X/oYfeDBIXJXANCLnZWNGgY4XOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ybxPnST5HuEFuD1BlDX7aqWGQqMruSdLkSlZeHMM01M=;
- b=Tu5ZT248dTPDaHExb2MawW7mVyE10UNukzsos3/9Y2ungN04SFKEGyg3vh5I8xpr4AlIlnzymQLjx0OqwhHWgacUvvKNc02ATXIzIpwp6/6EweT3fq4EjKx2uKbconmQVNbPD4Jtl6UdWuPqv0gZL2EraEYKAlxgFnfEhQXpUz584rcCpdN+HULDb+Ss6yj7OY0Z5JZ6Y8EwmCesYjFOpp18mEWeeqytASjSQxil85agM5h3s3CcAfTCWR24CmfENUSc838hpKHzREhagNhGtflBSpSj9Kx2UaVitW6806QZrKJdhNh5aS33Grl/IpVES5c8S09mWWQXSsvV/QKv2g==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
- by MN2PR12MB4080.namprd12.prod.outlook.com (2603:10b6:208:1d9::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.25; Wed, 21 Jul
- 2021 21:38:51 +0000
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::dcee:535c:30e:95f4]) by MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::dcee:535c:30e:95f4%6]) with mapi id 15.20.4352.025; Wed, 21 Jul 2021
- 21:38:51 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Wei Xu <weixugc@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Greg Thelen <gthelen@google.com>,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH -V11 8/9] mm/vmscan: never demote for memcg reclaim
-Date:   Wed, 21 Jul 2021 17:38:45 -0400
-X-Mailer: MailMate (1.14r5812)
-Message-ID: <43A1CB83-6127-427F-94AF-40CE1B283BE1@nvidia.com>
-In-Reply-To: <20210721063926.3024591-8-ying.huang@intel.com>
-References: <20210721063926.3024591-1-ying.huang@intel.com>
- <20210721063926.3024591-8-ying.huang@intel.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_B1EDC7E6-C631-4573-8A8E-31071A42A683_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BL1PR13CA0370.namprd13.prod.outlook.com
- (2603:10b6:208:2c0::15) To MN2PR12MB3823.namprd12.prod.outlook.com
- (2603:10b6:208:168::26)
+        id S229909AbhGUVAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 17:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhGUVAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 17:00:17 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212FEC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 14:40:54 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id p17so2135945plf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 14:40:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vEXADD/tGzUEc0+8M2o1tj24YNoqKRkImkzyq/62Yyo=;
+        b=ALkBIWxv3Noo8dZYk/VOkEAwKWM3UfpZYZnmCAi/RR1MBIvlAAGbSX7JQwfJYdZBlC
+         gPpGTGwRY6nIEdd1+8wP40n0ZlZbD+8dLjg/PNf/LWlPov9QthQSERLteFZex4c3yRMJ
+         0dQDuu4VDS3zA/0Vlxb2s1wAVULC0OmsYMvnY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vEXADD/tGzUEc0+8M2o1tj24YNoqKRkImkzyq/62Yyo=;
+        b=WHA5uiu/FK9e7ttmeZi+XbKnUUZVDOZc3zgCJbqi1rcwTAW1k2btAy+oCqgJ8xr/Tp
+         6RLlyqNeoSixMOfjJQ3kGgIP6CCh7XW0QORXN9TcBh5P4lyi+zg0GMROQKBOj9XKL7PU
+         OpGseWpYydeDqKQPXU4J7A7M14DIB2UaqCFhWx6yzMG+NEs6UsYKncbHd32p3K/Km+/t
+         gW1mZdP3WymbigsThvuLdAG1ekDc6M7SEj743/2vIQIpfrV7j+CSYo1LuMxO1AQxfOrO
+         VucrnAuC0UBzvsUw+OpKGemRKPumqZKBXgyKrjiESvC2oVqHNKnLcGgzcpSIePXcunSc
+         3bog==
+X-Gm-Message-State: AOAM532D/N1gX5fDRrNJCJ23ixw79T3xRGEmTkroB6V/GySu0tEuL30W
+        DpfnvKkHiUCHoE2CuYIFpq69Fw==
+X-Google-Smtp-Source: ABdhPJzV7V30j6/gnbfF/vS88cIdAE59iTHu3DlnFAc4Hnj59p7aXxt+iId45PbClk2sm6u6qQQqLw==
+X-Received: by 2002:a17:90a:ce04:: with SMTP id f4mr37397906pju.1.1626903653607;
+        Wed, 21 Jul 2021 14:40:53 -0700 (PDT)
+Received: from evgreen-glaptop.lan ([2601:646:c780:5ba8:8d9e:c2fc:c9ad:9c22])
+        by smtp.gmail.com with ESMTPSA id o184sm31435306pga.18.2021.07.21.14.40.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 14:40:53 -0700 (PDT)
+From:   Evan Green <evgreen@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-api@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>, Pavel Machek <pavel@ucw.cz>,
+        Evan Green <evgreen@chromium.org>, Alex Shi <alexs@kernel.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v3] mm: Enable suspend-only swap spaces
+Date:   Wed, 21 Jul 2021 14:40:28 -0700
+Message-Id: <20210721143946.v3.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.2.55.80] (216.228.112.21) by BL1PR13CA0370.namprd13.prod.outlook.com (2603:10b6:208:2c0::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.10 via Frontend Transport; Wed, 21 Jul 2021 21:38:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7ee5c375-269a-43c5-6452-08d94c8fee8e
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4080:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB40806443FCFF5BF1171329C1C2E39@MN2PR12MB4080.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m/G5Q7u8bHgblgq1lbPkFmdldev5NXrutVaIVTI6CCZQhctwMfKOrqCYgpZEt6meronbfMB6KBHYKOfBxmTNe+/4jw1coGXTNPyFGkvb0xvenm1r1xnF2n3mk+qfRJsC8BVxLFNoAVgJAoopo92IlnP06B+6fEtqMLmoqDy1efRRvzuMm9tmXSQLQ2thgEp25ggEpRXQiLA35WbD+54cxG+J+h4agIohu57rgZG0k0qgyqM+A6YYewfEF19an6GOlC8ppThFYupkBTElTmRDd5mr8AxeXa/qXulFw0WykgYnXJcDKXbQ6vN4ELHOjH3Cwte1k1dC4OMav+6rvtQQvbcAaC3Cg89k2MWJ+CcEcIWKfH7E0xfgm+W6sbV9R1V8kmblL9v3bx5dUNBSe61ar+JQJD+WUvlCZUNhP85DFp86ikfwwMbDbQpM/INJXxncnJDyDlageM8d3TN5IOEsuuaPIrrSs0WIObt+wquaQP/glOXRadZMqm0pSgzkUrelQpjVB+A3QABnIa692WyEoYW21wYXMiq8BRBnLkKa3ogLfOQwFaq8KHA/4l4vjvzEq9dmJwp3ProqfOdgM0EZSni7hL73d0cV9Jhras5TwYYgGbtU4J2zNo33XywsKKmKaKsZn8YxW4k3UaT5WCXyVg4pHEAvog4XyonDIS+fGcIH6ygokrxPp9fI/VbWBy1G7ZWiKa/jLJyIuVMGBT+28//VvGyOFmyU1D/x/FoIGV/Rv03agu4kBEKVbpmY1IBsCrs3txSdoDKmd2ndERnNXKOFe8zi+Gjyg0S488qegAiglN55lPSGjDgo8mKrMKpW
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(346002)(376002)(136003)(396003)(33656002)(478600001)(16576012)(38100700002)(8936002)(5660300002)(6666004)(2616005)(8676002)(36756003)(966005)(83380400001)(7416002)(235185007)(53546011)(6486002)(54906003)(66476007)(66556008)(6916009)(4326008)(186003)(26005)(316002)(21480400003)(2906002)(66946007)(33964004)(956004)(86362001)(72826004)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SlB4NzFxdlU3OTBwZkhwN25SRFZFNlFLWTZkMzI1dWJPdnJqeDRyajQ3dHhZ?=
- =?utf-8?B?QW1hd3kvTmNtbVQweFNWUnFOc3Bjcjk2ejArektzcmhFWWhjemdTWHBBVVZJ?=
- =?utf-8?B?U3FZR0FtTFM4NGVFK1JidFdsaXRwTDlhQysyUVh5OHZJOVhBWXIyeE9Memg5?=
- =?utf-8?B?YXMvMWhDQXhnV2tZNTVnK0NDdUx1R3RHa2IxWVg4K0JEWVdNaU5DRVMwSTJa?=
- =?utf-8?B?amhEb3FmNmZUVkgrWE8rSUl2bGxld3pQVGVwdlcrWTNZR0xrYVZYbU9pWk5x?=
- =?utf-8?B?NDdOZXNlR3FNanRWT1hSTW9BSzgrNGxYODhkRzFmL3BhbmxnRG4valU1ZXps?=
- =?utf-8?B?clFjeC8zNCt4dnptd3U1TUt1WEFRTzdyQTF1RWN5YTF3ZUFlYm4rbnA4U3c4?=
- =?utf-8?B?MzJ4Wk9aNXgvOUJ4UEg4RWFZSmlLcXZCOHcwemdDRXJRa3RjdzB3Q2tHcHVl?=
- =?utf-8?B?dXpDa0pQdzZxRmRYYU1CdDU5bUZxK2xQNW11VllqN1g3MnNveThSZEZHNy9C?=
- =?utf-8?B?QzhpbnZvb1RMekZ0UU42RUo4dzQrNldrVlR5cGJUQ25zL0xUNFgxMm9UK1VG?=
- =?utf-8?B?NVd0V1V4b2xjeE55YVh6cUNrWFlEd3JweUczM0M0VFJtWDJMMThoM3EvWHB5?=
- =?utf-8?B?YVFSZkVPa05yWFNteEJxSzNmSW0xT3RBT3FYMVhpcUl4RkEvaUdUV013QWxx?=
- =?utf-8?B?NVdsbGR1NG5YcW42RXFQY2FNaDZTUWRORnlIU2VVd09sK0JoeUNrck5BV2VI?=
- =?utf-8?B?Vnk1SjRmMFcwUzV0a1djZEFyVkpOWWhaanpUS3kzWEhaSVJqWUQ4ckNESUY4?=
- =?utf-8?B?dm40cTI1R1d2SU4wRXZJakdHdmcvK3J1NVgraEM0TzVjUXBtM3VWSVJGQmFx?=
- =?utf-8?B?aS9jSEhQaXN1bGhYeXlCeTIvTklnaEl5Ynd4WDlqT1VhelZrdUV5aUFRTU1Q?=
- =?utf-8?B?Zk9SYWpSUDF3Tkt3LzVtZS92N0VybmJFcE5iaUQrVFpRTUNlMkVPRmErQitw?=
- =?utf-8?B?d3FWOGVMYUpxQlFCN3lEc1huZ2RkZzBzZjNiNG1aWnQ2Z3BBUC9jbnk1amFp?=
- =?utf-8?B?eU1KZm9vYk9aS2tuL1VSaDdtR0RCSzZHT2drdjVZQjV2Q1FrQWpETXRwei9v?=
- =?utf-8?B?U25xUGtRbFVGR1dPT0lLQStzOVhreEZobDZ0dXhIQmhVU1lBaCsyUk5tWFFv?=
- =?utf-8?B?WjlYWUx2RHpzcktRcUhLcFBnM1FFMHRqZEV1RlV6T3A2TGxscUlDQnloRklB?=
- =?utf-8?B?MXhOaTlSbDhvK3FnRnhLQTFGRmtSWUZKMmVFNGxZWit5em1NcngxTzRZMndW?=
- =?utf-8?B?VFBWWGpmSVgvZVh4bDNqQVBOQjlaWllHK1JTMnhMekdZc0hEY2RRK0FRT0Zl?=
- =?utf-8?B?UzYyQVlPUDZIRzlicFZYZHdEQ0N0NGR5d3lsdWFNQWN6M0h0aHJENW5yRXA1?=
- =?utf-8?B?cVF5YTFqbU9QUXBLNmFVMUlBeDdYQk52M043dEREMjBwdG5hWjdLN0lpcllL?=
- =?utf-8?B?Qjc3eDBSaXE0MkUrMGpocjZpZlh4SS9sVitqeEs3YWdrMlVtSXloN1RvSmNU?=
- =?utf-8?B?ZGhYbTA4RVpjcW1TK0FxZTRlcUxtTGdQMHlPRW80VjAzRXpNOVBWLzMrbzBQ?=
- =?utf-8?B?Y2UvSW9nc2hyK1h5TWh3V1pZeEpOTm45MEtmR3l5emZpV05mVGdUWXlqSnNZ?=
- =?utf-8?B?Yml2aElrYzdISXdLU0dQS1IwblUxajljckxQbDFydnhTd2tITTROdnQwdkxS?=
- =?utf-8?Q?Sedltu4Lm11rtQ6SqMzLjMKc2u7erME14s+oU9+?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7ee5c375-269a-43c5-6452-08d94c8fee8e
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 21:38:51.7278
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i9TLUb4efa1QNTlgWMi4pjtg/TWOihkfeKRLFn1Jer+Bjz9U1MiAwy/XmjZ23tGf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4080
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_B1EDC7E6-C631-4573-8A8E-31071A42A683_=
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Currently it's not possible to enable hibernation without also enabling
+generic swap for a given swap area. These two use cases are not the
+same. For example there may be users who want to enable hibernation,
+but whose drives don't have the write endurance for generic swap
+activities. Swap and hibernate also have different security/integrity
+requirements, prompting folks to possibly set up something like block-level
+integrity for swap and image-level integrity for hibernate. Keeping swap
+and hibernate separate in these cases becomes not just a matter of
+preference, but correctness.
 
-On 21 Jul 2021, at 2:39, Huang Ying wrote:
+Add a new SWAP_FLAG_NOSWAP that adds a swap region but refuses to allow
+generic swapping to it. This region can still be wired up for use in
+suspend-to-disk activities, but will never have regular pages swapped to
+it. This flag will be passed in by utilities like swapon(8), usage would
+probably look something like: swapon -o noswap /dev/sda2.
 
-> From: Dave Hansen <dave.hansen@linux.intel.com>
->
-> Global reclaim aims to reduce the amount of memory used on a given node=
- or
-> set of nodes.  Migrating pages to another node serves this purpose.
->
-> memcg reclaim is different.  Its goal is to reduce the total memory
-> consumption of the entire memcg, across all nodes.  Migration does not
-> assist memcg reclaim because it just moves page contents between nodes
-> rather than actually reducing memory consumption.
->
-> Link: https://lkml.kernel.org/r/20210715055145.195411-9-ying.huang@inte=
-l.com
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Suggested-by: Yang Shi <yang.shi@linux.alibaba.com>
-> Reviewed-by: Yang Shi <shy828301@gmail.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Wei Xu <weixugc@google.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Zi Yan <ziy@nvidia.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Greg Thelen <gthelen@google.com>
-> Cc: Keith Busch <kbusch@kernel.org>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> ---
->  mm/vmscan.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
+Swap regions with SWAP_FLAG_NOSWAP set will not appear in /proc/meminfo
+under SwapTotal and SwapFree, since they are not usable as general swap.
 
-LGTM. Reviewed-by: Zi Yan <ziy@nvidia.com>.
+Signed-off-by: Evan Green <evgreen@chromium.org>
+---
 
-Should this be folded into Patch 4 when can_demote() is introduced?
+Changes in v3:
+ - Updated commit message with additional explanation [Andrew]
 
+Changes in v2:
+ - NOSWAP regions should not contribute to Swap stats in /proc/meminfo.
+   [David]
+ - Adjusted comment of SWAP_FLAG_NOSWAP [Pavel]
+ - Note: Opted not to take Pavel's tag since enough has changed in this
+   revision to warrant another look.
+ - Call swap_entry_free() in swap_free to avoid NOSWAP leaks back into
+   the general pool via swap_slots_cache [me].
 
-=E2=80=94
-Best Regards,
-Yan, Zi
+ include/linux/swap.h |  4 +++-
+ mm/swapfile.c        | 52 +++++++++++++++++++++++++++++++-------------
+ 2 files changed, 40 insertions(+), 16 deletions(-)
 
---=_MailMate_B1EDC7E6-C631-4573-8A8E-31071A42A683_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index cdf0957a88a49a..5e1d80be84bb02 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -28,10 +28,11 @@ struct pagevec;
+ #define SWAP_FLAG_DISCARD	0x10000 /* enable discard for swap */
+ #define SWAP_FLAG_DISCARD_ONCE	0x20000 /* discard swap area at swapon-time */
+ #define SWAP_FLAG_DISCARD_PAGES 0x40000 /* discard page-clusters after use */
++#define SWAP_FLAG_NOSWAP	0x80000 /* use only for hibernate, not swap */
+ 
+ #define SWAP_FLAGS_VALID	(SWAP_FLAG_PRIO_MASK | SWAP_FLAG_PREFER | \
+ 				 SWAP_FLAG_DISCARD | SWAP_FLAG_DISCARD_ONCE | \
+-				 SWAP_FLAG_DISCARD_PAGES)
++				 SWAP_FLAG_DISCARD_PAGES | SWAP_FLAG_NOSWAP)
+ #define SWAP_BATCH 64
+ 
+ static inline int current_is_kswapd(void)
+@@ -182,6 +183,7 @@ enum {
+ 	SWP_PAGE_DISCARD = (1 << 10),	/* freed swap page-cluster discards */
+ 	SWP_STABLE_WRITES = (1 << 11),	/* no overwrite PG_writeback pages */
+ 	SWP_SYNCHRONOUS_IO = (1 << 12),	/* synchronous IO is efficient */
++	SWP_NOSWAP	= (1 << 13),	/* use only for suspend, not swap */
+ 					/* add others here before... */
+ 	SWP_SCANNING	= (1 << 14),	/* refcount in scan_swap_map */
+ };
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index e3dcaeecc50f54..ca0e5e5d1f3074 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -697,7 +697,8 @@ static void swap_range_alloc(struct swap_info_struct *si, unsigned long offset,
+ 	if (si->inuse_pages == si->pages) {
+ 		si->lowest_bit = si->max;
+ 		si->highest_bit = 0;
+-		del_from_avail_list(si);
++		if (!(si->flags & SWP_NOSWAP))
++			del_from_avail_list(si);
+ 	}
+ }
+ 
+@@ -726,10 +727,12 @@ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
+ 		bool was_full = !si->highest_bit;
+ 
+ 		WRITE_ONCE(si->highest_bit, end);
+-		if (was_full && (si->flags & SWP_WRITEOK))
++		if (was_full &&
++		    ((si->flags & (SWP_WRITEOK | SWP_NOSWAP)) == SWP_WRITEOK))
+ 			add_to_avail_list(si);
+ 	}
+-	atomic_long_add(nr_entries, &nr_swap_pages);
++	if (!(si->flags & SWP_NOSWAP))
++		atomic_long_add(nr_entries, &nr_swap_pages);
+ 	si->inuse_pages -= nr_entries;
+ 	if (si->flags & SWP_BLKDEV)
+ 		swap_slot_free_notify =
+@@ -1078,6 +1081,9 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
+ 			WARN(!(si->flags & SWP_WRITEOK),
+ 			     "swap_info %d in list but !SWP_WRITEOK\n",
+ 			     si->type);
++			WARN((si->flags & SWP_NOSWAP),
++			     "swap_info %d in list but SWP_NOSWAP\n",
++			     si->type);
+ 			__del_from_avail_list(si);
+ 			spin_unlock(&si->lock);
+ 			goto nextsi;
+@@ -1338,8 +1344,12 @@ void swap_free(swp_entry_t entry)
+ 	struct swap_info_struct *p;
+ 
+ 	p = _swap_info_get(entry);
+-	if (p)
+-		__swap_entry_free(p, entry);
++	if (p) {
++		if (p->flags & SWP_NOSWAP)
++			swap_entry_free(p, entry);
++		else
++			__swap_entry_free(p, entry);
++	}
+ }
+ 
+ /*
+@@ -1783,8 +1793,10 @@ swp_entry_t get_swap_page_of_type(int type)
+ 
+ 	/* This is called for allocating swap entry, not cache */
+ 	spin_lock(&si->lock);
+-	if ((si->flags & SWP_WRITEOK) && scan_swap_map_slots(si, 1, 1, &entry))
+-		atomic_long_dec(&nr_swap_pages);
++	if ((si->flags & SWP_WRITEOK) && scan_swap_map_slots(si, 1, 1, &entry)) {
++		if (!(si->flags & SWP_NOSWAP))
++			atomic_long_dec(&nr_swap_pages);
++	}
+ 	spin_unlock(&si->lock);
+ fail:
+ 	return entry;
+@@ -2454,8 +2466,6 @@ static void setup_swap_info(struct swap_info_struct *p, int prio,
+ static void _enable_swap_info(struct swap_info_struct *p)
+ {
+ 	p->flags |= SWP_WRITEOK;
+-	atomic_long_add(p->pages, &nr_swap_pages);
+-	total_swap_pages += p->pages;
+ 
+ 	assert_spin_locked(&swap_lock);
+ 	/*
+@@ -2469,7 +2479,11 @@ static void _enable_swap_info(struct swap_info_struct *p)
+ 	 * swap_info_struct.
+ 	 */
+ 	plist_add(&p->list, &swap_active_head);
+-	add_to_avail_list(p);
++	if (!(p->flags & SWP_NOSWAP)) {
++		atomic_long_add(p->pages, &nr_swap_pages);
++		total_swap_pages += p->pages;
++		add_to_avail_list(p);
++	}
+ }
+ 
+ static void enable_swap_info(struct swap_info_struct *p, int prio,
+@@ -2564,7 +2578,9 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+ 		spin_unlock(&swap_lock);
+ 		goto out_dput;
+ 	}
+-	del_from_avail_list(p);
++	if (!(p->flags & SWP_NOSWAP))
++		del_from_avail_list(p);
++
+ 	spin_lock(&p->lock);
+ 	if (p->prio < 0) {
+ 		struct swap_info_struct *si = p;
+@@ -2581,8 +2597,10 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+ 		least_priority++;
+ 	}
+ 	plist_del(&p->list, &swap_active_head);
+-	atomic_long_sub(p->pages, &nr_swap_pages);
+-	total_swap_pages -= p->pages;
++	if (!(p->flags & SWP_NOSWAP)) {
++		atomic_long_sub(p->pages, &nr_swap_pages);
++		total_swap_pages -= p->pages;
++	}
+ 	p->flags &= ~SWP_WRITEOK;
+ 	spin_unlock(&p->lock);
+ 	spin_unlock(&swap_lock);
+@@ -3335,16 +3353,20 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 	if (swap_flags & SWAP_FLAG_PREFER)
+ 		prio =
+ 		  (swap_flags & SWAP_FLAG_PRIO_MASK) >> SWAP_FLAG_PRIO_SHIFT;
++
++	if (swap_flags & SWAP_FLAG_NOSWAP)
++		p->flags |= SWP_NOSWAP;
+ 	enable_swap_info(p, prio, swap_map, cluster_info, frontswap_map);
+ 
+-	pr_info("Adding %uk swap on %s.  Priority:%d extents:%d across:%lluk %s%s%s%s%s\n",
++	pr_info("Adding %uk swap on %s.  Priority:%d extents:%d across:%lluk %s%s%s%s%s%s\n",
+ 		p->pages<<(PAGE_SHIFT-10), name->name, p->prio,
+ 		nr_extents, (unsigned long long)span<<(PAGE_SHIFT-10),
+ 		(p->flags & SWP_SOLIDSTATE) ? "SS" : "",
+ 		(p->flags & SWP_DISCARDABLE) ? "D" : "",
+ 		(p->flags & SWP_AREA_DISCARD) ? "s" : "",
+ 		(p->flags & SWP_PAGE_DISCARD) ? "c" : "",
+-		(frontswap_map) ? "FS" : "");
++		(frontswap_map) ? "FS" : "",
++		(p->flags & SWP_NOSWAP) ? "N" : "");
+ 
+ 	mutex_unlock(&swapon_mutex);
+ 	atomic_inc(&proc_poll_event);
+-- 
+2.31.0
 
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmD4k+UPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKe0AP/jOB76epG49N+ZXkWbO0t1lefDjP4xMpskDs
-nAadE7nCZqRk/+n33Py6My7xghHq3mWrVdv0cdiWKzipdbf8adcXzhzJTGgtwCuH
-uXpybOf5OweYCTMl+Y8AAqXYWoZgjoN6AzNL0omqmsRDhaqJIeCF1zg2tABjewIA
-xwa7rmf9cexlpRMW8PmiXTYXLG01BfNDO12o6Jv87jU60594dMWB6kvs8XT/5PLP
-SbXWazkifQqXRC9ynBNYkFEOu7becUNJC+Kyu/r6YSDhXilZndYan5uNnpVTUVa6
-ACAHHXvi4n/td/Se4WpHbGR5rmlxYKhLexi4mo47F3svBlxqDMWKCVh9oVT3LtBZ
-bWmV86paT8Vn5Ye4Y67CTocJdRlGW+eH4uRZdkUrPElACDzF7lQWPCPMkqIT+L1B
-gRVz6nV2ssFCy5NCpNAbBge2XxVTBOPI8Cl4xM9DP9uJGY4+CACHWLz1M0JRCyTm
-fSF6uEWIE8GOYwKobm5YK5O4KPtHCUZFQSYKbiMzbJ5xVCXIFh/w4P3BAgSeXDBe
-PSAA0J07Rfq9E3O5ee/GzjS8UDHOs3q/OUr6HdAX9aawhQiTL0Iwo12Jn6DIvkTV
-H4CO0ATXuME9haWSiGlgZPwbofeWlk4kEnK/L/xi5N4iUiuWF/UMbJ6EZMXq8whh
-BP0f2pcD
-=Y3mk
------END PGP SIGNATURE-----
-
---=_MailMate_B1EDC7E6-C631-4573-8A8E-31071A42A683_=--
