@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20E43D1892
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1BF3D1893
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhGUUWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:22:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33186 "EHLO mail.kernel.org"
+        id S230380AbhGUUWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:22:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhGUUVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229738AbhGUUVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 16:21:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAA5E61375;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE5F161377;
         Wed, 21 Jul 2021 21:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626901303;
-        bh=2ypAAf1//UhTVaprCt661gjp0uOoM61nRDgGX5MymnM=;
+        bh=G8La4NjHWKPC8j0EAHrMvvJRJqzlGgBYRKyw0zCFXlE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uIt9nlKuGjnZQKZy02GFCYcLZ0Sh16YyhUpk9Gi48LZnlXTYj2e6PRZPgmR7hDIvs
-         kr5YEi6IMVY+KcUDNDhlpnMJUf2zPz7gJ/XwB+nZNIjl1xUx5OTOxj778xybM8bwWA
-         EXTMTjeOWR3RtH+cQOlD2Wi8zbdYU6xxMqnJ0T8ofXTxFVZkf8ldGL0+VKH5KoN1kB
-         Dlhz+2WBGKX0zs3xbw9cd9uxM7no2xoSeiSyTelPCTYB97zJwXDYF/BuNm+qN8XDhh
-         2GxiuCZwCrwvlJZv0y8Bf1yajuCjci2265vv2Xj/LW6KsNfUF1knT6OrfiY4nzHQ72
-         vuraLIxim63CA==
+        b=IEi2XzbQmgMkU4DhTsupSx7R/DqXioYuBMYxF+MHmnbD2TOzCCqvuArzqmbV3urvT
+         Fzw4BqSC06cQrhqZy1nYWp/0AFW8q9dIXAtlwf5F7b6wtpOmCgLn6bva5clNyRXG8K
+         jDF2ttHgXY3kZyONEP2RexHg5+1eGs9bt5ERpeafknSZfnUxPxNECrCSoAAtDM3lV6
+         cFsKHheW7gvNuYljsFPYfrQEWEfjxY62A2GRHcSQsJwh8lLyiEmkj81LdLM61+geVq
+         u91fmwj+cbalofEBVIuYZwMDXv5IWYf8dfKQxk2RibGOEFAju4Go0gu4SvtMtSMV3H
+         6KOrc/tGVoZfA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EA04E5C23AA; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
+        id EBC1F5C259B; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 18/21] torture: Make kvm-test-1-run-batch.sh select per-scenario affinity masks
-Date:   Wed, 21 Jul 2021 14:01:37 -0700
-Message-Id: <20210721210140.787717-18-paulmck@kernel.org>
+Subject: [PATCH rcu 19/21] torture: Don't use "test" command's "-a" argument
+Date:   Wed, 21 Jul 2021 14:01:38 -0700
+Message-Id: <20210721210140.787717-19-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
@@ -46,103 +46,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit causes kvm-test-1-run-batch.sh to use the new
-kvm-assign-cpus.sh and kvm-get-cpus-script.sh scripts to create a
-TORTURE_AFFINITY environment variable containing either an empty string
-(for no affinity) or a list of CPUs to pin the scenario's vCPUs to.
-The additional change to kvm-test-1-run.sh places the per-scenario
-number-of-CPUs information where it can easily be found.
-
-If there is some reason why affinity cannot be supplied, this commit
-prints and logs the reason via changes to kvm-again.sh.
-
-Finally, this commit updates the kvm-remote.sh script to copy the
-qemu-affinity output files back to the host system.
+There was a time long ago when the "test" command's documentation
+claimed that the "-a" and "-o" arguments did something useful.
+But this documentation now suggests letting the shell execute
+these boolean operators, so this commit applies that suggestion to
+kvm-test-1-run-qemu.sh.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/kvm-again.sh     |  2 +-
- .../selftests/rcutorture/bin/kvm-remote.sh    |  2 +-
- .../rcutorture/bin/kvm-test-1-run-batch.sh    | 23 +++++++++++++++++++
- .../rcutorture/bin/kvm-test-1-run.sh          |  1 +
- 4 files changed, 26 insertions(+), 2 deletions(-)
+ .../selftests/rcutorture/bin/kvm-test-1-run-qemu.sh    | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-index b7b8d6856d7ec..5a0023d183dac 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-@@ -179,6 +179,6 @@ if test -n "$dryrun"
- then
- 	echo ---- Dryrun complete, directory: $rundir | tee -a "$rundir/log"
- else
--	( cd "$rundir"; sh $T/runbatches.sh )
-+	( cd "$rundir"; sh $T/runbatches.sh ) | tee -a "$rundir/log"
- 	kvm-end-run-stats.sh "$rundir" "$starttime"
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
+index d828a34b5b89f..ca1d49c1c2f45 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
+@@ -89,7 +89,7 @@ then
  fi
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-index 19cadb1b2f2d3..03126eb6ec5ae 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-@@ -254,7 +254,7 @@ do
- 		sleep 30
- 	done
- 	echo " ---" Collecting results from $i `date`
--	( cd "$oldrun"; ssh $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu[_-]pid */qemu-retval; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
-+	( cd "$oldrun"; ssh $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu[_-]pid */qemu-retval */qemu-affinity; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
- done
- 
- ( kvm-end-run-stats.sh "$oldrun" "$starttime"; echo $? > $T/exitcode ) | tee -a "$oldrun/remote-log"
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh
-index 005a048c55aa0..1e29d656501bc 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh
-@@ -50,11 +50,34 @@ grep '^#' $1/qemu-cmd | sed -e 's/^# //' > $T/qemu-cmd-settings
- echo ---- System running test: `uname -a`
- echo ---- Starting kernels. `date` | tee -a log
- $TORTURE_JITTER_START
-+kvm-assign-cpus.sh /sys/devices/system/node > $T/cpuarray.awk
- for i in "$@"
+ while :
  do
- 	echo ---- System running test: `uname -a` > $i/kvm-test-1-run-qemu.sh.out
- 	echo > $i/kvm-test-1-run-qemu.sh.out
- 	export TORTURE_AFFINITY=
-+	kvm-get-cpus-script.sh $T/cpuarray.awk $T/cpubatches.awk $T/cpustate
-+	cat << '	___EOF___' >> $T/cpubatches.awk
-+	END {
-+		affinitylist = "";
-+		if (!gotcpus()) {
-+			print "echo No CPU-affinity information, so no taskset command.";
-+		} else if (cpu_count !~ /^[0-9][0-9]*$/) {
-+			print "echo " scenario ": Bogus number of CPUs (old qemu-cmd?), so no taskset command.";
-+		} else {
-+			affinitylist = nextcpus(cpu_count);
-+			if (!(affinitylist ~ /^[0-9,-][0-9,-]*$/))
-+				print "echo " scenario ": Bogus CPU-affinity information, so no taskset command.";
-+			else if (!dumpcpustate())
-+				print "echo " scenario ": Could not dump state, so no taskset command.";
-+			else
-+				print "export TORTURE_AFFINITY=" affinitylist;
-+		}
-+	}
-+	___EOF___
-+	cpu_count="`grep '# TORTURE_CPU_COUNT=' $i/qemu-cmd | sed -e 's/^.*=//'`"
-+	affinity_export="`awk -f $T/cpubatches.awk -v cpu_count="$cpu_count" -v scenario=$i < /dev/null`"
-+	$affinity_export
- 	kvm-test-1-run-qemu.sh $i >> $i/kvm-test-1-run-qemu.sh.out 2>&1 &
+-	if test -z "$qemu_pid" -a -s "$resdir/qemu-pid"
++	if test -z "$qemu_pid" && test -s "$resdir/qemu-pid"
+ 	then
+ 		qemu_pid=`cat "$resdir/qemu-pid"`
+ 	fi
+@@ -122,11 +122,11 @@ do
+ 		break
+ 	fi
  done
- for i in $runfiles
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index f10f426f50893..f4c8055dbf7ad 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -205,6 +205,7 @@ echo "# TORTURE_KCONFIG_GDB_ARG=\"$TORTURE_KCONFIG_GDB_ARG\"" >> $resdir/qemu-cm
- echo "# TORTURE_JITTER_START=\"$TORTURE_JITTER_START\"" >> $resdir/qemu-cmd
- echo "# TORTURE_JITTER_STOP=\"$TORTURE_JITTER_STOP\"" >> $resdir/qemu-cmd
- echo "# TORTURE_TRUST_MAKE=\"$TORTURE_TRUST_MAKE\"; export TORTURE_TRUST_MAKE" >> $resdir/qemu-cmd
-+echo "# TORTURE_CPU_COUNT=$cpu_count" >> $resdir/qemu-cmd
- 
- if test -n "$TORTURE_BUILDONLY"
+-if test -z "$qemu_pid" -a -s "$resdir/qemu-pid"
++if test -z "$qemu_pid" && test -s "$resdir/qemu-pid"
  then
+ 	qemu_pid=`cat "$resdir/qemu-pid"`
+ fi
+-if test $commandcompleted -eq 0 -a -n "$qemu_pid"
++if test $commandcompleted -eq 0 && test -n "$qemu_pid"
+ then
+ 	if ! test -f "$resdir/../STOP.1"
+ 	then
+@@ -159,11 +159,11 @@ then
+ 		then
+ 			last_ts=0
+ 		fi
+-		if test "$newline" != "$oldline" -a "$last_ts" -lt $((seconds + $TORTURE_SHUTDOWN_GRACE))
++		if test "$newline" != "$oldline" && test "$last_ts" -lt $((seconds + $TORTURE_SHUTDOWN_GRACE))
+ 		then
+ 			must_continue=yes
+ 		fi
+-		if test $must_continue = no -a $kruntime -ge $((seconds + $TORTURE_SHUTDOWN_GRACE))
++		if test $must_continue = no && test $kruntime -ge $((seconds + $TORTURE_SHUTDOWN_GRACE))
+ 		then
+ 			echo "!!! PID $qemu_pid hung at $kruntime vs. $seconds seconds" >> $resdir/Warnings 2>&1
+ 			kill -KILL $qemu_pid
 -- 
 2.31.1.189.g2e36527f23
 
