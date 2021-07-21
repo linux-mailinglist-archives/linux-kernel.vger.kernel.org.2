@@ -2,191 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4188E3D1709
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03AAC3D174C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239492AbhGUSqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 14:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
+        id S232467AbhGUTI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238997AbhGUSqP (ORCPT
+        with ESMTP id S239410AbhGUSx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 14:46:15 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F65DC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:26:50 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id d17so4352398ljq.12
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:26:50 -0700 (PDT)
+        Wed, 21 Jul 2021 14:53:57 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6C7C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:34:32 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id qa36so4878810ejc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:34:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9sDQIsNrlW4/7KiDM2DrNKpvI0kLVfuko2l2eubfBvQ=;
-        b=cz+Yym+fp4gdemr2ADcB3IUUobejnaEe8M1aadDtpYGC79aJSDdBdpkp+toJBuz6Ug
-         xNAHIe1Ee+XlbRRevJOputY88NGZm0RTF+YaTX3jKt6kHnOvpCMiofgIHbABcuBLeg7M
-         5EeQD0xon/UUwnnK8T/f+pY5s3Xa13Ex6ug+o=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xZ0ej/xlqgZRChvPE6flzxwaHipob78lAAQBtqKCFyk=;
+        b=iGTLXypEwA0xgrrWmhC0QTc5++cVg7UBLLk18t7uJqEVSAWTDZk2sJtvMRo9LNzULz
+         /CbbTRChxHkQOZfZFDRegnuAlTu7lCXhxvgQ2Y9OKYOMUCV0odQJQCZ+YjHis59np+qR
+         goC79xS7n6BEIgLEBYtaA/Xc7Gmt4QjIjTa+0sTGr2jwSKdyMfoxs0/nTzlP7MYkLKHe
+         MeZFkyzo63c/NTG47+alUDS+xKtdeacMskKamRsvY7Bpthpa55GkMhLYAvRryrOOeNH7
+         /fa+tiw1iXVGnXHI8ogVsuppOhmHLmU5n9adm/Mt0P7Bwn9rUJgvT/9ZkTbHPpO2mmjL
+         i93A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9sDQIsNrlW4/7KiDM2DrNKpvI0kLVfuko2l2eubfBvQ=;
-        b=q3fip5D1RD4WhBR7A/iEiXlWq4gHpukD7UxDPxcVvsIPcPjCSx9jX8nR68t60ktCH9
-         MxcAjQWoj3uQicami4THU1TRHWjt9FndnbIuTp3QL5Oj4Py/7Hai2Vh64CgA5Yg0Gmnz
-         2NqFAOoILYNKjrbBsVo+JacZsoB0c/4VEse0iNjSm89oFXwKsxXeCEeoJ8BkR63fRU8Q
-         DKbVB+HYjXyQ7ed7ILfjmnl16pGrVBICczeLNQ2LiS6CTX94SB/NXGVwdcEOWgyfAxAt
-         Uzb5XK53v72a5SE2HLC/7sEahEffbd57RhDR2DE+bAZAz4fXFvhp0BbCSqQok7Ee1ikI
-         gvPg==
-X-Gm-Message-State: AOAM5328BYaGJ+ul5TuZfdY1qv6iRILKgye7p1rXGKmsMyIkSNICBmkp
-        gQubzGBrLURp0dRV6tLHPZcvSIbzdLsYfF0q
-X-Google-Smtp-Source: ABdhPJwwuL6CDcl813ArvoKiwpcoxBDv58frk8p4ya93VRb5UsGQg1L2qYVwgJFm8dYlCommn5jsyA==
-X-Received: by 2002:a2e:bd8b:: with SMTP id o11mr31952400ljq.207.1626895608392;
-        Wed, 21 Jul 2021 12:26:48 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id n15sm1814462lft.169.2021.07.21.12.26.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 12:26:47 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id b16so3145572ljq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:26:47 -0700 (PDT)
-X-Received: by 2002:a2e:90cd:: with SMTP id o13mr15953928ljg.465.1626895606811;
- Wed, 21 Jul 2021 12:26:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xZ0ej/xlqgZRChvPE6flzxwaHipob78lAAQBtqKCFyk=;
+        b=haBV4AH9EluTrOedV9OoW3JaWAXqVD/HUVzrswi03pLIFYXGhn/wZlEjcxydcaKc0V
+         zcSAi467x25DJhKJjFWfHh+4xGik+1fBbq4Oy5Gtp35/WxYWBI5XWT5EnwQmkbuuhKl0
+         w55ldrHXFf1Dm44IYhhUTzBPvJliGMl4mSMKOBsNJETfifgS4QMrVtpEyxP9Tg+pie86
+         A5CbYAxQ2Ee4iP0fgCtWXS4KwPs3msbVa6HcQR2tDMThARTIMViWuyzOu9JPH67o45vq
+         sxfbrSTlFTiHTRC/ojHNUGREan4rUH3yBrSSmj5r6r7+stzFcv/EQcGLGU9wtV670A/G
+         oOCA==
+X-Gm-Message-State: AOAM532Yg0Mzi83oZ3e0m/TN1WTZe9a4NSA8GFfP3WjnDwLZTnzIiri7
+        WifHOZqGqAR1fJ4syHXWqE4=
+X-Google-Smtp-Source: ABdhPJwOIBT3zOReL4o/86VvY8k3AZk1n6Bh6FKOn0tIYsBbMdHqNPYi329AFtZcpmALpY60Rbleog==
+X-Received: by 2002:a17:907:961b:: with SMTP id gb27mr3488399ejc.340.1626896070700;
+        Wed, 21 Jul 2021 12:34:30 -0700 (PDT)
+Received: from localhost.localdomain ([176.30.239.20])
+        by smtp.gmail.com with ESMTPSA id e22sm11359084edu.35.2021.07.21.12.34.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 12:34:30 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org, zhansayabagdaulet@gmail.com,
+        straube.linux@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH 0/2] staging: rtl8712: fix error handling
+Date:   Wed, 21 Jul 2021 22:34:20 +0300
+Message-Id: <cover.1626895918.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210721135926.602840-1-nborisov@suse.com> <CAHk-=whqJKKc9wUacLEkvTzXYfYOUDt=kHKX6Fa8Kb4kQftbbQ@mail.gmail.com>
- <b24b5a9d-69a0-43b9-2ceb-8e4ee3bf2f17@suse.com> <CAHk-=wgMyXh3gGuSzj_Dgw=Gn_XPxGSTPq6Pz7dEyx6JNuAh9g@mail.gmail.com>
-In-Reply-To: <CAHk-=wgMyXh3gGuSzj_Dgw=Gn_XPxGSTPq6Pz7dEyx6JNuAh9g@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 21 Jul 2021 12:26:29 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgr3JSoasv3Kyzc0u-L36oAr=hzY9oUrCxaszWaxgLW0A@mail.gmail.com>
-Message-ID: <CAHk-=wgr3JSoasv3Kyzc0u-L36oAr=hzY9oUrCxaszWaxgLW0A@mail.gmail.com>
-Subject: Re: [PATCH] lib/string: Bring optimized memcmp from glibc
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>
-Content-Type: multipart/mixed; boundary="000000000000bb410005c7a726dd"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000bb410005c7a726dd
-Content-Type: text/plain; charset="UTF-8"
+Hi, rtl8712 developers and stanging maintainers!
 
-On Wed, Jul 21, 2021 at 11:45 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> I can do the mutual alignment too, but I'd actually prefer to do it as
-> a separate patch, for when there are numbers for that.
->
-> And I wouldn't do it as a byte-by-byte case, because that's just stupid.
+In this patch series I rewrote error handling approach in rtl8712 driver.
+Detailed description can be found in commit messages. In short:
 
-Here's that "try to align one of the pointers in order to avoid the
-lots-of-unaligned case" patch.
+There was strage approach to handle fw load error. For some reason fw callback
+was doing clean up stuff which can lead to UAF bug. For example:
 
-It's not quite as simple, and the generated assembly isn't quite as
-obvious. But it still generates code that looks good, it's just that
-the code to align the first pointer ends up being a bit harder to
-read.
 
-And since it's a bit less obvious, the "this is probably buggy because
-I didn't actually _test_ it" warning holds even more. But you can see
-how much simpler the code still is than the horrendous glibc mess is.
+CPU0                                        CPU1
+r871xu_dev_remove()
+                                          rtl871x_load_fw_cb()
+                                          free_netdev(netdev)
 
-And I removed the "CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS" checking,
-because now it should be at least *somewhat* reasonable even on
-machines that have a complicated "get_unaligned()".
+wait_for_completion(netdev_priv->compl) <- UAF, slab-out-of-bound or smth else
 
-But maybe I should have kept it. Only testing will tell.
+I've added free_netdev() call in my previous patch to this driver:
+e02a3b945816 ("staging: rtl8712: fix memory leak in rtl871x_load_fw_cb") to avoid
+memory leak and I believed, that this approach won't trigger anything else, but,
+unfortunately, I was wrong. Syzbot found 2 bugs [1] [2] and I decided to complely
+rewrite error handling in case of fw load failure. This patch series was tested
+with both reproducers and did't trigger any bugs.
 
-Again: UNTESTED GARBAGE ATTACHED. Be careful. But it migth work, and
-ti generates something that looks superficially reasonable.
+[1] https://syzkaller.appspot.com/bug?id=7646834b55c71c45ed85f601032daa6c23db0513
+[2] https://syzkaller.appspot.com/bug?id=89c3ddb9936d3552995130298f1d2633ab9d3541
 
-Gcc again:
 
-        memcmp:
-                cmpq    $7, %rdx
-                jbe     .L56
-                movq    (%rsi), %rax
-                cmpq    %rax, (%rdi)
-                je      .L61
-        .L55:
-                xorl    %ecx, %ecx
-                jmp     .L58
-        .L62:
-                addq    $1, %rcx
-                cmpq    %rcx, %rdx
-                je      .L51
-        .L58:
-                movzbl  (%rdi,%rcx), %eax
-                movzbl  (%rsi,%rcx), %r8d
-                subl    %r8d, %eax
-                je      .L62
-        .L51:
-                ret
-        .L56:
-                testq   %rdx, %rdx
-                jne     .L55
-                xorl    %eax, %eax
-                ret
-        .L61:
-                movq    %rdi, %rcx
-                movl    $8, %eax
-                andl    $7, %ecx
-                subq    %rcx, %rax
-                leaq    -8(%rcx,%rdx), %rdx
-                addq    %rax, %rdi
-                addq    %rax, %rsi
-                cmpq    $7, %rdx
-                ja      .L57
-                jmp     .L56
-        .L63:
-                subq    $8, %rdx
-                addq    $8, %rdi
-                addq    $8, %rsi
-                cmpq    $7, %rdx
-                jbe     .L56
-        .L57:
-                movq    (%rsi), %rax
-                cmpq    %rax, (%rdi)
-                je      .L63
-                jmp     .L55
+With regards,
+Pavel Skripkin
 
-but clang is similar (except clang isn't as eager to move basic blocks
-around, so it's visually very different).
+Pavel Skripkin (2):
+  staging: rtl8712: get rid of flush_scheduled_work
+  staging: rtl8712: error handling refactoring
 
-Note no spills, no odd shifts for unaligned accesses, no garbage.
+ drivers/staging/rtl8712/hal_init.c        | 30 ++++++++-----
+ drivers/staging/rtl8712/rtl8712_led.c     |  8 ++++
+ drivers/staging/rtl8712/rtl871x_led.h     |  1 +
+ drivers/staging/rtl8712/rtl871x_pwrctrl.c |  8 ++++
+ drivers/staging/rtl8712/rtl871x_pwrctrl.h |  1 +
+ drivers/staging/rtl8712/usb_intf.c        | 51 ++++++++++-------------
+ 6 files changed, 61 insertions(+), 38 deletions(-)
 
-Again: untested, so consider this a starting point rather than
-anything good and proper.
+-- 
+2.32.0
 
-                   Linus
-
---000000000000bb410005c7a726dd
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_krdvlhyk0>
-X-Attachment-Id: f_krdvlhyk0
-
-IGxpYi9zdHJpbmcuYyB8IDI2ICsrKysrKysrKysrKysrKysrKysrKysrKysrCiAxIGZpbGUgY2hh
-bmdlZCwgMjYgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL2xpYi9zdHJpbmcuYyBiL2xpYi9z
-dHJpbmcuYwppbmRleCA3N2JkMGIxZDMyOTYuLjNlYjM5MGZjNGY3MyAxMDA2NDQKLS0tIGEvbGli
-L3N0cmluZy5jCisrKyBiL2xpYi9zdHJpbmcuYwpAQCAtMjksNiArMjksNyBAQAogI2luY2x1ZGUg
-PGxpbnV4L2Vycm5vLmg+CiAjaW5jbHVkZSA8bGludXgvc2xhYi5oPgogCisjaW5jbHVkZSA8YXNt
-L3VuYWxpZ25lZC5oPgogI2luY2x1ZGUgPGFzbS9ieXRlb3JkZXIuaD4KICNpbmNsdWRlIDxhc20v
-d29yZC1hdC1hLXRpbWUuaD4KICNpbmNsdWRlIDxhc20vcGFnZS5oPgpAQCAtOTM1LDYgKzkzNiwz
-MSBAQCBfX3Zpc2libGUgaW50IG1lbWNtcChjb25zdCB2b2lkICpjcywgY29uc3Qgdm9pZCAqY3Qs
-IHNpemVfdCBjb3VudCkKIAljb25zdCB1bnNpZ25lZCBjaGFyICpzdTEsICpzdTI7CiAJaW50IHJl
-cyA9IDA7CiAKKwlpZiAoY291bnQgPj0gc2l6ZW9mKHVuc2lnbmVkIGxvbmcpKSB7CisJCWNvbnN0
-IHVuc2lnbmVkIGxvbmcgKnUxID0gY3M7CisJCWNvbnN0IHVuc2lnbmVkIGxvbmcgKnUyID0gY3Q7
-CisJCXVuc2lnbmVkIGxvbmcgb2Zmc2V0OworCisJCWlmIChnZXRfdW5hbGlnbmVkKHUxKSAhPSBn
-ZXRfdW5hbGlnbmVkKHUyKSkKKwkJCWdvdG8gYnl0ZXdpc2U7CisKKwkJLyogQWxpZ24gJ3UxJyB1
-cCAqLworCQlvZmZzZXQgPSBzaXplb2YoKnUxKSAtICgoc2l6ZW9mKCp1MSktMSkgJiAodW5zaWdu
-ZWQgbG9uZykodTEpKTsKKwkJdTEgPSBjcyArIG9mZnNldDsKKwkJdTIgPSBjdCArIG9mZnNldDsK
-KwkJY291bnQgLT0gb2Zmc2V0OworCisJCXdoaWxlIChjb3VudCA+PSBzaXplb2YodW5zaWduZWQg
-bG9uZykpIHsKKwkJCWlmICgqdTEgIT0gZ2V0X3VuYWxpZ25lZCh1MikpCisJCQkJYnJlYWs7CisJ
-CQl1MSsrOworCQkJdTIrKzsKKwkJCWNvdW50IC09IHNpemVvZih1bnNpZ25lZCBsb25nKTsKKwkJ
-fQorCQljcyA9IHUxOworCQljdCA9IHUyOworCX0KK2J5dGV3aXNlOgogCWZvciAoc3UxID0gY3Ms
-IHN1MiA9IGN0OyAwIDwgY291bnQ7ICsrc3UxLCArK3N1MiwgY291bnQtLSkKIAkJaWYgKChyZXMg
-PSAqc3UxIC0gKnN1MikgIT0gMCkKIAkJCWJyZWFrOwo=
---000000000000bb410005c7a726dd--
