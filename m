@@ -2,80 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04ED43D16F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 642953D16FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240219AbhGUSf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 14:35:57 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:32592 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S239665AbhGUSfp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 14:35:45 -0400
-X-IronPort-AV: E=Sophos;i="5.84,258,1620658800"; 
-   d="scan'208";a="88398359"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 22 Jul 2021 04:16:20 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2F326400854C;
-        Thu, 22 Jul 2021 04:16:18 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v3 4/4] arm64: dts: renesas: rzg2l-smarc: Add scif0 pins
-Date:   Wed, 21 Jul 2021 20:15:58 +0100
-Message-Id: <20210721191558.22484-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210721191558.22484-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20210721191558.22484-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S238159AbhGUShV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Jul 2021 14:37:21 -0400
+Received: from aposti.net ([89.234.176.197]:51626 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232419AbhGUShT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 14:37:19 -0400
+Date:   Wed, 21 Jul 2021 20:17:45 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 6/6] dt-bindings: iio/adc: ingenic: add the JZ4760(B) socs
+ to the sadc Documentation
+To:     citral23 <cbranchereau@gmail.com>
+Cc:     jic23@kernel.org, lars@metafoo.de, linux-mips@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net,
+        contact@artur-rojek.eu
+Message-Id: <L90MWQ.K24XQ4Q0L9XN@crapouillou.net>
+In-Reply-To: <20210721105317.36742-7-cbranchereau@gmail.com>
+References: <20210721105317.36742-1-cbranchereau@gmail.com>
+        <20210721105317.36742-7-cbranchereau@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add scif0 pins in pinctrl node and update the scif0 node
-to include pinctrl properties.
+Hi Christophe,
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Please always add a short description in your patches, even if all you 
+do is repeat the patch title.
 
-diff --git a/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi b/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
-index adcd4f50519e..0987163f25ee 100644
---- a/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
-+++ b/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
-@@ -6,6 +6,7 @@
-  */
- 
- #include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/pinctrl/rzg2l-pinctrl.h>
- 
- / {
- 	aliases {
-@@ -22,6 +23,15 @@
- 	clock-frequency = <24000000>;
- };
- 
-+&pinctrl {
-+	scif0_pins: scif0 {
-+		pinmux = <RZG2L_PORT_PINMUX(38, 0, 1)>,	/* TxD */
-+			 <RZG2L_PORT_PINMUX(38, 1, 1)>;	/* RxD */
-+	};
-+};
-+
- &scif0 {
-+	pinctrl-0 = <&scif0_pins>;
-+	pinctrl-names = "default";
- 	status = "okay";
- };
--- 
-2.17.1
+
+Le mer., juil. 21 2021 at 12:53:17 +0200, citral23 
+<cbranchereau@gmail.com> a écrit :
+> Signed-off-by: citral23 <cbranchereau@gmail.com>
+> ---
+>  .../devicetree/bindings/iio/adc/ingenic,adc.yaml         | 9 
+> +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git 
+> a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml 
+> b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+> index 433a3fb55a2e..1b423adba61d 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+> @@ -23,6 +23,8 @@ properties:
+>      enum:
+>        - ingenic,jz4725b-adc
+>        - ingenic,jz4740-adc
+> +      - ingenic,jz4760-adc
+> +      - ingenic,jz4760b-adc
+>        - ingenic,jz4770-adc
+> 
+>    '#io-channel-cells':
+> @@ -43,6 +45,12 @@ properties:
+>    interrupts:
+>      maxItems: 1
+> 
+> +  ingenic,use-internal-divider:
+> +    description:
+> +      This property can be used to set VBAT_SEL in the JZ4760B CFG 
+> register
+> +      to sample the battery voltage from the internal divider. If 
+> absent, it
+> +      will sample the external divider.
+
+Please remove trailing spaces. And you don't need to describe internal 
+behaviour; you only need to explain the functionality in a user-facing 
+perspective. Something like:
+
+"If present, battery voltage is read from the VBAT_IR pin, which has an 
+internal /4 divider. If absent, it is read through the VBAT_ER pin, 
+which does not have such divider."
+
+You also don't specify the type of the property, please add "type: 
+boolean" before the description.
+
+There should also be a way to make sure that this property can only be 
+used with the JZ4760B SoC. So a dependency for this vendor property on 
+the "ingenic,jz4760b-adc" compatible string. But I'm honestly not sure 
+how to express that... Maybe Rob can help.
+
+> +
+>  required:
+>    - compatible
+>    - '#io-channel-cells'
+> @@ -53,6 +61,7 @@ required:
+> 
+>  additionalProperties: false
+> 
+> +
+
+Remove the extra newline.
+
+Cheers,
+-Paul
+
+>  examples:
+>    - |
+>      #include <dt-bindings/clock/jz4740-cgu.h>
+> --
+> 2.30.2
+> 
+
 
