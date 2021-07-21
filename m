@@ -2,234 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFC43D0A2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB923D0A3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234501AbhGUHTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 03:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
+        id S234096AbhGUHU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 03:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234280AbhGUHR6 (ORCPT
+        with ESMTP id S233957AbhGUHS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:17:58 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC54DC061767;
-        Wed, 21 Jul 2021 00:58:35 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id j73so1146195pge.1;
-        Wed, 21 Jul 2021 00:58:35 -0700 (PDT)
+        Wed, 21 Jul 2021 03:18:59 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE31C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 00:59:31 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id o72-20020a9d224e0000b02904bb9756274cso1300066ota.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 00:59:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0r7Snqa7jDQOWEOYS2VGMrE6hSBLZKPe/sB/w5/dLBo=;
-        b=StBryJxE4/C+5nTVVqXPx8OG+lzkRAytVgibKUxDnfdu/3oqfoyrySR97EKWK7M0X3
-         46HpVhW1bgxw/Oh8SFfonOHmpAmqxSQjhJJ27e65pY63G8HanwKmZql7fMvWtZWSSD9/
-         HVohh2GM4/H9+zUCQL3LsWbQcHW6uEH8vNb4OI8s/xNAXsn+rwtcRSodIruEMa385SYM
-         dWgfrESiKr72J6LCa9q7Fv/fzFD06RKXsGF78mb7znMpP6vRgKyUfsPx7D1h95bvFHxC
-         G9BSdrDgU1erOWhOJHIOEj+mumh6tZ29hnom2g6zCi3T1tCb+p3GQf6ZtXjqnQRJl5QT
-         PCrg==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=i1uzYLmR5eIDsH2uz91oXJvOO8JLzGZfgbFg19OYUOg=;
+        b=iIIO8uiPJd8ABtw13Umn0Qzy4qd108xTqg9zeHtryzTqn1f23VsT6sj+Xdy7fw5pB0
+         JXSSOKWxIHPm+DTThfW4L7RTzyfLxc59rBMx365YGzyk7XQRM47pp7v+T9hNYttlfAKv
+         plx0mOufPHR8h5iNXoImM0LMpyzeJIirrUpPY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0r7Snqa7jDQOWEOYS2VGMrE6hSBLZKPe/sB/w5/dLBo=;
-        b=Mn3ujUaw9NcQLUk3ZINtBD14VYBL6LRsy5b0tBfQemQQS+3vCTjr6+25U3v5tASRua
-         k/Z70o922WIVISVWaPrbr8MzciWT8XqAtYBD5uB6lGxcBhkGTDXXAzZUzED4b5RpxkYp
-         pBzN0zj4W79BYpOCqG3AJfhhcL+W8o/S9PtVABtj8U4JhFustk9KoJr/Og15GMGLFrPh
-         97bzoO1DZDUsGgupFRmICA/XV3EBQbRk+nFmHTv40Qor4VVpg7QCt2ZQTEqK/zfQ9Q7h
-         XpYwkpxWXtwonwkJ7PgIkTKoLfEpgSZCR+LYqzJaM9FZe10by8JPDEIv8oG2UgfgEZQy
-         S3aA==
-X-Gm-Message-State: AOAM533GqceGLmGMhswHf8xEf+IdTchdRc+qTXeyg9SysWtqHu7djOsI
-        2r9DH5+n9GdZaa0F8uusVTo=
-X-Google-Smtp-Source: ABdhPJwnqma2Q1t6EX0yVDhku7X/8rpZqUZ75abYmy1GSmMErlU7PCYy67/XxXPHZZHsxboT7+ltlg==
-X-Received: by 2002:a63:3704:: with SMTP id e4mr34657458pga.310.1626854315424;
-        Wed, 21 Jul 2021 00:58:35 -0700 (PDT)
-Received: from BJ10918PCW.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id q3sm27847723pfb.184.2021.07.21.00.58.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 00:58:35 -0700 (PDT)
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-To:     dietmar.eggemann@arm.com, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org
-Cc:     rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, mcgrof@kernel.org, keescook@chromium.org,
-        yzaikin@google.com, pjt@google.com, qais.yousef@arm.com,
-        qperret@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH] sched/uclamp:  Introduce a method to transform UCLAMP_MIN into BOOST
-Date:   Wed, 21 Jul 2021 15:57:51 +0800
-Message-Id: <20210721075751.542-1-xuewen.yan94@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=i1uzYLmR5eIDsH2uz91oXJvOO8JLzGZfgbFg19OYUOg=;
+        b=ghqrR9sJHKqy8xF1h2wsWWp0No23ybAKXHHXEWJl+qV6xD6TQsH8KWr1psgOPnzyRP
+         oLbks1Z3L/6RZN958gygxgZnh98fARitmHc5m2R3P3NuDQ8Tt0kcZ6M8rNJz+3jbxtKL
+         WBFgsiNrVcWhNr4L3DQL6ko8p+A+FyYNc146MFw+jFKdcyUL4NbHptKO5ZKJFzWQvqrB
+         P2Bk6qVZzMDO865/Kwtjsv8nipl1vwZ8W0B2UcHvkQSFcIv/xjJZxE/Kq+3KLDJbg63Z
+         057wca0ZiSY2a/7vsoLZ+F1TjnxYSo0zqunEOqNpDu498uWDmxsEQ/H+yUMLbsq6wx84
+         p3Zg==
+X-Gm-Message-State: AOAM530sDLdapdRGZMjN0skLEm/DL/jX1y/HeIu3qudNyf+Cw6rcGATu
+        yYcBQZ1hcen8BhJFpfSBWj+QMg9qqWwEmxHZQRTcmQ==
+X-Google-Smtp-Source: ABdhPJzlBV2SpVcZvVFa40w7afLAaXHdHt5EO5vd/HzIEfGT9t2nEOfXFCaT4JwjLsT9zv7LjEY872P7lUIno55+qlo=
+X-Received: by 2002:a9d:6d86:: with SMTP id x6mr11443606otp.188.1626854370953;
+ Wed, 21 Jul 2021 00:59:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210720150716.1213775-1-robdclark@gmail.com> <60ffb6f3-e932-d9af-3b90-81adf0c15250@gmail.com>
+ <CAF6AEGtOW3EjZWo36ij8U1om=gAqvg8CSkJJq2GkyHFGWUH4kQ@mail.gmail.com>
+ <CAKMK7uF1=Y6_9znGoWG8GrteXBBRmyW8C3bFE+eJQqOj0A1buA@mail.gmail.com> <CAF6AEGsOVPdMkXwU9C+nDfQpPThveJ2A0jbXi43RRkkJKtnz3w@mail.gmail.com>
+In-Reply-To: <CAF6AEGsOVPdMkXwU9C+nDfQpPThveJ2A0jbXi43RRkkJKtnz3w@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 21 Jul 2021 09:59:20 +0200
+Message-ID: <CAKMK7uHMXFqic=9APJrSf6totB8nGZTDe4x8+sv-drmV4Q+4Bg@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH] drm/msm: Add fence->wait() op
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Sean Paul <sean@poorly.run>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuewen Yan <xuewen.yan@unisoc.com>
+On Wed, Jul 21, 2021 at 12:32 AM Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Tue, Jul 20, 2021 at 1:55 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Tue, Jul 20, 2021 at 8:26 PM Rob Clark <robdclark@gmail.com> wrote:
+> > >
+> > > On Tue, Jul 20, 2021 at 11:03 AM Christian K=C3=B6nig
+> > > <ckoenig.leichtzumerken@gmail.com> wrote:
+> > > >
+> > > > Hi Rob,
+> > > >
+> > > > Am 20.07.21 um 17:07 schrieb Rob Clark:
+> > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > >
+> > > > > Somehow we had neither ->wait() nor dma_fence_signal() calls, and=
+ no
+> > > > > one noticed.  Oops.
+> > > >
+> > > >
+> > > > I'm not sure if that is a good idea.
+> > > >
+> > > > The dma_fence->wait() callback is pretty much deprecated and should=
+ not
+> > > > be used any more.
+> > > >
+> > > > What exactly do you need that for?
+> > >
+> > > Well, the alternative is to track the set of fences which have
+> > > signalling enabled, and then figure out which ones to signal, which
+> > > seems like a lot more work, vs just re-purposing the wait
+> > > implementation we already have for non-dma_fence cases ;-)
+> > >
+> > > Why is the ->wait() callback (pretty much) deprecated?
+> >
+> > Because if you need it that means for your driver dma_fence_add_cb is
+> > broken, which means a _lot_ of things don't work. Like dma_buf poll
+> > (compositors have patches to start using that), and I think
+> > drm/scheduler also becomes rather unhappy.
+>
+> I'm starting to page back in how this works.. fence cb's aren't broken
+> (which is also why dma_fence_wait() was not completely broken),
+> because in retire_submits() we call
+> dma_fence_is_signaled(submit->hw_fence).
+>
+> But the reason that the custom wait function cleans up a tiny bit of
+> jank is that the wait_queue_head_t gets signaled earlier, before we
+> start iterating the submits and doing all that retire_submit() stuff
+> (unpin/unref bo's, etc).  I suppose I could just split things up to
+> call dma_fence_signal() earlier, and *then* do the retire_submits()
+> stuff.
 
-The uclamp can clamp the util within uclamp_min and uclamp_max,
-it is benifit to some tasks with small util, but for those tasks
-with middle util, it is useless.
+Yeah reducing the latency there sounds like a good idea.
+-Daniel
 
-To speed up those tasks, convert UCLAMP_MIN to BOOST,
-the BOOST as schedtune does:
+>
+> BR,
+> -R
+>
+> > It essentially exists only for old drivers where ->enable_signalling
+> > is unreliable and we paper over that with a retry loop in ->wait and
+> > pray no one notices that it's too butchered. The proper fix is to have
+> > a driver thread to guarantee that ->enable_signalling works reliable,
+> > so you don't need a ->wait.
+> >
+> > Can you type up a kerneldoc patch for dma_fence_ops->wait to hammer
+> > this in please?
+> > -Daniel
+> >
+> > >
+> > > BR,
+> > > -R
+> > >
+> > > > Regards,
+> > > > Christian.
+> > > >
+> > > > >
+> > > > > Note that this removes the !timeout case, which has not been used=
+ in
+> > > > > a long time.
+> > > >
+> > > >
+> > > > >
+> > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > > ---
+> > > > >   drivers/gpu/drm/msm/msm_fence.c | 59 +++++++++++++++++++-------=
+-------
+> > > > >   1 file changed, 34 insertions(+), 25 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/ms=
+m/msm_fence.c
+> > > > > index cd59a5918038..8ee96b90ded6 100644
+> > > > > --- a/drivers/gpu/drm/msm/msm_fence.c
+> > > > > +++ b/drivers/gpu/drm/msm/msm_fence.c
+> > > > > @@ -38,11 +38,10 @@ static inline bool fence_completed(struct msm=
+_fence_context *fctx, uint32_t fenc
+> > > > >       return (int32_t)(fctx->completed_fence - fence) >=3D 0;
+> > > > >   }
+> > > > >
+> > > > > -/* legacy path for WAIT_FENCE ioctl: */
+> > > > > -int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fenc=
+e,
+> > > > > -             ktime_t *timeout, bool interruptible)
+> > > > > +static signed long wait_fence(struct msm_fence_context *fctx, ui=
+nt32_t fence,
+> > > > > +             signed long remaining_jiffies, bool interruptible)
+> > > > >   {
+> > > > > -     int ret;
+> > > > > +     signed long ret;
+> > > > >
+> > > > >       if (fence > fctx->last_fence) {
+> > > > >               DRM_ERROR_RATELIMITED("%s: waiting on invalid fence=
+: %u (of %u)\n",
+> > > > > @@ -50,33 +49,34 @@ int msm_wait_fence(struct msm_fence_context *=
+fctx, uint32_t fence,
+> > > > >               return -EINVAL;
+> > > > >       }
+> > > > >
+> > > > > -     if (!timeout) {
+> > > > > -             /* no-wait: */
+> > > > > -             ret =3D fence_completed(fctx, fence) ? 0 : -EBUSY;
+> > > > > +     if (interruptible) {
+> > > > > +             ret =3D wait_event_interruptible_timeout(fctx->even=
+t,
+> > > > > +                     fence_completed(fctx, fence),
+> > > > > +                     remaining_jiffies);
+> > > > >       } else {
+> > > > > -             unsigned long remaining_jiffies =3D timeout_to_jiff=
+ies(timeout);
+> > > > > -
+> > > > > -             if (interruptible)
+> > > > > -                     ret =3D wait_event_interruptible_timeout(fc=
+tx->event,
+> > > > > -                             fence_completed(fctx, fence),
+> > > > > -                             remaining_jiffies);
+> > > > > -             else
+> > > > > -                     ret =3D wait_event_timeout(fctx->event,
+> > > > > -                             fence_completed(fctx, fence),
+> > > > > -                             remaining_jiffies);
+> > > > > -
+> > > > > -             if (ret =3D=3D 0) {
+> > > > > -                     DBG("timeout waiting for fence: %u (complet=
+ed: %u)",
+> > > > > -                                     fence, fctx->completed_fenc=
+e);
+> > > > > -                     ret =3D -ETIMEDOUT;
+> > > > > -             } else if (ret !=3D -ERESTARTSYS) {
+> > > > > -                     ret =3D 0;
+> > > > > -             }
+> > > > > +             ret =3D wait_event_timeout(fctx->event,
+> > > > > +                     fence_completed(fctx, fence),
+> > > > > +                     remaining_jiffies);
+> > > > > +     }
+> > > > > +
+> > > > > +     if (ret =3D=3D 0) {
+> > > > > +             DBG("timeout waiting for fence: %u (completed: %u)"=
+,
+> > > > > +                             fence, fctx->completed_fence);
+> > > > > +             ret =3D -ETIMEDOUT;
+> > > > > +     } else if (ret !=3D -ERESTARTSYS) {
+> > > > > +             ret =3D 0;
+> > > > >       }
+> > > > >
+> > > > >       return ret;
+> > > > >   }
+> > > > >
+> > > > > +/* legacy path for WAIT_FENCE ioctl: */
+> > > > > +int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fenc=
+e,
+> > > > > +             ktime_t *timeout, bool interruptible)
+> > > > > +{
+> > > > > +     return wait_fence(fctx, fence, timeout_to_jiffies(timeout),=
+ interruptible);
+> > > > > +}
+> > > > > +
+> > > > >   /* called from workqueue */
+> > > > >   void msm_update_fence(struct msm_fence_context *fctx, uint32_t =
+fence)
+> > > > >   {
+> > > > > @@ -114,10 +114,19 @@ static bool msm_fence_signaled(struct dma_f=
+ence *fence)
+> > > > >       return fence_completed(f->fctx, f->base.seqno);
+> > > > >   }
+> > > > >
+> > > > > +static signed long msm_fence_wait(struct dma_fence *fence, bool =
+intr,
+> > > > > +             signed long timeout)
+> > > > > +{
+> > > > > +     struct msm_fence *f =3D to_msm_fence(fence);
+> > > > > +
+> > > > > +     return wait_fence(f->fctx, fence->seqno, timeout, intr);
+> > > > > +}
+> > > > > +
+> > > > >   static const struct dma_fence_ops msm_fence_ops =3D {
+> > > > >       .get_driver_name =3D msm_fence_get_driver_name,
+> > > > >       .get_timeline_name =3D msm_fence_get_timeline_name,
+> > > > >       .signaled =3D msm_fence_signaled,
+> > > > > +     .wait =3D msm_fence_wait,
+> > > > >   };
+> > > > >
+> > > > >   struct dma_fence *
+> > > >
+> >
+> >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
 
-boot = uclamp_min / SCHED_CAPACITY_SCALE;
-margin = boost * (uclamp_max - util)
-boost_util = util + margin;
 
-Scenario:
-if the task_util = 200, {uclamp_min, uclamp_max} = {100, 1024}
 
-without patch:
-clamp_util = 200;
-
-with patch:
-clamp_util = 200 + (100 / 1024) * (1024 - 200) = 280;
-
-On the other hand, adding a SYS interface to  allow users
-to configure it according to their own needs.
-
-Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
----
- include/linux/sched/sysctl.h |  1 +
- kernel/sched/core.c          | 19 +++++++++++++++++++
- kernel/sched/fair.c          | 15 ++++++++++++---
- kernel/sched/sched.h         | 10 +++++++++-
- kernel/sysctl.c              |  9 +++++++++
- 5 files changed, 50 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
-index db2c0f34aaaf..97d8c5ecd4e6 100644
---- a/include/linux/sched/sysctl.h
-+++ b/include/linux/sched/sysctl.h
-@@ -69,6 +69,7 @@ extern unsigned int sysctl_sched_dl_period_min;
- extern unsigned int sysctl_sched_uclamp_util_min;
- extern unsigned int sysctl_sched_uclamp_util_max;
- extern unsigned int sysctl_sched_uclamp_util_min_rt_default;
-+extern unsigned int sysctl_sched_uclamp_min_to_boost;
- #endif
- 
- #ifdef CONFIG_CFS_BANDWIDTH
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2d9ff40f4661..8a49f9962cda 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1245,6 +1245,9 @@ unsigned int sysctl_sched_uclamp_util_max = SCHED_CAPACITY_SCALE;
-  */
- unsigned int sysctl_sched_uclamp_util_min_rt_default = SCHED_CAPACITY_SCALE;
- 
-+/* map util clamp_min to boost */
-+unsigned int sysctl_sched_uclamp_min_to_boost;
-+
- /* All clamps are required to be less or equal than these values */
- static struct uclamp_se uclamp_default[UCLAMP_CNT];
- 
-@@ -1448,6 +1451,22 @@ uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
- 	return uc_req;
- }
- 
-+unsigned long uclamp_transform_boost(unsigned long util, unsigned long uclamp_min,
-+				    unsigned long uclamp_max)
-+{
-+	unsigned long margin;
-+
-+	if (unlikely(uclamp_min > uclamp_max))
-+		return util;
-+
-+	if (util >= uclamp_max)
-+		return uclamp_max;
-+
-+	margin = DIV_ROUND_CLOSEST_ULL(uclamp_min * (uclamp_max - util),
-+					SCHED_CAPACITY_SCALE);
-+	return util + margin;
-+}
-+
- unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id)
- {
- 	struct uclamp_se uc_eff;
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 44c452072a1b..790dfbb6c897 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3934,9 +3934,18 @@ static inline unsigned long task_util_est(struct task_struct *p)
- #ifdef CONFIG_UCLAMP_TASK
- static inline unsigned long uclamp_task_util(struct task_struct *p)
- {
--	return clamp(task_util_est(p),
--		     uclamp_eff_value(p, UCLAMP_MIN),
--		     uclamp_eff_value(p, UCLAMP_MAX));
-+	unsigned long min_util = uclamp_eff_value(p, UCLAMP_MIN);
-+	unsigned long max_util = uclamp_eff_value(p, UCLAMP_MAX);
-+	unsigned long clamp_util, util;
-+
-+	util = task_util_est(p);
-+
-+	if (sysctl_sched_uclamp_min_to_boost)
-+		clamp_util = uclamp_transform_boost(util, min_util, max_util);
-+	else
-+		clamp_util = clamp(util, min_util, max_util);
-+
-+	return clamp_util;
- }
- #else
- static inline unsigned long uclamp_task_util(struct task_struct *p)
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 14a41a243f7b..73657be84678 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2796,6 +2796,8 @@ static inline void cpufreq_update_util(struct rq *rq, unsigned int flags) {}
- 
- #ifdef CONFIG_UCLAMP_TASK
- unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id);
-+unsigned long uclamp_transform_boost(unsigned long util, unsigned long uclamp_min,
-+				     unsigned long uclamp_max);
- 
- /**
-  * uclamp_rq_util_with - clamp @util with @rq and @p effective uclamp values.
-@@ -2820,6 +2822,7 @@ unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
- {
- 	unsigned long min_util = 0;
- 	unsigned long max_util = 0;
-+	unsigned long clamp_util;
- 
- 	if (!static_branch_likely(&sched_uclamp_used))
- 		return util;
-@@ -2847,7 +2850,12 @@ unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
- 	if (unlikely(min_util >= max_util))
- 		return min_util;
- 
--	return clamp(util, min_util, max_util);
-+	if (sysctl_sched_uclamp_min_to_boost)
-+		clamp_util = uclamp_transform_boost(util, min_util, max_util);
-+	else
-+		clamp_util = clamp(util, min_util, max_util);
-+
-+	return clamp_util;
- }
- 
- /*
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 272f4a272f8c..b3a83356a969 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -1827,6 +1827,15 @@ static struct ctl_table kern_table[] = {
- 		.mode		= 0644,
- 		.proc_handler	= sysctl_sched_uclamp_handler,
- 	},
-+	{
-+		.procname	= "sched_clamp_min2boost",
-+		.data		= &sysctl_sched_uclamp_min_to_boost,
-+		.maxlen		= sizeof(unsigned int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
- #endif
- #ifdef CONFIG_SCHED_AUTOGROUP
- 	{
--- 
-2.25.1
-
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
