@@ -2,152 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCE13D0690
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 03:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B403D06AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 04:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhGUBPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 21:15:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59626 "EHLO mail.kernel.org"
+        id S230327AbhGUBlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 21:41:12 -0400
+Received: from mga03.intel.com ([134.134.136.65]:60809 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230015AbhGUBPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 21:15:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC5AC6044F;
-        Wed, 21 Jul 2021 01:55:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626832545;
-        bh=udoAwfxkz2c3+6bRQCgcDtKski/cNMY8ohh4yK73Tso=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AOUtAI/4UX6ZSX/WqH40ms5XuNKclmxsf9ByxBxR1YeMHhmuGjX5cW0REJZj+1QCJ
-         MVt10zmqJAZD+Si81q49Vi2ijLgikeMBrym0jqg/OoggGtTRPm+OMY4hBs5/vy5IEz
-         0kvms9zOVERaw2CP0vXGzUvHTM0PIzrjt+KjFH7k/fNYmk0hwIJXFKwutqgOvM9vYY
-         IFzz43q9q16ohDtTRHSpLRZneMNNzsSMBH24dEOGpCVuEYIWj58oIQ8YrfeO1/mJ5O
-         Htc66L8MBi4h8wwwhNyo/PIr9gfbcWdQvt8PBZzh9krjCpNlbaYnvN8KXhtwAH9t2/
-         e3x6Z5frbSgqg==
-Date:   Tue, 20 Jul 2021 18:55:42 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH] Input: serio - make write method mandatory
-Message-ID: <YPd+nl30LwKWpEZa@Ryzen-9-3900X.localdomain>
-References: <YFgUxG/TljMuVeQ3@google.com>
+        id S229903AbhGUBlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 21:41:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="211418639"
+X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
+   d="asc'?scan'208";a="211418639"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 19:21:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
+   d="asc'?scan'208";a="495105095"
+Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Jul 2021 19:21:45 -0700
+Date:   Wed, 21 Jul 2021 10:00:09 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc:     Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Xin Tan <tanxin.ctf@gmail.com>,
+        yuanxzhang@fudan.edu.cn
+Subject: Re: [PATCH] drm/i915/gvt: Convert from atomic_t to refcount_t on
+ intel_vgpu_ppgtt_spt->refcount
+Message-ID: <20210721020009.GG13928@zhen-hp.sh.intel.com>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <1626432098-27626-1-git-send-email-xiyuyang19@fudan.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="DNUSDXU7R7AVVM8C"
 Content-Disposition: inline
-In-Reply-To: <YFgUxG/TljMuVeQ3@google.com>
+In-Reply-To: <1626432098-27626-1-git-send-email-xiyuyang19@fudan.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 08:53:40PM -0700, Dmitry Torokhov wrote:
-> Given that all serio drivers except one implement write() method
-> let's make it mandatory to avoid testing for its presence whenever
-> we attempt to use it.
-> 
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+
+--DNUSDXU7R7AVVM8C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 2021.07.16 18:41:38 +0800, Xiyu Yang wrote:
+> refcount_t type and corresponding API can protect refcounters from
+> accidental underflow and overflow and further use-after-free situations
+>
+
+Thanks for the patch. Is there any specific problem you run with current co=
+de?
+Any shadow ppgtt error?
+
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 > ---
->  drivers/input/serio/ams_delta_serio.c | 6 ++++++
->  drivers/input/serio/serio.c           | 5 +++++
->  include/linux/serio.h                 | 5 +----
->  3 files changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/input/serio/ams_delta_serio.c b/drivers/input/serio/ams_delta_serio.c
-> index 1c0be299f179..a1c314897951 100644
-> --- a/drivers/input/serio/ams_delta_serio.c
-> +++ b/drivers/input/serio/ams_delta_serio.c
-> @@ -89,6 +89,11 @@ static irqreturn_t ams_delta_serio_interrupt(int irq, void *dev_id)
->  	return IRQ_HANDLED;
->  }
->  
-> +static int ams_delta_serio_write(struct serio *serio, u8 data)
-> +{
-> +	return -EINVAL;
-> +}
-> +
->  static int ams_delta_serio_open(struct serio *serio)
+>  drivers/gpu/drm/i915/gvt/gtt.c | 11 ++++++-----
+>  drivers/gpu/drm/i915/gvt/gtt.h |  3 ++-
+>  2 files changed, 8 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gt=
+t.c
+> index cc2c05e18206..62f3daff5a36 100644
+> --- a/drivers/gpu/drm/i915/gvt/gtt.c
+> +++ b/drivers/gpu/drm/i915/gvt/gtt.c
+> @@ -841,7 +841,7 @@ static struct intel_vgpu_ppgtt_spt *ppgtt_alloc_spt(
+>  	}
+> =20
+>  	spt->vgpu =3D vgpu;
+> -	atomic_set(&spt->refcount, 1);
+> +	refcount_set(&spt->refcount, 1);
+>  	INIT_LIST_HEAD(&spt->post_shadow_list);
+> =20
+>  	/*
+> @@ -927,18 +927,19 @@ static struct intel_vgpu_ppgtt_spt *ppgtt_alloc_spt=
+_gfn(
+> =20
+>  static inline void ppgtt_get_spt(struct intel_vgpu_ppgtt_spt *spt)
 >  {
->  	struct ams_delta_serio *priv = serio->port_data;
-> @@ -157,6 +162,7 @@ static int ams_delta_serio_init(struct platform_device *pdev)
->  	priv->serio = serio;
->  
->  	serio->id.type = SERIO_8042;
-> +	serio->write = ams_delta_serio_write;
->  	serio->open = ams_delta_serio_open;
->  	serio->close = ams_delta_serio_close;
->  	strlcpy(serio->name, "AMS DELTA keyboard adapter", sizeof(serio->name));
-> diff --git a/drivers/input/serio/serio.c b/drivers/input/serio/serio.c
-> index 29f491082926..8d229a11bb6b 100644
-> --- a/drivers/input/serio/serio.c
-> +++ b/drivers/input/serio/serio.c
-> @@ -694,6 +694,11 @@ EXPORT_SYMBOL(serio_reconnect);
->   */
->  void __serio_register_port(struct serio *serio, struct module *owner)
->  {
-> +	if (!serio->write) {
-> +		pr_err("%s: refusing to register %s without write method\n",
-> +		       __func__, serio->name);
-> +		return;
-> +	}
->  	serio_init_port(serio);
->  	serio_queue_event(serio, owner, SERIO_REGISTER_PORT);
+> -	int v =3D atomic_read(&spt->refcount);
+> +	int v =3D refcount_read(&spt->refcount);
+> =20
+>  	trace_spt_refcount(spt->vgpu->id, "inc", spt, v, (v + 1));
+> -	atomic_inc(&spt->refcount);
+> +	refcount_inc(&spt->refcount);
 >  }
-> diff --git a/include/linux/serio.h b/include/linux/serio.h
-> index 6c27d413da92..075f1b8d76fa 100644
-> --- a/include/linux/serio.h
-> +++ b/include/linux/serio.h
-> @@ -121,10 +121,7 @@ void serio_unregister_driver(struct serio_driver *drv);
->  
->  static inline int serio_write(struct serio *serio, unsigned char data)
+> =20
+>  static inline int ppgtt_put_spt(struct intel_vgpu_ppgtt_spt *spt)
 >  {
-> -	if (serio->write)
-> -		return serio->write(serio, data);
-> -	else
-> -		return -1;
-> +	return serio->write(serio, data);
+> -	int v =3D atomic_read(&spt->refcount);
+> +	int v =3D refcount_read(&spt->refcount);
+> =20
+>  	trace_spt_refcount(spt->vgpu->id, "dec", spt, v, (v - 1));
+> -	return atomic_dec_return(&spt->refcount);
+> +	refcount_dec(&spt->refcount);
+> +	return refcount_read(&spt->refcount);
 >  }
->  
->  static inline void serio_drv_write_wakeup(struct serio *serio)
-> -- 
-> 2.31.0.rc2.261.g7f71774620-goog
-> 
-> 
-> -- 
-> Dmitry
+> =20
+>  static int ppgtt_invalidate_spt(struct intel_vgpu_ppgtt_spt *spt);
+> diff --git a/drivers/gpu/drm/i915/gvt/gtt.h b/drivers/gpu/drm/i915/gvt/gt=
+t.h
+> index 3bf45672ef98..944c2d0739df 100644
+> --- a/drivers/gpu/drm/i915/gvt/gtt.h
+> +++ b/drivers/gpu/drm/i915/gvt/gtt.h
+> @@ -38,6 +38,7 @@
+>  #include <linux/kref.h>
+>  #include <linux/mutex.h>
+>  #include <linux/radix-tree.h>
+> +#include <linux/refcount.h>
+> =20
+>  #include "gt/intel_gtt.h"
+> =20
+> @@ -243,7 +244,7 @@ struct intel_vgpu_oos_page {
+> =20
+>  /* Represent a vgpu shadow page table. */
+>  struct intel_vgpu_ppgtt_spt {
+> -	atomic_t refcount;
+> +	refcount_t refcount;
+>  	struct intel_vgpu *vgpu;
+> =20
+>  	struct {
+> --=20
+> 2.7.4
+>=20
+> _______________________________________________
+> intel-gvt-dev mailing list
+> intel-gvt-dev@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
 
-This patch as commit 81c7c0a350bf ("Input: serio - make write method
-mandatory") in -next breaks input for my Hyper-V VM, which prevents me
-from logging in. I attempted to do something like the following (-1 or
--EINVAL) which should be equivalent but it does not resolve the issue.
+--DNUSDXU7R7AVVM8C
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Cheers,
-Nathan
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/input/serio/hyperv-keyboard.c b/drivers/input/serio/hyperv-keyboard.c
-index 1a7b72a9016d..d3eee2d4c327 100644
---- a/drivers/input/serio/hyperv-keyboard.c
-+++ b/drivers/input/serio/hyperv-keyboard.c
-@@ -311,6 +311,11 @@ static void hv_kbd_stop(struct serio *serio)
-        spin_unlock_irqrestore(&kbd_dev->lock, flags);
- }
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYPd/qQAKCRCxBBozTXgY
+J4MVAJ95yNAURQh6cNjOk/8THKqisqplMwCbBUeMC3+rNCFCjrGdgeMCTprr3WI=
+=isR6
+-----END PGP SIGNATURE-----
 
-+static int hv_kbd_write(struct serio *serio, u8 data)
-+{
-+       return -1;
-+}
-+
- static int hv_kbd_probe(struct hv_device *hv_dev,
-                        const struct hv_vmbus_device_id *dev_id)
- {
-@@ -341,6 +346,7 @@ static int hv_kbd_probe(struct hv_device *hv_dev,
-
-        hv_serio->start = hv_kbd_start;
-        hv_serio->stop = hv_kbd_stop;
-+       hv_serio->write = hv_kbd_write;
-
-        error = vmbus_open(hv_dev->channel,
-                           KBD_VSC_SEND_RING_BUFFER_SIZE,
-
+--DNUSDXU7R7AVVM8C--
