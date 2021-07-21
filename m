@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49AC3D103D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B45A3D104D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239093AbhGUNJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:09:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238996AbhGUNJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:09:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3453C6121E;
-        Wed, 21 Jul 2021 13:49:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626875384;
-        bh=Fcd46JsRF5Xzokx8EbEQAOvgZr4ne1Di199XOOqGdXI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MlngOFVzPy6D4n/vJS8cjv7UbvZgk2BbOpnI5+S4srLE5uyBvjmuzvuK6bVFb3fFj
-         19HPLZGZUuiHcV3pVbD+3M2mCNVMqiZ2hmQprUrNSSdqQ2+6HZZKs4XkkeMRjPgsCF
-         j/6ZYtYhD/trRr673VMxc9e6EOc0rL1pUmfUtUijh5aOHbIGCnCQ8Nxi8CTPWlypNM
-         uCXisRccE7jOfEPF/4SZTKVHS8JIOZ6Wsk0Zon74S97Bmb3BzdgmWrhehfUzALQmrN
-         +an+o4ZhXnKawCDxTNtX0d6jgAw7c+hMbNWhkva58kZcDvUDKAJ5khJ/kid8yv0l2q
-         VRaXfzTQnwJtw==
-Received: by mail-ej1-f54.google.com with SMTP id dp20so3351333ejc.7;
-        Wed, 21 Jul 2021 06:49:44 -0700 (PDT)
-X-Gm-Message-State: AOAM5331v6oohHBSF80LwYsbKi9X5VAFuedk6zKHNBlB31uxJ0CB1qYQ
-        iVN8OjAlq9i/+Slb5UrxCjUu1TWer8xJtnoEgg==
-X-Google-Smtp-Source: ABdhPJzh5cj++jO5fwUbg47UmcOOhxrwvB/MBLzILA/PNS+iWEyxrXcgOCfI8OpXmusl3DEp7otnJa9jAjW0ixfrR7g=
-X-Received: by 2002:a17:906:5fc1:: with SMTP id k1mr37644013ejv.360.1626875382783;
- Wed, 21 Jul 2021 06:49:42 -0700 (PDT)
+        id S238667AbhGUNPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:15:10 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50426 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232706AbhGUNPJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 09:15:09 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id A4A9620341;
+        Wed, 21 Jul 2021 13:55:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626875744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d2zL4DSMxxgusCwerQYFit51RZdm7XIpv5GcoSHdjTc=;
+        b=k41ZNBw3GYqRYI9O1VKZjSxUOz2zBx+Bp+E+Nz9zW7n8bXxAVTwiYAaGH73jrLMynem9Ji
+        nNQvCmYsb7AdauDaq7kR9oSaQ4aVPKIgUynRW1ea8F7jdq7NzNBYwUVyF2pECfarNjpDhj
+        tZeaGuigE2yUMqO09pxLu/N6JsmB0yo=
+Received: from suse.cz (pathway.suse.cz [10.100.12.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 47F1EA3B83;
+        Wed, 21 Jul 2021 13:55:44 +0000 (UTC)
+Date:   Wed, 21 Jul 2021 15:55:44 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Jia He <justin.he@arm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>, nd@arm.com
+Subject: Re: [PATCH v7 3/5] lib/vsprintf.c: make '%pD' print the full path of
+ file
+Message-ID: <20210721135544.w4blqsvcyr42sxcb@pathway.suse.cz>
+References: <20210715011407.7449-1-justin.he@arm.com>
+ <20210715011407.7449-4-justin.he@arm.com>
 MIME-Version: 1.0
-References: <20210720172025.363238-1-robh@kernel.org> <8343dfe9d1af1ad4ab806104b74a95819c765dea.camel@pengutronix.de>
-In-Reply-To: <8343dfe9d1af1ad4ab806104b74a95819c765dea.camel@pengutronix.de>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 21 Jul 2021 07:49:30 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+XEbEJuoSiQ=PeL-34FkLqG-eYA86FvNK7K-uGbaTFwg@mail.gmail.com>
-Message-ID: <CAL_Jsq+XEbEJuoSiQ=PeL-34FkLqG-eYA86FvNK7K-uGbaTFwg@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: Remove "status" from schema examples
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Dilip Kota <eswara.kota@linux.intel.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715011407.7449-4-justin.he@arm.com>
+User-Agent: NeoMutt/20170912 (1.9.0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 2:33 AM Philipp Zabel <p.zabel@pengutronix.de> wrote:
->
-> Hi Rob,
->
-> On Tue, 2021-07-20 at 11:20 -0600, Rob Herring wrote:
-> > There's no reason to have "status" properties in examples. "okay" is the
-> > default, and "disabled" turns off some schema checks ('required'
-> > specifically).
->
-> Is this documented somewhere? If not, should it be? (Maybe in writing-
-> schema.rst -> Schema Contents -> examples?)
+On Thu 2021-07-15 09:14:05, Jia He wrote:
+> Previously, the specifier '%pD' was for printing dentry name of struct
+> file. It may not be perfect since by default it only prints one component.
+> 
+> As suggested by Linus [1]:
+>   A dentry has a parent, but at the same time, a dentry really does
+>   inherently have "one name" (and given just the dentry pointers, you
+>   can't show mount-related parenthood, so in many ways the "show just
+>   one name" makes sense for "%pd" in ways it doesn't necessarily for
+>   "%pD"). But while a dentry arguably has that "one primary component",
+>   a _file_ is certainly not exclusively about that last component.
+> 
+> Hence change the behavior of '%pD' to print the full path of that file.
+> It is worthy of noting that %pD uses the entire given buffer as a scratch
+> space. It might write something behind the trailing '\0' but never write
+> beyond the scratch space.
+> 
+> Precision specifier is never going to be used with %p (or any of its
+> kernel extensions) if -Wformat is turned on.
+> 
+> Link: https://lore.kernel.org/lkml/CAHk-=wimsMqGdzik187YWLb-ru+iktb4MYbMQG1rnZ81dXYFVg@mail.gmail.com/ [1]
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Jia He <justin.he@arm.com>
 
-I don't think it is. I'm writing a schema for it which works for both
-those that read documentation and those that don't.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Rob
+Best Regards,
+Petr
