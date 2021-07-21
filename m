@@ -2,108 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFB93D194F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F113D194D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhGUU6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:58:49 -0400
-Received: from ashburn-va-datacenter.serverpoint.com ([64.235.46.20]:48490
-        "EHLO 3ud9jz.cn" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhGUU6s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 16:58:48 -0400
-X-Greylist: delayed 2126 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Jul 2021 16:58:48 EDT
-Received: from DHf.support?cc.biccamera.com (unknown [216.108.228.130])
-        by 3ud9jz.cn (Postfix) with ESMTPA id CFBAC4B529
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 04:36:56 +0800 (CST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 3ud9jz.cn CFBAC4B529
-Sender: admin@3ud9jz.cn
-Message-ID: <20210721133656531722@3ud9jz.cn>
-From:   =?utf-8?B?6YeN6KaB44Gq44OL44Ol44O844K5?= <info@admin.com>
-To:     <linux-kernel@vger.kernel.org>
-Subject: =?utf-8?B?6YeN6KaB44Gq44OL44Ol44O844K5?=
-Date:   Wed, 21 Jul 2021 13:36:49 -0800
+        id S229764AbhGUU6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:58:06 -0400
+Received: from mga17.intel.com ([192.55.52.151]:28297 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229597AbhGUU6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 16:58:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="191796723"
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="191796723"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 14:38:41 -0700
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="501451075"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 14:38:41 -0700
+Date:   Wed, 21 Jul 2021 14:38:13 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Kevin Tian <kevin.tian@intel.com>,
+        Marc Zyngier <maz@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [patch 1/8] PCI/MSI: Enable and mask MSIX early
+Message-ID: <20210721213813.GB676232@otc-nc-03>
+References: <20210721191126.274946280@linutronix.de>
+ <20210721192650.106154171@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
-X-mailer: Sjx 1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210721192650.106154171@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-44GT44KT44Gr44Gh44Gv44CB44GT44KT44Gr44Gh44Gv44CCDQrjgb7jgZroh6rlt7HntLnku4vj
-gZXjgZvjgabjgY/jgaDjgZXjgYTjgIINCuengeOBr+ODl+ODreOBruODl+ODreOCsOODqeODnuOD
-vOOBp+OAgeiHqueUseaZgumWk+OBq+ODj+ODg+OCq+ODvOS+teWFpeOBq+eJueWMluOBl+OBpuOB
-hOOBvuOBmeOAgg0K5LiN5bm444Gr44KC44CB44GC44Gq44Gf44Gv56eB44Gu5qyh44Gu6KKr5a6z
-6ICF44Gr44Gq44Gj44Gm44CB56eB44Gv44GC44Gq44Gf44GuT1Pjgajjg4fjg5DjgqTjgrnjgavj
-g4/jg4Pjgq3jg7PjgrDjgZfjgb7jgZfjgZ/jgIINCuengeOBr+aVsOODtuaciOmWk+OBguOBquOB
-n+OCkuims+Wvn+OBl+OBpuOBhOOBn+OAguewoeWNmOOBq+iogOOBhuOBqOOAgeOBguOBquOBn+OB
-jOWlveOBjeOBquOCteOCpOODiOOBq+OCouOCr+OCu+OCueOBl+OBn+aZguOAgeOBguOBquOBn+OB
-ruODh+ODkOOCpOOCueOBr+engeOBruOCpuOCpOODq+OCueOBq+aEn+afk+OBl+OBn+OAgg0K44GT
-44Gu44KI44GG44Gq54q25rOB44Gr6Kmz44GX44GP44Gq44GE5Lq644KC44GE44KL44Gu44Gn44CB
-54++54q244KS44KC44Gj44Go6Kmz44GX44GP6Kqs5piO44GX44G+44GZ44CCDQrjg4jjg63jgqTj
-ga7mnKjppqzjgpLpgJrjgZjjgabjgIHnp4Hjga/jgYLjgarjgZ/jga7oqK3lgpnjgbjjga7lhajp
-naLnmoTjgarjgqLjgq/jgrvjgrnjgajliLblvqHjgpLlvpfjgb7jgZfjgZ/jgILjgZfjgZ/jgYzj
-gaPjgabjgIHnlLvpnaLkuIrjga7jgZnjgbnjgabjga7jgrPjg7Pjg4bjg7Pjg4TjgpLooajnpLrj
-gZfjgabjgqLjgq/jgrvjgrnjgZfjgIHnn6XjgonjgarjgYTjgYbjgaHjgavjgqvjg6Hjg6njgoTj
-g57jgqTjgq/jgpLjgqrjg7Mv44Kq44OV44GX44CB5LuW44Gu5qeY44CF44Gq44GT44Go44KS44GZ
-44KL44GT44Go44GM44Gn44GN44G+44GZ44CCDQrjgZXjgonjgavjgIHnp4HjgZ/jgaHjga/jgYLj
-garjgZ/jga7jgr3jg7zjgrfjg6Pjg6vjg43jg4Pjg4jjg6/jg7zjgq/jgYrjgojjgbPjg4fjg5Dj
-gqTjgrnjga7jgZnjgbnjgabjga7pgKPntaHlhYjjgavjgqLjgq/jgrvjgrnjgZfjgb7jgZfjgZ/j
-gIINCuOBquOBnOS7iuOBvuOBp+OCouODs+ODgeOCpuOCpOODq+OCueOCveODleODiOOBr+aCquaE
-j+OBruOBguOCi+OCveODleODiOOCpuOCp+OCouOCkuaknOWHuuOBl+OBpuOBhOOBquOBi+OBo+OB
-n+OBruOBoOOCjeOBhuOBi+OBqOaAneOBhOOBvuOBmeOAgg0K5a6f44Gv44CB56eB44Gu44K544OR
-44Kk44K944OV44OI44Gv54m55Yil44Gq44OJ44Op44Kk44OQ44KS5L2/44Gj44Gm44CB44KI44GP
-572y5ZCN44KS5pu444GN55u044GX44Gm44GE44KL44Gu44Gn44CB44GC44Gq44Gf44Gu44Km44Kj
-44Or44K55a++562W44K944OV44OI44Gv5o2V44G+44Gj44Gm44GE44G+44Gb44KT44CCDQrjgrnj
-gq/jg6rjg7zjg7Pjga7lt6blgbTjgavjgYLjgorjgb7jgZnjgILnp4HjgZ/jgaHjga/jgYLjgarj
-gZ/jga7lgIvkurrnmoTjgarnjKXopLvjg5Pjg4fjgqrjgpLoqJjpjLLjgZfjgabjgIHlj7PlgbTj
-gavjgYLjgarjgZ/jgYzplrLopqfjgZfjgZ/jgYTjgY/jgaTjgYvjga7kuI3oia/oqJjpjLLjgpLo
-qJjpjLLjgZnjgovjg5Pjg4fjgqrjgq/jg6rjg4Pjg5fjgpLkvZzmiJDjgZfjgb7jgZfjgZ/vvIEo
-5a6X5pWZ44CB5pyq5oiQ5bm044Od44Or44OO44CB5o+05Yqp5oOF5aCx44Gq44Gp44KS5ZCr44KA
-KeOAgg0K44Oe44Km44K544KS5pWw5Zue44Kv44Oq44OD44Kv44GZ44KL44Gg44GR44Gn44CB6YCj
-57Wh5YWI44KE44K944O844K344Oj44Or44Oh44OH44Kj44Ki44Gu44GZ44G544Gm44Gu5Y+L6YGU
-44Gr6Lui6YCB44GZ44KL44GT44Go44GM44Gn44GN44G+44GZ44CC44GT44KM44KJ44Gu44OX44Op
-44Kk44OQ44K344O844KS44GC44Gq44Gf44Gu5LyB5qWt44Gu5ZCM5YOa44KE44Oq44O844OA44O8
-44Gr57Ch5Y2Y44Gr6YCB5L+h44GZ44KL44GT44Go44KC44Gn44GN44G+44GZ44GM44CB44GT44KM
-44KJ44Gu44OT44OH44Kq44KE44GC44Gq44Gf44Gu44GE44GP44Gk44GL44Gu5YCL5Lq65oOF5aCx
-44KS5YWs6ZaL44Ki44Kv44K744K544Gu44Kq44Oz44Op44Kk44Oz44OX44Op44OD44OI44OV44Kp
-44O844Og44Gr44Ki44OD44OX44Ot44O844OJ44GZ44KM44Gw44CB6ama44GP44GL44KC44GX44KM
-44G+44Gb44KT44CC56eB44Gv44GT44KM44GM44GC44Gq44Gf44Gu5LuV5LqL44Go55Sf5rS744Gr
-5aSn44GN44Gq5b2x6Z+/44KS5Y+K44G844GZ44Go5oCd44GG77yBDQroia/jgYTjg4vjg6Xjg7zj
-grnjga/jgIHjgb7jgaDmipHliLbjgZXjgozjgovjgZPjgajjgYzjgafjgY3jgovjgajjgYTjgYbj
-gZPjgajjgaDjgIIxN+S4h+WGhuOBruODk+ODg+ODiOOCs+OCpOODs+OCkuengeOBrkJUQ+iyoeW4
-g+OBq+aMr+OCiui+vOOCgeOBsOmYu+atouOBp+OBjeOCiyjjganjgYbjgZnjgozjgbDjgYTjgYTj
-ga7jgYvjgo/jgYvjgonjgarjgYTkurrjga/vvIzjgqrjg7Pjg6njgqTjg7PmpJzntKLjgavjgojj
-gorvvIzmrrXpmo7jgZTjgajjga7mlrnms5XjgpLoqqzmmI7jgZnjgovoqJjkuovjgYzlpJrjgY/n
-mbropovjgZXjgozjgovjga/jgZrjgafjgYLjgospLuOAgg0K56eB44Gu44OT44OD44OI44Kz44Kk
-44Oz6LKh5biDKEJUQyBXYWxsZXQp77yaMUdzcXBzczR1bmlLSGQzRmlmb0JFQ2ozODdZaGtWdGs2
-OA0KDQrjgYLjgarjgZ/jga7poJDph5HjgpLnorroqo3jgZfjgZ/jgonjgIHnp4Hjga/jgZnjgbnj
-gabjga7njKXopLvjg5Pjg4fjgqrjgajjgYLjgarjgZ/jga7lgIvkurrmg4XloLHjgpLliYrpmaTj
-gZfjgabjgIHjgZPjgozku6XkuIrpgKPntaHjgZfjgarjgYTjgZPjgajjgpLkv53oqLzjgZfjgb7j
-gZnjgIINCuOBk+OBruaUr+aJleOBhOWujOS6huOBq+OBrzQ45pmC6ZaTKOOBoeOCh+OBhuOBqTLm
-l6Up44Gu54y25LqI44GM44GC44KLLuOAgg0K44GT44Gu6Zu75a2Q44Oh44O844Or44KS6ZaL44GP
-44Go44CB6Ieq5YuV55qE44Gr6Kqt5pu46YCa55+l44GM6YCB44KJ44KM44Gm44GN44Gm44CB44K/
-44Kk44Oe44O844GM6Ieq5YuV55qE44Gr44Kr44Km44Oz44OI44KS6ZaL5aeL44GX44G+44GZ44CC
-DQrnp4Hjga7jg6Hjg7zjg6vjgavov5Tkv6HjgZfjgabjgb/jgarjgYTjgafjgY/jgaDjgZXjgYTj
-gIINCijpgIHkv6HlhYPjga7pm7vlrZDjg6Hjg7zjg6vjgqLjg4njg6zjgrnjga/oh6rli5XnmoTj
-gavkvZzmiJDjgZXjgozjgIHjgqrjg7Pjg6njgqTjg7Pjgaflj5blvpfjgZXjgozjgabjgYTjgovj
-ga7jgafjgIHkvZXjga7lpInljJbjgoLjgYLjgorjgb7jgZvjgpMp44CCDQrjganjgZPjgafjgoLo
-i6bmg4XjgoTloLHlkYrjgpLjgZfjgarjgYTjgafjgY/jgaDjgZXjgYTjgIINCuengeOBruWAi+S6
-uuaDheWgseOBqOengeOBruODk+ODg+ODiOOCs+OCpOODs+OCouODieODrOOCueOBr+ODluODreOD
-g+OCr+ODgeOCp+ODvOODs+OCt+OCueODhuODoOOBruS4gOmDqOOBqOOBl+OBpuaal+WPt+WMluOB
-leOCjOOBpuOBhOOCi+OAgg0K55eF5rCX44Gr44Gq44KJ44Gq44GE44KI44GG44Gr44GE44KN44GE
-44KN44Gq44GT44Go44KS56CU56m244GX44Gm44GN44G+44GX44Gf44CCDQrnp4HjgZ/jgaHjgYzj
-gZPjga7pm7vlrZDjg6Hjg7zjg6vjgpLoqrDjgYvjgavou6LpgIHjgZfjgojjgYbjgajjgZfjgabj
-gYTjgovjgZPjgajjgpLnmbropovjgZfjgZ/jgonjgIHnp4HjgZ/jgaHjga/jgYLjgarjgZ/jga7n
-jKXopLvjg5Pjg4fjgqrjgajlgIvkurrnmoTjgarmg4XloLHjgpLlhazplovjgZfjgb7jgZnjgIIN
-CueQhuaAp+eahOOBq+iAg+OBiOOBpuOAgeOBk+OCjOS7peS4iuaEmuOBi+OBquecn+S8vOOCkuOB
-l+OBquOBhOOBp+OBj+OBoOOBleOBhOOAgg0K56eB44Gv5LiA5q2p5LiA5q2p55CG6Kej44GX44KE
-44GZ44GE6Kqs5piO44KS44GZ44KL44Gk44KC44KK44Gg44CCDQrjgYLjgarjgZ/jgYzku4rjgZfj
-garjgZHjgozjgbDjgarjgonjgarjgYTjgZPjgajjga/np4Hjga7mjIfnpLrjgavlvpPjgaPjgabj
-gIHjgZPjga7jgojjgYbjgarkuI3lv6vjgarnirbms4HjgYvjgonmipzjgZHlh7rjgZnjgZPjgajj
-gafjgZnjgIINCuOBguOCiuOBjOOBqOOBhuOBlOOBluOBhOOBvuOBl+OBn+OAgg0K44GU5bm46YGL
-44KS56WI44KK44G+44GZ44CCDQo=
+On Wed, Jul 21, 2021 at 09:11:27PM +0200, Thomas Gleixner wrote:
+> The ordering of MSI-X enable in hardware is disfunctional:
+> 
+>  1) MSI-X is disabled in the control register
+>  2) Various setup functions
+>  3) pci_msi_setup_msi_irqs() is invoked which ends up accessing
+>     the MSI-X table entries
+>  4) MSI-X is enabled and masked in the control register with the
+>     comment that enabling is required for some hardware to access
+>     the MSI-X table
+> 
+> #4 obviously contradicts #3. The history of this is an issue with the NIU
+> hardware. When #4 was introduced the table access actually happened in
+> msix_program_entries() which was invoked after enabling and masking MSI-X.
+> 
+> This was changed in commit d71d6432e105 ("PCI/MSI: Kill redundant call of
+> irq_set_msi_desc() for MSI-X interrupts") which removed the table write
+> from msix_program_entries().
+> 
+> Interestingly enough nobody noticed and either NIU still works or it did
+> not get any testing with a kernel 3.19 or later.
+> 
+> Nevertheless this is inconsistent and there is no reason why MSI-X can't be
+> enabled and masked in the control register early on, i.e. move #4 above to
 
+Does the above comment also apply to legacy MSI when it support per-vector
+masking capability? Probably not interesting since without IR, we only give
+1 vector to MSI. 
 
+Reviewed-by: Ashok Raj <ashok.raj@intel.com>
+
+> #1. This preserves the NIU workaround and has no side effects on other
+> hardware.
+> 
+> Fixes: d71d6432e105 ("PCI/MSI: Kill redundant call of irq_set_msi_desc() for MSI-X interrupts")
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: linux-pci@vger.kernel.org
+> ---
+>  drivers/pci/msi.c |   28 +++++++++++++++-------------
+>  1 file changed, 15 insertions(+), 13 deletions(-)
+> 
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -772,18 +772,25 @@ static int msix_capability_init(struct p
+>  	u16 control;
+>  	void __iomem *base;
+>  
+> -	/* Ensure MSI-X is disabled while it is set up */
+> -	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
+> +	/*
+> +	 * Some devices require MSI-X to be enabled before the MSI-X
+> +	 * registers can be accessed.  Mask all the vectors to prevent
+> +	 * interrupts coming in before they're fully set up.
+> +	 */
+> +	pci_msix_clear_and_set_ctrl(dev, 0, PCI_MSIX_FLAGS_MASKALL |
+> +				    PCI_MSIX_FLAGS_ENABLE);
+>  
+>  	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &control);
+>  	/* Request & Map MSI-X table region */
+>  	base = msix_map_region(dev, msix_table_size(control));
+> -	if (!base)
+> -		return -ENOMEM;
+> +	if (!base) {
+> +		ret = -ENOMEM;
+> +		goto out_disable;
+> +	}
+>  
+>  	ret = msix_setup_entries(dev, base, entries, nvec, affd);
+>  	if (ret)
+> -		return ret;
+> +		goto out_disable;
+>  
+>  	ret = pci_msi_setup_msi_irqs(dev, nvec, PCI_CAP_ID_MSIX);
+>  	if (ret)
+> @@ -794,14 +801,6 @@ static int msix_capability_init(struct p
+>  	if (ret)
+>  		goto out_free;
+>  
+> -	/*
+> -	 * Some devices require MSI-X to be enabled before we can touch the
+> -	 * MSI-X registers.  We need to mask all the vectors to prevent
+> -	 * interrupts coming in before they're fully set up.
+> -	 */
+> -	pci_msix_clear_and_set_ctrl(dev, 0,
+> -				PCI_MSIX_FLAGS_MASKALL | PCI_MSIX_FLAGS_ENABLE);
+> -
+>  	msix_program_entries(dev, entries);
+>  
+>  	ret = populate_msi_sysfs(dev);
+> @@ -836,6 +835,9 @@ static int msix_capability_init(struct p
+>  out_free:
+>  	free_msi_irqs(dev);
+>  
+> +out_disable:
+> +	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
+> +
+>  	return ret;
+>  }
+>  
+> 
