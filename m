@@ -2,201 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9478C3D073D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 05:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C003F3D0741
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 05:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbhGUCdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 22:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231756AbhGUC0k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 22:26:40 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0807AC0613E0;
-        Tue, 20 Jul 2021 20:07:13 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id s193so872332qke.4;
-        Tue, 20 Jul 2021 20:07:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GBxLtWhEZsYL5lfe8/wLjcrrsUgudlTtucyNHZMYMQk=;
-        b=fOaY69lbuts10kKaqZ0eocvUPYPzq+XmHmkus9YUsrdpL+EC9m3xmrTkEPmpGkc1Wt
-         327EKfhyimv2Mv/Ie05WzHvPeL2jZ70DADMv8rgCApFcZWh72DjDpYUiFcYJ/94HzT+R
-         xOYV0E//WvXXNgnCvQ8sScO39cfhYlmXSfAwylpHZ6bAKdnPgRW+79xO4EgkDHlTFfJW
-         QHufIZn/ghYZ9tCMTgarIwe3uK5cxMLihsN6r/SD8ivfddQTAQe4LQIilYH1uWmEMuOG
-         yfxW7T12u349fRI9haOgFHe2NMn4s+pqvII17RG1L4UsqGkT6OISiTOplsvCB6mhvBRV
-         f5XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GBxLtWhEZsYL5lfe8/wLjcrrsUgudlTtucyNHZMYMQk=;
-        b=p6PVBD53T+MMgLSxW4F3PfaNQ+4FGKJ6hQ0O6busVn8r6N5qY0wkd/chRVO7sAxGPR
-         q77U81WiE/a223kK8SZsEhn8e9On43ZD+7s0QpDKUIRInpzgPSn6KQipYbC/wPyFpQte
-         rGRxalE/8qHTOnx6ivM+YiKXY68uDqcT8xtDkRVhpU+ihO3mxUE6I34JoCokk/B52Ap3
-         pW0cZLY1h67vZRpbnKZkVLBaVb4mgo7hn4hatsjhbrJ9Qm/aDkF6BxErqCRLirayqddo
-         of7BL3gNDEL8hXu8YrXC9LKiFGKYGPpSebzRDr+YzrOzDoIM/2kFTU4FVuVPOZ8KSto2
-         ZUow==
-X-Gm-Message-State: AOAM5332SeaC76QSN9Z5Z4w3DDvkT/h0EiySmw6sQw4zHt3jfxIKdr5S
-        ob8riuTVIB0jMndTD4uFfZs=
-X-Google-Smtp-Source: ABdhPJyMTVTQBqf6Xy0foGGb4wr4dcTmPTf+Bk5XNZNWU5dESbc8BZgKDeaY2rYaUKzEKSVkf8HWxw==
-X-Received: by 2002:ae9:f805:: with SMTP id x5mr32483942qkh.373.1626836832254;
-        Tue, 20 Jul 2021 20:07:12 -0700 (PDT)
-Received: from shaak.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id g76sm10561024qke.127.2021.07.20.20.07.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 20:07:11 -0700 (PDT)
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     liambeguin@gmail.com, peda@axentia.se, jic23@kernel.org,
-        lars@metafoo.de, pmeerw@pmeerw.net
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: [PATCH v6 13/13] dt-bindings: iio: afe: add bindings for temperature transducers
-Date:   Tue, 20 Jul 2021 23:06:13 -0400
-Message-Id: <20210721030613.3105327-14-liambeguin@gmail.com>
-X-Mailer: git-send-email 2.30.1.489.g328c10930387
-In-Reply-To: <20210721030613.3105327-1-liambeguin@gmail.com>
-References: <20210721030613.3105327-1-liambeguin@gmail.com>
+        id S231983AbhGUCda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 22:33:30 -0400
+Received: from mga05.intel.com ([192.55.52.43]:40963 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232187AbhGUC24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 22:28:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="296924415"
+X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
+   d="scan'208";a="296924415"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 20:08:04 -0700
+X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
+   d="scan'208";a="501122354"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 20:08:02 -0700
+Subject: Re: [PATCH] perf pmu: Fix alias matching
+To:     John Garry <john.garry@huawei.com>, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        jolsa@redhat.com, namhyung@kernel.org, kjain@linux.ibm.com,
+        alexander.shishkin@linux.intel.com, irogers@google.com
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1626793819-79090-1-git-send-email-john.garry@huawei.com>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <0b57fa9b-fba4-8143-bef6-b7c4f2987635@linux.intel.com>
+Date:   Wed, 21 Jul 2021 11:07:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1626793819-79090-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Beguin <lvb@xiphos.com>
+Hi Garry,
 
-An ADC is often used to measure other quantities indirectly.
-This binding describe one case, the measurement of a temperature
-through a temperature transducer (either voltage or current).
+On 7/20/2021 11:10 PM, John Garry wrote:
+> Commit c47a5599eda32 ("perf tools: Fix pattern matching for same substring
+> in different PMU type"), may have fixed some alias matching, but has broken
+> some others.
+> 
+> Firstly it cannot handle the simple scenario of PMU name in form
+> pmu_name{digits} - it can only handle pmu_name_{digits}.
+> 
+> Secondly it cannot handle more complex matching in the case where we have
+> multiple tokens. In this scenario, the code failed to realise that we
+> may examine multiple substrings in the PMU name.
+> 
+> Fix in two ways:
+> - Change perf_pmu__valid_suffix() to accept a PMU name without '_' in the
+>    suffix
+> - Only pay attention to perf_pmu__valid_suffix() for the final token
+> 
+> Also add const qualifiers as necessary to avoid casting.
+> 
+> Fixes: c47a5599eda3 ("perf tools: Fix pattern matching for same substring in different PMU type")
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+> @Jin Yao, please test for your scenarios
+> 
 
-Signed-off-by: Liam Beguin <lvb@xiphos.com>
----
- .../iio/afe/temperature-transducer.yaml       | 114 ++++++++++++++++++
- 1 file changed, 114 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
+For x86, the form uncore_pmu_{digits} or the uncore_pmu itself are supported. We don't have more 
+complex case such as the name in the form aaa_bbbX_cccY. So my test didn't cover that complex form.
 
-diff --git a/Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml b/Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
-new file mode 100644
-index 000000000000..cfbf5350db27
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
-@@ -0,0 +1,114 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/afe/temperature-transducer.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Temperature Transducer
-+
-+maintainers:
-+  - Liam Beguin <liambeguin@gmail.com>
-+
-+description: |
-+  A temperature transducer is a device that converts a thermal quantity
-+  into any other physical quantity. This binding applies to temperature to
-+  voltage (like the LTC2997), and temperature to current (like the AD590)
-+  linear transducers.
-+  In both cases these are assumed to be connected to a voltage ADC.
-+
-+  When an io-channel measures the output voltage of a temperature analog front
-+  end such as a temperature transducer, the interesting measurement is almost
-+  always the corresponding temperature, not the voltage output. This binding
-+  describes such a circuit.
-+
-+  The general transfer function here is (using SI units)
-+    V(T) = Rsense * Isense(T)
-+    T = (Isense(T) / alpha) + offset
-+    T = 1 / (Rsense * alpha) * (V + offset * Rsense * alpha)
-+
-+  When using a temperature to voltage transducer, Rsense is set to 1.
-+
-+  The following circuits show a temperature to current and a temperature to
-+  voltage transducer that can be used with this binding.
-+
-+           VCC
-+          -----
-+            |
-+        +---+---+
-+        | AD590 |                               VCC
-+        +---+---+                              -----
-+            |                                    |
-+            V proportional to T             +----+----+
-+            |                          D+ --+         |
-+            +---- Vout                      | LTC2997 +--- Vout
-+            |                          D- --+         |
-+        +---+----+                          +---------+
-+        | Rsense |                               |
-+        +---+----+                             -----
-+            |                                   GND
-+          -----
-+           GND
-+
-+properties:
-+  compatible:
-+    const: temperature-transducer
-+
-+  io-channels:
-+    maxItems: 1
-+    description: |
-+      Channel node of a voltage io-channel.
-+
-+  '#io-channel-cells':
-+    const: 0
-+
-+  sense-offset-millicelsius:
-+    description: |
-+      Temperature offset.
-+      This offset is commonly used to convert from Kelvins to degrees Celsius.
-+      In that case, sense-offset-millicelsius would be set to <(-273150)>.
-+    default: 0
-+
-+  sense-resistor-ohms:
-+    description: |
-+      The sense resistor.
-+      By default sense-resistor-ohms cancels out the resistor making the
-+      circuit behave like a temperature transducer.
-+    default: 1
-+
-+  alpha-ppm-per-celsius:
-+    description: |
-+      Sometimes referred to as output gain, slope, or temperature coefficient.
-+
-+      alpha is expressed in parts per million which can be micro-amps per
-+      degrees Celsius or micro-volts per degrees Celsius. The is the main
-+      characteristic of a temperature transducer and should be stated in the
-+      datasheet.
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - io-channels
-+  - alpha-ppm-per-celsius
-+
-+examples:
-+  - |
-+    ad950: temperature-sensor-0 {
-+        compatible = "temperature-transducer";
-+        #io-channel-cells = <0>;
-+        io-channels = <&temp_adc 3>;
-+
-+        sense-offset-millicelsius = <(-273150)>; /* Kelvin to degrees Celsius */
-+        sense-resistor-ohms = <8060>;
-+        alpha-ppm-per-celsius = <1>; /* 1 uA/K */
-+    };
-+  - |
-+    znq_tmp: temperature-sensor-1 {
-+        compatible = "temperature-transducer";
-+        #io-channel-cells = <0>;
-+        io-channels = <&temp_adc 2>;
-+
-+        sense-offset-millicelsius = <(-273150)>; /* Kelvin to degrees Celsius */
-+        alpha-ppm-per-celsius = <4000>; /* 4 mV/K */
-+    };
-+...
--- 
-2.30.1.489.g328c10930387
+For my test, your patch works, thanks! :)
 
+> Note:
+> About any effect in perf_pmu__match() -> perf_pmu__valid_suffix()
+> callchain, this seems to be called for wildcard in PMU names in metric
+> expressions. We don't have any metrics for arm64 which use feature.
+> However, I hacked an existing metric to use a wildcard and it looks ok.
+> Also the "DRAM_BW_Use" metric on my broadwell uses this feature, and it
+> looks ok.
+> 
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index a1bd7007a8b4..fc683bc41715 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -742,9 +742,13 @@ struct pmu_events_map *__weak pmu_events_map__find(void)
+>   	return perf_pmu__find_map(NULL);
+>   }
+>   
+> -static bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
+> +/*
+> + * Suffix must be in form tok_{digits}, or tok{digits}, or same as pmu_name
+> + * to be valid.
+> + */
+> +static bool perf_pmu__valid_suffix(const char *pmu_name, char *tok)
+>   {
+> -	char *p;
+> +	const char *p;
+>   
+>   	if (strncmp(pmu_name, tok, strlen(tok)))
+>   		return false;
+> @@ -753,12 +757,16 @@ static bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
+>   	if (*p == 0)
+>   		return true;
+>   
+> -	if (*p != '_')
+> -		return false;
+> +	if (*p == '_')
+> +		++p;
+>   
+> -	++p;
+> -	if (*p == 0 || !isdigit(*p))
+> -		return false;
+> +	/* Ensure we end in a number */
+> +	while (1) {
+> +		if (!isdigit(*p))
+> +			return false;
+> +		if (*(++p) == 0)
+> +			break;
+> +	}
+>   
+
+Do we check *p before first isdigit? For example,
+
+if (*p == 0)
+	return false;
+
+While (*p) {
+	if (!isdigit(*p)
+		return false;
+	++p;
+}
+
+But maybe isdigit can handle the null string well. I'm just feeling a bit unsure.
+
+>   	return true;
+>   }
+> @@ -789,12 +797,19 @@ bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
+>   	 *	    match "socket" in "socketX_pmunameY" and then "pmuname" in
+>   	 *	    "pmunameY".
+>   	 */
+> -	for (; tok; name += strlen(tok), tok = strtok_r(NULL, ",", &tmp)) {
+> +	while (1) {
+> +		char *next_tok = strtok_r(NULL, ",", &tmp);
+> +
+>   		name = strstr(name, tok);
+> -		if (!name || !perf_pmu__valid_suffix((char *)name, tok)) {
+> +		if (!name ||
+> +		    (!next_tok && !perf_pmu__valid_suffix(name, tok))) {
+>   			res = false;
+>   			goto out;
+>   		}
+> +		if (!next_tok)
+> +			break;
+> +		tok = next_tok;
+> +		name += strlen(tok);
+>   	}
+>   
+>   	res = true;
+> 
+
+My test didn't cover the tokens which were delimited by ','. I assume you have tested that on arm64 
+system. :)
+
+Thanks
+Jin Yao
