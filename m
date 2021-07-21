@@ -2,165 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3513D0CD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFEF3D0CD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237981AbhGUKAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:00:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238301AbhGUJsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:48:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5063B6044F;
-        Wed, 21 Jul 2021 10:29:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626863353;
-        bh=V7djkVVl929sbXP118vb28LnoFtni/31Vo8GPg09wsg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FcUxNN89zmCPrGAKO0cORrnwJIx3mtxA0qyyCfDQ/+vhJ4gPWo8X6FVxJr3QU5BxR
-         DMEW4HmYAFBSqbSlJP5ZZmTDnAa1SJPAifyj8uIvs+iHo1UU00B0/AOMU7951IyzGI
-         Q3Yo8vNTgw6ZcmkDfQNCUnVvBKddbPzOqofb5M2Y=
-Date:   Wed, 21 Jul 2021 12:29:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        John Stultz <john.stultz@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Amit Pundir <amit.pundir@linaro.org>
-Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-Message-ID: <YPf29+ewbrYgHxRP@kroah.com>
-References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
- <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
- <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
- <20210714124807.o22mottsrg3tv6nt@mobilestation>
- <YPfPDqJhfzbvDLvB@kroah.com>
- <20210721100220.ddfxwugivsndsedv@mobilestation>
+        id S239035AbhGUKCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239099AbhGUJvY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 05:51:24 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE47BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 03:30:04 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id w14so1749133edc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 03:30:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YmKAu6pikxHl7GzDzhAFFQ7A4Rj7cfag8yxs2GUbOH0=;
+        b=RxqaTore1jFbUcUe6rW8GXjzpy2fg9SbFgp1rbHv6nQo9yvAS/ZBE4fqfvDGT6zmeq
+         vZdVaiCznPgDC8Vmk4DuFIvXQ+rX9aVQA7M6U3cCYaALMcDY9QENO8V0kxaBe7VblrvI
+         qQo9F6P4ZVbWy8cEY60aF6QoPBk7lZSl9wy6Dcn5LIXgSjx/UGnUEvAcPK5LA8zssP9f
+         tI4NVbrxfEaRvTLglGcBuhbIoYRXa9C7C1sYftz52te4SrnopqZCXAMOlxG5n9WZNXjl
+         nFJItf1PIeL3wqTJYoV9F3n9t4pFB6s2qtSQ/nRilTqTNjh4Y/Y0qtl9EYcGn4aCOdS/
+         8qbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YmKAu6pikxHl7GzDzhAFFQ7A4Rj7cfag8yxs2GUbOH0=;
+        b=F+q7tHG6Y8mkD3gp60M52oyhAf4FJIxzBPMsP1KuO0epfmQ1X3LV7u3Ok6yJcznBTf
+         VrLM5klSTw4EFQVwcmhvAYYFL+c4FiLENFUV0vsgKmltdHo8wVpAlMAx1S3iJSLJ85/D
+         XrDFMr7vrv2xJwjkaRFIQNYtDH57vP6NdZGSCIie73ugXOtbxMpw8peQl55ImGIOj38N
+         uqLQbvMYvfRv7LsdDfxcIXgS+huFAC4r9naEK8VcpjIhNW6T4zolF5h93+78bpWBKyNJ
+         0eNLTaeJSkv3XLk9TEeb/QvuxNQ34ss3ou988pKXoPCjpznFBstbXZmA2K+kMg8oiVBm
+         Kbog==
+X-Gm-Message-State: AOAM533rSl+ARn79YAHaHU7hTpJXRvSbYMfODZ3RL5/sZYDqrkn3WXyU
+        tCK3duWSZ3yrm47UQsMLZDpDYFsHMWrh1ss12owU9w==
+X-Google-Smtp-Source: ABdhPJxfS9FpxGbS3lEkz0KD/K2JXWR/18PuQ4JFvUNn7OLrLWjVf8OMliTM0ABMMGncEX6LY2vTZFYuwELVKem20aY=
+X-Received: by 2002:a05:6402:4386:: with SMTP id o6mr7878135edc.239.1626863403329;
+ Wed, 21 Jul 2021 03:30:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210721100220.ddfxwugivsndsedv@mobilestation>
+References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 21 Jul 2021 15:59:51 +0530
+Message-ID: <CA+G9fYt7PavdDfqEmf_xRXoRAJ1a5kMKf3N_h1KhauBeTBJguQ@mail.gmail.com>
+Subject: Re: [PATCH 4.9 000/245] 4.9.276-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 01:02:20PM +0300, Serge Semin wrote:
-> Hi Greg,
-> @Krzysztof, @Rob, please join the discussion so to finally get done
-> with the concerned issue.
-> 
-> On Wed, Jul 21, 2021 at 09:38:54AM +0200, Greg Kroah-Hartman wrote:
-> > On Wed, Jul 14, 2021 at 03:48:07PM +0300, Serge Semin wrote:
-> > > Hello John,
-> > > 
-> > > On Tue, Jul 13, 2021 at 05:07:00PM -0700, John Stultz wrote:
-> > > > On Tue, Oct 20, 2020 at 5:10 AM Serge Semin
-> > > > <Sergey.Semin@baikalelectronics.ru> wrote:
-> > > > >
-> > > > > In accordance with the DWC USB3 bindings the corresponding node
-> > > > > name is suppose to comply with the Generic USB HCD DT schema, which
-> > > > > requires the USB nodes to have the name acceptable by the regexp:
-> > > > > "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-> > > > > named.
-> > > > >
-> > > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > > > 
-> > > 
-> > > > I know folks like to ignore this, but this patch breaks AOSP on db845c. :(
-> > > 
-> > > Sorry to hear that. Alas there is no much can be done about it.
-> > 
-> > Yes there is, we can revert the change.  We do not break existing
-> > configurations, sorry.
-> 
-> By reverting this patch we'll get back to the broken dt-bindings
-> since it won't comply to the current USB DT-nodes requirements
-> which at this state well describe the latest DT spec:
-> https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
-> Thus the dtbs_check will fail for these nodes.
-> 
-> Originally this whole patchset was connected with finally getting the
-> DT-node names in order to comply with the standard requirement and it
-> was successful mostly except a few patches which still haven't been
-> merged in.
-> 
-> Anyway @Krzysztof has already responded to the complain regarding this
-> issue here:
-> https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
-> but noone cared to respond on his reasonable questions in order to
-> get to a suitable solution for everyone. Instead we are
-> getting another email with the same request to revert the changes.
-> Here is the quote from the Krzysztof email so we could continue the
-> discussion:
-> 
-> On Mon, 21 Dec 2020 13:04:27 -0800 (PST), Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > On Mon, Dec 21, 2020 at 12:24:11PM -0800, John Stultz wrote:
-> > > On Sat, Dec 19, 2020 at 3:06 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > > > ...
-> > > >
-> > > > The node names are not part of an ABI, are they? I expect only
-> > > > compatibles and properties to be stable. If user-space looks for
-> > > > something by name, it's a user-space's mistake.  Not mentioning that you
-> > > > also look for specific address... Imagine remapping of addresses with
-> > > > ranges (for whatever reason) - AOSP also would be broken? Addresses are
-> > > > definitely not an ABI.
-> > > 
-> > > Though that is how it's exported through sysfs.
-> > 
-> > The ABI is the format of sysfs file for example in /sys/devices. However
-> > the ABI is not the exact address or node name of each device.
-> > 
-> > > In AOSP it is then used to setup the configfs gadget by writing that
-> > > value into /config/usb_gadget/g1/UDC.
-> > > 
-> > > Given there may be multiple controllers on a device, or even if its
-> > > just one and the dummy hcd driver is enabled, I'm not sure how folks
-> > > reference the "right" one without the node name?
-> > 
-> > I think it is the same type of problem as for all other subsystems, e.g.
-> > mmc, hwmon/iio.  They usually solve it either with aliases or with
-> > special property with the name/label.
-> > 
-> > > I understand the fuzziness with sysfs ABI, and I get that having
-> > > consistent naming is important, but like the eth0 -> enp3s0 changes,
-> > > it seems like this is going to break things.
-> > 
-> > One could argue whether interface name is or is not ABI. But please tell
-> > me how the address of a device in one's representation (for example DT)
-> > is a part of a stable interface?
-> > 
-> > > Greg? Is there some better way AOSP should be doing this?
-> > 
-> > If you need to find specific device, maybe go through the given bus and
-> > check compatibles?
-> > 
-> > Best regards,
-> > Krzysztof
-> 
-> So the main question is how is the DT-node really connected with ABI
-> and is supposed to be stable in that concern?
-> 
-> As I see it even if it affects the configfs node name, then we may
-> either need to break that connection and somehow deliver DT-node-name
-> independent interface to the user-space or we have no choice but to
-> export the node with an updated name and ask of user-space to deal
-> with it. In both suggested cases the DT-node name will still conform
-> to the USB-node name DT spec. Currently we are at the second one.
+On Mon, 19 Jul 2021 at 20:37, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.276 release.
+> There are 245 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 21 Jul 2021 14:47:42 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.276-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I really do not care what you all decide on, but you CAN NOT break
-existing working systems, sorry.  That is why I have reverted this
-change in my tree and will send it to Linus soon.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-thanks,
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-greg k-h
+## Build
+* kernel: 4.9.276-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.9.y
+* git commit: 04afcb7e33f59d83d1e1bf39a8c0d9bbe6df454c
+* git describe: v4.9.275-246-g04afcb7e33f5
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+75-246-g04afcb7e33f5
+
+## Regressions (compared to v4.9.275-185-g85e806546048)
+No regressions found.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+
+## No fixes (compared to v4.9.275-185-g85e806546048)
+
+## Test result summary
+ total: 58298, pass: 45562, fail: 520, skip: 10368, xfail: 1848,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timens[
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
