@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DDB53D181F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E0D3D1822
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbhGUTrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:47:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231247AbhGUTrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:47:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E282D61241;
-        Wed, 21 Jul 2021 20:27:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626899261;
-        bh=bY2h45O1WGp4EAcbrVOvoTnaHbm43ttm/JmeBcWYJwM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SZzTmQPPOZ+VZkiybRvFq0WduwGXe4tAlzN4nL+YUsjj2cgRssBvCucq9Eiap9eSP
-         v/djQadojNyT77NMk2CvrkOupnwQGimf5pm+XaplfNnGI9MbkSquPgWrZOmDzG9h6k
-         ni5XQX8zi9tWl8zJqWF5bNEteUzSYGT5CHnxwmnuhV9A/pQx2hyqXiSF0lV8Dms3eo
-         llOO0kfFLx6T484eth6Senl4Gp5zMwpV5akZt9eYjet3Cn3qOmeZqzMC7dTFsCUBKS
-         cqBpNQ+JH4LOZ5oGFVCZSa9qeuoJHnoqWDfcas2TroAa7C7JMjkIYXnETD4M+u45H3
-         bSDA6zJF5YBMA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B4EEB5C0A03; Wed, 21 Jul 2021 13:27:41 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 2/2] rcu/nocb: Remove NOCB deferred wakeup from rcutree_dead_cpu()
-Date:   Wed, 21 Jul 2021 13:27:39 -0700
-Message-Id: <20210721202739.2784140-2-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210721202716.GA2679705@paulmck-ThinkPad-P17-Gen-1>
-References: <20210721202716.GA2679705@paulmck-ThinkPad-P17-Gen-1>
+        id S232001AbhGUTrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231766AbhGUTrk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 15:47:40 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102DEC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:28:16 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id y7so4639850ljm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:28:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=Wfplf+fD3sAhG/xYw9pABvgaxNvCuT0joqilD8I+WIY=;
+        b=Cy+092dUMFCuH1x/9wzZLNPpohYwL5mLJ+XoNI+Yu8Va3rjvRxkCDSxK4HdOBvSFlS
+         0734f+bWrs/te02P8ApPWN8u9tATzWG8YVMRzmGI/BbmcsJ1RHcmjpVboynFKJRBL4z9
+         CEy0kwsNhs6vH5oTOf6B4dDodN/vfPbEOpwUw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=Wfplf+fD3sAhG/xYw9pABvgaxNvCuT0joqilD8I+WIY=;
+        b=UviO/yxM2QgQy/w/a0QA0RzmUpMMshDEkfks3W/j6Ra7bXafZ5CyLcSEWyKPdG2A7/
+         Moa+QeuD+iy12XGLSYlGNY7UZaTyaUIT6l7iXAlPC3ywBIXaVN4EZlJQdkF/UHfcZQmE
+         Z4nEo6mno7TDfMD0hXT5x4S+q7qbFSYFB4FNGz2GCW9YCcg3heFed3kOiY0MZDYpkXRU
+         lYgPpEetFs5YyU33QyFfOL3rdKL8dB0NUMP4t2SApORpmbJ7KB6SGDpJSC9fVwetFq6E
+         0sshJwZZCabl8sIi9Q0Crecf5TUiHuwgseB0Nmjdan+sWKamYun2Zd/Vh6sJTfOqf2WL
+         lXaw==
+X-Gm-Message-State: AOAM533LV74kk+fM6SGGTc29WmUgeolT4aEJlb0fdF+VSSNO1uW/T5TU
+        1kxWGmpLGUD1I1pEnIC4OwU57xKOv1Zx+5Dp
+X-Google-Smtp-Source: ABdhPJxYfZdaYbtzUM5HCA1EvHKZfyTopnzIjYPfeVoeCJ0hy7FpykwY1iajW71M0GalMBsvaj1eQg==
+X-Received: by 2002:a2e:b0f6:: with SMTP id h22mr33709453ljl.274.1626899293909;
+        Wed, 21 Jul 2021 13:28:13 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id u17sm1820221lfg.306.2021.07.21.13.28.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Jul 2021 13:28:13 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id e14so4598448ljo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:28:13 -0700 (PDT)
+X-Received: by 2002:a2e:81c4:: with SMTP id s4mr32086757ljg.251.1626899292773;
+ Wed, 21 Jul 2021 13:28:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210721135926.602840-1-nborisov@suse.com> <CAHk-=whqJKKc9wUacLEkvTzXYfYOUDt=kHKX6Fa8Kb4kQftbbQ@mail.gmail.com>
+ <20210721201029.GQ19710@twin.jikos.cz>
+In-Reply-To: <20210721201029.GQ19710@twin.jikos.cz>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 21 Jul 2021 13:27:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whCygw44p30Pmf+Bt8=LVtmij3_XOxweEA3OQNruhMg+A@mail.gmail.com>
+Message-ID: <CAHk-=whCygw44p30Pmf+Bt8=LVtmij3_XOxweEA3OQNruhMg+A@mail.gmail.com>
+Subject: Re: [PATCH] lib/string: Bring optimized memcmp from glibc
+To:     David Sterba <dsterba@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+On Wed, Jul 21, 2021 at 1:13 PM David Sterba <dsterba@suse.cz> wrote:
+>
+> adding a memcmp_large that compares by native words or u64 could be
+> the best option.
 
-At CPU offline time, we must handle any pending wakeup for the nocb_gp
-kthread linked to the outgoing CPU.
+Yeah, we could just special-case that one place.
 
-Now we are making sure of that twice:
+But see the patches I sent out - I think we can get the best of both worlds.
 
-1) From rcu_report_dead() when the outgoing CPU makes the very last
-   local cleanups by itself before switching offline.
+A small and simple memcmp() that is good enough and not the
+_completely_ stupid thing we have now.
 
-2) From rcutree_dead_cpu(). Here the offlining CPU has gone and is truly
-   now offline. Another CPU takes care of post-portem cleaning up and
-   check if the offline CPU had pending wakeup.
+The second patch I sent out even gets the mutually aligned case right.
 
-Both ways are fine but we have to choose one or the other because we
-don't need to repeat that action. Simply benefit from cache locality
-and keep only the first solution.
+Of course, the glibc code also ended up unrolling things a bit, but
+honestly, the way it did it was too disgusting for words.
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree.c | 3 ---
- 1 file changed, 3 deletions(-)
+And if it really turns out that the unrolling makes a big difference -
+although I doubt it's meaningful with any modern core - I can add a
+couple of lines to that simple patch I sent out to do that too.
+Without getting the monster that is that glibc code.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b6eb480402e05..0fda98a0d12e9 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2471,9 +2471,6 @@ int rcutree_dead_cpu(unsigned int cpu)
- 	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
- 	/* Adjust any no-longer-needed kthreads. */
- 	rcu_boost_kthread_setaffinity(rnp, -1);
--	/* Do any needed no-CB deferred wakeups from this CPU. */
--	do_nocb_deferred_wakeup(per_cpu_ptr(&rcu_data, cpu));
--
- 	// Stop-machine done, so allow nohz_full to disable tick.
- 	tick_dep_clear(TICK_DEP_BIT_RCU);
- 	return 0;
--- 
-2.31.1.189.g2e36527f23
+Of course, my patch depends on the fact that "get_unaligned()" is
+cheap on all CPU's that really matter, and that caches aren't
+direct-mapped any more. The glibc code seems to be written for a world
+where registers are cheap, unaligned accesses are prohibitively
+expensive, and unrolling helps because L1 caches are direct-mapped and
+you really want to do chunking to not get silly way conflicts.
 
+If old-style Sparc or MIPS was our primary target, that would be one
+thing. But it really isn't.
+
+              Linus
