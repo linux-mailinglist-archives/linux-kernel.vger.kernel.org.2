@@ -2,178 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDC93D0FC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63933D0FC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238557AbhGUNAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
+        id S238573AbhGUNAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238381AbhGUM7Z (ORCPT
+        with ESMTP id S238534AbhGUM76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:59:25 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E26C002B64;
-        Wed, 21 Jul 2021 06:40:00 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id d12so2208048wre.13;
-        Wed, 21 Jul 2021 06:40:00 -0700 (PDT)
+        Wed, 21 Jul 2021 08:59:58 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF17DC00EE52
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:40:29 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id p5-20020a17090a8685b029015d1a9a6f1aso959349pjn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:40:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=2YZWGZN/barbCQ4PSNvEgZE4u5ohSafJjdAflTNqMgo=;
-        b=DY6ZW5ektiXig4yptvS9aLBaijbyR5XPieFrWmitZje3FrzUAyXvmyB7XDFu5dbOFf
-         ndRlZKbo6PUsSs2Bs7mvgMWw2jRhNerf6IL4FR8yUixvcb+QNQs0+DMYPrFCGohOLEb9
-         HmD581Q2ZQn3OroMlsjTncDLnfKP2qU6lEk2R7a2SQxh7QqKInVyUzINM/zNoKvh4UWP
-         P3mL3d+ogtY6yOuai8T9npV3cRk+IEKgGPalzsq6jbbjxPo8D2b1dWCQ3+Oka5S4mJhu
-         zvOegmp8aEevP5/QEtCWoUHEqeSKnCGvFZ7NtsmcubOeIdh8xM59TDTGumsoft7kqShh
-         1jkA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2zLU7xCdFtfu9+Bw/8ezSHg3AfeYZUFk7U4CAtgzsSk=;
+        b=DLHpRRbO2RjAuMVpphDwHJoRmp8oEEm2MATAeF6UdAuJwx6eZbHLhj/xa1KIBmUapU
+         vvrK/O8gHWiQUba4dp6grGuRxiZInd+ONetpTm56l+rBFizt/z7Dy9AYvs9HhYvLMNfQ
+         OprQNoqgEfTNr0CZ8TwU+aR/v2mVhyzcaf6M8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2YZWGZN/barbCQ4PSNvEgZE4u5ohSafJjdAflTNqMgo=;
-        b=YxGQJbGJmTgThSDTRSOyg8XUxiQhqaH0cP6OBtxPz/K9DhPYQXoPlpC8iRexepVsG6
-         y3iCLW1DRLfB2IVZBTyK0B+ma7Dxl5K6fRiNsE/zQP+MR24bja6VpDYKtf3/DRY3aB44
-         Rm7PEGiB3jOOFFbgftPeVqGbuMl4DkK2NKLPoXrwftXIRcq2f0Tig2RcJfYpzp7YaE08
-         br7UjiyYXzGUCWeOGF9FGctJ0+M0LT/c+7w0QctoQ+L8u/XDFwyuUGFvnUN/GIhoo6Ko
-         iIMwJIO2estRm/GoKBfkHQ2+Q1dTcskl8LeUr6lrOtEjfhkY9O0gJ9mhyUcqjODGDJif
-         ytwQ==
-X-Gm-Message-State: AOAM530rvD7zHLwvwrwz4BMg1YlZWPLJioJ1zBICa+8dQo/TVlmrzg4s
-        WGAW/r/b/Vn/MS66BcMGzG1/lAiU8zS8ZSH/
-X-Google-Smtp-Source: ABdhPJxUoK4ngIeYTYIeMp+nrdVW1rzVTvvMf1oFSztb8AbntNCukxzjtWSBNkREq7jtUpangYWSlQ==
-X-Received: by 2002:a5d:410b:: with SMTP id l11mr42738870wrp.173.1626874799148;
-        Wed, 21 Jul 2021 06:39:59 -0700 (PDT)
-Received: from ?IPv6:2a02:810d:d40:2317:2ef0:5dff:fe0a:a2d5? ([2a02:810d:d40:2317:2ef0:5dff:fe0a:a2d5])
-        by smtp.gmail.com with ESMTPSA id 129sm22792434wmz.26.2021.07.21.06.39.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 06:39:58 -0700 (PDT)
-Subject: Re: [PATCH v2] Expose Peak USB device id in sysfs via phys_port_name.
-To:     =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210721124048.590426-1-nautsch2@gmail.com>
- <20210721125926.593283-1-nautsch2@gmail.com>
- <PA4PR03MB67973D473C7CE600A6104EE8D6E39@PA4PR03MB6797.eurprd03.prod.outlook.com>
-From:   Andre Naujoks <nautsch2@gmail.com>
-Message-ID: <fe8998f2-7897-735c-926f-6b6b74018784@gmail.com>
-Date:   Wed, 21 Jul 2021 15:39:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2zLU7xCdFtfu9+Bw/8ezSHg3AfeYZUFk7U4CAtgzsSk=;
+        b=M/YBYZ66aWA49kZAQUPTjbQHD9QPAQSeiJvTTiBUOmzXsza3g6rU5m8GAAKksG6SFt
+         Im56owGX41A15Pp3r5q5kmakoVzvLXeyxniZTRxFTNtBYLyL7MJCpYVkhut6u6whQooe
+         ROT23nc0v5F0k2Holf5UFdhTV+NHfvxDz/NdiaJwmE7yeb8BgYwt6u8gZ7foqnRHA+Dk
+         eq2er9kQvWJsbggoL1NsfH7T8kXWgneC0ITigDnMpFlFFdFGb0b71CpGNiaBue7KeQRJ
+         HSWNKj9xa8D5Q3bBk/6byAkDfjuQDq/MoV+pLndFPdW+mWoZnK2h0qmqhKYGgzc4Yv/C
+         niEA==
+X-Gm-Message-State: AOAM530iaa3QHWxr3bxW2ktPdtezWGHM1IIM6cClfA1nFr7z6dkBSdt6
+        VioaRp+HRczDfjmVI7p4s0iXqRsxaxDC2ktCPvxsEw==
+X-Google-Smtp-Source: ABdhPJx22xhPEIxOvOdw0zD9THkPvLXa3uzUD5hc6KKSjL7/wue/Gk1Ox9vE25uU+NrX5EvLd6pJ/RDET8kRqJVOJzU=
+X-Received: by 2002:a17:90a:4f02:: with SMTP id p2mr3750645pjh.112.1626874829285;
+ Wed, 21 Jul 2021 06:40:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <PA4PR03MB67973D473C7CE600A6104EE8D6E39@PA4PR03MB6797.eurprd03.prod.outlook.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210715121209.31024-1-yong.wu@mediatek.com> <20210715121209.31024-12-yong.wu@mediatek.com>
+In-Reply-To: <20210715121209.31024-12-yong.wu@mediatek.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Wed, 21 Jul 2021 21:40:18 +0800
+Message-ID: <CAATdQgAfo9oNR5=ogEottHajODngi1ahvKUnEOUczzjreYpPcQ@mail.gmail.com>
+Subject: Re: [PATCH v2 11/11] memory: mtk-smi: mt8195: Add initial setting for smi-larb
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        anan.sun@mediatek.com, ming-fan.chen@mediatek.com,
+        yi.kuo@mediatek.com, anthony.huang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 21.07.21 um 15:29 schrieb Stéphane Grosjean:
-> Hi,
-> 
-> The display and the possibility to change this "device_number" is a current modification of the peak_usb driver. This modification will offer this possibility for all CAN - USB interfaces of PEAK-System.
-
-Hi.
-
-By "current modification" you mean something not yet public? Do you have 
-a time frame for when you are planning to make it public? I'd really 
-like to use this :-)
-
-> 
-> However, it is planned to create new R/W entries for this (under /sys/class/net/canX/...) as is already the case in other USB - CAN interface drivers.
-
-I'd be fine with that. I just chose something, that was already 
-available and looked as if it made the most sense without breaking anything.
-
-Thanks for the reply!
-   Andre
-
-> 
-> — Stéphane
-> 
-> 
-> De : Andre Naujoks <nautsch2@gmail.com>
-> Envoyé : mercredi 21 juillet 2021 14:59
-> À : Wolfgang Grandegger <wg@grandegger.com>; Marc Kleine-Budde <mkl@pengutronix.de>; David S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; Stéphane Grosjean <s.grosjean@peak-system.com>; Vincent Mailhol <mailhol.vincent@wanadoo.fr>; Gustavo A. R. Silva <gustavoars@kernel.org>; Pavel Skripkin <paskripkin@gmail.com>; Colin Ian King <colin.king@canonical.com>; Andre Naujoks <nautsch2@gmail.com>; linux-can@vger.kernel.org <linux-can@vger.kernel.org>; netdev@vger.kernel.org <netdev@vger.kernel.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
-> Objet : [PATCH v2] Expose Peak USB device id in sysfs via phys_port_name.
-> 
-> The Peak USB CAN adapters can be assigned a device id via the Peak
-> provided tools (pcan-settings). This id can currently not be set by the
-> upstream kernel drivers, but some devices expose this id already.
-> 
-> The id can be used for consistent naming of CAN interfaces regardless of
-> order of attachment or recognition on the system. The classical CAN Peak
-> USB adapters expose this id via bcdDevice (combined with another value)
-> on USB-level in the sysfs tree and this value is then available in
-> ID_REVISION from udev. This is not a feasible approach, when a single
-> USB device offers more than one CAN-interface, like e.g. the PCAN-USB
-> Pro FD devices.
-> 
-> This patch exposes those ids via the, up to now unused, netdevice sysfs
-> attribute phys_port_name as a simple decimal ASCII representation of the
-> id. phys_port_id was not used, since the default print functions from
-> net/core/net-sysfs.c output a hex-encoded binary value, which is
-> overkill for a one-byte device id, like this one.
-> 
-> Signed-off-by: Andre Naujoks <nautsch2@gmail.com>
+On Thu, Jul 15, 2021 at 8:23 PM Yong Wu <yong.wu@mediatek.com> wrote:
+>
+> To improve the performance, We add some initial setting for smi larbs.
+> there are two part:
+> 1), Each port has the special ostd(outstanding) value in each larb.
+> 2), Two general setting for each larb.
+>
+> In some SoC, this setting maybe changed dynamically for some special case
+> like 4K, and this initial setting is enough in mt8195.
+>
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 > ---
->   drivers/net/can/usb/peak_usb/pcan_usb_core.c | 16 ++++++++++++++++
->   1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> index e8f43ed90b72..f6cbb01a58cc 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> @@ -408,6 +408,21 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct sk_buff *skb,
->           return NETDEV_TX_OK;
->   }
-> 
-> +static int peak_usb_ndo_get_phys_port_name(struct net_device *netdev,
-> +                                          char *name, size_t len)
-> +{
-> +       const struct peak_usb_device *dev = netdev_priv(netdev);
-> +       int err;
+>  drivers/memory/mtk-smi.c | 74 +++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 73 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/memory/mtk-smi.c b/drivers/memory/mtk-smi.c
+> index c52bf02458ff..1d9e67520433 100644
+> --- a/drivers/memory/mtk-smi.c
+> +++ b/drivers/memory/mtk-smi.c
+> @@ -32,6 +32,14 @@
+>  #define SMI_DUMMY                      0x444
+>
+>  /* SMI LARB */
+> +#define SMI_LARB_CMD_THRT_CON          0x24
+> +#define SMI_LARB_THRT_EN               0x370256
 > +
-> +       err = snprintf(name, len, "%u", dev->device_number);
+> +#define SMI_LARB_SW_FLAG               0x40
+> +#define SMI_LARB_SW_FLAG_1             0x1
 > +
-> +       if (err >= len || err <= 0) {
-> +               return -EINVAL;
-> +       }
+> +#define SMI_LARB_OSTDL_PORT            0x200
+> +#define SMI_LARB_OSTDL_PORTx(id)       (SMI_LARB_OSTDL_PORT + (((id) & 0x1f) << 2))
+>
+>  /* Below are about mmu enable registers, they are different in SoCs */
+>  /* mt2701 */
+> @@ -67,6 +75,11 @@
+>  })
+>
+>  #define SMI_COMMON_INIT_REGS_NR                6
+> +#define SMI_LARB_PORT_NR_MAX           32
 > +
-> +       return 0;
-> +}
+> +#define MTK_SMI_FLAG_LARB_THRT_EN      BIT(0)
+> +#define MTK_SMI_FLAG_LARB_SW_FLAG      BIT(1)
+> +#define MTK_SMI_CAPS(flags, _x)                (!!((flags) & (_x)))
+>
+>  struct mtk_smi_reg_pair {
+>         unsigned int            offset;
+> @@ -97,6 +110,8 @@ struct mtk_smi_larb_gen {
+>         int port_in_larb[MTK_LARB_NR_MAX + 1];
+>         void (*config_port)(struct device *dev);
+>         unsigned int                    larb_direct_to_common_mask;
+> +       unsigned int                    flags_general;
+> +       const u8                        (*ostd)[SMI_LARB_PORT_NR_MAX];
+>  };
+>
+>  struct mtk_smi {
+> @@ -213,12 +228,22 @@ static void mtk_smi_larb_config_port_mt8173(struct device *dev)
+>  static void mtk_smi_larb_config_port_gen2_general(struct device *dev)
+>  {
+>         struct mtk_smi_larb *larb = dev_get_drvdata(dev);
+> -       u32 reg;
+> +       u32 reg, flags_general = larb->larb_gen->flags_general;
+> +       const u8 *larbostd = larb->larb_gen->ostd[larb->larbid];
+>         int i;
+>
+>         if (BIT(larb->larbid) & larb->larb_gen->larb_direct_to_common_mask)
+>                 return;
+>
+> +       if (MTK_SMI_CAPS(flags_general, MTK_SMI_FLAG_LARB_THRT_EN))
+> +               writel_relaxed(SMI_LARB_THRT_EN, larb->base + SMI_LARB_CMD_THRT_CON);
 > +
->   /*
->    * start the CAN interface.
->    * Rx and Tx urbs are allocated here. Rx urbs are submitted here.
-> @@ -769,6 +784,7 @@ static const struct net_device_ops peak_usb_netdev_ops = {
->           .ndo_stop = peak_usb_ndo_stop,
->           .ndo_start_xmit = peak_usb_ndo_start_xmit,
->           .ndo_change_mtu = can_change_mtu,
-> +       .ndo_get_phys_port_name = peak_usb_ndo_get_phys_port_name,
->   };
-> 
->   /*
-> --
-> 2.32.0
-> 
-> --
-> PEAK-System Technik GmbH
-> Sitz der Gesellschaft Darmstadt - HRB 9183
-> Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
-> Unsere Datenschutzerklaerung mit wichtigen Hinweisen
-> zur Behandlung personenbezogener Daten finden Sie unter
-> www.peak-system.com/Datenschutz.483.0.html
-> 
+> +       if (MTK_SMI_CAPS(flags_general, MTK_SMI_FLAG_LARB_SW_FLAG))
+> +               writel_relaxed(SMI_LARB_SW_FLAG_1, larb->base + SMI_LARB_SW_FLAG);
+> +
+> +       for (i = 0; i < SMI_LARB_PORT_NR_MAX && larbostd && !!larbostd[i]; i++)
+> +               writel_relaxed(larbostd[i], larb->base + SMI_LARB_OSTDL_PORTx(i));
 
+All other mtk platform's larbs have the same format for SMI_LARB_OSTDL_PORTx()
+registers at the same offset? or is this unique feature for mt8195?
+
+> +
+>         for_each_set_bit(i, (unsigned long *)larb->mmu, 32) {
+>                 reg = readl_relaxed(larb->base + SMI_LARB_NONSEC_CON(i));
+>                 reg |= F_MMU_EN;
+> @@ -227,6 +252,51 @@ static void mtk_smi_larb_config_port_gen2_general(struct device *dev)
+>         }
+>  }
+>
+> +static const u8 mtk_smi_larb_mt8195_ostd[][SMI_LARB_PORT_NR_MAX] = {
+> +       [0] = {0x0a, 0xc, 0x22, 0x22, 0x01, 0x0a,}, /* larb0 */
+> +       [1] = {0x0a, 0xc, 0x22, 0x22, 0x01, 0x0a,}, /* larb1 */
+> +       [2] = {0x12, 0x12, 0x12, 0x12, 0x0a,},      /* ... */
+> +       [3] = {0x12, 0x12, 0x12, 0x12, 0x28, 0x28, 0x0a,},
+> +       [4] = {0x06, 0x01, 0x17, 0x06, 0x0a,},
+> +       [5] = {0x06, 0x01, 0x17, 0x06, 0x06, 0x01, 0x06, 0x0a,},
+> +       [6] = {0x06, 0x01, 0x06, 0x0a,},
+> +       [7] = {0x0c, 0x0c, 0x12,},
+> +       [8] = {0x0c, 0x0c, 0x12,},
+> +       [9] = {0x0a, 0x08, 0x04, 0x06, 0x01, 0x01, 0x10, 0x18, 0x11, 0x0a,
+> +               0x08, 0x04, 0x11, 0x06, 0x02, 0x06, 0x01, 0x11, 0x11, 0x06,},
+> +       [10] = {0x18, 0x08, 0x01, 0x01, 0x20, 0x12, 0x18, 0x06, 0x05, 0x10,
+> +               0x08, 0x08, 0x10, 0x08, 0x08, 0x18, 0x0c, 0x09, 0x0b, 0x0d,
+> +               0x0d, 0x06, 0x10, 0x10,},
+> +       [11] = {0x0e, 0x0e, 0x0e, 0x0e, 0x0e, 0x0e, 0x01, 0x01, 0x01, 0x01,},
+> +       [12] = {0x09, 0x09, 0x05, 0x05, 0x0c, 0x18, 0x02, 0x02, 0x04, 0x02,},
+> +       [13] = {0x02, 0x02, 0x12, 0x12, 0x02, 0x02, 0x02, 0x02, 0x08, 0x01,},
+> +       [14] = {0x12, 0x12, 0x02, 0x02, 0x02, 0x02, 0x16, 0x01, 0x16, 0x01,
+> +               0x01, 0x02, 0x02, 0x08, 0x02,},
+> +       [15] = {},
+> +       [16] = {0x28, 0x02, 0x02, 0x12, 0x02, 0x12, 0x10, 0x02, 0x02, 0x0a,
+> +               0x12, 0x02, 0x0a, 0x16, 0x02, 0x04,},
+> +       [17] = {0x1a, 0x0e, 0x0a, 0x0a, 0x0c, 0x0e, 0x10,},
+> +       [18] = {0x12, 0x06, 0x12, 0x06,},
+> +       [19] = {0x01, 0x04, 0x01, 0x01, 0x01, 0x01, 0x01, 0x04, 0x04, 0x01,
+> +               0x01, 0x01, 0x04, 0x0a, 0x06, 0x01, 0x01, 0x01, 0x0a, 0x06,
+> +               0x01, 0x01, 0x05, 0x03, 0x03, 0x04, 0x01,},
+> +       [20] = {0x01, 0x04, 0x01, 0x01, 0x01, 0x01, 0x01, 0x04, 0x04, 0x01,
+> +               0x01, 0x01, 0x04, 0x0a, 0x06, 0x01, 0x01, 0x01, 0x0a, 0x06,
+> +               0x01, 0x01, 0x05, 0x03, 0x03, 0x04, 0x01,},
+> +       [21] = {0x28, 0x19, 0x0c, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x04,},
+> +       [22] = {0x28, 0x19, 0x0c, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x04,},
+> +       [23] = {0x18, 0x01,},
+> +       [24] = {0x01, 0x01, 0x04, 0x01, 0x01, 0x01, 0x01, 0x01, 0x04, 0x01,
+> +               0x01, 0x01,},
+> +       [25] = {0x02, 0x02, 0x02, 0x28, 0x16, 0x02, 0x02, 0x02, 0x12, 0x16,
+> +               0x02, 0x01,},
+> +       [26] = {0x02, 0x02, 0x02, 0x28, 0x16, 0x02, 0x02, 0x02, 0x12, 0x16,
+> +               0x02, 0x01,},
+> +       [27] = {0x02, 0x02, 0x02, 0x28, 0x16, 0x02, 0x02, 0x02, 0x12, 0x16,
+> +               0x02, 0x01,},
+> +       [28] = {0x1a, 0x0e, 0x0a, 0x0a, 0x0c, 0x0e, 0x10,},
+> +};
+> +
+>  static const struct mtk_smi_larb_gen mtk_smi_larb_mt2701 = {
+>         .port_in_larb = {
+>                 LARB0_PORT_OFFSET, LARB1_PORT_OFFSET,
+> @@ -269,6 +339,8 @@ static const struct mtk_smi_larb_gen mtk_smi_larb_mt8192 = {
+>
+>  static const struct mtk_smi_larb_gen mtk_smi_larb_mt8195 = {
+>         .config_port                = mtk_smi_larb_config_port_gen2_general,
+> +       .flags_general              = MTK_SMI_FLAG_LARB_THRT_EN | MTK_SMI_FLAG_LARB_SW_FLAG,
+> +       .ostd                       = mtk_smi_larb_mt8195_ostd,
+>  };
+>
+>  static const struct of_device_id mtk_smi_larb_of_ids[] = {
+> --
+> 2.18.0
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
