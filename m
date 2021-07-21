@@ -2,104 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEBB3D07DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 06:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4CDB3D07E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 06:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbhGUEFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 00:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        id S230040AbhGUEG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 00:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhGUEEB (ORCPT
+        with ESMTP id S229977AbhGUEE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 00:04:01 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA990C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 21:44:10 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so1023696otl.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 21:44:10 -0700 (PDT)
+        Wed, 21 Jul 2021 00:04:27 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D13C061768
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 21:44:39 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id v1so748304edt.6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 21:44:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=BfXWWTIMOmQTzPgis5xFp0H4x6lMPAPeV1tP+oyedqc=;
-        b=CcW6EzZRdtG0O1WjwIj+Cykmwt+KwmhaIQTKpaucBBNgxnOVSP/BRN7Zk7Xt8rfNMP
-         IAtJgHI8pc/+2TJjyWTnaBqiA5mF5TqKotEbXZ2jt38L6gxvdElK8FThDNYspDXMz6l3
-         VALP8V5tC1xdpko8EoFhDUfOf2/iZHzoFNsKI=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6oh691P4XIOtEoan62ZZ+cq3fvRkvPOeVqxSBdHspTI=;
+        b=kUnendCkudBP7K6LuHAlKTUl85jzu9F9KbdcQU0V1gQeWmVovU0wHd1i5UlGIQ82/Q
+         9uAn4+AryrDc14KMrkcoD+mS4LDf3JHLvmNCrC3tEffX07LQN6PROL6tfeGZ+ASdJLe4
+         zttpSP44Um622vwltczxIIiBEJM+AM7wjLWMyl5/iAXuf+/LBAs4QrPFS1sOwG8u/vVu
+         F8gaPek5W2nGahv23TPYswGL8uX28u4U1ms8jY74aG0AjtjsjY2YUgR6tUn9U4DZzZHT
+         Qnxar68+sABbBCYvGO+FyqTJwQz6pebLqliXerjzTjLvFHSgKw2V6q+ljR/HnZ1ln8+X
+         2byw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=BfXWWTIMOmQTzPgis5xFp0H4x6lMPAPeV1tP+oyedqc=;
-        b=DDlUYETIyl0gKjX5FcTLXQ0KD3O0jLaEdBRvQM+cSpMqwwbEqdSTQcqM+zJdV3Pyu1
-         QBjcO9w5Y72xh/Bk608akri+gXWY6jcb6ZOwLqlZspHQACOigbKn2lXVnUsG3bTXSdsR
-         +1qWKYiTHwKz14vDMgrroDTRNQe+tPc3nw3ulKADnXRhuiDfFNi1EHxmBPnBE5iOdQC8
-         OXacdNasfhPpwYs0Ag7OLQzrbnkISgFlulGzG1Ii1swwM5WYrcsccJj9ZPhjJLrQ7ffQ
-         OGvdnzgTa2aqlEVR0CM4AvqnVbXdX8ww161tZAAP262Cae0wRZ+kU9s/jUVq4qeAH1H+
-         3xXw==
-X-Gm-Message-State: AOAM532VI+YWeg99kqLZmYfAecTyky6xDZt6pbThC7JLL7LYCZ77yF5X
-        G3uuYrFR1vmGqD0bFIBLi58InBxMghCJ+CdcWzYmCw==
-X-Google-Smtp-Source: ABdhPJzR0xoikXdoN5v4m795dYznxelFcJLueVWs3AhpcIznH0aRODcF2DfsA1T59fd8iC1L4ioYPfkhFRCtHUhXNPU=
-X-Received: by 2002:a9d:1b6e:: with SMTP id l101mr9927059otl.34.1626842649804;
- Tue, 20 Jul 2021 21:44:09 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 21 Jul 2021 04:44:09 +0000
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6oh691P4XIOtEoan62ZZ+cq3fvRkvPOeVqxSBdHspTI=;
+        b=m/W7Zgy2pxJ22Mg2rpvxKTYofhwX5YQVZ+wqsCami7c75augvkzMoYWluD6uMPhzzm
+         AWiHeA1jJz90LKVrBD02uYsJG99ilGWjQSKzDDantJvfi6zWLf5i2jzPrhzLZ05ArtJu
+         n/DyrJEqohYVEskwtAgQ6TGHT19a9NCGS62cP1iOJIDCNNZerDnk6+k6AXzsIhmltFzx
+         NQ5ECNwLhL/T82Ew2XjpEfYE18J9IPtplpvQ3CEfDXe1eK+R/bSRMm6HKpMAHvfBfR1k
+         0KfdcUvEH/FJrnzESiytqOnkgs31NECqF3y+FiDoSC9RUnzKQontm4mX1VT7fPUEJtLH
+         NKHw==
+X-Gm-Message-State: AOAM530NzaKv97jQkeboN6CyUC4WO8s6fKUXA4hUyJdbLUZ6Xfa2lFII
+        PRjjbReUUVP5eSeGpOqnMOGC0TXqlHFdZiI8Ufk=
+X-Google-Smtp-Source: ABdhPJzyGt0nsnygfKJcQmbWPDVyie7og3N2BiJ9L2YHDgpqULnlKaf2OkwGFE6PoKW9F9Lqq4kUrAQW36nqK1WzJ8U=
+X-Received: by 2002:a05:6402:4c5:: with SMTP id n5mr45295794edw.322.1626842678114;
+ Tue, 20 Jul 2021 21:44:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1601448168-18396-3-git-send-email-srivasam@codeaurora.org>
-References: <1601448168-18396-1-git-send-email-srivasam@codeaurora.org> <1601448168-18396-3-git-send-email-srivasam@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 21 Jul 2021 04:44:09 +0000
-Message-ID: <CAE-0n51LVG1zZvuT4Cv-3nCRhPtC46OQCSeBmncwaH_3TXk8=w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc7180-trogdor: Add lpass dai
- link for HDMI
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <CAD-N9QVFnhKGfRYDDjWb0o_ty57AbjfzEnFPHZxEC5NOKL1ecg@mail.gmail.com>
+ <77df3e1f.22e1.17ac45a1bd9.Coremail.lyl2019@mail.ustc.edu.cn>
+In-Reply-To: <77df3e1f.22e1.17ac45a1bd9.Coremail.lyl2019@mail.ustc.edu.cn>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Wed, 21 Jul 2021 12:44:09 +0800
+Message-ID: <CAD-N9QUEdMMfAC46Wb7DJJRs792_3ukK0ykyh1_U1MAekM1L5g@mail.gmail.com>
+Subject: Re: Doubts about Patch "ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe"
+To:     lyl2019@mail.ustc.edu.cn
+Cc:     siglesias@igalia.com, jens.taprogge@taprogge.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        industrypack-devel@lists.sourceforge.net,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Srinivasa Rao Mandadapu (2020-09-29 23:42:48)
-> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+On Tue, Jul 20, 2021 at 10:38 PM <lyl2019@mail.ustc.edu.cn> wrote:
 >
-> Add dai link in sc7180-trogdor.dtsi for supporting audio over DP
 >
-> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
+> Hello Dongliang Mu,
 >
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> index 5724982..850b43e 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> @@ -231,6 +231,7 @@
+> >  Depending on if CONFIG_PCI defines, the "tpci200->info->cfg_regs" may
+> > not be freed.
+> >
+> > #ifdef CONFIG_PCI
+> > /* Destroy a virtual mapping cookie for a PCI BAR (memory or IO) */
+> > struct pci_dev;
+> > extern void pci_iounmap(struct pci_dev *dev, void __iomem *);
+> > #elif defined(CONFIG_GENERIC_IOMAP)
+> > struct pci_dev;
+> > static inline void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
+> > { }
+> > #endif
 >
->                 audio-jack = <&alc5682>;
->
-> +               #sound-dai-cells = <0>;
->                 #address-cells = <1>;
->                 #size-cells = <0>;
->
-> @@ -257,6 +258,17 @@
->                                 sound-dai = <&max98357a>;
->                         };
->                 };
-> +               dai-link@2 {
-> +                       link-name = "MultiMedia2";
-> +                       reg = <2>;
-> +                       cpu {
-> +                               sound-dai = <&lpass_cpu 2>;
-> +                       };
-> +
-> +                       codec {
-> +                               sound-dai = <&msm_dp>;
+> I think only `CONFIG_PCI=n` and `CONFIG_GENERIC_IOMAP=y` cause pci_iounmap an empty
+> implementation. Actually, `CONFIG_PCI` is a default option when run `make defconfig`,
+> pci_iounmap() usually is acted as an extern function.
 
-I see qcom maintainers have picked up the dp node now. Can you resend?
-This would need to change to mdss_dp. Also incorporate my comments from
-January this year please.
+I see. From the discussion with other developers, the usage of this
+driver needs to enable CONFIG_PCI. So we may not worry about this
+point any more.
+
+>
+>
+> > Even if CONFIG_PCI is undefined, it is possible that
+> > tpci200->info->cfg_regs is not freed at all. Therefore, this patch
+> > would cause memory leak. Take a look at the following code:
+> >
+> > void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+> > {
+> >         IO_COND(addr, /* nothing */, iounmap(addr));
+> > }
+>
+> Here i am not sure this is the final implementation of pci_iounmap(),
+> because pci_iounmap() is re-implementated in many architectures.
+> Even so, i observed there still many call-sites of pci_iounmap() have reset
+> `the addr = NULL` after calling.
+> Can you have some ways to determine the actual implementation of
+> pci_iounmap in our cases?
+
+Yeah, that's the problem. I am not highly certain about the
+implementation of this function. So if the free is not done, your
+previous patch would cause a memory leak.
+
+
+
+>
+>
+> > #define IO_COND(addr, is_pio, is_mmio) do {                     \
+> >         unsigned long port = (unsigned long __force)addr;       \
+> >         if (port >= PIO_RESERVED) {                             \
+> >                 is_mmio;                                        \
+> >         } else if (port > PIO_OFFSET) {                         \
+> >                 port &= PIO_MASK;                               \
+> >                 is_pio;                                         \
+> >         } else                                                  \
+> >                 bad_io_access(port, #is_pio );                  \
+> > } while (0)
+> >
+>
+> Although the above codes is actually called, the addr might be freed
+> if `port >= PIO_RESERVED` is true. The double free still existed.
+
+Of course. There exists a path in which the double free occurs.
+However, if you directly add this NULL assignment, it will cause a
+memory leak in other paths.
+
+I am not suspecting the validation of this patch in defending the
+double free. Instead, I agree with this patch, but it may introduce
+some other issues, like memory leak.
+
+>
+>
+>
+> If I make any mistakes, please tell me.
+> Thanks your report.
+> ---
+> Lv Yunlong
+>
+>
+>
+>
