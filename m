@@ -2,159 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2083D0F85
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6573D0F80
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237984AbhGUMsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:48:38 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12784 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232079AbhGUMsd (ORCPT
+        id S237928AbhGUMr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237878AbhGUMrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:48:33 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LD4SVg188787;
-        Wed, 21 Jul 2021 09:28:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=1/UqFbGMruDo3Q0vGuZwQjLuoMkBdQ71Br6XNAeVCaQ=;
- b=FwPLJVaStv0j9I+wdLUA/VQPmHLN4jGnfyjE4JCKPJFvAwKFpRfE9Afsg9EOswQ4VzBi
- APV/ndDSowzA3VlROOXNX/FUdQ3ChlB1eBuVsbJb9yroLnJtVVs7perwefkiHgV3+Z8G
- ogklqScJ9RGJ/nbO9wyHButKY3+7FPFHN5uKwjYJuGbN8qCcyynMJoFEHAQHenO3yJp/
- bqnxffnIKBNvsnQlGxUMTkvjg+2nxLFAtgmrg3GUX2NgFMrtDNzqhRtukWM5P1lXqnfW
- 9HDL2cmOy1JIJ1v4zWD8uSZJ/zFWtRGTyodEY9zFlc5jzdurlLDVA817eR66nGrN+lKy +g== 
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39xja3byf3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 09:28:51 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16LDHVKL020260;
-        Wed, 21 Jul 2021 13:28:50 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma03wdc.us.ibm.com with ESMTP id 39vqdvc540-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 13:28:50 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16LDRok130147048
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 13:27:50 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0E359124053;
-        Wed, 21 Jul 2021 13:27:50 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4C99D124062;
-        Wed, 21 Jul 2021 13:27:49 +0000 (GMT)
-Received: from v0005c16 (unknown [9.211.68.240])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Jul 2021 13:27:49 +0000 (GMT)
-Message-ID: <b482a658da7d6488e8b84c20db2efbe098052814.camel@linux.ibm.com>
-Subject: Re: [PATCH 1/3] fsi: occ: Force sequence numbering per OCC
-From:   Eddie James <eajames@linux.ibm.com>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-fsi@lists.ozlabs.org
-Date:   Wed, 21 Jul 2021 08:27:48 -0500
-In-Reply-To: <CACPK8XcBHGsFu0VoNPutC8HYbLcf0WV-KWNixCdGXxWsf1PDVg@mail.gmail.com>
-References: <20210716151850.28973-1-eajames@linux.ibm.com>
-         <20210716151850.28973-2-eajames@linux.ibm.com>
-         <CACPK8XcBHGsFu0VoNPutC8HYbLcf0WV-KWNixCdGXxWsf1PDVg@mail.gmail.com>
-Organization: IBM
+        Wed, 21 Jul 2021 08:47:25 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175ECC061762
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:28:02 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id r132so3280828yba.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:28:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MAafdB8maEcxAt7X4aari+TcZmDheDXHSryvpJebCSE=;
+        b=lfuTg9AWFswlPJLywoHYJK1agsZpv6/T05aDWoVWngTAAT8PURAoKP4BvhuWDegYwm
+         vbyWOypf9xXj4Eka8iqW66c4ICKcLvZ1GaZU9OHYPqXx+phQsBqMmBtMuGNm63DbbQ2R
+         tiQ2TmwqRwE25YRB7yabtogkuJoH53yd1eoV7j6SPdismGUzX0KcG3GqdFFbeKNDSr0C
+         5VW8VOEtldwEL51DqtvM30NXemVgS42Gimleq+MHwlIy20A9WG9R/juxJzMRObMW1N9O
+         ex1D+TORYJp02UbEh+YMRbnDyoMFlrzgP5mLIT13K0gqrn7cdHVE90AnNVSFQs0pXQC0
+         M9Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MAafdB8maEcxAt7X4aari+TcZmDheDXHSryvpJebCSE=;
+        b=azuDBeST+yDapWrB/6NXJQYM2lu6nLZ7ossv9cv5z9kCFzfysLlG+6maX7TyrhrlzS
+         syCPZcpPDfcG2OJo5Db+T0RtXBnSEsY7QZz2A3CqZKEqrimSPpKYoKJE8JLRlORn/eAr
+         +DSFifhNe/DVcvcSAA2eYF+iJ3poY3oiB5ArQvMUEH2nVJuWWmCtvRQdfZjCSKleJx0r
+         lFTBXAzwM8uqBZAcXbVe43mg4A18B13BneqeC5FPT4gGV366K0SuRvSflYeUSoqraCDL
+         KnnDUcepdwiIbFuQ/Nix+1K2hN4FQhsJoVxWXBz0jAhnpt9qNg6yvizs+zMQ4BU3lg9/
+         k+pg==
+X-Gm-Message-State: AOAM5335H1mlTrnRgyIxPrZSBuOUrG36ygIbP2RXCWxVimyAePCG1lf3
+        ol+ayKBKQDVGafKsAWu4hKxVZfWwsjBDKFcCdPOOIA==
+X-Google-Smtp-Source: ABdhPJx1WjVAkp6jRxZJp7kiQRs4VYJ4eZLaT2BIRQ1z4nBLr5bwozTZDA10RbWlmANLp/oyaO6yLB+iVdqEuKCbZ7k=
+X-Received: by 2002:a25:4102:: with SMTP id o2mr43915325yba.23.1626874081235;
+ Wed, 21 Jul 2021 06:28:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210712100317.23298-1-steven_lee@aspeedtech.com>
+In-Reply-To: <20210712100317.23298-1-steven_lee@aspeedtech.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 21 Jul 2021 15:27:50 +0200
+Message-ID: <CAMpxmJXfUterUdaGHOJT5hwcVJ+3cqgSQVdp-6Atuyyo36FxfQ@mail.gmail.com>
+Subject: Re: [PATCH v6 0/9] ASPEED sgpio driver enhancement.
+To:     Steven Lee <steven_lee@aspeedtech.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 4fvz68dvuIAlPOY2zffvQDIwk87o7CjD
-X-Proofpoint-ORIG-GUID: 4fvz68dvuIAlPOY2zffvQDIwk87o7CjD
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-21_08:2021-07-21,2021-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 adultscore=0
- mlxlogscore=999 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107210075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-07-21 at 02:37 +0000, Joel Stanley wrote:
-> On Fri, 16 Jul 2021 at 15:19, Eddie James <eajames@linux.ibm.com>
-> wrote:
-> > Set and increment the sequence number during the submit operation.
-> > This prevents sequence number conflicts between different users of
-> > the interface. A sequence number conflict may result in a user
-> > getting an OCC response meant for a different command. Since the
-> > sequence number is now modified, the checksum must be calculated
-> > and
-> > set before submitting the command.
-> > 
-> > Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> 
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
-> 
-> > @@ -479,11 +483,26 @@ int fsi_occ_submit(struct device *dev, const
-> > void *request, size_t req_len,
-> >                 return -EINVAL;
-> >         }
-> > 
-> > +       /* Checksum the request, ignoring first byte (sequence
-> > number). */
-> > +       for (i = 1; i < req_len - 2; ++i)
-> > +               checksum += byte_request[i];
-> > +
-> 
-> This could go below, after you've got the sequence number, so the
-> checksumming all happens in the same spot?
+On Mon, Jul 12, 2021 at 12:03 PM Steven Lee <steven_lee@aspeedtech.com> wrote:
+>
+> AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
+> with 80 pins, AST2500/AST2400 SoC has 1 SGPIO master interface that
+> supports up to 80 pins.
+> In the current driver design, the max number of sgpio pins is hardcoded
+> in macro MAX_NR_HW_SGPIO and the value is 80.
+>
+> For supporting sgpio master interfaces of AST2600 SoC, the patch series
+> contains the following enhancement:
+> - Convert txt dt-bindings to yaml.
+> - Update aspeed-g6 dtsi to support the enhanced sgpio.
+> - Support muiltiple SGPIO master interfaces.
+> - Support up to 128 pins by dts ngpios property.
+> - Pair input/output GPIOs instead of using 0 as GPIO input pin base and
+>   MAX_NR_HW_SGPIO as GPIO output pin base.
+> - Support wdt reset tolerance.
+> - Fix irq_chip issues which causes multiple sgpio devices use the same
+>   irq_chip data.
+> - Replace all of_*() APIs with device_*().
+>
+> Changes from v5:
+> * Squash v5 patch-05 and patch-06 to one patch.
+> * Remove MAX_NR_HW_SGPIO and corresponding design to make the gpio
+>   input/output pin base are determined by ngpios.
+>   For example, if MAX_NR_HW_SGPIO is 80 and ngpios is 10, the original
+>   pin order is as follows:
+>     Input:
+>     0 1 2 3 ... 9
+>     Output:
+>     80 81 82 ... 89
+>
+>   With the new design, pin order is changed as follows:
+>     Input:
+>     0 2 4 6 ... 18(ngpios * 2 - 2)
+>     Output:
+>     1 3 5 7 ... 19(ngpios * 2 - 1)
+> * Replace ast2600-sgpiom-128 and ast2600-sgpiom-80 compatibles by
+>   ast2600-sgpiom.
+> * Fix coding style issues.
+>
+> Changes from v4:
+> * Remove ngpios from dtsi
+> * Add ast2400 and ast2500 platform data.
+> * Remove unused macros.
+> * Add ngpios check in a separate patch.
+> * Fix coding style issues.
+>
+> Changes from v3:
+> * Split dt-bindings patch to 2 patches
+> * Rename ast2600-sgpiom1 compatible with ast2600-sgiom-128
+> * Rename ast2600-sgpiom2 compatible with ast2600-sgiom-80
+> * Correct the typo in commit messages.
+> * Fix coding style issues.
+> * Replace all of_*() APIs with device_*().
+>
+> Changes from v2:
+> * Remove maximum/minimum of ngpios from bindings.
+> * Remove max-ngpios from bindings and dtsi.
+> * Remove ast2400-sgpiom and ast2500-sgpiom compatibles from dts and
+>   driver.
+> * Add ast2600-sgpiom1 and ast2600-sgpiom2 compatibles as their max
+>   number of available gpio pins are different.
+> * Modify functions to pass aspeed_sgpio struct instead of passing
+>   max_ngpios.
+> * Split sgpio driver patch to 3 patches
+>
+> Changes from v1:
+> * Fix yaml format issues.
+> * Fix issues reported by kernel test robot.
+>
+> Please help to review.
+>
+> Thanks,
+> Steven
+>
+> Steven Lee (9):
+>   dt-bindings: aspeed-sgpio: Convert txt bindings to yaml.
+>   dt-bindings: aspeed-sgpio: Add ast2600 sgpio
+>   ARM: dts: aspeed-g6: Add SGPIO node.
+>   ARM: dts: aspeed-g5: Remove ngpios from sgpio node.
+>   gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
+>   gpio: gpio-aspeed-sgpio: Add set_config function
+>   gpio: gpio-aspeed-sgpio: Move irq_chip to aspeed-sgpio struct
+>   gpio: gpio-aspeed-sgpio: Use generic device property APIs
+>   gpio: gpio-aspeed-sgpio: Return error if ngpios is not multiple of 8.
+>
+>  .../bindings/gpio/aspeed,sgpio.yaml           |  77 ++++++++
+>  .../devicetree/bindings/gpio/sgpio-aspeed.txt |  46 -----
+>  arch/arm/boot/dts/aspeed-g5.dtsi              |   1 -
+>  arch/arm/boot/dts/aspeed-g6.dtsi              |  28 +++
+>  drivers/gpio/gpio-aspeed-sgpio.c              | 178 +++++++++++-------
+>  5 files changed, 215 insertions(+), 115 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
+>
+> --
+> 2.17.1
+>
 
-It definitely could, I had the idea to do the checksumming outside the
-mutex in case it took a long time? Probably not worth it though.
+The series looks good to me. Can the DTS and GPIO patches go into
+v5.15 separately?
 
-> 
-> The driver has become a bit of a maze, I can't tell how you're
-> deciding what goes in fsi_occ_submit vs occ_write vs occ_putsram. If
-> oyu have some ideas on how to simplify it then I would welcome those
-> changes.
-
-Well, it doesn't really matter in fsi_occ_submit vs occ_putsram, as the
-latter is only called in the former. occ_write wouldn't be used by the
-hwmon interface, which is why we're moving some of that to
-fsi_occ_submit, to have more in common. Agree it could probably be
-organized better but I don't immediately have a good idea how to do
-that.
-
-Thanks for the review!
-Eddie
-
-> 
-> 
-> 
-> >         mutex_lock(&occ->occ_lock);
-> > 
-> > -       /* Extract the seq_no from the command (first byte) */
-> > -       seq_no = *(const u8 *)request;
-> > -       rc = occ_putsram(occ, request, req_len);
-> > +       /*
-> > +        * Get a sequence number and update the counter. Avoid a
-> > sequence
-> > +        * number of 0 which would pass the response check below
-> > even if the
-> > +        * OCC response is uninitialized. Any sequence number the
-> > user is
-> > +        * trying to send is overwritten since this function is the
-> > only common
-> > +        * interface to the OCC and therefore the only place we can
-> > guarantee
-> > +        * unique sequence numbers.
-> > +        */
-> > +       seq_no = occ->sequence_number++;
-> > +       if (!occ->sequence_number)
-> > +               occ->sequence_number = 1;
-> > +       checksum += seq_no;
-> > +
-> > +       rc = occ_putsram(occ, request, req_len, seq_no, checksum);
-> >         if (rc)
-> >                 goto done;
-
+Bart
