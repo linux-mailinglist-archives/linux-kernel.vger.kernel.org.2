@@ -2,308 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52B83D1493
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4033D14A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235949AbhGUQKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:10:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235139AbhGUQKU (ORCPT
+        id S235719AbhGUQMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:12:30 -0400
+Received: from mail-il1-f181.google.com ([209.85.166.181]:39722 "EHLO
+        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhGUQM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:10:20 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174CAC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:50:57 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id l5so3078168iok.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iNA8kzrwXJHf408t5Tny5lnj4ZPK3z3F1NJP36I5Y5k=;
-        b=pQ3dxdw3glhs1TXiqouA23s/fl4P57CdrE3/fxRpCiW4BTx0hKO6moGAnLjEeMSOMn
-         iFtB8sWD4e2EvDL9VLMUf38iNm+2s46hcd4WVKpk7ArK9ZShWw+nNaNGt9hvMWjj+j2Z
-         tsKQhlyEszJgqJclBWqDZRWYnDUgZQDQbRllW07haAl0OdTcqYvYpCjdODlHg9xgZ4lk
-         BOskCs+LNUJNQF68qHAIgtGyaCpp1bTrVqPN4pH67+ifTT+7S56fAmXaSANuzVy1fOJ0
-         1YWWDEfN4arnF1K5JAMCFzORl3nqRNLvpkxy7c4YQzi241B/5Fucc0YLBFloGHMsJ++H
-         mEeQ==
+        Wed, 21 Jul 2021 12:12:28 -0400
+Received: by mail-il1-f181.google.com with SMTP id a7so2870982iln.6;
+        Wed, 21 Jul 2021 09:53:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iNA8kzrwXJHf408t5Tny5lnj4ZPK3z3F1NJP36I5Y5k=;
-        b=PzYsnjfg72wW3vbyu4Um5bHNZi/9vsqdvydWs8xVQ6EOS+JdwmbdATmjUc5i4FtKss
-         G8cIByKNI6oQTxVissplpnyQe0DXJqAmB77gUcx2rs5dN5Y1NQC/nbxxYuBhTVAnrIDV
-         WtoSDvye+Uf/qhot+xnoiwywy6ovT2EjtmQjAUB9AxjSHOhDUrTtag6rbJ19mG0F1KdX
-         0h3mNx7aosRM3tPF4xOoas1XljfMRJjreOA3IIjrH5IhCh3Me/THrHaKVcKY+6CCsVhh
-         mqphOf8t+b1h/V/HhQctOTfwfa8QXTgldqGxcV39ZMpAUJLzBGNsF4JHAMgQvu80MYbm
-         xQYw==
-X-Gm-Message-State: AOAM531dg7WIvv2l0zb6+enkvlQeyhVh5HpOzn+WVjBZNFuVnUnoyJTx
-        WSynauRGMAEhhqdTmHXVNmM2mslVncj/MtgAiPd2pw==
-X-Google-Smtp-Source: ABdhPJwKOZCb7YgcyRhS5qzLmp7wxF3TFGcQ+TTxsrBG76B/g9rmTTS5s2WUWsWTWmi38Q5Yn1Gajf+5If4lsXQXZmo=
-X-Received: by 2002:a5d:8a17:: with SMTP id w23mr14684461iod.19.1626886256295;
- Wed, 21 Jul 2021 09:50:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2FlplugSms0lq9vlT6qVeAF/xOXlsmB/xXx4Xh3GmPg=;
+        b=qEYugqIGuohbcrLlpQUA+XEvyBUaxaTs3jqG3qNgzY4O0ITwcTfGsCHNk9A6HkHNYR
+         3XOxiPQAMszyz7Bt4AAvBb4yORX4GqyidwLSY+JJ4O2cIf/+rr0LTsELXLdch/At+wB/
+         HeZoTak2BtNN5401lO7tE1bGD8Cet3L+8u+GrwyCC4oxarcy04EFNjOcqeWxI4ShAxlN
+         4Nnn8kq935+cQ81WhLbLSzgQuis4b6XWFYSGlu3OZ8EZI7vOQ+ibM7RAz+day4QJWGuC
+         /qjD23Q3Q1OOmoTPnONGSD1vhv4Z+JzXoP1G8yhMSNs+tX5NwHkcAlvZpA3Biqgab4Tl
+         Qj2A==
+X-Gm-Message-State: AOAM5324p6nGdDjnZXvjFOdjx+Hi5xkibt3SvyGmY1pKnJFj/wLxI2bS
+        IplbwnCzI8xlI+TS+5uigA==
+X-Google-Smtp-Source: ABdhPJyBGw8BgX6Ut+AjXB1gavWfI+GdQEOaA4ld3jRnJ/IyC+2yOdS5D+jM8xTQoVX/cB9CQhftLw==
+X-Received: by 2002:a92:d112:: with SMTP id a18mr20234016ilb.67.1626886383904;
+        Wed, 21 Jul 2021 09:53:03 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id b25sm14700743ios.36.2021.07.21.09.53.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 09:53:03 -0700 (PDT)
+Received: (nullmailer pid 2433823 invoked by uid 1000);
+        Wed, 21 Jul 2021 16:53:00 -0000
+Date:   Wed, 21 Jul 2021 10:53:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, festevam@gmail.com, kernel@pengutronix.de,
+        linux-imx@nxp.com, peppe.cavallaro@st.com, joabreu@synopsys.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next V1 2/3] dt-bindings: net: imx-dwmac: convert
+ imx-dwmac bindings to yaml
+Message-ID: <20210721165300.GA2430128@robh.at.kernel.org>
+References: <20210719071821.31583-1-qiangqing.zhang@nxp.com>
+ <20210719071821.31583-3-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
-References: <20210721051247.355435-1-mizhang@google.com> <20210721051247.355435-3-mizhang@google.com>
-In-Reply-To: <20210721051247.355435-3-mizhang@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 21 Jul 2021 09:50:44 -0700
-Message-ID: <CANgfPd810e1tz-ip5M3dB6VmJQMtkKJNmB1RqAy=fui8SGTozA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kvm: mmu/x86: Add detailed page size stats
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jing Zhang <jingzhangos@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719071821.31583-3-qiangqing.zhang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 10:13 PM Mingwei Zhang <mizhang@google.com> wrote:
->
-> Existing KVM code tracks the number of large pages regardless of their
-> sizes. Therefore, when large page of 1GB (or larger) is adopted, the
-> information becomes less useful because lpages counts a mix of 1G and 2M
-> pages.
->
-> So bridge the gap and provide a comprehensive page stats of all sizes from
-> 4K to 512G.
->
-> Suggested-by: Ben Gardon <bgardon@google.com>
-> Suggested-by: Jing Zhang <jingzhangos@google.com>
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+On Mon, Jul 19, 2021 at 03:18:20PM +0800, Joakim Zhang wrote:
+> In order to automate the verification of DT nodes covert imx-dwmac to
+> nxp,dwmac-imx.yaml, and pass below checking.
+> 
+> $ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
+> $ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
+> 
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 > ---
->  arch/x86/include/asm/kvm_host.h | 11 ++++++++-
->  arch/x86/kvm/mmu.h              |  2 ++
->  arch/x86/kvm/mmu/mmu.c          | 43 +++++++++++++++++++++++----------
->  arch/x86/kvm/mmu/tdp_mmu.c      | 10 +++-----
->  arch/x86/kvm/x86.c              |  6 ++++-
->  5 files changed, 51 insertions(+), 21 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 974cbfb1eefe..1b7b024f9573 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1206,9 +1206,18 @@ struct kvm_vm_stat {
->         u64 mmu_recycled;
->         u64 mmu_cache_miss;
->         u64 mmu_unsync;
-> -       u64 lpages;
-> +       atomic64_t lpages;
->         u64 nx_lpage_splits;
->         u64 max_mmu_page_hash_collisions;
-> +       union {
-> +               struct {
-> +                       atomic64_t pages_4k;
-> +                       atomic64_t pages_2m;
-> +                       atomic64_t pages_1g;
-> +                       atomic64_t pages_512g;
-> +               };
-> +               atomic64_t pages[4];
-> +       } page_stats;
->  };
->
->  struct kvm_vcpu_stat {
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 83e6c6965f1e..56d9c947a0cd 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -240,4 +240,6 @@ static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
->         return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
->  }
->
-> +void kvm_update_page_stats(struct kvm *kvm, u64 spte, int level, int delta);
+>  .../devicetree/bindings/net/imx-dwmac.txt     | 56 -----------
+>  .../bindings/net/nxp,dwmac-imx.yaml           | 93 +++++++++++++++++++
+>  2 files changed, 93 insertions(+), 56 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/net/imx-dwmac.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/imx-dwmac.txt b/Documentation/devicetree/bindings/net/imx-dwmac.txt
+> deleted file mode 100644
+> index 921d522fe8d7..000000000000
+> --- a/Documentation/devicetree/bindings/net/imx-dwmac.txt
+> +++ /dev/null
+> @@ -1,56 +0,0 @@
+> -IMX8 glue layer controller, NXP imx8 families support Synopsys MAC 5.10a IP.
+> -
+> -This file documents platform glue layer for IMX.
+> -Please see stmmac.txt for the other unchanged properties.
+> -
+> -The device node has following properties.
+> -
+> -Required properties:
+> -- compatible:  Should be "nxp,imx8mp-dwmac-eqos" to select glue layer
+> -	       and "snps,dwmac-5.10a" to select IP version.
+> -- clocks: Must contain a phandle for each entry in clock-names.
+> -- clock-names: Should be "stmmaceth" for the host clock.
+> -	       Should be "pclk" for the MAC apb clock.
+> -	       Should be "ptp_ref" for the MAC timer clock.
+> -	       Should be "tx" for the MAC RGMII TX clock:
+> -	       Should be "mem" for EQOS MEM clock.
+> -		- "mem" clock is required for imx8dxl platform.
+> -		- "mem" clock is not required for imx8mp platform.
+> -- interrupt-names: Should contain a list of interrupt names corresponding to
+> -		   the interrupts in the interrupts property, if available.
+> -		   Should be "macirq" for the main MAC IRQ
+> -		   Should be "eth_wake_irq" for the IT which wake up system
+> -- intf_mode: Should be phandle/offset pair. The phandle to the syscon node which
+> -	     encompases the GPR register, and the offset of the GPR register.
+> -		- required for imx8mp platform.
+> -		- is optional for imx8dxl platform.
+> -
+> -Optional properties:
+> -- intf_mode: is optional for imx8dxl platform.
+> -- snps,rmii_refclk_ext: to select RMII reference clock from external.
+> -
+> -Example:
+> -	eqos: ethernet@30bf0000 {
+> -		compatible = "nxp,imx8mp-dwmac-eqos", "snps,dwmac-5.10a";
+> -		reg = <0x30bf0000 0x10000>;
+> -		interrupts = <GIC_SPI 134 IRQ_TYPE_LEVEL_HIGH>,
+> -			     <GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>;
+> -		interrupt-names = "eth_wake_irq", "macirq";
+> -		clocks = <&clk IMX8MP_CLK_ENET_QOS_ROOT>,
+> -			 <&clk IMX8MP_CLK_QOS_ENET_ROOT>,
+> -			 <&clk IMX8MP_CLK_ENET_QOS_TIMER>,
+> -			 <&clk IMX8MP_CLK_ENET_QOS>;
+> -		clock-names = "stmmaceth", "pclk", "ptp_ref", "tx";
+> -		assigned-clocks = <&clk IMX8MP_CLK_ENET_AXI>,
+> -				  <&clk IMX8MP_CLK_ENET_QOS_TIMER>,
+> -				  <&clk IMX8MP_CLK_ENET_QOS>;
+> -		assigned-clock-parents = <&clk IMX8MP_SYS_PLL1_266M>,
+> -					 <&clk IMX8MP_SYS_PLL2_100M>,
+> -					 <&clk IMX8MP_SYS_PLL2_125M>;
+> -		assigned-clock-rates = <0>, <100000000>, <125000000>;
+> -		nvmem-cells = <&eth_mac0>;
+> -		nvmem-cell-names = "mac-address";
+> -		nvmem_macaddr_swap;
+> -		intf_mode = <&gpr 0x4>;
+> -		status = "disabled";
+> -	};
+> diff --git a/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml b/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
+> new file mode 100644
+> index 000000000000..5629b2e4ccf8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
+> @@ -0,0 +1,93 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/nxp,dwmac-imx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP i.MX8 DWMAC glue layer Device Tree Bindings
+> +
+> +maintainers:
+> +  - Joakim Zhang <qiangqing.zhang@nxp.com>
+> +
+> +# We need a select here so we don't match all nodes with 'snps,dwmac'
+> +select:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+> +          - nxp,imx8mp-dwmac-eqos
+> +          - nxp,imx8dxl-dwmac-eqos
+> +  required:
+> +    - compatible
+> +
+> +allOf:
+> +  - $ref: "snps,dwmac.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
 
-Delta should be count here to match below, or you should change below to delta.
+Don't need 'oneOf' as there is only one entry.
+
+> +          - enum:
+> +              - nxp,imx8mp-dwmac-eqos
+> +              - nxp,imx8dxl-dwmac-eqos
+> +          - const: snps,dwmac-5.10a
+> +
+> +  clocks:
+> +    minItems: 3
+> +    maxItems: 5
+> +    items:
+> +      - description: MAC host clock
+> +      - description: MAC apb clock
+> +      - description: MAC timer clock
+> +      - description: MAC RGMII TX clock
+> +      - description: EQOS MEM clock
+> +
+> +  clock-names:
+> +    minItems: 3
+> +    maxItems: 5
+> +    contains:
+
+s/contains/items/
+
+But really, like the other one, can't you define the order?
+
+> +      enum:
+> +        - stmmaceth
+> +        - pclk
+> +        - ptp_ref
+> +        - tx
+> +        - mem
+> +
+> +  intf_mode:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description:
+> +      Should be phandle/offset pair. The phandle to the syscon node which
+> +      encompases the GPR register, and the offset of the GPR register.
+
+Sounds like 2 cells:
+
+maxItems: 2
 
 > +
->  #endif
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index c45ddd2c964f..9ba25f00ca2b 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -588,16 +588,33 @@ static bool mmu_spte_update(u64 *sptep, u64 new_spte)
->         return flush;
->  }
->
-> +void kvm_update_page_stats(struct kvm *kvm, u64 spte, int level, int count)
-> +{
-> +       if (!is_last_spte(spte, level))
-> +               return;
-> +       /*
-> +        * If the backing page is a large page, update the lpages stat first,
-> +        * then log the specific type of backing page. Only log pages at highter
-
-*higher
-
-> +        * levels if they are marked as large pages. (As opposed to simply
-> +        * pointing to another level of page tables.).
-> +        */
-> +       if (is_large_pte(spte))
-> +               atomic64_add(count, (atomic64_t *)&kvm->stat.lpages);
-
-I don't think you need the casts to atomic64_t * here since these
-variables are already defined as atomic64_t.
-
-
-> +       atomic64_add(count,
-> +               (atomic64_t *)&kvm->stat.page_stats.pages[level-1]);
-> +}
+> +  snps,rmii_refclk_ext:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      To select RMII reference clock from external.
 > +
->  /*
->   * Rules for using mmu_spte_clear_track_bits:
->   * It sets the sptep from present to nonpresent, and track the
->   * state bits, it is used to clear the last level sptep.
->   * Returns non-zero if the PTE was previously valid.
->   */
-> -static int mmu_spte_clear_track_bits(u64 *sptep)
-> +static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
->  {
->         kvm_pfn_t pfn;
->         u64 old_spte = *sptep;
-> +       int level = sptep_to_sp(sptep)->role.level;
->
->         if (!spte_has_volatile_bits(old_spte))
->                 __update_clear_spte_fast(sptep, 0ull);
-> @@ -607,6 +624,8 @@ static int mmu_spte_clear_track_bits(u64 *sptep)
->         if (!is_shadow_present_pte(old_spte))
->                 return 0;
->
-> +       kvm_update_page_stats(kvm, old_spte, level, -1);
+> +required:
+> +  - compatible
+> +  - clocks
+> +  - clock-names
 > +
->         pfn = spte_to_pfn(old_spte);
->
->         /*
-> @@ -984,9 +1003,10 @@ static void __pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
->         }
->  }
->
-> -static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
-> +static void pte_list_remove(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> +                           u64 *sptep)
->  {
-> -       mmu_spte_clear_track_bits(sptep);
-> +       mmu_spte_clear_track_bits(kvm, sptep);
->         __pte_list_remove(sptep, rmap_head);
->  }
->
-> @@ -1119,7 +1139,7 @@ static u64 *rmap_get_next(struct rmap_iterator *iter)
->
->  static void drop_spte(struct kvm *kvm, u64 *sptep)
->  {
-> -       if (mmu_spte_clear_track_bits(sptep))
-> +       if (mmu_spte_clear_track_bits(kvm, sptep))
->                 rmap_remove(kvm, sptep);
->  }
->
-> @@ -1129,7 +1149,6 @@ static bool __drop_large_spte(struct kvm *kvm, u64 *sptep)
->         if (is_large_pte(*sptep)) {
->                 WARN_ON(sptep_to_sp(sptep)->role.level == PG_LEVEL_4K);
->                 drop_spte(kvm, sptep);
-> -               --kvm->stat.lpages;
->                 return true;
->         }
->
-> @@ -1386,7 +1405,7 @@ static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->         while ((sptep = rmap_get_first(rmap_head, &iter))) {
->                 rmap_printk("spte %p %llx.\n", sptep, *sptep);
->
-> -               pte_list_remove(rmap_head, sptep);
-> +               pte_list_remove(kvm, rmap_head, sptep);
->                 flush = true;
->         }
->
-> @@ -1421,13 +1440,13 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->                 need_flush = 1;
->
->                 if (pte_write(pte)) {
-> -                       pte_list_remove(rmap_head, sptep);
-> +                       pte_list_remove(kvm, rmap_head, sptep);
->                         goto restart;
->                 } else {
->                         new_spte = kvm_mmu_changed_pte_notifier_make_spte(
->                                         *sptep, new_pfn);
->
-> -                       mmu_spte_clear_track_bits(sptep);
-> +                       mmu_spte_clear_track_bits(kvm, sptep);
->                         mmu_spte_set(sptep, new_spte);
->                 }
->         }
-> @@ -2232,8 +2251,6 @@ static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
->         if (is_shadow_present_pte(pte)) {
->                 if (is_last_spte(pte, sp->role.level)) {
->                         drop_spte(kvm, spte);
-> -                       if (is_large_pte(pte))
-> -                               --kvm->stat.lpages;
->                 } else {
->                         child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
->                         drop_parent_pte(child, spte);
-> @@ -2690,10 +2707,10 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
->
->         pgprintk("%s: setting spte %llx\n", __func__, *sptep);
->         trace_kvm_mmu_set_spte(level, gfn, sptep);
-> -       if (!was_rmapped && is_large_pte(*sptep))
-> -               ++vcpu->kvm->stat.lpages;
->
->         if (!was_rmapped) {
-> +               kvm_update_page_stats(vcpu->kvm, *sptep,
-> +                       sptep_to_sp(sptep)->role.level, 1);
->                 rmap_count = rmap_add(vcpu, sptep, gfn);
->                 if (rmap_count > RMAP_RECYCLE_THRESHOLD)
->                         rmap_recycle(vcpu, sptep, gfn);
-> @@ -5669,7 +5686,7 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
->                 if (sp->role.direct && !kvm_is_reserved_pfn(pfn) &&
->                     sp->role.level < kvm_mmu_max_mapping_level(kvm, slot, sp->gfn,
->                                                                pfn, PG_LEVEL_NUM)) {
-> -                       pte_list_remove(rmap_head, sptep);
-> +                       pte_list_remove(kvm, rmap_head, sptep);
->
->                         if (kvm_available_flush_tlb_with_range())
->                                 kvm_flush_remote_tlbs_with_address(kvm, sp->gfn,
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index caac4ddb46df..24bd7f03248c 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -446,12 +446,10 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
->
->         trace_kvm_tdp_mmu_spte_changed(as_id, gfn, level, old_spte, new_spte);
->
-> -       if (is_large_pte(old_spte) != is_large_pte(new_spte)) {
-> -               if (is_large_pte(old_spte))
-> -                       atomic64_sub(1, (atomic64_t*)&kvm->stat.lpages);
-> -               else
-> -                       atomic64_add(1, (atomic64_t*)&kvm->stat.lpages);
-> -       }
-> +       if (is_large_pte(old_spte) && !is_large_pte(new_spte))
-> +               kvm_update_page_stats(kvm, old_spte, level, -1);
-> +       else if (!is_large_pte(old_spte) && is_large_pte(new_spte))
-> +               kvm_update_page_stats(kvm, new_spte, level, 1);
->
->         /*
->          * The only times a SPTE should be changed from a non-present to
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 8166ad113fb2..23444257fcbd 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -237,7 +237,11 @@ const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
->         STATS_DESC_ICOUNTER(VM, mmu_unsync),
->         STATS_DESC_ICOUNTER(VM, lpages),
->         STATS_DESC_ICOUNTER(VM, nx_lpage_splits),
-> -       STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions)
-> +       STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions),
-> +       STATS_DESC_ICOUNTER(VM, page_stats.pages_4k),
-> +       STATS_DESC_ICOUNTER(VM, page_stats.pages_2m),
-> +       STATS_DESC_ICOUNTER(VM, page_stats.pages_1g),
-> +       STATS_DESC_ICOUNTER(VM, page_stats.pages_512g)
->  };
->  static_assert(ARRAY_SIZE(kvm_vm_stats_desc) ==
->                 sizeof(struct kvm_vm_stat) / sizeof(u64));
-> --
-> 2.32.0.402.g57bb445576-goog
->
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/clock/imx8mp-clock.h>
+> +
+> +    eqos: ethernet@30bf0000 {
+> +            compatible = "nxp,imx8mp-dwmac-eqos","snps,dwmac-5.10a";
+> +            reg = <0x30bf0000 0x10000>;
+> +            interrupts = <GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>,
+> +                         <GIC_SPI 134 IRQ_TYPE_LEVEL_HIGH>;
+> +            interrupt-names = "macirq", "eth_wake_irq";
+> +            clocks = <&clk IMX8MP_CLK_ENET_QOS_ROOT>,
+> +                     <&clk IMX8MP_CLK_QOS_ENET_ROOT>,
+> +                     <&clk IMX8MP_CLK_ENET_QOS_TIMER>,
+> +                     <&clk IMX8MP_CLK_ENET_QOS>;
+> +            clock-names = "stmmaceth", "pclk", "ptp_ref", "tx";
+> +            phy-mode = "rgmii";
+> +            status = "disabled";
+
+Why are you disabling your example? Drop.
+
+> +    };
+> -- 
+> 2.17.1
+> 
+> 
