@@ -2,95 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D736B3D1907
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A03B3D1950
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbhGUUrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhGUUrv (ORCPT
+        id S229897AbhGUU7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:59:24 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49096 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229843AbhGUU7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 16:47:51 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE759C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 14:28:27 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id b12so2103617plh.10
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 14:28:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m52PtSGS5i2ngVfsBQ5ZUPxnRYkxsgX69pi1tPp/x28=;
-        b=EkRmTC23UJLa27xiqrDPH9e0nL/5dbsaIMYECtzNpfQdqxU0y++VvIo9t3iZOZasl4
-         jYpw45BVN3QaRitxTs3cwM8dzEJ2XqP31EZxKQ7iA3MxjV5p229J+WehsDebrvcj7VG9
-         IFHImvsX9TSaZrJekSbBMbLHBqoIUFhU5393LxtR0GoWKzmQz2HQdZq6/oQCP1/8P/Ui
-         wvRREhKgvtgIRbz96NCsgk/6a24bn9bmZrob2IZzZY31nKdoscikPvIXNGvT2TOY3X5R
-         jZkyiU86yysTbPsDId8Uw/VFPTacnJshMELqVIB/27u9v+L/DZgQAv6fZn0RfgfbXARd
-         6M5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m52PtSGS5i2ngVfsBQ5ZUPxnRYkxsgX69pi1tPp/x28=;
-        b=L0/oxpqzrEz9zARROF5y4meNzzieuvWQr/6BAFITKjjXlqMNBTymm7SaQ4LtVoBTJN
-         lcgRL4hlQIQIvf0KBuVxzJhJ24bsQ81/4Zhb07NCzBR2atLH0e7EeLRRBnuYposXrLeC
-         +WFT5hVtec2ZEySHjAoabf9NdZ0xPXw0Hf1Hp833lXhYSYMFdBcN9UsmSu5LHV1BXo+p
-         JHCdvkNowJ6YZBCsWZD5wB1XMA2Q1cdM87ptx8wR312Bzcam7tHEIiTH+aR0qeiIquE8
-         AiZdKzSzapohOQ6p9cixg9lpB6AjJvbsY22EtRFQoZ9QN9cq4ucDqPvzltOi37UTKfOg
-         XuVQ==
-X-Gm-Message-State: AOAM533ewyuiqZuKM9HUdjP+SZzSGQwZ6EXx0abrKmhgPk1VUThSRK+3
-        SRGg2gkQxHYI7LJ/PTZBUU7alA==
-X-Google-Smtp-Source: ABdhPJzsoonsfnNjS3Ej+And/W99sgjoE8mLSxLOu98GqGpd3UXFs6LJBzdPMDQ7TgaGj3mTUb7RMA==
-X-Received: by 2002:a65:6a0d:: with SMTP id m13mr38552756pgu.356.1626902907296;
-        Wed, 21 Jul 2021 14:28:27 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id w18sm25716948pjg.50.2021.07.21.14.28.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 14:28:26 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 21:28:22 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Wed, 21 Jul 2021 16:59:23 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AE6E81FD4E;
+        Wed, 21 Jul 2021 21:29:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626902974; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5k8V4ifsY920jgT9NekG/0BKiHClg3FqLTv6cJLLmjc=;
+        b=xXOrvC4CQQ6B0IF8LbWRucIwAOcrClWcIS8VKG13S2sfJ1WFT/e7LqTq1+IbZLxVoePXqx
+        KFlKmo7Lg0es1qKczcg7Krm2nZ/UBZ0DIDc3Y5YOcnKx4HQ04/YyKhvSFqNAQS+uVGRwx/
+        IRiKjfW7faN/+svWe87lm21cCcumhGI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626902974;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5k8V4ifsY920jgT9NekG/0BKiHClg3FqLTv6cJLLmjc=;
+        b=K0OwC4V1wKaOPX0SkSokjiupG48TU2okjqYW4UGMWYL6BecqTBtSRJGA95b52rM/AYvjjT
+        qMMo5sWwCXxToIDg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 802F613C12;
+        Wed, 21 Jul 2021 21:29:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id BTbAHb6R+GCeBwAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 21 Jul 2021 21:29:34 +0000
+Subject: Re: [PATCH resend] mm: compaction: optimize proactive compaction
+ deferrals
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Charan Teja Reddy <charante@codeaurora.org>
+Cc:     rientjes@google.com, nigupta@nvidia.com, khalid.aziz@oracle.com,
+        vinmenon@codeaurora.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "KVM: x86: WARN and reject loading KVM if NX is
- supported but not enabled"
-Message-ID: <YPiRdiG0uFFNGtmN@google.com>
-References: <20210625001853.318148-1-seanjc@google.com>
- <28ec9d07-756b-f546-dad1-0af751167838@redhat.com>
- <YOiFsB9vZgMcpJZu@google.com>
- <20210712075223.hqqoi4yp4fkkhrt5@linux.intel.com>
- <YOxThZrKeyONVe4i@google.com>
- <20210713035944.l7qa7q4qsmqywg6u@linux.intel.com>
+References: <1626869599-25412-1-git-send-email-charante@codeaurora.org>
+ <20210721131806.5898dab3e329940fd8bd2db6@linux-foundation.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <a693d1b0-e249-cca5-c910-5fbfd8f1a11c@suse.cz>
+Date:   Wed, 21 Jul 2021 23:29:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713035944.l7qa7q4qsmqywg6u@linux.intel.com>
+In-Reply-To: <20210721131806.5898dab3e329940fd8bd2db6@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021, Yu Zhang wrote:
-> On Mon, Jul 12, 2021 at 02:36:53PM +0000, Sean Christopherson wrote:
-> > On Mon, Jul 12, 2021, Yu Zhang wrote:
-> > > Why do we need EFER in that case? Thanks! :)
-> > 
-> > Because as you rightly remembered above, KVM always uses PAE paging for the guest,
-> > even when the host is !PAE.  And KVM also requires EFER.NX=1 for the guest when
-> > using shadow paging to handle a potential SMEP and !WP case.  
+On 7/21/21 10:18 PM, Andrew Morton wrote:
+> On Wed, 21 Jul 2021 17:43:19 +0530 Charan Teja Reddy <charante@codeaurora.org> wrote:
 > 
-> Just saw this in update_transition_efer(), which now enables efer.nx in shadow
-> unconditionally. But I guess the host kernel still needs to set efer.nx for
-> !PAE(e.g. in head_32.S),
+>> Vlastimil Babka figured out that when fragmentation score didn't go down
+>> across the proactive compaction i.e. when no progress is made, next wake
+>> up for proactive compaction is deferred for 1 <<
+>> COMPACT_MAX_DEFER_SHIFT, i.e. 64 times, with each wakeup interval of
+>> HPAGE_FRAG_CHECK_INTERVAL_MSEC(=500). In each of this wakeup, it just
+>> decrement 'proactive_defer' counter and goes sleep i.e. it is getting
+>> woken to just decrement a counter. The same deferral time can also
+>> achieved by simply doing the HPAGE_FRAG_CHECK_INTERVAL_MSEC <<
+>> COMPACT_MAX_DEFER_SHIFT thus unnecessary wakeup of kcompact thread is
+>> avoided thus also removes the need of 'proactive_defer' thread counter.
 
-Yep, and that's what I messed up.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-> because the guest may not touch efer at all. Is this correct?
+>>
+>> @@ -2902,23 +2903,30 @@ static int kcompactd(void *p)
+>>  
+>>  		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
+>>  		if (wait_event_freezable_timeout(pgdat->kcompactd_wait,
+>> -			kcompactd_work_requested(pgdat),
+>> -			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC))) {
+>> +			kcompactd_work_requested(pgdat), timeout)) {
+>>  
+>>  			psi_memstall_enter(&pflags);
+>>  			kcompactd_do_work(pgdat);
+>>  			psi_memstall_leave(&pflags);
+>> +			/*
+>> +			 * Reset the timeout value. The defer timeout by
+>> +			 * proactive compaction can effectively lost
+>> +			 * here but that is fine as the condition of the
+>> +			 * zone changed substantionally and carrying on
+>> +			 * with the previous defer is not useful.
+>> +			 */
+>> +			timeout = default_timeout;
+>>  			continue;
+> 
+> I find this comment hard to follow.  Is this better?
 
-KVM doesn't require EFER.NX "because the guest may not touch efer at all", it
-requires EFER.NX to handle scenarios where KVM needs to make a guest page
-!EXECUTABLE even if EFER is not exposed to the guest (thanks to SMEP && !WP).
+Yes, thanks.
+
+> --- a/mm/compaction.c~mm-compaction-optimize-proactive-compaction-deferrals-fix
+> +++ a/mm/compaction.c
+> @@ -2909,11 +2909,11 @@ static int kcompactd(void *p)
+>  			kcompactd_do_work(pgdat);
+>  			psi_memstall_leave(&pflags);
+>  			/*
+> -			 * Reset the timeout value. The defer timeout by
+> -			 * proactive compaction can effectively lost
+> -			 * here but that is fine as the condition of the
+> -			 * zone changed substantionally and carrying on
+> -			 * with the previous defer is not useful.
+> +			 * Reset the timeout value. The defer timeout from
+> +			 * proactive compaction is lost here but that is fine
+> +			 * as the condition of the zone changing substantionally
+> +			 * then carrying on with the previous defer interval is
+> +			 * not useful.
+>  			 */
+>  			timeout = default_timeout;
+>  			continue;
+> _
+> 
+
