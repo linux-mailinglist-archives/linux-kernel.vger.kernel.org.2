@@ -2,122 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFD93D15DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E61A3D15DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237902AbhGURXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:23:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39648 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235047AbhGURXo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:23:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626890660;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZqMoH0NfRKP6LtHMVfDps44O1mHFK/T4CYKvyVvbWLE=;
-        b=EnhorfWV4O221cJnLkA3YeeMy1HE9Po9yVSlWr4KNeuSw8xSphi9bmJuXZ6qFx+rOezbxd
-        Yi9eicb86WtVQGinFTwaZROpjfDsJ/m6UxdcFCTVMQYlIw8+dq3BBwdkAhefa/DUO7Xufq
-        q93EADDH2AweYktHZwxKEZzQgNUvkxo=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-wHId96QxNB6sLTea2mwUMA-1; Wed, 21 Jul 2021 14:04:19 -0400
-X-MC-Unique: wHId96QxNB6sLTea2mwUMA-1
-Received: by mail-wm1-f72.google.com with SMTP id j11-20020a05600c410bb02902278758ab90so823wmi.9
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 11:04:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZqMoH0NfRKP6LtHMVfDps44O1mHFK/T4CYKvyVvbWLE=;
-        b=rfmMaAhPXjXwXTn3Z5fAsK2wzsJ1YNScsJeqgssb93CFwvVAoYkDvcOOH4Pyvmi4QN
-         06JShO4CjL9CCIA53FYPsrAeUzGYvgD+XLspTG65uYEs0rIkvs0KXQfxWy0XKEymJ3Be
-         xMwJ2S2i89TQZg9O+xheLZJmsY9t6FQNkEfl8fs+cOnwCxDcn8y222ZlZmTqDNfmTH6+
-         SrMVk+5UO10v74nmX8Z64sYB0iqwadGs7Yb5Zz+mZvUoLtrtysw0tWjgf3CLKiI2zUib
-         +crP6MN0rEs+HP65+7L2LCQUm0X3LbzsynYKuH7I6wf8gcj6CmODMe6mXRqwuP3VVob+
-         jm9A==
-X-Gm-Message-State: AOAM533+N0pt5KJiTmMJi1HfmbEQmBfGTFNsuVZLhKCRKPAkqh1SG78X
-        j8eVsYspkVWyMssJ/NYJDW/Bt9ZjzBVDy+3vr7C42K6eARpguX7d4BTn2SI92d15ieUBD+R+EdX
-        ChgRkhmEXJYO+rdvgT0tFDergRwUIMTD8Yf4xIWj9OMcHSgfM/E179FSds5uDP2TLUsWwnof6/i
-        Y=
-X-Received: by 2002:a05:600c:2dd0:: with SMTP id e16mr39305073wmh.85.1626890657478;
-        Wed, 21 Jul 2021 11:04:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxmq4lWpNSkSi2Tsr8EMFmrJ9sUy8w3N88dVgXV8AyLLpJWZtjjrCKO6FtmU4pymaxlvhNnA==
-X-Received: by 2002:a05:600c:2dd0:: with SMTP id e16mr39305039wmh.85.1626890657221;
-        Wed, 21 Jul 2021 11:04:17 -0700 (PDT)
-Received: from [192.168.1.101] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id v2sm28003315wro.48.2021.07.21.11.04.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 11:04:16 -0700 (PDT)
-Subject: Re: [drm-drm-misc:drm-misc-next 1/2] undefined reference to
- `screen_info'
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-References: <202107212028.p9mTHgcu-lkp@intel.com>
- <daa6e212-9e66-e551-948f-0a3c59cafd9f@suse.de>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-Message-ID: <8458a6f8-0f51-d099-37cd-7cdfc85bbd8f@redhat.com>
-Date:   Wed, 21 Jul 2021 20:04:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <daa6e212-9e66-e551-948f-0a3c59cafd9f@suse.de>
-Content-Type: text/plain; charset=windows-1252
+        id S237599AbhGURZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:25:09 -0400
+Received: from mail-dm6nam08on2092.outbound.protection.outlook.com ([40.107.102.92]:30816
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230498AbhGURZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 13:25:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BtYgzQPz11ODBe2MYI5PpNgLNeWSSyzUwsDxxykOZSqJTmsxNvXC5d8+8xlXcdB+W+GwIvQvJifcMkwfHPezhZX0Aezsl67MCYQn60g6YctSm8GT3vWvaeQYGrsgzhuwCxMgXODNBJi7VEtsdeHd2NELkpFIX+nWPJ9jTH4dpyQy8pOthbph30lkNrv0Twed+Zo8aQ0jFJRizKu1UQU+nCtfPvmXOT0RT/z/ZaoXu23wHxhz9K+MvzQiGxLbR66WyeSNvPxYEkfdcBfS8CB0hHc5oNi58xB3Gr/WCwCyio8fFYxA1lrg9ddyPnPqExEVmdJh/pTytOWKnfltYLCAPA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l5cD0BSMUIOzQDOjEi8UFUmeQWbLWSGCpxtE+PbtrX4=;
+ b=Rf23N2uR6wonqFkbo61m1WKwnkMae6qqjtcE1wJ4i34nHK36M3yKk9XtgYxHbvjW7veCi09trUHH3AB84o7DquFnk2ggl9teyjfSBrPx+li4eW2jL5mSjY74hQmu7ApwWhifWOMKz5Kp9I6hYpIueF6RWxcLRg2shckQ2GmUyTU7KcdsRl07DHnrhUbFwWKfGaL2g2a9yXJE6o57cXFY6le7Nf9jPbCFI3Wg1YdrcJIqmZpxGkgr/RMqU/CFUy6/sPbJ1s/4c0TGMm6dzP1K1tkT1gcRAQuWcswIm0hb0YBSxguqFL+VVPtq9RCBAeEjb6Tlyi/SJTJdBNODroBTmQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l5cD0BSMUIOzQDOjEi8UFUmeQWbLWSGCpxtE+PbtrX4=;
+ b=mf+CRuSmF4mmcFp8TUuQPWB1HrT29OCtB3s4MTd4E5lBzfJMlPIDnbN2O1Z16pspChYvDsiQeCUaJSekUZlWGrk8sLgYpQ04hp1C8iQ5sFTUuAErYH7ktDB2QjglAGko77hHDDYfihUSTXmvXLUi4AXW5duphpsUC2mUqRjnO8uvWzW0NDPnLIit0CbMR7okp0+FIxEvW8g6i9icj78s5v1nm2pXvZi43pHY2slf2vCci8ci/cCURbdlEcjsN8iMCI/s4lQZjgOL+JnZ9bcO9mfRdnc9cS6e4hkUnFbxRAszHQRg0svUtX6oxq7K+L6viAgmR38gpewQyhTs0k6WIQ==
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
+ PH0PR01MB6454.prod.exchangelabs.com (2603:10b6:510:1b::9) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4331.24; Wed, 21 Jul 2021 18:05:40 +0000
+Received: from PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::5c02:2146:2b1:f1eb]) by PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::5c02:2146:2b1:f1eb%7]) with mapi id 15.20.4352.025; Wed, 21 Jul 2021
+ 18:05:39 +0000
+Subject: Re: [PATCH rdma-next 8/9] RDMA: Globally allocate and release QP
+ memory
+To:     Leon Romanovsky <leon@kernel.org>,
+        Gal Pressman <galpress@amazon.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Wenpeng Liang <liangwenpeng@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+References: <cover.1626609283.git.leonro@nvidia.com>
+ <5b3bff16da4b6f925c872594262cd8ed72b301cd.1626609283.git.leonro@nvidia.com>
+ <abfc0d32-eab8-97d4-5734-508b6c46fe98@amazon.com> <YPaKu4ppS0Bz6fW1@unreal>
+From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Message-ID: <5539c203-0d3b-6296-7554-143e7afb6e34@cornelisnetworks.com>
+Date:   Wed, 21 Jul 2021 14:05:34 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
+In-Reply-To: <YPaKu4ppS0Bz6fW1@unreal>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BN6PR13CA0059.namprd13.prod.outlook.com
+ (2603:10b6:404:11::21) To PH0PR01MB6439.prod.exchangelabs.com
+ (2603:10b6:510:d::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Denniss-MacBook-Pro.local (24.154.216.5) by BN6PR13CA0059.namprd13.prod.outlook.com (2603:10b6:404:11::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.7 via Frontend Transport; Wed, 21 Jul 2021 18:05:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3cd50f7d-0a72-4b5c-8996-08d94c7225c7
+X-MS-TrafficTypeDiagnostic: PH0PR01MB6454:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR01MB645449E59A7987670D9891D5F4E39@PH0PR01MB6454.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: i7sc8gJs/NeAujUiiExecfWEhxf0S2QwM9xscOKZJPX7TpdJwIohnLzgqQBzmr32nDNclN1nNj4iyAi+RWMlj+ShOCvDge7IG9m/e/kMrGcwsUg9nkYoLGb947vzh6hx/YZ8v+Db2Dn80NcyQNstgmXzEqapfKRcAG2Q3GDrWPGsG7mcihN3JmIiBRuJaS4TXqByAubi14wXSeofwfHGv6MEeUzyNBd35tuArMSkTKirNCwoCfDdSDGBk9U1HcIcjjkxhQhetvVPps+H7I6uALyZQ6Gd4r/k0xVVSEyh0F2PTIkMZxzsoA9csvhCeSAvutpiZId2W/Aay0EJ7EYsMxkbEETFbkWzmNp8ON7DpK14rqYHqbsiZ6cFqWTn3bNc8VhmqaicM5jk6ReGibS/t+aI6h2eWZn7nWHtiedLxaqtDMeZT0JNYtPWbBvLjAGzfxaiQ9sGG3ig0J5YBcgJU1SLPJ2pAwm29xbyVGACp23f4VNTVwoO/eA8h4PMvW7GvXijgFUGgxJRxtrEo4cD+RkqwVDbEL5AtXLy2IrCWtWiKd1OeG7zmLOkgU/xFS4EUUj8LAwQc/jakxo2mOPz/dZLhGQfacF4nAs4S7+Ma024xga0axoSc0SJY32/AOXmLWXokRghHdNE28rohJeAVjXBMEkBymOd7j6VHtp705MYr0J+G0cVv3o1PXJmxc+hCJpZnATAIICdmIeyMISJ/y4jJm5ddDcCwQ1xkbhXv9RnJTSExMxYViGGLaBA8GrpMyehQdD++G13qj4Eyz81yg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39840400004)(346002)(136003)(376002)(366004)(7416002)(86362001)(38100700002)(66476007)(31696002)(36756003)(44832011)(54906003)(83380400001)(5660300002)(38350700002)(26005)(2906002)(316002)(8676002)(66946007)(8936002)(52116002)(186003)(6486002)(2616005)(31686004)(6512007)(110136005)(66556008)(956004)(478600001)(6506007)(53546011)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OVBvMWNMRzZJTkFLZ28zWnJOME9ESjVFZDFlZXVnYjdRZWgvYVFucVllNDZz?=
+ =?utf-8?B?eHM4cVdScFRMWTJxcGZ5cXFNTnhNWVRjam9qR1lzUm41M1E5UjBiaU1tcW9D?=
+ =?utf-8?B?UFpRRXQ3UTIrQlo0ZWlVd1U2UmxYdkJZeFZOby9jWENXaVdMSkR2MjdRV0Vz?=
+ =?utf-8?B?WWJPWnVNVjAwanhsUGJyTXBSMndrZFFibzh2RjFOWXRxOEYwS05PTmZWalRk?=
+ =?utf-8?B?dko3V3FqNU9HLzlYOGZzM2w5SkNVMFNtQ01LRWxnMFFUYzlHaDhNVHBvMGVV?=
+ =?utf-8?B?NHhORjErWkJCV0FXSmZENjYwczFoMFZXdURTak5QRzRFcmxlUFp0dUdUYVYx?=
+ =?utf-8?B?ZUJvdDZhZkQya0h5blZXQXV0TC9RNUJXYTdMUk82V1QrcGxpS2dUL3E2NDkw?=
+ =?utf-8?B?S2ljN0RvUklFVk05ZVhXT2VtdWdMY0x5NjM3S295ZEY4SnlpSlRQMHJCT1p5?=
+ =?utf-8?B?RWZ3R3d1OWlIRE5GbEFPSVh4SGV5bVVtdWxiUVNReVU0OVZjOGlScGNNcWVC?=
+ =?utf-8?B?ZG9Gb2kzYVJzbmtocUJQMUdVaXlVQWJSWTh6bStVS0FqR1Vtd0ROdXhiOUlR?=
+ =?utf-8?B?aVZqUG1nSzlka1dRd2FUZXhDQ3dSV2pNeXFzN0xvVUMrVXFvaW1XZUVxdmkv?=
+ =?utf-8?B?RCtwbFJqNVRBVUZQaGlrS3htcGltN2RBcGxqM0VwQlROV0dhV3kwRzVYS2V2?=
+ =?utf-8?B?N2hJSkRQdzRUdTJnSkRERHkwWnEwOEVhcVVoaVlqaVZZYU5qKytiTHpjMEJL?=
+ =?utf-8?B?aDgydkxUT2kvakl4TWdjbllEaEJKdGhMS25KSEFVd1RwVkNkWE1oR1cyR1Ux?=
+ =?utf-8?B?TE1mQUUwRklOaklxM2ZyYjY1cVpuRWo0Ky81a1o2NXFIc2RPYkZkaWJXdGxN?=
+ =?utf-8?B?U055VCtlNjRCUkJhQmJGd25xTm5jY1F3SDdKVDczREc4YlRmUlpLKzB1SHQ5?=
+ =?utf-8?B?cTVtZnVYODNKZ0dtRjJGbVFxT0tEM09rV0UvWHVDbUxEaDB5cGJHWXoyaXQr?=
+ =?utf-8?B?VktrVm96cVV1SXBFTlFsR3FyN1cwY0RVNm8yRTJpWlRQRFV4dFY3UFJValkv?=
+ =?utf-8?B?WjZJTVU4RHgwd3BJQVdaOG9yT051K2JBOTdJbUoxcU9NYUErbkp0Z0RsSnor?=
+ =?utf-8?B?MWVWbHYzalZsL21YQVNIOU9UY1Bic2lQSk9rd1lNYk8yMHRNZ2VrTDN5b2lw?=
+ =?utf-8?B?aml3U1pWWCt6bWZJVHAvbzR2dkJsM2w5aXBZNHVUZzgyYkZiTWRqamxHYlJk?=
+ =?utf-8?B?TU55eWVxK21XR0tuT0xYRjExYmpOQVBUVHBpaVo1a25rbjRWektsemVTc1Nh?=
+ =?utf-8?B?dDlzcDNqMXI1RzhER0RGYllYbGQ0Uk5uRUs2VDJxcW9tL0ZCcWJuMFh2K2xn?=
+ =?utf-8?B?Z3A4TWErREhBK0pJY1hTV3FCRW8rZmh4clNzOUhyY1NTTmZCMER2RHp4RTJ3?=
+ =?utf-8?B?THNTTzZkejJTRXY5cHdpd0h5OGNYOVBPY01lblkzN2tFaVd1TG0wZVo4cUtS?=
+ =?utf-8?B?b25aejlBT0JtakVnL1NJaXpTM1hjb2ZHSGlLUzN4Q205VTYrc0syZDBqcGFk?=
+ =?utf-8?B?Q0d4cDE0SDVaTGtLSGowdTdEeUp5TFNLN1JGMzNaUGN1a252U2VCaFdTdU4x?=
+ =?utf-8?B?ZThrSm9lajFxSnk3cGlwVjhoaG4yaVFzUUY3L3JhaElQdDRvSFdOWUoxVkdI?=
+ =?utf-8?B?d3NZcEtXNGk1TGhUWkwwRmFJUUdHZnI4N3dEd1ZrUVljSjE3cGdYV3loQ1VN?=
+ =?utf-8?Q?4nDcYCCy0NwaMu4Ncq5BLmyZjqiPwjSE/A3yHer?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3cd50f7d-0a72-4b5c-8996-08d94c7225c7
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 18:05:39.6558
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zVminO7+3BM6IFVLuiqHnxa/BqTvr++4al2R0cDPIWwSZOgXBoTC2dWNpydK67Ra3nwpUPctIjw2+HkM16LDNJZMyWAw0Qqim2LXTS312soyiBXMlafUAqeOfFvKFuFh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6454
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thomas,
-
-On 7/21/21 8:01 PM, Thomas Zimmermann wrote:
-> Hi
-> 
-> Am 21.07.21 um 14:44 schrieb kernel test robot:
->> tree:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
->> head:   8633ef82f101c040427b57d4df7b706261420b94
->> commit: d391c58271072d0b0fad93c82018d495b2633448 [1/2] drivers/firmware: move x86 Generic System Framebuffers support
->> config: parisc-randconfig-r025-20210720 (attached as .config)
->> compiler: hppa64-linux-gcc (GCC) 10.3.0
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          git remote add drm-drm-misc git://anongit.freedesktop.org/drm/drm-misc
->>          git fetch --no-tags drm-drm-misc drm-misc-next
->>          git checkout d391c58271072d0b0fad93c82018d495b2633448
->>          # save the attached .config to linux build tree
->>          mkdir build_dir
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=parisc SHELL=/bin/bash
+On 7/20/21 4:35 AM, Leon Romanovsky wrote:
+> On Mon, Jul 19, 2021 at 04:42:11PM +0300, Gal Pressman wrote:
+>> On 18/07/2021 15:00, Leon Romanovsky wrote:
+>>> From: Leon Romanovsky <leonro@nvidia.com>
+>>>
+>>> Convert QP object to follow IB/core general allocation scheme.
+>>> That change allows us to make sure that restrack properly kref
+>>> the memory.
+>>>
+>>> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 >>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>     hppa64-linux-ld: drivers/firmware/sysfb.o: in function `sysfb_init':
->>>> (.init.text+0x8): undefined reference to `screen_info'
->>>> hppa64-linux-ld: (.init.text+0xc): undefined reference to `screen_info'
+>> EFA and core parts look good to me.
+>> Reviewed-by: Gal Pressman <galpress@amazon.com>
+>> Tested-by: Gal Pressman <galpress@amazon.com>
+
+Leon, I pulled your tree and tested, things look good so far.
+
+For rdmavt and core:
+Reviewed-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Tested-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+
+
+> Thanks a lot.
 > 
-> This could be related to the recent rework of the system-framebuffer 
-> code. I think the config has to be updated to select SYSFB and 
-> SYSFB_SIMPLEFB. [1]
+>>
+>>> +static inline void *rdma_zalloc_obj(struct ib_device *dev, size_t size,
+>>> +				    gfp_t gfp, bool is_numa_aware)
+>>> +{
+>>> +	if (is_numa_aware && dev->ops.get_numa_node)
+>>
+>> Honestly I think it's better to return an error if a numa aware allocation is
+>> requested and get_numa_node is not provided.
 > 
+> We don't want any driver to use and implement ".get_numa_node()" callback.
+> 
+> Initially, I thought about adding WARN_ON(driver_id != HFI && .get_numa_node)
+> to the device.c, but decided to stay with comment in ib_verbs.h only.
 
-Yes, it is. I've already answered to another similar report:
+Maybe you could update that comment and add that it's for performance? This way
+its clear we are different for a reason. I'd be fine adding a WARN_ON_ONCE like
+you mention here. I don't think we need to fail the call but drawing attention
+to it would not necessarily be a bad thing. Either way, RB/TB for me stands.
 
-https://lkml.org/lkml/2021/7/21/575
+-Denny
 
-I will propose a fix soon.
-
-Best regards,
--- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
 
