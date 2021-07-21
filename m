@@ -2,251 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D573D09FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B6D3D0A00
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235406AbhGUHHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 03:07:20 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:50445 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235098AbhGUHGz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:06:55 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id 66womzz0Zhqx966wpmyABU; Wed, 21 Jul 2021 09:47:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1626853639; bh=wcwqyp83aWiiVP/xgme05L0RFGFqcaoQ6hpPeBMax3Y=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=r1hIVuQG+1usCGrtnEnXWAbLjY9dUy+u/YwGes4RJDUDvvHWwQXrYOJi1pfEvg5P2
-         GqhlFZ1F61FI/xUjr8lWVTpxZZor+nMyDh0bzviOyMvypyQt+sGh9xmCn9gwNk8waX
-         ZMY4jAIz9WAwKR9fKraj3vwielQ+kAdqmicQeV5a9hGuhVnEH21lL0iGzSmcx8+7to
-         ncjFLPzug3LGNxMOpaPtzMkZO//Dv4M0888Ewff4PUOZz+bL6bxd0obkQUM3xC0kga
-         F0Iqf1FEUO7j/w+LPCqNcZzXXpIAhsQIlbaEIAVs1XxLM4DXeqPgCm+ufiTxG0xIIi
-         rlhSObuSHuYlA==
-Subject: Re: [PATCH v4 03/13] media: imx: imx8q: add imx8q vpu device driver
-To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
-        shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        aisheng.dong@nxp.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1626743758.git.ming.qian@nxp.com>
- <b5280a27895da7b2128a8b856b70a39b9ceb3188.1626743758.git.ming.qian@nxp.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <23da6982-8cc8-0f58-1289-e98f0944034b@xs4all.nl>
-Date:   Wed, 21 Jul 2021 09:47:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235494AbhGUHH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 03:07:27 -0400
+Received: from mail-bn1nam07on2054.outbound.protection.outlook.com ([40.107.212.54]:4071
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235277AbhGUHHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 03:07:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hXCYqFooWuZX+z6Vebu4lcfU5r1YiyWbN7pk9YvFPZ388gMlhB7NUKkdBiA2uK2GaX6GeUQLU3wOie1alLUMQSbyZM3iDkZhd3VM86Yzt4SKIVnXxji7KMVc1mv0CRmfSGk5BTeSUftIxJHnl1/HmSkj9NvIM0r8Xd0c1YzM6NmSLhK82+m7fuD4I9Jkmi9mmGtI6NiU05gMGyh4L1k0TEedURJBYdRK0XKlFbmBQmpD3OoiciGugxpUbLZnxIkRnQMl2wV9Ps3fU5kGG7BEkhYBZMD/FfrimkuQKVCvJ6OEHr9mtBK7mQQPIdArU+6Zaz/bpzEHQ9C5NS6Lvr0cCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1lfyzGJlpDrvE/782ZcavAe+EItWQeE3HR/p4pfiFDA=;
+ b=CH2CgcU/jLpGIpA0dMjDnMFHiMCkLC62qGv/W0R8rSubqHbWM//ay7W6r5jKcLL6DENeVzvpHOT6Ouse8jinsNqBPEI+Y/yQek5dMVHJwbgqpCxFMiPvH41dukXpbDqW41GYg0vVvwoCdp8PCG7+R23vNYf7RCF8pmCP6xEtYZewtaL1ZW/9L7vmzTn5DT1qXig9rMXRpLgbFCsoIi7mKEsWp8XmUAciDqutXqBKBkzHSHcxBbyeyu5GR31zQg0K6pFA0VWimfFz8/rNt88mc1IoO4U3TMZM1DbWSCP6u0ePVam1zcrJ9u9Xk2tMNVY4iBbXYmz8EfYUNqGTQt9dQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1lfyzGJlpDrvE/782ZcavAe+EItWQeE3HR/p4pfiFDA=;
+ b=fJMf24oLsXulXeuwpWiCOv/Bqvf4CxX4QVj70ks3FL1MMOe1dCgpdG+/BT6nD1RFazslvPSSJeMKMbbtimdj3V0OMdDlOAOY68sC/QcT/NocBeow6Z1+i6/G3RuEfiuvClCIKWuzBlTif7pzMkZLaSPjmpmGDrkXxcyTVY+c3ly+zbx37QyI2+AHZGI1ok3X8nb3LVhndGVldcQFtejNcEMRNUQ65M06Ds+TbaihiXPUr8JcFyj0exWaL0HEQdHeHmBPeuYXdZ3UIAi/eHk3LHH8OehR1u4UmGIDfwF3NuQSV2xjTszQOhrOFGeU1KZokIoI1mw3h4NFTQo9hzLxCQ==
+Received: from BN9PR03CA0013.namprd03.prod.outlook.com (2603:10b6:408:fa::18)
+ by BN6PR12MB1523.namprd12.prod.outlook.com (2603:10b6:405:10::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.25; Wed, 21 Jul
+ 2021 07:47:40 +0000
+Received: from BN8NAM11FT040.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:fa:cafe::33) by BN9PR03CA0013.outlook.office365.com
+ (2603:10b6:408:fa::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
+ Transport; Wed, 21 Jul 2021 07:47:40 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT040.mail.protection.outlook.com (10.13.177.166) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4352.24 via Frontend Transport; Wed, 21 Jul 2021 07:47:39 +0000
+Received: from [172.27.8.104] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 21 Jul
+ 2021 07:47:37 +0000
+Subject: Re: [PATCH rdma-next 4/7] RDMA/core: Reorganize create QP low-level
+ functions
+To:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+CC:     Leon Romanovsky <leonro@nvidia.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Mark Zhang <markz@mellanox.com>
+References: <cover.1626846795.git.leonro@nvidia.com>
+ <328963df8e30bfc040c846d2c7626becd341f3ec.1626846795.git.leonro@nvidia.com>
+From:   Mark Zhang <markzhang@nvidia.com>
+Message-ID: <11e8e739-99b4-8ebe-38e1-de36b21b0f25@nvidia.com>
+Date:   Wed, 21 Jul 2021 15:47:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <b5280a27895da7b2128a8b856b70a39b9ceb3188.1626743758.git.ming.qian@nxp.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <328963df8e30bfc040c846d2c7626becd341f3ec.1626846795.git.leonro@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfKNmbNgBJOmCees3JU1xCvBFHo0tpwIgQH1Q+ZcoZ8bow2y/EmC1igVXeMd0LDsKUYfZ/z11dvOh8jIinxbjR5gXuFYI6H0BKAklc5z79HBzp5+kZWDc
- oMX/Rhl4tfSuOEXZWbAniqF7Enk/Q1ior1r2Xc5cmrS8uWyb7IMVAPbIxlj69veQJnuELnCNxtoOjFH9nFncsOQ59KCbPtmw7vzmfMuG5prFa/UyzmZ/pB9z
- cgL2tBWceyeU21DChKiZQTl+1Jmzc45Hie/51/h382YYsXWmSexEd7c0DyWlFJoKUgovTiL2RLwd67r0Vnf2pRxq60qKhrWVajiuo7vogecdtJDTUQNS3n0t
- Ioh0OBpiNdymu0zdEZm04aL3ESX/CiJpkN/fdcZNiFCxT+Mfth3IOEMrmKcsDGjX9EPa4mv8Lq0frXIQtT02+3osaPE5f4rdHMjwamyJ4xPRTMvoAIGvh7QP
- IfdI4Z2NaS6r1BhyZDN0WAHZwC5dDmsJp6WNgkb2M/6Nxm5b8/AqScmdgwKWowz4HRsaHAa0JwXzWaObwsN6kMMMCRv07wtml1qRsMKskU9y+fyIzVjJpdQT
- 7u8jq2zhdETkaz9Mxyz8wUU7MS2iksh3zqdJhai16hWEEnGie4VqQ4RR3sL2Kphyjrp3WunlctB6D4h/JfshWK3ZGFDqCZ2HgHzZKW8N5cxQnxhVcYNFtMhc
- uhmdB7fPynk=
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b0b617a5-4770-4131-44b5-08d94c1bd0e2
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1523:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB152378BE080B7507AACDB2E2C7E39@BN6PR12MB1523.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: a59SIHnmQQSxV/nvkKZGFSbaSn8ec1r6hPmyjTwjoIVNFTMIK0GQPVgzYruG+HdgQi85xS9SpzMFj0rmSvg7YNYhdnFWxShfb9gmtY276sUSKLWPQbkiHadV6kqk/wOV0luPADwOf3wtMuYZCTvlZR/JQhyYI3Z5eMPVqE4A3m7p9N0T1n7/C3HSnMY/juaNkemZZo12I9UwPIm5tL9dSzyekP2dYGpeCHl413wZjFtZtgcM3y7h+qfqwCcrasJRfBl9mywkkLMm0/cgKl9ofTIrz6Mnve1TQSf4tLJO1cAMtoHPu4zKewo5dh5DojKuEfZ8ozpEFIx1H+ochYmyktFt8MBQOXQgdcU3zq1slutv6PZMQ2bVfsaLsh9za2K6NMMjdmYQwW0HRYRy0+nm3uB4m+IzC2kHHgXQPt0hnKeM9wnVuuE8Na7ubNzpZrlpS62KCyOU1NM6Y5bjudI6raxne/pmb12HvPQId4Qmc6WgENvFjtn+3BMpacMo14NM6Ic2w4YvvuNnAn+Lnrimo1KQASLnUlXfGgAg71pIVEgAH5yXCXCDiyuBlSjesVISeXVf3DKVIJfA+0wpDRNoJcDsPP9624HV/LCg+/PU8wZpq81BXzkr+56kldbp+RQhsmp61/xStOOEtmf4iuEYzZ0BVeSsDA5Ki9GultCvp0/jsx6RPdPgCbhxj0hxOxY0ZR0DJfCtiGQe7g/gx3VbTnO/r48Bjqz+WErEyFGdSBo=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(39860400002)(346002)(46966006)(36840700001)(426003)(5660300002)(31686004)(26005)(4744005)(6636002)(2616005)(70586007)(53546011)(82310400003)(2906002)(356005)(36906005)(316002)(478600001)(16576012)(6666004)(110136005)(186003)(54906003)(16526019)(336012)(36756003)(86362001)(47076005)(4326008)(36860700001)(82740400003)(31696002)(8676002)(70206006)(107886003)(8936002)(7636003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 07:47:39.8895
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0b617a5-4770-4131-44b5-08d94c1bd0e2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT040.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1523
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2021 03:43, Ming Qian wrote:
-> IMX8Q SoCs feature a powerful video processing unit able to decode many
-> foramts and encode H.264.
+On 7/21/2021 2:13 PM, Leon Romanovsky wrote:
+> External email: Use caution opening links or attachments
 > 
-> The vpu IP is amphion malone decoder and windsor encoder.
-> This Driver is for this IP that is based on the v4l2 mem2mem framework.
 > 
-> Supported SoCs are: IMX8QXP, IMX8QM
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> Signed-off-by: Shijie Qin <shijie.qin@nxp.com>
-> Signed-off-by: Zhou Peng <eagle.zhou@nxp.com>
+> The low-level create QP function grew to be larger than any sensible
+> incline function should be. The inline attribute is not really needed
+> for that function and can be implemented as exported symbol.
 
-<snip>
+incline -> inline?
 
-> diff --git a/include/uapi/linux/imx_vpu.h b/include/uapi/linux/imx_vpu.h
-> new file mode 100644
-> index 000000000000..330082d1c13f
-> --- /dev/null
-> +++ b/include/uapi/linux/imx_vpu.h
-> @@ -0,0 +1,120 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * Copyright 2018-2020 NXP
-
-2020 -> 2021
-
-> + */
-> +
-> +/*
-> + * The code contained herein is licensed under the GNU General Public
-> + * License. You may obtain a copy of the GNU General Public License
-> + * Version 2 or later at the following locations:
-> + *
-> + * http://www.opensource.org/licenses/gpl-license.html
-> + * http://www.gnu.org/copyleft/gpl.html
-> + */
-
-Drop this copyright comment block. The SPDX tag is sufficient. This should be
-removed in all files, just stick to the SPDX tag.
-
-> +#ifndef _UAPI__LINUX_IMX_VPU_H
-> +#define _UAPI__LINUX_IMX_VPU_H
-> +
-> +#include <linux/videodev2.h>
-> +#include <linux/v4l2-controls.h>
-> +
-> +/*imx v4l2 controls & extension controls*/
-> +
-> +//ctrls & extension ctrls definitions
-> +#define V4L2_CID_NON_FRAME		(V4L2_CID_USER_IMX_BASE)
-
-Don't use IMX_BASE, that's for the staging/media/imx driver.
-
-Add a new base for this driver to v4l2-controls.h.
-
-> +#define V4L2_CID_DIS_REORDER		(V4L2_CID_USER_IMX_BASE + 1)
-> +#define V4L2_CID_ROI_COUNT		(V4L2_CID_USER_IMX_BASE + 2)
-> +#define V4L2_CID_ROI			(V4L2_CID_USER_IMX_BASE + 3)
-> +#define V4L2_CID_IPCM_COUNT		(V4L2_CID_USER_IMX_BASE + 4)
-> +#define V4L2_CID_IPCM			(V4L2_CID_USER_IMX_BASE + 5)
-> +#define V4L2_CID_HDR10META		(V4L2_CID_USER_IMX_BASE + 6)
-> +#define V4L2_CID_SECUREMODE		(V4L2_CID_USER_IMX_BASE + 7)
-> +#define V4L2_CID_SC_ENABLE		(V4L2_CID_USER_IMX_BASE + 8)
-
-These all need to be documented in this header. Also make sure that all these
-structs are identical for 32 and 64 bit compilers (the pahole utility is
-very useful to test that), and that there are no holes in the structs.
-
-> +
-> +#define V4L2_MAX_ROI_REGIONS		8
-> +struct v4l2_enc_roi_param {
-> +	struct v4l2_rect rect;
-> +	__u32 enable;
-> +	__s32 qp_delta;
-> +	__u32 reserved[2];
-> +};
-
-Of interest might be this series adding support for dynamic array controls:
-
-https://patchwork.linuxtv.org/project/linux-media/cover/20210610113615.785359-1-hverkuil-cisco@xs4all.nl/
-
-It is very likely to be merged in the near future since it is needed for stateless
-HEVC decoders.
-
-> +
-> +struct v4l2_enc_roi_params {
-> +	__u32 num_roi_regions;
-> +	struct v4l2_enc_roi_param roi_params[V4L2_MAX_ROI_REGIONS];
-> +	__u32 config_store;
-
-That can be dropped, it appears to refer to the old and never merged config store API.
-Eventually the Request API was merged in the kernel, and that's what should be used.
-
-> +	__u32 reserved[2];
-> +};
-> +
-> +#define V4L2_MAX_IPCM_REGIONS		2
-> +struct v4l2_enc_ipcm_param {
-> +	struct v4l2_rect rect;
-> +	__u32 enable;
-> +	__u32 reserved[2];
-> +};
-> +struct v4l2_enc_ipcm_params {
-> +	__u32 num_ipcm_regions;
-> +	struct v4l2_enc_ipcm_param ipcm_params[V4L2_MAX_IPCM_REGIONS];
-> +	__u32 config_store;
-> +	__u32 reserved[2];
-> +};
-> +
-> +struct v4l2_hdr10_meta {
-> +	__u32 hasHdr10Meta;
-> +	__u32 redPrimary[2];
-> +	__u32 greenPrimary[2];
-> +	__u32 bluePrimary[2];
-> +	__u32 whitePoint[2];
-> +	__u32 maxMasteringLuminance;
-> +	__u32 minMasteringLuminance;
-> +	__u32 maxContentLightLevel;
-> +	__u32 maxFrameAverageLightLevel;
-> +};
-
-This is probably covered by the new colorimetry controls:
-
-https://hverkuil.home.xs4all.nl/spec/userspace-api/v4l/ext-ctrls-colorimetry.html
-
-> +
-> +/*imx v4l2 command*/
-> +#define V4L2_DEC_CMD_IMX_BASE		(0x08000000)
-> +#define V4L2_DEC_CMD_RESET		(V4L2_DEC_CMD_IMX_BASE + 1)
-
-Needs to be documented, looks dubious.
-
-> +
-> +/*imx v4l2 event*/
-> +//error happened in dec/enc
-> +#define V4L2_EVENT_CODEC_ERROR		(V4L2_EVENT_PRIVATE_START + 1)
-> +//frame loss in dec/enc
-> +#define V4L2_EVENT_SKIP			(V4L2_EVENT_PRIVATE_START + 2)
-> +//crop area change in dec, not reso change
-> +#define V4L2_EVENT_CROPCHANGE		(V4L2_EVENT_PRIVATE_START + 3)
-> +//some options can't be handled by codec, so might be ignored or updated. But codec could go on.
-> +#define V4L2_EVENT_INVALID_OPTION	(V4L2_EVENT_PRIVATE_START + 4)
-
-Documentation. I'm not sure we want it this way, or perhaps some should become standard
-events.
-
-> +
-> +/*imx v4l2 warning msg, attached with event V4L2_EVENT_INVALID_OPTION*/
-> +enum {
-> +	UNKONW_WARNING = -1,		//not known warning type
-> +	RIOREGION_NOTALLOW,		//(part of)roi region can not work with media setting and be ignored by enc
-> +	IPCMREGION_NOTALLOW,		//(part of)ipcm region can not work with media setting and be ignored by enc
-> +	LEVEL_UPDATED,			//current level cant't work with media setting and be updated by enc
-> +};
-> +
-> +/*  Flags for 'flags' field */
-> +/* Buffer only contains codec config data, eg. sps and pps*/
-> +#define V4L2_BUF_FLAG_CODECCONFIG	0x00200000
-> +
-> +/* imx v4l2 formats */
-> +/*raw formats*/
-> +#define V4L2_PIX_FMT_BGR565		v4l2_fourcc('B', 'G', 'R', 'P') /* 16  BGR-5-6-5 */
-> +#define V4L2_PIX_FMT_NV12X		v4l2_fourcc('N', 'V', 'X', '2') /* Y/CbCr 4:2:0 for 10bit */
-> +#define V4L2_PIX_FMT_DTRC		v4l2_fourcc('D', 'T', 'R', 'C') /* 8bit tile output, uncompressed */
-> +#define V4L2_PIX_FMT_P010		v4l2_fourcc('P', '0', '1', '0')	/* ms p010, data stored in upper 10 bits of 16 */
-> +#define V4L2_PIX_FMT_TILEX		v4l2_fourcc('D', 'T', 'R', 'X') /* 10 bit tile output, uncompressed */
-> +#define V4L2_PIX_FMT_RFC		v4l2_fourcc('R', 'F', 'C', '0') /* 8bit tile output, with rfc*/
-> +#define V4L2_PIX_FMT_RFCX		v4l2_fourcc('R', 'F', 'C', 'X') /* 10 bit tile output, with rfc */
-> +#define V4L2_PIX_FMT_411SP		v4l2_fourcc('4', '1', 'S', 'P') /* YUV 411 Semi planar */
-> +#define V4L2_PIX_FMT_NT8		v4l2_fourcc('N', 'A', '1', '2') /* NXP Tiled NV12 Format*/
-> +#define V4L2_PIX_FMT_NT10		v4l2_fourcc('N', 'T', '1', '2') /* NXP Tiled 10 bit Format*/
-> +
-> +/*codec format*/
-> +#define V4L2_PIX_FMT_AV1		v4l2_fourcc('A', 'V', '1', '0')	/* av1 */
-> +#define V4L2_PIX_FMT_RV			v4l2_fourcc('R', 'V', '0', '0')	/* rv  */
-> +#define V4L2_PIX_FMT_AVS		v4l2_fourcc('A', 'V', 'S', '0')	/* avs */
-> +#define V4L2_PIX_FMT_VP6		v4l2_fourcc('V', 'P', '6', '0') /* vp6 */
-> +#define V4L2_PIX_FMT_SPK		v4l2_fourcc('S', 'P', 'K', '0') /* spk */
-
-All these formats need to be added to videodev2.h and documented.
-
-I would suggest that you only keep what you really need for an initial submission of the
-driver, and add these new API features later. Extending the uAPI is always much
-more time consuming, so if possible you want to postpone that.
-
-Regards,
-
-	Hans
-
-> +
-> +/*codec formats*/
-> +#endif	//#ifndef _UAPI__LINUX_IMX_VPU_H
-> 
 
