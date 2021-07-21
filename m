@@ -2,205 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC193D127A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828493D1272
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239923AbhGUOxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:53:49 -0400
-Received: from orthanc.universe-factory.net ([104.238.176.138]:47414 "EHLO
-        orthanc.universe-factory.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239825AbhGUOxj (ORCPT
+        id S239807AbhGUOur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238585AbhGUOuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:53:39 -0400
-X-Greylist: delayed 350 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Jul 2021 10:53:37 EDT
-Received: from [IPv6:2001:19f0:6c01:100::2] (unknown [IPv6:2001:19f0:6c01:100::2])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by orthanc.universe-factory.net (Postfix) with ESMTPSA id D53CB1F4E2;
-        Wed, 21 Jul 2021 17:28:21 +0200 (CEST)
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, gabriel.kh.huang@fii-na.com,
-        moritzf@google.com, stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Justin Forbes <jmforbes@linuxtx.org>, linux-usb@vger.kernel.org
-References: <20210719070519.41114-1-mdf@kernel.org>
-From:   Matthias Schiffer <mschiffer@universe-factory.net>
-Subject: Re: [PATCH] Revert "usb: renesas-xhci: Fix handling of unknown ROM
- state"
-Message-ID: <c0f191cc-6400-7309-e8a4-eab0925a3d54@universe-factory.net>
-Date:   Wed, 21 Jul 2021 17:28:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 21 Jul 2021 10:50:46 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26A4C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:31:21 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id qa36so3829454ejc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=npBTNtth64784Swm+ecPNmUdwO9+AOQ0+inX3vZ7kvA=;
+        b=dSwx/4D7DraIZkK9jRugxs4mYM1BryTtv1wlMvQf4iExeZyNg9u7ojOxxYVPhNXt8k
+         xbGi+QWCJYrov0xwLBhrQaxMf3h8QYp9gOe7QjiOAzWv+S1cTwjzSfpCjIN86QxetJym
+         8DbhjzVN3vpL2FpRSQiF9srQeFwGDIWc3Xgc0QpyR+SrnCEGWhz43+UbB2tzeDbfoQjz
+         D04vWwkR5r34XVLMNqJTttbfDyJuvZLeqbM24n7EwZDhMlm+jMoaj5el4i+rrIvBY+Mr
+         yskETxK6wjpzc/srmYtsf/sCQ+C5eYqV7BEsfJBtpTXiRqTKenhOh6Ny7qI9ZjFmrBa4
+         YKyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=npBTNtth64784Swm+ecPNmUdwO9+AOQ0+inX3vZ7kvA=;
+        b=UxhE0ABEIcE/BA57a7vEAEzbMZxRxb6oUA9fKTVtaQ1xn6xJLNb1dnI7wBNblhGJDL
+         SI6/VrzSiLVT55wWO52q16n9kRvvHELaljaCQMWY3kwNsmlMT7NB8Pvv5fNTXmflNO9F
+         cRsbrXcS9Eg0aBHfLQaR2sWt3CNhoCi8WcJwJbi43BGElCRl5IuOF2hyPB8GE1zkG7H4
+         mu70jYuvjWA8ryvNdNNVTCKKLFoI9/MqhSD0Gc3qpMu/xWb64Gx8+dIciK6pKy6+NwtG
+         0shBi1iKgGvmfHyPDcQJn4NfCxilsp2CTI16O8AN4b9AFYB2L08PCmOgtnmuKVK5Dh5P
+         yWZg==
+X-Gm-Message-State: AOAM530vAoFYgJnaqIliPrDqoZMvjcTeJEpTmvU12QgsvVouaNcjPQqM
+        oem1vHv+PUNhDe72gNKyaVLms9rvusp89mFqVPM=
+X-Google-Smtp-Source: ABdhPJwBRIfAEE/lsfibIleDUjjVo9Ea3B1l3ZGGu/huP8QNC5XAxU2hRfsmPvSd/3DDx/f8Ogz3z0bPNEGHWITeLEM=
+X-Received: by 2002:a17:906:546:: with SMTP id k6mr38630111eja.53.1626881480186;
+ Wed, 21 Jul 2021 08:31:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210719070519.41114-1-mdf@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="HqCk6ZiLytvFswwmG4LPja68eEOGyVngQ"
+Received: by 2002:a54:2d0c:0:0:0:0:0 with HTTP; Wed, 21 Jul 2021 08:31:19
+ -0700 (PDT)
+Reply-To: ouedraogoahmed@outlook.com
+From:   mr ahmed <devoobrown@gmail.com>
+Date:   Wed, 21 Jul 2021 15:31:19 +0000
+Message-ID: <CALi_6kNv8URWMSCHR1gjihF5H3ux5dAdut30ZNBtW9mnkZ9syA@mail.gmail.com>
+Subject: Hello Dear.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---HqCk6ZiLytvFswwmG4LPja68eEOGyVngQ
-Content-Type: multipart/mixed; boundary="dne6ivMkj5K2Ni6kCDeXZjNUQjHxV9xO1";
- protected-headers="v1"
-From: Matthias Schiffer <mschiffer@universe-factory.net>
-To: Moritz Fischer <mdf@kernel.org>
-Cc: linux-kernel@vger.kernel.org, gabriel.kh.huang@fii-na.com,
- moritzf@google.com, stable@vger.kernel.org,
- Mathias Nyman <mathias.nyman@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Vinod Koul <vkoul@kernel.org>, Justin Forbes <jmforbes@linuxtx.org>,
- linux-usb@vger.kernel.org
-Message-ID: <c0f191cc-6400-7309-e8a4-eab0925a3d54@universe-factory.net>
-Subject: Re: [PATCH] Revert "usb: renesas-xhci: Fix handling of unknown ROM
- state"
-References: <20210719070519.41114-1-mdf@kernel.org>
-In-Reply-To: <20210719070519.41114-1-mdf@kernel.org>
+Greetings,
 
---dne6ivMkj5K2Ni6kCDeXZjNUQjHxV9xO1
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US-large
-Content-Transfer-Encoding: quoted-printable
+With due respect to your person. I need your assistance in
+transferring the sum of $11.3million to your private account. The
+money has been here in our Bank lying dormant for years without
+anybody coming for the claim. I want to release the money to you as
+the relative to our deceased customer (the account owner) who died a
+long with his family since October 2005.
 
-On 7/19/21 9:05 AM, Moritz Fischer wrote:
-> This reverts commit d143825baf15f204dac60acdf95e428182aa3374.
->=20
-> Justin reports some of his systems now fail as result of this commit:
->=20
->   xhci_hcd 0000:04:00.0: Direct firmware load for renesas_usb_fw.mem fa=
-iled with error -2
->   xhci_hcd 0000:04:00.0: request_firmware failed: -2
->   xhci_hcd: probe of 0000:04:00.0 failed with error -2
->=20
-> The revert brings back the original issue the commit tried to solve but=
+The Banking law and guideline here stipulates that if such money
+remains unclaimed after 16 years, the money will be transferred into
+the bank treasury as an unclaimed fund. that is the reason why i want
+to release the money to you for our mutual benefit.
 
-> at least unbreaks existing systems relying on previous behavior.
->=20
-> Cc: stable@vger.kernel.org
-> Cc: Mathias Nyman <mathias.nyman@intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Justin Forbes <jmforbes@linuxtx.org>
-> Reported-by: Justin Forbes <jmforbes@linuxtx.org>
-> Signed-off-by: Moritz Fischer <mdf@kernel.org>
-> ---
->=20
-> Justin,
->=20
-> would you be able to help out testing follow up patches to this?
->=20
-> I don't have a machine to test your use-case and mine definitly require=
-s
-> a firmware load on RENESAS_ROM_STATUS_NO_RESULT.
->=20
-> Thanks
-> - Moritz
+By indicating your interest I will send you the full details on how
+the business will be executed.
 
-
-Hi Moritz,
-
-as an additional data point, here's the behaviour of my system, a Thinkpa=
-d=20
-T14 AMD with:
-
-06:00.0 USB controller [0c03]: Renesas Technology Corp. uPD720202 USB 3.0=
-=20
-Host Controller [1912:0015] (rev 02)
-
-- On Kernel 5.13.1, no firmware: USB controller resets in an endless loop=
-=20
-when the system is running from battery
-- On Kernel 5.13.4, no firmware: USB controller probe fails with the=20
-mentioned firmware load error
-- On Kernel 5.13.4, with renesas_usb_fw.mem: everything is working fine, =
-
-the reset issue is gone
-
-So it seems to me that requiring a firmware is generally the correct driv=
-er=20
-behaviour for this hardware. The firmware I found in the Arch User=20
-Repository [1] unfortunately has a very restrictive license...
-
-Kind regards,
-Matthias
-
-
-[1] https://github.com/denisandroid/uPD72020x-Firmware
-
-
-
->=20
-> ---
->   drivers/usb/host/xhci-pci-renesas.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
->=20
-> diff --git a/drivers/usb/host/xhci-pci-renesas.c b/drivers/usb/host/xhc=
-i-pci-renesas.c
-> index 1da647961c25..5923844ed821 100644
-> --- a/drivers/usb/host/xhci-pci-renesas.c
-> +++ b/drivers/usb/host/xhci-pci-renesas.c
-> @@ -207,8 +207,7 @@ static int renesas_check_rom_state(struct pci_dev *=
-pdev)
->   			return 0;
->  =20
->   		case RENESAS_ROM_STATUS_NO_RESULT: /* No result yet */
-> -			dev_dbg(&pdev->dev, "Unknown ROM status ...\n");
-> -			break;
-> +			return 0;
->  =20
->   		case RENESAS_ROM_STATUS_ERROR: /* Error State */
->   		default: /* All other states are marked as "Reserved states" */
-> @@ -225,12 +224,13 @@ static int renesas_fw_check_running(struct pci_de=
-v *pdev)
->   	u8 fw_state;
->   	int err;
->  =20
-> -	/*
-> -	 * Only if device has ROM and loaded FW we can skip loading and
-> -	 * return success. Otherwise (even unknown state), attempt to load FW=
-=2E
-> -	 */
-> -	if (renesas_check_rom(pdev) && !renesas_check_rom_state(pdev))
-> -		return 0;
-> +	/* Check if device has ROM and loaded, if so skip everything */
-> +	err =3D renesas_check_rom(pdev);
-> +	if (err) { /* we have rom */
-> +		err =3D renesas_check_rom_state(pdev);
-> +		if (!err)
-> +			return err;
-> +	}
->  =20
->   	/*
->   	 * Test if the device is actually needing the firmware. As most
->=20
-
-
-
---dne6ivMkj5K2Ni6kCDeXZjNUQjHxV9xO1--
-
---HqCk6ZiLytvFswwmG4LPja68eEOGyVngQ
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEEZmTnvaa2aYgexS51Fu8/ZMsgHZwFAmD4PRUFAwAAAAAACgkQFu8/ZMsgHZxu
-EBAA5q6s7FqVB71rjTBI5D46DCZ7m+yBlfD4cSDItuycPNAeNAbF8prz+KVX3uyFQnFixggBF5fK
-t6CiFuhE4FrunQJYX9pVOEJD6v5WnYZznRNEdciZ/Pa6EQ8XSWmnp0cfeR+C7Z+ur8ZAhjgfylzW
-7B+7wAYu/7vK7bGA5cSlZ0AW3SH2V/7A4DNdOuhgsGMSF3JuBOhoGdZQP8WhLz0wphSDXNBUi3uy
-koKo89u7bBv/hSKMW/HF4+mgUaVBvQdd7Wj7IQQ57QwWjRdG2nY1LIs/PQU0yKtGQQdjo6kGij56
-qLtADISuNrIdm4gWzC8qGVzWaUsNPAnrZmwnFxNwQ7YoEDwNti30hTbTnQbl9EBom/n+L47a23Eo
-mXuH/z9Kw78qyK5IokumDxSwNrSWpnMADywhkqSZDE6Ul6dFj2Z8ScDsu0HOgXp3BM11OI4Y1XHU
-DqEzZSyPTZmVzGsS59udJDznQV0cp2SWvt1PqB1EVpxwTGfXEehs+AWKaagaPgMqCK+0vDtM/C93
-de9d2vMPOt+F3Cu0OqjznPktycUlhuJ9zwgksDl7KLfemSqv8mRAb2jtZ3u9YI7aw8jMnpMXjQUl
-ndBCXEax7nQssarGoJZwQ/44YmNXxFr0gOTKlkY3754p5L1Cm2dNGeN/GVeWutbb6sHxMzcfXpqY
-krw=
-=2e4k
------END PGP SIGNATURE-----
-
---HqCk6ZiLytvFswwmG4LPja68eEOGyVngQ--
+Best Regards,
+Ahmed Ouedraogo.
