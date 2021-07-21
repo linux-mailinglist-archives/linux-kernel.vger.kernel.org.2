@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6E23D180C
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5EA3D180D
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240471AbhGUTla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:41:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50102 "EHLO mail.kernel.org"
+        id S240525AbhGUTle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:41:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240399AbhGUTky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:40:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F02016139A;
+        id S240396AbhGUTkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 15:40:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEF6761376;
         Wed, 21 Jul 2021 20:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626898890;
-        bh=MwdcEzyqxvGGf9rRbzj9W8+01WNtdWk5AM4dfPjKIEU=;
+        bh=gYGT2TdvW7CGqArE81oxQ37v9JGE/2qRSNuOECdP1Rg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K13FYWMXVDFnYgHMWDqShTRRCby/S3XEDN1NsAWSgfRe4Lln9ZUG+EX8GJe/yrWFI
-         0iljXuShFyFQvWaDPRRyOfLnH0j4ySizE0uC9EFjH/zJr/5V9Pmb8KZOGh7lxamGj8
-         NLmRU/BpiJfVD3ST19GG9RqsOQpsbX1cckPppr75+BN6bsV39xCSVwEeFdlfXlybJm
-         xEg9ZADcb2Gs+iUH+m0wwZsRadf/fy5InpNrXnzUmCGH+ciRhqCPdq1pXV3PQCUEvi
-         3sP16LZc5C2NI+jlyRQzJ5WQEYo3tkEgcY8FSoB4MczliifLAovLvJanXFi6E6F4qB
-         C0CaNQc/qgg8A==
+        b=lQ1Wn3tIm2vxQZfPGlY2NHQYdQTegLvtZn2RDZh/N5LylHnD0LLqX60zD7dxXAbxy
+         yg9KY5hEGHYA8NNaP+xM/SWgk7zlmCCY1q0ehgL2uckUOLoz/tAPo/digk9X1ChiMW
+         Z4wDLYhm3CZAlnZ4IZ68FLv/Ryy6GdwrsuwUpsQ69Qv96d3xcR4ROsIPUiixTzVD0+
+         FOiKF2H11qiHazh+oDkPXEt4H9ym6MfBkmFXJqVQpjNZrwLgfK+skzey4qdMpGUVJW
+         yniGD9WCJ13yWw60miCH85s9kGif2QkpLe8x/nI1eGrOA5ANHeapbiad7F74tjSASR
+         +CtpH8Qqu/Mdg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4CA415C0F00; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
+        id 4DA995C2315; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,14 +33,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 17/18] rcu: Explain why rcu_all_qs() is a stub in preemptible TREE RCU
-Date:   Wed, 21 Jul 2021 13:21:25 -0700
-Message-Id: <20210721202127.2129660-17-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 18/18] rcu: Print human-readable message for schedule() in RCU reader
+Date:   Wed, 21 Jul 2021 13:21:26 -0700
+Message-Id: <20210721202127.2129660-18-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
@@ -50,46 +46,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+The WARN_ON_ONCE() invocation within the CONFIG_PREEMPT=y version of
+rcu_note_context_switch() triggers when there is a voluntary context
+switch in an RCU read-side critical section, but there is quite a gap
+between the output of that WARN_ON_ONCE() and this RCU-usage error.
+This commit therefore converts the WARN_ON_ONCE() to a WARN_ONCE()
+that explicitly describes the problem in its message.
 
-The cond_resched() function reports an RCU quiescent state only in
-non-preemptible TREE RCU implementation.  This commit therefore adds a
-comment explaining why cond_resched() does nothing in preemptible kernels.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/sched/core.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2d9ff40f46619..6a03c3fac55cc 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7781,6 +7781,17 @@ int __sched __cond_resched(void)
- 		preempt_schedule_common();
- 		return 1;
- 	}
-+	/*
-+	 * In preemptible kernels, ->rcu_read_lock_nesting tells the tick
-+	 * whether the current CPU is in an RCU read-side critical section,
-+	 * so the tick can report quiescent states even for CPUs looping
-+	 * in kernel context.  In contrast, in non-preemptible kernels,
-+	 * RCU readers leave no in-memory hints, which means that CPU-bound
-+	 * processes executing in kernel context might never report an
-+	 * RCU quiescent state.  Therefore, the following code causes
-+	 * cond_resched() to report a quiescent state, but only when RCU
-+	 * is in urgent need of one.
-+	 */
- #ifndef CONFIG_PREEMPT_RCU
- 	rcu_all_qs();
- #endif
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 83a702a4e2963..e8b45ab72a799 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -346,7 +346,7 @@ void rcu_note_context_switch(bool preempt)
+ 
+ 	trace_rcu_utilization(TPS("Start context switch"));
+ 	lockdep_assert_irqs_disabled();
+-	WARN_ON_ONCE(!preempt && rcu_preempt_depth() > 0);
++	WARN_ONCE(!preempt && rcu_preempt_depth() > 0, "Voluntary context switch within RCU read-side critical section!");
+ 	if (rcu_preempt_depth() > 0 &&
+ 	    !t->rcu_read_unlock_special.b.blocked) {
+ 
 -- 
 2.31.1.189.g2e36527f23
 
