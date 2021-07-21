@@ -2,96 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F563D11D9
+	by mail.lfdr.de (Postfix) with ESMTP id CC2A03D11DB
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239452AbhGUOX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:23:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239473AbhGUOUe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S239504AbhGUOXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:23:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239478AbhGUOUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 10:20:34 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBB6C061575;
-        Wed, 21 Jul 2021 08:00:51 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id x17so2751020edd.12;
-        Wed, 21 Jul 2021 08:00:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3QH0L1galc4dXmyAjj6SONbiSv0qVq6f5DQ4NUtGEno=;
-        b=ksK3cQEkcbM2A1jLvr4UuKTvyNMRVEzp0tvWg8di9oPfOkQHQy6xwZLfWylwgHXeky
-         zT5+pr/Vo1E5ZvqpCBJ76fS1+G1yypiU54zm2N54vDXPS4tmEzVUY1Xhl8/gOc3dOq/Z
-         DOmdcOMb6d85MqtiR8FoXDdcafAr+rlf+lWJ5C0q+TGyAfHgwVZa6hDATsFxBTdOX4qj
-         xZC16RQwxKt+eCQdTc47xPXWJD+ObiE8Z0zUEoI7M2Q3WT5Rt/dZTDxr75xcq1E1ey8i
-         kcqOU0q8BmVtpv3lBZR396OEXoDJtCUMwPIpQX4BxHiNydCqSlzCcjiSURY1NtDsvfxI
-         ZZmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3QH0L1galc4dXmyAjj6SONbiSv0qVq6f5DQ4NUtGEno=;
-        b=Dq8q+eltPKNOhyPaJ8dYHAbDzy39ZGWzGA6DOAtPBvt5+IBAvGqJ+2M3GAxgR+38mG
-         3L4gGZ+ADhXlgqZnMbdCxjLqt+XiU+cdZpkPOfnAengxy1oi+Ur4hpWJClj5SvPXevC2
-         1ee9N1XeODFUw9pevOZ4MXvQp23GQRh0b9G65efq7F8L/8W3pQt6zr/APinu/jeVZAvJ
-         Y2VL4G8DMwyCQgk0CY9CJDxe+tUol/o8A7F48/OiceAjrlq3A/ovP+1jH+La+7TZ0vCU
-         5A0Vdvt/33xT3fLEJx07HgyKV5qcJLrSo21DM8KQa016uT1defjuhXGYeWwaKWhZwl/u
-         xAuQ==
-X-Gm-Message-State: AOAM531/Kl1Znb54H2mQqGnxrA7W0K3pYHl/CNFdR8upMyPLoRvC8dra
-        tu1KzXVZboAZFTAUTPf8DdXUSrsv/Pe2tMe6/7k=
-X-Google-Smtp-Source: ABdhPJwsdM7NhMOEPZ+TG7bCz9J7fuNtMI27TGWdC6n7lbhoBMHBK0YuVNjfgWVfOXR7v0uUr3SK5Qg0rxNOhwip2XI=
-X-Received: by 2002:a05:6402:19a:: with SMTP id r26mr47901608edv.230.1626879650292;
- Wed, 21 Jul 2021 08:00:50 -0700 (PDT)
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F46A6120E;
+        Wed, 21 Jul 2021 15:01:00 +0000 (UTC)
+Date:   Wed, 21 Jul 2021 11:00:53 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v3] tracing/histogram: Rename "cpu" to "common_cpu"
+Message-ID: <20210721110053.26b4f641@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <CAOuPNLhqSpaTm3u4kFsnuZ0PLDKuX8wsxuF=vUJ1TEG0EP+L1g@mail.gmail.com>
- <alpine.LRH.2.02.2107200737510.19984@file01.intranet.prod.int.rdu2.redhat.com>
-In-Reply-To: <alpine.LRH.2.02.2107200737510.19984@file01.intranet.prod.int.rdu2.redhat.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Wed, 21 Jul 2021 20:30:38 +0530
-Message-ID: <CAOuPNLhh_LkLQ8mSA4eoUDLCLzHo5zHXsiQZXUB_-T_F1_v6-g@mail.gmail.com>
-Subject: Re: Kernel 4.14: Using dm-verity with squashfs rootfs - mounting issue
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>, dm-devel@redhat.com,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>, agk@redhat.com,
-        snitzer@redhat.com, shli@kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 at 17:12, Mikulas Patocka <mpatocka@redhat.com> wrote:
->
-> Hi
->
-> Try to set up dm-verity with block size 512 bytes.
->
-> I don't know what block size does squashfs use, but if the filesystem
-> block size is smaller than dm-verity block size, it doesn't work.
->
-Okay thank you so much for this clue,
-It seems we are using 65536 as the squashfs block size:
-==> mksquashfs [...] - comp xz -Xdict-size 32K -noI -Xbcj arm -b 65536
--processors 1
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-But for dm-verity we are giving block size of 4096
-==> [    0.000000] Kernel command line:[..] verity="96160 12020
-d7b8a7d0c01b9aec888930841313a81603a50a2a7be44631c4c813197a50d681 0 "
-rootfstype=squashfs root=/dev/mtdblock34 ubi.mtd=30,0,30 [...]
-root=/dev/dm-0 dm="system none ro,0 96160 verity 1 /dev/mtdblock34
-/dev/mtdblock39 4096 4096 12020 8 sha256
-d7b8a7d0c01b9aec888930841313a81603a50a2a7be44631c4c813197a50d681
-aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7"
+Currently the histogram logic allows the user to write "cpu" in as an
+event field, and it will record the CPU that the event happened on.
 
-Now, we are checking by giving squashfs block size also as 4096
+The problem with this is that there's a lot of events that have "cpu"
+as a real field, and using "cpu" as the CPU it ran on, makes it
+impossible to run histograms on the "cpu" field of events.
 
-In case, if this does not work, what else could be the other option ?
-Can we try with initramfs approach ?
+For example, if I want to have a histogram on the count of the
+workqueue_queue_work event on its cpu field, running:
 
-Thanks,
-Pintu
+ ># echo 'hist:keys=cpu' > events/workqueue/workqueue_queue_work/trigger
+
+Gives a misleading and wrong result.
+
+Change the command to "common_cpu" as no event should have "common_*"
+fields as that's a reserved name for fields used by all events. And
+this makes sense here as common_cpu would be a field used by all events.
+
+Now we can even do:
+
+ ># echo 'hist:keys=common_cpu,cpu if cpu < 100' > events/workqueue/workqueue_queue_work/trigger
+ ># cat events/workqueue/workqueue_queue_work/hist
+ # event histogram
+ #
+ # trigger info: hist:keys=common_cpu,cpu:vals=hitcount:sort=hitcount:size=2048 if cpu < 100 [active]
+ #
+
+ { common_cpu:          0, cpu:          2 } hitcount:          1
+ { common_cpu:          0, cpu:          4 } hitcount:          1
+ { common_cpu:          7, cpu:          7 } hitcount:          1
+ { common_cpu:          0, cpu:          7 } hitcount:          1
+ { common_cpu:          0, cpu:          1 } hitcount:          1
+ { common_cpu:          0, cpu:          6 } hitcount:          2
+ { common_cpu:          0, cpu:          5 } hitcount:          2
+ { common_cpu:          1, cpu:          1 } hitcount:          4
+ { common_cpu:          6, cpu:          6 } hitcount:          4
+ { common_cpu:          5, cpu:          5 } hitcount:         14
+ { common_cpu:          4, cpu:          4 } hitcount:         26
+ { common_cpu:          0, cpu:          0 } hitcount:         39
+ { common_cpu:          2, cpu:          2 } hitcount:        184
+
+Now for backward compatibility, I added a trick. If "cpu" is used, and
+the field is not found, it will fall back to "common_cpu" and work as
+it did before. This way, it will still work for old programs that use
+"cpu" to get the actual CPU, but if the event has a "cpu" as a field, it
+will get that event's "cpu" field, which is probably what it wants
+anyway.
+
+I updated the tracefs/README to include documentation about both the
+common_timestamp and the common_cpu. This way, if that text is present in
+the README, then an application can know that common_cpu is supported over
+just plain "cpu".
+
+Cc: stable@vger.kernel.org
+Fixes: 8b7622bf94a44 ("tracing: Add cpu field for hist triggers")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+Changes since v2:
+  compile tested :-p and found I missed a '"' in the README.
+
+ Documentation/trace/histogram.rst |  2 +-
+ kernel/trace/trace.c              |  4 ++++
+ kernel/trace/trace_events_hist.c  | 22 ++++++++++++++++------
+ 3 files changed, 21 insertions(+), 7 deletions(-)
+
+diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
+index b71e09f745c3..f99be8062bc8 100644
+--- a/Documentation/trace/histogram.rst
++++ b/Documentation/trace/histogram.rst
+@@ -191,7 +191,7 @@ Documentation written by Tom Zanussi
+                                 with the event, in nanoseconds.  May be
+ 			        modified by .usecs to have timestamps
+ 			        interpreted as microseconds.
+-    cpu                    int  the cpu on which the event occurred.
++    common_cpu             int  the cpu on which the event occurred.
+     ====================== ==== =======================================
+ 
+ Extended error information
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 14f56e9fa001..e6074040c977 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -5619,6 +5619,10 @@ static const char readme_msg[] =
+ 	"\t            [:name=histname1]\n"
+ 	"\t            [:<handler>.<action>]\n"
+ 	"\t            [if <filter>]\n\n"
++	"\t    Note, special fields can be used as well:\n"
++	"\t            common_timestamp - to record current timestamp\n"
++	"\t            common_cpu - to record the CPU the event happened on\n"
++	"\n"
+ 	"\t    When a matching event is hit, an entry is added to a hash\n"
+ 	"\t    table using the key(s) and value(s) named, and the value of a\n"
+ 	"\t    sum called 'hitcount' is incremented.  Keys and values\n"
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 16a9dfc9fffc..34325f41ebc0 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -1111,7 +1111,7 @@ static const char *hist_field_name(struct hist_field *field,
+ 		 field->flags & HIST_FIELD_FL_ALIAS)
+ 		field_name = hist_field_name(field->operands[0], ++level);
+ 	else if (field->flags & HIST_FIELD_FL_CPU)
+-		field_name = "cpu";
++		field_name = "common_cpu";
+ 	else if (field->flags & HIST_FIELD_FL_EXPR ||
+ 		 field->flags & HIST_FIELD_FL_VAR_REF) {
+ 		if (field->system) {
+@@ -1991,14 +1991,24 @@ parse_field(struct hist_trigger_data *hist_data, struct trace_event_file *file,
+ 		hist_data->enable_timestamps = true;
+ 		if (*flags & HIST_FIELD_FL_TIMESTAMP_USECS)
+ 			hist_data->attrs->ts_in_usecs = true;
+-	} else if (strcmp(field_name, "cpu") == 0)
++	} else if (strcmp(field_name, "common_cpu") == 0)
+ 		*flags |= HIST_FIELD_FL_CPU;
+ 	else {
+ 		field = trace_find_event_field(file->event_call, field_name);
+ 		if (!field || !field->size) {
+-			hist_err(tr, HIST_ERR_FIELD_NOT_FOUND, errpos(field_name));
+-			field = ERR_PTR(-EINVAL);
+-			goto out;
++			/*
++			 * For backward compatibility, if field_name
++			 * was "cpu", then we treat this the same as
++			 * common_cpu.
++			 */
++			if (strcmp(field_name, "cpu") == 0) {
++				*flags |= HIST_FIELD_FL_CPU;
++			} else {
++				hist_err(tr, HIST_ERR_FIELD_NOT_FOUND,
++					 errpos(field_name));
++				field = ERR_PTR(-EINVAL);
++				goto out;
++			}
+ 		}
+ 	}
+  out:
+@@ -5085,7 +5095,7 @@ static void hist_field_print(struct seq_file *m, struct hist_field *hist_field)
+ 		seq_printf(m, "%s=", hist_field->var.name);
+ 
+ 	if (hist_field->flags & HIST_FIELD_FL_CPU)
+-		seq_puts(m, "cpu");
++		seq_puts(m, "common_cpu");
+ 	else if (field_name) {
+ 		if (hist_field->flags & HIST_FIELD_FL_VAR_REF ||
+ 		    hist_field->flags & HIST_FIELD_FL_ALIAS)
+-- 
+2.31.1
+
