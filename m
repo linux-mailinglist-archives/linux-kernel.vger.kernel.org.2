@@ -2,85 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CA93D1268
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBA43D126B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239879AbhGUOsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:48:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238083AbhGUOsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:48:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68F3361019;
-        Wed, 21 Jul 2021 15:29:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626881363;
-        bh=6Z3/WQ4Gk2tsFmqm7hmsYlmSZnfofpUun0bNut/JX3U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lat3ZQjeyVszUvAcZF4IkW/6EYcIVqgM9NKp3aE/kn3oxkU8/OAPMCCfDuhU6pXWa
-         RN27s+sJxIt17yXIPxK7UzPe9A4YBpGntM3xbvNWmxFg6+UGR9tWBvzjze5PS2EGqr
-         HND7b7dqZrSEK8v3VWBdfPJI4HqCleCc8aPCiQxE=
-Date:   Wed, 21 Jul 2021 17:29:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 1/2] driver core: Prevent warning when removing a
- device link from unregistered consumer
-Message-ID: <YPg9TBLElQqcn3PS@kroah.com>
-References: <20210716114408.17320-1-adrian.hunter@intel.com>
- <20210716114408.17320-2-adrian.hunter@intel.com>
+        id S239896AbhGUOtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238083AbhGUOs7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 10:48:59 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38264C061575;
+        Wed, 21 Jul 2021 08:29:35 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id y42so3769423lfa.3;
+        Wed, 21 Jul 2021 08:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=y3Me1H1g+i1iLWwjD1JZUPq0fs+AL+QhFF9DCBhI9X8=;
+        b=pdVrpvByPApfQZfDso8ynert9Ks/VK9apcwGzpNoJqn7Rouyr4gipe/Z2tZ3ZjWtdj
+         TGtZiyHT7zT7mOGEEUDDz+akJXDt23CQxPao9IkNYPs2lmw2j6BFHOQ/cfrOb/aAolwJ
+         KNs/9RBtlB69C+OdnGFAYeQu01WyyWpU3PBhihHYEcej4SVhuTi49kvxzFw62ubTcB4Z
+         gmTmbRAetA2EIIXEhtf9jALTyI4GFBoEdb2LhKlSz8YSeov6arMXi88XFXhJm501Es9K
+         I1eGL+k/FulsJNsqncQufG7iWX4lXgNhC9lsO2Pjt3AWM6Gtxr9EJz9Kp+Z4nbo3vGL3
+         NeLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y3Me1H1g+i1iLWwjD1JZUPq0fs+AL+QhFF9DCBhI9X8=;
+        b=fIwa6h/7ZMheyHzMLx46+S2QLyQylxfnbTamiQBpIqAWN0ZgErhozFaoYSdSzHggpl
+         PdxIICuMNHm2Y0HG17KcLVD+/0dtJ76H0pirs8xap7FjXAVKNTV+0pvhf4V201UBMsHl
+         o5rbM4zLm9/6mOAC4aJ1Q1NZ7+GL1YTUQxnL4V5tuG8w80lPv87W7pW4dd69ZXOHy04B
+         dpoyrrAgywppGDQEAgMVixkAeBD9zg0m0O+DsaJE62Ylr3iHBX1zZwNc1bLi/EDHGFhQ
+         kWmp4CDEkmeaFw3xgt/ipw+kXdSnUMFWdBeGwgTFLT8AwI4tIy5oTMmc27BQqCsSS7TV
+         u61Q==
+X-Gm-Message-State: AOAM530myPf9aGvp3WjMmP4hDif1mjRkG6detebPwNAj3Y0BRrE2rRQ1
+        jfkJBhG4J8QX2b5LZyzzv08Zjj4eH+Q=
+X-Google-Smtp-Source: ABdhPJyFWzk8hSRWU933+n0cefcBs+yAZ5Nzg7Uh9cqxFc8FENPZPdOXpuP1HFMbLAERC7Mmw2czoA==
+X-Received: by 2002:a05:6512:744:: with SMTP id c4mr25549643lfs.596.1626881373489;
+        Wed, 21 Jul 2021 08:29:33 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-100-70.dynamic.spd-mgts.ru. [46.138.100.70])
+        by smtp.googlemail.com with ESMTPSA id t17sm1943317ljk.102.2021.07.21.08.29.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Jul 2021 08:29:32 -0700 (PDT)
+Subject: Re: [PATCH] arm64: tegra: add regulator dependency
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210721151457.2285669-1-arnd@kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <c9968f90-0633-9467-a3fb-725b92116fe2@gmail.com>
+Date:   Wed, 21 Jul 2021 18:29:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716114408.17320-2-adrian.hunter@intel.com>
+In-Reply-To: <20210721151457.2285669-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 02:44:07PM +0300, Adrian Hunter wrote:
-> sysfs_remove_link() causes a warning if the parent directory does not
-> exist. That can happen if the device link consumer has not been registered.
-> So do not attempt sysfs_remove_link() in that case.
+21.07.2021 18:14, Arnd Bergmann пишет:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Fixes: 287905e68dd29 ("driver core: Expose device link details in sysfs")
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: stable@vger.kernel.org # 5.9+
-> Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
+> The two regulator drivers in the drivers/soc/ directory fail to build
+> when regulator support is disabled:
+> 
+> aarch64-linux-ld: drivers/soc/tegra/regulators-tegra20.o: in function `tegra20_regulator_reboot':
+> regulators-tegra20.c:(.text.tegra20_regulator_reboot+0x4c): undefined reference to `regulator_sync_voltage_rdev'
+> aarch64-linux-ld: regulators-tegra20.c:(.text.tegra20_regulator_reboot+0x58): undefined reference to `regulator_sync_voltage_rdev'
+> aarch64-linux-ld: drivers/soc/tegra/regulators-tegra30.o: in function `tegra30_regulator_reboot':
+> regulators-tegra30.c:(.text.tegra30_regulator_reboot+0x44): undefined reference to `regulator_sync_voltage_rdev'
+> aarch64-linux-ld: regulators-tegra30.c:(.text.tegra30_regulator_reboot+0x50): undefined reference to `regulator_sync_voltage_rdev'
+> 
+> Add a Kconfig dependency to avoid this configuration.
+> 
+> Fixes: 496747e7d907 ("soc/tegra: regulators: Add regulators coupler for Tegra20")
+> Fixes: 783807436f36 ("soc/tegra: regulators: Add regulators coupler for Tegra30")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/base/core.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+>  drivers/soc/tegra/Kconfig | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index ea5b85354526..2de8f7d8cf54 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -575,8 +575,10 @@ static void devlink_remove_symlinks(struct device *dev,
->  		return;
->  	}
+> diff --git a/drivers/soc/tegra/Kconfig b/drivers/soc/tegra/Kconfig
+> index db49075b1946..c56122be27a9 100644
+> --- a/drivers/soc/tegra/Kconfig
+> +++ b/drivers/soc/tegra/Kconfig
+> @@ -153,8 +153,10 @@ config SOC_TEGRA_POWERGATE_BPMP
 >  
-> -	snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
-> -	sysfs_remove_link(&con->kobj, buf);
-> +	if (device_is_registered(con)) {
-> +		snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
-> +		sysfs_remove_link(&con->kobj, buf);
-> +	}
->  	snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
->  	sysfs_remove_link(&sup->kobj, buf);
->  	kfree(buf);
-> -- 
-> 2.17.1
+>  config SOC_TEGRA20_VOLTAGE_COUPLER
+>  	bool "Voltage scaling support for Tegra20 SoCs"
+> +	depends on REGULATOR
+>  	depends on ARCH_TEGRA_2x_SOC || COMPILE_TEST
+>  
+>  config SOC_TEGRA30_VOLTAGE_COUPLER
+>  	bool "Voltage scaling support for Tegra30 SoCs"
+> +	depends on REGULATOR
+>  	depends on ARCH_TEGRA_3x_SOC || COMPILE_TEST
 > 
 
-I've applied this patch to my tree now.
+Hello Arnd,
 
-thanks,
+Thank you for the patch!
 
-greg k-h
+I also sent out the fix [1] about a month ago and was trying to ping
+Thierry. Unfortunately there was no reaction so far and now Thierry is
+on vacation.
+
+[1]
+https://patchwork.ozlabs.org/project/linux-tegra/patch/20210621160739.22448-1-digetx@gmail.com/
+
+It looks like my variant of the fix should be a bit more correct since
+it won't build the regulator drivers if both TEGRA=n and REGULATOR=n.
+
+I guess it should be fine if you could take the patch directly, perhaps
+Jon could ack the patch for that. Otherwise we could wait for Thierry to
+return.
