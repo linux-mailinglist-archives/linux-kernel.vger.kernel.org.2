@@ -2,84 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1877D3D1524
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C303D1530
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234914AbhGUQx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42606 "EHLO
+        id S230115AbhGUQ5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236218AbhGUQxV (ORCPT
+        with ESMTP id S229962AbhGUQ46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:53:21 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F013C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:33:56 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id k11so3236324ioa.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:33:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=+VXGL5cSlrsHSV53qZrI5w6RxxYRiKt4sgbxRqXwtr4=;
-        b=W8DvMJkHp77lb81cnx18pbiB2xwPWCqHll0r4pPPNRDojHBBXtFSDWAFa/xMRdurW0
-         2UkjjA3Ty0go017Zp6vEh6P6VvK/cQlhGvciz3dq1t7hNHsdsoqc4b3j/2K7rFeNvV5N
-         7PtYnNTfZcKa+CftRlDE3LiCtSyFNDHmLPz3rCX5Cm8X/Jlr+rGtk5wsAUHoy8YS6uHe
-         Zwqn3p2vpqgYL0pavqAkeuh3cCfV7J/FGAIiAQ6F9t7E3g7rm12HG+Stij1OHbu1g6Cd
-         kh1KdlC80IROVI/LVyHa9AoXFo1hXw45ctFC8/2GkGZxZleuYxYBXCkQeO9014SIJ0Ek
-         ghLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=+VXGL5cSlrsHSV53qZrI5w6RxxYRiKt4sgbxRqXwtr4=;
-        b=XIhsRcechDjPYDxl5c9Cwme2SvUeDzgcK+cOjbWWz07SvsAEOgHng/IAOVM9GJFf2k
-         q3/b/YtURYwba7Rz89crbLeAe8F68KHtrFY6bZ0IpP4gTWV5+AKP9ISyW35/37o/g9X7
-         iCZYH+UXPwSSifiRVoSA2Jywp93ay2LMMMmylpKcj+lOG58hGBKWa/CWBOr0TpUtALOz
-         quPTLSMLOw8SVyrz2ThHNmtwPHXsKd51GVVVY6IcsVoiYxi1BDeyptIZunbS15k/yFHQ
-         CJFWVzgBF6m1bmdBEcy+uSBqPQKiq3U5kh7vU5zjUxHFGxsVKEnqDmXLLV0D2uvmRhrK
-         RcNg==
-X-Gm-Message-State: AOAM532rxxOe9BBrNy1YK/Iq2fEOQ5megiex7T1SPKIIkWe5+GOQN8Ov
-        NeOm4NHU9d3bGYO7PCg+fQzc66EOc0QyD4/2dAo=
-X-Google-Smtp-Source: ABdhPJzhHMccQw7DoYT9EBYdCL8hwSInB4g1rgKhyjyPBevwxIS5fF94ixuHQlBzjNmoT0y449XP8576tNj8uRLzi/c=
-X-Received: by 2002:a05:6638:2516:: with SMTP id v22mr29673657jat.144.1626888835973;
- Wed, 21 Jul 2021 10:33:55 -0700 (PDT)
+        Wed, 21 Jul 2021 12:56:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843F1C061575;
+        Wed, 21 Jul 2021 10:37:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NIOeAssJiAIvzmBOsIJ5kA5U16lQSx2xMldjNfs0508=; b=EZCzRd5PKRp+8KRIDqdcuggQcW
+        hUc43nT6G3bxoSHFgyJOeYIHPiCWlmbxu3P1DcYGicKBhjq5+BT31M97v79DC6h7kN0BPQlahcD9J
+        XdITNhAkFIYYSG99uMvwH5FeFZZRXuEmRwRWPyNAi65t0JxR/WQkYmf6W+vSi3h7sCzZi5BQIGe7y
+        14kZ0yA+lnmiqZDS6C8FfDUss4R8Wfv0WZaYhimu6QliZw1t6422dFdkSZTsL3HGRRbFXC0+tPKrP
+        iYBR1I6NtnOIAWQcY/uyH1B7cwwEs7yLglvd7/BxsITaWgzko4ID74Gkae7sl3nMrG2wsowDRL4Ys
+        jp1LhFJw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m6G9r-009Rb6-KG; Wed, 21 Jul 2021 17:37:26 +0000
+Date:   Wed, 21 Jul 2021 18:37:23 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: A shift-out-of-bounds in minix_statfs in fs/minix/inode.c
+Message-ID: <YPhbU/umyUZLdxIw@casper.infradead.org>
+References: <CAFcO6XOdMe-RgN8MCUT59cYEVBp+3VYTW-exzxhKdBk57q0GYw@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6e02:927:0:0:0:0 with HTTP; Wed, 21 Jul 2021 10:33:55
- -0700 (PDT)
-From:   ahmed edelbore <ahmededelbore300uk@gmail.com>
-Date:   Wed, 21 Jul 2021 19:33:55 +0200
-Message-ID: <CAGwNYa8BFt1LYrRHx4u8hqRfJDcHxwTM_EQiPQzatgM1Pe6yyQ@mail.gmail.com>
-Subject: I wish to trust you
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFcO6XOdMe-RgN8MCUT59cYEVBp+3VYTW-exzxhKdBk57q0GYw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Jul 22, 2021 at 01:14:06AM +0800, butt3rflyh4ck wrote:
+> ms = (struct minix_super_block *) bh->b_data; /// --------------> set
+> minix_super_block pointer
+> sbi->s_ms = ms;
+> sbi->s_sbh = bh;
+> sbi->s_mount_state = ms->s_state;
+> sbi->s_ninodes = ms->s_ninodes;
+> sbi->s_nzones = ms->s_nzones;
+> sbi->s_imap_blocks = ms->s_imap_blocks;
+> sbi->s_zmap_blocks = ms->s_zmap_blocks;
+> sbi->s_firstdatazone = ms->s_firstdatazone;
+> sbi->s_log_zone_size = ms->s_log_zone_size;  // ------------------>
+> set sbi->s_log_zone_size
 
-My Name is Mr. Ahmed Edelbore the Chief Operating Officer of CITIZEN
-BANK OF AFRICA and I am in need of a reliable foreigner to carry out
-this important deal.
+So what you're saying is that if you construct a malicious minix image,
+you can produce undefined behaviour?  That's not something we're
+traditionally interested in, unless the filesystem is one customarily
+used for data interchange (like FAT or iso9660).
 
-An account was opened in my bank by one of my customer in the name of
-MR. THOMAS BAHIA a Dutch National from Germany who made a fixed
-deposit of $1,600,000.00 (One Million, Six hundred Thousand United
-States Dollars) and never show up again and I later discovered that he
-died with his entire family members on a plane crash that occurred in
-Libya on the 12th of May 2010 and below is a link for your view..
-
-http://www.nytimes.com/2010/05/13/world/middleeast/13libya.html
-
-Now I want to present a foreigner as next of kin to late Thomas so we
-can make the claim and you can contact me if you are interested so I
-can give you more detailed information about this transaction. For the
-sharing of the money will be shared in the ratio of 50% for me, 50%
-for you
-
-Please, this is the right time for this deal after my studies
-
-Thanks.
-
-Mr. Ahmed Edelbore
-Reply to ahmed.edelbore207@gmail.com
-Phone whatsapp: +228 92392524
