@@ -2,90 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB843D0C54
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 12:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 189703D0C57
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 12:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238484AbhGUJea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 05:34:30 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:60687 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238575AbhGUJ05 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:26:57 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id 695Wm0wvJhqx9695XmyZfw; Wed, 21 Jul 2021 12:04:27 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1626861867; bh=cgcEhCAjE00nZtbq0nX2QC7407e9zYa5j31u1zfddl8=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=trXRXAwSrkq9vZzkf/sRTpostu2ppufQUcwhw27zCy7sXvIHDIzDItA5rDDAngUYN
-         dAnfdvSK3+NZZ1CQ2Ka2fm21uzHMc1XD8Yu+Yr1iel0JjcXZH0CSwYzL9CNh0iuRYV
-         +Lk1k9uF0+rbLOhMAlQfp0ih0F1t4r93BV17IdXS0bw4/Y3PbkW0PuT2ZMpwCOVz+m
-         zxqi16csKaHHUIaRebzX/zaXB/x0aS29QrUKd1oeZWoFQbb5jiKidjmFKpwcV4QkkB
-         Cyr5y6FwN0eLdV9x9f3jOfmw5AO76nR9rC/tt5Akvrx+xcIyY9Ai7rMcjwgm8zrI40
-         cg6gqWqR1buow==
-Subject: Re: [PATCH REPOST] TDA1997x: replace video detection routine
-To:     =?UTF-8?Q?Krzysztof_Ha=c5=82asa?= <khalasa@piap.pl>
-Cc:     Tim Harvey <tharvey@gateworks.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
-References: <m3k0lmejlw.fsf@t19.piap.pl>
- <68bd6e41-4c32-240f-aa83-fd2b96929d45@xs4all.nl> <m3a6mgdrsa.fsf@t19.piap.pl>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <99ca51b7-804e-1a53-765c-013093d38598@xs4all.nl>
-Date:   Wed, 21 Jul 2021 12:04:26 +0200
+        id S238837AbhGUJf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 05:35:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:50472 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238515AbhGUJ06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 05:26:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8420531B;
+        Wed, 21 Jul 2021 03:07:17 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C851B3F694;
+        Wed, 21 Jul 2021 03:07:15 -0700 (PDT)
+Subject: Re: [PATCH v4 1/2] sched: Fix UCLAMP_FLAG_IDLE setting
+To:     Quentin Perret <qperret@google.com>, mingo@redhat.com,
+        peterz@infradead.org, vincent.guittot@linaro.org,
+        qais.yousef@arm.com, rickyiu@google.com, wvw@google.com,
+        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com
+References: <20210719161656.3833943-1-qperret@google.com>
+ <20210719161656.3833943-2-qperret@google.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <7ef85d3f-fd2b-a192-07ef-3431b33d06ce@arm.com>
+Date:   Wed, 21 Jul 2021 12:07:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <m3a6mgdrsa.fsf@t19.piap.pl>
+In-Reply-To: <20210719161656.3833943-2-qperret@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfNBusYnDP7cnZxsLH0s+/xhSc9LlzxKu8cBWfd/JBo2N5PllXF0Oe6WJObD//OjjMk7sLRZJhCnXool61ekCnBJsEEt3EwLeeI75Sjx2uhoo8l7EFtK4
- U43JdaZFIbC75bF9Rw0VluWp3UmSIgV+1I58To7K33uVoZgM7fe13ISIo7AMJMorne5Ko6tGGgg5qfqKGcvNZUd1ApFQ4nPhJKX1yL0usneZH1Nf4BiHhq2m
- UNar3Yzp88mCeMJxoP5JEvWR9ZYmxJsUxfVlQphWAD8gRIH2Iyfqt2jR94WkO7zC+8rOhwEzCge8UheJfQeNvt46P4KasOwD+2d396bTaG4JXxYKNAictewm
- o2nrxu3res6nk90+XaqR6bHfPiYQnFt+AbHd8oukYatc35eOroY5950yfvgmJPVTPllws4i1
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/2021 09:56, Krzysztof Hałasa wrote:
-> Hi Hans,
-> 
-> Hans Verkuil <hverkuil@xs4all.nl> writes:
-> 
->>> --- a/drivers/media/i2c/tda1997x.c
->>> +++ b/drivers/media/i2c/tda1997x.c
->>> @@ -1092,66 +1094,71 @@ tda1997x_detect_std(struct tda1997x_state *state,
->>>  		    struct v4l2_dv_timings *timings)
-> 
-> ...
-> 
->>> +	if (!timings)
->>> +		return 0;
->>
->> This check isn't necessary, timings is never NULL.
-> 
-> Well, the tda1997x_irq_sus() does this:
-> 
-> 	if (debug)
-> 		tda1997x_detect_std(state, NULL);
+On 19/07/2021 18:16, Quentin Perret wrote:
+> The UCLAMP_FLAG_IDLE flag is set on a runqueue when dequeueing the last
+> active task to maintain the last uclamp.max and prevent blocked util
 
-Ah, I missed that. Then you can keep that check.
+s/active/runnable ?
 
-Regards,
-
-	Hans
-
-> 
-> Perhaps there is a better way, but I think I will leave it for now.
-> Also there is the issue of ignoring tda1997x_detect_std() return value,
-> but I can now see it's only a case in tda1997x_query_dv_timings(), easy
-> to fix.
-> 
-> Will post an update shortly.
-> 
-> Thanks for your comments,
+> from suddenly becoming visible.
 > 
 
+[...]
+
+IMHO, the main argument in v3 to do the clearing outside
+uclamp_rq_inc_id() was a possible order change in `for_each_clamp_id()`.
+So setting/clearing `rq->uclamp_flags` (UCLAMP_FLAG_IDLE) on UCLAMP_MAX
+(currently the highest Uclamp constraint (UCLAMP_CNT-1)) could be
+incorrect when UCLAMP_MIN and UCLAMP_MAX change place because the
+same `rq->uclamp_flags` value is needed for both Uclamp constraint
+values.
+
+What about decoupling rq->uclamp_flags` handling from UCLAMP_MAX and
+doing this for 'UCLAMP_CNT - 1', i.e. always on the highest Uclamp
+constraint?
+
+#define for_each_clamp_id(clamp_id) \
+    for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
+
+In this case the code change can be as easy as in your original v3.
+
+Setting UCLAMP_FLAG_IDLE in uclamp_idle_value():
+
+  uclamp_rq_dec_id() -> uclamp_rq_max_value() -> *uclamp_idle_value()*
+
+Resetting UCLAMP_FLAG_IDLE in uclamp_idle_reset():
+
+  uclamp_rq_inc_id()                          -> *uclamp_idle_reset()*  
+
+This would be more symmetrical then uclamp_idle_value() and
+uclamp_rq_inc()/uclamp_rq_reinc_id().
+
+--8<--
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 0c22cd026440..600f68f3378c 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1300,15 +1300,16 @@ static inline unsigned int
+ uclamp_idle_value(struct rq *rq, enum uclamp_id clamp_id,
+ 		  unsigned int clamp_value)
+ {
++	if (clamp_id == UCLAMP_CNT - 1)
++		rq->uclamp_flags |= UCLAMP_FLAG_IDLE;
++
+ 	/*
+ 	 * Avoid blocked utilization pushing up the frequency when we go
+ 	 * idle (which drops the max-clamp) by retaining the last known
+ 	 * max-clamp.
+ 	 */
+-	if (clamp_id == UCLAMP_MAX) {
+-		rq->uclamp_flags |= UCLAMP_FLAG_IDLE;
++	if (clamp_id == UCLAMP_MAX)
+ 		return clamp_value;
+-	}
+ 
+ 	return uclamp_none(UCLAMP_MIN);
+ }
+@@ -1320,6 +1321,9 @@ static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
+ 	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+ 		return;
+ 
++	if ((clamp_id == UCLAMP_CNT - 1) && (rq->uclamp_flags & UCLAMP_FLAG_IDLE))
++		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
++
+ 	WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
+ }
+ 
+@@ -1595,10 +1599,6 @@ static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+ 
+ 	for_each_clamp_id(clamp_id)
+ 		uclamp_rq_inc_id(rq, p, clamp_id);
+-
+-	/* Reset clamp idle holding when there is one RUNNABLE task */
+-	if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+-		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+ }
