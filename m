@@ -2,67 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FA13D16E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AA43D16E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238065AbhGUSdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 14:33:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231143AbhGUSdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 14:33:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E645461029;
-        Wed, 21 Jul 2021 19:14:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626894857;
-        bh=npzfqeWI+4wHmooiuXhmsobgpIf7M3e1QSXcBc2VOFU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oMgqpW82XepnaU3tx1qyH8jfdiE+LcTzt2JiQDOd9Wa+uQ3cXKajKygd1jg7cwFBY
-         CbVfBnItw8ml9JHwBkhNFw3TGA5YEFMiFnqgk5EUcgUGgTm57F15GF8oevGbPYhZba
-         dLRdpMXPXQSxnF3cy+siAa8kpr2cvERDzcLA3wC0grsmlkOpUIwsRVUEm3m2WSOZzq
-         LVog9jP4i6iy3oFN66jnzPbzmQixeJ9J9LgPXhjOjQKW/FeXUC9O+QmA6ZBKKe5f+0
-         +J1BziRWX6s/BtYX1kXry5omvAd+elLKXX+sAburafwxrWAM+VKOodXseQ1SIMEyrm
-         DJOyG7H5HFRDA==
-Date:   Wed, 21 Jul 2021 12:14:16 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: A shift-out-of-bounds in minix_statfs in fs/minix/inode.c
-Message-ID: <20210721191416.GC8572@magnolia>
-References: <CAFcO6XOdMe-RgN8MCUT59cYEVBp+3VYTW-exzxhKdBk57q0GYw@mail.gmail.com>
- <YPhbU/umyUZLdxIw@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPhbU/umyUZLdxIw@casper.infradead.org>
+        id S239012AbhGUSff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 14:35:35 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:11112 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231633AbhGUSfe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 14:35:34 -0400
+X-IronPort-AV: E=Sophos;i="5.84,258,1620658800"; 
+   d="scan'208";a="88348859"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 22 Jul 2021 04:16:09 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 17339400854C;
+        Thu, 22 Jul 2021 04:16:06 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v3 0/4] pin and gpio controller driver for Renesas RZ/G2L
+Date:   Wed, 21 Jul 2021 20:15:54 +0100
+Message-Id: <20210721191558.22484-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 06:37:23PM +0100, Matthew Wilcox wrote:
-> On Thu, Jul 22, 2021 at 01:14:06AM +0800, butt3rflyh4ck wrote:
-> > ms = (struct minix_super_block *) bh->b_data; /// --------------> set
-> > minix_super_block pointer
-> > sbi->s_ms = ms;
-> > sbi->s_sbh = bh;
-> > sbi->s_mount_state = ms->s_state;
-> > sbi->s_ninodes = ms->s_ninodes;
-> > sbi->s_nzones = ms->s_nzones;
-> > sbi->s_imap_blocks = ms->s_imap_blocks;
-> > sbi->s_zmap_blocks = ms->s_zmap_blocks;
-> > sbi->s_firstdatazone = ms->s_firstdatazone;
-> > sbi->s_log_zone_size = ms->s_log_zone_size;  // ------------------>
-> > set sbi->s_log_zone_size
-> 
-> So what you're saying is that if you construct a malicious minix image,
-> you can produce undefined behaviour?  That's not something we're
-> traditionally interested in, unless the filesystem is one customarily
-> used for data interchange (like FAT or iso9660).
+Hi All,
 
-Sounds to me like butt3rflyh4ck is volunteering to rebuild fs/minix with
-proper ondisk metadata buffer verifiers.
+This patch series adds pin and gpio controller driver for Renesas RZ/G2L
+SoC. RZ/G2L has a simple pin and GPIO controller combined similar to RZ/A2.
 
---D
+This patch series applies on top of Linux 5.14-rc2
+
+Cheers,
+Prabhakar
+
+Changes for v3:
+* Dropped clock patch from the series (its queued up already in
+  renesas-clk-for-v5.15)
+* Included ACK form Geert for binding patch
+* Fixed review comments pointed by Geert
+* Fixed s/property/properties for patch 4/4 pointed by Sergei
+
+Changes for v2:
+* Added support for per pin pinmux support
+* Added support for pins to set configs
+* Dropped pfc-r9a07g044.c/h
+* Fixed review comments pointed by Geert
+* Included clock/reset changes
+* Included DTS/I changes
+
+Lad Prabhakar (4):
+  dt-bindings: pinctrl: renesas,rzg2l-pinctrl: Add DT bindings for
+    RZ/G2L pinctrl
+  pinctrl: renesas: Add RZ/G2L pin and gpio controller driver
+  arm64: dts: renesas: r9a07g044: Add pinctrl node
+  arm64: dts: renesas: rzg2l-smarc: Add scif0 pins
+
+ .../pinctrl/renesas,rzg2l-pinctrl.yaml        |  155 +++
+ arch/arm64/boot/dts/renesas/r9a07g044.dtsi    |   13 +
+ arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi  |   10 +
+ drivers/pinctrl/renesas/Kconfig               |   11 +
+ drivers/pinctrl/renesas/Makefile              |    1 +
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c       | 1163 +++++++++++++++++
+ include/dt-bindings/pinctrl/rzg2l-pinctrl.h   |   23 +
+ 7 files changed, 1376 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/renesas/pinctrl-rzg2l.c
+ create mode 100644 include/dt-bindings/pinctrl/rzg2l-pinctrl.h
+
+
+base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
+-- 
+2.17.1
+
