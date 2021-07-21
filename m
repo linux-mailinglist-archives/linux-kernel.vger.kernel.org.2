@@ -2,129 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BBE3D0F9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288FF3D0FAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238216AbhGUM5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
+        id S238295AbhGUM7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238159AbhGUMzi (ORCPT
+        with ESMTP id S238337AbhGUM5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:55:38 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D862FC061762;
-        Wed, 21 Jul 2021 06:35:58 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id oz7so3309012ejc.2;
-        Wed, 21 Jul 2021 06:35:58 -0700 (PDT)
+        Wed, 21 Jul 2021 08:57:07 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C63C061574;
+        Wed, 21 Jul 2021 06:37:09 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id q15so2053477qkm.8;
+        Wed, 21 Jul 2021 06:37:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iv3GrYGJUQgZ0uDNyTImICR6X15wuHMecLC2T1/RMXo=;
-        b=hTH2xDXFTP8YJSxGbXerdWTQWBygjFRpRwTlnBK48BtxbHmHiD86/vC3vzlDTYCYv2
-         4ylYGWVajaCRpMFqa0yC8bHEJDxD78w3Z9xAcrpWFAqPmBUWqVj4r/kz15KNHQetfrcv
-         7GXuGvpQR73Okplia/PqeLidI7Bc9eDhA6TnrSV4N5QDmY+4r8hLOyUdI99hB/lwRAnw
-         1KjdKpYl6z5CkhcDA47andrc+Wu1athTpClVRB5baJn4T9bUf9XBqQcxTG7WHhDHFjgK
-         Zii2YwvXt1VtHRA1KiRGzcCpzcvDfH74idQ3D6+mqAGquzvTY9lbzZaVrPOBov4iYyuz
-         P+6w==
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uh01RhYYBX/9cJeTpZ4herRqCYgg+c5yWd7RJP1vPE4=;
+        b=ttPcGi41ChO5jWh67Rq2CEwXuAdMhJZawaeNETBMgEuClYxQgk9xjiRYl+d2b3KvLc
+         CbracepViCUfG7fdHaJxDYWbxVsyDAnbdkyIitxTTUhvSEwSST5ank4/BhMtQsSfDbLW
+         V3rPCA2trJSHl+I6Hgsbfeft/rSklrqmnx8vnuV58iQavmrTdNa6IWEwsXslXfoSP60+
+         YCtBIomio9al5fBDKGf+C0OasZQN6K2Nr0UfukVjJTlvHhIf7933CTmzBLGyKnD0U49i
+         NK+u2+SNKAsRKhLoxF19E7toNJb5PFEnYFK24n8OAvMgF0gPKCdWYzV1iTSBpLezB7o5
+         gKig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iv3GrYGJUQgZ0uDNyTImICR6X15wuHMecLC2T1/RMXo=;
-        b=X/W3gKmhdpk0QEO+SqBf6jrPZUjCt5zN93cbXN4RiFrgRU7UQfmo8mdywowibBwRcJ
-         cttKNvSS9apKmWl8CPrZqweuXZLZe80mBo7nrXOoNS9ErAk+DVAJ4Yjsvcg1iyqb/ZS6
-         uYNCmT4vpzC7eMnAtI5/9+x437TiN7UdGnfbCmXht/L1dP6Pbjy+YVH8ZrdH/jcJexvl
-         ie9A3eamJICgAV6hCkIdwkwSwCYvPXvUM/FD+HVyVioT78jvTMaZ9NifhL2jgyDDS+XX
-         lKE6o4WjyQJceBHjKE33+18Nh+PbmD6bBxS9cZDYdyFAZOGcQOGte18xN6ysYSklnmJc
-         U0oQ==
-X-Gm-Message-State: AOAM531tLMeXJQvXNUTbYr7UvdlghRbNe6QCZCwWjJZ+ainPvUQwJ92C
-        Wbs8Jebi6j3hLF3uCFCxPOAomJFpJC6usisbPLw=
-X-Google-Smtp-Source: ABdhPJxPxFk89NLNHuFUCmT2mj0lRhzLQo0wbpb1Hy57bNkodaPR+nEzdQnqwqvd1BvQ6RVunyonVwdW+kv8vGpVGcE=
-X-Received: by 2002:a17:906:eda7:: with SMTP id sa7mr38847584ejb.135.1626874557379;
- Wed, 21 Jul 2021 06:35:57 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uh01RhYYBX/9cJeTpZ4herRqCYgg+c5yWd7RJP1vPE4=;
+        b=dzKUtuFdIBPUkGPIZg66Ykb9+wHScFTJtHe8aii0AzA9fyQadG+/AXZtsrPZLmHgbk
+         CR84RJSb//e3grJc3FvUpTIwFXjmdrDf/dc71RZfM2Fj9NHUVNsSyPMaAPLjfuNlnXM2
+         Hpq8vz8EBQELjZH1K+axpV/TdcqS9kXlY4MkcExxDpUt0ubHaJimbLdvjXQ0qO1Gcr3G
+         pAKPB59bMOR0cy0rlPRYuFSYuaWtYLq3ATZesLOHGkQ6rV7uFBkprA5GcmUWaAvlKtQA
+         K6sMJttmsjxKFOe8rCLybo1JBlR2CxGdIsVJb3aXTaTz/efH3xP1Yzbl1dQ9dtkYAQia
+         Kd1g==
+X-Gm-Message-State: AOAM531f/346JWe0YgbVhyJygZ82/D/iMw/tGlgtpQq/fcgHUoKHc67D
+        MP65o+HDti2u+FUwC63/cWY=
+X-Google-Smtp-Source: ABdhPJxyxcuUQq7+7lE+19VBeIl+gcagTSt9CBIWFUpKrnYFkf+yg0Tn031PfZiwNaPHNJwyiangEw==
+X-Received: by 2002:a05:620a:1305:: with SMTP id o5mr17697082qkj.213.1626874628846;
+        Wed, 21 Jul 2021 06:37:08 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:1102::1444? ([2620:10d:c091:480::1:8307])
+        by smtp.gmail.com with ESMTPSA id c11sm9046470qth.29.2021.07.21.06.37.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Jul 2021 06:37:08 -0700 (PDT)
+From:   Jes Sorensen <jes.sorensen@gmail.com>
+X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
+Subject: Re: [PATCH] rtl8xxxu: remove unnecessary labels
+To:     samirweng1979 <samirweng1979@163.com>, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+References: <20210720070040.20840-1-samirweng1979@163.com>
+Message-ID: <eb5393c9-77d5-37f1-e9e8-67795958c9e6@gmail.com>
+Date:   Wed, 21 Jul 2021 09:37:07 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210721113305.1524059-1-mudongliangabcd@gmail.com>
- <YPgMZBK/FWLRD1Ic@hovoldconsulting.com> <CAD-N9QVLshn_A=S+Nqemc9BRUdW432VrLJCAb=t35WaoL-C3=Q@mail.gmail.com>
- <YPgcgahQ458ndT1j@hovoldconsulting.com>
-In-Reply-To: <YPgcgahQ458ndT1j@hovoldconsulting.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Wed, 21 Jul 2021 21:35:31 +0800
-Message-ID: <CAD-N9QXD85YthmKp_AGjVzXL4=NstCvicEdVO_zu=TSj0kMSZw@mail.gmail.com>
-Subject: Re: [PATCH v2] tty: nozomi: tty_unregister_device -> tty_port_unregister_device
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210720070040.20840-1-samirweng1979@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 9:09 PM Johan Hovold <johan@kernel.org> wrote:
->
-> On Wed, Jul 21, 2021 at 08:53:47PM +0800, Dongliang Mu wrote:
-> > On Wed, Jul 21, 2021 at 8:01 PM Johan Hovold <johan@kernel.org> wrote:
-> > >
-> > > On Wed, Jul 21, 2021 at 07:33:04PM +0800, Dongliang Mu wrote:
-> > > > The pairwise api invocation of tty_port_register_device should be
-> > > > tty_port_unregister_device, other than tty_unregister_device.
-> > >
-> > > Are you sure about that? Please explain why you think this to be the
-> > > case and why this change is needed.
-> >
-> > I am sure about this.
->
-> I'm afraid you are mistaken. There is a bit of inconsistency in the API,
-> but it is *not* a requirement to use the port helper for deregistration
-> here.
->
-> > 1. From the implementation,
-> >     tty_port_register_device -> tty_port_register_device_attr ->
-> > tty_port_link_device; tty_register_device_attr
-> >     tty_register_device -> tty_register_device_attr
-> >
-> >     tty_port_unregister_device -> serdev_tty_port_unregister;
-> > tty_unregister_device
-> >     tty_unregister_device
->
-> >     As to the functionability, tty_port_register_device pairs with
-> > tty_port_unregister_device; meanwhile, the same to tty_register_device
-> > and tty_unregister_device.
->
-> Again, this is not an explanation. Why do think it is needed? What could
-> possibly go wrong if you don't change the code like you propose?
->
-> > 2. From the function naming style,
-> >
-> >     tty_port_register_device - tty_port_unregister_device;
-> > tty_register_device - tty_unregister_device
->
-> Yes, the naming suggests you should be using the port helper and it is
-> ok to do so, but again, it is not a requirement (unless you're using the
-> serdev variant).
+On 7/20/21 3:00 AM, samirweng1979 wrote:
+> From: wengjianfeng <wengjianfeng@yulong.com>
+> 
+> Simplify the code by removing unnecessary labels and returning directly.
+> 
+> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+> ---
+>  drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8723a.c | 17 ++++++-----------
+>  1 file changed, 6 insertions(+), 11 deletions(-)
 
-OK, I see. Thanks for your information.
+NACK
 
-Next time I will double-check the underlying details of each function
-to verify if they are in pairs.
+Using gotos to have a unified exit path keeps the code cleaner and makes
+it easier to ensure locking is correct where applicable.
 
->
-> > > > Fixes: a6afd9f3e819 ("tty: move a number of tty drivers from drivers/char/ to drivers/tty/")
-> > >
-> > > Please try a little harder, that's clearly not the commit that changed
-> > > to the port registration helper.
-> > >
-> > > > Cc: stable@vger.kernel.org
-> > >
-> > > Why do you think this is stable material? (hint: it is not)
-> >
-> > From the documentation, this label could make the patch automatically
-> > go to stable tree. And stable tree is also using the incorrect api.
->
-> No, it is not using an "incorrect api". There is nothing wrong with
-> current code. And it certainly does not need to be changed in stable.
->
-> Johan
+Jes
+
+> diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8723a.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8723a.c
+> index 4f93f88..3fd14e6 100644
+> --- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8723a.c
+> +++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8723a.c
+> @@ -256,10 +256,8 @@ static int rtl8723a_emu_to_active(struct rtl8xxxu_priv *priv)
+>  		udelay(10);
+>  	}
+>  
+> -	if (!count) {
+> -		ret = -EBUSY;
+> -		goto exit;
+> -	}
+> +	if (!count)
+> +		return -EBUSY;
+>  
+>  	/* We should be able to optimize the following three entries into one */
+>  
+> @@ -292,10 +290,8 @@ static int rtl8723a_emu_to_active(struct rtl8xxxu_priv *priv)
+>  		udelay(10);
+>  	}
+>  
+> -	if (!count) {
+> -		ret = -EBUSY;
+> -		goto exit;
+> -	}
+> +	if (!count)
+> +		return3RGD9F -EBUSY;
+>  
+>  	/* 0x4C[23] = 0x4E[7] = 1, switch DPDT_SEL_P output from WL BB */
+>  	/*
+> @@ -307,7 +303,6 @@ static int rtl8723a_emu_to_active(struct rtl8xxxu_priv *priv)
+>  	val8 &= ~LEDCFG2_DPDT_SELECT;
+>  	rtl8xxxu_write8(priv, REG_LEDCFG2, val8);
+>  
+> -exit:
+>  	return ret;
+>  }
+>  
+> @@ -327,7 +322,7 @@ static int rtl8723au_power_on(struct rtl8xxxu_priv *priv)
+>  
+>  	ret = rtl8723a_emu_to_active(priv);
+>  	if (ret)
+> -		goto exit;
+> +		return ret;
+>  
+>  	/*
+>  	 * 0x0004[19] = 1, reset 8051
+> @@ -353,7 +348,7 @@ static int rtl8723au_power_on(struct rtl8xxxu_priv *priv)
+>  	val32 &= ~(BIT(28) | BIT(29) | BIT(30));
+>  	val32 |= (0x06 << 28);
+>  	rtl8xxxu_write32(priv, REG_EFUSE_CTRL, val32);
+> -exit:
+> +
+>  	return ret;
+>  }
+>  
+> 
+
