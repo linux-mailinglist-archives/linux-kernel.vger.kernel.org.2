@@ -2,159 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFFB3D119C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08413D11A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239274AbhGUOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:05:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57662 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232977AbhGUOFp (ORCPT
+        id S238651AbhGUOLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232939AbhGUOLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:05:45 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 7FB702255F;
-        Wed, 21 Jul 2021 14:46:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626878781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GKBbRf6M5YRpXhRu4kWBBslSOKw3EM2yD26p1YHSL1g=;
-        b=Qw4qDueueWpWmpsvX1l2RGTlFdu9jNaZLYPSfsfOwMnHO2W//fPPyh24R3vXbZFKdj6Fbl
-        KK141wzLn9oFsgrz1cwnIwmZn5iOicYNFZ3d6+vVoAwubILbrEJQZ1T/H1CvGKAKPQ9Eo6
-        9P1ob9tEcUHAc8XsEN0bWhrVVTW0rS0=
-Received: from suse.cz (pathway.suse.cz [10.100.12.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 330B1A3B92;
-        Wed, 21 Jul 2021 14:46:21 +0000 (UTC)
-Date:   Wed, 21 Jul 2021 16:46:21 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2 2/2] printk: Add printk.console_verbose boot parameter
-Message-ID: <20210721144621.ddvxouzxpp6sn4ec@pathway.suse.cz>
-References: <20210713011511.215808-1-dima@arista.com>
- <20210713011511.215808-3-dima@arista.com>
+        Wed, 21 Jul 2021 10:11:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E358CC061575;
+        Wed, 21 Jul 2021 07:51:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AKhTwBZRXuGyK0eHt0zsDJMOjVofgpnBIIWEazs7doI=; b=egiPLTjakG8jcgwUqAP7E3PEAa
+        CVYhSGAarUxwP3XjPbEHvaB3QfbP66PeiHIyi0IUdquVR+rZcGXpYLNmXX+YRWyc7+NAOJOQ1ru1g
+        cwLHq3YAEbnlcygzQ+TUuukACRA0ajirTF09amSs3alMVWmT1VawrduKoJyb0FttR9X/otktMQ+BU
+        IyrKGa7C0gtof2ZZuwwy+mZuZ9Z8bsMkPPpysQzqt3bnCPp2oR4GCBaD07AjEnQz62+fYYr62lfbG
+        cNfbK2iah0tgoiZrSorKKIjVWMb1nausf8L06VQOD6EX06zJJrYrB4KJx/Q1DJsQdhUKQ4H0rlzpC
+        7dNYi4rA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m6DZ5-009Inm-09; Wed, 21 Jul 2021 14:51:20 +0000
+Date:   Wed, 21 Jul 2021 15:51:14 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Nikolay Borisov <nborisov@suse.com>, linux-kernel@vger.kernel.org,
+        ndesaulniers@google.com, torvalds@linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, david@fromorbit.com
+Subject: Re: [PATCH] lib/string: Bring optimized memcmp from glibc
+Message-ID: <YPg0Ylbmk4qIZ/63@casper.infradead.org>
+References: <20210721135926.602840-1-nborisov@suse.com>
+ <YPgwATAQBfU2eeOk@infradead.org>
+ <b1fdda4c-5f2a-a86a-0407-1591229bb241@suse.com>
+ <YPgyQsG7PFLL8yE3@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210713011511.215808-3-dima@arista.com>
-User-Agent: NeoMutt/20170912 (1.9.0)
+In-Reply-To: <YPgyQsG7PFLL8yE3@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-07-13 02:15:11, Dmitry Safonov wrote:
-> console_verbose() increases console loglevel to CONSOLE_LOGLEVEL_MOTORMOUTH,
-> which provides more information to debug a panic/oops.
+On Wed, Jul 21, 2021 at 03:42:10PM +0100, Christoph Hellwig wrote:
+> On Wed, Jul 21, 2021 at 05:35:42PM +0300, Nikolay Borisov wrote:
+> > 
+> > 
+> > On 21.07.21 ??. 17:32, Christoph Hellwig wrote:
+> > > This seems to have lost the copyright notices from glibc.
+> > > 
+> > 
+> > I copied over only the code, what else needs to be brought up:
+> > 
+> >  Copyright (C) 1991-2021 Free Software Foundation, Inc.
+> >    This file is part of the GNU C Library.
+> >    Contributed by Torbjorn Granlund (tege@sics.se).
+> > 
+> > The rest is the generic GPL license txt ?
 > 
-> Unfortunately, in Arista we maintain some DUTs (Device Under Test) that
-> are configured to have 9600 baud rate. While verbose console messages
-> have their value to post-analyze crashes, on such setup they:
-> - may prevent panic/oops messages being printed
-> - take too long to flush on console resulting in watchdog reboot
-> 
-> In all our setups we use kdump which saves dmesg buffer after panic,
-> so in reality those extra messages on console provide no additional value,
-> but rather add risk of not getting to __crash_kexec().
+> Last time I checked glibc is under LGPL.
 
-Yup, it makes sense.
-
-> Provide printk.console_verbose boot parameter, which allows to switch off
-> printk being verbose on oops/panic/lockdep (making it boot parameter
-> instead of compile-option suggested-by Petr).
->
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: John Ogness <john.ogness@linutronix.de>
-> Cc: Petr Mladek <pmladek@suse.com>
-> Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 9 +++++++++
->  include/linux/printk.h                          | 4 +++-
->  kernel/printk/printk.c                          | 6 ++++++
->  3 files changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index bdb22006f713..9fae19b1edd8 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4167,6 +4167,15 @@
->  			Format: <bool>  (1/Y/y=enable, 0/N/n=disable)
->  			default: disabled
->  
-> +	printk.console_verbose=
-> +			Raise console loglevel to highest on oops, panic or
-> +			lockdep-detected issues (only if lock debug is on).
-> +			With an exception to setups with low baudrate on
-> +			serial console, keeping this enabled is a good choice
-> +			in order to provide more debug information.
-> +			Format: <bool>  (1/Y/y=enable, 0/N/n=disable)
-> +			default: enabled
-
-Hmm, the name suggests that the console should always be verbose.
-It looks like a counterpart to the "quiet" option.
-
-It actually is a counter part to the existing "quiet" option
-except that it triggers in some situations only.
-
-Hence, I would call it "no_auto_verbose":
-
-   + "verbose" follows the simple naming scheme of the existing
-     "quiet" option (no "printk" and no "console" in the name)
-
-   + "no_auto" suggests that it disables some auto-verbose behavior
-     which is exactly what it does.
-
-Any better idea?
-
-> +
->  	printk.devkmsg={on,off,ratelimit}
->  			Control writing to /dev/kmsg.
->  			on - unlimited logging to /dev/kmsg from userspace
-> diff --git a/include/linux/printk.h b/include/linux/printk.h
-> index a63f468a8239..9d0b8133a03c 100644
-> --- a/include/linux/printk.h
-> +++ b/include/linux/printk.h
-> @@ -70,9 +70,11 @@ extern int console_printk[];
->  #define minimum_console_loglevel (console_printk[2])
->  #define default_console_loglevel (console_printk[3])
->  
-> +extern bool printk_console_verbose;
-> +
->  static inline void console_verbose(void)
->  {
-> -	if (console_loglevel)
-> +	if (console_loglevel && printk_console_verbose)
->  		console_loglevel = CONSOLE_LOGLEVEL_MOTORMOUTH;
->  }
->  
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 142a58d124d9..e321ee78855d 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -2404,6 +2404,12 @@ module_param_named(console_suspend, console_suspend_enabled,
->  MODULE_PARM_DESC(console_suspend, "suspend console during suspend"
->  	" and hibernate operations");
->  
-> +bool printk_console_verbose = true;
-
-I would call it "console_auto_verbose".
-
-> +EXPORT_SYMBOL(printk_console_verbose);
-
-I would prefer to move console_verbose() into printk.c
-and export the function instead of this variable.
-
-> +module_param_named(console_verbose, printk_console_verbose, bool, 0644);
-> +MODULE_PARM_DESC(console_verbose, "Raise console loglevel to highest on oops/panic/etc");
-
-Best Regards,
-Petr
+This particular file is under LGPL-2.1, so we can distribute it under
+GPL 2.
