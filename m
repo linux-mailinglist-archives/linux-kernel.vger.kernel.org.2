@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764E03D1540
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A34F73D154B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236529AbhGURBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:01:12 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:39108 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236183AbhGURBK (ORCPT
+        id S236183AbhGURCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:02:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229794AbhGURCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:01:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626889307; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=THtIv/A+ebq+WyEizX2cp5b7XW4WU+bpZu4ZDrccPOs=;
- b=h4UwGGi7W7RIbNQKUtylFBPdmFCtDcqcrEdl4Fj8GfTD+hRyUma5N6JOZzagsT/9bpf5M8qt
- T5E28gbSe8hIBijwQzLaFeK05tksrUXvC0GC2vg9zkZqe4xsdprDeYgjyy/5AeFE92bZkyz9
- j8QtRM7VYmSjjVHQ/0rX4gYFcGM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60f85c51e81205dd0ab8682e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 17:41:37
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C3B6BC433F1; Wed, 21 Jul 2021 17:41:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD73FC4338A;
-        Wed, 21 Jul 2021 17:41:35 +0000 (UTC)
+        Wed, 21 Jul 2021 13:02:14 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1C2C061575;
+        Wed, 21 Jul 2021 10:42:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tronnes.org
+        ; s=ds202012; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=TjEvLNNHsaSMgTUGcuTFfcltWUToJtf32CG/+sem9oM=; b=RWW2ghceWcYcdYf59J7wku4SgX
+        asTxnafzEldcqxfOMw1hGEdAJbe/ScWiax0dQA7D85esoVmpNgp8d4+5kXxKOvvLby8ISnjRMFJXW
+        HpX2W4ASw/7bu60u3IoHBLTlRxbEyA1chCshKjtqylSh896BX9g7YHb7zYSUGLBDYkgUwNoAphm/7
+        CBk3LLu6hK8QLzH0PGJDJkrVlqZVHCbe9yav+wQ+dQPlIFCGpZP5SRe7miyZOr4cYWO+lNXjDL9rv
+        79wdYqYXlLNb52v/tXFO+VlJeXhMkMkk0lNl6C0tWfeFIvsTOiHpDKFpTY7m7HsMTo4/UE+KIukTK
+        TdpPnndg==;
+Received: from 211.81-166-168.customer.lyse.net ([81.166.168.211]:61963 helo=[192.168.10.61])
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <noralf@tronnes.org>)
+        id 1m6GF5-00034t-Ej; Wed, 21 Jul 2021 19:42:47 +0200
+Subject: Re: [PATCH v2 3/3] drm/panel: Add ilitek ili9341 panel driver
+To:     dillon.minfei@gmail.com, thierry.reding@gmail.com,
+        sam@ravnborg.org, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org, linus.walleij@linaro.org,
+        alexandre.torgue@foss.st.com, mcoquelin.stm32@gmail.com
+Cc:     dianders@chromium.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1626853288-31223-1-git-send-email-dillon.minfei@gmail.com>
+ <1626853288-31223-4-git-send-email-dillon.minfei@gmail.com>
+From:   =?UTF-8?Q?Noralf_Tr=c3=b8nnes?= <noralf@tronnes.org>
+Message-ID: <8e091b9c-764d-d410-559e-3c5e25de2a3c@tronnes.org>
+Date:   Wed, 21 Jul 2021 19:42:42 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <1626853288-31223-4-git-send-email-dillon.minfei@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 21 Jul 2021 23:11:35 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     bjorn.andersson@linaro.org, mka@chromium.org, robh+dt@kernel.org,
-        saiprakash.ranjan@codeaurora.org, will@kernel.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org
-Subject: Re: [PATCH v2 08/10] arm64: dts: qcom: sc7280: Add nodes to boot
- modem
-In-Reply-To: <CAE-0n50HwmuYWnqs9TYJYEoB=-BV8Bbz+AMUUy5t9dtN1jSsjA@mail.gmail.com>
-References: <1626775980-28637-1-git-send-email-sibis@codeaurora.org>
- <1626775980-28637-9-git-send-email-sibis@codeaurora.org>
- <CAE-0n50HwmuYWnqs9TYJYEoB=-BV8Bbz+AMUUy5t9dtN1jSsjA@mail.gmail.com>
-Message-ID: <11b5493ecb6118ec8c5fd49ec7a85aa3@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-21 11:14, Stephen Boyd wrote:
-> Quoting Sibi Sankar (2021-07-20 03:12:58)
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 5ed7a511bfc9..3fb6a6ef39f8 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -1219,6 +1224,21 @@
->>                         };
->>                 };
->> 
->> +               imem@146aa000 {
+
+
+Den 21.07.2021 09.41, skrev dillon.minfei@gmail.com:
+> From: Dillon Min <dillon.minfei@gmail.com>
 > 
-> is sram a more appropriate node name here? Is imem a generic node name
-> in DT spec?
-
-binding check for qcom,pil-info.yaml
-didn't complain so I just followed
-it. AFAICS, sram isn't mentioned in
-generic node names either.
-
+> This driver combine tiny/ili9341.c mipi_dbi_interface driver
+> with mipi_dpi_interface driver, can support ili9341 with serial
+> mode or parallel rgb interface mode by register configuration.
 > 
->> +                       compatible = "syscon", "simple-mfd";
->> +                       reg = <0 0x146aa000 0 0x2000>;
->> +
->> +                       #address-cells = <2>;
->> +                       #size-cells = <2>;
->> +
->> +                       ranges = <0 0x0 0 0x146aa000 0 0x2000>;
->> +
->> +                       pil-reloc@94c {
->> +                               compatible = "qcom,pil-reloc-info";
->> +                               reg = <0 0x94c 0 0xc8>;
->> +                       };
->> +               };
->> +
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+> ---
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+> +static const struct of_device_id ili9341_of_match[] = {
+> +	{
+> +		.compatible = "st,sf-tc240t-9370-t",
+> +		.data = &ili9341_stm32f429_disco_data,
+> +	},
+> +	{
+> +		/* porting from tiny/ili9341.c
+> +		 * for original mipi dbi compitable
+> +		 */
+> +		.compatible = "adafruit,yx240qv29",
+
+I don't understand this, now there will be 2 drivers that support the
+same display?
+
+AFAICT drm/tiny/ili9341.c is just copied into this driver, is the plan
+to remove the tiny/ driver? If so I couldn't see this mentioned anywhere.
+
+Noralf.
+
+> +		.data = NULL,
+> +	},
+> +};
+> +MODULE_DEVICE_TABLE(of, ili9341_of_match);
