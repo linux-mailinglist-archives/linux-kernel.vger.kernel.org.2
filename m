@@ -2,205 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DDD53D0D57
+	by mail.lfdr.de (Postfix) with ESMTP id 66C553D0D58
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238888AbhGUKkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233818AbhGUKcP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 06:32:15 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99191C0613DB
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 04:12:14 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id bt15so1457059pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 04:12:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bAqxaWmRBbvBfwuN5ASS6Uh0iJY+nOJwOMZ0keYIQDw=;
-        b=qt67IGjTPJZS6aaVp8yIpa0wU+6sFCjAyFY5RSfft5+W4JO4dGf+LU3ABswiLiD6L6
-         Bm0w3ut+uaWNbM2s+9Lx3cCCFYMJdC+a+JMeF9l0/UkSKIvqXOdTTJTD4xz0GS+d/shP
-         FlQgtq36QOHmvLsxbhC5vXIEEOj4VNBFMCr3vWDJUb050fn2q5wP8sdyaFy54rcv8u++
-         naqK9lhFmoaWEK+JLap8jSQaTYtiWo88rFjQgro4JdsSvwJJj06qmSroSl9omr+46gtQ
-         QNgJE8gCcfXnTcrcBkR5lnLX4C+V4Qz2qqmWBaHLLf0VWnBS052VG/lrjAWlJESUzO0a
-         Z0LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bAqxaWmRBbvBfwuN5ASS6Uh0iJY+nOJwOMZ0keYIQDw=;
-        b=jCNqA8mo7Mi6xZNRKWX82vjkT9v3lEvIV3OL98Xma/vauelmi4htl6vUhE9sVFwxgH
-         /DN9gLqOUiQOcgXb5eUpl7KlPzFNCNbx2Vq2yAzzbc4Kqd8oYTf0lqC+ae9Dx2fIXsyc
-         yhsVYLJVEdich6X7HW1SxQNyngrdoW4EVjZ1AnR0Yih/opesbKgu5mPERtK8dHsA5nws
-         LAf0D9F05hVhQicp6OEEVo6NDU2UiB99Rmsr4kP2OIEOJAVsYQMuQAlmL9nD2Thx5fzg
-         sTcrVQ+Oon/rqrpTxbb7XJuWRmEYt6Jut8ZJbAhdlyDucOPpUowgWCHMXMWIVVbLwThU
-         WKWQ==
-X-Gm-Message-State: AOAM533tFLUJ1C+gBNgtiApjg2c1UmUvp3tdR1J0DWekf3LXG02Zjn1M
-        /rB8gaU26XRAKiTHEkP22x0=
-X-Google-Smtp-Source: ABdhPJydG9fKfnTDWkaV9pJzrkP9wFBteirSAxx44ckK1orQbNo3gLC8X9n8ArZjAeaLSQ3PEYyQJg==
-X-Received: by 2002:a17:902:ecce:b029:12b:1c81:2741 with SMTP id a14-20020a170902ecceb029012b1c812741mr27286593plh.3.1626865934058;
-        Wed, 21 Jul 2021 04:12:14 -0700 (PDT)
-Received: from localhost.localdomain ([154.16.166.166])
-        by smtp.gmail.com with ESMTPSA id d3sm2996679pfj.17.2021.07.21.04.12.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 04:12:13 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Zhouyang Jia <jiazhouyang09@gmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        industrypack-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] ipack: tpci200: fix memory leak in the tpci200_register
-Date:   Wed, 21 Jul 2021 19:11:32 +0800
-Message-Id: <20210721111137.1523229-3-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210721111137.1523229-1-mudongliangabcd@gmail.com>
-References: <20210721111137.1523229-1-mudongliangabcd@gmail.com>
+        id S239098AbhGUKkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:40:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:52010 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239008AbhGUKcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 06:32:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90CCD31B;
+        Wed, 21 Jul 2021 04:12:18 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E03D3F694;
+        Wed, 21 Jul 2021 04:12:16 -0700 (PDT)
+Subject: Re: [PATCH 4/5] iommu/vt-d: Disallow SVA if devices don't support
+ 64-bit address
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sanjay Kumar <sanjay.k.kumar@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210720013856.4143880-1-baolu.lu@linux.intel.com>
+ <20210720013856.4143880-5-baolu.lu@linux.intel.com>
+ <22302277-0470-db41-7a19-41b5f73bd2c5@arm.com>
+ <4d3a2546-da21-605d-26a9-1f6f52123056@linux.intel.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <5662caea-a974-e511-9509-010606fda251@arm.com>
+Date:   Wed, 21 Jul 2021 12:12:10 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <4d3a2546-da21-605d-26a9-1f6f52123056@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The error handling code in tpci200_register does not free interface_regs
-allocated by ioremap and the current version of error handling code is
-problematic.
+On 2021-07-21 02:50, Lu Baolu wrote:
+> Hi Robin,
+> 
+> Thanks a lot for reviewing my patch!
+> 
+> On 7/20/21 5:27 PM, Robin Murphy wrote:
+>> On 2021-07-20 02:38, Lu Baolu wrote:
+>>> When the device and CPU share an address space (such as SVA), the device
+>>> must support the same addressing capability as the CPU. The CPU does not
+>>> consider the addressing ability of any device when managing the page 
+>>> table
+>>> of a process, so the device must have enough addressing ability to bind
+>>> the page table of the process.
+>>>
+>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>>> ---
+>>>   drivers/iommu/intel/iommu.c | 3 +++
+>>>   1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+>>> index f45c80ce2381..f3cca1dd384d 100644
+>>> --- a/drivers/iommu/intel/iommu.c
+>>> +++ b/drivers/iommu/intel/iommu.c
+>>> @@ -5372,6 +5372,9 @@ static int intel_iommu_enable_sva(struct device 
+>>> *dev)
+>>>       if (!(iommu->flags & VTD_FLAG_SVM_CAPABLE))
+>>>           return -ENODEV;
+>>> +    if (!dev->dma_mask || *dev->dma_mask != DMA_BIT_MASK(64))
+>>
+>> Careful - VFIO doesn't set DMA masks (since it doesn't use the DMA API),
+> 
+> SVA doesn't work through the VFIO framework.
 
-Fix this by refactoring the error handling code and free interface_regs
-when necessary.
+Did anyone say it does? My point is that, as far as I understand, the 
+SVA UAPI is very much intended to work *with* VFIO, and even if the 
+finer details are still mired in the /dev/ioasid discussion today we 
+should definitely expect to see VFIO-like use-cases at some point. I 
+certainly don't see why any of the guest SVA stuff exists already if not 
+for VFIO-assigned devices?
 
-Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Fixes: 43986798fd50 ("ipack: add error handling for ioremap_nocache")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- drivers/ipack/carriers/tpci200.c | 52 +++++++++++++++++---------------
- 1 file changed, 28 insertions(+), 24 deletions(-)
+>> so this appears to be relying on another driver having bound previously,
+> 
+> Yes. You are right.
+> 
+>> otherwise the mask would still be the default 32-bit one from 
+>> pci_setup_device(). I'm not sure that's an entirely robust assumption.
+> 
+> Currently SVA implementation always requires a native kernel driver. The
+> assumption is that the drivers should check and set 64-bit addressing
+> capability before calling iommu_sva_xxx() APIs.
 
-diff --git a/drivers/ipack/carriers/tpci200.c b/drivers/ipack/carriers/tpci200.c
-index 7fbfb17c341b..a4e5883321df 100644
---- a/drivers/ipack/carriers/tpci200.c
-+++ b/drivers/ipack/carriers/tpci200.c
-@@ -84,20 +84,6 @@ static void tpci200_set_mask(struct tpci200_board *tpci200,
- 	spin_unlock_irqrestore(&tpci200->regs_lock, flags);
- }
- 
--static void tpci200_unregister(struct tpci200_board *tpci200)
--{
--	free_irq(tpci200->info->pdev->irq, (void *) tpci200);
--
--	iounmap(tpci200->info->interface_regs);
--
--	pci_release_region(tpci200->info->pdev, TPCI200_IP_INTERFACE_BAR);
--	pci_release_region(tpci200->info->pdev, TPCI200_IO_ID_INT_SPACES_BAR);
--	pci_release_region(tpci200->info->pdev, TPCI200_MEM16_SPACE_BAR);
--	pci_release_region(tpci200->info->pdev, TPCI200_MEM8_SPACE_BAR);
--
--	pci_disable_device(tpci200->info->pdev);
--}
--
- static void tpci200_enable_irq(struct tpci200_board *tpci200,
- 			       int islot)
- {
-@@ -254,7 +240,7 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 			"(bn 0x%X, sn 0x%X) failed to allocate PCI resource for BAR 2 !",
- 			tpci200->info->pdev->bus->number,
- 			tpci200->info->pdev->devfn);
--		goto out_disable_pci;
-+		goto err_enable_device;
- 	}
- 
- 	/* Request IO ID INT space (Bar 3) */
-@@ -266,7 +252,7 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 			"(bn 0x%X, sn 0x%X) failed to allocate PCI resource for BAR 3 !",
- 			tpci200->info->pdev->bus->number,
- 			tpci200->info->pdev->devfn);
--		goto out_release_ip_space;
-+		goto err_ip_interface_bar;
- 	}
- 
- 	/* Request MEM8 space (Bar 5) */
-@@ -277,7 +263,7 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 			"(bn 0x%X, sn 0x%X) failed to allocate PCI resource for BAR 5!",
- 			tpci200->info->pdev->bus->number,
- 			tpci200->info->pdev->devfn);
--		goto out_release_ioid_int_space;
-+		goto err_io_id_int_spaces_bar;
- 	}
- 
- 	/* Request MEM16 space (Bar 4) */
-@@ -288,7 +274,7 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 			"(bn 0x%X, sn 0x%X) failed to allocate PCI resource for BAR 4!",
- 			tpci200->info->pdev->bus->number,
- 			tpci200->info->pdev->devfn);
--		goto out_release_mem8_space;
-+		goto err_mem8_space_bar;
- 	}
- 
- 	/* Map internal tpci200 driver user space */
-@@ -302,7 +288,7 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 			tpci200->info->pdev->bus->number,
- 			tpci200->info->pdev->devfn);
- 		res = -ENOMEM;
--		goto out_release_mem8_space;
-+		goto err_mem16_space_bar;
- 	}
- 
- 	/* Initialize lock that protects interface_regs */
-@@ -341,22 +327,40 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 			"(bn 0x%X, sn 0x%X) unable to register IRQ !",
- 			tpci200->info->pdev->bus->number,
- 			tpci200->info->pdev->devfn);
--		goto out_release_ioid_int_space;
-+		goto err_interface_regs;
- 	}
- 
- 	return 0;
- 
--out_release_mem8_space:
-+err_interface_regs:
-+	iounmap(tpci200->info->interface_regs);
-+err_mem16_space_bar:
-+	pci_release_region(tpci200->info->pdev, TPCI200_MEM16_SPACE_BAR);
-+err_mem8_space_bar:
- 	pci_release_region(tpci200->info->pdev, TPCI200_MEM8_SPACE_BAR);
--out_release_ioid_int_space:
-+err_io_id_int_spaces_bar:
- 	pci_release_region(tpci200->info->pdev, TPCI200_IO_ID_INT_SPACES_BAR);
--out_release_ip_space:
-+err_ip_interface_bar:
- 	pci_release_region(tpci200->info->pdev, TPCI200_IP_INTERFACE_BAR);
--out_disable_pci:
-+err_enable_device:
- 	pci_disable_device(tpci200->info->pdev);
- 	return res;
- }
- 
-+static void tpci200_unregister(struct tpci200_board *tpci200)
-+{
-+	free_irq(tpci200->info->pdev->irq, (void *) tpci200);
-+
-+	iounmap(tpci200->info->interface_regs);
-+
-+	pci_release_region(tpci200->info->pdev, TPCI200_IP_INTERFACE_BAR);
-+	pci_release_region(tpci200->info->pdev, TPCI200_IO_ID_INT_SPACES_BAR);
-+	pci_release_region(tpci200->info->pdev, TPCI200_MEM16_SPACE_BAR);
-+	pci_release_region(tpci200->info->pdev, TPCI200_MEM8_SPACE_BAR);
-+
-+	pci_disable_device(tpci200->info->pdev);
-+}
-+
- static int tpci200_get_clockrate(struct ipack_device *dev)
- {
- 	struct tpci200_board *tpci200 = check_slot(dev);
--- 
-2.25.1
+...and given that that is not a documented requirement, and certainly 
+not a technical one (even a self-contained kernel driver could choose to 
+only use SVA contexts and not touch the DMA API), it's an inherently 
+fragile assumption which I'm confident *will* be broken eventually :)
 
+Robin.
+
+>>> +        return -ENODEV;
+>>> +
+>>>       if (intel_iommu_enable_pasid(iommu, dev))
+>>>           return -ENODEV;
+>>>
+> 
+> Best regards,
+> baolu
