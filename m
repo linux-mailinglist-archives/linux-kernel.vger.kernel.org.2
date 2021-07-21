@@ -2,71 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC833D0CDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A746B3D0CE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239168AbhGUKCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:02:39 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:44274
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239311AbhGUJyQ (ORCPT
+        id S239415AbhGUKF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237184AbhGUJ7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:54:16 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 970743F228;
-        Wed, 21 Jul 2021 10:34:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626863691;
-        bh=kof4hQbIpCyinlLXysmNbWB1iLCSU1hw525MyejIWwc=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=NtLitiEPvsyIztn2Z7opEeT9N58YZTGBE8Oft2BnPF08p6u1C1HS5+fBF1PgqO3Gq
-         Rl9fk5oWBJ8M37o7qYqIcFt2gjdCNOvD47tz1v9ynWpNsTkFfMxEaxpLrNfOSknPNN
-         RB7v6o9zF1pOBGXG5C7DmAxWao4MHa0q3ok7hgC/cUkjXASNNsA9oUc6+T1IIb/VZP
-         rtFPwTwf4KxX4YnHY1mo3axwKK2u0Z8GlS5OlTaNjTdjXToX31VOc3vQWaou5kYqeR
-         GmO40VG0hvTsYKiQOLsHCJJjEaxevzEDOxUltFMxccAPovx9KeyXVdG1FeraumzfJc
-         PKtIqm+G/QP8g==
-From:   Colin King <colin.king@canonical.com>
-To:     Evgeniy Polyakov <zbr@ioremap.net>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] w1: remove redundant initialization to variable result
-Date:   Wed, 21 Jul 2021 11:34:51 +0100
-Message-Id: <20210721103451.43026-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 21 Jul 2021 05:59:22 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DF9C061762
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 03:38:46 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id y17so1436625pgf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 03:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EIbOGymDYcRaNQxjueCe6a1zJ8aY0naaP0fQUkEZuv8=;
+        b=Ov5r12ynseBnyTNRKsKx9w8I9twMbxcSJ1f73zH2iop1yQASsh3BfriyZofnrwgGPb
+         JWsBYE6ZU5a3lBHKbfhG01blBS2BP/AHgilqkL+QG/cbbprBm/Aw4GR7gpJVVtkbNURP
+         IGrlGE+9rwKA79Of6P2jRijrEqbvnRi+5RyzY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EIbOGymDYcRaNQxjueCe6a1zJ8aY0naaP0fQUkEZuv8=;
+        b=hu0A9Dw6ODdTdQgDOJyfBNxERKXCSlCU9C03C+7Zi8x0RTu3t/MQ49t2m6rn/lrvS0
+         924cDeEFXEWm9S5GTGuhMTup04OuTnpO9mNcWr+3FIGENt9XPlHiCxErjRU6I6AhZmnD
+         IPv0NMRh7+XJGkn1bNIjafDJ5u40QQlFXT2N0hsOCXvqcWIcMtZGmQrWYdNDXeUU7fPa
+         2fkF0pWgZ2bH3JAj3EzhiO7ewOQxrymo42lsoMiffk+itia1kmePNuSjHDX89YErNHr4
+         VACNYFTspwstHx6ikY3zyyB5GbpVYmco4HT5pelklqD7VPNxUUhFjAoisuxP6VayrGq+
+         YukA==
+X-Gm-Message-State: AOAM531fB2QBaUuV5k1FnCrsTJm02jBXtdXOAthnsrJccHK34JYSouqa
+        CBr7p/bLv+atNquRicD+MF13Pg==
+X-Google-Smtp-Source: ABdhPJwG3zXjqu/tpj5VxqRx6FmJchnrD4hFB2OoBNGmAOcVyTAxWZv9VdpXTlSzk5yhFw1PCfmBEw==
+X-Received: by 2002:aa7:81c5:0:b029:2f7:d4e3:78e9 with SMTP id c5-20020aa781c50000b02902f7d4e378e9mr36527927pfn.31.1626863925613;
+        Wed, 21 Jul 2021 03:38:45 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:f1b2:269f:996b:b71a])
+        by smtp.gmail.com with ESMTPSA id z16sm5586915pgu.21.2021.07.21.03.38.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 03:38:45 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 19:38:40 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Joel Fernandes <joelaf@google.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Will Deacon <will@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCHv2 4/4] arm64: add host pv-vcpu-state support
+Message-ID: <YPf5MFV99zPdTu/U@google.com>
+References: <20210709043713.887098-1-senozhatsky@chromium.org>
+ <20210709043713.887098-5-senozhatsky@chromium.org>
+ <874kcz33g5.wl-maz@kernel.org>
+ <CAJWu+oqCyj3H0=1KNo3c+crdcktYinFoTQJ5jHgU8gjeF4d2yA@mail.gmail.com>
+ <87h7go2h69.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h7go2h69.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On (21/07/21 09:40), Marc Zyngier wrote:
+> > 
+> > Can that be cured by just checking vcpu->preempted before calling
+> > kvm_update_vcpu_preempted() ?
+> 
+> It isn't obvious to me that this is the right thing to do.
+> vcpu->preempted is always updated on sched-out from the preempt
+> notifier if the vcpu was on the run-queue, so my guess is that it will
+> always be set when switching to another task.
+> 
+> What you probably want is to check whether the vcpu is blocked by
+> introspecting the wait-queue with:
+> 
+> 	scuwait_active(kvm_arch_vcpu_get_wait(vcpu)
+> 
+> which will tell you whether you are blocking or not. We are already
+> using a similar construct for arming a background timer in this case.
 
-The variable result is being initialized with a value that is never
-read, it is being updated later on. The assignment is redundant and
-can be removed.
-
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/w1/w1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/w1/w1.c b/drivers/w1/w1.c
-index f2ae2e563dc5..3c7817bd6744 100644
---- a/drivers/w1/w1.c
-+++ b/drivers/w1/w1.c
-@@ -501,7 +501,7 @@ static ssize_t w1_master_attribute_store_remove(struct device *dev,
- 	struct w1_master *md = dev_to_w1_master(dev);
- 	struct w1_reg_num rn;
- 	struct w1_slave *sl;
--	ssize_t result = count;
-+	ssize_t result;
- 
- 	if (w1_atoreg_num(dev, buf, count, &rn))
- 		return -EINVAL;
--- 
-2.31.1
-
+Can we examine if vcpu->run->exit_reason == WFE/WFI and avoid setting
+preempted state if so?
