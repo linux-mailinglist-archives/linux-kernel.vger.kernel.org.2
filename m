@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 137313D0D45
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539EC3D0D52
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237273AbhGUKdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:33:24 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:12283 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239778AbhGUKZo (ORCPT
+        id S235723AbhGUKfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:35:53 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3443 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239988AbhGUK0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 06:25:44 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GVCM93YSRz7wd2;
-        Wed, 21 Jul 2021 19:01:41 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 21 Jul 2021 19:06:17 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 21 Jul 2021 19:06:16 +0800
-Subject: Re: [PATCH 4.14 000/314] 4.14.240-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210719184316.271467313@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <8b9e3e08-c125-2b98-f7f5-b82709c1a4bd@huawei.com>
-Date:   Wed, 21 Jul 2021 19:06:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 21 Jul 2021 06:26:50 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GVC8m0yxyz6D8Wf;
+        Wed, 21 Jul 2021 18:52:40 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 21 Jul 2021 13:07:26 +0200
+Received: from [10.47.85.43] (10.47.85.43) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 21 Jul
+ 2021 12:07:25 +0100
+Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
+ from remote numa node
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     Robin Murphy <robin.murphy@arm.com>,
+        <iommu@lists.linux-foundation.org>, Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <YOgK8fdv7dOQtkET@T590>
+ <23e7956b-f3b5-b585-3c18-724165994051@arm.com> <YOhcOv1oOwm6fco+@T590>
+ <ad5bc549-d83f-bee0-9a9f-03a5afd7f3d9@huawei.com> <YPd7IGFZrsTRfUxE@T590>
+ <74537f9c-af5f-cd84-60ab-49ca6220310e@huawei.com> <YPfwAN1onpSKoeBj@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <a2650064-41cf-cb62-7ab4-d14ef1856966@huawei.com>
+Date:   Wed, 21 Jul 2021 12:07:22 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20210719184316.271467313@linuxfoundation.org>
+In-Reply-To: <YPfwAN1onpSKoeBj@T590>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
+X-Originating-IP: [10.47.85.43]
+X-ClientProxiedBy: lhreml734-chm.china.huawei.com (10.201.108.85) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/7/20 2:44, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.240 release.
-> There are 314 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 21/07/2021 10:59, Ming Lei wrote:
+>> I have now removed that from the tree, so please re-pull.
+> Now the kernel can be built successfully, but not see obvious improvement
+> on the reported issue:
 > 
-> Responses should be made by Wed, 21 Jul 2021 18:42:37 +0000.
-> Anything received after that time might be too late.
+> [root@ampere-mtjade-04 ~]# uname -a
+> Linux ampere-mtjade-04.khw4.lab.eng.bos.redhat.com 5.14.0-rc2_smmu_fix+ #2 SMP Wed Jul 21 05:49:03 EDT 2021 aarch64 aarch64 aarch64 GNU/Linux
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.240-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
+> [root@ampere-mtjade-04 ~]# taskset -c 0 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
+> + fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
+> test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=io_uring, iodepth=64
+> fio-3.27
+> Starting 1 process
+> Jobs: 1 (f=1): [r(1)][100.0%][r=1503MiB/s][r=385k IOPS][eta 00m:00s]
+> test: (groupid=0, jobs=1): err= 0: pid=3143: Wed Jul 21 05:58:14 2021
+>    read: IOPS=384k, BW=1501MiB/s (1573MB/s)(14.7GiB/10001msec)
+
+I am not sure what baseline you used previously, but you were getting 
+327K then, so at least this would be an improvement.
+
 > 
-> thanks,
-> 
-> greg k-h
-> 
+> [root@ampere-mtjade-04 ~]# taskset -c 80 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
+> + fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
+> test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=io_uring, iodepth=64
+> fio-3.27
+> Starting 1 process
+> Jobs: 1 (f=1): [r(1)][100.0%][r=138MiB/s][r=35.4k IOPS][eta 00m:00s]
+> test: (groupid=0, jobs=1): err= 0: pid=3063: Wed Jul 21 05:55:31 2021
+>    read: IOPS=35.4k, BW=138MiB/s (145MB/s)(1383MiB/10001msec)
 
-Tested on x86 for 4.14.240-rc2,
+I can try similar on our arm64 board when I get a chance.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.14.y
-Version: 4.14.240-rc2
-Commit: 0389571aa4961edf535388163d29a35aa85cf450
-Compiler: gcc version 7.3.0 (GCC)
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8836
-passed: 8836
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+Thanks,
+John
