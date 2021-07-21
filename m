@@ -2,102 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE863D0808
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1183D080A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232701AbhGUEUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 00:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
+        id S232583AbhGUEVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 00:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232359AbhGUETi (ORCPT
+        with ESMTP id S232321AbhGUEVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 00:19:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B714EC061574;
-        Tue, 20 Jul 2021 22:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IctsTVrtwipEv00mkrFyUnMJXKowudn2hKnX1KBUBjo=; b=IXImCDQ2qlkdgYwRnUusz3CUhb
-        x3Uir6PJDYrIuiJWCCbQXFXPwpEh8Ygz9na3CmtqFlPzGL7QyppNWm2BPlCToQ+A8xvJAk9vE5uh5
-        SmXfvm9o7alqEz7CzZ9hE+WCFs8/IRthEYy0GhaTwoi2aByAbp4fIOzC1OtpxtElaeI182YIe5yyr
-        2otH1MtdwlbtYQ3ZpnEB691t+X9zOoV3WzOESfm2kC81aZxjog/LnuaMAZ75Bhf+6xdE1dox/IBgG
-        X23ZNHb9LrkQ+bWZ9FMOdPlIpuAefmEUeqKDp4krHV4W4ZEpvuJy2WUsRNRemRf6CGm7/0nHH6VRD
-        KxmAJmOw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m64KU-008o8T-0m; Wed, 21 Jul 2021 04:59:39 +0000
-Date:   Wed, 21 Jul 2021 05:59:34 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, hare@suse.de, bvanassche@acm.org,
-        ming.lei@redhat.com, hch@infradead.org, jack@suse.cz,
-        osandov@fb.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] block: add flag for add_disk() completion notation
-Message-ID: <YPeptlG19sdu18jD@infradead.org>
-References: <20210720182048.1906526-1-mcgrof@kernel.org>
- <20210720182048.1906526-2-mcgrof@kernel.org>
+        Wed, 21 Jul 2021 00:21:31 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CFAC061574;
+        Tue, 20 Jul 2021 22:02:08 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GV3NG0Yzvz9sS8;
+        Wed, 21 Jul 2021 15:02:06 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626843726;
+        bh=6jHVXxsENGHMKsqQdwUp/5VdSk4SlhPEYaFa/V27tnA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BtmoSuuGmgUbuXuvDfcyYyutXBKcamgfHzAgUjeJRBqtCrXXwlHJnw+qqaosVWB0q
+         pAIhiHTOEMfbNbpm9sKkgl1d6ou10ccklhGQ0ADuEWVd2n+iL1TnwfOSbbAVGCTyrw
+         9sqO3KY+A+NuKa5WLJ9SRl8V5gFfCsZgwHkaTMe7i8AIlsY6BNWiz9hCWnPYZXNAYR
+         kCvK5zzBEY3anQhdjBGJP0dIlDkXBBDNaYhZnADtxHj+l8lIimhvZMGBH7O2MStdZF
+         XS/ZXpy9Sny1cigwocOnIOfY3Abg8a3HC2e9IaftOXWxYb5Fvkm/Wq56JvBcxYj+MW
+         FrAOfAVfxQR5Q==
+Date:   Wed, 21 Jul 2021 15:02:05 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the folio tree with the ext3 tree
+Message-ID: <20210721150205.2a7f4fb7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210720182048.1906526-2-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: multipart/signed; boundary="Sig_/I67XNDAujQVr1Rb3Xo=imif";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 11:20:44AM -0700, Luis Chamberlain wrote:
-> Often drivers may have complex setups where it is not
-> clear if their disk completed their respective *add_disk*()
-> call. They either have to invent a setting or, they
-> incorrectly use GENHD_FL_UP. Using GENHD_FL_UP however is
-> used internally so we know when we can add / remove
-> partitions safely. We can easily fail along the way
-> prior to add_disk() completing and still have
-> GENHD_FL_UP set, so it would not be correct in that case
-> to call del_gendisk() on the disk.
-> 
-> Provide a new flag then which allows us to check if
-> *add_disk*() completed, and conversely just make
-> del_gendisk() check for this for drivers so that
-> they can safely call del_gendisk() and we'll figure
-> it out if it is safe for you to call this.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  block/genhd.c         |  8 ++++++++
->  include/linux/genhd.h | 11 ++++++++++-
->  2 files changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/block/genhd.c b/block/genhd.c
-> index af4d2ab4a633..a858eed05e55 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -539,6 +539,8 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
->  
->  	disk_add_events(disk);
->  	blk_integrity_add(disk);
-> +
-> +	disk->flags |= GENHD_FL_DISK_ADDED;
+--Sig_/I67XNDAujQVr1Rb3Xo=imif
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I guess I failed to mention it last time - but I think this needs
-to go into disk->state as dynamic state.
+Hi all,
 
-> + * Drivers can safely call this even if they are not sure if the respective
-> + * __device_add_disk() call succeeded.
-> + *
->   * Drivers exist which depend on the release of the gendisk to be synchronous,
->   * it should not be deferred.
->   *
-> @@ -578,6 +583,9 @@ void del_gendisk(struct gendisk *disk)
->  {
->  	might_sleep();
->  
-> +	if (!blk_disk_added(disk))
-> +		return;
+Today's linux-next merge of the folio tree got a conflict in:
 
-I still very much disagree with this check.  It just leads to really
-bad driver code.  In genral we need to _fix_ the existing abuses of
-the UP check in drivers, not spread this kind of sloppyness further.
+  mm/filemap.c
 
+between commit:
+
+  730633f0b7f9 ("mm: Protect operations adding pages to page cache with inv=
+alidate_lock")
+
+from the ext3 tree and commit:
+
+  e3700f8b6abe ("mm/filemap: Add __folio_lock_async()")
+
+from the folio tree.
+
+I fixed it up (I think - see below) and can carry the fix as necessary.
+This is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc mm/filemap.c
+index 0fad08331cf4,104b27c372bf..000000000000
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@@ -999,54 -997,16 +999,54 @@@ struct folio *filemap_alloc_folio(gfp_
+  		do {
+  			cpuset_mems_cookie =3D read_mems_allowed_begin();
+  			n =3D cpuset_mem_spread_node();
+- 			page =3D __alloc_pages_node(n, gfp, 0);
+- 		} while (!page && read_mems_allowed_retry(cpuset_mems_cookie));
++ 			folio =3D __folio_alloc_node(gfp, order, n);
++ 		} while (!folio && read_mems_allowed_retry(cpuset_mems_cookie));
+ =20
+- 		return page;
++ 		return folio;
+  	}
+- 	return alloc_pages(gfp, 0);
++ 	return folio_alloc(gfp, order);
+  }
+- EXPORT_SYMBOL(__page_cache_alloc);
++ EXPORT_SYMBOL(filemap_alloc_folio);
+  #endif
+ =20
+ +/*
+ + * filemap_invalidate_lock_two - lock invalidate_lock for two mappings
+ + *
+ + * Lock exclusively invalidate_lock of any passed mapping that is not NUL=
+L.
+ + *
+ + * @mapping1: the first mapping to lock
+ + * @mapping2: the second mapping to lock
+ + */
+ +void filemap_invalidate_lock_two(struct address_space *mapping1,
+ +				 struct address_space *mapping2)
+ +{
+ +	if (mapping1 > mapping2)
+ +		swap(mapping1, mapping2);
+ +	if (mapping1)
+ +		down_write(&mapping1->invalidate_lock);
+ +	if (mapping2 && mapping1 !=3D mapping2)
+ +		down_write_nested(&mapping2->invalidate_lock, 1);
+ +}
+ +EXPORT_SYMBOL(filemap_invalidate_lock_two);
+ +
+ +/*
+ + * filemap_invalidate_unlock_two - unlock invalidate_lock for two mappings
+ + *
+ + * Unlock exclusive invalidate_lock of any passed mapping that is not NUL=
+L.
+ + *
+ + * @mapping1: the first mapping to unlock
+ + * @mapping2: the second mapping to unlock
+ + */
+ +void filemap_invalidate_unlock_two(struct address_space *mapping1,
+ +				   struct address_space *mapping2)
+ +{
+ +	if (mapping1)
+ +		up_write(&mapping1->invalidate_lock);
+ +	if (mapping2 && mapping1 !=3D mapping2)
+ +		up_write(&mapping2->invalidate_lock);
+ +}
+ +EXPORT_SYMBOL(filemap_invalidate_unlock_two);
+ +
+  /*
+   * In order to wait for pages to become available there must be
+   * waitqueues associated with pages. By using a hash table of
+@@@ -2406,49 -2362,42 +2402,50 @@@ static int filemap_update_page(struct k
+  		struct address_space *mapping, struct iov_iter *iter,
+  		struct page *page)
+  {
++ 	struct folio *folio =3D page_folio(page);
+  	int error;
+ =20
+ +	if (iocb->ki_flags & IOCB_NOWAIT) {
+ +		if (!filemap_invalidate_trylock_shared(mapping))
+ +			return -EAGAIN;
+ +	} else {
+ +		filemap_invalidate_lock_shared(mapping);
+ +	}
+ +
+- 	if (!trylock_page(page)) {
++ 	if (!folio_trylock(folio)) {
+ +		error =3D -EAGAIN;
+  		if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_NOIO))
+ -			return -EAGAIN;
+ +			goto unlock_mapping;
+  		if (!(iocb->ki_flags & IOCB_WAITQ)) {
+ +			filemap_invalidate_unlock_shared(mapping);
+- 			put_and_wait_on_page_locked(page, TASK_KILLABLE);
++ 			put_and_wait_on_page_locked(&folio->page, TASK_KILLABLE);
+  			return AOP_TRUNCATED_PAGE;
+  		}
+- 		error =3D __lock_page_async(page, iocb->ki_waitq);
++ 		error =3D __folio_lock_async(folio, iocb->ki_waitq);
+  		if (error)
+ -			return error;
+ +			goto unlock_mapping;
+  	}
+ =20
+ +	error =3D AOP_TRUNCATED_PAGE;
+- 	if (!page->mapping)
++ 	if (!folio->mapping)
+ -		goto truncated;
+ +		goto unlock;
+ =20
+  	error =3D 0;
+- 	if (filemap_range_uptodate(mapping, iocb->ki_pos, iter, page))
++ 	if (filemap_range_uptodate(mapping, iocb->ki_pos, iter, &folio->page))
+  		goto unlock;
+ =20
+  	error =3D -EAGAIN;
+  	if (iocb->ki_flags & (IOCB_NOIO | IOCB_NOWAIT | IOCB_WAITQ))
+  		goto unlock;
+ =20
+- 	error =3D filemap_read_page(iocb->ki_filp, mapping, page);
++ 	error =3D filemap_read_page(iocb->ki_filp, mapping, &folio->page);
+ -	if (error =3D=3D AOP_TRUNCATED_PAGE)
+ -		folio_put(folio);
+ -	return error;
+ -truncated:
+ -	folio_unlock(folio);
+ -	folio_put(folio);
+ -	return AOP_TRUNCATED_PAGE;
+ +	goto unlock_mapping;
+  unlock:
+- 	unlock_page(page);
++ 	folio_unlock(folio);
+ +unlock_mapping:
+ +	filemap_invalidate_unlock_shared(mapping);
+ +	if (error =3D=3D AOP_TRUNCATED_PAGE)
+- 		put_page(page);
+++		folio_put(folio);
+  	return error;
+  }
+ =20
+
+--Sig_/I67XNDAujQVr1Rb3Xo=imif
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD3qk0ACgkQAVBC80lX
+0GxCYwgAnWEyoSuNdNygoZKaJgYnOVd1+z3Ik25QhOBeCANCWlzlO7AMOVy6jO4K
+wEP/CXHhPtvwPp42pisgxnIjbdxnZr7iiXH6shHdzeRZID7QPBUWZwo9zS+4edoN
+Yv4nQK9FNZxqErGybLV7r0fD0SNarXdNIz36YtAv4xjd4bB9cmFPjd+KaAHFjFjH
+NU1SwljH7EqdQdyOVTsmSQXCoxHBqsQMF/9yyOUmC6A+75Ynh73yuJgFstGAPgup
+Ep56esDxA18fh6pLA9a/ZOZQQGtrEx2drr4YrqcHMw9G9smkD7tfQhC9IEJMwfbA
+xOhkMODyOwdDXWOdfqAn270yPGpBbg==
+=dvqy
+-----END PGP SIGNATURE-----
+
+--Sig_/I67XNDAujQVr1Rb3Xo=imif--
