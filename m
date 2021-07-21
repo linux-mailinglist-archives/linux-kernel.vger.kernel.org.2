@@ -2,122 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6593D0802
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 06:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE053D0804
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 06:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbhGUERD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 00:17:03 -0400
-Received: from mail-ed1-f49.google.com ([209.85.208.49]:45728 "EHLO
-        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhGUEQe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 00:16:34 -0400
-Received: by mail-ed1-f49.google.com with SMTP id x17so747539edd.12;
-        Tue, 20 Jul 2021 21:57:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G1CpyrlxbkQi8C3eKrGFY5ZV8sAO1WbnuAPLS/w9iyc=;
-        b=jBAPrGNXTUYVryYWhW0yT82PbMHi6faQKRsQBZ69QIjwFn9LHNNOKiwdpXDgP8eODT
-         mcjqoYgQVqE+/u2QizmTlciVzQ8XxSXZCQhaeMxhz0OVoU/CO8hro5tDPyt5buhTgBBr
-         6D79fsPpebjzEq+fElrM5fuOBHPrfoJWU+lMHYl4vSsjG+Rq9/LJsDMeC47jozKdCksK
-         MpfWnuK60gJsgIXBRWBVj/YVlx+VR3ZEUxX00Tl2Aq9gtvEAe+9lBlAhXm0+vOVxe/Xz
-         la8a+ectMxcWTj2nGpGNVq1BVW2ICDFn0qnDPCv7AqIhncIffoIROj1JWooEUGN5M4v4
-         s/vw==
-X-Gm-Message-State: AOAM530kArH/FdYWpIgzF5A83swCItLPHIOntOwM4p+KN2cA88y/oJzO
-        B+8Vnx7gJyJRzWlAodWS3pD0yToTnTkuYxn+
-X-Google-Smtp-Source: ABdhPJxO2gHuT5k9dcnnZGNk0MGMbiLxVmvaik28q18dCpokHnuwiZzoDtkaMJ2BA5ylmY0hCGjwCw==
-X-Received: by 2002:aa7:c4c7:: with SMTP id p7mr45104066edr.290.1626843430294;
-        Tue, 20 Jul 2021 21:57:10 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id s18sm7979195ejh.12.2021.07.20.21.57.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 21:57:09 -0700 (PDT)
-Subject: Re: [Patch v4 2/3] Drivers: hv: add Azure Blob driver
-To:     Long Li <longli@microsoft.com>,
-        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
-        "linux-fs@vger.kernel.org" <linux-fs@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-References: <1626751866-15765-1-git-send-email-longli@linuxonhyperv.com>
- <1626751866-15765-3-git-send-email-longli@linuxonhyperv.com>
- <90ed52d3-5095-9789-53f0-477ba70edc3b@kernel.org>
- <BY5PR21MB15069D0519AD92773355FCF6CEE29@BY5PR21MB1506.namprd21.prod.outlook.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <5c5dd1e5-2639-b293-b2e0-d7cfd5ca3c0c@kernel.org>
-Date:   Wed, 21 Jul 2021 06:57:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232590AbhGUESs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 00:18:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232359AbhGUESh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 00:18:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19772611C1;
+        Wed, 21 Jul 2021 04:59:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626843554;
+        bh=b6IDKKSTuET5UbImwi5gnCTWu3F5j9/wKXMyH1lizOw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fYCKH6IZ0XCf/I+eSPBPKisIl6CfLr+SjsaBUudlWdY8HOyFC4ym65221NMExS0TN
+         m+JR8LWk+9w6pJOFkE1FAtLcGy4Ic82ZKlTdhFvbELpnSGnumibJJ/+2HWd4CS0Sr7
+         UiHXtO8O7lIS58Fa8RWC5nZvlQ7soKtSMmuQxcuc=
+Date:   Wed, 21 Jul 2021 06:59:12 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Michael Broadfoot <msbroadf@gmail.com>
+Cc:     valentina.manea.m@gmail.com, shuah@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] A reset can be sent anytime and so the vhcd Root Hub
+ should renable the port always on a virtual reset
+Message-ID: <YPepoOjwX9WSjJYG@kroah.com>
+References: <YPd1FhI/ASlQ2K9o@michael-gitpc>
 MIME-Version: 1.0
-In-Reply-To: <BY5PR21MB15069D0519AD92773355FCF6CEE29@BY5PR21MB1506.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPd1FhI/ASlQ2K9o@michael-gitpc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 07. 21, 0:12, Long Li wrote:
->> Subject: Re: [Patch v4 2/3] Drivers: hv: add Azure Blob driver
->>
->> On 20. 07. 21, 5:31, longli@linuxonhyperv.com wrote:
->>> --- /dev/null
->>> +++ b/include/uapi/misc/hv_azure_blob.h
->>> @@ -0,0 +1,34 @@
->>> +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
->>> +/* Copyright (c) 2021 Microsoft Corporation. */
->>> +
->>> +#ifndef _AZ_BLOB_H
->>> +#define _AZ_BLOB_H
->>> +
->>> +#include <linux/kernel.h>
->>> +#include <linux/uuid.h>
->>
->> Quoting from
->> https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.
->> kernel.org%2Flinux-
->> doc%2FMWHPR21MB159375586D810EC5DCB66AF0D7039%40MWHPR21MB1
->> 593.namprd21.prod.outlook.com%2F&amp;data=04%7C01%7Clongli%40micr
->> osoft.com%7C7fdf2d6ed15d4d4122a308d94b6eeed0%7C72f988bf86f141af91
->> ab2d7cd011db47%7C1%7C0%7C637623762292949381%7CUnknown%7CTWFp
->> bGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVC
->> I6Mn0%3D%7C3000&amp;sdata=kv0ZkU1QL6TxlJJZEQEsT7aqLFL9lmP2SStz8k
->> U5sIs%3D&amp;reserved=0:
->> =====
->> Seems like a #include of asm/ioctl.h (or something similar) is needed so that
->> _IOWR is defined.  Also, a #include is needed for __u32, __aligned_u64,
->> guid_t, etc.
->> =====
+On Wed, Jul 21, 2021 at 11:15:02AM +1000, Michael Broadfoot wrote:
+> And if the HIGH and LOW flags are not set on the port
+> status that means FULL speed and is not an
+> error (see 11.24.2.7.1 Port Status Bits)
+> ---
+>  drivers/usb/usbip/vhci_hcd.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
 > 
-> The user-space code includes "sys/ioctl.h" for calling into ioctl(). "sys/ioctl.h"
-> includes <linux/ioctl.h>, so it has no problem finding _IOWR.
+> diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+> index 4ba6bcdaa8e9..3ea76dcdc8e2 100644
+> --- a/drivers/usb/usbip/vhci_hcd.c
+> +++ b/drivers/usb/usbip/vhci_hcd.c
+> @@ -455,15 +455,12 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
+>  			vhci_hcd->port_status[rhport] &= ~(1 << USB_PORT_FEAT_RESET);
+>  			vhci_hcd->re_timeout = 0;
+>  
+> -			if (vhci_hcd->vdev[rhport].ud.status ==
+> -			    VDEV_ST_NOTASSIGNED) {
+>  				usbip_dbg_vhci_rh(
+>  					" enable rhport %d (status %u)\n",
+>  					rhport,
+>  					vhci_hcd->vdev[rhport].ud.status);
+>  				vhci_hcd->port_status[rhport] |=
+>  					USB_PORT_STAT_ENABLE;
+> -			}
+>  
+>  			if (hcd->speed < HCD_USB3) {
+>  				switch (vhci_hcd->vdev[rhport].speed) {
+> @@ -475,8 +472,7 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
+>  					vhci_hcd->port_status[rhport] |=
+>  						USB_PORT_STAT_LOW_SPEED;
+>  					break;
+> -				default:
+> -					pr_err("vhci_device speed not set\n");
+> +				default: // FULL speed
+>  					break;
+>  				}
+>  			}
+> -- 
+> 2.30.2
 > 
-> guid_t is defined in <uapi/linux/uuid.h>, included from <linux/uuid.h> (in this file)
-> __u32 and __aligned_u64 are defined in <uapi/linux/types.>, which is included from <linux/kernel.h> (in this file)
 
-No, please don't rely on implicit include chains. Nor that userspace 
-solves the includes for you.
+Hi,
+
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- Your patch does not have a Signed-off-by: line.  Please read the
+  kernel file, Documentation/SubmittingPatches and resend it after
+  adding that line.  Note, the line needs to be in the body of the
+  email, before the patch, not at the bottom of the patch or in the
+  email signature.
+
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what is needed in order to
+  properly describe the change.
+
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what a proper Subject: line should
+  look like.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
 thanks,
--- 
-js
-suse labs
+
+greg k-h's patch email bot
