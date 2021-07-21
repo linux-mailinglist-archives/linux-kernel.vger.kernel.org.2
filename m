@@ -2,212 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BBA3D0784
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 06:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE143D0789
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 06:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbhGUDbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 23:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57222 "EHLO
+        id S232037AbhGUDc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 23:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbhGUDbT (ORCPT
+        with ESMTP id S231363AbhGUDcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 23:31:19 -0400
+        Tue, 20 Jul 2021 23:32:22 -0400
 Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F206BC061574;
-        Tue, 20 Jul 2021 21:11:55 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id u14so674957pga.11;
-        Tue, 20 Jul 2021 21:11:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BBFC061762;
+        Tue, 20 Jul 2021 21:12:56 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id u14so676616pga.11;
+        Tue, 20 Jul 2021 21:12:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/cGI+iVWCJGFFtwmPo17o5F5ePaIGRvj0d9XE8sJR3M=;
-        b=FUY6TVUGKlmucS+kUxfuo9dGjDTYxFQxitjZR+aMsEGKvBi/nIWlGC36KEFw0cSaER
-         kQH06QEAjqSJnU8GX8TTaodKsPivghuGqJ8z+Ci+NfR4/W0TCmKiN1soZKboZ2rxSpVC
-         G892bKUAJBhGs4sS0UXlkfp18BtcHSdruZdLY4zAXdEbsccaXNrfWYNiV5S6KSb+3ekQ
-         gWSKQGRrDQNp01klCrdE9PBMr/63kmkbshbp1WQ3RpHJ+txmBNfny28oiRjT2akM5zRP
-         dukcJxzrDdcshsc+cjXP5+JKUYNIxLHlUdeVlGPdFRsxBKBcAhol3VEgx8oHK+K1uM6A
-         qxrQ==
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OweqAn0jjaaJ1nkpX09td2gsbVc7s9T7jQnGd97x/HU=;
+        b=mQyzJWewVy53W2a4rYsw86+Kbq0Q0kylQKJAOe7JEYV/dim81wNt2bu3ZQ0+zlUkS3
+         MeU7ue/ZtdwJVzG6bnbqwiWsNjmJgEcfYFFKfw5jGGlEl+iX2ruwyHc2BkO3xCAimcHF
+         /U9fVrT4Kz+PrDrwmnganUCbjMV1NanHaBCC1xoXaVhShhNUowSzcadnREfXuTLGzm2I
+         NHZEQgMmG0ul72tnmp4tvPteGAELhYf7Wz7QoUQpgkTQKxuMyZimaMSfbGOBfho0+oGT
+         m43kOBcBE0njffTKaQrV/5ksIx4GEAc6M7xMHqBJnnd9Dkg9XaJu8dYkwFvde8l00IRa
+         GEZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/cGI+iVWCJGFFtwmPo17o5F5ePaIGRvj0d9XE8sJR3M=;
-        b=Jfr05yaCVawBlS/QF7JkyyLzEru7bgegJoIf+IsDfCPGlD4cU/3x0rAP9/XxviWbSQ
-         sTjrYGCcmvrpAest6LwhLIFfWnJyS1mUAfCQHNJWdM2ZnA49v3mxzhJi5jlroRSYiFzk
-         07529p3ZL2+oqPDKquabq28hbrJN7mMH3oG+dMQ6wCA05jqTIZPcoiNNONYOv098ZPv9
-         JBOxf2CB3bbjaRgCb46DUjuIgCjCWd6jYbGETjI3Wn7Uv4IDmJJkROMfgPJk/wz8usZP
-         rGBRqNeqkigN35APVdfx6MD+I7noMk0XejWOeKV5J9nL9Yml/qAFuBhzlsNTePH6Tubo
-         YlAQ==
-X-Gm-Message-State: AOAM5301guLAVSzGIAc4kou8YJtFoMyuLaxJ1SWO/6Ml3X0y7ODxUn9p
-        8kiwilvAFTfnm+g97I2w9HA=
-X-Google-Smtp-Source: ABdhPJz5owIwN6ceBYNMycQB5BvpEZZsONLgLmzJAkwS0zAHI5ZmUOGwSS7Cvl8CofWJ6ya9pJo9RQ==
-X-Received: by 2002:aa7:8392:0:b029:2db:4a7:d866 with SMTP id u18-20020aa783920000b02902db04a7d866mr34334316pfm.66.1626840715282;
-        Tue, 20 Jul 2021 21:11:55 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:3ca3:c5c9:5db2:10e2])
-        by smtp.gmail.com with ESMTPSA id m34sm28705732pgb.85.2021.07.20.21.11.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 21:11:54 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 21:11:51 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: Re: [PATCH] Input: serio - make write method mandatory
-Message-ID: <YPeeh/s/pp4DOVR3@google.com>
-References: <YFgUxG/TljMuVeQ3@google.com>
- <YPd+nl30LwKWpEZa@Ryzen-9-3900X.localdomain>
- <MWHPR21MB159385686CD54855A5FBE251D7E39@MWHPR21MB1593.namprd21.prod.outlook.com>
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OweqAn0jjaaJ1nkpX09td2gsbVc7s9T7jQnGd97x/HU=;
+        b=cck4sKBW/vLpNXre4SxC4n+0BI5FFtFBtv9RQuf4pC2cJUFgPVo4BmFHfoYhV5R9zE
+         ASFvjopwV7WrCqdb/ZuESqD9k2nHKKi/HwkaXkzJf2CL5u2AYx4gqldSpMzVglZ4jYoW
+         xX1eoeEIL6WM2/vKU1P2bVSRiJuzBlrQdmYcgW+hmhvrUP8UAaJHX/l12T05CKFNa/hy
+         nIxK4XDtEHCsBzD0TWmitoTkrIB9q3DqYBgnVTx4alb3ZvcuBZqHzWxSCwWX9HvMUiuh
+         6G5mHnxGrbyXQ64pbI+8McXfC0quUOsLDeWG8yg9/hEeEmJ50MMj+XIMR6q9wKJq/EIB
+         w1Jg==
+X-Gm-Message-State: AOAM533MTyKbGlxzA2prFGCnDfljJFjcBHIdyLXmOVZjyzxsuq9VZgpZ
+        CThnQfuctAJcs2Hh32GmF1s=
+X-Google-Smtp-Source: ABdhPJyiOMiOqi1c4EcFJnIcFX2VG125433D3Ouk72IpcFYjdlK34CJ4U4WYIZV4r3+SBCUmD0adUw==
+X-Received: by 2002:a63:44a:: with SMTP id 71mr5536716pge.259.1626840775662;
+        Tue, 20 Jul 2021 21:12:55 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id x7sm9124061pfn.70.2021.07.20.21.12.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jul 2021 21:12:55 -0700 (PDT)
+Subject: Re: [PATCH v8 0/5] drm: address potential UAF bugs with drm_master
+ ptrs
+To:     Daniel Vetter <daniel@ffwll.ch>
+References: <20210712043508.11584-1-desmondcheongzx@gmail.com>
+ <YPcU3wJK7kC5b7kv@phenom.ffwll.local>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        emil.l.velikov@gmail.com
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <50c5582b-c674-4ef8-585f-7a3d78a49f85@gmail.com>
+Date:   Wed, 21 Jul 2021 12:12:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB159385686CD54855A5FBE251D7E39@MWHPR21MB1593.namprd21.prod.outlook.com>
+In-Reply-To: <YPcU3wJK7kC5b7kv@phenom.ffwll.local>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 03:19:36AM +0000, Michael Kelley wrote:
-> From: Nathan Chancellor <nathan@kernel.org> Sent: Tuesday, July 20, 2021 6:56 PM
-> > 
-> > On Sun, Mar 21, 2021 at 08:53:40PM -0700, Dmitry Torokhov wrote:
-> > > Given that all serio drivers except one implement write() method
-> > > let's make it mandatory to avoid testing for its presence whenever
-> > > we attempt to use it.
-> > >
-> > > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > > ---
-> > >  drivers/input/serio/ams_delta_serio.c | 6 ++++++
-> > >  drivers/input/serio/serio.c           | 5 +++++
-> > >  include/linux/serio.h                 | 5 +----
-> > >  3 files changed, 12 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/input/serio/ams_delta_serio.c b/drivers/input/serio/ams_delta_serio.c
-> > > index 1c0be299f179..a1c314897951 100644
-> > > --- a/drivers/input/serio/ams_delta_serio.c
-> > > +++ b/drivers/input/serio/ams_delta_serio.c
-> > > @@ -89,6 +89,11 @@ static irqreturn_t ams_delta_serio_interrupt(int irq, void *dev_id)
-> > >  	return IRQ_HANDLED;
-> > >  }
-> > >
-> > > +static int ams_delta_serio_write(struct serio *serio, u8 data)
-> > > +{
-> > > +	return -EINVAL;
-> > > +}
-> > > +
-> > >  static int ams_delta_serio_open(struct serio *serio)
-> > >  {
-> > >  	struct ams_delta_serio *priv = serio->port_data;
-> > > @@ -157,6 +162,7 @@ static int ams_delta_serio_init(struct platform_device *pdev)
-> > >  	priv->serio = serio;
-> > >
-> > >  	serio->id.type = SERIO_8042;
-> > > +	serio->write = ams_delta_serio_write;
-> > >  	serio->open = ams_delta_serio_open;
-> > >  	serio->close = ams_delta_serio_close;
-> > >  	strlcpy(serio->name, "AMS DELTA keyboard adapter", sizeof(serio->name));
-> > > diff --git a/drivers/input/serio/serio.c b/drivers/input/serio/serio.c
-> > > index 29f491082926..8d229a11bb6b 100644
-> > > --- a/drivers/input/serio/serio.c
-> > > +++ b/drivers/input/serio/serio.c
-> > > @@ -694,6 +694,11 @@ EXPORT_SYMBOL(serio_reconnect);
-> > >   */
-> > >  void __serio_register_port(struct serio *serio, struct module *owner)
-> > >  {
-> > > +	if (!serio->write) {
-> > > +		pr_err("%s: refusing to register %s without write method\n",
-> > > +		       __func__, serio->name);
-> > > +		return;
-> > > +	}
-> > >  	serio_init_port(serio);
-> > >  	serio_queue_event(serio, owner, SERIO_REGISTER_PORT);
-> > >  }
-> > > diff --git a/include/linux/serio.h b/include/linux/serio.h
-> > > index 6c27d413da92..075f1b8d76fa 100644
-> > > --- a/include/linux/serio.h
-> > > +++ b/include/linux/serio.h
-> > > @@ -121,10 +121,7 @@ void serio_unregister_driver(struct serio_driver *drv);
-> > >
-> > >  static inline int serio_write(struct serio *serio, unsigned char data)
-> > >  {
-> > > -	if (serio->write)
-> > > -		return serio->write(serio, data);
-> > > -	else
-> > > -		return -1;
-> > > +	return serio->write(serio, data);
-> > >  }
-> > >
-> > >  static inline void serio_drv_write_wakeup(struct serio *serio)
-> > > --
-> > > 2.31.0.rc2.261.g7f71774620-goog
-> > >
-> > >
-> > > --
-> > > Dmitry
-> > 
-> > This patch as commit 81c7c0a350bf ("Input: serio - make write method
-> > mandatory") in -next breaks input for my Hyper-V VM, which prevents me
-> > from logging in. I attempted to do something like the following (-1 or
-> > -EINVAL) which should be equivalent but it does not resolve the issue.
-> > 
-> > Cheers,
-> > Nathan
-> > 
-> > diff --git a/drivers/input/serio/hyperv-keyboard.c b/drivers/input/serio/hyperv-keyboard.c
-> > index 1a7b72a9016d..d3eee2d4c327 100644
-> > --- a/drivers/input/serio/hyperv-keyboard.c
-> > +++ b/drivers/input/serio/hyperv-keyboard.c
-> > @@ -311,6 +311,11 @@ static void hv_kbd_stop(struct serio *serio)
-> >         spin_unlock_irqrestore(&kbd_dev->lock, flags);
-> >  }
-> > 
-> > +static int hv_kbd_write(struct serio *serio, u8 data)
-> > +{
-> > +       return -1;
-> > +}
-> > +
-> >  static int hv_kbd_probe(struct hv_device *hv_dev,
-> >                         const struct hv_vmbus_device_id *dev_id)
-> >  {
-> > @@ -341,6 +346,7 @@ static int hv_kbd_probe(struct hv_device *hv_dev,
-> > 
-> >         hv_serio->start = hv_kbd_start;
-> >         hv_serio->stop = hv_kbd_stop;
-> > +       hv_serio->write = hv_kbd_write;
-> > 
-> >         error = vmbus_open(hv_dev->channel,
-> >                            KBD_VSC_SEND_RING_BUFFER_SIZE,
+On 21/7/21 2:24 am, Daniel Vetter wrote:
+> On Mon, Jul 12, 2021 at 12:35:03PM +0800, Desmond Cheong Zhi Xi wrote:
+>> Hi,
+>>
+>> In the previous thread on this series we decided to remove a patch that was violating a lockdep requirement in drm_lease. In addition to this change, I took a closer look at the CI logs for the Basic Acceptance Tests and noticed that another regression was introduced. The new patch 2 is a response to this.
+>>
+>> Overall, this series addresses potential use-after-free errors when dereferencing pointers to struct drm_master. These were identified after one such bug was caught by Syzbot in drm_getunique():
+>> https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
+>>
+>> The series is broken up into five patches:
+>>
+>> 1. Move a call to drm_is_current_master() out from a section locked by &dev->mode_config.mutex in drm_mode_getconnector(). This patch does not apply to stable.
+>>
+>> 2. Move a call to drm_is_current_master() out from the RCU read-side critical section in drm_clients_info().
+>>
+>> 3. Implement a locked version of drm_is_current_master() function that's used within drm_auth.c.
+>>
+>> 4. Serialize drm_file.master by introducing a new spinlock that's held whenever the value of drm_file.master changes.
+>>
+>> 5. Identify areas in drm_lease.c where pointers to struct drm_master are dereferenced, and ensure that the master pointers are not freed during use.
+>>
+>> v7 -> v8:
+>> - Remove the patch that moves the call to _drm_lease_held out from the section locked by &dev->mode_config.idr_mutex in __drm_mode_object_find. This patch violated an existing lockdep requirement as reported by the intel-gfx CI.
+>> - Added a new patch that moves a call to drm_is_current_master out from the RCU critical section in drm_clients_info. This was reported by the intel-gfx CI.
+>>
+>> v6 -> v7:
+>> - Modify code alignment as suggested by the intel-gfx CI.
+>> - Add a new patch to the series that adds a new lock to serialize drm_file.master, in response to the lockdep splat by the intel-gfx CI.
+>> - Update drm_file_get_master to use the new drm_file.master_lock instead of drm_device.master_mutex, in response to the lockdep splat by the intel-gfx CI.
+>>
+>> v5 -> v6:
+>> - Add a new patch to the series that moves the call to _drm_lease_held out from the section locked by &dev->mode_config.idr_mutex in __drm_mode_object_find.
+>> - Clarify the kerneldoc for dereferencing drm_file.master, as suggested by Daniel Vetter.
+>> - Refactor error paths with goto labels so that each function only has a single drm_master_put(), as suggested by Emil Velikov.
+>> - Modify comparisons to NULL into "!master", as suggested by the intel-gfx CI.
+>>
+>> v4 -> v5:
+>> - Add a new patch to the series that moves the call to drm_is_current_master in drm_mode_getconnector out from the section locked by &dev->mode_config.mutex.
+>> - Additionally, added a missing semicolon to the patch, caught by the intel-gfx CI.
+>>
+>> v3 -> v4:
+>> - Move the call to drm_is_current_master in drm_mode_getconnector out from the section locked by &dev->mode_config.mutex. As suggested by Daniel Vetter. This avoids a circular lock lock dependency as reported here https://patchwork.freedesktop.org/patch/440406/
+>> - Inside drm_is_current_master, instead of grabbing &fpriv->master->dev->master_mutex, we grab &fpriv->minor->dev->master_mutex to avoid dereferencing a null ptr if fpriv->master is not set.
+>> - Modify kerneldoc formatting for drm_file.master, as suggested by Daniel Vetter.
+>> - Additionally, add a file_priv->master NULL check inside drm_file_get_master, and handle the NULL result accordingly in drm_lease.c. As suggested by Daniel Vetter.
+>>
+>> v2 -> v3:
+>> - Move the definition of drm_is_current_master and the _locked version higher up in drm_auth.c to avoid needing a forward declaration of drm_is_current_master_locked. As suggested by Daniel Vetter.
+>> - Instead of leaking drm_device.master_mutex into drm_lease.c to protect drm_master pointers, add a new drm_file_get_master() function that returns drm_file->master while increasing its reference count, to prevent drm_file->master from being freed. As suggested by Daniel Vetter.
+>>
+>> v1 -> v2:
+>> - Move the lock and assignment before the DRM_DEBUG_LEASE in drm_mode_get_lease_ioctl, as suggested by Emil Velikov.
 > 
-> I'm seeing the same problem.  I've added the code to hyperv-keyboard.c that Nathan
-> proposed, and that solves the immediate problem in that the "refusing to register"
-> message no longer occurs.
+> Apologies for the delay, I missed your series. Maybe just ping next time
+> around there's silence.
 > 
-> But there's now a different problem in that this error is output whenever a key
-> is typed on the Hyper-V synthetic keyboard:
+> Looks all great, merged to drm-misc-next. Given how complex this was I'm
+> vary of just pushing this to -fixes without some solid testing.
 > 
-> [   11.576716] atkbd serio0: keyboard reset failed on d34b2567-b9b6-42b9-8778-0a4ec0b
-> 
-> The Hyper-V keyboard driver depends on the AT Keyboard driver, and there's code in
-> atkbd.c that checks for the existence of the serio->write function.  I haven't debugged all
-> the details, but apparently hyperv-keyboard.c depends on atkbd.c finding that function
-> as NULL in order to work properly.   See atkbd_connect().  These messages are output
-> during boot when the two drivers are working properly together:
-> 
-> [    2.672693] hv_vmbus: registering driver hyperv_keyboard
-> [    2.700587] input: AT Translated Set 2 keyboard as /devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/VMBUS:00/d34b2567-b9b6-42b9-8778-0a4ec0b955bf/serio0/input/input1
-> 
-> I'm not seeing the second message when running the latest linux-next.
 
-Yeah, the patch is busted as several drivers actually check for the
-presence of serio->write() to adjust their behavior. I will revert the
-patch.
+Hi Daniel,
 
-Thanks!
+Thanks for merging, more testing definitely sounds good to me.
 
--- 
-Dmitry
+> One thing I noticed is that drm_is_current_master could just use the
+> spinlock, since it's only doing a read access. Care to type up that patch?
+> 
+
+I thought about this too, but I'm not sure if that's the best solution.
+
+drm_is_current_master calls drm_lease_owner which then walks up the tree 
+of master lessors. The spinlock protects the master of the current drm 
+file, but subsequent lessors aren't protected without holding the 
+device's master mutex.
+
+> Also, do you plan to look into that idea we've discussed to flush pending
+> access when we revoke a master or a lease? I think that would be really
+> nice improvement here.
+> -Daniel
+> 
+
+Yup, now that the potential UAFs are addressed (hopefully), I'll take a 
+closer look and propose a patch for this.
+
+Best wishes,
+Desmond
+
+>>
+>> Desmond Cheong Zhi Xi (5):
+>>    drm: avoid circular locks in drm_mode_getconnector
+>>    drm: avoid blocking in drm_clients_info's rcu section
+>>    drm: add a locked version of drm_is_current_master
+>>    drm: serialize drm_file.master with a new spinlock
+>>    drm: protect drm_master pointers in drm_lease.c
+>>
+>>   drivers/gpu/drm/drm_auth.c      | 93 ++++++++++++++++++++++++---------
+>>   drivers/gpu/drm/drm_connector.c |  5 +-
+>>   drivers/gpu/drm/drm_debugfs.c   |  3 +-
+>>   drivers/gpu/drm/drm_file.c      |  1 +
+>>   drivers/gpu/drm/drm_lease.c     | 81 +++++++++++++++++++++-------
+>>   include/drm/drm_auth.h          |  1 +
+>>   include/drm/drm_file.h          | 18 +++++--
+>>   7 files changed, 152 insertions(+), 50 deletions(-)
+>>
+>> -- 
+>> 2.25.1
+>>
+> 
+
