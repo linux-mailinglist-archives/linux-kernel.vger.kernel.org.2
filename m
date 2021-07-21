@@ -2,102 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F7F3D173B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4253D174A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbhGUTCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhGUTCm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:02:42 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46913C061575;
-        Wed, 21 Jul 2021 12:43:18 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id l1so3828369edr.11;
-        Wed, 21 Jul 2021 12:43:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9DyEqM+ou6CvfIYyiIpmWP6ULsbRUlC6gxSHlAoCFBo=;
-        b=IkxPBT6rYUeFD3pEnM0sR3iFySrR1W3ZseLvmrpZbAyDqLlLg9IcdS1SU8DhRtOgNh
-         OknnZj8BoE7E7a91lZajImSqdYLV1HCRfkgyrhNNcrySFUx4xi1muiQpWmsEzDCVX1J1
-         xS1Iho82An6eAZ7qmJIz99QDzwl1qMedorINlJq5aNolbDC7ay81ddXAG6KKERaYdzjP
-         wIasTLoMOfx1Q6ItaRFQtkPoRcSz4YWw/iihaxNT4DB3t3RjiSiypXmDmR5u++UwW+8e
-         7Q1xd4NvUrX5Lv1QTGVtdFUdlbTMmiYWSQlBldH4b3r8Ud8s/UyNsNblTSgnIFXGuARb
-         H79g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9DyEqM+ou6CvfIYyiIpmWP6ULsbRUlC6gxSHlAoCFBo=;
-        b=h36Pbc4kJdVxBVjQ9hhkLwBd0mM7h1flpH1TP4iNkW3AcDQnVt3R1SK+RJkykQuoT/
-         /N9d03rYu19h8Wh1AcX7ILwQ/6nP6ggHkt98zT1Ft8G10ff2mAQfhn577onizCkddSjX
-         KJtASkO7kX6/Y17dMrwxcrsqhcXczhdemjYbgdb6Ta6wycMOdNu52PUaLmJtv9it4/VF
-         72NYjf+43KqmdcaQatUDBHbzdarID7ujEKnA/9GE6lPUhqoZrcYmbLkp3NcRlbkS7znQ
-         tOXdAvwdWE+z4vhmBssgbnvIwsQ5kd6XrcRddWpuTQdD8EOlMyg7AwBACdFL1NQpHwT2
-         Jbeg==
-X-Gm-Message-State: AOAM533Rpp/DUS08O3ap/0IGU81AQTqpp41qrZl1QgQM0cNn2e9v5YiC
-        mZffSABdG0/Zd+1xH89u+VI=
-X-Google-Smtp-Source: ABdhPJzTKu7cz1ySoc1NAfQGF10UNkUqZ5dLAqZTNwJXUWdSrOpQp0HuayD57Qbo2FjQbbdEeqXkQQ==
-X-Received: by 2002:a05:6402:26c5:: with SMTP id x5mr33434396edd.237.1626896596810;
-        Wed, 21 Jul 2021 12:43:16 -0700 (PDT)
-Received: from localhost.localdomain ([176.30.239.20])
-        by smtp.gmail.com with ESMTPSA id j21sm11219926edq.76.2021.07.21.12.43.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 12:43:16 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     mchehab@kernel.org, hverkuil@xs4all.nl
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
-Subject: [PATCH v2] media: em28xx: add missing em28xx_close_extension
-Date:   Wed, 21 Jul 2021 22:43:07 +0300
-Message-Id: <20210721194307.12155-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <7df1705e-b2c7-ddfc-9cc5-582fb1a304e5@xs4all.nl>
-References: <7df1705e-b2c7-ddfc-9cc5-582fb1a304e5@xs4all.nl>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S240267AbhGUTHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:07:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239655AbhGUTHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 15:07:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A24316120C;
+        Wed, 21 Jul 2021 19:47:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626896865;
+        bh=rd4uAYwB7OU2RVAQS5s/ge5JjFe7uYcooBaTBZmdtXk=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=lTglysgqO6/a97dCJo6ZlVvPYzM44Qit8Ui6Zcn1G2yYjCzy/3PCxs97lQp77z+cM
+         5135fZ33AtuRHir+FgNclzCE9yU/YzlqKcvgDJL0KnaO9uv+VoeZsQvGuL4EkAc863
+         ezu7IPHfndv9/KovyAbcYw/vArpgpTJwaYCHPDQXHO3vEcZZy438oGeIfNbI7NkGjr
+         X0sj1dkIi55UOHEge8hTGrTuc017tBduZP2qJdUSuRCFPWnpfO1tuiho2T49tq5HSP
+         NwD3h4e/Z8BjvCwsSncL8lxMoGQUEPTesXgG8beIbNsAb/uZTkjFvlHEmUGigVTFfB
+         taxypTC4YY6KA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9C3AC60A4E;
+        Wed, 21 Jul 2021 19:47:45 +0000 (UTC)
+Subject: Re: [GIT PULL] regulator fixes for v5.14-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210721173343.C04176023B@mail.kernel.org>
+References: <20210721173343.C04176023B@mail.kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210721173343.C04176023B@mail.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.14-rc2
+X-PR-Tracked-Commit-Id: 1c73daee4bf30ccdff5e86dc400daa6f74735da5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7c3d49b0b545d27372f824dce83139afeea61633
+Message-Id: <162689686563.6427.13928512862955795222.pr-tracker-bot@kernel.org>
+Date:   Wed, 21 Jul 2021 19:47:45 +0000
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If em28xx dev has ->dev_next pointer, we need to delete dev_next list node
-from em28xx_extension_devlist on disconnect to avoid UAF bugs and
-corrupted list bugs, since driver frees this pointer on disconnect.
+The pull request you sent on Wed, 21 Jul 2021 18:33:22 +0100:
 
-Fixes: 1a23f81b7dc3 ("V4L/DVB (9979): em28xx: move usb probe code to a proper place")
-Reported-and-tested-by: syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.14-rc2
 
-Changes in v2:
-	Previous patch was completely broken. I've done some debugging
-	again and found true root case of the reported bug.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7c3d49b0b545d27372f824dce83139afeea61633
 
----
- drivers/media/usb/em28xx/em28xx-cards.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Thank you!
 
-diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index c1e0dccb7408..d56b040e1bd7 100644
---- a/drivers/media/usb/em28xx/em28xx-cards.c
-+++ b/drivers/media/usb/em28xx/em28xx-cards.c
-@@ -4139,8 +4139,10 @@ static void em28xx_usb_disconnect(struct usb_interface *intf)
- 
- 	em28xx_close_extension(dev);
- 
--	if (dev->dev_next)
-+	if (dev->dev_next) {
- 		em28xx_release_resources(dev->dev_next);
-+		em28xx_close_extension(dev->dev_next);
-+	}
- 	em28xx_release_resources(dev);
- 
- 	if (dev->dev_next) {
 -- 
-2.32.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
