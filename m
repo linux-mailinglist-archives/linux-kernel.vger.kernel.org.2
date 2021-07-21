@@ -2,97 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAC13D0DE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22ADD3D0DF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233183AbhGUK6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
+        id S237999AbhGUK6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238015AbhGUKmn (ORCPT
+        with ESMTP id S237982AbhGUKnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 06:42:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A898DC061574;
-        Wed, 21 Jul 2021 04:23:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tjKLXf0Ng52UH5nHxMTM/eP+9xIaqoGvYekhvlgulkU=; b=ml92iat7e/0Z0zUSXyBKWCFT/T
-        +LyfOBlYqxlteYRIYhfLZunuiaY0K4ewec4QNxKTsAhIvGnLKyEVhhQanm/af+BF2OtFcRhk4GElJ
-        5a3qkimaAA9z/UuwPVhjWwfSHWIRErSBHjJL2JkvMkmBc4Ceclrfn77wnaYSomg+bKyW7LR23ZWw5
-        SfrPRbkNbOVXp2zoGMtiZYFHSqjVuP96NiR3So0JPPEWP/nd/By1Hku3hx2ymY4pO1kMLzEYCbI9Q
-        LI5fLcJlj77T+vGjXJtV8j+oeZfRQ1PDsGlSIZCUVZStjZsZeWA0daIESAeCtuBMJlF/PReDVvnGc
-        fQJ7Kptw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6AJh-0097oC-3n; Wed, 21 Jul 2021 11:23:10 +0000
-Date:   Wed, 21 Jul 2021 12:23:09 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v14 011/138] mm/lru: Add folio LRU functions
-Message-ID: <YPgDne2ORs+tJsk2@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-12-willy@infradead.org>
- <YPao+syEWXGhDxay@kernel.org>
- <YPedzMQi+h/q0sRU@casper.infradead.org>
- <YPfdM9dLEsFXZJgf@kernel.org>
+        Wed, 21 Jul 2021 06:43:00 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80BD0C061762
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 04:23:37 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id l7so1781957wrv.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 04:23:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5r4SARj9UXSpcoZXx50eoUO8FuzdCp7+FLIK6b9NrWI=;
+        b=Cg//U4Y/1gDgxt7k5xmPgDyo0T0uwh0g+60Sh5AVkHS8/ei3NhtyBF6YUUZECQJ58p
+         cUzo7OyBMRL1w7ZINYSSzxOiPjjdfCP8gmgVRIQrnKhlqKVsz4YOjpHWokj0QfreyYfD
+         rHb7sejYFAOJAr8kwsiMNxNWVcph5CirgTBgM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=5r4SARj9UXSpcoZXx50eoUO8FuzdCp7+FLIK6b9NrWI=;
+        b=aGYCdhOcN4cRYWJGWCR0LvyXbb5xj7CGLQOBJXsKwtFLXFhQOWuWIrTJ1yu90dX9f2
+         /CU/iq8x7cgIo9V7iJz7O5dUgcS3a83xI1qLeYd3WlMHS+AKZNoKcklgybRgp6/LTLw8
+         +KRd8CTNDEJdkB+squ2WFaKgrBofgyNC7i7EsdwM1aroUE2252U1C951a/+K3+Do8A+k
+         gMAhRVGg/p1fOoQSzTZ+jpHkCB8R37iVL13pa+n+4SNuMlJjZt/SK2prw5rCRptlr5oJ
+         jAeFO0zU9JssDft+qZbSgDeC4yiA8/9jI8vbB6Dgts8QSxLi8zg+J8Aufah2NIhlA2Ix
+         hRqw==
+X-Gm-Message-State: AOAM531dL9YEpG8jm2Fmcw58bqI5QThDfarYOiDl8RlMY/JWCIdb7gmb
+        BGIIsNbmpIXMPkxaaKDIHxWctQ==
+X-Google-Smtp-Source: ABdhPJz23x9YYT7kn6ADtNpcXFeq0lIiwVkk98kY+doYcdNtjlUQIlafrn5wFGkpRjXik49b18LU5g==
+X-Received: by 2002:a5d:6482:: with SMTP id o2mr41030703wri.367.1626866616114;
+        Wed, 21 Jul 2021 04:23:36 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id f26sm21862934wmc.29.2021.07.21.04.23.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 04:23:35 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 13:23:33 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Dave Airlie <airlied@gmail.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Borislav Petkov <bp@suse.de>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+Subject: Re: [PATCH v3 0/2] allow simple{fb, drm} drivers to be used on
+ non-x86 EFI platforms
+Message-ID: <YPgDtQ0sGRlvNH0F@phenom.ffwll.local>
+Mail-Followup-To: Javier Martinez Canillas <javierm@redhat.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>, Dave Airlie <airlied@gmail.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Robinson <pbrobinson@gmail.com>, Borislav Petkov <bp@suse.de>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+References: <8dd26141-a09c-39e2-5174-4cad8d21c49c@suse.de>
+ <CAPM=9tyfNPa2f5PDBLm4w_H_riEQ5P3rEhX73YGE1y_ygRox+w@mail.gmail.com>
+ <CAMj1kXErHteZ+MKYvp=yYmwVxV3A=vjtnG351hZHV+3BPwDQvw@mail.gmail.com>
+ <YPbJJ/0tSO/fuW7a@phenom.ffwll.local>
+ <03f0edef-e54e-8a2a-4b50-683d3d42e249@redhat.com>
+ <YPbWrV/cIODdgu6A@phenom.ffwll.local>
+ <37e05f02-b810-0cb1-cc4f-95711cd148d9@suse.de>
+ <44a75f18-e3a6-f764-b0ec-ce3ac05805a9@redhat.com>
+ <1e85fae7-ef95-b2f7-3463-e90958e54684@suse.de>
+ <0ad257ce-44d9-beea-8afb-c879146c523b@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YPfdM9dLEsFXZJgf@kernel.org>
+In-Reply-To: <0ad257ce-44d9-beea-8afb-c879146c523b@redhat.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 11:39:15AM +0300, Mike Rapoport wrote:
-> On Wed, Jul 21, 2021 at 05:08:44AM +0100, Matthew Wilcox wrote:
-> > I wanted to turn those last two sentences into a list, but my
-> > kernel-doc-fu abandoned me.  Feel free to submit a follow-on patch to
-> > fix that ;-)
+On Wed, Jul 21, 2021 at 12:15:12PM +0200, Javier Martinez Canillas wrote:
+> On 7/21/21 12:07 PM, Thomas Zimmermann wrote:
+> > Hi
+> > 
+> > Am 21.07.21 um 07:09 schrieb Javier Martinez Canillas:
+> > ...
+> >>>
+> >>> Can I simply put the patches in to drm-misc-next? There was some talk
+> >>> about a topic branch?
+> >>>
+> >>
+> >> ... which AFAIU means that there's no need for a topic branch, since the
+> >> patches will be present in linux-next. And the EFI folks can use that to
+> >> check if there are any integration issues or regressions caused by these.
+> > 
+> > Merged into drm-misc-next.
+> > 
 > 
-> Here it is ;-)
+> Thanks a lot Thomas for all your help!
 
-Did you try it?  Here's what that turns into with htmldoc:
+Yeah topic branch makes sense when we have further work that will build on
+top of a patch sets in at latest _two_ different subsystems, and it
+doesn't make sense to just merge it all in one place (because too much
+work, or a refactoring that's too invasive and will cause random conflicts
+with subsequent work in the same subsystem, or ...).
 
-Description
-
-We would like to get this info without a page flag, but the state needs
-to survive until the folio is last deleted from the LRU, which could be
-as far down as __page_cache_release.
-
- * 1 if folio is a regular filesystem backed page cache folio or a
-   lazily freed anonymous folio (e.g. via MADV_FREE).
- * 0 if folio is a normal anonymous folio, a tmpfs folio or otherwise
-   ram or swap backed folio.
-
-Return
-
-An integer (not a boolean!) used to sort a folio onto the right LRU list
-and to account folios correctly.
-
-Yes, we get a bulleted list, but it's placed in the wrong section!
-
-Adding linux-doc for additional insight into this problem.
-For their reference, here's the input:
-
-/**
- * folio_is_file_lru - Should the folio be on a file LRU or anon LRU?
- * @folio: The folio to test.
- *
- * We would like to get this info without a page flag, but the state
- * needs to survive until the folio is last deleted from the LRU, which
- * could be as far down as __page_cache_release.
- *
- * Return: An integer (not a boolean!) used to sort a folio onto the
- * right LRU list and to account folios correctly.
- *
- * - 1 if @folio is a regular filesystem backed page cache folio
- *   or a lazily freed anonymous folio (e.g. via MADV_FREE).
- * - 0 if @folio is a normal anonymous folio, a tmpfs folio or otherwise
- *   ram or swap backed folio.
- */
-static inline int folio_is_file_lru(struct folio *folio)
-
+Otherwise just acks and then merge in one place. We shouldn't do
+bureaucratics like topic branches if there's not an actual need for them.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
