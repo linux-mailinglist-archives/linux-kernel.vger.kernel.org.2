@@ -2,155 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800C53D0743
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 05:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195F53D074D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 05:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhGUCdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 22:33:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232126AbhGUCco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 22:32:44 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59F4160FDB;
-        Wed, 21 Jul 2021 03:13:16 +0000 (UTC)
-Date:   Tue, 20 Jul 2021 23:13:09 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] tracing/histogram: Rename "cpu" to "common_cpu"
-Message-ID: <20210720231309.32082092@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231455AbhGUChU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 22:37:20 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:45092 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230338AbhGUChQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 22:37:16 -0400
+X-UUID: c117cace960f4552bcb0052495e7eed6-20210721
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=zmxQjGdFqyA3uAn2rxS3iv5n86oQfg1uYDVx+P9Idkw=;
+        b=dCrK3PEuV/ySoCzadrRvVWS8ZzeqDGMbyiU+yI2yPC5/wuneOvT/lD6TctsTrLWbOpkUG1jeU3b/P/MTfDHtmvb+Y0E1uyhD1nk9KxqBLkw/ymxurTFK8FM6b/jts4aj8FnbC7LWkqDTCpfdnunh0H8JAVwaKbpBuGZHSx6w0Ds=;
+X-UUID: c117cace960f4552bcb0052495e7eed6-20210721
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 468878292; Wed, 21 Jul 2021 11:17:51 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs06n1.mediatek.inc
+ (172.21.101.129) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 21 Jul
+ 2021 11:17:49 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 21 Jul 2021 11:17:48 +0800
+Message-ID: <1626837468.4247.3.camel@mhfsdcap03>
+Subject: Re: [PATCH v3 3/3] phy: phy-mtk-tphy: add support mt8195
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Eddie Hung <eddie.hung@mediatek.com>
+Date:   Wed, 21 Jul 2021 11:17:48 +0800
+In-Reply-To: <YPaIYI70823rK68w@matsya>
+References: <1626331702-27825-1-git-send-email-chunfeng.yun@mediatek.com>
+         <1626331702-27825-3-git-send-email-chunfeng.yun@mediatek.com>
+         <YPaIYI70823rK68w@matsya>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+T24gVHVlLCAyMDIxLTA3LTIwIGF0IDEzOjU1ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOg0KPiBP
+biAxNS0wNy0yMSwgMTQ6NDgsIENodW5mZW5nIFl1biB3cm90ZToNCj4gPiBUaGUgY29udHJvbGxl
+ciBpcyBkZXNpZ25lZCB0byB1c2UgdXNlIFBMTCBpbnRlZ2VyIG1vZGUsIGJ1dA0KPiA+IGluIGZh
+Y3QgdXNlZCBmcmFjdGlvbmFsIG1vZGUgZm9yIHNvbWUgb25lcyBvbiBtdDgxOTUsIHRoaXMNCj4g
+PiBjYXVzZXMgc2lnbmFsIGRlZ3JhZGF0aW9uIChlLmcuIGV5ZSBkaWFncmFtIHRlc3QgZmFpbCks
+IGZpeA0KPiA+IGl0IGJ5IHN3aXRjaGluZyBQTEwgdG8gMjZNaHogZnJvbSBkZWZhdWx0IDQ4TWh6
+IHRvIGltcHJvdmUNCj4gPiBzaWduYWwgcXVhbGl0eS4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4g
+djJ+Mzogbm8gY2hhbmdlcw0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3BoeS9tZWRpYXRlay9waHkt
+bXRrLXRwaHkuYyB8IDUyICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmls
+ZSBjaGFuZ2VkLCA1MiBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvcGh5L21lZGlhdGVrL3BoeS1tdGstdHBoeS5jIGIvZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5
+LW10ay10cGh5LmMNCj4gPiBpbmRleCA0MmExMTc0ZGE2Y2MuLmMzZGMxNzYzYTdlYiAxMDA2NDQN
+Cj4gPiAtLS0gYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLXRwaHkuYw0KPiA+ICsrKyBi
+L2RyaXZlcnMvcGh5L21lZGlhdGVrL3BoeS1tdGstdHBoeS5jDQo+ID4gQEAgLTQxLDYgKzQxLDgg
+QEANCj4gPiAgDQo+ID4gICNkZWZpbmUgVTNQX1VTQlBIWUFDUjAJCTB4MDAwDQo+ID4gICNkZWZp
+bmUgUEEwX1JHX1UyUExMX0ZPUkNFX09OCQlCSVQoMTUpDQo+ID4gKyNkZWZpbmUgUEEwX1VTQjIw
+X1BMTF9QUkVESVYJCUdFTk1BU0soNywgNikNCj4gPiArI2RlZmluZSBQQTBfVVNCMjBfUExMX1BS
+RURJVl9WQUwoeCkJKCgweDMgJiAoeCkpIDw8IDYpDQo+ID4gICNkZWZpbmUgUEEwX1JHX1VTQjIw
+X0lOVFJfRU4JCUJJVCg1KQ0KPiA+ICANCj4gPiAgI2RlZmluZSBVM1BfVVNCUEhZQUNSMQkJMHgw
+MDQNCj4gPiBAQCAtNTIsNiArNTQsOCBAQA0KPiA+ICAjZGVmaW5lIFBBMV9SR19URVJNX1NFTF9W
+QUwoeCkJKCgweDcgJiAoeCkpIDw8IDgpDQo+ID4gIA0KPiA+ICAjZGVmaW5lIFUzUF9VU0JQSFlB
+Q1IyCQkweDAwOA0KPiA+ICsjZGVmaW5lIFBBMl9SR19VMlBMTF9CVwkJCUdFTk1BU0soMjEsIDE5
+KQ0KPiA+ICsjZGVmaW5lIFBBMl9SR19VMlBMTF9CV19WQUwoeCkJCSgoMHg3ICYgKHgpKSA8PCAx
+OSkNCj4gPiAgI2RlZmluZSBQQTJfUkdfU0lGX1UyUExMX0ZPUkNFX0VOCUJJVCgxOCkNCj4gPiAg
+DQo+ID4gICNkZWZpbmUgVTNQX1VTQlBIWUFDUjUJCTB4MDE0DQo+ID4gQEAgLTczLDYgKzc3LDE0
+IEBADQo+ID4gICNkZWZpbmUgUDJDX1VTQjIwX0dQSU9fTU9ERQkJQklUKDgpDQo+ID4gICNkZWZp
+bmUgUDJDX1UyX0dQSU9fQ1RSX01TSwkoUDJDX1JHX1VTQjIwX0dQSU9fQ1RMIHwgUDJDX1VTQjIw
+X0dQSU9fTU9ERSkNCj4gPiAgDQo+ID4gKyNkZWZpbmUgVTNQX1UyUEhZQV9SRVNWCQkweDAzMA0K
+PiA+ICsjZGVmaW5lIFAyUl9SR19VMlBMTF9GQkRJVl8yNk0JCTB4MWJiMTNiDQo+ID4gKyNkZWZp
+bmUgUDJSX1JHX1UyUExMX0ZCRElWXzQ4TQkJMHgzYzAwMDANCj4gPiArDQo+ID4gKyNkZWZpbmUg
+VTNQX1UyUEhZQV9SRVNWMQkweDA0NA0KPiA+ICsjZGVmaW5lIFAyUl9SR19VMlBMTF9SRUZDTEtf
+U0VMCUJJVCg1KQ0KPiA+ICsjZGVmaW5lIFAyUl9SR19VMlBMTF9GUkFfRU4JCUJJVCgzKQ0KPiA+
+ICsNCj4gPiAgI2RlZmluZSBVM0RfVTJQSFlEQ1IwCQkweDA2MA0KPiA+ICAjZGVmaW5lIFAyQ19S
+R19TSUZfVTJQTExfRk9SQ0VfT04JQklUKDI0KQ0KPiA+ICANCj4gPiBAQCAtMjc3LDYgKzI4OSwx
+MiBAQCBlbnVtIG10a19waHlfdmVyc2lvbiB7DQo+ID4gIHN0cnVjdCBtdGtfcGh5X3BkYXRhIHsN
+Cj4gPiAgCS8qIGF2b2lkIFJYIHNlbnNpdGl2aXR5IGxldmVsIGRlZ3JhZGF0aW9uIG9ubHkgZm9y
+IG10ODE3MyAqLw0KPiA+ICAJYm9vbCBhdm9pZF9yeF9zZW5fZGVncmFkYXRpb247DQo+ID4gKwkv
+Kg0KPiA+ICsJICogdTJwaHkgc2hvdWxkIHVzZSBpbnRlZ2VyIG1vZGUgaW5zdGVhZCBvZiBmcmFj
+dGlvbmFsIG1vZGUgb2YNCj4gPiArCSAqIDQ4TSBQTEwsIGZpeCBpdCBieSBzd2l0Y2hpbmcgUExM
+IHRvIDI2TSBmcm9tIGRlZmF1bHQgNDhNDQo+ID4gKwkgKiBmb3IgbXQ4MTk1DQo+ID4gKwkgKi8N
+Cj4gPiArCWJvb2wgc3dfcGxsXzQ4bV90b18yNm07DQo+ID4gIAllbnVtIG10a19waHlfdmVyc2lv
+biB2ZXJzaW9uOw0KPiA+ICB9Ow0KPiA+ICANCj4gPiBAQCAtNDU2LDYgKzQ3NCwzMyBAQCBzdGF0
+aWMgdm9pZCB1M19waHlfaW5zdGFuY2VfaW5pdChzdHJ1Y3QgbXRrX3RwaHkgKnRwaHksDQo+ID4g
+IAlkZXZfZGJnKHRwaHktPmRldiwgIiVzKCVkKVxuIiwgX19mdW5jX18sIGluc3RhbmNlLT5pbmRl
+eCk7DQo+ID4gIH0NCj4gPiAgDQo+ID4gK3N0YXRpYyB2b2lkIHUyX3BoeV9wbGxfMjZtX3NldChz
+dHJ1Y3QgbXRrX3RwaHkgKnRwaHksDQo+ID4gKwlzdHJ1Y3QgbXRrX3BoeV9pbnN0YW5jZSAqaW5z
+dGFuY2UpDQo+ID4gK3sNCj4gPiArCXN0cnVjdCB1MnBoeV9iYW5rcyAqdTJfYmFua3MgPSAmaW5z
+dGFuY2UtPnUyX2JhbmtzOw0KPiA+ICsJdm9pZCBfX2lvbWVtICpjb20gPSB1Ml9iYW5rcy0+Y29t
+Ow0KPiA+ICsJdTMyIHRtcDsNCj4gPiArDQo+ID4gKwlpZiAoIXRwaHktPnBkYXRhLT5zd19wbGxf
+NDhtX3RvXzI2bSkNCj4gPiArCQlyZXR1cm47DQo+ID4gKw0KPiA+ICsJdG1wID0gcmVhZGwoY29t
+ICsgVTNQX1VTQlBIWUFDUjApOw0KPiA+ICsJdG1wICY9IH5QQTBfVVNCMjBfUExMX1BSRURJVjsN
+Cj4gPiArCXRtcCB8PSBQQTBfVVNCMjBfUExMX1BSRURJVl9WQUwoMCk7DQo+ID4gKwl3cml0ZWwo
+dG1wLCBjb20gKyBVM1BfVVNCUEhZQUNSMCk7DQo+ID4gKw0KPiA+ICsJdG1wID0gcmVhZGwoY29t
+ICsgVTNQX1VTQlBIWUFDUjIpOw0KPiA+ICsJdG1wICY9IH5QQTJfUkdfVTJQTExfQlc7DQo+ID4g
+Kwl0bXAgfD0gUEEyX1JHX1UyUExMX0JXX1ZBTCgzKTsNCj4gPiArCXdyaXRlbCh0bXAsIGNvbSAr
+IFUzUF9VU0JQSFlBQ1IyKTsNCj4gPiArDQo+ID4gKwl3cml0ZWwoUDJSX1JHX1UyUExMX0ZCRElW
+XzI2TSwgY29tICsgVTNQX1UyUEhZQV9SRVNWKTsNCj4gPiArDQo+ID4gKwl0bXAgPSByZWFkbChj
+b20gKyBVM1BfVTJQSFlBX1JFU1YxKTsNCj4gPiArCXRtcCB8PSBQMlJfUkdfVTJQTExfRlJBX0VO
+IHwgUDJSX1JHX1UyUExMX1JFRkNMS19TRUw7DQo+ID4gKwl3cml0ZWwodG1wLCBjb20gKyBVM1Bf
+VTJQSFlBX1JFU1YxKTsNCj4gPiArfQ0KPiA+ICsNCj4gPiAgc3RhdGljIHZvaWQgdTJfcGh5X2lu
+c3RhbmNlX2luaXQoc3RydWN0IG10a190cGh5ICp0cGh5LA0KPiA+ICAJc3RydWN0IG10a19waHlf
+aW5zdGFuY2UgKmluc3RhbmNlKQ0KPiA+ICB7DQo+ID4gQEAgLTk0MSw2ICs5ODYsNyBAQCBzdGF0
+aWMgaW50IG10a19waHlfaW5pdChzdHJ1Y3QgcGh5ICpwaHkpDQo+ID4gIA0KPiA+ICAJc3dpdGNo
+IChpbnN0YW5jZS0+dHlwZSkgew0KPiA+ICAJY2FzZSBQSFlfVFlQRV9VU0IyOg0KPiA+ICsJCXUy
+X3BoeV9wbGxfMjZtX3NldCh0cGh5LCBpbnN0YW5jZSk7DQo+IA0KPiBzaG91bGQgdGhpcyBub3Qg
+YmUgc2V0IG9ubHkgZm9yIE1US19QSFlfVjM/DQpXb3JrYXJvdW5kIG9ubHkgZm9yIG10ODE5NSwg
+SFcgd2lsbCBmaXggaXQgZm9yIG90aGVycyAoVjMpDQoNClRoYW5rcw0KDQo+IA0KPiA+ICAJCXUy
+X3BoeV9pbnN0YW5jZV9pbml0KHRwaHksIGluc3RhbmNlKTsNCj4gPiAgCQl1Ml9waHlfcHJvcHNf
+c2V0KHRwaHksIGluc3RhbmNlKTsNCj4gPiAgCQlicmVhazsNCj4gPiBAQCAtMTA5NCwxMCArMTE0
+MCwxNiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG10a19waHlfcGRhdGEgbXQ4MTczX3BkYXRhID0g
+ew0KPiA+ICAJLnZlcnNpb24gPSBNVEtfUEhZX1YxLA0KPiA+ICB9Ow0KPiA+ICANCj4gPiArc3Rh
+dGljIGNvbnN0IHN0cnVjdCBtdGtfcGh5X3BkYXRhIG10ODE5NV9wZGF0YSA9IHsNCj4gPiArCS5z
+d19wbGxfNDhtX3RvXzI2bSA9IHRydWUsDQo+ID4gKwkudmVyc2lvbiA9IE1US19QSFlfVjMsDQo+
+ID4gK307DQo+ID4gKw0KPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBtdGtf
+dHBoeV9pZF90YWJsZVtdID0gew0KPiA+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDI3
+MDEtdTNwaHkiLCAuZGF0YSA9ICZ0cGh5X3YxX3BkYXRhIH0sDQo+ID4gIAl7IC5jb21wYXRpYmxl
+ID0gIm1lZGlhdGVrLG10MjcxMi11M3BoeSIsIC5kYXRhID0gJnRwaHlfdjJfcGRhdGEgfSwNCj4g
+PiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLXUzcGh5IiwgLmRhdGEgPSAmbXQ4
+MTczX3BkYXRhIH0sDQo+ID4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5NS10cGh5
+IiwgLmRhdGEgPSAmbXQ4MTk1X3BkYXRhIH0sDQo+ID4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlh
+dGVrLGdlbmVyaWMtdHBoeS12MSIsIC5kYXRhID0gJnRwaHlfdjFfcGRhdGEgfSwNCj4gPiAgCXsg
+LmNvbXBhdGlibGUgPSAibWVkaWF0ZWssZ2VuZXJpYy10cGh5LXYyIiwgLmRhdGEgPSAmdHBoeV92
+Ml9wZGF0YSB9LA0KPiA+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxnZW5lcmljLXRwaHkt
+djMiLCAuZGF0YSA9ICZ0cGh5X3YzX3BkYXRhIH0sDQo+ID4gLS0gDQo+ID4gMi4xOC4wDQo+IA0K
+DQo=
 
-Currently the histogram logic allows the user to write "cpu" in as an
-event field, and it will record the CPU that the event happened on.
-
-The problem with this is that there's a lot of events that have "cpu"
-as a real field, and using "cpu" as the CPU it ran on, makes it
-impossible to run histograms on the "cpu" field of events.
-
-For example, if I want to have a histogram on the count of the
-workqueue_queue_work event on its cpu field, running:
-
- ># echo 'hist:keys=cpu' > events/workqueue/workqueue_queue_work/trigger
-
-Gives a misleading and wrong result.
-
-Change the command to "common_cpu" as no event should have "common_*"
-fields as that's a reserved name for fields used by all events. And
-this makes sense here as common_cpu would be a field used by all events.
-
-Now we can even do:
-
- ># echo 'hist:keys=common_cpu,cpu if cpu < 100' > events/workqueue/workqueue_queue_work/trigger
- ># cat events/workqueue/workqueue_queue_work/hist
- # event histogram
- #
- # trigger info: hist:keys=common_cpu,cpu:vals=hitcount:sort=hitcount:size=2048 if cpu < 100 [active]
- #
-
- { common_cpu:          0, cpu:          2 } hitcount:          1
- { common_cpu:          0, cpu:          4 } hitcount:          1
- { common_cpu:          7, cpu:          7 } hitcount:          1
- { common_cpu:          0, cpu:          7 } hitcount:          1
- { common_cpu:          0, cpu:          1 } hitcount:          1
- { common_cpu:          0, cpu:          6 } hitcount:          2
- { common_cpu:          0, cpu:          5 } hitcount:          2
- { common_cpu:          1, cpu:          1 } hitcount:          4
- { common_cpu:          6, cpu:          6 } hitcount:          4
- { common_cpu:          5, cpu:          5 } hitcount:         14
- { common_cpu:          4, cpu:          4 } hitcount:         26
- { common_cpu:          0, cpu:          0 } hitcount:         39
- { common_cpu:          2, cpu:          2 } hitcount:        184
-
-
-Now for backward compatibility, I added a trick. If "cpu" is used, and
-the field is not found, it will fall back to "common_cpu" and work as
-it did before. This way, it will still work for old programs that use
-"cpu" to get the actual CPU, but if the event has a "cpu" as a field, it
-will get that event's "cpu" field, which is probably what it wants
-anyway.
-
-Cc: stable@vger.kernel.org
-Fixes: 8b7622bf94a44 ("tracing: Add cpu field for hist triggers")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
-
-diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
-index b71e09f745c3..f99be8062bc8 100644
---- a/Documentation/trace/histogram.rst
-+++ b/Documentation/trace/histogram.rst
-@@ -191,7 +191,7 @@ Documentation written by Tom Zanussi
-                                 with the event, in nanoseconds.  May be
- 			        modified by .usecs to have timestamps
- 			        interpreted as microseconds.
--    cpu                    int  the cpu on which the event occurred.
-+    common_cpu             int  the cpu on which the event occurred.
-     ====================== ==== =======================================
- 
- Extended error information
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 16a9dfc9fffc..b3b7fd6f5a57 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -1111,7 +1111,7 @@ static const char *hist_field_name(struct hist_field *field,
- 		 field->flags & HIST_FIELD_FL_ALIAS)
- 		field_name = hist_field_name(field->operands[0], ++level);
- 	else if (field->flags & HIST_FIELD_FL_CPU)
--		field_name = "cpu";
-+		field_name = "common_cpu";
- 	else if (field->flags & HIST_FIELD_FL_EXPR ||
- 		 field->flags & HIST_FIELD_FL_VAR_REF) {
- 		if (field->system) {
-@@ -1991,14 +1991,24 @@ parse_field(struct hist_trigger_data *hist_data, struct trace_event_file *file,
- 		hist_data->enable_timestamps = true;
- 		if (*flags & HIST_FIELD_FL_TIMESTAMP_USECS)
- 			hist_data->attrs->ts_in_usecs = true;
--	} else if (strcmp(field_name, "cpu") == 0)
-+	} else if (strcmp(field_name, "common_cpu") == 0)
- 		*flags |= HIST_FIELD_FL_CPU;
- 	else {
- 		field = trace_find_event_field(file->event_call, field_name);
- 		if (!field || !field->size) {
--			hist_err(tr, HIST_ERR_FIELD_NOT_FOUND, errpos(field_name));
--			field = ERR_PTR(-EINVAL);
--			goto out;
-+			/*
-+			 * For backward compatibility, if field_name
-+			 * was "cpu", then we treat this the same as
-+			 * common_cpu.
-+			 */
-+			if (strcmp(field_name, "cpu") == 0) {
-+				*flags |= HIST_FIELD_FL_CPU;
-+			} else {
-+				hist_err(tr, HIST_ERR_FIELD_NOT_FOUND,
-+					 errpos(field_name));
-+				field = ERR_PTR(-EINVAL);
-+				goto out;
-+			}
- 		}
- 	}
-  out:
-@@ -5085,7 +5095,7 @@ static void hist_field_print(struct seq_file *m, struct hist_field *hist_field)
- 		seq_printf(m, "%s=", hist_field->var.name);
- 
- 	if (hist_field->flags & HIST_FIELD_FL_CPU)
--		seq_puts(m, "cpu");
-+		seq_puts(m, "common_cpu");
- 	else if (field_name) {
- 		if (hist_field->flags & HIST_FIELD_FL_VAR_REF ||
- 		    hist_field->flags & HIST_FIELD_FL_ALIAS)
