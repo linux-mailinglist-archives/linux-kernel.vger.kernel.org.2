@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470AD3D11DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833903D11E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239527AbhGUOXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:23:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56964 "EHLO mail.kernel.org"
+        id S239582AbhGUOXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:23:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:56846 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239497AbhGUOVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:21:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63F616120E;
-        Wed, 21 Jul 2021 15:01:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626879706;
-        bh=GM/YKf0TTowOMKZHs3ZnhJSjFzIIGc4teYwggsZx9lc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Lq0mnd0IoQnmGV2JZnegOxfb8QAUNrwT0agSZfZow+n1t+PE/Hu0lr80u/KA1ftnx
-         Co+Sq7CgU1s2sbjVIpwDBsRS9fxERAWkJYeIR1U/AwCQ307+94z2yG88a4YQvKFA6G
-         gaYrqnCqy9upHb+BrJQH6n8dMeEWj/b6hkN7k3yB4lzj2GnqvgsgjcWTl/j9xcOx1z
-         48dxLyHJGhREwTBM9fxRkr9j22c3fHZsN98dDRYIM2Rm+LuDjoJYH6mFByngdn+xFh
-         Q8GkJTKS3I9Oh/E7xBKiI9K4xMn3r9LtS/jVhPlakj1j258oCei9v4vkQS+PnwAC1b
-         Y3OhnDnaRQ86w==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Bauer <mail@david-bauer.net>,
-        Michael Walle <michael@walle.cc>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: phy: at803x: fix at803x_match_phy_id mismatch
-Date:   Wed, 21 Jul 2021 17:01:28 +0200
-Message-Id: <20210721150141.1737124-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S239499AbhGUOVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 10:21:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DB6A1FB;
+        Wed, 21 Jul 2021 08:02:10 -0700 (PDT)
+Received: from e121896.arm.com (unknown [10.57.39.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BBFA73F73D;
+        Wed, 21 Jul 2021 08:02:07 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     acme@kernel.org, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org
+Cc:     leo.yan@linaro.org, al.grant@arm.com, suzuki.poulose@arm.com,
+        anshuman.khandual@arm.com, mike.leach@linaro.org,
+        James Clark <james.clark@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] perf cs-etm: Support TRBE (unformatted decoding)
+Date:   Wed, 21 Jul 2021 16:01:56 +0100
+Message-Id: <20210721150202.32065-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+This patchset consists of refactoring to allow the decoder to be
+created in advance when the AUX records are iterated over. The
+AUX record flags are used to communicate whether the data is
+formatted or not which is the reason this refactoring is required.
 
-There are two conflicting patches in net-next, one removed
-the at803x_get_features() function and the other added another
-user:
+These changes result in some simplifications, removal of early exit
+conditions etc.
 
-drivers/net/phy/at803x.c: In function 'at803x_get_features':
-drivers/net/phy/at803x.c:706:14: error: implicit declaration of function 'at803x_match_phy_id' [-Werror=implicit-function-declaration]
+A change was also made to --dump-raw-trace code to allow the
+formatted/unformatted status to persist and for the decoder to
+not be continually deleted and recreated.
 
-Change the new caller over to an open-coded comparison as well.
+The changes apply on top of the previous patchset "[PATCH v7 0/2] perf
+cs-etm: Split Coresight decode by aux records".
 
-Fixes: 8887ca5474bd ("net: phy: at803x: simplify custom phy id matching")
-Fixes: b856150c8098 ("net: phy: at803x: mask 1000 Base-X link mode")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/phy/at803x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes since v1:
+ * Change 'decoders_per_cpu' variable name to 'decoders' and add a comment
+ * Add a warning that piped mode is best effort, suggested by Suzuki
 
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index 0790ffcd3db6..bdac087058b2 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -703,7 +703,7 @@ static int at803x_get_features(struct phy_device *phydev)
- 	if (err)
- 		return err;
- 
--	if (!at803x_match_phy_id(phydev, ATH8031_PHY_ID))
-+	if (phydev->drv->phy_id != ATH8031_PHY_ID)
- 		return 0;
- 
- 	/* AR8031/AR8033 have different status registers
+James Clark (6):
+  perf cs-etm: Refactor initialisation of kernel start address
+  perf cs-etm: Split setup and timestamp search functions
+  perf cs-etm: Only setup queues when they are modified
+  perf cs-etm: Suppress printing when resetting decoder
+  perf cs-etm: Use existing decoder instead of resetting it
+  perf cs-etm: Pass unformatted flag to decoder
+
+ .../perf/util/cs-etm-decoder/cs-etm-decoder.c |  14 +-
+ tools/perf/util/cs-etm.c                      | 185 +++++++++---------
+ 2 files changed, 97 insertions(+), 102 deletions(-)
+
 -- 
-2.29.2
+2.28.0
 
