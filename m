@@ -2,196 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4EA3D17A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512803D17CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhGUTcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50652 "EHLO
+        id S231401AbhGUTes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhGUTcg (ORCPT
+        with ESMTP id S229591AbhGUTej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:32:36 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0C9C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:13:12 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so3224841otl.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:13:12 -0700 (PDT)
+        Wed, 21 Jul 2021 15:34:39 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF68C061575;
+        Wed, 21 Jul 2021 13:15:14 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id k4-20020a17090a5144b02901731c776526so579977pjm.4;
+        Wed, 21 Jul 2021 13:15:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lop2Mo3qaKZQHvdRq+YuqOoaPIzQiwDuhfWOgAOqAZ0=;
-        b=PB5mPY5G2ota/+DFFfxv3JPi5/vJEoUikCFhR6GYPPynTWxryvDVQAjnTtQwa5NC5K
-         8h+BmifA/rmTHaPIVlCdcglYRQYSXE0+fy4IZ+L5VDB9DeM5MDHAoqM6B0vhSYO3sKGx
-         lHZX3keWuX9nc7XYdQ97FzDGY97MRBs2sYrar6FXMQRafku+SUf0KDpR8t6RDz/m9ME1
-         7lFJyccSwSSiifWjfHMAIU3w72mDbgnkTh8gBqBut4/IjGpZoYqEydJ/FP68dicuDiq1
-         6vu2iB76r8IUSdI6oEBE5OOZIzIe9emYP59IsOin4oGebtHd3WUzZX9p/V8zxSlAgbuB
-         cfVQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SOGnEDYj6+aPEFG0m6p/HdJZ6lLy+2oB11LH/GMIPe8=;
+        b=DQfgQO3uCJmeqfPd4GrrnMGsak6ZUiMipZ5qwGZtq+Y4GnbN+3ZveORbh7uh+P7+E5
+         Ku/Q0UMDjt7U15df32VENimOMh3ZwtrJcN0sYnZvDr+UbOp39zxNBXTzGgEeIORNtAXY
+         1Ye1OkKig6CHdJD/D5zeG4cOXQodWG4c90noX+n+xKnNY3so0BtSPU6o8pWYlVHiN3B3
+         ENX5NV2ASXhgf6aPSywQx8ik2OzP6OW+ni11VnAaLtdMavEltJs0/pz1h1E2SViLf8SV
+         uxLJfKNjZM7W0PMTRmpnPtaH3PSFofI4UyzIRQwKlnFTHOvaN/+kU7pndu/ledNmiCC3
+         GZGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lop2Mo3qaKZQHvdRq+YuqOoaPIzQiwDuhfWOgAOqAZ0=;
-        b=CLnjuxQn66a8C5e8MOP4mhYQgnQw8isIM66o26PK9LhybuQPDcLFnA8sClFynlBHwp
-         E2axhyYeomLwgKDa5jK08F700B+9JNmtsMzFckb/kGSuaeKTDrJp51B4q3P1bcd2XG6n
-         fzgVRM+AZOwNJ8mRvPuD8VjatOtxvGCK7m6ZE3IZ6LFBeL5Ll+JilNnPx22ubp7oW61m
-         pqosuwQPG+JUbjUU6iM6MqNjq6vkN7XBhgvH0R3mRTOxSygmuNhrmUb3H2SP2ecYtwPL
-         opMgn/5npl7KBO9F/3WSE1AFSKGhFp34eRGOZ8iZMU1VoDgvxwnIwa61PfOpuP8+NRIT
-         ulyQ==
-X-Gm-Message-State: AOAM530XYW9jBxe2dJ5vila53f2LwjOKqxzLFvxyrSWyc2cK8onhRVKI
-        fAdUe3m03WW5Cu01SZaq1VLC3A==
-X-Google-Smtp-Source: ABdhPJwsrm6tGosBeciWrtLHpuumSbtrzelppV5AbtxXUKRLSAIzmTPCqypzIK2PjWq0vIb4pcWAcw==
-X-Received: by 2002:a05:6830:34a4:: with SMTP id c36mr14509757otu.57.1626898391420;
-        Wed, 21 Jul 2021 13:13:11 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b2sm1732793otf.40.2021.07.21.13.13.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 13:13:10 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 15:13:08 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable
- as a permenent module
-Message-ID: <YPh/1IN1A9BixMrw@yoga>
-References: <20210707045320.529186-1-john.stultz@linaro.org>
- <YPJkF21ItYlKODyq@yoga>
- <CALAqxLUzTNiA7u=4_y9pkrh=Q_+vpPgFrhf_6F8-U0XPQU9crQ@mail.gmail.com>
- <YPXUI0VzpxYO56BU@yoga>
- <CAGETcx90xNFzEB9yfWvLg=X+ptrgNaQg9Ncxi-U_Z0vXHrUcgw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SOGnEDYj6+aPEFG0m6p/HdJZ6lLy+2oB11LH/GMIPe8=;
+        b=U7MyZGcKOsr/FTrVDzvkIku2RCnfehlz9zRML6VGeJPc0mNolX+dpJCwLtkuEGZRXv
+         4FwdjuwVfcVALIgJe+cgDN9l6BtSpx+jk2+E2ma0D6Qq81XqQRemluoK8hSXgdExYc0I
+         GUzx63VjeH4wFhg/o7HW79OBV765KLyLKQfKnV540iZoo95loijPP972OYLp1mHdoUGA
+         MxT0/Mlhgab/z5xMMpuVPJTwKJjpJVLAbI+gF4x7PyLNej2hJwc2kAmO5Hwxh8Ai4QYy
+         pSVl7oMterHS0S59l0AUSvSoSPfBNf1VJ7jwH44MOveA9HsCFBt0MyQhCffQdBPRvxYn
+         zJZA==
+X-Gm-Message-State: AOAM530gK3pgkSnG9aEu+9JEImScTh1akb8YThC68WoC7+cIJVz/x/Ub
+        JsxhnwdCr1Im7r3s5q4tUpywNgQKa8Btu8h29dQ=
+X-Google-Smtp-Source: ABdhPJx640ylm2KAYp8SewF8Z1tD2mQcn3QMu2iUcvhaFtOAx0ZMixA4m1wVyyq0Dg6aSdjc6BVMPAJP4hkVR2M1HcU=
+X-Received: by 2002:a63:58e:: with SMTP id 136mr6723399pgf.37.1626898513639;
+ Wed, 21 Jul 2021 13:15:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx90xNFzEB9yfWvLg=X+ptrgNaQg9Ncxi-U_Z0vXHrUcgw@mail.gmail.com>
+References: <20210521221211.29077-1-yu-cheng.yu@intel.com> <20210521221211.29077-25-yu-cheng.yu@intel.com>
+ <YPhkIHJ0guc4UNoO@AUS-LX-JohALLEN.amd.com>
+In-Reply-To: <YPhkIHJ0guc4UNoO@AUS-LX-JohALLEN.amd.com>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Wed, 21 Jul 2021 13:14:37 -0700
+Message-ID: <CAMe9rOqwe8Mr2pkf0yopWj_F7yZLj9_nmz97+AmFkkmd2U=-fg@mail.gmail.com>
+Subject: Re: [PATCH v27 24/31] x86/cet/shstk: Handle thread shadow stack
+To:     John Allen <john.allen@amd.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 19 Jul 16:53 CDT 2021, Saravana Kannan wrote:
+On Wed, Jul 21, 2021 at 11:15 AM John Allen <john.allen@amd.com> wrote:
+>
+> On Fri, May 21, 2021 at 03:12:04PM -0700, Yu-cheng Yu wrote:
+> > diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+> > index 5ea2b494e9f9..8e5f772181b9 100644
+> > --- a/arch/x86/kernel/shstk.c
+> > +++ b/arch/x86/kernel/shstk.c
+> > @@ -71,6 +71,53 @@ int shstk_setup(void)
+> >       return 0;
+> >  }
+> >
+> > +int shstk_alloc_thread_stack(struct task_struct *tsk, unsigned long clone_flags,
+> > +                          unsigned long stack_size)
+> > +{
+> > +     struct thread_shstk *shstk = &tsk->thread.shstk;
+> > +     struct cet_user_state *state;
+> > +     unsigned long addr;
+> > +
+> > +     if (!stack_size)
+> > +             return -EINVAL;
+>
+> I've been doing some light testing on AMD hardware and I've found that
+> this version of the patchset doesn't boot for me. It appears that when
+> systemd processes start spawning, they hit the above case, return
+> -EINVAL, and the fork fails. In these cases, copy_thread has been passed
+> 0 for both sp and stack_size.
+>
+> For previous versions of the patchset, I can still boot. When the
+> stack_size check was last, the function would always return before
+> completing the check, hitting one of the two cases below.
+>
+> At the very least, it would seem that on some systems, it isn't valid to
+> rely on the stack_size passed from clone3, though I'm unsure what the
+> correct behavior should be here. If the passed stack_size == 0 and sp ==
+> 0, is this a case where we want to alloc a shadow stack for this thread
+> with some capped size? Alternatively, is this a case that isn't valid to
+> alloc a shadow stack and we should simply return 0 instead of -EINVAL?
+>
+> I'm running Fedora 34 which satisfies the required versions of gcc,
+> binutils, and glibc.
+>
+> Please let me know if there is any additional information I can provide.
 
-> On Mon, Jul 19, 2021 at 12:36 PM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Mon 19 Jul 14:00 CDT 2021, John Stultz wrote:
-> >
-> > > On Fri, Jul 16, 2021 at 10:01 PM Bjorn Andersson
-> > > <bjorn.andersson@linaro.org> wrote:
-> > > > On Tue 06 Jul 23:53 CDT 2021, John Stultz wrote:
-> > > > > Allow the qcom_scm driver to be loadable as a permenent module.
-> > > > >
-> > > > > This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
-> > > > > ensure that drivers that call into the qcom_scm driver are
-> > > > > also built as modules. While not ideal in some cases its the
-> > > > > only safe way I can find to avoid build errors without having
-> > > > > those drivers select QCOM_SCM and have to force it on (as
-> > > > > QCOM_SCM=n can be valid for those drivers).
-> > > > >
-> > > > > Reviving this now that Saravana's fw_devlink defaults to on,
-> > > > > which should avoid loading troubles seen before.
-> > > > >
-> > > >
-> > > > Are you (in this last paragraph) saying that all those who have been
-> > > > burnt by fw_devlink during the last months and therefor run with it
-> > > > disabled will have a less fun experience once this is merged?
-> > > >
-> 
-> Bjorn,
-> 
-> I jump in and help with any reports of issues with fw_devlink if I'm
-> cc'ed. Please feel free to add me and I'll help fix any issues you
-> have with fw_devlink=on.
-> 
+FWIW, I have been maintaining stable CET kernels at:
 
-Thanks Saravana, unfortunately I've only heard these reports second hand
-so far, not been able to reproduce them on my own. I appreciate your
-support and will certainly reach out if I need some assistance.
+https://github.com/hjl-tools/linux/
 
-> > >
-> > > I guess potentially. So way back when this was originally submitted,
-> > > some folks had trouble booting if it was set as a module due to it
-> > > loading due to the deferred_probe_timeout expiring.
-> > > My attempts to change the default timeout value to be larger ran into
-> > > trouble, but Saravana's fw_devlink does manage to resolve things
-> > > properly for this case.
-> > >
-> >
-> > Unfortunately I see really weird things coming out of that, e.g. display
-> > on my db845c is waiting for the USB hub on PCIe to load its firmware,
-> > which typically times out after 60 seconds.
-> >
-> > I've stared at it quite a bit and I don't understand how they are
-> > related.
-> 
-> Can you please add me to any email thread with the details? I'd be
-> happy to help.
-> 
-> First step is to make sure all the devices probe as with
-> fw_devlink=permissive. After that if you are still seeing issues, it's
-> generally timing issues in the driver. But if the actual timing issue
-> is identified (by you or whoever knows the driver seeing the issue),
-> then I can help with fixes or suggestions for fixes.
-> 
-> > > But if folks are having issues w/ fw_devlink, and have it disabled,
-> > > and set QCOM_SCM=m they could still trip over the issue with the
-> > > timeout firing before it is loaded (especially if they are loading
-> > > modules from late mounted storage rather than ramdisk).
-> > >
-> >
-> > I guess we'll have to force QCOM_SCM=y in the defconfig and hope people
-> > don't make it =m.
-> >
-> > > > (I'm picking this up, but I don't fancy the idea that some people are
-> > > > turning the boot process into a lottery)
-> > >
-> > > Me neither, and I definitely think the deferred_probe_timeout logic is
-> > > way too fragile, which is why I'm eager for fw_devlink as it's a much
-> > > less racy approach to handling module loading dependencies.
-> >
-> > Right, deferred_probe_timeout is the main issue here. Without it we
-> > might get some weird probe deferral runs, but either some driver is
-> > missing or it settles eventually.
-> >
-> > With deferred_probe_timeout it's rather common for me to see things
-> > end up probe out of order (even more now with fw_devlink finding cyclic
-> > dependencies) and deferred_probe_timeout just breaking things.
-> 
-> Again, please CC me on these threads and I'd be happy to help.
-> 
-> >
-> > > So if you
-> > > want to hold on this, while any remaining fw_devlink issues get
-> > > sorted, that's fine.  But I'd also not cast too much ire at
-> > > fw_devlink, as the global probe timeout approach for handling optional
-> > > links isn't great, and we need a better solution.
-> > >
-> >
-> > There's no end to the possible and valid ways you can setup your
-> > defconfig and run into the probe deferral issues, so I see no point in
-> > holding this one back any longer. I just hope that one day it will be
-> > possible to boot the upstream kernel in a reliable fashion.
-> 
-> Might not be believable, but I'm hoping fw_devlink helps you meet this goal :)
-> 
+The current CET kernel is on hjl/cet/linux-5.13.y branch.
 
-Sounds good, I hope so too :)
+> Thanks,
+> John
+>
+> > +
+> > +     if (!shstk->size)
+> > +             return 0;
+> > +
+> > +     /*
+> > +      * For CLONE_VM, except vfork, the child needs a separate shadow
+> > +      * stack.
+> > +      */
+> > +     if ((clone_flags & (CLONE_VFORK | CLONE_VM)) != CLONE_VM)
+> > +             return 0;
+> > +
+> > +     state = get_xsave_addr(&tsk->thread.fpu.state.xsave, XFEATURE_CET_USER);
+> > +     if (!state)
+> > +             return -EINVAL;
+> > +
+> > +     /*
+> > +      * Compat-mode pthreads share a limited address space.
+> > +      * If each function call takes an average of four slots
+> > +      * stack space, allocate 1/4 of stack size for shadow stack.
+> > +      */
+> > +     if (in_compat_syscall())
+> > +             stack_size /= 4;
+> > +
+> > +     stack_size = round_up(stack_size, PAGE_SIZE);
+> > +     addr = alloc_shstk(stack_size);
+> > +     if (IS_ERR_VALUE(addr)) {
+> > +             shstk->base = 0;
+> > +             shstk->size = 0;
+> > +             return PTR_ERR((void *)addr);
+> > +     }
+> > +
+> > +     fpu__prepare_write(&tsk->thread.fpu);
+> > +     state->user_ssp = (u64)(addr + stack_size);
+> > +     shstk->base = addr;
+> > +     shstk->size = stack_size;
+> > +     return 0;
+> > +}
+> > +
+> >  void shstk_free(struct task_struct *tsk)
+> >  {
+> >       struct thread_shstk *shstk = &tsk->thread.shstk;
+> > @@ -80,7 +127,13 @@ void shstk_free(struct task_struct *tsk)
+> >           !shstk->base)
+> >               return;
+> >
+> > -     if (!tsk->mm)
+> > +     /*
+> > +      * When fork() with CLONE_VM fails, the child (tsk) already has a
+> > +      * shadow stack allocated, and exit_thread() calls this function to
+> > +      * free it.  In this case the parent (current) and the child share
+> > +      * the same mm struct.
+> > +      */
+> > +     if (!tsk->mm || tsk->mm != current->mm)
+> >               return;
+> >
+> >       while (1) {
 
-Regards,
-Bjorn
+
+
+-- 
+H.J.
