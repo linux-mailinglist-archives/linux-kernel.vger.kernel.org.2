@@ -2,78 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566A13D09E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5543D09F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbhGUHAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 03:00:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234706AbhGUG7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 02:59:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02EE961181;
-        Wed, 21 Jul 2021 07:39:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626853179;
-        bh=2+aIADsNMywloffWsQ/EH6AZceZU2TxZe1S4FGZ6kg8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zEtb9gnJ+bjNEB+fmDcY8H8GFfC9Sh7vBRvRCP+DWQkuykeIQeI8bi8ohRI2ffFb3
-         uqt2Fh4ddpXzGoWB0c4mleMIq73g2vszkErNQ+8uvJ3UjLXxLS/rm6YdSEKMXz2ISn
-         8tczLJppYpdWXwsRNDQU1PpGzMKZt26hgC3hM7ts=
-Date:   Wed, 21 Jul 2021 09:39:37 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Amit Pundir <amit.pundir@linaro.org>
-Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-Message-ID: <YPfPOWcczdQTmGR0@kroah.com>
-References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
- <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
- <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
- <YO5Lm0zMEEP5uSSl@yoga>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YO5Lm0zMEEP5uSSl@yoga>
+        id S235504AbhGUHBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 03:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235289AbhGUHA6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 03:00:58 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE37C061574;
+        Wed, 21 Jul 2021 00:41:35 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d1so568228plg.0;
+        Wed, 21 Jul 2021 00:41:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=BQot9UItgo6XN+5GjiuK2SpVANWGwz3AoSdzswtxo6U=;
+        b=cauIKMH8zc6qx5eC0HA5pKkcJgsEJwskQoocWc6fYrwYD8Yv5uaINCHnaL+FsPoVVg
+         FnBIn+54FOCtYfRZfGeMmKuJ1IS7/iZpR44xinqi62wma2K/IMKKZ3ObqW0Ki+nIBoeb
+         Ivw43SYUT1MMha6XbeYB3IWtXjfOHD1/LD3awEP6RSfpOTDCgB30Frx7ZOvInVsVD6pY
+         obBRiov76RwnQBbNdeuLgvNodYEBw1qylzHLc489yJkW/XBs4VUMQgzBrM2KIRU5gi++
+         s/A+zn0JEoZKfaa8fPHCydAKUFtHwoY/T1WUdtTzro+A5pouRPRu54VlEYTRrik9nCJc
+         tb4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=BQot9UItgo6XN+5GjiuK2SpVANWGwz3AoSdzswtxo6U=;
+        b=Xr+ahS1Cu8YmfLXwoP5KjSrqCWRIQdDnpwtuzUIqu9yyZIVahdTcGQh9vLDcYP6HK2
+         OdMdtraagbAxEsMbiCGpCFK1imqNnNwzSdFCeMj4SFciiGewD5EQGz0bDcubavcwoIbL
+         mkNOd1iVimkWPqDCE54Zvle5lBKrW+ayoJ7i+7RBLi6Zf6NJo+j56pEVD2x1c6YcIq97
+         qvRJte4iV7z/4y24e6JFRyMD+qzc2Q1WFTSMhbOLFGhanFzoFNzHerhEyLT+9wum8406
+         jTvJyoHEqZ/6Qt/R97NAJ6gzSumrCtk61pozKEQOyczgoBjz8cPJXIXJR9olA1QBcewC
+         /XNQ==
+X-Gm-Message-State: AOAM531PEmlVn/LidMATdztClMPArIbouWNb6q11k4FDTMpZKH8xoHYf
+        mqxfTqdEtYZPWN7hZJegA1Q=
+X-Google-Smtp-Source: ABdhPJwhNk3YO74f6uSp+4Dh/cuvO4Pe1uHMBx6hL82AB/WyBUffaXaWt4dXRDMjdeEKIlTsxOmukQ==
+X-Received: by 2002:a17:902:e8ce:b029:12b:3d80:a028 with SMTP id v14-20020a170902e8ceb029012b3d80a028mr26666684plg.47.1626853295180;
+        Wed, 21 Jul 2021 00:41:35 -0700 (PDT)
+Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
+        by smtp.gmail.com with ESMTPSA id i8sm4841867pjh.36.2021.07.21.00.41.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 21 Jul 2021 00:41:34 -0700 (PDT)
+From:   dillon.minfei@gmail.com
+To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
+        daniel@ffwll.ch, robh+dt@kernel.org, linus.walleij@linaro.org,
+        alexandre.torgue@foss.st.com, mcoquelin.stm32@gmail.com
+Cc:     noralf@tronnes.org, dianders@chromium.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dillon Min <dillon.minfei@gmail.com>
+Subject: [PATCH v2 0/3] Add ilitek ili9341 panel driver
+Date:   Wed, 21 Jul 2021 15:41:25 +0800
+Message-Id: <1626853288-31223-1-git-send-email-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 09:27:39PM -0500, Bjorn Andersson wrote:
-> On Tue 13 Jul 19:07 CDT 2021, John Stultz wrote:
-> 
-> > On Tue, Oct 20, 2020 at 5:10 AM Serge Semin
-> > <Sergey.Semin@baikalelectronics.ru> wrote:
-> > >
-> > > In accordance with the DWC USB3 bindings the corresponding node
-> > > name is suppose to comply with the Generic USB HCD DT schema, which
-> > > requires the USB nodes to have the name acceptable by the regexp:
-> > > "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-> > > named.
-> > >
-> > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > 
-> > I know folks like to ignore this, but this patch breaks AOSP on db845c. :(
-> > 
-> 
-> Sorry, I totally forgot that the name of that node is part of the USB
-> gadget configfs interface.
+From: Dillon Min <dillon.minfei@gmail.com>
 
-Yes, and as such, it's a user-visible change, so I will go revert this.
+Since the st,sf-tc240t-9370-t dts binding already exist in stm32f429-disco.dts
+but, the panel driver didn't get accepted from mainline. it's time to submit
+patch fot it.
 
-thanks,
+This driver can support two different interface by different dts bindings:
+- spi+dpi, use spi to configure register, dpi for graphic data.
+  st,sf-tc240t-9370-t
+- only spi, just like tiny/ili9341.c (actually, this part is copy from tiny)
+  adafruit,yx240qv29
 
-greg k-h
+I submited the first patch last year, you can find it at [1].
+this patch has one major difference from that one, which is replace the low
+level communication way, from spi_sync() to mipi_dbi_{command,
+command_stackbuf}() interface, referred from Linus's patch [2].
+
+both the two dpi/dbi interface was tested on stm32f429-disco board, if anyone
+want to verify this patch, you need apply the clk patch for this board first,
+you can get it from [3]
+
+[1] "drm/panel: Add ilitek ili9341 panel driver"
+https://lore.kernel.org/lkml/1590378348-8115-7-git-send-email-dillon.minfei@gmail.com/
+
+[2] "drm/panel: s6e63m0: Switch to DBI abstraction for SPI"
+https://lore.kernel.org/dri-devel/20210611214243.669892-1-linus.walleij@linaro.org/
+
+[3]
+https://lore.kernel.org/lkml/1590378348-8115-6-git-send-email-dillon.minfei@gmail.com/
+
+v2:
+- replace vcc regulator to bulk regulators in driver, from linus suggestion.
+- fix dtbs_check warnings on ili9341 dts binding check.
+- add bulk regulation node in ilitek,ili9341.yaml.
+v1 link:
+https://lore.kernel.org/lkml/1626430843-23823-1-git-send-email-dillon.minfei@gmail.com/
+
+Dillon Min (3):
+  dt-bindings: display: panel: Add ilitek ili9341 panel bindings
+  ARM: dts: stm32: fix dtbs_check warning on ili9341 dts binding
+  drm/panel: Add ilitek ili9341 panel driver
+
+ .../bindings/display/panel/ilitek,ili9341.yaml     |  78 +++
+ arch/arm/boot/dts/stm32f429-disco.dts              |   2 +-
+ drivers/gpu/drm/panel/Kconfig                      |  12 +
+ drivers/gpu/drm/panel/Makefile                     |   1 +
+ drivers/gpu/drm/panel/panel-ilitek-ili9341.c       | 778 +++++++++++++++++++++
+ 5 files changed, 870 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
+ create mode 100644 drivers/gpu/drm/panel/panel-ilitek-ili9341.c
+
+-- 
+2.7.4
+
