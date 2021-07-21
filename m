@@ -2,131 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244133D14BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4443D14BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236043AbhGUQUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:20:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37110 "EHLO mail.kernel.org"
+        id S236233AbhGUQVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:21:34 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:35228 "EHLO mail.ispras.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229561AbhGUQUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:20:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72F3260FF3;
-        Wed, 21 Jul 2021 17:00:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626886849;
-        bh=hroQ6GW2Js8li6Khq4NdbOetcx6pit97/TyltR5nTXQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R+zARPPfPdd3B1s1Kt37AVrdb8qbI3cm9ChQkvHhfFLMSuqOCn9dd1j+Io3I7/H7p
-         ytCvMLTiKu5IgAePcglp3iq34vfehohjMky3elXA5PV8hjs4i06CEsfzfDS3P3VjcK
-         kLYtrzwcQuY5aDkS9CIBO0i/BfG4qoxYR/eR3NUbnZb2Vo7Pr/X0w9wxbweim/CZer
-         6slhDdDlzzh4Luw1N/35OJboxCcVB14LSIgPo5KesJBbMXSeWXEX52nnA0ZatTZvR0
-         KCGSg4HnqpdgcdV4S8Nnej/asX6AanTo3u3yk7RM8XJp/yoG+L8CQwGnLX496kaCyc
-         +GSERaCsr4oyw==
-Date:   Wed, 21 Jul 2021 18:00:43 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Devicetree List <devicetree@vger.kernel.org>,
-        Daniel Baluta <daniel.baluta@gmail.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        id S229561AbhGUQVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 12:21:31 -0400
+Received: from localhost.localdomain (unknown [46.188.10.168])
+        by mail.ispras.ru (Postfix) with ESMTPSA id 01B0040D403D;
+        Wed, 21 Jul 2021 17:02:04 +0000 (UTC)
+From:   Alexander Monakov <amonakov@ispras.ru>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alexander Monakov <amonakov@ispras.ru>,
+        Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [PATCH 1/3] ASoC: SOF: Parse fw/tplg filename from DT
-Message-ID: <20210721170043.GH4259@sirena.org.uk>
-References: <20210715141802.880911-1-daniel.baluta@oss.nxp.com>
- <20210715141802.880911-2-daniel.baluta@oss.nxp.com>
- <20210715143906.GD4590@sirena.org.uk>
- <CAEnQRZCdSLoaLVZ7-jtufgZCG6QshMwdfyJy_4oE6cXRbA5H8A@mail.gmail.com>
- <CAEnQRZCiC5aGK6AsD0TN5fzN6AxFn6=f8hCrd2B9fhCYfCFOSg@mail.gmail.com>
- <bd85ea7c-e9b5-de67-07ce-7104a1e19805@linux.intel.com>
- <20210721125912.GE4259@sirena.org.uk>
- <eb98c10a-cc04-dbcf-b5cf-511703dc22fb@linux.intel.com>
+        Hui Wang <hui.wang@canonical.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Jeremy Szu <jeremy.szu@canonical.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        PeiSen Hou <pshou@realtek.com>, alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda/realtek: add mic quirk for Acer SF314-42
+Date:   Wed, 21 Jul 2021 20:01:41 +0300
+Message-Id: <20210721170141.24807-1-amonakov@ispras.ru>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xHbokkKX1kTiQeDC"
-Content-Disposition: inline
-In-Reply-To: <eb98c10a-cc04-dbcf-b5cf-511703dc22fb@linux.intel.com>
-X-Cookie: Many pages make a thick book.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Acer Swift SF314-42 laptop is using Realtek ALC255 codec. Add a
+quirk so microphone in a headset connected via the right-hand side jack
+is usable.
 
---xHbokkKX1kTiQeDC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Hui Wang <hui.wang@canonical.com>
+Cc: Kailang Yang <kailang@realtek.com>
+Cc: Jeremy Szu <jeremy.szu@canonical.com>
+Cc: Jian-Hong Pan <jhp@endlessos.org>
+Cc: Chris Chiu <chris.chiu@canonical.com>
+Cc: PeiSen Hou <pshou@realtek.com>
+Cc: alsa-devel@alsa-project.org
+---
+Hello,
 
-On Wed, Jul 21, 2021 at 08:28:17AM -0500, Pierre-Louis Bossart wrote:
+Acer Swift SF314-42 laptop is using AMD Ryzen SoC audio with Realtek
+ALC255 codec. The are three ALSA cards: HDMI audio, AMD ACP card, and
+AMD HDA card. There is an internal stereo microphone connected to the
+ACP card, and a mini-jack connected to the Realtek codec. There are no
+LEDs.
 
-> > Seems like it'd be trivial to arrange in the kernel, or with userspace
-> > firmware loading the loader could do the unpacking.
+I'd like to be able to use a mic+headphones headset. Unfortunately, out
+of the box ALSA does not correctly detect the microphone input of the
+Realtek codec.  The suggested patch fixes that, though I cannot be sure
+it's 100% correct.
 
-> I think we can bundle the firmware inside of the kernel image itself,
-> but we've never tried so it doesn't work by default.
-> I don't know what userspace loading means, we rely on request_firmware
-> and don't assume any specific support from userspace.
+With the patch, the experience is unfortunately still not ideal. I have
+noticed a couple of issues:
 
-If you have a userspace handler that implements loading firmware into
-the kernel (rather than having the kernel just try with a given path
-prefix) then that program can do anything it likes to get the firmware,
-including unpacking it out of another image.
+1) at high enough gain, recording the microphone is picking up what is
+being played via the headphones; maybe it's supposed to be like that,
+but it surprised me;
 
-> > That seems like an orthogonal issue here?  The requirement for a
-> > firmware that's joined up with the hardware (and system description)
-> > that it's being used with exists regardless of how we rename things.
+2) there is a very noticeable "pop" when plugging the headset in/out,
+accompanied by
 
-> It's not completely orthogonal. The topology currently defines e.g. the
-> I2S interface index, Mclk, bclk, fsync, etc, and my point is that these
-> bits of information are completely related to the hardware and should
-> probably come from platform firmware/ACPI.
+pcieport 0000:00:08.1: PME: Spurious native interrupt!
+pcieport 0000:00:08.1: PME: Spurious native interrupt!
 
-If only ACPI based platforms offered a standard way to do this like DT
-does and didn't rely on all these platform specific hacks!  In any case
-my point is more that use case dependent selection of the firmware is a
-separate issue to having firmware that matches a specific board and
-there seemed to be some conflation of the two.  For having a completely
-board specific firmware we already have system level identification in
-both DT and ACPI which can be used.
+in dmesg. I'd appreciate info and any help about this issue.
 
-> The topology framework currently provides too much freedom to
-> developers, it's fine to add new pipelines, PCM devices and new
-> processing, but when it comes to the hardware interfaces the topology is
-> completely constrained. I've been arguing for a while now that the
-> dailink descriptions and configurations should be treated as an input to
-> the topology, not something that the topology can configure. I don't
-> know how many issues we had to deal with because the topology settings
-> were not supported by the hardware, or mismatches between topology and
-> machine drivers (missing dailinks, bad dailink index, etc).
+Thanks.
+Alexander
 
-I think it'd definitely help to at least have some strong diagnostics
-for detecting mismatches between the topology and the hardware and
-machine driver it's being applied to, including what configurations the
-machine driver is willing to have on the links (which could be just a
-single configuration if that's what makes sense for the platform).  I
-can see that the topology might want to select different configurations
-for the various hardware links depending on how it wants to use them in
-a given application, especially in more embedded contexts.
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---xHbokkKX1kTiQeDC
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index ab5113cccffa..87ad8469dbc5 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8191,6 +8191,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1025, 0x142b, "Acer Swift SF314-42", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1430, "Acer TravelMate B311R-31", ALC256_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1466, "Acer Aspire A515-56", ALC255_FIXUP_ACER_HEADPHONE_AND_MIC),
+ 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD4UroACgkQJNaLcl1U
-h9COUwf/QBa/hu110FzQzO7qAGIl1ukQEgywEkbjEHhjzU13EXqQKhKY8zUTcOFW
-GItaLI2waPJrI/DjvkKD64gQ5jtkrntoInrRmdNGAGxdo6c0wqyoe8n7+3nG+ap2
-AGD/za07Vd94ssr3ii2UFrIck7HXuC3irbMu8jkbBGbY6TC7xR1XIn0eQ51lNdC8
-hokGE2w6CwxapGkxsE9By9CdEkmn94aV8N5umRD55QEp2++wROH5E10PVL0PXsLt
-PoRxIq9bCx8fGAGivBu2htcE/eIFDy8qu3F5ggZChAT5jeUpeSAO35oMeY62xAlx
-MHPU+q6uS3vHDrlKdsu4YsaLajecHA==
-=5ZbX
------END PGP SIGNATURE-----
-
---xHbokkKX1kTiQeDC--
+base-commit: 62fb9874f5da54fdb243003b386128037319b219
+-- 
+2.31.1
