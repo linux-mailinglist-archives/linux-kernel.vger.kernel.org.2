@@ -2,105 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2792C3D11E6
+	by mail.lfdr.de (Postfix) with ESMTP id 74CAC3D11E7
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239723AbhGUOYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239486AbhGUOWt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:22:49 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7C5C061575;
-        Wed, 21 Jul 2021 08:03:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=WaEaZLo99zKGArJnchsGd0Ac07YGVhjisSX1dpfpeSI=; b=zX+QUfarnn/fehC1ZfWAGOfLV
-        blrCO/XHwuqrbighF8tOpVDqHqQaNclmDccY6c3gh9J3aiX4Qt3d7Yv5sQEdBAA9KQbwenKo2TNJn
-        hnMSrRuDKQpotqEUtXVddkBDhnkupwutBzM3dmC+IP2YZe8vRtEjkvZlRfnj3i1nCpdC5bhpMwtkT
-        nWhm+XhKfJqXKpS++Nk1/cvxfpYHooK1IYjn2vMYzLdhW1KnlTdIEe5kTIqS4TjF6K2nHi4ysXHsm
-        y8ep21XcgiayhhxaFYu8vlVRJbz+fe1zl/ZlK2OWOl+NnqyqR0M72TNvAPThzKPIFNT1uwtIiSMuY
-        dhGvwHwVg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46432)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1m6DkV-0007tl-8J; Wed, 21 Jul 2021 16:03:03 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1m6DkS-0008ND-OM; Wed, 21 Jul 2021 16:03:00 +0100
-Date:   Wed, 21 Jul 2021 16:03:00 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Bauer <mail@david-bauer.net>,
-        Michael Walle <michael@walle.cc>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: at803x: fix at803x_match_phy_id mismatch
-Message-ID: <20210721150300.GA22278@shell.armlinux.org.uk>
-References: <20210721150141.1737124-1-arnd@kernel.org>
+        id S239732AbhGUOYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:24:09 -0400
+Received: from mga09.intel.com ([134.134.136.24]:4035 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239462AbhGUOXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 10:23:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="211450913"
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="211450913"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 08:03:57 -0700
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="501315527"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 08:03:55 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m6DlF-00GgaQ-GI; Wed, 21 Jul 2021 18:03:49 +0300
+Date:   Wed, 21 Jul 2021 18:03:49 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andreas Schwab <schwab@suse.de>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
+Message-ID: <YPg3VS/Ure6VRsuJ@smile.fi.intel.com>
+References: <mvmtukn6bmu.fsf@suse.de>
+ <YPgwHcbK7XoXL/mD@smile.fi.intel.com>
+ <mvmpmvb68cg.fsf@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210721150141.1737124-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <mvmpmvb68cg.fsf@suse.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch already sent by Vladimir, and just applied.
+On Wed, Jul 21, 2021 at 04:37:51PM +0200, Andreas Schwab wrote:
+> On Jul 21 2021, Andy Shevchenko wrote:
+> 
+> > The driver has OF compatible strings and should be loaded automatically.
+> 
+> They are never being used.
 
-On Wed, Jul 21, 2021 at 05:01:28PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> There are two conflicting patches in net-next, one removed
-> the at803x_get_features() function and the other added another
-> user:
-> 
-> drivers/net/phy/at803x.c: In function 'at803x_get_features':
-> drivers/net/phy/at803x.c:706:14: error: implicit declaration of function 'at803x_match_phy_id' [-Werror=implicit-function-declaration]
-> 
-> Change the new caller over to an open-coded comparison as well.
-> 
-> Fixes: 8887ca5474bd ("net: phy: at803x: simplify custom phy id matching")
-> Fixes: b856150c8098 ("net: phy: at803x: mask 1000 Base-X link mode")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/net/phy/at803x.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-> index 0790ffcd3db6..bdac087058b2 100644
-> --- a/drivers/net/phy/at803x.c
-> +++ b/drivers/net/phy/at803x.c
-> @@ -703,7 +703,7 @@ static int at803x_get_features(struct phy_device *phydev)
->  	if (err)
->  		return err;
->  
-> -	if (!at803x_match_phy_id(phydev, ATH8031_PHY_ID))
-> +	if (phydev->drv->phy_id != ATH8031_PHY_ID)
->  		return 0;
->  
->  	/* AR8031/AR8033 have different status registers
-> -- 
-> 2.29.2
-> 
-> 
+What do you mean by that?
+
+Can you explain what is the _practical_ issue here? What is your HW setup and
+what you are trying to do?
+
+> # udevadm info /sys/devices/platform/soc/10050000.spi/spi_master/spi1/spi1.0
+> P: /devices/platform/soc/10050000.spi/spi_master/spi1/spi1.0
+> L: 0
+> E: DEVPATH=/devices/platform/soc/10050000.spi/spi_master/spi1/spi1.0
+> E: DRIVER=mmc_spi
+> E: OF_NAME=mmc
+> E: OF_FULLNAME=/soc/spi@10050000/mmc@0
+> E: OF_COMPATIBLE_0=mmc-spi-slot
+> E: OF_COMPATIBLE_N=1
+> E: MODALIAS=spi:mmc-spi-slot
+> E: SUBSYSTEM=spi
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+With Best Regards,
+Andy Shevchenko
+
+
