@@ -2,76 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5766A3D09D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905B73D09E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236013AbhGUG5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 02:57:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234361AbhGUGzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 02:55:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE907606A5;
-        Wed, 21 Jul 2021 07:36:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626852968;
-        bh=KlmLkL59OiWSTy83kBXJsEldlUQA0yf4WquevwiPQnM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nUKzA/Q+07YyD48Aekk1WulMlHGmOFP4xtq0/4OAkFmryLTnrmKDKz7k66khqk2rC
-         oO95Y+4krxmBfFk/jBHP3WsxmqMysPAcwSI3TM69ti/e8ZyHigNdqQjsOCKyUK1ZKI
-         dtMENVDxIMvVcTXElA4HdS9bAPgWxeMTDN8XYHCw=
-Date:   Wed, 21 Jul 2021 09:36:06 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Oliver Neukum <oneukum@suse.com>,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Rustam Kovhaev <rkovhaev@gmail.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com,
-        YueHaibing <yuehaibing@huawei.com>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] usb: hso: fix error handling code of
- hso_create_net_device
-Message-ID: <YPfOZp7YoagbE+Mh@kroah.com>
-References: <20210714091327.677458-1-mudongliangabcd@gmail.com>
+        id S234361AbhGUG6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 02:58:40 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3440 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236038AbhGUG5H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 02:57:07 -0400
+Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GV6Vm5QWVz6D8n1;
+        Wed, 21 Jul 2021 15:22:56 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 21 Jul 2021 09:37:42 +0200
+Received: from [10.47.85.43] (10.47.85.43) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 21 Jul
+ 2021 08:37:41 +0100
+Subject: Re: [PATCH] perf pmu: Fix alias matching
+To:     "Jin, Yao" <yao.jin@linux.intel.com>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <kjain@linux.ibm.com>,
+        <alexander.shishkin@linux.intel.com>, <irogers@google.com>
+CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1626793819-79090-1-git-send-email-john.garry@huawei.com>
+ <0b57fa9b-fba4-8143-bef6-b7c4f2987635@linux.intel.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <0752a2b1-4770-4614-3b3f-73752a7d962a@huawei.com>
+Date:   Wed, 21 Jul 2021 08:37:38 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210714091327.677458-1-mudongliangabcd@gmail.com>
+In-Reply-To: <0b57fa9b-fba4-8143-bef6-b7c4f2987635@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.85.43]
+X-ClientProxiedBy: lhreml734-chm.china.huawei.com (10.201.108.85) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 05:13:22PM +0800, Dongliang Mu wrote:
-> The current error handling code of hso_create_net_device is
-> hso_free_net_device, no matter which errors lead to. For example,
-> WARNING in hso_free_net_device [1].
+>>
+>> Fixes: c47a5599eda3 ("perf tools: Fix pattern matching for same 
+>> substring in different PMU type")
+>> Signed-off-by: John Garry <john.garry@huawei.com>
+>> ---
+>> @Jin Yao, please test for your scenarios
+>>
 > 
-> Fix this by refactoring the error handling code of
-> hso_create_net_device by handling different errors by different code.
+> For x86, the form uncore_pmu_{digits} or the uncore_pmu itself are 
+> supported. We don't have more complex case such as the name in the form 
+> aaa_bbbX_cccY. So my test didn't cover that complex form.
 > 
-> [1] https://syzkaller.appspot.com/bug?id=66eff8d49af1b28370ad342787413e35bbe76efe
+
+My next thing to do is to add support for these more complex scenarios 
+in the PMU events self tests
+
+> For my test, your patch works, thanks! :)
+
+Good
+
 > 
-> Reported-by: syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com
-> Fixes: 5fcfb6d0bfcd ("hso: fix bailout in error case of probe")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
-> v1->v2: change labels according to the comment of Dan Carpenter
-> v2->v3: change the style of error handling labels
->  drivers/net/usb/hso.c | 33 +++++++++++++++++++++++----------
->  1 file changed, 23 insertions(+), 10 deletions(-)
+>> Note:
+>> About any effect in perf_pmu__match() -> perf_pmu__valid_suffix()
+>> callchain, this seems to be called for wildcard in PMU names in metric
+>> expressions. We don't have any metrics for arm64 which use feature.
+>> However, I hacked an existing metric to use a wildcard and it looks ok.
+>> Also the "DRAM_BW_Use" metric on my broadwell uses this feature, and it
+>> looks ok.
+>>
+>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+>> index a1bd7007a8b4..fc683bc41715 100644
+>> --- a/tools/perf/util/pmu.c
+>> +++ b/tools/perf/util/pmu.c
+>> @@ -742,9 +742,13 @@ struct pmu_events_map *__weak 
+>> pmu_events_map__find(void)
+>>       return perf_pmu__find_map(NULL);
+>>   }
+>> -static bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
+>> +/*
+>> + * Suffix must be in form tok_{digits}, or tok{digits}, or same as 
+>> pmu_name
+>> + * to be valid.
+>> + */
+>> +static bool perf_pmu__valid_suffix(const char *pmu_name, char *tok)
+>>   {
+>> -    char *p;
+>> +    const char *p;
+>>       if (strncmp(pmu_name, tok, strlen(tok)))
+>>           return false;
+>> @@ -753,12 +757,16 @@ static bool perf_pmu__valid_suffix(char 
+>> *pmu_name, char *tok)
+>>       if (*p == 0)
+>>           return true;
+>> -    if (*p != '_')
+>> -        return false;
+>> +    if (*p == '_')
+>> +        ++p;
+>> -    ++p;
+>> -    if (*p == 0 || !isdigit(*p))
+>> -        return false;
+>> +    /* Ensure we end in a number */
+>> +    while (1) {
+>> +        if (!isdigit(*p))
+>> +            return false;
+>> +        if (*(++p) == 0)
+>> +            break;
+>> +    }
+> 
+> Do we check *p before first isdigit? For example,
+> 
+> if (*p == 0)
+>      return false;
+> 
+> While (*p) {
+>      if (!isdigit(*p)
+>          return false;
+>      ++p;
+> }
+> 
+> But maybe isdigit can handle the null string well. I'm just feeling a 
+> bit unsure.
+> 
 
-Please resend the whole series, not just one patch of the series.
-Otherwise it makes it impossible to determine what patch from what
-series should be applied in what order.
+isdigit() can safely handle 0 and returns 0 for that case, so what I 
+added should be ok
 
-All of these are now dropped from my queue, please fix up and resend.
+>>       return true;
+>>   }
+>> @@ -789,12 +797,19 @@ bool pmu_uncore_alias_match(const char 
+>> *pmu_name, const char *name)
+>>        *        match "socket" in "socketX_pmunameY" and then 
+>> "pmuname" in
+>>        *        "pmunameY".
+>>        */
+>> -    for (; tok; name += strlen(tok), tok = strtok_r(NULL, ",", &tmp)) {
+>> +    while (1) {
+>> +        char *next_tok = strtok_r(NULL, ",", &tmp);
+>> +
+>>           name = strstr(name, tok);
+>> -        if (!name || !perf_pmu__valid_suffix((char *)name, tok)) {
+>> +        if (!name ||
+>> +            (!next_tok && !perf_pmu__valid_suffix(name, tok))) {
+>>               res = false;
+>>               goto out;
+>>           }
+>> +        if (!next_tok)
+>> +            break;
+>> +        tok = next_tok;
+>> +        name += strlen(tok);
+>>       }
+>>       res = true;
+>>
+> 
+> My test didn't cover the tokens which were delimited by ','. I assume 
+> you have tested that on arm64 system. :)
+> 
 
-thanks,
-
-greg k-h
+Right
+Thanks,
+John
