@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193D43D1526
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1877D3D1524
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236432AbhGUQxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:53:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236338AbhGUQxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:53:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 485936124B;
-        Wed, 21 Jul 2021 17:34:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626888847;
-        bh=b6z7/esTdXvxkRFP8Hdtl7YfEHwvkyxK8xKYwAwchuk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=pTKTV7RHlxD81GPcOVD5Xk9vRtDOrTVPkofkSyGAcAhm8DlQEZBB+h97+JWnXhVx6
-         37UOq3nXg/qSRp1Hc5cFauYQn7i1GyAJ19/bBUdtYxX+mIwdDBhwB1xfnVLSG9wDWk
-         jXYKtTEAkWACLO+5fCwVcmds78CW82gPJpFQaRYQ7VY+2DPV1kQjx3v1zoRG/lUX7z
-         b/ctna6WK9rphEHoK2vOOcTyzv5VDNai2WmSeLCGgsoUEDSNbJe/TDF2sY+Y8FNC/a
-         Tf+3VOZs1BLcnVnhnPUtyRZCkKaymsWKWjWMhLkrTQrdXoxyXWCxa0blbII1cES82L
-         CLW/aDMYCSa4w==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] SPI fixes for v5.14-rc2
-Date:   Wed, 21 Jul 2021 18:33:48 +0100
-Message-Id: <20210721173407.485936124B@mail.kernel.org>
+        id S234914AbhGUQx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236218AbhGUQxV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 12:53:21 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F013C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:33:56 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id k11so3236324ioa.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:33:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=+VXGL5cSlrsHSV53qZrI5w6RxxYRiKt4sgbxRqXwtr4=;
+        b=W8DvMJkHp77lb81cnx18pbiB2xwPWCqHll0r4pPPNRDojHBBXtFSDWAFa/xMRdurW0
+         2UkjjA3Ty0go017Zp6vEh6P6VvK/cQlhGvciz3dq1t7hNHsdsoqc4b3j/2K7rFeNvV5N
+         7PtYnNTfZcKa+CftRlDE3LiCtSyFNDHmLPz3rCX5Cm8X/Jlr+rGtk5wsAUHoy8YS6uHe
+         Zwqn3p2vpqgYL0pavqAkeuh3cCfV7J/FGAIiAQ6F9t7E3g7rm12HG+Stij1OHbu1g6Cd
+         kh1KdlC80IROVI/LVyHa9AoXFo1hXw45ctFC8/2GkGZxZleuYxYBXCkQeO9014SIJ0Ek
+         ghLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=+VXGL5cSlrsHSV53qZrI5w6RxxYRiKt4sgbxRqXwtr4=;
+        b=XIhsRcechDjPYDxl5c9Cwme2SvUeDzgcK+cOjbWWz07SvsAEOgHng/IAOVM9GJFf2k
+         q3/b/YtURYwba7Rz89crbLeAe8F68KHtrFY6bZ0IpP4gTWV5+AKP9ISyW35/37o/g9X7
+         iCZYH+UXPwSSifiRVoSA2Jywp93ay2LMMMmylpKcj+lOG58hGBKWa/CWBOr0TpUtALOz
+         quPTLSMLOw8SVyrz2ThHNmtwPHXsKd51GVVVY6IcsVoiYxi1BDeyptIZunbS15k/yFHQ
+         CJFWVzgBF6m1bmdBEcy+uSBqPQKiq3U5kh7vU5zjUxHFGxsVKEnqDmXLLV0D2uvmRhrK
+         RcNg==
+X-Gm-Message-State: AOAM532rxxOe9BBrNy1YK/Iq2fEOQ5megiex7T1SPKIIkWe5+GOQN8Ov
+        NeOm4NHU9d3bGYO7PCg+fQzc66EOc0QyD4/2dAo=
+X-Google-Smtp-Source: ABdhPJzhHMccQw7DoYT9EBYdCL8hwSInB4g1rgKhyjyPBevwxIS5fF94ixuHQlBzjNmoT0y449XP8576tNj8uRLzi/c=
+X-Received: by 2002:a05:6638:2516:: with SMTP id v22mr29673657jat.144.1626888835973;
+ Wed, 21 Jul 2021 10:33:55 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:6e02:927:0:0:0:0 with HTTP; Wed, 21 Jul 2021 10:33:55
+ -0700 (PDT)
+From:   ahmed edelbore <ahmededelbore300uk@gmail.com>
+Date:   Wed, 21 Jul 2021 19:33:55 +0200
+Message-ID: <CAGwNYa8BFt1LYrRHx4u8hqRfJDcHxwTM_EQiPQzatgM1Pe6yyQ@mail.gmail.com>
+Subject: I wish to trust you
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit b470e10eb43f19e08245cd87dd3192a8141cfbb5:
+Hello,
 
-  spi: core: add dma_map_dev for dma device (2021-06-25 12:26:49 +0100)
+My Name is Mr. Ahmed Edelbore the Chief Operating Officer of CITIZEN
+BANK OF AFRICA and I am in need of a reliable foreigner to carry out
+this important deal.
 
-are available in the Git repository at:
+An account was opened in my bank by one of my customer in the name of
+MR. THOMAS BAHIA a Dutch National from Germany who made a fixed
+deposit of $1,600,000.00 (One Million, Six hundred Thousand United
+States Dollars) and never show up again and I later discovered that he
+died with his entire family members on a plane crash that occurred in
+Libya on the 12th of May 2010 and below is a link for your view..
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.14-rc2
+http://www.nytimes.com/2010/05/13/world/middleeast/13libya.html
 
-for you to fetch changes up to c45c1e82bba130db4f19d9dbc1deefcf4ea994ed:
+Now I want to present a foreigner as next of kin to late Thomas so we
+can make the claim and you can contact me if you are interested so I
+can give you more detailed information about this transaction. For the
+sharing of the money will be shared in the ratio of 50% for me, 50%
+for you
 
-  spi: spi-bcm2835: Fix deadlock (2021-07-20 13:34:05 +0100)
+Please, this is the right time for this deal after my studies
 
-----------------------------------------------------------------
-spi: Fixes for v5.14
+Thanks.
 
-A collection of driver specific fixes, there was a bit of a kerfuffle
-with some last minute review on hte spi-cadence-quadspi division by zero
-change but otherwise nothing terribly remarkable here - important fixes
-if you have the hardware but nothing with too wide an impact.
-
-----------------------------------------------------------------
-Alain Volmat (2):
-      spi: stm32h7: fix full duplex irq handler handling
-      spi: stm32: fixes pm_runtime calls in probe/remove
-
-Alexandru Tachici (1):
-      spi: spi-bcm2835: Fix deadlock
-
-Apurva Nandan (1):
-      spi: cadence-quadspi: Disable Auto-HW polling
-
-Dan Sneddon (1):
-      spi: atmel: Fix CS and initialization bug
-
-Marek Vasut (2):
-      spi: imx: mx51-ecspi: Reinstate low-speed CONFIGREG delay
-      spi: cadence: Correct initialisation of runtime PM again
-
-Mason Zhang (1):
-      spi: mediatek: move devm_spi_register_master position
-
-Peter Hess (1):
-      spi: mediatek: fix fifo rx mode
-
-Yoshitaka Ikeda (3):
-      spi: spi-cadence-quadspi: Fix division by zero warning
-      spi: spi-cadence-quadspi: Revert "Fix division by zero warning"
-      spi: spi-cadence-quadspi: Fix division by zero warning
-
- drivers/spi/spi-atmel.c           |  9 ++-------
- drivers/spi/spi-bcm2835.c         | 12 +++++++-----
- drivers/spi/spi-cadence-quadspi.c | 30 +++++++++++++++++-------------
- drivers/spi/spi-cadence.c         | 14 +++++++++-----
- drivers/spi/spi-imx.c             | 38 +++++++++++++++++++-------------------
- drivers/spi/spi-mt65xx.c          | 28 +++++++++++++++++++---------
- drivers/spi/spi-stm32.c           | 24 +++++++++++++++++-------
- 7 files changed, 90 insertions(+), 65 deletions(-)
+Mr. Ahmed Edelbore
+Reply to ahmed.edelbore207@gmail.com
+Phone whatsapp: +228 92392524
