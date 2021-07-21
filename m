@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFC93D180A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6E23D180C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240506AbhGUTlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:41:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50132 "EHLO mail.kernel.org"
+        id S240471AbhGUTla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:41:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240371AbhGUTkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:40:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA5BF61378;
+        id S240399AbhGUTky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 15:40:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F02016139A;
         Wed, 21 Jul 2021 20:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626898889;
-        bh=SdrpdiqsOqw1ZsbcidRIoS1RHh9baiBuMisVCrPhoEQ=;
+        s=k20201202; t=1626898890;
+        bh=MwdcEzyqxvGGf9rRbzj9W8+01WNtdWk5AM4dfPjKIEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fCzu80q9eWNODF2A5llLlQ8BqcIW1MMrXhKi/HljySv1nw6DYNJl6yXfMUjaCQZdN
-         6Y2KIz4oduKC2tcgDXp2+G0qQLrqOfc0x5Q7phqA1TVc9Vy8Nnhr0dAQn0eU5kMT8B
-         FchlLVid0zxXjlPNgM43EMf0Zr/EfKjDUNvSswaLuGoLWByut80ydW3VU5tEkUxw74
-         0QPmr2wiZ6vO8RizgAyXEG6FQjyC2Z0v6JP4YK4ztzjqVnmzjRSuAx1FOPffcATpef
-         aEWkaDoewd27GWsPqqrB7By9uMCD+KWAB7xyi9MmqTQUHfMFI9I3Lf2ona3pXJflHG
-         rEBLdDdabEj/A==
+        b=K13FYWMXVDFnYgHMWDqShTRRCby/S3XEDN1NsAWSgfRe4Lln9ZUG+EX8GJe/yrWFI
+         0iljXuShFyFQvWaDPRRyOfLnH0j4ySizE0uC9EFjH/zJr/5V9Pmb8KZOGh7lxamGj8
+         NLmRU/BpiJfVD3ST19GG9RqsOQpsbX1cckPppr75+BN6bsV39xCSVwEeFdlfXlybJm
+         xEg9ZADcb2Gs+iUH+m0wwZsRadf/fy5InpNrXnzUmCGH+ciRhqCPdq1pXV3PQCUEvi
+         3sP16LZc5C2NI+jlyRQzJ5WQEYo3tkEgcY8FSoB4MczliifLAovLvJanXFi6E6F4qB
+         C0CaNQc/qgg8A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4975A5C10AA; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
+        id 4CA415C0F00; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,13 +33,14 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Liu Song <liu.song11@zte.com.cn>,
-        Uladzislau Rezki <urezki@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 16/18] rcu: Use per_cpu_ptr to get the pointer of per_cpu variable
-Date:   Wed, 21 Jul 2021 13:21:24 -0700
-Message-Id: <20210721202127.2129660-16-paulmck@kernel.org>
+Subject: [PATCH rcu 17/18] rcu: Explain why rcu_all_qs() is a stub in preemptible TREE RCU
+Date:   Wed, 21 Jul 2021 13:21:25 -0700
+Message-Id: <20210721202127.2129660-17-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
@@ -49,62 +50,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Song <liu.song11@zte.com.cn>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-There are a few remaining locations in kernel/rcu that still use
-"&per_cpu()".  This commit replaces them with "per_cpu_ptr(&)", and does
-not introduce any functional change.
+The cond_resched() function reports an RCU quiescent state only in
+non-preemptible TREE RCU implementation.  This commit therefore adds a
+comment explaining why cond_resched() does nothing in preemptible kernels.
 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Liu Song <liu.song11@zte.com.cn>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h      | 2 +-
- kernel/rcu/tree.c       | 2 +-
- kernel/rcu/tree_stall.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ kernel/sched/core.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 8536c55df5142..21f00194e69d7 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -920,7 +920,7 @@ static void trc_read_check_handler(void *t_in)
- 	// Allow future IPIs to be sent on CPU and for task.
- 	// Also order this IPI handler against any later manipulations of
- 	// the intended task.
--	smp_store_release(&per_cpu(trc_ipi_to_cpu, smp_processor_id()), false); // ^^^
-+	smp_store_release(per_cpu_ptr(&trc_ipi_to_cpu, smp_processor_id()), false); // ^^^
- 	smp_store_release(&texp->trc_ipi_to_cpu, -1); // ^^^
- }
- 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 7b65ac3f49e5a..888efad0361d3 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1292,7 +1292,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- 	 */
- 	jtsq = READ_ONCE(jiffies_to_sched_qs);
- 	ruqp = per_cpu_ptr(&rcu_data.rcu_urgent_qs, rdp->cpu);
--	rnhqp = &per_cpu(rcu_data.rcu_need_heavy_qs, rdp->cpu);
-+	rnhqp = per_cpu_ptr(&rcu_data.rcu_need_heavy_qs, rdp->cpu);
- 	if (!READ_ONCE(*rnhqp) &&
- 	    (time_after(jiffies, rcu_state.gp_start + jtsq * 2) ||
- 	     time_after(jiffies, rcu_state.jiffies_resched) ||
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index a8d0fcf0826f4..677ee3d8671bf 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -351,7 +351,7 @@ static void rcu_dump_cpu_stacks(void)
- 
- static void print_cpu_stall_fast_no_hz(char *cp, int cpu)
- {
--	struct rcu_data *rdp = &per_cpu(rcu_data, cpu);
-+	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
- 
- 	sprintf(cp, "last_accelerate: %04lx/%04lx dyntick_enabled: %d",
- 		rdp->last_accelerate & 0xffff, jiffies & 0xffff,
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 2d9ff40f46619..6a03c3fac55cc 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7781,6 +7781,17 @@ int __sched __cond_resched(void)
+ 		preempt_schedule_common();
+ 		return 1;
+ 	}
++	/*
++	 * In preemptible kernels, ->rcu_read_lock_nesting tells the tick
++	 * whether the current CPU is in an RCU read-side critical section,
++	 * so the tick can report quiescent states even for CPUs looping
++	 * in kernel context.  In contrast, in non-preemptible kernels,
++	 * RCU readers leave no in-memory hints, which means that CPU-bound
++	 * processes executing in kernel context might never report an
++	 * RCU quiescent state.  Therefore, the following code causes
++	 * cond_resched() to report a quiescent state, but only when RCU
++	 * is in urgent need of one.
++	 */
+ #ifndef CONFIG_PREEMPT_RCU
+ 	rcu_all_qs();
+ #endif
 -- 
 2.31.1.189.g2e36527f23
 
