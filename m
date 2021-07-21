@@ -2,88 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F423D176A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF1C3D1765
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239925AbhGUTMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
+        id S239782AbhGUTM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239730AbhGUTM2 (ORCPT
+        with ESMTP id S232486AbhGUTMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:12:28 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F4C7C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:53:04 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id j1so800988pjj.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:53:04 -0700 (PDT)
+        Wed, 21 Jul 2021 15:12:25 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A86AC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:53:01 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id cu14so2556854pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:53:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NRbb2WhKrno0rg5XVu8dJTfW7QbPPoDT9nWYWG2fU04=;
-        b=Zzrk729wAqGilC6KYU+4BZArciy7pZDSM7C98suRTP+rY1Alunx9WnXRn1ijGDQ4qr
-         ORSJ7IVuNgMtRsVkn04q55/yvSTa7X01QoLAWnpIJpg8dfg+lE5QCkLBhIqXTRXv+BtA
-         SzPMcvWsnCsHNt0YZrk+Q93X7z49RBVnGOY2fkMVZvRxdfdOX2k5fPDoIqkq8xYagxjI
-         C54roWj4UlWVOXdGMYAsZXKG+PxU7cJqVYKu11pJ6mUyB4M9xQXYjz0Gc1lp38PBUhtq
-         ZRR8g4ICOc1Eb6j+hzuFH8Dww/4DhZHjQ4RriyZHvAnQLpcc0nrO//XZ/pxl0g7D4sic
-         U7oA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1ZFdogakN+U+D6SX6LhX2SwuYGYaPQsFnYtn2JJoTak=;
+        b=tvsyIWhNU3cg/xV3WaOgqDwBpspmMJ50HUSKczTQOHxoia0Gf97fLeNPk6repjxMxU
+         5jlQjcRGy7FAvAeYmsOGOEYiTkvB0EteJixLlWUNljGhhG0PxH0M7Jr0YMrWsiBC+SVB
+         pIOpLAoFAx54KbgFB0OJI2cv1cLaVXjySbSkqcTiKacy5Jiswx7XbaxYaezXwq5abeO8
+         d9qYtq/rp/48EjBy9Fe3JmA2tU0HXYTEFUlhqjbmenaY06xhIi59kAojLPYzjgdIIkUG
+         pwhusBBAxUzr7N/6g9a8yVt99NfLdGGQmtyY79jbo2dQWDvQacDkC6QpUzuye67Hh0CG
+         pWSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NRbb2WhKrno0rg5XVu8dJTfW7QbPPoDT9nWYWG2fU04=;
-        b=jNyORW1HMLRUT4rgQLVJRfjYM3CpC/LlkZpqQCRvYoJTIN6pt7MlUEY5HqAzodKX9S
-         ExhufYhi9xcvv32rAved/fHrQ0DFUVXHUb6zbi/0QYKeO3ByTEL/2+2OQQsEs1ntVXnt
-         7ykU1lLm70y/0wdJr+Ui7x/E8HoIg/bK09EM2qW47rbzPN8T2Gv3AKOuUHerNTJP0X0Y
-         vJwdEs136HFJI8T3gK4MZZhYLTdPkvHWWI43Xnx9LChHAoL4vc91oerCTI0u5kcrNYpP
-         pPEaPkBklrTxP/Tq0jZfOrS9GH24zxeBO06mP4fRp4Atvp+i23d2Mip3He6s4LE09zPi
-         w2dw==
-X-Gm-Message-State: AOAM532Kg+1V/uya2g5lbTDpNnvFQXZIAnkt9oxCFpogO8ZqrBjHnq1B
-        Ba5kHFen/POz99p4+OThUyk4whMC+TW3bTvdTGhSZkYsaiXJhA==
-X-Google-Smtp-Source: ABdhPJzH4d3B0PuFlBwcr6uSCwfZe56uh2y9B0upxapM08pQm8+CliBNhuJMlpm2Fa1l2Iaihfu25JZva1y+Y9BG7ng=
-X-Received: by 2002:a65:6a01:: with SMTP id m1mr38108609pgu.201.1626897183577;
- Wed, 21 Jul 2021 12:53:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1ZFdogakN+U+D6SX6LhX2SwuYGYaPQsFnYtn2JJoTak=;
+        b=orJqVCX44GM45xETL5dInJDpCmSpGXhXe5it7Sl5iJGuJq5eyC6F+/rBCtcGXvyYdT
+         5s1IFx8ZqLQrD/6cDLU+HlS7ing6B9qMxYqzmZR52UoZasS/ai8/px7thJDJh+naFOja
+         jO9Jf09FIsV051QxU21YD2Thhfht81GqIeC3o2KTLG0Bh/skFe8GOq9lAhIzAJwBw+v1
+         on/2sXSISuQiIgqkWp9oaARa9jzc9PEtX4dtueHX0P1qt4s+KHOsPAcumrK6YZeVKBdL
+         reg17idzhLzEActRgVmSPmM+wqgPKnFIhEg+nEQBPMKaMPqx+QaM4VuqMY1p+6V24TCp
+         uSkA==
+X-Gm-Message-State: AOAM533JtlUQwLur6C8XqUMtC2Wi6QHgX+mlnlMHjmoRWmu8de1/o/F/
+        h2T8/Yl1WyDq/qthsapVKlAkjA==
+X-Google-Smtp-Source: ABdhPJx0SNXBSozA1zqonbwhhcSmrLxNop72v66ohRghPV4r836hvfWk3fIwfoZPziXuNwE9t9Hl/Q==
+X-Received: by 2002:a17:90b:2382:: with SMTP id mr2mr5315994pjb.169.1626897180725;
+        Wed, 21 Jul 2021 12:53:00 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id 5sm31461466pgv.25.2021.07.21.12.52.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 12:52:59 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 19:52:55 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 40/40] KVM: SVM: Support SEV-SNP AP Creation
+ NAE event
+Message-ID: <YPh7F2talucL7FQ9@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-41-brijesh.singh@amd.com>
+ <YPdjvca28JaWPZRb@google.com>
+ <c007821a-3a79-d270-07af-eb7d4c2d0862@amd.com>
 MIME-Version: 1.0
-References: <20210717234758.46598-1-andrealmeid@collabora.com> <20210717234758.46598-2-andrealmeid@collabora.com>
-In-Reply-To: <20210717234758.46598-2-andrealmeid@collabora.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 21 Jul 2021 12:52:52 -0700
-Message-ID: <CAFd5g47nOfQ506ZyivLy2U1FkrnNhuDxUr0wUyN=F700mw+N8A@mail.gmail.com>
-Subject: Re: [PATCH v5 1/1] lib: Convert UUID runtime test to KUnit
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, Shuah Khan <shuah@kernel.org>,
-        ~lkcamp/patches@lists.sr.ht, nfraprado@collabora.com,
-        leandro.ribeiro@collabora.com,
-        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com,
-        David Gow <davidgow@google.com>,
-        Daniel Latypov <dlatypov@google.com>, tales.aparecida@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c007821a-3a79-d270-07af-eb7d4c2d0862@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 4:48 PM Andr=C3=A9 Almeida <andrealmeid@collabora.c=
-om> wrote:
->
-> Remove custom functions for testing and use KUnit framework. Keep the
-> tested functions and test data the same.
->
-> Current test threat (g/u)uid_parse and (g/u)uid_equal as different test
-> cases. Make both functions being part of the same test case, given the
-> dependency regarding their results. This reduces the tests cases from 6
-> cases to 4, while keeping the test coverage the same. Given that we have
-> 3 strings for each test case, current test output notifies 18 tests
-> results, and the KUnit output announces 12 results.
->
-> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
-> Reviewed-by: Daniel Latypov <dlatypov@google.com>
+On Wed, Jul 21, 2021, Tom Lendacky wrote:
+> On 7/20/21 7:01 PM, Sean Christopherson wrote:
+> > On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> >> From: Tom Lendacky <thomas.lendacky@amd.com>
+> >> +
+> >> +		svm->snp_vmsa_pfn = pfn;
+> >> +
+> >> +		/* Use the new VMSA in the sev_es_init_vmcb() path */
+> >> +		svm->vmsa_pa = pfn_to_hpa(pfn);
+> >> +		svm->vmcb->control.vmsa_pa = svm->vmsa_pa;
+> >> +
+> >> +		vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+> >> +	} else {
+> >> +		vcpu->arch.pv.pv_unhalted = false;
+> > 
+> > Shouldn't the RUNNABLE path also clear pv_unhalted?
+> 
+> If anything it should set it, since it will be "unhalted" now. But, I
+> looked through the code to try and understand if there was a need to set
+> it and didn't really see any reason. It is only ever set (at least
+> directly) in one place and is cleared everywhere else. It was odd to me.
 
-I don't think I have anything to add that hasn't already been said.
-Nevertheless, this looks good to me.
+pv_unhalted is specifically used for a "magic" IPI (KVM hijacked a defunct
+IPI type) in the context of PV spinlocks.  The idea is that a vCPU that's releasing
+a spinlock can kick the next vCPU in the queue, and KVM will directly yield to the
+vCPU being kicked so that the guest can efficiently make forward progress.
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+So it's not wrong to leave pv_unhalted as is, but it's odd to clear it in the
+DESTROY case but not CREATE_INIT case.  It should be a moot point, as a sane
+implementation should make it impossible to get to CREATE with pv_unhalted=1.
+
+> >> +		vcpu->arch.mp_state = KVM_MP_STATE_UNINITIALIZED;
+> > 
+> > What happens if userspace calls kvm_arch_vcpu_ioctl_set_mpstate, or even worse
+> > the guest sends INIT-SIPI?  Unless I'm mistaken, either case will cause KVM to
+> > run the vCPU with vmcb->control.vmsa_pa==0.
+> 
+> Using the INVALID_PAGE value now (and even when it was 0), you'll get a
+> VMRUN failure.
+> 
+> The AP CREATE_ON_INIT is meant to be used with INIT-SIPI, so if the guest
+> hasn't done the right thing, then it will fail on VMRUN.
+> 
+> > 
+> > My initial reaction is that the "offline" case needs a new mp_state, or maybe
+> > just use KVM_MP_STATE_STOPPED.
+> 
+> I'll look at KVM_MP_STATE_STOPPED. Qemu doesn't reference that state at
+> all in the i386 support, though, which is why I went with UNINITIALIZED.
+
+Ya, it'd effectively be a new feature.  My concern with UNINITIALIZED is that it
+be impossible for KVM to differentiate between "never run" and "destroyed and may
+have an invalid VMSA" without looking at the VMSA.
+
+> >> +	mutex_lock(&target_svm->snp_vmsa_mutex);
+> > 
+> > This seems like it's missing a big pile of sanity checks.  E.g. KVM should reject
+> > SVM_VMGEXIT_AP_CREATE if the target vCPU is already "created", including the case
+> > where it was "created_on_init" but hasn't yet received INIT-SIPI.
+> 
+> Why? If the guest wants to call it multiple times I guess I don't see a
+> reason that it would need to call DESTROY first and then CREATE. I don't
+> know why a guest would want to do that, but I don't think we should
+> prevent it.
+
+Because "creating" a vCPU that already exists is non-sensical.  Ditto for
+onlining a vCPU that is already onlined.  E.g. from the guest's perspective, I
+would fully expect a SVM_VMGEXIT_AP_CREATE to fail, not effectively send the vCPU
+to an arbitrary state.
+
+Any ambiguity as to the legality of CREATE/DESTROY absolutely needs to be clarified
+in the GHCB.
+
+> >> +
+> >> +	target_svm->snp_vmsa_gpa = 0;
+> >> +	target_svm->snp_vmsa_update_on_init = false;
+> >> +
+> >> +	/* Interrupt injection mode shouldn't change for AP creation */
+> >> +	if (request < SVM_VMGEXIT_AP_DESTROY) {
+> >> +		u64 sev_features;
+> >> +
+> >> +		sev_features = vcpu->arch.regs[VCPU_REGS_RAX];
+> >> +		sev_features ^= sev->sev_features;
+> >> +		if (sev_features & SVM_SEV_FEATURES_INT_INJ_MODES) {
+> > 
+> > Why is only INT_INJ_MODES checked?  The new comment in sev_es_sync_vmsa() explicitly
+> > states that sev_features are the same for all vCPUs, but that's not enforced here.
+> > At a bare minimum I would expect this to sanity check SVM_SEV_FEATURES_SNP_ACTIVE.
+> 
+> That's because we can't really enforce it. The SEV_FEATURES value is part
+> of the VMSA, of which the hypervisor has no insight into (its encrypted).
+> 
+> The interrupt injection mechanism was specifically requested as a sanity
+> check type of thing during the GHCB review, and as there were no
+> objections, it was added (see the end of section 4.1.9).
+> 
+> I can definitely add the check for the SNP_ACTIVE bit, but it isn't required.
+
+I'm confused.  If we've no insight into what the guest is actually using, what's
+the point of the INT_INJ_MODES check?
