@@ -2,121 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166903D1196
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AAF3D1199
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238958AbhGUOEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:04:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36369 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232977AbhGUOEk (ORCPT
+        id S239127AbhGUOFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:05:31 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9598 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232977AbhGUOF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:04:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626878716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bi83+pMn2EM7Jf6IheSLOvkh5RLIZq18EkMqBfUIdaU=;
-        b=JpYlaR7X2bgZKOQgggSdgc9+6hAcO5D1eAIjtWE0g9iaQIXm4grkZw2JT9U2fvV7PCLog6
-        6awED2F5sxlBAtEeI136HdEtZklwfCftwEIlbjr111f8TJH6qkkUuKOBc//jVyasMSrmvm
-        /6IjS0Hh9Ys0HXfO4VnB/+ULf5hjsek=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-333-h2lVYRghPwKhcr7RrrYdbA-1; Wed, 21 Jul 2021 10:45:15 -0400
-X-MC-Unique: h2lVYRghPwKhcr7RrrYdbA-1
-Received: by mail-wm1-f70.google.com with SMTP id o21-20020a05600c4fd5b029023448cbd285so658168wmq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:45:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Bi83+pMn2EM7Jf6IheSLOvkh5RLIZq18EkMqBfUIdaU=;
-        b=UgwovBi/5RP77yMdD2WjU4E6l+ahUf0URWL/tdM1dvjD4M13QQ7uBDYN2/+S209FLu
-         56YOMI28gnpwC78PvBxyppbcRvTaXbVNpN6W98tUOY6vkuy/zH3Dcj1naNU2bXA9JBSX
-         vd/DbgI6J8SFfN24ySn3nWfWdM6FLzmASST0XuAhr2JuJq/1wQBDt9A3N+owQAXu7piV
-         LqRu8cGe9Y13iZ1i2qLnxtYm6MqpQUKDzaDsgooRYNqfIGXWdQwr/qUT6zRZ9mMtvVC+
-         uXGOx0T+a6XwDL9E3xSg1glqGoNITT7NxWJnIifQS4ImxNHlUk9MyH9L+woh+HEsv6E7
-         0WWA==
-X-Gm-Message-State: AOAM532C2GXFJqCXh1xfdOtd/B4Ih4i6b5A/OEO3mCweR4ERl15msy3Q
-        uVTfEAXcrFQt5LIhcOYKsOP1DfQsWeflpaqRVBhgADhBhYpNarWJPugUMv9P+RTRu2n1xVoXV/F
-        iv+rIeJyEW3W+/E3I8ZYPePUF
-X-Received: by 2002:a05:600c:198a:: with SMTP id t10mr4451570wmq.32.1626878713896;
-        Wed, 21 Jul 2021 07:45:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwoyKCFUi8BeAwkjDrhalMlOXUsLIw0gn1PWPDKRsjXVihZLlq6jUd/AXZ3Sphn18EM6Hu7Bw==
-X-Received: by 2002:a05:600c:198a:: with SMTP id t10mr4451551wmq.32.1626878713642;
-        Wed, 21 Jul 2021 07:45:13 -0700 (PDT)
-Received: from [192.168.1.101] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id m32sm122922wms.23.2021.07.21.07.45.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 07:45:13 -0700 (PDT)
-Subject: Re: [drm-drm-misc:drm-misc-next 1/2] hppa-linux-ld: undefined
- reference to `screen_info'
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>
-References: <202107212128.dNkuzyKl-lkp@intel.com>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-Message-ID: <aa045f6a-5f99-48e6-b073-c55500411893@redhat.com>
-Date:   Wed, 21 Jul 2021 16:45:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 21 Jul 2021 10:05:29 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LEXGE6016086;
+        Wed, 21 Jul 2021 10:46:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=idOSKcIpSGAJCFkAxhVfxNrXuZDZVWjSg4IXQKAQfKE=;
+ b=Zvd1yKxfs0V2BAD32UYslyzCjxyZQupea4xRTwXP/DNmFaLTCfLyykyQ90YXJ3vI89Mb
+ wc/X+fts0l8tWZOXiYAPk3QDrVUiPqUMj779KZZ09GTosmCf2xbfyp5AX2eG6neqMA9/
+ z1j7YKgK3bKnOuVXJWh7JkhBT3/cMUZkZGYV1sdSEnjw4rcH81qoS91YxW5lRyDaaIKL
+ eheUWMxRZ3sx6vB7CDjcEM3EvBCIdYqwcLXyOtGfweuxRrCflWlUO7ulAO9d4Uz8Rivp
+ zJKF42RWdIvmEoGvlxn1Te3X5VABDt5xMox1AMWElNenHZI2YRoaAspXjzS4kyefNz6H 2g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39xkeemes9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Jul 2021 10:46:03 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16LEXlQs018761;
+        Wed, 21 Jul 2021 10:46:02 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39xkeemek3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Jul 2021 10:46:02 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16LEhiTh023345;
+        Wed, 21 Jul 2021 14:45:57 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 39upu89xn4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Jul 2021 14:45:57 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16LEjsqO30540110
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Jul 2021 14:45:54 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2899E42045;
+        Wed, 21 Jul 2021 14:45:54 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1378C42042;
+        Wed, 21 Jul 2021 14:45:53 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.34.151])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 21 Jul 2021 14:45:52 +0000 (GMT)
+Date:   Wed, 21 Jul 2021 16:45:50 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
+Subject: Re: [PATCH 2/2] s390/vfio-ap: replace open coded locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+Message-ID: <20210721164550.5402fe1c.pasic@linux.ibm.com>
+In-Reply-To: <20210719193503.793910-3-akrowiak@linux.ibm.com>
+References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
+        <20210719193503.793910-3-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <202107212128.dNkuzyKl-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: tOr7mkqCo33hLxPXSEAClv6pfQtjgpgP
+X-Proofpoint-ORIG-GUID: F0wvlLJxm9y82zazex2Nac9ePluYyTaj
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-21_09:2021-07-21,2021-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ priorityscore=1501 mlxlogscore=999 mlxscore=0 suspectscore=0
+ lowpriorityscore=0 impostorscore=0 spamscore=0 adultscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107210084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the report.
+On Mon, 19 Jul 2021 15:35:03 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-On 7/21/21 3:13 PM, kernel test robot wrote:
-> tree:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-> head:   8633ef82f101c040427b57d4df7b706261420b94
-> commit: d391c58271072d0b0fad93c82018d495b2633448 [1/2] drivers/firmware: move x86 Generic System Framebuffers support
-> config: parisc-randconfig-r021-20210720 (attached as .config)
-> compiler: hppa-linux-gcc (GCC) 10.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         git remote add drm-drm-misc git://anongit.freedesktop.org/drm/drm-misc
->         git fetch --no-tags drm-drm-misc drm-misc-next
->         git checkout d391c58271072d0b0fad93c82018d495b2633448
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=parisc SHELL=/bin/bash
+> It was pointed out during an unrelated patch review that locks should not
+
+[..]
+
+> -static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
+> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev,
+> +				   struct kvm *kvm)
+>  {
+> -	/*
+> -	 * If the KVM pointer is in the process of being set, wait until the
+> -	 * process has completed.
+> -	 */
+> -	wait_event_cmd(matrix_mdev->wait_for_kvm,
+> -		       !matrix_mdev->kvm_busy,
+> -		       mutex_unlock(&matrix_dev->lock),
+> -		       mutex_lock(&matrix_dev->lock));
+> -
+> -	if (matrix_mdev->kvm) {
+
+We used to check if matrix_mdev->kvm is null, but ...
+
+> -		matrix_mdev->kvm_busy = true;
+> -		mutex_unlock(&matrix_dev->lock);
+> -
+> -		if (matrix_mdev->kvm->arch.crypto.crycbd) {
+> -			down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
+> -			matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> -			up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
+> -
+> -			kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> -		}
+> +	if (kvm->arch.crypto.crycbd) {
+
+... now we just try to dereference it. And ..
+
+> +		down_write(&kvm->arch.crypto.pqap_hook_rwsem);
+> +		kvm->arch.crypto.pqap_hook = NULL;
+> +		up_write(&kvm->arch.crypto.pqap_hook_rwsem);
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> +		mutex_lock(&kvm->lock);
+>  		mutex_lock(&matrix_dev->lock);
+> +
+> +		kvm_arch_crypto_clear_masks(kvm);
+>  		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
+> -		kvm_put_kvm(matrix_mdev->kvm);
+> +		kvm_put_kvm(kvm);
+>  		matrix_mdev->kvm = NULL;
+> -		matrix_mdev->kvm_busy = false;
+> -		wake_up_all(&matrix_mdev->wait_for_kvm);
+> +
+> +		mutex_unlock(&kvm->lock);
+> +		mutex_unlock(&matrix_dev->lock);
+>  	}
+>  }
 > 
-> All errors (new ones prefixed by >>):
+
+[..]
+
+> @@ -1363,14 +1323,11 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
+>  {
+>  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
 > 
->    hppa-linux-ld: drivers/firmware/sysfb.o: in function `sysfb_init':
->    (.init.text+0x24): undefined reference to `screen_info'
->>> hppa-linux-ld: (.init.text+0x28): undefined reference to `screen_info'
->
+> -	mutex_lock(&matrix_dev->lock);
+> -	vfio_ap_mdev_unset_kvm(matrix_mdev);
+> -	mutex_unlock(&matrix_dev->lock);
+> -
 
-Apparently not all architectures define a screen_info, this was reported for
-parisc but it's also true for other arches: arc, m68k, microblaze, openrisc
-and s390.
+.. before access to the matrix_mdev->kvm used to be protected by
+the matrix_dev->lock ...
 
-The Kconfig symbol is built when COMPILE_TEST is enabled, but that shouldn't
-be done for this reason and instead only built for the arches that need it:
+>  	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
+>  				 &matrix_mdev->iommu_notifier);
+>  	vfio_unregister_notifier(mdev_dev(mdev), VFIO_GROUP_NOTIFY,
+>  				 &matrix_mdev->group_notifier);
+> +	vfio_ap_mdev_unset_kvm(matrix_mdev, matrix_mdev->kvm);
 
-config SYSFB
-        bool
-        default y
-        depends on X86 || ARM || ARM64 || RISCV || COMPILE_TEST
+... but it is not any more. BTW I don't think the code is guaranteed
+to fetch ->kvm just once.
 
-I'll post a patch later. 
+Can you please explain why can we get away with being more
+lax when dealing with matrix_mdev->kvm?
 
-Best regards,
--- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+Regards,
+Halil
 
+[..]
