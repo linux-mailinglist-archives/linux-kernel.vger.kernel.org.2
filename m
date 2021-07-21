@@ -2,146 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3ADA3D0F15
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC23B3D0F18
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbhGUMMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:12:07 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64496 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232654AbhGUMMG (ORCPT
+        id S235127AbhGUMMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234803AbhGUMMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:12:06 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LCWvFA189059;
-        Wed, 21 Jul 2021 08:52:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=y1r1zJtG8LNPPJbB7YIF0dReYdihiXhoe0szr4+LlSo=;
- b=b5PE+J82EIDUuXXOgcPGyeQHl/5ZZO0EEZd3QMtjX9z2vG/ZwJLleyG9cnMNqOo/j4dX
- c3z+sga9EVg8w0Dkna+6fJkVHZC8lHs62EmF+9M8rlkrWkXy7kbNxFYx+ZCxzTsgijzl
- x+CbJMhmwQlNm/Zwiy3aacgCXilfjeoHkYiFKvJd+ZAFhbNxVdkSo0+0ZdZKMJrHt4xB
- iONysYtHpGEQHZvb6u4K0StYsvEZh/TzmunV7onwr5475qrtpEXVekgLvVXBCZrLeNf4
- J1hFLVeTrAlZ5Ib/Fz3ybc/hu54JtBzvE7eyazerkbbVeAI7Q+CaMOssEhvT15JUd+hf KQ== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39xgfynvg7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 08:52:41 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16LCpt68018234;
-        Wed, 21 Jul 2021 12:52:39 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma05fra.de.ibm.com with ESMTP id 39upu894j1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 12:52:39 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16LCqbjm32375174
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 12:52:37 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 23C644205E;
-        Wed, 21 Jul 2021 12:52:37 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0F5CA4205C;
-        Wed, 21 Jul 2021 12:52:37 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 21 Jul 2021 12:52:37 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
-        id 996B1E06C2; Wed, 21 Jul 2021 14:52:36 +0200 (CEST)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Alexey Gladkov <legion@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: [PATCH v2] ucounts: add missing data type changes
-Date:   Wed, 21 Jul 2021 14:52:33 +0200
-Message-Id: <20210721125233.1041429-1-svens@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 21 Jul 2021 08:12:14 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23803C061574;
+        Wed, 21 Jul 2021 05:52:51 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id h2so2258330edt.3;
+        Wed, 21 Jul 2021 05:52:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Lopkcsr4P+MdAdY820YUCByo+p9D0uTSe24WA3N0bWE=;
+        b=eqzyhtcaAHP6aZcni9mHwPJxWtbeDz+Y1LSAg/gBXGXsnYroQ1CDNYas06RC6x8gz4
+         AE7SI/LWG+UkCIl1k65Z1c3qoXRlRjK8Q2wqh0knG9TO/cpGi7+0WXbXojrir3mFiTBT
+         ebKzOEca4jjH5MtwWDJSD2BNpfwYTmZ7Xt1y+W3o+pfz3dkenvMKn//hYhjxZOvtsc0m
+         IiJOpoPmXDWMUlZMzB1zGdGtTU/QPMGxDV+O9YcWY0ZbY5/e+VVVcQthn6JMy6YRRpdx
+         6Nr+HJerBayJTOL5yARXbKxGrOm9OZo4D7iG8gPH/EddB4DtdRqZh2RNP+tQ4/Hah6qW
+         KZUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Lopkcsr4P+MdAdY820YUCByo+p9D0uTSe24WA3N0bWE=;
+        b=Qb1HWtcof95ltYIsKLidqYFo9apLzV9JTxK7N4sgkwAksxkrOlBJggtmTnVM2QmZA8
+         prtaeQtNHWW/34/ZOd9ZndSPEtwkwP8+agupbEwp772qV+d1nPpdT8Vc2lPfkw5JMnm6
+         27e0dD3lvCJxYOEebTgm2JPqn27by9rgOl/gNkuett9Z+XSHzHEtMALlAllLayA108a+
+         UWwHHPlCjBk3vPdSuxODVx4QMCv+tFQnDlIgjuaMMObtJlGzGw2vP34f7cLYzsQ2JzDj
+         sQtrWzGRBX+cKFyTEUeYzhxOk+0FoAVOc1MPFNRVaUuHVECrq9dmqSuw9zf6j9IM0qIw
+         DChQ==
+X-Gm-Message-State: AOAM530W7rfBUemoP/rnS0uZRr/xzDyu1uvb+WEmFzAkMMouWQwIU00L
+        xgVvUPoVTFrhZ4De5uKX8Jc=
+X-Google-Smtp-Source: ABdhPJyd4UBuTyZI4wZ4XjGR/XQCh5kjnHnFE7/PkvfsXgb2wlYwibfbXuty+872Yyk7495IaRIMEw==
+X-Received: by 2002:a50:875d:: with SMTP id 29mr47512294edv.340.1626871969738;
+        Wed, 21 Jul 2021 05:52:49 -0700 (PDT)
+Received: from localhost.localdomain ([176.30.109.247])
+        by smtp.gmail.com with ESMTPSA id g8sm10769279edv.84.2021.07.21.05.52.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 05:52:49 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 15:52:40 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Andre Naujoks <nautsch2@gmail.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Expose Peak USB device id in sysfs via phys_port_name.
+Message-ID: <20210721155240.57887e6c@gmail.com>
+In-Reply-To: <20210721124048.590426-1-nautsch2@gmail.com>
+References: <20210721124048.590426-1-nautsch2@gmail.com>
+X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: fLxf1IrHpRNAbslL-a9J1ltJzQoL1OGa
-X-Proofpoint-GUID: fLxf1IrHpRNAbslL-a9J1ltJzQoL1OGa
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-21_08:2021-07-21,2021-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 bulkscore=0 phishscore=0 spamscore=0 priorityscore=1501
- adultscore=1 mlxscore=0 suspectscore=0 lowpriorityscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107210071
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
-changed the data type of ucounts/ucounts_max to long, but missed to
-adjust a few other places. This is noticeable on big endian platforms
-from user space because the /proc/sys/user/max_*_names files all
-contain 0.
+On Wed, 21 Jul 2021 14:40:47 +0200
+Andre Naujoks <nautsch2@gmail.com> wrote:
 
-Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
----
- fs/notify/fanotify/fanotify_user.c | 10 ++++++----
- kernel/ucount.c                    | 16 ++++++++--------
- 2 files changed, 14 insertions(+), 12 deletions(-)
+> The Peak USB CAN adapters can be assigned a device id via the Peak
+> provided tools (pcan-settings). This id can currently not be set by
+> the upstream kernel drivers, but some devices expose this id already.
+> 
+> The id can be used for consistent naming of CAN interfaces regardless
+> of order of attachment or recognition on the system. The classical
+> CAN Peak USB adapters expose this id via bcdDevice (combined with
+> another value) on USB-level in the sysfs tree and this value is then
+> available in ID_REVISION from udev. This is not a feasible approach,
+> when a single USB device offers more than one CAN-interface, like
+> e.g. the PCAN-USB Pro FD devices.
+> 
+> This patch exposes those ids via the, up to now unused, netdevice
+> sysfs attribute phys_port_name as a simple decimal ASCII
+> representation of the id. phys_port_id was not used, since the
+> default print functions from net/core/net-sysfs.c output a
+> hex-encoded binary value, which is overkill for a one-byte device id,
+> like this one.
 
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 64864fb40b40..6576657a1a25 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -58,18 +58,20 @@ struct ctl_table fanotify_table[] = {
- 	{
- 		.procname	= "max_user_groups",
- 		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_GROUPS],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
-+		.proc_handler	= proc_doulongvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_INT_MAX,
- 	},
- 	{
- 		.procname	= "max_user_marks",
- 		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_MARKS],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
-+		.proc_handler	= proc_doulongvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_INT_MAX,
- 	},
- 	{
- 		.procname	= "max_queued_events",
-diff --git a/kernel/ucount.c b/kernel/ucount.c
-index 87799e2379bd..f852591e395c 100644
---- a/kernel/ucount.c
-+++ b/kernel/ucount.c
-@@ -58,14 +58,14 @@ static struct ctl_table_root set_root = {
- 	.permissions = set_permissions,
- };
- 
--#define UCOUNT_ENTRY(name)				\
--	{						\
--		.procname	= name,			\
--		.maxlen		= sizeof(int),		\
--		.mode		= 0644,			\
--		.proc_handler	= proc_dointvec_minmax,	\
--		.extra1		= SYSCTL_ZERO,		\
--		.extra2		= SYSCTL_INT_MAX,	\
-+#define UCOUNT_ENTRY(name)					\
-+	{							\
-+		.procname	= name,				\
-+		.maxlen		= sizeof(long),			\
-+		.mode		= 0644,				\
-+		.proc_handler	= proc_doulongvec_minmax,	\
-+		.extra1		= SYSCTL_ZERO,			\
-+		.extra2		= SYSCTL_INT_MAX,		\
- 	}
- static struct ctl_table user_table[] = {
- 	UCOUNT_ENTRY("max_user_namespaces"),
--- 
-2.25.1
 
+Hi, Andre!
+
+You should add Signed-off-by tag to the patch
+
+
+With regards,
+Pavel Skripkin
