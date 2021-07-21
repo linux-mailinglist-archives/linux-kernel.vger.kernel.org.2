@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA053D06B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 04:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F4C3D06B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 04:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhGUBpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 21:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33786 "EHLO
+        id S231262AbhGUBqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 21:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbhGUBpE (ORCPT
+        with ESMTP id S229903AbhGUBqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 21:45:04 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E844C061574;
-        Tue, 20 Jul 2021 19:25:42 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id j1-20020a0568302701b02904d1f8b9db81so721175otu.12;
-        Tue, 20 Jul 2021 19:25:42 -0700 (PDT)
+        Tue, 20 Jul 2021 21:46:24 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1923FC061574;
+        Tue, 20 Jul 2021 19:27:02 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id a12so931870lfb.7;
+        Tue, 20 Jul 2021 19:27:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aDp1Sbc7Q+/I5oxSEHI3ZL2iq8pyuXoWqX53xRk7g+U=;
-        b=Dz59CAZuL0q69B5FwsM04Z1ucFChwmWiv+sjbrlMZQyTlVy+6bHLWAaBpGHjRq/FlM
-         mTr9jbZ1uiy7tZkihAZBM4cpaP2iZL0AvPfFt4gSPcBmHFcAQBrhxSpkuohzLpYK1wfF
-         3y8TEERNYygmPoec23V4WPLtiXKoSD1nlEd5mDSFGUAhlIbR+Nh5BHye1JuCja0G4RQp
-         W3fxAyaTBtFgX3ePp6gX75hzJYQDKb4j660Yde1x23Cgwy0rUh5zLhz/VUTMNI6KSEEB
-         UQxDzntGdYdQ2sHXZ1WXQSlLIdiAjCunNymErF3P4fpLgc66aTejxqyusV6xAf1NMaQC
-         damA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=IMEA7XUipMCPe6h8ouCsvI5CYO5wKR/xBeSj7gVT1/8=;
+        b=ZL2tFxwrvAaDcgkunbrl2DXK4XIAXlxgvsjOXndmxdfQ1aP/4Oi8plfR3O0VsRQxf0
+         Kj/IAHQTP8GgfPGfGebET4AOzmA/PyrMGb0D2skqhIVN8ZGr4m7y7dt9dY0HJ1YvZma+
+         Hhly9/7QgO4cZ3IYYU0q3ebArfbUXGkcF1T+IssQW79jiLOkRyIDT9kS5wSXpUKIcLOP
+         Byz6t0ncf330RJcnL5OoaL7Om/VfFJtU0KXn+O0cZaIzkieo4LWeopnRmZMEB6jodKSn
+         iu3uwpNM8RQPwuKkfXg1+0rjQnsUlkA4190PRkHwObJXyUh2DsNWgGSBwbB+MjlFwoBC
+         06vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aDp1Sbc7Q+/I5oxSEHI3ZL2iq8pyuXoWqX53xRk7g+U=;
-        b=nazOXHPx/cEsCw7b+CLagjtMOMvtYbvQ5BuKXOQRDvwYHRpVvlQMc9nW3mZrpiCTFg
-         IfU28nzW9D3j85KbdRKh2uzqVHifkKOUDxO9UrYXrXQTdJ4u3uTE1LIU/7ihj5B6qEG8
-         7Fk41HNy2158a5WEGuswuAsghpqsLCq3sc7g/Vs1nItDQVKlLZxwlLmggxiDj99E3BgI
-         NbOMfDuq4STySpoN092ddudLUQmHh2Rm45EMvj1d/lTcMCvgM9vLKyaLKtXhGsTmhZ9A
-         Lw8H3Waqu6WdJVNPpvrWX1XZqvuP10iRDuZeom+Q3BIrExHu0qo0JjN26B4mbjoUfZlT
-         wXdA==
-X-Gm-Message-State: AOAM531cin3rzZcAcqYjUMZL65lY0+mfncRKgYzYiRLqgNFnWLej40IY
-        1IS+b2oAsfrA2JpbWm31wctoMjrkHIodpDmJ/ok=
-X-Google-Smtp-Source: ABdhPJy6w2NlTHnzYqZX447IxmhSjiliNstyArWeoKp1KAOiR32KQul8JuTAfrbxHo/v9bxHWZmZcA==
-X-Received: by 2002:a9d:4112:: with SMTP id o18mr25081915ote.128.1626834341643;
-        Tue, 20 Jul 2021 19:25:41 -0700 (PDT)
-Received: from localhost.localdomain (c-98-249-124-70.hsd1.nm.comcast.net. [98.249.124.70])
-        by smtp.googlemail.com with ESMTPSA id v5sm2542722oor.33.2021.07.20.19.25.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 19:25:41 -0700 (PDT)
-From:   Brett Holman <bholman.devel@gmail.com>
-Cc:     linux-perf-users@vger.kernel.org,
-        Brett Holman <bholman.devel@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] perf mem: Standardize 'perf mem' arg parsing
-Date:   Tue, 20 Jul 2021 20:24:42 -0600
-Message-Id: <20210721022442.159436-2-bholman.devel@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210721022442.159436-1-bholman.devel@gmail.com>
-References: <20210721022442.159436-1-bholman.devel@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=IMEA7XUipMCPe6h8ouCsvI5CYO5wKR/xBeSj7gVT1/8=;
+        b=V1dzQlS+OukHfmuQd1JN2gulz7b9maORxqrBjESq3KAtOxftFSf90ZvAx9I6pJykU0
+         uDVvtYg8b6YPQOMtePmU1fo2skDmT/Gf9aDfVDk/n0AAZYLvBMjNuZeiZkutqDHtTekC
+         9HF9OIiO1GzJgGEHXmlMjnlVwChnzm9AM9UPsWJIDM0L5l7giP+kbETlDRUglktUWYm9
+         HUq269IfDnxTZwNa659th4/3AAgzl61VJ3V9oEbc7JJgQd38rLI9sm9D3AkTmBwvgrxu
+         p6tJOXzX7+fKnx4qU3K+9Jvylk/7ne6KTtvoBN9p16Bo9U3IeRTyVxT8Zd5UqPIxG2F8
+         WoEQ==
+X-Gm-Message-State: AOAM530ATuAULtb5IG1Fp8mMcIXaVHp17xwgmrDG9/Ppw2zE/M0unc/P
+        hXw8+mdWjoMu3O6nUfn7hyMqJXLFLjgg4C7v9ls=
+X-Google-Smtp-Source: ABdhPJy6dCrVihE64G/2FDHlAuzGdom8CulvBOLoo9EPFdwRFwalBwnjn6yQF+6SCWyYI7tIAeVjr0Y7QC+APrGtAFU=
+X-Received: by 2002:ac2:5482:: with SMTP id t2mr24222408lfk.135.1626834420374;
+ Tue, 20 Jul 2021 19:27:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
+ <20210720204224.GK23236@magnolia> <YPc9viRAKm6cf2Ey@casper.infradead.org>
+ <YPdkYFSjFHDOU4AV@B-P7TQMD6M-0146.local> <20210721001720.GS22357@magnolia> <YPdrSN6Vso98bLzB@B-P7TQMD6M-0146.local>
+In-Reply-To: <YPdrSN6Vso98bLzB@B-P7TQMD6M-0146.local>
+From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Date:   Wed, 21 Jul 2021 04:26:47 +0200
+Message-ID: <CAHpGcM+8cp81=bkzFf3sZfKREM9VbXfePpXrswNJOLVcwEnK7A@mail.gmail.com>
+Subject: Re: [PATCH v4] iomap: support tail packing inline read
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arguments are parsed differently by 'perf record' and 'perf mem
-record'. While '--' can be used to stop parsing arguments in both,
-'perf record' stops parsing when an unknown argument is found and 'perf
-mem record' does not. This may lead to surprise when flags are stripped
-from the command being tested with 'perf mem record'. This patch
-eliminates this difference in behavior.
+Am Mi., 21. Juli 2021 um 02:33 Uhr schrieb Gao Xiang
+<hsiangkao@linux.alibaba.com>:
+> > And since you can only kmap one page at a time, an inline read grabs the
+> > first part of the data in "page one" and then we have to call
+> > iomap_begin a second time get a new address so that we can read the rest
+> > from "page two"?
+>
+> Nope, currently EROFS inline data won't cross page like this.
+>
+> But in principle, yes, I don't want to limit it to the current
+> EROFS or gfs2 usage. I think we could make this iomap function
+> more generally (I mean, I'd like to make the INLINE extent
+> functionity as general as possible,
 
-Signed-off-by: Brett Holman <bholman.devel@gmail.com>
----
- tools/perf/builtin-mem.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Nono. Can we please limit this patch what we actually need right now,
+and worry about extending it later?
 
-diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
-index 0fd2a74dbaca..ce734774b552 100644
---- a/tools/perf/builtin-mem.c
-+++ b/tools/perf/builtin-mem.c
-@@ -89,7 +89,7 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
- 	}
- 
- 	argc = parse_options(argc, argv, options, record_mem_usage,
--			     PARSE_OPT_KEEP_UNKNOWN);
-+			     PARSE_OPT_STOP_AT_NON_OPTION);
- 
- 	if (!perf_pmu__has_hybrid())
- 		rec_argc = argc + 9; /* max number of arguments */
-@@ -484,9 +484,14 @@ int cmd_mem(int argc, const char **argv)
- 		NULL
- 	};
- 
--	argc = parse_options_subcommand(argc, argv, mem_options, mem_subcommands,
-+	if (!strncmp(argv[1], "rec", 3))
-+		argc = parse_options_subcommand(argc, argv, mem_options, mem_subcommands,
-+					mem_usage, PARSE_OPT_STOP_AT_NON_OPTION);
-+	else
-+		argc = parse_options_subcommand(argc, argv, mem_options, mem_subcommands,
- 					mem_usage, PARSE_OPT_KEEP_UNKNOWN);
- 
-+
- 	if (!argc || !(strncmp(argv[0], "rec", 3) || mem.operation))
- 		usage_with_options(mem_usage, mem_options);
- 
--- 
-2.31.1
+> my v1 original approach
+> in principle can support any inline extent in the middle of
+> file rather than just tail blocks, but zeroing out post-EOF
+> needs another iteration) and I don't see it add more code and
+> complexity.
 
+Thanks,
+Andreas
