@@ -2,153 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E283D1035
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49AC3D103D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239037AbhGUNHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:07:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24927 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238854AbhGUNGx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:06:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626875249;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cux4vK7FasEebT+e6GSkGlqilieGd9BwE6MltPwMMpQ=;
-        b=M26gSRLo6otX9GploVuUfrbVtwBvKpgeoz3l34h18GAFGLUr9UR+TGBMNX1VA4JkhhJfqI
-        KCgCyWyKf+Y7o5so1rqENq+CbVwcT8kJQssUSlEKyz6ljURuuyODiQ0U9m5ndvoTQcmbqa
-        LV6PzVlXj1/WJyg6404ZN8ocdu7Zrz8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-Q8UWrdvhOY-FMC_HmRYBkg-1; Wed, 21 Jul 2021 09:47:26 -0400
-X-MC-Unique: Q8UWrdvhOY-FMC_HmRYBkg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F80F107ACF5;
-        Wed, 21 Jul 2021 13:47:23 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-62.rdu2.redhat.com [10.10.112.62])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 99F0C19C79;
-        Wed, 21 Jul 2021 13:47:16 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [RFC PATCH 12/12] netfs: Export some read-request ref functions
-From:   David Howells <dhowells@redhat.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Mike Marshall <hubcap@omnibond.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 21 Jul 2021 14:47:15 +0100
-Message-ID: <162687523532.276387.15449857111016442696.stgit@warthog.procyon.org.uk>
-In-Reply-To: <162687506932.276387.14456718890524355509.stgit@warthog.procyon.org.uk>
-References: <162687506932.276387.14456718890524355509.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S239093AbhGUNJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:09:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238996AbhGUNJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 09:09:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3453C6121E;
+        Wed, 21 Jul 2021 13:49:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626875384;
+        bh=Fcd46JsRF5Xzokx8EbEQAOvgZr4ne1Di199XOOqGdXI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MlngOFVzPy6D4n/vJS8cjv7UbvZgk2BbOpnI5+S4srLE5uyBvjmuzvuK6bVFb3fFj
+         19HPLZGZUuiHcV3pVbD+3M2mCNVMqiZ2hmQprUrNSSdqQ2+6HZZKs4XkkeMRjPgsCF
+         j/6ZYtYhD/trRr673VMxc9e6EOc0rL1pUmfUtUijh5aOHbIGCnCQ8Nxi8CTPWlypNM
+         uCXisRccE7jOfEPF/4SZTKVHS8JIOZ6Wsk0Zon74S97Bmb3BzdgmWrhehfUzALQmrN
+         +an+o4ZhXnKawCDxTNtX0d6jgAw7c+hMbNWhkva58kZcDvUDKAJ5khJ/kid8yv0l2q
+         VRaXfzTQnwJtw==
+Received: by mail-ej1-f54.google.com with SMTP id dp20so3351333ejc.7;
+        Wed, 21 Jul 2021 06:49:44 -0700 (PDT)
+X-Gm-Message-State: AOAM5331v6oohHBSF80LwYsbKi9X5VAFuedk6zKHNBlB31uxJ0CB1qYQ
+        iVN8OjAlq9i/+Slb5UrxCjUu1TWer8xJtnoEgg==
+X-Google-Smtp-Source: ABdhPJzh5cj++jO5fwUbg47UmcOOhxrwvB/MBLzILA/PNS+iWEyxrXcgOCfI8OpXmusl3DEp7otnJa9jAjW0ixfrR7g=
+X-Received: by 2002:a17:906:5fc1:: with SMTP id k1mr37644013ejv.360.1626875382783;
+ Wed, 21 Jul 2021 06:49:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210720172025.363238-1-robh@kernel.org> <8343dfe9d1af1ad4ab806104b74a95819c765dea.camel@pengutronix.de>
+In-Reply-To: <8343dfe9d1af1ad4ab806104b74a95819c765dea.camel@pengutronix.de>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 21 Jul 2021 07:49:30 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+XEbEJuoSiQ=PeL-34FkLqG-eYA86FvNK7K-uGbaTFwg@mail.gmail.com>
+Message-ID: <CAL_Jsq+XEbEJuoSiQ=PeL-34FkLqG-eYA86FvNK7K-uGbaTFwg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: Remove "status" from schema examples
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
+        "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Dilip Kota <eswara.kota@linux.intel.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export some functions for getting/putting read-request structures for use
-in later patches.
+On Wed, Jul 21, 2021 at 2:33 AM Philipp Zabel <p.zabel@pengutronix.de> wrote:
+>
+> Hi Rob,
+>
+> On Tue, 2021-07-20 at 11:20 -0600, Rob Herring wrote:
+> > There's no reason to have "status" properties in examples. "okay" is the
+> > default, and "disabled" turns off some schema checks ('required'
+> > specifically).
+>
+> Is this documented somewhere? If not, should it be? (Maybe in writing-
+> schema.rst -> Schema Contents -> examples?)
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+I don't think it is. I'm writing a schema for it which works for both
+those that read documentation and those that don't.
 
- fs/netfs/internal.h    |   10 ++++++++++
- fs/netfs/read_helper.c |   15 +++------------
- 2 files changed, 13 insertions(+), 12 deletions(-)
-
-diff --git a/fs/netfs/internal.h b/fs/netfs/internal.h
-index a9ec6591f90a..6ae1eb55093a 100644
---- a/fs/netfs/internal.h
-+++ b/fs/netfs/internal.h
-@@ -78,9 +78,19 @@ static inline void netfs_see_write_request(struct netfs_write_request *wreq,
-  */
- extern unsigned int netfs_debug;
- 
-+void __netfs_put_subrequest(struct netfs_read_subrequest *subreq, bool was_async);
-+void netfs_put_read_request(struct netfs_read_request *rreq, bool was_async);
-+void netfs_rreq_completed(struct netfs_read_request *rreq, bool was_async);
- int netfs_prefetch_for_write(struct file *file, struct page *page, loff_t pos, size_t len,
- 			     bool always_fill);
- 
-+static inline void netfs_put_subrequest(struct netfs_read_subrequest *subreq,
-+					bool was_async)
-+{
-+	if (refcount_dec_and_test(&subreq->usage))
-+		__netfs_put_subrequest(subreq, was_async);
-+}
-+
- /*
-  * write_helper.c
-  */
-diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
-index 0b771f2f5449..e5c636acc756 100644
---- a/fs/netfs/read_helper.c
-+++ b/fs/netfs/read_helper.c
-@@ -28,14 +28,6 @@ MODULE_PARM_DESC(netfs_debug, "Netfs support debugging mask");
- 
- static void netfs_rreq_work(struct work_struct *);
- static void netfs_rreq_clear_buffer(struct netfs_read_request *);
--static void __netfs_put_subrequest(struct netfs_read_subrequest *, bool);
--
--static void netfs_put_subrequest(struct netfs_read_subrequest *subreq,
--				 bool was_async)
--{
--	if (refcount_dec_and_test(&subreq->usage))
--		__netfs_put_subrequest(subreq, was_async);
--}
- 
- static struct netfs_read_request *netfs_alloc_read_request(struct address_space *mapping,
- 							   struct file *file)
-@@ -97,7 +89,7 @@ static void netfs_free_read_request(struct work_struct *work)
- 	netfs_stat_d(&netfs_n_rh_rreq);
- }
- 
--static void netfs_put_read_request(struct netfs_read_request *rreq, bool was_async)
-+void netfs_put_read_request(struct netfs_read_request *rreq, bool was_async)
- {
- 	if (refcount_dec_and_test(&rreq->usage)) {
- 		if (was_async) {
-@@ -135,8 +127,7 @@ static void netfs_get_read_subrequest(struct netfs_read_subrequest *subreq)
- 	refcount_inc(&subreq->usage);
- }
- 
--static void __netfs_put_subrequest(struct netfs_read_subrequest *subreq,
--				   bool was_async)
-+void __netfs_put_subrequest(struct netfs_read_subrequest *subreq, bool was_async)
- {
- 	struct netfs_read_request *rreq = subreq->rreq;
- 
-@@ -214,7 +205,7 @@ static void netfs_read_from_server(struct netfs_read_request *rreq,
- /*
-  * Release those waiting.
-  */
--static void netfs_rreq_completed(struct netfs_read_request *rreq, bool was_async)
-+void netfs_rreq_completed(struct netfs_read_request *rreq, bool was_async)
- {
- 	trace_netfs_rreq(rreq, netfs_rreq_trace_done);
- 	netfs_rreq_clear_subreqs(rreq, was_async);
-
-
+Rob
