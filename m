@@ -2,405 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463053D1490
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52B83D1493
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbhGUQJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
+        id S235949AbhGUQKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235831AbhGUQJM (ORCPT
+        with ESMTP id S235139AbhGUQKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:09:12 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BDEC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:49:48 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1m6FP7-0004wl-4C; Wed, 21 Jul 2021 18:49:05 +0200
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1m6FP4-0003Ee-MG; Wed, 21 Jul 2021 18:49:02 +0200
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Cc:     kernel@pengutronix.de, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Richard Weinberger <richard@nod.at>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH 4/4] KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
-Date:   Wed, 21 Jul 2021 18:48:55 +0200
-Message-Id: <655aab117f922320e2123815afb5bf3daeb7b8b3.1626885907.git-series.a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
-References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
+        Wed, 21 Jul 2021 12:10:20 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174CAC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:50:57 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id l5so3078168iok.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iNA8kzrwXJHf408t5Tny5lnj4ZPK3z3F1NJP36I5Y5k=;
+        b=pQ3dxdw3glhs1TXiqouA23s/fl4P57CdrE3/fxRpCiW4BTx0hKO6moGAnLjEeMSOMn
+         iFtB8sWD4e2EvDL9VLMUf38iNm+2s46hcd4WVKpk7ArK9ZShWw+nNaNGt9hvMWjj+j2Z
+         tsKQhlyEszJgqJclBWqDZRWYnDUgZQDQbRllW07haAl0OdTcqYvYpCjdODlHg9xgZ4lk
+         BOskCs+LNUJNQF68qHAIgtGyaCpp1bTrVqPN4pH67+ifTT+7S56fAmXaSANuzVy1fOJ0
+         1YWWDEfN4arnF1K5JAMCFzORl3nqRNLvpkxy7c4YQzi241B/5Fucc0YLBFloGHMsJ++H
+         mEeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iNA8kzrwXJHf408t5Tny5lnj4ZPK3z3F1NJP36I5Y5k=;
+        b=PzYsnjfg72wW3vbyu4Um5bHNZi/9vsqdvydWs8xVQ6EOS+JdwmbdATmjUc5i4FtKss
+         G8cIByKNI6oQTxVissplpnyQe0DXJqAmB77gUcx2rs5dN5Y1NQC/nbxxYuBhTVAnrIDV
+         WtoSDvye+Uf/qhot+xnoiwywy6ovT2EjtmQjAUB9AxjSHOhDUrTtag6rbJ19mG0F1KdX
+         0h3mNx7aosRM3tPF4xOoas1XljfMRJjreOA3IIjrH5IhCh3Me/THrHaKVcKY+6CCsVhh
+         mqphOf8t+b1h/V/HhQctOTfwfa8QXTgldqGxcV39ZMpAUJLzBGNsF4JHAMgQvu80MYbm
+         xQYw==
+X-Gm-Message-State: AOAM531dg7WIvv2l0zb6+enkvlQeyhVh5HpOzn+WVjBZNFuVnUnoyJTx
+        WSynauRGMAEhhqdTmHXVNmM2mslVncj/MtgAiPd2pw==
+X-Google-Smtp-Source: ABdhPJwKOZCb7YgcyRhS5qzLmp7wxF3TFGcQ+TTxsrBG76B/g9rmTTS5s2WUWsWTWmi38Q5Yn1Gajf+5If4lsXQXZmo=
+X-Received: by 2002:a5d:8a17:: with SMTP id w23mr14684461iod.19.1626886256295;
+ Wed, 21 Jul 2021 09:50:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210721051247.355435-1-mizhang@google.com> <20210721051247.355435-3-mizhang@google.com>
+In-Reply-To: <20210721051247.355435-3-mizhang@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 21 Jul 2021 09:50:44 -0700
+Message-ID: <CANgfPd810e1tz-ip5M3dB6VmJQMtkKJNmB1RqAy=fui8SGTozA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kvm: mmu/x86: Add detailed page size stats
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jing Zhang <jingzhangos@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
-built into many newer i.MX and QorIQ SoCs by NXP.
+On Tue, Jul 20, 2021 at 10:13 PM Mingwei Zhang <mizhang@google.com> wrote:
+>
+> Existing KVM code tracks the number of large pages regardless of their
+> sizes. Therefore, when large page of 1GB (or larger) is adopted, the
+> information becomes less useful because lpages counts a mix of 1G and 2M
+> pages.
+>
+> So bridge the gap and provide a comprehensive page stats of all sizes from
+> 4K to 512G.
+>
+> Suggested-by: Ben Gardon <bgardon@google.com>
+> Suggested-by: Jing Zhang <jingzhangos@google.com>
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 11 ++++++++-
+>  arch/x86/kvm/mmu.h              |  2 ++
+>  arch/x86/kvm/mmu/mmu.c          | 43 +++++++++++++++++++++++----------
+>  arch/x86/kvm/mmu/tdp_mmu.c      | 10 +++-----
+>  arch/x86/kvm/x86.c              |  6 ++++-
+>  5 files changed, 51 insertions(+), 21 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 974cbfb1eefe..1b7b024f9573 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1206,9 +1206,18 @@ struct kvm_vm_stat {
+>         u64 mmu_recycled;
+>         u64 mmu_cache_miss;
+>         u64 mmu_unsync;
+> -       u64 lpages;
+> +       atomic64_t lpages;
+>         u64 nx_lpage_splits;
+>         u64 max_mmu_page_hash_collisions;
+> +       union {
+> +               struct {
+> +                       atomic64_t pages_4k;
+> +                       atomic64_t pages_2m;
+> +                       atomic64_t pages_1g;
+> +                       atomic64_t pages_512g;
+> +               };
+> +               atomic64_t pages[4];
+> +       } page_stats;
+>  };
+>
+>  struct kvm_vcpu_stat {
+> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+> index 83e6c6965f1e..56d9c947a0cd 100644
+> --- a/arch/x86/kvm/mmu.h
+> +++ b/arch/x86/kvm/mmu.h
+> @@ -240,4 +240,6 @@ static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
+>         return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
+>  }
+>
+> +void kvm_update_page_stats(struct kvm *kvm, u64 spte, int level, int delta);
 
-The CAAM does crypto acceleration, hardware number generation and
-has a blob mechanism for encapsulation/decapsulation of sensitive material.
+Delta should be count here to match below, or you should change below to delta.
 
-This blob mechanism depends on a device specific random 256-bit One Time
-Programmable Master Key that is fused in each SoC at manufacturing
-time. This key is unreadable and can only be used by the CAAM for AES
-encryption/decryption of user data.
+> +
+>  #endif
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index c45ddd2c964f..9ba25f00ca2b 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -588,16 +588,33 @@ static bool mmu_spte_update(u64 *sptep, u64 new_spte)
+>         return flush;
+>  }
+>
+> +void kvm_update_page_stats(struct kvm *kvm, u64 spte, int level, int count)
+> +{
+> +       if (!is_last_spte(spte, level))
+> +               return;
+> +       /*
+> +        * If the backing page is a large page, update the lpages stat first,
+> +        * then log the specific type of backing page. Only log pages at highter
 
-This makes it a suitable backend (source) for kernel trusted keys.
+*higher
 
-Previous commits generalized trusted keys to support multiple backends
-and added an API to access the CAAM blob mechanism. Based on these,
-provide the necessary glue to use the CAAM for trusted keys.
+> +        * levels if they are marked as large pages. (As opposed to simply
+> +        * pointing to another level of page tables.).
+> +        */
+> +       if (is_large_pte(spte))
+> +               atomic64_add(count, (atomic64_t *)&kvm->stat.lpages);
 
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
-To: Jonathan Corbet <corbet@lwn.net>
-To: David Howells <dhowells@redhat.com>
-To: Jarkko Sakkinen <jarkko@kernel.org>
-To: James Bottomley <jejb@linux.ibm.com>
-To: Mimi Zohar <zohar@linux.ibm.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: "Serge E. Hallyn" <serge@hallyn.com>
-Cc: "Horia Geantă" <horia.geanta@nxp.com>
-Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Udit Agarwal <udit.agarwal@nxp.com>
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: Jan Luebbe <j.luebbe@pengutronix.de>
-Cc: David Gstir <david@sigma-star.at>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Franck LENORMAND <franck.lenormand@nxp.com>
-Cc: Sumit Garg <sumit.garg@linaro.org>
-Cc: keyrings@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-integrity@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-security-module@vger.kernel.org
----
- Documentation/admin-guide/kernel-parameters.txt   |  1 +-
- Documentation/security/keys/trusted-encrypted.rst | 42 ++++++++-
- MAINTAINERS                                       |  9 ++-
- include/keys/trusted_caam.h                       | 11 ++-
- security/keys/trusted-keys/Kconfig                | 11 +-
- security/keys/trusted-keys/Makefile               |  2 +-
- security/keys/trusted-keys/trusted_caam.c         | 74 ++++++++++++++++-
- security/keys/trusted-keys/trusted_core.c         |  6 +-
- 8 files changed, 152 insertions(+), 4 deletions(-)
- create mode 100644 include/keys/trusted_caam.h
- create mode 100644 security/keys/trusted-keys/trusted_caam.c
+I don't think you need the casts to atomic64_t * here since these
+variables are already defined as atomic64_t.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 0267ead88902..43010cb27f17 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5729,6 +5729,7 @@
- 			sources:
- 			- "tpm"
- 			- "tee"
-+			- "caam"
- 			If not specified then it defaults to iterating through
- 			the trust source list starting with TPM and assigns the
- 			first trust source as a backend which is initialized
-diff --git a/Documentation/security/keys/trusted-encrypted.rst b/Documentation/security/keys/trusted-encrypted.rst
-index 1d4b4b8f12f0..ad66573ca6fd 100644
---- a/Documentation/security/keys/trusted-encrypted.rst
-+++ b/Documentation/security/keys/trusted-encrypted.rst
-@@ -35,6 +35,13 @@ safe.
-          Rooted to Hardware Unique Key (HUK) which is generally burnt in on-chip
-          fuses and is accessible to TEE only.
- 
-+     (3) CAAM (Cryptographic Acceleration and Assurance Module: IP on NXP SoCs)
-+
-+         When High Assurance Boot (HAB) is enabled and the CAAM is in secure
-+         mode, trust is rooted to the OTPMK, a never-disclosed 256-bit key
-+         randomly generated and fused into each SoC at manufacturing time.
-+         Otherwise, a common fixed test key is used instead.
-+
-   *  Execution isolation
- 
-      (1) TPM
-@@ -46,6 +53,10 @@ safe.
-          Customizable set of operations running in isolated execution
-          environment verified via Secure/Trusted boot process.
- 
-+     (3) CAAM
-+
-+         Fixed set of operations running in isolated execution environment.
-+
-   * Optional binding to platform integrity state
- 
-      (1) TPM
-@@ -63,6 +74,11 @@ safe.
-          Relies on Secure/Trusted boot process for platform integrity. It can
-          be extended with TEE based measured boot process.
- 
-+     (3) CAAM
-+
-+         Relies on the High Assurance Boot (HAB) mechanism of NXP SoCs
-+         for platform integrity.
-+
-   *  Interfaces and APIs
- 
-      (1) TPM
-@@ -74,10 +90,13 @@ safe.
-          TEEs have well-documented, standardized client interface and APIs. For
-          more details refer to ``Documentation/staging/tee.rst``.
- 
-+     (3) CAAM
-+
-+         Interface is specific to silicon vendor.
- 
-   *  Threat model
- 
--     The strength and appropriateness of a particular TPM or TEE for a given
-+     The strength and appropriateness of a particular trust source for a given
-      purpose must be assessed when using them to protect security-relevant data.
- 
- 
-@@ -104,8 +123,14 @@ selected trust source:
-      from platform specific hardware RNG or a software based Fortuna CSPRNG
-      which can be seeded via multiple entropy sources.
- 
-+  *  CAAM: Kernel RNG
-+
-+     The normal kernel random number generator is used. To seed it from the
-+     CAAM HWRNG, enable CRYPTO_DEV_FSL_CAAM_RNG_API and ensure the device
-+     can be probed.
-+
- Optionally, users may specify ``trusted.kernel_rng=1`` on the kernel
--command-line to override the used RNG with the kernel's random number pool.
-+command-line to force use of the kernel's random number pool.
- 
- Encrypted Keys
- --------------
-@@ -192,6 +217,19 @@ Usage::
- specific to TEE device implementation.  The key length for new keys is always
- in bytes. Trusted Keys can be 32 - 128 bytes (256 - 1024 bits).
- 
-+Trusted Keys usage: CAAM
-+------------------------
-+
-+Usage::
-+
-+    keyctl add trusted name "new keylen" ring
-+    keyctl add trusted name "load hex_blob" ring
-+    keyctl print keyid
-+
-+"keyctl print" returns an ASCII hex copy of the sealed key, which is in format
-+specific to CAAM device implementation.  The key length for new keys is always
-+in bytes. Trusted Keys can be 32 - 128 bytes (256 - 1024 bits).
-+
- Encrypted Keys usage
- --------------------
- 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6c8be735cc91..aa654e69075d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10265,6 +10265,15 @@ S:	Supported
- F:	include/keys/trusted_tee.h
- F:	security/keys/trusted-keys/trusted_tee.c
- 
-+KEYS-TRUSTED-CAAM
-+M:	Ahmad Fatoum <a.fatoum@pengutronix.de>
-+R:	Pengutronix Kernel Team <kernel@pengutronix.de>
-+L:	linux-integrity@vger.kernel.org
-+L:	keyrings@vger.kernel.org
-+S:	Supported
-+F:	include/keys/trusted_caam.h
-+F:	security/keys/trusted-keys/trusted_caam.c
-+
- KEYS/KEYRINGS
- M:	David Howells <dhowells@redhat.com>
- M:	Jarkko Sakkinen <jarkko@kernel.org>
-diff --git a/include/keys/trusted_caam.h b/include/keys/trusted_caam.h
-new file mode 100644
-index 000000000000..2fba0996b0b0
---- /dev/null
-+++ b/include/keys/trusted_caam.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2021 Pengutronix, Ahmad Fatoum <kernel@pengutronix.de>
-+ */
-+
-+#ifndef __CAAM_TRUSTED_KEY_H
-+#define __CAAM_TRUSTED_KEY_H
-+
-+extern struct trusted_key_ops caam_trusted_key_ops;
-+
-+#endif
-diff --git a/security/keys/trusted-keys/Kconfig b/security/keys/trusted-keys/Kconfig
-index c163cfeedff6..fac80117ef46 100644
---- a/security/keys/trusted-keys/Kconfig
-+++ b/security/keys/trusted-keys/Kconfig
-@@ -24,6 +24,15 @@ config TRUSTED_KEYS_TEE
- 	  Enable use of the Trusted Execution Environment (TEE) as trusted
- 	  key backend.
- 
--if !TRUSTED_KEYS_TPM && !TRUSTED_KEYS_TEE
-+config TRUSTED_KEYS_CAAM
-+	bool "CAAM-based trusted keys"
-+	depends on CRYPTO_DEV_FSL_CAAM_JR >= TRUSTED_KEYS
-+	select CRYPTO_DEV_FSL_CAAM_BLOB_GEN
-+	default y
-+	help
-+	  Enable use of NXP's Cryptographic Accelerator and Assurance Module
-+	  (CAAM) as trusted key backend.
-+
-+if !TRUSTED_KEYS_TPM && !TRUSTED_KEYS_TEE && !TRUSTED_KEYS_CAAM
- comment "No trust source selected!"
- endif
-diff --git a/security/keys/trusted-keys/Makefile b/security/keys/trusted-keys/Makefile
-index 2e2371eae4d5..735aa0bc08ef 100644
---- a/security/keys/trusted-keys/Makefile
-+++ b/security/keys/trusted-keys/Makefile
-@@ -12,3 +12,5 @@ trusted-$(CONFIG_TRUSTED_KEYS_TPM) += trusted_tpm2.o
- trusted-$(CONFIG_TRUSTED_KEYS_TPM) += tpm2key.asn1.o
- 
- trusted-$(CONFIG_TRUSTED_KEYS_TEE) += trusted_tee.o
-+
-+trusted-$(CONFIG_TRUSTED_KEYS_CAAM) += trusted_caam.o
-diff --git a/security/keys/trusted-keys/trusted_caam.c b/security/keys/trusted-keys/trusted_caam.c
-new file mode 100644
-index 000000000000..01adfd18adda
---- /dev/null
-+++ b/security/keys/trusted-keys/trusted_caam.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2021 Pengutronix, Ahmad Fatoum <kernel@pengutronix.de>
-+ */
-+
-+#include <keys/trusted_caam.h>
-+#include <keys/trusted-type.h>
-+#include <linux/build_bug.h>
-+#include <linux/key-type.h>
-+#include <soc/fsl/caam-blob.h>
-+
-+static struct caam_blob_priv *blobifier;
-+
-+#define KEYMOD "kernel:trusted"
-+
-+static_assert(MAX_KEY_SIZE + CAAM_BLOB_OVERHEAD <= CAAM_BLOB_MAX_LEN);
-+static_assert(MAX_BLOB_SIZE <= CAAM_BLOB_MAX_LEN);
-+
-+static int trusted_caam_seal(struct trusted_key_payload *p, char *datablob)
-+{
-+	int length = p->key_len + CAAM_BLOB_OVERHEAD;
-+	int ret;
-+
-+	ret = caam_encap_blob(blobifier, KEYMOD, p->key, p->blob, length);
-+	if (ret)
-+		return ret;
-+
-+	p->blob_len = length;
-+	return 0;
-+}
-+
-+static int trusted_caam_unseal(struct trusted_key_payload *p, char *datablob)
-+{
-+	int length = p->blob_len;
-+	int ret;
-+
-+	ret = caam_decap_blob(blobifier, KEYMOD, p->blob, p->key, length);
-+	if (ret)
-+		return ret;
-+
-+	p->key_len = length - CAAM_BLOB_OVERHEAD;
-+	return 0;
-+}
-+
-+static int trusted_caam_init(void)
-+{
-+	int ret;
-+
-+	blobifier = caam_blob_gen_init();
-+	if (IS_ERR(blobifier)) {
-+		pr_err("Job Ring Device allocation for transform failed\n");
-+		return PTR_ERR(blobifier);
-+	}
-+
-+	ret = register_key_type(&key_type_trusted);
-+	if (ret)
-+		caam_blob_gen_exit(blobifier);
-+
-+	return ret;
-+}
-+
-+static void trusted_caam_exit(void)
-+{
-+	unregister_key_type(&key_type_trusted);
-+	caam_blob_gen_exit(blobifier);
-+}
-+
-+struct trusted_key_ops caam_trusted_key_ops = {
-+	.migratable = 0, /* non-migratable */
-+	.init = trusted_caam_init,
-+	.seal = trusted_caam_seal,
-+	.unseal = trusted_caam_unseal,
-+	.exit = trusted_caam_exit,
-+};
-diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
-index d2b7626cde8b..305e44651180 100644
---- a/security/keys/trusted-keys/trusted_core.c
-+++ b/security/keys/trusted-keys/trusted_core.c
-@@ -9,6 +9,7 @@
- #include <keys/user-type.h>
- #include <keys/trusted-type.h>
- #include <keys/trusted_tee.h>
-+#include <keys/trusted_caam.h>
- #include <keys/trusted_tpm.h>
- #include <linux/capability.h>
- #include <linux/err.h>
-@@ -29,7 +30,7 @@ MODULE_PARM_DESC(kernel_rng, "Generate key material from kernel RNG");
- 
- static char *trusted_key_source;
- module_param_named(source, trusted_key_source, charp, 0);
--MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
-+MODULE_PARM_DESC(source, "Select trusted keys source (tpm, tee or caam)");
- 
- static const struct trusted_key_source trusted_key_sources[] = {
- #if defined(CONFIG_TRUSTED_KEYS_TPM)
-@@ -38,6 +39,9 @@ static const struct trusted_key_source trusted_key_sources[] = {
- #if defined(CONFIG_TRUSTED_KEYS_TEE)
- 	{ "tee", &trusted_key_tee_ops },
- #endif
-+#if defined(CONFIG_TRUSTED_KEYS_CAAM)
-+	{ "caam", &caam_trusted_key_ops },
-+#endif
- };
- 
- DEFINE_STATIC_CALL_NULL(trusted_key_init, *trusted_key_sources[0].ops->init);
--- 
-git-series 0.9.1
+
+> +       atomic64_add(count,
+> +               (atomic64_t *)&kvm->stat.page_stats.pages[level-1]);
+> +}
+> +
+>  /*
+>   * Rules for using mmu_spte_clear_track_bits:
+>   * It sets the sptep from present to nonpresent, and track the
+>   * state bits, it is used to clear the last level sptep.
+>   * Returns non-zero if the PTE was previously valid.
+>   */
+> -static int mmu_spte_clear_track_bits(u64 *sptep)
+> +static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
+>  {
+>         kvm_pfn_t pfn;
+>         u64 old_spte = *sptep;
+> +       int level = sptep_to_sp(sptep)->role.level;
+>
+>         if (!spte_has_volatile_bits(old_spte))
+>                 __update_clear_spte_fast(sptep, 0ull);
+> @@ -607,6 +624,8 @@ static int mmu_spte_clear_track_bits(u64 *sptep)
+>         if (!is_shadow_present_pte(old_spte))
+>                 return 0;
+>
+> +       kvm_update_page_stats(kvm, old_spte, level, -1);
+> +
+>         pfn = spte_to_pfn(old_spte);
+>
+>         /*
+> @@ -984,9 +1003,10 @@ static void __pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
+>         }
+>  }
+>
+> -static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
+> +static void pte_list_remove(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+> +                           u64 *sptep)
+>  {
+> -       mmu_spte_clear_track_bits(sptep);
+> +       mmu_spte_clear_track_bits(kvm, sptep);
+>         __pte_list_remove(sptep, rmap_head);
+>  }
+>
+> @@ -1119,7 +1139,7 @@ static u64 *rmap_get_next(struct rmap_iterator *iter)
+>
+>  static void drop_spte(struct kvm *kvm, u64 *sptep)
+>  {
+> -       if (mmu_spte_clear_track_bits(sptep))
+> +       if (mmu_spte_clear_track_bits(kvm, sptep))
+>                 rmap_remove(kvm, sptep);
+>  }
+>
+> @@ -1129,7 +1149,6 @@ static bool __drop_large_spte(struct kvm *kvm, u64 *sptep)
+>         if (is_large_pte(*sptep)) {
+>                 WARN_ON(sptep_to_sp(sptep)->role.level == PG_LEVEL_4K);
+>                 drop_spte(kvm, sptep);
+> -               --kvm->stat.lpages;
+>                 return true;
+>         }
+>
+> @@ -1386,7 +1405,7 @@ static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+>         while ((sptep = rmap_get_first(rmap_head, &iter))) {
+>                 rmap_printk("spte %p %llx.\n", sptep, *sptep);
+>
+> -               pte_list_remove(rmap_head, sptep);
+> +               pte_list_remove(kvm, rmap_head, sptep);
+>                 flush = true;
+>         }
+>
+> @@ -1421,13 +1440,13 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+>                 need_flush = 1;
+>
+>                 if (pte_write(pte)) {
+> -                       pte_list_remove(rmap_head, sptep);
+> +                       pte_list_remove(kvm, rmap_head, sptep);
+>                         goto restart;
+>                 } else {
+>                         new_spte = kvm_mmu_changed_pte_notifier_make_spte(
+>                                         *sptep, new_pfn);
+>
+> -                       mmu_spte_clear_track_bits(sptep);
+> +                       mmu_spte_clear_track_bits(kvm, sptep);
+>                         mmu_spte_set(sptep, new_spte);
+>                 }
+>         }
+> @@ -2232,8 +2251,6 @@ static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
+>         if (is_shadow_present_pte(pte)) {
+>                 if (is_last_spte(pte, sp->role.level)) {
+>                         drop_spte(kvm, spte);
+> -                       if (is_large_pte(pte))
+> -                               --kvm->stat.lpages;
+>                 } else {
+>                         child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
+>                         drop_parent_pte(child, spte);
+> @@ -2690,10 +2707,10 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
+>
+>         pgprintk("%s: setting spte %llx\n", __func__, *sptep);
+>         trace_kvm_mmu_set_spte(level, gfn, sptep);
+> -       if (!was_rmapped && is_large_pte(*sptep))
+> -               ++vcpu->kvm->stat.lpages;
+>
+>         if (!was_rmapped) {
+> +               kvm_update_page_stats(vcpu->kvm, *sptep,
+> +                       sptep_to_sp(sptep)->role.level, 1);
+>                 rmap_count = rmap_add(vcpu, sptep, gfn);
+>                 if (rmap_count > RMAP_RECYCLE_THRESHOLD)
+>                         rmap_recycle(vcpu, sptep, gfn);
+> @@ -5669,7 +5686,7 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
+>                 if (sp->role.direct && !kvm_is_reserved_pfn(pfn) &&
+>                     sp->role.level < kvm_mmu_max_mapping_level(kvm, slot, sp->gfn,
+>                                                                pfn, PG_LEVEL_NUM)) {
+> -                       pte_list_remove(rmap_head, sptep);
+> +                       pte_list_remove(kvm, rmap_head, sptep);
+>
+>                         if (kvm_available_flush_tlb_with_range())
+>                                 kvm_flush_remote_tlbs_with_address(kvm, sp->gfn,
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index caac4ddb46df..24bd7f03248c 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -446,12 +446,10 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>
+>         trace_kvm_tdp_mmu_spte_changed(as_id, gfn, level, old_spte, new_spte);
+>
+> -       if (is_large_pte(old_spte) != is_large_pte(new_spte)) {
+> -               if (is_large_pte(old_spte))
+> -                       atomic64_sub(1, (atomic64_t*)&kvm->stat.lpages);
+> -               else
+> -                       atomic64_add(1, (atomic64_t*)&kvm->stat.lpages);
+> -       }
+> +       if (is_large_pte(old_spte) && !is_large_pte(new_spte))
+> +               kvm_update_page_stats(kvm, old_spte, level, -1);
+> +       else if (!is_large_pte(old_spte) && is_large_pte(new_spte))
+> +               kvm_update_page_stats(kvm, new_spte, level, 1);
+>
+>         /*
+>          * The only times a SPTE should be changed from a non-present to
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 8166ad113fb2..23444257fcbd 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -237,7 +237,11 @@ const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
+>         STATS_DESC_ICOUNTER(VM, mmu_unsync),
+>         STATS_DESC_ICOUNTER(VM, lpages),
+>         STATS_DESC_ICOUNTER(VM, nx_lpage_splits),
+> -       STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions)
+> +       STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions),
+> +       STATS_DESC_ICOUNTER(VM, page_stats.pages_4k),
+> +       STATS_DESC_ICOUNTER(VM, page_stats.pages_2m),
+> +       STATS_DESC_ICOUNTER(VM, page_stats.pages_1g),
+> +       STATS_DESC_ICOUNTER(VM, page_stats.pages_512g)
+>  };
+>  static_assert(ARRAY_SIZE(kvm_vm_stats_desc) ==
+>                 sizeof(struct kvm_vm_stat) / sizeof(u64));
+> --
+> 2.32.0.402.g57bb445576-goog
+>
