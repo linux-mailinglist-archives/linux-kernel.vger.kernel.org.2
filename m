@@ -2,74 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123233D0FC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDC93D0FC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238531AbhGUNAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43970 "EHLO
+        id S238557AbhGUNAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238331AbhGUM7F (ORCPT
+        with ESMTP id S238381AbhGUM7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:59:05 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02187C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:39:34 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id r18so1439195vsa.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:39:34 -0700 (PDT)
+        Wed, 21 Jul 2021 08:59:25 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E26C002B64;
+        Wed, 21 Jul 2021 06:40:00 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id d12so2208048wre.13;
+        Wed, 21 Jul 2021 06:40:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FQWrEGJNf7d0De/tJqK3kQBt/v9xkOGr4BS+4HVg0EM=;
-        b=EMMSRpjLlR8z+9dKBS1LOAQ5xvjsVXm5iI/uKPDfiPQplFAdN6hsuW8fNAN9mTsWFh
-         EWKrfhq3e2QQZrG8+RaOxX5bhWvGSLvnxsyu6yJvQILSiYCBcz/AcLFuU9d/fsDOtb4Q
-         zmddOdVeEak6hqr1ebmjixvSoYW8XJFz84Als=
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=2YZWGZN/barbCQ4PSNvEgZE4u5ohSafJjdAflTNqMgo=;
+        b=DY6ZW5ektiXig4yptvS9aLBaijbyR5XPieFrWmitZje3FrzUAyXvmyB7XDFu5dbOFf
+         ndRlZKbo6PUsSs2Bs7mvgMWw2jRhNerf6IL4FR8yUixvcb+QNQs0+DMYPrFCGohOLEb9
+         HmD581Q2ZQn3OroMlsjTncDLnfKP2qU6lEk2R7a2SQxh7QqKInVyUzINM/zNoKvh4UWP
+         P3mL3d+ogtY6yOuai8T9npV3cRk+IEKgGPalzsq6jbbjxPo8D2b1dWCQ3+Oka5S4mJhu
+         zvOegmp8aEevP5/QEtCWoUHEqeSKnCGvFZ7NtsmcubOeIdh8xM59TDTGumsoft7kqShh
+         1jkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FQWrEGJNf7d0De/tJqK3kQBt/v9xkOGr4BS+4HVg0EM=;
-        b=pvT8d/eC5UneCqG4ZvHu9S90ehuTVf0McO0ph+am9CyBDKoIRk5VKeqU8xqNLu536B
-         nDEcX2bZ9+mVnsRYldZaLHnY54h2Oev+4gdFcV4xk1AW1P+Pd01phc/Ndj6R43D0TZgq
-         BUBViPum11l7x7Vk/vY8phBPzBRo91AIQ5Mg8zxnEcjB7aZJGe/00AlB3VJ4BlgUYp3o
-         uUPsv9SS5OkrEJx7QSqyBBHhUnYzSD7GeoW5cZAh5LaK2n4XOm48Nv/dr03Py+B4/grw
-         BiS3z/l7pWTW9q68nXVcMqs4gmx0ftXKTSFfi/YnmdFyBgLFos0pyfOVX0+oU1Jc5FQn
-         Bm3A==
-X-Gm-Message-State: AOAM5332NYtVHF2cgK1VlNEmvnO9yRFGHaczSDrn9Sglwh6gGc5icD1H
-        S6RaBYcWmE1mRlcVnk124Qkrpl3puqlAtDAEiQ0kg4PUebE=
-X-Google-Smtp-Source: ABdhPJwH4yJ9S25IQ5rPLheaGef2e4VPv9oDKl8stXlTiIfMtNVD6W6giQawxkcYCrZSguYrZde3NJF/M4O9psaGr/w=
-X-Received: by 2002:a67:87c6:: with SMTP id j189mr35364915vsd.0.1626874774049;
- Wed, 21 Jul 2021 06:39:34 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2YZWGZN/barbCQ4PSNvEgZE4u5ohSafJjdAflTNqMgo=;
+        b=YxGQJbGJmTgThSDTRSOyg8XUxiQhqaH0cP6OBtxPz/K9DhPYQXoPlpC8iRexepVsG6
+         y3iCLW1DRLfB2IVZBTyK0B+ma7Dxl5K6fRiNsE/zQP+MR24bja6VpDYKtf3/DRY3aB44
+         Rm7PEGiB3jOOFFbgftPeVqGbuMl4DkK2NKLPoXrwftXIRcq2f0Tig2RcJfYpzp7YaE08
+         br7UjiyYXzGUCWeOGF9FGctJ0+M0LT/c+7w0QctoQ+L8u/XDFwyuUGFvnUN/GIhoo6Ko
+         iIMwJIO2estRm/GoKBfkHQ2+Q1dTcskl8LeUr6lrOtEjfhkY9O0gJ9mhyUcqjODGDJif
+         ytwQ==
+X-Gm-Message-State: AOAM530rvD7zHLwvwrwz4BMg1YlZWPLJioJ1zBICa+8dQo/TVlmrzg4s
+        WGAW/r/b/Vn/MS66BcMGzG1/lAiU8zS8ZSH/
+X-Google-Smtp-Source: ABdhPJxUoK4ngIeYTYIeMp+nrdVW1rzVTvvMf1oFSztb8AbntNCukxzjtWSBNkREq7jtUpangYWSlQ==
+X-Received: by 2002:a5d:410b:: with SMTP id l11mr42738870wrp.173.1626874799148;
+        Wed, 21 Jul 2021 06:39:59 -0700 (PDT)
+Received: from ?IPv6:2a02:810d:d40:2317:2ef0:5dff:fe0a:a2d5? ([2a02:810d:d40:2317:2ef0:5dff:fe0a:a2d5])
+        by smtp.gmail.com with ESMTPSA id 129sm22792434wmz.26.2021.07.21.06.39.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Jul 2021 06:39:58 -0700 (PDT)
+Subject: Re: [PATCH v2] Expose Peak USB device id in sysfs via phys_port_name.
+To:     =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210721124048.590426-1-nautsch2@gmail.com>
+ <20210721125926.593283-1-nautsch2@gmail.com>
+ <PA4PR03MB67973D473C7CE600A6104EE8D6E39@PA4PR03MB6797.eurprd03.prod.outlook.com>
+From:   Andre Naujoks <nautsch2@gmail.com>
+Message-ID: <fe8998f2-7897-735c-926f-6b6b74018784@gmail.com>
+Date:   Wed, 21 Jul 2021 15:39:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210720163832.544a2baf@canb.auug.org.au>
-In-Reply-To: <20210720163832.544a2baf@canb.auug.org.au>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 21 Jul 2021 15:39:23 +0200
-Message-ID: <CAJfpegvVyZXCb-RHBea6wmqOHPTzauXwSny0w666GJnm68ZLmQ@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the overlayfs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <PA4PR03MB67973D473C7CE600A6104EE8D6E39@PA4PR03MB6797.eurprd03.prod.outlook.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 at 08:38, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the overlayfs tree, today's linux-next build (htmldocs)
-> produced this warning:
->
-> Documentation/filesystems/api-summary:95: fs/stat.c:67: WARNING: Unknown target name: "statx_attr".
->
-> Introduced by commit
->
->   d1e717e0032c ("fs: add generic helper for filling statx attribute flags")
+Am 21.07.21 um 15:29 schrieb Stéphane Grosjean:
+> Hi,
+> 
+> The display and the possibility to change this "device_number" is a current modification of the peak_usb driver. This modification will offer this possibility for all CAN - USB interfaces of PEAK-System.
 
-Thanks, fix folded and force pushed.
+Hi.
 
-Miklos
+By "current modification" you mean something not yet public? Do you have 
+a time frame for when you are planning to make it public? I'd really 
+like to use this :-)
+
+> 
+> However, it is planned to create new R/W entries for this (under /sys/class/net/canX/...) as is already the case in other USB - CAN interface drivers.
+
+I'd be fine with that. I just chose something, that was already 
+available and looked as if it made the most sense without breaking anything.
+
+Thanks for the reply!
+   Andre
+
+> 
+> — Stéphane
+> 
+> 
+> De : Andre Naujoks <nautsch2@gmail.com>
+> Envoyé : mercredi 21 juillet 2021 14:59
+> À : Wolfgang Grandegger <wg@grandegger.com>; Marc Kleine-Budde <mkl@pengutronix.de>; David S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; Stéphane Grosjean <s.grosjean@peak-system.com>; Vincent Mailhol <mailhol.vincent@wanadoo.fr>; Gustavo A. R. Silva <gustavoars@kernel.org>; Pavel Skripkin <paskripkin@gmail.com>; Colin Ian King <colin.king@canonical.com>; Andre Naujoks <nautsch2@gmail.com>; linux-can@vger.kernel.org <linux-can@vger.kernel.org>; netdev@vger.kernel.org <netdev@vger.kernel.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
+> Objet : [PATCH v2] Expose Peak USB device id in sysfs via phys_port_name.
+> 
+> The Peak USB CAN adapters can be assigned a device id via the Peak
+> provided tools (pcan-settings). This id can currently not be set by the
+> upstream kernel drivers, but some devices expose this id already.
+> 
+> The id can be used for consistent naming of CAN interfaces regardless of
+> order of attachment or recognition on the system. The classical CAN Peak
+> USB adapters expose this id via bcdDevice (combined with another value)
+> on USB-level in the sysfs tree and this value is then available in
+> ID_REVISION from udev. This is not a feasible approach, when a single
+> USB device offers more than one CAN-interface, like e.g. the PCAN-USB
+> Pro FD devices.
+> 
+> This patch exposes those ids via the, up to now unused, netdevice sysfs
+> attribute phys_port_name as a simple decimal ASCII representation of the
+> id. phys_port_id was not used, since the default print functions from
+> net/core/net-sysfs.c output a hex-encoded binary value, which is
+> overkill for a one-byte device id, like this one.
+> 
+> Signed-off-by: Andre Naujoks <nautsch2@gmail.com>
+> ---
+>   drivers/net/can/usb/peak_usb/pcan_usb_core.c | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+> 
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> index e8f43ed90b72..f6cbb01a58cc 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> @@ -408,6 +408,21 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct sk_buff *skb,
+>           return NETDEV_TX_OK;
+>   }
+> 
+> +static int peak_usb_ndo_get_phys_port_name(struct net_device *netdev,
+> +                                          char *name, size_t len)
+> +{
+> +       const struct peak_usb_device *dev = netdev_priv(netdev);
+> +       int err;
+> +
+> +       err = snprintf(name, len, "%u", dev->device_number);
+> +
+> +       if (err >= len || err <= 0) {
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>   /*
+>    * start the CAN interface.
+>    * Rx and Tx urbs are allocated here. Rx urbs are submitted here.
+> @@ -769,6 +784,7 @@ static const struct net_device_ops peak_usb_netdev_ops = {
+>           .ndo_stop = peak_usb_ndo_stop,
+>           .ndo_start_xmit = peak_usb_ndo_start_xmit,
+>           .ndo_change_mtu = can_change_mtu,
+> +       .ndo_get_phys_port_name = peak_usb_ndo_get_phys_port_name,
+>   };
+> 
+>   /*
+> --
+> 2.32.0
+> 
+> --
+> PEAK-System Technik GmbH
+> Sitz der Gesellschaft Darmstadt - HRB 9183
+> Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
+> Unsere Datenschutzerklaerung mit wichtigen Hinweisen
+> zur Behandlung personenbezogener Daten finden Sie unter
+> www.peak-system.com/Datenschutz.483.0.html
+> 
+
