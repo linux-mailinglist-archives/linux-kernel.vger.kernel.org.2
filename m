@@ -2,80 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925183D0CBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547843D0CB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237935AbhGUJnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 05:43:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238793AbhGUJeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:34:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5DC46121F;
-        Wed, 21 Jul 2021 10:15:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626862523;
-        bh=TXJ1u7MVWN0FWVTPNy5JjGB30jYHeFOl74oKTqbFZYg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OsOgGDejJPd7YSI26Pni+5+GVuK3sfotExMnI7ne5Us+IPOWbkv3rb0HxBDqw6XKl
-         6OEqOEpwsu08/DWDPIlnqnTaG2Xcg5wlRd3pMOuE+NHtoqqRDnOYk0aWSd/n1hLOeb
-         RPj7ncmQ4fvK9U9vmvLvN/GmySO5P9LcACdhcgmdzHbnc4iJwimHYtEPSKy1gWoTWz
-         nlsiaZ61trfZAKuXifXUV3/fYlS70AvJoFv2/x0x82TqpTnA+BgWszZrfJOFoUf2I+
-         J1sUeaQ4Xz11vOGmyP4zY76rnIm9dHi9yxPOZ4QeMx2080iU2B2ZI28l8JRJ9MxEI1
-         nehxTCjOEhyzQ==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1m69G5-002565-D1; Wed, 21 Jul 2021 12:15:21 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Henry Styles <hes@sifive.com>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh@kernel.org>,
-        Wesley Sheng <wesley.sheng@amd.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: [PATCH v7 11/10] PCI: kirin: Allow building it as a module
-Date:   Wed, 21 Jul 2021 12:15:17 +0200
-Message-Id: <8dbdde3eda0e5d22020f6a8bf153d7cfb775c980.1626862458.git.mchehab+huawei@kernel.org>
+        id S236397AbhGUJmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 05:42:19 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:59384
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238792AbhGUJep (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 05:34:45 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id CB2333F243;
+        Wed, 21 Jul 2021 10:15:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626862521;
+        bh=SjoWjrqwnItTOh5zDKu4Dx2Q1flNerPBza5NTZJ0c4o=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=A0ZhYv4iW0I+Z2k/Ro32erSR/secBJ8GyhpKr2JJSa15MBEbZ1MnqSlPwwxaWlhW/
+         UMZnLhgaHe8Th/kdWSL7Q0ZMZPYAzYYDkyVL08TpT3Td2wLegXsLmsNxQm3f5SSsMX
+         bElzX+GVl93BYfXLWQbyAN5KfMnxBhS1rp++q2i26x/ddkUbcwtHb80NxmdgLCUkMO
+         PCzBPk22zj5ocdWaY1QKVEG1lpD94tpY+5aWlSijC6fzdACGCYki3cyxS20FHtZCus
+         RycbsTED2KJ0nxkyyT1Y3xL2yQshXG54AIeveRRqoLolaB4iPHQC7VfSlfJq+IQYFC
+         V7qCObWbSqs5g==
+From:   Colin King <colin.king@canonical.com>
+To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Varun Prakash <varun@chelsio.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: target: remove redundant assignment to variable ret
+Date:   Wed, 21 Jul 2021 11:15:19 +0100
+Message-Id: <20210721101519.42299-1-colin.king@canonical.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1626855713.git.mchehab+huawei@kernel.org>
-References: <cover.1626855713.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's nothing preventing this driver to be loaded as a
-module. So, change its config from bool to tristate.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+The variable ret is being initialized with a value that is never
+read, the assignment is redundant and can be removed.
+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/pci/controller/dwc/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/target/iscsi/cxgbit/cxgbit_ddp.c | 2 +-
+ drivers/target/loopback/tcm_loop.c       | 4 ++--
+ drivers/target/target_core_iblock.c      | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index 423d35872ce4..e0091bfae5b5 100644
---- a/drivers/pci/controller/dwc/Kconfig
-+++ b/drivers/pci/controller/dwc/Kconfig
-@@ -227,7 +227,7 @@ config PCIE_INTEL_GW
+diff --git a/drivers/target/iscsi/cxgbit/cxgbit_ddp.c b/drivers/target/iscsi/cxgbit/cxgbit_ddp.c
+index b044999ad002..072afd070f3e 100644
+--- a/drivers/target/iscsi/cxgbit/cxgbit_ddp.c
++++ b/drivers/target/iscsi/cxgbit/cxgbit_ddp.c
+@@ -234,7 +234,7 @@ cxgbit_get_r2t_ttt(struct iscsi_conn *conn, struct iscsi_cmd *cmd,
+ 	struct cxgbit_device *cdev = csk->com.cdev;
+ 	struct cxgbit_cmd *ccmd = iscsit_priv_cmd(cmd);
+ 	struct cxgbi_task_tag_info *ttinfo = &ccmd->ttinfo;
+-	int ret = -EINVAL;
++	int ret;
  
- config PCIE_KIRIN
- 	depends on OF && (ARM64 || COMPILE_TEST)
--	bool "HiSilicon Kirin series SoCs PCIe controllers"
-+	tristate "HiSilicon Kirin series SoCs PCIe controllers"
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_DW_HOST
- 	help
+ 	if ((!ccmd->setup_ddp) ||
+ 	    (!test_bit(CSK_DDP_ENABLE, &csk->com.flags)))
+diff --git a/drivers/target/loopback/tcm_loop.c b/drivers/target/loopback/tcm_loop.c
+index 6d0b0e67e79e..fdc36274cb39 100644
+--- a/drivers/target/loopback/tcm_loop.c
++++ b/drivers/target/loopback/tcm_loop.c
+@@ -241,7 +241,7 @@ static int tcm_loop_abort_task(struct scsi_cmnd *sc)
+ {
+ 	struct tcm_loop_hba *tl_hba;
+ 	struct tcm_loop_tpg *tl_tpg;
+-	int ret = FAILED;
++	int ret;
+ 
+ 	/*
+ 	 * Locate the tcm_loop_hba_t pointer
+@@ -261,7 +261,7 @@ static int tcm_loop_device_reset(struct scsi_cmnd *sc)
+ {
+ 	struct tcm_loop_hba *tl_hba;
+ 	struct tcm_loop_tpg *tl_tpg;
+-	int ret = FAILED;
++	int ret;
+ 
+ 	/*
+ 	 * Locate the tcm_loop_hba_t pointer
+diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
+index 44d9d028f716..4069a1edcfa3 100644
+--- a/drivers/target/target_core_iblock.c
++++ b/drivers/target/target_core_iblock.c
+@@ -83,7 +83,7 @@ static int iblock_configure_device(struct se_device *dev)
+ 	struct blk_integrity *bi;
+ 	fmode_t mode;
+ 	unsigned int max_write_zeroes_sectors;
+-	int ret = -ENOMEM;
++	int ret;
+ 
+ 	if (!(ib_dev->ibd_flags & IBDF_HAS_UDEV_PATH)) {
+ 		pr_err("Missing udev_path= parameters for IBLOCK\n");
 -- 
 2.31.1
-
 
