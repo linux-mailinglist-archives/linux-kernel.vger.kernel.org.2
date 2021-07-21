@@ -2,134 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6BF3D1106
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DD63D110F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238874AbhGUNhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:37:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:64109 "EHLO mga09.intel.com"
+        id S239023AbhGUNj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:39:56 -0400
+Received: from 8bytes.org ([81.169.241.247]:43038 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232419AbhGUNhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:37:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="211442244"
-X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
-   d="scan'208";a="211442244"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 07:18:14 -0700
-X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
-   d="scan'208";a="501302795"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.213.149]) ([10.254.213.149])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 07:18:11 -0700
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Sanjay Kumar <sanjay.k.kumar@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>
-References: <20210720013856.4143880-1-baolu.lu@linux.intel.com>
- <20210720013856.4143880-5-baolu.lu@linux.intel.com>
- <22302277-0470-db41-7a19-41b5f73bd2c5@arm.com>
- <4d3a2546-da21-605d-26a9-1f6f52123056@linux.intel.com>
- <5662caea-a974-e511-9509-010606fda251@arm.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [PATCH 4/5] iommu/vt-d: Disallow SVA if devices don't support
- 64-bit address
-Message-ID: <f1fd4464-d186-e18f-3e33-eac56d488bba@linux.intel.com>
-Date:   Wed, 21 Jul 2021 22:17:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232419AbhGUNjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 09:39:53 -0400
+Received: from cap.home.8bytes.org (p4ff2b1ea.dip0.t-ipconnect.de [79.242.177.234])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id BC9EF87B;
+        Wed, 21 Jul 2021 16:20:22 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org, Eric Biederman <ebiederm@xmission.com>
+Cc:     kexec@lists.infradead.org, Joerg Roedel <jroedel@suse.de>,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Joerg Roedel <joro@8bytes.org>, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH 00/12] x86/sev: KEXEC/KDUMP support for SEV-ES guests
+Date:   Wed, 21 Jul 2021 16:20:03 +0200
+Message-Id: <20210721142015.1401-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <5662caea-a974-e511-9509-010606fda251@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/21 19:12, Robin Murphy wrote:
-> On 2021-07-21 02:50, Lu Baolu wrote:
->> Hi Robin,
->>
->> Thanks a lot for reviewing my patch!
->>
->> On 7/20/21 5:27 PM, Robin Murphy wrote:
->>> On 2021-07-20 02:38, Lu Baolu wrote:
->>>> When the device and CPU share an address space (such as SVA), the 
->>>> device
->>>> must support the same addressing capability as the CPU. The CPU does 
->>>> not
->>>> consider the addressing ability of any device when managing the page 
->>>> table
->>>> of a process, so the device must have enough addressing ability to bind
->>>> the page table of the process.
->>>>
->>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->>>> ---
->>>>   drivers/iommu/intel/iommu.c | 3 +++
->>>>   1 file changed, 3 insertions(+)
->>>>
->>>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->>>> index f45c80ce2381..f3cca1dd384d 100644
->>>> --- a/drivers/iommu/intel/iommu.c
->>>> +++ b/drivers/iommu/intel/iommu.c
->>>> @@ -5372,6 +5372,9 @@ static int intel_iommu_enable_sva(struct 
->>>> device *dev)
->>>>       if (!(iommu->flags & VTD_FLAG_SVM_CAPABLE))
->>>>           return -ENODEV;
->>>> +    if (!dev->dma_mask || *dev->dma_mask != DMA_BIT_MASK(64))
->>>
->>> Careful - VFIO doesn't set DMA masks (since it doesn't use the DMA API),
->>
->> SVA doesn't work through the VFIO framework.
-> 
-> Did anyone say it does? My point is that, as far as I understand, the 
-> SVA UAPI is very much intended to work *with* VFIO, and even if the 
-> finer details are still mired in the /dev/ioasid discussion today we 
-> should definitely expect to see VFIO-like use-cases at some point. I 
-> certainly don't see why any of the guest SVA stuff exists already if not 
-> for VFIO-assigned devices?
+From: Joerg Roedel <jroedel@suse.de>
 
-Agreed. From /dev/ioasid design point of view, it's possible to have
-VFIO-like use case of SVA. Perhaps the device addressing capability
-could be included in GET_DEV_INFO of /dev/ioasid UAPI.
+Hi,
 
-> 
->>> so this appears to be relying on another driver having bound previously,
->>
->> Yes. You are right.
->>
->>> otherwise the mask would still be the default 32-bit one from 
->>> pci_setup_device(). I'm not sure that's an entirely robust assumption.
->>
->> Currently SVA implementation always requires a native kernel driver. The
->> assumption is that the drivers should check and set 64-bit addressing
->> capability before calling iommu_sva_xxx() APIs.
-> 
-> ...and given that that is not a documented requirement, and certainly 
-> not a technical one (even a self-contained kernel driver could choose to 
-> only use SVA contexts and not touch the DMA API), it's an inherently 
-> fragile assumption which I'm confident *will* be broken eventually :)
-> 
+here are changes to enable kexec/kdump in SEV-ES guests. The biggest
+problem for supporting kexec/kdump under SEV-ES is to find a way to
+hand the non-boot CPUs (APs) from one kernel to another.
 
-Fair enough. I will drop this patch.
+Without SEV-ES the first kernel parks the CPUs in a HLT loop until
+they get reset by the kexec'ed kernel via an INIT-SIPI-SIPI sequence.
+For virtual machines the CPU reset is emulated by the hypervisor,
+which sets the vCPU registers back to reset state.
 
-Thanks a lot for the comments.
+This does not work under SEV-ES, because the hypervisor has no access
+to the vCPU registers and can't make modifications to them. So an
+SEV-ES guest needs to reset the vCPU itself and park it using the
+AP-reset-hold protocol. Upon wakeup the guest needs to jump to
+real-mode and to the reset-vector configured in the AP-Jump-Table.
 
-Best regards,
-baolu
+The code to do this is the main part of this patch-set. It works by
+placing code on the AP Jump-Table page itself to park the vCPU and for
+jumping to the reset vector upon wakeup. The code on the AP Jump Table
+runs in 16-bit protected mode with segment base set to the beginning
+of the page. The AP Jump-Table is usually not within the first 1MB of
+memory, so the code can't run in real-mode.
 
-> Robin.
-> 
->>>> +        return -ENODEV;
->>>> +
->>>>       if (intel_iommu_enable_pasid(iommu, dev))
->>>>           return -ENODEV;
->>>>
->>
->> Best regards,
->> baolu
+The AP Jump-Table is the best place to put the parking code, because
+the memory is owned, but read-only by the firmware and writeable by
+the OS. Only the first 4 bytes are used for the reset-vector, leaving
+the rest of the page for code/data/stack to park a vCPU. The code
+can't be in kernel memory because by the time the vCPU wakes up the
+memory will be owned by the new kernel, which might have overwritten it
+already.
+
+The other patches add initial GHCB Version 2 protocol support, because
+kexec/kdump need the MSR-based (without a GHCB) AP-reset-hold VMGEXT,
+which is a GHCB protocol version 2 feature.
+
+The kexec'ed kernel is also entered via the decompressor and needs
+MMIO support there, so this patch-set also adds MMIO #VC support to
+the decompressor and support for handling CLFLUSH instructions.
+
+Finally there is also code to disable kexec/kdump support at runtime
+when the environment does not support it (e.g. no GHCB protocol
+version 2 support or AP Jump Table over 4GB).
+
+The diffstat looks big, but most of it is moving code for MMIO #VC
+support around to make it available to the decompressor.
+
+Known problems:
+
+	It currently only works reliable when the kexec_file syscall
+	is used. With the kexec syscall it works one time, and the
+	second kexec then hangs because the sha256 verification fails
+	in the purgatory.
+
+	For the kexec syscall the purgatory is loaded from user-space,
+	were most likely the issue needs to be fixed. But the question
+	is whether this is a useful way. The user-space purgatory has
+	other ways to break under SEV-ES, which can be enabled via
+	kexec-tool command line options. For example enabling console
+	support for the purgatory will definitly break kexec for
+	SEV-ES.
+
+	So the question is whether is makes sense to only support
+	kexec_file() under SEV-ES, where the in-kernel purgatory is
+	used (which has less ways to break under SEV-ES).
+
+With that said, please review :)
+
+Regards,
+
+	Joerg
+
+Joerg Roedel (12):
+  kexec: Allow architecture code to opt-out at runtime
+  x86/kexec/64: Forbid kexec when running as an SEV-ES guest
+  x86/sev: Save and print negotiated GHCB protocol version
+  x86/sev: Do not hardcode GHCB protocol version
+  x86/sev: Use GHCB protocol version 2 if supported
+  x86/sev: Cache AP Jump Table Address
+  x86/sev: Setup code to park APs in the AP Jump Table
+  x86/sev: Park APs on AP Jump Table with GHCB protocol version 2
+  x86/sev: Use AP Jump Table blob to stop CPU
+  x86/sev: Add MMIO handling support to boot/compressed/ code
+  x86/sev: Handle CLFLUSH MMIO events
+  x86/sev: Support kexec under SEV-ES with AP Jump Table blob
+
+ arch/x86/boot/compressed/sev.c          |  56 +-
+ arch/x86/include/asm/realmode.h         |   5 +
+ arch/x86/include/asm/sev-ap-jumptable.h |  25 +
+ arch/x86/include/asm/sev.h              |  13 +-
+ arch/x86/kernel/machine_kexec_64.c      |  12 +
+ arch/x86/kernel/process.c               |   8 +
+ arch/x86/kernel/sev-shared.c            | 333 +++++++++-
+ arch/x86/kernel/sev.c                   | 494 ++++++---------
+ arch/x86/lib/insn-eval-shared.c         | 805 ++++++++++++++++++++++++
+ arch/x86/lib/insn-eval.c                | 802 +----------------------
+ arch/x86/realmode/Makefile              |   9 +-
+ arch/x86/realmode/rm/Makefile           |  11 +-
+ arch/x86/realmode/rm/header.S           |   3 +
+ arch/x86/realmode/rm/sev_ap_park.S      |  89 +++
+ arch/x86/realmode/rmpiggy.S             |   6 +
+ arch/x86/realmode/sev/Makefile          |  41 ++
+ arch/x86/realmode/sev/ap_jump_table.S   | 130 ++++
+ arch/x86/realmode/sev/ap_jump_table.lds |  24 +
+ include/linux/kexec.h                   |   1 +
+ kernel/kexec.c                          |  14 +
+ kernel/kexec_file.c                     |   9 +
+ 21 files changed, 1764 insertions(+), 1126 deletions(-)
+ create mode 100644 arch/x86/include/asm/sev-ap-jumptable.h
+ create mode 100644 arch/x86/lib/insn-eval-shared.c
+ create mode 100644 arch/x86/realmode/rm/sev_ap_park.S
+ create mode 100644 arch/x86/realmode/sev/Makefile
+ create mode 100644 arch/x86/realmode/sev/ap_jump_table.S
+ create mode 100644 arch/x86/realmode/sev/ap_jump_table.lds
+
+
+base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
+-- 
+2.31.1
+
