@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19213D0E54
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DADE3D0E4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237012AbhGULTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:19:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:52776 "EHLO foss.arm.com"
+        id S238842AbhGULSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:18:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:52826 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237668AbhGULKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:10:55 -0400
+        id S237697AbhGULLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 07:11:00 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D38A631B;
-        Wed, 21 Jul 2021 04:51:31 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 221EA11B3;
+        Wed, 21 Jul 2021 04:51:37 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6C71C3F694;
-        Wed, 21 Jul 2021 04:51:29 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B050C3F694;
+        Wed, 21 Jul 2021 04:51:34 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rt-users@vger.kernel.org
@@ -35,9 +35,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Steven Price <steven.price@arm.com>,
         Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 1/3] sched: Introduce is_pcpu_safe()
-Date:   Wed, 21 Jul 2021 12:51:16 +0100
-Message-Id: <20210721115118.729943-2-valentin.schneider@arm.com>
+Subject: [PATCH 3/3] arm64: mm: Make arch_faults_on_old_pte() check for migratability
+Date:   Wed, 21 Jul 2021 12:51:18 +0100
+Message-Id: <20210721115118.729943-4-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210721115118.729943-1-valentin.schneider@arm.com>
 References: <20210721115118.729943-1-valentin.schneider@arm.com>
@@ -47,44 +47,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some areas use preempt_disable() + preempt_enable() to safely access
-per-CPU data. The PREEMPT_RT folks have shown this can also be done by
-keeping preemption enabled and instead disabling migration (and acquiring a
-sleepable lock, if relevant).
+Running v5.13-rt1 on my arm64 Juno board triggers:
 
-Introduce a helper which checks whether the current task can safely access
-per-CPU data, IOW if the task's context guarantees the accesses will target
-a single CPU. This accounts for preemption, CPU affinity, and migrate
-disable - note that the CPU affinity check also mandates the presence of
-PF_NO_SETAFFINITY, as otherwise userspace could concurrently render the
-upcoming per-CPU access(es) unsafe.
+[   30.430643] WARNING: CPU: 4 PID: 1 at arch/arm64/include/asm/pgtable.h:985 do_set_pte (./arch/arm64/include/asm/pgtable.h:985 ./arch/arm64/include/asm/pgtable.h:997 mm/memory.c:3830)
+[   30.430669] Modules linked in:
+[   30.430679] CPU: 4 PID: 1 Comm: init Tainted: G        W         5.13.0-rt1-00002-gcb994ad7c570 #35
+[   30.430690] Hardware name: ARM Juno development board (r0) (DT)
+[   30.430695] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+[   30.430705] pc : do_set_pte (./arch/arm64/include/asm/pgtable.h:985 ./arch/arm64/include/asm/pgtable.h:997 mm/memory.c:3830)
+[   30.430713] lr : filemap_map_pages (mm/filemap.c:3222)
+[   30.430725] sp : ffff800012f4bb90
+[   30.430729] x29: ffff800012f4bb90 x28: fffffc0025d81900 x27: 0000000000000100
+[   30.430745] x26: fffffc0025d81900 x25: ffff000803460000 x24: ffff000801bbf428
+[   30.430760] x23: ffff00080317d900 x22: 0000ffffb4c3e000 x21: fffffc0025d81900
+[   30.430775] x20: ffff800012f4bd10 x19: 00200009f6064fc3 x18: 000000000000ca01
+[   30.430790] x17: 0000000000000000 x16: 000000000000ca06 x15: ffff80001240e128
+[   30.430804] x14: ffff8000124b0128 x13: 000000000000000a x12: ffff80001205e5f0
+[   30.430819] x11: 0000000000000000 x10: ffff800011a37d28 x9 : 00000000000000c8
+[   30.430833] x8 : ffff000800160000 x7 : 0000000000000002 x6 : 0000000000000000
+[   30.430847] x5 : 0000000000000000 x4 : 0000ffffb4c2f000 x3 : 0020000000000fc3
+[   30.430861] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000000
+[   30.430874] Call trace:
+[   30.430878] do_set_pte (./arch/arm64/include/asm/pgtable.h:985 ./arch/arm64/include/asm/pgtable.h:997 mm/memory.c:3830)
+[   30.430886] filemap_map_pages (mm/filemap.c:3222)
+[   30.430895] __handle_mm_fault (mm/memory.c:4006 mm/memory.c:4020 mm/memory.c:4153 mm/memory.c:4412 mm/memory.c:4547)
+[   30.430904] handle_mm_fault (mm/memory.c:4645)
+[   30.430912] do_page_fault (arch/arm64/mm/fault.c:507 arch/arm64/mm/fault.c:607)
+[   30.430925] do_translation_fault (arch/arm64/mm/fault.c:692)
+[   30.430936] do_mem_abort (arch/arm64/mm/fault.c:821)
+[   30.430946] el0_ia (arch/arm64/kernel/entry-common.c:324)
+[   30.430959] el0_sync_handler (arch/arm64/kernel/entry-common.c:431)
+[   30.430967] el0_sync (arch/arm64/kernel/entry.S:744)
+[   30.430977] irq event stamp: 1228384
+[   30.430981] hardirqs last enabled at (1228383): lock_page_memcg (mm/memcontrol.c:2005 (discriminator 1))
+[   30.430993] hardirqs last disabled at (1228384): el1_dbg (arch/arm64/kernel/entry-common.c:144 arch/arm64/kernel/entry-common.c:234)
+[   30.431007] softirqs last enabled at (1228260): __local_bh_enable_ip (./arch/arm64/include/asm/irqflags.h:85 kernel/softirq.c:262)
+[   30.431022] softirqs last disabled at (1228232): fpsimd_restore_current_state (./include/linux/bottom_half.h:19 arch/arm64/kernel/fpsimd.c:183 arch/arm64/kernel/fpsimd.c:1182)
+
+CONFIG_PREEMPT_RT turns the PTE lock into a sleepable spinlock. Since
+acquiring such a lock also disables migration, any per-CPU access done
+under the lock remains safe even if preemptible.
+
+This affects:
+
+  filemap_map_pages()
+  `\
+    do_set_pte()
+    `\
+      arch_wants_old_prefaulted_pte()
+
+which checks preemptible() to figure out if the output of
+cpu_has_hw_af() (IOW the underlying CPU) will remain stable for the
+subsequent operations. Make it use is_pcpu_safe() instead.
 
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- include/linux/sched.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/arm64/include/asm/pgtable.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index efdbdf654876..7ce2d5c1ad55 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1707,6 +1707,16 @@ static inline bool is_percpu_thread(void)
- #endif
- }
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index 0b10204e72fc..3c2b63306237 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -982,7 +982,7 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
+  */
+ static inline bool arch_faults_on_old_pte(void)
+ {
+-	WARN_ON(preemptible());
++	WARN_ON(!is_pcpu_safe());
  
-+/* Is the current task guaranteed not to be migrated elsewhere? */
-+static inline bool is_pcpu_safe(void)
-+{
-+#ifdef CONFIG_SMP
-+	return !preemptible() || is_percpu_thread() || current->migration_disabled;
-+#else
-+	return true;
-+#endif
-+}
-+
- /* Per-process atomic flags. */
- #define PFA_NO_NEW_PRIVS		0	/* May not gain new privileges. */
- #define PFA_SPREAD_PAGE			1	/* Spread page cache over cpuset */
+ 	return !cpu_has_hw_af();
+ }
 -- 
 2.25.1
 
