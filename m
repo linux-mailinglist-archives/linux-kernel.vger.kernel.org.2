@@ -2,61 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3884E3D1695
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE273D169A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239290AbhGUSCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 14:02:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58726 "EHLO
+        id S239367AbhGUSFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 14:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237864AbhGUSCw (ORCPT
+        with ESMTP id S231535AbhGUSFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 14:02:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F906C061575;
-        Wed, 21 Jul 2021 11:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9RT4PyD91dRKt/JcdMzt4T8CVasdTpw3pfAjcsgWVk4=; b=wZJ2oFLgnqPkvGsQjb54IVdM11
-        1QyaCu74yf7MAPhpTK8hvKrOsN/Sa8z0UsgX9TU1/MkVp10mRCxeKNnbQoO+f7CHpvsNT4KVtSCCU
-        /1zgCeTSMlbxbwLiO0/QURyZ/Ox0e+HTg82tQWAue1IBUNn6O1DK5vBe9cdv8navMvbGFY3VHmphp
-        J10hU87wQOzeWw9DHb0Xb6z9jEh1IczLM+qDPMDdR7dTBk22IkUm+jgA09svhhrDB2m+D7o/JyYzt
-        87ilDYkZ9ANLoU+NzIGiT3TABOaugyANGybsnEVkduOS95XjqSzkal/lxdLo+lMClUA9LGLvPtisI
-        nxZg6XJw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6HBL-009VB3-Kf; Wed, 21 Jul 2021 18:43:07 +0000
-Date:   Wed, 21 Jul 2021 19:42:59 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dennis Camera <bugs+kernel.org@dtnr.ch>, stable@vger.kernel.org
-Subject: Re: [PATCH] hugetlbfs: fix mount mode command line processing
-Message-ID: <YPhqswl0EbBoqDZ0@casper.infradead.org>
-References: <20210721183326.102716-1-mike.kravetz@oracle.com>
+        Wed, 21 Jul 2021 14:05:19 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C947CC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 11:45:55 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id h9so4254281ljm.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 11:45:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8y6QbjABYVdCwCo9bCH3uRUzlEcjRbA7x2BUjVyc0ws=;
+        b=hBUMMtm8juMCJx4jllyZahvGiCtlfjKyjc1FvS1TrtIMoXehtYE8RQBhzutuMuUXBw
+         +ZzhHb+Uy6icnIIwEZFOuLpqmC7VLRKYfCK1VRcuzDI5JuppC+jaTAWvJurBuPnMtXuA
+         SFtKdmhSLtUp7cgKEZPGOTovb4IS5Dqjf8u7Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8y6QbjABYVdCwCo9bCH3uRUzlEcjRbA7x2BUjVyc0ws=;
+        b=mwpF9O06BHbOr59w4XIK/56VoxR0CKt9yqHEGBEHWdqtyfgFw/sBlN4YJhLisRbfbf
+         MX5enBMt9yVBf8d3fK5ogBHFEint9QONUTPBcLVbnLqSEBEnpHX6EUJY4MoOeuiQ/smn
+         Sp2XVbWUZtUvFXXAjc2cYX1mXmnTwr7fLYJN+nI6aqc5pXkG6uRw/Ymmaj1O8cVndCSZ
+         UY4r0NcVnacMnC8J9N1YWXLkpa25/X6GpqC5c5CVp9TM9aQFuRWP9t86gpzE2+OxytFM
+         IcIQmVA1U98SfFjGZceLOF/YBvk98UQy1wPvyZ+W/SUwZYeHvYRgGqSY2A11trGUeZSJ
+         2Fxw==
+X-Gm-Message-State: AOAM530yLorQlme7Rms0+A5iax1L1VDuNPM9TSjlx9sKe6w/3cVhHpaA
+        mIB/pjQtR+3e9aPzi4JBhxfIWODHgRT5HoRq
+X-Google-Smtp-Source: ABdhPJyO7fZ0nN54bx9oEtQafeIpPfVviD7rIr/tkk6jp2DcicdrqBhHMuaxsfI1DmG8iok6EWtC3g==
+X-Received: by 2002:a2e:9a58:: with SMTP id k24mr20985645ljj.8.1626893153989;
+        Wed, 21 Jul 2021 11:45:53 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id u10sm2883550ljl.122.2021.07.21.11.45.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Jul 2021 11:45:53 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id b26so4664953lfo.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 11:45:52 -0700 (PDT)
+X-Received: by 2002:a05:6512:3f82:: with SMTP id x2mr25045987lfa.421.1626893152674;
+ Wed, 21 Jul 2021 11:45:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210721183326.102716-1-mike.kravetz@oracle.com>
+References: <20210721135926.602840-1-nborisov@suse.com> <CAHk-=whqJKKc9wUacLEkvTzXYfYOUDt=kHKX6Fa8Kb4kQftbbQ@mail.gmail.com>
+ <b24b5a9d-69a0-43b9-2ceb-8e4ee3bf2f17@suse.com>
+In-Reply-To: <b24b5a9d-69a0-43b9-2ceb-8e4ee3bf2f17@suse.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 21 Jul 2021 11:45:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgMyXh3gGuSzj_Dgw=Gn_XPxGSTPq6Pz7dEyx6JNuAh9g@mail.gmail.com>
+Message-ID: <CAHk-=wgMyXh3gGuSzj_Dgw=Gn_XPxGSTPq6Pz7dEyx6JNuAh9g@mail.gmail.com>
+Subject: Re: [PATCH] lib/string: Bring optimized memcmp from glibc
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>
+Content-Type: multipart/mixed; boundary="000000000000741c3905c7a694cd"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 11:33:26AM -0700, Mike Kravetz wrote:
-> In commit 32021982a324 ("hugetlbfs: Convert to fs_context") processing
-> of the mount mode string was changed from match_octal() to fsparam_u32.
-> This changed existing behavior as match_octal does not require octal
-> values to have a '0' prefix, but fsparam_u32 does.
-> 
-> Use fsparam_u32oct which provides the same behavior as match_octal.
-> 
-> Reported-by: Dennis Camera <bugs+kernel.org@dtnr.ch>
-> Fixes: 32021982a324 ("hugetlbfs: Convert to fs_context")
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> CC: <stable@vger.kernel.org>
+--000000000000741c3905c7a694cd
+Content-Type: text/plain; charset="UTF-8"
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+On Wed, Jul 21, 2021 at 11:17 AM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+> I find it somewhat arbitrary that we choose to align the 2nd pointer and
+> not the first.
+
+Yeah, that's a bit odd, but I don't think it matters.
+
+The hope is obviously that they are mutually aligned, and in that case
+it doesn't matter which one you aim to align.
+
+> So you are saying that the current memcmp could indeed use improvement
+> but you don't want it to be based on the glibc's code due to the ugly
+> misalignment handling?
+
+Yeah. I suspect that this (very simple) patch gives you the same
+performance improvement that the glibc code does.
+
+NOTE! I'm not saying this patch is perfect. This one doesn't even
+_try_ to do the mutual alignment, because it's really silly. But I'm
+throwing this out here for discussion, because
+
+ - it's really simple
+
+ - I suspect it gets you 99% of the way there
+
+ - the code generation is actually quite good with both gcc and clang.
+This is gcc:
+
+        memcmp:
+                jmp     .L60
+        .L52:
+                movq    (%rsi), %rax
+                cmpq    %rax, (%rdi)
+                jne     .L53
+                addq    $8, %rdi
+                addq    $8, %rsi
+                subq    $8, %rdx
+        .L60:
+                cmpq    $7, %rdx
+                ja      .L52
+                testq   %rdx, %rdx
+                je      .L61
+        .L53:
+                xorl    %ecx, %ecx
+                jmp     .L56
+        .L62:
+                addq    $1, %rcx
+                cmpq    %rcx, %rdx
+                je      .L51
+        .L56:
+                movzbl  (%rdi,%rcx), %eax
+                movzbl  (%rsi,%rcx), %r8d
+                subl    %r8d, %eax
+                je      .L62
+        .L51:
+                ret
+        .L61:
+                xorl    %eax, %eax
+                ret
+
+and notice how there are no spills, no extra garbage, just simple and
+straightforward code.
+
+Those things ends mattering too - it's good for I$, it's good for the
+small cases, and it's good for debugging and reading the code.
+
+If this is "good enough" for your test-case, I really would prefer
+something like this. "Make it as simple as possible, but no simpler"
+
+I can do the mutual alignment too, but I'd actually prefer to do it as
+a separate patch, for when there are numbers for that.
+
+And I wouldn't do it as a byte-by-byte case, because that's just stupid.
+
+I'd do it using a separate first single "get unaligned word from both
+sources, compare them for equality, and then only add enough bytes to
+align"
+
+                  Linus
+
+--000000000000741c3905c7a694cd
+Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_krdu1hal0>
+X-Attachment-Id: f_krdu1hal0
+
+IGxpYi9zdHJpbmcuYyB8IDE2ICsrKysrKysrKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCAxNiBp
+bnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvbGliL3N0cmluZy5jIGIvbGliL3N0cmluZy5jCmlu
+ZGV4IDc3YmQwYjFkMzI5Ni4uYjJkZTQ1YTU4MWY0IDEwMDY0NAotLS0gYS9saWIvc3RyaW5nLmMK
+KysrIGIvbGliL3N0cmluZy5jCkBAIC0yOSw2ICsyOSw3IEBACiAjaW5jbHVkZSA8bGludXgvZXJy
+bm8uaD4KICNpbmNsdWRlIDxsaW51eC9zbGFiLmg+CiAKKyNpbmNsdWRlIDxhc20vdW5hbGlnbmVk
+Lmg+CiAjaW5jbHVkZSA8YXNtL2J5dGVvcmRlci5oPgogI2luY2x1ZGUgPGFzbS93b3JkLWF0LWEt
+dGltZS5oPgogI2luY2x1ZGUgPGFzbS9wYWdlLmg+CkBAIC05MzUsNiArOTM2LDIxIEBAIF9fdmlz
+aWJsZSBpbnQgbWVtY21wKGNvbnN0IHZvaWQgKmNzLCBjb25zdCB2b2lkICpjdCwgc2l6ZV90IGNv
+dW50KQogCWNvbnN0IHVuc2lnbmVkIGNoYXIgKnN1MSwgKnN1MjsKIAlpbnQgcmVzID0gMDsKIAor
+I2lmZGVmIENPTkZJR19IQVZFX0VGRklDSUVOVF9VTkFMSUdORURfQUNDRVNTCisJaWYgKGNvdW50
+ID49IHNpemVvZih1bnNpZ25lZCBsb25nKSkgeworCQljb25zdCB1bnNpZ25lZCBsb25nICp1MSA9
+IGNzOworCQljb25zdCB1bnNpZ25lZCBsb25nICp1MiA9IGN0OworCQlkbyB7CisJCQlpZiAoZ2V0
+X3VuYWxpZ25lZCh1MSkgIT0gZ2V0X3VuYWxpZ25lZCh1MikpCisJCQkJYnJlYWs7CisJCQl1MSsr
+OworCQkJdTIrKzsKKwkJCWNvdW50IC09IHNpemVvZih1bnNpZ25lZCBsb25nKTsKKwkJfSB3aGls
+ZSAoY291bnQgPj0gc2l6ZW9mKHVuc2lnbmVkIGxvbmcpKTsKKwkJY3MgPSB1MTsKKwkJY3QgPSB1
+MjsKKwl9CisjZW5kaWYKIAlmb3IgKHN1MSA9IGNzLCBzdTIgPSBjdDsgMCA8IGNvdW50OyArK3N1
+MSwgKytzdTIsIGNvdW50LS0pCiAJCWlmICgocmVzID0gKnN1MSAtICpzdTIpICE9IDApCiAJCQli
+cmVhazsK
+--000000000000741c3905c7a694cd--
