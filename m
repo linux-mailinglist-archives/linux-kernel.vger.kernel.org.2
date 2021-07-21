@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD323D189A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A45E63D1898
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbhGUUYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:24:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34834 "EHLO mail.kernel.org"
+        id S230047AbhGUUYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:24:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229908AbhGUUYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229943AbhGUUYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 16:24:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51F0261264;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C1356135A;
         Wed, 21 Jul 2021 21:04:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626901483;
-        bh=BRCA3cizbBxreJRulOEZaGT1dH+vBvoN0yRwdhOIDXA=;
+        bh=uLNy3yIK4EBO9lKuJ5GSBVXdPDG6YtLrOMDVTxwg7p8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NqjY/CkneNItcKa12J60Xuq2mrGrTF1kYM1PZBkd68l3VxTc8fsEVqFgpqskGPCls
-         tzjCqRO1272inrIIrkoJMxzK47COzOD9mjoWZfiKGLgLOZDiNqjzbgrZ9aD9oDkyeZ
-         W7DqFsjalpPGm4uNPSUVu/FHOxPZK7Cejdpl/mOBOhi3abaut6e0+AqCDt4sLuRmep
-         48CbLY9fdItr7ECvRlE5R8UKPZJcuLPyflz5QH6yPQe0CeTaypL12EgV1G91/B69qj
-         oEDrj2yq8HtCrlkl3XH5b8j8RzYpSvjje8zTsqlkxsXbI7RMh/Xg8A4DoJfMQt0x85
-         macz8cEv/CXWQ==
+        b=Gu3El/Kk9uCmsl/KjH8HLKmaHv/2RDJD2+HXUoTj66/HggQXCoGI2NUC1fTUjmwqC
+         NnS7ZhqzPq6VR7bmfHF0hsjWFvOTDTvvpaC7R9RSj70VkLHIbW0lIJ1CkSQr43WegV
+         1HTNB2pK5++j9NsD0khW+NWA/6+IlXHOLYv2f/4tbiwUCyUpdupS0vuNbmZPhzts16
+         v09UeDpUpTSC4kkzUo+LEQZuCjDYOT2MVTvYpNMu3lNKl0qgJJ3AETr0UU+wcxVZnU
+         dLHCIFexxrkCSR7oN2urjJqxE5Vhy2iVyYB85rBpt3Wfv4g0K8MPHRSK9A0KUdTA5H
+         jqjxHWI6i0eSw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 20CF55C0A11; Wed, 21 Jul 2021 14:04:43 -0700 (PDT)
+        id 251125C0A2D; Wed, 21 Jul 2021 14:04:43 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,11 +33,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Jiangong.Han" <jiangong.han@windriver.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/7] rcuscale: Console output claims too few grace periods
-Date:   Wed, 21 Jul 2021 14:04:37 -0700
-Message-Id: <20210721210441.796995-3-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 4/7] locktorture: Mark statistics data races
+Date:   Wed, 21 Jul 2021 14:04:38 -0700
+Message-Id: <20210721210441.796995-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721210421.GA788053@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721210421.GA788053@paulmck-ThinkPad-P17-Gen-1>
@@ -47,63 +46,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Jiangong.Han" <jiangong.han@windriver.com>
+The lock_stress_stats structure's ->n_lock_fail and ->n_lock_acquired
+fields are incremented and sampled locklessly using plain C-language
+statements, which KCSAN objects to.  This commit therefore marks the
+statistics gathering with data_race() to flag the intent.  While in
+the area, this commit also reduces the number of accesses to the
+->n_lock_acquired field, thus eliminating some possible check/use
+confusion.
 
-The rcuscale console output claims N grace periods, numbered from zero
-to N, which means that there were really N+1 grace periods.  The root
-cause of this bug is that rcu_scale_writer() stores the number of the
-last grace period (numbered from zero) into writer_n_durations[me]
-instead of the number of grace periods.  This commit therefore assigns
-the actual number of grace periods to writer_n_durations[me], and also
-makes the corresponding adjustment to the loop outputting per-grace-period
-measurements.
-
-Sample of old console output:
-    rcu-scale: writer 0 gps: 133
-    ......
-    rcu-scale:    0 writer-duration:     0 44003961
-    rcu-scale:    0 writer-duration:     1 32003582
-    ......
-    rcu-scale:    0 writer-duration:   132 28004391
-    rcu-scale:    0 writer-duration:   133 27996410
-
-Sample of new console output:
-    rcu-scale: writer 0 gps: 134
-    ......
-    rcu-scale:    0 writer-duration:     0 44003961
-    rcu-scale:    0 writer-duration:     1 32003582
-    ......
-    rcu-scale:    0 writer-duration:   132 28004391
-    rcu-scale:    0 writer-duration:   133 27996410
-
-Signed-off-by: Jiangong.Han <jiangong.han@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcuscale.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/locking/locktorture.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index dca51fe9c73f2..2cc34a22a5060 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -487,7 +487,7 @@ rcu_scale_writer(void *arg)
- 	if (gp_async) {
- 		cur_ops->gp_barrier();
+diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+index b3adb40549bf3..313d5e613fbe6 100644
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -738,20 +738,22 @@ static int lock_torture_reader(void *arg)
+ static void __torture_print_stats(char *page,
+ 				  struct lock_stress_stats *statp, bool write)
+ {
++	long cur;
+ 	bool fail = false;
+ 	int i, n_stress;
+-	long max = 0, min = statp ? statp[0].n_lock_acquired : 0;
++	long max = 0, min = statp ? data_race(statp[0].n_lock_acquired) : 0;
+ 	long long sum = 0;
+ 
+ 	n_stress = write ? cxt.nrealwriters_stress : cxt.nrealreaders_stress;
+ 	for (i = 0; i < n_stress; i++) {
+-		if (statp[i].n_lock_fail)
++		if (data_race(statp[i].n_lock_fail))
+ 			fail = true;
+-		sum += statp[i].n_lock_acquired;
+-		if (max < statp[i].n_lock_acquired)
+-			max = statp[i].n_lock_acquired;
+-		if (min > statp[i].n_lock_acquired)
+-			min = statp[i].n_lock_acquired;
++		cur = data_race(statp[i].n_lock_acquired);
++		sum += cur;
++		if (max < cur)
++			max = cur;
++		if (min > cur)
++			min = cur;
  	}
--	writer_n_durations[me] = i_max;
-+	writer_n_durations[me] = i_max + 1;
- 	torture_kthread_stopping("rcu_scale_writer");
- 	return 0;
- }
-@@ -561,7 +561,7 @@ rcu_scale_cleanup(void)
- 			wdpp = writer_durations[i];
- 			if (!wdpp)
- 				continue;
--			for (j = 0; j <= writer_n_durations[i]; j++) {
-+			for (j = 0; j < writer_n_durations[i]; j++) {
- 				wdp = &wdpp[j];
- 				pr_alert("%s%s %4d writer-duration: %5d %llu\n",
- 					scale_type, SCALE_FLAG,
+ 	page += sprintf(page,
+ 			"%s:  Total: %lld  Max/Min: %ld/%ld %s  Fail: %d %s\n",
 -- 
 2.31.1.189.g2e36527f23
 
