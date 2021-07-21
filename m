@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980343D183A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B59C3D183D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbhGUT5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56332 "EHLO mail.kernel.org"
+        id S233276AbhGUT56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:57:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231787AbhGUT5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231989AbhGUT5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 15:57:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 963AB61241;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B6A76124B;
         Wed, 21 Jul 2021 20:38:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626899901;
-        bh=PiwE8bKHOYIPDLz77rhdrSex9XbZaPhjXnqWpREoRi8=;
+        bh=GigiSkqXTDy+QkyYs7Y/oDOjKdcjT/+3+R3H9fSvMOA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QJ87wJCjgVjV0PUFaVOqbZ5aCFWyMxaK5hJJkEehaAjffSU8D8kw8SaphPc4qRgmt
-         HjDh8/6XeTPdOa4wJLYK09s/s2kVXCtQQpz3D+voIFhujLwDgjJabVpxuUf22twwfN
-         PWwOd5Tt8T0M4RtyzP3c5pIVrC9dDbimz9UP3pnr9bqnKnbc39eeIFIU0tBF+db9in
-         w9/22B135Dv84EDrb8w5gGnTnCeci3bHKcqM+QMEilb3aja6h+d8h8rjo7bjEUg3++
-         yqaxc2Z/u6/Preed3KgN4Dsq20Ot0Swg1V/ajY6sEBN+FdpZ4PLzXqFHRQUNMiM+NZ
-         RIDOOBJZvbmnQ==
+        b=VR/mXfWqTQUi9xVyVpjTWkROpuiANmjgWANZtEIAB49b2+F0aZVWKg3zczTsoWWqx
+         aXAvm0iCAR98vHKJcKVXf+qSkqLPrQRY2wbIWGUuD4j55XV79agfJjH7HwoZakR2Xa
+         JGEiK/xZ4JL8ehZ1G8ut4hFpQIP2laT97Z04uGxFhneKwaznANROIwwF0atRpWUW53
+         yVhByrde4bzO5D2ZqU14QhsJ3OWcFJI0FRxQsSdmoo1EF5M8iKm+RixpeOQVoGtGq0
+         Y0fccOyDT8pNRY6DPNBpb2qFg7X9KWJ+JH+xWFSiyFxuCIOmv6z2zLujo68YPv9CgZ
+         kWPGLUQH+TvPQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5D5E25C0A2D; Wed, 21 Jul 2021 13:38:21 -0700 (PDT)
+        id 60CFD5C0BF4; Wed, 21 Jul 2021 13:38:21 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,10 +33,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 4/5] rcu-tasks: Fix synchronize_rcu_rude() typo in comment
-Date:   Wed, 21 Jul 2021 13:38:17 -0700
-Message-Id: <20210721203818.3398345-4-paulmck@kernel.org>
+        Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 5/5] rcu: Fix macro name CONFIG_TASKS_RCU_TRACE
+Date:   Wed, 21 Jul 2021 13:38:18 -0700
+Message-Id: <20210721203818.3398345-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721203758.GA3386731@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721203758.GA3386731@paulmck-ThinkPad-P17-Gen-1>
@@ -46,29 +47,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit replaces the fictitious synchronize_rcu_rude() function with
-its real-world synchronize_rcu_tasks_rude() counterpart.
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
+This commit fixes several typos where CONFIG_TASKS_RCU_TRACE should
+instead be CONFIG_TASKS_TRACE_RCU.  Among other things, these typos
+could cause CONFIG_TASKS_TRACE_RCU_READ_MB=y kernels to suffer from
+memory-ordering bugs that could result in false-positive quiescent
+states and too-short grace periods.
+
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/rcupdate.h | 2 +-
+ kernel/rcu/tree_plugin.h | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 1cece5e9be9a9..f9f52daacd1c5 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -643,8 +643,8 @@ void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
- //
- // "Rude" variant of Tasks RCU, inspired by Steve Rostedt's trick of
- // passing an empty function to schedule_on_each_cpu().  This approach
--// provides an asynchronous call_rcu_tasks_rude() API and batching
--// of concurrent calls to the synchronous synchronize_rcu_rude() API.
-+// provides an asynchronous call_rcu_tasks_rude() API and batching of
-+// concurrent calls to the synchronous synchronize_rcu_tasks_rude() API.
- // This invokes schedule_on_each_cpu() in order to send IPIs far and wide
- // and induces otherwise unnecessary context switches on all online CPUs,
- // whether idle or not.
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index d9680b798b211..955c82b4737c5 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -167,7 +167,7 @@ void synchronize_rcu_tasks(void);
+ # define synchronize_rcu_tasks synchronize_rcu
+ # endif
+ 
+-# ifdef CONFIG_TASKS_RCU_TRACE
++# ifdef CONFIG_TASKS_TRACE_RCU
+ # define rcu_tasks_trace_qs(t)						\
+ 	do {								\
+ 		if (!likely(READ_ONCE((t)->trc_reader_checked)) &&	\
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index de1dc3bb7f701..6ce104242b23d 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2982,17 +2982,17 @@ static void noinstr rcu_dynticks_task_exit(void)
+ /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
+ static void rcu_dynticks_task_trace_enter(void)
+ {
+-#ifdef CONFIG_TASKS_RCU_TRACE
++#ifdef CONFIG_TASKS_TRACE_RCU
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+ 		current->trc_reader_special.b.need_mb = true;
+-#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
++#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+ }
+ 
+ /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
+ static void rcu_dynticks_task_trace_exit(void)
+ {
+-#ifdef CONFIG_TASKS_RCU_TRACE
++#ifdef CONFIG_TASKS_TRACE_RCU
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+ 		current->trc_reader_special.b.need_mb = false;
+-#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
++#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+ }
 -- 
 2.31.1.189.g2e36527f23
 
