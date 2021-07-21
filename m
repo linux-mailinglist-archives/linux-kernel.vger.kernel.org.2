@@ -2,187 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4393D0893
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 08:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CEE3D0897
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 08:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233249AbhGUFWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 01:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
+        id S233173AbhGUFXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 01:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhGUFV6 (ORCPT
+        with ESMTP id S233358AbhGUFXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 01:21:58 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 390FEC061574;
-        Tue, 20 Jul 2021 23:02:35 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GV4jy1sKyz9sWX;
-        Wed, 21 Jul 2021 16:02:30 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626847350;
-        bh=8hVKcObG1uG5ImM6YAu362aWi5k5Z9pejvw+yjxvdNQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pNABsTziAlcMtGwpR6CMe2M3ZeKxr+oEcLjupyubennBxSLs7qrw6EononS38GSne
-         3SCvTQBLiMQ31QQC6rxYlIDYEySeVPsGa+03hogvqB6qf19RTIXzkU1/RWtcek3hcG
-         YcB01sUyMtFBR/gmNmmlRjF4yFTt4hOCO0/XhF7jLKOv6qWzB0Nt4wMPUjlfJXPCZw
-         yTKY4Rv2BkptWNshGryIDmL/uiK2xFPGIyDpCbe/Vb1qNoe2NsADQ2uUDk4QZZ5IlR
-         pyGYLDKVHTnLcHn/V5nlA9y5DHR5/hYuhbmoeonPcILID9AIYySI6e0pnYqfNcxr18
-         tI9vHR3BvCh/w==
-Date:   Wed, 21 Jul 2021 16:02:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the akpm-current tree with the folio
- tree
-Message-ID: <20210721160228.176a31c9@canb.auug.org.au>
+        Wed, 21 Jul 2021 01:23:15 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A545C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 23:03:50 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id r11so813494wro.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 23:03:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LLVD1J3nQD5jfzD/Z0julSyofDbeE2fYH4Xvj/4eakQ=;
+        b=vyRxqbcprpkVe/zNi18wjFtSfadWd2IhcpGSt8Pry8kZeFoXvqMDY7NtBhn4Hu0K+h
+         rMrImEBrPq4Wk2ortPVJQOq3HrijBdR4qLQmf4cFVL3hOXjf+fKU0YQaPhrN+AxscHCy
+         YzA4Ux446F1CTycLLWoAAYBvnw64+hX0M5ZAQTWnF/FE2VP76hKHrbeYOXntaMzrLDR+
+         5Xt2O19zvJGJu2/Sv+jUeqowUGjMO9Oi5iWzw+HsoN6fYDusPxP4K58thtO69/NBRNpN
+         FbQgET3IKwgwEhLLyl+QjCLXGm2B/sBZgWz6CSqlB94yytn2lyJhr/c2GyVYnfDv3z/X
+         lZaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LLVD1J3nQD5jfzD/Z0julSyofDbeE2fYH4Xvj/4eakQ=;
+        b=VV/quKKXkAr5v2VVybYRIoeuziPYKKT/KDOBO6nqzJ5R+msibSKchzKX3oyr56YWKy
+         xYYBLnoiCKwjotkf5GZf11ffA72varkMCdq/BkVpBznVQMWnejyMHYR57cqNeZizTzzp
+         hELub5Qtbm9sy4ZuTJPmln0gRM5L9ynVMXuMtrCqB/irr9FzpCixb0O2Rj1e4k2kcd3u
+         LUR3ySibzyNDlANnI98wr77j375O47XUY23v/a3pkZLS3ivswwoeNt6uH847iE9w5k1R
+         r8aPaYMr0SH+NvcX/9Ry10Nv/7zCnW/0/lX27Dt2jPr4Q/M7m42/LD+OgvEarS6U8/s0
+         SDFw==
+X-Gm-Message-State: AOAM5301xFsnEq7LCqROSkKKlBis8g4T84R7oXkIFxC4HHWQzYkbIluf
+        InXnE1XZXV9tGrbTJWTDTL5reJC1qnPKCe6KF6MlwQ==
+X-Google-Smtp-Source: ABdhPJyddlJAaOzZ/gq+V3H6ZGOhy/2kQ3ucAtz5059UxRJQgffyl72+EWTWfg0vA/o2JgBiaRyG9fmW7mxFx8gEr74=
+X-Received: by 2002:adf:e5ce:: with SMTP id a14mr39394187wrn.226.1626847428914;
+ Tue, 20 Jul 2021 23:03:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vjw8z3SUDYKthg9knYn67x5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210614223317.999867-1-tyhicks@linux.microsoft.com>
+ <CAHUa44ErgoxT3L1W-ouoQwUg1fNC-zagOOgy=KBuGN_pETnYaw@mail.gmail.com>
+ <20210615133734.GY4910@sequoia> <944c1df8-3e9f-0026-c83c-d778f42fa1b3@gmail.com>
+In-Reply-To: <944c1df8-3e9f-0026-c83c-d778f42fa1b3@gmail.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Wed, 21 Jul 2021 08:03:38 +0200
+Message-ID: <CAHUa44Ej85bbn8CzsJ24CWkeZQPMWC-w_m2ypP6nPjcEuErFBA@mail.gmail.com>
+Subject: Re: [PATCH v5 0/8] tee: Improve support for kexec and kdump
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        linux-mips@vger.kernel.org, Vikas Gupta <vikas.gupta@broadcom.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vjw8z3SUDYKthg9knYn67x5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Tyler,
 
-Hi all,
+With Florian's Ack on "PATCH v5 8/8] firmware: tee_bnxt: Release TEE
+shm, session, and context during kexec" I think we have everything we
+need for a pull request. I've pushed the patches to
+https://git.linaro.org/people/jens.wiklander/linux-tee.git/log/?h=3Dtyhicks=
+_kexec_v5
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+Would you mind testing that branch to make sure it still works as
+intended? I'd appreciate if you could double check the tags too. I'll
+send a pull request for v5.14 later this week if everything is OK.
 
-  mm/page-writeback.c
+Thanks,
+Jens
 
-between commits:
-
-  7cfa3de8ce5d ("mm/writeback: Add __folio_end_writeback()")
-  e8fc4f61a3e3 ("mm/writeback: Add folio_start_writeback()")
-
-from the folio tree and commit:
-
-  4dd7a4fe8321 ("writeback: track number of inodes under writeback")
-
-from the akpm-current tree.
-
-Willy, thanks for the resolution.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc mm/page-writeback.c
-index c2987f05c944,57b98ea365e2..000000000000
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@@ -2751,17 -2739,34 +2763,35 @@@ bool folio_clear_dirty_for_io(struct fo
-  		unlocked_inode_to_wb_end(inode, &cookie);
-  		return ret;
-  	}
- -	return TestClearPageDirty(page);
- +	return folio_test_clear_dirty(folio);
-  }
- -EXPORT_SYMBOL(clear_page_dirty_for_io);
- +EXPORT_SYMBOL(folio_clear_dirty_for_io);
- =20
-+ static void wb_inode_writeback_start(struct bdi_writeback *wb)
-+ {
-+ 	atomic_inc(&wb->writeback_inodes);
-+ }
-+=20
-+ static void wb_inode_writeback_end(struct bdi_writeback *wb)
-+ {
-+ 	atomic_dec(&wb->writeback_inodes);
-+ 	/*
-+ 	 * Make sure estimate of writeback throughput gets updated after
-+ 	 * writeback completed. We delay the update by BANDWIDTH_INTERVAL
-+ 	 * (which is the interval other bandwidth updates use for batching) so
-+ 	 * that if multiple inodes end writeback at a similar time, they get
-+ 	 * batched into one bandwidth update.
-+ 	 */
-+ 	queue_delayed_work(bdi_wq, &wb->bw_dwork, BANDWIDTH_INTERVAL);
-+ }
-+=20
- -int test_clear_page_writeback(struct page *page)
- +bool __folio_end_writeback(struct folio *folio)
-  {
- -	struct address_space *mapping =3D page_mapping(page);
- -	int ret;
- +	long nr =3D folio_nr_pages(folio);
- +	struct address_space *mapping =3D folio_mapping(folio);
- +	bool ret;
- =20
- -	lock_page_memcg(page);
- +	folio_memcg_lock(folio);
-  	if (mapping && mapping_use_writeback_tags(mapping)) {
-  		struct inode *inode =3D mapping->host;
-  		struct backing_dev_info *bdi =3D inode_to_bdi(inode);
-@@@ -2775,8 -2780,11 +2805,11 @@@
-  			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT) {
-  				struct bdi_writeback *wb =3D inode_to_wb(inode);
- =20
- -				dec_wb_stat(wb, WB_WRITEBACK);
- -				__wb_writeout_inc(wb);
- +				wb_stat_mod(wb, WB_WRITEBACK, -nr);
- +				__wb_writeout_add(wb, nr);
-+ 				if (!mapping_tagged(mapping,
-+ 						    PAGECACHE_TAG_WRITEBACK))
-+ 					wb_inode_writeback_end(wb);
-  			}
-  		}
- =20
-@@@ -2821,14 -2827,18 +2854,18 @@@ bool __folio_start_writeback(struct fol
-  						   PAGECACHE_TAG_WRITEBACK);
- =20
-  			xas_set_mark(&xas, PAGECACHE_TAG_WRITEBACK);
-- 			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT)
-- 				wb_stat_mod(inode_to_wb(inode), WB_WRITEBACK,
-- 						nr);
-+ 			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT) {
-+ 				struct bdi_writeback *wb =3D inode_to_wb(inode);
-+=20
- -				inc_wb_stat(wb, WB_WRITEBACK);
-++				wb_stat_mod(wb, WB_WRITEBACK, nr);
-+ 				if (!on_wblist)
-+ 					wb_inode_writeback_start(wb);
-+ 			}
- =20
-  			/*
- -			 * We can come through here when swapping anonymous
- -			 * pages, so we don't necessarily have an inode to track
- -			 * for sync.
- +			 * We can come through here when swapping
- +			 * anonymous folios, so we don't necessarily
- +			 * have an inode to track for sync.
-  			 */
-  			if (mapping->host && !on_wblist)
-  				sb_mark_inode_writeback(mapping->host);
-
---Sig_/vjw8z3SUDYKthg9knYn67x5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD3uHQACgkQAVBC80lX
-0Gz6Jgf+OP6aPK3Agbrw1ldp6JY+uN9YSRSbxNBeJjZWz58lDpFAfpYJlaWMQrk4
-bcXh/VcMlhyBNmxCVoeN70zYmQWaUmTmLXw1G8r/A63dFSxfN1Ab3W1pVA+OpzqA
-BVhycR/FNBGMDkbMQ0S4eaTADGTzrdPbVq2VaOzCu97YE7uHc/AuavP34ywiERQj
-Hw3sQZIYdpu+6XjxpuD2Q6fR9OB64/LI/JaV+2vu9JL3OQR02m1s6FPcFmMsGQqG
-4gHXYSJy54WlPpmbiJxkkTTXfEcIH3hr0vyO9sM4MYNP6EpglOOBgE2a23Gsmhet
-DviOPf1a1hQtH5F1xqdqWnWx6PM7PA==
-=hHO7
------END PGP SIGNATURE-----
-
---Sig_/vjw8z3SUDYKthg9knYn67x5--
+On Tue, Jun 15, 2021 at 4:16 PM Florian Fainelli <f.fainelli@gmail.com> wro=
+te:
+>
+>
+>
+> On 6/15/2021 6:37 AM, Tyler Hicks wrote:
+> > On 2021-06-15 09:23:25, Jens Wiklander wrote:
+> >> It looks like we're almost done now. Thanks for your patience to see
+> >> this through.
+> >>
+> >> I suppose it makes most sense to take this via my tree, but before I
+> >> can do that I'll need acks from the maintainers of
+> >> drivers/char/tpm/tpm_ftpm_tee.c ("tpm_ftpm_tee: Free and unregister
+> >> TEE shared memory during kexec") and
+> >> drivers/firmware/broadcom/tee_bnxt_fw.c ("firmware: tee_bnxt: Release
+> >> TEE shm, session, and context during kexec").
+> >
+> > @Rafa=C5=82 Mi=C5=82ecki, we just need an ack from you for the tee_bnxt=
+_fw.c
+> > change:
+> >
+> >  https://lore.kernel.org/lkml/20210614223317.999867-9-tyhicks@linux.mic=
+rosoft.com/
+>
+> Rafal is listed as the maintainer of drivers/firmware/broadcom/ but he
+> did not author that file, Vikas did, adding him.
+> --
+> Florian
