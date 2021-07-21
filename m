@@ -2,129 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D0F3D12F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F3B3D130B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240031AbhGUPPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 11:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238315AbhGUPPX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:15:23 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E0FC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:55:59 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id y3so1171998plp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:55:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=RSgJZgL5+8JDLD0WocVJD8SB24xW93k7iVgT/78Sy20=;
-        b=Bz5HdzvhnqAwgoTJ2mc8rFx1BZpq5k+jDTZz4jPm9R7EwU5EbHBqm+WngUGHOa3F9g
-         LEjEORs2BZn3AT3cbgPsz5qrMl8eB58PvC/215HL1dNBAsPby8+wcsTI7Glw2+qnCXj/
-         VAJd4vq70yT6IOSpy3ndijUSf5ImyQ5d5Lc21BuBOgE7IdpYAVl+eI2ez6Y+/q1MGtnL
-         qXfPTC9aQdtE7YZrgQ2SsHGl5FI+MJ0yqVm8091yvpqx+i3zRR7u6jKld9nMqwgr1rSs
-         LpBkJ4RctuIJk3ajs08+1G8bVXdd/L0VjbhxCm9j2kYkblX2HF2eU23ovCnf60Pz5I7D
-         CNxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=RSgJZgL5+8JDLD0WocVJD8SB24xW93k7iVgT/78Sy20=;
-        b=IKug3Xe6w3IslQIw4ViqiR0igMFA3b7vlB+HAEbbIYGIrJHPdnRwX2VgRTe361Hnq5
-         CckYgeALQDYynYOjChRFlb1AC3IP7GWqL5HJgas9QwQFtCB5GsROMV/WeE+QDxMESJbp
-         izweeddhYRcdw6DpdbbD6NpSpF/cu1mYN9R3Jnt80vXwFInxJ1sTzWYrH9TvR23nr1E+
-         YVQodWnP73BQXA91hM2pbMype53kta/t1Mb0sVHn3Dkoh0E5jdnqfEpbslpGICW4KkVO
-         r8z730/EHJHRW3UqopHsm9M7u7+sENK4qyOC4zVlxqSmy8hmrWSwwX0k/CF4iV49WU7J
-         XEkw==
-X-Gm-Message-State: AOAM530uV/1Ur5GigAO5b/g/gfF1YyCylGIMFW0rrn/+iEgOtqYkwtsM
-        bxTQp317+55Jz3awtlte+luHeA==
-X-Google-Smtp-Source: ABdhPJzZSlNsPhf1QsxsV4wRl2bwvxT828TD7A/odWmLldAyLK5QQITmbH4bGXuTrU4/GBIwvI6H4g==
-X-Received: by 2002:a17:903:3005:b029:12b:54cf:c513 with SMTP id o5-20020a1709033005b029012b54cfc513mr27997855pla.21.1626882959326;
-        Wed, 21 Jul 2021 08:55:59 -0700 (PDT)
-Received: from Shannons-MacBook-Pro.local ([50.53.47.17])
-        by smtp.gmail.com with ESMTPSA id x3sm329098pjq.6.2021.07.21.08.55.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 08:55:58 -0700 (PDT)
-Subject: Re: [PATCH net-next] ionic: cleanly release devlink instance
-To:     Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, drivers@pensando.io,
-        linux-kernel@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org
-References: <956213a5c415c30e7e9f9c20bb50bc5b50ba4d18.1626870761.git.leonro@nvidia.com>
-From:   Shannon Nelson <snelson@pensando.io>
-Message-ID: <04d36c6b-1e8d-117f-3079-8314f6b8051d@pensando.io>
-Date:   Wed, 21 Jul 2021 08:55:56 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <956213a5c415c30e7e9f9c20bb50bc5b50ba4d18.1626870761.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S240118AbhGUPRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 11:17:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:58352 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240098AbhGUPRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 11:17:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 76C631FB;
+        Wed, 21 Jul 2021 08:58:23 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BF42D3F73D;
+        Wed, 21 Jul 2021 08:58:22 -0700 (PDT)
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org, peterz@infradead.org
+Cc:     elver@google.com, mark.rutland@arm.com
+Subject: [PATCH] locking/atomic: simplify non-atomic wrappers
+Date:   Wed, 21 Jul 2021 16:58:13 +0100
+Message-Id: <20210721155813.17082-1-mark.rutland@arm.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/21 5:39 AM, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> The failure to register devlink will leave the system with dangled
-> devlink resource, which is not cleaned if devlink_port_register() fails.
->
-> In order to remove access to ".registered" field of struct devlink_port,
-> require both devlink_register and devlink_port_register to success and
-> check it through device pointer.
->
-> Fixes: fbfb8031533c ("ionic: Add hardware init and device commands")
-> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Since the non-atomic arch_*() bitops use plain accesses, they are
+implicitly instrumnted by the compiler, and we work around this in the
+instrumented wrappers to avoid double instrumentation.
 
-Sure, thanks.
+It's simpler to avoid the wrappers entirely, and use the preprocessor to
+alias the arch_*() bitops to their regular versions, removing the need
+for checks in the instrumented wrappers.
 
-Acked-by: Shannon Nelson <snelson@pensando.io>
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Suggested-by: Marco Elver <elver@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+---
+ .../asm-generic/bitops/instrumented-non-atomic.h    | 21 +++++++--------------
+ include/asm-generic/bitops/non-atomic.h             | 16 +++++++---------
+ 2 files changed, 14 insertions(+), 23 deletions(-)
 
-> ---
-> Future series will remove .registered field from the devlink.
-> ---
->   .../net/ethernet/pensando/ionic/ionic_devlink.c    | 14 +++++++-------
->   1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/net/ethernet/pensando/ionic/ionic_devlink.c b/drivers/net/ethernet/pensando/ionic/ionic_devlink.c
-> index b41301a5b0df..cd520e4c5522 100644
-> --- a/drivers/net/ethernet/pensando/ionic/ionic_devlink.c
-> +++ b/drivers/net/ethernet/pensando/ionic/ionic_devlink.c
-> @@ -91,20 +91,20 @@ int ionic_devlink_register(struct ionic *ionic)
->   	attrs.flavour = DEVLINK_PORT_FLAVOUR_PHYSICAL;
->   	devlink_port_attrs_set(&ionic->dl_port, &attrs);
->   	err = devlink_port_register(dl, &ionic->dl_port, 0);
-> -	if (err)
-> +	if (err) {
->   		dev_err(ionic->dev, "devlink_port_register failed: %d\n", err);
-> -	else
-> -		devlink_port_type_eth_set(&ionic->dl_port,
-> -					  ionic->lif->netdev);
-> +		devlink_unregister(dl);
-> +		return err;
-> +	}
->   
-> -	return err;
-> +	devlink_port_type_eth_set(&ionic->dl_port, ionic->lif->netdev);
-> +	return 0;
->   }
->   
->   void ionic_devlink_unregister(struct ionic *ionic)
->   {
->   	struct devlink *dl = priv_to_devlink(ionic);
->   
-> -	if (ionic->dl_port.registered)
-> -		devlink_port_unregister(&ionic->dl_port);
-> +	devlink_port_unregister(&ionic->dl_port);
->   	devlink_unregister(dl);
->   }
+Hi Peter,
+
+Are you happy to take this atop your queue/locking/core branch?
+
+This was suggested by Marco in [1], and also sidesteps some particularly bad
+stack spills as in [2].
+
+[1] https://lore.kernel.org/r/CANpmjNNVn4UxBCMg1ke9xaQNv52OMuQjr17GxUXojZKwiAFzzg@mail.gmail.com
+[2] https://lore.kernel.org/r/20210719100719.GB12806@C02TD0UTHF1T.local/
+
+Thanks,
+Mark.
+
+diff --git a/include/asm-generic/bitops/instrumented-non-atomic.h b/include/asm-generic/bitops/instrumented-non-atomic.h
+index e6c1540965d6..37363d570b9b 100644
+--- a/include/asm-generic/bitops/instrumented-non-atomic.h
++++ b/include/asm-generic/bitops/instrumented-non-atomic.h
+@@ -24,8 +24,7 @@
+  */
+ static inline void __set_bit(long nr, volatile unsigned long *addr)
+ {
+-	if (!__is_defined(arch___set_bit_uses_plain_access))
+-		instrument_write(addr + BIT_WORD(nr), sizeof(long));
++	instrument_write(addr + BIT_WORD(nr), sizeof(long));
+ 	arch___set_bit(nr, addr);
+ }
+ 
+@@ -40,8 +39,7 @@ static inline void __set_bit(long nr, volatile unsigned long *addr)
+  */
+ static inline void __clear_bit(long nr, volatile unsigned long *addr)
+ {
+-	if (!__is_defined(arch___clear_bit_uses_plain_access))
+-		instrument_write(addr + BIT_WORD(nr), sizeof(long));
++	instrument_write(addr + BIT_WORD(nr), sizeof(long));
+ 	arch___clear_bit(nr, addr);
+ }
+ 
+@@ -56,8 +54,7 @@ static inline void __clear_bit(long nr, volatile unsigned long *addr)
+  */
+ static inline void __change_bit(long nr, volatile unsigned long *addr)
+ {
+-	if (!__is_defined(arch___change_bit_uses_plain_access))
+-		instrument_write(addr + BIT_WORD(nr), sizeof(long));
++	instrument_write(addr + BIT_WORD(nr), sizeof(long));
+ 	arch___change_bit(nr, addr);
+ }
+ 
+@@ -95,8 +92,7 @@ static inline void __instrument_read_write_bitop(long nr, volatile unsigned long
+  */
+ static inline bool __test_and_set_bit(long nr, volatile unsigned long *addr)
+ {
+-	if (!__is_defined(arch___test_and_set_bit_uses_plain_access))
+-		__instrument_read_write_bitop(nr, addr);
++	__instrument_read_write_bitop(nr, addr);
+ 	return arch___test_and_set_bit(nr, addr);
+ }
+ 
+@@ -110,8 +106,7 @@ static inline bool __test_and_set_bit(long nr, volatile unsigned long *addr)
+  */
+ static inline bool __test_and_clear_bit(long nr, volatile unsigned long *addr)
+ {
+-	if (!__is_defined(arch___test_and_clear_bit_uses_plain_access))
+-		__instrument_read_write_bitop(nr, addr);
++	__instrument_read_write_bitop(nr, addr);
+ 	return arch___test_and_clear_bit(nr, addr);
+ }
+ 
+@@ -125,8 +120,7 @@ static inline bool __test_and_clear_bit(long nr, volatile unsigned long *addr)
+  */
+ static inline bool __test_and_change_bit(long nr, volatile unsigned long *addr)
+ {
+-	if (!__is_defined(arch___test_and_change_bit_uses_plain_access))
+-		__instrument_read_write_bitop(nr, addr);
++	__instrument_read_write_bitop(nr, addr);
+ 	return arch___test_and_change_bit(nr, addr);
+ }
+ 
+@@ -137,8 +131,7 @@ static inline bool __test_and_change_bit(long nr, volatile unsigned long *addr)
+  */
+ static inline bool test_bit(long nr, const volatile unsigned long *addr)
+ {
+-	if (!__is_defined(arch_test_bit_uses_plain_access))
+-		instrument_atomic_read(addr + BIT_WORD(nr), sizeof(long));
++	instrument_atomic_read(addr + BIT_WORD(nr), sizeof(long));
+ 	return arch_test_bit(nr, addr);
+ }
+ 
+diff --git a/include/asm-generic/bitops/non-atomic.h b/include/asm-generic/bitops/non-atomic.h
+index c8149cd52730..365377fb104b 100644
+--- a/include/asm-generic/bitops/non-atomic.h
++++ b/include/asm-generic/bitops/non-atomic.h
+@@ -21,7 +21,7 @@ arch___set_bit(int nr, volatile unsigned long *addr)
+ 
+ 	*p  |= mask;
+ }
+-#define arch___set_bit_uses_plain_access
++#define __set_bit arch___set_bit
+ 
+ static __always_inline void
+ arch___clear_bit(int nr, volatile unsigned long *addr)
+@@ -31,7 +31,7 @@ arch___clear_bit(int nr, volatile unsigned long *addr)
+ 
+ 	*p &= ~mask;
+ }
+-#define arch___clear_bit_uses_plain_access
++#define __clear_bit arch___clear_bit
+ 
+ /**
+  * arch___change_bit - Toggle a bit in memory
+@@ -50,7 +50,7 @@ void arch___change_bit(int nr, volatile unsigned long *addr)
+ 
+ 	*p ^= mask;
+ }
+-#define arch___change_bit_uses_plain_access
++#define __change_bit arch___change_bit
+ 
+ /**
+  * arch___test_and_set_bit - Set a bit and return its old value
+@@ -71,7 +71,7 @@ arch___test_and_set_bit(int nr, volatile unsigned long *addr)
+ 	*p = old | mask;
+ 	return (old & mask) != 0;
+ }
+-#define arch___test_and_set_bit_uses_plain_access
++#define __test_and_set_bit arch___test_and_set_bit
+ 
+ /**
+  * arch___test_and_clear_bit - Clear a bit and return its old value
+@@ -92,7 +92,7 @@ arch___test_and_clear_bit(int nr, volatile unsigned long *addr)
+ 	*p = old & ~mask;
+ 	return (old & mask) != 0;
+ }
+-#define arch___test_and_clear_bit_uses_plain_access
++#define __test_and_clear_bit arch___test_and_clear_bit
+ 
+ /* WARNING: non atomic and it can be reordered! */
+ static __always_inline int
+@@ -105,7 +105,7 @@ arch___test_and_change_bit(int nr, volatile unsigned long *addr)
+ 	*p = old ^ mask;
+ 	return (old & mask) != 0;
+ }
+-#define arch___test_and_change_bit_uses_plain_access
++#define __test_and_change_bit arch___test_and_change_bit
+ 
+ /**
+  * arch_test_bit - Determine whether a bit is set
+@@ -117,8 +117,6 @@ arch_test_bit(int nr, const volatile unsigned long *addr)
+ {
+ 	return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+ }
+-#define arch_test_bit_uses_plain_access
+-
+-#include <asm-generic/bitops/instrumented-non-atomic.h>
++#define test_bit arch_test_bit
+ 
+ #endif /* _ASM_GENERIC_BITOPS_NON_ATOMIC_H_ */
+-- 
+2.11.0
 
