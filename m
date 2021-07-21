@@ -2,279 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D27A3D1340
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C12B83D1344
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhGUPZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 11:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbhGUPYx (ORCPT
+        id S231489AbhGUPZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 11:25:14 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41794 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229682AbhGUPZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:24:53 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F254C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:05:30 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id u126so2549884pfb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CGpixdwO7S1rtC4H5PLra/JF15vH5Z2FO/vDmyJkJCY=;
-        b=zy/yk5PdgpZ09jUzAIhm6OJ/jZVUOLlg3DrvB4ZhRyXKQ8IJPDCay3t57CzO7CNFph
-         cPQ8TiYVKrWPE3zEsGC7HJzMarSeTSoNnumeO7mF/D2wnviQiYbIvrG+7sJuilZo0TiX
-         MIwwcyil7lfV20bZK6J4vuQZQ1uKJ47OxZ+tXQsSmdZEoW6XBozN/0Px2XLut0pFlLhW
-         3ipGtwgJhJ4xjCpPXJ9fyJzhBLOlkjEPvdVTVmj3nC8YHoObOMyv6Ichpe9hHRzmJMSA
-         9DdgXDkG/FVCt08zJDMsqzCr1vH9xqETYfk+hnU6fv1g1rRkYtgXHE40aWSCKOMa8HvF
-         zNXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CGpixdwO7S1rtC4H5PLra/JF15vH5Z2FO/vDmyJkJCY=;
-        b=EInbIHtPPxcRhii5BTz7OMt2ivCy4PRpJRAcuRtVTggVM2vcy1mvBGpY/j5+WsZWrO
-         mE65iKn3WlFpfoskwXCfTcnOpiVgk+/X+DzWKaLorqRPbrIk6lQuQUXf6F4Io0MvkBMc
-         n2OQnNwpHOvtUXEipz29GbLqyzxrCRqdf4AwhdcfxxPuTPWK3cGN3hm5kgyY0OcwJSCk
-         S9Zhvif25eY0KpO9tTBxl7YbBCjq8TX+4Dyh4fVekB6OYe3RsAJCiazPe0J/jzKxhp16
-         sgwqrmc7mYIgu1SYp4uUcNS1P7pW7PDUwZASBGwYBsyrrKJikPZ9B7volwo53ivck56t
-         8Eeg==
-X-Gm-Message-State: AOAM530vo8srjRIXQwEyGm2bAOWdg99nA/X6OPnHnewR1mtIBdgIAJYH
-        D6afpiZJ//ueqcIFbXcClNfGaQ==
-X-Google-Smtp-Source: ABdhPJxWoDOsxiyBezzrV73RXSCqJWMdMtgO5FSvBKjrjA1h1cvQFu6ROZ2dOE8hLSRB3qKxKGXhHA==
-X-Received: by 2002:a63:67c5:: with SMTP id b188mr37038490pgc.333.1626883529937;
-        Wed, 21 Jul 2021 09:05:29 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id p24sm31234336pgl.68.2021.07.21.09.05.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 09:05:25 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 10:05:23 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     acme@kernel.org, coresight@lists.linaro.org, leo.yan@linaro.org,
-        al.grant@arm.com, suzuki.poulose@arm.com,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] perf cs-etm: Pass unformatted flag to decoder
-Message-ID: <20210721160523.GA2377909@p14s>
-References: <20210721150202.32065-1-james.clark@arm.com>
- <20210721150202.32065-7-james.clark@arm.com>
+        Wed, 21 Jul 2021 11:25:13 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id AB74E1FEC6;
+        Wed, 21 Jul 2021 16:05:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626883548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UXaVdmdVOspBLf87DTyZrv0DC3rht0alDNBSCfEl0Bc=;
+        b=mYIGcLsHlGiWr9qAhll63WTrpruY8jZwExieXsSmllqWCbd+2rwQD3nfRFukmDKO/ZG+Vu
+        7FgoYX4oa+evS/8QRdDcaUgBhXKdWIgG4kvQ+O6XzzacUNcWGuXn+lri4AT23lsNhe7ARl
+        vcn9Mg49s/asy9HsS6mHIlAc4DRrbkQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626883548;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UXaVdmdVOspBLf87DTyZrv0DC3rht0alDNBSCfEl0Bc=;
+        b=uUPsuQBvUB/sD56TtsPeKrtSwMOpAE9Ed3ICp8CfZHvMFgu9Ndmp6UzM2i7HgdyicESJZ4
+        IRCzh6pMg24yK/DQ==
+Received: from hawking.suse.de (hawking.suse.de [10.160.4.0])
+        by relay2.suse.de (Postfix) with ESMTP id 95314A3B88;
+        Wed, 21 Jul 2021 16:05:48 +0000 (UTC)
+Received: by hawking.suse.de (Postfix, from userid 17005)
+        id 87991446119; Wed, 21 Jul 2021 18:05:48 +0200 (CEST)
+From:   Andreas Schwab <schwab@suse.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
+References: <mvmtukn6bmu.fsf@suse.de> <YPgwHcbK7XoXL/mD@smile.fi.intel.com>
+        <mvmpmvb68cg.fsf@suse.de> <YPg3VS/Ure6VRsuJ@smile.fi.intel.com>
+        <mvmlf5z66l9.fsf@suse.de>
+        <CAHp75VeFKn=--PuF6deOp6H-j7z8PXgkXA5PeSftiK5LWX30Qw@mail.gmail.com>
+X-Yow:  Intra-mural sports results are filtering through th' plumbing...
+Date:   Wed, 21 Jul 2021 18:05:48 +0200
+In-Reply-To: <CAHp75VeFKn=--PuF6deOp6H-j7z8PXgkXA5PeSftiK5LWX30Qw@mail.gmail.com>
+        (Andy Shevchenko's message of "Wed, 21 Jul 2021 18:45:00 +0300")
+Message-ID: <mvmh7gn649v.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210721150202.32065-7-james.clark@arm.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 04:02:02PM +0100, James Clark wrote:
-> The TRBE (Trace Buffer Extension) feature allows a separate trace buffer
-> for each trace source, therefore the trace wouldn't need to be
-> formatted. The driver was introduced in commit 3fbf7f011f24
-> ("coresight: sink: Add TRBE driver").
-> 
-> The formatted/unformatted mode is encoded in one of the flags of the
-> AUX record. The first AUX record encountered for each event is used to
-> determine the mode, and this will persist for the remaining trace that
-> is either decoded or dumped.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> ---
->  .../perf/util/cs-etm-decoder/cs-etm-decoder.c |  4 +-
->  tools/perf/util/cs-etm.c                      | 53 ++++++++++++++-----
->  2 files changed, 42 insertions(+), 15 deletions(-)
-> 
+On Jul 21 2021, Andy Shevchenko wrote:
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> What is your DT excerpt for it?
 
-Arnaldo, please consider adding this set to your tree.
+arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts:
 
-Thanks,
-Mathieu
+&qspi2 {
+	status = "okay";
+	mmc@0 {
+		compatible = "mmc-spi-slot";
+		reg = <0>;
+		spi-max-frequency = <20000000>;
+		voltage-ranges = <3300 3300>;
+		disable-wp;
+	};
+};
 
-> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> index ed1f0326f859..9c9039ae6989 100644
-> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> @@ -687,7 +687,7 @@ cs_etm_decoder__create_etm_decoder(struct cs_etm_decoder_params *d_params,
->  }
->  
->  struct cs_etm_decoder *
-> -cs_etm_decoder__new(int num_cpu, struct cs_etm_decoder_params *d_params,
-> +cs_etm_decoder__new(int decoders, struct cs_etm_decoder_params *d_params,
->  		    struct cs_etm_trace_params t_params[])
->  {
->  	struct cs_etm_decoder *decoder;
-> @@ -732,7 +732,7 @@ cs_etm_decoder__new(int num_cpu, struct cs_etm_decoder_params *d_params,
->  	/* init raw frame logging if required */
->  	cs_etm_decoder__init_raw_frame_logging(d_params, decoder);
->  
-> -	for (i = 0; i < num_cpu; i++) {
-> +	for (i = 0; i < decoders; i++) {
->  		ret = cs_etm_decoder__create_etm_decoder(d_params,
->  							 &t_params[i],
->  							 decoder);
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index 760050ea936d..f4b2bff533f3 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -461,13 +461,14 @@ static void cs_etm__set_trace_param_etmv4(struct cs_etm_trace_params *t_params,
->  }
->  
->  static int cs_etm__init_trace_params(struct cs_etm_trace_params *t_params,
-> -				     struct cs_etm_auxtrace *etm)
-> +				     struct cs_etm_auxtrace *etm,
-> +				     int decoders)
->  {
->  	int i;
->  	u32 etmidr;
->  	u64 architecture;
->  
-> -	for (i = 0; i < etm->num_cpu; i++) {
-> +	for (i = 0; i < decoders; i++) {
->  		architecture = etm->metadata[i][CS_ETM_MAGIC];
->  
->  		switch (architecture) {
-> @@ -488,7 +489,8 @@ static int cs_etm__init_trace_params(struct cs_etm_trace_params *t_params,
->  
->  static int cs_etm__init_decoder_params(struct cs_etm_decoder_params *d_params,
->  				       struct cs_etm_queue *etmq,
-> -				       enum cs_etm_decoder_operation mode)
-> +				       enum cs_etm_decoder_operation mode,
-> +				       bool formatted)
->  {
->  	int ret = -EINVAL;
->  
-> @@ -498,7 +500,7 @@ static int cs_etm__init_decoder_params(struct cs_etm_decoder_params *d_params,
->  	d_params->packet_printer = cs_etm__packet_dump;
->  	d_params->operation = mode;
->  	d_params->data = etmq;
-> -	d_params->formatted = true;
-> +	d_params->formatted = formatted;
->  	d_params->fsyncs = false;
->  	d_params->hsyncs = false;
->  	d_params->frame_aligned = true;
-> @@ -720,11 +722,17 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
->  	return len;
->  }
->  
-> -static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
-> +static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm,
-> +						bool formatted)
->  {
->  	struct cs_etm_decoder_params d_params;
->  	struct cs_etm_trace_params  *t_params = NULL;
->  	struct cs_etm_queue *etmq;
-> +	/*
-> +	 * Each queue can only contain data from one CPU when unformatted, so only one decoder is
-> +	 * needed.
-> +	 */
-> +	int decoders = formatted ? etm->num_cpu : 1;
->  
->  	etmq = zalloc(sizeof(*etmq));
->  	if (!etmq)
-> @@ -735,21 +743,23 @@ static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
->  		goto out_free;
->  
->  	/* Use metadata to fill in trace parameters for trace decoder */
-> -	t_params = zalloc(sizeof(*t_params) * etm->num_cpu);
-> +	t_params = zalloc(sizeof(*t_params) * decoders);
->  
->  	if (!t_params)
->  		goto out_free;
->  
-> -	if (cs_etm__init_trace_params(t_params, etm))
-> +	if (cs_etm__init_trace_params(t_params, etm, decoders))
->  		goto out_free;
->  
->  	/* Set decoder parameters to decode trace packets */
->  	if (cs_etm__init_decoder_params(&d_params, etmq,
->  					dump_trace ? CS_ETM_OPERATION_PRINT :
-> -						     CS_ETM_OPERATION_DECODE))
-> +						     CS_ETM_OPERATION_DECODE,
-> +					formatted))
->  		goto out_free;
->  
-> -	etmq->decoder = cs_etm_decoder__new(etm->num_cpu, &d_params, t_params);
-> +	etmq->decoder = cs_etm_decoder__new(decoders, &d_params,
-> +					    t_params);
->  
->  	if (!etmq->decoder)
->  		goto out_free;
-> @@ -777,14 +787,15 @@ static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
->  
->  static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
->  			       struct auxtrace_queue *queue,
-> -			       unsigned int queue_nr)
-> +			       unsigned int queue_nr,
-> +			       bool formatted)
->  {
->  	struct cs_etm_queue *etmq = queue->priv;
->  
->  	if (list_empty(&queue->head) || etmq)
->  		return 0;
->  
-> -	etmq = cs_etm__alloc_queue(etm);
-> +	etmq = cs_etm__alloc_queue(etm, formatted);
->  
->  	if (!etmq)
->  		return -ENOMEM;
-> @@ -2430,8 +2441,14 @@ static int cs_etm__process_auxtrace_event(struct perf_session *session,
->  		if (err)
->  			return err;
->  
-> +		/*
-> +		 * Knowing if the trace is formatted or not requires a lookup of
-> +		 * the aux record so only works in non-piped mode where data is
-> +		 * queued in cs_etm__queue_aux_records(). Always assume
-> +		 * formatted in piped mode (true).
-> +		 */
->  		err = cs_etm__setup_queue(etm, &etm->queues.queue_array[idx],
-> -					  idx);
-> +					  idx, true);
->  		if (err)
->  			return err;
->  
-> @@ -2678,6 +2695,7 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session, off_t file_o
->  	union perf_event auxtrace_fragment;
->  	__u64 aux_offset, aux_size;
->  	__u32 idx;
-> +	bool formatted;
->  
->  	struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
->  						   struct cs_etm_auxtrace,
-> @@ -2745,7 +2763,9 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session, off_t file_o
->  			return err;
->  
->  		idx = auxtrace_event->idx;
-> -		return cs_etm__setup_queue(etm, &etm->queues.queue_array[idx], idx);
-> +		formatted = !(aux_event->flags & PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
-> +		return cs_etm__setup_queue(etm, &etm->queues.queue_array[idx],
-> +					   idx, formatted);
->  	}
->  
->  	/* Wasn't inside this buffer, but there were no parse errors. 1 == 'not found' */
-> @@ -3034,6 +3054,13 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
->  		goto err_delete_thread;
->  
->  	etm->data_queued = etm->queues.populated;
-> +	/*
-> +	 * Print warning in pipe mode, see cs_etm__process_auxtrace_event() and
-> +	 * cs_etm__queue_aux_fragment() for details relating to limitations.
-> +	 */
-> +	if (!etm->data_queued)
-> +		pr_warning("CS ETM warning: Coresight decode and TRBE support requires random file access.\n"
-> +			   "Continuing with best effort decoding in piped mode.\n\n");
->  
->  	return 0;
->  
-> -- 
-> 2.28.0
-> 
+Andreas.
+
+-- 
+Andreas Schwab, SUSE Labs, schwab@suse.de
+GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
+"And now for something completely different."
