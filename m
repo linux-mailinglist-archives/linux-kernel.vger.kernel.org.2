@@ -2,97 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E3D3D1791
+	by mail.lfdr.de (Postfix) with ESMTP id 6EAD43D1790
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240183AbhGUT2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbhGUT2U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S240203AbhGUT2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:28:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232698AbhGUT2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 15:28:20 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D53ABC061575;
-        Wed, 21 Jul 2021 13:08:56 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id f10-20020a05600c4e8ab029023e8d74d693so1654766wmq.3;
-        Wed, 21 Jul 2021 13:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2Axto6lQ2+nrph0X1bVranPKMH1bIvsVkx0NZvngC7c=;
-        b=FGd5xGSWm0HOZejRS1CKbRrRfp4f9OHkviymUztPGVbz8lkVywuQ7yhPIRWCEZpgMZ
-         a7Ds/jC9ijZdOXK8sSDPMWNa3mTlb7Qm9XCuszQABm/J1XwZ1f3vjPYYUfYOSTe32Dhi
-         7vIRno6xrQc6v+a0RDvfAm4Qc1hdjD98etLR2K0ydNSAKFVKxUQyQTBj0D9KRWfHDbwm
-         +UFsh+smhf8xmlElCwoQgwchFZV3mgzQ3I+lcUWPoiMsduK240RGJMRHzs8bCPHxX7Ew
-         jVigodWydTAnkGJhcZAM96eMq6QLeonxEl46oInEw6TdJe851er/Ic8848iiDAojuQKR
-         z9yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2Axto6lQ2+nrph0X1bVranPKMH1bIvsVkx0NZvngC7c=;
-        b=n/zBQUsdjjmeSmPxZZwb34PXWTmgDICebmNRdM0YoVqxvJWlRfOH3uP6R3hk/SBEpi
-         vgMaYbSnV9h/AuYB0cims6TbrK/MKtQvfhbfrsl9v4hKCwmCbncGScKqAMe9MtpE9RSq
-         GTYSvofAcI+esg+vZKlCkuu0s/v16vjpsf4L2LlQWVyS8xIhRHxBQs7L6jL6hTCMgd1U
-         Cy+fPFhCidUZB7733SnG5WuSaVFg0nQEMvLFHlhfKmCqZOC3A5H+rN207qv6GpY4cEnc
-         ZYeIuwObecdn9dvkz5TPY4EJDMO+PKqyVgjtL2oioIaqvHEOOj/myuk76FU7L1kvkB34
-         YDig==
-X-Gm-Message-State: AOAM531uRn1rZD35ILqEP+w5Emb7vkTt87v6ecZbv3ORgKVXjuDTUL3y
-        kW2X2R6QtITb8oUqwhF9XUM=
-X-Google-Smtp-Source: ABdhPJxRAR2ME7BbdLUxY5mKNVXe30C/6s/O5OXZ4H9yrWvG9+kuPhZAAzOgl/uqFIZxl0lirjWmtA==
-X-Received: by 2002:a05:600c:b47:: with SMTP id k7mr40127576wmr.155.1626898135054;
-        Wed, 21 Jul 2021 13:08:55 -0700 (PDT)
-Received: from kista.localdomain (cpe-86-58-46-198.static.triera.net. [86.58.46.198])
-        by smtp.gmail.com with ESMTPSA id k24sm28927162wrh.30.2021.07.21.13.08.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 13:08:54 -0700 (PDT)
-From:   Jernej Skrabec <jernej.skrabec@gmail.com>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     robh+dt@kernel.org, jernej.skrabec@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: allwinner: h6: tanix-tx6: enable emmc
-Date:   Wed, 21 Jul 2021 22:08:32 +0200
-Message-Id: <20210721200832.916644-3-jernej.skrabec@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210721200832.916644-1-jernej.skrabec@gmail.com>
-References: <20210721200832.916644-1-jernej.skrabec@gmail.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C85206121F;
+        Wed, 21 Jul 2021 20:08:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626898134;
+        bh=0/+9Ds2nYq23Vrp98ZdFSBDOmDW4de7H4iN14rx/Tk0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=AOVcxnPwJ9Hyc1CyHYwruPr9TjjoVyKG9/Ewu7Y1hNfS+uYPiR0qAZX6NggfUntFb
+         PJCmeQQvYqNqG6azSZLCiK30RyU9I0FQevGr2sy4bTApQ5b2d5FyPbseBJ9F/8MgQw
+         5Lv+OjeX/sGQ+RezZG5y8gbGm01bEhsSDYwZHi/ZDoQ3mjrsXXNydtY9LPjUY65lZZ
+         7rnUL4adBrmrYgTqPsOaCBzr9Ld6ZPZ7jvJEFs51TQQxORclhc6wMGbg+9j9GgS4rP
+         FWDWSuq6nCLZvlYsNMuIBuMtmhJ1QcvOnoWADKiR579St1WTb31UND0ZETQ/Kz1AVn
+         HhPevEOoc7ARQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 852685C09A4; Wed, 21 Jul 2021 13:08:54 -0700 (PDT)
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        Akira Yokosawa <akiyks@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 1/5] Documentation/RCU: Fix emphasis markers
+Date:   Wed, 21 Jul 2021 13:08:49 -0700
+Message-Id: <20210721200853.1175189-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20210721200806.GA950569@paulmck-ThinkPad-P17-Gen-1>
+References: <20210721200806.GA950569@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tanix TX6 has 32 GiB eMMC. Add a node for it.
+From: Akira Yokosawa <akiyks@gmail.com>
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+"-foo-" does not work as emphasis in ReST markdown.
+Use "*foo*" instead.
+
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ Documentation/RCU/checklist.rst       | 24 ++++++++++++------------
+ Documentation/RCU/rcu_dereference.rst |  6 +++---
+ Documentation/RCU/stallwarn.rst       |  8 ++++----
+ 3 files changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
-index a1dd8f472cc8..c23b7c37406b 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
-@@ -98,6 +98,16 @@ &mmc0 {
- 	status = "okay";
- };
+diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
+index 01cc21f17f7bd..f4545b7c9a63d 100644
+--- a/Documentation/RCU/checklist.rst
++++ b/Documentation/RCU/checklist.rst
+@@ -37,7 +37,7 @@ over a rather long period of time, but improvements are always welcome!
  
-+&mmc2 {
-+	vmmc-supply = <&reg_vcc3v3>;
-+	vqmmc-supply = <&reg_vcc1v8>;
-+	bus-width = <8>;
-+	non-removable;
-+	cap-mmc-hw-reset;
-+	mmc-hs200-1_8v;
-+	status = "okay";
-+};
-+
- &ohci0 {
- 	status = "okay";
- };
+ 1.	Does the update code have proper mutual exclusion?
+ 
+-	RCU does allow -readers- to run (almost) naked, but -writers- must
++	RCU does allow *readers* to run (almost) naked, but *writers* must
+ 	still use some sort of mutual exclusion, such as:
+ 
+ 	a.	locking,
+@@ -73,7 +73,7 @@ over a rather long period of time, but improvements are always welcome!
+ 	critical section is every bit as bad as letting them leak out
+ 	from under a lock.  Unless, of course, you have arranged some
+ 	other means of protection, such as a lock or a reference count
+-	-before- letting them out of the RCU read-side critical section.
++	*before* letting them out of the RCU read-side critical section.
+ 
+ 3.	Does the update code tolerate concurrent accesses?
+ 
+@@ -101,7 +101,7 @@ over a rather long period of time, but improvements are always welcome!
+ 	c.	Make updates appear atomic to readers.	For example,
+ 		pointer updates to properly aligned fields will
+ 		appear atomic, as will individual atomic primitives.
+-		Sequences of operations performed under a lock will -not-
++		Sequences of operations performed under a lock will *not*
+ 		appear to be atomic to RCU readers, nor will sequences
+ 		of multiple atomic primitives.
+ 
+@@ -333,7 +333,7 @@ over a rather long period of time, but improvements are always welcome!
+ 	for example) may be omitted.
+ 
+ 10.	Conversely, if you are in an RCU read-side critical section,
+-	and you don't hold the appropriate update-side lock, you -must-
++	and you don't hold the appropriate update-side lock, you *must*
+ 	use the "_rcu()" variants of the list macros.  Failing to do so
+ 	will break Alpha, cause aggressive compilers to generate bad code,
+ 	and confuse people trying to read your code.
+@@ -359,12 +359,12 @@ over a rather long period of time, but improvements are always welcome!
+ 	callback pending, then that RCU callback will execute on some
+ 	surviving CPU.	(If this was not the case, a self-spawning RCU
+ 	callback would prevent the victim CPU from ever going offline.)
+-	Furthermore, CPUs designated by rcu_nocbs= might well -always-
++	Furthermore, CPUs designated by rcu_nocbs= might well *always*
+ 	have their RCU callbacks executed on some other CPUs, in fact,
+ 	for some  real-time workloads, this is the whole point of using
+ 	the rcu_nocbs= kernel boot parameter.
+ 
+-13.	Unlike other forms of RCU, it -is- permissible to block in an
++13.	Unlike other forms of RCU, it *is* permissible to block in an
+ 	SRCU read-side critical section (demarked by srcu_read_lock()
+ 	and srcu_read_unlock()), hence the "SRCU": "sleepable RCU".
+ 	Please note that if you don't need to sleep in read-side critical
+@@ -411,16 +411,16 @@ over a rather long period of time, but improvements are always welcome!
+ 14.	The whole point of call_rcu(), synchronize_rcu(), and friends
+ 	is to wait until all pre-existing readers have finished before
+ 	carrying out some otherwise-destructive operation.  It is
+-	therefore critically important to -first- remove any path
++	therefore critically important to *first* remove any path
+ 	that readers can follow that could be affected by the
+-	destructive operation, and -only- -then- invoke call_rcu(),
++	destructive operation, and *only then* invoke call_rcu(),
+ 	synchronize_rcu(), or friends.
+ 
+ 	Because these primitives only wait for pre-existing readers, it
+ 	is the caller's responsibility to guarantee that any subsequent
+ 	readers will execute safely.
+ 
+-15.	The various RCU read-side primitives do -not- necessarily contain
++15.	The various RCU read-side primitives do *not* necessarily contain
+ 	memory barriers.  You should therefore plan for the CPU
+ 	and the compiler to freely reorder code into and out of RCU
+ 	read-side critical sections.  It is the responsibility of the
+@@ -459,8 +459,8 @@ over a rather long period of time, but improvements are always welcome!
+ 	pass in a function defined within a loadable module, then it in
+ 	necessary to wait for all pending callbacks to be invoked after
+ 	the last invocation and before unloading that module.  Note that
+-	it is absolutely -not- sufficient to wait for a grace period!
+-	The current (say) synchronize_rcu() implementation is -not-
++	it is absolutely *not* sufficient to wait for a grace period!
++	The current (say) synchronize_rcu() implementation is *not*
+ 	guaranteed to wait for callbacks registered on other CPUs.
+ 	Or even on the current CPU if that CPU recently went offline
+ 	and came back online.
+@@ -470,7 +470,7 @@ over a rather long period of time, but improvements are always welcome!
+ 	-	call_rcu() -> rcu_barrier()
+ 	-	call_srcu() -> srcu_barrier()
+ 
+-	However, these barrier functions are absolutely -not- guaranteed
++	However, these barrier functions are absolutely *not* guaranteed
+ 	to wait for a grace period.  In fact, if there are no call_rcu()
+ 	callbacks waiting anywhere in the system, rcu_barrier() is within
+ 	its rights to return immediately.
+diff --git a/Documentation/RCU/rcu_dereference.rst b/Documentation/RCU/rcu_dereference.rst
+index f3e587acb4deb..0b418a5b243c5 100644
+--- a/Documentation/RCU/rcu_dereference.rst
++++ b/Documentation/RCU/rcu_dereference.rst
+@@ -43,7 +43,7 @@ Follow these rules to keep your RCU code working properly:
+ 	-	Set bits and clear bits down in the must-be-zero low-order
+ 		bits of that pointer.  This clearly means that the pointer
+ 		must have alignment constraints, for example, this does
+-		-not- work in general for char* pointers.
++		*not* work in general for char* pointers.
+ 
+ 	-	XOR bits to translate pointers, as is done in some
+ 		classic buddy-allocator algorithms.
+@@ -174,7 +174,7 @@ Follow these rules to keep your RCU code working properly:
+ 		Please see the "CONTROL DEPENDENCIES" section of
+ 		Documentation/memory-barriers.txt for more details.
+ 
+-	-	The pointers are not equal -and- the compiler does
++	-	The pointers are not equal *and* the compiler does
+ 		not have enough information to deduce the value of the
+ 		pointer.  Note that the volatile cast in rcu_dereference()
+ 		will normally prevent the compiler from knowing too much.
+@@ -360,7 +360,7 @@ in turn destroying the ordering between this load and the loads of the
+ return values.  This can result in "p->b" returning pre-initialization
+ garbage values.
+ 
+-In short, rcu_dereference() is -not- optional when you are going to
++In short, rcu_dereference() is *not* optional when you are going to
+ dereference the resulting pointer.
+ 
+ 
+diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
+index 7148e9be08c34..1cc944aec46f2 100644
+--- a/Documentation/RCU/stallwarn.rst
++++ b/Documentation/RCU/stallwarn.rst
+@@ -32,7 +32,7 @@ warnings:
+ 
+ -	Booting Linux using a console connection that is too slow to
+ 	keep up with the boot-time console-message rate.  For example,
+-	a 115Kbaud serial console can be -way- too slow to keep up
++	a 115Kbaud serial console can be *way* too slow to keep up
+ 	with boot-time message rates, and will frequently result in
+ 	RCU CPU stall warning messages.  Especially if you have added
+ 	debug printk()s.
+@@ -105,7 +105,7 @@ warnings:
+ 	leading the realization that the CPU had failed.
+ 
+ The RCU, RCU-sched, and RCU-tasks implementations have CPU stall warning.
+-Note that SRCU does -not- have CPU stall warnings.  Please note that
++Note that SRCU does *not* have CPU stall warnings.  Please note that
+ RCU only detects CPU stalls when there is a grace period in progress.
+ No grace period, no CPU stall warnings.
+ 
+@@ -145,7 +145,7 @@ CONFIG_RCU_CPU_STALL_TIMEOUT
+ 	this parameter is checked only at the beginning of a cycle.
+ 	So if you are 10 seconds into a 40-second stall, setting this
+ 	sysfs parameter to (say) five will shorten the timeout for the
+-	-next- stall, or the following warning for the current stall
++	*next* stall, or the following warning for the current stall
+ 	(assuming the stall lasts long enough).  It will not affect the
+ 	timing of the next warning for the current stall.
+ 
+@@ -202,7 +202,7 @@ causing stalls, and that the stall was affecting RCU-sched.  This message
+ will normally be followed by stack dumps for each CPU.  Please note that
+ PREEMPT_RCU builds can be stalled by tasks as well as by CPUs, and that
+ the tasks will be indicated by PID, for example, "P3421".  It is even
+-possible for an rcu_state stall to be caused by both CPUs -and- tasks,
++possible for an rcu_state stall to be caused by both CPUs *and* tasks,
+ in which case the offending CPUs and tasks will all be called out in the list.
+ 
+ CPU 2's "(3 GPs behind)" indicates that this CPU has not interacted with
 -- 
-2.32.0
+2.31.1.189.g2e36527f23
 
