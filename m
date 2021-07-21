@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E993D114A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3CA3D1148
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239388AbhGUNqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:46:04 -0400
-Received: from [43.250.32.171] ([43.250.32.171]:52478 "EHLO email.cn"
+        id S239382AbhGUNqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:46:01 -0400
+Received: from [43.250.32.171] ([43.250.32.171]:52502 "EHLO email.cn"
         rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239674AbhGUNpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:45:20 -0400
+        id S239692AbhGUNpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 09:45:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=From:To:Date; bh=KvPl5N/aV5EPUutGWuRiRIXwvm+Hdj+YFMzRG
-        h9umS8=; b=ff5VBtJYbvb1n8G+NbugVvH9F3AMqS0YsJps85OPUZI62Z5UZKfJN
-        7UoPhKeX/3iFYs0Tx16NiAggEoDiIcKXeqAH3nBrMPsoj73npu8G07f2shrsB8D8
-        V49NiY8KP4qa3WbCqUtfqOsybDW2C8gsqj22nY0qcgszMElorhLe/U=
+        s=dkim; h=From:To:Date; bh=rEqvMVf93bs3VTPbOq2N3kKJ18Jfa4r4uJsJ0
+        YIC/7Q=; b=NLLpvebnwq+qWwV0PBMTpoUWmxTgE3g2gMEwP6PtCM3Bt6ykkSaT5
+        yb9legMI0vchEmPSBd8hQd/jtVDAa7wr6YSpT4onN7UHSVi2TGWzrM4iD1h83SbF
+        yXrExQwr2Ke70c1dxhX7riDAmfkC2M2OjuZHwj7YBhwbK5xWQeievQ=
 Received: from localhost.localdomain (unknown [180.120.41.43])
-        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgCnQzdlLvhgL8VVAA--.36318S2;
-        Wed, 21 Jul 2021 22:25:41 +0800 (CST)
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgCnQzdlLvhgL8VVAA--.36318S3;
+        Wed, 21 Jul 2021 22:25:48 +0800 (CST)
 From:   Hu Haowen <src.res@email.cn>
 To:     corbet@lwn.net
 Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Hu Haowen <src.res@email.cn>
-Subject: [PATCH v4 1/2] docs: add traditional Chinese translation for kernel Documentation
-Date:   Wed, 21 Jul 2021 22:25:36 +0800
-Message-Id: <20210721142537.29409-1-src.res@email.cn>
+Subject: [PATCH v4 2/2] docs/zh_TW: add translations for zh_TW/process
+Date:   Wed, 21 Jul 2021 22:25:37 +0800
+Message-Id: <20210721142537.29409-2-src.res@email.cn>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210721142537.29409-1-src.res@email.cn>
+References: <20210721142537.29409-1-src.res@email.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LCKnCgCnQzdlLvhgL8VVAA--.36318S2
-X-Coremail-Antispam: 1UD129KBjvAXoWkXw1xZw45Zw15XFy3Jw43ZFb_yoWkWr4fto
-        WI9ay5C34kAF4aqFyrGa1UJFWxGw13CFs8uwsrKrn8Gr1UCFy5t3Wvq3y5KrWa93y5Wa1f
-        Ja4FvF1Sy3W5AFyDn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+X-CM-TRANSID: LCKnCgCnQzdlLvhgL8VVAA--.36318S3
+X-Coremail-Antispam: 1UD129KBjvAXoWDKw4kJFWDGFyDCw17Xr45Awb_yoWkuF17Wo
+        WSkay5uw1kAa13XFyrWa15JFWxGw43CFWruw47Gan8ur1UuFy5C3Wvqwn8ArZavrW5X3Zx
+        Ga4YqF4fGF1DAFsrn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
         AaLaJ3UjIYCTnIWjp_UUU5s7CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM28lY4IE
         w2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84
         ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl
@@ -52,4256 +54,6611 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add traditional Chinese translation (zh_TW) for the Linux Kernel
-documentation with a series of translated files.
+Create new translations for zh_TW/process and link them to index.
 
 Signed-off-by: Hu Haowen <src.res@email.cn>
 ---
- Documentation/translations/index.rst          |    1 +
- Documentation/translations/zh_TW/IRQ.txt      |   41 +
- .../translations/zh_TW/admin-guide/README.rst |  351 +++++
- .../zh_TW/admin-guide/bug-bisect.rst          |   85 ++
- .../zh_TW/admin-guide/bug-hunting.rst         |  344 +++++
- .../zh_TW/admin-guide/clearing-warn-once.rst  |   16 +
- .../zh_TW/admin-guide/cpu-load.rst            |  112 ++
- .../translations/zh_TW/admin-guide/index.rst  |  135 ++
- .../translations/zh_TW/admin-guide/init.rst   |   58 +
- .../zh_TW/admin-guide/reporting-issues.rst    | 1337 +++++++++++++++++
- .../zh_TW/admin-guide/security-bugs.rst       |   78 +
- .../zh_TW/admin-guide/tainted-kernels.rst     |  161 ++
- .../zh_TW/admin-guide/unicode.rst             |  174 +++
- .../translations/zh_TW/disclaimer-zh_TW.rst   |   11 +
- Documentation/translations/zh_TW/gpio.txt     |  651 ++++++++
- Documentation/translations/zh_TW/index.rst    |  162 ++
- .../translations/zh_TW/io_ordering.txt        |   68 +
- .../translations/zh_TW/oops-tracing.txt       |  212 +++
- Documentation/translations/zh_TW/sparse.txt   |   91 ++
- 19 files changed, 4088 insertions(+)
- create mode 100644 Documentation/translations/zh_TW/IRQ.txt
- create mode 100644 Documentation/translations/zh_TW/admin-guide/README.rst
- create mode 100644 Documentation/translations/zh_TW/admin-guide/bug-bisect.rst
- create mode 100644 Documentation/translations/zh_TW/admin-guide/bug-hunting.rst
- create mode 100644 Documentation/translations/zh_TW/admin-guide/clearing-warn-once.rst
- create mode 100644 Documentation/translations/zh_TW/admin-guide/cpu-load.rst
- create mode 100644 Documentation/translations/zh_TW/admin-guide/index.rst
- create mode 100644 Documentation/translations/zh_TW/admin-guide/init.rst
- create mode 100644 Documentation/translations/zh_TW/admin-guide/reporting-issues.rst
- create mode 100644 Documentation/translations/zh_TW/admin-guide/security-bugs.rst
- create mode 100644 Documentation/translations/zh_TW/admin-guide/tainted-kernels.rst
- create mode 100644 Documentation/translations/zh_TW/admin-guide/unicode.rst
- create mode 100644 Documentation/translations/zh_TW/disclaimer-zh_TW.rst
- create mode 100644 Documentation/translations/zh_TW/gpio.txt
- create mode 100644 Documentation/translations/zh_TW/index.rst
- create mode 100644 Documentation/translations/zh_TW/io_ordering.txt
- create mode 100644 Documentation/translations/zh_TW/oops-tracing.txt
- create mode 100644 Documentation/translations/zh_TW/sparse.txt
+ Documentation/translations/zh_TW/index.rst    |  10 +-
+ .../translations/zh_TW/process/1.Intro.rst    | 199 ++++
+ .../translations/zh_TW/process/2.Process.rst  | 369 +++++++
+ .../zh_TW/process/3.Early-stage.rst           | 172 ++++
+ .../translations/zh_TW/process/4.Coding.rst   | 297 ++++++
+ .../translations/zh_TW/process/5.Posting.rst  | 251 +++++
+ .../zh_TW/process/6.Followthrough.rst         | 156 +++
+ .../zh_TW/process/7.AdvancedTopics.rst        | 137 +++
+ .../zh_TW/process/8.Conclusion.rst            |  74 ++
+ .../code-of-conduct-interpretation.rst        | 112 ++
+ .../zh_TW/process/code-of-conduct.rst         |  76 ++
+ .../zh_TW/process/coding-style.rst            | 958 ++++++++++++++++++
+ .../zh_TW/process/development-process.rst     |  30 +
+ .../zh_TW/process/email-clients.rst           | 252 +++++
+ .../process/embargoed-hardware-issues.rst     | 232 +++++
+ .../translations/zh_TW/process/howto.rst      | 500 +++++++++
+ .../translations/zh_TW/process/index.rst      |  67 ++
+ .../zh_TW/process/kernel-driver-statement.rst | 203 ++++
+ .../process/kernel-enforcement-statement.rst  | 155 +++
+ .../zh_TW/process/license-rules.rst           | 374 +++++++
+ .../zh_TW/process/magic-number.rst            | 148 +++
+ .../zh_TW/process/management-style.rst        | 211 ++++
+ .../zh_TW/process/programming-language.rst    |  76 ++
+ .../zh_TW/process/stable-api-nonsense.rst     | 159 +++
+ .../zh_TW/process/stable-kernel-rules.rst     |  68 ++
+ .../zh_TW/process/submit-checklist.rst        | 109 ++
+ .../zh_TW/process/submitting-drivers.rst      | 164 +++
+ .../zh_TW/process/submitting-patches.rst      | 686 +++++++++++++
+ .../process/volatile-considered-harmful.rst   | 110 ++
+ 29 files changed, 6351 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/translations/zh_TW/process/1.Intro.rst
+ create mode 100644 Documentation/translations/zh_TW/process/2.Process.rst
+ create mode 100644 Documentation/translations/zh_TW/process/3.Early-stage.rst
+ create mode 100644 Documentation/translations/zh_TW/process/4.Coding.rst
+ create mode 100644 Documentation/translations/zh_TW/process/5.Posting.rst
+ create mode 100644 Documentation/translations/zh_TW/process/6.Followthrough.rst
+ create mode 100644 Documentation/translations/zh_TW/process/7.AdvancedTopics.rst
+ create mode 100644 Documentation/translations/zh_TW/process/8.Conclusion.rst
+ create mode 100644 Documentation/translations/zh_TW/process/code-of-conduct-interpretation.rst
+ create mode 100644 Documentation/translations/zh_TW/process/code-of-conduct.rst
+ create mode 100644 Documentation/translations/zh_TW/process/coding-style.rst
+ create mode 100644 Documentation/translations/zh_TW/process/development-process.rst
+ create mode 100644 Documentation/translations/zh_TW/process/email-clients.rst
+ create mode 100644 Documentation/translations/zh_TW/process/embargoed-hardware-issues.rst
+ create mode 100644 Documentation/translations/zh_TW/process/howto.rst
+ create mode 100644 Documentation/translations/zh_TW/process/index.rst
+ create mode 100644 Documentation/translations/zh_TW/process/kernel-driver-statement.rst
+ create mode 100644 Documentation/translations/zh_TW/process/kernel-enforcement-statement.rst
+ create mode 100644 Documentation/translations/zh_TW/process/license-rules.rst
+ create mode 100644 Documentation/translations/zh_TW/process/magic-number.rst
+ create mode 100644 Documentation/translations/zh_TW/process/management-style.rst
+ create mode 100644 Documentation/translations/zh_TW/process/programming-language.rst
+ create mode 100644 Documentation/translations/zh_TW/process/stable-api-nonsense.rst
+ create mode 100644 Documentation/translations/zh_TW/process/stable-kernel-rules.rst
+ create mode 100644 Documentation/translations/zh_TW/process/submit-checklist.rst
+ create mode 100644 Documentation/translations/zh_TW/process/submitting-drivers.rst
+ create mode 100644 Documentation/translations/zh_TW/process/submitting-patches.rst
+ create mode 100644 Documentation/translations/zh_TW/process/volatile-considered-harmful.rst
 
-diff --git a/Documentation/translations/index.rst b/Documentation/translations/index.rst
-index 556b050884fc..1175a47d07f0 100644
---- a/Documentation/translations/index.rst
-+++ b/Documentation/translations/index.rst
-@@ -8,6 +8,7 @@ Translations
-    :maxdepth: 1
+diff --git a/Documentation/translations/zh_TW/index.rst b/Documentation/translations/zh_TW/index.rst
+index cab58e428825..76981b2111f6 100644
+--- a/Documentation/translations/zh_TW/index.rst
++++ b/Documentation/translations/zh_TW/index.rst
+@@ -22,9 +22,7 @@
+ 下面的文檔介紹了Linux內核原始碼的許可證（GPLv2）、如何在原始碼樹中正確標記
+ 單個文件的許可證、以及指向完整許可證文本的連結。
  
-    zh_CN/index
-+   zh_TW/index
-    it_IT/index
-    ko_KR/index
-    ja_JP/index
-diff --git a/Documentation/translations/zh_TW/IRQ.txt b/Documentation/translations/zh_TW/IRQ.txt
+-TODOList:
+-
+-* Documentation/translations/zh_TW/process/license-rules.rst
++Documentation/translations/zh_TW/process/license-rules.rst
+ 
+ 用戶文檔
+ --------
+@@ -67,9 +65,13 @@ TODOlist:
+ 開發人員做出貢獻。與任何大型社區一樣，知道如何完成任務將使得更改合併的過程
+ 變得更加容易。
+ 
++.. toctree::
++   :maxdepth: 2
++
++   process/index
++
+ TODOList:
+ 
+-* process/index
+ * dev-tools/index
+ * doc-guide/index
+ * kernel-hacking/index
+diff --git a/Documentation/translations/zh_TW/process/1.Intro.rst b/Documentation/translations/zh_TW/process/1.Intro.rst
 new file mode 100644
-index 000000000000..73d435a0d1e7
+index 000000000000..ca2b931be6c5
 --- /dev/null
-+++ b/Documentation/translations/zh_TW/IRQ.txt
-@@ -0,0 +1,41 @@
-+Chinese translated version of Documentation/core-api/irq/index.rst
-+
-+If you have any comment or update to the content, please contact the
-+original document maintainer directly.  However, if you have a problem
-+communicating in English you can also ask the Chinese maintainer for
-+help.  Contact the Chinese maintainer if this translation is outdated
-+or if there is a problem with the translation.
-+
-+Maintainer: Eric W. Biederman <ebiederman@xmission.com>
-+Traditional Chinese maintainer: Hu Haowen <src.res@email.cn>
-+---------------------------------------------------------------------
-+Documentation/core-api/irq/index.rst 的繁體中文翻譯
-+
-+如果想評論或更新本文的內容，請直接聯繫原文檔的維護者。如果你使用英文
-+交流有困難的話，也可以向繁體中文版維護者求助。如果本翻譯更新不及時或
-+者翻譯存在問題，請聯繫繁體中文版維護者。
-+
-+英文版維護者： Eric W. Biederman <ebiederman@xmission.com>
-+繁體中文版維護者： 胡皓文 Hu Haowen <src.res@email.cn>
-+繁體中文版翻譯者： 胡皓文 Hu Haowen <src.res@email.cn>
-+繁體中文版校譯者： 胡皓文 Hu Haowen <src.res@email.cn>
-+
-+
-+以下爲正文
-+---------------------------------------------------------------------
-+何爲 IRQ?
-+
-+一個 IRQ 是來自某個設備的一個中斷請求。目前，它們可以來自一個硬體引腳，
-+或來自一個數據包。多個設備可能連接到同個硬體引腳，從而共享一個 IRQ。
-+
-+一個 IRQ 編號是用於告知硬體中斷源的內核標識。通常情況下，這是一個
-+全局 irq_desc 數組的索引，但是除了在 linux/interrupt.h 中的實現，
-+具體的細節是體系結構特定的。
-+
-+一個 IRQ 編號是設備上某個可能的中斷源的枚舉。通常情況下，枚舉的編號是
-+該引腳在系統內中斷控制器的所有輸入引腳中的編號。對於 ISA 總線中的情況，
-+枚舉的是在兩個 i8259 中斷控制器中 16 個輸入引腳。
-+
-+架構可以對 IRQ 編號指定額外的含義，在硬體涉及任何手工配置的情況下，
-+是被提倡的。ISA 的 IRQ 是一個分配這類額外含義的典型例子。
-+
-diff --git a/Documentation/translations/zh_TW/admin-guide/README.rst b/Documentation/translations/zh_TW/admin-guide/README.rst
-new file mode 100644
-index 000000000000..b752e50359e6
---- /dev/null
-+++ b/Documentation/translations/zh_TW/admin-guide/README.rst
-@@ -0,0 +1,351 @@
++++ b/Documentation/translations/zh_TW/process/1.Intro.rst
+@@ -0,0 +1,199 @@
 +.. SPDX-License-Identifier: GPL-2.0
 +
 +.. include:: ../disclaimer-zh_TW.rst
 +
-+:Original: Documentation/admin-guide/README.rst
++:Original: :ref:`Documentation/process/1.Intro.rst <development_process_intro>`
 +
-+:譯者:
++:Translator:
++
++ 時奎亮 Alex Shi <alex.shi@linux.alibaba.com>
++
++:校譯:
 +
 + 吳想成 Wu XiangCheng <bobwxc@email.cn>
 + 胡皓文 Hu Haowen <src.res@email.cn>
 +
-+Linux內核5.x版本 <http://kernel.org/>
-+=========================================
-+
-+以下是Linux版本5的發行註記。仔細閱讀它們，
-+它們會告訴你這些都是什麼，解釋如何安裝內核，以及遇到問題時該如何做。
-+
-+什麼是Linux？
-+---------------
-+
-+  Linux是Unix作業系統的克隆版本，由Linus Torvalds在一個鬆散的網絡黑客
-+  （Hacker，無貶義）團隊的幫助下從頭開始編寫。它旨在實現兼容POSIX和
-+  單一UNIX規範。
-+
-+  它具有在現代成熟的Unix中應當具有的所有功能，包括真正的多任務處理、虛擬內存、
-+  共享庫、按需加載、共享的寫時拷貝（COW）可執行文件、恰當的內存管理以及包括
-+  IPv4和IPv6在內的複合網絡棧。
-+
-+  Linux在GNU通用公共許可證，版本2（GNU GPLv2）下分發，詳見隨附的COPYING文件。
-+
-+它能在什麼樣的硬體上運行？
-+-----------------------------
-+
-+  雖然Linux最初是爲32位的x86 PC機（386或更高版本）開發的，但今天它也能運行在
-+  （至少）Compaq Alpha AXP、Sun SPARC與UltraSPARC、Motorola 68000、PowerPC、
-+  PowerPC64、ARM、Hitachi SuperH、Cell、IBM S/390、MIPS、HP PA-RISC、Intel 
-+  IA-64、DEC VAX、AMD x86-64 Xtensa和ARC架構上。
-+
-+  Linux很容易移植到大多數通用的32位或64位體系架構，只要它們有一個分頁內存管理
-+  單元（PMMU）和一個移植的GNU C編譯器（gcc；GNU Compiler Collection，GCC的一
-+  部分）。Linux也被移植到許多沒有PMMU的體系架構中，儘管功能顯然受到了一定的
-+  限制。
-+  Linux也被移植到了其自己上。現在可以將內核作爲用戶空間應用程式運行——這被
-+  稱爲用戶模式Linux（UML）。
-+
-+文檔
-+-----
-+網際網路上和書籍上都有大量的電子文檔，既有Linux專屬文檔，也有與一般UNIX問題相關
-+的文檔。我建議在任何Linux FTP站點上查找LDP（Linux文檔項目）書籍的文檔子目錄。
-+本自述文件並不是關於系統的文檔：有更好的可用資源。
-+
-+ - 網際網路上和書籍上都有大量的（電子）文檔，既有Linux專屬文檔，也有與普通
-+   UNIX問題相關的文檔。我建議在任何有LDP（Linux文檔項目）書籍的Linux FTP
-+   站點上查找文檔子目錄。本自述文件並不是關於系統的文檔：有更好的可用資源。
-+
-+ - 文檔/子目錄中有各種自述文件：例如，這些文件通常包含一些特定驅動程序的
-+   內核安裝說明。請閱讀
-+   :ref:`Documentation/process/changes.rst <changes>` 文件，它包含了升級內核
-+   可能會導致的問題的相關信息。
-+
-+安裝內核原始碼
-+---------------
-+
-+ - 如果您要安裝完整的原始碼，請把內核tar檔案包放在您有權限的目錄中（例如您
-+   的主目錄）並將其解包::
-+
-+     xz -cd linux-5.x.tar.xz | tar xvf -
-+
-+   將「X」替換成最新內核的版本號。
-+
-+   【不要】使用 /usr/src/linux 目錄！這裡有一組庫頭文件使用的內核頭文件
-+   （通常是不完整的）。它們應該與庫匹配，而不是被內核的變化搞得一團糟。
-+
-+ - 您還可以通過打補丁在5.x版本之間升級。補丁以xz格式分發。要通過打補丁進行
-+   安裝，請獲取所有較新的補丁文件，進入內核原始碼（linux-5.x）的目錄並
-+   執行::
-+
-+     xz -cd ../patch-5.x.xz | patch -p1
-+
-+   請【按順序】替換所有大於當前原始碼樹版本的「x」，這樣就可以了。您可能想要
-+   刪除備份文件（文件名類似xxx~ 或 xxx.orig)，並確保沒有失敗的補丁（文件名
-+   類似xxx# 或 xxx.rej）。如果有，不是你就是我犯了錯誤。
-+
-+   與5.x內核的補丁不同，5.x.y內核（也稱爲穩定版內核）的補丁不是增量的，而是
-+   直接應用於基本的5.x內核。例如，如果您的基本內核是5.0，並且希望應用5.0.3
-+   補丁，則不應先應用5.0.1和5.0.2的補丁。類似地，如果您運行的是5.0.2內核，
-+   並且希望跳轉到5.0.3，那麼在應用5.0.3補丁之前，必須首先撤銷5.0.2補丁
-+   （即patch -R）。更多關於這方面的內容，請閱讀
-+   :ref:`Documentation/process/applying-patches.rst <applying_patches>` 。
-+
-+   或者，腳本 patch-kernel 可以用來自動化這個過程。它能確定當前內核版本並
-+   應用找到的所有補丁::
-+
-+     linux/scripts/patch-kernel linux
-+
-+   上面命令中的第一個參數是內核原始碼的位置。補丁是在當前目錄應用的，但是
-+   可以將另一個目錄指定爲第二個參數。
-+
-+ - 確保沒有過時的 .o 文件和依賴項::
-+
-+     cd linux
-+     make mrproper
-+
-+   現在您應該已經正確安裝了原始碼。
-+
-+軟體要求
-+---------
-+
-+   編譯和運行5.x內核需要各種軟體包的最新版本。請參考
-+   :ref:`Documentation/process/changes.rst <changes>`
-+   來了解最低版本要求以及如何升級軟體包。請注意，使用過舊版本的這些包可能會
-+   導致很難追蹤的間接錯誤，因此不要以爲在生成或操作過程中出現明顯問題時可以
-+   只更新包。
-+
-+爲內核建立目錄
-+---------------
-+
-+   編譯內核時，默認情況下所有輸出文件都將與內核原始碼放在一起。使用
-+   ``make O=output/dir`` 選項可以爲輸出文件（包括 .config）指定備用位置。
-+   例如::
-+
-+     kernel source code: /usr/src/linux-5.x
-+     build directory:    /home/name/build/kernel
-+
-+   要配置和構建內核，請使用::
-+
-+     cd /usr/src/linux-5.x
-+     make O=/home/name/build/kernel menuconfig
-+     make O=/home/name/build/kernel
-+     sudo make O=/home/name/build/kernel modules_install install
-+
-+   請注意：如果使用了 ``O=output/dir`` 選項，那麼它必須用於make的所有調用。
-+
-+配置內核
-+---------
-+
-+   即使只升級一個小版本，也不要跳過此步驟。每個版本中都會添加新的配置選項，
-+   如果配置文件沒有按預定設置，就會出現奇怪的問題。如果您想以最少的工作量
-+   將現有配置升級到新版本，請使用 ``makeoldconfig`` ，它只會詢問您新配置
-+   選項的答案。
-+
-+ - 其他配置命令包括::
-+
-+     "make config"      純文本界面。
-+
-+     "make menuconfig"  基於文本的彩色菜單、選項列表和對話框。
-+
-+     "make nconfig"     增強的基於文本的彩色菜單。
-+
-+     "make xconfig"     基於Qt的配置工具。
-+
-+     "make gconfig"     基於GTK+的配置工具。
-+
-+     "make oldconfig"   基於現有的 ./.config 文件選擇所有選項，並詢問
-+                        新配置選項。
-+
-+     "make olddefconfig"
-+                        類似上一個，但不詢問直接將新選項設置爲默認值。
-+
-+     "make defconfig"   根據體系架構，使用arch/$arch/defconfig或
-+                        arch/$arch/configs/${PLATFORM}_defconfig中的
-+                        默認選項值創建./.config文件。
-+
-+     "make ${PLATFORM}_defconfig"
-+                        使用arch/$arch/configs/${PLATFORM}_defconfig中
-+                        的默認選項值創建一個./.config文件。
-+                        用「makehelp」來獲取您體系架構中所有可用平台的列表。
-+
-+     "make allyesconfig"
-+                        通過儘可能將選項值設置爲「y」，創建一個
-+                        ./.config文件。
-+
-+     "make allmodconfig"
-+                        通過儘可能將選項值設置爲「m」，創建一個
-+                        ./.config文件。
-+
-+     "make allnoconfig" 通過儘可能將選項值設置爲「n」，創建一個
-+                        ./.config文件。
-+
-+     "make randconfig"  通過隨機設置選項值來創建./.config文件。
-+
-+     "make localmodconfig" 基於當前配置和加載的模塊（lsmod）創建配置。禁用
-+                           已加載的模塊不需要的任何模塊選項。
-+
-+                           要爲另一台計算機創建localmodconfig，請將該計算機
-+                           的lsmod存儲到一個文件中，並將其作爲lsmod參數傳入。
-+
-+                           此外，通過在參數LMC_KEEP中指定模塊的路徑，可以將
-+                           模塊保留在某些文件夾或kconfig文件中。
-+
-+                   target$ lsmod > /tmp/mylsmod
-+                   target$ scp /tmp/mylsmod host:/tmp
-+
-+                   host$ make LSMOD=/tmp/mylsmod \
-+                           LMC_KEEP="drivers/usb:drivers/gpu:fs" \
-+                           localmodconfig
-+
-+                           上述方法在交叉編譯時也適用。
-+
-+     "make localyesconfig" 與localmodconfig類似，只是它會將所有模塊選項轉換
-+                           爲內置（=y）。你可以同時通過LMC_KEEP保留模塊。
-+
-+     "make kvmconfig"   爲kvm客體內核支持啓用其他選項。
-+
-+     "make xenconfig"   爲xen dom0客體內核支持啓用其他選項。
-+
-+     "make tinyconfig"  配置儘可能小的內核。
-+
-+   更多關於使用Linux內核配置工具的信息，見文檔
-+   Documentation/kbuild/kconfig.rst。
-+
-+ - ``make config`` 注意事項:
-+
-+    - 包含不必要的驅動程序會使內核變大，並且在某些情況下會導致問題：
-+      探測不存在的控制器卡可能會混淆其他控制器。
-+
-+    - 如果存在協處理器，則編譯了數學仿真的內核仍將使用協處理器：在
-+      這種情況下，數學仿真永遠不會被使用。內核會稍微大一點，但不管
-+      是否有數學協處理器，都可以在不同的機器上工作。
-+
-+    - 「kernel hacking」配置細節通常會導致更大或更慢的內核（或兩者
-+      兼而有之），甚至可以通過配置一些例程來主動嘗試破壞壞代碼以發現
-+      內核問題，從而降低內核的穩定性（kmalloc()）。因此，您可能應該
-+      用於研究「開發」、「實驗」或「調試」特性相關問題。
-+
-+編譯內核
-+---------
-+
-+ - 確保您至少有gcc 4.9可用。
-+   有關更多信息，請參閱 :ref:`Documentation/process/changes.rst <changes>` 。
-+
-+   請注意，您仍然可以使用此內核運行a.out用戶程序。
-+
-+ - 執行 ``make`` 來創建壓縮內核映像。如果您安裝了lilo以適配內核makefile，
-+   那麼也可以進行 ``makeinstall`` ，但是您可能需要先檢查特定的lilo設置。
-+
-+   實際安裝必須以root身份執行，但任何正常構建都不需要。
-+   無須徒然使用root身份。
-+
-+ - 如果您將內核的任何部分配置爲模塊，那麼還必須執行 ``make modules_install`` 。
-+
-+ - 詳細的內核編譯/生成輸出：
-+
-+   通常，內核構建系統在相當安靜的模式下運行（但不是完全安靜）。但是有時您或
-+   其他內核開發人員需要看到編譯、連結或其他命令的執行過程。爲此，可使用
-+   「verbose（詳細）」構建模式。
-+   向 ``make`` 命令傳遞 ``V=1`` 來實現，例如::
-+
-+     make V=1 all
-+
-+   如需構建系統也給出內個目標重建的願意，請使用 ``V=2`` 。默認爲 ``V=0`` 。
-+
-+ - 準備一個備份內核以防出錯。對於開發版本尤其如此，因爲每個新版本都包含
-+   尚未調試的新代碼。也要確保保留與該內核對應的模塊的備份。如果要安裝
-+   與工作內核版本號相同的新內核，請在進行 ``make modules_install`` 安裝
-+   之前備份modules目錄。
-+
-+   或者，在編譯之前，使用內核配置選項「LOCALVERSION」向常規內核版本附加
-+   一個唯一的後綴。LOCALVERSION可以在「General Setup」菜單中設置。
-+
-+ - 爲了引導新內核，您需要將內核映像（例如編譯後的
-+   .../linux/arch/x86/boot/bzImage）複製到常規可引導內核的位置。
-+
-+ - 不再支持在沒有LILO等啓動裝載程序幫助的情況下直接從軟盤引導內核。
-+
-+   如果從硬碟引導Linux，很可能使用LILO，它使用/etc/lilo.conf文件中
-+   指定的內核映像文件。內核映像文件通常是/vmlinuz、/boot/vmlinuz、
-+   /bzImage或/boot/bzImage。使用新內核前，請保存舊映像的副本，並複製
-+   新映像覆蓋舊映像。然後您【必須重新運行LILO】來更新加載映射！否則，
-+   將無法啓動新的內核映像。
-+
-+   重新安裝LILO通常需要運行/sbin/LILO。您可能希望編輯/etc/lilo.conf
-+   文件爲舊內核映像指定一個條目（例如/vmlinux.old)防止新的不能正常
-+   工作。有關更多信息，請參閱LILO文檔。
-+
-+   重新安裝LILO之後，您應該就已經準備好了。關閉系統，重新啓動，盡情
-+   享受吧！
-+
-+   如果需要更改內核映像中的默認根設備、視頻模式等，請在適當的地方使用
-+   啓動裝載程序的引導選項。無需重新編譯內核即可更改這些參數。
-+
-+ - 使用新內核重新啓動並享受它吧。
-+
-+若遇到問題
-+-----------
-+
-+ - 如果您發現了一些可能由於內核缺陷所導致的問題，請檢查MAINTAINERS（維護者）
-+   文件看看是否有人與令您遇到麻煩的內核部分相關。如果無人在此列出，那麼第二
-+   個最好的方案就是把它們發給我（torvalds@linux-foundation.org），也可能發送
-+   到任何其他相關的郵件列表或新聞組。
-+
-+ - 在所有的缺陷報告中，【請】告訴我們您在說什麼內核，如何復現問題，以及您的
-+   設置是什麼的（使用您的常識）。如果問題是新的，請告訴我；如果問題是舊的，
-+   請嘗試告訴我您什麼時候首次注意到它。
-+
-+ - 如果缺陷導致如下消息::
-+
-+     unable to handle kernel paging request at address C0000010
-+     Oops: 0002
-+     EIP:   0010:XXXXXXXX
-+     eax: xxxxxxxx   ebx: xxxxxxxx   ecx: xxxxxxxx   edx: xxxxxxxx
-+     esi: xxxxxxxx   edi: xxxxxxxx   ebp: xxxxxxxx
-+     ds: xxxx  es: xxxx  fs: xxxx  gs: xxxx
-+     Pid: xx, process nr: xx
-+     xx xx xx xx xx xx xx xx xx xx
-+
-+   或者類似的內核調試信息顯示在屏幕上或在系統日誌里，請【如實】複製它。
-+   可能對你來說轉儲（dump）看起來不可理解，但它確實包含可能有助於調試問題的
-+   信息。轉儲上方的文本也很重要：它說明了內核轉儲代碼的原因（在上面的示例中，
-+   是由於內核指針錯誤）。更多關於如何理解轉儲的信息，請參見
-+   Documentation/admin-guide/bug-hunting.rst。
-+
-+ - 如果使用 CONFIG_KALLSYMS 編譯內核，則可以按原樣發送轉儲，否則必須使用
-+   ``ksymoops`` 程序來理解轉儲（但通常首選使用CONFIG_KALLSYMS編譯）。
-+   此實用程序可從
-+   https://www.kernel.org/pub/linux/utils/kernel/ksymoops/ 下載。
-+   或者，您可以手動執行轉儲查找：
-+
-+ - 在調試像上面這樣的轉儲時，如果您可以查找EIP值的含義，這將非常有幫助。
-+   十六進位值本身對我或其他任何人都沒有太大幫助：它會取決於特定的內核設置。
-+   您應該做的是從EIP行獲取十六進位值（忽略 ``0010:`` ），然後在內核名字列表
-+   中查找它，以查看哪個內核函數包含有問題的地址。
-+
-+   要找到內核函數名，您需要找到與顯示症狀的內核相關聯的系統二進位文件。就是
-+   文件「linux/vmlinux」。要提取名字列表並將其與內核崩潰中的EIP進行匹配，
-+   請執行::
-+
-+     nm vmlinux | sort | less
-+
-+   這將爲您提供一個按升序排序的內核地址列表，從中很容易找到包含有問題的地址
-+   的函數。請注意，內核調試消息提供的地址不一定與函數地址完全匹配（事實上，
-+   這是不可能的），因此您不能只「grep」列表：不過列表將爲您提供每個內核函數
-+   的起點，因此通過查找起始地址低於你正在搜索的地址，但後一個函數的高於的
-+   函數，你會找到您想要的。實際上，在您的問題報告中加入一些「上下文」可能是
-+   一個好主意，給出相關的上下幾行。
-+
-+   如果您由於某些原因無法完成上述操作（如您使用預編譯的內核映像或類似的映像），
-+   請儘可能多地告訴我您的相關設置信息，這會有所幫助。有關詳細信息請閱讀
-+   『Documentation/admin-guide/reporting-issues.rst』。
-+
-+ - 或者，您可以在正在運行的內核上使用gdb（只讀的；即不能更改值或設置斷點）。
-+   爲此，請首先使用-g編譯內核；適當地編輯arch/x86/Makefile，然後執行 ``make
-+   clean`` 。您還需要啓用CONFIG_PROC_FS（通過 ``make config`` ）。
-+
-+   使用新內核重新啓動後，執行 ``gdb vmlinux /proc/kcore`` 。現在可以使用所有
-+   普通的gdb命令。查找系統崩潰點的命令是 ``l *0xXXXXXXXX`` （將xxx替換爲EIP
-+   值）。
-+
-+   用gdb無法調試一個當前未運行的內核是由於gdb（錯誤地）忽略了編譯內核的起始
-+   偏移量。
-+
-diff --git a/Documentation/translations/zh_TW/admin-guide/bug-bisect.rst b/Documentation/translations/zh_TW/admin-guide/bug-bisect.rst
-new file mode 100644
-index 000000000000..41a39aebb8d6
---- /dev/null
-+++ b/Documentation/translations/zh_TW/admin-guide/bug-bisect.rst
-@@ -0,0 +1,85 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: ../disclaimer-zh_TW.rst
-+
-+:Original: :doc:`../../../admin-guide/bug-bisect`
-+
-+:譯者:
-+
-+ 吳想成 Wu XiangCheng <bobwxc@email.cn>
-+ 胡皓文 Hu Haowen <src.res@email.cn>
-+
-+二分（bisect）缺陷
-++++++++++++++++++++
-+
-+（英文版）最後更新：2016年10月28日
++.. _tw_development_process_intro:
 +
 +引言
-+=====
++====
 +
-+始終嘗試由來自kernel.org的原始碼構建的最新內核。如果您沒有信心這樣做，請將
-+錯誤報告給您的發行版供應商，而不是內核開發人員。
++內容提要
++--------
 +
-+找到缺陷（bug）並不總是那麼容易，不過仍然得去找。如果你找不到它，不要放棄。
-+儘可能多的向相關維護人員報告您發現的信息。請參閱MAINTAINERS文件以了解您所
-+關注的子系統的維護人員。
++本節的其餘部分涵蓋了內核開發的過程，以及開發人員及其僱主在這方面可能遇到的
++各種問題。有很多原因使內核代碼應被合併到正式的（「主線」）內核中，包括對用戶
++的自動可用性、多種形式的社區支持以及影響內核開發方向的能力。提供給Linux內核
++的代碼必須在與GPL兼容的許可證下可用。
 +
-+在提交錯誤報告之前，請閱讀「Documentation/admin-guide/reporting-issues.rst」。
-+
-+設備未出現（Devices not appearing）
-+====================================
-+
-+這通常是由udev/systemd引起的。在將其歸咎於內核之前先檢查一下。
-+
-+查找導致缺陷的補丁
-+===================
-+
-+使用 ``git`` 提供的工具可以很容易地找到缺陷，只要缺陷是可復現的。
-+
-+操作步驟：
-+
-+- 從git原始碼構建內核
-+- 以此開始二分 [#f1]_::
-+
-+	$ git bisect start
-+
-+- 標記損壞的變更集::
-+
-+	$ git bisect bad [commit]
-+
-+- 標記正常工作的變更集::
-+
-+	$ git bisect good [commit]
-+
-+- 重新構建內核並測試
-+- 使用以下任一與git bisect進行交互::
-+
-+	$ git bisect good
-+
-+  或::
-+
-+	$ git bisect bad
-+
-+  這取決於您測試的變更集上是否有缺陷
-+- 在一些交互之後，git bisect將給出可能導致缺陷的變更集。
-+
-+- 例如，如果您知道當前版本有問題，而4.8版本是正常的，則可以執行以下操作::
-+
-+	$ git bisect start
-+	$ git bisect bad                 # Current version is bad
-+	$ git bisect good v4.8
++:ref:`tw_development_process` 介紹了開發過程、內核發布周期和合併窗口的機制。
++涵蓋了補丁開發、審查和合併周期中的各個階段。還有一些關於工具和郵件列表的討論？
++鼓勵希望開始內核開發的開發人員跟蹤並修復缺陷以作爲初步練習。
 +
 +
-+.. [#f1] 您可以（可選地）在開始git bisect的時候提供good或bad參數
-+         ``git bisect start [BAD] [GOOD]``
++:ref:`tw_development_early_stage` 包括項目的早期規劃，重點是儘快讓開發社區
++參與進來。
 +
-+如需進一步參考，請閱讀：
++:ref:`tw_development_coding` 是關於編程過程的；介紹了其他開發人員遇到的幾個
++陷阱。也涵蓋了對補丁的一些要求，並且介紹了一些工具，這些工具有助於確保內核
++補丁是正確的。
 +
-+- ``git-bisect`` 的手冊頁
-+- `Fighting regressions with git bisect（用git bisect解決回歸）
-+  <https://www.kernel.org/pub/software/scm/git/docs/git-bisect-lk2009.html>`_
-+- `Fully automated bisecting with "git bisect run"（使用git bisect run
-+  來全自動二分） <https://lwn.net/Articles/317154>`_
-+- `Using Git bisect to figure out when brokenness was introduced
-+  （使用Git二分來找出何時引入了錯誤） <http://webchick.net/node/99>`_
++:ref:`tw_development_posting` 描述發布補丁以供評審的過程。爲了讓開發社區能
++認真對待，補丁必須被正確格式化和描述，並且必須發送到正確的地方。遵循本節中的
++建議有助於確保您的工作能被較好地接納。
 +
-diff --git a/Documentation/translations/zh_TW/admin-guide/bug-hunting.rst b/Documentation/translations/zh_TW/admin-guide/bug-hunting.rst
++:ref:`tw_development_followthrough` 介紹了發布補丁之後發生的事情；工作在這時
++還遠遠沒有完成。與審閱者一起工作是開發過程中的一個重要部分；本節提供了一些
++關於如何在這個重要階段避免問題的提示。當補丁被合併到主線中時，開發人員要注意
++不要假定任務已經完成。
++
++:ref:`tw_development_advancedtopics` 介紹了兩個「高級」主題：使用Git管理補丁
++和查看其他人發布的補丁。
++
++:ref:`tw_development_conclusion` 總結了有關內核開發的更多信息，附帶有相關資源
++連結。
++
++這個文檔是關於什麼的
++--------------------
++
++Linux內核有超過800萬行代碼，每個版本的貢獻者超過1000人，是現存最大、最活躍的
++免費軟體項目之一。從1991年開始，這個內核已經發展成爲一個最好的作業系統組件，
++運行在袖珍數位音樂播放器、桌上型電腦、現存最大的超級計算機以及所有類型的系統上。
++它是一種適用於幾乎任何情況的健壯、高效和可擴展的解決方案。
++
++隨著Linux的發展，希望參與其開發的開發人員（和公司）的數量也在增加。硬體供應商
++希望確保Linux能夠很好地支持他們的產品，使這些產品對Linux用戶具有吸引力。嵌入
++式系統供應商使用Linux作爲集成產品的組件，希望Linux能夠儘可能地勝任手頭的任務。
++分銷商和其他基於Linux的軟體供應商切實關心Linux內核的功能、性能和可靠性。最終
++用戶也常常希望修改Linux，使之能更好地滿足他們的需求。
++
++Linux最引人注目的特性之一是這些開發人員可以訪問它；任何具備必要技能的人都可以
++改進Linux並影響其開發方向。專有產品不能提供這種開放性，這是自由軟體的一個特點。
++如果有什麼不同的話，那就是內核比大多數其他自由軟體項目更開放。一個典型的三個
++月內核開發周期可以涉及1000多個開發人員，他們爲100多個不同的公司（或者根本不
++隸屬公司）工作。
++
++與內核開發社區合作並不是特別困難。但儘管如此，仍有許多潛在的貢獻者在嘗試做
++內核工作時遇到了困難。內核社區已經發展出自己獨特的操作方式，使其能夠在每天
++都要更改數千行代碼的環境中順利運行（並生成高質量的產品）。因此，Linux內核開發
++過程與專有的開發模式有很大的不同也就不足爲奇了。
++
++對於新開發人員來說，內核的開發過程可能會讓人感到奇怪和恐懼，但這背後有充分的
++理由和堅實的經驗。一個不了解內核社區工作方式的開發人員（或者更糟的是，他們
++試圖拋棄或規避之）會得到令人沮喪的體驗。開發社區在幫助那些試圖學習的人的同時，
++沒有時間幫助那些不願意傾聽或不關心開發過程的人。
++
++希望閱讀本文的人能夠避免這種令人沮喪的經歷。這些材料很長，但閱讀它們時所做的
++努力會在短時間內得到回報。開發社區總是需要能讓內核變更好的開發人員；下面的
++文字應該幫助您或爲您工作的人員加入我們的社區。
++
++致謝
++----
++
++本文檔由Jonathan Corbet <corbet@lwn.net> 撰寫。以下人員的建議使之更爲完善：
++Johannes Berg, James Berry, Alex Chiang, Roland Dreier, Randy Dunlap,
++Jake Edge, Jiri Kosina, Matt Mackall, Arthur Marsh, Amanda McPherson,
++Andrew Morton, Andrew Price, Tsugikazu Shibata 和 Jochen Voß 。
++
++這項工作得到了Linux基金會的支持，特別感謝Amanda McPherson，他看到了這項工作
++的價值並將其變成現實。
++
++代碼進入主線的重要性
++--------------------
++
++有些公司和開發人員偶爾會想，爲什麼他們要費心學習如何與內核社區合作，並將代碼
++放入主線內核（「主線」是由Linus Torvalds維護的內核，Linux發行商將其用作基礎）。
++在短期內，貢獻代碼看起來像是一種可以避免的開銷；維護獨立代碼並直接支持用戶
++似乎更容易。事實上，保持代碼獨立（「樹外」）是在經濟上是錯誤的。
++
++爲了說明樹外代碼成本，下面給出內核開發過程的一些相關方面；本文稍後將更詳細地
++討論其中的大部分內容。請考慮：
++
++- 所有Linux用戶都可以使用合併到主線內核中的代碼。它將自動出現在所有啓用它的
++  發行版上。無需驅動程序磁碟、額外下載，也不需要爲多個發行版的多個版本提供
++  支持；這一切將方便所有開發人員和用戶。併入主線解決了大量的分發和支持問題。
++
++- 當內核開發人員努力維護一個穩定的用戶空間接口時，內核內部API處於不斷變化之中。
++  不維持穩定的內部接口是一個慎重的設計決策；它允許在任何時候進行基本的改進，
++  並產出更高質量的代碼。但該策略導致結果是，若要使用新的內核，任何樹外代碼都
++  需要持續的維護。維護樹外代碼會需要大量的工作才能使代碼保持正常運行。
++
++  相反，位於主線中的代碼不需要這樣做，因爲基本規則要求進行API更改的任何開發
++  人員也必須修復由於該更改而破壞的任何代碼。因此，合併到主線中的代碼大大降低
++  了維護成本。
++
++- 除此之外，內核中的代碼通常會被其他開發人員改進。您授權的用戶社區和客戶對您
++  產品的改進可能會令人驚喜。
++
++- 內核代碼在合併到主線之前和之後都要經過審查。無論原始開發人員的技能有多強，
++  這個審查過程總是能找到改進代碼的方法。審查經常發現嚴重的錯誤和安全問題。
++  對於在封閉環境中開發的代碼尤其如此；這種代碼從外部開發人員的審查中獲益匪淺。
++  樹外代碼是低質量代碼。
++
++- 參與開發過程是您影響內核開發方向的方式。旁觀者的抱怨會被聽到，但是活躍的
++  開發人員有更強的聲音——並且能夠實現使內核更好地滿足其需求的更改。
++
++- 當單獨維護代碼時，總是存在第三方爲類似功能提供不同實現的可能性。如果發生
++  這種情況，合併代碼將變得更加困難——甚至成爲不可能。之後，您將面臨以下令人
++  不快的選擇：（1）無限期地維護樹外的非標準特性，或（2）放棄代碼並將用戶遷移
++  到樹內版本。
++
++- 代碼的貢獻是使整個流程工作的根本。通過貢獻代碼，您可以向內核添加新功能，並
++  提供其他內核開發人員使用的功能和示例。如果您已經爲Linux開發了代碼（或者正在
++  考慮這樣做），那麼您顯然對這個平台的持續成功感興趣；貢獻代碼是確保成功的
++  最好方法之一。
++
++上述所有理由都適用於任何樹外內核代碼，包括以專有的、僅二進位形式分發的代碼。
++然而，在考慮任何類型的純二進位內核代碼分布之前，還需要考慮其他因素。包括：
++
++- 圍繞專有內核模塊分發的法律問題其實較爲模糊；相當多的內核版權所有者認爲，
++  大多數僅二進位的模塊是內核的派生產品，因此，它們的分發違反了GNU通用公共
++  許可證（下面將詳細介紹）。本文作者不是律師，本文檔中的任何內容都不可能被
++  視爲法律建議。封閉原始碼模塊的真實法律地位只能由法院決定。但不管怎樣，困擾
++  這些模塊的不確定性仍然存在。
++
++- 二進位模塊大大增加了調試內核問題的難度，以至於大多數內核開發人員甚至都不會
++  嘗試。因此，只分發二進位模塊將使您的用戶更難從社區獲得支持。
++
++- 對於僅二進位的模塊的發行者來說，支持也更加困難，他們必須爲他們希望支持的
++  每個發行版和每個內核版本提供不同版本的模塊。爲了提供較爲全面的覆蓋範圍，
++  可能需要一個模塊的幾十個構建，並且每次升級內核時，您的用戶都必須單獨升級
++  這些模塊。
++
++- 上面提到的關於代碼評審的所有問題都更加存在於封閉原始碼中。由於該代碼根本
++  不可得，因此社區無法對其進行審查，毫無疑問，它將存在嚴重問題。
++
++尤其是嵌入式系統的製造商，可能會傾向於忽視本節中所說的大部分內容；因爲他們
++相信自己正在商用一種使用凍結內核版本的獨立產品，在發布後不需要再進行開發。
++這個論點忽略了廣泛的代碼審查的價值以及允許用戶向產品添加功能的價值。但這些
++產品的商業壽命有限，之後必須發布新版本的產品。在這一點上，代碼在主線上並得到
++良好維護的供應商將能夠更好地占位，以使新產品快速上市。
++
++許可
++----
++
++代碼是根據一些許可證提供給Linux內核的，但是所有代碼都必須與GNU通用公共許可
++證（GPLV2）的版本2兼容，該版本是覆蓋整個內核分發的許可證。在實踐中，這意味
++著所有代碼貢獻都由GPLv2（可選地，語言允許在更高版本的GPL下分發）或3子句BSD
++許可（New BSD License，譯者注）覆蓋。任何不包含在兼容許可證中的貢獻都不會
++被接受到內核中。
++
++貢獻給內核的代碼不需要（或請求）版權分配。合併到主線內核中的所有代碼都保留
++其原始所有權；因此，內核現在擁有數千個所有者。
++
++這種所有權結構也暗示著，任何改變內核許可的嘗試都註定會失敗。很少有實際情況
++可以獲得所有版權所有者的同意（或者從內核中刪除他們的代碼）。因此，尤其是在
++可預見的將來，許可證不大可能遷移到GPL的版本3。
++
++所有貢獻給內核的代碼都必須是合法的免費軟體。因此，不接受匿名（或化名）貢獻
++者的代碼。所有貢獻者都需要在他們的代碼上「sign off（簽發）」，聲明代碼可以
++在GPL下與內核一起分發。無法提供未被其所有者許可爲免費軟體的代碼，或可能爲
++內核造成版權相關問題的代碼（例如，由缺乏適當保護的反向工程工作派生的代碼）
++不能被接受。
++
++有關版權問題的提問在Linux開發郵件列表中很常見。這樣的問題通常會得到不少答案，
++但請記住，回答這些問題的人不是律師，不能提供法律諮詢。如果您有關於Linux原始碼
++的法律問題，沒有什麼可以代替諮詢了解這一領域的律師。依賴從技術郵件列表中獲得
++的答案是一件冒險的事情。
++
++
+diff --git a/Documentation/translations/zh_TW/process/2.Process.rst b/Documentation/translations/zh_TW/process/2.Process.rst
 new file mode 100644
-index 000000000000..4d813aec77d2
+index 000000000000..b01cdd3a39ae
 --- /dev/null
-+++ b/Documentation/translations/zh_TW/admin-guide/bug-hunting.rst
-@@ -0,0 +1,344 @@
++++ b/Documentation/translations/zh_TW/process/2.Process.rst
+@@ -0,0 +1,369 @@
 +.. SPDX-License-Identifier: GPL-2.0
 +
 +.. include:: ../disclaimer-zh_TW.rst
 +
-+:Original: :doc:`../../../admin-guide/bug-hunting`
++:Original: :ref:`Documentation/process/2.Process.rst <development_process>`
 +
-+:譯者:
++:Translator:
++
++ 時奎亮 Alex Shi <alex.shi@linux.alibaba.com>
++
++:校譯:
 +
 + 吳想成 Wu XiangCheng <bobwxc@email.cn>
 + 胡皓文 Hu Haowen <src.res@email.cn>
 +
-+追蹤缺陷
-+=========
-+
-+內核錯誤報告通常附帶如下堆棧轉儲::
-+
-+	------------[ cut here ]------------
-+	WARNING: CPU: 1 PID: 28102 at kernel/module.c:1108 module_put+0x57/0x70
-+	Modules linked in: dvb_usb_gp8psk(-) dvb_usb dvb_core nvidia_drm(PO) nvidia_modeset(PO) snd_hda_codec_hdmi snd_hda_intel snd_hda_codec snd_hwdep snd_hda_core snd_pcm snd_timer snd soundcore nvidia(PO) [last unloaded: rc_core]
-+	CPU: 1 PID: 28102 Comm: rmmod Tainted: P        WC O 4.8.4-build.1 #1
-+	Hardware name: MSI MS-7309/MS-7309, BIOS V1.12 02/23/2009
-+	 00000000 c12ba080 00000000 00000000 c103ed6a c1616014 00000001 00006dc6
-+	 c1615862 00000454 c109e8a7 c109e8a7 00000009 ffffffff 00000000 f13f6a10
-+	 f5f5a600 c103ee33 00000009 00000000 00000000 c109e8a7 f80ca4d0 c109f617
-+	Call Trace:
-+	 [<c12ba080>] ? dump_stack+0x44/0x64
-+	 [<c103ed6a>] ? __warn+0xfa/0x120
-+	 [<c109e8a7>] ? module_put+0x57/0x70
-+	 [<c109e8a7>] ? module_put+0x57/0x70
-+	 [<c103ee33>] ? warn_slowpath_null+0x23/0x30
-+	 [<c109e8a7>] ? module_put+0x57/0x70
-+	 [<f80ca4d0>] ? gp8psk_fe_set_frontend+0x460/0x460 [dvb_usb_gp8psk]
-+	 [<c109f617>] ? symbol_put_addr+0x27/0x50
-+	 [<f80bc9ca>] ? dvb_usb_adapter_frontend_exit+0x3a/0x70 [dvb_usb]
-+	 [<f80bb3bf>] ? dvb_usb_exit+0x2f/0xd0 [dvb_usb]
-+	 [<c13d03bc>] ? usb_disable_endpoint+0x7c/0xb0
-+	 [<f80bb48a>] ? dvb_usb_device_exit+0x2a/0x50 [dvb_usb]
-+	 [<c13d2882>] ? usb_unbind_interface+0x62/0x250
-+	 [<c136b514>] ? __pm_runtime_idle+0x44/0x70
-+	 [<c13620d8>] ? __device_release_driver+0x78/0x120
-+	 [<c1362907>] ? driver_detach+0x87/0x90
-+	 [<c1361c48>] ? bus_remove_driver+0x38/0x90
-+	 [<c13d1c18>] ? usb_deregister+0x58/0xb0
-+	 [<c109fbb0>] ? SyS_delete_module+0x130/0x1f0
-+	 [<c1055654>] ? task_work_run+0x64/0x80
-+	 [<c1000fa5>] ? exit_to_usermode_loop+0x85/0x90
-+	 [<c10013f0>] ? do_fast_syscall_32+0x80/0x130
-+	 [<c1549f43>] ? sysenter_past_esp+0x40/0x6a
-+	---[ end trace 6ebc60ef3981792f ]---
-+
-+這樣的堆棧跟蹤提供了足夠的信息來識別內核原始碼中發生錯誤的那一行。根據問題的
-+嚴重性，它還可能包含 **「Oops」** 一詞，比如::
-+
-+	BUG: unable to handle kernel NULL pointer dereference at   (null)
-+	IP: [<c06969d4>] iret_exc+0x7d0/0xa59
-+	*pdpt = 000000002258a001 *pde = 0000000000000000
-+	Oops: 0002 [#1] PREEMPT SMP
-+	...
-+
-+儘管有 **Oops** 或其他類型的堆棧跟蹤，但通常需要找到出問題的行來識別和處理缺
-+陷。在本章中，我們將參考「Oops」來了解需要分析的各種堆棧跟蹤。
-+
-+如果內核是用 ``CONFIG_DEBUG_INFO`` 編譯的，那麼可以使用文件：
-+`scripts/decode_stacktrace.sh` 。
-+
-+連結的模塊
-+-----------
-+
-+受到汙染或正在加載/卸載的模塊用「（…）」標記，汙染標誌在
-+`Documentation/admin-guide/tainted-kernels.rst` 文件中進行了描述，「正在被加
-+載」用「+」標註，「正在被卸載」用「-」標註。
-+
-+
-+Oops消息在哪？
-+---------------
-+
-+通常，Oops文本由klogd從內核緩衝區讀取，然後交給 ``syslogd`` ，後者將其寫入
-+syslog文件，通常是 ``/var/log/messages`` （取決於 ``/etc/syslog.conf`` ）。
-+在使用systemd的系統上，它也可以由 ``journald`` 守護進程存儲，並通過運行
-+``journalctl`` 命令進行訪問。
-+
-+有時 ``klogd`` 會掛掉，這種情況下您可以運行 ``dmesg > file`` 從內核緩衝區
-+讀取數據並保存它。或者您可以 ``cat /proc/kmsg > file`` ，但是您必須適時
-+中斷以停止傳輸，因爲 ``kmsg`` 是一個「永無止境的文件」。
-+
-+如果機器嚴重崩潰，無法輸入命令或磁碟不可用，那還有三個選項：
++.. _tw_development_process:
++
++開發流程如何進行
++================
++
++90年代早期的Linux內核開發是一件相當鬆散的事情，涉及的用戶和開發人員相對較少。
++由於擁有數以百萬計的用戶羣，且每年有大約2000名開發人員參與進來，內核因此必須
++發展出許多既定流程來保證開發的順利進行。要參與到流程中來，需要對此流程的進行
++方式有一個紮實的理解。
++
++總覽
++----
++
++內核開發人員使用一個鬆散的基於時間的發布過程，每兩到三個月發布一次新的主要
++內核版本。最近的發布歷史記錄如下：
++
++	======  =================
++	5.0	2019年3月3日
++	5.1	2019年5月5日
++	5.2	2019年7月7日
++	5.3	2019年9月15日
++	5.4	2019年11月24日
++	5.5	2020年1月6日
++	======  =================
++
++每個5.x版本都是一個主要的內核版本，具有新特性、內部API更改等等。一個典型的5.x
++版本包含大約13000個變更集，變更了幾十萬行代碼。因此，5.x是Linux內核開發的前
++沿；內核使用滾動開發模型，不斷集成重大變化。
++
++對於每個版本的補丁合併，遵循一個相對簡單的規則。在每個開發周期的開頭，「合併
++窗口」被打開。這時，被認爲足夠穩定（並且被開發社區接受）的代碼被合併到主線內
++核中。在這段時間內，新開發周期的大部分變更（以及所有主要變更）將以接近每天
++1000次變更（「補丁」或「變更集」）的速度合併。
++
++（順便說一句，值得注意的是，合併窗口期間集成的更改並不是憑空產生的；它們是經
++提前收集、測試和分級的。稍後將詳細描述該過程的工作方式。）
++
++合併窗口持續大約兩周。在這段時間結束時，LinusTorvalds將聲明窗口已關閉，並
++釋放第一個「rc」內核。例如，對於目標爲5.6的內核，在合併窗口結束時發生的釋放
++將被稱爲5.6-rc1。-rc1 版本是一個信號，表示合併新特性的時間已經過去，穩定下一
++個內核的時間已經到來。
++
++在接下來的6到10周內，只有修復問題的補丁才應該提交給主線。有時會允許更大的
++更改，但這種情況很少發生；試圖在合併窗口外合併新功能的開發人員往往受不到
++友好的接待。一般來說，如果您錯過了給定特性的合併窗口，最好的做法是等待下一
++個開發周期。（偶爾會對未支持硬體的驅動程序進行例外；如果它們不改變已有代碼，
++則不會導致回歸，應該可以隨時被安全地加入）。
++
++隨著修復程序進入主線，補丁速度將隨著時間的推移而變慢。Linus大約每周發布一次
++新的-rc內核；在內核被認爲足夠穩定並最終發布前，一般會達到-rc6到-rc9之間。
++然後，整個過程又重新開始了。
++
++例如，這裡是5.4的開發周期進行情況（2019年）:
++
++	==============  ==============================
++	九月 15         5.3 穩定版發布
++	九月 30         5.4-rc1 合併窗口關閉
++	十月 6          5.4-rc2
++	十月 13         5.4-rc3
++	十月 20         5.4-rc4
++	十月 27         5.4-rc5
++	十一月 3        5.4-rc6
++	十一月 10       5.4-rc7
++	十一月 17       5.4-rc8
++	十一月 24       5.4 穩定版發布
++	==============  ==============================
++
++開發人員如何決定何時結束開發周期並創建穩定版本？最重要的指標是以前版本的
++回歸列表。不歡迎出現任何錯誤，但是那些破壞了以前能工作的系統的錯誤被認爲是
++特別嚴重的。因此，導致回歸的補丁是不受歡迎的，很可能在穩定期內刪除。
++
++開發人員的目標是在穩定發布之前修復所有已知的回歸。在現實世界中，這種完美是
++很難實現的；在這種規模的項目中，變數太多了。需要說明的是，延遲最終版本只會
++使問題變得更糟；等待下一個合併窗口的更改將變多，導致下次出現更多的回歸錯誤。
++因此，大多數5.x內核都有一些已知的回歸錯誤，不過，希望沒有一個是嚴重的。
++
++一旦一個穩定的版本發布，它的持續維護工作就被移交給「穩定團隊」，目前由
++Greg Kroah-Hartman領導。穩定團隊將使用5.x.y編號方案不定期地發布穩定版本的
++更新。要合入更新版本，補丁必須（1）修復一個重要的缺陷，且（2）已經合併到
++下一個開發版本主線中。內核通常會在其初始版本後的一個以上的開發周期內收到
++穩定版更新。例如，5.2內核的歷史如下（2019年）：
++
++	==============  ===============================
++        七月 7 	        5.2 穩定版發布
++	七月 13	        5.2.1
++	七月 21	        5.2.2
++	七月 26	        5.2.3
++	七月 28	        5.2.4
++	七月 31	        5.2.5
++	...	        ...
++	十月 11         5.2.21
++	==============  ===============================
++
++5.2.21是5.2版本的最終穩定更新。
++
++有些內核被指定爲「長期」內核；它們將得到更長時間的支持。在本文中，當前的長期
++內核及其維護者是：
++
++	======  ================================	================
++	3.16	Ben Hutchings				（長期穩定內核）
++	4.4	Greg Kroah-Hartman & Sasha Levin	（長期穩定內核）
++	4.9	Greg Kroah-Hartman & Sasha Levin
++	4.14	Greg Kroah-Hartman & Sasha Levin
++	4.19	Greg Kroah-Hartman & Sasha Levin
++	5.4	Greg Kroah-Hartman & Sasha Levin
++	======  ================================	================
++
++長期支持內核的選擇純粹是維護人員是否有需求和時間來維護該版本的問題。
++目前還沒有爲即將發布的任何特定版本提供長期支持的已知計劃。
++
++補丁的生命周期
++--------------
 +
-+(1) 手動複製屏幕上的文本，並在機器重新啓動後輸入。很難受，但這是突然崩潰下
-+    唯一的選擇。或者你可以用數位相機拍下屏幕——雖然不那麼好，但總比什麼都沒
-+    有好。如果消息滾動超出控制台頂部，使用更高解析度（例如 ``vga=791`` ）
-+    引導啓動將允許您閱讀更多文本。（警告：這需要 ``vesafb`` ，因此對「早期」
-+    的Oppses沒有幫助）
-+
-+(2) 從串口終端啓動（參見
-+    :ref:`Documentation/admin-guide/serial-console.rst <serial_console>` ），
-+    在另一台機器上運行數據機然後用你喜歡的通信程序捕獲輸出。
-+    Minicom運行良好。
++補丁不會直接從開發人員的鍵盤進入主線內核。相反，有一個稍微複雜（如果有些非
++正式）的過程，旨在確保對每個補丁進行質量審查，並確保每個補丁實現了一個在主線
++中需要的更改。對於小的修復，這個過程可能會很快完成，，而對於較大或有爭議的
++變更，可能會持續數年。許多開發人員的沮喪來自於對這個過程缺乏理解或者試圖繞過它。
++
++爲了減少這種挫敗，本文將描述補丁如何進入內核。下面的介紹以一種較爲理想化的
++方式描述了這個過程。更詳細的過程將在後面的章節中介紹。
 +
-+(3) 使用Kdump（參閱 Documentation/admin-guide/kdump/kdump.rst ），使用
-+    Documentation/admin-guide/kdump/gdbmacros.txt 中的dmesg gdbmacro從舊內存
-+    中提取內核環形緩衝區。
++補丁通常要經歷以下階段：
 +
-+找到缺陷位置
-+-------------
++- 設計。這就是補丁的真正需求——以及滿足這些需求的方式——所在。設計工作通常
++  是在不涉及社區的情況下完成的，但是如果可能的話，最好是在公開的情況下完成
++  這項工作；這樣可以節省很多稍後再重新設計的時間。
 +
-+如果你能指出缺陷在內核原始碼中的位置，則報告缺陷的效果會非常好。這有兩種方法。
-+通常來說使用 ``gdb`` 會比較容易，不過內核需要用調試信息來預編譯。
++- 早期評審。補丁被發布到相關的郵件列表中，列表中的開發人員會回復他們可能有
++  的任何評論。如果一切順利的話，這個過程應該會發現補丁的任何主要問題。
 +
-+gdb
-+^^^^
++- 更廣泛的評審。當補丁接近準備好納入主線時，它應該被相關的子系統維護人員
++  接受——儘管這種接受並不能保證補丁會一直延伸到主線。補丁將出現在維護人員的
++  子系統樹中，並進入 -next 樹（如下所述）。當流程進行時，此步驟將會對補丁
++  進行更廣泛的審查，並發現由於將此補丁與其他人所做的工作合併而導致的任何
++  問題。
 +
-+GNU 調試器（GNU debugger， ``gdb`` ）是從 ``vmlinux`` 文件中找出OOPS的確切
-+文件和行號的最佳方法。
++- 請注意，大多數維護人員也有日常工作，因此合併補丁可能不是他們的最優先工作。
++  如果您的補丁得到了需要更改的反饋，那麼您應該進行這些更改，或者解釋爲何
++  不應該進行這些更改。如果您的補丁沒有評審意見，也沒有被其相應的子系統或
++  驅動程序維護者接受，那麼您應該堅持不懈地將補丁更新到當前內核使其可被正常
++  應用，並不斷地發送它以供審查和合併。
++
++- 合併到主線。最終，一個成功的補丁將被合併到由LinusTorvalds管理的主線存儲庫
++  中。此時可能會出現更多的評論和/或問題；對開發人員來說應對這些問題並解決
++  出現的任何問題仍很重要。
++
++- 穩定版發布。大量用戶可能受此補丁影響，因此可能再次出現新的問題。
 +
-+在使用 ``CONFIG_DEBUG_INFO`` 編譯的內核上使用gdb效果最好。可通過運行以下命令
-+進行設置::
++- 長期維護。雖然開發人員在合併代碼後可能會忘記代碼，但這種行爲往往會給開發
++  社區留下不良印象。合併代碼消除了一些維護負擔，因爲其他人將修復由API更改
++  引起的問題。但是，如果代碼要長期保持可用，原始開發人員應該繼續爲代碼負責。
++
++內核開發人員（或他們的僱主）犯的最大錯誤之一是試圖將流程簡化爲一個「合併到
++主線」步驟。這種方法總是會讓所有相關人員感到沮喪。
++
++補丁如何進入內核
++----------------
 +
-+  $ ./scripts/config -d COMPILE_TEST -e DEBUG_KERNEL -e DEBUG_INFO
++只有一個人可以將補丁合併到主線內核存儲庫中：LinusTorvalds。但是，在進入
++2.6.38內核的9500多個補丁中，只有112個（大約1.3%）是由Linus自己直接選擇的。
++內核項目已經發展到一個沒有一個開發人員可以在沒有支持的情況下檢查和選擇每個
++補丁的規模。內核開發人員處理這種增長的方式是使用圍繞信任鏈構建的助理系統。
 +
-+在用 ``CONFIG_DEBUG_INFO`` 編譯的內核上，你可以直接從OOPS複製EIP值::
++內核代碼庫在邏輯上被分解爲一組子系統：網絡、特定體系結構支持、內存管理、視
++頻設備等。大多數子系統都有一個指定的維護人員，其總體負責該子系統中的代碼。
++這些子系統維護者（鬆散地）是他們所管理的內核部分的「守門員」；他們（通常）
++會接受一個補丁以包含到主線內核中。
 +
-+ EIP:    0060:[<c021e50e>]    Not tainted VLI
++子系統維護人員每個人都管理著自己版本的內核原始碼樹，通常（並非總是）使用Git。
++Git等工具（以及Quilt或Mercurial等相關工具）允許維護人員跟蹤補丁列表，包括作者
++信息和其他元數據。在任何給定的時間，維護人員都可以確定他或她的存儲庫中的哪
++些補丁在主線中找不到。
 +
-+並使用GDB來將其翻譯成可讀形式::
++當合併窗口打開時，頂級維護人員將要求Linus從存儲庫中「拉出」他們爲合併選擇
++的補丁。如果Linus同意，補丁流將流向他的存儲庫，成爲主線內核的一部分。
++Linus對拉取中接收到的特定補丁的關注程度各不相同。很明顯，有時他看起來很
++關注。但是一般來說，Linus相信子系統維護人員不會向上游發送壞補丁。
 +
-+  $ gdb vmlinux
-+  (gdb) l *0xc021e50e
++子系統維護人員反過來也可以從其他維護人員那裡獲取補丁。例如，網絡樹是由首先
++在專用於網絡設備驅動程序、無線網絡等的樹中積累的補丁構建的。此存儲鏈可以
++任意長，但很少超過兩個或三個連結。由於鏈中的每個維護者都信任那些管理較低
++級別樹的維護者，所以這個過程稱爲「信任鏈」。
 +
-+如果沒有啓用 ``CONFIG_DEBUG_INFO`` ，則使用OOPS的函數偏移::
++顯然，在這樣的系統中，獲取內核補丁取決於找到正確的維護者。直接向Linus發送
++補丁通常不是正確的方法。
 +
-+ EIP is at vt_ioctl+0xda8/0x1482
++Next 樹
++-------
 +
-+並在啓用 ``CONFIG_DEBUG_INFO`` 的情況下重新編譯內核::
++子系統樹鏈引導補丁流到內核，但它也提出了一個有趣的問題：如果有人想查看爲
++下一個合併窗口準備的所有補丁怎麼辦？開發人員將感興趣的是，還有什麼其他的
++更改有待解決，以了解是否存在需要擔心的衝突；例如，更改核心內核函數原型的
++修補程序將與使用該函數舊形式的任何其他修補程序衝突。審查人員和測試人員希望
++在所有這些變更到達主線內核之前，能夠訪問它們的集成形式的變更。您可以從所有
++相關的子系統樹中提取更改，但這將是一項複雜且容易出錯的工作。
 +
-+  $ ./scripts/config -d COMPILE_TEST -e DEBUG_KERNEL -e DEBUG_INFO
-+  $ make vmlinux
-+  $ gdb vmlinux
-+  (gdb) l *vt_ioctl+0xda8
-+  0x1888 is in vt_ioctl (drivers/tty/vt/vt_ioctl.c:293).
-+  288	{
-+  289		struct vc_data *vc = NULL;
-+  290		int ret = 0;
-+  291
-+  292		console_lock();
-+  293		if (VT_BUSY(vc_num))
-+  294			ret = -EBUSY;
-+  295		else if (vc_num)
-+  296			vc = vc_deallocate(vc_num);
-+  297		console_unlock();
++解決方案以-next樹的形式出現，在這裡子系統樹被收集以供測試和審查。這些樹中
++由Andrew Morton維護的較老的一個，被稱爲「-mm」（用於內存管理，創建時爲此）。
++-mm 樹集成了一長串子系統樹中的補丁；它還包含一些旨在幫助調試的補丁。
 +
-+或者若您想要更詳細的顯示::
++除此之外，-mm 還包含大量由Andrew直接選擇的補丁。這些補丁可能已經發布在郵件
++列表上，或者它們可能應用於內核中未指定子系統樹的部分。同時，-mm 作爲最後
++手段的子系統樹；如果沒有其他明顯的路徑可以讓補丁進入主線，那麼它很可能最
++終選擇-mm 樹。累積在-mm 中的各種補丁最終將被轉發到適當的子系統樹，或者直接
++發送到Linus。在典型的開發周期中，大約5-10%的補丁通過-mm 進入主線。
 +
-+  (gdb) p vt_ioctl
-+  $1 = {int (struct tty_struct *, unsigned int, unsigned long)} 0xae0 <vt_ioctl>
-+  (gdb) l *0xae0+0xda8
++當前-mm 補丁可在「mmotm」（-mm of the moment）目錄中找到：
 +
-+您也可以使用對象文件作爲替代::
++        https://www.ozlabs.org/~akpm/mmotm/
 +
-+  $ make drivers/tty/
-+  $ gdb drivers/tty/vt/vt_ioctl.o
-+  (gdb) l *vt_ioctl+0xda8
++然而，使用MMOTM樹可能會十分令人頭疼；它甚至可能無法編譯。
 +
-+如果你有調用跟蹤，類似::
++下一個周期補丁合併的主要樹是linux-next，由Stephen Rothwell 維護。根據設計
++linux-next 是下一個合併窗口關閉後主線的快照。linux-next樹在Linux-kernel 和
++Linux-next 郵件列表中發布，可從以下位置下載：
 +
-+     Call Trace:
-+      [<ffffffff8802c8e9>] :jbd:log_wait_commit+0xa3/0xf5
-+      [<ffffffff810482d9>] autoremove_wake_function+0x0/0x2e
-+      [<ffffffff8802770b>] :jbd:journal_stop+0x1be/0x1ee
-+      ...
++        https://www.kernel.org/pub/linux/kernel/next/
 +
-+這表明問題可能在 :jbd: 模塊中。您可以在gdb中加載該模塊並列出相關代碼::
++Linux-next 已經成爲內核開發過程中不可或缺的一部分；在一個給定的合併窗口中合併
++的所有補丁都應該在合併窗口打開之前的一段時間內找到進入Linux-next 的方法。
 +
-+  $ gdb fs/jbd/jbd.ko
-+  (gdb) l *log_wait_commit+0xa3
++Staging 樹
++----------
 +
-+.. note::
++內核原始碼樹包含drivers/staging/目錄，其中有許多驅動程序或文件系統的子目錄
++正在被添加到內核樹中。它們在仍然需要更多的修正的時候可以保留在driver/staging/
++目錄中；一旦完成，就可以將它們移到內核中。這是一種跟蹤不符合Linux內核編碼或
++質量標準的驅動程序的方法，人們可能希望使用它們並跟蹤開發。
 +
-+     您還可以對堆棧跟蹤處的任何函數調用執行相同的操作，例如::
++Greg Kroah Hartman 目前負責維護staging 樹。仍需要修正的驅動程序將發送給他，
++每個驅動程序在drivers/staging/中都有自己的子目錄。除了驅動程序源文件之外，
++目錄中還應該有一個TODO文件。TODO文件列出了驅動程序需要接受的暫停的工作，
++以及驅動程序的任何補丁都應該抄送的人員列表。當前的規則要求，staging的驅動
++程序必須至少正確編譯。
 +
-+	 [<f80bc9ca>] ? dvb_usb_adapter_frontend_exit+0x3a/0x70 [dvb_usb]
++Staging 是一種讓新的驅動程序進入主線的相對容易的方法，它們會幸運地引起其他
++開發人員的注意，並迅速改進。然而，進入staging並不是故事的結尾；staging中
++沒有看到常規進展的代碼最終將被刪除。經銷商也傾向於相對不願意使用staging驅動
++程序。因此，在成爲一個合適的主線驅動的路上，staging 僅是一個中轉站。
 +
-+     上述調用發生的位置可以通過以下方式看到::
++工具
++----
 +
-+	$ gdb drivers/media/usb/dvb-usb/dvb-usb.o
-+	(gdb) l *dvb_usb_adapter_frontend_exit+0x3a
++從上面的文本可以看出，內核開發過程在很大程度上依賴於在不同方向上聚集補丁的
++能力。如果沒有適當強大的工具，整個系統將無法在任何地方正常工作。關於如何使用
++這些工具的教程遠遠超出了本文檔的範圍，但還是用一點篇幅介紹一些關鍵點。
 +
-+objdump
-+^^^^^^^^
++到目前爲止，內核社區使用的主要原始碼管理系統是git。Git是在自由軟體社區中開發
++的許多分布式版本控制系統之一。它非常適合內核開發，因爲它在處理大型存儲庫和
++大量補丁時性能非常好。它也以難以學習和使用而著稱，儘管隨著時間的推移它變得
++更好了。對於內核開發人員來說，對Git的某種熟悉幾乎是一種要求；即使他們不將它
++用於自己的工作，他們也需要Git來跟上其他開發人員（以及主線）正在做的事情。
 +
-+要調試內核，請使用objdump並從崩潰輸出中查找十六進位偏移，以找到有效的代碼/匯
-+編行。如果沒有調試符號，您將看到所示例程的彙編程序代碼，但是如果內核有調試
-+符號，C代碼也將可見（調試符號可以在內核配置菜單的hacking項中啓用）。例如::
++現在幾乎所有的Linux發行版都打包了Git。Git主頁位於：
 +
-+    $ objdump -r -S -l --disassemble net/dccp/ipv4.o
++        https://git-scm.com/
 +
-+.. note::
++此頁面包含了文檔和教程的連結。
 +
-+   您需要處於內核樹的頂層以便此獲得您的C文件。
++在不使用git的內核開發人員中，最流行的選擇幾乎肯定是Mercurial：
 +
-+如果您無法訪問原始碼，仍然可以使用以下方法調試一些崩潰轉儲（如Dave Miller的
-+示例崩潰轉儲輸出所示）::
++        http://www.seleric.com/mercurial/
 +
-+     EIP is at 	+0x14/0x4c0
-+      ...
-+     Code: 44 24 04 e8 6f 05 00 00 e9 e8 fe ff ff 8d 76 00 8d bc 27 00 00
-+     00 00 55 57  56 53 81 ec bc 00 00 00 8b ac 24 d0 00 00 00 8b 5d 08
-+     <8b> 83 3c 01 00 00 89 44  24 14 8b 45 28 85 c0 89 44 24 18 0f 85
++Mercurial與Git共享許多特性，但它提供了一個界面，許多人覺得它更易於使用。
 +
-+     Put the bytes into a "foo.s" file like this:
++另一個值得了解的工具是Quilt:
 +
-+            .text
-+            .globl foo
-+     foo:
-+            .byte  .... /* bytes from Code: part of OOPS dump */
++        https://savannah.nongnu.org/projects/quilt
 +
-+     Compile it with "gcc -c -o foo.o foo.s" then look at the output of
-+     "objdump --disassemble foo.o".
++Quilt 是一個補丁管理系統，而不是原始碼管理系統。它不會隨著時間的推移跟蹤歷史；
++相反，它面向根據不斷發展的代碼庫跟蹤一組特定的更改。一些主要的子系統維護人員
++使用Quilt來管理打算向上游移動的補丁。對於某些樹的管理（例如-mm），quilt 是
++最好的工具。
 +
-+     Output:
++郵件列表
++--------
 +
-+     ip_queue_xmit:
-+         push       %ebp
-+         push       %edi
-+         push       %esi
-+         push       %ebx
-+         sub        $0xbc, %esp
-+         mov        0xd0(%esp), %ebp        ! %ebp = arg0 (skb)
-+         mov        0x8(%ebp), %ebx         ! %ebx = skb->sk
-+         mov        0x13c(%ebx), %eax       ! %eax = inet_sk(sk)->opt
++大量的Linux內核開發工作是通過郵件列表完成的。如果不加入至少一個某個列表，
++就很難成爲社區中的一個「全功能」成員。但是，Linux郵件列表對開發人員來說也是
++一個潛在的危險，他們可能會被一堆電子郵件淹沒、違反Linux列表上使用的約定，
++或者兩者兼而有之。
 +
-+`scripts/decodecode` 文件可以用來自動完成大部分工作，這取決於正在調試的CPU
-+體系結構。
++大多數內核郵件列表都在vger.kernel.org上運行；主列表位於：
 +
-+報告缺陷
-+---------
++        http://vger.kernel.org/vger-lists.html
 +
-+一旦你通過定位缺陷找到了其發生的地方，你可以嘗試自己修復它或者向上游報告它。
++不過，也有一些列表託管在別處；其中一些列表位於
++redhat.com/mailman/listinfo。
 +
-+爲了向上游報告，您應該找出用於開發受影響代碼的郵件列表。這可以使用 ``get_maintainer.pl`` 。
++當然，內核開發的核心郵件列表是linux-kernel。這個列表是一個令人生畏的地方：
++每天的信息量可以達到500條，噪音很高，談話技術性很強，且參與者並不總是表現出
++高度的禮貌。但是，沒有其他地方可以讓內核開發社區作爲一個整體聚集在一起；
++不使用此列表的開發人員將錯過重要信息。
 +
++以下一些提示可以幫助在linux-kernel生存：
 +
-+例如，您在gspca的sonixj.c文件中發現一個缺陷，則可以通過以下方法找到它的維護者::
++- 將郵件轉移到單獨的文件夾，而不是主郵箱文件夾。我們必須能夠持續地忽略洪流。
 +
-+	$ ./scripts/get_maintainer.pl -f drivers/media/usb/gspca/sonixj.c
-+	Hans Verkuil <hverkuil@xs4all.nl> (odd fixer:GSPCA USB WEBCAM DRIVER,commit_signer:1/1=100%)
-+	Mauro Carvalho Chehab <mchehab@kernel.org> (maintainer:MEDIA INPUT INFRASTRUCTURE (V4L/DVB),commit_signer:1/1=100%)
-+	Tejun Heo <tj@kernel.org> (commit_signer:1/1=100%)
-+	Bhaktipriya Shridhar <bhaktipriya96@gmail.com> (commit_signer:1/1=100%,authored:1/1=100%,added_lines:4/4=100%,removed_lines:9/9=100%)
-+	linux-media@vger.kernel.org (open list:GSPCA USB WEBCAM DRIVER)
-+	linux-kernel@vger.kernel.org (open list)
++- 不要試圖跟上每一次談話——沒人會這樣。重要的是要篩選感興趣的主題（但請注意
++  長時間的對話可能會偏離原來的主題，儘管未改變電子郵件的主題）和參與的人。
 +
-+請注意它將指出：
++- 不要回復挑事的人。如果有人試圖激起憤怒，請忽略他們。
 +
-+- 最後接觸原始碼的開發人員（如果這是在git樹中完成的）。在上面的例子中是Tejun
-+  和Bhaktipriya（在這個特定的案例中，沒有人真正參與這個文件的開發）；
-+- 驅動維護人員（Hans Verkuil）；
-+- 子系統維護人員（Mauro Carvalho Chehab）；
-+- 驅動程序和/或子系統郵件列表（linux-media@vger.kernel.org）；
-+- Linux內核郵件列表（linux-kernel@vger.kernel.org）。
++- 當回復Linux內核電子郵件（或其他列表上的電子郵件）時，請爲所有相關人員保留
++  Cc: 抄送頭。如果沒有確實的理由（如明確的請求），則不應刪除收件人。一定要
++  確保你要回復的人在抄送列表中。這個慣例也使你不必在回覆郵件時明確要求被抄送。
 +
-+通常，修復缺陷的最快方法是將它報告給用於開發相關代碼的郵件列表（linux-media
-+ML），抄送驅動程序維護者（Hans）。
++- 在提出問題之前，搜索列表存檔（和整個網絡）。有些開發人員可能會對那些顯然
++  沒有完成家庭作業的人感到不耐煩。
 +
-+如果你完全不知道該把報告寄給誰，且 ``get_maintainer.pl`` 也沒有提供任何有用
-+的信息，請發送到linux-kernel@vger.kernel.org。
++- 避免頂部回復（把你的答案放在你要回復的引文上面的做法）。這會讓你的回答更難
++  理解，印象也很差。
 +
-+感謝您的幫助，這使Linux儘可能穩定:-)
++- 在正確的郵件列表發問。linux-kernel 可能是通用的討論場所，但它不是尋找所有
++  子系統開發人員的最佳場所。
 +
-+修復缺陷
-+---------
++最後一點——找到正確的郵件列表——是開發人員常出錯的地方。在linux-kernel上
++提出與網絡相關的問題的人幾乎肯定會收到一個禮貌的建議，轉到netdev列表上提出，
++因爲這是大多數網絡開發人員經常出現的列表。還有其他列表可用於scsi、video4linux、
++ide、filesystem等子系統。查找郵件列表的最佳位置是與內核原始碼一起打包的
++MAINTAINERS文件。
 +
-+如果你懂得編程，你不僅可以通過報告錯誤來幫助我們，還可以提供一個解決方案。
-+畢竟，開源就是分享你的工作，你不想因爲你的天才而被認可嗎？
++開始內核開發
++------------
 +
-+如果你決定這樣做，請在制定解決方案後將其提交到上游。
++關於如何開始內核開發過程的問題很常見——個人和公司皆然。同樣常見的是失誤，這
++使得關係的開始比本應的更困難。
 +
-+請務必閱讀
-+:ref:`Documentation/process/submitting-patches.rst <submittingpatches>` ，
-+以幫助您的代碼被接受。
++公司通常希望聘請知名的開發人員來啓動開發團隊。實際上，這是一種有效的技術。
++但它也往往是昂貴的，而且對增加有經驗的內核開發人員的數量沒有多大幫助。考
++慮到時間投入，可以讓內部開發人員加快Linux內核的開發速度。利用這段時間可以
++讓僱主擁有一批既了解內核又了解公司的開發人員，還可以幫助培訓其他人。從中期
++來看，這通常是更有利可圖的方法。
 +
++可以理解的是，單個開發人員往往對起步感到茫然。從一個大型項目開始可能會很
++嚇人；人們往往想先用一些較小的東西來試試水。由此，一些開發人員開始創建修補
++拼寫錯誤或輕微編碼風格問題的補丁。不幸的是，這樣的補丁會產生一定程度的噪音，
++這會分散整個開發社區的注意力，因此，它們越來越被人不看重。希望向社區介紹
++自己的新開發人員將無法通過這些方式獲得他們期待的反響。
 +
-+---------------------------------------------------------------------------
-+
-+用 ``klogd`` 進行Oops跟蹤的注意事項
-+------------------------------------
-+
-+爲了幫助Linus和其他內核開發人員， ``klogd`` 對保護故障的處理提供了大量支持。
-+爲了完整支持地址解析，至少應該使用 ``sysklogd`` 包的1.3-pl3版本。
-+
-+當發生保護故障時， ``klogd`` 守護進程會自動將內核日誌消息中的重要地址轉換爲
-+它們的等效符號。然後通過 ``klogd`` 使用的任何報告機制來轉發這個已翻譯的內核
-+消息。保護錯誤消息可以直接從消息文件中剪切出來並轉發給內核開發人員。
-+
-+``klogd`` 執行兩種類型的地址解析，靜態翻譯和動態翻譯。靜態翻譯使用System.map
-+文件。爲了進行靜態轉換， ``klogd`` 守護進程必須能夠在守護進程初始化時找到系
-+統映射文件。有關 ``klogd`` 如何搜索映射文件的信息，請參見klogd手冊頁。
-+
-+當使用內核可加載模塊時，動態地址轉換非常重要。由於內核模塊的內存是從內核的
-+動態內存池中分配的，因此無論是模塊的開頭還是模塊中的函數和符號都沒有固定的
-+位置。
-+
-+內核支持系統調用，允許程序確定加載哪些模塊及其在內存中的位置。klogd守護進程
-+使用這些系統調用構建了一個符號表，可用於調試可加載內核模塊中發生的保護錯誤。
-+
-+klogd至少會提供產生保護故障的模塊的名稱。如果可加載模塊的開發人員選擇從模塊
-+導出符號信息，則可能會有其他可用的符號信息。
-+
-+由於內核模塊環境可以是動態的，因此當模塊環境發生變化時，必須有一種通知
-+``klogd`` 守護進程的機制。有一些可用的命令行選項允許klogd向當前正在執行的守
-+護進程發出信號示意應該刷新符號信息。有關更多信息，請參閱 ``klogd`` 手冊頁。
-+
-+sysklogd發行版附帶了一個補丁，它修改了 ``modules-2.0.0`` 包，以便在加載或
-+卸載模塊時自動向klogd發送信號。應用此補丁基本上可無縫支持調試內核可加載模塊
-+發生的保護故障。
-+
-+以下是 ``klogd`` 處理的可加載模塊中的保護故障示例::
-+
-+	Aug 29 09:51:01 blizard kernel: Unable to handle kernel paging request at virtual address f15e97cc
-+	Aug 29 09:51:01 blizard kernel: current->tss.cr3 = 0062d000, %cr3 = 0062d000
-+	Aug 29 09:51:01 blizard kernel: *pde = 00000000
-+	Aug 29 09:51:01 blizard kernel: Oops: 0002
-+	Aug 29 09:51:01 blizard kernel: CPU:    0
-+	Aug 29 09:51:01 blizard kernel: EIP:    0010:[oops:_oops+16/3868]
-+	Aug 29 09:51:01 blizard kernel: EFLAGS: 00010212
-+	Aug 29 09:51:01 blizard kernel: eax: 315e97cc   ebx: 003a6f80   ecx: 001be77b   edx: 00237c0c
-+	Aug 29 09:51:01 blizard kernel: esi: 00000000   edi: bffffdb3   ebp: 00589f90   esp: 00589f8c
-+	Aug 29 09:51:01 blizard kernel: ds: 0018   es: 0018   fs: 002b   gs: 002b   ss: 0018
-+	Aug 29 09:51:01 blizard kernel: Process oops_test (pid: 3374, process nr: 21, stackpage=00589000)
-+	Aug 29 09:51:01 blizard kernel: Stack: 315e97cc 00589f98 0100b0b4 bffffed4 0012e38e 00240c64 003a6f80 00000001
-+	Aug 29 09:51:01 blizard kernel:        00000000 00237810 bfffff00 0010a7fa 00000003 00000001 00000000 bfffff00
-+	Aug 29 09:51:01 blizard kernel:        bffffdb3 bffffed4 ffffffda 0000002b 0007002b 0000002b 0000002b 00000036
-+	Aug 29 09:51:01 blizard kernel: Call Trace: [oops:_oops_ioctl+48/80] [_sys_ioctl+254/272] [_system_call+82/128]
-+	Aug 29 09:51:01 blizard kernel: Code: c7 00 05 00 00 00 eb 08 90 90 90 90 90 90 90 90 89 ec 5d c3
-+
-+---------------------------------------------------------------------------
++Andrew Morton 爲有抱負的內核開發人員提供了如下建議
 +
 +::
 +
-+  Dr. G.W. Wettstein           Oncology Research Div. Computing Facility
-+  Roger Maris Cancer Center    INTERNET: greg@wind.rmcc.com
-+  820 4th St. N.
-+  Fargo, ND  58122
-+  Phone: 701-234-7556
++	所有內核開發者的第一個項目肯定應該是「確保內核在您可以操作的所有
++	機器上始終完美運行」。通常的方法是和其他人一起解決問題（這可能需
++	要堅持！），但就是如此——這是內核開發的一部分。
 +
-diff --git a/Documentation/translations/zh_TW/admin-guide/clearing-warn-once.rst b/Documentation/translations/zh_TW/admin-guide/clearing-warn-once.rst
++(http://lwn.net/articles/283982/)
++
++在沒有明顯問題需要解決的情況下，通常建議開發人員查看當前的回歸和開放缺陷
++列表。從來都不缺少需要解決的問題；通過解決這些問題，開發人員將從該過程獲得
++經驗，同時與開發社區的其他成員建立相互尊重。
++
+diff --git a/Documentation/translations/zh_TW/process/3.Early-stage.rst b/Documentation/translations/zh_TW/process/3.Early-stage.rst
 new file mode 100644
-index 000000000000..bdc1a22046cf
+index 000000000000..ab2a45fd65a4
 --- /dev/null
-+++ b/Documentation/translations/zh_TW/admin-guide/clearing-warn-once.rst
-@@ -0,0 +1,16 @@
++++ b/Documentation/translations/zh_TW/process/3.Early-stage.rst
+@@ -0,0 +1,172 @@
 +.. SPDX-License-Identifier: GPL-2.0
 +
 +.. include:: ../disclaimer-zh_TW.rst
 +
-+:Translator: 胡皓文 Hu Haowen <src.res@email.cn>
++:Original: :ref:`Documentation/process/3.Early-stage.rst <development_early_stage>`
 +
-+清除 WARN_ONCE
-+--------------
++:Translator:
 +
-+WARN_ONCE / WARN_ON_ONCE / printk_once 僅僅列印一次消息.
++ 時奎亮 Alex Shi <alex.shi@linux.alibaba.com>
 +
-+echo 1 > /sys/kernel/debug/clear_warn_once
++:校譯:
 +
-+可以清除這種狀態並且再次允許列印一次告警信息，這對於運行測試集後重現問題
-+很有用。
++ 吳想成 Wu XiangCheng <bobwxc@email.cn>
++ 胡皓文 Hu Haowen <src.res@email.cn>
 +
-diff --git a/Documentation/translations/zh_TW/admin-guide/cpu-load.rst b/Documentation/translations/zh_TW/admin-guide/cpu-load.rst
++.. _tw_development_early_stage:
++
++早期規劃
++========
++
++當考慮一個Linux內核開發項目時，很可能會直接跳進去開始編碼。然而，與任何重要
++的項目一樣，許多成功的基礎最好是在第一行代碼編寫之前就打下。在早期計劃和
++溝通中花費一些時間可以在之後節省更多的時間。
++
++搞清問題
++--------
++
++與任何工程項目一樣，成功的內核改善從清晰描述要解決的問題開始。在某些情況
++下，這個步驟很容易：例如當某個特定硬體需要驅動程序時。不過，在其他情況下，
++很容易將實際問題與建議的解決方案混在一起，這可能會導致麻煩。
++
++舉個例子：幾年前，Linux音頻的開發人員尋求一種方法來運行應用程式，而不會因
++系統延遲過大而導致退出或其他問題。他們得到的解決方案是一個連接到Linux安全
++模塊（LSM）框架中的內核模塊；這個模塊可以配置爲允許特定的應用程式訪問實時
++調度程序。這個模塊被實現並發到linux-kernel郵件列表，在那裡它立即遇到了麻煩。
++
++對於音頻開發人員來說，這個安全模塊足以解決他們當前的問題。但是，對於更廣泛的
++內核社區來說，這被視爲對LSM框架的濫用（LSM框架並不打算授予他們原本不具備的
++進程特權），並對系統穩定性造成風險。他們首選的解決方案包括短期的通過rlimit
++機制進行實時調度訪問，以及長期的減少延遲的工作。
++
++然而，音頻社區無法超越他們實施的特定解決方案來看問題；他們不願意接受替代方案。
++由此產生的分歧使這些開發人員對整個內核開發過程感到失望；其中一個開發人員返回
++到audio列表並發布了以下內容：
++
++	有很多非常好的Linux內核開發人員，但他們往往會被一羣傲慢的傻瓜所壓倒。
++	試圖向這些人傳達用戶需求是浪費時間。他們太「聰明」了，根本聽不到少數
++	人的話。
++
++（http://lwn.net/articles/131776/）
++
++實際情況卻是不同的；與特定模塊相比，內核開發人員更關心系統穩定性、長期維護
++以及找到問題的正確解決方案。這個故事的寓意是把重點放在問題上——而不是具體的
++解決方案上——並在開始編寫代碼之前與開發社區討論這個問題。
++
++因此，在考慮一個內核開發項目時，我們應該得到一組簡短問題的答案：
++
++ - 需要解決的問題究竟是什麼？
++
++ - 受此問題影響的用戶有哪些？解決方案應該解決哪些使用案例？
++
++ - 內核現在爲何沒能解決這個問題？
++
++只有這樣，才能開始考慮可能的解決方案。
++
++
++早期討論
++--------
++
++在計劃內核開發項目時，在開始實施之前與社區進行討論是很有意義的。早期溝通可以
++通過多種方式節省時間和麻煩：
++
++ - 很可能問題是由內核以您不理解的方式解決的。Linux內核很大，具有許多不明顯
++   的特性和功能。並不是所有的內核功能都像人們所希望的那樣有文檔記錄，而且很
++   容易遺漏一些東西。某作者發布了一個完整的驅動程序，重複了一個其不
++   知道的現有驅動程序。重新發明現有輪子的代碼不僅浪費，而且不會被接受到主線
++   內核中。
++
++ - 建議的解決方案中可能有一些要素不適合併入主線。在編寫代碼之前，最好先了解
++   這樣的問題。
++
++ - 其他開發人員完全有可能考慮過這個問題；他們可能有更好的解決方案的想法，並且
++   可能願意幫助創建這個解決方案。
++
++在內核開發社區的多年經驗給了我們一個明確的教訓：閉門設計和開發的內核代碼總是
++有一些問題，這些問題只有在代碼發布到社區中時才會被發現。有時這些問題很嚴重，
++需要數月或數年的努力才能使代碼達到內核社區的標準。例如：
++
++ - 設計並實現了單處理器系統的DeviceScape網絡棧。只有使其適合於多處理器系統，
++   才能將其合併到主線中。在代碼中修改鎖等等是一項困難的任務；因此，這段代碼
++   （現在稱爲mac80211）的合併被推遲了一年多。
++
++ - Reiser4文件系統包含許多功能，核心內核開發人員認爲這些功能應該在虛擬文件
++   系統層中實現。它還包括一些特性，這些特性在不將系統暴露於用戶引起的死鎖的
++   情況下是不容易實現的。這些問題過遲發現——以及拒絕處理其中一些問題——已經
++   導致Reiser4置身主線內核之外。
++
++ - Apparmor安全模塊以被認爲不安全和不可靠的方式使用內部虛擬文件系統數據結構。
++   這種擔心（包括其他）使Apparmor多年來無法進入主線。
++
++在這些情況下，與內核開發人員的早期討論，可以避免大量的痛苦和額外的工作。
++
++找誰交流？
++----------
++
++當開發人員決定公開他們的計劃時，下一個問題是：我們從哪裡開始？答案是找到正確
++的郵件列表和正確的維護者。對於郵件列表，最好的方法是在維護者(MAINTAINERS)文件
++中查找要發布的相關位置。如果有一個合適的子系統列表，那麼其上發布通常比在
++linux-kernel上發布更可取；您更有可能接觸到在相關子系統中具有專業知識的開發
++人員，並且環境可能具支持性。
++
++找到維護人員可能會有點困難。同樣，維護者文件是開始的地方。但是，該文件往往不
++是最新的，並且並非所有子系統都在那裡顯示。實際上，維護者文件中列出的人員可能
++不是當前實際擔任該角色的人員。因此，當對聯繫誰有疑問時，一個有用的技巧是使用
++git（尤其是「git-log」）查看感興趣的子系統中當前活動的用戶。看看誰在寫補丁、
++誰會在這些補丁上加上Signed-off-by行簽名（如有）。這些人將是幫助新開發項目的
++最佳人選。
++
++找到合適的維護者有時是非常具有挑戰性的，以至於內核開發人員添加了一個腳本來
++簡化這個過程：
++
++::
++
++	.../scripts/get_maintainer.pl
++
++當給定「-f」選項時，此腳本將返回指定文件或目錄的當前維護者。如果在命令行上
++給出了一個補丁，它將列出可能接收補丁副本的維護人員。有許多選項可以調節
++get_maintainer.pl搜索維護者的嚴格程度；請小心使用更激進的選項，因爲最終結果
++可能會包括對您正在修改的代碼沒有真正興趣的開發人員。
++
++如果所有其他方法都失敗了，那麼與Andrew Morton交流是跟蹤特定代碼段維護人員
++的一種有效方法。
++
++何時郵寄？
++----------
++
++如果可能的話，在早期階段發布你的計劃只會更有幫助。描述正在解決的問題以及已經
++制定的關於如何實施的任何計劃。您可以提供的任何信息都可以幫助開發社區爲項目
++提供有用的輸入。
++
++在這個階段可能發生的一件令人沮喪的事情不是得到反對意見，而是很少或根本沒有
++反饋。令人傷心的事實是：（1）內核開發人員往往很忙；（2）不缺少有宏偉計劃但
++代碼（甚至代碼設想）很少的人去支持他們；（3）沒有人有義務審查或評論別人發表
++的想法。除此之外，高層級的設計常常隱藏著一些問題，這些問題只有在有人真正嘗試
++實現這些設計時才會被發現；因此，內核開發人員寧願看到代碼。
++
++如果發布請求評論（RFC）並沒得到什麼有用的評論，不要以爲這意味著無人對此項目
++有興趣，同時你也不能假設你的想法沒有問題。在這種情況下，最好的做法是繼續進
++行，把你的進展隨時通知社區。
++
++獲得官方認可
++-----------------------
++
++如果您的工作是在公司環境中完成的，就像大多數Linux內核工作一樣；顯然，在您將
++公司的計劃或代碼發布到公共郵件列表之前，必須獲得有適當權利經理的許可。發布
++不確定是否兼容GPL的代碼尤其會帶來問題；公司的管理層和法律人員越早能夠就發布
++內核開發項目達成一致，對參與的每個人都越好。
++
++一些讀者可能會認爲他們的核心工作是爲了支持還沒有正式承認存在的產品。將僱主
++的計劃公布在公共郵件列表上可能不是一個可行的選擇。在這種情況下，有必要考慮
++保密是否真的是必要的；通常不需要把開發計劃關在門內。
++
++的確，有些情況下一家公司在開發過程的早期無法合法地披露其計劃。擁有經驗豐富
++的內核開發人員的公司可能選擇以開環的方式進行開發，前提是他們以後能夠避免
++嚴重的集成問題。對於沒有這種內部專業知識的公司，最好的選擇往往是聘請外部
++開發者根據保密協議審查計劃。Linux基金會運行了一個NDA程序，旨在幫助解決這種
++情況；更多信息參見：
++
++    http://www.linuxfoundation.org/nda/
++
++這種審查通常足以避免以後出現嚴重問題，而無需公開披露項目。
++
+diff --git a/Documentation/translations/zh_TW/process/4.Coding.rst b/Documentation/translations/zh_TW/process/4.Coding.rst
 new file mode 100644
-index 000000000000..be087cef1967
+index 000000000000..ccc3946227a0
 --- /dev/null
-+++ b/Documentation/translations/zh_TW/admin-guide/cpu-load.rst
++++ b/Documentation/translations/zh_TW/process/4.Coding.rst
+@@ -0,0 +1,297 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/4.Coding.rst <development_coding>`
++
++:Translator:
++
++ 時奎亮 Alex Shi <alex.shi@linux.alibaba.com>
++
++:校譯:
++
++ 吳想成 Wu XiangCheng <bobwxc@email.cn>
++ 胡皓文 Hu Haowen <src.res@email.cn>
++
++.. _tw_development_coding:
++
++使代碼正確
++======================
++
++雖然一個堅實的、面向社區的設計過程有很多值得說道的，但是任何內核開發項目工作
++的證明都反映在代碼中。它是將由其他開發人員檢查併合並（或不合併）到主線樹中
++的代碼。所以這段代碼的質量決定了項目的最終成功。
++
++本節將檢查編碼過程。我們將從內核開發人員常犯的幾種錯誤開始。然後重點將轉移
++到正確的做法和相關有用的工具上。
++
++陷阱
++----
++
++代碼風格
++********
++
++內核長期以來都有其標準的代碼風格，如
++:ref:`Documentation/translations/zh_TW/process/coding-style.rst <tw_codingstyle>`
++中所述。在多數時候，該文檔中描述的準則至多被認爲是建議性的。因此，內核中存在
++大量不符合代碼風格準則的代碼。這種代碼的存在會給內核開發人員帶來兩方面的危害。
++
++首先，相信內核代碼標準並不重要，也不強制執行。但事實上，如果沒有按照標準
++編寫代碼，那麼新代碼將很難加入到內核中；許多開發人員甚至會在審查代碼之前要求
++對代碼進行重新格式化。一個像內核這麼大的代碼庫需要一些統一格式的代碼，以使
++開發人員能夠快速理解其中的任何部分。所以再也經不起奇怪格式的代碼的折騰了。
++
++內核的代碼風格偶爾會與僱主的強制風格發生衝突。在這種情況下，必須在代碼合併
++之前遵從內核代碼風格。將代碼放入內核意味著以多種方式放棄一定程度的控制權——
++包括控制代碼樣式。
++
++另一個危害是認爲已經在內核中的代碼迫切需要修復代碼樣式。開發者可能會開始編寫
++重新格式化補丁，作爲熟悉開發過程的一種方式，或者作爲將其名字寫入內核變更日誌
++的一種方式，或者兩者兼而有之。但是純代碼風格的修復被開發社區視爲噪音，它們往
++往受到冷遇。因此，最好避免編寫這種類型的補丁。在由於其他原因處理一段代碼的
++同時順帶修復其樣式是很自然的，但是不應該僅爲了更改代碼樣式而更改之。
++
++代碼風格文檔也不應該被視爲絕對不可違反的規則。如果有一個足夠的理由反對這種
++樣式（例如爲了80列限制拆分行會導致可讀性大大降低），那麼就這樣做吧。
++
++注意您還可以使用 ``clang-format`` 工具來幫助您處理這些規則，快速自動重新格式
++化部分代碼，和審閱完整的文件以發現代碼樣式錯誤、拼寫錯誤和可能的改進。它還
++可以方便地排序 ``#includes`` 、對齊變量/宏、重排文本和其他類似任務。有關詳細
++信息，請參閱文檔 :ref:`Documentation/process/clang-format.rst <clangformat>`
++
++抽象層
++******
++
++計算機科學教授教學生以靈活性和信息隱藏的名義廣泛使用抽象層。當然，內核廣泛
++地使用了抽象；任何涉及數百萬行代碼的項目都必須做到這一點以存續下來。但經驗
++表明，過度或過早的抽象可能和過早的優化一樣有害。抽象應用在適當層級，
++不要過度。
++
++簡單點，先考慮一個調用時始終只有一個參數且總爲零的函數。我們可以保留這個參數，
++以在需要使用它時提供的額外靈活性。不過，在那時實現了這個額外參數的代碼很有
++可能以某種從未被注意到的微妙方式被破壞——因爲它從未被使用過。或者當需要額外
++的靈活性時，它並未以符合程式設計師當初期望的方式來實現。內核開發人員通常會提交
++補丁來刪除未使用的參數；一般來說，一開始就不應該添加這些參數。
++
++隱藏硬體訪問的抽象層——通常爲了允許大量的驅動程序兼容多個作業系統——尤其不受
++歡迎。這樣的層使代碼變得模糊，可能會造成性能損失；它們不屬於Linux內核。
++
++另一方面，如果您發現自己從另一個內核子系統複製了大量的代碼，那麼是時候
++了解一下：是否需要將這些代碼中的部分提取到單獨的庫中，或者在更高的層次上
++實現這些功能。在整個內核中複製相同的代碼沒有價值。
++
++#ifdef 和預處理
++***************
++
++C預處理器似乎給一些C程式設計師帶來了強大的誘惑，他們認爲它是一種將大量靈活性加入
++原始碼中的方法。但是預處理器不是C，大量使用它會導致代碼對其他人來說更難閱讀，
++對編譯器來說更難檢查正確性。使用了大量預處理器幾乎總是代碼需要一些
++清理工作的標誌。
++
++使用#ifdef的條件編譯實際上是一個強大的功能，它在內核中使用。但是很少有人希望
++看到代碼被鋪滿#ifdef塊。一般規定，ifdef的使用應儘可能限制在頭文件中。條件
++編譯代碼可以限制函數，如果代碼不存在，這些函數就直接變成空的。然後編譯器將
++悄悄地優化對空函數的調用。使得代碼更加清晰，更容易理解。
++
++C預處理器宏存在許多危險性，包括可能對具有副作用且沒有類型安全的表達式進行多
++重評估。如果您試圖定義宏，請考慮創建一個內聯函數替代。結果相同的代碼，內聯
++函數更容易閱讀，不會多次計算其參數，並且允許編譯器對參數和返回值執行類型檢查。
++
++內聯函數
++********
++
++不過，內聯函數本身也存在風險。程式設計師可以傾心於避免函數調用和用內聯函數填充源
++文件所固有的效率。然而，這些功能實際上會降低性能。因爲它們的代碼在每個調用站
++點都被複製一遍，所以最終會增加編譯內核的大小。此外，這也對處理器的內存緩存
++造成壓力，從而大大降低執行速度。通常內聯函數應該非常小，而且相對較少。畢竟
++函數調用的成本並不高；大量創建內聯函數是過早優化的典型例子。
++
++一般來說，內核程式設計師會自冒風險忽略緩存效果。在數據結構課程開頭中的經典
++時間/空間權衡通常不適用於當代硬體。空間 *就是* 時間，因爲一個大的程序比一個
++更緊湊的程序運行得慢。
++
++較新的編譯器越來越激進地決定一個給定函數是否應該內聯。因此，隨意放置使用
++「inline」關鍵字可能不僅僅是過度的，也可能是無用的。
++
++鎖
++**
++
++2006年5月，「deviceescape」網絡堆棧在前呼後擁下以GPL發布，並被納入主線內核。
++這是一個受歡迎的消息；Linux中對無線網絡的支持充其量被認爲是不合格的，而
++Deviceescape堆棧承諾修復這種情況。然而直到2007年6月（2.6.22），這段代碼才真
++正進入主線。發生了什麼？
++
++這段代碼出現了許多閉門造車的跡象。但一個大麻煩是，它並不是爲多處理器系統而
++設計。在合併這個網絡堆棧（現在稱爲mac80211）之前，需要對其進行一個鎖方案的
++改造。
++
++曾經，Linux內核代碼可以在不考慮多處理器系統所帶來的並發性問題的情況下進行
++開發。然而現在，這個文檔就是在雙核筆記本電腦上寫的。即使在單處理器系統上，
++爲提高響應能力所做的工作也會提高內核內的並發性水平。編寫內核代碼而不考慮鎖
++的日子早已遠去。
++
++可以由多個線程並發訪問的任何資源（數據結構、硬體寄存器等）必須由鎖保護。新
++的代碼應該謹記這一要求；事後修改鎖是一項相當困難的任務。內核開發人員應該花
++時間充分了解可用的鎖原語，以便爲工作選擇正確的工具。對並發性缺乏關注的代碼
++很難進入主線。
++
++回歸
++****
++
++最後一個值得一提的危險是回歸：它可能會引起導致現有用戶的某些東西中斷的改變
++（這也可能會帶來很大的改進）。這種變化被稱爲「回歸」，回歸已經成爲主線內核
++最不受歡迎的問題。除了少數例外情況，如果回歸不能及時修正，會導致回歸的修改
++將被取消。最好首先避免回歸發生。
++
++人們常常爭論，如果回歸帶來的功能遠超過產生的問題，那麼回歸是否爲可接受的。
++如果它破壞了一個系統卻爲十個系統帶來新的功能，爲何不改改態度呢？2007年7月，
++Linus對這個問題給出了最佳答案:
++
++::
++
++	所以我們不會通過引入新問題來修復錯誤。這種方式是靠不住的，沒人知道
++	是否真的有進展。是前進兩步、後退一步，還是前進一步、後退兩步？
++
++（http://lwn.net/articles/243460/）
++
++特別不受歡迎的一種回歸類型是用戶空間ABI的任何變化。一旦接口被導出到用戶空間，
++就必須無限期地支持它。這一事實使得用戶空間接口的創建特別具有挑戰性：因爲它們
++不能以不兼容的方式進行更改，所以必須一次就對。因此，用戶空間接口總是需要大量
++的思考、清晰的文檔和廣泛的審查。
++
++
++代碼檢查工具
++------------
++
++至少目前，編寫無錯誤代碼仍然是我們中很少人能達到的理想狀態。不過，我們希望做
++的是，在代碼進入主線內核之前，儘可能多地捕獲並修復這些錯誤。爲此，內核開發人
++員已經提供了一系列令人印象深刻的工具，可以自動捕獲各種各樣的隱藏問題。計算機
++發現的任何問題都是一個以後不會困擾用戶的問題，因此，只要有可能，就應該使用
++自動化工具。
++
++第一步是注意編譯器產生的警告。當前版本的GCC可以檢測（並警告）大量潛在錯誤。
++通常，這些警告都指向真正的問題。提交以供審閱的代碼一般不會產生任何編譯器警告。
++在消除警告時，注意了解真正的原因，並儘量避免僅「修復」使警告消失而不解決其原因。
++
++請注意，並非所有編譯器警告都默認啓用。使用「make KCFLAGS=-W」構建內核以
++獲得完整集合。
++
++內核提供了幾個配置選項，可以打開調試功能；大多數配置選項位於「kernel hacking」
++子菜單中。對於任何用於開發或測試目的的內核，都應該啓用其中幾個選項。特別是，
++您應該打開：
++
++ - FRAME_WARN 獲取大於給定數量的堆棧幀的警告。
++   這些警告生成的輸出可能比較冗長，但您不必擔心來自內核其他部分的警告。
++
++ - DEBUG_OBJECTS 將添加代碼以跟蹤內核創建的各種對象的生命周期，並在出現問題
++   時發出警告。如果你要添加創建（和導出）關於其自己的複雜對象的子系統，請
++   考慮打開對象調試基礎結構的支持。
++
++ - DEBUG_SLAB 可以發現各種內存分配和使用錯誤；它應該用於大多數開發內核。
++
++ - DEBUG_SPINLOCK, DEBUG_ATOMIC_SLEEP 和 DEBUG_MUTEXES 會發現許多常見的
++   鎖錯誤。
++
++還有很多其他調試選項，其中一些將在下面討論。其中一些有顯著的性能影響，不應
++一直使用。在學習可用選項上花費一些時間，可能會在短期內得到許多回報。
++
++其中一個較重的調試工具是鎖檢查器或「lockdep」。該工具將跟蹤系統中每個鎖
++（spinlock或mutex）的獲取和釋放、獲取鎖的相對順序、當前中斷環境等等。然後，
++它可以確保總是以相同的順序獲取鎖，相同的中斷假設適用於所有情況等等。換句話
++說，lockdep可以找到許多導致系統死鎖的場景。在部署的系統中，這種問題可能會
++很痛苦（對於開發人員和用戶而言）；LockDep允許提前以自動方式發現問題。具有
++任何類型的非普通鎖的代碼在提交合併前應在啓用lockdep的情況下運行測試。
++
++作爲一個勤奮的內核程式設計師，毫無疑問，您將檢查任何可能失敗的操作（如內存分配）
++的返回狀態。然而，事實上，最終的故障復現路徑可能完全沒有經過測試。未測試的
++代碼往往會出問題；如果所有這些錯誤處理路徑都被執行了幾次，那麼您可能對代碼
++更有信心。
++
++內核提供了一個可以做到這一點的錯誤注入框架，特別是在涉及內存分配的情況下。
++啓用故障注入後，內存分配的可配置失敗的百分比；這些失敗可以限定在特定的代碼
++範圍內。在啓用了故障注入的情況下運行，程式設計師可以看到當情況惡化時代碼如何響
++應。有關如何使用此工具的詳細信息，請參閱
++Documentation/fault-injection/fault-injection.rst。
++
++「sparse」靜態分析工具可以發現其他類型的錯誤。sparse可以警告程式設計師用戶空間
++和內核空間地址之間的混淆、大端序與小端序的混淆、在需要一組位標誌的地方傳遞
++整數值等等。sparse必須單獨安裝(如果您的分發伺服器沒有將其打包，
++可以在 https://sparse.wiki.kernel.org/index.php/Main_page 找到）,
++然後可以通過在make命令中添加「C=1」在代碼上運行它。
++
++「Coccinelle」工具 :ref:`http://coccinelle.lip6.fr/ <devtools_coccinelle>`
++能夠發現各種潛在的編碼問題；它還可以爲這些問題提出修複方案。在
++scripts/coccinelle目錄下已經打包了相當多的內核「語義補丁」；運行
++「make coccicheck」將運行這些語義補丁並報告發現的任何問題。有關詳細信息，請參閱
++:ref:`Documentation/dev-tools/coccinelle.rst <devtools_coccinelle>`
++
++
++其他類型的可移植性錯誤最好通過爲其他體系結構編譯代碼來發現。如果沒有S/390系統
++或Blackfin開發板，您仍然可以執行編譯步驟。可以在以下位置找到一大堆用於x86系統的
++交叉編譯器：
++
++        https://www.kernel.org/pub/tools/crosstool/
++
++花一些時間安裝和使用這些編譯器將有助於避免以後的尷尬。
++
++文檔
++----
++
++文檔通常比內核開發規則更爲例外。即便如此，足夠的文檔將有助於簡化將新代碼合併
++到內核中的過程，使其他開發人員的生活更輕鬆，並對您的用戶有所幫助。在許多情況
++下，添加文檔已基本上是強制性的。
++
++任何補丁的第一個文檔是其關聯的變更日誌。日誌條目應該描述正在解決的問題、解決
++方案的形式、處理補丁的人員、對性能的任何相關影響，以及理解補丁可能需要的任何
++其他內容。確保變更日誌說明了*爲什麼*補丁值得應用；大量開發者未能提供這些信息。
++
++任何添加新用戶空間接口的代碼——包括新的sysfs或/proc文件——都應該包含該接口
++的文檔，該文檔使用戶空間開發人員能夠知道他們在使用什麼。請參閱
++Documentation/ABI/README，了解如何此文檔格式以及需要提供哪些信息。
++
++文檔 :ref:`Documentation/admin-guide/kernel-parameters.rst <kernelparameters>`
++描述了內核的所有引導時間參數。任何添加新參數的補丁都應該向該文檔添加適當的
++條目。
++
++任何新的配置選項都必須附有幫助文本，幫助文本需清楚地解釋這些選項以及用戶可能
++希望何時使用它們。
++
++許多子系統的內部API信息通過專門格式化的注釋進行記錄；這些注釋可以通過
++「kernel-doc」腳本以多種方式提取和格式化。如果您在具有kerneldoc注釋的子系統中
++工作，則應該維護它們，並根據需要爲外部可用的功能添加它們。即使在沒有如此記錄
++的領域中，爲將來添加kerneldoc注釋也沒有壞處；實際上，這對於剛開始開發內核的人
++來說是一個有用的活動。這些注釋的格式以及如何創建kerneldoc模板的一些信息可以在
++:ref:`Documentation/doc-guide/ <doc_guide>` 上找到。
++
++任何閱讀大量現有內核代碼的人都會注意到，注釋的缺失往往是最值得注意的。同時，
++對新代碼的要求比過去更高；合併未注釋的代碼將更加困難。這就是說，人們並不期望
++詳細注釋的代碼。代碼本身應該是自解釋的，注釋闡釋了更微妙的方面。
++
++某些事情應該總是被注釋。使用內存屏障時，應附上一行文字，解釋爲什麼需要設置內存
++屏障。數據結構的鎖規則通常需要在某個地方解釋。一般來說，主要數據結構需要全面
++的文檔。應該指出代碼中分立的位之間不明顯的依賴性。任何可能誘使代碼管理人進行
++錯誤的「清理」的事情都需要一個注釋來說明爲什麼要這樣做。等等。
++
++
++內部API更改
++-----------
++
++內核提供給用戶空間的二進位接口不能被破壞，除非逼不得已。而內核的內部編程接口
++是高度流動的，當需要時可以更改。如果你發現自己不得不處理一個內核API，或者僅
++僅因爲它不滿足你的需求導致無法使用特定的功能，這可能是API需要改變的一個標誌。
++作爲內核開發人員，您有權進行此類更改。
++
++的確可以進行API更改，但更改必須是合理的。因此任何進行內部API更改的補丁都應該
++附帶關於更改內容和必要原因的描述。這種變化也應該拆分成一個單獨的補丁，而不是
++埋在一個更大的補丁中。
++
++另一個要點是，更改內部API的開發人員通常要負責修復內核樹中被更改破壞的任何代碼。
++對於一個廣泛使用的函數，這個責任可以導致成百上千的變化，其中許多變化可能與其他
++開發人員正在做的工作相衝突。不用說，這可能是一項大工程，所以最好確保理由是
++可靠的。請注意，coccinelle工具可以幫助進行廣泛的API更改。
++
++在進行不兼容的API更改時，應儘可能確保編譯器捕獲未更新的代碼。這將幫助您確保找
++到該接口的樹內用處。它還將警告開發人員樹外代碼存在他們需要響應的更改。支持樹外
++代碼不是內核開發人員需要擔心的事情，但是我們也不必使樹外開發人員的生活有不必要
++的困難。
++
+diff --git a/Documentation/translations/zh_TW/process/5.Posting.rst b/Documentation/translations/zh_TW/process/5.Posting.rst
+new file mode 100644
+index 000000000000..5578bca403e6
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/5.Posting.rst
+@@ -0,0 +1,251 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/5.Posting.rst <development_posting>`
++
++:Translator:
++
++ 時奎亮 Alex Shi <alex.shi@linux.alibaba.com>
++
++:校譯:
++
++ 吳想成 Wu XiangCheng <bobwxc@email.cn>
++ 胡皓文 Hu Haowen <src.res@email.cn>
++
++.. _tw_development_posting:
++
++發布補丁
++========
++
++您的工作遲早會準備好提交給社區進行審查，並最終包含到主線內核中。毫不稀奇，
++內核開發社區已經發展出一套用於發布補丁的約定和過程；遵循這些約定和過程將使
++參與其中的每個人的生活更加輕鬆。本文檔試圖描述這些約定的部分細節；更多信息
++也可在以下文檔中找到
++:ref:`Documentation/translations/zh_TW/process/submitting-patches.rst <tw_submittingpatches>`，
++:ref:`Documentation/translations/zh_TW/process/submitting-drivers.rst <tw_submittingdrivers>`
++和 :ref:`Documentation/translations/zh_TW/process/submit-checklist.rst <tw_submitchecklist>`。
++
++何時郵寄
++--------
++
++在補丁完全「準備好」之前，避免發布補丁是一種持續的誘惑。對於簡單的補丁，這
++不是問題。但是如果正在完成的工作很複雜，那麼在工作完成之前從社區獲得反饋就
++可以獲得很多好處。因此，您應該考慮發布正在進行的工作，甚至維護一個可用的Git
++樹，以便感興趣的開發人員可以隨時趕上您的工作。
++
++當發布中有尚未準備好被包含的代碼，最好在發布中說明。還應提及任何有待完成的
++主要工作和任何已知問題。很少有人會願意看那些被認爲是半生不熟的補丁，但是
++那些願意的人會帶著他們的點子來一起幫助你把工作推向正確的方向。
++
++創建補丁之前
++------------
++
++在考慮將補丁發送到開發社區之前，有許多事情應該做。包括：
++
++ - 儘可能地測試代碼。利用內核的調試工具，確保內核使用了所有可能的配置選項組合
++   進行構建，使用交叉編譯器爲不同的體系結構進行構建等。
++
++ - 確保您的代碼符合內核代碼風格指南。
++
++ - 您的更改是否具有性能影響？如果是這樣，您應該運行基準測試來顯示您的變更的
++   影響（或好處）；結果的摘要應該包含在補丁中。
++
++ - 確保您有權發布代碼。如果這項工作是爲僱主完成的，僱主對這項工作具有所有權，
++   並且必須同意根據GPL對其進行發布。
++
++一般來說，在發布代碼之前進行一些額外的思考，幾乎總是能在短時間內得到回報。
++
++補丁準備
++--------
++
++準備補丁發布的工作量可能很驚人，但在此嘗試節省時間通常是不明智的，即使在短期
++內亦然。
++
++必須針對內核的特定版本準備補丁。一般來說，補丁應該基於Linus的Git樹中的當前
++主線。當以主線爲基礎時，請從一個衆所周知的發布點開始——如穩定版本或 -rc
++版本發布點——而不是在一個任意的主線分支點。
++
++也可能需要針對-mm、linux-next或子系統樹生成版本，以便於更廣泛的測試和審查。
++根據補丁的區域以及其他地方的情況，針對其他樹建立的補丁可能需要大量的工作來
++解決衝突和處理API更改。
++
++只有最簡單的更改才應格式化爲單個補丁；其他所有更改都應作爲一系列邏輯更改進行。
++分割補丁是一門藝術；一些開發人員花了很長時間來弄清楚如何按照社區期望的方式來
++分割。不過，這些經驗法則也許有幫助：
++
++ - 您發布的補丁系列幾乎肯定不會是開發過程中版本控制系統中的一系列更改。相反，
++   需要對您所做更改的最終形式加以考慮，然後以有意義的方式進行拆分。開發人員對
++   離散的、自包含的更改感興趣，而不是您創造這些更改的原始路徑。
++
++ - 每個邏輯上獨立的變更都應該格式化爲單獨的補丁。這些更改可以是小的（如「向
++   此結構體添加欄位」）或大的（如添加一個重要的新驅動程序），但它們在概念上
++   應該是小的，並且可以在一行內簡述。每個補丁都應該做一個特定的、可以單獨
++   檢查並驗證它所做的事情的更改。
++
++ - 換種方式重申上述準則，也就是說：不要在同一補丁中混合不同類型的更改。如果
++   一個補丁修復了一個關鍵的安全漏洞，又重新排列了一些結構，還重新格式化了代
++   碼，那麼它很有可能會被忽略，從而導致重要的修復丟失。
++
++ - 每個補丁都應該能創建一個可以正確地構建和運行的內核；如果補丁系列在中間被
++   斷開，那麼結果仍應是一個正常工作的內核。部分應用一系列補丁是使用
++   「git bisct」工具查找回歸的一個常見場景；如果結果是一個損壞的內核，那麼將使
++   那些從事追蹤問題的高尚工作的開發人員和用戶的生活更加艱難。
++
++ - 不要過分分割。一位開發人員曾經將一組針對單個文件的編輯分成500個單獨的補丁
++   發布，這並沒有使他成爲內核郵件列表中最受歡迎的人。一個補丁可以相當大，
++   只要它仍然包含一個單一的 *邏輯* 變更。
++
++ - 用一系列補丁添加一個全新的基礎設施，但是該設施在系列中的最後一個補丁啓用
++   整個變更之前不能使用，這看起來很誘人。如果可能的話，應該避免這種誘惑；
++   如果這個系列增加了回歸，那麼二分法將指出最後一個補丁是導致問題的補丁，
++   即使真正的bug在其他地方。只要有可能，添加新代碼的補丁程序應該立即激活該
++   代碼。
++
++創建完美補丁系列的工作可能是一個令人沮喪的過程，在完成「真正的工作」之後需要
++花費大量的時間和思考。但是如果做得好，花費的時間就是值得的。
++
++補丁格式和更改日誌
++------------------
++
++所以現在你有了一系列完美的補丁可以發布，但是這項工作還沒有完成。每個補丁都
++需要被格式化成一條消息，以快速而清晰地將其目的傳達到世界其他地方。爲此，
++每個補丁將由以下部分組成：
++
++ - 可選的「From」行，表明補丁作者。只有當你通過電子郵件發送別人的補丁時，這一行
++   才是必須的，但是爲防止疑問加上它也不會有什麼壞處。
++
++ - 一行描述，說明補丁的作用。對於在沒有其他上下文的情況下看到該消息的讀者來說，
++   該消息應足以確定修補程序的範圍；此行將顯示在「short form（簡短格式）」變更
++   日誌中。此消息通常需要先加上子系統名稱前綴，然後是補丁的目的。例如：
++
++   ::
++
++        gpio: fix build on CONFIG_GPIO_SYSFS=n
++
++ - 一行空白，後接補丁內容的詳細描述。此描述可以是任意需要的長度；它應該說明補丁
++   的作用以及爲什麼它應該應用於內核。
++
++ - 一個或多個標記行，至少有一個由補丁作者的 Signed-off-by 簽名。標記將在下面
++   詳細描述。
++
++上面的項目一起構成補丁的變更日誌。寫一則好的變更日誌是一門至關重要但常常被
++忽視的藝術；值得花一點時間來討論這個問題。當你編寫變更日誌時，你應該記住有
++很多不同的人會讀你的話。其中包括子系統維護人員和審查人員，他們需要決定是否
++應該合併補丁，分銷商和其他維護人員試圖決定是否應該將補丁反向移植到其他內核，
++缺陷搜尋人員想知道補丁是否導致他們正在追查的問題，以及想知道內核如何變化的
++用戶等等。一個好的變更日誌以最直接和最簡潔的方式向所有這些人傳達所需的信息。
++
++在結尾，總結行應該描述變更的影響和動機，以及在一行約束條件下可能發生的變化。
++然後，詳細的描述可以詳述這些主題，並提供任何需要的附加信息。如果補丁修復了
++一個缺陷，請引用引入該缺陷的提交（如果可能，請在引用提交時同時提供其 id 和
++標題）。如果某個問題與特定的日誌或編譯器輸出相關聯，請包含該輸出以幫助其他
++人搜索同一問題的解決方案。如果更改是爲了支持以後補丁中的其他更改，那麼應當
++說明。如果更改了內部API，請詳細說明這些更改以及其他開發人員應該如何響應。
++一般來說，你越把自己放在每個閱讀你變更日誌的人的位置上，變更日誌（和內核
++作爲一個整體）就越好。
++
++不消說，變更日誌是將變更提交到版本控制系統時使用的文本。接下來將是：
++
++ - 補丁本身，採用統一的（「-u」）補丁格式。使用「-p」選項來diff將使函數名與
++   更改相關聯，從而使結果補丁更容易被其他人讀取。
++
++您應該避免在補丁中包括與更改不相關文件（例如，構建過程生成的文件或編輯器
++備份文件）。文檔目錄中的「dontdiff」文件在這方面有幫助；使用「-X」選項將
++其傳遞給diff。
++
++上面提到的標籤（tag）用於描述各種開發人員如何與這個補丁的開發相關聯。
++:ref:`Documentation/translations/zh_TW/process/submitting-patches.rst <tw_submittingpatches>`
++文檔中對它們進行了詳細描述；下面是一個簡短的總結。每一行的格式如下：
++
++::
++
++	tag: Full Name <email address>  optional-other-stuff
++
++常用的標籤有：
++
++ - Signed-off-by: 這是一個開發人員的證明，證明他或她有權提交補丁以包含到內核
++   中。這表明同意開發者來源認證協議，其全文見
++   :ref:`Documentation/translations/zh_TW/process/submitting-patches.rst <tw_submittingpatches>`
++   如果沒有合適的簽字，則不能合併到主線中。
++
++ - Co-developed-by: 聲明補丁是由多個開發人員共同創建的；當幾個人在一個補丁上
++   工作時，它用於給出共同作者（除了 From: 所給出的作者之外）。由於
++   Co-developed-by: 表示作者身份，所以每個共同開發人，必須緊跟在相關合作作者
++   的Signed-off-by之後。具體內容和示例見以下文件
++   :ref:`Documentation/translations/zh_TW/process/submitting-patches.rst <tw_submittingpatches>`
++
++ - Acked-by: 表示另一個開發人員（通常是相關代碼的維護人員）同意補丁適合包含
++   在內核中。
++
++ - Tested-by: 聲明某人已經測試了補丁並確認它可以工作。
++
++ - Reviewed-by: 表示某開發人員已經審查了補丁的正確性；有關詳細信息，請參閱
++   :ref:`Documentation/translations/zh_TW/process/submitting-patches.rst <tw_submittingpatches>`
++
++ - Reported-by: 指定報告此補丁修復的問題的用戶；此標記用於表示感謝。
++
++ - Cc：指定某人收到了補丁的副本，並有機會對此發表評論。
++
++在補丁中添加標籤時要小心：只有Cc:才適合在沒有指定人員明確許可的情況下添加。
++
++發送補丁
++--------
++
++在寄出補丁之前，您還需要注意以下幾點：
++
++ - 您確定您的郵件發送程序不會損壞補丁嗎？被郵件客戶端更改空白或修飾了行的補丁
++   無法被另一端接受，並且通常不會進行任何詳細檢查。如果有任何疑問，先把補丁寄
++   給你自己，讓你自己確定它是完好無損的。
++
++   :ref:`Documentation/translations/zh_TW/process/email-clients.rst <tw_email_clients>`
++   提供了一些有用的提示，可以讓特定的郵件客戶端正常發送補丁。
++
++ - 你確定你的補丁沒有荒唐的錯誤嗎？您應該始終通過scripts/checkpatch.pl檢查
++   補丁程序，並解決它提出的問題。請記住，checkpatch.pl，雖然體現了對內核補丁
++   應該是什麼樣的大量思考，但它並不比您聰明。如果修復checkpatch.pl給的問題會
++   使代碼變得更糟，請不要這樣做。
++
++補丁應始終以純文本形式發送。請不要將它們作爲附件發送；這使得審閱者在答覆中更難
++引用補丁的部分。相反，只需將補丁直接放到您的消息中。
++
++寄出補丁時，重要的是將副本發送給任何可能感興趣的人。與其他一些項目不同，內核
++鼓勵人們甚至錯誤地發送過多的副本；不要假定相關人員會看到您在郵件列表中的發布。
++尤其是，副本應發送至：
++
++ - 受影響子系統的維護人員。如前所述，維護人員文件是查找這些人員的首選地方。
++
++ - 其他在同一領域工作的開發人員，尤其是那些現在可能在那裡工作的開發人員。使用
++   git查看還有誰修改了您正在處理的文件，這很有幫助。
++
++ - 如果您對某錯誤報告或功能請求做出響應，也可以抄送原始發送人。
++
++ - 將副本發送到相關郵件列表，或者若無相關列表，則發送到linux-kernel列表。
++
++ - 如果您正在修復一個缺陷，請考慮該修復是否應進入下一個穩定更新。如果是這樣，
++   補丁副本也應發到stable@vger.kernel.org 。另外，在補丁本身的標籤中添加一個
++   「Cc: stable@vger.kernel.org」；這將使穩定版團隊在修復進入主線時收到通知。
++
++當爲一個補丁選擇接收者時，最好清楚你認爲誰最終會接受這個補丁並將其合併。雖然
++可以將補丁直接發給Linus Torvalds並讓他合併，但通常情況下不會這樣做。Linus很
++忙，並且有子系統維護人員負責監視內核的特定部分。通常您會希望維護人員合併您的
++補丁。如果沒有明顯的維護人員，Andrew Morton通常是最後的補丁接收者。
++
++補丁需要好的主題行。補丁主題行的規範格式如下：
++
++::
++
++	[PATCH nn/mm] subsys: one-line description of the patch
++
++其中「nn」是補丁的序號，「mm」是系列中補丁的總數，「subsys」是受影響子系統的
++名稱。當然，一個單獨的補丁可以省略nn/mm。
++
++如果您有一系列重要的補丁，那麼通常發送一個簡介作爲第〇部分。不過，這個約定
++並沒有得到普遍遵循；如果您使用它，請記住簡介中的信息不會進入內核變更日誌。
++因此，請確保補丁本身具有完整的變更日誌信息。
++
++一般來說，多部分補丁的第二部分和後續部分應作爲對第一部分的回覆發送，以便它們
++在接收端都連接在一起。像git和coilt這樣的工具有命令，可以通過適當的線程發送
++一組補丁。但是，如果您有一長串補丁，並正使用git，請不要使用–-chain-reply-to
++選項，以避免創建過深的嵌套。
++
+diff --git a/Documentation/translations/zh_TW/process/6.Followthrough.rst b/Documentation/translations/zh_TW/process/6.Followthrough.rst
+new file mode 100644
+index 000000000000..4af782742db3
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/6.Followthrough.rst
+@@ -0,0 +1,156 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/6.Followthrough.rst <development_followthrough>`
++
++:Translator:
++
++ 時奎亮 Alex Shi <alex.shi@linux.alibaba.com>
++
++:校譯:
++
++ 吳想成 Wu XiangCheng <bobwxc@email.cn>
++ 胡皓文 Hu Haowen <src.res@email.cn>
++
++.. _tw_development_followthrough:
++
++跟進
++====
++
++此時，您已經遵循了到目前爲止給出的指導方針，並且，隨著您自己的工程技能的增加，
++已經發布了一系列完美的補丁。即使是經驗豐富的內核開發人員也能犯的最大錯誤之一
++是，認爲他們的工作現在已經完成了。事實上，發布補丁意味著進入流程的下一個階段，
++可能還需要做很多工作。
++
++一個補丁在首次發布時就非常出色、沒有改進的餘地，這是很罕見的。內核開發流程已
++認識到這一事實，因此它非常注重對已發布代碼的改進。作爲代碼的作者，您應該與
++內核社區合作，以確保您的代碼符合內核的質量標準。如果不參與這個過程，很可能會
++無法將補丁合併到主線中。
++
++與審閱者合作
++------------
++
++任何意義上的補丁都會導致其他開發人員在審查代碼時發表大量評論。對於許多開發
++人員來說，與審閱人員合作可能是內核開發過程中最令人生畏的部分。但是如果你
++記住一些事情，生活會變得容易得多：
++
++ - 如果你已經很好地解釋了你的補丁，審閱人員會理解它的價值，以及爲什麼你會
++   費盡心思去寫它。但是這個並不能阻止他們提出一個基本的問題：在五年或十年後
++   維護含有此代碼的內核會怎麼樣？你可能被要求做出的許多改變——從編碼風格的
++   調整到大量的重寫——都來自於對Linux的理解，即從現在起十年後，Linux仍將
++   在開發中。
++
++ - 代碼審查是一項艱苦的工作，這是一項相對吃力不討好的工作；人們記得誰編寫了
++   內核代碼，但對於那些審查它的人來說，幾乎沒有什麼長久的名聲。因此，審閱
++   人員可能會變得暴躁，尤其是當他們看到同樣的錯誤被一遍又一遍地犯下時。如果
++   你得到了一個看起來憤怒、侮辱或完全冒犯你的評論，請抑制以同樣方式回應的衝動。
++   代碼審查是關於代碼的，而不是關於人的，代碼審閱人員不會親自攻擊您。
++
++ - 同樣，代碼審閱人員也不想以犧牲你僱主的利益爲代價來宣傳他們僱主的議程。
++   內核開發人員通常希望今後幾年能在內核上工作，但他們明白他們的僱主可能會改
++   變。他們真的，幾乎毫無例外地，致力於創造他們所能做到的最好的內核；他們並
++   沒有試圖給僱主的競爭對手造成不適。
++
++所有這些歸根結底就是，當審閱者向您發送評論時，您需要注意他們正在進行的技術
++評論。不要讓他們的表達方式或你自己的驕傲阻止此事。當你在一個補丁上得到評論
++時，花點時間去理解評論人想說什麼。如果可能的話，請修覆審閱者要求您修復的內
++容。然後回覆審閱者：謝謝他們，並描述你將如何回答他們的問題。
++
++請注意，您不必同意審閱者建議的每個更改。如果您認爲審閱者誤解了您的代碼，請
++解釋到底發生了什麼。如果您對建議的更改有技術上的異議，請描述它並證明您對該
++問題的解決方案是正確的。如果你的解釋有道理，審閱者會接受的。不過，如果你的
++解釋證明缺乏說服力，尤其是當其他人開始同意審稿人的觀點時，請花些時間重新考慮
++一下。你很容易對自己解決問題的方法視而不見，以至於你沒有意識到某些東西完全
++是錯誤的，或者你甚至沒有解決正確的問題。
++
++Andrew Morton建議，每一個不會導致代碼更改的審閱評論都應該產生一個額外的代碼
++注釋；這可以幫助未來的審閱人員避免第一次出現的問題。
++
++一個致命的錯誤是忽視評論，希望它們會消失。它們不會走的。如果您在沒有對之前
++收到的評論做出響應的情況下重新發布代碼，那麼很可能會發現補丁毫無用處。
++
++說到重新發布代碼：請記住，審閱者不會記住您上次發布的代碼的所有細節。因此，
++提醒審閱人員以前提出的問題以及您如何處理這些問題總是一個好主意；補丁變更
++日誌是提供此類信息的好地方。審閱者不必搜索列表檔案來熟悉上次所說的內容；
++如果您幫助他們直接開始，當他們重新查看您的代碼時，心情會更好。
++
++如果你已經試著做正確的事情，但事情仍然沒有進展呢？大多數技術上的分歧都可以
++通過討論來解決，但有時人們仍需要做出決定。如果你真的認爲這個決定對你不利，
++你可以試著向有更高權力的人上訴。對於本文，更高權力的人是 Andrew Morton 。
++Andrew 在內核開發社區中非常受尊敬；他經常爲似乎被絕望阻塞的事情清障。儘管
++如此，不應輕易就直接找 Andrew ，也不應在所有其他替代方案都被嘗試之前找他。
++當然，記住，他也可能不同意你的意見。
++
++接下來會發生什麼
++----------------
++
++如果一個補丁被認爲適合添加到內核中，並且大多數審查問題得到解決，下一步通常
++是進入子系統維護人員的樹中。工作方式因子系統而異；每個維護人員都有自己的
++工作方式。特別是可能有不止一棵樹——也許一棵樹專門用於計劃下一個合併窗口的
++補丁，另一棵樹用於長期工作。
++
++對於應用到不屬於明顯子系統樹（例如內存管理修補程序）的區域的修補程序，默認樹
++通常上溯到-mm。影響多個子系統的補丁也可以最終進入-mm樹。
++
++包含在子系統樹中可以提高補丁的可見性。現在，使用該樹的其他開發人員將默認獲
++得補丁。子系統樹通常也爲Linux提供支持，使其內容對整個開發社區可見。在這一點
++上，您很可能會從一組新的審閱者那裡得到更多的評論；這些評論需要像上一輪那樣
++得到回應。
++
++在這時也會發生點什麼，這取決於你的補丁的性質，是否與其他人正在做的工作發生
++衝突。在最壞的情況下，嚴重的補丁衝突可能會導致一些工作被擱置，以便剩餘的補丁
++可以成形併合並。另一些時候，衝突解決將涉及到與其他開發人員合作，可能還會
++在樹之間移動一些補丁，以確保所有的應用都是乾淨的。這項工作可能是一件痛苦的
++事情，但也需慶幸現在的幸福：在linux-next樹出現之前，這些衝突通常只在合併窗口
++中出現，必須迅速解決。現在可以在合併窗口打開之前的空閒時間解決這些問題。
++
++有朝一日，如果一切順利，您將登錄並看到您的補丁已經合併到主線內核中。祝賀你！
++然而，一旦慶祝完了（並且您已經將自己添加到維護人員文件中），就一定要記住
++一個重要的小事實：工作仍然沒有完成。併入主線也帶來了它的挑戰。
++
++首先，補丁的可見性再次提高。可能會有以前不知道這個補丁的開發者的新一輪評論。
++忽略它們可能很有誘惑力，因爲您的代碼不再存在任何被合併的問題。但是，要抵制
++這種誘惑，您仍然需要對有問題或建議的開發人員作出響應。
++
++不過，更重要的是：將代碼包含在主線中會將代碼交給更多的一些測試人員。即使您
++爲尚未可用的硬體提供了驅動程序，您也會驚訝於有多少人會將您的代碼構建到內核
++中。當然，如果有測試人員，也可能會有錯誤報告。
++
++最糟糕的錯誤報告是回歸。如果你的補丁導致回歸，你會發現多到讓你不舒服的眼睛盯
++著你；回歸需要儘快修復。如果您不願意或無法修復回歸（其他人都不會爲您修復），
++那麼在穩定期內，您的補丁幾乎肯定會被移除。除了否定您爲使補丁進入主線所做的
++所有工作之外，如果由於未能修復回歸而取消補丁，很可能會使將來的工作更難被合併。
++
++在處理完任何回歸之後，可能還有其他普通缺陷需要處理。穩定期是修復這些錯誤並
++確保代碼在主線內核版本中的首次發布儘可能可靠的最好機會。所以，請回應錯誤
++報告，並儘可能解決問題。這就是穩定期的目的；一旦解決了舊補丁的任何問題，就
++可以開始盡情創建新補丁。
++
++別忘了，還有其他節點也可能會創建缺陷報告：下一個主線穩定版本，當著名的發行
++商選擇包含您補丁的內核版本時等等。繼續響應這些報告是您工作的基本素養。但是
++如果這不能提供足夠的動機，那麼也需要考慮：開發社區會記住那些在合併後對代碼
++失去興趣的開發人員。下一次你發布補丁時，他們會以你以後不會持續維護它爲前提
++來評估它。
++
++其他可能發生的事情
++------------------
++
++某天，當你打開你的郵件客戶端時，看到有人給你寄了一個代碼補丁。畢竟，這是
++讓您的代碼公開存在的好處之一。如果您同意這個補丁，您可以將它轉發給子系統
++維護人員（確保包含一個正確的From:行，這樣屬性是正確的，並添加一個您自己的
++signoff ），或者回復一個 Acked-by: 讓原始發送者向上發送它。
++
++如果您不同意補丁，請禮貌地回復，解釋原因。如果可能的話，告訴作者需要做哪些
++更改才能讓您接受補丁。合併代碼的編寫者和維護者所反對的補丁的確存在著一定的
++阻力，但僅此而已。如果你被認爲不必要的阻礙了好的工作，那麼這些補丁最終會
++繞過你並進入主線。在Linux內核中，沒有人對任何代碼擁有絕對的否決權。可能除
++了Linus。
++
++在非常罕見的情況下，您可能會看到完全不同的東西：另一個開發人員發布了針對您
++的問題的不同解決方案。在這時，兩個補丁之一可能不會被合併，「我的補丁首先
++發布」不被認爲是一個令人信服的技術論據。如果有別人的補丁取代了你的補丁而進
++入了主線，那麼只有一種方法可以回應你：很高興你的問題解決了，請繼續工作吧。
++以這種方式把某人的工作推到一邊可能導致傷心和氣餒，但是社區會記住你的反應，
++即使很久以後他們已經忘記了誰的補丁真正被合併。
++
+diff --git a/Documentation/translations/zh_TW/process/7.AdvancedTopics.rst b/Documentation/translations/zh_TW/process/7.AdvancedTopics.rst
+new file mode 100644
+index 000000000000..3de093d0f170
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/7.AdvancedTopics.rst
+@@ -0,0 +1,137 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/7.AdvancedTopics.rst <development_advancedtopics>`
++
++:Translator:
++
++ 時奎亮 Alex Shi <alex.shi@linux.alibaba.com>
++
++:校譯:
++
++ 吳想成 Wu XiangCheng <bobwxc@email.cn>
++ 胡皓文 Hu Haowen <src.res@email.cn>
++
++.. _tw_development_advancedtopics:
++
++高級主題
++========
++
++現在，希望您能夠掌握開發流程的工作方式。然而，還有更多的東西要學！本節將介紹
++一些主題，這些主題對希望成爲Linux內核開發過程常規部分的開發人員有幫助。
++
++使用Git管理補丁
++---------------
++
++內核使用分布式版本控制始於2002年初，當時Linus首次開始使用專有的Bitkeeper應用
++程序。雖然BitKeeper存在爭議，但它所體現的軟體版本管理方法卻肯定不是。分布式
++版本控制可以立即加速內核開發項目。現在有好幾種免費的BitKeeper替代品。
++但無論好壞，內核項目都已經選擇了Git作爲其工具。
++
++使用Git管理補丁可以使開發人員的生活更加輕鬆，尤其是隨著補丁數量的增長。Git也
++有其粗糙的邊角和一定的危險性，它是一個年輕和強大的工具，仍然在其開發人員完善
++中。本文檔不會試圖教會讀者如何使用git；這會是個巨長的文檔。相反，這裡的重點
++將是Git如何特別適合內核開發過程。想要加快用Git速度的開發人員可以在以下網站上
++找到更多信息：
++
++	https://git-scm.com/
++
++	https://www.kernel.org/pub/software/scm/git/docs/user-manual.html
++
++同時網上也能找到各種各樣的教程。
++
++在嘗試使用它生成補丁供他人使用之前，第一要務是閱讀上述網頁，對Git的工作方式
++有一個紮實的了解。使用Git的開發人員應能進行拉取主線存儲庫的副本，查詢修訂
++歷史，提交對樹的更改，使用分支等操作。了解Git用於重寫歷史的工具（如rebase）
++也很有用。Git有自己的術語和概念；Git的新用戶應該了解引用、遠程分支、索引、
++快進合併、推拉、游離頭等。一開始可能有點嚇人，但這些概念不難通過一點學習來
++理解。
++
++使用git生成通過電子郵件提交的補丁是提高速度的一個很好的練習。
++
++當您準備好開始建立Git樹供其他人查看時，無疑需要一個可以從中拉取的伺服器。
++如果您有一個可以訪問網際網路的系統，那麼使用git-daemon設置這樣的伺服器相對
++簡單。同時，免費的公共託管網站（例如github）也開始出現在網絡上。成熟的開發
++人員可以在kernel.org上獲得一個帳戶，但這些帳戶並不容易得到；更多有關信息，
++請參閱 https://kernel.org/faq/ 。
++
++正常的Git工作流程涉及到許多分支的使用。每一條開發線都可以分爲單獨的「主題
++分支」，並獨立維護。Git的分支很容易使用，沒有理由不使用它們。而且，在任何
++情況下，您都不應該在任何您打算讓其他人從中拉取的分支中進行開發。應該小心地
++創建公開可用的分支；當開發分支處於完整狀態並已準備好時(而不是之前）才合併
++開發分支的補丁。
++
++Git提供了一些強大的工具，可以讓您重寫開發歷史。一個不方便的補丁（比如說，
++一個打破二分法的補丁，或者有其他一些明顯的缺陷）可以在適當的位置修復，或者
++完全從歷史中消失。一個補丁系列可以被重寫，就好像它是在今天的主線上寫的一樣，
++即使你已經花了幾個月的時間在寫它。可以透明地將更改從一個分支轉移到另一個
++分支。等等。明智地使用git修改歷史的能力可以幫助創建問題更少的乾淨補丁集。
++
++然而，過度使用這種功能可能會導致其他問題，而不僅僅是對創建完美項目歷史的
++簡單癡迷。重寫歷史將重寫該歷史中包含的更改，將經過測試（希望如此）的內核樹
++變爲未經測試的內核樹。除此之外，如果開發人員沒有共享項目歷史，他們就無法
++輕鬆地協作；如果您重寫了其他開發人員拉入他們存儲庫的歷史，您將使這些開發
++人員的生活更加困難。因此，這裡有一個簡單的經驗法則：被導出到其他地方的歷史
++在此後通常被認爲是不可變的。
++
++因此，一旦將一組更改推送到公開可用的伺服器上，就不應該重寫這些更改。如果您
++嘗試強制進行無法快進合併的更改（即不共享同一歷史記錄的更改），Git將嘗試強制
++執行此規則。這可能覆蓋檢查，有時甚至需要重寫導出的樹。在樹之間移動變更集以
++避免linux-next中的衝突就是一個例子。但這種行爲應該是罕見的。這就是爲什麼
++開發應該在私有分支中進行（必要時可以重寫）並且只有在公共分支處於合理的較新
++狀態時才轉移到公共分支中的原因之一。
++
++當主線（或其他一組變更所基於的樹）前進時，很容易與該樹合併以保持領先地位。
++對於一個私有的分支，rebasing 可能是一個很容易跟上另一棵樹的方法，但是一旦
++一棵樹被導出到外界，rebasing就不可取了。一旦發生這種情況，就必須進行完全
++合併（merge）。合併有時是很有意義的，但是過於頻繁的合併會不必要地擾亂歷史。
++在這種情況下建議的做法是不要頻繁合併，通常只在特定的發布點（如主線-rc發布）
++合併。如果您對特定的更改感到緊張，則可以始終在私有分支中執行測試合併。在
++這種情況下，git「rerere」工具很有用；它能記住合併衝突是如何解決的，這樣您
++就不必重複相同的工作。
++
++關於Git這樣的工具的一個最大的反覆抱怨是：補丁從一個存儲庫到另一個存儲庫的
++大量移動使得很容易陷入錯誤建議的變更中，這些變更避開審查雷達進入主線。當內
++核開發人員看到這種情況發生時，他們往往會感到不高興；在Git樹上放置未審閱或
++主題外的補丁可能會影響您將來讓樹被拉取的能力。引用Linus的話:
++
++::
++
++   你可以給我發補丁，但當我從你那裡拉取一個Git補丁時，我需要知道你清楚
++   自己在做什麼，我需要能夠相信事情而 *無需* 手動檢查每個單獨的更改。
++
++（http://lwn.net/articles/224135/）。
++
++爲了避免這種情況，請確保給定分支中的所有補丁都與相關主題緊密相關；「驅動程序
++修復」分支不應更改核心內存管理代碼。而且，最重要的是，不要使用Git樹來繞過
++審查過程。不時的將樹的摘要發布到相關的列表中，在合適時候請求linux-next中
++包含該樹。
++
++如果其他人開始發送補丁以包含到您的樹中，不要忘記審閱它們。還要確保您維護正確
++的作者信息； git 「am」工具在這方面做得最好，但是如果補丁通過第三方轉發給您，
++您可能需要在補丁中添加「From:」行。
++
++請求拉取時，請務必提供所有相關信息：樹的位置、要拉取的分支以及拉取將導致的
++更改。在這方面 git request-pull 命令非常有用；它將按照其他開發人員所期望的
++格式化請求，並檢查以確保您已記得將這些更改推送到公共伺服器。
++
++審閱補丁
++--------
++
++一些讀者顯然會反對將本節與「高級主題」放在一起，因爲即使是剛開始的內核開發人員
++也應該審閱補丁。當然，沒有比查看其他人發布的代碼更好的方法來學習如何在內核環境
++中編程了。此外，審閱者永遠供不應求；通過審閱代碼，您可以對整個流程做出重大貢獻。
++
++審查代碼可能是一副令人生畏的圖景，特別是對一個新的內核開發人員來說，他們
++可能會對公開詢問代碼感到緊張，而這些代碼是由那些有更多經驗的人發布的。不過，
++即使是最有經驗的開發人員編寫的代碼也可以得到改進。也許對（所有）審閱者最好
++的建議是：把審閱評論當成問題而不是批評。詢問「在這條路徑中如何釋放鎖？」
++總是比說「這裡的鎖是錯誤的」更好。
++
++不同的開發人員將從不同的角度審查代碼。部分人會主要關注代碼風格以及代碼行是
++否有尾隨空格。其他人會主要關注補丁作爲一個整體實現的變更是否對內核有好處。
++同時也有人會檢查是否存在鎖問題、堆棧使用過度、可能的安全問題、在其他地方
++發現的代碼重複、足夠的文檔、對性能的不利影響、用戶空間ABI更改等。所有類型
++的檢查，只要它們能引導更好的代碼進入內核，都是受歡迎和值得的。
++
+diff --git a/Documentation/translations/zh_TW/process/8.Conclusion.rst b/Documentation/translations/zh_TW/process/8.Conclusion.rst
+new file mode 100644
+index 000000000000..7572b17667d9
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/8.Conclusion.rst
+@@ -0,0 +1,74 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/8.Conclusion.rst <development_conclusion>`
++:Translator:
++
++ 時奎亮 Alex Shi <alex.shi@linux.alibaba.com>
++
++:校譯:
++
++ 吳想成 Wu XiangCheng <bobwxc@email.cn>
++ 胡皓文 Hu Haowen <src.res@email.cn>
++
++.. _tw_development_conclusion:
++
++更多信息
++========
++
++關於Linux內核開發和相關主題的信息來源很多。首先是在內核原始碼分發中找到的
++文檔目錄。頂級
++:ref:`Documentation/translations/zh_TW/process/howto.rst <tw_process_howto>`
++文件是一個重要的起點；
++:ref:`Documentation/translations/zh_TW/process/submitting-patches.rst <tw_submittingpatches>`
++和 :ref:`Documentation/translations/zh_TW/process/submitting-drivers.rst <tw_submittingdrivers>`
++也是所有內核開發人員都應該閱讀的內容。許多內部內核API都是使用kerneldoc機制
++記錄的；「make htmldocs」或「make pdfdocs」可用於以HTML或PDF格式生成這些文檔
++（儘管某些發行版提供的tex版本會遇到內部限制，無法正確處理文檔）。
++
++不同的網站在各個細節層次上討論內核開發。本文作者想謙虛地建議用 https://lwn.net/
++作爲來源；有關許多特定內核主題的信息可以通過以下網址的 LWN 內核索引找到：
++
++  http://lwn.net/kernel/index/
++
++除此之外，內核開發人員的一個寶貴資源是：
++
++  https://kernelnewbies.org/
++
++當然，也不應該忘記 https://kernel.org/ ，這是內核發布信息的最終位置。
++
++關於內核開發有很多書：
++
++  《Linux設備驅動程序》第三版（Jonathan Corbet、Alessandro Rubini和Greg Kroah Hartman）
++  線上版本在 http://lwn.net/kernel/ldd3/
++
++  《Linux內核設計與實現》（Robert Love）
++
++  《深入理解Linux內核》(Daniel Bovet和Marco Cesati）
++
++然而，所有這些書都有一個共同的缺點：它們上架時就往往有些過時，而且已經上架
++一段時間了。不過，在那裡還是可以找到相當多的好信息。
++
++有關git的文檔，請訪問：
++
++  https://www.kernel.org/pub/software/scm/git/docs/
++
++  https://www.kernel.org/pub/software/scm/git/docs/user-manual.html
++
++結論
++====
++
++祝賀所有通過這篇冗長的文檔的人。希望它能夠幫助您理解Linux內核是如何開發的，
++以及您如何參與這個過程。
++
++最後，重要的是參與。任何開源軟體項目都不會超過其貢獻者投入其中的總和。Linux
++內核的發展速度和以前一樣快，因爲它得到了大量開發人員的幫助，他們都在努力使它
++變得更好。內核是一個最成功的例子，說明了當成千上萬的人爲了一個共同的目標一起
++工作時，可以做出什麼。
++
++不過，內核總是可以從更大的開發人員基礎中獲益。總有更多的工作要做。但是同樣
++重要的是，Linux生態系統中的大多數其他參與者可以通過爲內核做出貢獻而受益。使
++代碼進入主線是提高代碼質量、降低維護和分發成本、提高對內核開發方向的影響程度
++等的關鍵。這是一種共贏的局面。啓動你的編輯器，來加入我們吧；你會非常受歡迎的。
++
+diff --git a/Documentation/translations/zh_TW/process/code-of-conduct-interpretation.rst b/Documentation/translations/zh_TW/process/code-of-conduct-interpretation.rst
+new file mode 100644
+index 000000000000..949d831aaf6c
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/code-of-conduct-interpretation.rst
 @@ -0,0 +1,112 @@
 +.. SPDX-License-Identifier: GPL-2.0
 +
 +.. include:: ../disclaimer-zh_TW.rst
 +
-+:Translator: 胡皓文 Hu Haowen <src.res@email.cn>
++:Original: :ref:`Documentation/process/code-of-conduct-interpretation.rst <code_of_conduct_interpretation>`
++:Translator: Alex Shi <alex.shi@linux.alibaba.com>
++             Hu Haowen <src.res@email.cn>
 +
-+========
-+CPU 負載
-+========
++.. _tw_code_of_conduct_interpretation:
 +
-+Linux通過``/proc/stat``和``/proc/uptime``導出各種信息，用戶空間工具
-+如top(1)使用這些信息計算系統花費在某個特定狀態的平均時間。
-+例如：
-+
-+    $ iostat
-+    Linux 2.6.18.3-exp (linmac)     02/20/2007
-+
-+    avg-cpu:  %user   %nice %system %iowait  %steal   %idle
-+              10.01    0.00    2.92    5.44    0.00   81.63
-+
-+    ...
-+
-+這裡系統認爲在默認採樣周期內有10.01%的時間工作在用戶空間，2.92%的時
-+間用在系統空間，總體上有81.63%的時間是空閒的。
-+
-+大多數情況下``/proc/stat``的信息幾乎真實反映了系統信息，然而，由於內
-+核採集這些數據的方式/時間的特點，有時這些信息根本不可靠。
-+
-+那麼這些信息是如何被搜集的呢？每當時間中斷觸發時，內核查看此刻運行的
-+進程類型，並增加與此類型/狀態進程對應的計數器的值。這種方法的問題是
-+在兩次時間中斷之間系統（進程）能夠在多種狀態之間切換多次，而計數器只
-+增加最後一種狀態下的計數。
-+
-+舉例
-+---
-+
-+假設系統有一個進程以如下方式周期性地占用cpu::
-+
-+     兩個時鐘中斷之間的時間線
-+    |-----------------------|
-+     ^                     ^
-+     |_ 開始運行           |
-+                           |_ 開始睡眠
-+                           （很快會被喚醒）
-+
-+在上面的情況下，根據``/proc/stat``的信息（由於當系統處於空閒狀態時，
-+時間中斷經常會發生）系統的負載將會是0
-+
-+大家能夠想像內核的這種行爲會發生在許多情況下，這將導致``/proc/stat``
-+中存在相當古怪的信息::
-+
-+	/* gcc -o hog smallhog.c */
-+	#include <time.h>
-+	#include <limits.h>
-+	#include <signal.h>
-+	#include <sys/time.h>
-+	#define HIST 10
-+
-+	static volatile sig_atomic_t stop;
-+
-+	static void sighandler (int signr)
-+	{
-+	(void) signr;
-+	stop = 1;
-+	}
-+	static unsigned long hog (unsigned long niters)
-+	{
-+	stop = 0;
-+	while (!stop && --niters);
-+	return niters;
-+	}
-+	int main (void)
-+	{
-+	int i;
-+	struct itimerval it = { .it_interval = { .tv_sec = 0, .tv_usec = 1 },
-+				.it_value = { .tv_sec = 0, .tv_usec = 1 } };
-+	sigset_t set;
-+	unsigned long v[HIST];
-+	double tmp = 0.0;
-+	unsigned long n;
-+	signal (SIGALRM, &sighandler);
-+	setitimer (ITIMER_REAL, &it, NULL);
-+
-+	hog (ULONG_MAX);
-+	for (i = 0; i < HIST; ++i) v[i] = ULONG_MAX - hog (ULONG_MAX);
-+	for (i = 0; i < HIST; ++i) tmp += v[i];
-+	tmp /= HIST;
-+	n = tmp - (tmp / 3.0);
-+
-+	sigemptyset (&set);
-+	sigaddset (&set, SIGALRM);
-+
-+	for (;;) {
-+		hog (n);
-+		sigwait (&set, &i);
-+	}
-+	return 0;
-+	}
-+
-+
-+參考
-+---
-+
-+- https://lore.kernel.org/r/loom.20070212T063225-663@post.gmane.org
-+- Documentation/filesystems/proc.rst (1.8)
-+
-+
-+謝謝
-+---
-+
-+Con Kolivas, Pavel Machek
-+
-diff --git a/Documentation/translations/zh_TW/admin-guide/index.rst b/Documentation/translations/zh_TW/admin-guide/index.rst
-new file mode 100644
-index 000000000000..293c20245783
---- /dev/null
-+++ b/Documentation/translations/zh_TW/admin-guide/index.rst
-@@ -0,0 +1,135 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: ../disclaimer-zh_TW.rst
-+
-+:Original: :doc:`../../../admin-guide/index`
-+:Translator: 胡皓文 Hu Haowen <src.res@email.cn>
-+
-+Linux 內核用戶和管理員指南
-+==========================
-+
-+下面是一組隨時間添加到內核中的面向用戶的文檔的集合。到目前爲止，還沒有一個
-+整體的順序或組織 - 這些材料不是一個單一的，連貫的文件！幸運的話，情況會隨著
-+時間的推移而迅速改善。
-+
-+這個初始部分包含總體信息，包括描述內核的README， 關於內核參數的文檔等。
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   README
-+
-+Todolist:
-+
-+   kernel-parameters
-+   devices
-+   sysctl/index
-+
-+本節介紹CPU漏洞及其緩解措施。
-+
-+Todolist:
-+
-+   hw-vuln/index
-+
-+下面的一組文檔，針對的是試圖跟蹤問題和bug的用戶。
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   reporting-issues
-+   security-bugs
-+   bug-hunting
-+   bug-bisect
-+   tainted-kernels
-+   init
-+
-+Todolist:
-+
-+   reporting-bugs
-+   ramoops
-+   dynamic-debug-howto
-+   kdump/index
-+   perf/index
-+
-+這是應用程式開發人員感興趣的章節的開始。可以在這裡找到涵蓋內核ABI各個
-+方面的文檔。
-+
-+Todolist:
-+
-+   sysfs-rules
-+
-+本手冊的其餘部分包括各種指南，介紹如何根據您的喜好配置內核的特定行爲。
-+
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   clearing-warn-once
-+   cpu-load
-+   unicode
-+
-+Todolist:
-+
-+   acpi/index
-+   aoe/index
-+   auxdisplay/index
-+   bcache
-+   binderfs
-+   binfmt-misc
-+   blockdev/index
-+   bootconfig
-+   braille-console
-+   btmrvl
-+   cgroup-v1/index
-+   cgroup-v2
-+   cifs/index
-+   cputopology
-+   dell_rbu
-+   device-mapper/index
-+   edid
-+   efi-stub
-+   ext4
-+   nfs/index
-+   gpio/index
-+   highuid
-+   hw_random
-+   initrd
-+   iostats
-+   java
-+   jfs
-+   kernel-per-CPU-kthreads
-+   laptops/index
-+   lcd-panel-cgram
-+   ldm
-+   lockup-watchdogs
-+   LSM/index
-+   md
-+   media/index
-+   mm/index
-+   module-signing
-+   mono
-+   namespaces/index
-+   numastat
-+   parport
-+   perf-security
-+   pm/index
-+   pnp
-+   rapidio
-+   ras
-+   rtc
-+   serial-console
-+   svga
-+   sysrq
-+   thunderbolt
-+   ufs
-+   vga-softcursor
-+   video-output
-+   xfs
-+
-+.. only::  subproject and html
-+
-+   Indices
-+   =======
-+
-+   * :ref:`genindex`
-+
-diff --git a/Documentation/translations/zh_TW/admin-guide/init.rst b/Documentation/translations/zh_TW/admin-guide/init.rst
-new file mode 100644
-index 000000000000..32cdf134948f
---- /dev/null
-+++ b/Documentation/translations/zh_TW/admin-guide/init.rst
-@@ -0,0 +1,58 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: ../disclaimer-zh_TW.rst
-+
-+:Original: :doc:`../../../admin-guide/init`
-+
-+:譯者:
-+
-+ 吳想成 Wu XiangCheng <bobwxc@email.cn>
-+ 胡皓文 Hu Haowen <src.res@email.cn>
-+
-+解釋「No working init found.」啓動掛起消息
-+==========================================
-+
-+:作者:
-+
-+ Andreas Mohr <andi at lisas period de>
-+
-+ Cristian Souza <cristianmsbr at gmail period com>
-+
-+本文檔提供了加載初始化二進位（init binary）失敗的一些高層級原因（大致按執行
-+順序列出）。
-+
-+1) **無法掛載根文件系統Unable to mount root FS** ：請設置「debug」內核參數（在
-+   引導加載程序bootloader配置文件或CONFIG_CMDLINE）以獲取更詳細的內核消息。
-+
-+2) **初始化二進位不存在於根文件系統上init binary doesn't exist on rootfs** ：
-+   確保您的根文件系統類型正確（並且 ``root=`` 內核參數指向正確的分區）；擁有
-+   所需的驅動程序，例如SCSI或USB等存儲硬體；文件系統（ext3、jffs2等）是內建的
-+   （或者作爲模塊由initrd預加載）。
-+
-+3) **控制台設備損壞Broken console device** ： ``console= setup`` 中可能存在
-+   衝突 --> 初始控制台不可用（initial console unavailable）。例如，由於串行
-+   IRQ問題（如缺少基於中斷的配置）導致的某些串行控制台不可靠。嘗試使用不同的
-+   ``console= device`` 或像 ``netconsole=`` 。
-+
-+4) **二進位存在但依賴項不可用Binary exists but dependencies not available** ：
-+   例如初始化二進位的必需庫依賴項，像 ``/lib/ld-linux.so.2`` 丟失或損壞。使用
-+   ``readelf -d <INIT>|grep NEEDED`` 找出需要哪些庫。
-+
-+5) **無法加載二進位Binary cannot be loaded** ：請確保二進位的體系結構與您的
-+   硬體匹配。例如i386不匹配x86_64，或者嘗試在ARM硬體上加載x86。如果您嘗試在
-+   此處加載非二進位文件（shell腳本？），您應該確保腳本在其工作頭（shebang
-+   header）行 ``#!/...`` 中指定能正常工作的解釋器（包括其庫依賴項）。在處理
-+   腳本之前，最好先測試一個簡單的非腳本二進位文件，比如 ``/bin/sh`` ，並確認
-+   它能成功執行。要了解更多信息，請將代碼添加到 ``init/main.c`` 以顯示
-+   kernel_execve()的返回值。
-+
-+當您發現新的失敗原因時，請擴展本解釋（畢竟加載初始化二進位是一個 **關鍵** 且
-+艱難的過渡步驟，需要儘可能無痛地進行），然後向LKML提交一個補丁。
-+
-+待辦事項：
-+
-+- 通過一個可以存儲 ``kernel_execve()`` 結果值的結構體數組實現各種
-+  ``run_init_process()`` 調用，並在失敗時通過疊代 **所有** 結果來記錄一切
-+  （非常重要的可用性修復）。
-+- 試著使實現本身在一般情況下更有幫助，例如在受影響的地方提供額外的錯誤消息。
-+
-diff --git a/Documentation/translations/zh_TW/admin-guide/reporting-issues.rst b/Documentation/translations/zh_TW/admin-guide/reporting-issues.rst
-new file mode 100644
-index 000000000000..27638e199f13
---- /dev/null
-+++ b/Documentation/translations/zh_TW/admin-guide/reporting-issues.rst
-@@ -0,0 +1,1337 @@
-+.. SPDX-License-Identifier: (GPL-2.0+ OR CC-BY-4.0)
-+..
-+   If you want to distribute this text under CC-BY-4.0 only, please use 'The
-+   Linux kernel developers' for author attribution and link this as source:
-+   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/Documentation/admin-guide/reporting-issues.rst
-+..
-+   Note: Only the content of this RST file as found in the Linux kernel sources
-+   is available under CC-BY-4.0, as versions of this text that were processed
-+   (for example by the kernel's build system) might contain content taken from
-+   files which use a more restrictive license.
-+
-+.. include:: ../disclaimer-zh_TW.rst
-+
-+:Original: Documentation/admin-guide/reporting-issues.rst
-+
-+:譯者:
-+
-+ 吳想成 Wu XiangCheng <bobwxc@email.cn>
-+ 胡皓文 Hu Haowen <src.res@email.cn>
-+
-+
-+報告問題
-++++++++++
-+
-+
-+簡明指南（亦即 太長不看）
-+==========================
-+
-+您面臨的是否爲同系列穩定版或長期支持內核的普通內核的回歸？是否仍然受支持？
-+請搜索 `LKML內核郵件列表 <https://lore.kernel.org/lkml/>`_ 和
-+`Linux穩定版郵件列表 <https://lore.kernel.org/stable/>`_ 存檔中匹配的報告並
-+加入討論。如果找不到匹配的報告，請安裝該系列的最新版本。如果它仍然出現問題，
-+報告給穩定版郵件列表（stable@vger.kernel.org）。
-+
-+在所有其他情況下，請儘可能猜測是哪個內核部分導致了問題。查看MAINTAINERS文件，
-+了解開發人員希望如何得知問題，大多數情況下，報告問題都是通過電子郵件和抄送
-+相關郵件列表進行的。檢查報告目的地的存檔中是否已有匹配的報告；也請搜索
-+`LKML <https://lore.kernel.org/lkml/>`_ 和網絡。如果找不到可加入的討論，請
-+安裝 `最新的主線內核 <https://kernel.org/>`_ 。如果仍存在問題，請發送報告。
-+
-+問題已經解決了，但是您希望看到它在一個仍然支持的穩定版或長期支持系列中得到
-+解決？請安裝其最新版本。如果它出現了問題，那麼在主線中搜索修復它的更改，並
-+檢查是否正在回傳（backporting）或者已放棄；如果兩者都沒有，那麼可詢問處理
-+更改的人員。
-+
-+**通用提醒** ：當安裝和測試上述內核時，請確保它是普通的（即：沒有補丁，也沒
-+有使用附加模塊）。還要確保它是在一個正常的環境中構建和運行，並且在問題發生
-+之前沒有被汙染（tainted）。
-+
-+在編寫報告時，要涵蓋與問題相關的所有信息，如使用的內核和發行版。在碰見回歸時，
-+嘗試給出引入它的更改的提交ID，二分可以找到它。如果您同時面臨Linux內核的多個
-+問題，請分別報告每個問題。
-+
-+一旦報告發出，請回答任何出現的問題，並儘可能地提供幫助。這包括通過不時重新
-+測試新版本並發送狀態更新來推動進展。
-+
-+
-+如何向內核維護人員報告問題的逐步指南
-+=====================================
-+
-+上面的簡明指南概述了如何向Linux內核開發人員報告問題。對於已經熟悉向自由和開
-+源軟體（FLOSS）項目報告問題的人來說，這可能是他們所需要的全部內容。對於其他
-+人，本部分更爲詳細，並一步一步地描述。爲了便於閱讀，它仍然儘量簡潔，並省略
-+了許多細節；這些在逐步指南後的參考章節中進行了描述，該章節更詳細地解釋了每
-+個步驟。
-+
-+注意：本節涉及的方面比簡明指南多，順序也稍有不同。這符合你的利益，以確保您
-+儘早意識到看起來像Linux內核毛病的問題可能實際上是由其他原因引起的。這些步驟
-+可以確保你最終不會覺得在這一過程中投入的時間是浪費：
-+
-+ * 您是否面臨硬體或軟體供應商提供的Linux內核的問題？那麼基本上您最好停止閱讀
-+   本文檔，轉而向您的供應商報告問題，除非您願意自己安裝最新的Linux版本。尋找
-+   和解決問題往往需要後者。
-+
-+ * 使用您喜愛的網絡搜尋引擎對現有報告進行粗略搜索；此外，請檢查
-+   `Linux內核郵件列表（LKML） <https://lore.kernel.org/lkml/>`_ 的存檔。如果
-+   找到匹配的報告，請加入討論而不是發送新報告。
-+
-+ * 看看你正在處理的問題是否爲回歸問題、安全問題或非常嚴重的問題：這些都是需
-+   要在接下來的一些步驟中特別處理的「高優先級問題」。
-+
-+ * 確保不是內核環境導致了您面臨的問題。
-+
-+ * 創建一個新的備份，並將系統修復和恢復工具放在手邊。
-+
-+ * 確保您的系統不會通過動態構建額外的內核模塊來增強其內核，像DKMS這樣的解決
-+   方案可能在您不知情的情況下就在本地進行了這樣的工作。
-+
-+ * 當問題發生時，檢查您的內核是否被「汙染」，因爲使內核設置這個標誌的事件可能
-+   會導致您面臨的問題。
-+
-+ * 粗略地寫下如何重現這個問題。如果您同時處理多個問題，請爲每個問題單獨寫注
-+   釋，並確保它們在新啓動的系統上獨立出現。這是必要的，因爲每個問題都需要分
-+   別報告給內核開發人員，除非它們嚴重糾纏在一起。
-+
-+ * 如果您正面臨穩定版或長期支持版本線的回歸（例如從5.10.4更新到5.10.5時出現
-+   故障），請查看後文「報告穩定版和長期支持內核線的回歸」小節。
-+
-+ * 定位可能引起問題的驅動程序或內核子系統。找出其開發人員期望的報告的方式和
-+   位置。注意：大多數情況下不會是 bugzilla.kernel.org，因爲問題通常需要通
-+   過郵件發送給維護人員和公共郵件列表。
-+
-+ * 在缺陷追蹤器或問題相關郵件列表的存檔中徹底搜索可能與您的問題匹配的報告。
-+   如果你發現了一些相關討論，請加入討論而不是發送新的報告。
-+
-+在完成這些準備之後，你將進入主要部分：
-+
-+ * 除非您已經在運行最新的「主線」Linux內核，否則最好在報告流程前安裝它。在某些
-+   情況下，使用最新的「穩定版」Linux進行測試和報告也是可以接受的替代方案；在
-+   合併窗口期間，這實際上可能是最好的方法，但在開發階段最好還是暫停幾天。無論
-+   你選擇什麼版本，最好使用「普通」構建。忽略這些建議會大大增加您的報告被拒絕
-+   或忽略的風險。
-+
-+ * 確保您剛剛安裝的內核在運行時不會「汙染」自己。
-+
-+ * 在您剛剛安裝的內核中復現這個問題。如果它沒有出現，請查看下方只發生在
-+   穩定版和長期支持內核的問題的說明。
-+
-+ * 優化你的筆記：試著找到並寫出最直接的復現問題的方法。確保最終結果包含所有
-+   重要的細節，同時讓第一次聽說的人容易閱讀和理解。如果您在此過程中學到了一
-+   些東西，請考慮再次搜索關於該問題的現有報告。
-+
-+ * 如果失敗涉及「panic」、「Oops」、「warning」或「BUG」，請考慮解碼內核日誌以查找觸
-+   發錯誤的代碼行。
-+
-+ * 如果您的問題是回歸問題，請儘可能縮小引入問題時的範圍。
-+
-+ * 通過詳細描述問題來開始編寫報告。記得包括以下條目：您爲復現而安裝的最新內
-+   核版本、使用的Linux發行版以及關於如何復現該問題的說明。如果可能，將內核
-+   構建配置（.config）和 ``dmesg`` 的輸出放在網上的某個地方，並連結到它。包
-+   含或上傳所有其他可能相關的信息，如Oops的輸出/截圖或來自 ``lspci`` 的輸出
-+   。一旦你寫完了這個主要部分，請在上方插入一個正常長度的段落快速概述問題和
-+   影響。再在此之上添加一個簡單描述問題的句子，以得到人們的閱讀。現在給出一
-+   個更短的描述性標題或主題。然後就可以像MAINTAINERS文件告訴你的那樣發送或
-+   提交報告了，除非你在處理一個「高優先級問題」：它們需要按照下面「高優先級問
-+   題的特殊處理」所述特別關照。
-+
-+ * 等待別人的反應，繼續推進事情，直到你能夠接受這樣或那樣的結果。因此，請公
-+   開和及時地回應任何詢問。測試提出的修復。積極地測試：至少重新測試每個新主
-+   線版本的首個候選版本（RC），並報告你的結果。如果出現拖延，就友好地提醒一
-+   下。如果你沒有得到任何幫助或者未能滿意，請試著自己幫助自己。
-+
-+
-+報告穩定版和長期支持內核線的回歸
-+----------------------------------
-+
-+如果您發現了穩定版或長期支持內核版本線中的回歸問題並按上述流程跳到這裡，那麼
-+請閱讀本小節。即例如您在從5.10.4更新到5.10.5時出現了問題（從5.9.15到5.10.5則
-+不是）。開發人員希望儘快修復此類回歸，因此有一個簡化流程來報告它們：
-+
-+ * 檢查內核開發人員是否仍然維護你關心的Linux內核版本線：去 `kernel.org 的首頁
-+   <https://kernel.org/>`_ ，確保此特定版本線的最新版沒有「[EOL]」標記。
-+
-+ * 檢查 `Linux穩定版郵件列表 <https://lore.kernel.org/stable/>`_ 中的現有報告。
-+
-+ * 從特定的版本線安裝最新版本作爲純淨內核。確保這個內核沒有被汙染，並且仍然
-+   存在問題，因爲問題可能已經在那裡被修復了。如果您第一次發現供應商內核的問題，
-+   請檢查已知最新版本的普通構建是否可以正常運行。
-+
-+ * 向Linux穩定版郵件列表發送一個簡短的問題報告(stable@vger.kernel.org)。大致
-+   描述問題，並解釋如何復現。講清楚首個出現問題的版本和最後一個工作正常的版本。
-+   然後等待進一步的指示。
-+
-+下面的參考章節部分詳細解釋了這些步驟中的每一步。
-+
-+
-+報告只發生在較舊內核版本線的問題
-+----------------------------------
-+
-+若您嘗試了上述的最新主線內核，但未能在那裡復現問題，那麼本小節適用於您；以下
-+流程有助於使問題在仍然支持的穩定版或長期支持版本線，或者定期基於最新穩定版或
-+長期支持內核的供應商內核中得到修復。如果是這種情況，請執行以下步驟：
-+
-+ * 請做好準備，接下來的幾個步驟可能無法在舊版本中解決問題：修復可能太大或太
-+   冒險，無法移植到那裡。
-+
-+ * 執行前節「報告穩定版和長期支持內核線的回歸」中的前三個步驟。
-+
-+ * 在Linux內核版本控制系統中搜索修復主線問題的更改，因爲它的提交消息可能會
-+   告訴你修復是否已經計劃好了支持。如果你沒有找到，搜索適當的郵件列表，尋找
-+   討論此類問題或同行評議可能修復的帖子；然後檢查討論是否認爲修復不適合支持。
-+   如果支持根本不被考慮，加入最新的討論，詢問是否有可能。
-+
-+ * 前面的步驟之一應該會給出一個解決方案。如果仍未能成功，請向可能引起問題的
-+   子系統的維護人員詢問建議；抄送特定子系統的郵件列表以及穩定版郵件列表
-+
-+下面的參考章節部分詳細解釋了這些步驟中的每一步。
-+
-+
-+參考章節：向內核維護者報告問題
++Linux內核貢獻者契約行為準則解釋
 +===============================
 +
-+上面的詳細指南簡要地列出了所有主要步驟，這對大多數人來說應該足夠了。但有時，
-+即使是有經驗的用戶也可能想知道如何實際執行這些步驟之一。這就是本節的目的，
-+因爲它將提供關於上述每個步驟的更多細節。請將此作爲參考文檔：可以從頭到尾
-+閱讀它。但它主要是爲了瀏覽和查找如何實際執行這些步驟的詳細信息。
-+
-+在深入挖掘細節之前，我想先給你一些一般性建議：
-+
-+ * Linux內核開發人員很清楚這個過程很複雜，比其他的FLOSS項目要求更多。我們很
-+   希望讓它更簡單。但這需要在不同的地方以及一些基礎設施上付諸努力，這些基礎
-+   設施需要持續的維護；尚未有人站出來做這些工作，所以目前情況就是這樣。
-+
-+ * 與某些供應商簽訂的保證或支持合同並不能使您有權要求上游Linux內核社區的開
-+   發人員進行修復：這樣的合同完全在Linux內核、其開發社區和本文檔的範圍之外。
-+   這就是爲什麼在這種情況下，你不能要求任何契約保證，即使開發人員處理的問
-+   題對供應商有效。如果您想主張您的權利，使用供應商的支持渠道代替。當這樣做
-+   的時候，你可能想提出你希望看到這個問題在上游Linux內核中修復；可以這是確
-+   保最終修復將被納入所有Linux發行版的唯一方法來鼓勵他們。
-+
-+ * 如果您從未向FLOSS項目報告過任何問題，那麼您應該考慮閱讀 `如何有效地報告
-+   缺陷 <https://www.chiark.greenend.org.uk/~sgtatham/bugs.html>`_ ， `如何
-+   以明智的方式提問 <http://www.catb.org/esr/faqs/smart-questions.html>`_ ，
-+   和 `如何提出好問題 <https://jvns.ca/blog/good-questions/>`_ 。
-+
-+解決這些問題之後，可以在下面找到如何正確地向Linux內核報告問題的詳細信息。
-+
-+
-+確保您使用的是上游Linux內核
-+----------------------------
-+
-+   *您是否面臨硬體或軟體供應商提供的Linux內核的問題？那麼基本上您最好停止閱
-+   讀本文檔，轉而向您的供應商報告問題，除非您願意自己安裝最新的Linux版本。
-+   尋找和解決問題往往需要後者。*
-+
-+與大多數程式設計師一樣，Linux內核開發人員不喜歡花時間處理他們維護的原始碼中根本
-+不會發生的問題的報告。這只會浪費每個人的時間，尤其是你的時間。不幸的是，當
-+涉及到內核時，這樣的情況很容易發生，並且常常導致雙方氣餒。這是因爲幾乎所有預
-+裝在設備（台式機、筆記本電腦、智慧型手機、路由器等）上的Linux內核，以及大多數
-+由Linux發行商提供的內核，都與由kernel.org發行的官方Linux內核相距甚遠：從Linux
-+開發的角度來看，這些供應商提供的內核通常是古老的或者經過了大量修改，通常兩點
-+兼具。
-+
-+大多數供應商內核都不適合用來向Linux內核開發人員報告問題：您在其中遇到的問題
-+可能已經由Linux內核開發人員在數月或數年前修復；此外，供應商的修改和增強可能
-+會導致您面臨的問題，即使它們看起來很小或者完全不相關。這就是爲什麼您應該向
-+供應商報告這些內核的問題。它的開發者應該查看報告，如果它是一個上游問題，直接
-+於上游修復或將報告轉發到那裡。在實踐中，這有時行不通。因此，您可能需要考慮
-+通過自己安裝最新的Linux內核內核來繞過供應商。如果如果您選擇此方法，那麼本指
-+南後面的步驟將解釋如何在排除了其他可能導致您的問題的原因後執行此操作。
-+
-+注意前段使用的詞語是「大多數」，因爲有時候開發人員實際上願意處理供應商內核出現
-+的問題報告。他們是否這麼做很大程度上取決於開發人員和相關問題。如果發行版只
-+根據最近的Linux版本對內核進行了較小修改，那麼機會就比較大；例如對於Debian
-+GNU/Linux Sid或Fedora Rawhide所提供的主線內核。一些開發人員還將接受基於最新
-+穩定內核的發行版內核問題報告，只要它改動不大；例如Arch Linux、常規Fedora版本
-+和openSUSE Turboweed。但是請記住，您最好使用主線Linux，並避免在此流程中使用
-+穩定版內核，如「安裝一個新的內核進行測試」一節中所詳述。
-+
-+當然，您可以忽略所有這些建議，並向上游Linux開發人員報告舊的或經過大量修改的
-+供應商內核的問題。但是注意，這樣的報告經常被拒絕或忽視，所以自行小心考慮一下。
-+不過這還是比根本不報告問題要好：有時候這樣的報告會直接或間接地幫助解決之後的
-+問題。
-+
-+
-+搜索現有報告（第一部分）
-+-------------------------
-+
-+    *使用您喜愛的網絡搜尋引擎對現有報告進行粗略搜索；此外，請檢查Linux內核
-+    郵件列表（LKML）的存檔。如果找到匹配的報告，請加入討論而不是發送新報告。*
-+
-+報告一個別人已經提出的問題，對每個人來說都是浪費時間，尤其是作爲報告人的你。
-+所以徹底檢查是否有人已經報告了這個問題，這對你自己是有利的。在流程中的這一步，
-+可以只執行一個粗略的搜索：一旦您知道您的問題需要報告到哪裡，稍後的步驟將告訴
-+您如何詳細搜索。儘管如此，不要倉促完成這一步，它可以節省您的時間和減少麻煩。
-+
-+只需先用你最喜歡的搜尋引擎在網際網路上搜索。然後再搜索Linux內核郵件列表（LKML）
-+存檔。
-+
-+如果搜索結果實在太多，可以考慮讓你的搜尋引擎將搜索時間範圍限制在過去的一個
-+月或一年。而且無論你在哪裡搜索，一定要用恰當的搜索關鍵詞；也要變化幾次關鍵
-+詞。同時，試著從別人的角度看問題：這將幫助你想出其他的關鍵詞。另外，一定不
-+要同時使用過多的關鍵詞。記住搜索時要同時嘗試包含和不包含內核驅動程序的名稱
-+或受影響的硬體組件的名稱等信息。但其確切的品牌名稱（比如說「華碩紅魔 Radeon
-+RX 5700 XT Gaming OC」）往往幫助不大，因爲它太具體了。相反，嘗試搜索術語，如
-+型號（Radeon 5700 或 Radeon 5000）和核心代號（「Navi」或「Navi10」），以及包含
-+和不包含其製造商（「AMD」）。
-+
-+如果你發現了關於你的問題的現有報告，請加入討論，因爲你可能會提供有價值的額
-+外信息。這一點很重要，即使是在修復程序已經準備好或處於最後階段，因爲開發人
-+員可能會尋找能夠提供額外信息或測試建議修復程序的人。跳到「發布報告後的責任」
-+一節，了解有關如何正確參與的細節。
-+
-+注意，搜索 `bugzilla.kernel.org <https://bugzilla.kernel.org/>`_ 網站可能
-+也是一個好主意，因爲這可能會提供有價值的見解或找到匹配的報告。如果您發現後者，
-+請記住：大多數子系統都希望在不同的位置報告，如下面「你需要將問題報告到何處」
-+一節中所述。因此本應處理這個問題的開發人員甚至可能不知道bugzilla的工單。所以
-+請檢查工單中的問題是否已經按照本文檔所述得到報告，如果沒有，請考慮這樣做。
-+
-+高優先級的問題？
-+-----------------
-+
-+    *看看你正在處理的問題是否是回歸問題、安全問題或非常嚴重的問題：這些都是
-+    需要在接下來的一些步驟中特別處理的「高優先級問題」。*
-+
-+Linus Torvalds和主要的Linux內核開發人員希望看到一些問題儘快得到解決，因此在
-+報告過程中有一些「高優先級問題」的處理略有不同。有三種情況符合條件:回歸、安全
-+問題和非常嚴重的問題。
-+
-+如果在舊版本的Linux內核中工作的東西不能在新版本的Linux內核中工作，或者某種
-+程度上在新版本的Linux內核中工作得更差，那麼你就需要處理「回歸」。因此，當一個
-+在Linux 5.7中表現良好的WiFi驅動程序在5.8中表現不佳或根本不能工作時，這是一
-+種回歸。如果應用程式在新的內核中出現不穩定的現象，這也是一種回歸，這可能是
-+由於內核和用戶空間之間的接口（如procfs和sysfs）發生不兼容的更改造成的。顯著
-+的性能降低或功耗增加也可以稱爲回歸。但是請記住:新內核需要使用與舊內核相似的
-+配置來構建（參見下面如何實現這一點）。這是因爲內核開發人員在實現新特性時有
-+時無法避免不兼容性；但是爲了避免回歸，這些特性必須在構建配置期間顯式地啓用。
-+
-+什麼是安全問題留給您自己判斷。在繼續之前，請考慮閱讀
-+「Documentation/translations/zh_TW/admin-guide/security-bugs.rst」，
-+因爲它提供了如何最恰當地處理安全問題的額外細節。
-+
-+當發生了完全無法接受的糟糕事情時，此問題就是一個「非常嚴重的問題」。例如，
-+Linux內核破壞了它處理的數據或損壞了它運行的硬體。當內核突然顯示錯誤消息
-+（「kernel panic」）並停止工作，或者根本沒有任何停止信息時，您也在處理一個嚴重
-+的問題。注意：不要混淆「panic」（內核停止自身的致命錯誤）和「Oops」（可恢復錯誤），
-+因爲顯示後者之後內核仍然在運行。
-+
-+
-+確保環境健康
-+--------------
-+
-+    *確保不是內核所處環境導致了你所面臨的問題。*
-+
-+看起來很像內核問題的問題有時是由構建或運行時環境引起的。很難完全排除這種問
-+題，但你應該儘量減少這種問題：
-+
-+ * 構建內核時，請使用經過驗證的工具，因爲編譯器或二進位文件中的錯誤可能會導
-+   致內核出現錯誤行爲。
-+
-+ * 確保您的計算機組件在其設計規範內運行；這對處理器、內存和主板尤爲重要。因
-+   此，當面臨潛在的內核問題時，停止低電壓或超頻。
-+
-+ * 儘量確保不是硬體故障導致了你的問題。例如，內存損壞會導致大量的問題，這些
-+   問題會表現爲看起來像內核問題。
-+
-+ * 如果你正在處理一個文件系統問題，你可能需要用 ``fsck`` 檢查一下文件系統，
-+   因爲它可能會以某種方式被損壞，從而導致無法預期的內核行爲。
-+
-+ * 在處理回歸問題時，要確保沒有在更新內核的同時發生了其他變化。例如，這個問
-+   題可能是由同時更新的其他軟體引起的。也有可能是在你第一次重啓進入新內核時，
-+   某個硬體巧合地壞了。更新系統 BIOS 或改變 BIOS 設置中的某些內容也會導致
-+   一些看起來很像內核回歸的問題。
-+
-+
-+爲緊急情況做好準備
-+-------------------
-+
-+    *創建一個全新的備份，並將系統修復和還原工具放在手邊*
-+
-+我得提醒您，您正在和計算機打交道，計算機有時會出現意想不到的事情，尤其是當
-+您折騰其作業系統的內核等關鍵部件時。而這就是你在這個過程中要做的事情。因此，
-+一定要創建一個全新的備份；還要確保你手頭有修復或重裝作業系統的所有工具，
-+以及恢復備份所需的一切。
-+
-+
-+確保你的內核不會被增強
-+------------------------
-+
-+    *確保您的系統不會通過動態構建額外的內核模塊來增強其內核，像DKMS這樣的解
-+    決方案可能在您不知情的情況下就在本地進行了這樣的工作。*
-+
-+如果內核以任何方式得到增強，那麼問題報告被忽略或拒絕的風險就會急劇增加。這就
-+是爲什麼您應該刪除或禁用像akmods和DKMS這樣的機制：這些機制會自動構建額外內核
-+模塊，例如當您安裝新的Linux內核或第一次引導它時。也要記得同時刪除他們可能安裝
-+的任何模塊。然後重新啓動再繼續。
-+
-+注意，你可能不知道你的系統正在使用這些解決方案之一：當你安裝 Nvidia 專有圖
-+形驅動程序、VirtualBox 或其他需要 Linux 內核以外的模塊支持的軟體時，它們通
-+常會靜默設置。這就是爲什麼你可能需要卸載這些軟體的軟體包，以擺脫任何第三方
-+內核模塊。
-+
-+
-+檢測「汙染」標誌
-+----------------
-+
-+    *當問題發生時，檢查您的內核是否被「汙染」，因爲使內核設置這個標誌的事件可
-+    能會導致您面臨的問題。*
-+
-+當某些可能會導致看起來完全不相關的後續錯誤的事情發生時，內核會用「汙染
-+（taint）」標誌標記自己。如果您的內核受到汙染，那麼您面臨的可能是這樣的錯誤。
-+因此在投入更多時間到這個過程中之前，儘早排除此情況可能對你有好處。這是這個
-+步驟出現在這裡的唯一原因，因爲這個過程稍後會告訴您安裝最新的主線內核；然後
-+您將需要再次檢查汙染標誌，因爲當它出問題的時候內核報告會關注它。
-+
-+在正在運行的系統上檢查內核是否汙染非常容易：如果 ``cat /proc/sys/kernel/tainted``
-+返回「0」，那麼內核沒有被汙染，一切正常。在某些情況下無法檢查該文件；這就是
-+爲什麼當內核報告內部問題（「kernel bug」）、可恢復錯誤（「kernel Oops」）或停止
-+操作前不可恢復的錯誤（「kernel panic」）時，它也會提到汙染狀態。當其中一個錯
-+誤發生時，查看列印的錯誤消息的頂部，搜索以「CPU:」開頭的行。如果發現問題時內
-+核未被汙染，那麼它應該以「Not infected」結束；如果你看到「Tainted:」且後跟一些
-+空格和字母，那就被汙染了。
-+
-+如果你的內核被汙染了，請閱讀「Documentation/translations/zh_TW/admin-guide/tainted-kernels.rst」
-+以找出原因。設法消除汙染因素。通常是由以下三種因素之一引起的：
-+
-+ 1. 發生了一個可恢復的錯誤（「kernel Oops」），內核汙染了自己，因爲內核知道在
-+    此之後它可能會出現奇怪的行爲錯亂。在這種情況下，檢查您的內核或系統日誌，
-+    並尋找以下列文字開頭的部分::
-+
-+       Oops: 0000 [#1] SMP
-+
-+    如方括號中的「#1」所示，這是自啓動以來的第一次Oops。每個Oops和此後發生的
-+    任何其他問題都可能是首個Oops的後續問題，即使這兩個問題看起來完全不相關。
-+    通過消除首個Oops的原因並在之後復現該問題，可以排除這種情況。有時僅僅
-+    重新啓動就足夠了，有時更改配置後重新啓動可以消除Oops。但是在這個流程中
-+    不要花費太多時間在這一點上，因爲引起Oops的原因可能已經在您稍後將按流程
-+    安裝的新Linux內核版本中修復了。
-+
-+ 2. 您的系統使用的軟體安裝了自己的內核模塊，例如Nvidia的專有圖形驅動程序或
-+    VirtualBox。當內核從外部源（即使它們是開源的）加載此類模塊時，它會汙染
-+    自己：它們有時會在不相關的內核區域導致錯誤，從而可能導致您面臨的問題。
-+    因此，當您想要向Linux內核開發人員報告問題時，您必須阻止這些模塊加載。
-+    大多數情況下最簡單的方法是：臨時卸載這些軟體，包括它們可能已經安裝的任
-+    何模塊。之後重新啓動。
-+
-+ 3. 當內核加載駐留在Linux內核原始碼staging樹中的模塊時，它也會汙染自身。這
-+    是一個特殊的區域，代碼（主要是驅動程序）還沒有達到正常Linux內核的質量
-+    標準。當您報告此種模塊的問題時，內核受到汙染顯然是沒有問題的；只需確保
-+    問題模塊是造成汙染的唯一原因。如果問題發生在一個不相關的區域，重新啓動
-+    並通過指定 ``foo.blacklist=1`` 作爲內核參數臨時阻止該模塊被加載（用有
-+    問題的模塊名替換「foo」）。
-+
-+
-+記錄如何重現問題
-+------------------
-+
-+    *粗略地寫下如何重現這個問題。如果您同時處理多個問題，請爲每個問題單獨寫
-+    注釋，並確保它們在新啓動的系統上獨立出現。這是必要的，因爲每個問題都需
-+    要分別報告給內核開發人員，除非它們嚴重糾纏在一起。*
-+
-+如果你同時處理多個問題，必須分別報告每個問題，因爲它們可能由不同的開發人員
-+處理。在一份報告中描述多種問題，也會讓其他人難以將其分開。因此只有在問題嚴
-+重糾纏的情況下，才能將問題合併在一份報告中。
-+
-+此外，在報告過程中，你必須測試該問題是否發生在其他內核版本上。因此，如果您
-+知道如何在一個新啓動的系統上快速重現問題，將使您的工作更加輕鬆。
-+
-+注意：報告只發生過一次的問題往往是沒有結果的，因爲它們可能是由於宇宙輻射導
-+致的位翻轉。所以你應該嘗試通過重現問題來排除這種情況，然後再繼續。如果你有
-+足夠的經驗來區分由於硬體故障引起的一次性錯誤和難以重現的罕見內核問題，可以
-+忽略這個建議。
-+
-+
-+穩定版或長期支持內核的回歸？
-+-----------------------------
-+
-+    *如果您正面臨穩定版或長期支持版本線的回歸（例如從5.10.4更新到5.10.5時出現
-+    故障），請查看後文「報告穩定版和長期支持內核線的回歸」小節。*
-+
-+穩定版和長期支持內核版本線中的回歸是Linux開發人員非常希望解決的問題，這樣的
-+問題甚至比主線開發分支中的回歸更不應出現，因爲它們會很快影響到很多人。開發人員
-+希望儘快了解此類問題，因此有一個簡化流程來報告這些問題。注意，使用更新內核版
-+本線的回歸（比如從5.9.15切換到5.10.5時出現故障）不符合條件。
-+
-+
-+你需要將問題報告到何處
-+------------------------
-+
-+    *定位可能引起問題的驅動程序或內核子系統。找出其開發人員期望的報告的方式
-+    和位置。注意：大多數情況下不會是bugzilla.kernel.org，因爲問題通常需要通
-+    過郵件發送給維護人員和公共郵件列表。*
-+
-+將報告發送給合適的人是至關重要的，因爲Linux內核是一個大項目，大多數開發人員
-+只熟悉其中的一小部分。例如，相當多的程式設計師只關心一個驅動程序，比如一個WiFi
-+晶片驅動程序；它的開發人員可能對疏遠的或不相關的「子系統」（如TCP堆棧、
-+PCIe/PCI子系統、內存管理或文件系統）的內部知識了解很少或完全不了解。
-+
-+問題在於：Linux內核缺少一個，可以簡單地將問題歸檔並讓需要了解它的開發人員了
-+解它的，中心化缺陷跟蹤器。這就是爲什麼你必須找到正確的途徑來自己報告問題。
-+您可以在腳本的幫助下做到這一點（見下文），但它主要針對的是內核開發人員和專
-+家。對於其他人來說，MAINTAINERS（維護人員）文件是更好的選擇。
-+
-+如何閱讀MAINTAINERS維護者文件
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+爲了說明如何使用 :ref:`MAINTAINERS <maintainers>` 文件，讓我們假設您的筆記
-+本電腦中的WiFi在更新內核後突然出現了錯誤行爲。這種情況下可能是WiFi驅動的問
-+題。顯然，它也可能由於驅動基於的某些代碼，但除非你懷疑有這樣的東西會附著在
-+驅動程序上。如果真的是其他的問題，驅動程序的開發人員會讓合適的人參與進來。
-+
-+遺憾的是，沒有通用且簡單的辦法來檢查哪個代碼驅動了特定硬體組件。
-+
-+在WiFi驅動出現問題的情況下，你可能想查看 ``lspci -k`` 的輸出，因爲它列出了
-+PCI/PCIe總線上的設備和驅動它的內核模塊::
-+
-+       [user@something ~]$ lspci -k
-+       [...]
-+       3a:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter (rev 32)
-+         Subsystem: Bigfoot Networks, Inc. Device 1535
-+         Kernel driver in use: ath10k_pci
-+         Kernel modules: ath10k_pci
-+       [...]
-+
-+但如果你的WiFi晶片通過USB或其他內部總線連接，這種方法就行不通了。在這種情況
-+下，您可能需要檢查您的WiFi管理器或 ``ip link`` 的輸出。尋找有問題的網絡接口
-+的名稱，它可能類似於「wlp58s0」。此名稱可以用來找到驅動它的模塊::
-+
-+       [user@something ~]$ realpath --relative-to=/sys/module//sys/class/net/wlp58s0/device/driver/module
-+       ath10k_pci
-+
-+如果這些技巧不能進一步幫助您，請嘗試在網上搜索如何縮小相關驅動程序或子系統
-+的範圍。如果你不確定是哪一個：試著猜一下，即使你猜得不好，也會有人會幫助你
-+的。
-+
-+一旦您知道了相應的驅動程序或子系統，您就希望在MAINTAINERS文件中搜索它。如果
-+是「ath10k_pci」，您不會找到任何東西，因爲名稱太具體了。有時你需要在網上尋找
-+幫助；但在此之前，請嘗試使用一個稍短或修改過的名稱來搜索MAINTAINERS文件，因
-+爲這樣你可能會發現類似這樣的東西::
-+
-+       QUALCOMM ATHEROS ATH10K WIRELESS DRIVER
-+       Mail:          A. Some Human <shuman@example.com>
-+       Mailing list:  ath10k@lists.infradead.org
-+       Status:        Supported
-+       Web-page:      https://wireless.wiki.kernel.org/en/users/Drivers/ath10k
-+       SCM:           git git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
-+       Files:         drivers/net/wireless/ath/ath10k/
-+
-+注意：如果您閱讀在Linux原始碼樹的根目錄中找到的原始維護者文件，則行描述將是
-+縮寫。例如，「Mail:（郵件）」將是「M:」，「Mailing list:（郵件列表）」將是「L」，
-+「Status:（狀態）」將是「S:」。此文件頂部有一段解釋了這些和其他縮寫。
-+
-+首先查看「Status」狀態行。理想情況下，它應該得到「Supported（支持）」或
-+「Maintained（維護）」。如果狀態爲「Obsolete（過時的）」，那麼你在使用一些過時的
-+方法，需要轉換到新的解決方案上。有時候，只有在感到有動力時，才會有人爲代碼
-+提供「Odd Fixes」。如果碰見「Orphan」，你就完全不走運了，因爲再也沒有人關心代碼
-+了，只剩下這些選項:準備好與問題共存，自己修復它，或者找一個願意修復它的程式設計師。
-+
-+檢查狀態後，尋找以「bug:」開頭的一行：它將告訴你在哪裡可以找到子系統特定的缺
-+陷跟蹤器來提交你的問題。上面的例子沒有此行。大多數部分都是這樣，因爲 Linux
-+內核的開發完全是由郵件驅動的。很少有子系統使用缺陷跟蹤器，且其中只有一部分
-+依賴於 bugzilla.kernel.org。
-+
-+在這種以及其他很多情況下，你必須尋找以「Mail:」開頭的行。這些行提到了特定代碼
-+的維護者的名字和電子郵件地址。也可以查找以「Mailing list:」開頭的行，它告訴你
-+開發代碼的公共郵件列表。你的報告之後需要通過郵件發到這些地址。另外，對於所有
-+通過電子郵件發送的問題報告，一定要抄送 Linux Kernel Mailing List（LKML）
-+<linux-kernel@vger.kernel.org>。在以後通過郵件發送問題報告時，不要遺漏任何
-+一個郵件列表!維護者都是大忙人，可能會把一些工作留給子系統特定列表上的其他開
-+發者；而 LKML 很重要，因爲需要一個可以找到所有問題報告的地方。
-+
-+
-+藉助腳本找到維護者
-+~~~~~~~~~~~~~~~~~~~~
-+
-+對於手頭有Linux源碼的人來說，有第二個可以找到合適的報告地點的選擇：腳本
-+「scripts/get_maintainer.pl」，它嘗試找到所有要聯繫的人。它會查詢MAINTAINERS
-+文件，並需要用相關原始碼的路徑來調用。對於編譯成模塊的驅動程序，經常可以用
-+這樣的命令找到::
-+
-+       $ modinfo ath10k_pci | grep filename | sed 's!/lib/modules/.*/kernel/!!; s!filename:!!; s!\.ko\(\|\.xz\)!!'
-+       drivers/net/wireless/ath/ath10k/ath10k_pci.ko
-+
-+將其中的部分內容傳遞給腳本::
-+
-+       $ ./scripts/get_maintainer.pl -f drivers/net/wireless/ath/ath10k*
-+       Some Human <shuman@example.com> (supporter:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER)
-+       Another S. Human <asomehuman@example.com> (maintainer:NETWORKING DRIVERS)
-+       ath10k@lists.infradead.org (open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER)
-+       linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS))
-+       netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
-+       linux-kernel@vger.kernel.org (open list)
-+
-+不要把你的報告發給所有的人。發送給維護者，腳本稱之爲「supporter:」；另外抄送
-+代碼最相關的郵件列表，以及 Linux 內核郵件列表（LKML）。在此例中，你需要將報
-+告發送給 「Some Human <shuman@example.com>」 ，並抄送
-+「ath10k@lists.infradead.org」和「linux-kernel@vger.kernel.org」。
-+
-+注意：如果你用 git 克隆了 Linux 原始碼，你可能需要用--git 再次調用
-+get_maintainer.pl。腳本會查看提交歷史，以找到最近哪些人參與了相關代碼的編寫，
-+因爲他們可能會提供幫助。但要小心使用這些結果，因爲它很容易讓你誤入歧途。
-+例如，這種情況常常會發生在很少被修改的地方（比如老舊的或未維護的驅動程序）：
-+有時這樣的代碼會在樹級清理期間被根本不關心此驅動程序的開發者修改。
-+
-+
-+搜索現有報告（第二部分）
-+--------------------------
-+
-+    *在缺陷追蹤器或問題相關郵件列表的存檔中徹底搜索可能與您的問題匹配的報告。
-+    如果找到匹配的報告，請加入討論而不是發送新報告。*
-+
-+如前所述：報告一個別人已經提出的問題，對每個人來說都是浪費時間，尤其是作爲報告
-+人的你。這就是爲什麼你應該再次搜索現有的報告。現在你已經知道問題需要報告到哪裡。
-+如果是郵件列表，那麼一般在 `lore.kernel.org <https://lore.kernel.org/>`_ 可以
-+找到相應存檔。
-+
-+但有些列表運行在其他地方。例如前面步驟中當例子的ath10k WiFi驅動程序就是這種
-+情況。但是你通常可以在網上很容易地找到這些列表的檔案。例如搜索「archive
-+ath10k@lists.infradead.org」，將引導您到ath10k郵件列表的信息頁，該頁面頂部連結
-+到其 `列表存檔 <https://lists.infradead.org/pipermail/ath10k/>`_ 。遺憾的是，
-+這個列表和其他一些列表缺乏搜索其存檔的功能。在這種情況下可以使用常規的網際網路
-+搜尋引擎，並添加類似「site:lists.infadead.org/pipermail/ath10k/」這
-+樣的搜索條件，這會把結果限制在該連結中的檔案。
-+
-+也請進一步搜索網絡、LKML和bugzilla.kernel.org網站。
-+
-+有關如何搜索以及在找到匹配報告時如何操作的詳細信息，請參閱上面的「搜索現有報告
-+（第一部分）」。
-+
-+不要急著完成報告過程的這一步：花30到60分鐘甚至更多的時間可以爲你和其他人節省 /
-+減少相當多的時間和麻煩。
-+
-+
-+安裝一個新的內核進行測試
-+--------------------------
-+
-+    *除非您已經在運行最新的「主線」Linux內核，否則最好在報告流程前安裝它。在
-+    某些情況下，使用最新的「穩定版」Linux進行測試和報告也是可以接受的替代方案；
-+    在合併窗口期間，這實際上可能是最好的方法，但在開發階段最好還是暫停幾天。
-+    無論你選擇什麼版本，最好使用「普通」構建。忽略這些建議會大大增加您的報告
-+    被拒絕或忽略的風險。*
-+
-+正如第一步的詳細解釋中所提到的：與大多數程式設計師一樣，與大多數程式設計師一樣，Linux
-+內核開發人員不喜歡花時間處理他們維護的原始碼中根本不會發生的問題的報告。這隻
-+會浪費每個人的時間，尤其是你的時間。這就是爲什麼在報告問題之前，您必須先確認
-+問題仍然存在於最新的上游代碼中，這符合每個人的利益。您可以忽略此建議，但如前
-+所述：這樣做會極大地增加問題報告被拒絕或被忽略的風險。
-+
-+內核「最新上游」的範圍通常指：
-+
-+ * 安裝一個主線內核；最新的穩定版內核也可以是一個選擇，但大多數時候都最好避免。
-+   長期支持內核（有時稱爲「LTS內核」）不適合此流程。下一小節將更詳細地解釋所有
-+   這些。
-+
-+ * 下一小節描述獲取和安裝這樣一個內核的方法。它還指出了使用預編譯內核是可以的，
-+   但普通的內核更好，這意味著：它是直接使用從 `kernel.org <https://kernel.org/>`_
-+   獲得的Linux原始碼構建並且沒有任何方式修改或增強。
-+
-+
-+選擇適合測試的版本
-+~~~~~~~~~~~~~~~~~~~~
-+
-+前往 `kernel.org <https://kernel.org/>`_ 來決定使用哪個版本。忽略那個寫著
-+「Latest release最新版本」的巨大黃色按鈕，往下看有一個表格。在表格的頂部，你會
-+看到一行以「mainline」開頭的字樣，大多數情況下它會指向一個版本號類似「5.8-rc2」
-+的預發布版本。如果是這樣的話，你將需要使用這個主線內核進行測試。不要讓「rc」
-+嚇到你，這些「開發版內核」實際上非常可靠——而且你已經按照上面的指示做了備份，
-+不是嗎？
-+
-+大概每九到十周，「mainline」可能會給你指出一個版本號類似「5.7」的正式版本。如果
-+碰見這種情況，請考慮暫停報告過程，直到下一個版本的第一個預發布（5.8-rc1）出
-+現在 `kernel.org <https://kernel.org/>`_ 上。這是因爲 Linux 的開發周期正在
-+兩周的「合併窗口」內。大部分的改動和所有干擾性的改動都會在這段時間內被合併到
-+下一個版本中。在此期間使用主線是比較危險的。內核開發者通常也很忙，可能沒有
-+多餘的時間來處理問題報告。這也是很有可能在合併窗口中應用了許多修改來修復你
-+所面臨的問題；這就是爲什麼你很快就得用一個新的內核版本重新測試，就像下面「發
-+布報告後的責任」一節中所述的那樣。
-+
-+這就是爲什麼要等到合併窗口結束後才去做。但是如果你處理的是一些不應該等待的
-+東西，則無需這樣做。在這種情況下，可以考慮通過 git 獲取最新的主線內核（見下
-+文），或者使用 kernel.org 上提供的最新穩定版本。如果 mainline 因爲某些原因
-+不無法正常工作，那麼使用它也是可以接受的。總的來說：用它來重現問題也比完全
-+不報告問題要好。
-+
-+最好避免在合併窗口外使用最新的穩定版內核，因爲所有修復都必須首先應用於主線。
-+這就是爲什麼檢查最新的主線內核是如此重要：你希望看到在舊版本線修復的任何問題
-+需要先在主線修復，然後才能得到回傳，這可能需要幾天或幾周。另一個原因是：您
-+希望的修復對於回傳來說可能太難或太冒險；因此再次報告問題不太可能改變任何事情。
-+
-+這些方面也部分表明了爲什麼長期支持內核（有時稱爲「LTS內核」）不適合報告流程：
-+它們與當前代碼的距離太遠。因此，先去測試主線，然後再按流程走：如果主線沒有
-+出現問題，流程將指導您如何在舊版本線中修復它。
-+
-+如何獲得新的 Linux 內核
-+~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+你可以使用預編譯或自編譯的內核進行測試；如果你選擇後者，可以使用 git 獲取源
-+代碼，或者下載其 tar 存檔包。
-+
-+**使用預編譯的內核** ：這往往是最快速、最簡單、最安全的方法——尤其是在你不熟
-+悉 Linux 內核的情況下。問題是：發行商或附加存儲庫提供的大多數版本都是從修改
-+過的Linux原始碼構建的。因此它們不是普通的，通常不適合於測試和問題報告：這些
-+更改可能會導致您面臨的問題或以某種方式影響問題。
-+
-+但是如果您使用的是流行的Linux發行版，那麼您就很幸運了：對於大部分的發行版，
-+您可以在網上找到包含最新主線或穩定版本Linux內核包的存儲庫。使用這些是完全可
-+以的，只要從存儲庫的描述中確認它們是普通的或者至少接近普通。此外，請確保軟體
-+包包含kernel.org上提供的最新版本內核。如果這些軟體包的時間超過一周，那麼它們
-+可能就不合適了，因爲新的主線和穩定版內核通常至少每周發布一次。
-+
-+請注意，您以後可能需要手動構建自己的內核：有時這是調試或測試修復程序所必需的，
-+如後文所述。還要注意，預編譯的內核可能缺少在出現panic、Oops、warning或BUG時
-+解碼內核列印的消息所需的調試符號；如果您計劃解碼這些消息，最好自己編譯內核
-+（有關詳細信息，請參閱本小節結尾和「解碼失敗信息」小節）。
-+
-+**使用git** ：熟悉 git 的開發者和有經驗的 Linux 用戶通常最好直接從
-+`kernel.org 上的官方開發倉庫
-+<https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/>`_
-+中獲取最新的 Linux 內核原始碼。這些很可能比最新的主線預發布版本更新一些。不
-+用擔心：它們和正式的預發布版本一樣可靠，除非內核的開發周期目前正處於合併窗
-+口中。不過即便如此，它們也是相當可靠的。
-+
-+**常規方法** ：不熟悉 git 的人通常最好從 `kernel.org <https://kernel.org/>`_
-+下載源碼的tar 存檔包。
-+
-+如何實際構建一個內核並不在這裡描述，因爲許多網站已經解釋了必要的步驟。如果
-+你是新手，可以考慮按照那些建議使用 ``make localmodconfig`` 來做，它將嘗試獲
-+取你當前內核的配置，然後根據你的系統進行一些調整。這樣做並不能使編譯出來的
-+內核更好，但可以更快地編譯。
-+
-+注意：如果您正在處理來自內核的pannc、Oops、warning或BUG，請在配置內核時嘗試
-+啓用 CONFIG_KALLSYMS 選項。此外，還可以啓用 CONFIG_DEBUG_KERNEL 和
-+CONFIG_DEBUG_INFO；後者是相關選項，但只有啓用前者才能開啓。請注意，
-+CONFIG_DEBUG_INFO 會需要更多儲存空間來構建內核。但這是值得的，因爲這些選項將
-+允許您稍後精確定位觸發問題的確切代碼行。下面的「解碼失敗信息」一節對此進行了更
-+詳細的解釋。
-+
-+但請記住：始終記錄遇到的問題，以防難以重現。發送未解碼的報告總比不報告要好。
-+
-+
-+檢查「汙染」標誌
-+----------------
-+
-+    *確保您剛剛安裝的內核在運行時不會「汙染」自己。*
-+
-+正如上面已經詳細介紹過的：當發生一些可能會導致一些看起來完全不相關的後續錯
-+誤的事情時，內核會設置一個「汙染」標誌。這就是爲什麼你需要檢查你剛剛安裝的內
-+核是否有設置此標誌。如果有的話，幾乎在任何情況下你都需要在報告問題之前先消
-+除它。詳細的操作方法請看上面的章節。
-+
-+
-+用新內核重現問題
-+------------------
-+
-+    *在您剛剛安裝的內核中復現這個問題。如果它沒有出現，請查看下方只發生在
-+    穩定版和長期支持內核的問題的說明。*
-+
-+檢查這個問題是否發生在你剛剛安裝的新 Linux 內核版本上。如果新內核已經修復了，
-+可以考慮使用此版本線，放棄報告問題。但是請記住，只要它沒有在 `kernel.org
-+<https://kernel.org/>`_ 的穩定版和長期版（以及由這些版本衍生出來的廠商內核）
-+中得到修復，其他用戶可能仍然會受到它的困擾。如果你喜歡使用其中的一個，或
-+者只是想幫助它們的用戶，請前往下面的「報告只發生在較舊內核版本線的問題」一節。
-+
-+
-+優化復現問題的描述
-+--------------------
-+
-+    *優化你的筆記：試著找到並寫出最直接的復現問題的方法。確保最終結果包含所
-+    有重要的細節，同時讓第一次聽說的人容易閱讀和理解。如果您在此過程中學到
-+    了一些東西，請考慮再次搜索關於該問題的現有報告。*
-+
-+過於複雜的報告會讓別人很難理解。因此請儘量找到一個可以直接描述、易於以書面
-+形式理解的再現方法。包含所有重要的細節，但同時也要儘量保持簡短。
-+
-+在這在前面的步驟中，你很可能已經了解了一些關於你所面臨的問題的點。利用這些
-+知識，再次搜索可以轉而加入的現有報告。
-+
-+
-+解碼失敗信息
-+-------------
-+
-+    *如果失敗涉及「panic」、「Oops」、「warning」或「BUG」，請考慮解碼內核日誌以查找
-+    觸發錯誤的代碼行。*
-+
-+當內核檢測到內部問題時，它會記錄一些有關已執行代碼的信息。這使得在原始碼中精
-+確定位觸發問題的行並顯示如何調用它成爲可能。但只有在配置內核時啓用了
-+CONFIG_DEBUG_INFO 和 CONFIG_KALLSYMS選項時，這種方法才起效。如果已啓用此選項，
-+請考慮解碼內核日誌中的信息。這將使我們更容易理解是什麼導致了「panic」、「Oops」、
-+「warning」或「BUG」，從而增加了有人提供修復的機率。
-+
-+解碼可以通過Linux原始碼樹中的腳本來完成。如果您運行的內核是之前自己編譯的，
-+這樣這樣調用它::
-+
-+	[user@something ~]$ sudo dmesg | ./linux-5.10.5/scripts/decode_stacktrace.sh ./linux-5.10.5/vmlinux
-+	/usr/lib/debug/lib/modules/5.10.10-4.1.x86_64/vmlinux /usr/src/kernels/5.10.10-4.1.x86_64/
-+
-+如果您運行的是打包好的普通內核，則可能需要安裝帶有調試符號的相應包。然後按以下
-+方式調用腳本（如果發行版未打包，則可能需要從Linux原始碼獲取）::
-+
-+	[user@something ~]$ sudo dmesg | ./linux-5.10.5/scripts/decode_stacktrace.sh \
-+	/usr/lib/debug/lib/modules/5.10.10-4.1.x86_64/vmlinux /usr/src/kernels/5.10.10-4.1.x86_64/
-+
-+腳本將解碼如下的日誌行，這些日誌行顯示內核在發生錯誤時正在執行的代碼的地址::
-+
-+	[   68.387301] RIP: 0010:test_module_init+0x5/0xffa [test_module]
-+
-+解碼之後，這些行將變成這樣::
-+
-+	[   68.387301] RIP: 0010:test_module_init (/home/username/linux-5.10.5/test-module/test-module.c:16) test_module
-+
-+在本例中，執行的代碼是從文件「~/linux-5.10.5/test-module/test-module.c」構建的，
-+錯誤出現在第16行的指令中。
-+
-+該腳本也會如此解碼以「Call trace」開頭的部分中提到的地址，該部分顯示出現問題的
-+函數的路徑。此外，腳本還會顯示內核正在執行的代碼部分的彙編輸出。
-+
-+注意，如果你沒法做到這一點，只需跳過這一步，並在報告中說明原因。如果你幸運的
-+話，可能無需解碼。如果需要的話，也許有人會幫你做這件事情。還要注意，這只是解
-+碼內核堆棧跟蹤的幾種方法之一。有時需要採取不同的步驟來檢索相關的詳細信息。
-+別擔心，如果您碰到的情況需要這樣做，開發人員會告訴您該怎麼做。
-+
-+
-+對回歸的特別關照
-+-----------------
-+
-+    *如果您的問題是回歸問題，請儘可能縮小引入問題時的範圍。*
-+
-+Linux 首席開發者 Linus Torvalds 認爲 Linux 內核永遠不應惡化，這就是爲什麼他
-+認爲回歸是不可接受的，並希望看到它們被迅速修復。這就是爲什麼引入了回歸的改
-+動導致的問題若無法通過其他方式快速解決，通常會被迅速撤銷。因此，報告回歸有
-+點像「王炸」，會迅速得到修復。但要做到這一點，需要知道導致回歸的變化。通常情
-+況下，要由報告者來追查罪魁禍首，因爲維護者往往沒有時間或手頭設置不便來自行
-+重現它。
-+
-+有一個叫做「二分」的過程可以來尋找變化，這在
-+「Documentation/translations/zh_TW/admin-guide/bug-bisect.rst」文檔中進行了詳細
-+的描述，這個過程通常需要你構建十到二十個內核鏡像，每次都嘗試在構建下一個鏡像
-+之前重現問題。是的，這需要花費一些時間，但不用擔心，它比大多數人想像的要快得多。
-+多虧了「binary search二進位搜索」，這將引導你在原始碼管理系統中找到導致回歸的提交。
-+一旦你找到它，就在網上搜索其主題、提交ID和縮短的提交ID（提交ID的前12個字符）。
-+如果有的話，這將引導您找到關於它的現有報告。
-+
-+需要注意的是，二分法需要一點竅門，不是每個人都懂得訣竅，也需要相當多的努力，
-+不是每個人都願意投入。儘管如此，還是強烈建議自己進行一次二分。如果你真的
-+不能或者不想走這條路，至少要找出是哪個主線內核引入的回歸。比如說從 5.5.15
-+切換到 5.8.4 的時候出現了一些問題，那麼至少可以嘗試一下相近的所有的主線版本
-+（5.6、5.7 和 5.8）來檢查它是什麼時候出現的。除非你想在一個穩定版或長期支持
-+內核中找到一個回歸，否則要避免測試那些編號有三段的版本（5.6.12、5.7.8），因
-+爲那會使結果難以解釋，可能會讓你的測試變得無用。一旦你找到了引入回歸的主要
-+版本，就可以放心地繼續報告了。但請記住：在不知道罪魁禍首的情況下，開發人員
-+是否能夠提供幫助取決於手頭的問題。有時他們可能會從報告中確認是什麼出現了問
-+題，並能修復它；有時他們可能無法提供幫助，除非你進行二分。
-+
-+當處理回歸問題時，請確保你所面臨的問題真的是由內核引起的，而不是由其他東西
-+引起的，如上文所述。
-+
-+在整個過程中，請記住：只有當舊內核和新內核的配置相似時，問題才算回歸。最好
-+的方法是：把配置文件（``.config``）從舊的工作內核直接複製到你嘗試的每個新內
-+核版本。之後運行 ``make oldnoconfig`` 來調整它以適應新版本的需要，而不啓用
-+任何新的功能，因爲那些功能也可能導致回歸。
-+
-+
-+撰寫並發送報告
-+---------------
-+
-+    *通過詳細描述問題來開始編寫報告。記得包括以下條目：您爲復現而安裝的最新
-+    內核版本、使用的Linux發行版以及關於如何復現該問題的說明。如果可能，將內
-+    核構建配置（.config）和 ``dmesg`` 的輸出放在網上的某個地方，並連結到它。
-+    包含或上傳所有其他可能相關的信息，如Oops的輸出/截圖或來自 ``lspci``
-+    的輸出。一旦你寫完了這個主要部分，請在上方插入一個正常長度的段落快速概
-+    述問題和影響。再在此之上添加一個簡單描述問題的句子，以得到人們的閱讀。
-+    現在給出一個更短的描述性標題或主題。然後就可以像MAINTAINERS文件告訴你的
-+    那樣發送或提交報告了，除非你在處理一個「高優先級問題」：它們需要按照下面
-+    「高優先級問題的特殊處理」所述特別關照。*
-+
-+現在你已經準備好了一切，是時候寫你的報告了。上文前言中連結的三篇文檔對如何
-+寫報告做了部分解釋。這就是爲什麼本文將只提到一些基本的內容以及 Linux 內核特
-+有的東西。
-+
-+有一點是符合這兩類的：你的報告中最關鍵的部分是標題/主題、第一句話和第一段。
-+開發者經常會收到許多郵件。因此，他們往往只是花幾秒鐘的時間瀏覽一下郵件，然
-+後再決定繼續下一封或仔細查看。因此，你報告的開頭越好，有人研究並幫助你的機
-+會就越大。這就是爲什麼你應該暫時忽略他們，先寫出詳細的報告。;-)
-+
-+每份報告都應提及的事項
-+~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+詳細描述你的問題是如何發生在你安裝的新純淨內核上的。試著包含你之前寫的和優
-+化過的分步說明，概述你和其他人如何重現這個問題；在極少數無法重現的情況下，
-+儘量描述你做了什麼來觸發它。
-+
-+還應包括其他人爲了解該問題及其環境而可能需要的所有相關信息。實際需要的東西
-+在很大程度上取決於具體問題，但有些事項你總是應該包括在內：
-+
-+ * ``cat /proc/version`` 的輸出，其中包含 Linux 內核版本號和構建時的編譯器。
-+
-+ * 機器正在運行的 Linux 發行版（ ``hostnamectl | grep 「Operating System「`` ）
-+
-+ * CPU 和作業系統的架構（ ``uname -mi`` ）
-+
-+ * 如果您正在處理回歸，並進行了二分，請提及導致回歸的變更的主題和提交ID。
-+
-+許多情況下，讓讀你報告的人多了解兩件事也是明智之舉：
-+
-+ * 用於構建 Linux 內核的配置（「.config」文件）
-+
-+ * 內核的信息，你從 ``dmesg`` 得到的信息寫到一個文件里。確保它以像「Linux
-+   version 5.8-1 (foobar@example.com) (gcc (GCC) 10.2.1, GNU ld version
-+   2.34) #1 SMP Mon Aug 3 14:54:37 UTC 2020」這樣的行開始，如果沒有，那麼第
-+   一次啓動階段的重要信息已經被丟棄了。在這種情況下，可以考慮使用
-+   ``journalctl -b 0 -k`` ；或者你也可以重啓，重現這個問題，然後調用
-+   ``dmesg`` 。
-+
-+這兩個文件很大，所以直接把它們放到你的報告中是個壞主意。如果你是在缺陷跟蹤
-+器中提交問題，那麼將它們附加到工單中。如果你通過郵件報告問題，不要用附件附
-+上它們，因爲那會使郵件變得太大，可以按下列之一做：
-+
-+ * 將文件上傳到某個公開的地方（你的網站，公共文件粘貼服務，在
-+   `bugzilla.kernel.org <https://bugzilla.kernel.org/>`_ 上創建的工單……），
-+   並在你的報告中放上連結。理想情況下請使用允許這些文件保存很多年的地方，因
-+   爲它們可能在很多年後對別人有用；例如 5 年或 10 年後，一個開發者正在修改
-+   一些代碼，而這些代碼正是爲了修復你的問題。
-+
-+ * 把文件放在一邊，然後說明你會在他人回復時再單獨發送。只要記得報告發出去後，
-+   真正做到這一點就可以了。;-)
-+
-+提供這些東西可能是明智的
-+~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+根據問題的不同，你可能需要提供更多的背景數據。這裡有一些關於提供什麼比較好
-+的建議：
-+
-+ * 如果你處理的是內核的「warning」、「OOPS」或「panic」，請包含它。如果你不能複製
-+   粘貼它，試著用netconsole網絡終端遠程跟蹤或者至少拍一張屏幕的照片。
-+
-+ * 如果問題可能與你的電腦硬體有關，請說明你使用的是什麼系統。例如，如果你的
-+   顯卡有問題，請提及它的製造商，顯卡的型號，以及使用的晶片。如果是筆記本電
-+   腦，請提及它的型號名稱，但儘量確保意義明確。例如「戴爾 XPS 13」就不很明確，
-+   因爲它可能是 2012 年的那款，那款除了看起來和現在銷售的沒有什麼不同之外，
-+   兩者沒有任何共同之處。因此，在這種情況下，要加上準確的型號，例如 2019
-+   年內推出的 XPS 13 型號爲「9380」或「7390」。像「聯想 Thinkpad T590」這樣的名字
-+   也有些含糊不清：這款筆記本有帶獨立顯卡和不帶的子型號，所以要儘量找到準確
-+   的型號名稱或註明主要部件。
-+
-+ * 說明正在使用的相關軟體。如果你在加載模塊時遇到了問題，你要說明正在使用的
-+   kmod、systemd 和 udev 的版本。如果其中一個 DRM 驅動出現問題，你要說明
-+   libdrm 和 Mesa 的版本；還要說明你的 Wayland 合成器或 X-Server 及其驅動。
-+   如果你有文件系統問題，請註明相應的文件系統實用程序的版本（e2fsprogs,
-+   btrfs-progs, xfsprogs……）。
-+
-+ * 從內核中收集可能有用的額外信息。例如， ``lspci -nn`` 的輸出可以幫助別人
-+   識別你使用的硬體。如果你的硬體有問題，你甚至可以給出 ``sudo lspci -vvv``
-+   的結果，因爲它提供了組件是如何配置的信息。對於一些問題，可能最好包含
-+   ``/proc/cpuinfo`` ， ``/proc/ioports`` ， ``/proc/iomem`` ，
-+   ``/proc/modules`` 或 ``/proc/scsi/scsi`` 等文件的內容。一些子系統還提
-+   供了收集相關信息的工具。 ``alsa-info.sh`` `就是這樣一個工具，它是音頻/聲
-+   音子系統開發者提供的  <https://www.alsa-project.org/wiki/AlsaInfo>`_ 。
-+
-+這些例子應該會給你一些知識點，讓你知道附上什麼數據可能是明智的，但你自己也
-+要想一想，哪些數據對別人會有幫助。不要太擔心忘記一些東西，因爲開發人員會要
-+求提供他們需要的額外細節。但從一開始就把所有重要的東西都提供出來，會增加別
-+人仔細查看的機會。
-+
-+
-+重要部分：報告的開頭
-+~~~~~~~~~~~~~~~~~~~~~~
-+
-+現在你已經準備好了報告的詳細部分，讓我們進入最重要的部分：開頭幾句。現在到
-+報告的最前面，在你剛才寫的部分之前加上類似「The detailed description:」（詳細
-+描述）這樣的內容，並在最前面插入兩個新行。現在寫一個正常長度的段落，大致概
-+述這個問題。去掉所有枯燥的細節，把重點放在讀者需要知道的關鍵部分，以讓人了
-+解這是怎麼回事；如果你認爲這個缺陷影響了很多用戶，就提一下這點來吸引大家關
-+注。
-+
-+做好這一點後，在頂部再插入兩行，寫一句話的摘要，快速解釋報告的內容。之後你
-+要更加抽象，爲報告寫一個更短的主題/標題。
-+
-+現在你已經寫好了這部分，請花點時間來優化它，因爲它是你的報告中最重要的部分：
-+很多人會先讀這部分，然後才會決定是否值得花時間閱讀其他部分。
-+
-+現在就像 :ref:`MAINTAINERS <maintainers>` 維護者文件告訴你的那樣發送或提交
-+報告，除非它是前面概述的那些「高優先級問題」之一：在這種情況下，請先閱讀下一
-+小節，然後再發送報告。
-+
-+高優先級問題的特殊處理
-+~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+高優先級問題的報告需要特殊處理。
-+
-+**非常嚴重的缺陷** ：確保在主題或工單標題以及第一段中明顯標出 severeness
-+（非常嚴重的）。
-+
-+**回歸** ：如果問題是一個回歸，請在郵件的主題或缺陷跟蹤器的標題中添加
-+[REGRESSION]。如果您沒有進行二分，請至少註明您測試的最新主線版本（比如 5.7）
-+和出現問題的最新版本（比如 5.8）。如果您成功地進行了二分，請註明導致回歸
-+的提交ID和主題。也請添加該變更的作者到你的報告中；如果您需要將您的缺陷提交
-+到缺陷跟蹤器中，請將報告以私人郵件的形式轉發給他，並註明報告提交地點。
-+
-+**安全問題** ：對於這種問題，你將必須評估：如果細節被公開披露，是否會對其他
-+用戶產生短期風險。如果不會，只需按照所述繼續報告問題。如果有此風險，你需要
-+稍微調整一下報告流程。
-+
-+ * 如果 MAINTAINERS 文件指示您通過郵件報告問題，請不要抄送任何公共郵件列表。
-+
-+ * 如果你應該在缺陷跟蹤器中提交問題，請確保將工單標記爲「私有」或「安全問題」。
-+   如果缺陷跟蹤器沒有提供保持報告私密性的方法，那就別想了，把你的報告以私人
-+   郵件的形式發送給維護者吧。
-+
-+在這兩種情況下，都一定要將報告發到 MAINTAINERS 文件中「安全聯絡」部分列出的
-+地址。理想的情況是在發送報告的時候直接抄送他們。如果您在缺陷跟蹤器中提交了
-+報告，請將報告的文本轉發到這些地址；但請在報告的頂部加上注釋，表明您提交了
-+報告，並附上工單連結。
-+
-+更多信息請參見「Documentation/translations/zh_TW/admin-guide/security-bugs.rst」。
-+
-+
-+發布報告後的責任
-+------------------
-+
-+    *等待別人的反應，繼續推進事情，直到你能夠接受這樣或那樣的結果。因此，請
-+    公開和及時地回應任何詢問。測試提出的修復。積極地測試：至少重新測試每個
-+    新主線版本的首個候選版本（RC），並報告你的結果。如果出現拖延，就友好地
-+    提醒一下。如果你沒有得到任何幫助或者未能滿意，請試著自己幫助自己。*
-+
-+如果你的報告非常優秀，而且你真的很幸運，那麼某個開發者可能會立即發現導致問
-+題的原因；然後他們可能會寫一個補丁來修復、測試它，並直接發送給主線集成，同
-+時標記它以便以後回溯到需要它的穩定版和長期支持內核。那麼你需要做的就是回復
-+一句「Thank you very much」（非常感謝），然後在發布後換上修復好的版本。
-+
-+但這種理想狀況很少發生。這就是爲什麼你把報告拿出來之後工作才開始。你要做的
-+事情要視情況而定，但通常會是下面列出的事情。但在深入研究細節之前，這裡有幾
-+件重要的事情，你需要記住這部分的過程。
-+
-+
-+關於進一步互動的一般建議
-+~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+**總是公開回復** ：當你在缺陷跟蹤器中提交問題時，一定要在那裡回復，不要私下
-+聯繫任何開發者。對於郵件報告，在回復您收到的任何郵件時，總是使用「全部回復」
-+功能。這包括帶有任何你可能想要添加到你的報告中的額外數據的郵件：進入郵件應
-+用程序「已發送」文件夾，並在郵件上使用「全部回復」來回復報告。這種方法可以確保
-+公共郵件列表和其他所有參與者都能及時了解情況；它還能保持郵件線程的完整性，
-+這對於郵件列表將所有相關郵件歸爲一類是非常重要的。
-+
-+只有兩種情況不適合在缺陷跟蹤器或「全部回復」中發表評論：
-+
-+ * 有人讓你私下發東西。
-+
-+ * 你被告知要發送一些東西，但注意到其中包含需要保密的敏感信息。在這種情況下，
-+   可以私下發送給要求發送的開發者。但要在工單或郵件中註明你是這麼做的，這
-+   樣其他人就知道你尊重了這個要求。
-+
-+**在請求解釋或幫助之前先研究一下** ：在這部分過程中，有人可能會告訴你用尚未
-+掌握的技能做一些事情。例如你可能會被要求使用一些你從未聽說過的測試工具；或
-+者你可能會被要求在 Linux 內核原始碼上應用一個補丁來測試它是否有幫助。在某些
-+情況下，發個回復詢問如何做就可以了。但在走這條路之前，儘量通過在網際網路上搜
-+索自行找到答案；或者考慮在其他地方詢問建議。比如詢問朋友，或者到你平時常去
-+的聊天室或論壇發帖諮詢。
-+
-+**要有耐心** ：如果你真的很幸運，你可能會在幾個小時內收到對你的報告的答覆。
-+但大多數情況下會花費更多的時間，因爲維護者分散在全球各地，因此可能在不同的
-+時區——在那裡他們已經享受著遠離鍵盤的夜晚。
-+
-+一般來說，內核開發者需要一到五個工作日來回復報告。有時會花費更長的時間，因
-+爲他們可能正忙於合併窗口、其他工作、參加開發者會議，或者只是在享受一個漫長
-+的暑假。
-+
-+「高優先級的問題」（見上面的解釋）例外：維護者應該儘快解決這些問題；這就是爲
-+什麼你應該最多等待一個星期（如果是緊急的事情，則只需兩天），然後再發送友好
-+的提醒。
-+
-+有時維護者可能沒有及時回復；有時候可能會出現分歧，例如一個問題是否符合回歸
-+的條件。在這種情況下，在郵件列表上提出你的顧慮，並請求其他人公開或私下回復
-+如何繼續推進。如果失敗了，可能應該讓更高級別的維護者介入。如果是 WiFi 驅動，
-+那就是無線維護者；如果沒有更高級別的維護者，或者其他一切努力都失敗了，那
-+這可能是一種罕見的、可以讓 Linus Torvalds 參與進來的情況。
-+
-+**主動測試** ：每當一個新的主線內核版本的第一個預發布版本（rc1）發布的時候，
-+去檢查一下這個問題是否得到了解決，或者是否有什麼重要的變化。在工單中或在
-+回復報告的郵件中提及結果（確保所有參與討論的人都被抄送）。這將表明你的承諾
-+和你願意幫忙。如果問題持續存在，它也會提醒開發者確保他們不會忘記它。其他一
-+些不定期的重新測試（例如用rc3、rc5 和最終版本）也是一個好主意，但只有在相關
-+的東西發生變化或者你正在寫什麼東西的時候才報告你的結果。
-+
-+這些些常規的事情就不說了，我們來談談報告後如何幫助解決問題的細節。
-+
-+查詢和測試請求
-+~~~~~~~~~~~~~~~
-+
-+如果你的報告得到了回復則需履行以下責任：
-+
-+**檢查與你打交道的人** ：大多數情況下，會是維護者或特定代碼區域的開發人員對
-+你的報告做出回應。但由於問題通常是公開報告的，所以回復的可能是任何人——包括
-+那些想要幫忙的人，但最後可能會用他們的問題或請求引導你完全偏離軌道。這很少
-+發生，但這是快速上網搜搜看你正在與誰互動是明智之舉的許多原因之一。通過這樣
-+做，你也可以知道你的報告是否被正確的人聽到，因爲如果討論沒有導致滿意的問題
-+解決方案而淡出，之後可能需要提醒維護者（見下文）。
-+
-+**查詢數據** ：通常你會被要求測試一些東西或提供更多細節。儘快提供所要求的信
-+息，因爲你已經得到了可能會幫助你的人的注意，你等待的時間越長就有越可能失去
-+關注；如果你不在數個工作日內提供信息，甚至可能出現這種結果。
-+
-+**測試請求** ：當你被要求測試一個診斷補丁或可能的修復時，也要儘量及時測試。
-+但要做得恰當，一定不要急於求成：混淆事情很容易發生，這會給所有人帶來許多困
-+惑。例如一個常見的錯誤是以爲應用了一個帶修復的建議補丁，但事實上並沒有。即
-+使是有經驗的測試人員也會偶爾發生這樣的事情，但當有修復的內核和沒有修復的內
-+核表現得一樣時，他們大多時候會注意到。
-+
-+當沒有任何實質性進展時該怎麼辦
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+有些報告不會得到負有相關責任的 Linux 內核開發者的任何反應；或者圍繞這個問題
-+的討論有所發展，但漸漸淡出，沒有任何實質內容產出。
-+
-+在這種情況下，要等兩個星期（最好是三個星期）後再發出友好的提醒：也許當你的
-+報告到達時，維護者剛剛離開鍵盤一段時間，或者有更重要的事情要處理。在寫提醒
-+信的時候，要善意地問一下，是否還需要你這邊提供什麼來讓事情推進下去。如果報
-+告是通過郵件發出來的，那就在郵件的第一行回覆你的初始郵件（見上文），其中包
-+括下方的原始報告的完整引用：這是少數幾種情況下，這樣的「TOFU」（Text Over,
-+Fullquote Under文字在上，完整引用在下）是正確的做法，因爲這樣所有的收件人都
-+會以適當的順序立即讓細節到手頭上來。
-+
-+在提醒之後，再等三周的回覆。如果你仍然沒有得到適當的反饋，你首先應該重新考
-+慮你的方法。你是否可能嘗試接觸了錯誤的人？是不是報告也許令人反感或者太混亂，
-+以至於人們決定完全遠離它？排除這些因素的最好方法是：把報告給一兩個熟悉
-+FLOSS 問題報告的人看，詢問他們的意見。同時徵求他們關於如何繼續推進的建議。
-+這可能意味著：準備一份更好的報告，讓這些人在你發出去之前對它進行審查。這樣
-+的方法完全可以；只需說明這是關於這個問題的第二份改進的報告，並附上第一份報
-+告的連結。
-+
-+如果報告是恰當的，你可以發送第二封提醒信；在其中詢問爲什麼報告沒有得到任何
-+回復。第二封提醒郵件的好時機是在新 Linux 內核版本的首個預發布版本（'rc1'）
-+發布後不久，因爲無論如何你都應該在那個時候重新測試並提供狀態更新（見上文）。
-+
-+如果第二次提醒的結果又在一周內沒有任何反應，可以嘗試聯繫上級維護者詢問意見：
-+即使再忙的維護者在這時候也至少應該發過某種確認。
-+
-+記住要做好失望的準備：理想狀況下維護者最好對每一個問題報告做出回應，但他們
-+只有義務解決之前列出的「高優先級問題」。所以，如果你得到的回覆是「謝謝你的報告，
-+我目前有更重要的問題要處理，在可預見的未來沒有時間去研究這個問題」，那請不
-+要太沮喪。
-+
-+也有可能在缺陷跟蹤器或列表中進行了一些討論之後，什麼都沒有發生，提醒也無助
-+於激勵大家進行修復。這種情況可能是毀滅性的，但在 Linux 內核開發中確實會發生。
-+這些和其他得不到幫助的原因在本文結尾處的「爲什麼有些問題在被報告後沒有得到
-+任何回應或者仍然沒有修復」中進行了解釋。
-+
-+如果你沒有得到任何幫助或問題最終沒有得到解決，不要沮喪：Linux 內核是 FLOSS，
-+因此你仍然可以自己幫助自己。例如，你可以試著找到其他受影響的人，和他們一
-+起合作來解決這個問題。這樣的團隊可以一起準備一份新的報告，提到團隊有多少人，
-+爲什麼你們認爲這是應該得到解決的事情。也許你們還可以一起縮小確切原因或引
-+入回歸的變化，這往往會使修復更容易。而且如果運氣好的話，團隊中可能會有懂點
-+編程的人，也許能寫出一個修複方案。
-+
-+
-+
-+「報告穩定版和長期支持內核線的回歸」的參考
-+------------------------------------------
-+
-+本小節提供了在穩定版和長期支持內核線中面對回歸時需要執行的步驟的詳細信息。
-+
-+確保特定版本線仍然受支持
-+~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+    *檢查內核開發人員是否仍然維護你關心的Linux內核版本線：去 kernel.org 的
-+    首頁，確保此特定版本線的最新版沒有「[EOL]」標記。*
-+
-+大多數內核版本線只支持三個月左右，因爲延長維護時間會帶來相當多的工作。因此，
-+每年只會選擇一個版本來支持至少兩年（通常是六年）。這就是爲什麼你需要檢查
-+內核開發者是否還支持你關心的版本線。
-+
-+注意，如果 `kernel.org <https://kernel.org/>`_ 在首頁上列出了兩個「穩定」版本，
-+你應該考慮切換到較新的版本，而忘掉較舊的版本：對它的支持可能很快就會結束。
-+然後，它將被標記爲「生命周期結束」（EOL）。達到這個程度的版本線仍然會在
-+`kernel.org <https://kernel.org/>`_ 首頁上被顯示一兩周，但不適合用於測試和
-+報告。
-+
-+搜索穩定版郵件列表
-+~~~~~~~~~~~~~~~~~~~
-+
-+    *檢查Linux穩定版郵件列表中的現有報告。*
-+
-+也許你所面臨的問題已經被發現，並且已經或即將被修復。因此，請在 `Linux 穩定
-+版郵件列表的檔案 <https://lore.kernel.org/stable/>`_ 中搜索類似問題的報告。
-+如果你找到任何匹配的問題，可以考慮加入討論，除非修復工作已經完成並計劃很快
-+得到應用。
-+
-+用最新版本復現問題
-+~~~~~~~~~~~~~~~~~~~
-+
-+    *從特定的版本線安裝最新版本作爲純淨內核。確保這個內核沒有被汙染，並且仍
-+    然存在問題，因爲問題可能已經在那裡被修復了。*
-+
-+在投入更多時間到這個過程中之前，你要檢查這個問題是否在你關注的版本線的最新
-+版本中已經得到了修復。這個內核需要是純淨的，在問題發生之前不應該被汙染，正
-+如上面已經在測試主線的過程中詳細介紹過的一樣。
-+
-+您是否是第一次注意到供應商內核的回歸？供應商的更改可能會發生變化。你需要重新
-+檢查排除來這個問題。當您從5.10.4-vendor.42更新到5.10.5-vendor.43時，記錄損壞
-+的信息。然後在測試了前一段中所述的最新5.10版本之後，檢查Linux 5.10.4的普通版本
-+是否也可以正常工作。如果問題在那裡出現，那就不符合上游回歸的條件，您需要切換
-+回主逐步指南來報告問題。
-+
-+報告回歸
-+~~~~~~~~~~
-+
-+    *向Linux穩定版郵件列表發送一個簡短的問題報告(stable@vger.kernel.org)。
-+    大致描述問題，並解釋如何復現。講清楚首個出現問題的版本和最後一個工作正常
-+    的版本。然後等待進一步的指示。*
-+
-+當報告在穩定版或長期支持內核線內發生的回歸（例如在從5.10.4更新到5.10.5時），
-+一份簡短的報告足以快速報告問題。因此只需要粗略的描述。
-+
-+但是請注意，如果您能夠指明引入問題的確切版本，這將對開發人員有很大幫助。因此
-+如果有時間的話，請嘗試使用普通內核找到該版本。讓我們假設發行版發布Linux內核
-+5.10.5到5.10.8的更新時發生了故障。那麼按照上面的指示，去檢查該版本線中的最新
-+內核，比如5.10.9。如果問題出現，請嘗試普通5.10.5，以確保供應商應用的補丁不會
-+干擾。如果問題沒有出現，那麼嘗試5.10.7，然後直到5.10.8或5.10.6（取決於結果）
-+找到第一個引入問題的版本。在報告中寫明這一點，並指出5.10.9仍然存在故障。
-+
-+前一段基本粗略地概述了「二分」方法。一旦報告出來，您可能會被要求做一個正確的
-+報告，因爲它允許精確地定位導致問題的確切更改（然後很容易被恢復以快速修復問題）。
-+因此如果時間允許，考慮立即進行適當的二分。有關如何詳細信息，請參閱「對回歸的
-+特別關照」部分和文檔「Documentation/translations/zh_TW/admin-guide/bug-bisect.rst」。
-+
-+
-+「報告僅在舊內核版本線中發生的問題」的參考
-+------------------------------------------
-+
-+本節詳細介紹了如果無法用主線內核重現問題，但希望在舊版本線（又稱穩定版內核和
-+長期支持內核）中修復問題時需要採取的步驟。
-+
-+有些修復太複雜
-+~~~~~~~~~~~~~~~
-+
-+    *請做好準備，接下來的幾個步驟可能無法在舊版本中解決問題：修復可能太大或
-+    太冒險，無法移植到那裡。*
-+
-+即使是微小的、看似明顯的代碼變化，有時也會帶來新的、完全意想不到的問題。穩
-+定版和長期支持內核的維護者非常清楚這一點，因此他們只對這些內核進行符合
-+「Documentation/translations/zh_TW/process/stable-kernel-rules.rst」中所列出的
-+規則的修改。
-+
-+複雜或有風險的修改不符合條件，因此只能應用於主線。其他的修復很容易被回溯到
-+最新的穩定版和長期支持內核，但是風險太大，無法集成到舊版內核中。所以要注意
-+你所希望的修復可能是那些不會被回溯到你所關心的版本線的修復之一。在這種情況
-+下，你將別無選擇，要麼忍受這個問題，要麼切換到一個較新的 Linux 版本，除非你
-+想自己把修復補丁應用到你的內核中。
-+
-+通用準備
-+~~~~~~~~~~
-+
-+    *執行上面「報告僅在舊內核版本線中發生的問題」一節中的前三個步驟。*
-+
-+您需要執行本指南另一節中已經描述的幾個步驟。這些步驟將讓您：
-+
-+ * 檢查內核開發人員是否仍然維護您關心的Linux內核版本行。
-+
-+ * 在Linux穩定郵件列表中搜索退出的報告。
-+
-+ * 檢查最新版本。
-+
-+
-+檢查代碼歷史和搜索現有的討論
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+    *在Linux內核版本控制系統中搜索修復主線問題的更改，因爲它的提交消息可能
-+    會告訴你修復是否已經計劃好了支持。如果你沒有找到，搜索適當的郵件列表，
-+    尋找討論此類問題或同行評議可能修復的帖子；然後檢查討論是否認爲修復不適
-+    合支持。如果支持根本不被考慮，加入最新的討論，詢問是否有可能。*
-+
-+在許多情況下，你所處理的問題會發生在主線上，但已在主線上得到了解決。修正它
-+的提交也需要被回溯才能解決這個問題。這就是爲什麼你要搜索它或任何相關討論。
-+
-+ * 首先嘗試在存放 Linux 內核原始碼的 Git 倉庫中找到修復。你可以通過
-+   `kernel.org 上的網頁
-+   <https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/>`_
-+   或 `GitHub 上的鏡像 <https://github.com/torvalds/linux>`_ 來實現；如果你
-+   有一個本地克隆，你也可以在命令行用 ``git log --grep=<pattern>`` 來搜索。
-+
-+   如果你找到了修復，請查看提交消息的尾部是否包含了類似這樣的「穩定版標籤」：
-+
-+          Cc: <stable@vger.kernel.org> # 5.4+
-+
-+   像上面這行，開發者標記了安全修復可以回傳到 5.4 及以後的版本。大多數情況
-+   下，它會在兩周內被應用到那裡，但有時需要更長的時間。
-+
-+ * 如果提交沒有告訴你任何東西，或者你找不到修復，請再找找關於這個問題的討論。
-+   用你最喜歡的搜尋引擎搜索網絡，以及 `Linux kernel developers mailing
-+   list 內核開發者郵件列表 <https://lore.kernel.org/lkml/>`_ 的檔案。也可以
-+   閱讀上面的 `定位導致問題的內核區域` 一節，然後按照說明找到導致問題的子系
-+   統：它的缺陷跟蹤器或郵件列表存檔中可能有你要找的答案。
-+
-+ * 如果你看到了一個計劃的修復，請按上所述在版本控制系統中搜索它，因爲提交可
-+   能會告訴你是否可以進行回溯。
-+
-+   * 檢查討論中是否有任何跡象表明，該修復程序可能風險太大，無法回溯到你關心
-+     的版本線。如果是這樣的話，你必須忍受這個問題，或者切換到應用了修復的內
-+     核版本線。
-+
-+   * 如果修復的問題未包含穩定版標籤，並且沒有討論過回溯問題，請加入討論：如
-+     果合適的話，請提及你所面對的問題的版本，以及你希望看到它被修復。
-+
-+
-+請求建議
-+~~~~~~~~~
-+
-+    *前面的步驟之一應該會給出一個解決方案。如果仍未能成功，請向可能引起問題
-+    的子系統的維護人員詢問建議；抄送特定子系統的郵件列表以及穩定版郵件列表。*
-+
-+如果前面的三個步驟都沒有讓你更接近解決方案，那麼只剩下一個選擇：請求建議。
-+在你發給可能是問題根源的子系統的維護者的郵件中這樣做；抄送子系統的郵件列表
-+以及穩定版郵件列表（stable@vger.kernel.org）。
-+
-+
-+爲什麼有些問題在報告後沒有任何回應或仍未解決？
-+===============================================
-+
-+當向 Linux 開發者報告問題時，要注意只有「高優先級的問題」（回歸、安全問題、嚴
-+重問題）才一定會得到解決。如果維護者或其他人都失敗了，Linus Torvalds 他自己
-+會確保這一點。他們和其他內核開發者也會解決很多其他問題。但是要知道，有時他
-+們也會不能或不願幫忙；有時甚至沒有人發報告給他們。
-+
-+最好的解釋就是那些內核開發者常常是在業餘時間爲 Linux 內核做出貢獻。內核中的
-+不少驅動程序都是由這樣的程式設計師編寫的，往往只是因爲他們想讓自己的硬體可以在
-+自己喜歡的作業系統上使用。
-+
-+這些程式設計師大多數時候會很樂意修復別人報告的問題。但是沒有人可以強迫他們這樣
-+做，因爲他們是自願貢獻的。
-+
-+還有一些情況下，這些開發者真的很想解決一個問題，但卻不能解決：有時他們缺乏
-+硬體編程文檔來解決問題。這種情況往往由於公開的文檔太簡陋，或者驅動程序是通
-+過逆向工程編寫的。
-+
-+業餘開發者遲早也會不再關心某驅動。也許他們的測試硬體壞了，被更高級的玩意取
-+代了，或者是太老了以至於只能在計算機博物館裡找到。有時開發者根本就不關心他
-+們的代碼和 Linux 了，因爲在他們的生活中一些不同的東西變得更重要了。在某些情
-+況下，沒有人願意接手維護者的工作——也沒有人可以被強迫，因爲對 Linux 內核的貢
-+獻是自願的。然而被遺棄的驅動程序仍然存在於內核中：它們對人們仍然有用，刪除
-+它們可能導致回歸。
-+
-+對於那些爲 Linux 內核工作而獲得報酬的開發者來說，情況並沒有什麼不同。這些人
-+現在貢獻了大部分的變更。但是他們的僱主遲早也會停止關注他們的代碼或者讓程序
-+員專注於其他事情。例如，硬體廠商主要通過銷售新硬體來賺錢；因此，他們中的不
-+少人並沒有投入太多時間和精力來維護他們多年前就停止銷售的東西的 Linux 內核驅
-+動。企業級 Linux 發行商往往持續維護的時間比較長，但在新版本中往往會把對老舊
-+和稀有硬體的支持放在一邊，以限制範圍。一旦公司拋棄了一些代碼，往往由業餘貢
-+獻者接手，但正如上面提到的：他們遲早也會放下代碼。
-+
-+優先級是一些問題沒有被修復的另一個原因，因爲維護者相當多的時候是被迫設置這
-+些優先級的，因爲在 Linux 上工作的時間是有限的。對於業餘時間或者僱主給予他們
-+的開發人員用於上游內核維護工作的時間也是如此。有時維護人員也會被報告淹沒，
-+即使一個驅動程序幾乎完美地工作。爲了不被完全纏住，程式設計師可能別無選擇，只能
-+對問題報告進行優先級排序而拒絕其中的一些報告。
-+
-+不過這些都不用太過擔心，很多驅動都有積極的維護者，他們對儘可能多的解決問題
-+相當感興趣。
-+
-+
-+結束語
-+=======
-+
-+與其他免費/自由&開源軟體（Free/Libre & Open Source Software，FLOSS）相比，
-+向 Linux 內核開發者報告問題是很難的：這個文檔的長度和複雜性以及字裡行間的內
-+涵都說明了這一點。但目前就是這樣了。這篇文字的主要作者希望通過記錄現狀來爲
-+以後改善這種狀況打下一些基礎。
-+
-diff --git a/Documentation/translations/zh_TW/admin-guide/security-bugs.rst b/Documentation/translations/zh_TW/admin-guide/security-bugs.rst
-new file mode 100644
-index 000000000000..eed260ef0c37
---- /dev/null
-+++ b/Documentation/translations/zh_TW/admin-guide/security-bugs.rst
-@@ -0,0 +1,78 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: ../disclaimer-zh_TW.rst
-+
-+:Original: :doc:`../../../admin-guide/security-bugs`
-+
-+:譯者:
-+
-+ 吳想成 Wu XiangCheng <bobwxc@email.cn>
-+ 胡皓文 Hu Haowen <src.res@email.cn>
-+
-+安全缺陷
-+=========
-+
-+Linux內核開發人員非常重視安全性。因此我們想知道何時發現了安全漏洞，以便儘快
-+修復和披露。請向Linux內核安全團隊報告安全漏洞。
-+
-+聯絡
-+-----
-+
-+可以通過電子郵件<security@kernel.org>聯繫Linux內核安全團隊。這是一個安全人員
-+的私有列表，他們將幫助驗證錯誤報告並開發和發布修復程序。如果您已經有了一個
-+修復，請將其包含在您的報告中，這樣可以大大加快進程。安全團隊可能會從區域維護
-+人員那裡獲得額外的幫助，以理解和修復安全漏洞。
-+
-+與任何缺陷一樣，提供的信息越多，診斷和修復就越容易。如果您不清楚哪些信息有用，
-+請查看「Documentation/translations/zh_TW/admin-guide/reporting-issues.rst」中
-+概述的步驟。任何利用漏洞的攻擊代碼都非常有用，未經報告者同意不會對外發布，除
-+非已經公開。
-+
-+請儘可能發送無附件的純文本電子郵件。如果所有的細節都藏在附件里，那麼就很難對
-+一個複雜的問題進行上下文引用的討論。把它想像成一個
-+:doc:`常規的補丁提交 <../process/submitting-patches>` （即使你還沒有補丁）：
-+描述問題和影響，列出復現步驟，然後給出一個建議的解決方案，所有這些都是純文本的。
-+
-+披露和限制信息
-+---------------
-+
-+安全列表不是公開渠道。爲此，請參見下面的協作。
-+
-+一旦開發出了健壯的補丁，發布過程就開始了。對公開的缺陷的修復會立即發布。
-+
-+儘管我們傾向於在未公開缺陷的修復可用時即發布補丁，但應報告者或受影響方的請求，
-+這可能會被推遲到發布過程開始後的7日內，如果根據缺陷的嚴重性需要更多的時間，
-+則可額外延長到14天。推遲發布修復的唯一有效原因是爲了適應QA的邏輯和需要發布
-+協調的大規模部署。
-+
-+雖然可能與受信任的個人共享受限信息以開發修復，但未經報告者許可，此類信息不會
-+與修復程序一起發布或發布在任何其他披露渠道上。這包括但不限於原始錯誤報告和
-+後續討論（如有）、漏洞、CVE信息或報告者的身份。
-+
-+換句話說，我們唯一感興趣的是修復缺陷。提交給安全列表的所有其他資料以及對報告
-+的任何後續討論，即使在解除限制之後，也將永久保密。
-+
-+協調
++:ref:`tw_code_of_conduct` 準則是一個通用文檔，旨在爲幾乎所有開源社區提供一套規則。
++每個開源社區都是獨一無二的，Linux內核也不例外。因此，本文描述了Linux內核社區中
++如何解釋它。我們也不希望這種解釋隨著時間的推移是靜態的，並將根據需要進行調整。
++
++與開發軟體的「傳統」方法相比，Linux內核開發工作是一個非常個人化的過程。你的貢獻
++和背後的想法將被仔細審查，往往導致批判和批評。審查將幾乎總是需要改進，材料才
++能包括在內核中。要知道這是因爲所有相關人員都希望看到Linux整體成功的最佳解決方
++案。這個開發過程已經被證明可以創建有史以來最健壯的作業系統內核，我們不想做任何
++事情來導致提交質量和最終結果的下降。
++
++維護者
 +------
 +
-+對敏感缺陷（例如那些可能導致權限提升的缺陷）的修復可能需要與私有郵件列表
-+<linux-distros@vs.openwall.org>進行協調，以便分發供應商做好準備，在公開披露
-+上游補丁時發布一個已修復的內核。發行版將需要一些時間來測試建議的補丁，通常
-+會要求至少幾天的限制，而供應商更新發布更傾向於周二至周四。若合適，安全團隊
-+可以協助這種協調，或者報告者可以從一開始就包括linux發行版。在這種情況下，請
-+記住在電子郵件主題行前面加上「[vs]」，如linux發行版wiki中所述：
-+<http://oss-security.openwall.org/wiki/mailing-lists/distros#how-to-use-the-lists>。
++行為準則多次使用「維護者」一詞。在內核社區中，「維護者」是負責子系統、驅動程序或
++文件的任何人，並在內核原始碼樹的維護者文件中列出。
 +
-+CVE分配
-+--------
++責任
++----
 +
-+安全團隊通常不分配CVE，我們也不需要它們來進行報告或修復，因爲這會使過程不必
-+要的複雜化，並可能耽誤缺陷處理。如果報告者希望在公開披露之前分配一個CVE編號，
-+他們需要聯繫上述的私有linux-distros列表。當在提供補丁之前已有這樣的CVE編號時，
-+如報告者願意，最好在提交消息中提及它。
++《行為準則》提到了維護人員的權利和責任，這需要進一步澄清。
 +
-+保密協議
-+---------
++首先，最重要的是，有一個合理的期望是由維護人員通過實例來領導。
 +
-+Linux內核安全團隊不是一個正式的機構實體，因此無法簽訂任何保密協議。
++也就是說，我們的社區是廣闊的，對維護者沒有新的要求，他們單方面處理其他人在
++他們活躍的社區的行爲。這一責任由我們所有人承擔，最終《行為準則》記錄了最終的
++上訴路徑，以防有關行爲問題的問題懸而未決。
 +
-diff --git a/Documentation/translations/zh_TW/admin-guide/tainted-kernels.rst b/Documentation/translations/zh_TW/admin-guide/tainted-kernels.rst
++維護人員應該願意在出現問題時提供幫助，並在需要時與社區中的其他人合作。如果您
++不確定如何處理出現的情況，請不要害怕聯繫技術諮詢委員會（TAB）或其他維護人員。
++除非您願意，否則不會將其視爲違規報告。如果您不確定是否該聯繫TAB 或任何其他維
++護人員，請聯繫我們的衝突調解人 Mishi Choudhary <mishi@linux.com>。
++
++最後，「善待對方」才是每個人的最終目標。我們知道每個人都是人，有時我們都會失敗，
++但我們所有人的首要目標應該是努力友好地解決問題。執行行為準則將是最後的選擇。
++
++我們的目標是創建一個強大的、技術先進的作業系統，以及所涉及的技術複雜性，這自
++然需要專業知識和決策。
++
++所需的專業知識因貢獻領域而異。它主要由上下文和技術複雜性決定，其次由貢獻者和
++維護者的期望決定。
++
++專家的期望和決策都要經過討論，但在最後，爲了取得進展，必須能夠做出決策。這一
++特權掌握在維護人員和項目領導的手中，預計將善意使用。
++
++因此，設定專業知識期望、作出決定和拒絕不適當的貢獻不被視爲違反行為準則。
++
++雖然維護人員一般都歡迎新來者，但他們幫助（新）貢獻者克服障礙的能力有限，因此
++他們必須確定優先事項。這也不應被視爲違反了行為準則。內核社區意識到這一點，並
++以各種形式提供入門級節目，如 kernelnewbies.org 。
++
++範圍
++----
++
++Linux內核社區主要在一組公共電子郵件列表上進行交互，這些列表分布在由多個不同
++公司或個人控制的多個不同伺服器上。所有這些列表都在內核原始碼樹中的
++MAINTAINERS 文件中定義。發送到這些郵件列表的任何電子郵件都被視爲包含在行爲
++準則中。
++
++使用 kernel.org bugzilla和其他子系統bugzilla 或bug跟蹤工具的開發人員應該遵循
++行為準則的指導原則。Linux內核社區沒有「官方」項目電子郵件地址或「官方」社交媒體
++地址。使用kernel.org電子郵件帳戶執行的任何活動必須遵循爲kernel.org發布的行爲
++準則，就像任何使用公司電子郵件帳戶的個人必須遵循該公司的特定規則一樣。
++
++行為準則並不禁止在郵件列表消息、內核更改日誌消息或代碼注釋中繼續包含名稱、
++電子郵件地址和相關注釋。
++
++其他論壇中的互動包括在適用於上述論壇的任何規則中，通常不包括在行為準則中。
++除了在極端情況下可考慮的例外情況。
++
++提交給內核的貢獻應該使用適當的語言。在行為準則之前已經存在的內容現在不會被
++視爲違反。然而，不適當的語言可以被視爲一個bug；如果任何相關方提交補丁，
++這樣的bug將被更快地修復。當前屬於用戶/內核API的一部分的表達式，或者反映已
++發布標準或規範中使用的術語的表達式，不被視爲bug。
++
++執行
++----
++
++行為準則中列出的地址屬於行為準則委員會。https://kernel.org/code-of-conduct.html
++列出了在任何給定時間接收這些電子郵件的確切成員。成員不能訪問在加入委員會之前
++或離開委員會之後所做的報告。
++
++最初的行為準則委員會由TAB的志願者以及作爲中立第三方的專業調解人組成。委員會
++的首要任務是建立文件化的流程，並將其公開。
++
++如果報告人不希望將整個委員會納入投訴或關切，可直接聯繫委員會的任何成員，包括
++調解人。
++
++行為準則委員會根據流程審查案例（見上文），並根據需要和適當與TAB協商，例如請求
++和接收有關內核社區的信息。
++
++委員會做出的任何決定都將提交到表中，以便在必要時與相關維護人員一起執行。行爲
++準則委員會的決定可以通過三分之二的投票推翻。
++
++每季度，行為準則委員會和標籤將提供一份報告，概述行為準則委員會收到的匿名報告
++及其狀態，以及任何否決決定的細節，包括完整和可識別的投票細節。
++
++我們希望在啓動期之後爲行為準則委員會人員配備建立一個不同的流程。發生此情況時，
++將使用該信息更新此文檔。
++
+diff --git a/Documentation/translations/zh_TW/process/code-of-conduct.rst b/Documentation/translations/zh_TW/process/code-of-conduct.rst
 new file mode 100644
-index 000000000000..d7b3c4276417
+index 000000000000..716e5843b6e9
 --- /dev/null
-+++ b/Documentation/translations/zh_TW/admin-guide/tainted-kernels.rst
-@@ -0,0 +1,161 @@
++++ b/Documentation/translations/zh_TW/process/code-of-conduct.rst
+@@ -0,0 +1,76 @@
 +.. SPDX-License-Identifier: GPL-2.0
 +
 +.. include:: ../disclaimer-zh_TW.rst
 +
-+:Original: :doc:`../../../admin-guide/tainted-kernels`
++:Original: :ref:`Documentation/process/code-of-conduct.rst <code_of_conduct>`
++:Translator: Alex Shi <alex.shi@linux.alibaba.com>
++             Hu Haowen <src.res@email.cn>
 +
-+:譯者:
++.. _tw_code_of_conduct:
 +
-+ 吳想成 Wu XiangCheng <bobwxc@email.cn>
-+ 胡皓文 Hu Haowen <src.res@email.cn>
++貢獻者契約行為準則
++++++++++++++++++++
 +
-+受汙染的內核
-+-------------
++我們的誓言
++==========
 +
-+當發生一些在稍後調查問題時可能相關的事件時，內核會將自己標記爲「受汙染
-+（tainted）」的。不用太過擔心，大多數情況下運行受汙染的內核沒有問題；這些信息
-+主要在有人想調查某個問題時才有意義的，因爲問題的真正原因可能是導致內核受汙染
-+的事件。這就是爲什麼來自受汙染內核的缺陷報告常常被開發人員忽略，因此請嘗試用
-+未受汙染的內核重現問題。
++爲了營造一個開放、友好的環境，我們作爲貢獻者和維護人承諾，讓我們的社區和參
++與者，擁有一個無騷擾的體驗，無論年齡、體型、殘疾、種族、性別特徵、性別認同
++和表達、經驗水平、教育程度、社會狀況，經濟地位、國籍、個人外貌、種族、宗教
++或性身份和取向。
 +
-+請注意，即使在您消除導致汙染的原因（亦即卸載專有內核模塊）之後，內核仍將保持
-+汙染狀態，以表示內核仍然不可信。這也是爲什麼內核在注意到內部問題（「kernel
-+bug」）、可恢復錯誤（「kernel oops」）或不可恢復錯誤（「kernel panic」）時會列印
-+受汙染狀態，並將有關此的調試信息寫入日誌 ``dmesg`` 輸出。也可以通過
-+``/proc/`` 中的文件在運行時檢查受汙染的狀態。
++我們的標準
++==========
++
++有助於創造積極環境的行爲包括：
++
++* 使用歡迎和包容的語言
++* 尊重不同的觀點和經驗
++* 優雅地接受建設性的批評
++* 關注什麼對社區最有利
++* 對其他社區成員表示同情
++
++參與者的不可接受行爲包括：
++
++* 使用性意味的語言或意象以及不受歡迎的性注意或者更過分的行爲
++* 煽動、侮辱/貶損評論以及個人或政治攻擊
++* 公開或私下騷擾
++* 未經明確許可，發布他人的私人信息，如物理或電子地址。
++* 在專業場合被合理認爲不適當的其他行爲
++
++我們的責任
++==========
++
++維護人員負責澄清可接受行爲的標準，並應針對任何不可接受行爲採取適當和公平的
++糾正措施。
++
++維護人員有權和責任刪除、編輯或拒絕與本行為準則不一致的評論、承諾、代碼、
++wiki編輯、問題和其他貢獻，或暫時或永久禁止任何貢獻者從事他們認爲不適當、
++威脅、冒犯或有害的其他行爲。
++
++範圍
++====
++
++當個人代表項目或其社區時，本行為準則既適用於項目空間，也適用於公共空間。
++代表一個項目或社區的例子包括使用一個正式的項目電子郵件地址，通過一個正式
++的社交媒體帳戶發布，或者在在線或離線事件中擔任指定的代表。項目維護人員可以
++進一步定義和澄清項目的表示。
++
++執行
++====
++
++如有濫用、騷擾或其他不可接受的行爲，可聯繫行為準則委員會<conduct@kernel.org>。
++所有投訴都將接受審查和調查，並將得到必要和適當的答覆。行為準則委員會有義務
++對事件報告人保密。具體執行政策的進一步細節可單獨公布。
++
++歸屬
++====
++
++本行為準則改編自《貢獻者契約》，版本1.4，可從
++https://www.contributor-covenant.org/version/1/4/code-of-conduct.html 獲取。
++
++解釋
++====
++
++有關Linux內核社區如何解釋此文檔，請參閱 :ref:`tw_code_of_conduct_interpretation`
++
+diff --git a/Documentation/translations/zh_TW/process/coding-style.rst b/Documentation/translations/zh_TW/process/coding-style.rst
+new file mode 100644
+index 000000000000..61e614aad6a7
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/coding-style.rst
+@@ -0,0 +1,958 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/coding-style.rst <codingstyle>`
++
++.. _tw_codingstyle:
++
++譯者::
++
++  中文版維護者： 張樂 Zhang Le <r0bertz@gentoo.org>
++  中文版翻譯者： 張樂 Zhang Le <r0bertz@gentoo.org>
++  中文版校譯者： 王聰 Wang Cong <xiyou.wangcong@gmail.com>
++                 wheelz <kernel.zeng@gmail.com>
++                 管旭東 Xudong Guan <xudong.guan@gmail.com>
++                 Li Zefan <lizf@cn.fujitsu.com>
++                 Wang Chen <wangchen@cn.fujitsu.com>
++                 Hu Haowen <src.res@email.cn>
++
++Linux 內核代碼風格
++=========================
++
++這是一個簡短的文檔，描述了 linux 內核的首選代碼風格。代碼風格是因人而異的，
++而且我不願意把自己的觀點強加給任何人，但這就像我去做任何事情都必須遵循的原則
++那樣，我也希望在絕大多數事上保持這種的態度。請 (在寫代碼時) 至少考慮一下這裡
++的代碼風格。
++
++首先，我建議你列印一份 GNU 代碼規範，然後不要讀。燒了它，這是一個具有重大象徵
++性意義的動作。
++
++不管怎樣，現在我們開始：
 +
 +
-+BUG、Oops或Panics消息中的汙染標誌
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++1) 縮進
++--------------
 +
-+在頂部以「CPU:」開頭的一行中可以找到受汙染的狀態；內核是否受到汙染和原因會顯示
-+在進程ID（「PID:」）和觸發事件命令的縮寫名稱（「Comm:」）之後::
++制表符是 8 個字符，所以縮進也是 8 個字符。有些異端運動試圖將縮進變爲 4 (甚至
++2！) 字符深，這幾乎相當於嘗試將圓周率的值定義爲 3。
 +
-+	BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
-+	Oops: 0002 [#1] SMP PTI
-+	CPU: 0 PID: 4424 Comm: insmod Tainted: P        W  O      4.20.0-0.rc6.fc30 #1
-+	Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
-+	RIP: 0010:my_oops_init+0x13/0x1000 [kpanic]
-+	[...]
++理由：縮進的全部意義就在於清楚的定義一個控制塊起止於何處。尤其是當你盯著你的
++屏幕連續看了 20 小時之後，你將會發現大一點的縮進會使你更容易分辨縮進。
 +
-+如果內核在事件發生時沒有被汙染，您將在那裡看到「Not-tainted:」；如果被汙染，那
-+麼它將是「Tainted:」以及字母或空格。在上面的例子中，它看起來是這樣的::
++現在，有些人會抱怨 8 個字符的縮進會使代碼向右邊移動的太遠，在 80 個字符的終端
++屏幕上就很難讀這樣的代碼。這個問題的答案是，如果你需要 3 級以上的縮進，不管用
++何種方式你的代碼已經有問題了，應該修正你的程序。
 +
-+	Tainted: P        W  O
++簡而言之，8 個字符的縮進可以讓代碼更容易閱讀，還有一個好處是當你的函數嵌套太
++深的時候可以給你警告。留心這個警告。
 +
-+下表解釋了這些字符的含義。在本例中，由於加載了專有模塊（ ``P`` ），出現了
-+警告（ ``W`` ），並且加載了外部構建的模塊（ ``O`` ），所以內核早些時候受到
-+了汙染。要解碼其他字符，請使用下表。
++在 switch 語句中消除多級縮進的首選的方式是讓 ``switch`` 和從屬於它的 ``case``
++標籤對齊於同一列，而不要 ``兩次縮進`` ``case`` 標籤。比如：
++
++.. code-block:: c
++
++	switch (suffix) {
++	case 'G':
++	case 'g':
++		mem <<= 30;
++		break;
++	case 'M':
++	case 'm':
++		mem <<= 20;
++		break;
++	case 'K':
++	case 'k':
++		mem <<= 10;
++		fallthrough;
++	default:
++		break;
++	}
++
++不要把多個語句放在一行里，除非你有什麼東西要隱藏：
++
++.. code-block:: c
++
++	if (condition) do_this;
++	  do_something_everytime;
++
++也不要在一行里放多個賦值語句。內核代碼風格超級簡單。就是避免可能導致別人誤讀
++的表達式。
++
++除了注釋、文檔和 Kconfig 之外，不要使用空格來縮進，前面的例子是例外，是有意爲
++之。
++
++選用一個好的編輯器，不要在行尾留空格。
 +
 +
-+解碼運行時的汙染狀態
-+~~~~~~~~~~~~~~~~~~~~~
++2) 把長的行和字符串打散
++------------------------------
 +
-+在運行時，您可以通過讀取 ``cat /proc/sys/kernel/tainted`` 來查詢受汙染狀態。
-+如果返回 ``0`` ，則內核沒有受到汙染；任何其他數字都表示受到汙染的原因。解碼
-+這個數字的最簡單方法是使用腳本  ``tools/debugging/kernel-chktaint`` ，您的
-+發行版可能會將其作爲名爲 ``linux-tools`` 或 ``kernel-tools`` 的包的一部分提
-+供；如果沒有，您可以從
-+`git.kernel.org <https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/tools/debugging/kernel-chktaint>`_
-+網站下載此腳本並用 ``sh kernel-chktaint`` 執行，它會在上面引用的日誌中有類似
-+語句的機器上列印這樣的內容::
++代碼風格的意義就在於使用平常使用的工具來維持代碼的可讀性和可維護性。
 +
-+	Kernel is Tainted for following reasons:
-+	 * Proprietary module was loaded (#0)
-+	 * Kernel issued warning (#9)
-+	 * Externally-built ('out-of-tree') module was loaded  (#12)
-+	See Documentation/admin-guide/tainted-kernels.rst in the Linux kernel or
-+	 https://www.kernel.org/doc/html/latest/admin-guide/tainted-kernels.html for
-+	 a more details explanation of the various taint flags.
-+	Raw taint value as int/string: 4609/'P        W  O     '
++每一行的長度的限制是 80 列，我們強烈建議您遵守這個慣例。
 +
-+你也可以試著自己解碼這個數字。如果內核被汙染的原因只有一個，那麼這很簡單，
-+在本例中您可以通過下表找到數字。如果你需要解碼有多個原因的數字，因爲它是一
-+個位域（bitfield），其中每個位表示一個特定類型的汙染的存在或不存在，最好讓
-+前面提到的腳本來處理。但是如果您需要快速看一下，可以使用這個shell命令來檢查
-+設置了哪些位::
++長於 80 列的語句要打散成有意義的片段。除非超過 80 列能顯著增加可讀性，並且不
++會隱藏信息。子片段要明顯短於母片段，並明顯靠右。這同樣適用於有著很長參數列表
++的函數頭。然而，絕對不要打散對用戶可見的字符串，例如 printk 信息，因爲這樣就
++很難對它們 grep。
 +
-+	$ for i in $(seq 18); do echo $(($i-1)) $(($(cat /proc/sys/kernel/tainted)>>($i-1)&1));done
 +
-+汙染狀態代碼表
++3) 大括號和空格的放置
++------------------------------
++
++C 語言風格中另外一個常見問題是大括號的放置。和縮進大小不同，選擇或棄用某种放
++置策略並沒有多少技術上的原因，不過首選的方式，就像 Kernighan 和 Ritchie 展示
++給我們的，是把起始大括號放在行尾，而把結束大括號放在行首，所以：
++
++.. code-block:: c
++
++	if (x is true) {
++		we do y
++	}
++
++這適用於所有的非函數語句塊 (if, switch, for, while, do)。比如：
++
++.. code-block:: c
++
++	switch (action) {
++	case KOBJ_ADD:
++		return "add";
++	case KOBJ_REMOVE:
++		return "remove";
++	case KOBJ_CHANGE:
++		return "change";
++	default:
++		return NULL;
++	}
++
++不過，有一個例外，那就是函數：函數的起始大括號放置於下一行的開頭，所以：
++
++.. code-block:: c
++
++	int function(int x)
++	{
++		body of function
++	}
++
++全世界的異端可能會抱怨這個不一致性是... 呃... 不一致的，不過所有思維健全的人
++都知道 (a) K&R 是 **正確的** 並且 (b) K&R 是正確的。此外，不管怎樣函數都是特
++殊的 (C 函數是不能嵌套的)。
++
++注意結束大括號獨自占據一行，除非它後面跟著同一個語句的剩餘部分，也就是 do 語
++句中的 "while" 或者 if 語句中的 "else"，像這樣：
++
++.. code-block:: c
++
++	do {
++		body of do-loop
++	} while (condition);
++
++和
++
++.. code-block:: c
++
++	if (x == y) {
++		..
++	} else if (x > y) {
++		...
++	} else {
++		....
++	}
++
++理由：K&R。
++
++也請注意這種大括號的放置方式也能使空 (或者差不多空的) 行的數量最小化，同時不
++失可讀性。因此，由於你的屏幕上的新行是不可再生資源 (想想 25 行的終端屏幕)，你
++將會有更多的空行來放置注釋。
++
++當只有一個單獨的語句的時候，不用加不必要的大括號。
++
++.. code-block:: c
++
++	if (condition)
++		action();
++
++和
++
++.. code-block:: c
++
++	if (condition)
++		do_this();
++	else
++		do_that();
++
++這並不適用於只有一個條件分支是單語句的情況；這時所有分支都要使用大括號：
++
++.. code-block:: c
++
++	if (condition) {
++		do_this();
++		do_that();
++	} else {
++		otherwise();
++	}
++
++3.1) 空格
++********************
++
++Linux 內核的空格使用方式 (主要) 取決於它是用於函數還是關鍵字。(大多數) 關鍵字
++後要加一個空格。值得注意的例外是 sizeof, typeof, alignof 和 __attribute__，這
++些關鍵字某些程度上看起來更像函數 (它們在 Linux 里也常常伴隨小括號而使用，儘管
++在 C 里這樣的小括號不是必需的，就像 ``struct fileinfo info;`` 聲明過後的
++``sizeof info``)。
++
++所以在這些關鍵字之後放一個空格::
++
++	if, switch, case, for, do, while
++
++但是不要在 sizeof, typeof, alignof 或者 __attribute__ 這些關鍵字之後放空格。
++例如，
++
++.. code-block:: c
++
++	s = sizeof(struct file);
++
++不要在小括號里的表達式兩側加空格。這是一個 **反例** ：
++
++.. code-block:: c
++
++	s = sizeof( struct file );
++
++當聲明指針類型或者返回指針類型的函數時， ``*`` 的首選使用方式是使之靠近變量名
++或者函數名，而不是靠近類型名。例子：
++
++.. code-block:: c
++
++	char *linux_banner;
++	unsigned long long memparse(char *ptr, char **retptr);
++	char *match_strdup(substring_t *s);
++
++在大多數二元和三元操作符兩側使用一個空格，例如下面所有這些操作符::
++
++	=  +  -  <  >  *  /  %  |  &  ^  <=  >=  ==  !=  ?  :
++
++但是一元操作符後不要加空格::
++
++	&  *  +  -  ~  !  sizeof  typeof  alignof  __attribute__  defined
++
++後綴自加和自減一元操作符前不加空格::
++
++	++  --
++
++前綴自加和自減一元操作符後不加空格::
++
++	++  --
++
++``.`` 和 ``->`` 結構體成員操作符前後不加空格。
++
++不要在行尾留空白。有些可以自動縮進的編輯器會在新行的行首加入適量的空白，然後
++你就可以直接在那一行輸入代碼。不過假如你最後沒有在那一行輸入代碼，有些編輯器
++就不會移除已經加入的空白，就像你故意留下一個只有空白的行。包含行尾空白的行就
++這樣產生了。
++
++當 git 發現補丁包含了行尾空白的時候會警告你，並且可以應你的要求去掉行尾空白；
++不過如果你是正在打一系列補丁，這樣做會導致後面的補丁失敗，因爲你改變了補丁的
++上下文。
++
++
++4) 命名
++------------------------------
++
++C 是一個簡樸的語言，你的命名也應該這樣。和 Modula-2 和 Pascal 程式設計師不同，
++C 程式設計師不使用類似 ThisVariableIsATemporaryCounter 這樣華麗的名字。C 程式設計師會
++稱那個變量爲 ``tmp`` ，這樣寫起來會更容易，而且至少不會令其難於理解。
++
++不過，雖然混用大小寫的名字是不提倡使用的，但是全局變量還是需要一個具描述性的
++名字。稱一個全局函數爲 ``foo`` 是一個難以饒恕的錯誤。
++
++全局變量 (只有當你 **真正** 需要它們的時候再用它) 需要有一個具描述性的名字，就
++像全局函數。如果你有一個可以計算活動用戶數量的函數，你應該叫它
++``count_active_users()`` 或者類似的名字，你不應該叫它 ``cntuser()`` 。
++
++在函數名中包含函數類型 (所謂的匈牙利命名法) 是腦子出了問題——編譯器知道那些類
++型而且能夠檢查那些類型，這樣做只能把程式設計師弄糊塗了。難怪微軟總是製造出有問題
++的程序。
++
++本地變量名應該簡短，而且能夠表達相關的含義。如果你有一些隨機的整數型的循環計
++數器，它應該被稱爲 ``i`` 。叫它 ``loop_counter`` 並無益處，如果它沒有被誤解的
++可能的話。類似的， ``tmp`` 可以用來稱呼任意類型的臨時變量。
++
++如果你怕混淆了你的本地變量名，你就遇到另一個問題了，叫做函數增長荷爾蒙失衡綜
++合症。請看第六章 (函數)。
++
++
++5) Typedef
++-----------
++
++不要使用類似 ``vps_t`` 之類的東西。
++
++對結構體和指針使用 typedef 是一個 **錯誤** 。當你在代碼里看到：
++
++.. code-block:: c
++
++	vps_t a;
++
++這代表什麼意思呢？
++
++相反，如果是這樣
++
++.. code-block:: c
++
++	struct virtual_container *a;
++
++你就知道 ``a`` 是什麼了。
++
++很多人認爲 typedef ``能提高可讀性`` 。實際不是這樣的。它們只在下列情況下有用：
++
++ (a) 完全不透明的對象 (這種情況下要主動使用 typedef 來 **隱藏** 這個對象實際上
++     是什麼)。
++
++     例如： ``pte_t`` 等不透明對象，你只能用合適的訪問函數來訪問它們。
++
++     .. note::
++
++       不透明性和 "訪問函數" 本身是不好的。我們使用 pte_t 等類型的原因在於真
++       的是完全沒有任何共用的可訪問信息。
++
++ (b) 清楚的整數類型，如此，這層抽象就可以 **幫助** 消除到底是 ``int`` 還是
++     ``long`` 的混淆。
++
++     u8/u16/u32 是完全沒有問題的 typedef，不過它們更符合類別 (d) 而不是這裡。
++
++     .. note::
++
++       要這樣做，必須事出有因。如果某個變量是 ``unsigned long`` ，那麼沒有必要
++
++	typedef unsigned long myflags_t;
++
++     不過如果有一個明確的原因，比如它在某種情況下可能會是一個 ``unsigned int``
++     而在其他情況下可能爲 ``unsigned long`` ，那麼就不要猶豫，請務必使用
++     typedef。
++
++ (c) 當你使用 sparse 按字面的創建一個 **新** 類型來做類型檢查的時候。
++
++ (d) 和標準 C99 類型相同的類型，在某些例外的情況下。
++
++     雖然讓眼睛和腦筋來適應新的標準類型比如 ``uint32_t`` 不需要花很多時間，可
++     是有些人仍然拒絕使用它們。
++
++     因此，Linux 特有的等同於標準類型的 ``u8/u16/u32/u64`` 類型和它們的有符號
++     類型是被允許的——儘管在你自己的新代碼中，它們不是強制要求要使用的。
++
++     當編輯已經使用了某個類型集的已有代碼時，你應該遵循那些代碼中已經做出的選
++     擇。
++
++ (e) 可以在用戶空間安全使用的類型。
++
++     在某些用戶空間可見的結構體裡，我們不能要求 C99 類型而且不能用上面提到的
++     ``u32`` 類型。因此，我們在與用戶空間共享的所有結構體中使用 __u32 和類似
++     的類型。
++
++可能還有其他的情況，不過基本的規則是 **永遠不要** 使用 typedef，除非你可以明
++確的應用上述某個規則中的一個。
++
++總的來說，如果一個指針或者一個結構體裡的元素可以合理的被直接訪問到，那麼它們
++就不應該是一個 typedef。
++
++
++6) 函數
++------------------------------
++
++函數應該簡短而漂亮，並且只完成一件事情。函數應該可以一屏或者兩屏顯示完 (我們
++都知道 ISO/ANSI 屏幕大小是 80x24)，只做一件事情，而且把它做好。
++
++一個函數的最大長度是和該函數的複雜度和縮進級數成反比的。所以，如果你有一個理
++論上很簡單的只有一個很長 (但是簡單) 的 case 語句的函數，而且你需要在每個 case
++里做很多很小的事情，這樣的函數儘管很長，但也是可以的。
++
++不過，如果你有一個複雜的函數，而且你懷疑一個天分不是很高的高中一年級學生可能
++甚至搞不清楚這個函數的目的，你應該嚴格遵守前面提到的長度限制。使用輔助函數，
++並爲之取個具描述性的名字 (如果你覺得它們的性能很重要的話，可以讓編譯器內聯它
++們，這樣的效果往往會比你寫一個複雜函數的效果要好。)
++
++函數的另外一個衡量標準是本地變量的數量。此數量不應超過 5－10 個，否則你的函數
++就有問題了。重新考慮一下你的函數，把它分拆成更小的函數。人的大腦一般可以輕鬆
++的同時跟蹤 7 個不同的事物，如果再增多的話，就會糊塗了。即便你聰穎過人，你也可
++能會記不清你 2 個星期前做過的事情。
++
++在源文件里，使用空行隔開不同的函數。如果該函數需要被導出，它的 **EXPORT** 宏
++應該緊貼在它的結束大括號之下。比如：
++
++.. code-block:: c
++
++	int system_is_up(void)
++	{
++		return system_state == SYSTEM_RUNNING;
++	}
++	EXPORT_SYMBOL(system_is_up);
++
++在函數原型中，包含函數名和它們的數據類型。雖然 C 語言裡沒有這樣的要求，在
++Linux 里這是提倡的做法，因爲這樣可以很簡單的給讀者提供更多的有價值的信息。
++
++
++7) 集中的函數退出途徑
++------------------------------
++
++雖然被某些人聲稱已經過時，但是 goto 語句的等價物還是經常被編譯器所使用，具體
++形式是無條件跳轉指令。
++
++當一個函數從多個位置退出，並且需要做一些類似清理的常見操作時，goto 語句就很方
++便了。如果並不需要清理操作，那麼直接 return 即可。
++
++選擇一個能夠說明 goto 行爲或它爲何存在的標籤名。如果 goto 要釋放 ``buffer``,
++一個不錯的名字可以是 ``out_free_buffer:`` 。別去使用像 ``err1:`` 和 ``err2:``
++這樣的GW_BASIC 名稱，因爲一旦你添加或刪除了 (函數的) 退出路徑，你就必須對它們
++重新編號，這樣會難以去檢驗正確性。
++
++使用 goto 的理由是：
++
++- 無條件語句容易理解和跟蹤
++- 嵌套程度減小
++- 可以避免由於修改時忘記更新個別的退出點而導致錯誤
++- 讓編譯器省去刪除冗餘代碼的工作 ;)
++
++.. code-block:: c
++
++	int fun(int a)
++	{
++		int result = 0;
++		char *buffer;
++
++		buffer = kmalloc(SIZE, GFP_KERNEL);
++		if (!buffer)
++			return -ENOMEM;
++
++		if (condition1) {
++			while (loop1) {
++				...
++			}
++			result = 1;
++			goto out_free_buffer;
++		}
++		...
++	out_free_buffer:
++		kfree(buffer);
++		return result;
++	}
++
++一個需要注意的常見錯誤是 ``一個 err 錯誤`` ，就像這樣：
++
++.. code-block:: c
++
++	err:
++		kfree(foo->bar);
++		kfree(foo);
++		return ret;
++
++這段代碼的錯誤是，在某些退出路徑上 ``foo`` 是 NULL。通常情況下，通過把它分離
++成兩個錯誤標籤 ``err_free_bar:`` 和 ``err_free_foo:`` 來修復這個錯誤：
++
++.. code-block:: c
++
++	 err_free_bar:
++		kfree(foo->bar);
++	 err_free_foo:
++		kfree(foo);
++		return ret;
++
++理想情況下，你應該模擬錯誤來測試所有退出路徑。
++
++
++8) 注釋
++------------------------------
++
++注釋是好的，不過有過度注釋的危險。永遠不要在注釋里解釋你的代碼是如何運作的：
++更好的做法是讓別人一看你的代碼就可以明白，解釋寫的很差的代碼是浪費時間。
++
++一般的，你想要你的注釋告訴別人你的代碼做了什麼，而不是怎麼做的。也請你不要把
++注釋放在一個函數體內部：如果函數複雜到你需要獨立的注釋其中的一部分，你很可能
++需要回到第六章看一看。你可以做一些小注釋來註明或警告某些很聰明 (或者槽糕) 的
++做法，但不要加太多。你應該做的，是把注釋放在函數的頭部，告訴人們它做了什麼，
++也可以加上它做這些事情的原因。
++
++當注釋內核 API 函數時，請使用 kernel-doc 格式。請看
++Documentation/doc-guide/ 和 scripts/kernel-doc 以獲得詳細信息。
++
++長 (多行) 注釋的首選風格是：
++
++.. code-block:: c
++
++	/*
++	 * This is the preferred style for multi-line
++	 * comments in the Linux kernel source code.
++	 * Please use it consistently.
++	 *
++	 * Description:  A column of asterisks on the left side,
++	 * with beginning and ending almost-blank lines.
++	 */
++
++對於在 net/ 和 drivers/net/ 的文件，首選的長 (多行) 注釋風格有些不同。
++
++.. code-block:: c
++
++	/* The preferred comment style for files in net/ and drivers/net
++	 * looks like this.
++	 *
++	 * It is nearly the same as the generally preferred comment style,
++	 * but there is no initial almost-blank line.
++	 */
++
++注釋數據也是很重要的，不管是基本類型還是衍生類型。爲了方便實現這一點，每一行
++應只聲明一個數據 (不要使用逗號來一次聲明多個數據)。這樣你就有空間來爲每個數據
++寫一段小注釋來解釋它們的用途了。
++
++
++9) 你已經把事情弄糟了
++------------------------------
++
++這沒什麼，我們都是這樣。可能你的使用了很長時間 Unix 的朋友已經告訴你
++``GNU emacs`` 能自動幫你格式化 C 原始碼，而且你也注意到了，確實是這樣，不過它
++所使用的默認值和我們想要的相去甚遠 (實際上，甚至比隨機打的還要差——無數個猴子
++在 GNU emacs 里打字永遠不會創造出一個好程序) (譯註：Infinite Monkey Theorem)
++
++所以你要麼放棄 GNU emacs，要麼改變它讓它使用更合理的設定。要採用後一個方案，
++你可以把下面這段粘貼到你的 .emacs 文件里。
++
++.. code-block:: none
++
++  (defun c-lineup-arglist-tabs-only (ignored)
++    "Line up argument lists by tabs, not spaces"
++    (let* ((anchor (c-langelem-pos c-syntactic-element))
++           (column (c-langelem-2nd-pos c-syntactic-element))
++           (offset (- (1+ column) anchor))
++           (steps (floor offset c-basic-offset)))
++      (* (max steps 1)
++         c-basic-offset)))
++
++  (dir-locals-set-class-variables
++   'linux-kernel
++   '((c-mode . (
++          (c-basic-offset . 8)
++          (c-label-minimum-indentation . 0)
++          (c-offsets-alist . (
++                  (arglist-close         . c-lineup-arglist-tabs-only)
++                  (arglist-cont-nonempty .
++		      (c-lineup-gcc-asm-reg c-lineup-arglist-tabs-only))
++                  (arglist-intro         . +)
++                  (brace-list-intro      . +)
++                  (c                     . c-lineup-C-comments)
++                  (case-label            . 0)
++                  (comment-intro         . c-lineup-comment)
++                  (cpp-define-intro      . +)
++                  (cpp-macro             . -1000)
++                  (cpp-macro-cont        . +)
++                  (defun-block-intro     . +)
++                  (else-clause           . 0)
++                  (func-decl-cont        . +)
++                  (inclass               . +)
++                  (inher-cont            . c-lineup-multi-inher)
++                  (knr-argdecl-intro     . 0)
++                  (label                 . -1000)
++                  (statement             . 0)
++                  (statement-block-intro . +)
++                  (statement-case-intro  . +)
++                  (statement-cont        . +)
++                  (substatement          . +)
++                  ))
++          (indent-tabs-mode . t)
++          (show-trailing-whitespace . t)
++          ))))
++
++  (dir-locals-set-directory-class
++   (expand-file-name "~/src/linux-trees")
++   'linux-kernel)
++
++這會讓 emacs 在 ``~/src/linux-trees`` 下的 C 源文件獲得更好的內核代碼風格。
++
++不過就算你嘗試讓 emacs 正確的格式化代碼失敗了，也並不意味著你失去了一切：還可
++以用 ``indent`` 。
++
++不過，GNU indent 也有和 GNU emacs 一樣有問題的設定，所以你需要給它一些命令選
++項。不過，這還不算太糟糕，因爲就算是 GNU indent 的作者也認同 K&R 的權威性
++(GNU 的人並不是壞人，他們只是在這個問題上被嚴重的誤導了)，所以你只要給 indent
++指定選項 ``-kr -i8`` (代表 ``K&R，8 字符縮進``)，或使用 ``scripts/Lindent``
++這樣就可以以最時髦的方式縮進原始碼。
++
++``indent`` 有很多選項，特別是重新格式化注釋的時候，你可能需要看一下它的手冊。
++不過記住： ``indent`` 不能修正壞的編程習慣。
++
++
++10) Kconfig 配置文件
++------------------------------
++
++對於遍布源碼樹的所有 Kconfig* 配置文件來說，它們縮進方式有所不同。緊挨著
++``config`` 定義的行，用一個制表符縮進，然而 help 信息的縮進則額外增加 2 個空
++格。舉個例子::
++
++  config AUDIT
++	bool "Auditing support"
++	depends on NET
++	help
++	  Enable auditing infrastructure that can be used with another
++	  kernel subsystem, such as SELinux (which requires this for
++	  logging of avc messages output).  Does not do system-call
++	  auditing without CONFIG_AUDITSYSCALL.
++
++而那些危險的功能 (比如某些文件系統的寫支持) 應該在它們的提示字符串里顯著的聲
++明這一點::
++
++  config ADFS_FS_RW
++	bool "ADFS write support (DANGEROUS)"
++	depends on ADFS_FS
++	...
++
++要查看配置文件的完整文檔，請看 Documentation/kbuild/kconfig-language.rst。
++
++
++11) 數據結構
++------------------------------
++
++如果一個數據結構，在創建和銷毀它的單線執行環境之外可見，那麼它必須要有一個引
++用計數器。內核里沒有垃圾收集 (並且內核之外的垃圾收集慢且效率低下)，這意味著你
++絕對需要記錄你對這種數據結構的使用情況。
++
++引用計數意味著你能夠避免上鎖，並且允許多個用戶並行訪問這個數據結構——而不需要
++擔心這個數據結構僅僅因爲暫時不被使用就消失了，那些用戶可能不過是沉睡了一陣或
++者做了一些其他事情而已。
++
++注意上鎖 **不能** 取代引用計數。上鎖是爲了保持數據結構的一致性，而引用計數是一
++個內存管理技巧。通常二者都需要，不要把兩個搞混了。
++
++很多數據結構實際上有 2 級引用計數，它們通常有不同 ``類`` 的用戶。子類計數器統
++計子類用戶的數量，每當子類計數器減至零時，全局計數器減一。
++
++這種 ``多級引用計數`` 的例子可以在內存管理 (``struct mm_struct``: mm_users 和
++mm_count)，和文件系統 (``struct super_block``: s_count 和 s_active) 中找到。
++
++記住：如果另一個執行線索可以找到你的數據結構，但這個數據結構沒有引用計數器，
++這裡幾乎肯定是一個 bug。
++
++
++12) 宏，枚舉和RTL
++------------------------------
++
++用於定義常量的宏的名字及枚舉里的標籤需要大寫。
++
++.. code-block:: c
++
++	#define CONSTANT 0x12345
++
++在定義幾個相關的常量時，最好用枚舉。
++
++宏的名字請用大寫字母，不過形如函數的宏的名字可以用小寫字母。
++
++一般的，如果能寫成內聯函數就不要寫成像函數的宏。
++
++含有多個語句的宏應該被包含在一個 do-while 代碼塊里：
++
++.. code-block:: c
++
++	#define macrofun(a, b, c)			\
++		do {					\
++			if (a == 5)			\
++				do_this(b, c);		\
++		} while (0)
++
++使用宏的時候應避免的事情：
++
++1) 影響控制流程的宏：
++
++.. code-block:: c
++
++	#define FOO(x)					\
++		do {					\
++			if (blah(x) < 0)		\
++				return -EBUGGERED;	\
++		} while (0)
++
++**非常** 不好。它看起來像一個函數，不過卻能導致 ``調用`` 它的函數退出；不要打
++亂讀者大腦里的語法分析器。
++
++2) 依賴於一個固定名字的本地變量的宏：
++
++.. code-block:: c
++
++	#define FOO(val) bar(index, val)
++
++可能看起來像是個不錯的東西，不過它非常容易把讀代碼的人搞糊塗，而且容易導致看起
++來不相關的改動帶來錯誤。
++
++3) 作爲左值的帶參數的宏： FOO(x) = y；如果有人把 FOO 變成一個內聯函數的話，這
++   種用法就會出錯了。
++
++4) 忘記了優先級：使用表達式定義常量的宏必須將表達式置於一對小括號之內。帶參數
++   的宏也要注意此類問題。
++
++.. code-block:: c
++
++	#define CONSTANT 0x4000
++	#define CONSTEXP (CONSTANT | 3)
++
++5) 在宏里定義類似函數的本地變量時命名衝突：
++
++.. code-block:: c
++
++	#define FOO(x)				\
++	({					\
++		typeof(x) ret;			\
++		ret = calc_ret(x);		\
++		(ret);				\
++	})
++
++ret 是本地變量的通用名字 - __foo_ret 更不容易與一個已存在的變量衝突。
++
++cpp 手冊對宏的講解很詳細。gcc internals 手冊也詳細講解了 RTL，內核里的彙編語
++言經常用到它。
++
++
++13) 列印內核消息
++------------------------------
++
++內核開發者應該是受過良好教育的。請一定注意內核信息的拼寫，以給人以好的印象。
++不要用不規範的單詞比如 ``dont``，而要用 ``do not`` 或者 ``don't`` 。保證這些信
++息簡單明了,無歧義。
++
++內核信息不必以英文句號結束。
++
++在小括號里列印數字 (%d) 沒有任何價值，應該避免這樣做。
++
++<linux/device.h> 里有一些驅動模型診斷宏，你應該使用它們，以確保信息對應於正確
++的設備和驅動，並且被標記了正確的消息級別。這些宏有：dev_err(), dev_warn(),
++dev_info() 等等。對於那些不和某個特定設備相關連的信息，<linux/printk.h> 定義
++了 pr_notice(), pr_info(), pr_warn(), pr_err() 和其他。
++
++寫出好的調試信息可以是一個很大的挑戰；一旦你寫出後，這些信息在遠程除錯時能提
++供極大的幫助。然而列印調試信息的處理方式同列印非調試信息不同。其他 pr_XXX()
++函數能無條件地列印，pr_debug() 卻不；默認情況下它不會被編譯，除非定義了 DEBUG
++或設定了 CONFIG_DYNAMIC_DEBUG。實際這同樣是爲了 dev_dbg()，一個相關約定是在一
++個已經開啓了 DEBUG 時，使用 VERBOSE_DEBUG 來添加 dev_vdbg()。
++
++許多子系統擁有 Kconfig 調試選項來開啓 -DDEBUG 在對應的 Makefile 裡面；在其他
++情況下，特殊文件使用 #define DEBUG。當一條調試信息需要被無條件列印時，例如，
++如果已經包含一個調試相關的 #ifdef 條件，printk(KERN_DEBUG ...) 就可被使用。
++
++
++14) 分配內存
++------------------------------
++
++內核提供了下面的一般用途的內存分配函數：
++kmalloc(), kzalloc(), kmalloc_array(), kcalloc(), vmalloc() 和 vzalloc()。
++請參考 API 文檔以獲取有關它們的詳細信息。
++
++傳遞結構體大小的首選形式是這樣的：
++
++.. code-block:: c
++
++	p = kmalloc(sizeof(*p), ...);
++
++另外一種傳遞方式中，sizeof 的操作數是結構體的名字，這樣會降低可讀性，並且可能
++會引入 bug。有可能指針變量類型被改變時，而對應的傳遞給內存分配函數的 sizeof
++的結果不變。
++
++強制轉換一個 void 指針返回值是多餘的。C 語言本身保證了從 void 指針到其他任何
++指針類型的轉換是沒有問題的。
++
++分配一個數組的首選形式是這樣的：
++
++.. code-block:: c
++
++	p = kmalloc_array(n, sizeof(...), ...);
++
++分配一個零長數組的首選形式是這樣的：
++
++.. code-block:: c
++
++	p = kcalloc(n, sizeof(...), ...);
++
++兩種形式檢查分配大小 n * sizeof(...) 的溢出，如果溢出返回 NULL。
++
++
++15) 內聯弊病
++------------------------------
++
++有一個常見的誤解是 ``內聯`` 是 gcc 提供的可以讓代碼運行更快的一個選項。雖然使
++用內聯函數有時候是恰當的 (比如作爲一種替代宏的方式，請看第十二章)，不過很多情
++況下不是這樣。inline 的過度使用會使內核變大，從而使整個系統運行速度變慢。
++因爲體積大內核會占用更多的指令高速緩存，而且會導致 pagecache 的可用內存減少。
++想像一下，一次 pagecache 未命中就會導致一次磁碟尋址，將耗時 5 毫秒。5 毫秒的
++時間內 CPU 能執行很多很多指令。
++
++一個基本的原則是如果一個函數有 3 行以上，就不要把它變成內聯函數。這個原則的一
++個例外是，如果你知道某個參數是一個編譯時常量，而且因爲這個常量你確定編譯器在
++編譯時能優化掉你的函數的大部分代碼，那仍然可以給它加上 inline 關鍵字。
++kmalloc() 內聯函數就是一個很好的例子。
++
++人們經常主張給 static 的而且只用了一次的函數加上 inline，如此不會有任何損失，
++因爲沒有什麼好權衡的。雖然從技術上說這是正確的，但是實際上這種情況下即使不加
++inline gcc 也可以自動使其內聯。而且其他用戶可能會要求移除 inline，由此而來的
++爭論會抵消 inline 自身的潛在價值，得不償失。
++
++
++16) 函數返回值及命名
++------------------------------
++
++函數可以返回多種不同類型的值，最常見的一種是表明函數執行成功或者失敗的值。這樣
++的一個值可以表示爲一個錯誤代碼整數 (-Exxx＝失敗，0＝成功) 或者一個 ``成功``
++布爾值 (0＝失敗，非0＝成功)。
++
++混合使用這兩種表達方式是難於發現的 bug 的來源。如果 C 語言本身嚴格區分整形和
++布爾型變量，那麼編譯器就能夠幫我們發現這些錯誤... 不過 C 語言不區分。爲了避免
++產生這種 bug，請遵循下面的慣例::
++
++	如果函數的名字是一個動作或者強制性的命令，那麼這個函數應該返回錯誤代
++	碼整數。如果是一個判斷，那麼函數應該返回一個 "成功" 布爾值。
++
++比如， ``add work`` 是一個命令，所以 add_work() 在成功時返回 0，在失敗時返回
++-EBUSY。類似的，因爲 ``PCI device present`` 是一個判斷，所以 pci_dev_present()
++在成功找到一個匹配的設備時應該返回 1，如果找不到時應該返回 0。
++
++所有 EXPORTed 函數都必須遵守這個慣例，所有的公共函數也都應該如此。私有
++(static) 函數不需要如此，但是我們也推薦這樣做。
++
++返回值是實際計算結果而不是計算是否成功的標誌的函數不受此慣例的限制。一般的，
++他們通過返回一些正常值範圍之外的結果來表示出錯。典型的例子是返回指針的函數，
++他們使用 NULL 或者 ERR_PTR 機制來報告錯誤。
++
++
++17) 不要重新發明內核宏
++------------------------------
++
++頭文件 include/linux/kernel.h 包含了一些宏，你應該使用它們，而不要自己寫一些
++它們的變種。比如，如果你需要計算一個數組的長度，使用這個宏
++
++.. code-block:: c
++
++	#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
++
++類似的，如果你要計算某結構體成員的大小，使用
++
++.. code-block:: c
++
++	#define sizeof_field(t, f) (sizeof(((t*)0)->f))
++
++還有可以做嚴格的類型檢查的 min() 和 max() 宏，如果你需要可以使用它們。你可以
++自己看看那個頭文件里還定義了什麼你可以拿來用的東西，如果有定義的話，你就不應
++在你的代碼里自己重新定義。
++
++
++18) 編輯器模式行和其他需要羅嗦的事情
++--------------------------------------------------
++
++有一些編輯器可以解釋嵌入在源文件里的由一些特殊標記標明的配置信息。比如，emacs
++能夠解釋被標記成這樣的行：
++
++.. code-block:: c
++
++	-*- mode: c -*-
++
++或者這樣的：
++
++.. code-block:: c
++
++	/*
++	Local Variables:
++	compile-command: "gcc -DMAGIC_DEBUG_FLAG foo.c"
++	End:
++	*/
++
++Vim 能夠解釋這樣的標記：
++
++.. code-block:: c
++
++	/* vim:set sw=8 noet */
++
++不要在原始碼中包含任何這樣的內容。每個人都有他自己的編輯器配置，你的源文件不
++應該覆蓋別人的配置。這包括有關縮進和模式配置的標記。人們可以使用他們自己定製
++的模式，或者使用其他可以產生正確的縮進的巧妙方法。
++
++
++19) 內聯彙編
++------------------------------
++
++在特定架構的代碼中，你可能需要內聯彙編與 CPU 和平台相關功能連接。需要這麼做時
++就不要猶豫。然而，當 C 可以完成工作時，不要平白無故地使用內聯彙編。在可能的情
++況下，你可以並且應該用 C 和硬體溝通。
++
++請考慮去寫捆綁通用位元 (wrap common bits) 的內聯彙編的簡單輔助函數，別去重複
++地寫下只有細微差異內聯彙編。記住內聯彙編可以使用 C 參數。
++
++大型，有一定複雜度的彙編函數應該放在 .S 文件內，用相應的 C 原型定義在 C 頭文
++件中。彙編函數的 C 原型應該使用 ``asmlinkage`` 。
++
++你可能需要把彙編語句標記爲 volatile，用來阻止 GCC 在沒發現任何副作用後就把它
++移除了。你不必總是這樣做，儘管，這不必要的舉動會限制優化。
++
++在寫一個包含多條指令的單個內聯彙編語句時，把每條指令用引號分割而且各占一行，
++除了最後一條指令外，在每個指令結尾加上 \n\t，讓彙編輸出時可以正確地縮進下一條
++指令：
++
++.. code-block:: c
++
++	asm ("magic %reg1, #42\n\t"
++	     "more_magic %reg2, %reg3"
++	     : /* outputs */ : /* inputs */ : /* clobbers */);
++
++
++20) 條件編譯
++------------------------------
++
++只要可能，就不要在 .c 文件裡面使用預處理條件 (#if, #ifdef)；這樣做讓代碼更難
++閱讀並且更難去跟蹤邏輯。替代方案是，在頭文件中用預處理條件提供給那些 .c 文件
++使用，再給 #else 提供一個空樁 (no-op stub) 版本，然後在 .c 文件內無條件地調用
++那些 (定義在頭文件內的) 函數。這樣做，編譯器會避免爲樁函數 (stub) 的調用生成
++任何代碼，產生的結果是相同的，但邏輯將更加清晰。
++
++最好傾向於編譯整個函數，而不是函數的一部分或表達式的一部分。與其放一個 ifdef
++在表達式內，不如分解出部分或全部表達式，放進一個單獨的輔助函數，並應用預處理
++條件到這個輔助函數內。
++
++如果你有一個在特定配置中，可能變成未使用的函數或變量，編譯器會警告它定義了但
++未使用，把它標記爲 __maybe_unused 而不是將它包含在一個預處理條件中。(然而，如
++果一個函數或變量總是未使用，就直接刪除它。)
++
++在代碼中，儘可能地使用 IS_ENABLED 宏來轉化某個 Kconfig 標記爲 C 的布爾
++表達式，並在一般的 C 條件中使用它：
++
++.. code-block:: c
++
++	if (IS_ENABLED(CONFIG_SOMETHING)) {
++		...
++	}
++
++編譯器會做常量摺疊，然後就像使用 #ifdef 那樣去包含或排除代碼塊，所以這不會帶
++來任何運行時開銷。然而，這種方法依舊允許 C 編譯器查看塊內的代碼，並檢查它的正
++確性 (語法，類型，符號引用，等等)。因此，如果條件不滿足，代碼塊內的引用符號就
++不存在時，你還是必須去用 #ifdef。
++
++在任何有意義的 #if 或 #ifdef 塊的末尾 (超過幾行的)，在 #endif 同一行的後面寫下
++註解，注釋這個條件表達式。例如：
++
++.. code-block:: c
++
++	#ifdef CONFIG_SOMETHING
++	...
++	#endif /* CONFIG_SOMETHING */
++
++
++附錄 I) 參考
++-------------------
++
++The C Programming Language, 第二版
++作者：Brian W. Kernighan 和 Denni M. Ritchie.
++Prentice Hall, Inc., 1988.
++ISBN 0-13-110362-8 (軟皮), 0-13-110370-9 (硬皮).
++
++The Practice of Programming
++作者：Brian W. Kernighan 和 Rob Pike.
++Addison-Wesley, Inc., 1999.
++ISBN 0-201-61586-X.
++
++GNU 手冊 - 遵循 K&R 標準和此文本 - cpp, gcc, gcc internals and indent,
++都可以從 https://www.gnu.org/manual/ 找到
++
++WG14 是 C 語言的國際標準化工作組，URL: http://www.open-std.org/JTC1/SC22/WG14/
++
++Kernel process/coding-style.rst，作者 greg@kroah.com 發表於 OLS 2002：
++http://www.kroah.com/linux/talks/ols_2002_kernel_codingstyle_talk/html/
++
+diff --git a/Documentation/translations/zh_TW/process/development-process.rst b/Documentation/translations/zh_TW/process/development-process.rst
+new file mode 100644
+index 000000000000..45e6385647cd
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/development-process.rst
+@@ -0,0 +1,30 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/development-process.rst <development_process_main>`
++:Translator: Alex Shi <alex.shi@linux.alibaba.com>
++             Hu Haowen <src.res@email.cn>
++
++.. _tw_development_process_main:
++
++內核開發過程指南
++================
++
++內容:
++
++.. toctree::
++   :numbered:
++   :maxdepth: 2
++
++   1.Intro
++   2.Process
++   3.Early-stage
++   4.Coding
++   5.Posting
++   6.Followthrough
++   7.AdvancedTopics
++   8.Conclusion
++
++本文檔的目的是幫助開發人員（及其經理）以最小的挫折感與開發社區合作。它試圖記錄這個社區如何以一種不熟悉Linux內核開發（或者實際上是自由軟體開發）的人可以訪問的方式工作。雖然這裡有一些技術資料，但這是一個面向過程的討論，不需要深入了解內核編程就可以理解。
++
+diff --git a/Documentation/translations/zh_TW/process/email-clients.rst b/Documentation/translations/zh_TW/process/email-clients.rst
+new file mode 100644
+index 000000000000..4ba543d06f3b
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/email-clients.rst
+@@ -0,0 +1,252 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. _tw_email_clients:
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/email-clients.rst <email_clients>`
++
++譯者::
++
++        中文版維護者： 賈威威  Harry Wei <harryxiyou@gmail.com>
++        中文版翻譯者： 賈威威  Harry Wei <harryxiyou@gmail.com>
++                       時奎亮  Alex Shi <alex.shi@linux.alibaba.com>
++        中文版校譯者： Yinglin Luan <synmyth@gmail.com>
++        	       Xiaochen Wang <wangxiaochen0@gmail.com>
++                       yaxinsn <yaxinsn@163.com>
++                      Hu Haowen <src.res@email.cn>
++
++Linux郵件客戶端配置信息
++=======================
++
++Git
++---
++
++現在大多數開發人員使用 ``git send-email`` 而不是常規的電子郵件客戶端。這方面
++的手冊非常好。在接收端，維護人員使用 ``git am`` 加載補丁。
++
++如果你是 ``git`` 新手，那麼把你的第一個補丁發送給你自己。將其保存爲包含所有
++標題的原始文本。運行 ``git am raw_email.txt`` ，然後使用 ``git log`` 查看更
++改日誌。如果工作正常，再將補丁發送到相應的郵件列表。
++
++
++普通配置
++--------
++Linux內核補丁是通過郵件被提交的，最好把補丁作爲郵件體的內嵌文本。有些維護者
++接收附件，但是附件的內容格式應該是"text/plain"。然而，附件一般是不贊成的，
++因爲這會使補丁的引用部分在評論過程中變的很困難。
++
++用來發送Linux內核補丁的郵件客戶端在發送補丁時應該處於文本的原始狀態。例如，
++他們不能改變或者刪除制表符或者空格，甚至是在每一行的開頭或者結尾。
++
++不要通過"format=flowed"模式發送補丁。這樣會引起不可預期以及有害的斷行。
++
++不要讓你的郵件客戶端進行自動換行。這樣也會破壞你的補丁。
++
++郵件客戶端不能改變文本的字符集編碼方式。要發送的補丁只能是ASCII或者UTF-8編碼方式，
++如果你使用UTF-8編碼方式發送郵件，那麼你將會避免一些可能發生的字符集問題。
++
++郵件客戶端應該形成並且保持 References: 或者 In-Reply-To: 標題，那麼
++郵件話題就不會中斷。
++
++複製粘帖(或者剪貼粘帖)通常不能用於補丁，因爲制表符會轉換爲空格。使用xclipboard, xclip
++或者xcutsel也許可以，但是最好測試一下或者避免使用複製粘帖。
++
++不要在使用PGP/GPG署名的郵件中包含補丁。這樣會使得很多腳本不能讀取和適用於你的補丁。
++（這個問題應該是可以修復的）
++
++在給內核郵件列表發送補丁之前，給自己發送一個補丁是個不錯的主意，保存接收到的
++郵件，將補丁用'patch'命令打上，如果成功了，再給內核郵件列表發送。
++
++
++一些郵件客戶端提示
++------------------
++這裡給出一些詳細的MUA配置提示，可以用於給Linux內核發送補丁。這些並不意味是
++所有的軟體包配置總結。
++
++說明：
++TUI = 以文本爲基礎的用戶接口
++GUI = 圖形界面用戶接口
++
++Alpine (TUI)
++~~~~~~~~~~~~
++
++配置選項：
++在"Sending Preferences"部分：
++
++- "Do Not Send Flowed Text"必須開啓
++- "Strip Whitespace Before Sending"必須關閉
++
++當寫郵件時，光標應該放在補丁會出現的地方，然後按下CTRL-R組合鍵，使指定的
++補丁文件嵌入到郵件中。
++
++Evolution (GUI)
 +~~~~~~~~~~~~~~~
 +
-+===  =====  ======  ========================================================
-+ 位  日誌     數字  內核被汙染的原因
-+===  =====  ======  ========================================================
-+  0   G/P        1  已加載專用模塊
-+  1   _/F        2  模塊被強制加載
-+  2   _/S        4  內核運行在不合規範的系統上
-+  3   _/R        8  模塊被強制卸載
-+  4   _/M       16  處理器報告了機器檢測異常（MCE）
-+  5   _/B       32  引用了錯誤的頁或某些意外的頁標誌
-+  6   _/U       64  用戶空間應用程式請求的汙染
-+  7   _/D      128  內核最近死機了，即曾出現OOPS或BUG
-+  8   _/A      256  ACPI表被用戶覆蓋
-+  9   _/W      512  內核發出警告
-+ 10   _/C     1024  已加載staging驅動程序
-+ 11   _/I     2048  已應用平台固件缺陷的解決方案
-+ 12   _/O     4096  已加載外部構建（「樹外」）模塊
-+ 13   _/E     8192  已加載未簽名的模塊
-+ 14   _/L    16384  發生軟鎖定
-+ 15   _/K    32768  內核已實時打補丁
-+ 16   _/X    65536  備用汙染，爲發行版定義並使用
-+ 17   _/T   131072  內核是用結構隨機化插件構建的
-+===  =====  ======  ========================================================
++一些開發者成功的使用它發送補丁
 +
-+註：字符 ``_`` 表示空白，以便於閱讀表。
++當選擇郵件選項：Preformat
++  從Format->Heading->Preformatted (Ctrl-7)或者工具欄
 +
-+汙染的更詳細解釋
++然後使用：
++  Insert->Text File... (Alt-n x)插入補丁文件。
++
++你還可以"diff -Nru old.c new.c | xclip"，選擇Preformat，然後使用中間鍵進行粘帖。
++
++Kmail (GUI)
++~~~~~~~~~~~
++
++一些開發者成功的使用它發送補丁。
++
++默認設置不爲HTML格式是合適的；不要啓用它。
++
++當書寫一封郵件的時候，在選項下面不要選擇自動換行。唯一的缺點就是你在郵件中輸入的任何文本
++都不會被自動換行，因此你必須在發送補丁之前手動換行。最簡單的方法就是啓用自動換行來書寫郵件，
++然後把它保存爲草稿。一旦你在草稿中再次打開它，它已經全部自動換行了，那麼你的郵件雖然沒有
++選擇自動換行，但是還不會失去已有的自動換行。
++
++在郵件的底部，插入補丁之前，放上常用的補丁定界符：三個連字號(---)。
++
++然後在"Message"菜單條目，選擇插入文件，接著選取你的補丁文件。還有一個額外的選項，你可以
++通過它配置你的郵件建立工具欄菜單，還可以帶上"insert file"圖標。
++
++你可以安全地通過GPG標記附件，但是內嵌補丁最好不要使用GPG標記它們。作爲內嵌文本的簽發補丁，
++當從GPG中提取7位編碼時會使他們變的更加複雜。
++
++如果你非要以附件的形式發送補丁，那麼就右鍵點擊附件，然後選中屬性，突出"Suggest automatic
++display"，這樣內嵌附件更容易讓讀者看到。
++
++當你要保存將要發送的內嵌文本補丁，你可以從消息列表窗格選擇包含補丁的郵件，然後右擊選擇
++"save as"。你可以使用一個沒有更改的包含補丁的郵件，如果它是以正確的形式組成。當你正真在它
++自己的窗口之下察看，那時沒有選項可以保存郵件--已經有一個這樣的bug被匯報到了kmail的bugzilla
++並且希望這將會被處理。郵件是以只針對某個用戶可讀寫的權限被保存的，所以如果你想把郵件複製到其他地方，
++你不得不把他們的權限改爲組或者整體可讀。
++
++Lotus Notes (GUI)
 +~~~~~~~~~~~~~~~~~
 +
-+ 0)  ``G`` 加載的所有模塊都有GPL或兼容許可證， ``P`` 加載了任何專有模塊。
-+     沒有MODULE_LICENSE（模塊許可證）或MODULE_LICENSE未被insmod認可爲GPL
-+     兼容的模塊被認爲是專有的。
++不要使用它。
++
++Mutt (TUI)
++~~~~~~~~~~
++
++很多Linux開發人員使用mutt客戶端，所以證明它肯定工作的非常漂亮。
++
++Mutt不自帶編輯器，所以不管你使用什麼編輯器都不應該帶有自動斷行。大多數編輯器都帶有
++一個"insert file"選項，它可以通過不改變文件內容的方式插入文件。
++
++'vim'作爲mutt的編輯器：
++  set editor="vi"
++
++  如果使用xclip，敲入以下命令
++  :set paste
++  按中鍵之前或者shift-insert或者使用
++  :r filename
++
++如果想要把補丁作爲內嵌文本。
++(a)ttach工作的很好，不帶有"set paste"。
++
++你可以通過 ``git format-patch`` 生成補丁，然後用 Mutt發送它們::
++
++        $ mutt -H 0001-some-bug-fix.patch
++
++配置選項：
++它應該以默認設置的形式工作。
++然而，把"send_charset"設置爲"us-ascii::utf-8"也是一個不錯的主意。
++
++Mutt 是高度可配置的。 這裡是個使用mutt通過 Gmail 發送的補丁的最小配置::
++
++  # .muttrc
++  # ================  IMAP ====================
++  set imap_user = 'yourusername@gmail.com'
++  set imap_pass = 'yourpassword'
++  set spoolfile = imaps://imap.gmail.com/INBOX
++  set folder = imaps://imap.gmail.com/
++  set record="imaps://imap.gmail.com/[Gmail]/Sent Mail"
++  set postponed="imaps://imap.gmail.com/[Gmail]/Drafts"
++  set mbox="imaps://imap.gmail.com/[Gmail]/All Mail"
++
++  # ================  SMTP  ====================
++  set smtp_url = "smtp://username@smtp.gmail.com:587/"
++  set smtp_pass = $imap_pass
++  set ssl_force_tls = yes # Require encrypted connection
++
++  # ================  Composition  ====================
++  set editor = `echo \$EDITOR`
++  set edit_headers = yes  # See the headers when editing
++  set charset = UTF-8     # value of $LANG; also fallback for send_charset
++  # Sender, email address, and sign-off line must match
++  unset use_domain        # because joe@localhost is just embarrassing
++  set realname = "YOUR NAME"
++  set from = "username@gmail.com"
++  set use_from = yes
++
++Mutt文檔含有更多信息:
++
++    http://dev.mutt.org/trac/wiki/UseCases/Gmail
++
++    http://dev.mutt.org/doc/manual.html
++
++Pine (TUI)
++~~~~~~~~~~
++
++Pine過去有一些空格刪減問題，但是這些現在應該都被修復了。
++
++如果可以，請使用alpine(pine的繼承者)
++
++配置選項：
++- 最近的版本需要消除流程文本
++- "no-strip-whitespace-before-send"選項也是需要的。
 +
 +
-+ 1)  ``F`` 任何模塊被 ``insmod -f`` 強制加載， ``' '`` 所有模塊正常加載。
++Sylpheed (GUI)
++~~~~~~~~~~~~~~
 +
-+ 2)  ``S`` 內核運行在不合規範的處理器或系統上：硬體已運行在不受支持的配置中，
-+     因此無法保證正確執行。內核將被汙染，例如：
++- 內嵌文本可以很好的工作（或者使用附件）。
++- 允許使用外部的編輯器。
++- 對於目錄較多時非常慢。
++- 如果通過non-SSL連接，無法使用TLS SMTP授權。
++- 在組成窗口中有一個很有用的ruler bar。
++- 給地址本中添加地址就不會正確的了解顯示名。
 +
-+     - 在x86上：PAE是通過intel CPU（如Pentium M）上的forcepae強制執行的，這些
-+       CPU不報告PAE，但可能有功能實現，SMP內核在非官方支持的SMP Athlon CPU上
-+       運行，MSR被暴露到用戶空間中。
-+     - 在arm上：在某些CPU（如Keystone 2）上運行的內核，沒有啓用某些內核特性。
-+     - 在arm64上：CPU之間存在不匹配的硬體特性，引導加載程序以不同的模式引導CPU。
-+     - 某些驅動程序正在被用在不受支持的體系結構上（例如x86_64以外的其他系統
-+       上的scsi/snic，非x86/x86_64/itanium上的scsi/ips，已經損壞了arm64上
-+       irqchip/irq-gic的固件設置…）。
++Thunderbird (GUI)
++~~~~~~~~~~~~~~~~~
 +
-+ 3)  ``R`` 模塊被 ``rmmod -f`` 強制卸載， ``' '`` 所有模塊都正常卸載。
++默認情況下，thunderbird很容易損壞文本，但是還有一些方法可以強制它變得更好。
 +
-+ 4)  ``M`` 任何處理器報告了機器檢測異常， ``' '`` 未發生機器檢測異常。
++- 在用戶帳號設置里，組成和尋址，不要選擇"Compose messages in HTML format"。
 +
-+ 5)  ``B`` 頁面釋放函數發現錯誤的頁面引用或某些意外的頁面標誌。這表示硬體問題
-+     或內核錯誤；日誌中應該有其他信息指示發生此汙染的原因。
++- 編輯你的Thunderbird配置設置來使它不要拆行使用：user_pref("mailnews.wraplength", 0);
 +
-+ 6)  ``U`` 用戶或用戶應用程式特意請求設置受汙染標誌，否則應爲 ``' '`` 。
++- 編輯你的Thunderbird配置設置，使它不要使用"format=flowed"格式：user_pref("mailnews.
++  send_plaintext_flowed", false);
 +
-+ 7)  ``D`` 內核最近死機了，即出現了OOPS或BUG。
++- 你需要使Thunderbird變爲預先格式方式：
++  如果默認情況下你書寫的是HTML格式，那不是很難。僅僅從標題欄的下拉框中選擇"Preformat"格式。
++  如果默認情況下你書寫的是文本格式，你不得把它改爲HTML格式（僅僅作爲一次性的）來書寫新的消息，
++  然後強制使它回到文本格式，否則它就會拆行。要實現它，在寫信的圖標上使用shift鍵來使它變爲HTML
++  格式，然後標題欄的下拉框中選擇"Preformat"格式。
 +
-+ 8)  ``A`` ACPI表被重寫。
++- 允許使用外部的編輯器：
++  針對Thunderbird打補丁最簡單的方法就是使用一個"external editor"擴展，然後使用你最喜歡的
++  $EDITOR來讀取或者合併補丁到文本中。要實現它，可以下載並且安裝這個擴展，然後添加一個使用它的
++  按鍵View->Toolbars->Customize...最後當你書寫信息的時候僅僅點擊它就可以了。
 +
-+ 9)  ``W`` 內核之前已發出過警告（儘管有些警告可能會設置更具體的汙染標誌）。
++TkRat (GUI)
++~~~~~~~~~~~
 +
-+ 10) ``C`` 已加載staging驅動程序。
++可以使用它。使用"Insert file..."或者外部的編輯器。
 +
-+ 11) ``I`` 內核正在處理平台固件（BIOS或類似軟體）中的嚴重錯誤。
++Gmail (Web GUI)
++~~~~~~~~~~~~~~~
 +
-+ 12) ``O`` 已加載外部構建（「樹外」）模塊。
++不要使用它發送補丁。
 +
-+ 13) ``E`` 在支持模塊簽名的內核中加載了未簽名的模塊。
++Gmail網頁客戶端自動地把制表符轉換爲空格。
 +
-+ 14) ``L`` 系統上先前發生過軟鎖定。
++雖然制表符轉換爲空格問題可以被外部編輯器解決，同時它還會使用回車換行把每行拆分爲78個字符。
 +
-+ 15) ``K`` 內核已經實時打了補丁。
++另一個問題是Gmail還會把任何不是ASCII的字符的信息改爲base64編碼。它把東西變的像歐洲人的名字。
 +
-+ 16) ``X`` 備用汙染，由Linux發行版定義和使用。
++                                ###
 +
-+ 17) ``T`` 內核構建時使用了randstruct插件，它可以有意生成非常不尋常的內核結構
-+     布局（甚至是性能病態的布局），這在調試時非常有用。於構建時設置。
-+
-diff --git a/Documentation/translations/zh_TW/admin-guide/unicode.rst b/Documentation/translations/zh_TW/admin-guide/unicode.rst
+diff --git a/Documentation/translations/zh_TW/process/embargoed-hardware-issues.rst b/Documentation/translations/zh_TW/process/embargoed-hardware-issues.rst
 new file mode 100644
-index 000000000000..720875be5ef8
+index 000000000000..d676cef16646
 --- /dev/null
-+++ b/Documentation/translations/zh_TW/admin-guide/unicode.rst
-@@ -0,0 +1,174 @@
++++ b/Documentation/translations/zh_TW/process/embargoed-hardware-issues.rst
+@@ -0,0 +1,232 @@
 +.. SPDX-License-Identifier: GPL-2.0
 +
 +.. include:: ../disclaimer-zh_TW.rst
 +
-+:Original: Documentation/admin-guide/unicode.rst
++:Original: :ref:`Documentation/process/embargoed-hardware-issues.rst <embargoed_hardware_issues>`
++:Translator: Alex Shi <alex.shi@linux.alibaba.com>
++             Hu Haowen <src.res@email.cn>
 +
-+:譯者:
++被限制的硬體問題
++================
 +
-+ 吳想成 Wu XiangCheng <bobwxc@email.cn>
-+ 胡皓文 Hu Haowen <src.res@email.cn>
++範圍
++----
 +
-+Unicode（統一碼）支持
-+======================
++導致安全問題的硬體問題與只影響Linux內核的純軟體錯誤是不同的安全錯誤類別。
 +
-+	（英文版）上次更新：2005-01-17，版本號 1.4
++必須區別對待諸如熔毀(Meltdown)、Spectre、L1TF等硬體問題，因爲它們通常會影響
++所有作業系統（「OS」），因此需要在不同的OS供應商、發行版、硬體供應商和其他各方
++之間進行協調。對於某些問題，軟體緩解可能依賴於微碼或固件更新，這需要進一步的
++協調。
 +
-+此文檔由H. Peter Anvin <unicode@lanana.org>管理，是Linux註冊名稱與編號管理局
-+（Linux Assigned Names And Numbers Authority，LANANA）項目的一部分。
-+現行版本請見：
++.. _zh_Contact:
 +
-+	http://www.lanana.org/docs/unicode/admin-guide/unicode.rst
++接觸
++----
 +
-+簡介
-+-----
++Linux內核硬體安全小組獨立於普通的Linux內核安全小組。
 +
-+Linux內核代碼已被重寫以使用Unicode來將字符映射到字體。下載一個Unicode到字體
-+（Unicode-to-font）表，八位字符集與UTF-8模式都將改用此字體來顯示。
++該小組只負責協調被限制的硬體安全問題。Linux內核中純軟體安全漏洞的報告不由該
++小組處理，報告者將被引導至常規Linux內核安全小組(:ref:`Documentation/admin-guide/
++<securitybugs>`)聯繫。
 +
-+這微妙地改變了八位字符表的語義。現在的四個字符表是：
++可以通過電子郵件 <hardware-security@kernel.org> 與小組聯繫。這是一份私密的安全
++官名單，他們將幫助您根據我們的文檔化流程協調問題。
 +
-+=============== =============================== ================
-+映射代號        映射名稱                        Escape代碼 (G0)
-+=============== =============================== ================
-+LAT1_MAP        Latin-1 (ISO 8859-1)            ESC ( B
-+GRAF_MAP        DEC VT100 pseudographics        ESC ( 0
-+IBMPC_MAP       IBM code page 437               ESC ( U
-+USER_MAP        User defined                    ESC ( K
-+=============== =============================== ================
++郵件列表是加密的，發送到列表的電子郵件可以通過PGP或S/MIME加密，並且必須使用報告
++者的PGP密鑰或S/MIME證書籤名。該列表的PGP密鑰和S/MIME證書可從
++https://www.kernel.org/.... 獲得。
 +
-+特別是 ESC ( U 不再是「直通字體」，因爲字體可能與IBM字符集完全不同。
-+例如，即使加載了一個Latin-1字體，也允許使用塊圖形（block graphics）。
++雖然硬體安全問題通常由受影響的硬體供應商處理，但我們歡迎發現潛在硬體缺陷的研究
++人員或個人與我們聯繫。
 +
-+請注意，儘管這些代碼與ISO 2022類似，但這些代碼及其用途都與ISO 2022不匹配；
-+Linux有兩個八位代碼（G0和G1），而ISO 2022有四個七位代碼（G0-G3）。
++硬體安全官
++^^^^^^^^^^
 +
-+根據Unicode標準/ISO 10646，U+F000到U+F8FF被保留用於作業系統範圍內的分配
-+（Unicode標準將其稱爲「團體區域（Corporate Zone）」，因爲這對於Linux是不準確
-+的，所以我們稱之爲「Linux區域」）。選擇U+F000作爲起點，因爲它允許直接映射
-+區域以2的大倍數開始（以防需要1024或2048個字符的字體）。這就留下U+E000到
-+U+EFFF作爲最終用戶區。
++目前的硬體安全官小組:
 +
-+[v1.2]：Unicodes範圍從U+F000到U+F7FF已經被硬編碼爲直接映射到加載的字體，
-+繞過了翻譯表。用戶定義的映射現在默認爲U+F000到U+F0FF，模擬前述行爲。實際上，
-+此範圍可能較短；例如，vgacon只能處理256字符（U+F000..U+F0FF）或512字符
-+（U+F000..U+F1FF）字體。
++  - Linus Torvalds（Linux基金會院士）
++  - Greg Kroah Hartman（Linux基金會院士）
++  - Thomas Gleixner（Linux基金會院士）
 +
-+Linux 區域中定義的實際字符
-+---------------------------
++郵件列表的操作
++^^^^^^^^^^^^^^
 +
-+此外，還定義了Unicode 1.1.4中不存在的以下字符；這些字符由DEC VT圖形映射使用。
-+[v1.2]此用法已過時，不應再使用；請參見下文。
++處理流程中使用的加密郵件列表託管在Linux Foundation的IT基礎設施上。通過提供這項
++服務，Linux基金會的IT基礎設施安全總監在技術上有能力訪問被限制的信息，但根據他
++的僱傭合同，他必須保密。Linux基金會的IT基礎設施安全總監還負責 kernel.org 基礎
++設施。
 +
-+====== ======================================
-+U+F800 DEC VT GRAPHICS HORIZONTAL LINE SCAN 1
-+U+F801 DEC VT GRAPHICS HORIZONTAL LINE SCAN 3
-+U+F803 DEC VT GRAPHICS HORIZONTAL LINE SCAN 7
-+U+F804 DEC VT GRAPHICS HORIZONTAL LINE SCAN 9
-+====== ======================================
++Linux基金會目前的IT基礎設施安全總監是 Konstantin Ryabitsev。
 +
-+DEC VT220使用6x10字符矩陣，這些字符在DEC VT圖形字符集中形成一個平滑的過渡。
-+我省略了掃描5行，因爲它也被用作塊圖形字符，因此被編碼爲U+2500 FORMS LIGHT
-+HORIZONTAL。
++保密協議
++--------
 +
-+[v1.3]：這些字符已正式添加到Unicode 3.2.0中；它們在U+23BA、U+23BB、U+23BC、
-+U+23BD處添加。Linux現在使用新值。
++Linux內核硬體安全小組不是正式的機構，因此無法簽訂任何保密協議。核心社區意識到
++這些問題的敏感性，並提供了一份諒解備忘錄。
 +
-+[v1.2]：添加了以下字符來表示常見的鍵盤符號，這些符號不太可能被添加到Unicode
-+中，因爲它們非常討厭地取決於特定供應商。當然，這是糟糕設計的一個好例子。
++諒解備忘錄
++----------
 +
-+====== ======================================
-+U+F810 KEYBOARD SYMBOL FLYING FLAG
-+U+F811 KEYBOARD SYMBOL PULLDOWN MENU
-+U+F812 KEYBOARD SYMBOL OPEN APPLE
-+U+F813 KEYBOARD SYMBOL SOLID APPLE
-+====== ======================================
++Linux內核社區深刻理解在不同作業系統供應商、發行商、硬體供應商和其他各方之間
++進行協調時，保持硬體安全問題處於限制狀態的要求。
 +
-+克林貢（Klingon）語支持
++Linux內核社區在過去已經成功地處理了硬體安全問題，並且有必要的機制允許在限制
++限制下進行符合社區的開發。
++
++Linux內核社區有一個專門的硬體安全小組負責初始聯繫，並監督在限制規則下處理
++此類問題的過程。
++
++硬體安全小組確定開發人員（領域專家），他們將組成特定問題的初始響應小組。最初
++的響應小組可以引入更多的開發人員（領域專家）以最佳的技術方式解決這個問題。
++
++所有相關開發商承諾遵守限制規定，並對收到的信息保密。違反承諾將導致立即從當前
++問題中排除，並從所有相關郵件列表中刪除。此外，硬體安全小組還將把違反者排除在
++未來的問題之外。這一後果的影響在我們社區是一種非常有效的威懾。如果發生違規
++情況，硬體安全小組將立即通知相關方。如果您或任何人發現潛在的違規行爲，請立即
++向硬體安全人員報告。
++
++流程
++^^^^
++
++由於Linux內核開發的全球分布式特性，面對面的會議幾乎不可能解決硬體安全問題。
++由於時區和其他因素，電話會議很難協調，只能在絕對必要時使用。加密電子郵件已被
++證明是解決此類問題的最有效和最安全的通信方法。
++
++開始披露
++""""""""
++
++披露內容首先通過電子郵件聯繫Linux內核硬體安全小組。此初始聯繫人應包含問題的
++描述和任何已知受影響硬體的列表。如果您的組織製造或分發受影響的硬體，我們建議
++您也考慮哪些其他硬體可能會受到影響。
++
++硬體安全小組將提供一個特定於事件的加密郵件列表，用於與報告者進行初步討論、
++進一步披露和協調。
++
++硬體安全小組將向披露方提供一份開發人員（領域專家）名單，在與開發人員確認他們
++將遵守本諒解備忘錄和文件化流程後，應首先告知開發人員有關該問題的信息。這些開發
++人員組成初始響應小組，並在初始接觸後負責處理問題。硬體安全小組支持響應小組，
++但不一定參與緩解開發過程。
++
++雖然個別開發人員可能通過其僱主受到保密協議的保護，但他們不能以Linux內核開發
++人員的身份簽訂個別保密協議。但是，他們將同意遵守這一書面程序和諒解備忘錄。
++
++披露方應提供已經或應該被告知該問題的所有其他實體的聯繫人名單。這有幾個目的:
++
++  - 披露的實體列表允許跨行業通信，例如其他作業系統供應商、硬體供應商等。
++
++  - 可聯繫已披露的實體，指定應參與緩解措施開發的專家。
++
++  - 如果需要處理某一問題的專家受僱於某一上市實體或某一上市實體的成員，則響應
++    小組可要求該實體披露該專家。這確保專家也是實體反應小組的一部分。
++
++披露
++""""
++
++披露方通過特定的加密郵件列表向初始響應小組提供詳細信息。
++
++根據我們的經驗，這些問題的技術文檔通常是一個足夠的起點，最好通過電子郵件進行
++進一步的技術澄清。
++
++緩解開發
++""""""""
++
++初始響應小組設置加密郵件列表，或在適當的情況下重新修改現有郵件列表。
++
++使用郵件列表接近於正常的Linux開發過程，並且在過去已經成功地用於爲各種硬體安全
++問題開發緩解措施。
++
++郵件列表的操作方式與正常的Linux開發相同。發布、討論和審查修補程序，如果同意，
++則應用於非公共git存儲庫，參與開發人員只能通過安全連接訪問該存儲庫。存儲庫包含
++針對主線內核的主開發分支，並根據需要爲穩定的內核版本提供向後移植分支。
++
++最初的響應小組將根據需要從Linux內核開發人員社區中確定更多的專家。引進專家可以
++在開發過程中的任何時候發生，需要及時處理。
++
++如果專家受僱於披露方提供的披露清單上的實體或其成員，則相關實體將要求其參與。
++
++否則，披露方將被告知專家參與的情況。諒解備忘錄涵蓋了專家，要求披露方確認參與。
++如果披露方有令人信服的理由提出異議，則必須在五個工作日內提出異議，並立即與事件
++小組解決。如果披露方在五個工作日內未作出回應，則視爲默許。
++
++在確認或解決異議後，專家由事件小組披露，並進入開發過程。
++
++協調發布
++""""""""
++
++有關各方將協商限制結束的日期和時間。此時，準備好的緩解措施集成到相關的內核樹中
++並發布。
++
++雖然我們理解硬體安全問題需要協調限制時間，但限制時間應限制在所有有關各方制定、
++測試和準備緩解措施所需的最短時間內。人爲地延長限制時間以滿足會議討論日期或其他
++非技術原因，會給相關的開發人員和響應小組帶來了更多的工作和負擔，因爲補丁需要
++保持最新，以便跟蹤正在進行的上游內核開發，這可能會造成衝突的更改。
++
++CVE分配
++"""""""
++
++硬體安全小組和初始響應小組都不分配CVE，開發過程也不需要CVE。如果CVE是由披露方
++提供的，則可用於文檔中。
++
++流程專使
++--------
++
++爲了協助這一進程，我們在各組織設立了專使，他們可以回答有關報告流程和進一步處理
++的問題或提供指導。專使不參與特定問題的披露，除非響應小組或相關披露方提出要求。
++現任專使名單:
++
++  ============= ========================================================
++  ARM
++  AMD		Tom Lendacky <tom.lendacky@amd.com>
++  IBM
++  Intel		Tony Luck <tony.luck@intel.com>
++  Qualcomm	Trilok Soni <tsoni@codeaurora.org>
++
++  Microsoft	Sasha Levin <sashal@kernel.org>
++  VMware
++  Xen		Andrew Cooper <andrew.cooper3@citrix.com>
++
++  Canonical	John Johansen <john.johansen@canonical.com>
++  Debian	Ben Hutchings <ben@decadent.org.uk>
++  Oracle	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
++  Red Hat	Josh Poimboeuf <jpoimboe@redhat.com>
++  SUSE		Jiri Kosina <jkosina@suse.cz>
++
++  Amazon
++  Google	Kees Cook <keescook@chromium.org>
++  ============= ========================================================
++
++如果要將您的組織添加到專使名單中，請與硬體安全小組聯繫。被提名的專使必須完全
++理解和支持我們的過程，並且在Linux內核社區中很容易聯繫。
++
++加密郵件列表
++------------
++
++我們使用加密郵件列表進行通信。這些列表的工作原理是，發送到列表的電子郵件使用
++列表的PGP密鑰或列表的/MIME證書進行加密。郵件列表軟體對電子郵件進行解密，並
++使用訂閱者的PGP密鑰或S/MIME證書爲每個訂閱者分別對其進行重新加密。有關郵件列表
++軟體和用於確保列表安全和數據保護的設置的詳細信息，請訪問:
++https://www.kernel.org/....
++
++關鍵點
++^^^^^^
++
++初次接觸見 :ref:`zh_Contact`. 對於特定於事件的郵件列表，密鑰和S/MIME證書通過
++特定列表發送的電子郵件傳遞給訂閱者。
++
++訂閱事件特定列表
++^^^^^^^^^^^^^^^^
++
++訂閱由響應小組處理。希望參與通信的披露方將潛在訂戶的列表發送給響應組，以便
++響應組可以驗證訂閱請求。
++
++每個訂戶都需要通過電子郵件向響應小組發送訂閱請求。電子郵件必須使用訂閱伺服器
++的PGP密鑰或S/MIME證書籤名。如果使用PGP密鑰，則必須從公鑰伺服器獲得該密鑰，
++並且理想情況下該密鑰連接到Linux內核的PGP信任網。另請參見:
++https://www.kernel.org/signature.html.
++
++響應小組驗證訂閱者，並將訂閱者添加到列表中。訂閱後，訂閱者將收到來自郵件列表
++的電子郵件，該郵件列表使用列表的PGP密鑰或列表的/MIME證書籤名。訂閱者的電子郵件
++客戶端可以從簽名中提取PGP密鑰或S/MIME證書，以便訂閱者可以向列表發送加密電子
++郵件。
++
+diff --git a/Documentation/translations/zh_TW/process/howto.rst b/Documentation/translations/zh_TW/process/howto.rst
+new file mode 100644
+index 000000000000..2043691b92e3
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/howto.rst
+@@ -0,0 +1,500 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. _tw_process_howto:
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/howto.rst <process_howto>`
++
++譯者::
++
++    英文版維護者： Greg Kroah-Hartman <greg@kroah.com>
++    中文版維護者： 李陽  Li Yang <leoyang.li@nxp.com>
++    中文版翻譯者： 李陽  Li Yang <leoyang.li@nxp.com>
++                   時奎亮 Alex Shi <alex.shi@linux.alibaba.com>
++    中文版校譯者:
++                   鍾宇  TripleX Chung <xxx.phy@gmail.com>
++                   陳琦  Maggie Chen <chenqi@beyondsoft.com>
++                   王聰  Wang Cong <xiyou.wangcong@gmail.com>
++                   胡皓文 Hu Haowen <src.res@email.cn>
++
++如何參與Linux內核開發
++=====================
++
++這是一篇將如何參與Linux內核開發的相關問題一網打盡的終極祕笈。它將指導你
++成爲一名Linux內核開發者，並且學會如何同Linux內核開發社區合作。它儘可能不
++包括任何關於內核編程的技術細節，但會給你指引一條獲得這些知識的正確途徑。
++
++如果這篇文章中的任何內容不再適用，請給文末列出的文件維護者發送補丁。
++
++
++入門
++----
++
++你想了解如何成爲一名Linux內核開發者？或者老闆吩咐你「給這個設備寫個Linux
++驅動程序」？這篇文章的目的就是教會你達成這些目標的全部訣竅，它將描述你需
++要經過的流程以及給出如何同內核社區合作的一些提示。它還將試圖解釋內核社區
++爲何這樣運作。
++
++Linux內核大部分是由C語言寫成的，一些體系結構相關的代碼用到了彙編語言。要
++參與內核開發，你必須精通C語言。除非你想爲某個架構開發底層代碼，否則你並
++不需要了解（任何體系結構的）彙編語言。下面列舉的書籍雖然不能替代紮實的C
++語言教育和多年的開發經驗，但如果需要的話，做爲參考還是不錯的：
++
++ - "The C Programming Language" by Kernighan and Ritchie [Prentice Hall]
++   《C程序設計語言（第2版·新版）》（徐寶文 李志 譯）[機械工業出版社]
++ - "Practical C Programming" by Steve Oualline [O'Reilly]
++   《實用C語言編程（第三版）》（郭大海 譯）[中國電力出版社]
++ - "C:  A Reference Manual" by Harbison and Steele [Prentice Hall]
++   《C語言參考手冊（原書第5版）》（邱仲潘 等譯）[機械工業出版社]
++
++Linux內核使用GNU C和GNU工具鏈開發。雖然它遵循ISO C89標準，但也用到了一些
++標準中沒有定義的擴展。內核是自給自足的C環境，不依賴於標準C庫的支持，所以
++並不支持C標準中的部分定義。比如long long類型的大數除法和浮點運算就不允許
++使用。有時候確實很難弄清楚內核對工具鏈的要求和它所使用的擴展，不幸的是目
++前還沒有明確的參考資料可以解釋它們。請查閱gcc信息頁（使用「info gcc」命令
++顯示）獲得一些這方面信息。
++
++請記住你是在學習怎麼和已經存在的開發社區打交道。它由一羣形形色色的人組成，
++他們對代碼、風格和過程有著很高的標準。這些標準是在長期實踐中總結出來的，
++適應於地理上分散的大型開發團隊。它們已經被很好得整理成檔，建議你在開發
++之前儘可能多的學習這些標準，而不要期望別人來適應你或者你公司的行爲方式。
++
++
++法律問題
++--------
++
++Linux內核原始碼都是在GPL（通用公共許可證）的保護下發布的。要了解這種許可
++的細節請查看原始碼主目錄下的COPYING文件。Linux內核許可準則和如何使用
++`SPDX <https://spdx.org/>` 標誌符說明在這個文件中
++:ref:`Documentation/translations/zh_TW/process/license-rules.rst <tw_kernel_licensing>`
++如果你對它還有更深入問題請聯繫律師，而不要在Linux內核郵件組上提問。因爲
++郵件組裡的人並不是律師，不要期望他們的話有法律效力。
++
++對於GPL的常見問題和解答，請訪問以下連結：
++	https://www.gnu.org/licenses/gpl-faq.html
++
++
++文檔
++----
++
++Linux內核代碼中包含有大量的文檔。這些文檔對於學習如何與內核社區互動有著
++不可估量的價值。當一個新的功能被加入內核，最好把解釋如何使用這個功能的文
++檔也放進內核。當內核的改動導致面向用戶空間的接口發生變化時，最好將相關信
++息或手冊頁(manpages)的補丁發到mtk.manpages@gmail.com，以向手冊頁(manpages)
++的維護者解釋這些變化。
++
++以下是內核代碼中需要閱讀的文檔：
++  :ref:`Documentation/admin-guide/README.rst <readme>`
++    文件簡要介紹了Linux內核的背景，並且描述了如何配置和編譯內核。內核的
++    新用戶應該從這裡開始。
++
++
++  :ref:`Documentation/process/changes.rst <changes>`
++    文件給出了用來編譯和使用內核所需要的最小軟體包列表。
++
++  :ref:`Documentation/translations/zh_TW/process/coding-style.rst <tw_codingstyle>`
++    描述Linux內核的代碼風格和理由。所有新代碼需要遵守這篇文檔中定義的規
++    范。大多數維護者只會接收符合規定的補丁，很多人也只會幫忙檢查符合風格
++    的代碼。
++
++  :ref:`Documentation/translations/zh_TW/process/submitting-patches.rst <tw_submittingpatches>`
++  :ref:`Documentation/process/submitting-drivers.rst <submittingdrivers>`
++
++    這兩份文檔明確描述如何創建和發送補丁，其中包括（但不僅限於)：
++       - 郵件內容
++       - 郵件格式
++       - 選擇收件人
++
++    遵守這些規定並不能保證提交成功（因爲所有補丁需要通過嚴格的內容和風格
++    審查），但是忽視他們幾乎就意味著失敗。
++
++    其他關於如何正確地生成補丁的優秀文檔包括：
++    "The Perfect Patch"
++
++        https://www.ozlabs.org/~akpm/stuff/tpp.txt
++
++    "Linux kernel patch submission format"
++
++        https://web.archive.org/web/20180829112450/http://linux.yyz.us/patch-format.html
++
++  :ref:`Documentation/translations/zh_TW/process/stable-api-nonsense.rst <tw_stable_api_nonsense>`
++    論證內核爲什麼特意不包括穩定的內核內部API，也就是說不包括像這樣的特
++    性：
++
++       - 子系統中間層（爲了兼容性？）
++       - 在不同作業系統間易於移植的驅動程序
++       - 減緩（甚至阻止）內核代碼的快速變化
++
++    這篇文檔對於理解Linux的開發哲學至關重要。對於將開發平台從其他操作系
++    統轉移到Linux的人來說也很重要。
++
++  :ref:`Documentation/admin-guide/security-bugs.rst <securitybugs>`
++    如果你認爲自己發現了Linux內核的安全性問題，請根據這篇文檔中的步驟來
++    提醒其他內核開發者並幫助解決這個問題。
++
++  :ref:`Documentation/translations/zh_TW/process/management-style.rst <tw_managementstyle>`
++
++    描述內核維護者的工作方法及其共有特點。這對於剛剛接觸內核開發（或者對
++    它感到好奇）的人來說很重要，因爲它解釋了很多對於內核維護者獨特行爲的
++    普遍誤解與迷惑。
++
++  :ref:`Documentation/process/stable-kernel-rules.rst <stable_kernel_rules>`
++    解釋了穩定版內核發布的規則，以及如何將改動放入這些版本的步驟。
++
++  :ref:`Documentation/process/kernel-docs.rst <kernel_docs>`
++    有助於內核開發的外部文檔列表。如果你在內核自帶的文檔中沒有找到你想找
++    的內容，可以查看這些文檔。
++
++  :ref:`Documentation/process/applying-patches.rst <applying_patches>`
++    關於補丁是什麼以及如何將它打在不同內核開發分支上的好介紹
++
++內核還擁有大量從代碼自動生成或者從 ReStructuredText(ReST) 標記生成的文檔，
++比如這個文檔，它包含內核內部API的全面介紹以及如何妥善處理加鎖的規則。所有
++這些文檔都可以通過運行以下命令從內核代碼中生成爲PDF或HTML文檔::
++
++    make pdfdocs
++    make htmldocs
++
++ReST格式的文檔會生成在 Documentation/output. 目錄中。
++它們也可以用下列命令生成 LaTeX 和 ePub 格式文檔::
++
++    make latexdocs
++    make epubdocs
++
++如何成爲內核開發者
++------------------
++如果你對Linux內核開發一無所知，你應該訪問「Linux內核新手」計劃：
++
++	https://kernelnewbies.org
++
++它擁有一個可以問各種最基本的內核開發問題的郵件列表（在提問之前一定要記得
++查找已往的郵件，確認是否有人已經回答過相同的問題）。它還擁有一個可以獲得
++實時反饋的IRC聊天頻道，以及大量對於學習Linux內核開發相當有幫助的文檔。
++
++網站簡要介紹了原始碼組織結構、子系統劃分以及目前正在進行的項目（包括內核
++中的和單獨維護的）。它還提供了一些基本的幫助信息，比如如何編譯內核和打補
++丁。
++
++如果你想加入內核開發社區並協助完成一些任務，卻找不到從哪裡開始，可以訪問
++「Linux內核房管員」計劃：
++
++	https://kernelnewbies.org/KernelJanitors
++
++這是極佳的起點。它提供一個相對簡單的任務列表，列出內核代碼中需要被重新
++整理或者改正的地方。通過和負責這個計劃的開發者們一同工作，你會學到將補丁
++集成進內核的基本原理。如果還沒有決定下一步要做什麼的話，你還可能會得到方
++向性的指點。
++
++在真正動手修改內核代碼之前，理解要修改的代碼如何運作是必需的。要達到這個
++目的，沒什麼辦法比直接讀代碼更有效了（大多數花招都會有相應的注釋），而且
++一些特製的工具還可以提供幫助。例如，「Linux代碼交叉引用」項目就是一個值得
++特別推薦的幫助工具，它將原始碼顯示在有編目和索引的網頁上。其中一個更新及
++時的內核源碼庫，可以通過以下地址訪問：
++
++        https://elixir.bootlin.com/
++
++
++開發流程
++--------
++
++目前Linux內核開發流程包括幾個「主內核分支」和很多子系統相關的內核分支。這
++些分支包括：
++
++  - Linus 的內核源碼樹
++  - 多個主要版本的穩定版內核樹
++  - 子系統相關的內核樹
++  - linux-next 集成測試樹
++
++
++主線樹
++------
++主線樹是由Linus Torvalds 維護的。你可以在https://kernel.org 網站或者代碼
++庫中下找到它。它的開發遵循以下步驟：
++
++  - 每當一個新版本的內核被發布，爲期兩周的集成窗口將被打開。在這段時間裡
++    維護者可以向Linus提交大段的修改，通常這些修改已經被放到-mm內核中幾個
++    星期了。提交大量修改的首選方式是使用git工具（內核的代碼版本管理工具
++    ，更多的信息可以在 https://git-scm.com/ 獲取），不過使用普通補丁也是
++    可以的。
++  - 兩個星期以後-rc1版本內核發布。之後只有不包含可能影響整個內核穩定性的
++    新功能的補丁才可能被接受。請注意一個全新的驅動程序（或者文件系統）有
++    可能在-rc1後被接受是因爲這樣的修改完全獨立，不會影響其他的代碼，所以
++    沒有造成內核退步的風險。在-rc1以後也可以用git向Linus提交補丁，不過所
++    有的補丁需要同時被發送到相應的公衆郵件列表以徵詢意見。
++  - 當Linus認爲當前的git源碼樹已經達到一個合理健全的狀態足以發布供人測試
++    時，一個新的-rc版本就會被發布。計劃是每周都發布新的-rc版本。
++  - 這個過程一直持續下去直到內核被認爲達到足夠穩定的狀態，持續時間大概是
++    6個星期。
++
++關於內核發布，值得一提的是Andrew Morton在linux-kernel郵件列表中如是說：
++	「沒有人知道新內核何時會被發布，因爲發布是根據已知bug的情況來決定
++	的，而不是根據一個事先制定好的時間表。」
++
++子系統特定樹
++------------
++
++各種內核子系統的維護者——以及許多內核子系統開發人員——在原始碼庫中公開了他們
++當前的開發狀態。這樣，其他人就可以看到內核的不同區域發生了什麼。在開發速度
++很快的領域，可能會要求開發人員將提交的內容建立在這樣的子系統內核樹上，這樣
++就避免了提交與其他已經進行的工作之間的衝突。
++
++這些存儲庫中的大多數都是Git樹，但是也有其他的scm在使用，或者補丁隊列被發布
++爲Quilt系列。這些子系統存儲庫的地址列在MAINTAINERS文件中。其中許多可以在
++https://git.kernel.org/上瀏覽。
++
++在將一個建議的補丁提交到這樣的子系統樹之前，需要對它進行審查，審查主要發生
++在郵件列表上（請參見下面相應的部分）。對於幾個內核子系統，這個審查過程是通
++過工具補丁跟蹤的。Patchwork提供了一個Web界面，顯示補丁發布、對補丁的任何評
++論或修訂，維護人員可以將補丁標記爲正在審查、接受或拒絕。大多數補丁網站都列
++在 https://patchwork.kernel.org/
++
++Linux-next 集成測試樹
++---------------------
++
++在將子系統樹的更新合併到主線樹之前，需要對它們進行集成測試。爲此，存在一個
++特殊的測試存儲庫，其中幾乎每天都會提取所有子系統樹：
++
++        https://git.kernel.org/？p=linux/kernel/git/next/linux-next.git
++
++通過這種方式，Linux-next 對下一個合併階段將進入主線內核的內容給出了一個概要
++展望。非常歡冒險的測試者運行測試Linux-next。
++
++多個主要版本的穩定版內核樹
++-----------------------------------
++由3個數字組成的內核版本號說明此內核是-stable版本。它們包含內核的相對較小且
++至關重要的修補，這些修補針對安全性問題或者嚴重的內核退步。
++
++這種版本的內核適用於那些期望獲得最新的穩定版內核並且不想參與測試開發版或
++者實驗版的用戶。
++
++穩定版內核樹版本由「穩定版」小組（郵件地址<stable@vger.kernel.org>）維護，一般
++隔周發布新版本。
++
++內核源碼中的 :ref:`Documentation/process/stable-kernel-rules.rst <stable_kernel_rules>`
++文件具體描述了可被穩定版內核接受的修改類型以及發布的流程。
++
++
++報告bug
++-------
++
++bugzilla.kernel.org是Linux內核開發者們用來跟蹤內核Bug的網站。我們鼓勵用
++戶在這個工具中報告找到的所有bug。如何使用內核bugzilla的細節請訪問：
++
++	http://test.kernel.org/bugzilla/faq.html
++
++內核源碼主目錄中的:ref:`admin-guide/reporting-bugs.rst <reportingbugs>`
++文件里有一個很好的模板。它指導用戶如何報告可能的內核bug以及需要提供哪些信息
++來幫助內核開發者們找到問題的根源。
++
++
++利用bug報告
++-----------
++
++練習內核開發技能的最好辦法就是修改其他人報告的bug。你不光可以幫助內核變
++得更加穩定，還可以學會如何解決實際問題從而提高自己的技能，並且讓其他開發
++者感受到你的存在。修改bug是贏得其他開發者讚譽的最好辦法，因爲並不是很多
++人都喜歡浪費時間去修改別人報告的bug。
++
++要嘗試修改已知的bug，請訪問 http://bugzilla.kernel.org 網址。
++
++
++郵件列表
++--------
++
++正如上面的文檔所描述，大多數的骨幹內核開發者都加入了Linux Kernel郵件列
++表。如何訂閱和退訂列表的細節可以在這裡找到：
++
++	http://vger.kernel.org/vger-lists.html#linux-kernel
++
++網上很多地方都有這個郵件列表的存檔(archive)。可以使用搜尋引擎來找到這些
++存檔。比如：
++
++	http://dir.gmane.org/gmane.linux.kernel
++
++在發信之前，我們強烈建議你先在存檔中搜索你想要討論的問題。很多已經被詳細
++討論過的問題只在郵件列表的存檔中可以找到。
++
++大多數內核子系統也有自己獨立的郵件列表來協調各自的開發工作。從
++MAINTAINERS文件中可以找到不同話題對應的郵件列表。
++
++很多郵件列表架設在kernel.org伺服器上。這些列表的信息可以在這裡找到：
++
++	http://vger.kernel.org/vger-lists.html
++
++在使用這些郵件列表時，請記住保持良好的行爲習慣。下面的連結提供了與這些列
++表（或任何其它郵件列表）交流的一些簡單規則，雖然內容有點濫竽充數。
++
++	http://www.albion.com/netiquette/
++
++當有很多人回覆你的郵件時，郵件的抄送列表會變得很長。請不要將任何人從抄送
++列表中刪除，除非你有足夠的理由這麼做。也不要只回復到郵件列表。請習慣於同
++一封郵件接收兩次（一封來自發送者一封來自郵件列表），而不要試圖通過添加一
++些奇特的郵件頭來解決這個問題，人們不會喜歡的。
++
++記住保留你所回復內容的上下文和源頭。在你回覆郵件的頂部保留「某某某說到……」
++這幾行。將你的評論加在被引用的段落之間而不要放在郵件的頂部。
++
++如果你在郵件中附帶補丁，請確認它們是可以直接閱讀的純文本（如
++:ref:`Documentation/translations/zh_TW/process/submitting-patches.rst <tw_submittingpatches>`
++文檔中所述）。內核開發者們不希望遇到附件或者被壓縮了的補丁。只有這樣才能
++保證他們可以直接評論你的每行代碼。請確保你使用的郵件發送程序不會修改空格
++和制表符。一個防範性的測試方法是先將郵件發送給自己，然後自己嘗試是否可以
++順利地打上收到的補丁。如果測試不成功，請調整或者更換你的郵件發送程序直到
++它正確工作爲止。
++
++總而言之，請尊重其他的郵件列表訂閱者。
++
++
++同內核社區合作
++----------------
++
++內核社區的目標就是提供盡善盡美的內核。所以當你提交補丁期望被接受進內核的
++時候，它的技術價值以及其他方面都將被評審。那麼你可能會得到什麼呢？
++
++  - 批評
++  - 評論
++  - 要求修改
++  - 要求證明修改的必要性
++  - 沉默
++
++要記住，這些是把補丁放進內核的正常情況。你必須學會聽取對補丁的批評和評論，
++從技術層面評估它們，然後要麼重寫你的補丁要麼簡明扼要地論證修改是不必要
++的。如果你發的郵件沒有得到任何回應，請過幾天後再試一次，因爲有時信件會湮
++沒在茫茫信海中。
++
++你不應該做的事情：
++
++  - 期望自己的補丁不受任何質疑就直接被接受
++  - 翻臉
++  - 忽略別人的評論
++  - 沒有按照別人的要求做任何修改就重新提交
++
++在一個努力追尋最好技術方案的社區里，對於一個補丁有多少好處總會有不同的見
++解。你必須要抱著合作的態度，願意改變自己的觀點來適應內核的風格。或者至少
++願意去證明你的想法是有價值的。記住，犯錯誤是允許的，只要你願意朝著正確的
++方案去努力。
++
++如果你的第一個補丁換來的是一堆修改建議，這是很正常的。這並不代表你的補丁
++不會被接受，也不意味著有人和你作對。你只需要改正所有提出的問題然後重新發
++送你的補丁。
++
++內核社區和公司文化的差異
 +------------------------
 +
-+1996年，Linux是世界上第一個添加對人工語言克林貢支持的作業系統，克林貢是由
-+Marc Okrand爲《星際迷航》電視連續劇創造的。這種編碼後來被徵募Unicode註冊表
-+（ConScript Unicode Registry，CSUR）採用，並建議（但最終被拒絕）納入Unicode
-+平面一。不過，它仍然是Linux區域中的Linux/CSUR私有分配。
++內核社區的工作模式同大多數傳統公司開發隊伍的工作模式並不相同。下面這些例
++子，可以幫助你避免某些可能發生問題：
++用這些話介紹你的修改提案會有好處：
 +
-+這種編碼已經得到克林貢語言研究所（Klingon Language Institute）的認可。
-+有關更多信息，請聯繫他們：
++    - 它同時解決了多個問題
++    - 它刪除了2000行代碼
++    - 這是補丁，它已經解釋了我想要說明的
++    - 我在5種不同的體系結構上測試過它……
++    - 這是一系列小補丁用來……
++    - 這個修改提高了普通機器的性能……
 +
-+	http://www.kli.org/
++應該避免如下的說法：
 +
-+由於Linux CZ開頭部分的字符大多是dingbats/symbols/forms類型，而且這是一種
-+語言，因此根據標準Unicode慣例，我將它放置在16單元的邊界上。
++    - 我們在AIX/ptx/Solaris就是這麼做的，所以這麼做肯定是好的……
++    - 我做這行已經20年了，所以……
++    - 爲了我們公司賺錢考慮必須這麼做
++    - 這是我們的企業產品線所需要的
++    - 這裡是描述我觀點的1000頁設計文檔
++    - 這是一個5000行的補丁用來……
++    - 我重寫了現在亂七八糟的代碼，這就是……
++    - 我被規定了最後期限，所以這個補丁需要立刻被接受
 +
-+.. note::
++另外一個內核社區與大部分傳統公司的軟體開發隊伍不同的地方是無法面對面地交
++流。使用電子郵件和IRC聊天工具做爲主要溝通工具的一個好處是性別和種族歧視
++將會更少。Linux內核的工作環境更能接受婦女和少數族羣，因爲每個人在別人眼
++里只是一個郵件地址。國際化也幫助了公平的實現，因爲你無法通過姓名來判斷人
++的性別。男人有可能叫李麗，女人也有可能叫王剛。大多數在Linux內核上工作過
++並表達過看法的女性對在linux上工作的經歷都給出了正面的評價。
 +
-+  這個範圍現在由徵募Unicode註冊表正式管理。規範性引用文件爲：
++對於一些不習慣使用英語的人來說，語言可能是一個引起問題的障礙。在郵件列表
++中要正確地表達想法必需良好地掌握語言，所以建議你在發送郵件之前最好檢查一
++下英文寫得是否正確。
 +
-+	https://www.evertype.com/standards/csur/klingon.html
 +
-+克林貢語有一個26個字符的字母表，一個10位數的位置數字書寫系統，從左到右
-+，從上到下書寫。
++拆分修改
++--------
 +
-+克林貢字母的幾種字形已經被提出。但是由於這組符號看起來始終是一致的，只有實際
-+的形狀不同，因此按照標準Unicode慣例，這些差異被認爲是字體變體。
++Linux內核社區並不喜歡一下接收大段的代碼。修改需要被恰當地介紹、討論並且
++拆分成獨立的小段。這幾乎完全和公司中的習慣背道而馳。你的想法應該在開發最
++開始的階段就讓大家知道，這樣你就可以及時獲得對你正在進行的開發的反饋。這
++樣也會讓社區覺得你是在和他們協作，而不是僅僅把他們當作傾銷新功能的對象。
++無論如何，你不要一次性地向郵件列表發送50封信，你的補丁序列應該永遠用不到
++這麼多。
 +
-+======	=======================================================
-+U+F8D0	KLINGON LETTER A
-+U+F8D1	KLINGON LETTER B
-+U+F8D2	KLINGON LETTER CH
-+U+F8D3	KLINGON LETTER D
-+U+F8D4	KLINGON LETTER E
-+U+F8D5	KLINGON LETTER GH
-+U+F8D6	KLINGON LETTER H
-+U+F8D7	KLINGON LETTER I
-+U+F8D8	KLINGON LETTER J
-+U+F8D9	KLINGON LETTER L
-+U+F8DA	KLINGON LETTER M
-+U+F8DB	KLINGON LETTER N
-+U+F8DC	KLINGON LETTER NG
-+U+F8DD	KLINGON LETTER O
-+U+F8DE	KLINGON LETTER P
-+U+F8DF	KLINGON LETTER Q
-+	- Written <q> in standard Okrand Latin transliteration
-+U+F8E0	KLINGON LETTER QH
-+	- Written <Q> in standard Okrand Latin transliteration
-+U+F8E1	KLINGON LETTER R
-+U+F8E2	KLINGON LETTER S
-+U+F8E3	KLINGON LETTER T
-+U+F8E4	KLINGON LETTER TLH
-+U+F8E5	KLINGON LETTER U
-+U+F8E6	KLINGON LETTER V
-+U+F8E7	KLINGON LETTER W
-+U+F8E8	KLINGON LETTER Y
-+U+F8E9	KLINGON LETTER GLOTTAL STOP
++將補丁拆開的原因如下：
 +
-+U+F8F0	KLINGON DIGIT ZERO
-+U+F8F1	KLINGON DIGIT ONE
-+U+F8F2	KLINGON DIGIT TWO
-+U+F8F3	KLINGON DIGIT THREE
-+U+F8F4	KLINGON DIGIT FOUR
-+U+F8F5	KLINGON DIGIT FIVE
-+U+F8F6	KLINGON DIGIT SIX
-+U+F8F7	KLINGON DIGIT SEVEN
-+U+F8F8	KLINGON DIGIT EIGHT
-+U+F8F9	KLINGON DIGIT NINE
++1) 小的補丁更有可能被接受，因爲它們不需要太多的時間和精力去驗證其正確性。
++   一個5行的補丁，可能在維護者看了一眼以後就會被接受。而500行的補丁則
++   需要數個小時來審查其正確性（所需時間隨補丁大小增加大約呈指數級增長）。
 +
-+U+F8FD	KLINGON COMMA
-+U+F8FE	KLINGON FULL STOP
-+U+F8FF	KLINGON SYMBOL FOR EMPIRE
-+======	=======================================================
++   當出了問題的時候，小的補丁也會讓調試變得非常容易。一個一個補丁地回溯
++   將會比仔細剖析一個被打上的大補丁（這個補丁破壞了其他東西）容易得多。
 +
-+其他虛構和人工字母
-+-------------------
++2）不光發送小的補丁很重要，在提交之前重新編排、化簡（或者僅僅重新排列）
++   補丁也是很重要的。
 +
-+自從分配了克林貢Linux Unicode塊之後，John Cowan <jcowan@reutershealth.com>
-+和 Michael Everson <everson@evertype.com> 建立了一個虛構和人工字母的註冊表。
-+徵募Unicode註冊表請訪問：
++這裡有內核開發者Al Viro打的一個比方：
++	「想像一個老師正在給學生批改數學作業。老師並不希望看到學生爲了得
++	到正確解法所進行的嘗試和產生的錯誤。他希望看到的是最乾淨最優雅的
++	解答。好學生了解這點，絕不會把最終解決之前的中間方案提交上去。」
 +
-+	https://www.evertype.com/standards/csur/
++	內核開發也是這樣。維護者和評審者不希望看到一個人在解決問題時的思
++	考過程。他們只希望看到簡單和優雅的解決方案。
 +
-+所使用的範圍位於最終用戶區域的低端，因此無法進行規範化分配，但建議希望對虛構
-+字母進行編碼的人員使用這些代碼，以實現互操作性。對於克林貢語，CSUR採用了Linux
-+編碼。CSUR的人正在推動將Tengwar和Cirth添加到Unicode平面一；將克林貢添加到
-+Unicode平面一被拒絕，因此上述編碼仍然是官方的。
++直接給出一流的解決方案，和社區一起協作討論尚未完成的工作，這兩者之間似乎
++很難找到一個平衡點。所以最好儘早開始收集有利於你進行改進的反饋；同時也要
++保證修改分成很多小塊，這樣在整個項目都準備好被包含進內核之前，其中的一部
++分可能會先被接收。
 +
-diff --git a/Documentation/translations/zh_TW/disclaimer-zh_TW.rst b/Documentation/translations/zh_TW/disclaimer-zh_TW.rst
++必須了解這樣做是不可接受的：試圖將未完成的工作提交進內核，然後再找時間修
++復。
++
++
++證明修改的必要性
++----------------
++除了將補丁拆成小塊，很重要的一點是讓Linux社區了解他們爲什麼需要這樣修改。
++你必須證明新功能是有人需要的並且是有用的。
++
++
++記錄修改
++--------
++
++當你發送補丁的時候，需要特別留意郵件正文的內容。因爲這裡的信息將會做爲補
++丁的修改記錄(ChangeLog)，會被一直保留以備大家查閱。它需要完全地描述補丁，
++包括：
++
++  - 爲什麼需要這個修改
++  - 補丁的總體設計
++  - 實現細節
++  - 測試結果
++
++想了解它具體應該看起來像什麼，請查閱以下文檔中的「ChangeLog」章節：
++  「The Perfect Patch」
++  	 https://www.ozlabs.org/~akpm/stuff/tpp.txt
++
++
++這些事情有時候做起來很難。要在任何方面都做到完美可能需要好幾年時間。這是
++一個持續提高的過程，它需要大量的耐心和決心。只要不放棄，你一定可以做到。
++很多人已經做到了，而他們都曾經和現在的你站在同樣的起點上。
++
++
++感謝
++----
++感謝Paolo Ciarrocchi允許「開發流程」部分基於他所寫的文章
++(http://www.kerneltravel.net/newbie/2.6-development_process)，感謝Randy
++Dunlap和Gerrit Huizenga完善了應該說和不該說的列表。感謝Pat Mochel, Hanna
++Linder, Randy Dunlap, Kay Sievers, Vojtech Pavlik, Jan Kara, Josh Boyer,
++Kees Cook, Andrew Morton, Andi Kleen, Vadim Lobanov, Jesper Juhl, Adrian
++Bunk, Keri Harris, Frans Pop, David A. Wheeler, Junio Hamano, Michael
++Kerrisk和Alex Shepard的評審、建議和貢獻。沒有他們的幫助，這篇文檔是不可
++能完成的。
++
++
++
++英文版維護者： Greg Kroah-Hartman <greg@kroah.com>
++
+diff --git a/Documentation/translations/zh_TW/process/index.rst b/Documentation/translations/zh_TW/process/index.rst
 new file mode 100644
-index 000000000000..f4cf87d03dc5
+index 000000000000..ec7ad14bfd13
 --- /dev/null
-+++ b/Documentation/translations/zh_TW/disclaimer-zh_TW.rst
-@@ -0,0 +1,11 @@
-+:orphan:
-+
-+.. warning::
-+     此文件的目的是爲讓中文讀者更容易閱讀和理解，而不是作爲一個分支。因此，
-+     如果您對此文件有任何意見或改動，請先嘗試更新原始英文文件。如果要更改或
-+     修正某處翻譯文件，請將意見或補丁發送給維護者（聯繫方式見下）。
-+
-+.. note::
-+     如果您發現本文檔與原始文件有任何不同或者有翻譯問題，請聯繫該文件的譯者，
-+     或者發送電子郵件給胡皓文以獲取幫助：<src.res@email.cn>。
-+
-diff --git a/Documentation/translations/zh_TW/gpio.txt b/Documentation/translations/zh_TW/gpio.txt
-new file mode 100644
-index 000000000000..e3c076dd75a5
---- /dev/null
-+++ b/Documentation/translations/zh_TW/gpio.txt
-@@ -0,0 +1,651 @@
-+Chinese translated version of Documentation/admin-guide/gpio
-+
-+If you have any comment or update to the content, please contact the
-+original document maintainer directly.  However, if you have a problem
-+communicating in English you can also ask the Chinese maintainer for
-+help.  Contact the Chinese maintainer if this translation is outdated
-+or if there is a problem with the translation.
-+
-+Maintainer: Grant Likely <grant.likely@secretlab.ca>
-+		Linus Walleij <linus.walleij@linaro.org>
-+Traditional Chinese maintainer: Hu Haowen <src.res@email.cn>
-+---------------------------------------------------------------------
-+Documentation/admin-guide/gpio 的繁體中文翻譯
-+
-+如果想評論或更新本文的內容，請直接聯繫原文檔的維護者。如果你使用英文
-+交流有困難的話，也可以向繁體中文版維護者求助。如果本翻譯更新不及時或
-+者翻譯存在問題，請聯繫繁體中文版維護者。
-+
-+英文版維護者： Grant Likely <grant.likely@secretlab.ca>
-+		Linus Walleij <linus.walleij@linaro.org>
-+繁體中文版維護者： 胡皓文 Hu Haowen <src.res@email.cn>
-+繁體中文版翻譯者： 胡皓文 Hu Haowen <src.res@email.cn>
-+繁體中文版校譯者： 胡皓文 Hu Haowen <src.res@email.cn>
-+
-+以下爲正文
-+---------------------------------------------------------------------
-+GPIO 接口
-+
-+本文檔提供了一個在Linux下訪問GPIO的公約概述。
-+
-+這些函數以 gpio_* 作爲前綴。其他的函數不允許使用這樣的前綴或相關的
-+__gpio_* 前綴。
-+
-+
-+什麼是GPIO?
-+==========
-+"通用輸入/輸出口"(GPIO)是一個靈活的由軟體控制的數位訊號。他們可
-+由多種晶片提供,且對於從事嵌入式和定製硬體的 Linux 開發者來說是
-+比較熟悉。每個GPIO 都代表一個連接到特定引腳或球柵陣列(BGA)封裝中
-+「球珠」的一個位。電路板原理圖顯示了 GPIO 與外部硬體的連接關係。
-+驅動可以編寫成通用代碼，以使板級啓動代碼可傳遞引腳配置數據給驅動。
-+
-+片上系統 (SOC) 處理器對 GPIO 有很大的依賴。在某些情況下,每個
-+非專用引腳都可配置爲 GPIO,且大多數晶片都最少有一些 GPIO。
-+可編程邏輯器件(類似 FPGA) 可以方便地提供 GPIO。像電源管理和
-+音頻編解碼器這樣的多功能晶片經常留有一些這樣的引腳來幫助那些引腳
-+匱乏的 SOC。同時還有通過 I2C 或 SPI 串行總線連接的「GPIO擴展器」
-+晶片。大多數 PC 的南橋有一些擁有 GPIO 能力的引腳 (只有BIOS
-+固件才知道如何使用他們)。
-+
-+GPIO 的實際功能因系統而異。通常用法有:
-+
-+  - 輸出值可寫 (高電平=1，低電平=0)。一些晶片也有如何驅動這些值的選項,
-+    例如只允許輸出一個值、支持「線與」及其他取值類似的模式(值得注意的是
-+    「開漏」信號)
-+
-+  - 輸入值可讀(1、0)。一些晶片支持引腳在配置爲「輸出」時回讀，這對於類似
-+    「線與」的情況(以支持雙向信號)是非常有用的。GPIO 控制器可能有輸入
-+    去毛刺/消抖邏輯,這有時需要軟體控制。
-+
-+  - 輸入通常可作爲 IRQ 信號,一般是沿觸發,但有時是電平觸發。這樣的 IRQ
-+    可能配置爲系統喚醒事件,以將系統從低功耗狀態下喚醒。
-+
-+  - 通常一個 GPIO 根據不同產品電路板的需求,可以配置爲輸入或輸出,也有僅
-+    支持單向的。
-+
-+  - 大部分 GPIO 可以在持有自旋鎖時訪問,但是通常由串行總線擴展的 GPIO
-+    不允許持有自旋鎖。但某些系統也支持這種類型。
-+
-+對於給定的電路板,每個 GPIO 都用於某個特定的目的,如監控 MMC/SD 卡的
-+插入/移除、檢測卡的防寫狀態、驅動 LED、配置收發器、模擬串行總線、
-+復位硬體看門狗、感知開關狀態等等。
-+
-+
-+GPIO 公約
-+=========
-+注意,這個叫做「公約」，因爲這不是強制性的，不遵循這個公約是無傷大雅的，
-+因爲此時可移植性並不重要。GPIO 常用於板級特定的電路邏輯,甚至可能
-+隨著電路板的版本而改變，且不可能在不同走線的電路板上使用。僅有在少數
-+功能上才具有可移植性，其他功能是平台特定。這也是由於「膠合」的邏輯造成的。
-+
-+此外，這不需要任何的執行框架，只是一個接口。某個平台可能通過一個簡單地
-+訪問晶片寄存器的內聯函數來實現它，其他平台可能通過委託一系列不同的GPIO
-+控制器的抽象函數來實現它。(有一些可選的代碼能支持這種策略的實現,本文檔
-+後面會介紹，但作爲 GPIO 接口的客戶端驅動程序必須與它的實現無關。)
-+
-+也就是說,如果在他們的平台上支持這個公約，驅動應儘可能的使用它。同時，平台
-+必須在 Kconfig 中選擇 ARCH_REQUIRE_GPIOLIB 或者 ARCH_WANT_OPTIONAL_GPIOLIB
-+選項。那些調用標準 GPIO 函數的驅動應該在 Kconfig 入口中聲明依賴GENERIC_GPIO。
-+當驅動包含文件:
-+
-+	#include <linux/gpio.h>
-+
-+則 GPIO 函數是可用,無論是「真實代碼」還是經優化過的語句。如果你遵守
-+這個公約，當你的代碼完成後，對其他的開發者來說會更容易看懂和維護。
-+
-+注意，這些操作包含所用平台的 I/O 屏障代碼，驅動無須顯式地調用他們。
-+
-+
-+標識 GPIO
-+---------
-+GPIO 是通過無符號整型來標識的,範圍是 0 到 MAX_INT。保留「負」數
-+用於其他目的,例如標識信號「在這個板子上不可用」或指示錯誤。未接觸底層
-+硬體的代碼會忽略這些整數。
-+
-+平台會定義這些整數的用法,且通常使用 #define 來定義 GPIO，這樣
-+板級特定的啓動代碼可以直接關聯相應的原理圖。相對來說，驅動應該僅使用
-+啓動代碼傳遞過來的 GPIO 編號，使用 platform_data 保存板級特定
-+引腳配置數據 (同時還有其他須要的板級特定數據)，避免可能出現的問題。
-+
-+例如一個平台使用編號 32-159 來標識 GPIO,而在另一個平台使用編號0-63
-+標識一組 GPIO 控制器,64-79標識另一類 GPIO 控制器,且在一個含有
-+FPGA 的特定板子上使用 80-95。編號不一定要連續,那些平台中，也可以
-+使用編號2000-2063來標識一個 I2C 接口的 GPIO 擴展器中的 GPIO。
-+
-+如果你要初始化一個帶有無效 GPIO 編號的結構體,可以使用一些負編碼
-+(如"-EINVAL")，那將使其永遠不會是有效。來測試這樣一個結構體中的編號
-+是否關聯一個 GPIO，你可使用以下斷言:
-+
-+	int gpio_is_valid(int number);
-+
-+如果編號不存在，則請求和釋放 GPIO 的函數將拒絕執行相關操作(見下文)。
-+其他編號也可能被拒絕,比如一個編號可能存在，但暫時在給定的電路上不可用。
-+
-+一個平台是否支持多個 GPIO 控制器爲平台特定的實現問題，就像是否可以
-+在 GPIO 編號空間中有「空洞」和是否可以在運行時添加新的控制器一樣。
-+這些問題會影響其他事情，包括相鄰的 GPIO 編號是否存在等。
-+
-+使用 GPIO
-+---------
-+對於一個 GPIO，系統應該做的第一件事情就是通過 gpio_request()
-+函數分配它，見下文。
-+
-+接下來是設置I/O方向，這通常是在板級啓動代碼中爲所使用的 GPIO 設置
-+platform_device 時完成。
-+
-+	/* 設置爲輸入或輸出, 返回 0 或負的錯誤代碼 */
-+	int gpio_direction_input(unsigned gpio);
-+	int gpio_direction_output(unsigned gpio, int value);
-+
-+返回值爲零代表成功，否則返回一個負的錯誤代碼。這個返回值需要檢查，因爲
-+get/set(獲取/設置)函數調用沒法返回錯誤,且有可能是配置錯誤。通常，
-+你應該在進程上下文中調用這些函數。然而,對於自旋鎖安全的 GPIO，在板子
-+啓動的早期、進程啓動前使用他們也是可以的。
-+
-+對於作爲輸出的 GPIO，爲其提供初始輸出值，對於避免在系統啓動期間出現
-+信號毛刺是很有幫助的。
-+
-+爲了與傳統的 GPIO 接口兼容, 在設置一個 GPIO 方向時，如果它還未被申請，
-+則隱含了申請那個 GPIO 的操作(見下文)。這種兼容性正在從可選的 gpiolib
-+框架中移除。
-+
-+如果這個 GPIO 編碼不存在，或者特定的 GPIO 不能用於那種模式，則方向
-+設置可能失敗。依賴啓動固件來正確地設置方向通常是一個壞主意，因爲它可能
-+除了啓動Linux，並沒有做更多的驗證工作。(同理, 板子的啓動代碼可能需要
-+將這個復用的引腳設置爲 GPIO，並正確地配置上拉/下拉電阻。)
-+
-+
-+訪問自旋鎖安全的 GPIO
-+-------------------
-+大多數 GPIO 控制器可以通過內存讀/寫指令來訪問。這些指令不會休眠,可以
-+安全地在硬(非線程)中斷例程和類似的上下文中完成。
-+
-+對於那些用 gpio_cansleep()測試總是返回失敗的 GPIO(見下文)，使用
-+以下的函數訪問:
-+
-+	/* GPIO 輸入:返回零或非零 */
-+	int gpio_get_value(unsigned gpio);
-+
-+	/* GPIO 輸出 */
-+	void gpio_set_value(unsigned gpio, int value);
-+
-+GPIO值是布爾值，零表示低電平，非零表示高電平。當讀取一個輸出引腳的值時，
-+返回值應該是引腳上的值。這個值不總是和輸出值相符，因爲存在開漏輸出信號和
-+輸出延遲問題。
-+
-+以上的 get/set 函數無錯誤返回值，因爲之前 gpio_direction_*()應已檢查過
-+其是否爲「無效GPIO」。此外，還需要注意的是並不是所有平台都可以從輸出引腳
-+中讀取數據，對於不能讀取的引腳應總返回零。另外，對那些在原子上下文中無法
-+安全訪問的 GPIO (譯者註：因爲訪問可能導致休眠)使用這些函數是不合適的
-+(見下文)。
-+
-+在 GPIO 編號(還有輸出、值)爲常數的情況下,鼓勵通過平台特定的實現來優化
-+這兩個函數來訪問 GPIO 值。這種情況(讀寫一個硬體寄存器)下只需要幾條指令
-+是很正常的,且無須自旋鎖。這種優化函數比起那些在子程序上花費許多指令的
-+函數可以使得模擬接口(譯者注:例如 GPIO 模擬 I2C、1-wire 或 SPI)的
-+應用(在空間和時間上都)更具效率。
-+
-+
-+訪問可能休眠的 GPIO
-+-----------------
-+某些 GPIO 控制器必須通過基於總線(如 I2C 或 SPI)的消息訪問。讀或寫這些
-+GPIO 值的命令需要等待其信息排到隊首才發送命令，再獲得其反饋。期間需要
-+休眠，這不能在 IRQ 例程(中斷上下文)中執行。
-+
-+支持此類 GPIO 的平台通過以下函數返回非零值來區分出這種 GPIO。(此函數需要
-+一個之前通過 gpio_request 分配到的有效 GPIO 編號):
-+
-+	int gpio_cansleep(unsigned gpio);
-+
-+爲了訪問這種 GPIO,內核定義了一套不同的函數:
-+
-+	/* GPIO 輸入:返回零或非零 ,可能會休眠 */
-+	int gpio_get_value_cansleep(unsigned gpio);
-+
-+	/* GPIO 輸出,可能會休眠 */
-+	void gpio_set_value_cansleep(unsigned gpio, int value);
-+
-+
-+訪問這樣的 GPIO 需要一個允許休眠的上下文，例如線程 IRQ 處理例程，並用以上的
-+訪問函數替換那些沒有 cansleep()後綴的自旋鎖安全訪問函數。
-+
-+除了這些訪問函數可能休眠，且它們操作的 GPIO 不能在硬體 IRQ 處理例程中訪問的
-+事實，這些處理例程實際上和自旋鎖安全的函數是一樣的。
-+
-+** 除此之外 ** 調用設置和配置此類 GPIO 的函數也必須在允許休眠的上下文中，
-+因爲它們可能也需要訪問 GPIO 控制器晶片: (這些設置函數通常在板級啓動代碼或者
-+驅動探測/斷開代碼中，所以這是一個容易滿足的約束條件。)
-+
-+	gpio_direction_input()
-+	gpio_direction_output()
-+	gpio_request()
-+
-+## 	gpio_request_one()
-+##	gpio_request_array()
-+## 	gpio_free_array()
-+
-+	gpio_free()
-+	gpio_set_debounce()
-+
-+
-+
-+聲明和釋放 GPIO
-+----------------------------
-+爲了有助於捕獲系統配置錯誤,定義了兩個函數。
-+
-+	/* 申請 GPIO, 返回 0 或負的錯誤代碼.
-+	 * 非空標籤可能有助於診斷.
-+	 */
-+	int gpio_request(unsigned gpio, const char *label);
-+
-+	/* 釋放之前聲明的 GPIO */
-+	void gpio_free(unsigned gpio);
-+
-+將無效的 GPIO 編碼傳遞給 gpio_request()會導致失敗，申請一個已使用這個
-+函數聲明過的 GPIO 也會失敗。gpio_request()的返回值必須檢查。你應該在
-+進程上下文中調用這些函數。然而,對於自旋鎖安全的 GPIO,在板子啓動的早期、
-+進入進程之前是可以申請的。
-+
-+這個函數完成兩個基本的目標。一是標識那些實際上已作爲 GPIO 使用的信號線，
-+這樣便於更好地診斷;系統可能需要服務幾百個可用的 GPIO，但是對於任何一個
-+給定的電路板通常只有一些被使用。另一個目的是捕獲衝突，查明錯誤:如兩個或
-+更多驅動錯誤地認爲他們已經獨占了某個信號線,或是錯誤地認爲移除一個管理著
-+某個已激活信號的驅動是安全的。也就是說，申請 GPIO 的作用類似一種鎖機制。
-+
-+某些平台可能也使用 GPIO 作爲電源管理激活信號(例如通過關閉未使用晶片區和
-+簡單地關閉未使用時鐘)。
-+
-+對於 GPIO 使用 pinctrl 子系統已知的引腳，子系統應該被告知其使用情況；
-+一個 gpiolib 驅動的 .request()操作應調用 pinctrl_gpio_request()，
-+而 gpiolib 驅動的 .free()操作應調用 pinctrl_gpio_free()。pinctrl
-+子系統允許 pinctrl_gpio_request()在某個引腳或引腳組以復用形式「屬於」
-+一個設備時都成功返回。
-+
-+任何須將 GPIO 信號導向適當引腳的引腳復用硬體的編程應該發生在 GPIO
-+驅動的 .direction_input()或 .direction_output()函數中，以及
-+任何輸出 GPIO 值的設置之後。這樣可使從引腳特殊功能到 GPIO 的轉換
-+不會在引腳產生毛刺波形。有時當用一個 GPIO 實現其信號驅動一個非 GPIO
-+硬體模塊的解決方案時，就需要這種機制。
-+
-+某些平台允許部分或所有 GPIO 信號使用不同的引腳。類似的，GPIO 或引腳的
-+其他方面也需要配置，如上拉/下拉。平台軟體應該在對這些 GPIO 調用
-+gpio_request()前將這類細節配置好，例如使用 pinctrl 子系統的映射表，
-+使得 GPIO 的用戶無須關注這些細節。
-+
-+還有一個值得注意的是在釋放 GPIO 前，你必須停止使用它。
-+
-+
-+注意:申請一個 GPIO 並沒有以任何方式配置它，只不過標識那個 GPIO 處於使用
-+狀態。必須有另外的代碼來處理引腳配置(如控制 GPIO 使用的引腳、上拉/下拉)。
-+考慮到大多數情況下聲明 GPIO 之後就會立即配置它們,所以定義了以下三個輔助函數:
-+
-+	/* 申請一個 GPIO 信號, 同時通過特定的'flags'初始化配置,
-+	 * 其他和 gpio_request()的參數和返回值相同
-+	 *
-+	 */
-+	int gpio_request_one(unsigned gpio, unsigned long flags, const char *label);
-+
-+	/* 在單個函數中申請多個 GPIO
-+	 */
-+	int gpio_request_array(struct gpio *array, size_t num);
-+
-+	/* 在單個函數中釋放多個 GPIO
-+	 */
-+	void gpio_free_array(struct gpio *array, size_t num);
-+
-+這裡 'flags' 當前定義可指定以下屬性:
-+
-+	* GPIOF_DIR_IN		- 配置方向爲輸入
-+	* GPIOF_DIR_OUT		- 配置方向爲輸出
-+
-+	* GPIOF_INIT_LOW	- 在作爲輸出時,初始值爲低電平
-+	* GPIOF_INIT_HIGH	- 在作爲輸出時,初始值爲高電平
-+	* GPIOF_OPEN_DRAIN	- gpio引腳爲開漏信號
-+	* GPIOF_OPEN_SOURCE	- gpio引腳爲源極開路信號
-+
-+	* GPIOF_EXPORT_DIR_FIXED	- 將 gpio 導出到 sysfs，並保持方向
-+	* GPIOF_EXPORT_DIR_CHANGEABLE	- 同樣是導出, 但允許改變方向
-+
-+因爲 GPIOF_INIT_* 僅有在配置爲輸出的時候才存在,所以有效的組合爲:
-+
-+	* GPIOF_IN		- 配置爲輸入
-+	* GPIOF_OUT_INIT_LOW	- 配置爲輸出,並初始化爲低電平
-+	* GPIOF_OUT_INIT_HIGH	- 配置爲輸出,並初始化爲高電平
-+
-+當設置 flag 爲 GPIOF_OPEN_DRAIN 時，則假設引腳是開漏信號。這樣的引腳
-+將不會在輸出模式下置1。這樣的引腳需要連接上拉電阻。通過使能這個標誌，gpio庫
-+將會在被要求輸出模式下置1時將引腳變爲輸入狀態來使引腳置高。引腳在輸出模式下
-+通過置0使其輸出低電平。
-+
-+當設置 flag 爲 GPIOF_OPEN_SOURCE 時，則假設引腳爲源極開路信號。這樣的引腳
-+將不會在輸出模式下置0。這樣的引腳需要連接下拉電阻。通過使能這個標誌，gpio庫
-+將會在被要求輸出模式下置0時將引腳變爲輸入狀態來使引腳置低。引腳在輸出模式下
-+通過置1使其輸出高電平。
-+
-+將來這些標誌可能擴展到支持更多的屬性。
-+
-+更進一步,爲了更簡單地聲明/釋放多個 GPIO,'struct gpio'被引進來封裝所有
-+這三個領域:
-+
-+	struct gpio {
-+		unsigned	gpio;
-+		unsigned long	flags;
-+		const char	*label;
-+	};
-+
-+一個典型的用例:
-+
-+	static struct gpio leds_gpios[] = {
-+		{ 32, GPIOF_OUT_INIT_HIGH, "Power LED" }, /* 默認開啓 */
-+		{ 33, GPIOF_OUT_INIT_LOW,  "Green LED" }, /* 默認關閉 */
-+		{ 34, GPIOF_OUT_INIT_LOW,  "Red LED"   }, /* 默認關閉 */
-+		{ 35, GPIOF_OUT_INIT_LOW,  "Blue LED"  }, /* 默認關閉 */
-+		{ ... },
-+	};
-+
-+	err = gpio_request_one(31, GPIOF_IN, "Reset Button");
-+	if (err)
-+		...
-+
-+	err = gpio_request_array(leds_gpios, ARRAY_SIZE(leds_gpios));
-+	if (err)
-+		...
-+
-+	gpio_free_array(leds_gpios, ARRAY_SIZE(leds_gpios));
-+
-+
-+GPIO 映射到 IRQ
-+--------------------
-+GPIO 編號是無符號整數;IRQ 編號也是。這些構成了兩個邏輯上不同的命名空間
-+(GPIO 0 不一定使用 IRQ 0)。你可以通過以下函數在它們之間實現映射:
-+
-+	/* 映射 GPIO 編號到 IRQ 編號 */
-+	int gpio_to_irq(unsigned gpio);
-+
-+	/* 映射 IRQ 編號到 GPIO 編號 (儘量避免使用) */
-+	int irq_to_gpio(unsigned irq);
-+
-+它們的返回值爲對應命名空間的相關編號，或是負的錯誤代碼(如果無法映射)。
-+(例如,某些 GPIO 無法做爲 IRQ 使用。)以下的編號錯誤是未經檢測的:使用一個
-+未通過 gpio_direction_input()配置爲輸入的 GPIO 編號，或者使用一個
-+並非來源於gpio_to_irq()的 IRQ 編號。
-+
-+這兩個映射函數可能會在信號編號的加減計算過程上花些時間。它們不可休眠。
-+
-+gpio_to_irq()返回的非錯誤值可以傳遞給 request_irq()或者 free_irq()。
-+它們通常通過板級特定的初始化代碼存放到平台設備的 IRQ 資源中。注意:IRQ
-+觸發選項是 IRQ 接口的一部分，如 IRQF_TRIGGER_FALLING，系統喚醒能力
-+也是如此。
-+
-+irq_to_gpio()返回的非錯誤值大多數通常可以被 gpio_get_value()所使用，
-+比如在 IRQ 是沿觸發時初始化或更新驅動狀態。注意某些平台不支持反映射,所以
-+你應該儘量避免使用它。
-+
-+
-+模擬開漏信號
-+----------------------------
-+有時在只有低電平信號作爲實際驅動結果(譯者注:多個輸出連接於一點，邏輯電平
-+結果爲所有輸出的邏輯與)的時候,共享的信號線需要使用「開漏」信號。(該術語
-+適用於 CMOS 管；而 TTL 用「集電極開路」。)一個上拉電阻使信號爲高電平。這
-+有時被稱爲「線與」。實際上，從負邏輯(低電平爲真)的角度來看，這是一個「線或」。
-+
-+一個開漏信號的常見例子是共享的低電平使能 IRQ 信號線。此外,有時雙向數據總線
-+信號也使用漏極開路信號。
-+
-+某些 GPIO 控制器直接支持開漏輸出，還有許多不支持。當你需要開漏信號，但
-+硬體又不直接支持的時候，一個常用的方法是用任何即可作輸入也可作輸出的 GPIO
-+引腳來模擬:
-+
-+ LOW:	gpio_direction_output(gpio, 0) ... 這代碼驅動信號並覆蓋
-+	上拉配置。
-+
-+ HIGH:	gpio_direction_input(gpio) ... 這代碼關閉輸出,所以上拉電阻
-+	(或其他的一些器件)控制了信號。
-+
-+如果你將信號線「驅動」爲高電平，但是 gpio_get_value(gpio)報告了一個
-+低電平(在適當的上升時間後)，你就可以知道是其他的一些組件將共享信號線拉低了。
-+這不一定是錯誤的。一個常見的例子就是 I2C 時鐘的延長：一個需要較慢時鐘的
-+從設備延遲 SCK 的上升沿，而 I2C 主設備相應地調整其信號傳輸速率。
-+
-+
-+這些公約忽略了什麼?
-+================
-+這些公約忽略的最大一件事就是引腳復用，因爲這屬於高度晶片特定的屬性且
-+沒有可移植性。某個平台可能不需要明確的復用信息；有的對於任意給定的引腳
-+可能只有兩個功能選項；有的可能每個引腳有八個功能選項；有的可能可以將
-+幾個引腳中的任何一個作爲給定的 GPIO。(是的，這些例子都來自於當前運行
-+Linux 的系統。)
-+
-+在某些系統中,與引腳復用相關的是配置和使能集成的上、下拉模式。並不是所有
-+平台都支持這種模式,或者不會以相同的方式來支持這種模式；且任何給定的電路板
-+可能使用外置的上拉(或下拉)電阻,這時晶片上的就不應該使用。(當一個電路需要
-+5kOhm 的拉動電阻,晶片上的 100 kOhm 電阻就不能做到。)同樣的，驅動能力
-+(2 mA vs 20 mA)和電壓(1.8V vs 3.3V)是平台特定問題,就像模型一樣在
-+可配置引腳和 GPIO 之間(沒)有一一對應的關係。
-+
-+還有其他一些系統特定的機制沒有在這裡指出，例如上述的輸入去毛刺和線與輸出
-+選項。硬體可能支持批量讀或寫 GPIO，但是那一般是配置相關的：對於處於同一
-+塊區(bank)的GPIO。(GPIO 通常以 16 或 32 個組成一個區塊，一個給定的
-+片上系統一般有幾個這樣的區塊。)某些系統可以通過輸出 GPIO 觸發 IRQ，
-+或者從並非以 GPIO 管理的引腳取值。這些機制的相關代碼沒有必要具有可移植性。
-+
-+當前，動態定義 GPIO 並不是標準的，例如作爲配置一個帶有某些 GPIO 擴展器的
-+附加電路板的副作用。
-+
-+GPIO 實現者的框架 (可選)
-+=====================
-+前面提到了，有一個可選的實現框架，讓平台使用相同的編程接口，更加簡單地支持
-+不同種類的 GPIO 控制器。這個框架稱爲"gpiolib"。
-+
-+作爲一個輔助調試功能，如果 debugfs 可用，就會有一個 /sys/kernel/debug/gpio
-+文件。通過這個框架，它可以列出所有註冊的控制器,以及當前正在使用中的 GPIO
-+的狀態。
-+
-+
-+控制器驅動: gpio_chip
-+-------------------
-+在框架中每個 GPIO 控制器都包裝爲一個 "struct gpio_chip"，他包含了
-+該類型的每個控制器的常用信息:
-+
-+ - 設置 GPIO 方向的方法
-+ - 用於訪問 GPIO 值的方法
-+ - 告知調用其方法是否可能休眠的標誌
-+ - 可選的 debugfs 信息導出方法 (顯示類似上拉配置一樣的額外狀態)
-+ - 診斷標籤
-+
-+也包含了來自 device.platform_data 的每個實例的數據：它第一個 GPIO 的
-+編號和它可用的 GPIO 的數量。
-+
-+實現 gpio_chip 的代碼應支持多控制器實例，這可能使用驅動模型。那些代碼要
-+配置每個 gpio_chip，並發起gpiochip_add()。卸載一個 GPIO 控制器很少見，
-+但在必要的時候可以使用 gpiochip_remove()。
-+
-+大部分 gpio_chip 是一個實例特定結構體的一部分，而並不將 GPIO 接口單獨
-+暴露出來,比如編址、電源管理等。類似編解碼器這樣的晶片會有複雜的非 GPIO
-+狀態。
-+
-+任何一個 debugfs 信息導出方法通常應該忽略還未申請作爲 GPIO 的信號線。
-+他們可以使用 gpiochip_is_requested()測試，當這個 GPIO 已經申請過了
-+就返回相關的標籤，否則返回 NULL。
-+
-+
-+平台支持
-+-------
-+爲了支持這個框架，一個平台的 Kconfig 文件將會 "select"(選擇)
-+ARCH_REQUIRE_GPIOLIB 或 ARCH_WANT_OPTIONAL_GPIOLIB，並讓它的
-+<asm/gpio.h> 包含 <asm-generic/gpio.h>，同時定義三個方法:
-+gpio_get_value()、gpio_set_value()和 gpio_cansleep()。
-+
-+它也應提供一個 ARCH_NR_GPIOS 的定義值，這樣可以更好地反映該平台 GPIO
-+的實際數量,節省靜態表的空間。(這個定義值應該包含片上系統內建 GPIO 和
-+GPIO 擴展器中的數據。)
-+
-+ARCH_REQUIRE_GPIOLIB 意味著 gpiolib 核心在這個構架中將總是編譯進內核。
-+
-+ARCH_WANT_OPTIONAL_GPIOLIB 意味著 gpiolib 核心默認關閉,且用戶可以
-+使能它,並將其編譯進內核(可選)。
-+
-+如果這些選項都沒被選擇,該平台就不通過 GPIO-lib 支持 GPIO,且代碼不可以
-+被用戶使能。
-+
-+以下這些方法的實現可以直接使用框架代碼,並總是通過 gpio_chip 調度:
-+
-+  #define gpio_get_value	__gpio_get_value
-+  #define gpio_set_value	__gpio_set_value
-+  #define gpio_cansleep		__gpio_cansleep
-+
-+這些定義可以用更理想的實現方法替代，那就是使用經過邏輯優化的內聯函數來訪問
-+基於特定片上系統的 GPIO。例如,若引用的 GPIO (寄存器位偏移)是常量「12」，
-+讀取或設置它可能只需少則兩或三個指令，且不會休眠。當這樣的優化無法實現時，
-+那些函數必須使用框架提供的代碼，那就至少要幾十條指令才可以實現。對於用 GPIO
-+模擬的 I/O 接口, 如此精簡指令是很有意義的。
-+
-+對於片上系統，平台特定代碼爲片上 GPIO 每個區(bank)定義並註冊 gpio_chip
-+實例。那些 GPIO 應該根據晶片廠商的文檔進行編碼/標籤,並直接和電路板原理圖
-+對應。他們應該開始於零並終止於平台特定的限制。這些 GPIO(代碼)通常從
-+arch_initcall()或者更早的地方集成進平台初始化代碼，使這些 GPIO 總是可用，
-+且他們通常可以作爲 IRQ 使用。
-+
-+板級支持
-+-------
-+對於外部 GPIO 控制器(例如 I2C 或 SPI 擴展器、專用晶片、多功能器件、FPGA
-+或 CPLD)，大多數常用板級特定代碼都可以註冊控制器設備，並保證他們的驅動知道
-+gpiochip_add()所使用的 GPIO 編號。他們的起始編號通常跟在平台特定的 GPIO
-+編號之後。
-+
-+例如板級啓動代碼應該創建結構體指明晶片公開的 GPIO 範圍，並使用 platform_data
-+將其傳遞給每個 GPIO 擴展器晶片。然後晶片驅動中的 probe()例程可以將這個
-+數據傳遞給 gpiochip_add()。
-+
-+初始化順序很重要。例如，如果一個設備依賴基於 I2C 的(擴展)GPIO，那麼它的
-+probe()例程就應該在那個 GPIO 有效以後才可以被調用。這意味著設備應該在
-+GPIO 可以工作之後才可被註冊。解決這類依賴的的一種方法是讓這種 gpio_chip
-+控制器向板級特定代碼提供 setup()和 teardown()回調函數。一旦所有必須的
-+資源可用之後，這些板級特定的回調函數將會註冊設備，並可以在這些 GPIO 控制器
-+設備變成無效時移除它們。
-+
-+
-+用戶空間的 Sysfs 接口(可選)
-+========================
-+使用「gpiolib」實現框架的平台可以選擇配置一個 GPIO 的 sysfs 用戶接口。
-+這不同於 debugfs 接口，因爲它提供的是對 GPIO方向和值的控制，而不只顯示
-+一個GPIO 的狀態摘要。此外,它可以出現在沒有調試支持的產品級系統中。
-+
-+例如，通過適當的系統硬體文檔，用戶空間可以知道 GIOP #23 控制 Flash
-+存儲器的防寫(用於保護其中 Bootloader 分區)。產品的系統升級可能需要
-+臨時解除這個保護：首先導入一個 GPIO，改變其輸出狀態，然後在重新使能防寫
-+前升級代碼。通常情況下,GPIO #23 是不會被觸及的，並且內核也不需要知道他。
-+
-+根據適當的硬體文檔，某些系統的用戶空間 GPIO 可以用於確定系統配置數據，
-+這些數據是標準內核不知道的。在某些任務中，簡單的用戶空間 GPIO 驅動可能是
-+系統真正需要的。
-+
-+注意：標準內核驅動中已經存在通用的「LED 和按鍵」GPIO 任務，分別是:
-+"leds-gpio" 和 "gpio_keys"。請使用這些來替代直接訪問 GPIO，因爲集成在
-+內核框架中的這類驅動比你在用戶空間的代碼更好。
-+
-+
-+Sysfs 中的路徑
-+--------------
-+在/sys/class/gpio 中有 3 類入口:
-+
-+   -	用於在用戶空間控制 GPIO 的控制接口;
-+
-+   -	GPIOs 本身;以及
-+
-+   -	GPIO 控制器 ("gpio_chip" 實例)。
-+
-+除了這些標準的文件,還包含「device」符號連結。
-+
-+控制接口是只寫的:
-+
-+    /sys/class/gpio/
-+
-+    	"export" ... 用戶空間可以通過寫其編號到這個文件，要求內核導出
-+		一個 GPIO 的控制到用戶空間。
-+
-+		例如: 如果內核代碼沒有申請 GPIO #19,"echo 19 > export"
-+		將會爲 GPIO #19 創建一個 "gpio19" 節點。
-+
-+    	"unexport" ... 導出到用戶空間的逆操作。
-+
-+		例如: "echo 19 > unexport" 將會移除使用"export"文件導出的
-+		"gpio19" 節點。
-+
-+GPIO 信號的路徑類似 /sys/class/gpio/gpio42/ (對於 GPIO #42 來說)，
-+並有如下的讀/寫屬性:
-+
-+    /sys/class/gpio/gpioN/
-+
-+	"direction" ... 讀取得到 "in" 或 "out"。這個值通常運行寫入。
-+		寫入"out" 時,其引腳的默認輸出爲低電平。爲了確保無故障運行，
-+		"low" 或 "high" 的電平值應該寫入 GPIO 的配置，作爲初始輸出值。
-+
-+		注意:如果內核不支持改變 GPIO 的方向，或者在導出時內核代碼沒有
-+		明確允許用戶空間可以重新配置 GPIO 方向，那麼這個屬性將不存在。
-+
-+	"value" ... 讀取得到 0 (低電平) 或 1 (高電平)。如果 GPIO 配置爲
-+		輸出,這個值允許寫操作。任何非零值都以高電平看待。
-+
-+		如果引腳可以配置爲中斷信號，且如果已經配置了產生中斷的模式
-+		（見"edge"的描述），你可以對這個文件使用輪詢操作(poll(2))，
-+		且輪詢操作會在任何中斷觸發時返回。如果你使用輪詢操作(poll(2))，
-+		請在 events 中設置 POLLPRI 和 POLLERR。如果你使用輪詢操作
-+		(select(2))，請在 exceptfds 設置你期望的文件描述符。在
-+		輪詢操作(poll(2))返回之後，既可以通過 lseek(2)操作讀取
-+		sysfs 文件的開始部分，也可以關閉這個文件並重新打開它來讀取數據。
-+
-+	"edge" ... 讀取得到「none」、「rising」、「falling」或者「both」。
-+		將這些字符串寫入這個文件可以選擇沿觸發模式，會使得輪詢操作
-+		(select(2))在"value"文件中返回。
-+
-+		這個文件僅有在這個引腳可以配置爲可產生中斷輸入引腳時，才存在。
-+
-+	"active_low" ... 讀取得到 0 (假) 或 1 (真)。寫入任何非零值可以
-+		翻轉這個屬性的(讀寫)值。已存在或之後通過"edge"屬性設置了"rising"
-+		和 "falling" 沿觸發模式的輪詢操作(poll(2))將會遵循這個設置。
-+
-+GPIO 控制器的路徑類似 /sys/class/gpio/gpiochip42/ (對於從#42 GPIO
-+開始實現控制的控制器),並有著以下只讀屬性:
-+
-+    /sys/class/gpio/gpiochipN/
-+
-+    	"base" ... 與以上的 N 相同,代表此晶片管理的第一個 GPIO 的編號
-+
-+    	"label" ... 用於診斷 (並不總是只有唯一值)
-+
-+    	"ngpio" ... 此控制器所管理的 GPIO 數量(而 GPIO 編號從 N 到
-+    		N + ngpio - 1)
-+
-+大多數情況下,電路板的文檔應當標明每個 GPIO 的使用目的。但是那些編號並不總是
-+固定的,例如在擴展卡上的 GPIO會根據所使用的主板或所在堆疊架構中其他的板子而
-+有所不同。在這種情況下,你可能需要使用 gpiochip 節點(儘可能地結合電路圖)來
-+確定給定信號所用的 GPIO 編號。
-+
-+
-+從內核代碼中導出
-+-------------
-+內核代碼可以明確地管理那些已通過 gpio_request()申請的 GPIO 的導出:
-+
-+	/* 導出 GPIO 到用戶空間 */
-+	int gpio_export(unsigned gpio, bool direction_may_change);
-+
-+	/* gpio_export()的逆操作 */
-+	void gpio_unexport();
-+
-+	/* 創建一個 sysfs 連接到已導出的 GPIO 節點 */
-+	int gpio_export_link(struct device *dev, const char *name,
-+		unsigned gpio)
-+
-+在一個內核驅動申請一個 GPIO 之後，它可以通過 gpio_export()使其在 sysfs
-+接口中可見。該驅動可以控制信號方向是否可修改。這有助於防止用戶空間代碼無意間
-+破壞重要的系統狀態。
-+
-+這個明確的導出有助於(通過使某些實驗更容易來)調試，也可以提供一個始終存在的接口，
-+與文檔配合作爲板級支持包的一部分。
-+
-+在 GPIO 被導出之後，gpio_export_link()允許在 sysfs 文件系統的任何地方
-+創建一個到這個 GPIO sysfs 節點的符號連結。這樣驅動就可以通過一個描述性的
-+名字，在 sysfs 中他們所擁有的設備下提供一個(到這個 GPIO sysfs 節點的)接口。
-+
-diff --git a/Documentation/translations/zh_TW/index.rst b/Documentation/translations/zh_TW/index.rst
-new file mode 100644
-index 000000000000..cab58e428825
---- /dev/null
-+++ b/Documentation/translations/zh_TW/index.rst
-@@ -0,0 +1,162 @@
++++ b/Documentation/translations/zh_TW/process/index.rst
+@@ -0,0 +1,67 @@
 +.. SPDX-License-Identifier: GPL-2.0
 +
 +.. raw:: latex
 +
 +	\renewcommand\thesection*
 +	\renewcommand\thesubsection*
-+	\kerneldocCJKon
 +
-+.. _linux_doc_zh_tw:
++.. include:: ../disclaimer-zh_TW.rst
 +
-+繁體中文翻譯
-+============
++:Original: :ref:`Documentation/process/index.rst <process_index>`
++:Translator: Alex Shi <alex.shi@linux.alibaba.com>
++             Hu Haowen <src.res@email.cn>
 +
++.. _tw_process_index:
 +
-+.. note::
-+   內核文檔繁體中文版的翻譯工作正在進行中。如果您願意並且有時間參與這項工
-+   作，歡迎提交補丁給胡皓文 <src.res@email.cn>。
++與Linux 內核社區一起工作
++========================
 +
-+許可證文檔
-+----------
++你想成爲Linux內核開發人員嗎？歡迎之至！在學習許多關於內核的技術知識的同時，
++了解我們社區的工作方式也很重要。閱讀這些文檔可以讓您以更輕鬆的、麻煩更少的
++方式將更改合併到內核。
 +
-+下面的文檔介紹了Linux內核原始碼的許可證（GPLv2）、如何在原始碼樹中正確標記
-+單個文件的許可證、以及指向完整許可證文本的連結。
-+
-+TODOList:
-+
-+* Documentation/translations/zh_TW/process/license-rules.rst
-+
-+用戶文檔
-+--------
-+
-+下面的手冊是爲內核用戶編寫的——即那些試圖讓它在給定系統上以最佳方式工作的
-+用戶。
++以下是每位開發人員都應閱讀的基本指南：
 +
 +.. toctree::
-+   :maxdepth: 2
++   :maxdepth: 1
 +
-+   admin-guide/index
++   howto
++   code-of-conduct
++   code-of-conduct-interpretation
++   submitting-patches
++   programming-language
++   coding-style
++   development-process
++   email-clients
++   license-rules
++   kernel-enforcement-statement
++   kernel-driver-statement
 +
-+TODOList:
++其它大多數開發人員感興趣的社區指南：
 +
-+* kbuild/index
 +
-+固件相關文檔
++.. toctree::
++   :maxdepth: 1
++
++   submitting-drivers
++   submit-checklist
++   stable-api-nonsense
++   stable-kernel-rules
++   management-style
++   embargoed-hardware-issues
++
++這些是一些總體性技術指南，由於不大好分類而放在這裡：
++
++.. toctree::
++   :maxdepth: 1
++
++   magic-number
++   volatile-considered-harmful
++
++.. only::  subproject and html
++
++   目錄
++   ====
++
++   * :ref:`genindex`
++
+diff --git a/Documentation/translations/zh_TW/process/kernel-driver-statement.rst b/Documentation/translations/zh_TW/process/kernel-driver-statement.rst
+new file mode 100644
+index 000000000000..8f225379b12c
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/kernel-driver-statement.rst
+@@ -0,0 +1,203 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. _zh_process_statement_driver:
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/kernel-driver-statement.rst <process_statement_driver>`
++:Translator: Alex Shi <alex.shi@linux.alibaba.com>
++             Hu Haowen <src.res@email.cn>
++
++內核驅動聲明
 +------------
 +
-+下列文檔描述了內核需要的平台固件相關信息。
++關於Linux內核模塊的立場聲明
++===========================
 +
-+TODOList:
++我們，以下署名的Linux內核開發人員，認爲任何封閉源Linux內核模塊或驅動程序都是
++有害的和不可取的。我們已經一再發現它們對Linux用戶，企業和更大的Linux生態系統
++有害。這樣的模塊否定了Linux開發模型的開放性，穩定性，靈活性和可維護性，並使
++他們的用戶無法使用Linux社區的專業知識。提供閉源內核模塊的供應商迫使其客戶
++放棄Linux的主要優勢或選擇新的供應商。因此，爲了充分利用開源所提供的成本節省和
++共享支持優勢，我們敦促供應商採取措施，以開源內核代碼在Linux上爲其客戶提供支持。
 +
-+* firmware-guide/index
-+* devicetree/index
++我們只爲自己說話，而不是我們今天可能會爲之工作，過去或將來會爲之工作的任何公司。
 +
-+應用程式開發人員文檔
-+--------------------
++ - Dave Airlie
++ - Nick Andrew
++ - Jens Axboe
++ - Ralf Baechle
++ - Felipe Balbi
++ - Ohad Ben-Cohen
++ - Muli Ben-Yehuda
++ - Jiri Benc
++ - Arnd Bergmann
++ - Thomas Bogendoerfer
++ - Vitaly Bordug
++ - James Bottomley
++ - Josh Boyer
++ - Neil Brown
++ - Mark Brown
++ - David Brownell
++ - Michael Buesch
++ - Franck Bui-Huu
++ - Adrian Bunk
++ - François Cami
++ - Ralph Campbell
++ - Luiz Fernando N. Capitulino
++ - Mauro Carvalho Chehab
++ - Denis Cheng
++ - Jonathan Corbet
++ - Glauber Costa
++ - Alan Cox
++ - Magnus Damm
++ - Ahmed S. Darwish
++ - Robert P. J. Day
++ - Hans de Goede
++ - Arnaldo Carvalho de Melo
++ - Helge Deller
++ - Jean Delvare
++ - Mathieu Desnoyers
++ - Sven-Thorsten Dietrich
++ - Alexey Dobriyan
++ - Daniel Drake
++ - Alex Dubov
++ - Randy Dunlap
++ - Michael Ellerman
++ - Pekka Enberg
++ - Jan Engelhardt
++ - Mark Fasheh
++ - J. Bruce Fields
++ - Larry Finger
++ - Jeremy Fitzhardinge
++ - Mike Frysinger
++ - Kumar Gala
++ - Robin Getz
++ - Liam Girdwood
++ - Jan-Benedict Glaw
++ - Thomas Gleixner
++ - Brice Goglin
++ - Cyrill Gorcunov
++ - Andy Gospodarek
++ - Thomas Graf
++ - Krzysztof Halasa
++ - Harvey Harrison
++ - Stephen Hemminger
++ - Michael Hennerich
++ - Tejun Heo
++ - Benjamin Herrenschmidt
++ - Kristian Høgsberg
++ - Henrique de Moraes Holschuh
++ - Marcel Holtmann
++ - Mike Isely
++ - Takashi Iwai
++ - Olof Johansson
++ - Dave Jones
++ - Jesper Juhl
++ - Matthias Kaehlcke
++ - Kenji Kaneshige
++ - Jan Kara
++ - Jeremy Kerr
++ - Russell King
++ - Olaf Kirch
++ - Roel Kluin
++ - Hans-Jürgen Koch
++ - Auke Kok
++ - Peter Korsgaard
++ - Jiri Kosina
++ - Aaro Koskinen
++ - Mariusz Kozlowski
++ - Greg Kroah-Hartman
++ - Michael Krufky
++ - Aneesh Kumar
++ - Clemens Ladisch
++ - Christoph Lameter
++ - Gunnar Larisch
++ - Anders Larsen
++ - Grant Likely
++ - John W. Linville
++ - Yinghai Lu
++ - Tony Luck
++ - Pavel Machek
++ - Matt Mackall
++ - Paul Mackerras
++ - Roland McGrath
++ - Patrick McHardy
++ - Kyle McMartin
++ - Paul Menage
++ - Thierry Merle
++ - Eric Miao
++ - Akinobu Mita
++ - Ingo Molnar
++ - James Morris
++ - Andrew Morton
++ - Paul Mundt
++ - Oleg Nesterov
++ - Luca Olivetti
++ - S.Çağlar Onur
++ - Pierre Ossman
++ - Keith Owens
++ - Venkatesh Pallipadi
++ - Nick Piggin
++ - Nicolas Pitre
++ - Evgeniy Polyakov
++ - Richard Purdie
++ - Mike Rapoport
++ - Sam Ravnborg
++ - Gerrit Renker
++ - Stefan Richter
++ - David Rientjes
++ - Luis R. Rodriguez
++ - Stefan Roese
++ - Francois Romieu
++ - Rami Rosen
++ - Stephen Rothwell
++ - Maciej W. Rozycki
++ - Mark Salyzyn
++ - Yoshinori Sato
++ - Deepak Saxena
++ - Holger Schurig
++ - Amit Shah
++ - Yoshihiro Shimoda
++ - Sergei Shtylyov
++ - Kay Sievers
++ - Sebastian Siewior
++ - Rik Snel
++ - Jes Sorensen
++ - Alexey Starikovskiy
++ - Alan Stern
++ - Timur Tabi
++ - Hirokazu Takata
++ - Eliezer Tamir
++ - Eugene Teo
++ - Doug Thompson
++ - FUJITA Tomonori
++ - Dmitry Torokhov
++ - Marcelo Tosatti
++ - Steven Toth
++ - Theodore Tso
++ - Matthias Urlichs
++ - Geert Uytterhoeven
++ - Arjan van de Ven
++ - Ivo van Doorn
++ - Rik van Riel
++ - Wim Van Sebroeck
++ - Hans Verkuil
++ - Horst H. von Brand
++ - Dmitri Vorobiev
++ - Anton Vorontsov
++ - Daniel Walker
++ - Johannes Weiner
++ - Harald Welte
++ - Matthew Wilcox
++ - Dan J. Williams
++ - Darrick J. Wong
++ - David Woodhouse
++ - Chris Wright
++ - Bryan Wu
++ - Rafael J. Wysocki
++ - Herbert Xu
++ - Vlad Yasevich
++ - Peter Zijlstra
++ - Bartlomiej Zolnierkiewicz
 +
-+用戶空間API手冊涵蓋了描述應用程式開發人員可見內核接口方面的文檔。
+diff --git a/Documentation/translations/zh_TW/process/kernel-enforcement-statement.rst b/Documentation/translations/zh_TW/process/kernel-enforcement-statement.rst
+new file mode 100644
+index 000000000000..99e21d22800d
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/kernel-enforcement-statement.rst
+@@ -0,0 +1,155 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+TODOlist:
++﻿.. _tw_process_statement_kernel:
 +
-+* userspace-api/index
++.. include:: ../disclaimer-zh_TW.rst
 +
-+內核開發簡介
-+------------
++:Original: :ref:`Documentation/process/kernel-enforcement-statement.rst <process_statement_kernel>`
++:Translator: Alex Shi <alex.shi@linux.alibaba.com>
++             Hu Haowen <src.res@email.cn>
 +
-+這些手冊包含有關如何開發內核的整體信息。內核社區非常龐大，一年下來有數千名
-+開發人員做出貢獻。與任何大型社區一樣，知道如何完成任務將使得更改合併的過程
-+變得更加容易。
++Linux 內核執行聲明
++------------------
 +
-+TODOList:
++作爲Linux內核的開發人員，我們對如何使用我們的軟體以及如何實施軟體許可證有著
++濃厚的興趣。遵守GPL-2.0的互惠共享義務對我們軟體和社區的長期可持續性至關重要。
 +
-+* process/index
-+* dev-tools/index
-+* doc-guide/index
-+* kernel-hacking/index
-+* trace/index
-+* maintainer/index
-+* fault-injection/index
-+* livepatch/index
-+* rust/index
++雖然有權強制執行對我們社區的貢獻中的單獨版權權益，但我們有共同的利益，即確保
++個人強制執行行動的方式有利於我們的社區，不會對我們軟體生態系統的健康和增長
++產生意外的負面影響。爲了阻止無益的執法行動，我們同意代表我們自己和我們版權
++利益的任何繼承人對Linux內核用戶作出以下符合我們開發社區最大利益的承諾:
 +
-+內核API文檔
-+-----------
++    儘管有GPL-2.0的終止條款，我們同意，採用以下GPL-3.0條款作爲我們許可證下的
++    附加許可，作爲任何對許可證下權利的非防禦性主張，這符合我們開發社區的最佳
++    利益。
 +
-+以下手冊從內核開發人員的角度詳細介紹了特定的內核子系統是如何工作的。這裡的
-+大部分信息都是直接從內核原始碼獲取的，並根據需要添加補充材料（或者至少是在
-+我們設法添加的時候——可能不是所有的都是有需要的）。
++        但是，如果您停止所有違反本許可證的行爲，則您從特定版權持有人處獲得的
++        許可證將被恢復：（a）暫時恢復，除非版權持有人明確並最終終止您的許可證；
++        以及（b）永久恢復, 如果版權持有人未能在你終止違反後60天內以合理方式
++        通知您違反本許可證的行爲，則永久恢復您的許可證。
 +
-+TODOList:
++        此外，如果版權所有者以某種合理的方式通知您違反了本許可，這是您第一次
++        從該版權所有者處收到違反本許可的通知（對於任何作品），並且您在收到通知
++        後的30天內糾正違規行爲。則您從特定版權所有者處獲得的許可將永久恢復.
 +
-+* driver-api/index
-+* core-api/index
-+* locking/index
-+* accounting/index
-+* block/index
-+* cdrom/index
-+* cpu-freq/index
-+* ide/index
-+* fb/index
-+* fpga/index
-+* hid/index
-+* i2c/index
-+* iio/index
-+* isdn/index
-+* infiniband/index
-+* leds/index
-+* netlabel/index
-+* networking/index
-+* pcmcia/index
-+* power/index
-+* target/index
-+* timers/index
-+* spi/index
-+* w1/index
-+* watchdog/index
-+* virt/index
-+* input/index
-+* hwmon/index
-+* gpu/index
-+* security/index
-+* sound/index
-+* crypto/index
-+* filesystems/index
-+* vm/index
-+* bpf/index
-+* usb/index
-+* PCI/index
-+* scsi/index
-+* misc-devices/index
-+* scheduler/index
-+* mhi/index
++我們提供這些保證的目的是鼓勵更多地使用該軟體。我們希望公司和個人使用、修改和
++分發此軟體。我們希望以公開和透明的方式與用戶合作，以消除我們對法規遵從性或強制
++執行的任何不確定性，這些不確定性可能會限制我們軟體的採用。我們將法律行動視爲
++最後手段，只有在其他社區努力未能解決這一問題時才採取行動。
 +
-+體系結構無關文檔
-+----------------
++最後，一旦一個不合規問題得到解決，我們希望用戶會感到歡迎，加入我們爲之努力的
++這個項目。共同努力，我們會更強大。
 +
-+TODOList:
++除了下面提到的以外，我們只爲自己說話，而不是爲今天、過去或將來可能爲之工作的
++任何公司說話。
 +
-+* asm-annotations
++  - Laura Abbott
++  - Bjorn Andersson (Linaro)
++  - Andrea Arcangeli
++  - Neil Armstrong
++  - Jens Axboe
++  - Pablo Neira Ayuso
++  - Khalid Aziz
++  - Ralf Baechle
++  - Felipe Balbi
++  - Arnd Bergmann
++  - Ard Biesheuvel
++  - Tim Bird
++  - Paolo Bonzini
++  - Christian Borntraeger
++  - Mark Brown (Linaro)
++  - Paul Burton
++  - Javier Martinez Canillas
++  - Rob Clark
++  - Kees Cook (Google)
++  - Jonathan Corbet
++  - Dennis Dalessandro
++  - Vivien Didelot (Savoir-faire Linux)
++  - Hans de Goede
++  - Mel Gorman (SUSE)
++  - Sven Eckelmann
++  - Alex Elder (Linaro)
++  - Fabio Estevam
++  - Larry Finger
++  - Bhumika Goyal
++  - Andy Gross
++  - Juergen Gross
++  - Shawn Guo
++  - Ulf Hansson
++  - Stephen Hemminger (Microsoft)
++  - Tejun Heo
++  - Rob Herring
++  - Masami Hiramatsu
++  - Michal Hocko
++  - Simon Horman
++  - Johan Hovold (Hovold Consulting AB)
++  - Christophe JAILLET
++  - Olof Johansson
++  - Lee Jones (Linaro)
++  - Heiner Kallweit
++  - Srinivas Kandagatla
++  - Jan Kara
++  - Shuah Khan (Samsung)
++  - David Kershner
++  - Jaegeuk Kim
++  - Namhyung Kim
++  - Colin Ian King
++  - Jeff Kirsher
++  - Greg Kroah-Hartman (Linux Foundation)
++  - Christian König
++  - Vinod Koul
++  - Krzysztof Kozlowski
++  - Viresh Kumar
++  - Aneesh Kumar K.V
++  - Julia Lawall
++  - Doug Ledford
++  - Chuck Lever (Oracle)
++  - Daniel Lezcano
++  - Shaohua Li
++  - Xin Long
++  - Tony Luck
++  - Catalin Marinas (Arm Ltd)
++  - Mike Marshall
++  - Chris Mason
++  - Paul E. McKenney
++  - Arnaldo Carvalho de Melo
++  - David S. Miller
++  - Ingo Molnar
++  - Kuninori Morimoto
++  - Trond Myklebust
++  - Martin K. Petersen (Oracle)
++  - Borislav Petkov
++  - Jiri Pirko
++  - Josh Poimboeuf
++  - Sebastian Reichel (Collabora)
++  - Guenter Roeck
++  - Joerg Roedel
++  - Leon Romanovsky
++  - Steven Rostedt (VMware)
++  - Frank Rowand
++  - Ivan Safonov
++  - Anna Schumaker
++  - Jes Sorensen
++  - K.Y. Srinivasan
++  - David Sterba (SUSE)
++  - Heiko Stuebner
++  - Jiri Kosina (SUSE)
++  - Willy Tarreau
++  - Dmitry Torokhov
++  - Linus Torvalds
++  - Thierry Reding
++  - Rik van Riel
++  - Luis R. Rodriguez
++  - Geert Uytterhoeven (Glider bvba)
++  - Eduardo Valentin (Amazon.com)
++  - Daniel Vetter
++  - Linus Walleij
++  - Richard Weinberger
++  - Dan Williams
++  - Rafael J. Wysocki
++  - Arvind Yadav
++  - Masahiro Yamada
++  - Wei Yongjun
++  - Lv Zheng
++  - Marc Zyngier (Arm Ltd)
 +
-+特定體系結構文檔
-+----------------
+diff --git a/Documentation/translations/zh_TW/process/license-rules.rst b/Documentation/translations/zh_TW/process/license-rules.rst
+new file mode 100644
+index 000000000000..ad2b80f97123
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/license-rules.rst
+@@ -0,0 +1,374 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+TODOList:
++.. SPDX-License-Identifier: GPL-2.0
 +
-+* arch
++.. include:: ../disclaimer-zh_TW.rst
 +
-+其他文檔
-+--------
++:Original: :ref:`Documentation/process/license-rules.rst <kernel_licensing>`
++:Translator: Alex Shi <alex.shi@linux.alibaba.com>
++             Hu Haowen <src.res@email.cn>
 +
-+有幾份未排序的文檔似乎不適合放在文檔的其他部分，或者可能需要進行一些調整和/或
-+轉換爲reStructureText格式，也有可能太舊。
++.. _tw_kernel_licensing:
 +
-+TODOList:
++Linux內核許可規則
++=================
 +
-+* staging/index
-+* watch_queue
++Linux內核根據LICENSES/preferred/GPL-2.0中提供的GNU通用公共許可證版本2
++（GPL-2.0）的條款提供，並在LICENSES/exceptions/Linux-syscall-note中顯式
++描述了例外的系統調用，如COPYING文件中所述。
 +
-+目錄和表格
++此文檔文件提供了如何對每個源文件進行注釋以使其許可證清晰明確的說明。
++它不會取代內核的許可證。
++
++內核原始碼作爲一個整體適用於COPYING文件中描述的許可證，但是單個源文件可以
++具有不同的與GPL-20兼容的許可證::
++
++    GPL-1.0+ : GNU通用公共許可證v1.0或更高版本
++    GPL-2.0+ : GNU通用公共許可證v2.0或更高版本
++    LGPL-2.0 : 僅限GNU庫通用公共許可證v2
++    LGPL-2.0+: GNU 庫通用公共許可證v2或更高版本
++    LGPL-2.1 : 僅限GNU寬通用公共許可證v2.1
++    LGPL-2.1+: GNU寬通用公共許可證v2.1或更高版本
++
++除此之外，個人文件可以在雙重許可下提供，例如一個兼容的GPL變體，或者BSD，
++MIT等許可。
++
++用戶空間API（UAPI）頭文件描述了用戶空間程序與內核的接口，這是一種特殊情況。
++根據內核COPYING文件中的注釋，syscall接口是一個明確的邊界，它不會將GPL要求
++擴展到任何使用它與內核通信的軟體。由於UAPI頭文件必須包含在創建在Linux內核
++上運行的可執行文件的任何源文件中，因此此例外必須記錄在特別的許可證表述中。
++
++表達源文件許可證的常用方法是將匹配的樣板文本添加到文件的頂部注釋中。由於
++格式，拼寫錯誤等，這些「樣板」很難通過那些在上下文中使用的驗證許可證合規性
++的工具。
++
++樣板文本的替代方法是在每個源文件中使用軟體包數據交換（SPDX）許可證標識符。
++SPDX許可證標識符是機器可解析的，並且是用於提供文件內容的許可證的精確縮寫。
++SPDX許可證標識符由Linux 基金會的SPDX 工作組管理，並得到了整個行業，工具
++供應商和法律團隊的合作夥伴的一致同意。有關詳細信息，請參閱
++https://spdx.org/
++
++Linux內核需要所有源文件中的精確SPDX標識符。內核中使用的有效標識符在
++`許可標識符`_ 一節中進行了解釋，並且已可以在
++https://spdx.org/licenses/ 上的官方SPDX許可證列表中檢索，並附帶許可證
++文本。
++
++許可標識符語法
++--------------
++
++1.安置:
++
++   內核文件中的SPDX許可證標識符應添加到可包含注釋的文件中的第一行。對於大多
++   數文件，這是第一行，除了那些在第一行中需要'#!PATH_TO_INTERPRETER'的腳本。
++   對於這些腳本，SPDX標識符進入第二行。
++
++|
++
++2. 風格:
++
++   SPDX許可證標識符以注釋的形式添加。注釋樣式取決於文件類型::
++
++      C source:	// SPDX-License-Identifier: <SPDX License Expression>
++      C header:	/* SPDX-License-Identifier: <SPDX License Expression> */
++      ASM:	/* SPDX-License-Identifier: <SPDX License Expression> */
++      scripts:	# SPDX-License-Identifier: <SPDX License Expression>
++      .rst:	.. SPDX-License-Identifier: <SPDX License Expression>
++      .dts{i}:	// SPDX-License-Identifier: <SPDX License Expression>
++
++   如果特定工具無法處理標準注釋樣式，則應使用工具接受的相應注釋機制。這是在
++   C 頭文件中使用「/\*\*/」樣式注釋的原因。過去在使用生成的.lds文件中觀察到
++   構建被破壞，其中'ld'無法解析C++注釋。現在已經解決了這個問題，但仍然有較
++   舊的彙編程序工具無法處理C++樣式的注釋。
++
++|
++
++3. 句法:
++
++   <SPDX許可證表達式>是SPDX許可證列表中的SPDX短格式許可證標識符，或者在許可
++   證例外適用時由「WITH」分隔的兩個SPDX短格式許可證標識符的組合。當應用多個許
++   可證時，表達式由分隔子表達式的關鍵字「AND」，「OR」組成，並由「（」，「）」包圍。
++
++   帶有「或更高」選項的[L]GPL等許可證的許可證標識符通過使用「+」來表示「或更高」
++   選項來構建。::
++
++      // SPDX-License-Identifier: GPL-2.0+
++      // SPDX-License-Identifier: LGPL-2.1+
++
++   當需要修正的許可證時，應使用WITH。 例如，linux內核UAPI文件使用表達式::
++
++      // SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note
++      // SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note
++
++   其它在內核中使用WITH例外的事例如下::
++
++      // SPDX-License-Identifier: GPL-2.0 WITH mif-exception
++      // SPDX-License-Identifier: GPL-2.0+ WITH GCC-exception-2.0
++
++   例外只能與特定的許可證標識符一起使用。有效的許可證標識符列在異常文本文件
++   的標記中。有關詳細信息，請參閱 `許可標識符`_ 一章中的 `例外`_ 。
++
++   如果文件是雙重許可且只選擇一個許可證，則應使用OR。例如，一些dtsi文件在雙
++   許可下可用::
++
++      // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
++
++   內核中雙許可文件中許可表達式的示例::
++
++      // SPDX-License-Identifier: GPL-2.0 OR MIT
++      // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++      // SPDX-License-Identifier: GPL-2.0 OR Apache-2.0
++      // SPDX-License-Identifier: GPL-2.0 OR MPL-1.1
++      // SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) OR MIT
++      // SPDX-License-Identifier: GPL-1.0+ OR BSD-3-Clause OR OpenSSL
++
++   如果文件具有多個許可證，其條款全部適用於使用該文件，則應使用AND。例如，
++   如果代碼是從另一個項目繼承的，並且已經授予了將其放入內核的權限，但原始
++   許可條款需要保持有效::
++
++      // SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) AND MIT
++
++   另一個需要遵守兩套許可條款的例子是::
++
++      // SPDX-License-Identifier: GPL-1.0+ AND LGPL-2.1+
++
++許可標識符
 +----------
 +
-+* :ref:`genindex`
++當前使用的許可證以及添加到內核的代碼許可證可以分解爲：
 +
-diff --git a/Documentation/translations/zh_TW/io_ordering.txt b/Documentation/translations/zh_TW/io_ordering.txt
++1. _`優先許可`:
++
++   應儘可能使用這些許可證，因爲它們已知完全兼容並廣泛使用。這些許可證在內核
++   目錄::
++
++      LICENSES/preferred/
++
++   此目錄中的文件包含完整的許可證文本和 `元標記`_ 。文件名與SPDX許可證標識
++   符相同，後者應用於源文件中的許可證。
++
++   例如::
++
++      LICENSES/preferred/GPL-2.0
++
++   包含GPLv2許可證文本和所需的元標籤::
++
++      LICENSES/preferred/MIT
++
++   包含MIT許可證文本和所需的元標記
++
++   _`元標記`:
++
++   許可證文件中必須包含以下元標記：
++
++   - Valid-License-Identifier:
++
++     一行或多行, 聲明那些許可標識符在項目內有效, 以引用此特定許可的文本。通
++     常這是一個有效的標識符，但是例如對於帶有'或更高'選項的許可證，兩個標識
++     符都有效。
++
++   - SPDX-URL:
++
++     SPDX頁面的URL，其中包含與許可證相關的其他信息.
++
++   - Usage-Guidance:
++
++     使用建議的自由格式文本。該文本必須包含SPDX許可證標識符的正確示例，因爲
++     它們應根據 `許可標識符語法`_ 指南放入源文件中。
++
++   - License-Text:
++
++     此標記之後的所有文本都被視爲原始許可文本
++
++   文件格式示例::
++
++      Valid-License-Identifier: GPL-2.0
++      Valid-License-Identifier: GPL-2.0+
++      SPDX-URL: https://spdx.org/licenses/GPL-2.0.html
++      Usage-Guide:
++        To use this license in source code, put one of the following SPDX
++	tag/value pairs into a comment according to the placement
++	guidelines in the licensing rules documentation.
++	For 'GNU General Public License (GPL) version 2 only' use:
++	  SPDX-License-Identifier: GPL-2.0
++	For 'GNU General Public License (GPL) version 2 or any later version' use:
++	  SPDX-License-Identifier: GPL-2.0+
++      License-Text:
++        Full license text
++
++   ::
++
++      SPDX-License-Identifier: MIT
++      SPDX-URL: https://spdx.org/licenses/MIT.html
++      Usage-Guide:
++	To use this license in source code, put the following SPDX
++	tag/value pair into a comment according to the placement
++	guidelines in the licensing rules documentation.
++	  SPDX-License-Identifier: MIT
++      License-Text:
++        Full license text
++
++|
++
++2. 不推薦的許可證:
++
++   這些許可證只應用於現有代碼或從其他項目導入代碼。這些許可證在內核目錄::
++
++      LICENSES/other/
++
++   此目錄中的文件包含完整的許可證文本和 `元標記`_ 。文件名與SPDX許可證標識
++   符相同，後者應用於源文件中的許可證。
++
++   例如::
++
++      LICENSES/other/ISC
++
++   包含國際系統聯合許可文本和所需的元標籤::
++
++      LICENSES/other/ZLib
++
++   包含ZLIB許可文本和所需的元標籤.
++
++   元標籤:
++
++   「其他」許可證的元標籤要求與 `優先許可`_ 的要求相同。
++
++   文件格式示例::
++
++      Valid-License-Identifier: ISC
++      SPDX-URL: https://spdx.org/licenses/ISC.html
++      Usage-Guide:
++        Usage of this license in the kernel for new code is discouraged
++	and it should solely be used for importing code from an already
++	existing project.
++        To use this license in source code, put the following SPDX
++	tag/value pair into a comment according to the placement
++	guidelines in the licensing rules documentation.
++	  SPDX-License-Identifier: ISC
++      License-Text:
++        Full license text
++
++|
++
++3. _`例外`:
++
++   某些許可證可以修改，並允許原始許可證不具有的某些例外權利。這些例外在
++   內核目錄::
++
++      LICENSES/exceptions/
++
++   此目錄中的文件包含完整的例外文本和所需的 `例外元標記`_ 。
++
++   例如::
++
++      LICENSES/exceptions/Linux-syscall-note
++
++   包含Linux內核的COPYING文件中記錄的Linux系統調用例外，該文件用於UAPI
++   頭文件。例如::
++
++      LICENSES/exceptions/GCC-exception-2.0
++
++   包含GCC'連結例外'，它允許獨立於其許可證的任何二進位文件與標記有此例外的
++   文件的編譯版本連結。這是從GPL不兼容原始碼創建可運行的可執行文件所必需的。
++
++   _`例外元標記`:
++
++   以下元標記必須在例外文件中可用：
++
++   - SPDX-Exception-Identifier:
++
++     一個可與SPDX許可證標識符一起使用的例外標識符。
++
++   - SPDX-URL:
++
++     SPDX頁面的URL，其中包含與例外相關的其他信息。
++
++   - SPDX-Licenses:
++
++     以逗號分隔的例外可用的SPDX許可證標識符列表。
++
++   - Usage-Guidance:
++
++     使用建議的自由格式文本。必須在文本後面加上SPDX許可證標識符的正確示例，
++     因爲它們應根據 `許可標識符語法`_ 指南放入源文件中。
++
++   - Exception-Text:
++
++     此標記之後的所有文本都被視爲原始異常文本
++
++   文件格式示例::
++
++      SPDX-Exception-Identifier: Linux-syscall-note
++      SPDX-URL: https://spdx.org/licenses/Linux-syscall-note.html
++      SPDX-Licenses: GPL-2.0, GPL-2.0+, GPL-1.0+, LGPL-2.0, LGPL-2.0+, LGPL-2.1, LGPL-2.1+
++      Usage-Guidance:
++        This exception is used together with one of the above SPDX-Licenses
++	to mark user-space API (uapi) header files so they can be included
++	into non GPL compliant user-space application code.
++        To use this exception add it with the keyword WITH to one of the
++	identifiers in the SPDX-Licenses tag:
++	  SPDX-License-Identifier: <SPDX-License> WITH Linux-syscall-note
++      Exception-Text:
++        Full exception text
++
++   ::
++
++      SPDX-Exception-Identifier: GCC-exception-2.0
++      SPDX-URL: https://spdx.org/licenses/GCC-exception-2.0.html
++      SPDX-Licenses: GPL-2.0, GPL-2.0+
++      Usage-Guidance:
++        The "GCC Runtime Library exception 2.0" is used together with one
++	of the above SPDX-Licenses for code imported from the GCC runtime
++	library.
++        To use this exception add it with the keyword WITH to one of the
++	identifiers in the SPDX-Licenses tag:
++	  SPDX-License-Identifier: <SPDX-License> WITH GCC-exception-2.0
++      Exception-Text:
++        Full exception text
++
++
++所有SPDX許可證標識符和例外都必須在LICENSES子目錄中具有相應的文件。這是允許
++工具驗證（例如checkpatch.pl）以及準備好從源讀取和提取許可證所必需的, 這是
++各種FOSS組織推薦的，例如 `FSFE REUSE initiative <https://reuse.software/>`_.
++
++_`模塊許可`
++-----------------
++
++   可加載內核模塊還需要MODULE_LICENSE（）標記。此標記既不替代正確的原始碼
++   許可證信息（SPDX-License-Identifier），也不以任何方式表示或確定提供模塊
++   原始碼的確切許可證。
++
++   此標記的唯一目的是提供足夠的信息，該模塊是否是自由軟體或者是內核模塊加
++   載器和用戶空間工具的專有模塊。
++
++   MODULE_LICENSE（）的有效許可證字符串是:
++
++    ============================= =============================================
++    "GPL"			  模塊是根據GPL版本2許可的。這並不表示僅限於
++                                  GPL-2.0或GPL-2.0或更高版本之間的任何區別。
++                                  最正確許可證信息只能通過相應源文件中的許可證
++                                  信息來確定
++
++    "GPL v2"			  和"GPL"相同，它的存在是因爲歷史原因。
++
++    "GPL and additional rights"   表示模塊源在GPL v2變體和MIT許可下雙重許可的
++                                  歷史變體。請不要在新代碼中使用。
++
++    "Dual MIT/GPL"		  表達該模塊在GPL v2變體或MIT許可證選擇下雙重
++                                  許可的正確方式。
++
++    "Dual BSD/GPL"		  該模塊根據GPL v2變體或BSD許可證選擇進行雙重
++                                  許可。 BSD許可證的確切變體只能通過相應源文件
++                                  中的許可證信息來確定。
++
++    "Dual MPL/GPL"		  該模塊根據GPL v2變體或Mozilla Public License
++                                  （MPL）選項進行雙重許可。 MPL許可證的確切變體
++                                  只能通過相應的源文件中的許可證信息來確定。
++
++    "Proprietary"		  該模塊屬於專有許可。此字符串僅用於專有的第三
++                                  方模塊，不能用於在內核樹中具有原始碼的模塊。
++                                  以這種方式標記的模塊在加載時會使用'P'標記汙
++                                  染內核，並且內核模塊加載器拒絕將這些模塊連結
++                                  到使用EXPORT_SYMBOL_GPL（）導出的符號。
++    ============================= =============================================
++
++
+diff --git a/Documentation/translations/zh_TW/process/magic-number.rst b/Documentation/translations/zh_TW/process/magic-number.rst
 new file mode 100644
-index 000000000000..1e99206c8421
+index 000000000000..ae321a9aaece
 --- /dev/null
-+++ b/Documentation/translations/zh_TW/io_ordering.txt
-@@ -0,0 +1,68 @@
-+Chinese translated version of Documentation/driver-api/io_ordering.rst
++++ b/Documentation/translations/zh_TW/process/magic-number.rst
+@@ -0,0 +1,148 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+If you have any comment or update to the content, please contact the
-+original document maintainer directly.  However, if you have a problem
-+communicating in English you can also ask the Chinese maintainer for
-+help.  Contact the Chinese maintainer if this translation is outdated
-+or if there is a problem with the translation.
++.. _tw_magicnumbers:
 +
-+Traditional Chinese maintainer: Hu Haowen <src.res@email.cn>
-+---------------------------------------------------------------------
-+Documentation/driver-api/io_ordering.rst 的繁體中文翻譯
++.. include:: ../disclaimer-zh_TW.rst
 +
-+如果想評論或更新本文的內容，請直接聯繫原文檔的維護者。如果你使用英文
-+交流有困難的話，也可以向繁體中文版維護者求助。如果本翻譯更新不及時或
-+者翻譯存在問題，請聯繫繁體中文版維護者。
++:Original: :ref:`Documentation/process/magic-number.rst <magicnumbers>`
 +
-+繁體中文版維護者： 胡皓文 Hu Haowen <src.res@email.cn>
-+繁體中文版翻譯者： 胡皓文 Hu Haowen <src.res@email.cn>
-+繁體中文版校譯者： 胡皓文 Hu Haowen <src.res@email.cn>
++如果想評論或更新本文的內容，請直接發信到LKML。如果你使用英文交流有困難的話，也可
++以向中文版維護者求助。如果本翻譯更新不及時或者翻譯存在問題，請聯繫中文版維護者::
 +
++        中文版維護者： 賈威威 Jia Wei Wei <harryxiyou@gmail.com>
++        中文版翻譯者： 賈威威 Jia Wei Wei <harryxiyou@gmail.com>
++        中文版校譯者： 賈威威 Jia Wei Wei <harryxiyou@gmail.com>
++                      胡皓文 Hu Haowen <src.res@email.cn>
 +
-+以下爲正文
-+---------------------------------------------------------------------
++Linux 魔術數
++============
 +
-+在某些平台上，所謂的內存映射I/O是弱順序。在這些平台上，驅動開發者有責任
-+保證I/O內存映射地址的寫操作按程序圖意的順序達到設備。通常讀取一個「安全」
-+設備寄存器或橋寄存器，觸發IO晶片清刷未處理的寫操作到達設備後才處理讀操作，
-+而達到保證目的。驅動程序通常在spinlock保護的臨界區退出之前使用這種技術。
-+這也可以保證後面的寫操作只在前面的寫操作之後到達設備（這非常類似於內存
-+屏障操作，mb()，不過僅適用於I/O）。
++這個文件是有關當前使用的魔術值註冊表。當你給一個結構添加了一個魔術值，你也應該把這個魔術值添加到這個文件，因爲我們最好把用於各種結構的魔術值統一起來。
 +
-+假設一個設備驅動程的具體例子：
++使用魔術值來保護內核數據結構是一個非常好的主意。這就允許你在運行期檢查(a)一個結構是否已經被攻擊，或者(b)你已經給一個例行程序通過了一個錯誤的結構。後一種情況特別地有用---特別是當你通過一個空指針指向結構體的時候。tty源碼，例如，經常通過特定驅動使用這種方法並且反覆地排列特定方面的結構。
 +
-+        ...
-+CPU A:  spin_lock_irqsave(&dev_lock, flags)
-+CPU A:  val = readl(my_status);
-+CPU A:  ...
-+CPU A:  writel(newval, ring_ptr);
-+CPU A:  spin_unlock_irqrestore(&dev_lock, flags)
-+        ...
-+CPU B:  spin_lock_irqsave(&dev_lock, flags)
-+CPU B:  val = readl(my_status);
-+CPU B:  ...
-+CPU B:  writel(newval2, ring_ptr);
-+CPU B:  spin_unlock_irqrestore(&dev_lock, flags)
-+        ...
++使用魔術值的方法是在結構的開始處聲明的，如下::
 +
-+上述例子中，設備可能會先接收到newval2的值，然後接收到newval的值，問題就
-+發生了。不過很容易通過下面方法來修復：
-+
-+        ...
-+CPU A:  spin_lock_irqsave(&dev_lock, flags)
-+CPU A:  val = readl(my_status);
-+CPU A:  ...
-+CPU A:  writel(newval, ring_ptr);
-+CPU A:  (void)readl(safe_register); /* 配置寄存器？*/
-+CPU A:  spin_unlock_irqrestore(&dev_lock, flags)
-+        ...
-+CPU B:  spin_lock_irqsave(&dev_lock, flags)
-+CPU B:  val = readl(my_status);
-+CPU B:  ...
-+CPU B:  writel(newval2, ring_ptr);
-+CPU B:  (void)readl(safe_register); /* 配置寄存器？*/
-+CPU B:  spin_unlock_irqrestore(&dev_lock, flags)
-+
-+在解決方案中，讀取safe_register寄存器，觸發IO晶片清刷未處理的寫操作，
-+再處理後面的讀操作，防止引發數據不一致問題。
-+
-diff --git a/Documentation/translations/zh_TW/oops-tracing.txt b/Documentation/translations/zh_TW/oops-tracing.txt
-new file mode 100644
-index 000000000000..be8e59f2abaf
---- /dev/null
-+++ b/Documentation/translations/zh_TW/oops-tracing.txt
-@@ -0,0 +1,212 @@
-+Chinese translated version of Documentation/admin-guide/bug-hunting.rst
-+
-+If you have any comment or update to the content, please contact the
-+original document maintainer directly.  However, if you have a problem
-+communicating in English you can also ask the Chinese maintainer for
-+help.  Contact the Chinese maintainer if this translation is outdated
-+or if there is a problem with the translation.
-+
-+Traditional Chinese maintainer:  Hu Haowen <src.res@email.cn>
-+---------------------------------------------------------------------
-+Documentation/admin-guide/bug-hunting.rst 的繁體中文版翻譯
-+
-+如果想評論或更新本文的內容，請直接聯繫原文檔的維護者。如果你使用英文
-+交流有困難的話，也可以向繁體中文版維護者求助。如果本翻譯更新不及時或
-+者翻譯存在問題，請聯繫繁體中文版維護者。
-+
-+繁體中文版維護者： 胡皓文 Hu Haowen <src.res@email.cn>
-+繁體中文版翻譯者： 胡皓文 Hu Haowen <src.res@email.cn>
-+繁體中文版校譯者： 胡皓文 Hu Haowen <src.res@email.cn>
-+
-+以下爲正文
-+---------------------------------------------------------------------
-+
-+注意： ksymoops 在2.6中是沒有用的。 請以原有格式使用Oops(來自dmesg，等等)。
-+忽略任何這樣那樣關於「解碼Oops」或者「通過ksymoops運行」的文檔。 如果你貼出運行過
-+ksymoops的來自2.6的Oops，人們只會讓你重貼一次。
-+
-+快速總結
-+-------------
-+
-+發現Oops並發送給看似相關的內核領域的維護者。別太擔心對不上號。如果你不確定就發給
-+和你所做的事情相關的代碼的負責人。 如果可重現試著描述怎樣重構。 那甚至比oops更有
-+價值。
-+
-+如果你對於發送給誰一無所知， 發給linux-kernel@vger.kernel.org。感謝你幫助Linux
-+儘可能地穩定。
-+
-+Oops在哪裡?
-+----------------------
-+
-+通常Oops文本由klogd從內核緩衝區里讀取並傳給syslogd，由syslogd寫到syslog文件中，
-+典型地是/var/log/messages(依賴於/etc/syslog.conf)。有時klogd崩潰了,這種情況下你
-+能夠運行dmesg > file來從內核緩衝區中讀取數據並保存下來。 否則你可以
-+cat /proc/kmsg > file， 然而你必須介入中止傳輸， kmsg是一個「永不結束的文件」。如
-+果機器崩潰壞到你不能輸入命令或者磁碟不可用那麼你有三種選擇:-
-+
-+（1） 手抄屏幕上的文本待機器重啓後再輸入計算機。 麻煩但如果沒有針對崩潰的準備，
-+這是僅有的選擇。 另外，你可以用數位相機把屏幕拍下來-不太好，但比沒有強。 如果信
-+息滾動到了終端的上面，你會發現以高分辯率啓動（比如，vga=791）會讓你讀到更多的文
-+本。（注意：這需要vesafb，所以對『早期』的oops沒有幫助）
-+
-+（2）用串口終端啓動（請參看Documentation/admin-guide/serial-console.rst），運行一個null
-+modem到另一台機器並用你喜歡的通訊工具獲取輸出。Minicom工作地很好。
-+
-+（3）使用Kdump（請參看Documentation/admin-guide/kdump/kdump.rst），
-+使用在Documentation/admin-guide/kdump/gdbmacros.txt中定義的dmesg gdb宏，從舊的內存中提取內核
-+環形緩衝區。
-+
-+完整信息
-+----------------
-+
-+注意：以下來自於Linus的郵件適用於2.4內核。 我因爲歷史原因保留了它，並且因爲其中
-+一些信息仍然適用。 特別注意的是，請忽略任何ksymoops的引用。
-+
-+From: Linus Torvalds <torvalds@osdl.org>
-+
-+怎樣跟蹤Oops.. [原發到linux-kernel的一封郵件]
-+
-+主要的竅門是有五年和這些煩人的oops消息打交道的經驗;-)
-+
-+實際上，你有辦法使它更簡單。我有兩個不同的方法：
-+
-+	gdb /usr/src/linux/vmlinux
-+	gdb> disassemble <offending_function>
-+
-+那是發現問題的簡單辦法，至少如果bug報告做的好的情況下（象這個一樣-運行ksymoops
-+得到oops發生的函數及函數內的偏移）。
-+
-+哦，如果報告發生的內核以相同的編譯器和相似的配置編譯它會有幫助的。
-+
-+另一件要做的事是反彙編bug報告的「Code」部分：ksymoops也會用正確的工具來做這件事，
-+但如果沒有那些工具你可以寫一個傻程序：
-+
-+	char str[] = "\xXX\xXX\xXX...";
-+	main(){}
-+
-+並用gcc -g編譯它然後執行「disassemble str」（XX部分是由Oops報告的值-你可以僅剪切
-+粘貼並用「\x」替換空格-我就是這麼做的，因爲我懶得寫程序自動做這一切）。
-+
-+另外，你可以用scripts/decodecode這個shell腳本。它的使用方法是：
-+decodecode < oops.txt
-+
-+「Code」之後的十六進位字節可能（在某些架構上）有一些當前指令之前的指令字節以及
-+當前和之後的指令字節
-+
-+Code: f9 0f 8d f9 00 00 00 8d 42 0c e8 dd 26 11 c7 a1 60 ea 2b f9 8b 50 08 a1
-+64 ea 2b f9 8d 34 82 8b 1e 85 db 74 6d 8b 15 60 ea 2b f9 <8b> 43 04 39 42 54
-+7e 04 40 89 42 54 8b 43 04 3b 05 00 f6 52 c0
-+
-+最後，如果你想知道代碼來自哪裡，你可以：
-+
-+	cd /usr/src/linux
-+	make fs/buffer.s 	# 或任何產生BUG的文件
-+
-+然後你會比gdb反彙編更清楚的知道發生了什麼。
-+
-+現在，問題是把你所擁有的所有數據結合起來：C源碼（關於它應該怎樣的一般知識），
-+彙編代碼及其反彙編得到的代碼（另外還有從「oops」消息得到的寄存器狀態-對了解毀壞的
-+指針有用，而且當你有了彙編代碼你也能拿其它的寄存器和任何它們對應的C表達式做匹配
-+）。
-+
-+實際上，你僅需看看哪裡不匹配（這個例子是「Code」反彙編和編譯器生成的代碼不匹配）。
-+然後你須要找出爲什麼不匹配。通常很簡單-你看到代碼使用了空指針然後你看代碼想知道
-+空指針是怎麼出現的，還有檢查它是否合法..
-+
-+現在，如果明白這是一項耗時的工作而且需要一丁點兒的專心，沒錯。這就是我爲什麼大多
-+只是忽略那些沒有符號表信息的崩潰報告的原因：簡單的說太難查找了（我有一些
-+程序用於在內核代碼段中搜索特定的模式，而且有時我也已經能找出那些崩潰的地方，但是
-+僅僅是找出正確的序列也確實需要相當紮實的內核知識）
-+
-+_有時_會發生這種情況，我僅看到崩潰中的反彙編代碼序列， 然後我馬上就明白問題出在
-+哪裡。這時我才意識到自己幹這個工作已經太長時間了;-)
-+
-+		Linus
-+
-+
-+---------------------------------------------------------------------------
-+關於Oops跟蹤的註解：
-+
-+爲了幫助Linus和其它內核開發者，klogd納入了大量的支持來處理保護錯誤。爲了擁有對
-+地址解析的完整支持至少應該使用1.3-pl3的sysklogd包。
-+
-+當保護錯誤發生時，klogd守護進程自動把內核日誌信息中的重要地址翻譯成它們相應的符
-+號。
-+
-+klogd執行兩種類型的地址解析。首先是靜態翻譯其次是動態翻譯。靜態翻譯和ksymoops
-+一樣使用System.map文件。爲了做靜態翻譯klogd守護進程必須在初始化時能找到system
-+map文件。關於klogd怎樣搜索map文件請參看klogd手冊頁。
-+
-+動態地址翻譯在使用內核可裝載模塊時很重要。 因爲內核模塊的內存是從內核動態內存池
-+里分配的，所以不管是模塊開始位置還是模塊中函數和符號的位置都不是固定的。
-+
-+內核支持允許程序決定裝載哪些模塊和它們在內存中位置的系統調用。使用這些系統調用
-+klogd守護進程生成一張符號表用於調試發生在可裝載模塊中的保護錯誤。
-+
-+至少klogd會提供產生保護錯誤的模塊名。還可有額外的符號信息供可裝載模塊開發者選擇
-+以從模塊中輸出符號信息。
-+
-+因爲內核模塊環境可能是動態的，所以必須有一種機制當模塊環境發生改變時來通知klogd
-+守護進程。 有一些可用的命令行選項允許klogd向當前執行中的守護進程發送信號，告知符
-+號信息應該被刷新了。 更多信息請參看klogd手冊頁。
-+
-+sysklogd發布時包含一個補丁修改了modules-2.0.0包，無論何時一個模塊裝載或者卸載都
-+會自動向klogd發送信號。打上這個補丁提供了必要的對調試發生於內核可裝載模塊的保護
-+錯誤的無縫支持。
-+
-+以下是被klogd處理過的發生在可裝載模塊中的一個保護錯誤例子：
-+---------------------------------------------------------------------------
-+Aug 29 09:51:01 blizard kernel: Unable to handle kernel paging request at virtual address f15e97cc
-+Aug 29 09:51:01 blizard kernel: current->tss.cr3 = 0062d000, %cr3 = 0062d000
-+Aug 29 09:51:01 blizard kernel: *pde = 00000000
-+Aug 29 09:51:01 blizard kernel: Oops: 0002
-+Aug 29 09:51:01 blizard kernel: CPU:    0
-+Aug 29 09:51:01 blizard kernel: EIP:    0010:[oops:_oops+16/3868]
-+Aug 29 09:51:01 blizard kernel: EFLAGS: 00010212
-+Aug 29 09:51:01 blizard kernel: eax: 315e97cc   ebx: 003a6f80   ecx: 001be77b   edx: 00237c0c
-+Aug 29 09:51:01 blizard kernel: esi: 00000000   edi: bffffdb3   ebp: 00589f90   esp: 00589f8c
-+Aug 29 09:51:01 blizard kernel: ds: 0018   es: 0018   fs: 002b   gs: 002b   ss: 0018
-+Aug 29 09:51:01 blizard kernel: Process oops_test (pid: 3374, process nr: 21, stackpage=00589000)
-+Aug 29 09:51:01 blizard kernel: Stack: 315e97cc 00589f98 0100b0b4 bffffed4 0012e38e 00240c64 003a6f80 00000001
-+Aug 29 09:51:01 blizard kernel:        00000000 00237810 bfffff00 0010a7fa 00000003 00000001 00000000 bfffff00
-+Aug 29 09:51:01 blizard kernel:        bffffdb3 bffffed4 ffffffda 0000002b 0007002b 0000002b 0000002b 00000036
-+Aug 29 09:51:01 blizard kernel: Call Trace: [oops:_oops_ioctl+48/80] [_sys_ioctl+254/272] [_system_call+82/128]
-+Aug 29 09:51:01 blizard kernel: Code: c7 00 05 00 00 00 eb 08 90 90 90 90 90 90 90 90 89 ec 5d c3
-+---------------------------------------------------------------------------
-+
-+Dr. G.W. Wettstein           Oncology Research Div. Computing Facility
-+Roger Maris Cancer Center    INTERNET: greg@wind.rmcc.com
-+820 4th St. N.
-+Fargo, ND  58122
-+Phone: 701-234-7556
-+
-+
-+---------------------------------------------------------------------------
-+受汙染的內核
-+
-+一些oops報告在程序記數器之後包含字符串'Tainted: '。這表明內核已經被一些東西給汙
-+染了。 該字符串之後緊跟著一系列的位置敏感的字符，每個代表一個特定的汙染值。
-+
-+  1：'G'如果所有裝載的模塊都有GPL或相容的許可證，'P'如果裝載了任何的專有模塊。
-+沒有模塊MODULE_LICENSE或者帶有insmod認爲是與GPL不相容的的MODULE_LICENSE的模塊被
-+認定是專有的。
-+
-+  2：'F'如果有任何通過「insmod -f」被強制裝載的模塊，' '如果所有模塊都被正常裝載。
-+
-+  3：'S'如果oops發生在SMP內核中，運行於沒有證明安全運行多處理器的硬體。 當前這種
-+情況僅限於幾種不支持SMP的速龍處理器。
-+
-+  4：'R'如果模塊通過「insmod -f」被強制裝載，' '如果所有模塊都被正常裝載。
-+
-+  5：'M'如果任何處理器報告了機器檢查異常，' '如果沒有發生機器檢查異常。
-+
-+  6：'B'如果頁釋放函數發現了一個錯誤的頁引用或者一些非預期的頁標誌。
-+
-+  7：'U'如果用戶或者用戶應用程式特別請求設置汙染標誌，否則' '。
-+
-+  8：'D'如果內核剛剛死掉，比如有OOPS或者BUG。
-+
-+使用'Tainted: '字符串的主要原因是要告訴內核調試者，這是否是一個乾淨的內核亦或發
-+生了任何的不正常的事。汙染是永久的：即使出錯的模塊已經被卸載了，汙染值仍然存在，
-+以表明內核不再值得信任。
-+
-diff --git a/Documentation/translations/zh_TW/sparse.txt b/Documentation/translations/zh_TW/sparse.txt
-new file mode 100644
-index 000000000000..c9acb2c926cb
---- /dev/null
-+++ b/Documentation/translations/zh_TW/sparse.txt
-@@ -0,0 +1,91 @@
-+﻿Chinese translated version of Documentation/dev-tools/sparse.rst
-+
-+If you have any comment or update to the content, please contact the
-+original document maintainer directly.  However, if you have a problem
-+communicating in English you can also ask the Chinese maintainer for
-+help.  Contact the Chinese maintainer if this translation is outdated
-+or if there is a problem with the translation.
-+
-+Traditional Chinese maintainer: Hu Haowen <src.res@email.cn>
-+---------------------------------------------------------------------
-+Documentation/dev-tools/sparse.rst 的繁體中文翻譯
-+
-+如果想評論或更新本文的內容，請直接聯繫原文檔的維護者。如果你使用英文
-+交流有困難的話，也可以向繁體中文版維護者求助。如果本翻譯更新不及時或
-+者翻譯存在問題，請聯繫繁體中文版維護者。
-+
-+繁體中文版維護者： 胡皓文 Hu Haowen <src.res@email.cn>
-+繁體中文版翻譯者： 胡皓文 Hu Haowen <src.res@email.cn>
-+
-+以下爲正文
-+---------------------------------------------------------------------
-+
-+Copyright 2004 Linus Torvalds
-+Copyright 2004 Pavel Machek <pavel@ucw.cz>
-+Copyright 2006 Bob Copeland <me@bobcopeland.com>
-+
-+使用 sparse 工具做類型檢查
-+~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+"__bitwise" 是一種類型屬性，所以你應該這樣使用它：
-+
-+        typedef int __bitwise pm_request_t;
-+
-+        enum pm_request {
-+                PM_SUSPEND = (__force pm_request_t) 1,
-+                PM_RESUME = (__force pm_request_t) 2
++        struct tty_ldisc {
++	        int	magic;
++        	...
 +        };
 +
-+這樣會使 PM_SUSPEND 和 PM_RESUME 成爲位方式(bitwise)整數（使用"__force"
-+是因爲 sparse 會抱怨改變位方式的類型轉換，但是這裡我們確實需要強制進行轉
-+換）。而且因爲所有枚舉值都使用了相同的類型，這裡的"enum pm_request"也將
-+會使用那個類型做爲底層實現。
++當你以後給內核添加增強功能的時候，請遵守這條規則！這樣就會節省數不清的調試時間，特別是一些古怪的情況，例如，數組超出範圍並且重新寫了超出部分。遵守這個規則，‪這些情況可以被快速地，安全地避免。
 +
-+而且使用 gcc 編譯的時候，所有的 __bitwise/__force 都會消失，最後在 gcc
-+看來它們只不過是普通的整數。
++		Theodore Ts'o
++		  31 Mar 94
 +
-+坦白來說，你並不需要使用枚舉類型。上面那些實際都可以濃縮成一個特殊的"int
-+__bitwise"類型。
++給當前的Linux 2.1.55添加魔術表。
 +
-+所以更簡單的辦法只要這樣做：
++		Michael Chastain
++		<mailto:mec@shout.net>
++		22 Sep 1997
 +
-+	typedef int __bitwise pm_request_t;
++現在應該最新的Linux 2.1.112.因爲在特性凍結期間，不能在2.2.x前改變任何東西。這些條目被數域所排序。
 +
-+	#define PM_SUSPEND ((__force pm_request_t) 1)
-+	#define PM_RESUME ((__force pm_request_t) 2)
++		Krzysztof G.Baranowski
++	        <mailto: kgb@knm.org.pl>
++		29 Jul 1998
 +
-+現在你就有了嚴格的類型檢查所需要的所有基礎架構。
++更新魔術表到Linux 2.5.45。剛好越過特性凍結，但是有可能還會有一些新的魔術值在2.6.x之前融入到內核中。
 +
-+一個小提醒：常數整數"0"是特殊的。你可以直接把常數零當作位方式整數使用而
-+不用擔心 sparse 會抱怨。這是因爲"bitwise"（恰如其名）是用來確保不同位方
-+式類型不會被弄混（小尾模式，大尾模式，cpu尾模式，或者其他），對他們來說
-+常數"0"確實是特殊的。
++		Petr Baudis
++		<pasky@ucw.cz>
++		03 Nov 2002
 +
-+獲取 sparse 工具
-+~~~~~~~~~~~~~~~~
++更新魔術表到Linux 2.5.74。
 +
-+你可以從 Sparse 的主頁獲取最新的發布版本：
++		Fabian Frederick
++                <ffrederick@users.sourceforge.net>
++		09 Jul 2003
 +
-+	http://www.kernel.org/pub/linux/kernel/people/josh/sparse/
++===================== ================ ======================== ==========================================
++魔術數名              數字             結構                     文件
++===================== ================ ======================== ==========================================
++PG_MAGIC              'P'              pg_{read,write}_hdr      ``include/linux/pg.h``
++CMAGIC                0x0111           user                     ``include/linux/a.out.h``
++MKISS_DRIVER_MAGIC    0x04bf           mkiss_channel            ``drivers/net/mkiss.h``
++HDLC_MAGIC            0x239e           n_hdlc                   ``drivers/char/n_hdlc.c``
++APM_BIOS_MAGIC        0x4101           apm_user                 ``arch/x86/kernel/apm_32.c``
++DB_MAGIC              0x4442           fc_info                  ``drivers/net/iph5526_novram.c``
++DL_MAGIC              0x444d           fc_info                  ``drivers/net/iph5526_novram.c``
++FASYNC_MAGIC          0x4601           fasync_struct            ``include/linux/fs.h``
++FF_MAGIC              0x4646           fc_info                  ``drivers/net/iph5526_novram.c``
++PTY_MAGIC             0x5001                                    ``drivers/char/pty.c``
++PPP_MAGIC             0x5002           ppp                      ``include/linux/if_pppvar.h``
++SSTATE_MAGIC          0x5302           serial_state             ``include/linux/serial.h``
++SLIP_MAGIC            0x5302           slip                     ``drivers/net/slip.h``
++STRIP_MAGIC           0x5303           strip                    ``drivers/net/strip.c``
++SIXPACK_MAGIC         0x5304           sixpack                  ``drivers/net/hamradio/6pack.h``
++AX25_MAGIC            0x5316           ax_disp                  ``drivers/net/mkiss.h``
++TTY_MAGIC             0x5401           tty_struct               ``include/linux/tty.h``
++MGSL_MAGIC            0x5401           mgsl_info                ``drivers/char/synclink.c``
++TTY_DRIVER_MAGIC      0x5402           tty_driver               ``include/linux/tty_driver.h``
++MGSLPC_MAGIC          0x5402           mgslpc_info              ``drivers/char/pcmcia/synclink_cs.c``
++USB_SERIAL_MAGIC      0x6702           usb_serial               ``drivers/usb/serial/usb-serial.h``
++FULL_DUPLEX_MAGIC     0x6969                                    ``drivers/net/ethernet/dec/tulip/de2104x.c``
++USB_BLUETOOTH_MAGIC   0x6d02           usb_bluetooth            ``drivers/usb/class/bluetty.c``
++RFCOMM_TTY_MAGIC      0x6d02                                    ``net/bluetooth/rfcomm/tty.c``
++USB_SERIAL_PORT_MAGIC 0x7301           usb_serial_port          ``drivers/usb/serial/usb-serial.h``
++CG_MAGIC              0x00090255       ufs_cylinder_group       ``include/linux/ufs_fs.h``
++LSEMAGIC              0x05091998       lse                      ``drivers/fc4/fc.c``
++GDTIOCTL_MAGIC        0x06030f07       gdth_iowr_str            ``drivers/scsi/gdth_ioctl.h``
++RIEBL_MAGIC           0x09051990                                ``drivers/net/atarilance.c``
++NBD_REQUEST_MAGIC     0x12560953       nbd_request              ``include/linux/nbd.h``
++RED_MAGIC2            0x170fc2a5       (any)                    ``mm/slab.c``
++BAYCOM_MAGIC          0x19730510       baycom_state             ``drivers/net/baycom_epp.c``
++ISDN_X25IFACE_MAGIC   0x1e75a2b9       isdn_x25iface_proto_data ``drivers/isdn/isdn_x25iface.h``
++ECP_MAGIC             0x21504345       cdkecpsig                ``include/linux/cdk.h``
++LSOMAGIC              0x27091997       lso                      ``drivers/fc4/fc.c``
++LSMAGIC               0x2a3b4d2a       ls                       ``drivers/fc4/fc.c``
++WANPIPE_MAGIC         0x414C4453       sdla_{dump,exec}         ``include/linux/wanpipe.h``
++CS_CARD_MAGIC         0x43525553       cs_card                  ``sound/oss/cs46xx.c``
++LABELCL_MAGIC         0x4857434c       labelcl_info_s           ``include/asm/ia64/sn/labelcl.h``
++ISDN_ASYNC_MAGIC      0x49344C01       modem_info               ``include/linux/isdn.h``
++CTC_ASYNC_MAGIC       0x49344C01       ctc_tty_info             ``drivers/s390/net/ctctty.c``
++ISDN_NET_MAGIC        0x49344C02       isdn_net_local_s         ``drivers/isdn/i4l/isdn_net_lib.h``
++SAVEKMSG_MAGIC2       0x4B4D5347       savekmsg                 ``arch/*/amiga/config.c``
++CS_STATE_MAGIC        0x4c4f4749       cs_state                 ``sound/oss/cs46xx.c``
++SLAB_C_MAGIC          0x4f17a36d       kmem_cache               ``mm/slab.c``
++COW_MAGIC             0x4f4f4f4d       cow_header_v1            ``arch/um/drivers/ubd_user.c``
++I810_CARD_MAGIC       0x5072696E       i810_card                ``sound/oss/i810_audio.c``
++TRIDENT_CARD_MAGIC    0x5072696E       trident_card             ``sound/oss/trident.c``
++ROUTER_MAGIC          0x524d4157       wan_device               [in ``wanrouter.h`` pre 3.9]
++SAVEKMSG_MAGIC1       0x53415645       savekmsg                 ``arch/*/amiga/config.c``
++GDA_MAGIC             0x58464552       gda                      ``arch/mips/include/asm/sn/gda.h``
++RED_MAGIC1            0x5a2cf071       (any)                    ``mm/slab.c``
++EEPROM_MAGIC_VALUE    0x5ab478d2       lanai_dev                ``drivers/atm/lanai.c``
++HDLCDRV_MAGIC         0x5ac6e778       hdlcdrv_state            ``include/linux/hdlcdrv.h``
++PCXX_MAGIC            0x5c6df104       channel                  ``drivers/char/pcxx.h``
++KV_MAGIC              0x5f4b565f       kernel_vars_s            ``arch/mips/include/asm/sn/klkernvars.h``
++I810_STATE_MAGIC      0x63657373       i810_state               ``sound/oss/i810_audio.c``
++TRIDENT_STATE_MAGIC   0x63657373       trient_state             ``sound/oss/trident.c``
++M3_CARD_MAGIC         0x646e6f50       m3_card                  ``sound/oss/maestro3.c``
++FW_HEADER_MAGIC       0x65726F66       fw_header                ``drivers/atm/fore200e.h``
++SLOT_MAGIC            0x67267321       slot                     ``drivers/hotplug/cpqphp.h``
++SLOT_MAGIC            0x67267322       slot                     ``drivers/hotplug/acpiphp.h``
++LO_MAGIC              0x68797548       nbd_device               ``include/linux/nbd.h``
++M3_STATE_MAGIC        0x734d724d       m3_state                 ``sound/oss/maestro3.c``
++VMALLOC_MAGIC         0x87654320       snd_alloc_track          ``sound/core/memory.c``
++KMALLOC_MAGIC         0x87654321       snd_alloc_track          ``sound/core/memory.c``
++PWC_MAGIC             0x89DC10AB       pwc_device               ``drivers/usb/media/pwc.h``
++NBD_REPLY_MAGIC       0x96744668       nbd_reply                ``include/linux/nbd.h``
++ENI155_MAGIC          0xa54b872d       midway_eprom	        ``drivers/atm/eni.h``
++CODA_MAGIC            0xC0DAC0DA       coda_file_info           ``fs/coda/coda_fs_i.h``
++DPMEM_MAGIC           0xc0ffee11       gdt_pci_sram             ``drivers/scsi/gdth.h``
++YAM_MAGIC             0xF10A7654       yam_port                 ``drivers/net/hamradio/yam.c``
++CCB_MAGIC             0xf2691ad2       ccb                      ``drivers/scsi/ncr53c8xx.c``
++QUEUE_MAGIC_FREE      0xf7e1c9a3       queue_entry              ``drivers/scsi/arm/queue.c``
++QUEUE_MAGIC_USED      0xf7e1cc33       queue_entry              ``drivers/scsi/arm/queue.c``
++HTB_CMAGIC            0xFEFAFEF1       htb_class                ``net/sched/sch_htb.c``
++NMI_MAGIC             0x48414d4d455201 nmi_s                    ``arch/mips/include/asm/sn/nmi.h``
++===================== ================ ======================== ==========================================
 +
-+或者，你也可以使用 git 克隆最新的 sparse 開發版本：
 +
-+	git://git.kernel.org/pub/scm/linux/kernel/git/josh/sparse.git
++請注意，在聲音記憶管理中仍然有一些特殊的爲每個驅動定義的魔術值。查看include/sound/sndmagic.h來獲取他們完整的列表信息。很多OSS聲音驅動擁有自己從音效卡PCI ID構建的魔術值-他們也沒有被列在這裡。
 +
-+一旦你下載了源碼，只要以普通用戶身份運行：
++IrDA子系統也使用了大量的自己的魔術值，查看include/net/irda/irda.h來獲取他們完整的信息。
 +
-+	make
-+	make install
++HFS是另外一個比較大的使用魔術值的文件系統-你可以在fs/hfs/hfs.h中找到他們。
 +
-+它將會被自動安裝到你的 ~/bin 目錄下。
+diff --git a/Documentation/translations/zh_TW/process/management-style.rst b/Documentation/translations/zh_TW/process/management-style.rst
+new file mode 100644
+index 000000000000..dce248470063
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/management-style.rst
+@@ -0,0 +1,211 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+使用 sparse 工具
-+~~~~~~~~~~~~~~~~
++.. include:: ../disclaimer-zh_TW.rst
 +
-+用"make C=1"命令來編譯內核，會對所有重新編譯的 C 文件使用 sparse 工具。
-+或者使用"make C=2"命令，無論文件是否被重新編譯都會對其使用 sparse 工具。
-+如果你已經編譯了內核，用後一種方式可以很快地檢查整個源碼樹。
++:Original: :ref:`Documentation/process/management-style.rst <managementstyle>`
++:Translator: Alex Shi <alex.shi@linux.alibaba.com>
++             Hu Haowen <src.res@email.cn>
 +
-+make 的可選變量 CHECKFLAGS 可以用來向 sparse 工具傳遞參數。編譯系統會自
-+動向 sparse 工具傳遞 -Wbitwise 參數。
++.. _tw_managementstyle:
++
++Linux內核管理風格
++=================
++
++這是一個簡短的文檔，描述了Linux內核首選的（或胡編的，取決於您問誰）管理風格。
++它的目的是在某種程度上參照 :ref:`process/coding-style.rst <codingstyle>`
++主要是爲了避免反覆回答 [#cnf1]_ 相同（或類似）的問題。
++
++管理風格是非常個人化的，比簡單的編碼風格規則更難以量化，因此本文檔可能與實
++際情況有關，也可能與實際情況無關。起初它是一個玩笑，但這並不意味著它可能不
++是真的。你得自己決定。
++
++順便說一句，在談到「核心管理者」時，主要是技術負責人，而不是在公司內部進行傳
++統管理的人。如果你簽署了採購訂單或者對你的團隊的預算有任何了解，你幾乎肯定
++不是一個核心管理者。這些建議可能適用於您，也可能不適用於您。
++
++首先，我建議你購買「高效人的七個習慣」，而不是閱讀它。燒了它，這是一個偉大的
++象徵性姿態。
++
++.. [#cnf1] 本文件並不是通過回答問題，而是通過讓提問者痛苦地明白，我們不知道
++   答案是什麼。
++
++不管怎樣，這裡是：
++
++.. _tw_decisions:
++
++1）決策
++-------
++
++每個人都認爲管理者做決定，而且決策很重要。決定越大越痛苦，管理者就必須越高級。
++這很明顯，但事實並非如此。
++
++遊戲的名字是 **避免** 做出決定。尤其是，如果有人告訴你「選擇（a）或（b），
++我們真的需要你來做決定」，你就是陷入麻煩的管理者。你管理的人比你更了解細節，
++所以如果他們來找你做技術決策，你完蛋了。你顯然沒有能力爲他們做這個決定。
++
++（推論：如果你管理的人不比你更了解細節，你也會被搞砸，儘管原因完全不同。
++也就是說，你的工作是錯的，他們應該管理你的才智）
++
++所以遊戲的名字是 **避免** 做出決定，至少是那些大而痛苦的決定。做一些小的
++和非結果性的決定是很好的，並且使您看起來好像知道自己在做什麼，所以內核管理者
++需要做的是將那些大的和痛苦的決定變成那些沒有人真正關心的小事情。
++
++這有助於認識到一個大的決定和一個小的決定之間的關鍵區別是你是否可以在事後修正
++你的決定。任何決定都可以通過始終確保如果你錯了（而且你一定會錯），你以後總是
++可以通過回溯來彌補損失。突然間，你就要做兩個無關緊要的決定，一個是錯誤的，另
++一個是正確的。
++
++人們甚至會認爲這是真正的領導能力（咳，胡說，咳）。
++
++因此，避免重大決策的關鍵在於避免做那些無法挽回的事情。不要被引導到一個你無法
++逃離的角落。走投無路的老鼠可能很危險——走投無路的管理者真可憐。
++
++事實證明，由於沒有人會愚蠢到讓內核管理者承擔巨大的財政責任，所以通常很容易
++回溯。既然你不可能浪費掉你無法償還的巨額資金，你唯一可以回溯的就是技術決策，
++而回溯很容易：只要告訴大家你是個不稱職的傻瓜，說對不起，然後撤銷你去年讓別
++人所做的毫無價值的工作。突然間，你一年前做的決定不在是一個重大的決定，因爲
++它很容易被推翻。
++
++事實證明，有些人對接受這種方法有困難，原因有兩個：
++
++ - 承認你是個白癡比看起來更難。我們都喜歡保持形象，在公共場合說你錯了有時
++   確實很難。
++ - 如果有人告訴你，你去年所做的工作終究是不值得的，那麼對那些可憐的低級工
++   程師來說也是很困難的，雖然實際的 **工作** 很容易刪除，但你可能已經不可
++   挽回地失去了工程師的信任。記住：「不可撤銷」是我們一開始就試圖避免的，
++   而你的決定終究是一個重大的決定。
++
++令人欣慰的是，這兩個原因都可以通過預先承認你沒有任何線索，提前告訴人們你的
++決定完全是初步的，而且可能是錯誤的事情來有效地緩解。你應該始終保留改變主意
++的權利，並讓人們 **意識** 到這一點。當你 **還沒有** 做過真正愚蠢的事情的時
++候，承認自己是愚蠢的要容易得多。
++
++然後，當它真的被證明是愚蠢的時候，人們就轉動他們的眼珠說「哎呀，下次不要了」。
++
++這種對不稱職的先發制人的承認，也可能使真正做這項工作的人也會三思是否值得做。
++畢竟，如果他們不確定這是否是一個好主意，你肯定不應該通過向他們保證他們所做
++的工作將會進入（內核）鼓勵他們。在他們開始一項巨大的努力之前，至少讓他們三
++思而後行。
++
++記住：他們最好比你更了解細節，而且他們通常認爲他們對每件事都有答案。作爲一
++個管理者，你能做的最好的事情不是灌輸自信，而是對他們所做的事情進行健康的批
++判性思考。
++
++順便說一句，另一種避免做出決定的方法是看起來很可憐的抱怨 「我們不能兩者兼
++得嗎？」 相信我，它是有效的。如果不清楚哪種方法更好，他們最終會弄清楚的。
++最終的答案可能是兩個團隊都會因爲這種情況而感到沮喪，以至於他們放棄了。
++
++這聽起來像是一個失敗，但這通常是一個跡象，表明兩個項目都有問題，而參與其中
++的人不能做決定的原因是他們都是錯誤的。你最終會聞到玫瑰的味道，你避免了另一
++個你本可以搞砸的決定。
++
++2）人
++-----
++
++大多數人都是白癡，做一名管理者意味著你必須處理好這件事，也許更重要的是,
++**他們** 必須處理好你。
++
++事實證明，雖然很容易糾正技術錯誤，但不容易糾正人格障礙。你只能和他們的和
++你的（人格障礙）共處。
++
++但是，爲了做好作爲內核管理者的準備，最好記住不要燒掉任何橋樑，不要轟炸任何
++無辜的村民，也不要疏遠太多的內核開發人員。事實證明，疏遠人是相當容易的，而
++親近一個疏遠的人是很難的。因此，「疏遠」立即屬於「不可逆」的範疇，並根據
++:ref:`tw_decisions` 成爲絕不可以做的事情。
++
++這裡只有幾個簡單的規則：
++
++ (1) 不要叫人笨蛋（至少不要在公共場合）
++ (2) 學習如何在忘記規則(1)時道歉
++
++問題在於 #1 很容易去做，因爲你可以用數百萬種不同的方式說「你是一個笨蛋」 [#cnf2]_
++有時甚至沒有意識到，而且幾乎總是帶著一種白熱化的信念，認爲你是對的。
++
++你越確信自己是對的（讓我們面對現實吧，你可以把幾乎所有人都稱爲壞人，而且你
++經常是對的），事後道歉就越難。
++
++要解決此問題，您實際上只有兩個選項：
++
++ - 非常擅長道歉
++ - 把「愛」均勻地散開，沒有人會真正感覺到自己被不公平地瞄準了。讓它有足夠的
++   創造性，他們甚至可能會覺得好笑。
++
++選擇永遠保持禮貌是不存在的。沒有人會相信一個如此明顯地隱藏了他們真實性格的人。
++
++.. [#cnf2] 保羅·西蒙演唱了「離開愛人的50種方法」，因爲坦率地說，「告訴開發者
++   他們是D*CKHEAD" 的100萬種方法都無法確認。但我確信他已經這麼想了。
++
++3）人2 - 好人
++-------------
++
++雖然大多數人都是白癡，但不幸的是，據此推論你也是白癡，儘管我們都自我感覺良
++好，我們比普通人更好（讓我們面對現實吧，沒有人相信他們是普通人或低於普通人），
++我們也應該承認我們不是最鋒利的刀，而且會有其他人比你更不像白癡。
++
++有些人對聰明人反應不好。其他人利用它們。
++
++作爲內核維護人員，確保您在第二組中。接受他們，因爲他們會讓你的工作更容易。
++特別是，他們能夠爲你做決定，這就是遊戲的全部內容。
++
++所以當你發現一個比你聰明的人時，就順其自然吧。你的管理職責在很大程度上變成
++了「聽起來像是個好主意——去嘗試吧」，或者「聽起來不錯，但是XXX呢？」「。第二個版
++本尤其是一個很好的方法，要麼學習一些關於「XXX」的新東西，要麼通過指出一些聰明
++人沒有想到的東西來顯得更具管理性。無論哪種情況，你都會贏。
++
++要注意的一件事是認識到一個領域的偉大不一定會轉化爲其他領域。所以你可能會向
++特定的方向刺激人們，但讓我們面對現實吧，他們可能擅長他們所做的事情，而且對
++其他事情都很差勁。好消息是，人們往往會自然而然地重拾他們擅長的東西，所以當
++你向某個方向刺激他們時，你並不是在做不可逆轉的事情，只是不要用力推。
++
++4）責備
++-------
++
++事情會出問題的，人們希望去責備人。貼標籤，你就是受責備的人。
++
++事實上，接受責備並不難，尤其是當人們意識到這不 **全是** 你的過錯時。這讓我
++們找到了承擔責任的最佳方式：爲別人承擔這件事。你會感覺很好，他們會感覺很好，
++沒有受到指責. 那誰，失去了他們的全部36GB色情收藏的人，因爲你的無能將勉強承
++認，你至少沒有試圖逃避責任。
++
++然後讓真正搞砸了的開發人員（如果你能找到他們）私下知道他們搞砸了。不僅是爲
++了將來可以避免，而且爲了讓他們知道他們欠你一個人情。而且，也許更重要的是，
++他們也可能是能夠解決問題的人。因爲，讓我們面對現實吧，肯定不是你。
++
++承擔責任也是你首先成爲管理者的原因。這是讓人們信任你，讓你獲得潛在的榮耀的
++一部分，因爲你就是那個會說「我搞砸了」的人。如果你已經遵循了以前的規則，你現
++在已經很擅長說了。
++
++5）應避免的事情
++---------------
++
++有一件事人們甚至比被稱爲「笨蛋」更討厭，那就是在一個神聖的聲音中被稱爲「笨蛋」。
++第一個你可以道歉，第二個你不會真正得到機會。即使你做得很好，他們也可能不再
++傾聽。
++
++我們都認爲自己比別人強，這意味著當別人裝腔作勢時，這會讓我們很惱火。你也許
++在道德和智力上比你周圍的每個人都優越，但不要試圖太明顯，除非你真的打算激怒
++某人 [#cnf3]_
++
++同樣，不要對事情太客氣或太微妙。禮貌很容易落得落花流水，把問題隱藏起來，
++正如他們所說，「在網際網路上，沒人能聽到你的含蓄。」用一個鈍器把這一點錘進去，
++因爲你不能真的依靠別人來獲得你的觀點。
++
++一些幽默可以幫助緩和直率和道德化。過度到荒謬的地步，可以灌輸一個觀點，而不
++會讓接受者感到痛苦，他們只是認爲你是愚蠢的。因此，它可以幫助我們擺脫對批評
++的個人心理障礙。
++
++.. [#cnf3] 提示：與你的工作沒有直接關係的網絡新聞組是消除你對他人不滿的好
++   方法。偶爾寫些侮辱性的帖子，打個噴嚏，讓你的情緒得到淨化。別把牢騷帶回家
++
++6）爲什麼是我？
++---------------
++
++既然你的主要責任似乎是爲別人的錯誤承擔責任，並且讓別人痛苦地明白你是不稱職
++的，那麼顯而易見的問題之一就變成了爲什麼首先要這樣做。
++
++首先，雖然你可能會或可能不會聽到十幾歲女孩（或男孩，讓我們不要在這裡評判或
++性別歧視）敲你的更衣室門，你會得到一個巨大的個人成就感爲「負責」。別介意你真
++的在領導別人，你要跟上別人，儘可能快地追趕他們。每個人都會認爲你是負責人。
++
++如果你可以做到這個， 這是個偉大的工作！
++
+diff --git a/Documentation/translations/zh_TW/process/programming-language.rst b/Documentation/translations/zh_TW/process/programming-language.rst
+new file mode 100644
+index 000000000000..54e3699eadf8
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/programming-language.rst
+@@ -0,0 +1,76 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/programming-language.rst <programming_language>`
++:Translator: Alex Shi <alex.shi@linux.alibaba.com>
++             Hu Haowen <src.res@email.cn>
++
++.. _tw_programming_language:
++
++程序設計語言
++============
++
++內核是用C語言 :ref:`c-language <tw_c-language>` 編寫的。更準確地說，內核通常是用 :ref:`gcc <tw_gcc>`
++在 ``-std=gnu89`` :ref:`gcc-c-dialect-options <tw_gcc-c-dialect-options>` 下編譯的：ISO C90的 GNU 方言（
++包括一些C99特性）
++
++這種方言包含對語言 :ref:`gnu-extensions <tw_gnu-extensions>` 的許多擴展，當然，它們許多都在內核中使用。
++
++對於一些體系結構，有一些使用 :ref:`clang <tw_clang>` 和 :ref:`icc <tw_icc>` 編譯內核
++的支持，儘管在編寫此文檔時還沒有完成，仍需要第三方補丁。
++
++屬性
++----
++
++在整個內核中使用的一個常見擴展是屬性（attributes） :ref:`gcc-attribute-syntax <tw_gcc-attribute-syntax>`
++屬性允許將實現定義的語義引入語言實體（如變量、函數或類型），而無需對語言進行
++重大的語法更改（例如添加新關鍵字） :ref:`n2049 <tw_n2049>`
++
++在某些情況下，屬性是可選的（即不支持這些屬性的編譯器仍然應該生成正確的代碼，
++即使其速度較慢或執行的編譯時檢查/診斷次數不夠）
++
++內核定義了僞關鍵字（例如， ``pure`` ），而不是直接使用GNU屬性語法（例如,
++``__attribute__((__pure__))`` ），以檢測可以使用哪些關鍵字和/或縮短代碼, 具體
++請參閱 ``include/linux/compiler_attributes.h``
++
++.. _tw_c-language:
++
++c-language
++   http://www.open-std.org/jtc1/sc22/wg14/www/standards
++
++.. _tw_gcc:
++
++gcc
++   https://gcc.gnu.org
++
++.. _tw_clang:
++
++clang
++   https://clang.llvm.org
++
++.. _tw_icc:
++
++icc
++   https://software.intel.com/en-us/c-compilers
++
++.. _tw_gcc-c-dialect-options:
++
++c-dialect-options
++   https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html
++
++.. _tw_gnu-extensions:
++
++gnu-extensions
++   https://gcc.gnu.org/onlinedocs/gcc/C-Extensions.html
++
++.. _tw_gcc-attribute-syntax:
++
++gcc-attribute-syntax
++   https://gcc.gnu.org/onlinedocs/gcc/Attribute-Syntax.html
++
++.. _tw_n2049:
++
++n2049
++   http://www.open-std.org/jtc1/sc22/wg14/www/docs/n2049.pdf
++
+diff --git a/Documentation/translations/zh_TW/process/stable-api-nonsense.rst b/Documentation/translations/zh_TW/process/stable-api-nonsense.rst
+new file mode 100644
+index 000000000000..22caa5b8d422
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/stable-api-nonsense.rst
+@@ -0,0 +1,159 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. _tw_stable_api_nonsense:
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/stable-api-nonsense.rst
++           <stable_api_nonsense>`
++
++譯者::
++
++        中文版維護者： 鍾宇  TripleX Chung <xxx.phy@gmail.com>
++        中文版翻譯者： 鍾宇  TripleX Chung <xxx.phy@gmail.com>
++        中文版校譯者： 李陽  Li Yang <leoyang.li@nxp.com>
++                      胡皓文 Hu Haowen <src.res@email.cn>
++
++Linux 內核驅動接口
++==================
++
++寫作本文檔的目的，是爲了解釋爲什麼Linux既沒有二進位內核接口，也沒有穩定
++的內核接口。這裡所說的內核接口，是指內核里的接口，而不是內核和用戶空間
++的接口。內核到用戶空間的接口，是提供給應用程式使用的系統調用，系統調用
++在歷史上幾乎沒有過變化，將來也不會有變化。我有一些老應用程式是在0.9版本
++或者更早版本的內核上編譯的，在使用2.6版本內核的Linux發布上依然用得很好
++。用戶和應用程式作者可以將這個接口看成是穩定的。
++
++
++執行綱要
++--------
++
++你也許以爲自己想要穩定的內核接口，但是你不清楚你要的實際上不是它。你需
++要的其實是穩定的驅動程序，而你只有將驅動程序放到公版內核的原始碼樹里，
++才有可能達到這個目的。而且這樣做還有很多其它好處，正是因爲這些好處使得
++Linux能成爲強壯，穩定，成熟的作業系統，這也是你最開始選擇Linux的原因。
++
++
++入門
++-----
++
++只有那些寫驅動程序的「怪人」才會擔心內核接口的改變，對廣大用戶來說，既
++看不到內核接口，也不需要去關心它。
++
++首先，我不打算討論關於任何非GPL許可的內核驅動的法律問題，這些非GPL許可
++的驅動程序包括不公開原始碼，隱藏原始碼，二進位或者是用原始碼包裝，或者
++是其它任何形式的不能以GPL許可公開原始碼的驅動程序。如果有法律問題，請咨
++詢律師，我只是一個程式設計師，所以我只打算探討技術問題（不是小看法律問題，
++法律問題很實際，並且需要一直關注）。
++
++既然只談技術問題，我們就有了下面兩個主題：二進位內核接口和穩定的內核源
++代碼接口。這兩個問題是互相關聯的，讓我們先解決掉二進位接口的問題。
++
++
++二進位內核接口
++--------------
++假如我們有一個穩定的內核原始碼接口，那麼自然而然的，我們就擁有了穩定的
++二進位接口，是這樣的嗎？錯。讓我們看看關於Linux內核的幾點事實：
++
++    - 取決於所用的C編譯器的版本，不同的內核數據結構里的結構體的對齊方
++      式會有差別，代碼中不同函數的表現形式也不一樣（函數是不是被inline
++      編譯取決於編譯器行爲）。不同的函數的表現形式並不重要，但是數據
++      結構內部的對齊方式很關鍵。
++
++    - 取決於內核的配置選項，不同的選項會讓內核的很多東西發生改變：
++
++      - 同一個結構體可能包含不同的成員變量
++      - 有的函數可能根本不會被實現（比如編譯的時候沒有選擇SMP支持
++        一些鎖函數就會被定義成空函數）。
++      - 內核使用的內存會以不同的方式對齊，這取決於不同的內核配置選
++        項。
++
++    - Linux可以在很多的不同體系結構的處理器上運行。在某個體系結構上編
++      譯好的二進位驅動程序，不可能在另外一個體系結構上正確的運行。
++
++對於一個特定的內核，滿足這些條件並不難，使用同一個C編譯器和同樣的內核配
++置選項來編譯驅動程序模塊就可以了。這對於給一個特定Linux發布的特定版本提
++供驅動程序，是完全可以滿足需求的。但是如果你要給不同發布的不同版本都發
++布一個驅動程序，就需要在每個發布上用不同的內核設置參數都編譯一次內核，
++這簡直跟噩夢一樣。而且還要注意到，每個Linux發布還提供不同的Linux內核，
++這些內核都針對不同的硬體類型進行了優化（有很多種不同的處理器，還有不同
++的內核設置選項）。所以每發布一次驅動程序，都需要提供很多不同版本的內核
++模塊。
++
++相信我，如果你真的要採取這種發布方式，一定會慢慢瘋掉，我很久以前就有過
++深刻的教訓...
++
++
++穩定的內核原始碼接口
++--------------------
++
++如果有人不將他的內核驅動程序，放入公版內核的原始碼樹，而又想讓驅動程序
++一直保持在最新的內核中可用，那麼這個話題將會變得沒完沒了。
++內核開發是持續而且快節奏的，從來都不會慢下來。內核開發人員在當前接口中
++找到bug，或者找到更好的實現方式。一旦發現這些，他們就很快會去修改當前的
++接口。修改接口意味著，函數名可能會改變，結構體可能被擴充或者刪減，函數
++的參數也可能發生改變。一旦接口被修改，內核中使用這些接口的地方需要同時
++修正，這樣才能保證所有的東西繼續工作。
++
++舉一個例子，內核的USB驅動程序接口在USB子系統的整個生命周期中，至少經歷
++了三次重寫。這些重寫解決以下問題：
++
++    - 把數據流從同步模式改成非同步模式，這個改動減少了一些驅動程序的
++      複雜度，提高了所有USB驅動程序的吞吐率，這樣幾乎所有的USB設備都
++      能以最大速率工作了。
++    - 修改了USB核心代碼中爲USB驅動分配數據包內存的方式，所有的驅動都
++      需要提供更多的參數給USB核心，以修正了很多已經被記錄在案的死鎖。
++
++這和一些封閉原始碼的作業系統形成鮮明的對比，在那些作業系統上，不得不額
++外的維護舊的USB接口。這導致了一個可能性，新的開發者依然會不小心使用舊的
++接口，以不恰當的方式編寫代碼，進而影響到作業系統的穩定性。
++在上面的例子中，所有的開發者都同意這些重要的改動，在這樣的情況下修改代
++價很低。如果Linux保持一個穩定的內核原始碼接口，那麼就得創建一個新的接口
++；舊的，有問題的接口必須一直維護，給Linux USB開發者帶來額外的工作。既然
++所有的Linux USB驅動的作者都是利用自己的時間工作，那麼要求他們去做毫無意
++義的免費額外工作，是不可能的。
++安全問題對Linux來說十分重要。一個安全問題被發現，就會在短時間內得到修
++正。在很多情況下，這將導致Linux內核中的一些接口被重寫，以從根本上避免安
++全問題。一旦接口被重寫，所有使用這些接口的驅動程序，必須同時得到修正，
++以確定安全問題已經得到修復並且不可能在未來還有同樣的安全問題。如果內核
++內部接口不允許改變，那麼就不可能修復這樣的安全問題，也不可能確認這樣的
++安全問題以後不會發生。
++開發者一直在清理內核接口。如果一個接口沒有人在使用了，它就會被刪除。這
++樣可以確保內核儘可能的小，而且所有潛在的接口都會得到儘可能完整的測試
++（沒有人使用的接口是不可能得到良好的測試的）。
++
++
++要做什麼
++--------
++
++如果你寫了一個Linux內核驅動，但是它還不在Linux原始碼樹里，作爲一個開發
++者，你應該怎麼做？爲每個發布的每個版本提供一個二進位驅動，那簡直是一個
++噩夢，要跟上永遠處於變化之中的內核接口，也是一件辛苦活。
++很簡單，讓你的驅動進入內核原始碼樹（要記得我們在談論的是以GPL許可發行
++的驅動，如果你的代碼不符合GPL，那麼祝你好運，你只能自己解決這個問題了，
++你這個吸血鬼<把Andrew和Linus對吸血鬼的定義連結到這裡>）。當你的代碼加入
++公版內核原始碼樹之後，如果一個內核接口改變，你的驅動會直接被修改接口的
++那個人修改。保證你的驅動永遠都可以編譯通過，並且一直工作，你幾乎不需要
++做什麼事情。
++
++把驅動放到內核原始碼樹里會有很多的好處：
++
++    - 驅動的質量會提升，而維護成本（對原始作者來說）會下降。
++    - 其他人會給驅動添加新特性。
++    - 其他人會找到驅動中的bug並修復。
++    - 其他人會在驅動中找到性能優化的機會。
++    - 當外部的接口的改變需要修改驅動程序的時候，其他人會修改驅動程序
++    - 不需要聯繫任何發行商，這個驅動會自動的隨著所有的Linux發布一起發
++      布。
++
++和別的作業系統相比，Linux爲更多不同的設備提供現成的驅動，而且能在更多不
++同體系結構的處理器上支持這些設備。這個經過考驗的開發模式，必然是錯不了
++的 :)
++
++感謝
++----
++感謝 Randy Dunlap, Andrew Morton, David Brownell, Hanna Linder,
++Robert Love, and Nishanth Aravamudan 對於本文檔早期版本的評審和建議。
++
++英文版維護者： Greg Kroah-Hartman <greg@kroah.com>
++
+diff --git a/Documentation/translations/zh_TW/process/stable-kernel-rules.rst b/Documentation/translations/zh_TW/process/stable-kernel-rules.rst
+new file mode 100644
+index 000000000000..9bb0d9b4f3ac
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/stable-kernel-rules.rst
+@@ -0,0 +1,68 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. _tw_stable_kernel_rules:
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/stable-kernel-rules.rst <stable_kernel_rules>`
++
++如果想評論或更新本文的內容，請直接聯繫原文檔的維護者。如果你使用英文
++交流有困難的話，也可以向中文版維護者求助。如果本翻譯更新不及時或者翻
++譯存在問題，請聯繫中文版維護者::
++
++        中文版維護者： 鍾宇  TripleX Chung <xxx.phy@gmail.com>
++        中文版翻譯者： 鍾宇  TripleX Chung <xxx.phy@gmail.com>
++        中文版校譯者：
++            - 李陽  Li Yang <leoyang.li@nxp.com>
++            - Kangkai Yin <e12051@motorola.com>
++            - 胡皓文 Hu Haowen <src.res@email.cn>
++
++所有你想知道的事情 - 關於linux穩定版發布
++========================================
++
++關於Linux 2.6穩定版發布，所有你想知道的事情。
++
++關於哪些類型的補丁可以被接收進入穩定版代碼樹，哪些不可以的規則：
++----------------------------------------------------------------
++
++  - 必須是顯而易見的正確，並且經過測試的。
++  - 連同上下文，不能大於100行。
++  - 必須只修正一件事情。
++  - 必須修正了一個給大家帶來麻煩的真正的bug（不是「這也許是一個問題...」
++    那樣的東西）。
++  - 必須修正帶來如下後果的問題：編譯錯誤（對被標記爲CONFIG_BROKEN的例外），
++    內核崩潰，掛起，數據損壞，真正的安全問題，或者一些類似「哦，這不
++    好」的問題。簡短的說，就是一些致命的問題。
++  - 沒有「理論上的競爭條件」，除非能給出競爭條件如何被利用的解釋。
++  - 不能存在任何的「瑣碎的」修正（拼寫修正，去掉多餘空格之類的）。
++  - 必須被相關子系統的維護者接受。
++  - 必須遵循Documentation/translations/zh_TW/process/submitting-patches.rst里的規則。
++
++向穩定版代碼樹提交補丁的過程：
++------------------------------
++
++  - 在確認了補丁符合以上的規則後，將補丁發送到stable@vger.kernel.org。
++  - 如果補丁被接受到隊列里，發送者會收到一個ACK回復，如果沒有被接受，收
++    到的是NAK回復。回復需要幾天的時間，這取決於開發者的時間安排。
++  - 被接受的補丁會被加到穩定版本隊列里，等待其他開發者的審查。
++  - 安全方面的補丁不要發到這個列表，應該發送到security@kernel.org。
++
++審查周期：
++----------
++
++  - 當穩定版的維護者決定開始一個審查周期，補丁將被發送到審查委員會，以
++    及被補丁影響的領域的維護者（除非提交者就是該領域的維護者）並且抄送
++    到linux-kernel郵件列表。
++  - 審查委員會有48小時的時間，用來決定給該補丁回復ACK還是NAK。
++  - 如果委員會中有成員拒絕這個補丁，或者linux-kernel列表上有人反對這個
++    補丁，並提出維護者和審查委員會之前沒有意識到的問題，補丁會從隊列中
++    丟棄。
++  - 在審查周期結束的時候，那些得到ACK回應的補丁將會被加入到最新的穩定版
++    發布中，一個新的穩定版發布就此產生。
++  - 安全性補丁將從內核安全小組那裡直接接收到穩定版代碼樹中，而不是通過
++    通常的審查周期。請聯繫內核安全小組以獲得關於這個過程的更多細節。
++
++審查委員會：
++------------
++  - 由一些自願承擔這項任務的內核開發者，和幾個非志願的組成。
++
+diff --git a/Documentation/translations/zh_TW/process/submit-checklist.rst b/Documentation/translations/zh_TW/process/submit-checklist.rst
+new file mode 100644
+index 000000000000..ff2f89cba83f
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/submit-checklist.rst
+@@ -0,0 +1,109 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/submit-checklist.rst <submitchecklist>`
++:Translator: Alex Shi <alex.shi@linux.alibaba.com>
++             Hu Haowen <src.res@email.cn>
++
++.. _tw_submitchecklist:
++
++Linux內核補丁提交清單
++~~~~~~~~~~~~~~~~~~~~~
++
++如果開發人員希望看到他們的內核補丁提交更快地被接受，那麼他們應該做一些基本
++的事情。
++
++這些都是在
++:ref:`Documentation/translations/zh_TW/process/submitting-patches.rst <tw_submittingpatches>`
++和其他有關提交Linux內核補丁的文檔中提供的。
++
++1) 如果使用工具，則包括定義/聲明該工具的文件。不要依賴於其他頭文件拉入您使用
++   的頭文件。
++
++2) 乾淨的編譯：
++
++   a) 使用適用或修改的 ``CONFIG`` 選項 ``=y``、``=m`` 和 ``=n`` 。沒有GCC
++      警告/錯誤，沒有連結器警告/錯誤。
++
++   b) 通過allnoconfig、allmodconfig
++
++   c) 使用 ``O=builddir`` 時可以成功編譯
++
++3) 通過使用本地交叉編譯工具或其他一些構建場在多個CPU體系結構上構建。
++
++4) PPC64是一種很好的交叉編譯檢查體系結構，因爲它傾向於對64位的數使用無符號
++   長整型。
++
++5) 如下所述 :ref:`Documentation/translations/zh_TW/process/coding-style.rst <tw_codingstyle>`.
++   檢查您的補丁是否爲常規樣式。在提交（ ``scripts/check patch.pl`` ）之前，
++   使用補丁樣式檢查器檢查是否有輕微的衝突。您應該能夠處理您的補丁中存在的所有
++   違規行爲。
++
++6) 任何新的或修改過的 ``CONFIG`` 選項都不會弄髒配置菜單，並默認爲關閉，除非
++   它們符合 ``Documentation/kbuild/kconfig-language.rst`` 中記錄的異常條件,
++   菜單屬性：默認值.
++
++7) 所有新的 ``kconfig`` 選項都有幫助文本。
++
++8) 已仔細審查了相關的 ``Kconfig`` 組合。這很難用測試來糾正——腦力在這裡是有
++   回報的。
++
++9) 用 sparse 檢查乾淨。
++
++10) 使用 ``make checkstack`` 和 ``make namespacecheck`` 並修復他們發現的任何
++    問題。
++
++    .. note::
++
++        ``checkstack`` 並沒有明確指出問題，但是任何一個在堆棧上使用超過512
++        字節的函數都可以進行更改。
++
++11) 包括 :ref:`kernel-doc <kernel_doc>` 內核文檔以記錄全局內核API。（靜態函數
++    不需要，但也可以。）使用 ``make htmldocs`` 或 ``make pdfdocs`` 檢查
++    :ref:`kernel-doc <kernel_doc>` 並修復任何問題。
++
++12) 通過以下選項同時啓用的測試 ``CONFIG_PREEMPT``, ``CONFIG_DEBUG_PREEMPT``,
++    ``CONFIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
++    ``CONFIG_DEBUG_SPINLOCK``, ``CONFIG_DEBUG_ATOMIC_SLEEP``,
++    ``CONFIG_PROVE_RCU`` and ``CONFIG_DEBUG_OBJECTS_RCU_HEAD``
++
++13) 已經過構建和運行時測試，包括有或沒有 ``CONFIG_SMP``, ``CONFIG_PREEMPT``.
++
++14) 如果補丁程序影響IO/磁碟等：使用或不使用 ``CONFIG_LBDAF`` 進行測試。
++
++15) 所有代碼路徑都已在啓用所有lockdep功能的情況下運行。
++
++16) 所有新的/proc條目都記錄在 ``Documentation/``
++
++17) 所有新的內核引導參數都記錄在
++    Documentation/admin-guide/kernel-parameters.rst 中。
++
++18) 所有新的模塊參數都記錄在 ``MODULE_PARM_DESC()``
++
++19) 所有新的用戶空間接口都記錄在 ``Documentation/ABI/`` 中。有關詳細信息，
++    請參閱 ``Documentation/ABI/README`` 。更改用戶空間接口的補丁應該抄送
++    linux-api@vger.kernel.org。
++
++20) 已通過至少注入slab和page分配失敗進行檢查。請參閱 ``Documentation/fault-injection/``
++    如果新代碼是實質性的，那麼添加子系統特定的故障注入可能是合適的。
++
++21) 新添加的代碼已經用 ``gcc -W`` 編譯（使用 ``make EXTRA-CFLAGS=-W`` ）。這
++    將產生大量噪聲，但對於查找諸如「警告：有符號和無符號之間的比較」之類的錯誤
++    很有用。
++
++22) 在它被合併到-mm補丁集中之後進行測試，以確保它仍然與所有其他排隊的補丁以
++    及VM、VFS和其他子系統中的各種更改一起工作。
++
++23) 所有內存屏障例如 ``barrier()``, ``rmb()``, ``wmb()`` 都需要原始碼中的注
++    釋來解釋它們正在執行的操作及其原因的邏輯。
++
++24) 如果補丁添加了任何ioctl，那麼也要更新 ``Documentation/userspace-api/ioctl/ioctl-number.rst``
++
++25) 如果修改後的原始碼依賴或使用與以下 ``Kconfig`` 符號相關的任何內核API或
++    功能，則在禁用相關 ``Kconfig`` 符號和/或 ``=m`` （如果該選項可用）的情況
++    下測試以下多個構建[並非所有這些都同時存在，只是它們的各種/隨機組合]：
++
++    ``CONFIG_SMP``, ``CONFIG_SYSFS``, ``CONFIG_PROC_FS``, ``CONFIG_INPUT``, ``CONFIG_PCI``, ``CONFIG_BLOCK``, ``CONFIG_PM``, ``CONFIG_MAGIC_SYSRQ``,
++    ``CONFIG_NET``, ``CONFIG_INET=n`` (但是後者伴隨 ``CONFIG_NET=y``).
++
+diff --git a/Documentation/translations/zh_TW/process/submitting-drivers.rst b/Documentation/translations/zh_TW/process/submitting-drivers.rst
+new file mode 100644
+index 000000000000..2fdd742318ba
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/submitting-drivers.rst
+@@ -0,0 +1,164 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. _tw_submittingdrivers:
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/submitting-drivers.rst
++           <submittingdrivers>`
++
++如果想評論或更新本文的內容，請直接聯繫原文檔的維護者。如果你使用英文
++交流有困難的話，也可以向中文版維護者求助。如果本翻譯更新不及時或者翻
++譯存在問題，請聯繫中文版維護者::
++
++        中文版維護者： 李陽  Li Yang <leoyang.li@nxp.com>
++        中文版翻譯者： 李陽  Li Yang <leoyang.li@nxp.com>
++        中文版校譯者： 陳琦 Maggie Chen <chenqi@beyondsoft.com>
++                       王聰 Wang Cong <xiyou.wangcong@gmail.com>
++                       張巍 Zhang Wei <wezhang@outlook.com>
++                       胡皓文 Hu Haowen <src.res@email.cn>
++
++如何向 Linux 內核提交驅動程序
++=============================
++
++這篇文檔將會解釋如何向不同的內核源碼樹提交設備驅動程序。請注意，如果你感
++興趣的是顯卡驅動程序，你也許應該訪問 XFree86 項目(https://www.xfree86.org/)
++和／或 X.org 項目 (https://x.org)。
++
++另請參閱 Documentation/translations/zh_TW/process/submitting-patches.rst 文檔。
++
++
++分配設備號
++----------
++
++塊設備和字符設備的主設備號與從設備號是由 Linux 命名編號分配權威 LANANA（
++現在是 Torben Mathiasen）負責分配。申請的網址是 https://www.lanana.org/。
++即使不準備提交到主流內核的設備驅動也需要在這裡分配設備號。有關詳細信息，
++請參閱 Documentation/admin-guide/devices.rst。
++
++如果你使用的不是已經分配的設備號，那麼當你提交設備驅動的時候，它將會被強
++制分配一個新的設備號，即便這個設備號和你之前發給客戶的截然不同。
++
++設備驅動的提交對象
++------------------
++
++Linux 2.0:
++	此內核源碼樹不接受新的驅動程序。
++
++Linux 2.2:
++	此內核源碼樹不接受新的驅動程序。
++
++Linux 2.4:
++	如果所屬的代碼領域在內核的 MAINTAINERS 文件中列有一個總維護者，
++	那麼請將驅動程序提交給他。如果此維護者沒有回應或者你找不到恰當的
++	維護者，那麼請聯繫 Willy Tarreau <w@1wt.eu>。
++
++Linux 2.6:
++	除了遵循和 2.4 版內核同樣的規則外，你還需要在 linux-kernel 郵件
++	列表上跟蹤最新的 API 變化。向 Linux 2.6 內核提交驅動的頂級聯繫人
++	是 Andrew Morton <akpm@linux-foundation.org>。
++
++決定設備驅動能否被接受的條件
++----------------------------
++
++許可：		代碼必須使用 GNU 通用公開許可證 (GPL) 提交給 Linux，但是
++		我們並不要求 GPL 是唯一的許可。你或許會希望同時使用多種
++		許可證發布，如果希望驅動程序可以被其他開源社區（比如BSD）
++		使用。請參考 include/linux/module.h 文件中所列出的可被
++		接受共存的許可。
++
++版權：		版權所有者必須同意使用 GPL 許可。最好提交者和版權所有者
++		是相同個人或實體。否則，必需列出授權使用 GPL 的版權所有
++		人或實體，以備驗證之需。
++
++接口：		如果你的驅動程序使用現成的接口並且和其他同類的驅動程序行
++		爲相似，而不是去發明無謂的新接口，那麼它將會更容易被接受。
++		如果你需要一個 Linux 和 NT 的通用驅動接口，那麼請在用
++		戶空間實現它。
++
++代碼：		請使用 Documentation/process/coding-style.rst 中所描述的 Linux 代碼風
++		格。如果你的某些代碼段（例如那些與 Windows 驅動程序包共
++		享的代碼段）需要使用其他格式，而你卻只希望維護一份代碼，
++		那麼請將它們很好地區分出來，並且註明原因。
++
++可移植性：	請注意，指針並不永遠是 32 位的，不是所有的計算機都使用小
++		尾模式 (little endian) 存儲數據，不是所有的人都擁有浮點
++		單元，不要隨便在你的驅動程序里嵌入 x86 彙編指令。只能在
++		x86 上運行的驅動程序一般是不受歡迎的。雖然你可能只有 x86
++		硬體，很難測試驅動程序在其他平台上是否可用，但是確保代碼
++		可以被輕鬆地移植卻是很簡單的。
++
++清晰度：	做到所有人都能修補這個驅動程序將會很有好處，因爲這樣你將
++		會直接收到修復的補丁而不是 bug 報告。如果你提交一個試圖
++		隱藏硬體工作機理的驅動程序，那麼它將會被扔進廢紙簍。
++
++電源管理：	因爲 Linux 正在被很多行動裝置和桌面系統使用，所以你的驅
++		動程序也很有可能被使用在這些設備上。它應該支持最基本的電
++		源管理，即在需要的情況下實現系統級休眠和喚醒要用到的
++		.suspend 和 .resume 函數。你應該檢查你的驅動程序是否能正
++		確地處理休眠與喚醒，如果實在無法確認，請至少把 .suspend
++		函數定義成返回 -ENOSYS（功能未實現）錯誤。你還應該嘗試確
++		保你的驅動在什麼都不乾的情況下將耗電降到最低。要獲得驅動
++		程序測試的指導，請參閱
++		Documentation/power/drivers-testing.rst。有關驅動程序電
++		源管理問題相對全面的概述，請參閱
++		Documentation/driver-api/pm/devices.rst。
++
++管理：		如果一個驅動程序的作者還在進行有效的維護，那麼通常除了那
++		些明顯正確且不需要任何檢查的補丁以外，其他所有的補丁都會
++		被轉發給作者。如果你希望成爲驅動程序的聯繫人和更新者，最
++		好在代碼注釋中寫明並且在 MAINTAINERS 文件中加入這個驅動
++		程序的條目。
++
++不影響設備驅動能否被接受的條件
++------------------------------
++
++供應商：	由硬體供應商來維護驅動程序通常是一件好事。不過，如果源碼
++		樹里已經有其他人提供了可穩定工作的驅動程序，那麼請不要期
++		望「我是供應商」會成爲內核改用你的驅動程序的理由。理想的情
++		況是：供應商與現有驅動程序的作者合作，構建一個統一完美的
++		驅動程序。
++
++作者：		驅動程序是由大的 Linux 公司研發還是由你個人編寫，並不影
++		響其是否能被內核接受。沒有人對內核源碼樹享有特權。只要你
++		充分了解內核社區，你就會發現這一點。
++
++
++資源列表
++--------
++
++Linux 內核主源碼樹：
++	ftp.??.kernel.org:/pub/linux/kernel/...
++	?? == 你的國家代碼，例如 "cn"、"us"、"uk"、"fr" 等等
++
++Linux 內核郵件列表：
++	linux-kernel@vger.kernel.org
++	[可通過向majordomo@vger.kernel.org發郵件來訂閱]
++
++Linux 設備驅動程序，第三版（探討 2.6.10 版內核）：
++	https://lwn.net/Kernel/LDD3/ （免費版）
++
++LWN.net:
++	每周內核開發活動摘要 - https://lwn.net/
++
++	2.6 版中 API 的變更：
++
++		https://lwn.net/Articles/2.6-kernel-api/
++
++	將舊版內核的驅動程序移植到 2.6 版：
++
++		https://lwn.net/Articles/driver-porting/
++
++內核新手(KernelNewbies):
++	爲新的內核開發者提供文檔和幫助
++	https://kernelnewbies.org/
++
++Linux USB項目：
++	http://www.linux-usb.org/
++
++寫內核驅動的「不要」（Arjan van de Ven著）:
++	http://www.fenrus.org/how-to-not-write-a-device-driver-paper.pdf
++
++內核清潔工 (Kernel Janitor):
++	https://kernelnewbies.org/KernelJanitors
++
+diff --git a/Documentation/translations/zh_TW/process/submitting-patches.rst b/Documentation/translations/zh_TW/process/submitting-patches.rst
+new file mode 100644
+index 000000000000..cdf0b52e4a98
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/submitting-patches.rst
+@@ -0,0 +1,686 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. _tw_submittingpatches:
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/submitting-patches.rst <submittingpatches>`
++
++譯者::
++
++        中文版維護者： 鍾宇 TripleX Chung <xxx.phy@gmail.com>
++        中文版翻譯者： 鍾宇 TripleX Chung <xxx.phy@gmail.com>
++                       時奎亮 Alex Shi <alex.shi@linux.alibaba.com>
++        中文版校譯者： 李陽 Li Yang <leoyang.li@nxp.com>
++                       王聰 Wang Cong <xiyou.wangcong@gmail.com>
++                       胡皓文 Hu Haowen <src.res@email.cn>
++
++
++如何讓你的改動進入內核
++======================
++
++對於想要將改動提交到 Linux 內核的個人或者公司來說，如果不熟悉「規矩」，
++提交的流程會讓人畏懼。本文檔收集了一系列建議，這些建議可以大大的提高你
++的改動被接受的機會.
++
++以下文檔含有大量簡潔的建議， 具體請見：
++:ref:`Documentation/process <development_process_main>`
++同樣，:ref:`Documentation/translations/zh_TW/process/submit-checklist.rst <tw_submitchecklist>`
++給出在提交代碼前需要檢查的項目的列表。如果你在提交一個驅動程序，那麼
++同時閱讀一下:
++:ref:`Documentation/process/submitting-drivers.rst <submittingdrivers>`
++
++其中許多步驟描述了Git版本控制系統的默認行爲；如果您使用Git來準備補丁，
++您將發現它爲您完成的大部分機械工作，儘管您仍然需要準備和記錄一組合理的
++補丁。一般來說，使用git將使您作爲內核開發人員的生活更輕鬆。
++
++
++0) 獲取當前源碼樹
++-----------------
++
++如果您沒有一個可以使用當前內核原始碼的存儲庫，請使用git獲取一個。您將要
++從主線存儲庫開始，它可以通過以下方式獲取::
++
++        git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
++
++但是，請注意，您可能不希望直接針對主線樹進行開發。大多數子系統維護人員運
++行自己的樹，並希望看到針對這些樹準備的補丁。請參見MAINTAINERS文件中子系
++統的 **T:** 項以查找該樹，或者簡單地詢問維護者該樹是否未在其中列出。
++
++仍然可以通過tarballs下載內核版本（如下一節所述），但這是進行內核開發的
++一種困難的方式。
++
++1) "diff -up"
++-------------
++
++使用 "diff -up" 或者 "diff -uprN" 來創建補丁。
++
++所有內核的改動，都是以補丁的形式呈現的，補丁由 diff(1) 生成。創建補丁的
++時候，要確認它是以 "unified diff" 格式創建的，這種格式由 diff(1) 的 '-u'
++參數生成。而且，請使用 '-p' 參數，那樣會顯示每個改動所在的C函數，使得
++產生的補丁容易讀得多。補丁應該基於內核原始碼樹的根目錄，而不是裡邊的任
++何子目錄。
++
++爲一個單獨的文件創建補丁，一般來說這樣做就夠了::
++
++        SRCTREE=linux
++        MYFILE=drivers/net/mydriver.c
++
++        cd $SRCTREE
++        cp $MYFILE $MYFILE.orig
++        vi $MYFILE      # make your change
++        cd ..
++        diff -up $SRCTREE/$MYFILE{.orig,} > /tmp/patch
++
++爲多個文件創建補丁，你可以解開一個沒有修改過的內核原始碼樹，然後和你自
++己的代碼樹之間做 diff 。例如::
++
++        MYSRC=/devel/linux
++
++        tar xvfz linux-3.19.tar.gz
++        mv linux-3.19 linux-3.19-vanilla
++        diff -uprN -X linux-3.19-vanilla/Documentation/dontdiff \
++                linux-3.19-vanilla $MYSRC > /tmp/patch
++
++"dontdiff" 是內核在編譯的時候產生的文件的列表，列表中的文件在 diff(1)
++產生的補丁里會被跳過。
++
++確定你的補丁里沒有包含任何不屬於這次補丁提交的額外文件。記得在用diff(1)
++生成補丁之後，審閱一次補丁，以確保準確。
++
++如果你的改動很散亂，你應該研究一下如何將補丁分割成獨立的部分，將改動分
++割成一系列合乎邏輯的步驟。這樣更容易讓其他內核開發者審核，如果你想你的
++補丁被接受，這是很重要的。請參閱：
++:ref:`tw_split_changes`
++
++如果你用 ``git`` , ``git rebase -i`` 可以幫助你這一點。如果你不用 ``git``,
++``quilt`` <https://savannah.nongnu.org/projects/quilt> 另外一個流行的選擇。
++
++.. _tw_describe_changes:
++
++2) 描述你的改動
++---------------
++
++描述你的問題。無論您的補丁是一行錯誤修復還是5000行新功能，都必須有一個潛在
++的問題激勵您完成這項工作。讓審稿人相信有一個問題值得解決，讓他們讀完第一段
++是有意義的。
++
++描述用戶可見的影響。直接崩潰和鎖定是相當有說服力的，但並不是所有的錯誤都那麼
++明目張胆。即使在代碼審查期間發現了這個問題，也要描述一下您認爲它可能對用戶產
++生的影響。請記住，大多數Linux安裝運行的內核來自二級穩定樹或特定於供應商/產品
++的樹，只從上游精選特定的補丁，因此請包含任何可以幫助您將更改定位到下游的內容：
++觸發的場景、DMESG的摘錄、崩潰描述、性能回歸、延遲尖峯、鎖定等。
++
++量化優化和權衡。如果您聲稱在性能、內存消耗、堆棧占用空間或二進位大小方面有所
++改進，請包括支持它們的數字。但也要描述不明顯的成本。優化通常不是免費的，而是
++在CPU、內存和可讀性之間進行權衡；或者，探索性的工作，在不同的工作負載之間進
++行權衡。請描述優化的預期缺點，以便審閱者可以權衡成本和收益。
++
++一旦問題建立起來，就要詳細地描述一下您實際在做什麼。對於審閱者來說，用簡單的
++英語描述代碼的變化是很重要的，以驗證代碼的行爲是否符合您的意願。
++
++如果您將補丁描述寫在一個表單中，這個表單可以很容易地作爲「提交日誌」放入Linux
++的原始碼管理系統git中，那麼維護人員將非常感謝您。見 :ref:`tw_explicit_in_reply_to`.
++
++每個補丁只解決一個問題。如果你的描述開始變長，這就表明你可能需要拆分你的補丁。
++請見 :ref:`tw_split_changes`
++
++提交或重新提交修補程序或修補程序系列時，請包括完整的修補程序說明和理由。不要
++只說這是補丁（系列）的第幾版。不要期望子系統維護人員引用更早的補丁版本或引用
++URL來查找補丁描述並將其放入補丁中。也就是說，補丁（系列）及其描述應該是獨立的。
++這對維護人員和審查人員都有好處。一些評審者可能甚至沒有收到補丁的早期版本。
++
++描述你在命令語氣中的變化，例如「make xyzzy do frotz」而不是「[這個補丁]make
++xyzzy do frotz」或「[我]changed xyzzy to do frotz」，就好像你在命令代碼庫改變
++它的行爲一樣。
++
++如果修補程序修復了一個記錄的bug條目，請按編號和URL引用該bug條目。如果補丁來
++自郵件列表討論，請給出郵件列表存檔的URL；使用帶有 ``Message-ID`` 的
++https://lkml.kernel.org/ 重定向，以確保連結不會過時。
++
++但是，在沒有外部資源的情況下，儘量讓你的解釋可理解。除了提供郵件列表存檔或
++bug的URL之外，還要總結需要提交補丁的相關討論要點。
++
++如果您想要引用一個特定的提交，不要只引用提交的 SHA-1 ID。還請包括提交的一行
++摘要，以便於審閱者了解它是關於什麼的。例如::
++
++        Commit e21d2170f36602ae2708 ("video: remove unnecessary
++        platform_set_drvdata()") removed the unnecessary
++        platform_set_drvdata(), but left the variable "dev" unused,
++        delete it.
++
++您還應該確保至少使用前12位 SHA-1 ID. 內核存儲庫包含*許多*對象，使與較短的ID
++發生衝突的可能性很大。記住，即使現在不會與您的六個字符ID發生衝突，這種情況
++可能五年後改變。
++
++如果修補程序修復了特定提交中的錯誤，例如，使用 ``git bisct`` ，請使用帶有前
++12個字符SHA-1 ID 的"Fixes:"標記和單行摘要。爲了簡化不要將標記拆分爲多個，
++行、標記不受分析腳本「75列換行」規則的限制。例如::
++
++        Fixes: 54a4f0239f2e ("KVM: MMU: make kvm_mmu_zap_page() return the number of pages it actually freed")
++
++下列 ``git config`` 設置可以添加讓 ``git log``, ``git show`` 漂亮的顯示格式::
++
++	[core]
++		abbrev = 12
++	[pretty]
++		fixes = Fixes: %h (\"%s\")
++
++.. _tw_split_changes:
++
++3) 拆分你的改動
++---------------
++
++將每個邏輯更改分隔成一個單獨的補丁。
++
++例如，如果你的改動里同時有bug修正和性能優化，那麼把這些改動拆分到兩個或
++者更多的補丁文件中。如果你的改動包含對API的修改，並且修改了驅動程序來適
++應這些新的API，那麼把這些修改分成兩個補丁。
++
++另一方面，如果你將一個單獨的改動做成多個補丁文件，那麼將它們合併成一個
++單獨的補丁文件。這樣一個邏輯上單獨的改動只被包含在一個補丁文件里。
++
++如果有一個補丁依賴另外一個補丁來完成它的改動，那沒問題。簡單的在你的補
++丁描述里指出「這個補丁依賴某補丁」就好了。
++
++在將您的更改劃分爲一系列補丁時，要特別注意確保內核在系列中的每個補丁之後
++都能正常構建和運行。使用 ``git bisect`` 來追蹤問題的開發者可能會在任何時
++候分割你的補丁系列；如果你在中間引入錯誤，他們不會感謝你。
++
++如果你不能將補丁濃縮成更少的文件，那麼每次大約發送出15個，然後等待審查
++和集成。
++
++4) 檢查你的更改風格
++-------------------
++
++檢查您的補丁是否存在基本樣式衝突，詳細信息可在
++:ref:`Documentation/translations/zh_TW/process/coding-style.rst <tw_codingstyle>`
++中找到。如果不這樣做，只會浪費審稿人的時間，並且會導致你的補丁被拒絕，甚至
++可能沒有被閱讀。
++
++一個重要的例外是在將代碼從一個文件移動到另一個文件時——在這種情況下，您不應
++該在移動代碼的同一個補丁中修改移動的代碼。這清楚地描述了移動代碼和您的更改
++的行爲。這大大有助於審查實際差異，並允許工具更好地跟蹤代碼本身的歷史。
++
++在提交之前，使用補丁樣式檢查程序檢查補丁（scripts/check patch.pl）。不過，
++請注意，樣式檢查程序應該被視爲一個指南，而不是作爲人類判斷的替代品。如果您
++的代碼看起來更好，但有違規行爲，那麼最好不要使用它。
++
++檢查者報告三個級別：
++
++ - ERROR：很可能出錯的事情
++ - WARNING：需要仔細審查的事項
++ - CHECK：需要思考的事情
++
++您應該能夠判斷您的補丁中存在的所有違規行爲。
++
++5) 選擇補丁收件人
++-----------------
++
++您應該總是在任何補丁上複製相應的子系統維護人員，以獲得他們維護的代碼；查看
++維護人員文件和原始碼修訂歷史記錄，以了解這些維護人員是誰。腳本
++scripts/get_Maintainer.pl在這個步驟中非常有用。如果您找不到正在工作的子系統
++的維護人員，那麼Andrew Morton（akpm@linux-foundation.org）將充當最後的維護
++人員。
++
++您通常還應該選擇至少一個郵件列表來接收補丁集的。linux-kernel@vger.kernel.org
++作爲最後一個解決辦法的列表，但是這個列表上的體積已經引起了許多開發人員的拒絕。
++在MAINTAINERS文件中查找子系統特定的列表；您的補丁可能會在那裡得到更多的關注。
++不過，請不要發送垃圾郵件到無關的列表。
++
++許多與內核相關的列表託管在vger.kernel.org上；您可以在
++http://vger.kernel.org/vger-lists.html 上找到它們的列表。不過，也有與內核相關
++的列表託管在其他地方。
++
++不要一次發送超過15個補丁到vger郵件列表！！！！
++
++Linus Torvalds 是決定改動能否進入 Linux 內核的最終裁決者。他的 e-mail
++地址是 <torvalds@linux-foundation.org> 。他收到的 e-mail 很多，所以一般
++的說，最好別給他發 e-mail。
++
++如果您有修復可利用安全漏洞的補丁，請將該補丁發送到 security@kernel.org。對於
++嚴重的bug，可以考慮短期暫停以允許分銷商向用戶發布補丁；在這種情況下，顯然不應
++將補丁發送到任何公共列表。
++
++修復已發布內核中嚴重錯誤的補丁程序應該指向穩定版維護人員，方法是放這樣的一行::
++
++        Cc: stable@vger.kernel.org
++
++進入補丁的簽准區（注意，不是電子郵件收件人）。除了這個文件之外，您還應該閱讀
++:ref:`Documentation/process/stable-kernel-rules.rst <stable_kernel_rules>`
++
++但是，請注意，一些子系統維護人員希望得出他們自己的結論，即哪些補丁應該被放到
++穩定的樹上。尤其是網絡維護人員，不希望看到單個開發人員在補丁中添加像上面這樣
++的行。
++
++如果更改影響到用戶和內核接口，請向手冊頁維護人員（如維護人員文件中所列）發送
++手冊頁補丁，或至少發送更改通知，以便一些信息進入手冊頁。還應將用戶空間API
++更改複製到 linux-api@vger.kernel.org。
++
++對於小的補丁，你也許會CC到搜集瑣碎補丁的郵件列表(Trivial Patch Monkey)
++trivial@kernel.org，那裡專門收集瑣碎的補丁。下面這樣的補丁會被看作「瑣碎的」
++補丁：
++
++ - 文檔的拼寫修正。
++ - 修正會影響到 grep(1) 的拼寫。
++ - 警告信息修正(頻繁的列印無用的警告是不好的。)
++ - 編譯錯誤修正（代碼邏輯的確是對的，只是編譯有問題。）
++ - 運行時修正（只要真的修正了錯誤。）
++ - 移除使用了被廢棄的函數/宏的代碼(例如 check_region。)
++ - 聯繫方式和文檔修正。
++ - 用可移植的代碼替換不可移植的代碼（即使在體系結構相關的代碼中，既然有
++ - 人拷貝，只要它是瑣碎的）
++ - 任何文件的作者/維護者對該文件的改動（例如 patch monkey 在重傳模式下）
++
++(譯註，關於「瑣碎補丁」的一些說明：因爲原文的這一部分寫得比較簡單，所以不得不
++違例寫一下譯註。"trivial"這個英文單詞的本意是「瑣碎的，不重要的。」但是在這裡
++有稍微有一些變化，例如對一些明顯的NULL指針的修正，屬於運行時修正，會被歸類
++到瑣碎補丁里。雖然NULL指針的修正很重要，但是這樣的修正往往很小而且很容易得到
++檢驗，所以也被歸入瑣碎補丁。瑣碎補丁更精確的歸類應該是
++「simple, localized & easy to verify」，也就是說簡單的，局部的和易於檢驗的。
++trivial@kernel.org郵件列表的目的是針對這樣的補丁，爲提交者提供一個中心，來
++降低提交的門檻。)
++
++6) 沒有 MIME 編碼，沒有連結，沒有壓縮，沒有附件，只有純文本
++-----------------------------------------------------------
++
++Linus 和其他的內核開發者需要閱讀和評論你提交的改動。對於內核開發者來說
++，可以「引用」你的改動很重要，使用一般的 e-mail 工具，他們就可以在你的
++代碼的任何位置添加評論。
++
++因爲這個原因，所有的提交的補丁都是 e-mail 中「內嵌」的。
++
++.. warning::
++   如果你使用剪切-粘貼你的補丁，小心你的編輯器的自動換行功能破壞你的補丁
++
++不要將補丁作爲 MIME 編碼的附件，不管是否壓縮。很多流行的 e-mail 軟體不
++是任何時候都將 MIME 編碼的附件當作純文本發送的，這會使得別人無法在你的
++代碼中加評論。另外，MIME 編碼的附件會讓 Linus 多花一點時間來處理，這就
++降低了你的改動被接受的可能性。
++
++例外：如果你的郵遞員弄壞了補丁，那麼有人可能會要求你使用mime重新發送補丁
++
++請參閱 :ref:`Documentation/translations/zh_TW/process/email-clients.rst <tw_email_clients>`
++以獲取有關配置電子郵件客戶端以使其不受影響地發送修補程序的提示。
++
++7) e-mail 的大小
++----------------
++
++大的改動對郵件列表不合適，對某些維護者也不合適。如果你的補丁，在不壓縮
++的情況下，超過了300kB，那麼你最好將補丁放在一個能通過 internet 訪問的服
++務器上，然後用指向你的補丁的 URL 替代。但是請注意，如果您的補丁超過了
++300kb，那麼它幾乎肯定需要被破壞。
++
++8）回複評審意見
++---------------
++
++你的補丁幾乎肯定會得到評審者對補丁改進方法的評論。您必須對這些評論作出
++回應；讓補丁被忽略的一個好辦法就是忽略審閱者的意見。不會導致代碼更改的
++意見或問題幾乎肯定會帶來注釋或變更日誌的改變，以便下一個評審者更好地了解
++正在發生的事情。
++
++一定要告訴審稿人你在做什麼改變，並感謝他們的時間。代碼審查是一個累人且
++耗時的過程，審查人員有時會變得暴躁。即使在這種情況下，也要禮貌地回應並
++解決他們指出的問題。
++
++9）不要洩氣或不耐煩
++-------------------
++
++提交更改後，請耐心等待。審閱者是忙碌的人，可能無法立即訪問您的修補程序。
++
++曾幾何時，補丁曾在沒有評論的情況下消失在空白中，但開發過程比現在更加順利。
++您應該在一周左右的時間內收到評論；如果沒有收到評論，請確保您已將補丁發送
++到正確的位置。在重新提交或聯繫審閱者之前至少等待一周-在諸如合併窗口之類的
++繁忙時間可能更長。
++
++10）主題中包含 PATCH
++--------------------
++
++由於到linus和linux內核的電子郵件流量很高，通常會在主題行前面加上[PATCH]
++前綴. 這使Linus和其他內核開發人員更容易將補丁與其他電子郵件討論區分開。
++
++11）簽署你的作品-開發者原始認證
++-------------------------------
++
++爲了加強對誰做了何事的追蹤，尤其是對那些透過好幾層的維護者的補丁，我們
++建議在發送出去的補丁上加一個 「sign-off」 的過程。
++
++"sign-off" 是在補丁的注釋的最後的簡單的一行文字，認證你編寫了它或者其他
++人有權力將它作爲開放原始碼的補丁傳遞。規則很簡單：如果你能認證如下信息:
++
++開發者來源證書 1.1
++^^^^^^^^^^^^^^^^^^
++
++對於本項目的貢獻，我認證如下信息：
++
++      （a）這些貢獻是完全或者部分的由我創建，我有權利以文件中指出
++           的開放原始碼許可證提交它；或者
++      （b）這些貢獻基於以前的工作，據我所知，這些以前的工作受恰當的開放
++           原始碼許可證保護，而且，根據許可證，我有權提交修改後的貢獻，
++           無論是完全還是部分由我創造，這些貢獻都使用同一個開放原始碼許可證
++           （除非我被允許用其它的許可證），正如文件中指出的；或者
++      （c）這些貢獻由認證（a），（b）或者（c）的人直接提供給我，而
++           且我沒有修改它。
++      （d）我理解並同意這個項目和貢獻是公開的，貢獻的記錄（包括我
++           一起提交的個人記錄，包括 sign-off ）被永久維護並且可以和這個項目
++           或者開放原始碼的許可證同步地再發行。
++
++那麼加入這樣一行::
++
++       Signed-off-by: Random J Developer <random@developer.example.org>
++
++使用你的真名（抱歉，不能使用假名或者匿名。）
++
++有人在最後加上標籤。現在這些東西會被忽略，但是你可以這樣做，來標記公司
++內部的過程，或者只是指出關於 sign-off 的一些特殊細節。
++
++如果您是子系統或分支維護人員，有時需要稍微修改收到的補丁，以便合併它們，
++因爲樹和提交者中的代碼不完全相同。如果你嚴格遵守規則（c），你應該要求提交者
++重新發布，但這完全是在浪費時間和精力。規則（b）允許您調整代碼，但是更改一個
++提交者的代碼並讓他認可您的錯誤是非常不禮貌的。要解決此問題，建議在最後一個
++由簽名行和您的行之間添加一行，指示更改的性質。雖然這並不是強制性的，但似乎
++在描述前加上您的郵件和/或姓名（全部用方括號括起來），這足以讓人注意到您對最
++後一分鐘的更改負有責任。例如::
++
++	Signed-off-by: Random J Developer <random@developer.example.org>
++	[lucky@maintainer.example.org: struct foo moved from foo.c to foo.h]
++	Signed-off-by: Lucky K Maintainer <lucky@maintainer.example.org>
++
++如果您維護一個穩定的分支機構，同時希望對作者進行致謝、跟蹤更改、合併修復並
++保護提交者不受投訴，那麼這種做法尤其有用。請注意，在任何情況下都不能更改作者
++的ID（From 頭），因爲它是出現在更改日誌中的標識。
++
++對回合（back-porters）的特別說明：在提交消息的頂部（主題行之後）插入一個補丁
++的起源指示似乎是一種常見且有用的實踐，以便於跟蹤。例如，下面是我們在3.x穩定
++版本中看到的內容::
++
++  Date:   Tue Oct 7 07:26:38 2014 -0400
++
++    libata: Un-break ATA blacklist
++
++    commit 1c40279960bcd7d52dbdf1d466b20d24b99176c8 upstream.
++
++還有， 這裡是一個舊版內核中的一個回合補丁::
++
++    Date:   Tue May 13 22:12:27 2008 +0200
++
++        wireless, airo: waitbusy() won't delay
++
++        [backport of 2.6 commit b7acbdfbd1f277c1eb23f344f899cfa4cd0bf36a]
++
++12）何時使用Acked-by:，CC:，和Co-Developed by:
++----------------------------------------------
++
++Singed-off-by: 標記表示簽名者參與了補丁的開發，或者他/她在補丁的傳遞路徑中。
++
++如果一個人沒有直接參與補丁的準備或處理，但希望表示並記錄他們對補丁的批准，
++那麼他們可以要求在補丁的變更日誌中添加一個 Acked-by:
++
++Acked-by：通常由受影響代碼的維護者使用，當該維護者既沒有貢獻也沒有轉發補丁時。
++
++Acked-by: 不像簽字人那樣正式。這是一個記錄，確認人至少審查了補丁，並表示接受。
++因此，補丁合併有時會手動將Acker的「Yep，looks good to me」轉換爲 Acked-By：（但
++請注意，通常最好要求一個明確的Ack）。
++
++Acked-by：不一定表示對整個補丁的確認。例如，如果一個補丁影響多個子系統，並且
++有一個：來自一個子系統維護者，那麼這通常表示只確認影響維護者代碼的部分。這裡
++應該仔細判斷。如有疑問，應參考郵件列表檔案中的原始討論。
++
++如果某人有機會對補丁進行評論，但沒有提供此類評論，您可以選擇在補丁中添加 ``Cc:``
++這是唯一一個標籤，它可以在沒有被它命名的人顯式操作的情況下添加，但它應該表明
++這個人是在補丁上抄送的。討論中包含了潛在利益相關方。
++
++Co-developed-by: 聲明補丁是由多個開發人員共同創建的；當幾個人在一個補丁上工
++作時，它用於將屬性賦予共同作者（除了 From: 所賦予的作者之外）。因爲
++Co-developed-by: 表示作者身份，所以每個共同開發人：必須緊跟在相關合作作者的
++簽名之後。標準的簽核程序要求：標記的簽核順序應儘可能反映補丁的時間歷史，而不
++管作者是通過 From ：還是由 Co-developed-by: 共同開發的。值得注意的是，最後一
++個簽字人：必須始終是提交補丁的開發人員。
++
++注意，當作者也是電子郵件標題「發件人：」行中列出的人時，「From: 」 標記是可選的。
++
++作者提交的補丁程序示例::
++
++	<changelog>
++
++	Co-developed-by: First Co-Author <first@coauthor.example.org>
++	Signed-off-by: First Co-Author <first@coauthor.example.org>
++	Co-developed-by: Second Co-Author <second@coauthor.example.org>
++	Signed-off-by: Second Co-Author <second@coauthor.example.org>
++	Signed-off-by: From Author <from@author.example.org>
++
++合作開發者提交的補丁示例::
++
++	From: From Author <from@author.example.org>
++
++	<changelog>
++
++	Co-developed-by: Random Co-Author <random@coauthor.example.org>
++	Signed-off-by: Random Co-Author <random@coauthor.example.org>
++	Signed-off-by: From Author <from@author.example.org>
++	Co-developed-by: Submitting Co-Author <sub@coauthor.example.org>
++	Signed-off-by: Submitting Co-Author <sub@coauthor.example.org>
++
++
++13）使用報告人：、測試人：、審核人：、建議人：、修復人：
++--------------------------------------------------------
++
++Reported-by: 給那些發現錯誤並報告錯誤的人致謝，它希望激勵他們在將來再次幫助
++我們。請注意，如果bug是以私有方式報告的，那麼在使用Reported-by標記之前，請
++先請求權限。
++
++Tested-by: 標記表示補丁已由指定的人（在某些環境中）成功測試。這個標籤通知
++維護人員已經執行了一些測試，爲將來的補丁提供了一種定位測試人員的方法，並確
++保測試人員的信譽。
++
++Reviewed-by：相反，根據審查人的聲明，表明該補丁已被審查並被認爲是可接受的：
++
++
++審查人的監督聲明
++^^^^^^^^^^^^^^^^
++
++通過提供我的 Reviewed-by，我聲明：
++
++        (a) 我已經對這個補丁進行了一次技術審查，以評估它是否適合被包含到
++            主線內核中。
++
++        (b) 與補丁相關的任何問題、顧慮或問題都已反饋給提交者。我對提交者對
++            我的評論的回應感到滿意。
++
++        (c) 雖然這一提交可能會改進一些東西，但我相信，此時，（1）對內核
++            進行了有價值的修改，（2）沒有包含爭論中涉及的已知問題。
++
++        (d) 雖然我已經審查了補丁並認爲它是健全的，但我不會（除非另有明確
++            說明）作出任何保證或保證它將在任何給定情況下實現其規定的目的
++            或正常運行。
++
++Reviewed-by 是一種觀點聲明，即補丁是對內核的適當修改，沒有任何遺留的嚴重技術
++問題。任何感興趣的審閱者（完成工作的人）都可以爲一個補丁提供一個 Review-by
++標籤。此標籤用於向審閱者提供致謝，並通知維護者已在修補程序上完成的審閱程度。
++Reviewed-by: 當由已知了解主題區域並執行徹底檢查的審閱者提供時，通常會增加
++補丁進入內核的可能性。
++
++Suggested-by: 表示補丁的想法是由指定的人提出的，並確保將此想法歸功於指定的
++人。請注意，未經許可，不得添加此標籤，特別是如果該想法未在公共論壇上發布。
++這就是說，如果我們勤快地致謝我們的創意者，他們很有希望在未來得到鼓舞，再次
++幫助我們。
++
++Fixes: 指示補丁在以前的提交中修復了一個問題。它可以很容易地確定錯誤的來源，
++這有助於檢查錯誤修復。這個標記還幫助穩定內核團隊確定應該接收修復的穩定內核
++版本。這是指示補丁修復的錯誤的首選方法。請參閱 :ref:`tw_describe_changes`
++描述您的更改以了解更多詳細信息。
++
++.. _tw_the_canonical_patch_format:
++
++12）標準補丁格式
++----------------
++
++本節描述如何格式化補丁本身。請注意，如果您的補丁存儲在 ``Git`` 存儲庫中，則
++可以使用 ``git format-patch`` 進行正確的補丁格式設置。但是，這些工具無法創建
++必要的文本，因此請務必閱讀下面的說明。
++
++標準的補丁，標題行是::
++
++    Subject: [PATCH 001/123] 子系統:一句話概述
++
++標準補丁的信體存在如下部分：
++
++  - 一個 "from" 行指出補丁作者。後跟空行（僅當發送修補程序的人不是作者時才需要）。
++
++  - 解釋的正文，行以75列包裝，這將被複製到永久變更日誌來描述這個補丁。
++
++  - 一個空行
++
++  - 上面描述的「Signed-off-by」 行，也將出現在更改日誌中。
++
++  - 只包含 ``---`` 的標記線。
++
++  - 任何其他不適合放在變更日誌的注釋。
++
++  - 實際補丁（ ``diff`` 輸出）。
++
++標題行的格式，使得對標題行按字母序排序非常的容易 - 很多 e-mail 客戶端都
++可以支持 - 因爲序列號是用零填充的，所以按數字排序和按字母排序是一樣的。
++
++e-mail 標題中的「子系統」標識哪個內核子系統將被打補丁。
++
++e-mail 標題中的「一句話概述」扼要的描述 e-mail 中的補丁。「一句話概述」
++不應該是一個文件名。對於一個補丁系列（「補丁系列」指一系列的多個相關補
++丁），不要對每個補丁都使用同樣的「一句話概述」。
++
++記住 e-mail 的「一句話概述」會成爲該補丁的全局唯一標識。它會蔓延到 git
++的改動記錄里。然後「一句話概述」會被用在開發者的討論里，用來指代這個補
++丁。用戶將希望通過 google 來搜索"一句話概述"來找到那些討論這個補丁的文
++章。當人們在兩三個月後使用諸如 ``gitk`` 或 ``git log --oneline`` 之類
++的工具查看數千個補丁時，也會很快看到它。
++
++出於這些原因，概述必須不超過70-75個字符，並且必須描述補丁的更改以及爲
++什麼需要補丁。既要簡潔又要描述性很有挑戰性，但寫得好的概述應該這樣做。
++
++概述的前綴可以用方括號括起來：「Subject: [PATCH <tag>...] <概述>」。標記
++不被視爲概述的一部分，而是描述應該如何處理補丁。如果補丁的多個版本已發
++送出來以響應評審（即「v1，v2，v3」）或「rfc」，以指示評審請求，那麼通用標記
++可能包括版本描述符。如果一個補丁系列中有四個補丁，那麼各個補丁可以這樣
++編號：1/4、2/4、3/4、4/4。這可以確保開發人員了解補丁應用的順序，並且他們
++已經查看或應用了補丁系列中的所有補丁。
++
++一些標題的例子::
++
++    Subject: [patch 2/5] ext2: improve scalability of bitmap searching
++    Subject: [PATCHv2 001/207] x86: fix eflags tracking
++
++"From" 行是信體裡的最上面一行，具有如下格式：
++        From: Patch Author <author@example.com>
++
++"From" 行指明在永久改動日誌里，誰會被確認爲作者。如果沒有 "From" 行，那
++麼郵件頭裡的 "From: " 行會被用來決定改動日誌中的作者。
++
++說明的主題將會被提交到永久的原始碼改動日誌里，因此對那些早已經不記得和
++這個補丁相關的討論細節的有能力的讀者來說，是有意義的。包括補丁程序定位
++錯誤的（內核日誌消息、OOPS消息等）症狀，對於搜索提交日誌以尋找適用補丁的人
++尤其有用。如果一個補丁修復了一個編譯失敗，那麼可能不需要包含所有編譯失敗；
++只要足夠讓搜索補丁的人能夠找到它就行了。與概述一樣，既要簡潔又要描述性。
++
++"---" 標記行對於補丁處理工具要找到哪裡是改動日誌信息的結束，是不可缺少
++的。
++
++對於 "---" 標記之後的額外註解，一個好的用途就是用來寫 diffstat，用來顯
++示修改了什麼文件和每個文件都增加和刪除了多少行。diffstat 對於比較大的補
++丁特別有用。其餘那些只是和時刻或者開發者相關的註解，不合適放到永久的改
++動日誌里的，也應該放這裡。
++使用 diffstat的選項 "-p 1 -w 70" 這樣文件名就會從內核原始碼樹的目錄開始
++，不會占用太寬的空間（很容易適合80列的寬度，也許會有一些縮進。）
++
++在後面的參考資料中能看到適當的補丁格式的更多細節。
++
++.. _tw_explicit_in_reply_to:
++
++15) 明確回覆郵件頭(In-Reply-To)
++-------------------------------
++
++手動添加回復補丁的的標題頭(In-Reply_To:) 是有幫助的（例如，使用 ``git send-email`` ）
++將補丁與以前的相關討論關聯起來，例如，將bug修復程序連結到電子郵件和bug報告。
++但是，對於多補丁系列，最好避免在回復時使用連結到該系列的舊版本。這樣，
++補丁的多個版本就不會成爲電子郵件客戶端中無法管理的引用序列。如果連結有用，
++可以使用 https://lkml.kernel.org/ 重定向器（例如，在封面電子郵件文本中）
++連結到補丁系列的早期版本。
++
++16) 發送git pull請求
++--------------------
++
++如果您有一系列補丁，那麼讓維護人員通過git pull操作將它們直接拉入子系統存儲
++庫可能是最方便的。但是，請注意，從開發人員那裡獲取補丁比從郵件列表中獲取補
++丁需要更高的信任度。因此，許多子系統維護人員不願意接受請求，特別是來自新的
++未知開發人員的請求。如果有疑問，您可以在封面郵件中使用pull 請求作爲補丁系列
++正常發布的一個選項，讓維護人員可以選擇使用其中之一。
++
++pull 請求的主題行中應該有[Git Pull]。請求本身應該在一行中包含存儲庫名稱和
++感興趣的分支；它應該看起來像::
++
++  Please pull from
++
++      git://jdelvare.pck.nerim.net/jdelvare-2.6 i2c-for-linus
++
++  to get these changes:
++
++
++pull 請求還應該包含一條整體消息，說明請求中將包含什麼，一個補丁本身的 ``Git shortlog``
++以及一個顯示補丁系列整體效果的 ``diffstat`` 。當然，將所有這些信息收集在一起
++的最簡單方法是讓 ``git`` 使用 ``git request-pull`` 命令爲您完成這些工作。
++
++一些維護人員（包括Linus）希望看到來自已簽名提交的請求；這增加了他們對你的
++請求信心。特別是，在沒有簽名標籤的情況下，Linus 不會從像 Github 這樣的公共
++託管站點拉請求。
++
++創建此類簽名的第一步是生成一個 GNRPG 密鑰，並由一個或多個核心內核開發人員對
++其進行簽名。這一步對新開發人員來說可能很困難，但沒有辦法繞過它。參加會議是
++找到可以簽署您的密鑰的開發人員的好方法。
++
++一旦您在Git 中準備了一個您希望有人拉的補丁系列，就用 ``git tag -s`` 創建一
++個簽名標記。這將創建一個新標記，標識該系列中的最後一次提交，並包含用您的私
++鑰創建的簽名。您還可以將changelog樣式的消息添加到標記中；這是一個描述拉請求
++整體效果的理想位置。
++
++如果維護人員將要從中提取的樹不是您正在使用的存儲庫，請不要忘記將已簽名的標記
++顯式推送到公共樹。
++
++生成拉請求時，請使用已簽名的標記作爲目標。這樣的命令可以實現::
++
++  git request-pull master git://my.public.tree/linux.git my-signed-tag
++
++參考文獻
++--------
++
++Andrew Morton, "The perfect patch" (tpp).
++  <https://www.ozlabs.org/~akpm/stuff/tpp.txt>
++
++Jeff Garzik, "Linux kernel patch submission format".
++  <https://web.archive.org/web/20180829112450/http://linux.yyz.us/patch-format.html>
++
++Greg Kroah-Hartman, "How to piss off a kernel subsystem maintainer".
++  <http://www.kroah.com/log/linux/maintainer.html>
++
++  <http://www.kroah.com/log/linux/maintainer-02.html>
++
++  <http://www.kroah.com/log/linux/maintainer-03.html>
++
++  <http://www.kroah.com/log/linux/maintainer-04.html>
++
++  <http://www.kroah.com/log/linux/maintainer-05.html>
++
++  <http://www.kroah.com/log/linux/maintainer-06.html>
++
++NO!!!! No more huge patch bombs to linux-kernel@vger.kernel.org people!
++  <https://lore.kernel.org/r/20050711.125305.08322243.davem@davemloft.net>
++
++Kernel Documentation/process/coding-style.rst:
++  :ref:`Documentation/translations/zh_TW/process/coding-style.rst <tw_codingstyle>`
++
++Linus Torvalds's mail on the canonical patch format:
++  <https://lore.kernel.org/r/Pine.LNX.4.58.0504071023190.28951@ppc970.osdl.org>
++
++Andi Kleen, "On submitting kernel patches"
++  Some strategies to get difficult or controversial changes in.
++
++  http://halobates.de/on-submitting-patches.pdf
++
+diff --git a/Documentation/translations/zh_TW/process/volatile-considered-harmful.rst b/Documentation/translations/zh_TW/process/volatile-considered-harmful.rst
+new file mode 100644
+index 000000000000..097fe80352cb
+--- /dev/null
++++ b/Documentation/translations/zh_TW/process/volatile-considered-harmful.rst
+@@ -0,0 +1,110 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. _tw_volatile_considered_harmful:
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: :ref:`Documentation/process/volatile-considered-harmful.rst
++           <volatile_considered_harmful>`
++
++如果想評論或更新本文的內容，請直接聯繫原文檔的維護者。如果你使用英文
++交流有困難的話，也可以向中文版維護者求助。如果本翻譯更新不及時或者翻
++譯存在問題，請聯繫中文版維護者::
++
++        英文版維護者： Jonathan Corbet <corbet@lwn.net>
++        中文版維護者： 伍鵬  Bryan Wu <bryan.wu@analog.com>
++        中文版翻譯者： 伍鵬  Bryan Wu <bryan.wu@analog.com>
++        中文版校譯者： 張漢輝  Eugene Teo <eugeneteo@kernel.sg>
++                       楊瑞  Dave Young <hidave.darkstar@gmail.com>
++                       時奎亮 Alex Shi <alex.shi@linux.alibaba.com>
++                       胡皓文 Hu Haowen <src.res@email.cn>
++
++爲什麼不應該使用「volatile」類型
++================================
++
++C程式設計師通常認爲volatile表示某個變量可以在當前執行的線程之外被改變；因此，在內核
++中用到共享數據結構時，常常會有C程式設計師喜歡使用volatile這類變量。換句話說，他們經
++常會把volatile類型看成某種簡易的原子變量，當然它們不是。在內核中使用volatile幾
++乎總是錯誤的；本文檔將解釋爲什麼這樣。
++
++理解volatile的關鍵是知道它的目的是用來消除優化，實際上很少有人真正需要這樣的應
++用。在內核中，程式設計師必須防止意外的並發訪問破壞共享的數據結構，這其實是一個完全
++不同的任務。用來防止意外並發訪問的保護措施，可以更加高效的避免大多數優化相關的
++問題。
++
++像volatile一樣，內核提供了很多原語來保證並發訪問時的數據安全（自旋鎖, 互斥量,內
++存屏障等等），同樣可以防止意外的優化。如果可以正確使用這些內核原語，那麼就沒有
++必要再使用volatile。如果仍然必須使用volatile，那麼幾乎可以肯定在代碼的某處有一
++個bug。在正確設計的內核代碼中，volatile能帶來的僅僅是使事情變慢。
++
++思考一下這段典型的內核代碼::
++
++    spin_lock(&the_lock);
++    do_something_on(&shared_data);
++    do_something_else_with(&shared_data);
++    spin_unlock(&the_lock);
++
++如果所有的代碼都遵循加鎖規則，當持有the_lock的時候，不可能意外的改變shared_data的
++值。任何可能訪問該數據的其他代碼都會在這個鎖上等待。自旋鎖原語跟內存屏障一樣—— 它
++們顯式的用來書寫成這樣 —— 意味著數據訪問不會跨越它們而被優化。所以本來編譯器認爲
++它知道在shared_data裡面將有什麼，但是因爲spin_lock()調用跟內存屏障一樣，會強制編
++譯器忘記它所知道的一切。那麼在訪問這些數據時不會有優化的問題。
++
++如果shared_data被聲名爲volatile，鎖操作將仍然是必須的。就算我們知道沒有其他人正在
++使用它，編譯器也將被阻止優化對臨界區內shared_data的訪問。在鎖有效的同時，
++shared_data不是volatile的。在處理共享數據的時候，適當的鎖操作可以不再需要
++volatile —— 並且是有潛在危害的。
++
++volatile的存儲類型最初是爲那些內存映射的I/O寄存器而定義。在內核里，寄存器訪問也應
++該被鎖保護，但是人們也不希望編譯器「優化」臨界區內的寄存器訪問。內核里I/O的內存訪問
++是通過訪問函數完成的；不贊成通過指針對I/O內存的直接訪問，並且不是在所有體系架構上
++都能工作。那些訪問函數正是爲了防止意外優化而寫的，因此，再說一次，volatile類型不
++是必需的。
++
++另一種引起用戶可能使用volatile的情況是當處理器正忙著等待一個變量的值。正確執行一
++個忙等待的方法是::
++
++    while (my_variable != what_i_want)
++        cpu_relax();
++
++cpu_relax()調用會降低CPU的能量消耗或者讓位於超線程雙處理器；它也作爲內存屏障一樣出
++現，所以，再一次，volatile不是必需的。當然，忙等待一開始就是一種反常規的做法。
++
++在內核中，一些稀少的情況下volatile仍然是有意義的：
++
++  - 在一些體系架構的系統上，允許直接的I/0內存訪問，那麼前面提到的訪問函數可以使用
++    volatile。基本上，每一個訪問函數調用它自己都是一個小的臨界區域並且保證了按照
++    程式設計師期望的那樣發生訪問操作。
++
++  - 某些會改變內存的內聯彙編代碼雖然沒有什麼其他明顯的附作用，但是有被GCC刪除的可
++    能性。在彙編聲明中加上volatile關鍵字可以防止這種刪除操作。
++
++  - Jiffies變量是一種特殊情況，雖然每次引用它的時候都可以有不同的值，但讀jiffies
++    變量時不需要任何特殊的加鎖保護。所以jiffies變量可以使用volatile，但是不贊成
++    其他跟jiffies相同類型變量使用volatile。Jiffies被認爲是一種「愚蠢的遺留物"
++    （Linus的話）因爲解決這個問題比保持現狀要麻煩的多。
++
++  - 由於某些I/0設備可能會修改連續一致的內存,所以有時,指向連續一致內存的數據結構
++    的指針需要正確的使用volatile。網絡適配器使用的環狀緩存區正是這類情形的一個例
++    子，其中適配器用改變指針來表示哪些描述符已經處理過了。
++
++對於大多代碼，上述幾種可以使用volatile的情況都不適用。所以，使用volatile是一種
++bug並且需要對這樣的代碼額外仔細檢查。那些試圖使用volatile的開發人員需要退一步想想
++他們真正想實現的是什麼。
++
++非常歡迎刪除volatile變量的補丁 － 只要證明這些補丁完整的考慮了並發問題。
++
++注釋
++----
++
++[1] https://lwn.net/Articles/233481/
++[2] https://lwn.net/Articles/233482/
++
++致謝
++----
++
++最初由Randy Dunlap推動並作初步研究
++由Jonathan Corbet撰寫
++參考Satyam Sharma，Johannes Stezenbach，Jesper Juhl，Heikki Orsila，
++H. Peter Anvin，Philipp Hahn和Stefan Richter的意見改善了本檔。
 +
 -- 
 2.25.1
