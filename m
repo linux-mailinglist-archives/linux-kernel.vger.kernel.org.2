@@ -2,76 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26AC3D1997
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 00:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0473D19A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 00:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhGUVb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 17:31:27 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:56636
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229608AbhGUVb0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 17:31:26 -0400
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net [80.193.200.194])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 0FE4A3F235;
-        Wed, 21 Jul 2021 22:11:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626905521;
-        bh=J0x7Mk1L5wZTTEhmdsCR4xaxJH/q6r74SfQ+T3WO81M=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=F6JXIqyfwgCM+QUxviWiUftXatS9E5+eLjw7iO0ub1ji0ezhfiSrm/+fL3OmjxjSE
-         vyEfMYJhtGrNJysNmegfjHqnvckALkM6ag2h0aLI0CjJFiRd36oLI4mJ9C4QlFb996
-         +8kIO/BsfR7N+mbTmoOoVRuBCuLQTv2eNFE0SeyXMCcEK6BwkN9V3jXL6RfPjLtnXt
-         nZgb7r3MLubAJu3kX5JYA+VX6xsMhnt5DsftPh3j8AWsYY2ZLx7MJaYwiQ3oXIP15j
-         UdFubKABTdh8XFwCJxDW/5xHmHyVHKF1A7BpmBkJWLlJVuG0xCvqKx8YfAd2w3pThw
-         c56ujzTWR35ow==
-From:   Colin King <colin.king@canonical.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm: Fix space indentations, replace with tabs
-Date:   Wed, 21 Jul 2021 23:11:48 +0100
-Message-Id: <20210721221148.18127-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S230103AbhGUVnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 17:43:07 -0400
+Received: from mga02.intel.com ([134.134.136.20]:6577 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229936AbhGUVnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 17:43:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="198729567"
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="198729567"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 15:23:41 -0700
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="501465185"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 15:23:41 -0700
+Date:   Wed, 21 Jul 2021 15:23:13 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Marc Zyngier <maz@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [patch 2/8] PCI/MSI: Mask all unused MSI-X entries
+Message-ID: <20210721222313.GC676232@otc-nc-03>
+References: <20210721191126.274946280@linutronix.de>
+ <20210721192650.268814107@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210721192650.268814107@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi Thomas
 
-A couple of statements are indented with spaces, clean this up
-by replacing spaces with tabs.
+On Wed, Jul 21, 2021 at 09:11:28PM +0200, Thomas Gleixner wrote:
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/drm_ioctl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[snip]
 
-diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
-index f454e0424086..c023da67ca7a 100644
---- a/drivers/gpu/drm/drm_ioctl.c
-+++ b/drivers/gpu/drm/drm_ioctl.c
-@@ -834,8 +834,8 @@ long drm_ioctl(struct file *filp,
- 	if (drm_dev_is_unplugged(dev))
- 		return -ENODEV;
- 
--       if (DRM_IOCTL_TYPE(cmd) != DRM_IOCTL_BASE)
--               return -ENOTTY;
-+	if (DRM_IOCTL_TYPE(cmd) != DRM_IOCTL_BASE)
-+		return -ENOTTY;
- 
- 	is_driver_ioctl = nr >= DRM_COMMAND_BASE && nr < DRM_COMMAND_END;
- 
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -691,6 +691,7 @@ static int msix_setup_entries(struct pci
+>  {
+>  	struct irq_affinity_desc *curmsk, *masks = NULL;
+>  	struct msi_desc *entry;
+> +	void __iomem *addr;
+>  	int ret, i;
+>  	int vec_count = pci_msix_vec_count(dev);
+>  
+> @@ -711,6 +712,7 @@ static int msix_setup_entries(struct pci
+>  
+>  		entry->msi_attrib.is_msix	= 1;
+>  		entry->msi_attrib.is_64		= 1;
+> +
+>  		if (entries)
+>  			entry->msi_attrib.entry_nr = entries[i].entry;
+>  		else
+> @@ -722,6 +724,10 @@ static int msix_setup_entries(struct pci
+>  		entry->msi_attrib.default_irq	= dev->irq;
+>  		entry->mask_base		= base;
+>  
+> +		addr = pci_msix_desc_addr(entry);
+> +		if (addr)
+> +			entry->masked = readl(addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
+
+Silly question:
+Do we have to read what the HW has to set this entry->masked? Shouldn't
+this be all masked before we start the setup?
+
+> +
+>  		list_add_tail(&entry->list, dev_to_msi_list(&dev->dev));
+>  		if (masks)
+>  			curmsk++;
+> @@ -732,26 +738,25 @@ static int msix_setup_entries(struct pci
+>  	return ret;
+>  }
+>  
+> -static void msix_program_entries(struct pci_dev *dev,
+> -				 struct msix_entry *entries)
+> +static void msix_update_entries(struct pci_dev *dev, struct msix_entry *entries)
+>  {
+>  	struct msi_desc *entry;
+> -	int i = 0;
+> -	void __iomem *desc_addr;
+>  
+>  	for_each_pci_msi_entry(entry, dev) {
+> -		if (entries)
+> -			entries[i++].vector = entry->irq;
+> +		if (entries) {
+> +			entries->vector = entry->irq;
+> +			entries++;
+> +		}
+> +	}
+> +}
+>  
+> -		desc_addr = pci_msix_desc_addr(entry);
+> -		if (desc_addr)
+> -			entry->masked = readl(desc_addr +
+> -					      PCI_MSIX_ENTRY_VECTOR_CTRL);
+> -		else
+> -			entry->masked = 0;
+> +static void msix_mask_all(void __iomem *base, int tsize)
+> +{
+> +	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
+> +	int i;
+>  
+> -		msix_mask_irq(entry, 1);
+> -	}
+> +	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
+> +		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
+
+shouldn't we initialize entry->masked here?
+
+>  }
+>  
+>  /**
+> @@ -768,9 +773,9 @@ static void msix_program_entries(struct
+>  static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+>  				int nvec, struct irq_affinity *affd)
+>  {
+> -	int ret;
+> -	u16 control;
+>  	void __iomem *base;
+> +	int ret, tsize;
+> +	u16 control;
+>  
+>  	/*
+>  	 * Some devices require MSI-X to be enabled before the MSI-X
+> @@ -782,12 +787,16 @@ static int msix_capability_init(struct p
+>  
+>  	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &control);
+>  	/* Request & Map MSI-X table region */
+> -	base = msix_map_region(dev, msix_table_size(control));
+> +	tsize = msix_table_size(control);
+> +	base = msix_map_region(dev, tsize);
+>  	if (!base) {
+>  		ret = -ENOMEM;
+>  		goto out_disable;
+>  	}
+>  
+> +	/* Ensure that all table entries are masked. */
+> +	msix_mask_all(base, tsize);
+> +
+>  	ret = msix_setup_entries(dev, base, entries, nvec, affd);
+>  	if (ret)
+>  		goto out_disable;
+> @@ -801,7 +810,7 @@ static int msix_capability_init(struct p
+>  	if (ret)
+>  		goto out_free;
+>  
+> -	msix_program_entries(dev, entries);
+> +	msix_update_entries(dev, entries);
+>  
+>  	ret = populate_msi_sysfs(dev);
+>  	if (ret)
+> 
+
 -- 
-2.31.1
+Cheers,
+Ashok
 
+[Forgiveness is the attribute of the STRONG - Gandhi]
