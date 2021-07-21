@@ -2,148 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257323D0818
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49FA23D081C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbhGUE3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 00:29:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30397 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232733AbhGUE2z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 00:28:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626844169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S+zWfy2tC40xUQfOhENAkA+DP5zrQupivowwlpIU07g=;
-        b=OKvQMBfJdOMJzGla1xXeLHAtj4kHE/ygi2s72aJf/7lRxWF/gVycMHi7Wwj8MJKvAUnRBH
-        47oeUp6V4Uheu25aj9ej3rvcFZMRke6yRQZm04PVlHVFORP7/TMlcvBJ5URYCWi1WSQjwb
-        XdEA7jKEhWxophxmjn9EX0gKAE1LNk0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-86-GGzom7_RPVS-YOhPZ5uxBw-1; Wed, 21 Jul 2021 01:09:27 -0400
-X-MC-Unique: GGzom7_RPVS-YOhPZ5uxBw-1
-Received: by mail-wr1-f71.google.com with SMTP id p11-20020a5d59ab0000b02901526f76d738so445849wrr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 22:09:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=S+zWfy2tC40xUQfOhENAkA+DP5zrQupivowwlpIU07g=;
-        b=iTEuCfXZ+H4neF7bVvv++LAt1e0SmpY07jSMVPmqMN5EdxTY0//hi3rGsnvWcOKApz
-         3APru9sKr30Z/UyXalNaICc3Eh/MEUCCodSAgNaTzJeD0lNtrQG1UFeltnSWicm5lXvC
-         FtzmPydJnzh18dpb8k4gh/wfbDEUEXSLfETbzby2FsqRFRlXLn7nRFrL0y8Yoq6nUPD8
-         AZC7dI9g7hvkbMzxcpxYzHICTyDHzUSJosj8z2JRICWT998lYHERPAcB8p3svJkJmrHY
-         nlfPdl9x+vkAsQ5Sbu5gmLI8+kXxbFoHyiym1kiACstniAGEeq8e4TIZJo+lhyTE7B/f
-         957A==
-X-Gm-Message-State: AOAM530uLcSMEInE7Tjz8DtHv3eeofhc2E2pAN/66/lSBD8H4mxGl+pt
-        xkcc6qhE8+lpo/uSFk5bMc0cG4NHKWPArdPX7XdFPlRR6PzIm1HHvtn7ISN4KeXCI3RzVtyfdiM
-        v40Nh34zQxGDSsNlHXKmIc0M7
-X-Received: by 2002:a7b:c747:: with SMTP id w7mr2031957wmk.148.1626844166554;
-        Tue, 20 Jul 2021 22:09:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwCxXonukubT9gJL2Rc7x0XVeUSko96/DCQuDEhTryxASNBDgCxR12O8zMwgWe3dBuGqn9kQg==
-X-Received: by 2002:a7b:c747:: with SMTP id w7mr2031926wmk.148.1626844166269;
-        Tue, 20 Jul 2021 22:09:26 -0700 (PDT)
-Received: from [192.168.1.101] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id k24sm26722409wrh.30.2021.07.20.22.09.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 22:09:25 -0700 (PDT)
-Subject: Re: [PATCH v3 0/2] allow simple{fb, drm} drivers to be used on
- non-x86 EFI platforms
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Dave Airlie <airlied@gmail.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Atish Patra <atish.patra@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Will Deacon <will@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Borislav Petkov <bp@suse.de>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>
-References: <20210625130947.1803678-1-javierm@redhat.com>
- <e61cf77c-6bff-dfcc-d3df-2fb6b48e5897@redhat.com>
- <8dd26141-a09c-39e2-5174-4cad8d21c49c@suse.de>
- <CAPM=9tyfNPa2f5PDBLm4w_H_riEQ5P3rEhX73YGE1y_ygRox+w@mail.gmail.com>
- <CAMj1kXErHteZ+MKYvp=yYmwVxV3A=vjtnG351hZHV+3BPwDQvw@mail.gmail.com>
- <YPbJJ/0tSO/fuW7a@phenom.ffwll.local>
- <03f0edef-e54e-8a2a-4b50-683d3d42e249@redhat.com>
- <YPbWrV/cIODdgu6A@phenom.ffwll.local>
- <37e05f02-b810-0cb1-cc4f-95711cd148d9@suse.de>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-Message-ID: <44a75f18-e3a6-f764-b0ec-ce3ac05805a9@redhat.com>
-Date:   Wed, 21 Jul 2021 07:09:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232996AbhGUEbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 00:31:23 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:42959 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232877AbhGUEaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 00:30:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626844283; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=6/tzE+Rdvx7qE2xKE4duh7usV101nQNMue6qbv72j+4=;
+ b=Ftyc19hTUiyLuNY43iL6PI8HJCXowPKKV9s792KHm/MUqrRWYjWCPi6/I6hw3IlLIXAlusfz
+ Usu4KZx8cwiKJyTz7pohdtAahOHHAfRti1eMklzla8RtS+JaNt34y/teyHmmgGzXWIAVfn5k
+ QS+EZlKU549crZGQBQ/zu45oZIo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60f7ac6de31d882d182c90af (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 05:11:09
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 174D9C43217; Wed, 21 Jul 2021 05:11:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E1779C433D3;
+        Wed, 21 Jul 2021 05:11:03 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <37e05f02-b810-0cb1-cc4f-95711cd148d9@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 20 Jul 2021 22:11:03 -0700
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Oliver Sang <oliver.sang@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        John Dias <joaodias@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com, linux-mm <linux-mm@kvack.org>,
+        Minchan Kim <minchan.kim@gmail.com>
+Subject: Re: [PATCH v2] mm: fs: invalidate bh_lrus for only cold path
+In-Reply-To: <YM0YjgpBpSqnrWQH@google.com>
+References: <20210601145425.1396981-1-minchan@kernel.org>
+ <20210601161540.9f449314965bd94c84725481@linux-foundation.org>
+ <YLgKI4CdGDKOCDHU@google.com>
+ <e126cd8c99440b100c61c4a792aeccd0@codeaurora.org>
+ <YM0YjgpBpSqnrWQH@google.com>
+Message-ID: <996ee883ce7644e0238b37799f025f16@codeaurora.org>
+X-Sender: cgoldswo@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thomas,
-
-On 7/20/21 8:38 PM, Thomas Zimmermann wrote:
-> Am 20.07.21 um 15:59 schrieb Daniel Vetter:
->> On Tue, Jul 20, 2021 at 03:42:45PM +0200, Javier Martinez Canillas wrote:
->>> On 7/20/21 3:01 PM, Daniel Vetter wrote:
->>>> On Mon, Jul 19, 2021 at 09:10:52AM +0200, Ard Biesheuvel wrote:
->>>>> On Mon, 19 Jul 2021 at 04:59, Dave Airlie <airlied@gmail.com> wrote:
-
-[snip]
-
->>>>>> Can we just merge via drm-misc and make sure the acks are present and
->>>>>> I'll deal with the fallout if any.
->>>>>>
->>>>>
->>>>> Fine with me. Could you stick it on a separate branch so I can double
->>>>> check whether there are any issues wrt the EFI tree?
->>>>
->>>> It'll pop up in linux-next for integration testing or you can pick up the
->>>> patch here for test-merge if you want.
->>>>
-
-This is what Daniel said...
-
->>>
->>> Thanks a lot Dave and Daniel!
->>
->> Oh I haven't merged them, I'm assuming Thomas will do that. Just figured
+On 2021-06-18 15:05, Minchan Kim wrote:
+> On Wed, Jun 09, 2021 at 01:52:46PM -0700, Chris Goldsworthy wrote:
+>> On 2021-06-02 15:45, Minchan Kim wrote:
+>> > On Tue, Jun 01, 2021 at 04:15:40PM -0700, Andrew Morton wrote:
+>> > > On Tue,  1 Jun 2021 07:54:25 -0700 Minchan Kim <minchan@kernel.org>
+>> > > wrote:
+>> > >
+>> > > > kernel test robot reported the regression of fio.write_iops[1]
+>> > > > with [2].
+>> > > >
+>> > > > Since lru_add_drain is called frequently, invalidate bh_lrus
+>> > > > there could increase bh_lrus cache miss ratio, which needs
+>> > > > more IO in the end.
+>> > > >
+>> > > > This patch moves the bh_lrus invalidation from the hot path(
+>> > > > e.g., zap_page_range, pagevec_release) to cold path(i.e.,
+>> > > > lru_add_drain_all, lru_cache_disable).
+>> > >
+>> > > This code is starting to hurt my brain.
+>> > >
+>> > > What are the locking/context rules for invalidate_bh_lrus_cpu()?
+>> >
+>> >
+>> > > AFAICT it offers no protection against two CPUs concurrently running
+>> > > __invalidate_bh_lrus() against the same bh_lru.
+>> >
+>> > The lru_add_drain_per_cpu will run on per-cpu since it's per-cpu work
+>> > and invalidate_bh_lrus_cpu will run under bh_lru_lock so I couldn't
+>> > imagine that race can happen.
+>> >
+>> > >
+>> > > So when CONFIG_SMP=y, invalidate_bh_lrus_cpu() must always and only be
+>> > > run on the cpu which owns the bh_lru.  In which case why does it have
+>> > > the `cpu' arg?
+>> >
+>> > I just wanted to express both lru_add_drain_cpu and
+>> > invalidate_bh_lrus_cpu
+>> > in lru_add_and_bh_lrus_drain run in the same cpu but look like a bad
+>> > idea
+>> > since it makes people confused. Let me remove the cpu argument from
+>> > invalidate_bh_lrus_cpu.
+>> >
+>> > >
+>> > > Your new lru_add_and_bh_lrus_drain() follows these rules by calling
+>> > > invalidate_bh_lrus_cpu() from a per-cpu worker or when CONFIG_SMP=n.
+>> > >
+>> > > I think.  It's all as clear as mud and undocumented.  Could you please
+>> > > take a look at this?  Comment the locking/context rules thoroughly and
+>> > > check that they are being followed?  Not forgetting cpu hotplug...
+>> > > See if
+>> > > there's a way of simplifying/clarifying the code?
+>> > >
+>> > > The fact that swap.c has those #ifdef CONFIG_SMPs in there is a hint
+>> > > that we're doing something wrong (or poorly) in there.  Perhaps that's
+>> > > unavoidable because of all the fancy footwork in
+>> > > __lru_add_drain_all().
+>> > >
+>> >
+>> > Hopefully, this is better.
+>> >
+>> > From 8d58e7ade3ed6c080995dec1395b1e130b3d16b3 Mon Sep 17 00:00:00 2001
+>> > From: Minchan Kim <minchan@kernel.org>
+>> > Date: Tue, 25 May 2021 08:19:17 -0700
+>> > Subject: [PATCH] mm: fs: invalidate bh_lrus for only cold path
+>> >
+>> > kernel test robot reported the regression of fio.write_iops[1]
+>> > with [2].
+>> >
+>> > Since lru_add_drain is called frequently, invalidate bh_lrus
+>> > there could increase bh_lrus cache miss ratio, which needs
+>> > more IO in the end.
+>> >
+>> > This patch moves the bh_lrus invalidation from the hot path(
+>> > e.g., zap_page_range, pagevec_release) to cold path(i.e.,
+>> > lru_add_drain_all, lru_cache_disable).
+>> >
+>> > [1]
+>> > https://lore.kernel.org/lkml/20210520083144.GD14190@xsang-OptiPlex-9020/
+>> > [2] 8cc621d2f45d, mm: fs: invalidate BH LRU during page migration
+>> > Reported-by: kernel test robot <oliver.sang@intel.com>
+>> > Signed-off-by: Minchan Kim <minchan@kernel.org>
+>> > ---
+>> >  fs/buffer.c                 |  8 ++++++--
+>> >  include/linux/buffer_head.h |  4 ++--
+>> >  mm/swap.c                   | 19 ++++++++++++++++---
+>> >  3 files changed, 24 insertions(+), 7 deletions(-)
+>> >
+>> > diff --git a/fs/buffer.c b/fs/buffer.c
+>> > index 673cfbef9eec..bdaffed39030 100644
+>> > --- a/fs/buffer.c
+>> > +++ b/fs/buffer.c
+>> > @@ -1487,12 +1487,16 @@ void invalidate_bh_lrus(void)
+>> >  }
+>> >  EXPORT_SYMBOL_GPL(invalidate_bh_lrus);
+>> >
+>> > -void invalidate_bh_lrus_cpu(int cpu)
+>> > +/*
+>> > + * It's called from workqueue context so we need a bh_lru_lock to close
+>> > + * the race with preemption/irq.
+>> > + */
+>> > +void invalidate_bh_lrus_cpu(void)
+>> >  {
+>> >  	struct bh_lru *b;
+>> >
+>> >  	bh_lru_lock();
+>> > -	b = per_cpu_ptr(&bh_lrus, cpu);
+>> > +	b = this_cpu_ptr(&bh_lrus);
+>> >  	__invalidate_bh_lrus(b);
+>> >  	bh_lru_unlock();
+>> >  }
+>> > diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+>> > index e7e99da31349..b04d34bab124 100644
+>> > --- a/include/linux/buffer_head.h
+>> > +++ b/include/linux/buffer_head.h
+>> > @@ -194,7 +194,7 @@ void __breadahead_gfp(struct block_device *,
+>> > sector_t block, unsigned int size,
+>> >  struct buffer_head *__bread_gfp(struct block_device *,
+>> >  				sector_t block, unsigned size, gfp_t gfp);
+>> >  void invalidate_bh_lrus(void);
+>> > -void invalidate_bh_lrus_cpu(int cpu);
+>> > +void invalidate_bh_lrus_cpu(void);
+>> >  bool has_bh_in_lru(int cpu, void *dummy);
+>> >  struct buffer_head *alloc_buffer_head(gfp_t gfp_flags);
+>> >  void free_buffer_head(struct buffer_head * bh);
+>> > @@ -408,7 +408,7 @@ static inline int inode_has_buffers(struct inode
+>> > *inode) { return 0; }
+>> >  static inline void invalidate_inode_buffers(struct inode *inode) {}
+>> >  static inline int remove_inode_buffers(struct inode *inode) { return 1;
+>> > }
+>> >  static inline int sync_mapping_buffers(struct address_space *mapping)
+>> > { return 0; }
+>> > -static inline void invalidate_bh_lrus_cpu(int cpu) {}
+>> > +static inline void invalidate_bh_lrus_cpu(void) {}
+>> >  static inline bool has_bh_in_lru(int cpu, void *dummy) { return 0; }
+>> >  #define buffer_heads_over_limit 0
+>> >
+>> > diff --git a/mm/swap.c b/mm/swap.c
+>> > index 1958d5feb148..4d9ec3c3c5a9 100644
+>> > --- a/mm/swap.c
+>> > +++ b/mm/swap.c
+>> > @@ -642,7 +642,6 @@ void lru_add_drain_cpu(int cpu)
+>> >  		pagevec_lru_move_fn(pvec, lru_lazyfree_fn);
+>> >
+>> >  	activate_page_drain(cpu);
+>> > -	invalidate_bh_lrus_cpu(cpu);
+>> >  }
+>> >
+>> >  /**
+>> > @@ -725,6 +724,20 @@ void lru_add_drain(void)
+>> >  	local_unlock(&lru_pvecs.lock);
+>> >  }
+>> >
+>> > +/*
+>> > + * It's called from per-cpu workqueue context in SMP case so
+>> > + * lru_add_drain_cpu and invalidate_bh_lrus_cpu should run on
+>> > + * the same cpu. It shouldn't be a problem in !SMP case since
+>> > + * the core is only one and the locks will disable preemption.
+>> > + */
+>> > +static void lru_add_and_bh_lrus_drain(void)
+>> > +{
+>> > +	local_lock(&lru_pvecs.lock);
+>> > +	lru_add_drain_cpu(smp_processor_id());
+>> > +	local_unlock(&lru_pvecs.lock);
+>> > +	invalidate_bh_lrus_cpu();
+>> > +}
+>> > +
+>> >  void lru_add_drain_cpu_zone(struct zone *zone)
+>> >  {
+>> >  	local_lock(&lru_pvecs.lock);
+>> > @@ -739,7 +752,7 @@ static DEFINE_PER_CPU(struct work_struct,
+>> > lru_add_drain_work);
+>> >
+>> >  static void lru_add_drain_per_cpu(struct work_struct *dummy)
+>> >  {
+>> > -	lru_add_drain();
+>> > +	lru_add_and_bh_lrus_drain();
+>> >  }
+>> >
+>> >  /*
+>> > @@ -880,7 +893,7 @@ void lru_cache_disable(void)
+>> >  	 */
+>> >  	__lru_add_drain_all(true);
+>> >  #else
+>> > -	lru_add_drain();
+>> > +	lru_add_and_bh_lrus_drain();
+>> >  #endif
+>> >  }
+>> 
+>> Hi Minchan,
+>> 
+>> This looks good to me.  Feel free to add:
+>> 
+>> Reviewed-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
 > 
-> Can I simply put the patches in to drm-misc-next? There was some talk 
-> about a topic branch?
->
-
-... which AFAIU means that there's no need for a topic branch, since the
-patches will be present in linux-next. And the EFI folks can use that to
-check if there are any integration issues or regressions caused by these.
- 
-> Best regards
-> Thomas
+> Thanks for the review, Chris.
 > 
+> Andrew, could you take a look?
 
-Best regards,
+Hi Andrew,
+
+Have you been able to look over the second version of Minchan's patch?
+
+Thanks,
+
+Chris.
+
 -- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
-
+The Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
