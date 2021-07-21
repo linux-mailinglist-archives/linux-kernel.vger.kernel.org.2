@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3967C3D1899
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71ED03D189D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhGUUYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:24:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34852 "EHLO mail.kernel.org"
+        id S230010AbhGUUYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:24:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229930AbhGUUYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229966AbhGUUYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 16:24:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5963661285;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CE5C613F9;
         Wed, 21 Jul 2021 21:04:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626901483;
-        bh=KCVmElLnyJJDyLi/tiwKtNc0ccGtyECFx6O/8bB8cao=;
+        bh=P6H4/q8Jcku/r9cqoAqpvUci1dTZhmdzV4BQu+y+VuM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yy0jVeOKoJ5Pdl7iuq0y98eojBqrxJ1+E/yUD13mCfue/zc9bWRTWYqxWtmGLh455
-         NJeCPPmvu58Rd30clinfDJ/WfRuwrP/aafJnAJAAkmzf72y8Uwgn1VcT9tpsbg6pV/
-         7ERJiCQlt55wKfc4V5fUsPdq4EUif9u2fZh0E/uoAbEk3KxJlmVHRP4XED/bKJYM8g
-         EQhju0VK97FcVY6AGPLn/bh2lNurTEuyUWAdsTdhfoeNjsS6asaNb9XOAU2MJ351NZ
-         jeqknLVeHjvkSMQJ4pViC2R+VfWi5WGj6hXAiIL3wepF1F6i2onQ2uiwCVcKy8xJ1W
-         sXR6AFmGT/RQQ==
+        b=JjvRqCQmVIUXg2TUj8f6+rvcgHYRTY2ndmCX8W6X1qdwvwR7kjyAtmu/+Usi4J8o4
+         gG0KJyOgu6GbsYmO0hecIiyyByKO7P7KDbx1lqX3zmuFoPQtcsDWA28b4p+I8AvIS0
+         6uH1BKVZARiU0kRhejU6/x8QpgnP8KZQJv7reDIXficxpLqb17D1WSsPlKLwOf6Pjk
+         0qNMeFrdDYM+NCHv75IN1W3hgTnxhYjenXKfYsa2w9RaAZajlYWTeQTk5JVGkuJm4O
+         GhD91fm+YNZjAWMED9Uw/nc/jzdbcsQS4pE68JiNalXxFy/pRuMsz/DOQoPQErAd6K
+         vVQs0Mt523f8Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2B1865C0BF4; Wed, 21 Jul 2021 14:04:43 -0700 (PDT)
+        id 31EEA5C0C70; Wed, 21 Jul 2021 14:04:43 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/7] locktorture: Count lock readers
-Date:   Wed, 21 Jul 2021 14:04:39 -0700
-Message-Id: <20210721210441.796995-5-paulmck@kernel.org>
+Subject: [PATCH rcu 6/7] scftorture: Add RPC-like IPI tests
+Date:   Wed, 21 Jul 2021 14:04:40 -0700
+Message-Id: <20210721210441.796995-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721210421.GA788053@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721210421.GA788053@paulmck-ThinkPad-P17-Gen-1>
@@ -46,70 +46,223 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the lock_is_read_held variable is bool, so that a reader sets
-it to true just after lock acquisition and then to false just before
-lock release.  This works in a rough statistical sense, but can result
-in false negatives just after one of a pair of concurrent readers has
-released the lock.  This approach does have low overhead, but at the
-expense of the setting to true potentially never leaving the reader's
-store buffer, thus resulting in an unconditional false negative.
-
-This commit therefore converts this variable to atomic_t and makes
-the reader use atomic_inc() just after acquisition and atomic_dec()
-just before release.  This does increase overhead, but this increase is
-negligible compared to the 10-microsecond lock hold time.
+This commit adds the single_weight_rpc module parameter, which causes the
+IPI handler to awaken the IPI sender.  In many scheduler configurations,
+this will result in an IPI back to the sender that is likely to be
+received at a time when the sender CPU is idle.  The intent is to stress
+IPI reception during CPU busy-to-idle transitions.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/locking/locktorture.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ kernel/scftorture.c | 76 +++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 63 insertions(+), 13 deletions(-)
 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 313d5e613fbe6..7c5a4a087cc73 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -59,7 +59,7 @@ static struct task_struct **writer_tasks;
- static struct task_struct **reader_tasks;
+diff --git a/kernel/scftorture.c b/kernel/scftorture.c
+index 29e8fc5d91a7b..5cf40e4383191 100644
+--- a/kernel/scftorture.c
++++ b/kernel/scftorture.c
+@@ -64,6 +64,7 @@ torture_param(bool, use_cpus_read_lock, 0, "Use cpus_read_lock() to exclude CPU
+ torture_param(int, verbose, 0, "Enable verbose debugging printk()s");
+ torture_param(int, weight_resched, -1, "Testing weight for resched_cpu() operations.");
+ torture_param(int, weight_single, -1, "Testing weight for single-CPU no-wait operations.");
++torture_param(int, weight_single_rpc, -1, "Testing weight for single-CPU RPC operations.");
+ torture_param(int, weight_single_wait, -1, "Testing weight for single-CPU operations.");
+ torture_param(int, weight_many, -1, "Testing weight for multi-CPU no-wait operations.");
+ torture_param(int, weight_many_wait, -1, "Testing weight for multi-CPU operations.");
+@@ -86,6 +87,8 @@ struct scf_statistics {
+ 	long long n_resched;
+ 	long long n_single;
+ 	long long n_single_ofl;
++	long long n_single_rpc;
++	long long n_single_rpc_ofl;
+ 	long long n_single_wait;
+ 	long long n_single_wait_ofl;
+ 	long long n_many;
+@@ -101,14 +104,17 @@ static DEFINE_PER_CPU(long long, scf_invoked_count);
+ // Data for random primitive selection
+ #define SCF_PRIM_RESCHED	0
+ #define SCF_PRIM_SINGLE		1
+-#define SCF_PRIM_MANY		2
+-#define SCF_PRIM_ALL		3
+-#define SCF_NPRIMS		7 // Need wait and no-wait versions of each,
+-				  //  except for SCF_PRIM_RESCHED.
++#define SCF_PRIM_SINGLE_RPC	2
++#define SCF_PRIM_MANY		3
++#define SCF_PRIM_ALL		4
++#define SCF_NPRIMS		8 // Need wait and no-wait versions of each,
++				  //  except for SCF_PRIM_RESCHED and
++				  //  SCF_PRIM_SINGLE_RPC.
  
- static bool lock_is_write_held;
--static bool lock_is_read_held;
-+static atomic_t lock_is_read_held;
- static unsigned long last_lock_release;
+ static char *scf_prim_name[] = {
+ 	"resched_cpu",
+ 	"smp_call_function_single",
++	"smp_call_function_single_rpc",
+ 	"smp_call_function_many",
+ 	"smp_call_function",
+ };
+@@ -128,6 +134,8 @@ struct scf_check {
+ 	bool scfc_out;
+ 	int scfc_cpu; // -1 for not _single().
+ 	bool scfc_wait;
++	bool scfc_rpc;
++	struct completion scfc_completion;
+ };
  
- struct lock_stress_stats {
-@@ -682,7 +682,7 @@ static int lock_torture_writer(void *arg)
- 		if (WARN_ON_ONCE(lock_is_write_held))
- 			lwsp->n_lock_fail++;
- 		lock_is_write_held = true;
--		if (WARN_ON_ONCE(lock_is_read_held))
-+		if (WARN_ON_ONCE(atomic_read(&lock_is_read_held)))
- 			lwsp->n_lock_fail++; /* rare, but... */
+ // Use to wait for all threads to start.
+@@ -158,6 +166,7 @@ static void scf_torture_stats_print(void)
+ 		scfs.n_resched += scf_stats_p[i].n_resched;
+ 		scfs.n_single += scf_stats_p[i].n_single;
+ 		scfs.n_single_ofl += scf_stats_p[i].n_single_ofl;
++		scfs.n_single_rpc += scf_stats_p[i].n_single_rpc;
+ 		scfs.n_single_wait += scf_stats_p[i].n_single_wait;
+ 		scfs.n_single_wait_ofl += scf_stats_p[i].n_single_wait_ofl;
+ 		scfs.n_many += scf_stats_p[i].n_many;
+@@ -168,9 +177,10 @@ static void scf_torture_stats_print(void)
+ 	if (atomic_read(&n_errs) || atomic_read(&n_mb_in_errs) ||
+ 	    atomic_read(&n_mb_out_errs) || atomic_read(&n_alloc_errs))
+ 		bangstr = "!!! ";
+-	pr_alert("%s %sscf_invoked_count %s: %lld resched: %lld single: %lld/%lld single_ofl: %lld/%lld many: %lld/%lld all: %lld/%lld ",
++	pr_alert("%s %sscf_invoked_count %s: %lld resched: %lld single: %lld/%lld single_ofl: %lld/%lld single_rpc: %lld single_rpc_ofl: %lld many: %lld/%lld all: %lld/%lld ",
+ 		 SCFTORT_FLAG, bangstr, isdone ? "VER" : "ver", invoked_count, scfs.n_resched,
+ 		 scfs.n_single, scfs.n_single_wait, scfs.n_single_ofl, scfs.n_single_wait_ofl,
++		 scfs.n_single_rpc, scfs.n_single_rpc_ofl,
+ 		 scfs.n_many, scfs.n_many_wait, scfs.n_all, scfs.n_all_wait);
+ 	torture_onoff_stats();
+ 	pr_cont("ste: %d stnmie: %d stnmoe: %d staf: %d\n", atomic_read(&n_errs),
+@@ -282,10 +292,13 @@ static void scf_handler(void *scfc_in)
+ out:
+ 	if (unlikely(!scfcp))
+ 		return;
+-	if (scfcp->scfc_wait)
++	if (scfcp->scfc_wait) {
+ 		WRITE_ONCE(scfcp->scfc_out, true);
+-	else
++		if (scfcp->scfc_rpc)
++			complete(&scfcp->scfc_completion);
++	} else {
+ 		kfree(scfcp);
++	}
+ }
  
- 		lwsp->n_lock_acquired++;
-@@ -717,13 +717,13 @@ static int lock_torture_reader(void *arg)
- 			schedule_timeout_uninterruptible(1);
- 
- 		cxt.cur_ops->readlock(tid);
--		lock_is_read_held = true;
-+		atomic_inc(&lock_is_read_held);
- 		if (WARN_ON_ONCE(lock_is_write_held))
- 			lrsp->n_lock_fail++; /* rare, but... */
- 
- 		lrsp->n_lock_acquired++;
- 		cxt.cur_ops->read_delay(&rand);
--		lock_is_read_held = false;
-+		atomic_dec(&lock_is_read_held);
- 		cxt.cur_ops->readunlock(tid);
- 
- 		stutter_wait("lock_torture_reader");
-@@ -998,7 +998,6 @@ static int __init lock_torture_init(void)
+ // As above, but check for correct CPU.
+@@ -319,6 +332,7 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
+ 			scfcp->scfc_cpu = -1;
+ 			scfcp->scfc_wait = scfsp->scfs_wait;
+ 			scfcp->scfc_out = false;
++			scfcp->scfc_rpc = false;
  		}
+ 	}
+ 	switch (scfsp->scfs_prim) {
+@@ -350,6 +364,34 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
+ 			scfcp = NULL;
+ 		}
+ 		break;
++	case SCF_PRIM_SINGLE_RPC:
++		if (!scfcp)
++			break;
++		cpu = torture_random(trsp) % nr_cpu_ids;
++		scfp->n_single_rpc++;
++		scfcp->scfc_cpu = cpu;
++		scfcp->scfc_wait = true;
++		init_completion(&scfcp->scfc_completion);
++		scfcp->scfc_rpc = true;
++		barrier(); // Prevent race-reduction compiler optimizations.
++		scfcp->scfc_in = true;
++		ret = smp_call_function_single(cpu, scf_handler_1, (void *)scfcp, 0);
++		if (!ret) {
++			if (use_cpus_read_lock)
++				cpus_read_unlock();
++			else
++				preempt_enable();
++			wait_for_completion(&scfcp->scfc_completion);
++			if (use_cpus_read_lock)
++				cpus_read_lock();
++			else
++				preempt_disable();
++		} else {
++			scfp->n_single_rpc_ofl++;
++			kfree(scfcp);
++			scfcp = NULL;
++		}
++		break;
+ 	case SCF_PRIM_MANY:
+ 		if (scfsp->scfs_wait)
+ 			scfp->n_many_wait++;
+@@ -379,10 +421,12 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
+ 	}
+ 	if (scfcp && scfsp->scfs_wait) {
+ 		if (WARN_ON_ONCE((num_online_cpus() > 1 || scfsp->scfs_prim == SCF_PRIM_SINGLE) &&
+-				 !scfcp->scfc_out))
++				 !scfcp->scfc_out)) {
++			pr_warn("%s: Memory-ordering failure, scfs_prim: %d.\n", __func__, scfsp->scfs_prim);
+ 			atomic_inc(&n_mb_out_errs); // Leak rather than trash!
+-		else
++		} else {
+ 			kfree(scfcp);
++		}
+ 		barrier(); // Prevent race-reduction compiler optimizations.
+ 	}
+ 	if (use_cpus_read_lock)
+@@ -453,8 +497,8 @@ static void
+ scftorture_print_module_parms(const char *tag)
+ {
+ 	pr_alert(SCFTORT_FLAG
+-		 "--- %s:  verbose=%d holdoff=%d longwait=%d nthreads=%d onoff_holdoff=%d onoff_interval=%d shutdown_secs=%d stat_interval=%d stutter=%d use_cpus_read_lock=%d, weight_resched=%d, weight_single=%d, weight_single_wait=%d, weight_many=%d, weight_many_wait=%d, weight_all=%d, weight_all_wait=%d\n", tag,
+-		 verbose, holdoff, longwait, nthreads, onoff_holdoff, onoff_interval, shutdown, stat_interval, stutter, use_cpus_read_lock, weight_resched, weight_single, weight_single_wait, weight_many, weight_many_wait, weight_all, weight_all_wait);
++		 "--- %s:  verbose=%d holdoff=%d longwait=%d nthreads=%d onoff_holdoff=%d onoff_interval=%d shutdown_secs=%d stat_interval=%d stutter=%d use_cpus_read_lock=%d, weight_resched=%d, weight_single=%d, weight_single_rpc=%d, weight_single_wait=%d, weight_many=%d, weight_many_wait=%d, weight_all=%d, weight_all_wait=%d\n", tag,
++		 verbose, holdoff, longwait, nthreads, onoff_holdoff, onoff_interval, shutdown, stat_interval, stutter, use_cpus_read_lock, weight_resched, weight_single, weight_single_rpc, weight_single_wait, weight_many, weight_many_wait, weight_all, weight_all_wait);
+ }
  
- 		if (nreaders_stress) {
--			lock_is_read_held = false;
- 			cxt.lrsa = kmalloc_array(cxt.nrealreaders_stress,
- 						 sizeof(*cxt.lrsa),
- 						 GFP_KERNEL);
+ static void scf_cleanup_handler(void *unused)
+@@ -497,6 +541,7 @@ static int __init scf_torture_init(void)
+ 	int firsterr = 0;
+ 	unsigned long weight_resched1 = weight_resched;
+ 	unsigned long weight_single1 = weight_single;
++	unsigned long weight_single_rpc1 = weight_single_rpc;
+ 	unsigned long weight_single_wait1 = weight_single_wait;
+ 	unsigned long weight_many1 = weight_many;
+ 	unsigned long weight_many_wait1 = weight_many_wait;
+@@ -508,11 +553,13 @@ static int __init scf_torture_init(void)
+ 
+ 	scftorture_print_module_parms("Start of test");
+ 
+-	if (weight_resched == -1 && weight_single == -1 && weight_single_wait == -1 &&
++	if (weight_resched == -1 &&
++	    weight_single == -1 && weight_single_rpc == -1 && weight_single_wait == -1 &&
+ 	    weight_many == -1 && weight_many_wait == -1 &&
+ 	    weight_all == -1 && weight_all_wait == -1) {
+ 		weight_resched1 = 2 * nr_cpu_ids;
+ 		weight_single1 = 2 * nr_cpu_ids;
++		weight_single_rpc1 = 2 * nr_cpu_ids;
+ 		weight_single_wait1 = 2 * nr_cpu_ids;
+ 		weight_many1 = 2;
+ 		weight_many_wait1 = 2;
+@@ -523,6 +570,8 @@ static int __init scf_torture_init(void)
+ 			weight_resched1 = 0;
+ 		if (weight_single == -1)
+ 			weight_single1 = 0;
++		if (weight_single_rpc == -1)
++			weight_single_rpc1 = 0;
+ 		if (weight_single_wait == -1)
+ 			weight_single_wait1 = 0;
+ 		if (weight_many == -1)
+@@ -534,7 +583,7 @@ static int __init scf_torture_init(void)
+ 		if (weight_all_wait == -1)
+ 			weight_all_wait1 = 0;
+ 	}
+-	if (weight_single1 == 0 && weight_single_wait1 == 0 &&
++	if (weight_single1 == 0 && weight_single_rpc1 == 0 && weight_single_wait1 == 0 &&
+ 	    weight_many1 == 0 && weight_many_wait1 == 0 &&
+ 	    weight_all1 == 0 && weight_all_wait1 == 0) {
+ 		VERBOSE_SCFTORTOUT_ERRSTRING("all zero weights makes no sense");
+@@ -546,6 +595,7 @@ static int __init scf_torture_init(void)
+ 	else if (weight_resched1)
+ 		VERBOSE_SCFTORTOUT_ERRSTRING("built as module, weight_resched ignored");
+ 	scf_sel_add(weight_single1, SCF_PRIM_SINGLE, false);
++	scf_sel_add(weight_single_rpc1, SCF_PRIM_SINGLE_RPC, true);
+ 	scf_sel_add(weight_single_wait1, SCF_PRIM_SINGLE, true);
+ 	scf_sel_add(weight_many1, SCF_PRIM_MANY, false);
+ 	scf_sel_add(weight_many_wait1, SCF_PRIM_MANY, true);
 -- 
 2.31.1.189.g2e36527f23
 
