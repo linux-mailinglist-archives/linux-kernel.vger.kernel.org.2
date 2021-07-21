@@ -2,151 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314F13D0AA0
+	by mail.lfdr.de (Postfix) with ESMTP id C35E53D0AA2
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237177AbhGUHvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 03:51:06 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38450 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234630AbhGUHlX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:41:23 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S237265AbhGUHvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 03:51:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236383AbhGUHmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 03:42:31 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4671F1FE7C;
-        Wed, 21 Jul 2021 08:21:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626855711; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tcl5cDaIqMqE73ZOqGYcVvyHb9eNkCSZ2iF/c1CRjCM=;
-        b=anyXctr5WzEJX8ZuGNc4atC6Qe2T/8PH78c7Pq5ensllQyfOBRG/dqGX7l4XR5VREILJTq
-        PCUTYgQp/ahe4N64AZD3QIlh9sSyDt7MDu1eY1YTkeZ3ePlDdz7pob0pzgHKn6cFLWrX4R
-        xrP72CSWpsLniQymRT+7eqW22oqmWvI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626855711;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tcl5cDaIqMqE73ZOqGYcVvyHb9eNkCSZ2iF/c1CRjCM=;
-        b=a4YxmfT55TUjivfjD/lVONl60kzHpD3Pk3vzXYw2qvNFHQFF0idO6SKCqwQmYt0FSKu7fR
-        hR8qWESklDplLCBg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 0E7C913BC9;
-        Wed, 21 Jul 2021 08:21:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id tVM0AB/Z92BkIgAAGKfGzw
-        (envelope-from <jdelvare@suse.de>); Wed, 21 Jul 2021 08:21:50 +0000
-Date:   Wed, 21 Jul 2021 10:21:46 +0200
-From:   Jean Delvare <jdelvare@suse.de>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] i2c: parport: Switch to use
- module_parport_driver()
-Message-ID: <20210721102146.66a486bc@endymion>
-In-Reply-To: <20210712141119.22426-1-andriy.shevchenko@linux.intel.com>
-References: <20210712141119.22426-1-andriy.shevchenko@linux.intel.com>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
-MIME-Version: 1.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 46F786120A;
+        Wed, 21 Jul 2021 08:23:02 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m67VM-00Eev3-8O; Wed, 21 Jul 2021 09:23:00 +0100
+Date:   Wed, 21 Jul 2021 09:22:44 +0100
+Message-ID: <87im142i0b.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCHv2 2/4] arm64: add guest pvstate support
+In-Reply-To: <YPeA5ReGSwBvWGSa@google.com>
+References: <20210709043713.887098-1-senozhatsky@chromium.org>
+        <20210709043713.887098-3-senozhatsky@chromium.org>
+        <877dhv35ea.wl-maz@kernel.org>
+        <YPeA5ReGSwBvWGSa@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: senozhatsky@chromium.org, will@kernel.org, suleiman@google.com, joelaf@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, virtualization@lists.linux-foundation.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-On Mon, 12 Jul 2021 17:11:19 +0300, Andy Shevchenko wrote:
-> Switch to use module_parport_driver() to reduce boilerplate code.
-
-This has the downside of moving the sanity check of the type parameter
-to run time, instead of driver load time. In particular this means that
-loading the i2c-parport driver without specifying the type will no
-longer fail. The driver will load successfully, but won't do anything.
-
-While I prefer user errors to be reported as soon as possible, I don't
-really mind here, as parallel port drivers are not something worth
-debating over at this point in time. As a matter of fact, I can't
-possibly test this change as I no longer have a parallel port on any of
-my systems.
-
-So if that's the direction we want to take then so be it.
-
-Reviewed-by: Jean Delvare <jdelvare@suse.de>
-
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> v2: fixed compilation error (Jean, LKP)
->  drivers/i2c/busses/i2c-parport.c | 36 ++++++++++----------------------
->  1 file changed, 11 insertions(+), 25 deletions(-)
+On Wed, 21 Jul 2021 03:05:25 +0100,
+Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
 > 
-> diff --git a/drivers/i2c/busses/i2c-parport.c b/drivers/i2c/busses/i2c-parport.c
-> index a535889acca6..231145c48728 100644
-> --- a/drivers/i2c/busses/i2c-parport.c
-> +++ b/drivers/i2c/busses/i2c-parport.c
-> @@ -267,6 +267,16 @@ static void i2c_parport_attach(struct parport *port)
->  	int i;
->  	struct pardev_cb i2c_parport_cb;
->  
-> +	if (type < 0) {
-> +		pr_warn("adapter type unspecified\n");
-> +		return;
-> +	}
-> +
-> +	if (type >= ARRAY_SIZE(adapter_parm)) {
-> +		pr_warn("invalid type (%d)\n", type);
-> +		return;
-> +	}
-> +
->  	for (i = 0; i < MAX_DEVICE; i++) {
->  		if (parport[i] == -1)
->  			continue;
-> @@ -392,32 +402,8 @@ static struct parport_driver i2c_parport_driver = {
->  	.detach = i2c_parport_detach,
->  	.devmodel = true,
->  };
-> -
-> -/* ----- Module loading, unloading and information ------------------------ */
-> -
-> -static int __init i2c_parport_init(void)
-> -{
-> -	if (type < 0) {
-> -		pr_warn("adapter type unspecified\n");
-> -		return -ENODEV;
-> -	}
-> -
-> -	if (type >= ARRAY_SIZE(adapter_parm)) {
-> -		pr_warn("invalid type (%d)\n", type);
-> -		return -ENODEV;
-> -	}
-> -
-> -	return parport_register_driver(&i2c_parport_driver);
-> -}
-> -
-> -static void __exit i2c_parport_exit(void)
-> -{
-> -	parport_unregister_driver(&i2c_parport_driver);
-> -}
-> +module_parport_driver(i2c_parport_driver);
->  
->  MODULE_AUTHOR("Jean Delvare <jdelvare@suse.de>");
->  MODULE_DESCRIPTION("I2C bus over parallel port");
->  MODULE_LICENSE("GPL");
-> -
-> -module_init(i2c_parport_init);
-> -module_exit(i2c_parport_exit);
+> On (21/07/12 16:42), Marc Zyngier wrote:
+> > > 
+> > > PV-vcpu-state is a per-CPU struct, which, for the time being,
+> > > holds boolean `preempted' vCPU state. During the startup,
+> > > given that host supports PV-state, each guest vCPU sends
+> > > a pointer to its per-CPU variable to the host as a payload
+> > 
+> > What is the expected memory type for this memory region? What is its
+> > life cycle? Where is it allocated from?
+> 
+> Guest per-CPU area, which physical addresses is shared with the
+> host.
 
+Again: what are the memory types you expect this to be used with? When
+will the hypervisor ever stop accessing this? How does it work across
+reset?
+
+I'm sorry to be that pressing, but these are the gory details that
+actually matter if you want this thing to be maintainable.
+
+Thanks,
+
+	M.
 
 -- 
-Jean Delvare
-SUSE L3 Support
+Without deviation from the norm, progress is not possible.
