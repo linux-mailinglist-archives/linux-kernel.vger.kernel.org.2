@@ -2,148 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770AE3D1816
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 151813D1818
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhGUTnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
+        id S231398AbhGUTnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230336AbhGUTnF (ORCPT
+        with ESMTP id S229729AbhGUTno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:43:05 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529EDC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:23:40 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so3301398otl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:23:40 -0700 (PDT)
+        Wed, 21 Jul 2021 15:43:44 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D072C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:24:19 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id s13so5020587lfi.12
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:24:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=77dhpNLNlPTZpTCURQUnf+oZHn/H39pvM50oNH/nUpc=;
-        b=YjPCN/rRIxpIJzYVmExEinm/P78doKDEyOHsAhpwBykxyVgKttjk81jWoHdxeagjCx
-         qazfTYAVv2F8cJiIoBXQldyIB9X2iZDpTC9B2sWXQsuMFN6cHC5OjUzweiXHBnRE8knm
-         mBGyLzUpbgRPD1fp/vu6+E6MWgQ2vzNj5atkmxbYQk5TBXwYD1ZTQNYi2zF5BFZGbNsP
-         +JItZ0rOXWR3ClEyiy7sihCe9IxNJNXn37d/Nvkvkro14P+AxzcTa8g3aooGQ8+TCH7r
-         +okZpgIj8LIh34FstHZs9mKBYZMXnJFSlZtCfge66nJKU5hn51rVmZ6q5PfdjteS3QOf
-         3S8g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D1fSEVFqUHw4YbE91AcPQyxQQAoQKEf3Quu62fEWYpM=;
+        b=eNPhHfJRAQmHqXGo9tKdmBMr74Yzifs4VEpKtVWbGpAw3a/ia6SnGPHN++Kg8qNYti
+         C2LVca0Zr+CXXv9RqN+9hrUMF8Dy5GlxC9gO2+cGGRoLca9eyCTkOiQkPm+LMc6HAe9K
+         LxdQgK7NHnJd5T1mUubdTOkVkknGaQKzOzFIzFfZV6bZFL/L47auyl/st/0JMNR4b5Wn
+         qy8/dPed+bfqT0AnW/VcqDSrlSFJ+mxn1G/89uIDBwPD1ADuA/q45pw1K0bH2X2TN+Tv
+         MJA+qsN0kRCWuq9Pm1AadJdT/Rce3ppBKvd+S0Ib7jw9IABUZiwoyQ3HC69WF1Jn8Yp8
+         Y1uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=77dhpNLNlPTZpTCURQUnf+oZHn/H39pvM50oNH/nUpc=;
-        b=bB2VhZoDQ4Fm2kkCe97UXRS1rQuvnLFtNUvawKqKZSl5ZMK2ab/SZuVnygJIsmmn2y
-         p/Jsb6ygfyvIrX59zPSRGsbCalXtLHGw5CoWOjuZeOCrlRpf2k8bghCnDOSMLPUW0r/j
-         BKZEfSNvZ6ICPJm6N/d23V+O0eUJSuzXrmLn3YeUbsOP5P3fhxO2Gph/EQHNyfXAQ51x
-         ff2H3D7IqguZW01hBYqKGhm7L3jPDkOIKqFtCDv5u6WEX9RCXyKzO1vC4NRPIIfIynUn
-         YmbU9OjXAa5ajIZ33wR7UdA/IBNyHq8KUw0ywTA0T+KhfYMQ7tr/nWdLa759SMV4RtJd
-         irXQ==
-X-Gm-Message-State: AOAM533hM6+Zm9ABV2ebxkhyf4OqpvghrjqCHp0q8Fqjh5lFMbgUeC4Q
-        7k0CWaJZcNipNJKGSpuwpwZ1dw==
-X-Google-Smtp-Source: ABdhPJwnSDEVp2hbZ0kUNxTYaDzfnALKUB+kN8v1J2PAI7IeD1hHGGKQpAciErFoEbZXOlPZNL0lUA==
-X-Received: by 2002:a9d:5a8:: with SMTP id 37mr27558191otd.345.1626899019664;
-        Wed, 21 Jul 2021 13:23:39 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l17sm4939939ota.20.2021.07.21.13.23.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 13:23:39 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 15:23:36 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Todd Kjos <tkjos@google.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable
- as a permenent module
-Message-ID: <YPiCSOys6zEH6Kfg@yoga>
-References: <20210707045320.529186-1-john.stultz@linaro.org>
- <YPgK50dmV7Z69WsL@kroah.com>
- <CALAqxLUVgUT+1DyDGsFbF0138S0OYzpKADk__PsYbR4B4mbMhw@mail.gmail.com>
- <CAGETcx91URbHCYMoGt_cCgvMXNkVyJb4Ek-ng8jwR+eQhvZN1A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D1fSEVFqUHw4YbE91AcPQyxQQAoQKEf3Quu62fEWYpM=;
+        b=COt/wguUvva3PQBSE62eX0dL0N3J6nZn9KRYbBUSROiPQunYGuSMUm4VDBELG5KxNG
+         cWgpU//tFJhC1blDHgZhxUgKzXpoHGhA/AQb+KUHL9ghhQ6jtyUx9I+5VCF2vXOKh2PR
+         C7+MRBZGJRVhjDb7erzH3aw6HSAeYN53W+Oybn6IqaWGeaxNSUNEHHmL8ZfyH/bcH+FC
+         mFhdKYy3qCPRH323qYuClD6YzYjSsmXj/+iGlPGqTqUqD+uIgKplsz9gPrZyAqkLSSkC
+         PcvnPCfhIMPTbBrxD2/yF6WbEBNPB6tNl7rWG07JRHsS2GpTOyGo9xEkdF0D2QvaYxu8
+         HACQ==
+X-Gm-Message-State: AOAM531N5sdBqS5jW8WF3BljQZWU8mfvq1TEdKkpOqAN+rzJlSuJBn4e
+        dQG5SSvL9fJNUp5pTVWeCKESlqXSzlFC6rbgDUuNrQ==
+X-Google-Smtp-Source: ABdhPJyGeXguhortkkfg6BjqS34WA20M1SIfJqsW4mpXW18zkOgpVQv39lVckpNO2cFGBH/aqAfnxROqkwH5q24AkQI=
+X-Received: by 2002:a05:6512:169e:: with SMTP id bu30mr6326301lfb.291.1626899057636;
+ Wed, 21 Jul 2021 13:24:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx91URbHCYMoGt_cCgvMXNkVyJb4Ek-ng8jwR+eQhvZN1A@mail.gmail.com>
+References: <20210721151546.2325937-1-arnd@kernel.org>
+In-Reply-To: <20210721151546.2325937-1-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 21 Jul 2021 22:24:06 +0200
+Message-ID: <CACRpkdbuXkvOkMNizqmRPwuYz-YU8j-yidtXsOAmEd4z3B0hVA@mail.gmail.com>
+Subject: Re: [PATCH] ARM: ixp4xx: fix building both pci drivers
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linus Walleij <linusw@kernel.org>, SoC Team <soc@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 21 Jul 13:00 CDT 2021, Saravana Kannan wrote:
+On Wed, Jul 21, 2021 at 5:15 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-> On Wed, Jul 21, 2021 at 10:24 AM John Stultz <john.stultz@linaro.org> wrote:
-> >
-> > On Wed, Jul 21, 2021 at 4:54 AM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Wed, Jul 07, 2021 at 04:53:20AM +0000, John Stultz wrote:
-> > > > Allow the qcom_scm driver to be loadable as a permenent module.
-> > >
-> > > This feels like a regression, it should be allowed to be a module.
-> >
-> > I'm sorry, I'm not sure I'm following you, Greg.  This patch is trying
-> > to enable the driver to be able to be loaded as a module.
-> 
-> I think the mix up might be that Greg mentally read "permanent module"
-> as "builtin"?
-> 
-> "permanent module" is just something that can't be unloaded once it's
-> loaded. It's not "builtin".
-> 
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> When both the old and the new PCI drivers are enabled
+> in the same kernel, there are a couple of namespace
+> conflicts that cause a build failure:
+>
+> drivers/pci/controller/pci-ixp4xx.c:38: error: "IXP4XX_PCI_CSR" redefined [-Werror]
+>    38 | #define IXP4XX_PCI_CSR                  0x1c
+>       |
+> In file included from arch/arm/mach-ixp4xx/include/mach/hardware.h:23,
+>                  from arch/arm/mach-ixp4xx/include/mach/io.h:15,
+>                  from arch/arm/include/asm/io.h:198,
+>                  from include/linux/io.h:13,
+>                  from drivers/pci/controller/pci-ixp4xx.c:20:
+> arch/arm/mach-ixp4xx/include/mach/ixp4xx-regs.h:221: note: this is the location of the previous definition
+>   221 | #define IXP4XX_PCI_CSR(x) ((volatile u32 *)(IXP4XX_PCI_CFG_BASE_VIRT+(x)))
+>       |
+> drivers/pci/controller/pci-ixp4xx.c:148:12: error: 'ixp4xx_pci_read' redeclared as different kind of symbol
+>   148 | static int ixp4xx_pci_read(struct ixp4xx_pci *p, u32 addr, u32 cmd, u32 *data)
+>       |            ^~~~~~~~~~~~~~~
+>
+> Rename both the ixp4xx_pci_read/ixp4xx_pci_write functions and the
+> IXP4XX_PCI_CSR macro. In each case, I went with the version that
+> has fewer callers to keep the change small.
+>
+> Fixes: f7821b493458 ("PCI: ixp4xx: Add a new driver for IXP4xx")
+> Cc: soc@kernel.org
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Afaict there's nothing in this patch that makes it more or less
-permanent. The module will be quite permanent (in practice) because
-several other core modules reference symbols in the qcom_scm module.
+I tried very hard to make it impossible to build both drivers at the
+same time :(
 
-But thanks to a previous patch, the qcom_scm device comes with
-suppress_bind_attrs, to prevent that the device goes away from a simple
-unbind operation - which the API and client drivers aren't designed to
-handle.
+Oh well I guess I failed. Kconfig ... say no more.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-So, it would have been better in this case to omit the word "permanent"
-from the commit message, but the change is good and I don't want to
-rebase my tree to drop that word.
-
-Thanks,
-Bjorn
-
-> -Saravana
-> 
-> >
-> > > > This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
-> > > > ensure that drivers that call into the qcom_scm driver are
-> > > > also built as modules. While not ideal in some cases its the
-> > > > only safe way I can find to avoid build errors without having
-> > > > those drivers select QCOM_SCM and have to force it on (as
-> > > > QCOM_SCM=n can be valid for those drivers).
-> > > >
-> > > > Reviving this now that Saravana's fw_devlink defaults to on,
-> > > > which should avoid loading troubles seen before.
-> > >
-> > > fw_devlink was supposed to resolve these issues and _allow_ code to be
-> > > built as modules and not forced to be built into the kernel.
-> >
-> > Right. I'm re-submitting this patch to enable a driver to work as a
-> > module, because earlier attempts to submit it ran into boot trouble
-> > because fw_devlink wasn't yet enabled.
-> >
-> > I worry something in my description made it seem otherwise, so let me
-> > know how you read it and I'll try to avoid such confusion in the
-> > future.
-> >
-> > thanks
-> > -john
+Yours,
+Linus Walleij
