@@ -2,256 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA0A3D0CDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3513D0CD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238308AbhGUKCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:02:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238917AbhGUJus (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:50:48 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FCBCC0613E3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 03:29:16 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so1587816otq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 03:29:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=h417+5Nn2Pgd6WA/rkzrOB7f5qZl0K/oFZRySnon6fM=;
-        b=dP5y0SRwrB1hjw/MVYi14vnTeaxW3RWgNT4XKLVwLQTSLYGNhUM8B/5tUKn/AjmG/e
-         87Dgni6usuZj0Gwd26LtGaiVnfb+Nb3LcfIks58zLNCluPjUgZ07/vDQPpH5UsVcLJnm
-         DUBHIuwtqCITyO6+jd9Nl3a1Uz9J2CkocvlKU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=h417+5Nn2Pgd6WA/rkzrOB7f5qZl0K/oFZRySnon6fM=;
-        b=TCkkIQX7yQQZRyG1XfI7qYBk9wEcrv0GLOEB6Wu/3V1aKove2dOU2jPtQ48Sw/FC+o
-         2RbJshO0JHAHJa9mL4IlC+6WnLMW4CbiJziM7ndFaDRrCkYGm0oK42WsLfc/PCnSTN2a
-         2qJ152icihxnES3wzEPO0m/hX8CuN8sM6bpKqK/xsvmRa9dnH8Uvr4ZwRUwcL/8ueXHe
-         /ltvCL1Q/LK8FFjoWhoVpbscM+x/GcCZWKuIOmsYMFxBr7BQqprLbLyRqcK8AhFlhIsS
-         2xdYZtMD6N1j3gusfeRWIJTAgIs1xoeV0wsa3MiSuI0CyUafneMNXWV2nHUL/t2j5I/e
-         ptFg==
-X-Gm-Message-State: AOAM530BGeqa0nvl8uSvPeSKexqWtVVaO60wq6B2jrX4WpURrpXKWJgk
-        ZtIXysZTcwxbpZJr5vHapa7GFDJ46Hdoh7RgSFRSGV2UvJ4=
-X-Google-Smtp-Source: ABdhPJxnsfA3n87/jWpR0qUhPsWBSfRhmjyGwC0ANDR9tMSbPA64GLPwtsPMaBOTIwvd+I7FHsCQ2NOVZZiPWLN/Uko=
-X-Received: by 2002:a05:6830:2802:: with SMTP id w2mr24416395otu.303.1626863355405;
- Wed, 21 Jul 2021 03:29:15 -0700 (PDT)
+        id S237981AbhGUKAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:00:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238301AbhGUJsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 05:48:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5063B6044F;
+        Wed, 21 Jul 2021 10:29:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626863353;
+        bh=V7djkVVl929sbXP118vb28LnoFtni/31Vo8GPg09wsg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FcUxNN89zmCPrGAKO0cORrnwJIx3mtxA0qyyCfDQ/+vhJ4gPWo8X6FVxJr3QU5BxR
+         DMEW4HmYAFBSqbSlJP5ZZmTDnAa1SJPAifyj8uIvs+iHo1UU00B0/AOMU7951IyzGI
+         Q3Yo8vNTgw6ZcmkDfQNCUnVvBKddbPzOqofb5M2Y=
+Date:   Wed, 21 Jul 2021 12:29:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        John Stultz <john.stultz@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
+Message-ID: <YPf29+ewbrYgHxRP@kroah.com>
+References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
+ <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
+ <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
+ <20210714124807.o22mottsrg3tv6nt@mobilestation>
+ <YPfPDqJhfzbvDLvB@kroah.com>
+ <20210721100220.ddfxwugivsndsedv@mobilestation>
 MIME-Version: 1.0
-References: <20210712043508.11584-1-desmondcheongzx@gmail.com>
- <YPcU3wJK7kC5b7kv@phenom.ffwll.local> <50c5582b-c674-4ef8-585f-7a3d78a49f85@gmail.com>
-In-Reply-To: <50c5582b-c674-4ef8-585f-7a3d78a49f85@gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 21 Jul 2021 12:29:04 +0200
-Message-ID: <CAKMK7uGvb3O9Ypd73xZf6bdMcXJyGJw4C7GXGprkZLpN9Gx7qQ@mail.gmail.com>
-Subject: Re: [PATCH v8 0/5] drm: address potential UAF bugs with drm_master ptrs
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Airlie <airlied@linux.ie>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Emil Velikov <emil.l.velikov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210721100220.ddfxwugivsndsedv@mobilestation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 6:12 AM Desmond Cheong Zhi Xi
-<desmondcheongzx@gmail.com> wrote:
-> On 21/7/21 2:24 am, Daniel Vetter wrote:
-> > On Mon, Jul 12, 2021 at 12:35:03PM +0800, Desmond Cheong Zhi Xi wrote:
-> >> Hi,
-> >>
-> >> In the previous thread on this series we decided to remove a patch tha=
-t was violating a lockdep requirement in drm_lease. In addition to this cha=
-nge, I took a closer look at the CI logs for the Basic Acceptance Tests and=
- noticed that another regression was introduced. The new patch 2 is a respo=
-nse to this.
-> >>
-> >> Overall, this series addresses potential use-after-free errors when de=
-referencing pointers to struct drm_master. These were identified after one =
-such bug was caught by Syzbot in drm_getunique():
-> >> https://syzkaller.appspot.com/bug?id=3D148d2f1dfac64af52ffd27b661981a5=
-40724f803
-> >>
-> >> The series is broken up into five patches:
-> >>
-> >> 1. Move a call to drm_is_current_master() out from a section locked by=
- &dev->mode_config.mutex in drm_mode_getconnector(). This patch does not ap=
-ply to stable.
-> >>
-> >> 2. Move a call to drm_is_current_master() out from the RCU read-side c=
-ritical section in drm_clients_info().
-> >>
-> >> 3. Implement a locked version of drm_is_current_master() function that=
-'s used within drm_auth.c.
-> >>
-> >> 4. Serialize drm_file.master by introducing a new spinlock that's held=
- whenever the value of drm_file.master changes.
-> >>
-> >> 5. Identify areas in drm_lease.c where pointers to struct drm_master a=
-re dereferenced, and ensure that the master pointers are not freed during u=
-se.
-> >>
-> >> v7 -> v8:
-> >> - Remove the patch that moves the call to _drm_lease_held out from the=
- section locked by &dev->mode_config.idr_mutex in __drm_mode_object_find. T=
-his patch violated an existing lockdep requirement as reported by the intel=
--gfx CI.
-> >> - Added a new patch that moves a call to drm_is_current_master out fro=
-m the RCU critical section in drm_clients_info. This was reported by the in=
-tel-gfx CI.
-> >>
-> >> v6 -> v7:
-> >> - Modify code alignment as suggested by the intel-gfx CI.
-> >> - Add a new patch to the series that adds a new lock to serialize drm_=
-file.master, in response to the lockdep splat by the intel-gfx CI.
-> >> - Update drm_file_get_master to use the new drm_file.master_lock inste=
-ad of drm_device.master_mutex, in response to the lockdep splat by the inte=
-l-gfx CI.
-> >>
-> >> v5 -> v6:
-> >> - Add a new patch to the series that moves the call to _drm_lease_held=
- out from the section locked by &dev->mode_config.idr_mutex in __drm_mode_o=
-bject_find.
-> >> - Clarify the kerneldoc for dereferencing drm_file.master, as suggeste=
-d by Daniel Vetter.
-> >> - Refactor error paths with goto labels so that each function only has=
- a single drm_master_put(), as suggested by Emil Velikov.
-> >> - Modify comparisons to NULL into "!master", as suggested by the intel=
--gfx CI.
-> >>
-> >> v4 -> v5:
-> >> - Add a new patch to the series that moves the call to drm_is_current_=
-master in drm_mode_getconnector out from the section locked by &dev->mode_c=
-onfig.mutex.
-> >> - Additionally, added a missing semicolon to the patch, caught by the =
-intel-gfx CI.
-> >>
-> >> v3 -> v4:
-> >> - Move the call to drm_is_current_master in drm_mode_getconnector out =
-from the section locked by &dev->mode_config.mutex. As suggested by Daniel =
-Vetter. This avoids a circular lock lock dependency as reported here https:=
-//patchwork.freedesktop.org/patch/440406/
-> >> - Inside drm_is_current_master, instead of grabbing &fpriv->master->de=
-v->master_mutex, we grab &fpriv->minor->dev->master_mutex to avoid derefere=
-ncing a null ptr if fpriv->master is not set.
-> >> - Modify kerneldoc formatting for drm_file.master, as suggested by Dan=
-iel Vetter.
-> >> - Additionally, add a file_priv->master NULL check inside drm_file_get=
-_master, and handle the NULL result accordingly in drm_lease.c. As suggeste=
-d by Daniel Vetter.
-> >>
-> >> v2 -> v3:
-> >> - Move the definition of drm_is_current_master and the _locked version=
- higher up in drm_auth.c to avoid needing a forward declaration of drm_is_c=
-urrent_master_locked. As suggested by Daniel Vetter.
-> >> - Instead of leaking drm_device.master_mutex into drm_lease.c to prote=
-ct drm_master pointers, add a new drm_file_get_master() function that retur=
-ns drm_file->master while increasing its reference count, to prevent drm_fi=
-le->master from being freed. As suggested by Daniel Vetter.
-> >>
-> >> v1 -> v2:
-> >> - Move the lock and assignment before the DRM_DEBUG_LEASE in drm_mode_=
-get_lease_ioctl, as suggested by Emil Velikov.
-> >
-> > Apologies for the delay, I missed your series. Maybe just ping next tim=
-e
-> > around there's silence.
-> >
-> > Looks all great, merged to drm-misc-next. Given how complex this was I'=
-m
-> > vary of just pushing this to -fixes without some solid testing.
-> >
->
-> Hi Daniel,
->
-> Thanks for merging, more testing definitely sounds good to me.
->
-> > One thing I noticed is that drm_is_current_master could just use the
-> > spinlock, since it's only doing a read access. Care to type up that pat=
-ch?
-> >
->
-> I thought about this too, but I'm not sure if that's the best solution.
->
-> drm_is_current_master calls drm_lease_owner which then walks up the tree
-> of master lessors. The spinlock protects the master of the current drm
-> file, but subsequent lessors aren't protected without holding the
-> device's master mutex.
+On Wed, Jul 21, 2021 at 01:02:20PM +0300, Serge Semin wrote:
+> Hi Greg,
+> @Krzysztof, @Rob, please join the discussion so to finally get done
+> with the concerned issue.
+> 
+> On Wed, Jul 21, 2021 at 09:38:54AM +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Jul 14, 2021 at 03:48:07PM +0300, Serge Semin wrote:
+> > > Hello John,
+> > > 
+> > > On Tue, Jul 13, 2021 at 05:07:00PM -0700, John Stultz wrote:
+> > > > On Tue, Oct 20, 2020 at 5:10 AM Serge Semin
+> > > > <Sergey.Semin@baikalelectronics.ru> wrote:
+> > > > >
+> > > > > In accordance with the DWC USB3 bindings the corresponding node
+> > > > > name is suppose to comply with the Generic USB HCD DT schema, which
+> > > > > requires the USB nodes to have the name acceptable by the regexp:
+> > > > > "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
+> > > > > named.
+> > > > >
+> > > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > > > 
+> > > 
+> > > > I know folks like to ignore this, but this patch breaks AOSP on db845c. :(
+> > > 
+> > > Sorry to hear that. Alas there is no much can be done about it.
+> > 
+> > Yes there is, we can revert the change.  We do not break existing
+> > configurations, sorry.
+> 
+> By reverting this patch we'll get back to the broken dt-bindings
+> since it won't comply to the current USB DT-nodes requirements
+> which at this state well describe the latest DT spec:
+> https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
+> Thus the dtbs_check will fail for these nodes.
+> 
+> Originally this whole patchset was connected with finally getting the
+> DT-node names in order to comply with the standard requirement and it
+> was successful mostly except a few patches which still haven't been
+> merged in.
+> 
+> Anyway @Krzysztof has already responded to the complain regarding this
+> issue here:
+> https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
+> but noone cared to respond on his reasonable questions in order to
+> get to a suitable solution for everyone. Instead we are
+> getting another email with the same request to revert the changes.
+> Here is the quote from the Krzysztof email so we could continue the
+> discussion:
+> 
+> On Mon, 21 Dec 2020 13:04:27 -0800 (PST), Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > On Mon, Dec 21, 2020 at 12:24:11PM -0800, John Stultz wrote:
+> > > On Sat, Dec 19, 2020 at 3:06 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > > > ...
+> > > >
+> > > > The node names are not part of an ABI, are they? I expect only
+> > > > compatibles and properties to be stable. If user-space looks for
+> > > > something by name, it's a user-space's mistake.  Not mentioning that you
+> > > > also look for specific address... Imagine remapping of addresses with
+> > > > ranges (for whatever reason) - AOSP also would be broken? Addresses are
+> > > > definitely not an ABI.
+> > > 
+> > > Though that is how it's exported through sysfs.
+> > 
+> > The ABI is the format of sysfs file for example in /sys/devices. However
+> > the ABI is not the exact address or node name of each device.
+> > 
+> > > In AOSP it is then used to setup the configfs gadget by writing that
+> > > value into /config/usb_gadget/g1/UDC.
+> > > 
+> > > Given there may be multiple controllers on a device, or even if its
+> > > just one and the dummy hcd driver is enabled, I'm not sure how folks
+> > > reference the "right" one without the node name?
+> > 
+> > I think it is the same type of problem as for all other subsystems, e.g.
+> > mmc, hwmon/iio.  They usually solve it either with aliases or with
+> > special property with the name/label.
+> > 
+> > > I understand the fuzziness with sysfs ABI, and I get that having
+> > > consistent naming is important, but like the eth0 -> enp3s0 changes,
+> > > it seems like this is going to break things.
+> > 
+> > One could argue whether interface name is or is not ABI. But please tell
+> > me how the address of a device in one's representation (for example DT)
+> > is a part of a stable interface?
+> > 
+> > > Greg? Is there some better way AOSP should be doing this?
+> > 
+> > If you need to find specific device, maybe go through the given bus and
+> > check compatibles?
+> > 
+> > Best regards,
+> > Krzysztof
+> 
+> So the main question is how is the DT-node really connected with ABI
+> and is supposed to be stable in that concern?
+> 
+> As I see it even if it affects the configfs node name, then we may
+> either need to break that connection and somehow deliver DT-node-name
+> independent interface to the user-space or we have no choice but to
+> export the node with an updated name and ask of user-space to deal
+> with it. In both suggested cases the DT-node name will still conform
+> to the USB-node name DT spec. Currently we are at the second one.
 
-But this isn't a fpriv->master pointer, but a master->lessor pointer.
-Which should never ever be able to change (we'd have tons of uaf bugs
-around drm_lease_owner otherwise). So I don't think there's anything
-that dev->master_lock protects here that fpriv->master_lookup_lock
-doesn't protect already?
+I really do not care what you all decide on, but you CAN NOT break
+existing working systems, sorry.  That is why I have reverted this
+change in my tree and will send it to Linus soon.
 
-Or am I missing something?
+thanks,
 
-The comment in the struct drm_master says it's protected by
-mode_config.idr_mutex, but that only applies to the idrs and lists I
-think.
-
-> > Also, do you plan to look into that idea we've discussed to flush pendi=
-ng
-> > access when we revoke a master or a lease? I think that would be really
-> > nice improvement here.
-> > -Daniel
-> >
->
-> Yup, now that the potential UAFs are addressed (hopefully), I'll take a
-> closer look and propose a patch for this.
-
-Thanks a lot.
--Daniel
-
->
-> Best wishes,
-> Desmond
->
-> >>
-> >> Desmond Cheong Zhi Xi (5):
-> >>    drm: avoid circular locks in drm_mode_getconnector
-> >>    drm: avoid blocking in drm_clients_info's rcu section
-> >>    drm: add a locked version of drm_is_current_master
-> >>    drm: serialize drm_file.master with a new spinlock
-> >>    drm: protect drm_master pointers in drm_lease.c
-> >>
-> >>   drivers/gpu/drm/drm_auth.c      | 93 ++++++++++++++++++++++++-------=
---
-> >>   drivers/gpu/drm/drm_connector.c |  5 +-
-> >>   drivers/gpu/drm/drm_debugfs.c   |  3 +-
-> >>   drivers/gpu/drm/drm_file.c      |  1 +
-> >>   drivers/gpu/drm/drm_lease.c     | 81 +++++++++++++++++++++-------
-> >>   include/drm/drm_auth.h          |  1 +
-> >>   include/drm/drm_file.h          | 18 +++++--
-> >>   7 files changed, 152 insertions(+), 50 deletions(-)
-> >>
-> >> --
-> >> 2.25.1
-> >>
-> >
->
-
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+greg k-h
