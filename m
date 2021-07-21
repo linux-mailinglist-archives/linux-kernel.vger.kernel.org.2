@@ -2,134 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19013D0623
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 02:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB71A3D062A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 02:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233731AbhGTXgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 19:36:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230234AbhGTXgn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 19:36:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 167D761019;
-        Wed, 21 Jul 2021 00:17:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626826641;
-        bh=BAf24pBOd5vcvL9pJfGRG9h4uyY5iC2A0LApbSzyhy8=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=TXSLVz8HQpk9sGs6HV8UiQpvtDXi4gyPsPkxqb8syZbXCwCPQm993eJkl8azoE7uz
-         0RifQxz3lLU9XdYxG8wwRZU2ehZmN/3CoRWz3LPuYpw0GKFjTpUyodmniyRyqUPRNE
-         Y3BPZLtYcvR80ai3m/op3vUpH7utZxLozSBWNoFIBKVGlwXMSYHvHiUjjWRVcbY77u
-         Vnj8NC6QJpax5KSyexEJoa5djVmQbMV+vPPy2KL5Fvwf8OLOLyrpj1OEFxtcaWYNwJ
-         uExRbAhAx+JZRx2BulWUb+MsHPMpiCjix0IOGgSEoYXvcJfLmPFyH6Cu9fTAe2QdIH
-         PEpn5k1jMV+8A==
-Date:   Tue, 20 Jul 2021 17:17:20 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v4] iomap: support tail packing inline read
-Message-ID: <20210721001720.GS22357@magnolia>
-References: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
- <20210720204224.GK23236@magnolia>
- <YPc9viRAKm6cf2Ey@casper.infradead.org>
- <YPdkYFSjFHDOU4AV@B-P7TQMD6M-0146.local>
+        id S234223AbhGTXkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 19:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230234AbhGTXj4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 19:39:56 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFF1C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 17:20:33 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id j199so900198pfd.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 17:20:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xsx3HQqSw4EPyNMxM9oP5SdyJb+SogTu3w/uAOd0oLk=;
+        b=cEWuOuugvVGVQn+IaenjLryO1wWgCOjt/YM2Kg9/wQVM/wZQZ67OtRnHOVJkUn4p5+
+         oXecvk/lXVdHh5LgWt0w/g64Drk8tZZrJGD28T9y5cC0Nxnod7L1qvnYcKAi27ZQ3j8G
+         PNlEydF9bXaF2opSpKep2gvoKiZNU1CTeGtx5BFMxWuEJTugu7AhwYkFG+gR2NFCnXEu
+         gSUJUqH4RNkeO8OwkSc4fB/7oLySNbXLE6lFafYRtyEGXXCxnBhE4xrtCtHPS0BAGR2J
+         N5AyGxEJnyZyZLgTRs/GS6tmRf+pUGoyQaNOObjf1/wqesnkxLshoNKWErNj+qhUi3+E
+         imUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xsx3HQqSw4EPyNMxM9oP5SdyJb+SogTu3w/uAOd0oLk=;
+        b=QfD2O8pr4rdyiZfZ672lYlaqsogEN26r04cs8943RheGJau848/iz+x0rmSxyVWgrH
+         kz0cfBfJDpvBGj79l4enUYHPG97KapFJuFuOb+bkArcAhv0AZTdGJPdG5saym1cq2lYF
+         uesJmNwVF+4T6xG5/jGsHwE6avYVYH125Z++0bRx1puCnaxM92iDtIFRur1bx6YZ4nr1
+         W/Cc8AC/Cktt7qbL5TphG8FWuX2aZwxYZlNgY5M9+NnudlgKW2F8MEnSA3O0TMiOW5tC
+         8RvVD3XDrsbDyrBzTchstJ1IddluWm3ap+SpOzrlJlTTisiNxJ0D3lo077xx7VlhOPzQ
+         geyw==
+X-Gm-Message-State: AOAM530SPnICwlB1tLMXbrPIsKcMLyZBXWMw0YwvyXdMeDhpp7h/sSbX
+        xMD7pdgMOrzncpsTo3F0mr7kuNTW/fCtRw==
+X-Google-Smtp-Source: ABdhPJzO5a2tT2MSUn4GuU8F1gVkASk2rMMQW40YjFMKpseRmAH4meFchXyU//CEhkz6SKp8BznOpQ==
+X-Received: by 2002:a63:5c04:: with SMTP id q4mr32924434pgb.127.1626826832684;
+        Tue, 20 Jul 2021 17:20:32 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id f11sm28627430pga.61.2021.07.20.17.20.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 17:20:32 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 00:20:28 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 39/40] KVM: SVM: Use a VMSA physical address
+ variable for populating VMCB
+Message-ID: <YPdoTK9V3anPZe7C@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-40-brijesh.singh@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YPdkYFSjFHDOU4AV@B-P7TQMD6M-0146.local>
+In-Reply-To: <20210707183616.5620-40-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 08:03:44AM +0800, Gao Xiang wrote:
-> On Tue, Jul 20, 2021 at 10:18:54PM +0100, Matthew Wilcox wrote:
-> > On Tue, Jul 20, 2021 at 01:42:24PM -0700, Darrick J. Wong wrote:
-> > > > -	BUG_ON(page_has_private(page));
-> > > > -	BUG_ON(page->index);
-> > > > -	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> > > > +	/* inline source data must be inside a single page */
-> > > > +	BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> > > 
-> > > Can we reduce the strength of these checks to a warning and an -EIO
-> > > return?
-> > 
-> > I'm not entirely sure that we need this check, tbh.
+On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
 > 
-> I'm fine to get rid of this check, it just inherited from:
->  - BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> 
-> It has no real effect, but when reading INLINE extent, its .iomap_begin()
-> does:
-> 	iomap->private = erofs_get_meta_page()	/* get meta page */
-> 
-> and in the .iomap_end(), it does:
-> 	struct page *ipage = iomap->private;
-> 	if (ipage) {
-> 		unlock_page(ipage);
-> 		put_page(ipage);
-> 	}
-> 
-> > 
-> > > > +	/* handle tail-packing blocks cross the current page into the next */
-> > > > +	size = min_t(unsigned int, iomap->length + pos - iomap->offset,
-> > > > +		     PAGE_SIZE - poff);
-> > > >  
-> > > >  	addr = kmap_atomic(page);
-> > > > -	memcpy(addr, iomap->inline_data, size);
-> > > > -	memset(addr + size, 0, PAGE_SIZE - size);
-> > > > +	memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
-> > > > +	memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
-> > > 
-> > > Hmm, so I guess the point of this is to support reading data from a
-> > > tail-packing block, where each file gets some arbitrary byte range
-> > > within the tp-block, and the range isn't aligned to an fs block?  Hence
-> > > you have to use the inline data code to read the relevant bytes and copy
-> > > them into the pagecache?
-> > 
-> > I think there are two distinct cases for IOMAP_INLINE.  One is
-> > where the tail of the file is literally embedded into the inode.
-> > Like ext4 fast symbolic links.  Taking the ext4 i_blocks layout
-> > as an example, you could have a 4kB block stored in i_block[0]
-> > and then store bytes 4096-4151 in i_block[1-14] (although reading
-> > https://www.kernel.org/doc/html/latest/filesystems/ext4/dynamic.html
-> > makes me think that ext4 only supports storing 0-59 in the i_blocks;
-> > it doesn't support 0-4095 in i_block[0] and then 4096-4151 in i_blocks)
-> > 
-> > The other is what I think erofs is doing where, for example, you'd
-> > specify in i_block[1] the block which contains the tail and then in
-> > i_block[2] what offset of the block the tail starts at.
-> 
-> Nope, EROFS inline data is embedded into the inode in order to save
-> I/O as well as space (maybe I didn't express clear before [1]). 
-> 
-> I understand the other one, but it can only save storage space but
-> cannot save I/O (we still need another independent I/O to read its
-> meta buffered page).
-> 
-> In the view of INLINE extent itself, I think both ways can be
-> supported with this approach.
+> In preparation to support SEV-SNP AP Creation, use a variable that holds
+> the VMSA physical address rather than converting the virtual address.
+> This will allow SEV-SNP AP Creation to set the new physical address that
+> will be used should the vCPU reset path be taken.
 
-OH, I see, so you need the multi-page inline data support because the
-ondisk layout is something like this:
+I'm pretty sure adding vmsa_pa is unnecessary.  The next patch sets svm->vmsa_pa
+and vmcb->control.vmsa_pa as a pair.  And for the existing code, my proposed
+patch to emulate INIT on shutdown would eliminate the one path that zeros the
+VMCB[1].  That series patch also drops the init_vmcb() in svm_create_vcpu()[2].
 
-+----------- page one ---------+----------- page two...
-V                              V
-+-------+-----------------------------+---------
-| inode |   inline data               | inode...
-+-------+-----------------------------+---------
+Assuming there are no VMCB shenanigans I'm missing, sev_es_init_vmcb() can do
 
-And since you can only kmap one page at a time, an inline read grabs the
-first part of the data in "page one" and then we have to call
-iomap_begin a second time get a new address so that we can read the rest
-from "page two"?
+	if (!init_event)
+		svm->vmcb->control.vmsa_pa = __pa(svm->vmsa);
 
---D
+And while I'm thinking of it, the next patch should ideally free svm->vmsa when
+the the guest configures a new VMSA for the vCPU.
 
+[1] https://lkml.kernel.org/r/20210713163324.627647-45-seanjc@google.com
+[2] https://lkml.kernel.org/r/20210713163324.627647-10-seanjc@google.com
+
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/kvm/svm/sev.c | 5 ++---
+>  arch/x86/kvm/svm/svm.c | 9 ++++++++-
+>  arch/x86/kvm/svm/svm.h | 1 +
+>  3 files changed, 11 insertions(+), 4 deletions(-)
 > 
-> [1] https://www.kernel.org/doc/html/latest/filesystems/erofs.html
->     "On-disk details" section.
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 4cb4c1d7e444..d8ad6dd58c87 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -3553,10 +3553,9 @@ void sev_es_init_vmcb(struct vcpu_svm *svm)
+>  
+>  	/*
+>  	 * An SEV-ES guest requires a VMSA area that is a separate from the
+> -	 * VMCB page. Do not include the encryption mask on the VMSA physical
+> -	 * address since hardware will access it using the guest key.
+> +	 * VMCB page.
+>  	 */
+> -	svm->vmcb->control.vmsa_pa = __pa(svm->vmsa);
+> +	svm->vmcb->control.vmsa_pa = svm->vmsa_pa;
+>  
+>  	/* Can't intercept CR register access, HV can't modify CR registers */
+>  	svm_clr_intercept(svm, INTERCEPT_CR0_READ);
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 32e35d396508..74bc635c9608 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1379,9 +1379,16 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+>  	svm->vmcb01.ptr = page_address(vmcb01_page);
+>  	svm->vmcb01.pa = __sme_set(page_to_pfn(vmcb01_page) << PAGE_SHIFT);
+>  
+> -	if (vmsa_page)
+> +	if (vmsa_page) {
+>  		svm->vmsa = page_address(vmsa_page);
+>  
+> +		/*
+> +		 * Do not include the encryption mask on the VMSA physical
+> +		 * address since hardware will access it using the guest key.
+> +		 */
+> +		svm->vmsa_pa = __pa(svm->vmsa);
+> +	}
+> +
+>  	svm->guest_state_loaded = false;
+>  
+>  	svm_switch_vmcb(svm, &svm->vmcb01);
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 9fcfc0a51737..285d9b97b4d2 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -177,6 +177,7 @@ struct vcpu_svm {
+>  
+>  	/* SEV-ES support */
+>  	struct sev_es_save_area *vmsa;
+> +	hpa_t vmsa_pa;
+>  	struct ghcb *ghcb;
+>  	struct kvm_host_map ghcb_map;
+>  	bool received_first_sipi;
+> -- 
+> 2.17.1
 > 
-> Thanks,
-> Gao Xiang
