@@ -2,125 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227AB3D0F3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAE23D0F44
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237095AbhGUM3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236709AbhGUM3M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:29:12 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE50CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:09:44 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id n4so1304840wms.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:09:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tHmB5kkgrWA99Mw1mjaFWztLpoqJ2vPxQBq9hPpb8a8=;
-        b=l0XWIeTg4o/w9RqkkmMJYCfq/HlkvryFqjVUmN+vvlCUAAkjXMpABoEQ33ltaxt7V8
-         JoCOOJgKL/XrKOBqI/yn4iVCfKpAaKR1glkip5mDKolTD+LxqzUQniB2u2lqkUNJhMX/
-         qh71rPBI9ddJH5CUzAGBx1rC+EuBRSCE1fl3zllmikGQQAqBwAG0q1oDdhrzCIrIThCb
-         pp2U9oxG4k6lqfxL88iSb5EUYs20ktodWtq/aEZotFQJDmLZWZjtCsrX9IHz8cWmN0fm
-         95Gw+8i9v+etCXkRf6u5wL5NglQLUUjJaBHwYfdWVNALT9LfXNr8372o5bgQXIprMrGf
-         yZ2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tHmB5kkgrWA99Mw1mjaFWztLpoqJ2vPxQBq9hPpb8a8=;
-        b=O0DxEuQfXXMiJUsH9zbEy/yoTortQmaQtmeI435nShvG9eHVJJRfUgl7Z8gyUwShIF
-         gKoU45z/+afduc50Iiwf3yMrOqZy+eVOaPooHDuPGJ5de1QBSviBLdfztobff+hnv7qw
-         GI6tgdZ9rF8wpPJ9yGnVuGAaBR6F1GJzvd+mIAAugx4YoY8yIivOn8Z1n9qe4nBVDfJj
-         CIFDEvqEfqtFw9qA+EdmfwgjXiwWkJ2Yb/WxqC7wpNDgHWd8aC6YLQS6g00Xxb9Wpi+m
-         szj2s9+QdLs+3zPqfDLMaPyXRCSOq1yjpvpdU0+IFIfcosmnGSbyPvu7xWpjGqtMJH0E
-         qzgQ==
-X-Gm-Message-State: AOAM531IgQJJLqv/ukvdl7RFT6HN4JHsShn+F1vH9SK1AINjirIzM/NM
-        xR2+SkGegFQJpa1kAosDQtef9A==
-X-Google-Smtp-Source: ABdhPJx3wPg38RBMBbQF/Rsi2wcT8ZKhMHkIEVx7EnljhmNKpe2h6MTpceqzCmQ3UfLbNGXeBCTepA==
-X-Received: by 2002:a1c:5419:: with SMTP id i25mr37668757wmb.71.1626872983112;
-        Wed, 21 Jul 2021 06:09:43 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:efb1:2fcc:e84:52ad])
-        by smtp.gmail.com with ESMTPSA id t15sm26208998wrx.17.2021.07.21.06.09.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 06:09:42 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 14:09:39 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        qais.yousef@arm.com, rickyiu@google.com, wvw@google.com,
-        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v4 1/2] sched: Fix UCLAMP_FLAG_IDLE setting
-Message-ID: <YPgck3j01cI3VzqD@google.com>
-References: <20210719161656.3833943-1-qperret@google.com>
- <20210719161656.3833943-2-qperret@google.com>
- <7ef85d3f-fd2b-a192-07ef-3431b33d06ce@arm.com>
+        id S237321AbhGUMaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:30:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232286AbhGUM37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 08:29:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 414AF6120A;
+        Wed, 21 Jul 2021 13:10:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626873035;
+        bh=RyTa6MIG32jq2CsXun6DRYMHVllwbaPN2b34PGmMn1M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=U/z85Hx/5xYT4WlwkQAIuVF+38cUNuHNXFEUE29SkU7anczFwcWnbr6GA7UJLib5+
+         aCvcEHN/7cYRm9D4/rV5wi8wUWQ3uSrRGE2AbfL0gPvHlNSAwpbR4CseZRwcnz9Ss5
+         z/z1zUwSwvbGXtiRQZOpX0LJnbPRUGu4k6xmqfYs5LWmbU+rYKv3K+G7U+rsgjWyMY
+         j8hu8XVRfCIKrlAnCsPlQAIQm0eE2WLnrmxVKdRwTDLe2iWqtc4tjNlEVT/ZWDLxOO
+         Pwqw+1HkDZg6rQoTHeDA9XiI0urXuaIaxHYdwkcvP0paJcKs3/P1sbbA+TFLmsJXI9
+         lUEKxG8qVGz6w==
+Date:   Wed, 21 Jul 2021 15:10:29 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mauro Carvalho Chehab <mauro.chehab@huawei.com>,
+        Krzysztof =?UTF-8?B?V2ls?= =?UTF-8?B?Y3p5xYRza2k=?= 
+        <kw@linux.com>, Alex Dewar <alex.dewar90@gmail.com>,
+        Henry Styles <hes@sifive.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh@kernel.org>,
+        Wesley Sheng <wesley.sheng@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v7 11/10] PCI: kirin: Allow building it as a module
+Message-ID: <20210721151029.29c84c57@coco.lan>
+In-Reply-To: <CAK8P3a0fB48uES77a+z=OyyV9Rd4HbA4Q7gkVFCtPV5yispGYA@mail.gmail.com>
+References: <cover.1626855713.git.mchehab+huawei@kernel.org>
+        <8dbdde3eda0e5d22020f6a8bf153d7cfb775c980.1626862458.git.mchehab+huawei@kernel.org>
+        <CAK8P3a0fB48uES77a+z=OyyV9Rd4HbA4Q7gkVFCtPV5yispGYA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ef85d3f-fd2b-a192-07ef-3431b33d06ce@arm.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dietmar,
+Em Wed, 21 Jul 2021 13:55:07 +0200
+Arnd Bergmann <arnd@arndb.de> escreveu:
 
-On Wednesday 21 Jul 2021 at 12:07:04 (+0200), Dietmar Eggemann wrote:
-> On 19/07/2021 18:16, Quentin Perret wrote:
-> > The UCLAMP_FLAG_IDLE flag is set on a runqueue when dequeueing the last
-> > active task to maintain the last uclamp.max and prevent blocked util
+> On Wed, Jul 21, 2021 at 12:15 PM Mauro Carvalho Chehab
+> <mchehab+huawei@kernel.org> wrote:
+> >
+> > There's nothing preventing this driver to be loaded as a
+> > module. So, change its config from bool to tristate.
+> >
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
 > 
-> s/active/runnable ?
+> No objections from me, but I wonder if you would also consider making the
+> module removable. It's currently marked as 'builtin_platform_driver',
+> so you can load but not remove it. Rob has done some bug fixes that make
+> it possible to remove similar drivers, so it's probably not much work
+> here either.
 
-'active' should still be correct here no? We enter uclamp_rq_max_value()
--> uclamp_idle_value() when the last _active_ uclamp_se is decremented,
-and when all the buckets are empty, so I think that works?
+Yeah, I can probably work on a patch to unbind/remove this driver.
 
-> > from suddenly becoming visible.
-> > 
-> 
-> [...]
-> 
-> IMHO, the main argument in v3 to do the clearing outside
-> uclamp_rq_inc_id() was a possible order change in `for_each_clamp_id()`.
-> So setting/clearing `rq->uclamp_flags` (UCLAMP_FLAG_IDLE) on UCLAMP_MAX
-> (currently the highest Uclamp constraint (UCLAMP_CNT-1)) could be
-> incorrect when UCLAMP_MIN and UCLAMP_MAX change place because the
-> same `rq->uclamp_flags` value is needed for both Uclamp constraint
-> values.
-> 
-> What about decoupling rq->uclamp_flags` handling from UCLAMP_MAX and
-> doing this for 'UCLAMP_CNT - 1', i.e. always on the highest Uclamp
-> constraint?
-> 
-> #define for_each_clamp_id(clamp_id) \
->     for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
-> 
-> In this case the code change can be as easy as in your original v3.
-> 
-> Setting UCLAMP_FLAG_IDLE in uclamp_idle_value():
-> 
->   uclamp_rq_dec_id() -> uclamp_rq_max_value() -> *uclamp_idle_value()*
-> 
-> Resetting UCLAMP_FLAG_IDLE in uclamp_idle_reset():
-> 
->   uclamp_rq_inc_id()                          -> *uclamp_idle_reset()*  
-> 
-> This would be more symmetrical then uclamp_idle_value() and
-> uclamp_rq_inc()/uclamp_rq_reinc_id().
+Never actually tried to write a patch removing the PCIe BUS, so no
+idea if the refcounts for the in-board Ethernet NIC, M.2 and mini-PCIe
+slots will be properly handled. If refcount is handled properly, I
+guess a patch like that won't be hard, at least for Kirin 970 PHY.
 
-Right, thanks for the suggestion but to be fair I feel like this is a
-matter of personal preference at this point. I personally like the way
-it is in this patch -- I find it easier to reason about, but maybe
-that's because I wrote it ...
+The Kirin 960 PHY will require a small change at the current version,
+as it currently misses the power_off logic.
 
-Do you feel strongly about it? If not I'd prefer to not re-spin this
-another time if possible. Let me know what you think.
+I also need to double-check if devm resources will be freed at the 
+driver removal time, as, with some past tests with media devices,
+we had some issues with that.
 
-Cheers,
-Quentin
+Thanks,
+Mauro
