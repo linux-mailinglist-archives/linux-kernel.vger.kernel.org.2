@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F24C3D0A1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B141D3D0A25
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235749AbhGUHPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 03:15:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40752 "EHLO mail.kernel.org"
+        id S235966AbhGUHP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 03:15:57 -0400
+Received: from ni.piap.pl ([195.187.100.5]:58262 "EHLO ni.piap.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235427AbhGUHNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:13:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C54260FE9;
-        Wed, 21 Jul 2021 07:54:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626854069;
-        bh=r7maj2kuI2vO86xAHo4bhkYzsnBLjpZXw4i7HuI1fKo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S4+8tGxIJIsGfGI7MxKLPA5/acCyol3lQYiJMFk24n8hWJNiyOHP6JueaT8XE3kah
-         y+ZR98MwkHWJJHvsLOPvdQEkloisxIv76OMm5TSaTLsXcbCNnN7t/TzsVGn0/J84oa
-         uH9LRFB/t49zGMhWxfSH6TXADEMLXoj5QuekfqPA=
-Date:   Wed, 21 Jul 2021 09:54:27 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Moritz Fischer <moritz.fischer.private@gmail.com>,
-        Moritz Fischer <mdf@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: REGRESSION: Renesas USB host broken after commit d143825baf15
-Message-ID: <YPfSsx8p32w72OCB@kroah.com>
-References: <s5h7dhkoaa2.wl-tiwai@suse.de>
- <YPdcUrR5J6vA2Glr@epycbox.lan>
- <s5h1r7snneh.wl-tiwai@suse.de>
+        id S235610AbhGUHPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 03:15:34 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        by ni.piap.pl (Postfix) with ESMTPSA id BD8F9C3F3EE1;
+        Wed, 21 Jul 2021 09:56:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl BD8F9C3F3EE1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1626854165; bh=6XM2XjK5JFDUc84MNpO08XUn/FAW916r/iYKVjQami4=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=EbZPojY2/DaJbX3BOKfbHueepNx5GHr72BdDLYhYAhB/3COMWYM2Ux0+Hw5vGiATb
+         imPfCDkwkfA7tpsR50R5Ckk7M00SD6xGoVAuYqhEijDcO+eWu32MBRBT95ByqES+zU
+         Bznuoj9RMobStG1bJfqB3sNKcPQ25RxjDB++zEPw=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Tim Harvey <tharvey@gateworks.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH REPOST] TDA1997x: replace video detection routine
+References: <m3k0lmejlw.fsf@t19.piap.pl>
+        <68bd6e41-4c32-240f-aa83-fd2b96929d45@xs4all.nl>
+Sender: khalasa@piap.pl
+Date:   Wed, 21 Jul 2021 09:56:05 +0200
+In-Reply-To: <68bd6e41-4c32-240f-aa83-fd2b96929d45@xs4all.nl> (Hans Verkuil's
+        message of "Wed, 21 Jul 2021 09:12:08 +0200")
+Message-ID: <m3a6mgdrsa.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5h1r7snneh.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 165154 [Jul 21 2021]
+X-KLMS-AntiSpam-Version: 5.9.20.0
+X-KLMS-AntiSpam-Envelope-From: khalasa@piap.pl
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dkim=pass header.d=piap.pl
+X-KLMS-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17, {Tracking_from_exist}, {Tracking_arrow_text}, {Tracking_Text_ENG_RU_Has_Extended_Latin_Letters, eng}, {Tracking_marketers, three}, {Tracking_from_domain_doesnt_match_to}, t19.piap.pl:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;piap.pl:7.1.1
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2021/07/21 05:08:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/21 00:56:00 #16933345
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 09:20:38AM +0200, Takashi Iwai wrote:
-> On Wed, 21 Jul 2021 01:29:22 +0200,
-> Moritz Fischer wrote:
-> > 
-> > Hi Takashi,
-> > 
-> > On Wed, Jul 21, 2021 at 01:06:29AM +0200, Takashi Iwai wrote:
-> > > Hi,
-> > > 
-> > > the recent patch landed in 5.13.2 stable tree from the upstream commit
-> > > d143825baf15 ("usb: renesas-xhci: Fix handling of unknown ROM state")
-> > > seems causing a regression on a few machines, as reported on openSUSE
-> > > Bugzilla:
-> > >   https://bugzilla.opensuse.org/show_bug.cgi?id=1188485
-> > >   https://bugzilla.opensuse.org/show_bug.cgi?id=1188515
-> > > 
-> > > Reverting it on top of 5.13.3 fixed the problem, so it's likely the
-> > > cause.  Could you guys take a look?
-> > 
-> > I've sent out a revert patch.
-> > 
-> > https://lore.kernel.org/linux-usb/20210719070519.41114-1-mdf@kernel.org/T/#u
-> > 
-> > I think the driver has more problems but I'll tackle that in a follow up
-> > patch, lets get this unbricked, first.
-> 
-> OK, thank you for the information!
+Hi Hans,
 
-I've reverted this now, will get it to Linus for 5.14-rc3, sorry about
-that.
+Hans Verkuil <hverkuil@xs4all.nl> writes:
 
-thanks,
+>> --- a/drivers/media/i2c/tda1997x.c
+>> +++ b/drivers/media/i2c/tda1997x.c
+>> @@ -1092,66 +1094,71 @@ tda1997x_detect_std(struct tda1997x_state *state,
+>>  		    struct v4l2_dv_timings *timings)
 
-greg k-h
+...
+
+>> +	if (!timings)
+>> +		return 0;
+>
+> This check isn't necessary, timings is never NULL.
+
+Well, the tda1997x_irq_sus() does this:
+
+	if (debug)
+		tda1997x_detect_std(state, NULL);
+
+Perhaps there is a better way, but I think I will leave it for now.
+Also there is the issue of ignoring tda1997x_detect_std() return value,
+but I can now see it's only a case in tda1997x_query_dv_timings(), easy
+to fix.
+
+Will post an update shortly.
+
+Thanks for your comments,
+--=20
+Krzysztof "Chris" Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
