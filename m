@@ -2,104 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F2D3D114F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B0A3D1156
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239401AbhGUNqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239300AbhGUNpw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:45:52 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FCDC061799
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:26:21 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id b26so3460189lfo.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:26:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y5IdCRJZdJYIiudXPCqxlRKiC6LdgtZkGmH8rRPhgTM=;
-        b=DfZty/Ixt/tbCkEATYd7Xctiu3ogAgN3WD/IwiROnkAKSZv3xwTODhlTlCT8Xi3nv1
-         Dg1qfPy20ffG87fs1hWVi3Q25QSj0diOYe09xTXjyv6um8idOFHt/ZXV3rgZe9NgqdN1
-         yEyzWn9IBYZGP9L8EmDpmRxNpbXAYwqRXc8AEIlWBl5F5mpmMfVKsuonN3B9ProzGngQ
-         FtKpxS++Sb9F9gquqZzPud504nw7wq++64NoUphdP3fwj8uB/e3VLCpXjjacCc5sBbNu
-         oeiMP8oGGghMnRlAM06pfMf3TdJGTqA5LoVQu6KZaJXAzorOV5PfOVReFX+O2e/HD2OK
-         PL4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y5IdCRJZdJYIiudXPCqxlRKiC6LdgtZkGmH8rRPhgTM=;
-        b=lDfbBvGGe83wqPrlsYdNQ5TKAvwGyWObWtwa+CG+pC1KHxde/0h6LGfTdiAwQ5hGTG
-         yeiR1c3d3G2/v/NWlLCowuOCosruWKMh9WUWfaD8nHgEsxlyeyT2Rkk74VqfjLPGaQvB
-         2SPTUg9x8hw5zzrw8qj00KvYhMiT6B6efjYJ1rNpUDzW/JqGdq939RICSgP7Sq0dmwXq
-         bJkxrsnORcfJSD1kqaL9B33FsDz2sLaEH0G6AhC4Le2a7gdW8CKYK9cE9xXmcDzt+Zjn
-         vtdMrgChck+r/2ZMWFB9scfjFMTT8BePYPgEqQB4wFyPfEM7KFpGVehMByrtgAGxQP/Z
-         pEhg==
-X-Gm-Message-State: AOAM531TpueYr4sH/6giLfhDK7gOpm1v/ZnbnfAQrBYvueuAvQ2a1Z7N
-        8FD6X1wjLBrEY2xObqBCH0pZ6QBYWz+8YMEg0mjK5w==
-X-Google-Smtp-Source: ABdhPJxLJxuektkYlmThnTeKs9wi2CGTur5nFPRKxrsRGLrNNjiiMAw1eN/JZqtaD96z1vToql3upVxtxcQHSW4GACE=
-X-Received: by 2002:a05:6512:169e:: with SMTP id bu30mr5421776lfb.291.1626877579556;
- Wed, 21 Jul 2021 07:26:19 -0700 (PDT)
+        id S239047AbhGUNsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:48:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:55980 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235762AbhGUNsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 09:48:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A15331B;
+        Wed, 21 Jul 2021 07:28:52 -0700 (PDT)
+Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC7453F73D;
+        Wed, 21 Jul 2021 07:28:50 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 15:28:45 +0100
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        Nitesh Lal <nilal@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicolas Saenz <nsaenzju@redhat.com>,
+        Christoph Lameter <cl@gentwo.de>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 5/6] sched/isolation: Make HK_FLAG_DOMAIN mutable
+Message-ID: <20210721142726.GA206211@e120877-lin.cambridge.arm.com>
+References: <20210714135420.69624-1-frederic@kernel.org>
+ <20210714135420.69624-6-frederic@kernel.org>
 MIME-Version: 1.0
-References: <20210720172025.363238-1-robh@kernel.org>
-In-Reply-To: <20210720172025.363238-1-robh@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 21 Jul 2021 16:26:08 +0200
-Message-ID: <CACRpkdZdm=ArA3H86iHwmhLnCtTePxCtuik8O+bOhDBPMXOP=A@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: Remove "status" from schema examples
-To:     Rob Herring <robh@kernel.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Dilip Kota <eswara.kota@linux.intel.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-rtc <linux-rtc@vger.kernel.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714135420.69624-6-frederic@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 7:20 PM Rob Herring <robh@kernel.org> wrote:
+Hi Frederic,
 
-> There's no reason to have "status" properties in examples. "okay" is the
-> default, and "disabled" turns off some schema checks ('required'
-> specifically).
+[...]
 
-All of mine are mistakes anyway.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>  
+> +// Only support HK_FLAG_DOMAIN for now
+> +// TODO: propagate the changes through all interested subsystems:
+> +// workqueues, net, pci; ...
+> +void housekeeping_cpumask_set(struct cpumask *mask, enum hk_flags flags)
+> +{
+> +	/* Only HK_FLAG_DOMAIN change supported for now */
+> +	if (WARN_ON_ONCE(flags != HK_FLAG_DOMAIN))
+> +		return;
+>  
+> +	if (!static_key_enabled(&housekeeping_overridden.key)) {
+> +		if (cpumask_equal(mask, cpu_possible_mask))
+> +			return;
+> +		if (WARN_ON_ONCE(!alloc_cpumask_var(&hk_domain_mask, GFP_KERNEL)))
+> +			return;
+> +		cpumask_copy(hk_domain_mask, mask);
+> +		static_branch_enable(&housekeeping_overridden);
 
-Thanks for fixing this up.
+I get a warning here. static_branch_enable() is trying to take cpus_read_lock().
+But the same lock is already taken by cpuset_write_u64().
 
-Yours,
-Linus Walleij
+Also, shouldn't it set HK_FLAG_DOMAIN in housekeeping_flags to enable
+housekeeping if the kernel started without isolcpus="" ?
+
+-- 
+Vincent
