@@ -2,43 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30DB3D1212
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06AF3D1217
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239526AbhGUOdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:33:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60168 "EHLO mail.kernel.org"
+        id S239729AbhGUOdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:33:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239459AbhGUOc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:32:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABD1A61019;
-        Wed, 21 Jul 2021 15:13:32 +0000 (UTC)
+        id S239627AbhGUOda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 10:33:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2EF6606A5;
+        Wed, 21 Jul 2021 15:14:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626880415;
-        bh=ZpXSFxbdmmtXubwHT8SiJge7QzFLPxH/DKFpzEzryX0=;
+        s=k20201202; t=1626880447;
+        bh=NrwxCLoURd1LdJnNYb7I+1LjEmcgSb+64PHqxxsUM4I=;
         h=From:To:Cc:Subject:Date:From;
-        b=Qq2FtaQYOk7Om3Cvdg9fj2hsf/LZz5vwc64Ms+OCDqViCECTtjypkyOUeQpjbXUC9
-         N1fe3E0z/xtpWgSmD+UMmv0vzfuryzVHcRwaOdjEQ091/Ist5K8h80Zrg5MAZaH+kA
-         z8gHDP6Gq4syOHNn+QwQ6XTRCg7p/LUcrg+xJ43HmJ00sY3lNNQnMkdzjjLKyqgw3a
-         dPQX7PAIlPC2J8SiVJrN8WNYWMOFUDMcSZme06M2V2OPQCUaof4DmCdtvy9VexVylq
-         H2JTnExau1nVKqJuPiJ5tmTuJpgIwB633DPxVhdmqX84oUiFXepaDbgmRW+HcrPUwj
-         sobForTXPqNAQ==
+        b=Ai94YkINIWn0q5DQOaZUuANgc0RtwanZUvEZVehbnCvj68tqPtZ723F0AqhaD39jr
+         xLzgo/uUlrqeeq54MLgAgVaphpG+59NLHEoereK2n52MgBmstdnapJtWI97Pv/ShqF
+         g3NkWIjvQztfURWxz3y7DCJSnjn4TTC9QEwiijo3lWwRBNCCoKuFlH65wHf39fFkwb
+         6EDEwL81L3DyzCwaZe3/H9gd3hfSrKvSPf7wHb8PgnKYEBHB2YvnQWmP3eve1UQsj4
+         wK5K0ssSd+R9edohGM9K2yc582prjkJPZd4fSr3ME6PzaBPe5bZifawkVBRZ3lBMO6
+         EigtS73S9OqgQ==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Sean Nyekjaer <sean@geanix.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Tomas Melin <tomas.melin@vaisala.com>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: accel: fxls8962af: fix i2c dependency
-Date:   Wed, 21 Jul 2021 17:13:20 +0200
-Message-Id: <20210721151330.2176653-1-arnd@kernel.org>
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: tegra: add regulator dependency
+Date:   Wed, 21 Jul 2021 17:13:57 +0200
+Message-Id: <20210721151403.2218211-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -48,45 +42,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-With CONFIG_SPI=y and CONFIG_I2C=m, building fxls8962af into vmlinux
-causes a link error against the I2C module:
+The two regulator drivers in the drivers/soc/ directory fail to build
+when regulator support is disabled:
 
-aarch64-linux-ld: drivers/iio/accel/fxls8962af-core.o: in function `fxls8962af_fifo_flush':
-fxls8962af-core.c:(.text+0x3a0): undefined reference to `i2c_verify_client'
+aarch64-linux-ld: drivers/soc/tegra/regulators-tegra20.o: in function `tegra20_regulator_reboot':
+regulators-tegra20.c:(.text.tegra20_regulator_reboot+0x4c): undefined reference to `regulator_sync_voltage_rdev'
+aarch64-linux-ld: regulators-tegra20.c:(.text.tegra20_regulator_reboot+0x58): undefined reference to `regulator_sync_voltage_rdev'
+aarch64-linux-ld: drivers/soc/tegra/regulators-tegra30.o: in function `tegra30_regulator_reboot':
+regulators-tegra30.c:(.text.tegra30_regulator_reboot+0x44): undefined reference to `regulator_sync_voltage_rdev'
+aarch64-linux-ld: regulators-tegra30.c:(.text.tegra30_regulator_reboot+0x50): undefined reference to `regulator_sync_voltage_rdev'
 
-Work around it by adding a Kconfig dependency that forces the SPI driver
-to be a loadable module whenever I2C is a module.
+Add a Kconfig dependency to avoid this configuration.
 
-Fixes: af959b7b96b8 ("iio: accel: fxls8962af: fix errata bug E3 - I2C burst reads")
+Fixes: 496747e7d907 ("soc/tegra: regulators: Add regulators coupler for Tegra20")
+Fixes: 783807436f36 ("soc/tegra: regulators: Add regulators coupler for Tegra30")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-I'm not overly happy with the fix either, but couldn't think of
-a better idea. If someone provide a different fix, please ignore
-mine.
----
- drivers/iio/accel/Kconfig | 2 ++
+ drivers/soc/tegra/Kconfig | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/iio/accel/Kconfig b/drivers/iio/accel/Kconfig
-index 0e56ace61103..8d8b1ba42ff8 100644
---- a/drivers/iio/accel/Kconfig
-+++ b/drivers/iio/accel/Kconfig
-@@ -231,6 +231,7 @@ config DMARD10
+diff --git a/drivers/soc/tegra/Kconfig b/drivers/soc/tegra/Kconfig
+index db49075b1946..c56122be27a9 100644
+--- a/drivers/soc/tegra/Kconfig
++++ b/drivers/soc/tegra/Kconfig
+@@ -153,8 +153,10 @@ config SOC_TEGRA_POWERGATE_BPMP
  
- config FXLS8962AF
- 	tristate
-+	depends on I2C || !I2C # cannot be built-in for modular I2C
+ config SOC_TEGRA20_VOLTAGE_COUPLER
+ 	bool "Voltage scaling support for Tegra20 SoCs"
++	depends on REGULATOR
+ 	depends on ARCH_TEGRA_2x_SOC || COMPILE_TEST
  
- config FXLS8962AF_I2C
- 	tristate "NXP FXLS8962AF/FXLS8964AF Accelerometer I2C Driver"
-@@ -247,6 +248,7 @@ config FXLS8962AF_I2C
- config FXLS8962AF_SPI
- 	tristate "NXP FXLS8962AF/FXLS8964AF Accelerometer SPI Driver"
- 	depends on SPI
-+	depends on I2C || !I2C
- 	select FXLS8962AF
- 	select REGMAP_SPI
- 	help
+ config SOC_TEGRA30_VOLTAGE_COUPLER
+ 	bool "Voltage scaling support for Tegra30 SoCs"
++	depends on REGULATOR
+ 	depends on ARCH_TEGRA_3x_SOC || COMPILE_TEST
 -- 
 2.29.2
 
