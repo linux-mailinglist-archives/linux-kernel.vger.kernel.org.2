@@ -2,65 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F5B3D14A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DA73D14AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235816AbhGUQMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:12:40 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:40827 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234061AbhGUQMh (ORCPT
+        id S235371AbhGUQPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:15:55 -0400
+Received: from mail-pl1-f175.google.com ([209.85.214.175]:37719 "EHLO
+        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229561AbhGUQPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:12:37 -0400
-Received: by mail-il1-f199.google.com with SMTP id a18-20020a92c7120000b029020757e7bf9fso1921760ilp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:53:13 -0700 (PDT)
+        Wed, 21 Jul 2021 12:15:53 -0400
+Received: by mail-pl1-f175.google.com with SMTP id y3so1259047plp.4;
+        Wed, 21 Jul 2021 09:56:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=gxyqQvbXalzs54ThUrwETt9kFkgligD2HIuxmfdETBQ=;
-        b=hYuh1exVRKsWbmjLO3mi6FPMgxVcjvzb0Xgwe0+KMnW9YirSOZV1KPSwuGHumw3QN9
-         Lm2GrgzEHqdqZiMQ0Afsm3fwgIUClGYoHcTgxEa9AnobbG0NT4ojt1BjOS4g7NxFXXs2
-         JLEF0B+1j+35kG2CnMUWWOGvnjmO0q8XzyH0QgGG1OhlcmgK8lNudCnqzvEgsf/G6Ao/
-         N69xx8dNShq/nvi/3qesYi410BrjXsd7Mg3dgwOuUJLtM+dAAK334gL9s6nWj1OldCNe
-         2sdwGQVcJTRhOGnWTVXdrypMMB3VBibEe3Lp3c5UC7wtGim2jgFkITH4SlwBwizyt+ng
-         w++w==
-X-Gm-Message-State: AOAM533w9cT0A25L989Fo2MgznX2zbVKtJr0/6dH9VJi+yNMX1YtyG/L
-        zRaQbK2MBc6Lc1sTkk/GQ8dyAmlJK/L3qmr2VbIvMud84Pov
-X-Google-Smtp-Source: ABdhPJxs3YL4DMoh9YXP6oKHGFZzawFBVEXzfEdTgQWajC/iEbeG9HpwgfC30tgN/zbRaL9qcDCGYWliT+MBKtJAOlkNt/LCBF2o
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IBALwA0/lwQlCC9ArWBTvBN3bpZvZSDVrssut1ZL5To=;
+        b=G5Dl+E1P/ctIAYcJVuRw+G2ejfCTfQirlVGDkVMCeoZvKN/jWIGa61XeWhl7aegIGN
+         TitxiYIYCTrOH6ADBws9exWjLEbkaabzo5a/hZX6kA7PFfrHH+RnAlS2OPF5xFVV1aij
+         XcgOvxiacNyqtkDe03ZzmtYg6Kgkyu1BlsFx2/aRjxcnlL3yrLZNQn8tG+P0HFkDTOsd
+         GEMoGmARcGMUSZF772n5utr+I3oIvk49/0aUOcmqz3c9ErX7w3yuwOwekQpUwmPRqVGY
+         0c8zmgN6s/cJgzOJGMKXO0bbEtVChqBhoVnD/5jQ5DHJgJTLLnnyHqG6m0J/MnLB5KD+
+         NggQ==
+X-Gm-Message-State: AOAM532Oe4PrEizeq5VUU1OMW4/nRCMZuQaKtGf4Bj0/GhfSIcY84Mmr
+        J+brajI+yR0Qyteq4gIl8YpLwR/24dY=
+X-Google-Smtp-Source: ABdhPJzLT5UR89aJMp59XYiivG86/2UEWAPwE+X+74lT1yI7aGKnATCAT7OyluqUiTmtGSaHfB07sw==
+X-Received: by 2002:a17:902:7c18:b029:117:e575:473e with SMTP id x24-20020a1709027c18b0290117e575473emr28357351pll.37.1626886589063;
+        Wed, 21 Jul 2021 09:56:29 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:6f70:be34:681b:b1e9:776f])
+        by smtp.gmail.com with ESMTPSA id q125sm21522998pga.87.2021.07.21.09.56.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 09:56:28 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 09:56:27 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Matthias Schiffer <mschiffer@universe-factory.net>
+Cc:     Moritz Fischer <mdf@kernel.org>, linux-kernel@vger.kernel.org,
+        gabriel.kh.huang@fii-na.com, moritzf@google.com,
+        stable@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Justin Forbes <jmforbes@linuxtx.org>, linux-usb@vger.kernel.org
+Subject: Re: [PATCH] Revert "usb: renesas-xhci: Fix handling of unknown ROM
+ state"
+Message-ID: <YPhRu/DWbs58hgvq@epycbox.lan>
+References: <20210719070519.41114-1-mdf@kernel.org>
+ <c0f191cc-6400-7309-e8a4-eab0925a3d54@universe-factory.net>
 MIME-Version: 1.0
-X-Received: by 2002:a92:b111:: with SMTP id t17mr25820868ilh.208.1626886393308;
- Wed, 21 Jul 2021 09:53:13 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 09:53:13 -0700
-In-Reply-To: <20210721125710.1a1c041f@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000902d5d05c7a50171@google.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in do_wait_for_common
-From:   syzbot <syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com>
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, hridayhegde1999@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        paskripkin@gmail.com, rkovhaev@gmail.com, straube.linux@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c0f191cc-6400-7309-e8a4-eab0925a3d54@universe-factory.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jul 21, 2021 at 05:28:21PM +0200, Matthias Schiffer wrote:
+> On 7/19/21 9:05 AM, Moritz Fischer wrote:
+> > This reverts commit d143825baf15f204dac60acdf95e428182aa3374.
+> > 
+> > Justin reports some of his systems now fail as result of this commit:
+> > 
+> >   xhci_hcd 0000:04:00.0: Direct firmware load for renesas_usb_fw.mem failed with error -2
+> >   xhci_hcd 0000:04:00.0: request_firmware failed: -2
+> >   xhci_hcd: probe of 0000:04:00.0 failed with error -2
+> > 
+> > The revert brings back the original issue the commit tried to solve but
+> > at least unbreaks existing systems relying on previous behavior.
+> > 
+> > Cc: stable@vger.kernel.org
+> > Cc: Mathias Nyman <mathias.nyman@intel.com>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: Justin Forbes <jmforbes@linuxtx.org>
+> > Reported-by: Justin Forbes <jmforbes@linuxtx.org>
+> > Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> > ---
+> > 
+> > Justin,
+> > 
+> > would you be able to help out testing follow up patches to this?
+> > 
+> > I don't have a machine to test your use-case and mine definitly requires
+> > a firmware load on RENESAS_ROM_STATUS_NO_RESULT.
+> > 
+> > Thanks
+> > - Moritz
+> 
+> 
+> Hi Moritz,
+> 
+> as an additional data point, here's the behaviour of my system, a Thinkpad
+> T14 AMD with:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Thanks!
+> 
+> 06:00.0 USB controller [0c03]: Renesas Technology Corp. uPD720202 USB 3.0
+> Host Controller [1912:0015] (rev 02)
+> 
+> - On Kernel 5.13.1, no firmware: USB controller resets in an endless loop
+> when the system is running from battery
+> - On Kernel 5.13.4, no firmware: USB controller probe fails with the
+> mentioned firmware load error
+> - On Kernel 5.13.4, with renesas_usb_fw.mem: everything is working fine, the
+> reset issue is gone
+> 
+> So it seems to me that requiring a firmware is generally the correct driver
+> behaviour for this hardware. The firmware I found in the Arch User
+> Repository [1] unfortunately has a very restrictive license...
 
-Reported-and-tested-by: syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com
+Yeah, the chip definitely needs the firmware. It can either initialize
+from external ROM or runtime loaded firmware.
 
-Tested on:
+I think the problem really lies in how the current (and reverted) code
+detects the need for firmware loading.
 
-commit:         8cae8cd8 seq_file: disallow extremely large seq buffer..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=300aea483211c875
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc699626e48a6ebaf295
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1174d0d4300000
+The current code looks at two indicators:
+- Is there an external ROM and if so, did somebody try to program the
+  external ROM and succeed? (renesas_check_rom_state)
+- Did somebody try to runtime-load firmware, and if so did they succeed?
+  (renesas_fw_check_running, after the early return)
 
-Note: testing is done by a robot and is best-effort only.
+The first one (and resulting early return) does *not* tell you whether
+the controller actually has firwmare. That's what breaks my systems.
+
+The second one is only really useful *if* we also check that FW_DOWNLOAD
+was locked.
+
+Neither of the above captures the case where you actually have an
+external ROM that is programmed with proper firmware and caused the chip
+to be loaded with said firmware.
+
+Now before the patch that was reverted, since nobody tried to program
+the ROM, it feel through to the "do nothing" in this case -- which
+worked since it configured itself from external ROM.
+
+Now how do we properly determine we do or don't need firwmare?
+
+Looking at the datasheet I see two options.
+- The version register? I need to investigate what that resets to with
+  an unprogrammed/corrupted ROM. If that reliably gives a detectable value
+  this could be used as an indicator.
+  
+- The USBSTS register according to the datasheet will report an error
+  through the HCE bit:
+  "If both uDP720201 and uDP720202 detect no correct firmware in Serial
+  ROM, this flag will be set"
+
+I'll put up an RFC in the next couple of days ...
+
+- Moritz
