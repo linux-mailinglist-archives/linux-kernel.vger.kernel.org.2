@@ -2,131 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD623D0E33
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7623B3D0E36
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbhGULOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:14:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50548 "EHLO mail.kernel.org"
+        id S238810AbhGULPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:15:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:52530 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238785AbhGULAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:00:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B0AF61001;
-        Wed, 21 Jul 2021 11:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626867639;
-        bh=+i4sQ0y2P0tlzbuuPjWOutDrZUTehFe9PgKvtCPlu98=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OVO7/0xBDgfW/YMs98tYB94z/iMm8bVEEivg7gl105cTWUmdyQOAGtVHD3emJW90a
-         7ePzo0mlSzQX/Bk1GX4Xc3ppqLkJZCa8L7+rdAOtj5Wa4/VO7GV2lWGqN1olEdQDDB
-         Fw+TS1CyR8EyitevuKdPuR3lYxniTgnYqoj8h77k=
-Date:   Wed, 21 Jul 2021 13:40:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Guodong Xu <guodong.xu@linaro.org>, tangchengchang@huawei.com,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        yangyicong <yangyicong@huawei.com>, tim.c.chen@linux.intel.com,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v7 4/4] lib: test_bitmap: add bitmap_print_to_buf test
- cases
-Message-ID: <YPgHtJqXi8cKad1Q@kroah.com>
-References: <20210715115856.11304-1-song.bao.hua@hisilicon.com>
- <20210715115856.11304-5-song.bao.hua@hisilicon.com>
- <YPAlg5c8uDSZ2WvZ@smile.fi.intel.com>
- <YPCe+f3GPDUuvwnW@yury-ThinkPad>
- <CAHp75VcoNPiKDaZzTVr3unV3F5u+LQwAjy1hKSq0WUw_tB6uAw@mail.gmail.com>
- <YPDDdAwgYEptz2Uq@yury-ThinkPad>
+        id S239238AbhGULBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 07:01:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 63E9E31B;
+        Wed, 21 Jul 2021 04:42:22 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D1273F694;
+        Wed, 21 Jul 2021 04:42:20 -0700 (PDT)
+Subject: Re: [PATCH -next] iommu/arm-smmu-v3: Add suspend and resume support
+To:     Bixuan Cui <cuibixuan@huawei.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        will@kernel.org
+Cc:     weiyongjun1@huawei.com, john.wanghui@huawei.com,
+        dingtianhong@huawei.com, thunder.leizhen@huawei.com,
+        guohanjun@huawei.com, joro@8bytes.org, jean-philippe@linaro.org,
+        Jonathan.Cameron@huawei.com, song.bao.hua@hisilicon.com,
+        linux-arm-kernel@lists.infradead.org, Marc Zyngier <maz@kernel.org>
+References: <20210721013350.17664-1-cuibixuan@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <4e506481-5f6c-9c5e-eda3-300861581080@arm.com>
+Date:   Wed, 21 Jul 2021 12:42:14 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPDDdAwgYEptz2Uq@yury-ThinkPad>
+In-Reply-To: <20210721013350.17664-1-cuibixuan@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:23:32PM -0700, Yury Norov wrote:
-> On Fri, Jul 16, 2021 at 12:32:45AM +0300, Andy Shevchenko wrote:
-> > On Thu, Jul 15, 2021 at 11:48 PM Yury Norov <yury.norov@gmail.com> wrote:
-> > > On Thu, Jul 15, 2021 at 03:09:39PM +0300, Andy Shevchenko wrote:
-> > > > On Thu, Jul 15, 2021 at 11:58:56PM +1200, Barry Song wrote:
-> > > > > The added test items cover both cases where bitmap buf of the printed
-> > > > > result is greater than and less than 4KB.
-> > > > > And it also covers the case where offset for bitmap_print_to_buf is
-> > > > > non-zero which will happen when printed buf is larger than one page
-> > > > > in sysfs bin_attribute.
-> > > >
-> > > > More test cases is always a good thing, thanks!
-> > >
-> > > Generally yes. But in this case... I believe, Barry didn't write that
-> > > huge line below by himself. Most probably he copy-pasted the output of
-> > > his bitmap_print_buf() into the test. If so, this code tests nothing,
-> > > and just enforces current behavior of snprintf.
-> > 
-> > I'm not sure I got what you are telling me. The big line is to test
-> > strings that are bigger than 4k.
+[ +Marc for MSI bits ]
+
+On 2021-07-21 02:33, Bixuan Cui wrote:
+> Add suspend and resume support for arm-smmu-v3 by low-power mode.
 > 
-> I'm trying to say that human are not able to verify correctness of
-> this line. The test is supposed to check bitmap_print_to_buf(), but
-> reference output itself is generated by bitmap_print_to_buf(). This
-> test will always pass by design, even if there's an error somewhere
-> in the middle, isn't it?
-
-Then please manually check it to verify it is correct or not.  Once we
-have it verified, that's fine, it will remain static in this test for
-always going forward.
-
-That's what "oracles" are for, there is nothing wrong with this test
-case or "proof" that I can see.
-
-> > 
-> > ...
-> > 
-> > > > > +static const char large_list[] __initconst = /* more than 4KB */
-> > > > > +   "0,4,8,12,16,20,24,28,32-33,36-37,40-41,44-45,48-49,52-53,56-57,60-61,64,68,72,76,80,84,88,92,96-97,100-101,104-1"
-> > > > > +   "05,108-109,112-113,116-117,120-121,124-125,128,132,136,140,144,148,152,156,160-161,164-165,168-169,172-173,176-1"
-> > > > > +   "77,180-181,184-185,188-189,192,196,200,204,208,212,216,220,224-225,228-229,232-233,236-237,240-241,244-245,248-2"
-> > >
-> > > I don't like this behavior of the code: each individual line is not a
-> > > valid bitmap_list. I would prefer to split original bitmap and print
-> > > list representation of parts in a compatible format; considering a
-> > > receiving part of this splitting machinery.
-> > 
-> > I agree that split is not the best here, but after all it's only 1
-> > line and this is on purpose.
+> When the smmu is suspended, it is powered off and the registers are
+> cleared. So saves the msi_msg context during msi interrupt initialization
+> of smmu. When resume happens it calls arm_smmu_device_reset() to restore
+> the registers.
 > 
-> What I see is that bitmap_print_to_buf() is called many times,
+> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+> Reviewed-by: Wei Yongjun <weiyongjun1@huawei.com>
+> Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Reviewed-by: Ding Tianhong <dingtianhong@huawei.com>
+> Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+> ---
+> 
+>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 72 ++++++++++++++++++---
+>   1 file changed, 64 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index 235f9bdaeaf2..bf1163acbcb1 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -40,6 +40,7 @@ MODULE_PARM_DESC(disable_bypass,
+>   
+>   static bool disable_msipolling;
+>   module_param(disable_msipolling, bool, 0444);
+> +static bool bypass;
+>   MODULE_PARM_DESC(disable_msipolling,
+>   	"Disable MSI-based polling for CMD_SYNC completion.");
+>   
+> @@ -3129,11 +3130,37 @@ static void arm_smmu_write_msi_msg(struct msi_desc *desc, struct msi_msg *msg)
+>   	doorbell = (((u64)msg->address_hi) << 32) | msg->address_lo;
+>   	doorbell &= MSI_CFG0_ADDR_MASK;
+>   
+> +	/* Saves the msg context for resume if desc->msg is empty */
+> +	if (desc->msg.address_lo == 0 && desc->msg.address_hi == 0) {
+> +		desc->msg.address_lo = msg->address_lo;
+> +		desc->msg.address_hi = msg->address_hi;
+> +		desc->msg.data = msg->data;
+> +	}
 
-That is not what the above list shows at all, it's one long string all
-together, only split up to make it easier for us to work with.
+My gut feeling is that this is something a device driver maybe shouldn't 
+be poking into, but I'm not entirely familiar with the area :/
 
-> and
-> each time it returns something that is not a valid bitmap list string.
-> If the caller was be able to concatenate all the lines returned by
-> bitmap_print_to_buf(), he'd probably get correct result. But in such
-> case, why don't he use scnprintf("pbl") directly?
+> +
+>   	writeq_relaxed(doorbell, smmu->base + cfg[0]);
+>   	writel_relaxed(msg->data, smmu->base + cfg[1]);
+>   	writel_relaxed(ARM_SMMU_MEMATTR_DEVICE_nGnRE, smmu->base + cfg[2]);
+>   }
+>   
+> +static void arm_smmu_resume_msis(struct arm_smmu_device *smmu)
+> +{
+> +	struct msi_desc *desc;
+> +	struct device *dev = smmu->dev;
+> +
+> +	for_each_msi_entry(desc, dev) {
+> +		switch (desc->platform.msi_index) {
+> +		case EVTQ_MSI_INDEX:
+> +		case GERROR_MSI_INDEX:
+> +		case PRIQ_MSI_INDEX:
+> +			arm_smmu_write_msi_msg(desc, &(desc->msg));
+> +			break;
+> +		default:
+> +			continue;
+> +
+> +		}
+> +	}
+> +}
+> +
+>   static void arm_smmu_setup_msis(struct arm_smmu_device *smmu)
+>   {
+>   	struct msi_desc *desc;
+> @@ -3184,11 +3211,17 @@ static void arm_smmu_setup_msis(struct arm_smmu_device *smmu)
+>   	devm_add_action(dev, arm_smmu_free_msis, dev);
+>   }
+>   
+> -static void arm_smmu_setup_unique_irqs(struct arm_smmu_device *smmu)
+> +static void arm_smmu_setup_unique_irqs(struct arm_smmu_device *smmu, bool resume_mode)
+>   {
+>   	int irq, ret;
+>   
+> -	arm_smmu_setup_msis(smmu);
+> +	if (!resume_mode)
+> +		arm_smmu_setup_msis(smmu);
+> +	else {
+> +		/* The irq doesn't need to be re-requested during resume */
+> +		arm_smmu_resume_msis(smmu);
+> +		return;
 
-I do not understand the objection here at all.  This series is fixing a
-real problem that people are having and your complaining about test
-strings is _VERY_ odd.
+What about wired IRQs?
 
-If you have an alternate solution, please propose it, otherwise I will
-be taking this series in the next few days.
+> +	}
+>   
+>   	/* Request interrupt lines */
+>   	irq = smmu->evtq.q.irq;
+> @@ -3230,7 +3263,7 @@ static void arm_smmu_setup_unique_irqs(struct arm_smmu_device *smmu)
+>   	}
+>   }
+>   
+> -static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu)
+> +static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu, bool resume_mode)
+>   {
+>   	int ret, irq;
+>   	u32 irqen_flags = IRQ_CTRL_EVTQ_IRQEN | IRQ_CTRL_GERROR_IRQEN;
+> @@ -3257,7 +3290,7 @@ static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu)
+>   		if (ret < 0)
+>   			dev_warn(smmu->dev, "failed to enable combined irq\n");
+>   	} else
+> -		arm_smmu_setup_unique_irqs(smmu);
+> +		arm_smmu_setup_unique_irqs(smmu, resume_mode);
+>   
+>   	if (smmu->features & ARM_SMMU_FEAT_PRI)
+>   		irqen_flags |= IRQ_CTRL_PRIQ_IRQEN;
+> @@ -3282,7 +3315,7 @@ static int arm_smmu_device_disable(struct arm_smmu_device *smmu)
+>   	return ret;
+>   }
+>   
+> -static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
+> +static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool resume_mode)
 
-thanks,
+Er, what about the use of "bypass" towards the end of the function. Have 
+you even compiled this?
 
-greg k-h
+>   {
+>   	int ret;
+>   	u32 reg, enables;
+> @@ -3392,7 +3425,7 @@ static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
+>   		}
+>   	}
+>   
+> -	ret = arm_smmu_setup_irqs(smmu);
+> +	ret = arm_smmu_setup_irqs(smmu, resume_mode);
+>   	if (ret) {
+>   		dev_err(smmu->dev, "failed to setup irqs\n");
+>   		return ret;
+> @@ -3749,6 +3782,24 @@ static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
+>   	return devm_ioremap_resource(dev, &res);
+>   }
+>   
+> +static int __maybe_unused arm_smmu_suspend(struct device *dev)
+> +{
+> +	/*
+> +	 * The smmu is powered off and related registers are automatically
+> +	 * cleared when suspend. No need to do anything.
+> +	 */
+
+Is that guaranteed? What if suspend is only implemented by external 
+clock-gating?
+
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused arm_smmu_resume(struct device *dev)
+> +{
+> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
+> +
+> +	arm_smmu_device_reset(smmu, true);
+> +
+> +	return 0;
+> +}
+> +
+>   static int arm_smmu_device_probe(struct platform_device *pdev)
+>   {
+>   	int irq, ret;
+> @@ -3756,7 +3807,6 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
+>   	resource_size_t ioaddr;
+>   	struct arm_smmu_device *smmu;
+>   	struct device *dev = &pdev->dev;
+> -	bool bypass;
+
+Once again...
+
+>   	smmu = devm_kzalloc(dev, sizeof(*smmu), GFP_KERNEL);
+>   	if (!smmu)
+> @@ -3831,7 +3881,7 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
+>   	platform_set_drvdata(pdev, smmu);
+>   
+>   	/* Reset the device */
+> -	ret = arm_smmu_device_reset(smmu, bypass);
+
+...either this is based on some out-of-tree hack which introduced its 
+own uninitialised-usage bug here, or it doesn't even compile.
+
+> +	ret = arm_smmu_device_reset(smmu, false);
+>   	if (ret)
+>   		return ret;
+>   
+> @@ -3884,6 +3934,11 @@ static const struct of_device_id arm_smmu_of_match[] = {
+>   };
+>   MODULE_DEVICE_TABLE(of, arm_smmu_of_match);
+>   
+> +static const struct dev_pm_ops arm_smmu_pm_ops = {
+> +	.suspend = arm_smmu_suspend,
+> +	.resume = arm_smmu_resume,
+
+Either use SET_SYSTEM_SLEEP_PM_OPS() here or drop the __maybe_unused 
+annmotations above - they're pointless if the callbacks are referenced 
+unconditionally.
+
+Robin.
+
+> +};
+> +
+>   static void arm_smmu_driver_unregister(struct platform_driver *drv)
+>   {
+>   	arm_smmu_sva_notifier_synchronize();
+> @@ -3895,6 +3950,7 @@ static struct platform_driver arm_smmu_driver = {
+>   		.name			= "arm-smmu-v3",
+>   		.of_match_table		= arm_smmu_of_match,
+>   		.suppress_bind_attrs	= true,
+> +		.pm			= &arm_smmu_pm_ops,
+>   	},
+>   	.probe	= arm_smmu_device_probe,
+>   	.remove	= arm_smmu_device_remove,
+> 
