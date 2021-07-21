@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3673D123F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C043D1253
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239742AbhGUOng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237983AbhGUOnc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:43:32 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B96AC061575;
-        Wed, 21 Jul 2021 08:24:07 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id p15-20020a05600c358fb0290245467f26a4so1211474wmq.0;
-        Wed, 21 Jul 2021 08:24:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Oi/kmLG+yo834vJn/MBYQrG1NfEUwztJBaDA0SorlMw=;
-        b=GPPygBoG0okZabi4k2zvS5PJYSyAiI3ZvpEMup6Ewo21SE5tPZ9ry+/FdFaeISL7Bc
-         6C60RiG56Ta8ZNUw6wo5CcrGvXvfzuHkf3VoixI1dsM6B0m7OVMA4Wv5B/gJhKBbCVkC
-         0d39uqHuQrS5YlATH1NFNKwUIS1Ne5KcvDwzjOf6a1foUQuBzkKg0IlGbs59zzJlbugF
-         g+1xoep1MxZevYMn9EoqWmp9RVieSWDnJfYE5b2MCo9v/Pa9fWtaLuwk6lkqjlTcjdWs
-         9wdH7hO+KBjL0VqQugznvQINceZLeeog51Lhh3dTJhsAUstG3ZIk7MuD2meazqGYLiI1
-         85lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Oi/kmLG+yo834vJn/MBYQrG1NfEUwztJBaDA0SorlMw=;
-        b=U8NXoktdBSJ3QlbNlOdAL1ZA22FzBvuzQLoA3HeR7Jvq1GlQjvAn4ScO6kMuOIyQ1j
-         OcZLBma+vVXdbjXrJcRqXbx+LIci6dT36KApNW01G0cHEOTPfKTu/Xi0HTsOV12gFcIC
-         HHxXSzOBFsgtRw+DeEDK9Cp3SrKUzKuxu0EUMoeks9vrZ6T94qpwTNgHKemgJheFSHj/
-         5Tp3Y4v4Pc/d3Vbo85nXelTl7QZwkbjxqvG9a2yMqvNzltrBthb5M4kPIo393FoYoXp9
-         0UkA7Jbsl7J54hha0rSuicICdCrqwE5kii2Wz8Fu7SEOze9N1mgXec9EUUKzEsdXZKwH
-         H/Hw==
-X-Gm-Message-State: AOAM532a0aNf0MmyJR3LOb8tVZlLmHwnM7m0Xtect9nwkyaPLECstPG+
-        +kHa8ZwPrKJQ34F4rYtZADw=
-X-Google-Smtp-Source: ABdhPJzUR2AgoD7KuBHSGj82WNYdT6Fbt0Qdp5E+r2m1Na+R4fuxAFwmQtgBNtidSvW66hH1r3tBLQ==
-X-Received: by 2002:a05:600c:350b:: with SMTP id h11mr4543981wmq.20.1626881046170;
-        Wed, 21 Jul 2021 08:24:06 -0700 (PDT)
-Received: from chgm-pc-linux.bachmann.at ([185.67.228.2])
-        by smtp.gmail.com with ESMTPSA id b8sm221299wmb.20.2021.07.21.08.24.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 08:24:05 -0700 (PDT)
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-To:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: dwc: do not ignore link errors
-Date:   Wed, 21 Jul 2021 17:23:47 +0200
-Message-Id: <20210721152347.2965403-1-christian.gmeiner@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S239820AbhGUOow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:44:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237983AbhGUOou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 10:44:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E8D761019;
+        Wed, 21 Jul 2021 15:25:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626881126;
+        bh=q0qmFKoQHFOjKVXrivEKxEo8pwCPzGuiEq0fkOew1ws=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EjUc+ZGi3vqpbw+zT5T1m6aYf2iKBQFXxnlst/1u7eRlQnHjnt3I5D7fSw9w1cWm7
+         f/70hlkaPSDXZ42nJ0qhDut6Vki3N9K27omo53aMnRlIREGXIP2ot8XNIzRVzjfwXj
+         Fe/qyHukrmqOOM+rFW6BMwCZpIYovAC5oVRTq/o2LjhjMKaGfbn0uQVsXJkkcDbkUb
+         vvR5dHqbmKtnWyQH6qAHbrlPnoOiIq3AYxA3CQh/TsL8pJjM2l0xSP9ytIvPCiqN3i
+         MU9mqXgruNBb2Waan88gGgI2QvAGaVNuEN3U54lOm72wCx81wqRyIg/keo7StpD4Ey
+         2vtpeczphi3fw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     niklas.soderlund+renesas@ragnatech.se, geert+renesas@glider.be,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: rcar_drif: select CONFIG_V4L2_ASYNC
+Date:   Wed, 21 Jul 2021 17:24:59 +0200
+Message-Id: <20210721152522.2928952-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes long boot delays of about 10 seconds.
+From: Arnd Bergmann <arnd@arndb.de>
 
-I am working on a device powered by an TI am65 SoC where
-we have a PCIe expansion slot. If there is no PCIe device
-connected I see boot delays caused by pci_host_probe(..).
+Without this, I see a randconfig link failure:
 
-Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+aarch64-linux-ld: drivers/media/platform/rcar_drif.o: in function `rcar_drif_remove':
+rcar_drif.c:(.text+0x2a8): undefined reference to `v4l2_async_notifier_unregister'
+aarch64-linux-ld: rcar_drif.c:(.text+0x2b0): undefined reference to `v4l2_async_notifier_cleanup'
+aarch64-linux-ld: drivers/media/platform/rcar_drif.o: in function `rcar_drif_sdr_probe':
+rcar_drif.c:(.text+0x1444): undefined reference to `v4l2_async_notifier_init'
+aarch64-linux-ld: rcar_drif.c:(.text+0x14a0): undefined reference to `v4l2_async_notifier_register'
+aarch64-linux-ld: rcar_drif.c:(.text+0x14d8): undefined reference to `v4l2_async_notifier_cleanup'
+aarch64-linux-ld: rcar_drif.c:(.text+0x15a8): undefined reference to `__v4l2_async_notifier_add_fwnode_subdev'
+
+I could not easily figure out when this was introduced, as this code
+has not changed in a while but I only saw the problem recently.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/pci/controller/dwc/pcie-designware-host.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/media/platform/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index a608ae1fad57..82ba429246f8 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -408,8 +408,9 @@ int dw_pcie_host_init(struct pcie_port *pp)
- 			goto err_free_msi;
- 	}
- 
--	/* Ignore errors, the link may come up later */
--	dw_pcie_wait_for_link(pci);
-+	int ret = dw_pcie_wait_for_link(pci);
-+	if (ret)
-+		goto err_free_msi;
- 
- 	bridge->sysdata = pp;
- 
+diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+index 157c924686e4..c5d1c83bd582 100644
+--- a/drivers/media/platform/Kconfig
++++ b/drivers/media/platform/Kconfig
+@@ -635,6 +635,7 @@ config VIDEO_RCAR_DRIF
+ 	depends on VIDEO_V4L2
+ 	depends on ARCH_RENESAS || COMPILE_TEST
+ 	select VIDEOBUF2_VMALLOC
++	select V4L2_ASYNC
+ 	help
+ 	  Say Y if you want to enable R-Car Gen3 DRIF support. DRIF is Digital
+ 	  Radio Interface that interfaces with an RF front end chip. It is a
 -- 
-2.31.1
+2.29.2
 
