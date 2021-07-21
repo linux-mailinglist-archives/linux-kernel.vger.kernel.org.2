@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A943D1229
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75FD3D122D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239785AbhGUOib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:38:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33488 "EHLO mail.kernel.org"
+        id S239794AbhGUOjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:39:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238083AbhGUOiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:38:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D9D861245;
-        Wed, 21 Jul 2021 15:19:02 +0000 (UTC)
+        id S232808AbhGUOjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 10:39:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E36360E0C;
+        Wed, 21 Jul 2021 15:19:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626880742;
-        bh=iyJmmnRrmq3NjJ0o9+o2VxFl1R0JWz/x6crIEc3pGdc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bztUAqqMxqi/SzVRjgbhD2sJ8CieKxas0xnNwFaILxOp3EoCBq3Waf/Va5tII0mwJ
-         4wdTIg4KizMLZcLI/V38eZAAgf7a8gxfkS8ScDn5xK5w0XGb3f9qtGahOTvZ7d4Bk4
-         cVrnyNhrO9KsGeSo4aoMC+Q3PN2E19SIWeC6YO/bkFflFZgjpgu1xKzo545Vg5+hc2
-         2yhnpji+iBW9SIO9Vc5GQ/FNNS5C2/+l8hUhBbp4D23zSZGkPDzQs5/BLbBvJd9mrb
-         zUJ987dbD9oYOQFoS5FSU0Ivex0N53tYBs0cJV09Euxnsh19p7ENC96XMFMLzj+Jeo
-         jRKH1gb/918nw==
-Date:   Wed, 21 Jul 2021 11:19:01 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        David Wysochanski <dwysocha@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "J. Bruce Fields" <bfields@redhat.com>
-Subject: Re: [PATCH 5.10 147/243] NFSD: Fix TP_printk() format specifier in
- nfsd_clid_class
-Message-ID: <YPg65XyiPf+A/2yi@sashalap>
-References: <20210719144940.904087935@linuxfoundation.org>
- <20210719144945.657682587@linuxfoundation.org>
- <20210720214847.GB704@amd>
- <20210721100413.227fd0cb@oasis.local.home>
+        s=k20201202; t=1626880795;
+        bh=UZmUgiq+0zQRbNJ0Kg61Zjq+ze+yjskbVrAwJ89o1Gw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dg4lDZVW9E0iR/8jYLE/BGJ1d18WPys91V3j2iVk3/jwODmV2AKf/TooI6VXV2NqD
+         K7QrxzPBwNPP2AT0uTi9y5lRA+ZwgDjftQtWMRET0F0q/hshMO1bch7nJif6nKuM3o
+         BTqF+VbcOpk+LcEozOKV1p7Od5aAYLpNsCj9FZ0IS4AlKaPhFTTsJGv9Ejb+dK6cK5
+         dd/Le1z60tHMUFV57T7jDy1VEo2e+icLNUxWZReF8GR+W8DHnN6k+/uPd12Mdoma7J
+         bnYWQzCfSoRqi/Dv9lYXHVmU8/n4x+KdhRNY00MiXUROt4H0EHOpN4XxzBmFTqNaom
+         mjNBS0K9dElxQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: ixp46x: fix ptp build failure
+Date:   Wed, 21 Jul 2021 17:19:32 +0200
+Message-Id: <20210721151951.2558679-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210721100413.227fd0cb@oasis.local.home>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 10:04:13AM -0400, Steven Rostedt wrote:
->On Tue, 20 Jul 2021 23:48:47 +0200
->Pavel Machek <pavel@denx.de> wrote:
->
->> Hi!
->>
->> > [ Upstream commit a948b1142cae66785521a389cab2cce74069b547 ]
->> >
->> > Since commit 9a6944fee68e ("tracing: Add a verifier to check string
->> > pointers for trace events"), which was merged in v5.13-rc1,
->> > TP_printk() no longer tacitly supports the "%.*s" format specifier.
->> >
->> > These are low value tracepoints, so just remove them.
->>
->> So I understand we want this for mainline, but AFAICT 5.10 does not
->> have 9a6944fee68e ("tracing: Add a verifier to check string pointers
->> for trace events") commit, so this does not fix any bug and removal of
->> tracepoints can be surprising.
->>
->
->Thanks for pointing this out. I get so many stable patches, I don't
->have time to look at all of them.
->
->Greg, I don't think this should be backported. The verifier code had a
->bug in it that broke the '%.*s' formats. This patch removed the good
->code because of the broken code.
->
->See eb01f5353bdaa ("tracing: Handle %.*s in trace_check_vprintf()")
+From: Arnd Bergmann <arnd@arndb.de>
 
-Uh, yes, I'll drop it. Thanks for catching this!
+The rework of the ixp46x cpu detection left the network driver in
+a half broken state:
 
+drivers/net/ethernet/xscale/ptp_ixp46x.c: In function 'ptp_ixp_init':
+drivers/net/ethernet/xscale/ptp_ixp46x.c:290:51: error: 'IXP4XX_TIMESYNC_BASE_VIRT' undeclared (first use in this function)
+  290 |                 (struct ixp46x_ts_regs __iomem *) IXP4XX_TIMESYNC_BASE_VIRT;
+      |                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/xscale/ptp_ixp46x.c:290:51: note: each undeclared identifier is reported only once for each function it appears in
+drivers/net/ethernet/xscale/ptp_ixp46x.c: At top level:
+drivers/net/ethernet/xscale/ptp_ixp46x.c:323:1: error: data definition has no type or storage class [-Werror]
+  323 | module_init(ptp_ixp_init);
+
+I have patches to complete the transition for a future release, but
+for the moment, add the missing include statements to get it to build
+again.
+
+Fixes: 09aa9aabdcc4 ("soc: ixp4xx: move cpu detection to linux/soc/ixp4xx/cpu.h")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/xscale/ptp_ixp46x.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/ethernet/xscale/ptp_ixp46x.c b/drivers/net/ethernet/xscale/ptp_ixp46x.c
+index 99d4d9439d05..a6fb88fd42f7 100644
+--- a/drivers/net/ethernet/xscale/ptp_ixp46x.c
++++ b/drivers/net/ethernet/xscale/ptp_ixp46x.c
+@@ -14,6 +14,8 @@
+ #include <linux/kernel.h>
+ #include <linux/ptp_clock_kernel.h>
+ #include <linux/soc/ixp4xx/cpu.h>
++#include <linux/module.h>
++#include <mach/ixp4xx-regs.h>
+ 
+ #include "ixp46x_ts.h"
+ 
 -- 
-Thanks,
-Sasha
+2.29.2
+
