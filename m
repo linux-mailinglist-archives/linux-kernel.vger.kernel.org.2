@@ -2,85 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0379B3D0E6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B9B3D0E76
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237405AbhGULVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:21:55 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:44879 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238710AbhGULOu (ORCPT
+        id S238370AbhGULXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:23:15 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:47984
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239029AbhGULQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:14:50 -0400
-Received: from mail-wm1-f54.google.com ([209.85.128.54]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mdf3x-1lXO6H0XWz-00Ziaj; Wed, 21 Jul 2021 13:55:24 +0200
-Received: by mail-wm1-f54.google.com with SMTP id o30-20020a05600c511eb029022e0571d1a0so822956wms.5;
-        Wed, 21 Jul 2021 04:55:24 -0700 (PDT)
-X-Gm-Message-State: AOAM530AfRa3HKIYg6SIUv1WxpIVMi1Gb3NOkqgcQsM3iV1xXvIpM3lo
-        wIcLf7lAVplJ6udiUptfxnkEuTS0xauAxaKuCO0=
-X-Google-Smtp-Source: ABdhPJy4EXJSa5RpG/qfjvUKgiDhoM7SKGMs58HDYjrIRZu7cl/bUvkfbFQyQOZ55tRAZchy6LkfVE1zaiNR+vTackk=
-X-Received: by 2002:a7b:c385:: with SMTP id s5mr36193035wmj.43.1626868523806;
- Wed, 21 Jul 2021 04:55:23 -0700 (PDT)
+        Wed, 21 Jul 2021 07:16:00 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 5AB3F3F233;
+        Wed, 21 Jul 2021 11:56:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626868593;
+        bh=z2ufXsLf37VqDlE9l6EtFspiE90ljAjzw62R09jzo/Y=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=TZwEf7IEZjs0CeGI6pWIb2jqxZIObRdqFz29DsylAxAiC1XQLbRi+34P+YmLuifpo
+         k6ElrOQryQaYAsIjScswMlyVbec66N8hvjEBd2TCKQhc0QKgIhzwejTzqNQY8X/RfM
+         EnzgKn0+9EJ9+uCG0uOX2n1DszQqMo/0Gq9mD7QHRjHBp3hPujVdmAj2k39FrdR37A
+         X9VmR73zFrWxqfl1QDtOur09FdazHsYWO8r+z/l3IcJpj4CIsuJlZ+chOF/5xZLjix
+         QmswdhJDUuW8Hr1I8drlAugo8QZyVMNve8nWE1akbi1A4z+bKXRTDoSZ7PrL1VFrI6
+         Q+L2ilizuJB5A==
+From:   Colin King <colin.king@canonical.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bpf: remove redundant intiialization of variable stype
+Date:   Wed, 21 Jul 2021 12:56:30 +0100
+Message-Id: <20210721115630.109279-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <cover.1626855713.git.mchehab+huawei@kernel.org> <8dbdde3eda0e5d22020f6a8bf153d7cfb775c980.1626862458.git.mchehab+huawei@kernel.org>
-In-Reply-To: <8dbdde3eda0e5d22020f6a8bf153d7cfb775c980.1626862458.git.mchehab+huawei@kernel.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 21 Jul 2021 13:55:07 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0fB48uES77a+z=OyyV9Rd4HbA4Q7gkVFCtPV5yispGYA@mail.gmail.com>
-Message-ID: <CAK8P3a0fB48uES77a+z=OyyV9Rd4HbA4Q7gkVFCtPV5yispGYA@mail.gmail.com>
-Subject: Re: [PATCH v7 11/10] PCI: kirin: Allow building it as a module
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        Mauro Carvalho Chehab <mauro.chehab@huawei.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Henry Styles <hes@sifive.com>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh@kernel.org>,
-        Wesley Sheng <wesley.sheng@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:t49h9CVeedSZ7+fdL7z6u910E0XuctlxZSelhJbgB07hKUXCtvr
- 9drUzE44+OjS/J+dEodL3FTDBeF91SjK3urcQblBk8hcfgjDmOjpNYXziKAJm/MmB0Ar/xZ
- fX8bBx2A7wmEWCNZ9Mw7Iesg+Et5VlQeT10XipHZ1pXT/TSX6fjpSszdTD72XWIRmLcimHQ
- JoSi0Q4cp93Aj1u7qU4NQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6uSZ28bHNyE=:GfICW98GumRzDvpk8xW4pZ
- d7jJL/3g4xmYF4nXra0F7tjcW/qJm+ApMubRsgFGrehBx1zu3Gur5u6cBEe0lD3TGSkTzJ0v0
- let9/OFo9wKegZijpnLPqgl0o9pJHJcsN0j5RyndmtP0NKkH8o971xv70ir+mLW++Nnb3sTOb
- 2KugNKtQsxKGRB80a/knxr1HwODi3VVjQLewGn5N92j4CjsrQdpIiyAlAv9mC0jqBwvZoM04L
- rzcw7F352J5FlKqyPdKH9vUKTAs4EIdjt4U8gOAJ7cGJJU3u8gT0SGg/r+oUuwvUX33H6jmEO
- i5/eqQz1OR+2dkohRjgJO7P3L79DePdx0NUqRbCqCenjCxuimoYXRX8VSEUEw/SvVtwBzE15K
- iluxJvWy4cgumHTjZn/LZQ2sW33nLZ149bzAbOkohY6Dz6Z2PkuPtGF5PsSCPOxdNpqdQB0TJ
- p3x3pwkXDmQTw8TOXphe0RmY3WmEQRb0FmR/fAmhzMCl2QZ8uZFUYRgJ1jssqLY8bJOuVIwD1
- zNkvI0bQJfGYR3mbFAH++5wrWylHb6k3Ae1vq/0/AIuaIO9DZW0lsiBGVoYcCAMG8V1hfmVp+
- mBgWEStMHcl+GfNbkcdshQSwAdnipewp/faXC123zAV1WUP9a3au9NCHHCXlGVOltjefO2yK0
- FdP7PyUdsXK8XJUUMAe5ZYmAY/07gXC9ScYD/H5gWzv7oBn6+IppY8nALr0cklZ0JBmR4XAqC
- gC5FNFbJH4cScAuDD45b28vrbiu2Dlmn48ku/KbmgIxuhrc4bSMkmumx4SLwug3X0S2Tkf4GI
- nLhdBx+wlgQBQVN8kcStFBwvolexVP5sSzix0szc5Dl6UqCdBv8ypFUrF+LAha1bVU11n2u
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 12:15 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> There's nothing preventing this driver to be loaded as a
-> module. So, change its config from bool to tristate.
->
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-No objections from me, but I wonder if you would also consider making the
-module removable. It's currently marked as 'builtin_platform_driver',
-so you can load but not remove it. Rob has done some bug fixes that make
-it possible to remove similar drivers, so it's probably not much work
-here either.
+The variable stype is being initialized with a value that is never
+read, it is being updated later on. The assignment is redundant and
+can be removed.
 
-     Arnd
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ kernel/bpf/local_storage.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
+index 362e81481594..7ed2a14dc0de 100644
+--- a/kernel/bpf/local_storage.c
++++ b/kernel/bpf/local_storage.c
+@@ -406,7 +406,7 @@ static int cgroup_storage_check_btf(const struct bpf_map *map,
+ static void cgroup_storage_seq_show_elem(struct bpf_map *map, void *key,
+ 					 struct seq_file *m)
+ {
+-	enum bpf_cgroup_storage_type stype = cgroup_storage_type(map);
++	enum bpf_cgroup_storage_type stype;
+ 	struct bpf_cgroup_storage *storage;
+ 	int cpu;
+ 
+-- 
+2.31.1
+
