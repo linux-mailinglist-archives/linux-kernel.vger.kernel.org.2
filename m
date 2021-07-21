@@ -2,160 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209743D1326
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7E13D12EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhGUPUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 11:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49028 "EHLO
+        id S239890AbhGUPOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 11:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhGUPUU (ORCPT
+        with ESMTP id S239750AbhGUPOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:20:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF99C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:00:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=82dEs+QK8clDq3Pt2lMrAAeDCJqiHd3ZB8Jdeya5Gvc=; b=sRwZtN5JPOtgbYSaT+IxrmHdoA
-        3G1b1SSk+OKQAm5SYA0QWnWIl6aSQImQamHngl4lXKRv4l+YS29GRqapmf5OzJ9kvzc1N+kBWUS0z
-        s58Mq8IP3DCfd+jPNcqGjUrY7A2ACC+p/TSDWi23SwQUcKsgYs2L9dQ6HuS1cU9Vqgr0h1Lew/Uoy
-        IDn2MinUJO/TJ1le955+OW1zlWYz9bzHhhr4IiU/eRM6fxxYJVjwBd+jVD+MrEacS9LleuXCnLQEr
-        XjZ+7HoUneOWQF4hr70YyKP82SDU1DxpYF0PS6eiQfZsAcmRZIaeM/6E4q/nXoO/f3YO5YtXurG5E
-        yk1hJwPA==;
-Received: from [2001:4bb8:193:7660:d6d5:72f4:23f7:1898] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6Edp-009MeG-Bh; Wed, 21 Jul 2021 16:00:25 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>
-Cc:     intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 17/21] drm/i915/gvt: devirtualize ->gfn_to_mfn
-Date:   Wed, 21 Jul 2021 17:53:51 +0200
-Message-Id: <20210721155355.173183-18-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210721155355.173183-1-hch@lst.de>
-References: <20210721155355.173183-1-hch@lst.de>
+        Wed, 21 Jul 2021 11:14:38 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C057C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:55:15 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id r21so2263890pgv.13
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:55:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=AamAJMWACPXm/uhBeW58E0AsjcEWEr3w6J2GnzViHiA=;
+        b=WB+2PJIakQlOTm9wjhPJzp8hB1utuhxsTJnRUMf3O02ShM1OHfun//a3DiSuax3Ula
+         y4jLEgCZDspibyRcz8Th1U2MJ3praLixVFT3CM4gtQE/e5b8bl8hrd4KzY0JR5fbbiao
+         0MwRgc2g4gI+XmaGHpSK/NPbd/JKN1h9ADnL5X+HCuWjgLqXeTAxs0KApxmL15Fb0+8H
+         RvdwmFJ9C8EG3ArJTTI1w7+woXXHwzHhIF4f1pPVvft5JNmh8EcjR/4W1r+E/81yZ29j
+         2+RkCgA+gGmn316uEu+XzZyUNU5pDxltDh7tiuBGz6IohNXsfw/RBhIkRmfnF1qCITCA
+         k3OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=AamAJMWACPXm/uhBeW58E0AsjcEWEr3w6J2GnzViHiA=;
+        b=Z89yWIesVlHL5UvXKXkU5FPhio/EZjOZF+8S3yWdFjtSt1/P44FoyOddXT7sA6VLio
+         gdZw1403V8iyFpfLOtI5zDq0CMhekqZ+Jl7Fy6kn50VP06cO2J05uxFUtDEMXe18ZuHH
+         +lnlWxHhrPxF2hyU7eTubzfMyvnwZDyIE4izBkJtZ6/4CpJpfDh/+K7ZiWEY2D+SPVh5
+         n1Lqd90M8Ci2pRgIx4mYqVP56Fyz811aVoYulrf/OH9GToUwng6dNjMz1wj0m06ODmhq
+         Akxd0n/wZorGh7/bvyzJgJ27V4w92VSGyreELdsfyLK5RnFrbT5e04NRgpIiidpbqhlm
+         DNMg==
+X-Gm-Message-State: AOAM5322PxGrC4fO9jVKNOsVHPlXTcozqI9pmHzBXsr+HnlWG3ZAZ1an
+        VxRkYnzgKgrF+8MS+mSgQgleuQ==
+X-Google-Smtp-Source: ABdhPJwwQM3wb9won1K+8GVee0NEZPozhbd2UA018Tfv3tLtslZhN2u+D9aYesjxL2UPAAfxTRbfNQ==
+X-Received: by 2002:a63:ef57:: with SMTP id c23mr36356785pgk.60.1626882914844;
+        Wed, 21 Jul 2021 08:55:14 -0700 (PDT)
+Received: from Shannons-MacBook-Pro.local ([50.53.47.17])
+        by smtp.gmail.com with ESMTPSA id r10sm26922902pff.7.2021.07.21.08.55.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Jul 2021 08:55:14 -0700 (PDT)
+Subject: Re: [PATCH net-next] ionic: drop useless check of PCI driver data
+ validity
+To:     Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, drivers@pensando.io,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <93b5b93f83fae371e53069fc27975e59de493a3b.1626861128.git.leonro@nvidia.com>
+From:   Shannon Nelson <snelson@pensando.io>
+Message-ID: <bb9c5fdc-491a-03f6-2f67-083e375b8fc2@pensando.io>
+Date:   Wed, 21 Jul 2021 08:55:12 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <93b5b93f83fae371e53069fc27975e59de493a3b.1626861128.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just open code it in the only caller.
+On 7/21/21 2:54 AM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+>
+> The driver core will call to .remove callback only if .probe succeeded
+> and it will ensure that driver data has pointer to struct ionic.
+>
+> There is no need to check it again.
+>
+> Fixes: fbfb8031533c ("ionic: Add hardware init and device commands")
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/gpu/drm/i915/gvt/gtt.c       |  9 +++++----
- drivers/gpu/drm/i915/gvt/hypercall.h |  1 -
- drivers/gpu/drm/i915/gvt/kvmgt.c     | 16 ----------------
- drivers/gpu/drm/i915/gvt/mpt.h       | 14 --------------
- 4 files changed, 5 insertions(+), 35 deletions(-)
+Thanks,
 
-diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gtt.c
-index 5783642d4d79..75782f59df8e 100644
---- a/drivers/gpu/drm/i915/gvt/gtt.c
-+++ b/drivers/gpu/drm/i915/gvt/gtt.c
-@@ -1176,15 +1176,16 @@ static int is_2MB_gtt_possible(struct intel_vgpu *vgpu,
- 	struct intel_gvt_gtt_entry *entry)
- {
- 	struct intel_gvt_gtt_pte_ops *ops = vgpu->gvt->gtt.pte_ops;
--	unsigned long pfn;
-+	kvm_pfn_t pfn;
- 
- 	if (!HAS_PAGE_SIZES(vgpu->gvt->gt->i915, I915_GTT_PAGE_SIZE_2M))
- 		return 0;
- 
--	pfn = intel_gvt_hypervisor_gfn_to_mfn(vgpu, ops->get_pfn(entry));
--	if (pfn == INTEL_GVT_INVALID_ADDR)
-+	if (!vgpu->attached)
-+		return -EINVAL;
-+	pfn = gfn_to_pfn(vgpu->kvm, ops->get_pfn(entry));
-+	if (is_error_noslot_pfn(pfn))
- 		return -EINVAL;
--
- 	return PageTransHuge(pfn_to_page(pfn));
- }
- 
-diff --git a/drivers/gpu/drm/i915/gvt/hypercall.h b/drivers/gpu/drm/i915/gvt/hypercall.h
-index c1a9eeed0460..dbde492cafc8 100644
---- a/drivers/gpu/drm/i915/gvt/hypercall.h
-+++ b/drivers/gpu/drm/i915/gvt/hypercall.h
-@@ -47,7 +47,6 @@ struct intel_gvt_mpt {
- 	void (*host_exit)(struct device *dev, void *gvt);
- 	int (*enable_page_track)(struct intel_vgpu *vgpu, u64 gfn);
- 	int (*disable_page_track)(struct intel_vgpu *vgpu, u64 gfn);
--	unsigned long (*gfn_to_mfn)(struct intel_vgpu *vgpu, unsigned long gfn);
- 
- 	int (*dma_map_guest_page)(struct intel_vgpu *vgpu, unsigned long gfn,
- 				  unsigned long size, dma_addr_t *dma_addr);
-diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
-index 2d3ef59e7227..226e3f3c41df 100644
---- a/drivers/gpu/drm/i915/gvt/kvmgt.c
-+++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-@@ -1855,21 +1855,6 @@ void intel_vgpu_detach_regions(struct intel_vgpu *vgpu)
- 	vgpu->region = NULL;
- }
- 
--static unsigned long kvmgt_gfn_to_pfn(struct intel_vgpu *vgpu,
--		unsigned long gfn)
--{
--	kvm_pfn_t pfn;
--
--	if (!vgpu->attached)
--		return INTEL_GVT_INVALID_ADDR;
--
--	pfn = gfn_to_pfn(vgpu->kvm, gfn);
--	if (is_error_noslot_pfn(pfn))
--		return INTEL_GVT_INVALID_ADDR;
--
--	return pfn;
--}
--
- static int kvmgt_dma_map_guest_page(struct intel_vgpu *vgpu, unsigned long gfn,
- 		unsigned long size, dma_addr_t *dma_addr)
- {
-@@ -1966,7 +1951,6 @@ static const struct intel_gvt_mpt kvmgt_mpt = {
- 	.host_exit = kvmgt_host_exit,
- 	.enable_page_track = kvmgt_page_track_add,
- 	.disable_page_track = kvmgt_page_track_remove,
--	.gfn_to_mfn = kvmgt_gfn_to_pfn,
- 	.dma_map_guest_page = kvmgt_dma_map_guest_page,
- 	.dma_unmap_guest_page = kvmgt_dma_unmap_guest_page,
- 	.dma_pin_guest_page = kvmgt_dma_pin_guest_page,
-diff --git a/drivers/gpu/drm/i915/gvt/mpt.h b/drivers/gpu/drm/i915/gvt/mpt.h
-index 1a796f2181ba..2d4bb6eaa08e 100644
---- a/drivers/gpu/drm/i915/gvt/mpt.h
-+++ b/drivers/gpu/drm/i915/gvt/mpt.h
-@@ -99,20 +99,6 @@ static inline int intel_gvt_hypervisor_disable_page_track(
- 	return intel_gvt_host.mpt->disable_page_track(vgpu, gfn);
- }
- 
--/**
-- * intel_gvt_hypervisor_gfn_to_mfn - translate a GFN to MFN
-- * @vgpu: a vGPU
-- * @gpfn: guest pfn
-- *
-- * Returns:
-- * MFN on success, INTEL_GVT_INVALID_ADDR if failed.
-- */
--static inline unsigned long intel_gvt_hypervisor_gfn_to_mfn(
--		struct intel_vgpu *vgpu, unsigned long gfn)
--{
--	return intel_gvt_host.mpt->gfn_to_mfn(vgpu, gfn);
--}
--
- /**
-  * intel_gvt_hypervisor_dma_map_guest_page - setup dma map for guest page
-  * @vgpu: a vGPU
--- 
-2.30.2
+Acked-by: Shannon Nelson <snelson@pensando.io>
+
+> ---
+>   drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c | 3 ---
+>   1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c b/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c
+> index e4a5416adc80..505f605fa40b 100644
+> --- a/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c
+> +++ b/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c
+> @@ -373,9 +373,6 @@ static void ionic_remove(struct pci_dev *pdev)
+>   {
+>   	struct ionic *ionic = pci_get_drvdata(pdev);
+>   
+> -	if (!ionic)
+> -		return;
+> -
+>   	del_timer_sync(&ionic->watchdog_timer);
+>   
+>   	if (ionic->lif) {
 
