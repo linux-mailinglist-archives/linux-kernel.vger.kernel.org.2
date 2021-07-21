@@ -2,127 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1E73D15A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED783D15BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237556AbhGURO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:14:29 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:31830 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236551AbhGURO2 (ORCPT
+        id S237209AbhGURQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:16:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229948AbhGURQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:14:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626890104; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=pJQVTKLxIe0Fn9msKrGPa7GRTW4HbzJ0ouMJuFmUpVs=; b=oik3U5SbPgPkugXcD8fM4OgFuAShgFlRmXnZrk5lGQCEIrAM5IMb8cdfJv5oiAjOXbo4Ur6I
- LvGzRZ2Vci9n7VkhLcf4iX19NCdxu6+jzggQKvMQiv2R+6trFGylXSfxb2xX5TPcIaJ3M5pt
- pBAqb6c5uhO/wT32hxMxdqRzCNw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60f85f62290ea35ee67b3c7f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 17:54:42
- GMT
-Sender: mdtipton=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9DEE7C43217; Wed, 21 Jul 2021 17:54:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-mdtipton-lv.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdtipton)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AF8FCC433F1;
-        Wed, 21 Jul 2021 17:54:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AF8FCC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mdtipton@codeaurora.org
-From:   Mike Tipton <mdtipton@codeaurora.org>
-To:     djakov@kernel.org
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
-        saravanak@google.com, okukatla@codeaurora.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Mike Tipton <mdtipton@codeaurora.org>
-Subject: [PATCH v2 4/4] interconnect: qcom: icc-rpmh: Add BCMs to commit list in pre_aggregate
-Date:   Wed, 21 Jul 2021 10:54:32 -0700
-Message-Id: <20210721175432.2119-5-mdtipton@codeaurora.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210721175432.2119-1-mdtipton@codeaurora.org>
-References: <20210721175432.2119-1-mdtipton@codeaurora.org>
+        Wed, 21 Jul 2021 13:16:12 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D7CC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:56:48 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id c17so4460112ejk.13
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vrMphr3tpItn2w3bBK1L8WnMR/wafltXE6Any2pLriw=;
+        b=rtdiKAHwaRqh8X+FKuOHGfbcpYhyq06wimQpNcQgPkZTz6/eAvUT1D1HBNHj5YoaLE
+         X+vmixOJr4r15Dzo1zBi6hI0mIbdzMsUdGxXCqFMnKc5ROVW3dXItOh2of/2WPOU8+Yk
+         6V2CFYdkbmpsPZis/khwXfYZdxSav5Eai2B/Qj1bjP3yeYHdYbkjQXkMCXkWzO3pm9JG
+         LVxyY1yhCYvmuCdyV/944q6XZ0Dbz/mXKkDAqlCUF+JXdM6e/0elAqQoszltebGx1Rbq
+         6siHkU46e8dFc3XhRcnMXXQl+lv0FrdkasnCdiQWlL0cSBohyrZ5lqB197OkMaJYMuzB
+         dNNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vrMphr3tpItn2w3bBK1L8WnMR/wafltXE6Any2pLriw=;
+        b=dZ6znT2VF+r7RopA9jFTVofGfpKMCvOOJ7VWiJ0inw7K9BlOamdaQaXhztobNHPUoo
+         qsyFgxjI4HEMpDGmTx0MyV+t37e/zdc4iWyn98Dh8toHrhURsP11C2WZFE9QXWXiA8qP
+         2VCfoaIJXGeB85gcJliCL80TTgPytwl13AwugpiPcpeMAb6P8XNto+359IKTnSWtx3bh
+         SzttIftW74Emq1YHkuJYnV5Y+F+MHVZjNw6/v+qJWP8cPh3JBl8+5daaUF+fjvAPXVas
+         KYksyIOJA7mqH8KX9OZqivoJpd+5SvPtyfWQQ5b18w4v1OqBiatD5ayuUL1jpPjnVMPi
+         MVPw==
+X-Gm-Message-State: AOAM533hmIIXYLb8/Dl/8uRvi+op8+StRLPXRs68uT0YXJHVd229PfGi
+        HvJL3Jhx6zwfNMIUzzxTINjYDA==
+X-Google-Smtp-Source: ABdhPJztICbLBjabcxqrQBD4WycfWu5/hNk/dhR2NO6b/fMWzVqkTTn/NuY6CqSY8ILFXvSFOtrYAg==
+X-Received: by 2002:a17:906:4ad9:: with SMTP id u25mr39222251ejt.174.1626890206835;
+        Wed, 21 Jul 2021 10:56:46 -0700 (PDT)
+Received: from myrica (adsl-84-226-111-173.adslplus.ch. [84.226.111.173])
+        by smtp.gmail.com with ESMTPSA id p5sm6130708ejl.73.2021.07.21.10.56.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 10:56:46 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 19:56:25 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     maz@kernel.org
+Cc:     kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, corbet@lwn.net, james.morse@arm.com,
+        alexandru.elisei@arm.com, suzuki.poulose@arm.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        lorenzo.pieralisi@arm.com, salil.mehta@huawei.com,
+        shameerali.kolothum.thodi@huawei.com, jonathan.cameron@huawei.com,
+        tabba@google.com, oupton@google.com
+Subject: Re: [RFC PATCH 0/5] KVM: arm64: Pass PSCI to userspace
+Message-ID: <YPhfyVUIKHW9xF22@myrica>
+References: <20210608154805.216869-1-jean-philippe@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608154805.216869-1-jean-philippe@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We're only adding BCMs to the commit list in aggregate(), but there are
-cases where pre_aggregate() is called without subsequently calling
-aggregate(). In particular, in icc_sync_state() when a node with initial
-BW has zero requests. Since BCMs aren't added to the commit list in
-these cases, we don't actually send the zero BW request to HW. So the
-resources remain on unnecessarily.
+On Tue, Jun 08, 2021 at 05:48:01PM +0200, Jean-Philippe Brucker wrote:
+> Allow userspace to request handling PSCI calls from guests. Our goal is
+> to enable a vCPU hot-add solution for Arm where the VMM presents
+> possible resources to the guest at boot, and controls which vCPUs can be
+> brought up by allowing or denying PSCI CPU_ON calls.
 
-Add BCMs to the commit list in pre_aggregate() instead, which is always
-called even when there are no requests.
+Since it looks like vCPU hot-add will be implemented differently, I don't
+intend to resend this series at the moment. But some of it could be
+useful for other projects and to avoid the helpful review effort going to
+waste, I fixed it up and will leave it on branch
+https://jpbrucker.net/git/linux/log/?h=kvm/psci-to-userspace
+It now only uses KVM_CAP_EXIT_HYPERCALL introduced in v5.14.
 
-Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
-Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
----
- drivers/interconnect/qcom/icc-rpmh.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/interconnect/qcom/icc-rpmh.c b/drivers/interconnect/qcom/icc-rpmh.c
-index f118f57eae37..b26fda0588e0 100644
---- a/drivers/interconnect/qcom/icc-rpmh.c
-+++ b/drivers/interconnect/qcom/icc-rpmh.c
-@@ -20,13 +20,18 @@ void qcom_icc_pre_aggregate(struct icc_node *node)
- {
- 	size_t i;
- 	struct qcom_icc_node *qn;
-+	struct qcom_icc_provider *qp;
- 
- 	qn = node->data;
-+	qp = to_qcom_provider(node->provider);
- 
- 	for (i = 0; i < QCOM_ICC_NUM_BUCKETS; i++) {
- 		qn->sum_avg[i] = 0;
- 		qn->max_peak[i] = 0;
- 	}
-+
-+	for (i = 0; i < qn->num_bcms; i++)
-+		qcom_icc_bcm_voter_add(qp->voter, qn->bcms[i]);
- }
- EXPORT_SYMBOL_GPL(qcom_icc_pre_aggregate);
- 
-@@ -44,10 +49,8 @@ int qcom_icc_aggregate(struct icc_node *node, u32 tag, u32 avg_bw,
- {
- 	size_t i;
- 	struct qcom_icc_node *qn;
--	struct qcom_icc_provider *qp;
- 
- 	qn = node->data;
--	qp = to_qcom_provider(node->provider);
- 
- 	if (!tag)
- 		tag = QCOM_ICC_TAG_ALWAYS;
-@@ -67,9 +70,6 @@ int qcom_icc_aggregate(struct icc_node *node, u32 tag, u32 avg_bw,
- 	*agg_avg += avg_bw;
- 	*agg_peak = max_t(u32, *agg_peak, peak_bw);
- 
--	for (i = 0; i < qn->num_bcms; i++)
--		qcom_icc_bcm_voter_add(qp->voter, qn->bcms[i]);
--
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(qcom_icc_aggregate);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Thanks,
+Jean
