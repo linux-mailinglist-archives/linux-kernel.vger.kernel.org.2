@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2163D0FB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D433D0FB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238398AbhGUM7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43538 "EHLO
+        id S238304AbhGUM7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238304AbhGUM5J (ORCPT
+        with ESMTP id S238301AbhGUM5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 08:57:09 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29EE2C0613E2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:37:43 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id hr1so3335161ejc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:37:43 -0700 (PDT)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E23C0613E3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:37:44 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id bu12so3377267ejb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:37:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SMjuPxhinOa2feNA8CC5hEMDGs+6QzUFA+HdTbnhsDk=;
-        b=IBHBLDkC9SXhRKFYeg9i1nJxQtOCOJtYpeb6wOTneByiF8GeUTHxCm1B30vNJnkvvF
-         mvpNroxZ83v6G2G37Jo/hIVRWBDRWyd8jniGZsqUuIlOc82QhEzDkoIiDEzekjbl5zAz
-         /HGyDSk3uMXAY6B4roPmGnP+QT0Tx1AFP4jYmhGxdjyCpEHL6DZfMXS2OoG7qgpHveal
-         +98x8jYjp1aZH3RfVWp5Z56xHXTZk7IH0d+ScZitdjCOw9ARK6yHQ+6lLcAvwj6mgHwB
-         zSgqJixx79yO4zplA42DnTT6bGOfPshteUWDmY7JLisMh++hIgJ7FxYxq28ye/IrZsNP
-         Lidg==
+        bh=sL2olSMTJFzVJiuJQ17ZzQTo2MiVeT3LUtk6TNAxUlk=;
+        b=fU5LI4XQ+qWe8BJfHUAnwmx32Siftjh9MqZm2Q6N1Be7szRcJVT3UbQGZn5df3fVAU
+         jZCufU/Hc8I2vjiI4RSY4moied5qHZ92moVoEmMGiKT0LnPzkxZo/XHyQHwSJZh9sBxK
+         KIPgNSPDipH2747tq2HaAVHBCqwmu3hCFDZMNF5gkmJ+f0QwnGYkShxJC4ciQm/L220K
+         4ReiN/Y4m18qDoM9/FqLv/IhJADhqD7eDlAk5XVEjHV4fatGat9NNCCeW1zozT8aS7Op
+         MXSqQhqyGP92LmXckYbYaQWbFnvYFf/waFqbjONqSeDoFZWSTV4v5zArjd69iqUq+PfY
+         UE9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SMjuPxhinOa2feNA8CC5hEMDGs+6QzUFA+HdTbnhsDk=;
-        b=iAnT5iwC22x9/gsmwzuLaTTlsCISKWZPa9C5lfMWh+lTcHORJb2DfDno4fsE7nvWwn
-         ZTr3F1PyLRwNPuSSOGNUdB8Orz5PX4N/d/4lrlo7SRVp011xXI3H942RnENCO8Y9d501
-         D96vfJ79xk8GjIlMlsRIQozGpsOIMGN5etCZcuxH62nNCU9cHlpG5lau32Cx4Af/7gjw
-         9PMj2kIMxCo0vqR18TJh0QW4PqlkYhaXgSWMWdSgbapw3RJR3VNQqm5Fh23yimZUHyz/
-         7XL4x5sDLENC9zeL0jb6c10PuzM/JO4hKvwPQj38o5qiyUUlnlNSYrMPVkIbJkJyffrP
-         CwmQ==
-X-Gm-Message-State: AOAM530ofr81N5/Wb6GvsM/X/Kfy/n7yS4of7GWdHUxfq05p/8nBvxtw
-        +7CdVXi+EIQOtqMhOlaNV85K5LxsOeA=
-X-Google-Smtp-Source: ABdhPJzhLyld393a04kENDgH2k5G0ICSJ/UT5tdH9GT+qq1PXXeBA88cpcZGN821RvIeVoT9OaBOHw==
-X-Received: by 2002:a17:906:43c9:: with SMTP id j9mr37936233ejn.57.1626874661630;
-        Wed, 21 Jul 2021 06:37:41 -0700 (PDT)
+        bh=sL2olSMTJFzVJiuJQ17ZzQTo2MiVeT3LUtk6TNAxUlk=;
+        b=hPBjoRrrvX8xoj4NrxcQBvRw7Ad5x0WrsMnN2CP9taWpNyMTa33bIESSBsaSg+6nRO
+         6r796+dtAuQ6fzDG/kN/mUgxe6dNZjbGW6tvCsKjkuHpMphFIt1ofbT+YbyFUltn8ULY
+         2fPiZuMiCjFwzFLORpKyXHukg6Y7lTQwoDC+vsWoEQXlCT6LV9/vjLAbyC8fKIfWEsy9
+         K477fi0Udvs+M6DlobkVFJfyEfUrqBNSMdOe/di6FAJdI3S1/RiJ5ssUQCdjIUGjogK2
+         DAbRdl3toPzyreVbdQpla4W1ZHX2uPqHftyS4YF8jeLgmlgD24kcWZCFQGxZRlpGz4gw
+         1nWg==
+X-Gm-Message-State: AOAM532Jg1C9NIwLYGEFRJX8X3y0+/nUBBApmPCegZ2U4QOZlieem2aL
+        gIIgQYLufxG5REH7ltXq4Kokm5j/Tyg=
+X-Google-Smtp-Source: ABdhPJwvBw1oCqokEK0IIHcLW1inGZ109gt32UVUyWUaZ7vzwk0o3pEfHNUpcliZjBI7VEN039v1TA==
+X-Received: by 2002:a17:907:70c6:: with SMTP id yk6mr37553467ejb.42.1626874663082;
+        Wed, 21 Jul 2021 06:37:43 -0700 (PDT)
 Received: from agape ([5.171.73.45])
-        by smtp.gmail.com with ESMTPSA id c17sm10677121edv.6.2021.07.21.06.37.41
+        by smtp.gmail.com with ESMTPSA id ba25sm10714239edb.1.2021.07.21.06.37.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 06:37:41 -0700 (PDT)
+        Wed, 21 Jul 2021 06:37:42 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 11/16] staging: rtl8723bs: fix camel case in struct wlan_phy_info
-Date:   Wed, 21 Jul 2021 15:37:18 +0200
-Message-Id: <caadcfc157d62b633fd757d5696c1abce5ef9ae9.1626874164.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 12/16] staging: rtl8723bs: fix camel case in struct wlan_bcn_info
+Date:   Wed, 21 Jul 2021 15:37:19 +0200
+Message-Id: <52c74cf0183da44f2ddaac2607e4b7ccaf9abd91.1626874164.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1626874164.git.fabioaiuto83@gmail.com>
 References: <cover.1626874164.git.fabioaiuto83@gmail.com>
@@ -64,170 +64,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix camel case in struct wlan_phy_info all over the driver.
+fix camel case in struct wlan_bcn_info all over the driver.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_mlme.c     | 30 +++++++++----------
- drivers/staging/rtl8723bs/core/rtw_mlme_ext.c |  8 ++---
- .../staging/rtl8723bs/include/wlan_bssdef.h   |  8 ++---
- .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c |  2 +-
- .../staging/rtl8723bs/os_dep/ioctl_linux.c    |  4 +--
- 5 files changed, 26 insertions(+), 26 deletions(-)
+ .../staging/rtl8723bs/core/rtw_ieee80211.c    | 28 +++++++++----------
+ .../staging/rtl8723bs/core/rtw_wlan_util.c    | 16 +++++------
+ .../staging/rtl8723bs/include/wlan_bssdef.h   |  2 +-
+ 3 files changed, 23 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-index f9c3525ffb57..a0c19253095d 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-@@ -452,7 +452,7 @@ void update_network(struct wlan_bssid_ex *dst, struct wlan_bssid_ex *src,
- {
- 	long rssi_ori = dst->rssi;
+diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
+index 57a75e1f9a56..b7ad4a11a7b7 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
++++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
+@@ -1034,9 +1034,9 @@ static int rtw_get_cipher_info(struct wlan_network *pnetwork)
  
--	u8 sq_smp = src->phy_info.SignalQuality;
-+	u8 sq_smp = src->phy_info.signal_quality;
- 
- 	u8 ss_final;
- 	u8 sq_final;
-@@ -470,13 +470,13 @@ void update_network(struct wlan_bssid_ex *dst, struct wlan_bssid_ex *src,
- 			rssi_final = rssi_ori;
+ 	if (pbuf && (wpa_ielen > 0)) {
+ 		if (_SUCCESS == rtw_parse_wpa_ie(pbuf, wpa_ielen+2, &group_cipher, &pairwise_cipher, &is8021x)) {
+-			pnetwork->BcnInfo.pairwise_cipher = pairwise_cipher;
+-			pnetwork->BcnInfo.group_cipher = group_cipher;
+-			pnetwork->BcnInfo.is_8021x = is8021x;
++			pnetwork->bcn_info.pairwise_cipher = pairwise_cipher;
++			pnetwork->bcn_info.group_cipher = group_cipher;
++			pnetwork->bcn_info.is_8021x = is8021x;
+ 			ret = _SUCCESS;
+ 		}
  	} else {
- 		if (sq_smp != 101) { /* from the right channel */
--			ss_final = ((u32)(src->phy_info.SignalStrength)+(u32)(dst->phy_info.SignalStrength)*4)/5;
--			sq_final = ((u32)(src->phy_info.SignalQuality)+(u32)(dst->phy_info.SignalQuality)*4)/5;
-+			ss_final = ((u32)(src->phy_info.signal_strength)+(u32)(dst->phy_info.signal_strength)*4)/5;
-+			sq_final = ((u32)(src->phy_info.signal_quality)+(u32)(dst->phy_info.signal_quality)*4)/5;
- 			rssi_final = (src->rssi+dst->rssi*4)/5;
- 		} else {
- 			/* bss info not receiving from the right channel, use the original RX signal infos */
--			ss_final = dst->phy_info.SignalStrength;
--			sq_final = dst->phy_info.SignalQuality;
-+			ss_final = dst->phy_info.signal_strength;
-+			sq_final = dst->phy_info.signal_quality;
- 			rssi_final = dst->rssi;
+@@ -1044,9 +1044,9 @@ static int rtw_get_cipher_info(struct wlan_network *pnetwork)
+ 
+ 		if (pbuf && (wpa_ielen > 0)) {
+ 			if (_SUCCESS == rtw_parse_wpa2_ie(pbuf, wpa_ielen+2, &group_cipher, &pairwise_cipher, &is8021x)) {
+-				pnetwork->BcnInfo.pairwise_cipher = pairwise_cipher;
+-				pnetwork->BcnInfo.group_cipher = group_cipher;
+-				pnetwork->BcnInfo.is_8021x = is8021x;
++				pnetwork->bcn_info.pairwise_cipher = pairwise_cipher;
++				pnetwork->bcn_info.group_cipher = group_cipher;
++				pnetwork->bcn_info.is_8021x = is8021x;
+ 				ret = _SUCCESS;
+ 			}
+ 		}
+@@ -1073,17 +1073,17 @@ void rtw_get_bcn_info(struct wlan_network *pnetwork)
+ 		bencrypt = 1;
+ 		pnetwork->network.privacy = 1;
+ 	} else {
+-		pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_OPENSYS;
++		pnetwork->bcn_info.encryp_protocol = ENCRYP_PROTOCOL_OPENSYS;
+ 	}
+ 	rtw_get_sec_ie(pnetwork->network.ies, pnetwork->network.ie_length, NULL, &rsn_len, NULL, &wpa_len);
+ 
+ 	if (rsn_len > 0) {
+-		pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_WPA2;
++		pnetwork->bcn_info.encryp_protocol = ENCRYP_PROTOCOL_WPA2;
+ 	} else if (wpa_len > 0) {
+-		pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_WPA;
++		pnetwork->bcn_info.encryp_protocol = ENCRYP_PROTOCOL_WPA;
+ 	} else {
+ 		if (bencrypt)
+-			pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_WEP;
++			pnetwork->bcn_info.encryp_protocol = ENCRYP_PROTOCOL_WEP;
+ 	}
+ 	rtw_get_cipher_info(pnetwork);
+ 
+@@ -1092,17 +1092,17 @@ void rtw_get_bcn_info(struct wlan_network *pnetwork)
+ 	p = rtw_get_ie(pnetwork->network.ies + _FIXED_IE_LENGTH_, WLAN_EID_HT_CAPABILITY, &len, pnetwork->network.ie_length - _FIXED_IE_LENGTH_);
+ 	if (p && len > 0) {
+ 			pht_cap = (struct ieee80211_ht_cap *)(p + 2);
+-			pnetwork->BcnInfo.ht_cap_info = le16_to_cpu(pht_cap->cap_info);
++			pnetwork->bcn_info.ht_cap_info = le16_to_cpu(pht_cap->cap_info);
+ 	} else {
+-			pnetwork->BcnInfo.ht_cap_info = 0;
++			pnetwork->bcn_info.ht_cap_info = 0;
+ 	}
+ 	/* parsing HT_INFO_IE */
+ 	p = rtw_get_ie(pnetwork->network.ies + _FIXED_IE_LENGTH_, WLAN_EID_HT_OPERATION, &len, pnetwork->network.ie_length - _FIXED_IE_LENGTH_);
+ 	if (p && len > 0) {
+ 			pht_info = (struct HT_info_element *)(p + 2);
+-			pnetwork->BcnInfo.ht_info_infos_0 = pht_info->infos[0];
++			pnetwork->bcn_info.ht_info_infos_0 = pht_info->infos[0];
+ 	} else {
+-			pnetwork->BcnInfo.ht_info_infos_0 = 0;
++			pnetwork->bcn_info.ht_info_infos_0 = 0;
+ 	}
+ }
+ 
+diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+index f9042f1dadb5..efd0cbbde389 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
++++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+@@ -1248,12 +1248,12 @@ int rtw_check_bcn_info(struct adapter *Adapter, u8 *pframe, u32 packet_len)
+ 	} else {
+ 		ht_info_infos_0 = 0;
+ 	}
+-	if (ht_cap_info != cur_network->BcnInfo.ht_cap_info ||
+-	    ((ht_info_infos_0&0x03) != (cur_network->BcnInfo.ht_info_infos_0&0x03))) {
++	if (ht_cap_info != cur_network->bcn_info.ht_cap_info ||
++	    ((ht_info_infos_0&0x03) != (cur_network->bcn_info.ht_info_infos_0&0x03))) {
+ 		{
+ 			/* bcn_info_update */
+-			cur_network->BcnInfo.ht_cap_info = ht_cap_info;
+-			cur_network->BcnInfo.ht_info_infos_0 = ht_info_infos_0;
++			cur_network->bcn_info.ht_cap_info = ht_cap_info;
++			cur_network->bcn_info.ht_info_infos_0 = ht_info_infos_0;
+ 			/* to do : need to check that whether modify related register of BB or not */
+ 		}
+ 		/* goto _mismatch; */
+@@ -1313,7 +1313,7 @@ int rtw_check_bcn_info(struct adapter *Adapter, u8 *pframe, u32 packet_len)
+ 		if (bssid->privacy)
+ 			encryp_protocol = ENCRYP_PROTOCOL_WEP;
+ 
+-	if (cur_network->BcnInfo.encryp_protocol != encryp_protocol)
++	if (cur_network->bcn_info.encryp_protocol != encryp_protocol)
+ 		goto _mismatch;
+ 
+ 	if (encryp_protocol == ENCRYP_PROTOCOL_WPA || encryp_protocol == ENCRYP_PROTOCOL_WPA2) {
+@@ -1329,11 +1329,11 @@ int rtw_check_bcn_info(struct adapter *Adapter, u8 *pframe, u32 packet_len)
+ 						  &pairwise_cipher, &is_8021x);
  		}
  
-@@ -488,8 +488,8 @@ void update_network(struct wlan_bssid_ex *dst, struct wlan_bssid_ex *src,
- 		memcpy((u8 *)dst, (u8 *)src, get_wlan_bssid_ex_sz(src));
+-		if (pairwise_cipher != cur_network->BcnInfo.pairwise_cipher ||
+-		    group_cipher != cur_network->BcnInfo.group_cipher)
++		if (pairwise_cipher != cur_network->bcn_info.pairwise_cipher ||
++		    group_cipher != cur_network->bcn_info.group_cipher)
+ 			goto _mismatch;
+ 
+-		if (is_8021x != cur_network->BcnInfo.is_8021x)
++		if (is_8021x != cur_network->bcn_info.is_8021x)
+ 			goto _mismatch;
  	}
  
--	dst->phy_info.SignalStrength = ss_final;
--	dst->phy_info.SignalQuality = sq_final;
-+	dst->phy_info.signal_strength = ss_final;
-+	dst->phy_info.signal_quality = sq_final;
- 	dst->rssi = rssi_final;
- }
- 
-@@ -568,8 +568,8 @@ void rtw_update_scanned_network(struct adapter *adapter, struct wlan_bssid_ex *t
- 			pnetwork->join_res = 0;
- 
- 			/* bss info not receiving from the right channel */
--			if (pnetwork->network.phy_info.SignalQuality == 101)
--				pnetwork->network.phy_info.SignalQuality = 0;
-+			if (pnetwork->network.phy_info.signal_quality == 101)
-+				pnetwork->network.phy_info.signal_quality = 0;
- 		} else {
- 			/* Otherwise just pull from the free list */
- 
-@@ -585,8 +585,8 @@ void rtw_update_scanned_network(struct adapter *adapter, struct wlan_bssid_ex *t
- 			pnetwork->last_scanned = jiffies;
- 
- 			/* bss info not receiving from the right channel */
--			if (pnetwork->network.phy_info.SignalQuality == 101)
--				pnetwork->network.phy_info.SignalQuality = 0;
-+			if (pnetwork->network.phy_info.signal_quality == 101)
-+				pnetwork->network.phy_info.signal_quality = 0;
- 
- 			list_add_tail(&(pnetwork->list), &(queue->queue));
- 
-@@ -1120,10 +1120,10 @@ static void rtw_joinbss_update_network(struct adapter *padapter, struct wlan_net
- 
- 	rtw_set_signal_stat_timer(&padapter->recvpriv);
- 
--	padapter->recvpriv.signal_strength = ptarget_wlan->network.phy_info.SignalStrength;
--	padapter->recvpriv.signal_qual = ptarget_wlan->network.phy_info.SignalQuality;
--	/* the ptarget_wlan->network.rssi is raw data, we use ptarget_wlan->network.phy_info.SignalStrength instead (has scaled) */
--	padapter->recvpriv.rssi = translate_percentage_to_dbm(ptarget_wlan->network.phy_info.SignalStrength);
-+	padapter->recvpriv.signal_strength = ptarget_wlan->network.phy_info.signal_strength;
-+	padapter->recvpriv.signal_qual = ptarget_wlan->network.phy_info.signal_quality;
-+	/* the ptarget_wlan->network.rssi is raw data, we use ptarget_wlan->network.phy_info.signal_strength instead (has scaled) */
-+	padapter->recvpriv.rssi = translate_percentage_to_dbm(ptarget_wlan->network.phy_info.signal_strength);
- 
- 	rtw_set_signal_stat_timer(&padapter->recvpriv);
- 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-index 97d4c425b29b..5942e51b23b6 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-@@ -3995,8 +3995,8 @@ u8 collect_bss_info(struct adapter *padapter, union recv_frame *precv_frame, str
- 
- 	/* get the signal strength */
- 	bssid->rssi = precv_frame->u.hdr.attrib.phy_info.RecvSignalPower; /*  in dBM.raw data */
--	bssid->phy_info.SignalQuality = precv_frame->u.hdr.attrib.phy_info.SignalQuality;/* in percentage */
--	bssid->phy_info.SignalStrength = precv_frame->u.hdr.attrib.phy_info.SignalStrength;/* in percentage */
-+	bssid->phy_info.signal_quality = precv_frame->u.hdr.attrib.phy_info.SignalQuality;/* in percentage */
-+	bssid->phy_info.signal_strength = precv_frame->u.hdr.attrib.phy_info.SignalStrength;/* in percentage */
- 
- 	/*  checking SSID */
- 	p = rtw_get_ie(bssid->ies + ie_offset, WLAN_EID_SSID, &len, bssid->ie_length - ie_offset);
-@@ -4095,9 +4095,9 @@ u8 collect_bss_info(struct adapter *padapter, union recv_frame *precv_frame, str
- 			pmlmepriv->num_sta_no_ht++;
- 	}
- 
--	/*  mark bss info receiving from nearby channel as SignalQuality 101 */
-+	/*  mark bss info receiving from nearby channel as signal_quality 101 */
- 	if (bssid->configuration.ds_config != rtw_get_oper_ch(padapter))
--		bssid->phy_info.SignalQuality = 101;
-+		bssid->phy_info.signal_quality = 101;
- 
- 	return _SUCCESS;
- }
 diff --git a/drivers/staging/rtl8723bs/include/wlan_bssdef.h b/drivers/staging/rtl8723bs/include/wlan_bssdef.h
-index 331578129644..4e6d0b8e17a6 100644
+index 4e6d0b8e17a6..8c9d78c35650 100644
 --- a/drivers/staging/rtl8723bs/include/wlan_bssdef.h
 +++ b/drivers/staging/rtl8723bs/include/wlan_bssdef.h
-@@ -143,10 +143,10 @@ struct ndis_802_11_wep {
- #endif
- 
- struct wlan_phy_info {
--	u8 SignalStrength;/* in percentage) */
--	u8 SignalQuality;/* in percentage) */
--	u8 Optimum_antenna;  /* for Antenna diversity */
--	u8 Reserved_0;
-+	u8 signal_strength;/* in percentage) */
-+	u8 signal_quality;/* in percentage) */
-+	u8 optimum_antenna;  /* for Antenna diversity */
-+	u8 reserved_0;
+@@ -194,7 +194,7 @@ struct	wlan_network {
+ 	int	aid;			/* will only be valid when a BSS is joinned. */
+ 	int	join_res;
+ 	struct wlan_bssid_ex	network; /* must be the last item */
+-	struct wlan_bcn_info	BcnInfo;
++	struct wlan_bcn_info	bcn_info;
  };
  
- struct wlan_bcn_info {
-diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-index 17628704d428..bcd8d03a35a0 100644
---- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-+++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-@@ -290,7 +290,7 @@ struct cfg80211_bss *rtw_cfg80211_inform_bss(struct adapter *padapter, struct wl
- 		is_same_network(&pmlmepriv->cur_network.network, &pnetwork->network, 0)) {
- 		notify_signal = 100*translate_percentage_to_dbm(padapter->recvpriv.signal_strength);/* dbm */
- 	} else {
--		notify_signal = 100*translate_percentage_to_dbm(pnetwork->network.phy_info.SignalStrength);/* dbm */
-+		notify_signal = 100*translate_percentage_to_dbm(pnetwork->network.phy_info.signal_strength);/* dbm */
- 	}
- 
- 	buf = kzalloc(MAX_BSSINFO_LEN, GFP_ATOMIC);
-diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-index 95aef62ecfb8..8c44db696b52 100644
---- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-+++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-@@ -303,8 +303,8 @@ static char *translate_scan(struct adapter *padapter,
- 		ss = padapter->recvpriv.signal_strength;
- 		sq = padapter->recvpriv.signal_qual;
- 	} else {
--		ss = pnetwork->network.phy_info.SignalStrength;
--		sq = pnetwork->network.phy_info.SignalQuality;
-+		ss = pnetwork->network.phy_info.signal_strength;
-+		sq = pnetwork->network.phy_info.signal_quality;
- 	}
- 
- 
+ enum {
 -- 
 2.20.1
 
