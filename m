@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296273D1635
+	by mail.lfdr.de (Postfix) with ESMTP id 73C363D1636
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235526AbhGURk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:40:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:33214 "EHLO foss.arm.com"
+        id S237000AbhGURkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:40:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:33232 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232456AbhGURkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:40:19 -0400
+        id S231751AbhGURkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 13:40:21 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4174113E;
-        Wed, 21 Jul 2021 11:20:55 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 92F38D6E;
+        Wed, 21 Jul 2021 11:20:57 -0700 (PDT)
 Received: from 010265703453.arm.com (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5DC4E3F694;
-        Wed, 21 Jul 2021 11:20:54 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1D3973F694;
+        Wed, 21 Jul 2021 11:20:55 -0700 (PDT)
 From:   Robin Murphy <robin.murphy@arm.com>
 To:     joro@8bytes.org, will@kernel.org
 Cc:     iommu@lists.linux-foundation.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
         john.garry@huawei.com, dianders@chromium.org
-Subject: [PATCH 06/23] iommu/ipmmu-vmsa: Drop IOVA cookie management
-Date:   Wed, 21 Jul 2021 19:20:17 +0100
-Message-Id: <1ca98c5c7ce4e6daf27803adc6f4b362362ce651.1626888444.git.robin.murphy@arm.com>
+Subject: [PATCH 07/23] iommu/mtk: Drop IOVA cookie management
+Date:   Wed, 21 Jul 2021 19:20:18 +0100
+Message-Id: <8a7aadfa995874926f99a413d0c4114fd17e93d1.1626888444.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1626888444.git.robin.murphy@arm.com>
 References: <cover.1626888444.git.robin.murphy@arm.com>
@@ -39,64 +39,31 @@ The core code bakes its own cookies now.
 
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 ---
- drivers/iommu/ipmmu-vmsa.c | 27 ++++-----------------------
- 1 file changed, 4 insertions(+), 23 deletions(-)
+ drivers/iommu/mtk_iommu.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/iommu/ipmmu-vmsa.c b/drivers/iommu/ipmmu-vmsa.c
-index 51ea6f00db2f..31252268f0d0 100644
---- a/drivers/iommu/ipmmu-vmsa.c
-+++ b/drivers/iommu/ipmmu-vmsa.c
-@@ -564,10 +564,13 @@ static irqreturn_t ipmmu_irq(int irq, void *dev)
-  * IOMMU Operations
-  */
- 
--static struct iommu_domain *__ipmmu_domain_alloc(unsigned type)
-+static struct iommu_domain *ipmmu_domain_alloc(unsigned type)
- {
- 	struct ipmmu_vmsa_domain *domain;
- 
-+	if (type != IOMMU_DOMAIN_UNMANAGED && type != IOMMU_DOMAIN_DMA)
-+		return NULL;
-+
- 	domain = kzalloc(sizeof(*domain), GFP_KERNEL);
- 	if (!domain)
+diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+index 6f7c69688ce2..e39a6d1da28d 100644
+--- a/drivers/iommu/mtk_iommu.c
++++ b/drivers/iommu/mtk_iommu.c
+@@ -441,17 +441,11 @@ static struct iommu_domain *mtk_iommu_domain_alloc(unsigned type)
+ 	if (!dom)
  		return NULL;
-@@ -577,27 +580,6 @@ static struct iommu_domain *__ipmmu_domain_alloc(unsigned type)
- 	return &domain->io_domain;
- }
  
--static struct iommu_domain *ipmmu_domain_alloc(unsigned type)
--{
--	struct iommu_domain *io_domain = NULL;
--
--	switch (type) {
--	case IOMMU_DOMAIN_UNMANAGED:
--		io_domain = __ipmmu_domain_alloc(type);
--		break;
--
--	case IOMMU_DOMAIN_DMA:
--		io_domain = __ipmmu_domain_alloc(type);
--		if (io_domain && iommu_get_dma_cookie(io_domain)) {
--			kfree(io_domain);
--			io_domain = NULL;
--		}
--		break;
+-	if (iommu_get_dma_cookie(&dom->domain)) {
+-		kfree(dom);
+-		return NULL;
 -	}
 -
--	return io_domain;
--}
--
- static void ipmmu_domain_free(struct iommu_domain *io_domain)
+ 	return &dom->domain;
+ }
+ 
+ static void mtk_iommu_domain_free(struct iommu_domain *domain)
  {
- 	struct ipmmu_vmsa_domain *domain = to_vmsa_domain(io_domain);
-@@ -606,7 +588,6 @@ static void ipmmu_domain_free(struct iommu_domain *io_domain)
- 	 * Free the domain resources. We assume that all devices have already
- 	 * been detached.
- 	 */
--	iommu_put_dma_cookie(io_domain);
- 	ipmmu_domain_destroy_context(domain);
- 	free_io_pgtable_ops(domain->iop);
- 	kfree(domain);
+-	iommu_put_dma_cookie(domain);
+ 	kfree(to_mtk_domain(domain));
+ }
+ 
 -- 
 2.25.1
 
