@@ -2,136 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7233D1680
+	by mail.lfdr.de (Postfix) with ESMTP id A4A853D1681
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237807AbhGUR6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:58:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230269AbhGUR6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:58:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57E6561222;
-        Wed, 21 Jul 2021 18:38:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626892736;
-        bh=c58AgXYLjV8nxV+yGDWGaiNc8lcnebnlE03OtQCUX8g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TXMnY/wOnELdxVY2UtnXI7v3JQ4uQNXB+95A3X/Ux1IpvCYoC+cOYlFW3kuVf4zxL
-         jOnCVH8WpF06Fw22zy1ijEG0BH6X7zrY1VXHBJDTJ7PPPU70RjlsIIN6wPnePqsEkT
-         dw6Y4/uW3a9A9aevLRFAyIeet0td3xhNCPBYjKcfSWaJ8QRfkLC6HPjcKTjQA6mBF6
-         H8CTepg+QFouXY97lVzm2urACHyzbkMwuLctp5Iboyce4Tp7gZ/u//Yl+I+Wey8a19
-         wudZz6BEjYQMJ5XkLfGgiACqpRodC7evSlKPclcqbBhh0YfBI1sDp4WNuq42HlzUQP
-         Bi0ZA6loAxRxg==
-Received: by mail-wm1-f52.google.com with SMTP id r16-20020a05600c2c50b029014c1adff1edso76550wmg.4;
-        Wed, 21 Jul 2021 11:38:56 -0700 (PDT)
-X-Gm-Message-State: AOAM533/H+Vl1K79Oflk7ZsVpxnbkE3oWMzIqvZ6u9j2kSeGqe/+uGtF
-        yeGc8qkh8NCTcuHe/qBAZ470/Y3QZJ0TGeE2SV4=
-X-Google-Smtp-Source: ABdhPJyhSRgfLaBTPJMwtpFNlY9q/GPNEb6Tfyk+uF/aS8k580kiJJMP0SB0r+iW16M91ZGiiwEn6z8lhMS6dEb2QmA=
-X-Received: by 2002:a1c:c90f:: with SMTP id f15mr5472491wmb.142.1626892734959;
- Wed, 21 Jul 2021 11:38:54 -0700 (PDT)
+        id S238094AbhGUR6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230269AbhGUR6n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 13:58:43 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFCBC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 11:39:17 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id b29so4191126ljf.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 11:39:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XVG+jbRDBSu+eXxXtQp1KBYPh+7m/khOUuuf9tJsJlQ=;
+        b=o0knBKRqF+/V/tbZpHxFHljIbk4FsvpfHxd1B4gIGEd6eXlgdOM3oy0vhGXit4qYj3
+         Eau+h3HBB/pRHR7jWtV+eRigTywh20vgTGPLE+kHjvhHEv1ehZ01GA/4VF8wU23W+Ykv
+         EAJaX4O9jgr3FMsTBKsz07UN/lmzQ6HdWBm6TBVUW892tdubZjbTaGBZjMx8ZAQYJ7cO
+         SIVhMpC2buXAwwPSCIZ6N/RAcaDc5RF3LZMUFdeqUaD0NYg0nDfSDZZ7xZPyjVy6dWbV
+         rhw5saUHGPTXtEGx/ZJc07ntkyzEClVwkS6wR2VacLMcAJDIjYQMxoqoQLbUfqU+ZYCH
+         QWZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XVG+jbRDBSu+eXxXtQp1KBYPh+7m/khOUuuf9tJsJlQ=;
+        b=iebTwF5m/bBDSCyElOWFlAYbTzJMDc0bwktU2MMEKcH/5UKt94jjFClq9uk3n1FeWF
+         6bl8QJ/eYSVSVTKKcBTJ6Wco1S1WZ6NL8NQ14S/IQwR/4wiIDE1V5cW+Mhlo5xwI4yZg
+         3yYwjDY03C1jzpzOm5EuRraTQW+T/RRAMH7ZuD1gkFg+bDssUOtk1ieT0sc/XfDN2Hm4
+         9sHOG+egq8RioqH1FklnPq2FZEDtwRubo7PJrIE6AZjOFstslvr6ydcxevX6uGj1I7CQ
+         g1JBaba0QP+fnZPHn8FVuDNAqN81E44XZ+95GH+ZAcPFelzdOdgRZY3PoSYLWY66iOOG
+         ryVg==
+X-Gm-Message-State: AOAM533kF/LizusuekLf/mN5TW2qaM+HuaMF6AhHAuNxeBcQQSthA8Z/
+        C8coyqAmVvMRGJvJXzobTMcgJlgWpfyPHxpQgCQ=
+X-Google-Smtp-Source: ABdhPJwoLGwmM+TS2dyBgKCbp5Ry4yu+pA8iXsy3Lf/VOi5eurQ/S0y3MgQ+JBpzeMSSwEoknDX2czlo24N5L0fkqf8=
+X-Received: by 2002:a2e:890f:: with SMTP id d15mr31953878lji.37.1626892756146;
+ Wed, 21 Jul 2021 11:39:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210721151100.2042139-1-arnd@kernel.org> <CANH7hM7nLq9LthNi=D9qHsiS_eyhU8-CGjnXhsKYX9dqTaOmNw@mail.gmail.com>
-In-Reply-To: <CANH7hM7nLq9LthNi=D9qHsiS_eyhU8-CGjnXhsKYX9dqTaOmNw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 21 Jul 2021 20:38:38 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a27ii4fPvB8QA149g6ofWHazPGb9EZL_7M4z5ymkepVnw@mail.gmail.com>
-Message-ID: <CAK8P3a27ii4fPvB8QA149g6ofWHazPGb9EZL_7M4z5ymkepVnw@mail.gmail.com>
-Subject: Re: [PATCH] gve: DQO: avoid unused variable warnings
-To:     Bailey Forrest <bcf@google.com>
-Cc:     Catherine Sullivan <csully@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Sagi Shahar <sagis@google.com>,
-        Jon Olson <jonolson@google.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210715170011.GA17324@lst.de> <20210716083934.154992-1-rm.skakun@gmail.com>
+ <20210716093551.GA17981@lst.de> <CADu_u-OYA+Z_y-DBLxyUYGhmLVMtLggmZ_SnRiEtw9EGrO4oGg@mail.gmail.com>
+ <alpine.DEB.2.21.2107160828430.3916@sstabellini-ThinkPad-T480s>
+ <CADu_u-Psn5QpOyZ18_NCPx14DYxmGmSqVod=_RBC3A_A93tGUw@mail.gmail.com> <20210719092235.GA31566@lst.de>
+In-Reply-To: <20210719092235.GA31566@lst.de>
+From:   Roman Skakun <rm.skakun@gmail.com>
+Date:   Wed, 21 Jul 2021 21:39:05 +0300
+Message-ID: <CADu_u-OVTGFpDw9cP+VHMAW8fdG3mtMZDCG3Tu92fF286zVFDA@mail.gmail.com>
+Subject: Re: [PATCH v2] dma-mapping: use vmalloc_to_page for vmalloc addresses
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Volodymyr Babchuk <volodymyr_babchuk@epam.com>,
+        Andrii Anisov <andrii_anisov@epam.com>,
+        Roman Skakun <Roman_Skakun@epam.com>,
+        Roman Skakun <rm.skakun@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dma_unmap_len_set(pending_packet->bufs[pending_packet->num_bufs], len, len);
-On Wed, Jul 21, 2021 at 5:36 PM Bailey Forrest <bcf@google.com> wrote:
-> On Wed, Jul 21, 2021 at 8:11 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> Fine with.  I've queued up the modified patch.
+
+Good. Thanks!
+
+>
+> On Sat, Jul 17, 2021 at 11:39:21AM +0300, Roman Skakun wrote:
+> > > We can merge this patch and create a new one for
+> > > xen_swiotlb_free_coherent() later.
+> > > Yeah, no worries, I didn't know that exposing dma_common_vaddr_to_page
+> > > was problematic.
+> > >
+> > > This patch is fine by me.
 > >
-> >
-> > +static void gve_unmap_packet(struct device *dev,
-> > +                            struct gve_tx_pending_packet_dqo *pending_packet)
-> > +{
-> > +       dma_addr_t addr;
-> > +       size_t len;
-> > +       int i;
-> > +
-> > +       /* SKB linear portion is guaranteed to be mapped */
-> > +       addr = dma_unmap_addr(&pending_packet->bufs[0], dma);
-> > +       len = dma_unmap_len(&pending_packet->bufs[0], len);
-> > +       dma_unmap_single(dev, addr, len, DMA_TO_DEVICE);
+> > Good. I'm agreed too. Waiting for Christoph.
 >
-> "SKB linear portion is guaranteed to be mapped" is only true if
-> gve_tx_add_skb_no_copy_dqo completed successfully.
->
-> This optimization is important for the success path because otherwise
-> there would be a per-packet branch misprediction, which I found to
-> have a large performance impact.
->
-> A solution which should address this would be something like:
->
-> +static void gve_unmap_packet(struct device *dev,
-> +     struct gve_tx_pending_packet_dqo *pending_packet
-> +     bool always_unmap_first)
-> +{
-> + dma_addr_t addr;
-> + size_t len;
-> + int i;
-> +
-> + if (always_unmap_first || pending_packet->num_bufs > 0) {
-> +  addr = dma_unmap_addr(&pending_packet->bufs[0], dma);
-> +  len = dma_unmap_len(&pending_packet->bufs[0], len);
-> +  dma_unmap_single(dev, addr, len, DMA_TO_DEVICE);
-> + }
-> +
-> + for (i = 1; i < pending_packet->num_bufs; i++) {
-> +  addr = dma_unmap_addr(&pending_packet->bufs[i], dma);
-> +  len = dma_unmap_len(&pending_packet->bufs[i], len);
-> +  dma_unmap_page(dev, addr, len, DMA_TO_DEVICE);
-> + }
-> + pending_packet->num_bufs = 0;
-> +}
->
-> (Sorry my email client keeps turning tabs into spaces...)
->
-> By doing this, we can rely on the compiler to optimize away the extra
-> branch in cases we know the first buffer will be mapped.
+> Fine with.  I've queued up the modified patch.
 
-I didn't really change it here, I just moved the function up and changed
-the dma_unmap_addr/dma_unmap_len calls to avoid the warning.
 
-> > +static inline void gve_tx_dma_buf_set(struct gve_tx_dma_buf *buf,
-> > +                                     dma_addr_t addr, size_t len)
-> > +{
-> > +       dma_unmap_len_set(buf, len, len);
-> > +       dma_unmap_addr_set(buf, dma, addr);
-> > +}
->
-> checkpatch.pl will complain about `inline` in a C file.
->
-> However, I would prefer to just not introduce this helper because it
-> introduces indirection for the reader and the risk of passing the
-> arguments in the wrong order. Don't have a strong opinion here
-> though.
 
-Sure, feel free to just treat my patch as a bug report and send a different
-fix if you prefer to not have an inline function. This is usually the easiest
-way to get around the macro ignoring its arguments since the compiler
-does not warn for unused function arguments.
-
-Open-codiung the call as
-
-dma_unmap_len_set(pending_packet->bufs[pending_packet->num_bufs], len, len);
-dma_unmap_len_addr(pending_packet->bufs[pending_packet->num_bufs], addr, dma);
-
-works as well, I just found the inline function more readable.
-
-     Arnd
+--
+Best Regards, Roman.
