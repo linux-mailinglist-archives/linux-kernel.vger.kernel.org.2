@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7F93D0F3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE083D0F3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235479AbhGUM2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:28:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234468AbhGUM2d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:28:33 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AB6C061767
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:08:58 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id t5so2118261wrw.12
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:08:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p4j+IB5ABbcQqTi2Z9gFZCErxz2KV+Poiy1HA/Do+ds=;
-        b=HWGXeogxEr4/cdQYJz3iFSBi5416qINplAbl2FXo/cUGzOEa0+NQTyAFs36U66Eb29
-         Vxvt5uqrLGwk6cImlwUYMC+Ew4KHvh6OekyYJCPVFBeCtqGSdYeVILnT1jZaamMvPaqA
-         v7Tb2eUMzH+f1sye0KTbGkJgfxTJTax4IKo8Ks0Ayh/z0vs0UyM3Vta96q4/6UvfCUG0
-         OnOhis5x4OI8awpdfJGtSIKhwCp19aX0ZOvnlGHSq7Iy6jEgo8vmOpC3x+lDKr6y55bd
-         cqRgERRoNM1cSwk5oSSXMB+HqE3MBysvxllbTp1teD4p+SkB5L76mq+wLMoqKxA4VApB
-         0Fjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p4j+IB5ABbcQqTi2Z9gFZCErxz2KV+Poiy1HA/Do+ds=;
-        b=naw1YiyJAauD/7mU555qeCfzRYMsUxl9DWxAxKdzQotA1PWomjnZfr0UYTSGbd+1m9
-         cnkUb3oGPP3KxUrCA7n+i53Zqth98L3sAcct/J9uDqX9h3UMuELukB7fVsPC6BG/2aea
-         XNLbtiOOyUeV6Xcfo47FS98G8ipinRLVp90cuHHyeJwDcMGl1NPThrdcPUqIQNr9HLj4
-         2PuVVh9ehcQUpgatbspgjCqksHEQokXUYYB8XXOZlbJPHCD/tuyQJpppUab8H6SaEwst
-         z9sWLDNs3Su+k0zdQ0QHEMzXWxp4PL7i6pYVSCCjZpXSaRq08lwnU8VxxPR3tiRmMZEs
-         4S2w==
-X-Gm-Message-State: AOAM5323uMXLkAmEKyYDucTpEgA9PP3GYmJok1roXWrZiVb4ZP1H+jfN
-        fDHxTYN8KvdSfS5OhfwoRdQ=
-X-Google-Smtp-Source: ABdhPJwKF+b0l7SD4byoxy+kFrWjKbCEMnAsTwNbtXX7B0tbrrKToykQSZQvFTaioimwE04Oavb/7A==
-X-Received: by 2002:a05:6000:d0:: with SMTP id q16mr4958169wrx.234.1626872937096;
-        Wed, 21 Jul 2021 06:08:57 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id o14sm27279663wrj.66.2021.07.21.06.08.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 06:08:56 -0700 (PDT)
-Subject: Re: [PATCH] mm/mremap: Don't account pages in vma_to_resize()
-To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Geffon <bgeffon@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chen Wandun <chenwandun@huawei.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Will Deacon <will@kernel.org>
-References: <20210721124949.517217-1-dima@arista.com>
-From:   Dmitry Safonov <0x7f454c46@gmail.com>
-Message-ID: <cd8fd36b-eba7-039b-f823-f62d62c503b8@gmail.com>
-Date:   Wed, 21 Jul 2021 14:08:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237167AbhGUM30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:29:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236534AbhGUM3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 08:29:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6D5A60E08;
+        Wed, 21 Jul 2021 13:09:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626872985;
+        bh=0cKN38H5QwtYtjSBi1Vxzqbnp5z74e0BfgWfrJuLPA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jQ+IqBMfJVMb52jT89kNU14QdMO3JM6YHHJwvO4KEvBFPgwg4npPj9UMPmZPdMzoa
+         +b5Qmm8iVjDItVzZ8R8EnzkQwiNd2jXBXEKJT7ywecbOX0YIcIUlLxng7Wkjjd36A/
+         vgBjd9/GRVuyk7crZuH3ISRMgBOy/obAVYFiB1852RL7aipXVX2uLTktQW8OkgO1KG
+         wy0vmW9RtKEziO2U9rK1YXmKiLU9DDNpb+jXJ2VZVJPfJpkMALRPGtYmSVqbPq2Odc
+         JZMBZ4oCnmVIiFysYquhd8HZ2byhfkq6R8hm3pQynB4VDXGuRVsru6KgXjdgWLIi88
+         /6ND2azVNT4Cw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1m6ByT-00018a-DS; Wed, 21 Jul 2021 15:09:21 +0200
+Date:   Wed, 21 Jul 2021 15:09:21 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] tty: nozomi: tty_unregister_device ->
+ tty_port_unregister_device
+Message-ID: <YPgcgahQ458ndT1j@hovoldconsulting.com>
+References: <20210721113305.1524059-1-mudongliangabcd@gmail.com>
+ <YPgMZBK/FWLRD1Ic@hovoldconsulting.com>
+ <CAD-N9QVLshn_A=S+Nqemc9BRUdW432VrLJCAb=t35WaoL-C3=Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210721124949.517217-1-dima@arista.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD-N9QVLshn_A=S+Nqemc9BRUdW432VrLJCAb=t35WaoL-C3=Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/21 1:49 PM, Dmitry Safonov wrote:
-> All this vm_unacct_memory(charged) dance seems to complicate the life
-> without a good reason. Furthermore, it seems not always done right on
-> error-pathes in mremap_to().
-> And worse than that: this `charged' difference is sometimes
-> double-accounted for growing MREMAP_DONTUNMAP mremap()s in move_vma():
-> : if (security_vm_enough_memory_mm(mm, new_len >> PAGE_SHIFT))
+On Wed, Jul 21, 2021 at 08:53:47PM +0800, Dongliang Mu wrote:
+> On Wed, Jul 21, 2021 at 8:01 PM Johan Hovold <johan@kernel.org> wrote:
+> >
+> > On Wed, Jul 21, 2021 at 07:33:04PM +0800, Dongliang Mu wrote:
+> > > The pairwise api invocation of tty_port_register_device should be
+> > > tty_port_unregister_device, other than tty_unregister_device.
+> >
+> > Are you sure about that? Please explain why you think this to be the
+> > case and why this change is needed.
 > 
-> Let's not do this.
-> Account memory in mremap() fast-path for growing VMAs or in move_vma()
-> for actually moving things.
+> I am sure about this.
 
-And this one is also wrong: the diff for growing vma should be accounted
-for !MREMAP_DONTUNMAP too.
-Sending v2...
+I'm afraid you are mistaken. There is a bit of inconsistency in the API,
+but it is *not* a requirement to use the port helper for deregistration
+here.
 
-Thanks,
-          Dmitry
+> 1. From the implementation,
+>     tty_port_register_device -> tty_port_register_device_attr ->
+> tty_port_link_device; tty_register_device_attr
+>     tty_register_device -> tty_register_device_attr
+> 
+>     tty_port_unregister_device -> serdev_tty_port_unregister;
+> tty_unregister_device
+>     tty_unregister_device
+
+>     As to the functionability, tty_port_register_device pairs with
+> tty_port_unregister_device; meanwhile, the same to tty_register_device
+> and tty_unregister_device.
+
+Again, this is not an explanation. Why do think it is needed? What could
+possibly go wrong if you don't change the code like you propose?
+
+> 2. From the function naming style,
+> 
+>     tty_port_register_device - tty_port_unregister_device;
+> tty_register_device - tty_unregister_device
+
+Yes, the naming suggests you should be using the port helper and it is
+ok to do so, but again, it is not a requirement (unless you're using the
+serdev variant).
+
+> > > Fixes: a6afd9f3e819 ("tty: move a number of tty drivers from drivers/char/ to drivers/tty/")
+> >
+> > Please try a little harder, that's clearly not the commit that changed
+> > to the port registration helper.
+> >
+> > > Cc: stable@vger.kernel.org
+> >
+> > Why do you think this is stable material? (hint: it is not)
+> 
+> From the documentation, this label could make the patch automatically
+> go to stable tree. And stable tree is also using the incorrect api.
+
+No, it is not using an "incorrect api". There is nothing wrong with
+current code. And it certainly does not need to be changed in stable.
+
+Johan
