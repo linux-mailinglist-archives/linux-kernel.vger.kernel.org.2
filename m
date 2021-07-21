@@ -2,151 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497D23D14B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244133D14BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236184AbhGUQSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:18:05 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:34098 "EHLO m43-7.mailgun.net"
+        id S236043AbhGUQUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:20:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229561AbhGUQSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:18:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626886720; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=w/HMXtzgE+0xI3zDkR795AF2McOV6W/T1YvFy1bK/nk=;
- b=fXFuUJOc/csCFF/p6SED/icl6UKwG+SWwX8t3TxVZWpSzmPxdN5468ZJBgdU3acqnPcLKhBu
- //Au9k3gGyfDmyhYMC7RfjcvEvGjuPTpajaNofYGAolIJaj9B6EU1w+6KpWTMfUymoYVpsb6
- nuuZcj7h1+clmgFCLSwbGABQKlM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60f8523be81205dd0a84a146 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 16:58:35
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E278FC43217; Wed, 21 Jul 2021 16:58:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 146DFC433D3;
-        Wed, 21 Jul 2021 16:58:33 +0000 (UTC)
+        id S229561AbhGUQUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 12:20:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72F3260FF3;
+        Wed, 21 Jul 2021 17:00:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626886849;
+        bh=hroQ6GW2Js8li6Khq4NdbOetcx6pit97/TyltR5nTXQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R+zARPPfPdd3B1s1Kt37AVrdb8qbI3cm9ChQkvHhfFLMSuqOCn9dd1j+Io3I7/H7p
+         ytCvMLTiKu5IgAePcglp3iq34vfehohjMky3elXA5PV8hjs4i06CEsfzfDS3P3VjcK
+         kLYtrzwcQuY5aDkS9CIBO0i/BfG4qoxYR/eR3NUbnZb2Vo7Pr/X0w9wxbweim/CZer
+         6slhDdDlzzh4Luw1N/35OJboxCcVB14LSIgPo5KesJBbMXSeWXEX52nnA0ZatTZvR0
+         KCGSg4HnqpdgcdV4S8Nnej/asX6AanTo3u3yk7RM8XJp/yoG+L8CQwGnLX496kaCyc
+         +GSERaCsr4oyw==
+Date:   Wed, 21 Jul 2021 18:00:43 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Devicetree List <devicetree@vger.kernel.org>,
+        Daniel Baluta <daniel.baluta@gmail.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Subject: Re: [PATCH 1/3] ASoC: SOF: Parse fw/tplg filename from DT
+Message-ID: <20210721170043.GH4259@sirena.org.uk>
+References: <20210715141802.880911-1-daniel.baluta@oss.nxp.com>
+ <20210715141802.880911-2-daniel.baluta@oss.nxp.com>
+ <20210715143906.GD4590@sirena.org.uk>
+ <CAEnQRZCdSLoaLVZ7-jtufgZCG6QshMwdfyJy_4oE6cXRbA5H8A@mail.gmail.com>
+ <CAEnQRZCiC5aGK6AsD0TN5fzN6AxFn6=f8hCrd2B9fhCYfCFOSg@mail.gmail.com>
+ <bd85ea7c-e9b5-de67-07ce-7104a1e19805@linux.intel.com>
+ <20210721125912.GE4259@sirena.org.uk>
+ <eb98c10a-cc04-dbcf-b5cf-511703dc22fb@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 21 Jul 2021 22:28:33 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     swboyd@chromium.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org, ulf.hansson@linaro.org, rjw@rjwysocki.net,
-        agross@kernel.org, ohad@wizery.com, mathieu.poirier@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, rishabhb@codeaurora.org,
-        sidgup@codeaurora.org
-Subject: Re: [PATCH v4 02/13] dt-bindings: remoteproc: qcom: pas: Add QMP
- property
-In-Reply-To: <YPdXz1T89GcIYmJO@google.com>
-References: <1626755807-11865-1-git-send-email-sibis@codeaurora.org>
- <1626755807-11865-3-git-send-email-sibis@codeaurora.org>
- <YPdXz1T89GcIYmJO@google.com>
-Message-ID: <9ba5feb96fac6486c3f1aa19444864c2@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xHbokkKX1kTiQeDC"
+Content-Disposition: inline
+In-Reply-To: <eb98c10a-cc04-dbcf-b5cf-511703dc22fb@linux.intel.com>
+X-Cookie: Many pages make a thick book.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Matthias,
 
-Thanks for taking time to review
-the series.
+--xHbokkKX1kTiQeDC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2021-07-21 04:40, Matthias Kaehlcke wrote:
-> On Tue, Jul 20, 2021 at 10:06:36AM +0530, Sibi Sankar wrote:
->> The load state power-domain, used by the co-processors to notify the
->> Always on Subsystem (AOSS) that a particular co-processor is up/down,
->> suffers from the side-effect of changing states during suspend/resume.
->> However the co-processors enter low-power modes independent to that of
->> the application processor and their states are expected to remain
->> unaltered across system suspend/resume cycles. To achieve this 
->> behavior
->> let's drop the load state power-domain and replace them with the qmp
->> property for all SoCs supporting low power mode signalling.
->> 
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->> 
->> v4:
->>  * Commit message change and sc8180x co-processor addition. 
->> [Rob/Bjorn]
->> 
->>  .../devicetree/bindings/remoteproc/qcom,adsp.yaml  | 65 
->> +++++++++++-----------
->>  1 file changed, 33 insertions(+), 32 deletions(-)
->> 
->> diff --git 
->> a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml 
->> b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
->> index c597ccced623..1182afb5f593 100644
->> --- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
->> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
->> @@ -78,11 +78,11 @@ properties:
->> 
->>    power-domains:
->>      minItems: 1
->> -    maxItems: 3
->> +    maxItems: 2
->> 
->>    power-domain-names:
->>      minItems: 1
->> -    maxItems: 3
->> +    maxItems: 2
-> 
-> It seems maxItems should have been 4 in the first place and should 
-> remain
-> unchanged after removing the load state power domain. With this patch:
+On Wed, Jul 21, 2021 at 08:28:17AM -0500, Pierre-Louis Bossart wrote:
 
-sc7180-mpss-pas actually uses only
-cx and mss. The mpss-pas compatible
-is overridden by the mss-pil compatible
-for all the platforms present upstream
-for sc7180, that's the reason we probably
-haven't run into any binding check failures.
-I'll keep the max-items to 2 and fix-up
-the sc7180 power-domain requirements
-instead.
+> > Seems like it'd be trivial to arrange in the kernel, or with userspace
+> > firmware loading the loader could do the unpacking.
 
-> 
->   - if:
->       properties:
->         compatible:
->           contains:
->             enum:
->               - qcom,sc7180-mpss-pas
->     then:
->       properties:
->         power-domains:
->           items:
->             - description: CX power domain
->             - description: MX power domain
->             - description: MSS power domain
->         power-domain-names:
->           items:
->             - const: cx
->             - const: mx
->             - const: mss
+> I think we can bundle the firmware inside of the kernel image itself,
+> but we've never tried so it doesn't work by default.
+> I don't know what userspace loading means, we rely on request_firmware
+> and don't assume any specific support from userspace.
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+If you have a userspace handler that implements loading firmware into
+the kernel (rather than having the kernel just try with a given path
+prefix) then that program can do anything it likes to get the firmware,
+including unpacking it out of another image.
+
+> > That seems like an orthogonal issue here?  The requirement for a
+> > firmware that's joined up with the hardware (and system description)
+> > that it's being used with exists regardless of how we rename things.
+
+> It's not completely orthogonal. The topology currently defines e.g. the
+> I2S interface index, Mclk, bclk, fsync, etc, and my point is that these
+> bits of information are completely related to the hardware and should
+> probably come from platform firmware/ACPI.
+
+If only ACPI based platforms offered a standard way to do this like DT
+does and didn't rely on all these platform specific hacks!  In any case
+my point is more that use case dependent selection of the firmware is a
+separate issue to having firmware that matches a specific board and
+there seemed to be some conflation of the two.  For having a completely
+board specific firmware we already have system level identification in
+both DT and ACPI which can be used.
+
+> The topology framework currently provides too much freedom to
+> developers, it's fine to add new pipelines, PCM devices and new
+> processing, but when it comes to the hardware interfaces the topology is
+> completely constrained. I've been arguing for a while now that the
+> dailink descriptions and configurations should be treated as an input to
+> the topology, not something that the topology can configure. I don't
+> know how many issues we had to deal with because the topology settings
+> were not supported by the hardware, or mismatches between topology and
+> machine drivers (missing dailinks, bad dailink index, etc).
+
+I think it'd definitely help to at least have some strong diagnostics
+for detecting mismatches between the topology and the hardware and
+machine driver it's being applied to, including what configurations the
+machine driver is willing to have on the links (which could be just a
+single configuration if that's what makes sense for the platform).  I
+can see that the topology might want to select different configurations
+for the various hardware links depending on how it wants to use them in
+a given application, especially in more embedded contexts.
+
+--xHbokkKX1kTiQeDC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD4UroACgkQJNaLcl1U
+h9COUwf/QBa/hu110FzQzO7qAGIl1ukQEgywEkbjEHhjzU13EXqQKhKY8zUTcOFW
+GItaLI2waPJrI/DjvkKD64gQ5jtkrntoInrRmdNGAGxdo6c0wqyoe8n7+3nG+ap2
+AGD/za07Vd94ssr3ii2UFrIck7HXuC3irbMu8jkbBGbY6TC7xR1XIn0eQ51lNdC8
+hokGE2w6CwxapGkxsE9By9CdEkmn94aV8N5umRD55QEp2++wROH5E10PVL0PXsLt
+PoRxIq9bCx8fGAGivBu2htcE/eIFDy8qu3F5ggZChAT5jeUpeSAO35oMeY62xAlx
+MHPU+q6uS3vHDrlKdsu4YsaLajecHA==
+=5ZbX
+-----END PGP SIGNATURE-----
+
+--xHbokkKX1kTiQeDC--
