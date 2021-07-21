@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4443D14BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8E53D14C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236233AbhGUQVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:21:34 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:35228 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229561AbhGUQVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:21:31 -0400
-Received: from localhost.localdomain (unknown [46.188.10.168])
-        by mail.ispras.ru (Postfix) with ESMTPSA id 01B0040D403D;
-        Wed, 21 Jul 2021 17:02:04 +0000 (UTC)
-From:   Alexander Monakov <amonakov@ispras.ru>
-To:     linux-kernel@vger.kernel.org
-Cc:     Alexander Monakov <amonakov@ispras.ru>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Hui Wang <hui.wang@canonical.com>,
-        Kailang Yang <kailang@realtek.com>,
-        Jeremy Szu <jeremy.szu@canonical.com>,
-        Jian-Hong Pan <jhp@endlessos.org>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        PeiSen Hou <pshou@realtek.com>, alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/realtek: add mic quirk for Acer SF314-42
-Date:   Wed, 21 Jul 2021 20:01:41 +0300
-Message-Id: <20210721170141.24807-1-amonakov@ispras.ru>
-X-Mailer: git-send-email 2.31.1
+        id S236331AbhGUQWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236260AbhGUQWH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 12:22:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BD5C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:02:43 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1m6FcI-0006k1-92; Wed, 21 Jul 2021 19:02:42 +0200
+Subject: Re: [PATCH v2 6/6] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        horia geanta <horia.geanta@nxp.com>,
+        aymen sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>, Udit Agarwal <udit.agarwal@nxp.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        david <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+References: <cover.1dfbb73645d917b3c76d01290804a3410bd9932e.1624364386.git-series.a.fatoum@pengutronix.de>
+ <39e6d65ca5d2a0a35fb71d6c1f85add8ee489a19.1624364386.git-series.a.fatoum@pengutronix.de>
+ <1850833581.13438.1625172175436.JavaMail.zimbra@nod.at>
+ <2f608e5a-5a12-6db1-b9bd-a2cd9e3e3671@pengutronix.de>
+ <783613027.15909.1625223222889.JavaMail.zimbra@nod.at>
+ <ac8ef66f-4d57-ead0-d1b3-e97220463241@pengutronix.de>
+ <CAFLxGvxr94apP2jaT0tB6JRDtv_ivrguXK2Ykd3zer_4xtJ+2w@mail.gmail.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <879d4cda-2ac1-d81b-7f4d-c08261e0aa0c@pengutronix.de>
+Date:   Wed, 21 Jul 2021 19:02:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFLxGvxr94apP2jaT0tB6JRDtv_ivrguXK2Ykd3zer_4xtJ+2w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Acer Swift SF314-42 laptop is using Realtek ALC255 codec. Add a
-quirk so microphone in a headset connected via the right-hand side jack
-is usable.
+Hi,
 
-Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Hui Wang <hui.wang@canonical.com>
-Cc: Kailang Yang <kailang@realtek.com>
-Cc: Jeremy Szu <jeremy.szu@canonical.com>
-Cc: Jian-Hong Pan <jhp@endlessos.org>
-Cc: Chris Chiu <chris.chiu@canonical.com>
-Cc: PeiSen Hou <pshou@realtek.com>
-Cc: alsa-devel@alsa-project.org
----
-Hello,
+On 20.07.21 21:19, Richard Weinberger wrote:
+> On Fri, Jul 2, 2021 at 2:37 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>>> Both is possible. If the string starts with "0x" it needs to be decoded to a
+>>> 128 bit key. Otherwise it has to be a up to 16 byte string.
+>>
+>> Fine by me. Looking forward to your patches. :-)
+> 
+> I'm not sure how to proceed.  Should I base my changes on this series
+> or do you plan to send an updated
+> version soon?
+> Maybe it makes also sense to base my DCP patch set on yours.
+> 
+> Trusted Keys maintainers, what do you prefer?
 
-Acer Swift SF314-42 laptop is using AMD Ryzen SoC audio with Realtek
-ALC255 codec. The are three ALSA cards: HDMI audio, AMD ACP card, and
-AMD HDA card. There is an internal stereo microphone connected to the
-ACP card, and a mini-jack connected to the Realtek codec. There are no
-LEDs.
+I sent out v3 despite the name (of course forgot that git-send-email -vX is silently
+dropped when sending patch files directly..):
 
-I'd like to be able to use a mic+headphones headset. Unfortunately, out
-of the box ALSA does not correctly detect the microphone input of the
-Realtek codec.  The suggested patch fixes that, though I cannot be sure
-it's 100% correct.
+https://lore.kernel.org/linux-integrity/cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de/T/#t
 
-With the patch, the experience is unfortunately still not ideal. I have
-noticed a couple of issues:
+I'd advise you base your changes on the first two patches there as well as the Kconfig fix/enhancement
+I sent out separately:
+https://lore.kernel.org/linux-integrity/20210721160258.7024-1-a.fatoum@pengutronix.de/T/#u
 
-1) at high enough gain, recording the microphone is picking up what is
-being played via the headphones; maybe it's supposed to be like that,
-but it surprised me;
+Those are relevant for you as well and I assume they should be good to be merged even if the
+CAAM series turns out to need some more love.
 
-2) there is a very noticeable "pop" when plugging the headset in/out,
-accompanied by
+Cheers,
+Ahmad
 
-pcieport 0000:00:08.1: PME: Spurious native interrupt!
-pcieport 0000:00:08.1: PME: Spurious native interrupt!
 
-in dmesg. I'd appreciate info and any help about this issue.
-
-Thanks.
-Alexander
-
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index ab5113cccffa..87ad8469dbc5 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8191,6 +8191,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_FIXUP_ACER_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x1025, 0x142b, "Acer Swift SF314-42", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x1430, "Acer TravelMate B311R-31", ALC256_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x1466, "Acer Aspire A515-56", ALC255_FIXUP_ACER_HEADPHONE_AND_MIC),
- 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
-
-base-commit: 62fb9874f5da54fdb243003b386128037319b219
 -- 
-2.31.1
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
