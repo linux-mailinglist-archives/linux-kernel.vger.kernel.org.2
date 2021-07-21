@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EED3D187C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F073D1880
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbhGUUVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:21:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32964 "EHLO mail.kernel.org"
+        id S229630AbhGUUVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:21:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229623AbhGUUVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229635AbhGUUVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 16:21:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12F64611C1;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FCB561222;
         Wed, 21 Jul 2021 21:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626901303;
-        bh=A/7nV5SAL79sHSHaEZ2l+SvV6ZtHjMLwx/eAY5cjZrI=;
+        bh=kPy6NejNU+zhKsFjtTBpT7qPm6CzwTsw91RV0KQ+WRM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B98jG91kaY3tsjdNx5IfUYj/qzwwN4ujQ+Gy2Umf4iVElDQwSdQsu1NFSCvO8s9zB
-         pH5xse51Uw7UIHiCF3eX3F+acMq50Waha6P6UV7Wn2pA92QTL3fIhkDWqbaRVJI+lu
-         DUkHeHJc5kDQ5kibLqikkFccsDPT4BS72DJafRFC/dsGIBmQ8cm0MmTS1PL+R9nOkC
-         6an6kKMzsLLv1TNkJatTs6+zvt60t3UifHHHW7c/b6sIK8sxLuklRuXlN91A5gYsOc
-         GUik/CEPKVvRC0x/KTwlA5XaFBphB3FscWg6NciB1zdvTfNWU7UAN5q6Qj4sVBlskz
-         yZycqQp9+WN+w==
+        b=Pgr0ofmQKrMHGl22T34l+qeSQYsKdas98X2d1YLhoUX967KIoRUCYwpD0WL02dpCj
+         7g5fuXIK37+eLxN2SwYQDQ0RStLFJbE+Ke+Tx8VwBcd+zXu7xBp8SZwRY/Acj0cV/V
+         cTlUiZHtAe1SsvtzkhabDb4ZB1JX/KrDHlH5nGI0FeElyuuVDBwpletmYMVH5gOOP7
+         sMNAg2E5N1U+l5XN4CjLTrnw93QnQo6+cUP/ZufwLxc+f/h81sp6eY3+4oWCWNTIhU
+         JiH5wpIRxh1HFqlXPOmtiE7Bu2ucaGbQB+De0Edi9jeQEnaB4TWcPhwQheQAWvIVBJ
+         fuyMHGcXV/LAw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CF7E35C0A2D; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
+        id D158B5C0BF4; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 04/21] torture: Create KCSAN summaries for torture.sh runs
-Date:   Wed, 21 Jul 2021 14:01:23 -0700
-Message-Id: <20210721210140.787717-4-paulmck@kernel.org>
+Subject: [PATCH rcu 05/21] torture: Make kvm-recheck-scf.sh tolerate qemu-cmd comments
+Date:   Wed, 21 Jul 2021 14:01:24 -0700
+Message-Id: <20210721210140.787717-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
@@ -46,31 +46,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, each -kcsan run in a torture.sh group of runs has its own
-kcsan.sum summary.  This works, but there is usually a lot of duplication
-between the runs.  This commit therefore also creates an overall kcsan.sum
-file for the entire torture.sh run, if there was at least one -kcsan run.
+The qemu-cmd file can contain comments that are not relevant to the
+operation of kvm-recheck-scf.sh.  This commit therefore strips these
+comments before looking for timing information.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/testing/selftests/rcutorture/bin/kvm-recheck-scf.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index f1d1dff715905..363f56081eff3 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -418,6 +418,10 @@ then
- 	nfailures="`wc -l "$T/failures" | awk '{ print $1 }'`"
- 	ret=2
- fi
-+if test "$do_kcsan" = "yes"
-+then
-+	TORTURE_KCONFIG_KCSAN_ARG=1 tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh tools/testing/selftests/rcutorture/res/$ds > tools/testing/selftests/rcutorture/res/$ds/kcsan.sum
-+fi
- echo Started at $startdate, ended at `date`, duration `get_starttime_duration $starttime`. | tee -a $T/log
- echo Summary: Successes: $nsuccesses Failures: $nfailures. | tee -a $T/log
- tdir="`cat $T/successes $T/failures | head -1 | awk '{ print $NF }' | sed -e 's,/[^/]\+/*$,,'`"
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck-scf.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck-scf.sh
+index 671bfee4fcef4..3afa5c6eda4f7 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-recheck-scf.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck-scf.sh
+@@ -25,7 +25,7 @@ if test -z "$nscfs"
+ then
+ 	echo "$configfile ------- "
+ else
+-	dur="`sed -e 's/^.* scftorture.shutdown_secs=//' -e 's/ .*$//' < $i/qemu-cmd 2> /dev/null`"
++	dur="`grep -v '^#' $i/qemu-cmd | sed -e 's/^.* scftorture.shutdown_secs=//' -e 's/ .*$//' 2> /dev/null`"
+ 	if test -z "$dur"
+ 	then
+ 		rate=""
 -- 
 2.31.1.189.g2e36527f23
 
