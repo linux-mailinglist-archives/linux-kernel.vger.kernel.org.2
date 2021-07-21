@@ -2,93 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1363D186E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453543D1872
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhGUUN4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Jul 2021 16:13:56 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:44328 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhGUUNz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 16:13:55 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 4FA38606BA4F;
-        Wed, 21 Jul 2021 22:54:29 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id OeNpA8TbCsvM; Wed, 21 Jul 2021 22:54:28 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 88A0960A59D3;
-        Wed, 21 Jul 2021 22:54:28 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id JgBGLF30wa6X; Wed, 21 Jul 2021 22:54:28 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 55876606BA4F;
-        Wed, 21 Jul 2021 22:54:28 +0200 (CEST)
-Date:   Wed, 21 Jul 2021 22:54:28 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Pintu Agarwal <pintu.ping@gmail.com>
-Cc:     Greg KH <greg@kroah.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>
-Message-ID: <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at>
-In-Reply-To: <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
-References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com> <YPGojf7hX//Wn5su@kroah.com> <568938486.33366.1626452816917.JavaMail.zimbra@nod.at> <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com> <1458549943.44607.1626686894648.JavaMail.zimbra@nod.at> <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com> <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at> <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
-Subject: Re: MTD: How to get actual image size from MTD partition
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF90 (Linux)/8.8.12_GA_3809)
-Thread-Topic: How to get actual image size from MTD partition
-Thread-Index: BowgerheV9p1zguM4N2pUdD/cVsfMg==
+        id S229862AbhGUUOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:14:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229738AbhGUUOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 16:14:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9923861009;
+        Wed, 21 Jul 2021 20:54:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626900882;
+        bh=GYGNogGu+jhewfWZhRoGPpIWczxpITQfjsoJjB/iBw4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=VY1sRhuQdxzlODEUTbCRdrNZyW6UbAmAYMEm5siw5GgCkKlrdruyDaW16NrKRD59l
+         2YKIovtBguTsek+u8wwms5gs1pa9mw1slOYdiPzFM8e/ef5lTUV2q9deAzrgcwzpx+
+         a+DXtSOIxbo3J1D6xB6w0AqSEtrxyQ2UPhR0+6SMz7kIxXWzR+cHChhbJ3L+xPAMR0
+         uktMRlYVwYCAyL8H69ZfCCL/mW8Kc8+m4CptWwoDqepYfWSPRvNV3kvnc3pWQfag+O
+         E3vU4ki3nUBRbPDNQOAkD3uBZmfNH755Cj1faN58noA1iwNGh5sAdLvUXn6xtMPhrh
+         uanka3IqHEnUA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8646A60A4E;
+        Wed, 21 Jul 2021 20:54:42 +0000 (UTC)
+Subject: Re: [GIT PULL] s390 updates for 5.14-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YPhrv8YEX7pVo73Y@osiris>
+References: <YPhrv8YEX7pVo73Y@osiris>
+X-PR-Tracked-List-Id: <linux-s390.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YPhrv8YEX7pVo73Y@osiris>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.14-3
+X-PR-Tracked-Commit-Id: 0cde560a8bfc3cb790715f39d4535129cca9e6ae
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 3d5895cd351757f69c9a66fb5fc8cf19f454d773
+Message-Id: <162690088248.6812.4345152659534973031.pr-tracker-bot@kernel.org>
+Date:   Wed, 21 Jul 2021 20:54:42 +0000
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
->> But let me advertise ubiblock a second time.
-> Sorry, I could not understand about the ubiblock request. Is it
-> possible to elaborate little more ?
-> We are already using squashfs on top of our UBI volumes (including
-> rootfs mounting).
-> This is the kernel command line we pass:
-> rootfstype=squashfs root=/dev/mtdblock44 ubi.mtd=40,0,30
-> And CONFIG_MTD_UBI_BLOCK=y is already enabled in our kernel.
-> Do we need to do something different for ubiblock ?
+The pull request you sent on Wed, 21 Jul 2021 20:47:27 +0200:
 
-From that command line I understand that you are *not* using squashfs on top of UBI.
-You use mtdblock. ubiblock is a mechanism to turn an UBI volume into a read-only
-block device.
-See: http://www.linux-mtd.infradead.org/doc/ubi.html#L_ubiblock
+> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.14-3
 
->> If you place your squashfs on a UBI static volume, UBI knows the exact length
->> and you can checksum it
->> more easily.
-> Yes, we use squashfs on UBI volumes, but our volume type is still dynamic.
-> Also, you said, UBI knows the exact length, you mean the whole image length ?
-> How can we get this length at runtime ?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/3d5895cd351757f69c9a66fb5fc8cf19f454d773
 
-You need a static volume for that. If you update a static volume the length is
-known by UBI.
+Thank you!
 
-> Also, how can we get the checksum of the entire UBI volume content
-> (ignoring the erased/empty/bad block content) ?
-
-Just read from the volume. /dev/ubiX_Y.
-
-> Or, you mean to say, the whole checksum logic is in-built inside the
-> UBI layer and users don't need to worry about the integrity at all ?
-
-Static volumes have a crc32 checksum over the whole content.
-Of course this offers no cryptographic integrity.
-See: http://www.linux-mtd.infradead.org/doc/ubi.html#L_overview
-
-Thanks,
-//richard
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
