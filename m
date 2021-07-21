@@ -2,135 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47AFD3D0AD2
+	by mail.lfdr.de (Postfix) with ESMTP id 910503D0AD3
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237125AbhGUH7j convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Jul 2021 03:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236785AbhGUHxK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:53:10 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76E0C061762
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 01:33:40 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1m67f8-0007Mj-OA; Wed, 21 Jul 2021 10:33:06 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1m67f0-0007mW-Ha; Wed, 21 Jul 2021 10:32:58 +0200
-Message-ID: <8343dfe9d1af1ad4ab806104b74a95819c765dea.camel@pengutronix.de>
-Subject: Re: [PATCH] dt-bindings: Remove "status" from schema examples
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Dilip Kota <eswara.kota@linux.intel.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rtc@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Date:   Wed, 21 Jul 2021 10:32:58 +0200
-In-Reply-To: <20210720172025.363238-1-robh@kernel.org>
-References: <20210720172025.363238-1-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S236333AbhGUIBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 04:01:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:48564 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236024AbhGUHza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 03:55:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 585421FB;
+        Wed, 21 Jul 2021 01:35:57 -0700 (PDT)
+Received: from [10.57.38.215] (unknown [10.57.38.215])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB5173F694;
+        Wed, 21 Jul 2021 01:35:54 -0700 (PDT)
+Subject: Re: [PATCH 6/6] perf cs-etm: Pass unformatted flag to decoder
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     acme@kernel.org, coresight@lists.linaro.org, leo.yan@linaro.org,
+        al.grant@arm.com, branislav.rankov@arm.com, suzuki.poulose@arm.com,
+        anshuman.khandual@arm.com, Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210713154008.29656-1-james.clark@arm.com>
+ <20210713154008.29656-7-james.clark@arm.com> <20210720154539.GC2296792@p14s>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <2af8d1ee-6dd0-42b5-6882-2396df8c07bc@arm.com>
+Date:   Wed, 21 Jul 2021 09:35:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210720154539.GC2296792@p14s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-On Tue, 2021-07-20 at 11:20 -0600, Rob Herring wrote:
-> There's no reason to have "status" properties in examples. "okay" is the
-> default, and "disabled" turns off some schema checks ('required'
-> specifically).
 
-Is this documented somewhere? If not, should it be? (Maybe in writing-
-schema.rst -> Schema Contents -> examples?)
- 
-> Enabling qca,ar71xx causes a warning, so let's fix the node names:
+On 20/07/2021 16:45, Mathieu Poirier wrote:
+> On Tue, Jul 13, 2021 at 04:40:08PM +0100, James Clark wrote:
+>> The TRBE (Trace Buffer Extension) feature allows a separate trace buffer
+>> for each trace source, therefore the trace wouldn't need to be
+>> formatted. The driver was introduced in commit 3fbf7f011f24
+>> ("coresight: sink: Add TRBE driver").
+>>
+>> The formatted/unformatted mode is encoded in one of the flags of the
+>> AUX record. The first AUX record encountered for each event is used to
+>> determine the mode, and this will persist for the remaining trace that
+>> is either decoded or dumped.
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>  tools/perf/util/cs-etm.c | 42 +++++++++++++++++++++++++++-------------
+>>  1 file changed, 29 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+>> index 760050ea936d..62769a84a53f 100644
+>> --- a/tools/perf/util/cs-etm.c
+>> +++ b/tools/perf/util/cs-etm.c
+>> @@ -461,13 +461,14 @@ static void cs_etm__set_trace_param_etmv4(struct cs_etm_trace_params *t_params,
+>>  }
+>>  
+>>  static int cs_etm__init_trace_params(struct cs_etm_trace_params *t_params,
+>> -				     struct cs_etm_auxtrace *etm)
+>> +				     struct cs_etm_auxtrace *etm,
+>> +				     int decoders_per_cpu)
+>>  {
+>>  	int i;
+>>  	u32 etmidr;
+>>  	u64 architecture;
+>>  
+>> -	for (i = 0; i < etm->num_cpu; i++) {
+>> +	for (i = 0; i < decoders_per_cpu; i++) {
+>>  		architecture = etm->metadata[i][CS_ETM_MAGIC];
+>>  
+>>  		switch (architecture) {
+>> @@ -488,7 +489,8 @@ static int cs_etm__init_trace_params(struct cs_etm_trace_params *t_params,
+>>  
+>>  static int cs_etm__init_decoder_params(struct cs_etm_decoder_params *d_params,
+>>  				       struct cs_etm_queue *etmq,
+>> -				       enum cs_etm_decoder_operation mode)
+>> +				       enum cs_etm_decoder_operation mode,
+>> +				       bool formatted)
+>>  {
+>>  	int ret = -EINVAL;
+>>  
+>> @@ -498,7 +500,7 @@ static int cs_etm__init_decoder_params(struct cs_etm_decoder_params *d_params,
+>>  	d_params->packet_printer = cs_etm__packet_dump;
+>>  	d_params->operation = mode;
+>>  	d_params->data = etmq;
+>> -	d_params->formatted = true;
+>> +	d_params->formatted = formatted;
+>>  	d_params->fsyncs = false;
+>>  	d_params->hsyncs = false;
+>>  	d_params->frame_aligned = true;
+>> @@ -720,11 +722,13 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
+>>  	return len;
+>>  }
+>>  
+>> -static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
+>> +static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm,
+>> +						bool formatted)
+>>  {
+>>  	struct cs_etm_decoder_params d_params;
+>>  	struct cs_etm_trace_params  *t_params = NULL;
+>>  	struct cs_etm_queue *etmq;
+>> +	int decoders_per_cpu = formatted ? etm->num_cpu : 1;
 > 
-> Documentation/devicetree/bindings/net/qca,ar71xx.example.dt.yaml: phy@3: '#phy-cells' is a required property
->         From schema: schemas/phy/phy-provider.yaml
+> I really tripped on the name "decoders_per_cpu", to a point where I had to
+> review the current code before looking at this patch.  I find the "_per_cpu"
+> part especially puzzling.  In the end the variable determines the amount of
+> decoders to instantiate for a specific queue...  
 > 
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Rui Miguel Silva <rmfrfs@gmail.com>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Robert Marko <robert.marko@sartura.hr>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Alessandro Zummo <a.zummo@towertech.it>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Ramesh Shanmugasundaram <rashanmu@gmail.com>
-> Cc: "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> Cc: ChiYuan Huang <cy_huang@richtek.com>
-> Cc: Wei Xu <xuwei5@hisilicon.com>
-> Cc: Dilip Kota <eswara.kota@linux.intel.com>
-> Cc: Karol Gugala <kgugala@antmicro.com>
-> Cc: Mateusz Holenko <mholenko@antmicro.com>
-> Cc: Olivier Moysan <olivier.moysan@st.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-rtc@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../display/allwinner,sun8i-a83t-dw-hdmi.yaml |  2 --
->  .../display/panel/boe,tv101wum-nl6.yaml       |  1 -
->  .../bindings/media/nxp,imx7-mipi-csi2.yaml    |  2 --
->  .../bindings/media/renesas,drif.yaml          |  1 -
->  .../bindings/net/intel,dwmac-plat.yaml        |  2 --
->  .../bindings/net/intel,ixp4xx-ethernet.yaml   |  2 --
->  .../bindings/net/nfc/samsung,s3fwrn5.yaml     |  3 ---
->  .../devicetree/bindings/net/qca,ar71xx.yaml   | 25 ++++---------------
->  .../regulator/richtek,rt6245-regulator.yaml   |  1 -
->  .../regulator/vqmmc-ipq4019-regulator.yaml    |  1 -
->  .../reset/hisilicon,hi3660-reset.yaml         |  1 -
->  .../bindings/reset/intel,rcu-gw.yaml          |  1 -
-[...]
+> Couldn't it be just "decoders"?  Or maybe it just needs a little comment to
+> disambiguate things?
+> 
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+Yeah I think just decoders will be good if I add a comment explaining why there is
+a difference with formatted vs unformatted. I will re-submit with the change.
 
-regards
-Philipp
+Thanks for the reviews.
+
+James
+
+> Thanks,
+> Mathieu
+> 
+>>  
+>>  	etmq = zalloc(sizeof(*etmq));
+>>  	if (!etmq)
+>> @@ -735,21 +739,23 @@ static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
+>>  		goto out_free;
+>>  
+>>  	/* Use metadata to fill in trace parameters for trace decoder */
+>> -	t_params = zalloc(sizeof(*t_params) * etm->num_cpu);
+>> +	t_params = zalloc(sizeof(*t_params) * decoders_per_cpu);
+>>  
+>>  	if (!t_params)
+>>  		goto out_free;
+>>  
+>> -	if (cs_etm__init_trace_params(t_params, etm))
+>> +	if (cs_etm__init_trace_params(t_params, etm, decoders_per_cpu))
+>>  		goto out_free;
+>>  
+>>  	/* Set decoder parameters to decode trace packets */
+>>  	if (cs_etm__init_decoder_params(&d_params, etmq,
+>>  					dump_trace ? CS_ETM_OPERATION_PRINT :
+>> -						     CS_ETM_OPERATION_DECODE))
+>> +						     CS_ETM_OPERATION_DECODE,
+>> +					formatted))
+>>  		goto out_free;
+>>  
+>> -	etmq->decoder = cs_etm_decoder__new(etm->num_cpu, &d_params, t_params);
+>> +	etmq->decoder = cs_etm_decoder__new(decoders_per_cpu, &d_params,
+>> +					    t_params);
+>>  
+>>  	if (!etmq->decoder)
+>>  		goto out_free;
+>> @@ -777,14 +783,15 @@ static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
+>>  
+>>  static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
+>>  			       struct auxtrace_queue *queue,
+>> -			       unsigned int queue_nr)
+>> +			       unsigned int queue_nr,
+>> +			       bool formatted)
+>>  {
+>>  	struct cs_etm_queue *etmq = queue->priv;
+>>  
+>>  	if (list_empty(&queue->head) || etmq)
+>>  		return 0;
+>>  
+>> -	etmq = cs_etm__alloc_queue(etm);
+>> +	etmq = cs_etm__alloc_queue(etm, formatted);
+>>  
+>>  	if (!etmq)
+>>  		return -ENOMEM;
+>> @@ -2430,8 +2437,14 @@ static int cs_etm__process_auxtrace_event(struct perf_session *session,
+>>  		if (err)
+>>  			return err;
+>>  
+>> +		/*
+>> +		 * Knowing if the trace is formatted or not requires a lookup of
+>> +		 * the aux record so only works in non-piped mode where data is
+>> +		 * queued in cs_etm__queue_aux_records(). Always assume
+>> +		 * formatted in piped mode (true).
+>> +		 */
+>>  		err = cs_etm__setup_queue(etm, &etm->queues.queue_array[idx],
+>> -					  idx);
+>> +					  idx, true);
+>>  		if (err)
+>>  			return err;
+>>  
+>> @@ -2678,6 +2691,7 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session, off_t file_o
+>>  	union perf_event auxtrace_fragment;
+>>  	__u64 aux_offset, aux_size;
+>>  	__u32 idx;
+>> +	bool formatted;
+>>  
+>>  	struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
+>>  						   struct cs_etm_auxtrace,
+>> @@ -2745,7 +2759,9 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session, off_t file_o
+>>  			return err;
+>>  
+>>  		idx = auxtrace_event->idx;
+>> -		return cs_etm__setup_queue(etm, &etm->queues.queue_array[idx], idx);
+>> +		formatted = !(aux_event->flags & PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
+>> +		return cs_etm__setup_queue(etm, &etm->queues.queue_array[idx],
+>> +					   idx, formatted);
+>>  	}
+>>  
+>>  	/* Wasn't inside this buffer, but there were no parse errors. 1 == 'not found' */
+>> -- 
+>> 2.28.0
+>>
