@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA5F3D10EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D50B3D10F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238669AbhGUNcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:32:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51984 "EHLO
+        id S238748AbhGUNdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbhGUNcb (ORCPT
+        with ESMTP id S232079AbhGUNdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:32:31 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC061C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:13:07 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id g5so3434395ybu.10
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:13:07 -0700 (PDT)
+        Wed, 21 Jul 2021 09:33:09 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB764C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:13:43 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id a22so1512139vso.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:13:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=deviqon.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bxJG9dhJg971EM1jTPDx1+rVCA7QuZrtXkki4ARdNb8=;
-        b=gZAsc/0UAAHZxhjucvY5bco5lvrJ234R6bxUbpmbGrSrKWsLFdJz9u7HmdS+twGVjv
-         CGt6f+7RyrcyijIYHxvjW6uuPyYQAPeOGRcdAWDswEMd4+rX1vXjy6W27zBkx5Qk+7Y/
-         VPiWVXBF8ujEeur8XUkJNDJ191QnpBiwR0NkLUNHr/tIcO/wp6yasvZhqhSYMT2jIDam
-         C1as+EeklfSoAwrABny4giJLfzrnBTBwMOsC13xnwf2NMgGZA+OT0xYgnKKF5gR7rAEg
-         bUTJVA1Ltg0DVZgGI8PoR+E6fQ8+pHpyD4tAQ4r7VPs3q28irXIgTjqTvMWutoYO5YhV
-         eVdQ==
+        bh=hZfNzgsD7J2Mjt1wMPXQg6aTS+MDAP37E7oHrwgMTDE=;
+        b=RiHimWEdJ/RGZ9gofssOFkx+Wfty76jxVPgU8sJf9GNjIeUy02HWR2f3yFqLtn3aZV
+         Res00d+d7X+xgbJYJtPOOOpG5ZKAXeDFChxnAVN3kC+ktsv2ZUZ/jI+Y1lS7f9Z/MlM4
+         N2+ApXcedGuK0ZsphtpBKRo7TX5qVD/mt8fxkr0u2VlANdNkGSXKd2ysAW/NsBQUqY0E
+         d2oziHVdEUbdxu5CW8fbxGW9O3zSiDp0O1cHtYX/H7CUFYxa1NzCVrMiFG6atT4/l6/y
+         GxUutU9oArsohXQYkoqOUXQ0GBPE9rC9x3CDbu5oVMJKUBHqix4yKMQRUXHlGa+w93b9
+         c1rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bxJG9dhJg971EM1jTPDx1+rVCA7QuZrtXkki4ARdNb8=;
-        b=XNkbJO0ihjURvvpyZs44uPuuM+zDcgZmgbSlDSUZEaCbk3cZdyDvaY3d+7PRrza2Tg
-         /ToStq0JrOr+uagPGv1f4VRqRgT02xtpSwj3+GCaYCHgKhU0gF0vDweM9k8iUxIxDb6a
-         Wz/XBe5UAWyzOHy+ytyQLGKGt9tsu0TKiyfPgN+bTNLeF6BDzePKYCwbJ5oW7peYHrth
-         HoUMKicTbke2h5aWoW+wYzfPm4ybgnc0KX12pnQVZ/NlKC44vBaBZvc/8ERYJS8eCwPt
-         K57NG+OSBbHq4iB5RHg0rHf833CYm8+xifXs5E9IEGCq2XuYOyAbAtlfMlqLdthZ9WAh
-         YTaQ==
-X-Gm-Message-State: AOAM531Z/7MA28K30U05mg9TA0+NssYwcBhjVqSzL1akgDBxfPVSRXhN
-        r2BYq587Bk6Wx90Z9T1+T+5GltKOSsauz2kn0zI=
-X-Google-Smtp-Source: ABdhPJyb9EnIJ1cSuH2LGGqh5iBWZSsCltT9+kvwIltvVqLIela9b8rmEnBATlbpKqxJqJ5ktIGP3U9Jux9/NHl5uOE=
-X-Received: by 2002:a25:7cc6:: with SMTP id x189mr48172992ybc.371.1626876787088;
- Wed, 21 Jul 2021 07:13:07 -0700 (PDT)
+        bh=hZfNzgsD7J2Mjt1wMPXQg6aTS+MDAP37E7oHrwgMTDE=;
+        b=EMzugkeQblsX6jZf7W20hMVWYZB+kuFUnf3BFARidTbWulI39OFfBtOYs4+qA7X2ly
+         aC9mY361Sqenk+FtSIMDr3pXjI8dqeF1FGoTD5LFh+h/eKEEC4vL8h6Y/iqXrZJVzsur
+         Smh0rZZ1YCmTVbFOp3Dn3XO5d86fcJchLI9lOGz92WM95iX3c1kH8uFdn/64PLEfjrFe
+         dtutzIDfL8SIa/XSmu7m5f10RAQsRrtvFmAxZtQh3ttRYxN/XvZQg4G7+btvEDurp78c
+         Zu0EiCjrVKm+wMK6s6ALR9rxK740KGppz+1KRmxuwdsNZOrhyhPAHMTZPappZqvs27li
+         TlNA==
+X-Gm-Message-State: AOAM530lDF4mC1ffbQB+o92jZ1UZiid+Jir8CbgowLyYHwMRcs7I1ywT
+        Imqh2qk+6b8aJbp72a67AY/rbCSgEnwP5TLO1EYvuQ==
+X-Google-Smtp-Source: ABdhPJzDzZiF5vXCGP5mkzRnVr4i3jpCUZGt6JzyAJTJuPHcvtQTM87aLzJv4GnqrDPGagqH5nK/n18oBDQ0LIAiPEw=
+X-Received: by 2002:a67:c009:: with SMTP id v9mr12696459vsi.47.1626876822371;
+ Wed, 21 Jul 2021 07:13:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210721075937.696811-1-alex@ghiti.fr>
-In-Reply-To: <20210721075937.696811-1-alex@ghiti.fr>
-From:   Emil Renner Berthing <emil.renner.berthing@gmail.com>
-Date:   Wed, 21 Jul 2021 16:12:56 +0200
-Message-ID: <CANBLGcyqOKgoQr3EWvgTKewj9PtbzZ4STOz5KXHm78JQYc0G4w@mail.gmail.com>
-Subject: Re: [PATCH -fixes 0/3] Fixes regarding CONFIG_PHYS_RAM_BASE
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210707135144.191567-1-aardelean@deviqon.com> <CAMpxmJVBTqX_e6a7PjdNmwYN-SCgqXQ1WbfzZbRLBGvPSVHTFQ@mail.gmail.com>
+In-Reply-To: <CAMpxmJVBTqX_e6a7PjdNmwYN-SCgqXQ1WbfzZbRLBGvPSVHTFQ@mail.gmail.com>
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+Date:   Wed, 21 Jul 2021 17:13:30 +0300
+Message-ID: <CAASAkoYhg2VQB5En8=pybeHngnApaYoStg3ZB9=J-ZMofD7Rkg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: viperboard: remove platform_set_drvdata() call in probe
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Jul 2021 at 10:00, Alexandre Ghiti <alex@ghiti.fr> wrote:
+On Wed, 21 Jul 2021 at 16:16, Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
 >
-> The following commits:
+> On Wed, Jul 7, 2021 at 3:51 PM Alexandru Ardelean <aardelean@deviqon.com> wrote:
+> >
+> > The platform_set_drvdata() call is only useful if we need to retrieve back
+> > the private information.
+> > Since the driver doesn't do that, it's not useful to have it.
+> >
+> > This change removes it.
+> >
+> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> > ---
+> >  drivers/gpio/gpio-viperboard.c | 6 +-----
+> >  1 file changed, 1 insertion(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/gpio/gpio-viperboard.c b/drivers/gpio/gpio-viperboard.c
+> > index c301c1d56dd2..98ddd6590362 100644
+> > --- a/drivers/gpio/gpio-viperboard.c
+> > +++ b/drivers/gpio/gpio-viperboard.c
+> > @@ -422,12 +422,8 @@ static int vprbrd_gpio_probe(struct platform_device *pdev)
+> >         vb_gpio->gpiob.direction_input = vprbrd_gpiob_direction_input;
+> >         vb_gpio->gpiob.direction_output = vprbrd_gpiob_direction_output;
+> >         ret = devm_gpiochip_add_data(&pdev->dev, &vb_gpio->gpiob, vb_gpio);
+> > -       if (ret < 0) {
+> > +       if (ret < 0)
+> >                 dev_err(vb_gpio->gpiob.parent, "could not add gpio b");
+> > -               return ret;
+> > -       }
+> > -
+> > -       platform_set_drvdata(pdev, vb_gpio);
+> >
+> >         return ret;
+> >  }
+> > --
+> > 2.31.1
+> >
 >
-> 7094e6acaf7a ("riscv: Simplify xip and !xip kernel address conversion macros")
-> 9b79878ced8f ("riscv: Remove CONFIG_PHYS_RAM_BASE_FIXED")
+> The log is not really needed, we'll get an error message from gpiolib
+> core. Can you remove it while you're at it and just return the result
+> of devm_gpiochip_add_data()?
+
+I thought about removing it, but in this driver there are 2
+devm_gpiochip_add_data() calls.
+It registers 2 GPIOchip instances.
+Which is not so easy to see in this patch.
+
+First one says "could not add gpio a"  and this one says "could not add gpio b".
+I hesitated to remove either of these.
+
+In this case, it may be a little helpful to know which GPIOchip failed
+to be registered.
+
+But I don't mind removing them both.
+Whatever you prefer. I'm undecided.
+
 >
-> expose CONFIG_PHYS_RAM_BASE for all kernel types whereas this value is
-> implementation-specific, so that breaks the kernel genericity.
->
-> The first patch in this patchset removes the usage of CONFIG_PHYS_RAM_BASE
-> by introducing a new global variable that holds this value.
->
-> The second patch reverts 9b79878ced8f ("riscv: Remove
-> CONFIG_PHYS_RAM_BASE_FIXED").
->
-> The last patch is an optimization 'symmetrical' to the one introduced in
-> the first patch: this is not a fix, then it is not necessary to pull
-> this into -fixes.
-
-Hi Alex,
-
-Thank you, this works  fine on my BeagleV Beta board.
-
-If I'm not mistaken after this series all uses of CONFIG_PHYS_RAM if
-protected by #ifdef CONFIG_XIP_KERNEL, so maybe we can remove the
-middleman, CONFIG_PHYS_RAM_BASE_FIXED, and just let CONFIG_PHYS_RAM
-directly depend on CONFIG_XIP_KERNEL.
-
-Don't let that delay this series though. I'd still rather have this
-fixed in 5.14 as is.
-
-If it makes any difference you can add this for the series:
-Tested-by: Emil Renner Berthing <kernel@esmil.dk>
-
-/Emil
+> Bart
