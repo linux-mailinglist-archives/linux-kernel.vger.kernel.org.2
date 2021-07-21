@@ -2,140 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48BF3D13F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0773D13F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235879AbhGUPkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 11:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235743AbhGUPkA (ORCPT
+        id S235967AbhGUPkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 11:40:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40916 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235949AbhGUPkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:40:00 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F1AC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:20:37 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id r25so1741978vsk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:20:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=051mTyyqTLe5bNxs3xMEB9dCJVVcLYp1lomu2/ziKcg=;
-        b=mBZuY8y7e8p9bUY1ojzWBevvvMvTeIrdLx4L5N2hrw76MKt+CQ8zR8aQd0r0l8+0Ri
-         UCcpj15XA0v3mA5O0DkBjetFm+wvkqr4V/U1eKIkv6x4bTyJ9A2lF5WYQiOSi/1MmEkt
-         ojmFv7HtVf14t2mJ8bjQNIEC+NcaNKyl8ybHo=
+        Wed, 21 Jul 2021 11:40:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626884446;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YkZTscC6KpmV7ZPZQ/arpngaCqGBZg3nbQ0knfcsigA=;
+        b=OoNHUArlPziuidJkqum5NZbzWl39kZjrq4df41R5oo6znE6t+yLYc7yQp+RG/+GR/O3JGL
+        i4A+KrgqRY9y6V+MOcv+m5i9kIoMjtMX0RYriMvGWgiNuPci8UQwpf51MkFl21mJgESsH4
+        ob8TyMIRz1KtdFpJc6sqena2XP/IT7o=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-254--awQt1I0PFWF-JgsBac_cQ-1; Wed, 21 Jul 2021 12:20:45 -0400
+X-MC-Unique: -awQt1I0PFWF-JgsBac_cQ-1
+Received: by mail-qv1-f71.google.com with SMTP id kj25-20020a0562145299b02902fbda5d4988so1871706qvb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:20:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=051mTyyqTLe5bNxs3xMEB9dCJVVcLYp1lomu2/ziKcg=;
-        b=TBMSaMbkzB27I8SMYAkUkF+THt17W8F/gC26EUKPkFRbK8OR+b+T9ZQTbNSE+QJDZu
-         WDeBiVzkt03Vq2vRwT8f2atZBgEStVWXclh+v6CbMOnDBBNkF2vq305NCXFUMvHQGJni
-         DoSGNca0mCOBSAIvrKiSWXDzY+YpYHD8Z7s/kYadGJlMI6jA7ex48RJwGEiaxU+fWnJv
-         0x7NVngrsHFeXJiJWrjxzj+1/JJ+y0IE2a9dySkZkIMDIwsYY3MCoew8fM/JRBRDDZmO
-         qJp5mTk553TIcbjHoaqaXJBNNFzs5m536Q0r4dYaMNBA2QdYUnHpRqSsd32b/874QwEG
-         9tJg==
-X-Gm-Message-State: AOAM5327EVjmQ4Gdp0GIr0GW7mTlNa6DPi3t2527fIDOi/XqEcItFgwA
-        cfV6LG4iFJnX+wQY0r31ITA9bSnaEnp67g==
-X-Google-Smtp-Source: ABdhPJzMtrT1FWsI/FH7evU/JGGXfDLeyJtArmfkhTxNPuQ1TEj1RGpOisk2fhcXD3Lwmpj2GdFxQQ==
-X-Received: by 2002:a67:707:: with SMTP id 7mr36120569vsh.39.1626884435818;
-        Wed, 21 Jul 2021 09:20:35 -0700 (PDT)
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
-        by smtp.gmail.com with ESMTPSA id 34sm2423542vkl.4.2021.07.21.09.20.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 09:20:35 -0700 (PDT)
-Received: by mail-vs1-f42.google.com with SMTP id r18so1728544vsa.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:20:35 -0700 (PDT)
-X-Received: by 2002:a05:6102:144:: with SMTP id a4mr34855801vsr.29.1626884434569;
- Wed, 21 Jul 2021 09:20:34 -0700 (PDT)
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=YkZTscC6KpmV7ZPZQ/arpngaCqGBZg3nbQ0knfcsigA=;
+        b=oBdK3ruNnq+nVi8+Fht2B5fuPvMvcqxHi969Hd3liaHtaw5SQg3e3KgYzxSEp1FyU5
+         pQj99mnHgzEI1KUaPctEFR7cyOmz5Y1lX4y2c9e22YKwB4bp0gSlwvUlsVqnbaRhM9AD
+         nZdBLLXqFMK62EE0A4ESrmVsc+vWDQHirrefi9Xyf6QDLeU72aqVV6QejBK6Ahj+i0E6
+         +ignBo8aUfNGi2UXZwqFzmnZhxlmpXXqYIzuWC/ibI1lVCuWQBfWpWT50AS2Cx1g3h2U
+         1JlBMxxgltRODeRFKWQ7yPoyf1QZQ+VXg+jw4tIYLodLzbMyRcFwOGV9lj2mq1hzNZ3/
+         1qaQ==
+X-Gm-Message-State: AOAM532YoD4t9HN75Om8MyoEHjKAAVREoevUK0/ISrNSpBx/D+soY55L
+        mj4odZhiiBbMk6YyvV2kfYeoB7YnPXwTo1lv/3d5Ttp/0AsVztkSgxRo04tkeXw8Oloc3TAj5nc
+        dht1KKTk5PZWS6Zg70cC60cYl
+X-Received: by 2002:a0c:a223:: with SMTP id f32mr37104016qva.8.1626884444601;
+        Wed, 21 Jul 2021 09:20:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw+t6fxG/ixd7o7dlSLuaUhbdIrVbCJpvX027HWNZq9vT5wDnkVq2oxjwvDHG0JV/G1ddMkig==
+X-Received: by 2002:a0c:a223:: with SMTP id f32mr37103999qva.8.1626884444411;
+        Wed, 21 Jul 2021 09:20:44 -0700 (PDT)
+Received: from [192.168.1.3] (68-20-15-154.lightspeed.rlghnc.sbcglobal.net. [68.20.15.154])
+        by smtp.gmail.com with ESMTPSA id i4sm9475118qka.130.2021.07.21.09.20.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 09:20:43 -0700 (PDT)
+Message-ID: <35ecb577315f486f1636b2316c2051ad004f6f7b.camel@redhat.com>
+Subject: Re: [RFC PATCH 01/12] afs: Sort out symlink reading
+From:   Jeff Layton <jlayton@redhat.com>
+To:     David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Mike Marshall <hubcap@omnibond.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        devel@lists.orangefs.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 21 Jul 2021 12:20:42 -0400
+In-Reply-To: <162687508008.276387.6418924257569297305.stgit@warthog.procyon.org.uk>
+References: <162687506932.276387.14456718890524355509.stgit@warthog.procyon.org.uk>
+         <162687508008.276387.6418924257569297305.stgit@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-References: <20210721084126.14035-1-srivasam@codeaurora.org> <20210721084126.14035-3-srivasam@codeaurora.org>
-In-Reply-To: <20210721084126.14035-3-srivasam@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 21 Jul 2021 09:20:23 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=W3X8W90vPdrDAymzTKj-J7QPyn4ukaLSOhEkCme3+r_Q@mail.gmail.com>
-Message-ID: <CAD=FV=W3X8W90vPdrDAymzTKj-J7QPyn4ukaLSOhEkCme3+r_Q@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] arm64: dts: qcom: sc7180-trogdor: Add lpass dai
- link for HDMI
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Judy Hsiao <judyhsiao@chromium.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Jul 21, 2021 at 1:42 AM Srinivasa Rao Mandadapu
-<srivasam@codeaurora.org> wrote:
->
-> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
->
-> Add dai link in sc7180-trogdor.dtsi for supporting audio over DP
->
-> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On Wed, 2021-07-21 at 14:44 +0100, David Howells wrote:
+> afs_readpage() doesn't get a file pointer when called for a symlink, so
+> separate it from regular file pointer handling.
+> 
+> Signed-off-by: David Howells <dhowells@redhat.com>
 > ---
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> index 31bf7c698b8f..a4cb9ee567ff 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> @@ -288,6 +288,7 @@ sound: sound {
->                         "Headphone Jack", "HPOL",
->                         "Headphone Jack", "HPOR";
->
-> +               #sound-dai-cells = <0>;
-
-The `#sound-dai-cells` is not in the bindings. The bindings also say
-`additionalProperties: false`. So either your patch is wrong for
-including this or the bindings are wrong for omitting it. Which is it?
-I notice that downstream we don't have this.
-
-
-> @@ -314,6 +315,18 @@ sound_multimedia1_codec: codec {
->                                 sound-dai = <&max98357a>;
-
-Ideally you'll want to rebase to make context clean since the above
-got changed from `max98357a` to `max98360a`.
-
-
->                         };
->                 };
+> 
+>  fs/afs/file.c     |   14 +++++++++-----
+>  fs/afs/inode.c    |    6 +++---
+>  fs/afs/internal.h |    3 ++-
+>  3 files changed, 14 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/afs/file.c b/fs/afs/file.c
+> index ca0d993add65..c9c21ad0e7c9 100644
+> --- a/fs/afs/file.c
+> +++ b/fs/afs/file.c
+> @@ -19,6 +19,7 @@
+>  
+>  static int afs_file_mmap(struct file *file, struct vm_area_struct *vma);
+>  static int afs_readpage(struct file *file, struct page *page);
+> +static int afs_symlink_readpage(struct file *file, struct page *page);
+>  static void afs_invalidatepage(struct page *page, unsigned int offset,
+>  			       unsigned int length);
+>  static int afs_releasepage(struct page *page, gfp_t gfp_flags);
+> @@ -46,7 +47,7 @@ const struct inode_operations afs_file_inode_operations = {
+>  	.permission	= afs_permission,
+>  };
+>  
+> -const struct address_space_operations afs_fs_aops = {
+> +const struct address_space_operations afs_file_aops = {
+>  	.readpage	= afs_readpage,
+>  	.readahead	= afs_readahead,
+>  	.set_page_dirty	= afs_set_page_dirty,
+> @@ -60,6 +61,12 @@ const struct address_space_operations afs_fs_aops = {
+>  	.writepages	= afs_writepages,
+>  };
+>  
+> +const struct address_space_operations afs_symlink_aops = {
+> +	.readpage	= afs_symlink_readpage,
+> +	.releasepage	= afs_releasepage,
+> +	.invalidatepage	= afs_invalidatepage,
+> +};
 > +
-> +               dai-link@2 {
-> +                       link-name = "MultiMedia2";
-> +                       reg = <2>;
+>  static const struct vm_operations_struct afs_vm_ops = {
+>  	.fault		= filemap_fault,
+>  	.map_pages	= filemap_map_pages,
+> @@ -321,7 +328,7 @@ static void afs_req_issue_op(struct netfs_read_subrequest *subreq)
+>  	afs_fetch_data(fsreq->vnode, fsreq);
+>  }
+>  
+> -static int afs_symlink_readpage(struct page *page)
+> +static int afs_symlink_readpage(struct file *file, struct page *page)
+>  {
+>  	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
+>  	struct afs_read *fsreq;
 
-I am certainly not an expert, but I notice that downstream we have reg
-as <LPASS_DP_RX>, which makes the node name dai-link@5 instead of @2.
-Does that matter?
 
+I wonder...would you be better served here by not using page_readlink
+for symlinks and instead use simple_get_link and roll your own readlink
+operation. It seems a bit more direct, and AFS seems to be the only
+caller of page_readlink.
 
-> @@ -768,6 +781,10 @@ secondary_mi2s: mi2s@1 {
->                 reg = <MI2S_SECONDARY>;
->                 qcom,playback-sd-lines = <0>;
->         };
-> +
-> +       hdmi-primary@0 {
-> +               reg = <LPASS_DP_RX>;
+> @@ -386,9 +393,6 @@ const struct netfs_read_request_ops afs_req_ops = {
+>  
+>  static int afs_readpage(struct file *file, struct page *page)
+>  {
+> -	if (!file)
+> -		return afs_symlink_readpage(page);
+> -
+>  	return netfs_readpage(file, page, &afs_req_ops, NULL);
+>  }
+>  
+> diff --git a/fs/afs/inode.c b/fs/afs/inode.c
+> index bef6f5ccfb09..cf7b66957c6f 100644
+> --- a/fs/afs/inode.c
+> +++ b/fs/afs/inode.c
+> @@ -105,7 +105,7 @@ static int afs_inode_init_from_status(struct afs_operation *op,
+>  		inode->i_mode	= S_IFREG | (status->mode & S_IALLUGO);
+>  		inode->i_op	= &afs_file_inode_operations;
+>  		inode->i_fop	= &afs_file_operations;
+> -		inode->i_mapping->a_ops	= &afs_fs_aops;
+> +		inode->i_mapping->a_ops	= &afs_file_aops;
+>  		break;
+>  	case AFS_FTYPE_DIR:
+>  		inode->i_mode	= S_IFDIR |  (status->mode & S_IALLUGO);
+> @@ -123,11 +123,11 @@ static int afs_inode_init_from_status(struct afs_operation *op,
+>  			inode->i_mode	= S_IFDIR | 0555;
+>  			inode->i_op	= &afs_mntpt_inode_operations;
+>  			inode->i_fop	= &afs_mntpt_file_operations;
+> -			inode->i_mapping->a_ops	= &afs_fs_aops;
+> +			inode->i_mapping->a_ops	= &afs_symlink_aops;
+>  		} else {
+>  			inode->i_mode	= S_IFLNK | status->mode;
+>  			inode->i_op	= &afs_symlink_inode_operations;
+> -			inode->i_mapping->a_ops	= &afs_fs_aops;
+> +			inode->i_mapping->a_ops	= &afs_symlink_aops;
+>  		}
+>  		inode_nohighmem(inode);
+>  		break;
+> diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+> index 791cf02e5696..ccdde00ada8a 100644
+> --- a/fs/afs/internal.h
+> +++ b/fs/afs/internal.h
+> @@ -1050,7 +1050,8 @@ extern void afs_dynroot_depopulate(struct super_block *);
+>  /*
+>   * file.c
+>   */
+> -extern const struct address_space_operations afs_fs_aops;
+> +extern const struct address_space_operations afs_file_aops;
+> +extern const struct address_space_operations afs_symlink_aops;
+>  extern const struct inode_operations afs_file_inode_operations;
+>  extern const struct file_operations afs_file_operations;
+>  extern const struct netfs_read_request_ops afs_req_ops;
+> 
+> 
 
-Your node name and `reg` don't match. `LPASS_DP_RX` is 5 so the node
-name should include @5, not @0. I also notice that downstream the node
-name is called `hdmi`, not `hdmi-primary`. The downstream `hdmi` seems
-more parallel to the sibling nodes, like `mi2s@0` and `mi2s@1`.
+Regardless, this is more reasonable than what's there now.
+
+Reviewed-by: Jeff Layton <jlayton@redhat.com>
+
