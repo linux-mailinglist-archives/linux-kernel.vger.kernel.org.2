@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4933D0B4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3823D0B53
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237176AbhGUIXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 04:23:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237454AbhGUIOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 04:14:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3116E6101E;
-        Wed, 21 Jul 2021 08:54:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626857696;
-        bh=kd+4dTdc2/L0vdJ20rKYVTfc7Q/zfKE6gLw9cC1PYtE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aWLz2Phc1fiyB0bLMX+hR88Rgg/HKiYl+O1AE0G5MWYJb9vhW5zQIOCwqdc9nYdDj
-         3TPW1YCfTKcnWELCxXofDyVMsY4m4s6MVuyVpZIIa80/xnSrlHACctpiFLeL7Ip8os
-         XUcEXwWtRfTZ2xQInRVlTy88UNLlVYUos2FW7wUTMwBJKpbJTs2rLZOKWGyJ39RGQ8
-         RaC+ogT/QA0jM4rJQQ/xP4jzvq/emEmJojtKCIJOkaS71hl1cPpD7wS0fZ5wQXBVDP
-         Nm/f+nKTEA+aJLymWlV+Zhy+Da+AtezBWzL5TT/WwDMGKFigyTEUz0PH06dFNgpdvm
-         Jeo1pV9YtJsWQ==
-Received: by pali.im (Postfix)
-        id A6A8779B; Wed, 21 Jul 2021 10:54:53 +0200 (CEST)
-Date:   Wed, 21 Jul 2021 10:54:53 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Ingmar Klein <ingmar_klein@web.de>, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: QCA6174 pcie wifi: Add pci quirks
-Message-ID: <20210721085453.aqd73h22j6clzcfs@pali>
-References: <20210415195338.icpo5644bo76rzuc@pali>
- <20210525221215.GA1235899@bjorn-Precision-5520>
+        id S237283AbhGUIak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 04:30:40 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50696 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237277AbhGUIRT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 04:17:19 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DCB031FE7D;
+        Wed, 21 Jul 2021 08:57:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626857825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u0kC18X/luRjFIG/rcDP9X4vD1QUzspWnVNHzWoy7wQ=;
+        b=e/4mBaqKMgOr3tXAjWQrJxDHRDbwqWOmEQtL060VVGu0BpQBkcy2JoV/ZOSOkljL6ZWSek
+        dqqz3yU3FLZxJTMHn63ZRopUHcvId+T/Ph8mcGM7uneV4z8E+8qO5KWCN6/qbdyS6Ww3Rb
+        a/hGoGTXMC74BKnvnkkdEYn5tZBJ42g=
+Received: from suse.cz (pathway.suse.cz [10.100.12.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 936BEA3B81;
+        Wed, 21 Jul 2021 08:57:05 +0000 (UTC)
+Date:   Wed, 21 Jul 2021 10:57:05 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the printk tree
+Message-ID: <20210721085705.fy6hrc5n3qtlwehq@pathway.suse.cz>
+References: <20210720174300.018cc765@canb.auug.org.au>
+ <CA+G9fYs2ApGkrJHL5HOO1jEJZ714itVp+Tdj7fWzkG+JWc=pOA@mail.gmail.com>
+ <YPbBfdz9srIpI+bb@chrisdown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210525221215.GA1235899@bjorn-Precision-5520>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <YPbBfdz9srIpI+bb@chrisdown.name>
+User-Agent: NeoMutt/20170912 (1.9.0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 25 May 2021 17:12:15 Bjorn Helgaas wrote:
-> On Thu, Apr 15, 2021 at 09:53:38PM +0200, Pali Rohár wrote:
-> > Hello!
-> > 
-> > On Thursday 15 April 2021 13:01:19 Alex Williamson wrote:
-> > > [cc +Pali]
-> > > 
-> > > On Thu, 15 Apr 2021 20:02:23 +0200
-> > > Ingmar Klein <ingmar_klein@web.de> wrote:
-> > > 
-> > > > First thanks to you both, Alex and Bjorn!
-> > > > I am in no way an expert on this topic, so I have to fully rely on your
-> > > > feedback, concerning this issue.
-> > > > 
-> > > > If you should have any other solution approach, in form of patch-set, I
-> > > > would be glad to test it out. Just let me know, what you think might
-> > > > make sense.
-> > > > I will wait for your further feedback on the issue. In the meantime I
-> > > > have my current workaround via quirk entry.
-> > > > 
-> > > > By the way, my layman's question:
-> > > > Do you think, that the following topic might also apply for the QCA6174?
-> > > > https://www.spinics.net/lists/linux-pci/msg106395.html
-> > 
-> > I have been testing more ath cards and I'm going to send a new version
-> > of this patch with including more PCI ids.
+On Tue 2021-07-20 13:28:45, Chris Down wrote:
+> Hey folks,
 > 
-> Dropping this patch in favor of Pali's new version.
+> Naresh Kamboju writes:
+> > On Tue, 20 Jul 2021 at 13:13, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > 
+> > > Hi all,
+> > > 
+> > > After merging the printk tree, today's linux-next build (mips allnoconfig)
+> > > failed like this:
+> > > 
+> > > arch/mips/kernel/genex.o: In function `handle_mcheck_int':
+> > > (.text+0x190c): undefined reference to `printk'
+> > > arch/mips/kernel/genex.o: In function `handle_reserved_int':
+> > > (.text+0x1c8c): undefined reference to `printk'
+> > > 
+> > > Caused by commit
+> > > 
+> > >   337015573718 ("printk: Userspace format indexing support")
+> > 
+> > Following MIPS builds failed at our end due the reported problem.
+> 
+> Thanks: missed this as I made sure to change all .S files to use _printk,
+> but this is in a .h file included in a .S file.
+> 
+> Here's what's needed. :-)
+> 
+> diff --git arch/mips/include/asm/asm.h arch/mips/include/asm/asm.h
+> index ea4b62ece336..2f8ce94ebaaf 100644
+> --- arch/mips/include/asm/asm.h
+> +++ arch/mips/include/asm/asm.h
+> @@ -114,7 +114,7 @@ symbol		=	value
+>  		.set	push;				\
+>  		.set	reorder;			\
+>  		PTR_LA	a0, 8f;				\
+> -		jal	printk;				\
+> +		jal	_printk;			\
+>  		.set	pop;				\
+>  		TEXT(string)
+>  #else
 
-Hello Bjorn! Seems that it would take much more time to finish my
-version of patch. So could you take Ingmar's patch with cc:stable tag
-for now, which just adds PCI device id into list of problematic devices?
+Chris, could you please send it as a proper patch?
+
+Best Regards,
+Petr
