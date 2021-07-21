@@ -2,132 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72DB3D0F01
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6AC3D0F06
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbhGUMFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:05:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:46876 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231139AbhGUMFk (ORCPT
+        id S233575AbhGUMIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231996AbhGUMIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:05:40 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626871576;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cdS1buxKYZqBBBQSENm52Z2BdiL5OnJduLY+Z3jB0eY=;
-        b=19cTuzozpKz2m6yusdcjCowUC++mkWqLuMbFOlmc71QS6OURW5sQ6dio/NqnOtRZeXzL1/
-        +sm52j62lmS4IzDSo2BJ19dqnWgssdXP5w8YxJXYiz2iWB/PXPeKvROVkwxP3thsSMyLrq
-        vT5nJSVsl7l2xwbIcYE0ziUAViZLIVMnn7Cy7ZRhf1oaWPR3QimBaa0uM14kHH8ZSeB7iM
-        YT/keUdJIe8LfMBpy7OMPwJ7QSb0mSLKRvhhKG7MYtwtJ0Ti9B0svmKRRP7jxfhIoXoSuX
-        GycPdi8THSadrxXzDb/uC2gEGFUhul2oHeGVLPHLgTUFTx4wwdBN6U+SJUqNHg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626871576;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cdS1buxKYZqBBBQSENm52Z2BdiL5OnJduLY+Z3jB0eY=;
-        b=Q3q0I7J1FXSbLrOv/qmQ4GnglOnFnnEdRZSKWXYKU6ktHo5Y2/FmNqCrN5Gn0IA5Cxbouu
-        CMBE6+4XHA57LkDw==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ingo Molnar <mingo@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Wolfram Sang \(Renesas\)" <wsa+renesas@sang-engineering.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Xiongwei Song <sxwjean@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH printk v4 4/6] printk: remove NMI tracking
-In-Reply-To: <20210721120026.y3dqno24ahw4sazy@pathway.suse.cz>
-References: <20210715193359.25946-1-john.ogness@linutronix.de> <20210715193359.25946-5-john.ogness@linutronix.de> <20210721120026.y3dqno24ahw4sazy@pathway.suse.cz>
-Date:   Wed, 21 Jul 2021 14:52:15 +0206
-Message-ID: <877dhjygvc.fsf@jogness.linutronix.de>
+        Wed, 21 Jul 2021 08:08:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45D9C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 05:49:24 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m6Bez-0005Rz-3Z; Wed, 21 Jul 2021 14:49:13 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m6Bel-00009I-8O; Wed, 21 Jul 2021 14:48:59 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m6Bel-0000Yf-7G; Wed, 21 Jul 2021 14:48:59 +0200
+Date:   Wed, 21 Jul 2021 14:48:59 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: Re: [v9 2/2] pwm: Add Aspeed ast2600 PWM support
+Message-ID: <20210721124859.clv6qlitbyomdz6s@pengutronix.de>
+References: <20210709065217.6153-1-billy_tsai@aspeedtech.com>
+ <20210709065217.6153-3-billy_tsai@aspeedtech.com>
+ <20210715150533.vppkw5oiomkxmfrn@pengutronix.de>
+ <BD5B012C-B377-45E2-B04E-61D12B086670@aspeedtech.com>
+ <20210716070943.ayxkz2irkwhgincz@pengutronix.de>
+ <DD5590B4-11BC-411B-95BF-03AC26C078E4@aspeedtech.com>
+ <20210716101301.l563tdwt5xuq5iq6@pengutronix.de>
+ <3F12A498-DF5C-4954-8BCE-8C0C66BC9734@aspeedtech.com>
+ <4BC9AEF6-31EA-4EDA-BCB2-7E4D44B6D5D2@aspeedtech.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sh6jjxfikryciybj"
+Content-Disposition: inline
+In-Reply-To: <4BC9AEF6-31EA-4EDA-BCB2-7E4D44B6D5D2@aspeedtech.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-21, Petr Mladek <pmladek@suse.com> wrote:
->> --- a/kernel/trace/trace.c
->> +++ b/kernel/trace/trace.c
->> @@ -9647,7 +9647,7 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
->>  	tracing_off();
->>  
->>  	local_irq_save(flags);
->> -	printk_nmi_direct_enter();
->> +	printk_deferred_enter();
->
-> I would prefer to do not manipulate the printk context here anymore,
-> as it was done in v3.
->
-> printk_nmi_direct_enter() was added here by the commit the commit
-> 03fc7f9c99c1e7ae2925d4 ("printk/nmi: Prevent deadlock when
-> accessing the main log buffer in NMI"). It was _not_ about console
-> handling. The reason was to modify the default behavior under NMI
-> and store the messages directly into the main log buffer.
->
-> When I think about it. The original fix was not correct. We should have
-> modified the context only when ftrace_dump() was really called under NMI:
->
-> 	if (in_nmi())
-> 		printk_nmi_direct_enter();
->
-> By other words. We should try to show the messages on the console
-> when ftrace_dump()/panic() is not called from NMI. It will help
-> to see all messages even when the ftrace buffers are bigger
-> than printk() ones.
->
-> And we do not need any special handling here for NMI. vprintk()
-> in printk/printk_safe.c will do the right thing for us.
 
-Agreed. We need to mention this behavior change in the commit
-message. Perhaps this as the commit message:
+--sh6jjxfikryciybj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All NMI contexts are handled the same as the safe context: store the
-message and defer printing. There is no need to have special NMI
-context tracking for this. Using in_nmi() is enough.
+On Wed, Jul 21, 2021 at 10:52:21AM +0000, Billy Tsai wrote:
+> Hi Uwe,
+>=20
+>     On 2021/7/16, 6:13 PM, "Uwe Kleine-K=F6nig" <u.kleine-koenig@pengutro=
+nix.de> wrote:
+>=20
+>         On Fri, Jul 16, 2021 at 09:22:22AM +0000, Billy Tsai wrote:
+>         >> On 2021/7/16, 3:10 PM, "Uwe Kleine-K=F6nig" <u.kleine-koenig@p=
+engutronix.de> wrote:
+>         >>=20
+>         >>     On Fri, Jul 16, 2021 at 01:48:20AM +0000, Billy Tsai wrote:
+>         >>     >> On 2021/7/15, 11:06 PM, "Uwe Kleine-K=F6nig" <u.kleine-=
+koenig@pengutronix.de>> wrote:
+>         >>     >>     > Another is: The PWM doesn't support duty_cycle 0,=
+ on such a request the
+>         >>     >>     > PWM is disabled which results in a constant inact=
+ive level.
+>         >>     >>=20
+>         >>     >>     > (This is correct, is it? Or does it yield a const=
+ant 0 level?)
+>         >>     >>=20
+>         >>     >> Our pwm can support duty_cycle 0 by unset CLK_ENABLE.
+>         >>=20
+>         >>     > This has a slightly different semantic though. Some cons=
+umer might
+>         >>     > expect that the following sequence:
+>         >>=20
+>         >>     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 10=
+000, .enabled =3D true })
+>         >>     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 0,=
+ .enabled =3D true })
+>         >>     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 10=
+000, .enabled =3D true })
+>         >>=20
+>         >>     > results in the output being low for an integer multiple =
+of 10 =B5s. This
+>         >>     > isn't given with setting CLK_ENABLE to zero, is it? (I d=
+idn't recheck,
+>         >>     > if the PWM doesn't complete periods on reconfiguration t=
+his doesn't
+>         >>     > matter much though.)
+>         >> Thanks for the explanation.
+>         >> Our hardware actually can only support duty from 1/256 to 256/=
+256.
+>         >> For this situation I can do possible solution:
+>         >> We can though change polarity to meet this requirement. Invers=
+e the pin and use
+>         >> duty_cycle 100.=20
+>         >> But I think this is not a good solution for this problem right?
+>=20
+>         > If this doesn't result in more glitches that would be fine for =
+me.
+>         > (Assuming it is documented good enough in the code to be
+>         > understandable.)
+>=20
+>     > The polarity of our pwm controller will affect the duty cycle range:
+>     > PWM_POLARITY_INVERSED : Support duty_cycle from 0% to 99%
+>     > PWM_POLARITY_NORMAL: Support duty_cycle from 1% to 100%
+>     > Dynamic change polarity will result in more glitches. Thus, this wi=
+ll become
+>     > a trade-off between 100% and 0% duty_cycle support for user to use =
+our pwm device.
+>     > I will document it and send next patch.
+>=20
+> For handling the situation that the user want to set the duty cycle to 0%=
+, the driver can:
+> 1. Just return the error.
+> 2. Use the minimum duty cycle value.
+> I don't know which solution will be the better way or others.
+> I would be grateful if you can give me some suggestion about this problem.
 
-There are several parts of the kernel that are manually calling into
-the printk NMI context tracking in order to cause general printk
-deferred printing:
+I thought if you disable the PWM it emits the inactive level? Then this
+is the best you can do if duty_cycle =3D 0 is requested.
 
-    arch/arm/kernel/smp.c
-    arch/powerpc/kexec/crash.c
-    kernel/trace/trace.c
+Best regards
+Uwe
 
-For arm/kernel/smp.c and powerpc/kexec/crash.c, provide a new
-function pair printk_deferred_enter/exit that explicitly achieves the
-same objective.
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-For ftrace, remove general printk deferring. This general deferrment
-was added in commit 03fc7f9c99c1 ("printk/nmi: Prevent deadlock when
-accessing the main log buffer in NMI"), but really should have only
-been deferred when in NMI context. Since vprintk() now checks for
-NMI context when deciding to defer, ftrace does not need any special
-handling.
+--sh6jjxfikryciybj
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmD4F7gACgkQwfwUeK3K
+7AkJmQgAnqDb+O4do8MRPO90e+3qhwE2WBmoUv3JcNTC4u/KvdJlWCq1JvKmGjAs
+L5nbyWsMVXT9A6Ry1xVvDH5jIVd9kpLns5ApiyURH94FUZR/wG9BfpaLdSDwzLzM
+W8WOr3c5Dcq9D/2j0cZ5xcjcg4kC31NkCkEL9U4dBYY+8XQ3f5zkKQgLzvJiEgSV
+P43lIjEFxmkZLZ2p+EWTMDK+fxYq6GXTcjLY+zVbmLh3S7kcTrf9ccSGS4tb8Xha
+oytit4cw0uUZ8tGk1dLSMysNexb/6p/QKfC5XSe7vshfobkDryGZUa9UQT4GmqTU
+h4V6Sk4tjTVpfnBEWUL5fadiMoc/nQ==
+=bCmv
+-----END PGP SIGNATURE-----
+
+--sh6jjxfikryciybj--
