@@ -2,101 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF373D0ED3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6EBD3D0ED6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235901AbhGULvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:51:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232908AbhGULvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:51:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0697261221;
-        Wed, 21 Jul 2021 12:32:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626870732;
-        bh=XQHf2979Xlx/iaZS18v88toAob2o+9Cb5fbI2ZSNIWw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xo8/ygYg4NMC7fOpp2VARr/Gu/BNupkOCXn5WIVbNPdXXb7n5QN3CK+IeDlMMONIL
-         6yUO9Ll1v8GyjRbyTFgIliumZxtDobA2FZCXtpjx1yUyFWEw/LLXm8mjVzcDBJZCEf
-         RByxyvVfmGvGk0TsrHoDyGvKU9NFCp/3dSQSk7BuhLmkXalFEvQMYrCJPl9qmKMrCa
-         GH1diIeE1an+UCi6hkSM1wEQU7Nm1RZBa5Zo79RGMEkxgaInIrn/EzYD9733iptVfy
-         UT3PRNV8FfotQ92YWBd6r7uzbURtBoCj4WG5e6oxlZc+TMzcnS+wu1MX3MGTqY0Pqo
-         zuB92JuqPlsAw==
-Date:   Wed, 21 Jul 2021 13:32:07 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>
-Cc:     "Tachici, Alexandru" <Alexandru.Tachici@analog.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "nsaenz@kernel.org" <nsaenz@kernel.org>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "rjui@broadcom.com" <rjui@broadcom.com>,
-        "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
-        "bcm-kernel-feedback-list@broadcom.com" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "bootc@bootc.net" <bootc@bootc.net>
-Subject: Re: [PATCH 0/1] spi: spi-bcm2835: Fix deadlock
-Message-ID: <20210721123207.GD4259@sirena.org.uk>
-References: <20210716210245.13240-1-alexandru.tachici@analog.com>
- <162680680557.11423.14003826010912823109.b4-ty@kernel.org>
- <PH0PR03MB6366CFFFF5846F7018FFA03699E39@PH0PR03MB6366.namprd03.prod.outlook.com>
+        id S236767AbhGULwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:52:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44848 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236999AbhGULwB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 07:52:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626870757;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BhZuTxoecOSBTlHMJqTl/6bVqh22YD7O7U2gF62TFQ0=;
+        b=TAIVsR8tCd+AVnu9uYqmTYX0KuAYjHTg9W72agjitaWDYvKze4ItqLxBNxw18YalJLJMFp
+        0PoyBgHs/Yb6KX9qgbeJEICFkYZRKBLEDS3IJYbLNwoetG2oPp9M9c6HvgXk9zysytfcM7
+        sDwQB9ZWrymVIZbHH5o0yVzAfxyh7r4=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-498-F0QuZQAWM7irIa0IyJTGAQ-1; Wed, 21 Jul 2021 08:32:36 -0400
+X-MC-Unique: F0QuZQAWM7irIa0IyJTGAQ-1
+Received: by mail-ed1-f70.google.com with SMTP id cw12-20020a056402228cb02903a4b3e93e15so971806edb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 05:32:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=BhZuTxoecOSBTlHMJqTl/6bVqh22YD7O7U2gF62TFQ0=;
+        b=OP69u6Hjdxb8rJulf/my5/vB/jNDrsU8XgzqENnJebzX7Qe3Uoh5PuRvYNWuQtGnm7
+         ejO9PFwbku4VYxHRI0DqiPfRyDcoPM2uCK4YPuvbybRFy93jbBsnMEMAhBCtO+FbvPdD
+         Wynk433mYo+4a18nkvAnhL0z/Bs8gXWKuskOsmQFDXJLt8FowgfyKL7xPX9raIkcxFrH
+         XX+vHDFNan121Aw4kszPWv29j/USzr17lrPxAAB3u6VYWoT7ce1rRmxRY7dFQr4cNVmP
+         8aQrlY284ti3Zo0wTPrCzyChWW7HoPnOfr9AHM+IDTbWe2YheoIVBXILL+AUd1IEoprR
+         2gRw==
+X-Gm-Message-State: AOAM530Qq58QpUxSkhgCDd5/j2iS7mhOZEEe+yMajQnlAbTMxsrxXrL4
+        JG4/uIbJwrEHDH/x8gVOz4n8vNIx7HzaEz2jDNo3kJUGNP2SGpRruAGG/upSIF6JasPzM1Ymp3X
+        EKOlClMLRSbERu7QT9N861zQf
+X-Received: by 2002:aa7:d353:: with SMTP id m19mr49379415edr.162.1626870755241;
+        Wed, 21 Jul 2021 05:32:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxAEr+MuFS8GkfrCrhq3b5owjggB+XDhNH2yRXPavvDb9W9IQvA/XjsEM19tDcZfivypeW8eA==
+X-Received: by 2002:aa7:d353:: with SMTP id m19mr49379391edr.162.1626870755109;
+        Wed, 21 Jul 2021 05:32:35 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id s18sm810368ejc.52.2021.07.21.05.32.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 05:32:34 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Peter Gonda <pgonda@google.com>, kvm list <kvm@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH] KVM: SVM: Do not terminate SEV-ES guests on GHCB
+ validation failure
+In-Reply-To: <YK/VUPi+zFO6wFXB@google.com>
+References: <f8811b3768c4306af7fb2732b6b3755489832c55.1621020158.git.thomas.lendacky@amd.com>
+ <CAMkAt6qJqTvM0PX+ja3rLP3toY-Rr4pSUbiFKL1GwzYZPG6f8g@mail.gmail.com>
+ <324d9228-03e9-0fe2-59c0-5e41e449211b@amd.com>
+ <YKa1jduPK9JyjWbx@google.com>
+ <468cee77-aa0a-cf4a-39cf-71b5bfb3575e@amd.com>
+ <YK/VUPi+zFO6wFXB@google.com>
+Date:   Wed, 21 Jul 2021 14:32:33 +0200
+Message-ID: <8735s7sv8e.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9dgjiU4MmWPVapMU"
-Content-Disposition: inline
-In-Reply-To: <PH0PR03MB6366CFFFF5846F7018FFA03699E39@PH0PR03MB6366.namprd03.prod.outlook.com>
-X-Cookie: Many pages make a thick book.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sean Christopherson <seanjc@google.com> writes:
 
---9dgjiU4MmWPVapMU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On Thu, May 20, 2021, Tom Lendacky wrote:
+>> On 5/20/21 2:16 PM, Sean Christopherson wrote:
+>> > On Mon, May 17, 2021, Tom Lendacky wrote:
+>> >> On 5/14/21 6:06 PM, Peter Gonda wrote:
+>> >>> On Fri, May 14, 2021 at 1:22 PM Tom Lendacky <thomas.lendacky@amd.com> wrote:
+>> >>>>
+>> >>>> Currently, an SEV-ES guest is terminated if the validation of the VMGEXIT
+>> >>>> exit code and parameters fail. Since the VMGEXIT instruction can be issued
+>> >>>> from userspace, even though userspace (likely) can't update the GHCB,
+>> >>>> don't allow userspace to be able to kill the guest.
+>> >>>>
+>> >>>> Return a #GP request through the GHCB when validation fails, rather than
+>> >>>> terminating the guest.
+>> >>>
+>> >>> Is this a gap in the spec? I don't see anything that details what
+>> >>> should happen if the correct fields for NAE are not set in the first
+>> >>> couple paragraphs of section 4 'GHCB Protocol'.
+>> >>
+>> >> No, I don't think the spec needs to spell out everything like this. The
+>> >> hypervisor is free to determine its course of action in this case.
+>> > 
+>> > The hypervisor can decide whether to inject/return an error or kill the guest,
+>> > but what errors can be returned and how they're returned absolutely needs to be
+>> > ABI between guest and host, and to make the ABI vendor agnostic the GHCB spec
+>> > is the logical place to define said ABI.
+>> 
+>> For now, that is all we have for versions 1 and 2 of the spec. We can
+>> certainly extend it in future versions if that is desired.
+>> 
+>> I would suggest starting a thread on what we would like to see in the next
+>> version of the GHCB spec on the amd-sev-snp mailing list:
+>> 
+>> 	amd-sev-snp@lists.suse.com
+>
+> Will do, but in the meantime, I don't think we should merge a fix of any kind
+> until there is consensus on what the VMM behavior will be.  IMO, fixing this in
+> upstream is not urgent; I highly doubt anyone is deploying SEV-ES in production
+> using a bleeding edge KVM.
 
-On Wed, Jul 21, 2021 at 06:47:01AM +0000, Sa, Nuno wrote:
-> > To: Tachici, Alexandru <Alexandru.Tachici@analog.com>; linux-
-> > kernel@vger.kernel.org; linux-spi@vger.kernel.org
-> > Cc: Mark Brown <broonie@kernel.org>; nsaenz@kernel.org;
-> > f.fainelli@gmail.com; rjui@broadcom.com; swarren@wwwdotorg.org;
-> > bcm-kernel-feedback-list@broadcom.com; bootc@bootc.net; Sa,
-> > Nuno <Nuno.Sa@analog.com>
-> > Subject: Re: [PATCH 0/1] spi: spi-bcm2835: Fix deadlock
+Sorry for resurrecting this old thread but were there any deveopments
+here? I may have missed something but last time I've checked a single
+"rep; vmmcall" from userspace was still crashing the guest. The issue,
+however, doesn't seem to reproduce with Vmware ESXi which probably means
+they're just skipping the instruction and not even injecting #GP (AFAIR,
+I don't have an environment to re-test handy).
 
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
+-- 
+Vitaly
 
-> I'm really curious about this one and how should we proceed. Maybe this is not
-> new (just to me) and the way to go is just to "fix" the spi controller when we hit the
-> issue? I'm asking this because there's a more fundamental problem when this pieces
-> align together (CCF + SPI). What I mean is that this can potentially happen in every
-> system that happens to have a spi based clock provider and in which the spi controller
-> tries to access the CCF in the spi transfer function... Doing a quick and short look I can
-> already see that [1], [2], [3] and [4] could hit the same deadlock...
-
-The clock API just doesn't work very well for things on buses that might
-sleep, I2C is another example - it's a long standing general issue that
-needs to be addressed in the clock framework for example with finer
-grained locking but nobody has come up with anything yet.
-
---9dgjiU4MmWPVapMU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD4E8YACgkQJNaLcl1U
-h9CYAAf7BWXFxsLJR0wtgTKipOtavmlW4sbr+1qOD4EqV53Q0uCO+u9UhLqhqDKf
-pah8nixXNUSfNW6Yc+myXrrwNm9wBBw638E2OMEnFo5w5+/m8cL/a/Y2LQimtpfl
-Nw9aWwGaiPUSqbByaPqWQyNgR4VG2N5qN6hLLdCKlkMHI6xejBqc0WBXSmyIDqi3
-HVxRS7a9H2GwIYcjyoBtowguYCuD3vPux7eaFPvdBG1D/K8Rn2jHuWXGNb589h/C
-6xPnM7jmPghS/CrAL6+YZW3/Iz/iX5TZn9/X82PPQbKd694h+dOSbOLd/MlOx6vi
-NsgO/BBT2qkVAX6aoE3Vu+3oNcwJZg==
-=VEKT
------END PGP SIGNATURE-----
-
---9dgjiU4MmWPVapMU--
