@@ -2,152 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DA73D14AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 119303D14B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235371AbhGUQPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 12:15:55 -0400
-Received: from mail-pl1-f175.google.com ([209.85.214.175]:37719 "EHLO
-        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbhGUQPx (ORCPT
+        id S233491AbhGUQQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 12:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235545AbhGUQQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 12:15:53 -0400
-Received: by mail-pl1-f175.google.com with SMTP id y3so1259047plp.4;
-        Wed, 21 Jul 2021 09:56:29 -0700 (PDT)
+        Wed, 21 Jul 2021 12:16:11 -0400
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3FDC061575;
+        Wed, 21 Jul 2021 09:56:47 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id c9so1080512uat.1;
+        Wed, 21 Jul 2021 09:56:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=soKsTxfp3JlXQfUzAz/2MafI1ftVItRQDjW8DRM/Ruo=;
+        b=V5dapbQqTI9nxBA635LT5YfE4dkOAr52Zh6Tf1AfvcNhGOdTwmOP0amqjKJleXAkJt
+         dKqr5TwQ6z7g9xJbvKw3c1R0VA8mXfJIbTqoPt+HVGAsfv4ukoEk4FSBzSF3Cy/0B8oY
+         bHLKblgfpWa+7zVrSqIYBG8zxj20bskFYVG+XGGSCd0PtyYW+1d/MvoKxBzzB7L+ZbQ3
+         cgnw+9TZz5NHx62ADsjpXY4Bwkyl/qNesldUpNGf5mMFNr0M6vXS6lyp28i/XDVsIbJc
+         DnVxhN+Fv9FqkSXvST+kzSXXz2e42BwgUGBiT/ytcDBs3QI/sb03MCti4jT07mVDDvUk
+         5ATQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IBALwA0/lwQlCC9ArWBTvBN3bpZvZSDVrssut1ZL5To=;
-        b=G5Dl+E1P/ctIAYcJVuRw+G2ejfCTfQirlVGDkVMCeoZvKN/jWIGa61XeWhl7aegIGN
-         TitxiYIYCTrOH6ADBws9exWjLEbkaabzo5a/hZX6kA7PFfrHH+RnAlS2OPF5xFVV1aij
-         XcgOvxiacNyqtkDe03ZzmtYg6Kgkyu1BlsFx2/aRjxcnlL3yrLZNQn8tG+P0HFkDTOsd
-         GEMoGmARcGMUSZF772n5utr+I3oIvk49/0aUOcmqz3c9ErX7w3yuwOwekQpUwmPRqVGY
-         0c8zmgN6s/cJgzOJGMKXO0bbEtVChqBhoVnD/5jQ5DHJgJTLLnnyHqG6m0J/MnLB5KD+
-         NggQ==
-X-Gm-Message-State: AOAM532Oe4PrEizeq5VUU1OMW4/nRCMZuQaKtGf4Bj0/GhfSIcY84Mmr
-        J+brajI+yR0Qyteq4gIl8YpLwR/24dY=
-X-Google-Smtp-Source: ABdhPJzLT5UR89aJMp59XYiivG86/2UEWAPwE+X+74lT1yI7aGKnATCAT7OyluqUiTmtGSaHfB07sw==
-X-Received: by 2002:a17:902:7c18:b029:117:e575:473e with SMTP id x24-20020a1709027c18b0290117e575473emr28357351pll.37.1626886589063;
-        Wed, 21 Jul 2021 09:56:29 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:6f70:be34:681b:b1e9:776f])
-        by smtp.gmail.com with ESMTPSA id q125sm21522998pga.87.2021.07.21.09.56.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 09:56:28 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 09:56:27 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Matthias Schiffer <mschiffer@universe-factory.net>
-Cc:     Moritz Fischer <mdf@kernel.org>, linux-kernel@vger.kernel.org,
-        gabriel.kh.huang@fii-na.com, moritzf@google.com,
-        stable@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Justin Forbes <jmforbes@linuxtx.org>, linux-usb@vger.kernel.org
-Subject: Re: [PATCH] Revert "usb: renesas-xhci: Fix handling of unknown ROM
- state"
-Message-ID: <YPhRu/DWbs58hgvq@epycbox.lan>
-References: <20210719070519.41114-1-mdf@kernel.org>
- <c0f191cc-6400-7309-e8a4-eab0925a3d54@universe-factory.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=soKsTxfp3JlXQfUzAz/2MafI1ftVItRQDjW8DRM/Ruo=;
+        b=CRXW5jC5v24PSN0gUfEJZX92jBaBU0bU+MWIzWTQxDiGGQqjFD3oIhVeq/kDW7Xzx+
+         8B7VBSJCk7R+ug7FzQA1nh8yyHEEOIlh4Y6RBFh1/rOsjVaQNjzoGGJlbra92fDyaM0u
+         FxmrBuL2mqD1jbfEYuPQbnqAeadpv4vivQ0ThW5KlXD7NCVIZGSAbe4OmNkxPXJUSw6r
+         vEFTb+ZWQCMhG+vC9x6CCMyOIgQlaHHFZnW794rQmuV/b2c6tnVV6U0miXDHc4SEJCmw
+         9J/jIlyw9RdK7w0rcBQFhUOBQtekZh/QgJjn+OgscjpNDm2Rdu4s/Ebl6TnzvJM9Zp96
+         0f/g==
+X-Gm-Message-State: AOAM531r4pwz6R31IQnMDSBpdk4v24O4UAJYsRNHCTtkU/TRC3lRBWzS
+        ePDU9MbaXcsbNjhDd7Cia6gAMczsjnQl3BqXOOU=
+X-Google-Smtp-Source: ABdhPJzAJqh/MT4+UTvyMERbEJLUdK2lAb/jlbXI3N3/Mq9G2nwAtocprZXozt0qP8h6GWGHizbt5VXZo1lgBOE06Hk=
+X-Received: by 2002:ab0:2c0e:: with SMTP id l14mr38088577uar.126.1626886606504;
+ Wed, 21 Jul 2021 09:56:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c0f191cc-6400-7309-e8a4-eab0925a3d54@universe-factory.net>
+References: <20210720172251.4504-1-romain.perier@gmail.com>
+ <20210720172251.4504-3-romain.perier@gmail.com> <YPcroRmHYEV9BWaJ@piout.net>
+In-Reply-To: <YPcroRmHYEV9BWaJ@piout.net>
+From:   Romain Perier <romain.perier@gmail.com>
+Date:   Wed, 21 Jul 2021 18:56:34 +0200
+Message-ID: <CABgxDoJtd6sVuVoEQ5orWDQ5YV18Tno7K_0GaAsgPdPPB_9HEA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] rtc: Add support for the MSTAR MSC313 RTC
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-rtc@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 05:28:21PM +0200, Matthias Schiffer wrote:
-> On 7/19/21 9:05 AM, Moritz Fischer wrote:
-> > This reverts commit d143825baf15f204dac60acdf95e428182aa3374.
-> > 
-> > Justin reports some of his systems now fail as result of this commit:
-> > 
-> >   xhci_hcd 0000:04:00.0: Direct firmware load for renesas_usb_fw.mem failed with error -2
-> >   xhci_hcd 0000:04:00.0: request_firmware failed: -2
-> >   xhci_hcd: probe of 0000:04:00.0 failed with error -2
-> > 
-> > The revert brings back the original issue the commit tried to solve but
-> > at least unbreaks existing systems relying on previous behavior.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Cc: Mathias Nyman <mathias.nyman@intel.com>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Cc: Justin Forbes <jmforbes@linuxtx.org>
-> > Reported-by: Justin Forbes <jmforbes@linuxtx.org>
-> > Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Hello Alexandre,
+
+Le mar. 20 juil. 2021 =C3=A0 22:01, Alexandre Belloni
+<alexandre.belloni@bootlin.com> a =C3=A9crit :
+>
+> Hello Romain,
+>
+> On 20/07/2021 19:22:50+0200, Romain Perier wrote:
+> > From: Daniel Palmer <daniel@0x0f.com>
+> >
+> > This adds support for the RTC block on the Mstar MSC313e SoCs and newer=
+.
+> >
+> > Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> > Co-developed-by: Romain Perier <romain.perier@gmail.com>
+> > Signed-off-by: Romain Perier <romain.perier@gmail.com>
 > > ---
-> > 
-> > Justin,
-> > 
-> > would you be able to help out testing follow up patches to this?
-> > 
-> > I don't have a machine to test your use-case and mine definitly requires
-> > a firmware load on RENESAS_ROM_STATUS_NO_RESULT.
-> > 
-> > Thanks
-> > - Moritz
-> 
-> 
-> Hi Moritz,
-> 
-> as an additional data point, here's the behaviour of my system, a Thinkpad
-> T14 AMD with:
+> >  MAINTAINERS              |   1 +
+> >  drivers/rtc/Kconfig      |  10 ++
+> >  drivers/rtc/Makefile     |   1 +
+> >  drivers/rtc/rtc-msc313.c | 246 +++++++++++++++++++++++++++++++++++++++
+> >  4 files changed, 258 insertions(+)
+> >  create mode 100644 drivers/rtc/rtc-msc313.c
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 6c8be735cc91..7e8d1a375e0d 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -2220,6 +2220,7 @@ F:      arch/arm/boot/dts/mstar-*
+> >  F:   arch/arm/mach-mstar/
+> >  F:   drivers/clk/mstar/
+> >  F:   drivers/gpio/gpio-msc313.c
+> > +F:   drivers/rtc/rtc-msc313.c
+> >  F:   drivers/watchdog/msc313e_wdt.c
+> >  F:   include/dt-bindings/clock/mstar-*
+> >  F:   include/dt-bindings/gpio/msc313-gpio.h
+> > diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+> > index 12153d5801ce..67870b422bc5 100644
+> > --- a/drivers/rtc/Kconfig
+> > +++ b/drivers/rtc/Kconfig
+> > @@ -1925,4 +1925,14 @@ config RTC_DRV_WILCO_EC
+> >         This can also be built as a module. If so, the module will
+> >         be named "rtc_wilco_ec".
+> >
+> > +config RTC_DRV_MSC313
+> > +     tristate "MStar MSC313 RTC"
+> > +        depends on ARCH_MSTARV7
+>
+> || COMPILE_TEST maybe ?
+
+Arf, I always forget this option. Ack, I will add it in v2.
+
+>
+> > +     help
+> > +       If you say yes here you get support for the Mstar MSC313e On-Ch=
+ip
+> > +       Real Time Clock.
+> > +
+> > +       This driver can also be built as a module, if so, the module
+> > +       will be called "rtc-msc313".
+> > +
+> >  endif # RTC_CLASS
+>
+>
+> > +static int msc313_rtc_read_time(struct device *dev, struct rtc_time *t=
+m)
+> > +{
+> > +     struct msc313_rtc *priv =3D dev_get_drvdata(dev);
+> > +     u32 seconds;
+> > +     u16 reg;
+> > +
+> > +     reg =3D readw(priv->rtc_base + REG_RTC_CTRL);
+> > +     writew(reg | READ_EN_BIT, priv->rtc_base + REG_RTC_CTRL);
+> > +
+> > +     /* Wait for HW latch done */
+> > +     while (readw(priv->rtc_base + REG_RTC_CTRL) & READ_EN_BIT)
+> > +             udelay(1);
+> > +
+> > +     seconds =3D readw(priv->rtc_base + REG_RTC_CNT_VAL_L)
+> > +                     | (readw(priv->rtc_base + REG_RTC_CNT_VAL_H) << 1=
+6);
+> > +
+> > +     rtc_time64_to_tm(seconds, tm);
+> > +
+> > +     return rtc_valid_tm(tm);
+>
+> This is not necessary, tm is valid at that point (and the core will
+> check anyway).
+
+ack.
+
+>
+> > +}
+> > +
+> > +static int msc313_rtc_set_time(struct device *dev, struct rtc_time *tm=
+)
+> > +{
+> > +     struct msc313_rtc *priv =3D dev_get_drvdata(dev);
+> > +     unsigned long seconds;
+> > +     u16 reg;
+> > +
+> > +     seconds =3D rtc_tm_to_time64(tm);
+> > +     writew(seconds & 0xFFFF, priv->rtc_base + REG_RTC_LOAD_VAL_L);
+> > +     writew((seconds >> 16) & 0xFFFF, priv->rtc_base + REG_RTC_LOAD_VA=
+L_H);
+> > +     reg =3D readw(priv->rtc_base + REG_RTC_CTRL);
+> > +     writew(reg | LOAD_EN_BIT, priv->rtc_base + REG_RTC_CTRL);
+> > +
+> > +     /* need to check carefully if we want to clear REG_RTC_LOAD_VAL_H=
+ for customer*/
+> > +     while (readw(priv->rtc_base + REG_RTC_CTRL) & LOAD_EN_BIT)
+> > +             udelay(1);
+> > +     writew(0, priv->rtc_base + REG_RTC_LOAD_VAL_H);
+>
+> Why is that necessary? The comment is not super useful here.
+>
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct rtc_class_ops msc313_rtc_ops =3D {
+> > +     .read_time =3D msc313_rtc_read_time,
+> > +     .set_time =3D msc313_rtc_set_time,
+> > +     .read_alarm =3D msc313_rtc_read_alarm,
+> > +     .set_alarm =3D msc313_rtc_set_alarm,
+> > +     .alarm_irq_enable =3D msc313_rtc_alarm_irq_enable,
+> > +};
+> > +
+> > +static irqreturn_t msc313_rtc_interrupt(s32 irq, void *dev_id)
+> > +{
+> > +     struct msc313_rtc *priv =3D dev_get_drvdata(dev_id);
+> > +     u16 reg;
+> > +
+> > +     reg =3D readw_relaxed(priv->rtc_base + REG_RTC_CTRL);
+> > +     reg |=3D INT_CLEAR_BIT;
+> > +     reg &=3D ~INT_FORCE_BIT;
+> > +     writew_relaxed(reg, priv->rtc_base + REG_RTC_CTRL);
+> > +
+>
+> I'm not convinced the _relaxed functions are doing the right thing here.
+
+
+Good catch for the _relaxed, I did not pay attention during refactoring.
+
+> Also, shouldn't you check the alarm actually fired?
+
+You mean before set the flag "RTC_AF" ? This driver is mostly based on
+reverse engineering,
+even if we have some hardware info. I will try to find if it is
+possible (I mean,  from the info
+I have).
+
+>
+> > +     rtc_update_irq(priv->rtc_dev, 1, RTC_IRQF | RTC_AF);
+> > +
+> > +     return IRQ_HANDLED;
+> > +}
+> > +
+> > +static int msc313_rtc_remove(struct platform_device *pdev)
+> > +{
+> > +     struct msc313_rtc *priv =3D platform_get_drvdata(pdev);
+> > +
+> > +     clk_disable_unprepare(priv->clk);
+>
+> With a nice devm_add_action_or_reset() in the probe, you can remove the
+> need for msc313_rtc_remove().
+
+devm_add_action_or_reset() you said, interesting I did not know this functi=
+on.
+
+
+>
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int msc313_rtc_probe(struct platform_device *pdev)
+> > +{
+> > +     struct device *dev =3D &pdev->dev;
+> > +     struct msc313_rtc *priv;
+> > +     int ret;
+> > +     int irq;
+> > +     unsigned long rate;
+> > +     u16 reg;
+> > +
+> > +     priv =3D devm_kzalloc(&pdev->dev, sizeof(struct msc313_rtc), GFP_=
+KERNEL);
+> > +     if (!priv)
+> > +             return -ENOMEM;
+> > +
+> > +     priv->rtc_base =3D devm_platform_ioremap_resource(pdev, 0);
+> > +     if (IS_ERR(priv->rtc_base))
+> > +             return PTR_ERR(priv->rtc_base);
+> > +
+> > +     irq =3D platform_get_irq(pdev, 0);
+> > +     if (irq < 0)
+> > +             return -EINVAL;
+> > +
+> > +     ret =3D devm_request_irq(dev, irq, msc313_rtc_interrupt, IRQF_SHA=
+RED,
+> > +                            dev_name(&pdev->dev), &pdev->dev);
+> > +     if (ret) {
+> > +             dev_err(dev, "Unable to request irq\n");
+> > +             return ret;
+> > +     }
+> > +
+> > +     priv->clk =3D devm_clk_get(dev, NULL);
+> > +     if (IS_ERR(priv->clk)) {
+> > +             dev_err(dev, "No input reference clock\n");
+> > +             return PTR_ERR(priv->clk);
+> > +     }
+> > +
+> > +     ret =3D clk_prepare_enable(priv->clk);
+> > +     if (ret) {
+> > +             dev_err(dev, "Failed to enable the reference clock, %d\n"=
+, ret);
+> > +             return ret;
+> > +     }
+> > +
+> > +     rate =3D clk_get_rate(priv->clk);
+> > +
+> > +     reg =3D readw(priv->rtc_base + REG_RTC_CTRL);
+> > +     if (!(reg & SOFT_RSTZ_BIT)) {
+> > +             reg |=3D SOFT_RSTZ_BIT;
+> > +             writew(reg, priv->rtc_base + REG_RTC_CTRL);
+> > +     }
+>
+> What is the meaning of this bit? I would think it is better to use that
+> to know whether the RTC holds the correct time instead of killing the
+> info here.
+>
+> > +
+> > +     writew(rate & 0xFFFF, priv->rtc_base + REG_RTC_FREQ_CW_L);
+> > +     writew((rate >> 16) & 0xFFFF, priv->rtc_base + REG_RTC_FREQ_CW_H)=
+;
+> > +
+> > +     reg |=3D CNT_EN_BIT;
+> > +     writew(reg, priv->rtc_base + REG_RTC_CTRL);
+> > +
+> > +     platform_set_drvdata(pdev, priv);
+> > +
+> > +     priv->rtc_dev =3D devm_rtc_device_register(dev, dev_name(dev), &m=
+sc313_rtc_ops, THIS_MODULE);
+> > +     if (IS_ERR(priv->rtc_dev)) {
+> > +             dev_err(dev, "Failed to register rtc device\n");
+> > +             return PTR_ERR(priv->rtc_dev);
+> > +     }
+>
+> Please switch to devm_rtc_allocate_device and devm_rtc_register_device.
+> Also drop the error message, it is not necessary.
+>
+> You must also set the RTC range. To help you, you can use:
+> https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/rtc-tools.git/tr=
+ee/rtc-range.c
+> then you must update the DT bindings as the RTC will support the
+> start-year property
+>
+> You must also run rtctest and should include the results.
+
+Ack, I will do this in v2.
 
 Thanks!
-> 
-> 06:00.0 USB controller [0c03]: Renesas Technology Corp. uPD720202 USB 3.0
-> Host Controller [1912:0015] (rev 02)
-> 
-> - On Kernel 5.13.1, no firmware: USB controller resets in an endless loop
-> when the system is running from battery
-> - On Kernel 5.13.4, no firmware: USB controller probe fails with the
-> mentioned firmware load error
-> - On Kernel 5.13.4, with renesas_usb_fw.mem: everything is working fine, the
-> reset issue is gone
-> 
-> So it seems to me that requiring a firmware is generally the correct driver
-> behaviour for this hardware. The firmware I found in the Arch User
-> Repository [1] unfortunately has a very restrictive license...
-
-Yeah, the chip definitely needs the firmware. It can either initialize
-from external ROM or runtime loaded firmware.
-
-I think the problem really lies in how the current (and reverted) code
-detects the need for firmware loading.
-
-The current code looks at two indicators:
-- Is there an external ROM and if so, did somebody try to program the
-  external ROM and succeed? (renesas_check_rom_state)
-- Did somebody try to runtime-load firmware, and if so did they succeed?
-  (renesas_fw_check_running, after the early return)
-
-The first one (and resulting early return) does *not* tell you whether
-the controller actually has firwmare. That's what breaks my systems.
-
-The second one is only really useful *if* we also check that FW_DOWNLOAD
-was locked.
-
-Neither of the above captures the case where you actually have an
-external ROM that is programmed with proper firmware and caused the chip
-to be loaded with said firmware.
-
-Now before the patch that was reverted, since nobody tried to program
-the ROM, it feel through to the "do nothing" in this case -- which
-worked since it configured itself from external ROM.
-
-Now how do we properly determine we do or don't need firwmare?
-
-Looking at the datasheet I see two options.
-- The version register? I need to investigate what that resets to with
-  an unprogrammed/corrupted ROM. If that reliably gives a detectable value
-  this could be used as an indicator.
-  
-- The USBSTS register according to the datasheet will report an error
-  through the HCE bit:
-  "If both uDP720201 and uDP720202 detect no correct firmware in Serial
-  ROM, this flag will be set"
-
-I'll put up an RFC in the next couple of days ...
-
-- Moritz
