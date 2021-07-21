@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F95E3D1664
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB813D1668
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239147AbhGURsC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Jul 2021 13:48:02 -0400
-Received: from aposti.net ([89.234.176.197]:49002 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239078AbhGURsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:48:00 -0400
-Date:   Wed, 21 Jul 2021 19:28:18 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 5/6] iio/adc: ingenic: modify
-To:     citral23 <cbranchereau@gmail.com>
-Cc:     jic23@kernel.org, lars@metafoo.de, linux-mips@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net,
-        contact@artur-rojek.eu
-Message-Id: <6ZXLWQ.5R931M3PVWBF2@crapouillou.net>
-In-Reply-To: <20210721105317.36742-6-cbranchereau@gmail.com>
-References: <20210721105317.36742-1-cbranchereau@gmail.com>
-        <20210721105317.36742-6-cbranchereau@gmail.com>
+        id S239181AbhGURsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:48:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40596 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239078AbhGURsN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 13:48:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626892128;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TkdTO/UxdGxI+/KgnvL1pZPS4iHaPv/sef/gzkTwrYg=;
+        b=HT+8xbUv57kJvwKY0CsNo1OHm/siAwiwaBZrOaOobV/mp4SMgtbv7B8ZOE2FNBX0UknQxb
+        ZIqpT3sDOyJee94JHW0t+DDplnJd+R4qZPmS1rWDpKfpkwx6Lo6zSKtfook9Gq0J9NgAlK
+        7h8ZjdHC/xS861dbmdcaCBcW8fCVNoE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167-OZJ_IJG8M8idZr9-uoubBQ-1; Wed, 21 Jul 2021 14:28:46 -0400
+X-MC-Unique: OZJ_IJG8M8idZr9-uoubBQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0404BC7401;
+        Wed, 21 Jul 2021 18:28:42 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (ovpn-113-201.ams2.redhat.com [10.36.113.201])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D3AE4610AF;
+        Wed, 21 Jul 2021 18:28:25 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     John Allen <john.allen@amd.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v27 24/31] x86/cet/shstk: Handle thread shadow stack
+References: <20210521221211.29077-1-yu-cheng.yu@intel.com>
+        <20210521221211.29077-25-yu-cheng.yu@intel.com>
+        <YPhkIHJ0guc4UNoO@AUS-LX-JohALLEN.amd.com>
+Date:   Wed, 21 Jul 2021 20:28:23 +0200
+In-Reply-To: <YPhkIHJ0guc4UNoO@AUS-LX-JohALLEN.amd.com> (John Allen's message
+        of "Wed, 21 Jul 2021 13:14:56 -0500")
+Message-ID: <87h7gnldx4.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+* John Allen:
 
-Le mer., juil. 21 2021 at 12:53:16 +0200, citral23 
-<cbranchereau@gmail.com> a écrit :
-> The current code does not allow to set MD to 0 to sample AUX0, fix it 
-> for the JZ4760(B).
+> At the very least, it would seem that on some systems, it isn't valid to
+> rely on the stack_size passed from clone3, though I'm unsure what the
+> correct behavior should be here. If the passed stack_size =3D=3D 0 and sp=
+ =3D=3D
+> 0, is this a case where we want to alloc a shadow stack for this thread
+> with some capped size? Alternatively, is this a case that isn't valid to
+> alloc a shadow stack and we should simply return 0 instead of -EINVAL?
+>
+> I'm running Fedora 34 which satisfies the required versions of gcc,
+> binutils, and glibc.
 
-Well, then this should be merged with patch 3, because that means 
-JZ4760 support does not work without it.
+Fedora 34 doesn't use clone3 yet.  You can upgrade to a rawhide build,
+e.g. glibc-2.33.9000-46.fc35:
 
-Also, concise commit messages are good, but "modify" is a bit too 
-concise ;)
+  <https://koji.fedoraproject.org/koji/buildinfo?buildID=3D1782678>
 
-Cheers,
--Paul
+It's currently not in main rawhide because the Firefox sandbox breaks
+clone3.  The =E2=80=9Cfix=E2=80=9D is that clone3 will fail with ENOSYS und=
+er the
+sandbox.
 
-> Signed-off-by: citral23 <cbranchereau@gmail.com>
-> ---
->  drivers/iio/adc/ingenic-adc.c | 20 ++++++++++++++++----
->  1 file changed, 16 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ingenic-adc.c 
-> b/drivers/iio/adc/ingenic-adc.c
-> index 618150475421..1edaae439a32 100644
-> --- a/drivers/iio/adc/ingenic-adc.c
-> +++ b/drivers/iio/adc/ingenic-adc.c
-> @@ -632,7 +632,7 @@ static int ingenic_adc_read_chan_info_raw(struct 
-> iio_dev *iio_dev,
->  					  struct iio_chan_spec const *chan,
->  					  int *val)
->  {
-> -	int bit, ret, engine = (chan->channel == INGENIC_ADC_BATTERY);
-> +	int cmd, ret, engine = (chan->channel == INGENIC_ADC_BATTERY);
->  	struct ingenic_adc *adc = iio_priv(iio_dev);
-> 
->  	ret = clk_enable(adc->clk);
-> @@ -642,11 +642,22 @@ static int 
-> ingenic_adc_read_chan_info_raw(struct iio_dev *iio_dev,
->  		return ret;
->  	}
-> 
-> -	/* We cannot sample AUX/AUX2 in parallel. */
-> +	/* We cannot sample the aux channels in parallel. */
->  	mutex_lock(&adc->aux_lock);
->  	if (adc->soc_data->has_aux_md && engine == 0) {
-> -		bit = BIT(chan->channel == INGENIC_ADC_AUX2);
-> -		ingenic_adc_set_config(adc, JZ_ADC_REG_CFG_AUX_MD, bit);
-> +		switch (chan->channel) {
-> +		case INGENIC_ADC_AUX0:
-> +			cmd = 0;
-> +			break;
-> +		case INGENIC_ADC_AUX:
-> +			cmd = 1;
-> +			break;
-> +		case INGENIC_ADC_AUX2:
-> +			cmd = 2;
-> +			break;
-> +		}
-> +
-> +		ingenic_adc_set_config(adc, JZ_ADC_REG_CFG_AUX_MD, cmd);
->  	}
-> 
->  	ret = ingenic_adc_capture(adc, engine);
-> @@ -654,6 +665,7 @@ static int ingenic_adc_read_chan_info_raw(struct 
-> iio_dev *iio_dev,
->  		goto out;
-> 
->  	switch (chan->channel) {
-> +	case INGENIC_ADC_AUX0:
->  	case INGENIC_ADC_AUX:
->  	case INGENIC_ADC_AUX2:
->  		*val = readw(adc->base + JZ_ADC_REG_ADSDAT);
-> --
-> 2.30.2
-> 
+I expect that container runtimes turn clone3 into clone in the same way
+(via ENOSYS), at least for the medium term.  So it would make sense to
+allocate some sort of shadow stack for clone as well, if that's possible
+to implement in some way.
 
+Thanks,
+Florian
 
