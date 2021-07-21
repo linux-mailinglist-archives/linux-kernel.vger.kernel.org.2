@@ -2,140 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF733D11EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFCF3D11E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239642AbhGUOX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239510AbhGUOVr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S239703AbhGUOYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:24:03 -0400
+Received: from mga12.intel.com ([192.55.52.136]:52750 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239505AbhGUOVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 10:21:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76376C061575;
-        Wed, 21 Jul 2021 08:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=36rD6Wb6Yd/QwjBFd0xntesjrDvCLO/ZMPTZtTD0QUg=; b=IbAsiplG3kaBoKMtU7f2oPHIkK
-        5dlac78FL49HMshsrcmvadPy1WmsH18q106Jpb+Iee7TQCqlyesdsEivr4A+9de5In08wYaD60kV3
-        aREeTdRGTpwoQLzIHAe5QO6jzOThu2wCuUF4UCC6eW7w8I2liXJ2Xhr8+VS4ZARCwDf/tZB6K4B32
-        /8YoqTPTNIqUuA4wrAQr2sVmliK0aY17e9w6lgoAmB2ymku1YrsbFpqoXB40WHYlzF9Jnxeb4Ri5b
-        JfHtjcepGm1lA8OilRECyGF/A460xIrBYxJE7PjPO5zcahBURWNuhONWHRksJUnfoj0aR7uELh3rU
-        4c081oQw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6Djb-009JG6-8B; Wed, 21 Jul 2021 15:02:11 +0000
-Date:   Wed, 21 Jul 2021 16:02:07 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 054/138] mm: Add kmap_local_folio()
-Message-ID: <YPg2756QFreokTIg@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-55-willy@infradead.org>
- <YPfvwNHk6H9dOCKK@kernel.org>
- <YPgrM9P3CFjkpP5A@casper.infradead.org>
- <YPgtmCtE5Xj56+LM@kernel.org>
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="191032125"
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="191032125"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 08:01:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="470184135"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 21 Jul 2021 08:01:49 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 94EF9D7; Wed, 21 Jul 2021 18:02:17 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        gregkh@linuxfoundation.org
+Subject: [PATCH v1 1/2] parport: serial: Get rid of IRQ_NONE abuse
+Date:   Wed, 21 Jul 2021 18:02:15 +0300
+Message-Id: <20210721150216.64823-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPgtmCtE5Xj56+LM@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 05:22:16PM +0300, Mike Rapoport wrote:
-> On Wed, Jul 21, 2021 at 03:12:03PM +0100, Matthew Wilcox wrote:
-> > On Wed, Jul 21, 2021 at 12:58:24PM +0300, Mike Rapoport wrote:
-> > > > +/**
-> > > > + * kmap_local_folio - Map a page in this folio for temporary usage
-> > > > + * @folio:	The folio to be mapped.
-> > > > + * @offset:	The byte offset within the folio.
-> > > > + *
-> > > > + * Returns: The virtual address of the mapping
-> > > > + *
-> > > > + * Can be invoked from any context.
-> > > 
-> > > Context: Can be invoked from any context.
-> > > 
-> > > > + *
-> > > > + * Requires careful handling when nesting multiple mappings because the map
-> > > > + * management is stack based. The unmap has to be in the reverse order of
-> > > > + * the map operation:
-> > > > + *
-> > > > + * addr1 = kmap_local_folio(page1, offset1);
-> > > > + * addr2 = kmap_local_folio(page2, offset2);
-> > > 
-> > > Please s/page/folio/g here and in the description below
-> > > 
-> > > > + * ...
-> > > > + * kunmap_local(addr2);
-> > > > + * kunmap_local(addr1);
-> > > > + *
-> > > > + * Unmapping addr1 before addr2 is invalid and causes malfunction.
-> > > > + *
-> > > > + * Contrary to kmap() mappings the mapping is only valid in the context of
-> > > > + * the caller and cannot be handed to other contexts.
-> > > > + *
-> > > > + * On CONFIG_HIGHMEM=n kernels and for low memory pages this returns the
-> > > > + * virtual address of the direct mapping. Only real highmem pages are
-> > > > + * temporarily mapped.
-> > > > + *
-> > > > + * While it is significantly faster than kmap() for the higmem case it
-> > > > + * comes with restrictions about the pointer validity. Only use when really
-> > > > + * necessary.
-> > > > + *
-> > > > + * On HIGHMEM enabled systems mapping a highmem page has the side effect of
-> > > > + * disabling migration in order to keep the virtual address stable across
-> > > > + * preemption. No caller of kmap_local_folio() can rely on this side effect.
-> > > > + */
-> > 
-> > kmap_local_folio() only maps one page from the folio.  So it's not
-> > appropriate to s/page/folio/g.  I fiddled with the description a bit to
-> > make this clearer:
-> > 
-> >  /**
-> >   * kmap_local_folio - Map a page in this folio for temporary usage
-> > - * @folio:     The folio to be mapped.
-> > - * @offset:    The byte offset within the folio.
-> > - *
-> > - * Returns: The virtual address of the mapping
-> > - *
-> > - * Can be invoked from any context.
-> > + * @folio: The folio containing the page.
-> > + * @offset: The byte offset within the folio which identifies the page.
-> >   *
-> >   * Requires careful handling when nesting multiple mappings because the map
-> >   * management is stack based. The unmap has to be in the reverse order of
-> >   * the map operation:
-> >   *
-> > - * addr1 = kmap_local_folio(page1, offset1);
-> > - * addr2 = kmap_local_folio(page2, offset2);
-> > + * addr1 = kmap_local_folio(folio1, offset1);
-> > + * addr2 = kmap_local_folio(folio2, offset2);
-> >   * ...
-> >   * kunmap_local(addr2);
-> >   * kunmap_local(addr1);
-> > @@ -131,6 +127,9 @@ static inline void *kmap_local_page(struct page *page);
-> >   * On HIGHMEM enabled systems mapping a highmem page has the side effect of
-> >   * disabling migration in order to keep the virtual address stable across
-> >   * preemption. No caller of kmap_local_folio() can rely on this side effect.
-> > + *
-> > + * Context: Can be invoked from any context.
-> > + * Return: The virtual address of @offset.
-> >   */
-> >  static inline void *kmap_local_folio(struct folio *folio, size_t offset)
-> 
-> This is clearer, thanks! 
-> 
-> Maybe just add page to Return: description:
-> 
-> * Return: The virtual address of page @offset.
+IRQ_NONE definition is solely for IRQ handlers and not for generic
+probe code. Replace it with plain integer.
 
-No, it really does return the virtual address of @offset.  If you ask
-for offset 0x1234 within a (sufficiently large) folio, it will map the
-second page of that folio and return the address of the 0x234'th byte
-within it.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/parport/parport_serial.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/parport/parport_serial.c b/drivers/parport/parport_serial.c
+index 96b888bb49c6..14e2427676f0 100644
+--- a/drivers/parport/parport_serial.c
++++ b/drivers/parport/parport_serial.c
+@@ -607,11 +607,12 @@ static int parport_register(struct pci_dev *dev, const struct pci_device_id *id)
+                                         def.) */
+ 		/* TODO: test if sharing interrupts works */
+ 		irq = dev->irq;
+-		if (irq == IRQ_NONE) {
++		if (irq == 0)
++			irq = PARPORT_IRQ_NONE;
++		if (irq == PARPORT_IRQ_NONE) {
+ 			dev_dbg(&dev->dev,
+ 				"PCI parallel port detected: I/O at %#lx(%#lx)\n",
+ 				io_lo, io_hi);
+-			irq = PARPORT_IRQ_NONE;
+ 		} else {
+ 			dev_dbg(&dev->dev,
+ 				"PCI parallel port detected: I/O at %#lx(%#lx), IRQ %d\n",
+-- 
+2.30.2
+
