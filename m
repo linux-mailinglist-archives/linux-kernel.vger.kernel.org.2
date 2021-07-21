@@ -2,192 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992DA3D07FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 06:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AECCE3D07FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 06:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbhGUEOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 00:14:19 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:52357 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232111AbhGUEOB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 00:14:01 -0400
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 16L4sM0v022986;
-        Wed, 21 Jul 2021 13:54:23 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 16L4sM0v022986
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1626843263;
-        bh=W1v70rWFrLtOW1Ykxet5FTFkDNOi12M78dgvKR6ceXg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bTGxYgJVrwr+TAaFPHcmdmmaCJtAK3wd0a6B3GBXxtL9PXeNhBxyApVnqwcoMUqQa
-         qgYM1cC6J6S2JlFbeUkP6CRYsf3u+IIWycsCjRrCJQw2OdH9tHtYY5StREub/pNcEu
-         2v0foeI3vZe5JXS1ZSNSd4Cp32+BqIZsD/R8KtfzJkQkdEWntJTPF/INuJLO1ydpm7
-         Ktk+ACJVECOmHDHwteEl0kf9er/+DWYzWYJWpNLn36jQnl9inE6QwjpWq696Drzpqa
-         t1yrDJlseyjXVLAJVggXkDJfDlYeHEPvw9aJPyli5YsbjhgVeL5M1zIkUWTMsJgflv
-         9tL5yVmQ/AxYQ==
-X-Nifty-SrcIP: [209.85.216.43]
-Received: by mail-pj1-f43.google.com with SMTP id g4-20020a17090ace84b029017554809f35so3277722pju.5;
-        Tue, 20 Jul 2021 21:54:23 -0700 (PDT)
-X-Gm-Message-State: AOAM530+0fJlpMbNUJb1bS0eiLTfuBDfDTZUgzdHsKNBHjch/tn413Y+
-        2jpQKj/IJCDqEHXaeUILIGB/yBIV84baI3LO3T8=
-X-Google-Smtp-Source: ABdhPJxeCjqxcCUPnWhnNro9RqO8oWqcWwGQRcS7jQ04Cxg5C82KfU6jz0UBpdmcYuojrbvkddaTuHHxiE8xp2UVGkU=
-X-Received: by 2002:a17:902:e8ce:b029:12b:3d80:a028 with SMTP id
- v14-20020a170902e8ceb029012b3d80a028mr26211447plg.47.1626843262323; Tue, 20
- Jul 2021 21:54:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210708232522.3118208-1-ndesaulniers@google.com>
- <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
- <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com> <CAKwvOdn065OJpow=7VF=ujagFoyN4sYMKAA_E2_39ZC7uThchg@mail.gmail.com>
-In-Reply-To: <CAKwvOdn065OJpow=7VF=ujagFoyN4sYMKAA_E2_39ZC7uThchg@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 21 Jul 2021 13:53:45 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQUSHmD=D6e1NrkZ+oUPV23wX8rHd8wEmQJJ4LW3bNW5w@mail.gmail.com>
-Message-ID: <CAK7LNAQUSHmD=D6e1NrkZ+oUPV23wX8rHd8wEmQJJ4LW3bNW5w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
- LLVM=1 LLVM_IAS=1
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>
+        id S232400AbhGUEQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 00:16:03 -0400
+Received: from mout.gmx.net ([212.227.15.18]:43123 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231168AbhGUEP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 00:15:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626843382;
+        bh=j3gXYD1/RFC+vfMB/LRp2Kww3W261kkIitdKWMPK0OE=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=jQBjJH2i2cUZR7hK9jMXh5oqlTbcqcLhKrFUIHANAOCBkhuX2NRisJK4S1HXbW9X4
+         B+9KHG/AcigU31SXUkLeUBIGrK0yND7kTluPhCuSUisMWerO65V0P5YnyMD9Guq95P
+         vWY50DcgnzZbrARCHd/+J4Pv3urZc37/cZIEUAF8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.150.108]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MmDIo-1lNtl01mzY-00iCWl; Wed, 21
+ Jul 2021 06:56:22 +0200
+Message-ID: <240f104fc6757d8c38fa01342511eda931632d5a.camel@gmx.de>
+Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
+ exclusion scope
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-rt-users@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Wed, 21 Jul 2021 06:56:21 +0200
+In-Reply-To: <f16b78bd3bb8fecf734017d40274e4c3294554ab.camel@gmx.de>
+References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
+         <878s2fnv79.ffs@nanos.tec.linutronix.de>
+         <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
+         <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
+         <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
+         <f16b78bd3bb8fecf734017d40274e4c3294554ab.camel@gmx.de>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Te6jTaO4amfpJi+b83efejJQbLW7GVVDdCsg0lWhtJlSbxqmXrC
+ 2IN84GOSHfFhkkwjqhJX8x9seWJb07e7j5mE6ZvdyAy+mWvLE17iGnacM8kEOlAgbuxlThC
+ uHeqFmZVq1zMCaQpXBaQ+gNJiN7O9wprdk0QKBSLNldvsnDKZDqGs6hpQDeU/RbeVb/0a5a
+ RNqDN/slwgl3iEIkFPisg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BVJAN3Vuxio=:XasT1JG7FKa9yzD4yf/KrJ
+ OmJMOTLYncxUJ4smYrApyWWVGNGDWfy1D1fwWa7Y/gPnGIdzOgsxWYLaGBa4tr6Q5a1gfhCjP
+ NNfro76FQx9xt1pygABauN4js/C8CNt4eT0RM+3ktLs5TEgjF+yMvT8ggfQ5bde9hDsCPd3Ml
+ nBgVOvfIgAM0HDumV02FPBGthwlVFF3ZVFokP+AhCyVKlPUAAmimsv2fxm+qRa+nGwlkJFX08
+ N2sW0JBUQ0aGouC3L2/bKPhkdE9NFpU+Y85zXDnLkXX9oUqUzAcMRyTSUUGQIwcUVyUCu25K2
+ hfdt1z6ZNvn8Hnd4RbtURPD0Z5fOJAy/YXX5mm/MhRoqpqxl+QLK+V4ygcsKql1UIJGK4vvC+
+ SykBQmiROQoLG4W4L95pqA5SU26HYI5udDb32uYFG6qRFGNuV+XqSdFgSdNTVxKeiCYD8ICRS
+ tfhBGWejHLW+XXQWeKm6yU3rhwdD/JNErD4693hW1fu9hI8rciT3cCECBuLOJRiroFVZ8rW7r
+ jgfPg9GEe6z+VAhag4R3TyW9bHK3fa9aWkcWvTpbWTGYPxrqSGfQlmynYILCZZxVRLEEBEzFP
+ HtjpUbUI6DhFOJwv2xFMqfO3TUA04YKsxJKu2vZaw93jdYuSa3O/EbSAAT8CrhxY1F+5sj/dT
+ f2WhcjXWDcBq+kS0iK53duVtOBdjI8SC6AGUzLvFPGTmUhtdPXDSq3J+8k8IM76Ho+urWMkYQ
+ pRQzMBsE1J6WhY2xCO6aBz5HgvumkyuH3si0sJnV97vOIhje3z8gND5hMB02A2xpY0LlrXcHl
+ 1Uq/s4mtcOxJPFYWWJfiIwJ8mWZodNZdG4sq7W90Y3uqX1WtocGTJWqHHiLTU9dE3raYThjcL
+ GT7qirXFkNNo2ct/a/TQiUDcrnpEem4REvZ90OIZp7t7bgRyl/7xE1Z+jBR3HUgfC0Raty4kO
+ FcdMI6uLVcvlK27aq16jCZTe0+KKuEnLx9a48v0tPZyX0+EfQpT2IQG1I4J5pYN4EOhI5ZPLa
+ aJvNjrIO8A+zOLoyVS7GdvANNysQiTc4OayOyaPDsYoT8gtPHloikrGIXI0pGVa+4woecuoqm
+ jtBjXJZaE1Yyk3VunrPuqh9Qw3v9iOTCjvZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 5:52 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Tue, Jul 20, 2021 at 10:43 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
+On Tue, 2021-07-20 at 13:26 +0200, Mike Galbraith wrote:
+> On Tue, 2021-07-20 at 10:56 +0200, Vlastimil Babka wrote:
+> > > crash> bt -sx
+> > > PID: 18761  TASK: ffff88812fff0000  CPU: 0   COMMAND: "hackbench"
+> > >  #0 [ffff88818f8ff980] machine_kexec+0x14f at ffffffff81051c8f
+> > >  #1 [ffff88818f8ff9c8] __crash_kexec+0xd2 at ffffffff8111ef72
+> > >  #2 [ffff88818f8ffa88] crash_kexec+0x30 at ffffffff8111fd10
+> > >  #3 [ffff88818f8ffa98] oops_end+0xd3 at ffffffff810267e3
+> > >  #4 [ffff88818f8ffab8] exc_general_protection+0x195 at
+> > > ffffffff8179fdb5
+> > >  #5 [ffff88818f8ffb50] asm_exc_general_protection+0x1e at
+> > > ffffffff81800a0e
+> > >     [exception RIP: __unfreeze_partials+156]
 > >
-> > On Tue, Jul 20, 2021 at 1:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >
-> > > LLVM=1 is a convenient switch to change all the
-> > > defaults, but yet you can flip each tool individually.
-> >
-> > Actually, I'd argue that "LLVM=1" is *not* a convenient switch.
+> > Hm going back to this report...
+> > So could it be that it was stillput_cpu_partial() preempting
+> > __slab_alloc() messing the partial list, but for some reason the
+> > put_cpu_partial() side crashed this time?
 >
-> Compared to the old way of CC=clang LD=ld.lld OBJCOPY=.... it certainly is.
->
-> > Neither are the individual other command line settings.
->
-> Agreed, but we needed flexibility until we could get all of the
-> command line tools working for each architecture.  They're still
-> useful when there's a regression and we need to fall back.  So I
-> wouldn't be in favor of removing them (not that that's been proposed).
->
-> > When clang was the odd man out, and special, it all made sense.
-> > Changing the path to CC was similar to changing the path to AWK. And
-> > that's obviously why we have what we have.
-> >
-> > But clang has become a primary compiler for some kernel communities,
-> > and I think it might be time to just re-visit that entirely.
->
-> :^)
->
-> > In particular, I think we should just make it a Kconfig option. I hate
-> > the command flag stuff so much, that my clang tree literally has this
-> > patch in it:
-> >
-> >     -CC = $(CROSS_COMPILE)gcc
-> >     +CC = $(CROSS_COMPILE)clang
-> >
-> > so that I can just do the same "make -j128" in both my gcc tree and my
-> > clang tree.
->
-> So you haven't been using LLD... :( (imagine using more than one
-> thread to link, and being faster than ld.gold)  If anything you should
-> be hard coding LLVM=1 in that tree.  Also, please be careful you don't
-> accidentally commit that! 0:-)
->
-> > But each build tree already has its own .config file, so it would be a
-> > lot more convenient if that was how the compiler was chosen, and then
-> > "make oldconfig" would just DTRT.
-> >
-> > We do most of the other heavy lifting in this area in Kconfig anyway,
-> > why not add that compiler choice?
-> >
-> > Obviously it would be gated by the tests to see which compilers are
-> > _installed_ (and that they are valid versions), so that it doesn't ask
-> > stupid things ("do you want gcc or clang" when only one of them is
-> > installed and/or viable).
-> >
-> > Hmm? So then any "LLVM=1" thing would be about the "make config"
-> > stage, not the actual build stage.
-> >
-> > (It has annoyed me for years that if you want to cross-compile, you
-> > first have to do "make ARCH=xyz config" and then remember to do "make
-> > ARCH=xyz" for the build too, but I cross-compile so seldom that I've
-> > never really cared).
-> >
-> > Let the flame wars^H^Hpolite discussions ensue..
->
-> I agree with you.  Overall the command line invocation of make when
-> cross compiling, or when using LLVM is too long.  You even call out
-> LLVM=1 and ARCH separately.  Each one of these had good reasons to
-> exist for years.
->
-> But I disagree that all needs to be sorted out together, or right now.
-> And I'd much rather tackle them separately, one by one, than try to
-> completely rewrite how we cross compile the kernel today.
->
-> Right now, we have:
-> $ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make LLVM=1 LLVM_IAS=1 -j72
->
-> This series is concerned with just CROSS_COMPILE (and just for LLVM=1).
-> Next I plan to default on LLVM_IAS=1 for all architectures we support,
-> minus ppc and s390 where we still have some assembler bugs.
-> Your/Arnd's ideas about LLVM=1 or not via Kconfig, or pre-Kconfig is a
-> good idea for eliminating LLVM=1.
+> Thinking this bug is toast, I emptied the trash bin, so no can peek.
 
+I made fireworks while waiting for bike riding time, boom #10 was
+finally the right flavor, but...
 
-I also like to make the integrated assembler our default.
+crash> bt -sx
+PID: 32     TASK: ffff888100a56000  CPU: 3   COMMAND: "rcuc/3"
+ #0 [ffff888100aa7a90] machine_kexec+0x14f at ffffffff81051c8f
+ #1 [ffff888100aa7ad8] __crash_kexec+0xd2 at ffffffff81120612
+ #2 [ffff888100aa7b98] crash_kexec+0x30 at ffffffff811213b0
+ #3 [ffff888100aa7ba8] oops_end+0xd3 at ffffffff810267e3
+ #4 [ffff888100aa7bc8] exc_general_protection+0x195 at ffffffff817a2cc5
+ #5 [ffff888100aa7c60] asm_exc_general_protection+0x1e at ffffffff81800a0e
+    [exception RIP: __unfreeze_partials+149]
+    RIP: ffffffff8124a295  RSP: ffff888100aa7d10  RFLAGS: 00010202
+    RAX: 0000000000190016  RBX: 0000000000190016  RCX: 000000017fffffff
+    RDX: 00000001ffffffff  RSI: 0000000000000023  RDI: ffffffff81e58b10
+    RBP: ffff888100aa7da0   R8: 0000000000000000   R9: 0000000000190018
+    R10: ffff888100aa7db8  R11: 000000000002d9e4  R12: ffff888100190500
+    R13: ffff88810018c980  R14: 00000001ffffffff  R15: ffffea0004571588
+    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+ #6 [ffff888100aa7db0] put_cpu_partial+0x8e at ffffffff8124a56e
+ #7 [ffff888100aa7dd0] kmem_cache_free+0x3a8 at ffffffff8124d238
+ #8 [ffff888100aa7e08] rcu_do_batch+0x186 at ffffffff810eb246
+ #9 [ffff888100aa7e70] rcu_core+0x25f at ffffffff810eeb2f
+#10 [ffff888100aa7eb0] rcu_cpu_kthread+0x94 at ffffffff810eed24
+#11 [ffff888100aa7ee0] smpboot_thread_fn+0x249 at ffffffff8109e559
+#12 [ffff888100aa7f18] kthread+0x1ac at ffffffff810984dc
+#13 [ffff888100aa7f50] ret_from_fork+0x1f at ffffffff81001b1f
+crash> runq
+...
+CPU 3 RUNQUEUE: ffff88840ece9980
+  CURRENT: PID: 32     TASK: ffff888100a56000  COMMAND: "rcuc/3"
+  RT PRIO_ARRAY: ffff88840ece9bc0
+     [ 94] PID: 32     TASK: ffff888100a56000  COMMAND: "rcuc/3"
+  CFS RB_ROOT: ffff88840ece9a40
+     [120] PID: 33     TASK: ffff888100a51000  COMMAND: "ksoftirqd/3"
+...
+crash> bt -sx 33
+PID: 33     TASK: ffff888100a51000  CPU: 3   COMMAND: "ksoftirqd/3"
+ #0 [ffff888100aabdf0] __schedule+0x2d7 at ffffffff817ad3a7
+ #1 [ffff888100aabec8] schedule+0x3b at ffffffff817ae4eb
+ #2 [ffff888100aabee0] smpboot_thread_fn+0x18c at ffffffff8109e49c
+ #3 [ffff888100aabf18] kthread+0x1ac at ffffffff810984dc
+ #4 [ffff888100aabf50] ret_from_fork+0x1f at ffffffff81001b1f
+crash>
 
-We can add LLVM_DISABLE_IAS=1 to
-replace LLVM_IAS=1.
-
-
-
-
-
-
-
-> Then that just leaves ARCH.
-> Arnd's idea about helping you install a toolchain from kernel.org is
-> one I support, but orthogonal to the above somewhat.  Do you allow
-> someone to have a config that denotes intent to build with clang then
-> prompt if they don't have clang installed to download it? Or do you
-> prevent someone from selecting building with clang because it's not in
-> the $PATH?
-> Your/Arnd's idea about detecting which toolchains are installed is one
-> I support, but orthogonal to the above somewhat.  (For that, I'm
-> curious for our build servers if that means having to put tools in
-> certain locations; I prefer we reference $PATH when possible. Or if
-> .configs can no longer be shared if tools are in different locations.
-> But perhaps that's a non-issue).  I'm also curious how many stat calls
-> we'll need to test/probe/find these, and how we prioritize which tools
-> are selected when there's more than one version installed.
->
-> I encourage us to make steps in the right direction; but I think this
-> series is ready to go for at least one of the command line variables.
-> I don't think we need to wait for some probing machinery to eliminate
-> CROSS_COMPILE when LLVM=1; and if we ever get such machinery we can
-> revisit whether that helps this case at all.
-> --
-> Thanks,
-> ~Nick Desaulniers
-
-
-
--- 
-Best Regards
-Masahiro Yamada
