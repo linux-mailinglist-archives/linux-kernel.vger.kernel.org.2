@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90663D0E8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C153D0E8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238285AbhGULXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:23:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238185AbhGULUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:20:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A064861181;
-        Wed, 21 Jul 2021 12:01:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626868861;
-        bh=e/vlteaJBktOmPKsskSDx+AWnwvwZTl8zneuBz1GiXs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jk+X6bDFisucKyRu4K7IEj+W6TPeW8c0nKzAiCzeVY0KpxkRU+GqVwNQ3BHhs31FK
-         2EwzoSHh7KEeEYLQp39D3jsEG70HH7Ol+8Z50GJeHwK5LLvdskoTTTPUxrG7GQr3C0
-         G8O+Len0iwp3s+JbixPMCCZF5Lo8B7gvUn7/bEvpFni+vcDKJUKLs6yUcPjdPuQt50
-         C3j8iAXXgZ11XpcAwvWocr4oJYYRzKFGk5CAYHYhl+szATzm0FADIkAjIjWGGSKk51
-         VHCs3T1iKr1Mtux+rbpHDehhB4uhZAM6OlN0NUBnvyK33+d4/U6iuT6PPA9oOqnNO3
-         jV688Hz1U2blg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1m6Atw-0006IE-EL; Wed, 21 Jul 2021 14:00:37 +0200
-Date:   Wed, 21 Jul 2021 14:00:36 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] tty: nozomi: tty_unregister_device ->
- tty_port_unregister_device
-Message-ID: <YPgMZBK/FWLRD1Ic@hovoldconsulting.com>
-References: <20210721113305.1524059-1-mudongliangabcd@gmail.com>
+        id S238323AbhGULYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:24:11 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:48238
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238184AbhGULVM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 07:21:12 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id AC0A13F24D;
+        Wed, 21 Jul 2021 12:01:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626868908;
+        bh=4rNr75iyy/j1TQd7Pr+dzCy4gKd7n5s0DoW6abDmq8Q=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=jWgWr3fGBqcLb8uG/vUpfQLwqcb2LKm7kS/9qpV5tWi99kj0WWTi6cpk+YRxmlUcy
+         z2uQFX81eCVQSY9NipHZrYVhQWhsNn8C39a+ci61CUdB9147UdUL4WYaoIIJ45cnkl
+         NLjnXnKPFrYHVmsz7uef7iTVlrFX/69MQzLHQmQlyzTvPK2E6hutNba4aPMBlFw9Qp
+         K4RNIOSLyKATOL/E53/WEic/zuFAGTAZ9DYQDitYUEcc1l7yPKlZu7dOJWJjEDT4fq
+         1tP8UANdVFOCIPMOpLOnuhRRSEckUrd8FHaFR4YnwfTt03wpYS0wxmOvD0T5YgJDRS
+         AnKc6QyHebKvg==
+From:   Colin King <colin.king@canonical.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org
+Subject: [PATCH] posix-timers: remove redundant initialization of variable ret
+Date:   Wed, 21 Jul 2021 13:01:47 +0100
+Message-Id: <20210721120147.109570-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210721113305.1524059-1-mudongliangabcd@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 07:33:04PM +0800, Dongliang Mu wrote:
-> The pairwise api invocation of tty_port_register_device should be
-> tty_port_unregister_device, other than tty_unregister_device.
+From: Colin Ian King <colin.king@canonical.com>
 
-Are you sure about that? Please explain why you think this to be the
-case and why this change is needed.
+The variable ret is being initialized with a value that is never
+read, it is being updated later on. The assignment is redundant and
+can be removed.
 
-> Fixes: a6afd9f3e819 ("tty: move a number of tty drivers from drivers/char/ to drivers/tty/")
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ kernel/time/posix-timers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please try a little harder, that's clearly not the commit that changed
-to the port registration helper.
+diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
+index dd5697d7347b..3913222e7bcf 100644
+--- a/kernel/time/posix-timers.c
++++ b/kernel/time/posix-timers.c
+@@ -336,7 +336,7 @@ void posixtimer_rearm(struct kernel_siginfo *info)
+ int posix_timer_event(struct k_itimer *timr, int si_private)
+ {
+ 	enum pid_type type;
+-	int ret = -1;
++	int ret;
+ 	/*
+ 	 * FIXME: if ->sigq is queued we can race with
+ 	 * dequeue_signal()->posixtimer_rearm().
+-- 
+2.31.1
 
-> Cc: stable@vger.kernel.org
-
-Why do you think this is stable material? (hint: it is not)
-
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
->  drivers/tty/nozomi.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
-> index 0c80f25c8c3d..08bdd82f60b5 100644
-> --- a/drivers/tty/nozomi.c
-> +++ b/drivers/tty/nozomi.c
-> @@ -1417,7 +1417,8 @@ static int nozomi_card_init(struct pci_dev *pdev,
->  
->  err_free_tty:
->  	for (i--; i >= 0; i--) {
-> -		tty_unregister_device(ntty_driver, dc->index_start + i);
-> +		tty_port_unregister_device(&dc->port[i].port, ntty_driver,
-> +				dc->index_start + i);
->  		tty_port_destroy(&dc->port[i].port);
->  	}
->  	free_irq(pdev->irq, dc);
-
-Johan
