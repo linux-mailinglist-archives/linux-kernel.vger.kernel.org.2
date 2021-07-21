@@ -2,177 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6573D0F80
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 780F43D0F82
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237928AbhGUMr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237878AbhGUMrZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:47:25 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175ECC061762
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:28:02 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id r132so3280828yba.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:28:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MAafdB8maEcxAt7X4aari+TcZmDheDXHSryvpJebCSE=;
-        b=lfuTg9AWFswlPJLywoHYJK1agsZpv6/T05aDWoVWngTAAT8PURAoKP4BvhuWDegYwm
-         vbyWOypf9xXj4Eka8iqW66c4ICKcLvZ1GaZU9OHYPqXx+phQsBqMmBtMuGNm63DbbQ2R
-         tiQ2TmwqRwE25YRB7yabtogkuJoH53yd1eoV7j6SPdismGUzX0KcG3GqdFFbeKNDSr0C
-         5VW8VOEtldwEL51DqtvM30NXemVgS42Gimleq+MHwlIy20A9WG9R/juxJzMRObMW1N9O
-         ex1D+TORYJp02UbEh+YMRbnDyoMFlrzgP5mLIT13K0gqrn7cdHVE90AnNVSFQs0pXQC0
-         M9Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MAafdB8maEcxAt7X4aari+TcZmDheDXHSryvpJebCSE=;
-        b=azuDBeST+yDapWrB/6NXJQYM2lu6nLZ7ossv9cv5z9kCFzfysLlG+6maX7TyrhrlzS
-         syCPZcpPDfcG2OJo5Db+T0RtXBnSEsY7QZz2A3CqZKEqrimSPpKYoKJE8JLRlORn/eAr
-         +DSFifhNe/DVcvcSAA2eYF+iJ3poY3oiB5ArQvMUEH2nVJuWWmCtvRQdfZjCSKleJx0r
-         lFTBXAzwM8uqBZAcXbVe43mg4A18B13BneqeC5FPT4gGV366K0SuRvSflYeUSoqraCDL
-         KnnDUcepdwiIbFuQ/Nix+1K2hN4FQhsJoVxWXBz0jAhnpt9qNg6yvizs+zMQ4BU3lg9/
-         k+pg==
-X-Gm-Message-State: AOAM5335H1mlTrnRgyIxPrZSBuOUrG36ygIbP2RXCWxVimyAePCG1lf3
-        ol+ayKBKQDVGafKsAWu4hKxVZfWwsjBDKFcCdPOOIA==
-X-Google-Smtp-Source: ABdhPJx1WjVAkp6jRxZJp7kiQRs4VYJ4eZLaT2BIRQ1z4nBLr5bwozTZDA10RbWlmANLp/oyaO6yLB+iVdqEuKCbZ7k=
-X-Received: by 2002:a25:4102:: with SMTP id o2mr43915325yba.23.1626874081235;
- Wed, 21 Jul 2021 06:28:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210712100317.23298-1-steven_lee@aspeedtech.com>
-In-Reply-To: <20210712100317.23298-1-steven_lee@aspeedtech.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 21 Jul 2021 15:27:50 +0200
-Message-ID: <CAMpxmJXfUterUdaGHOJT5hwcVJ+3cqgSQVdp-6Atuyyo36FxfQ@mail.gmail.com>
-Subject: Re: [PATCH v6 0/9] ASPEED sgpio driver enhancement.
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        id S237960AbhGUMrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:47:47 -0400
+Received: from mga09.intel.com ([134.134.136.24]:59252 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232672AbhGUMrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 08:47:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="211432735"
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="211432735"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 06:28:21 -0700
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="662114672"
+Received: from tamoore1-mobl3.amr.corp.intel.com (HELO [10.209.131.176]) ([10.209.131.176])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 06:28:20 -0700
+Subject: Re: [PATCH 1/3] ASoC: SOF: Parse fw/tplg filename from DT
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Devicetree List <devicetree@vger.kernel.org>,
+        Daniel Baluta <daniel.baluta@gmail.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+References: <20210715141802.880911-1-daniel.baluta@oss.nxp.com>
+ <20210715141802.880911-2-daniel.baluta@oss.nxp.com>
+ <20210715143906.GD4590@sirena.org.uk>
+ <CAEnQRZCdSLoaLVZ7-jtufgZCG6QshMwdfyJy_4oE6cXRbA5H8A@mail.gmail.com>
+ <CAEnQRZCiC5aGK6AsD0TN5fzN6AxFn6=f8hCrd2B9fhCYfCFOSg@mail.gmail.com>
+ <bd85ea7c-e9b5-de67-07ce-7104a1e19805@linux.intel.com>
+ <20210721125912.GE4259@sirena.org.uk>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <eb98c10a-cc04-dbcf-b5cf-511703dc22fb@linux.intel.com>
+Date:   Wed, 21 Jul 2021 08:28:17 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210721125912.GE4259@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 12:03 PM Steven Lee <steven_lee@aspeedtech.com> wrote:
->
-> AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
-> with 80 pins, AST2500/AST2400 SoC has 1 SGPIO master interface that
-> supports up to 80 pins.
-> In the current driver design, the max number of sgpio pins is hardcoded
-> in macro MAX_NR_HW_SGPIO and the value is 80.
->
-> For supporting sgpio master interfaces of AST2600 SoC, the patch series
-> contains the following enhancement:
-> - Convert txt dt-bindings to yaml.
-> - Update aspeed-g6 dtsi to support the enhanced sgpio.
-> - Support muiltiple SGPIO master interfaces.
-> - Support up to 128 pins by dts ngpios property.
-> - Pair input/output GPIOs instead of using 0 as GPIO input pin base and
->   MAX_NR_HW_SGPIO as GPIO output pin base.
-> - Support wdt reset tolerance.
-> - Fix irq_chip issues which causes multiple sgpio devices use the same
->   irq_chip data.
-> - Replace all of_*() APIs with device_*().
->
-> Changes from v5:
-> * Squash v5 patch-05 and patch-06 to one patch.
-> * Remove MAX_NR_HW_SGPIO and corresponding design to make the gpio
->   input/output pin base are determined by ngpios.
->   For example, if MAX_NR_HW_SGPIO is 80 and ngpios is 10, the original
->   pin order is as follows:
->     Input:
->     0 1 2 3 ... 9
->     Output:
->     80 81 82 ... 89
->
->   With the new design, pin order is changed as follows:
->     Input:
->     0 2 4 6 ... 18(ngpios * 2 - 2)
->     Output:
->     1 3 5 7 ... 19(ngpios * 2 - 1)
-> * Replace ast2600-sgpiom-128 and ast2600-sgpiom-80 compatibles by
->   ast2600-sgpiom.
-> * Fix coding style issues.
->
-> Changes from v4:
-> * Remove ngpios from dtsi
-> * Add ast2400 and ast2500 platform data.
-> * Remove unused macros.
-> * Add ngpios check in a separate patch.
-> * Fix coding style issues.
->
-> Changes from v3:
-> * Split dt-bindings patch to 2 patches
-> * Rename ast2600-sgpiom1 compatible with ast2600-sgiom-128
-> * Rename ast2600-sgpiom2 compatible with ast2600-sgiom-80
-> * Correct the typo in commit messages.
-> * Fix coding style issues.
-> * Replace all of_*() APIs with device_*().
->
-> Changes from v2:
-> * Remove maximum/minimum of ngpios from bindings.
-> * Remove max-ngpios from bindings and dtsi.
-> * Remove ast2400-sgpiom and ast2500-sgpiom compatibles from dts and
->   driver.
-> * Add ast2600-sgpiom1 and ast2600-sgpiom2 compatibles as their max
->   number of available gpio pins are different.
-> * Modify functions to pass aspeed_sgpio struct instead of passing
->   max_ngpios.
-> * Split sgpio driver patch to 3 patches
->
-> Changes from v1:
-> * Fix yaml format issues.
-> * Fix issues reported by kernel test robot.
->
-> Please help to review.
->
-> Thanks,
-> Steven
->
-> Steven Lee (9):
->   dt-bindings: aspeed-sgpio: Convert txt bindings to yaml.
->   dt-bindings: aspeed-sgpio: Add ast2600 sgpio
->   ARM: dts: aspeed-g6: Add SGPIO node.
->   ARM: dts: aspeed-g5: Remove ngpios from sgpio node.
->   gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
->   gpio: gpio-aspeed-sgpio: Add set_config function
->   gpio: gpio-aspeed-sgpio: Move irq_chip to aspeed-sgpio struct
->   gpio: gpio-aspeed-sgpio: Use generic device property APIs
->   gpio: gpio-aspeed-sgpio: Return error if ngpios is not multiple of 8.
->
->  .../bindings/gpio/aspeed,sgpio.yaml           |  77 ++++++++
->  .../devicetree/bindings/gpio/sgpio-aspeed.txt |  46 -----
->  arch/arm/boot/dts/aspeed-g5.dtsi              |   1 -
->  arch/arm/boot/dts/aspeed-g6.dtsi              |  28 +++
->  drivers/gpio/gpio-aspeed-sgpio.c              | 178 +++++++++++-------
->  5 files changed, 215 insertions(+), 115 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
->  delete mode 100644 Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
->
-> --
-> 2.17.1
->
 
-The series looks good to me. Can the DTS and GPIO patches go into
-v5.15 separately?
+> Please fix your mail client to word wrap within paragraphs at something
+> substantially less than 80 columns.  Doing this makes your messages much
+> easier to read and reply to.
 
-Bart
+Oops.
+
+>> - we currently don't support 'shipping the topology and firmware
+>> bundled up in a single image to avoid them getting out of sync'. No
+>> idea how that might work.
+> 
+> Seems like it'd be trivial to arrange in the kernel, or with userspace
+> firmware loading the loader could do the unpacking.
+
+I think we can bundle the firmware inside of the kernel image itself,
+but we've never tried so it doesn't work by default.
+I don't know what userspace loading means, we rely on request_firmware
+and don't assume any specific support from userspace.
+
+>> - if the machine driver is specified in DeviceTree, then the topology
+>> used is *required* to be aligned with the machine driver. The rules
+>> are that a topology may not make references to a BE dailink exposed in
+>> the machine driver, but conversely if the topology makes a reference
+>> to a BE dailink that is not exposed in the machine driver the topology
+>> parsing will fail. It's one of the current weaknesses of
+>> topology-based solutions, we have non-configurable hardware-related
+>> things that are described in topology but should really be described
+>> in platform firmware, be it ACPI or DT, and provided to the topology.
+> 
+> That seems like an orthogonal issue here?  The requirement for a
+> firmware that's joined up with the hardware (and system description)
+> that it's being used with exists regardless of how we rename things.
+
+It's not completely orthogonal. The topology currently defines e.g. the
+I2S interface index, Mclk, bclk, fsync, etc, and my point is that these
+bits of information are completely related to the hardware and should
+probably come from platform firmware/ACPI.
+
+The topology framework currently provides too much freedom to
+developers, it's fine to add new pipelines, PCM devices and new
+processing, but when it comes to the hardware interfaces the topology is
+completely constrained. I've been arguing for a while now that the
+dailink descriptions and configurations should be treated as an input to
+the topology, not something that the topology can configure. I don't
+know how many issues we had to deal with because the topology settings
+were not supported by the hardware, or mismatches between topology and
+machine drivers (missing dailinks, bad dailink index, etc).
+
