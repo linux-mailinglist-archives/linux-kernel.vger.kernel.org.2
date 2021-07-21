@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4DC3D0E44
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461CC3D0E59
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbhGULRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:17:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53828 "EHLO mail.kernel.org"
+        id S237498AbhGULT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:19:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:52750 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237773AbhGULMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:12:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 751D46109F;
-        Wed, 21 Jul 2021 11:51:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626868319;
-        bh=hEJvu6/cow0FvseVKzbhqeQsfEPQOVHFme9rz9lVotk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pU+YYoq3108Oq4wVKJY/mjGW/J6p2z50PLnpKyCLFFAoHdeO3j8uTwg7PRvaixFIl
-         jwX55IS0msfH/94B4a6miF5/knSAlhrluvN0zy648W0pnBfmSSiJ6T5XJxWmmEQgi8
-         nHVna0fdHCRxiswPV+jhs9dCO7MFrMeB5M/Xd0po=
-Date:   Wed, 21 Jul 2021 13:51:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>
-Subject: Re: [PATCH] misc: sgi-gru: Convert from atomic_t to refcount_t on
- gru_thread_state->ts_refcnt
-Message-ID: <YPgKXBTjgO6ko0qQ@kroah.com>
-References: <1626517043-42696-1-git-send-email-xiyuyang19@fudan.edu.cn>
+        id S237424AbhGULKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 07:10:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38A336D;
+        Wed, 21 Jul 2021 04:51:29 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BB4C63F694;
+        Wed, 21 Jul 2021 04:51:26 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rt-users@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 0/3] sched: migrate_disable() vs per-CPU access safety checks
+Date:   Wed, 21 Jul 2021 12:51:15 +0100
+Message-Id: <20210721115118.729943-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626517043-42696-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 06:17:22PM +0800, Xiyu Yang wrote:
-> refcount_t type and corresponding API can protect refcounters from
-> accidental underflow and overflow and further use-after-free situations.
-> 
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> ---
->  drivers/misc/sgi-gru/grumain.c   | 6 +++---
->  drivers/misc/sgi-gru/grutables.h | 3 ++-
->  2 files changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/misc/sgi-gru/grumain.c b/drivers/misc/sgi-gru/grumain.c
-> index 40ac59dd018c..9afda47efbf2 100644
-> --- a/drivers/misc/sgi-gru/grumain.c
-> +++ b/drivers/misc/sgi-gru/grumain.c
-> @@ -282,7 +282,7 @@ static void gru_unload_mm_tracker(struct gru_state *gru,
->   */
->  void gts_drop(struct gru_thread_state *gts)
->  {
-> -	if (gts && atomic_dec_return(&gts->ts_refcnt) == 0) {
-> +	if (gts && refcount_dec_and_test(&gts->ts_refcnt)) {
->  		if (gts->ts_gms)
->  			gru_drop_mmu_notifier(gts->ts_gms);
->  		kfree(gts);
+Hi folks,
 
-Related to this, shouldn't this really be a 'struct kref' instead of
-hand-creating the exact same logic?
+I've hit a few warnings when taking v5.13-rt1 out for a spin on my arm64
+Juno. Those are due to regions that become preemptible under PREEMPT_RT, but
+remain safe wrt per-CPU accesses due to migrate_disable() + a sleepable lock.
 
-Want to make that change on top of this one?
+This adds a helper that looks at not just preemptability but also affinity and
+migrate disable, and plasters the warning sites.
 
-thanks,
+Cheers,
+Valentin
 
-greg k-h
+Valentin Schneider (3):
+  sched: Introduce is_pcpu_safe()
+  rcu/nocb: Check for migratability rather than pure preemptability
+  arm64: mm: Make arch_faults_on_old_pte() check for migratability
+
+ arch/arm64/include/asm/pgtable.h |  2 +-
+ include/linux/sched.h            | 10 ++++++++++
+ kernel/rcu/tree_plugin.h         |  3 +--
+ 3 files changed, 12 insertions(+), 3 deletions(-)
+
+--
+2.25.1
+
