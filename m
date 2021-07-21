@@ -2,69 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51A83D139F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088EF3D13AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbhGUPgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 11:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbhGUPgB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:36:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6039C061575;
-        Wed, 21 Jul 2021 09:16:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=dovBFK3QQdO0rOX8vuhPmoaedl
-        ggoMRCo09tbcMv7DguiDQsLvJaZAEFeOCHY64YF8+XeisjCS0MfFmCbAjnK7WWbibGrXW5kNp95H9
-        xfLXECgjN1DM2kXnXe+uYTmEesIzs/xr5310buPqfdvE2luvfrAXJ9lO2dIerZh9CflZMjlLSGo6X
-        iEDYmRjNSHYEo7mbBb4GNyqpvq9tHohN9ymD28n8q5rlk9Uh38aNj279aOIfxDm1jPx60t4qH9JuL
-        EbOcHo6L8tLo7zO2s7OAbUH+SIf31zd1YhyYcoJdEboEqWRBQe3wALgsHsqnUvN9tXm6+4NLCYrbx
-        go//Vf2w==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6Et7-009NYa-0x; Wed, 21 Jul 2021 16:16:01 +0000
-Date:   Wed, 21 Jul 2021 17:16:01 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v2 2/2] RDMA: Use dma_map_sgtable for map umem
- pages
-Message-ID: <YPhIQWvob3pTTUYA@infradead.org>
-References: <cover.1626605893.git.leonro@nvidia.com>
- <009740c35873683e401da3f86d0e7a78b2f25601.1626605893.git.leonro@nvidia.com>
+        id S233006AbhGUPg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 11:36:56 -0400
+Received: from elvis.franken.de ([193.175.24.41]:43886 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232785AbhGUPgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 11:36:55 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1m6EuY-00011A-00; Wed, 21 Jul 2021 18:17:30 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 29583C0EF7; Wed, 21 Jul 2021 18:17:19 +0200 (CEST)
+Date:   Wed, 21 Jul 2021 18:17:19 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        list@opendingux.net, Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] MIPS: Avoid macro redefinitions
+Message-ID: <20210721161719.GA9805@alpha.franken.de>
+References: <20210718130748.230758-1-paul@crapouillou.net>
+ <CAKwvOdkVEa-CxbVschn5Tnh7-Ynvzcz+zChhP3LL3Q745wE7_A@mail.gmail.com>
+ <7YIIWQ.1TU3IBLL4KNC2@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <009740c35873683e401da3f86d0e7a78b2f25601.1626605893.git.leonro@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <7YIIWQ.1TU3IBLL4KNC2@crapouillou.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,
+On Mon, Jul 19, 2021 at 11:10:55PM +0100, Paul Cercueil wrote:
+> > >   #ifndef TOOLCHAIN_SUPPORTS_VIRT
+> > 
+> > Same question for GAS version support for virt?
+> > Documentation/process/changes.rst
+> > says GNU binutils 2.23+ is required for building the kernel.
+> > If we still need to support, have you tested this change on such an
+> > older version of GNU binutils?
+> 
+> I have no idea about virt support - I hope Thomas can answer this.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+virt support was added in 2.24 and xpa in 2.25. So we still need the
+TOOLCHAIN defines for it.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
