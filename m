@@ -2,125 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286B03D0A6A
+	by mail.lfdr.de (Postfix) with ESMTP id 713283D0A6B
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236600AbhGUHgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 03:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236383AbhGUHb3 (ORCPT
+        id S236689AbhGUHhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 03:37:31 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:63266 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236442AbhGUHby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:31:29 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A3AC061574;
-        Wed, 21 Jul 2021 01:12:03 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id z9so1403871iob.8;
-        Wed, 21 Jul 2021 01:12:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=pL2C9kVjJUNoadYQaAKSPZ98TvYLySVH4tRSkOmd6po=;
-        b=fo/NxuLkx8GcFXYS3VVuLCjl4ki9ob6lizBHGdDSitZ10DmW5vaKYGWAt3LbvoSCwX
-         kVlWdvMTfrkcf/9O7AeyPiUWkAFfJBzeHpc6IOBFNCB1mfUng5/YU61/Jx+LmYgXLeBl
-         iILgVv4K7xVCg3ezgjzA96EwwMZPwX4RPcYlc5bJ8gyIEu5RISlTOSUbF1xNCBmb44LL
-         2LEjwGXSJC3Qbv7diUtmwPuYQrB5xfL0vDoZCn3T6wz5s/rd226RGChmeIi9Eu3utTif
-         tRCXS8XsRIGusF5Ufx3RhGzLTA0i/z30GHjI0Ba20muC3zpXFwodbKo+Y8aYgxeBFPiT
-         hYCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=pL2C9kVjJUNoadYQaAKSPZ98TvYLySVH4tRSkOmd6po=;
-        b=euo1IhuaI79aP0gl8B2ypy7EFol6ofnQwWvFvtrrK8cmiM4NJ50tpNePzIMelny0Em
-         Lrt6qGw0qjwAwjUzMgWfLmke7V4G17dii5z0SKi3+4Xs3j/cMEl3h3GGzhozbuu5UJ1N
-         5468Q3E6ZPnj9uB7/ipchq/8KH9vCWoP0d+p32u5uQ9rSlIOahvRwejRhUeqchKYe42Y
-         TzZbgBkJE3+LSQ9rhHqIxUCjTfrFMaKDix9vThwbTMTJkiuJa0Vcsc8d+Sinzw+9CrOp
-         Zk0jabSpXH26IxoKpau82LWpHixPZZbQ8HfgbUfvEzZp4uiS1pFXbY5vYLSZRzsJHyZr
-         2Yow==
-X-Gm-Message-State: AOAM530gDLSfb6oUE6ks+fBB0e3id/8ji3INfDQUxVYM83WBA+pmbL48
-        HIYqxG/RsIxeaEhFCxzbgvr/8cIgsGd/cU4eOA+Rvn1cX+qWFA==
-X-Google-Smtp-Source: ABdhPJztKrsz6lAR+YpujrMMSlaT3nT9BUhbavspkBABheJZkliR6NnmksVys2h3dE9SfgBLBlOF8A5LIUzYH69sKh8=
-X-Received: by 2002:a5e:8d16:: with SMTP id m22mr2457103ioj.60.1626855123253;
- Wed, 21 Jul 2021 01:12:03 -0700 (PDT)
+        Wed, 21 Jul 2021 03:31:54 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16L8BxHU019546;
+        Wed, 21 Jul 2021 01:12:12 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=od1qgwPdesVrx/a5RzhfIJUjik2Kl6xewfT1iFSN8Gg=;
+ b=D/EwDv1zG7qjZ8tSeF5Lpp9e3w7Qdx15Ljtc6vFIm29dl3P4dYQHd4+FpaBFnZmCaDtu
+ 64A0dtwaT9Q+F2ONTRyxP98uz4fxbfypMft9xiqgTT88tTDs4+OvzpwtvyK7L7iYG6Ed
+ HfZCtyzPFUPL4bfMkpJ8rd7MHHsz/xNAofSjt7fbwLMSvu/BRzxx4vYyv/LgJQ4JvK9O
+ 8g1id4TMJZNoUJxnCsvySmJggpMuJvjLNA+9bM1+Jrgy6iCjzTdWc/mACf0QvvgnQJTp
+ +xRy20m+P9RjRPhgDjpPbUcvm6+9PMpO7/GX8tLs/ERlGUcD30pXrtrUXMFn789Sk9fF tA== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2173.outbound.protection.outlook.com [104.47.58.173])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 39xawqgud0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Jul 2021 01:12:11 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R8SADzB7CQZKW2aL1ffiDOAJRIuLW8SmHqyq/AFUsgA6WsfTXaD2TpmsPm7vIbKmBfZlBaOyne/zNqMHtbKK1HQ124diYlMToWU9nsSd61ibvFVY7cyldoq+kXVU8LootmvEDpuy7phKH22kyJHGbifri4DOeuLuCDGA8DH0w+xlyne4zvjqhxhpz/7uawwxx2r5l/W1jdBDzeP3/zteKBhv2YjJ8oVDQ3fFLqlbkNX7mOXh9Cje5NdChpRod5DWrtkARxipEo1P9L0AkAHtGYsN7fIKjPfxSbgjxsfGfAYPZDUEA7tFOlrMRdUmoh7xvtrDu5zN4B9mKr4BrZQDow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=od1qgwPdesVrx/a5RzhfIJUjik2Kl6xewfT1iFSN8Gg=;
+ b=IaamaKq7Pp9Hyo4MKpS9Jv/OiR+rbiPV1+M+DCYZILbPJXNBhr2BEIzlp/+yT3lXPvun3qHxIXUleNprpjVufRg0nQPwTHAky1WzkjsXF967V086istB7/GSSEMAZgjdfAew3c05hlEBQW3T6VrpUK6PQ0J7BWcMaRYymSlKT9Wbju1kvsAeK3ulAt9hObWr4kvxeFgw7DTKXFlIqwrHoLjqXAhwr+wEbUYJ/mkNcWFLMKX/l9jzMFtdAezuU86jmeaCAVeTHVz0AujUsiGkjzQvR3Fz2OLyxm8kW6sgD+cPbxereMlFU+AizwdmGVgxH8DHu83FGvGVxJN+Zk8WDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 158.140.1.147) smtp.rcpttodomain=bootlin.com smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=od1qgwPdesVrx/a5RzhfIJUjik2Kl6xewfT1iFSN8Gg=;
+ b=EkaRoizrrus8AxuWC5YurzHtbY3hdyon0Bj8+jDOHNRujtPk+4IdcQBs47ftucdIT4lZLFrVeu/quY86hh7SEfhVTUfblGPEoIcrh5EQ2A+/xPvZgSlhWsWAfkhjmKPTqM0dzkoMxfd3JNk3kcBx/OjFKaAnKTG4jzqmueutTY4=
+Received: from MWHPR1401CA0018.namprd14.prod.outlook.com
+ (2603:10b6:301:4b::28) by BY5PR07MB7157.namprd07.prod.outlook.com
+ (2603:10b6:a03:1f1::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Wed, 21 Jul
+ 2021 08:12:08 +0000
+Received: from MW2NAM12FT040.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:301:4b:cafe::13) by MWHPR1401CA0018.outlook.office365.com
+ (2603:10b6:301:4b::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
+ Transport; Wed, 21 Jul 2021 08:12:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
+ smtp.mailfrom=cadence.com; bootlin.com; dkim=none (message not signed)
+ header.d=none;bootlin.com; dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
+Received: from sjmaillnx1.cadence.com (158.140.1.147) by
+ MW2NAM12FT040.mail.protection.outlook.com (10.13.180.228) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4352.9 via Frontend Transport; Wed, 21 Jul 2021 08:12:08 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 16L8C2SF012308
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Jul 2021 01:12:05 -0700
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 21 Jul 2021 10:12:02 +0200
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Wed, 21 Jul 2021 10:12:02 +0200
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 16L8C2dd025374;
+        Wed, 21 Jul 2021 10:12:02 +0200
+Received: (from pthombar@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 16L8C1Xj025373;
+        Wed, 21 Jul 2021 10:12:01 +0200
+From:   Parshuram Thombare <pthombar@cadence.com>
+To:     <lukas@wunner.de>, <linux-spi@vger.kernel.org>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-kernel@vger.kernel.org>, <mparab@cadence.com>,
+        <jpawar@cadence.com>, Parshuram Thombare <pthombar@cadence.com>
+Subject: [PATCH v2 0/2] add support for Cadence's XSPI controller
+Date:   Wed, 21 Jul 2021 10:11:58 +0200
+Message-ID: <1626855118-25327-1-git-send-email-pthombar@cadence.com>
+X-Mailer: git-send-email 2.2.2
 MIME-Version: 1.0
-References: <1626430843-23823-2-git-send-email-dillon.minfei@gmail.com>
- <202107201305.FPUQWvWk-lkp@intel.com> <CAL9mu0LVdt1wtKzBa=201AJ-Eb4BdKtVx18hzQfaB0-Ga0jx9g@mail.gmail.com>
-In-Reply-To: <CAL9mu0LVdt1wtKzBa=201AJ-Eb4BdKtVx18hzQfaB0-Ga0jx9g@mail.gmail.com>
-From:   Dillon Min <dillon.minfei@gmail.com>
-Date:   Wed, 21 Jul 2021 16:11:27 +0800
-Message-ID: <CAL9mu0JVA-jvExpQyZVfqC61qtsXJHgFbeo5LBjaxFF-PYzHuQ@mail.gmail.com>
-Subject: Fwd: [PATCH 1/2] dt-bindings: display: panel: Add ilitek ili9341
- panel bindings
-To:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f361608e-2a33-4c37-522c-08d94c1f3bd6
+X-MS-TrafficTypeDiagnostic: BY5PR07MB7157:
+X-Microsoft-Antispam-PRVS: <BY5PR07MB7157F197BBE0B86F44FDB001C1E39@BY5PR07MB7157.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WjfmcCq5lU7T6FQhfaWBe4qHwUx8hUtpFDI4qQb/XVZc4xqObiIlzJ3XJBaju4fCOaYt77/G7pFLSth1HOsrGVrzYpOL+CwaRnGpq9TcnKCPIeKyd7e6fV4sIU611TqwQUSTzPp04XFvkVLoPOS7Ly1V1JiAZdwaRxFXsKTj8qyVYFYZCfrL16/8y05fFTF5HKirIT3BF+51yrSt8zetWaf34hycYXBMQmwAgUqkuoKwcuEcn9epGDlg/dWoAWP1r5MJe8C6yri6a5ZvRoYVxoGWFQ0PwdQMOLjbs9MFEW0cRuNredwj7RO2AFEPVeacNcrNUKNM2asNGdqA2MiaF4d1XSPZn4pnsvAtEDKHVHH/4lOBNz6QGhlDqksJfU4BJxn0YNkW0U/acut0Ki6+OsKqkF9RBoGWX2jm2ElrPxxBr+p8mQTYcsmqhZ3qSpRXqpbIC0G7E3P4H2HsuD96gUCMR5FTnHwBcjxFKpsoRmS7qvN0QU/1zYc/lFUpDwQD2dQFeg/3PpUejjfugergyJa+JKwD20hlEEsp1zJR8+8M+raLk8JgQh0ugKZcyFR/j8worPq8TfAO+Y/78rGFCTI9oXjThJG4gEfJVBLUPBTDQ4rxuGtqEgSuBWShjJDcv5dlmLSgeoQ5+hwekwDva3hhTz8JkvPjFPpWZf6S2UIt1YNSz4fTJ+kXZDyr9mopGyUDqo0eI3n3zZ4xpMXlWtd0qzBuBrFMjossJsMrq2W86rUXicYvLH3WScSZCZrZ
+X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(376002)(396003)(36092001)(36840700001)(46966006)(7636003)(42186006)(82310400003)(70586007)(2906002)(47076005)(70206006)(186003)(316002)(110136005)(26005)(107886003)(86362001)(4326008)(54906003)(8936002)(478600001)(8676002)(36756003)(5660300002)(82740400003)(356005)(2616005)(426003)(36860700001)(6666004)(336012)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 08:12:08.0644
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f361608e-2a33-4c37-522c-08d94c1f3bd6
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: MW2NAM12FT040.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR07MB7157
+X-Proofpoint-ORIG-GUID: ZtA3RWYVVQc0ZpeX8tF4uA0lnKLtpeIw
+X-Proofpoint-GUID: ZtA3RWYVVQc0ZpeX8tF4uA0lnKLtpeIw
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-21_04:2021-07-21,2021-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 adultscore=0
+ lowpriorityscore=0 phishscore=0 mlxlogscore=501 impostorscore=0
+ bulkscore=0 malwarescore=0 priorityscore=1501 clxscore=1011 mlxscore=0
+ spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107210045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kernel test robot,
+This patch series adds support for Cadence's XSPI controller.
+This controller supports multiple work modes e.g.
+STIG (Software Triggered Instruction Generator) mode, ACMD PIO
+and CDMA modes, direct mode.
+In STIG mode, controller sends low-level instructions to memory.
+Each instruction is 128-bit width. There is special instruction
+DataSequence which carries information about data phase.
+Driver uses Slave DMA interface to transfer data as only this
+interface can be used in STIG work mode.
+The CDMA work mode is dedicated for high-performance application
+where very low software overhead is required. In this mode the
+Command Engine is programmed by the series of linked descriptors
+stored in system memory. These descriptors provide commands to execute
+and store status information for finished commands.
+The PIO mode work mode is dedicated for single operation where
+constructing a linked list of descriptors would require too
+much effort.
+Currently ACMD PIO mode is used for NOR flash read, program, erase
+operations, all other operations are handled in STIG work mode.
 
-Thanks for your time to test my patch.
+Changes since v1:
+1. Use ACMD PIO work mode for NOR read, program and erase operations,
+   for everything else use STIG(Software Triggered Instruction
+   Generator) work mode.
+2. Changes suggested by Lukas.
 
-I did the dtbs_check on my side, and got the same warnings.
+Parshuram Thombare (2):
+  spi: cadence: add dt-bindings documentation for Cadence XSPI
+    controller
+  spi: cadence: add support for Cadence XSPI controller
 
-But I guess these warnings do not come from this submission,
-So, I will not be going to fix it at this time, but will at other submissions
-to fix these, add arm,armv7m-nvic.yaml ... to describe compatibles, etc.
+ .../devicetree/bindings/spi/cdns,xspi.yaml         |  169 +++
+ drivers/spi/Kconfig                                |   11 +
+ drivers/spi/Makefile                               |    1 +
+ drivers/spi/spi-cadence-xspi.c                     | 1102 ++++++++++++++++++++
+ 4 files changed, 1283 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+ create mode 100644 drivers/spi/spi-cadence-xspi.c
 
-by the way, i did find a warning from the stm32f429-disco.dts and fixt it
-in "[PATCH v2 2/3] ARM: dts: stm32: fix dtbs_check warning on ili9341
-dts binding",
+-- 
+2.7.4
 
-the warning:
-arch/arm/boot/dts/stm32f429-disco.dt.yaml: display@1: compatible:
-['st,sf-tc240t-9370-t'] is too short
-
-my make command:
-make ARCH=arm dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
-
-Best regards
-thanks
-
-Dillon
-
-On Tue, 20 Jul 2021 at 14:12, kernel test robot <lkp@intel.com> wrote:
->
-> Hi,
->
-> Thank you for the patch! Perhaps something to improve:
->
-> [auto build test WARNING on robh/for-next]
-> [also build test WARNING on linus/master v5.14-rc2 next-20210719]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/dillon-minfei-gmail-com/Add-ilitek-ili9341-panel-driver/20210718-103113
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-> compiler: arm-linux-gnueabi-gcc (GCC) 10.3.0
-> reproduce: make ARCH=arm dtbs_check
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
->
-> dtcheck warnings: (new ones prefixed by >>)
->    arch/arm/boot/dts/stm32f429-disco.dt.yaml:0:0: /interrupt-controller@e000e100: failed to match any schema with compatible: ['arm,armv7m-nvic']
->    arch/arm/boot/dts/stm32f429-disco.dt.yaml:0:0: /timer@e000e010: failed to match any schema with compatible: ['arm,armv7m-systick']
->    arch/arm/boot/dts/stm32f429-disco.dt.yaml:0:0: /soc/i2c@40005c00/stmpe811@41: failed to match any schema with compatible: ['st,stmpe811']
->    arch/arm/boot/dts/stm32f429-disco.dt.yaml:0:0: /soc/i2c@40005c00/stmpe811@41/stmpe_touchscreen: failed to match any schema with compatible: ['st,stmpe-ts']
->    arch/arm/boot/dts/stm32f429-disco.dt.yaml: l3gd20@0: 'spi-max-frequency' does not match any of the regexes: 'pinctrl-[0-9]+'
->         From schema: Documentation/devicetree/bindings/iio/st,st-sensors.yaml
-> >> arch/arm/boot/dts/stm32f429-disco.dt.yaml: display@1: compatible: ['st,sf-tc240t-9370-t'] is too short
->         From schema: Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
->    arch/arm/boot/dts/stm32f429-disco.dt.yaml:0:0: /soc/crc@40023000: failed to match any schema with compatible: ['st,stm32f4-crc']
->    arch/arm/boot/dts/stm32f429-disco.dt.yaml:0:0: /soc/rcc@40023800: failed to match any schema with compatible: ['st,stm32f42xx-rcc', 'st,stm32-rcc']
->    arch/arm/boot/dts/stm32f429-disco.dt.yaml:0:0: /soc/rcc@40023800: failed to match any schema with compatible: ['st,stm32f42xx-rcc', 'st,stm32-rcc']
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
