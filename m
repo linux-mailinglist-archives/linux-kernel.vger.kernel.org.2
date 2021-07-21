@@ -2,131 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317CD3D0BF7
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9063D0BF8
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 12:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238017AbhGUI75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 04:59:57 -0400
-Received: from mout.gmx.net ([212.227.17.21]:36425 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237702AbhGUIxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 04:53:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626860022;
-        bh=QmdL01pmor+IWHIS1CdJrkCqY7QNMbMK7ucbZiQKmUA=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=aR+cve4/BcjXKNZ/eG+ywb+m+Uogna4+tDky9euC2L+u3gLHb3Dh+KupyXSyMsyQI
-         bK1TYa80bcpfus9oRRvziUsyfds3+xHiZ/pNH2X0Duuuvki00CugqxDwUA5bs4gmzC
-         Wxa+WH0zVHbpZ34zSqjZlpZG38WYPosK981pSnio=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.150.108]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MJE27-1lppyn2519-00KhIV; Wed, 21
- Jul 2021 11:33:42 +0200
-Message-ID: <84a7bd02cf109c6a5a8c7cc2bfc2898cb98270aa.camel@gmx.de>
-Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
- exclusion scope
-From:   Mike Galbraith <efault@gmx.de>
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-rt-users@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Date:   Wed, 21 Jul 2021 11:33:41 +0200
-In-Reply-To: <69da2ecd-a797-e264-fbfa-13108dc7a573@suse.cz>
-References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
-         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
-         <878s2fnv79.ffs@nanos.tec.linutronix.de>
-         <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
-         <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
-         <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
-         <f16b78bd3bb8fecf734017d40274e4c3294554ab.camel@gmx.de>
-         <240f104fc6757d8c38fa01342511eda931632d5a.camel@gmx.de>
-         <69da2ecd-a797-e264-fbfa-13108dc7a573@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S236428AbhGUJBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 05:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237804AbhGUI6i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 04:58:38 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94263C061762;
+        Wed, 21 Jul 2021 02:38:59 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id b12so1799870pfv.6;
+        Wed, 21 Jul 2021 02:38:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i9lkhl5CGNwVkPr4Gc/fkK8jj+kqc00wstH/fPwiQoY=;
+        b=hH2Z4OaAClP5KljSyPIFjkVHl1LF2NfPBN/bNCaI0eAGcpgtt2DbKCB6S0XKzS8s42
+         /oZP5LmeyfDv8Caqje9WS3sgtklqdfYTMkuPq32Ew7XqxVFvcgD6wHm6XhrzeVZAAcGi
+         11iJy/iIb7wcGE2RZq119eDp6TtBD95RcgfOTzPAtySSptZsmEUPvV/ajbVmASxQl0M5
+         IIcQ1C+hiqd4WWu2yzvmMR9eegWTfQYD4GtMndBT9/7Pgs3EXpTe5r/0ZDZbxaTT91RU
+         +XGIRLzmOWCyW9RWanuS27vUqIG9V3OSN9FOmfKOI+Qb+1KvQAq6BlbxPKoahWNsz/5p
+         Hm0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i9lkhl5CGNwVkPr4Gc/fkK8jj+kqc00wstH/fPwiQoY=;
+        b=WXqEYHd0WsFppra77BpGt4qkSsBAdZrL3S9tpq89BL+MAUkk0GpgVkI+mVaWM/rZmX
+         bSfBsHBoceqAayDZqmgnP8I+MdQEZEbH1KnHqxnfxaewwTl6XuXiqlLFDRPov6C0bKw3
+         sWeBC/yz1haZ6tDNrv64/ZbKGk8ztoofG8MAprz+4ACWqbm/7MCuDXdL4cqajpcNW/na
+         ooCntlkMlBev0fqgjKK9u5XsfQMz96Ct/0jNLTAo1gqaIPEf/eeMfzIMLT06oskhKYB+
+         WO+hmEUwDEiBjF/0HSM6Cn89iXgoTViPRoNpsVRCcaTIuXHGKTZoOb/ZcbZV4eUolf9Q
+         YWEA==
+X-Gm-Message-State: AOAM5322UfYg40TSDIvdNVSWUo0c2jHnqnse8jcRL4TeOIB4SuuiBv4R
+        F/yTq9/7L2HY9NYOoooDxGM=
+X-Google-Smtp-Source: ABdhPJwe9X9dZuLm3t9+BFn8++RhOcSNWNEc70KRQR5FCUJmoeexUawaYQaytntIsbib8D73D3c9Cw==
+X-Received: by 2002:a63:3dcb:: with SMTP id k194mr34987757pga.202.1626860339124;
+        Wed, 21 Jul 2021 02:38:59 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id j129sm27311956pfb.132.2021.07.21.02.38.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 02:38:58 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, matthieu.baerts@tessares.net,
+        stefan@datenfreihafen.org
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v3 0/2] Bluetooth: fix inconsistent lock states
+Date:   Wed, 21 Jul 2021 17:38:30 +0800
+Message-Id: <20210721093832.78081-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fQhsIRfZyMUR0bUanRrqW8hhCOpgRPD8dle9Q68q3lM7dS0FWI1
- 5IcWwp8mJ9CK/Vv4wC91fSJzoM0O87sbpQ2kaSrakjIqAIyMbHN/kzKGQUrpfMlljvG2CjA
- x1L3XtlzZpKEHs2bljTCwQGRB3Ekwv4xBQu21Er2V0VPlMg+WRSFU9IQg6IqRoBI+s2rFGg
- /kEnmPUhmN84FHZc7hexg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jqP8deKCgRM=:aq7YJew0PGP5rDFc9bHRz8
- Go44LjP1SOq2qBay08tvODGaogRNgnV3aBaJm+RiiFwRITahmvZPf/x1/HIUcMP74ZND+56jG
- K6RXIR/UnB+jlDs4R7eJR3vgKY/3oTnaO53lTIJza6GrWpo56UBlogmZHmnjAEqbm+auKTi+x
- A5zdMneL9+1fpyzhEndadTedrwv/xG9ZpJRLA3PjAZGDqvjO0Z9kjqcuDHGS1XN+8/35rwgWY
- DnqQxSWtWaGmYLCKvKnsA4poV4GETkbtV2zMjhSguTU6v/WJOxIDwwiecsZ4+dHMByPygaDc9
- jBlY2QoBIxpAIPlx5DV5UxHcIbnrcUOjkt33MqwUrG0VIMkddzwTtpUJ/VD7IUNNhTRIAU3Ik
- AgYDP4vxSylCxLnpJGlWG9osLjnrjfiThtCRKSz+XAOwPswsJ1JDHVExaQatx+H15klKkSQrf
- +TfeWp86sXyRb96dFa6xIjaVj+zAfzk6OklOLv13/+4wtT7F0VHf6n06Q6IbIp1ex5ngNDHuO
- mM+Gntx2XL+ckUpOrv5DjYYhDTkZB55V69L/zrfNEMvpG4EWhMZE9wKYMecrHPHO6bsgDkSNw
- DCZM0heFPM5D8anTSwshmzJJbRzKQGKCjJLpxvqoZboqujI/d1mSLwzY613RQxGio+btUsj1I
- hXMkxyO6ovDjJpMgkN//OeY5gPXMOqWwOlFxlF4mZ6h5w4LTYOBBXksnwgg1A+TyZItAdboRo
- D9Cubu1Ah8idXP+nuvYEp9ro5Gp+rBNCm6f4NSYXajsWXHgHNy1otBndmX/PGVY/HgDG2ZwAH
- azGqm+nDA9fc1oJtW+/9KZ2a6UeqkiKmuY2fFpYim0x5PTV1Rmvn6vQtBXALi/I4kMAneGzq0
- 0ZzR3ekpVKqcclDjfE+QURf5QsgU3le6/yaiwAbPGBE73dcNymHvTG5sp3asxuJAi/wQk5wMv
- wmCOm08IEfKyvBY+YuhZzh2KJrqBmOvkf3yFkCX5leEyswDUEgqCpTHyVmTC2HcMd+FH22DTp
- xK5VGpdx0cwQhJnIZcCZcynAdF+m0KiBMrCTsrVIAy5ieNKZKG77S9wfPbNbaH6Uf58Fittg5
- xaTwKKa6Wx7fph86hM3f1tOBKwqzorxORcI
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-07-21 at 10:44 +0200, Vlastimil Babka wrote:
->
-> So this doesn't look like our put_cpu_partial() preempted a
-> __slab_alloc() on the same cpu, right?
+Hi,
 
-No, likely it was the one preempted by someone long gone, but we'll
-never know without setting a trap.
+This series addresses inconsistent lock states first identified by
+Syzbot here:
+https://syzkaller.appspot.com/bug?extid=2f6d7c28bb4bf7e82060
 
-> BTW did my ugly patch work?
+v2 -> v3:
+- Split SCO and RFCOMM code changes, as suggested by Luiz Augusto von
+Dentz.
+- Simplify local bh disabling in SCO by using local_bh_disable/enable
+inside sco_chan_del. The rationale is inside the commit message, but in
+summary I initially wanted to avoid nesting local_bh_disable until I
+learned that local_bh_disable/enable pairs are reentrant.
 
-Nope.  I guess you missed my reporting it to have been a -ENOBOOT, and
-that cutting it in half, ie snagging only __slab_free() does boot, and
-seems to cure all of the RT fireworks.
+v1 -> v2:
+- Instead of pulling out the clean-up code out from sco_chan_del and
+using it directly in sco_conn_del, disable local softirqs for relevant
+sections.
+- Disable local softirqs more thoroughly for instances of
+bh_lock_sock/bh_lock_sock_nested in the bluetooth subsystem.
+Specifically, the calls in af_bluetooth.c and rfcomm/sock.c are now made
+with local softirqs disabled as well.
 
-(chainsaw noises...)
+Best wishes,
+Desmond
 
-=2D--
- mm/slub.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+Desmond Cheong Zhi Xi (2):
+  Bluetooth: fix inconsistent lock state in SCO
+  Bluetooth: fix inconsistent lock state in rfcomm_connect_ind
 
-=2D-- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2551,6 +2551,8 @@ static void put_cpu_partial(struct kmem_
- 	int pobjects;
+ net/bluetooth/rfcomm/sock.c |  2 ++
+ net/bluetooth/sco.c         | 21 +++++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
- 	slub_get_cpu_ptr(s->cpu_slab);
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT) && drain)
-+		local_lock(&s->cpu_slab->lock);
- 	do {
- 		pages =3D 0;
- 		pobjects =3D 0;
-@@ -2564,7 +2566,13 @@ static void put_cpu_partial(struct kmem_
- 				 * partial array is full. Move the existing
- 				 * set to the per node partial list.
- 				 */
--				unfreeze_partials(s);
-+				this_cpu_write(s->cpu_slab->partial, NULL);
-+				if (IS_ENABLED(CONFIG_PREEMPT_RT) && drain)
-+					local_unlock(&s->cpu_slab->lock);
-+				__unfreeze_partials(s, oldpage);
-+				if (IS_ENABLED(CONFIG_PREEMPT_RT) && drain)
-+					local_lock(&s->cpu_slab->lock);
-+
- 				oldpage =3D NULL;
- 				pobjects =3D 0;
- 				pages =3D 0;
-@@ -2581,6 +2589,8 @@ static void put_cpu_partial(struct kmem_
-
- 	} while (this_cpu_cmpxchg(s->cpu_slab->partial, oldpage, page)
- 								!=3D oldpage);
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT) && drain)
-+		local_unlock(&s->cpu_slab->lock);
- 	slub_put_cpu_ptr(s->cpu_slab);
- #endif	/* CONFIG_SLUB_CPU_PARTIAL */
- }
-
+-- 
+2.25.1
 
