@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685243D1835
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE223D1836
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhGUTze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhGUTzd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:55:33 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1DF4C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:36:09 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626899767;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VhovpCDMe6qYvpY3LIzNmgTjkTz8Q04ycc21UN9oufA=;
-        b=UK2zeV1RXy7ul4dkcmxFImbE+m20gPvafLWpJWzJAa3oXMdMVmeebh4GCvJ78W4BYf0tjk
-        zUzEZFtJ6/QxSCe54orsYwW4i3DaIVeq/wkBMoO802pvXH0iKj22d7DB1ArfRGZce/xve4
-        TcM3uFqtlNW5vcz+Sv6jTqQvvr5NAB+XKlILVK45Cqas9lahn95Huo2uBx/YpIyrZdcOw6
-        npeGcYZxaR2z7Q9MgI66+cP1IRJIY4vyQ6RNMWSqfUyz01XVUbDDV2W/7FwXypedHZmu1F
-        s3wLinTjvHdaymPek8hBjdceSkV+Ajvnxw8m7kJcnaLPprRfKVsRvGl32XKbTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626899767;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VhovpCDMe6qYvpY3LIzNmgTjkTz8Q04ycc21UN9oufA=;
-        b=Q35vB6KKP75fXv/myH8LmcYww7OrbBTlhpEwSNfivsguyeXXnjE3o+He2KvQ5eLfvMsIlB
-        n0JxhQgFkY8mPdDQ==
-To:     Rik van Riel <riel@surriel.com>, linux-kernel@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, kernel-team@fb.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Subject: Re: [PATCH] x86,mm: print likely CPU at segfault time
-In-Reply-To: <20210719150041.3c719c94@imladris.surriel.com>
-References: <20210719150041.3c719c94@imladris.surriel.com>
-Date:   Wed, 21 Jul 2021 22:36:07 +0200
-Message-ID: <87sg07pfpk.ffs@nanos.tec.linutronix.de>
+        id S232644AbhGUTzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:55:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232139AbhGUTzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 15:55:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEE5961221;
+        Wed, 21 Jul 2021 20:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626899781;
+        bh=/wxAFIqgtYQFGYfLbqrm+AjM60PFfFL8F/IJVYY05ZI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=i6wLdHzQdQA9b+Q7t8p5rugcDKp1xiItcMS5fcijMHSVm7tn40BWoG1uk+lJDLPDm
+         QEIDBcWfSov+0n0tuZLHdteLoEFM6ErUDzSpZrlEt8bA8AuNGxr4r1mAfk0wpQM0Lt
+         dEwA248FToehssKv1m3fjeODvSe9FJpGyrm2shmuCdPv8yrM55kM0ZTTmyCeLPIoRZ
+         JhWaVGgvi8zXcTkRAacRfYj2cAn4Gux/gnW9CtoALEATHR36nzTpoJH90/sBathc+T
+         ibH91sx0w2bq7uEAsI4liji0bb9CQfecrqDKANOqo+kiS1jHlxwlt6u4d3+YKZX1aY
+         NBaEEqa/7+j+Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B4C725C09A4; Wed, 21 Jul 2021 13:36:20 -0700 (PDT)
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>, Willy Tarreau <w@1wt.eu>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH nolibc 1/2] tools: include: nolibc: Fix a typo occured to occurred in the file nolibc.h
+Date:   Wed, 21 Jul 2021 13:36:18 -0700
+Message-Id: <20210721203619.3373350-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20210721203600.GA3360826@paulmck-ThinkPad-P17-Gen-1>
+References: <20210721203600.GA3360826@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rik,
+From: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-On Mon, Jul 19 2021 at 15:00, Rik van Riel wrote:
->
-> Adding a printk to show_signal_msg() achieves that purpose. It isn't
-> perfect since the task might get rescheduled on another CPU between
-> when the fault hit and when the message is printed, but it should be
-> good enough to show correlation between userspace and kernel errors
-> when dealing with a bad CPU.
+s/occured/occurred/
 
-we could collect the cpu number in do_*_addr_fault() before interrupts
-are enabled and just hand it through. There are only a few callchains
-which end up in __bad_area_nosemaphore().
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Willy Tarreau <w@1wt.eu>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ tools/include/nolibc/nolibc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
+diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
+index 8b7a9830dd221..13c194aeaf3f0 100644
+--- a/tools/include/nolibc/nolibc.h
++++ b/tools/include/nolibc/nolibc.h
+@@ -1031,7 +1031,7 @@ struct sys_stat_struct {
+  *     scall32-o32.S in the kernel sources.
+  *   - the system call is performed by calling "syscall"
+  *   - syscall return comes in v0, and register a3 needs to be checked to know
+- *     if an error occured, in which case errno is in v0.
++ *     if an error occurred, in which case errno is in v0.
+  *   - the arguments are cast to long and assigned into the target registers
+  *     which are then simply passed as registers to the asm code, so that we
+  *     don't have to experience issues with register constraints.
+-- 
+2.31.1.189.g2e36527f23
 
-        tglx
