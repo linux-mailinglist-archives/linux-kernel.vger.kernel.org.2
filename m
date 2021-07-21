@@ -2,119 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64C43D0B49
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E513D0B4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236719AbhGUIWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 04:22:00 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:32015 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237476AbhGUIOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 04:14:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626857716; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=LXEcJaQAaG9kD6bf+iJKc6F7+3ikgC098NK15DTx/I4=; b=uOqACi6KfnMNt7p4MTsKwhAVtXiAOUUL+gO4ChldEddQDO1x9re0ASvOrHqufQyIa2/g/ipS
- K0KSK74BW6aqpSXKup9uIDlK1E36MPv7KWD7RzxCIff41RTEtOre2xPUY0/xX/kTLqSPFftr
- onlFKgdf6qsOO06niCbtw3tUhD4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60f7de5838fa9bfe9cc16275 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 08:44:08
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3A945C43460; Wed, 21 Jul 2021 08:44:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.242.137.170] (unknown [202.46.23.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S238034AbhGUIY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 04:24:56 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45730 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237552AbhGUIOx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 04:14:53 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9DD36C433F1;
-        Wed, 21 Jul 2021 08:44:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9DD36C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc7180-trogdor: Add lpass dai
- link for HDMI
-To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <1601448168-18396-1-git-send-email-srivasam@codeaurora.org>
- <1601448168-18396-3-git-send-email-srivasam@codeaurora.org>
- <CAE-0n51LVG1zZvuT4Cv-3nCRhPtC46OQCSeBmncwaH_3TXk8=w@mail.gmail.com>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <63fa0059-04c3-f654-1327-fa1d583515e8@codeaurora.org>
-Date:   Wed, 21 Jul 2021 14:14:01 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5C277224E6;
+        Wed, 21 Jul 2021 08:44:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626857044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GV4EH+LUx8k8415eaM5w7Ajz0rH98YCcAorT7SWra2M=;
+        b=vVq/1WSNagTpuOaRP4J6sYRPQuxJn2pGKuSP9JavQuUz36yD05vK0bPz3RoBgEj0Oj0s6o
+        PbyFlaxQwY2Zgj25omAL7ezvzegkrCNXRdThVuoey29iVJ2es/XmaS22DdFtOnw4G0xCGB
+        O208Ry8S32Mbs5FJeyJvIWNhwfhUqqk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626857044;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GV4EH+LUx8k8415eaM5w7Ajz0rH98YCcAorT7SWra2M=;
+        b=9aA7pfiAkFLFapS83qB/5qNs1S2qesMhB1eSq5paBhUFpgKlX/gwLWgT8dYgbaujc5j3u7
+        LZBDX584pw9rABCA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 425CA13BC9;
+        Wed, 21 Jul 2021 08:44:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id hgh5D1Te92CwKQAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 21 Jul 2021 08:44:04 +0000
+To:     Mike Galbraith <efault@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-rt-users@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+ <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
+ <878s2fnv79.ffs@nanos.tec.linutronix.de>
+ <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
+ <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
+ <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
+ <f16b78bd3bb8fecf734017d40274e4c3294554ab.camel@gmx.de>
+ <240f104fc6757d8c38fa01342511eda931632d5a.camel@gmx.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
+ exclusion scope
+Message-ID: <69da2ecd-a797-e264-fbfa-13108dc7a573@suse.cz>
+Date:   Wed, 21 Jul 2021 10:44:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n51LVG1zZvuT4Cv-3nCRhPtC46OQCSeBmncwaH_3TXk8=w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <240f104fc6757d8c38fa01342511eda931632d5a.camel@gmx.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen!!
+On 7/21/21 6:56 AM, Mike Galbraith wrote:
+> On Tue, 2021-07-20 at 13:26 +0200, Mike Galbraith wrote:
+>> On Tue, 2021-07-20 at 10:56 +0200, Vlastimil Babka wrote:
+>> > > crash> bt -sx
+>> > > PID: 18761  TASK: ffff88812fff0000  CPU: 0   COMMAND: "hackbench"
+>> > >  #0 [ffff88818f8ff980] machine_kexec+0x14f at ffffffff81051c8f
+>> > >  #1 [ffff88818f8ff9c8] __crash_kexec+0xd2 at ffffffff8111ef72
+>> > >  #2 [ffff88818f8ffa88] crash_kexec+0x30 at ffffffff8111fd10
+>> > >  #3 [ffff88818f8ffa98] oops_end+0xd3 at ffffffff810267e3
+>> > >  #4 [ffff88818f8ffab8] exc_general_protection+0x195 at
+>> > > ffffffff8179fdb5
+>> > >  #5 [ffff88818f8ffb50] asm_exc_general_protection+0x1e at
+>> > > ffffffff81800a0e
+>> > >     [exception RIP: __unfreeze_partials+156]
+>> >
+>> > Hm going back to this report...
+>> > So could it be that it was stillput_cpu_partial() preempting
+>> > __slab_alloc() messing the partial list, but for some reason the
+>> > put_cpu_partial() side crashed this time?
+>>
+>> Thinking this bug is toast, I emptied the trash bin, so no can peek.
+> 
+> I made fireworks while waiting for bike riding time, boom #10 was
+> finally the right flavor, but...
+> 
+> crash> bt -sx
+> PID: 32     TASK: ffff888100a56000  CPU: 3   COMMAND: "rcuc/3"
+>  #0 [ffff888100aa7a90] machine_kexec+0x14f at ffffffff81051c8f
+>  #1 [ffff888100aa7ad8] __crash_kexec+0xd2 at ffffffff81120612
+>  #2 [ffff888100aa7b98] crash_kexec+0x30 at ffffffff811213b0
+>  #3 [ffff888100aa7ba8] oops_end+0xd3 at ffffffff810267e3
+>  #4 [ffff888100aa7bc8] exc_general_protection+0x195 at ffffffff817a2cc5
+>  #5 [ffff888100aa7c60] asm_exc_general_protection+0x1e at ffffffff81800a0e
+>     [exception RIP: __unfreeze_partials+149]
+>     RIP: ffffffff8124a295  RSP: ffff888100aa7d10  RFLAGS: 00010202
+>     RAX: 0000000000190016  RBX: 0000000000190016  RCX: 000000017fffffff
+>     RDX: 00000001ffffffff  RSI: 0000000000000023  RDI: ffffffff81e58b10
+>     RBP: ffff888100aa7da0   R8: 0000000000000000   R9: 0000000000190018
+>     R10: ffff888100aa7db8  R11: 000000000002d9e4  R12: ffff888100190500
+>     R13: ffff88810018c980  R14: 00000001ffffffff  R15: ffffea0004571588
+>     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+>  #6 [ffff888100aa7db0] put_cpu_partial+0x8e at ffffffff8124a56e
+>  #7 [ffff888100aa7dd0] kmem_cache_free+0x3a8 at ffffffff8124d238
+>  #8 [ffff888100aa7e08] rcu_do_batch+0x186 at ffffffff810eb246
+>  #9 [ffff888100aa7e70] rcu_core+0x25f at ffffffff810eeb2f
+> #10 [ffff888100aa7eb0] rcu_cpu_kthread+0x94 at ffffffff810eed24
+> #11 [ffff888100aa7ee0] smpboot_thread_fn+0x249 at ffffffff8109e559
+> #12 [ffff888100aa7f18] kthread+0x1ac at ffffffff810984dc
+> #13 [ffff888100aa7f50] ret_from_fork+0x1f at ffffffff81001b1f
+> crash> runq
+> ...
+> CPU 3 RUNQUEUE: ffff88840ece9980
+>   CURRENT: PID: 32     TASK: ffff888100a56000  COMMAND: "rcuc/3"
+>   RT PRIO_ARRAY: ffff88840ece9bc0
+>      [ 94] PID: 32     TASK: ffff888100a56000  COMMAND: "rcuc/3"
+>   CFS RB_ROOT: ffff88840ece9a40
+>      [120] PID: 33     TASK: ffff888100a51000  COMMAND: "ksoftirqd/3"
+> ...
+> crash> bt -sx 33
+> PID: 33     TASK: ffff888100a51000  CPU: 3   COMMAND: "ksoftirqd/3"
+>  #0 [ffff888100aabdf0] __schedule+0x2d7 at ffffffff817ad3a7
+>  #1 [ffff888100aabec8] schedule+0x3b at ffffffff817ae4eb
+>  #2 [ffff888100aabee0] smpboot_thread_fn+0x18c at ffffffff8109e49c
+>  #3 [ffff888100aabf18] kthread+0x1ac at ffffffff810984dc
+>  #4 [ffff888100aabf50] ret_from_fork+0x1f at ffffffff81001b1f
+> crash>
 
-Thanks for reminder.
+So this doesn't look like our put_cpu_partial() preempted a __slab_alloc() on
+the same cpu, right? There might have been __slab_alloc() in irq handler
+preempting us, but we won't see that anymore. I don't immediately see the root
+cause and this scenario should be possible on !RT too where we however didn't
+see these explosions.
 
-On 7/21/2021 10:14 AM, Stephen Boyd wrote:
-> Quoting Srinivasa Rao Mandadapu (2020-09-29 23:42:48)
->> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
->>
->> Add dai link in sc7180-trogdor.dtsi for supporting audio over DP
->>
->> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->> ---
->>   arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 15 +++++++++++++++
->>   1 file changed, 15 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
->> index 5724982..850b43e 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
->> @@ -231,6 +231,7 @@
->>
->>                  audio-jack = <&alc5682>;
->>
->> +               #sound-dai-cells = <0>;
->>                  #address-cells = <1>;
->>                  #size-cells = <0>;
->>
->> @@ -257,6 +258,17 @@
->>                                  sound-dai = <&max98357a>;
->>                          };
->>                  };
->> +               dai-link@2 {
->> +                       link-name = "MultiMedia2";
->> +                       reg = <2>;
->> +                       cpu {
->> +                               sound-dai = <&lpass_cpu 2>;
->> +                       };
->> +
->> +                       codec {
->> +                               sound-dai = <&msm_dp>;
-> I see qcom maintainers have picked up the dp node now. Can you resend?
-> This would need to change to mdss_dp. Also incorporate my comments from
-> January this year please.
-Resent the patches. Please check V5 version of patches.
+BTW did my ugly patch work?
 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Thanks.
