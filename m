@@ -2,151 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B403D06AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 04:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5EA3D0697
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 04:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhGUBlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 21:41:12 -0400
-Received: from mga03.intel.com ([134.134.136.65]:60809 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229903AbhGUBlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 21:41:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="211418639"
-X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
-   d="asc'?scan'208";a="211418639"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 19:21:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
-   d="asc'?scan'208";a="495105095"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Jul 2021 19:21:45 -0700
-Date:   Wed, 21 Jul 2021 10:00:09 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     Zhi Wang <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Xin Tan <tanxin.ctf@gmail.com>,
-        yuanxzhang@fudan.edu.cn
-Subject: Re: [PATCH] drm/i915/gvt: Convert from atomic_t to refcount_t on
- intel_vgpu_ppgtt_spt->refcount
-Message-ID: <20210721020009.GG13928@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <1626432098-27626-1-git-send-email-xiyuyang19@fudan.edu.cn>
+        id S231163AbhGUBXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 21:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230296AbhGUBXY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 21:23:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFAB5C061574;
+        Tue, 20 Jul 2021 19:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=9ZdDeoeJBVHasYACD/U9e1/n6aWpbckywvGfg+hXFTo=; b=tocW9ftMAovoUtTPs67DWlJ+PE
+        +O6opCRNAC0OR23uJBWO+H/gDeaD/PNJ5C2A0VRAUQsUmcE/sO5goUAhXzDFVQ9UenoM9AV6Nkdtb
+        SiXsIidoLpmRluQE4U3LnLAPThQd4jEbsnVzHpSMAOQiFUZll4tP6Z6Gi7sm56Zcrf2DMaUIl3EE8
+        QX2rIo0wnN3HJveksaPBa1X6AY5ZSqqfnZTP28Wl4JHrUiLrDrhRvx2lWXjh9OhiV65qAkNUmYpE7
+        eL7rPpFbNAK7qPJiReQsdrdu9pNjNT4JVjNZIUAcDCr8MRSd6AuRLuSUyj+78WaeCocXE1bwLEm1N
+        9nzQ+GOA==;
+Received: from [2601:1c0:6280:3f0::a22f] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m61aG-008hYY-ML; Wed, 21 Jul 2021 02:03:49 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Aditya Srivastava <yashsri421@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Prameela Rani Garnepudi <prameela.j04cs@gmail.com>,
+        Sanjay Kumar Konduri <sanjay.konduri@redpinesignals.com>,
+        Siva Rebbagondla <siva.rebbagondla@redpinesignals.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH] bluetooth: btrsi: use non-kernel-doc comment for copyright
+Date:   Tue, 20 Jul 2021 19:03:34 -0700
+Message-Id: <20210721020334.3129-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="DNUSDXU7R7AVVM8C"
-Content-Disposition: inline
-In-Reply-To: <1626432098-27626-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+kernel-doc complains about a non-kernel-doc comment that uses "/**"
+to begin the comment, so change it to just "/*".
 
---DNUSDXU7R7AVVM8C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+drivers/bluetooth/btrsi.c:2: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Copyright (c) 2017 Redpine Signals Inc.
 
-On 2021.07.16 18:41:38 +0800, Xiyu Yang wrote:
-> refcount_t type and corresponding API can protect refcounters from
-> accidental underflow and overflow and further use-after-free situations
->
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Aditya Srivastava <yashsri421@gmail.com>
+Cc: Marcel Holtmann <marcel@holtmann.org>
+Cc: Johan Hedberg <johan.hedberg@gmail.com>
+Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: linux-bluetooth@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: Prameela Rani Garnepudi <prameela.j04cs@gmail.com>
+Cc: Sanjay Kumar Konduri <sanjay.konduri@redpinesignals.com>
+Cc: Siva Rebbagondla <siva.rebbagondla@redpinesignals.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+---
+ drivers/bluetooth/btrsi.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for the patch. Is there any specific problem you run with current co=
-de?
-Any shadow ppgtt error?
-
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> ---
->  drivers/gpu/drm/i915/gvt/gtt.c | 11 ++++++-----
->  drivers/gpu/drm/i915/gvt/gtt.h |  3 ++-
->  2 files changed, 8 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gt=
-t.c
-> index cc2c05e18206..62f3daff5a36 100644
-> --- a/drivers/gpu/drm/i915/gvt/gtt.c
-> +++ b/drivers/gpu/drm/i915/gvt/gtt.c
-> @@ -841,7 +841,7 @@ static struct intel_vgpu_ppgtt_spt *ppgtt_alloc_spt(
->  	}
-> =20
->  	spt->vgpu =3D vgpu;
-> -	atomic_set(&spt->refcount, 1);
-> +	refcount_set(&spt->refcount, 1);
->  	INIT_LIST_HEAD(&spt->post_shadow_list);
-> =20
->  	/*
-> @@ -927,18 +927,19 @@ static struct intel_vgpu_ppgtt_spt *ppgtt_alloc_spt=
-_gfn(
-> =20
->  static inline void ppgtt_get_spt(struct intel_vgpu_ppgtt_spt *spt)
->  {
-> -	int v =3D atomic_read(&spt->refcount);
-> +	int v =3D refcount_read(&spt->refcount);
-> =20
->  	trace_spt_refcount(spt->vgpu->id, "inc", spt, v, (v + 1));
-> -	atomic_inc(&spt->refcount);
-> +	refcount_inc(&spt->refcount);
->  }
-> =20
->  static inline int ppgtt_put_spt(struct intel_vgpu_ppgtt_spt *spt)
->  {
-> -	int v =3D atomic_read(&spt->refcount);
-> +	int v =3D refcount_read(&spt->refcount);
-> =20
->  	trace_spt_refcount(spt->vgpu->id, "dec", spt, v, (v - 1));
-> -	return atomic_dec_return(&spt->refcount);
-> +	refcount_dec(&spt->refcount);
-> +	return refcount_read(&spt->refcount);
->  }
-> =20
->  static int ppgtt_invalidate_spt(struct intel_vgpu_ppgtt_spt *spt);
-> diff --git a/drivers/gpu/drm/i915/gvt/gtt.h b/drivers/gpu/drm/i915/gvt/gt=
-t.h
-> index 3bf45672ef98..944c2d0739df 100644
-> --- a/drivers/gpu/drm/i915/gvt/gtt.h
-> +++ b/drivers/gpu/drm/i915/gvt/gtt.h
-> @@ -38,6 +38,7 @@
->  #include <linux/kref.h>
->  #include <linux/mutex.h>
->  #include <linux/radix-tree.h>
-> +#include <linux/refcount.h>
-> =20
->  #include "gt/intel_gtt.h"
-> =20
-> @@ -243,7 +244,7 @@ struct intel_vgpu_oos_page {
-> =20
->  /* Represent a vgpu shadow page table. */
->  struct intel_vgpu_ppgtt_spt {
-> -	atomic_t refcount;
-> +	refcount_t refcount;
->  	struct intel_vgpu *vgpu;
-> =20
->  	struct {
-> --=20
-> 2.7.4
->=20
-> _______________________________________________
-> intel-gvt-dev mailing list
-> intel-gvt-dev@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
-
---DNUSDXU7R7AVVM8C
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYPd/qQAKCRCxBBozTXgY
-J4MVAJ95yNAURQh6cNjOk/8THKqisqplMwCbBUeMC3+rNCFCjrGdgeMCTprr3WI=
-=isR6
------END PGP SIGNATURE-----
-
---DNUSDXU7R7AVVM8C--
+--- linux-next-20210720.orig/drivers/bluetooth/btrsi.c
++++ linux-next-20210720/drivers/bluetooth/btrsi.c
+@@ -1,4 +1,4 @@
+-/**
++/*
+  * Copyright (c) 2017 Redpine Signals Inc.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
