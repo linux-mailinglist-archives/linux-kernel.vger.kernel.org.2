@@ -2,86 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D32F3D181C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F203D181D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhGUTo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:44:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49368 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhGUTo6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:44:58 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626899133;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/CthbpuGZ/4QYOJnFtoyw2VJqPR9q9LtmXqXub96q+k=;
-        b=cTYlhxb8dGvUls4dX0qq5oaVHOxNm7MYH/CHV24oIScKMCKsUVF/oAkignqKt1L05Z4Ms1
-        yuhqj4/PZXBby3VMqDC7d49tr+RVPldtMn9btuedvliqedchBFaznNpVuMn+mxweFh5UAv
-        epfElup/3o8WlZGUHw2USdI/4QbJ5aCqz08HTfEYhsD+WKa8RYE/Oezgp2Z4DU0ey0ifmF
-        hDd9muJbxCy5ydu8LPdwsYPaUw5ITmIy7WgHtC2s+kB588DpHYNGcMuzO1i+qnfQHcOrm0
-        23SJVGP/l6qW7IYX7oPAZu/qPpk3WWQDk9JvF1XmNNQfKNjgSrcA6HUTdFzX/Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626899133;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/CthbpuGZ/4QYOJnFtoyw2VJqPR9q9LtmXqXub96q+k=;
-        b=kohnLQCXgZGWJwAmpzUFf/Gws9c3kRvfJVCKy3S7dZ6xnEpGVByaElYwpltlrQeSB8QP/B
-        DHq6jQkceVx3fnDw==
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Song Hui <hui.song_1@nxp.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        stable@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "gpio: mpc8xxx: change the gpio interrupt flags."
-In-Reply-To: <20210702133712.128611-1-linux@rasmusvillemoes.dk>
-References: <20210702133712.128611-1-linux@rasmusvillemoes.dk>
-Date:   Wed, 21 Jul 2021 22:25:33 +0200
-Message-ID: <87v953pg76.ffs@nanos.tec.linutronix.de>
+        id S231268AbhGUTql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:46:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229729AbhGUTqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 15:46:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74A8C61221;
+        Wed, 21 Jul 2021 20:27:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626899236;
+        bh=TQmEZg+Sj+04B+Vhe9Tt8lQmPjDUAau6RE/aWEtgw0Y=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=trgxzN4SH23g+lxC+6TR77r37TEz8CwneEgh8WejwWSPY9tDyldQStDaugmKjlSEr
+         6Rl2eoipfskIwmafnjPlrkMcGpOHXz9K6R8+7/zXCdAE1z4QNdhAadskZo2xahnbnQ
+         4KTg20BE1/ByKxEclWVFLOcXNN8PFld0R5ArmbOK2a413ibdJtYBPA+I7ahVMf5Sfx
+         VKQyxFE+9C9wAcNMo90ms3dsEMBLlqcpWiOx34LD+0KsN9YHZcLhpHseJbh7PMvjiq
+         Hkm1Cme6X6s/D7vcmdbXaAISNNnVMmXoFO7vz1jSpMkaVvaMYxyR3FOvzJr1LnjDEd
+         7OWE8mmGAa5Vw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 358D05C09A4; Wed, 21 Jul 2021 13:27:16 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 13:27:16 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH rcu 0/2] NOCB-CPU updates for v5.15
+Message-ID: <20210721202716.GA2679705@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02 2021 at 15:37, Rasmus Villemoes wrote:
-> This reverts commit 3d5bfbd9716318b1ca5c38488aa69f64d38a9aa5.
->
-> When booting with threadirqs, it causes a splat
->
->   WARNING: CPU: 0 PID: 29 at kernel/irq/handle.c:159 __handle_irq_event_percpu+0x1ec/0x27c
->   irq 66 handler irq_default_primary_handler+0x0/0x1c enabled interrupts
->
-> That splat later went away with commit 81e2073c175b ("genirq: Disable
-> interrupts for force threaded handlers"), which got backported to
-> -stable. However, when running an -rt kernel, the splat still
-> exists. Moreover, quoting Thomas Gleixner [1]
->
->   But 3d5bfbd97163 ("gpio: mpc8xxx: change the gpio interrupt flags.")
->   has nothing to do with that:
->
->       "Delete the interrupt IRQF_NO_THREAD flags in order to gpio interrupts
->        can be threaded to allow high-priority processes to preempt."
->
->   This changelog is blatantly wrong. In mainline forced irq threads
->   have always been invoked with softirqs disabled, which obviously
->   makes them non-preemptible.
->
-> So the patch didn't even do what its commit log said.
->
-> [1] https://lore.kernel.org/lkml/871r8zey88.ffs@nanos.tec.linutronix.de/
->
-> Cc: stable@vger.kernel.org # v5.9+
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> ---
-> Thomas, please correct me if I misinterpreted your explanation.
+Hello!
 
-Nothing to correct here.
+The following series provides NOCB updates:
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+1.	Start moving nocb code to its own plugin file, courtesy of
+	Frederic Weisbecker.
+
+2.	Remove NOCB deferred wakeup from rcutree_dead_cpu(), courtesy
+	of Frederic Weisbecker.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/kernel/rcu/tree.c        |    1 
+ b/kernel/rcu/tree_nocb.h   | 1496 +++++++++++++++++++++++++++++++++++++++++++++
+ b/kernel/rcu/tree_plugin.h | 1487 --------------------------------------------
+ kernel/rcu/tree.c          |    3 
+ 4 files changed, 1497 insertions(+), 1490 deletions(-)
