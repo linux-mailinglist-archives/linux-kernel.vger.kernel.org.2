@@ -2,105 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E293D0B3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64C43D0B49
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237853AbhGUIUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 04:20:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53694 "EHLO mail.kernel.org"
+        id S236719AbhGUIWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 04:22:00 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:32015 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235143AbhGUINs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 04:13:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCD5061029;
-        Wed, 21 Jul 2021 08:42:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626856982;
-        bh=zaxBgl0zmqFoRCTU1TKbNY9Ob5tCMwIxamYH6mVMFV8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LG0eVYN12xOURN7r0bA3jJ7dGpw6SpSOR7sqA+lH7bme3QHLolqgA5zAzqch+nu3x
-         zYgRbEk2OzWL0uVLFKCk4/kgy8z0jQpK/tcBYiw13cFSR86sZA93nWU078G2HuH6oy
-         rvqswbeX+wuCupd+z8FqCIWX9QGHbmhm0pjoUmahPDcy5YSqOPUDq513sljul05OE8
-         VwwJl42IvVDviDvRyYsLw573rDW1lGXu87vAM+m5lCPgXrYIYf4SjYCz6MucYQ/p6F
-         13lQ2lQ8tC0H1F+ZUFKDQprGCfwQpCS4KhafHjFrX0ljrHBXGOJfyGZLnc0glgeW3+
-         L1pZzXedGEysQ==
-Date:   Wed, 21 Jul 2021 17:42:58 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH -tip v2 0/6] kprobes: treewide: Clean up kprobe code
-Message-Id: <20210721174258.0fc04b1ab8d8c3ebcba6295e@kernel.org>
-In-Reply-To: <162598881438.1222130.11530594038964049135.stgit@devnote2>
-References: <162598881438.1222130.11530594038964049135.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S237476AbhGUIOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 04:14:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626857716; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=LXEcJaQAaG9kD6bf+iJKc6F7+3ikgC098NK15DTx/I4=; b=uOqACi6KfnMNt7p4MTsKwhAVtXiAOUUL+gO4ChldEddQDO1x9re0ASvOrHqufQyIa2/g/ipS
+ K0KSK74BW6aqpSXKup9uIDlK1E36MPv7KWD7RzxCIff41RTEtOre2xPUY0/xX/kTLqSPFftr
+ onlFKgdf6qsOO06niCbtw3tUhD4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60f7de5838fa9bfe9cc16275 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 08:44:08
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3A945C43460; Wed, 21 Jul 2021 08:44:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.242.137.170] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9DD36C433F1;
+        Wed, 21 Jul 2021 08:44:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9DD36C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc7180-trogdor: Add lpass dai
+ link for HDMI
+To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, rohitkr@codeaurora.org,
+        srinivas.kandagatla@linaro.org
+Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <1601448168-18396-1-git-send-email-srivasam@codeaurora.org>
+ <1601448168-18396-3-git-send-email-srivasam@codeaurora.org>
+ <CAE-0n51LVG1zZvuT4Cv-3nCRhPtC46OQCSeBmncwaH_3TXk8=w@mail.gmail.com>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <63fa0059-04c3-f654-1327-fa1d583515e8@codeaurora.org>
+Date:   Wed, 21 Jul 2021 14:14:01 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAE-0n51LVG1zZvuT4Cv-3nCRhPtC46OQCSeBmncwaH_3TXk8=w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Stephen!!
 
-On Sun, 11 Jul 2021 16:33:34 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Thanks for reminder.
 
-> Hi,
-> 
-> Here is the 2nd series of patches to cleanup the kprobes code. Previous
-> version is here.
-> 
->  https://lore.kernel.org/bpf/162592891873.1158485.768824457210707916.stgit@devnote2/
-> 
-> This version is just add a cleanup of trace_kprobes to the [6/6], thanks
-> Joe to find it out!
-
-Does anyone have any comments? Or should I make a pull request for this change?
-
-Thank you,
-
-> 
-> 
-> Thank you,
-> 
-> ---
-> 
-> Masami Hiramatsu (6):
->       kprobes: treewide: Cleanup the error messages for kprobes
->       kprobes: Fix coding style issues
->       kprobes: Use IS_ENABLED() instead of kprobes_built_in()
->       kprobes: Add assertions for required lock
->       kprobes: treewide: Use 'kprobe_opcode_t *' for the code address in get_optimized_kprobe()
->       kprobes: Use bool type for functions which returns boolean value
-> 
-> 
->  arch/arm/probes/kprobes/core.c     |    4 
->  arch/arm/probes/kprobes/opt-arm.c  |    7 -
->  arch/arm64/kernel/probes/kprobes.c |    5 -
->  arch/csky/kernel/probes/kprobes.c  |   10 +
->  arch/mips/kernel/kprobes.c         |   11 +
->  arch/powerpc/kernel/optprobes.c    |    6 -
->  arch/riscv/kernel/probes/kprobes.c |   11 +
->  arch/s390/kernel/kprobes.c         |    4 
->  arch/x86/kernel/kprobes/opt.c      |    6 -
->  include/linux/kprobes.h            |   64 +++----
->  kernel/kprobes.c                   |  315 +++++++++++++++++++-----------------
->  kernel/trace/trace_kprobe.c        |    2 
->  12 files changed, 227 insertions(+), 218 deletions(-)
-> 
-> --
-> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
-
+On 7/21/2021 10:14 AM, Stephen Boyd wrote:
+> Quoting Srinivasa Rao Mandadapu (2020-09-29 23:42:48)
+>> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+>>
+>> Add dai link in sc7180-trogdor.dtsi for supporting audio over DP
+>>
+>> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 15 +++++++++++++++
+>>   1 file changed, 15 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+>> index 5724982..850b43e 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+>> @@ -231,6 +231,7 @@
+>>
+>>                  audio-jack = <&alc5682>;
+>>
+>> +               #sound-dai-cells = <0>;
+>>                  #address-cells = <1>;
+>>                  #size-cells = <0>;
+>>
+>> @@ -257,6 +258,17 @@
+>>                                  sound-dai = <&max98357a>;
+>>                          };
+>>                  };
+>> +               dai-link@2 {
+>> +                       link-name = "MultiMedia2";
+>> +                       reg = <2>;
+>> +                       cpu {
+>> +                               sound-dai = <&lpass_cpu 2>;
+>> +                       };
+>> +
+>> +                       codec {
+>> +                               sound-dai = <&msm_dp>;
+> I see qcom maintainers have picked up the dp node now. Can you resend?
+> This would need to change to mdss_dp. Also incorporate my comments from
+> January this year please.
+Resent the patches. Please check V5 version of patches.
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
