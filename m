@@ -2,109 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7313D06B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 04:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6503D06B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 04:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbhGUBmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 21:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhGUBlV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 21:41:21 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5941C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 19:21:58 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id j73so527995pge.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 19:21:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=Xa2qBzVhj+Lwzg0PLQSc5h1ujLhU4dxvWdbFcvIDTfw=;
-        b=SXnOcZ0M8e/9dJtVF+RdQ0y/kMDW3abcs+qkGIoPCTEsFozKmSK82jf2+02L57zLYC
-         jYmgqsfAtoGhhgdRxMjIWYm52f2rP12uQ0HsOTR47XMczrlEmI/trqf2epwZ7HNM/pa+
-         QrE9oTA0xM6/KaoH212t8N0P/HgCCPh57r0MAI+h5lgVUMHCrcT3h2z6/3vbtSrUV52q
-         Jgtl5vTIWagvcfTskpINygfcsuFhHi16QeSKcD+9VQ+K+rYZDH/OJyDNZ6qOAhwqLY04
-         8Cl5EpaWOs6HPygLiAD2zjQNZT3LEKvLV97l1d9D9YhFKP3uP5pT73FV/TykavGBSdcQ
-         SLMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=Xa2qBzVhj+Lwzg0PLQSc5h1ujLhU4dxvWdbFcvIDTfw=;
-        b=n7n5YfeOjo9J9zCoLOforMv9QQbrcYLciTZJBivZE9tWGQFrN6YS+pbqyQnY4M4Gwq
-         uqf0b3LcrFrZI74F8vRXTadHIf4My1YZ5kSjbdNWEtLK+rkxkxIBreHtM3RON+2XBR6p
-         8oXHoQWZ0gya5qlUSfmiCQJHt/4NPK/xYfc1Gd9MBuvS84W6fyN0oWpcoff/OTkBeD1N
-         OmUZoFacdC307WjoX3lHeqApX66W79YhXrQbhDjLTFxBE8LfeF8XjfgDdJ9h47s+Qczp
-         yNxGnn0y6BAshr005y8IqPTOzJGMMj/g7bUaQ5rixKEcZFwgbhmU+pMsZEDk6MJujEeG
-         KQzg==
-X-Gm-Message-State: AOAM530jggbZsGwuosgjdTsbObnGLN6vw/oadKy/MI89vFtNgUQ1Km6r
-        N/r8Ny3Zogidi/L+0tTADtwcyA==
-X-Google-Smtp-Source: ABdhPJwS6Lzpa5Vs2Z8wzgBskUrWY6TXhY1ph6ulpI4RrbxgxkYEI8hVxvqHQoiYdxs5NDFF5jtyzA==
-X-Received: by 2002:a63:5442:: with SMTP id e2mr34013774pgm.365.1626834118464;
-        Tue, 20 Jul 2021 19:21:58 -0700 (PDT)
-Received: from [10.76.41.210] ([61.120.150.77])
-        by smtp.gmail.com with ESMTPSA id n14sm26773984pfq.177.2021.07.20.19.21.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 19:21:58 -0700 (PDT)
-Subject: Re: [PATCH 1/7] mm: fix the deadlock in finish_fault()
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>, tglx@linutronix.de,
-        hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com
-References: <20210718043034.76431-1-zhengqi.arch@bytedance.com>
- <20210718043034.76431-2-zhengqi.arch@bytedance.com>
- <20210718212814.suvziikndiyezi6m@box.shutemov.name>
- <9e97cedc-9fd7-4290-9f44-04b96acea15d@bytedance.com>
- <20210720161421.f4874db77e0b13192d0ab895@linux-foundation.org>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-Message-ID: <b4dc16f4-faf0-7af6-7853-5f54fef77b02@bytedance.com>
-Date:   Wed, 21 Jul 2021 10:21:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        id S231281AbhGUBms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 21:42:48 -0400
+Received: from mga14.intel.com ([192.55.52.115]:7364 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230429AbhGUBls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 21:41:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="211078145"
+X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
+   d="scan'208";a="211078145"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 19:22:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
+   d="scan'208";a="469998629"
+Received: from lkp-server01.sh.intel.com (HELO b8b92b2878b0) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 20 Jul 2021 19:22:19 -0700
+Received: from kbuild by b8b92b2878b0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m61sJ-00001q-2U; Wed, 21 Jul 2021 02:22:19 +0000
+Date:   Wed, 21 Jul 2021 10:22:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.07.14a] BUILD SUCCESS
+ 52acaa5c81bd48810fce48332951a7676d6ab69e
+Message-ID: <60f784d4.0T8lMPOegdyCvEfs%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210720161421.f4874db77e0b13192d0ab895@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.07.14a
+branch HEAD: 52acaa5c81bd48810fce48332951a7676d6ab69e  fixup! EXP cpu: Add warning if CPU-hotplug notifier runs for more than 100 seconds
 
+elapsed time: 732m
 
-On 7/21/21 7:14 AM, Andrew Morton wrote:
-> On Mon, 19 Jul 2021 17:53:12 +0800 Qi Zheng <zhengqi.arch@bytedance.com> wrote:
-> 
->>
->>
->> On 7/19/21 5:28 AM, Kirill A. Shutemov wrote:
->>> On Sun, Jul 18, 2021 at 12:30:27PM +0800, Qi Zheng wrote:
->>>> The commit 63f3655f9501(mm, memcg: fix reclaim deadlock with writeback)
->>>> fix a deadlock bug by pre-allocating the pte page table outside of the
->>>> page lock, the commit f9ce0be71d1f(mm: Cleanup faultaround and
->>>> finish_fault() codepaths) rework the relevant code but ignore this race,
->>>> fix it.
->>>>
->>>> Fixes: f9ce0be71d1f(mm: Cleanup faultaround and finish_fault() codepaths)
->>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->>>
->>> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->>>
->>> and add stable@, please.
->>>
->>
->> OK, I will add these in the patch v2, thanks.
-> 
-> Please send this as a separate standalone patch, not as a part of the
-> main series.
-> 
-> Also, please include in the changelog a description of the user-visible
-> impact of the bug which is being fixed.
-> 
+configs tested: 127
+configs skipped: 3
 
-OK, I will do this.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
-Qi
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         lpc18xx_defconfig
+x86_64                           allyesconfig
+sh                           se7724_defconfig
+powerpc                      acadia_defconfig
+mips                      pistachio_defconfig
+s390                       zfcpdump_defconfig
+arm                          ep93xx_defconfig
+mips                      maltasmvp_defconfig
+ia64                             allmodconfig
+arm                           corgi_defconfig
+powerpc                 linkstation_defconfig
+m68k                        m5407c3_defconfig
+sh                   secureedge5410_defconfig
+powerpc                     sequoia_defconfig
+m68k                       m5208evb_defconfig
+arm                           sama5_defconfig
+mips                       rbtx49xx_defconfig
+mips                          ath25_defconfig
+powerpc                     mpc5200_defconfig
+powerpc               mpc834x_itxgp_defconfig
+sh                         apsh4a3a_defconfig
+arm                             mxs_defconfig
+arm                          pcm027_defconfig
+arm                           tegra_defconfig
+arm                         bcm2835_defconfig
+powerpc                      mgcoge_defconfig
+riscv                            alldefconfig
+microblaze                          defconfig
+m68k                                defconfig
+sh                          rsk7269_defconfig
+parisc                generic-64bit_defconfig
+arm                           stm32_defconfig
+arm                         vf610m4_defconfig
+x86_64                            allnoconfig
+arm                        multi_v5_defconfig
+mips                  cavium_octeon_defconfig
+powerpc                      chrp32_defconfig
+m68k                        mvme16x_defconfig
+powerpc                       holly_defconfig
+powerpc                      katmai_defconfig
+mips                         mpc30x_defconfig
+mips                         tb0287_defconfig
+sh                          landisk_defconfig
+arm                         socfpga_defconfig
+powerpc64                           defconfig
+powerpc                      cm5200_defconfig
+arm                         palmz72_defconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210719
+i386                 randconfig-a004-20210719
+i386                 randconfig-a006-20210719
+i386                 randconfig-a001-20210719
+i386                 randconfig-a003-20210719
+i386                 randconfig-a002-20210719
+i386                 randconfig-a005-20210720
+i386                 randconfig-a003-20210720
+i386                 randconfig-a004-20210720
+i386                 randconfig-a002-20210720
+i386                 randconfig-a001-20210720
+i386                 randconfig-a006-20210720
+x86_64               randconfig-a003-20210720
+x86_64               randconfig-a006-20210720
+x86_64               randconfig-a001-20210720
+x86_64               randconfig-a005-20210720
+x86_64               randconfig-a004-20210720
+x86_64               randconfig-a002-20210720
+i386                 randconfig-a016-20210720
+i386                 randconfig-a013-20210720
+i386                 randconfig-a012-20210720
+i386                 randconfig-a014-20210720
+i386                 randconfig-a011-20210720
+i386                 randconfig-a015-20210720
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210720
+x86_64               randconfig-a011-20210720
+x86_64               randconfig-a016-20210720
+x86_64               randconfig-a013-20210720
+x86_64               randconfig-a014-20210720
+x86_64               randconfig-a012-20210720
+x86_64               randconfig-a015-20210720
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
