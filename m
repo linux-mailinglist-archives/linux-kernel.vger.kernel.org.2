@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583A13D1882
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0183B3D1888
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbhGUUVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:21:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33184 "EHLO mail.kernel.org"
+        id S230133AbhGUUV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:21:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229655AbhGUUVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229638AbhGUUVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 16:21:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6392961289;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63A7A6128A;
         Wed, 21 Jul 2021 21:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626901303;
-        bh=Ua2aCs2M28OEnDurjWyslc2dz0CsyNmcWg6WUCzeMXA=;
+        bh=hCYgEjm28HUWvCmBn4VbCaGHESdbATNc/Ga+CADkdVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o+SNnk1pRIFDz5EcPJWArpccrxm0JzDBNcqDng19RSew3nNvhhQhAxRiWbzLOIv32
-         sCg9rtdGLKCkS7MuPzSvbkY0soqum5GD6hTqm53dwV7/UKtwJBeXHLs9rmUos39AxE
-         eOnKw5DEEuow9qRceqtdudPnaVg+KVAip7C5RfMXQKLXzbqq3Mm+KEjHdeQL/0DCuh
-         0OldCJiWN2Fon9CKbe2WsBcqmPRO8mJJ9sWDPe38n+XvCTi2haFtLhZbNHiSzapLdi
-         ZvyWZuEKglap7obytENLN2M9EFshYraqcKwoxL9EASNgqTf7chqvOMOULPfbCXPT97
-         3Emdz5hF5IZMA==
+        b=GjbiDJ7iTLDnYG2cxYMMgqZyyXpY0Fre37J4/1i2ffPBxhVyc3MvUJ+sGXwtKq8o4
+         PJ/eDggOV/ueybMTPYz16X99+uC6OpexMNFJRCosKaZs0IC/SukvFhxGWuw+lcvAKp
+         eOAvBqNkai4gejwIG08yjDYUPJU8X5hGsq1M8tsG5pPZv+v3T0gj8C6v3MZNW/Lw5U
+         DbtcFa+CfBXY0cs0YsazxK0Tof+G1yxLOfG7gYwjPNXiZaqChCjUnuFfLYWP3jQdXO
+         8AmyfOu43Si/hoHZ9djiz9TsAZ8NaZs2fjA1mSoXhPwUkLUX/NOBWiJAk8RgzpiCxd
+         WAjlNmHDF0eWQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D33D35C0C70; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
+        id D51535C0D47; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 06/21] torture: Make kvm-recheck-lock.sh tolerate qemu-cmd comments
-Date:   Wed, 21 Jul 2021 14:01:25 -0700
-Message-Id: <20210721210140.787717-6-paulmck@kernel.org>
+Subject: [PATCH rcu 07/21] torture: Log more kvm-remote.sh information
+Date:   Wed, 21 Jul 2021 14:01:26 -0700
+Message-Id: <20210721210140.787717-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
@@ -46,28 +46,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The qemu-cmd file can contain comments that are not relevant to the
-operation of kvm-recheck-lock.sh.  This commit therefore strips these
-comments before looking for timing information.
+This commit logs additional information to help track down set up and
+networking issues.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-recheck-lock.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../selftests/rcutorture/bin/kvm-remote.sh        | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck-lock.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck-lock.sh
-index f3a7a5e2b89d4..db2c0e2c8e1de 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-recheck-lock.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck-lock.sh
-@@ -25,7 +25,7 @@ then
- 	echo "$configfile -------"
- else
- 	title="$configfile ------- $ncs acquisitions/releases"
--	dur=`sed -e 's/^.* locktorture.shutdown_secs=//' -e 's/ .*$//' < $i/qemu-cmd 2> /dev/null`
-+	dur=`grep -v '^#' $i/qemu-cmd | sed -e 's/^.* locktorture.shutdown_secs=//' -e 's/ .*$//' 2> /dev/null`
- 	if test -z "$dur"
- 	then
- 		:
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
+index 79e680e0e7bf3..8f26dbfc2edf2 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
+@@ -128,6 +128,7 @@ awk < "$rundir"/scenarios -v dest="$T/bin" -v rundir="$rundir" '
+ 	for (i = 2; i <= NF; i++)
+ 		scenarios = scenarios " " $i;
+ 	print "kvm-test-1-run-batch.sh" scenarios > fn;
++	print "sync" >> fn;
+ 	print "rm " rundir "/remote.run" >> fn;
+ }'
+ chmod +x $T/bin/kvm-remote-*.sh
+@@ -172,11 +173,20 @@ checkremotefile () {
+ 	do
+ 		ssh $1 "test -f \"$2\""
+ 		ret=$?
+-		if test "$ret" -ne 255
++		if test "$ret" -eq 255
+ 		then
++			echo " ---" ssh failure to $1 checking for file $2, retry after $sleeptime seconds. `date`
++		elif test "$ret" -eq 0
++		then
++			return 0
++		elif test "$ret" -eq 1
++		then
++			echo " ---" File \"$2\" not found: ssh $1 test -f \"$2\"
++			return 1
++		else
++			echo " ---" Exit code $ret: ssh $1 test -f \"$2\", retry after $sleeptime seconds. `date`
+ 			return $ret
+ 		fi
+-		echo " ---" ssh failure to $1 checking for file $2, retry after $sleeptime seconds. `date`
+ 		sleep $sleeptime
+ 	done
+ }
+@@ -242,6 +252,7 @@ do
+ 	do
+ 		sleep 30
+ 	done
++	echo " ---" Collecting results from $i `date`
+ 	( cd "$oldrun"; ssh $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu_pid */qemu-retval; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
+ done
+ 
 -- 
 2.31.1.189.g2e36527f23
 
