@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CB03D0E43
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A923D0E45
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237536AbhGULQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:16:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31246 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239809AbhGULHD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:07:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626868059;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1ITgdpbHrkG/PyamO/WTSqphxRqKor6geSRI8hUKktg=;
-        b=RcEOeVnu4gPCGlDZBf5pCFdTcr4QCKDx/rxAZxBFZzQBiEkL0dCoAFIPjecTcUNq2Bv+cN
-        R/Y7RT2dJqgcQ0VW+e2xZ1Ihlt4BPNfvDj1E5aOrcB9nKWTOZHulmCM++jeZuaA8jSBg7o
-        ZNcBteGU5m05qZB/Hu9dXQKAv5raISQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-403-Ie5tPRBVMKyDZFvfEhZLZQ-1; Wed, 21 Jul 2021 07:47:38 -0400
-X-MC-Unique: Ie5tPRBVMKyDZFvfEhZLZQ-1
-Received: by mail-wr1-f70.google.com with SMTP id h15-20020adffd4f0000b0290137e68ed637so888813wrs.22
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 04:47:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1ITgdpbHrkG/PyamO/WTSqphxRqKor6geSRI8hUKktg=;
-        b=LfegSGvQs5+qrhFkkNLKWL4bn4d+MLgvF02xNkb6b8olHvLpciH+Nrcp5c7d8REOII
-         kDj95qyPSnWidTW4ITB7YCgiarYghZvuQGx5pIyh1vf5iXaZb0rGlxids/eKXIQ+abqU
-         KBWJtilxXWTw0bme6NfxB4bkSJk22vXqyUjC7mFlAj0TCrBhzAKqihzH12gxdvZ4jFf6
-         gBrTD4w6NEpb73uUsh+0m2h2CVf6bmrBUbOyqrXW9i3oP+8Z9dJmZaXbNS4Im7osKVPp
-         7RfEdubrep5IP4ROXlHph3smnGWXB247vqJ7HHFS/9EhjPgfyz2U8CC6kEM/X5whUHu1
-         mVvg==
-X-Gm-Message-State: AOAM532NRRJ0y/EsfNuSRKYnWXhFKi3D+4egBjfeQGPi0ozPIE+Xyet0
-        yvE8kS/jI1YK9K8x9XMchAMmqQrF8IlPIwU4tutjwiIuCbUYVoxKXFRVVBTzet6A8g3oGDRauuQ
-        sl1VOVPlNXh8ceM98J4v+ju2B
-X-Received: by 2002:a5d:46d1:: with SMTP id g17mr42856184wrs.2.1626868056880;
-        Wed, 21 Jul 2021 04:47:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzJJTHhJT5SbgMJ3Y0QXm1zLjqie/kZGfgz0cBlpMwooT1VD7jk3zd3oSXFb1L3mlFd4Fj5eg==
-X-Received: by 2002:a5d:46d1:: with SMTP id g17mr42856177wrs.2.1626868056704;
-        Wed, 21 Jul 2021 04:47:36 -0700 (PDT)
-Received: from vian.redhat.com ([79.116.5.179])
-        by smtp.gmail.com with ESMTPSA id b16sm28142037wrs.51.2021.07.21.04.47.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 04:47:36 -0700 (PDT)
-From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Subject: [PATCH] ftrace: Avoid synchronize_rcu_tasks_rude() call when not necessary
-Date:   Wed, 21 Jul 2021 13:47:26 +0200
-Message-Id: <20210721114726.1545103-1-nsaenzju@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        id S238123AbhGULRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:17:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:52800 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236618AbhGULK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 07:10:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7ABE5D6E;
+        Wed, 21 Jul 2021 04:51:34 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 145223F694;
+        Wed, 21 Jul 2021 04:51:31 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rt-users@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 2/3] rcu/nocb: Check for migratability rather than pure preemptability
+Date:   Wed, 21 Jul 2021 12:51:17 +0100
+Message-Id: <20210721115118.729943-3-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210721115118.729943-1-valentin.schneider@arm.com>
+References: <20210721115118.729943-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-synchronize_rcu_tasks_rude() triggers IPIs and forces rescheduling on
-all CPUs. It is a costly operation and, when targeting nohz_full CPUs,
-very disrupting (hence the name). So avoid calling it when 'old_hash'
-doesn't need to be freed.
+Running v5.13-rt1 on my arm64 Juno board triggers:
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+[    0.156302] =============================
+[    0.160416] WARNING: suspicious RCU usage
+[    0.164529] 5.13.0-rt1 #20 Not tainted
+[    0.168300] -----------------------------
+[    0.172409] kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
+[    0.179920]
+[    0.179920] other info that might help us debug this:
+[    0.179920]
+[    0.188037]
+[    0.188037] rcu_scheduler_active = 1, debug_locks = 1
+[    0.194677] 3 locks held by rcuc/0/11:
+[    0.198448] #0: ffff00097ef10cf8 ((softirq_ctrl.lock).lock){+.+.}-{2:2}, at: __local_bh_disable_ip (./include/linux/rcupdate.h:662 kernel/softirq.c:171)
+[    0.208709] #1: ffff80001205e5f0 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock (kernel/locking/spinlock_rt.c:43 (discriminator 4))
+[    0.217134] #2: ffff80001205e5f0 (rcu_read_lock){....}-{1:2}, at: __local_bh_disable_ip (kernel/softirq.c:169)
+[    0.226428]
+[    0.226428] stack backtrace:
+[    0.230889] CPU: 0 PID: 11 Comm: rcuc/0 Not tainted 5.13.0-rt1 #20
+[    0.237100] Hardware name: ARM Juno development board (r0) (DT)
+[    0.243041] Call trace:
+[    0.245497] dump_backtrace (arch/arm64/kernel/stacktrace.c:163)
+[    0.249185] show_stack (arch/arm64/kernel/stacktrace.c:219)
+[    0.252522] dump_stack (lib/dump_stack.c:122)
+[    0.255947] lockdep_rcu_suspicious (kernel/locking/lockdep.c:6439)
+[    0.260328] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
+[    0.264537] rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
+[    0.267786] rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
+[    0.271644] smpboot_thread_fn (kernel/smpboot.c:165 (discriminator 3))
+[    0.275767] kthread (kernel/kthread.c:321)
+[    0.279013] ret_from_fork (arch/arm64/kernel/entry.S:1005)
+
+In this case, this is the RCU core kthread accessing the local CPU's
+rdp. Before that, rcu_cpu_kthread() invokes local_bh_disable().
+
+Under !CONFIG_PREEMPT_RT (and rcutree.use_softirq=0), this ends up
+incrementing the preempt_count, which satisfies the "local non-preemptible
+read" of rcu_rdp_is_offloaded().
+
+Under CONFIG_PREEMPT_RT however, this becomes
+
+  local_lock(&softirq_ctrl.lock)
+
+which, under the same config, is migrate_disable() + rt_spin_lock().
+This *does* prevent the task from migrating away, but not in a way
+rcu_rdp_is_offloaded() can notice. Note that the invoking task is an
+smpboot thread, and thus cannot be migrated away in the first place.
+
+Check is_pcpu_safe() here rather than preemptible().
+
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- kernel/trace/ftrace.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/rcu/tree_plugin.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index e6fb3e6e1ffc..4fbcf560dd03 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -5985,7 +5985,8 @@ ftrace_graph_release(struct inode *inode, struct file *file)
- 		 * infrastructure to do the synchronization, thus we must do it
- 		 * ourselves.
- 		 */
--		synchronize_rcu_tasks_rude();
-+		if (old_hash != EMPTY_HASH)
-+			synchronize_rcu_tasks_rude();
- 
- 		free_ftrace_hash(old_hash);
- 	}
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index ad0156b86937..6c3c4100da83 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -70,8 +70,7 @@ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
+ 		!(lockdep_is_held(&rcu_state.barrier_mutex) ||
+ 		  (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_held()) ||
+ 		  rcu_lockdep_is_held_nocb(rdp) ||
+-		  (rdp == this_cpu_ptr(&rcu_data) &&
+-		   !(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())) ||
++		  (rdp == this_cpu_ptr(&rcu_data) && is_pcpu_safe()) ||
+ 		  rcu_current_is_nocb_kthread(rdp) ||
+ 		  rcu_running_nocb_timer(rdp)),
+ 		"Unsafe read of RCU_NOCB offloaded state"
 -- 
-2.31.1
+2.25.1
 
