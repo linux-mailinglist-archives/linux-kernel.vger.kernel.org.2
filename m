@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F573D1875
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DDD3D1879
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhGUUOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:14:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60088 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229841AbhGUUOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 16:14:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66C95611C1;
-        Wed, 21 Jul 2021 20:55:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626900911;
-        bh=lwGCCLLRxD/zF8v0rUDtLAsLAq5VfjL8yHIso29kuwI=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=tD5Gd+zfbqUoG8eqT/VlNQ+4bjhLnXnCFVZXe5agaikHPjyxb5nSWkwYRw2i/V4ji
-         pI0JK7bpVlwPTT+b0BVebjYP6n8ZGwzLYcHdMX+B6cyb6d0gZBnSG04SoXYs5KnGGZ
-         cVC3AgqCIJH+kirfORMflET/pMifL83hP6IONZNxO7yd2C+DO/yjPed0Anb5bBLb6E
-         zhYsnS43t+RTFdN2MvfuvKr9ukRXFx+f7iLVTsh80vV+lWIRLiFkTyR/aJX9pac0/X
-         V/EDH8G2NOI6W4gk2spOlN+cYgrgH29r4ewUZDbp2VA8HEtNRo7g880PeoFa4hTycV
-         ppFh6Cbp+8jtQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 353D85C09A4; Wed, 21 Jul 2021 13:55:11 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 13:55:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH rcu 0/21] Torture-test scripting updates for v5.15
-Message-ID: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        id S229607AbhGUUTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhGUUTU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 16:19:20 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F204FC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:59:56 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id y38so2248698ybi.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 13:59:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zev5RkUDntkX6kWICmg9oLGVZwQDp/V6CB2SFJXvlbM=;
+        b=MbUup/f2IQ4e5MYXEyQSpJT9BA/5+K1mBDGxRAU/j8XHmKaNWC16053kMEmyaCPWU0
+         6X5d7gRKAa/dn9sXGMMonqNVZSQYg+FgMrgm/oDLmrFHHR6ryPTk24OjWuqiUkf9JhlW
+         PLjjQ9c7rg4CcEE7sbk2wPUqHfE4u7dcmZIHR68kECpIWmNrF1e+HavOLMMowGahLl1N
+         kGlsYJAhDLNMrqMEj2DACIl6eethtxavpitbs31H1qNkaE1Gra0Ryy7rqC6tnXd9j2JL
+         7GKz6SzksiLzhiITrFIqLM+x66LPrPtZYXLKfOTn1rDr0ivJKphsFhfY2vy2DTZWrCSf
+         Kz9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zev5RkUDntkX6kWICmg9oLGVZwQDp/V6CB2SFJXvlbM=;
+        b=jR4vt+3+XRcQvd7fIa/icsLdGf5f0YoglHO3PXzSeUwWa1SvpXlBrfQIMbxGl2QiSs
+         1ubS90G5YwrY7DeFb1AeTyVo4ZyLdQQgrYEVIr/YuMTHa7ARHcKydJdJv/d5XcduEMda
+         QRYoXLNcGGW1tgTtx4mX8IgUMCMrG7hCAz/57pJOU7hV2AYMSx0rewrBW9BUeSq0uGj5
+         HiQ5O/u5oCBoBevQTHA89meTLUVgUA8lfE/evzW2alNDUFzDESpu9o/EFVh1E72aGmRZ
+         o9y4LtgFFPX3RAIHo1ZfLzNLKMFlDLuIGaj0meNPXv9lkwuSZDeURC3Za/tn/iX4KGur
+         nJlQ==
+X-Gm-Message-State: AOAM531poJpB7UgfCEjpGIinBhbSeSDbRSx1/iz/ZkMGrPUV+mIb4LRK
+        qVH2bHwWRhjp4km/qQnNBJF9Stdc5HdPnJEncn6byA==
+X-Google-Smtp-Source: ABdhPJxPA+1Lvr6r0Ah+Ih16Hp1gDj0q96HTIeJShNuvXV8XbMIS4BZvdwqDvpclVoKXHc0q16IfDXSgqc30JARLqDQ=
+X-Received: by 2002:a25:d912:: with SMTP id q18mr44064581ybg.294.1626901195909;
+ Wed, 21 Jul 2021 13:59:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210718214134.2619099-1-surenb@google.com> <7eb17da6-03a6-5eaf-16e6-97b53ba163d8@redhat.com>
+ <20210720160707.2332738708948f7d865d67c1@linux-foundation.org>
+ <ba763ed3-9ad1-9502-1ffc-3175446570d1@redhat.com> <CAJuCfpEB994Xj3FcmzyH1p3yOdLVf6EwZaGaRj7NJi_c9hbsRQ@mail.gmail.com>
+ <0ee6775b-589c-3243-1c01-aafad5eecb73@redhat.com> <CAJuCfpHtRzCNH6Cspu8ngjw+WLvZTMsVbmBu_F-z8YY_n=RbvA@mail.gmail.com>
+ <20210721135056.84d12dd49c07adff7b0beffb@linux-foundation.org>
+In-Reply-To: <20210721135056.84d12dd49c07adff7b0beffb@linux-foundation.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 21 Jul 2021 13:59:44 -0700
+Message-ID: <CAJuCfpGsSFccjV9Qd86PCdLHjRG9gdP7snfy-856pzmfxdGO1w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] mm, oom: move task_will_free_mem up in the file to
+ be used in process_mrelease
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Wed, Jul 21, 2021 at 1:51 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Wed, 21 Jul 2021 13:19:35 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> > > > This would not require moving other functions.
+> > > > Would that be better than the current approach or the forward declaration?
+> > >
+> > > IMHO that could be an easy, possible alternative.
+> >
+> > Andrew, others? Should I follow this path instead?
+>
+> Whatever you prefer ;)
 
-This series contains torture-test scripting updates:
-
-1.	Add clocksource-watchdog testing to torture.sh.
-
-2.	Make torture.sh accept --do-all and --donone.
-
-3.	Enable KCSAN summaries over groups of torture-test runs.
-
-4.	Create KCSAN summaries for torture.sh runs.
-
-5.	Make kvm-recheck-scf.sh tolerate qemu-cmd comments.
-
-6.	Make kvm-recheck-lock.sh tolerate qemu-cmd comments.
-
-7.	Log more kvm-remote.sh information.
-
-8.	Protect kvm-remote.sh directory trees from /tmp reaping.
-
-9.	Make kvm-recheck.sh skip kcsan.sum for build-only runs.
-
-10.	Move parse-console.sh call to PATH-aware scripts.
-
-11.	Put kvm.sh batch-creation awk script into a temp file.
-
-12.	Make kvm.sh select per-scenario affinity masks.
-
-13.	Don't redirect qemu-cmd comment lines.
-
-14.	Make kvm-test-1-run-qemu.sh apply affinity.
-
-15.	Upgrade two-CPU scenarios to four CPUs.
-
-16.	Use numeric taskset argument in jitter.sh.
-
-17.	Consistently name "qemu*" test output files.
-
-18.	Make kvm-test-1-run-batch.sh select per-scenario affinity masks.
-
-19.	Don't use "test" command's "-a" argument.
-
-20.	Add timestamps to kvm-test-1-run-qemu.sh output.
-
-21.	Make kvm-test-1-run-qemu.sh check for reboot loops.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/tools/testing/selftests/rcutorture/bin/jitter.sh               |   10 
- b/tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh       |    2 
- b/tools/testing/selftests/rcutorture/bin/kvm-again.sh            |    2 
- b/tools/testing/selftests/rcutorture/bin/kvm-assign-cpus.sh      |  105 ++++++++++
- b/tools/testing/selftests/rcutorture/bin/kvm-get-cpus-script.sh  |   87 ++++++++
- b/tools/testing/selftests/rcutorture/bin/kvm-recheck-lock.sh     |    2 
- b/tools/testing/selftests/rcutorture/bin/kvm-recheck-scf.sh      |    2 
- b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh          |    5 
- b/tools/testing/selftests/rcutorture/bin/kvm-remote-noreap.sh    |   30 ++
- b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh           |   15 +
- b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh |    1 
- b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh  |    2 
- b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh       |    1 
- b/tools/testing/selftests/rcutorture/bin/kvm.sh                  |   27 +-
- b/tools/testing/selftests/rcutorture/bin/torture.sh              |   29 ++
- b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01          |    2 
- b/tools/testing/selftests/rcutorture/configs/rcu/TASKS01         |    2 
- b/tools/testing/selftests/rcutorture/configs/rcu/TASKS03         |    2 
- tools/testing/selftests/rcutorture/bin/kvm-again.sh              |    2 
- tools/testing/selftests/rcutorture/bin/kvm-remote.sh             |    7 
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh   |   23 ++
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh    |   57 +++--
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh         |    1 
- tools/testing/selftests/rcutorture/bin/kvm.sh                    |   14 +
- tools/testing/selftests/rcutorture/bin/torture.sh                |    8 
- 25 files changed, 373 insertions(+), 65 deletions(-)
+I understand David's concern too well to ignore it, so I prefer to
+follow this middle-ground approach if you don't mind :)
