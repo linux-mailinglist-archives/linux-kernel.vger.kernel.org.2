@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEBBD3D0AD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 025073D0B18
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235550AbhGUH6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 03:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235639AbhGUHwg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:52:36 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84155C0613E1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 01:32:48 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id n11so610537plc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 01:32:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Pf6yv9jzBQ/5AFzoIiLQG3uhUQu1tpDnak3e79XC28M=;
-        b=y621LkRHoi99PoVsbnU6S0bH0TRJ5AQnMgOjpKF2WeizYtAtjYEO4wMVTq0GXd76Dx
-         DViLNHf98/Czq3TvPL2kWUcgaWOm5bihicRD4yEqjftumKKgsyvoLgul2JrkM15M/Jrm
-         vwWifgz5nXe8nKG/cEfmv72QUuURbldIZczbabFzQMd3BrMgIdooTAMVBilzLpdjYpJH
-         1fLAP7FPSDPZdI4uV3+BC4PTZvruO/4otSFfN8ILdtj0ZpXdV+sP2wfT+HZdkiuoyeI5
-         mK9KUCMw4ADGl0/8xmY6I4G/9GOnQTMKkKNW12qrrkblyDl+7sqmf+clAHi1LsFrCM6F
-         VPgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pf6yv9jzBQ/5AFzoIiLQG3uhUQu1tpDnak3e79XC28M=;
-        b=bUINDekxlGRbLmVEVeU+hCSizWwwVt9kWDWRR3MY2NgpzbKAm7XEBCf9IAMEsNQvLm
-         Djm8z4TyLhzZKRySLriQsLdq2Blr1TvJxRBbcbFKcPgWpjPgVs4gvurRJ9synSsGkPh+
-         ZgX2I28Ktj3PlRK/5jUKeQd8PN6eynNVhYSAZU7jlFZbQjOjDvQF4gouop7+Mn/tG/gC
-         cwGEjUVsEjn6sXLMIp68rF3PUbjC80elN73+YYlnrC2anltPhh5x6b+gs0o8lsOPvy6N
-         Cl+8LLOr3UPozgRKDOT2M0q0O5aeFLwdFqCRBDIxMEHJJmH4xRbAeII6p/hMm1MpSa46
-         VBOg==
-X-Gm-Message-State: AOAM532AoKvJV6Ep8tIrRTNAtwva+9VDPj9OhGrEHMukLf+nlSMOM2Wr
-        QEp3JlM18CCHJJrAQ9qE1mAzW5GB+m44A53UNF/UeQ==
-X-Google-Smtp-Source: ABdhPJzRQYs9xMtL6uWdKACy4LYj8NjRc/WHONkTYnb65giEix9lTJqOkotPC3WrBp5cVQ+01FK/g1KFYFLuwN5g3L4=
-X-Received: by 2002:a17:90a:d590:: with SMTP id v16mr33821256pju.205.1626856367721;
- Wed, 21 Jul 2021 01:32:47 -0700 (PDT)
+        id S236384AbhGUISJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 04:18:09 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:50719 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236247AbhGUIBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 04:01:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626856921; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=OEg/3GOtqKIbJ2a3pN0JGdqf4+iLIj2+GMpxZArDU0U=; b=TVxjP59mINtkMcGllWgOnebaeAZ9+bgf6VAO+iGEN5Vts633DUY+CUDAPB8iFY6KldknY5yd
+ +VMOwlbn1UDxbfQ/4UgQhbDUHaOvmYq7G3TzaG3aTS8kYkHLFNFePyF6E3Wc9Ob/EtNu7oPR
+ pzkQCtNED6bUcez6pQZmpIK2v/s=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60f7ddc6e31d882d18c95737 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 08:41:42
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 63483C43217; Wed, 21 Jul 2021 08:41:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 94B05C433F1;
+        Wed, 21 Jul 2021 08:41:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 94B05C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
+        srinivas.kandagatla@linaro.org, dianders@chromium.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v5 0/2] Qualcomm's lpass device tree changes
+Date:   Wed, 21 Jul 2021 14:11:24 +0530
+Message-Id: <20210721084126.14035-1-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20210721082058.71098-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210721082058.71098-1-andriy.shevchenko@linux.intel.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Wed, 21 Jul 2021 10:42:42 +0200
-Message-ID: <CAMZdPi_SotoXgWHQxHyWnjVHs1M2t3xa8+qhsD21b_qcp+t_ag@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] net: wwan: iosm: Switch to use module_pci_driver() macro
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     M Chetan Kumar <m.chetan.kumar@intel.com>,
-        Network Development <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Jul 2021 at 10:20, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> Eliminate some boilerplate code by using module_pci_driver() instead of
-> init/exit, moving the salient bits from init into probe.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Changes Since v4:
+  -- Signed off address change.
+Changes Since v3:
+  -- Changed DP node name.
+Changes Since v2:
+  -- Removed obsolete hdmi-jack property.
+  -- Updated sound dai cells property
+Changes Since v1:
+  -- hdmi dai is added in lpass-cpu node.
 
-Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+V Sujith Kumar Reddy (2):
+  arm64: dts: qcom: sc7180: Update lpass cpu node for audio over dp
+  arm64: dts: qcom: sc7180-trogdor: Add lpass dai link for HDMI
+
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 17 +++++++++++++++++
+ arch/arm64/boot/dts/qcom/sc7180.dtsi         | 16 ++++++++++------
+ 2 files changed, 27 insertions(+), 6 deletions(-)
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
