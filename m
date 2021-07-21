@@ -2,231 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1183D080A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9219E3D080D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbhGUEVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 00:21:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
+        id S232723AbhGUEYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 00:24:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232321AbhGUEVb (ORCPT
+        with ESMTP id S232321AbhGUEX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 00:21:31 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CFAC061574;
-        Tue, 20 Jul 2021 22:02:08 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GV3NG0Yzvz9sS8;
-        Wed, 21 Jul 2021 15:02:06 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626843726;
-        bh=6jHVXxsENGHMKsqQdwUp/5VdSk4SlhPEYaFa/V27tnA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=BtmoSuuGmgUbuXuvDfcyYyutXBKcamgfHzAgUjeJRBqtCrXXwlHJnw+qqaosVWB0q
-         pAIhiHTOEMfbNbpm9sKkgl1d6ou10ccklhGQ0ADuEWVd2n+iL1TnwfOSbbAVGCTyrw
-         9sqO3KY+A+NuKa5WLJ9SRl8V5gFfCsZgwHkaTMe7i8AIlsY6BNWiz9hCWnPYZXNAYR
-         kCvK5zzBEY3anQhdjBGJP0dIlDkXBBDNaYhZnADtxHj+l8lIimhvZMGBH7O2MStdZF
-         XS/ZXpy9Sny1cigwocOnIOfY3Abg8a3HC2e9IaftOXWxYb5Fvkm/Wq56JvBcxYj+MW
-         FrAOfAVfxQR5Q==
-Date:   Wed, 21 Jul 2021 15:02:05 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the folio tree with the ext3 tree
-Message-ID: <20210721150205.2a7f4fb7@canb.auug.org.au>
+        Wed, 21 Jul 2021 00:23:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BF2C061574;
+        Tue, 20 Jul 2021 22:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=D20QS6MxrqZjpfJr3udotoWchnhZQTjbmypQCoId5Uw=; b=dlPo+cYBzFsFFxIcS4cYqT1y4v
+        5Og9QnPdR7+tgNY/mC4DDWWwn9IG6Y1NxBmegim+rvlhrYTIO4sYBBTzCbgKQiyUExae41YdthWOB
+        +iHlTPjl2Yy3lzJAT0lCtOu1qpNEg16QRSjSjY3YH+GP7i3Mm7cfgujPX0kGu7li12Q0DCLsBcAEP
+        TD2DV6pCn3bPuvPvCmnlEz816HpGzL1dZeBTuDMPz5LlqdpTfhcmgrwpWHbPA3glsfRek93dlTGpd
+        KJHjPzOvYVx96bDHgqkpcl3KG5OU2lopmvHN0bke/Z8M1V/Ash+m7zLezzViDDeoE9o1tXCTfwmri
+        KHGshupw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m64OY-008oIM-3C; Wed, 21 Jul 2021 05:03:47 +0000
+Date:   Wed, 21 Jul 2021 06:03:46 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, hare@suse.de, bvanassche@acm.org,
+        ming.lei@redhat.com, hch@infradead.org, jack@suse.cz,
+        osandov@fb.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Song Liu <songliubraving@fb.com>, linux-raid@vger.kernel.org
+Subject: Re: [PATCH 2/5] md: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED on
+ is_mddev_broken()
+Message-ID: <YPeqspNQrE7PvbXR@infradead.org>
+References: <20210720182048.1906526-1-mcgrof@kernel.org>
+ <20210720182048.1906526-3-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/I67XNDAujQVr1Rb3Xo=imif";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210720182048.1906526-3-mcgrof@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/I67XNDAujQVr1Rb3Xo=imif
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jul 20, 2021 at 11:20:45AM -0700, Luis Chamberlain wrote:
+> The GENHD_FL_DISK_ADDED flag is what we really want, as the
+> flag GENHD_FL_UP could be set on a semi-initialized device.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-Hi all,
+Based on the commit log for the patch adding this check I think this
+is wrong  It actually wants to detected underlying devices for which
+del_gendisk has been called.
 
-Today's linux-next merge of the folio tree got a conflict in:
-
-  mm/filemap.c
-
-between commit:
-
-  730633f0b7f9 ("mm: Protect operations adding pages to page cache with inv=
-alidate_lock")
-
-from the ext3 tree and commit:
-
-  e3700f8b6abe ("mm/filemap: Add __folio_lock_async()")
-
-from the folio tree.
-
-I fixed it up (I think - see below) and can carry the fix as necessary.
-This is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc mm/filemap.c
-index 0fad08331cf4,104b27c372bf..000000000000
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@@ -999,54 -997,16 +999,54 @@@ struct folio *filemap_alloc_folio(gfp_
-  		do {
-  			cpuset_mems_cookie =3D read_mems_allowed_begin();
-  			n =3D cpuset_mem_spread_node();
-- 			page =3D __alloc_pages_node(n, gfp, 0);
-- 		} while (!page && read_mems_allowed_retry(cpuset_mems_cookie));
-+ 			folio =3D __folio_alloc_node(gfp, order, n);
-+ 		} while (!folio && read_mems_allowed_retry(cpuset_mems_cookie));
- =20
-- 		return page;
-+ 		return folio;
-  	}
-- 	return alloc_pages(gfp, 0);
-+ 	return folio_alloc(gfp, order);
-  }
-- EXPORT_SYMBOL(__page_cache_alloc);
-+ EXPORT_SYMBOL(filemap_alloc_folio);
-  #endif
- =20
- +/*
- + * filemap_invalidate_lock_two - lock invalidate_lock for two mappings
- + *
- + * Lock exclusively invalidate_lock of any passed mapping that is not NUL=
-L.
- + *
- + * @mapping1: the first mapping to lock
- + * @mapping2: the second mapping to lock
- + */
- +void filemap_invalidate_lock_two(struct address_space *mapping1,
- +				 struct address_space *mapping2)
- +{
- +	if (mapping1 > mapping2)
- +		swap(mapping1, mapping2);
- +	if (mapping1)
- +		down_write(&mapping1->invalidate_lock);
- +	if (mapping2 && mapping1 !=3D mapping2)
- +		down_write_nested(&mapping2->invalidate_lock, 1);
- +}
- +EXPORT_SYMBOL(filemap_invalidate_lock_two);
- +
- +/*
- + * filemap_invalidate_unlock_two - unlock invalidate_lock for two mappings
- + *
- + * Unlock exclusive invalidate_lock of any passed mapping that is not NUL=
-L.
- + *
- + * @mapping1: the first mapping to unlock
- + * @mapping2: the second mapping to unlock
- + */
- +void filemap_invalidate_unlock_two(struct address_space *mapping1,
- +				   struct address_space *mapping2)
- +{
- +	if (mapping1)
- +		up_write(&mapping1->invalidate_lock);
- +	if (mapping2 && mapping1 !=3D mapping2)
- +		up_write(&mapping2->invalidate_lock);
- +}
- +EXPORT_SYMBOL(filemap_invalidate_unlock_two);
- +
-  /*
-   * In order to wait for pages to become available there must be
-   * waitqueues associated with pages. By using a hash table of
-@@@ -2406,49 -2362,42 +2402,50 @@@ static int filemap_update_page(struct k
-  		struct address_space *mapping, struct iov_iter *iter,
-  		struct page *page)
-  {
-+ 	struct folio *folio =3D page_folio(page);
-  	int error;
- =20
- +	if (iocb->ki_flags & IOCB_NOWAIT) {
- +		if (!filemap_invalidate_trylock_shared(mapping))
- +			return -EAGAIN;
- +	} else {
- +		filemap_invalidate_lock_shared(mapping);
- +	}
- +
-- 	if (!trylock_page(page)) {
-+ 	if (!folio_trylock(folio)) {
- +		error =3D -EAGAIN;
-  		if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_NOIO))
- -			return -EAGAIN;
- +			goto unlock_mapping;
-  		if (!(iocb->ki_flags & IOCB_WAITQ)) {
- +			filemap_invalidate_unlock_shared(mapping);
-- 			put_and_wait_on_page_locked(page, TASK_KILLABLE);
-+ 			put_and_wait_on_page_locked(&folio->page, TASK_KILLABLE);
-  			return AOP_TRUNCATED_PAGE;
-  		}
-- 		error =3D __lock_page_async(page, iocb->ki_waitq);
-+ 		error =3D __folio_lock_async(folio, iocb->ki_waitq);
-  		if (error)
- -			return error;
- +			goto unlock_mapping;
-  	}
- =20
- +	error =3D AOP_TRUNCATED_PAGE;
-- 	if (!page->mapping)
-+ 	if (!folio->mapping)
- -		goto truncated;
- +		goto unlock;
- =20
-  	error =3D 0;
-- 	if (filemap_range_uptodate(mapping, iocb->ki_pos, iter, page))
-+ 	if (filemap_range_uptodate(mapping, iocb->ki_pos, iter, &folio->page))
-  		goto unlock;
- =20
-  	error =3D -EAGAIN;
-  	if (iocb->ki_flags & (IOCB_NOIO | IOCB_NOWAIT | IOCB_WAITQ))
-  		goto unlock;
- =20
-- 	error =3D filemap_read_page(iocb->ki_filp, mapping, page);
-+ 	error =3D filemap_read_page(iocb->ki_filp, mapping, &folio->page);
- -	if (error =3D=3D AOP_TRUNCATED_PAGE)
- -		folio_put(folio);
- -	return error;
- -truncated:
- -	folio_unlock(folio);
- -	folio_put(folio);
- -	return AOP_TRUNCATED_PAGE;
- +	goto unlock_mapping;
-  unlock:
-- 	unlock_page(page);
-+ 	folio_unlock(folio);
- +unlock_mapping:
- +	filemap_invalidate_unlock_shared(mapping);
- +	if (error =3D=3D AOP_TRUNCATED_PAGE)
-- 		put_page(page);
-++		folio_put(folio);
-  	return error;
-  }
- =20
-
---Sig_/I67XNDAujQVr1Rb3Xo=imif
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD3qk0ACgkQAVBC80lX
-0GxCYwgAnWEyoSuNdNygoZKaJgYnOVd1+z3Ik25QhOBeCANCWlzlO7AMOVy6jO4K
-wEP/CXHhPtvwPp42pisgxnIjbdxnZr7iiXH6shHdzeRZID7QPBUWZwo9zS+4edoN
-Yv4nQK9FNZxqErGybLV7r0fD0SNarXdNIz36YtAv4xjd4bB9cmFPjd+KaAHFjFjH
-NU1SwljH7EqdQdyOVTsmSQXCoxHBqsQMF/9yyOUmC6A+75Ynh73yuJgFstGAPgup
-Ep56esDxA18fh6pLA9a/ZOZQQGtrEx2drr4YrqcHMw9G9smkD7tfQhC9IEJMwfbA
-xOhkMODyOwdDXWOdfqAn270yPGpBbg==
-=dvqy
------END PGP SIGNATURE-----
-
---Sig_/I67XNDAujQVr1Rb3Xo=imif--
+> ---
+>  drivers/md/md.h | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/md/md.h b/drivers/md/md.h
+> index 832547cf038f..cf70e0cfa856 100644
+> --- a/drivers/md/md.h
+> +++ b/drivers/md/md.h
+> @@ -764,9 +764,7 @@ struct md_rdev *md_find_rdev_rcu(struct mddev *mddev, dev_t dev);
+>  
+>  static inline bool is_mddev_broken(struct md_rdev *rdev, const char *md_type)
+>  {
+> -	int flags = rdev->bdev->bd_disk->flags;
+> -
+> -	if (!(flags & GENHD_FL_UP)) {
+> +	if (!blk_disk_added(rdev->bdev->bd_disk)) {
+>  		if (!test_and_set_bit(MD_BROKEN, &rdev->mddev->flags))
+>  			pr_warn("md: %s: %s array has a missing/failed member\n",
+>  				mdname(rdev->mddev), md_type);
+> -- 
+> 2.27.0
+> 
+---end quoted text---
