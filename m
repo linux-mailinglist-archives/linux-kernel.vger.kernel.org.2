@@ -2,118 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22633D1593
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F333D1596
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234468AbhGURM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbhGURM6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:12:58 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D33C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:53:34 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id m68so2860499qke.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:53:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6yFvLCK83EARCEJW2USL66XPk2Snwg9rOn4V8eQnKq4=;
-        b=LmYH4vBpP8tsrP/2QQX/a4c4LvuM1+b4/24JikG+Eg3ffRRWq1sLdvVWqmdZSpffFs
-         zYMHn1k1Y7JSxueTKglktRFPafjcur+BGgT8Ux3LXzZB1CNjBqPF55WMoTS3UHR/naUy
-         5HN4fHlgHkJlsYXgo1YafStP4kmIs1l/2txFBajcHQd5DgvTLQTHypzSg1u2dEsyWtNa
-         1Gnt5R/qqXAZ4zGACvt2zRiwgMwtDzYJEII9SZ5Ev6ztWv9+tg0z29/yQFcibOFahdej
-         SPDfQhV5wiSgG/WdTlqfqtvyXLh0cVDvfnKvx7ZZJF7FSQsGy43aezRKof8MJZkcTPGM
-         o0VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6yFvLCK83EARCEJW2USL66XPk2Snwg9rOn4V8eQnKq4=;
-        b=dNVyRP3HAWwtuKGxhVPaIz002LC0u8RPL5NHOpQ6IyrSaufi+3+JSIgAZc/HDVmm1o
-         2vIdamRsTtP5BTZFzXlnt/mY6t6KnuZAvK9gICm4PIySXtEvPCVn+IMWOjofzjhxweOq
-         ayzrTjsvq83Sp2iujnQmr8MwMhK+Cxei6v2NSjE9z6ynAGdc3sBCxj2mmZL5xW3jIeNP
-         8cSCzBD7mpwMVkBOyQN9dkYU65cAmTnvoU4iDRF/0sYPSOJuIoyHXA7/xaqQOW3yu62x
-         SjRcRpyaNhA35uJl+EQ9FTD5hDoSMxSchYLOdbY3yQr5uHFNhWaLD/OCteUNP6dQG5G+
-         BnNw==
-X-Gm-Message-State: AOAM533wi/C3ZcI2WYKOWYMEdS0ifbcZFhdoMtAcc0ZxaJGW+jfkgWtL
-        2J6/dUxj3nM4DgxnflJqW1mNRQMcJDhG0RBqVe7EAyA3IPPbsw==
-X-Google-Smtp-Source: ABdhPJzkyyOAFQakNLKPpJl5joOFjae/AcNTO5l2I8TPcjJJXSsAIKXc+xGIz33Gsbm9HQbKLCjKhxqfB9nnHVogi3Y=
-X-Received: by 2002:a37:8044:: with SMTP id b65mr22312539qkd.150.1626890013396;
- Wed, 21 Jul 2021 10:53:33 -0700 (PDT)
+        id S236329AbhGURON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:14:13 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:35819 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237163AbhGUROM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 13:14:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626890089; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=n+WomZgsGntNVi2ZamTOte+9Sxr3DS3WUwW5O2gEwCI=; b=VVF3KVHMKhikJYDgssruMYbZ2ZFYMesAdb7fgD/MxQp4gW9AW2IqhW98j1oizBimunFQN1WZ
+ YFyxeWdT/bjCA40wa9Aqx4PFCKI0fk2OXW9oS91LSk6Wlz6z8Odz6c+pAe7qPH6RWar1QuTg
+ Lme9stMmRHOqZ53GW6YxabWqceo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60f85f5ee31d882d184a7f2d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 17:54:38
+ GMT
+Sender: mdtipton=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A3F2AC4338A; Wed, 21 Jul 2021 17:54:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-mdtipton-lv.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdtipton)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C8D96C433D3;
+        Wed, 21 Jul 2021 17:54:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C8D96C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mdtipton@codeaurora.org
+From:   Mike Tipton <mdtipton@codeaurora.org>
+To:     djakov@kernel.org
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        saravanak@google.com, okukatla@codeaurora.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Mike Tipton <mdtipton@codeaurora.org>
+Subject: [PATCH v2 0/4] interconnect: Fix sync-state issues
+Date:   Wed, 21 Jul 2021 10:54:28 -0700
+Message-Id: <20210721175432.2119-1-mdtipton@codeaurora.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210707183616.5620-1-brijesh.singh@amd.com> <20210707183616.5620-27-brijesh.singh@amd.com>
- <YPHpk3RFSmE13ZXz@google.com> <9ee5a991-3e43-3489-5ee1-ff8c66cfabc1@amd.com> <YPWuVY+rKU2/DVUS@google.com>
-In-Reply-To: <YPWuVY+rKU2/DVUS@google.com>
-From:   Marc Orr <marcorr@google.com>
-Date:   Wed, 21 Jul 2021 10:53:22 -0700
-Message-ID: <CAA03e5EW1HUZW7xWbMyYMC1Q+A18G=91qfKT-ew=X0XNGHbVtg@mail.gmail.com>
-Subject: Re: [PATCH Part2 RFC v4 26/40] KVM: SVM: Add KVM_SEV_SNP_LAUNCH_FINISH
- command
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 9:54 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Fri, Jul 16, 2021, Brijesh Singh wrote:
-> >
-> > On 7/16/21 3:18 PM, Sean Christopherson wrote:
-> > > On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> > >> +  data->gctx_paddr = __psp_pa(sev->snp_context);
-> > >> +  ret = sev_issue_cmd(kvm, SEV_CMD_SNP_LAUNCH_FINISH, data, &argp->error);
-> > > Shouldn't KVM unwind everything it did if LAUNCH_FINISH fails?  And if that's
-> > > not possible, take steps to make the VM unusable?
-> >
-> > Well, I am not sure if VM need to unwind. If the command fail but VMM decide
-> > to ignore the error then VMRUN will probably fail and user will get the KVM
-> > shutdown event. The LAUNCH_FINISH command finalizes the VM launch process,
-> > the firmware will probably not load the memory encryption keys until it moves
-> > to the running state.
->
-> Within reason, KVM needs to provide consistent, deterministic behavior.  Yes, more
-> than likely failure at this point will be fatal to the VM, but that doesn't justify
-> leaving the VM in a random/bogus state.  In addition to being a poor ABI, it also
-> makes it more difficult to reason about what is/isn't possible in KVM.
+These patches fix a couple of sync-state bugs that either cause the initial BW
+floors to be ignored entirely, or to be never removed after sync-state is
+called.
 
-+1 to Sean's feedback to unwind everything here properly here.
-Comments of the nature of "XYZ should happen" -- without a test (e.g.,
-selftest or kvm-unit-test) to ensure the XYZ _does_ happen -- are a
-time bomb waiting to happen.
+v2:
+- Move pre_aggregate call to outside the aggregate if statement
 
-Also, I wonder if we leave pages, RMPUPDATE'd to immutable in previous
-loop iterations, is it possible for them to remain as immutable and be
-reused later on (after this guest is destroyed)? And if this happens,
-will we get an RMP violation? Even if the answer is no -- go read this
-code 2,000 lines away -- it handles this case. That's still not a very
-satisfying answer. I'd rather see things cleaned up ASAP as soon as
-the code starts to go off the rails.
+Mike Tipton (4):
+  interconnect: Zero initial BW after sync-state
+  interconnect: Always call pre_aggregate before aggregate
+  interconnect: qcom: icc-rpmh: Ensure floor BW is enforced for all nodes
+  interconnect: qcom: icc-rpmh: Add BCMs to commit list in pre_aggregate
+
+ drivers/interconnect/core.c          |  7 +++++++
+ drivers/interconnect/qcom/icc-rpmh.c | 20 ++++++++++----------
+ 2 files changed, 17 insertions(+), 10 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
