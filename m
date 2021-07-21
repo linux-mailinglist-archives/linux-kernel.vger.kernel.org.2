@@ -2,73 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B878D3D0B22
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E293D0B3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237717AbhGUIT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 04:19:29 -0400
-Received: from mga12.intel.com ([192.55.52.136]:61620 "EHLO mga12.intel.com"
+        id S237853AbhGUIUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 04:20:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236634AbhGUIGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 04:06:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="190980767"
-X-IronPort-AV: E=Sophos;i="5.84,257,1620716400"; 
-   d="scan'208";a="190980767"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 01:42:28 -0700
-X-IronPort-AV: E=Sophos;i="5.84,257,1620716400"; 
-   d="scan'208";a="576286338"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 01:42:27 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m67o5-00GYvS-Op; Wed, 21 Jul 2021 11:42:21 +0300
-Date:   Wed, 21 Jul 2021 11:42:21 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jean Delvare <jdelvare@suse.de>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] i2c: parport: Switch to use
- module_parport_driver()
-Message-ID: <YPfd7aJfvH+NYtl1@smile.fi.intel.com>
-References: <20210712141119.22426-1-andriy.shevchenko@linux.intel.com>
- <20210721102146.66a486bc@endymion>
- <YPfc2eBjc4I2ycKV@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPfc2eBjc4I2ycKV@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S235143AbhGUINs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 04:13:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCD5061029;
+        Wed, 21 Jul 2021 08:42:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626856982;
+        bh=zaxBgl0zmqFoRCTU1TKbNY9Ob5tCMwIxamYH6mVMFV8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LG0eVYN12xOURN7r0bA3jJ7dGpw6SpSOR7sqA+lH7bme3QHLolqgA5zAzqch+nu3x
+         zYgRbEk2OzWL0uVLFKCk4/kgy8z0jQpK/tcBYiw13cFSR86sZA93nWU078G2HuH6oy
+         rvqswbeX+wuCupd+z8FqCIWX9QGHbmhm0pjoUmahPDcy5YSqOPUDq513sljul05OE8
+         VwwJl42IvVDviDvRyYsLw573rDW1lGXu87vAM+m5lCPgXrYIYf4SjYCz6MucYQ/p6F
+         13lQ2lQ8tC0H1F+ZUFKDQprGCfwQpCS4KhafHjFrX0ljrHBXGOJfyGZLnc0glgeW3+
+         L1pZzXedGEysQ==
+Date:   Wed, 21 Jul 2021 17:42:58 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH -tip v2 0/6] kprobes: treewide: Clean up kprobe code
+Message-Id: <20210721174258.0fc04b1ab8d8c3ebcba6295e@kernel.org>
+In-Reply-To: <162598881438.1222130.11530594038964049135.stgit@devnote2>
+References: <162598881438.1222130.11530594038964049135.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 11:37:45AM +0300, Andy Shevchenko wrote:
-> On Wed, Jul 21, 2021 at 10:21:46AM +0200, Jean Delvare wrote:
-> > On Mon, 12 Jul 2021 17:11:19 +0300, Andy Shevchenko wrote:
-> > > Switch to use module_parport_driver() to reduce boilerplate code.
-> > 
-> > This has the downside of moving the sanity check of the type parameter
-> > to run time, instead of driver load time. In particular this means that
-> > loading the i2c-parport driver without specifying the type will no
-> > longer fail.
+Hi,
+
+On Sun, 11 Jul 2021 16:33:34 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Hi,
 > 
-> And this is actually an advantage of the change if you think about it.
-> Now we can have a module that won't fail at boot time and give the user
-> a chance to amend parameter at run time if it was wrong at boot time.
+> Here is the 2nd series of patches to cleanup the kprobes code. Previous
+> version is here.
+> 
+>  https://lore.kernel.org/bpf/162592891873.1158485.768824457210707916.stgit@devnote2/
+> 
+> This version is just add a cleanup of trace_kprobes to the [6/6], thanks
+> Joe to find it out!
 
-Okay, for built-in driver it might require to check and fix permissions
-of the parameter sysfs node (currently 0).
+Does anyone have any comments? Or should I make a pull request for this change?
 
-> > The driver will load successfully, but won't do anything.
-> > 
-> > While I prefer user errors to be reported as soon as possible, I don't
-> > really mind here, as parallel port drivers are not something worth
-> > debating over at this point in time. As a matter of fact, I can't
-> > possibly test this change as I no longer have a parallel port on any of
-> > my systems.
+Thank you,
+
+> 
+> 
+> Thank you,
+> 
+> ---
+> 
+> Masami Hiramatsu (6):
+>       kprobes: treewide: Cleanup the error messages for kprobes
+>       kprobes: Fix coding style issues
+>       kprobes: Use IS_ENABLED() instead of kprobes_built_in()
+>       kprobes: Add assertions for required lock
+>       kprobes: treewide: Use 'kprobe_opcode_t *' for the code address in get_optimized_kprobe()
+>       kprobes: Use bool type for functions which returns boolean value
+> 
+> 
+>  arch/arm/probes/kprobes/core.c     |    4 
+>  arch/arm/probes/kprobes/opt-arm.c  |    7 -
+>  arch/arm64/kernel/probes/kprobes.c |    5 -
+>  arch/csky/kernel/probes/kprobes.c  |   10 +
+>  arch/mips/kernel/kprobes.c         |   11 +
+>  arch/powerpc/kernel/optprobes.c    |    6 -
+>  arch/riscv/kernel/probes/kprobes.c |   11 +
+>  arch/s390/kernel/kprobes.c         |    4 
+>  arch/x86/kernel/kprobes/opt.c      |    6 -
+>  include/linux/kprobes.h            |   64 +++----
+>  kernel/kprobes.c                   |  315 +++++++++++++++++++-----------------
+>  kernel/trace/trace_kprobe.c        |    2 
+>  12 files changed, 227 insertions(+), 218 deletions(-)
+> 
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Masami Hiramatsu <mhiramat@kernel.org>
