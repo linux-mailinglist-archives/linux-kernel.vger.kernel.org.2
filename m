@@ -2,67 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480D43D1906
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D736B3D1907
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhGUUrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:47:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhGUUrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 16:47:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC0576120C;
-        Wed, 21 Jul 2021 21:27:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626902875;
-        bh=yBd/HwZEfIX5sh0k8B0keM9qnHKxrJmqgW07M/2+iDY=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=nWm7ZnR7q1dCSXHFCrN9L4swRj0ZII1biK7KsVbd2H8qYpGP9fiFkVNMAjhSqmpXv
-         h1Rf2UES9mmrRuQyop+acJGPQXG00X/ZmS+GEHXBzIdXaJ+36BeBLVc6CwEvFHOYe9
-         xwVbQaLUJY7ZtbjjBZosr+k6m5G0ujOdmnHkCxAldvqTOOlpCLKeFhGFOKzewo4vmt
-         1RmVGX/zpygQT4B7WMRsSH4Ni68v35eY1naXo8zraYWI+OqxEDF2fOskFnzMS8Gz+n
-         PskQuLICRT+hJ4GM8hRU0QWwU8ykbch1E59nPUEQtqoc/a3NBJ3Vz7ZrN4KeVnwdFF
-         FdCXcEDNTkUQA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A1D635C09A4; Wed, 21 Jul 2021 14:27:55 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 14:27:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com
-Subject: [PATCH v15 clocksource] Prohibit clocksource watchdog test when
- HZ<100
-Message-ID: <20210721212755.GA2066078@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        id S229779AbhGUUrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhGUUrv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 16:47:51 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE759C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 14:28:27 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id b12so2103617plh.10
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 14:28:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=m52PtSGS5i2ngVfsBQ5ZUPxnRYkxsgX69pi1tPp/x28=;
+        b=EkRmTC23UJLa27xiqrDPH9e0nL/5dbsaIMYECtzNpfQdqxU0y++VvIo9t3iZOZasl4
+         jYpw45BVN3QaRitxTs3cwM8dzEJ2XqP31EZxKQ7iA3MxjV5p229J+WehsDebrvcj7VG9
+         IFHImvsX9TSaZrJekSbBMbLHBqoIUFhU5393LxtR0GoWKzmQz2HQdZq6/oQCP1/8P/Ui
+         wvRREhKgvtgIRbz96NCsgk/6a24bn9bmZrob2IZzZY31nKdoscikPvIXNGvT2TOY3X5R
+         jZkyiU86yysTbPsDId8Uw/VFPTacnJshMELqVIB/27u9v+L/DZgQAv6fZn0RfgfbXARd
+         6M5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m52PtSGS5i2ngVfsBQ5ZUPxnRYkxsgX69pi1tPp/x28=;
+        b=L0/oxpqzrEz9zARROF5y4meNzzieuvWQr/6BAFITKjjXlqMNBTymm7SaQ4LtVoBTJN
+         lcgRL4hlQIQIvf0KBuVxzJhJ24bsQ81/4Zhb07NCzBR2atLH0e7EeLRRBnuYposXrLeC
+         +WFT5hVtec2ZEySHjAoabf9NdZ0xPXw0Hf1Hp833lXhYSYMFdBcN9UsmSu5LHV1BXo+p
+         JHCdvkNowJ6YZBCsWZD5wB1XMA2Q1cdM87ptx8wR312Bzcam7tHEIiTH+aR0qeiIquE8
+         AiZdKzSzapohOQ6p9cixg9lpB6AjJvbsY22EtRFQoZ9QN9cq4ucDqPvzltOi37UTKfOg
+         XuVQ==
+X-Gm-Message-State: AOAM533ewyuiqZuKM9HUdjP+SZzSGQwZ6EXx0abrKmhgPk1VUThSRK+3
+        SRGg2gkQxHYI7LJ/PTZBUU7alA==
+X-Google-Smtp-Source: ABdhPJzsoonsfnNjS3Ej+And/W99sgjoE8mLSxLOu98GqGpd3UXFs6LJBzdPMDQ7TgaGj3mTUb7RMA==
+X-Received: by 2002:a65:6a0d:: with SMTP id m13mr38552756pgu.356.1626902907296;
+        Wed, 21 Jul 2021 14:28:27 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id w18sm25716948pjg.50.2021.07.21.14.28.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 14:28:26 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 21:28:22 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yu Zhang <yu.c.zhang@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "KVM: x86: WARN and reject loading KVM if NX is
+ supported but not enabled"
+Message-ID: <YPiRdiG0uFFNGtmN@google.com>
+References: <20210625001853.318148-1-seanjc@google.com>
+ <28ec9d07-756b-f546-dad1-0af751167838@redhat.com>
+ <YOiFsB9vZgMcpJZu@google.com>
+ <20210712075223.hqqoi4yp4fkkhrt5@linux.intel.com>
+ <YOxThZrKeyONVe4i@google.com>
+ <20210713035944.l7qa7q4qsmqywg6u@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210713035944.l7qa7q4qsmqywg6u@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted in a comment, use of the TEST_CLOCKSOURCE_WATCHDOG kconfig
-option is prohibited when HZ is less than 100 in order to avoid signed
-integer overflow.  However, comments can easily be ignored even when they
-are actually read.  Therefore, add a "depends" clause to prohibit use
-of the TEST_CLOCKSOURCE_WATCHDOG kconfig option when HZ is less than 100.
+On Tue, Jul 13, 2021, Yu Zhang wrote:
+> On Mon, Jul 12, 2021 at 02:36:53PM +0000, Sean Christopherson wrote:
+> > On Mon, Jul 12, 2021, Yu Zhang wrote:
+> > > Why do we need EFER in that case? Thanks! :)
+> > 
+> > Because as you rightly remembered above, KVM always uses PAE paging for the guest,
+> > even when the host is !PAE.  And KVM also requires EFER.NX=1 for the guest when
+> > using shadow paging to handle a potential SMEP and !WP case.  
+> 
+> Just saw this in update_transition_efer(), which now enables efer.nx in shadow
+> unconditionally. But I guess the host kernel still needs to set efer.nx for
+> !PAE(e.g. in head_32.S),
 
-Reported-by: kernel test robot <lkp@intel.com>
-Tested-by: Rong Chen <rong.a.chen@intel.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Link: https://lore.kernel.org/lkml/202107040532.wqL30yFp-lkp@intel.com/
+Yep, and that's what I messed up.
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 831212722924c..79487f3dad430 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2612,6 +2612,7 @@ config TEST_FPU
- config TEST_CLOCKSOURCE_WATCHDOG
- 	tristate "Test clocksource watchdog in kernel space"
- 	depends on CLOCKSOURCE_WATCHDOG
-+	depends on HZ >= 100
- 	help
- 	  Enable this option to create a kernel module that will trigger
- 	  a test of the clocksource watchdog.  This module may be loaded
+> because the guest may not touch efer at all. Is this correct?
+
+KVM doesn't require EFER.NX "because the guest may not touch efer at all", it
+requires EFER.NX to handle scenarios where KVM needs to make a guest page
+!EXECUTABLE even if EFER is not exposed to the guest (thanks to SMEP && !WP).
