@@ -2,243 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0773D0B5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C3E3D0B64
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237612AbhGUIe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 04:34:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236904AbhGUI1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 04:27:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F33A6120E;
-        Wed, 21 Jul 2021 09:07:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626858464;
-        bh=hmBTCuYmdKT0R/A7MnX2mud32dN03kh+Obf31pt3ank=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QQo+Zb7cetEQOqBOm53Uh77CVnEicfR1sx6QMRjDrva+kgUiEu08neoQaodyHM2o5
-         xW9YPluvymm61tDeouLPT4vWLyOZMaHxHhwUGiiTYqCG63Jbl6zuRiGAvNV+UOaXJi
-         19f4RK4wwaNmuhng0K1IRIUCAMryFjvUUU+wY+Qc6caJm+/RXiWVAPzUlAluKchYUv
-         Dkkop/UDQtXwotZT4sLQE/6M0zm9DmoMosOpTDmRSBz5PU6bdHXm0WsOo3DGdoEPLt
-         4oZo3bXOlohFNnrMwxRfUH3Vx9dBjspeCBE3/gCjmJA1Rw6+bEw6JycpPv4iO9JCNB
-         pN7gf2Fgvsi/g==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Mark Zhang <markz@mellanox.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH rdma-next v1 7/7] RDMA/core: Create clean QP creations interface for uverbs
-Date:   Wed, 21 Jul 2021 12:07:10 +0300
-Message-Id: <f8d72abd9097e6a3aefa457425e721bea402dbe3.1626857976.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1626857976.git.leonro@nvidia.com>
-References: <cover.1626857976.git.leonro@nvidia.com>
+        id S238038AbhGUIjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 04:39:39 -0400
+Received: from lucky1.263xmail.com ([211.157.147.133]:51090 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236744AbhGUI1z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 04:27:55 -0400
+Received: from localhost (unknown [192.168.167.70])
+        by lucky1.263xmail.com (Postfix) with ESMTP id AA31CD604A;
+        Wed, 21 Jul 2021 17:07:58 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by smtp.263.net (postfix) whith ESMTP id P13644T140561998673664S1626858476493763_;
+        Wed, 21 Jul 2021 17:07:57 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <677266e43cc6ebe63ae9c4eeb930a4f8>
+X-RL-SENDER: chenhaoa@uniontech.com
+X-SENDER: chenhaoa@uniontech.com
+X-LOGIN-NAME: chenhaoa@uniontech.com
+X-FST-TO: peppe.cavallaro@st.com
+X-RCPT-COUNT: 12
+X-SENDER-IP: 113.57.152.160
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Hao Chen <chenhaoa@uniontech.com>
+To:     peppe.cavallaro@st.com
+Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, qiangqing.zhang@nxp.com,
+        Hao Chen <chenhaoa@uniontech.com>
+Subject: [net,v6] net: stmmac: fix 'ethtool -P' return -EBUSY
+Date:   Wed, 21 Jul 2021 17:07:14 +0800
+Message-Id: <20210721090714.17416-1-chenhaoa@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+I want to get permanent MAC address when the card is down. And I think
+it is more convenient to get statistics in the down state by 'ethtool -S'.
+But current all of the ethool command return -EBUSY.
 
-Unify create QP creation interface to make clean approach to create
-XRC_TGT and regular QPs.
+I don't think we should detect that the network card is up in '. Begin',
+which will cause that all the ethtool commands can't be used when the
+network card is down. If some ethtool commands can only be used in the
+up state, check it in the corresponding ethool OPS function is better.
+This is too rude and unreasonable.
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+I have checked the '. Begin' implementation of other drivers, most of which
+support the submission of NIC driver for the first time.
+They are too old to know why '. Begin' is implemented. I suspect that they
+have not noticed the usage of '. Begin'.
+
+Fixes: 47dd7a540b8a ("net: add support for STMicroelectronics Ethernet
+		     controllers.")
+
+Compile-tested on arm64. Tested on an arm64 system with an on-board
+STMMAC chip.
+
+Changes v5 ... v6:
+- The 4.19.90 kernel not support pm_runtime, so implemente '.begin' and
+  '.complete' again. Add return value check of pm_runtime function.
+
+Changes v4 ... v5:
+- test the '.begin' will return -13 error on my machine based on 4.19.90
+  kernel. The platform driver does not supported pm_runtime. So remove the
+  implementation of '.begin' and '.complete'.
+
+Changes v3 ... v4:
+- implement '.complete' ethtool OPS.
+
+Changes v2 ... v3:
+- add linux/pm_runtime.h head file.
+
+Changes v1 ... v2:
+- fix spell error of dev.
+
+Signed-off-by: Hao Chen <chenhaoa@uniontech.com>
 ---
- drivers/infiniband/core/core_priv.h           |  9 +--
- drivers/infiniband/core/uverbs_cmd.c          | 13 +---
- drivers/infiniband/core/uverbs_std_types_qp.c | 10 +--
- drivers/infiniband/core/verbs.c               | 72 +++++++++++--------
- 4 files changed, 52 insertions(+), 52 deletions(-)
+ .../ethernet/stmicro/stmmac/stmmac_ethtool.c  | 21 +++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index d8f464b43dbc..f66f48d860ec 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -316,10 +316,11 @@ struct ib_device *ib_device_get_by_index(const struct net *net, u32 index);
- void nldev_init(void);
- void nldev_exit(void);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+index d0ce608b81c3..e969bde36507 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+@@ -12,8 +12,9 @@
+ #include <linux/ethtool.h>
+ #include <linux/interrupt.h>
+ #include <linux/mii.h>
+-#include <linux/phylink.h>
+ #include <linux/net_tstamp.h>
++#include <linux/phylink.h>
++#include <linux/pm_runtime.h>
+ #include <asm/io.h>
  
--struct ib_qp *_ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
--			    struct ib_qp_init_attr *attr,
--			    struct ib_udata *udata, struct ib_uqp_object *uobj,
--			    const char *caller);
-+struct ib_qp *ib_create_qp_user(struct ib_device *dev, struct ib_pd *pd,
-+				struct ib_qp_init_attr *attr,
-+				struct ib_udata *udata,
-+				struct ib_uqp_object *uobj, const char *caller);
-+
- void ib_qp_usecnt_inc(struct ib_qp *qp);
- void ib_qp_usecnt_dec(struct ib_qp *qp);
+ #include "stmmac.h"
+@@ -410,11 +411,18 @@ static void stmmac_ethtool_setmsglevel(struct net_device *dev, u32 level)
  
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 62cafd768d89..740e6b2efe0e 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -1435,23 +1435,14 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
- 		attr.source_qpn = cmd->source_qpn;
- 	}
- 
--	if (cmd->qp_type == IB_QPT_XRC_TGT)
--		qp = ib_create_qp(pd, &attr);
--	else
--		qp = _ib_create_qp(device, pd, &attr, &attrs->driver_udata, obj,
--				   NULL);
--
-+	qp = ib_create_qp_user(device, pd, &attr, &attrs->driver_udata, obj,
-+			       KBUILD_MODNAME);
- 	if (IS_ERR(qp)) {
- 		ret = PTR_ERR(qp);
- 		goto err_put;
- 	}
- 	ib_qp_usecnt_inc(qp);
- 
--	if (cmd->qp_type == IB_QPT_XRC_TGT) {
--		/* It is done in _ib_create_qp for other QP types */
--		qp->uobject = obj;
--	}
--
- 	obj->uevent.uobject.object = qp;
- 	obj->uevent.event_file = READ_ONCE(attrs->ufile->default_async_file);
- 	if (obj->uevent.event_file)
-diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
-index a0e734735ba5..dd1075466f61 100644
---- a/drivers/infiniband/core/uverbs_std_types_qp.c
-+++ b/drivers/infiniband/core/uverbs_std_types_qp.c
-@@ -248,12 +248,8 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
- 	set_caps(&attr, &cap, true);
- 	mutex_init(&obj->mcast_lock);
- 
--	if (attr.qp_type == IB_QPT_XRC_TGT)
--		qp = ib_create_qp(pd, &attr);
--	else
--		qp = _ib_create_qp(device, pd, &attr, &attrs->driver_udata, obj,
--				   NULL);
--
-+	qp = ib_create_qp_user(device, pd, &attr, &attrs->driver_udata, obj,
-+			       KBUILD_MODNAME);
- 	if (IS_ERR(qp)) {
- 		ret = PTR_ERR(qp);
- 		goto err_put;
-@@ -264,8 +260,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
- 		obj->uxrcd = container_of(xrcd_uobj, struct ib_uxrcd_object,
- 					  uobject);
- 		atomic_inc(&obj->uxrcd->refcnt);
--		/* It is done in _ib_create_qp for other QP types */
--		qp->uobject = obj;
- 	}
- 
- 	obj->uevent.uobject.object = qp;
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 65e344920513..fa07bdd23104 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1200,21 +1200,10 @@ static struct ib_qp *create_xrc_qp_user(struct ib_qp *qp,
- 	return qp;
  }
  
--/**
-- * _ib_create_qp - Creates a QP associated with the specified protection domain
-- * @dev: IB device
-- * @pd: The protection domain associated with the QP.
-- * @attr: A list of initial attributes required to create the
-- *   QP.  If QP creation succeeds, then the attributes are updated to
-- *   the actual capabilities of the created QP.
-- * @udata: User data
-- * @uobj: uverbs obect
-- * @caller: caller's build-time module name
-- */
--struct ib_qp *_ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
--			    struct ib_qp_init_attr *attr,
--			    struct ib_udata *udata, struct ib_uqp_object *uobj,
--			    const char *caller)
-+static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
-+			       struct ib_qp_init_attr *attr,
-+			       struct ib_udata *udata,
-+			       struct ib_uqp_object *uobj, const char *caller)
+-static int stmmac_check_if_running(struct net_device *dev)
++static int stmmac_ethtool_begin(struct net_device *dev)
  {
- 	struct ib_udata dummy = {};
- 	struct ib_qp *qp;
-@@ -1273,7 +1262,43 @@ struct ib_qp *_ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
- 	return ERR_PTR(ret);
- 
- }
--EXPORT_SYMBOL(_ib_create_qp);
+-	if (!netif_running(dev))
+-		return -EBUSY;
+-	return 0;
++	struct stmmac_priv *priv = netdev_priv(dev);
 +
-+/**
-+ * ib_create_qp_user - Creates a QP associated with the specified protection
-+ *   domain.
-+ * @dev: IB device
-+ * @pd: The protection domain associated with the QP.
-+ * @attr: A list of initial attributes required to create the
-+ *   QP.  If QP creation succeeds, then the attributes are updated to
-+ *   the actual capabilities of the created QP.
-+ * @udata: User data
-+ * @uobj: uverbs obect
-+ * @caller: caller's build-time module name
-+ */
-+struct ib_qp *ib_create_qp_user(struct ib_device *dev, struct ib_pd *pd,
-+				struct ib_qp_init_attr *attr,
-+				struct ib_udata *udata,
-+				struct ib_uqp_object *uobj, const char *caller)
-+{
-+	struct ib_qp *qp, *xrc_qp;
-+
-+	if (attr->qp_type == IB_QPT_XRC_TGT)
-+		qp = create_qp(dev, pd, attr, NULL, NULL, caller);
-+	else
-+		qp = create_qp(dev, pd, attr, udata, uobj, NULL);
-+	if (attr->qp_type != IB_QPT_XRC_TGT || IS_ERR(qp))
-+		return qp;
-+
-+	xrc_qp = create_xrc_qp_user(qp, attr);
-+	if (IS_ERR(xrc_qp)) {
-+		ib_destroy_qp(qp);
-+		return xrc_qp;
-+	}
-+
-+	xrc_qp->uobject = uobj;
-+	return xrc_qp;
++	return pm_runtime_resume_and_get(dev);
 +}
-+EXPORT_SYMBOL(ib_create_qp_user);
++
++static void stmmac_ethtool_complete(struct net_device *dev)
++{
++	struct stmmac_priv *priv = netdev_priv(dev);
++
++	pm_runtime_put(priv->device);
+ }
  
- void ib_qp_usecnt_inc(struct ib_qp *qp)
- {
-@@ -1309,7 +1334,7 @@ struct ib_qp *ib_create_qp_kernel(struct ib_pd *pd,
- 				  struct ib_qp_init_attr *qp_init_attr,
- 				  const char *caller)
- {
--	struct ib_device *device = pd ? pd->device : qp_init_attr->xrcd->device;
-+	struct ib_device *device = pd->device;
- 	struct ib_qp *qp;
- 	int ret;
- 
-@@ -1322,21 +1347,10 @@ struct ib_qp *ib_create_qp_kernel(struct ib_pd *pd,
- 	if (qp_init_attr->cap.max_rdma_ctxs)
- 		rdma_rw_init_qp(device, qp_init_attr);
- 
--	qp = _ib_create_qp(device, pd, qp_init_attr, NULL, NULL, caller);
-+	qp = create_qp(device, pd, qp_init_attr, NULL, NULL, caller);
- 	if (IS_ERR(qp))
- 		return qp;
- 
--	if (qp_init_attr->qp_type == IB_QPT_XRC_TGT) {
--		struct ib_qp *xrc_qp =
--			create_xrc_qp_user(qp, qp_init_attr);
--
--		if (IS_ERR(xrc_qp)) {
--			ret = PTR_ERR(xrc_qp);
--			goto err;
--		}
--		return xrc_qp;
--	}
--
- 	ib_qp_usecnt_inc(qp);
- 
- 	if (qp_init_attr->cap.max_rdma_ctxs) {
+ static int stmmac_ethtool_get_regs_len(struct net_device *dev)
+@@ -1073,7 +1081,8 @@ static int stmmac_set_tunable(struct net_device *dev,
+ static const struct ethtool_ops stmmac_ethtool_ops = {
+ 	.supported_coalesce_params = ETHTOOL_COALESCE_USECS |
+ 				     ETHTOOL_COALESCE_MAX_FRAMES,
+-	.begin = stmmac_check_if_running,
++	.begin = stmmac_ethtool_begin,
++	.complete = stmmac_ethtool_complete,
+ 	.get_drvinfo = stmmac_ethtool_getdrvinfo,
+ 	.get_msglevel = stmmac_ethtool_getmsglevel,
+ 	.set_msglevel = stmmac_ethtool_setmsglevel,
 -- 
-2.31.1
+2.20.1
+
+
 
