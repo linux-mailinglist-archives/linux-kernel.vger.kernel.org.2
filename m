@@ -2,225 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910503D0AD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A003D0AE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236333AbhGUIBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 04:01:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:48564 "EHLO foss.arm.com"
+        id S236773AbhGUING (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 04:13:06 -0400
+Received: from mga04.intel.com ([192.55.52.120]:29425 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236024AbhGUHza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:55:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 585421FB;
-        Wed, 21 Jul 2021 01:35:57 -0700 (PDT)
-Received: from [10.57.38.215] (unknown [10.57.38.215])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB5173F694;
-        Wed, 21 Jul 2021 01:35:54 -0700 (PDT)
-Subject: Re: [PATCH 6/6] perf cs-etm: Pass unformatted flag to decoder
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     acme@kernel.org, coresight@lists.linaro.org, leo.yan@linaro.org,
-        al.grant@arm.com, branislav.rankov@arm.com, suzuki.poulose@arm.com,
-        anshuman.khandual@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210713154008.29656-1-james.clark@arm.com>
- <20210713154008.29656-7-james.clark@arm.com> <20210720154539.GC2296792@p14s>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <2af8d1ee-6dd0-42b5-6882-2396df8c07bc@arm.com>
-Date:   Wed, 21 Jul 2021 09:35:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S236899AbhGUH5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 03:57:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="209494670"
+X-IronPort-AV: E=Sophos;i="5.84,257,1620716400"; 
+   d="scan'208";a="209494670"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 01:37:52 -0700
+X-IronPort-AV: E=Sophos;i="5.84,257,1620716400"; 
+   d="scan'208";a="470087364"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 01:37:51 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m67jd-00GYqL-0s; Wed, 21 Jul 2021 11:37:45 +0300
+Date:   Wed, 21 Jul 2021 11:37:45 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jean Delvare <jdelvare@suse.de>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] i2c: parport: Switch to use
+ module_parport_driver()
+Message-ID: <YPfc2eBjc4I2ycKV@smile.fi.intel.com>
+References: <20210712141119.22426-1-andriy.shevchenko@linux.intel.com>
+ <20210721102146.66a486bc@endymion>
 MIME-Version: 1.0
-In-Reply-To: <20210720154539.GC2296792@p14s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210721102146.66a486bc@endymion>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 20/07/2021 16:45, Mathieu Poirier wrote:
-> On Tue, Jul 13, 2021 at 04:40:08PM +0100, James Clark wrote:
->> The TRBE (Trace Buffer Extension) feature allows a separate trace buffer
->> for each trace source, therefore the trace wouldn't need to be
->> formatted. The driver was introduced in commit 3fbf7f011f24
->> ("coresight: sink: Add TRBE driver").
->>
->> The formatted/unformatted mode is encoded in one of the flags of the
->> AUX record. The first AUX record encountered for each event is used to
->> determine the mode, and this will persist for the remaining trace that
->> is either decoded or dumped.
->>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> ---
->>  tools/perf/util/cs-etm.c | 42 +++++++++++++++++++++++++++-------------
->>  1 file changed, 29 insertions(+), 13 deletions(-)
->>
->> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
->> index 760050ea936d..62769a84a53f 100644
->> --- a/tools/perf/util/cs-etm.c
->> +++ b/tools/perf/util/cs-etm.c
->> @@ -461,13 +461,14 @@ static void cs_etm__set_trace_param_etmv4(struct cs_etm_trace_params *t_params,
->>  }
->>  
->>  static int cs_etm__init_trace_params(struct cs_etm_trace_params *t_params,
->> -				     struct cs_etm_auxtrace *etm)
->> +				     struct cs_etm_auxtrace *etm,
->> +				     int decoders_per_cpu)
->>  {
->>  	int i;
->>  	u32 etmidr;
->>  	u64 architecture;
->>  
->> -	for (i = 0; i < etm->num_cpu; i++) {
->> +	for (i = 0; i < decoders_per_cpu; i++) {
->>  		architecture = etm->metadata[i][CS_ETM_MAGIC];
->>  
->>  		switch (architecture) {
->> @@ -488,7 +489,8 @@ static int cs_etm__init_trace_params(struct cs_etm_trace_params *t_params,
->>  
->>  static int cs_etm__init_decoder_params(struct cs_etm_decoder_params *d_params,
->>  				       struct cs_etm_queue *etmq,
->> -				       enum cs_etm_decoder_operation mode)
->> +				       enum cs_etm_decoder_operation mode,
->> +				       bool formatted)
->>  {
->>  	int ret = -EINVAL;
->>  
->> @@ -498,7 +500,7 @@ static int cs_etm__init_decoder_params(struct cs_etm_decoder_params *d_params,
->>  	d_params->packet_printer = cs_etm__packet_dump;
->>  	d_params->operation = mode;
->>  	d_params->data = etmq;
->> -	d_params->formatted = true;
->> +	d_params->formatted = formatted;
->>  	d_params->fsyncs = false;
->>  	d_params->hsyncs = false;
->>  	d_params->frame_aligned = true;
->> @@ -720,11 +722,13 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
->>  	return len;
->>  }
->>  
->> -static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
->> +static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm,
->> +						bool formatted)
->>  {
->>  	struct cs_etm_decoder_params d_params;
->>  	struct cs_etm_trace_params  *t_params = NULL;
->>  	struct cs_etm_queue *etmq;
->> +	int decoders_per_cpu = formatted ? etm->num_cpu : 1;
+On Wed, Jul 21, 2021 at 10:21:46AM +0200, Jean Delvare wrote:
+> Hi Andy,
 > 
-> I really tripped on the name "decoders_per_cpu", to a point where I had to
-> review the current code before looking at this patch.  I find the "_per_cpu"
-> part especially puzzling.  In the end the variable determines the amount of
-> decoders to instantiate for a specific queue...  
+> On Mon, 12 Jul 2021 17:11:19 +0300, Andy Shevchenko wrote:
+> > Switch to use module_parport_driver() to reduce boilerplate code.
 > 
-> Couldn't it be just "decoders"?  Or maybe it just needs a little comment to
-> disambiguate things?
+> This has the downside of moving the sanity check of the type parameter
+> to run time, instead of driver load time. In particular this means that
+> loading the i2c-parport driver without specifying the type will no
+> longer fail.
+
+And this is actually an advantage of the change if you think about it.
+Now we can have a module that won't fail at boot time and give the user
+a chance to amend parameter at run time if it was wrong at boot time.
+
+> The driver will load successfully, but won't do anything.
 > 
-
-Yeah I think just decoders will be good if I add a comment explaining why there is
-a difference with formatted vs unformatted. I will re-submit with the change.
-
-Thanks for the reviews.
-
-James
-
-> Thanks,
-> Mathieu
+> While I prefer user errors to be reported as soon as possible, I don't
+> really mind here, as parallel port drivers are not something worth
+> debating over at this point in time. As a matter of fact, I can't
+> possibly test this change as I no longer have a parallel port on any of
+> my systems.
 > 
->>  
->>  	etmq = zalloc(sizeof(*etmq));
->>  	if (!etmq)
->> @@ -735,21 +739,23 @@ static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
->>  		goto out_free;
->>  
->>  	/* Use metadata to fill in trace parameters for trace decoder */
->> -	t_params = zalloc(sizeof(*t_params) * etm->num_cpu);
->> +	t_params = zalloc(sizeof(*t_params) * decoders_per_cpu);
->>  
->>  	if (!t_params)
->>  		goto out_free;
->>  
->> -	if (cs_etm__init_trace_params(t_params, etm))
->> +	if (cs_etm__init_trace_params(t_params, etm, decoders_per_cpu))
->>  		goto out_free;
->>  
->>  	/* Set decoder parameters to decode trace packets */
->>  	if (cs_etm__init_decoder_params(&d_params, etmq,
->>  					dump_trace ? CS_ETM_OPERATION_PRINT :
->> -						     CS_ETM_OPERATION_DECODE))
->> +						     CS_ETM_OPERATION_DECODE,
->> +					formatted))
->>  		goto out_free;
->>  
->> -	etmq->decoder = cs_etm_decoder__new(etm->num_cpu, &d_params, t_params);
->> +	etmq->decoder = cs_etm_decoder__new(decoders_per_cpu, &d_params,
->> +					    t_params);
->>  
->>  	if (!etmq->decoder)
->>  		goto out_free;
->> @@ -777,14 +783,15 @@ static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
->>  
->>  static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
->>  			       struct auxtrace_queue *queue,
->> -			       unsigned int queue_nr)
->> +			       unsigned int queue_nr,
->> +			       bool formatted)
->>  {
->>  	struct cs_etm_queue *etmq = queue->priv;
->>  
->>  	if (list_empty(&queue->head) || etmq)
->>  		return 0;
->>  
->> -	etmq = cs_etm__alloc_queue(etm);
->> +	etmq = cs_etm__alloc_queue(etm, formatted);
->>  
->>  	if (!etmq)
->>  		return -ENOMEM;
->> @@ -2430,8 +2437,14 @@ static int cs_etm__process_auxtrace_event(struct perf_session *session,
->>  		if (err)
->>  			return err;
->>  
->> +		/*
->> +		 * Knowing if the trace is formatted or not requires a lookup of
->> +		 * the aux record so only works in non-piped mode where data is
->> +		 * queued in cs_etm__queue_aux_records(). Always assume
->> +		 * formatted in piped mode (true).
->> +		 */
->>  		err = cs_etm__setup_queue(etm, &etm->queues.queue_array[idx],
->> -					  idx);
->> +					  idx, true);
->>  		if (err)
->>  			return err;
->>  
->> @@ -2678,6 +2691,7 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session, off_t file_o
->>  	union perf_event auxtrace_fragment;
->>  	__u64 aux_offset, aux_size;
->>  	__u32 idx;
->> +	bool formatted;
->>  
->>  	struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
->>  						   struct cs_etm_auxtrace,
->> @@ -2745,7 +2759,9 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session, off_t file_o
->>  			return err;
->>  
->>  		idx = auxtrace_event->idx;
->> -		return cs_etm__setup_queue(etm, &etm->queues.queue_array[idx], idx);
->> +		formatted = !(aux_event->flags & PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
->> +		return cs_etm__setup_queue(etm, &etm->queues.queue_array[idx],
->> +					   idx, formatted);
->>  	}
->>  
->>  	/* Wasn't inside this buffer, but there were no parse errors. 1 == 'not found' */
->> -- 
->> 2.28.0
->>
+> So if that's the direction we want to take then so be it.
+> 
+> Reviewed-by: Jean Delvare <jdelvare@suse.de>
+
+Thanks!
+
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > ---
+> > v2: fixed compilation error (Jean, LKP)
+> >  drivers/i2c/busses/i2c-parport.c | 36 ++++++++++----------------------
+> >  1 file changed, 11 insertions(+), 25 deletions(-)
+> > 
+> > diff --git a/drivers/i2c/busses/i2c-parport.c b/drivers/i2c/busses/i2c-parport.c
+> > index a535889acca6..231145c48728 100644
+> > --- a/drivers/i2c/busses/i2c-parport.c
+> > +++ b/drivers/i2c/busses/i2c-parport.c
+> > @@ -267,6 +267,16 @@ static void i2c_parport_attach(struct parport *port)
+> >  	int i;
+> >  	struct pardev_cb i2c_parport_cb;
+> >  
+> > +	if (type < 0) {
+> > +		pr_warn("adapter type unspecified\n");
+> > +		return;
+> > +	}
+> > +
+> > +	if (type >= ARRAY_SIZE(adapter_parm)) {
+> > +		pr_warn("invalid type (%d)\n", type);
+> > +		return;
+> > +	}
+> > +
+> >  	for (i = 0; i < MAX_DEVICE; i++) {
+> >  		if (parport[i] == -1)
+> >  			continue;
+> > @@ -392,32 +402,8 @@ static struct parport_driver i2c_parport_driver = {
+> >  	.detach = i2c_parport_detach,
+> >  	.devmodel = true,
+> >  };
+> > -
+> > -/* ----- Module loading, unloading and information ------------------------ */
+> > -
+> > -static int __init i2c_parport_init(void)
+> > -{
+> > -	if (type < 0) {
+> > -		pr_warn("adapter type unspecified\n");
+> > -		return -ENODEV;
+> > -	}
+> > -
+> > -	if (type >= ARRAY_SIZE(adapter_parm)) {
+> > -		pr_warn("invalid type (%d)\n", type);
+> > -		return -ENODEV;
+> > -	}
+> > -
+> > -	return parport_register_driver(&i2c_parport_driver);
+> > -}
+> > -
+> > -static void __exit i2c_parport_exit(void)
+> > -{
+> > -	parport_unregister_driver(&i2c_parport_driver);
+> > -}
+> > +module_parport_driver(i2c_parport_driver);
+> >  
+> >  MODULE_AUTHOR("Jean Delvare <jdelvare@suse.de>");
+> >  MODULE_DESCRIPTION("I2C bus over parallel port");
+> >  MODULE_LICENSE("GPL");
+> > -
+> > -module_init(i2c_parport_init);
+> > -module_exit(i2c_parport_exit);
+> 
+> 
+> -- 
+> Jean Delvare
+> SUSE L3 Support
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
