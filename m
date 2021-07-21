@@ -2,70 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185263D1900
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F523D1902
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhGUUmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:42:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40282 "EHLO mail.kernel.org"
+        id S229604AbhGUUok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:44:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhGUUmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 16:42:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9861E61249;
-        Wed, 21 Jul 2021 21:22:41 +0000 (UTC)
+        id S229504AbhGUUok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 16:44:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 346866120C;
+        Wed, 21 Jul 2021 21:25:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626902561;
-        bh=wVXjBvnDqeBXxEgGrM3dHFzG2SEW7Fk2iOjM5sBOS3k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CPyUZzWf3CDK7aK5PD1pTusv0T6/pupkiQsuurXls4hO4sNAxIwV+jQVYXlBZmwXh
-         LDUQWgfE4DW6lkMFdtbIohMGG07t31qNWAxn0afoU/w1hC1SFcm4aN7xCG4gONOv2Q
-         jB8JvOMguRgCGfMGd8g49EaFyPERsqT3l/Vf3ELRgoLlyBnP5Sdw+PSlB/lVz1ZaBv
-         KR2NGXvTFvP3telRK40WfyXRTu0k7V16sVatXbWvx+Jiv+O8RCDgWMphwpltkGOVk7
-         pQHSDSO8RbNussXEZpfgkk/8xwxIypyu79unVlndVEN5g0hEAe1jt6JOtA+N/lnkni
-         p5in5soEKvsew==
-Received: by mail-wr1-f52.google.com with SMTP id t5so3611605wrw.12;
-        Wed, 21 Jul 2021 14:22:41 -0700 (PDT)
-X-Gm-Message-State: AOAM530BMhMl6OI5bw3pl6Ei56C5S5IZLUYERFXUytyqylFlRYJNBe88
-        LJW3NN7/tBxIkdai3es+St+WYs8ul/NkS0x6czY=
-X-Google-Smtp-Source: ABdhPJxch64cTukt4PD+FaRfYlbdrPaAFs1B2RT26cj4vvJbfUqAnPkx2+be51IRpr6rQdKNapYLDFkqa48ysWy0vS0=
-X-Received: by 2002:adf:f2c6:: with SMTP id d6mr45877743wrp.286.1626902560213;
- Wed, 21 Jul 2021 14:22:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210720150950.3669610-1-arnd@kernel.org> <20210720150950.3669610-2-arnd@kernel.org>
- <YPbtsU4GX6PL7/42@infradead.org>
-In-Reply-To: <YPbtsU4GX6PL7/42@infradead.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 21 Jul 2021 23:22:24 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0OkF1G2kNTnn8Nh5aGAf5nnHNZqoQD3TB7mN2_VTV_9w@mail.gmail.com>
-Message-ID: <CAK8P3a0OkF1G2kNTnn8Nh5aGAf5nnHNZqoQD3TB7mN2_VTV_9w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] kexec: avoid compat_alloc_user_space
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        s=k20201202; t=1626902716;
+        bh=k4tebm4ckQUUfigmvIsDkaS0hJcmbZNxBgEUPDP9zyw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=g2qEUyEjuiVizeov2tx4qpJdxW8uKaN5rIVq4g9z7yITohA99A6rbKooxwhlqR0AU
+         FdWXKbL0mbUkOg/X5dsMWDpySXrQAj5pQphp6GPaichiIAEJKwhT2G8YOWoxBkrGrw
+         XnttHRZ/ArFZ9tvuA5+UNM3vvgjoTlRnThdqfTzl/VM4gg3iMEvmnsh4AedfHgIato
+         UIbyK9qWdDYOOEQDcoODfoFbdCMw8zuoLjdqjvz5eLu43xb0W41YLXHAxYKVhLIV7Z
+         gwIoQG619ciTa7iu4ngW/ZzlTYSXWSnwM58DTRdzfV1gh0fwd1TyRBlJAVkjJ9shzp
+         D7WV67/L6C3wQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0007E5C09A4; Wed, 21 Jul 2021 14:25:15 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 14:25:15 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     rcu@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, kexec@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <kernel-team@fb.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH rcu 04/18] rcu: Weaken ->dynticks accesses and updates
+Message-ID: <20210721212515.GV4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-4-paulmck@kernel.org>
+ <CAHk-=wgm_W82CcbiJHZPw45QRwomFbWcHkFoOd5C5hG-5GGoRQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgm_W82CcbiJHZPw45QRwomFbWcHkFoOd5C5hG-5GGoRQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 5:37 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> This can be simplified a little more by killing off
-> copy_user_segment_list entirely, using memdup_user and dropping the
-> not really required _locked wrapper.  The locking move might make
-> most sense as a separate prep patch.
+On Wed, Jul 21, 2021 at 01:41:46PM -0700, Linus Torvalds wrote:
+> Hmm.
+> 
+> This actually seems to make some of the ordering worse.
+> 
+> I'm not seeing a lot of weakening or optimization, but it depends a
+> bit on what is common and what is not.
 
-Ok, I've integrated this as separate patches into my series now, will resend
-after some more build testing.
+Agreed, and I expect that I will be reworking this patch rather
+thoroughly.
 
-      Arnd
+Something about smp_mb() often being a locked atomic operation on a
+stack location.  :-/
+
+But you did ask for this to be sped up some years back (before the
+memory model was formalized), so I figured I should at least show what
+can be done.  Plus I expect that you know much more about what Intel is
+planning than I do.
+
+> On Wed, Jul 21, 2021 at 1:21 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > +/*
+> > + * Increment the current CPU's rcu_data structure's ->dynticks field
+> > + * with ordering.  Return the new value.
+> > + */
+> > +static noinstr unsigned long rcu_dynticks_inc(int incby)
+> > +{
+> > +       struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+> > +       int seq;
+> > +
+> > +       seq = READ_ONCE(rdp->dynticks) + incby;
+> > +       smp_store_release(&rdp->dynticks, seq);
+> > +       smp_mb();  // Fundamental RCU ordering guarantee.
+> > +       return seq;
+> > +}
+> 
+> So this is actually likely *more* expensive than the old code was, at
+> least on x86.
+> 
+> The READ_ONCE/smp_store_release are cheap, but then the smp_mb() is expensive.
+> 
+> The old code did just arch_atomic_inc_return(), which included the
+> memory barrier.
+> 
+> There *might* be some cache ordering advantage to letting the
+> READ_ONCE() float upwards, but from a pure barrier standpoint this is
+> more expensive than what we used to have.
+
+No argument here.
+
+> > -       if (atomic_read(&rdp->dynticks) & 0x1)
+> > +       if (READ_ONCE(rdp->dynticks) & 0x1)
+> >                 return;
+> > -       atomic_inc(&rdp->dynticks);
+> > +       rcu_dynticks_inc(1);
+> 
+> And this one seems to not take advantage of the new rule, so we end up
+> having two reads, and then that potentially more expensive sequence.
+
+This one only executes when a CPU comes online, so I am not worried
+about its overhead.
+
+> >  static int rcu_dynticks_snap(struct rcu_data *rdp)
+> >  {
+> > -       return atomic_add_return(0, &rdp->dynticks);
+> > +       smp_mb();  // Fundamental RCU ordering guarantee.
+> > +       return smp_load_acquire(&rdp->dynticks);
+> >  }
+> 
+> This is likely cheaper - not because of barriers, but simply because
+> it avoids dirtying the cacheline.
+> 
+> So which operation do we _care_ about, and do we have numbers for why
+> this improves anything? Because looking at the patch, it's not obvious
+> that this is an improvement.
+
+It sounds like I should keep this hunk and revert the rest back to
+atomic operations, but still in the new rcu_dynticks_inc() function.
+
+Either way, thank you for looking this over!
+
+							Thanx, Paul
