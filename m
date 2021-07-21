@@ -2,227 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4393D0C4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 12:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DC93D0C4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 12:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238001AbhGUJcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 05:32:00 -0400
-Received: from mga06.intel.com ([134.134.136.31]:58471 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237919AbhGUJVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:21:37 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="272521459"
-X-IronPort-AV: E=Sophos;i="5.84,257,1620716400"; 
-   d="scan'208";a="272521459"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 03:02:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,257,1620716400"; 
-   d="scan'208";a="470107477"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Jul 2021 03:02:06 -0700
-Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 21 Jul 2021 03:02:05 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Wed, 21 Jul 2021 03:02:05 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Wed, 21 Jul 2021 03:02:05 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O7tnOp0+vwjT9+RdxvgxXbmT1y+T1iNg0k0V2J+55JBKkwL05QSKx0KtFnuVA5bVXu2VCjqz0URQcOdGAR1N+IRiI0LdkEXPuWDvZ7fGQ7lIH7h1rKfFtbZaO8p0JL8pxQBhKeWMjnDm96sgq+X0Gj4BMnObg90das37WGqo1UoeG6H8C8eMh++/IJ1MERc+IMJ5d4Wp2zOc276kki2Sbz73HZy/KnVKLIymm++jT7gNwiuPI16ViFy3KndMsF0rAcqw73Xu0AZko2quDt4aj85FiorZK6W/MZCeM3H5MZ2vL6ccNIOwIAhP9s7UomzezWnC9TIAZK+GZhADIpQQXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zAWjP+Vp2B+XLtJjxmEvx5hz2qErRTfk/uA2/Lc5QlQ=;
- b=GgYYHrGLXn5zIhFHUaPYCufPt8qRWUBJNiXycJI+RipFdKlZ+eSUMRihZi4RR+lrg3gz0lHQyrgio38bptVup0PFxm/gdyNj0WFTRSJmWIemRekm5vQ7XMi2cAd6pEqXBa8rwffiQpLMmsLMQRckWC/NajQ4PUARUpm3rBHU+MBG6W2cREHlsNwmajgsheR1OHS6cdkyeC1CQYEKjpS9NJ4PsBJN4FCYmbwmwrvBO86ujNFmm//A+Z+EjXPxafVYkf5bHAe4OKVGmaP9tBCUxWaysokytkrU3E0UngRGUEHrJ787xUWmgbJJkXa/mUlPfLZ6K36NyjnwxYnMr1vfsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zAWjP+Vp2B+XLtJjxmEvx5hz2qErRTfk/uA2/Lc5QlQ=;
- b=QVkS/OLLdCwMNvDua6aLZuyWN6jKuNsQxzZXRQm0TS3sA+ZaC1IA0Kzjkk73trS3DvagyQgc64YQGAZMRLufs1h5EsQajQoOeW5QKTOqBaXhNIGKgsT/fGmxFVTnHJ1UicaPC6IKl3DBrulyOB7rjnWgT6DXlKV3mFPfKxX9fFA=
-Received: from DM4PR11MB5453.namprd11.prod.outlook.com (2603:10b6:5:398::15)
- by DM4PR11MB5551.namprd11.prod.outlook.com (2603:10b6:5:392::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.32; Wed, 21 Jul
- 2021 10:02:04 +0000
-Received: from DM4PR11MB5453.namprd11.prod.outlook.com
- ([fe80::38aa:9c52:efcd:4652]) by DM4PR11MB5453.namprd11.prod.outlook.com
- ([fe80::38aa:9c52:efcd:4652%3]) with mapi id 15.20.4331.034; Wed, 21 Jul 2021
- 10:02:03 +0000
-From:   "Hu, Robert" <robert.hu@intel.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-CC:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Robert Hoo <robert.hu@linux.intel.com>
-Subject: RE: [PATCH] KVM: nVMX: Dynamically compute max VMCS index for vmcs12
-Thread-Topic: [PATCH] KVM: nVMX: Dynamically compute max VMCS index for vmcs12
-Thread-Index: AQHXZIuB9zPySR3qkk2RxIcrlGLzAKseKLEAgAAIJYCALy/4cA==
-Date:   Wed, 21 Jul 2021 10:02:03 +0000
-Message-ID: <DM4PR11MB5453A57DAAC025417C22BCA4E0E39@DM4PR11MB5453.namprd11.prod.outlook.com>
-References: <20210618214658.2700765-1-seanjc@google.com>
- <c847e00a-e422-cdc9-3317-fbbd82b6e418@redhat.com>
- <YNDHfX0cntj72sk6@google.com>
-In-Reply-To: <YNDHfX0cntj72sk6@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-reaction: no-action
-dlp-product: dlpe-windows
-authentication-results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4be4a210-c5f7-49b2-d3fb-08d94c2e9745
-x-ms-traffictypediagnostic: DM4PR11MB5551:
-x-microsoft-antispam-prvs: <DM4PR11MB55516D3FE3F9ECB0D098D91FE0E39@DM4PR11MB5551.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PqqWt4jY924UDURcYdVHyztEhtp/h57Ma2BDCv24bsQbI5uC2Wy9FYHCAYAGmfyTpuFCWlKUrGneFqY5bGNMUosLRhleRk5x3Y/lz5hCNdvnduu4choGAbYb+Zwok6UQgh+7cOFv1E5URz7OCRxVCSTRzTL8i7PDYlaPnrHUv+g8owN62ltVe0QIWcpXc5yzHDYTMeepopctmtoitmjNYi3QN1EVjJjpH82+cMTBFC5ekMmEv3P77XOgmIzjtCdhHytxPLBTVRNUclLflUfBWJjmNUUL894xuF/w7YiK1BW1QZgjheV2bc5Z++VeDSAoRAq/MRsJ23QjYoT/81ZWpmraiNRWhFk4wDEwvruvnVHa4T1LmO6ZyWfFdEWgGowhiUyBXtzoGe7DfDbrfZQqJBfE5ywwA/HxD1wxEGPlk+/9+Xtl59ujGrC8IA2NbEcCcdzOj8BU9FGp6W7nqMwuJXKxSiGY0Gtn7w8mD+4jiX3QBS3IYEsjSoufkxDH4v9NbtzwJKhzIZvTQnu354aUdkbpT0nUu0wYcHpKLYC5yOapM4q+PV8PPKef71qWKNMZf9SimLVywqaYR/oaM5Sfjci6C0Rwo7M/bmMGsdxf9axGi9jrLyOZku1ynwp7tBx4z2CSZVXRua1v/jGDDx1z565WVhMTeIWMWnrsJDveI6hI3aNTp9tirrQZnAAqZI2RwRS9jd5Sm8M+UcatMOqO0w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5453.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(366004)(39860400002)(376002)(7696005)(8936002)(8676002)(186003)(55016002)(83380400001)(52536014)(71200400001)(86362001)(110136005)(54906003)(5660300002)(64756008)(66446008)(6506007)(66556008)(4326008)(66476007)(76116006)(26005)(53546011)(316002)(66946007)(122000001)(38100700002)(478600001)(2906002)(9686003)(33656002)(38070700004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tu+6aGt0+DQwt0K4atvtuMnGSnqvyGn7Ba7pHY2z4TiBjXs+qR5VmdBAmRk6?=
- =?us-ascii?Q?Z8DIgg8W3bkrwMiNlaiNXm83Aj+w+W+LvIqxDH/ZjM2Om+W8YITG9zL0KlsE?=
- =?us-ascii?Q?PR2Mh/N+gazQb6y/tQWcpkVxu801vm0ap3qcEZjw75FGpuQpVG1EutahJ596?=
- =?us-ascii?Q?+QE2Gv+slyWN/XpIZ1PTBKuuFDLgzVg/BH/um3tP+2QJQ/eHbwl1BlR/KHCn?=
- =?us-ascii?Q?XkkuXtnaeZ7+Zd7ln/o+6eKhpjy9Ip/dHZyUVNg7l7WpU1MwcyRwX7IoYHJ1?=
- =?us-ascii?Q?89RAVpoeWOLHpokXLRjlA1dLKpUStl1V8+uMhtP8Mo8TysL5IFOISeN3dGTg?=
- =?us-ascii?Q?pebWc9TaQ+u9KAN342yc5rgN1/rRRjDw6Q79OzuiXJZnk17ZlvWr61T/OPcp?=
- =?us-ascii?Q?ZHvJY0k2c+IPbVuDwDORQO7bwSZNmT+o2Y6wUAryGdbiMQiqAlCD28alRAZ7?=
- =?us-ascii?Q?0H/TD3ydUfSoqR8kNgx4xifmWKVt6Vf66BfZatUwsF4TjirXK1OPcL5wxtru?=
- =?us-ascii?Q?BksICNnO//F0y+GU9fmRsZC8OxDgsP8nLYpUMyOLkJJb0govJBfbffdF3Xjf?=
- =?us-ascii?Q?Mqmdg+7SZhzCYRC49NyMmlPg4WJ5Eglwl34A2SGZzTcDkMyX755TQcgl8u3k?=
- =?us-ascii?Q?iE8Srw608nj8CpWyVZ6rXi3HXI/2GRXp8gCPX1OiKJ+6x/Ck6nSJHnK07SuH?=
- =?us-ascii?Q?G/WXIuYtYPauRNRTlfU2uyXeaJ/gbbEfpwV3zskLHHYrXQWvW7BL3iRexVgG?=
- =?us-ascii?Q?v9uKYqrfmE5xB+XBMX5EhQmYhiIAnu0TaK/3342ZHCtNb6SywDcZ9IhcPQ6m?=
- =?us-ascii?Q?aEJTmBWxOym+13kU6LTpnXJRX/wVUwk/CysO69Of1l3k7nvcIIFiUMwnatmU?=
- =?us-ascii?Q?8bMpkk0kQJ903hhxH8GMzc6ruF/BPta7h6U60TS71Y/67+zHhOhhKum27wo8?=
- =?us-ascii?Q?5Q6+bE0n6vYcUTJajRZDoxFrjdXKrvS5MPTIwwRbvMggjIrX1s/LW5GhChxJ?=
- =?us-ascii?Q?5+6pIZ3JUVDRzHmnSmvghyV2NpJMfgQ4QI4wukxqD+3ijOYnvAbH29khVsMT?=
- =?us-ascii?Q?HPYA2tnn6Ri207DZ8Z5tD+VHGcqN9AZWpBbT0gqWxdeBMAbDjaiTqCLvvXI1?=
- =?us-ascii?Q?e8dqZYBHrjaQGHwNxZbxYFKSSVRlZ8eul4/7PtJmhzTNnGCL83hUorfrUhef?=
- =?us-ascii?Q?7XWaO6IhNYJ1bmlLMncEqAV7nBWbt2MonLHa3uEsMHgceuqbeiVXg4YZDvBD?=
- =?us-ascii?Q?FY6EqZCYpLuDeJeB4BGrJBaRghd6VTCeQL3zobiEOJ2lGrP3DDnRcK0OTLJm?=
- =?us-ascii?Q?p+cR6iBdrwuwjlpuaUjYZOnE?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S238282AbhGUJdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 05:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237922AbhGUJVw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 05:21:52 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD78BC061574;
+        Wed, 21 Jul 2021 03:02:25 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id s13so2280499lfi.12;
+        Wed, 21 Jul 2021 03:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uq/BDgHzeQirTDEogKe70scOce4C0cOi5x0MYXrCpbY=;
+        b=Ke7nwN3tAtft8VpPMijva70KCg4QgprDjHpK3KURV7Tsib3GmYBjUI6FQAjUWgrhMn
+         C6XaCl0VVvViBXLVZWPfh/7TkdpPei4bF8Z59SpvnyKrTHfXqYVpllMPX8Dz+5v6heAD
+         4oZPzUCmj3xOtoqpCXCgQ0i+H3/HXujIfqghC+aFA3LmMJ/a7rrDfgtR3hCmQKY/LZMD
+         K6Xz1WXQBmNs56GlU+capX+PxgH4zuOFDgJe2Q7MmqrXVDWLOpFELkwbYKQox1fwvZge
+         7YZYtsE/6PX/r9CajyrWlSWs7Ts1nlgIBX5zwPKOsnf5lVUwEIPkAfE+VFKGj1FVKMpQ
+         GRJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uq/BDgHzeQirTDEogKe70scOce4C0cOi5x0MYXrCpbY=;
+        b=HQbjeQVUxHFgz4wy6POcEyzgWZ3yG1CQFVfTjFjc7bw1GSrQRUHG4ROOa6nnzpLIwt
+         tX5jiYOCycbCRlVopMCe6crQAzslGwpMOrQpXSGjEL3e5THEDGyDDsQ47Ppav8ucubK8
+         g3oMKxQDgmiVls1o7Go3w4lysb6XZ4kK7HDNsQnN8jUfMvApjoFeKD70pBgzLPQTIqD+
+         JXMojHJRWxz/c6rdknYJ4il5HpAXg2kciuVulXHgLC5aY3KjT+VrWZ9Ivz25NAVlX8vh
+         5fL9xuu7+/ZChKWvsWsYbqRUnNs4F35zHPe4B/IjadMCrOmkU50HKu3/lnDljSX7HFst
+         O2ow==
+X-Gm-Message-State: AOAM531KDv0QFzkP4yNxa42lEqfpnA1a4I+U3iRbO54m+VKtH9NYxjcU
+        ItS2ESGw8xGiakVwums4o00=
+X-Google-Smtp-Source: ABdhPJwJ9oOZ8/cOl8mTGgS93guEhW0BZrD42ndG6/7urMIsSHF10NN5cZsYqdECl0IP7vfCOlqiDw==
+X-Received: by 2002:ac2:4107:: with SMTP id b7mr24842540lfi.609.1626861744103;
+        Wed, 21 Jul 2021 03:02:24 -0700 (PDT)
+Received: from mobilestation ([95.79.127.110])
+        by smtp.gmail.com with ESMTPSA id t7sm2138866ljc.81.2021.07.21.03.02.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 03:02:22 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 13:02:20 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        John Stultz <john.stultz@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
+Message-ID: <20210721100220.ddfxwugivsndsedv@mobilestation>
+References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
+ <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
+ <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
+ <20210714124807.o22mottsrg3tv6nt@mobilestation>
+ <YPfPDqJhfzbvDLvB@kroah.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5453.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4be4a210-c5f7-49b2-d3fb-08d94c2e9745
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2021 10:02:03.8513
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /e6MpeGZ+cI+mZ/rXVQ//TPjz8ALt2LbMibJomJJVkICEugJoi91zNCZRHDOAnrCpMHLW6cCGu2RQLHFxxs3MQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5551
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPfPDqJhfzbvDLvB@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Sean Christopherson <seanjc@google.com>
-> Sent: Tuesday, June 22, 2021 01:08
-> To: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>; Wanpeng Li
-> <wanpengli@tencent.com>; Jim Mattson <jmattson@google.com>; Joerg
-> Roedel <joro@8bytes.org>; kvm@vger.kernel.org; linux-kernel@vger.kernel.o=
-rg
-> Subject: Re: [PATCH] KVM: nVMX: Dynamically compute max VMCS index for
-> vmcs12
->=20
-> On Mon, Jun 21, 2021, Paolo Bonzini wrote:
-> > On 18/06/21 23:46, Sean Christopherson wrote:
-> > > Calculate the max VMCS index for vmcs12 by walking the array to find
-> > > the actual max index.  Hardcoding the index is prone to bitrot, and
-> > > the calculation is only done on KVM bringup (albeit on every CPU,
-> > > but there aren't _that_ many null entries in the array).
-> > >
-> > > Fixes: 3c0f99366e34 ("KVM: nVMX: Add a TSC multiplier field in
-> > > VMCS12")
-> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > > ---
-> > >
-> > > Note, the vmx test in kvm-unit-tests will still fail using stock
-> > > QEMU, as QEMU also hardcodes and overwrites the MSR.  The test
-> > > passes if I hack KVM to ignore userspace (it was easier than rebuildi=
-ng
-> QEMU).
-> >
-> > Queued, thanks.  Without having checked the kvm-unit-tests sources
-> > very thoroughly, this might be a configuration issue in
-> > kvm-unit-tests; in theory "-cpu host" (unlike "-cpu
-> > host,migratable=3Dno") should not enable TSC scaling.
->=20
-> As noted in the code comments, KVM allows VMREAD/VMWRITE to all defined
-> fields, whether or not the field should actually exist for the vCPU model=
- doesn't
-> enter into the equation.  That's technically wrong as there are a number =
-of
-> fields that the SDM explicitly states exist iff a certain feature is supp=
-orted. =20
-[Hu, Robert]=20
-It's right that a number of fields' existence depends on some certain featu=
-re.
-Meanwhile, "IA32_VMX_VMCS_ENUM indicates to software the highest index
-value used in the encoding of any field *supported* by the processor", rath=
-er than
-*existed*.
-So my understanding is no matter what VMCS exec control field's value is se=
-t, value
-of IA32_VMX_VMCS_ENUM shall not be affected, as it reports the physical CPU=
-'s capability
-rather than runtime VMCS configuration.
-Back to nested case, L1's VMCS configuration lays the "physical" capability=
- for L2, right?
-nested_vmx_msrs or at least nested_vmx_msrs.vmcs_enum shall be put to vcpu
-scope, rather than current kvm global.
-Current nested_vmx_calc_vmcs_enum_msr() is invoked at early stage, before v=
-cpu features
-are settled. I think should be moved to later stage as well.
-=20
-> To fix that we'd need to add a "feature flag" to vmcs_field_to_offset_tab=
-le that is
-> checked against the vCPU model, though updating the MSR would probably fa=
-ll
-> onto userspace's shoulders?
->=20
-> And FWIW, this is the QEMU code:
->=20
->   #define VMCS12_MAX_FIELD_INDEX (0x17)
->=20
->   static void kvm_msr_entry_add_vmx(X86CPU *cpu, FeatureWordArray f)
->   {
->       ...
->=20
->       /*
->        * Just to be safe, write these with constant values.  The CRn_FIXE=
-D1
->        * MSRs are generated by KVM based on the vCPU's CPUID.
->        */
->       kvm_msr_entry_add(cpu, MSR_IA32_VMX_CR0_FIXED0,
->                         CR0_PE_MASK | CR0_PG_MASK | CR0_NE_MASK);
->       kvm_msr_entry_add(cpu, MSR_IA32_VMX_CR4_FIXED0,
->                         CR4_VMXE_MASK);
->       kvm_msr_entry_add(cpu, MSR_IA32_VMX_VMCS_ENUM,
->                         VMCS12_MAX_FIELD_INDEX << 1);
->   }
+Hi Greg,
+@Krzysztof, @Rob, please join the discussion so to finally get done
+with the concerned issue.
 
+On Wed, Jul 21, 2021 at 09:38:54AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Jul 14, 2021 at 03:48:07PM +0300, Serge Semin wrote:
+> > Hello John,
+> > 
+> > On Tue, Jul 13, 2021 at 05:07:00PM -0700, John Stultz wrote:
+> > > On Tue, Oct 20, 2020 at 5:10 AM Serge Semin
+> > > <Sergey.Semin@baikalelectronics.ru> wrote:
+> > > >
+> > > > In accordance with the DWC USB3 bindings the corresponding node
+> > > > name is suppose to comply with the Generic USB HCD DT schema, which
+> > > > requires the USB nodes to have the name acceptable by the regexp:
+> > > > "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
+> > > > named.
+> > > >
+> > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > > 
+> > 
+> > > I know folks like to ignore this, but this patch breaks AOSP on db845c. :(
+> > 
+> > Sorry to hear that. Alas there is no much can be done about it.
+> 
+> Yes there is, we can revert the change.  We do not break existing
+> configurations, sorry.
+
+By reverting this patch we'll get back to the broken dt-bindings
+since it won't comply to the current USB DT-nodes requirements
+which at this state well describe the latest DT spec:
+https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
+Thus the dtbs_check will fail for these nodes.
+
+Originally this whole patchset was connected with finally getting the
+DT-node names in order to comply with the standard requirement and it
+was successful mostly except a few patches which still haven't been
+merged in.
+
+Anyway @Krzysztof has already responded to the complain regarding this
+issue here:
+https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
+but noone cared to respond on his reasonable questions in order to
+get to a suitable solution for everyone. Instead we are
+getting another email with the same request to revert the changes.
+Here is the quote from the Krzysztof email so we could continue the
+discussion:
+
+On Mon, 21 Dec 2020 13:04:27 -0800 (PST), Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> On Mon, Dec 21, 2020 at 12:24:11PM -0800, John Stultz wrote:
+> > On Sat, Dec 19, 2020 at 3:06 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > > ...
+> > >
+> > > The node names are not part of an ABI, are they? I expect only
+> > > compatibles and properties to be stable. If user-space looks for
+> > > something by name, it's a user-space's mistake.  Not mentioning that you
+> > > also look for specific address... Imagine remapping of addresses with
+> > > ranges (for whatever reason) - AOSP also would be broken? Addresses are
+> > > definitely not an ABI.
+> > 
+> > Though that is how it's exported through sysfs.
+> 
+> The ABI is the format of sysfs file for example in /sys/devices. However
+> the ABI is not the exact address or node name of each device.
+> 
+> > In AOSP it is then used to setup the configfs gadget by writing that
+> > value into /config/usb_gadget/g1/UDC.
+> > 
+> > Given there may be multiple controllers on a device, or even if its
+> > just one and the dummy hcd driver is enabled, I'm not sure how folks
+> > reference the "right" one without the node name?
+> 
+> I think it is the same type of problem as for all other subsystems, e.g.
+> mmc, hwmon/iio.  They usually solve it either with aliases or with
+> special property with the name/label.
+> 
+> > I understand the fuzziness with sysfs ABI, and I get that having
+> > consistent naming is important, but like the eth0 -> enp3s0 changes,
+> > it seems like this is going to break things.
+> 
+> One could argue whether interface name is or is not ABI. But please tell
+> me how the address of a device in one's representation (for example DT)
+> is a part of a stable interface?
+> 
+> > Greg? Is there some better way AOSP should be doing this?
+> 
+> If you need to find specific device, maybe go through the given bus and
+> check compatibles?
+> 
+> Best regards,
+> Krzysztof
+
+So the main question is how is the DT-node really connected with ABI
+and is supposed to be stable in that concern?
+
+As I see it even if it affects the configfs node name, then we may
+either need to break that connection and somehow deliver DT-node-name
+independent interface to the user-space or we have no choice but to
+export the node with an updated name and ask of user-space to deal
+with it. In both suggested cases the DT-node name will still conform
+to the USB-node name DT spec. Currently we are at the second one.
+
+Regards,
+-Sergey
+
+> 
+> thanks,
+> 
+> greg k-h
