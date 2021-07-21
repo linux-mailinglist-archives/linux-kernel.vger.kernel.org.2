@@ -2,490 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FB83D194A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607683D1944
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbhGUUyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:54:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhGUUyg (ORCPT
+        id S229707AbhGUUzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:55:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59498 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229459AbhGUUzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 16:54:36 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D4EC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 14:35:12 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id a23-20020a05600c2257b0290236ec98bebaso1771654wmm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 14:35:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mpjoKT9Sz0S0pfBQmSHj3fO1iKImE3q5PZnvwUtpk60=;
-        b=tqKlhbtGb9hm5dMrJQCb7MIsXMYncjIns2l9nx4oQaXySAxyQBQf52qtGmuAm0QOWC
-         fYLa1wG6EVcpUyxtevybFFuLX8i5fXSU+u+ICCf9Yj8T6s//YWC0zfLBZ3acFuMJrE0G
-         EwdIOq65AXmb7c0NEAyUlqq4D6v40YoWzcpW8JKcJzW4Cq4MXtA2mBDLmYc0d8QE4wB2
-         tNLE7gq95f5t+HHARNE00ZwqOLeUSQMmd0Fk0JCfrLcju1SwknrooU7sNeKevViLkhy3
-         3ZbHtrrxe+n8MuLoqHTOOsTmJgXbqxNkg59RQt9MKfN1I/cCpLvW1VINOWf5x5Z236UN
-         IjCA==
+        Wed, 21 Jul 2021 16:55:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626903337;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U/WZQ3ffHWJN+iuGTm5qHe7VNikHIU8P5Rl+l3AmGKE=;
+        b=bxH2f1KwJbCT8Lk9sfiSA5aI8WkcD8w3rxndXBkNeIPLmFYte2svD57wKjrSMHOQCEinbo
+        4z7Y5nyh4qFMhBuIPacfuw3cNI6Ka7whfEgO7JwvgaSdY2lCS1YfYXmFgjG2lttf69zC93
+        v8cAN6j2FtyPR/1ItcXEbGZ8ZDvfYkk=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-494-qT-j-t6SOQWxEGTLT4trAg-1; Wed, 21 Jul 2021 17:35:35 -0400
+X-MC-Unique: qT-j-t6SOQWxEGTLT4trAg-1
+Received: by mail-qk1-f197.google.com with SMTP id 81-20020a370b540000b02903b854c43335so2569648qkl.21
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 14:35:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mpjoKT9Sz0S0pfBQmSHj3fO1iKImE3q5PZnvwUtpk60=;
-        b=Qab+YKZ6tmKvh/6jTjw5cPfQUEsR277PxaMi7tJiM5xdYHETRx+ntd0fa9ZpRq83ME
-         C7d2flq8s8tlVK7+cJeT/lPfy/WWUhP4VHlcdDzB7LpDdAktuMm/sSkeHMuIXQodCXhO
-         X9SRALi/c3n4Zau9wfXBVuzL9h/RP/mkOAEYtsZ2LSu7I7treKdHI7ZqL/GUIgKjshyY
-         ub7R+q3OyFTDniqQyHpQJFFFBZYmyXc8rAhZNiJJaXAQtq2KDL+4diYteRtUztBuKsXp
-         kN+OP2ZaEUxriQ9ZLxlItJAiB89O+OgDqRyU73uLjrQqO9CIYKK/Gs7ZJ6S8uDL2z3Ib
-         wFEw==
-X-Gm-Message-State: AOAM532AL60oUrHPXEjkCk8d5L58Q49ps9un9qpEj2TLrKwSbBUSZFpJ
-        XzvKH3JlyA0pJ454wM5MbrAF/dGAFNU3ck8ChdhBkw==
-X-Google-Smtp-Source: ABdhPJylg+kaKhwzDjm6T10dMS2vrUTNXbyaV9PoDuqdmcVulI+8ZTQyZrOQCPrPUp1Ru10wKT4CCdnmeEAJ3srtbWA=
-X-Received: by 2002:a05:600c:21d7:: with SMTP id x23mr39135695wmj.98.1626903310702;
- Wed, 21 Jul 2021 14:35:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U/WZQ3ffHWJN+iuGTm5qHe7VNikHIU8P5Rl+l3AmGKE=;
+        b=nOH9TwRkk3NEu7ajTt449j8K6BTZcYQKfmi1ia5qL3aqOaKNnPLCSGzIvMGrgbmmgh
+         KfYhGmgiJiEiOEPQKfA7mX6663zRAVVpwECSzTckUr21kbEzJjWlZbPEwIfMfycO81Ie
+         nxVLFCH/YijkqZt13bEr3DTC5XRIDzx4xrpMvLozUM4zuaPIhJbiPmKLl8jKwSOrPN28
+         H0y+RMpNXM4Q4Ez9PARP/nBCpwWNUo1UyqCICsP5Aa496Y09vb8fLAZPpbfIapK6Lo9L
+         npGwhoj++Dm71DDGmYJo+LvZ8aFS1fGKLxRabiAAKXLO2knoA1/oMEK5Mf0hoGhZ+Lry
+         zvVw==
+X-Gm-Message-State: AOAM533fmHFsVMA2maORqhBRiKoIvCTuSvcB/QtD9IXuP866gW07API+
+        TLAwR/72xElJf5gBfBmihgQz1IoKMbzmMMV/Z/ewLBpLxExnfeY3WSIGRFA5iFoB1PIvNoOj0p4
+        Y0lL8KHx/xAE58+msFiOstq+I
+X-Received: by 2002:ae9:dd06:: with SMTP id r6mr37386554qkf.74.1626903335182;
+        Wed, 21 Jul 2021 14:35:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwgt1yBb7PyOi6Z3ISzruYC8uksXGClR/NuJ9FT9l5G6GNvdCFzD8CrfZDjsQwtmt0bcl86Rg==
+X-Received: by 2002:ae9:dd06:: with SMTP id r6mr37386529qkf.74.1626903334931;
+        Wed, 21 Jul 2021 14:35:34 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id w19sm7155986qkb.66.2021.07.21.14.35.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 14:35:34 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 17:35:32 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miaohe Lin <linmiaohe@huawei.com>
+Subject: Re: [PATCH v5 05/26] mm/swap: Introduce the idea of special swap ptes
+Message-ID: <YPiTJLGxqiLXjbAU@t490s>
+References: <20210715201422.211004-1-peterx@redhat.com>
+ <6116877.MhgVfB7NV9@nvdebian>
+ <YPHZ5cCv+I/hLO08@t490s>
+ <23927325.GfNbO0Vjio@nvdebian>
 MIME-Version: 1.0
-References: <20210707133003.5414-1-mike.leach@linaro.org> <20210712164413.GA1777012@p14s>
- <a80b9a03-01ba-3752-9e6e-ee2d194ba2a1@arm.com> <CAJ9a7ViieBazkBckF+2Bb0eeQyp14EpUAJ0j_GmU_Kibj9OBMg@mail.gmail.com>
- <20210721174417.GB2377909@p14s>
-In-Reply-To: <20210721174417.GB2377909@p14s>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Wed, 21 Jul 2021 22:35:00 +0100
-Message-ID: <CAJ9a7Vi9v=tk8YRj13k6pSxuMs1cKk2JgwtffE1ubqTjexLkhg@mail.gmail.com>
-Subject: Re: [PATCH v8 00/10] CoreSight configuration management; ETM strobing
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Branislav Rankov <branislav.rankov@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <23927325.GfNbO0Vjio@nvdebian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Mathieu,
+On Wed, Jul 21, 2021 at 09:28:49PM +1000, Alistair Popple wrote:
+> On Saturday, 17 July 2021 5:11:33 AM AEST Peter Xu wrote:
+> > On Fri, Jul 16, 2021 at 03:50:52PM +1000, Alistair Popple wrote:
+> > > Hi Peter,
+> > > 
+> > > [...]
+> > > 
+> > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > > index ae1f5d0cb581..4b46c099ad94 100644
+> > > > --- a/mm/memcontrol.c
+> > > > +++ b/mm/memcontrol.c
+> > > > @@ -5738,7 +5738,7 @@ static enum mc_target_type get_mctgt_type(struct vm_area_struct *vma,
+> > > >  
+> > > >  	if (pte_present(ptent))
+> > > >  		page = mc_handle_present_pte(vma, addr, ptent);
+> > > > -	else if (is_swap_pte(ptent))
+> > > > +	else if (pte_has_swap_entry(ptent))
+> > > >  		page = mc_handle_swap_pte(vma, ptent, &ent);
+> > > >  	else if (pte_none(ptent))
+> > > >  		page = mc_handle_file_pte(vma, addr, ptent, &ent);
+> > > 
+> > > As I understand things pte_none() == False for a special swap pte, but
+> > > shouldn't this be treated as pte_none() here? Ie. does this need to be
+> > > pte_none(ptent) || is_swap_special_pte() here?
+> > 
+> > Looks correct; here the page/swap cache could hide behind the special pte just
+> > like a none pte.  Will fix it.  Thanks!
+> > 
+> > > 
+> > > > diff --git a/mm/memory.c b/mm/memory.c
+> > > > index 0e0de08a2cd5..998a4f9a3744 100644
+> > > > --- a/mm/memory.c
+> > > > +++ b/mm/memory.c
+> > > > @@ -3491,6 +3491,13 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+> > > >  	if (!pte_unmap_same(vmf))
+> > > >  		goto out;
+> > > >  
+> > > > +	/*
+> > > > +	 * We should never call do_swap_page upon a swap special pte; just be
+> > > > +	 * safe to bail out if it happens.
+> > > > +	 */
+> > > > +	if (WARN_ON_ONCE(is_swap_special_pte(vmf->orig_pte)))
+> > > > +		goto out;
+> > > > +
+> > > >  	entry = pte_to_swp_entry(vmf->orig_pte);
+> > > >  	if (unlikely(non_swap_entry(entry))) {
+> > > >  		if (is_migration_entry(entry)) {
+> > > 
+> > > Are there other changes required here? Because we can end up with stale special
+> > > pte's and a special pte is !pte_none don't we need to fix some of the !pte_none
+> > > checks in these functions:
+> > > 
+> > > insert_pfn() -> checks for !pte_none
+> > > remap_pte_range() -> BUG_ON(!pte_none)
+> > > apply_to_pte_range() -> didn't check further but it tests for !pte_none
+> > > 
+> > > In general it feels like I might be missing something here though. There are
+> > > plenty of checks in the kernel for pte_none() which haven't been updated. Is
+> > > there some rule that says none of those paths can see a special pte?
+> > 
+> > My rule on doing this was to only care about vma that can be backed by RAM,
+> > majorly shmem/hugetlb, so the special pte can only exist there within those
+> > vmas.  I believe in most pte_none() users this special pte won't exist.
+> > 
+> > So if it's not related to RAM backed memory at all, maybe it's fine to keep the
+> > pte_none() usage like before.
+> > 
+> > Take the example of insert_pfn() referenced first - I think it can be used to
+> > map some MMIO regions, but I don't think we'll call that upon a RAM region
+> > (either shmem or hugetlb), nor can it be uffd wr-protected.  So I'm not sure
+> > adding special pte check there would be helpful.
+> > 
+> > apply_to_pte_range() seems to be a bit special - I think the pte_fn_t matters
+> > more on whether the special pte will matter.  I had a quick look, it seems
+> > still be used mostly by all kinds of driver code not mm core.  It's used in two
+> > forms:
+> > 
+> >         apply_to_page_range
+> >         apply_to_existing_page_range
+> > 
+> > The first one creates ptes only, so it ignores the pte_none() check so I skipped.
+> > 
+> > The second one has two call sites:
+> > 
+> > *** arch/powerpc/mm/pageattr.c:
+> > change_memory_attr[99]         return apply_to_existing_page_range(&init_mm, start, size,
+> > set_memory_attr[132]           return apply_to_existing_page_range(&init_mm, start, sz, set_page_attr,
+> > 
+> > *** mm/kasan/shadow.c:
+> > kasan_release_vmalloc[485]     apply_to_existing_page_range(&init_mm,
+> > 
+> > I'll leave the ppc callers for now as uffd-wp is not even supported there.  The
+> > kasan_release_vmalloc() should be for kernel allocated memories only, so should
+> > not be a target for special pte either.
+> > 
+> > So indeed it's hard to 100% cover all pte_none() users to make sure things are
+> > used right.  As stated above I still believe most callers don't need that, but
+> > the worst case is if someone triggered uffd-wp issues with a specific feature,
+> > we can look into it.  I am not sure whether it's good we add this for all the
+> > pte_none() users, because mostly they'll be useless checks, imho.
+> 
+> I wonder then - should we make pte_none() return true for these special pte's
+> as well? It seems if we do miss any callers it could result in some fairly hard
+> to find bugs if the code follows a different path due to the presence of an
+> unexpected special pte changing the result of pte_none().
 
-On Wed, 21 Jul 2021 at 18:44, Mathieu Poirier
-<mathieu.poirier@linaro.org> wrote:
->
-> On Fri, Jul 16, 2021 at 11:25:47AM +0100, Mike Leach wrote:
-> > HI Mathieu,
-> >
-> > Below my change notes for the patches changed between v7 and v8 in this=
- set.
-> >
-> > Regards
-> >
-> > Mike
-> >
-> > 0001, 0003, 0004, 0006, 0007, 0008, 0010 - no change
-> >
-> > 0002 -
-> > coresight-syscfg.c
-> >     top of file - mutex declaration removed.
-> >     cscfg_add_csdev_cfg()
-> >         Spinlock replaces mutex
-> >     cscfg_load_feat_csdev()
-> >         Spinlock replaces mutex
-> >     cscsg_list_add_csdev()
-> >         Init spinlock
-> > coresight.h
-> >     struct coresight_device {}
-> >         Add spinlock cscfg_csdev_lock alongside the csdev feature and
-> > config lists that it protects.
-> >
-> > 0005 -
-> > coresight-syscfg.c
-> >     cscfg_csdev_reset_feats()
-> >             Spinlock replaces mutex.
-> >
-> >     cscfg_csdev_enable_active_config()
-> >             Spinlock replaces mutex. In enable flag to avoid race with =
-disable.
-> >     cscfg_csdev_disable_active_config()
-> >             Spinlock replaces mutex. In enable flag to avoid race with =
-enable.
-> >
->
-> I'm good with the changes made to the above two patches.
->
-> >
-> > coresight.h
-> >     struct coresight_device {}
-> >         In enable flag introduced to control possible race between
-> > enable and disable. E.g. if we are enabling a config, but a power
-> > event tries to shut down the CPU/ETM causing a disable call. We don=E2=
-=80=99t
-> > want to hold the cscfg_csdev_lock spinlock throughout the entire
-> > enable process - especially as the programming call will claim the
-> > internal driver spinlock when writing internal driver data, but we
-> > need to ensure that if there is a condition that permits a disable
-> > call out of normal sequence then we are able to see it and handle it.
-> >
->
-> Here I'm assuming the enable and disable calls you are referring to are
-> cscfg_csdev_enable_active_config() and cscfg_csdev_disable_active_config(=
-).
->
+I thought about something similar before, but I didn't dare to change
+pte_none() as it's been there for ages and I'm afraid people will get confused
+when it's meaning changed.  So even if we want to have some helper identifying
+"either none pte or the swap special pte" it should use a different name.
 
-Yes.
+Modifying the meaning of pte_none() could also have other risks that when we
+really want an empty pte to be doing something else now.  It turns out there's
+no easy way to not identify the case one by one, at least to me.  I'm always
+open to good suggestions.
 
-> From the above paragraph I understand that a call to cscfg_csdev_enable_c=
-onfig()
-> can be interrupted at any time when the CPU is shutting down, which can o=
-nly
-> happen when operating from sysfs.
->
+Btw, as you mentioned before, we can use a new number out of MAX_SWAPFILES,
+that'll make all these easier a bit here, then we don't need to worry on
+pte_none() issues too.  Two days ago Hugh has raised some similar concern on
+whether it's good to implement this uffd-wp special pte like this.  I think we
+can discuss this separately.
 
-I was concerned about possible power management issues too - though
-thinking about it we shouldn't be powering down a PE if we are about
-to start tracing on it!
+> 
+> > So far what I planned to do is to cover most things we know that may be
+> > affected like this patch so the change may bring a difference, hopefully we
+> > won't miss any important spots.
+> > 
+> > > 
+> > > > diff --git a/mm/migrate.c b/mm/migrate.c
+> > > > index 23cbd9de030b..b477d0d5f911 100644
+> > > > --- a/mm/migrate.c
+> > > > +++ b/mm/migrate.c
+> > > > @@ -294,7 +294,7 @@ void __migration_entry_wait(struct mm_struct *mm, pte_t *ptep,
+> > > >  
+> > > >  	spin_lock(ptl);
+> > > >  	pte = *ptep;
+> > > > -	if (!is_swap_pte(pte))
+> > > > +	if (!pte_has_swap_entry(pte))
+> > > >  		goto out;
+> > > >  
+> > > >  	entry = pte_to_swp_entry(pte);
+> > > > @@ -2276,7 +2276,7 @@ static int migrate_vma_collect_pmd(pmd_t *pmdp,
+> > > >  
+> > > >  		pte = *ptep;
+> > > >  
+> > > > -		if (pte_none(pte)) {
+> > > > +		if (pte_none(pte) || is_swap_special_pte(pte)) {
+> > > 
+> > > I was wondering if we can loose the special pte information here? However I see
+> > > that in migrate_vma_insert_page() we check again and fail the migration if
+> > > !pte_none() so I think this is ok.
+> > > 
+> > > I think it would be better if this check was moved below so the migration fails
+> > > early. Ie:
+> > > 
+> > > 		if (pte_none(pte)) {
+> > >  			if (vma_is_anonymous(vma) && !is_swap_special_pte(pte)) {
+> > 
+> > Hmm.. but shouldn't vma_is_anonymous()==true already means it must not be a
+> > swap special pte?  Because swap special pte only exists when !vma_is_anonymous().
+> 
+> Oh ok that makes sense. With the code written that way it is easy to forget
+> that though so maybe a comment would help?
 
-Truth is, I split the spinlock claims in
-cscfg_csdev_enable_active_config() to follow the general kernel
-guidance to hold them for the minimum amount of time needed, and then
-could not convince myself that it was impossible for
-cscfg_csdev_disable_active_config() to be called part way through.
+I've put most words in comment of is_swap_special_pte().  Do you perhaps have a
+suggestion on the comment here?
 
-> With the above in mind and looking at the implementation in patch 05, if =
-the
-> code gets interrupted right after cscfg_csdev_enable_config(), function
-> cscfg_csdev_disable_config() in cscfg_csdev_disable_active_config() won't=
- be
-> called.
->
-> In function cscfg_csdev_enable_active_config(), could it be possible to s=
-et
-> csdev->active_cscfg_ctxt instead of csdev->cscfg_in_enable?  If
-> cscfg_csdev_enable_config() gets interrupted then function
-> cscfg_csdev_disable_config() can be called.  At that point disabling a fe=
-ature
-> that hasn't been enabled shouldn't do anything.
->
+> 
+> > > 
+> > > Also how does this work for page migration in general? I can see in
+> > > page_vma_mapped_walk() that we skip special pte's, but doesn't this mean we
+> > > loose the special pte in that instance? Or is that ok for some reason?
+> > 
+> > Do you mean try_to_migrate_one()? Does it need to be aware of that?  Per my
+> > understanding that's only for anonymous private memory, while in that world
+> > there should have no swap special pte (page_lock_anon_vma_read will return NULL
+> > early for !vma_is_anonymous).
+> 
+> As far as I know try_to_migrate_one() gets called for both anonymous pages and
+> file-backed pages. page_lock_anon_vma_read() is only called in the case of an
+> anonymous vma. See the implementation of rmap_walk() - it will call either
+> rmap_walk_anon() or rmap_walk_file() depending on the result of PageAnon().
 
-The concern is that the disable functionality is responsible for
-copying back values that might have changed during the operation of
-the config - e.g. counters in strobing are restarted at the value they
-last had if the routine is restarted on the same ETM at a later time
-in the perf session. So if the enable never occurred / errored - we
-want to avoid copying what would be an unknown value back. So the
-safest way is to only copy back if we succeeded in setting in the
-first place - even ETM was never actually started.
+I may have replied too soon there. :)  I think you're right.
 
-Currently we only set csdev->active_cscfg_ctxt after the call to do
-the actual register programming (call to cscfg_csdev_enable_config())
-has succeeded, which was fine using the mutex, but gives us the
-problem with the split spinlocks.
-So csdev->cscfg_in_enable prevents disable path from copying back an
-potentially invalid value.
+So I think how it should work with page migration is: we skip that pte just
+like what you said (check_pte returns false), then the per-pte info will be
+kept there, irrelevant of what's the backing page is.  When it faults, it'll
+bring up with either the old/new page depending on migration finished or not.
+Does that sound working to you?
 
-Regards
+Thanks,
 
-Mike
+-- 
+Peter Xu
 
-
-> Thanks,
-> Mathieu
->
-> > 0009 -
-> >     KConfig
-> >     add in dependency on CONFIGFS_FS to eliminate problem highlighted
-> > by the kernel bot tests. This had configured coresight as Y, but
-> > configfs as M - meaning link issues for configfs code introduced in
-> > this set.
-> >
-> > On Tue, 13 Jul 2021 at 10:43, Branislav Rankov <branislav.rankov@arm.co=
-m> wrote:
-> > >
-> > > Hi Mathieu,
-> > >
-> > > On 7/12/21 5:44 PM, Mathieu Poirier wrote:
-> > > > Good morning Mike,
-> > > >
-> > > > On Wed, Jul 07, 2021 at 02:29:53PM +0100, Mike Leach wrote:
-> > > >> This patchset introduces initial concepts in CoreSight system
-> > > >> configuration management support. to allow more detailed and compl=
-ex
-> > > >> programming to be applied to CoreSight systems during trace captur=
-e.
-> > > >>
-> > > >> Configurations consist of 2 elements:-
-> > > >> 1) Features - programming combinations for devices, applied to a c=
-lass of
-> > > >> device on the system (all ETMv4), or individual devices.
-> > > >> 2) Configurations - a set of programmed features used when the nam=
-ed
-> > > >> configuration is selected.
-> > > >>
-> > > >> Features and configurations are declared as a data table, a set of=
- register,
-> > > >> resource and parameter requirements. Features and configurations a=
-re loaded
-> > > >> into the system by the virtual cs_syscfg device. This then matches=
- features
-> > > >> to any registered devices and loads the feature into them.
-> > > >>
-> > > >> Individual device classes that support feature and configuration r=
-egister
-> > > >> with cs_syscfg.
-> > > >>
-> > > >> Once loaded a configuration can be enabled for a specific trace ru=
-n.
-> > > >> Configurations are registered with the perf cs_etm event as entrie=
-s in
-> > > >> cs_etm/events. These can be selected on the perf command line as f=
-ollows:-
-> > > >>
-> > > >> perf record -e cs_etm/<config_name>/ ...
-> > > >>
-> > > >> This patch set has one pre-loaded configuration and feature.
-> > > >> A named "strobing" feature is provided for ETMv4.
-> > > >> A named "autofdo" configuration is provided. This configuration en=
-ables
-> > > >> strobing on any ETM in used.
-> > > >>
-> > > >> Thus the command:
-> > > >> perf record -e cs_etm/autofdo/ ...
-> > > >>
-> > > >> will trace the supplied application while enabling the "autofdo" c=
-onfiguation
-> > > >> on each ETM as it is enabled by perf. This in turn will enable str=
-obing for
-> > > >> the ETM - with default parameters. Parameters can be adjusted usin=
-g configfs.
-> > > >>
-> > > >> The sink used in the trace run will be automatically selected.
-> > > >>
-> > > >> A configuration can supply up to 15 of preset parameter values, wh=
-ich will
-> > > >> subsitute in parameter values for any feature used in the configur=
-ation.
-> > > >>
-> > > >> Selection of preset values as follows
-> > > >> perf record -e cs_etm/autofdo,preset=3D1/ ...
-> > > >>
-> > > >> (valid presets 1-N, where N is the number supplied in the configur=
-ation, not
-> > > >> exceeding 15. preset=3D0 is the same as not selecting a preset.)
-> > > >>
-> > > >> Applies to & tested against coresight/next (5.13-rc6 base)
-> > > >>
-> > > >> Changes since v7:
-> > > >>
-> > > >> Fixed kernel test robot issue - config with CORESIGHT=3Dy & CONFIG=
-FS_FS=3Dm causes
-> > > >> build error. Altered CORESIGHT config to select CONFIGFS_FS.
-> > > >> Reported-by: kernel test robot <lkp@intel.com>
-> > > >>
-> > > >> Replaced mutex use to protect loaded config lists in coresight dev=
-ices with per
-> > > >> device spinlock to remove issue when disable called in interrupt c=
-ontext.
-> > > >> Reported-by: Branislav Rankov <branislav.rankov@arm.com>
-> > > >>
-> > > >
-> > > > Can you indicate which patches have changed so I don't have to revi=
-ew the whole
-> > > > thing again?   It is also common practice to remove the RB tag when=
- patches
-> > > > have changed enough to mandate another review.  In this case all pa=
-tches still
-> > > > bare my RB tags.
-> > > >
-> > > > Branislav reported the problem but he is not a recipient.  I would =
-like to have
-> > > > a confirmation from him that this set fixes the problem he observed=
- before I
-> > > > start looking at it.
-> > >
-> > > I have tested this series and the issue I reported is fixed.
-> > > >
-> > > > Thanks,
-> > > > Mathieu
-> > > >
-> > > >>
-> > > >> Changes since v6:
-> > > >> Fixed kernel test robot issues-
-> > > >> Reported-by: kernel test robot <lkp@intel.com>
-> > > >>
-> > > >> Changes since v5:
-> > > >>
-> > > >> 1) Fix code style issues from auto-build reports, as
-> > > >> Reported-by: kernel test robot <lkp@intel.com>
-> > > >> 2) Update comments to get consistent docs for API functions.
-> > > >> 3) remove unused #define from autofdo example.
-> > > >> 4) fix perf code style issues from patch 4 (Mathieu)
-> > > >> 5) fix configfs code style issues from patch 9. (Mathieu)
-> > > >>
-> > > >> Changes since v4: (based on comments from Matthieu and Suzuki).
-> > > >> No large functional changes - primarily code improvements and nami=
-ng schema.
-> > > >> 1) Updated entire set to ensure a consistent naming scheme was use=
-d for
-> > > >> variables and struct members that refer to the key objects in the =
-system.
-> > > >> Suffixes _desc used for all references to feature and configuraion=
- descriptors,
-> > > >> suffix _csdev used for all references to load feature and configs =
-in the csdev
-> > > >> instances. (Mathieu & Suzuki).
-> > > >> 2) Dropped the 'configurations' sub dir in cs_etm perf directories=
- as superfluous
-> > > >> with the configfs containing the same information. (Mathieu).
-> > > >> 3) Simplified perf handling code (suzuki)
-> > > >> 4) Multiple simplifications and improvements for code readability =
-(Matthieu
-> > > >> and Suzuki)
-> > > >>
-> > > >> Changes since v3: (Primarily based on comments from Matthieu)
-> > > >> 1) Locking mechanisms simplified.
-> > > >> 2) Removed the possibility to enable features independently from
-> > > >> configurations.Only configurations can be enabled now. Simplifies =
-programming
-> > > >> logic.
-> > > >> 3) Configuration now uses an activate->enable mechanism. This mean=
-s that perf
-> > > >> will activate a selected configuration at the start of a session (=
-during
-> > > >> setup_aux), and disable at the end of a session (around free_aux)
-> > > >> The active configuration and associated features will be programme=
-d into the
-> > > >> CoreSight device instances when they are enabled. This locks the c=
-onfiguration
-> > > >> into the system while in use. Parameters cannot be altered while t=
-his is
-> > > >> in place. This mechanism will be extended in future for dynamic lo=
-ad / unload
-> > > >> of configurations to prevent removal while in use.
-> > > >> 4) Removed the custom bus / driver as un-necessary. A single devic=
-e is
-> > > >> registered to own perf fs elements and configfs.
-> > > >> 5) Various other minor issues addressed.
-> > > >>
-> > > >> Changes since v2:
-> > > >> 1) Added documentation file.
-> > > >> 2) Altered cs_syscfg driver to no longer be coresight_device based=
-, and moved
-> > > >> to its own custom bus to remove it from the main coresight bus. (M=
-athieu)
-> > > >> 3) Added configfs support to inspect and control loaded configurat=
-ions and
-> > > >> features. Allows listing of preset values (Yabin Cui)
-> > > >> 4) Dropped sysfs support for adjusting feature parameters on the p=
-er device
-> > > >> basis, in favour of a single point adjustment in configfs that is =
-pushed to all
-> > > >> device instances.
-> > > >> 5) Altered how the config and preset command line options are hand=
-led in perf
-> > > >> and the drivers. (Mathieu and Suzuki).
-> > > >> 6) Fixes for various issues and technical points (Mathieu, Yabin)
-> > > >>
-> > > >> Changes since v1:
-> > > >> 1) Moved preloaded configurations and features out of individual d=
-rivers.
-> > > >> 2) Added cs_syscfg driver to manage configurations and features. I=
-ndividual
-> > > >> drivers register with cs_syscfg indicating support for config, and=
- provide
-> > > >> matching information that the system uses to load features into th=
-e drivers.
-> > > >> This allows individual drivers to be updated on an as needed basis=
- - and
-> > > >> removes the need to consider devices that cannot benefit from conf=
-iguration -
-> > > >> static replicators, funnels, tpiu.
-> > > >> 3) Added perf selection of configuarations.
-> > > >> 4) Rebased onto the coresight module loading set.
-> > > >>
-> > > >> To follow in future revisions / sets:-
-> > > >> a) load of additional config and features by loadable module.
-> > > >> b) load of additional config and features by configfs
-> > > >> c) enhanced resource management for ETMv4 and checking features ha=
-ve sufficient
-> > > >> resources to be enabled.
-> > > >> d) ECT and CTI support for configuration and features.
-> > > >>
-> > > >> Mike Leach (10):
-> > > >>   coresight: syscfg: Initial coresight system configuration
-> > > >>   coresight: syscfg: Add registration and feature loading for cs d=
-evices
-> > > >>   coresight: config: Add configuration and feature generic functio=
-ns
-> > > >>   coresight: etm-perf: update to handle configuration selection
-> > > >>   coresight: syscfg: Add API to activate and enable configurations
-> > > >>   coresight: etm-perf: Update to activate selected configuration
-> > > >>   coresight: etm4x: Add complex configuration handlers to etmv4
-> > > >>   coresight: config: Add preloaded configurations
-> > > >>   coresight: syscfg: Add initial configfs support
-> > > >>   Documentation: coresight: Add documentation for CoreSight config
-> > > >>
-> > > >>  .../trace/coresight/coresight-config.rst      | 244 ++++++
-> > > >>  Documentation/trace/coresight/coresight.rst   |  16 +
-> > > >>  drivers/hwtracing/coresight/Kconfig           |   1 +
-> > > >>  drivers/hwtracing/coresight/Makefile          |   7 +-
-> > > >>  .../hwtracing/coresight/coresight-cfg-afdo.c  | 153 ++++
-> > > >>  .../coresight/coresight-cfg-preload.c         |  31 +
-> > > >>  .../coresight/coresight-cfg-preload.h         |  13 +
-> > > >>  .../hwtracing/coresight/coresight-config.c    | 275 ++++++
-> > > >>  .../hwtracing/coresight/coresight-config.h    | 253 ++++++
-> > > >>  drivers/hwtracing/coresight/coresight-core.c  |  12 +-
-> > > >>  .../hwtracing/coresight/coresight-etm-perf.c  | 150 +++-
-> > > >>  .../hwtracing/coresight/coresight-etm-perf.h  |  12 +-
-> > > >>  .../hwtracing/coresight/coresight-etm4x-cfg.c | 182 ++++
-> > > >>  .../hwtracing/coresight/coresight-etm4x-cfg.h |  30 +
-> > > >>  .../coresight/coresight-etm4x-core.c          |  38 +-
-> > > >>  .../coresight/coresight-etm4x-sysfs.c         |   3 +
-> > > >>  .../coresight/coresight-syscfg-configfs.c     | 396 +++++++++
-> > > >>  .../coresight/coresight-syscfg-configfs.h     |  45 +
-> > > >>  .../hwtracing/coresight/coresight-syscfg.c    | 829 +++++++++++++=
-+++++
-> > > >>  .../hwtracing/coresight/coresight-syscfg.h    |  81 ++
-> > > >>  include/linux/coresight.h                     |  11 +
-> > > >>  21 files changed, 2746 insertions(+), 36 deletions(-)
-> > > >>  create mode 100644 Documentation/trace/coresight/coresight-config=
-.rst
-> > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-cfg-afdo=
-.c
-> > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-cfg-prel=
-oad.c
-> > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-cfg-prel=
-oad.h
-> > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-config.c
-> > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-config.h
-> > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-etm4x-cf=
-g.c
-> > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-etm4x-cf=
-g.h
-> > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg-c=
-onfigfs.c
-> > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg-c=
-onfigfs.h
-> > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg.c
-> > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg.h
-> > > >>
-> > > >> --
-> > > >> 2.17.1
-> > > >>
-> > > > _______________________________________________
-> > > > CoreSight mailing list
-> > > > CoreSight@lists.linaro.org
-> > > > https://lists.linaro.org/mailman/listinfo/coresight
-> > > >
-> >
-> >
-> >
-> > --
-> > Mike Leach
-> > Principal Engineer, ARM Ltd.
-> > Manchester Design Centre. UK
-
-
-
---=20
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
