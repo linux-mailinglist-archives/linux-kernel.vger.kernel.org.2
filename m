@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F4C3D06B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 04:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CD03D06BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 04:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbhGUBqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 21:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbhGUBqY (ORCPT
+        id S231178AbhGUBwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 21:52:13 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:38952 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229903AbhGUBv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 21:46:24 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1923FC061574;
-        Tue, 20 Jul 2021 19:27:02 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id a12so931870lfb.7;
-        Tue, 20 Jul 2021 19:27:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=IMEA7XUipMCPe6h8ouCsvI5CYO5wKR/xBeSj7gVT1/8=;
-        b=ZL2tFxwrvAaDcgkunbrl2DXK4XIAXlxgvsjOXndmxdfQ1aP/4Oi8plfR3O0VsRQxf0
-         Kj/IAHQTP8GgfPGfGebET4AOzmA/PyrMGb0D2skqhIVN8ZGr4m7y7dt9dY0HJ1YvZma+
-         Hhly9/7QgO4cZ3IYYU0q3ebArfbUXGkcF1T+IssQW79jiLOkRyIDT9kS5wSXpUKIcLOP
-         Byz6t0ncf330RJcnL5OoaL7Om/VfFJtU0KXn+O0cZaIzkieo4LWeopnRmZMEB6jodKSn
-         iu3uwpNM8RQPwuKkfXg1+0rjQnsUlkA4190PRkHwObJXyUh2DsNWgGSBwbB+MjlFwoBC
-         06vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=IMEA7XUipMCPe6h8ouCsvI5CYO5wKR/xBeSj7gVT1/8=;
-        b=V1dzQlS+OukHfmuQd1JN2gulz7b9maORxqrBjESq3KAtOxftFSf90ZvAx9I6pJykU0
-         uDVvtYg8b6YPQOMtePmU1fo2skDmT/Gf9aDfVDk/n0AAZYLvBMjNuZeiZkutqDHtTekC
-         9HF9OIiO1GzJgGEHXmlMjnlVwChnzm9AM9UPsWJIDM0L5l7giP+kbETlDRUglktUWYm9
-         HUq269IfDnxTZwNa659th4/3AAgzl61VJ3V9oEbc7JJgQd38rLI9sm9D3AkTmBwvgrxu
-         p6tJOXzX7+fKnx4qU3K+9Jvylk/7ne6KTtvoBN9p16Bo9U3IeRTyVxT8Zd5UqPIxG2F8
-         WoEQ==
-X-Gm-Message-State: AOAM530ATuAULtb5IG1Fp8mMcIXaVHp17xwgmrDG9/Ppw2zE/M0unc/P
-        hXw8+mdWjoMu3O6nUfn7hyMqJXLFLjgg4C7v9ls=
-X-Google-Smtp-Source: ABdhPJy6dCrVihE64G/2FDHlAuzGdom8CulvBOLoo9EPFdwRFwalBwnjn6yQF+6SCWyYI7tIAeVjr0Y7QC+APrGtAFU=
-X-Received: by 2002:ac2:5482:: with SMTP id t2mr24222408lfk.135.1626834420374;
- Tue, 20 Jul 2021 19:27:00 -0700 (PDT)
+        Tue, 20 Jul 2021 21:51:59 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.17]) by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee760f7871cfb3-4462d; Wed, 21 Jul 2021 10:31:56 +0800 (CST)
+X-RM-TRANSID: 2ee760f7871cfb3-4462d
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.0.144.134])
+        by rmsmtp-syy-appsvr09-12009 (RichMail) with SMTP id 2ee960f787184d6-c2b18;
+        Wed, 21 Jul 2021 10:31:56 +0800 (CST)
+X-RM-TRANSID: 2ee960f787184d6-c2b18
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH] drm/bridge/analogix/dp_core: Use devm_platform_ioremap_resource() to simplify code
+Date:   Wed, 21 Jul 2021 10:32:39 +0800
+Message-Id: <20210721023239.29284-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-References: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
- <20210720204224.GK23236@magnolia> <YPc9viRAKm6cf2Ey@casper.infradead.org>
- <YPdkYFSjFHDOU4AV@B-P7TQMD6M-0146.local> <20210721001720.GS22357@magnolia> <YPdrSN6Vso98bLzB@B-P7TQMD6M-0146.local>
-In-Reply-To: <YPdrSN6Vso98bLzB@B-P7TQMD6M-0146.local>
-From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date:   Wed, 21 Jul 2021 04:26:47 +0200
-Message-ID: <CAHpGcM+8cp81=bkzFf3sZfKREM9VbXfePpXrswNJOLVcwEnK7A@mail.gmail.com>
-Subject: Re: [PATCH v4] iomap: support tail packing inline read
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mi., 21. Juli 2021 um 02:33 Uhr schrieb Gao Xiang
-<hsiangkao@linux.alibaba.com>:
-> > And since you can only kmap one page at a time, an inline read grabs the
-> > first part of the data in "page one" and then we have to call
-> > iomap_begin a second time get a new address so that we can read the rest
-> > from "page two"?
->
-> Nope, currently EROFS inline data won't cross page like this.
->
-> But in principle, yes, I don't want to limit it to the current
-> EROFS or gfs2 usage. I think we could make this iomap function
-> more generally (I mean, I'd like to make the INLINE extent
-> functionity as general as possible,
+Use devm_platform_ioremap_resource() instead of
+platform_get_resource() & devm_ioremap_resource().
 
-Nono. Can we please limit this patch what we actually need right now,
-and worry about extending it later?
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ drivers/gpu/drm/bridge/analogix/analogix_dp_core.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> my v1 original approach
-> in principle can support any inline extent in the middle of
-> file rather than just tail blocks, but zeroing out post-EOF
-> needs another iteration) and I don't see it add more code and
-> complexity.
+diff --git a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
+index 76736fb8e..71537cf8c 100644
+--- a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
++++ b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
+@@ -1656,7 +1656,6 @@ analogix_dp_probe(struct device *dev, struct analogix_dp_plat_data *plat_data)
+ {
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 	struct analogix_dp_device *dp;
+-	struct resource *res;
+ 	unsigned int irq_flags;
+ 	int ret;
+ 
+@@ -1710,9 +1709,7 @@ analogix_dp_probe(struct device *dev, struct analogix_dp_plat_data *plat_data)
+ 
+ 	clk_prepare_enable(dp->clock);
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-
+-	dp->reg_base = devm_ioremap_resource(&pdev->dev, res);
++	dp->reg_base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(dp->reg_base))
+ 		return ERR_CAST(dp->reg_base);
+ 
+-- 
+2.20.1.windows.1
 
-Thanks,
-Andreas
+
+
