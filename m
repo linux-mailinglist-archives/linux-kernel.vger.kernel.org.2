@@ -2,99 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4623D16CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FEE3D16DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 21:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239573AbhGUSWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 14:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34824 "EHLO
+        id S240014AbhGUSWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 14:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231740AbhGUSWU (ORCPT
+        with ESMTP id S239913AbhGUSWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 14:22:20 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07581C061575;
-        Wed, 21 Jul 2021 12:02:56 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id qa36so4747238ejc.10;
-        Wed, 21 Jul 2021 12:02:55 -0700 (PDT)
+        Wed, 21 Jul 2021 14:22:52 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65894C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:03:26 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id hd33so4760699ejc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 12:03:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bz+gGGTDR08X+AO/SbVQCNhU2kG51Ah3ryQBTD5eMuQ=;
-        b=kXdFVki2Ry0Qh5deswzLJ0S8JSGB7N79Iy5ClQbvjmPZUJ0pDYTYM6eat85V8zdO//
-         aeLllkfCgdoe76xPh2iolTABrqdqH3DwbVoeuq2z6Inwq3zwPB6pQN4OcG7OTcTea03i
-         4VjCgQLHmtKvWYydflL1lWSyPEWDMJOeUEHEeJTQGFzqHosjVu/ztZF3WykSE0txnFuV
-         yugJsktvXpU0P7nmitRTxtgegWIHoNsPWih6Hh88W2fILhGUgR6FeC1mhQ92n9mKN6Mc
-         qjqnmnpzNW5n9BaLnos0bOft7NR784TuS2O8XdJAdBzV/tJIZ5+sW2A3M+bI1uHJs9KY
-         f5Uw==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=++tgyshRvxlgbKnxZVEXxedsZvd2u9+anyBU9UM8Xho=;
+        b=B+ZMCYMEBA7TCugxdS96PT2yzHfPnFBenpQsw1uxTHDSE0amhbipWWAm1DENubb1HB
+         qmn2VFdZsXfDzOWjfW7eFldgAPNzGL4PYnCaOIDSYc68GjATwHGyAP45fTM343lcNnOH
+         Qbxxx+aJbRGccoyxoUWcn+tnKkNKJriyFU2XA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bz+gGGTDR08X+AO/SbVQCNhU2kG51Ah3ryQBTD5eMuQ=;
-        b=pi9o8BEMWuOj6f8qE/fPNkkmLZgp/QpuMX1N87FkSqnM6UrDW3MJ4rmY5feSc1mMvf
-         Ub7GLF/a/b6kfsGd2Fla81hfaKZSp6L9R/hJyBpGSBaCaBhwPkKTkVi2c0ySS91116xR
-         F1P8XfB1H4I+o2HC1gCTxa236Uel5DbPid+GnXoWBPt1WM+eWQzPV6zD4xi7aTj1cvWu
-         DtTVxO1mvjGHi0rrQThOy1NlfH3N6Njtml5r/uJEjAgNjLhYog1x95bbaBWGNju+2CDG
-         Dz5YHQu07VORGJt2I98TzVOoiy4Cn9I47cJvuye1bb9SZAIWlcyVOjnaSqAPY930DBGP
-         tPWQ==
-X-Gm-Message-State: AOAM530oSHTMwyAooTD9IQGb49JgmRCKH9yydpECDO2qWSbYUAKR0KhF
-        eR7NIK/rsQ4edTkYFfKk3pQ=
-X-Google-Smtp-Source: ABdhPJywpZBOxUrcAA2ibda5nc6sB+szMz9PR3oDWSgdBzdM4+N7PEtUr/LYJyqBrD34NKnA4HfnRQ==
-X-Received: by 2002:a17:906:c302:: with SMTP id s2mr39661610ejz.151.1626894174613;
-        Wed, 21 Jul 2021 12:02:54 -0700 (PDT)
-Received: from localhost.localdomain (host-79-27-97-200.retail.telecomitalia.it. [79.27.97.200])
-        by smtp.gmail.com with ESMTPSA id a25sm11130868edr.21.2021.07.21.12.02.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=++tgyshRvxlgbKnxZVEXxedsZvd2u9+anyBU9UM8Xho=;
+        b=TYT1sU1JdYkyToP30kBiuA4UU1/DN07oQUYAv7kpbRAsyugRrEJNtQDPn4OcG+Pv48
+         +aIyP3+DE9lm2cKL9AZflkxYZ8EiN3AF2nyDn+3BGHZrahob85JFBvQ3rvIL1ACEccy0
+         CjKAhmdOy+NntKT54Ov2FchVMQPKx/00LJlC6yLwo/usSp69OEQGO4R5PzDhy5e2fuEO
+         Gp/nuWpUPqZJUHk9woX4f6KC8n6S718bN5ytOGo7kQcSzta/VHQ9KRt4f2Z4DuuUUIlB
+         DgMD+24syydAEjsAusNICla+XRLmLV7PrqIQOfppO2btTOT0eQN9wQvB1yBULG8Wj5AX
+         cFfA==
+X-Gm-Message-State: AOAM532WQ7d+uOQTITKTjuoe+tsf0qLrJhmj2wxQ4ObJnQKCFeNiPbuT
+        92mqQn0qFCPyiuCzLp2LQdyPk58oJ0q69Q==
+X-Google-Smtp-Source: ABdhPJzRzeP4RRoslhkL+sfcipP2tBusBU19nwhsPrBS8Te754Ug8WzWQs0xJeUdghEQbKoPAJh0vQ==
+X-Received: by 2002:a17:906:e51:: with SMTP id q17mr40233574eji.140.1626894204918;
+        Wed, 21 Jul 2021 12:03:24 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id k1sm8648459eji.84.2021.07.21.12.03.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 12:02:54 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Vineeth Pillai <Vineeth.Pillai@microsoft.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH] admin-guide/hw-vuln: Rephrase a section of core-scheduling.rst
-Date:   Wed, 21 Jul 2021 21:02:50 +0200
-Message-Id: <20210721190250.26095-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 21 Jul 2021 12:03:24 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 21:03:22 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Sean Paul <sean@poorly.run>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH] drm/msm: Add fence->wait() op
+Message-ID: <YPhvein5e8do2AR+@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>
+References: <20210720150716.1213775-1-robdclark@gmail.com>
+ <60ffb6f3-e932-d9af-3b90-81adf0c15250@gmail.com>
+ <CAF6AEGtOW3EjZWo36ij8U1om=gAqvg8CSkJJq2GkyHFGWUH4kQ@mail.gmail.com>
+ <CAKMK7uF1=Y6_9znGoWG8GrteXBBRmyW8C3bFE+eJQqOj0A1buA@mail.gmail.com>
+ <CAF6AEGsOVPdMkXwU9C+nDfQpPThveJ2A0jbXi43RRkkJKtnz3w@mail.gmail.com>
+ <CAKMK7uHMXFqic=9APJrSf6totB8nGZTDe4x8+sv-drmV4Q+4Bg@mail.gmail.com>
+ <CAF6AEGsKoucxt4a2pcdQM9+L0+YU-6TcAt8eF=3ur169646Jhw@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF6AEGsKoucxt4a2pcdQM9+L0+YU-6TcAt8eF=3ur169646Jhw@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rephrase the "For MDS" section in core-scheduling.rst for the purpose of
-making it clearer what is meant by "kernel memory is still considered
-untrusted".
+On Wed, Jul 21, 2021 at 09:34:43AM -0700, Rob Clark wrote:
+> On Wed, Jul 21, 2021 at 12:59 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Wed, Jul 21, 2021 at 12:32 AM Rob Clark <robdclark@gmail.com> wrote:
+> > >
+> > > On Tue, Jul 20, 2021 at 1:55 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > >
+> > > > On Tue, Jul 20, 2021 at 8:26 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > > >
+> > > > > On Tue, Jul 20, 2021 at 11:03 AM Christian König
+> > > > > <ckoenig.leichtzumerken@gmail.com> wrote:
+> > > > > >
+> > > > > > Hi Rob,
+> > > > > >
+> > > > > > Am 20.07.21 um 17:07 schrieb Rob Clark:
+> > > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > > >
+> > > > > > > Somehow we had neither ->wait() nor dma_fence_signal() calls, and no
+> > > > > > > one noticed.  Oops.
+> > > > > >
+> > > > > >
+> > > > > > I'm not sure if that is a good idea.
+> > > > > >
+> > > > > > The dma_fence->wait() callback is pretty much deprecated and should not
+> > > > > > be used any more.
+> > > > > >
+> > > > > > What exactly do you need that for?
+> > > > >
+> > > > > Well, the alternative is to track the set of fences which have
+> > > > > signalling enabled, and then figure out which ones to signal, which
+> > > > > seems like a lot more work, vs just re-purposing the wait
+> > > > > implementation we already have for non-dma_fence cases ;-)
+> > > > >
+> > > > > Why is the ->wait() callback (pretty much) deprecated?
+> > > >
+> > > > Because if you need it that means for your driver dma_fence_add_cb is
+> > > > broken, which means a _lot_ of things don't work. Like dma_buf poll
+> > > > (compositors have patches to start using that), and I think
+> > > > drm/scheduler also becomes rather unhappy.
+> > >
+> > > I'm starting to page back in how this works.. fence cb's aren't broken
+> > > (which is also why dma_fence_wait() was not completely broken),
+> > > because in retire_submits() we call
+> > > dma_fence_is_signaled(submit->hw_fence).
+> > >
+> > > But the reason that the custom wait function cleans up a tiny bit of
+> > > jank is that the wait_queue_head_t gets signaled earlier, before we
+> > > start iterating the submits and doing all that retire_submit() stuff
+> > > (unpin/unref bo's, etc).  I suppose I could just split things up to
+> > > call dma_fence_signal() earlier, and *then* do the retire_submits()
+> > > stuff.
+> >
+> > Yeah reducing the latency there sounds like a good idea.
+> > -Daniel
+> >
+> 
+> Hmm, no, turns out that isn't the problem.. or, well, it is probably a
+> good idea to call drm_fence_signal() earlier.  But it seems like
+> waking up from wait_event_* is faster than wake_up_state(wait->task,
+> TASK_NORMAL).  I suppose the wake_up_state() approach still needs for
+> the scheduler to get around to schedule the runnable task.
+> 
+> So for now, I'm going back to my own wait function (plus earlier
+> drm_fence_signal())
+> 
+> Before removing dma_fence_opps::wait(), I guess we want to re-think
+> dma_fence_default_wait().. but I think that would require a
+> dma_fence_context base class (rather than just a raw integer).
 
-Suggested-by: Vineeth Pillai <Vineeth.Pillai@microsoft.com>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- Documentation/admin-guide/hw-vuln/core-scheduling.rst | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Uh that's not great ... can't we fix this instead of papering over it in
+drivers? Aside from maybe different wakeup flags it all is supposed to
+work exactly the same underneath, and whether using a wait queue or not
+really shouldn't matter.
+-Daniel
 
-diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
-index 7b410aef9c5c..e6b5ceb219ec 100644
---- a/Documentation/admin-guide/hw-vuln/core-scheduling.rst
-+++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
-@@ -181,10 +181,11 @@ Open cross-HT issues that core scheduling does not solve
- --------------------------------------------------------
- 1. For MDS
- ~~~~~~~~~~
--Core scheduling cannot protect against MDS attacks between an HT running in
--user mode and another running in kernel mode. Even though both HTs run tasks
--which trust each other, kernel memory is still considered untrusted. Such
--attacks are possible for any combination of sibling CPU modes (host or guest mode).
-+Core scheduling cannot protect against MDS attacks between the siblings running in
-+user mode and the others running in kernel mode. Even though all siblings run tasks
-+which trust each other, when the kernel is executing code on behalf of a task, it
-+cannot trust the code running in the sibling. Such attacks are possible for any
-+combination of sibling CPU modes (host or guest mode).
- 
- 2. For L1TF
- ~~~~~~~~~~~
+> 
+> BR,
+> -R
+> 
+> > >
+> > > BR,
+> > > -R
+> > >
+> > > > It essentially exists only for old drivers where ->enable_signalling
+> > > > is unreliable and we paper over that with a retry loop in ->wait and
+> > > > pray no one notices that it's too butchered. The proper fix is to have
+> > > > a driver thread to guarantee that ->enable_signalling works reliable,
+> > > > so you don't need a ->wait.
+> > > >
+> > > > Can you type up a kerneldoc patch for dma_fence_ops->wait to hammer
+> > > > this in please?
+> > > > -Daniel
+> > > >
+> > > > >
+> > > > > BR,
+> > > > > -R
+> > > > >
+> > > > > > Regards,
+> > > > > > Christian.
+> > > > > >
+> > > > > > >
+> > > > > > > Note that this removes the !timeout case, which has not been used in
+> > > > > > > a long time.
+> > > > > >
+> > > > > >
+> > > > > > >
+> > > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > > > > ---
+> > > > > > >   drivers/gpu/drm/msm/msm_fence.c | 59 +++++++++++++++++++--------------
+> > > > > > >   1 file changed, 34 insertions(+), 25 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_fence.c
+> > > > > > > index cd59a5918038..8ee96b90ded6 100644
+> > > > > > > --- a/drivers/gpu/drm/msm/msm_fence.c
+> > > > > > > +++ b/drivers/gpu/drm/msm/msm_fence.c
+> > > > > > > @@ -38,11 +38,10 @@ static inline bool fence_completed(struct msm_fence_context *fctx, uint32_t fenc
+> > > > > > >       return (int32_t)(fctx->completed_fence - fence) >= 0;
+> > > > > > >   }
+> > > > > > >
+> > > > > > > -/* legacy path for WAIT_FENCE ioctl: */
+> > > > > > > -int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> > > > > > > -             ktime_t *timeout, bool interruptible)
+> > > > > > > +static signed long wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> > > > > > > +             signed long remaining_jiffies, bool interruptible)
+> > > > > > >   {
+> > > > > > > -     int ret;
+> > > > > > > +     signed long ret;
+> > > > > > >
+> > > > > > >       if (fence > fctx->last_fence) {
+> > > > > > >               DRM_ERROR_RATELIMITED("%s: waiting on invalid fence: %u (of %u)\n",
+> > > > > > > @@ -50,33 +49,34 @@ int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> > > > > > >               return -EINVAL;
+> > > > > > >       }
+> > > > > > >
+> > > > > > > -     if (!timeout) {
+> > > > > > > -             /* no-wait: */
+> > > > > > > -             ret = fence_completed(fctx, fence) ? 0 : -EBUSY;
+> > > > > > > +     if (interruptible) {
+> > > > > > > +             ret = wait_event_interruptible_timeout(fctx->event,
+> > > > > > > +                     fence_completed(fctx, fence),
+> > > > > > > +                     remaining_jiffies);
+> > > > > > >       } else {
+> > > > > > > -             unsigned long remaining_jiffies = timeout_to_jiffies(timeout);
+> > > > > > > -
+> > > > > > > -             if (interruptible)
+> > > > > > > -                     ret = wait_event_interruptible_timeout(fctx->event,
+> > > > > > > -                             fence_completed(fctx, fence),
+> > > > > > > -                             remaining_jiffies);
+> > > > > > > -             else
+> > > > > > > -                     ret = wait_event_timeout(fctx->event,
+> > > > > > > -                             fence_completed(fctx, fence),
+> > > > > > > -                             remaining_jiffies);
+> > > > > > > -
+> > > > > > > -             if (ret == 0) {
+> > > > > > > -                     DBG("timeout waiting for fence: %u (completed: %u)",
+> > > > > > > -                                     fence, fctx->completed_fence);
+> > > > > > > -                     ret = -ETIMEDOUT;
+> > > > > > > -             } else if (ret != -ERESTARTSYS) {
+> > > > > > > -                     ret = 0;
+> > > > > > > -             }
+> > > > > > > +             ret = wait_event_timeout(fctx->event,
+> > > > > > > +                     fence_completed(fctx, fence),
+> > > > > > > +                     remaining_jiffies);
+> > > > > > > +     }
+> > > > > > > +
+> > > > > > > +     if (ret == 0) {
+> > > > > > > +             DBG("timeout waiting for fence: %u (completed: %u)",
+> > > > > > > +                             fence, fctx->completed_fence);
+> > > > > > > +             ret = -ETIMEDOUT;
+> > > > > > > +     } else if (ret != -ERESTARTSYS) {
+> > > > > > > +             ret = 0;
+> > > > > > >       }
+> > > > > > >
+> > > > > > >       return ret;
+> > > > > > >   }
+> > > > > > >
+> > > > > > > +/* legacy path for WAIT_FENCE ioctl: */
+> > > > > > > +int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> > > > > > > +             ktime_t *timeout, bool interruptible)
+> > > > > > > +{
+> > > > > > > +     return wait_fence(fctx, fence, timeout_to_jiffies(timeout), interruptible);
+> > > > > > > +}
+> > > > > > > +
+> > > > > > >   /* called from workqueue */
+> > > > > > >   void msm_update_fence(struct msm_fence_context *fctx, uint32_t fence)
+> > > > > > >   {
+> > > > > > > @@ -114,10 +114,19 @@ static bool msm_fence_signaled(struct dma_fence *fence)
+> > > > > > >       return fence_completed(f->fctx, f->base.seqno);
+> > > > > > >   }
+> > > > > > >
+> > > > > > > +static signed long msm_fence_wait(struct dma_fence *fence, bool intr,
+> > > > > > > +             signed long timeout)
+> > > > > > > +{
+> > > > > > > +     struct msm_fence *f = to_msm_fence(fence);
+> > > > > > > +
+> > > > > > > +     return wait_fence(f->fctx, fence->seqno, timeout, intr);
+> > > > > > > +}
+> > > > > > > +
+> > > > > > >   static const struct dma_fence_ops msm_fence_ops = {
+> > > > > > >       .get_driver_name = msm_fence_get_driver_name,
+> > > > > > >       .get_timeline_name = msm_fence_get_timeline_name,
+> > > > > > >       .signaled = msm_fence_signaled,
+> > > > > > > +     .wait = msm_fence_wait,
+> > > > > > >   };
+> > > > > > >
+> > > > > > >   struct dma_fence *
+> > > > > >
+> > > >
+> > > >
+> > > >
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > http://blog.ffwll.ch
+> >
+> >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+
 -- 
-2.32.0
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
