@@ -2,120 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A923D0E45
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4DC3D0E44
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238123AbhGULRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:17:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:52800 "EHLO foss.arm.com"
+        id S232693AbhGULRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:17:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236618AbhGULK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:10:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7ABE5D6E;
-        Wed, 21 Jul 2021 04:51:34 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 145223F694;
-        Wed, 21 Jul 2021 04:51:31 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rt-users@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 2/3] rcu/nocb: Check for migratability rather than pure preemptability
-Date:   Wed, 21 Jul 2021 12:51:17 +0100
-Message-Id: <20210721115118.729943-3-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210721115118.729943-1-valentin.schneider@arm.com>
-References: <20210721115118.729943-1-valentin.schneider@arm.com>
+        id S237773AbhGULMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 07:12:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 751D46109F;
+        Wed, 21 Jul 2021 11:51:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626868319;
+        bh=hEJvu6/cow0FvseVKzbhqeQsfEPQOVHFme9rz9lVotk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pU+YYoq3108Oq4wVKJY/mjGW/J6p2z50PLnpKyCLFFAoHdeO3j8uTwg7PRvaixFIl
+         jwX55IS0msfH/94B4a6miF5/knSAlhrluvN0zy648W0pnBfmSSiJ6T5XJxWmmEQgi8
+         nHVna0fdHCRxiswPV+jhs9dCO7MFrMeB5M/Xd0po=
+Date:   Wed, 21 Jul 2021 13:51:56 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc:     Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>
+Subject: Re: [PATCH] misc: sgi-gru: Convert from atomic_t to refcount_t on
+ gru_thread_state->ts_refcnt
+Message-ID: <YPgKXBTjgO6ko0qQ@kroah.com>
+References: <1626517043-42696-1-git-send-email-xiyuyang19@fudan.edu.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626517043-42696-1-git-send-email-xiyuyang19@fudan.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running v5.13-rt1 on my arm64 Juno board triggers:
+On Sat, Jul 17, 2021 at 06:17:22PM +0800, Xiyu Yang wrote:
+> refcount_t type and corresponding API can protect refcounters from
+> accidental underflow and overflow and further use-after-free situations.
+> 
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> ---
+>  drivers/misc/sgi-gru/grumain.c   | 6 +++---
+>  drivers/misc/sgi-gru/grutables.h | 3 ++-
+>  2 files changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/misc/sgi-gru/grumain.c b/drivers/misc/sgi-gru/grumain.c
+> index 40ac59dd018c..9afda47efbf2 100644
+> --- a/drivers/misc/sgi-gru/grumain.c
+> +++ b/drivers/misc/sgi-gru/grumain.c
+> @@ -282,7 +282,7 @@ static void gru_unload_mm_tracker(struct gru_state *gru,
+>   */
+>  void gts_drop(struct gru_thread_state *gts)
+>  {
+> -	if (gts && atomic_dec_return(&gts->ts_refcnt) == 0) {
+> +	if (gts && refcount_dec_and_test(&gts->ts_refcnt)) {
+>  		if (gts->ts_gms)
+>  			gru_drop_mmu_notifier(gts->ts_gms);
+>  		kfree(gts);
 
-[    0.156302] =============================
-[    0.160416] WARNING: suspicious RCU usage
-[    0.164529] 5.13.0-rt1 #20 Not tainted
-[    0.168300] -----------------------------
-[    0.172409] kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
-[    0.179920]
-[    0.179920] other info that might help us debug this:
-[    0.179920]
-[    0.188037]
-[    0.188037] rcu_scheduler_active = 1, debug_locks = 1
-[    0.194677] 3 locks held by rcuc/0/11:
-[    0.198448] #0: ffff00097ef10cf8 ((softirq_ctrl.lock).lock){+.+.}-{2:2}, at: __local_bh_disable_ip (./include/linux/rcupdate.h:662 kernel/softirq.c:171)
-[    0.208709] #1: ffff80001205e5f0 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock (kernel/locking/spinlock_rt.c:43 (discriminator 4))
-[    0.217134] #2: ffff80001205e5f0 (rcu_read_lock){....}-{1:2}, at: __local_bh_disable_ip (kernel/softirq.c:169)
-[    0.226428]
-[    0.226428] stack backtrace:
-[    0.230889] CPU: 0 PID: 11 Comm: rcuc/0 Not tainted 5.13.0-rt1 #20
-[    0.237100] Hardware name: ARM Juno development board (r0) (DT)
-[    0.243041] Call trace:
-[    0.245497] dump_backtrace (arch/arm64/kernel/stacktrace.c:163)
-[    0.249185] show_stack (arch/arm64/kernel/stacktrace.c:219)
-[    0.252522] dump_stack (lib/dump_stack.c:122)
-[    0.255947] lockdep_rcu_suspicious (kernel/locking/lockdep.c:6439)
-[    0.260328] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
-[    0.264537] rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
-[    0.267786] rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
-[    0.271644] smpboot_thread_fn (kernel/smpboot.c:165 (discriminator 3))
-[    0.275767] kthread (kernel/kthread.c:321)
-[    0.279013] ret_from_fork (arch/arm64/kernel/entry.S:1005)
+Related to this, shouldn't this really be a 'struct kref' instead of
+hand-creating the exact same logic?
 
-In this case, this is the RCU core kthread accessing the local CPU's
-rdp. Before that, rcu_cpu_kthread() invokes local_bh_disable().
+Want to make that change on top of this one?
 
-Under !CONFIG_PREEMPT_RT (and rcutree.use_softirq=0), this ends up
-incrementing the preempt_count, which satisfies the "local non-preemptible
-read" of rcu_rdp_is_offloaded().
+thanks,
 
-Under CONFIG_PREEMPT_RT however, this becomes
-
-  local_lock(&softirq_ctrl.lock)
-
-which, under the same config, is migrate_disable() + rt_spin_lock().
-This *does* prevent the task from migrating away, but not in a way
-rcu_rdp_is_offloaded() can notice. Note that the invoking task is an
-smpboot thread, and thus cannot be migrated away in the first place.
-
-Check is_pcpu_safe() here rather than preemptible().
-
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- kernel/rcu/tree_plugin.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index ad0156b86937..6c3c4100da83 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -70,8 +70,7 @@ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
- 		!(lockdep_is_held(&rcu_state.barrier_mutex) ||
- 		  (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_held()) ||
- 		  rcu_lockdep_is_held_nocb(rdp) ||
--		  (rdp == this_cpu_ptr(&rcu_data) &&
--		   !(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())) ||
-+		  (rdp == this_cpu_ptr(&rcu_data) && is_pcpu_safe()) ||
- 		  rcu_current_is_nocb_kthread(rdp) ||
- 		  rcu_running_nocb_timer(rdp)),
- 		"Unsafe read of RCU_NOCB offloaded state"
--- 
-2.25.1
-
+greg k-h
