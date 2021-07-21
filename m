@@ -2,132 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0BC3D1100
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6BF3D1106
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237574AbhGUNgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237656AbhGUNgZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:36:25 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC94C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:17:00 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id h9so3221257ljm.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:17:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aMtC4XryKwhDIhZBjGDMT7qXwIITt0vl4IftwTuf1DM=;
-        b=tn/yPrq9tTMLPjmD5TbZ/iy3AJo6Mi9l2gxxljL5HEUbxMPZdG3RxSjQwM44qEg1Ay
-         ZSQoJ5VmiOWW4F6UY9kJyxELMnSWBgyrkKbQsc6D1cDjQNL0hgLdX0kWHGd5GZ4faBF2
-         BgkanG1I+E8lutJDzpQZ2fecWYN60jF1fRQYhx/4PhqUMW0FiAfl+lnJ7H3zb9yI3mxo
-         ve+3VAybuaeninHAl/dsVNjemwEUlUw0kquk8MkxSCod74oz+6KmpuIpHsAbGyCRXlsP
-         MAan1nHL+ko3XcitUB2qAlOM1tT6B29gN95vPLIRWqeSZymxrUpub7/K7xNOD1FSCw9z
-         BGfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aMtC4XryKwhDIhZBjGDMT7qXwIITt0vl4IftwTuf1DM=;
-        b=aSMAYFzADJY/g2c2SK4vEn+esTKtA7D9bKm0Ymj1PhVZewnxYj2pBzZ0vqkGwqruxy
-         0AUA5LsBuOA42sCxQ1ch0GwiICkJvr6Oa/skpiXcLrY6nRWPsWXz4E0PzikjlpAIDjbD
-         zhUAA9Q4l0XQLd2wycz1s7oesA+fTv/vQwtA4zbK4esVdfI1oLyPuMzH/TLujvu5J8s3
-         Fnrdi2RGZhCB05NnCKqtpD3/WXrETm14kW24rlToO28kzSqBnvMCK5Q4uDFiwj2R85MG
-         Dtkm01zQbHbFnI09dYX+4DzwOvvyhXQBB6Rr8bIrMPVPrIvc1sBXyn6Q/mV4jNDG0N98
-         s00w==
-X-Gm-Message-State: AOAM5328REEMV/6/Y1OnIeaW9AtZZkDSIawCipE5UYnwM5qw3fvSQpaG
-        M4sB/jSR9NSOhKqjhTbhguVUJgK00MnjF6T0SjcVLQ==
-X-Google-Smtp-Source: ABdhPJzpjzfCxuW9+8M52jHB3ZIgsPbzyBIakbaMW5R54JJyEfDj0/89vRmJI8EUQas2w0+VtPllFSyf5+6xQuZ8ilo=
-X-Received: by 2002:a2e:950:: with SMTP id 77mr31532430ljj.438.1626877019230;
- Wed, 21 Jul 2021 07:16:59 -0700 (PDT)
+        id S238874AbhGUNhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:37:40 -0400
+Received: from mga09.intel.com ([134.134.136.24]:64109 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232419AbhGUNhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 09:37:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="211442244"
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="211442244"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 07:18:14 -0700
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="501302795"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.213.149]) ([10.254.213.149])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 07:18:11 -0700
+Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sanjay Kumar <sanjay.k.kumar@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>
+References: <20210720013856.4143880-1-baolu.lu@linux.intel.com>
+ <20210720013856.4143880-5-baolu.lu@linux.intel.com>
+ <22302277-0470-db41-7a19-41b5f73bd2c5@arm.com>
+ <4d3a2546-da21-605d-26a9-1f6f52123056@linux.intel.com>
+ <5662caea-a974-e511-9509-010606fda251@arm.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH 4/5] iommu/vt-d: Disallow SVA if devices don't support
+ 64-bit address
+Message-ID: <f1fd4464-d186-e18f-3e33-eac56d488bba@linux.intel.com>
+Date:   Wed, 21 Jul 2021 22:17:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210607123317.3242031-1-robert.marko@sartura.hr>
- <20210607123317.3242031-5-robert.marko@sartura.hr> <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
- <20210713222528.GA952399@robh.at.kernel.org> <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
- <20210719225906.GA2769608@robh.at.kernel.org>
-In-Reply-To: <20210719225906.GA2769608@robh.at.kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 21 Jul 2021 16:16:48 +0200
-Message-ID: <CACRpkdbq6Jow6AT9OpsR7Q0JVCWVMcmamh9KHPXMtUnkoe7ZFw@mail.gmail.com>
-Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     Robert Marko <robert.marko@sartura.hr>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5662caea-a974-e511-9509-010606fda251@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 12:59 AM Rob Herring <robh@kernel.org> wrote:
+On 2021/7/21 19:12, Robin Murphy wrote:
+> On 2021-07-21 02:50, Lu Baolu wrote:
+>> Hi Robin,
+>>
+>> Thanks a lot for reviewing my patch!
+>>
+>> On 7/20/21 5:27 PM, Robin Murphy wrote:
+>>> On 2021-07-20 02:38, Lu Baolu wrote:
+>>>> When the device and CPU share an address space (such as SVA), the 
+>>>> device
+>>>> must support the same addressing capability as the CPU. The CPU does 
+>>>> not
+>>>> consider the addressing ability of any device when managing the page 
+>>>> table
+>>>> of a process, so the device must have enough addressing ability to bind
+>>>> the page table of the process.
+>>>>
+>>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>>>> ---
+>>>>   drivers/iommu/intel/iommu.c | 3 +++
+>>>>   1 file changed, 3 insertions(+)
+>>>>
+>>>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+>>>> index f45c80ce2381..f3cca1dd384d 100644
+>>>> --- a/drivers/iommu/intel/iommu.c
+>>>> +++ b/drivers/iommu/intel/iommu.c
+>>>> @@ -5372,6 +5372,9 @@ static int intel_iommu_enable_sva(struct 
+>>>> device *dev)
+>>>>       if (!(iommu->flags & VTD_FLAG_SVM_CAPABLE))
+>>>>           return -ENODEV;
+>>>> +    if (!dev->dma_mask || *dev->dma_mask != DMA_BIT_MASK(64))
+>>>
+>>> Careful - VFIO doesn't set DMA masks (since it doesn't use the DMA API),
+>>
+>> SVA doesn't work through the VFIO framework.
+> 
+> Did anyone say it does? My point is that, as far as I understand, the 
+> SVA UAPI is very much intended to work *with* VFIO, and even if the 
+> finer details are still mired in the /dev/ioasid discussion today we 
+> should definitely expect to see VFIO-like use-cases at some point. I 
+> certainly don't see why any of the guest SVA stuff exists already if not 
+> for VFIO-assigned devices?
 
-> > > > Are there any issues with the bindings?
-> > >
-> > > Yes. Primarily the GPIO function being part of the compatible. I'm
-> > > surprised Linus W is okay with that.
-> >
-> > I think I already explained this before, having a single compatible
-> > won't work here.
-> > Then there would not be anything to know whether its input or output
-> > only as the pins
-> > have specific purpose.
->
-> The client side should tell the direction. Are you using the SFP
-> binding?: Documentation/devicetree/bindings/net/sff,sfp.txt
->
-> Specific purpose IOs are not general purpose IOs. Repeating Linus W
-> here. Maybe his opinion has evolved...
+Agreed. From /dev/ioasid design point of view, it's possible to have
+VFIO-like use case of SVA. Perhaps the device addressing capability
+could be included in GET_DEV_INFO of /dev/ioasid UAPI.
 
-Nah. I think at one time or two I was convinced to let something
-special purpose slip through as "GPIO".
+> 
+>>> so this appears to be relying on another driver having bound previously,
+>>
+>> Yes. You are right.
+>>
+>>> otherwise the mask would still be the default 32-bit one from 
+>>> pci_setup_device(). I'm not sure that's an entirely robust assumption.
+>>
+>> Currently SVA implementation always requires a native kernel driver. The
+>> assumption is that the drivers should check and set 64-bit addressing
+>> capability before calling iommu_sva_xxx() APIs.
+> 
+> ...and given that that is not a documented requirement, and certainly 
+> not a technical one (even a self-contained kernel driver could choose to 
+> only use SVA contexts and not touch the DMA API), it's an inherently 
+> fragile assumption which I'm confident *will* be broken eventually :)
+> 
 
-Typical case: LED control lines that were in practice used for other
-things, such as controlling motors.
+Fair enough. I will drop this patch.
 
-Here there is a pin named "SFP TX disable" which is suspicious.
-Why isn't whatever is now managing SFP just read/write this bit
-without going through the GPIO abstraction to disable TX?
+Thanks a lot for the comments.
 
-If it is a regmap in Linux then that is fine, just pass the regmap
-around inside the kernel, OK finished. But really that is an OS
-detail.
+Best regards,
+baolu
 
-If the pin is in practice used for other things, say connected
-to a LED, I would soften up and accept it as a GPIO compatible.
-
-> If the programming model of each instance is different, then different
-> compatibles are justified. But describe what the difference is, not the
-> connection.
-
-IIRC that is the case as the instances are different.
-
-So those differences should be described for each compatible in the
-bindings.
-
-So there is this:
-
-> +  GPIO controller module provides GPIO-s for the SFP slots.
-> +  It is split into 3 controllers, one output only for the SFP TX disable
-> +  pins, one input only for the SFP present pins and one input only for
-> +  the SFP LOS pins.
-
-This should read "the hardware instances are different in such way
-that the first can only (by hardware restrictions) be used as output..."
-etc, so that it is crystal clear what this means.
-
-But if the lines are special purpose not general purpose, they
-should not be GPIOs to begin with.
-
-Yours,
-Linus Walleij
+> Robin.
+> 
+>>>> +        return -ENODEV;
+>>>> +
+>>>>       if (intel_iommu_enable_pasid(iommu, dev))
+>>>>           return -ENODEV;
+>>>>
+>>
+>> Best regards,
+>> baolu
