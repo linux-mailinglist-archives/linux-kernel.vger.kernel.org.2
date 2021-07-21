@@ -2,69 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267753D1361
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528033D1363
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbhGUP3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 11:29:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54356 "EHLO mail.kernel.org"
+        id S232359AbhGUPaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 11:30:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231756AbhGUP33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:29:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 12C6E6127C;
-        Wed, 21 Jul 2021 16:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626883806;
-        bh=Dn83UhcSYYhUEwq8NHNIrxPGniXJq+1VJH1oxrrBVpU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JIVfOP1ReH8eaYgFDwKCtIRFv/HhdCYj126/QUSaEDd1qeU747WI/4R093GHUV94J
-         cS/yd3COuxke4qSB49BT/UupfRA782zUM/7UkTzrhTvRrl7/Z7RsaWwDYCyP6EvVCh
-         2WJF9+vewd3PF/VOGNLkczAJFU7IPzERsQGBaRQxtMiGm9Y+6yEi3x7ueTcwnoZ0wN
-         17OgUgYu1pj12jPO6fb6sMnQHs67fJX30i466GL4Q0Lg2VF8wzFrvMipfK8/B9vuRp
-         VT1AnbWvKebZXiPbHHfR6vIwnsgy8gVTAaepbhvWqXtwcuW+gWu6tEcT6xVhLavwl0
-         uv/lbqBDj4sqw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0C8F460CCF;
-        Wed, 21 Jul 2021 16:10:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231401AbhGUPaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 11:30:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E7676100C;
+        Wed, 21 Jul 2021 16:10:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626883850;
+        bh=ATbjR5e/Nku6Q63BGC31Ok9sISkS6hGpkLuuBaaVK0Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dol824DpEIFytbAdGqq/PDZ6qvwrlmYA0/I30RpnGDx5eI1H5r7mz2Uluikvk6H2b
+         94y/V0u2mQAFGKQ6f8OxAlL7CDOfKQs/DfLYglF814izLaj2QLlHqxB3qeE/eKzEl6
+         fpglALaLsBsDYft2N5h9wHE2RAdXUrDlisT8dtsA=
+Date:   Wed, 21 Jul 2021 18:10:48 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, jgg@ziepe.ca,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        daniel.vetter@ffwll.ch, galpress@amazon.com, sleybo@amazon.com,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, dledford@redhat.com,
+        airlied@gmail.com, alexander.deucher@amd.com, leonro@nvidia.com,
+        hch@lst.de, amd-gfx@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v5 0/2] Add p2p via dmabuf to habanalabs
+Message-ID: <YPhHCIoHzMnbIfeF@kroah.com>
+References: <20210711140601.7472-1-ogabbay@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v1 1/1] net: wwan: iosm: Switch to use module_pci_driver()
- macro
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162688380604.30339.5977187977733465489.git-patchwork-notify@kernel.org>
-Date:   Wed, 21 Jul 2021 16:10:06 +0000
-References: <20210721082058.71098-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210721082058.71098-1-andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     m.chetan.kumar@intel.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxwwan@intel.com,
-        loic.poulain@linaro.org, ryazanov.s.a@gmail.com,
-        johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210711140601.7472-1-ogabbay@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Wed, 21 Jul 2021 11:20:58 +0300 you wrote:
-> Eliminate some boilerplate code by using module_pci_driver() instead of
-> init/exit, moving the salient bits from init into probe.
+On Sun, Jul 11, 2021 at 05:05:59PM +0300, Oded Gabbay wrote:
+> Hi,
+> This is v5 of this patch-set following again a long email thread.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/net/wwan/iosm/iosm_ipc_pcie.c | 19 +------------------
->  1 file changed, 1 insertion(+), 18 deletions(-)
+> It contains fixes to the implementation according to the review that Jason
+> did on v4. Jason, I appreciate your feedback. If you can take another look
+> to see I didn't miss anything that would be great.
+> 
+> The details of the fixes are in the changelog in the commit message of
+> the second patch.
+> 
+> There was one issue with your proposal to set the orig_nents to 0. I did
+> that, but I also had to restore it to nents before calling sg_free_table
+> because that function uses orig_nents to iterate.
 
-Here is the summary with links:
-  - [v1,1/1] net: wwan: iosm: Switch to use module_pci_driver() macro
-    https://git.kernel.org/netdev/net-next/c/7f8b20d0deed
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
