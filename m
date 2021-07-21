@@ -2,174 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB71A3D062A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 02:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4B13D062C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 02:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234223AbhGTXkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 19:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
+        id S234955AbhGTXnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 19:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbhGTXj4 (ORCPT
+        with ESMTP id S232502AbhGTXlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 19:39:56 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFF1C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 17:20:33 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id j199so900198pfd.7
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 17:20:33 -0700 (PDT)
+        Tue, 20 Jul 2021 19:41:51 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BAEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 17:22:29 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id t4-20020a05683014c4b02904cd671b911bso569208otq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 17:22:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xsx3HQqSw4EPyNMxM9oP5SdyJb+SogTu3w/uAOd0oLk=;
-        b=cEWuOuugvVGVQn+IaenjLryO1wWgCOjt/YM2Kg9/wQVM/wZQZ67OtRnHOVJkUn4p5+
-         oXecvk/lXVdHh5LgWt0w/g64Drk8tZZrJGD28T9y5cC0Nxnod7L1qvnYcKAi27ZQ3j8G
-         PNlEydF9bXaF2opSpKep2gvoKiZNU1CTeGtx5BFMxWuEJTugu7AhwYkFG+gR2NFCnXEu
-         gSUJUqH4RNkeO8OwkSc4fB/7oLySNbXLE6lFafYRtyEGXXCxnBhE4xrtCtHPS0BAGR2J
-         N5AyGxEJnyZyZLgTRs/GS6tmRf+pUGoyQaNOObjf1/wqesnkxLshoNKWErNj+qhUi3+E
-         imUg==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G9TO+iZ7Ir53u9Gh/j26vGhpLzZM6SVZZgf+lWvR/pE=;
+        b=F7rWQqe4K8cpd1wP5r+PFJze8wRJ43Q/KfBeI8Y/63gRnVw9a/EjlaumUrfRstm0hX
+         NCfReDydysSJP9cGiDHpplyXYdaOxNfmt3orCAPgayRxA452BPLQ/63i+svAJKK+Ccnh
+         H1HBZj/WPbjm9k19KtlaPwE1TgQ7lrDVddZwmbJg+WUWspudLlN3D6N7SailwBEvU/Sp
+         YNB4ksyMblJEKfWtfpyFQOzwlvjwdY49P7veoFOwQGtoY4P3HvVV36Nn5+MsSmvJtfjS
+         n9Ape0Euw3JUfmxWRqNg3hmPil1yAp5yUo4zAIT7/CMB6mx39sq25lXt/AkTGuLYJYlw
+         AVQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xsx3HQqSw4EPyNMxM9oP5SdyJb+SogTu3w/uAOd0oLk=;
-        b=QfD2O8pr4rdyiZfZ672lYlaqsogEN26r04cs8943RheGJau848/iz+x0rmSxyVWgrH
-         kz0cfBfJDpvBGj79l4enUYHPG97KapFJuFuOb+bkArcAhv0AZTdGJPdG5saym1cq2lYF
-         uesJmNwVF+4T6xG5/jGsHwE6avYVYH125Z++0bRx1puCnaxM92iDtIFRur1bx6YZ4nr1
-         W/Cc8AC/Cktt7qbL5TphG8FWuX2aZwxYZlNgY5M9+NnudlgKW2F8MEnSA3O0TMiOW5tC
-         8RvVD3XDrsbDyrBzTchstJ1IddluWm3ap+SpOzrlJlTTisiNxJ0D3lo077xx7VlhOPzQ
-         geyw==
-X-Gm-Message-State: AOAM530SPnICwlB1tLMXbrPIsKcMLyZBXWMw0YwvyXdMeDhpp7h/sSbX
-        xMD7pdgMOrzncpsTo3F0mr7kuNTW/fCtRw==
-X-Google-Smtp-Source: ABdhPJzO5a2tT2MSUn4GuU8F1gVkASk2rMMQW40YjFMKpseRmAH4meFchXyU//CEhkz6SKp8BznOpQ==
-X-Received: by 2002:a63:5c04:: with SMTP id q4mr32924434pgb.127.1626826832684;
-        Tue, 20 Jul 2021 17:20:32 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f11sm28627430pga.61.2021.07.20.17.20.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 17:20:32 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 00:20:28 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 39/40] KVM: SVM: Use a VMSA physical address
- variable for populating VMCB
-Message-ID: <YPdoTK9V3anPZe7C@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-40-brijesh.singh@amd.com>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G9TO+iZ7Ir53u9Gh/j26vGhpLzZM6SVZZgf+lWvR/pE=;
+        b=c6Gm3qAdCHy8LPCuLdvwLuUXR7W8jYNAc3GBR7FC2P4K5liPdrMpUdPXmlLAPhCNKS
+         BwZw6VhMoQHgKkIUKlamJa9HQeCEfhLf7rjWNN4RJK6gXpdT8uqaCumxdMDtUB3Ohw0y
+         dv4Xl1dXamJ/Kto6leSBn03yKmwm9fZQCxeuLmLGECnlyi/TyO5iXyEVTKKWrvkXYJZ/
+         P6ZKSwnP/JUFS4kdxNRUF1RsIlH1ThkpehQCw42VYc+a6yOAhJbEnoiRGt868zFgTgNW
+         DQGUxXtyC+4OuMEFLM3GT1FAH2S/NTEgeh8ZSf6h9kYCndPyU19KuYKSLAdB8oT0WKq4
+         edoA==
+X-Gm-Message-State: AOAM532wwjccRin7yH4pXtAAU2eoQFcHrcXpLPnbh2WNEZWbnW0N7rbJ
+        5pJINI9Y05HdMWO1tqwnATo=
+X-Google-Smtp-Source: ABdhPJwRIpApJ1EXCXjB+f0uM611tDA5JGFduBOALAFTgFcvlM4BoGq5VZJSfHp5gEvBeFaeqjG6IA==
+X-Received: by 2002:a05:6830:1c65:: with SMTP id s5mr18764814otg.256.1626826948826;
+        Tue, 20 Jul 2021 17:22:28 -0700 (PDT)
+Received: from localhost.localdomain (cpe-24-31-246-181.kc.res.rr.com. [24.31.246.181])
+        by smtp.gmail.com with ESMTPSA id x22sm662479oie.28.2021.07.20.17.22.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jul 2021 17:22:28 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Subject: Re: [PATCH resend] staging: rtl8188eu: move all source files from
+ core subdirectory
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     Phillip Potter <phil@philpotter.co.uk>, gregkh@linuxfoundation.org,
+        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+References: <20210719224601.255364-1-phil@philpotter.co.uk>
+ <7bc43fb0-2dab-190b-c480-9e77cff863d4@lwfinger.net>
+ <20210720090035.GB1406@agape.jhs>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+Message-ID: <08a8b372-8ec2-afcc-cc54-305d1dd74a59@lwfinger.net>
+Date:   Tue, 20 Jul 2021 19:22:26 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-40-brijesh.singh@amd.com>
+In-Reply-To: <20210720090035.GB1406@agape.jhs>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> From: Tom Lendacky <thomas.lendacky@amd.com>
+On 7/20/21 4:00 AM, Fabio Aiuto wrote:
+> maybe the information we will need one day is:
 > 
-> In preparation to support SEV-SNP AP Creation, use a variable that holds
-> the VMSA physical address rather than converting the virtual address.
-> This will allow SEV-SNP AP Creation to set the new physical address that
-> will be used should the vCPU reset path be taken.
-
-I'm pretty sure adding vmsa_pa is unnecessary.  The next patch sets svm->vmsa_pa
-and vmcb->control.vmsa_pa as a pair.  And for the existing code, my proposed
-patch to emulate INIT on shutdown would eliminate the one path that zeros the
-VMCB[1].  That series patch also drops the init_vmcb() in svm_create_vcpu()[2].
-
-Assuming there are no VMCB shenanigans I'm missing, sev_es_init_vmcb() can do
-
-	if (!init_event)
-		svm->vmcb->control.vmsa_pa = __pa(svm->vmsa);
-
-And while I'm thinking of it, the next patch should ideally free svm->vmsa when
-the the guest configures a new VMSA for the vCPU.
-
-[1] https://lkml.kernel.org/r/20210713163324.627647-45-seanjc@google.com
-[2] https://lkml.kernel.org/r/20210713163324.627647-10-seanjc@google.com
-
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/kvm/svm/sev.c | 5 ++---
->  arch/x86/kvm/svm/svm.c | 9 ++++++++-
->  arch/x86/kvm/svm/svm.h | 1 +
->  3 files changed, 11 insertions(+), 4 deletions(-)
+> will the core/-os_dep/-hal/-include/-directory-structure be
+> welcomed in mainline wireless subsystem, when an rtl* driver
+> will be perfectly tuned?
 > 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 4cb4c1d7e444..d8ad6dd58c87 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -3553,10 +3553,9 @@ void sev_es_init_vmcb(struct vcpu_svm *svm)
->  
->  	/*
->  	 * An SEV-ES guest requires a VMSA area that is a separate from the
-> -	 * VMCB page. Do not include the encryption mask on the VMSA physical
-> -	 * address since hardware will access it using the guest key.
-> +	 * VMCB page.
->  	 */
-> -	svm->vmcb->control.vmsa_pa = __pa(svm->vmsa);
-> +	svm->vmcb->control.vmsa_pa = svm->vmsa_pa;
->  
->  	/* Can't intercept CR register access, HV can't modify CR registers */
->  	svm_clr_intercept(svm, INTERCEPT_CR0_READ);
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 32e35d396508..74bc635c9608 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1379,9 +1379,16 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
->  	svm->vmcb01.ptr = page_address(vmcb01_page);
->  	svm->vmcb01.pa = __sme_set(page_to_pfn(vmcb01_page) << PAGE_SHIFT);
->  
-> -	if (vmsa_page)
-> +	if (vmsa_page) {
->  		svm->vmsa = page_address(vmsa_page);
->  
-> +		/*
-> +		 * Do not include the encryption mask on the VMSA physical
-> +		 * address since hardware will access it using the guest key.
-> +		 */
-> +		svm->vmsa_pa = __pa(svm->vmsa);
-> +	}
-> +
->  	svm->guest_state_loaded = false;
->  
->  	svm_switch_vmcb(svm, &svm->vmcb01);
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 9fcfc0a51737..285d9b97b4d2 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -177,6 +177,7 @@ struct vcpu_svm {
->  
->  	/* SEV-ES support */
->  	struct sev_es_save_area *vmsa;
-> +	hpa_t vmsa_pa;
->  	struct ghcb *ghcb;
->  	struct kvm_host_map ghcb_map;
->  	bool received_first_sipi;
-> -- 
-> 2.17.1
+> At the moment I can't see such a directory organization
+> in any of the realtek wireless driver.
 > 
+> Sure there's time for that;),
+
+The question is how much lipstick do you want to put on that pig? The current 
+version does not use cfg80211, and it does not work with NetworkManager or a 
+modern hostapd to create an AP.
+
+If you want to get the rtl8188eu driver in shape to be added to the regular 
+drivers section, then I suggest you start with the v5.2.2.4 branch of 
+https://github.com/lwfinger/rtl8188eu.git. Many users of the RTL8188EU chip use 
+that driver. At least that version fixes the two problems listed above. If you 
+want to flatten the directory structure, you can do it there and offline.
+
+I want to caution you that following this path will take a lot of time, but once 
+you get it into kernel shape, it will at least be useful. I have never had the 
+time, nor the ambition to undertake this effort.
+
+Larry
+
