@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5490F3D1804
+	by mail.lfdr.de (Postfix) with ESMTP id C16593D1805
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 22:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240470AbhGUTlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 15:41:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50066 "EHLO mail.kernel.org"
+        id S240474AbhGUTlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 15:41:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236645AbhGUTkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237346AbhGUTkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 15:40:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A08B661353;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A76E861357;
         Wed, 21 Jul 2021 20:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626898889;
-        bh=QUqMqT880NTnSp4mKtTyqHOCDRWBO5LbjpDhT+NOKN4=;
+        bh=QhuNcsunZD2QYw6aN/2PjhF7hYYh0BTHMfQNysrs8x4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U5nAYhXVaf1nG9NC1Fd/CoKUkFS0v6Qc8tH6fy3MJtu/2UIM7IMrBLVozP3zoKHrq
-         nlx4G+KdlD7sQFFCHIiUp1vSeekJSp16g0o7vjz9xG33ynRPRHusEyxOzoFy4TFT1x
-         Eo/IEs2U4pA6d3B69TYTGIUTmgLKWBbSSy3h9VI80vXhY/G4ukUzc6Zzd27PVhBdbs
-         t3PDZkml3zJsCzINuxo6IYo/V9DOxjXG+sezpE4wUjjcWWAxicU1JD+rXwvfS4A+jg
-         kor7rE2hxPNUPXBR+BuJK7gvAwmo7ljgJ3XBNjKo5cT7J7AgSeVHP9u9F4pzfLlRNe
-         HlCOjionKi85g==
+        b=g+azx71pU4jAYLhP++cXgQ7IP6GXrStmWvO5i03OCs6y5OoAb2KzDvBrEysUj1Ihb
+         8Zi1yKpGXzjR07p7cM50EnZApUW0l9pt2uGI8ngoiIgPRTv0YGcKZWvzbR+jocozHM
+         031cVGWeKaNmK5ECRzk4PBGWaZpItdfcQsfxuy1x5u6UiO6etZhwSt5cVpYiNNs1PY
+         V8/V154E9bL9wik18M/u4KJ0GZ3BvNXOvJ/L1UizNQEFzLBU4jSdKWHEBCfygQokMO
+         rVfp+w30LueQkMTHShz1EtwK0Ham3NSgHwV5A6rRy2k8oUPSwyzXTWNHPSmRXGWU2m
+         GDhEQBOiCGJTg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 23B0A5C0DBB; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
+        id 26D025C0E45; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,11 +33,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 08/18] rcu: Do not disable GP stall detection in rcu_cpu_stall_reset()
-Date:   Wed, 21 Jul 2021 13:21:16 -0700
-Message-Id: <20210721202127.2129660-8-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [PATCH rcu 09/18] rcu: Start timing stall repetitions after warning complete
+Date:   Wed, 21 Jul 2021 13:21:17 -0700
+Message-Id: <20210721202127.2129660-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
@@ -47,48 +47,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
+Systems with low-bandwidth consoles can have very large printk()
+latencies, and on such systems it makes no sense to have the next RCU CPU
+stall warning message start output before the prior message completed.
+This commit therefore sets the time of the next stall only after the
+prints have completed.  While printing, the time of the next stall
+message is set to ULONG_MAX/2 jiffies into the future.
 
-rcu_cpu_stall_reset() is one of the functions virtual CPUs
-execute during VM resume in order to handle jiffies skew
-that can trigger false positive stall warnings. Paul has
-pointed out that this approach is problematic because
-rcu_cpu_stall_reset() disables RCU grace period stall-detection
-virtually forever, while in fact it can just restart the
-stall-detection timeout.
-
-Suggested-by: "Paul E. McKenney" <paulmck@kernel.org>
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Signed-off-by: Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ kernel/rcu/tree_stall.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 0e7a60706d1c0..e199022dce9dc 100644
+index e199022dce9dc..42847caa3909b 100644
 --- a/kernel/rcu/tree_stall.h
 +++ b/kernel/rcu/tree_stall.h
-@@ -119,17 +119,14 @@ static void panic_on_rcu_stall(void)
- }
+@@ -647,6 +647,7 @@ static void print_cpu_stall(unsigned long gps)
  
- /**
-- * rcu_cpu_stall_reset - prevent further stall warnings in current grace period
-- *
-- * Set the stall-warning timeout way off into the future, thus preventing
-- * any RCU CPU stall-warning messages from appearing in the current set of
-- * RCU grace periods.
-+ * rcu_cpu_stall_reset - restart stall-warning timeout for current grace period
-  *
-  * The caller must disable hard irqs.
-  */
- void rcu_cpu_stall_reset(void)
+ static void check_cpu_stall(struct rcu_data *rdp)
  {
--	WRITE_ONCE(rcu_state.jiffies_stall, jiffies + ULONG_MAX / 2);
-+	WRITE_ONCE(rcu_state.jiffies_stall,
-+		   jiffies + rcu_jiffies_till_stall_check());
++	bool didstall = false;
+ 	unsigned long gs1;
+ 	unsigned long gs2;
+ 	unsigned long gps;
+@@ -692,7 +693,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 	    ULONG_CMP_GE(gps, js))
+ 		return; /* No stall or GP completed since entering function. */
+ 	rnp = rdp->mynode;
+-	jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
++	jn = jiffies + ULONG_MAX / 2;
+ 	if (rcu_gp_in_progress() &&
+ 	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
+ 	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+@@ -709,6 +710,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 		print_cpu_stall(gps);
+ 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+ 			rcu_ftrace_dump(DUMP_ALL);
++		didstall = true;
+ 
+ 	} else if (rcu_gp_in_progress() &&
+ 		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
+@@ -726,6 +728,11 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 		print_other_cpu_stall(gs2, gps);
+ 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+ 			rcu_ftrace_dump(DUMP_ALL);
++		didstall = true;
++	}
++	if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {
++		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
++		WRITE_ONCE(rcu_state.jiffies_stall, jn);
+ 	}
  }
  
- //////////////////////////////////////////////////////////////////////////////
 -- 
 2.31.1.189.g2e36527f23
 
