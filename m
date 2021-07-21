@@ -2,307 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416D53D166E
+	by mail.lfdr.de (Postfix) with ESMTP id D99E23D1670
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238224AbhGURuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbhGURuq (ORCPT
+        id S238566AbhGURxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:53:19 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:9062 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230208AbhGURxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:50:46 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C2DC061575;
-        Wed, 21 Jul 2021 11:31:21 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id p22so4562592yba.7;
-        Wed, 21 Jul 2021 11:31:20 -0700 (PDT)
+        Wed, 21 Jul 2021 13:53:18 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LIWklT008439;
+        Wed, 21 Jul 2021 18:33:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=8pW+inlNHaYM8+hMzkLjqMex8Oqc0Kw17KUdUSmnGpo=;
+ b=TO7nBdNGi749Hp7rQHwpdDVWVW62fVU7mcyBduZsdYtK1TTnWEtLnKAQ2N8naNoaHvf8
+ cP55VFTJaxalbwRK90iIR08VC+fQZEn05qid9vWyzL4YiiaDKw4j0pjF2jUSDYb3gMQA
+ Mq4gSvHdS5po1oJt03KKGpKCIB/+zL70fdWrTt+W3IByOf9SmcKThGbCGeeT77ACv7ic
+ F63xuiWSVzLxJDIgKq37+2tpPUd1Ik2Ivo9z6BXn3n4jq/PWmK21jXvQDqEA/Rfh3iwC
+ AwgIJ4SyESF2glfZSto2En1zalnQs2pxksrihIAgprynO9guSP7LSNr16dpq8haqUt8l GQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=8pW+inlNHaYM8+hMzkLjqMex8Oqc0Kw17KUdUSmnGpo=;
+ b=MHEZe+bddBbOzH0+mcg7LTdNrjkOEVvBqUAS+bPeIPag3pSQTGk12HG3P2qMW2kHQbdO
+ ukmMFX1irp6xgzUDVQ8aDnjoivcSl2SXpF/n5KzkMA5VEp1ZFMHFQcvQ/GpgqyEopG8J
+ 0rS60FKK052e5LUbChGBE7o42bvia2sXflNgUBg1xJkT/ToytlySM9ZTCpWjmFJKZlWI
+ 7/IcqxwyC7NaGD/9D4pfePv3LxB85VPaQ681gOYfAWREGmxPDcEw4ItnJgDZzYOj5R8p
+ uzDHClL5IT9R65hCiSmh6UswlGu0DbC+2eb+tK++n3rdtIwk8gFLBy9Y+MtNGAHbwbxC hQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39wvr8bju6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Jul 2021 18:33:46 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16LIUapx117162;
+        Wed, 21 Jul 2021 18:33:45 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+        by userp3030.oracle.com with ESMTP id 39umb3a96n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Jul 2021 18:33:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OgaOr+8YHunx1eW0mTUPK4qhQx0QBDXpF6jYxI1jVZOsOZN/qq0difORk9jGkTcRXWcRlWMinBZiJ5mMVNSbno9hVqtYma+5ri5yHJ+bWCE1H28LEVhgiOhdNA4vL645JwRdDMCQOO0DeI471YlqzIFh9mkcbx/LfRKzw0+IQu5AHleTfQEwAmBxi+0O4pgeesddaJ36++1ymYW/DZPaseHDKBzT4pC8yj5IR3LSdcyggmZeJawIZjLEwu5R3WfAV031GlHGkENI6er6WR9hVp/u1evGD7EHfpKpZkZje6GoAMVuw3E8/Ux/ZiuIuxBWreiejSzghxWjxgFIhQazHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8pW+inlNHaYM8+hMzkLjqMex8Oqc0Kw17KUdUSmnGpo=;
+ b=npzd9fG5DVb6m0NfaoH8jOCKaXMRwVQa9nfhaO3KHDiVsmvsg+jgj004kVnODp1PxzJyrG8GKYaLVDqMZqGtDx+0A1C21cNdOA9VV41ZVJOsKOF734fsgosHVhVzCFHVImbkg3JOJSM6pnElfPutCZoso1jmZQaa7Wi9qy2Ya0k84v1OU9ea6R2pqY/8C4pBLqCTfC1xZWnFeg8YSqgAYGVCUJNt5Zlh2gVvF5dMPEv0UIM1GFU0De2+WOc4aj13uq5gSCKkjVvGAHdmk5bXnlLRMTSNeN5PXkNvx7zYUZhaEAPiqyDSLHKyzARYjPSZ7O1IU/iznnM0j0Qg+JiTtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KTE4uS5d06Y9ZVzPnKQMR2mBVjNhNjPjsvjQXNcyr10=;
-        b=RNw+d3qYyvb/ZW+4Cm29FdQBPPx4Hyl5/oThWyOQvixpr8NWQS7TCBl0vsiOfB/OmY
-         M/8HXpQhoKOH1W6dysmIhusNZucPQmadAUAIZATYtMYto7T64HfunS8S7tlAXk03Gh+6
-         CNi2tdOICqv1At5h/QLNaExqXOcf5vRabYOJcJ29xlvR6Au5JpQORG6X2NbCVEKh9yIo
-         mp0FN3Vum2lRHiRd3uRqAgwZxqnZHQuM7qr/a4/VHxvRhZv8d6SorakKokQ52De1pBlw
-         nJ+DBQ+MirPp0bcvRPv7HQB5MDYSXZozXPl15XXvgboK2LCLX5eoAMTCtcCPVNIyHx+N
-         2ScA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KTE4uS5d06Y9ZVzPnKQMR2mBVjNhNjPjsvjQXNcyr10=;
-        b=EhMr79vrcwbVNIyXaOSNb5gaIIFPd/z/k/OY40s1Ehpw4tFhOR+zVEZ8Mc3mCNQC64
-         bLSLy4ZglqBGsE0hdhSXH3LfEr6yRM/pDGy1eAvIkQwaBIgKeARDjhnbK8IqQCJhVIUI
-         lybIBqkImQP7VHoHK9NFWOVqvX2HWC9M41ZLmDdCUeqEqIaJCGL3FBSzbsCJm1Xr6x+Q
-         iCOy7nbrglKx2iz9Zy7OAdz5oTJX6j9oy6lYPKKigxOL4fBAg3RmsMa2bSAwaBdAefIP
-         42jymf6eLm3rXwPt44s7HcS+JS2TaunHPS4FrE6yAZSV/hoikXS35AyZ/eLuv0Fls75z
-         +1aQ==
-X-Gm-Message-State: AOAM533lbWjp8u0I12BuhqwWlHdFV98benF+Xj5zPYVtfkvAwt7L0tQF
-        qHvfCyMX3Cq0Rg9MytxsMHIBF2RYLr0QNJDLtdM=
-X-Google-Smtp-Source: ABdhPJwwDcOydNE8B5DrFavMNkAaTZwcqFXs9pmp3uVucbVaklb08+Y/SSSWkTri3pTUC8WaFH/9lw5s/eS+H+yIHtU=
-X-Received: by 2002:a25:be02:: with SMTP id h2mr49133394ybk.91.1626892279628;
- Wed, 21 Jul 2021 11:31:19 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8pW+inlNHaYM8+hMzkLjqMex8Oqc0Kw17KUdUSmnGpo=;
+ b=ubcVrO8Mb7McHHUY1WpI8YcXrQA8pMkokV2MuRRws+qsgLBRPvafRRqgwsR2ppVpbpvZ6nw3pTqRqk2y1RMAdoXKtEVXNbCgk3lAjdyOPWhjmK8Zy5jQjvMRfWZE8d4DVW1fDHAgFBrraWZARCOQVnbbG7t7vdDeQ6GyStPd3/8=
+Authentication-Results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BY5PR10MB3810.namprd10.prod.outlook.com (2603:10b6:a03:1fb::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.25; Wed, 21 Jul
+ 2021 18:33:42 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::8d2a:558d:ab4a:9c2a]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::8d2a:558d:ab4a:9c2a%5]) with mapi id 15.20.4331.034; Wed, 21 Jul 2021
+ 18:33:42 +0000
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Dennis Camera <bugs+kernel.org@dtnr.ch>, stable@vger.kernel.org
+Subject: [PATCH] hugetlbfs: fix mount mode command line processing
+Date:   Wed, 21 Jul 2021 11:33:26 -0700
+Message-Id: <20210721183326.102716-1-mike.kravetz@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR03CA0300.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::35) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-References: <nycvar.YFH.7.76.2107131924280.8253@cbobk.fhfr.pm> <nycvar.YFH.7.76.2107212026050.8253@cbobk.fhfr.pm>
-In-Reply-To: <nycvar.YFH.7.76.2107212026050.8253@cbobk.fhfr.pm>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Wed, 21 Jul 2021 11:31:08 -0700
-Message-ID: <CABBYNZ+mXqKx_gF=F80Y-vz7F-ysLGHYLaKT+fxze4tu1_1S3w@mail.gmail.com>
-Subject: Re: Two issues caused by commit e305509e678b3 ("Bluetooth: use
- correct lock to prevent UAF of hdev object")
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Lin Ma <linma@zju.edu.cn>, Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from monkey.oracle.com (50.38.35.18) by SJ0PR03CA0300.namprd03.prod.outlook.com (2603:10b6:a03:39e::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22 via Frontend Transport; Wed, 21 Jul 2021 18:33:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 04c03f11-73e1-43dd-3b6a-08d94c761113
+X-MS-TrafficTypeDiagnostic: BY5PR10MB3810:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR10MB381048EDD712DC2BF449BEF5E2E39@BY5PR10MB3810.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:422;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OSZV2BUuGv0b7B36WAn6DRmKrvT3bh2PUEgZPEiFx4nmHe/T3cVqbyV3OEiPFTA1O6cgs6FxjnBPvf2DYYXyKmHfXjwC1VzCNA4m+gxUA+G43aGR/7Q9QaxXt+Nh1UJS2ui+8BjTR/fBcJyBg+JRTVILgQ7Urow7w5NnMwXF0VTH0uVTrxdWa8DvXvUqBU8mHPs4o+eP+yAKIhpePGyunOtXQU5JkRyWUmtXe8ZbVvbopV07oAhRzOE2/jWSaaRGGhyahO83HYSo/cxNzSqiXONIw08tADOUqj1tSsh+lUlkLQX5bwDX3J4SN7sf4vQcNrizcbVkfzNcnu7sJuRxdqDi6JXXavclhajXv/gVCIVz8WApkARw6b4B58lFtbCS3TAcpjWr5BI2HkvoUUMV1B1yOTv/4K6o0S/KOQAUJnbA6ofy8DlY1y3HWUG49j/2y+VASXV6YHpTgT55ow0YeCMHTzD2MgQnSpV9P+2lBGQAu7iSjNIsukXNk3aNrCeeO7ebklXYni1G6gd6QYXR9ap3Ys1mhxRWBsdbFCrgaw6949ZXrL8DfdcGDEhjHZhnmEJ4o+PbvP69qnh6L0VKDtSKiDN4eoHwR7DtXyeJ5PXQN15SC5rvUnJrwXshzd1VNdClRRRfswGi3zVCF4h78FFEg+lTttRR5Q5A5zRgSCiHKwnz3ZUX5jucsNURdLgj46F5g6Vn2Zw3Mi06uTEYNg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66946007)(26005)(1076003)(38350700002)(38100700002)(508600001)(4326008)(44832011)(66476007)(6666004)(83380400001)(66556008)(7696005)(86362001)(316002)(2906002)(8936002)(52116002)(54906003)(5660300002)(6486002)(2616005)(8676002)(36756003)(186003)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?f0JW8R0chIOhNp7ftxMXDQ3d5ftC4XtjpaMrvVJx0aHTTd7FZjpL18rMtirA?=
+ =?us-ascii?Q?Cz9Rdb5fVMc3ThVL+c2ZRcttJNbk7i4qwuv8rGijWj54lZjdbx+GCfFmgMBg?=
+ =?us-ascii?Q?fRZkSWH05dseZ5QnJJSPk/AIL9ufOL1qB378oQhAC/tl/w0xHORZqWpnh6dc?=
+ =?us-ascii?Q?6o4Fd8UPUuVYDbd1fVgiJr1r0HhtZVUNmh70vvwxwqSZWhCEdTbKLTTtfT2F?=
+ =?us-ascii?Q?fSm3RdDvvbc6owsB29d1J5xZtLc5m3iE9yXsA2qySGHzGlcZyLpWiMflLUdQ?=
+ =?us-ascii?Q?41goqyoq4EjhL5OsdDVAblH2OKxy3TmzUI0TOeGzTVDHuVkbgQMGHKGZW6j+?=
+ =?us-ascii?Q?LM7UBx9pwb5uydg0MPDQcQtUbPP1PW72JuLNhe5m4vByaKIAmR6+dZ+8rzmv?=
+ =?us-ascii?Q?my/1aB8tYYYUrWMDMix/5y/5T8kkzj8bd/74UEla4DxmwR2YYQQqsgpyhkTk?=
+ =?us-ascii?Q?nbzkWYSbLKTeXe/ceudyRS6dP/2YaMz7XmRVZXLAwnXbrGhLvgFIHRIBTI3Z?=
+ =?us-ascii?Q?/GXdDBbwHO4RcAbEtGn7ojSWO1HXnGNIRncmSufW3Na/WZl89dOEZHwgRbuv?=
+ =?us-ascii?Q?rriBtoI8vLWZRQO9N52nsOen7+6QM8p6zaWKEO76FHA/cinUqZak9VAnXlnc?=
+ =?us-ascii?Q?MN2S2vDxobSQ3bw3mEquZL+Zj1cBMPvwOJaXyFb5j/d/ydos5LMlDZOYhuFx?=
+ =?us-ascii?Q?bol0oI/Eqh7JxE68ASB6y76u1iMIjOKbN9xQmE3IktbhlMx9l+ck4CD0zYGp?=
+ =?us-ascii?Q?0ZV4n78T+K+4BFReD4w1QPCCd5R7AYudDnhIGwpf0PmtmSZcEikb4rCtAhtz?=
+ =?us-ascii?Q?jCfFoY15dqPg2t/FT+/V9Qnf1fu8E9IJsd0nxRzyXD12mpsz8bjcu0nPpwpY?=
+ =?us-ascii?Q?e7MHjJWRQw4SoxeN7mZDtsgAcx4xLBj9t4I1cxIxXrThR6iY8XXpZV74o1j/?=
+ =?us-ascii?Q?gdYZaCJinQ+UNjgEsWLftCuCPxTRkmISMVkfUNlfpO9PjmwMd8hI//Rbx75N?=
+ =?us-ascii?Q?e3vop/FqPA7I+A5hBnnjxl1wlmOWTEWP+K6P7Dmbg6YrqquTv229Sk6OJ6ua?=
+ =?us-ascii?Q?FcNw68i/A9VcyyPqVA2FVKupDcSRqeR5ldX40PQsNby31DmjKCprwD0+HCES?=
+ =?us-ascii?Q?EFxit79vito7pwQwnktlaJYYoM5fHw6xVYcaPBvCo1dvAhJAhjN8i/x1IIIb?=
+ =?us-ascii?Q?y/LXG/82veCBxHm0Gxj7RgCjv5+0J3SxbFHueBukzVhMcxuBIERlAve14Y+s?=
+ =?us-ascii?Q?/Rta7csySWK6HFtc+3GYwmCse0NIrqLdoRnE9FmEXkm/iXrgZYVD0jSBLZA9?=
+ =?us-ascii?Q?QGFR+wN0K6XspJnFkprvN1zr?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04c03f11-73e1-43dd-3b6a-08d94c761113
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 18:33:42.7693
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: J76Bj9k1p3DpV1w770nEyvyYp9eAt7v8H9lkhgSXRytR74CKWeXfZEvuVKDgP5Vu7mOj+1wxTqKJsHnnz3KtrQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3810
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10052 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107210109
+X-Proofpoint-GUID: EF7fkJvjWaBv4q8IezCFRuQ9ZoyX8AGf
+X-Proofpoint-ORIG-GUID: EF7fkJvjWaBv4q8IezCFRuQ9ZoyX8AGf
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+In commit 32021982a324 ("hugetlbfs: Convert to fs_context") processing
+of the mount mode string was changed from match_octal() to fsparam_u32.
+This changed existing behavior as match_octal does not require octal
+values to have a '0' prefix, but fsparam_u32 does.
 
-On Wed, Jul 21, 2021 at 11:26 AM Jiri Kosina <jikos@kernel.org> wrote:
->
-> On Tue, 13 Jul 2021, Jiri Kosina wrote:
->
-> > Hi,
-> >
-> > commit e305509e678b3 ("Bluetooth: use correct lock to prevent UAF of hd=
-ev
-> > object") has two issues, and I believe it should be reverted for 5.14
-> > final. Could you please elaborate what is the exact UAF scenario the pa=
-tch
-> > is fixing? It's rather hard to deduce from the very short changelog, bu=
-t
-> > it's pretty obvious that it creates at least two issues.
->
-> Marcel, Johan, Luiz, any thoughts on this please? Thanks.
+Use fsparam_u32oct which provides the same behavior as match_octal.
 
-We are looking into it.
+Reported-by: Dennis Camera <bugs+kernel.org@dtnr.ch>
+Fixes: 32021982a324 ("hugetlbfs: Convert to fs_context")
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+CC: <stable@vger.kernel.org>
+---
+ fs/hugetlbfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> >
-> >
-> >
-> > (1) it introduces a possibility of deadlock between hci_sock_dev_event(=
-)
-> >    and hci_sock_sendmsg().
-> >
-> > Namely:
-> >
-> > - hci_sock_sendmsg(HCI_CHANNEL_LOGGING) acquires lock_sock(sk) and then
-> >   calls into hci_logging_frame() -> hci_send_to_channel() which in turn
-> >   acquires hci_sk_list.lock
-> >
-> > - after the mentioned commit, hci_sock_dev_event() first acquires
-> >   hci_sk_list.lock before doing lock_sock(sk) on each of the sockets it
-> >   iterates through, creating the reverse dependency
-> >
-> >
-> > Please find the full lockdep report below for reference.
-> >
-> > (2) it causes sleeping function to be called from atomic context, becau=
-se
-> >    it's not allowed to sleep after acquiring read_lock(), which is exac=
-tly
-> >    what this patch does (lock_sock() is sleepable). Report below as wel=
-l.
-> >
-> >
-> >
-> >
-> >
-> >
-> >  BUG: sleeping function called from invalid context at net/core/sock.c:=
-3100
-> >  in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 448, name: kwor=
-ker/0:5
-> >  6 locks held by kworker/0:5/448:
-> >   #0: ffff89e947fb4338 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: pro=
-cess_one_work+0x1c2/0x5e0
-> >   #1: ffffadef40973e78 ((work_completion)(&hub->events)){+.+.}-{0:0}, a=
-t: process_one_work+0x1c2/0x5e0
-> >   #2: ffff89e946998a20 (&dev->mutex){....}-{3:3}, at: hub_event+0x6a/0x=
-d50 [usbcore]
-> >   #3: ffff89e950828a20 (&dev->mutex){....}-{3:3}, at: usb_disconnect+0x=
-54/0x270 [usbcore]
-> >   #4: ffff89e9504e71a8 (&dev->mutex){....}-{3:3}, at: device_release_dr=
-iver_internal+0x1a/0x1d0
-> >   #5: ffffffffc117a3c0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev=
-_event+0x12b/0x1e0 [bluetooth]
-> >  CPU: 0 PID: 448 Comm: kworker/0:5 Not tainted 5.14.0-rc1-00003-g7fef2e=
-df7cc7 #15
-> >  Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/=
-31/2017
-> >  Workqueue: usb_hub_wq hub_event [usbcore]
-> >  Call Trace:
-> >   dump_stack_lvl+0x56/0x6c
-> >   ___might_sleep+0x1b6/0x210
-> >   lock_sock_nested+0x29/0xa0
-> >   hci_sock_dev_event+0x156/0x1e0 [bluetooth]
-> >   hci_unregister_dev+0xd2/0x350 [bluetooth]
-> >   btusb_disconnect+0x63/0x150 [btusb]
-> >   usb_unbind_interface+0x79/0x260 [usbcore]
-> >   device_release_driver_internal+0xf7/0x1d0
-> >   bus_remove_device+0xef/0x160
-> >   device_del+0x1ac/0x430
-> >   ? usb_remove_ep_devs+0x1b/0x30 [usbcore]
-> >   usb_disable_device+0x8d/0x1a0 [usbcore]
-> >   usb_disconnect+0xc1/0x270 [usbcore]
-> >   ? hub_event+0x4b0/0xd50 [usbcore]
-> >   hub_port_connect+0x82/0xa20 [usbcore]
-> >   ? __mutex_unlock_slowpath+0x43/0x2b0
-> >   hub_event+0x4c4/0xd50 [usbcore]
-> >   ? lock_is_held_type+0xb4/0x120
-> >   process_one_work+0x244/0x5e0
-> >   worker_thread+0x3c/0x390
-> >   ? process_one_work+0x5e0/0x5e0
-> >   kthread+0x133/0x160
-> >   ? set_kthread_struct+0x40/0x40
-> >   ret_from_fork+0x22/0x30
-> >
-> >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> >  WARNING: possible circular locking dependency detected
-> >  5.14.0-rc1-00003-g7fef2edf7cc7 #15 Tainted: G        W
-> >  ------------------------------------------------------
-> >  kworker/0:5/448 is trying to acquire lock:
-> >  ffff89e950647920 (sk_lock-AF_BLUETOOTH-BTPROTO_HCI){+.+.}-{0:0}, at: h=
-ci_sock_dev_event+0x156/0x1e0 [bluetooth]
-> >
-> >  but task is already holding lock:
-> >  ffffffffc117a3c0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev_even=
-t+0x12b/0x1e0 [bluetooth]
-> >
-> >  which lock already depends on the new lock.
-> >
-> >
-> >  the existing dependency chain (in reverse order) is:
-> >
-> >  -> #1 (hci_sk_list.lock){++++}-{2:2}:
-> >         _raw_read_lock+0x38/0x70
-> >  systemd-sysv-generator[1254]: stat() failed on /etc/init.d/jexec, igno=
-ring: No such file or directory
-> >         hci_send_to_channel+0x22/0x50 [bluetooth]
-> >         hci_sock_sendmsg+0xa2b/0xa40 [bluetooth]
-> >         sock_sendmsg+0x5b/0x60
-> >         ____sys_sendmsg+0x1ed/0x250
-> >  systemd-sysv-generator[1254]: SysV service '/etc/init.d/tpfand' lacks =
-a native systemd unit file. Automatically generating a unit file for compat=
-ibility. Please update package to include a native systemd unit file, in or=
-der to make it more safe and robust.
-> >         ___sys_sendmsg+0x88/0xd0
-> >         __sys_sendmsg+0x5e/0xa0
-> >         do_syscall_64+0x3a/0xb0
-> >  systemd-sysv-generator[1254]: SysV service '/etc/init.d/boot.local' la=
-cks a native systemd unit file. Automatically generating a unit file for co=
-mpatibility. Please update package to include a native systemd unit file, i=
-n order to make it more safe and robust.
-> >         entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >
-> >  -> #0 (sk_lock-AF_BLUETOOTH-BTPROTO_HCI){+.+.}-{0:0}:
-> >         __lock_acquire+0x124a/0x1680
-> >         lock_acquire+0x278/0x300
-> >         lock_sock_nested+0x72/0xa0
-> >         hci_sock_dev_event+0x156/0x1e0 [bluetooth]
-> >         hci_unregister_dev+0xd2/0x350 [bluetooth]
-> >         btusb_disconnect+0x63/0x150 [btusb]
-> >         usb_unbind_interface+0x79/0x260 [usbcore]
-> >         device_release_driver_internal+0xf7/0x1d0
-> >         bus_remove_device+0xef/0x160
-> >         device_del+0x1ac/0x430
-> >         usb_disable_device+0x8d/0x1a0 [usbcore]
-> >         usb_disconnect+0xc1/0x270 [usbcore]
-> >         hub_port_connect+0x82/0xa20 [usbcore]
-> >         hub_event+0x4c4/0xd50 [usbcore]
-> >         process_one_work+0x244/0x5e0
-> >         worker_thread+0x3c/0x390
-> >         kthread+0x133/0x160
-> >         ret_from_fork+0x22/0x30
-> >
-> >  other info that might help us debug this:
-> >
-> >   Possible unsafe locking scenario:
-> >
-> >         CPU0                    CPU1
-> >         ----                    ----
-> >    lock(hci_sk_list.lock);
-> >                                 lock(sk_lock-AF_BLUETOOTH-BTPROTO_HCI);
-> >                                 lock(hci_sk_list.lock);
-> >    lock(sk_lock-AF_BLUETOOTH-BTPROTO_HCI);
-> >
-> >   *** DEADLOCK ***
-> >
-> >  6 locks held by kworker/0:5/448:
-> >   #0: ffff89e947fb4338 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: pro=
-cess_one_work+0x1c2/0x5e0
-> >   #1: ffffadef40973e78 ((work_completion)(&hub->events)){+.+.}-{0:0}, a=
-t: process_one_work+0x1c2/0x5e0
-> >   #2: ffff89e946998a20 (&dev->mutex){....}-{3:3}, at: hub_event+0x6a/0x=
-d50 [usbcore]
-> >   #3: ffff89e950828a20 (&dev->mutex){....}-{3:3}, at: usb_disconnect+0x=
-54/0x270 [usbcore]
-> >   #4: ffff89e9504e71a8 (&dev->mutex){....}-{3:3}, at: device_release_dr=
-iver_internal+0x1a/0x1d0
-> >   #5: ffffffffc117a3c0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev=
-_event+0x12b/0x1e0 [bluetooth]
-> >
-> >  stack backtrace:
-> >  CPU: 0 PID: 448 Comm: kworker/0:5 Tainted: G        W         5.14.0-r=
-c1-00003-g7fef2edf7cc7 #15
-> >  Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/=
-31/2017
-> >  Workqueue: usb_hub_wq hub_event [usbcore]
-> >  Call Trace:
-> >   dump_stack_lvl+0x56/0x6c
-> >   check_noncircular+0x105/0x120
-> >   ? stack_trace_save+0x4b/0x70
-> >   ? save_trace+0x3d/0x340
-> >   ? __lock_acquire+0x124a/0x1680
-> >   __lock_acquire+0x124a/0x1680
-> >   lock_acquire+0x278/0x300
-> >   ? hci_sock_dev_event+0x156/0x1e0 [bluetooth]
-> >   ? lock_release+0x15a/0x2a0
-> >   lock_sock_nested+0x72/0xa0
-> >   ? hci_sock_dev_event+0x156/0x1e0 [bluetooth]
-> >   hci_sock_dev_event+0x156/0x1e0 [bluetooth]
-> >   hci_unregister_dev+0xd2/0x350 [bluetooth]
-> >   btusb_disconnect+0x63/0x150 [btusb]
-> >   usb_unbind_interface+0x79/0x260 [usbcore]
-> >   device_release_driver_internal+0xf7/0x1d0
-> >   bus_remove_device+0xef/0x160
-> >   device_del+0x1ac/0x430
-> >   ? usb_remove_ep_devs+0x1b/0x30 [usbcore]
-> >   usb_disable_device+0x8d/0x1a0 [usbcore]
-> >   usb_disconnect+0xc1/0x270 [usbcore]
-> >   ? hub_event+0x4b0/0xd50 [usbcore]
-> >   hub_port_connect+0x82/0xa20 [usbcore]
-> >   ? __mutex_unlock_slowpath+0x43/0x2b0
-> >   hub_event+0x4c4/0xd50 [usbcore]
-> >   ? lock_is_held_type+0xb4/0x120
-> >   process_one_work+0x244/0x5e0
-> >   worker_thread+0x3c/0x390
-> >   ? process_one_work+0x5e0/0x5e0
-> >   kthread+0x133/0x160
-> >   ? set_kthread_struct+0x40/0x40
-> >   ret_from_fork+0x22/0x30
-> >
-> >
-> >
-> > --
-> > Jiri Kosina
-> > SUSE Labs
-> >
->
-> --
-> Jiri Kosina
-> SUSE Labs
->
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 926eeb9bf4eb..cdfb1ae78a3f 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -77,7 +77,7 @@ enum hugetlb_param {
+ static const struct fs_parameter_spec hugetlb_fs_parameters[] = {
+ 	fsparam_u32   ("gid",		Opt_gid),
+ 	fsparam_string("min_size",	Opt_min_size),
+-	fsparam_u32   ("mode",		Opt_mode),
++	fsparam_u32oct("mode",		Opt_mode),
+ 	fsparam_string("nr_inodes",	Opt_nr_inodes),
+ 	fsparam_string("pagesize",	Opt_pagesize),
+ 	fsparam_string("size",		Opt_size),
+-- 
+2.31.1
 
-
---=20
-Luiz Augusto von Dentz
