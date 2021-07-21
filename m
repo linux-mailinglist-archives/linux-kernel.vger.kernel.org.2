@@ -2,154 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C3E3D0B5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF65A3D0B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 11:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237726AbhGUIe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 04:34:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:49328 "EHLO foss.arm.com"
+        id S237681AbhGUIer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 04:34:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235457AbhGUI1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 04:27:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0654B1396;
-        Wed, 21 Jul 2021 02:07:40 -0700 (PDT)
-Received: from e121896.arm.com (unknown [10.57.38.215])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 666D93F694;
-        Wed, 21 Jul 2021 02:07:37 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     acme@kernel.org, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org
-Cc:     leo.yan@linaro.org, al.grant@arm.com, suzuki.poulose@arm.com,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        James Clark <james.clark@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH 6/6] perf cs-etm: Print the decoder name
-Date:   Wed, 21 Jul 2021 10:07:05 +0100
-Message-Id: <20210721090706.21523-7-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210721090706.21523-1-james.clark@arm.com>
-References: <20210721090706.21523-1-james.clark@arm.com>
+        id S235639AbhGUI0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 04:26:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEF156120A;
+        Wed, 21 Jul 2021 09:07:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626858452;
+        bh=CEJyO9Yy4FU8TKYwWIP+VJYoiy0mqOrVsLitic27HE0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HKuytsVcsjFrYCOqDzC4ZXEtPz6apdzNdEMD8vpK7ElSsMFuqVMAIxBvu4Ed9pSNj
+         JEXUNFqsJDO/erOTTPLpKb2BakayZH/EPoZ7+jT1yslZNDpbvHrElM5IbRx1NNFqN7
+         w6JcMSHOm4tbs4NU/47squxnz1SLOaOr62TqRam7CPEsULy5/kT/miDiv4OaFhpspU
+         r3r+eT2RA2vu10kIGWkLRQFmm2SV0WONbZwSMctUPT5d8SkWRq/I0h6XBiRI2E1n21
+         xCAjSJ5L0XWxoqHeoMG6os/mObZASqXvwUL6QWQ4LSmCbRLn5R934EB2pd8jAafyqm
+         Jm8QpnF8rF4vw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Mark Zhang <markz@mellanox.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: [PATCH rdma-next v1 2/7] RDMA/core: Delete duplicated and unreachable code
+Date:   Wed, 21 Jul 2021 12:07:05 +0300
+Message-Id: <ade67ecead1398594dc4129b32f6884387f080f1.1626857976.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1626857976.git.leonro@nvidia.com>
+References: <cover.1626857976.git.leonro@nvidia.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the real name of the decoder instead of hard-coding "ETM" to avoid
-confusion when the trace is ETE. This also now distinguishes between
-ETMv3 and ETMv4.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Signed-off-by: James Clark <james.clark@arm.com>
+The ib_create_named_qp() is kernel verb and no kernel users exist that
+use XRC_INI QP. Hence such QP path is not reachable. In addition, delete
+duplicated assignments of QP attributes from the initialization structure.
+
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- tools/perf/util/cs-etm-decoder/cs-etm-decoder.c | 17 +++++++++++------
- tools/perf/util/cs-etm-decoder/cs-etm-decoder.h |  1 +
- tools/perf/util/cs-etm.c                        |  4 ++--
- 3 files changed, 14 insertions(+), 8 deletions(-)
+ drivers/infiniband/core/core_priv.h |  1 +
+ drivers/infiniband/core/verbs.c     | 22 ++++------------------
+ 2 files changed, 5 insertions(+), 18 deletions(-)
 
-diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-index 37bc9d6a7677..177c08f5be8d 100644
---- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-+++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-@@ -37,6 +37,7 @@ struct cs_etm_decoder {
- 	dcd_tree_handle_t dcd_tree;
- 	cs_etm_mem_cb_type mem_access;
- 	ocsd_datapath_resp_t prev_return;
-+	const char *decoder_name;
- };
+diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
+index 5dfa1190e3ea..cc54d74930d6 100644
+--- a/drivers/infiniband/core/core_priv.h
++++ b/drivers/infiniband/core/core_priv.h
+@@ -342,6 +342,7 @@ _ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
+ 	qp->rwq_ind_tbl = attr->rwq_ind_tbl;
+ 	qp->event_handler = attr->event_handler;
+ 	qp->port = attr->port_num;
++	qp->qp_context = attr->qp_context;
  
- static u32
-@@ -614,7 +615,6 @@ cs_etm_decoder__create_etm_decoder(struct cs_etm_decoder_params *d_params,
- 				   struct cs_etm_trace_params *t_params,
- 				   struct cs_etm_decoder *decoder)
- {
--	const char *decoder_name;
- 	ocsd_etmv3_cfg config_etmv3;
- 	ocsd_etmv4_cfg trace_config_etmv4;
- 	ocsd_ete_cfg trace_config_ete;
-@@ -625,19 +625,19 @@ cs_etm_decoder__create_etm_decoder(struct cs_etm_decoder_params *d_params,
- 	case CS_ETM_PROTO_ETMV3:
- 	case CS_ETM_PROTO_PTM:
- 		cs_etm_decoder__gen_etmv3_config(t_params, &config_etmv3);
--		decoder_name = (t_params->protocol == CS_ETM_PROTO_ETMV3) ?
-+		decoder->decoder_name = (t_params->protocol == CS_ETM_PROTO_ETMV3) ?
- 							OCSD_BUILTIN_DCD_ETMV3 :
- 							OCSD_BUILTIN_DCD_PTM;
- 		trace_config = &config_etmv3;
- 		break;
- 	case CS_ETM_PROTO_ETMV4i:
- 		cs_etm_decoder__gen_etmv4_config(t_params, &trace_config_etmv4);
--		decoder_name = OCSD_BUILTIN_DCD_ETMV4I;
-+		decoder->decoder_name = OCSD_BUILTIN_DCD_ETMV4I;
- 		trace_config = &trace_config_etmv4;
- 		break;
- 	case CS_ETM_PROTO_ETE:
- 		cs_etm_decoder__gen_ete_config(t_params, &trace_config_ete);
--		decoder_name = OCSD_BUILTIN_DCD_ETE;
-+		decoder->decoder_name = OCSD_BUILTIN_DCD_ETE;
- 		trace_config = &trace_config_ete;
- 		break;
- 	default:
-@@ -646,7 +646,7 @@ cs_etm_decoder__create_etm_decoder(struct cs_etm_decoder_params *d_params,
+ 	spin_lock_init(&qp->mr_lock);
+ 	INIT_LIST_HEAD(&qp->rdma_mrs);
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 89c6987cb5eb..635642a3ecbc 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -1257,28 +1257,14 @@ struct ib_qp *ib_create_named_qp(struct ib_pd *pd,
+ 		return xrc_qp;
+ 	}
  
- 	if (d_params->operation == CS_ETM_OPERATION_DECODE) {
- 		if (ocsd_dt_create_decoder(decoder->dcd_tree,
--					   decoder_name,
-+					   decoder->decoder_name,
- 					   OCSD_CREATE_FLG_FULL_DECODER,
- 					   trace_config, &csid))
- 			return -1;
-@@ -658,7 +658,7 @@ cs_etm_decoder__create_etm_decoder(struct cs_etm_decoder_params *d_params,
+-	qp->event_handler = qp_init_attr->event_handler;
+-	qp->qp_context = qp_init_attr->qp_context;
+-	if (qp_init_attr->qp_type == IB_QPT_XRC_INI) {
+-		qp->recv_cq = NULL;
+-		qp->srq = NULL;
+-	} else {
+-		qp->recv_cq = qp_init_attr->recv_cq;
+-		if (qp_init_attr->recv_cq)
+-			atomic_inc(&qp_init_attr->recv_cq->usecnt);
+-		qp->srq = qp_init_attr->srq;
+-		if (qp->srq)
+-			atomic_inc(&qp_init_attr->srq->usecnt);
+-	}
+-
+-	qp->send_cq = qp_init_attr->send_cq;
+-	qp->xrcd    = NULL;
++	if (qp_init_attr->recv_cq)
++		atomic_inc(&qp_init_attr->recv_cq->usecnt);
++	if (qp->srq)
++		atomic_inc(&qp_init_attr->srq->usecnt);
  
- 		return 0;
- 	} else if (d_params->operation == CS_ETM_OPERATION_PRINT) {
--		if (ocsd_dt_create_decoder(decoder->dcd_tree, decoder_name,
-+		if (ocsd_dt_create_decoder(decoder->dcd_tree, decoder->decoder_name,
- 					   OCSD_CREATE_FLG_PACKET_PROC,
- 					   trace_config, &csid))
- 			return -1;
-@@ -790,3 +790,8 @@ void cs_etm_decoder__free(struct cs_etm_decoder *decoder)
- 	decoder->dcd_tree = NULL;
- 	free(decoder);
- }
-+
-+const char *cs_etm_decoder__get_name(struct cs_etm_decoder *decoder)
-+{
-+	return decoder->decoder_name;
-+}
-diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.h b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.h
-index 9137796fe3c5..fbd6786baf99 100644
---- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.h
-+++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.h
-@@ -99,5 +99,6 @@ int cs_etm_decoder__get_packet(struct cs_etm_packet_queue *packet_queue,
- 			       struct cs_etm_packet *packet);
+ 	atomic_inc(&pd->usecnt);
+ 	if (qp_init_attr->send_cq)
+ 		atomic_inc(&qp_init_attr->send_cq->usecnt);
+-	if (qp_init_attr->rwq_ind_tbl)
+-		atomic_inc(&qp->rwq_ind_tbl->usecnt);
  
- int cs_etm_decoder__reset(struct cs_etm_decoder *decoder);
-+const char *cs_etm_decoder__get_name(struct cs_etm_decoder *decoder);
- 
- #endif /* INCLUDE__CS_ETM_DECODER_H__ */
-diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-index 870073bce670..bb7957afd9cb 100644
---- a/tools/perf/util/cs-etm.c
-+++ b/tools/perf/util/cs-etm.c
-@@ -564,8 +564,8 @@ static void cs_etm__dump_event(struct cs_etm_queue *etmq,
- 
- 	fprintf(stdout, "\n");
- 	color_fprintf(stdout, color,
--		     ". ... CoreSight ETM Trace data: size %zu bytes\n",
--		     buffer->size);
-+		     ". ... CoreSight %s Trace data: size %zu bytes\n",
-+		     cs_etm_decoder__get_name(etmq->decoder), buffer->size);
- 
- 	do {
- 		size_t consumed;
+ 	if (qp_init_attr->cap.max_rdma_ctxs) {
+ 		ret = rdma_rw_init_mrs(qp, qp_init_attr);
 -- 
-2.28.0
+2.31.1
 
