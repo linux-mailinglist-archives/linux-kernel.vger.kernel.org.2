@@ -2,86 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5EA3D0697
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 04:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777203D0699
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 04:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhGUBXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 21:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57252 "EHLO
+        id S231133AbhGUBZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 21:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbhGUBXY (ORCPT
+        with ESMTP id S230296AbhGUBYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 21:23:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFAB5C061574;
-        Tue, 20 Jul 2021 19:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=9ZdDeoeJBVHasYACD/U9e1/n6aWpbckywvGfg+hXFTo=; b=tocW9ftMAovoUtTPs67DWlJ+PE
-        +O6opCRNAC0OR23uJBWO+H/gDeaD/PNJ5C2A0VRAUQsUmcE/sO5goUAhXzDFVQ9UenoM9AV6Nkdtb
-        SiXsIidoLpmRluQE4U3LnLAPThQd4jEbsnVzHpSMAOQiFUZll4tP6Z6Gi7sm56Zcrf2DMaUIl3EE8
-        QX2rIo0wnN3HJveksaPBa1X6AY5ZSqqfnZTP28Wl4JHrUiLrDrhRvx2lWXjh9OhiV65qAkNUmYpE7
-        eL7rPpFbNAK7qPJiReQsdrdu9pNjNT4JVjNZIUAcDCr8MRSd6AuRLuSUyj+78WaeCocXE1bwLEm1N
-        9nzQ+GOA==;
-Received: from [2601:1c0:6280:3f0::a22f] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m61aG-008hYY-ML; Wed, 21 Jul 2021 02:03:49 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Prameela Rani Garnepudi <prameela.j04cs@gmail.com>,
-        Sanjay Kumar Konduri <sanjay.konduri@redpinesignals.com>,
-        Siva Rebbagondla <siva.rebbagondla@redpinesignals.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH] bluetooth: btrsi: use non-kernel-doc comment for copyright
-Date:   Tue, 20 Jul 2021 19:03:34 -0700
-Message-Id: <20210721020334.3129-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Tue, 20 Jul 2021 21:24:55 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC5FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 19:05:32 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id k20so470401pgg.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 19:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CR6e7L39bvv4cVAWl7nDFXsCXi3qZFbBtgP7R4qlUk0=;
+        b=maWcJ6MiehasEtax7J2WPwxAf1jcx6tDiC9mcb+3UkkzVfpnyHX+jcScZ1uf3UxHGB
+         5ad3yQsGe0bJofiSL14RjdXNqbI2E1moZPkK/7jhipD3d6YeIsEM4O9sRGk5K1SCqLJS
+         mJTypDdRoR7uQpXEfhTjX8Ob2dxqbfdgbRHqc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CR6e7L39bvv4cVAWl7nDFXsCXi3qZFbBtgP7R4qlUk0=;
+        b=Xw6J++OMLrXSaaD1nKDLQUI351m7BONm5My2rBfqzJy8YxSe4urGK5DM8YZ/SIm8Cn
+         3BrdEeQ11NLeMgpYVf1r75sL/P9MfJsdi86yyrapKMmmx1CtNT9yC7N/NrtCQA4d8n1/
+         9hJhi0r76mEPUK4mTiFpvmFTJQroHzRawfXImRBGumALOsCbf9ZGCSz75iU87rN8Ary5
+         57D38aU5UHz1KLfawAlhGgJ9clcCyTHM/r0+Qr6f14lcHRKZc9JTUgpF/wr9elvw6STo
+         HXqNwv6AX0jRin2T2Eh/pxrDpszbEl8TzINgXc+/MGyN6EJffU9AGbG65wakRfPU/T1N
+         Orhw==
+X-Gm-Message-State: AOAM531uEVEtXUARD5o/7tlxi3c5yMDtuGAj7x81gl9GxDoT8+w34bYv
+        69XflLNJ3Vyy8eSdzqlabBOq4g==
+X-Google-Smtp-Source: ABdhPJxpeEKw7sLSFfF2jFlD87jS6c3Cv7f9kkLu2mZtm2AkTa4BArHc2e4Css5Mt5sAAvOPk9e0Tg==
+X-Received: by 2002:aa7:86d9:0:b029:32b:5ec8:c87b with SMTP id h25-20020aa786d90000b029032b5ec8c87bmr34511465pfo.1.1626833131504;
+        Tue, 20 Jul 2021 19:05:31 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:808c:1a13:1159:8184])
+        by smtp.gmail.com with ESMTPSA id m21sm20972208pjz.36.2021.07.20.19.05.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 19:05:30 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 11:05:25 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Will Deacon <will@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCHv2 2/4] arm64: add guest pvstate support
+Message-ID: <YPeA5ReGSwBvWGSa@google.com>
+References: <20210709043713.887098-1-senozhatsky@chromium.org>
+ <20210709043713.887098-3-senozhatsky@chromium.org>
+ <877dhv35ea.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dhv35ea.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel-doc complains about a non-kernel-doc comment that uses "/**"
-to begin the comment, so change it to just "/*".
+On (21/07/12 16:42), Marc Zyngier wrote:
+> > 
+> > PV-vcpu-state is a per-CPU struct, which, for the time being,
+> > holds boolean `preempted' vCPU state. During the startup,
+> > given that host supports PV-state, each guest vCPU sends
+> > a pointer to its per-CPU variable to the host as a payload
+> 
+> What is the expected memory type for this memory region? What is its
+> life cycle? Where is it allocated from?
 
-drivers/bluetooth/btrsi.c:2: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Copyright (c) 2017 Redpine Signals Inc.
+Guest per-CPU area, which physical addresses is shared with the host.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Aditya Srivastava <yashsri421@gmail.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>
-Cc: Johan Hedberg <johan.hedberg@gmail.com>
-Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: linux-bluetooth@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: Prameela Rani Garnepudi <prameela.j04cs@gmail.com>
-Cc: Sanjay Kumar Konduri <sanjay.konduri@redpinesignals.com>
-Cc: Siva Rebbagondla <siva.rebbagondla@redpinesignals.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>
----
- drivers/bluetooth/btrsi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > with the SMCCC HV call, so that host can update vCPU state
+> > when it puts or loads vCPU.
+> > 
+> > This has impact on the guest's scheduler:
+> > 
+> > [..]
+> >   wake_up_process()
+> >    try_to_wake_up()
+> >     select_task_rq_fair()
+> >      available_idle_cpu()
+> >       vcpu_is_preempted()
+> > 
+> > Some sched benchmarks data is available on the github page [0].
+> > 
+> > [0] https://github.com/sergey-senozhatsky/arm64-vcpu_is_preempted
+> 
+> Please include these results in the cover letter. I tend to reply to
+> email while offline, and I can't comment on GH.
 
---- linux-next-20210720.orig/drivers/bluetooth/btrsi.c
-+++ linux-next-20210720/drivers/bluetooth/btrsi.c
-@@ -1,4 +1,4 @@
--/**
-+/*
-  * Copyright (c) 2017 Redpine Signals Inc.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
+ACK.
+
+> > +struct vcpu_state {
+> 
+> If this is KVM specific (which it most likely is), please name-space
+> it correctly, and move it to a KVM-specific location.
+
+ACK.
+
+> > +	bool	preempted;
+> > +	u8	reserved[63];
+> 
+> Why 63? Do you attach any particular meaning to a 64byte structure
+> (and before you say "cache line size", please look at some of the
+> cache line sizes we have to deal with...).
+
+We do have some future plans to share some bits of the guest's context
+with the host.
+
+> This should also be versioned from day-1, one way or another.
+
+Makes sense.
+
+> > +};
+> > +
+> >  #ifdef CONFIG_PARAVIRT
+> >  #include <linux/static_call_types.h>
+> >  
+> > @@ -20,8 +25,22 @@ static inline u64 paravirt_steal_clock(int cpu)
+> >  
+> >  int __init pv_time_init(void);
+> >  
+> > +bool dummy_vcpu_is_preempted(unsigned int cpu);
+> > +
+> > +extern struct static_key pv_vcpu_is_preempted_enabled;
+> > +DECLARE_STATIC_CALL(pv_vcpu_is_preempted, dummy_vcpu_is_preempted);
+> > +
+> > +static inline bool paravirt_vcpu_is_preempted(unsigned int cpu)
+> > +{
+> > +	return static_call(pv_vcpu_is_preempted)(cpu);
+> > +}
+> > +
+> > +int __init pv_vcpu_state_init(void);
+> > +
+> >  #else
+> >  
+> > +#define pv_vcpu_state_init() do {} while (0)
+> > +
+> >  #define pv_time_init() do {} while (0)
+> >  
+> >  #endif // CONFIG_PARAVIRT
+> > diff --git a/arch/arm64/kernel/paravirt.c b/arch/arm64/kernel/paravirt.c
+> > index 75fed4460407..d8fc46795d94 100644
+> > --- a/arch/arm64/kernel/paravirt.c
+> > +++ b/arch/arm64/kernel/paravirt.c
+> > @@ -40,6 +40,11 @@ struct pv_time_stolen_time_region {
+> >  
+> >  static DEFINE_PER_CPU(struct pv_time_stolen_time_region, stolen_time_region);
+> >  
+> > +static DEFINE_PER_CPU(struct vcpu_state, vcpus_states);
+> 
+> nit: there is only one 'state' structure per CPU, so I'd prefer the
+> singular form.
+
+ACK.
+
+> > +struct static_key pv_vcpu_is_preempted_enabled;
+> > +
+> > +DEFINE_STATIC_CALL(pv_vcpu_is_preempted, dummy_vcpu_is_preempted);
+> > +
+> >  static bool steal_acc = true;
+> >  static int __init parse_no_stealacc(char *arg)
+> >  {
+> > @@ -165,3 +170,92 @@ int __init pv_time_init(void)
+> >  
+> >  	return 0;
+> >  }
+> > +
+> > +bool dummy_vcpu_is_preempted(unsigned int cpu)
+> 
+> Why does this have to be global?
+
+I think this can be moved away from the header, so then we don't need
+to DECLARE_STATIC_CALL() with a dummy function.
+
+> > +static bool has_pv_vcpu_state(void)
+> > +{
+> > +	struct arm_smccc_res res;
+> > +
+> > +	/* To detect the presence of PV time support we require SMCCC 1.1+ */
+> > +	if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
+> > +		return false;
+> > +
+> > +	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_FEATURES_FUNC_ID,
+> > +			     ARM_SMCCC_HV_PV_VCPU_STATE_FEATURES,
+> > +			     &res);
+> > +
+> > +	if (res.a0 != SMCCC_RET_SUCCESS)
+> > +		return false;
+> > +	return true;
+> 
+> Please move all this over the the KVM-specific discovery mechanism.
+
+Will take a look.
+
+> > +static int __pv_vcpu_state_hook(unsigned int cpu, int event)
+> > +{
+> > +	struct arm_smccc_res res;
+> > +	struct vcpu_state *st;
+> > +
+> > +	st = &per_cpu(vcpus_states, cpu);
+> > +	arm_smccc_1_1_invoke(event, virt_to_phys(st), &res);
+> > +	if (res.a0 != SMCCC_RET_SUCCESS)
+> > +		return -EINVAL;
+> > +	return 0;
+> > +}
+> > +
+> > +static int vcpu_state_init(unsigned int cpu)
+> > +{
+> > +	int ret = __pv_vcpu_state_hook(cpu, ARM_SMCCC_HV_PV_VCPU_STATE_INIT);
+> > +
+> > +	if (ret)
+> > +		pr_warn("Unable to ARM_SMCCC_HV_PV_STATE_INIT\n");
+> 
+> pr_warn_once(), please.
+
+ACK.
