@@ -2,135 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A683D11EC
+	by mail.lfdr.de (Postfix) with ESMTP id DBA233D11ED
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239745AbhGUOYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:24:33 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44066 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S239462AbhGUOYb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:24:31 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LF3HK6175709;
-        Wed, 21 Jul 2021 11:04:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=YIoED6AauQ4yitAFa7xjRwIfW+sUM7Fu4FYDva3JiaE=;
- b=ZwohY/8rtCFqvBzi+p3AaHntuvl+NBYH2jcovL/KQz6kwKZRIbape0DnCpicxXsABIxd
- yKLFsda9CZv41ki1aWIjZ/d3fAMUXAxUrHiwAMcj+gbr4A63Jtz6BmLMAfvN5QABmfQD
- KY7fiphNb/JoR4LAI5lf2e+jOBF9daCd/z9NOszmufQO4gwOgTndMzpIW9osLglZk604
- jYOzeGbywgxEwwDWGb1aq+tD3qF7FqBRgygRYk8vcA7OXNqhT1GHUGONVlSybOFV2ZQ8
- NUnwBdp2+8q9pz/JAhnx9eQcp/7Z+4AoJxTe6VYOxCX2jHbdddqDdJh5DVBDLuvMWMRI yw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39xkeen3rc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 11:04:40 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16LF4O48182099;
-        Wed, 21 Jul 2021 11:04:39 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39xkeen3q3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 11:04:39 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16LF4IiQ019772;
-        Wed, 21 Jul 2021 15:04:37 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 39upu895rx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 15:04:37 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16LF4ZPs28311978
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 15:04:35 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB2B64C05E;
-        Wed, 21 Jul 2021 15:04:34 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 637144C040;
-        Wed, 21 Jul 2021 15:04:34 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.171.74.114])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Jul 2021 15:04:34 +0000 (GMT)
-Subject: Re: [PATCH v5 10/11] powerpc/pseries/iommu: Make use of DDW for
- indirect mapping
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        kernel test robot <lkp@intel.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210716082755.428187-1-leobras.c@gmail.com>
- <20210716082755.428187-11-leobras.c@gmail.com>
- <b98f696a-ed64-4c9e-ccb6-549ae8bc7fd6@linux.ibm.com>
- <8dfb28d5-b654-746c-03d8-aeee3d438240@ozlabs.ru>
-From:   Frederic Barrat <fbarrat@linux.ibm.com>
-Message-ID: <994051df-73b3-4dad-76aa-1a03d9afaf6d@linux.ibm.com>
-Date:   Wed, 21 Jul 2021 17:04:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239767AbhGUOYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:24:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239462AbhGUOYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 10:24:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19E1B60FF1;
+        Wed, 21 Jul 2021 15:05:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626879914;
+        bh=LlZsTCwo55N+RZAir1Av59XUrJ9QoPgdyfVVcThgmU0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WKZDCgOBjqILAGhDpdTVHkDHsrxce8rMUvBPzPZqC3HXdO83Q8ga62HWf2xGvmovt
+         7jg+Y5v/9rdSQx9w9jJUsnOHWep2quxQfaVP4OYKRfhsJHaWUimWOu7iGbFeaDsjYL
+         R1y/p7bPfifpppU71AMjt7JQ+vYjCcZ72UqJ1nHiCOA93IgEDuOlufjpxP4MO6JQU3
+         w7/6maXf1yz+hBbvHGYaYnrZyXQmyrEMFQWoqecWo44Cw2DI3HCbCgjzpDi9nbxnOJ
+         pJrdqsrwvsmBjSfyCWrkMtn1F4j1+4GqezA1TZR0wAtFYHp1fb2A0d3/+3x6Mc89on
+         A5Aud3XlQad9A==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: codecs: wcd938x: fix wcd module dependency
+Date:   Wed, 21 Jul 2021 17:04:45 +0200
+Message-Id: <20210721150510.1837221-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <8dfb28d5-b654-746c-03d8-aeee3d438240@ozlabs.ru>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 64t-t_OYI5dWibQk5RuFJ-01YuYFt3K_
-X-Proofpoint-ORIG-GUID: w9ni4Lr0nTcXsDyW-V2JMK6vrmnEZ72J
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-21_09:2021-07-21,2021-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- priorityscore=1501 mlxlogscore=999 mlxscore=0 suspectscore=0
- lowpriorityscore=0 impostorscore=0 spamscore=0 adultscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107210088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
+With SND_SOC_ALL_CODECS=y and SND_SOC_WCD938X_SDW=m, there is a link
+error from a reverse dependency, since the built-in codec driver calls
+into the modular soundwire back-end:
 
-On 21/07/2021 05:32, Alexey Kardashevskiy wrote:
->>> +        struct iommu_table *newtbl;
->>> +        int i;
->>> +
->>> +        for (i = 0; i < ARRAY_SIZE(pci->phb->mem_resources); i++) {
->>> +            const unsigned long mask = IORESOURCE_MEM_64 | 
->>> IORESOURCE_MEM;
->>> +
->>> +            /* Look for MMIO32 */
->>> +            if ((pci->phb->mem_resources[i].flags & mask) == 
->>> IORESOURCE_MEM)
->>> +                break;
->>> +        }
->>> +
->>> +        if (i == ARRAY_SIZE(pci->phb->mem_resources))
->>> +            goto out_del_list;
->>
->>
->> So we exit and do nothing if there's no MMIO32 bar?
->> Isn't the intent just to figure out the MMIO32 area to reserve it when 
->> init'ing the table? In which case we could default to 0,0
->>
->> I'm actually not clear why we are reserving this area on pseries.
-> 
-> 
-> 
-> If we do not reserve it, then the iommu code will allocate DMA pages 
-> from there and these addresses are MMIO32 from the kernel pov at least. 
-> I saw crashes when (I think) a device tried DMAing to the top 2GB of the 
-> bus space which happened to be a some other device's BAR.
+x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_free':
+wcd938x.c:(.text+0x2c0): undefined reference to `wcd938x_sdw_free'
+x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_hw_params':
+wcd938x.c:(.text+0x2f6): undefined reference to `wcd938x_sdw_hw_params'
+x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_set_sdw_stream':
+wcd938x.c:(.text+0x332): undefined reference to `wcd938x_sdw_set_sdw_stream'
+x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_tx_swr_ctrl':
+wcd938x.c:(.text+0x23de): undefined reference to `wcd938x_swr_get_current_bank'
+x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_bind':
+wcd938x.c:(.text+0x2579): undefined reference to `wcd938x_sdw_device_get'
+x86_64-linux-ld: wcd938x.c:(.text+0x25a1): undefined reference to `wcd938x_sdw_device_get'
+x86_64-linux-ld: wcd938x.c:(.text+0x262a): undefined reference to `__devm_regmap_init_sdw'
 
+Work around this using two small hacks: An added Kconfig dependency
+prevents the main driver from being built-in when soundwire support
+itself is a loadable module to allow calling devm_regmap_init_sdw(),
+and a Makefile trick links the wcd938x-sdw backend as built-in
+if needed to solve the dependency between the two modules.
 
-hmmm... then figuring out the correct range needs more work. We could 
-have more than one MMIO32 bar. And they don't have to be adjacent. I 
-don't see that we are reserving any range on the initial table though 
-(on pseries).
+Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+I saw this on -rc2, please ignore if this is already fixed
+---
+ sound/soc/codecs/Kconfig  | 1 +
+ sound/soc/codecs/Makefile | 5 ++++-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-   Fred
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 7ebae3f09435..459deba31485 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1558,6 +1558,7 @@ config SND_SOC_WCD934X
+ 
+ config SND_SOC_WCD938X
+ 	tristate
++	depends on SOUNDWIRE || !SOUNDWIRE
+ 
+ config SND_SOC_WCD938X_SDW
+ 	tristate "WCD9380/WCD9385 Codec - SDW"
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index de8b83dd2c76..7bb38c370842 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -583,7 +583,10 @@ obj-$(CONFIG_SND_SOC_WCD_MBHC)	+= snd-soc-wcd-mbhc.o
+ obj-$(CONFIG_SND_SOC_WCD9335)	+= snd-soc-wcd9335.o
+ obj-$(CONFIG_SND_SOC_WCD934X)	+= snd-soc-wcd934x.o
+ obj-$(CONFIG_SND_SOC_WCD938X)	+= snd-soc-wcd938x.o
+-obj-$(CONFIG_SND_SOC_WCD938X_SDW) += snd-soc-wcd938x-sdw.o
++ifdef CONFIG_SND_SOC_WCD938X_SDW
++# avoid link failure by forcing sdw code built-in when needed
++obj-$(CONFIG_SND_SOC_WCD938X) += snd-soc-wcd938x-sdw.o
++endif
+ obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
+ obj-$(CONFIG_SND_SOC_WM0010)	+= snd-soc-wm0010.o
+ obj-$(CONFIG_SND_SOC_WM1250_EV1) += snd-soc-wm1250-ev1.o
+-- 
+2.29.2
+
