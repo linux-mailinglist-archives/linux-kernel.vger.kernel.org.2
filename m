@@ -2,128 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBA43D126B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D693E3D1270
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239896AbhGUOtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        id S239904AbhGUOuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238083AbhGUOs7 (ORCPT
+        with ESMTP id S238083AbhGUOuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:48:59 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38264C061575;
-        Wed, 21 Jul 2021 08:29:35 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id y42so3769423lfa.3;
-        Wed, 21 Jul 2021 08:29:35 -0700 (PDT)
+        Wed, 21 Jul 2021 10:50:06 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66CC0C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:30:42 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id i5so3794799lfe.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 08:30:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=y3Me1H1g+i1iLWwjD1JZUPq0fs+AL+QhFF9DCBhI9X8=;
-        b=pdVrpvByPApfQZfDso8ynert9Ks/VK9apcwGzpNoJqn7Rouyr4gipe/Z2tZ3ZjWtdj
-         TGtZiyHT7zT7mOGEEUDDz+akJXDt23CQxPao9IkNYPs2lmw2j6BFHOQ/cfrOb/aAolwJ
-         KNs/9RBtlB69C+OdnGFAYeQu01WyyWpU3PBhihHYEcej4SVhuTi49kvxzFw62ubTcB4Z
-         gmTmbRAetA2EIIXEhtf9jALTyI4GFBoEdb2LhKlSz8YSeov6arMXi88XFXhJm501Es9K
-         I1eGL+k/FulsJNsqncQufG7iWX4lXgNhC9lsO2Pjt3AWM6Gtxr9EJz9Kp+Z4nbo3vGL3
-         NeLQ==
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Z7unYwn55jnXDQQu8jt2zbz9VWoS1Hb8e9CfJmGr4DU=;
+        b=xsFfjM/y5u4YvX3E7YZWe+UCNHc3FGQM87xUPYylpOgTn/2e9RF20e+YSWRBXKoC/M
+         8ec+bL5zHDNfUw+s1oLC7HBtynj8Uyw8P71vOKvJNWdBCeAt5456IrMeRYEiT+0wjR7G
+         ASJRQwUw7qkNykCrPu/J7KwWEUUnJy8mXeo9IQ648pctfhXeLx+pYNNiUWbt7si035xm
+         W8kWm9jTBQa8sZPw8tC71k03zaaEfNplkoHcp/wwW1I/frxmUb5J8KQtgi/RufQXj3Jk
+         TXR8m4TOpeFh6INeUyki/PzjTexdB2pzzN0ethC8RlMsgzHBqmf6aUFYqG+2DuZyLEfa
+         dlyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y3Me1H1g+i1iLWwjD1JZUPq0fs+AL+QhFF9DCBhI9X8=;
-        b=fIwa6h/7ZMheyHzMLx46+S2QLyQylxfnbTamiQBpIqAWN0ZgErhozFaoYSdSzHggpl
-         PdxIICuMNHm2Y0HG17KcLVD+/0dtJ76H0pirs8xap7FjXAVKNTV+0pvhf4V201UBMsHl
-         o5rbM4zLm9/6mOAC4aJ1Q1NZ7+GL1YTUQxnL4V5tuG8w80lPv87W7pW4dd69ZXOHy04B
-         dpoyrrAgywppGDQEAgMVixkAeBD9zg0m0O+DsaJE62Ylr3iHBX1zZwNc1bLi/EDHGFhQ
-         kWmp4CDEkmeaFw3xgt/ipw+kXdSnUMFWdBeGwgTFLT8AwI4tIy5oTMmc27BQqCsSS7TV
-         u61Q==
-X-Gm-Message-State: AOAM530myPf9aGvp3WjMmP4hDif1mjRkG6detebPwNAj3Y0BRrE2rRQ1
-        jfkJBhG4J8QX2b5LZyzzv08Zjj4eH+Q=
-X-Google-Smtp-Source: ABdhPJyFWzk8hSRWU933+n0cefcBs+yAZ5Nzg7Uh9cqxFc8FENPZPdOXpuP1HFMbLAERC7Mmw2czoA==
-X-Received: by 2002:a05:6512:744:: with SMTP id c4mr25549643lfs.596.1626881373489;
-        Wed, 21 Jul 2021 08:29:33 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-100-70.dynamic.spd-mgts.ru. [46.138.100.70])
-        by smtp.googlemail.com with ESMTPSA id t17sm1943317ljk.102.2021.07.21.08.29.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 08:29:32 -0700 (PDT)
-Subject: Re: [PATCH] arm64: tegra: add regulator dependency
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210721151457.2285669-1-arnd@kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c9968f90-0633-9467-a3fb-725b92116fe2@gmail.com>
-Date:   Wed, 21 Jul 2021 18:29:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Z7unYwn55jnXDQQu8jt2zbz9VWoS1Hb8e9CfJmGr4DU=;
+        b=DQYXAbaAui4Ov6iRcCTc6IRToGwtysSwRVvAR9Qm9K/pALuCZ4eeouLxsVMrInnnrO
+         h8GFSVhTTcB8qWrm88Lz+YCKGHzQb9uHmN3HI8O9kAnY4jbUbK9t7JX8mEyyeL1vJpQa
+         aVIefohc+SXeYfF5L7abHD1tWRZUkvIGuC1qQspmAb8g+ikKS0OHfU352ZOcWfmLNP78
+         rEz6nV7An50DkSfgxENUrKiNH1dVaNLdFKF60vvNFVohr4bE6af0uRzaZXvZfMxsKbty
+         tcyQnmQ/ZnMrRX5iQmqVcBiFCiejF8ZQc3vZIt47Tgx4X3ZKnLzADVyOIPFDnlRW3UBd
+         05RQ==
+X-Gm-Message-State: AOAM531c1EOUNAdONM2Akq2yqIi3e3VJOmNtgl8c7n48rNLruJwvHld+
+        llbcdr6E6tSxFD0EVkEV8PNDEA==
+X-Google-Smtp-Source: ABdhPJx99qhuuX+hob4lpg1lV5u5N+4Mnlby8FOR/yXbil2gtuzBRuPswy3hLK+1ifkN0KXdV2xnJw==
+X-Received: by 2002:ac2:5e75:: with SMTP id a21mr26316341lfr.429.1626881440816;
+        Wed, 21 Jul 2021 08:30:40 -0700 (PDT)
+Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
+        by smtp.gmail.com with ESMTPSA id x7sm1768883lfu.17.2021.07.21.08.30.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 08:30:40 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 17:30:39 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        geert+renesas@glider.be, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: rcar_drif: select CONFIG_V4L2_ASYNC
+Message-ID: <YPg9n3QsD/I7ciQS@oden.dyn.berto.se>
+References: <20210721152522.2928952-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210721151457.2285669-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210721152522.2928952-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.07.2021 18:14, Arnd Bergmann пишет:
+Hi Arnd,
+
+On 2021-07-21 17:24:59 +0200, Arnd Bergmann wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
-> The two regulator drivers in the drivers/soc/ directory fail to build
-> when regulator support is disabled:
+> Without this, I see a randconfig link failure:
 > 
-> aarch64-linux-ld: drivers/soc/tegra/regulators-tegra20.o: in function `tegra20_regulator_reboot':
-> regulators-tegra20.c:(.text.tegra20_regulator_reboot+0x4c): undefined reference to `regulator_sync_voltage_rdev'
-> aarch64-linux-ld: regulators-tegra20.c:(.text.tegra20_regulator_reboot+0x58): undefined reference to `regulator_sync_voltage_rdev'
-> aarch64-linux-ld: drivers/soc/tegra/regulators-tegra30.o: in function `tegra30_regulator_reboot':
-> regulators-tegra30.c:(.text.tegra30_regulator_reboot+0x44): undefined reference to `regulator_sync_voltage_rdev'
-> aarch64-linux-ld: regulators-tegra30.c:(.text.tegra30_regulator_reboot+0x50): undefined reference to `regulator_sync_voltage_rdev'
+> aarch64-linux-ld: drivers/media/platform/rcar_drif.o: in function `rcar_drif_remove':
+> rcar_drif.c:(.text+0x2a8): undefined reference to `v4l2_async_notifier_unregister'
+> aarch64-linux-ld: rcar_drif.c:(.text+0x2b0): undefined reference to `v4l2_async_notifier_cleanup'
+> aarch64-linux-ld: drivers/media/platform/rcar_drif.o: in function `rcar_drif_sdr_probe':
+> rcar_drif.c:(.text+0x1444): undefined reference to `v4l2_async_notifier_init'
+> aarch64-linux-ld: rcar_drif.c:(.text+0x14a0): undefined reference to `v4l2_async_notifier_register'
+> aarch64-linux-ld: rcar_drif.c:(.text+0x14d8): undefined reference to `v4l2_async_notifier_cleanup'
+> aarch64-linux-ld: rcar_drif.c:(.text+0x15a8): undefined reference to `__v4l2_async_notifier_add_fwnode_subdev'
 > 
-> Add a Kconfig dependency to avoid this configuration.
+> I could not easily figure out when this was introduced, as this code
+> has not changed in a while but I only saw the problem recently.
 > 
-> Fixes: 496747e7d907 ("soc/tegra: regulators: Add regulators coupler for Tegra20")
-> Fixes: 783807436f36 ("soc/tegra: regulators: Add regulators coupler for Tegra30")
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Reviewed-by: Niklas S�derlund <niklas.soderlund+renesas@ragnatech.se>
+
 > ---
->  drivers/soc/tegra/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
+>  drivers/media/platform/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/soc/tegra/Kconfig b/drivers/soc/tegra/Kconfig
-> index db49075b1946..c56122be27a9 100644
-> --- a/drivers/soc/tegra/Kconfig
-> +++ b/drivers/soc/tegra/Kconfig
-> @@ -153,8 +153,10 @@ config SOC_TEGRA_POWERGATE_BPMP
->  
->  config SOC_TEGRA20_VOLTAGE_COUPLER
->  	bool "Voltage scaling support for Tegra20 SoCs"
-> +	depends on REGULATOR
->  	depends on ARCH_TEGRA_2x_SOC || COMPILE_TEST
->  
->  config SOC_TEGRA30_VOLTAGE_COUPLER
->  	bool "Voltage scaling support for Tegra30 SoCs"
-> +	depends on REGULATOR
->  	depends on ARCH_TEGRA_3x_SOC || COMPILE_TEST
+> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+> index 157c924686e4..c5d1c83bd582 100644
+> --- a/drivers/media/platform/Kconfig
+> +++ b/drivers/media/platform/Kconfig
+> @@ -635,6 +635,7 @@ config VIDEO_RCAR_DRIF
+>  	depends on VIDEO_V4L2
+>  	depends on ARCH_RENESAS || COMPILE_TEST
+>  	select VIDEOBUF2_VMALLOC
+> +	select V4L2_ASYNC
+>  	help
+>  	  Say Y if you want to enable R-Car Gen3 DRIF support. DRIF is Digital
+>  	  Radio Interface that interfaces with an RF front end chip. It is a
+> -- 
+> 2.29.2
 > 
 
-Hello Arnd,
-
-Thank you for the patch!
-
-I also sent out the fix [1] about a month ago and was trying to ping
-Thierry. Unfortunately there was no reaction so far and now Thierry is
-on vacation.
-
-[1]
-https://patchwork.ozlabs.org/project/linux-tegra/patch/20210621160739.22448-1-digetx@gmail.com/
-
-It looks like my variant of the fix should be a bit more correct since
-it won't build the regulator drivers if both TEGRA=n and REGULATOR=n.
-
-I guess it should be fine if you could take the patch directly, perhaps
-Jon could ack the patch for that. Otherwise we could wait for Thierry to
-return.
+-- 
+Regards,
+Niklas S�derlund
