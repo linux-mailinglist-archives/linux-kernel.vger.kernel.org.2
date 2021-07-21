@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F123D0E1A
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5DC3D0E19
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236745AbhGULIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:08:48 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:34386 "EHLO
+        id S235114AbhGULIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:08:00 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:34390 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237773AbhGUK4E (ORCPT
+        with ESMTP id S237783AbhGUK4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 06:56:04 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16LBaXeC058743;
-        Wed, 21 Jul 2021 06:36:33 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16LBaa1u058757;
+        Wed, 21 Jul 2021 06:36:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1626867393;
-        bh=BrYp/NL15Aj44S8+xgk5v85ywLu8jggNxu+gcJm/iQo=;
+        s=ti-com-17Q1; t=1626867396;
+        bh=zTc0+d5by1yn2c2oxZDaWLTqDtg1JcqD65QZC9tn/98=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=n5eEDfBMxKR89V+AnTJYYLFFM6dOj8xIxmJysAva5rpefoqmtfgmlbTZAvOOVwh6P
-         8q9luuFkq5IXGNf9Nk/z2XqrYZC+ejqOU778poBZzgKHHcuckq1HbaCN6hOx5ADybR
-         8WeOYwYcbFzYlfaKGAOWQ3AnMA8A/Z1O9oqRSheU=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16LBaXtx076824
+        b=EH/xpLCSywfg1GlSxcvWScXzqutR0Kele8XTwoQazKl+vTub/HRw2yNwVvL4iS4qa
+         pDXZLua3Hqac7F8FMTxNOEwZsJxPIptXQVqA3v2tuC9zpytrrYbstMbLICnAcCe0qn
+         guyoFvGGI6s1SYIWDnrvIJHcya6nNn99Vf7Jejvg=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16LBaaB7109213
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 21 Jul 2021 06:36:33 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 21
- Jul 2021 06:36:33 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+        Wed, 21 Jul 2021 06:36:36 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE101.ent.ti.com
  (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 21
+ Jul 2021 06:36:36 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 21 Jul 2021 06:36:33 -0500
+ Frontend Transport; Wed, 21 Jul 2021 06:36:36 -0500
 Received: from lokesh-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16LBaQBm115096;
-        Wed, 21 Jul 2021 06:36:30 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16LBaQBn115096;
+        Wed, 21 Jul 2021 06:36:33 -0500
 From:   Lokesh Vutla <lokeshvutla@ti.com>
 To:     Nishanth Menon <nm@ti.com>, <kristo@kernel.org>
 CC:     Device Tree Mailing List <devicetree@vger.kernel.org>,
@@ -44,9 +44,9 @@ CC:     Device Tree Mailing List <devicetree@vger.kernel.org>,
         Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, Vignesh R <vigneshr@ti.com>,
         Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH v2 1/4] arm64: dts: ti: k3-am64-main: Add epwm nodes
-Date:   Wed, 21 Jul 2021 17:06:22 +0530
-Message-ID: <20210721113625.17299-2-lokeshvutla@ti.com>
+Subject: [PATCH v2 2/4] arm64: dts: ti: k3-am64-main: Add ecap pwm nodes
+Date:   Wed, 21 Jul 2021 17:06:23 +0530
+Message-ID: <20210721113625.17299-3-lokeshvutla@ti.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210721113625.17299-1-lokeshvutla@ti.com>
 References: <20210721113625.17299-1-lokeshvutla@ti.com>
@@ -58,114 +58,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT nodes for all epwm instances present in AM64 SoC.
+There are 3 instances of ecap modules that are capable of generating
+a pwm when configured in apwm mode. Add DT nodes for these 3 ecap
+instances.
 
 Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 87 ++++++++++++++++++++++++
- 1 file changed, 87 insertions(+)
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 27 ++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index 02c3fdf9cc46..9e762f64b631 100644
+index 9e762f64b631..42d1d219a3fd 100644
 --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
 +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -217,6 +217,12 @@ phy_gmii_sel: phy@4044 {
- 			reg = <0x4044 0x8>;
- 			#phy-cells = <1>;
- 		};
-+
-+		epwm_tbclk: clock@4140 {
-+			compatible = "ti,am64-epwm-tbclk", "syscon";
-+			reg = <0x4130 0x4>;
-+			#clock-cells = <1>;
-+		};
- 	};
- 
- 	main_uart0: serial@2800000 {
-@@ -859,4 +865,85 @@ pcie0_ep: pcie-ep@f102000 {
- 		clock-names = "fck";
- 		max-functions = /bits/ 8 <1>;
+@@ -946,4 +946,31 @@ epwm8: pwm@23080000 {
+ 		clocks = <&epwm_tbclk 8>, <&k3_clks 94 0>;
+ 		clock-names = "tbclk", "fck";
  	};
 +
-+	epwm0: pwm@23000000 {
-+		compatible = "ti,am64-epwm", "ti,am3352-ehrpwm";
++	ecap0: pwm@23100000 {
++		compatible = "ti,am64-ecap", "ti,am3352-ecap";
 +		#pwm-cells = <3>;
-+		reg = <0x0 0x23000000 0x0 0x100>;
-+		power-domains = <&k3_pds 86 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&epwm_tbclk 0>, <&k3_clks 86 0>;
-+		clock-names = "tbclk", "fck";
++		reg = <0x0 0x23100000 0x0 0x60>;
++		power-domains = <&k3_pds 51 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 51 0>;
++		clock-names = "fck";
 +	};
 +
-+	epwm1: pwm@23010000 {
-+		compatible = "ti,am64-epwm", "ti,am3352-ehrpwm";
++	ecap1: pwm@23110000 {
++		compatible = "ti,am64-ecap", "ti,am3352-ecap";
 +		#pwm-cells = <3>;
-+		reg = <0x0 0x23010000 0x0 0x100>;
-+		power-domains = <&k3_pds 87 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&epwm_tbclk 1>, <&k3_clks 87 0>;
-+		clock-names = "tbclk", "fck";
++		reg = <0x0 0x23110000 0x0 0x60>;
++		power-domains = <&k3_pds 52 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 52 0>;
++		clock-names = "fck";
 +	};
 +
-+	epwm2: pwm@23020000 {
-+		compatible = "ti,am64-epwm", "ti,am3352-ehrpwm";
++	ecap2: pwm@23120000 {
++		compatible = "ti,am64-ecap", "ti,am3352-ecap";
 +		#pwm-cells = <3>;
-+		reg = <0x0 0x23020000 0x0 0x100>;
-+		power-domains = <&k3_pds 88 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&epwm_tbclk 2>, <&k3_clks 88 0>;
-+		clock-names = "tbclk", "fck";
-+	};
-+
-+	epwm3: pwm@23030000 {
-+		compatible = "ti,am64-epwm", "ti,am3352-ehrpwm";
-+		#pwm-cells = <3>;
-+		reg = <0x0 0x23030000 0x0 0x100>;
-+		power-domains = <&k3_pds 89 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&epwm_tbclk 3>, <&k3_clks 89 0>;
-+		clock-names = "tbclk", "fck";
-+	};
-+
-+	epwm4: pwm@23040000 {
-+		compatible = "ti,am64-epwm", "ti,am3352-ehrpwm";
-+		#pwm-cells = <3>;
-+		reg = <0x0 0x23040000 0x0 0x100>;
-+		power-domains = <&k3_pds 90 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&epwm_tbclk 4>, <&k3_clks 90 0>;
-+		clock-names = "tbclk", "fck";
-+	};
-+
-+	epwm5: pwm@23050000 {
-+		compatible = "ti,am64-epwm", "ti,am3352-ehrpwm";
-+		#pwm-cells = <3>;
-+		reg = <0x0 0x23050000 0x0 0x100>;
-+		power-domains = <&k3_pds 91 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&epwm_tbclk 5>, <&k3_clks 91 0>;
-+		clock-names = "tbclk", "fck";
-+	};
-+
-+	epwm6: pwm@23060000 {
-+		compatible = "ti,am64-epwm", "ti,am3352-ehrpwm";
-+		#pwm-cells = <3>;
-+		reg = <0x0 0x23060000 0x0 0x100>;
-+		power-domains = <&k3_pds 92 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&epwm_tbclk 6>, <&k3_clks 92 0>;
-+		clock-names = "tbclk", "fck";
-+	};
-+
-+	epwm7: pwm@23070000 {
-+		compatible = "ti,am64-epwm", "ti,am3352-ehrpwm";
-+		#pwm-cells = <3>;
-+		reg = <0x0 0x23070000 0x0 0x100>;
-+		power-domains = <&k3_pds 93 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&epwm_tbclk 7>, <&k3_clks 93 0>;
-+		clock-names = "tbclk", "fck";
-+	};
-+
-+	epwm8: pwm@23080000 {
-+		compatible = "ti,am64-epwm", "ti,am3352-ehrpwm";
-+		#pwm-cells = <3>;
-+		reg = <0x0 0x23080000 0x0 0x100>;
-+		power-domains = <&k3_pds 94 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&epwm_tbclk 8>, <&k3_clks 94 0>;
-+		clock-names = "tbclk", "fck";
++		reg = <0x0 0x23120000 0x0 0x60>;
++		power-domains = <&k3_pds 53 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 53 0>;
++		clock-names = "fck";
 +	};
  };
 -- 
