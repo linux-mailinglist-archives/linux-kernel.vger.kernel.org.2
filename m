@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E973D0D15
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB1F3D0D09
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233891AbhGUK3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:29:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37026 "EHLO mail.kernel.org"
+        id S238789AbhGUK1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:27:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:51724 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239633AbhGUKT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 06:19:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 693A16024A;
-        Wed, 21 Jul 2021 10:58:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626865127;
-        bh=DFwEgDEXW/LZtYl7uojJx9kXcSpyiS4kMBCg+Z++wLI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EyhdzGEsyrrB30xG4064GTctlnUiMhxEE6TpBf940Iqx/pVH4oVoEaf/9YJN9nw+o
-         CRQ65lrqddfptubI8FrFjDSmvaH9FKkkoBWmIfJvqv3QhWA5bF6N86Y0Ek9eplcEg2
-         G4dxzE07jdwrRubg0sdyehTxAnbxyBWbJ+dRRSJ8=
-Date:   Wed, 21 Jul 2021 12:58:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: nozomi: change tty_unregister_device to
- tty_port_unregister_device
-Message-ID: <YPf95Wd6pbjgeU3g@kroah.com>
-References: <20210720083805.1430892-1-mudongliangabcd@gmail.com>
+        id S238935AbhGUKSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 06:18:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DAA7631B;
+        Wed, 21 Jul 2021 03:58:46 -0700 (PDT)
+Received: from [10.163.64.235] (unknown [10.163.64.235])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3935E3F99C;
+        Wed, 21 Jul 2021 03:58:42 -0700 (PDT)
+Subject: Re: [PATCH v3 01/12] mm/debug_vm_pgtable: Introduce struct
+ pgtable_debug_args
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Qian Cai <cai@lca.pw>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+References: <20210719130613.334901-1-gshan@redhat.com>
+ <20210719130613.334901-2-gshan@redhat.com>
+ <ab0f9daa-0c49-e74c-e073-6e03a3cabb07@arm.com>
+ <280a5740-b5dc-4b78-3a38-67e5adbb0afd@redhat.com>
+ <e579e969-e344-8678-ca56-f933000fa7c1@arm.com>
+Message-ID: <23bb5363-fd36-5161-0ba2-da1efc3e3018@arm.com>
+Date:   Wed, 21 Jul 2021 16:29:33 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210720083805.1430892-1-mudongliangabcd@gmail.com>
+In-Reply-To: <e579e969-e344-8678-ca56-f933000fa7c1@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 04:38:05PM +0800, Dongliang Mu wrote:
-> The pairwise api invocation of tty_port_register_device should be
-> tty_port_unregister_device, other than tty_unregister_device.
+
+
+On 7/21/21 4:09 PM, Anshuman Khandual wrote:
 > 
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
->  drivers/tty/nozomi.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> On 7/21/21 3:50 PM, Gavin Shan wrote:
+>> Hi Anshuman,
+>>
+>> On 7/21/21 3:44 PM, Anshuman Khandual wrote:
+>>> On 7/19/21 6:36 PM, Gavin Shan wrote:
+>>>> In debug_vm_pgtable(), there are many local variables introduced to
+>>>> track the needed information and they are passed to the functions for
+>>>> various test cases. It'd better to introduce a struct as place holder
+>>>> for these information. With it, what the functions for various test
+>>>> cases need is the struct, to simplify the code. It also makes code
+>>>> easier to be maintained.
+>>>>
+>>>> Besides, set_xxx_at() could access the data on the corresponding pages
+>>>> in the page table modifying tests. So the accessed pages in the tests
+>>>> should have been allocated from buddy. Otherwise, we're accessing pages
+>>>> that aren't owned by us. This causes issues like page flag corruption.
+>>>>
+>>>> This introduces "struct pgtable_debug_args". The struct is initialized
+>>>> and destroyed, but the information in the struct isn't used yet. They
+>>>> will be used in subsequent patches.
+>>>>
+>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>>> ---
+>>>>   mm/debug_vm_pgtable.c | 197 +++++++++++++++++++++++++++++++++++++++++-
+>>>>   1 file changed, 196 insertions(+), 1 deletion(-)
+>>>>
+>> I saw you've finished the review on PATCH[v3 01/12] and PATCH[v3 02/12].
+>> I will wait to integrate your comments to v4 until you finish the review
+>> on all patches in v3 series
+> Yes, please do wait for the complete review and test before going for V4.
+> Also please add the following emails on copy next time, so that we might
+> have some more reviews here. Thank you.
 > 
-> diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
-> index 0c80f25c8c3d..08bdd82f60b5 100644
-> --- a/drivers/tty/nozomi.c
-> +++ b/drivers/tty/nozomi.c
-> @@ -1417,7 +1417,8 @@ static int nozomi_card_init(struct pci_dev *pdev,
->  
->  err_free_tty:
->  	for (i--; i >= 0; i--) {
-> -		tty_unregister_device(ntty_driver, dc->index_start + i);
-> +		tty_port_unregister_device(&dc->port[i].port, ntty_driver,
-> +				dc->index_start + i);
->  		tty_port_destroy(&dc->port[i].port);
->  	}
->  	free_irq(pdev->irq, dc);
-> -- 
-> 2.25.1
-> 
+> + Christophe Leroy <christophe.leroy@csgroup.eu>
+> + Gerald Schaefer <gerald.schaefer@de.ibm.com>
 
-What commit does this fix?  Should it go to stable kernels?  Can you
-please resend it with that information?
+This one instead.
 
-And how did you find this?
-
-thanks,
-
-greg k-h
+Gerald Schaefer <gerald.schaefer@linux.ibm.com>
