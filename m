@@ -2,97 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DB33D0CAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D243D0CB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238985AbhGUJkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 05:40:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236370AbhGUJaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:30:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFE3F6108B;
-        Wed, 21 Jul 2021 10:10:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626862238;
-        bh=xlNP5a4uduYvyMqVF4Oq/f5D4uaNQN51y0PLueC06Os=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EBo9p2yYYcIhOINxDz4pJjeRD+z/tvNLVzQoC71kmOBTNtDVF1poAeRj3Sq412JxZ
-         v5JSyAmYQbmMUNybwD0NkPlWVAJZksPNP3tmLoY1JhdcrM09uQGXcRS4/WerD7E7Ir
-         6NfeqeFPiKiQa6pFzZBdGAZDw/KPsrbkRCAxUhQmEAov0iJzWY5PRfZ4w289WDGo7Y
-         sOPiPKHoH7ky9ICLk+BFTRnAGx7KSwnzmzncT57T3S7lZB0uaWYYCyg0/XakErPiW8
-         HIgqzNZ23c6AKgTIaKiXK8ZqauPAOOv9m3ChJFm7JY4UGUBKbuJ3krSU0UfHy+Qh4w
-         VNHnn4IT99Rjg==
-Date:   Wed, 21 Jul 2021 12:10:31 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH v14 5/9] staging: hi6421-spmi-pmic: cleanup drvdata
-Message-ID: <20210721121031.04bcadcc@coco.lan>
-In-Reply-To: <YPfoGzCtS7sBFESm@kroah.com>
-References: <cover.1626515862.git.mchehab+huawei@kernel.org>
-        <723edefbb2e9ce0b70d9c7bce95f288e3ea1f5b1.1626515862.git.mchehab+huawei@kernel.org>
-        <YPfoGzCtS7sBFESm@kroah.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S239081AbhGUJlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 05:41:36 -0400
+Received: from mail-eopbgr60049.outbound.protection.outlook.com ([40.107.6.49]:64741
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237812AbhGUJbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 05:31:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TWuf0J+E5DydnRqDeppUZ3+Wlry5sxKRKbA/4bBYYNIs7DotBb+i4Pf6RlZU8gO0USz1kZHNfa5nR2v06TYdg9QMTMfVBq2uWwnd7CfQkLgFRciDJca1/giDJpMpEOGjUJXBvojEviCDAgwjlfDGInaSoPlSzZSsqMJIXYiW5ujTSPj0YLRyIvjPDYqpal2U1yPCic9nN/gOiqp0tLRD13s3BTq+O9Iga+6uSPMjWWmey7DpapfpWFGUOEdk1sviMFv/a/+j+ppu1YPJPXk3MbbYnPqj+9pFdo4y1IiWvKMvk7mty39eQrGleau9hj3a0XhqPsz2MCLWEw2aI0w5rA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GUTYTVZYXS6uAjjbMDPbDb6XKTqtrHPodnTJrWeOqrs=;
+ b=WadHg4vPVkMEqcTMFgMr4qS0b1D4H23CMUIYisTSVmu5CaMhvnsEgM7c6PdWDdxS4JzB4mhRXvg+T4FwK1/G2D0bALjFibYIbsRHmeDTaRpNLYH6Umruz6a/UatFpv9zSIOrlwl/BQy09TL5cpYIo4VK8GDSPYx+IWqCIJaKBu56CX86iJMQ9tMy8cGl0fX+71GsfYrLSvsL35UaLFW/cYQSD5tPrs3mQdY4w7AjqOKAMIbSVWEzsHXHDmV1e+OvEG/GOt+2lU5ZGj+0u3VNYGDFR9ECkrfzwRA9v9u3lxf27roaeI2HzXjRglDN+qUsbJ+UNysVuR8JoltyNZT/ag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GUTYTVZYXS6uAjjbMDPbDb6XKTqtrHPodnTJrWeOqrs=;
+ b=U2dKEShMMwplXJuUMiB/xIuqZxTkpbMCWSmZZ+G+gAzGHSked0Ico9FDesLUHOMSGiP/GM+t7PkTIyWOv3q+6SX10bZMhmkD4TfliQpiv06KGitzbc8OCzKOWQg0r/8DZ0UYpnjOJyCcgi79QbfCOSsC6AXmc/pigXbYIEsMqYY=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DBAPR04MB7480.eurprd04.prod.outlook.com (2603:10a6:10:1a3::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Wed, 21 Jul
+ 2021 10:11:58 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::9c70:fd2f:f676:4802]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::9c70:fd2f:f676:4802%9]) with mapi id 15.20.4331.034; Wed, 21 Jul 2021
+ 10:11:58 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com
+Cc:     linux-imx@nxp.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH net-next 0/2] dt-bindings: net: improve fec binding
+Date:   Wed, 21 Jul 2021 18:12:18 +0800
+Message-Id: <20210721101220.22781-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR04CA0195.apcprd04.prod.outlook.com
+ (2603:1096:4:14::33) To DB8PR04MB6795.eurprd04.prod.outlook.com
+ (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2PR04CA0195.apcprd04.prod.outlook.com (2603:1096:4:14::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Wed, 21 Jul 2021 10:11:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 64da49a3-254f-411c-5b4d-08d94c2ff93c
+X-MS-TrafficTypeDiagnostic: DBAPR04MB7480:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DBAPR04MB7480BCAE151E675D8E26B73BE6E39@DBAPR04MB7480.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mLCKc8DDiSjyd+XdHoE2KanW9TFu0mUVZWSevhmKfT06YWMt2RejN8KkvK1kJvRQFxpqDnNhhcgRttpRRlMAsbmfdO2qk512/afDexaqibQ3YKT2bDDNgCydsBT/2pB3FkWzMjeAON+zWQrDqW8Fdoya11zftF/oJ81NYn5aLhlEOwcDazXoYIedwy0sCmnZVpQYc8X0TbnglOAzdSQXptxHTLA9Ct27MBRAjCV+YOFqA+wsQyMnkJTap7mvB/UsRwOfWfMGao4rDNvh0APXlO/5kQ6Ze2ceKmNOhbrTmuhHc7uTju5zpgq7Zt3VVc7xCAt/xz73u74UfdG/dScj3YHwLJcTc0leV+N4tTkxCMmVTItFMHeSDd958yGx0AhG4epv49QJczB3knv9rFmbSf2Vp2cX/4A04W9vxTqoYQS4DRyyRSxcK/SePcwCsAicuXz8PlgUyf2v6pYpRzymWedwC+/beDPCQ9tNRNuDAtjBD86iTVCYMcia1tI9ing74bCa3CVj+9fC0nE+1SxbTCqR5t3MSNlW1zqaU0/QJiXAksqPdiRnwhRKsPBK6i3EUFaIU3nI6doL1PSfX6bL0rrbQzBs4MtV4WASKzQ5Z/5z+x1A72iksWnRXMFOJwy8Glv7Q6b4KecGxtaJMMLbUZXjZNMzm8I7tSdVbRGzzPPNkxQO0CN2tEF0rQK1VStCg0WzlvHXF1eo4qG0vTLkqQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(136003)(396003)(39860400002)(1076003)(4326008)(186003)(4744005)(66476007)(66946007)(5660300002)(6486002)(8676002)(478600001)(7416002)(2906002)(26005)(52116002)(83380400001)(6506007)(86362001)(38350700002)(6666004)(8936002)(38100700002)(2616005)(6512007)(36756003)(956004)(316002)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TR5nYPooTPJdkM9xEFAwSBGpyJ2I5e18/C+H1RgZdcuJM/aeOyU24pavYF9v?=
+ =?us-ascii?Q?kESiFbqBgxWx2wWGjhMfUHRfJzXZ8WmDjU+lQeLjWSsFva3RPUZH11Qfi8W0?=
+ =?us-ascii?Q?q543nv5G5yJho6LZ3WpvPDwKwIZJG0xhR53SSqXGEicchiglp2qAOpgw3uH0?=
+ =?us-ascii?Q?rhHzx6qk+FECyJU8NBeIvHeM0Jm0RyDAwSuswi6qOV2IfOpBBH3W97+gdavU?=
+ =?us-ascii?Q?VIYVpTdqGJ14kfFuktzCBAye0IAVplTj77WgEGrPa0XMXl9H+kC3fgVlY2a3?=
+ =?us-ascii?Q?4D7ICXCmNI+QMJBvQXwFDVo638SBBiQZcvMd0DT1X8aybXnEPW3tgVzHPip/?=
+ =?us-ascii?Q?gMBw0cCauIyv1Ni2HJnI8EN0i3wB1/G+wa7DIYJFS2MzX6zDeVc9UC8zpd9V?=
+ =?us-ascii?Q?dvyqBik+XPCgRzti4J8WRD2uEDrM5NTghZRbAHvopEI5Y+17m5mY3PVlbXHT?=
+ =?us-ascii?Q?MsBMvOQWcSySHvgDdkQm0vgFOdcaOgmw6PEi2pSWK7dvz9lJVVJYqeh45Rgi?=
+ =?us-ascii?Q?Yfgp2D0mQs52MCszp4AwJCJZy/uJFDvd1wa3eoqtXpmlHemTF2EV2Pxs+z7H?=
+ =?us-ascii?Q?M3vBRdfk3T4OaFK7eH3u6lJEbOpvGjWSbZ6R8Nf6BTZXqf2BAwMSgNaQnZMB?=
+ =?us-ascii?Q?xqZoe9VicXS5rQwMpsXzc9bUzACGehrlEla1XMpCUyHcxDC8RiSbqCw1hWi/?=
+ =?us-ascii?Q?BwFTKYmR7lWh2qHbhyiIWdKMubo7+GGoRzgBbq0OuMkNrtYFnWb9DfDlWxrd?=
+ =?us-ascii?Q?u8z+aRASbD86z2+QqcOpyOov0oPr6/65QiqKEvD+njbGsXdYBlrwS4ZJSf9x?=
+ =?us-ascii?Q?XDLFZoLmQkKNQrfhAqy7Jc2HQg72roQMBfzygP1KpBuag0CoXj1Tb6ts8u8S?=
+ =?us-ascii?Q?bTV/+dmX/buSKxi3BGG3iN17vkVgd3GFuGemg7VNRMQwTRW8etDlkRGWDeaf?=
+ =?us-ascii?Q?lxeC0neIsvdWTggc5B+kIVWM4GkrVrRFQzvi5dFgpGOa6Rce5g2XCG92EnOu?=
+ =?us-ascii?Q?ydO/U5XJdGy+QLy41wey7+EUtQtG+wIuCSobjmKnNqnoIYHvtXX9gCrIXm9N?=
+ =?us-ascii?Q?k5ZPIVm4R31nb0SkMZfmhdrSGTCOvzvgHYYXUXKn9DSiKK8Ob9kq69j7J2Xe?=
+ =?us-ascii?Q?MsAxo6DmKVIY/N7pb04OfBbE+Y/4yD4sFKcz6FT82wJbQXSaPK1RY2MqmvP9?=
+ =?us-ascii?Q?SvauBIcUqC0ZvLN63Qsf/d3uzXN87kIln68eBWtoBEMvbB35U6l4HFsREK2D?=
+ =?us-ascii?Q?pZBV2M9GyhafsaJfaG0NeWxIpFGzVHcr+kouXOTK3+ag8sfcbImXPu96VT9o?=
+ =?us-ascii?Q?FL0a1E9qQdbgvGvFBeEFJgvm?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 64da49a3-254f-411c-5b4d-08d94c2ff93c
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 10:11:58.1637
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oBmErUHmf0mf6evlJPHZ9d0hThr1leDWAioGnPm96DWiaWIeN6kQT+BMNzxIDFw00o1foOmUdHGAsNs6RFlYSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7480
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 21 Jul 2021 11:25:47 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+This patch intends to improve fec binding.
 
-> On Sat, Jul 17, 2021 at 11:58:16AM +0200, Mauro Carvalho Chehab wrote:
-> > There are lots of fields at struct hi6421_spmi_pmic that aren't
-> > used. In a matter of fact, only regmap is needed.
-> > 
-> > So, drop the struct as a hole, and set just the regmap as
-> > the drvdata.
-> > 
-> > While here, add a missing dot at the Huawei's copyrights.
-> > 
-> > Acked-by: Mark Brown <broonie@kernel.org>
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  drivers/misc/hi6421v600-irq.c               |  9 ++++----
-> >  drivers/regulator/hi6421v600-regulator.c    | 10 ++++-----
-> >  drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 16 +++++--------
-> >  include/linux/mfd/hi6421-spmi-pmic.h        | 25 ---------------------
-> >  4 files changed, 14 insertions(+), 46 deletions(-)
-> >  delete mode 100644 include/linux/mfd/hi6421-spmi-pmic.h  
-> 
-> This patch fails to apply to my 5.14-rc2 tree, it gets a failure in the
-> regulator portion of the patch.
+Joakim Zhang (2):
+  dt-bindings: net: fsl,fec: improve the binding a bit
+  ARM: dts: imx6qdl: move phy properties into phy device node
 
-Hi Greg,
+ .../devicetree/bindings/net/fsl,fec.yaml      | 34 +++++++++++--------
+ arch/arm/boot/dts/imx6q-novena.dts            | 34 ++++++++++++-------
+ arch/arm/boot/dts/imx6qdl-aristainetos2.dtsi  | 18 +++++++---
+ arch/arm/boot/dts/imx6qdl-nit6xlite.dtsi      | 34 ++++++++++++-------
+ arch/arm/boot/dts/imx6qdl-nitrogen6_max.dtsi  | 34 ++++++++++++-------
+ arch/arm/boot/dts/imx6qdl-nitrogen6x.dtsi     | 34 ++++++++++++-------
+ arch/arm/boot/dts/imx6qdl-sabrelite.dtsi      | 34 ++++++++++++-------
+ 7 files changed, 143 insertions(+), 79 deletions(-)
 
-This one depends on a regression-fix patch merged via this branch:
+-- 
+2.17.1
 
-	https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-The patch is this one[1]:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git/commit/drivers/regulator/hi6421v600-regulator.c?id=5db5dd5be70eaf808d9fd90174b957fc5c2912cb
-
-Mark,
-
-Is this branch stable or do you rebase it? 
-
-If the branch is stable, then perhaps Greg could merge from it before
-applying the remaining patches from this series.
-
--
-
-[1] There's no need of backporting the fix to stable, as the driver
-    won't work with upstream Kernels without patches 8 and 9 from 
-    this series containing the Open Firmware data needed to probe it.
-
-Thanks,
-Mauro
