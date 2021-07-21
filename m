@@ -2,263 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B433D061B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 02:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406553D0621
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 02:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232032AbhGTXbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 19:31:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbhGTXbV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 19:31:21 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40298C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 17:11:58 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id b6so815102iln.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 17:11:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yft8d0QKQYEK6jK1cRdXCSL3/Fc2IYBV0nFOZMJwK8M=;
-        b=mth2Xcw77G1fhqx5Z6yTnexgH++YcdpJkPxVeLiB2HaUCwihpVQJL+0e6ziFZcp7Tw
-         xmxbsdUrG9lXyAVamXp7i8cZEKGjKX7lN7k1Jx1k4J665LG1ubyclJC0mYyjEBvXU9Og
-         xqKC7bfhgl3yn3BRVZI8Mtj3crBqgU8g9pQnkIfCjiX6cWm3ZX4pR1vtF/P+t7EJw52R
-         Xw+14ovmIQyxfeLan2f5M5FB1JvoGt75i31qbLDbKz+KVCwjkMvWplYaeI/OpUAO8mvV
-         f1P50ps+izwc7xOgdbitpz5AyoqLAWaxFfpoWB+5n/GoGtrWXrEOCR6Vob/X4ddRqrX1
-         ZKCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yft8d0QKQYEK6jK1cRdXCSL3/Fc2IYBV0nFOZMJwK8M=;
-        b=oTDwAdKT6/JT6EKlNDt2rcZ5Ah/G9NLpWeNpBbdxo8hhl+IZGmRKpe+IzyAC/vX4RG
-         hiE8kCWhNiFZZinzkAootu4vuMibuohTZyXEfvkoxCcOoQ0bfV0IE7vSnoqQHA/mSKGj
-         qROaf2lJlucfjPJ6W5qmsLC4F54RHoOkLRekpxCqVYY573PqwleJ/GDOYYYQBwLia07A
-         qO7ww0ePj4Te4dNcwwlD+6i+gAhTVJDWBPPhBODTb8l5v6IreYVMxyYAOW9D3qSjN7+3
-         SXrT+z2iru8ISCERoYGLNYm3BhgMtYGb2EyboiJEC1KHcjq9dCTT8kQ4bwmvhzsZ5rS1
-         /iOw==
-X-Gm-Message-State: AOAM530UY5JlH3fQoGxULVC6epUBJY7JE9WaZTKgEw637oLj40eOpXp6
-        oyQ9OxEOPHRZ0nRZHqE3QMK0JXClPyuzkIB4AAa3/A==
-X-Google-Smtp-Source: ABdhPJxmLFhbRjnHDW9ZI2SSVXvHthrv4IHNOWF1JoW9PbC0D0Zo0xPkJ0Fn08z2T4wW3SPJNsv+X+G8pJ0uoiDYSsY=
-X-Received: by 2002:a05:6e02:d41:: with SMTP id h1mr21391622ilj.191.1626826317665;
- Tue, 20 Jul 2021 17:11:57 -0700 (PDT)
+        id S235159AbhGTXcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 19:32:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231765AbhGTXcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Jul 2021 19:32:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F19266101B;
+        Wed, 21 Jul 2021 00:12:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626826359;
+        bh=lYXkX3S8CqeBNBxz55FI+vEABUN7e84q0v25YCXZZBo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=e7xYcm5OiSAtCgBJ1qa025M+AK2LwAiCsPvYKn3YRJr+nHuQUzKmDRiVhSFBMV2Pq
+         dCq6WtI4SueU/mhACB9slwpzSqgsEld/13OFoZVjMIifnk0UqX4rgqx12pt+zGVIF/
+         BbWkY+wWfCRujX2WzLx5zQar7xv6+IpJq2qeZR26rWoSGZ2MmfEYf1rxKv5i3G5SVN
+         G2JsxPbjg+YEr6yUKHCbcLf9lJuey/yuXwbw+TDGQBc/pKVEaTVW5sP2DZppCSsjVv
+         ntGhFKgEbrIvr+V9Mmb/20uQDlq3Z7uSs6UWP+0OO+6DW4T18t1MbhLOz/gJsTF4a6
+         IGPJreV/BIlYg==
+Date:   Tue, 20 Jul 2021 19:12:37 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Nikolai Zhubr <zhubr.2@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] x86: PIRQ/ELCR-related fixes and updates
+Message-ID: <20210721001237.GA144325@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210718203746.7159-1-theobf@usp.br> <CA+U=DspWmrWWsQDFPLycS2y-=8Q7TSn5NYMVgbQ42FccAy0=pw@mail.gmail.com>
- <CAD5vTa8gnQpZ8B4KQkA=-6Oo-YiN4J7pDp0HoUZgpHN99vJK_g@mail.gmail.com> <CA+U=DsrU5iPBRexdUK3fx-PG3CbSoKouGWENVLJ5+h8L5-y_Og@mail.gmail.com>
-In-Reply-To: <CA+U=DsrU5iPBRexdUK3fx-PG3CbSoKouGWENVLJ5+h8L5-y_Og@mail.gmail.com>
-From:   =?UTF-8?Q?Th=C3=A9o_Bor=C3=A9m_Fabris?= <theobf@usp.br>
-Date:   Tue, 20 Jul 2021 21:11:20 -0300
-Message-ID: <CAD5vTa_cR0da4qZ2JTB7G-QgZrSeZr3e8fp92S6WGMaCoUr15g@mail.gmail.com>
-Subject: Re: [PATCH] iio: dac: max5821: convert device register to device
- managed function
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2107171813230.9461@angie.orcam.me.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em ter., 20 de jul. de 2021 =C3=A0s 04:22, Alexandru Ardelean
-<ardeleanalex@gmail.com> escreveu:
->
-> On Mon, Jul 19, 2021 at 6:25 PM Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.b=
-r> wrote:
-> >
-> > Hi, Alexandru.
-> >
-> > Em seg., 19 de jul. de 2021 =C3=A0s 04:33, Alexandru Ardelean
-> > <ardeleanalex@gmail.com> escreveu:
-> > >
-> > > On Sun, Jul 18, 2021 at 11:42 PM Th=C3=A9o Bor=C3=A9m Fabris <theobf@=
-usp.br> wrote:
-> > > >
-> > > > Add a device managed hook, via devm_add_action_or_reset() and
-> > > > max5821_regulator_disable(), to disable voltage regulator on device
-> > > > detach.
-> > > > Replace iio_device_register() by devm_iio_device_register() and rem=
-ove
-> > > > the max5821_remove() function used to unregister the device and dis=
-able the
-> > > > voltage regulator.
-> > > > Remove i2c_set_clientdata() from the probe function, since
-> > > > i2c_get_clientdata() is not used anymore.
-> > >
-> > > Looks good overall.
-> > > A few comments inline.
-> > >
-> > > >
-> > > > Signed-off-by: Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.br>
-> > > > ---
-> > > >  drivers/iio/dac/max5821.c | 30 ++++++++++++++++--------------
-> > > >  1 file changed, 16 insertions(+), 14 deletions(-)
-> > > >
-> > > > diff --git a/drivers/iio/dac/max5821.c b/drivers/iio/dac/max5821.c
-> > > > index bd6e75699a63..44c04ae70b32 100644
-> > > > --- a/drivers/iio/dac/max5821.c
-> > > > +++ b/drivers/iio/dac/max5821.c
-> > > > @@ -294,6 +294,13 @@ static const struct iio_info max5821_info =3D =
-{
-> > > >         .write_raw =3D max5821_write_raw,
-> > > >  };
-> > > >
-> > > > +static void max5821_regulator_disable(void *data)
-> > > > +{
-> > > > +       struct regulator *rdata =3D data;
-> > > > +
-> > > > +       regulator_disable(rdata);
-> > >
-> > > This can be simplified a bit:
-> > >
-> > > static void max5821_regulator_disable(void *reg)
-> > > {
-> > >       regulator_disable(reg);
-> > > }
-> > >
-> > > I used to do explicit casting, but then I also figured that it's not =
-necessary.
-> > >
-> > Ok.
-> >
-> > > > +}
-> > > > +
-> > > >  static int max5821_probe(struct i2c_client *client,
-> > > >                         const struct i2c_device_id *id)
-> > > >  {
-> > > > @@ -306,7 +313,6 @@ static int max5821_probe(struct i2c_client *cli=
-ent,
-> > > >         if (!indio_dev)
-> > > >                 return -ENOMEM;
-> > > >         data =3D iio_priv(indio_dev);
-> > > > -       i2c_set_clientdata(client, indio_dev);
-> > > >         data->client =3D client;
-> > > >         mutex_init(&data->lock);
-> > > >
-> > > > @@ -331,6 +337,14 @@ static int max5821_probe(struct i2c_client *cl=
-ient,
-> > > >                 goto error_free_reg;
-> > > >         }
-> > > >
-> > > > +       ret =3D devm_add_action_or_reset(&client->dev, max5821_regu=
-lator_disable,
-> > > > +                                      data->vref_reg);
-> > > > +       if (ret) {
-> > > > +               dev_err(&client->dev,
-> > > > +                       "Failed to add action to managed regulator:=
- %d\n", ret);
-> > > > +               goto error_disable_reg;
-> > >
-> > > return ret;
-> > >
-> > > devm_add_action_or_reset() should call max5821_regulator_disable() in
-> > > case of error
-> > >
-> > Ok.
-> >
-> > > > +       }
-> > > > +
-> > > >         ret =3D regulator_get_voltage(data->vref_reg);
-> > > >         if (ret < 0) {
-> > > >                 dev_err(&client->dev,
-> > > > @@ -346,7 +360,7 @@ static int max5821_probe(struct i2c_client *cli=
-ent,
-> > > >         indio_dev->modes =3D INDIO_DIRECT_MODE;
-> > > >         indio_dev->info =3D &max5821_info;
-> > > >
-> > > > -       return iio_device_register(indio_dev);
-> > > > +       return devm_iio_device_register(&client->dev, indio_dev);
-> > > >
-> > > >  error_disable_reg:
-> > >
-> > > This entire goto block should be removed.
-> > > The idea of using only devm_ functions is to not have these goto stat=
-ements.
-> > >
-> > I thought the action added via devm_add_action (and devres_add) was cal=
-led only
-> > on driver detach, thus the error_disable_reg label would be necessary
-> > to handle the
->
-> devm_add_action() yes
-> this is devm_add_action_or_reset() which looks like this:
->
-> static inline int devm_add_action_or_reset(struct device *dev,
->                        void (*action)(void *), void *data)
-> {
->     int ret;
->
->     ret =3D devm_add_action(dev, action, data);
->     if (ret)
->         action(data);
->
->     return ret;
-> }
->
-> it can be found in "include/linux/device.h"
->
-> > possible error on regulator_get_voltage. Could you please clarify for
-> > me when does
-> > a driver detach happen?
->
-> a driver detach happens when:
-> * the kmod is unloaded (assuming the driver is running as a kmod)
-> * manually unbinding the driver from sysfs ;
->    a quick article about this [it's for USB, but other interfaces use
->    the same mechanism]:
->    https://lwn.net/Articles/143397/
->    there should be something under /sys/bus/spi/drivers/xxxx/unbind
-> * when the system powers down (reboots)
-> * maybe there is some other new method to do this [that I don't know abou=
-t]
->
-Thank you so much.
+On Tue, Jul 20, 2021 at 05:27:43AM +0200, Maciej W. Rozycki wrote:
+> Hi,
+> 
+>  In the course of adding PIRQ routing support for Nikolai's FinALi system 
+> I realised we need to have some infrastructure for the indirectly accessed
+> configuration space implemented by some chipsets as well as Cyrix CPUs and 
+> also included with the Intel MP spec for the IMCR register via port I/O 
+> space locations 0x22/0x23.  With that in place I implemented PIRQ support 
+> for the Intel PCEB/ESC combined EISA southbridge using the same scheme to 
+> access the relevant registers and for the final remaining Intel chipset of 
+> the era, that is the i420EX.
+> 
+>  While at it I chose to rewrite ELCR register accesses to avoid using 
+> magic numbers scattered across our code and use proper macros like with 
+> the remaining PIC registers, and while at it again I noticed and fixed a 
+> number of typos: s/ECLR/ELCR/.
+> 
+>  Since there are mechanical dependencies between the patches (except for 
+> typo fixes) I chose to send them as a series rather than individually, 
+> though 3/6 depends on: <https://lore.kernel.org/patchwork/patch/1452772/> 
+> necessarily as well, the fate of which is currently unclear to me.
+> 
+>  See individual change descriptions for details.
+> 
+>  Nikolai: for your system only 1/6 and 2/6 are required, though you are 
+> free to experiment with all the patches.  Mind that 3/6 mechanically 
+> depends on the earlier change for the SIO PIRQ router referred above.  In 
+> any case please use the debug patch for PCI code as well as the earlier 
+> patches for your other system and send the resulting bootstrap log for 
+> confirmation.
+> 
+>  Ideally this would be verified with PCI interrupt sharing, but for that 
+> you'd have to track down one or more multifunction option cards (USB 2.0 
+> interfaces with legacy 1.1 functions or serial/parallel multi-I/O cards 
+> are good candidates, but of course there are more) or option devices with 
+> PCI-to-PCI bridges, and then actually use some of these devices as well.  
+> Any interrupt sharing will be reported, e.g.:
+> 
+> pci 0000:00:07.0: SIO/PIIX/ICH IRQ router [8086:7000]
+> pci 0000:00:11.0: PCI INT A -> PIRQ 63, mask deb8, excl 0c20
+> pci 0000:00:11.0: PCI INT A -> newirq 0
+> PCI: setting IRQ 11 as level-triggered
+> pci 0000:00:11.0: found PCI INT A -> IRQ 11
+> pci 0000:00:11.0: sharing IRQ 11 with 0000:00:07.2
+> pci 0000:02:00.0: using bridge 0000:00:11.0 INT A to get INT A
+> pci 0000:00:11.0: sharing IRQ 11 with 0000:02:00.0
+> pci 0000:02:01.0: using bridge 0000:00:11.0 INT B to get INT A
+> pci 0000:02:02.0: using bridge 0000:00:11.0 INT C to get INT A
+> pci 0000:03:00.0: using bridge 0000:00:11.0 INT A to get INT A
+> pci 0000:00:11.0: sharing IRQ 11 with 0000:03:00.0
+> pci 0000:04:00.0: using bridge 0000:00:11.0 INT B to get INT A
+> pci 0000:04:00.3: using bridge 0000:00:11.0 INT A to get INT D
+> pci 0000:00:11.0: sharing IRQ 11 with 0000:04:00.3
+> pci 0000:06:05.0: using bridge 0000:00:11.0 INT D to get INT A
+> pci 0000:06:08.0: using bridge 0000:00:11.0 INT C to get INT A
+> pci 0000:06:08.1: using bridge 0000:00:11.0 INT D to get INT B
+> pci 0000:06:08.2: using bridge 0000:00:11.0 INT A to get INT C
+> pci 0000:00:11.0: sharing IRQ 11 with 0000:06:08.2
+> 
+> -- a lot of sharing and swizzling here. :)  You'd most definitely need: 
+> <https://lore.kernel.org/patchwork/patch/1454747/> for that though, as I 
+> can't imagine PCI BIOS 2.1 PIRQ routers to commonly enumerate devices 
+> behind PCI-to-PCI bridges, given that they fail to cope with more complex 
+> bus topologies created by option devices in the first place.
 
-So, should this goto error_disable_reg be replaced by
-"regulator_disable(.); return ret;"?
-ret =3D regulator_get_voltage(data->vref_reg);
-    if (ret < 0) {
-        dev_err(&client->dev,
-             "Failed to get voltage on regulator: %d\n", ret);
-        goto error_disable_reg;
-    }
+Looks nicely done but I have no ability to review or test, so I assume
+the x86 folks will take care of this.
 
-> >
-> > Thanks for your reply,
-> > Th=C3=A9o
-> >
-> > > >         regulator_disable(data->vref_reg);
-> > > > @@ -356,17 +370,6 @@ static int max5821_probe(struct i2c_client *cl=
-ient,
-> > > >         return ret;
-> > > >  }
-> > > >
-> > > > -static int max5821_remove(struct i2c_client *client)
-> > > > -{
-> > > > -       struct iio_dev *indio_dev =3D i2c_get_clientdata(client);
-> > > > -       struct max5821_data *data =3D iio_priv(indio_dev);
-> > > > -
-> > > > -       iio_device_unregister(indio_dev);
-> > > > -       regulator_disable(data->vref_reg);
-> > > > -
-> > > > -       return 0;
-> > > > -}
-> > > > -
-> > > >  static const struct i2c_device_id max5821_id[] =3D {
-> > > >         { "max5821", ID_MAX5821 },
-> > > >         { }
-> > > > @@ -386,7 +389,6 @@ static struct i2c_driver max5821_driver =3D {
-> > > >                 .pm     =3D &max5821_pm_ops,
-> > > >         },
-> > > >         .probe          =3D max5821_probe,
-> > > > -       .remove         =3D max5821_remove,
-> > > >         .id_table       =3D max5821_id,
-> > > >  };
-> > > >  module_i2c_driver(max5821_driver);
-> > > > --
-> > > > 2.20.1
-> > > >
+Bjorn
