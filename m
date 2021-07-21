@@ -2,68 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B1D3D0EF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5243D0EFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237673AbhGUMCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:02:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58456 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237633AbhGUMCo (ORCPT
+        id S237837AbhGUMDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237633AbhGUMDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:02:44 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 5603B224F6;
-        Wed, 21 Jul 2021 12:43:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626871400; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oGdnMjLwINujnz/L5thSgsnoCsraP3fxSj7mEBMY+OE=;
-        b=cbm9l81/iwGYnn/eo6PG0O8t9L+KinXbx42JJnBBIg+9kCICBVqb2OBvUda3dlHT0/j/aq
-        X3ULSQn2EBa7ZzXETwnCgbZ9gdat1gGMW/3kKVNVgD/lsqR8PFtloN5yJDjpR/KSf7/Lse
-        IP69UJYmPEcyQUX1Y8hwcZvU0Pl2dls=
-Received: from suse.cz (pathway.suse.cz [10.100.12.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 16609A3B81;
-        Wed, 21 Jul 2021 12:43:20 +0000 (UTC)
-Date:   Wed, 21 Jul 2021 14:43:19 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v4 6/6] printk: syslog: close window between wait
- and read
-Message-ID: <20210721124319.hy5rrn6p2i2r2qya@pathway.suse.cz>
-References: <20210715193359.25946-1-john.ogness@linutronix.de>
- <20210715193359.25946-7-john.ogness@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715193359.25946-7-john.ogness@linutronix.de>
-User-Agent: NeoMutt/20170912 (1.9.0)
+        Wed, 21 Jul 2021 08:03:19 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 401E1C061574;
+        Wed, 21 Jul 2021 05:43:56 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id j4so1758224pgk.5;
+        Wed, 21 Jul 2021 05:43:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=hRkHCKSSN064WZq1PoAF2chWbSrhzer+ob3WlnV1ZTg=;
+        b=i1ljmJ0xkOVkevu0L5R6bZJv23gy7JZLLudqY+ir1G582Mvkirwu4/WqTIRVls88U9
+         loA4ae9K4+A2QhtVGK/0Y9wXhlKbiMHhI7VbEipr0/8R82RrJXyuCBEYYhSjx9MmtIqk
+         d8S6GwUbQOvgSlNI/S27jARDLoLjYgq/821xXPz200VUv+WXyv/zxR+wSU/MIsRvyrCw
+         MfFoj9S+6s4j6bwY0lbJGeKjJifC3FhlXqmD/1O9sJMGB4SArTcF3zO1MxsyLoiDIzX+
+         jzueCOOOic+Tw38VaIhRd1p/NbyD7JV/CxzlfE8CTJdfEy4mnXCGcfxInELkYWW9REaA
+         w0VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=hRkHCKSSN064WZq1PoAF2chWbSrhzer+ob3WlnV1ZTg=;
+        b=VpQkf32YHnIuYUhNJNb3z645XBtgNNoZw+W24DcXX4NbV9k6Qyn07Af7wq3VA6cJqq
+         Vw/MNW6ZO1xrdI7brk6SllbPoC/sx6VnMvgrUVl/zQuspYUQ1EmXT60H5LRFwiNYbYhu
+         QxntHChjw9+MgTYa6ddVpU2PYcjN49+5gS7+GjwHcXPTkF3ISOD7ASz1U93klLywym9Y
+         fq+6ISqXUB7oDu+AmppMnmIjk4jG+MAJ+2ZEALGX8gd8n2eojCfzDMZJrI3FZwiluZgf
+         +Ti6k7yxmM/Nv+VmeBU5zjYB0JBIPe3nqLUAnppUTb42Zz7NaCbT2QJxwy+NIp10dqPA
+         9F4Q==
+X-Gm-Message-State: AOAM531f0+wr723W0PP572WDJRrI4/ASgLllwtJL+rRcC91TGhFGRqi3
+        UT6cXGqNARqh7u7OnJxJ8g==
+X-Google-Smtp-Source: ABdhPJwCa7xYvom7hwj58FEfM880ND/5npe9pPzfK0Pv9KDM5la/3pyI+/q/gplYcT3mONUnoBm2mA==
+X-Received: by 2002:a62:19c9:0:b029:32a:129f:542d with SMTP id 192-20020a6219c90000b029032a129f542dmr36137694pfz.8.1626871435789;
+        Wed, 21 Jul 2021 05:43:55 -0700 (PDT)
+Received: from vultr.guest ([107.191.53.97])
+        by smtp.gmail.com with ESMTPSA id t3sm1877785pfd.153.2021.07.21.05.43.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 21 Jul 2021 05:43:55 -0700 (PDT)
+From:   Zheyu Ma <zheyuma97@gmail.com>
+To:     sam@ravnborg.org, tzimmermann@suse.de
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>
+Subject: [PATCH] video: fbdev: neofb: add a check against divide error
+Date:   Wed, 21 Jul 2021 12:43:44 +0000
+Message-Id: <1626871424-27708-1-git-send-email-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-07-15 21:39:59, John Ogness wrote:
-> Syslog's SYSLOG_ACTION_READ is supposed to block until the next
-> syslog record can be read, and then it should read that record.
-> However, because @syslog_lock is not held between waking up and
-> reading the record, another reader could read the record first,
-> thus causing SYSLOG_ACTION_READ to return with a value of 0, never
-> having read _anything_.
-> 
-> By holding @syslog_lock between waking up and reading, it can be
-> guaranteed that SYSLOG_ACTION_READ blocks until it successfully
-> reads a syslog record (or a real error occurs).
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+The userspace program could pass any values to the driver through
+ioctl() interface. If the driver doesn't check the value of 'pixclock',
+it may cause divide error because of the 'PICOS2KHZ' macro.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+Fix this by checking whether 'pixclock' is zero first.
 
-Best Regards,
-Petr
+The following log reveals it:
+
+[   53.093806] divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+[   53.093838] CPU: 3 PID: 11763 Comm: hang Not tainted 5.14.0-rc2-00478-g2734d6c1b1a0 #215
+[   53.093859] RIP: 0010:neofb_check_var+0x80/0xe50
+[   53.093951] Call Trace:
+[   53.093956]  ? neofb_setcolreg+0x2b0/0x2b0
+[   53.093968]  fb_set_var+0x2e4/0xeb0
+[   53.093977]  ? fb_blank+0x1a0/0x1a0
+[   53.093984]  ? lock_acquire+0x1ef/0x530
+[   53.093996]  ? lock_release+0x810/0x810
+[   53.094005]  ? lock_is_held_type+0x100/0x140
+[   53.094016]  ? ___might_sleep+0x1ee/0x2d0
+[   53.094028]  ? __mutex_lock+0x620/0x1190
+[   53.094036]  ? do_fb_ioctl+0x313/0x700
+[   53.094044]  ? mutex_lock_io_nested+0xfa0/0xfa0
+[   53.094051]  ? __this_cpu_preempt_check+0x1d/0x30
+[   53.094060]  ? _raw_spin_unlock_irqrestore+0x46/0x60
+[   53.094069]  ? lockdep_hardirqs_on+0x59/0x100
+[   53.094076]  ? _raw_spin_unlock_irqrestore+0x46/0x60
+[   53.094085]  ? trace_hardirqs_on+0x6a/0x1c0
+[   53.094096]  do_fb_ioctl+0x31e/0x700
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+---
+ drivers/video/fbdev/neofb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/video/fbdev/neofb.c b/drivers/video/fbdev/neofb.c
+index c0f4f402da3f..966df2a07360 100644
+--- a/drivers/video/fbdev/neofb.c
++++ b/drivers/video/fbdev/neofb.c
+@@ -585,7 +585,7 @@ neofb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
+ 
+ 	DBG("neofb_check_var");
+ 
+-	if (PICOS2KHZ(var->pixclock) > par->maxClock)
++	if (var->pixclock && PICOS2KHZ(var->pixclock) > par->maxClock)
+ 		return -EINVAL;
+ 
+ 	/* Is the mode larger than the LCD panel? */
+-- 
+2.17.6
+
