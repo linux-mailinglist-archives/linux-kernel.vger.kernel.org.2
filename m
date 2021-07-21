@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5853D08D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 08:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D38613D08C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 08:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235394AbhGUFmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 01:42:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34270 "EHLO mail.kernel.org"
+        id S234189AbhGUFiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 01:38:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233088AbhGUFcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233072AbhGUFcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 01:32:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6679B6113C;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57EA0600EF;
         Wed, 21 Jul 2021 06:13:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626848002;
