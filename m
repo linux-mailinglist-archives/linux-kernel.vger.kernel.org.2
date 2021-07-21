@@ -2,239 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9587C3D11E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF733D11EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239520AbhGUOYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:24:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:56958 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239519AbhGUOWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:22:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 061641396;
-        Wed, 21 Jul 2021 08:02:30 -0700 (PDT)
-Received: from e121896.arm.com (unknown [10.57.39.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 62D253F73D;
-        Wed, 21 Jul 2021 08:02:27 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     acme@kernel.org, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org
-Cc:     leo.yan@linaro.org, al.grant@arm.com, suzuki.poulose@arm.com,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        James Clark <james.clark@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] perf cs-etm: Pass unformatted flag to decoder
-Date:   Wed, 21 Jul 2021 16:02:02 +0100
-Message-Id: <20210721150202.32065-7-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210721150202.32065-1-james.clark@arm.com>
-References: <20210721150202.32065-1-james.clark@arm.com>
+        id S239642AbhGUOX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239510AbhGUOVr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 10:21:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76376C061575;
+        Wed, 21 Jul 2021 08:02:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=36rD6Wb6Yd/QwjBFd0xntesjrDvCLO/ZMPTZtTD0QUg=; b=IbAsiplG3kaBoKMtU7f2oPHIkK
+        5dlac78FL49HMshsrcmvadPy1WmsH18q106Jpb+Iee7TQCqlyesdsEivr4A+9de5In08wYaD60kV3
+        aREeTdRGTpwoQLzIHAe5QO6jzOThu2wCuUF4UCC6eW7w8I2liXJ2Xhr8+VS4ZARCwDf/tZB6K4B32
+        /8YoqTPTNIqUuA4wrAQr2sVmliK0aY17e9w6lgoAmB2ymku1YrsbFpqoXB40WHYlzF9Jnxeb4Ri5b
+        JfHtjcepGm1lA8OilRECyGF/A460xIrBYxJE7PjPO5zcahBURWNuhONWHRksJUnfoj0aR7uELh3rU
+        4c081oQw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m6Djb-009JG6-8B; Wed, 21 Jul 2021 15:02:11 +0000
+Date:   Wed, 21 Jul 2021 16:02:07 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 054/138] mm: Add kmap_local_folio()
+Message-ID: <YPg2756QFreokTIg@casper.infradead.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-55-willy@infradead.org>
+ <YPfvwNHk6H9dOCKK@kernel.org>
+ <YPgrM9P3CFjkpP5A@casper.infradead.org>
+ <YPgtmCtE5Xj56+LM@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPgtmCtE5Xj56+LM@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TRBE (Trace Buffer Extension) feature allows a separate trace buffer
-for each trace source, therefore the trace wouldn't need to be
-formatted. The driver was introduced in commit 3fbf7f011f24
-("coresight: sink: Add TRBE driver").
+On Wed, Jul 21, 2021 at 05:22:16PM +0300, Mike Rapoport wrote:
+> On Wed, Jul 21, 2021 at 03:12:03PM +0100, Matthew Wilcox wrote:
+> > On Wed, Jul 21, 2021 at 12:58:24PM +0300, Mike Rapoport wrote:
+> > > > +/**
+> > > > + * kmap_local_folio - Map a page in this folio for temporary usage
+> > > > + * @folio:	The folio to be mapped.
+> > > > + * @offset:	The byte offset within the folio.
+> > > > + *
+> > > > + * Returns: The virtual address of the mapping
+> > > > + *
+> > > > + * Can be invoked from any context.
+> > > 
+> > > Context: Can be invoked from any context.
+> > > 
+> > > > + *
+> > > > + * Requires careful handling when nesting multiple mappings because the map
+> > > > + * management is stack based. The unmap has to be in the reverse order of
+> > > > + * the map operation:
+> > > > + *
+> > > > + * addr1 = kmap_local_folio(page1, offset1);
+> > > > + * addr2 = kmap_local_folio(page2, offset2);
+> > > 
+> > > Please s/page/folio/g here and in the description below
+> > > 
+> > > > + * ...
+> > > > + * kunmap_local(addr2);
+> > > > + * kunmap_local(addr1);
+> > > > + *
+> > > > + * Unmapping addr1 before addr2 is invalid and causes malfunction.
+> > > > + *
+> > > > + * Contrary to kmap() mappings the mapping is only valid in the context of
+> > > > + * the caller and cannot be handed to other contexts.
+> > > > + *
+> > > > + * On CONFIG_HIGHMEM=n kernels and for low memory pages this returns the
+> > > > + * virtual address of the direct mapping. Only real highmem pages are
+> > > > + * temporarily mapped.
+> > > > + *
+> > > > + * While it is significantly faster than kmap() for the higmem case it
+> > > > + * comes with restrictions about the pointer validity. Only use when really
+> > > > + * necessary.
+> > > > + *
+> > > > + * On HIGHMEM enabled systems mapping a highmem page has the side effect of
+> > > > + * disabling migration in order to keep the virtual address stable across
+> > > > + * preemption. No caller of kmap_local_folio() can rely on this side effect.
+> > > > + */
+> > 
+> > kmap_local_folio() only maps one page from the folio.  So it's not
+> > appropriate to s/page/folio/g.  I fiddled with the description a bit to
+> > make this clearer:
+> > 
+> >  /**
+> >   * kmap_local_folio - Map a page in this folio for temporary usage
+> > - * @folio:     The folio to be mapped.
+> > - * @offset:    The byte offset within the folio.
+> > - *
+> > - * Returns: The virtual address of the mapping
+> > - *
+> > - * Can be invoked from any context.
+> > + * @folio: The folio containing the page.
+> > + * @offset: The byte offset within the folio which identifies the page.
+> >   *
+> >   * Requires careful handling when nesting multiple mappings because the map
+> >   * management is stack based. The unmap has to be in the reverse order of
+> >   * the map operation:
+> >   *
+> > - * addr1 = kmap_local_folio(page1, offset1);
+> > - * addr2 = kmap_local_folio(page2, offset2);
+> > + * addr1 = kmap_local_folio(folio1, offset1);
+> > + * addr2 = kmap_local_folio(folio2, offset2);
+> >   * ...
+> >   * kunmap_local(addr2);
+> >   * kunmap_local(addr1);
+> > @@ -131,6 +127,9 @@ static inline void *kmap_local_page(struct page *page);
+> >   * On HIGHMEM enabled systems mapping a highmem page has the side effect of
+> >   * disabling migration in order to keep the virtual address stable across
+> >   * preemption. No caller of kmap_local_folio() can rely on this side effect.
+> > + *
+> > + * Context: Can be invoked from any context.
+> > + * Return: The virtual address of @offset.
+> >   */
+> >  static inline void *kmap_local_folio(struct folio *folio, size_t offset)
+> 
+> This is clearer, thanks! 
+> 
+> Maybe just add page to Return: description:
+> 
+> * Return: The virtual address of page @offset.
 
-The formatted/unformatted mode is encoded in one of the flags of the
-AUX record. The first AUX record encountered for each event is used to
-determine the mode, and this will persist for the remaining trace that
-is either decoded or dumped.
-
-Signed-off-by: James Clark <james.clark@arm.com>
----
- .../perf/util/cs-etm-decoder/cs-etm-decoder.c |  4 +-
- tools/perf/util/cs-etm.c                      | 53 ++++++++++++++-----
- 2 files changed, 42 insertions(+), 15 deletions(-)
-
-diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-index ed1f0326f859..9c9039ae6989 100644
---- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-+++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-@@ -687,7 +687,7 @@ cs_etm_decoder__create_etm_decoder(struct cs_etm_decoder_params *d_params,
- }
- 
- struct cs_etm_decoder *
--cs_etm_decoder__new(int num_cpu, struct cs_etm_decoder_params *d_params,
-+cs_etm_decoder__new(int decoders, struct cs_etm_decoder_params *d_params,
- 		    struct cs_etm_trace_params t_params[])
- {
- 	struct cs_etm_decoder *decoder;
-@@ -732,7 +732,7 @@ cs_etm_decoder__new(int num_cpu, struct cs_etm_decoder_params *d_params,
- 	/* init raw frame logging if required */
- 	cs_etm_decoder__init_raw_frame_logging(d_params, decoder);
- 
--	for (i = 0; i < num_cpu; i++) {
-+	for (i = 0; i < decoders; i++) {
- 		ret = cs_etm_decoder__create_etm_decoder(d_params,
- 							 &t_params[i],
- 							 decoder);
-diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-index 760050ea936d..f4b2bff533f3 100644
---- a/tools/perf/util/cs-etm.c
-+++ b/tools/perf/util/cs-etm.c
-@@ -461,13 +461,14 @@ static void cs_etm__set_trace_param_etmv4(struct cs_etm_trace_params *t_params,
- }
- 
- static int cs_etm__init_trace_params(struct cs_etm_trace_params *t_params,
--				     struct cs_etm_auxtrace *etm)
-+				     struct cs_etm_auxtrace *etm,
-+				     int decoders)
- {
- 	int i;
- 	u32 etmidr;
- 	u64 architecture;
- 
--	for (i = 0; i < etm->num_cpu; i++) {
-+	for (i = 0; i < decoders; i++) {
- 		architecture = etm->metadata[i][CS_ETM_MAGIC];
- 
- 		switch (architecture) {
-@@ -488,7 +489,8 @@ static int cs_etm__init_trace_params(struct cs_etm_trace_params *t_params,
- 
- static int cs_etm__init_decoder_params(struct cs_etm_decoder_params *d_params,
- 				       struct cs_etm_queue *etmq,
--				       enum cs_etm_decoder_operation mode)
-+				       enum cs_etm_decoder_operation mode,
-+				       bool formatted)
- {
- 	int ret = -EINVAL;
- 
-@@ -498,7 +500,7 @@ static int cs_etm__init_decoder_params(struct cs_etm_decoder_params *d_params,
- 	d_params->packet_printer = cs_etm__packet_dump;
- 	d_params->operation = mode;
- 	d_params->data = etmq;
--	d_params->formatted = true;
-+	d_params->formatted = formatted;
- 	d_params->fsyncs = false;
- 	d_params->hsyncs = false;
- 	d_params->frame_aligned = true;
-@@ -720,11 +722,17 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
- 	return len;
- }
- 
--static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
-+static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm,
-+						bool formatted)
- {
- 	struct cs_etm_decoder_params d_params;
- 	struct cs_etm_trace_params  *t_params = NULL;
- 	struct cs_etm_queue *etmq;
-+	/*
-+	 * Each queue can only contain data from one CPU when unformatted, so only one decoder is
-+	 * needed.
-+	 */
-+	int decoders = formatted ? etm->num_cpu : 1;
- 
- 	etmq = zalloc(sizeof(*etmq));
- 	if (!etmq)
-@@ -735,21 +743,23 @@ static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
- 		goto out_free;
- 
- 	/* Use metadata to fill in trace parameters for trace decoder */
--	t_params = zalloc(sizeof(*t_params) * etm->num_cpu);
-+	t_params = zalloc(sizeof(*t_params) * decoders);
- 
- 	if (!t_params)
- 		goto out_free;
- 
--	if (cs_etm__init_trace_params(t_params, etm))
-+	if (cs_etm__init_trace_params(t_params, etm, decoders))
- 		goto out_free;
- 
- 	/* Set decoder parameters to decode trace packets */
- 	if (cs_etm__init_decoder_params(&d_params, etmq,
- 					dump_trace ? CS_ETM_OPERATION_PRINT :
--						     CS_ETM_OPERATION_DECODE))
-+						     CS_ETM_OPERATION_DECODE,
-+					formatted))
- 		goto out_free;
- 
--	etmq->decoder = cs_etm_decoder__new(etm->num_cpu, &d_params, t_params);
-+	etmq->decoder = cs_etm_decoder__new(decoders, &d_params,
-+					    t_params);
- 
- 	if (!etmq->decoder)
- 		goto out_free;
-@@ -777,14 +787,15 @@ static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
- 
- static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
- 			       struct auxtrace_queue *queue,
--			       unsigned int queue_nr)
-+			       unsigned int queue_nr,
-+			       bool formatted)
- {
- 	struct cs_etm_queue *etmq = queue->priv;
- 
- 	if (list_empty(&queue->head) || etmq)
- 		return 0;
- 
--	etmq = cs_etm__alloc_queue(etm);
-+	etmq = cs_etm__alloc_queue(etm, formatted);
- 
- 	if (!etmq)
- 		return -ENOMEM;
-@@ -2430,8 +2441,14 @@ static int cs_etm__process_auxtrace_event(struct perf_session *session,
- 		if (err)
- 			return err;
- 
-+		/*
-+		 * Knowing if the trace is formatted or not requires a lookup of
-+		 * the aux record so only works in non-piped mode where data is
-+		 * queued in cs_etm__queue_aux_records(). Always assume
-+		 * formatted in piped mode (true).
-+		 */
- 		err = cs_etm__setup_queue(etm, &etm->queues.queue_array[idx],
--					  idx);
-+					  idx, true);
- 		if (err)
- 			return err;
- 
-@@ -2678,6 +2695,7 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session, off_t file_o
- 	union perf_event auxtrace_fragment;
- 	__u64 aux_offset, aux_size;
- 	__u32 idx;
-+	bool formatted;
- 
- 	struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
- 						   struct cs_etm_auxtrace,
-@@ -2745,7 +2763,9 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session, off_t file_o
- 			return err;
- 
- 		idx = auxtrace_event->idx;
--		return cs_etm__setup_queue(etm, &etm->queues.queue_array[idx], idx);
-+		formatted = !(aux_event->flags & PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
-+		return cs_etm__setup_queue(etm, &etm->queues.queue_array[idx],
-+					   idx, formatted);
- 	}
- 
- 	/* Wasn't inside this buffer, but there were no parse errors. 1 == 'not found' */
-@@ -3034,6 +3054,13 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
- 		goto err_delete_thread;
- 
- 	etm->data_queued = etm->queues.populated;
-+	/*
-+	 * Print warning in pipe mode, see cs_etm__process_auxtrace_event() and
-+	 * cs_etm__queue_aux_fragment() for details relating to limitations.
-+	 */
-+	if (!etm->data_queued)
-+		pr_warning("CS ETM warning: Coresight decode and TRBE support requires random file access.\n"
-+			   "Continuing with best effort decoding in piped mode.\n\n");
- 
- 	return 0;
- 
--- 
-2.28.0
-
+No, it really does return the virtual address of @offset.  If you ask
+for offset 0x1234 within a (sufficiently large) folio, it will map the
+second page of that folio and return the address of the 0x234'th byte
+within it.
