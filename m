@@ -2,124 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215F93D19C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 00:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D82E43D19C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 00:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhGUVuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 17:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhGUVuX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 17:50:23 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA13C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 15:30:58 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id h9so4963133ljm.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 15:30:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TU/KkduaSrurFShl837GHBlKY1G5viwl2DwVlMVRYRw=;
-        b=l4dD20jhcB0ra/CjblbMC0qwO/H7BusoqZ7Eq0FzOKayOixc7r03ufBjhWvwl6DhwG
-         5iETQYa6bbNa6tPt15XKmTjIP781paRAP1XWM7Rnz4s2bpKTtVUP+WwybGTOY5tk3lAW
-         M8mzKnhwBZ1GmAWoabjgkw+SwZ1FRXrk/cFzXteP7v7oxJpNUrB+a8bQ7vhlUhhuVzT9
-         +4bh+PbOjDKt5+pcgsKQtRS9Hnm64RE6KTMOvvvf5F66DC/MCCTxkC/Ylexhp7Mh6KWq
-         9X6KAY2CXc2mY7S9sGZ8fed9qOveL4HOf42PPGk4Htx56saBtItEPnxQit0SpALb+Vjt
-         hsFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TU/KkduaSrurFShl837GHBlKY1G5viwl2DwVlMVRYRw=;
-        b=cwLjDFfIZ0XqxBJrH05elWOv2DxtePEivvKHKHGeWbRRnqbMfsKqfSKD3QTtW+lsaS
-         JYmGEVTT2vj3lpPUh/KJtvXMFNZwO37cNC3yNLVpldg3TAfaNrY34ko3XPx5qc8lM/Q7
-         x6m0+rfBHZGs6kj/oLjppevaHL5fM94Ts0J9IyfDkxcu89RSe3EPlISw8MU3h8Qk+rXQ
-         jSmeYM35jK71qtIQi/Wgdf7RkSFUqGdkq3eCBEWl6fJ1BNBjw4aPkJOa3VXOfF/8cj07
-         sXqzRw7iQDGi/4kiZKnHstMEstxD2y1tVYLNWXkjwt8FoMgxnK+IvcTmHNnJp3rYOChQ
-         FuEg==
-X-Gm-Message-State: AOAM532rFYNFrFHCypzb4velJ66t8+oFkEE8K4C0meVe4B2BjcdjRzpO
-        /IvFXwy0Aj1yiWIJwyc3efVqKVLWs7JHx9G329w=
-X-Google-Smtp-Source: ABdhPJzxAE1hlSvd2ajpDjbBz/1Yfz+4LI9qCBI+A/TBLOw3jZ74TptEiaagBCUqi1wMk7xqrudDnLBcQex5nUiQIyE=
-X-Received: by 2002:a2e:8858:: with SMTP id z24mr7143087ljj.413.1626906656926;
- Wed, 21 Jul 2021 15:30:56 -0700 (PDT)
+        id S230106AbhGUVwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 17:52:31 -0400
+Received: from mga17.intel.com ([192.55.52.151]:31984 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229684AbhGUVwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 17:52:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="191802657"
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="191802657"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 15:33:05 -0700
+X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
+   d="scan'208";a="454537679"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 15:33:05 -0700
+Date:   Wed, 21 Jul 2021 15:32:38 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Marc Zyngier <maz@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [patch 3/8] PCI/MSI: Enforce that MSI-X table entry is masked
+ for update
+Message-ID: <20210721223238.GD676232@otc-nc-03>
+References: <20210721191126.274946280@linutronix.de>
+ <20210721192650.408910288@linutronix.de>
 MIME-Version: 1.0
-References: <20210721072048.3035928-1-daeho43@gmail.com> <YPiTLwB3d8BWSKje@gmail.com>
-In-Reply-To: <YPiTLwB3d8BWSKje@gmail.com>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Wed, 21 Jul 2021 15:30:46 -0700
-Message-ID: <CACOAw_xq3_ccqzh8dnomFXBOK_iN9LOTsOBYSBzDJHSSDrRxVw@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH] f2fs: change fiemap way in printing
- compression chunk
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210721192650.408910288@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Wed, Jul 21, 2021 at 09:11:29PM +0200, Thomas Gleixner wrote:
+> The specification states:
+> 
+>     For MSI-X, a function is permitted to cache Address and Data values
+>     from unmasked MSI-X Table entries. However, anytime software unmasks a
+>     currently masked MSI-X Table entry either by clearing its Mask bit or
+>     by clearing the Function Mask bit, the function must update any Address
+>     or Data values that it cached from that entry. If software changes the
+>     Address or Data value of an entry while the entry is unmasked, the
+>     result is undefined.
+> 
+> The Linux kernel's MSI-X support never enforced that the entry is masked
+> before the entry is modified hence the Fixes tag refers to a commit in:
+>       git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+> 
+> Enforce the entry to be masked across the update.
+> 
+> There is no point in enforcing this to be handled at all possible call
+> sites as this is just pointless code duplication and the common update
+> function is the obvious place to enforce this.
+> 
+> Reported-by: Kevin Tian <kevin.tian@intel.com>
+> Fixes: f036d4ea5fa7 ("[PATCH] ia32 Message Signalled Interrupt support")
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: linux-pci@vger.kernel.org
+> ---
+>  drivers/pci/msi.c |   15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -289,13 +289,28 @@ void __pci_write_msi_msg(struct msi_desc
+>  		/* Don't touch the hardware now */
+>  	} else if (entry->msi_attrib.is_msix) {
+>  		void __iomem *base = pci_msix_desc_addr(entry);
+> +		bool unmasked = !(entry->masked & PCI_MSIX_ENTRY_CTRL_MASKBIT);
+>  
+>  		if (!base)
+>  			goto skip;
+>  
+> +		/*
+> +		 * The specification mandates that the entry is masked
+> +		 * when the message is modified:
+> +		 *
+> +		 * "If software changes the Address or Data value of an
+> +		 * entry while the entry is unmasked, the result is
+> +		 * undefined."
+> +		 */
+> +		if (unmasked)
+> +			__pci_msix_desc_mask_irq(entry, PCI_MSIX_ENTRY_CTRL_MASKBIT);
+> +
 
-On Wed, Jul 21, 2021 at 2:35 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Wed, Jul 21, 2021 at 12:20:48AM -0700, Daeho Jeong wrote:
-> > From: Daeho Jeong <daehojeong@google.com>
-> >
-> > When we print out a discontinuous compression chunk, it shows like a
-> > continuous chunk now. To show it more correctly, I've changed the way of
-> > printing fiemap info like below. Plus, eliminated NEW_ADDR(-1) in fiemap
-> > info, since it is not in fiemap user api manual.
-> >
-> > 0: 0000000000000000 0000000000000000 0000000000001000 1008 (M/E)
-> > 1: 0000000000001000 0000000f15c0f000 0000000000001000 1008 (M/E)
-> > 2: 0000000000002000 0000000000000000 0000000000002000 1808 (M/U/E)
-> > 3: 0000000000004000 0000000000000000 0000000000001000 1008 (M/E)
-> > 4: 0000000000005000 0000000f15c10000 0000000000001000 1008 (M/E)
-> > 5: 0000000000006000 0000000000000000 0000000000002000 1808 (M/U/E)
-> > 6: 0000000000008000 0000000000000000 0000000000001000 1008 (M/E)
->
-> Please label these columns.
->
-> Anyway, this doesn't appear to work quite in the way I had in mind.  With this
-> patch, what I'm seeing is:
->
-> $ head -c 16384 /dev/zero > file; xfs_io -c "fiemap -v" file
-> file:
->  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->    0: [0..7]:          0..7                 8 0x1008
->    1: [8..15]:         2683128..2683135     8 0x1008
->    2: [16..31]:        0..15               16 0x1809
->
-> So, working in 512-byte sectors, the logical sectors 0-31 are stored as one
-> compressed cluster in the 8 physical sectors 2683128-2683135.
->
-> The problem is, with this patch these physical sectors are reported at logical
-> sectors 8-15 instead of 0-7.  Obviously, this isn't particularly well-defined,
-> but I thought it was logical for the physical blocks to be associated with the
-> first logical blocks.  That is what the tests I've written (xfstest f2fs/002,
-> and the Android vts_kernel_encryption_test) assume.
->
-> Is there any particular reason why you wouldn't report instead:
->
->    0: [0..7]:         2683128..2683135     8 0x1008
->    1: [8..31]:        0..23                8 0x1809
->
-> - Eric
+Is there any locking needs here? say during cpu hotplug and some user-space
+setting affinity?
 
-The reason is related to how F2FS stores the mapping information in
-the mapping table.
-Actually, the mapping inside of the table is like this.
-[0..7]:  COMPR_ADDR flag(0x1008) -> merged, encoded
-[8..15]: 2683128..2683135 flag(0x1008) -> merged, encoded
-[16..31]: NEW_ADDR flag(0x1809) -> merged, unwritten(!), last_extent
-
-I understand what you mean.
-But, if we adapt to your way, how do you think we can print out when
-we ask for f2fs to print out only the [8..15] area? Zero address? How
-about flags?
-I think the current way explains the layout of the f2fs metadata more exactly.
-
-Thank you,
+>  		writel(msg->address_lo, base + PCI_MSIX_ENTRY_LOWER_ADDR);
+>  		writel(msg->address_hi, base + PCI_MSIX_ENTRY_UPPER_ADDR);
+>  		writel(msg->data, base + PCI_MSIX_ENTRY_DATA);
+> +
+> +		if (unmasked)
+> +			__pci_msix_desc_mask_irq(entry, 0);
+>  	} else {
+>  		int pos = dev->msi_cap;
+>  		u16 msgctl;
+> 
