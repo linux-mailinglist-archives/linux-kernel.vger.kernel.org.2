@@ -2,73 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0563D1062
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05133D1065
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237392AbhGUNUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:20:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59856 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237371AbhGUNTz (ORCPT
+        id S238897AbhGUNUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238678AbhGUNUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:19:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626876028;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nGak2M97IuWdYoQHfae4kk19ASj53/qSdtxEd9Xt/o8=;
-        b=K16Y4RMk13IeNLEq9IgAfTv2WE9y7yr78AJNqNHhP21GU0zX4fvR68phODK+OgwbyfkFVz
-        qPEgKOJhu8O6eHO0hy4dVrsouEYY8rAaQya5y7CVIv66fUVw5lf2E3PswLSbHK4z5c1uRI
-        1kkqohJgmGPsnOSSnR+rRaemr8DfZIQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-D8IhJirPPYGUo9zPgq-vSg-1; Wed, 21 Jul 2021 10:00:27 -0400
-X-MC-Unique: D8IhJirPPYGUo9zPgq-vSg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 64EDA1074667;
-        Wed, 21 Jul 2021 14:00:24 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-62.rdu2.redhat.com [10.10.112.62])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D1935D9DD;
-        Wed, 21 Jul 2021 14:00:13 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <162687506932.276387.14456718890524355509.stgit@warthog.procyon.org.uk>
-References: <162687506932.276387.14456718890524355509.stgit@warthog.procyon.org.uk>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Mike Marshall <hubcap@omnibond.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 00/12] netfs: Experimental write helpers, fscrypt and compression
+        Wed, 21 Jul 2021 09:20:11 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15027C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:00:48 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id y42so3322796lfa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:00:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zsvJRDxyY5UbCVX7sGabd497i4VkHjlUGB0A4qGDBiM=;
+        b=blMhE7FHuYJvQ1jjr+eBeAoe0VtX2eu7Ve2CWtDtuuospCBc5iAQLUu0A6jR/ynetF
+         SPnplHFagBkDTKPQ7D4dX1CTKIT+Zpq0RGWPMEagc0uYZ66Sd+VQ35EWVZjiRNXHExOn
+         FjwJcVQx6m3GkAkZdxYrV1EF0HAKW+t5CI29SFuf5n2wnFPEFo7pgOCzZLaLYJZRPMgs
+         Edn645SrSlfVxr4SLzgTjeuM7Frlr+GZ5OFpRZNtLSNy4TCHJfKM0vEY3m2FfgUbP5pi
+         5TmpbmrV+zyjRWlnXOYbMXbn93WMk4AWn8PwpwMOCdVj7OFWg9tcDeVD/dOp9o+DDvTM
+         dvRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zsvJRDxyY5UbCVX7sGabd497i4VkHjlUGB0A4qGDBiM=;
+        b=Hhd7foSG4Ahmxnt4q27aEG8wtgma55hgD5+vhA6dtQzFQWYuc3b6RXvBRMXjt0V7Dh
+         4YLimD6dqqodWbWxHeMgnsTzNYAAdt7ZRONEno7/EGiIaRXi+tvGTlBlGEmryK2ETBcj
+         4YHc5xE1ltvQq/8OGlyZiOpVEnXiEyqPbMua1ceB3d8kICd9yTdBB2r9ZA5M+De+vRai
+         u8LpgqXevDWnS9B3cAp/xAFKuAQ5VFmlgD1VlGwhqKqvWTa9XkZjk4tMO0uiAXjwCDUt
+         aU+Zt56kcmBw7dQNWxWScvuUJmnRq/fC9S+OiY63Zag19iD9FTT1dtY5YdyxmVu7eYgo
+         lfYw==
+X-Gm-Message-State: AOAM531WoX5qXOQ+QVucsxcJxVzKLHAxMJHdKnrmo7YJrCfbxvBrrb8I
+        djqoXZu5bkiWoFudXwSklNJhqXJdlDJq1h7BcRXDZA==
+X-Google-Smtp-Source: ABdhPJxEOaTZyJ//VL0xm+qjsBbECijs8kafihDiLsk9j4fdAjhS7j5/f6rj7V9/XmHDPmtM1H58IrDvM4Y9VTGHhKs=
+X-Received: by 2002:a05:6512:3f1f:: with SMTP id y31mr19471776lfa.29.1626876046329;
+ Wed, 21 Jul 2021 07:00:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <277971.1626876012.1@warthog.procyon.org.uk>
-Date:   Wed, 21 Jul 2021 15:00:12 +0100
-Message-ID: <277974.1626876012@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <1626853288-31223-1-git-send-email-dillon.minfei@gmail.com> <1626853288-31223-2-git-send-email-dillon.minfei@gmail.com>
+In-Reply-To: <1626853288-31223-2-git-send-email-dillon.minfei@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 21 Jul 2021 16:00:35 +0200
+Message-ID: <CACRpkdYerVu_LyNOJoxMTqhuNd9QBSFWTM7bfRnrsOyrxqE_kw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: display: panel: Add ilitek ili9341
+ panel bindings
+To:     dillon min <dillon.minfei@gmail.com>
+Cc:     "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        =?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apologies...  The subject line in the cover letter got word-wrapped by my
-editor and lost.
+On Wed, Jul 21, 2021 at 9:41 AM <dillon.minfei@gmail.com> wrote:
 
-David
+> From: Dillon Min <dillon.minfei@gmail.com>
+>
+> Add documentation for "ilitek,ili9341" panel.
+>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
