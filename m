@@ -2,128 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9E43D15D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AAD3D15CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237489AbhGURVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:21:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55322 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbhGURVo (ORCPT
+        id S234227AbhGURUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231256AbhGURUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:21:44 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B12522257D;
-        Wed, 21 Jul 2021 18:02:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626890539;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UURkxj0FzkddkNj25OCBmqPhNmUDQqkrhXQKcD008LU=;
-        b=xcQSz636EWAiC85tX8hiA6MdN0EZiqEIXRlig788UnnDsmwAPzPBNq5J3lLcsUo83LT+9F
-        PWY+l9YpdOPJ6SMR19CtQZDKqUAtXxhCzxHkySb4Z5Fz+k5lkuLdPKh0+Fr0OknVGundiW
-        hVkzEVOGq0Yvh7CCchNWz2ZxJ+eNiJ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626890539;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UURkxj0FzkddkNj25OCBmqPhNmUDQqkrhXQKcD008LU=;
-        b=BKweevZE47LPO8lNVm//uvT+55czJ9isHbyeT/esC54dRYhnvB5WwwqU7lmw2B08F50XxW
-        Zq7IF1jCXNLG68BA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 9A5B9A3B87;
-        Wed, 21 Jul 2021 18:02:19 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6D5D5DA704; Wed, 21 Jul 2021 19:59:38 +0200 (CEST)
-Date:   Wed, 21 Jul 2021 19:59:38 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        anand.jain@oracle.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-Subject: Re: [PATCH] btrfs: fix rw device counting in
- __btrfs_free_extra_devids
-Message-ID: <20210721175938.GP19710@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-References: <20210715103403.176695-1-desmondcheongzx@gmail.com>
+        Wed, 21 Jul 2021 13:20:44 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A644BC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 11:01:19 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 8so4429048lfp.9
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 11:01:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VPa37eNvC3uDqntcxwWWKIYs96FW2IfN+zBOwLvLWyk=;
+        b=c+qRkAs1DwxE9hRy95PZsZTyPTKGRmiVDdYPr/bRhqbhIDs7uWTM2Wsf1S7FMeFGe1
+         FNgM0RY06bExtz9ZsFKG5uZQ1/OxFtWR3RXfJPOwfj+9JRRXgAw7yBN4moMgoQd9D6PA
+         XBUgrH2V+hAGFnQQ1Pvz1igLS1r2cK9mRXng4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VPa37eNvC3uDqntcxwWWKIYs96FW2IfN+zBOwLvLWyk=;
+        b=WlAvXktGeph+rwrtByba0In4y5/9hDor4kaPdZeYmP/L9kvnEO8OlH+YilmwirE+uU
+         iMB64lgfLA+6HFbejiQDclwIgi6gZnNT60GgPa/Jvjr1Pv9gKtoAbfStcRNSToBMBxTE
+         dWKdUZnD3rrnsMuMaKZij0Rn7MKcGwX86/RaQhxTxf97JThn63dcGpG/zjweht0M5B0n
+         Z8t93vq0pmHd56m5mozk16GfI2A9RCZN3i/DIcJJF6ZTFm4rL43XsAoDM3O5cYORWVHK
+         fl6Yvcz/S1oNilRxXuisqhsMjQZyQ8IezzEmYCp/y2tfoLwULDZxLCtaTu8R6sZHNkds
+         meRQ==
+X-Gm-Message-State: AOAM53094057GmRTz+DnR/8fdPpsAEb/jCpVKOufIPK3S0nh/SjBJvSX
+        nXGEckln03PH39udrogTOJbqUk7ErAxpZPzh
+X-Google-Smtp-Source: ABdhPJz3h5qNRRU0jqN+/1nSbLOrLOQXBL9muYBnSGyzfis/Z96kLC7wv20fPzQA69+SAHb5DFB3FA==
+X-Received: by 2002:ac2:414e:: with SMTP id c14mr26575175lfi.632.1626890476806;
+        Wed, 21 Jul 2021 11:01:16 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id d8sm1797015lfq.138.2021.07.21.11.01.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Jul 2021 11:01:16 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id g8so4422583lfh.8
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 11:01:16 -0700 (PDT)
+X-Received: by 2002:ac2:42d6:: with SMTP id n22mr26027265lfl.41.1626890475459;
+ Wed, 21 Jul 2021 11:01:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715103403.176695-1-desmondcheongzx@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20210721135926.602840-1-nborisov@suse.com>
+In-Reply-To: <20210721135926.602840-1-nborisov@suse.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 21 Jul 2021 11:00:59 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whqJKKc9wUacLEkvTzXYfYOUDt=kHKX6Fa8Kb4kQftbbQ@mail.gmail.com>
+Message-ID: <CAHk-=whqJKKc9wUacLEkvTzXYfYOUDt=kHKX6Fa8Kb4kQftbbQ@mail.gmail.com>
+Subject: Re: [PATCH] lib/string: Bring optimized memcmp from glibc
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 06:34:03PM +0800, Desmond Cheong Zhi Xi wrote:
-> Syzbot reports a warning in close_fs_devices that happens because
-> fs_devices->rw_devices is not 0 after calling btrfs_close_one_device
-> on each device.
-> 
-> This happens when a writeable device is removed in
-> __btrfs_free_extra_devids, but the rw device count is not decremented
-> accordingly. So when close_fs_devices is called, the removed device is
-> still counted and we get an off by 1 error.
-> 
-> Here is one call trace that was observed:
->   btrfs_mount_root():
->     btrfs_scan_one_device():
->       device_list_add();   <---------------- device added
->     btrfs_open_devices():
->       open_fs_devices():
->         btrfs_open_one_device();   <-------- rw device count ++
->     btrfs_fill_super():
->       open_ctree():
->         btrfs_free_extra_devids():
-> 	  __btrfs_free_extra_devids();  <--- device removed
-> 	  fail_tree_roots:
-> 	    btrfs_close_devices():
-> 	      close_fs_devices();   <------- rw device count off by 1
-> 
-> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
+On Wed, Jul 21, 2021 at 6:59 AM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+> This is glibc's memcmp version. The upside is that for architectures
+> which don't have an optimized version the kernel can provide some
+> solace in the form of a generic, word-sized optimized memcmp. I tested
+> this with a heavy IOCTL_FIDEDUPERANGE(2) workload and here are the
+> results I got:
 
-What this patch did in the last hunk was the rw_devices decrement, but
-conditional:
+Hmm. I suspect the usual kernel use of memcmp() is _very_ skewed to
+very small memcmp calls, and I don't think I've ever seen that
+(horribly bad) byte-wise default memcmp in most profiles.
 
-@@ -1080,9 +1071,6 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
-                if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
-                        list_del_init(&device->dev_alloc_list);
-                        clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
--                       if (!test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
--                                     &device->dev_state))
--                               fs_devices->rw_devices--;
-                }
-                list_del_init(&device->dev_list);
-                fs_devices->num_devices--;
----
+I suspect that FIDEDUPERANGE thing is most likely a very special case.
 
+So I don't think you're wrong to look at this, but I think you've gone
+from our old "spend no effort at all" to "look at one special case".
 
-> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
->  		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
->  			list_del_init(&device->dev_alloc_list);
->  			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
-> +			fs_devices->rw_devices--;
->  		}
->  		list_del_init(&device->dev_list);
->  		fs_devices->num_devices--;
+And I think the glibc implementation is horrible and doesn't know
+about machines where unaligned loads are cheap - which is all
+reasonable ones.
 
-So should it be reinstated in the original form? The rest of
-cf89af146b7e handles unexpected device replace item during mount.
+That MERGE() macro is disgusting, and memcmp_not_common_alignment()
+should not exist on any sane architecture. It's literally doing extra
+work to make for slower accesses, when the hardware does it better
+natively.
 
-Adding the decrement is correct, but right now I'm not sure about the
-corner case when teh devcie has the BTRFS_DEV_STATE_REPLACE_TGT bit set.
-The state machine of the device bits and counters is not trivial so
-fixing it one way or the other could lead to further syzbot reports if
-we don't understand the issue.
+So honestly, I'd much rather see a much saner and simpler
+implementation that works well on the architectures that matter, and
+that don't want that "align things by hand".
+
+Aligning one of the sources by hand is fine and makes sense - so that
+_if_ the two strings end up being mutually aligned, all subsequent
+accesses are aligned.
+
+ But then trying to do shift-and-masking for the possibly remaining
+unaligned source is crazy and garbage. Don't do it.
+
+And you never saw that, because your special FIDEDUPERANGE testcase
+will never have anything but mutually aligned cases.
+
+Which just shows that going from "don't care at all' to "care about
+one special case" is not the way to go.
+
+So I'd much rather see a simple default function that works well for
+the sane architectures, than go with the default code from glibc - and
+bad for the common modern architectures.
+
+Then architectures could choose that one with some
+
+        select GENERIC_MEMCMP
+
+the same way we have
+
+        select GENERIC_STRNCPY_FROM_USER
+
+for the (sane, for normal architectures) common optimized case for a
+special string instruction that matters a lot for the kernel.
+
+                     Linus
