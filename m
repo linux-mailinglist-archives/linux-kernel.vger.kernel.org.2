@@ -2,133 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59803D1146
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42693D114E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237385AbhGUNpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:45:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239491AbhGUNmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:42:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0EA66121F;
-        Wed, 21 Jul 2021 14:22:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626877343;
-        bh=4NTnFEe2l3CAr2NuivBsayg3RBvIVlGjYGI9vT1IRx0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SWdacA+swjElFXK4xDg7Y5+tnh9JLsd2jeuI09FuvMfY7Uu72LwA9IBdw95kknr96
-         Ob+ppAo/jhfJ9SSpZYKmpufBNfj1ZTdWC19ww9ZjZI78ry7I82EQUDvWdl8TNtUrg9
-         KNcNhqlzqpNxhJsTOa3KTSnEWdUpe/Zf/HjqHbr7/kEFphV2T+3BB+MA1G+uUXvCLR
-         Kyj1pDCgsSnybQHtv/jdu6dlmbck0jxtFrYQFUJcVNG2HcfDNblVz8TsTAtoBJHDBr
-         5xFkROedkpIiHYC7h/TKPww3Jl87DCb1jMPhw8nG3mDCRGxyxPoAu9M4VyUxvp+Vzg
-         yn6Uy2lXL/wuQ==
-Date:   Wed, 21 Jul 2021 17:22:16 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 054/138] mm: Add kmap_local_folio()
-Message-ID: <YPgtmCtE5Xj56+LM@kernel.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-55-willy@infradead.org>
- <YPfvwNHk6H9dOCKK@kernel.org>
- <YPgrM9P3CFjkpP5A@casper.infradead.org>
+        id S239262AbhGUNqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239605AbhGUNog (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 09:44:36 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D7EC0617A1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:22:45 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id t3so3251498ljc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:22:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RxH3J+Eoh7kaNaXSHILbrEKptNqW5XNSkT/LEfhorfw=;
+        b=np3T/tKhWSs3xDEU7MtFijZp9knPrBJjhodCGPOhu6WamYYnmI0gWgLGwLiNBVO5Cv
+         PY1SoZQb+Yd3SboBPYmHKlddwz0Qh7RS4ABDPEFwe+7cPUmCuN7+IY5A/hWgkSBr2lMX
+         j5/t1emiw10+TGpDl8R9AGk0R6trQrmcKoEZ7ZcoQsKlqecQZu+WjhXR8he0+NqXegso
+         4j8UZUofI2jkgKlTt5CnguAr5JSdq8A7kgzUkaQ1+2bwoj3MHdKoPFbJYCkI2+zkhmPO
+         2AKw2+7SY6NIuFDUZ8U29hXdJ4BRQcYUrQLeC7Kzmo837X3mqcFFVJNz9cBQFO4GYJWV
+         hfmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RxH3J+Eoh7kaNaXSHILbrEKptNqW5XNSkT/LEfhorfw=;
+        b=amRh6dWVTKszUz20gMOH+yZkziZZb8jhmqaF1o/fsU5DzbrG0WDq1wQBfsWonWtGL/
+         5K+ccxQPUA0tW/xyKHEB4VlCKvyuGfazpogFGoZGeleG1n5WtRrOEUIBCjMJiKxYvf3w
+         7qxukuh/uhbxq4yT6LVIO94REFMijGa7Of+3vB1AmJ4qCGMf3k3scll6QKUvaK+hjd03
+         aFEMDab5bE6T4QLpgxkvfwXZEwA73cIBKG8t3GIEwrW8LjPFETxaA+kS9CH5jUZkeEvv
+         ++esr6w7M4LO/cT0ZMn0k/ftzuI0uiRp7SI8icOWaWnzBHecvrATd2Hk8r2FtVZk8Ci1
+         f2tw==
+X-Gm-Message-State: AOAM533StglEzpr7U4VHh3QntvciHp3R0ApWrf5xHUATy2fPLWwKn/5T
+        uSOwyEUX/GJDLUXlB2kP4seAJmM3nnwXsuloZF6KQQ==
+X-Google-Smtp-Source: ABdhPJxRKXD+U0XQM/F7sLwpZwFlzVAYL4bWalqIvOAZRJl36XOz1b+yigg+oOm5a+edqTSoFlwCiEItIcz7ltih25o=
+X-Received: by 2002:a2e:9d15:: with SMTP id t21mr31738197lji.200.1626877364224;
+ Wed, 21 Jul 2021 07:22:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPgrM9P3CFjkpP5A@casper.infradead.org>
+References: <1626853288-31223-1-git-send-email-dillon.minfei@gmail.com>
+ <1626853288-31223-2-git-send-email-dillon.minfei@gmail.com>
+ <CACRpkdYerVu_LyNOJoxMTqhuNd9QBSFWTM7bfRnrsOyrxqE_kw@mail.gmail.com> <YPgsl5M6P86iJADt@ravnborg.org>
+In-Reply-To: <YPgsl5M6P86iJADt@ravnborg.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 21 Jul 2021 16:22:33 +0200
+Message-ID: <CACRpkdb14g+cn1hKi+gF6oOLMSNLffvuuJbVqR95pmuCtgjHEA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: display: panel: Add ilitek ili9341
+ panel bindings
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     dillon min <dillon.minfei@gmail.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        =?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 03:12:03PM +0100, Matthew Wilcox wrote:
-> On Wed, Jul 21, 2021 at 12:58:24PM +0300, Mike Rapoport wrote:
-> > > +/**
-> > > + * kmap_local_folio - Map a page in this folio for temporary usage
-> > > + * @folio:	The folio to be mapped.
-> > > + * @offset:	The byte offset within the folio.
-> > > + *
-> > > + * Returns: The virtual address of the mapping
-> > > + *
-> > > + * Can be invoked from any context.
-> > 
-> > Context: Can be invoked from any context.
-> > 
-> > > + *
-> > > + * Requires careful handling when nesting multiple mappings because the map
-> > > + * management is stack based. The unmap has to be in the reverse order of
-> > > + * the map operation:
-> > > + *
-> > > + * addr1 = kmap_local_folio(page1, offset1);
-> > > + * addr2 = kmap_local_folio(page2, offset2);
-> > 
-> > Please s/page/folio/g here and in the description below
-> > 
-> > > + * ...
-> > > + * kunmap_local(addr2);
-> > > + * kunmap_local(addr1);
-> > > + *
-> > > + * Unmapping addr1 before addr2 is invalid and causes malfunction.
-> > > + *
-> > > + * Contrary to kmap() mappings the mapping is only valid in the context of
-> > > + * the caller and cannot be handed to other contexts.
-> > > + *
-> > > + * On CONFIG_HIGHMEM=n kernels and for low memory pages this returns the
-> > > + * virtual address of the direct mapping. Only real highmem pages are
-> > > + * temporarily mapped.
-> > > + *
-> > > + * While it is significantly faster than kmap() for the higmem case it
-> > > + * comes with restrictions about the pointer validity. Only use when really
-> > > + * necessary.
-> > > + *
-> > > + * On HIGHMEM enabled systems mapping a highmem page has the side effect of
-> > > + * disabling migration in order to keep the virtual address stable across
-> > > + * preemption. No caller of kmap_local_folio() can rely on this side effect.
-> > > + */
-> 
-> kmap_local_folio() only maps one page from the folio.  So it's not
-> appropriate to s/page/folio/g.  I fiddled with the description a bit to
-> make this clearer:
-> 
->  /**
->   * kmap_local_folio - Map a page in this folio for temporary usage
-> - * @folio:     The folio to be mapped.
-> - * @offset:    The byte offset within the folio.
-> - *
-> - * Returns: The virtual address of the mapping
-> - *
-> - * Can be invoked from any context.
-> + * @folio: The folio containing the page.
-> + * @offset: The byte offset within the folio which identifies the page.
->   *
->   * Requires careful handling when nesting multiple mappings because the map
->   * management is stack based. The unmap has to be in the reverse order of
->   * the map operation:
->   *
-> - * addr1 = kmap_local_folio(page1, offset1);
-> - * addr2 = kmap_local_folio(page2, offset2);
-> + * addr1 = kmap_local_folio(folio1, offset1);
-> + * addr2 = kmap_local_folio(folio2, offset2);
->   * ...
->   * kunmap_local(addr2);
->   * kunmap_local(addr1);
-> @@ -131,6 +127,9 @@ static inline void *kmap_local_page(struct page *page);
->   * On HIGHMEM enabled systems mapping a highmem page has the side effect of
->   * disabling migration in order to keep the virtual address stable across
->   * preemption. No caller of kmap_local_folio() can rely on this side effect.
-> + *
-> + * Context: Can be invoked from any context.
-> + * Return: The virtual address of @offset.
->   */
->  static inline void *kmap_local_folio(struct folio *folio, size_t offset)
+On Wed, Jul 21, 2021 at 4:18 PM Sam Ravnborg <sam@ravnborg.org> wrote:
+> Hi Linus,
+> On Wed, Jul 21, 2021 at 04:00:35PM +0200, Linus Walleij wrote:
+> > On Wed, Jul 21, 2021 at 9:41 AM <dillon.minfei@gmail.com> wrote:
+> >
+> > > From: Dillon Min <dillon.minfei@gmail.com>
+> > >
+> > > Add documentation for "ilitek,ili9341" panel.
+> > >
+> > > Cc: Linus Walleij <linus.walleij@linaro.org>
+> > > Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> >
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> will you take care to push the patches now you did the review?
 
-This is clearer, thanks! 
+Yes but uncertain about patch 2/3 which fixes a DTS file.
 
-Maybe just add page to Return: description:
+Normally that should go through the SoC tree. I'm fine with
+applying 1 & 3 but don't want to cause excess errors in schema
+validation so I'm a bit ambivalent.
 
-* Return: The virtual address of page @offset.
+I would prefer if patch 2 gets applied to the SoC tree and
+propagate all the way to linux-next before applying patch 1 & 3
+but I understand that will take some time.
 
--- 
-Sincerely yours,
-Mike.
+Yours,
+Linus Walleij
