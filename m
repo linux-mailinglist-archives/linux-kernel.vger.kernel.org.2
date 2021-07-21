@@ -2,171 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6AC3D0F06
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18BE3D0F12
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbhGUMIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
+        id S233605AbhGUMJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231996AbhGUMIs (ORCPT
+        with ESMTP id S235353AbhGUMJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:08:48 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45D9C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 05:49:24 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m6Bez-0005Rz-3Z; Wed, 21 Jul 2021 14:49:13 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m6Bel-00009I-8O; Wed, 21 Jul 2021 14:48:59 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m6Bel-0000Yf-7G; Wed, 21 Jul 2021 14:48:59 +0200
-Date:   Wed, 21 Jul 2021 14:48:59 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Subject: Re: [v9 2/2] pwm: Add Aspeed ast2600 PWM support
-Message-ID: <20210721124859.clv6qlitbyomdz6s@pengutronix.de>
-References: <20210709065217.6153-1-billy_tsai@aspeedtech.com>
- <20210709065217.6153-3-billy_tsai@aspeedtech.com>
- <20210715150533.vppkw5oiomkxmfrn@pengutronix.de>
- <BD5B012C-B377-45E2-B04E-61D12B086670@aspeedtech.com>
- <20210716070943.ayxkz2irkwhgincz@pengutronix.de>
- <DD5590B4-11BC-411B-95BF-03AC26C078E4@aspeedtech.com>
- <20210716101301.l563tdwt5xuq5iq6@pengutronix.de>
- <3F12A498-DF5C-4954-8BCE-8C0C66BC9734@aspeedtech.com>
- <4BC9AEF6-31EA-4EDA-BCB2-7E4D44B6D5D2@aspeedtech.com>
+        Wed, 21 Jul 2021 08:09:17 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA9FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 05:49:54 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso3352335wmh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 05:49:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9fLe6r5M9YCsN+u9j0MHPR2O1k5FlFfghu7zbUgzRek=;
+        b=M5i5gEYYLvatVUqGemPlfqrKkQvWg/u7TigfdeKlfJ51trQJB/YjovQd0wBcnPPlKo
+         zy5e7xhnBqEOo58YPvm9dtPjSL8PRp/ybJcUh39yMm2TJl5789hJTnkOsJET8YHq0XFY
+         mOb4JqQLiM4OrEaoj1+daqmrsZViJJEExSpyvrdo/iMSuipoXNoE6FfrMYPCCGpjKLUk
+         x8xMhZOhjy9Mq1sWg8+jqhaX1E4luE3Qqapc+mkVPzI42TTVBGSm93cfM4mQbsALdK/t
+         Zgyfjq+KkoGYBx3CLMaBwCuHKb0e82+8EnoFB1j96XzsuoO55Yg37qYrPQCYIA6Qiynm
+         ri0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9fLe6r5M9YCsN+u9j0MHPR2O1k5FlFfghu7zbUgzRek=;
+        b=Sg+JUY7XoaCDeQYBX/ci/vC5kuH5+Dwy6wsyFhE363HgxjsoMHEuTB6xYhub7p4XyX
+         OwUO6yfNuYYfVSknZmb43ieE6RI64hiNn0c1zMhJIkg6uLZCFxr2zrq0j9FqUDemR+Ns
+         jIBkt0P/TGYBPcXAquSgz7LY7uWQp6QYX4wzW8Cb5QO7fi643Xrk0WSp0so4wTiTNAk9
+         g1GD+VZKoJwdSf9RYyuF+8tOT2YzI6M2aZLnzBn2MJNzrY8HwICSt2tJlAFIELu4H4mL
+         zs4k3Kqna2q2NdpjJgyA3u3aUGayLoM3eHaE+abOlAtD0fGAF3aRPrwjptJyb+Z3W5Dt
+         nm0g==
+X-Gm-Message-State: AOAM53248WyifiUKpJ5T8GgxpTbOYmscNJ1toZ1lwIP0X1Cb7gu24xc/
+        8+E/FaiXv0QH/lJ40LCXc7pBVrhHgjBtlA==
+X-Google-Smtp-Source: ABdhPJwTOHOy75FOleI/71nywuUkIrbymlJorqU7Xd2glO+xTVz6X9SxxQ4rx9TZS53VSyr2/yk+yA==
+X-Received: by 2002:a1c:1bc3:: with SMTP id b186mr3966568wmb.27.1626871792281;
+        Wed, 21 Jul 2021 05:49:52 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id w9sm22667429wmc.19.2021.07.21.05.49.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 05:49:51 -0700 (PDT)
+From:   Dmitry Safonov <dima@arista.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Dmitry Safonov <dima@arista.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Geffon <bgeffon@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chen Wandun <chenwandun@huawei.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH] mm/mremap: Don't account pages in vma_to_resize()
+Date:   Wed, 21 Jul 2021 13:49:49 +0100
+Message-Id: <20210721124949.517217-1-dima@arista.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sh6jjxfikryciybj"
-Content-Disposition: inline
-In-Reply-To: <4BC9AEF6-31EA-4EDA-BCB2-7E4D44B6D5D2@aspeedtech.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+All this vm_unacct_memory(charged) dance seems to complicate the life
+without a good reason. Furthermore, it seems not always done right on
+error-pathes in mremap_to().
+And worse than that: this `charged' difference is sometimes
+double-accounted for growing MREMAP_DONTUNMAP mremap()s in move_vma():
+: if (security_vm_enough_memory_mm(mm, new_len >> PAGE_SHIFT))
 
---sh6jjxfikryciybj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Let's not do this.
+Account memory in mremap() fast-path for growing VMAs or in move_vma()
+for actually moving things.
 
-On Wed, Jul 21, 2021 at 10:52:21AM +0000, Billy Tsai wrote:
-> Hi Uwe,
->=20
->     On 2021/7/16, 6:13 PM, "Uwe Kleine-K=F6nig" <u.kleine-koenig@pengutro=
-nix.de> wrote:
->=20
->         On Fri, Jul 16, 2021 at 09:22:22AM +0000, Billy Tsai wrote:
->         >> On 2021/7/16, 3:10 PM, "Uwe Kleine-K=F6nig" <u.kleine-koenig@p=
-engutronix.de> wrote:
->         >>=20
->         >>     On Fri, Jul 16, 2021 at 01:48:20AM +0000, Billy Tsai wrote:
->         >>     >> On 2021/7/15, 11:06 PM, "Uwe Kleine-K=F6nig" <u.kleine-=
-koenig@pengutronix.de>> wrote:
->         >>     >>     > Another is: The PWM doesn't support duty_cycle 0,=
- on such a request the
->         >>     >>     > PWM is disabled which results in a constant inact=
-ive level.
->         >>     >>=20
->         >>     >>     > (This is correct, is it? Or does it yield a const=
-ant 0 level?)
->         >>     >>=20
->         >>     >> Our pwm can support duty_cycle 0 by unset CLK_ENABLE.
->         >>=20
->         >>     > This has a slightly different semantic though. Some cons=
-umer might
->         >>     > expect that the following sequence:
->         >>=20
->         >>     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 10=
-000, .enabled =3D true })
->         >>     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 0,=
- .enabled =3D true })
->         >>     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 10=
-000, .enabled =3D true })
->         >>=20
->         >>     > results in the output being low for an integer multiple =
-of 10 =B5s. This
->         >>     > isn't given with setting CLK_ENABLE to zero, is it? (I d=
-idn't recheck,
->         >>     > if the PWM doesn't complete periods on reconfiguration t=
-his doesn't
->         >>     > matter much though.)
->         >> Thanks for the explanation.
->         >> Our hardware actually can only support duty from 1/256 to 256/=
-256.
->         >> For this situation I can do possible solution:
->         >> We can though change polarity to meet this requirement. Invers=
-e the pin and use
->         >> duty_cycle 100.=20
->         >> But I think this is not a good solution for this problem right?
->=20
->         > If this doesn't result in more glitches that would be fine for =
-me.
->         > (Assuming it is documented good enough in the code to be
->         > understandable.)
->=20
->     > The polarity of our pwm controller will affect the duty cycle range:
->     > PWM_POLARITY_INVERSED : Support duty_cycle from 0% to 99%
->     > PWM_POLARITY_NORMAL: Support duty_cycle from 1% to 100%
->     > Dynamic change polarity will result in more glitches. Thus, this wi=
-ll become
->     > a trade-off between 100% and 0% duty_cycle support for user to use =
-our pwm device.
->     > I will document it and send next patch.
->=20
-> For handling the situation that the user want to set the duty cycle to 0%=
-, the driver can:
-> 1. Just return the error.
-> 2. Use the minimum duty cycle value.
-> I don't know which solution will be the better way or others.
-> I would be grateful if you can give me some suggestion about this problem.
+Originally noticed by Chen Wandun:
+https://lkml.kernel.org/r/20210717101942.120607-1-chenwandun@huawei.com
 
-I thought if you disable the PWM it emits the inactive level? Then this
-is the best you can do if duty_cycle =3D 0 is requested.
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Brian Geffon <bgeffon@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Chen Wandun <chenwandun@huawei.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Ralph Campbell <rcampbell@nvidia.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: Will Deacon <will@kernel.org>
+Fixes: e346b3813067 ("mm/mremap: add MREMAP_DONTUNMAP to mremap()")
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+---
+ mm/mremap.c | 36 +++++++++++++-----------------------
+ 1 file changed, 13 insertions(+), 23 deletions(-)
 
-Best regards
-Uwe
+diff --git a/mm/mremap.c b/mm/mremap.c
+index 5989d3990020..ae48955aee74 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -708,8 +708,7 @@ static unsigned long move_vma(struct vm_area_struct *vma,
+ }
+ 
+ static struct vm_area_struct *vma_to_resize(unsigned long addr,
+-	unsigned long old_len, unsigned long new_len, unsigned long flags,
+-	unsigned long *p)
++	unsigned long old_len, unsigned long new_len, unsigned long flags)
+ {
+ 	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma;
+@@ -768,13 +767,6 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
+ 				(new_len - old_len) >> PAGE_SHIFT))
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	if (vma->vm_flags & VM_ACCOUNT) {
+-		unsigned long charged = (new_len - old_len) >> PAGE_SHIFT;
+-		if (security_vm_enough_memory_mm(mm, charged))
+-			return ERR_PTR(-ENOMEM);
+-		*p = charged;
+-	}
+-
+ 	return vma;
+ }
+ 
+@@ -787,7 +779,6 @@ static unsigned long mremap_to(unsigned long addr, unsigned long old_len,
+ 	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma;
+ 	unsigned long ret = -EINVAL;
+-	unsigned long charged = 0;
+ 	unsigned long map_flags = 0;
+ 
+ 	if (offset_in_page(new_addr))
+@@ -830,7 +821,7 @@ static unsigned long mremap_to(unsigned long addr, unsigned long old_len,
+ 		old_len = new_len;
+ 	}
+ 
+-	vma = vma_to_resize(addr, old_len, new_len, flags, &charged);
++	vma = vma_to_resize(addr, old_len, new_len, flags);
+ 	if (IS_ERR(vma)) {
+ 		ret = PTR_ERR(vma);
+ 		goto out;
+@@ -853,7 +844,7 @@ static unsigned long mremap_to(unsigned long addr, unsigned long old_len,
+ 				((addr - vma->vm_start) >> PAGE_SHIFT),
+ 				map_flags);
+ 	if (IS_ERR_VALUE(ret))
+-		goto out1;
++		goto out;
+ 
+ 	/* We got a new mapping */
+ 	if (!(flags & MREMAP_FIXED))
+@@ -862,12 +853,6 @@ static unsigned long mremap_to(unsigned long addr, unsigned long old_len,
+ 	ret = move_vma(vma, addr, old_len, new_len, new_addr, locked, flags, uf,
+ 		       uf_unmap);
+ 
+-	if (!(offset_in_page(ret)))
+-		goto out;
+-
+-out1:
+-	vm_unacct_memory(charged);
+-
+ out:
+ 	return ret;
+ }
+@@ -899,7 +884,6 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+ 	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma;
+ 	unsigned long ret = -EINVAL;
+-	unsigned long charged = 0;
+ 	bool locked = false;
+ 	bool downgraded = false;
+ 	struct vm_userfaultfd_ctx uf = NULL_VM_UFFD_CTX;
+@@ -981,7 +965,7 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+ 	/*
+ 	 * Ok, we need to grow..
+ 	 */
+-	vma = vma_to_resize(addr, old_len, new_len, flags, &charged);
++	vma = vma_to_resize(addr, old_len, new_len, flags);
+ 	if (IS_ERR(vma)) {
+ 		ret = PTR_ERR(vma);
+ 		goto out;
+@@ -994,8 +978,16 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+ 		if (vma_expandable(vma, new_len - old_len)) {
+ 			int pages = (new_len - old_len) >> PAGE_SHIFT;
+ 
++			if (vma->vm_flags & VM_ACCOUNT) {
++				if (security_vm_enough_memory_mm(mm, pages)) {
++					ret = -ENOMEM;
++					goto out;
++				}
++			}
++
+ 			if (vma_adjust(vma, vma->vm_start, addr + new_len,
+ 				       vma->vm_pgoff, NULL)) {
++				vm_unacct_memory(pages);
+ 				ret = -ENOMEM;
+ 				goto out;
+ 			}
+@@ -1034,10 +1026,8 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+ 			       &locked, flags, &uf, &uf_unmap);
+ 	}
+ out:
+-	if (offset_in_page(ret)) {
+-		vm_unacct_memory(charged);
++	if (offset_in_page(ret))
+ 		locked = false;
+-	}
+ 	if (downgraded)
+ 		mmap_read_unlock(current->mm);
+ 	else
+-- 
+2.32.0
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---sh6jjxfikryciybj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmD4F7gACgkQwfwUeK3K
-7AkJmQgAnqDb+O4do8MRPO90e+3qhwE2WBmoUv3JcNTC4u/KvdJlWCq1JvKmGjAs
-L5nbyWsMVXT9A6Ry1xVvDH5jIVd9kpLns5ApiyURH94FUZR/wG9BfpaLdSDwzLzM
-W8WOr3c5Dcq9D/2j0cZ5xcjcg4kC31NkCkEL9U4dBYY+8XQ3f5zkKQgLzvJiEgSV
-P43lIjEFxmkZLZ2p+EWTMDK+fxYq6GXTcjLY+zVbmLh3S7kcTrf9ccSGS4tb8Xha
-oytit4cw0uUZ8tGk1dLSMysNexb/6p/QKfC5XSe7vshfobkDryGZUa9UQT4GmqTU
-h4V6Sk4tjTVpfnBEWUL5fadiMoc/nQ==
-=bCmv
------END PGP SIGNATURE-----
-
---sh6jjxfikryciybj--
