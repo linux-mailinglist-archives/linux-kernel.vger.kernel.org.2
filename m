@@ -2,356 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED44A3D1334
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB9C3D133D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 18:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbhGUPVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 11:21:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49372 "EHLO
+        id S230383AbhGUPYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 11:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhGUPVr (ORCPT
+        with ESMTP id S230185AbhGUPYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:21:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12673C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:02:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=L0rgG4EJeXpovhpXwl2DgG837tqFwqB9CPy8joRs7n4=; b=hW5O9M4BRvla3Ak7xYsdSvRW2v
-        AQBxPFtWHyyXI8fwpvvQBErkwwsMJ4oKsjoRnH3NrcvW0Q1k5eE3scc02cf7JMzPrET9J2v0G0NSP
-        KvP6iPzb5ApwW1VyvxcV2lYB7UPUdFF3Ft7EjO96lI+fO8fCPvRokcEPaNXNViApzZ9Hh6dMn/vVY
-        4y26URANnd4gobzsa33vjvKMfKOXqe6H1HTRXyVWjJerE8as8MGy7JFnRHm5qYGcNn13gJX/26LtO
-        VG6HgywbqmGUhv+cxyjXR7LapkzeHVyb9EjyIj7D4/Kmijnbbh+Ps1OcmNygJ9mWoR95RisenZY9A
-        b0GPlvcg==;
-Received: from [2001:4bb8:193:7660:d6d5:72f4:23f7:1898] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6Efb-009Mlw-V3; Wed, 21 Jul 2021 16:02:06 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>
-Cc:     intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 21/21] drm/i915/gvt: remove struct intel_gvt_mpt
-Date:   Wed, 21 Jul 2021 17:53:55 +0200
-Message-Id: <20210721155355.173183-22-hch@lst.de>
+        Wed, 21 Jul 2021 11:24:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28F5C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 09:05:16 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1m6Ei2-0007F5-OS; Wed, 21 Jul 2021 18:04:34 +0200
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1m6Ehw-0004VU-OE; Wed, 21 Jul 2021 18:04:28 +0200
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     kernel@pengutronix.de, Andreas Rammhold <andreas@rammhold.de>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Richard Weinberger <richard@nod.at>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+Subject: [PATCH v2] KEYS: trusted: fix use as module when CONFIG_TCG_TPM=m
+Date:   Wed, 21 Jul 2021 18:02:59 +0200
+Message-Id: <20210721160258.7024-1-a.fatoum@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210721155355.173183-1-hch@lst.de>
-References: <20210721155355.173183-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just call the initializion and exit functions directly and remove
-this abstraction entirely.
+Since commit 5d0682be3189 ("KEYS: trusted: Add generic trusted keys
+framework"), trusted.ko built with CONFIG_TCG_TPM=CONFIG_TRUSTED_KEYS=m
+will not register the TPM trusted key type at runtime.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+This is because, after that rework, CONFIG_DEPENDENCY of the TPM
+and TEE backends were checked with #ifdef, but that's only true
+when they're built-in.
+
+Fix this by introducing two new boolean Kconfig symbols:
+TRUSTED_KEYS_TPM and TRUSTED_KEYS_TEE with the appropriate
+dependencies and use them to check which backends are available.
+
+This also has a positive effect on user experience:
+
+ - It's now possible to use TEE trusted keys without CONFIG_TCG_TPM
+ - It's now possible to enable CONFIG_TCG_TPM, but exclude TPM from
+   available trust sources
+ - TEE=m && TRUSTED_KEYS=y no longer leads to TEE support
+   being silently dropped
+
+Any code depending on the TPM trusted key backend or symbols exported
+by it will now need to explicitly state that it
+
+  depends on TRUSTED_KEYS && TRUSTED_KEYS_TPM
+
+The latter to ensure the dependency is built and the former to ensure
+it's reachable for module builds. This currently only affects
+CONFIG_ASYMMETRIC_TPM_KEY_SUBTYPE, so it's fixed up here as well.
+
+Reported-by: Andreas Rammhold <andreas@rammhold.de>
+Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 ---
- drivers/gpu/drm/i915/gvt/gvt.c       | 11 ++++-
- drivers/gpu/drm/i915/gvt/gvt.h       | 12 ++---
- drivers/gpu/drm/i915/gvt/hypercall.h | 50 -------------------
- drivers/gpu/drm/i915/gvt/kvmgt.c     | 39 ++-------------
- drivers/gpu/drm/i915/gvt/mpt.h       | 74 ----------------------------
- 5 files changed, 17 insertions(+), 169 deletions(-)
- delete mode 100644 drivers/gpu/drm/i915/gvt/hypercall.h
- delete mode 100644 drivers/gpu/drm/i915/gvt/mpt.h
 
-diff --git a/drivers/gpu/drm/i915/gvt/gvt.c b/drivers/gpu/drm/i915/gvt/gvt.c
-index 2b59e79f5e3b..c55c542e3c75 100644
---- a/drivers/gpu/drm/i915/gvt/gvt.c
-+++ b/drivers/gpu/drm/i915/gvt/gvt.c
-@@ -135,7 +135,8 @@ static void intel_gvt_clean_device(struct drm_i915_private *i915)
- 	if (drm_WARN_ON(&i915->drm, !gvt))
- 		return;
+(Implicit) v1 was as a preparatory patch for CAAM trusted keys[1] with the
+goal of fixing the Kconfig inflexibility after the TEE trusted key rework.
+
+Unbeknownst to me, it also fixes a regression, which was later
+reported by Andreas[2] along with a patch.
+
+I split out the fix from the CAAM series and adjusted the commit
+message to explain the regression.
+
+v1 -> v2:
+  - Move rest of TPM-related selects from TRUSTED_KEYS to
+    TRUSTED_KEYS_TPM (Sumit)
+  - Remove left-over line in Makefile (Sumit)
+  - added Fixes: tag
+  - adjust commit message to reference the regression reported
+    by Andreas
+  - have ASYMMETRIC_TPM_KEY_SUBTYPE depend on TRUSTED_KEYS_TPM,
+    because it references global symbols that are exported
+    by the trusted key TPM backend.
+
+[1]: https://lore.kernel.org/linux-integrity/f8285eb0135ba30c9d846cf9dd395d1f5f8b1efc.1624364386.git-series.a.fatoum@pengutronix.de/
+[2]: https://lore.kernel.org/linux-integrity/20210719091335.vwfebcpkf4pag3wm@wrt/T/#t
+
+To: Jarkko Sakkinen <jarkko@kernel.org>
+To: James Morris <jmorris@namei.org>
+To: "Serge E. Hallyn" <serge@hallyn.com>
+To: James Bottomley <jejb@linux.ibm.com>
+To: Mimi Zohar <zohar@linux.ibm.com>
+To: Sumit Garg <sumit.garg@linaro.org>
+To: David Howells <dhowells@redhat.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+To: "David S. Miller" <davem@davemloft.net>
+Cc: David Gstir <david@sigma-star.at>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: keyrings@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-security-module@vger.kernel.org
+Cc: linux-integrity@vger.kernel.org
+---
+ crypto/asymmetric_keys/Kconfig            |  2 +-
+ security/keys/Kconfig                     | 18 ++++++--------
+ security/keys/trusted-keys/Kconfig        | 29 +++++++++++++++++++++++
+ security/keys/trusted-keys/Makefile       |  8 +++----
+ security/keys/trusted-keys/trusted_core.c |  4 ++--
+ 5 files changed, 43 insertions(+), 18 deletions(-)
+ create mode 100644 security/keys/trusted-keys/Kconfig
+
+diff --git a/crypto/asymmetric_keys/Kconfig b/crypto/asymmetric_keys/Kconfig
+index 1f1f004dc757..8886eddbf881 100644
+--- a/crypto/asymmetric_keys/Kconfig
++++ b/crypto/asymmetric_keys/Kconfig
+@@ -25,7 +25,7 @@ config ASYMMETRIC_PUBLIC_KEY_SUBTYPE
+ config ASYMMETRIC_TPM_KEY_SUBTYPE
+ 	tristate "Asymmetric TPM backed private key subtype"
+ 	depends on TCG_TPM
+-	depends on TRUSTED_KEYS
++	depends on TRUSTED_KEYS && TRUSTED_KEYS_TPM
+ 	select CRYPTO_HMAC
+ 	select CRYPTO_SHA1
+ 	select CRYPTO_HASH_INFO
+diff --git a/security/keys/Kconfig b/security/keys/Kconfig
+index 64b81abd087e..9ec302962fe2 100644
+--- a/security/keys/Kconfig
++++ b/security/keys/Kconfig
+@@ -70,23 +70,19 @@ config BIG_KEYS
  
--	intel_gvt_hypervisor_host_exit(i915->drm.dev, gvt);
-+	mdev_unregister_device(i915->drm.dev);
-+	intel_gvt_cleanup_vgpu_type_groups(gvt);
- 	intel_gvt_destroy_idle_vgpu(gvt->idle_vgpu);
- 	intel_gvt_clean_vgpu_types(gvt);
+ config TRUSTED_KEYS
+ 	tristate "TRUSTED KEYS"
+-	depends on KEYS && TCG_TPM
+-	select CRYPTO
+-	select CRYPTO_HMAC
+-	select CRYPTO_SHA1
+-	select CRYPTO_HASH_INFO
+-	select ASN1_ENCODER
+-	select OID_REGISTRY
+-	select ASN1
++	depends on KEYS
+ 	help
+ 	  This option provides support for creating, sealing, and unsealing
+ 	  keys in the kernel. Trusted keys are random number symmetric keys,
+-	  generated and RSA-sealed by the TPM. The TPM only unseals the keys,
+-	  if the boot PCRs and other criteria match.  Userspace will only ever
+-	  see encrypted blobs.
++	  generated and sealed by a trust source selected at kernel boot-time.
++	  Userspace will only ever see encrypted blobs.
  
-@@ -235,13 +236,19 @@ static int intel_gvt_init_device(struct drm_i915_private *i915)
+ 	  If you are unsure as to whether this is required, answer N.
  
- 	intel_gvt_debugfs_init(gvt);
- 
--	ret = intel_gvt_hypervisor_host_init(i915->drm.dev, gvt);
-+	ret = intel_gvt_init_vgpu_type_groups(gvt);
- 	if (ret)
- 		goto out_destroy_idle_vgpu;
- 
-+	ret = mdev_register_device(i915->drm.dev, &intel_vgpu_ops);
-+	if (ret)
-+		goto out_cleanup_vgpu_type_groups;
++if TRUSTED_KEYS
++source "security/keys/trusted-keys/Kconfig"
++endif
 +
- 	gvt_dbg_core("gvt device initialization is done\n");
- 	return 0;
- 
-+out_cleanup_vgpu_type_groups:
-+	intel_gvt_cleanup_vgpu_type_groups(gvt);
- out_destroy_idle_vgpu:
- 	intel_gvt_destroy_idle_vgpu(gvt->idle_vgpu);
- 	intel_gvt_debugfs_clean(gvt);
-diff --git a/drivers/gpu/drm/i915/gvt/gvt.h b/drivers/gpu/drm/i915/gvt/gvt.h
-index a8fc381f558e..a1fba27462b7 100644
---- a/drivers/gpu/drm/i915/gvt/gvt.h
-+++ b/drivers/gpu/drm/i915/gvt/gvt.h
-@@ -40,7 +40,6 @@
- #include "i915_drv.h"
- 
- #include "debug.h"
--#include "hypercall.h"
- #include "mmio.h"
- #include "reg.h"
- #include "interrupt.h"
-@@ -58,12 +57,6 @@
- 
- #define GVT_MAX_VGPU 8
- 
--struct intel_gvt_host {
--	const struct intel_gvt_mpt *mpt;
--};
--
--extern struct intel_gvt_host intel_gvt_host;
--
- /* Describe per-platform limitations. */
- struct intel_gvt_device_info {
- 	u32 max_support_vgpus;
-@@ -772,9 +765,12 @@ int intel_gvt_dma_map_guest_page(struct intel_vgpu *vgpu, unsigned long gfn,
- void intel_gvt_dma_unmap_guest_page(struct intel_vgpu *vgpu,
- 		dma_addr_t dma_addr);
- 
-+int intel_gvt_init_vgpu_type_groups(struct intel_gvt *gvt);
-+void intel_gvt_cleanup_vgpu_type_groups(struct intel_gvt *gvt);
+ config ENCRYPTED_KEYS
+ 	tristate "ENCRYPTED KEYS"
+ 	depends on KEYS
+diff --git a/security/keys/trusted-keys/Kconfig b/security/keys/trusted-keys/Kconfig
+new file mode 100644
+index 000000000000..c163cfeedff6
+--- /dev/null
++++ b/security/keys/trusted-keys/Kconfig
+@@ -0,0 +1,29 @@
++config TRUSTED_KEYS_TPM
++	bool "TPM-based trusted keys"
++	depends on TCG_TPM >= TRUSTED_KEYS
++	default y
++	select CRYPTO
++	select CRYPTO_HMAC
++	select CRYPTO_SHA1
++	select CRYPTO_HASH_INFO
++	select ASN1_ENCODER
++	select OID_REGISTRY
++	select ASN1
++	help
++	  Enable use of the Trusted Platform Module (TPM) as trusted key
++	  backend. Trusted keys are are random number symmetric keys,
++	  which will be generated and RSA-sealed by the TPM.
++	  The TPM only unseals the keys, if the boot PCRs and other
++	  criteria match.
 +
- #include "trace.h"
--#include "mpt.h"
++config TRUSTED_KEYS_TEE
++	bool "TEE-based trusted keys"
++	depends on TEE >= TRUSTED_KEYS
++	default y
++	help
++	  Enable use of the Trusted Execution Environment (TEE) as trusted
++	  key backend.
++
++if !TRUSTED_KEYS_TPM && !TRUSTED_KEYS_TEE
++comment "No trust source selected!"
++endif
+diff --git a/security/keys/trusted-keys/Makefile b/security/keys/trusted-keys/Makefile
+index feb8b6c3cc79..2e2371eae4d5 100644
+--- a/security/keys/trusted-keys/Makefile
++++ b/security/keys/trusted-keys/Makefile
+@@ -5,10 +5,10 @@
  
-+extern const struct mdev_parent_ops intel_vgpu_ops;
- extern const struct i915_virtual_gpu_ops intel_gvt_vgpu_ops;
+ obj-$(CONFIG_TRUSTED_KEYS) += trusted.o
+ trusted-y += trusted_core.o
+-trusted-y += trusted_tpm1.o
++trusted-$(CONFIG_TRUSTED_KEYS_TPM) += trusted_tpm1.o
  
+ $(obj)/trusted_tpm2.o: $(obj)/tpm2key.asn1.h
+-trusted-y += trusted_tpm2.o
+-trusted-y += tpm2key.asn1.o
++trusted-$(CONFIG_TRUSTED_KEYS_TPM) += trusted_tpm2.o
++trusted-$(CONFIG_TRUSTED_KEYS_TPM) += tpm2key.asn1.o
+ 
+-trusted-$(CONFIG_TEE) += trusted_tee.o
++trusted-$(CONFIG_TRUSTED_KEYS_TEE) += trusted_tee.o
+diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
+index d5c891d8d353..8cab69e5d0da 100644
+--- a/security/keys/trusted-keys/trusted_core.c
++++ b/security/keys/trusted-keys/trusted_core.c
+@@ -27,10 +27,10 @@ module_param_named(source, trusted_key_source, charp, 0);
+ MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
+ 
+ static const struct trusted_key_source trusted_key_sources[] = {
+-#if defined(CONFIG_TCG_TPM)
++#if defined(CONFIG_TRUSTED_KEYS_TPM)
+ 	{ "tpm", &trusted_key_tpm_ops },
  #endif
-diff --git a/drivers/gpu/drm/i915/gvt/hypercall.h b/drivers/gpu/drm/i915/gvt/hypercall.h
-deleted file mode 100644
-index d49437aeabac..000000000000
---- a/drivers/gpu/drm/i915/gvt/hypercall.h
-+++ /dev/null
-@@ -1,50 +0,0 @@
--/*
-- * Copyright(c) 2011-2016 Intel Corporation. All rights reserved.
-- *
-- * Permission is hereby granted, free of charge, to any person obtaining a
-- * copy of this software and associated documentation files (the "Software"),
-- * to deal in the Software without restriction, including without limitation
-- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-- * and/or sell copies of the Software, and to permit persons to whom the
-- * Software is furnished to do so, subject to the following conditions:
-- *
-- * The above copyright notice and this permission notice (including the next
-- * paragraph) shall be included in all copies or substantial portions of the
-- * Software.
-- *
-- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-- * SOFTWARE.
-- *
-- * Authors:
-- *    Eddie Dong <eddie.dong@intel.com>
-- *    Dexuan Cui
-- *    Jike Song <jike.song@intel.com>
-- *
-- * Contributors:
-- *    Zhi Wang <zhi.a.wang@intel.com>
-- *
-- */
--
--#ifndef _GVT_HYPERCALL_H_
--#define _GVT_HYPERCALL_H_
--
--#include <linux/types.h>
--
--struct device;
--struct intel_vgpu;
--
--/*
-- * Specific GVT-g MPT modules function collections. Currently GVT-g supports
-- * both Xen and KVM by providing dedicated hypervisor-related MPT modules.
-- */
--struct intel_gvt_mpt {
--	int (*host_init)(struct device *dev, void *gvt);
--	void (*host_exit)(struct device *dev, void *gvt);
--};
--
--#endif /* _GVT_HYPERCALL_H_ */
-diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
-index 5f10ed5eccde..5c72dcf205fb 100644
---- a/drivers/gpu/drm/i915/gvt/kvmgt.c
-+++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-@@ -153,7 +153,7 @@ static struct attribute_group *gvt_vgpu_type_groups[] = {
- 	[0 ... NR_MAX_INTEL_VGPU_TYPES - 1] = NULL,
+-#if defined(CONFIG_TEE)
++#if defined(CONFIG_TRUSTED_KEYS_TEE)
+ 	{ "tee", &trusted_key_tee_ops },
+ #endif
  };
- 
--static int intel_gvt_init_vgpu_type_groups(struct intel_gvt *gvt)
-+int intel_gvt_init_vgpu_type_groups(struct intel_gvt *gvt)
- {
- 	int i, j;
- 	struct intel_vgpu_type *type;
-@@ -182,7 +182,7 @@ static int intel_gvt_init_vgpu_type_groups(struct intel_gvt *gvt)
- 	return -ENOMEM;
- }
- 
--static void intel_gvt_cleanup_vgpu_type_groups(struct intel_gvt *gvt)
-+void intel_gvt_cleanup_vgpu_type_groups(struct intel_gvt *gvt)
- {
- 	int i;
- 	struct attribute_group *group;
-@@ -1646,8 +1646,9 @@ static const struct attribute_group *intel_vgpu_groups[] = {
- 	NULL,
- };
- 
--static struct mdev_parent_ops intel_vgpu_ops = {
-+const struct mdev_parent_ops intel_vgpu_ops = {
- 	.mdev_attr_groups       = intel_vgpu_groups,
-+	.supported_type_groups	= gvt_vgpu_type_groups,
- 	.create			= intel_vgpu_create,
- 	.remove			= intel_vgpu_remove,
- 
-@@ -1660,29 +1661,6 @@ static struct mdev_parent_ops intel_vgpu_ops = {
- 	.ioctl			= intel_vgpu_ioctl,
- };
- 
--static int kvmgt_host_init(struct device *dev, void *gvt)
--{
--	int ret;
--
--	ret = intel_gvt_init_vgpu_type_groups((struct intel_gvt *)gvt);
--	if (ret)
--		return ret;
--
--	intel_vgpu_ops.supported_type_groups = gvt_vgpu_type_groups;
--
--	ret = mdev_register_device(dev, &intel_vgpu_ops);
--	if (ret)
--		intel_gvt_cleanup_vgpu_type_groups((struct intel_gvt *)gvt);
--
--	return ret;
--}
--
--static void kvmgt_host_exit(struct device *dev, void *gvt)
--{
--	mdev_unregister_device(dev);
--	intel_gvt_cleanup_vgpu_type_groups((struct intel_gvt *)gvt);
--}
--
- int intel_gvt_page_track_add(struct intel_vgpu *info, u64 gfn)
- {
- 	struct kvm *kvm = info->kvm;
-@@ -1945,14 +1923,5 @@ void intel_gvt_dma_unmap_guest_page(struct intel_vgpu *vgpu,
- 	mutex_unlock(&vgpu->cache_lock);
- }
- 
--static const struct intel_gvt_mpt kvmgt_mpt = {
--	.host_init = kvmgt_host_init,
--	.host_exit = kvmgt_host_exit,
--};
--
--struct intel_gvt_host intel_gvt_host = {
--	.mpt		= &kvmgt_mpt,
--};
--
- MODULE_LICENSE("GPL and additional rights");
- MODULE_AUTHOR("Intel Corporation");
-diff --git a/drivers/gpu/drm/i915/gvt/mpt.h b/drivers/gpu/drm/i915/gvt/mpt.h
-deleted file mode 100644
-index 3be602a3f764..000000000000
---- a/drivers/gpu/drm/i915/gvt/mpt.h
-+++ /dev/null
-@@ -1,74 +0,0 @@
--/*
-- * Copyright(c) 2011-2016 Intel Corporation. All rights reserved.
-- *
-- * Permission is hereby granted, free of charge, to any person obtaining a
-- * copy of this software and associated documentation files (the "Software"),
-- * to deal in the Software without restriction, including without limitation
-- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-- * and/or sell copies of the Software, and to permit persons to whom the
-- * Software is furnished to do so, subject to the following conditions:
-- *
-- * The above copyright notice and this permission notice (including the next
-- * paragraph) shall be included in all copies or substantial portions of the
-- * Software.
-- *
-- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-- * SOFTWARE.
-- *
-- * Authors:
-- *    Eddie Dong <eddie.dong@intel.com>
-- *    Dexuan Cui
-- *    Jike Song <jike.song@intel.com>
-- *
-- * Contributors:
-- *    Zhi Wang <zhi.a.wang@intel.com>
-- *
-- */
--
--#ifndef _GVT_MPT_H_
--#define _GVT_MPT_H_
--
--#include "gvt.h"
--
--/**
-- * DOC: Hypervisor Service APIs for GVT-g Core Logic
-- *
-- * This is the glue layer between specific hypervisor MPT modules and GVT-g core
-- * logic. Each kind of hypervisor MPT module provides a collection of function
-- * callbacks and will be attached to GVT host when the driver is loading.
-- * GVT-g core logic will call these APIs to request specific services from
-- * hypervisor.
-- */
--
--/**
-- * intel_gvt_hypervisor_host_init - init GVT-g host side
-- *
-- * Returns:
-- * Zero on success, negative error code if failed
-- */
--static inline int intel_gvt_hypervisor_host_init(struct device *dev, void *gvt)
--{
--	if (!intel_gvt_host.mpt->host_init)
--		return -ENODEV;
--
--	return intel_gvt_host.mpt->host_init(dev, gvt);
--}
--
--/**
-- * intel_gvt_hypervisor_host_exit - exit GVT-g host side
-- */
--static inline void intel_gvt_hypervisor_host_exit(struct device *dev, void *gvt)
--{
--	/* optional to provide */
--	if (!intel_gvt_host.mpt->host_exit)
--		return;
--
--	intel_gvt_host.mpt->host_exit(dev, gvt);
--}
--
--#endif /* _GVT_MPT_H_ */
 -- 
 2.30.2
 
