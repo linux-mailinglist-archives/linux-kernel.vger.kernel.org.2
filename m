@@ -2,177 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AAF3D1199
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFFB3D119C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239127AbhGUOFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:05:31 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9598 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232977AbhGUOF3 (ORCPT
+        id S239274AbhGUOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:05:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57662 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232977AbhGUOFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:05:29 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LEXGE6016086;
-        Wed, 21 Jul 2021 10:46:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=idOSKcIpSGAJCFkAxhVfxNrXuZDZVWjSg4IXQKAQfKE=;
- b=Zvd1yKxfs0V2BAD32UYslyzCjxyZQupea4xRTwXP/DNmFaLTCfLyykyQ90YXJ3vI89Mb
- wc/X+fts0l8tWZOXiYAPk3QDrVUiPqUMj779KZZ09GTosmCf2xbfyp5AX2eG6neqMA9/
- z1j7YKgK3bKnOuVXJWh7JkhBT3/cMUZkZGYV1sdSEnjw4rcH81qoS91YxW5lRyDaaIKL
- eheUWMxRZ3sx6vB7CDjcEM3EvBCIdYqwcLXyOtGfweuxRrCflWlUO7ulAO9d4Uz8Rivp
- zJKF42RWdIvmEoGvlxn1Te3X5VABDt5xMox1AMWElNenHZI2YRoaAspXjzS4kyefNz6H 2g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39xkeemes9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 10:46:03 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16LEXlQs018761;
-        Wed, 21 Jul 2021 10:46:02 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39xkeemek3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 10:46:02 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16LEhiTh023345;
-        Wed, 21 Jul 2021 14:45:57 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 39upu89xn4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Jul 2021 14:45:57 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16LEjsqO30540110
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 14:45:54 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2899E42045;
-        Wed, 21 Jul 2021 14:45:54 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1378C42042;
-        Wed, 21 Jul 2021 14:45:53 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.34.151])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed, 21 Jul 2021 14:45:52 +0000 (GMT)
-Date:   Wed, 21 Jul 2021 16:45:50 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
-Subject: Re: [PATCH 2/2] s390/vfio-ap: replace open coded locks for
- VFIO_GROUP_NOTIFY_SET_KVM notification
-Message-ID: <20210721164550.5402fe1c.pasic@linux.ibm.com>
-In-Reply-To: <20210719193503.793910-3-akrowiak@linux.ibm.com>
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
-        <20210719193503.793910-3-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 21 Jul 2021 10:05:45 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7FB702255F;
+        Wed, 21 Jul 2021 14:46:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626878781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GKBbRf6M5YRpXhRu4kWBBslSOKw3EM2yD26p1YHSL1g=;
+        b=Qw4qDueueWpWmpsvX1l2RGTlFdu9jNaZLYPSfsfOwMnHO2W//fPPyh24R3vXbZFKdj6Fbl
+        KK141wzLn9oFsgrz1cwnIwmZn5iOicYNFZ3d6+vVoAwubILbrEJQZ1T/H1CvGKAKPQ9Eo6
+        9P1ob9tEcUHAc8XsEN0bWhrVVTW0rS0=
+Received: from suse.cz (pathway.suse.cz [10.100.12.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 330B1A3B92;
+        Wed, 21 Jul 2021 14:46:21 +0000 (UTC)
+Date:   Wed, 21 Jul 2021 16:46:21 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Dmitry Safonov <dima@arista.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2 2/2] printk: Add printk.console_verbose boot parameter
+Message-ID: <20210721144621.ddvxouzxpp6sn4ec@pathway.suse.cz>
+References: <20210713011511.215808-1-dima@arista.com>
+ <20210713011511.215808-3-dima@arista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: tOr7mkqCo33hLxPXSEAClv6pfQtjgpgP
-X-Proofpoint-ORIG-GUID: F0wvlLJxm9y82zazex2Nac9ePluYyTaj
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-21_09:2021-07-21,2021-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- priorityscore=1501 mlxlogscore=999 mlxscore=0 suspectscore=0
- lowpriorityscore=0 impostorscore=0 spamscore=0 adultscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107210084
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713011511.215808-3-dima@arista.com>
+User-Agent: NeoMutt/20170912 (1.9.0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 15:35:03 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-
-> It was pointed out during an unrelated patch review that locks should not
-
-[..]
-
-> -static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
-> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev,
-> +				   struct kvm *kvm)
->  {
-> -	/*
-> -	 * If the KVM pointer is in the process of being set, wait until the
-> -	 * process has completed.
-> -	 */
-> -	wait_event_cmd(matrix_mdev->wait_for_kvm,
-> -		       !matrix_mdev->kvm_busy,
-> -		       mutex_unlock(&matrix_dev->lock),
-> -		       mutex_lock(&matrix_dev->lock));
-> -
-> -	if (matrix_mdev->kvm) {
-
-We used to check if matrix_mdev->kvm is null, but ...
-
-> -		matrix_mdev->kvm_busy = true;
-> -		mutex_unlock(&matrix_dev->lock);
-> -
-> -		if (matrix_mdev->kvm->arch.crypto.crycbd) {
-> -			down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> -			matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> -			up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> -
-> -			kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> -		}
-> +	if (kvm->arch.crypto.crycbd) {
-
-... now we just try to dereference it. And ..
-
-> +		down_write(&kvm->arch.crypto.pqap_hook_rwsem);
-> +		kvm->arch.crypto.pqap_hook = NULL;
-> +		up_write(&kvm->arch.crypto.pqap_hook_rwsem);
+On Tue 2021-07-13 02:15:11, Dmitry Safonov wrote:
+> console_verbose() increases console loglevel to CONSOLE_LOGLEVEL_MOTORMOUTH,
+> which provides more information to debug a panic/oops.
 > 
-> +		mutex_lock(&kvm->lock);
->  		mutex_lock(&matrix_dev->lock);
+> Unfortunately, in Arista we maintain some DUTs (Device Under Test) that
+> are configured to have 9600 baud rate. While verbose console messages
+> have their value to post-analyze crashes, on such setup they:
+> - may prevent panic/oops messages being printed
+> - take too long to flush on console resulting in watchdog reboot
+> 
+> In all our setups we use kdump which saves dmesg buffer after panic,
+> so in reality those extra messages on console provide no additional value,
+> but rather add risk of not getting to __crash_kexec().
+
+Yup, it makes sense.
+
+> Provide printk.console_verbose boot parameter, which allows to switch off
+> printk being verbose on oops/panic/lockdep (making it boot parameter
+> instead of compile-option suggested-by Petr).
+>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Ogness <john.ogness@linutronix.de>
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 9 +++++++++
+>  include/linux/printk.h                          | 4 +++-
+>  kernel/printk/printk.c                          | 6 ++++++
+>  3 files changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index bdb22006f713..9fae19b1edd8 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -4167,6 +4167,15 @@
+>  			Format: <bool>  (1/Y/y=enable, 0/N/n=disable)
+>  			default: disabled
+>  
+> +	printk.console_verbose=
+> +			Raise console loglevel to highest on oops, panic or
+> +			lockdep-detected issues (only if lock debug is on).
+> +			With an exception to setups with low baudrate on
+> +			serial console, keeping this enabled is a good choice
+> +			in order to provide more debug information.
+> +			Format: <bool>  (1/Y/y=enable, 0/N/n=disable)
+> +			default: enabled
+
+Hmm, the name suggests that the console should always be verbose.
+It looks like a counterpart to the "quiet" option.
+
+It actually is a counter part to the existing "quiet" option
+except that it triggers in some situations only.
+
+Hence, I would call it "no_auto_verbose":
+
+   + "verbose" follows the simple naming scheme of the existing
+     "quiet" option (no "printk" and no "console" in the name)
+
+   + "no_auto" suggests that it disables some auto-verbose behavior
+     which is exactly what it does.
+
+Any better idea?
+
 > +
-> +		kvm_arch_crypto_clear_masks(kvm);
->  		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-> -		kvm_put_kvm(matrix_mdev->kvm);
-> +		kvm_put_kvm(kvm);
->  		matrix_mdev->kvm = NULL;
-> -		matrix_mdev->kvm_busy = false;
-> -		wake_up_all(&matrix_mdev->wait_for_kvm);
+>  	printk.devkmsg={on,off,ratelimit}
+>  			Control writing to /dev/kmsg.
+>  			on - unlimited logging to /dev/kmsg from userspace
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index a63f468a8239..9d0b8133a03c 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -70,9 +70,11 @@ extern int console_printk[];
+>  #define minimum_console_loglevel (console_printk[2])
+>  #define default_console_loglevel (console_printk[3])
+>  
+> +extern bool printk_console_verbose;
 > +
-> +		mutex_unlock(&kvm->lock);
-> +		mutex_unlock(&matrix_dev->lock);
->  	}
+>  static inline void console_verbose(void)
+>  {
+> -	if (console_loglevel)
+> +	if (console_loglevel && printk_console_verbose)
+>  		console_loglevel = CONSOLE_LOGLEVEL_MOTORMOUTH;
 >  }
-> 
+>  
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 142a58d124d9..e321ee78855d 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -2404,6 +2404,12 @@ module_param_named(console_suspend, console_suspend_enabled,
+>  MODULE_PARM_DESC(console_suspend, "suspend console during suspend"
+>  	" and hibernate operations");
+>  
+> +bool printk_console_verbose = true;
 
-[..]
+I would call it "console_auto_verbose".
 
-> @@ -1363,14 +1323,11 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
->  {
->  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
-> 
-> -	mutex_lock(&matrix_dev->lock);
-> -	vfio_ap_mdev_unset_kvm(matrix_mdev);
-> -	mutex_unlock(&matrix_dev->lock);
-> -
+> +EXPORT_SYMBOL(printk_console_verbose);
 
-.. before access to the matrix_mdev->kvm used to be protected by
-the matrix_dev->lock ...
+I would prefer to move console_verbose() into printk.c
+and export the function instead of this variable.
 
->  	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
->  				 &matrix_mdev->iommu_notifier);
->  	vfio_unregister_notifier(mdev_dev(mdev), VFIO_GROUP_NOTIFY,
->  				 &matrix_mdev->group_notifier);
-> +	vfio_ap_mdev_unset_kvm(matrix_mdev, matrix_mdev->kvm);
+> +module_param_named(console_verbose, printk_console_verbose, bool, 0644);
+> +MODULE_PARM_DESC(console_verbose, "Raise console loglevel to highest on oops/panic/etc");
 
-... but it is not any more. BTW I don't think the code is guaranteed
-to fetch ->kvm just once.
-
-Can you please explain why can we get away with being more
-lax when dealing with matrix_mdev->kvm?
-
-Regards,
-Halil
-
-[..]
+Best Regards,
+Petr
