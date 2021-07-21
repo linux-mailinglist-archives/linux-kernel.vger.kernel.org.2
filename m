@@ -2,61 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFBA3D0A09
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22A23D0A18
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235758AbhGUHKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 03:10:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235869AbhGUHJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:09:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 083A9611C1;
-        Wed, 21 Jul 2021 07:49:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626853793;
-        bh=NiAJktv7ds+8oKSDNOTKvzGUhZmEmpyNWO4ZqNTOKkc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TFr9PKZEaWZ1nQXZa8lR21YIcIUfrVKgjHhFCCLi9A2jWAlMSs7erV26W8yLyyzro
-         04j5UUqK1bk4ho7WtzCjq6clfuczklHHke6g6a1CP2ds7RTgWM6zqG0AwHGirYaY6J
-         WuBeozLqluxktzZXhZDQmKwscn/UZV72hQTT6CYSJbA8V/msE67dsVzgO5iQiZlucS
-         SxUEgzlfw6tot/u9pgPZmSI9qMkyL4hdLmqHhSStX6wN0IjNOKh9hpkQPaMbFfgTTl
-         IgtPDTJGikFSwZ93sRfp7Kpylrwpwl8sBFlsJ9gr26dPGIEQyrD/5ZBknoICyvPXub
-         PefzkmH5tX3oA==
-Date:   Wed, 21 Jul 2021 10:49:50 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Mark Zhang <markzhang@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Mark Zhang <markz@mellanox.com>
-Subject: Re: [PATCH rdma-next 4/7] RDMA/core: Reorganize create QP low-level
- functions
-Message-ID: <YPfRnt4XeMIgZnn/@unreal>
-References: <cover.1626846795.git.leonro@nvidia.com>
- <328963df8e30bfc040c846d2c7626becd341f3ec.1626846795.git.leonro@nvidia.com>
- <11e8e739-99b4-8ebe-38e1-de36b21b0f25@nvidia.com>
+        id S235485AbhGUHMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 03:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235749AbhGUHKr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 03:10:47 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2286AC061768
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 00:51:14 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id l2so1310903qtp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 00:51:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fPh5HDaC3NW63sKOep74w/15dkj23GMomTPo2I4GDhw=;
+        b=GeesXmQG+7CVMQ6QTsIDB+/F52PWxosGClYlRK86JCSRPaEo9A097xHaGPOsY098Gy
+         xrWTrFFlK11otZlGua6ezmKIjD3Hezx1tprVfiZ/iG5dP6sXc6rZXW36KaeLfqAsDpdz
+         Est8nIU8s8G2ugeReNJgIqUZptBTIdytVztczNJenUOGfAH9MD7xY5VugeKAbbgB03dt
+         dKCNWlvTWBXssbyrIiEVaAzb4cLFsnWzTTKjKRi+IGvcoY+CHa5amWDwr5AZ8itI3E8w
+         D1i+AQHH2HU7DrlShG/wUfyPHh5iNyAGsbNTnnfjmT0cEvdHmft2lvwZnm7DjfnAsygc
+         T2Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fPh5HDaC3NW63sKOep74w/15dkj23GMomTPo2I4GDhw=;
+        b=j2TRjUxqipYrlhUQN94Nu8VdCcjcSSy5f3ituZ61H/cziLmcDboGKF8CiroT0bOdaH
+         bNzZ8F9+jEIcc9krs5c7Ro9dCjWUJeR/ec1Sd+QucWvFpEwIxVQgYXHRQoMlUpR0fq8r
+         DQXKy9b7D1lDXQWEqeJ3by/uFYVB+zhmGoYTbum7ihjijd7Tavmp5biJghbXC81ffCg7
+         eMsDu4/+phzODM1y6LqRqfhNvEOsS8TiJoeGF64yVIfqxAI03CYXmXs8BdpyfRGxisKD
+         862WrAfaVqs26jelCTSCCpOUT7y8xsduKUkPIXIoH82bkf1Ta5Vyblmw+RML4O8kzuPY
+         FApg==
+X-Gm-Message-State: AOAM530a4HvP1iMYtvkMitEZQBi61fLxQ0l0v5a9IFm2+O20BRKjqB7U
+        J70fQmiWjCu1K305Pqm/7h3p+ixpyj375emCtYvlbg==
+X-Google-Smtp-Source: ABdhPJxuzYwcKE9v7oGs3UREu1WAf08RLSGca69xQOyr3PRedUcyn2cJAVDrjrhmRHUPOnTskWIHCnDMDsvvQnUrlK8=
+X-Received: by 2002:ac8:5645:: with SMTP id 5mr30183956qtt.200.1626853873268;
+ Wed, 21 Jul 2021 00:51:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11e8e739-99b4-8ebe-38e1-de36b21b0f25@nvidia.com>
+References: <20210618195033.3209598-1-grzegorz.jaszczyk@linaro.org>
+In-Reply-To: <20210618195033.3209598-1-grzegorz.jaszczyk@linaro.org>
+From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Date:   Wed, 21 Jul 2021 09:51:02 +0200
+Message-ID: <CAMxfBF7tQunNenizu5U+tF8aYQdVii=o_f2VcrT5fK7t-bzaqA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] introduce watchdog_dev_suspend/resume
+To:     wim@linux-watchdog.org, Guenter Roeck <linux@roeck-us.net>,
+        shawnguo@kernel.org
+Cc:     linux-watchdog@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 03:47:34PM +0800, Mark Zhang wrote:
-> On 7/21/2021 2:13 PM, Leon Romanovsky wrote:
-> > External email: Use caution opening links or attachments
-> > 
-> > 
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > The low-level create QP function grew to be larger than any sensible
-> > incline function should be. The inline attribute is not really needed
-> > for that function and can be implemented as exported symbol.
-> 
-> incline -> inline?
+On Fri, 18 Jun 2021 at 21:50, Grzegorz Jaszczyk
+<grzegorz.jaszczyk@linaro.org> wrote:
+>
+> Hi All,
+>
+> The following is a v2 version of the series [1] that fixes system hang which
+> occurs when the ping worker fires after wdog suspend and before wdog resume.
+> This happens because the ping worker can issue low-level ping while the wdog clk
+> was disabled by the suspend routine (accessing hw wdog registers while they are
+> not fed by the clk).
+>
+> To overcome this issue two patches were introduced. Patch #1 introduces pm
+> notifier in the watchdog core which will call watchdog_dev_suspend/resume and
+> actually cancel ping worker during suspend and restore it back, if needed,
+> during resume.
+>
+> Patch #2 introduces relevant changes to imx2_wdt driver and notifies wdog core
+> to stop ping worker on suspend.
+>
+> [1] https://lkml.org/lkml/2021/6/15/542
+>
+> Best regards,
+> Grzegorz
+>
+> Grzegorz Jaszczyk (2):
+>   watchdog: introduce watchdog_dev_suspend/resume
+>   watchdog: imx2_wdg: notify wdog core to stop ping worker on suspend
+>
+>  drivers/watchdog/imx2_wdt.c      |  1 +
+>  drivers/watchdog/watchdog_core.c | 37 +++++++++++++++++++++++++
+>  drivers/watchdog/watchdog_dev.c  | 47 ++++++++++++++++++++++++++++++++
+>  include/linux/watchdog.h         | 10 +++++++
+>  4 files changed, 95 insertions(+)
+>
+> --
+> 2.29.0
+>
 
-Thanks
+Hi,
 
-> 
-> 
+Gentle reminder about this patch-set. Both patches were reviewed by
+Guenter Roeck and are on the list for some time, I would be happy if
+we could get them applied.
+
+Thank you in advance,
+Grzegorz
