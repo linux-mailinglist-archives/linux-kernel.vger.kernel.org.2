@@ -2,298 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62713D0824
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF98B3D0829
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbhGUEdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 00:33:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42634 "EHLO
+        id S233076AbhGUEfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 00:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232749AbhGUEcm (ORCPT
+        with ESMTP id S232866AbhGUEfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 00:32:42 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2185AC061768
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 22:13:18 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id z93-20020a17090a6d66b0290175a6c43dbfso1044909pjj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 22:13:18 -0700 (PDT)
+        Wed, 21 Jul 2021 00:35:30 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CED0C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 22:16:07 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id y17-20020a4ae7110000b0290262f3c22a63so303623oou.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 22:16:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=SyzM/1Xe+ymsJmVtWID+cyYrevQaZgWI1lW0Ggj1cvk=;
-        b=efP5ufQi112KnYNclLUGX2R1/vhBTgKlGF7LsXqf9eBW6NfyzC2yOyRiC+Ya+GGZF1
-         AEHcJQoI1Wi3fcjwz0dbtqVMQHHorQgfnIcAcCWQOFHQLpgpZt/ZifFaf3iGqxSg3akR
-         qUd7Ud+Q5lQQmJJkADYEjxHAvKxnpuGoOvNYldD0XCHT1i06xSGyayVpOppwsj8bqynM
-         XFFUnSlhIyzhPGuFT2lHHPWJKo3nuxd0ERSCKn+O6N0Uh/2ckc1Hw3yPCeD7d4Z/GeMu
-         oLY4WEEZF7rlptjdyQ2LPi/tj5/BEduJVZ1kHW29Gu3UTfn8InLDnykHC0tuKRqX6tZZ
-         VICg==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=V2Y9FK8B3XEt2CBNMnOBB1fSQfFtt/UMwPYA85/KD5s=;
+        b=CKOk08I09kVqDyHTWl5Jm7LtpyXb0tS8INMXUBNAXqEuQVASWYEkI6ceQIVAd6KUU8
+         VgOdlEmqvEWIHiSGa+JdsJioQNcICJ5QYAuX5Ouqgri/KnpBnYQkwjO6AC8P9Vn1h9SY
+         2wonFd9Q6YFZIfn3RE51prrouC+J188ZTEPOA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=SyzM/1Xe+ymsJmVtWID+cyYrevQaZgWI1lW0Ggj1cvk=;
-        b=lCeOGbGc4Bh6GJvRPdtNpBhk3Fv6Zex44LKS7R02BpgtCzA9q2kJi1cHc+O0JRMtkk
-         3DLRE9M+pa73LsoPcYpnCqq5oMNUg9eQYzUbhQbUB3yx7yRo9CUfG69taaPHkdT+m4Rq
-         p4tG5utQaImNNq+B2kOKWeWwLd2mBWBSGrGITUeTjkOnBU8+oI1QQmHlUEw1vRQdv3xP
-         2A6GX/H9d1LmVQpbkjkxFp5KxxJWL1v4VEfp2ts1IVzKFt4QWUmmx3qzd0wydqRr2lmf
-         hrU4UZ4WSLYduOhjPm3RSVUE+59fXPPqLcoiXN++GB1OJi+oSp8x1NJmxN3JgKkYXbJM
-         ZZZw==
-X-Gm-Message-State: AOAM530ruUykeOFxsNWoTJ+7KIMmBxcs675Wbic/befyAAAGwm19ss0R
-        3iT8Ji1Bb/Q0dRlf9KTzwf0pV+j1LiZU
-X-Google-Smtp-Source: ABdhPJzVFeWlLZgsXAp2kr8s+JHoArhSmGGKkXeEdgYfbPdHZxiJEVrZz0ZzMoiJwV1RDJwdtWGUUl9cfXOO
-X-Received: from mihenry-linux-desktop.kir.corp.google.com ([2620:15c:29:204:4b06:fd20:8c22:9df1])
- (user=mizhang job=sendgmr) by 2002:a17:90a:9f91:: with SMTP id
- o17mr1999543pjp.29.1626844397644; Tue, 20 Jul 2021 22:13:17 -0700 (PDT)
-Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Tue, 20 Jul 2021 22:12:47 -0700
-In-Reply-To: <20210721051247.355435-1-mizhang@google.com>
-Message-Id: <20210721051247.355435-3-mizhang@google.com>
-Mime-Version: 1.0
-References: <20210721051247.355435-1-mizhang@google.com>
-X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
-Subject: [PATCH 2/2] kvm: mmu/x86: Add detailed page size stats
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Jing Zhang <jingzhangos@google.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=V2Y9FK8B3XEt2CBNMnOBB1fSQfFtt/UMwPYA85/KD5s=;
+        b=SG0WW/FyPdmBmfVjkjzNSihPJ23I2J9B4ElsB83hzcgfoW8igwEUmfMDekOYbqOVWW
+         0EuA8ift+5Ed9ugPj50JwFcS3eZB2W+d6JiVeCk7ayv8VpIzJzvu8TVu61eRZno195tC
+         YlYppHCMcx7EE+6dI3pLetqps7iUdhAto5on56kabfWZFeRs7Kx5G3YSfc3X20gczw2T
+         FL1CHGC8aWuU8rL0ussG4WtOQGC0z9qPQpXUqjgk1gUoiEntLCCG3oMAktZNEs9T8tWs
+         SElW+DccRvzRqUfw/+9tQK9VzPZZlkpBfHRghboVui/0P5+6A+8NwGkc22XpM5vwaese
+         mtZg==
+X-Gm-Message-State: AOAM531ZPF9/7EP36l8eTM6oZqZmpvdtBF8N0cyeWmYKIvyAWzLzwd9B
+        Ca8f0aT7uCrYg6bMrJvxg2kW1DzeJVmmetUTgphpdQ==
+X-Google-Smtp-Source: ABdhPJxCJYRZlniT0E2L1KJRisYCloErmXTq0V6N+52uVLiOm2L3iNt58JcJnkGTkkaUDS8usl2FRAroypRGXiSiFxs=
+X-Received: by 2002:a4a:e206:: with SMTP id b6mr23323098oot.16.1626844566901;
+ Tue, 20 Jul 2021 22:16:06 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 21 Jul 2021 05:16:06 +0000
+MIME-Version: 1.0
+In-Reply-To: <1626755807-11865-13-git-send-email-sibis@codeaurora.org>
+References: <1626755807-11865-1-git-send-email-sibis@codeaurora.org> <1626755807-11865-13-git-send-email-sibis@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 21 Jul 2021 05:16:06 +0000
+Message-ID: <CAE-0n51BCqrbRx7g8vPHp-C_5L3owD-c720aiKqxoOVM9UyqkA@mail.gmail.com>
+Subject: Re: [PATCH v4 12/13] dt-bindings: msm/dp: Remove aoss-qmp header
+To:     Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org,
+        mka@chromium.org, robh+dt@kernel.org
+Cc:     ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
+        ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Existing KVM code tracks the number of large pages regardless of their
-sizes. Therefore, when large page of 1GB (or larger) is adopted, the
-information becomes less useful because lpages counts a mix of 1G and 2M
-pages.
+Quoting Sibi Sankar (2021-07-19 21:36:46)
+> Remove the unused aoss-qmp header from the list of includes.
+>
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
 
-So bridge the gap and provide a comprehensive page stats of all sizes from
-4K to 512G.
-
-Suggested-by: Ben Gardon <bgardon@google.com>
-Suggested-by: Jing Zhang <jingzhangos@google.com>
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
----
- arch/x86/include/asm/kvm_host.h | 11 ++++++++-
- arch/x86/kvm/mmu.h              |  2 ++
- arch/x86/kvm/mmu/mmu.c          | 43 +++++++++++++++++++++++----------
- arch/x86/kvm/mmu/tdp_mmu.c      | 10 +++-----
- arch/x86/kvm/x86.c              |  6 ++++-
- 5 files changed, 51 insertions(+), 21 deletions(-)
-
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 974cbfb1eefe..1b7b024f9573 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1206,9 +1206,18 @@ struct kvm_vm_stat {
- 	u64 mmu_recycled;
- 	u64 mmu_cache_miss;
- 	u64 mmu_unsync;
--	u64 lpages;
-+	atomic64_t lpages;
- 	u64 nx_lpage_splits;
- 	u64 max_mmu_page_hash_collisions;
-+	union {
-+		struct {
-+			atomic64_t pages_4k;
-+			atomic64_t pages_2m;
-+			atomic64_t pages_1g;
-+			atomic64_t pages_512g;
-+		};
-+		atomic64_t pages[4];
-+	} page_stats;
- };
- 
- struct kvm_vcpu_stat {
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 83e6c6965f1e..56d9c947a0cd 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -240,4 +240,6 @@ static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
- 	return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
- }
- 
-+void kvm_update_page_stats(struct kvm *kvm, u64 spte, int level, int delta);
-+
- #endif
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index c45ddd2c964f..9ba25f00ca2b 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -588,16 +588,33 @@ static bool mmu_spte_update(u64 *sptep, u64 new_spte)
- 	return flush;
- }
- 
-+void kvm_update_page_stats(struct kvm *kvm, u64 spte, int level, int count)
-+{
-+	if (!is_last_spte(spte, level))
-+		return;
-+	/*
-+	 * If the backing page is a large page, update the lpages stat first,
-+	 * then log the specific type of backing page. Only log pages at highter
-+	 * levels if they are marked as large pages. (As opposed to simply
-+	 * pointing to another level of page tables.).
-+	 */
-+	if (is_large_pte(spte))
-+		atomic64_add(count, (atomic64_t *)&kvm->stat.lpages);
-+	atomic64_add(count,
-+		(atomic64_t *)&kvm->stat.page_stats.pages[level-1]);
-+}
-+
- /*
-  * Rules for using mmu_spte_clear_track_bits:
-  * It sets the sptep from present to nonpresent, and track the
-  * state bits, it is used to clear the last level sptep.
-  * Returns non-zero if the PTE was previously valid.
-  */
--static int mmu_spte_clear_track_bits(u64 *sptep)
-+static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
- {
- 	kvm_pfn_t pfn;
- 	u64 old_spte = *sptep;
-+	int level = sptep_to_sp(sptep)->role.level;
- 
- 	if (!spte_has_volatile_bits(old_spte))
- 		__update_clear_spte_fast(sptep, 0ull);
-@@ -607,6 +624,8 @@ static int mmu_spte_clear_track_bits(u64 *sptep)
- 	if (!is_shadow_present_pte(old_spte))
- 		return 0;
- 
-+	kvm_update_page_stats(kvm, old_spte, level, -1);
-+
- 	pfn = spte_to_pfn(old_spte);
- 
- 	/*
-@@ -984,9 +1003,10 @@ static void __pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
- 	}
- }
- 
--static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
-+static void pte_list_remove(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-+			    u64 *sptep)
- {
--	mmu_spte_clear_track_bits(sptep);
-+	mmu_spte_clear_track_bits(kvm, sptep);
- 	__pte_list_remove(sptep, rmap_head);
- }
- 
-@@ -1119,7 +1139,7 @@ static u64 *rmap_get_next(struct rmap_iterator *iter)
- 
- static void drop_spte(struct kvm *kvm, u64 *sptep)
- {
--	if (mmu_spte_clear_track_bits(sptep))
-+	if (mmu_spte_clear_track_bits(kvm, sptep))
- 		rmap_remove(kvm, sptep);
- }
- 
-@@ -1129,7 +1149,6 @@ static bool __drop_large_spte(struct kvm *kvm, u64 *sptep)
- 	if (is_large_pte(*sptep)) {
- 		WARN_ON(sptep_to_sp(sptep)->role.level == PG_LEVEL_4K);
- 		drop_spte(kvm, sptep);
--		--kvm->stat.lpages;
- 		return true;
- 	}
- 
-@@ -1386,7 +1405,7 @@ static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 	while ((sptep = rmap_get_first(rmap_head, &iter))) {
- 		rmap_printk("spte %p %llx.\n", sptep, *sptep);
- 
--		pte_list_remove(rmap_head, sptep);
-+		pte_list_remove(kvm, rmap_head, sptep);
- 		flush = true;
- 	}
- 
-@@ -1421,13 +1440,13 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 		need_flush = 1;
- 
- 		if (pte_write(pte)) {
--			pte_list_remove(rmap_head, sptep);
-+			pte_list_remove(kvm, rmap_head, sptep);
- 			goto restart;
- 		} else {
- 			new_spte = kvm_mmu_changed_pte_notifier_make_spte(
- 					*sptep, new_pfn);
- 
--			mmu_spte_clear_track_bits(sptep);
-+			mmu_spte_clear_track_bits(kvm, sptep);
- 			mmu_spte_set(sptep, new_spte);
- 		}
- 	}
-@@ -2232,8 +2251,6 @@ static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
- 	if (is_shadow_present_pte(pte)) {
- 		if (is_last_spte(pte, sp->role.level)) {
- 			drop_spte(kvm, spte);
--			if (is_large_pte(pte))
--				--kvm->stat.lpages;
- 		} else {
- 			child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
- 			drop_parent_pte(child, spte);
-@@ -2690,10 +2707,10 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
- 
- 	pgprintk("%s: setting spte %llx\n", __func__, *sptep);
- 	trace_kvm_mmu_set_spte(level, gfn, sptep);
--	if (!was_rmapped && is_large_pte(*sptep))
--		++vcpu->kvm->stat.lpages;
- 
- 	if (!was_rmapped) {
-+		kvm_update_page_stats(vcpu->kvm, *sptep,
-+			sptep_to_sp(sptep)->role.level, 1);
- 		rmap_count = rmap_add(vcpu, sptep, gfn);
- 		if (rmap_count > RMAP_RECYCLE_THRESHOLD)
- 			rmap_recycle(vcpu, sptep, gfn);
-@@ -5669,7 +5686,7 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
- 		if (sp->role.direct && !kvm_is_reserved_pfn(pfn) &&
- 		    sp->role.level < kvm_mmu_max_mapping_level(kvm, slot, sp->gfn,
- 							       pfn, PG_LEVEL_NUM)) {
--			pte_list_remove(rmap_head, sptep);
-+			pte_list_remove(kvm, rmap_head, sptep);
- 
- 			if (kvm_available_flush_tlb_with_range())
- 				kvm_flush_remote_tlbs_with_address(kvm, sp->gfn,
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index caac4ddb46df..24bd7f03248c 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -446,12 +446,10 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 
- 	trace_kvm_tdp_mmu_spte_changed(as_id, gfn, level, old_spte, new_spte);
- 
--	if (is_large_pte(old_spte) != is_large_pte(new_spte)) {
--		if (is_large_pte(old_spte))
--			atomic64_sub(1, (atomic64_t*)&kvm->stat.lpages);
--		else
--			atomic64_add(1, (atomic64_t*)&kvm->stat.lpages);
--	}
-+	if (is_large_pte(old_spte) && !is_large_pte(new_spte))
-+		kvm_update_page_stats(kvm, old_spte, level, -1);
-+	else if (!is_large_pte(old_spte) && is_large_pte(new_spte))
-+		kvm_update_page_stats(kvm, new_spte, level, 1);
- 
- 	/*
- 	 * The only times a SPTE should be changed from a non-present to
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 8166ad113fb2..23444257fcbd 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -237,7 +237,11 @@ const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
- 	STATS_DESC_ICOUNTER(VM, mmu_unsync),
- 	STATS_DESC_ICOUNTER(VM, lpages),
- 	STATS_DESC_ICOUNTER(VM, nx_lpage_splits),
--	STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions)
-+	STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions),
-+	STATS_DESC_ICOUNTER(VM, page_stats.pages_4k),
-+	STATS_DESC_ICOUNTER(VM, page_stats.pages_2m),
-+	STATS_DESC_ICOUNTER(VM, page_stats.pages_1g),
-+	STATS_DESC_ICOUNTER(VM, page_stats.pages_512g)
- };
- static_assert(ARRAY_SIZE(kvm_vm_stats_desc) ==
- 		sizeof(struct kvm_vm_stat) / sizeof(u64));
--- 
-2.32.0.402.g57bb445576-goog
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
