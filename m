@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C423D0E17
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0E43D0E18
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233939AbhGULDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238726AbhGUKyP (ORCPT
+        id S239558AbhGULFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:05:04 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44918 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234274AbhGUK4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 06:54:15 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76DFC0613DB
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 04:34:36 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id hd33so2720857ejc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 04:34:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PwGcv3K9+/fZntIbMMSYVNFpVjwRYL0TiDMPAIGioqk=;
-        b=dK85GgVIzBeoZpKaj6jnIjgvauVXwA83Dt9rpmb6PMdVLM4o6RuDepeW+HxDaLPOLU
-         cmSc17JhSWrNiO7PvNbmJhM2+wg+3uHRymRhtVtch+KsSUbfTy07bis5ssbV3mviQWP/
-         HRQKSvJxLDsgDSE1agijIJHN58G0H3mukJf+aHLpPbW2JUc8Rl6pVgP8i84sBUzj3xRp
-         ShwTwWRdWwcA2XaqCXrdNsGlsw2xYUZTz1Cbal4PyDLGcn9xsRulj0ecJTT5s3jHAJEV
-         sk0x1l3+rX2Q54+kyZXSV8BUnqYxtNYRqrG1TJmDxWNj+aD0HnEQamSlRUhsV0hjcLdo
-         mocA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PwGcv3K9+/fZntIbMMSYVNFpVjwRYL0TiDMPAIGioqk=;
-        b=XIquweJca3j0LEkBbR+Vd1ir8pF3Ns5beXCzy/8b/F2ic6Ew8Uv1YIGUTiaLslvWNr
-         SEkPC1cQ+An30Ri+qK4ANHK12wbH+ik8ExX6T46oBWRP8fAdNyolydIvyHEzthfzQKiZ
-         6Mcnr4kcLGREhGRU7Al8B+8FFMY1FJikioaR68Nirt2/eD8eNMTAkRQGFGG/bk9C2JLq
-         3JwVSsps4Ugx+a6SLjQtw1x5PAFrZFILfuE+BfR4YrcYxv3atn8/BA8P4kjJU92q6vq4
-         mkEPBG5IyiaaWhR4YIs/5gYpW6qCb2+p0wS8wonRV7iuOp+KR3erp8OJdpkgH+X12zpg
-         uPCg==
-X-Gm-Message-State: AOAM531yiY1TGCpgR7/kMCL4nmc9A0a0KmeRLvqqG93VB6c5PyTzU17Z
-        lZNJPrnhT+PrSfu/f+6dqFA=
-X-Google-Smtp-Source: ABdhPJzdJ64/3yvm9dTSLwZ2K9adWnKQ3cLecGfacs3CIZF5EBdHO4FiLPzglFD5UlvIZQ2AQuISIQ==
-X-Received: by 2002:a17:906:5e51:: with SMTP id b17mr38098962eju.270.1626867275390;
-        Wed, 21 Jul 2021 04:34:35 -0700 (PDT)
-Received: from localhost.localdomain (host-79-27-97-200.retail.telecomitalia.it. [79.27.97.200])
-        by smtp.gmail.com with ESMTPSA id n2sm10732686edi.32.2021.07.21.04.34.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 04:34:34 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: rtl8188eu: Remove an unused variable and some lines of code
-Date:   Wed, 21 Jul 2021 13:34:33 +0200
-Message-ID: <22299777.3ztAgAtxqs@localhost.localdomain>
-In-Reply-To: <YPfYlf25CtKckRQx@kroah.com>
-References: <20210705134151.15143-1-fmdefrancesco@gmail.com> <YPfYlf25CtKckRQx@kroah.com>
+        Wed, 21 Jul 2021 06:56:01 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16LBaUxc113532;
+        Wed, 21 Jul 2021 06:36:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1626867390;
+        bh=2s2bXdv9TLjhc1ejdWbmRITXCQDwa1YJVHNps0Uqx2g=;
+        h=From:To:CC:Subject:Date;
+        b=FWZbGFDJsF47S1JRf1jcZv0wgtHsEHXX0TEyh1FtSp/WQIeTAMcKAXNUOdPuWQCQo
+         msNUqujXJbGLyvXYn6IvGZ5uxPo9sSvtN/sYWfu6QAZIP/9h1t9FUsLFUkdlDSre3u
+         6x+kFcxb+ADfMHVA9LOJlJvUVeNaMpw3awb7DMsg=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16LBaU24089732
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 21 Jul 2021 06:36:30 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 21
+ Jul 2021 06:36:30 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 21 Jul 2021 06:36:29 -0500
+Received: from lokesh-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16LBaQBl115096;
+        Wed, 21 Jul 2021 06:36:27 -0500
+From:   Lokesh Vutla <lokeshvutla@ti.com>
+To:     Nishanth Menon <nm@ti.com>, <kristo@kernel.org>
+CC:     Device Tree Mailing List <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Vignesh R <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH v2 0/4] arm64: dts: ti: k3-am64: Add PWM nodes
+Date:   Wed, 21 Jul 2021 17:06:21 +0530
+Message-ID: <20210721113625.17299-1-lokeshvutla@ti.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, July 21, 2021 10:19:33 AM CEST Greg Kroah-Hartman wrote:
-> On Mon, Jul 05, 2021 at 03:41:51PM +0200, Fabio M. De Francesco wrote:
-> > Remove set but unused iw_operation_mode[]. This driver doesn't support
-> > SIOCSIWRATE.  It just returns zero and does nothing.  Change it to
-> > return -ENOTSUPP instead.  (This is an API change but we don't expect it
-> > to break anything).
-> > 
-> > Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> > 
-> > v1->v2: Delete rtw_wx_set_rate() and its association with command
-> > SIOCSIWRATE as suggested by Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> Does not apply to my tree :(
->
-Hi Greg,
+Add epwm and ecap nodes for AM64 boards.
 
-It cannot apply to your tree because, while it was waiting for acceptance, 
-someone else did a large part of the removal of the code related to the 
-unsupported SIOCSIWRATE and you applied this other patch.
+Changes since v1:
+- Mark all un-used pwm nodes as disabled.
 
-However, the no more necessary iw_operation_mode[] is still in your tree. So 
-I'm about to send a patch that only removes the above-mentioned array.
+Lokesh Vutla (4):
+  arm64: dts: ti: k3-am64-main: Add epwm nodes
+  arm64: dts: ti: k3-am64-main: Add ecap pwm nodes
+  arm64: dts: ti: k3-am642-evm: Add pwm nodes
+  arm64: dts: ti: k3-am642-sk: Add pwm nodes
 
-Thanks,
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 114 +++++++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts  |  56 +++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-sk.dts   |  64 +++++++++++++
+ 3 files changed, 234 insertions(+)
 
-Fabio
-
-
+-- 
+2.31.1
 
