@@ -2,147 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98B13D167D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7233D1680
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236998AbhGUR5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:57:37 -0400
-Received: from mga05.intel.com ([192.55.52.43]:28452 "EHLO mga05.intel.com"
+        id S237807AbhGUR6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:58:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230269AbhGUR52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:57:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="297055867"
-X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
-   d="scan'208";a="297055867"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 11:38:04 -0700
-X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
-   d="scan'208";a="576781537"
-Received: from aannamal-mobl.amr.corp.intel.com (HELO [10.212.140.253]) ([10.212.140.253])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 11:38:02 -0700
-Subject: Re: [PATCH v27 24/31] x86/cet/shstk: Handle thread shadow stack
-To:     John Allen <john.allen@amd.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210521221211.29077-1-yu-cheng.yu@intel.com>
- <20210521221211.29077-25-yu-cheng.yu@intel.com>
- <YPhkIHJ0guc4UNoO@AUS-LX-JohALLEN.amd.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <cd064202-2c5f-b1d5-2970-9bff0a762a95@intel.com>
-Date:   Wed, 21 Jul 2021 11:37:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230269AbhGUR6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 13:58:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57E6561222;
+        Wed, 21 Jul 2021 18:38:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626892736;
+        bh=c58AgXYLjV8nxV+yGDWGaiNc8lcnebnlE03OtQCUX8g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TXMnY/wOnELdxVY2UtnXI7v3JQ4uQNXB+95A3X/Ux1IpvCYoC+cOYlFW3kuVf4zxL
+         jOnCVH8WpF06Fw22zy1ijEG0BH6X7zrY1VXHBJDTJ7PPPU70RjlsIIN6wPnePqsEkT
+         dw6Y4/uW3a9A9aevLRFAyIeet0td3xhNCPBYjKcfSWaJ8QRfkLC6HPjcKTjQA6mBF6
+         H8CTepg+QFouXY97lVzm2urACHyzbkMwuLctp5Iboyce4Tp7gZ/u//Yl+I+Wey8a19
+         wudZz6BEjYQMJ5XkLfGgiACqpRodC7evSlKPclcqbBhh0YfBI1sDp4WNuq42HlzUQP
+         Bi0ZA6loAxRxg==
+Received: by mail-wm1-f52.google.com with SMTP id r16-20020a05600c2c50b029014c1adff1edso76550wmg.4;
+        Wed, 21 Jul 2021 11:38:56 -0700 (PDT)
+X-Gm-Message-State: AOAM533/H+Vl1K79Oflk7ZsVpxnbkE3oWMzIqvZ6u9j2kSeGqe/+uGtF
+        yeGc8qkh8NCTcuHe/qBAZ470/Y3QZJ0TGeE2SV4=
+X-Google-Smtp-Source: ABdhPJyhSRgfLaBTPJMwtpFNlY9q/GPNEb6Tfyk+uF/aS8k580kiJJMP0SB0r+iW16M91ZGiiwEn6z8lhMS6dEb2QmA=
+X-Received: by 2002:a1c:c90f:: with SMTP id f15mr5472491wmb.142.1626892734959;
+ Wed, 21 Jul 2021 11:38:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YPhkIHJ0guc4UNoO@AUS-LX-JohALLEN.amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210721151100.2042139-1-arnd@kernel.org> <CANH7hM7nLq9LthNi=D9qHsiS_eyhU8-CGjnXhsKYX9dqTaOmNw@mail.gmail.com>
+In-Reply-To: <CANH7hM7nLq9LthNi=D9qHsiS_eyhU8-CGjnXhsKYX9dqTaOmNw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 21 Jul 2021 20:38:38 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a27ii4fPvB8QA149g6ofWHazPGb9EZL_7M4z5ymkepVnw@mail.gmail.com>
+Message-ID: <CAK8P3a27ii4fPvB8QA149g6ofWHazPGb9EZL_7M4z5ymkepVnw@mail.gmail.com>
+Subject: Re: [PATCH] gve: DQO: avoid unused variable warnings
+To:     Bailey Forrest <bcf@google.com>
+Cc:     Catherine Sullivan <csully@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Sagi Shahar <sagis@google.com>,
+        Jon Olson <jonolson@google.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/21 11:14 AM, John Allen wrote:
->> +int shstk_alloc_thread_stack(struct task_struct *tsk, unsigned long clone_flags,
->> +			     unsigned long stack_size)
->> +{
->> +	struct thread_shstk *shstk = &tsk->thread.shstk;
->> +	struct cet_user_state *state;
->> +	unsigned long addr;
->> +
->> +	if (!stack_size)
->> +		return -EINVAL;
-> I've been doing some light testing on AMD hardware and I've found that
-> this version of the patchset doesn't boot for me. It appears that when
-> systemd processes start spawning, they hit the above case, return
-> -EINVAL, and the fork fails. In these cases, copy_thread has been passed
-> 0 for both sp and stack_size.
+dma_unmap_len_set(pending_packet->bufs[pending_packet->num_bufs], len, len);
+On Wed, Jul 21, 2021 at 5:36 PM Bailey Forrest <bcf@google.com> wrote:
+> On Wed, Jul 21, 2021 at 8:11 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> >
+> > +static void gve_unmap_packet(struct device *dev,
+> > +                            struct gve_tx_pending_packet_dqo *pending_packet)
+> > +{
+> > +       dma_addr_t addr;
+> > +       size_t len;
+> > +       int i;
+> > +
+> > +       /* SKB linear portion is guaranteed to be mapped */
+> > +       addr = dma_unmap_addr(&pending_packet->bufs[0], dma);
+> > +       len = dma_unmap_len(&pending_packet->bufs[0], len);
+> > +       dma_unmap_single(dev, addr, len, DMA_TO_DEVICE);
+>
+> "SKB linear portion is guaranteed to be mapped" is only true if
+> gve_tx_add_skb_no_copy_dqo completed successfully.
+>
+> This optimization is important for the success path because otherwise
+> there would be a per-packet branch misprediction, which I found to
+> have a large performance impact.
+>
+> A solution which should address this would be something like:
+>
+> +static void gve_unmap_packet(struct device *dev,
+> +     struct gve_tx_pending_packet_dqo *pending_packet
+> +     bool always_unmap_first)
+> +{
+> + dma_addr_t addr;
+> + size_t len;
+> + int i;
+> +
+> + if (always_unmap_first || pending_packet->num_bufs > 0) {
+> +  addr = dma_unmap_addr(&pending_packet->bufs[0], dma);
+> +  len = dma_unmap_len(&pending_packet->bufs[0], len);
+> +  dma_unmap_single(dev, addr, len, DMA_TO_DEVICE);
+> + }
+> +
+> + for (i = 1; i < pending_packet->num_bufs; i++) {
+> +  addr = dma_unmap_addr(&pending_packet->bufs[i], dma);
+> +  len = dma_unmap_len(&pending_packet->bufs[i], len);
+> +  dma_unmap_page(dev, addr, len, DMA_TO_DEVICE);
+> + }
+> + pending_packet->num_bufs = 0;
+> +}
+>
+> (Sorry my email client keeps turning tabs into spaces...)
+>
+> By doing this, we can rely on the compiler to optimize away the extra
+> branch in cases we know the first buffer will be mapped.
 
-A few tangential things I noticed:
+I didn't really change it here, I just moved the function up and changed
+the dma_unmap_addr/dma_unmap_len calls to avoid the warning.
 
-This hunk is not mentioned in the version changelog at all.  I also
-don't see any feedback that might have prompted it.  This is one reason
-per-patch changelogs are preferred.
+> > +static inline void gve_tx_dma_buf_set(struct gve_tx_dma_buf *buf,
+> > +                                     dma_addr_t addr, size_t len)
+> > +{
+> > +       dma_unmap_len_set(buf, len, len);
+> > +       dma_unmap_addr_set(buf, dma, addr);
+> > +}
+>
+> checkpatch.pl will complain about `inline` in a C file.
+>
+> However, I would prefer to just not introduce this helper because it
+> introduces indirection for the reader and the risk of passing the
+> arguments in the wrong order. Don't have a strong opinion here
+> though.
 
-As a general rule, new features should strive to be implemented in a way
-that it's *obvious* that they won't break old code.
-shstk_alloc_thread_stack() fails that test for me.  If it had:
+Sure, feel free to just treat my patch as a bug report and send a different
+fix if you prefer to not have an inline function. This is usually the easiest
+way to get around the macro ignoring its arguments since the compiler
+does not warn for unused function arguments.
 
-	if (!cpu_feature_enabled(X86_FEATURE_SHSTK)) // or whatever
-		return 0;
+Open-codiung the call as
 
-in the function, it would be obviously harmless.  Better yet would be
-doing the feature check at the shstk_alloc_thread_stack() call site,
-that way even the function call can be optimized out.
+dma_unmap_len_set(pending_packet->bufs[pending_packet->num_bufs], len, len);
+dma_unmap_len_addr(pending_packet->bufs[pending_packet->num_bufs], addr, dma);
 
-Further, this confused me because the changelog didn't even mention the
-arg -> stack_size rename.  That would have been nice for another patch,
-or an extra sentence in the changelog.
+works as well, I just found the inline function more readable.
+
+     Arnd
