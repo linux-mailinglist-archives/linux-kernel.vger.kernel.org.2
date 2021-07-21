@@ -2,259 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7623B3D0E36
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E783D0E38
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238810AbhGULPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:15:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:52530 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239238AbhGULBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:01:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 63E9E31B;
-        Wed, 21 Jul 2021 04:42:22 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D1273F694;
-        Wed, 21 Jul 2021 04:42:20 -0700 (PDT)
-Subject: Re: [PATCH -next] iommu/arm-smmu-v3: Add suspend and resume support
-To:     Bixuan Cui <cuibixuan@huawei.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        will@kernel.org
-Cc:     weiyongjun1@huawei.com, john.wanghui@huawei.com,
-        dingtianhong@huawei.com, thunder.leizhen@huawei.com,
-        guohanjun@huawei.com, joro@8bytes.org, jean-philippe@linaro.org,
-        Jonathan.Cameron@huawei.com, song.bao.hua@hisilicon.com,
-        linux-arm-kernel@lists.infradead.org, Marc Zyngier <maz@kernel.org>
-References: <20210721013350.17664-1-cuibixuan@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <4e506481-5f6c-9c5e-eda3-300861581080@arm.com>
-Date:   Wed, 21 Jul 2021 12:42:14 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S238983AbhGULPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239643AbhGULFU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 07:05:20 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0BBC0613E7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 04:44:07 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d12so2042953pfj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 04:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4eOE5oXt0Te/GnUqshzOeQhr7DeyqOGjYygIrkfQGGA=;
+        b=KdQI6LuD8Wmsu8sCpYBmVNr4uqXouJd6KbQ3iYRLn2UXIAxs+TuEUbZye6F9L7aj1V
+         ZAgxxPSOUOm+s48Q3N1vGWUj2UI5ovvKG0zNnKpAZ+Y4nQZHgOrkuO2NxaUrVYYpljXg
+         lyBhu/YTGUcqASeyyy69yxEUAvWHEkFO5P9HA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4eOE5oXt0Te/GnUqshzOeQhr7DeyqOGjYygIrkfQGGA=;
+        b=TQnupXIE+a/cXRuNC04PA7QlauOZ7t92nNzkWdmlpsa4qgvWjOmFmtL7yIEhFSajWQ
+         UTK+kHXX6C09lu9/q98BSpTSAW4+asQ4poaTZrdRvhwIi4t3l4f4wG4T8K4oE/QBONXY
+         ReRYJWkj7dqdRvfUfZLBrkIDBLPvw/SN6+xj+oQXachwd0TscxJSR7L3Xkgao2xh8ppp
+         R1ivM7l7mpT0h9XQWiao6PSJtcBS4sn2OS3HyTHx+udz2N7HZotac99tTGwxmp+31Vkp
+         PnaVArJK1I1XDJcyEikSrwMTKuxSDoRNW4FAojI5oD9YwUExlcyI7XNPFvRBmG1l5RfP
+         yFtg==
+X-Gm-Message-State: AOAM5312cjwviH9csBpL4JnAeI4bZOmWM0fj94alyhwGYxUCGkHjmF45
+        APIGRXukQL0LPvfZEwWwiGSu7nL2HZJaGZMfZvy58A==
+X-Google-Smtp-Source: ABdhPJwOBnuO9cyF8OBviJSYN7tjfT+V3IKi0eKLRcwtLf+HGoO48XKeVyIURCRqP1SfZkP8A4tRfzpBVnepdhLBrCI=
+X-Received: by 2002:a05:6a00:2407:b029:341:185e:8674 with SMTP id
+ z7-20020a056a002407b0290341185e8674mr20738643pfh.42.1626867846555; Wed, 21
+ Jul 2021 04:44:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210721013350.17664-1-cuibixuan@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210715121209.31024-1-yong.wu@mediatek.com> <20210715121209.31024-8-yong.wu@mediatek.com>
+In-Reply-To: <20210715121209.31024-8-yong.wu@mediatek.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Wed, 21 Jul 2021 19:43:55 +0800
+Message-ID: <CAATdQgBDsPHcuPYd=a+fjjTuqwXdJ-1GuSkj47cH1Ju5geqSLg@mail.gmail.com>
+Subject: Re: [PATCH v2 07/11] memory: mtk-smi: Add smi sub common support
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        anan.sun@mediatek.com, ming-fan.chen@mediatek.com,
+        yi.kuo@mediatek.com, anthony.huang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ +Marc for MSI bits ]
+On Thu, Jul 15, 2021 at 8:25 PM Yong Wu <yong.wu@mediatek.com> wrote:
+>
+> In mt8195, there are some larbs connect with the smi-sub-common, then
+> connect with smi-common.
 
-On 2021-07-21 02:33, Bixuan Cui wrote:
-> Add suspend and resume support for arm-smmu-v3 by low-power mode.
-> 
-> When the smmu is suspended, it is powered off and the registers are
-> cleared. So saves the msi_msg context during msi interrupt initialization
-> of smmu. When resume happens it calls arm_smmu_device_reset() to restore
-> the registers.
-> 
-> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-> Reviewed-by: Wei Yongjun <weiyongjun1@huawei.com>
-> Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
-> Reviewed-by: Ding Tianhong <dingtianhong@huawei.com>
-> Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+Not critical but I suggest to describe what is smi-sub-common.
+e.g. "some larbs are not directly connected to smi-common,
+they are connected to smi-sub-common which is a bridge(?) interface to..."
+
+>
+> Before we create device link between smi-larb with smi-common. If we have
+> sub-common, we should use device link the smi-larb and smi-sub-common,
+> then use device link between the smi-sub-common with smi-common. This is
+> for enabling clock/power automatically.
+>
+> Move the device link code to a new interface for reusing.
+>
+> There is no SW extra setting for smi-sub-common.
+>
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+
+Reviewed-by: Ikjoon Jang <ikjn@chromium.org>
+
 > ---
-> 
->   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 72 ++++++++++++++++++---
->   1 file changed, 64 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 235f9bdaeaf2..bf1163acbcb1 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -40,6 +40,7 @@ MODULE_PARM_DESC(disable_bypass,
->   
->   static bool disable_msipolling;
->   module_param(disable_msipolling, bool, 0444);
-> +static bool bypass;
->   MODULE_PARM_DESC(disable_msipolling,
->   	"Disable MSI-based polling for CMD_SYNC completion.");
->   
-> @@ -3129,11 +3130,37 @@ static void arm_smmu_write_msi_msg(struct msi_desc *desc, struct msi_msg *msg)
->   	doorbell = (((u64)msg->address_hi) << 32) | msg->address_lo;
->   	doorbell &= MSI_CFG0_ADDR_MASK;
->   
-> +	/* Saves the msg context for resume if desc->msg is empty */
-> +	if (desc->msg.address_lo == 0 && desc->msg.address_hi == 0) {
-> +		desc->msg.address_lo = msg->address_lo;
-> +		desc->msg.address_hi = msg->address_hi;
-> +		desc->msg.data = msg->data;
-> +	}
-
-My gut feeling is that this is something a device driver maybe shouldn't 
-be poking into, but I'm not entirely familiar with the area :/
-
-> +
->   	writeq_relaxed(doorbell, smmu->base + cfg[0]);
->   	writel_relaxed(msg->data, smmu->base + cfg[1]);
->   	writel_relaxed(ARM_SMMU_MEMATTR_DEVICE_nGnRE, smmu->base + cfg[2]);
->   }
->   
-> +static void arm_smmu_resume_msis(struct arm_smmu_device *smmu)
+>  drivers/memory/mtk-smi.c | 75 +++++++++++++++++++++++++++-------------
+>  1 file changed, 51 insertions(+), 24 deletions(-)
+>
+> diff --git a/drivers/memory/mtk-smi.c b/drivers/memory/mtk-smi.c
+> index e68cbb51dd12..ee49bb50f5f5 100644
+> --- a/drivers/memory/mtk-smi.c
+> +++ b/drivers/memory/mtk-smi.c
+> @@ -60,7 +60,8 @@
+>
+>  enum mtk_smi_type {
+>         MTK_SMI_GEN1,
+> -       MTK_SMI_GEN2
+> +       MTK_SMI_GEN2,           /* gen2 smi common */
+> +       MTK_SMI_GEN2_SUB_COMM,  /* gen2 smi sub common */
+>  };
+>
+>  #define MTK_SMI_CLK_NR_MAX                     4
+> @@ -90,13 +91,14 @@ struct mtk_smi {
+>                 void __iomem            *smi_ao_base; /* only for gen1 */
+>                 void __iomem            *base;        /* only for gen2 */
+>         };
+> +       struct device                   *smi_common_dev; /* for sub common */
+>         const struct mtk_smi_common_plat *plat;
+>  };
+>
+>  struct mtk_smi_larb { /* larb: local arbiter */
+>         struct mtk_smi                  smi;
+>         void __iomem                    *base;
+> -       struct device                   *smi_common_dev;
+> +       struct device                   *smi_common_dev; /* common or sub-common dev */
+>         const struct mtk_smi_larb_gen   *larb_gen;
+>         int                             larbid;
+>         u32                             *mmu;
+> @@ -259,6 +261,38 @@ static const struct of_device_id mtk_smi_larb_of_ids[] = {
+>         {}
+>  };
+>
+> +static int mtk_smi_device_link_common(struct device *dev, struct device **com_dev)
 > +{
-> +	struct msi_desc *desc;
-> +	struct device *dev = smmu->dev;
+> +       struct platform_device *smi_com_pdev;
+> +       struct device_node *smi_com_node;
+> +       struct device *smi_com_dev;
+> +       struct device_link *link;
 > +
-> +	for_each_msi_entry(desc, dev) {
-> +		switch (desc->platform.msi_index) {
-> +		case EVTQ_MSI_INDEX:
-> +		case GERROR_MSI_INDEX:
-> +		case PRIQ_MSI_INDEX:
-> +			arm_smmu_write_msi_msg(desc, &(desc->msg));
-> +			break;
-> +		default:
-> +			continue;
+> +       smi_com_node = of_parse_phandle(dev->of_node, "mediatek,smi", 0);
+> +       if (!smi_com_node)
+> +               return -EINVAL;
 > +
-> +		}
-> +	}
+> +       smi_com_pdev = of_find_device_by_node(smi_com_node);
+> +       of_node_put(smi_com_node);
+> +       if (smi_com_pdev) {
+> +               /* smi common is the supplier, Make sure it is ready before */
+> +               if (!platform_get_drvdata(smi_com_pdev))
+> +                       return -EPROBE_DEFER;
+> +               smi_com_dev = &smi_com_pdev->dev;
+> +               link = device_link_add(dev, smi_com_dev,
+> +                                      DL_FLAG_PM_RUNTIME | DL_FLAG_STATELESS);
+> +               if (!link) {
+> +                       dev_err(dev, "Unable to link smi-common dev\n");
+> +                       return -ENODEV;
+> +               }
+> +               *com_dev = smi_com_dev;
+> +       } else {
+> +               dev_err(dev, "Failed to get the smi_common device\n");
+> +               return -EINVAL;
+> +       }
+> +       return 0;
 > +}
 > +
->   static void arm_smmu_setup_msis(struct arm_smmu_device *smmu)
->   {
->   	struct msi_desc *desc;
-> @@ -3184,11 +3211,17 @@ static void arm_smmu_setup_msis(struct arm_smmu_device *smmu)
->   	devm_add_action(dev, arm_smmu_free_msis, dev);
->   }
->   
-> -static void arm_smmu_setup_unique_irqs(struct arm_smmu_device *smmu)
-> +static void arm_smmu_setup_unique_irqs(struct arm_smmu_device *smmu, bool resume_mode)
->   {
->   	int irq, ret;
->   
-> -	arm_smmu_setup_msis(smmu);
-> +	if (!resume_mode)
-> +		arm_smmu_setup_msis(smmu);
-> +	else {
-> +		/* The irq doesn't need to be re-requested during resume */
-> +		arm_smmu_resume_msis(smmu);
-> +		return;
-
-What about wired IRQs?
-
-> +	}
->   
->   	/* Request interrupt lines */
->   	irq = smmu->evtq.q.irq;
-> @@ -3230,7 +3263,7 @@ static void arm_smmu_setup_unique_irqs(struct arm_smmu_device *smmu)
->   	}
->   }
->   
-> -static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu)
-> +static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu, bool resume_mode)
->   {
->   	int ret, irq;
->   	u32 irqen_flags = IRQ_CTRL_EVTQ_IRQEN | IRQ_CTRL_GERROR_IRQEN;
-> @@ -3257,7 +3290,7 @@ static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu)
->   		if (ret < 0)
->   			dev_warn(smmu->dev, "failed to enable combined irq\n");
->   	} else
-> -		arm_smmu_setup_unique_irqs(smmu);
-> +		arm_smmu_setup_unique_irqs(smmu, resume_mode);
->   
->   	if (smmu->features & ARM_SMMU_FEAT_PRI)
->   		irqen_flags |= IRQ_CTRL_PRIQ_IRQEN;
-> @@ -3282,7 +3315,7 @@ static int arm_smmu_device_disable(struct arm_smmu_device *smmu)
->   	return ret;
->   }
->   
-> -static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
-> +static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool resume_mode)
-
-Er, what about the use of "bypass" towards the end of the function. Have 
-you even compiled this?
-
->   {
->   	int ret;
->   	u32 reg, enables;
-> @@ -3392,7 +3425,7 @@ static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
->   		}
->   	}
->   
-> -	ret = arm_smmu_setup_irqs(smmu);
-> +	ret = arm_smmu_setup_irqs(smmu, resume_mode);
->   	if (ret) {
->   		dev_err(smmu->dev, "failed to setup irqs\n");
->   		return ret;
-> @@ -3749,6 +3782,24 @@ static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
->   	return devm_ioremap_resource(dev, &res);
->   }
->   
-> +static int __maybe_unused arm_smmu_suspend(struct device *dev)
-> +{
-> +	/*
-> +	 * The smmu is powered off and related registers are automatically
-> +	 * cleared when suspend. No need to do anything.
-> +	 */
-
-Is that guaranteed? What if suspend is only implemented by external 
-clock-gating?
-
-> +	return 0;
-> +}
+>  static int mtk_smi_dts_clk_init(struct device *dev, struct mtk_smi *smi,
+>                                 unsigned int clk_nr_optional,
+>                                 const char * const clk_optional[])
+> @@ -285,9 +319,6 @@ static int mtk_smi_larb_probe(struct platform_device *pdev)
+>         struct mtk_smi_larb *larb;
+>         struct resource *res;
+>         struct device *dev = &pdev->dev;
+> -       struct device_node *smi_node;
+> -       struct platform_device *smi_pdev;
+> -       struct device_link *link;
+>         int ret;
+>
+>         larb = devm_kzalloc(dev, sizeof(*larb), GFP_KERNEL);
+> @@ -307,26 +338,10 @@ static int mtk_smi_larb_probe(struct platform_device *pdev)
+>                 return ret;
+>
+>         larb->smi.dev = dev;
+> -       smi_node = of_parse_phandle(dev->of_node, "mediatek,smi", 0);
+> -       if (!smi_node)
+> -               return -EINVAL;
+>
+> -       smi_pdev = of_find_device_by_node(smi_node);
+> -       of_node_put(smi_node);
+> -       if (smi_pdev) {
+> -               if (!platform_get_drvdata(smi_pdev))
+> -                       return -EPROBE_DEFER;
+> -               larb->smi_common_dev = &smi_pdev->dev;
+> -               link = device_link_add(dev, larb->smi_common_dev,
+> -                                      DL_FLAG_PM_RUNTIME | DL_FLAG_STATELESS);
+> -               if (!link) {
+> -                       dev_err(dev, "Unable to link smi-common dev\n");
+> -                       return -ENODEV;
+> -               }
+> -       } else {
+> -               dev_err(dev, "Failed to get the smi_common device\n");
+> -               return -EINVAL;
+> -       }
+> +       ret = mtk_smi_device_link_common(dev, &larb->smi_common_dev);
+> +       if (ret < 0)
+> +               return ret;
+>
+>         pm_runtime_enable(dev);
+>         platform_set_drvdata(pdev, larb);
+> @@ -471,6 +486,14 @@ static int mtk_smi_common_probe(struct platform_device *pdev)
+>                 if (IS_ERR(common->base))
+>                         return PTR_ERR(common->base);
+>         }
 > +
-> +static int __maybe_unused arm_smmu_resume(struct device *dev)
-> +{
-> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
+> +       /* link its smi-common if this is smi-sub-common */
+> +       if (common->plat->type == MTK_SMI_GEN2_SUB_COMM) {
+> +               ret = mtk_smi_device_link_common(dev, &common->smi_common_dev);
+> +               if (ret < 0)
+> +                       return ret;
+> +       }
 > +
-> +	arm_smmu_device_reset(smmu, true);
+>         pm_runtime_enable(dev);
+>         platform_set_drvdata(pdev, common);
+>         return 0;
+> @@ -478,6 +501,10 @@ static int mtk_smi_common_probe(struct platform_device *pdev)
+>
+>  static int mtk_smi_common_remove(struct platform_device *pdev)
+>  {
+> +       struct mtk_smi *common = dev_get_drvdata(&pdev->dev);
 > +
-> +	return 0;
-> +}
-> +
->   static int arm_smmu_device_probe(struct platform_device *pdev)
->   {
->   	int irq, ret;
-> @@ -3756,7 +3807,6 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
->   	resource_size_t ioaddr;
->   	struct arm_smmu_device *smmu;
->   	struct device *dev = &pdev->dev;
-> -	bool bypass;
-
-Once again...
-
->   	smmu = devm_kzalloc(dev, sizeof(*smmu), GFP_KERNEL);
->   	if (!smmu)
-> @@ -3831,7 +3881,7 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
->   	platform_set_drvdata(pdev, smmu);
->   
->   	/* Reset the device */
-> -	ret = arm_smmu_device_reset(smmu, bypass);
-
-...either this is based on some out-of-tree hack which introduced its 
-own uninitialised-usage bug here, or it doesn't even compile.
-
-> +	ret = arm_smmu_device_reset(smmu, false);
->   	if (ret)
->   		return ret;
->   
-> @@ -3884,6 +3934,11 @@ static const struct of_device_id arm_smmu_of_match[] = {
->   };
->   MODULE_DEVICE_TABLE(of, arm_smmu_of_match);
->   
-> +static const struct dev_pm_ops arm_smmu_pm_ops = {
-> +	.suspend = arm_smmu_suspend,
-> +	.resume = arm_smmu_resume,
-
-Either use SET_SYSTEM_SLEEP_PM_OPS() here or drop the __maybe_unused 
-annmotations above - they're pointless if the callbacks are referenced 
-unconditionally.
-
-Robin.
-
-> +};
-> +
->   static void arm_smmu_driver_unregister(struct platform_driver *drv)
->   {
->   	arm_smmu_sva_notifier_synchronize();
-> @@ -3895,6 +3950,7 @@ static struct platform_driver arm_smmu_driver = {
->   		.name			= "arm-smmu-v3",
->   		.of_match_table		= arm_smmu_of_match,
->   		.suppress_bind_attrs	= true,
-> +		.pm			= &arm_smmu_pm_ops,
->   	},
->   	.probe	= arm_smmu_device_probe,
->   	.remove	= arm_smmu_device_remove,
-> 
+> +       if (common->plat->type == MTK_SMI_GEN2_SUB_COMM)
+> +               device_link_remove(&pdev->dev, common->smi_common_dev);
+>         pm_runtime_disable(&pdev->dev);
+>         return 0;
+>  }
+> --
+> 2.18.0
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
