@@ -2,126 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EC83D1648
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1333D164F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239056AbhGURlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:41:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:33542 "EHLO foss.arm.com"
+        id S238931AbhGURoH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Jul 2021 13:44:07 -0400
+Received: from aposti.net ([89.234.176.197]:48802 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238609AbhGURkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:40:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5481C13D5;
-        Wed, 21 Jul 2021 11:21:25 -0700 (PDT)
-Received: from 010265703453.arm.com (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D83BC3F694;
-        Wed, 21 Jul 2021 11:21:23 -0700 (PDT)
-From:   Robin Murphy <robin.murphy@arm.com>
-To:     joro@8bytes.org, will@kernel.org
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
-        john.garry@huawei.com, dianders@chromium.org
-Subject: [PATCH 23/23] iommu/arm-smmu: Allow non-strict in pgtable_quirks interface
-Date:   Wed, 21 Jul 2021 19:20:34 +0100
-Message-Id: <a3aed2f0356e013db18814fb2b14d26256d33022.1626888445.git.robin.murphy@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1626888444.git.robin.murphy@arm.com>
-References: <cover.1626888444.git.robin.murphy@arm.com>
+        id S236999AbhGURoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 13:44:04 -0400
+Date:   Wed, 21 Jul 2021 19:24:29 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 4/6] iio/adc: ingenic: add JZ4760B support to the sadc
+ driver
+To:     citral23 <cbranchereau@gmail.com>
+Cc:     jic23@kernel.org, lars@metafoo.de, linux-mips@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net,
+        contact@artur-rojek.eu
+Message-Id: <TSXLWQ.2A9E0DYPFZ8Q1@crapouillou.net>
+In-Reply-To: <20210721105317.36742-5-cbranchereau@gmail.com>
+References: <20210721105317.36742-1-cbranchereau@gmail.com>
+        <20210721105317.36742-5-cbranchereau@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make io-pgtable aware of a flush queue being dynamically enabled,
-allow IO_PGTABLE_QUIRK_NON_STRICT to be set even after a domain has been
-attached to, and hook up the final piece of the puzzle in iommu-dma.
+Hi Christophe,
 
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 15 +++++++++++++++
- drivers/iommu/arm/arm-smmu/arm-smmu.c       | 11 +++++++++++
- drivers/iommu/dma-iommu.c                   |  3 +++
- 3 files changed, 29 insertions(+)
+Le mer., juil. 21 2021 at 12:53:15 +0200, citral23 
+<cbranchereau@gmail.com> a écrit :
+> The JZ4760B variant differs slightly from the JZ4760, in that it has 
+> a bit called VBAT_SEL
+> in the CFG register. In order to correctly sample the battery voltage 
+> on existing handhelds
+> using this SOC, the bit must be cleared.
+> 
+> We leave the possibility to set the bit, by using the 
+> "ingenic,use-internal-divider" in the devicetree.
+> 
+> Signed-off-by: citral23 <cbranchereau@gmail.com>
+> ---
+>  drivers/iio/adc/ingenic-adc.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/iio/adc/ingenic-adc.c 
+> b/drivers/iio/adc/ingenic-adc.c
+> index 285e7aa8e37a..618150475421 100644
+> --- a/drivers/iio/adc/ingenic-adc.c
+> +++ b/drivers/iio/adc/ingenic-adc.c
+> @@ -37,6 +37,7 @@
+>  #define JZ_ADC_REG_CFG_SAMPLE_NUM(n)	((n) << 10)
+>  #define JZ_ADC_REG_CFG_PULL_UP(n)	((n) << 16)
+>  #define JZ_ADC_REG_CFG_CMD_SEL		BIT(22)
+> +#define JZ_ADC_REG_CFG_VBAT_SEL		BIT(30)
+>  #define JZ_ADC_REG_CFG_TOUCH_OPS_MASK	(BIT(31) | GENMASK(23, 10))
+>  #define JZ_ADC_REG_ADCLK_CLKDIV_LSB	0
+>  #define JZ4725B_ADC_REG_ADCLK_CLKDIV10US_LSB	16
+> @@ -869,6 +870,10 @@ static int ingenic_adc_probe(struct 
+> platform_device *pdev)
+>  	/* Put hardware in a known passive state. */
+>  	writeb(0x00, adc->base + JZ_ADC_REG_ENABLE);
+>  	writeb(0xff, adc->base + JZ_ADC_REG_CTRL);
+> +
+> +	if (!device_property_present(dev, "ingenic,use-internal-divider")) 
+> /* JZ4760B specific */
+> +		ingenic_adc_set_config(adc, JZ_ADC_REG_CFG_VBAT_SEL, 0);
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 260b560d0075..ca19e4551468 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2714,6 +2714,20 @@ static int arm_smmu_enable_nesting(struct iommu_domain *domain)
- 	return ret;
- }
- 
-+static int arm_smmu_set_pgtable_quirks(struct iommu_domain *domain,
-+		unsigned long quirks)
-+{
-+	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
-+
-+	if (quirks == IO_PGTABLE_QUIRK_NON_STRICT && smmu_domain->pgtbl_ops) {
-+		struct io_pgtable *iop = io_pgtable_ops_to_pgtable(smmu_domain->pgtbl_ops);
-+
-+		iop->cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
-+		return 0;
-+	}
-+	return -EINVAL;
-+}
-+
- static int arm_smmu_of_xlate(struct device *dev, struct of_phandle_args *args)
- {
- 	return iommu_fwspec_add_ids(dev, args->args, 1);
-@@ -2828,6 +2842,7 @@ static struct iommu_ops arm_smmu_ops = {
- 	.release_device		= arm_smmu_release_device,
- 	.device_group		= arm_smmu_device_group,
- 	.enable_nesting		= arm_smmu_enable_nesting,
-+	.set_pgtable_quirks	= arm_smmu_set_pgtable_quirks,
- 	.of_xlate		= arm_smmu_of_xlate,
- 	.get_resv_regions	= arm_smmu_get_resv_regions,
- 	.put_resv_regions	= generic_iommu_put_resv_regions,
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index 2c717f3be056..0f181f76c31b 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -1522,6 +1522,17 @@ static int arm_smmu_set_pgtable_quirks(struct iommu_domain *domain,
- 	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
- 	int ret = 0;
- 
-+	if (quirks == IO_PGTABLE_QUIRK_NON_STRICT) {
-+		struct io_pgtable *iop;
-+
-+		if (!smmu_domain->pgtbl_ops)
-+			return -EINVAL;
-+
-+		iop = io_pgtable_ops_to_pgtable(smmu_domain->pgtbl_ops);
-+		iop->cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
-+		return 0;
-+	}
-+
- 	mutex_lock(&smmu_domain->init_mutex);
- 	if (smmu_domain->smmu)
- 		ret = -EPERM;
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 64e9eefce00e..6b51e45e2358 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -16,6 +16,7 @@
- #include <linux/huge_mm.h>
- #include <linux/iommu.h>
- #include <linux/iova.h>
-+#include <linux/io-pgtable.h>
- #include <linux/irq.h>
- #include <linux/mm.h>
- #include <linux/mutex.h>
-@@ -326,6 +327,8 @@ int iommu_dma_init_fq(struct iommu_domain *domain)
- 		return -ENODEV;
- 	}
- 	cookie->fq_domain = domain;
-+	if (domain->ops->set_pgtable_quirks)
-+		domain->ops->set_pgtable_quirks(domain, IO_PGTABLE_QUIRK_NON_STRICT);
- 	return 0;
- }
- 
--- 
-2.25.1
+You miss an "else" part, no? Set the bit if the property is present, 
+clear it if it is missing? You can't really rely on the reset value, 
+since (e.g.) the bootloader could have changed it.
+
+Cheers,
+-Paul
+
+> +
+>  	usleep_range(2000, 3000); /* Must wait at least 2ms. */
+>  	clk_disable(adc->clk);
+> 
+> @@ -896,6 +901,7 @@ static const struct of_device_id 
+> ingenic_adc_of_match[] = {
+>  	{ .compatible = "ingenic,jz4725b-adc", .data = 
+> &jz4725b_adc_soc_data, },
+>  	{ .compatible = "ingenic,jz4740-adc", .data = &jz4740_adc_soc_data, 
+> },
+>  	{ .compatible = "ingenic,jz4760-adc", .data = &jz4760_adc_soc_data, 
+> },
+> +	{ .compatible = "ingenic,jz4760b-adc", .data = 
+> &jz4760_adc_soc_data, },
+>  	{ .compatible = "ingenic,jz4770-adc", .data = &jz4770_adc_soc_data, 
+> },
+>  	{ },
+>  };
+> --
+> 2.30.2
+> 
+
 
