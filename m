@@ -2,231 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFEF3D0CD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8E93D0CD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239035AbhGUKCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239099AbhGUJvY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:51:24 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE47BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 03:30:04 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id w14so1749133edc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 03:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YmKAu6pikxHl7GzDzhAFFQ7A4Rj7cfag8yxs2GUbOH0=;
-        b=RxqaTore1jFbUcUe6rW8GXjzpy2fg9SbFgp1rbHv6nQo9yvAS/ZBE4fqfvDGT6zmeq
-         vZdVaiCznPgDC8Vmk4DuFIvXQ+rX9aVQA7M6U3cCYaALMcDY9QENO8V0kxaBe7VblrvI
-         qQo9F6P4ZVbWy8cEY60aF6QoPBk7lZSl9wy6Dcn5LIXgSjx/UGnUEvAcPK5LA8zssP9f
-         tI4NVbrxfEaRvTLglGcBuhbIoYRXa9C7C1sYftz52te4SrnopqZCXAMOlxG5n9WZNXjl
-         nFJItf1PIeL3wqTJYoV9F3n9t4pFB6s2qtSQ/nRilTqTNjh4Y/Y0qtl9EYcGn4aCOdS/
-         8qbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YmKAu6pikxHl7GzDzhAFFQ7A4Rj7cfag8yxs2GUbOH0=;
-        b=F+q7tHG6Y8mkD3gp60M52oyhAf4FJIxzBPMsP1KuO0epfmQ1X3LV7u3Ok6yJcznBTf
-         VrLM5klSTw4EFQVwcmhvAYYFL+c4FiLENFUV0vsgKmltdHo8wVpAlMAx1S3iJSLJ85/D
-         XrDFMr7vrv2xJwjkaRFIQNYtDH57vP6NdZGSCIie73ugXOtbxMpw8peQl55ImGIOj38N
-         uqLQbvMYvfRv7LsdDfxcIXgS+huFAC4r9naEK8VcpjIhNW6T4zolF5h93+78bpWBKyNJ
-         0eNLTaeJSkv3XLk9TEeb/QvuxNQ34ss3ou988pKXoPCjpznFBstbXZmA2K+kMg8oiVBm
-         Kbog==
-X-Gm-Message-State: AOAM533rSl+ARn79YAHaHU7hTpJXRvSbYMfODZ3RL5/sZYDqrkn3WXyU
-        tCK3duWSZ3yrm47UQsMLZDpDYFsHMWrh1ss12owU9w==
-X-Google-Smtp-Source: ABdhPJxfS9FpxGbS3lEkz0KD/K2JXWR/18PuQ4JFvUNn7OLrLWjVf8OMliTM0ABMMGncEX6LY2vTZFYuwELVKem20aY=
-X-Received: by 2002:a05:6402:4386:: with SMTP id o6mr7878135edc.239.1626863403329;
- Wed, 21 Jul 2021 03:30:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210719144940.288257948@linuxfoundation.org>
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 21 Jul 2021 15:59:51 +0530
-Message-ID: <CA+G9fYt7PavdDfqEmf_xRXoRAJ1a5kMKf3N_h1KhauBeTBJguQ@mail.gmail.com>
-Subject: Re: [PATCH 4.9 000/245] 4.9.276-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S238801AbhGUKAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:00:44 -0400
+Received: from mail-eopbgr50066.outbound.protection.outlook.com ([40.107.5.66]:61844
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238684AbhGUJuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 05:50:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FuQTt8bimVuJ0RUdiCw/1iV4GEpUbI+aD4mKRp+CsB5aLe92y5STOdDkuT0IuQfo9cAa2TMNsq5d5Bp2zf5PrVojkph9i7+GYBbXxTYJh50K9nwr8OMpyZHdVQgbWzo5yKie+GWuf0QRkxHKbwswTrh3RU+i8WEx5rTh2fxMmHVteCTSHfjrHCMmWEoIBYaiXEEDbxg8IpEmoewfNz20FRSPKfE9y0Jns2+uqT22P0WiM4UyE3gzVbd3ARL47+/YuFoFZ5TlJvEPf9TjmqTKrEbmKcABTo/aKQ1PftOCbY28kWlBgvMbUGeyf5JwrQmLR8s+CPROUjLJuV8yEUZB5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+yMeZN3nGJl3aOuYXjAzvRRhuTrPGMy8YY0TEYudfgM=;
+ b=DQdxWQT0ipFebp/DRw9RdmJfbSp+KF6XUDBLVFsNH6lOocTalsTojqscN8/JgP9SUBlbIFtSeBDROtiuIoOQtd0h2xF/M1HpQvVGESobijRFu0VVaxwVfRIwYWI7GYq6n+XkI5NGoeMqqq7pqzL2YgVwM432xJfM5hc30MfJOfP4hx9jD40MfaIWKRn8LhQgtfvzDpVfQ6g44ghd96SjLoaReAnWHIfFc4e5pUnySuxKMmk8TYeqro8AfLZVw6uq6j74dZxAxBN56pYCbvfcGdlVw3tW36ugBo0UCExi1pTBv2plNdMzv0AaPQbwxfmT1348p07J9fN/Nj7amISzKQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+yMeZN3nGJl3aOuYXjAzvRRhuTrPGMy8YY0TEYudfgM=;
+ b=qo4KsjpYkHx28RVdyds11MByMsWvoc1ZjjzBCAjbe8l21Pc+smPMeBclG+KE59z576yergKQeZJ+3iWP0RqGP5YGNTQB40HqO7Kp73MSDn/HrDN4Emg1gsIbUFqKTF3N6R19m1t19obCmdjhgLS7ey5pV9xVKCJ1Bkj1wOx/dWI=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB5295.eurprd04.prod.outlook.com (2603:10a6:803:59::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Wed, 21 Jul
+ 2021 10:30:05 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0%2]) with mapi id 15.20.4331.034; Wed, 21 Jul 2021
+ 10:30:05 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+Thread-Topic: linux-next: build failure after merge of the net-next tree
+Thread-Index: AQHXfc+BUi5PeIFlAECY83S5wMlCkatNOx6A
+Date:   Wed, 21 Jul 2021 10:30:05 +0000
+Message-ID: <20210721103005.vqll3bhqixkc7uym@skbuf>
+References: <20210721112652.47225cb4@canb.auug.org.au>
+In-Reply-To: <20210721112652.47225cb4@canb.auug.org.au>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ec70f31e-d916-4cdb-1ebc-08d94c3281a3
+x-ms-traffictypediagnostic: VI1PR04MB5295:
+x-microsoft-antispam-prvs: <VI1PR04MB5295354CB1EC550443698115E0E39@VI1PR04MB5295.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3383;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: j1LV3umiwRRnlcasvQv55ZpWzHiLMm/mWTguyXu3Rd3stqVe1QLGUA6J4Kh4xIisaFOWDXJuFZE6nYwz2Wj8wzWjOu/xj9xO2NuSR3NhzJugffkL1ApZsqjoZitw5Rzp9ilEHtpUsL9PkBF+8KQTD2rpePZCHNOvXB5WONKzVpMFoN+WCY4PyqrRPnn3OT/JDt7fa7VdKa8rf3x7KASdITRH+KSD0Q1PdpJMNVGSbbC6dysCF8vxCSTmJsdv2y9QrZGytLkyy1VoB/6pPN3GWGT/rBewo7iYHgol+0R2ohcfYqtz8itg08mSWj4QlnuuNC7Lhn++RlkZSdGAPKxCoJzzJZRTNozKvjtuo6cXfjrn7XDPFPH+QOUbWWJrZQ8s18NIQ2k4shLqssiOGOGd9mB665dMQ4FO9F9dY5LlV9I3XxEDKLhnqX969J8elPHFK5eH/eEPBNUdfB56oXSkOWJb1QqAfLWFvcEyqx+1MkLMeJQqw14bPafr030vkXj0oRfoxtlzAGChRV5IAc1zMk8PyKhUvm+SFJSI0eQua6RM4VQQ5Vg9xwa9zAh2WXgI3pPq4P5+SrH1a6zLr3uZjH8R/iicH4IHQ56mOLD7rTkG2EQMuhInvneLvGXU4wXE33KYXTyhDRAN2k2W4SnDyalHhbCZb8s5W2bNeUXoOFKrxSSYKNTwm/n0deBqRt1ou1ZKr02tcS0wMMCcCfAsWTXvFIs2QTGGSafasHtbdD0zjntcs2XGMhw54dLcQviw4PXn/EPa0kDZi8PA+0Xhtw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(396003)(136003)(39860400002)(346002)(366004)(376002)(33716001)(6512007)(8676002)(5660300002)(4326008)(38100700002)(6506007)(6916009)(64756008)(54906003)(66476007)(66556008)(2906002)(8936002)(86362001)(9686003)(1076003)(4744005)(966005)(66446008)(66946007)(316002)(44832011)(6486002)(122000001)(71200400001)(26005)(478600001)(76116006)(186003)(91956017)(83380400001)(38070700004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?O7ChQBiag5gmr3va295wuKxQWBGd//uy5bErLV03jU2SLVPIAsyFTUqCsUaK?=
+ =?us-ascii?Q?EErP0OiLSmVJaryHvDhEXJ4ZQ2+lI8IcXwR/YdXOQCpOmt56LgIICR5F0jWo?=
+ =?us-ascii?Q?cI+pu7wwQoZkMYn2eRwd91QV89QgGzy10QDUTGoIlnh0iQZ2c2FbsJvhlB9t?=
+ =?us-ascii?Q?kvzqMealeOXGqYYYOyfo3ssgpDh7tVlmJCEsvZ5TBG+gRaijn0MDUbFZvkqV?=
+ =?us-ascii?Q?n+8ohajC8498cmwR/dZywE6o1KA6G5mYCx7atMmowVrepY5rwGFNiIRhSJjD?=
+ =?us-ascii?Q?qilXnJpggvDq5UchSdS3RnJD90+OHSzvFY+b2tZ321x9qxgjC/cE5RQuKe9y?=
+ =?us-ascii?Q?blawT4pIysssQnAnI4ZDnWywnwaRUCJ0DGKh+JgG/KxskzDgUFCxxvNH7ay9?=
+ =?us-ascii?Q?cT/n37p48miexCzX5NXcZN/Ey2WpnGq9YwDg7YF/D5Cm5yQfDQMtTMiZGpuR?=
+ =?us-ascii?Q?xMXT+G5Aa87qpNtBgaD5aBldqEdkE3HLHDU8csREA3OWGOli7AAXHunEQ/gz?=
+ =?us-ascii?Q?a6NI5b4sTiOTIAFYQHd35dTKY/1Nu/28rL6qynBc3UvV3HKZ2ZMIGauXj2/l?=
+ =?us-ascii?Q?i2dWGC/eGhy7PGR5dOyPX8Rxlb8gHCfDLbJtFt+J6CYVLCKyPchmQN2sSZg0?=
+ =?us-ascii?Q?wC23RYPJqJ+TEv6XX17dri7zMFmAaET5eJ2rJYCsFOCfRDvB51d76FNnwvMc?=
+ =?us-ascii?Q?wbKuzQMbcqWVctRmHZlAzKQ6Fr6KOr5SFEA73K5qktOFpcNqdkrsO9EB2PSU?=
+ =?us-ascii?Q?y1OHvsYl/df2Wyu8rtgQ8SvvfCFCTwrvMlTUqjmHOlPaMUYrbuD8DMFZ1aQq?=
+ =?us-ascii?Q?CwXvnWG6mYST7yWDs4HT6DWw0D2QEirb9C96TKety7XYE6kUGUBHrLKFfjy4?=
+ =?us-ascii?Q?E0H8CbnXT1hJSnY4IxKHeqlrccJsQcreU4kSGP2Rn2r+99P4zkBGenQKv7E2?=
+ =?us-ascii?Q?9tAjoD5DlElXBIHMhvXomZdKvQGQSoNwq0w/KwDWRv5MDheVUmenKybWLcR4?=
+ =?us-ascii?Q?6QN32P6eCySTlTTDoSNx5b8fDGXGYwhi6ipkm2+8I+Q6Gb33DJVmv+2todg3?=
+ =?us-ascii?Q?QVTO8/hrGAo75FaFKjQ8U3F8IFZm6GNVl40F9nNOrTAH91r+YAztWvNSUKNR?=
+ =?us-ascii?Q?fJ81LY46pvQLJGkGXG52170GCYAS3ouNqFn0IegZkq3376TPdV8uq6dBPCtf?=
+ =?us-ascii?Q?WgSFYk5mLAof2OM9qqX8bmXiVKvsmbzsMXB/VWKjPoIa1AFloXeB4VKGKGuE?=
+ =?us-ascii?Q?xwc/2rLkr1oglHaogNPPKWecr985BiIgz+8BzB0ZwFADLPi4NqcU7ELe3ZB4?=
+ =?us-ascii?Q?GPxM5HzJunIDHGbkuU6Cn/fm?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D1DD2D17A64EAA4BBBC29744295AFDAE@eurprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec70f31e-d916-4cdb-1ebc-08d94c3281a3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2021 10:30:05.6123
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eqrlau2gJbDk0z4YVSHxZsCRiGF5nHKNRDnES7ZxYRyKlO/CfpVIBAIKpC6tFDqAYUOH1x0mS64KaCpnP983hQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5295
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 at 20:37, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.276 release.
-> There are 245 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 21 Jul 2021 14:47:42 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.276-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Wed, Jul 21, 2021 at 11:26:52AM +1000, Stephen Rothwell wrote:
+> include/net/switchdev.h:399:1: warning: 'switchdev_handle_fdb_del_to_devi=
+ce' declared 'static' but never defined [-Wunused-function]
+>   399 | switchdev_handle_fdb_del_to_device(struct net_device *dev,
+>       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.9.276-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.9.y
-* git commit: 04afcb7e33f59d83d1e1bf39a8c0d9bbe6df454c
-* git describe: v4.9.275-246-g04afcb7e33f5
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
-75-246-g04afcb7e33f5
-
-## Regressions (compared to v4.9.275-185-g85e806546048)
-No regressions found.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-## No fixes (compared to v4.9.275-185-g85e806546048)
-
-## Test result summary
- total: 58298, pass: 45562, fail: 520, skip: 10368, xfail: 1848,
-
-## Build Summary
-* arm: 97 total, 97 passed, 0 failed
-* arm64: 24 total, 24 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 14 total, 14 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timens[
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Sorry for the breakage.
+https://patchwork.kernel.org/project/netdevbpf/patch/20210720173557.999534-=
+2-vladimir.oltean@nxp.com/=
