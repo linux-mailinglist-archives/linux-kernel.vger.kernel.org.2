@@ -2,122 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DADE3D0E4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C0F3D0E5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238842AbhGULSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:18:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:52826 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237697AbhGULLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:11:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 221EA11B3;
-        Wed, 21 Jul 2021 04:51:37 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B050C3F694;
-        Wed, 21 Jul 2021 04:51:34 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rt-users@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 3/3] arm64: mm: Make arch_faults_on_old_pte() check for migratability
-Date:   Wed, 21 Jul 2021 12:51:18 +0100
-Message-Id: <20210721115118.729943-4-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210721115118.729943-1-valentin.schneider@arm.com>
-References: <20210721115118.729943-1-valentin.schneider@arm.com>
+        id S237903AbhGULUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:20:19 -0400
+Received: from mail-sn1anam02on2044.outbound.protection.outlook.com ([40.107.96.44]:42871
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238438AbhGULN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 07:13:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fm6ItjZLJfcY0ZghmuIoDWlGL/BUMkEK5FT9Yh3tMLYcZe4JQa1Hqx9GlmL4E0xOqhK4UaXW9zrnu7IDSILOEvSfFXHcSnZ7/nWtb3ugkDhFrQA/DHOe6qQVZD7GaQmuXw/6Pml23FUrO0m2vZf0c5Erk0Rp6AKNNJ5IuHJ5UsubzlrwX95F+OVaglxj8dXzvoqtW3ZnDuSFZfJVuuMWHIFHGsKmyLunWnm/uL7gLrKqU1RYfIkhE+GvmUiMZLf9jMtly56cAB6l9AaJVMCVgZjqvfb6fVsd5FJ5u1sMsED/IW80dNLP4M2k5/EGE5OPsnvK/cTtbYbw6eASJYiGzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xxpJ6fIAa/zRBwSDqYd243UC1fjkHambavZmlLQuj7k=;
+ b=NuuQnkLIG6wN7GQgIWBtuvUSIXOScWYm9GAbJAHaEv18xXoCEnjK8qE4tmJ+akzlszP8ymF/CCc/sr1UjtH6mb39Y8bqGFvOcCYhUc3Uo2mMuuyIFcNvARw6H6jw9piAzZcpjBhqn9WPfKDCbJMAtvzD94jmfN1ZyrKUgqW67hWh4+1nssNtpN+jK1OTHrMQOi3SLTR9Ajmaz8vQ/zRgKPtqbMv1oNWqO1PFkAQlV0yhWPVnX4ifyhxnDNeK8iQRAv+klCv3CjEfRCHyxKJNFpq3czD/jb387Lkl8G+Lvpo79OUWkyV5+hsJfiOd0Eq3u5zkqpaEriq/7qZER+Q6Rw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=gmail.com smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xxpJ6fIAa/zRBwSDqYd243UC1fjkHambavZmlLQuj7k=;
+ b=O9/Cct3Fn0Vzuue3hDAQ4UdBV39Z+wei/DkLXhgvoWCk0LA1uUVFAJDZh1A07u1eYaVjMgt8GwzcuQK9wfG3N5nuzrNKWhrDPtclHU0Z6EVMcpLv75ul7NbZaE4RNAQrwAdvbApDV7RnQ2iWc7OQEy+A4IEMxSJM1WMyST3Mjx8=
+Received: from BN6PR13CA0059.namprd13.prod.outlook.com (2603:10b6:404:11::21)
+ by DM6PR02MB5849.namprd02.prod.outlook.com (2603:10b6:5:156::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22; Wed, 21 Jul
+ 2021 11:54:32 +0000
+Received: from BN1NAM02FT052.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:404:11:cafe::92) by BN6PR13CA0059.outlook.office365.com
+ (2603:10b6:404:11::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.7 via Frontend
+ Transport; Wed, 21 Jul 2021 11:54:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ BN1NAM02FT052.mail.protection.outlook.com (10.13.2.160) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4352.24 via Frontend Transport; Wed, 21 Jul 2021 11:54:32 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 21 Jul 2021 04:54:25 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 21 Jul 2021 04:54:25 -0700
+Envelope-to: git@xilinx.com,
+ saikrishna12468@gmail.com,
+ robh+dt@kernel.org,
+ linus.walleij@linaro.org,
+ gregkh@linuxfoundation.org,
+ linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org,
+ linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Received: from [172.23.64.106] (port=50891 helo=xhdvnc125.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <lakshmi.sai.krishna.potthuri@xilinx.com>)
+        id 1m6Anw-000EUU-EO; Wed, 21 Jul 2021 04:54:24 -0700
+Received: by xhdvnc125.xilinx.com (Postfix, from userid 14964)
+        id A7339121273; Wed, 21 Jul 2021 17:24:23 +0530 (IST)
+From:   Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <git@xilinx.com>,
+        <saikrishna12468@gmail.com>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Subject: [PATCH 0/4] pinctrl: pinctrl-zynq: yaml conversion and minor driver updates
+Date:   Wed, 21 Jul 2021 17:22:29 +0530
+Message-ID: <1626868353-96475-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+X-Mailer: git-send-email 2.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 71e5cda5-7ca8-4f1a-3f70-08d94c3e4d95
+X-MS-TrafficTypeDiagnostic: DM6PR02MB5849:
+X-Microsoft-Antispam-PRVS: <DM6PR02MB5849B082447EB34C20FC2198BDE39@DM6PR02MB5849.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rzb+D7CsgZj1/6puUPuulQ+XdWpnucdLDsJQTrBjvvdE7aY/pMZ1eeFTTnoeUeDQHuzkC1NgoYgMijA9QrKtIJK/0rvniQsairidlEQ8aLxqPScm6cZdyw9UuDJHWAj1IUJ3M8/8K+SQkYkqmS9IFiNSAl9rtSX5LPrRocTns5Zc9EAbvIg8ae3/JpqHysi4zG4bj6FmunyRJ6IYOendQ+ZXyoFVcl6o2V6sBT+OcXHgeeMZ9GxJzD+EQ0nqoPTcjWf7Ty6uZ/NG+y4KL9vsmVA79zKd7Z97fSJwDZeyUcb8OqAQmTJcyNKDjo+7tww1mUbtnxpzQextPHIVFtojOgFyvzRKGpSTDUkZbogqa7wClqClxto+XbSDp1N4SKpiJu5bulojbTm08MC3su4KaPNaqJ8AWpNqJBwEjXVhtrG3LN/vfvVbaHfNBXftRkjSVPsjdpS0ssPOvhndv1Y+Q/EUa2D8qnymKU9/aK7xjAzwpkmLMhP63io8BNrT9VTQ9BX94Z5bbgpGMHDDUN9irQz3ee+jnTRc0GzgaOfHW45aKivjvVZ3BIFfo/8VDnsXEO7krWrojZNz3MRmcstiL27z9MhjSTaI+ON+bnLRtCMmT8oxcnqoWEzXO8c1RoanoqKox2m8mVKClTbHIWrnN6yoh7ZgTKIbWC7P5wLQxe9ob/LK4IVvrOdt1jgso/JusMJPblJx/07XNuuXnyYJxU98VLYpBwPRi98ZvD40HOE78oNsm3ArQKQ+Og3XPH9XZyFRBUzfbhTZWSPnDXjOprOyj8s3xs3236XaokYXUN4qZUKju+7qN8smCRs5d/rt
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(136003)(39860400002)(36840700001)(46966006)(47076005)(4326008)(107886003)(26005)(36906005)(36860700001)(2906002)(83380400001)(316002)(82310400003)(42186006)(82740400003)(5660300002)(336012)(426003)(110136005)(186003)(54906003)(70206006)(2616005)(6266002)(478600001)(15650500001)(356005)(70586007)(36756003)(8936002)(8676002)(7636003)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 11:54:32.1626
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 71e5cda5-7ca8-4f1a-3f70-08d94c3e4d95
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT052.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB5849
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running v5.13-rt1 on my arm64 Juno board triggers:
+This patch series does the following
+- Covert Zynq pinctrl driver binding file to yaml.
+- Update the binding for Zynq pinctrl to replace the 'io-standard' with
+'power-source' parameter as recommended by Linus during ZynqMP pinctrl
+driver review(https://lkml.org/lkml/2021/3/25/278).
+- Update the Zynq pinctrl the driver to remove custom pin
+parameter(io-standard) and instead use generic parameter(power-source).
+- Update Zynq dts files to replace 'io-standard' with 'power-source'.
 
-[   30.430643] WARNING: CPU: 4 PID: 1 at arch/arm64/include/asm/pgtable.h:985 do_set_pte (./arch/arm64/include/asm/pgtable.h:985 ./arch/arm64/include/asm/pgtable.h:997 mm/memory.c:3830)
-[   30.430669] Modules linked in:
-[   30.430679] CPU: 4 PID: 1 Comm: init Tainted: G        W         5.13.0-rt1-00002-gcb994ad7c570 #35
-[   30.430690] Hardware name: ARM Juno development board (r0) (DT)
-[   30.430695] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-[   30.430705] pc : do_set_pte (./arch/arm64/include/asm/pgtable.h:985 ./arch/arm64/include/asm/pgtable.h:997 mm/memory.c:3830)
-[   30.430713] lr : filemap_map_pages (mm/filemap.c:3222)
-[   30.430725] sp : ffff800012f4bb90
-[   30.430729] x29: ffff800012f4bb90 x28: fffffc0025d81900 x27: 0000000000000100
-[   30.430745] x26: fffffc0025d81900 x25: ffff000803460000 x24: ffff000801bbf428
-[   30.430760] x23: ffff00080317d900 x22: 0000ffffb4c3e000 x21: fffffc0025d81900
-[   30.430775] x20: ffff800012f4bd10 x19: 00200009f6064fc3 x18: 000000000000ca01
-[   30.430790] x17: 0000000000000000 x16: 000000000000ca06 x15: ffff80001240e128
-[   30.430804] x14: ffff8000124b0128 x13: 000000000000000a x12: ffff80001205e5f0
-[   30.430819] x11: 0000000000000000 x10: ffff800011a37d28 x9 : 00000000000000c8
-[   30.430833] x8 : ffff000800160000 x7 : 0000000000000002 x6 : 0000000000000000
-[   30.430847] x5 : 0000000000000000 x4 : 0000ffffb4c2f000 x3 : 0020000000000fc3
-[   30.430861] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000000
-[   30.430874] Call trace:
-[   30.430878] do_set_pte (./arch/arm64/include/asm/pgtable.h:985 ./arch/arm64/include/asm/pgtable.h:997 mm/memory.c:3830)
-[   30.430886] filemap_map_pages (mm/filemap.c:3222)
-[   30.430895] __handle_mm_fault (mm/memory.c:4006 mm/memory.c:4020 mm/memory.c:4153 mm/memory.c:4412 mm/memory.c:4547)
-[   30.430904] handle_mm_fault (mm/memory.c:4645)
-[   30.430912] do_page_fault (arch/arm64/mm/fault.c:507 arch/arm64/mm/fault.c:607)
-[   30.430925] do_translation_fault (arch/arm64/mm/fault.c:692)
-[   30.430936] do_mem_abort (arch/arm64/mm/fault.c:821)
-[   30.430946] el0_ia (arch/arm64/kernel/entry-common.c:324)
-[   30.430959] el0_sync_handler (arch/arm64/kernel/entry-common.c:431)
-[   30.430967] el0_sync (arch/arm64/kernel/entry.S:744)
-[   30.430977] irq event stamp: 1228384
-[   30.430981] hardirqs last enabled at (1228383): lock_page_memcg (mm/memcontrol.c:2005 (discriminator 1))
-[   30.430993] hardirqs last disabled at (1228384): el1_dbg (arch/arm64/kernel/entry-common.c:144 arch/arm64/kernel/entry-common.c:234)
-[   30.431007] softirqs last enabled at (1228260): __local_bh_enable_ip (./arch/arm64/include/asm/irqflags.h:85 kernel/softirq.c:262)
-[   30.431022] softirqs last disabled at (1228232): fpsimd_restore_current_state (./include/linux/bottom_half.h:19 arch/arm64/kernel/fpsimd.c:183 arch/arm64/kernel/fpsimd.c:1182)
+Reason for adding the generic parameter 'power-source' in Zynq pinctrl driver
+is to maintain common pin parameter across Xilinx Zynq and ZynqMP platforms
+for power supply configuration.
 
-CONFIG_PREEMPT_RT turns the PTE lock into a sleepable spinlock. Since
-acquiring such a lock also disables migration, any per-CPU access done
-under the lock remains safe even if preemptible.
+Sai Krishna Potthuri (4):
+  dt-bindings: pinctrl: pinctrl-zynq: Convert to yaml
+  dt-bindings: pinctrl-zynq: Replace 'io-standard' with 'power-source'
+  pinctrl: pinctrl-zynq: Add support for 'power-source' parameter
+  arm: dts: zynq: Replace 'io-standard' with 'power-source' property
 
-This affects:
+ .../bindings/pinctrl/xlnx,zynq-pinctrl.txt    | 105 ---------
+ .../bindings/pinctrl/xlnx,zynq-pinctrl.yaml   | 214 ++++++++++++++++++
+ arch/arm/boot/dts/zynq-ebaz4205.dts           |   8 +-
+ arch/arm/boot/dts/zynq-microzed.dts           |   2 +-
+ arch/arm/boot/dts/zynq-zc702.dts              |  20 +-
+ arch/arm/boot/dts/zynq-zc706.dts              |  18 +-
+ drivers/pinctrl/pinctrl-zynq.c                |   2 +
+ include/dt-bindings/pinctrl/pinctrl-zynq.h    |  17 ++
+ 8 files changed, 257 insertions(+), 129 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/pinctrl/xlnx,zynq-pinctrl.txt
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/xlnx,zynq-pinctrl.yaml
+ create mode 100644 include/dt-bindings/pinctrl/pinctrl-zynq.h
 
-  filemap_map_pages()
-  `\
-    do_set_pte()
-    `\
-      arch_wants_old_prefaulted_pte()
-
-which checks preemptible() to figure out if the output of
-cpu_has_hw_af() (IOW the underlying CPU) will remain stable for the
-subsequent operations. Make it use is_pcpu_safe() instead.
-
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- arch/arm64/include/asm/pgtable.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 0b10204e72fc..3c2b63306237 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -982,7 +982,7 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
-  */
- static inline bool arch_faults_on_old_pte(void)
- {
--	WARN_ON(preemptible());
-+	WARN_ON(!is_pcpu_safe());
- 
- 	return !cpu_has_hw_af();
- }
 -- 
-2.25.1
+2.17.1
 
