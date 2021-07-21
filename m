@@ -2,106 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9693D0AD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8CC3D0AE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236873AbhGUIEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 04:04:20 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42694 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236301AbhGUH74 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:59:56 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 7F64122077;
-        Wed, 21 Jul 2021 08:39:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626856777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=aIKkY/oksyNCRT46/tzea6WLOM5qQKhBXPzprEVpLXY=;
-        b=wxbNsWTwFTx00MqsmrBFuJ9Ug3oYW4LCMMbNCEEquwr12jpsO6S968p4uHHCiqH9KjcwrM
-        x0aYZatZ6XrWGmYLBqG4/47Z/ZcRsnBEQzQVY+Ir/PRy86V9UOAE0SC3/uIAEquN65+fKt
-        yxoioJ8VIarRC60E4Vuz5BPJg1kzETw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626856777;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=aIKkY/oksyNCRT46/tzea6WLOM5qQKhBXPzprEVpLXY=;
-        b=T6a3c+SOulfKuR8LZ3QbFkafEEQ6oVnynzx8LIQodFl0M3aD1SpBQDJms6DsU+A3jcoiPo
-        vPBCGagnjTy2boCA==
-Received: from un68u.suse.de (unknown [10.163.42.126])
-        by relay2.suse.de (Postfix) with ESMTP id BBE7DA3B8E;
-        Wed, 21 Jul 2021 08:39:36 +0000 (UTC)
-From:   Mian Yousaf Kaukab <ykaukab@suse.de>
-To:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     stefanb@linux.ibm.com, davem@davemloft.net,
-        herbert@gondor.apana.org.au, tiwai@suse.de,
-        guillaume.gardet@arm.com, Mian Yousaf Kaukab <ykaukab@suse.de>
-Subject: [PATCH] crypto: ecc: handle unaligned input buffer in ecc_swap_digits
-Date:   Wed, 21 Jul 2021 10:39:05 +0200
-Message-Id: <20210721083905.15144-1-ykaukab@suse.de>
-X-Mailer: git-send-email 2.26.2
+        id S236439AbhGUILb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 04:11:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237179AbhGUH77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 03:59:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84D716120C;
+        Wed, 21 Jul 2021 08:39:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626856759;
+        bh=mfCDdxxdxIfXvExYFxJrBOcbLIuXkpzrhMTJH0gwU9g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jNIx8LF/wcsfGkWe56VXcP1AfJJxcknYoSVdTHMrItZiy5dwiVA7ErDqASBTUzujs
+         UR0bw/TuE2qmXxDQLyfS8vyxYLOUKb1IDMlf8+ks903PRVWgVXgKaLPFuK0LDaqYaD
+         1fXxjyqafGx3yPTg+xyiXThjvjqCSaJjIn1Zulw572IPujx7YteYtnouvsKSDTkOd7
+         t6VmYkfn2XEX8bh/26WhKPEBF8chGonT4TziIDBodkk3OqIpdc4ettKDDisxDsr7Kj
+         FavLMOH7ws0u5nHnY+5cT07nBRlSPA45DfrFrvU1qv92n5suVylTB706v+Qz1dQr9M
+         f/Ewxl2JOmDJQ==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1m67l5-0022dW-DT; Wed, 21 Jul 2021 10:39:15 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: [PATCH v7 04/10] PCI: kirin: Add MODULE_* macros
+Date:   Wed, 21 Jul 2021 10:39:06 +0200
+Message-Id: <cafb25d4368afca14a44de1b6264ff9de5e86a9f.1626855713.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1626855713.git.mchehab+huawei@kernel.org>
+References: <cover.1626855713.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ecdsa_set_pub_key() makes an u64 pointer at 1 byte offset of the key.
-This results in an unaligned u64 pointer. This pointer is passed to
-ecc_swap_digits() which assumes natural alignment.
+This driver misses the MODULE_* macros. Add them.
 
-This causes a kernel crash on an armv7 platform:
-[    0.409022] Unhandled fault: alignment exception (0x001) at 0xc2a0a6a9
-...
-[    0.416982] PC is at ecdsa_set_pub_key+0xdc/0x120
-...
-[    0.491492] Backtrace:
-[    0.492059] [<c07c266c>] (ecdsa_set_pub_key) from [<c07c75d4>] (test_akcipher_one+0xf4/0x6c0)
-
-Handle unaligned input buffer in ecc_swap_digits() by replacing
-be64_to_cpu() to get_unaligned_be64(). Change type of in pointer to
-void to reflect it doesn’t necessarily need to be aligned.
-
-Fixes: 4e6602916bc6 ("crypto: ecdsa - Add support for ECDSA signature verification")
-Reported-by: Guillaume Gardet <guillaume.gardet@arm.com>
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- crypto/ecc.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/pci/controller/dwc/pcie-kirin.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/crypto/ecc.h b/crypto/ecc.h
-index a006132646a4..1350e8eb6ac2 100644
---- a/crypto/ecc.h
-+++ b/crypto/ecc.h
-@@ -27,6 +27,7 @@
- #define _CRYPTO_ECC_H
- 
- #include <crypto/ecc_curve.h>
-+#include <asm/unaligned.h>
- 
- /* One digit is u64 qword. */
- #define ECC_CURVE_NIST_P192_DIGITS  3
-@@ -46,13 +47,13 @@
-  * @out:      Output array
-  * @ndigits:  Number of digits to copy
-  */
--static inline void ecc_swap_digits(const u64 *in, u64 *out, unsigned int ndigits)
-+static inline void ecc_swap_digits(const void *in, u64 *out, unsigned int ndigits)
- {
- 	const __be64 *src = (__force __be64 *)in;
- 	int i;
- 
- 	for (i = 0; i < ndigits; i++)
--		out[i] = be64_to_cpu(src[ndigits - 1 - i]);
-+		out[i] = get_unaligned_be64(&src[ndigits - 1 - i]);
- }
- 
- /**
+diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
+index 5fe0cd0af572..a32f7f36461c 100644
+--- a/drivers/pci/controller/dwc/pcie-kirin.c
++++ b/drivers/pci/controller/dwc/pcie-kirin.c
+@@ -612,3 +612,8 @@ static struct platform_driver kirin_pcie_driver = {
+ 	},
+ };
+ builtin_platform_driver(kirin_pcie_driver);
++
++MODULE_DEVICE_TABLE(of, kirin_pcie_match);
++MODULE_DESCRIPTION("PCIe host controller driver for Kirin Phone SoCs");
++MODULE_AUTHOR("Xiaowei Song <songxiaowei@huawei.com>");
++MODULE_LICENSE("GPL v2");
 -- 
-2.26.2
+2.31.1
 
