@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D5C3D0CEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9561E3D0CED
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238668AbhGUKJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 06:09:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58690 "EHLO mail.kernel.org"
+        id S235410AbhGUKLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 06:11:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239487AbhGUKFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 06:05:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 851FC60238;
-        Wed, 21 Jul 2021 10:46:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626864369;
-        bh=lekz1x8Vr+mtj6/j1CLlcAW/8TwIhmgKM8+wU/jnTd4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I3WtQXqEESn30zVXhTZ7Rf7axCV+VRasQnprlkR/u7LSKrlVylGYfkUewLhoVp/fD
-         IJedpcadAQ0QHFTl0SxxRdlu3rgGAekSV4pzAQKudjBQLW1i2XbfTFGXtpKAp6cjKL
-         fgNulM80bhGQechPnYIiFF3/dCAs0n+WaEjdVWuE=
-Date:   Wed, 21 Jul 2021 12:46:06 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     timur@kernel.org, linux@armlinux.org.uk, alcooperx@gmail.com,
-        tklauser@distanz.ch, sean.wang@kernel.org,
-        srv_heupstream@mediatek.com, hui.liu@mediatek.com,
-        yuchen.huang@mediatek.com, huihui.wang@mediatek.com,
-        eddie.huang@mediatek.com, sean.wang@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        id S239929AbhGUKHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 06:07:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDCED6138C;
+        Wed, 21 Jul 2021 10:47:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626864482;
+        bh=qR4EPIkAAUhsdXzNobnISSq8AvXs8KveVzIPRgC1ZSg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ID6hrb0zF1vZAWTO/w64wkH49bmbmEGRBdhTkmz8CXH9ZQ5RF7SsBYyX6mXFyyASq
+         f07Ztur3Q8lPzlkZAf/va0W1gLo9bnlyRHdsKrfjsu5sUGuqAvqSocHtj4yFnuL0cJ
+         HiqjLARL7TjecLsxZuUzEPQkZx1WtlU6O3iMOLP74mxKJjN7PE3iMkNtcDR6HQfFGj
+         XRT3R6bViCjK4K/kVOCKFpFBDjuL9BhP+zLL9tekrqcd4Umomaxh0EnxUYxWWnlo0R
+         ld9xxHa8rszAKphlvt/IYjNPlhOofDAjcAFSKgUAqmggENwS95WZ2jZptkug0eO44b
+         WhsgW3cGaup2Q==
+From:   Will Deacon <will@kernel.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linuxppc-dev@lists.ozlabs.org, Mark Rutland <mark.rutland@arm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH] uart: mediatek: fix memory corruption issue
-Message-ID: <YPf67gw2KJCk/Ucs@kroah.com>
-References: <20210710090103.2643-1-zhiyong.tao@mediatek.com>
- <20210710090103.2643-2-zhiyong.tao@mediatek.com>
+        Paul Mackerras <paulus@samba.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2] Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge"
+Date:   Wed, 21 Jul 2021 11:47:53 +0100
+Message-Id: <162686329170.980657.905966885675716231.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <87r1fs1762.fsf@mpe.ellerman.id.au>
+References: <20210720202627.Horde.vlszNhxkKrLIg0-3Sn2ucw5@messagerie.c-s.fr> <87r1fs1762.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210710090103.2643-2-zhiyong.tao@mediatek.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 05:01:03PM +0800, Zhiyong Tao wrote:
-> This patch is used to fix memory corruption issue when rx power off.
-> 1. add spin lock in mtk8250_dma_rx_complete function in APDMA mode.
-
-What does a lock protect from?  Please be explicit and detailed.
-
-> 2. add processing mechanism which count value is 0
-
-What does this do?  And why is it needed?
-
+On Wed, 21 Jul 2021 17:02:13 +1000, Michael Ellerman wrote:
+> This reverts commit c742199a014de23ee92055c2473d91fe5561ffdf.
 > 
-> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-
-What commit does this fix?  Does this need to go to stable kernel trees?
-If so, how far back?
-
-> ---
->  drivers/tty/serial/8250/8250_mtk.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
+> c742199a014d ("mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge")
+> breaks arm64 in at least two ways for configurations where PUD or PMD
+> folding occur:
 > 
-> diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
-> index f7d3023f860f..09f7d2166315 100644
-> --- a/drivers/tty/serial/8250/8250_mtk.c
-> +++ b/drivers/tty/serial/8250/8250_mtk.c
-> @@ -91,12 +91,15 @@ static void mtk8250_dma_rx_complete(void *param)
->  	struct mtk8250_data *data = up->port.private_data;
->  	struct tty_port *tty_port = &up->port.state->port;
->  	struct dma_tx_state state;
-> -	int copied, total, cnt;
-> +	unsigned int copied, total, cnt;
->  	unsigned char *ptr;
-> +	unsigned long flags;
->  
->  	if (data->rx_status == DMA_RX_SHUTDOWN)
->  		return;
->  
-> +	spin_lock_irqsave(&up->port.lock, flags);
-> +
->  	dmaengine_tx_status(dma->rxchan, dma->rx_cookie, &state);
->  	total = dma->rx_size - state.residue;
->  	cnt = total;
-> @@ -104,9 +107,11 @@ static void mtk8250_dma_rx_complete(void *param)
->  	if ((data->rx_pos + cnt) > dma->rx_size)
->  		cnt = dma->rx_size - data->rx_pos;
->  
-> -	ptr = (unsigned char *)(data->rx_pos + dma->rx_buf);
-> -	copied = tty_insert_flip_string(tty_port, ptr, cnt);
-> -	data->rx_pos += cnt;
-> +	if (cnt != 0) {
+>   1. We no longer install huge-vmap mappings and silently fall back to
+>      page-granular entries, despite being able to install block entries
+>      at what is effectively the PGD level.
+> 
+> [...]
 
-Why does cnt matter here?  If cnt is 0, the code above should not do
-anything at all, right?
+Thank you Michael! I owe you a beer next time I see you, if we don't go
+extinct before then.
 
-Or if it does, should we change tty_insert_flip_string() to always check
-for cnt != 0 before it does the first loop?  Hm, it looks like it will
-abort if cnt is 0, so what is this change really doing?  Why do you need
-it?  What is it "fixing"?
+Applied to arm64 (for-next/fixes), thanks!
 
-thanks,
+[1/1] Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge"
+      https://git.kernel.org/arm64/c/d8a719059b9d
 
-greg k-h
+Cheers,
+-- 
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
