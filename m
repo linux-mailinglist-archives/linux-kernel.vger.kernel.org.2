@@ -2,148 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4663D0AD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC273D0AE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236346AbhGUIBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 04:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236762AbhGUH7M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:59:12 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA2CC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 01:38:35 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id i11-20020a4adf0b0000b0290263e1ba7ff9so399179oou.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 01:38:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hjk9wYDN8kF50l88X0tsNPFKkVLnNkYeT23mxxv/7SU=;
-        b=hfZh63wEsME9LvocLpRlEw6rVj1VQ/v2IP8BtPmf0LPzZCTj2bN5J3t708OsoRiTeT
-         05sBX9PNxg98AWKgt1OiqvVFL3v6P5xH3fXY0zrTZXW+BcdR+xAT6CsFcdTgZHMghUb1
-         wI76eJkMMogT83dSC+fvHNUwsZDEiBaGIBCk9noNDVYjDyoxlJMEgh4EH8mvMQW+2goj
-         cSB+zyC1L4CjC0WmVP5Nl0grIimlVFIiRuS0h209pZOjYNth9pVSWS62D35mhmDXIgZ5
-         lf1GZX7lZLb5zANyF51wURmgOtTSXCumIGGj2X8RuM+kbpiZddh4CgUlVdKh+AxLiDpJ
-         t57g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hjk9wYDN8kF50l88X0tsNPFKkVLnNkYeT23mxxv/7SU=;
-        b=G/JrbIrRgOk9oWuoo393a4/eHakrIu58//WnAMMFjxC2F076Y9EUeg1CDWczJCS514
-         k+qduPCrytkhl+BgGbxuxIcLQPyehPC4rxAwu5qeQXmXY7yC/fwzTHvj5DcbdXcyL3OW
-         00c8vO/446cOoCLBiV8bzK/tjIcVYhIjJe7BC3ZkgIpmHFYFhGM7COXnki4/JcxZlSVJ
-         ulTyiQx1WepmD4Roe2QBKEpRMMuo0Ut4u6OGcKbW9fO5U7j5GmdWxEMJhtlm78xWY7Vr
-         q8wEdqkeXxkVv666cmspNZYpzt4NLrgjOFCjZGywXEukUBL4hgw4DGL5qlQJIpAPvO5w
-         fLwg==
-X-Gm-Message-State: AOAM5338cSYuq/ek/S0OP9o8cnQfpjlcrOLIvBBS98nnG4fawgurMDve
-        ZMHzQLrzIl+7KxYi8n6+QjczRB2QmxpSa69vD5ympw==
-X-Google-Smtp-Source: ABdhPJy//VB1TOY10+y4WgHDnbceTtCEaCsqZmkKqh7tjjUE/NPaPwrvOM7CfoskWl8rUmKPhGYBa3HPSWiZvxL9j2Q=
-X-Received: by 2002:a4a:e14f:: with SMTP id p15mr6493966oot.42.1626856714449;
- Wed, 21 Jul 2021 01:38:34 -0700 (PDT)
+        id S237325AbhGUINo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 04:13:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237042AbhGUH77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 03:59:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7008660D07;
+        Wed, 21 Jul 2021 08:39:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626856759;
+        bh=Qq1imSQJcW+JM2nPOv5o8/qLfHa/MxqP6bvtnPhpMCo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hU4hNYT+8MFbXA+BTSuShi3SLjQNCMAiHF31H+H9FPuocqkjhSoCZMfN8Uo0c/6mp
+         hKMNBQ7iCGlHjdGzJL+FyNh0AtQQdtbgaIAYfOGVTO0+1sLp6YFfv1XbUMgz5ncgoX
+         sKOMKvi+DHZsVu5dcFa0I7X36275ujGS6CGhucRskdnkdD3M3wfXtv4o6Ihn0fqI/y
+         pjuzUmqWEoG4zvLYp3+8P91X9rmaul476JUlWzjEr8zkfEz1UFQIOPWQ5BB91mQgiS
+         VXe/bPKTr9cJp/Puq4kGg4EIpHReGWA4YgeQseQM5d01uCnOnB8eeGMaV2wejNSs7I
+         nkUhMQW0QsaqA==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1m67l5-0022dG-66; Wed, 21 Jul 2021 10:39:15 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: [PATCH v7 00/10] Add support for Hikey 970 PCIe
+Date:   Wed, 21 Jul 2021 10:39:02 +0200
+Message-Id: <cover.1626855713.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210719104735.3681732-1-qperret@google.com> <20210719104735.3681732-13-qperret@google.com>
-In-Reply-To: <20210719104735.3681732-13-qperret@google.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Wed, 21 Jul 2021 09:37:58 +0100
-Message-ID: <CA+EHjTxnkhDJTAokEA7PsaL9VAZ296Gp3B8CAu4cMSqp67MNwA@mail.gmail.com>
-Subject: Re: [PATCH 12/14] KVM: arm64: Refactor pkvm_pgtable locking
-To:     Quentin Perret <qperret@google.com>
-Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        dbrazdil@google.com, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
+This series depends on this one:
+	https://lore.kernel.org/lkml/cover.1626515862.git.mchehab+huawei@kernel.org/
 
-On Mon, Jul 19, 2021 at 11:48 AM Quentin Perret <qperret@google.com> wrote:
->
-> Refactor the hypervisor stage-1 locking in nVHE protected mode to expose
-> a new pkvm_create_mappings_locked() function. This will be used in later
-> patches to allow walking and changing the hypervisor stage-1 without
-> releasing the lock.
->
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/kvm/hyp/include/nvhe/mm.h |  1 +
->  arch/arm64/kvm/hyp/nvhe/mm.c         | 16 ++++++++++++++--
->  2 files changed, 15 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm64/kvm/hyp/include/nvhe/mm.h b/arch/arm64/kvm/hyp/include/nvhe/mm.h
-> index 8ec3a5a7744b..c76d7136ed9b 100644
-> --- a/arch/arm64/kvm/hyp/include/nvhe/mm.h
-> +++ b/arch/arm64/kvm/hyp/include/nvhe/mm.h
-> @@ -23,6 +23,7 @@ int hyp_map_vectors(void);
->  int hyp_back_vmemmap(phys_addr_t phys, unsigned long size, phys_addr_t back);
->  int pkvm_cpu_set_vector(enum arm64_hyp_spectre_vector slot);
->  int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot);
-> +int pkvm_create_mappings_locked(void *from, void *to, enum kvm_pgtable_prot prot);
->  int __pkvm_create_mappings(unsigned long start, unsigned long size,
->                            unsigned long phys, enum kvm_pgtable_prot prot);
->  unsigned long __pkvm_create_private_mapping(phys_addr_t phys, size_t size,
+It is available, with its patch dependencies against v5.14-rc1 at:
+	https://github.com/mchehab/linux/commits/pcie-alternate
 
-The locking logic seems to be consistent, with pkvm_create_mappings()
-holding the lock for the whole duration of the operation rather than
-per-iteration.
+This series add support at the pcie-kirin dirver for it to use a separate PHY driver.
 
-It would be nice though to document which lock should be held for the
-_locked versions.
+Yet, in order to preserve the existing DT schema for Kirin 960, it keeps the
+Kirin 960 PHY inside the pci driver. I tried to find a way to split it while keeping
+the DT schema backward-compatible, but currently the PHY core doesn't allow
+that, as it relies on a "phy" property at the pcie node in order to recognize the
+PHY driver.
 
-Thanks,
-/fuad
+Once the pci-kiring is modified to support an external PHY driver, add a
+Kirin 970 PHY and add the needed properties for the HiKey 970 board to
+detect the PCIe.
+
+It should be noticed that the HiKey 970 design uses 4 different GPIO pins, one 
+for each PERST# signal for each PCIe bus device:
+
+    - GPIO 56 has a pullup logic from 1V8 to 2V5
+      connected to a PCIe bridge chip (PEX 8606);
+    - GPIO 25 has a pullup logic from 1V8 to 3V3
+      connected to the PERST# pin at the M.2 slot;
+    - GPIO 220 has a pullup logic from 1V8 to 3V3
+      connected to the PERST# pin at the PCIe mini slot;
+    - GPIO 203 has a pullup logic from 1V8 to 3V3
+      connected to the PERST# pin at the Ethernet chipset.
+
+At the first versions, those were mapped as part of the pci-bus, but the
+pci-bus.yaml schema only allows a single PERST# GPIO. So, on v5, those
+were moved to the PHY DT schema. However, as Rob complained, on this
+version, I opted to add a separate patch (the last one) that moves those
+back to the PCIe of-node. 
+
+If such patch 09/09 is accepted, then this patch for the DT schema should 
+also be accepted:
+
+   https://github.com/devicetree-org/dt-schema/pull/56
+
+Tested on Hikey970:
+
+  $ lspci
+  00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3670 (rev 01)
+  01:00.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+  02:01.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+  02:04.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+  02:05.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+  02:07.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+  02:09.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+  06:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 07)
+
+  $ ethtool enp6s0
+  Settings for enp6s0:
+	Supported ports: [ TP	 MII ]
+	Supported link modes:   10baseT/Half 10baseT/Full
+	                        100baseT/Half 100baseT/Full
+	                        1000baseT/Half 1000baseT/Full
+	Supported pause frame use: Symmetric Receive-only
+	Supports auto-negotiation: Yes
+	Supported FEC modes: Not reported
+	Advertised link modes:  10baseT/Half 10baseT/Full
+	                        100baseT/Half 100baseT/Full
+	                        1000baseT/Half 1000baseT/Full
+	Advertised pause frame use: Symmetric Receive-only
+	Advertised auto-negotiation: Yes
+	Advertised FEC modes: Not reported
+	Link partner advertised link modes:  10baseT/Half 10baseT/Full
+	                                     100baseT/Half 100baseT/Full
+	Link partner advertised pause frame use: Symmetric Receive-only
+	Link partner advertised auto-negotiation: Yes
+	Link partner advertised FEC modes: Not reported
+	Speed: 100Mb/s
+	Duplex: Full
+	Auto-negotiation: on
+	master-slave cfg: preferred slave
+	master-slave status: slave
+	Port: Twisted Pair
+	PHYAD: 0
+	Transceiver: external
+	MDI-X: Unknown
+  netlink error: Operation not permitted
+	Link detected: yes
+
+Also tested  that Hikey 960 keeps being supported:
+
+  $ lspci
+  00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3660 (rev 01)
+
+---
+
+v7:
+- Moved kirin_pcie_match to be closer to the probe function;
+- Improved patch description for:
+	"PCI: kirin: add support for a PHY layer"
+- Added missing MODULE_*() macros on both PCI and PHY drivers;
+- Fixed a warning at hisilicon,phy-hi3670-pcie.yaml reported by
+  Rob Herring's bot.
+
+v6:
+- Use an alternative approach, in order to keep the Kirin 960 PHY internal to 
+  the driver, in order to not break the DT schema. The PHY-specific code
+  were made self-contained at pcie-kirin, in order to make easier to split
+  it in the future, if needed.
+
+v5:
+- added "static" to hi3670_pcie_get_eyeparam() declaration on patch 6/8
+
+v4:
+
+- dropped the DTS patch, as it depends on a PMIC-related patch series;
+- minor changes at the patch description;
+- HiKey and HiSilicon are now using the preferred CamelCase format.
 
 
+Manivannan Sadhasivam (1):
+  arm64: dts: HiSilicon: Add support for HiKey 970 PCIe controller
+    hardware
+
+Mauro Carvalho Chehab (9):
+  PCI: kirin: Reorganize the PHY logic inside the driver
+  PCI: kirin: Add support for a PHY layer
+  PCI: kirin: Use regmap for APB registers
+  PCI: kirin: Add MODULE_* macros
+  dt-bindings: PCI: kirin: Fix compatible string
+  dt-bindings: phy: Add bindings for HiKey 970 PCIe PHY
+  phy: HiSilicon: Add driver for Kirin 970 PCIe PHY
+  dt-bindings: PCI: kirin-pcie.txt: Convert it to yaml
+  phy-hi3670-pcie: Move reset-gpios to the PCIe DT schema
+
+ .../bindings/pci/hisilicon,kirin-pcie.yaml    |  87 ++
+ .../devicetree/bindings/pci/kirin-pcie.txt    |  50 -
+ .../devicetree/bindings/pci/snps,dw-pcie.yaml |   2 +-
+ .../phy/hisilicon,phy-hi3670-pcie.yaml        |  88 ++
+ MAINTAINERS                                   |   2 +-
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  70 ++
+ .../boot/dts/hisilicon/hikey970-pmic.dtsi     |   1 -
+ drivers/pci/controller/dwc/pcie-kirin.c       | 413 +++++---
+ drivers/phy/hisilicon/Kconfig                 |  10 +
+ drivers/phy/hisilicon/Makefile                |   1 +
+ drivers/phy/hisilicon/phy-hi3670-pcie.c       | 902 ++++++++++++++++++
+ 11 files changed, 1429 insertions(+), 197 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+ delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+ create mode 100644 drivers/phy/hisilicon/phy-hi3670-pcie.c
+
+-- 
+2.31.1
 
 
-> diff --git a/arch/arm64/kvm/hyp/nvhe/mm.c b/arch/arm64/kvm/hyp/nvhe/mm.c
-> index a8efdf0f9003..dde22e2a322a 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/mm.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/mm.c
-> @@ -67,7 +67,7 @@ unsigned long __pkvm_create_private_mapping(phys_addr_t phys, size_t size,
->         return addr;
->  }
->
-> -int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
-> +int pkvm_create_mappings_locked(void *from, void *to, enum kvm_pgtable_prot prot)
->  {
->         unsigned long start = (unsigned long)from;
->         unsigned long end = (unsigned long)to;
-> @@ -81,7 +81,8 @@ int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
->                 int err;
->
->                 phys = hyp_virt_to_phys((void *)virt_addr);
-> -               err = __pkvm_create_mappings(virt_addr, PAGE_SIZE, phys, prot);
-> +               err = kvm_pgtable_hyp_map(&pkvm_pgtable, virt_addr, PAGE_SIZE,
-> +                                         phys, prot);
->                 if (err)
->                         return err;
->         }
-> @@ -89,6 +90,17 @@ int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
->         return 0;
->  }
->
-> +int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
-> +{
-> +       int ret;
-> +
-> +       hyp_spin_lock(&pkvm_pgd_lock);
-> +       ret = pkvm_create_mappings_locked(from, to, prot);
-> +       hyp_spin_unlock(&pkvm_pgd_lock);
-> +
-> +       return ret;
-> +}
-> +
->  int hyp_back_vmemmap(phys_addr_t phys, unsigned long size, phys_addr_t back)
->  {
->         unsigned long start, end;
-> --
-> 2.32.0.402.g57bb445576-goog
->
