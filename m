@@ -2,111 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B4F3D11CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181363D11D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238404AbhGUOW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239431AbhGUOTG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:19:06 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383BBC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:59:43 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id d9so2689977ioo.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:59:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XI+Dx3h7cED2ymBlyHrrhom6GxHUNS25otSbDCgTdfM=;
-        b=StuwqrCNBxAbvlaItriRISqUD2bCPrwte93gRcZgZRTpbgma1yt3VbTMnXPiMYOT5A
-         wS66/RgcYikmz21fweGdngLUbmyoAe3hK5pFRTh9jZlus1fm+U7mop8//e75VPGWFshD
-         W8lmHS5IsP0PyTYfCpXsxiFt/RTFuRO/9WKS2MLzRnX0d/YB8Ox7xseTNkhOdAz1bq1z
-         zicnkCWJKkJMNBQBYp1XGtf4+RTBQnIySSHou9FUDsOFmMV17QmHE3vNZCpvw36297uy
-         MDhIhNVEtFGBXPtXDJqQA99PsjO8xZhZ4/sfFnw8K/7aSKLBw6O/H8VV6NECw9vx6eez
-         31Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XI+Dx3h7cED2ymBlyHrrhom6GxHUNS25otSbDCgTdfM=;
-        b=ax3vjNeztn7DkHGk0HJYvA74t0+14qieeII1IcvJH0BY47jG4vfxYra1iB53lbIu4N
-         c/62dv4/nO+irnTpCgCDcDo6H4if6nLHgVbzNiHGzgbwcaMzc1isas7tiEyahNZvrwGP
-         HzTJIQMOkwNCkAM4FUE3jtUF67f0HDJIWw9Kraehgw1znqjtoJz1mDdqQtJd42XcT4qa
-         j2e8BL2sxl8urB6+eOfaqyljn/ztuTn6JrzuQbGqQVcIjagPls7UZTgvFlCDaTFaAsH+
-         PGYg3xdQcQdMJq/vzg9mUCsHNRAWBgY3/qtCHNXcTslDsoMTGVuGM01oYrpvVi24TMzb
-         KFWg==
-X-Gm-Message-State: AOAM531Zy2JnKv02489hKiIfmy0EJVIL9Xo7IryWBjy7SH9h/ylBHs1K
-        SrIFNZVRFgdMNTkRv8DeLd8noQ6sL84eYQXDnq+sZQ==
-X-Google-Smtp-Source: ABdhPJxWig2ftKvDrXZ52oVv1Tgm9j7Gynu/T56MHNUX8Y4w0mTDu5mLA7JxdJDhGzDmynKXL3lild0by9DMwauSDc4=
-X-Received: by 2002:a02:380b:: with SMTP id b11mr31300909jaa.83.1626879582678;
- Wed, 21 Jul 2021 07:59:42 -0700 (PDT)
+        id S239483AbhGUOWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:22:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239442AbhGUOTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 10:19:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2F06660FF1;
+        Wed, 21 Jul 2021 15:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626879604;
+        bh=5TcyXITY13mlEpb9N11XNbpiRnui8Alq6NyhR8Fbot0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=W4o/j7QO/LnjGD+BxIQk7sa4kS5myfRzqYV14JbVHInaJMzY80Z9hW/DRHrNdr2WL
+         lhttSO+NKOurziU0St8IBRX/DjxQ3Xy/YRsUrAtd3HhqpSAUI7ah3TPH9fiih9uq/O
+         JNDY/oc8YhymI38OXTebQRdQVlcbyGlXMwqIYBKk8mduRFLOqg7uDanvyRXhk5OfTm
+         D6KxU1D9YDnpua4NL/fbDw3Sw0yu9TsGroXXR9rTLvi7H6D+tq3RyY7Z1Qrt0jMBw2
+         jHEdJrVa4/T/N1hH590oxrIv3r9bKVtVLtugTR6DaK9IeUZXJfVoXlZnRpAoQc2erZ
+         sIRCiUS+Oku0g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 203FB60CD3;
+        Wed, 21 Jul 2021 15:00:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210721090706.21523-1-james.clark@arm.com>
-In-Reply-To: <20210721090706.21523-1-james.clark@arm.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Wed, 21 Jul 2021 08:59:31 -0600
-Message-ID: <CANLsYkyjQi9+qM7mzWw+nxD_G36oRbN8Q8K2Vyo0rvsSnJQ90w@mail.gmail.com>
-Subject: Re: [PATCH 0/6] Support ETE decoding
-To:     James Clark <james.clark@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, Al Grant <al.grant@arm.com>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v3] r8169: Avoid duplicate sysfs entry creation error
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162687960412.27043.13400437965163469138.git-patchwork-notify@kernel.org>
+Date:   Wed, 21 Jul 2021 15:00:04 +0000
+References: <20210720161740.5214-1-andre.przywara@arm.com>
+In-Reply-To: <20210720161740.5214-1-andre.przywara@arm.com>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     hkallweit1@gmail.com, nic_swsd@realtek.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sayanta.pattanayak@arm.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Hello:
 
-I have received this set but won't be able to look at it for quite some time.
+This patch was applied to netdev/net.git (refs/heads/master):
 
-Thanks,
-Mathieu
+On Tue, 20 Jul 2021 17:17:40 +0100 you wrote:
+> From: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+> 
+> When registering the MDIO bus for a r8169 device, we use the PCI
+> bus/device specifier as a (seemingly) unique device identifier.
+> However the very same BDF number can be used on another PCI segment,
+> which makes the driver fail probing:
+> 
+> [...]
 
-On Wed, 21 Jul 2021 at 03:07, James Clark <james.clark@arm.com> wrote:
->
-> Decoding ETE already works because it is a superset of
-> ETMv4, but if any new packet types are found then they will be
-> ignored by the decoder. This patchset creates an ETE decoder
-> which can output the new packets and saves a new register that
-> is required. No new packet types are handled by perf yet, as this
-> can be added in the future.
->
-> This set applies on top of "perf cs-etm: Support TRBE
-> (unformatted decoding)" on perf/core.
->
-> James Clark (6):
->   perf cs-etm: Refactor initialisation of decoder params.
->   perf cs-etm: Initialise architecture based on TRCIDR1
->   perf cs-etm: Save TRCDEVARCH register
->   perf cs-etm: Update OpenCSD decoder for ETE
->   perf cs-etm: Create ETE decoder
->   perf cs-etm: Print the decoder name
->
->  tools/build/feature/test-libopencsd.c         |   4 +-
->  tools/perf/arch/arm/util/cs-etm.c             |  13 +-
->  .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 151 ++++++++----------
->  .../perf/util/cs-etm-decoder/cs-etm-decoder.h |   8 +
->  tools/perf/util/cs-etm.c                      |  54 ++++++-
->  tools/perf/util/cs-etm.h                      |   6 +-
->  6 files changed, 147 insertions(+), 89 deletions(-)
->
-> --
-> 2.28.0
->
+Here is the summary with links:
+  - [net,v3] r8169: Avoid duplicate sysfs entry creation error
+    https://git.kernel.org/netdev/net/c/e9a72f874d5b
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
