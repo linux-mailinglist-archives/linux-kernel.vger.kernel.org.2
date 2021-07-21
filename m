@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C145B3D1A29
+	by mail.lfdr.de (Postfix) with ESMTP id 537503D1A28
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 01:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbhGUWZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 18:25:14 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:29092 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229659AbhGUWZL (ORCPT
+        id S230347AbhGUWZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 18:25:09 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:37706 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229659AbhGUWZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 18:25:11 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LMvG6r009329;
-        Wed, 21 Jul 2021 23:05:26 GMT
+        Wed, 21 Jul 2021 18:25:08 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LMuRYr020157;
+        Wed, 21 Jul 2021 23:05:29 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2021-07-09;
- bh=OEk2me/tuxVjQrtAfxnZ0WsH6lXIBG8II8327vcDUO4=;
- b=M2vy+PNbHaVv5gAGiKdJvxi2DUSViuLSFuPyGJ5IBZ4Rnrv7THgRYCt5TBcyQQtA1JTq
- VVCkKxTOs2GxBQ48w09oRLUPaZSq6AV/s5Mfj6lyZ5gqZjb34er1pm7FxcbZE3uVCS9b
- BmNLPn0OblTh8iLZvZnJ9UcN0tKvpW1y5BYIpg3mOiMtPq7eWkRuGcA/i5qsFATWkCW+
- nA5534i6FE46D0V3cyEPodNm60YX6r1t/CHrBD3pOr7yGwbWSWQ6XFM4EqjjhltiWxZE
- BS1gMAqlESv22d2TYdcHNrmRwxr1Rn+lRpU7N1izC6SStSHUrjPSUd4f1a/UKBm9+dPE vQ== 
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2021-07-09; bh=LAfpmG+F4us2CJXJQgOM8oeTtf/v302JFO/6wDULhy8=;
+ b=InY94sd0DVNL0QRotgCDT7zT18UoHMh1nfP85IlCuTF/A1ujr0uIpZYrUzAsl+zAZpJy
+ aktVu9TH6pskdoyyoLfRc2JPqsgjVCLW36JTfvXYF4ggYj0Lp0VVniOrKJvOJoYIfXbA
+ nBqbKBwix8hzVps1fxwIyAZDCz7gY9ChRBCd3WxoemoKnS33Aeb+7AO1o9ee4me7F16p
+ 7mlALPvkUAQP8gxpHam6g4afs8YgBGicm7t9LYCGu8Ruw+mtsrwywcI9rYFJi3qnauYC
+ Ut9F8baiIgr5SZmr0y2cvKZCtgYV/jm7+nFNzrYT2685TYlwkz4LLRGlLZ6Woz7k/ytr wg== 
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2020-01-29;
- bh=OEk2me/tuxVjQrtAfxnZ0WsH6lXIBG8II8327vcDUO4=;
- b=raESjYOrSYg4LPzUZW5yvmrcFBplGnJjPQfFXVIDmKStR/kUc/8Kw/04mnsvdVzzoY2o
- x2t2Zot0IJtukl/YC0p7IuamB2J80pqTcM8jf1uz1yZjhdOf0V9mVIf1PabLXPHwjhc4
- WMnv/smd3iWn3B8R23SWr3wMj7hwSbb0IcRcKmneY7e38XBf8pIEzpWY13Ac4fYsGu7g
- dpa/lnKJIVcyT/BlvgQZIj9PxB2GSb4Ap3YjHAnKtoLN3t3UEv2LbftWylpzICp9dVps
- vOyQirh9QXcQTgOJBBo1zbtbTcIFUsoxsR2onMQm/KSaYhvIB1sRJkTC7pSaM5Ksyd7n ig== 
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2020-01-29; bh=LAfpmG+F4us2CJXJQgOM8oeTtf/v302JFO/6wDULhy8=;
+ b=hT2lwzHrXxkNOf0h3r1JvvBEdfvcTUyFGxsyNpLZUqybnUYblrnMDBcSdL13wCJZpDve
+ lB4igUD4SUG1uY+oXmXqmKkOBzKMcizqQVdktjZ6+8qoEORYDI/yYoJQkakVFF6V1yQr
+ vj2AW47taHQvSSS1SV3uLOxQg60n0ReXgcb3veGK5mq0B/pzJKG0AV7cDYOubx5T+Cvm
+ 5MZ7oj6w6o64RFLczP4Vgl8tFw8/iuLHpgIRH1ET8kOeMBAa0zOnTRZ3tEnBZfllYIc5
+ VciEgYtehFViiOjKwoppHRWr+QzlR+IuIsqFnUTJyxpxpfzjTpYYCIsbNvPdBhMhfmtB pw== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39xu2fr5wa-1
+        by mx0b-00069f02.pphosted.com with ESMTP id 39xvm7r0ua-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 23:05:26 +0000
+        Wed, 21 Jul 2021 23:05:28 +0000
 Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16LN5NPm103248;
-        Wed, 21 Jul 2021 23:05:25 GMT
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16LN5NPp103248;
+        Wed, 21 Jul 2021 23:05:28 GMT
 Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2042.outbound.protection.outlook.com [104.47.73.42])
-        by aserp3030.oracle.com with ESMTP id 39wunmv2ae-1
+        by aserp3030.oracle.com with ESMTP id 39wunmv2ae-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 23:05:24 +0000
+        Wed, 21 Jul 2021 23:05:27 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gKuC3oTfg7rKh08C4YpTt56KrVxjjTuD782qyuIB5JtraFelquSVbnQyJZ7ciwHZ1/kXLbC6VDCyhK/wJDeZ8RRbhIczSciC6D7CLrU5Vc7ap4PFRtcet2rjoE5LSxZgrdXZDnZ0kWMVyoKPkjq8aZ6ax6zOPi2K0HR6zF76DxXD6Y/6GEBeVQ1DwRODC+ReKF97pydoasWCp3Pi8M+b//qunaOmxnvrISeq56RGtEyH1kkhCxozuB6UQNLAtiVBTix2NNqmMHHatpJw1JcUdq938ptsxuO1KCR4BGQpr5rbpO0twUSHdP5VQ5Z5Mg7CkgBt0MktHbSHT2Zn2ZS+FQ==
+ b=FpA3Pz5yiVOe9Nr+EJGnoAVUdwpodQwPzh4BQgOxMnLAOroHditMm/Ps+Kazd9zLxMbfWBWH/ww8Tgqmvy3gmYqLgRzaavjHWr1lZ95o1jJtwwY5YTDZD3GWWikDnF9njn8LROJ504m0bHG+I4Em8N0KH0rxFcWAcnViqNg201uB1TYtBahia+CPDzq2OqLg6uR/0ApmRaBooM4mSuwPUgD7KArDzNGtvHzS7sST7iLVc7/XKWg3D/bUKnkk74kX5y8aYLvwCwex9NxdElWefa7/qosuxhqXm5gipAPNYPdys4y7DaZPYaLZ4uNURF/KORcOBlWWh9YvbcoAAPmzvw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OEk2me/tuxVjQrtAfxnZ0WsH6lXIBG8II8327vcDUO4=;
- b=D4YLEjMWGC0ImEe2edvt6OTxh38R0evk2mYeIfS7hGhquTIJ0woKegu/0CYudc3ITrydnE6TvClLJXBuCORcuR8VmEpJV//wWg5NLBu3+sr6MIFXnpKhSeriZ+kkjUoRXtfRHG1cwQiAfvQmhby6mjn6WQuUR2+YD146tpZPzkpgFLY9h2x/C/DFQE8VnBUj88IunFodHFrNnK+/W049mJHNWBPoO8FFPLa3JDYnGVFubCDOJ9qUw1YkEZVSFjxbo89S58PBZzSyOVBWVJ8kpU38Ih9p1jTGZscZCFaBmQMIhn0XnxD04e+sn0b/3KbgV6UhJeq5mGsOzAxiKC5z5w==
+ bh=LAfpmG+F4us2CJXJQgOM8oeTtf/v302JFO/6wDULhy8=;
+ b=CxDYhdJhOJE2Mt0gbVXhwtRBE7BKnXxVQbjDPIvGkWWFgeW1+h6v6Sz+NdLF0AavSkrzMzznfQqiF5Yrlo+VYSuNyYJJmh8+3OdxQmp+dMRlvRDRDGqZIWUCma3lDucoU9lbZX9LTYINwDl1AL27FPn8FosJpnEJIrlMVuGlpDnY85YuFavgDIvxDav8ddh6+75U4gi7CXqjvvsC7pmSzIcNEqJ5oOEIDQRgcTuMhGbb8W+gBOTnTyRehe0pUAx9lLCGC0BdFZZqVTNpwsEZOGyoivqQTfxbUZrHz5CgAvx5J7yWLuQOP0NnjGdolQ54kUDwKCk/FDvNDrufrIju3w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OEk2me/tuxVjQrtAfxnZ0WsH6lXIBG8II8327vcDUO4=;
- b=J6YmGsb42KjluhfbKFXwqXrEeHpJPLMPdVT3orsOqCZfDy02UGB1YesP1/sNXfcihNAtqnWVT2J6NqjgPBJ827UEVOSPGlrjhQxgiUNjUGZZ35EW4hVmwNa4e7yoVVBaMcmKcudx8oq+Eod2XktA6aKwxSIIipQ0TUtTaQlfvGI=
+ bh=LAfpmG+F4us2CJXJQgOM8oeTtf/v302JFO/6wDULhy8=;
+ b=ex709avpsBBEMQJRkDINVfMTfeV+oz7bqveysAIjlE4yvkpZggCYWA11fg8I16OR7R3PUmhxElsSJM//zlbGQNdGD4dN9m2luCw8KQHEEZ8UKf6m12CXNOtI9G2NRPjOjc7CN1ECH4AzlachDGFm1CQXcr+qjr0vTjmxcG6ZNGI=
 Authentication-Results: kvack.org; dkim=none (message not signed)
  header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
  by BYAPR10MB3735.namprd10.prod.outlook.com (2603:10b6:a03:11e::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.26; Wed, 21 Jul
- 2021 23:05:21 +0000
+ 2021 23:05:24 +0000
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::8d2a:558d:ab4a:9c2a]) by BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::8d2a:558d:ab4a:9c2a%5]) with mapi id 15.20.4331.034; Wed, 21 Jul 2021
- 23:05:21 +0000
+ 23:05:24 +0000
 From:   Mike Kravetz <mike.kravetz@oracle.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     David Hildenbrand <david@redhat.com>,
@@ -80,10 +80,12 @@ Cc:     David Hildenbrand <david@redhat.com>,
         David Rientjes <rientjes@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH 0/8] hugetlb: add demote/split page functionality
-Date:   Wed, 21 Jul 2021 16:05:03 -0700
-Message-Id: <20210721230511.201823-1-mike.kravetz@oracle.com>
+Subject: [PATCH 1/8] hugetlb: add demote hugetlb page sysfs interfaces
+Date:   Wed, 21 Jul 2021 16:05:04 -0700
+Message-Id: <20210721230511.201823-2-mike.kravetz@oracle.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210721230511.201823-1-mike.kravetz@oracle.com>
+References: <20210721230511.201823-1-mike.kravetz@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: MWHPR1201CA0021.namprd12.prod.outlook.com
@@ -91,161 +93,263 @@ X-ClientProxiedBy: MWHPR1201CA0021.namprd12.prod.outlook.com
  (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from monkey.oracle.com (50.38.35.18) by MWHPR1201CA0021.namprd12.prod.outlook.com (2603:10b6:301:4a::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22 via Frontend Transport; Wed, 21 Jul 2021 23:05:20 +0000
+Received: from monkey.oracle.com (50.38.35.18) by MWHPR1201CA0021.namprd12.prod.outlook.com (2603:10b6:301:4a::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22 via Frontend Transport; Wed, 21 Jul 2021 23:05:23 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fed741b9-e4b4-4933-cbdf-08d94c9c0387
+X-MS-Office365-Filtering-Correlation-Id: 5b2acb7b-2193-48ad-9faa-08d94c9c059f
 X-MS-TrafficTypeDiagnostic: BYAPR10MB3735:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB3735658F9FD1F97D46EE15C0E2E39@BYAPR10MB3735.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Microsoft-Antispam-PRVS: <BYAPR10MB3735D190F31B89816B0A04BDE2E39@BYAPR10MB3735.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 83HbP2V28dAkV2966gAxCW+gJbkcJb1CqbS2z0ZC4kRRtlacSzjjQgdfZ2Piao82Xj9KvGoXTJWE7xBRLvY3P5j+4UfdeE4fXzfekFhDyXuTKNUZWUS31IKX5dDb2I6I9eM4j/t1Yupw9+9GHjukva4swPu6tqshy50RzmwkWra5fTv5QQFgzMF3WmcI5yRdDicETRZ1oVfQ54tEhC+CGxkus739mghKIYiLGd4lftB0XzHP01C1AftC1tI4e8crt8Ds/ngYPSnu7yW9pQ4repAlTEmGO04vwcvx2qWeDmTc1Y/CieVSfDtxen+b1jHeBqX4Gpxbj04BfbNgN1WCzuIm0OAUuXPY66/4I/IWBcmHjJc95n3aTPvkfVZB8IowKJ3WS1Um/4bJVlWHWpuYGKOiP2CUMBcG5cwRdqDNxb89PBtdDGVFaQsJMmwU6935ZILXR2QKaaNsV4twvap7uwUDUJHTpALQTtVGCO8muWw9hlZw1fugW9L98u0cFGd4fRCgEGduAHQinFvpRhoTCylV/JMaIISIDm7UykAhO/FnvqpfBP+Zb5Cuel6EdQ5BJkj/+GSq3bL3vYWnxJEz5/mlWG54e766b2bVzM2VJ3W2/ymPyBuMmhEz4XYW9cXkCFPWcTTsu5dqmR336pirxgHU/wY7GND3T61rmJyUBjQutqmYOl8QWKYfUPA0cNC2WSUHECWoAlLBhJeUq445DoRNfOzFD7ACpCBH6G/haVswU6yGcloWPtZ9MG2E5/k2irYFBIOn60WTn08RpbMYyB9b4DyTf3noPuqL3sPBpmWw/lKKuJPdQPWn5pnTlrOnbUyiS5+aQE2EmS9VxQ6l0w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(39860400002)(396003)(136003)(376002)(186003)(66556008)(478600001)(52116002)(86362001)(2616005)(107886003)(8936002)(5660300002)(1076003)(4326008)(6486002)(2906002)(66946007)(66476007)(956004)(6666004)(26005)(316002)(38350700002)(38100700002)(7416002)(36756003)(83380400001)(7696005)(54906003)(966005)(8676002)(44832011);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 7RGQkEWE11VI9MtMO2rurkrJJbbskmNDJFIf/4DpJFW0U5Nf4RMUN8peaRBNZFlMebRYV69EB1IgyMBBxUp20ylfHMP+pgImvG5VJxthWYW0BNCYw3wsTzQavXTpjw4WWObuhq8CHAtZgwCeZI/kNmYXqXWxrmE1UXzG2L/LwSKb3IxDzNtU0Zl5KZzoG8soJh8rBicDxmLa83ibPM2Z7+8/EoZjvrVgP+yfwBWoFUGm0NjAFzM+xfW5m3+49I8p3qytR81W2sdYKK8bMOKuLpa2U+S0t0zfRlzc1kk6QesoSM3lrNobdy1BNa3yVa0PwI5gueNdYNPB6rfD/Z0LxxhrPmm0IUrYKLZ4ttZAkle42HMLDN49zx3dyJuZw6fOd5jHZQAnLoj0J6qJqlKrtPRcMQ8eObw2+Zd2lMeqhIkCvaW4REvwg3/y3A93uaShkzVQvrFPe+3UcPR+7bJGEO3LXBCNsen1jfuEHvWLqxIGUzF8gXNjs2AinRNzkzj/pcx/tC8sESrTN2/JvTw+VlCh9VaLYcsjag4rg/P8IWLO5t/8/TCl28nmQsRVCVEE2nwZU4mfegpigf7uUEzzEWHp1E2aRjexuMyAGJW/1snsM65DBuemei/pHMylLifKny8A36zSQLD8IFLHi/COrW8RDNf8Q+E4+UrjlT8wHwwB7Bm4JJbdBqgDaFvueRLyI3aaOvl4HiIp3tnTntGYug==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(39860400002)(396003)(136003)(376002)(186003)(66556008)(478600001)(52116002)(86362001)(2616005)(107886003)(8936002)(5660300002)(1076003)(4326008)(6486002)(2906002)(66946007)(66476007)(956004)(6666004)(26005)(316002)(38350700002)(38100700002)(7416002)(36756003)(83380400001)(7696005)(54906003)(8676002)(44832011);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gLUKqWfinaiUoUeI1S8HhCYsR//cCG/EK8Jw0ry+++m3utYIMb1ZAeOYd9+k?=
- =?us-ascii?Q?FipDg8BGP73LX9RBhats6J1kluVJ92OG+HQShTclyWEdeUr6/2gcTvbEtOmO?=
- =?us-ascii?Q?WOJhqJHldrw7r8IUouI8fwCF+Af22B1uU9F4OPEV7H9zfJIEK7Sgnkx68Qnc?=
- =?us-ascii?Q?QIVEYCBmQUd57zQ/GOG+74CRo+RSOZQDdhc/TsRL7OesWJ3C/skpUsr5wCwp?=
- =?us-ascii?Q?Nz9YMavl2dLjXAqwZ5+gRk0KJK2VwQnDJBLgcuoMFM1WVUx2MWwqRdpZsWMY?=
- =?us-ascii?Q?HwMIeuSzeWex2M5lAeenkY7+BHhMD1r0XRSkoNi6+h8dX9oLl7JLab1roJ8k?=
- =?us-ascii?Q?rE4+FRF9UOA3T+BBwMWfSDEx+Tl8LkoRvUZiIo5y+n2GiwOPQKROW4zOVk9E?=
- =?us-ascii?Q?l+v5pgSMU4l5ikxght7fo3nEhaiRUTRkhLJKyzsVjx+oDYTzr6SY/JLS/Gm0?=
- =?us-ascii?Q?lor1osWC2Ye8F01YLRL5X750t77qmPzNh1vBx87eFxhWAu2pusB+Zdk7FnSE?=
- =?us-ascii?Q?w2V6RdrPsNJ5oZmMPNJKjQ7VeuJV8WrvsgDvZZjUMQey96eYK0qapJ9jew5d?=
- =?us-ascii?Q?0rG8DdNbSaSN3tfyMgQDRvHkrLw/MeRkYtDhjJUQ7Mv10tCsVhi43gvlLIIm?=
- =?us-ascii?Q?yTSu0hdKms3v40a5Tkph71wMcsfOq5uPPYn7vbT6+fkUMKo4eQvu1zClpcMr?=
- =?us-ascii?Q?+Uta7mrO7xDL600oj2qOXt3WNnZvxA2wpFXkG3imVS1VkkC2KQq5fSyNnVSQ?=
- =?us-ascii?Q?LjnsXEh4xYAq+zrWcKgx4ZNGW0fbSwRbIa7MM1R2YdZWUrJkKTcqT0AvAILW?=
- =?us-ascii?Q?nOszO9+qWE97PIgRVN7ffb+DJb+nsigFOxpEf6cSlbj/takWHsDfl81wTd2z?=
- =?us-ascii?Q?p0OyCOMrf8csJszuArub3hLT389gSHv66cSTAHHc67TZbxWu5a9rjfoGaCY/?=
- =?us-ascii?Q?mqcgxYlUR1dOn9EDZeudROSHjvh87CUuz6IjyV1fWKLxeu6gcYlqIPko7cYi?=
- =?us-ascii?Q?1n2wZ87KgCOrpWvrkAiaB6GdtZyih5UCYxB1eDKSThp3s18/Wk9uk/GfXKZ7?=
- =?us-ascii?Q?edaWpMsYqlus+4SllIcFbVQXf9QGuneSbuzYeyfZ9j37JjgHeFNi0EVmebSs?=
- =?us-ascii?Q?L/Pz/QDaWItddy1CF1XeYDa0V/lC202pihRHPiEHNMo7LbHfbKExnUrjidUZ?=
- =?us-ascii?Q?Ni8OjiYNRr0KZX+hdJkrxdCjHFCA6wLrbhC8nvsPxyLWxh4VibThp6dBUMa6?=
- =?us-ascii?Q?NIpM57u6RxSmQBQp6022gOV2Cg1RSFuc9RaGzQLfF23J+HCMKEhi9JW1SiYg?=
- =?us-ascii?Q?Q2LztU9Z2pghamKHeNIPwOWO?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/tl+uW4UPMZ0nGaNx88oX1ksfSotmXuSrFndNoYAr/uvddpBdaMvnv/N4cWQ?=
+ =?us-ascii?Q?QFpHpt7eX2zMGt1HewrIIJOGl2qf9YS+Wa0DS5m/HsbEuVr1fRsPd5KgYl+a?=
+ =?us-ascii?Q?HopsIfrLg4N8cdQSdToO2YpGBD39fyqXvzZW2pihdZSi9nPP+4g2XNo0dNnO?=
+ =?us-ascii?Q?3Diy6dmH9zAc4xvSPmNfVAMbVorkcnZJQzUT5Jd8h9WCpgZ4t98YI8Jpztt9?=
+ =?us-ascii?Q?/kKqVaNksjVPI7a88RlzfVrtMjrNBWquLWLUD1jKACEaxroxZA5kGF2ihAmh?=
+ =?us-ascii?Q?JE1OaLyy1jyHoxtjyQHdhmR8Ze/L+GKvnoC9ocoRldvWtcxWfwSJ3u43GA3s?=
+ =?us-ascii?Q?yFNJZ6lStnNhJubDjrHLF/p8QG83k6acJmgeRF3jqXNfI919fRy+HAiofUQq?=
+ =?us-ascii?Q?mQ07rOGhvOG5CLq+c4Qk3WfJknNIiFVTuhAIXI6z9+vCmhGDoABtNQWzKPSi?=
+ =?us-ascii?Q?kr/LCFZKt2vjcLPeFYZdXpaImlit95G62oAC6Xf7LfNyjYoe7l7m5QFWXKpb?=
+ =?us-ascii?Q?AQgfH4BMhIkzkTqr28Q07kEg9JWCW7xzcZClKD/IdiqbMFXL1LC1xh8Sqhzf?=
+ =?us-ascii?Q?uBY0RT8VmnKMIXmCXE/41KEHjCj1zgXSd5TGSKrLY6ohrjVGR+SqqBMGarET?=
+ =?us-ascii?Q?+ZJq64NX68KQAeEFddA4kwqbKhMcnuQPhrFEvNDxam4PSYeo7uoHRpWD18UO?=
+ =?us-ascii?Q?zd8n4UuOE0dk3DwUlmsF4Ulbf8ByPYFic7QeEVpUMNJa/eDI+yXRjWQbEgQ4?=
+ =?us-ascii?Q?WytsPLvVrYtG2yBmgQ0nup0sRp6QQMo4WZqOvlws1sWn0hXxryZ6sx1b2mgz?=
+ =?us-ascii?Q?1T1p8atPGgb5HjZB5229P0Hwrgd8H2aDycDOAtUWbo2HHBBzeY9znsBNGLYx?=
+ =?us-ascii?Q?nJ8k015ngT3FIJPLzy5AfAU50z24Y6W9Qi5iFLrfXdX4OFRELw557KStAIpv?=
+ =?us-ascii?Q?2m07UUYG2VAfXO8b30PMQ/zhWcvcqguelqEzvi3Qn9gN4qG2IKfxRBIKsQkS?=
+ =?us-ascii?Q?zX8rGgIogF5IDkcgOrXZYezU3o54CdxBFplKH9J25LUX1yvrH6y74eFgIV8A?=
+ =?us-ascii?Q?+RSPvvsZ92N7BsSxKFtvoqYuetM5ChdxFbDSZMyKmxJe+/bsVL2Wj9AZBjjo?=
+ =?us-ascii?Q?Uenou3wFx93C1ugUuKf/PggwVqTn0sMSfmRf/ErWwb0tyNNzPoQxDcA5DSdi?=
+ =?us-ascii?Q?QUtKHC4+KyhGLXXiCsZa/8G+5wtn5aUBw2ovCvu+8RzwQ0BYPZl8oS+iQwRQ?=
+ =?us-ascii?Q?zjMs4W60P/+Tf/uLEBzbKDX17QPZjrteHTSknibP3H+fPVJr5HGX3kqqsre7?=
+ =?us-ascii?Q?fw7b/acPw1ksaWsw/pcxreGm?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fed741b9-e4b4-4933-cbdf-08d94c9c0387
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b2acb7b-2193-48ad-9faa-08d94c9c059f
 X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 23:05:20.9935
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 23:05:24.4010
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4irN4HvLW6I9VCLGZTQqqjN9FDsbnOz9hD5p+y5fCSxn+KbG3Ymno1OsFqSQ+lr1VL69uTcypmoGMFb0ab7oNw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: dQPwlUi0UC104ZZXUhmFPFjxleZvs4C/Gi3ajgah+bxkCIaNYzBskHlApdT6MnQ6iK2V5QfaOsT/r0sh1zVojA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3735
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10052 signatures=668682
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
  bulkscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 mlxscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
  definitions=main-2107210138
-X-Proofpoint-ORIG-GUID: XZG7f0dbjawrbugYreERjOQ-NsaMNVbR
-X-Proofpoint-GUID: XZG7f0dbjawrbugYreERjOQ-NsaMNVbR
+X-Proofpoint-ORIG-GUID: xzlZ6P8GUtB2xmJqjx6e37xyDn5rPiTD
+X-Proofpoint-GUID: xzlZ6P8GUtB2xmJqjx6e37xyDn5rPiTD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The concurrent use of multiple hugetlb page sizes on a single system
-is becoming more common.  One of the reasons is better TLB support for
-gigantic page sizes on x86 hardware.  In addition, hugetlb pages are
-being used to back VMs in hosting environments.
+Two new sysfs files are added to demote hugtlb pages.  These files are
+both per-hugetlb page size and per node.  Files are:
+  demote_size - The size in Kb that pages are demoted to. (read-only)
+  demote - The number of huge pages to demote. (write-only)
 
-When using hugetlb pages to back VMs in such environments, it is
-sometimes desirable to preallocate hugetlb pools.  This avoids the delay
-and uncertainty of allocating hugetlb pages at VM startup.  In addition,
-preallocating huge pages minimizes the issue of memory fragmentation that
-increases the longer the system is up and running.
+Writing a value to demote will result in an attempt to demote that
+number of hugetlb pages to an appropriate number of demote_size pages.
 
-In such environments, a combination of larger and smaller hugetlb pages
-are preallocated in anticipation of backing VMs of various sizes.  Over
-time, the preallocated pool of smaller hugetlb pages may become
-depleted while larger hugetlb pages still remain.  In such situations,
-it may be desirable to convert larger hugetlb pages to smaller hugetlb
-pages.
+This patch does not provide full demote functionality.  It only provides
+the sysfs interfaces and uses existing code to free pages to the buddy
+allocator if demote_size == PAGESIZE.
 
-Converting larger to smaller hugetlb pages can be accomplished today by
-first freeing the larger page to the buddy allocator and then allocating
-the smaller pages.  However, there are two issues with this approach:
-1) This process can take quite some time, especially if allocation of
-   the smaller pages is not immediate and requires migration/compaction.
-2) There is no guarantee that the total size of smaller pages allocated
-   will match the size of the larger page which was freed.  This is
-   because the area freed by the larger page could quickly be
-   fragmented.
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ include/linux/hugetlb.h |   1 +
+ mm/hugetlb.c            | 121 +++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 121 insertions(+), 1 deletion(-)
 
-To address these issues, introduce the concept of hugetlb page demotion.
-Demotion provides a means of 'in place' splitting a hugetlb page to
-pages of a smaller size.  For example, on x86 one 1G page can be
-demoted to 512 2M pages.  Page demotion is controlled via sysfs files.
-- demote_size   Read only target page size for demotion
-- demote        Writable number of hugetlb pages to be demoted
-
-Only hugetlb pages which are free at the time of the request can be demoted.
-Demotion does not add to the complexity surplus pages.  Demotion also honors
-reserved huge pages.  Therefore, when a value is written to the sysfs demote
-file, that value is only the maximum number of pages which will be demoted.
-It is possible fewer will actually be demoted.
-
-If demote_size is PAGESIZE, demote will simply free pages to the buddy
-allocator.
-
-Real world use cases
---------------------
-There are groups today using hugetlb pages to back VMs on x86.  Their
-use case is as described above.  They have experienced the issues with
-performance and not necessarily getting the excepted number smaller huge
-pages after free/allocate cycle.
-
-Note to reviewers
------------------
-Patches 1-5 provide the basic demote functionality.  They are built on
-	next-20210721.
-Patch 3 deals with this issue of speculative page references as
-	discussed in [1] and [2].  It builds on the ideas used in
-	patches currently in mmotm.  There have been few comments on
-	those patches in mmotm, so I do not feel the approach has been
-	well vetted.
-Patches 6-8 are an optimization to deal with vmemmap optimized pages.
-	This was discussed in the RFC.  IMO, the code may not be worth
-	the benefit.  They could be dropped with no loss of
-	functionality.  In addition, Muchun has recently sent patches to
-	further optimize hugetlb vmemmap reduction by only requiring one
-	vmemmap page per huge page [3].  These patches do not take Muchun's
-	new patches into account.
-
-RFC -> v1
-- Provides basic support for vmemmap optimized pages
-- Takes speculative page references into account
-- Updated Documentation file
-- Added optimizations for vmemmap optimized pages
-
-[1] https://lore.kernel.org/linux-mm/CAG48ez23q0Jy9cuVnwAe7t_fdhMk2S7N5Hdi-GLcCeq5bsfLxw@mail.gmail.com/
-[2] https://lore.kernel.org/linux-mm/20210710002441.167759-1-mike.kravetz@oracle.com/
-[3] https://lore.kernel.org/linux-mm/20210714091800.42645-1-songmuchun@bytedance.com/
-
-Mike Kravetz (8):
-  hugetlb: add demote hugetlb page sysfs interfaces
-  hugetlb: add HPageCma flag and code to free non-gigantic pages in CMA
-  hugetlb: add demote bool to gigantic page routines
-  hugetlb: add hugetlb demote page support
-  hugetlb: document the demote sysfs interfaces
-  hugetlb: vmemmap optimizations when demoting hugetlb pages
-  hugetlb: prepare destroy and prep routines for vmemmap optimized pages
-  hugetlb: Optimized demote vmemmap optimizatized pages
-
- Documentation/admin-guide/mm/hugetlbpage.rst |  29 +-
- include/linux/hugetlb.h                      |   8 +
- include/linux/mm.h                           |   4 +
- mm/hugetlb.c                                 | 328 +++++++++++++++++--
- mm/hugetlb_vmemmap.c                         |  72 +++-
- mm/hugetlb_vmemmap.h                         |  16 +
- mm/sparse-vmemmap.c                          | 123 ++++++-
- 7 files changed, 538 insertions(+), 42 deletions(-)
-
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index f7ca1a3870ea..d96e11ce986c 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -596,6 +596,7 @@ struct hstate {
+ 	int next_nid_to_alloc;
+ 	int next_nid_to_free;
+ 	unsigned int order;
++	unsigned int demote_order;
+ 	unsigned long mask;
+ 	unsigned long max_huge_pages;
+ 	unsigned long nr_huge_pages;
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 95714fb28150..cebc6dc353f3 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2964,7 +2964,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ 
+ static void __init hugetlb_init_hstates(void)
+ {
+-	struct hstate *h;
++	struct hstate *h, *h2;
+ 
+ 	for_each_hstate(h) {
+ 		if (minimum_order > huge_page_order(h))
+@@ -2973,6 +2973,17 @@ static void __init hugetlb_init_hstates(void)
+ 		/* oversize hugepages were init'ed in early boot */
+ 		if (!hstate_is_gigantic(h))
+ 			hugetlb_hstate_alloc_pages(h);
++
++		/*
++		 * Set demote order for each hstate.  Note that
++		 * h->demote_order is initially 0.
++		 */
++		for_each_hstate(h2) {
++			if (h2 == h)
++				continue;
++			if (h2->order < h->order && h2->order > h->demote_order)
++				h->demote_order = h2->order;
++		}
+ 	}
+ 	VM_BUG_ON(minimum_order == UINT_MAX);
+ }
+@@ -3213,9 +3224,36 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+ 	return 0;
+ }
+ 
++static int demote_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed)
++	__must_hold(&hugetlb_lock)
++{
++	int rc = 0;
++
++	lockdep_assert_held(&hugetlb_lock);
++	/* If no demote order, free to buddy */
++	if (!h->demote_order) {
++		struct page *page = remove_pool_huge_page(h, nodes_allowed, 0);
++
++		if (!page)
++			return rc;
++		spin_unlock_irq(&hugetlb_lock);
++		update_and_free_page(h, page, false);
++		spin_lock_irq(&hugetlb_lock);
++		return 1;
++	}
++
++	/*
++	 * TODO - demote fucntionality will be added in subsequent patch
++	 */
++	return rc;
++}
++
+ #define HSTATE_ATTR_RO(_name) \
+ 	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+ 
++#define HSTATE_ATTR_WO(_name) \
++	static struct kobj_attribute _name##_attr = __ATTR_WO(_name)
++
+ #define HSTATE_ATTR(_name) \
+ 	static struct kobj_attribute _name##_attr = \
+ 		__ATTR(_name, 0644, _name##_show, _name##_store)
+@@ -3411,12 +3449,91 @@ static ssize_t surplus_hugepages_show(struct kobject *kobj,
+ }
+ HSTATE_ATTR_RO(surplus_hugepages);
+ 
++static ssize_t demote_store(struct kobject *kobj,
++	       struct kobj_attribute *attr, const char *buf, size_t len)
++{
++	unsigned long nr_demote;
++	unsigned long nr_available;
++	nodemask_t nodes_allowed, *n_mask;
++	struct hstate *h;
++	int err;
++	int nid;
++
++	err = kstrtoul(buf, 10, &nr_demote);
++	if (err)
++		return err;
++	h = kobj_to_hstate(kobj, &nid);
++
++	/* Synchronize with other sysfs operations modifying huge pages */
++	mutex_lock(&h->resize_lock);
++
++	spin_lock_irq(&hugetlb_lock);
++	if (nid != NUMA_NO_NODE) {
++		nr_available = h->free_huge_pages_node[nid];
++		init_nodemask_of_node(&nodes_allowed, nid);
++		n_mask = &nodes_allowed;
++	} else {
++		nr_available = h->free_huge_pages;
++		n_mask = &node_states[N_MEMORY];
++	}
++	nr_available -= h->resv_huge_pages;
++	if (nr_available <= 0)
++		goto out;
++	nr_demote = min(nr_available, nr_demote);
++
++	while (nr_demote) {
++		if (!demote_pool_huge_page(h, n_mask))
++			break;
++
++		/*
++		 * We may have dropped the lock in the routines to
++		 * demote/free a page.  Recompute nr_demote as counts could
++		 * have changed and we want to make sure we do not demote
++		 * a reserved huge page.
++		 */
++		nr_demote--;
++		if (nid != NUMA_NO_NODE)
++			nr_available = h->free_huge_pages_node[nid];
++		else
++			nr_available = h->free_huge_pages;
++		nr_available -= h->resv_huge_pages;
++		if (nr_available <= 0)
++			nr_demote = 0;
++		else
++			nr_demote = min(nr_available, nr_demote);
++	}
++
++out:
++	spin_unlock_irq(&hugetlb_lock);
++	mutex_unlock(&h->resize_lock);
++
++	return len;
++}
++HSTATE_ATTR_WO(demote);
++
++static ssize_t demote_size_show(struct kobject *kobj,
++					struct kobj_attribute *attr, char *buf)
++{
++	struct hstate *h;
++	unsigned long demote_size;
++	int nid;
++
++	h = kobj_to_hstate(kobj, &nid);
++	demote_size = h->demote_order;
++
++	return sysfs_emit(buf, "%lukB\n",
++			(unsigned long)(PAGE_SIZE << h->demote_order) / SZ_1K);
++}
++HSTATE_ATTR_RO(demote_size);
++
+ static struct attribute *hstate_attrs[] = {
+ 	&nr_hugepages_attr.attr,
+ 	&nr_overcommit_hugepages_attr.attr,
+ 	&free_hugepages_attr.attr,
+ 	&resv_hugepages_attr.attr,
+ 	&surplus_hugepages_attr.attr,
++	&demote_size_attr.attr,
++	&demote_attr.attr,
+ #ifdef CONFIG_NUMA
+ 	&nr_hugepages_mempolicy_attr.attr,
+ #endif
+@@ -3486,6 +3603,8 @@ static struct attribute *per_node_hstate_attrs[] = {
+ 	&nr_hugepages_attr.attr,
+ 	&free_hugepages_attr.attr,
+ 	&surplus_hugepages_attr.attr,
++	&demote_size_attr.attr,
++	&demote_attr.attr,
+ 	NULL,
+ };
+ 
 -- 
 2.31.1
 
