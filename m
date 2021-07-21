@@ -2,162 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFC13D0E03
+	by mail.lfdr.de (Postfix) with ESMTP id 644053D0E04
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238860AbhGULBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:01:11 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:46502 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237241AbhGUKvz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 06:51:55 -0400
-Received: from [192.168.1.96] (unknown [223.226.82.147])
-        by linux.microsoft.com (Postfix) with ESMTPSA id F1C3A20B7178;
-        Wed, 21 Jul 2021 04:32:27 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F1C3A20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1626867152;
-        bh=0pXJNvxqroUIPcxzfR8QdEhfbKvPSRmc9RoEfu1edYU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=E3+eNc3WBIjxux+ZWF/OdBlYR8wZb7K6M4mixCY5k8va+Gz6alqh6JNUBQwDRsCMY
-         Cbgv75IY+hp1hSkIyx0KD3rjfZt3tCJ/SdRHCGkvhwcdNFW0eqM2IdGFWQzDPSYUsE
-         EaJP6x1yyVBxv5fG6fzzPq4acCi8gKmHnyVTK15U=
-Subject: Re: [PATCH] hyperv: root partition faults writing to VP ASSIST MSR
- PAGE
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Michael Kelley <mikelley@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        "nunodasneves@linux.microsoft.com" <nunodasneves@linux.microsoft.com>
-References: <20210719185126.3740-1-kumarpraveen@linux.microsoft.com>
- <20210720112011.7nxhiy6iyz4gz3j5@liuwe-devbox-debian-v2>
- <fd70c8e5-f58c-640b-30b7-70c4e4a4861a@linux.microsoft.com>
- <20210720133514.lurmus2lgffcldnq@liuwe-devbox-debian-v2>
- <MWHPR21MB15938E4E72E1A3EB3744AD53D7E29@MWHPR21MB1593.namprd21.prod.outlook.com>
- <20210720162923.rsbl24v5lujbiddj@liuwe-devbox-debian-v2>
- <MWHPR21MB159302588AD32CA605192398D7E39@MWHPR21MB1593.namprd21.prod.outlook.com>
- <d8bd9c00-4eb5-187f-e31b-cba2ecec565b@linux.microsoft.com>
- <20210721101026.3tujagjag5umqejh@liuwe-devbox-debian-v2>
-From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Message-ID: <497414c3-3782-26ad-3b41-105ee12098d4@linux.microsoft.com>
-Date:   Wed, 21 Jul 2021 17:02:25 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S239062AbhGULBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:01:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237391AbhGUKwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 06:52:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CB6560FED;
+        Wed, 21 Jul 2021 11:32:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626867163;
+        bh=4Y/2dDgy3hOFpReNNfcBctn8kDvRVCFYNU5op/h2okE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KvU9aJvQHtPT3F48cbvVWwNmM5ZodebOZVXEGHpazXX0pHsCDbRhtk1xq/1rrolYr
+         ykN5ymTfLs7+41aIYN6rdCPL/9m3ieno7u+z7zUCogerIdCOkMkazKYpwnlWcyvTQF
+         LDBi+R4YCqgUJxpO3Y+DsNLF8BaYKr1aeXY3v8zo=
+Date:   Wed, 21 Jul 2021 13:32:41 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     tj@kernel.org, shuah@kernel.org, akpm@linux-foundation.org,
+        rafael@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, andriin@fb.com, daniel@iogearbox.net,
+        atenart@kernel.org, alobakin@pm.me, weiwan@google.com,
+        ap420073@gmail.com, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] selftests: add tests_sysfs module
+Message-ID: <YPgF2VAoxPIiKWX1@kroah.com>
+References: <20210703004632.621662-1-mcgrof@kernel.org>
+ <20210703004632.621662-2-mcgrof@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210721101026.3tujagjag5umqejh@liuwe-devbox-debian-v2>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210703004632.621662-2-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-07-2021 15:40, Wei Liu wrote:
-> On Wed, Jul 21, 2021 at 12:42:52PM +0530, Praveen Kumar wrote:
->> On 21-07-2021 09:40, Michael Kelley wrote:
->>> From: Wei Liu <wei.liu@kernel.org> Sent: Tuesday, July 20, 2021 9:29 AM
->>>>
->>>> On Tue, Jul 20, 2021 at 04:20:44PM +0000, Michael Kelley wrote:
->>>>> From: Wei Liu <wei.liu@kernel.org> Sent: Tuesday, July 20, 2021 6:35 AM
->>>>>>
->>>>>> On Tue, Jul 20, 2021 at 06:55:56PM +0530, Praveen Kumar wrote:
->>>>>> [...]
->>>>>>>>
->>>>>>>>> +	if (hv_root_partition &&
->>>>>>>>> +	    ms_hyperv.features & HV_MSR_APIC_ACCESS_AVAILABLE) {
->>>>>>>>
->>>>>>>> Is HV_MSR_APIC_ACCESS_AVAILABLE a root only flag? Shouldn't non-root
->>>>>>>> kernel check this too?
->>>>>>>
->>>>>>> Yes, you are right. Will update this in v2. thanks.
->>>>>>
->>>>>> Please split adding this check to its own patch.
->>>>>>
->>>>>> Ideally one patch only does one thing.
->>>>>>
->>>>>> Wei.
->>>>>>
->>>>>
->>>>> I was just looking around in the Hyper-V TLFS, and I didn't see
->>>>> anywhere that the ability to set up a VP Assist page is dependent
->>>>> on HV_MSR_APIC_ACCESS_AVAILABLE.  Or did I just miss it?
->>>>
->>>> The feature bit Praveen used is wrong and should be fixed.
->>>>
->>>> Per internal discussion this is gated by the AccessIntrCtrlRegs bit.
->>>>
->>>> Wei.
->>>>
->>>
->>> The AccessIntrCtrlRegs bit *is* HV_MSR_APIC_ACCESS_AVAILABLE.
->>> Both are defined as bit 4 of the Partition Privilege flags.  :-)   I don't
->>> know why the names don't line up.   Even so, it's not clear to me that
->>> AccessIntrCtrlRegs has any bearing on the VP Assist page.  I see this
->>> description of AccessIntrCtrlRegs:
->>>
->>
->> Yup, what I understood as well, this is the one required one for Partition Privilege Flags (4th bit), however, cannot comment on the naming convention.
->>
->>      5 /* Virtual APIC assist and VP assist page registers available */
->>      4 #define HV_MSR_APIC_ACCESS_AVAILABLE            BIT(4)
->>
+On Fri, Jul 02, 2021 at 05:46:29PM -0700, Luis Chamberlain wrote:
+> This adds a new selftest module which can be used to test sysfs, which
+> would otherwise require using an existing driver. This lets us muck
+> with a template driver to test breaking things without affecting
+> system behaviour or requiring the dependencies of a real device
+> driver.
 > 
-> Urgh, okay. It is my fault for not reading the code closely. Sorry for
-> the confusion.
+> A series of 28 tests are added. Support for using two device types are
+> supported:
 > 
->>> The partition has access to the synthetic MSRs associated with the
->>> APIC (HV_X64_MSR_EOI, HV_X64_MSR_ICR and HV_X64_MSR_TPR).
->>> If this flag is cleared, accesses to these MSRs results in a #GP fault if
->>> the MSR intercept is not installed.
->>>
->>
->> As per what I also understood from the TLFS doc,that we let partition
->> access the MSR and do a fault.  However, the point is, does it make
->> sense to allocate page for vp assist and perform action which is meant
->> to fail when the flag is cleared ?
+>   * misc
+>   * block
 > 
-> Like Michael said, there are some other things that are not tied to that
-> particular bit. We should get more clarity on what gates what.  Perhaps
-> that privilege bit only controls access to the EOI assist bit and the
-> other things in the VP assist page are gated by other privilege bits.
-> This basically means we should setup the page when there is at least one
-> thing in that page can be used.
+> Contrary to sysctls, sysfs requires a full write to happen at once, and
+> so we reduce the digit tests to single writes. Two main sysfs knobs are
+> provided for testing reading/storing, one which doesn't inclur any
+> delays and another which can incur programmed delays. What locks are
+> held, if any, are configurable, at module load time, or through dynamic
+> configuration at run time.
 > 
-> This is mostly an orthogonal issue from the one we want to fix. In
-> the interest of making progress we can drop the new check for now and
-> just add a root specific path for setting up and tearing down the VP
-> assist pages.
+> Since sysfs is a technically filesystem, but a pseudo one, which
+> requires a kernel user, our test_sysfs module and respective test script
+> embraces fstests format for tests in the kernel ring bufffer. Likewise,
+> a scraper for kernel crashes is provided which matches what fstests does
+> as well.
 > 
-> How does that sound?
+> Two tests are kept disabled as they currently cause a deadlock, and so
+> this provides a mechanism to easily show proof and demo how the deadlock
+> can happen:
 > 
+> Demos the deadlock with a device specific lock
+> ./tools/testing/selftests/sysfs/sysfs.sh -t 0027
+> 
+> Demos the deadlock with rtnl_lock()
+> ./tools/testing/selftests/sysfs/sysfs.sh -t 0028
+> 
+> Two separate solutions to the deadlock issue have been proposed,
+> and so now its a matter of either documenting this limitation or
+> eventually adopting a generic fix.
+> 
+> This selftests will shortly be expanded upon with more tests which
+> require further kernel changes in order to provide better test
+> coverage.
 
-Sounds good to me. Thanks Wei.
+Why is this not using kunit?  We should not be adding new in-kernel
+tests that are not using that api anymore.
 
-> Wei.
 > 
->>
->>> But maybe you have additional info that applies to the root
->>> partition that is not in the TLFS.
->>>
->>
->> As per what discussed internally and I understood, the root partition
->> shares the vp assist page provided by hypervisor and its read only for
->> Root kernel.
->>
->>> Michael
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  MAINTAINERS                            |    7 +
+>  lib/Kconfig.debug                      |   10 +
+>  lib/Makefile                           |    1 +
+>  lib/test_sysfs.c                       |  943 +++++++++++++++++++
+>  tools/testing/selftests/sysfs/Makefile |   12 +
+>  tools/testing/selftests/sysfs/config   |    2 +
+>  tools/testing/selftests/sysfs/sysfs.sh | 1202 ++++++++++++++++++++++++
+>  7 files changed, 2177 insertions(+)
+>  create mode 100644 lib/test_sysfs.c
+>  create mode 100644 tools/testing/selftests/sysfs/Makefile
+>  create mode 100644 tools/testing/selftests/sysfs/config
+>  create mode 100755 tools/testing/selftests/sysfs/sysfs.sh
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 66d047dc6880..fd369ed50040 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17958,6 +17958,13 @@ L:	linux-mmc@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/mmc/host/sdhci-pci-dwc-mshc.c
+>  
+> +SYSFS TEST DRIVER
+> +M:	Luis Chamberlain <mcgrof@kernel.org>
+> +L:	linux-kernel@vger.kernel.org
+> +S:	Maintained
+> +F:	lib/test_sysfs.c
+> +F:	tools/testing/selftests/sysfs/
+> +
+>  SYSTEM CONFIGURATION (SYSCON)
+>  M:	Lee Jones <lee.jones@linaro.org>
+>  M:	Arnd Bergmann <arnd@arndb.de>
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index fb370c7c4756..568838ac1189 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2360,6 +2360,16 @@ config TEST_SYSCTL
+>  
+>  	  If unsure, say N.
+>  
+> +config TEST_SYSFS
+> +	tristate "sysfs test driver"
+> +	depends on SYSFS
+> +	help
+> +	  This builds the "test_sysfs" module. This driver enables to test the
+> +	  sysfs file system safely without affecting production knobs which
+> +	  might alter system functionality.
+> +
+> +	  If unsure, say N.
+> +
+>  config BITFIELD_KUNIT
+>  	tristate "KUnit test bitfield functions at runtime"
+>  	depends on KUNIT
+> diff --git a/lib/Makefile b/lib/Makefile
+> index 5efd1b435a37..effd1ef806f0 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -61,6 +61,7 @@ obj-$(CONFIG_TEST_FIRMWARE) += test_firmware.o
+>  obj-$(CONFIG_TEST_BITOPS) += test_bitops.o
+>  CFLAGS_test_bitops.o += -Werror
+>  obj-$(CONFIG_TEST_SYSCTL) += test_sysctl.o
+> +obj-$(CONFIG_TEST_SYSFS) += test_sysfs.o
+>  obj-$(CONFIG_TEST_HASH) += test_hash.o test_siphash.o
+>  obj-$(CONFIG_TEST_IDA) += test_ida.o
+>  obj-$(CONFIG_KASAN_KUNIT_TEST) += test_kasan.o
+> diff --git a/lib/test_sysfs.c b/lib/test_sysfs.c
+> new file mode 100644
+> index 000000000000..bf43016d40b5
+> --- /dev/null
+> +++ b/lib/test_sysfs.c
+> @@ -0,0 +1,943 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
 
-Regards,
+This does not match your "boiler-plate" text below, sorry.
 
-~Praveen.
+thanks,
 
+greg k-h
