@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506153D18BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644BF3D18B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbhGUU2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:28:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhGUU1u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 16:27:50 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA31AC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 14:08:26 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id t186so2356545ybf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 14:08:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UBf2xEk8/8fmvgHkUbAP/1+jhiB7YJMg6Fos6jC4Avk=;
-        b=iOswR8bDPKPmaXbxSo7LpAdDVia28Nw7iA1NHSB/hQm4djv0jw5Jry1olvb2YDLWDG
-         4syxrMbOJa3ePkJiCDFub8LMNdCmo8gKJv261PJAx7n/XrKPZryC6RHomlOR2lORPHBq
-         19QfM45Ce3lWlwQ89vaHLLOQ19Y4YMroc3T75jo5J9zIBLM397xBNisHOL9/Tq6pSRCo
-         iFuE7M1Fbd3/8UqgzRgvapwRQR/BecMCco7lyG5UFSZxT3QMf9TErTmhP+7Lakl6v3Wj
-         5nUkWuAUuA7SVWshHwa3UhWtZbwWsdrICHmfxHqnSVVsdPU2XQ8RmNBe6MvbTe9zqiOY
-         HkaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UBf2xEk8/8fmvgHkUbAP/1+jhiB7YJMg6Fos6jC4Avk=;
-        b=VNOHEqLYTUpkmIelN+QvDvEWbDUnyedXALBn+0819nOt18w+lzCvxxGENzG2rJALFF
-         wmWyGfe63PpnC0c7Oqhpo6v+4sYQT/h7vNkZu/t00XSAXqXz9koRDJWX1+qJB7DY/mMD
-         ieTObXmVbhQ7UAG2lS5NDRxRo0F47MbJCY8LYKQRHNGEC+IsQy5HP0a8XXtEWwTGbHX+
-         D/WquAPMgIi6xayDKmqU6JQ69CqmhmSpNpZ3ge1ljd1bXRsFfhi7MP1Z0R0HCa7SM9r+
-         RkjjLa1f0lqi0Q3P9uqWl+prpAv2CMa8RCs8q3Ln+Wq5d8Daz/dJn77RwCM0nClbfksN
-         tRKA==
-X-Gm-Message-State: AOAM5339Tk0yXUhX/iduOBHbjorO0xsX1tETR5DD6Zt+NVjzMxuRDMo5
-        GKRdvF2o5Gxuf834VXp3vevR0Po0IxevIBk740Jurw==
-X-Google-Smtp-Source: ABdhPJxvvcIxjS1sPhcRo3uY116bCVXOf5nADsCBhFulbFzDi8z6ZYiOJj9B6s7MAoSBOkXUSsdQXTh0BQ4kxrSemrQ=
-X-Received: by 2002:a25:8b91:: with SMTP id j17mr46134726ybl.228.1626901705723;
- Wed, 21 Jul 2021 14:08:25 -0700 (PDT)
+        id S229944AbhGUU1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:27:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229585AbhGUU1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 16:27:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0849613FD;
+        Wed, 21 Jul 2021 21:08:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626901694;
+        bh=nZu80pSi991/jep8dyfRtBhXzoNqP+PLM2pJMkKPv9w=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Mv0cjSVM31CnNCv0QWoyELwMq0mSRYZKfhrqO31Ybs4qroG3Go9lmiX5LXoXN8CF3
+         NTLnWC4t80EakFua+4/8DgDROgOLRe7zCm4kEJYmnWgIYFnf0Y9fQYGSyOzzYChzzX
+         UBENRa6E2RI1ZH7EFdreGfpJdhX4RZcn76MefwEQAhS03u9K2IaySBN1IPgXSWqYzb
+         XLy0VlrOGmN222o+lhDzTImLmHBHJ3XkY5U2JaSDiG/c4cemnSQ6lwWkV80J2fr7Sa
+         DWB2ZGrJ799R0HT8458o9ysifHZwxW49bE9C//a2Ey0lIrJW1ZIdOrXCcAKz9Y3oIa
+         t7rC0Z75CGc7Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 51EC25C09A4; Wed, 21 Jul 2021 14:08:14 -0700 (PDT)
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        kernel-team@fb.com, mingo@kernel.org
+Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
+        dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH kcsan 1/8] kcsan: Improve some Kconfig comments
+Date:   Wed, 21 Jul 2021 14:08:05 -0700
+Message-Id: <20210721210812.844740-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
+References: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <20210707045320.529186-1-john.stultz@linaro.org>
- <YPgK50dmV7Z69WsL@kroah.com> <CALAqxLUVgUT+1DyDGsFbF0138S0OYzpKADk__PsYbR4B4mbMhw@mail.gmail.com>
- <CAGETcx91URbHCYMoGt_cCgvMXNkVyJb4Ek-ng8jwR+eQhvZN1A@mail.gmail.com> <YPiCSOys6zEH6Kfg@yoga>
-In-Reply-To: <YPiCSOys6zEH6Kfg@yoga>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 21 Jul 2021 14:07:49 -0700
-Message-ID: <CAGETcx8Yw2QDYBYNpqVt_kPHnokFR+qinr5GAJ1byVWMuc3PLQ@mail.gmail.com>
-Subject: Re: [PATCH] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable
- as a permenent module
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Todd Kjos <tkjos@google.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 1:23 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Wed 21 Jul 13:00 CDT 2021, Saravana Kannan wrote:
->
-> > On Wed, Jul 21, 2021 at 10:24 AM John Stultz <john.stultz@linaro.org> wrote:
-> > >
-> > > On Wed, Jul 21, 2021 at 4:54 AM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Wed, Jul 07, 2021 at 04:53:20AM +0000, John Stultz wrote:
-> > > > > Allow the qcom_scm driver to be loadable as a permenent module.
-> > > >
-> > > > This feels like a regression, it should be allowed to be a module.
-> > >
-> > > I'm sorry, I'm not sure I'm following you, Greg.  This patch is trying
-> > > to enable the driver to be able to be loaded as a module.
-> >
-> > I think the mix up might be that Greg mentally read "permanent module"
-> > as "builtin"?
-> >
-> > "permanent module" is just something that can't be unloaded once it's
-> > loaded. It's not "builtin".
-> >
->
-> Afaict there's nothing in this patch that makes it more or less
-> permanent.
+From: Marco Elver <elver@google.com>
 
-The lack of a module_exit() makes it a permanent module. If you do
-lsmod, it'll mark this as "[permanent]".
+Improve comment for CC_HAS_TSAN_COMPOUND_READ_BEFORE_WRITE. Also shorten
+the comment above the "strictness" configuration options.
 
--Saravana
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ lib/Kconfig.kcsan | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-> The module will be quite permanent (in practice) because
-> several other core modules reference symbols in the qcom_scm module.
->
-> But thanks to a previous patch, the qcom_scm device comes with
-> suppress_bind_attrs, to prevent that the device goes away from a simple
-> unbind operation - which the API and client drivers aren't designed to
-> handle.
->
-> So, it would have been better in this case to omit the word "permanent"
-> from the commit message, but the change is good and I don't want to
-> rebase my tree to drop that word.
->
-> Thanks,
-> Bjorn
->
-> > -Saravana
-> >
-> > >
-> > > > > This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
-> > > > > ensure that drivers that call into the qcom_scm driver are
-> > > > > also built as modules. While not ideal in some cases its the
-> > > > > only safe way I can find to avoid build errors without having
-> > > > > those drivers select QCOM_SCM and have to force it on (as
-> > > > > QCOM_SCM=n can be valid for those drivers).
-> > > > >
-> > > > > Reviving this now that Saravana's fw_devlink defaults to on,
-> > > > > which should avoid loading troubles seen before.
-> > > >
-> > > > fw_devlink was supposed to resolve these issues and _allow_ code to be
-> > > > built as modules and not forced to be built into the kernel.
-> > >
-> > > Right. I'm re-submitting this patch to enable a driver to work as a
-> > > module, because earlier attempts to submit it ran into boot trouble
-> > > because fw_devlink wasn't yet enabled.
-> > >
-> > > I worry something in my description made it seem otherwise, so let me
-> > > know how you read it and I'll try to avoid such confusion in the
-> > > future.
-> > >
-> > > thanks
-> > > -john
+diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
+index 0440f373248eb..6152fbd5cbb43 100644
+--- a/lib/Kconfig.kcsan
++++ b/lib/Kconfig.kcsan
+@@ -40,10 +40,14 @@ menuconfig KCSAN
+ 
+ if KCSAN
+ 
+-# Compiler capabilities that should not fail the test if they are unavailable.
+ config CC_HAS_TSAN_COMPOUND_READ_BEFORE_WRITE
+ 	def_bool (CC_IS_CLANG && $(cc-option,-fsanitize=thread -mllvm -tsan-compound-read-before-write=1)) || \
+ 		 (CC_IS_GCC && $(cc-option,-fsanitize=thread --param tsan-compound-read-before-write=1))
++	help
++	  The compiler instruments plain compound read-write operations
++	  differently (++, --, +=, -=, |=, &=, etc.), which allows KCSAN to
++	  distinguish them from other plain accesses. This is currently
++	  supported by Clang 12 or later.
+ 
+ config KCSAN_VERBOSE
+ 	bool "Show verbose reports with more information about system state"
+@@ -169,13 +173,9 @@ config KCSAN_REPORT_ONCE_IN_MS
+ 	  reporting to avoid flooding the console with reports.  Setting this
+ 	  to 0 disables rate limiting.
+ 
+-# The main purpose of the below options is to control reported data races (e.g.
+-# in fuzzer configs), and are not expected to be switched frequently by other
+-# users. We could turn some of them into boot parameters, but given they should
+-# not be switched normally, let's keep them here to simplify configuration.
+-#
+-# The defaults below are chosen to be very conservative, and may miss certain
+-# bugs.
++# The main purpose of the below options is to control reported data races, and
++# are not expected to be switched frequently by non-testers or at runtime.
++# The defaults are chosen to be conservative, and can miss certain bugs.
+ 
+ config KCSAN_REPORT_RACE_UNKNOWN_ORIGIN
+ 	bool "Report races of unknown origin"
+-- 
+2.31.1.189.g2e36527f23
+
