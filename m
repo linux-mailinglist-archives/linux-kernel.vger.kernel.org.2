@@ -2,179 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7B73D0AA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA82B3D0ABE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 10:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237223AbhGUHvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 03:51:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236377AbhGUHmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:42:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2051860725;
-        Wed, 21 Jul 2021 08:22:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626855773;
-        bh=3PWNZrY7Out6Ln+JN77opOhAxUWkjAGCCcV/67Adxew=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qI5dNiRdcZW41C4zH5DsiCCa1bfUyApXrNylhYbUKKn/hU05I1/GzHSh/PkFHMnQs
-         zE7ISA/7UOy3NL4lQepk+1yOzqqo6RULs2L2s9KJgOaMG1lg7Yfe+r9fXFM6g/fuIL
-         /wLGIK4EGDHh7xkBqrT3af/QIND4/0bsNbqNtuqg=
-Date:   Wed, 21 Jul 2021 10:22:51 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ojaswin Mujoo <ojaswin98@gmail.com>
-Cc:     Stefan Wahren <stefan.wahren@i2se.com>, nsaenz@kernel.org,
-        arnd@arndb.de, dan.carpenter@oracle.com, phil@raspberrypi.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] staging: vchiq: Combine vchiq platform code into
- single file
-Message-ID: <YPfZW0k563kuuHnx@kroah.com>
-References: <cover.1625401927.git.ojaswin98@gmail.com>
- <b2e9eaee3e6d8f278a3277aaa284c5ca8b76d756.1625401928.git.ojaswin98@gmail.com>
- <b1b867c1-476c-8a5d-721b-ac19854efcbc@i2se.com>
- <20210711112821.GA5049@ojas>
+        id S235602AbhGUHw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 03:52:26 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:42239 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236422AbhGUHnE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 03:43:04 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UgVIMrR_1626855804;
+Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgVIMrR_1626855804)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 21 Jul 2021 16:23:37 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Subject: [PATCH v5] iomap: support tail packing inline read
+Date:   Wed, 21 Jul 2021 16:23:23 +0800
+Message-Id: <20210721082323.41933-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210711112821.GA5049@ojas>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 04:58:21PM +0530, Ojaswin Mujoo wrote:
-> On Sun, Jul 11, 2021 at 12:49:35PM +0200, Stefan Wahren wrote:
-> > Am 04.07.21 um 17:59 schrieb Ojaswin Mujoo:
-> > > Combine the vchiq platform initialization code into a single file by
-> > > merging vchiq_2835_arm.c into vchiq_arm.c
-> > >
-> > > Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
-> > > ---
-> > >  drivers/staging/vc04_services/Makefile        |   1 -
-> > >  .../interface/vchiq_arm/vchiq_2835_arm.c      | 564 ------------------
-> > >  .../interface/vchiq_arm/vchiq_arm.c           | 549 +++++++++++++++++
-> > >  3 files changed, 549 insertions(+), 565 deletions(-)
-> > >  delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
-> > >
-> > > diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
-> > > index 0a04338fc962..1fd191e2e2a5 100644
-> > > --- a/drivers/staging/vc04_services/Makefile
-> > > +++ b/drivers/staging/vc04_services/Makefile
-> > > @@ -4,7 +4,6 @@ obj-$(CONFIG_BCM2835_VCHIQ)	+= vchiq.o
-> > >  vchiq-objs := \
-> > >     interface/vchiq_arm/vchiq_core.o  \
-> > >     interface/vchiq_arm/vchiq_arm.o \
-> > > -   interface/vchiq_arm/vchiq_2835_arm.o \
-> > >     interface/vchiq_arm/vchiq_debugfs.o \
-> > >     interface/vchiq_arm/vchiq_connected.o \
-> > >  
-> > ...
-> > > diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> > > index 0f2de571eba7..9057d01ffd48 100644
-> > > --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> > > +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> > > @@ -25,15 +25,32 @@
-> > >  #include <linux/rcupdate.h>
-> > >  #include <linux/delay.h>
-> > >  #include <linux/slab.h>
-> > > +#include <linux/interrupt.h>
-> > > +#include <linux/io.h>
-> > > +#include <linux/uaccess.h>
-> > >  #include <soc/bcm2835/raspberrypi-firmware.h>
-> > >  
-> > >  #include "vchiq_core.h"
-> > >  #include "vchiq_ioctl.h"
-> > >  #include "vchiq_arm.h"
-> > >  #include "vchiq_debugfs.h"
-> > > +#include "vchiq_connected.h"
-> > > +#include "vchiq_pagelist.h"
-> > >  
-> > >  #define DEVICE_NAME "vchiq"
-> > >  
-> > > +#define TOTAL_SLOTS (VCHIQ_SLOT_ZERO_SLOTS + 2 * 32)
-> > > +
-> > > +#define MAX_FRAGMENTS (VCHIQ_NUM_CURRENT_BULKS * 2)
-> > > +
-> > > +#define VCHIQ_PLATFORM_FRAGMENTS_OFFSET_IDX 0
-> > > +#define VCHIQ_PLATFORM_FRAGMENTS_COUNT_IDX  1
-> > > +
-> > > +#define BELL0	0x00
-> > > +#define BELL2	0x08
-> > > +
-> > > +#define ARM_DS_ACTIVE	BIT(2)
-> > > +
-> > >  /* Override the default prefix, which would be vchiq_arm (from the filename) */
-> > >  #undef MODULE_PARAM_PREFIX
-> > >  #define MODULE_PARAM_PREFIX DEVICE_NAME "."
-> > > @@ -59,10 +76,542 @@ static struct vchiq_drvdata bcm2836_drvdata = {
-> > >  	.cache_line_size = 64,
-> > >  };
-> > >  
-> > > +struct vchiq_2835_state {
-> > > +	int inited;
-> > > +	struct vchiq_arm_state arm_state;
-> > > +};
-> > > +
-> > > +struct vchiq_pagelist_info {
-> > > +	struct pagelist *pagelist;
-> > > +	size_t pagelist_buffer_size;
-> > > +	dma_addr_t dma_addr;
-> > > +	enum dma_data_direction dma_dir;
-> > > +	unsigned int num_pages;
-> > > +	unsigned int pages_need_release;
-> > > +	struct page **pages;
-> > > +	struct scatterlist *scatterlist;
-> > > +	unsigned int scatterlist_mapped;
-> > > +};
-> > > +
-> > > +static void __iomem *g_regs;
-> > > +/* This value is the size of the L2 cache lines as understood by the
-> > > + * VPU firmware, which determines the required alignment of the
-> > > + * offsets/sizes in pagelists.
-> > > + *
-> > > + * Modern VPU firmware looks for a DT "cache-line-size" property in
-> > > + * the VCHIQ node and will overwrite it with the actual L2 cache size,
-> > > + * which the kernel must then respect.  That property was rejected
-> > > + * upstream, so we have to use the VPU firmware's compatibility value
-> > > + * of 32.
-> > > + */
-> > > +static unsigned int g_cache_line_size = 32;
-> > > +static unsigned int g_fragments_size;
-> > > +static char *g_fragments_base;
-> > > +static char *g_free_fragments;
-> > > +static struct semaphore g_free_fragments_sema;
-> > > +static struct device *g_dev;
-> > > +
-> > > +static DEFINE_SEMAPHORE(g_free_fragments_mutex);
-> > > +
-> > > +static irqreturn_t
-> > > +vchiq_doorbell_irq(int irq, void *dev_id);
-> > > +
-> > > +static struct vchiq_pagelist_info *
-> > > +create_pagelist(char *buf, char __user *ubuf, size_t count, unsigned short type);
-> > > +
-> > > +static void
-> > > +free_pagelist(struct vchiq_pagelist_info *pagelistinfo,
-> > > +	      int actual);
-> > 
-> > please no forward declarations of these 3 functions. Put them into the
-> > right order instead ...
-> > 
-> > Since this patch is independent from the other ones from the series,
-> > maybe Greg can merg the rest of the series.
-> > 
-> > 
-> > 
-> 
-> Hello Stefan,
-> 
-> Thanks for the review. As for the forward declerations, sure I can fix
-> these 3 functions and send an independent patch for this.
+This tries to add tail packing inline read to iomap, which can support
+several inline tail blocks. Similar to the previous approach, it cleans
+post-EOF in one iteration.
 
-Please fix up and resend the whole series properly so that I can apply
-them that way.
+The write path remains untouched since EROFS cannot be used for testing.
+It'd be better to be implemented if upcoming real users care rather than
+leave untested dead code around.
 
-thanks,
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Darrick J. Wong <djwong@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+---
+v4: https://lore.kernel.org/r/20210720133554.44058-1-hsiangkao@linux.alibaba.com
+changes since v4:
+ - turn to WARN_ON_ONCE() suggested by Darrick;
+ - fix size to "min(iomap->length + iomap->offset - pos,
+                    PAGE_SIZE - poff)"
 
-greg k-h
+ fs/iomap/buffered-io.c | 58 +++++++++++++++++++++++++++---------------
+ fs/iomap/direct-io.c   | 13 +++++++---
+ 2 files changed, 47 insertions(+), 24 deletions(-)
+
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 87ccb3438bec..d8436d34a159 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -205,25 +205,27 @@ struct iomap_readpage_ctx {
+ 	struct readahead_control *rac;
+ };
+ 
+-static void
++static int
+ iomap_read_inline_data(struct inode *inode, struct page *page,
+-		struct iomap *iomap)
++		struct iomap *iomap, loff_t pos)
+ {
+-	size_t size = i_size_read(inode);
++	unsigned int size, poff = offset_in_page(pos);
+ 	void *addr;
+ 
+-	if (PageUptodate(page))
+-		return;
+-
+-	BUG_ON(page_has_private(page));
+-	BUG_ON(page->index);
+-	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
++	/* inline source data must be inside a single page */
++	if (WARN_ON_ONCE(iomap->length > PAGE_SIZE -
++			 offset_in_page(iomap->inline_data)))
++		return -EIO;
++	/* handle tail-packing blocks cross the current page into the next */
++	size = min_t(unsigned int, iomap->length + iomap->offset - pos,
++		     PAGE_SIZE - poff);
+ 
+ 	addr = kmap_atomic(page);
+-	memcpy(addr, iomap->inline_data, size);
+-	memset(addr + size, 0, PAGE_SIZE - size);
++	memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
++	memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
+ 	kunmap_atomic(addr);
+-	SetPageUptodate(page);
++	iomap_set_range_uptodate(page, poff, PAGE_SIZE - poff);
++	return PAGE_SIZE - poff;
+ }
+ 
+ static inline bool iomap_block_needs_zeroing(struct inode *inode,
+@@ -245,19 +247,23 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+ 	loff_t orig_pos = pos;
+ 	unsigned poff, plen;
+ 	sector_t sector;
++	int ret;
+ 
+-	if (iomap->type == IOMAP_INLINE) {
+-		WARN_ON_ONCE(pos);
+-		iomap_read_inline_data(inode, page, iomap);
+-		return PAGE_SIZE;
+-	}
+-
+-	/* zero post-eof blocks as the page may be mapped */
+ 	iop = iomap_page_create(inode, page);
++	/* needs to skip some leading uptodate blocks */
+ 	iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
+ 	if (plen == 0)
+ 		goto done;
+ 
++	if (iomap->type == IOMAP_INLINE) {
++		ret = iomap_read_inline_data(inode, page, iomap, pos);
++		if (ret < 0)
++			return ret;
++		plen = ret;
++		goto done;
++	}
++
++	/* zero post-eof blocks as the page may be mapped */
+ 	if (iomap_block_needs_zeroing(inode, iomap, pos)) {
+ 		zero_user(page, poff, plen);
+ 		iomap_set_range_uptodate(page, poff, plen);
+@@ -589,6 +595,18 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
+ 	return 0;
+ }
+ 
++static int iomap_write_begin_inline(struct inode *inode, loff_t pos,
++		struct page *page, struct iomap *srcmap)
++{
++	/* needs more work for the tailpacking case, disable for now */
++	if (WARN_ON_ONCE(srcmap->offset != 0))
++		return -EIO;
++	if (PageUptodate(page))
++		return 0;
++	iomap_read_inline_data(inode, page, srcmap, 0);
++	return 0;
++}
++
+ static int
+ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+ 		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
+@@ -618,7 +636,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+ 	}
+ 
+ 	if (srcmap->type == IOMAP_INLINE)
+-		iomap_read_inline_data(inode, page, srcmap);
++		status = iomap_write_begin_inline(inode, pos, page, srcmap);
+ 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
+ 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
+ 	else
+diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+index 9398b8c31323..cbadb99fb88c 100644
+--- a/fs/iomap/direct-io.c
++++ b/fs/iomap/direct-io.c
+@@ -379,22 +379,27 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
+ {
+ 	struct iov_iter *iter = dio->submit.iter;
+ 	size_t copied;
++	void *dst = iomap->inline_data + pos - iomap->offset;
+ 
+-	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
++	/* inline data must be inside a single page */
++	if (WARN_ON_ONCE(length > PAGE_SIZE -
++			 offset_in_page(iomap->inline_data)))
++		return -EIO;
+ 
+ 	if (dio->flags & IOMAP_DIO_WRITE) {
+ 		loff_t size = inode->i_size;
+ 
+ 		if (pos > size)
+-			memset(iomap->inline_data + size, 0, pos - size);
+-		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
++			memset(iomap->inline_data + size - iomap->offset,
++			       0, pos - size);
++		copied = copy_from_iter(dst, length, iter);
+ 		if (copied) {
+ 			if (pos + copied > size)
+ 				i_size_write(inode, pos + copied);
+ 			mark_inode_dirty(inode);
+ 		}
+ 	} else {
+-		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
++		copied = copy_to_iter(dst, length, iter);
+ 	}
+ 	dio->size += copied;
+ 	return copied;
+-- 
+2.24.4
+
