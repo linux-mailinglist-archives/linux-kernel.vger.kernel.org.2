@@ -2,133 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174EE3D0686
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 03:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B213D0688
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 03:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhGUBDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 21:03:11 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:10852 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbhGUBCc (ORCPT
+        id S230136AbhGUBJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 21:09:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36451 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230300AbhGUBJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 21:02:32 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626831787; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=mtzWCbrz+cE9oYupzBvuDqsFyd7ZcoJ86HtTVGOmLiE=; b=NwBcS0ydd9ApUPSgBeUru+aMnzq99wBSLtQf9bG+8XUhaP5xsSm2orChGjJbHQ48MQY4jJrd
- MkRxNBWFqc7N8256dWs6dSytCSKpC+IaP8IWrJNyLtXwtuKQMtn2TWmv9FV3RKerMNuhnv4u
- dufVVtfbA64rvFvo0Nz0riC3n98=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60f77baae31d882d189c2842 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Jul 2021 01:43:06
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3F483C4338A; Wed, 21 Jul 2021 01:43:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Tue, 20 Jul 2021 21:09:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626832205;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ycQUvev7iFjmkY/FUwE/4xwJ5iynNiXFiSZ1F9WCv/o=;
+        b=Uo7ZQARH6Q3022g/50e3twGtcuoY50YgvEI1rbhNY5JUn2gNpaliPYjCBoMqcDfNfELvfb
+        fiJr602KocQHgjPlp/bD8l7Xy5/hNjTKHVi2nXvu2HONDB7DDbc0TMUO2tTZFD5ALBzKmz
+        zV2qQudDeQ7PQs4/PomUfpsluPGgu5c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-517-_0U8Sy5fPjSCWUK8zaxCgw-1; Tue, 20 Jul 2021 21:50:01 -0400
+X-MC-Unique: _0U8Sy5fPjSCWUK8zaxCgw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46699C433D3;
-        Wed, 21 Jul 2021 01:43:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 46699C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     bqiang@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        hemantk@codeaurora.org, clew@codeaurora.org,
-        linux-kernel@vger.kernel.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH] net: qrtr: mhi: synchronize qrtr and mhi preparation
-Date:   Tue, 20 Jul 2021 18:42:58 -0700
-Message-Id: <1626831778-31796-1-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3AD7D19057A7;
+        Wed, 21 Jul 2021 01:50:00 +0000 (UTC)
+Received: from localhost (ovpn-12-206.pek2.redhat.com [10.72.12.206])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DA4CC60877;
+        Wed, 21 Jul 2021 01:49:55 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Subject: [PATCH V3] genirq/affinity: add helper of irq_affinity_calc_sets
+Date:   Wed, 21 Jul 2021 09:48:04 +0800
+Message-Id: <20210721014804.1059421-1-ming.lei@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A dl callback can be received anytime after mhi_prepare_for_transfer
-has been called. There is a window where the callback may happen
-before the probe initializes the qrtr_mhi_dev state. Move the
-mhi_prepare_for_transfer call after the registering the endpoint.
+When driver requests to allocate irq affinity managed vectors,
+pci_alloc_irq_vectors_affinity() may fallback to single vector
+allocation. In this situation, we don't need to call
+irq_create_affinity_masks for calling into ->calc_sets() for
+avoiding potential memory leak, so add the helper for this purpose.
 
-Once moved, the reverse can happen where qrtr will try to send a packet
-before the channels are prepared. Add a wait in the sending path to
-ensure the channels are prepared before trying to do a ul transfer.
-
-Fixes: a2e2cc0dbb11 ("net: qrtr: Start MHI channels during init")
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Fixes: c66d4bd110a1 ("genirq/affinity: Add new callback for (re)calculating interrupt sets")
+Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
 ---
- net/qrtr/mhi.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+V3:
+	- avoid pointless negations
+V2:
+	- move WARN_ON_ONCE() into irq_affinity_calc_sets
+	- don't install default calc_sets() callback as suggested by
+	Christoph
 
-diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
-index 29b4fa3..22b0395 100644
---- a/net/qrtr/mhi.c
-+++ b/net/qrtr/mhi.c
-@@ -15,6 +15,7 @@ struct qrtr_mhi_dev {
- 	struct qrtr_endpoint ep;
- 	struct mhi_device *mhi_dev;
- 	struct device *dev;
-+	struct completion ready;
- };
- 
- /* From MHI to QRTR */
-@@ -50,6 +51,10 @@ static int qcom_mhi_qrtr_send(struct qrtr_endpoint *ep, struct sk_buff *skb)
- 	struct qrtr_mhi_dev *qdev = container_of(ep, struct qrtr_mhi_dev, ep);
- 	int rc;
- 
-+	rc = wait_for_completion_interruptible(&qdev->ready);
-+	if (rc)
-+		goto free_skb;
+ drivers/pci/msi.c         |  3 ++-
+ include/linux/interrupt.h |  7 +++++++
+ kernel/irq/affinity.c     | 28 +++++++++++++++++-----------
+ 3 files changed, 26 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 9232255c8515..4e6fbdf0741c 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -1224,7 +1224,8 @@ int pci_alloc_irq_vectors_affinity(struct pci_dev *dev, unsigned int min_vecs,
+ 			 * for the single interrupt case.
+ 			 */
+ 			if (affd)
+-				irq_create_affinity_masks(1, affd);
++				irq_affinity_calc_sets(1, affd);
 +
- 	if (skb->sk)
- 		sock_hold(skb->sk);
+ 			pci_intx(dev, 1);
+ 			return 1;
+ 		}
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index 2ed65b01c961..c7ff84d60465 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -340,6 +340,7 @@ irq_create_affinity_masks(unsigned int nvec, struct irq_affinity *affd);
  
-@@ -78,11 +83,6 @@ static int qcom_mhi_qrtr_probe(struct mhi_device *mhi_dev,
- 	struct qrtr_mhi_dev *qdev;
- 	int rc;
+ unsigned int irq_calc_affinity_vectors(unsigned int minvec, unsigned int maxvec,
+ 				       const struct irq_affinity *affd);
++int irq_affinity_calc_sets(unsigned int affvecs, struct irq_affinity *affd);
  
--	/* start channels */
--	rc = mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
--	if (rc)
--		return rc;
+ #else /* CONFIG_SMP */
+ 
+@@ -391,6 +392,12 @@ irq_calc_affinity_vectors(unsigned int minvec, unsigned int maxvec,
+ 	return maxvec;
+ }
+ 
++static inline int irq_affinity_calc_sets(unsigned int affvecs,
++					 struct irq_affinity *affd)
++{
++	return 0;
++}
++
+ #endif /* CONFIG_SMP */
+ 
+ /*
+diff --git a/kernel/irq/affinity.c b/kernel/irq/affinity.c
+index 4d89ad4fae3b..2030770e8cff 100644
+--- a/kernel/irq/affinity.c
++++ b/kernel/irq/affinity.c
+@@ -405,6 +405,22 @@ static void default_calc_sets(struct irq_affinity *affd, unsigned int affvecs)
+ 	affd->set_size[0] = affvecs;
+ }
+ 
++int irq_affinity_calc_sets(unsigned int affvecs, struct irq_affinity *affd)
++{
++	/*
++	 * Simple invocations do not provide a calc_sets() callback. Call
++	 * the generic one.
++	 */
++	if (affd->calc_sets)
++		affd->calc_sets(affd, affvecs);
++	else
++		default_calc_sets(affd, affvecs);
++
++	if (WARN_ON_ONCE(affd->nr_sets > IRQ_AFFINITY_MAX_SETS))
++		return -ERANGE;
++	return 0;
++}
++
+ /**
+  * irq_create_affinity_masks - Create affinity masks for multiqueue spreading
+  * @nvecs:	The total number of vectors
+@@ -429,17 +445,7 @@ irq_create_affinity_masks(unsigned int nvecs, struct irq_affinity *affd)
+ 	else
+ 		affvecs = 0;
+ 
+-	/*
+-	 * Simple invocations do not provide a calc_sets() callback. Install
+-	 * the generic one.
+-	 */
+-	if (!affd->calc_sets)
+-		affd->calc_sets = default_calc_sets;
 -
- 	qdev = devm_kzalloc(&mhi_dev->dev, sizeof(*qdev), GFP_KERNEL);
- 	if (!qdev)
- 		return -ENOMEM;
-@@ -90,12 +90,22 @@ static int qcom_mhi_qrtr_probe(struct mhi_device *mhi_dev,
- 	qdev->mhi_dev = mhi_dev;
- 	qdev->dev = &mhi_dev->dev;
- 	qdev->ep.xmit = qcom_mhi_qrtr_send;
-+	init_completion(&qdev->ready);
+-	/* Recalculate the sets */
+-	affd->calc_sets(affd, affvecs);
+-
+-	if (WARN_ON_ONCE(affd->nr_sets > IRQ_AFFINITY_MAX_SETS))
++	if (irq_affinity_calc_sets(affvecs, affd))
+ 		return NULL;
  
- 	dev_set_drvdata(&mhi_dev->dev, qdev);
- 	rc = qrtr_endpoint_register(&qdev->ep, QRTR_EP_NID_AUTO);
- 	if (rc)
- 		return rc;
- 
-+	/* start channels */
-+	rc = mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
-+	if (rc) {
-+		qrtr_endpoint_unregister(&qdev->ep);
-+		dev_set_drvdata(&mhi_dev->dev, NULL);
-+		return rc;
-+	}
-+
-+	complete_all(&qdev->ready);
- 	dev_dbg(qdev->dev, "Qualcomm MHI QRTR driver probed\n");
- 
- 	return 0;
+ 	/* Nothing to assign? */
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.31.1
 
