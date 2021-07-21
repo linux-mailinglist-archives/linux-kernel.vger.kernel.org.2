@@ -2,181 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86853D1669
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416D53D166E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 20:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239253AbhGURs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:48:28 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:64910 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231680AbhGURsY (ORCPT
+        id S238224AbhGURuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231680AbhGURuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:48:24 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LIGmeB012970;
-        Wed, 21 Jul 2021 18:28:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=8miFMb2/6QrTW11W9EpH4IzYYTzc3oq8+1jrQTw2Klw=;
- b=wToGLaMzjbZtIXT9nYo1mcw4fPKvyheTtNHS3b+w1LWE/EAeWyRqUGICL3JmNLVuxGuG
- XyCIzVnXbU/qP3hzmA4jqYqPgig95OArvM4uBkKWt4rCKMXwKRaGfRYLpUNjUGLD4lyl
- Z5jORwffzJbWRb/jY2KjN3UqLcQCGWk1qeMKdGFJB0MaspbPoOzkKWOMozRNGOYHko5D
- PzR+v8/40nnMhSKtNw4fUBIatykNhFD/6nxzB9mcViGPg20RiNtxUoYwvN+n7i2hIrTI
- 8QE6S2622sr51njzCz6n8euCQ0DY1jn0ybtd4nHfpeYpYXcMwgsqNRQRNzMHi9xUhcWp oA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=8miFMb2/6QrTW11W9EpH4IzYYTzc3oq8+1jrQTw2Klw=;
- b=xe4a1bShOvUpwI3DNR81pxECBPXYs3cNbWOZA985l+HX7fwM/kC8ZaGPMqM38mDVbTVr
- bf8AwzMaasm4V52EUeLYSSIw8Yw4X6F3tjqOwF+tfHjMNCVkG81KHHFOeAh3eyqcyqsN
- M9R7J/4yq/V1GNhzD1ef/+pibnlgwAk2FpCjw+Nhe6ea6dmpsfkRM1BEwbAgEwYgYqa0
- IUwpSq6embuIsYcSoYJ+NlGPwpX1Z2+lk0OYhMxySX5WghBNX79A9Z02abAX+VgU+W12
- zxaI0PthiQnH3NffJnk7FmHN/aLgAFDKdTNgorr8MDYDne5JIOqrNHzBwMvFuHRS1nFz fw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39wvr8bjhx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 18:28:52 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16LIGYNF061398;
-        Wed, 21 Jul 2021 18:28:51 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2172.outbound.protection.outlook.com [104.47.58.172])
-        by userp3030.oracle.com with ESMTP id 39umb39xd5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Jul 2021 18:28:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cOMtJEPqCmasMjr5gIWR0KwyV5bpYATA5+zoqklA7fqN0R/a4iUeR/4yJdSiDjduvgl0rA/TeDzwdsQZjBas/w8pF4iUrCNb5MxKKe/bDKRbp6lh6BIPBlEGe8PTxgoIwrwVwdg1cj2mNCuTOaytjp2EBp5DAko35k2AnPKvMD67kZTGDF+x+9Vw76knAfoxsxKASGGSvkJNm5BbMqb5QIa6ietAZMxWGvOJ1oxaxY51x/BYwPGnB8L0blxbCx8d7qRKT/bMlzZRFvZdyHx2zNl9PM/cOGutEG6DN/NMSxWUrcXjeGLhbLxcfwd+1xZj1VfYriWI5Yj38AsPeO2Kkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8miFMb2/6QrTW11W9EpH4IzYYTzc3oq8+1jrQTw2Klw=;
- b=IvDhXVtSKvMq9LUFMuBysn7mETltagu9zAGcvduCl/+65nxnuRvu0ErQDnFij+BBW8F7JtuuwGcIB9toS/K/aUq5rtjoQx2lu5sv0m/zrUq1rixSLveXRJp0+v8rPJIqI76zlUJZpVYvSxoPxXrqP2GYA9PYfPKDCCB4K/C1Lv8quLLx59FgpCXBaLqtIc77/7HuB523KHSb5CiL42BwJjhquZwSIiE6fHUTvLCwy82Dra+BGjh68wPLChLOzh8BJFxhvy9z/hzrkC9p2CuI4p6Y6p+7RkmoxOPm3VfkdPPDmymLsLzHu3uM/khVP1OvsAFh11Yqw8u6bcRdtL/kVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 21 Jul 2021 13:50:46 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C2DC061575;
+        Wed, 21 Jul 2021 11:31:21 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id p22so4562592yba.7;
+        Wed, 21 Jul 2021 11:31:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8miFMb2/6QrTW11W9EpH4IzYYTzc3oq8+1jrQTw2Klw=;
- b=y1pYojB0c+bIGV041sjAy5WAdhUBqeh80wvZyDwcOrH56x/8aweRDODCkM+QVZlQIMWMpEkAmGFHeLVCFVex3qN8cSGtA9aILxAofk9l54Nrga9pabQ1IU3zdbIe+WFlxN3/8sycSt4pyiMbPZjoGRUCXcSxd96PLzFcZrsN/88=
-Authentication-Results: lwfinger.net; dkim=none (message not signed)
- header.d=none;lwfinger.net; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO1PR10MB4436.namprd10.prod.outlook.com
- (2603:10b6:303:91::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Wed, 21 Jul
- 2021 18:28:48 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4331.034; Wed, 21 Jul 2021
- 18:28:48 +0000
-Date:   Wed, 21 Jul 2021 21:28:36 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Phillip Potter <phil@philpotter.co.uk>, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        fabioaiuto83@gmail.com
-Subject: Re: [PATCH resend] staging: rtl8188eu: move all source files from
- core subdirectory
-Message-ID: <20210721182836.GX1931@kadam>
-References: <20210719224601.255364-1-phil@philpotter.co.uk>
- <7bc43fb0-2dab-190b-c480-9e77cff863d4@lwfinger.net>
- <20210720090035.GB1406@agape.jhs>
- <08a8b372-8ec2-afcc-cc54-305d1dd74a59@lwfinger.net>
- <YPfRf8dgFd+u5hzm@equinox>
- <0c2d97fa-e1e1-3564-98b8-37d5b9a1a9cb@lwfinger.net>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0c2d97fa-e1e1-3564-98b8-37d5b9a1a9cb@lwfinger.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: DB6PR1001CA0033.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:4:55::19) To MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KTE4uS5d06Y9ZVzPnKQMR2mBVjNhNjPjsvjQXNcyr10=;
+        b=RNw+d3qYyvb/ZW+4Cm29FdQBPPx4Hyl5/oThWyOQvixpr8NWQS7TCBl0vsiOfB/OmY
+         M/8HXpQhoKOH1W6dysmIhusNZucPQmadAUAIZATYtMYto7T64HfunS8S7tlAXk03Gh+6
+         CNi2tdOICqv1At5h/QLNaExqXOcf5vRabYOJcJ29xlvR6Au5JpQORG6X2NbCVEKh9yIo
+         mp0FN3Vum2lRHiRd3uRqAgwZxqnZHQuM7qr/a4/VHxvRhZv8d6SorakKokQ52De1pBlw
+         nJ+DBQ+MirPp0bcvRPv7HQB5MDYSXZozXPl15XXvgboK2LCLX5eoAMTCtcCPVNIyHx+N
+         2ScA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KTE4uS5d06Y9ZVzPnKQMR2mBVjNhNjPjsvjQXNcyr10=;
+        b=EhMr79vrcwbVNIyXaOSNb5gaIIFPd/z/k/OY40s1Ehpw4tFhOR+zVEZ8Mc3mCNQC64
+         bLSLy4ZglqBGsE0hdhSXH3LfEr6yRM/pDGy1eAvIkQwaBIgKeARDjhnbK8IqQCJhVIUI
+         lybIBqkImQP7VHoHK9NFWOVqvX2HWC9M41ZLmDdCUeqEqIaJCGL3FBSzbsCJm1Xr6x+Q
+         iCOy7nbrglKx2iz9Zy7OAdz5oTJX6j9oy6lYPKKigxOL4fBAg3RmsMa2bSAwaBdAefIP
+         42jymf6eLm3rXwPt44s7HcS+JS2TaunHPS4FrE6yAZSV/hoikXS35AyZ/eLuv0Fls75z
+         +1aQ==
+X-Gm-Message-State: AOAM533lbWjp8u0I12BuhqwWlHdFV98benF+Xj5zPYVtfkvAwt7L0tQF
+        qHvfCyMX3Cq0Rg9MytxsMHIBF2RYLr0QNJDLtdM=
+X-Google-Smtp-Source: ABdhPJwwDcOydNE8B5DrFavMNkAaTZwcqFXs9pmp3uVucbVaklb08+Y/SSSWkTri3pTUC8WaFH/9lw5s/eS+H+yIHtU=
+X-Received: by 2002:a25:be02:: with SMTP id h2mr49133394ybk.91.1626892279628;
+ Wed, 21 Jul 2021 11:31:19 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (102.222.70.252) by DB6PR1001CA0033.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:4:55::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23 via Frontend Transport; Wed, 21 Jul 2021 18:28:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b0b81667-e1f3-4e94-4be3-08d94c7561ea
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4436:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO1PR10MB44363CA7D1E3497525037EA28EE39@CO1PR10MB4436.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /ydLFDPXsVFy/4J/VVUdXkvZptbEt3CK79jrL/34b4iYw4Pa8eaS2wBsa2MTzwCjJjZIo6UwnnnXYWnGSu69TAoxYE6zCjfa5ZDIykrtR7HnU3I69zwkBsXPcmhyqL2Aek8id/xaIHa/SgNxiNo4DfL6ridTcp4pv4j4Uf4Zf9Ms2+1z9urCpBQHVkv1u83QoRUZ4e3WN5zG2I2BXcp4NOiJNoUInTKJaxbBxh0q3FA0+h3TXbLeh3FY4iEtAGxFig4oSJ7uAL58vUhuO/OWdLUFul3F1p2+SWqx4MhzGFRawqesH9ycQzWXQTmEzuI60MkmSqGnna3oOlF0om8bzYaEH2tdTFpizwE+F82Ko3SfTr4R83SfPUynW+Y6bh4tG+VXxxcjZq8Njd7sX8Xb7obIduXkX30qYToLEH73RI8vYMEyBYHztSf0GtsYjoTnGnwxZK9DH6JrBDNyHFzOt2aO19qY5fR8WkQHEAGdu2kObMaskOgjV2vgKDk+ysUBdd39j8lBRJhxm3R/D3HedM9AfnzbOZ8PHxiKi0EqWcYAwU2CVmm1cdqqCyyuMfRYihtSIwE6drhxiiwrQpoQy68fCZYWIPJtqOQ2xq9gg9gwNZ52E2A/AYMocra2qx5+RXd3FQiutV210Czq9RzOUFcPyQ3M04J3Q1IbygIbxdexib2NKKDnMviddUbY5HMhZmWAKbQzcjPmBBhvqxoEzA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39860400002)(396003)(136003)(346002)(8936002)(6666004)(5660300002)(4326008)(9686003)(6916009)(2906002)(33656002)(1076003)(55016002)(8676002)(38350700002)(38100700002)(33716001)(956004)(66556008)(66946007)(316002)(53546011)(44832011)(86362001)(26005)(66476007)(186003)(52116002)(83380400001)(9576002)(478600001)(6496006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MICIzxDuf4Aj+l2ik/jwLZmPIJ5DFu23Z4TUvwzaXeyEa0Kwlr8bXYop4bQ1?=
- =?us-ascii?Q?83mn2iy5Y5Gn4jJNeFE78vhv1XJcpQx1A35DOU4Fy3UvT4PcquHMuAwm0SvY?=
- =?us-ascii?Q?+lq4Dv4H+xdJJfUhO0Q4poi8iVZUFu5PCFRJfk14RXwSHbaBUVbBDA048cNl?=
- =?us-ascii?Q?WkJhC8S0tDoselPVYjyB+qYp4lWbzr0cCDrWO/5OUT1UWEKxxW9Y2r+DLrYK?=
- =?us-ascii?Q?sZBa7qg2twINU8m2+x7QVffr+CLA96BVRW+3btoQHatAzJ3Vhy4jsSFxNNjT?=
- =?us-ascii?Q?b+rLo6bFJWVYeeaIW0rtPQrSRNHMlOBe396BQKAAy1LVxKdOasF/NCW+BFUc?=
- =?us-ascii?Q?+R34TcXusLbGcCYQPTQoHGnssra9qJaXCadJdxwj0WoymZXtP3iIlZlI6EMa?=
- =?us-ascii?Q?M+nrtfqYBgMhBWbYgMZtGr9C/Fbe57zJwDp9D6odu83AeEsE6g2ercf4YNKh?=
- =?us-ascii?Q?ONmXukmu+0lUcFMFRUqNaNv5ISmFdxnE18RYf1mCG5kckshaKPM+SIbY09mE?=
- =?us-ascii?Q?Np7DQ071/Lih4aRFWIb13BBZdx7y/44Bn3Jeq82HSy5qvJ11AqH92lEpWpgw?=
- =?us-ascii?Q?pT5NXtaES2kO1Dv/EGEY2j2Aka6dWyV1RB4++BlCcZy8E2WLqZMeMtRCvNxE?=
- =?us-ascii?Q?tgvkb5Aaeepip2T2ssG1iZh0fBtRTePDZZILrRVqPs1WLK8U3T5gO3LbyM/N?=
- =?us-ascii?Q?HRZcCWw/uditZosHImkgLQjmGqZJ68WmiEDiPb/BBIqVi9j7o6VUmbd+PlCC?=
- =?us-ascii?Q?lljG8TWpHwEdAR6OJQbycDHT7GBo8485m6q5K7p+aDB/2NNbB3aQZ8cyLqHV?=
- =?us-ascii?Q?ivacVfaUS3jjXrm5lXu5k/sEmEUK2QEd2wNo7TmktGhKMjaGuVsfHqSZ0BXH?=
- =?us-ascii?Q?OzhwhjjZhGrgZHVTxj1nj3973sWupBNfD9G7wexAgMvL6Iz02pCKa3Hvxpkg?=
- =?us-ascii?Q?ivEBC+2/jYDQWI5clNhgN72qYnRqgVC0R4xKVwC8hrmBjrFX00cLcJDZV77f?=
- =?us-ascii?Q?hKuCQT2lO5KXn8CgtSTpj6+6fuXPyI+ORa1U+jX8lx+faqrbFwmNEV5WrN8O?=
- =?us-ascii?Q?r26cYQj8FaeNS2E39x61Wf0SUoNiphZq7zUW4CEvQ9I6yt5DAajcqvbHAAIg?=
- =?us-ascii?Q?LN8USYt0grnxidSRs6LEeu0+YqnDT9T2C90jfW2KapM8GSa7UIt/ljITE+pS?=
- =?us-ascii?Q?IRe8xDGVLawmTdZUx2vVU7GVZ4FtwELPY3rnOfZ1w+vglGBrGjZbvHBGbioR?=
- =?us-ascii?Q?ZXvsxaDyBnF441PPPjmhn2Uc/XQaTdDi/orDUSOxP5XBsSK2eZMH2rlqYNpg?=
- =?us-ascii?Q?ufGWQvg0AgRIccDO0L2NZhbj?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0b81667-e1f3-4e94-4be3-08d94c7561ea
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 18:28:48.8954
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OA9mJhfNX+ZfEQ5j8qj7sTKpkr2RvhmXAYragHLBLvvLB0CO0V+Hjl0kSeZrSV94qHGYBiuJDxxrGjJ7ydCRF2JOrwQ5TpS7nHkvawx4geU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4436
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10052 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
- mlxscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107210108
-X-Proofpoint-GUID: m-IVPcugX95Qmsmwdh2vc5u13Z4HGRE8
-X-Proofpoint-ORIG-GUID: m-IVPcugX95Qmsmwdh2vc5u13Z4HGRE8
+References: <nycvar.YFH.7.76.2107131924280.8253@cbobk.fhfr.pm> <nycvar.YFH.7.76.2107212026050.8253@cbobk.fhfr.pm>
+In-Reply-To: <nycvar.YFH.7.76.2107212026050.8253@cbobk.fhfr.pm>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Wed, 21 Jul 2021 11:31:08 -0700
+Message-ID: <CABBYNZ+mXqKx_gF=F80Y-vz7F-ysLGHYLaKT+fxze4tu1_1S3w@mail.gmail.com>
+Subject: Re: Two issues caused by commit e305509e678b3 ("Bluetooth: use
+ correct lock to prevent UAF of hdev object")
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Lin Ma <linma@zju.edu.cn>, Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 12:33:28PM -0500, Larry Finger wrote:
-> On 7/21/21 2:49 AM, Phillip Potter wrote:
-> > Dear Larry,
-> > 
-> > Whilst I (and no doubt others) are happy to look into what you've
-> > suggested, I do have a few questions:
-> > (1) Why is the version from github not the one in staging?
-> > (2) On a related note, working on it offline is difficult in terms of
-> > proving contributions, particularly for a kernel mentee such as myself.
-> > 
-> > Might I suggest replacing this driver with the one you suggested
-> > entirely, so work on it can continue in public? I am happy to submit
-> > this and continue work if you think it would be viable. Many thanks and
-> > I appreciate your thoughts on this.
-> 
-> The reason that the newer driver is at GitHub, rather than in the kernel, is
-> that I never want to devote the 6 months needed to get it into the shape of
-> the old one that I did send to staging. If you take a little time to look at
-> the GitHub code, you will see what I mean. I did this once before only to
-> have Realtek release a new version with all the old warts again. At least we
-> have the fact that this is a heritage product, and Realtek will not be
-> releasing any newer drivers.
+Hi Jiri,
 
-You're obviously not a Realtek employee, but what are they doing for
-wireless drivers these days?
+On Wed, Jul 21, 2021 at 11:26 AM Jiri Kosina <jikos@kernel.org> wrote:
+>
+> On Tue, 13 Jul 2021, Jiri Kosina wrote:
+>
+> > Hi,
+> >
+> > commit e305509e678b3 ("Bluetooth: use correct lock to prevent UAF of hd=
+ev
+> > object") has two issues, and I believe it should be reverted for 5.14
+> > final. Could you please elaborate what is the exact UAF scenario the pa=
+tch
+> > is fixing? It's rather hard to deduce from the very short changelog, bu=
+t
+> > it's pretty obvious that it creates at least two issues.
+>
+> Marcel, Johan, Luiz, any thoughts on this please? Thanks.
 
-regards,
-dan carpenter
+We are looking into it.
+
+> >
+> >
+> >
+> > (1) it introduces a possibility of deadlock between hci_sock_dev_event(=
+)
+> >    and hci_sock_sendmsg().
+> >
+> > Namely:
+> >
+> > - hci_sock_sendmsg(HCI_CHANNEL_LOGGING) acquires lock_sock(sk) and then
+> >   calls into hci_logging_frame() -> hci_send_to_channel() which in turn
+> >   acquires hci_sk_list.lock
+> >
+> > - after the mentioned commit, hci_sock_dev_event() first acquires
+> >   hci_sk_list.lock before doing lock_sock(sk) on each of the sockets it
+> >   iterates through, creating the reverse dependency
+> >
+> >
+> > Please find the full lockdep report below for reference.
+> >
+> > (2) it causes sleeping function to be called from atomic context, becau=
+se
+> >    it's not allowed to sleep after acquiring read_lock(), which is exac=
+tly
+> >    what this patch does (lock_sock() is sleepable). Report below as wel=
+l.
+> >
+> >
+> >
+> >
+> >
+> >
+> >  BUG: sleeping function called from invalid context at net/core/sock.c:=
+3100
+> >  in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 448, name: kwor=
+ker/0:5
+> >  6 locks held by kworker/0:5/448:
+> >   #0: ffff89e947fb4338 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: pro=
+cess_one_work+0x1c2/0x5e0
+> >   #1: ffffadef40973e78 ((work_completion)(&hub->events)){+.+.}-{0:0}, a=
+t: process_one_work+0x1c2/0x5e0
+> >   #2: ffff89e946998a20 (&dev->mutex){....}-{3:3}, at: hub_event+0x6a/0x=
+d50 [usbcore]
+> >   #3: ffff89e950828a20 (&dev->mutex){....}-{3:3}, at: usb_disconnect+0x=
+54/0x270 [usbcore]
+> >   #4: ffff89e9504e71a8 (&dev->mutex){....}-{3:3}, at: device_release_dr=
+iver_internal+0x1a/0x1d0
+> >   #5: ffffffffc117a3c0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev=
+_event+0x12b/0x1e0 [bluetooth]
+> >  CPU: 0 PID: 448 Comm: kworker/0:5 Not tainted 5.14.0-rc1-00003-g7fef2e=
+df7cc7 #15
+> >  Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/=
+31/2017
+> >  Workqueue: usb_hub_wq hub_event [usbcore]
+> >  Call Trace:
+> >   dump_stack_lvl+0x56/0x6c
+> >   ___might_sleep+0x1b6/0x210
+> >   lock_sock_nested+0x29/0xa0
+> >   hci_sock_dev_event+0x156/0x1e0 [bluetooth]
+> >   hci_unregister_dev+0xd2/0x350 [bluetooth]
+> >   btusb_disconnect+0x63/0x150 [btusb]
+> >   usb_unbind_interface+0x79/0x260 [usbcore]
+> >   device_release_driver_internal+0xf7/0x1d0
+> >   bus_remove_device+0xef/0x160
+> >   device_del+0x1ac/0x430
+> >   ? usb_remove_ep_devs+0x1b/0x30 [usbcore]
+> >   usb_disable_device+0x8d/0x1a0 [usbcore]
+> >   usb_disconnect+0xc1/0x270 [usbcore]
+> >   ? hub_event+0x4b0/0xd50 [usbcore]
+> >   hub_port_connect+0x82/0xa20 [usbcore]
+> >   ? __mutex_unlock_slowpath+0x43/0x2b0
+> >   hub_event+0x4c4/0xd50 [usbcore]
+> >   ? lock_is_held_type+0xb4/0x120
+> >   process_one_work+0x244/0x5e0
+> >   worker_thread+0x3c/0x390
+> >   ? process_one_work+0x5e0/0x5e0
+> >   kthread+0x133/0x160
+> >   ? set_kthread_struct+0x40/0x40
+> >   ret_from_fork+0x22/0x30
+> >
+> >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> >  WARNING: possible circular locking dependency detected
+> >  5.14.0-rc1-00003-g7fef2edf7cc7 #15 Tainted: G        W
+> >  ------------------------------------------------------
+> >  kworker/0:5/448 is trying to acquire lock:
+> >  ffff89e950647920 (sk_lock-AF_BLUETOOTH-BTPROTO_HCI){+.+.}-{0:0}, at: h=
+ci_sock_dev_event+0x156/0x1e0 [bluetooth]
+> >
+> >  but task is already holding lock:
+> >  ffffffffc117a3c0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev_even=
+t+0x12b/0x1e0 [bluetooth]
+> >
+> >  which lock already depends on the new lock.
+> >
+> >
+> >  the existing dependency chain (in reverse order) is:
+> >
+> >  -> #1 (hci_sk_list.lock){++++}-{2:2}:
+> >         _raw_read_lock+0x38/0x70
+> >  systemd-sysv-generator[1254]: stat() failed on /etc/init.d/jexec, igno=
+ring: No such file or directory
+> >         hci_send_to_channel+0x22/0x50 [bluetooth]
+> >         hci_sock_sendmsg+0xa2b/0xa40 [bluetooth]
+> >         sock_sendmsg+0x5b/0x60
+> >         ____sys_sendmsg+0x1ed/0x250
+> >  systemd-sysv-generator[1254]: SysV service '/etc/init.d/tpfand' lacks =
+a native systemd unit file. Automatically generating a unit file for compat=
+ibility. Please update package to include a native systemd unit file, in or=
+der to make it more safe and robust.
+> >         ___sys_sendmsg+0x88/0xd0
+> >         __sys_sendmsg+0x5e/0xa0
+> >         do_syscall_64+0x3a/0xb0
+> >  systemd-sysv-generator[1254]: SysV service '/etc/init.d/boot.local' la=
+cks a native systemd unit file. Automatically generating a unit file for co=
+mpatibility. Please update package to include a native systemd unit file, i=
+n order to make it more safe and robust.
+> >         entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >
+> >  -> #0 (sk_lock-AF_BLUETOOTH-BTPROTO_HCI){+.+.}-{0:0}:
+> >         __lock_acquire+0x124a/0x1680
+> >         lock_acquire+0x278/0x300
+> >         lock_sock_nested+0x72/0xa0
+> >         hci_sock_dev_event+0x156/0x1e0 [bluetooth]
+> >         hci_unregister_dev+0xd2/0x350 [bluetooth]
+> >         btusb_disconnect+0x63/0x150 [btusb]
+> >         usb_unbind_interface+0x79/0x260 [usbcore]
+> >         device_release_driver_internal+0xf7/0x1d0
+> >         bus_remove_device+0xef/0x160
+> >         device_del+0x1ac/0x430
+> >         usb_disable_device+0x8d/0x1a0 [usbcore]
+> >         usb_disconnect+0xc1/0x270 [usbcore]
+> >         hub_port_connect+0x82/0xa20 [usbcore]
+> >         hub_event+0x4c4/0xd50 [usbcore]
+> >         process_one_work+0x244/0x5e0
+> >         worker_thread+0x3c/0x390
+> >         kthread+0x133/0x160
+> >         ret_from_fork+0x22/0x30
+> >
+> >  other info that might help us debug this:
+> >
+> >   Possible unsafe locking scenario:
+> >
+> >         CPU0                    CPU1
+> >         ----                    ----
+> >    lock(hci_sk_list.lock);
+> >                                 lock(sk_lock-AF_BLUETOOTH-BTPROTO_HCI);
+> >                                 lock(hci_sk_list.lock);
+> >    lock(sk_lock-AF_BLUETOOTH-BTPROTO_HCI);
+> >
+> >   *** DEADLOCK ***
+> >
+> >  6 locks held by kworker/0:5/448:
+> >   #0: ffff89e947fb4338 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: pro=
+cess_one_work+0x1c2/0x5e0
+> >   #1: ffffadef40973e78 ((work_completion)(&hub->events)){+.+.}-{0:0}, a=
+t: process_one_work+0x1c2/0x5e0
+> >   #2: ffff89e946998a20 (&dev->mutex){....}-{3:3}, at: hub_event+0x6a/0x=
+d50 [usbcore]
+> >   #3: ffff89e950828a20 (&dev->mutex){....}-{3:3}, at: usb_disconnect+0x=
+54/0x270 [usbcore]
+> >   #4: ffff89e9504e71a8 (&dev->mutex){....}-{3:3}, at: device_release_dr=
+iver_internal+0x1a/0x1d0
+> >   #5: ffffffffc117a3c0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev=
+_event+0x12b/0x1e0 [bluetooth]
+> >
+> >  stack backtrace:
+> >  CPU: 0 PID: 448 Comm: kworker/0:5 Tainted: G        W         5.14.0-r=
+c1-00003-g7fef2edf7cc7 #15
+> >  Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/=
+31/2017
+> >  Workqueue: usb_hub_wq hub_event [usbcore]
+> >  Call Trace:
+> >   dump_stack_lvl+0x56/0x6c
+> >   check_noncircular+0x105/0x120
+> >   ? stack_trace_save+0x4b/0x70
+> >   ? save_trace+0x3d/0x340
+> >   ? __lock_acquire+0x124a/0x1680
+> >   __lock_acquire+0x124a/0x1680
+> >   lock_acquire+0x278/0x300
+> >   ? hci_sock_dev_event+0x156/0x1e0 [bluetooth]
+> >   ? lock_release+0x15a/0x2a0
+> >   lock_sock_nested+0x72/0xa0
+> >   ? hci_sock_dev_event+0x156/0x1e0 [bluetooth]
+> >   hci_sock_dev_event+0x156/0x1e0 [bluetooth]
+> >   hci_unregister_dev+0xd2/0x350 [bluetooth]
+> >   btusb_disconnect+0x63/0x150 [btusb]
+> >   usb_unbind_interface+0x79/0x260 [usbcore]
+> >   device_release_driver_internal+0xf7/0x1d0
+> >   bus_remove_device+0xef/0x160
+> >   device_del+0x1ac/0x430
+> >   ? usb_remove_ep_devs+0x1b/0x30 [usbcore]
+> >   usb_disable_device+0x8d/0x1a0 [usbcore]
+> >   usb_disconnect+0xc1/0x270 [usbcore]
+> >   ? hub_event+0x4b0/0xd50 [usbcore]
+> >   hub_port_connect+0x82/0xa20 [usbcore]
+> >   ? __mutex_unlock_slowpath+0x43/0x2b0
+> >   hub_event+0x4c4/0xd50 [usbcore]
+> >   ? lock_is_held_type+0xb4/0x120
+> >   process_one_work+0x244/0x5e0
+> >   worker_thread+0x3c/0x390
+> >   ? process_one_work+0x5e0/0x5e0
+> >   kthread+0x133/0x160
+> >   ? set_kthread_struct+0x40/0x40
+> >   ret_from_fork+0x22/0x30
+> >
+> >
+> >
+> > --
+> > Jiri Kosina
+> > SUSE Labs
+> >
+>
+> --
+> Jiri Kosina
+> SUSE Labs
+>
+
+
+--=20
+Luiz Augusto von Dentz
