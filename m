@@ -2,124 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E143D0F93
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C0A3D0FB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238070AbhGUMul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:50:41 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:42792 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237252AbhGUMuk (ORCPT
+        id S238459AbhGUM7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:59:48 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44698 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238302AbhGUM5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:50:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1626874276; x=1658410276;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=I7WNKuI7+/pCzxmkLSNPPRi3rAKXl6Cc8hkgas1mvPw=;
-  b=vqUkM+KHylyWtfaxGXwuC/eBXD24k3NZzhwHpkoasmXQZFnGogd0kqfX
-   I3tafE/KOsm63YttpYIb+YyVy4wL7fkITEdclGD4qcZXVOYvPb+e+6q9v
-   xGJWOafRMjmrz5gOu1ENc4OLijx3/yLFltvmV7EOfv74gNmwMuHV9aWH/
-   LSZGGFVV0oEb6b4jawyZUGJVMXx03PtebnbKf1a4kc7zc7Kal881wIgiE
-   hLB6EblBjGlrdGToIH7zI3GBh5MUwWztRSDYSx0IdMS7ldZxu7Gq2yV9b
-   tt5Y7EdMqbpAqVgJie5i5hJsfdHW+aPWyylLb1/S6t6F4lU4ot0WdEUWD
-   w==;
-IronPort-SDR: TB1f9NIV08DZNaBwaSYx0KT7fE2RjAj4o1xmO1rb/uIqteCgZuXpCb3ciqzIVcFSGpjmcNym7B
- TUjxXRU9v7s5+Do9hjAIWwJ/tUWTF+isqlvkw0bqLNXslQcwrXGvHlAyY/fU03cyMgFm/Qr6/S
- I/kK/oWmzGwHbKikYlhSzHPLP69NZbpfGQJh9JsAi7Y10CuyqyKm9v2CGFRD96XPqBkSstRTva
- mINJqJ1r3t9le8gfd+xXTZIFezdi5aitZZbyQfWPawXSWLv3KNdqRrp5z790I0d+HZBFgSif5N
- LHwMqRsu8gK7vknZNp/RCYO0
-X-IronPort-AV: E=Sophos;i="5.84,258,1620716400"; 
-   d="scan'208";a="122877766"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Jul 2021 06:31:15 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 21 Jul 2021 06:31:15 -0700
-Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Wed, 21 Jul 2021 06:31:09 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <stern@rowland.harvard.edu>, <gregkh@linuxfoundation.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>
-CC:     <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v2] usb: host: ohci-at91: suspend/resume ports after/before OHCI accesses
-Date:   Wed, 21 Jul 2021 16:29:05 +0300
-Message-ID: <20210721132905.1970713-1-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 21 Jul 2021 08:57:08 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7DD981FEA7;
+        Wed, 21 Jul 2021 13:36:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626874614;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ACSOqLjxdKypbguvriIn2aNR3FddUn7knx9Dv2QbmwE=;
+        b=n/b1fl3ecyHZMi/6WIbjgf5cls+zJemQ1MOUkGfSdnHaytU9XIQntu0Nxx76h3BnwHIHQ1
+        Ik6PEVpV89wDn7XahUFoLRcGmvvoHpdwtFSLRnojtE87LjWLl70r2auHHewAwYQURaVO0U
+        0CqrL77M+5kM5XLds90DyZTX1YQz8X8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626874614;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ACSOqLjxdKypbguvriIn2aNR3FddUn7knx9Dv2QbmwE=;
+        b=FH1MGv0VUqlII3Qv7nLEnjfyHdjMsKsmnpuQ3t+FpBT4BNp8YQBKXwk7fHRDr+fYoSVw68
+        86TtUebrHBXSGmAw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 64FC0A3B87;
+        Wed, 21 Jul 2021 13:36:54 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 482F7DA704; Wed, 21 Jul 2021 15:34:13 +0200 (CEST)
+Date:   Wed, 21 Jul 2021 15:34:13 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+Subject: Re: [PATCH] btrfs: fix rw device counting in
+ __btrfs_free_extra_devids
+Message-ID: <20210721133412.GE19710@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Nikolay Borisov <nborisov@suse.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+References: <20210715103403.176695-1-desmondcheongzx@gmail.com>
+ <7ae7a858-9893-c41c-ed96-10651c295087@suse.com>
+ <b8fe8fa5-c022-187f-b10d-3f73e668008a@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <b8fe8fa5-c022-187f-b10d-3f73e668008a@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On SAMA7G5 suspending ports will cut the access to OHCI registers and
-any subsequent access to them will lead to CPU being blocked trying to
-access that memory. Same thing happens on resume: if OHCI memory is
-accessed before resuming ports the CPU will block on that access. The
-OCHI memory is accessed on suspend/resume though
-ohci_suspend()/ohci_resume().
+On Thu, Jul 15, 2021 at 09:11:43PM +0800, Desmond Cheong Zhi Xi wrote:
+> On 15/7/21 7:55 pm, Nikolay Borisov wrote:
+> > 
+> > 
+> > On 15.07.21 г. 13:34, Desmond Cheong Zhi Xi wrote:
+> >> Syzbot reports a warning in close_fs_devices that happens because
+> >> fs_devices->rw_devices is not 0 after calling btrfs_close_one_device
+> >> on each device.
+> >>
+> >> This happens when a writeable device is removed in
+> >> __btrfs_free_extra_devids, but the rw device count is not decremented
+> >> accordingly. So when close_fs_devices is called, the removed device is
+> >> still counted and we get an off by 1 error.
+> >>
+> >> Here is one call trace that was observed:
+> >>    btrfs_mount_root():
+> >>      btrfs_scan_one_device():
+> >>        device_list_add();   <---------------- device added
+> >>      btrfs_open_devices():
+> >>        open_fs_devices():
+> >>          btrfs_open_one_device();   <-------- rw device count ++
+> >>      btrfs_fill_super():
+> >>        open_ctree():
+> >>          btrfs_free_extra_devids():
+> >> 	  __btrfs_free_extra_devids();  <--- device removed
+> >> 	  fail_tree_roots:
+> >> 	    btrfs_close_devices():
+> >> 	      close_fs_devices();   <------- rw device count off by 1
+> >>
+> >> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
+> >> Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+> >> Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+> >> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> > 
+> > Is there a reliable reproducer from syzbot? Can this be turned into an
+> > xfstest?
+> > 
+> 
+> Syzbot has some reliable reproducers here:
+> https://syzkaller.appspot.com/bug?id=113d9a01cbe0af3e291633ba7a7a3e983b86c3c0
+> 
+> Seems like it constructs two images in-memory then mounts them. I'm not 
+> sure if that's amenable to be converted into an xfstest?
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
+It would need to be an image from the time the warning is reproduced,
+I'm not sure how much timing is also important. But iirc adding raw test
+images to fstests was not welcome, so it would have to be a reproducer
+and given that the syzkaller source is not human readable I'm not sure
+it would be welcome either.
 
-Changes in v2:
-- rebase on top of v5.14-rc2
-- collected tag
-
- drivers/usb/host/ohci-at91.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/usb/host/ohci-at91.c b/drivers/usb/host/ohci-at91.c
-index 9bbd7ddd0003..a24aea3d2759 100644
---- a/drivers/usb/host/ohci-at91.c
-+++ b/drivers/usb/host/ohci-at91.c
-@@ -611,8 +611,6 @@ ohci_hcd_at91_drv_suspend(struct device *dev)
- 	if (ohci_at91->wakeup)
- 		enable_irq_wake(hcd->irq);
- 
--	ohci_at91_port_suspend(ohci_at91->sfr_regmap, 1);
--
- 	ret = ohci_suspend(hcd, ohci_at91->wakeup);
- 	if (ret) {
- 		if (ohci_at91->wakeup)
-@@ -632,7 +630,10 @@ ohci_hcd_at91_drv_suspend(struct device *dev)
- 		/* flush the writes */
- 		(void) ohci_readl (ohci, &ohci->regs->control);
- 		msleep(1);
-+		ohci_at91_port_suspend(ohci_at91->sfr_regmap, 1);
- 		at91_stop_clock(ohci_at91);
-+	} else {
-+		ohci_at91_port_suspend(ohci_at91->sfr_regmap, 1);
- 	}
- 
- 	return ret;
-@@ -644,6 +645,8 @@ ohci_hcd_at91_drv_resume(struct device *dev)
- 	struct usb_hcd	*hcd = dev_get_drvdata(dev);
- 	struct ohci_at91_priv *ohci_at91 = hcd_to_ohci_at91_priv(hcd);
- 
-+	ohci_at91_port_suspend(ohci_at91->sfr_regmap, 0);
-+
- 	if (ohci_at91->wakeup)
- 		disable_irq_wake(hcd->irq);
- 	else
-@@ -651,8 +654,6 @@ ohci_hcd_at91_drv_resume(struct device *dev)
- 
- 	ohci_resume(hcd, false);
- 
--	ohci_at91_port_suspend(ohci_at91->sfr_regmap, 0);
--
- 	return 0;
- }
- 
--- 
-2.25.1
-
+Maybe there's some middle ground when the image is created by mkfs and
+filled with the data and then the mount loop is started from shell. But
+that means to untangle the C reproducer.
