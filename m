@@ -2,37 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA233D11ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 518B53D11F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 17:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239767AbhGUOYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:24:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58406 "EHLO mail.kernel.org"
+        id S239517AbhGUO1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:27:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239462AbhGUOYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:24:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19E1B60FF1;
-        Wed, 21 Jul 2021 15:05:12 +0000 (UTC)
+        id S239021AbhGUO1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 10:27:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0795A60FE9;
+        Wed, 21 Jul 2021 15:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626879914;
-        bh=LlZsTCwo55N+RZAir1Av59XUrJ9QoPgdyfVVcThgmU0=;
+        s=k20201202; t=1626880071;
+        bh=CohVxwuDisL11y0VTlPi65KYI3TaQeWuxldXen3M5sg=;
         h=From:To:Cc:Subject:Date:From;
-        b=WKZDCgOBjqILAGhDpdTVHkDHsrxce8rMUvBPzPZqC3HXdO83Q8ga62HWf2xGvmovt
-         7jg+Y5v/9rdSQx9w9jJUsnOHWep2quxQfaVP4OYKRfhsJHaWUimWOu7iGbFeaDsjYL
-         R1y/p7bPfifpppU71AMjt7JQ+vYjCcZ72UqJ1nHiCOA93IgEDuOlufjpxP4MO6JQU3
-         w7/6maXf1yz+hBbvHGYaYnrZyXQmyrEMFQWoqecWo44Cw2DI3HCbCgjzpDi9nbxnOJ
-         pJrdqsrwvsmBjSfyCWrkMtn1F4j1+4GqezA1TZR0wAtFYHp1fb2A0d3/+3x6Mc89on
-         A5Aud3XlQad9A==
+        b=uzxaFRjrHeoZnGWliZY4qiD5WImC1kwJEK+DEsojPYsYt4ghnLHJGO2g12/4Pfz8A
+         t7DXoip/4x5NlJ0PVCcf4In0/m+fVcR5Xpf5ji7bAG65ZqeAbLoYjok/vXwDDsVLb5
+         /cAvzD+otHDHdg7UoOlUrkRJvRyUANq6+KfWtmLwAAJ8uxO2WK9ZTeQvzWeo9Ji/lA
+         NbpkNcjSKhyEftbOnMMDSRq2nviUHzNPfnIirSddM/vkYuRzlVmKoUPfLcD5hhdJYI
+         4OLP55IHOTYFYzsHiAiOx42K/4bSYAT7ZRJ9LdZLEuVbcIP+o5CMPoPa1//9+L4Te5
+         +Q7Ih4NOMUk2Q==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: codecs: wcd938x: fix wcd module dependency
-Date:   Wed, 21 Jul 2021 17:04:45 +0200
-Message-Id: <20210721150510.1837221-1-arnd@kernel.org>
+To:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ryder Lee <ryder.lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Soul Huang <Soul.Huang@mediatek.com>,
+        Deren Wu <deren.wu@mediatek.com>,
+        Xing Song <xing.song@mediatek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mt76: fix enum type mismatch
+Date:   Wed, 21 Jul 2021 17:06:56 +0200
+Message-Id: <20210721150745.1914829-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -42,66 +51,83 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-With SND_SOC_ALL_CODECS=y and SND_SOC_WCD938X_SDW=m, there is a link
-error from a reverse dependency, since the built-in codec driver calls
-into the modular soundwire back-end:
+There is no 'NONE' version of 'enum mcu_cipher_type', and returning
+'MT_CIPHER_NONE' causes a warning:
 
-x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_free':
-wcd938x.c:(.text+0x2c0): undefined reference to `wcd938x_sdw_free'
-x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_hw_params':
-wcd938x.c:(.text+0x2f6): undefined reference to `wcd938x_sdw_hw_params'
-x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_set_sdw_stream':
-wcd938x.c:(.text+0x332): undefined reference to `wcd938x_sdw_set_sdw_stream'
-x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_tx_swr_ctrl':
-wcd938x.c:(.text+0x23de): undefined reference to `wcd938x_swr_get_current_bank'
-x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_bind':
-wcd938x.c:(.text+0x2579): undefined reference to `wcd938x_sdw_device_get'
-x86_64-linux-ld: wcd938x.c:(.text+0x25a1): undefined reference to `wcd938x_sdw_device_get'
-x86_64-linux-ld: wcd938x.c:(.text+0x262a): undefined reference to `__devm_regmap_init_sdw'
+drivers/net/wireless/mediatek/mt76/mt7921/mcu.c: In function 'mt7921_mcu_get_cipher':
+drivers/net/wireless/mediatek/mt76/mt7921/mcu.c:114:24: error: implicit conversion from 'enum mt76_cipher_type' to 'enum mcu_cipher_type' [-Werror=enum-conversion]
+  114 |                 return MT_CIPHER_NONE;
+      |                        ^~~~~~~~~~~~~~
 
-Work around this using two small hacks: An added Kconfig dependency
-prevents the main driver from being built-in when soundwire support
-itself is a loadable module to allow calling devm_regmap_init_sdw(),
-and a Makefile trick links the wcd938x-sdw backend as built-in
-if needed to solve the dependency between the two modules.
+Add the missing MCU_CIPHER_NONE defintion that fits in here with
+the same value.
 
-Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
+Fixes: c368362c36d3 ("mt76: fix iv and CCMP header insertion")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-I saw this on -rc2, please ignore if this is already fixed
+This problem currently exists in 5.14-rc2, please ignore my patch
+if a fix is already queued up elsewhere.
 ---
- sound/soc/codecs/Kconfig  | 1 +
- sound/soc/codecs/Makefile | 5 ++++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7915/mcu.h | 3 ++-
+ drivers/net/wireless/mediatek/mt76/mt7921/mcu.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7921/mcu.h | 3 ++-
+ 4 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 7ebae3f09435..459deba31485 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -1558,6 +1558,7 @@ config SND_SOC_WCD934X
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
+index 863aa18b3024..43960770a9af 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
+@@ -111,7 +111,7 @@ mt7915_mcu_get_cipher(int cipher)
+ 	case WLAN_CIPHER_SUITE_SMS4:
+ 		return MCU_CIPHER_WAPI;
+ 	default:
+-		return MT_CIPHER_NONE;
++		return MCU_CIPHER_NONE;
+ 	}
+ }
  
- config SND_SOC_WCD938X
- 	tristate
-+	depends on SOUNDWIRE || !SOUNDWIRE
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.h b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.h
+index edd3ba3a0c2d..e68a562cc5b4 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.h
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.h
+@@ -1073,7 +1073,8 @@ enum {
+ };
  
- config SND_SOC_WCD938X_SDW
- 	tristate "WCD9380/WCD9385 Codec - SDW"
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index de8b83dd2c76..7bb38c370842 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -583,7 +583,10 @@ obj-$(CONFIG_SND_SOC_WCD_MBHC)	+= snd-soc-wcd-mbhc.o
- obj-$(CONFIG_SND_SOC_WCD9335)	+= snd-soc-wcd9335.o
- obj-$(CONFIG_SND_SOC_WCD934X)	+= snd-soc-wcd934x.o
- obj-$(CONFIG_SND_SOC_WCD938X)	+= snd-soc-wcd938x.o
--obj-$(CONFIG_SND_SOC_WCD938X_SDW) += snd-soc-wcd938x-sdw.o
-+ifdef CONFIG_SND_SOC_WCD938X_SDW
-+# avoid link failure by forcing sdw code built-in when needed
-+obj-$(CONFIG_SND_SOC_WCD938X) += snd-soc-wcd938x-sdw.o
-+endif
- obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
- obj-$(CONFIG_SND_SOC_WM0010)	+= snd-soc-wm0010.o
- obj-$(CONFIG_SND_SOC_WM1250_EV1) += snd-soc-wm1250-ev1.o
+ enum mcu_cipher_type {
+-	MCU_CIPHER_WEP40 = 1,
++	MCU_CIPHER_NONE = 0,
++	MCU_CIPHER_WEP40,
+ 	MCU_CIPHER_WEP104,
+ 	MCU_CIPHER_WEP128,
+ 	MCU_CIPHER_TKIP,
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
+index cd690c64f65b..9fbaacc67cfa 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
+@@ -111,7 +111,7 @@ mt7921_mcu_get_cipher(int cipher)
+ 	case WLAN_CIPHER_SUITE_SMS4:
+ 		return MCU_CIPHER_WAPI;
+ 	default:
+-		return MT_CIPHER_NONE;
++		return MCU_CIPHER_NONE;
+ 	}
+ }
+ 
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.h b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.h
+index d76cf8f8dfdf..de3c091f6736 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.h
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.h
+@@ -199,7 +199,8 @@ struct sta_rec_sec {
+ } __packed;
+ 
+ enum mcu_cipher_type {
+-	MCU_CIPHER_WEP40 = 1,
++	MCU_CIPHER_NONE = 0,
++	MCU_CIPHER_WEP40,
+ 	MCU_CIPHER_WEP104,
+ 	MCU_CIPHER_WEP128,
+ 	MCU_CIPHER_TKIP,
 -- 
 2.29.2
 
