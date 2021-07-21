@@ -2,82 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A923D081B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FF73D0823
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 07:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbhGUEbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 00:31:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232512AbhGUEaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 00:30:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5348A60FE7;
-        Wed, 21 Jul 2021 05:11:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626844290;
-        bh=pHR2j/1bWtegDLobNbANc0THMPZSOJdmsO6JZSbVrvE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J6vKnKOXleULywJpU2/cJo1wUEgINlSqz+X3/vhpRUHMVbyrFw8cAF3eniYRXbIcX
-         ooVQAQ55DDXEUPMEKxCHncH47HJpZo3LpJQpF0TrM5Sb141gYAaF/+QFDahjfp0mZz
-         xWTweK9B+tqUcrVYS8qC7qpXQJtWaQfl6jlh0Jr0O+YmBUtCAWchWXaJANZYtP2QEI
-         F5jIJgjo4+c46dT4gm4LwFuF7d2WGx8Zh0SLzrlvLwAG7uIaWs2PcxGNg+ZwhnOY1V
-         ie0CclnW/SbXKuPyrN9hX5r3ohW2zh1bYuw69p7Uv6iwduEMdA/VS59vT/E89YVMUA
-         4oRawwzvbkmHQ==
-Date:   Wed, 21 Jul 2021 08:11:26 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/irdma: Improve the way 'cqp_request' structures are
- cleaned when they are recycled
-Message-ID: <YPesftdeBpzJUhMZ@unreal>
-References: <7f93f2a2c2fd18ddfeb99339d175b85ffd1c6398.1626713915.git.christophe.jaillet@wanadoo.fr>
- <YPbALA/P5+NsC7MO@unreal>
- <629bc34e-ef41-9af6-9ed7-71865251a62c@wanadoo.fr>
+        id S232960AbhGUEdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 00:33:13 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:51943 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232616AbhGUEcn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 00:32:43 -0400
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 16L5D055008461;
+        Wed, 21 Jul 2021 14:13:01 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 16L5D055008461
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1626844381;
+        bh=3xx/KdE6CtGmtNN/L+TIdcy1e+9LgHIW8BuUFAscNmg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GFgnK6g6+r0QRE4QG0eo3yO1zerMqcZ7OckDP+uJIok1uKhmZwMj9J8OGpjZq7jaZ
+         trXv/4Qt0CrUp/pVuMJYMm1SdT3T0dUeI3uqxt3BmWx86QY+8OSDkHZv5YcWw2AOjG
+         TswefaiTJGK5BSbEu7BzpxALtGHxnT3gsmya58P3FRgjNRIG4lKpwVwVvgm6ysJbSN
+         /P4XrGyv0Wifm0WIe+1rK7COcP0O40SwGaDDi20mDqYF0VCCzdCo++ZNjAbr4lWuBG
+         Jf1pmGBQaLJ4evRkEaQSS9f9s6iWErepVYxszzEMdA7Ci+FKfdZW8phKakGFtk4AxJ
+         5K1MB3f5W97dA==
+X-Nifty-SrcIP: [209.85.210.181]
+Received: by mail-pf1-f181.google.com with SMTP id o201so1374499pfd.1;
+        Tue, 20 Jul 2021 22:13:01 -0700 (PDT)
+X-Gm-Message-State: AOAM530CZAue9BwGXPLA1K9r6cYeOUe5n/zA7CNLTjeJZ6UN1XTDXPy4
+        Q8uhiVZXxqjFip8OUiDb2VR/MAeZxBC4C9VEDhc=
+X-Google-Smtp-Source: ABdhPJzGcRQrkB41PoKaGV95KmcWhuCzOWZ0/Xn6gUMiVmgy3gEPga8Ar0Ai0mdgL7N3y2ZR1YLRh2OGvbhlJKIQseQ=
+X-Received: by 2002:a62:1d84:0:b029:304:5af1:65f6 with SMTP id
+ d126-20020a621d840000b02903045af165f6mr34202636pfd.80.1626844380426; Tue, 20
+ Jul 2021 22:13:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <629bc34e-ef41-9af6-9ed7-71865251a62c@wanadoo.fr>
+References: <20210708232522.3118208-1-ndesaulniers@google.com>
+ <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
+ <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com>
+ <CAKwvOdkvju7heeNpk87brsjkhXHbdKFsUgf63KWhXox9rDkQsA@mail.gmail.com>
+ <CAHk-=wiZe2FuiAOwhbKR_VMmFBKekz0NFREm4fvik25PEdcK_g@mail.gmail.com> <CAHk-=whS1zBU=uhDTk2M1LwkqG7AKLsR0_+XG+saY_s2FHZr-A@mail.gmail.com>
+In-Reply-To: <CAHk-=whS1zBU=uhDTk2M1LwkqG7AKLsR0_+XG+saY_s2FHZr-A@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 21 Jul 2021 14:12:23 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAROLTHfz7d93xNx-MWj1-dsxD+7=OFGd8z078kdSRigPA@mail.gmail.com>
+Message-ID: <CAK7LNAROLTHfz7d93xNx-MWj1-dsxD+7=OFGd8z078kdSRigPA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ LLVM=1 LLVM_IAS=1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 03:05:55PM +0200, Christophe JAILLET wrote:
-> Le 20/07/2021 à 14:23, Leon Romanovsky a écrit :
-> > On Mon, Jul 19, 2021 at 07:02:15PM +0200, Christophe JAILLET wrote:
-> > > A set of IRDMA_CQP_SW_SQSIZE_2048 (i.e. 2048) 'cqp_request' are
-> > > pre-allocated and zeroed in 'irdma_create_cqp()' (hw.c).  These
-> > > structures are managed with the 'cqp->cqp_avail_reqs' list which keeps
-> > > track of available entries.
-> > > 
-> > > In 'irdma_free_cqp_request()' (utils.c), when an entry is recycled and goes
-> > > back to the 'cqp_avail_reqs' list, some fields are reseted.
-> > > 
-> > > However, one of these fields, 'compl_info', is initialized within
-> > > 'irdma_alloc_and_get_cqp_request()'.
-> > > 
-> > > Move the corresponding memset to 'irdma_free_cqp_request()' so that the
-> > > clean-up is done in only one place. This makes the logic more easy to
-> > > understand.
-> > 
-> > I'm not so sure. The function irdma_alloc_and_get_cqp_request() returns
-> > prepared cqp_request and all users expect that it will returned cleaned
-> > one. The reliance on some other place to clear part of the structure is
-> > prone to errors.
-> 
-> Ok, so maybe, moving:
-> 	cqp_request->request_done = false;
-> 	cqp_request->callback_fcn = NULL;
-> 	cqp_request->waiting = false;
-> from 'irdma_free_cqp_request()' to 'irdma_alloc_and_get_cqp_request()' to
-> make explicit what is reseted makes more sense?
+On Wed, Jul 21, 2021 at 8:20 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Tue, Jul 20, 2021 at 2:54 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > But there are other things that stick around. In particular, I have
+> > considered simply using git config variables for that.
+> >
+> > Something like this in the main Makefile:
+>
+> A slightly more fleshed-out patch to do this just to see if somebody
+> wants to work on something like this.
+>
+> It really would seem to make it very easy to set up any random build
+> environment, and not have to remember it once it's done.
+>
+> There are probably better ways to do this, I normally try to avoid
+> doing Makefile magic, since others have taken it over. Masahiro?
 
-I think so, but it requires double check that these cleared values are
-not used after irdma_free_cqp_request().
 
-This is another reason why clearing fields after _free_ routine is
-mostly wrong. It hides errors when data is accessed after release.
+The patch would uglify the Makefile.
 
-Thanks
+If git is not installed, $(shell git config  ...)
+will spit an error message, so '2>/dev/null' is needed.
+
+Actually, I believe we should be able to build the kernel
+from a source tarball without relying on git in any way.
+
+In fact, we rely on git in some places, for example,
+scripts/setlocalversion can add commit hash to the release
+string, but I want to minimize the git-dependent code.
+
+
+
+
+
+
+
+
+>              Linus
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAHk-%3DwhS1zBU%3DuhDTk2M1LwkqG7AKLsR0_%2BXG%2BsaY_s2FHZr-A%40mail.gmail.com.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
