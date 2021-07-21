@@ -2,263 +2,372 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BD13D1552
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512F03D1555
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 19:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234418AbhGURDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 13:03:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55702 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229943AbhGURDO (ORCPT
+        id S235874AbhGUREA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 13:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229943AbhGURD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:03:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626889430;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3dOn7+nrEQrDF2IcT4kr/9MG9FoA4OKzs2zFSvE50Nw=;
-        b=TzH38iu4sbKjMeSzIj4A9hkBCxoOWBslcRg9QjkKIzPbXnlYxN131oqdv1/qQTw66TXhtR
-        lkccyP9TpFdWluBEwEpqWirqyCohCNUlYVm5kpKh4woyj/ZKYEjofNVkIAS8HBWN7+kjZS
-        DqKMAeF/ptjBkBU1qD4DrvfcCWRqMNg=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-d9bjrsbSMFG0OdLBd-FE9A-1; Wed, 21 Jul 2021 13:43:48 -0400
-X-MC-Unique: d9bjrsbSMFG0OdLBd-FE9A-1
-Received: by mail-qt1-f198.google.com with SMTP id z19-20020a05622a0613b02902682e86c382so2017868qta.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:43:48 -0700 (PDT)
+        Wed, 21 Jul 2021 13:03:59 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F780C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:44:33 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id b12so2768039pfv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 10:44:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=7g04vBKtF0ZEElYFfHTxoyICeD5Xbte2szynNTtKTgU=;
+        b=KMqxCPJK9BUAR4yIp3GNnad/u9nrO2pFwCRlcbuPIDMnz3qJveugb8M6SYvFz0iww4
+         QDNPZbNvaGiWM5T3O99Nrmbh38asRORFQehJDhXKmAOGx9gINpTu7deme+hZDTQCWwbp
+         k2SH1D3QNtGg8E8Z16mvHEJReUXeVEQ8wcV9OfhorSYJD/Vr/2EcKUlJ458t56sG64ri
+         GPTfOwXbzRH1VLyfY13kcC+MkFEyUCsQiBkXN8gl74qMxXCAPnG81f9EofRS8Y8jr3AW
+         cs4K9z6DLl2dQYNyFJ+yYFjH5vykaBOs/D6/kw5Q1JW1wWk6MecVVElEsHC6/OVHN/QK
+         3jEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=3dOn7+nrEQrDF2IcT4kr/9MG9FoA4OKzs2zFSvE50Nw=;
-        b=QmFJBQDNKBdSFNj2kg9c8rW3XIRaqYxMx2cUTaNjPvl2ukAjbLsKlLMxbIZCgCuZyc
-         GL4v6dtfefTaDOjg6kHOfPSQwZQ/na0V8gceTg6lRnWqrPt+Bp7XrZ4+3Ov679s2nLEY
-         CD3sPeR/yDOQpV3iF41UovBf6qamXZz62fGSdeRq/nKBggjc+iGymV/y2ZWSC6jv4cQ6
-         5k+PNJ1eMOuAmsCUAsjBjKuxDp88bcuwUr6aBY9GuY2DFNBug0T6C1UpwmNXp83pByPn
-         Adp1O5meC67Mk9UuOqCv8gQHMJEgLAkbsbxlhbQnlMFlToxgqa/Ib2HvWHWBnR2QRWQg
-         5GrA==
-X-Gm-Message-State: AOAM530mfrVL93WxCoKBzjjEddXxM7AxLZzUl7dZqNetxhqvD0WdDHbc
-        +xeOgq7acMl2NN5Z3ISy0qlU26nHZlWNojRYA5vhSiDaUc7zXXMnPNMBlGUiN1JtYART2taUU9e
-        QKOcEY5cXgWZfIPqk5TFybfRm
-X-Received: by 2002:a05:622a:1653:: with SMTP id y19mr18163555qtj.305.1626889428562;
-        Wed, 21 Jul 2021 10:43:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy73QoeXgeoF1lBpX1Vc7kQ/yjCgrGxg1ygCZQ38G6t9sqd8L74fPzeKuZd3aAUpkrFW+V2/g==
-X-Received: by 2002:a05:622a:1653:: with SMTP id y19mr18163539qtj.305.1626889428351;
-        Wed, 21 Jul 2021 10:43:48 -0700 (PDT)
-Received: from [192.168.1.3] (68-20-15-154.lightspeed.rlghnc.sbcglobal.net. [68.20.15.154])
-        by smtp.gmail.com with ESMTPSA id r16sm11484664qke.73.2021.07.21.10.43.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=7g04vBKtF0ZEElYFfHTxoyICeD5Xbte2szynNTtKTgU=;
+        b=l/zEOvTC7FOd1xHe0fddgGAf+yhYEbDfSmjAUV9arxodM7X8nxYJYQZreeS/ComYa9
+         XLLWbRVaz28Bj7Z0bI2+EjL6mA585aOJhrvK+t6B+wlOW3u6P1Dw334p8wCB7+TlvarW
+         mJSzMRRb5Umsf3uqjJ3ibWoEhlgQmeQsVpOgo+64A7Z/BLcPt109s92DkY3G9RyBSu+b
+         xOCEHAnXv5dsKAwKo/E0nIDAyoqr9L1/36EHlapTv53YsOW2QGalmA6k48KDsqFbOSDK
+         QnEmpCts/+b7chF9gJZzIMClBbI6F8n2YesKMzmYeoi1+5fpLq9OTzYku8Tr3hnRT2tr
+         HZiA==
+X-Gm-Message-State: AOAM530VMmoZcuUz0B6MOOyjNVQUOhjkkhK3iF7XVyddv3rNg2V+GnHQ
+        AcseSiN2BVP8J2C0uHV7NyCLWQ==
+X-Google-Smtp-Source: ABdhPJxz2cPOQ/4/hN3ve/rcMePrZuyJgMWDJTMmkUwlsfLtFBF2K68WPa46bBAriZKDyErPQf2x8g==
+X-Received: by 2002:a05:6a00:b83:b029:352:9507:f3b9 with SMTP id g3-20020a056a000b83b02903529507f3b9mr8638760pfj.13.1626889473023;
+        Wed, 21 Jul 2021 10:44:33 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id b1sm501569pjn.11.2021.07.21.10.44.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 10:43:47 -0700 (PDT)
-Message-ID: <e7a3b850e8a42845f4e020c7642743b3dce2b9f1.camel@redhat.com>
-Subject: Re: [RFC PATCH 03/12] netfs: Remove
- netfs_read_subrequest::transferred
-From:   Jeff Layton <jlayton@redhat.com>
-To:     David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Mike Marshall <hubcap@omnibond.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 21 Jul 2021 13:43:47 -0400
-In-Reply-To: <162687511125.276387.15493860267582539643.stgit@warthog.procyon.org.uk>
-References: <162687506932.276387.14456718890524355509.stgit@warthog.procyon.org.uk>
-         <162687511125.276387.15493860267582539643.stgit@warthog.procyon.org.uk>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        Wed, 21 Jul 2021 10:44:19 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 11:44:17 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     Branislav Rankov <branislav.rankov@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v8 00/10] CoreSight configuration management; ETM strobing
+Message-ID: <20210721174417.GB2377909@p14s>
+References: <20210707133003.5414-1-mike.leach@linaro.org>
+ <20210712164413.GA1777012@p14s>
+ <a80b9a03-01ba-3752-9e6e-ee2d194ba2a1@arm.com>
+ <CAJ9a7ViieBazkBckF+2Bb0eeQyp14EpUAJ0j_GmU_Kibj9OBMg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ9a7ViieBazkBckF+2Bb0eeQyp14EpUAJ0j_GmU_Kibj9OBMg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-07-21 at 14:45 +0100, David Howells wrote:
-> Remove netfs_read_subrequest::transferred as it's redundant as the count on
-> the iterator added to the subrequest can be used instead.
+On Fri, Jul 16, 2021 at 11:25:47AM +0100, Mike Leach wrote:
+> HI Mathieu,
 > 
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> ---
+> Below my change notes for the patches changed between v7 and v8 in this set.
 > 
->  fs/afs/file.c                |    4 ++--
->  fs/netfs/read_helper.c       |   26 ++++----------------------
->  include/linux/netfs.h        |    1 -
->  include/trace/events/netfs.h |   12 ++++++------
->  4 files changed, 12 insertions(+), 31 deletions(-)
+> Regards
 > 
-> diff --git a/fs/afs/file.c b/fs/afs/file.c
-> index ca529f23515a..82e945dbe379 100644
-> --- a/fs/afs/file.c
-> +++ b/fs/afs/file.c
-> @@ -315,8 +315,8 @@ static void afs_req_issue_op(struct netfs_read_subrequest *subreq)
->  		return netfs_subreq_terminated(subreq, -ENOMEM, false);
->  
->  	fsreq->subreq	= subreq;
-> -	fsreq->pos	= subreq->start + subreq->transferred;
-> -	fsreq->len	= subreq->len   - subreq->transferred;
-> +	fsreq->pos	= subreq->start + subreq->len - iov_iter_count(&subreq->iter);
-> +	fsreq->len	= iov_iter_count(&subreq->iter);
->  	fsreq->key	= subreq->rreq->netfs_priv;
->  	fsreq->vnode	= vnode;
->  	fsreq->iter	= &subreq->iter;
-> diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
-> index 715f3e9c380d..5e1a9be48130 100644
-> --- a/fs/netfs/read_helper.c
-> +++ b/fs/netfs/read_helper.c
-> @@ -148,12 +148,7 @@ static void __netfs_put_subrequest(struct netfs_read_subrequest *subreq,
->   */
->  static void netfs_clear_unread(struct netfs_read_subrequest *subreq)
->  {
-> -	struct iov_iter iter;
-> -
-> -	iov_iter_xarray(&iter, READ, &subreq->rreq->mapping->i_pages,
-> -			subreq->start + subreq->transferred,
-> -			subreq->len   - subreq->transferred);
-> -	iov_iter_zero(iov_iter_count(&iter), &iter);
-> +	iov_iter_zero(iov_iter_count(&subreq->iter), &subreq->iter);
->  }
->  
->  static void netfs_cache_read_terminated(void *priv, ssize_t transferred_or_error,
-> @@ -173,14 +168,9 @@ static void netfs_read_from_cache(struct netfs_read_request *rreq,
->  				  bool seek_data)
->  {
->  	struct netfs_cache_resources *cres = &rreq->cache_resources;
-> -	struct iov_iter iter;
->  
->  	netfs_stat(&netfs_n_rh_read);
-> -	iov_iter_xarray(&iter, READ, &rreq->mapping->i_pages,
-> -			subreq->start + subreq->transferred,
-> -			subreq->len   - subreq->transferred);
-> -
-> -	cres->ops->read(cres, subreq->start, &iter, seek_data,
-> +	cres->ops->read(cres, subreq->start, &subreq->iter, seek_data,
->  			netfs_cache_read_terminated, subreq);
->  }
->  
-
-The above two deltas seem like they should have been in patch #2.
-
-> @@ -419,7 +409,7 @@ static void netfs_rreq_unlock(struct netfs_read_request *rreq)
->  			if (pgend < iopos + subreq->len)
->  				break;
->  
-> -			account += subreq->transferred;
-> +			account += subreq->len - iov_iter_count(&subreq->iter);
->  			iopos += subreq->len;
->  			if (!list_is_last(&subreq->rreq_link, &rreq->subrequests)) {
->  				subreq = list_next_entry(subreq, rreq_link);
-> @@ -635,15 +625,8 @@ void netfs_subreq_terminated(struct netfs_read_subrequest *subreq,
->  		goto failed;
->  	}
->  
-> -	if (WARN(transferred_or_error > subreq->len - subreq->transferred,
-> -		 "Subreq overread: R%x[%x] %zd > %zu - %zu",
-> -		 rreq->debug_id, subreq->debug_index,
-> -		 transferred_or_error, subreq->len, subreq->transferred))
-> -		transferred_or_error = subreq->len - subreq->transferred;
-> -
->  	subreq->error = 0;
-> -	subreq->transferred += transferred_or_error;
-> -	if (subreq->transferred < subreq->len)
-> +	if (iov_iter_count(&subreq->iter))
->  		goto incomplete;
->  
-
-I must be missing it, but where does subreq->iter get advanced to the
-end of the current read? If you're getting rid of subreq->transferred
-then I think that has to happen above, no?
-
->  complete:
-> @@ -667,7 +650,6 @@ void netfs_subreq_terminated(struct netfs_read_subrequest *subreq,
->  incomplete:
->  	if (test_bit(NETFS_SREQ_CLEAR_TAIL, &subreq->flags)) {
->  		netfs_clear_unread(subreq);
-> -		subreq->transferred = subreq->len;
->  		goto complete;
->  	}
->  
-> diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-> index 5e4fafcc9480..45d40c622205 100644
-> --- a/include/linux/netfs.h
-> +++ b/include/linux/netfs.h
-> @@ -116,7 +116,6 @@ struct netfs_read_subrequest {
->  	struct iov_iter		iter;		/* Iterator for this subrequest */
->  	loff_t			start;		/* Where to start the I/O */
->  	size_t			len;		/* Size of the I/O */
-> -	size_t			transferred;	/* Amount of data transferred */
->  	refcount_t		usage;
->  	short			error;		/* 0 or error that occurred */
->  	unsigned short		debug_index;	/* Index in list (for debugging output) */
-> diff --git a/include/trace/events/netfs.h b/include/trace/events/netfs.h
-> index 4d470bffd9f1..04ac29fc700f 100644
-> --- a/include/trace/events/netfs.h
-> +++ b/include/trace/events/netfs.h
-> @@ -190,7 +190,7 @@ TRACE_EVENT(netfs_sreq,
->  		    __field(enum netfs_read_source,	source		)
->  		    __field(enum netfs_sreq_trace,	what		)
->  		    __field(size_t,			len		)
-> -		    __field(size_t,			transferred	)
-> +		    __field(size_t,			remain		)
->  		    __field(loff_t,			start		)
->  			     ),
->  
-> @@ -202,7 +202,7 @@ TRACE_EVENT(netfs_sreq,
->  		    __entry->source	= sreq->source;
->  		    __entry->what	= what;
->  		    __entry->len	= sreq->len;
-> -		    __entry->transferred = sreq->transferred;
-> +		    __entry->remain	= iov_iter_count(&sreq->iter);
->  		    __entry->start	= sreq->start;
->  			   ),
->  
-> @@ -211,7 +211,7 @@ TRACE_EVENT(netfs_sreq,
->  		      __print_symbolic(__entry->what, netfs_sreq_traces),
->  		      __print_symbolic(__entry->source, netfs_sreq_sources),
->  		      __entry->flags,
-> -		      __entry->start, __entry->transferred, __entry->len,
-> +		      __entry->start, __entry->len - __entry->remain, __entry->len,
->  		      __entry->error)
->  	    );
->  
-> @@ -230,7 +230,7 @@ TRACE_EVENT(netfs_failure,
->  		    __field(enum netfs_read_source,	source		)
->  		    __field(enum netfs_failure,		what		)
->  		    __field(size_t,			len		)
-> -		    __field(size_t,			transferred	)
-> +		    __field(size_t,			remain		)
->  		    __field(loff_t,			start		)
->  			     ),
->  
-> @@ -242,7 +242,7 @@ TRACE_EVENT(netfs_failure,
->  		    __entry->source	= sreq ? sreq->source : NETFS_INVALID_READ;
->  		    __entry->what	= what;
->  		    __entry->len	= sreq ? sreq->len : 0;
-> -		    __entry->transferred = sreq ? sreq->transferred : 0;
-> +		    __entry->remain	= sreq ? iov_iter_count(&sreq->iter) : 0;
->  		    __entry->start	= sreq ? sreq->start : 0;
->  			   ),
->  
-> @@ -250,7 +250,7 @@ TRACE_EVENT(netfs_failure,
->  		      __entry->rreq, __entry->index,
->  		      __print_symbolic(__entry->source, netfs_sreq_sources),
->  		      __entry->flags,
-> -		      __entry->start, __entry->transferred, __entry->len,
-> +		      __entry->start, __entry->len - __entry->remain, __entry->len,
->  		      __print_symbolic(__entry->what, netfs_failures),
->  		      __entry->error)
->  	    );
+> Mike
 > 
+> 0001, 0003, 0004, 0006, 0007, 0008, 0010 - no change
+> 
+> 0002 -
+> coresight-syscfg.c
+>     top of file - mutex declaration removed.
+>     cscfg_add_csdev_cfg()
+>         Spinlock replaces mutex
+>     cscfg_load_feat_csdev()
+>         Spinlock replaces mutex
+>     cscsg_list_add_csdev()
+>         Init spinlock
+> coresight.h
+>     struct coresight_device {}
+>         Add spinlock cscfg_csdev_lock alongside the csdev feature and
+> config lists that it protects.
+> 
+> 0005 -
+> coresight-syscfg.c
+>     cscfg_csdev_reset_feats()
+>             Spinlock replaces mutex.
+> 
+>     cscfg_csdev_enable_active_config()
+>             Spinlock replaces mutex. In enable flag to avoid race with disable.
+>     cscfg_csdev_disable_active_config()
+>             Spinlock replaces mutex. In enable flag to avoid race with enable.
+>
+
+I'm good with the changes made to the above two patches.
+
+> 
+> coresight.h
+>     struct coresight_device {}
+>         In enable flag introduced to control possible race between
+> enable and disable. E.g. if we are enabling a config, but a power
+> event tries to shut down the CPU/ETM causing a disable call. We don’t
+> want to hold the cscfg_csdev_lock spinlock throughout the entire
+> enable process - especially as the programming call will claim the
+> internal driver spinlock when writing internal driver data, but we
+> need to ensure that if there is a condition that permits a disable
+> call out of normal sequence then we are able to see it and handle it.
 > 
 
--- 
-Jeff Layton <jlayton@redhat.com>
+Here I'm assuming the enable and disable calls you are referring to are
+cscfg_csdev_enable_active_config() and cscfg_csdev_disable_active_config().
 
+From the above paragraph I understand that a call to cscfg_csdev_enable_config()
+can be interrupted at any time when the CPU is shutting down, which can only
+happen when operating from sysfs.
+
+With the above in mind and looking at the implementation in patch 05, if the
+code gets interrupted right after cscfg_csdev_enable_config(), function
+cscfg_csdev_disable_config() in cscfg_csdev_disable_active_config() won't be
+called.
+
+In function cscfg_csdev_enable_active_config(), could it be possible to set
+csdev->active_cscfg_ctxt instead of csdev->cscfg_in_enable?  If
+cscfg_csdev_enable_config() gets interrupted then function
+cscfg_csdev_disable_config() can be called.  At that point disabling a feature
+that hasn't been enabled shouldn't do anything. 
+
+Thanks,
+Mathieu
+
+> 0009 -
+>     KConfig
+>     add in dependency on CONFIGFS_FS to eliminate problem highlighted
+> by the kernel bot tests. This had configured coresight as Y, but
+> configfs as M - meaning link issues for configfs code introduced in
+> this set.
+> 
+> On Tue, 13 Jul 2021 at 10:43, Branislav Rankov <branislav.rankov@arm.com> wrote:
+> >
+> > Hi Mathieu,
+> >
+> > On 7/12/21 5:44 PM, Mathieu Poirier wrote:
+> > > Good morning Mike,
+> > >
+> > > On Wed, Jul 07, 2021 at 02:29:53PM +0100, Mike Leach wrote:
+> > >> This patchset introduces initial concepts in CoreSight system
+> > >> configuration management support. to allow more detailed and complex
+> > >> programming to be applied to CoreSight systems during trace capture.
+> > >>
+> > >> Configurations consist of 2 elements:-
+> > >> 1) Features - programming combinations for devices, applied to a class of
+> > >> device on the system (all ETMv4), or individual devices.
+> > >> 2) Configurations - a set of programmed features used when the named
+> > >> configuration is selected.
+> > >>
+> > >> Features and configurations are declared as a data table, a set of register,
+> > >> resource and parameter requirements. Features and configurations are loaded
+> > >> into the system by the virtual cs_syscfg device. This then matches features
+> > >> to any registered devices and loads the feature into them.
+> > >>
+> > >> Individual device classes that support feature and configuration register
+> > >> with cs_syscfg.
+> > >>
+> > >> Once loaded a configuration can be enabled for a specific trace run.
+> > >> Configurations are registered with the perf cs_etm event as entries in
+> > >> cs_etm/events. These can be selected on the perf command line as follows:-
+> > >>
+> > >> perf record -e cs_etm/<config_name>/ ...
+> > >>
+> > >> This patch set has one pre-loaded configuration and feature.
+> > >> A named "strobing" feature is provided for ETMv4.
+> > >> A named "autofdo" configuration is provided. This configuration enables
+> > >> strobing on any ETM in used.
+> > >>
+> > >> Thus the command:
+> > >> perf record -e cs_etm/autofdo/ ...
+> > >>
+> > >> will trace the supplied application while enabling the "autofdo" configuation
+> > >> on each ETM as it is enabled by perf. This in turn will enable strobing for
+> > >> the ETM - with default parameters. Parameters can be adjusted using configfs.
+> > >>
+> > >> The sink used in the trace run will be automatically selected.
+> > >>
+> > >> A configuration can supply up to 15 of preset parameter values, which will
+> > >> subsitute in parameter values for any feature used in the configuration.
+> > >>
+> > >> Selection of preset values as follows
+> > >> perf record -e cs_etm/autofdo,preset=1/ ...
+> > >>
+> > >> (valid presets 1-N, where N is the number supplied in the configuration, not
+> > >> exceeding 15. preset=0 is the same as not selecting a preset.)
+> > >>
+> > >> Applies to & tested against coresight/next (5.13-rc6 base)
+> > >>
+> > >> Changes since v7:
+> > >>
+> > >> Fixed kernel test robot issue - config with CORESIGHT=y & CONFIGFS_FS=m causes
+> > >> build error. Altered CORESIGHT config to select CONFIGFS_FS.
+> > >> Reported-by: kernel test robot <lkp@intel.com>
+> > >>
+> > >> Replaced mutex use to protect loaded config lists in coresight devices with per
+> > >> device spinlock to remove issue when disable called in interrupt context.
+> > >> Reported-by: Branislav Rankov <branislav.rankov@arm.com>
+> > >>
+> > >
+> > > Can you indicate which patches have changed so I don't have to review the whole
+> > > thing again?   It is also common practice to remove the RB tag when patches
+> > > have changed enough to mandate another review.  In this case all patches still
+> > > bare my RB tags.
+> > >
+> > > Branislav reported the problem but he is not a recipient.  I would like to have
+> > > a confirmation from him that this set fixes the problem he observed before I
+> > > start looking at it.
+> >
+> > I have tested this series and the issue I reported is fixed.
+> > >
+> > > Thanks,
+> > > Mathieu
+> > >
+> > >>
+> > >> Changes since v6:
+> > >> Fixed kernel test robot issues-
+> > >> Reported-by: kernel test robot <lkp@intel.com>
+> > >>
+> > >> Changes since v5:
+> > >>
+> > >> 1) Fix code style issues from auto-build reports, as
+> > >> Reported-by: kernel test robot <lkp@intel.com>
+> > >> 2) Update comments to get consistent docs for API functions.
+> > >> 3) remove unused #define from autofdo example.
+> > >> 4) fix perf code style issues from patch 4 (Mathieu)
+> > >> 5) fix configfs code style issues from patch 9. (Mathieu)
+> > >>
+> > >> Changes since v4: (based on comments from Matthieu and Suzuki).
+> > >> No large functional changes - primarily code improvements and naming schema.
+> > >> 1) Updated entire set to ensure a consistent naming scheme was used for
+> > >> variables and struct members that refer to the key objects in the system.
+> > >> Suffixes _desc used for all references to feature and configuraion descriptors,
+> > >> suffix _csdev used for all references to load feature and configs in the csdev
+> > >> instances. (Mathieu & Suzuki).
+> > >> 2) Dropped the 'configurations' sub dir in cs_etm perf directories as superfluous
+> > >> with the configfs containing the same information. (Mathieu).
+> > >> 3) Simplified perf handling code (suzuki)
+> > >> 4) Multiple simplifications and improvements for code readability (Matthieu
+> > >> and Suzuki)
+> > >>
+> > >> Changes since v3: (Primarily based on comments from Matthieu)
+> > >> 1) Locking mechanisms simplified.
+> > >> 2) Removed the possibility to enable features independently from
+> > >> configurations.Only configurations can be enabled now. Simplifies programming
+> > >> logic.
+> > >> 3) Configuration now uses an activate->enable mechanism. This means that perf
+> > >> will activate a selected configuration at the start of a session (during
+> > >> setup_aux), and disable at the end of a session (around free_aux)
+> > >> The active configuration and associated features will be programmed into the
+> > >> CoreSight device instances when they are enabled. This locks the configuration
+> > >> into the system while in use. Parameters cannot be altered while this is
+> > >> in place. This mechanism will be extended in future for dynamic load / unload
+> > >> of configurations to prevent removal while in use.
+> > >> 4) Removed the custom bus / driver as un-necessary. A single device is
+> > >> registered to own perf fs elements and configfs.
+> > >> 5) Various other minor issues addressed.
+> > >>
+> > >> Changes since v2:
+> > >> 1) Added documentation file.
+> > >> 2) Altered cs_syscfg driver to no longer be coresight_device based, and moved
+> > >> to its own custom bus to remove it from the main coresight bus. (Mathieu)
+> > >> 3) Added configfs support to inspect and control loaded configurations and
+> > >> features. Allows listing of preset values (Yabin Cui)
+> > >> 4) Dropped sysfs support for adjusting feature parameters on the per device
+> > >> basis, in favour of a single point adjustment in configfs that is pushed to all
+> > >> device instances.
+> > >> 5) Altered how the config and preset command line options are handled in perf
+> > >> and the drivers. (Mathieu and Suzuki).
+> > >> 6) Fixes for various issues and technical points (Mathieu, Yabin)
+> > >>
+> > >> Changes since v1:
+> > >> 1) Moved preloaded configurations and features out of individual drivers.
+> > >> 2) Added cs_syscfg driver to manage configurations and features. Individual
+> > >> drivers register with cs_syscfg indicating support for config, and provide
+> > >> matching information that the system uses to load features into the drivers.
+> > >> This allows individual drivers to be updated on an as needed basis - and
+> > >> removes the need to consider devices that cannot benefit from configuration -
+> > >> static replicators, funnels, tpiu.
+> > >> 3) Added perf selection of configuarations.
+> > >> 4) Rebased onto the coresight module loading set.
+> > >>
+> > >> To follow in future revisions / sets:-
+> > >> a) load of additional config and features by loadable module.
+> > >> b) load of additional config and features by configfs
+> > >> c) enhanced resource management for ETMv4 and checking features have sufficient
+> > >> resources to be enabled.
+> > >> d) ECT and CTI support for configuration and features.
+> > >>
+> > >> Mike Leach (10):
+> > >>   coresight: syscfg: Initial coresight system configuration
+> > >>   coresight: syscfg: Add registration and feature loading for cs devices
+> > >>   coresight: config: Add configuration and feature generic functions
+> > >>   coresight: etm-perf: update to handle configuration selection
+> > >>   coresight: syscfg: Add API to activate and enable configurations
+> > >>   coresight: etm-perf: Update to activate selected configuration
+> > >>   coresight: etm4x: Add complex configuration handlers to etmv4
+> > >>   coresight: config: Add preloaded configurations
+> > >>   coresight: syscfg: Add initial configfs support
+> > >>   Documentation: coresight: Add documentation for CoreSight config
+> > >>
+> > >>  .../trace/coresight/coresight-config.rst      | 244 ++++++
+> > >>  Documentation/trace/coresight/coresight.rst   |  16 +
+> > >>  drivers/hwtracing/coresight/Kconfig           |   1 +
+> > >>  drivers/hwtracing/coresight/Makefile          |   7 +-
+> > >>  .../hwtracing/coresight/coresight-cfg-afdo.c  | 153 ++++
+> > >>  .../coresight/coresight-cfg-preload.c         |  31 +
+> > >>  .../coresight/coresight-cfg-preload.h         |  13 +
+> > >>  .../hwtracing/coresight/coresight-config.c    | 275 ++++++
+> > >>  .../hwtracing/coresight/coresight-config.h    | 253 ++++++
+> > >>  drivers/hwtracing/coresight/coresight-core.c  |  12 +-
+> > >>  .../hwtracing/coresight/coresight-etm-perf.c  | 150 +++-
+> > >>  .../hwtracing/coresight/coresight-etm-perf.h  |  12 +-
+> > >>  .../hwtracing/coresight/coresight-etm4x-cfg.c | 182 ++++
+> > >>  .../hwtracing/coresight/coresight-etm4x-cfg.h |  30 +
+> > >>  .../coresight/coresight-etm4x-core.c          |  38 +-
+> > >>  .../coresight/coresight-etm4x-sysfs.c         |   3 +
+> > >>  .../coresight/coresight-syscfg-configfs.c     | 396 +++++++++
+> > >>  .../coresight/coresight-syscfg-configfs.h     |  45 +
+> > >>  .../hwtracing/coresight/coresight-syscfg.c    | 829 ++++++++++++++++++
+> > >>  .../hwtracing/coresight/coresight-syscfg.h    |  81 ++
+> > >>  include/linux/coresight.h                     |  11 +
+> > >>  21 files changed, 2746 insertions(+), 36 deletions(-)
+> > >>  create mode 100644 Documentation/trace/coresight/coresight-config.rst
+> > >>  create mode 100644 drivers/hwtracing/coresight/coresight-cfg-afdo.c
+> > >>  create mode 100644 drivers/hwtracing/coresight/coresight-cfg-preload.c
+> > >>  create mode 100644 drivers/hwtracing/coresight/coresight-cfg-preload.h
+> > >>  create mode 100644 drivers/hwtracing/coresight/coresight-config.c
+> > >>  create mode 100644 drivers/hwtracing/coresight/coresight-config.h
+> > >>  create mode 100644 drivers/hwtracing/coresight/coresight-etm4x-cfg.c
+> > >>  create mode 100644 drivers/hwtracing/coresight/coresight-etm4x-cfg.h
+> > >>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg-configfs.c
+> > >>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg-configfs.h
+> > >>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg.c
+> > >>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg.h
+> > >>
+> > >> --
+> > >> 2.17.1
+> > >>
+> > > _______________________________________________
+> > > CoreSight mailing list
+> > > CoreSight@lists.linaro.org
+> > > https://lists.linaro.org/mailman/listinfo/coresight
+> > >
+> 
+> 
+> 
+> -- 
+> Mike Leach
+> Principal Engineer, ARM Ltd.
+> Manchester Design Centre. UK
