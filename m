@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D433D0FB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92833D0FA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 15:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238304AbhGUM7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 08:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
+        id S238114AbhGUM50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 08:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238301AbhGUM5J (ORCPT
+        with ESMTP id S238322AbhGUM5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:57:09 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E23C0613E3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:37:44 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id bu12so3377267ejb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:37:44 -0700 (PDT)
+        Wed, 21 Jul 2021 08:57:10 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E76C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:37:45 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id h2so2441987edt.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 06:37:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sL2olSMTJFzVJiuJQ17ZzQTo2MiVeT3LUtk6TNAxUlk=;
-        b=fU5LI4XQ+qWe8BJfHUAnwmx32Siftjh9MqZm2Q6N1Be7szRcJVT3UbQGZn5df3fVAU
-         jZCufU/Hc8I2vjiI4RSY4moied5qHZ92moVoEmMGiKT0LnPzkxZo/XHyQHwSJZh9sBxK
-         KIPgNSPDipH2747tq2HaAVHBCqwmu3hCFDZMNF5gkmJ+f0QwnGYkShxJC4ciQm/L220K
-         4ReiN/Y4m18qDoM9/FqLv/IhJADhqD7eDlAk5XVEjHV4fatGat9NNCCeW1zozT8aS7Op
-         MXSqQhqyGP92LmXckYbYaQWbFnvYFf/waFqbjONqSeDoFZWSTV4v5zArjd69iqUq+PfY
-         UE9g==
+        bh=xdqtuLSomM345oz0maqt9DgjIUDOYD5gAX6DgQ2CV/0=;
+        b=nLT/JMF8N8fnKbBceVGlDwdWMPiS0PJiNRaXTWY9zNr473h6GGt7Hi7MVul8GcEZjL
+         k+kuG9N55/gPNkOYHTD10JBH7bROhOo0GK1S2V9DXlwlpUTYr61WK5WXduGVMrr5OtGK
+         +rhFAK9+Z0YZcRAw3mXpbk9eaXKEcONWxO2Cgd+LN+Lu1dSkqBm6dhgdk5+UK9BOI5ki
+         0vlkPftFFJtwoGvlQHdQdHSRYZppPUZriZYKfmH9Ggvb0UijvPy8j0fwbON3UGi6IRLO
+         UtFkcrahtoLMfVCUj01Bd0ER+HvM11kS3EhLgFJVIEkCwA7OvbnBtgqE8LKEmc/vtDhg
+         XSxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sL2olSMTJFzVJiuJQ17ZzQTo2MiVeT3LUtk6TNAxUlk=;
-        b=hPBjoRrrvX8xoj4NrxcQBvRw7Ad5x0WrsMnN2CP9taWpNyMTa33bIESSBsaSg+6nRO
-         6r796+dtAuQ6fzDG/kN/mUgxe6dNZjbGW6tvCsKjkuHpMphFIt1ofbT+YbyFUltn8ULY
-         2fPiZuMiCjFwzFLORpKyXHukg6Y7lTQwoDC+vsWoEQXlCT6LV9/vjLAbyC8fKIfWEsy9
-         K477fi0Udvs+M6DlobkVFJfyEfUrqBNSMdOe/di6FAJdI3S1/RiJ5ssUQCdjIUGjogK2
-         DAbRdl3toPzyreVbdQpla4W1ZHX2uPqHftyS4YF8jeLgmlgD24kcWZCFQGxZRlpGz4gw
-         1nWg==
-X-Gm-Message-State: AOAM532Jg1C9NIwLYGEFRJX8X3y0+/nUBBApmPCegZ2U4QOZlieem2aL
-        gIIgQYLufxG5REH7ltXq4Kokm5j/Tyg=
-X-Google-Smtp-Source: ABdhPJwvBw1oCqokEK0IIHcLW1inGZ109gt32UVUyWUaZ7vzwk0o3pEfHNUpcliZjBI7VEN039v1TA==
-X-Received: by 2002:a17:907:70c6:: with SMTP id yk6mr37553467ejb.42.1626874663082;
-        Wed, 21 Jul 2021 06:37:43 -0700 (PDT)
+        bh=xdqtuLSomM345oz0maqt9DgjIUDOYD5gAX6DgQ2CV/0=;
+        b=bdvcjk8iGqwUPCP9sL2BVnyi+WohQeVg3nhgqKtZoPE4teeZIHgPyzcp5FAQ+AGwu9
+         nBRB0hg6df+sTKDYUIdaqljGA910qRh9ETuPUxTwljdln5mG3ryqpc3u+UyUAlQPKWDH
+         euO1rZxXfJS2kZHLDJwaQwT3agtoNAHx7l0LdtKtRgx8EbjKJCDo6mDhfkt4Jwo814a/
+         81iRCDDLBgbKprpTYbdboVp1jkK3UJFay3FmS3XAoITx/nYSBhixwX0JP45TBr1dTMMS
+         LEF1hUbHGNdNuIYZZX28ddx5JXQsF20EHag0J5/o2J7oEUrsMURNkpdBf57m5S/0MNl8
+         71/A==
+X-Gm-Message-State: AOAM532mp2uCdHLyGcIcB8luuA3qrxz+62QmV6kDKvcrOo+MDEgDBtrt
+        5EcWQVg6/4Q8GBjcjdr5rB2JMwNLpKU=
+X-Google-Smtp-Source: ABdhPJwJXtDoVlWcZsB47LNZGUsPcVtRTmpZdhlgZlTpfVc9BFQfbnfcxnWxXerHHoKdXvYv9LV6eQ==
+X-Received: by 2002:aa7:d8c6:: with SMTP id k6mr48371354eds.374.1626874664472;
+        Wed, 21 Jul 2021 06:37:44 -0700 (PDT)
 Received: from agape ([5.171.73.45])
-        by smtp.gmail.com with ESMTPSA id ba25sm10714239edb.1.2021.07.21.06.37.42
+        by smtp.gmail.com with ESMTPSA id d2sm8295749ejo.13.2021.07.21.06.37.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 06:37:42 -0700 (PDT)
+        Wed, 21 Jul 2021 06:37:44 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 12/16] staging: rtl8723bs: fix camel case in struct wlan_bcn_info
-Date:   Wed, 21 Jul 2021 15:37:19 +0200
-Message-Id: <52c74cf0183da44f2ddaac2607e4b7ccaf9abd91.1626874164.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 13/16] staging: rtl8723bs: fix camel case in IE structures
+Date:   Wed, 21 Jul 2021 15:37:20 +0200
+Message-Id: <c1b36466fb5e17aa0dbbcdf6dfef3a82f9739c00.1626874164.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1626874164.git.fabioaiuto83@gmail.com>
 References: <cover.1626874164.git.fabioaiuto83@gmail.com>
@@ -64,147 +64,242 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix camel case in struct wlan_bcn_info all over the driver.
+fix camel case in IE structures all over the driver.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- .../staging/rtl8723bs/core/rtw_ieee80211.c    | 28 +++++++++----------
- .../staging/rtl8723bs/core/rtw_wlan_util.c    | 16 +++++------
- .../staging/rtl8723bs/include/wlan_bssdef.h   |  2 +-
- 3 files changed, 23 insertions(+), 23 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 20 ++++++-------
+ .../staging/rtl8723bs/core/rtw_wlan_util.c    | 28 +++++++++----------
+ .../staging/rtl8723bs/include/wlan_bssdef.h   | 10 +++----
+ 3 files changed, 29 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-index 57a75e1f9a56..b7ad4a11a7b7 100644
---- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-@@ -1034,9 +1034,9 @@ static int rtw_get_cipher_info(struct wlan_network *pnetwork)
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index 5942e51b23b6..07986eeafe08 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -1428,7 +1428,7 @@ unsigned int OnAssocRsp(struct adapter *padapter, union recv_frame *precv_frame)
+ 	for (i = (6 + WLAN_HDR_A3_LEN); i < pkt_len;) {
+ 		pIE = (struct ndis_80211_var_ie *)(pframe + i);
  
- 	if (pbuf && (wpa_ielen > 0)) {
- 		if (_SUCCESS == rtw_parse_wpa_ie(pbuf, wpa_ielen+2, &group_cipher, &pairwise_cipher, &is8021x)) {
--			pnetwork->BcnInfo.pairwise_cipher = pairwise_cipher;
--			pnetwork->BcnInfo.group_cipher = group_cipher;
--			pnetwork->BcnInfo.is_8021x = is8021x;
-+			pnetwork->bcn_info.pairwise_cipher = pairwise_cipher;
-+			pnetwork->bcn_info.group_cipher = group_cipher;
-+			pnetwork->bcn_info.is_8021x = is8021x;
- 			ret = _SUCCESS;
+-		switch (pIE->ElementID) {
++		switch (pIE->element_id) {
+ 		case WLAN_EID_VENDOR_SPECIFIC:
+ 			if (!memcmp(pIE->data, WMM_PARA_OUI, 6))	/* WMM */
+ 				WMM_param_handler(padapter, pIE);
+@@ -1450,7 +1450,7 @@ unsigned int OnAssocRsp(struct adapter *padapter, union recv_frame *precv_frame)
+ 			break;
  		}
- 	} else {
-@@ -1044,9 +1044,9 @@ static int rtw_get_cipher_info(struct wlan_network *pnetwork)
  
- 		if (pbuf && (wpa_ielen > 0)) {
- 			if (_SUCCESS == rtw_parse_wpa2_ie(pbuf, wpa_ielen+2, &group_cipher, &pairwise_cipher, &is8021x)) {
--				pnetwork->BcnInfo.pairwise_cipher = pairwise_cipher;
--				pnetwork->BcnInfo.group_cipher = group_cipher;
--				pnetwork->BcnInfo.is_8021x = is8021x;
-+				pnetwork->bcn_info.pairwise_cipher = pairwise_cipher;
-+				pnetwork->bcn_info.group_cipher = group_cipher;
-+				pnetwork->bcn_info.is_8021x = is8021x;
- 				ret = _SUCCESS;
+-		i += (pIE->Length + 2);
++		i += (pIE->length + 2);
+ 	}
+ 
+ 	pmlmeinfo->state &= (~WIFI_FW_ASSOC_STATE);
+@@ -2980,12 +2980,12 @@ void issue_assocreq(struct adapter *padapter)
+ 	for (i = sizeof(struct ndis_802_11_fix_ie); i < pmlmeinfo->network.ie_length;) {
+ 		pIE = (struct ndis_80211_var_ie *)(pmlmeinfo->network.ies + i);
+ 
+-		switch (pIE->ElementID) {
++		switch (pIE->element_id) {
+ 		case WLAN_EID_VENDOR_SPECIFIC:
+ 			if ((!memcmp(pIE->data, RTW_WPA_OUI, 4)) ||
+ 					(!memcmp(pIE->data, WMM_OUI, 4)) ||
+ 					(!memcmp(pIE->data, WPS_OUI, 4))) {
+-				vs_ie_length = pIE->Length;
++				vs_ie_length = pIE->length;
+ 				if ((!padapter->registrypriv.wifi_spec) && (!memcmp(pIE->data, WPS_OUI, 4))) {
+ 					/* Commented by Kurt 20110629
+ 					 * In some older APs, WPS handshake
+@@ -3001,26 +3001,26 @@ void issue_assocreq(struct adapter *padapter)
+ 			break;
+ 
+ 		case WLAN_EID_RSN:
+-			pframe = rtw_set_ie(pframe, WLAN_EID_RSN, pIE->Length, pIE->data, &(pattrib->pktlen));
++			pframe = rtw_set_ie(pframe, WLAN_EID_RSN, pIE->length, pIE->data, &(pattrib->pktlen));
+ 			break;
+ 		case WLAN_EID_HT_CAPABILITY:
+ 			if (padapter->mlmepriv.htpriv.ht_option) {
+ 				if (!(is_ap_in_tkip(padapter))) {
+ 					memcpy(&(pmlmeinfo->HT_caps), pIE->data, sizeof(struct HT_caps_element));
+-					pframe = rtw_set_ie(pframe, WLAN_EID_HT_CAPABILITY, pIE->Length, (u8 *)(&(pmlmeinfo->HT_caps)), &(pattrib->pktlen));
++					pframe = rtw_set_ie(pframe, WLAN_EID_HT_CAPABILITY, pIE->length, (u8 *)(&(pmlmeinfo->HT_caps)), &(pattrib->pktlen));
+ 				}
  			}
+ 			break;
+ 
+ 		case WLAN_EID_EXT_CAPABILITY:
+ 			if (padapter->mlmepriv.htpriv.ht_option)
+-				pframe = rtw_set_ie(pframe, WLAN_EID_EXT_CAPABILITY, pIE->Length, pIE->data, &(pattrib->pktlen));
++				pframe = rtw_set_ie(pframe, WLAN_EID_EXT_CAPABILITY, pIE->length, pIE->data, &(pattrib->pktlen));
+ 			break;
+ 		default:
+ 			break;
  		}
-@@ -1073,17 +1073,17 @@ void rtw_get_bcn_info(struct wlan_network *pnetwork)
- 		bencrypt = 1;
- 		pnetwork->network.privacy = 1;
- 	} else {
--		pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_OPENSYS;
-+		pnetwork->bcn_info.encryp_protocol = ENCRYP_PROTOCOL_OPENSYS;
- 	}
- 	rtw_get_sec_ie(pnetwork->network.ies, pnetwork->network.ie_length, NULL, &rsn_len, NULL, &wpa_len);
  
- 	if (rsn_len > 0) {
--		pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_WPA2;
-+		pnetwork->bcn_info.encryp_protocol = ENCRYP_PROTOCOL_WPA2;
- 	} else if (wpa_len > 0) {
--		pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_WPA;
-+		pnetwork->bcn_info.encryp_protocol = ENCRYP_PROTOCOL_WPA;
- 	} else {
- 		if (bencrypt)
--			pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_WEP;
-+			pnetwork->bcn_info.encryp_protocol = ENCRYP_PROTOCOL_WEP;
+-		i += (pIE->Length + 2);
++		i += (pIE->length + 2);
  	}
- 	rtw_get_cipher_info(pnetwork);
  
-@@ -1092,17 +1092,17 @@ void rtw_get_bcn_info(struct wlan_network *pnetwork)
- 	p = rtw_get_ie(pnetwork->network.ies + _FIXED_IE_LENGTH_, WLAN_EID_HT_CAPABILITY, &len, pnetwork->network.ie_length - _FIXED_IE_LENGTH_);
- 	if (p && len > 0) {
- 			pht_cap = (struct ieee80211_ht_cap *)(p + 2);
--			pnetwork->BcnInfo.ht_cap_info = le16_to_cpu(pht_cap->cap_info);
-+			pnetwork->bcn_info.ht_cap_info = le16_to_cpu(pht_cap->cap_info);
- 	} else {
--			pnetwork->BcnInfo.ht_cap_info = 0;
-+			pnetwork->bcn_info.ht_cap_info = 0;
+ 	if (pmlmeinfo->assoc_AP_vendor == HT_IOT_PEER_REALTEK)
+@@ -5411,7 +5411,7 @@ u8 join_cmd_hdl(struct adapter *padapter, u8 *pbuf)
+ 	for (i = _FIXED_IE_LENGTH_; i < pnetwork->ie_length;) {
+ 		pIE = (struct ndis_80211_var_ie *)(pnetwork->ies + i);
+ 
+-		switch (pIE->ElementID) {
++		switch (pIE->element_id) {
+ 		case WLAN_EID_VENDOR_SPECIFIC:/* Get WMM IE. */
+ 			if (!memcmp(pIE->data, WMM_OUI, 4))
+ 				WMM_param_handler(padapter, pIE);
+@@ -5457,7 +5457,7 @@ u8 join_cmd_hdl(struct adapter *padapter, u8 *pbuf)
+ 			break;
+ 		}
+ 
+-		i += (pIE->Length + 2);
++		i += (pIE->length + 2);
  	}
- 	/* parsing HT_INFO_IE */
- 	p = rtw_get_ie(pnetwork->network.ies + _FIXED_IE_LENGTH_, WLAN_EID_HT_OPERATION, &len, pnetwork->network.ie_length - _FIXED_IE_LENGTH_);
- 	if (p && len > 0) {
- 			pht_info = (struct HT_info_element *)(p + 2);
--			pnetwork->BcnInfo.ht_info_infos_0 = pht_info->infos[0];
-+			pnetwork->bcn_info.ht_info_infos_0 = pht_info->infos[0];
- 	} else {
--			pnetwork->BcnInfo.ht_info_infos_0 = 0;
-+			pnetwork->bcn_info.ht_info_infos_0 = 0;
+ 
+ 	/* check channel, bandwidth, offset and switch */
+diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+index efd0cbbde389..2a2a8634beb7 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
++++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+@@ -909,7 +909,7 @@ static void bwmode_update_check(struct adapter *padapter, struct ndis_80211_var_
+ 	if (phtpriv->ht_option == false)
+ 		return;
+ 
+-	if (pIE->Length > sizeof(struct HT_info_element))
++	if (pIE->length > sizeof(struct HT_info_element))
+ 		return;
+ 
+ 	pHT_info = (struct HT_info_element *)pIE->data;
+@@ -1001,7 +1001,7 @@ void HT_caps_handler(struct adapter *padapter, struct ndis_80211_var_ie *pIE)
+ 
+ 	pmlmeinfo->HT_caps_enable = 1;
+ 
+-	for (i = 0; i < (pIE->Length); i++) {
++	for (i = 0; i < (pIE->length); i++) {
+ 		if (i != 2) {
+ 			/* Commented by Albert 2010/07/12 */
+ 			/* Got the endian issue here. */
+@@ -1075,11 +1075,11 @@ void HT_info_handler(struct adapter *padapter, struct ndis_80211_var_ie *pIE)
+ 	if (phtpriv->ht_option == false)
+ 		return;
+ 
+-	if (pIE->Length > sizeof(struct HT_info_element))
++	if (pIE->length > sizeof(struct HT_info_element))
+ 		return;
+ 
+ 	pmlmeinfo->HT_info_enable = 1;
+-	memcpy(&(pmlmeinfo->HT_info), pIE->data, pIE->Length);
++	memcpy(&(pmlmeinfo->HT_info), pIE->data, pIE->length);
+ }
+ 
+ void HTOnAssocRsp(struct adapter *padapter)
+@@ -1117,11 +1117,11 @@ void ERP_IE_handler(struct adapter *padapter, struct ndis_80211_var_ie *pIE)
+ 	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
+ 	struct mlme_ext_info *pmlmeinfo = &(pmlmeext->mlmext_info);
+ 
+-	if (pIE->Length > 1)
++	if (pIE->length > 1)
+ 		return;
+ 
+ 	pmlmeinfo->ERP_enable = 1;
+-	memcpy(&(pmlmeinfo->ERP_IE), pIE->data, pIE->Length);
++	memcpy(&(pmlmeinfo->ERP_IE), pIE->data, pIE->length);
+ }
+ 
+ void VCS_update(struct adapter *padapter, struct sta_info *psta)
+@@ -1369,10 +1369,10 @@ void update_beacon_info(struct adapter *padapter, u8 *pframe, uint pkt_len, stru
+ 	for (i = 0; i < len;) {
+ 		pIE = (struct ndis_80211_var_ie *)(pframe + (_BEACON_IE_OFFSET_ + WLAN_HDR_A3_LEN) + i);
+ 
+-		switch (pIE->ElementID) {
++		switch (pIE->element_id) {
+ 		case WLAN_EID_VENDOR_SPECIFIC:
+ 			/* to update WMM parameter set while receiving beacon */
+-			if (!memcmp(pIE->data, WMM_PARA_OUI, 6) && pIE->Length == WLAN_WMM_LEN)	/* WMM */
++			if (!memcmp(pIE->data, WMM_PARA_OUI, 6) && pIE->length == WLAN_WMM_LEN)	/* WMM */
+ 				if (WMM_param_handler(padapter, pIE))
+ 					report_wmm_edca_update(padapter);
+ 
+@@ -1392,7 +1392,7 @@ void update_beacon_info(struct adapter *padapter, u8 *pframe, uint pkt_len, stru
+ 			break;
+ 		}
+ 
+-		i += (pIE->Length + 2);
++		i += (pIE->length + 2);
  	}
  }
  
-diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-index f9042f1dadb5..efd0cbbde389 100644
---- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-@@ -1248,12 +1248,12 @@ int rtw_check_bcn_info(struct adapter *Adapter, u8 *pframe, u32 packet_len)
- 	} else {
- 		ht_info_infos_0 = 0;
- 	}
--	if (ht_cap_info != cur_network->BcnInfo.ht_cap_info ||
--	    ((ht_info_infos_0&0x03) != (cur_network->BcnInfo.ht_info_infos_0&0x03))) {
-+	if (ht_cap_info != cur_network->bcn_info.ht_cap_info ||
-+	    ((ht_info_infos_0&0x03) != (cur_network->bcn_info.ht_info_infos_0&0x03))) {
- 		{
- 			/* bcn_info_update */
--			cur_network->BcnInfo.ht_cap_info = ht_cap_info;
--			cur_network->BcnInfo.ht_info_infos_0 = ht_info_infos_0;
-+			cur_network->bcn_info.ht_cap_info = ht_cap_info;
-+			cur_network->bcn_info.ht_info_infos_0 = ht_info_infos_0;
- 			/* to do : need to check that whether modify related register of BB or not */
- 		}
- 		/* goto _mismatch; */
-@@ -1313,7 +1313,7 @@ int rtw_check_bcn_info(struct adapter *Adapter, u8 *pframe, u32 packet_len)
- 		if (bssid->privacy)
- 			encryp_protocol = ENCRYP_PROTOCOL_WEP;
+@@ -1408,7 +1408,7 @@ unsigned int is_ap_in_tkip(struct adapter *padapter)
+ 		for (i = sizeof(struct ndis_802_11_fix_ie); i < pmlmeinfo->network.ie_length;) {
+ 			pIE = (struct ndis_80211_var_ie *)(pmlmeinfo->network.ies + i);
  
--	if (cur_network->BcnInfo.encryp_protocol != encryp_protocol)
-+	if (cur_network->bcn_info.encryp_protocol != encryp_protocol)
- 		goto _mismatch;
+-			switch (pIE->ElementID) {
++			switch (pIE->element_id) {
+ 			case WLAN_EID_VENDOR_SPECIFIC:
+ 				if ((!memcmp(pIE->data, RTW_WPA_OUI, 4)) && (!memcmp((pIE->data + 12), WPA_TKIP_CIPHER, 4)))
+ 					return true;
+@@ -1424,7 +1424,7 @@ unsigned int is_ap_in_tkip(struct adapter *padapter)
+ 				break;
+ 			}
  
- 	if (encryp_protocol == ENCRYP_PROTOCOL_WPA || encryp_protocol == ENCRYP_PROTOCOL_WPA2) {
-@@ -1329,11 +1329,11 @@ int rtw_check_bcn_info(struct adapter *Adapter, u8 *pframe, u32 packet_len)
- 						  &pairwise_cipher, &is_8021x);
+-			i += (pIE->Length + 2);
++			i += (pIE->length + 2);
  		}
  
--		if (pairwise_cipher != cur_network->BcnInfo.pairwise_cipher ||
--		    group_cipher != cur_network->BcnInfo.group_cipher)
-+		if (pairwise_cipher != cur_network->bcn_info.pairwise_cipher ||
-+		    group_cipher != cur_network->bcn_info.group_cipher)
- 			goto _mismatch;
+ 		return false;
+@@ -1480,7 +1480,7 @@ static u32 get_realtek_assoc_AP_vender(struct ndis_80211_var_ie *pIE)
+ {
+ 	u32 Vender = HT_IOT_PEER_REALTEK;
  
--		if (is_8021x != cur_network->BcnInfo.is_8021x)
-+		if (is_8021x != cur_network->bcn_info.is_8021x)
- 			goto _mismatch;
+-	if (pIE->Length >= 5) {
++	if (pIE->length >= 5) {
+ 		if (pIE->data[4] == 1)
+ 			/* if (pIE->data[5] & RT_HT_CAP_USE_LONG_PREAMBLE) */
+ 			/* bssDesc->BssHT.RT2RT_HT_Mode |= RT_HT_CAP_USE_LONG_PREAMBLE; */
+@@ -1511,7 +1511,7 @@ unsigned char check_assoc_AP(u8 *pframe, uint len)
+ 	for (i = sizeof(struct ndis_802_11_fix_ie); i < len;) {
+ 		pIE = (struct ndis_80211_var_ie *)(pframe + i);
+ 
+-		switch (pIE->ElementID) {
++		switch (pIE->element_id) {
+ 		case WLAN_EID_VENDOR_SPECIFIC:
+ 			if ((!memcmp(pIE->data, ARTHEROS_OUI1, 3)) || (!memcmp(pIE->data, ARTHEROS_OUI2, 3)))
+ 				return HT_IOT_PEER_ATHEROS;
+@@ -1536,7 +1536,7 @@ unsigned char check_assoc_AP(u8 *pframe, uint len)
+ 			break;
+ 		}
+ 
+-		i += (pIE->Length + 2);
++		i += (pIE->length + 2);
  	}
  
+ 	return HT_IOT_PEER_UNKNOWN;
 diff --git a/drivers/staging/rtl8723bs/include/wlan_bssdef.h b/drivers/staging/rtl8723bs/include/wlan_bssdef.h
-index 4e6d0b8e17a6..8c9d78c35650 100644
+index 8c9d78c35650..1915b524fd2d 100644
 --- a/drivers/staging/rtl8723bs/include/wlan_bssdef.h
 +++ b/drivers/staging/rtl8723bs/include/wlan_bssdef.h
-@@ -194,7 +194,7 @@ struct	wlan_network {
- 	int	aid;			/* will only be valid when a BSS is joinned. */
- 	int	join_res;
- 	struct wlan_bssid_ex	network; /* must be the last item */
--	struct wlan_bcn_info	BcnInfo;
-+	struct wlan_bcn_info	bcn_info;
+@@ -52,14 +52,14 @@ enum ndis_802_11_network_infrastructure {
  };
  
- enum {
+ struct ndis_802_11_fix_ie {
+-	u8  Timestamp[8];
+-	u16  BeaconInterval;
+-	u16  Capabilities;
++	u8  time_stamp[8];
++	u16  beacon_interval;
++	u16  capabilities;
+ };
+ 
+ struct ndis_80211_var_ie {
+-	u8  ElementID;
+-	u8  Length;
++	u8  element_id;
++	u8  length;
+ 	u8  data[];
+ };
+ 
 -- 
 2.20.1
 
