@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7E63D1891
+	by mail.lfdr.de (Postfix) with ESMTP id A20E43D1892
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 23:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhGUUV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 16:21:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33182 "EHLO mail.kernel.org"
+        id S229945AbhGUUWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 16:22:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229742AbhGUUVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229719AbhGUUVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Jul 2021 16:21:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9F7061370;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAA5E61375;
         Wed, 21 Jul 2021 21:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626901303;
-        bh=RdAL1UJ/R+LAq6pmS9aqielVwWYgDIKANDlmflWnGsE=;
+        bh=2ypAAf1//UhTVaprCt661gjp0uOoM61nRDgGX5MymnM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LwRfv0/l4LHyO1DcD6AXu30JhmBMRrs6bu/qj7Tgd6hNiRBzIMxORWHQzhx9n6Lig
-         mO58qC9vXzK6/8kqhlJwXJPc8zE8L8O8Ff33FLC5WQwXWmgv0K4hPxNB2BIgIE1g98
-         RPYNgSe8EhDPvmWXTbnjC011PreAvduZNjdZ6g/NxnvbSgsqvD7OgXHnbefZYlu+2r
-         +8kkHX2SODzd8IF2l8zVkSP6iZXTfpKfEcP/TyKLE0GXOMwT/fp7/kclm6j+hlwVsm
-         0PHSmwGr1bREuluZrr6TjxJRq6x4zGDmDkxxl4lfBPSjV6h7yRKB9VpixNEeulafUG
-         VxP1dnc1885FQ==
+        b=uIt9nlKuGjnZQKZy02GFCYcLZ0Sh16YyhUpk9Gi48LZnlXTYj2e6PRZPgmR7hDIvs
+         kr5YEi6IMVY+KcUDNDhlpnMJUf2zPz7gJ/XwB+nZNIjl1xUx5OTOxj778xybM8bwWA
+         EXTMTjeOWR3RtH+cQOlD2Wi8zbdYU6xxMqnJ0T8ofXTxFVZkf8ldGL0+VKH5KoN1kB
+         Dlhz+2WBGKX0zs3xbw9cd9uxM7no2xoSeiSyTelPCTYB97zJwXDYF/BuNm+qN8XDhh
+         2GxiuCZwCrwvlJZv0y8Bf1yajuCjci2265vv2Xj/LW6KsNfUF1knT6OrfiY4nzHQ72
+         vuraLIxim63CA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E819B5C2315; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
+        id EA04E5C23AA; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 17/21] torture: Consistently name "qemu*" test output files
-Date:   Wed, 21 Jul 2021 14:01:36 -0700
-Message-Id: <20210721210140.787717-17-paulmck@kernel.org>
+Subject: [PATCH rcu 18/21] torture: Make kvm-test-1-run-batch.sh select per-scenario affinity masks
+Date:   Wed, 21 Jul 2021 14:01:37 -0700
+Message-Id: <20210721210140.787717-18-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
@@ -46,100 +46,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is "qemu-affinity", "qemu-cmd", "qemu-retval", but also "qemu_pid".
-This is hard to remember, not so good for bash tab completion, and just
-plain inconsistent.  This commit therefore renames the "qemu_pid" file to
-"qemu-pid".  A couple of the scripts must deal with old runs, and thus
-must handle both "qemu_pid" and "qemu-pid", but new runs will produce
-"qemu-pid".
+This commit causes kvm-test-1-run-batch.sh to use the new
+kvm-assign-cpus.sh and kvm-get-cpus-script.sh scripts to create a
+TORTURE_AFFINITY environment variable containing either an empty string
+(for no affinity) or a list of CPUs to pin the scenario's vCPUs to.
+The additional change to kvm-test-1-run.sh places the per-scenario
+number-of-CPUs information where it can easily be found.
+
+If there is some reason why affinity cannot be supplied, this commit
+prints and logs the reason via changes to kvm-again.sh.
+
+Finally, this commit updates the kvm-remote.sh script to copy the
+qemu-affinity output files back to the host system.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/kvm-again.sh        |  2 +-
- .../selftests/rcutorture/bin/kvm-remote.sh       |  2 +-
- .../rcutorture/bin/kvm-test-1-run-qemu.sh        | 16 ++++++++--------
- 3 files changed, 10 insertions(+), 10 deletions(-)
+ .../selftests/rcutorture/bin/kvm-again.sh     |  2 +-
+ .../selftests/rcutorture/bin/kvm-remote.sh    |  2 +-
+ .../rcutorture/bin/kvm-test-1-run-batch.sh    | 23 +++++++++++++++++++
+ .../rcutorture/bin/kvm-test-1-run.sh          |  1 +
+ 4 files changed, 26 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-index d8c8483c46f13..b7b8d6856d7ec 100755
+index b7b8d6856d7ec..5a0023d183dac 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-@@ -142,7 +142,7 @@ then
- 	echo "Cannot copy from $oldrun to $rundir."
- 	usage
+@@ -179,6 +179,6 @@ if test -n "$dryrun"
+ then
+ 	echo ---- Dryrun complete, directory: $rundir | tee -a "$rundir/log"
+ else
+-	( cd "$rundir"; sh $T/runbatches.sh )
++	( cd "$rundir"; sh $T/runbatches.sh ) | tee -a "$rundir/log"
+ 	kvm-end-run-stats.sh "$rundir" "$starttime"
  fi
--rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
-+rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
- touch "$rundir/log"
- echo $scriptname $args | tee -a "$rundir/log"
- echo $oldrun > "$rundir/re-run"
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-index f52641fdd1fe7..19cadb1b2f2d3 100755
+index 19cadb1b2f2d3..03126eb6ec5ae 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
 @@ -254,7 +254,7 @@ do
  		sleep 30
  	done
  	echo " ---" Collecting results from $i `date`
--	( cd "$oldrun"; ssh $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu_pid */qemu-retval; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
-+	( cd "$oldrun"; ssh $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu[_-]pid */qemu-retval; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
+-	( cd "$oldrun"; ssh $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu[_-]pid */qemu-retval; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
++	( cd "$oldrun"; ssh $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu[_-]pid */qemu-retval */qemu-affinity; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
  done
  
  ( kvm-end-run-stats.sh "$oldrun" "$starttime"; echo $? > $T/exitcode ) | tee -a "$oldrun/remote-log"
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
-index b9a0bb6f01154..d828a34b5b89f 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
-@@ -47,7 +47,7 @@ then
- fi
- sed -e 's/^[^#].*$/'"$taskset_command"'& 2>\&1 \&/' < $resdir/qemu-cmd > $T/qemu-cmd
- echo 'qemu_pid=$!' >> $T/qemu-cmd
--echo 'echo $qemu_pid > $resdir/qemu_pid' >> $T/qemu-cmd
-+echo 'echo $qemu_pid > $resdir/qemu-pid' >> $T/qemu-cmd
- echo 'taskset -c -p $qemu_pid > $resdir/qemu-affinity' >> $T/qemu-cmd
- 
- # In case qemu refuses to run...
-@@ -55,14 +55,14 @@ echo "NOTE: $QEMU either did not run or was interactive" > $resdir/console.log
- 
- # Attempt to run qemu
- kstarttime=`gawk 'BEGIN { print systime() }' < /dev/null`
--( . $T/qemu-cmd; wait `cat  $resdir/qemu_pid`; echo $? > $resdir/qemu-retval ) &
-+( . $T/qemu-cmd; wait `cat  $resdir/qemu-pid`; echo $? > $resdir/qemu-retval ) &
- commandcompleted=0
- if test -z "$TORTURE_KCONFIG_GDB_ARG"
- then
- 	sleep 10 # Give qemu's pid a chance to reach the file
--	if test -s "$resdir/qemu_pid"
-+	if test -s "$resdir/qemu-pid"
- 	then
--		qemu_pid=`cat "$resdir/qemu_pid"`
-+		qemu_pid=`cat "$resdir/qemu-pid"`
- 		echo Monitoring qemu job at pid $qemu_pid
- 	else
- 		qemu_pid=""
-@@ -89,9 +89,9 @@ then
- fi
- while :
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh
+index 005a048c55aa0..1e29d656501bc 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh
+@@ -50,11 +50,34 @@ grep '^#' $1/qemu-cmd | sed -e 's/^# //' > $T/qemu-cmd-settings
+ echo ---- System running test: `uname -a`
+ echo ---- Starting kernels. `date` | tee -a log
+ $TORTURE_JITTER_START
++kvm-assign-cpus.sh /sys/devices/system/node > $T/cpuarray.awk
+ for i in "$@"
  do
--	if test -z "$qemu_pid" -a -s "$resdir/qemu_pid"
-+	if test -z "$qemu_pid" -a -s "$resdir/qemu-pid"
- 	then
--		qemu_pid=`cat "$resdir/qemu_pid"`
-+		qemu_pid=`cat "$resdir/qemu-pid"`
- 	fi
- 	kruntime=`gawk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
- 	if test -z "$qemu_pid" || kill -0 "$qemu_pid" > /dev/null 2>&1
-@@ -122,9 +122,9 @@ do
- 		break
- 	fi
+ 	echo ---- System running test: `uname -a` > $i/kvm-test-1-run-qemu.sh.out
+ 	echo > $i/kvm-test-1-run-qemu.sh.out
+ 	export TORTURE_AFFINITY=
++	kvm-get-cpus-script.sh $T/cpuarray.awk $T/cpubatches.awk $T/cpustate
++	cat << '	___EOF___' >> $T/cpubatches.awk
++	END {
++		affinitylist = "";
++		if (!gotcpus()) {
++			print "echo No CPU-affinity information, so no taskset command.";
++		} else if (cpu_count !~ /^[0-9][0-9]*$/) {
++			print "echo " scenario ": Bogus number of CPUs (old qemu-cmd?), so no taskset command.";
++		} else {
++			affinitylist = nextcpus(cpu_count);
++			if (!(affinitylist ~ /^[0-9,-][0-9,-]*$/))
++				print "echo " scenario ": Bogus CPU-affinity information, so no taskset command.";
++			else if (!dumpcpustate())
++				print "echo " scenario ": Could not dump state, so no taskset command.";
++			else
++				print "export TORTURE_AFFINITY=" affinitylist;
++		}
++	}
++	___EOF___
++	cpu_count="`grep '# TORTURE_CPU_COUNT=' $i/qemu-cmd | sed -e 's/^.*=//'`"
++	affinity_export="`awk -f $T/cpubatches.awk -v cpu_count="$cpu_count" -v scenario=$i < /dev/null`"
++	$affinity_export
+ 	kvm-test-1-run-qemu.sh $i >> $i/kvm-test-1-run-qemu.sh.out 2>&1 &
  done
--if test -z "$qemu_pid" -a -s "$resdir/qemu_pid"
-+if test -z "$qemu_pid" -a -s "$resdir/qemu-pid"
- then
--	qemu_pid=`cat "$resdir/qemu_pid"`
-+	qemu_pid=`cat "$resdir/qemu-pid"`
- fi
- if test $commandcompleted -eq 0 -a -n "$qemu_pid"
+ for i in $runfiles
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index f10f426f50893..f4c8055dbf7ad 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -205,6 +205,7 @@ echo "# TORTURE_KCONFIG_GDB_ARG=\"$TORTURE_KCONFIG_GDB_ARG\"" >> $resdir/qemu-cm
+ echo "# TORTURE_JITTER_START=\"$TORTURE_JITTER_START\"" >> $resdir/qemu-cmd
+ echo "# TORTURE_JITTER_STOP=\"$TORTURE_JITTER_STOP\"" >> $resdir/qemu-cmd
+ echo "# TORTURE_TRUST_MAKE=\"$TORTURE_TRUST_MAKE\"; export TORTURE_TRUST_MAKE" >> $resdir/qemu-cmd
++echo "# TORTURE_CPU_COUNT=$cpu_count" >> $resdir/qemu-cmd
+ 
+ if test -n "$TORTURE_BUILDONLY"
  then
 -- 
 2.31.1.189.g2e36527f23
