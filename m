@@ -2,103 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4303D0E8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783AB3D0E88
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 14:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235490AbhGULXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 07:23:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32190 "EHLO
+        id S237927AbhGULXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 07:23:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21275 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238073AbhGULSR (ORCPT
+        by vger.kernel.org with ESMTP id S234059AbhGULTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:18:17 -0400
+        Wed, 21 Jul 2021 07:19:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626868733;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        s=mimecast20190719; t=1626868769;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gxJfZWLtNPAs2shHJ9IAWHN7TfwnN9A2aOkk0cTcs2k=;
-        b=OrAiCN13WdYjaPIEW3eOXv3P3hlWYd6vjjeBPWFpF4gYV2DqZcsw+RaeiRauAHOSUtNvAX
-        z0Wry/DTFR7uwsRT691G2//1FWJyTK1URuXxEN7l3dMzjo+1axdkh3lIxESOd5jeXEAkFc
-        +APDZCy18Yd34nBmutTODFHOjn41lRc=
+        bh=8YXS+13F1KNUgpwdBeKvcGRJTj7T9ba6km6u1OzRRA0=;
+        b=BAhKX6FooCA+MKxQP1qLtB4uC82aJ8MGNOARVj+cQb88BBO9Bnk3iDFyFdKbm2gZY+svE+
+        HyXQRO4+KN+JduOzsitMN83PoBXtyRsVR+5aFDiIYNnSN3HgUtbyxxqc4ntuThrLXsHD/X
+        Qek1ofC26RcAjShAtfeWi8emy7jjm3I=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-125-GMMTpxDdNDy79OlVI1KIHQ-1; Wed, 21 Jul 2021 07:58:51 -0400
-X-MC-Unique: GMMTpxDdNDy79OlVI1KIHQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-11-MYgXijhtNWSsHeKOifwtdA-1; Wed, 21 Jul 2021 07:59:28 -0400
+X-MC-Unique: MYgXijhtNWSsHeKOifwtdA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 17430100F79B;
-        Wed, 21 Jul 2021 11:58:50 +0000 (UTC)
-Received: from T590 (ovpn-13-178.pek2.redhat.com [10.72.13.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4EFFE1B5C2;
-        Wed, 21 Jul 2021 11:58:40 +0000 (UTC)
-Date:   Wed, 21 Jul 2021 19:58:36 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
- from remote numa node
-Message-ID: <YPgL7InbR9UPkSQD@T590>
-References: <YOgK8fdv7dOQtkET@T590>
- <23e7956b-f3b5-b585-3c18-724165994051@arm.com>
- <YOhcOv1oOwm6fco+@T590>
- <ad5bc549-d83f-bee0-9a9f-03a5afd7f3d9@huawei.com>
- <YPd7IGFZrsTRfUxE@T590>
- <74537f9c-af5f-cd84-60ab-49ca6220310e@huawei.com>
- <YPfwAN1onpSKoeBj@T590>
- <a2650064-41cf-cb62-7ab4-d14ef1856966@huawei.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5172C1074671;
+        Wed, 21 Jul 2021 11:59:26 +0000 (UTC)
+Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A9C755D9FC;
+        Wed, 21 Jul 2021 11:59:21 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v3 01/12] mm/debug_vm_pgtable: Introduce struct
+ pgtable_debug_args
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Qian Cai <cai@lca.pw>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+References: <20210719130613.334901-1-gshan@redhat.com>
+ <20210719130613.334901-2-gshan@redhat.com>
+ <ab0f9daa-0c49-e74c-e073-6e03a3cabb07@arm.com>
+ <280a5740-b5dc-4b78-3a38-67e5adbb0afd@redhat.com>
+ <e579e969-e344-8678-ca56-f933000fa7c1@arm.com>
+ <23bb5363-fd36-5161-0ba2-da1efc3e3018@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <8f2cac0a-caac-9a0b-3eff-83f120882e48@redhat.com>
+Date:   Wed, 21 Jul 2021 21:59:38 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2650064-41cf-cb62-7ab4-d14ef1856966@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <23bb5363-fd36-5161-0ba2-da1efc3e3018@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 12:07:22PM +0100, John Garry wrote:
-> On 21/07/2021 10:59, Ming Lei wrote:
-> > > I have now removed that from the tree, so please re-pull.
-> > Now the kernel can be built successfully, but not see obvious improvement
-> > on the reported issue:
-> > 
-> > [root@ampere-mtjade-04 ~]# uname -a
-> > Linux ampere-mtjade-04.khw4.lab.eng.bos.redhat.com 5.14.0-rc2_smmu_fix+ #2 SMP Wed Jul 21 05:49:03 EDT 2021 aarch64 aarch64 aarch64 GNU/Linux
-> > 
-> > [root@ampere-mtjade-04 ~]# taskset -c 0 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
-> > + fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
-> > test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=io_uring, iodepth=64
-> > fio-3.27
-> > Starting 1 process
-> > Jobs: 1 (f=1): [r(1)][100.0%][r=1503MiB/s][r=385k IOPS][eta 00m:00s]
-> > test: (groupid=0, jobs=1): err= 0: pid=3143: Wed Jul 21 05:58:14 2021
-> >    read: IOPS=384k, BW=1501MiB/s (1573MB/s)(14.7GiB/10001msec)
+On 7/21/21 8:59 PM, Anshuman Khandual wrote:
+> On 7/21/21 4:09 PM, Anshuman Khandual wrote:
+>> On 7/21/21 3:50 PM, Gavin Shan wrote:
+>>> On 7/21/21 3:44 PM, Anshuman Khandual wrote:
+>>>> On 7/19/21 6:36 PM, Gavin Shan wrote:
+>>>>> In debug_vm_pgtable(), there are many local variables introduced to
+>>>>> track the needed information and they are passed to the functions for
+>>>>> various test cases. It'd better to introduce a struct as place holder
+>>>>> for these information. With it, what the functions for various test
+>>>>> cases need is the struct, to simplify the code. It also makes code
+>>>>> easier to be maintained.
+>>>>>
+>>>>> Besides, set_xxx_at() could access the data on the corresponding pages
+>>>>> in the page table modifying tests. So the accessed pages in the tests
+>>>>> should have been allocated from buddy. Otherwise, we're accessing pages
+>>>>> that aren't owned by us. This causes issues like page flag corruption.
+>>>>>
+>>>>> This introduces "struct pgtable_debug_args". The struct is initialized
+>>>>> and destroyed, but the information in the struct isn't used yet. They
+>>>>> will be used in subsequent patches.
+>>>>>
+>>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>>>> ---
+>>>>>    mm/debug_vm_pgtable.c | 197 +++++++++++++++++++++++++++++++++++++++++-
+>>>>>    1 file changed, 196 insertions(+), 1 deletion(-)
+>>>>>
+>>> I saw you've finished the review on PATCH[v3 01/12] and PATCH[v3 02/12].
+>>> I will wait to integrate your comments to v4 until you finish the review
+>>> on all patches in v3 series
+>> Yes, please do wait for the complete review and test before going for V4.
+>> Also please add the following emails on copy next time, so that we might
+>> have some more reviews here. Thank you.
+>>
+>> + Christophe Leroy <christophe.leroy@csgroup.eu>
+>> + Gerald Schaefer <gerald.schaefer@de.ibm.com>
 > 
-> I am not sure what baseline you used previously, but you were getting 327K
-> then, so at least this would be an improvement.
-
-Yeah, that might be one improvement, but not checked it since code base
-is changed.
-
+> This one instead.
 > 
-> > 
-> > [root@ampere-mtjade-04 ~]# taskset -c 80 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
-> > + fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
-> > test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=io_uring, iodepth=64
-> > fio-3.27
-> > Starting 1 process
-> > Jobs: 1 (f=1): [r(1)][100.0%][r=138MiB/s][r=35.4k IOPS][eta 00m:00s]
-> > test: (groupid=0, jobs=1): err= 0: pid=3063: Wed Jul 21 05:55:31 2021
-> >    read: IOPS=35.4k, BW=138MiB/s (145MB/s)(1383MiB/10001msec)
+> Gerald Schaefer <gerald.schaefer@linux.ibm.com>
 > 
-> I can try similar on our arm64 board when I get a chance.
 
-The issue I reported is this one.
+Sure, It's always nice to have more reviews from the experts. I will
+include them when I post v4. Thanks again for your time to review :)
 
 Thanks,
-Ming
+Gavin
 
