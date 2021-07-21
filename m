@@ -2,68 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7A53D0950
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4E93D0951
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233955AbhGUGTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 02:19:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229920AbhGUGSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 02:18:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1DD861029;
-        Wed, 21 Jul 2021 06:58:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626850723;
-        bh=/dzN3dGvff07PV8xReNJiv6NdGO7sdh+YWMg6puc25U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X6n/g+kWHUUgQWyFDHa6yC6UF9FlbF3Z3kDwXYf78ctmf7J3fy2Cz3Y6m/4jvwLCA
-         Ho9oSdogFAw+NJMkFmOQ0vmxpcQKPKtFyn4kGfoVKN0ROpixGcXAbcZr7H+x81xhOn
-         bm4jmGhG0NBLpkszFJ8saq2EtKTj1JK6TPyS+2UkqFo2CurpVX/OTLFgXCfytuvdkQ
-         ktJ+XxO1UqFEcHQB6xbwfBHi4CFG3aJDyCyU20M0TyfuUT8F7SNNb2Kdj1auVmlLK7
-         C457DPuw1Y9DnUGfHZMZ+Eh3PUCLDNV/TowDE2jBVub6l9135GX8ZAe0HrCfKvjm63
-         FfnfCGbe7XU2g==
-Date:   Wed, 21 Jul 2021 09:58:39 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Mark Zhang <markz@mellanox.com>
-Subject: Re: [PATCH rdma-next 4/7] RDMA/core: Reorganize create QP low-level
- functions
-Message-ID: <YPfFn2Qlaoe5cwBX@unreal>
-References: <cover.1626846795.git.leonro@nvidia.com>
- <328963df8e30bfc040c846d2c7626becd341f3ec.1626846795.git.leonro@nvidia.com>
- <YPfCnIfVmolgfMPF@infradead.org>
+        id S234099AbhGUGVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 02:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233590AbhGUGSY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 02:18:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40932C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 23:58:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2Tg6rDmREVX1ceiTKGgiYnKUFpoX6FiU/JNm2fWqBkw=; b=t3hopBQTUruM/ENRFxNyEOoUC+
+        5oJEQnciSH7H7I8MBiuNHyNhq7XNi/0H9lWN4pG4JSoChs5UkzgXC23DuhuRBWouYCC04xOkyZ1xV
+        rR+ywDmkEKE0nnaaZ5dg8qfF0i8IuE7hW6GwCxdzrrEd18zJIIHurdno+HOqRNXejciU760Nh3WQx
+        3AOh2nuu5mW+eF0HaQSNswWOgds534d05ahBQ3vI0rR4UkVwl5iObPL+K+tNrdsch3TtjxYoxhGnS
+        hW5Qq+sSJ88nW4YhTG3gLQZhM3cY/AdifCtrpRz3dSoygFIOUXVfb1SJ8YEApxUrgC5VPetggN9c3
+        7B06dTQQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m66BG-008tyJ-Id; Wed, 21 Jul 2021 06:58:13 +0000
+Date:   Wed, 21 Jul 2021 07:58:10 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Anson Jacob <Anson.Jacob@amd.com>
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        christophe.leroy@csgroup.eu, linuxppc-dev@lists.ozlabs.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Sunpeng.Li@amd.com, Harry Wentland <harry.wentland@amd.com>,
+        qingqing.zhuo@amd.com, Rodrigo.Siqueira@amd.com, roman.li@amd.com,
+        Christoph Hellwig <hch@infradead.org>,
+        Aurabindo.Pillai@amd.com, Bhawanpreet.Lakha@amd.com,
+        Christian K??nig <christian.koenig@amd.com>, bindu.r@amd.com
+Subject: Re: [RFC v2 1/2] ppc/fpu: Add generic FPU api similar to x86
+Message-ID: <YPfFgkD+kcRaH8Ow@infradead.org>
+References: <20210721044801.840501-1-Anson.Jacob@amd.com>
+ <20210721044801.840501-2-Anson.Jacob@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YPfCnIfVmolgfMPF@infradead.org>
+In-Reply-To: <20210721044801.840501-2-Anson.Jacob@amd.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 07:45:48AM +0100, Christoph Hellwig wrote:
-> > +/**
-> > + * ib_create_qp_kernel - Creates a kernel QP associated with the specified
-> 
-> Any reason this function is renamed?  This seems rather unrelated to
-> the rest of th patch.
+> +
+> +/*
+> + * Use kernel_fpu_begin/end() if you intend to use FPU in kernel context. It
+> + * disables preemption so be careful if you intend to use it for long periods
+> + * of time.
+> + * TODO: If you intend to use the FPU in irq/softirq you need to check first with
+> + * irq_fpu_usable() if it is possible.
 
-I wanted to make two functions: ib_create_qp_kernel and ib_create_qp_user.
+Please avoid the overly lone lines comments.
 
-> 
-> > + *   protection domain.
-> >   * @pd: The protection domain associated with the QP.
-> >   * @qp_init_attr: A list of initial attributes required to create the
-> >   *   QP.  If QP creation succeeds, then the attributes are updated to
-> >   *   the actual capabilities of the created QP.
-> >   * @caller: caller's build-time module name
-> > - *
-> > - * NOTE: for user qp use ib_create_qp_user with valid udata!
-> >   */
-> 
-> Also a kerneldoc comment for a function that is an implementation
-> detail is actively harmful.  Please document ib_create_qp instead.
+> +extern bool kernel_fpu_enabled(void);
+> +extern void kernel_fpu_begin(void);
+> +extern void kernel_fpu_end(void);
 
-Sure, will do.
+No need for the externs.
+
+> +/*
+> + * Track whether the kernel is using the FPU state
+> + * currently.
+
+This all fits on a single line.
+
+> +static bool fpu_support(void)
+> +{
+> +	if (cpu_has_feature(CPU_FTR_VSX_COMP)) {
+> +		return true;
+> +	} else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP)) {
+> +		return true;
+> +	} else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE)) {
+> +		return true;
+> +	}
+
+No need for the braces, or else after a return.  In fact this could
+be simplified down to:
+
+	return cpu_has_feature(CPU_FTR_VSX_COMP) ||
+		cpu_has_feature(CPU_FTR_ALTIVEC_COMP) ||
+		cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE));
+
+> +	preempt_disable();
+> +
+> +#ifdef CONFIG_VSX
+> +	if (cpu_has_feature(CPU_FTR_VSX_COMP)) {
+> +		enable_kernel_vsx();
+> +		return;
+> +	}
+> +#endif
+> +
+> +#ifdef CONFIG_ALTIVEC
+> +	if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP)) {
+> +		enable_kernel_altivec();
+> +		return;
+> +	}
+> +#endif
+> +
+> +#ifdef CONFIG_PPC_FPU
+> +	if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE)) {
+> +		enable_kernel_fp();
+> +		return;
+> +	}
+> +#endif
+
+All the features are defined away if not supported (and we already rely
+on that in fpu_support()).  So this could become:
+
+	if (cpu_has_feature(CPU_FTR_VSX_COMP))
+		enable_kernel_vsx();
+	else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
+		enable_kernel_altivec();
+	else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
+		enable_kernel_fp();
+
+Same for the disable path.
