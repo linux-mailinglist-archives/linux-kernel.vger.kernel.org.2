@@ -2,159 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A38E3D0CAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D9F3D0CAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 13:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238544AbhGUJgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 05:36:45 -0400
-Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:57447 "EHLO
-        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238670AbhGUJ3B (ORCPT
+        id S238929AbhGUJjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 05:39:24 -0400
+Received: from mail-wm1-f52.google.com ([209.85.128.52]:36647 "EHLO
+        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238751AbhGUJ3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 05:29:01 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id 69AOm0z7khqx969APmyaYO; Wed, 21 Jul 2021 12:09:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1626862170; bh=P3eSTRr/wwYYDeWXMLnHYx2UOIc+mSdyH5PzEnuByEY=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=OkOaoVs/4g8kNSUCw37Tt0XZFmJc1NSd9ubjTJ8iC4J/H3ekTo27b+cpq6u1RoQYF
-         BxVssIEpzTCW8a/Jg0GJn7v/Rfe7ZCfO1OYz6CbqTZXkms5id4YnBKGpZ1WIzGcnxU
-         /Artg1iefLlXNQA1H7VB6YtNnDwfRlS1C6vz1S4sMxjBGIUGpUhdX8I8T6qtnhfKgU
-         22RdGUYMo+avZrRxfyr9uwPI1hGHulKqhgWbOl0323vyNmU9FxxnsOK42sLc+kL2TH
-         qMd+km0BUZ+xf2TJ0J9qfMlPHiDf4geAc0ls/LSxNJd9yBfNnM/K51gwxbviFQ9d1o
-         iBnpoHyvKVShA==
-Subject: Re: [PATCH v4 02/13] media: v4l: add some definition of v4l2
- colorspace/xfer_func/ycbcr_encoding
-To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
-        shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        aisheng.dong@nxp.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1626743758.git.ming.qian@nxp.com>
- <d63b34381eec0ae47bf39dd2b88d2bc8994c269d.1626743758.git.ming.qian@nxp.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <449dc223-d248-8771-2f5a-46c6bbac401d@xs4all.nl>
-Date:   Wed, 21 Jul 2021 12:09:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 21 Jul 2021 05:29:53 -0400
+Received: by mail-wm1-f52.google.com with SMTP id l17-20020a05600c1d11b029021f84fcaf75so3099488wms.1;
+        Wed, 21 Jul 2021 03:10:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LGOZ0CCJk1xISndjbgUHFvSngWpzz+50b0eJ0QnZMjI=;
+        b=W/kOvwY065HGsCWg743fxeSOFWPbh/FR34ZAH9A1p2oHuufZYn3pcRPOtH3hzXLXrJ
+         uhwIDGv4T1enLESjgpbe7zb2wmJVhe1XS0mq57Gh/F0ntXzSJ0+8ORJC7AgD93RYoO9V
+         970OcuYBCf9a5N3DzOEaZ22uGvLYsbu/N0JbpVPfzYnQagixWl2sVODj6bEXG0JN1kGO
+         lHoAhezbKa125T+Fm+JwO0QvrPXiN7/RqhOh9t9msZiOeBjOS+u7T7z0b8DFUZE/zz+s
+         oe5GOSc6pCYTBzT9teZiNIcg/3fQpjvWpQCEUKdla0udizCX+8lamiuQ5/H8uRIlN5Qg
+         sP5w==
+X-Gm-Message-State: AOAM530G/ZG4qsJQMKeMg1diWtGC5tcqxrkE4iEMHigP7xuxLtZH8AjR
+        UFqOKwkr+eH3aql4j2sDwkk=
+X-Google-Smtp-Source: ABdhPJwAYYhAAIXec9Vo9y6rCL5ag9JTdcByujK/Xmr1EKfbOj2RYSId+IK87GxQM5owHTAf8dulDw==
+X-Received: by 2002:a1c:3942:: with SMTP id g63mr37370396wma.64.1626862228400;
+        Wed, 21 Jul 2021 03:10:28 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id f17sm5247550wrr.81.2021.07.21.03.10.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 03:10:28 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 10:10:26 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Cc:     Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        "nunodasneves@linux.microsoft.com" <nunodasneves@linux.microsoft.com>
+Subject: Re: [PATCH] hyperv: root partition faults writing to VP ASSIST MSR
+ PAGE
+Message-ID: <20210721101026.3tujagjag5umqejh@liuwe-devbox-debian-v2>
+References: <20210719185126.3740-1-kumarpraveen@linux.microsoft.com>
+ <20210720112011.7nxhiy6iyz4gz3j5@liuwe-devbox-debian-v2>
+ <fd70c8e5-f58c-640b-30b7-70c4e4a4861a@linux.microsoft.com>
+ <20210720133514.lurmus2lgffcldnq@liuwe-devbox-debian-v2>
+ <MWHPR21MB15938E4E72E1A3EB3744AD53D7E29@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <20210720162923.rsbl24v5lujbiddj@liuwe-devbox-debian-v2>
+ <MWHPR21MB159302588AD32CA605192398D7E39@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <d8bd9c00-4eb5-187f-e31b-cba2ecec565b@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <d63b34381eec0ae47bf39dd2b88d2bc8994c269d.1626743758.git.ming.qian@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfPV0SKw09O60/fU+QSqBVSheTtwmeqte4y+S0hj61q1Dxc5peWOif0typ/U0Hu+/OFSUlfd96wjKqttELUA2rAFV5d+IFLtA+GN3S6OZ8MGSZJtlZojs
- xnlulVR5YyjgMn8aoYJRs5ltgBEcvoBWEqisGTr6s68B2/zuBF6j8IjWXfoLGlOdx4vP1Yi1FSQljNx7ZypPb8+Zm4O07UcOqRAkN6tHv4R7c5UBULyj1Zk+
- fXxqMZzRxuUaLMeRA97Todjr8uhpkzBvbzaHKZvpHlt1Z+rl/3uCJ2pg4dep4lSJfC+74whEJXsnxPAU/zwEEcE+h+PzziC4xNHTj+xZiJM24mdKgwP7TfAp
- AU1NpUcRiiOAv5GX77DhbixopUqtdAzPokRpdloqjv8vKtNUEQtQSbyqN5iH34PGqPrvMHJ9qniyDfgbiZ45eUrYCtiC7EoLUElT6usTAeAmzBp7OJFADDEQ
- nvSSwkIs6DhuhlWxoOTBJ5lsEIsJC4PYC/eMXPcOPudpfXUhiI4okPUKSnqdDECbuSmLipN/p5v7jNd9VxAVZMZRWPeGHbxzmyDAUBGiRiZkyC+LaG6g0a2e
- bGh0+3NtoXEGFlq6kIXyh6sdYmteTXYhFA8PgQ3/sAwkFmYTpKZ6c1zb8zvGd24aECIj2XcTIWF78vSLXqa97PjntEkCgrfwougtm/Kg1PAXWUr58m5iXtJ3
- 8f4WJZM3hPw=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d8bd9c00-4eb5-187f-e31b-cba2ecec565b@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2021 03:43, Ming Qian wrote:
-> Some definition of colorspace/xfer_func/ycbcr_encoding
-> are defined in ISO, but missed in V4L2,
-> so add some definition according VPU driver's requirement
+On Wed, Jul 21, 2021 at 12:42:52PM +0530, Praveen Kumar wrote:
+> On 21-07-2021 09:40, Michael Kelley wrote:
+> > From: Wei Liu <wei.liu@kernel.org> Sent: Tuesday, July 20, 2021 9:29 AM
+> >>
+> >> On Tue, Jul 20, 2021 at 04:20:44PM +0000, Michael Kelley wrote:
+> >>> From: Wei Liu <wei.liu@kernel.org> Sent: Tuesday, July 20, 2021 6:35 AM
+> >>>>
+> >>>> On Tue, Jul 20, 2021 at 06:55:56PM +0530, Praveen Kumar wrote:
+> >>>> [...]
+> >>>>>>
+> >>>>>>> +	if (hv_root_partition &&
+> >>>>>>> +	    ms_hyperv.features & HV_MSR_APIC_ACCESS_AVAILABLE) {
+> >>>>>>
+> >>>>>> Is HV_MSR_APIC_ACCESS_AVAILABLE a root only flag? Shouldn't non-root
+> >>>>>> kernel check this too?
+> >>>>>
+> >>>>> Yes, you are right. Will update this in v2. thanks.
+> >>>>
+> >>>> Please split adding this check to its own patch.
+> >>>>
+> >>>> Ideally one patch only does one thing.
+> >>>>
+> >>>> Wei.
+> >>>>
+> >>>
+> >>> I was just looking around in the Hyper-V TLFS, and I didn't see
+> >>> anywhere that the ability to set up a VP Assist page is dependent
+> >>> on HV_MSR_APIC_ACCESS_AVAILABLE.  Or did I just miss it?
+> >>
+> >> The feature bit Praveen used is wrong and should be fixed.
+> >>
+> >> Per internal discussion this is gated by the AccessIntrCtrlRegs bit.
+> >>
+> >> Wei.
+> >>
+> > 
+> > The AccessIntrCtrlRegs bit *is* HV_MSR_APIC_ACCESS_AVAILABLE.
+> > Both are defined as bit 4 of the Partition Privilege flags.  :-)   I don't
+> > know why the names don't line up.   Even so, it's not clear to me that
+> > AccessIntrCtrlRegs has any bearing on the VP Assist page.  I see this
+> > description of AccessIntrCtrlRegs:
+> > 
 > 
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> Signed-off-by: Shijie Qin <shijie.qin@nxp.com>
-> Signed-off-by: Zhou Peng <eagle.zhou@nxp.com>
-> ---
->  include/uapi/linux/videodev2.h | 30 ++++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
+> Yup, what I understood as well, this is the one required one for Partition Privilege Flags (4th bit), however, cannot comment on the naming convention.
 > 
-> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> index 534eaa4d39bc..545f2c329bc9 100644
-> --- a/include/uapi/linux/videodev2.h
-> +++ b/include/uapi/linux/videodev2.h
-> @@ -247,6 +247,12 @@ enum v4l2_colorspace {
->  
->  	/* DCI-P3 colorspace, used by cinema projectors */
->  	V4L2_COLORSPACE_DCI_P3        = 12,
-> +
-> +	/* Generic film (colour filters using Illuminant C) */
-> +	V4L2_COLORSPACE_GENERIC_FILM  = 13,
-> +
-> +	/* SMPTE ST 428-1 */
-> +	V4L2_COLORSPACE_ST428         = 14,
->  };
->  
->  /*
-> @@ -276,6 +282,20 @@ enum v4l2_xfer_func {
->  	 * V4L2_COLORSPACE_RAW: V4L2_XFER_FUNC_NONE
->  	 *
->  	 * V4L2_COLORSPACE_DCI_P3: V4L2_XFER_FUNC_DCI_P3
-> +	 *
-> +	 * V4L2_XFER_FUNC_LINEAR: Linear transfer characteristics
-
-This exists already: V4L2_XFER_FUNC_NONE
-
-> +	 *
-> +	 * V4L2_XFER_FUNC_GAMMA22: Assumed display gamma 2.2
-> +	 *
-> +	 * V4L2_XFER_FUNC_GAMMA28: Assumed display gamma 2.8
-> +	 *
-> +	 * V4L2_XFER_FUNC_HLG: STD-B67, Rec. ITU-R BT.2100-2 hybrid-log-gamma
-> +	 *
-> +	 * V4L2_XFER_FUNC_XVYCC: IEC 61966-2-4
-
-This exists already, it is signaled through V4L2_YCBCR_ENC_XV709 and
-V4L2_YCBCR_ENC_XV601. It's not actually a different transfer function,
-it's the YCbCr encoding that's different (the transfer function is still
-V4L2_XFER_FUNC_709).
-
-> +	 *
-> +	 * V4L2_XFER_FUNC_BT1361: Rec. ITU-R BT.1361-0 extended colour gamut
-> +	 *
-> +	 * V4L2_XFER_FUNC_ST428: SMPTE ST 428-1
->  	 */
->  	V4L2_XFER_FUNC_DEFAULT     = 0,
->  	V4L2_XFER_FUNC_709         = 1,
-> @@ -285,6 +305,13 @@ enum v4l2_xfer_func {
->  	V4L2_XFER_FUNC_NONE        = 5,
->  	V4L2_XFER_FUNC_DCI_P3      = 6,
->  	V4L2_XFER_FUNC_SMPTE2084   = 7,
-> +	V4L2_XFER_FUNC_LINEAR      = 8,
-> +	V4L2_XFER_FUNC_GAMMA22     = 9,
-> +	V4L2_XFER_FUNC_GAMMA28     = 10,
-> +	V4L2_XFER_FUNC_HLG         = 11,
-> +	V4L2_XFER_FUNC_XVYCC       = 12,
-> +	V4L2_XFER_FUNC_BT1361      = 13,
-
-This appears to be a variant of xvYCC, it should probably be a YCBCR_ENC variant
-since the transfer function defined in bt.1361 is REC709.
-
-> +	V4L2_XFER_FUNC_ST428       = 14,
-
-Not sure what this one is about.
-
->  };
->  
->  /*
-> @@ -345,6 +372,9 @@ enum v4l2_ycbcr_encoding {
->  
->  	/* SMPTE 240M -- Obsolete HDTV */
->  	V4L2_YCBCR_ENC_SMPTE240M      = 8,
-> +
-> +	/* KR=0.30, KB=0.11 or equivalent */
-> +	V4L2_YCBCR_ENC_BT470_6M       = 9,
->  };
->  
->  /*
+>      5 /* Virtual APIC assist and VP assist page registers available */
+>      4 #define HV_MSR_APIC_ACCESS_AVAILABLE            BIT(4)
 > 
 
-I'm not opposed to this, but it has to be documented in
-Documentation/userspace-api/media/v4l/colorspaces-details.rst.
+Urgh, okay. It is my fault for not reading the code closely. Sorry for
+the confusion.
 
-I would recommend for an initial submission to only add those new colorimetries
-that are actually needed, and others can be added later. uAPI additions take a
-lot of time, esp. getting the documentation correct.
+> > The partition has access to the synthetic MSRs associated with the
+> > APIC (HV_X64_MSR_EOI, HV_X64_MSR_ICR and HV_X64_MSR_TPR).
+> > If this flag is cleared, accesses to these MSRs results in a #GP fault if
+> > the MSR intercept is not installed.
+> > 
+> 
+> As per what I also understood from the TLFS doc,that we let partition
+> access the MSR and do a fault.  However, the point is, does it make
+> sense to allocate page for vp assist and perform action which is meant
+> to fail when the flag is cleared ?
 
-Regards,
+Like Michael said, there are some other things that are not tied to that
+particular bit. We should get more clarity on what gates what.  Perhaps
+that privilege bit only controls access to the EOI assist bit and the
+other things in the VP assist page are gated by other privilege bits.
+This basically means we should setup the page when there is at least one
+thing in that page can be used.
 
-	Hans
+This is mostly an orthogonal issue from the one we want to fix. In
+the interest of making progress we can drop the new check for now and
+just add a root specific path for setting up and tearing down the VP
+assist pages.
+
+How does that sound?
+
+Wei.
+
+> 
+> > But maybe you have additional info that applies to the root
+> > partition that is not in the TLFS.
+> > 
+> 
+> As per what discussed internally and I understood, the root partition
+> shares the vp assist page provided by hypervisor and its read only for
+> Root kernel.
+> 
+> > Michael
+> > 
+> 
+> Regards,
+> 
+> ~Praveen.
