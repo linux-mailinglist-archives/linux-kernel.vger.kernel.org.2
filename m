@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B06A3D10E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA5F3D10EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238626AbhGUNbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 09:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51786 "EHLO
+        id S238669AbhGUNcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 09:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233069AbhGUNbf (ORCPT
+        with ESMTP id S232079AbhGUNcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:31:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADA7C061575;
-        Wed, 21 Jul 2021 07:12:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pCqdwefLOL0fhBrx/OBvnT5ccjRgtPGA+iSizhy+8vw=; b=ZIkbTOlnfMdhdbTbZj82Cs/2GN
-        c5CiRzbRJ62q+oZagyh6yMQsS0MfMC7fxPfxd6IWOwCHSMGJyvAHCJg1VQeC/KAwdi1W82gK/37Dd
-        xrFgudNbSVrauIKc13XQKvvT5ljxlNmLhwMR7edOzu91h19OBXIxTNG0byYiBoTO0OUCod2UPBOCA
-        Beib9ruIADNIxQaMzE7EdUh9KjlUDd1EcRxX2DY8Xjfsc+37X4VbwnkscG9Vj85IUInEWjDX9tIyL
-        ks9DgKgTtwXLEJ5p5rwSQ1nDcPvdaL4vyfm52ZZVspUUgZD294+/InP9LR5wHpim5/P2pvu1DVCN8
-        18hMeDCg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6Cx9-009GeH-Ex; Wed, 21 Jul 2021 14:12:05 +0000
-Date:   Wed, 21 Jul 2021 15:12:03 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 054/138] mm: Add kmap_local_folio()
-Message-ID: <YPgrM9P3CFjkpP5A@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-55-willy@infradead.org>
- <YPfvwNHk6H9dOCKK@kernel.org>
+        Wed, 21 Jul 2021 09:32:31 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC061C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:13:07 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id g5so3434395ybu.10
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 07:13:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bxJG9dhJg971EM1jTPDx1+rVCA7QuZrtXkki4ARdNb8=;
+        b=gZAsc/0UAAHZxhjucvY5bco5lvrJ234R6bxUbpmbGrSrKWsLFdJz9u7HmdS+twGVjv
+         CGt6f+7RyrcyijIYHxvjW6uuPyYQAPeOGRcdAWDswEMd4+rX1vXjy6W27zBkx5Qk+7Y/
+         VPiWVXBF8ujEeur8XUkJNDJ191QnpBiwR0NkLUNHr/tIcO/wp6yasvZhqhSYMT2jIDam
+         C1as+EeklfSoAwrABny4giJLfzrnBTBwMOsC13xnwf2NMgGZA+OT0xYgnKKF5gR7rAEg
+         bUTJVA1Ltg0DVZgGI8PoR+E6fQ8+pHpyD4tAQ4r7VPs3q28irXIgTjqTvMWutoYO5YhV
+         eVdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bxJG9dhJg971EM1jTPDx1+rVCA7QuZrtXkki4ARdNb8=;
+        b=XNkbJO0ihjURvvpyZs44uPuuM+zDcgZmgbSlDSUZEaCbk3cZdyDvaY3d+7PRrza2Tg
+         /ToStq0JrOr+uagPGv1f4VRqRgT02xtpSwj3+GCaYCHgKhU0gF0vDweM9k8iUxIxDb6a
+         Wz/XBe5UAWyzOHy+ytyQLGKGt9tsu0TKiyfPgN+bTNLeF6BDzePKYCwbJ5oW7peYHrth
+         HoUMKicTbke2h5aWoW+wYzfPm4ybgnc0KX12pnQVZ/NlKC44vBaBZvc/8ERYJS8eCwPt
+         K57NG+OSBbHq4iB5RHg0rHf833CYm8+xifXs5E9IEGCq2XuYOyAbAtlfMlqLdthZ9WAh
+         YTaQ==
+X-Gm-Message-State: AOAM531Z/7MA28K30U05mg9TA0+NssYwcBhjVqSzL1akgDBxfPVSRXhN
+        r2BYq587Bk6Wx90Z9T1+T+5GltKOSsauz2kn0zI=
+X-Google-Smtp-Source: ABdhPJyb9EnIJ1cSuH2LGGqh5iBWZSsCltT9+kvwIltvVqLIela9b8rmEnBATlbpKqxJqJ5ktIGP3U9Jux9/NHl5uOE=
+X-Received: by 2002:a25:7cc6:: with SMTP id x189mr48172992ybc.371.1626876787088;
+ Wed, 21 Jul 2021 07:13:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPfvwNHk6H9dOCKK@kernel.org>
+References: <20210721075937.696811-1-alex@ghiti.fr>
+In-Reply-To: <20210721075937.696811-1-alex@ghiti.fr>
+From:   Emil Renner Berthing <emil.renner.berthing@gmail.com>
+Date:   Wed, 21 Jul 2021 16:12:56 +0200
+Message-ID: <CANBLGcyqOKgoQr3EWvgTKewj9PtbzZ4STOz5KXHm78JQYc0G4w@mail.gmail.com>
+Subject: Re: [PATCH -fixes 0/3] Fixes regarding CONFIG_PHYS_RAM_BASE
+To:     Alexandre Ghiti <alex@ghiti.fr>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 12:58:24PM +0300, Mike Rapoport wrote:
-> > +/**
-> > + * kmap_local_folio - Map a page in this folio for temporary usage
-> > + * @folio:	The folio to be mapped.
-> > + * @offset:	The byte offset within the folio.
-> > + *
-> > + * Returns: The virtual address of the mapping
-> > + *
-> > + * Can be invoked from any context.
-> 
-> Context: Can be invoked from any context.
-> 
-> > + *
-> > + * Requires careful handling when nesting multiple mappings because the map
-> > + * management is stack based. The unmap has to be in the reverse order of
-> > + * the map operation:
-> > + *
-> > + * addr1 = kmap_local_folio(page1, offset1);
-> > + * addr2 = kmap_local_folio(page2, offset2);
-> 
-> Please s/page/folio/g here and in the description below
-> 
-> > + * ...
-> > + * kunmap_local(addr2);
-> > + * kunmap_local(addr1);
-> > + *
-> > + * Unmapping addr1 before addr2 is invalid and causes malfunction.
-> > + *
-> > + * Contrary to kmap() mappings the mapping is only valid in the context of
-> > + * the caller and cannot be handed to other contexts.
-> > + *
-> > + * On CONFIG_HIGHMEM=n kernels and for low memory pages this returns the
-> > + * virtual address of the direct mapping. Only real highmem pages are
-> > + * temporarily mapped.
-> > + *
-> > + * While it is significantly faster than kmap() for the higmem case it
-> > + * comes with restrictions about the pointer validity. Only use when really
-> > + * necessary.
-> > + *
-> > + * On HIGHMEM enabled systems mapping a highmem page has the side effect of
-> > + * disabling migration in order to keep the virtual address stable across
-> > + * preemption. No caller of kmap_local_folio() can rely on this side effect.
-> > + */
+On Wed, 21 Jul 2021 at 10:00, Alexandre Ghiti <alex@ghiti.fr> wrote:
+>
+> The following commits:
+>
+> 7094e6acaf7a ("riscv: Simplify xip and !xip kernel address conversion macros")
+> 9b79878ced8f ("riscv: Remove CONFIG_PHYS_RAM_BASE_FIXED")
+>
+> expose CONFIG_PHYS_RAM_BASE for all kernel types whereas this value is
+> implementation-specific, so that breaks the kernel genericity.
+>
+> The first patch in this patchset removes the usage of CONFIG_PHYS_RAM_BASE
+> by introducing a new global variable that holds this value.
+>
+> The second patch reverts 9b79878ced8f ("riscv: Remove
+> CONFIG_PHYS_RAM_BASE_FIXED").
+>
+> The last patch is an optimization 'symmetrical' to the one introduced in
+> the first patch: this is not a fix, then it is not necessary to pull
+> this into -fixes.
 
-kmap_local_folio() only maps one page from the folio.  So it's not
-appropriate to s/page/folio/g.  I fiddled with the description a bit to
-make this clearer:
+Hi Alex,
 
- /**
-  * kmap_local_folio - Map a page in this folio for temporary usage
-- * @folio:     The folio to be mapped.
-- * @offset:    The byte offset within the folio.
-- *
-- * Returns: The virtual address of the mapping
-- *
-- * Can be invoked from any context.
-+ * @folio: The folio containing the page.
-+ * @offset: The byte offset within the folio which identifies the page.
-  *
-  * Requires careful handling when nesting multiple mappings because the map
-  * management is stack based. The unmap has to be in the reverse order of
-  * the map operation:
-  *
-- * addr1 = kmap_local_folio(page1, offset1);
-- * addr2 = kmap_local_folio(page2, offset2);
-+ * addr1 = kmap_local_folio(folio1, offset1);
-+ * addr2 = kmap_local_folio(folio2, offset2);
-  * ...
-  * kunmap_local(addr2);
-  * kunmap_local(addr1);
-@@ -131,6 +127,9 @@ static inline void *kmap_local_page(struct page *page);
-  * On HIGHMEM enabled systems mapping a highmem page has the side effect of
-  * disabling migration in order to keep the virtual address stable across
-  * preemption. No caller of kmap_local_folio() can rely on this side effect.
-+ *
-+ * Context: Can be invoked from any context.
-+ * Return: The virtual address of @offset.
-  */
- static inline void *kmap_local_folio(struct folio *folio, size_t offset);
+Thank you, this works  fine on my BeagleV Beta board.
 
+If I'm not mistaken after this series all uses of CONFIG_PHYS_RAM if
+protected by #ifdef CONFIG_XIP_KERNEL, so maybe we can remove the
+middleman, CONFIG_PHYS_RAM_BASE_FIXED, and just let CONFIG_PHYS_RAM
+directly depend on CONFIG_XIP_KERNEL.
 
+Don't let that delay this series though. I'd still rather have this
+fixed in 5.14 as is.
+
+If it makes any difference you can add this for the series:
+Tested-by: Emil Renner Berthing <kernel@esmil.dk>
+
+/Emil
