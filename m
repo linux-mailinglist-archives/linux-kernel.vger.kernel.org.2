@@ -2,125 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0C53D11A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8AD3D11BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 16:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239223AbhGUONA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 10:13:00 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:33782 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232939AbhGUOM6 (ORCPT
+        id S239380AbhGUOQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 10:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239317AbhGUOQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 10:12:58 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16LErYuV063063;
-        Wed, 21 Jul 2021 09:53:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1626879214;
-        bh=AxRFfl1KWtjGMwXpDCKTpUH0BCBjea+MCAKLdEJs7nE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=c7Kp0re0DOtlmDe0ZbBk+1vHrfHw0FReJ1Wd4p5lr2Wre3tsPpscP1qhi+aBeIvY1
-         8+uar3qNzjKq8WHIGZJdtpVlLuFXwaSXNLKpn/BQu1ZeZYSPsHF3dyuWJFYwYIU4j2
-         s49mbozb9wXGMQ7lU8Eq4WZWFDkvLE0h1HrAjafw=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16LErYaN090166
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 21 Jul 2021 09:53:34 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 21
- Jul 2021 09:53:33 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 21 Jul 2021 09:53:33 -0500
-Received: from [10.250.234.142] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16LErV8C105095;
-        Wed, 21 Jul 2021 09:53:32 -0500
-Subject: Re: [PATCH v2 2/2] spi: cadence-quadspi: Fix check condition for DTR
- ops
-To:     Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-References: <20210716232504.182-1-a-nandan@ti.com>
- <20210716232504.182-3-a-nandan@ti.com>
-From:   "Nandan, Apurva" <a-nandan@ti.com>
-Message-ID: <c6bb03ff-1192-5276-4034-4a021e4f6923@ti.com>
-Date:   Wed, 21 Jul 2021 20:23:30 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 21 Jul 2021 10:16:01 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A55C061575;
+        Wed, 21 Jul 2021 07:56:37 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id l5so2662226iok.7;
+        Wed, 21 Jul 2021 07:56:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J9GXO25yH99ijG3XbaBRz1X0sXh/ONbHUAdBNJQ2uQA=;
+        b=Ox9tULYe6v8F+etXsBGnVP3ZxagjDPkPoE3e2Owy8q9dgWg8g7N7BBtrRQGvWFBr+6
+         1DWnyRpCtzw8pSfNr9LhYV0FvVRySbzwR9Xct6LYLyJP2J7Q3sFcAEvDsmMybK7CYgvj
+         wRnNAeDCTSfATzudZdTulAqJpXsyF1UvCqkDQck8iZV0s+D62hCPLCVZrr+9Sf7MgN91
+         FzK2m+IyV8440MGHYwMhQTlL3qK6+KsbJA11y3y6TdK83Ioh6TMDtnlvyjQc1h4OU/tF
+         t5tK8W1d8KZuZJYuXuvSFlti+PMn6KoQu2lwzwfZYnFtpr8Ql2pcf4dDjFyKSY4AgXyn
+         kGjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J9GXO25yH99ijG3XbaBRz1X0sXh/ONbHUAdBNJQ2uQA=;
+        b=h528Bp4eNLM9P8E3EepCqUR55r/lXSI7zCs9AhG03krzMzCgQWft5i7HKDam7rw9Ps
+         H2oZdUiEV4z85InCwbdu23nS2PIFwiDS035XaK1aiLkq09RS5Mq1zTbSC1C4c9EpyDXJ
+         NltIo/4jNL/u2w0E8zwNo2VaJrvs1qUylkBW7hGIARmY3zrmxHEFztuh9MrzlQz57dF7
+         8Nwt6zYVbUate74YX9cwZv545PO74/caYDewKVZPjHptt+KmoOWiuCEbsd9gtrajNEhx
+         XapEybN5sHb1Pc7fO77fcDddr94DTKxxSsTzJMgCcqOz0FJsJQkd7czr3NmSooBi9MYj
+         440Q==
+X-Gm-Message-State: AOAM531jyur+K2fZiM+CprDLSAMZ6DnRKR1lfxb0vatQYAmat8XhH6Kc
+        vqgiyZKHckQ3mChyZttNAro=
+X-Google-Smtp-Source: ABdhPJy7aOJWXiamd0Hlkl05QP+ZmCotvUqMDQL5gZVtwmyHFcb0CCzl9EIhAYopnrV/hlnp5ZOaBg==
+X-Received: by 2002:a5d:9f11:: with SMTP id q17mr25728474iot.62.1626879397039;
+        Wed, 21 Jul 2021 07:56:37 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id d9sm5457443ilv.62.2021.07.21.07.56.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 07:56:36 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id E0B6427C005A;
+        Wed, 21 Jul 2021 10:56:35 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 21 Jul 2021 10:56:35 -0400
+X-ME-Sender: <xms:ozX4YGbCuZ7aC1uJCWtzhxttyZF9oCWQuxfX3jujAB8B0eLqdGoCOw>
+    <xme:ozX4YJaFvWtXimH-yLAODBM7HsOnauqn2tSpZX_Jwcveo-8N6LGs9kh8w7244vfFC
+    eW4yd5XwBQxaiCdYg>
+X-ME-Received: <xmr:ozX4YA_9XlfW6YuQsp0zEuN95DJ08bJ5rvaXlevagGm00kaDhZEs8K34WH8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeeggdejhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
+    jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:ozX4YIqlhBsXEhsz7ulYltaphbXKaHAj7rrOdlh2LYAKlc757cMA_g>
+    <xmx:ozX4YBo8sGeT722A7iQEydilt0CXH7fx8zIlUZ69UaFEwL_R8FesfQ>
+    <xmx:ozX4YGSP5_AU0KmG-TiagSuULopWGfoEG3Xsg-juLSlR9hsVI-kgCg>
+    <xmx:ozX4YCRD0LHi8zbRJBvi-D1unRbeYy4dapFyEp9qwWIkPkleNhYt9PPgYiQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 21 Jul 2021 10:56:34 -0400 (EDT)
+Date:   Wed, 21 Jul 2021 22:54:36 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
+        wei.liu@kernel.org, kys@microsoft.com, sthemmin@microsoft.com,
+        ardb@kernel.org
+Subject: Re: [PATCH v11 2/5] arm64: hyperv: Add panic handler
+Message-ID: <YPg1LNq62LMZiXLX@boqun-archlinux>
+References: <1626793023-13830-1-git-send-email-mikelley@microsoft.com>
+ <1626793023-13830-3-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210716232504.182-3-a-nandan@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626793023-13830-3-git-send-email-mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 17-Jul-21 4:55 AM, Apurva Nandan wrote:
-> buswidth and dtr fields in spi_mem_op are only valid when the
-> corresponding spi_mem_op phase has a non-zero length. For example,
-> SPI NAND core doesn't set buswidth when using SPI_MEM_OP_NO_ADDR
-> phase.
+On Tue, Jul 20, 2021 at 07:57:00AM -0700, Michael Kelley wrote:
+> Add a function to inform Hyper-V about a guest panic.
 > 
-> Fix the dtr checks in set_protocol() and suppports_mem_op() to
-> ignore empty spi_mem_op phases, as checking for dtr field in
-> empty phase will result in false negatives.
+> This code is built only when CONFIG_HYPERV is enabled.
 > 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+
+Regards,
+Boqun
+
 > ---
->  drivers/spi/spi-cadence-quadspi.c | 21 ++++++++++++++++++---
->  1 file changed, 18 insertions(+), 3 deletions(-)
+>  arch/arm64/hyperv/hv_core.c | 52 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
 > 
-> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-> index a2de23516553..1cec1c179a94 100644
-> --- a/drivers/spi/spi-cadence-quadspi.c
-> +++ b/drivers/spi/spi-cadence-quadspi.c
-> @@ -325,7 +325,15 @@ static int cqspi_set_protocol(struct cqspi_flash_pdata *f_pdata,
->  	f_pdata->inst_width = CQSPI_INST_TYPE_SINGLE;
->  	f_pdata->addr_width = CQSPI_INST_TYPE_SINGLE;
->  	f_pdata->data_width = CQSPI_INST_TYPE_SINGLE;
-> -	f_pdata->dtr = op->data.dtr && op->cmd.dtr && op->addr.dtr;
+> diff --git a/arch/arm64/hyperv/hv_core.c b/arch/arm64/hyperv/hv_core.c
+> index 4c5dc0f..b54c347 100644
+> --- a/arch/arm64/hyperv/hv_core.c
+> +++ b/arch/arm64/hyperv/hv_core.c
+> @@ -127,3 +127,55 @@ u64 hv_get_vpreg(u32 msr)
+>  	return output.as64.low;
+>  }
+>  EXPORT_SYMBOL_GPL(hv_get_vpreg);
+> +
+> +/*
+> + * hyperv_report_panic - report a panic to Hyper-V.  This function uses
+> + * the older version of the Hyper-V interface that admittedly doesn't
+> + * pass enough information to be useful beyond just recording the
+> + * occurrence of a panic. The parallel hv_kmsg_dump() uses the
+> + * new interface that allows reporting 4 Kbytes of data, which is much
+> + * more useful. Hyper-V on ARM64 always supports the newer interface, but
+> + * we retain support for the older version because the sysadmin is allowed
+> + * to disable the newer version via sysctl in case of information security
+> + * concerns about the more verbose version.
+> + */
+> +void hyperv_report_panic(struct pt_regs *regs, long err, bool in_die)
+> +{
+> +	static bool	panic_reported;
+> +	u64		guest_id;
+> +
+> +	/* Don't report a panic to Hyper-V if we're not going to panic */
+> +	if (in_die && !panic_on_oops)
+> +		return;
 > +
 > +	/*
-> +	 * For an op to be DTR, cmd phase along with every other non-empty
-> +	 * phase should have dtr field set to 1. If an op phase has zero
-> +	 * nbytes, ignore its dtr field; otherwise, check its dtr field.
+> +	 * We prefer to report panic on 'die' chain as we have proper
+> +	 * registers to report, but if we miss it (e.g. on BUG()) we need
+> +	 * to report it on 'panic'.
+> +	 *
+> +	 * Calling code in the 'die' and 'panic' paths ensures that only
+> +	 * one CPU is running this code, so no atomicity is needed.
 > +	 */
-> +	f_pdata->dtr = op->cmd.dtr &&
-> +		       (!op->addr.nbytes || op->addr.dtr) &&
-> +		       (!op->data.nbytes || op->data.dtr);
->  
->  	switch (op->data.buswidth) {
->  	case 0:
-> @@ -1228,8 +1236,15 @@ static bool cqspi_supports_mem_op(struct spi_mem *mem,
->  {
->  	bool all_true, all_false;
->  
-> -	all_true = op->cmd.dtr && op->addr.dtr && op->dummy.dtr &&
-> -		   op->data.dtr;
-> +	/*
-> +	 * op->dummy.dtr is required for converting nbytes into ncycles.
-> +	 * Also, don't check the dtr field of the op phase having zero nbytes.
-> +	 */
-> +	all_true = op->cmd.dtr &&
-> +		   (!op->addr.nbytes || op->addr.dtr) &&
-> +		   (!op->dummy.nbytes || op->dummy.dtr) &&
-> +		   (!op->data.nbytes || op->data.dtr);
+> +	if (panic_reported)
+> +		return;
+> +	panic_reported = true;
 > +
->  	all_false = !op->cmd.dtr && !op->addr.dtr && !op->dummy.dtr &&
->  		    !op->data.dtr;
->  
+> +	guest_id = hv_get_vpreg(HV_REGISTER_GUEST_OSID);
+> +
+> +	/*
+> +	 * Hyper-V provides the ability to store only 5 values.
+> +	 * Pick the passed in error value, the guest_id, the PC,
+> +	 * and the SP.
+> +	 */
+> +	hv_set_vpreg(HV_REGISTER_CRASH_P0, err);
+> +	hv_set_vpreg(HV_REGISTER_CRASH_P1, guest_id);
+> +	hv_set_vpreg(HV_REGISTER_CRASH_P2, regs->pc);
+> +	hv_set_vpreg(HV_REGISTER_CRASH_P3, regs->sp);
+> +	hv_set_vpreg(HV_REGISTER_CRASH_P4, 0);
+> +
+> +	/*
+> +	 * Let Hyper-V know there is crash data available
+> +	 */
+> +	hv_set_vpreg(HV_REGISTER_CRASH_CTL, HV_CRASH_CTL_CRASH_NOTIFY);
+> +}
+> +EXPORT_SYMBOL_GPL(hyperv_report_panic);
+> -- 
+> 1.8.3.1
 > 
-
-Hi Mark,
-
-Could you please have a look, I fixed the comments as you suggested.
-
-Thanks and regards,
-Apurva Nandan
