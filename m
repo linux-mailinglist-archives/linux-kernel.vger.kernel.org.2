@@ -2,115 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CAC3D060F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 02:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B433D061B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 02:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234240AbhGTXY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Jul 2021 19:24:59 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:59920 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235067AbhGTXXK (ORCPT
+        id S232032AbhGTXbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Jul 2021 19:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230340AbhGTXbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Jul 2021 19:23:10 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UgSnpfC_1626825824;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgSnpfC_1626825824)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 21 Jul 2021 08:03:45 +0800
-Date:   Wed, 21 Jul 2021 08:03:44 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v4] iomap: support tail packing inline read
-Message-ID: <YPdkYFSjFHDOU4AV@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-References: <20210720133554.44058-1-hsiangkao@linux.alibaba.com>
- <20210720204224.GK23236@magnolia>
- <YPc9viRAKm6cf2Ey@casper.infradead.org>
+        Tue, 20 Jul 2021 19:31:21 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40298C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 17:11:58 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id b6so815102iln.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Jul 2021 17:11:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=usp.br; s=usp-google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yft8d0QKQYEK6jK1cRdXCSL3/Fc2IYBV0nFOZMJwK8M=;
+        b=mth2Xcw77G1fhqx5Z6yTnexgH++YcdpJkPxVeLiB2HaUCwihpVQJL+0e6ziFZcp7Tw
+         xmxbsdUrG9lXyAVamXp7i8cZEKGjKX7lN7k1Jx1k4J665LG1ubyclJC0mYyjEBvXU9Og
+         xqKC7bfhgl3yn3BRVZI8Mtj3crBqgU8g9pQnkIfCjiX6cWm3ZX4pR1vtF/P+t7EJw52R
+         Xw+14ovmIQyxfeLan2f5M5FB1JvoGt75i31qbLDbKz+KVCwjkMvWplYaeI/OpUAO8mvV
+         f1P50ps+izwc7xOgdbitpz5AyoqLAWaxFfpoWB+5n/GoGtrWXrEOCR6Vob/X4ddRqrX1
+         ZKCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yft8d0QKQYEK6jK1cRdXCSL3/Fc2IYBV0nFOZMJwK8M=;
+        b=oTDwAdKT6/JT6EKlNDt2rcZ5Ah/G9NLpWeNpBbdxo8hhl+IZGmRKpe+IzyAC/vX4RG
+         hiE8kCWhNiFZZinzkAootu4vuMibuohTZyXEfvkoxCcOoQ0bfV0IE7vSnoqQHA/mSKGj
+         qROaf2lJlucfjPJ6W5qmsLC4F54RHoOkLRekpxCqVYY573PqwleJ/GDOYYYQBwLia07A
+         qO7ww0ePj4Te4dNcwwlD+6i+gAhTVJDWBPPhBODTb8l5v6IreYVMxyYAOW9D3qSjN7+3
+         SXrT+z2iru8ISCERoYGLNYm3BhgMtYGb2EyboiJEC1KHcjq9dCTT8kQ4bwmvhzsZ5rS1
+         /iOw==
+X-Gm-Message-State: AOAM530UY5JlH3fQoGxULVC6epUBJY7JE9WaZTKgEw637oLj40eOpXp6
+        oyQ9OxEOPHRZ0nRZHqE3QMK0JXClPyuzkIB4AAa3/A==
+X-Google-Smtp-Source: ABdhPJxmLFhbRjnHDW9ZI2SSVXvHthrv4IHNOWF1JoW9PbC0D0Zo0xPkJ0Fn08z2T4wW3SPJNsv+X+G8pJ0uoiDYSsY=
+X-Received: by 2002:a05:6e02:d41:: with SMTP id h1mr21391622ilj.191.1626826317665;
+ Tue, 20 Jul 2021 17:11:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YPc9viRAKm6cf2Ey@casper.infradead.org>
+References: <20210718203746.7159-1-theobf@usp.br> <CA+U=DspWmrWWsQDFPLycS2y-=8Q7TSn5NYMVgbQ42FccAy0=pw@mail.gmail.com>
+ <CAD5vTa8gnQpZ8B4KQkA=-6Oo-YiN4J7pDp0HoUZgpHN99vJK_g@mail.gmail.com> <CA+U=DsrU5iPBRexdUK3fx-PG3CbSoKouGWENVLJ5+h8L5-y_Og@mail.gmail.com>
+In-Reply-To: <CA+U=DsrU5iPBRexdUK3fx-PG3CbSoKouGWENVLJ5+h8L5-y_Og@mail.gmail.com>
+From:   =?UTF-8?Q?Th=C3=A9o_Bor=C3=A9m_Fabris?= <theobf@usp.br>
+Date:   Tue, 20 Jul 2021 21:11:20 -0300
+Message-ID: <CAD5vTa_cR0da4qZ2JTB7G-QgZrSeZr3e8fp92S6WGMaCoUr15g@mail.gmail.com>
+Subject: Re: [PATCH] iio: dac: max5821: convert device register to device
+ managed function
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 10:18:54PM +0100, Matthew Wilcox wrote:
-> On Tue, Jul 20, 2021 at 01:42:24PM -0700, Darrick J. Wong wrote:
-> > > -	BUG_ON(page_has_private(page));
-> > > -	BUG_ON(page->index);
-> > > -	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> > > +	/* inline source data must be inside a single page */
-> > > +	BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> > 
-> > Can we reduce the strength of these checks to a warning and an -EIO
-> > return?
-> 
-> I'm not entirely sure that we need this check, tbh.
+Em ter., 20 de jul. de 2021 =C3=A0s 04:22, Alexandru Ardelean
+<ardeleanalex@gmail.com> escreveu:
+>
+> On Mon, Jul 19, 2021 at 6:25 PM Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.b=
+r> wrote:
+> >
+> > Hi, Alexandru.
+> >
+> > Em seg., 19 de jul. de 2021 =C3=A0s 04:33, Alexandru Ardelean
+> > <ardeleanalex@gmail.com> escreveu:
+> > >
+> > > On Sun, Jul 18, 2021 at 11:42 PM Th=C3=A9o Bor=C3=A9m Fabris <theobf@=
+usp.br> wrote:
+> > > >
+> > > > Add a device managed hook, via devm_add_action_or_reset() and
+> > > > max5821_regulator_disable(), to disable voltage regulator on device
+> > > > detach.
+> > > > Replace iio_device_register() by devm_iio_device_register() and rem=
+ove
+> > > > the max5821_remove() function used to unregister the device and dis=
+able the
+> > > > voltage regulator.
+> > > > Remove i2c_set_clientdata() from the probe function, since
+> > > > i2c_get_clientdata() is not used anymore.
+> > >
+> > > Looks good overall.
+> > > A few comments inline.
+> > >
+> > > >
+> > > > Signed-off-by: Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.br>
+> > > > ---
+> > > >  drivers/iio/dac/max5821.c | 30 ++++++++++++++++--------------
+> > > >  1 file changed, 16 insertions(+), 14 deletions(-)
+> > > >
+> > > > diff --git a/drivers/iio/dac/max5821.c b/drivers/iio/dac/max5821.c
+> > > > index bd6e75699a63..44c04ae70b32 100644
+> > > > --- a/drivers/iio/dac/max5821.c
+> > > > +++ b/drivers/iio/dac/max5821.c
+> > > > @@ -294,6 +294,13 @@ static const struct iio_info max5821_info =3D =
+{
+> > > >         .write_raw =3D max5821_write_raw,
+> > > >  };
+> > > >
+> > > > +static void max5821_regulator_disable(void *data)
+> > > > +{
+> > > > +       struct regulator *rdata =3D data;
+> > > > +
+> > > > +       regulator_disable(rdata);
+> > >
+> > > This can be simplified a bit:
+> > >
+> > > static void max5821_regulator_disable(void *reg)
+> > > {
+> > >       regulator_disable(reg);
+> > > }
+> > >
+> > > I used to do explicit casting, but then I also figured that it's not =
+necessary.
+> > >
+> > Ok.
+> >
+> > > > +}
+> > > > +
+> > > >  static int max5821_probe(struct i2c_client *client,
+> > > >                         const struct i2c_device_id *id)
+> > > >  {
+> > > > @@ -306,7 +313,6 @@ static int max5821_probe(struct i2c_client *cli=
+ent,
+> > > >         if (!indio_dev)
+> > > >                 return -ENOMEM;
+> > > >         data =3D iio_priv(indio_dev);
+> > > > -       i2c_set_clientdata(client, indio_dev);
+> > > >         data->client =3D client;
+> > > >         mutex_init(&data->lock);
+> > > >
+> > > > @@ -331,6 +337,14 @@ static int max5821_probe(struct i2c_client *cl=
+ient,
+> > > >                 goto error_free_reg;
+> > > >         }
+> > > >
+> > > > +       ret =3D devm_add_action_or_reset(&client->dev, max5821_regu=
+lator_disable,
+> > > > +                                      data->vref_reg);
+> > > > +       if (ret) {
+> > > > +               dev_err(&client->dev,
+> > > > +                       "Failed to add action to managed regulator:=
+ %d\n", ret);
+> > > > +               goto error_disable_reg;
+> > >
+> > > return ret;
+> > >
+> > > devm_add_action_or_reset() should call max5821_regulator_disable() in
+> > > case of error
+> > >
+> > Ok.
+> >
+> > > > +       }
+> > > > +
+> > > >         ret =3D regulator_get_voltage(data->vref_reg);
+> > > >         if (ret < 0) {
+> > > >                 dev_err(&client->dev,
+> > > > @@ -346,7 +360,7 @@ static int max5821_probe(struct i2c_client *cli=
+ent,
+> > > >         indio_dev->modes =3D INDIO_DIRECT_MODE;
+> > > >         indio_dev->info =3D &max5821_info;
+> > > >
+> > > > -       return iio_device_register(indio_dev);
+> > > > +       return devm_iio_device_register(&client->dev, indio_dev);
+> > > >
+> > > >  error_disable_reg:
+> > >
+> > > This entire goto block should be removed.
+> > > The idea of using only devm_ functions is to not have these goto stat=
+ements.
+> > >
+> > I thought the action added via devm_add_action (and devres_add) was cal=
+led only
+> > on driver detach, thus the error_disable_reg label would be necessary
+> > to handle the
+>
+> devm_add_action() yes
+> this is devm_add_action_or_reset() which looks like this:
+>
+> static inline int devm_add_action_or_reset(struct device *dev,
+>                        void (*action)(void *), void *data)
+> {
+>     int ret;
+>
+>     ret =3D devm_add_action(dev, action, data);
+>     if (ret)
+>         action(data);
+>
+>     return ret;
+> }
+>
+> it can be found in "include/linux/device.h"
+>
+> > possible error on regulator_get_voltage. Could you please clarify for
+> > me when does
+> > a driver detach happen?
+>
+> a driver detach happens when:
+> * the kmod is unloaded (assuming the driver is running as a kmod)
+> * manually unbinding the driver from sysfs ;
+>    a quick article about this [it's for USB, but other interfaces use
+>    the same mechanism]:
+>    https://lwn.net/Articles/143397/
+>    there should be something under /sys/bus/spi/drivers/xxxx/unbind
+> * when the system powers down (reboots)
+> * maybe there is some other new method to do this [that I don't know abou=
+t]
+>
+Thank you so much.
 
-I'm fine to get rid of this check, it just inherited from:
- - BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
+So, should this goto error_disable_reg be replaced by
+"regulator_disable(.); return ret;"?
+ret =3D regulator_get_voltage(data->vref_reg);
+    if (ret < 0) {
+        dev_err(&client->dev,
+             "Failed to get voltage on regulator: %d\n", ret);
+        goto error_disable_reg;
+    }
 
-It has no real effect, but when reading INLINE extent, its .iomap_begin()
-does:
-	iomap->private = erofs_get_meta_page()	/* get meta page */
-
-and in the .iomap_end(), it does:
-	struct page *ipage = iomap->private;
-	if (ipage) {
-		unlock_page(ipage);
-		put_page(ipage);
-	}
-
-> 
-> > > +	/* handle tail-packing blocks cross the current page into the next */
-> > > +	size = min_t(unsigned int, iomap->length + pos - iomap->offset,
-> > > +		     PAGE_SIZE - poff);
-> > >  
-> > >  	addr = kmap_atomic(page);
-> > > -	memcpy(addr, iomap->inline_data, size);
-> > > -	memset(addr + size, 0, PAGE_SIZE - size);
-> > > +	memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
-> > > +	memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
-> > 
-> > Hmm, so I guess the point of this is to support reading data from a
-> > tail-packing block, where each file gets some arbitrary byte range
-> > within the tp-block, and the range isn't aligned to an fs block?  Hence
-> > you have to use the inline data code to read the relevant bytes and copy
-> > them into the pagecache?
-> 
-> I think there are two distinct cases for IOMAP_INLINE.  One is
-> where the tail of the file is literally embedded into the inode.
-> Like ext4 fast symbolic links.  Taking the ext4 i_blocks layout
-> as an example, you could have a 4kB block stored in i_block[0]
-> and then store bytes 4096-4151 in i_block[1-14] (although reading
-> https://www.kernel.org/doc/html/latest/filesystems/ext4/dynamic.html
-> makes me think that ext4 only supports storing 0-59 in the i_blocks;
-> it doesn't support 0-4095 in i_block[0] and then 4096-4151 in i_blocks)
-> 
-> The other is what I think erofs is doing where, for example, you'd
-> specify in i_block[1] the block which contains the tail and then in
-> i_block[2] what offset of the block the tail starts at.
-
-Nope, EROFS inline data is embedded into the inode in order to save
-I/O as well as space (maybe I didn't express clear before [1]). 
-
-I understand the other one, but it can only save storage space but
-cannot save I/O (we still need another independent I/O to read its
-meta buffered page).
-
-In the view of INLINE extent itself, I think both ways can be
-supported with this approach.
-
-[1] https://www.kernel.org/doc/html/latest/filesystems/erofs.html
-    "On-disk details" section.
-
-Thanks,
-Gao Xiang
+> >
+> > Thanks for your reply,
+> > Th=C3=A9o
+> >
+> > > >         regulator_disable(data->vref_reg);
+> > > > @@ -356,17 +370,6 @@ static int max5821_probe(struct i2c_client *cl=
+ient,
+> > > >         return ret;
+> > > >  }
+> > > >
+> > > > -static int max5821_remove(struct i2c_client *client)
+> > > > -{
+> > > > -       struct iio_dev *indio_dev =3D i2c_get_clientdata(client);
+> > > > -       struct max5821_data *data =3D iio_priv(indio_dev);
+> > > > -
+> > > > -       iio_device_unregister(indio_dev);
+> > > > -       regulator_disable(data->vref_reg);
+> > > > -
+> > > > -       return 0;
+> > > > -}
+> > > > -
+> > > >  static const struct i2c_device_id max5821_id[] =3D {
+> > > >         { "max5821", ID_MAX5821 },
+> > > >         { }
+> > > > @@ -386,7 +389,6 @@ static struct i2c_driver max5821_driver =3D {
+> > > >                 .pm     =3D &max5821_pm_ops,
+> > > >         },
+> > > >         .probe          =3D max5821_probe,
+> > > > -       .remove         =3D max5821_remove,
+> > > >         .id_table       =3D max5821_id,
+> > > >  };
+> > > >  module_i2c_driver(max5821_driver);
+> > > > --
+> > > > 2.20.1
+> > > >
