@@ -2,92 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B141D3D0A25
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F47D3D0A27
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Jul 2021 09:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235966AbhGUHP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 03:15:57 -0400
-Received: from ni.piap.pl ([195.187.100.5]:58262 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235610AbhGUHPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:15:34 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        by ni.piap.pl (Postfix) with ESMTPSA id BD8F9C3F3EE1;
-        Wed, 21 Jul 2021 09:56:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl BD8F9C3F3EE1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1626854165; bh=6XM2XjK5JFDUc84MNpO08XUn/FAW916r/iYKVjQami4=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=EbZPojY2/DaJbX3BOKfbHueepNx5GHr72BdDLYhYAhB/3COMWYM2Ux0+Hw5vGiATb
-         imPfCDkwkfA7tpsR50R5Ckk7M00SD6xGoVAuYqhEijDcO+eWu32MBRBT95ByqES+zU
-         Bznuoj9RMobStG1bJfqB3sNKcPQ25RxjDB++zEPw=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Tim Harvey <tharvey@gateworks.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH REPOST] TDA1997x: replace video detection routine
-References: <m3k0lmejlw.fsf@t19.piap.pl>
-        <68bd6e41-4c32-240f-aa83-fd2b96929d45@xs4all.nl>
-Sender: khalasa@piap.pl
-Date:   Wed, 21 Jul 2021 09:56:05 +0200
-In-Reply-To: <68bd6e41-4c32-240f-aa83-fd2b96929d45@xs4all.nl> (Hans Verkuil's
-        message of "Wed, 21 Jul 2021 09:12:08 +0200")
-Message-ID: <m3a6mgdrsa.fsf@t19.piap.pl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S234291AbhGUHRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 03:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235922AbhGUHPi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 03:15:38 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D315C061762
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 00:56:11 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id n1so1097464wri.10
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 00:56:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=8w6x8b/7oISblxGUWEIo1tWz0WRfvQ9VyhhiZejv2vo=;
+        b=Tt1MCuMlpx25tAZ8kaDzDLvA9Bmyxtfro3AOH0567K+PGiryJKOZqPkgUoCxkx9Wfe
+         wLjkrzQx9E3vsMqPu8cOL8uHhMYvhjmZaVhwMknK8+bQJe+rQbHypIC8R0YUJKUaEtuB
+         jTghtKK5RgJadYVO81tbqpvrNPX6m8OPZdbgFa6bZVM/1+1tIyuy2h+HZn7PDRkKjXLq
+         2sspURuBgsFMvztK08fedY+lJ9LE2+Q9U6bzHREF38s6EIETmLDxc/E1hRma5I6YOBEU
+         z/rveNG3ui2qG+zKiKcurGLjP43SoHnHud/M6KE2Yse9HcxU7eM4S4p40TboRrdMcsQv
+         ZIAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=8w6x8b/7oISblxGUWEIo1tWz0WRfvQ9VyhhiZejv2vo=;
+        b=mgG+ZqFXdC70MwwyYIlLrE1o4O/04sAo74aXsqSkC0MO8yjL/sfqESj/CUwNkTiw+4
+         ShWtvGcagSlXmUY1JHOnsxVusm+Ju6P/vyzdA8/K6BZkAmXbGe7yioY7B38jCE9PH5CQ
+         tTqdo9Fx88kL3fX1sbLhMuoYc49gugSaJVSEmYx/cqL9zXdQ/vu8/+jMKH0kyT6pibWU
+         yA8rRkESOkHiffRLDxWCLSZR7B0dvfahBJWeCtxtmLXNEUq7LOQ7TYiS4vCiBJt4nEUn
+         V54jVYQWe3jS6b4KNx4lc8cykNRXhy8TooJUd6fcwYRAgqXbsZjWSG4MfGBXIuKXerdy
+         ToCA==
+X-Gm-Message-State: AOAM533/YctGObJs+qJCc+2qTgOblwZN2RQjn1tMeeRd4czJPhGQlrj+
+        QI/R2XirfwcvGtMthxZVwPvXdg==
+X-Google-Smtp-Source: ABdhPJzj097tjUzSS6tAEMTQjHX81v616+ZPhb3BSxHkaWVSqwV5SnLuiMTEp4iXQ6qWqIFyJJi6/w==
+X-Received: by 2002:a5d:46d1:: with SMTP id g17mr41675852wrs.2.1626854170169;
+        Wed, 21 Jul 2021 00:56:10 -0700 (PDT)
+Received: from wifi-122-dhcprange-122-230.wifi.unimo.it (wifi-122-dhcprange-122-230.wifi.unimo.it. [155.185.122.230])
+        by smtp.gmail.com with ESMTPSA id n18sm25133005wrt.89.2021.07.21.00.56.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 21 Jul 2021 00:56:09 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH] block/bfq: the delta_from_first should be ns rather than
+ us
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <20210721063047.92122-1-liubaozhu@uniontech.com>
+Date:   Wed, 21 Jul 2021 09:56:12 +0200
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 165154 [Jul 21 2021]
-X-KLMS-AntiSpam-Version: 5.9.20.0
-X-KLMS-AntiSpam-Envelope-From: khalasa@piap.pl
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=pass header.d=piap.pl
-X-KLMS-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17, {Tracking_from_exist}, {Tracking_arrow_text}, {Tracking_Text_ENG_RU_Has_Extended_Latin_Letters, eng}, {Tracking_marketers, three}, {Tracking_from_domain_doesnt_match_to}, t19.piap.pl:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;piap.pl:7.1.1
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2021/07/21 05:08:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/21 00:56:00 #16933345
-X-KLMS-AntiVirus-Status: Clean, skipped
+Message-Id: <C5E7C12D-616A-40BD-8BFF-2D7C0211B8C9@linaro.org>
+References: <20210721063047.92122-1-liubaozhu@uniontech.com>
+To:     liubaozhu <liubaozhu@uniontech.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+[RESENDING ...]
 
-Hans Verkuil <hverkuil@xs4all.nl> writes:
+> Il giorno 21 lug 2021, alle ore 08:30, liubaozhu =
+<liubaozhu@uniontech.com> ha scritto:
+>=20
+> In the block/bfq-iosched.c,the function bfq_update_peak_rate(),
+> bfqd->delta_from_first =3D now_ns - bfqd->first_dispatch,
+> according to the subtraction operation here,now_ns is ns,
+> and bfqd->first_dispatch is also ns,so bfqd->delta_from_first should =
+be ns.
+>=20
 
->> --- a/drivers/media/i2c/tda1997x.c
->> +++ b/drivers/media/i2c/tda1997x.c
->> @@ -1092,66 +1094,71 @@ tda1997x_detect_std(struct tda1997x_state *state,
->>  		    struct v4l2_dv_timings *timings)
+Correct!
 
-...
+Acked-by: Paolo Valente <paolo.valente@linaro.org>
 
->> +	if (!timings)
->> +		return 0;
->
-> This check isn't necessary, timings is never NULL.
+Thank you,
+Paolo
 
-Well, the tda1997x_irq_sus() does this:
+> Signed-off-by: liubaozhu <liubaozhu@uniontech.com>
+> ---
+> block/bfq-iosched.h | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+> index 99c2a3cb0..7cf4fc8c3 100644
+> --- a/block/bfq-iosched.h
+> +++ b/block/bfq-iosched.h
+> @@ -632,7 +632,7 @@ struct bfq_data {
+> 	u64 tot_sectors_dispatched;
+> 	/* max rq size seen during current observation interval =
+(sectors) */
+> 	u32 last_rq_max_size;
+> -	/* time elapsed from first dispatch in current observ. interval =
+(us) */
+> +	/* time elapsed from first dispatch in current observ. interval =
+(ns) */
+> 	u64 delta_from_first;
+> 	/*
+> 	 * Current estimate of the device peak rate, measured in
+> --=20
+> 2.20.1
+>=20
+>=20
+>=20
 
-	if (debug)
-		tda1997x_detect_std(state, NULL);
-
-Perhaps there is a better way, but I think I will leave it for now.
-Also there is the issue of ignoring tda1997x_detect_std() return value,
-but I can now see it's only a case in tda1997x_query_dv_timings(), easy
-to fix.
-
-Will post an update shortly.
-
-Thanks for your comments,
---=20
-Krzysztof "Chris" Ha=C5=82asa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
