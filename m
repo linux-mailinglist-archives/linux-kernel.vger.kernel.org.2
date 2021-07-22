@@ -2,98 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E473D1BA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 04:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C35F3D1BAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 04:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhGVB3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 21:29:24 -0400
-Received: from mail-io1-f51.google.com ([209.85.166.51]:35332 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhGVB3X (ORCPT
+        id S230370AbhGVB3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 21:29:51 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:53885 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230346AbhGVB3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 21:29:23 -0400
-Received: by mail-io1-f51.google.com with SMTP id d9so4633179ioo.2;
-        Wed, 21 Jul 2021 19:09:59 -0700 (PDT)
+        Wed, 21 Jul 2021 21:29:49 -0400
+Received: by mail-io1-f70.google.com with SMTP id c25-20020a6bec190000b02905393057ad92so2893786ioh.20
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 19:10:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=XI6tuL7/pBray3N0tX9rszM1IBJlHOCQO5uHh9acEo4=;
-        b=FCL10oc4gQvZrtepYM6PCht54qbxGMIHiVA2FezPdQBbHZznDvszBfYztg1Z1N23Az
-         k8SYG9Pxfjl3HTkk74qDZzc4vYvIW2vziIcCSvcRQSRbwJciaynpI2cZyPQy0aGo944K
-         KzV+L05wm9eZJZPYgu2/ahtu73ab5N3ZUMD97yVRpDI7Q2wxxY5qwYSVF8hbBilm3t0A
-         Kfx0ejaWQQvJKMzshP+AK64Z788HqQicbzVJThEMOgDXuqnIJGZbw/mVf9vhErk8DiLb
-         J2dh7Jr8J3aF19+061GI70TofvvMTXcvTulW+/TmKvFtXhz/im1MD4Eg77/jYf3DCEMv
-         6YqA==
-X-Gm-Message-State: AOAM533//9HzZS6gLq+pt2LM/59K4R/GhA/+ACCm2s1y2wulEfLszkIZ
-        C2Y9uyaYpHLEXbzUFGO4QQ==
-X-Google-Smtp-Source: ABdhPJwXoy7EEZp6Wh13QVY0SHOwBaW96b1k1tbwI0rV34cnGkXvWAGvtONpzuXfoWM82+w6jJOlqQ==
-X-Received: by 2002:a05:6638:3a12:: with SMTP id j18mr34051615jaj.75.1626919799407;
-        Wed, 21 Jul 2021 19:09:59 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id c7sm13492038ile.69.2021.07.21.19.09.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 19:09:58 -0700 (PDT)
-Received: (nullmailer pid 3145318 invoked by uid 1000);
-        Thu, 22 Jul 2021 02:09:56 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     citral23 <cbranchereau@gmail.com>
-Cc:     lars@metafoo.de, contact@artur-rojek.eu,
-        linux-mips@vger.kernel.org, paul@crapouillou.net, jic23@kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210721105317.36742-7-cbranchereau@gmail.com>
-References: <20210721105317.36742-1-cbranchereau@gmail.com> <20210721105317.36742-7-cbranchereau@gmail.com>
-Subject: Re: [PATCH 6/6] dt-bindings: iio/adc: ingenic: add the JZ4760(B) socs to the sadc Documentation
-Date:   Wed, 21 Jul 2021 20:09:56 -0600
-Message-Id: <1626919796.931159.3145317.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=MRVdo3BP1bfGw5Jrpums3dR51jXt/diLyZxT/ln8Sgw=;
+        b=VJXgqLppHcG3edYGevnW72WG9vbJbZMvHkwdR2UPnluD22MjKlh0j4udmBkKelz3Rh
+         /hOHhUK0rH0rNv6z6aCAo3A8N0iAcN8CC5vA7eG7bNGgKWLLuRj2FQWHsVEDamEVVY7Q
+         X5RfGdccKGBpbCJqzNqdsjHca9vki+SKmrXQulGAv72D+hY0zSd/IlchcV+8ifBHl2Ir
+         mkb63NQV8oszB30lTdzyd+5Kew2jxGzPEsjNIrNZMuKQRIqSrgiHvmIrpL4DK191bloq
+         yx4+OeuIGsD0kOy6EBmWJrStZb/osbxxN6HD+hEVKpDqd/h3IoWEDbzvsU+931OetyWe
+         x9aA==
+X-Gm-Message-State: AOAM531U6oYcUJFhLtNq+iLqCSONlCi8e9MXY4YLTjariLwiVspfrG+u
+        YKMuXZqgppAvMit2Ib/3GQnNDoUUpiz5vwIKnkRajv69TbfK
+X-Google-Smtp-Source: ABdhPJzUl8h8RWguJgP1hh4+Fa0JSzaHhsIQzPR1aO9Qmj0Wg7bfZruedIEsxwi0atJinBStdSTzaFZxsr4N2+tjyW3MAjsfaBfv
+MIME-Version: 1.0
+X-Received: by 2002:a02:c491:: with SMTP id t17mr28709574jam.56.1626919825473;
+ Wed, 21 Jul 2021 19:10:25 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 19:10:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000046837e05c7acca73@google.com>
+Subject: [syzbot] WARNING in ieee80211_offchannel_return
+From:   syzbot <syzbot+4c10031c63f173ea1dfc@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Jul 2021 12:53:17 +0200, citral23 wrote:
-> Signed-off-by: citral23 <cbranchereau@gmail.com>
-> ---
->  .../devicetree/bindings/iio/adc/ingenic,adc.yaml         | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
+Hello,
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+syzbot found the following issue on:
 
-yamllint warnings/errors:
+HEAD commit:    23d2b94043ca igmp: Add ip_mc_list lock in ip_check_mc_rcu
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=16cde812300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=da140227e4f25b17
+dashboard link: https://syzkaller.appspot.com/bug?extid=4c10031c63f173ea1dfc
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml: properties:ingenic,use-internal-divider: 'oneOf' conditional failed, one must be fixed:
-	'type' is a required property
-		hint: A vendor boolean property can use "type: boolean"
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml: properties:ingenic,use-internal-divider: 'oneOf' conditional failed, one must be fixed:
-		'enum' is a required property
-		'const' is a required property
-		hint: A vendor string property with exact values has an implicit type
-		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml: properties:ingenic,use-internal-divider: 'oneOf' conditional failed, one must be fixed:
-		'$ref' is a required property
-		'allOf' is a required property
-		hint: A vendor property needs a $ref to types.yaml
-		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-	hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
-	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml: ignoring, error in schema: properties: ingenic,use-internal-divider
-warning: no schema found in file: ./Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
-Documentation/devicetree/bindings/iio/adc/ingenic,adc.example.dt.yaml:0:0: /example-0/adc@10070000: failed to match any schema with compatible: ['ingenic,jz4740-adc']
-\ndoc reference errors (make refcheckdocs):
+Unfortunately, I don't have any reproducer for this issue yet.
 
-See https://patchwork.ozlabs.org/patch/1508137
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4c10031c63f173ea1dfc@syzkaller.appspotmail.com
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 8308 at net/mac80211/offchannel.c:136 ieee80211_offchannel_return+0x3e6/0x4a0 net/mac80211/offchannel.c:136
+Modules linked in:
+CPU: 0 PID: 8308 Comm: syz-executor.4 Tainted: G        W         5.14.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ieee80211_offchannel_return+0x3e6/0x4a0 net/mac80211/offchannel.c:136
+Code: 00 48 01 c6 e8 4b 04 e9 f8 e9 0e ff ff ff e8 01 96 f9 f8 31 d2 48 89 de 4c 89 e7 e8 34 b3 15 00 e9 f7 fe ff ff e8 ea 95 f9 f8 <0f> 0b e9 6c ff ff ff e8 ae 1d 40 f9 e9 51 fc ff ff 48 89 df e8 d1
+RSP: 0018:ffffc900020f7230 EFLAGS: 00010212
+RAX: 00000000000006ed RBX: 0000000000000001 RCX: ffffc90012282000
+RDX: 0000000000040000 RSI: ffffffff887bf386 RDI: 0000000000000003
+RBP: ffff888075980d20 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff887beffc R11: 0000000000000000 R12: ffff88807443c800
+R13: ffff888075982968 R14: 0000000000000000 R15: 0000000000000001
+FS:  00007f1a294ca700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f02e832aab4 CR3: 0000000081623000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __ieee80211_scan_completed+0x776/0xef0 net/mac80211/scan.c:470
+ ieee80211_scan_cancel+0x165/0x9b0 net/mac80211/scan.c:1277
+ ieee80211_do_stop+0x1863/0x2050 net/mac80211/iface.c:384
+ ieee80211_runtime_change_iftype net/mac80211/iface.c:1656 [inline]
+ ieee80211_if_change_type+0x383/0x840 net/mac80211/iface.c:1694
+ ieee80211_change_iface+0x26/0x210 net/mac80211/cfg.c:157
+ rdev_change_virtual_intf net/wireless/rdev-ops.h:69 [inline]
+ cfg80211_change_iface+0x335/0xf60 net/wireless/util.c:1073
+ nl80211_set_interface+0x65c/0x8d0 net/wireless/nl80211.c:3923
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:703 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:723
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2392
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2446
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2475
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1a294ca188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000000000000 RSI: 0000000020000340 RDI: 0000000000000006
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffe92760a3f R14: 00007f1a294ca300 R15: 0000000000022000
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
 
-pip3 install dtschema --upgrade
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Please check and re-submit.
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
