@@ -2,96 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08243D236F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93363D2395
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231896AbhGVL7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 07:59:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39457 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231772AbhGVL7R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 07:59:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626957592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ykv5wmLf4ZccwydelwmDaJ14hxc/5bcYf6Q0csIyjtg=;
-        b=XS4UeyA7eBuMs3aNP9cIB0HJBkeQVAJyIQOV0qJawmFEVkZftJkQrASRozX8nYblDMN5AS
-        ts0f47rpPRTwWFJQsbnp/aPY0GYnrYcs3jNn2bhiKt6OE8Z2+JnYV9CLoW80NKdJ/tdBds
-        E4gnK2SxT8p5QN8W/E9WmteNlTrUuxc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-d918l_wTNZmGfLz9gz7SAg-1; Thu, 22 Jul 2021 08:39:51 -0400
-X-MC-Unique: d918l_wTNZmGfLz9gz7SAg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 762D28B0600;
-        Thu, 22 Jul 2021 12:39:49 +0000 (UTC)
-Received: from starship (unknown [10.40.192.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EB3425C1C2;
-        Thu, 22 Jul 2021 12:39:46 +0000 (UTC)
-Message-ID: <e2aa50650b118b877d4fc10cd832bd1c05271f8b.camel@redhat.com>
-Subject: Re: [PATCH] KVM: x86: Check the right feature bit for
- MSR_KVM_ASYNC_PF_ACK access
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Oliver Upton <oupton@google.com>, linux-kernel@vger.kernel.org
-Date:   Thu, 22 Jul 2021 15:39:45 +0300
-In-Reply-To: <20210722123018.260035-1-vkuznets@redhat.com>
-References: <20210722123018.260035-1-vkuznets@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S231956AbhGVMId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 08:08:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231838AbhGVMIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 08:08:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B77A61285;
+        Thu, 22 Jul 2021 12:48:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626958132;
+        bh=PX46ntR2F8mhtnTnqk6z0maUFKW3hKlsYGyDxWq8nt8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uI8fZsAnCujH8W7YiEBRgCAjHShI6gE1mvUR0l57R+InmBX0WanZ/uw9vRAOln3Z8
+         nGIW49oPfs3Z0oGoceXArCb+pcxtHVC7BDgIPVu7ZQgOSXVYcpE0fh0cemOAHYvVRq
+         FKI2JY1Q7ji5J3em2CfLjWBtEWHTWOWxHMmXXgWyndwrPSlVntSikFKkr25MPmfWRd
+         v73iMcJt52+PkD+rdPNKZ3PKisAXpGa6fQ8OZroEymMb7Gi2et/DUC63IcI09aav3H
+         3ECp+pAFmA7kucS8vsrWJ92J66Z8gjShxT5O7vJdnqnBEe0ThenTNBxBPkUxQ1dKDS
+         brNKF2Qpg7HWw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-arch@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Brian Cain <bcain@codeaurora.org>,
+        Chris Zankel <chris@zankel.net>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Hellwig <hch@lst.de>, Guo Ren <guoren@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>, Jeff Dike <jdike@addtoit.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michal Simek <monstr@monstr.eu>,
+        Richard Weinberger <richard@nod.at>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        uclinux-h8-devel@lists.sourceforge.jp
+Subject: [PATCH v3 0/6] asm-generic: strncpy_from_user/strnlen_user cleanup
+Date:   Thu, 22 Jul 2021 14:48:05 +0200
+Message-Id: <20210722124814.778059-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-22 at 14:30 +0200, Vitaly Kuznetsov wrote:
-> MSR_KVM_ASYNC_PF_ACK MSR is part of interrupt based asynchronous page fault
-> interface and not the original (deprecated) KVM_FEATURE_ASYNC_PF. This is
-> stated in Documentation/virt/kvm/msr.rst.
-> 
-> Fixes: 66570e966dd9 ("kvm: x86: only provide PV features if enabled in guest's CPUID")
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  arch/x86/kvm/x86.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index d715ae9f9108..88ff7a1af198 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3406,7 +3406,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  			return 1;
->  		break;
->  	case MSR_KVM_ASYNC_PF_ACK:
-> -		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
-> +		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF_INT))
->  			return 1;
->  		if (data & 0x1) {
->  			vcpu->arch.apf.pageready_pending = false;
-> @@ -3745,7 +3745,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  		msr_info->data = vcpu->arch.apf.msr_int_val;
->  		break;
->  	case MSR_KVM_ASYNC_PF_ACK:
-> -		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
-> +		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF_INT))
->  			return 1;
->  
->  		msr_info->data = 0;
+From: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+I had run into some regressions for the previous version of this
+series, the new version is based on v5.14-rc2 instead.
 
-Best regards,
-	Maxim Levitsky
+These two functions appear to be unnecessarily different between
+architectures, and the asm-generic version is a bit questionable,
+even for NOMMU architectures.
 
+Clean this up to just use the generic library version for anything
+that uses the generic version today. I've expanded on the patch
+descriptions a little, as suggested by Christoph Hellwig, but I
+suspect a more detailed review would uncover additional problems
+with the custom versions that are getting removed.
+
+I ended up adding patches for csky and microblaze as they had the
+same implementation that I removed elsewhere, these are now gone
+as well.
+
+If I hear no objections from architecture maintainers or new
+build regressions, I'll queue these up in the asm-generic tree
+for 5.15.
+
+       Arnd
+
+Link: https://lore.kernel.org/linux-arch/20210515101803.924427-1-arnd@kernel.org/
+
+Arnd Bergmann (9):
+  asm-generic/uaccess.h: remove __strncpy_from_user/__strnlen_user
+  h8300: remove stale strncpy_from_user
+  hexagon: use generic strncpy/strnlen from_user
+  arc: use generic strncpy/strnlen from_user
+  csky: use generic strncpy/strnlen from_user
+  microblaze: use generic strncpy/strnlen from_user
+  asm-generic: uaccess: remove inline strncpy_from_user/strnlen_user
+  asm-generic: remove extra strn{cpy_from,len}_user declarations
+  asm-generic: reverse GENERIC_{STRNCPY_FROM,STRNLEN}_USER symbols
+
+ arch/alpha/Kconfig                        |   2 -
+ arch/arc/include/asm/uaccess.h            |  72 -------------
+ arch/arc/mm/extable.c                     |  12 ---
+ arch/arm/Kconfig                          |   2 -
+ arch/arm64/Kconfig                        |   2 -
+ arch/csky/include/asm/uaccess.h           |   6 --
+ arch/csky/lib/usercopy.c                  | 102 ------------------
+ arch/h8300/kernel/h8300_ksyms.c           |   2 -
+ arch/h8300/lib/Makefile                   |   2 +-
+ arch/h8300/lib/strncpy.S                  |  35 ------
+ arch/hexagon/include/asm/uaccess.h        |  31 ------
+ arch/hexagon/kernel/hexagon_ksyms.c       |   1 -
+ arch/hexagon/mm/Makefile                  |   2 +-
+ arch/hexagon/mm/strnlen_user.S            | 126 ----------------------
+ arch/ia64/Kconfig                         |   2 +
+ arch/m68k/Kconfig                         |   2 -
+ arch/microblaze/include/asm/uaccess.h     |  19 +---
+ arch/microblaze/kernel/microblaze_ksyms.c |   3 -
+ arch/microblaze/lib/uaccess_old.S         |  90 ----------------
+ arch/mips/Kconfig                         |   2 +
+ arch/nds32/Kconfig                        |   2 -
+ arch/nios2/Kconfig                        |   2 -
+ arch/openrisc/Kconfig                     |   2 -
+ arch/parisc/Kconfig                       |   2 +-
+ arch/powerpc/Kconfig                      |   2 -
+ arch/riscv/Kconfig                        |   2 -
+ arch/s390/Kconfig                         |   2 +
+ arch/sh/Kconfig                           |   2 -
+ arch/sparc/Kconfig                        |   2 -
+ arch/um/Kconfig                           |   2 +
+ arch/um/include/asm/uaccess.h             |   5 +-
+ arch/um/kernel/skas/uaccess.c             |  14 ++-
+ arch/x86/Kconfig                          |   2 -
+ arch/xtensa/Kconfig                       |   3 +-
+ arch/xtensa/include/asm/uaccess.h         |   3 +-
+ include/asm-generic/uaccess.h             |  52 ++-------
+ lib/Kconfig                               |  10 +-
+ 37 files changed, 43 insertions(+), 581 deletions(-)
+ delete mode 100644 arch/h8300/lib/strncpy.S
+ delete mode 100644 arch/hexagon/mm/strnlen_user.S
+
+-- 
+2.29.2
+
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com> 
+Cc: Al Viro <viro@zeniv.linux.org.uk> 
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com> 
+Cc: Brian Cain <bcain@codeaurora.org> 
+Cc: Chris Zankel <chris@zankel.net> 
+Cc: Christian Borntraeger <borntraeger@de.ibm.com> 
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Guo Ren <guoren@kernel.org> 
+Cc: Heiko Carstens <hca@linux.ibm.com> 
+Cc: Helge Deller <deller@gmx.de> 
+Cc: Jeff Dike <jdike@addtoit.com> 
+Cc: Linus Walleij <linus.walleij@linaro.org> 
+Cc: Max Filippov <jcmvbkbc@gmail.com> 
+Cc: Michal Simek <monstr@monstr.eu> 
+Cc: Richard Weinberger <richard@nod.at> 
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de> 
+Cc: Vasily Gorbik <gor@linux.ibm.com> 
+Cc: Vineet Gupta <vgupta@synopsys.com> 
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp> 
+Cc: linux-arch@vger.kernel.org 
+Cc: linux-csky@vger.kernel.org 
+Cc: linux-hexagon@vger.kernel.org 
+Cc: linux-ia64@vger.kernel.org 
+Cc: linux-kernel@vger.kernel.org 
+Cc: linux-mips@vger.kernel.org 
+Cc: linux-parisc@vger.kernel.org 
+Cc: linux-s390@vger.kernel.org 
+Cc: linux-snps-arc@lists.infradead.org 
+Cc: linux-um@lists.infradead.org 
+Cc: linux-xtensa@linux-xtensa.org 
+Cc: uclinux-h8-devel@lists.sourceforge.jp 
