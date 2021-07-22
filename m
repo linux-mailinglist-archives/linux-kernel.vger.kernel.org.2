@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673BD3D22D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 13:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1803D22D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 13:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231738AbhGVKzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 06:55:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
+        id S231716AbhGVKzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 06:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231728AbhGVKzU (ORCPT
+        with ESMTP id S231566AbhGVKzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 06:55:20 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD6DC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 04:35:55 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id ck17so2412287qvb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 04:35:55 -0700 (PDT)
+        Thu, 22 Jul 2021 06:55:13 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDEFC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 04:35:47 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id u1so5601969wrs.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 04:35:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gesMtrUah0NJ2jTkz8KPEiCEAERPBYdYVkAExdI+OCM=;
-        b=qqqhRjJVXDV6cHyzYu2NBGPWCOXvThtoilCR5G4xsxXFhqAZgPtF5q/92MFKyRohE2
-         YtIIa/twuh8rzWgP+1OpM8UE64oxw34xZ6T7ZABoFPfJwqhhdsN6sNlJPa3k0mXPLhEe
-         BqQS6vjHa+X3OO7NcduNjsaP6ApSFAX1NJMNHIPFPChzB0oZ1Vgvuwg/Mr56GbeRu/d0
-         +VCYNVR821S+WpnJv3E+Py7S1Lml+I4pmNIeruKiOqnJmTrhgp0npudvOfiManFzd7Kx
-         7GXNxtIMtYIs2yoWSBkquhRKYX5rpWYwGp3zwA2nLkiL2kJySAcKnrd5YyAxqykZvSR4
-         Szog==
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=qlzkM3F5fvit9VhnlC77Sop/s7euLd9Um8Su21feghE=;
+        b=U0vbvrxL0htJ+vraY35fcWe6WD1WXfJ7atdJ0FdoTh6FGRbVyu0IXKroO1gNEW8UfL
+         3RYvuAhFYISejYoe9aOImfwyp9uGMS5vp9vO7VzbGa1BJBssHBVeGM3NiS5LTgNjTi8c
+         Kw1kJUXL3NVhilHPDbIquwt0e3vjkpRZqpv+naxKV/S9s9IeBsSZ8InxIBpr1NgLIM6n
+         Av9dCoM06ACNzh4/JfyNLXEswn/DIrSsmAaAXpKzHKLxUEali6bZtt9DvAaK0Vs4Ewre
+         1AiK2R5p5L+mC2KgAEtwwmcwrVjAXu5TCbbHqB25j2jyHErf+NPMz/X5pqqzQPJjO/+S
+         B0XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gesMtrUah0NJ2jTkz8KPEiCEAERPBYdYVkAExdI+OCM=;
-        b=nMK+qyt7d0V/zVo8xi9NB17gIkIDhmZgSCkV+KKeULUdq90+G3X1OGpeTidpQ3S0Mz
-         ov5M1XjxT+kn4FXU1GPiB7KWxs5cuJr1KjRERuzUPrZZEkfqAWgUk9sRbTD2Jj6Knfxa
-         Y4C4dgJDP2Vo1/kjCId55P+JPH7tY+MTtS8sA1bcUY54u7G9XrzrZwxtNNHyEgLq/58+
-         py5Iif9UQXGG9S9f8yngBZ4MmaULaYyyO0KQbDufjh6R2mPi9QKcLDJzYfs9eQRtXvvW
-         JcFLjLN4GNOXlcBe1gRKplrFR5LjlkxGMR3Ik8d2JmhbWHNLOqyTNZIDaF2YjNSjvHHK
-         zgJQ==
-X-Gm-Message-State: AOAM530TkHTY/2Pd+jzmjwoFEGjwaFt01MsnyJp26e6wle8tV/uwvOH5
-        EKkocQP3SCuDVjyKcHqWdXmd/sbFuP7klZDshTy5TC/VhWw=
-X-Google-Smtp-Source: ABdhPJzdUxLlGHv3McZYt8XIoEZKPTnKnB6h4BMTvkOnd5yh4+vtdzkb0UyNGO/kIniWG5X6Mflvojo3tpvjBlPYqN4=
-X-Received: by 2002:a0c:ecc9:: with SMTP id o9mr39905665qvq.59.1626953754434;
- Thu, 22 Jul 2021 04:35:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=qlzkM3F5fvit9VhnlC77Sop/s7euLd9Um8Su21feghE=;
+        b=qXATfIRAL81cpx/rruXkNGHjG9x8yw5z2FcsomNTdz70j38IGZVFSjzJsCNqT25JTj
+         Vo+3oJhFW8vu3ZnQR+1ynHknm95we/CJvjjx/omh+nwUZvPkaiGUorDQsI2l8EtqRqqr
+         499VJhq7YrWJNhkHWVTFxDSBswaFDZmz4OjU+5Ym83y+akJ61nV2gFpSvr6JA8lNYuOP
+         f5rO/S/+9DRs+E1TNa95dN/tsN6s34ULKmBUQNe15DtnjLm4+UxJPtiQmHvDTguIN8Bj
+         Ge4NTbnGAeJgCGAgHUT4IleNRGrlfNobY2XdJuQgN+N7xFn9CVt6GqTi6MegP2pJ8Q6v
+         1KzA==
+X-Gm-Message-State: AOAM532x1WljOzxBZiv32JUjeR8lX4Kujc8Fa+rnCRvwJNV1Qyz8M0mx
+        kRzSBW7cfgUGOU7eMlbe42ObXSVndXiylA==
+X-Google-Smtp-Source: ABdhPJwNQdVmn8wmJMdhELUyS6EUU70oGebBvmvEO/uGWjWpu+I+sCJNxBYjaJWZOlMmi+o7MnqDEQ==
+X-Received: by 2002:a05:6000:231:: with SMTP id l17mr49006652wrz.40.1626953745983;
+        Thu, 22 Jul 2021 04:35:45 -0700 (PDT)
+Received: from google.com ([31.124.24.141])
+        by smtp.gmail.com with ESMTPSA id j4sm15884491wrt.24.2021.07.22.04.35.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 04:35:45 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 12:35:43 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Remy Card <card@masi.ibp.fr>,
+        "David S. Miller" <davem@caip.rutgers.edu>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 1/1] fs: ext4: namei: trivial: Fix a couple of small
+ whitespace issues
+Message-ID: <YPlYD1BXyjIgh++K@google.com>
+References: <20210520125558.3476318-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <202107221908.f0JFmEis-lkp@intel.com>
-In-Reply-To: <202107221908.f0JFmEis-lkp@intel.com>
-From:   Dongjiu Geng <gengdongjiu1@gmail.com>
-Date:   Thu, 22 Jul 2021 19:35:43 +0800
-Message-ID: <CABSBigQwHFyyCFtVSDHt4bLOsi=TSqOW++3-6gGdDfUHuzM8zQ@mail.gmail.com>
-Subject: Re: clk-hi3559a.c:undefined reference to `hisi_reset_exit'
-To:     kernel test robot <lkp@intel.com>
-Cc:     Dongjiu Geng <gengdongjiu@huawei.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210520125558.3476318-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot <lkp@intel.com> =E4=BA=8E2021=E5=B9=B47=E6=9C=8822=E6=97=
-=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=887:25=E5=86=99=E9=81=93=EF=BC=9A
->
-> Hi Dongjiu,
->
-> FYI, the error/warning still remains.
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t master
-> head:   3d5895cd351757f69c9a66fb5fc8cf19f454d773
-> commit: 6c81966107dc0caa5d2ebedbcebb5f10d865064d clk: hisilicon: Add cloc=
-k driver for hi3559A SoC
-> date:   3 weeks ago
-> config: arm64-randconfig-p001-20210722 (attached as .config)
-> compiler: aarch64-linux-gcc (GCC) 10.3.0
-> reproduce (this is a W=3D1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
-n/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
-git/commit/?id=3D6c81966107dc0caa5d2ebedbcebb5f10d865064d
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/=
-git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 6c81966107dc0caa5d2ebedbcebb5f10d865064d
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-10.3.0 make.cro=
-ss O=3Dbuild_dir ARCH=3Darm64 SHELL=3D/bin/bash
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    aarch64-linux-ld: Unexpected GOT/PLT entries detected!
->    aarch64-linux-ld: Unexpected run-time procedure linkages detected!
->    aarch64-linux-ld: drivers/clk/hisilicon/clk-hi3559a.o: in function `hi=
-3559av100_crg_remove':
-> >> clk-hi3559a.c:(.text+0x24c): undefined reference to `hisi_reset_exit'
->    aarch64-linux-ld: drivers/clk/hisilicon/clk-hi3559a.o: in function `hi=
-3559av100_crg_probe':
-> >> clk-hi3559a.c:(.text+0x2c0): undefined reference to `hisi_reset_init'
-> >> aarch64-linux-ld: clk-hi3559a.c:(.text+0x318): undefined reference to =
-`hisi_reset_exit'
+On Thu, 20 May 2021, Lee Jones wrote:
 
-
-Hi Stephen,
-
-     Can we apply below patch to fix this issues today? Thanks a lot.
-     https://lore.kernel.org/lkml/20210717043159.12566-1-rdunlap@infradead.=
-org/
-
->
+> Cc: "Theodore Ts'o" <tytso@mit.edu>
+> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+> Cc: Remy Card <card@masi.ibp.fr>
+> Cc: "David S. Miller" <davem@caip.rutgers.edu>
+> Cc: linux-ext4@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  fs/ext4/namei.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+Any news on this please?
+
+Would you like me to submit a [RESEND]?
+
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index afb9d05a99bae..7e780cf311c5a 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -1899,7 +1899,7 @@ static struct ext4_dir_entry_2 *dx_pack_dirents(struct inode *dir, char *base,
+>   * Returns pointer to de in block into which the new entry will be inserted.
+>   */
+>  static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
+> -			struct buffer_head **bh,struct dx_frame *frame,
+> +			struct buffer_head **bh, struct dx_frame *frame,
+>  			struct dx_hash_info *hinfo)
+>  {
+>  	unsigned blocksize = dir->i_sb->s_blocksize;
+> @@ -2246,7 +2246,7 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
+>  	if (retval)
+>  		goto out_frames;
+>  
+> -	de = do_split(handle,dir, &bh2, frame, &fname->hinfo);
+> +	de = do_split(handle, dir, &bh2, frame, &fname->hinfo);
+>  	if (IS_ERR(de)) {
+>  		retval = PTR_ERR(de);
+>  		goto out_frames;
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
