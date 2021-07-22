@@ -2,151 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8252B3D1B9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 04:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E473D1BA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 04:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhGVB1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 21:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhGVB1U (ORCPT
+        id S230324AbhGVB3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 21:29:24 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:35332 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229932AbhGVB3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 21:27:20 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90226C061575;
-        Wed, 21 Jul 2021 19:07:55 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id o8so4051374ilf.4;
-        Wed, 21 Jul 2021 19:07:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=90T8pVlNu5R4aARTLjIPZ2shWeZ1pN4LEYWIIMIBA/Y=;
-        b=ZrcYlafSzxD0iNHz7hFfuRgsZhERE/FFxN0t89R6+5lbyxC7+FH5iiv/EwOH4RoWLg
-         qvxm3vsrC/5fwcDoUGWRvEBxx+MKGXA6auS8Dr5I8xK1XsiTXuJbW7GKLUlPzTqM4W1C
-         +2CrFCMeknsDB2dF9Ecr6TqMn14CNC88WEKDpWBUxKEp8Ikpmv9jmxS2x+fQIfTgAnlF
-         Z91yHUNCggVbgrcsjthne/UBOvQtsFefHu7S4Vp6UhjPlx2hJH6mbx1YF4xl5AIOlIbm
-         DoklVBDaXv1/Eqh3VxLyksW2y5dGQhnsR1DYubiaFaFPi9btcOoHAJ/xROeJC58fY/6f
-         TCRw==
+        Wed, 21 Jul 2021 21:29:23 -0400
+Received: by mail-io1-f51.google.com with SMTP id d9so4633179ioo.2;
+        Wed, 21 Jul 2021 19:09:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=90T8pVlNu5R4aARTLjIPZ2shWeZ1pN4LEYWIIMIBA/Y=;
-        b=EqIcJjNsB/Dsk2wGvvwcJ9OypQDjxRX1uymZ8WMLzHu+fMPkzl+uh0uHJ3GiQl0x4m
-         QfHLJztZZ4NXZMR1pA0k386bR9BKk45QGCg5vEa7Y9LnIXt47yjcqi1O70F0W4Xa+u5H
-         Cp54b43mG9QadieN3PbMV06yf4f//++9+OfhRv9ADLRFxFMTHrV0lf9eSycSLyegJna6
-         DmGojpFS4vPjfp46hcCxfkDXRcieErB0iMn2pDv+EugcRp0Zf8nR2mv+qa5houEoTGxA
-         CPdsRQnEQJFcQYJ0209Jo4b8bMbzGBOmCw8perIJMQCkQ+oZT9Do6Z5i94jvVZq/d5eL
-         YQyw==
-X-Gm-Message-State: AOAM531T1DEjyTGzSub2P1i6tGnriIANU+gLgdlJcJqigoMxihHS3XkB
-        s6K1kbjozbyhndedYvpEXTemLEB26WsgBn/NuNA=
-X-Google-Smtp-Source: ABdhPJxgBytAWSHe5ssnHfJDN1qf7Ebn8LuKIIxs/cyJ1/sfTsYmEVV6WZ09Y2ktwylhbMFQIAmIrxrDCnDM1ssJyPA=
-X-Received: by 2002:a92:c5c5:: with SMTP id s5mr24509368ilt.271.1626919674933;
- Wed, 21 Jul 2021 19:07:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <1626853288-31223-1-git-send-email-dillon.minfei@gmail.com>
- <1626853288-31223-4-git-send-email-dillon.minfei@gmail.com> <8e091b9c-764d-d410-559e-3c5e25de2a3c@tronnes.org>
-In-Reply-To: <8e091b9c-764d-d410-559e-3c5e25de2a3c@tronnes.org>
-From:   Dillon Min <dillon.minfei@gmail.com>
-Date:   Thu, 22 Jul 2021 10:07:18 +0800
-Message-ID: <CAL9mu0K2yLsG0MXOd4ke8N8zn7311CJ54hL-JcbocJOK+H7W9A@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] drm/panel: Add ilitek ili9341 panel driver
-To:     =?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=XI6tuL7/pBray3N0tX9rszM1IBJlHOCQO5uHh9acEo4=;
+        b=FCL10oc4gQvZrtepYM6PCht54qbxGMIHiVA2FezPdQBbHZznDvszBfYztg1Z1N23Az
+         k8SYG9Pxfjl3HTkk74qDZzc4vYvIW2vziIcCSvcRQSRbwJciaynpI2cZyPQy0aGo944K
+         KzV+L05wm9eZJZPYgu2/ahtu73ab5N3ZUMD97yVRpDI7Q2wxxY5qwYSVF8hbBilm3t0A
+         Kfx0ejaWQQvJKMzshP+AK64Z788HqQicbzVJThEMOgDXuqnIJGZbw/mVf9vhErk8DiLb
+         J2dh7Jr8J3aF19+061GI70TofvvMTXcvTulW+/TmKvFtXhz/im1MD4Eg77/jYf3DCEMv
+         6YqA==
+X-Gm-Message-State: AOAM533//9HzZS6gLq+pt2LM/59K4R/GhA/+ACCm2s1y2wulEfLszkIZ
+        C2Y9uyaYpHLEXbzUFGO4QQ==
+X-Google-Smtp-Source: ABdhPJwXoy7EEZp6Wh13QVY0SHOwBaW96b1k1tbwI0rV34cnGkXvWAGvtONpzuXfoWM82+w6jJOlqQ==
+X-Received: by 2002:a05:6638:3a12:: with SMTP id j18mr34051615jaj.75.1626919799407;
+        Wed, 21 Jul 2021 19:09:59 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id c7sm13492038ile.69.2021.07.21.19.09.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 19:09:58 -0700 (PDT)
+Received: (nullmailer pid 3145318 invoked by uid 1000);
+        Thu, 22 Jul 2021 02:09:56 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     citral23 <cbranchereau@gmail.com>
+Cc:     lars@metafoo.de, contact@artur-rojek.eu,
+        linux-mips@vger.kernel.org, paul@crapouillou.net, jic23@kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210721105317.36742-7-cbranchereau@gmail.com>
+References: <20210721105317.36742-1-cbranchereau@gmail.com> <20210721105317.36742-7-cbranchereau@gmail.com>
+Subject: Re: [PATCH 6/6] dt-bindings: iio/adc: ingenic: add the JZ4760(B) socs to the sadc Documentation
+Date:   Wed, 21 Jul 2021 20:09:56 -0600
+Message-Id: <1626919796.931159.3145317.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Noralf
+On Wed, 21 Jul 2021 12:53:17 +0200, citral23 wrote:
+> Signed-off-by: citral23 <cbranchereau@gmail.com>
+> ---
+>  .../devicetree/bindings/iio/adc/ingenic,adc.yaml         | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
 
-Thanks for your time to review my patch.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-On Thu, 22 Jul 2021 at 01:42, Noralf Tr=C3=B8nnes <noralf@tronnes.org> wrot=
-e:
->
->
->
-> Den 21.07.2021 09.41, skrev dillon.minfei@gmail.com:
-> > From: Dillon Min <dillon.minfei@gmail.com>
-> >
-> > This driver combine tiny/ili9341.c mipi_dbi_interface driver
-> > with mipi_dpi_interface driver, can support ili9341 with serial
-> > mode or parallel rgb interface mode by register configuration.
-> >
-> > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> > ---
->
-> > +static const struct of_device_id ili9341_of_match[] =3D {
-> > +     {
-> > +             .compatible =3D "st,sf-tc240t-9370-t",
-> > +             .data =3D &ili9341_stm32f429_disco_data,
-> > +     },
-> > +     {
-> > +             /* porting from tiny/ili9341.c
-> > +              * for original mipi dbi compitable
-> > +              */
-> > +             .compatible =3D "adafruit,yx240qv29",
->
-> I don't understand this, now there will be 2 drivers that support the
-> same display?
+yamllint warnings/errors:
 
-There is no reason to create two drivers to support the same display.
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml: properties:ingenic,use-internal-divider: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+		hint: A vendor boolean property can use "type: boolean"
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml: properties:ingenic,use-internal-divider: 'oneOf' conditional failed, one must be fixed:
+		'enum' is a required property
+		'const' is a required property
+		hint: A vendor string property with exact values has an implicit type
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml: properties:ingenic,use-internal-divider: 'oneOf' conditional failed, one must be fixed:
+		'$ref' is a required property
+		'allOf' is a required property
+		hint: A vendor property needs a $ref to types.yaml
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
+	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml: ignoring, error in schema: properties: ingenic,use-internal-divider
+warning: no schema found in file: ./Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+Documentation/devicetree/bindings/iio/adc/ingenic,adc.example.dt.yaml:0:0: /example-0/adc@10070000: failed to match any schema with compatible: ['ingenic,jz4740-adc']
+\ndoc reference errors (make refcheckdocs):
 
-To support only-dbi and dbi+dpi panel at drm/panel or drm/tiny both
-fine with me.
+See https://patchwork.ozlabs.org/patch/1508137
 
->
-> AFAICT drm/tiny/ili9341.c is just copied into this driver, is the plan
-> to remove the tiny/ driver? If so I couldn't see this mentioned anywhere.
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-Yes, I'd like to merge the code from drm/tiny/ili9341.c to this driver
-(to make a single driver to support different bus).
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-I have two purpose to extend the feature drm/tiny/ili9341.c
+pip3 install dtschema --upgrade
 
-- keep compatible =3D "adafruit,yx240qv29", add bus mode dts bindings (pane=
-l_bus)
-  to define the interface which host wants to use. such as
-panel_bus=3D"dbi" or "rgb"
-  or "i80" for this case, i will add dpi code to drm/tiny/ili9341.c.
+Please check and re-submit.
 
-- merge tiny/ili9341.c to this driver,remove drm/tiny/ili9341.c, add
-new dts compatible
-  string to support other interfaces. just like what i'm doing now.
-
-I have no idea about your plan on drm/tiny drivers, actually some of
-these panels under
-the diny folder can support both dbi and dbi+dpi (much faster, need
-more pins). no
-doubt the requirement to support dpi is always there.
-
-What is your preference?
-
-Thanks & Regards
-Dillon
-
->
-> Noralf.
->
-> > +             .data =3D NULL,
-> > +     },
-> > +};
-> > +MODULE_DEVICE_TABLE(of, ili9341_of_match);
