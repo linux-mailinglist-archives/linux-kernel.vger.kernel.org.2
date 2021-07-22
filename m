@@ -2,207 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D21C3D2666
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419403D2668
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbhGVO3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 10:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232464AbhGVOYf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 10:24:35 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05720C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 08:04:58 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id y6so5606874ilj.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 08:04:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pdY6rhVpt2cvtRD9X+6uRamQHWbNgW9tGd+/rf6LByw=;
-        b=LfsodAg1o0ijTbK+UfgG4wZc2ri4Sy1nUrT/7gxYKMSxuvQ+PZJee8lZ8iU8iY7YFF
-         hYuYP7CWfASDCME7zXCXWrJMHrwbwEOoVAC6enIZFmZGsym+ZslNIazL0Yu3CiGMFDQm
-         JLmWMtUrUa4HuratO6FsGooWyNX1Mna9Y0z7CHCNCJTkrW7QD+1CEu5sJMGbVjPKGoks
-         JWXLdZ4HwnDvYbBD+1ckhsYvFxWiEFEs3T+198xWlTn0EU+Vrm4lspa2q6TFX+UWSY5+
-         0+GQHEm1qB+1uQyzFvO+k3OEIay5gz6KO2ZU7U1MSd44k0v3GKixXoOry47KjWPS3mTC
-         i4dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pdY6rhVpt2cvtRD9X+6uRamQHWbNgW9tGd+/rf6LByw=;
-        b=dS+zyQRztD6bhCm9YNriygd7oml5SqsDQ2TT738eiipyVLcyZl7AxHiFLx68C8YWHe
-         FdE78su+kEQ57Mvl2RMiIXB/vlpsI3epmn9XtwwzMiCsaD/fbL+x7wjAr5XTVyrJh9+E
-         h/TaTRTC0e3PrJYWPhr40uDLAv1dnBzQn55L3zzk86kqv85sxeVHEI9VqmbebW3Xrw9W
-         /XCZCWmwOMOhLZh6/nXOHu1yyshUoSQ0ofxB5KhrYMYLYC4QDivRb2hwG0ZJWyo1exUI
-         n8u9yfGYyCKTq4SZ27+pv4rp6djT8K/OcxV/j47dY0Ysbwaf+daqGaSPqdvVK5jPrHAE
-         YKKA==
-X-Gm-Message-State: AOAM5303wx4iZVgyzA3gr7S+o3VhXfQvXP2E2VHwxczXTmAlB486Yoo+
-        KgUlbBGH/FYsjgYSbwck91Y=
-X-Google-Smtp-Source: ABdhPJx/iCOEfKNx6SSZefLw/rcSZSwYcTvNl8FtSu3/Q1+/ix8XCODVcVTLTL+UhF83S6mF8+E0Ow==
-X-Received: by 2002:a92:c8c3:: with SMTP id c3mr193016ilq.153.1626966297417;
-        Thu, 22 Jul 2021 08:04:57 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id d9sm7011761ilv.62.2021.07.22.08.04.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 08:04:56 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id DE65C27C0054;
-        Thu, 22 Jul 2021 11:04:54 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 22 Jul 2021 11:04:54 -0400
-X-ME-Sender: <xms:FYn5YAWD-wPR-RVw-WwgbE4Lz_ycSmb-gkti1iUf_GKPSuyM0GECsg>
-    <xme:FYn5YEljXxBbC0VSh0ebQokzBVcIcnrl0abPWqqHKUFaXSoDB_y7md7LMg0moircI
-    GhFOubvfNfPTQZQIg>
-X-ME-Received: <xmr:FYn5YEY0fXjO9nL8oqKGhmiVbxt2vJDbd4VVLFFaXI-DVT7NzWLz3N0GbW4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeeigdekudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpeegudegfedtjedtffdvleelteefuddvkefgheejuedujeehfeelkeetjeegtdef
-    gfenucffohhmrghinhepfhhffihllhdrtghhnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhs
-    ohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnh
-    hgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:FYn5YPWRsfO9ylx6MZT3WvV8V59fPf49rtUcHHSIj61yPQL1vpqR9g>
-    <xmx:FYn5YKkH3YsWLAzswxzjeD3_KE1Ukrxn1L_fk7uLNJDu7P8Ge3LPSQ>
-    <xmx:FYn5YEe1sEA8kHDMSNFZHjhtJ2AG0Ygx4w6cqst97KBNYafBlF2JCw>
-    <xmx:Fon5YAl3nQwOwvJ0QPtpedI0pnNG0cRa7eC3mLZlyOQFW5BfYWOtepdQhhk>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 22 Jul 2021 11:04:52 -0400 (EDT)
-Date:   Thu, 22 Jul 2021 23:04:49 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
-        airlied@linux.ie, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 1/3] drm: use the lookup lock in drm_is_current_master
-Message-ID: <YPmJEYrnB0j17cZV@boqun-archlinux>
-References: <20210722092929.244629-1-desmondcheongzx@gmail.com>
- <20210722092929.244629-2-desmondcheongzx@gmail.com>
- <YPlKkvelm/mcnCj0@phenom.ffwll.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPlKkvelm/mcnCj0@phenom.ffwll.local>
+        id S232598AbhGVOa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 10:30:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232375AbhGVOZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 10:25:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6A4261289;
+        Thu, 22 Jul 2021 15:05:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626966357;
+        bh=T31aa2IVwBsquMNr1B6GucP8Bg+N1C5lu4IplWF/4vI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vA2sMLksNFLwJZB3GQIbk7wqJdoxyAFL2ex/paG3pbpMfoYFjNp1ZkEAYB404oUy+
+         Ef66Kk4+h1Q+WgtiitVDWkcjtpThn1ZtfXPlZRQzU0qlKpiUTmqJ2DUJSfba7Jk0zI
+         HtR1C3tVKYruS0zqhpI8H4PmPqlPNi0iqnF5oYfmZZ14mQD/HT+cQ0mnEGE+9ZYUj2
+         1Wp/4QyO1nRd8Jcc4LTVPn+u6TIY0/+1jQrrqqG/LDe1dw+RAWVC/S/mGRNW1gS39W
+         2Fcn3xA2WOkHumd2O2ezmP/SfwJVzSzEGfQ0Vgqj71qhlVE2qgxArPFcXDn91uUxUG
+         l4h/3o6vBbspA==
+Date:   Fri, 23 Jul 2021 00:05:55 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2] tracing: Allow execnames to be passed as args for
+ synthetic events
+Message-Id: <20210723000555.2daa37666c6e616378a0241d@kernel.org>
+In-Reply-To: <20210722094638.0f7caef2@oasis.local.home>
+References: <20210721214702.4eeb1cd9@oasis.local.home>
+        <20210722222924.c4ff024b507c69c08f8575a3@kernel.org>
+        <20210722094638.0f7caef2@oasis.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 12:38:10PM +0200, Daniel Vetter wrote:
-> On Thu, Jul 22, 2021 at 05:29:27PM +0800, Desmond Cheong Zhi Xi wrote:
-> > Inside drm_is_current_master, using the outer drm_device.master_mutex
-> > to protect reads of drm_file.master makes the function prone to creating
-> > lock hierarchy inversions. Instead, we can use the
-> > drm_file.master_lookup_lock that sits at the bottom of the lock
-> > hierarchy.
+On Thu, 22 Jul 2021 09:46:38 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Thu, 22 Jul 2021 22:29:24 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > This looks an interesting improvement. If we can do this, can we also filter
+> > the event by 'comm' (or execname)? 
+> 
+> We would be able to filter on the synthetic event, just like any other
+> event with a comm (or other string) But I don't think we can filter
+> before (that is, in the histogram code).
+> 
 > > 
-> > Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> > ---
-> >  drivers/gpu/drm/drm_auth.c | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
+> > > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > > ---
+> > > Changes since v1:
+> > >   - Hit a bug on freeing the histogram, found that I used "char[]" for the
+> > >     type, and it expects to be freed. Freed the old "type" and still use
+> > >     "char[]" but have the normal freeing use kfree_const() on type.  
 > > 
-> > diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
-> > index f00354bec3fb..9c24b8cc8e36 100644
-> > --- a/drivers/gpu/drm/drm_auth.c
-> > +++ b/drivers/gpu/drm/drm_auth.c
-> > @@ -63,8 +63,9 @@
-> >  
-> >  static bool drm_is_current_master_locked(struct drm_file *fpriv)
-> >  {
-> > -	lockdep_assert_held_once(&fpriv->minor->dev->master_mutex);
-> > -
-> > +	/* Either drm_device.master_mutex or drm_file.master_lookup_lock
-> > +	 * should be held here.
-> > +	 */
-> 
-> Disappointing that lockdep can't check or conditions for us, a
-> lockdep_assert_held_either would be really neat in some cases.
-> 
-
-The implementation is not hard but I don't understand the usage, for
-example, if we have a global variable x, and two locks L1 and L2, and
-the function
-
-	void do_something_to_x(void)
-	{
-		lockdep_assert_held_either(L1, L2);
-		x++;
-	}
-
-and two call sites:
-
-	void f(void)
-	{
-		lock(L1);
-		do_something_to_x();
-		unlock(L1);
-	}
-
-	void g(void)
-	{
-		lock(L2);
-		do_something_to_x();
-		unlock(L2);
-	}
-
-, wouldn't it be racy if f() and g() called by two threads at the same
-time? Usually I would expect there exists a third synchronazition
-mechanism (say M), which synchronizes the calls to f() and g(), and we
-put M in the lockdep_assert_held() check inside do_something_to_x()
-like:
-
-	void do_something_to_x(void)
-	{
-		lockdep_assert_held_once(M);
-		x++;
-	}
-
-But of course, M may not be a lock, so we cannot put the assert there.
-
-My cscope failed to find ->master_lookup_lock in -rc2 and seems it's not
-introduced in the patchset either, could you point me the branch this
-patchset is based on, so that I could understand this better, and maybe
-come up with a solution? Thanks ;-)
-
-Regards,
-Boqun
-
-> Adding lockdep folks, maybe they have ideas.
-> 
-> On the patch:
-> 
-> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> 
-> >  	return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
-> >  }
-> >  
-> > @@ -82,9 +83,9 @@ bool drm_is_current_master(struct drm_file *fpriv)
-> >  {
-> >  	bool ret;
-> >  
-> > -	mutex_lock(&fpriv->minor->dev->master_mutex);
-> > +	spin_lock(&fpriv->master_lookup_lock);
-> >  	ret = drm_is_current_master_locked(fpriv);
-> > -	mutex_unlock(&fpriv->minor->dev->master_mutex);
-> > +	spin_unlock(&fpriv->master_lookup_lock);
-> >  
-> >  	return ret;
-> >  }
-> > -- 
-> > 2.25.1
 > > 
+> > BTW, if we can use this technic on the hist_field->type, we can cleanup 
+> > other type = strdup("<any const type>", GFP_KERNEL) with type = "<any const type>" ?
+> > 
+> > Anyway, that will be done in another patch (I think that should be done first,
+> > then we can avoid an odd kfree() in update_var_execname().)
 > 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> You mean like this? It was done after the patch, but I can move it first.
+
+Yes, this looks good to me.
+
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> 
+> -- Steve
+> 
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index bb1956efd5ef..6b9e4fb70bc1 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -1590,7 +1590,7 @@ static void __destroy_hist_field(struct hist_field *hist_field)
+>  	kfree(hist_field->var.name);
+>  	kfree(hist_field->name);
+>  
+> -	/* execname vars use a constant type */
+> +	/* Can likely be a const */
+>  	kfree_const(hist_field->type);
+>  
+>  	kfree(hist_field->system);
+> @@ -1648,9 +1648,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+>  	if (flags & HIST_FIELD_FL_HITCOUNT) {
+>  		hist_field->fn = hist_field_counter;
+>  		hist_field->size = sizeof(u64);
+> -		hist_field->type = kstrdup("u64", GFP_KERNEL);
+> -		if (!hist_field->type)
+> -			goto free;
+> +		hist_field->type = "u64";
+>  		goto out;
+>  	}
+>  
+> @@ -1664,7 +1662,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+>  		hist_field->fn = hist_field_log2;
+>  		hist_field->operands[0] = create_hist_field(hist_data, field, fl, NULL);
+>  		hist_field->size = hist_field->operands[0]->size;
+> -		hist_field->type = kstrdup(hist_field->operands[0]->type, GFP_KERNEL);
+> +		hist_field->type = kstrdup_const(hist_field->operands[0]->type, GFP_KERNEL);
+>  		if (!hist_field->type)
+>  			goto free;
+>  		goto out;
+> @@ -1673,18 +1671,14 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+>  	if (flags & HIST_FIELD_FL_TIMESTAMP) {
+>  		hist_field->fn = hist_field_timestamp;
+>  		hist_field->size = sizeof(u64);
+> -		hist_field->type = kstrdup("u64", GFP_KERNEL);
+> -		if (!hist_field->type)
+> -			goto free;
+> +		hist_field->type = "u64";
+>  		goto out;
+>  	}
+>  
+>  	if (flags & HIST_FIELD_FL_CPU) {
+>  		hist_field->fn = hist_field_cpu;
+>  		hist_field->size = sizeof(int);
+> -		hist_field->type = kstrdup("unsigned int", GFP_KERNEL);
+> -		if (!hist_field->type)
+> -			goto free;
+> +		hist_field->type = "unsigned int";
+>  		goto out;
+>  	}
+>  
+> @@ -1697,7 +1691,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+>  		flags |= HIST_FIELD_FL_STRING;
+>  
+>  		hist_field->size = MAX_FILTER_STR_VAL;
+> -		hist_field->type = kstrdup(field->type, GFP_KERNEL);
+> +		hist_field->type = kstrdup_const(field->type, GFP_KERNEL);
+>  		if (!hist_field->type)
+>  			goto free;
+>  
+> @@ -1710,7 +1704,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+>  	} else {
+>  		hist_field->size = field->size;
+>  		hist_field->is_signed = field->is_signed;
+> -		hist_field->type = kstrdup(field->type, GFP_KERNEL);
+> +		hist_field->type = kstrdup_const(field->type, GFP_KERNEL);
+>  		if (!hist_field->type)
+>  			goto free;
+>  
+> @@ -1796,7 +1790,7 @@ static int init_var_ref(struct hist_field *ref_field,
+>  		}
+>  	}
+>  
+> -	ref_field->type = kstrdup(var_field->type, GFP_KERNEL);
+> +	ref_field->type = kstrdup_const(var_field->type, GFP_KERNEL);
+>  	if (!ref_field->type) {
+>  		err = -ENOMEM;
+>  		goto free;
+> @@ -2165,7 +2159,7 @@ static struct hist_field *parse_unary(struct hist_trigger_data *hist_data,
+>  	expr->operands[0] = operand1;
+>  	expr->operator = FIELD_OP_UNARY_MINUS;
+>  	expr->name = expr_str(expr, 0);
+> -	expr->type = kstrdup(operand1->type, GFP_KERNEL);
+> +	expr->type = kstrdup_const(operand1->type, GFP_KERNEL);
+>  	if (!expr->type) {
+>  		ret = -ENOMEM;
+>  		goto free;
+> @@ -2291,7 +2285,7 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+>  	expr->operands[1] = operand2;
+>  	expr->operator = field_op;
+>  	expr->name = expr_str(expr, 0);
+> -	expr->type = kstrdup(operand1->type, GFP_KERNEL);
+> +	expr->type = kstrdup_const(operand1->type, GFP_KERNEL);
+>  	if (!expr->type) {
+>  		ret = -ENOMEM;
+>  		goto free;
+> @@ -2679,10 +2673,10 @@ static struct hist_field *create_var(struct hist_trigger_data *hist_data,
+>  	var->var.hist_data = var->hist_data = hist_data;
+>  	var->size = size;
+>  	var->var.name = kstrdup(name, GFP_KERNEL);
+> -	var->type = kstrdup(type, GFP_KERNEL);
+> +	var->type = kstrdup_const(type, GFP_KERNEL);
+>  	if (!var->var.name || !var->type) {
+>  		kfree(var->var.name);
+> -		kfree(var->type);
+> +		kfree_const(var->type);
+>  		kfree(var);
+>  		var = ERR_PTR(-ENOMEM);
+>  	}
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
