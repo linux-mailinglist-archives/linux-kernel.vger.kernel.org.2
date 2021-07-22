@@ -2,156 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FC23D1E9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 09:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD9A3D1EA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 09:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhGVGXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 02:23:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhGVGXM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 02:23:12 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3A8C061575;
-        Thu, 22 Jul 2021 00:03:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tronnes.org
-        ; s=ds202012; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=geimImWkk+j3UI43YmrbXT0NGSrWz41IEgo4SUWY5x0=; b=vyIh5gzNB1430AHxLZ/3RRB97P
-        h3ohXM9uO7sST+trD0bY/4oh3g+BNyJ/TnvbagXk7G/C+nwuOedAiLFn51tRUUZddYyFX8pFOxQVc
-        UwNMkiqjQQpP6m3mH+oor2vJlvZSpg6JeF2rGIqTFI7zPKrWQ+V4BldVhLfMH3hPGRDFS8hYlp6Jp
-        NJkhwIMxdvn3IHGiZphKYAo/omRaLhHZf26fft+gt58oSlKM2zs4TgB7YT6kBp69u1FMYt1kFjPJJ
-        IO9+UYaq3W8C9Uwa05V2WK+3Vdgwd7hQLZ2lc11Wf17rjrQFU1RyX1xBmvkzvNROCLxx3O2It8LhA
-        RMBX4yMA==;
-Received: from 211.81-166-168.customer.lyse.net ([81.166.168.211]:57951 helo=[192.168.10.61])
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <noralf@tronnes.org>)
-        id 1m6SkC-0006us-Cm; Thu, 22 Jul 2021 09:03:44 +0200
-Subject: Re: [PATCH v2 3/3] drm/panel: Add ilitek ili9341 panel driver
-To:     Dillon Min <dillon.minfei@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <1626853288-31223-1-git-send-email-dillon.minfei@gmail.com>
- <1626853288-31223-4-git-send-email-dillon.minfei@gmail.com>
- <8e091b9c-764d-d410-559e-3c5e25de2a3c@tronnes.org>
- <CAL9mu0K2yLsG0MXOd4ke8N8zn7311CJ54hL-JcbocJOK+H7W9A@mail.gmail.com>
-From:   =?UTF-8?Q?Noralf_Tr=c3=b8nnes?= <noralf@tronnes.org>
-Message-ID: <1e4743b0-250f-975a-f83d-5d000c6496e3@tronnes.org>
-Date:   Thu, 22 Jul 2021 09:03:41 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S230418AbhGVGYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 02:24:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229547AbhGVGYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 02:24:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 692C261241;
+        Thu, 22 Jul 2021 07:05:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626937522;
+        bh=llpwcSwIoRkFywjB2bAOzYOX4SzJ7LKdKo1OJ6ezcx8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ek5e4/aBdnHqvQgymXDltbwMQX6FzSHQqI18vzIzfjRu80xuVCOcq6ROfIqRCSqO8
+         0zF73H5w2undmeY5Kgf2QkmU7dNt0ob/YiGcRx6fPhyqjHvkLs697Tvhw3XuE6gui3
+         /gSYaeQsBgmi9YFHrv2NVI0g4awvLnKfSm85sbwSxVlBtBWrsrcwPfadQNExlBU0qg
+         qqbfmglGN8WtLeEMOzplhXanAf+pMo2d1Bv3spEfXK/iBxaEfqFfEPpBl5WassAgF6
+         d1NTIRxOTPdYjMHcRBb/HTf+5Sl7CtnXXld5pUJlpvR0FQqQQClzMvP0x2oKiOKXw/
+         kD3wAvk9ndJbg==
+Date:   Thu, 22 Jul 2021 10:05:18 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     Gal Pressman <galpress@amazon.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Wenpeng Liang <liangwenpeng@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next 8/9] RDMA: Globally allocate and release QP
+ memory
+Message-ID: <YPkYrluozzr4dJUb@unreal>
+References: <cover.1626609283.git.leonro@nvidia.com>
+ <5b3bff16da4b6f925c872594262cd8ed72b301cd.1626609283.git.leonro@nvidia.com>
+ <abfc0d32-eab8-97d4-5734-508b6c46fe98@amazon.com>
+ <YPaKu4ppS0Bz6fW1@unreal>
+ <5539c203-0d3b-6296-7554-143e7afb6e34@cornelisnetworks.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL9mu0K2yLsG0MXOd4ke8N8zn7311CJ54hL-JcbocJOK+H7W9A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5539c203-0d3b-6296-7554-143e7afb6e34@cornelisnetworks.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 21, 2021 at 02:05:34PM -0400, Dennis Dalessandro wrote:
+> On 7/20/21 4:35 AM, Leon Romanovsky wrote:
+> > On Mon, Jul 19, 2021 at 04:42:11PM +0300, Gal Pressman wrote:
+> >> On 18/07/2021 15:00, Leon Romanovsky wrote:
+> >>> From: Leon Romanovsky <leonro@nvidia.com>
+> >>>
+> >>> Convert QP object to follow IB/core general allocation scheme.
+> >>> That change allows us to make sure that restrack properly kref
+> >>> the memory.
+> >>>
+> >>> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> >>
+> >> EFA and core parts look good to me.
+> >> Reviewed-by: Gal Pressman <galpress@amazon.com>
+> >> Tested-by: Gal Pressman <galpress@amazon.com>
+> 
+> Leon, I pulled your tree and tested, things look good so far.
+> 
+> For rdmavt and core:
+> Reviewed-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+> Tested-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 
+Thanks
 
-Den 22.07.2021 04.07, skrev Dillon Min:
-> Hi Noralf
 > 
-> Thanks for your time to review my patch.
 > 
-> On Thu, 22 Jul 2021 at 01:42, Noralf Trønnes <noralf@tronnes.org> wrote:
->>
->>
->>
->> Den 21.07.2021 09.41, skrev dillon.minfei@gmail.com:
->>> From: Dillon Min <dillon.minfei@gmail.com>
->>>
->>> This driver combine tiny/ili9341.c mipi_dbi_interface driver
->>> with mipi_dpi_interface driver, can support ili9341 with serial
->>> mode or parallel rgb interface mode by register configuration.
->>>
->>> Cc: Linus Walleij <linus.walleij@linaro.org>
->>> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
->>> ---
->>
->>> +static const struct of_device_id ili9341_of_match[] = {
->>> +     {
->>> +             .compatible = "st,sf-tc240t-9370-t",
->>> +             .data = &ili9341_stm32f429_disco_data,
->>> +     },
->>> +     {
->>> +             /* porting from tiny/ili9341.c
->>> +              * for original mipi dbi compitable
->>> +              */
->>> +             .compatible = "adafruit,yx240qv29",
->>
->> I don't understand this, now there will be 2 drivers that support the
->> same display?
+> > Thanks a lot.
+> > 
+> >>
+> >>> +static inline void *rdma_zalloc_obj(struct ib_device *dev, size_t size,
+> >>> +				    gfp_t gfp, bool is_numa_aware)
+> >>> +{
+> >>> +	if (is_numa_aware && dev->ops.get_numa_node)
+> >>
+> >> Honestly I think it's better to return an error if a numa aware allocation is
+> >> requested and get_numa_node is not provided.
+> > 
+> > We don't want any driver to use and implement ".get_numa_node()" callback.
+> > 
+> > Initially, I thought about adding WARN_ON(driver_id != HFI && .get_numa_node)
+> > to the device.c, but decided to stay with comment in ib_verbs.h only.
 > 
-> There is no reason to create two drivers to support the same display.
-> 
-> To support only-dbi and dbi+dpi panel at drm/panel or drm/tiny both
-> fine with me.
-> 
->>
->> AFAICT drm/tiny/ili9341.c is just copied into this driver, is the plan
->> to remove the tiny/ driver? If so I couldn't see this mentioned anywhere.
-> 
-> Yes, I'd like to merge the code from drm/tiny/ili9341.c to this driver
-> (to make a single driver to support different bus).
-> 
-> I have two purpose to extend the feature drm/tiny/ili9341.c
-> 
-> - keep compatible = "adafruit,yx240qv29", add bus mode dts bindings (panel_bus)
->   to define the interface which host wants to use. such as
-> panel_bus="dbi" or "rgb"
->   or "i80" for this case, i will add dpi code to drm/tiny/ili9341.c.
-> 
-> - merge tiny/ili9341.c to this driver,remove drm/tiny/ili9341.c, add
-> new dts compatible
->   string to support other interfaces. just like what i'm doing now.
-> 
-> I have no idea about your plan on drm/tiny drivers, actually some of
-> these panels under
-> the diny folder can support both dbi and dbi+dpi (much faster, need
-> more pins). no
-> doubt the requirement to support dpi is always there.
-> 
-> What is your preference?
-> 
+> Maybe you could update that comment and add that it's for performance? This way
+> its clear we are different for a reason. I'd be fine adding a WARN_ON_ONCE like
+> you mention here. I don't think we need to fail the call but drawing attention
+> to it would not necessarily be a bad thing. Either way, RB/TB for me stands.
 
-I have no plans for tiny/, it's just a place to put tiny DRM drivers of
-all sorts.
+The thing is that performance gain is achieved in very specific artificial
+use case, while we can think about other scenario where such allocation will
+give different results.
 
-Whether or not to have "full" DRM drivers in panel/ is up to Sam and
-Laurent I guess, currently there's only drm_panel drivers in there. I
-have no objections to doing that though.
+For the performance test, Mike forced to have QP and device to be in different
+NUMA nodes, while in reality such situation is possible only if memory on the
+local node is depleted and it is better to have working system instead of current
+situation where node request will fail.
 
-I just wanted to make sure we don't have 2 drivers for the same display.
+I don't want to give wrong impression that numa node allocations are
+better for performance.
 
-Noralf.
+Thanks
 
-> Thanks & Regards
-> Dillon
 > 
->>
->> Noralf.
->>
->>> +             .data = NULL,
->>> +     },
->>> +};
->>> +MODULE_DEVICE_TABLE(of, ili9341_of_match);
+> -Denny
+> 
+> 
