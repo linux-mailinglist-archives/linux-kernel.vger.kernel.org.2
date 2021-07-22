@@ -2,143 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9F93D2543
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62E93D2546
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232281AbhGVNbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:31:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40768 "EHLO mail.kernel.org"
+        id S232314AbhGVNcT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 09:32:19 -0400
+Received: from aposti.net ([89.234.176.197]:54362 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232118AbhGVNbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:31:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4972B613AA;
-        Thu, 22 Jul 2021 14:12:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626963137;
-        bh=Uws4FcnI2E78ZjWf4YvL6GyC8qkD43T2o2gKpCOur5c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tl4NKjzuSQpoHwqkt0rtf0GQ6qfD/Ge3rYMGIlWS1BSDX493/Sx5chHONM/07gMs2
-         HxrNrwqw/OwHpLk7QwSEkVWqqgcXL6/MceEVa1NCj6vL8LYn6YCdvffYwibTIYP5BM
-         pxiWDgVU2Af82hdRaBYgZtfB5vr4FOvYfv2xBKow=
-Date:   Thu, 22 Jul 2021 16:12:15 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Xiaotian Feng <xtfeng@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org,
-        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-        dri-devel@lists.freedesktop.org, Dave Airlie <airlied@redhat.com>
-Subject: Re: [PATCH 5.12 237/242] drm/ast: Remove reference to struct
- drm_device.pdev
-Message-ID: <YPl8v+FZ6PUl7XTl@kroah.com>
-References: <20210715182551.731989182@linuxfoundation.org>
- <20210715182634.577299401@linuxfoundation.org>
- <CAJn8CcF+gfXToErpZv=pWmBKF-i--oVWmaM=6AQ8YZCb21X=oA@mail.gmail.com>
- <YPVgtybrZLxe3XeW@kroah.com>
- <2ba3d853-f334-ba0e-3cdc-1e9a03f99b51@suse.de>
+        id S232105AbhGVNcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:32:18 -0400
+Date:   Thu, 22 Jul 2021 15:12:43 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 3/3] drm/panel-simple: add Gopher 2b LCD panel
+To:     Artjom Vejsel <akawolf0@gmail.com>
+Cc:     thierry.reding@gmail.com, sam@ravnborg.org,
+        dri-devel@lists.freedesktop.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <7TGNWQ.L2GCQQC1CJ603@crapouillou.net>
+In-Reply-To: <20210722140432.1426173-4-akawolf0@gmail.com>
+References: <20210722140432.1426173-1-akawolf0@gmail.com>
+        <20210722140432.1426173-4-akawolf0@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2ba3d853-f334-ba0e-3cdc-1e9a03f99b51@suse.de>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 04:35:21PM +0200, Thomas Zimmermann wrote:
-> hi
+Hi Artjom,
+
+Le jeu., juil. 22 2021 at 17:04:32 +0300, Artjom Vejsel 
+<akawolf0@gmail.com> a écrit :
+> The Gopher 2b LCD panel is used in Gopher 2b handhelds.
+> It's simple panel with NewVision NV3047 driver,
+> but SPI lines are not connected.
+> It has no specific name, since it's unique to that handhelds.
+> lot name at AliExpress: 4.3 inch 40PIN TFT LCD Screen COG
+> NV3047 Drive IC 480(RGB)*272 No Touch 24Bit RGB Interface
 > 
-> Am 19.07.21 um 13:23 schrieb Greg Kroah-Hartman:
-> > On Mon, Jul 19, 2021 at 05:57:30PM +0800, Xiaotian Feng wrote:
-> > > On Fri, Jul 16, 2021 at 5:13 AM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > > 
-> > > > From: Thomas Zimmermann <tzimmermann@suse.de>
-> > > > 
-> > > > commit 0ecb51824e838372e01330752503ddf9c0430ef7 upstream.
-> > > > 
-> > > > Using struct drm_device.pdev is deprecated. Upcast with to_pci_dev()
-> > > > from struct drm_device.dev to get the PCI device structure.
-> > > > 
-> > > > v9:
-> > > >          * fix remaining pdev references
-> > > > 
-> > > > Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> > > > Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-> > > > Fixes: ba4e0339a6a3 ("drm/ast: Fixed CVE for DP501")
-> > > > Cc: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-> > > > Cc: kernel test robot <lkp@intel.com>
-> > > > Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> > > > Cc: Dave Airlie <airlied@redhat.com>
-> > > > Cc: dri-devel@lists.freedesktop.org
-> > > > Link: https://patchwork.freedesktop.org/patch/msgid/20210429105101.25667-2-tzimmermann@suse.de
-> > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > ---
-> > > >   drivers/gpu/drm/ast/ast_main.c |    5 ++---
-> > > >   1 file changed, 2 insertions(+), 3 deletions(-)
-> > > > 
-> > > > --- a/drivers/gpu/drm/ast/ast_main.c
-> > > > +++ b/drivers/gpu/drm/ast/ast_main.c
-> > > > @@ -411,7 +411,6 @@ struct ast_private *ast_device_create(co
-> > > >                  return ast;
-> > > >          dev = &ast->base;
-> > > > 
-> > > > -       dev->pdev = pdev;
-> > > >          pci_set_drvdata(pdev, dev);
-> > > > 
-> > > >          ast->regs = pcim_iomap(pdev, 1, 0);
-> > > > @@ -453,8 +452,8 @@ struct ast_private *ast_device_create(co
-> > > > 
-> > > >          /* map reserved buffer */
-> > > >          ast->dp501_fw_buf = NULL;
-> > > > -       if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
-> > > > -               ast->dp501_fw_buf = pci_iomap_range(dev->pdev, 0, dev->vram_mm->vram_size, 0);
-> > > > +       if (dev->vram_mm->vram_size < pci_resource_len(pdev, 0)) {
-> > > > +               ast->dp501_fw_buf = pci_iomap_range(pdev, 0, dev->vram_mm->vram_size, 0);
-> > > >                  if (!ast->dp501_fw_buf)
-> > > >                          drm_info(dev, "failed to map reserved buffer!\n");
-> > > >          }
-> > > > 
-> > > 
-> > > Hi Greg,
-> > > 
-> > >       This backport is incomplete for 5.10 kernel,  kernel is panicked
-> > > on RIP: ast_device_create+0x7d.  When I look into the crash code, I
-> > > found
-> > > 
-> > > struct ast_private *ast_device_create(struct drm_driver *drv,
-> > >                                        struct pci_dev *pdev,
-> > >                                        unsigned long flags)
-> > > {
-> > > .......
-> > >          dev->pdev = pdev;  // This is removed
-> > >          pci_set_drvdata(pdev, dev);
-> > > 
-> > >          ast->regs = pcim_iomap(pdev, 1, 0);
-> > >          if (!ast->regs)
-> > >                  return ERR_PTR(-EIO);
-> > > 
-> > >          /*
-> > >           * If we don't have IO space at all, use MMIO now and
-> > >           * assume the chip has MMIO enabled by default (rev 0x20
-> > >           * and higher).
-> > >           */
-> > >          if (!(pci_resource_flags(dev->pdev, 2) & IORESOURCE_IO)) { //
-> > > dev->pdev is in used here.
-> > >                  drm_info(dev, "platform has no IO space, trying MMIO\n");
-> > >                  ast->ioregs = ast->regs + AST_IO_MM_OFFSET;
-> > >          }
-> > > 
-> > >          That's because commit 46fb883c3d0d8a823ef995ddb1f9b0817dea6882
-> > > is not backported to 5.10 kernel.
-> > 
-> > So what should I do here?  Backport that commit (was was not called
-> > out), or just revert this?
+> Signed-off-by: Artjom Vejsel <akawolf0@gmail.com>
+> ---
+>  drivers/gpu/drm/panel/panel-simple.c | 44 
+> ++++++++++++++++++++++++++++
+>  1 file changed, 44 insertions(+)
 > 
-> Best drop all these 'remove pdev' patches from stable. They are no bugfixes.
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c 
+> b/drivers/gpu/drm/panel/panel-simple.c
+> index 9b286bd4444f..9cce6b63a147 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -4306,6 +4306,47 @@ static const struct panel_desc 
+> yes_optoelectronics_ytc700tlag_05_201c = {
+>  	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+>  };
+> 
+> +static const struct drm_display_mode 
+> qishenglong_gopher2b_lcd_panel_modes[] = {
+> +	{ /* 60 Hz */
+> +		.clock = 10800,
+> +		.hdisplay = 480,
+> +		.hsync_start = 480 + 77,
+> +		.hsync_end = 480 + 77 + 41,
+> +		.htotal = 480 + 77 + 41 + 2,
+> +		.vdisplay = 272,
+> +		.vsync_start = 272 + 16,
+> +		.vsync_end = 272 + 16 + 10,
+> +		.vtotal = 272 + 16 + 10 + 2,
+> +		.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
+> +	},
+> +	{ /* 50 Hz */
+> +		.clock = 10800,
+> +		.hdisplay = 480,
+> +		.hsync_start = 480 + 17,
+> +		.hsync_end = 480 + 17 + 41,
+> +		.htotal = 480 + 17 + 41 + 2,
+> +		.vdisplay = 272,
+> +		.vsync_start = 272 + 116,
+> +		.vsync_end = 272 + 116 + 10,
+> +		.vtotal = 272 + 116 + 10 + 2,
+> +		.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
+> +	},
+> +};
+> +
+> +static const struct panel_desc qishenglong_gopher2b_lcd_panel = {
+> +	.modes = qishenglong_gopher2b_lcd_panel_modes,
+> +	.num_modes = ARRAY_SIZE(qishenglong_gopher2b_lcd_panel_modes),
+> +	.num_modes = 1,
 
-Which specific commits were they?
+Thank you for your patch. From a quick look though, you have .num_modes 
+listed twice here. I believe the second line should be removed.
 
-thanks,
+Cheers,
+-Paul
 
-greg k-h
+> +	.bpc = 8,
+> +	.size = {
+> +		.width = 95,
+> +		.height = 54,
+> +	},
+> +	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+> +	.bus_flags = DRM_BUS_FLAG_DE_HIGH | 
+> DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE,
+> +	.connector_type = DRM_MODE_CONNECTOR_DPI,
+> +};
+> +
+>  static const struct drm_display_mode arm_rtsm_mode[] = {
+>  	{
+>  		.clock = 65000,
+> @@ -4753,6 +4794,9 @@ static const struct of_device_id 
+> platform_of_match[] = {
+>  	}, {
+>  		.compatible = "yes-optoelectronics,ytc700tlag-05-201c",
+>  		.data = &yes_optoelectronics_ytc700tlag_05_201c,
+> +	}, {
+> +		.compatible = "qishenglong,gopher2b-lcd-panel",
+> +		.data = &qishenglong_gopher2b_lcd_panel,
+>  	}, {
+>  		/* Must be the last entry */
+>  		.compatible = "panel-dpi",
+> --
+> 2.32.0
+
+
