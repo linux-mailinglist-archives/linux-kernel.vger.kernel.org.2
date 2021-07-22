@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6AE3D2026
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 10:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D9B3D2027
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 10:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhGVIG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 04:06:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:47700 "EHLO foss.arm.com"
+        id S231288AbhGVIHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 04:07:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:47724 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230314AbhGVIG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 04:06:56 -0400
+        id S230314AbhGVIHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 04:07:01 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5605D6E;
-        Thu, 22 Jul 2021 01:47:31 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91983113E;
+        Thu, 22 Jul 2021 01:47:36 -0700 (PDT)
 Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3ABA03F73D;
-        Thu, 22 Jul 2021 01:47:30 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] sched: Fix UCLAMP_FLAG_IDLE setting
-To:     Quentin Perret <qperret@google.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D9B3D3F73D;
+        Thu, 22 Jul 2021 01:47:34 -0700 (PDT)
+Subject: Re: [PATCH v4 2/2] sched: Skip priority checks with
+ SCHED_FLAG_KEEP_PARAMS
+To:     Quentin Perret <qperret@google.com>, mingo@redhat.com,
+        peterz@infradead.org, vincent.guittot@linaro.org,
         qais.yousef@arm.com, rickyiu@google.com, wvw@google.com,
-        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
+        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com
 References: <20210719161656.3833943-1-qperret@google.com>
- <20210719161656.3833943-2-qperret@google.com>
- <7ef85d3f-fd2b-a192-07ef-3431b33d06ce@arm.com> <YPgck3j01cI3VzqD@google.com>
+ <20210719161656.3833943-3-qperret@google.com>
 From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <f21896e2-feae-5758-383b-6e5cd9cf8e46@arm.com>
-Date:   Thu, 22 Jul 2021 10:47:28 +0200
+Message-ID: <ad30be79-8fb2-023d-9936-01f7173164e4@arm.com>
+Date:   Thu, 22 Jul 2021 10:47:33 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YPgck3j01cI3VzqD@google.com>
+In-Reply-To: <20210719161656.3833943-3-qperret@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -40,72 +40,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/2021 15:09, Quentin Perret wrote:
-> Hi Dietmar,
+On 19/07/2021 18:16, Quentin Perret wrote:
+> SCHED_FLAG_KEEP_PARAMS can be passed to sched_setattr to specify that
+> the call must not touch scheduling parameters (nice or priority). This
+
+What about DL params (runtime, deadline, period)?
+
+Uclamp is not for DL but we could (*) still set uclamp values on a DL
+task. Obviously they would only be used when the task switches policy.
+
+On tip/sched/core:
+
+root@juno:~# chrt -d -P 1000000000 -T 100000000 -p 0 1671
+
+root@juno:~# uclampset -m200 -M400 -p 1671
+
+root@juno:~# cat /proc/1671/sched | grep uclamp
+uclamp.min                                   :                  200
+uclamp.max                                   :                  400
+effective uclamp.min                         :                  200
+effective uclamp.max                         :                  400
+
+root@juno:~# chrt -o -p 0
+pid 1702's current scheduling policy: SCHED_OTHER
+pid 1702's current scheduling priority: 0
+
+root@juno:~# cat /proc/1671/sched | grep uclamp
+uclamp.min                                   :                  200
+uclamp.max                                   :                  400
+effective uclamp.min                         :                  200
+effective uclamp.max                         :                  400
+
+
+> is particularly handy for uclamp when used in conjunction with
+> SCHED_FLAG_KEEP_POLICY as that allows to issue a syscall that only
+> impacts uclamp values.
 > 
-> On Wednesday 21 Jul 2021 at 12:07:04 (+0200), Dietmar Eggemann wrote:
->> On 19/07/2021 18:16, Quentin Perret wrote:
->>> The UCLAMP_FLAG_IDLE flag is set on a runqueue when dequeueing the last
->>> active task to maintain the last uclamp.max and prevent blocked util
->>
->> s/active/runnable ?
+> However, sched_setattr always checks whether the priorities and nice
+> values passed in sched_attr are valid first, even if those never get
+
++ DL params (__checkparam_dl())
+
+> used down the line. This is useless at best since userspace can
+> trivially bypass this check to set the uclamp values by specifying low
+> priorities. However, it is cumbersome to do so as there is no single
+> expression of this that skips both RT and CFS checks at once. As such,
+> userspace needs to query the task policy first with e.g. sched_getattr
+> and then set sched_attr.sched_priority accordingly. This is racy and
+> slower than a single call.
 > 
-> 'active' should still be correct here no? We enter uclamp_rq_max_value()
-> -> uclamp_idle_value() when the last _active_ uclamp_se is decremented,
-> and when all the buckets are empty, so I think that works?
-
-Ah, it this uclamp ative `p->uclamp[clamp_id].active` which is set with
-`bucket->tasks` in uclamp_rq_[inc/dec]_id.
-
-Maybe add: last (uclamp) active task, i.e. (bucket.tasks == 0 for all
-bucket_id's) ... ?
-
->>> from suddenly becoming visible.
->>>
->>
->> [...]
->>
->> IMHO, the main argument in v3 to do the clearing outside
->> uclamp_rq_inc_id() was a possible order change in `for_each_clamp_id()`.
->> So setting/clearing `rq->uclamp_flags` (UCLAMP_FLAG_IDLE) on UCLAMP_MAX
->> (currently the highest Uclamp constraint (UCLAMP_CNT-1)) could be
->> incorrect when UCLAMP_MIN and UCLAMP_MAX change place because the
->> same `rq->uclamp_flags` value is needed for both Uclamp constraint
->> values.
->>
->> What about decoupling rq->uclamp_flags` handling from UCLAMP_MAX and
->> doing this for 'UCLAMP_CNT - 1', i.e. always on the highest Uclamp
->> constraint?
->>
->> #define for_each_clamp_id(clamp_id) \
->>     for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
->>
->> In this case the code change can be as easy as in your original v3.
->>
->> Setting UCLAMP_FLAG_IDLE in uclamp_idle_value():
->>
->>   uclamp_rq_dec_id() -> uclamp_rq_max_value() -> *uclamp_idle_value()*
->>
->> Resetting UCLAMP_FLAG_IDLE in uclamp_idle_reset():
->>
->>   uclamp_rq_inc_id()                          -> *uclamp_idle_reset()*  
->>
->> This would be more symmetrical then uclamp_idle_value() and
->> uclamp_rq_inc()/uclamp_rq_reinc_id().
+> As the priority and nice checks are useless when SCHED_FLAG_KEEP_PARAMS
+> is specified, simply inherit them in this case to match the policy
+> inheritance of SCHED_FLAG_KEEP_POLICY.
 > 
-> Right, thanks for the suggestion but to be fair I feel like this is a
-> matter of personal preference at this point. I personally like the way
-> it is in this patch -- I find it easier to reason about, but maybe
-> that's because I wrote it ...
+> Reported-by: Wei Wang <wvw@google.com>
+> Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  kernel/sched/core.c | 19 +++++++++++++------
+>  1 file changed, 13 insertions(+), 6 deletions(-)
 > 
-> Do you feel strongly about it? If not I'd prefer to not re-spin this
-> another time if possible. Let me know what you think.
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index e801d2c3077b..914076eab242 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -7332,6 +7332,16 @@ static int sched_copy_attr(struct sched_attr __user *uattr, struct sched_attr *a
+>  	return -E2BIG;
+>  }
+>  
+> +static void get_params(struct task_struct *p, struct sched_attr *attr)
+> +{
+> +	if (task_has_dl_policy(p))
+> +		__getparam_dl(p, attr);
 
-No, not at all ;-) Just like it better since it would mean less code
-changes and only one place to reset UCLAMP_FLAG_IDLE.
+(*) This changes the behaviour when setting uclamp values on a DL task.
 
-You can add a:
+Before uclamp values could be set but now, because of
 
-Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+  void __getparam_dl(struct task_struct *p, struct sched_attr *attr)
+    ..
+    attr->sched_flags = dl_se->flags
 
-to your version in case you want to keep it.
+SCHED_FLAG_UTIL_CLAMP gets overwritten and  __sched_setscheduler() bails in:
+
+    if (unlikely(policy == p->policy)) {
+      ...
+      retval = 0;
+      goto unlock;
+    }
+  change:
+
+I.e. the:
+
+      if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)
+        goto change;
+
+can't trigger anymore.
+
+
+> +	else if (task_has_rt_policy(p))
+> +		attr->sched_priority = p->rt_priority;
+> +	else
+> +		attr->sched_nice = task_nice(p);
+> +}
+> +
+>  /**
+>   * sys_sched_setscheduler - set/change the scheduler policy and RT priority
+>   * @pid: the pid in question.
+> @@ -7393,6 +7403,8 @@ SYSCALL_DEFINE3(sched_setattr, pid_t, pid, struct sched_attr __user *, uattr,
+>  	rcu_read_unlock();
+>  
+>  	if (likely(p)) {
+> +		if (attr.sched_flags & SCHED_FLAG_KEEP_PARAMS)
+> +			get_params(p, &attr);
+
+SCHED_FLAG_KEEP_PARAMS is handled here but SCHED_FLAG_KEEP_POLICY
+outside (before) the `if (likely(p))`?
+
+>  		retval = sched_setattr(p, &attr);
+>  		put_task_struct(p);
+>  	}
+
+[...]
