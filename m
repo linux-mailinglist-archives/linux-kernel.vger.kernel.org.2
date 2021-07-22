@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEE03D2056
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB973D205D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhGVIYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 04:24:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59960 "EHLO mail.kernel.org"
+        id S231295AbhGVI0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 04:26:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231259AbhGVIYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 04:24:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C92606120C;
-        Thu, 22 Jul 2021 09:05:11 +0000 (UTC)
+        id S230419AbhGVI0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 04:26:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EC9B610F7;
+        Thu, 22 Jul 2021 09:07:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626944713;
-        bh=mDlBm1+st6/RYgagHA47JigTq8drz+tHlBP+CXPZbVk=;
+        s=k20201202; t=1626944842;
+        bh=G6uggNtHBw06DrLEyrx3+EPLEQiuV1JfBOJ1R+sWWJ8=;
         h=From:To:Cc:Subject:Date:From;
-        b=ZnI8FnerWIhS6ihirfALUw+u2q0hXQW0mcUNrGHQxMNBf7e9nxMlJ6hfE0uvuqBZQ
-         QHPLbZjjQ+JS+8st7iUbQSCGowkYzDp7ES/qFtLA7HL65Ac5RXGYo1ej69zmEc7hje
-         zdHOe2l6NLLC53fBQPTAemyVaDphW+9cs9lFEaeBtUZiuLfDEhS9r2pE/X5zh9Hvnu
-         VBrh4cLFwLEz4fjhULIFtlxBOoNmSUt7fqfh+7n2sTW94qzOe+ZKqzLq9C3CPEne5p
-         tRf22HctJ5G0kUVFOJejeD0im0lOU/R3KuXYdYX9UwYCuDB702mvbMrvKll6Ku6S3T
-         E9uBh7bfQjZpw==
+        b=KQeV/yh9kA3Pd9NOV0uvBntromN90sb9aiaaPGvLkaYVfUNU7O8bsgBgmvO/GMaao
+         LFhN0mq06HHJtG4ZO2HKrb9Y35Kf+x8VSCBty7LmZAqDvWlAN+01q6+P9hsjnc/pS5
+         Pq3wCiWrVQU+WsT+gJQa+4fqc6bRKBuB/W6E6fP4MRcNNHIFPUEGqMjbyX03kniPRw
+         HJqqoQZI6u1tjkjzwkx6c9yl/xRlmtD7bGpzoZYgJjaL2KuqMcAP4T7YW/T7wyRzf8
+         c1CeIPgNxz3WG9CfzPamEggWU3i9gd4RVaDmSPm20nO0AkFK7eBPZkDXhbFe8dLMsB
+         LGD0yeHyDmw0g==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] media: atmel: atmel-isc: fix build failures after split
-Date:   Thu, 22 Jul 2021 11:04:59 +0200
-Message-Id: <20210722090509.1054249-1-arnd@kernel.org>
+To:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jean-Francois Dagenais <jeff.dagenais@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Amit Kucheria <amitk@kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH] thermal: fix thermal_cooling_device_register() prototype
+Date:   Thu, 22 Jul 2021 11:06:44 +0200
+Message-Id: <20210722090717.1116748-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -46,106 +46,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When the two isc driver front-ends are both enabled, but one of them
-is built-in and the other one is a loadable module, the 'base' driver
-is in a state that does not really work, as it would have to be
-built in two different ways:
+There are two pairs of declarations for thermal_cooling_device_register()
+and thermal_of_cooling_device_register(), and only one set was changed
+in a recent patch, so the other one now causes a compile-time warning:
 
-arm-linux-gnueabi-ld: drivers/media/platform/atmel/atmel-isc-base.o: in function `isc_async_complete':
-atmel-isc-base.c:(.text+0x1e80): undefined reference to `__this_module'
-arm-linux-gnueabi-ld: drivers/media/platform/atmel/atmel-isc-base.o:(.rodata+0x3c8): undefined reference to `__this_module'
-arm-linux-gnueabi-ld: drivers/media/platform/atmel/atmel-isc-base.o:(__param+0x4): undefined reference to `__this_module'
-arm-linux-gnueabi-ld: drivers/media/platform/atmel/atmel-isc-base.o:(__param+0x18): undefined reference to `__this_module'
+drivers/net/wireless/mediatek/mt76/mt7915/init.c: In function 'mt7915_thermal_init':
+drivers/net/wireless/mediatek/mt76/mt7915/init.c:134:48: error: passing argument 1 of 'thermal_cooling_device_register' discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]
+  134 |         cdev = thermal_cooling_device_register(wiphy_name(wiphy), phy,
+      |                                                ^~~~~~~~~~~~~~~~~
+In file included from drivers/net/wireless/mediatek/mt76/mt7915/init.c:7:
+include/linux/thermal.h:407:39: note: expected 'char *' but argument is of type 'const char *'
+  407 | thermal_cooling_device_register(char *type, void *devdata,
+      |                                 ~~~~~~^~~~
 
-As a workaround, turn the base portion of the driver into a library
-by itself that can become a standalone module rather than being built
-into the two drivers.
+Change the dummy helper functions to have the same arguments as the
+normal version.
 
-Fixes: 0a0e265515db ("media: atmel: atmel-isc: split driver into driver base and isc")
-Fixes: c9aa973884a1 ("media: atmel: atmel-isc: add microchip-xisc driver")
+Fixes: f991de53a8ab ("thermal: make device_register's type argument const")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/media/platform/atmel/Makefile         |  8 ++++----
- drivers/media/platform/atmel/atmel-isc-base.c | 10 ++++++++++
- 2 files changed, 14 insertions(+), 4 deletions(-)
+ include/linux/thermal.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/atmel/Makefile b/drivers/media/platform/atmel/Makefile
-index c5c01556c653..03c896e478c2 100644
---- a/drivers/media/platform/atmel/Makefile
-+++ b/drivers/media/platform/atmel/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
--atmel-isc-objs = atmel-sama5d2-isc.o atmel-isc-base.o
--atmel-xisc-objs = atmel-sama7g5-isc.o atmel-isc-base.o
-+atmel-isc-objs = atmel-sama5d2-isc.o
-+atmel-xisc-objs = atmel-sama7g5-isc.o
- 
- obj-$(CONFIG_VIDEO_ATMEL_ISI) += atmel-isi.o
--obj-$(CONFIG_VIDEO_ATMEL_ISC) += atmel-isc.o
--obj-$(CONFIG_VIDEO_ATMEL_XISC) += atmel-xisc.o
-+obj-$(CONFIG_VIDEO_ATMEL_ISC) += atmel-isc.o atmel-isc-base.o
-+obj-$(CONFIG_VIDEO_ATMEL_XISC) += atmel-xisc.o atmel-isc-base.o
-diff --git a/drivers/media/platform/atmel/atmel-isc-base.c b/drivers/media/platform/atmel/atmel-isc-base.c
-index 19daa49bf604..b3730021dd89 100644
---- a/drivers/media/platform/atmel/atmel-isc-base.c
-+++ b/drivers/media/platform/atmel/atmel-isc-base.c
-@@ -378,6 +378,7 @@ int isc_clk_init(struct isc_device *isc)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(isc_clk_init);
- 
- void isc_clk_cleanup(struct isc_device *isc)
- {
-@@ -392,6 +393,7 @@ void isc_clk_cleanup(struct isc_device *isc)
- 			clk_unregister(isc_clk->clk);
- 	}
- }
-+EXPORT_SYMBOL_GPL(isc_clk_cleanup);
- 
- static int isc_queue_setup(struct vb2_queue *vq,
- 			    unsigned int *nbuffers, unsigned int *nplanes,
-@@ -1578,6 +1580,7 @@ irqreturn_t isc_interrupt(int irq, void *dev_id)
- 
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(isc_interrupt);
- 
- static void isc_hist_count(struct isc_device *isc, u32 *min, u32 *max)
- {
-@@ -2212,6 +2215,7 @@ const struct v4l2_async_notifier_operations isc_async_ops = {
- 	.unbind = isc_async_unbind,
- 	.complete = isc_async_complete,
- };
-+EXPORT_SYMBOL_GPL(isc_async_ops);
- 
- void isc_subdev_cleanup(struct isc_device *isc)
- {
-@@ -2224,6 +2228,7 @@ void isc_subdev_cleanup(struct isc_device *isc)
- 
- 	INIT_LIST_HEAD(&isc->subdev_entities);
- }
-+EXPORT_SYMBOL_GPL(isc_subdev_cleanup);
- 
- int isc_pipeline_init(struct isc_device *isc)
- {
-@@ -2264,6 +2269,7 @@ int isc_pipeline_init(struct isc_device *isc)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(isc_pipeline_init);
- 
- /* regmap configuration */
- #define ATMEL_ISC_REG_MAX    0xd5c
-@@ -2273,4 +2279,8 @@ const struct regmap_config isc_regmap_config = {
- 	.val_bits       = 32,
- 	.max_register	= ATMEL_ISC_REG_MAX,
- };
-+EXPORT_SYMBOL_GPL(isc_regmap_config);
- 
-+MODULE_AUTHOR("Songjun Wu");
-+MODULE_DESCRIPTION("The V4L2 driver for Atmel-ISC, common parts");
-+MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+index d296f3b88fb9..8050d929a5b4 100644
+--- a/include/linux/thermal.h
++++ b/include/linux/thermal.h
+@@ -404,12 +404,13 @@ static inline void thermal_zone_device_unregister(
+ 	struct thermal_zone_device *tz)
+ { }
+ static inline struct thermal_cooling_device *
+-thermal_cooling_device_register(char *type, void *devdata,
++thermal_cooling_device_register(const char *type, void *devdata,
+ 	const struct thermal_cooling_device_ops *ops)
+ { return ERR_PTR(-ENODEV); }
+ static inline struct thermal_cooling_device *
+ thermal_of_cooling_device_register(struct device_node *np,
+-	char *type, void *devdata, const struct thermal_cooling_device_ops *ops)
++	const char *type, void *devdata,
++	const struct thermal_cooling_device_ops *ops)
+ { return ERR_PTR(-ENODEV); }
+ static inline struct thermal_cooling_device *
+ devm_thermal_of_cooling_device_register(struct device *dev,
 -- 
 2.29.2
 
