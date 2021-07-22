@@ -2,50 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD473D2929
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778703D2A74
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbhGVQBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:01:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35290 "EHLO mail.kernel.org"
+        id S234453AbhGVQL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:11:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233686AbhGVP70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:59:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7933060E0C;
-        Thu, 22 Jul 2021 16:40:00 +0000 (UTC)
+        id S233150AbhGVQHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:07:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54EA961D30;
+        Thu, 22 Jul 2021 16:47:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972001;
-        bh=/gVeHfhRcbOljhuLQDLnBS0Z+BWxze5RyGoNvdYRXk0=;
+        s=korg; t=1626972464;
+        bh=KVJQDHg+koXl4QxZHfvKYjYa/TXmNjwLGPHmjBZWMHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QAfuZfJ66Kggp9P8W2UnUWZvy+jYaWt3nyrKBvPeqpJqtZFfY5Q4u3q5AQzN6aguG
-         9wTB1vYwPaR3/QhTH8ZlvLKcKAQ9FZr7yPpLGPoLjc6qTd9Ql6tgaL8AYvuYbsUEeh
-         gCDUmFGSTXWfewzvGFM9U6Wj1c/3xlvcYEJyXh7I=
+        b=rgyXXWDNmR+cIdxs1Gh3XP9fToUzIU0+UPluwwGclqIPfqOCypr0j6jsMxbPERSVK
+         P+OWY556xVo66z7+oj86OerNZKmzFQ0+sW14pougzdgoWXzXDk4geMo5JlQmKjI2B6
+         kMsSbFcoxFmMo30DWvb8RMDAvDMYqyMCGC0MU9FU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "From: Matthew Wilcox" <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Ying Huang <ying.huang@intel.com>, Alex Shi <alexs@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 108/125] Revert "mm/shmem: fix shmem_swapin() race with swapoff"
-Date:   Thu, 22 Jul 2021 18:31:39 +0200
-Message-Id: <20210722155628.289695046@linuxfoundation.org>
+        stable@vger.kernel.org, Jianlin Shi <jishi@redhat.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.13 125/156] net: ip_tunnel: fix mtu calculation for ETHER tunnel devices
+Date:   Thu, 22 Jul 2021 18:31:40 +0200
+Message-Id: <20210722155632.403279861@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,81 +40,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-This reverts commit a533a21b692fc15a6aadfa827b29c7d9989109ca which is
-commit 2efa33fc7f6ec94a3a538c1a264273c889be2b36 upstream.
+commit 9992a078b1771da354ac1f9737e1e639b687caa2 upstream.
 
-It should not have been added to the stable trees, sorry about that.
+Commit 28e104d00281 ("net: ip_tunnel: fix mtu calculation") removed
+dev->hard_header_len subtraction when calculate MTU for tunnel devices
+as there is an overhead for device that has header_ops.
 
-Link: https://lore.kernel.org/r/YPVgaY6uw59Fqg5x@casper.infradead.org
-Reported-by: From: Matthew Wilcox <willy@infradead.org>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Ying Huang <ying.huang@intel.com>
-Cc: Alex Shi <alexs@kernel.org>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Dennis Zhou <dennis@kernel.org>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Tim Chen <tim.c.chen@linux.intel.com>
-Cc: Wei Yang <richard.weiyang@gmail.com>
-Cc: Yang Shi <shy828301@gmail.com>
-Cc: Yu Zhao <yuzhao@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Sasha Levin <sashal@kernel.org>
+But there are ETHER tunnel devices, like gre_tap or erspan, which don't
+have header_ops but set dev->hard_header_len during setup. This makes
+pkts greater than (MTU - ETH_HLEN) could not be xmited. Fix it by
+subtracting the ETHER tunnel devices' dev->hard_header_len for MTU
+calculation.
+
+Fixes: 28e104d00281 ("net: ip_tunnel: fix mtu calculation")
+Reported-by: Jianlin Shi <jishi@redhat.com>
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/shmem.c |   14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+ net/ipv4/ip_tunnel.c |   18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1698,8 +1698,7 @@ static int shmem_swapin_page(struct inod
- 	struct address_space *mapping = inode->i_mapping;
- 	struct shmem_inode_info *info = SHMEM_I(inode);
- 	struct mm_struct *charge_mm = vma ? vma->vm_mm : current->mm;
--	struct swap_info_struct *si;
--	struct page *page = NULL;
-+	struct page *page;
- 	swp_entry_t swap;
- 	int error;
- 
-@@ -1707,12 +1706,6 @@ static int shmem_swapin_page(struct inod
- 	swap = radix_to_swp_entry(*pagep);
- 	*pagep = NULL;
- 
--	/* Prevent swapoff from happening to us. */
--	si = get_swap_device(swap);
--	if (!si) {
--		error = EINVAL;
--		goto failed;
--	}
- 	/* Look it up and read it in.. */
- 	page = lookup_swap_cache(swap, NULL, 0);
- 	if (!page) {
-@@ -1774,8 +1767,6 @@ static int shmem_swapin_page(struct inod
- 	swap_free(swap);
- 
- 	*pagep = page;
--	if (si)
--		put_swap_device(si);
- 	return 0;
- failed:
- 	if (!shmem_confirm_swap(mapping, index, swap))
-@@ -1786,9 +1777,6 @@ unlock:
- 		put_page(page);
+--- a/net/ipv4/ip_tunnel.c
++++ b/net/ipv4/ip_tunnel.c
+@@ -317,7 +317,7 @@ static int ip_tunnel_bind_dev(struct net
  	}
  
--	if (si)
--		put_swap_device(si);
--
- 	return error;
- }
+ 	dev->needed_headroom = t_hlen + hlen;
+-	mtu -= t_hlen;
++	mtu -= t_hlen + (dev->type == ARPHRD_ETHER ? dev->hard_header_len : 0);
+ 
+ 	if (mtu < IPV4_MIN_MTU)
+ 		mtu = IPV4_MIN_MTU;
+@@ -348,6 +348,9 @@ static struct ip_tunnel *ip_tunnel_creat
+ 	t_hlen = nt->hlen + sizeof(struct iphdr);
+ 	dev->min_mtu = ETH_MIN_MTU;
+ 	dev->max_mtu = IP_MAX_MTU - t_hlen;
++	if (dev->type == ARPHRD_ETHER)
++		dev->max_mtu -= dev->hard_header_len;
++
+ 	ip_tunnel_add(itn, nt);
+ 	return nt;
+ 
+@@ -489,11 +492,14 @@ static int tnl_update_pmtu(struct net_de
+ 
+ 	tunnel_hlen = md ? tunnel_hlen : tunnel->hlen;
+ 	pkt_size = skb->len - tunnel_hlen;
++	pkt_size -= dev->type == ARPHRD_ETHER ? dev->hard_header_len : 0;
+ 
+-	if (df)
++	if (df) {
+ 		mtu = dst_mtu(&rt->dst) - (sizeof(struct iphdr) + tunnel_hlen);
+-	else
++		mtu -= dev->type == ARPHRD_ETHER ? dev->hard_header_len : 0;
++	} else {
+ 		mtu = skb_valid_dst(skb) ? dst_mtu(skb_dst(skb)) : dev->mtu;
++	}
+ 
+ 	if (skb_valid_dst(skb))
+ 		skb_dst_update_pmtu_no_confirm(skb, mtu);
+@@ -972,6 +978,9 @@ int __ip_tunnel_change_mtu(struct net_de
+ 	int t_hlen = tunnel->hlen + sizeof(struct iphdr);
+ 	int max_mtu = IP_MAX_MTU - t_hlen;
+ 
++	if (dev->type == ARPHRD_ETHER)
++		max_mtu -= dev->hard_header_len;
++
+ 	if (new_mtu < ETH_MIN_MTU)
+ 		return -EINVAL;
+ 
+@@ -1149,6 +1158,9 @@ int ip_tunnel_newlink(struct net_device
+ 	if (tb[IFLA_MTU]) {
+ 		unsigned int max = IP_MAX_MTU - (nt->hlen + sizeof(struct iphdr));
+ 
++		if (dev->type == ARPHRD_ETHER)
++			max -= dev->hard_header_len;
++
+ 		mtu = clamp(dev->mtu, (unsigned int)ETH_MIN_MTU, max);
+ 	}
  
 
 
