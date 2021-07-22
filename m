@@ -2,129 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32353D3006
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 01:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CD93D300D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 01:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbhGVWX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 18:23:58 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:42555 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231713AbhGVWX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 18:23:57 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GW7LX1l1Bz9sT6;
-        Fri, 23 Jul 2021 09:04:20 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626995062;
-        bh=1dYc/r2vGdfoq+Khj3sHHLPZvn1tMhwl4BbcN3Q/uQs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CMgnkvN9F4PfAoayw/muHQV+WAFEkRSFIpzU+AjGuaFbitV5S2u71+gHizX2Hvdkb
-         tgmsI6MDo2aFaYqJO/7uMj2mxBsib4MNM+y6l/46wYYg8H1KPOqmbdrYpuXsZNzfOD
-         x030s4u88wuoXsZH1NZXUfHUTS05rYfEuAcDwBnRL65oB9wfWD5dIOD1jYFjrNiWMM
-         hNfuMe8LyYrSsZeyKaLRNCK/ceaWCZboSKL4KtK0vfJnJB8wyv5C3EhYCZ3vOiLDbD
-         yMp0v/lR06Y7MR1jC/+N1zSsrU7mIpO/uZkKCYlMwYAyMfcT7ys/Ye3OHq5QAsffnT
-         06UJzhP/NKq4w==
-Date:   Fri, 23 Jul 2021 09:04:19 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: linux-next: build failure in Linus' tree
-Message-ID: <20210723090419.529ee5ef@canb.auug.org.au>
-In-Reply-To: <20210720141101.78c1b8ba@cakuba>
-References: <20210715095032.6897f1f6@canb.auug.org.au>
-        <20210720164531.3f122a89@canb.auug.org.au>
-        <20210720141101.78c1b8ba@cakuba>
+        id S232513AbhGVW0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 18:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232024AbhGVW0r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 18:26:47 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D198AC061575;
+        Thu, 22 Jul 2021 16:07:20 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id a80-20020a1c98530000b0290245467f26a4so592826wme.0;
+        Thu, 22 Jul 2021 16:07:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=kcMAq+vYImtg9x3yikhRSLQWDkrCJClS0YBuTVPr5G8=;
+        b=BNP6aLmeZ+XgvFBiW3PUFt8JLuqYt6ywI/OHzzre1Narpoi/zja9pQPf/p7Lg2SEp1
+         0WkY8YoS2DBJl82ZX0LCPk6KlTaEdjcBxTCteBlapRPqMxXJ91u6pmVE/iGJxBgW9swS
+         U8CoYOzhm6ASwfPjAX73xfgv9ukUHfFH2DT+OS905Y2U8k4DZENCI6mE8XcvkuVUHJZ4
+         3QIGDK+jKeP+K6xx71j0KrEeIfk9JY/IryGe5nkWDkNJx/PjeZJQxH10YLFVxUoIGYXO
+         6Czt9APFAW76im4q5EBBfNEenR2wJLZld59EvvHYwAg5WVPCw3HcpFBjl6MHq5UilKGo
+         Ifzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=kcMAq+vYImtg9x3yikhRSLQWDkrCJClS0YBuTVPr5G8=;
+        b=MWpyR1/4kjUZK94xK/jg7qN2mIb9WDxVm21ZMjkJwfpY30An5G2FI0UPx87tyNM0tj
+         K3dIP2309m2j0z/xeRqHAGgAhx2/Niklxho1abDpv1/gIRQ4UGdiSd/JDhltAwxB4sVl
+         y6xlbhJLuBKd0e1/86urPnz14Gz9b02+67WEM0CYZi0j055oq9oKTnj+FOcncFZUBFGX
+         tzWPKJWTOgFHr2K0MOfyDOoffbZ51pWvs3Nle7dflmOyrcxsf9FKolrsqKPVrM8YOlYL
+         +pCShNtZrU/Qp6LgJtlDTZMxAeycoUxlmefNfaAc+xGZss4h7gnXPDeV+mg+DNc5vI4R
+         Nkvg==
+X-Gm-Message-State: AOAM532OdYTK+j6sqrDxrESInh1L/BYp+Bdv58A/KM42plge+hikTRJy
+        PIRPNmOmZ3PLZqQY6hstcvw=
+X-Google-Smtp-Source: ABdhPJxzRRGnluDMLSY3iS3iFV4f4vW/EZQ7p+vLjlgQ8nyT7uh9GDif9qZr+U7avsyZQgFIxUFnkg==
+X-Received: by 2002:a05:600c:3b98:: with SMTP id n24mr11415552wms.182.1626995239526;
+        Thu, 22 Jul 2021 16:07:19 -0700 (PDT)
+Received: from [192.168.1.211] ([2.29.20.106])
+        by smtp.gmail.com with ESMTPSA id 129sm26501878wmz.26.2021.07.22.16.07.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Jul 2021 16:07:18 -0700 (PDT)
+Subject: Re: [PATCH 13/13] media: ipu3-cio2: Add INT347A to cio2-bridge
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
+        <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>
+References: <20210722203407.3588046-1-djrscally@gmail.com>
+ <20210722203407.3588046-14-djrscally@gmail.com>
+ <CAHp75Vc60J1kTs0Kv5ibc+5zqCTvRDDAcmHFKFDi-4Qd-rBHuA@mail.gmail.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <339f54cb-6be1-1bfa-9b32-fe7dc28a447b@gmail.com>
+Date:   Fri, 23 Jul 2021 00:07:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/MGsEM8zq5E4uQoFtFGvvQIW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAHp75Vc60J1kTs0Kv5ibc+5zqCTvRDDAcmHFKFDi-4Qd-rBHuA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/MGsEM8zq5E4uQoFtFGvvQIW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Andy
 
-Hi all,
-
-On Tue, 20 Jul 2021 14:11:01 +0200 Jakub Kicinski <kuba@kernel.org> wrote:
+On 22/07/2021 23:22, Andy Shevchenko wrote:
 >
-> On Tue, 20 Jul 2021 16:45:31 +1000, Stephen Rothwell wrote:
-> >=20
-> > On Thu, 15 Jul 2021 09:50:32 +1000 Stephen Rothwell <sfr@canb.auug.org.=
-au> wrote: =20
-> > >
-> > > While compiling Linus' tree, a powerpc-allmodconfig build (and others)
-> > > with gcc 4.9 failed like this:
-> > >=20
-> > > drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c: In function 'i=
-fh_encode_bitfield':
-> > > include/linux/compiler_types.h:328:38: error: call to '__compiletime_=
-assert_431' declared with attribute error: Unsupported width, must be <=3D =
-40
-> > >   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTE=
-R__)
-> > >                                       ^
-> > > include/linux/compiler_types.h:309:4: note: in definition of macro '_=
-_compiletime_assert'
-> > >     prefix ## suffix();    \
-> > >     ^
-> > > include/linux/compiler_types.h:328:2: note: in expansion of macro '_c=
-ompiletime_assert'
-> > >   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTE=
-R__)
-> > >   ^
-> > > drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c:28:2: note: in =
-expansion of macro 'compiletime_assert'
-> > >   compiletime_assert(width <=3D 40, "Unsupported width, must be <=3D =
-40");
-> > >   ^
-> > >=20
-> > > Caused by commit
-> > >=20
-> > >   f3cad2611a77 ("net: sparx5: add hostmode with phylink support")
-> > >=20
-> > > I guess this is caused by the call to ifh_encode_bitfield() not being
-> > > inlined.   =20
-> >=20
-> > I am still getting these failures. =20
->=20
-> Bjarni, Steen, could you address this build failure ASAP?
->=20
-> We can't have a compile time asserts in static functions, if the code
-> is optimized for size chances are the function won't get inlined. clang
-> is pretty bad at propagating constants to compile time asserts, too.
-> Please remove this check, or refactor it to be done in a macro, or ..
+>
+> On Thursday, July 22, 2021, Daniel Scally <djrscally@gmail.com
+> <mailto:djrscally@gmail.com>> wrote:
+>
+>     ACPI _HID INT347A represents the OV8865 sensor, the driver for
+>     which can
+>     support the platforms that the cio2-bridge serves. Add it to the array
+>     of supported sensors so the bridge will connect the sensor to the CIO2
+>     device.
+>
+>     Signed-off-by: Daniel Scally <djrscally@gmail.com
+>     <mailto:djrscally@gmail.com>>
+>     ---
+>      drivers/media/pci/intel/ipu3/cio2-bridge.c | 2 ++
+>      1 file changed, 2 insertions(+)
+>
+>     diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c
+>     b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+>     index 4657e99df033..6195abd7582c 100644
+>     --- a/drivers/media/pci/intel/ipu3/cio2-bridge.c
+>     +++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+>     @@ -24,6 +24,8 @@ static const struct cio2_sensor_config
+>     cio2_supported_sensors[] = {
+>             CIO2_SENSOR_CONFIG("INT33BE", 0),
+>             /* Omnivision OV2680 */
+>             CIO2_SENSOR_CONFIG("OVTI2680", 0),
+>     +       /* Omnivision OV8865 */
+>     +       CIO2_SENSOR_CONFIG("INT347A", 1, 360000000),
+>
+>
+> I assume it may be positioned at any index in the array. I prefer to
+> see them sorted by HID
 
-I am still getting these failures.
 
---=20
-Cheers,
-Stephen Rothwell
+Yeah any position's fine; I seem to struggle with alphabetisation for
+some reason :) No problem, I'll order them properly in v2.
 
---Sig_/MGsEM8zq5E4uQoFtFGvvQIW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD5+XMACgkQAVBC80lX
-0Gwr8ggAkx3CBF9vs58H1cjnfEL6pF5lLruvkRDy8v4xLdJXxZ+6B2v+3HyP2dog
-Ak/ufAgB1SpN/Ilz9TmXwPTyRqVjP22m9IgOkM5eiTIqfz9itNFW8Eu0jvLOUTL6
-2hT6Sb/qVt0a7egyDGxcaGCq9linOEa8qPxCI65meMa/tr2JUQnmVwXCKMWwlMWK
-u3+767hZIYG/MMvSWXQA/cfB2CSHeJDD7CwgsfO78mFAZYmvE7GjNQ9DcZ3d3Iw9
-OtawRR6o8v2lYLgpHSwCIGcDSzFBBVrbqjQYhlEDKabQ5bFOyl4v6ipT3nHReDxZ
-oSOWmK4D1Ru4VvmKF+HiQQzeUzYGgg==
-=ZIzZ
------END PGP SIGNATURE-----
-
---Sig_/MGsEM8zq5E4uQoFtFGvvQIW--
+>
+>
+>  
+>
+>      };
+>
+>      static const struct cio2_property_names prop_names = {
+>     -- 
+>     2.25.1
+>
+>
+>
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+>
+>
