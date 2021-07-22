@@ -2,92 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E463D2B59
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8797D3D2B5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbhGVREO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 13:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhGVREN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 13:04:13 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66BBC061575;
-        Thu, 22 Jul 2021 10:44:48 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id m2-20020a17090a71c2b0290175cf22899cso312176pjs.2;
-        Thu, 22 Jul 2021 10:44:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QBvZGfhGPqv586kA+QHlMrcDII1Zc0Zi0WxS7GJ3bzo=;
-        b=VINP1t8dVL1tPyMdJJBMIZhsTXBtw4bbs6fEUyudHL0HiTKf5RS2be8FwKKfhG1x1T
-         YWcYZboNGQw9lusFEu603vChK59+AC/kL9wmDQErSToQDV7Wii6PeIOVLhi2iOtP+rst
-         l4QJEh0W2cqcQIk5EHXx+Mvbd0GugKrttZ0BOQvALqHrQ5I39f6j5DxcDgtoSyWo8uKL
-         jddYzr6bptePJTIUx0JYgr5p1gPH6frtBDAduKxATY6PAH+RWnfxVVdofhL3A77qJY/f
-         pD38ta2JjngDmTycE+gpInFd8+rdaJpKSKQpbagpdyVD51khRKCv4bSpjRSXPaBlfwAk
-         ZEaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QBvZGfhGPqv586kA+QHlMrcDII1Zc0Zi0WxS7GJ3bzo=;
-        b=jFqwEORqfbX4TrzygH3iP2DbXaesqxmyp2xJRcu3FP40x7p4qZD4SbjLZm1sqLdreT
-         BoDgnsV48TjyXXOb7NnKuR84Xi2O+AR95c700XmGwKXjmOAQY1LEQu01xUTOdPe1jlhH
-         TEcv3dlDkQfUVyabL0nlpaMM7ZaWt6umPrf4FN41wZxjZ0zaxF47ewdniE6hqJ6rWupK
-         boTR+A4IvcFazezb8BIfFQA5WkhQcK5VgZ3coBc0XDddSw3uE8PAqqFS7zkssEivLqVz
-         E0RVrQTuwVeVF008nqHuMJSZZO4PLkMnz9yvBdZFCwF6x6M/EygFq0nJSmoOBz6IJYnK
-         sPnA==
-X-Gm-Message-State: AOAM533F9ybWEKDMvHyVbjvTi3/kflMPpQY78gnLdrZBtiTCGPZ+ngR6
-        JFmCAeqvAY7IPokd86awJAU=
-X-Google-Smtp-Source: ABdhPJwLzBgrcFGsrw4o2GvSyiLGJ4FhAv2F1A8Y8vmLqPLJoWbIwXZ7BSLGx/42z8UhC/IACnXxJA==
-X-Received: by 2002:a63:5952:: with SMTP id j18mr1054001pgm.366.1626975888187;
-        Thu, 22 Jul 2021 10:44:48 -0700 (PDT)
-Received: from localhost.localdomain ([1.240.193.107])
-        by smtp.googlemail.com with ESMTPSA id t23sm31256840pfe.8.2021.07.22.10.44.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 10:44:47 -0700 (PDT)
-From:   Kangmin Park <l4stpr0gr4m@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ipv6: decrease hop limit counter in ip6_forward()
-Date:   Fri, 23 Jul 2021 02:44:43 +0900
-Message-Id: <20210722174443.416867-1-l4stpr0gr4m@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S229837AbhGVRG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 13:06:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229536AbhGVRGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 13:06:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8A9B6135A;
+        Thu, 22 Jul 2021 17:47:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626976050;
+        bh=XdqCZirstICjdLHQfMitOvR6dwyJLMO9kLydMKAiTxw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dPrHhcDaxL+k0xd8mwaVXIDJKy5lOyIXTIhmyQ3ee4E4+mUNzgM7W4FQFky7lXyLk
+         5m0LfXM5SMpF+E7naINdYUw+OptCA5t/R6OcFwCHUBYeOMqrfIQulDRsQCsbhMD9rV
+         hQkND0ZUR3xMnI06QMYIVmxiE5epkitAogEnmRMk=
+Date:   Thu, 22 Jul 2021 19:47:28 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Guodong Xu <guodong.xu@linaro.org>, tangchengchang@huawei.com,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        yangyicong <yangyicong@huawei.com>, tim.c.chen@linux.intel.com,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v7 4/4] lib: test_bitmap: add bitmap_print_to_buf test
+ cases
+Message-ID: <YPmvMJHouZFDHVds@kroah.com>
+References: <20210715115856.11304-1-song.bao.hua@hisilicon.com>
+ <20210715115856.11304-5-song.bao.hua@hisilicon.com>
+ <YPAlg5c8uDSZ2WvZ@smile.fi.intel.com>
+ <YPCe+f3GPDUuvwnW@yury-ThinkPad>
+ <CAHp75VcoNPiKDaZzTVr3unV3F5u+LQwAjy1hKSq0WUw_tB6uAw@mail.gmail.com>
+ <YPDDdAwgYEptz2Uq@yury-ThinkPad>
+ <YPgHtJqXi8cKad1Q@kroah.com>
+ <YPmmR3JfgM/yIh1H@yury-ThinkPad>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPmmR3JfgM/yIh1H@yury-ThinkPad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Decrease hop limit counter when deliver skb to ndp proxy.
+On Thu, Jul 22, 2021 at 10:09:27AM -0700, Yury Norov wrote:
+> On Wed, Jul 21, 2021 at 01:40:36PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Jul 15, 2021 at 04:23:32PM -0700, Yury Norov wrote:
+> > > On Fri, Jul 16, 2021 at 12:32:45AM +0300, Andy Shevchenko wrote:
+> > > > On Thu, Jul 15, 2021 at 11:48 PM Yury Norov <yury.norov@gmail.com> wrote:
+> > > > > On Thu, Jul 15, 2021 at 03:09:39PM +0300, Andy Shevchenko wrote:
+> > > > > > On Thu, Jul 15, 2021 at 11:58:56PM +1200, Barry Song wrote:
+> > > > > > > The added test items cover both cases where bitmap buf of the printed
+> > > > > > > result is greater than and less than 4KB.
+> > > > > > > And it also covers the case where offset for bitmap_print_to_buf is
+> > > > > > > non-zero which will happen when printed buf is larger than one page
+> > > > > > > in sysfs bin_attribute.
+> > > > > >
+> > > > > > More test cases is always a good thing, thanks!
+> > > > >
+> > > > > Generally yes. But in this case... I believe, Barry didn't write that
+> > > > > huge line below by himself. Most probably he copy-pasted the output of
+> > > > > his bitmap_print_buf() into the test. If so, this code tests nothing,
+> > > > > and just enforces current behavior of snprintf.
+> > > > 
+> > > > I'm not sure I got what you are telling me. The big line is to test
+> > > > strings that are bigger than 4k.
+> > > 
+> > > I'm trying to say that human are not able to verify correctness of
+> > > this line. The test is supposed to check bitmap_print_to_buf(), but
+> > > reference output itself is generated by bitmap_print_to_buf(). This
+> > > test will always pass by design, even if there's an error somewhere
+> > > in the middle, isn't it?
+> > 
+> > Then please manually check it to verify it is correct or not.  Once we
+> > have it verified, that's fine, it will remain static in this test for
+> > always going forward.
+> > 
+> > That's what "oracles" are for, there is nothing wrong with this test
+> > case or "proof" that I can see.
+> > 
+> > > > 
+> > > > ...
+> > > > 
+> > > > > > > +static const char large_list[] __initconst = /* more than 4KB */
+> > > > > > > +   "0,4,8,12,16,20,24,28,32-33,36-37,40-41,44-45,48-49,52-53,56-57,60-61,64,68,72,76,80,84,88,92,96-97,100-101,104-1"
+> > > > > > > +   "05,108-109,112-113,116-117,120-121,124-125,128,132,136,140,144,148,152,156,160-161,164-165,168-169,172-173,176-1"
+> > > > > > > +   "77,180-181,184-185,188-189,192,196,200,204,208,212,216,220,224-225,228-229,232-233,236-237,240-241,244-245,248-2"
+> > > > >
+> > > > > I don't like this behavior of the code: each individual line is not a
+> > > > > valid bitmap_list. I would prefer to split original bitmap and print
+> > > > > list representation of parts in a compatible format; considering a
+> > > > > receiving part of this splitting machinery.
+> > > > 
+> > > > I agree that split is not the best here, but after all it's only 1
+> > > > line and this is on purpose.
+> > > 
+> > > What I see is that bitmap_print_to_buf() is called many times,
+> > 
+> > That is not what the above list shows at all, it's one long string all
+> > together, only split up to make it easier for us to work with.
+> > 
+> > > and
+> > > each time it returns something that is not a valid bitmap list string.
+> > > If the caller was be able to concatenate all the lines returned by
+> > > bitmap_print_to_buf(), he'd probably get correct result. But in such
+> > > case, why don't he use scnprintf("pbl") directly?
+> > 
+> > I do not understand the objection here at all.  This series is fixing a
+> > real problem that eeople are having
+> 
+> I explicitly asked about an example of this problem. Barry answered in
+> a great length, but the key points are:
+> 
+>         https://lore.kernel.org/lkml/4ab928f1fb3e4420974dfafe4b32f5b7@hisilicon.com/
+> 
+>         > > So, the root problem here is that some machines have so many CPUs that
+>         > > their cpumask text representation may not fit into the full page in the
+>         > > worst case. Is my understanding correct? Can you share an example of
+>         > > such configuration?
+>         > 
+>         > in my understanding, I have not found any machine which has really
+>         > caused the problem till now.
+> 
+>         > [...]
+>         > 
+>         > This doesn't really happen nowadays as the maximum
+>         > NR_CPUS is 8196 for X86_64 and 4096 for ARM64 since 8196 * 9 / 32 = 2305
+>         > is still smaller than 4KB page size.
+> 
+> 
+> If it's not true, can you or Barry please share such an example?
 
-Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
----
- net/ipv6/ip6_output.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+So for a 4k page size, if you have every-other-cpu-enabled on x86, it
+will overflow this, right?
 
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 01bea76e3891..aaaf9622cf2d 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -549,9 +549,10 @@ int ip6_forward(struct sk_buff *skb)
- 	if (net->ipv6.devconf_all->proxy_ndp &&
- 	    pneigh_lookup(&nd_tbl, net, &hdr->daddr, skb->dev, 0)) {
- 		int proxied = ip6_forward_proxy_check(skb);
--		if (proxied > 0)
-+		if (proxied > 0) {
-+			hdr->hop_limit--;
- 			return ip6_input(skb);
--		else if (proxied < 0) {
-+		} else if (proxied < 0) {
- 			__IP6_INC_STATS(net, idev, IPSTATS_MIB_INDISCARDS);
- 			goto drop;
- 		}
--- 
-2.26.2
+And I have heard of systems much bigger than this as well.  Why do you
+not think that large number of CPUs are not around?
 
+> > and your complaining about test
+> > strings is _VERY_ odd.
+> 
+> The test itself is bad, but it's a minor issue.
+> 
+> My main complain is that the bitmap part of this series introduces a
+> function that requires O(N^2) of CPU time and O(N) of memory to just
+> print a string. The existing snprintf does this in O(N) and O(1)
+> respectively. Additionally to that, the proposed function has some
+> flaws in design.
+
+Can you propose a better solution?
+
+And is O(N^2) even an issue for this?  Have you run it to determine the
+cpu load for such a tiny thing?  Why optimize something that no one has
+even tried yet?
+
+> > If you have an alternate solution, please propose it, otherwise I will
+> > be taking this series in the next few days.
+> 
+> I think I suggested a better solution in the thread for v4:
+> 
+> https://lore.kernel.org/lkml/YMu2amhrdGZHJ5mY@yury-ThinkPad/
+> 
+>         > kasprintf() does everything you need. Why don't you use it directly in
+>         > your driver?
+> 
+> I'm not that familiar to sysfs internals to submit a patch, but the
+> idea in more details is like this:
+> 
+>         cpulist_read(...)
+>         {
+>                if (bitmap_string == NULL)
+>                         bitmap_string = kasprintf(bitmap, ...);
+> 
+>         }
+> 
+> Where bitmap_string pointer may be stored in struct file, struct kobject,
+> struct bit_attribute or where it's convenient. 
+
+No, we are not storing strings in a kobject, sorry.
+
+thanks,
+
+greg k-h
