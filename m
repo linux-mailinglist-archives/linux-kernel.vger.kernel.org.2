@@ -2,158 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742093D2B36
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02AC23D2B44
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhGVQxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:53:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:37160 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhGVQxq (ORCPT
+        id S230017AbhGVQzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:55:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50904 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229909AbhGVQza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:53:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626975261; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=cJDgVCs2rvIlKUPXYolN/oe1dY90L5GjxrP/lVY81IQ=;
- b=ENu++hepYWHLuPlXjVglOG4QtQLRTbsEmtB3+LX8GR720XGnYJF3ZPcGNWK4/QKBN8463GVs
- lyAVyP/WjxaElMbReCH04+h5s2tXnp9tXtPsKS8nadMuYGgZHn+6zqeRb7Ht5A9o4AxSHOU7
- 4fLwRC+Y+AdpN7owLWHs1B+v1mk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60f9ac0b96a66e66b2f1b17d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Jul 2021 17:34:03
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CDE6DC43217; Thu, 22 Jul 2021 17:34:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        Thu, 22 Jul 2021 12:55:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626975365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=guCqBWpVTzP+Sew+BobhY6iLap7ab0MnRptplCU8QQc=;
+        b=ICyl/CXptOcWoBn/OE9XB48lPDumiapdiQg6sW8QqTSYotn6s284MHD5wS718tjJN9eevD
+        oT9r3IDczUwZ6XG+YWMaOxHzxHq8JxnXzYabRwyfkObmjfHwrUyOQrOOq+9yIqagKBy7TS
+        cK4Y8a8tXLme/t8ItXU95OM3huE14Ac=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-604-B28Sw4rpOSKEUXVuW5qwIw-1; Thu, 22 Jul 2021 13:36:01 -0400
+X-MC-Unique: B28Sw4rpOSKEUXVuW5qwIw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2129FC4338A;
-        Thu, 22 Jul 2021 17:34:01 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA5EAC73A1;
+        Thu, 22 Jul 2021 17:35:59 +0000 (UTC)
+Received: from starship (unknown [10.40.192.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3EC9160936;
+        Thu, 22 Jul 2021 17:35:55 +0000 (UTC)
+Message-ID: <64ed28249c1895a59c9f2e2aa2e4c09a381f69e5.camel@redhat.com>
+Subject: Re: [PATCH v2 8/8] KVM: x86: hyper-v: Deactivate APICv only when
+ AutoEOI feature is in use
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Date:   Thu, 22 Jul 2021 20:35:54 +0300
+In-Reply-To: <YPXJQxLaJuoF6aXl@google.com>
+References: <20210713142023.106183-1-mlevitsk@redhat.com>
+         <20210713142023.106183-9-mlevitsk@redhat.com>
+         <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
+         <YPXJQxLaJuoF6aXl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 22 Jul 2021 23:04:01 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     bjorn.andersson@linaro.org, mka@chromium.org, robh+dt@kernel.org,
-        saiprakash.ranjan@codeaurora.org, will@kernel.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org
-Subject: Re: [PATCH v2 10/10] arm64: dts: qcom: sc7280: Update Q6V5 MSS node
-In-Reply-To: <CAE-0n51UbfpM94aOkdnSH9ZAvz-+V1X-hsOSMbkHJQDkYyD22w@mail.gmail.com>
-References: <1626775980-28637-1-git-send-email-sibis@codeaurora.org>
- <1626775980-28637-11-git-send-email-sibis@codeaurora.org>
- <CAE-0n53bRGouiycpcukPYB_+Gyz_Dr=rCAnb2MH64=+Q899aOA@mail.gmail.com>
- <a021012616af266905099e0563d0fff5@codeaurora.org>
- <CAE-0n51UbfpM94aOkdnSH9ZAvz-+V1X-hsOSMbkHJQDkYyD22w@mail.gmail.com>
-Message-ID: <2be424e6cc16e004ba64c5574cf607b9@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-22 04:23, Stephen Boyd wrote:
-> Quoting Sibi Sankar (2021-07-21 10:16:14)
->> On 2021-07-21 11:17, Stephen Boyd wrote:
->> > Quoting Sibi Sankar (2021-07-20 03:13:00)
->> >
->> >> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >> index 56ea172f641f..6d3687744440 100644
->> >> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >> @@ -586,7 +586,8 @@
->> >>
->> >>                 remoteproc_mpss: remoteproc@4080000 {
->> >>                         compatible = "qcom,sc7280-mpss-pas";
->> >> -                       reg = <0 0x04080000 0 0x10000>;
->> >> +                       reg = <0 0x04080000 0 0x10000>, <0 0x04180000
->> >> 0 0x48>;
->> >> +                       reg-names = "qdsp6", "rmb";
->> >>
->> >>                         interrupts-extended = <&intc GIC_SPI 264
->> >> IRQ_TYPE_EDGE_RISING>,
->> >>                                               <&modem_smp2p_in 0
->> >> IRQ_TYPE_EDGE_RISING>,
->> >> @@ -597,8 +598,11 @@
->> >>                         interrupt-names = "wdog", "fatal", "ready",
->> >> "handover",
->> >>                                           "stop-ack", "shutdown-ack";
->> >>
->> >> -                       clocks = <&rpmhcc RPMH_CXO_CLK>;
->> >> -                       clock-names = "xo";
->> >> +                       clocks = <&gcc GCC_MSS_CFG_AHB_CLK>,
->> >> +                                <&gcc GCC_MSS_OFFLINE_AXI_CLK>,
->> >> +                                <&gcc GCC_MSS_SNOC_AXI_CLK>,
->> >> +                                <&rpmhcc RPMH_CXO_CLK>;
->> >> +                       clock-names = "iface", "offline", "snoc_axi",
->> >> "xo";
->> >>
->> >>                         power-domains = <&rpmhpd SC7280_CX>,
->> >>                                         <&rpmhpd SC7280_MSS>;
->> >> @@ -611,6 +615,15 @@
->> >>                         qcom,smem-states = <&modem_smp2p_out 0>;
->> >>                         qcom,smem-state-names = "stop";
->> >>
->> >> +                       resets = <&aoss_reset AOSS_CC_MSS_RESTART>,
->> >> +                                <&pdc_reset PDC_MODEM_SYNC_RESET>;
->> >> +                       reset-names = "mss_restart", "pdc_reset";
->> >> +
->> >> +                       qcom,halt-regs = <&tcsr_mutex 0x23000 0x25000
->> >> 0x28000 0x33000>;
->> >> +                       qcom,ext-regs = <&tcsr_regs 0x10000 0x10004
->> >> +                                        &tcsr_mutex 0x26004 0x26008>;
->> >> +                       qcom,qaccept-regs = <&tcsr_mutex 0x23030
->> >> 0x23040 0x23020>;
->> >> +
->> >>                         status = "disabled";
->> >>
->> >>                         glink-edge {
->> >
->> > Any reason to not combine this stuff with the previous patch?
->> 
->> I split it into two separate
->> patches just to show that sc7280
->> supports two ways of bringing
->> modem out of reset and method
->> used is determined by the platform.
->> 
+On Mon, 2021-07-19 at 18:49 +0000, Sean Christopherson wrote:
+> On Sun, Jul 18, 2021, Maxim Levitsky wrote:
+> > I am more inclined to fix this by just tracking if we hold the srcu
+> > lock on each VCPU manually, just as we track the srcu index anyway,
+> > and then kvm_request_apicv_update can use this to drop the srcu
+> > lock when needed.
 > 
-> Ok. But if there are two methods do they work with the same node in
-> sc7280.dtsi? Because I was expecting to see the node introduced in the
-> SoC dtsi file in the final form instead of the half form and then be
-> amended in this patch.
+> The entire approach of dynamically adding/removing the memslot seems doomed to
+> failure, and is likely responsible for the performance issues with AVIC, e.g. a
+> single vCPU temporarily inhibiting AVIC will zap all SPTEs _twice_; on disable
+> and again on re-enable.
+> 
+> Rather than pile on more gunk, what about special casing the APIC access page
+> memslot in try_async_pf()?  E.g. zap the GFN in avic_update_access_page() when
+> disabling (and bounce through kvm_{inc,dec}_notifier_count()), and have the page
+> fault path skip directly to MMIO emulation without caching the MMIO info.  It'd
+> also give us a good excuse to rename try_async_pf() :-)
+> 
+> If lack of MMIO caching is a performance problem, an alternative solution would
+> be to allow caching but add a helper to zap the MMIO SPTE and request all vCPUs to
+> clear their cache.
+> 
+> It's all a bit gross, especially hijacking the mmu_notifier path, but IMO it'd be
+> less awful than the current memslot+SRCU mess.
 
-Board files enables the mss node
-and overloads the compatible depending
-on the platform it is expected to
-run on. So pretty much the same
-node with just changing the compatible
-and few additional properties support
-both methods. Patch 9 is complete in
-itself i.e. it is compliant with
-the pas yaml, while patch 10 adds
-the bits required to make alternate
-method work.
+Hi!
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+I am testing your approach and it actually works very well! I can't seem to break it.
+
+Could you explain why do I need to do something with kvm_{inc,dec}_notifier_count()) ?
+
+I just use your patch as is, plus the changes that are needed in kvm_request_apicv_update.
+
+On AVIC unlike APICv, the page in this memslot is pinned in the physical memory still
+(AVIC misses the code that APICv has in this regard).
+It should be done in the future though.
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index f4d35289f59e..ea434d76cfb0 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3767,9 +3767,9 @@ static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>                                   kvm_vcpu_gfn_to_hva(vcpu, gfn), &arch);
+>  }
+> 
+> -static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+> -                        gpa_t cr2_or_gpa, kvm_pfn_t *pfn, hva_t *hva,
+> -                        bool write, bool *writable)
+> +static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+> +                           gpa_t cr2_or_gpa, kvm_pfn_t *pfn, hva_t *hva,
+> +                           bool write, bool *writable, int *r)
+>  {
+>         struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+>         bool async;
+> @@ -3780,13 +3780,26 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+>          * be zapped before KVM inserts a new MMIO SPTE for the gfn.
+>          */
+>         if (slot && (slot->flags & KVM_MEMSLOT_INVALID))
+> -               return true;
+> +               goto out_retry;
+> 
+> -       /* Don't expose private memslots to L2. */
+> -       if (is_guest_mode(vcpu) && !kvm_is_visible_memslot(slot)) {
+> -               *pfn = KVM_PFN_NOSLOT;
+> -               *writable = false;
+> -               return false;
+> +       if (!kvm_is_visible_memslot(slot)) {
+> +               /* Don't expose private memslots to L2. */
+> +               if (is_guest_mode(vcpu)) {
+> +                       *pfn = KVM_PFN_NOSLOT;
+> +                       *writable = false;
+> +                       return false;
+> +               }
+> +               /*
+> +                * If the APIC access page exists but is disabled, go directly
+> +                * to emulation without caching the MMIO access or creating a
+> +                * MMIO SPTE.  That way the cache doesn't need to be purged
+> +                * when the AVIC is re-enabled.
+> +                */
+> +               if (slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT &&
+> +                   !vcpu->kvm->arch.apic_access_memslot_enabled) {
+> +                       *r = RET_PF_EMULATE;
+> +                       return true;
+> +               }
+>         }
+> 
+>         async = false;
+> @@ -3800,14 +3813,19 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+>                 if (kvm_find_async_pf_gfn(vcpu, gfn)) {
+>                         trace_kvm_async_pf_doublefault(cr2_or_gpa, gfn);
+>                         kvm_make_request(KVM_REQ_APF_HALT, vcpu);
+> -                       return true;
+> -               } else if (kvm_arch_setup_async_pf(vcpu, cr2_or_gpa, gfn))
+> -                       return true;
+> +                       goto out_retry;
+> +               } else if (kvm_arch_setup_async_pf(vcpu, cr2_or_gpa, gfn)) {
+> +                       goto out_retry;
+> +               }
+>         }
+> 
+>         *pfn = __gfn_to_pfn_memslot(slot, gfn, false, NULL,
+>                                     write, writable, hva);
+>         return false;
+> +
+> +out_retry:
+> +       *r = RET_PF_RETRY;
+> +       return true;
+>  }
+> 
+>  static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+> @@ -3839,9 +3857,9 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+>         mmu_seq = vcpu->kvm->mmu_notifier_seq;
+>         smp_rmb();
+> 
+> -       if (try_async_pf(vcpu, prefault, gfn, gpa, &pfn, &hva,
+> -                        write, &map_writable))
+> -               return RET_PF_RETRY;
+> +       if (kvm_faultin_pfn(vcpu, prefault, gfn, gpa, &pfn, &hva, write,
+> +                           &map_writable, &r))
+> +               return r;
+> 
+>         if (handle_abnormal_pfn(vcpu, is_tdp ? 0 : gpa, gfn, pfn, ACC_ALL, &r))
+>                 return r;
+> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+> index 490a028ddabe..9747124b877d 100644
+> --- a/arch/x86/kvm/mmu/paging_tmpl.h
+> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
+> @@ -881,9 +881,9 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
+>         mmu_seq = vcpu->kvm->mmu_notifier_seq;
+>         smp_rmb();
+>  
+> -       if (try_async_pf(vcpu, prefault, walker.gfn, addr, &pfn, &hva,
+> -                        write_fault, &map_writable))
+> -               return RET_PF_RETRY;
+> +       if (kvm_faultin_pfn(vcpu, prefault, walker.gfn, addr, &pfn, &hva,
+> +                           write_fault, &map_writable, &r))
+> +               return r;
+>  
+>         if (handle_abnormal_pfn(vcpu, addr, walker.gfn, pfn, walker.pte_access, &r))
+>                 return r;
+> 
+
+
