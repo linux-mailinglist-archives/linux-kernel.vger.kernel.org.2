@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11303D27BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 18:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AD83D27D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 18:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhGVPwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55494 "EHLO mail.kernel.org"
+        id S230227AbhGVPxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:53:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229952AbhGVPwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:52:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B7A06135A;
-        Thu, 22 Jul 2021 16:32:59 +0000 (UTC)
+        id S230198AbhGVPwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:52:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0258C6135C;
+        Thu, 22 Jul 2021 16:33:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971580;
-        bh=MrzzzqN1Qv9MtX7RBvMpcnCBAh1RZVanxlHRKq8q5TE=;
+        s=korg; t=1626971608;
+        bh=9bDJHo/tbUob7FbJ8et6dojhK5vB9CjDQyeRHuWrhYc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sr19sWJ1ybNWoXjeioOMdX0Ec6FYfx5r8b+8VU9KZub3bBcZ+Z9qf6q/OpYYTUPoP
-         RWdopOsImtVNsth9MEO8DScCAcKtZksP0g9fvM2PNQlSTYPlATz4UPFNn6FSJo9gbG
-         xKBelIWKtdlPvRI9n4uX4W1gI1BiodefB8zhueBE=
+        b=cbdzhdIHPbuTVExhk1+RdwCFy5v6F8CSolA84pjqwnlv5nRAFCeyFzEnesZy4pT43
+         /xi0aTVVs/XEwtNuBXlHHhAh8zftOpDXn7r89xLLP0DkTiWG6Yz9tbZksB3YCno7wW
+         HKO2Z3S3ikBx200k3eIJh6cWGGz1ju+UovmgzAtY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 02/71] ARM: dts: gemini: add device_type on pci
-Date:   Thu, 22 Jul 2021 18:30:37 +0200
-Message-Id: <20210722155617.946229582@linuxfoundation.org>
+Subject: [PATCH 5.4 03/71] ARM: dts: rockchip: fix pinctrl sleep nodename for rk3036-kylin and rk3288
+Date:   Thu, 22 Jul 2021 18:30:38 +0200
+Message-Id: <20210722155617.978149140@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155617.865866034@linuxfoundation.org>
 References: <20210722155617.865866034@linuxfoundation.org>
@@ -40,31 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe@baylibre.com>
+From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit 483f3645b3f7acfd1c78a19d51b80c0656161974 ]
+[ Upstream commit dfbfb86a43f9a5bbd166d88bca9e07ee4e1bff31 ]
 
-Fixes DT warning on pci node by adding the missing device_type.
+A test with the command below aimed at powerpc generates
+notifications in the Rockchip ARM tree.
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fix pinctrl "sleep" nodename by renaming it to "suspend"
+for rk3036-kylin and rk3288
+
+make ARCH=arm dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/powerpc/sleep.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/20210126110221.10815-1-jbx6244@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/gemini.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/rk3036-kylin.dts | 2 +-
+ arch/arm/boot/dts/rk3288.dtsi      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/gemini.dtsi b/arch/arm/boot/dts/gemini.dtsi
-index 8cf67b11751f..ef4f1c5323bd 100644
---- a/arch/arm/boot/dts/gemini.dtsi
-+++ b/arch/arm/boot/dts/gemini.dtsi
-@@ -286,6 +286,7 @@
- 			clock-names = "PCLK", "PCICLK";
- 			pinctrl-names = "default";
- 			pinctrl-0 = <&pci_default_pins>;
-+			device_type = "pci";
- 			#address-cells = <3>;
- 			#size-cells = <2>;
- 			#interrupt-cells = <1>;
+diff --git a/arch/arm/boot/dts/rk3036-kylin.dts b/arch/arm/boot/dts/rk3036-kylin.dts
+index fb3cf005cc90..2ef47ebeb0cb 100644
+--- a/arch/arm/boot/dts/rk3036-kylin.dts
++++ b/arch/arm/boot/dts/rk3036-kylin.dts
+@@ -390,7 +390,7 @@
+ 		};
+ 	};
+ 
+-	sleep {
++	suspend {
+ 		global_pwroff: global-pwroff {
+ 			rockchip,pins = <2 RK_PA7 1 &pcfg_pull_none>;
+ 		};
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index cc893e154fe5..a452d4ea3938 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -1575,7 +1575,7 @@
+ 			drive-strength = <12>;
+ 		};
+ 
+-		sleep {
++		suspend {
+ 			global_pwroff: global-pwroff {
+ 				rockchip,pins = <0 RK_PA0 1 &pcfg_pull_none>;
+ 			};
 -- 
 2.30.2
 
