@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E9D3D1BEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 04:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CD53D1BF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 04:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhGVCDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 22:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54682 "EHLO
+        id S230475AbhGVCDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 22:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhGVCDf (ORCPT
+        with ESMTP id S230430AbhGVCDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 22:03:35 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89872C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 19:44:11 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id e203-20020a4a55d40000b029025f4693434bso1016558oob.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 19:44:11 -0700 (PDT)
+        Wed, 21 Jul 2021 22:03:36 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AADEC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 19:44:12 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id j1-20020a0568302701b02904d1f8b9db81so3971026otu.12
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 19:44:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XOa5JGP/QaB36txylGv/8WA29Kpuziv0aJWiro9yf5M=;
-        b=MdLMOtJG6blCFS9ZTH8S0B80YLCo+rjEFclH0ZS6wgaH36oW9KyEsV2io3pQh229QB
-         Hg4275E0wMP8ec8vDpevFb0ibQgPKNiuYJYuf6cyZmpPJbOi8xP8QKcN2Xhg7fucV2u1
-         XqA3sdsMV8N90YS2v+ZffQzjj59QXMtLT7OxtZ7UoEa0eHYL9UnqsJ4zXdXDfBx2vu4e
-         6EGKV54M1Lpk7UOuR11x51iQ+n4sBYVX8a2nhsXB8ta3/QLWrwDStzmU7IJiHw599gb0
-         KC+gTtmlYTYTvdcjp4jFox22COV4JYsQm9JD+zie7nTBbi3S4BDxbBQjJuyM44GF/hZ1
-         ljzQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MS6mraKNigkKOXB/hgjulPSCM2yRlqN2uoBBxxKVwTA=;
+        b=z5cEQ5HwZy9cTyIhfxc5PZgxuUQae88VaPXcolle0LA4mxwW5kYraR3GpN/EW8J8Eh
+         IOBlIeS4wRe3w+fTRbu14xlJ38Jo9YmjMYy+tZgMisWvQ/PfPsJjCwBaxTL+aaq3xUou
+         h5680hBeio40Oms+w7uNvWOmD7RaNtBVnRMfdlp/tWgjsmEUDDTafy9bytnngOF+Yxja
+         gjw6vax6X2GZqox1hP0bffCa6tt2FTU/2ZvG+nYhrjpIdUGL2HKfUdmZoAl9gI7fOXiu
+         fbXgs6WyE8lr+COg/7PCUV7ZMYKJtrlnWdPYm+ygMbBzGyXQwicPRjzNHeoKODRLNJWw
+         MyDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XOa5JGP/QaB36txylGv/8WA29Kpuziv0aJWiro9yf5M=;
-        b=ppzYOD8i17zWGRSE+r7p1bemYPBIzLNt4hJPU1BCmfk4vUNCHbA0aR1rVaIjOTs9NN
-         uNXHiKtJy6CdbGhcgYfmZcglK+atzwzIYMJEuQB0yrQCNG3SQwxcSWizLx0AGQOIS5TG
-         agy8kjfD2oY55CxaYLSs9KcsUx0eixuaNERkavtrTFaYFwNUPrc065SYrEoPKYbixBqN
-         5zJYs1HyU48CBweBMkc7t/PzKxruZs/NQoGZWWywDxysnzDip3mIMlJwFKgW9kyInOJ7
-         gwqzLRQG3YsOzOBn3BEP+llyw06FihSBhflI1JZ+jS93yAoWkJb2L2UWUvQJjq5FJF4X
-         Qfcg==
-X-Gm-Message-State: AOAM530SmkKnz52gAlkmvdlLf548JipA4H9ZaIHB2BZevD7lAReEM0iT
-        wtOLVoQkDyww5wBmhjNgWnh40A==
-X-Google-Smtp-Source: ABdhPJz2HYRl1Cim/GV648ggH+HYACL81Wpb3DNsLrReG79jvZfQmMU9JrGlmcKDwyeOs4OG9u2MIg==
-X-Received: by 2002:a4a:4fca:: with SMTP id c193mr25835012oob.33.1626921850910;
-        Wed, 21 Jul 2021 19:44:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MS6mraKNigkKOXB/hgjulPSCM2yRlqN2uoBBxxKVwTA=;
+        b=thOYccFMLK6GuEHb0YRK8269syepYaWhw7lhOT7WwmxPJnPQaDx//7ZazI4u2m8MB/
+         EGigX8ptLzf+5HfqfzpBbpqr5MZ2POfbzNH1ebT+am2ZhYj1NXKDzai7AgIciiaQZgE4
+         vWoTV9yHSrI44yMEzN3ddYnwKMIQSpiSAZD8p731ReXPXulBnzp49y4JlIfwF3CRgBjR
+         +ihXXy5IFVlWQ2N7fDpVEuTTkgfANUmsrbBK0+Pt2ZXV3g0aNYybrDg1qh1h+Ains3Ko
+         bS74ce4TW4E4wCJaeu0LlAifJxLyakwP2RV2BbPuDPi9aT6grpd293P2Kk6vHSO0SEBG
+         hnkg==
+X-Gm-Message-State: AOAM531AeR6ARGS6dR+u/59j20jgxoWtqNaP4FaY1T5ryfTTls9PX94l
+        6BRwFWmC5aW3VnKnHB+DY1JRTg==
+X-Google-Smtp-Source: ABdhPJwxJKJoRHACBlCRhC1wTHOjaagQ66oQDTdk/KvD7hHQHiuM5LOfacjgqpVgp2acBRiGESoHAQ==
+X-Received: by 2002:a9d:7dcf:: with SMTP id k15mr21901596otn.201.1626921851922;
+        Wed, 21 Jul 2021 19:44:11 -0700 (PDT)
 Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id u18sm5346519oif.9.2021.07.21.19.44.10
+        by smtp.gmail.com with ESMTPSA id u18sm5346519oif.9.2021.07.21.19.44.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 19:44:10 -0700 (PDT)
+        Wed, 21 Jul 2021 19:44:11 -0700 (PDT)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
         David Airlie <airlied@linux.ie>,
@@ -61,35 +61,60 @@ Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
         linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
         freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/5] drm/msm/dp: Allow variation in register regions
-Date:   Wed, 21 Jul 2021 19:42:22 -0700
-Message-Id: <20210722024227.3313096-1-bjorn.andersson@linaro.org>
+Subject: [PATCH 1/5] dt-bindings: msm/dp: Change reg definition
+Date:   Wed, 21 Jul 2021 19:42:23 -0700
+Message-Id: <20210722024227.3313096-2-bjorn.andersson@linaro.org>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210722024227.3313096-1-bjorn.andersson@linaro.org>
+References: <20210722024227.3313096-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It turns out that sc8180x (among others) doesn't have the same internal layout
-of the 4 subblocks. This series therefor modifies the binding to require all
-four regions to be described individually and then extends the driver to read
-these four regions. The driver will fall back to read the old single-reg format
-and apply the original offsets and sizes.
+reg was defined as one region covering the entire DP block, but the
+memory map is actually split in 4 regions and obviously the size of
+these regions differs between platforms.
 
-Bjorn Andersson (5):
-  dt-bindings: msm/dp: Change reg definition
-  drm/msm/dp: Use devres for ioremap()
-  drm/msm/dp: Refactor ioremap wrapper
-  drm/msm/dp: Store each subblock in the io region
-  drm/msm/dp: Allow sub-regions to be specified in DT
+Switch the reg to require that all four regions are specified instead.
+It is expected that the implementation will handle existing DTBs, even
+though the schema defines the new layout.
 
- .../bindings/display/msm/dp-controller.yaml   |  11 +-
- drivers/gpu/drm/msm/dp/dp_catalog.c           |  64 ++++-------
- drivers/gpu/drm/msm/dp/dp_parser.c            | 102 +++++++++++-------
- drivers/gpu/drm/msm/dp/dp_parser.h            |  10 +-
- 4 files changed, 102 insertions(+), 85 deletions(-)
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ .../bindings/display/msm/dp-controller.yaml           | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+index 64d8d9e5e47a..a6e41be038fc 100644
+--- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
++++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+@@ -19,7 +19,11 @@ properties:
+       - qcom,sc7180-dp
+ 
+   reg:
+-    maxItems: 1
++    items:
++      - description: ahb register block
++      - description: aux register block
++      - description: link register block
++      - description: p0 register block
+ 
+   interrupts:
+     maxItems: 1
+@@ -100,7 +104,10 @@ examples:
+ 
+     displayport-controller@ae90000 {
+         compatible = "qcom,sc7180-dp";
+-        reg = <0xae90000 0x1400>;
++        reg = <0xae90000 0x200>,
++              <0xae90200 0x200>,
++              <0xae90400 0xc00>,
++              <0xae91000 0x400>;
+         interrupt-parent = <&mdss>;
+         interrupts = <12>;
+         clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
 -- 
 2.29.2
 
