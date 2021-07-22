@@ -2,93 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142333D204B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A533D2050
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhGVIWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 04:22:32 -0400
-Received: from mga06.intel.com ([134.134.136.31]:38335 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230330AbhGVIWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 04:22:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="272716522"
-X-IronPort-AV: E=Sophos;i="5.84,260,1620716400"; 
-   d="scan'208";a="272716522"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 02:02:55 -0700
-X-IronPort-AV: E=Sophos;i="5.84,260,1620716400"; 
-   d="scan'208";a="462701664"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 02:02:52 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m6UbO-00GvE7-Gj; Thu, 22 Jul 2021 12:02:46 +0300
-Date:   Thu, 22 Jul 2021 12:02:46 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Wolfram Sang <wsa@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v1 2/6] staging: atomisp: Replace open-coded
- i2c_acpi_find_client_by_adev()
-Message-ID: <YPk0NpOQWhzX31Dj@smile.fi.intel.com>
-References: <20210526124322.48915-1-andriy.shevchenko@linux.intel.com>
- <20210526124322.48915-2-andriy.shevchenko@linux.intel.com>
- <20210722105744.4a94d58d@coco.lan>
+        id S231255AbhGVIYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 04:24:01 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:52273 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230330AbhGVIX6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 04:23:58 -0400
+X-UUID: 91421b5c386f4357bc4539c6146e6a42-20210722
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=SUfFUHHeAiy7xHB0h/Imsj6WwwpQ9EOfIzx4JdwN/vE=;
+        b=GsEi1ZINroU+gGMj6dryC39Rbo1RNYLRaqwQwRa0LNApMnhChyl7SeZGuskAbdw1md+HIFRXAHYanlY5Lprlu3hD2eQ5mKZUON8T3H5UvoCi3exy+VRuMLr+3ix9XAc4pNR/a7qfGhdi4bfO6UVuCGykz9NsH2ttTnRLp7qocx4=;
+X-UUID: 91421b5c386f4357bc4539c6146e6a42-20210722
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1242842288; Thu, 22 Jul 2021 17:04:29 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Jul
+ 2021 17:04:26 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 22 Jul 2021 17:04:25 +0800
+Message-ID: <1626944665.29611.22.camel@mhfsdcap03>
+Subject: Re: [PATCH] uart: mediatek: fix memory corruption issue
+From:   zhiyong tao <zhiyong.tao@mediatek.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     "timur@kernel.org" <timur@kernel.org>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "alcooperx@gmail.com" <alcooperx@gmail.com>,
+        "tklauser@distanz.ch" <tklauser@distanz.ch>,
+        "sean.wang@kernel.org" <sean.wang@kernel.org>,
+        "srv_heupstream@mediatek.com" <srv_heupstream@mediatek.com>,
+        "hui.liu@mediatek.com" <hui.liu@mediatek.com>,
+        "yuchen.huang@mediatek.com" <yuchen.huang@mediatek.com>,
+        "huihui.wang@mediatek.com" <huihui.wang@mediatek.com>,
+        "eddie.huang@mediatek.com" <eddie.huang@mediatek.com>,
+        "sean.wang@mediatek.com" <sean.wang@mediatek.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
+Date:   Thu, 22 Jul 2021 17:04:25 +0800
+In-Reply-To: <CAHp75VeZL53VN0w3O160vMurmRT9ZJzJek6=4X6osqjJDuxD3g@mail.gmail.com>
+References: <20210710090103.2643-1-zhiyong.tao@mediatek.com>
+         <20210710090103.2643-2-zhiyong.tao@mediatek.com>
+         <CAHp75VeZL53VN0w3O160vMurmRT9ZJzJek6=4X6osqjJDuxD3g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210722105744.4a94d58d@coco.lan>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-TM-SNTS-SMTP: 807C9821DB6278E61EADEB2C44AB602CE8CBB4FB77B86B8C8DCE9240BB9B9AA02000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 10:57:44AM +0200, Mauro Carvalho Chehab wrote:
-> Em Wed, 26 May 2021 15:43:18 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> escreveu:
-> 
-> > gmin_i2c_dev_exists() is using open-coded variant of
-> > i2c_acpi_find_client_by_adev(). Replace it with a corresponding call.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> At least on the top of v5.14-rc1, this patch causes a compilation
-> issue:
-> 
-> 	drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c: In function ‘gmin_i2c_dev_exists’:
-> 	drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c:386:19: error: implicit declaration of function ‘i2c_acpi_find_client_by_adev’; did you mean ‘i2c_acpi_find_adapter_by_handle’? [-Werror=implicit-function-declaration]
-> 	  386 |         *client = i2c_acpi_find_client_by_adev(adev);
-> 	      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 	      |                   i2c_acpi_find_adapter_by_handle
-> 	drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c:386:17: warning: assignment to ‘struct i2c_client *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
-> 	  386 |         *client = i2c_acpi_find_client_by_adev(adev);
-> 	      |                 ^
-> 
-> The reason is because such function is static:
-> 
-> 	$ git grep i2c_acpi_find_client_by_adev
-> 	drivers/i2c/i2c-core-acpi.c:static struct i2c_client *i2c_acpi_find_client_by_adev(struct acpi_device *adev)
-> 
-> IMO, a patch like that should be applied at the same tree as a patch
-> dropping "static" from drivers/i2c/i2c-core-acpi.c. If you want to do
-> so, feel free to add:
-> 
-> Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-Thanks!
-
-There is a v2 of this where the patch is dropped from.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+T24gV2VkLCAyMDIxLTA3LTE0IGF0IDAxOjIwICswMzAwLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6
+DQo+IA0KPiANCj4gT24gU2F0dXJkYXksIEp1bHkgMTAsIDIwMjEsIFpoaXlvbmcgVGFvIDx6aGl5
+b25nLnRhb0BtZWRpYXRlay5jb20+DQo+IHdyb3RlOg0KPiANCj4gDQo+IFBsZWFzZSwgdXNlIOKA
+nHNlcmlhbDogODI2MF9tdGs64oCdIHByZWZpeC4NCg0KPT0+IEhpIEFuZHksDQoNClRoYW5rcyBm
+b3IgeW91ciBzdWdnZXN0aW9uLg0Kd2Ugd2lsbCBjaGFuZ2UgaXQgaW4gdGhlIG5leHQgdmVyc2lv
+bi4NCj4gDQo+ICAgICAgICAgVGhpcyBwYXRjaCBpcyB1c2VkIHRvIGZpeCBtZW1vcnkgDQo+ICAg
+ICAgICAgDQo+IA0KPiANCj4gVGhpcyBpcyBjb21wbGV0ZWx5IGNvbmZ1c2luZyBzdGFydCBvZiB0
+aGUgc2VudGVuY2UuIFRoZSBmb3JtIG9mIOKAnGJlDQo+IHVzZWQgdG/igJ0gc3Ryb25nbHkgc3Vn
+Z2VzdHMgdHdvIHRoaW5nczogMSkgaXQgd2FzIGEgcGF0Y2ggdG8gZml4DQo+IHNvbWV0aGluZzsg
+MikgaXQgaXMgbm90IHVzZWQgYW55bW9yZSBhbmQgbmV2ZXIgY29uc2lkZXJlZCB0byBiZSB1c2Vk
+DQo+IGFnYWluLA0KPiANCj4gDQo+IEJlc2lkZXMgdGhhdCBTdWJtaXR0aW5nIFBhdGNoZXMgZG9j
+dW1lbnQgaGlnaGx5IHJlY29tbWVuZHMgdG8gYXZvaWQNCj4gc2VudGVuY2VzIHRoYXQgc3RhcnRz
+IHdpdGgg4oCcdGhpcyBwYXRjaOKAnS4NCj4gIA0KDQo9PT5XZSB3aWxsIGNoYW5nZSB0aGUgY29t
+bWl0IG1lc3NhZ2UgYXMgIkZpeCB1YXJ0IGNvcnJ1cHRpb24gaXNzdWUgd2hlbg0KcnggcG93ZXIg
+b2ZmICJpbiB0aGUgbmV4dCB2ZXJzaW9uLg0KDQpUaGFua3MuDQo+ICAgICAgICAgDQo+ICAgICAg
+ICAgY29ycnVwdGlvbiBpc3N1ZSB3aGVuIHJ4IHBvd2VyIG9mZi4NCj4gICAgICAgICAxLiBhZGQg
+c3BpbiBsb2NrIGluIG10azgyNTBfZG1hX3J4X2NvbXBsZXRlIGZ1bmN0aW9uIGluIEFQRE1BDQo+
+ICAgICAgICAgbW9kZS4NCj4gICAgICAgICAyLiBhZGQgcHJvY2Vzc2luZyBtZWNoYW5pc20gd2hp
+Y2ggY291bnQgdmFsdWUgaXMgMA0KPiAgICAgICAgIA0KPiAgICAgICAgIFNpZ25lZC1vZmYtYnk6
+IFpoaXlvbmcgVGFvIDx6aGl5b25nLnRhb0BtZWRpYXRlay5jb20+DQo+ICAgICAgICAgLS0tDQo+
+ICAgICAgICAgIGRyaXZlcnMvdHR5L3NlcmlhbC84MjUwLzgyNTBfbXRrLmMgfCAxNSArKysrKysr
+KysrKy0tLS0NCj4gICAgICAgICAgMSBmaWxlIGNoYW5nZWQsIDExIGluc2VydGlvbnMoKyksIDQg
+ZGVsZXRpb25zKC0pDQo+ICAgICAgICAgDQo+ICAgICAgICAgZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+dHR5L3NlcmlhbC84MjUwLzgyNTBfbXRrLmMNCj4gICAgICAgICBiL2RyaXZlcnMvdHR5L3Nlcmlh
+bC84MjUwLzgyNTBfbXRrLmMNCj4gICAgICAgICBpbmRleCBmN2QzMDIzZjg2MGYuLjA5ZjdkMjE2
+NjMxNSAxMDA2NDQNCj4gICAgICAgICAtLS0gYS9kcml2ZXJzL3R0eS9zZXJpYWwvODI1MC84MjUw
+X210ay5jDQo+ICAgICAgICAgKysrIGIvZHJpdmVycy90dHkvc2VyaWFsLzgyNTAvODI1MF9tdGsu
+Yw0KPiAgICAgICAgIEBAIC05MSwxMiArOTEsMTUgQEAgc3RhdGljIHZvaWQgbXRrODI1MF9kbWFf
+cnhfY29tcGxldGUodm9pZA0KPiAgICAgICAgICpwYXJhbSkNCj4gICAgICAgICAgICAgICAgIHN0
+cnVjdCBtdGs4MjUwX2RhdGEgKmRhdGEgPSB1cC0+cG9ydC5wcml2YXRlX2RhdGE7DQo+ICAgICAg
+ICAgICAgICAgICBzdHJ1Y3QgdHR5X3BvcnQgKnR0eV9wb3J0ID0gJnVwLT5wb3J0LnN0YXRlLT5w
+b3J0Ow0KPiAgICAgICAgICAgICAgICAgc3RydWN0IGRtYV90eF9zdGF0ZSBzdGF0ZTsNCj4gICAg
+ICAgICAtICAgICAgIGludCBjb3BpZWQsIHRvdGFsLCBjbnQ7DQo+ICAgICAgICAgKyAgICAgICB1
+bnNpZ25lZCBpbnQgY29waWVkLCB0b3RhbCwgY250Ow0KPiAgICAgICAgICAgICAgICAgdW5zaWdu
+ZWQgY2hhciAqcHRyOw0KPiAgICAgICAgICsgICAgICAgdW5zaWduZWQgbG9uZyBmbGFnczsNCj4g
+ICAgICAgICANCj4gICAgICAgICAgICAgICAgIGlmIChkYXRhLT5yeF9zdGF0dXMgPT0gRE1BX1JY
+X1NIVVRET1dOKQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm47DQo+ICAgICAgICAg
+DQo+ICAgICAgICAgKyAgICAgICBzcGluX2xvY2tfaXJxc2F2ZSgmdXAtPnBvcnQubG9jaywgZmxh
+Z3MpOw0KPiAgICAgICAgICsNCj4gICAgICAgICAgICAgICAgIGRtYWVuZ2luZV90eF9zdGF0dXMo
+ZG1hLT5yeGNoYW4sIGRtYS0+cnhfY29va2llLA0KPiAgICAgICAgICZzdGF0ZSk7DQo+ICAgICAg
+ICAgICAgICAgICB0b3RhbCA9IGRtYS0+cnhfc2l6ZSAtIHN0YXRlLnJlc2lkdWU7DQo+ICAgICAg
+ICAgICAgICAgICBjbnQgPSB0b3RhbDsNCj4gICAgICAgICBAQCAtMTA0LDkgKzEwNywxMSBAQCBz
+dGF0aWMgdm9pZCBtdGs4MjUwX2RtYV9yeF9jb21wbGV0ZSh2b2lkDQo+ICAgICAgICAgKnBhcmFt
+KQ0KPiAgICAgICAgICAgICAgICAgaWYgKChkYXRhLT5yeF9wb3MgKyBjbnQpID4gZG1hLT5yeF9z
+aXplKQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICBjbnQgPSBkbWEtPnJ4X3NpemUgLSBkYXRh
+LT5yeF9wb3M7DQo+ICAgICAgICAgDQo+ICAgICAgICAgLSAgICAgICBwdHIgPSAodW5zaWduZWQg
+Y2hhciAqKShkYXRhLT5yeF9wb3MgKyBkbWEtPnJ4X2J1Zik7DQo+ICAgICAgICAgLSAgICAgICBj
+b3BpZWQgPSB0dHlfaW5zZXJ0X2ZsaXBfc3RyaW5nKHR0eV9wb3J0LCBwdHIsIGNudCk7DQo+ICAg
+ICAgICAgLSAgICAgICBkYXRhLT5yeF9wb3MgKz0gY250Ow0KPiAgICAgICAgICsgICAgICAgaWYg
+KGNudCAhPSAwKSB7DQo+ICAgICAgICAgKyAgICAgICAgICAgICAgIHB0ciA9ICh1bnNpZ25lZCBj
+aGFyICopKGRhdGEtPnJ4X3BvcyArDQo+ICAgICAgICAgZG1hLT5yeF9idWYpOw0KPiAgICAgICAg
+ICsgICAgICAgICAgICAgICBjb3BpZWQgPSB0dHlfaW5zZXJ0X2ZsaXBfc3RyaW5nKHR0eV9wb3J0
+LCBwdHIsDQo+ICAgICAgICAgY250KTsNCj4gICAgICAgICArICAgICAgICAgICAgICAgZGF0YS0+
+cnhfcG9zICs9IGNudDsNCj4gICAgICAgICArICAgICAgIH0NCj4gICAgICAgICANCj4gICAgICAg
+ICAgICAgICAgIGlmICh0b3RhbCA+IGNudCkgew0KPiAgICAgICAgICAgICAgICAgICAgICAgICBw
+dHIgPSAodW5zaWduZWQgY2hhciAqKShkbWEtPnJ4X2J1Zik7DQo+ICAgICAgICAgQEAgLTEyMCw2
+ICsxMjUsOCBAQCBzdGF0aWMgdm9pZCBtdGs4MjUwX2RtYV9yeF9jb21wbGV0ZSh2b2lkDQo+ICAg
+ICAgICAgKnBhcmFtKQ0KPiAgICAgICAgICAgICAgICAgdHR5X2ZsaXBfYnVmZmVyX3B1c2godHR5
+X3BvcnQpOw0KPiAgICAgICAgIA0KPiAgICAgICAgICAgICAgICAgbXRrODI1MF9yeF9kbWEodXAp
+Ow0KPiAgICAgICAgICsNCj4gICAgICAgICArICAgICAgIHNwaW5fdW5sb2NrX2lycXJlc3RvcmUo
+JnVwLT5wb3J0LmxvY2ssIGZsYWdzKTsNCj4gICAgICAgICAgfQ0KPiAgICAgICAgIA0KPiAgICAg
+ICAgICBzdGF0aWMgdm9pZCBtdGs4MjUwX3J4X2RtYShzdHJ1Y3QgdWFydF84MjUwX3BvcnQgKnVw
+KQ0KPiANCj4gDQo=
 
