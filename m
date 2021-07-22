@@ -2,190 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C45F3D2470
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C593D2478
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbhGVMgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 08:36:00 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37506 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232042AbhGVMfy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 08:35:54 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16MD4Xml170429;
-        Thu, 22 Jul 2021 09:16:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=+3M6udf/OqMT+ibxUfA2l2HHXj9sD0CYKoYMahSIlKs=;
- b=MfjLVW3CxbTFzZDNrKrnqYkmefspWtpSAiLxrtGMIFdTpaDiNz+ZY9vj90ODdyMvBy3R
- D7oEjN7OKAejgFE3OLcdPUlOqZZrx4IM48nRiAUsAJOxbSwF9+gUobs9niVO1A8shfYd
- iG1Y1Lf+phV/3RMoBaMOwsm54KekUnTBllqtVm6BWo11DQm7NtxPPT4Mfp6cSQ6VTIvZ
- WrrhkVKno+QMmm65rJYM7DIC69TYO/yzXKfhM+pruPelTGNH6Pb6+XaAgDQwqAN/nIzN
- dcmsXoaPIyUgkTVt51zrLyWrfQBWxft08rtJRfyT0UBquIlfjnev9xp4TrWWZlVG3YqO 2Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39y82e2ryp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 09:16:24 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16MDFFFE023974;
-        Thu, 22 Jul 2021 09:16:24 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39y82e2rxx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 09:16:24 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16MDDZks015618;
-        Thu, 22 Jul 2021 13:16:23 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma02dal.us.ibm.com with ESMTP id 39vuk7pdk3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 13:16:23 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16MDGLkc25821668
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Jul 2021 13:16:21 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7A1CA6A05F;
-        Thu, 22 Jul 2021 13:16:21 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 804B46A057;
-        Thu, 22 Jul 2021 13:16:20 +0000 (GMT)
-Received: from [9.85.184.30] (unknown [9.85.184.30])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 22 Jul 2021 13:16:20 +0000 (GMT)
-Subject: Re: [PATCH 2/2] s390/vfio-ap: replace open coded locks for
- VFIO_GROUP_NOTIFY_SET_KVM notification
-To:     jjherne@linux.ibm.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
- <20210719193503.793910-3-akrowiak@linux.ibm.com>
- <6c7244b5-be7b-1566-f406-4c4c37f06fd7@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <0f03ab0b-2dfd-e1c1-fe43-be2a59030a71@linux.ibm.com>
-Date:   Thu, 22 Jul 2021 09:16:19 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232043AbhGVMiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 08:38:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231925AbhGVMiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 08:38:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13F5161285;
+        Thu, 22 Jul 2021 13:18:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626959926;
+        bh=bcv6IlJoNXeSdpHKVKcs8UYSOQPfqrUyXA/cjo4gCLQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=hpa/PlOmQWI4uX70I/rgeb4xwoQsWfZ5+S7/FELSskTu0VDMgrehUQZHQjcQjhK/z
+         1YW/Ai5InjBhbpPSszqaDqhKu5srzn/C2zP/T0n1ZRzWKXZSVFXTQzc01+KK4w1U+s
+         WtPXuf78f31l3M6nFFgvTBmqSlgh+WC9uxguYKNdx31d2uiJRRyxd/jcCpeO0rLq6j
+         7Ua/trlfpu8yS0Eo7OTRZ24J2cuI69i9Y+19GD0IPFSo2JeGSzis2qiODsqshR2dUi
+         Lm5KXgRIKwJH8xDl85Qsdz2mDJ71kwGO1DcEUG9EM960/oUjUhJsgTg5VWMXRcrckY
+         UjadbOyfJ9TlQ==
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix wrong inflight page stats for
+ directIO
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>
+References: <20210719084548.25895-1-chao@kernel.org>
+ <YPi/4kMUAhlRZV3M@sol.localdomain> <YPjNGoFzQojO5Amr@sol.localdomain>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <311ab257-2d67-fd73-8359-af5b44e1447c@kernel.org>
+Date:   Thu, 22 Jul 2021 21:18:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <6c7244b5-be7b-1566-f406-4c4c37f06fd7@linux.ibm.com>
+In-Reply-To: <YPjNGoFzQojO5Amr@sol.localdomain>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: _iQ5Ehjq5rig3GNlswSjS5LbHggXFuBu
-X-Proofpoint-ORIG-GUID: gkWA0EW882j8l2685WtuoNYrTuiaMTem
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-22_07:2021-07-22,2021-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- malwarescore=0 clxscore=1015 mlxlogscore=999 lowpriorityscore=0
- impostorscore=0 priorityscore=1501 adultscore=0 suspectscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107220087
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/7/22 9:42, Eric Biggers wrote:
+> On Wed, Jul 21, 2021 at 05:46:26PM -0700, Eric Biggers wrote:
+>> On Mon, Jul 19, 2021 at 04:45:48PM +0800, Chao Yu wrote:
+>>> Previously, we use sbi->nr_pages[] to account direct IO, the count should
+>>> be based on page granularity rather than bio granularity, fix it.
+>>>
+>>> Fixes: 02b16d0a34a1 ("f2fs: add to account direct IO")
+>>> Signed-off-by: Chao Yu <chao@kernel.org>
+> 
+> Also, do we have to do this, as opposed to just moving F2FS_DIO_WRITE and
+> F2FS_DIO_READ out of ->nr_pages[] and into separate counters that are clearly
+> defined to be per-request?  As Christoph pointed out
+> (https://lkml.kernel.org/r/YPU+3inGclUtcSpJ@infradead.org), these counters are
+> only used to check whether there is any in-flight direct I/O at all.  (They're
+> also shown in /sys/kernel/debug/f2fs/status, but that doesn't really matter.)
+> 
+> As Christoph mentioned, there is a way to avoid needing f2fs_dio_submit_bio()
+> (which would save a memory allocation for every bio, which can fail).  But it
+> will only work if the counters remain per-request.
+> 
+> Can we leave these as per-request?
 
+I updated the patch, could you please check that?
 
-On 7/21/21 3:37 PM, Jason J. Herne wrote:
-> On 7/19/21 3:35 PM, Tony Krowiak wrote:
->> It was pointed out during an unrelated patch review that locks should 
->> not
->> be open coded - i.e., writing the algorithm of a standard lock in a
->> function instead of using a lock from the standard library. The 
->> setting and
->> testing of a busy flag and sleeping on a wait_event is the same thing
->> a lock does. The open coded locks are invisible to lockdep, so potential
->> locking problems are not detected.
->>
->> This patch removes the open coded locks used during
->> VFIO_GROUP_NOTIFY_SET_KVM notification. The busy flag
->> and wait queue were introduced to resolve a possible circular locking
->> dependency reported by lockdep when starting a secure execution guest
->> configured with AP adapters and domains. Reversing the order in which
->> the kvm->lock mutex and matrix_dev->lock mutex are locked resolves the
->> issue reported by lockdep, thus enabling the removal of the open coded
->> locks.
->>
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> ---
->>   arch/s390/kvm/kvm-s390.c              |  27 +++++-
->>   drivers/s390/crypto/vfio_ap_ops.c     | 132 ++++++++------------------
->>   drivers/s390/crypto/vfio_ap_private.h |   2 -
->>   3 files changed, 63 insertions(+), 98 deletions(-)
->>
->> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
->> index a08f242a9f27..4d2ef3a3286e 100644
->> --- a/arch/s390/kvm/kvm-s390.c
->> +++ b/arch/s390/kvm/kvm-s390.c
->> @@ -2559,12 +2559,24 @@ static void kvm_s390_set_crycb_format(struct 
->> kvm *kvm)
->>           kvm->arch.crypto.crycbd |= CRYCB_FORMAT1;
->>   }
->>   +/*
->> + * kvm_arch_crypto_set_masks
->> + *
->> + * @kvm: a pointer to the object containing the crypto masks
->
-> This should probably say "a pointer to the target guest's KVM struct" 
-> or something to that effect. Same comment for the comment above 
-> kvm_arch_crypto_clear_masks.
+Thanks,
 
-Will do.
-
->
->> + * @apm: the mask identifying the accessible AP adapters
->> + * @aqm: the mask identifying the accessible AP domains
->> + * @adm: the mask identifying the accessible AP control domains
->> + *
->> + * Set the masks that identify the adapters, domains and control 
->> domains to
->> + * which the KVM guest is granted access.
->> + *
->> + * Note: The kvm->lock mutex must be locked by the caller.
->> + */
->>   void kvm_arch_crypto_set_masks(struct kvm *kvm, unsigned long *apm,
->>                      unsigned long *aqm, unsigned long *adm)
->>   {
->>       struct kvm_s390_crypto_cb *crycb = kvm->arch.crypto.crycb;
->>   -    mutex_lock(&kvm->lock);
->>       kvm_s390_vcpu_block_all(kvm);
->>         switch (kvm->arch.crypto.crycbd & CRYCB_FORMAT_MASK) {
->> @@ -2595,13 +2607,21 @@ void kvm_arch_crypto_set_masks(struct kvm 
->> *kvm, unsigned long *apm,
->>       /* recreate the shadow crycb for each vcpu */
->>       kvm_s390_sync_request_broadcast(kvm, KVM_REQ_VSIE_RESTART);
->>       kvm_s390_vcpu_unblock_all(kvm);
->> -    mutex_unlock(&kvm->lock);
->>   }
->>   EXPORT_SYMBOL_GPL(kvm_arch_crypto_set_masks);
->>   +/*
->> + * kvm_arch_crypto_set_masks
->
-> Copy/paste error here. Rename to kvm_arch_crypto_CLEAR_masks
-
-I will fix it.
-
->
-> I did not find anything else in my review. However, I'm still very new 
-> to this code, so take that with a grain of salt :).
-
-The grain of salt has been ingested.
-
->
-> Also, I could not apply this to master. If there is a next version do 
-> you mind rebasing? Seeing the patch in full context would be helpful.
-
-This was rebased on the latest master branch at the time then re-tested. 
-This is something I always
-do prior to submitting patches, so is it possible you were using an 
-older version of master?
-
->
->
->
-
+> 
+> - Eric
+> 
