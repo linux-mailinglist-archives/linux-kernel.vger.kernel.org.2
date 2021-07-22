@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6252E3D293E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D5C3D2923
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233543AbhGVQCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:02:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35214 "EHLO mail.kernel.org"
+        id S233140AbhGVQBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:01:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233401AbhGVP66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:58:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 767AC61353;
-        Thu, 22 Jul 2021 16:39:30 +0000 (UTC)
+        id S232723AbhGVP7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:59:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C3B4613B7;
+        Thu, 22 Jul 2021 16:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971971;
-        bh=HLNRvvBjnuN0Hz1wec5vFYjOiLsBF/h0EvcK+c+6Wi0=;
+        s=korg; t=1626971973;
+        bh=CBpg0I9t+iAacq5dKrWgPhxIjIYjrsIru2PcukA/+do=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ogFIJ5Z6jywxibLAI6+xKAVDt+SJq0oT/X+v205Ipux25jBO+KgG5n9eaNrSDK7La
-         XzC4CGk+WSnSrmIJZhFaNSZYZ1ucVxtua3ZYWUKULE7PclUapzTIGqr4s+7m4wn+P/
-         UhA4cIO3E7L7cdEywP0TyN3LVT2dvjB8C94rie0s=
+        b=RBinBDTeY846Dx2pOKAdHXtmAEZId7bNEnoYiF1WAvpCv5PxWQ2shrZLgiDElz4XD
+         MjuKyx55Ldjgd6O6uWiVN3Nz3baBwAtg2Z6rHKd4lUIyfYJCr+g1C+cfOVrf3+tOoP
+         LFazyBYEmFScsS+4GxGt/4L9+eGU2RIZQjeEhhIY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ronak Doshi <doshir@vmware.com>,
-        Guolin Yang <gyang@vmware.com>,
+        stable@vger.kernel.org, Louis Peens <louis.peens@corigine.com>,
+        Yinjun Zhang <yinjun.zhang@corigine.com>,
+        Simon Horman <simon.horman@corigine.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 097/125] vmxnet3: fix cksum offload issues for tunnels with non-default udp ports
-Date:   Thu, 22 Jul 2021 18:31:28 +0200
-Message-Id: <20210722155627.922823708@linuxfoundation.org>
+Subject: [PATCH 5.10 098/125] net/sched: act_ct: remove and free nf_table callbacks
+Date:   Thu, 22 Jul 2021 18:31:29 +0200
+Message-Id: <20210722155627.952316310@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
 References: <20210722155624.672583740@linuxfoundation.org>
@@ -40,80 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronak Doshi <doshir@vmware.com>
+From: Louis Peens <louis.peens@corigine.com>
 
-commit b22580233d473dbf7bbfa4f6549c09e2c80e9e64 upstream.
+commit 77ac5e40c44eb78333fbc38482d61fc2af7dda0a upstream.
 
-Commit dacce2be3312 ("vmxnet3: add geneve and vxlan tunnel offload
-support") added support for encapsulation offload. However, the inner
-offload capability is to be restricted to UDP tunnels with default
-Vxlan and Geneve ports.
+When cleaning up the nf_table in tcf_ct_flow_table_cleanup_work
+there is no guarantee that the callback list, added to by
+nf_flow_table_offload_add_cb, is empty. This means that it is
+possible that the flow_block_cb memory allocated will be lost.
 
-This patch fixes the issue for tunnels with non-default ports using
-features check capability and filtering appropriate features for such
-tunnels.
+Fix this by iterating the list and freeing the flow_block_cb entries
+before freeing the nf_table entry (via freeing ct_ft).
 
-Fixes: dacce2be3312 ("vmxnet3: add geneve and vxlan tunnel offload support")
-Signed-off-by: Ronak Doshi <doshir@vmware.com>
-Acked-by: Guolin Yang <gyang@vmware.com>
+Fixes: 978703f42549 ("netfilter: flowtable: Add API for registering to flow table events")
+Signed-off-by: Louis Peens <louis.peens@corigine.com>
+Signed-off-by: Yinjun Zhang <yinjun.zhang@corigine.com>
+Signed-off-by: Simon Horman <simon.horman@corigine.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/vmxnet3/vmxnet3_ethtool.c |   22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ net/sched/act_ct.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/net/vmxnet3/vmxnet3_ethtool.c
-+++ b/drivers/net/vmxnet3/vmxnet3_ethtool.c
-@@ -1,7 +1,7 @@
- /*
-  * Linux driver for VMware's vmxnet3 ethernet NIC.
-  *
-- * Copyright (C) 2008-2020, VMware, Inc. All Rights Reserved.
-+ * Copyright (C) 2008-2021, VMware, Inc. All Rights Reserved.
-  *
-  * This program is free software; you can redistribute it and/or modify it
-  * under the terms of the GNU General Public License as published by the
-@@ -26,6 +26,10 @@
+--- a/net/sched/act_ct.c
++++ b/net/sched/act_ct.c
+@@ -320,11 +320,22 @@ err_alloc:
  
+ static void tcf_ct_flow_table_cleanup_work(struct work_struct *work)
+ {
++	struct flow_block_cb *block_cb, *tmp_cb;
+ 	struct tcf_ct_flow_table *ct_ft;
++	struct flow_block *block;
  
- #include "vmxnet3_int.h"
-+#include <net/vxlan.h>
-+#include <net/geneve.h>
+ 	ct_ft = container_of(to_rcu_work(work), struct tcf_ct_flow_table,
+ 			     rwork);
+ 	nf_flow_table_free(&ct_ft->nf_ft);
 +
-+#define VXLAN_UDP_PORT 8472
++	/* Remove any remaining callbacks before cleanup */
++	block = &ct_ft->nf_ft.flow_block;
++	down_write(&ct_ft->nf_ft.flow_block_lock);
++	list_for_each_entry_safe(block_cb, tmp_cb, &block->cb_list, list) {
++		list_del(&block_cb->list);
++		flow_block_cb_free(block_cb);
++	}
++	up_write(&ct_ft->nf_ft.flow_block_lock);
+ 	kfree(ct_ft);
  
- struct vmxnet3_stat_desc {
- 	char desc[ETH_GSTRING_LEN];
-@@ -277,6 +281,8 @@ netdev_features_t vmxnet3_features_check
- 	if (VMXNET3_VERSION_GE_4(adapter) &&
- 	    skb->encapsulation && skb->ip_summed == CHECKSUM_PARTIAL) {
- 		u8 l4_proto = 0;
-+		u16 port;
-+		struct udphdr *udph;
- 
- 		switch (vlan_get_protocol(skb)) {
- 		case htons(ETH_P_IP):
-@@ -289,8 +295,20 @@ netdev_features_t vmxnet3_features_check
- 			return features & ~(NETIF_F_CSUM_MASK | NETIF_F_GSO_MASK);
- 		}
- 
--		if (l4_proto != IPPROTO_UDP)
-+		switch (l4_proto) {
-+		case IPPROTO_UDP:
-+			udph = udp_hdr(skb);
-+			port = be16_to_cpu(udph->dest);
-+			/* Check if offloaded port is supported */
-+			if (port != GENEVE_UDP_PORT &&
-+			    port != IANA_VXLAN_UDP_PORT &&
-+			    port != VXLAN_UDP_PORT) {
-+				return features & ~(NETIF_F_CSUM_MASK | NETIF_F_GSO_MASK);
-+			}
-+			break;
-+		default:
- 			return features & ~(NETIF_F_CSUM_MASK | NETIF_F_GSO_MASK);
-+		}
- 	}
- 	return features;
- }
+ 	module_put(THIS_MODULE);
 
 
