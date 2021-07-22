@@ -2,63 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DD43D2B9D
+	by mail.lfdr.de (Postfix) with ESMTP id CC6AA3D2B9F
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 20:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbhGVRUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 13:20:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230086AbhGVRT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 13:19:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0AF296135F;
-        Thu, 22 Jul 2021 18:00:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626976833;
-        bh=fSwWzJJQs8mKjbj+ouc0JQN5s0eyyINvt+YEmk48jJc=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=KO+Y6CJrI08+qp6efFo50Xn0CT5LrsT8/pq+ebIYCEl7Kbh0aMDywVLW0tg7fS26o
-         dXZIoBRiEZzd3R2fckymS3xbOCRaspXKSgmqi0j8J9hY0QZLEPtHiBdICCs4YqJhb0
-         SFqTyh2lYTfzL35w2Fi/xXJKhbz9ByZp4NDERwdUoO4znSuE0KNv8zyR4mOoUTdRBh
-         ze677MvFkovuGb7IoUj2QTAxbpfl1xdgRthjRcP2TUn/nL8urvIZAZEtUWggNdCF9z
-         udu4YOZl9vzU8slzVWt4NQf86ripl2+KVWzLxeiKjjOXQDhDAqPzS0i4+2PMCnD5+1
-         lHSSSBln0d1tQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 05480600AB;
-        Thu, 22 Jul 2021 18:00:33 +0000 (UTC)
-Subject: Re: [GIT PULL] Hyper-V fixes for 5.14-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210722140949.3knhduxozzaido2r@liuwe-devbox-debian-v2>
-References: <20210722140949.3knhduxozzaido2r@liuwe-devbox-debian-v2>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210722140949.3knhduxozzaido2r@liuwe-devbox-debian-v2>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210722
-X-PR-Tracked-Commit-Id: f5a11c69b69923a4367d24365ad4dff6d4f3fc42
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7c14e4d6fbdd68bf8026868e8de263017c81b83d
-Message-Id: <162697683301.6012.10755117407654361177.pr-tracker-bot@kernel.org>
-Date:   Thu, 22 Jul 2021 18:00:33 +0000
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        kys@microsoft.com, sthemmin@microsoft.com, haiyangz@microsoft.com,
-        decui@microsoft.com, Michael Kelley <mikelley@microsoft.com>
+        id S230419AbhGVRUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 13:20:24 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:38919 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230383AbhGVRUW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 13:20:22 -0400
+Received: from smtpclient.apple (p5b3d2eb8.dip0.t-ipconnect.de [91.61.46.184])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 1E098CECE5;
+        Thu, 22 Jul 2021 20:00:56 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH v2] Bluetooth: btusb: Add support for Foxconn Mediatek
+ Chip
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210722171718.134034-1-aaron.ma@canonical.com>
+Date:   Thu, 22 Jul 2021 20:00:55 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        matthias.bgg@gmail.com,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <A24B292E-9E05-410E-8EF1-D815AEAE8165@holtmann.org>
+References: <E6EC3615-DAC0-4267-AD9B-3B0604EDAD87@holtmann.org>
+ <20210722171718.134034-1-aaron.ma@canonical.com>
+To:     Aaron Ma <aaron.ma@canonical.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 22 Jul 2021 14:09:49 +0000:
+Hi Aaron,
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210722
+> Add support for another Foxconn / Hon Hai device with MT7921 chip.
+> 
+> T:  Bus=05 Lev=01 Prnt=01 Port=03 Cnt=02 Dev#=  3 Spd=480  MxCh= 0
+> D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=0489 ProdID=e0cd Rev= 1.00
+> S:  Manufacturer=MediaTek Inc.
+> S:  Product=Wireless_Device
+> S:  SerialNumber=000000000
+> C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
+> A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
+> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+> I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
+> E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
+> E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
+> I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
+> E:  Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
+> E:  Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
+> 
+> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+> ---
+> drivers/bluetooth/btusb.c | 3 +++
+> 1 file changed, 3 insertions(+)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7c14e4d6fbdd68bf8026868e8de263017c81b83d
+patch has been applied to bluetooth-next tree.
 
-Thank you!
+Regards
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Marcel
+
