@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FED83D295C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB2B3D2932
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233810AbhGVQDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:03:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39702 "EHLO mail.kernel.org"
+        id S230271AbhGVQCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:02:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233490AbhGVQCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:02:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62A0861949;
-        Thu, 22 Jul 2021 16:42:40 +0000 (UTC)
+        id S233015AbhGVP76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:59:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85AD961353;
+        Thu, 22 Jul 2021 16:40:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972160;
-        bh=XuBuvsbKt3ZHT7dCNLzqm+nESIX8YJil9iu7Ncu4/KM=;
+        s=korg; t=1626972033;
+        bh=LgYr3QL72wQLpXTCnmzPiI3MQy1ZkUHS54cHgoTm/ac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ip8CW0XcQcxl2X2HGCP6OhZPcveyE+XVxrOAwqdSOW3AXe1EZDYWRMv3XktKe92+z
-         2ERNot7VkhiM5ZEsJgt/IY4YOLgzyFoJzzkBbxKmv+kxbThlQUOAj3Y0LYdvkJJL/7
-         bLOngJSiHaaHMRp+X9Ox/Md4ZWOe/S2anICXGlWA=
+        b=hHocCPLxDSsETdgcmjWBzyuq8w8UYguKs1VdZUFgsxu83KyzbCdmw6CIf/WIAGTJy
+         Jim1Gt6Ez2LhNjbXQDKKt08Ig6tWI82coRwX4bqVoIH7btaLCwIl8l/CPpzbDD7Drj
+         ZiyeNpuJ25oj7k9q9mrAlIk4MYORVs/7b/hxkWnE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>
-Subject: [PATCH 5.10 113/125] ARM: dts: aspeed: Fix AST2600 machines line names
-Date:   Thu, 22 Jul 2021 18:31:44 +0200
-Message-Id: <20210722155628.468517108@linuxfoundation.org>
+        stable@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>
+Subject: [PATCH 5.10 114/125] ARM: dts: tacoma: Add phase corrections for eMMC
+Date:   Thu, 22 Jul 2021 18:31:45 +0200
+Message-Id: <20210722155628.498585537@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
 References: <20210722155624.672583740@linuxfoundation.org>
@@ -38,54 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joel Stanley <joel@jms.id.au>
+From: Andrew Jeffery <andrew@aj.id.au>
 
-commit ca46ad2214473df1a6a9496be17156d65ba89b9f upstream.
+commit 2d6608b57c50c54c3e46649110e8ea5a40959c30 upstream.
 
-Tacoma and Rainier both have a line-names array that is too long:
+The degree values were reversed out from the magic tap values of 7 (in)
+and 15 + inversion (out) initially suggested by Aspeed.
 
- gpio gpiochip0: gpio-line-names is length 232 but should be at most length 208
+With the patch tacoma survives several gigabytes of reads and writes
+using dd while without it locks up randomly during the boot process.
 
-This was probably copied from an AST2500 device tree that did have more
-GPIOs on the controller.
-
-Fixes: e9b24b55ca4f ("ARM: dts: aspeed: rainier: Add gpio line names")
-Fixes: 2f68e4e7df67 ("ARM: dts: aspeed: tacoma: Add gpio line names")
-Link: https://lore.kernel.org/r/20210624090742.56640-1-joel@jms.id.au
+Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+Link: https://lore.kernel.org/r/20210625061017.1149942-1-andrew@aj.id.au
+Fixes: 2fc88f92359d ("mmc: sdhci-of-aspeed: Expose clock phase controls")
+Fixes: 961216c135a8 ("ARM: dts: aspeed: Add Rainier system")
 Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts |    5 +----
- arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts  |    5 +----
- 2 files changed, 2 insertions(+), 8 deletions(-)
+ arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-@@ -156,10 +156,7 @@
- 	/*W0-W7*/	"","","","","","","","",
- 	/*X0-X7*/	"","","","","","","","",
- 	/*Y0-Y7*/	"","","","","","","","",
--	/*Z0-Z7*/	"","","","","","","","",
--	/*AA0-AA7*/	"","","","","","","","",
--	/*AB0-AB7*/	"","","","","","","","",
--	/*AC0-AC7*/	"","","","","","","","";
-+	/*Z0-Z7*/	"","","","","","","","";
- 
- 	pin_mclr_vpp {
- 		gpio-hog;
 --- a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
 +++ b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-@@ -127,10 +127,7 @@
- 	/*W0-W7*/	"","","","","","","","",
- 	/*X0-X7*/	"","","","","","","","",
- 	/*Y0-Y7*/	"","","","","","","","",
--	/*Z0-Z7*/	"","","","","","","","",
--	/*AA0-AA7*/	"","","","","","","","",
--	/*AB0-AB7*/	"","","","","","","","",
--	/*AC0-AC7*/	"","","","","","","","";
-+	/*Z0-Z7*/	"","","","","","","","";
+@@ -177,6 +177,7 @@
+ 
+ &emmc {
+ 	status = "okay";
++	clk-phase-mmc-hs200 = <36>, <270>;
  };
  
- &fmc {
+ &fsim0 {
 
 
