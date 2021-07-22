@@ -2,88 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBEC3D2312
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9764D3D231E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231781AbhGVLY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 07:24:29 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:36142 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231712AbhGVLYO (ORCPT
+        id S231822AbhGVLc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 07:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231802AbhGVLc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 07:24:14 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id DE10E1FF07;
-        Thu, 22 Jul 2021 12:04:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626955488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y6zIvvc+aGMbYTBCMSNmSUsejo44QqaGf38QJZwX8sU=;
-        b=noNeRz+t6HY2X0JTwMVD9GC2fjJkPY2hirnvHgSauZmKwh2m3MU68S+0dL/ymRYN2qfKgp
-        /xkkpa5Ky0nGF14BZOMLtWz1D5EGozVhhFrfGMaoQP97xf2Qs/IMP1eXx11XCNDNFR4+AS
-        oA4ya/pUnuq5F6x/GOI3+I+d+w9LBtE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626955488;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y6zIvvc+aGMbYTBCMSNmSUsejo44QqaGf38QJZwX8sU=;
-        b=M5UBhb08BB9GFZEnGASYQlO+s7Qyx5wE8GaiqnpvUXxm2e38mSHj8tAH51DOSOZqH+MFAJ
-        sIZANhYlXnEYidAg==
-Received: from hawking.suse.de (hawking.suse.de [10.160.4.0])
-        by relay2.suse.de (Postfix) with ESMTP id D470CA3B8B;
-        Thu, 22 Jul 2021 12:04:48 +0000 (UTC)
-Received: by hawking.suse.de (Postfix, from userid 17005)
-        id C84DC445C89; Thu, 22 Jul 2021 14:04:48 +0200 (CEST)
-From:   Andreas Schwab <schwab@suse.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Tobias Schramm <t.schramm@manjaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
-References: <mvmtukn6bmu.fsf@suse.de> <YPgwHcbK7XoXL/mD@smile.fi.intel.com>
-        <mvmpmvb68cg.fsf@suse.de> <YPg3VS/Ure6VRsuJ@smile.fi.intel.com>
-        <mvmlf5z66l9.fsf@suse.de>
-        <CAHp75VeFKn=--PuF6deOp6H-j7z8PXgkXA5PeSftiK5LWX30Qw@mail.gmail.com>
-        <mvmh7gn649v.fsf@suse.de> <YPhT1APE8QweDCoP@smile.fi.intel.com>
-        <mvmczra64yj.fsf@suse.de>
-        <CAHp75VfY-_xtRJyfez_4voDuOUcfJAfFjtnAipCt2_UA4wqbQg@mail.gmail.com>
-X-Yow:  It's OBVIOUS..  The FURS never reached ISTANBUL..  You were
- an EXTRA in the REMAKE of ``TOPKAPI''..  Go home to your
- WIFE..  She's making FRENCH TOAST!
-Date:   Thu, 22 Jul 2021 14:04:48 +0200
-In-Reply-To: <CAHp75VfY-_xtRJyfez_4voDuOUcfJAfFjtnAipCt2_UA4wqbQg@mail.gmail.com>
-        (Andy Shevchenko's message of "Thu, 22 Jul 2021 13:28:43 +0300")
-Message-ID: <mvm8s1y5zbz.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Thu, 22 Jul 2021 07:32:27 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD19C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 05:13:01 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so5212606pjo.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 05:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=toqwJOa6X7fF0WvEMU298oqKFP2M/oQGkU+L/iT7lKc=;
+        b=cvHifto+mU9zRDSMMwqAFpvfXK5Oe2JNVOpNUa7rzR3+hyQa04XxZHMERrlZKgAFZK
+         WLPWDmsSrdO7/EpmyptNNnJV5fVdjdCLUHwMQx3wqio0Ie7+jG5cLjwJZQxnBnc+F2u7
+         XSlZj64+qLDQVvT6cUBMEWp/9nadg7N/pjhskILCVOQnl6Zn2wfz65d7Jea1u7MUrTEP
+         UvorFH1a13Eb9VW6BieXB0LjrISG/rKaWoUM9qNE2mk7fntVNnD2ev4n+v6BYxhYRfD8
+         RCPSKAds/PXq9+xa1SPfncLjmLRYiT+fyhGhGqdZPFRaJama91iFqduKlWnVsIO8jzGg
+         0GGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=toqwJOa6X7fF0WvEMU298oqKFP2M/oQGkU+L/iT7lKc=;
+        b=UWLVoGTBLpPsY86E2FQHiuNVC6afH9A13GBa7ah3DW6ahEL4nqsdXzXlY9zHo3jcDq
+         iqA6PjWCJRrlXYwd7ihVZTicyD8w+nR4o/Obxk2GmNaydilW4uyoOQ+VpHBnDTBevh8c
+         HczXH1wTjfCTWoaFrvCTmJrebV0MPbv2rnZeebKxGbsjkWVhBuI+bpf9FDhqnTBiI5yX
+         Pt2lEB5h4DVG6kSX8O5WhK/LiRtlAIYxojOY2rlAC050M7ArFoHtWpAToz95Rpz228PY
+         rJRRbrvciPm7yvPu6gaeau571idlOgJddGQ0QLaO21+LRA603EAcX59HTD8dY55gzaP2
+         gNXQ==
+X-Gm-Message-State: AOAM531VVi6+SBZm0nrvz689JBowh20mLws2JujFenDmkx7h457J9Pe2
+        7gUYHjfsbTcjt4BgvCfth2uh
+X-Google-Smtp-Source: ABdhPJxWOwziGGT2SQN01qtgjtuhdI8WSQk7IqMXafah1WHp5WZi5fNcL8m0FmaOQZbU3Q0TfGyz2Q==
+X-Received: by 2002:aa7:980a:0:b029:358:adf9:c37b with SMTP id e10-20020aa7980a0000b0290358adf9c37bmr7061445pfl.12.1626955981046;
+        Thu, 22 Jul 2021 05:13:01 -0700 (PDT)
+Received: from localhost.localdomain ([120.138.13.30])
+        by smtp.gmail.com with ESMTPSA id cp6sm2913846pjb.17.2021.07.22.05.12.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 05:13:00 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        robh@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, smohanad@codeaurora.org,
+        bjorn.andersson@linaro.org, sallenki@codeaurora.org,
+        skananth@codeaurora.org, vpernami@codeaurora.org,
+        vbadigan@codeaurora.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v7 0/3] Add Qualcomm PCIe Endpoint driver support
+Date:   Thu, 22 Jul 2021 17:42:39 +0530
+Message-Id: <20210722121242.47838-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul 22 2021, Andy Shevchenko wrote:
+Hello,
 
-> Compare the code of
-> https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L649
-> vs.
-> https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L56
->
-> and
->
-> https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L139
-> vs.
-> https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L361
+This series adds support for Qualcomm PCIe Endpoint controller found
+in platforms like SDX55. The Endpoint controller is based on the designware
+core with additional Qualcomm wrappers around the core.
 
-Thanks, I think I now know how to fix it correctly.
+The driver is added separately unlike other Designware based drivers that
+combine RC and EP in a single driver. This is done to avoid complexity and
+to maintain this driver autonomously.
 
-Andreas.
+The driver has been validated with an out of tree MHI function driver on
+SDX55 based Telit FN980 EVB connected to x86 host machine over PCIe.
+
+Thanks,
+Mani
+
+Changes in v7:
+
+* Used existing naming convention for callback functions
+* Used active low state for PERST# gpio
+
+Changes in v6:
+
+* Removed status property in DT and added reviewed tag from Rob
+* Switched to _relaxed variants as suggested by Rob
+
+Changes in v5:
+
+* Removed the DBI register settings that are not needed
+* Used the standard definitions available in pci_regs.h
+* Added defines for all the register fields
+* Removed the left over code from previous iteration
+
+Changes in v4:
+
+* Removed the active_config settings needed for IPA integration
+* Switched to writel for couple of relaxed versions that sneaked in
+
+Changes in v3:
+
+* Lot of minor cleanups to the driver patch based on review from Bjorn and Stan.
+* Noticeable changes are:
+  - Got rid of _relaxed calls and used readl/writel
+  - Got rid of separate TCSR memory region and used syscon for getting the
+    register offsets for Perst registers
+  - Changed the wake gpio handling logic
+  - Added remove() callback and removed "suppress_bind_attrs"
+  - stop_link() callback now just disables PERST IRQ
+* Added MMIO region and doorbell interrupt to the binding
+* Added logic to write MMIO physicall address to MHI base address as it is
+  for the function driver to work
+
+Changes in v2:
+
+* Addressed the comments from Rob on bindings patch
+* Modified the driver as per binding change
+* Fixed the warnings reported by Kbuild bot
+* Removed the PERST# "enable_irq" call from probe()
+
+Manivannan Sadhasivam (3):
+  dt-bindings: pci: Add devicetree binding for Qualcomm PCIe EP
+    controller
+  PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver
+  MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
+
+ .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 158 ++++
+ MAINTAINERS                                   |  10 +-
+ drivers/pci/controller/dwc/Kconfig            |  10 +
+ drivers/pci/controller/dwc/Makefile           |   1 +
+ drivers/pci/controller/dwc/pcie-qcom-ep.c     | 710 ++++++++++++++++++
+ 5 files changed, 888 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+ create mode 100644 drivers/pci/controller/dwc/pcie-qcom-ep.c
 
 -- 
-Andreas Schwab, SUSE Labs, schwab@suse.de
-GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
-"And now for something completely different."
+2.25.1
+
