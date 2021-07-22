@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B54E3D221B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B28F3D21D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231656AbhGVJsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 05:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231453AbhGVJst (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 05:48:49 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E5DC061575;
-        Thu, 22 Jul 2021 03:29:24 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id o8so3906314plg.11;
-        Thu, 22 Jul 2021 03:29:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D/T2v25ISKwnv+JiEOMpEorfBjmX5RIS7o1WRWb9zSI=;
-        b=giKvgL5mNpL7ZueglLsoIjxTM8iEkf/lQSwAd3w1o9qUSZuhxP6kcDyfFcH4a5u3jR
-         hcNE0sTliFTt6qLb1MgTpVygPhH8RQjFLKJWCIh67QfqW/BkQVoDNAy2e/N8qcDzzWp0
-         czN4xrEZsgFbsSVoZBOEQWOt4C3TrbCZGl6ETceKz9Bz2RB8oQsYQMVIv6E0qAh5JDNO
-         5p2EHdXs6y1g12iXkJNkcEbiyNjKa+YRCPTCMtXsQ6k0da0Sj0xmDXiQ7KkbeBWSVi5n
-         1y0jSm+XIXE/v7fpaXJfG3rETyb9hq5nHu7x+8iacyH66bmxy4B+wIc6yWhzE+9v73Z7
-         yYfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D/T2v25ISKwnv+JiEOMpEorfBjmX5RIS7o1WRWb9zSI=;
-        b=Dy4fW4P0AeiEUyq6I80X/WHVv8nlojnmjUaVD4zP/74nZZUL1mf33DtUqPLa8ATuNC
-         Rokj6TraaOPWGH5FRh913SoTDYZn9L9UW1zJdKDx2q3JH9IMZaAa2ty0W8e/6mOBH+iW
-         XeZ/j1YUmUIXY1iouMSp6uM3Q6to5rk+CgvUfpZehIAjFWmMcMoqHy6u2dGmLaj220QR
-         xCKWnVY83yISeyWCccUmchSZidDgBC7KVEATfWLEbYhMQUvXFjJ7YFft8drbJSCj7r7n
-         Aeh9YFIljrG+NuJU+kmSFbRZl1XKH+ZqvjASYKvFuEYOPuql/8cDd/Q9Dgj3h/KhlrAw
-         JENA==
-X-Gm-Message-State: AOAM5316T4ntT4mUpAZFfq4BEQv6AeQSV5J7GLCufUF3eT0wX8/c3kDd
-        yrKPPkcjdOl+/0U0Vaq7LP/I83Hy326SNsc0d1Y=
-X-Google-Smtp-Source: ABdhPJxoFCTp/NwlflZaAjqRTJvKvp0S635JhOGs61WECIltH+YXzHhAb9KefZ/ctEXb+XBhIbLUIbyfg78dqZ6hCc0=
-X-Received: by 2002:a17:90a:af90:: with SMTP id w16mr8455268pjq.129.1626949763784;
- Thu, 22 Jul 2021 03:29:23 -0700 (PDT)
+        id S231640AbhGVJaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 05:30:16 -0400
+Received: from mout.web.de ([212.227.17.12]:38425 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231637AbhGVJaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 05:30:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1626948648;
+        bh=AvlCrQmD9OJ1+lL/BRCB+v4cOg68WKsJxnLX8LWc23U=;
+        h=X-UI-Sender-Class:To:Subject:From:Date;
+        b=f0hlxX5RcwnUdx8u02R2IX4Ogj2ge2mIZZyns8o26treLwIDtS2ri/VP28IFnNIES
+         bDYkSDmPpH36//F/4elMQwAKcplNw5V5SugvQJ7c6lDe1cXShGS4Q9gZabyLYAQItP
+         XIA0IEWpC26BrfDF/42SKjhZt74ftgBgAgAZtYTg=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from localhost.localdomain ([178.9.212.178]) by smtp.web.de
+ (mrweb101 [213.165.67.124]) with ESMTPSA (Nemesis) id
+ 0MfHsM-1liowk1wIU-00OsSK for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021
+ 12:10:48 +0200
+To:     linux-kernel@vger.kernel.org
+Subject: Kernel 5.4.134
+From:   secret <andreas-stoewing@web.de>
+Date:   Thu, 22 Jul 2021 12:10:47 +0000
 MIME-Version: 1.0
-References: <mvmtukn6bmu.fsf@suse.de> <YPgwHcbK7XoXL/mD@smile.fi.intel.com>
- <mvmpmvb68cg.fsf@suse.de> <YPg3VS/Ure6VRsuJ@smile.fi.intel.com>
- <mvmlf5z66l9.fsf@suse.de> <CAHp75VeFKn=--PuF6deOp6H-j7z8PXgkXA5PeSftiK5LWX30Qw@mail.gmail.com>
- <mvmh7gn649v.fsf@suse.de> <YPhT1APE8QweDCoP@smile.fi.intel.com> <mvmczra64yj.fsf@suse.de>
-In-Reply-To: <mvmczra64yj.fsf@suse.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 22 Jul 2021 13:28:43 +0300
-Message-ID: <CAHp75VfY-_xtRJyfez_4voDuOUcfJAfFjtnAipCt2_UA4wqbQg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
-To:     Andreas Schwab <schwab@suse.de>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Tobias Schramm <t.schramm@manjaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <202107221210.50398.andreas-stoewing@web.de>
+X-Provags-ID: V03:K1:hHBnTF2yPG6RpDNkZKde84EvHpiQTFCfAlJ79BdklKdUKcTKCiI
+ V6fjm9mjdr2WCQlZyqwkzJEqwKENS8ftJ5b64iHMl7wsPXSsW0ZUTf5mH6yaawoL0oX99Ju
+ GEq6K3/MWxsQU5oGM6SlFFDLpETWRxD5KVHavNGyzvhIPYOrsz357XaorCl2EqjtF1pRemr
+ tXr9gkv/MRnzt40BRTNnQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2hkzP03sBHk=:nN5BuAxarE/GR5507Sm/wV
+ qZgw9tla9RPBvcgFYZ1J8+c8RJoySsiyAjITUXv7HR6AlHbLGGCzgqW3rhWGA4+anm31Q+d1Y
+ jlV7j9USzgsogc8G/dAu0JFMIvFW6ReGAX+TMGfCajQNzgMFREAwVOqppH5SmOH7WxDFvA/DT
+ jmgERFHdlUby00EwMnwemfH6gO+uH62+dSQJsU4Xd9uJF6Pm1h66i4giDQd5/QZLMuvY3Y1UW
+ brn/syzpYO/Pa660IxJKLdj0w0VtV5zhEBeCn5OAe1LVrDjN/xQ7oKA8KkBUwM6Tl3KoX0jYD
+ DR9HcxaImE6feA54sOrQCfkrXV9Wne8YocYV0E/Dlv5OGcFbk+u7n2BFBbbw+Hrk4EiEGeEUz
+ HQnYHL4WRPqDCDVb9ViDWL75asYqexvUpyTwABDL/UjotQ8KPCgzv/n380U9JRVUKhJMB8kEc
+ bVuPQWtOAY9HwJ1aTchBmXI5gJ2Tz820qpIo9vZ02uOf5e3vZT/ksWP7jbjBorvM8uz/GBPD9
+ iaC60VFjE3Zjyb3K/7H6WplG2275kxzsYydp0rG7qx12zs3gMaHINZtyoduh28gfk0EK+lNpn
+ ojFgQar1LGJqRcqkDh+WXhreElnZCdjhJAL8+blh4TRHERjpgRVwHrlrOrIsqC8fm2/GkJchu
+ 25tNF0z96tG3Ut77OGDiu5ifsur7nn3oT5rblFuWjnO/ot2iTWsRHjIevfBqd24MYk2yuwBNA
+ 9yvCtoUfxN9KVBOMtNYYR/7108NgUGxBgYY6CDicSlShnhA9kcqeDL5JjBB70Sk6WPu/JLP8J
+ G10P7fs0RozRn1nVIYIHKSPDSnNJ5tVFYVjYp2gvR4xzC2eXbEaE9x2nQ4xfx1qxqxiRzczP8
+ 5EIhXES+dv4xmR1Z9XaFt3hYz4bv9WG8KjiAM6Z4GQWSXuk4q5oTTAN4ozQmfabo3ZE9qlNX/
+ BELRz2wYNFZcbCTYUQ8qkg79mTBNLb41JG6gytFuj7KGP8CMb/dwOWw/KpnqRR+J+joZ1WoMt
+ 402z6TDSQgiJ5R3SPksb4/FH/HzA/v/9KNbEqcl+icJxpEKX8CW2hVNgKPIJmedoHXpMV+KhG
+ tDa9FKJJ+h1lqinFi3QkfagamxRuYV6T6SXUixmHls005aEwLl3Iu6i4w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 1:03 PM Andreas Schwab <schwab@suse.de> wrote:
-> On Jul 21 2021, Andy Shevchenko wrote:
->
-> > Or problem is somewhere else?
->
-> I don't know.  Why does the spi subsystem put "spi:mmc-spi-slot" into
-> the modalias file, instead of "of:N(null)T(null)Cmmc-spi-slot" or
-> similar?  The same problem exists with the other spi port on the board,
-> which has a jedec,spi-nor instance attached, also not auto loading.
 
-You see, there are two unrelated drivers that share the same issue
-(the common denominator is that they are SPI devices). I believe the
-issue is somewhere in the SPI core rather than here.
 
-Compare the code of
-https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L649
-vs.
-https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L56
+Hello,
 
-and
+I write again the content of my last E-mail to you, for  my smartphone has=
+ got
+only a small display and therefore a quit tiny keyboard...
 
-https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L139
-vs.
-https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L361
+Whenever Tor from rosa2016.1 (Rosalabs.ru) and/or Enterprise Linux 6 is
+starting, at least three kernel-processes start too and/or become more tha=
+n
+active (CPU capacity lies by more than 10 percent, making my orange LED on=
+ the
+tower blinking a lot)!
 
-The culprit is this one:
-https://lore.kernel.org/lkml/20190618052644.32446-1-bjorn.andersson@linaro.org/
+So they have got root-rights!
 
-and in my humble opinion must be reverted.
+Their name is like kworker-kcryptd/..., dmcrypt/... and uksmd, but this is=
+ not
+their complete name.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I do not want this activity as they irritate a lot in possibly causing hig=
+h
+and highest risks!
+
+Tests have shown, that no data seems to get transferred over the net, but
+knows the hell, what's really going on here....
+
+Is it worth a patch for you,
+can you resp. your foundation patch it?
+
+I would appreciate this.
+
+Regards, Andreas
+
+I also like to tell you, that this Tor is surrounded by firejail from pclo=
+s,
+this is PCLinuxOS 2021. The processes get permanently highly active for ab=
+out
+five (5) minutes. The LED on the tower for read and write on storage media=
+ is
+really blinking madly hard all this time, while the process-manager confir=
+ms
+the whole mysterious process-activities!
+After this time, Tor and surfing in the internet with the browser do work =
+fine
+as much as the rest of the Linux. So I have to wait several minutes.
+Does it have to do with one of the last patches of 5.4, for example the on=
+e
+for dmcrypt? Anyhow I use full system encryption by LUKS, that might matte
+here.
+
+Regards,
+Andreas St=C3=B6wing
+(Gooken)
+https://gooken.safe-ws.de/gooken
