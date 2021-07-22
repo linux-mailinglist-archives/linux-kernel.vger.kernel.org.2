@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2EC43D251B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152DB3D2529
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbhGVNXQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 09:23:16 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:51693 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232118AbhGVNXP (ORCPT
+        id S232298AbhGVNZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232198AbhGVNZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:23:15 -0400
-Received: from smtpclient.apple (p5b3d2eb8.dip0.t-ipconnect.de [91.61.46.184])
-        by mail.holtmann.org (Postfix) with ESMTPSA id ACF84CECDC;
-        Thu, 22 Jul 2021 16:03:48 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH v4 2/2] Bluetooth: btusb: Support Bluetooth Reset for
- Mediatek Chip(MT7921)
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210701194243.5449-2-mark-yw.chen@mediatek.com>
-Date:   Thu, 22 Jul 2021 16:03:48 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>, chris.lu@mediatek.com,
-        will-cy.lee@mediatek.com, Sean Wang <sean.wang@mediatek.com>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>,
-        michaelfsun@google.com, shawnku@google.com, jemele@google.com,
-        apusaka@google.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <0FDB7895-4ABF-4975-AF61-FCFA86597254@holtmann.org>
-References: <20210701194243.5449-1-mark-yw.chen@mediatek.com>
- <20210701194243.5449-2-mark-yw.chen@mediatek.com>
-To:     =?utf-8?B?Ik1hcmstWVcgQ2hlbiAo6Zmz5o+a5paHKSI=?= 
-        <Mark-YW.Chen@mediatek.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Thu, 22 Jul 2021 09:25:15 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6DCC061575;
+        Thu, 22 Jul 2021 07:05:49 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id h4so7491290ljo.6;
+        Thu, 22 Jul 2021 07:05:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I2yvd7CInVO2nkOTfuFibl5KCx2wDyhIqtzEA3PsnKs=;
+        b=iGv9cBbqaurk6QU1wp3PVLgyY0KNSOovMBvrZq6jnnLKkNTjdkt4smesD6pNc5fBo3
+         nt8vqGgNRJ72qlI2xbLjY2u+r63hEG/Crs9n+jQBebrSwDHvRl4Tlp6olb2vMSsr5aLE
+         47+EWwBbwBGUrGW0nB2KI0Mctk+Hpnjrz7pH4oyFidatq2/VV5LNfwmSvUc2HL/ARhoi
+         4cEu2I3yein+jYwXJRdrcxLM+TpFuEbaofT49WhectMycdy6ZKwcgI2+lVUfhPg9Obji
+         b13myBnPFk8YUoSR1TxQ2NIOPFmV8o9jknvK2fJfssxmywDjrc88784MKEL/f04he8ks
+         i3dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I2yvd7CInVO2nkOTfuFibl5KCx2wDyhIqtzEA3PsnKs=;
+        b=JDImDIEVNwHz9j43YE1DmUmy3bfmRFWpZj4vrfQA+YVzoNjyRcBjU1/mV0MoOFr8AF
+         fEa/q47H76DcpMBxLi2fP/3qm9enjVB7bTE5ybgjLA6iVyUle7g0C1I6VDusnOAsW6+t
+         5mPSNQCnaYG/zjFgNN2F5Uy5FkcTe7QX63zcSKjxh5AJ0VwWBc4VSdhedf/Mp0YYcp1n
+         odMqopxhPVqSqVAthhCxjbujapi3AbKgK0aWEH5n0c0VoIiPW/ueK/4+5LEO0hYDBJi9
+         50yc+gaBu61aRz+huuQkZTjCGfLq69MI5d8SoWV6dCdYE4YJcmyxqDeJetiLDcLekPbz
+         xyYA==
+X-Gm-Message-State: AOAM532byPdTf9wWoGack3j0pmcFETchjPi8AMOPdVILcRmAnROKa8a3
+        yVljtsuDFVf6QGhJfOLXl28=
+X-Google-Smtp-Source: ABdhPJy2pWZsvjXrjqMiSXpK+xu2P95G6VMKEhFtj21OR8/GzxKnwAtKWHBOZ4sv3SYhQBYUUK0EBA==
+X-Received: by 2002:a2e:a44a:: with SMTP id v10mr94179ljn.497.1626962748142;
+        Thu, 22 Jul 2021 07:05:48 -0700 (PDT)
+Received: from akaWolf-PC.. ([194.79.5.201])
+        by smtp.gmail.com with ESMTPSA id p8sm190584lfu.163.2021.07.22.07.05.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 07:05:47 -0700 (PDT)
+From:   Artjom Vejsel <akawolf0@gmail.com>
+Cc:     thierry.reding@gmail.com, sam@ravnborg.org,
+        dri-devel@lists.freedesktop.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paul@crapouillou.net, akawolf0@gmail.com
+Subject: [PATCH 0/3] add Gopher 2b LCD panel
+Date:   Thu, 22 Jul 2021 17:04:29 +0300
+Message-Id: <20210722140432.1426173-1-akawolf0@gmail.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+The Gopher 2b LCD panel is used in Gopher 2b handhelds.
+It's simple panel with NewVision NV3047 driver,
+but SPI lines are not connected.
+It has no specific name, since it's unique to that handhelds.
+lot name at AliExpress: 4.3 inch 40PIN TFT LCD Screen COG
+NV3047 Drive IC 480(RGB)*272 No Touch 24Bit RGB Interface
 
-> When the firmware hang or command no response, driver can reset the
-> bluetooth mcu via USB to recovery it. The reset steps as follows.
-> 
-> 1. Cancel USB transfer requests before reset.
-> 2. It use speicific USB HW Register to reset Bluetooth MCU, at the
->   same time, the USB Endpoint0 still keep alive.
-> 3. Poll the USB HW register until reset is completed by Endpoint0.
-> 4. To recovery unexpected USB state and behavior during resetting the
->   Bluetooth MCU, the driver need to reset the USB device for MT7921.
-> 5. After the reset is completed, the Bluetooth MCU need to re-setup,
->   such as download patch, power-on sequence and etc.
-> 
-> Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
-> ---
-> drivers/bluetooth/btusb.c | 127 ++++++++++++++++++++++++++++++++++++++
-> 1 file changed, 127 insertions(+)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index b1249b664981..122a928ebcb5 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -3076,6 +3076,17 @@ static int btusb_shutdown_intel_new(struct hci_dev *hdev)
-> 	return 0;
-> }
-> 
-> +/* UHW CR mapping */
-> +#define BT_MISC			0x70002510
-> +#define BT_SUBSYS_RST		0x70002610
-> +#define UDMA_INT_STA_BT		0x74000024
-> +#define UDMA_INT_STA_BT1	0x74000308
-> +#define BT_WDT_STATUS		0x740003A0
-> +#define EP_RST_OPT		0x74011890
-> +#define EP_RST_IN_OUT_OPT	0x00010001
-> +#define BT_RST_DONE		0x00000100
-> +#define BT_RESET_WAIT_MS	100
-> +#define BT_RESET_NUM_TRIES	10
+Artjom Vejsel (3):
+  dt-bindings: Add QiShenglong vendor prefix
+  dt-bindings: Add DT bindings for QiShenglong Gopher 2b panel
+  drm/panel-simple: add Gopher 2b LCD panel
 
-you need to prefix these with MTK since otherwise we get confused.
+ .../bindings/display/panel/panel-simple.yaml  |  2 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+ drivers/gpu/drm/panel/panel-simple.c          | 44 +++++++++++++++++++
+ 3 files changed, 48 insertions(+)
 
-And we need to work towards abstracting the vendor specific position out of btusb.c (and I include the Intel part here as well). The btusb.c is getting overloaded with vendor stuff.
-
-Regards
-
-Marcel
-
+--
+2.32.0
