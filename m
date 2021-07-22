@@ -2,122 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA763D1A9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 02:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6764D3D1AA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 02:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhGUXfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 19:35:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41060 "EHLO mail.kernel.org"
+        id S229931AbhGUXfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 19:35:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229600AbhGUXfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 19:35:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25C266124B;
-        Thu, 22 Jul 2021 00:15:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626912943;
-        bh=Qi3eR8xtzF26kiZ/SexfczHNUk8vNBP4CNqtBcnRUz0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jlp3kMuyWwjBup3T8xmMDvY1XbcRSc4ahYSiLtUemz2qP5FPPS0dRsWqROxmMHp8D
-         OuHZzX7MvrLVSNlc6m4xlfXnHbHdPThtquLrVG436+htzpsQkOcmMrnBe1RxPGh5cV
-         tlTb3MfyGJp6AR+sHw+kv+A79fut394cWt1VtXM0WfDiTvPkPpdT7cSdSUpP7ftxms
-         aWrJ3UtxjPRD0ZrBlbPLou5jRBm65vzpPo9YzP50pzcI+BJZ5M88yrMJjmLPqviRBX
-         c733iBldFIWacFWvYdgKQm0gELYLyR9TDjFIWXY6+PXrXaBYN/WkV+NmJ6OPGXJ6XN
-         WRIOxLZLS1VDQ==
-Date:   Wed, 21 Jul 2021 17:15:41 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Subject: Re: [f2fs-dev] [PATCH] f2fs: change fiemap way in printing
- compression chunk
-Message-ID: <YPi4rRg2ZPFBWaTZ@sol.localdomain>
-References: <20210721072048.3035928-1-daeho43@gmail.com>
- <YPiTLwB3d8BWSKje@gmail.com>
- <CACOAw_xq3_ccqzh8dnomFXBOK_iN9LOTsOBYSBzDJHSSDrRxVw@mail.gmail.com>
+        id S229600AbhGUXfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 19:35:20 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FA3B60D07;
+        Thu, 22 Jul 2021 00:15:55 +0000 (UTC)
+Date:   Wed, 21 Jul 2021 20:15:48 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] tracing: Allow execnames to be passed as args for synthetic
+ events
+Message-ID: <20210721201548.5f4262a3@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACOAw_xq3_ccqzh8dnomFXBOK_iN9LOTsOBYSBzDJHSSDrRxVw@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 03:30:46PM -0700, Daeho Jeong wrote:
-> Hi Eric,
-> 
-> On Wed, Jul 21, 2021 at 2:35 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > On Wed, Jul 21, 2021 at 12:20:48AM -0700, Daeho Jeong wrote:
-> > > From: Daeho Jeong <daehojeong@google.com>
-> > >
-> > > When we print out a discontinuous compression chunk, it shows like a
-> > > continuous chunk now. To show it more correctly, I've changed the way of
-> > > printing fiemap info like below. Plus, eliminated NEW_ADDR(-1) in fiemap
-> > > info, since it is not in fiemap user api manual.
-> > >
-> > > 0: 0000000000000000 0000000000000000 0000000000001000 1008 (M/E)
-> > > 1: 0000000000001000 0000000f15c0f000 0000000000001000 1008 (M/E)
-> > > 2: 0000000000002000 0000000000000000 0000000000002000 1808 (M/U/E)
-> > > 3: 0000000000004000 0000000000000000 0000000000001000 1008 (M/E)
-> > > 4: 0000000000005000 0000000f15c10000 0000000000001000 1008 (M/E)
-> > > 5: 0000000000006000 0000000000000000 0000000000002000 1808 (M/U/E)
-> > > 6: 0000000000008000 0000000000000000 0000000000001000 1008 (M/E)
-> >
-> > Please label these columns.
-> >
-> > Anyway, this doesn't appear to work quite in the way I had in mind.  With this
-> > patch, what I'm seeing is:
-> >
-> > $ head -c 16384 /dev/zero > file; xfs_io -c "fiemap -v" file
-> > file:
-> >  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-> >    0: [0..7]:          0..7                 8 0x1008
-> >    1: [8..15]:         2683128..2683135     8 0x1008
-> >    2: [16..31]:        0..15               16 0x1809
-> >
-> > So, working in 512-byte sectors, the logical sectors 0-31 are stored as one
-> > compressed cluster in the 8 physical sectors 2683128-2683135.
-> >
-> > The problem is, with this patch these physical sectors are reported at logical
-> > sectors 8-15 instead of 0-7.  Obviously, this isn't particularly well-defined,
-> > but I thought it was logical for the physical blocks to be associated with the
-> > first logical blocks.  That is what the tests I've written (xfstest f2fs/002,
-> > and the Android vts_kernel_encryption_test) assume.
-> >
-> > Is there any particular reason why you wouldn't report instead:
-> >
-> >    0: [0..7]:         2683128..2683135     8 0x1008
-> >    1: [8..31]:        0..23                8 0x1809
-> >
-> > - Eric
-> 
-> The reason is related to how F2FS stores the mapping information in
-> the mapping table.
-> Actually, the mapping inside of the table is like this.
-> [0..7]:  COMPR_ADDR flag(0x1008) -> merged, encoded
-> [8..15]: 2683128..2683135 flag(0x1008) -> merged, encoded
-> [16..31]: NEW_ADDR flag(0x1809) -> merged, unwritten(!), last_extent
-> 
-> I understand what you mean.
-> But, if we adapt to your way, how do you think we can print out when
-> we ask for f2fs to print out only the [8..15] area? Zero address? How
-> about flags?
-> I think the current way explains the layout of the f2fs metadata more exactly.
-> 
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-How f2fs stores the mapping information doesn't matter.  That's an
-implementation detail that shouldn't be exposed to userspace.  The only thing
-that should be exposed is the actual mapping, and for that it seems natural to
-report the physical blocks first.
+Allow common_pid.execname to be saved in a variable in one histogram to be
+passed to another histogram that can pass it as a parameter to a synthetic
+event.
 
-There is no perfect solution for how to handle the remaining logical blocks,
-given that the fiemap API was not designed for compressed files, but I think we
-should just go with extending the length of the last compressed extent in the
-cluster to cover the remaining logical blocks, i.e.:
+ ># echo 'hist:keys=pid:__arg__1=common_timestamp.usecs:arg2=common_pid.execname' \
+       > events/sched/sched_waking/trigger
+ ># echo 'wakeup_lat s32 pid; u64 delta; char wake_comm[]' > synthetic_events
+ ># echo 'hist:keys=next_pid:pid=next_pid,delta=common_timestamp.usecs-$__arg__1,exec=$arg2'\
+':onmatch(sched.sched_waking).trace(wakeup_lat,$pid,$delta,$exec)' \
+ > events/sched/sched_switch/trigger
 
-  [0..31]: 2683128..2683159 flag(0x1009) -> merged, encoded, last_extent
+The above is a wake up latency synthetic event setup that passes the execname
+of the common_pid that woke the task to the scheduling of that task, which
+triggers a synthetic event that passes the original execname as a
+parameter to display it.
 
-That's what btrfs does on compressed files.
+ ># echo 1 > events/synthetic/enable
+ ># cat trace
+    <idle>-0       [006] d..4   186.863801: wakeup_lat: pid=1306 delta=65 wake_comm=kworker/u16:3
+    <idle>-0       [000] d..4   186.863858: wakeup_lat: pid=163 delta=27 wake_comm=<idle>
+    <idle>-0       [001] d..4   186.863903: wakeup_lat: pid=1307 delta=36 wake_comm=kworker/u16:4
+    <idle>-0       [000] d..4   186.863927: wakeup_lat: pid=163 delta=5 wake_comm=<idle>
+    <idle>-0       [006] d..4   186.863957: wakeup_lat: pid=1306 delta=24 wake_comm=kworker/u16:3
+      sshd-1306    [006] d..4   186.864051: wakeup_lat: pid=61 delta=62 wake_comm=<idle>
+    <idle>-0       [000] d..4   186.965030: wakeup_lat: pid=609 delta=18 wake_comm=<idle>
+    <idle>-0       [006] d..4   186.987582: wakeup_lat: pid=1306 delta=65 wake_comm=kworker/u16:3
+    <idle>-0       [000] d..4   186.987639: wakeup_lat: pid=163 delta=27 wake_comm=<idle>
 
-- Eric
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_events_hist.c | 43 +++++++++++++++++++++++++++++---
+ 1 file changed, 39 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 34325f41ebc0..6060eb009647 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -1395,17 +1395,17 @@ static int hist_trigger_elt_data_alloc(struct tracing_map_elt *elt)
+ 	struct hist_trigger_data *hist_data = elt->map->private_data;
+ 	unsigned int size = TASK_COMM_LEN;
+ 	struct hist_elt_data *elt_data;
+-	struct hist_field *key_field;
++	struct hist_field *hist_field;
+ 	unsigned int i, n_str;
+ 
+ 	elt_data = kzalloc(sizeof(*elt_data), GFP_KERNEL);
+ 	if (!elt_data)
+ 		return -ENOMEM;
+ 
+-	for_each_hist_key_field(i, hist_data) {
+-		key_field = hist_data->fields[i];
++	for_each_hist_field(i, hist_data) {
++		hist_field = hist_data->fields[i];
+ 
+-		if (key_field->flags & HIST_FIELD_FL_EXECNAME) {
++		if (hist_field->flags & HIST_FIELD_FL_EXECNAME) {
+ 			elt_data->comm = kzalloc(size, GFP_KERNEL);
+ 			if (!elt_data->comm) {
+ 				kfree(elt_data);
+@@ -3707,6 +3707,38 @@ static int create_val_field(struct hist_trigger_data *hist_data,
+ 	return __create_val_field(hist_data, val_idx, file, NULL, field_str, 0);
+ }
+ 
++static const char *no_comm = "(no comm)";
++
++static u64 hist_field_execname(struct hist_field *hist_field,
++			       struct tracing_map_elt *elt,
++			       struct trace_buffer *buffer,
++			       struct ring_buffer_event *rbe,
++			       void *event)
++{
++	struct hist_elt_data *elt_data;
++
++	if (WARN_ON_ONCE(!elt))
++		return (u64)(unsigned long)no_comm;
++
++	elt_data = elt->private_data;
++
++	if (WARN_ON_ONCE(!elt_data->comm))
++		return (u64)(unsigned long)no_comm;
++
++	return (u64)(unsigned long)(elt_data->comm);
++}
++
++/* Convert a var that points to common_pid.execname to a string */
++static void update_var_execname(struct hist_field *hist_field)
++{
++	hist_field->flags = HIST_FIELD_FL_STRING | HIST_FIELD_FL_VAR |
++		HIST_FIELD_FL_EXECNAME;
++	hist_field->size = MAX_FILTER_STR_VAL;
++	hist_field->is_signed = 0;
++	hist_field->type = "char[]";
++	hist_field->fn = hist_field_execname;
++}
++
+ static int create_var_field(struct hist_trigger_data *hist_data,
+ 			    unsigned int val_idx,
+ 			    struct trace_event_file *file,
+@@ -3731,6 +3763,9 @@ static int create_var_field(struct hist_trigger_data *hist_data,
+ 
+ 	ret = __create_val_field(hist_data, val_idx, file, var_name, expr_str, flags);
+ 
++	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_EXECNAME)
++		update_var_execname(hist_data->fields[val_idx]);
++
+ 	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
+ 		hist_data->fields[val_idx]->var_str_idx = hist_data->n_var_str++;
+ 
+-- 
+2.31.1
+
