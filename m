@@ -2,146 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183E43D26CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A473D26D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232768AbhGVOzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 10:55:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37974 "EHLO mail.kernel.org"
+        id S232658AbhGVO5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 10:57:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232754AbhGVOy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 10:54:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B4CC6052B;
-        Thu, 22 Jul 2021 15:35:31 +0000 (UTC)
+        id S232488AbhGVO5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 10:57:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52F186052B;
+        Thu, 22 Jul 2021 15:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626968132;
-        bh=JkBVrKoKv3hGTuuYXwD37fKvGgt44OKz27uuFeV0da8=;
+        s=k20201202; t=1626968299;
+        bh=8nuwoZzIE9AXZnCM6wlUP00pAGYzYvAAKw+DrOsiFF4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vv3aGZGZTJ+L3r0dDzcvVVe21DJOzbthP1bEG82ssciZzP+aY9jAslFoX9y0RaKm7
-         6wcnceAHtzK0tXRk2sCQEMX60Na2ygOYCpfmxupaJax3S8iFu7PxjbewBwjw0Rj/lv
-         s0qictjNvNdt+Hxs+i9DVVgueqNF2UkocAQs6lfAMgFFN6oS5Sxrti1QTg5gLX0ia0
-         XNjl4+xUTrUpEhuCMmqJjFnk64DondHiTQaO6lNXPFnEZPSNbyLic9qDm3CoORwJv2
-         ZzrrvXMOr+RF+9jQ3+UKrmaf2RsH+UTd2MVpYlKNlNI/lxzod5PfBANN+URv2UudOD
-         eyM7o1n0KzXxw==
-Date:   Thu, 22 Jul 2021 17:35:29 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        viresh.kumar@linaro.org, stefanha@redhat.com,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v14] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YPmQQelKfa4J7zdA@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        viresh.kumar@linaro.org, stefanha@redhat.com,
-        gregkh@linuxfoundation.org
-References: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
+        b=GsDuiPbntO7mTbUHw/OMga6TpqxPzd1jVux3hSo8uaiVGT/FS1jJae4yyYqKXGFPa
+         Tjh6LTF4MnLRwrMll7/BPTadvvds5880xaeoagTdakty199n46NPakMNOgptqU60cB
+         P5gGX1qTC+Ri2ieYZ9XnV9h5HL+OIVKQciK2b4R4Mr/rNkCSUGXMt5qHwU6bIPeHqL
+         OkhSNafLRHVCfxswugOTMybYqAbgOigkhZPr/eOPPP4Z9PWTsLf2BWWk17ESMh5rQS
+         H+JD683PNUSwyaJGSrvqTMkk9WF3ym5GZXT3StPbQ9iWybwgJGZ5DxLDBOFkaC2VZb
+         5g3p3JN4p62sg==
+Date:   Thu, 22 Jul 2021 16:38:15 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Vladimir Murzin <vladimir.murzin@arm.com>
+Cc:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 3/3] kvm/arm: Align the VMID allocation with the arm64
+ ASID one
+Message-ID: <20210722153814.GA12566@willie-the-truck>
+References: <20210616155606.2806-1-shameerali.kolothum.thodi@huawei.com>
+ <20210616155606.2806-4-shameerali.kolothum.thodi@huawei.com>
+ <20210721163138.GD11003@willie-the-truck>
+ <f7d708704fb84380af85298a98f7a48c@huawei.com>
+ <20210722095010.GA12012@willie-the-truck>
+ <43b32e77-52b1-8524-63a1-c99578c2dd1d@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="otDcexng5nFQdyBJ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
+In-Reply-To: <43b32e77-52b1-8524-63a1-c99578c2dd1d@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vladimir,
 
---otDcexng5nFQdyBJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jul 22, 2021 at 04:22:26PM +0100, Vladimir Murzin wrote:
+> On 7/22/21 10:50 AM, Will Deacon wrote:
+> > As an aside: I'm more and more inclined to rip out the CnP stuff given
+> > that it doesn't appear to being any benefits, but does have some clear
+> > downsides. Perhaps something for next week.
+> 
+> Can you please clarify what do you mean by "it doesn't appear to being any
+> benefits"? IIRC, Cortex-A65 implements CnP hint and I've heard that some
+> payloads seen improvement...
 
-Hi,
+Has anybody taped that out? I'd have thought building an SMT design in 2021
+is a reasonably courageous thing to do.
 
-so only minor stuff left from my side.
+The issue I'm getting at is that modern cores seem to advertise CnP even
+if they ignore it internally, maybe because of some big/little worries?
+That would be fine if it didn't introduce complexity and overhead to the
+kernel, but it does and therefore I think we should rip it out (or at
+least stick it behind a "default n" config option if there are some niche
+users).
 
-> @@ -21,6 +21,17 @@ config I2C_ALI1535
->  	  This driver can also be built as a module.  If so, the module
->  	  will be called i2c-ali1535.
-> =20
-> +config I2C_VIRTIO
-> +	tristate "Virtio I2C Adapter"
-> +	select VIRTIO
-> +	help
-> +	  If you say yes to this option, support will be included for the virtio
-> +	  I2C adapter driver. The hardware can be emulated by any device model
-> +	  software according to the virtio protocol.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called i2c-virtio.
-> +
->  config I2C_ALI1563
->  	tristate "ALI 1563"
->  	depends on PCI
+There are also open questions as to exactly what CnP does because the
+architecture is not clear at all (for example TTBRx_EL1.CnP is permitted
+to be cached in a TLB).
 
-The sorting is not good. I think your entry should go to the bottom of
-the Kconfig file.
+CHeers,
 
-> diff --git a/drivers/i2c/busses/Makefile b/drivers/i2c/busses/Makefile
-> index 69e9963..9843756 100644
-> --- a/drivers/i2c/busses/Makefile
-> +++ b/drivers/i2c/busses/Makefile
-> @@ -147,4 +147,7 @@ obj-$(CONFIG_I2C_XGENE_SLIMPRO) +=3D i2c-xgene-slimpr=
-o.o
->  obj-$(CONFIG_SCx200_ACB)	+=3D scx200_acb.o
->  obj-$(CONFIG_I2C_FSI)		+=3D i2c-fsi.o
-> =20
-> +# VIRTIO I2C host controller driver
-
-This comment can go, I'd say.
-
-> +obj-$(CONFIG_I2C_VIRTIO)	+=3D i2c-virtio.o
-> +
->  ccflags-$(CONFIG_I2C_DEBUG_BUS) :=3D -DDEBUG
-
-
-> +		/*
-> +		 * We don't support 0 length messages and so masked out
-> +		 * I2C_FUNC_SMBUS_QUICK in virtio_i2c_func().
-> +		 */
-> +		if (!msgs[i].len)
-> +			break;
-
-I recommend using struct i2c_adapter_quirks with I2C_AQ_NO_ZERO_LEN. But
-let's wait first if zero length are possible or not.
-
-Also, checkpatch:
-
-WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-
-So, is one of you interested in maintaining this driver?
-
-All the best,
-
-   Wolfram
-
-
---otDcexng5nFQdyBJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmD5kEEACgkQFA3kzBSg
-KbbhXxAApwJ5WpX+cqUoQAt42qaLOBNMYLSFQiV9zL4JFbDq19zFWx/5cSEEXXlG
-lv3dRJp6an2ne+UBqrNAhcMhzWrlaypD7UKWrCMi100i3litwh3UtfwOYPXqNt1F
-xJJ/z1YvukRobsrg/sZnFREFgI0jgQMzeDdIEnG+K0Y60LHGp3pTuvgu4DP97BbT
-Iz4nMwlmFxPghn3cjTKFJnHrTrMuK9qVD/BtIcP7+uzkoynfAN5zPJW0U8J1k0HO
-xlSEAny9exJJWboeurW+RAvDCJkek5e6whq7qkqzp3GoOCmt6TGCjZY/Uzrwt82h
-LirIvqXWzYFqTD2K7BDwRO8wCXcJsTwy4zZJW26SUXyMkNhJJiTEV1fOvKgUIQti
-djXFpkqKKcRbwHFbWqfGnotR0ku8iMjw4TJQoEipc2yKT0mKS4cLZ/WVKKZ2byDl
-XvvhyTs3lxN5dFXb2/vmrff2MfCRzJ7jt8BNrS5e4IWpcb1CBcQbU4Xj7rv/tfNh
-2qsXQx5fTKRBvAAqHmuJk9cZaQj9jM5DRvSdTH5fXRiZwEPOSrBnDkSpli2sUfJ5
-VG2dS+JNZQvS4t0WbqhysIVZ16Y9ICpSLuv/7LFz+0ueyk7XWeSewLvyGdIajLjN
-6n6fIGKtOlogpgY6dgdbzE3O8btFGvDOlnfYxMEjWpYtxcAAKYI=
-=O1Lp
------END PGP SIGNATURE-----
-
---otDcexng5nFQdyBJ--
+Will
