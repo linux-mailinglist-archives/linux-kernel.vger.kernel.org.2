@@ -2,316 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FBA3D2B18
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D695C3D2B1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhGVQp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:45:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59248 "EHLO
+        id S229959AbhGVQq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbhGVQp4 (ORCPT
+        with ESMTP id S229943AbhGVQq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:45:56 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94115C061575;
-        Thu, 22 Jul 2021 10:26:31 -0700 (PDT)
-Received: from [IPv6:2a02:810a:880:f54:9b:291e:f55f:ae5f] (unknown [IPv6:2a02:810a:880:f54:9b:291e:f55f:ae5f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E85C71F44581;
-        Thu, 22 Jul 2021 18:26:29 +0100 (BST)
-Subject: Re: [PATCHv3 8/8] videobuf2: handle non-contiguous DMA allocations
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>
-References: <20210709092027.1050834-1-senozhatsky@chromium.org>
- <20210709092027.1050834-9-senozhatsky@chromium.org>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <3c80786a-7422-3736-7261-8605260eb99f@collabora.com>
-Date:   Thu, 22 Jul 2021 19:26:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210709092027.1050834-9-senozhatsky@chromium.org>
+        Thu, 22 Jul 2021 12:46:26 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E52C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:27:01 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id b2so5334368plx.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TOWH02qjc77Xd7z81JLx4HL1UgCCUE8E3VxL2ZDH10A=;
+        b=t8OJgEQZtgTCfwbdGyrHlRTDkRw1saAVFWKuPC/C8zLE7iS02OyqryL3omqbO9fqrN
+         V9XM0wc52FkRRi0GdFxdTRFooePjhHeAyMWMW4U96NVyEZjnKZPR2vjxxJWOhqcLup+/
+         63hgPGdxq4t2MSTAODblcUIc7JuDR6u0byJ4rxy/anunneel22elHKNnFA7ij7wXZprM
+         M7IdVNkH1FlTQ0ExvLKmCXXGV5aNEewuSohq7OdwsX4BaqDdAJo6RbyZPyCbTW6kajOb
+         E9JYUbyN2XqmdbgfXj+JxzxdKXlBZ69MOjE0oL8+1bXSOOvQhD4lxeF1ubv9/M4Xyem9
+         ofXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=TOWH02qjc77Xd7z81JLx4HL1UgCCUE8E3VxL2ZDH10A=;
+        b=dbokuhou4WpwyXu2kgPB07h6J8McX5N+kOAOln6L3uVP2kf43fMkVgPu116GZ+3sdx
+         crdo1S+D7YbHxEHxK9XU0FiL3Udx6y6Dmtp9k8fVHZlM53c+J5AX1+Liga+OccdJEkF8
+         DfopSgOYStc4j1O4tDhAnayPyJlnlKY/PQllQdxj3Lp7ACEdphrwvckjDEGHG+Z6Z0zt
+         qYCgMPo1DetE7HzPaTpMp8Gx/MBPAZOB7p9icswwcHj8NYrghfUpqK6qcfG2RRXmTCoR
+         dU79lZVXipJETpNUO7kFh8ivZ/kZTk+hg68J1ARoYx3p8Cc2S6Ii36mpsJFe1qEP82uP
+         ootg==
+X-Gm-Message-State: AOAM530l+DA+GY1jz533q5chhlOfQSYnkZdFJCzlQNL0Ata2JTBih+R0
+        7+kM9gsW/0Lw+2WXmbPjAgDPyQ==
+X-Google-Smtp-Source: ABdhPJx3zydz+GFRy8ZokYCyu76kOZ+rPujojki6m4FvqsyUDl/yfWpZxtJVWLNTDJugitA/vWBAyA==
+X-Received: by 2002:a65:6a0d:: with SMTP id m13mr1018088pgu.356.1626974820669;
+        Thu, 22 Jul 2021 10:27:00 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id n32sm30611132pfv.59.2021.07.22.10.26.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 10:26:59 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 10:26:59 -0700 (PDT)
+X-Google-Original-Date: Wed, 21 Jul 2021 23:23:49 PDT (-0700)
+Subject:     Re: [PATCH -next 1/2] riscv: implemented auipc simulate instruction
+In-Reply-To: <20210629023455.280998-1-chenlifu@huawei.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        guoren@linux.alibaba.com, chenlifu@huawei.com, penberg@kernel.org,
+        mhiramat@kernel.org, me@packi.ch, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     chenlifu@huawei.com
+Message-ID: <mhng-65ffe489-280a-4ebd-94e3-745f7114218d@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-On 09.07.21 11:20, Sergey Senozhatsky wrote:
-> This adds support for new noncontiguous DMA API, which
-> requires allocators to have two execution branches: one
-> for the current API, and one for the new one.
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> Acked-by: Christoph Hellwig <hch@lst.de>
+On Mon, 28 Jun 2021 19:34:54 PDT (-0700), chenlifu@huawei.com wrote:
+> To test the kprobe-based event tracing, we prepare
+> a kernel module 'kprobe_test.ko' to add the probes.
+> The assembly codes (partially) of the module are as follows:
+> ...
+> 0000000000000000 <kprobe_test_branch>:
+> ...
+> 0000000000000038 <.LVL1>:
+>   38:	00000597          	auipc	a1,0x0
+>   3c:	00058593          	mv	a1,a1
+> ...
+>
+> Test the kprobe-based event tracing in qemu-system-riscv64:
+> First, install the kprobe test module:
+> insmod /root/kprobe_test.ko
+>
+> Then, add a probe as a new event at an 'auipc' instruction,
+> the following error occurs due to the instruction not allowed to probe yet:
+> echo "p:auipc kprobe_test:kprobe_test_branch+0x38 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
+> sh: write error: Invalid argument
+>
+> This patch implemented the 'auipc' simulate instruction and allowed to probe it.
+> Merge this patch and perform the test again, the test results are as follows:
+> First, add a probe at the 'auipc' instruction:
+> echo "p:auipc kprobe_test:kprobe_test_branch+0x38 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
+> echo 1 > /sys/kernel/debug/tracing/events/kprobes/auipc/enable
+>
+> Then, do something to run to the probe.
+> After that, see the traced information:
+> cat /sys/kernel/debug/tracing/trace
+> sysctl-58      [001] d...   179.126350: auipc: (kprobe_test_branch+0x38/0x10e [kprobe_test]) epc=0xffffffff016122aa opcode=0x100073
+>
+> Now we can see the traced information.
+> The actual address of the symbol 'kprobe_test_branch' is as follows:
+> cat /proc/kallsyms | grep kprobe_test_branch
+> ffffffff01612272 t kprobe_test_branch   [kprobe_test]
+>
+> Based on the traced information and the actual address of the symbol
+> 'kprobe_test_branch', we can also see that the 'auipc' instruction
+> has been replaced by 'ebreak(0x100073)' instruction.
+>
+> --------
+>
+> Signed-off-by: Chen Lifu <chenlifu@huawei.com>
 > ---
->   .../common/videobuf2/videobuf2-dma-contig.c   | 139 ++++++++++++++----
->   1 file changed, 114 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> index 1e218bc440c6..7408ac9ed60a 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> @@ -17,6 +17,7 @@
->   #include <linux/sched.h>
->   #include <linux/slab.h>
->   #include <linux/dma-mapping.h>
-> +#include <linux/highmem.h>
->   
->   #include <media/videobuf2-v4l2.h>
->   #include <media/videobuf2-dma-contig.h>
-> @@ -42,6 +43,7 @@ struct vb2_dc_buf {
->   	struct dma_buf_attachment	*db_attach;
->   
->   	struct vb2_buffer		*vb;
-> +	bool				coherent_mem;
->   };
->   
->   /*********************************************/
-> @@ -78,14 +80,22 @@ static void *vb2_dc_cookie(struct vb2_buffer *vb, void *buf_priv)
->   static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
->   {
->   	struct vb2_dc_buf *buf = buf_priv;
-> -	struct dma_buf_map map;
-> -	int ret;
->   
-> -	if (!buf->vaddr && buf->db_attach) {
-> -		ret = dma_buf_vmap(buf->db_attach->dmabuf, &map);
-> -		buf->vaddr = ret ? NULL : map.vaddr;
-> +	if (buf->vaddr)
-> +		return buf->vaddr;
+>  arch/riscv/kernel/probes/decode-insn.c   |  2 +-
+>  arch/riscv/kernel/probes/simulate-insn.c | 34 ++++++++++++++++++++++++
+>  2 files changed, 35 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/kernel/probes/decode-insn.c b/arch/riscv/kernel/probes/decode-insn.c
+> index 0ed043acc882..5eb03fb61450 100644
+> --- a/arch/riscv/kernel/probes/decode-insn.c
+> +++ b/arch/riscv/kernel/probes/decode-insn.c
+> @@ -38,11 +38,11 @@ riscv_probe_decode_insn(probe_opcode_t *addr, struct arch_probe_insn *api)
+>  	RISCV_INSN_REJECTED(c_ebreak,		insn);
+>  #endif
+>
+> -	RISCV_INSN_REJECTED(auipc,		insn);
+>  	RISCV_INSN_REJECTED(branch,		insn);
+>
+>  	RISCV_INSN_SET_SIMULATE(jal,		insn);
+>  	RISCV_INSN_SET_SIMULATE(jalr,		insn);
+> +	RISCV_INSN_SET_SIMULATE(auipc,		insn);
+>
+>  	return INSN_GOOD;
+>  }
+> diff --git a/arch/riscv/kernel/probes/simulate-insn.c b/arch/riscv/kernel/probes/simulate-insn.c
+> index 2519ce26377d..b81719522d5c 100644
+> --- a/arch/riscv/kernel/probes/simulate-insn.c
+> +++ b/arch/riscv/kernel/probes/simulate-insn.c
+> @@ -83,3 +83,37 @@ bool __kprobes simulate_jalr(u32 opcode, unsigned long addr, struct pt_regs *reg
+>
+>  	return ret;
+>  }
 > +
-> +	if (buf->db_attach) {
-> +		struct dma_buf_map map;
+> +#define auipc_rd_idx(opcode) \
+> +	((opcode >> 7) & 0x1f)
 > +
-> +		if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
-> +			buf->vaddr = map.vaddr;
+> +#define auipc_imm(opcode) \
+> +	((((opcode) >> 12) & 0xfffff) << 12)
 > +
-> +		return buf->vaddr;
->   	}
->   
-> +	if (!buf->coherent_mem)
-> +		buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size,
-> +						    buf->dma_sgt);
->   	return buf->vaddr;
->   }
->   
-> @@ -101,13 +111,26 @@ static void vb2_dc_prepare(void *buf_priv)
->   	struct vb2_dc_buf *buf = buf_priv;
->   	struct sg_table *sgt = buf->dma_sgt;
->   
-> +	/* This takes care of DMABUF and user-enforced cache sync hint */
->   	if (buf->vb->skip_cache_sync_on_prepare)
->   		return;
->   
-> +	/*
-> +	 * Coherent MMAP buffers do not need to be synced, unlike USERPTR
-> +	 * and non-coherent MMAP buffers.
-> +	 */
-> +	if (buf->vb->memory == V4L2_MEMORY_MMAP && buf->coherent_mem)
-> +		return;
+> +#if __riscv_xlen == 64
+> +#define auipc_offset(opcode)	sign_extend64(auipc_imm(opcode), 31)
+> +#elif __riscv_xlen == 32
+> +#define auipc_offset(opcode)	auipc_imm(opcode)
+> +#else
+> +#error "Unexpected __riscv_xlen"
+> +#endif
 > +
->   	if (!sgt)
->   		return;
->   
-> +	/* For both USERPTR and non-coherent MMAP */
->   	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
-> +
-> +	/* Non-coherent MMAP only */
-> +	if (!buf->coherent_mem && buf->vaddr)
-> +		flush_kernel_vmap_range(buf->vaddr, buf->size);
->   }
->   
->   static void vb2_dc_finish(void *buf_priv)
-> @@ -115,13 +138,26 @@ static void vb2_dc_finish(void *buf_priv)
->   	struct vb2_dc_buf *buf = buf_priv;
->   	struct sg_table *sgt = buf->dma_sgt;
->   
-> +	/* This takes care of DMABUF and user-enforced cache sync hint */
->   	if (buf->vb->skip_cache_sync_on_finish)
->   		return;
->   
-> +	/*
-> +	 * Coherent MMAP buffers do not need to be synced, unlike USERPTR
-> +	 * and non-coherent MMAP buffers.
-> +	 */
-> +	if (buf->vb->memory == V4L2_MEMORY_MMAP && buf->coherent_mem)
-> +		return;
-> +
->   	if (!sgt)
->   		return;
->   
-> +	/* For both USERPTR and non-coherent MMAP */
->   	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
-> +
-> +	/* Non-coherent MMAP only */
-> +	if (!buf->coherent_mem && buf->vaddr)
-> +		invalidate_kernel_vmap_range(buf->vaddr, buf->size);
->   }
->   
->   /*********************************************/
-> @@ -139,17 +175,63 @@ static void vb2_dc_put(void *buf_priv)
->   		sg_free_table(buf->sgt_base);
->   		kfree(buf->sgt_base);
->   	}
-> -	dma_free_attrs(buf->dev, buf->size, buf->cookie, buf->dma_addr,
-> -		       buf->attrs);
-> +
-> +	if (buf->coherent_mem) {
-> +		dma_free_attrs(buf->dev, buf->size, buf->cookie,
-> +			       buf->dma_addr, buf->attrs);
-> +	} else {
-> +		if (buf->vaddr)
-> +			dma_vunmap_noncontiguous(buf->dev, buf->vaddr);
-> +		dma_free_noncontiguous(buf->dev, buf->size,
-> +				       buf->dma_sgt, buf->dma_addr);
-
-The last argument for dma_free_noncontiguous should be dma_dir.
-Also, the 'cookie' cb returns buf->dma_addr which is not initialized for
-the noncontiguous api. So it is not clear how drivers should use the new api.
-Many drivers call vb2_dma_contig_plane_dma_addr which returns the cookie.
-
-Thanks,
-Dafna
-
-> +	}
->   	put_device(buf->dev);
->   	kfree(buf);
->   }
->   
-> +static int vb2_dc_alloc_coherent(struct vb2_dc_buf *buf)
+> +bool __kprobes simulate_auipc(u32 opcode, unsigned long addr, struct pt_regs *regs)
 > +{
-> +	struct vb2_queue *q = buf->vb->vb2_queue;
-> +
-> +	buf->cookie = dma_alloc_attrs(buf->dev,
-> +				      buf->size,
-> +				      &buf->dma_addr,
-> +				      GFP_KERNEL | q->gfp_flags,
-> +				      buf->attrs);
-> +	if (!buf->cookie)
-> +		return -ENOMEM;
-> +
-> +	if (q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING)
-> +		return 0;
-> +
-> +	buf->vaddr = buf->cookie;
-> +	return 0;
-> +}
-> +
-> +static int vb2_dc_alloc_non_coherent(struct vb2_dc_buf *buf)
-> +{
-> +	struct vb2_queue *q = buf->vb->vb2_queue;
-> +
-> +	buf->dma_sgt = dma_alloc_noncontiguous(buf->dev,
-> +					       buf->size,
-> +					       buf->dma_dir,
-> +					       GFP_KERNEL | q->gfp_flags,
-> +					       buf->attrs);
-> +	if (!buf->dma_sgt)
-> +		return -ENOMEM;
 > +	/*
-> +	 * For requests that need kernel mapping (DMA_ATTR_NO_KERNEL_MAPPING
-> +	 * bit is cleared) we perform dma_vmap_noncontiguous() in vb2_dc_vadd().
+> +	 * auipc instruction:
+> +	 *  31        12 11 7 6      0
+> +	 * | imm[31:12] | rd | opcode |
+> +	 *        20       5     7
 > +	 */
-> +	return 0;
+> +
+> +	u32 rd_idx = auipc_rd_idx(opcode);
+> +	unsigned long rd_val = addr + auipc_offset(opcode);
+> +
+> +	if (!rv_insn_reg_set_val(regs, rd_idx, rd_val))
+> +		return false;
+> +
+> +	instruction_pointer_set(regs, addr + 4);
+> +
+> +	return true;
 > +}
-> +
->   static void *vb2_dc_alloc(struct vb2_buffer *vb,
->   			  struct device *dev,
->   			  unsigned long size)
->   {
->   	struct vb2_dc_buf *buf;
-> +	int ret;
->   
->   	if (WARN_ON(!dev))
->   		return ERR_PTR(-EINVAL);
-> @@ -159,27 +241,28 @@ static void *vb2_dc_alloc(struct vb2_buffer *vb,
->   		return ERR_PTR(-ENOMEM);
->   
->   	buf->attrs = vb->vb2_queue->dma_attrs;
-> -	buf->cookie = dma_alloc_attrs(dev, size, &buf->dma_addr,
-> -				      GFP_KERNEL | vb->vb2_queue->gfp_flags,
-> -				      buf->attrs);
-> -	if (!buf->cookie) {
-> -		dev_err(dev, "dma_alloc_coherent of size %ld failed\n", size);
-> -		kfree(buf);
-> -		return ERR_PTR(-ENOMEM);
-> -	}
-> -
-> -	if ((buf->attrs & DMA_ATTR_NO_KERNEL_MAPPING) == 0)
-> -		buf->vaddr = buf->cookie;
-> +	buf->dma_dir = vb->vb2_queue->dma_dir;
-> +	buf->vb = vb;
-> +	buf->coherent_mem = vb->vb2_queue->coherent_mem;
->   
-> +	buf->size = size;
->   	/* Prevent the device from being released while the buffer is used */
->   	buf->dev = get_device(dev);
-> -	buf->size = size;
-> -	buf->dma_dir = vb->vb2_queue->dma_dir;
-> +
-> +	if (buf->coherent_mem)
-> +		ret = vb2_dc_alloc_coherent(buf);
-> +	else
-> +		ret = vb2_dc_alloc_non_coherent(buf);
-> +
-> +	if (ret) {
-> +		dev_err(dev, "dma alloc of size %ld failed\n", size);
-> +		kfree(buf);
-> +		return ERR_PTR(-ENOMEM);
-> +	}
->   
->   	buf->handler.refcount = &buf->refcount;
->   	buf->handler.put = vb2_dc_put;
->   	buf->handler.arg = buf;
-> -	buf->vb = vb;
->   
->   	refcount_set(&buf->refcount, 1);
->   
-> @@ -196,9 +279,12 @@ static int vb2_dc_mmap(void *buf_priv, struct vm_area_struct *vma)
->   		return -EINVAL;
->   	}
->   
-> -	ret = dma_mmap_attrs(buf->dev, vma, buf->cookie,
-> -		buf->dma_addr, buf->size, buf->attrs);
-> -
-> +	if (buf->coherent_mem)
-> +		ret = dma_mmap_attrs(buf->dev, vma, buf->cookie, buf->dma_addr,
-> +				     buf->size, buf->attrs);
-> +	else
-> +		ret = dma_mmap_noncontiguous(buf->dev, vma, buf->size,
-> +					     buf->dma_sgt);
->   	if (ret) {
->   		pr_err("Remapping memory failed, error: %d\n", ret);
->   		return ret;
-> @@ -362,7 +448,7 @@ static int vb2_dc_dmabuf_ops_vmap(struct dma_buf *dbuf, struct dma_buf_map *map)
->   {
->   	struct vb2_dc_buf *buf = dbuf->priv;
->   
-> -	dma_buf_map_set_vaddr(map, buf->vaddr);
-> +	dma_buf_map_set_vaddr(map, vb2_dc_vaddr(buf->vb, buf));
->   
->   	return 0;
->   }
-> @@ -390,6 +476,9 @@ static struct sg_table *vb2_dc_get_base_sgt(struct vb2_dc_buf *buf)
->   	int ret;
->   	struct sg_table *sgt;
->   
-> +	if (!buf->coherent_mem)
-> +		return buf->dma_sgt;
-> +
->   	sgt = kmalloc(sizeof(*sgt), GFP_KERNEL);
->   	if (!sgt) {
->   		dev_err(buf->dev, "failed to alloc sg table\n");
-> 
+
+Thanks.  These are on for-next, with the checkpatch errors fixed and the 
+commit messages mostly removed -- it was all pretty awkwardly phrased so 
+I didn't want to clean it up.
