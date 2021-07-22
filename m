@@ -2,73 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2173D2194
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3253D21BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhGVJUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 05:20:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49358 "EHLO mail.kernel.org"
+        id S231355AbhGVJ0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 05:26:23 -0400
+Received: from mga11.intel.com ([192.55.52.93]:23475 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231486AbhGVJTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 05:19:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C9F96127C;
-        Thu, 22 Jul 2021 10:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626948020;
-        bh=4bDA0DxHuVQv8b0x7pfxVtVsMTX7rXTC5TkpMPrd7lQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fMnU1xVVaehpcCT1sRqhSgmlfyo2id6XbfclKiSH95ao5okMEwZhTf5epXmT6me9y
-         CZyEjx0jAk9kvCN+rSpdyzg2Lk95d2kx5iFgyorTe8YpwdfGUdU2mLBXNmpQj1xfx5
-         gxmO24WcTYc2fJQ6g9rAx9uJtFmYeyhxD4zNaJvOHVvAoiIKXw0AnMzHXsX2azZ5RS
-         ktKvR1XrlFN9oSIlu2BGKXHADp45aKaMruKSohBID1Td2iFbX5LQUGNbg63A4SjcUg
-         OjbkO3p/NopYfdvDO9p0KAetcRrkCjQG46nRp0NBOvK0ndo6zon37r02xK1Bn04VwF
-         eED6+o5BtlQ/Q==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1m6VV0-008mI6-AX; Thu, 22 Jul 2021 12:00:14 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 14/15] MAINTAINERS: update intel,ixp46x-rng.yaml reference
-Date:   Thu, 22 Jul 2021 12:00:11 +0200
-Message-Id: <95289c73673861f462954ae8383eb88804ae7a0c.1626947923.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1626947923.git.mchehab+huawei@kernel.org>
-References: <cover.1626947923.git.mchehab+huawei@kernel.org>
+        id S230365AbhGVJ0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 05:26:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="208496670"
+X-IronPort-AV: E=Sophos;i="5.84,260,1620716400"; 
+   d="asc'?scan'208";a="208496670"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 03:06:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,260,1620716400"; 
+   d="asc'?scan'208";a="433069587"
+Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
+  by fmsmga007.fm.intel.com with ESMTP; 22 Jul 2021 03:06:54 -0700
+Date:   Thu, 22 Jul 2021 17:45:16 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: refactor the i915 GVT support
+Message-ID: <20210722094516.GQ13928@zhen-hp.sh.intel.com>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20210721155355.173183-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="wjoFZxbW4tu+iR6v"
+Content-Disposition: inline
+In-Reply-To: <20210721155355.173183-1-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The file name: Documentation/devicetree/bindings/display/intel,ixp46x-rng.yaml
-should be, instead: Documentation/devicetree/bindings/rng/intel,ixp46x-rng.yaml.
 
-Update its cross-reference accordingly.
+--wjoFZxbW4tu+iR6v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: cca061b04c0d ("hw_random: ixp4xx: Add DT bindings")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2021.07.21 17:53:34 +0200, Christoph Hellwig wrote:
+> Hi all,
+>=20
+> the GVT code in the i915 is a bit of a mess right now due to strange
+> abstractions and lots of indirect calls.  This series refactors various
+> bits to clean that up.  The main user visible change is that almost all
+> of the GVT code moves out of the main i915 driver and into the kvmgt
+> module.
+>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0a571273f308..efcd2d461fc0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9411,7 +9411,7 @@ F:	include/linux/soc/ixp4xx/qmgr.h
- INTEL IXP4XX RANDOM NUMBER GENERATOR SUPPORT
- M:	Deepak Saxena <dsaxena@plexity.net>
- S:	Maintained
--F:	Documentation/devicetree/bindings/display/intel,ixp46x-rng.yaml
-+F:	Documentation/devicetree/bindings/rng/intel,ixp46x-rng.yaml
- F:	drivers/char/hw_random/ixp4xx-rng.c
- 
- INTEL KEEM BAY DRM DRIVER
--- 
-2.31.1
+The reason we isolated hypervisor specific code from core vgpu
+emulation is to make multiple hypervisor support possible. Yes, we do
+have Xen support but never got way into upstream...And we also have
+third party hypervisors which leverage gvt function through current
+hypervisor interface.
 
+Sorry I may not have more time to check in details for now, but some
+of them look fine to me. I'll review more after vacation or let Zhi check d=
+etails.
+
+Thanks!
+
+> Tested on my Thinkpad with a Kaby Lake CPU and integrated graphics.
+>=20
+> Git tree:
+>=20
+>     git://git.infradead.org/users/hch/misc.git i915-gvt
+>=20
+> Gitweb:
+>=20
+>     http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/i915-=
+gvt
+>=20
+> Diffstat:
+>  b/drivers/gpu/drm/i915/Kconfig                         |   31=20
+>  b/drivers/gpu/drm/i915/Makefile                        |   30=20
+>  b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c |    4=20
+>  b/drivers/gpu/drm/i915/gvt/cfg_space.c                 |   89 --
+>  b/drivers/gpu/drm/i915/gvt/cmd_parser.c                |    4=20
+>  b/drivers/gpu/drm/i915/gvt/dmabuf.c                    |   36=20
+>  b/drivers/gpu/drm/i915/gvt/execlist.c                  |   12=20
+>  b/drivers/gpu/drm/i915/gvt/gtt.c                       |   55 -
+>  b/drivers/gpu/drm/i915/gvt/gvt.c                       |  100 --
+>  b/drivers/gpu/drm/i915/gvt/gvt.h                       |  132 ++-
+>  b/drivers/gpu/drm/i915/gvt/interrupt.c                 |   38 -
+>  b/drivers/gpu/drm/i915/gvt/kvmgt.c                     |  634 ++++------=
+-------
+>  b/drivers/gpu/drm/i915/gvt/mmio.c                      |    4=20
+>  b/drivers/gpu/drm/i915/gvt/opregion.c                  |  148 ---
+>  b/drivers/gpu/drm/i915/gvt/page_track.c                |    8=20
+>  b/drivers/gpu/drm/i915/gvt/scheduler.c                 |   37=20
+>  b/drivers/gpu/drm/i915/gvt/trace.h                     |    2=20
+>  b/drivers/gpu/drm/i915/gvt/vgpu.c                      |   22=20
+>  b/drivers/gpu/drm/i915/i915_drv.h                      |    7=20
+>  b/drivers/gpu/drm/i915/i915_params.c                   |    2=20
+>  b/drivers/gpu/drm/i915/intel_gvt.c                     |   64 +
+>  b/drivers/gpu/drm/i915/intel_gvt.h                     |    4=20
+>  drivers/gpu/drm/i915/gvt/Makefile                      |    9=20
+>  drivers/gpu/drm/i915/gvt/hypercall.h                   |   82 --
+>  drivers/gpu/drm/i915/gvt/mpt.h                         |  400 ----------
+>  25 files changed, 541 insertions(+), 1413 deletions(-)
+
+--wjoFZxbW4tu+iR6v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYPk+JAAKCRCxBBozTXgY
+J09VAJ9C5w8OkOxQaT+Hh6GRuwyrHlKVPgCfR2B56jaNxNaxyz+943xRn2xdLCo=
+=enIC
+-----END PGP SIGNATURE-----
+
+--wjoFZxbW4tu+iR6v--
