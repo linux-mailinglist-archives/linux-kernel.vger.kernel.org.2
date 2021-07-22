@@ -2,672 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9333D26AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920E43D26B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbhGVOum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 10:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbhGVOul (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 10:50:41 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93159C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 08:31:15 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d15so4442403qte.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 08:31:15 -0700 (PDT)
+        id S232600AbhGVOx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 10:53:29 -0400
+Received: from mail-bn7nam10on2106.outbound.protection.outlook.com ([40.107.92.106]:37427
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232217AbhGVOx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 10:53:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BtDaSR4JUOCieCSsZj9DNLxSr/TIOuASBOpS4xbU3s/BL5W+ID5JDK5SFSLQs6lfuleCBqk3FHwsFwK72lz5BbGQP7N5nnpLFz1LWc92UlZZ1HnOqvxvuHW1Vo7j/6hfPA3oC57rjoWgXsH90N+EFvi9iK0MrxTKNGvW9WB0LnZXs151db87r9DY3jpsErEU1rSuT1gDN1AT3lHHE1gkvrlx1SkZK7jph8cGovb6/qBH4yst5iEWp2+Fur8praIf7+liNxFTo0v6B5G4VsFhrdThH2hJrC+XnITC8lyVbw+CRaLAIqIp9S/wrAv9WFeqZVJpP01HEHCUA0I379PEOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Npp4iX1PgCArjUt/0W6tKjavu4PGUTpGqwMp4K6RXHE=;
+ b=JYzgb0h9ZROO60+8+DNsCZIZj6e6ZXvH5FBGIf47McdO41WDMet9EfQZ1U7156C7s/gYuks966Ub7xezxYpweH3kK90exzPO5zXK5qszIGPTkBC/7v5sehq/2jnfOlzZDOkABiYPWu9eAWULBq3MvK52TJe3g9vVpC9q11aNH/tmiDOPQHc5q/GDsn6zDgxVWVqSeqTd/OSYtWtuu32WJxHzywVN39xz9FMD6R9eoFS688h36YUJKpmwB48QvK0hpWV7g2e8GNuo19B/l1ditbXLYvCdiVLhyytSHdzvYJf4Ljj//lE/IgTLpWE1Zdk+vTRSPN9X58FOIwW/MmgsaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=in-advantage.com; dmarc=pass action=none
+ header.from=in-advantage.com; dkim=pass header.d=in-advantage.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:organization:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rdB5ZW3TE+LvHDj9KWm8Y0RC1MY+wU1tGvs3M/nyT/A=;
-        b=w7cFodXoU00mIbGdw+lYwYaGD5JWf3uMjJrTNZigDC+D4K8HkcuFqDQgLIKpDR9xFw
-         POAkUxwcNEBcD+qobk53GP624a8/YhFBeBtSFtQ+/C5ecCgNKNaHoH7+wZ/Dm7p+NC8K
-         GYCygPYe79oO44CykYwFVJCO7FXbeD4y+4b1l87xC9MaA3zEKf8ni/cU7d6VrT0InLVV
-         Smz3w9pt590oHVCsNuIzqslt5AvEWvBXjSIK5jr1H85X5J8tx2GNYSAZHvyFeY2hcXLT
-         LjtKoPQGSYvaw2aPgxBnDlTDQKastifZhlR3TouAvE14hYk9yBVtYgW4+ffe9wMhgxhA
-         GeVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=rdB5ZW3TE+LvHDj9KWm8Y0RC1MY+wU1tGvs3M/nyT/A=;
-        b=d73vdcmyqBPtVpQTaSEUWbPSibcjxsy6T7yZ71aZmrk5w+7lsXI3c3E1bWhJFES94u
-         owqMPtxHh3ThScX1BKirNR7eVvyOOL0PtHScst/7deA0jOSm9k93XMyvR3m/UjKXS2v9
-         cGnpnvcbmwvc8YHSHhEwe15nV7JmqwkiICfySxAo9dV9phC5qfw8rODCxQ6vVBePHmVM
-         WxXEGQt+swQaKsDOzyfIaHPmwW3Id20oqdZS+pqR4osEJ0Tj9CRDmg2MUFQf7bmreSof
-         p1Z3unCCJ4/PSfK/WpRo22RB6nA519MPkt5yvpUyESlD0uN6h1bxY/JrzCkEl8INEpS4
-         9vgg==
-X-Gm-Message-State: AOAM532m1xwkre3vhH/L51PV0uTv4tpTTvtBaK47w1KhaB6/LK4sPx0l
-        820OVqfKuGQD7E+Ff4hkdMWjmg==
-X-Google-Smtp-Source: ABdhPJzpOgRPIbmGEAbbn2ACplOv936E0K11WreCin8bDsNd2QPq/LLnQGPEx8oiZT7u67Jt39reHA==
-X-Received: by 2002:a05:622a:1810:: with SMTP id t16mr251514qtc.272.1626967874521;
-        Thu, 22 Jul 2021 08:31:14 -0700 (PDT)
-Received: from iron-maiden.localnet ([50.225.136.98])
-        by smtp.gmail.com with ESMTPSA id q184sm12869769qkd.35.2021.07.22.08.31.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 08:31:11 -0700 (PDT)
-From:   Carlos Bilbao <bilbao@vt.edu>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, jianyong.wu@arm.com,
-        Matthew Wilcox <willy@infradead.org>, catalin.marinas@arm.com,
-        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org
-Subject: [PATCH v3] include: linux: Reorganize timekeeping and ktime headers
-Date:   Thu, 22 Jul 2021 11:31:09 -0400
-Message-ID: <2204751.ElGaqSPkdT@iron-maiden>
-Organization: Virginia Tech
-In-Reply-To: <5481133.DvuYhMxLoT@iron-maiden>
-References: <5729424.lOV4Wx5bFT@iron-maiden> <87fsw7pe5d.ffs@nanos.tec.linutronix.de> <5481133.DvuYhMxLoT@iron-maiden>
+ d=inadvantage.onmicrosoft.com; s=selector2-inadvantage-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Npp4iX1PgCArjUt/0W6tKjavu4PGUTpGqwMp4K6RXHE=;
+ b=Q/2AUktlRMEpVj0E10uTTbI5YKNQv5IErQXQj5FiRVnrrkCh7kzJ+blcy2221AwtMxzBMX/qWMuAU2a4hnEdq8RHSoiKAtaBUl+3d1hKnf1UoxWFWvukzDxsz5Qhg27ENZ2klrymZ8nJE9QT8JEuwzd/JAM0XtRjyPaT47HVv3w=
+Authentication-Results: lunn.ch; dkim=none (message not signed)
+ header.d=none;lunn.ch; dmarc=none action=none header.from=in-advantage.com;
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37) by CO1PR10MB4465.namprd10.prod.outlook.com
+ (2603:10b6:303:6d::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Thu, 22 Jul
+ 2021 15:34:01 +0000
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::e81f:cf8e:6ad6:d24d]) by MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::e81f:cf8e:6ad6:d24d%3]) with mapi id 15.20.4331.034; Thu, 22 Jul 2021
+ 15:34:01 +0000
+Date:   Thu, 22 Jul 2021 08:33:51 -0700
+From:   Colin Foster <colin.foster@in-advantage.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-omap@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 net-next 1/1] net: ethernet: ti: cpsw: allow MTU >
+ 1500 when overridden by module parameter
+Message-ID: <20210722153351.GA3590944@euler>
+References: <20210721210538.22394-1-colin.foster@in-advantage.com>
+ <YPl7LdLMMTmhSu1z@lunn.ch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPl7LdLMMTmhSu1z@lunn.ch>
+X-ClientProxiedBy: CO2PR05CA0053.namprd05.prod.outlook.com
+ (2603:10b6:102:2::21) To MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from euler (67.185.175.147) by CO2PR05CA0053.namprd05.prod.outlook.com (2603:10b6:102:2::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.9 via Frontend Transport; Thu, 22 Jul 2021 15:34:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 80e67995-cae6-4db1-f05a-08d94d262137
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4465:
+X-Microsoft-Antispam-PRVS: <CO1PR10MB44657C276FB3109EC2C9E839A4E49@CO1PR10MB4465.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Aj4kOk8N4BnhjuPOlE4Rx19tsyzla2yIFkv0nZ6onb+kxHwm6VkTsr1ntAj3JyLSTmUVJP6YJBmNEBvkXaiZeTlRE87yPzEbTz6cVEXteBdIyo37I4V8BBHjyIAcSMYdRmry8qLhZIF+UDU8YjUbEAumsJO6piO6rGW1eiiaxoH/jIVsgdEV4JtgsMMWDMEKXtbkOARBUmH/RoeH1URA1kVBtFWKItaW4suCvwuicPzew0Ftvr0VnepDQdSRyxTElpzmNp4r3nxSOi9Az7mZPvVKNlb/sgZLN/2dDS3lijHKHj8/fKLXgZVH5UuJtASVCQYtvB0jvCvCoxajrftWqjhSYsYtNJbNbNj7Uq5oXrrJFYb/cmlNvlX39KKQXwIgyFmLdui6a/ULsWISL4bmB3aywN6tK4yA7Mv4cz0ba0sNgsc+P6f9IxXnCuHAJno3OgzymoU8eRfLb11K+9Y3BPdT/DylHDvXmQGrm37knOi4U/uYoafEc3FOKjMJH2aTwSl0bGlAIKjHME4XkSlRvlYMmSYOlD43DR94286YFCi2oBJOkJQM5kKt4w6DiTP3tPVw+7SF76x3P+YmBpXRKevO/0yl78OQD2bAor0YwxSBA6i7teyGPHtWvJPm7D8vV9k/wbWdb3xBkRn/AXIuXCuoQMHHQZDAMt23PwLcaYsCZMa5Xw13Gb1GUzWW30DYHyIHEknuM3P/ygsU+36cbX3w+fwTYF+tV+0q12wWQJcfgRAYEud7gLCroqMFx3LGRUp3UlkoLLNCCn4MUM6r5uRetwViJj4D/vNuDBc6IVrrmP5Zen2NscsQ3t1SEA0b
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2351.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(396003)(39830400003)(136003)(55016002)(33656002)(6666004)(316002)(2906002)(33716001)(966005)(6496006)(52116002)(5660300002)(86362001)(44832011)(478600001)(8676002)(186003)(83380400001)(9576002)(26005)(54906003)(8936002)(956004)(4326008)(66946007)(9686003)(66556008)(1076003)(38350700002)(38100700002)(66476007)(6916009)(221023002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6owdTiPOpHf2VCrltvKleUdNc63nBNFj5iBSVgqvyzwoZR/vm51C8y22brlc?=
+ =?us-ascii?Q?WNVMNG1cNu4OrxZ4ZHuV72+maH6Xt9Nv2E2BRAE76TRHI/0jT162LwSFUlU7?=
+ =?us-ascii?Q?5M5LeaQ++KdbO0sH6lZTtT75x7dKsIjv7pXdAyZyBrpta91sVi1OBWZrSnrc?=
+ =?us-ascii?Q?s14NFYO0S37rxboF7/IgRueY/MhJT7u/Th8q7ZFuull0/YXLcCBnRswBh2BT?=
+ =?us-ascii?Q?uK1ajrpcJs6a5NEj6YPfotoqtJF6XUSwJweqISSFG8YKS62JQlKN3MZuecmv?=
+ =?us-ascii?Q?weXa1aJ2zxPyFczomKaAjYtA/Ee4+vPgLMvF6TiguKyN4XGKO2esGMJp8UB4?=
+ =?us-ascii?Q?Ou/cxpnrujDLOf/apPs2DKoqJUsX4KXUNtsTyOXFSP0fHBJ5BDTd3k9SU9zl?=
+ =?us-ascii?Q?wNFuALP0891cXQKoIZ7bq5AvZQd8OCOApOzVJUzgAvAIf7AWxS71m6FRE415?=
+ =?us-ascii?Q?gGWnspOZmR24hwdaHbr8BNanbMu3DFeLjb9MYMBxissWG96YkdlrKppzVsDj?=
+ =?us-ascii?Q?id7qcavdoqCi41yE42deF7SFxJTqjmLM4aZ7N9rAB0A9jGS+b1tRz4+iN6Ih?=
+ =?us-ascii?Q?N8fGoI6hvDdK/Cn1FG7GEfp6IgwAvsf4F3ZPv591FoTxH5dWONX1ZbmWWDxl?=
+ =?us-ascii?Q?uhnfuSodaPr9i7XTFBT+VCvaJnS1v4cDikOSdWi28sIkt6WFKwOSMJ50CDnN?=
+ =?us-ascii?Q?/FDZ7hvG4fuk7DOsoiqXm9jM1EyaCyX4accNmH6usDZKJpx9Ra2YyTnTYnM4?=
+ =?us-ascii?Q?GtCobyKyenyyBgE++VTOwRGAkq2Xqpz/d2NNU8FjCw0f3p/U3fSw8AVpCrqE?=
+ =?us-ascii?Q?0ep2PHM9wtE6hCk9LAWyB1mClKP1U9ZYHDjnDN/Rx0iAdTNmxDL0v0lwlV6y?=
+ =?us-ascii?Q?/pOX+sNQdV/uV3kmQgt/R2i8uU4+Mu3732cC24QD64zlN5SEd3YOI5x2/PyI?=
+ =?us-ascii?Q?c+S6GgqA+Swz4rzaB06DaIzV7UDt1D2Df1LNYrlSlNb2VKGXFARHCm0supLn?=
+ =?us-ascii?Q?OQuApy45asipK96MioVM+MngsSUOuCCpFE4agmlBUXcwzuz8p4zhEMmMQEmy?=
+ =?us-ascii?Q?BENhKnGW7yokPVZBD+7w9YXB6Co+1f3A62ZKh7H2g6w9Hqngwg/fDUvlEOGo?=
+ =?us-ascii?Q?7bm7gjGGuLKV2/7c5zCaa+HVOa70GsIpofyMFqNXsKQaYhsVrw51y0QAgPbZ?=
+ =?us-ascii?Q?vpv0Nafvb0u7cRd+YR271hTIX419uUaOGKeXkH5UfGT5jjNLDMO7AVFRHi+U?=
+ =?us-ascii?Q?M0nDPUOw+ifZknqWWVK0ksIO+kZOOhCdhca/Qk+UEy7fZoWpk4ESU5uGwJYl?=
+ =?us-ascii?Q?YO25eJkd49JWcb/2921LbjWN?=
+X-OriginatorOrg: in-advantage.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80e67995-cae6-4db1-f05a-08d94d262137
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2351.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2021 15:34:01.2824
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 48e842ca-fbd8-4633-a79d-0c955a7d3aae
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0CjKeXx6kUDyt/m7d6q3iJpe2jagzKjHdr5DgKFhJGWnDjkfQsAujlgimVG5TAP5hP4RrB9iBRcJ9upFQdkk7FFNV2X/geqew1Eec+wodBo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4465
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reorganize and separate the headers by making ktime.h take care of the 
-ktime_get() family of functions, and reserve timekeeping.h for the actual 
-timekeeping. This also helps to avoid implicit function errors and strengthens
-the header dependencies, since timekeeping.h was using ktime_to_ns(), a static 
-function defined in a header it does no include, ktime.h. Include the header 
-timekeeping.h wherever it is necessary for a successful compilation after the 
-header code reorganization.
+On Thu, Jul 22, 2021 at 04:05:33PM +0200, Andrew Lunn wrote:
+> On Wed, Jul 21, 2021 at 02:05:38PM -0700, Colin Foster wrote:
+> > The module parameter rx_packet_max can be overridden at module load or
+> > boot args. But it doesn't adjust the max_mtu for the device accordingly.
+> > 
+> > If a CPSW device is to be used in a DSA architecture, increasing the
+> > MTU by small amounts to account for switch overhead becomes necessary.
+> > This way, a boot arg of cpsw.rx_packet_max=1600 should allow the MTU
+> > to be increased to values of 1520, which is necessary for DSA tagging
+> > protocols like "ocelot" and "seville".
+> 
+> Hi Colin
+> 
+> As far as your patch goes, it makes sense.
+> 
+> However, module parameters are unlikely by netdev maintainers. Having
+> to set one in order to make DSA work is not nice. What is involved in
+> actually removing the module parameter and making the MTU change work
+> without it?
 
-Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
----
-Changelog:
-- v2: Add three more files that also needed a header update for x86: 
-  pps_kernel.h, posix-timers.c and hda_controller.c
-- v3: Cover build tests for other architectures than x86. To compile arm64, 
-  update arch/arm64/kvm/hypercalls.c, include/linux/stmmac.h, and 
-  drivers/rtc/class.c. No other arch/ seems to need fixes but to be on the safe
-  side compiled arm, mips, powerpc, sparc, s390, riscv and i386.
----
- arch/arm64/kvm/hypercalls.c    |   1 +
- arch/x86/kernel/tsc.c          |   1 +
- drivers/rtc/class.c            |   1 +
- include/linux/ktime.h          | 196 +++++++++++++++++++++++++++++++-
- include/linux/pps_kernel.h     |   1 +
- include/linux/sched_clock.h    |   2 +
- include/linux/stmmac.h         |   1 +
- include/linux/timekeeping.h    | 197 +--------------------------------
- init/main.c                    |   1 +
- kernel/time/ntp.c              |   1 +
- kernel/time/posix-timers.c     |   1 +
- kernel/time/time.c             |   1 +
- kernel/time/timekeeping.c      |   1 +
- sound/pci/hda/hda_controller.c |   1 +
- 14 files changed, 208 insertions(+), 198 deletions(-)
+Thanks for the feedback Andrew.
 
-diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
-index 30da78f72b3b..41499c1d7379 100644
---- a/arch/arm64/kvm/hypercalls.c
-+++ b/arch/arm64/kvm/hypercalls.c
-@@ -3,6 +3,7 @@
- 
- #include <linux/arm-smccc.h>
- #include <linux/kvm_host.h>
-+#include <linux/timekeeping.h>
- 
- #include <asm/kvm_emulate.h>
- 
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 57ec01192180..86f663d0d6ac 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -15,6 +15,7 @@
- #include <linux/timex.h>
- #include <linux/static_key.h>
- #include <linux/static_call.h>
-+#include <linux/timekeeping.h>
- 
- #include <asm/hpet.h>
- #include <asm/timer.h>
-diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
-index f77bc089eb6b..1bdf1f790beb 100644
---- a/drivers/rtc/class.c
-+++ b/drivers/rtc/class.c
-@@ -16,6 +16,7 @@
- #include <linux/kdev_t.h>
- #include <linux/idr.h>
- #include <linux/slab.h>
-+#include <linux/timekeeping.h>
- #include <linux/workqueue.h>
- 
- #include "rtc-core.h"
-diff --git a/include/linux/ktime.h b/include/linux/ktime.h
-index 73f20deb497d..37955d6664dd 100644
---- a/include/linux/ktime.h
-+++ b/include/linux/ktime.h
-@@ -229,6 +229,198 @@ static inline ktime_t ms_to_ktime(u64 ms)
- 	return ms * NSEC_PER_MSEC;
- }
- 
--# include <linux/timekeeping.h>
-+/*
-+ * ktime_get() family: read the current time in a multitude of ways,
-+ *
-+ * The default time reference is CLOCK_MONOTONIC, starting at
-+ * boot time but not counting the time spent in suspend.
-+ * For other references, use the functions with "real", "clocktai",
-+ * "boottime" and "raw" suffixes.
-+ *
-+ * To get the time in a different format, use the ones wit
-+ * "ns", "ts64" and "seconds" suffix.
-+ *
-+ * See Documentation/core-api/timekeeping.rst for more details.
-+ */
- 
--#endif
-+
-+/*
-+ * timespec64 based interfaces
-+ */
-+extern void ktime_get_raw_ts64(struct timespec64 *ts);
-+extern void ktime_get_ts64(struct timespec64 *ts);
-+extern void ktime_get_real_ts64(struct timespec64 *tv);
-+extern void ktime_get_coarse_ts64(struct timespec64 *ts);
-+extern void ktime_get_coarse_real_ts64(struct timespec64 *ts);
-+
-+void getboottime64(struct timespec64 *ts);
-+
-+/*
-+ * time64_t base interfaces
-+ */
-+extern time64_t ktime_get_seconds(void);
-+extern time64_t __ktime_get_real_seconds(void);
-+extern time64_t ktime_get_real_seconds(void);
-+
-+/*
-+ * ktime_t based interfaces
-+ */
-+
-+enum tk_offsets {
-+       TK_OFFS_REAL,
-+       TK_OFFS_BOOT,
-+       TK_OFFS_TAI,
-+       TK_OFFS_MAX,
-+};
-+
-+extern ktime_t ktime_get(void);
-+extern ktime_t ktime_get_with_offset(enum tk_offsets offs);
-+extern ktime_t ktime_get_coarse_with_offset(enum tk_offsets offs);
-+extern ktime_t ktime_mono_to_any(ktime_t tmono, enum tk_offsets offs);
-+extern ktime_t ktime_get_raw(void);
-+extern u32 ktime_get_resolution_ns(void);
-+
-+/**
-+ * ktime_get_real - get the real (wall-) time in ktime_t format
-+ */
-+static inline ktime_t ktime_get_real(void)
-+{
-+       return ktime_get_with_offset(TK_OFFS_REAL);
-+}
-+
-+static inline ktime_t ktime_get_coarse_real(void)
-+{
-+       return ktime_get_coarse_with_offset(TK_OFFS_REAL);
-+}
-+
-+/**
-+ * ktime_get_boottime - Returns monotonic time since boot in ktime_t format
-+ *
-+ * This is similar to CLOCK_MONTONIC/ktime_get, but also includes the
-+ * time spent in suspend.
-+ */
-+static inline ktime_t ktime_get_boottime(void)
-+{
-+       return ktime_get_with_offset(TK_OFFS_BOOT);
-+}
-+
-+static inline ktime_t ktime_get_coarse_boottime(void)
-+{
-+       return ktime_get_coarse_with_offset(TK_OFFS_BOOT);
-+}
-+
-+/**
-+ * ktime_get_clocktai - Returns the TAI time of day in ktime_t format
-+ */
-+static inline ktime_t ktime_get_clocktai(void)
-+{
-+       return ktime_get_with_offset(TK_OFFS_TAI);
-+}
-+
-+static inline ktime_t ktime_get_coarse_clocktai(void)
-+{
-+       return ktime_get_coarse_with_offset(TK_OFFS_TAI);
-+}
-+
-+static inline ktime_t ktime_get_coarse(void)
-+{
-+       struct timespec64 ts;
-+
-+       ktime_get_coarse_ts64(&ts);
-+       return timespec64_to_ktime(ts);
-+}
-+
-+static inline u64 ktime_get_coarse_ns(void)
-+{
-+       return ktime_to_ns(ktime_get_coarse());
-+}
-+
-+static inline u64 ktime_get_coarse_real_ns(void)
-+{
-+       return ktime_to_ns(ktime_get_coarse_real());
-+}
-+
-+static inline u64 ktime_get_coarse_boottime_ns(void)
-+{
-+       return ktime_to_ns(ktime_get_coarse_boottime());
-+}
-+
-+static inline u64 ktime_get_coarse_clocktai_ns(void)
-+{
-+       return ktime_to_ns(ktime_get_coarse_clocktai());
-+}
-+
-+/**
-+ * ktime_mono_to_real - Convert monotonic time to clock realtime
-+ */
-+static inline ktime_t ktime_mono_to_real(ktime_t mono)
-+{
-+       return ktime_mono_to_any(mono, TK_OFFS_REAL);
-+}
-+
-+static inline u64 ktime_get_ns(void)
-+{
-+       return ktime_to_ns(ktime_get());
-+}
-+
-+static inline u64 ktime_get_real_ns(void)
-+{
-+       return ktime_to_ns(ktime_get_real());
-+}
-+
-+static inline u64 ktime_get_boottime_ns(void)
-+{
-+       return ktime_to_ns(ktime_get_boottime());
-+}
-+
-+static inline u64 ktime_get_clocktai_ns(void)
-+{
-+       return ktime_to_ns(ktime_get_clocktai());
-+}
-+
-+static inline u64 ktime_get_raw_ns(void)
-+{
-+       return ktime_to_ns(ktime_get_raw());
-+}
-+
-+extern u64 ktime_get_mono_fast_ns(void);
-+extern u64 ktime_get_raw_fast_ns(void);
-+extern u64 ktime_get_boot_fast_ns(void);
-+extern u64 ktime_get_real_fast_ns(void);
-+
-+/*
-+ * timespec64/time64_t interfaces utilizing the ktime based ones
-+ * for API completeness, these could be implemented more efficiently
-+ * if needed.
-+ */
-+static inline void ktime_get_boottime_ts64(struct timespec64 *ts)
-+{
-+       *ts = ktime_to_timespec64(ktime_get_boottime());
-+}
-+
-+static inline void ktime_get_coarse_boottime_ts64(struct timespec64 *ts)
-+{
-+       *ts = ktime_to_timespec64(ktime_get_coarse_boottime());
-+}
-+
-+static inline time64_t ktime_get_boottime_seconds(void)
-+{
-+       return ktime_divns(ktime_get_coarse_boottime(), NSEC_PER_SEC);
-+}
-+
-+static inline void ktime_get_clocktai_ts64(struct timespec64 *ts)
-+{
-+       *ts = ktime_to_timespec64(ktime_get_clocktai());
-+}
-+
-+static inline void ktime_get_coarse_clocktai_ts64(struct timespec64 *ts)
-+{
-+       *ts = ktime_to_timespec64(ktime_get_coarse_clocktai());
-+}
-+
-+static inline time64_t ktime_get_clocktai_seconds(void)
-+{
-+       return ktime_divns(ktime_get_coarse_clocktai(), NSEC_PER_SEC);
-+}
-+
-+#endif /* _LINUX_KTIME_H */
-diff --git a/include/linux/pps_kernel.h b/include/linux/pps_kernel.h
-index 78c8ac4951b5..24970c202ac6 100644
---- a/include/linux/pps_kernel.h
-+++ b/include/linux/pps_kernel.h
-@@ -12,6 +12,7 @@
- #include <linux/cdev.h>
- #include <linux/device.h>
- #include <linux/time.h>
-+#include <linux/timekeeping.h>
- 
- /*
-  * Global defines
-diff --git a/include/linux/sched_clock.h b/include/linux/sched_clock.h
-index 528718e4ed52..3a1aa2fdd9b2 100644
---- a/include/linux/sched_clock.h
-+++ b/include/linux/sched_clock.h
-@@ -5,6 +5,8 @@
- #ifndef LINUX_SCHED_CLOCK
- #define LINUX_SCHED_CLOCK
- 
-+#include <linux/timekeeping.h>
-+
- #ifdef CONFIG_GENERIC_SCHED_CLOCK
- /**
-  * struct clock_read_data - data required to read from sched_clock()
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index 0db36360ef21..bd9b4205b070 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -14,6 +14,7 @@
- 
- #include <linux/platform_device.h>
- #include <linux/phy.h>
-+#include <linux/timekeeping.h>
- 
- #define MTL_MAX_RX_QUEUES	8
- #define MTL_MAX_TX_QUEUES	8
-diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
-index 78a98bdff76d..b1c54f5ff91e 100644
---- a/include/linux/timekeeping.h
-+++ b/include/linux/timekeeping.h
-@@ -19,201 +19,6 @@ extern void legacy_timer_tick(unsigned long ticks);
- extern int do_settimeofday64(const struct timespec64 *ts);
- extern int do_sys_settimeofday64(const struct timespec64 *tv,
- 				 const struct timezone *tz);
--
--/*
-- * ktime_get() family: read the current time in a multitude of ways,
-- *
-- * The default time reference is CLOCK_MONOTONIC, starting at
-- * boot time but not counting the time spent in suspend.
-- * For other references, use the functions with "real", "clocktai",
-- * "boottime" and "raw" suffixes.
-- *
-- * To get the time in a different format, use the ones wit
-- * "ns", "ts64" and "seconds" suffix.
-- *
-- * See Documentation/core-api/timekeeping.rst for more details.
-- */
--
--
--/*
-- * timespec64 based interfaces
-- */
--extern void ktime_get_raw_ts64(struct timespec64 *ts);
--extern void ktime_get_ts64(struct timespec64 *ts);
--extern void ktime_get_real_ts64(struct timespec64 *tv);
--extern void ktime_get_coarse_ts64(struct timespec64 *ts);
--extern void ktime_get_coarse_real_ts64(struct timespec64 *ts);
--
--void getboottime64(struct timespec64 *ts);
--
--/*
-- * time64_t base interfaces
-- */
--extern time64_t ktime_get_seconds(void);
--extern time64_t __ktime_get_real_seconds(void);
--extern time64_t ktime_get_real_seconds(void);
--
--/*
-- * ktime_t based interfaces
-- */
--
--enum tk_offsets {
--	TK_OFFS_REAL,
--	TK_OFFS_BOOT,
--	TK_OFFS_TAI,
--	TK_OFFS_MAX,
--};
--
--extern ktime_t ktime_get(void);
--extern ktime_t ktime_get_with_offset(enum tk_offsets offs);
--extern ktime_t ktime_get_coarse_with_offset(enum tk_offsets offs);
--extern ktime_t ktime_mono_to_any(ktime_t tmono, enum tk_offsets offs);
--extern ktime_t ktime_get_raw(void);
--extern u32 ktime_get_resolution_ns(void);
--
--/**
-- * ktime_get_real - get the real (wall-) time in ktime_t format
-- */
--static inline ktime_t ktime_get_real(void)
--{
--	return ktime_get_with_offset(TK_OFFS_REAL);
--}
--
--static inline ktime_t ktime_get_coarse_real(void)
--{
--	return ktime_get_coarse_with_offset(TK_OFFS_REAL);
--}
--
--/**
-- * ktime_get_boottime - Returns monotonic time since boot in ktime_t format
-- *
-- * This is similar to CLOCK_MONTONIC/ktime_get, but also includes the
-- * time spent in suspend.
-- */
--static inline ktime_t ktime_get_boottime(void)
--{
--	return ktime_get_with_offset(TK_OFFS_BOOT);
--}
--
--static inline ktime_t ktime_get_coarse_boottime(void)
--{
--	return ktime_get_coarse_with_offset(TK_OFFS_BOOT);
--}
--
--/**
-- * ktime_get_clocktai - Returns the TAI time of day in ktime_t format
-- */
--static inline ktime_t ktime_get_clocktai(void)
--{
--	return ktime_get_with_offset(TK_OFFS_TAI);
--}
--
--static inline ktime_t ktime_get_coarse_clocktai(void)
--{
--	return ktime_get_coarse_with_offset(TK_OFFS_TAI);
--}
--
--static inline ktime_t ktime_get_coarse(void)
--{
--	struct timespec64 ts;
--
--	ktime_get_coarse_ts64(&ts);
--	return timespec64_to_ktime(ts);
--}
--
--static inline u64 ktime_get_coarse_ns(void)
--{
--	return ktime_to_ns(ktime_get_coarse());
--}
--
--static inline u64 ktime_get_coarse_real_ns(void)
--{
--	return ktime_to_ns(ktime_get_coarse_real());
--}
--
--static inline u64 ktime_get_coarse_boottime_ns(void)
--{
--	return ktime_to_ns(ktime_get_coarse_boottime());
--}
--
--static inline u64 ktime_get_coarse_clocktai_ns(void)
--{
--	return ktime_to_ns(ktime_get_coarse_clocktai());
--}
--
--/**
-- * ktime_mono_to_real - Convert monotonic time to clock realtime
-- */
--static inline ktime_t ktime_mono_to_real(ktime_t mono)
--{
--	return ktime_mono_to_any(mono, TK_OFFS_REAL);
--}
--
--static inline u64 ktime_get_ns(void)
--{
--	return ktime_to_ns(ktime_get());
--}
--
--static inline u64 ktime_get_real_ns(void)
--{
--	return ktime_to_ns(ktime_get_real());
--}
--
--static inline u64 ktime_get_boottime_ns(void)
--{
--	return ktime_to_ns(ktime_get_boottime());
--}
--
--static inline u64 ktime_get_clocktai_ns(void)
--{
--	return ktime_to_ns(ktime_get_clocktai());
--}
--
--static inline u64 ktime_get_raw_ns(void)
--{
--	return ktime_to_ns(ktime_get_raw());
--}
--
--extern u64 ktime_get_mono_fast_ns(void);
--extern u64 ktime_get_raw_fast_ns(void);
--extern u64 ktime_get_boot_fast_ns(void);
--extern u64 ktime_get_real_fast_ns(void);
--
--/*
-- * timespec64/time64_t interfaces utilizing the ktime based ones
-- * for API completeness, these could be implemented more efficiently
-- * if needed.
-- */
--static inline void ktime_get_boottime_ts64(struct timespec64 *ts)
--{
--	*ts = ktime_to_timespec64(ktime_get_boottime());
--}
--
--static inline void ktime_get_coarse_boottime_ts64(struct timespec64 *ts)
--{
--	*ts = ktime_to_timespec64(ktime_get_coarse_boottime());
--}
--
--static inline time64_t ktime_get_boottime_seconds(void)
--{
--	return ktime_divns(ktime_get_coarse_boottime(), NSEC_PER_SEC);
--}
--
--static inline void ktime_get_clocktai_ts64(struct timespec64 *ts)
--{
--	*ts = ktime_to_timespec64(ktime_get_clocktai());
--}
--
--static inline void ktime_get_coarse_clocktai_ts64(struct timespec64 *ts)
--{
--	*ts = ktime_to_timespec64(ktime_get_coarse_clocktai());
--}
--
--static inline time64_t ktime_get_clocktai_seconds(void)
--{
--	return ktime_divns(ktime_get_coarse_clocktai(), NSEC_PER_SEC);
--}
--
- /*
-  * RTC specific
-  */
-@@ -308,4 +113,4 @@ void read_persistent_wall_and_boot_offset(struct timespec64 *wall_clock,
- extern int update_persistent_clock64(struct timespec64 now);
- #endif
- 
--#endif
-+#endif /* _LINUX_TIMEKEEPING_H */
-diff --git a/init/main.c b/init/main.c
-index eb01e121d2f1..8c1b2410e74b 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -98,6 +98,7 @@
- #include <linux/kcsan.h>
- #include <linux/init_syscalls.h>
- #include <linux/stackdepot.h>
-+#include <linux/timekeeping.h>
- 
- #include <asm/io.h>
- #include <asm/bugs.h>
-diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
-index 406dccb79c2b..804f06801737 100644
---- a/kernel/time/ntp.c
-+++ b/kernel/time/ntp.c
-@@ -18,6 +18,7 @@
- #include <linux/module.h>
- #include <linux/rtc.h>
- #include <linux/audit.h>
-+#include <linux/timekeeping.h>
- 
- #include "ntp_internal.h"
- #include "timekeeping_internal.h"
-diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
-index dd5697d7347b..14f82cd95d10 100644
---- a/kernel/time/posix-timers.c
-+++ b/kernel/time/posix-timers.c
-@@ -13,6 +13,7 @@
- #include <linux/interrupt.h>
- #include <linux/slab.h>
- #include <linux/time.h>
-+#include <linux/timekeeping.h>
- #include <linux/mutex.h>
- #include <linux/sched/task.h>
- 
-diff --git a/kernel/time/time.c b/kernel/time/time.c
-index 29923b20e0e4..7292ed074742 100644
---- a/kernel/time/time.c
-+++ b/kernel/time/time.c
-@@ -29,6 +29,7 @@
- #include <linux/timex.h>
- #include <linux/capability.h>
- #include <linux/timekeeper_internal.h>
-+#include <linux/timekeeping.h>
- #include <linux/errno.h>
- #include <linux/syscalls.h>
- #include <linux/security.h>
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index 8a364aa9881a..4dfee925adc8 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -22,6 +22,7 @@
- #include <linux/pvclock_gtod.h>
- #include <linux/compiler.h>
- #include <linux/audit.h>
-+#include <linux/timekeeping.h>
- 
- #include "tick-internal.h"
- #include "ntp_internal.h"
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index ca2f2ecd1488..efbbe624d81d 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -16,6 +16,7 @@
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
- #include <linux/slab.h>
-+#include <linux/timekeeping.h>
- 
- #ifdef CONFIG_X86
- /* for art-tsc conversion */
--- 
-2.25.1
+That's a good idea. I used the module parameter because it was already 
+there.
 
+My intent was to not change any existing default behavior. The below 
+forum post makes me think that simply changing the default value of 
+rx_packet_max from 1500 to 1998 alongside this patch is all that is 
+needed. It all seems too easy, so either my use-case is rare enough 
+that nobody considered it, or there's some limitation I'm missing.
 
+https://e2e.ti.com/support/processors-group/processors/f/processors-forum/461724/how-to-send-receive-jumbo-packet-by-am335x-emac
 
+> 
+> > Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
+> > ---
+> >  drivers/net/ethernet/ti/cpsw.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
+> > index c0cd7de88316..d400163c4ef2 100644
+> > --- a/drivers/net/ethernet/ti/cpsw.c
+> > +++ b/drivers/net/ethernet/ti/cpsw.c
+> > @@ -1625,6 +1625,14 @@ static int cpsw_probe(struct platform_device *pdev)
+> >  		goto clean_cpts;
+> >  	}
+> >  
+> > +	/* adjust max_mtu to match module parameter rx_packet_max */
+> > +	if (cpsw->rx_packet_max > CPSW_MAX_PACKET_SIZE) {
+> > +		ndev->max_mtu = ETH_DATA_LEN + (cpsw->rx_packet_max -
+> > +				CPSW_MAX_PACKET_SIZE);
+> > +		dev_info(dev, "overriding default MTU to %d\n\n",
+> > +			 ndev->max_mtu);
+> 
+> There is no need for dev_info(). You could consider dev_dbg(), or just
+> remove it.
 
+Understood.
+
+> 
+>        Andrew
