@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0073D2931
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C413D2939
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhGVQCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:02:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37352 "EHLO mail.kernel.org"
+        id S233587AbhGVQCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:02:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233170AbhGVP74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:59:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56F0C61241;
-        Thu, 22 Jul 2021 16:40:29 +0000 (UTC)
+        id S233032AbhGVP6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:58:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D3FE61396;
+        Thu, 22 Jul 2021 16:38:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972030;
-        bh=xMNiEi9zKRgBkqkjPu4lYP/af+oa+wiUpIv9csvptD8=;
+        s=korg; t=1626971936;
+        bh=nUhw8pyc02sZXHr0c7qkcJ3bFdSd30YzlHR9IE0UXfg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jZdFyW9RKCvn58l/dU6VwIIPhvlqIzcqijWHZNOdgpm4VqSY9wsDxMBpFAFO9b4gE
-         C+5HY/TT3TvGZVNw94zZ0wg6eC73iq5XHtlE1gq8eCBakfEznx9HkZDP3l4NM9L14R
-         U6Td6fsemXDjfEGfsbtLQgAwD8jxzaAdQQIR7vPU=
+        b=cKneVWlmjVIvGzRUS5SE/w6QTH/rGxe3/xznq8DaSoMkqkoVo+IJneeYA8BSbb0Im
+         NCqQf8/8QhNL93mK/yumDmsVQ5b8uccZvEWPNHnValVwe+HYdvinNxCGq0P0Xor3j3
+         RwQRcHPP2a/H8aHnL6xemJYCxdqq7uxILMz+lWjc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        stable@vger.kernel.org, gushengxian <gushengxian@yulong.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ben Segall <bsegall@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 075/125] sched/fair: Fix CFS bandwidth hrtimer expiry type
-Date:   Thu, 22 Jul 2021 18:31:06 +0200
-Message-Id: <20210722155627.174356109@linuxfoundation.org>
+Subject: [PATCH 5.10 076/125] perf/x86/intel/uncore: Clean up error handling path of iio mapping
+Date:   Thu, 22 Jul 2021 18:31:07 +0200
+Message-Id: <20210722155627.212491230@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
 References: <20210722155624.672583740@linuxfoundation.org>
@@ -41,51 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Odin Ugedal <odin@uged.al>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-[ Upstream commit 72d0ad7cb5bad265adb2014dbe46c4ccb11afaba ]
+[ Upstream commit d4ba0b06306a70c99a43f9d452886a86e2d3bd26 ]
 
-The time remaining until expiry of the refresh_timer can be negative.
-Casting the type to an unsigned 64-bit value will cause integer
-underflow, making the runtime_refresh_within return false instead of
-true. These situations are rare, but they do happen.
+The error handling path of iio mapping looks fragile. We already fixed
+one issue caused by it, commit f797f05d917f ("perf/x86/intel/uncore:
+Fix for iio mapping on Skylake Server"). Clean up the error handling
+path and make the code robust.
 
-This does not cause user-facing issues or errors; other than
-possibly unthrottling cfs_rq's using runtime from the previous period(s),
-making the CFS bandwidth enforcement less strict in those (special)
-situations.
-
-Signed-off-by: Odin Ugedal <odin@uged.al>
+Reported-by: gushengxian <gushengxian@yulong.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Ben Segall <bsegall@google.com>
-Link: https://lore.kernel.org/r/20210629121452.18429-1-odin@uged.al
+Link: https://lkml.kernel.org/r/40e66cf9-398b-20d7-ce4d-433be6e08921@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/events/intel/uncore_snbep.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 32c0905bca84..262b02d75007 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5047,7 +5047,7 @@ static const u64 cfs_bandwidth_slack_period = 5 * NSEC_PER_MSEC;
- static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
- {
- 	struct hrtimer *refresh_timer = &cfs_b->period_timer;
--	u64 remaining;
-+	s64 remaining;
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index 16159950fcf5..9c936d06fb61 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -3752,11 +3752,11 @@ static int skx_iio_set_mapping(struct intel_uncore_type *type)
+ 	/* One more for NULL. */
+ 	attrs = kcalloc((uncore_max_dies() + 1), sizeof(*attrs), GFP_KERNEL);
+ 	if (!attrs)
+-		goto err;
++		goto clear_topology;
  
- 	/* if the call-back is running a quota refresh is already occurring */
- 	if (hrtimer_callback_running(refresh_timer))
-@@ -5055,7 +5055,7 @@ static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
+ 	eas = kcalloc(uncore_max_dies(), sizeof(*eas), GFP_KERNEL);
+ 	if (!eas)
+-		goto err;
++		goto clear_attrs;
  
- 	/* is a quota refresh about to occur? */
- 	remaining = ktime_to_ns(hrtimer_expires_remaining(refresh_timer));
--	if (remaining < min_expire)
-+	if (remaining < (s64)min_expire)
- 		return 1;
- 
- 	return 0;
+ 	for (die = 0; die < uncore_max_dies(); die++) {
+ 		sprintf(buf, "die%ld", die);
+@@ -3777,7 +3777,9 @@ err:
+ 	for (; die >= 0; die--)
+ 		kfree(eas[die].attr.attr.name);
+ 	kfree(eas);
++clear_attrs:
+ 	kfree(attrs);
++clear_topology:
+ 	kfree(type->topology);
+ clear_attr_update:
+ 	type->attr_update = NULL;
 -- 
 2.30.2
 
