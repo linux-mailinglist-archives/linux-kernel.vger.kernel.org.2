@@ -2,312 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA4D3D2CE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540843D2CE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhGVS6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
+        id S230346AbhGVTCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 15:02:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhGVS6n (ORCPT
+        with ESMTP id S229756AbhGVTCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:58:43 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A58DC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:39:17 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id f4so3951601vsh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:39:17 -0700 (PDT)
+        Thu, 22 Jul 2021 15:02:00 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543ECC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:42:35 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id p3so6448560ilg.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:42:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ojab.ru; s=ojab;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7DaVr1b+362zLHRUtuZLZIEuCblGBWwhIVXIOpe6r18=;
-        b=E9UJpR1xCvFg+26nePCbhu6whpQ1S2faC1XeQjKjs2M4cQuCD/CfuhVabZeCMig8Ic
-         7lJ1+i3oiebnYl73I6pOPo9dFsbHvegCw+YLJJI3eRgR7bT8cT7sc63ZGbb6t/f7yGGY
-         PZhmGUFVL4aVgVku8JaRxteb2It6hQfqIqMgcFiPZ4vpsXFWtTrU91ZDtffUoOtQuQnu
-         1pofr1Oehud3HfnGwGWiaKguFZFXEvheKlMIph87Qy4yaLa/OcxsZLIS7/VS2EVEGrEa
-         AccCpgh/iRiVzlwfWdbNAf5Kcu8q/APnC1CHiLo1FiNqgAUKWK7T3uhYoTQtdVkvWNTk
-         Tukg==
+        bh=bEuCuHt84F523pMpVlgmLvJ4UIBF4EoLTs4dbDpATW8=;
+        b=mKU59JZsPpk4Uwrh9veqroWHFfmAS+JdwuvxLQdk+8vF9zAFjuiNoiHEI24a2DukKo
+         5MhOTtxunUNS4hbaqrDkjLwYr76tA5g73A4+lczu0NSSiOmMb+UKUc6r6h99MW6A5+b9
+         Q7bvYpxu1Mon2J4EnpLpVzxK+RGPMCxddZpU/EWqjSdsZnK8PKC4m/3T/xuu5KrT1ASi
+         wyy/tEO03vbX5aFkjMVtqkhVlsb6N31yshFICDUkrcKUmWz8qhBs0tytE1iqSKSKgECD
+         tpPtwFrUdXvO7VCKWdKQKxmu2xurNAK46JCBbIFn7O5l/cT9FyPL2gorlJMGX2WfLV2Q
+         qnEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7DaVr1b+362zLHRUtuZLZIEuCblGBWwhIVXIOpe6r18=;
-        b=YCl3nuh4EEC1u3ywekyRgVklQ3vTNvBeiBi2Cz0AE/Y0j5U/VCL76Zazrr+4qZk4jX
-         /EaYrsMRjjKGwzLvLKRV6x7sAXPt5QqZ68WeVzxIFKy5AFUEBR45vOLEiEyWwDvc8qHd
-         lAE/VJvWFp0qjBXeaTYZ0gi/91IP6VYxQNtVvfS6Lt775aUWnBhOSmH7ckQ6fEdBnoo+
-         RAJLyjOZ9gtDJt1eDcdprmPjKQnVcgtMT9JlaDIsRA2bRelN0N4u19JlEP3lQKi7FQu6
-         A/VFB9fuDXCo4Cjc/DmkeZSK6eW9GeJY3O658xkmPsmw+T60HlzoplwvujfCM5L3FwyP
-         CD/w==
-X-Gm-Message-State: AOAM531OzftqNuNgs/VBwlKT8PzggLys27rLGkS64JhkCPtxalJuYXqe
-        +972ECp3LBmvs47ni25m/9iuRYZ6tZ4krkbrKa4=
-X-Google-Smtp-Source: ABdhPJw/yqiQRbpZShbSgJJ85ur28nDK8fzSieBMoS3NJdzzjfJU48Ac+fZV56n+164BXuIYpx6m3n8dXqqdcQMGm+g=
-X-Received: by 2002:a67:fdc2:: with SMTP id l2mr1969758vsq.7.1626982756301;
- Thu, 22 Jul 2021 12:39:16 -0700 (PDT)
+        bh=bEuCuHt84F523pMpVlgmLvJ4UIBF4EoLTs4dbDpATW8=;
+        b=LCGuujqer8h4jgVTldPwVO8ZBBXO7nnvAbjLwh55WQHdvBSsD0s3ixwWjHqXQY4Ut9
+         A1mUMu5NnkUpaVlhIk2jHB31upibjCR/eM1lZu3KPCDeQOzek4d0HVkiEeexYYnnFJQf
+         NodITTvqOceBpMdo1c50TLEqabvcIv1a8eBbSouxDYkwXDp9D3ftbeuuva52KEbdg5ng
+         9NYt3Wz9HxYFqn4nr+Rp15jevHFWKb3uQJnHOUKrKpqEQF2Bk5KLrh4nAM88p6xfLbgZ
+         jnGjYbX+VDiC89/4U6kYBMklk23L8OgncO8ziljH+7wCnnrLXYvp5B13ywMQGPvbA3HT
+         UBJg==
+X-Gm-Message-State: AOAM533+jsdfZwv57179hn2iuOo+4AVkB5+OvLv7z6QKKMkA+tbhnqQt
+        gSIkY8NSIxWVNBITfZxqI6btsCAd17Qy+f8V9N3Xmw==
+X-Google-Smtp-Source: ABdhPJyMABrkiHTJMS9LZm/CFEJBy6P8UgBeaGafeRs22DUJ5aaCx9PBDCrxo0HZCPVZx1y0wGfrIk1R5ZHDwpeYc/o=
+X-Received: by 2002:a05:6e02:1d0f:: with SMTP id i15mr893058ila.199.1626982954711;
+ Thu, 22 Jul 2021 12:42:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210714175138.319514-1-jim.cromie@gmail.com> <20210714175138.319514-4-jim.cromie@gmail.com>
- <YPbPvm/xcBlTK1wq@phenom.ffwll.local>
-In-Reply-To: <YPbPvm/xcBlTK1wq@phenom.ffwll.local>
-From:   jim.cromie@gmail.com
-Date:   Thu, 22 Jul 2021 15:38:50 -0400
-Message-ID: <CAJfuBxxFL7bsuyFy6M4LK1QgvR0+0yt_DJQNjY=xMi36FU8jMA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] drm/print: RFC add choice to use dynamic debug in drm-debug
-To:     Jim Cromie <jim.cromie@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        dri-devel@lists.freedesktop.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, Jason Baron <jbaron@akamai.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>
+References: <20210722193459.7474-1-ojab@ojab.ru>
+In-Reply-To: <20210722193459.7474-1-ojab@ojab.ru>
+From:   "ojab //" <ojab@ojab.ru>
+Date:   Thu, 22 Jul 2021 22:42:23 +0300
+Message-ID: <CAKzrAgRvOLX6rcKKz=8ghD+QLyMu-1KEPm5HkkLEAzuE1MQpDA@mail.gmail.com>
+Subject: Re: [PATCH V2] ath10k: don't fail if IRAM write fails
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, axel.rasmussen1@gmail.com
+Cc:     ath10k@lists.infradead.org,
+        Linux Wireless <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the feedback!
+See also: https://lists.infradead.org/pipermail/ath10k/2021-May/012626.html
 
-
-On Tue, Jul 20, 2021 at 9:29 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+On Thu, 22 Jul 2021 at 22:36, ojab <ojab@ojab.ru> wrote:
 >
-> On Wed, Jul 14, 2021 at 11:51:36AM -0600, Jim Cromie wrote:
-> > drm's debug system uses distinct categories of debug messages, encoded
-> > in an enum (DRM_UT_<CATEGORY>), which are mapped to bits in drm.debug.
-> > drm_debug_enabled() does a lot of unlikely bit-mask checks on
-> > drm.debug; we can use dynamic debug instead, and get all that
-> > static_key/jump_label goodness.
-> >
-> > Dynamic debug has no concept of category, but we can map the DRM_UT_*
-> > to a set of distinct prefixes; "drm:core:", "drm:kms:" etc, and
-> > prepend them to the given formats.
-> >
-> > Then we can use:
-> >   `echo module drm format ^drm:core: +p > control`
-> >
-> > to enable every such "prefixed" pr_debug with one query.  This new
-> > prefix changes pr_debug's output, so is user visible, but it seems
-> > unlikely to cause trouble for log watchers; they're not relying on the
-> > absence of class prefix strings.
-> >
-> > This conversion yields ~2100 new callsites on my i7/i915 laptop:
-> >
-> >   dyndbg: 195 debug prints in module drm_kms_helper
-> >   dyndbg: 298 debug prints in module drm
-> >   dyndbg: 1630 debug prints in module i915
-> >
-> > CONFIG_DRM_USE_DYNAMIC_DEBUG enables this, and is available if
-> > CONFIG_DYNAMIC_DEBUG or CONFIG_DYNAMIC_DEBUG_CORE is chosen, and if
-> > CONFIG_JUMP_LABEL is enabled; this because its required to get the
-> > promised optimizations.
-> >
-> > The indirection/switchover is layered into the macro scheme:
-> >
-> > 0. A new callback on drm.debug which calls dynamic_debug_exec_queries
-> >    to map those bits to specific query/commands
-> >    dynamic_debug_exec_queries("format ^drm:kms: +p", "drm*");
-> >    here for POC, this should be in dynamic_debug.c
-> >    with a MODULE_PARAM_DEBUG_BITMAP(__drm_debug, { "prefix-1", "desc-1" }+)
+> After reboot with kernel & firmware updates I found `failed to copy
+> target iram contents:` in dmesg and missing wlan interfaces for both
+> of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
+> it, so while I have no idea what's actually happening, I don't see why
+> we should fail in this case, looks like some optional firmware ability
+> that could be skipped.
 >
-> This is really awesome. For merging I think we need to discuss with dyn
-> debug folks whether they're all ok with this, but it's exported already
-> should should be fine.
+> Also with additional logging there is
+> ```
+> [    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
+> [    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
+> [    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
+> [    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
+> ```
+> so exact branch could be seen.
 >
-
-Yay.  FWIW, Im to blame for that export, with this use case in mind.
-That said, I dont know if that macro can be written as I described,
-but if not, then { BIT(0), "prefix-0", "description-0" }, { BIT(1)
-.... } should work.
-If its been done elsewhere, Id copy it, or imitate it.
-
-
-
-
-
-> >
-> > 1. A "converted" or "classy" DRM_UT_* map
-> >
-> >    based on:   DRM_UT_* ( symbol => bit-mask )
-> >    named it:  cDRM_UT_* ( symbol => format-class-prefix-string )
-> >
-> >    So cDRM_UT_* is either:
-> >    legacy: cDRM_UT_* <-- DRM_UT_*   ( !CONFIG_DRM_USE_DYNAMIC_DEBUG )
-> >    enabled:
-> >     #define cDRM_UT_KMS    "drm:kms: "
-> >     #define cDRM_UT_PRIME  "drm:prime: "
-> >     #define cDRM_UT_ATOMIC "drm:atomic: "
+> Signed-off-by: Slava Kardakov <ojab@ojab.ru>
+> ---
+>  Of course I forgot to sing off, since I don't use it by default because I
+>  hate my real name and kernel requires it
 >
-> the cDRM looks a bit funny, plus I don't eve have an idea what _UT_ means
-> (and git history isn't helpful either). What about just using
-> DRM_DBG_CLASS_ as the prefix here for these indirection macros, i.e.
-> DRM_DBG_CLASS_KMS.
+>  drivers/net/wireless/ath/ath10k/core.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 >
-
-yes.
-
-
-> Also would be really nice if we could make these a table or something, but
-> I guess with the macro magic that's not possible.
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index 2f9be182fbfb..d9fd5294e142 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -2691,8 +2691,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
+>         u32 len, remaining_len;
 >
-
-not obvious to me, I'll watch for an opportunity.
-
-> >
-> >    DRM_UT_* are unchanged, since theyre used in drm_debug_enabled()
-> >    and elsewhere.
+>         hw_mem = ath10k_coredump_get_mem_layout(ar);
+> -       if (!hw_mem)
+> +       if (!hw_mem) {
+> +               ath10k_warn(ar, "No hardware memory");
+>                 return -ENOMEM;
+> +       }
 >
-> I think for the production version of these we need to retire/deprecate
-> them, at least for drm core. Otherwise you have an annoying mismatch
-> between drm.debug module option and dyn debug.
+>         for (i = 0; i < hw_mem->region_table.size; i++) {
+>                 tmp = &hw_mem->region_table.regions[i];
+> @@ -2702,8 +2704,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
+>                 }
+>         }
 >
-
-I will look at renaming it :  __drm_debug_enabled
-and making a macro for the old name.
-so enabled, it would end up like
-if (unlikely(1) && ... )
-
-drivers/gpu/drm/drm_atomic_uapi.c
-1457: if (drm_debug_enabled(DRM_UT_STATE))
-
-drivers/gpu/drm/drm_dp_mst_topology.c
-1358: if (unlikely(ret == -EIO) && drm_debug_enabled(DRM_UT_DP)) {
-2875: if (unlikely(ret) && drm_debug_enabled(DRM_UT_DP)) {
-2919: if (drm_debug_enabled(DRM_UT_DP)) {
-
-
-> >
-> > 2. drm_dev_dbg & drm_debug are renamed (prefixed with '_')
-> >
-> >    old names are now macros, calling either:
-> >      legacy:  -> to renamed fn
-> >      enabled: -> dev_dbg & pr_debug, with cDRM-prefix # format.
-> >
-> >    these names are used in a fat layer of macros (3) which supply the
-> >    category; those macros are used throughout drm code, yielding the
-> >    ~2100 new prdbgs reported above.
-> >
-> > 3. names in (2) are invoked by DRM_DEBUG_<Category>, drm_dbg_<Category>.
-> >
-> >    all these macros get "converted" to use cDRM_UT_*
-> >    to get right token type for both !/!! DRM_USE_DYNAMIC_DEBUG
-> >
-> > 4. simplification of __DRM_DEFINE_DBG_RATELIMITED macro
-> >
-> >    remove DRM_UT_ ## KMS as extra indirection
-> >    pass both DRM_UT & cDRM_UT, for drm_debug_enabled & drm_dev_dbg
+> -       if (!mem_region)
+> +       if (!mem_region) {
+> +               ath10k_warn(ar, "No memory region");
+>                 return -ENOMEM;
+> +       }
 >
-> For merging, can we pull out the renames and reorgs from this patch, and
-> then maybe also the reorder the next patch in your series here to be
-> before the dyn debug stuff?
+>         for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
+>                 if (ar->wmi.mem_chunks[i].req_id ==
+> @@ -2917,7 +2921,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+>                 if (status) {
+>                         ath10k_warn(ar, "failed to copy target iram contents: %d",
+>                                     status);
+> -                       goto err_hif_stop;
+>                 }
+>         }
 >
-
-I will drop the 4. RATELIMITED tweaks.
-FWIW, I have semi-working code to implement rate limiting
-in dynamic debug, controlled by `+r > control`
-which would touch this anyway.
-
-wrt reordering 4/5, can you clarify ?
-the i915 changes are 1/2 POC, so I'll assume you mean after getting 0.
-into dyndbg
-
-> > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> > ---
-> >  drivers/gpu/drm/Kconfig     |  13 +++++
-> >  drivers/gpu/drm/drm_print.c |  75 ++++++++++++++++++++++++--
-> >  include/drm/drm_print.h     | 102 ++++++++++++++++++++++++++----------
-> >  3 files changed, 158 insertions(+), 32 deletions(-)
->
-> I really like this, I think you can drop the RFC. A few more things that I
-> think we need:
->
-> - An overview kerneldoc section which explains the interfaces and how it
->   all works together. Essentially your commit message with some light
->   markup to make it look good.
-
-into include/drm/drm_print.h ?
-
->
-> - I think it would be really good to review the driver docs for all this
->   and make sure it's complete. Some of the interface functions aren't
->   documented yet (or maybe the ones that drivers shouldn't used need more
->   __ prefixes to denote them as internal, dunno).
->
-
-I will look, but I dont have the experience here to make these
-qualitative judgements
-
-Also, I renamed drm_dev_dbg to _drm_dev_dbg, with a single underscore.
-I'm now thinking this is reserved, and __ prefix is better (legal)
-This isnt quite the same is lower-level implementation detail,
-since it adds a CONFIG dependent alternative impl.
-But I'll do this unless you have a better name
-
-> - I guess deprecation notice for drm_debug_enabled() and all that, so that
->   we have a consistent interface. Doing the conversion will probably
->   highlight the need for a bit more infrastructure and tooling, e.g. the
->   bigger dump functions (like edid hex dump, or also the various decode
->   helpers we have for dp, hdmi infoframes and all that) ideally have a
->   single dyn_debug label to enable all of them instead of line-by-line.
->   Tbh no idea how this should work, might need dyndbg work too.
->
-
-macrofying drm_debug_enabled()  might work for this set.
-possibly with different prefixes,  forex: "drmx:*"  or "drm:misc:"
-
-> - For the driver side of this we probably want a
->   Documentation/gpu/TODO.rst entry if it's not all easy to convert
->   directly.
-
-so there are 32 uses of drm_debug_enabled(DRM_UT_*)
-and just 1 used in drm_dev_dbg    (with category as arg)
-I'll try to macrofy it, see if it will handle the 32 cases.
-
->
-> >
-> > diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> > index 7ff89690a976..e4524ccba040 100644
-> > --- a/drivers/gpu/drm/Kconfig
-> > +++ b/drivers/gpu/drm/Kconfig
-> > @@ -57,6 +57,19 @@ config DRM_DEBUG_MM
-> >
-> >         If in doubt, say "N".
-> >
-> > +config DRM_USE_DYNAMIC_DEBUG
-> > +     bool "use dynamic debug to implement drm.debug"
-> > +     default n
-> > +     depends on DRM
-> > +     depends on DYNAMIC_DEBUG || DYNAMIC_DEBUG_CORE
-> > +     depends on JUMP_LABEL
-> > +     help
-> > +       The drm debug category facility does a lot of unlikely bit-field
-> > +       tests at runtime; while cheap individually, the cost accumulates.
-> > +       This option uses dynamic debug facility (if configured and
-> > +       using jump_label) to avoid those runtime checks, patching
-> > +       the kernel when those debugs are desired.
->
-> Can't we just make this an internal option that's enabled automatically
-> when dyndbg is around? Plus a comment somewhere that we really recommend
-> enabling dyndbg for drm. Or would this mean that in certain dyndbg
-> configurations we'd loose all the debug lines, which would suck?
->
-
-We could indeed, I took the cautious approach.
-keeping the CONFIG simplifies comparing DRM_USE_DD=y/n builds,
-and changing default later is easy, and probably should have some numbers
-about instructions saved and obj size increase.
-
-
-> Anyway there's a pile of details, but the big picture I really like.
-> Especially that we can make dyndbg seamlessly support drm.debug is really
-> nice.
->
-> Cheers, Daniel
->
-
-thanks, Jim
+> --
+> 2.32.0
