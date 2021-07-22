@@ -2,259 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F275A3D2C44
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C723D2C4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhGVSWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:22:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhGVSWL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:22:11 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B674C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:02:45 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id l7so7012532wrv.7
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:02:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NxAWTtoyjsf5ed4GT6Mn+COejMtj0Ij6Ef+0zC6Fp0I=;
-        b=GlYfJXLDmHKYXvI8nkXkzG+gacX7+T76k4N1wPXrW28aQH7doyu/scQErhKLXXeT5j
-         rjL1Zy95ogbryL7A6ufHOhbOYRJpkseGhqFKNJOtnO4d2rxbs/aeimJHRJADUojQ7bYT
-         yW1mQ5ZWHeoMzezARa4AkB8kHrYLFWHY/XjdI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=NxAWTtoyjsf5ed4GT6Mn+COejMtj0Ij6Ef+0zC6Fp0I=;
-        b=B6JidbPO8X369ckY2dzW4nBzg6suVlvj4bvCi/yMXRsrbyjj/bw7w3LqIanz0GEhN2
-         EnkMobeyByaT/ogZkkJjUzxbOBlby0Ti27VL0dtIb8gj6w+kxDkj4HmUqUZbtg0HAU2U
-         9qqDGC8qd8j5hNb+6JrwGhFmpHye2a0rQV5DgLAlWEAe4BHcHem1gE/sOPYd+Z3HWcVr
-         abVyE9HUVBN30Pf20gDpRnCyJdwdp+3p3//BXmvalbL5kFxYu4q+8eOBObhgwcYJL4IN
-         HLRD2X4IU3doqVI5mWVtLrbJigjgenvHf086/4+JKaJWHMizG419MVkYcVHNHU6MG5wQ
-         bKAg==
-X-Gm-Message-State: AOAM533Sx5j1oeTDYDbsZWHUeM+4hastHNiR22wNJYU+2IiWafBKJpFa
-        DBHzeWIX8jrb2T/wLTQecNWSuA==
-X-Google-Smtp-Source: ABdhPJwVzmJqzAbTzUQiqbsqbtxeYf6pKuPCwR/7bRFDwV/F5EQMooRx31ZbsMvESwO+Xg8SvVqZWg==
-X-Received: by 2002:adf:eb43:: with SMTP id u3mr1433153wrn.83.1626980563826;
-        Thu, 22 Jul 2021 12:02:43 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id c10sm25624941wmb.40.2021.07.22.12.02.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 12:02:43 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 21:02:41 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>, Dave Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 1/3] drm: use the lookup lock in drm_is_current_master
-Message-ID: <CAKMK7uGSc_YMf2e=oA23KeAvC8i_pqJBU82v8oRGfnwsT41WLQ@mail.gmail.com>
-Mail-Followup-To: Boqun Feng <boqun.feng@gmail.com>,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>, Dave Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20210722092929.244629-1-desmondcheongzx@gmail.com>
- <20210722092929.244629-2-desmondcheongzx@gmail.com>
- <YPlKkvelm/mcnCj0@phenom.ffwll.local>
- <YPmJEYrnB0j17cZV@boqun-archlinux>
+        id S230270AbhGVSYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 14:24:32 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:40584 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230261AbhGVSYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 14:24:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626980705; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=WduP3o7gBFrmEiLJhLfBl2y3nG4pbHLqEz9PeWRtcrs=;
+ b=qvbkEVGvQiUtzIOxHAi7FP96+OMl0/ZbV2MEVfC8w901ZpPmGzcODoZntAQU5tKRNSW+z/JU
+ icH1sWfpCNnxCW/SahYzrWULMS8Ik+tFWOOE9k1OzBhMU+iX5Q+VK83qZQuPiXxx1iJceoiP
+ kQRyqlmSfI56TjDei5S8yaxxMpM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60f9c1424815712f3ae551f2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Jul 2021 19:04:34
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 16AFEC433F1; Thu, 22 Jul 2021 19:04:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91A72C433D3;
+        Thu, 22 Jul 2021 19:04:33 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPmJEYrnB0j17cZV@boqun-archlinux>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 22 Jul 2021 12:04:33 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     hemantk@codeaurora.org
+Cc:     manivannan.sadhasivam@linaro.org, bqiang@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, clew@codeaurora.org,
+        linux-kernel@vger.kernel.org, bbhatt=codeaurora.org@codeaurora.org,
+        hemantk=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH] net: qrtr: mhi: synchronize qrtr and mhi preparation
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <dc0f806dde7494629a4e4f85b0ba5b7e@codeaurora.org>
+References: <1626831778-31796-1-git-send-email-bbhatt@codeaurora.org>
+ <4214f00fa8cbcced4f389125b392f3b3@codeaurora.org>
+ <0da23f32f4313c0b701bafc078942a4e@codeaurora.org>
+ <dc0f806dde7494629a4e4f85b0ba5b7e@codeaurora.org>
+Message-ID: <0e06bf8a7132cc9539e4d9b1e41b8863@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 6:00 PM Boqun Feng <boqun.feng@gmail.com> wrote:
->
-> On Thu, Jul 22, 2021 at 12:38:10PM +0200, Daniel Vetter wrote:
-> > On Thu, Jul 22, 2021 at 05:29:27PM +0800, Desmond Cheong Zhi Xi wrote:
-> > > Inside drm_is_current_master, using the outer drm_device.master_mutex
-> > > to protect reads of drm_file.master makes the function prone to creating
-> > > lock hierarchy inversions. Instead, we can use the
-> > > drm_file.master_lookup_lock that sits at the bottom of the lock
-> > > hierarchy.
-> > >
-> > > Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> > > ---
-> > >  drivers/gpu/drm/drm_auth.c | 9 +++++----
-> > >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
-> > > index f00354bec3fb..9c24b8cc8e36 100644
-> > > --- a/drivers/gpu/drm/drm_auth.c
-> > > +++ b/drivers/gpu/drm/drm_auth.c
-> > > @@ -63,8 +63,9 @@
-> > >
-> > >  static bool drm_is_current_master_locked(struct drm_file *fpriv)
-> > >  {
-> > > -   lockdep_assert_held_once(&fpriv->minor->dev->master_mutex);
-> > > -
-> > > +   /* Either drm_device.master_mutex or drm_file.master_lookup_lock
-> > > +    * should be held here.
-> > > +    */
-> >
-> > Disappointing that lockdep can't check or conditions for us, a
-> > lockdep_assert_held_either would be really neat in some cases.
-> >
->
-> The implementation is not hard but I don't understand the usage, for
-> example, if we have a global variable x, and two locks L1 and L2, and
-> the function
->
->         void do_something_to_x(void)
->         {
->                 lockdep_assert_held_either(L1, L2);
->                 x++;
->         }
->
-> and two call sites:
->
->         void f(void)
->         {
->                 lock(L1);
->                 do_something_to_x();
->                 unlock(L1);
->         }
->
->         void g(void)
->         {
->                 lock(L2);
->                 do_something_to_x();
->                 unlock(L2);
->         }
->
-> , wouldn't it be racy if f() and g() called by two threads at the same
-> time? Usually I would expect there exists a third synchronazition
-> mechanism (say M), which synchronizes the calls to f() and g(), and we
-> put M in the lockdep_assert_held() check inside do_something_to_x()
-> like:
->
->         void do_something_to_x(void)
->         {
->                 lockdep_assert_held_once(M);
->                 x++;
->         }
->
-> But of course, M may not be a lock, so we cannot put the assert there.
->
-> My cscope failed to find ->master_lookup_lock in -rc2 and seems it's not
-> introduced in the patchset either, could you point me the branch this
-> patchset is based on, so that I could understand this better, and maybe
-> come up with a solution? Thanks ;-)
+On 2021-07-21 03:27 PM, hemantk@codeaurora.org wrote:
+> On 2021-07-21 11:07, Bhaumik Bhatt wrote:
+>> On 2021-07-21 10:52 AM, hemantk@codeaurora.org wrote:
+>>> On 2021-07-20 18:42, Bhaumik Bhatt wrote:
+>>>> A dl callback can be received anytime after mhi_prepare_for_transfer
+>>>> has been called. There is a window where the callback may happen
+>>>> before the probe initializes the qrtr_mhi_dev state. Move the
+>>>> mhi_prepare_for_transfer call after the registering the endpoint.
+>>>> 
+>>>> Once moved, the reverse can happen where qrtr will try to send a 
+>>>> packet
+>>>> before the channels are prepared. Add a wait in the sending path to
+>>>> ensure the channels are prepared before trying to do a ul transfer.
+>>>> 
+>>>> Fixes: a2e2cc0dbb11 ("net: qrtr: Start MHI channels during init")
+>>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>>>> ---
+>>>>  net/qrtr/mhi.c | 20 +++++++++++++++-----
+>>>>  1 file changed, 15 insertions(+), 5 deletions(-)
+>>>> 
+>>>> diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
+>>>> index 29b4fa3..22b0395 100644
+>>>> --- a/net/qrtr/mhi.c
+>>>> +++ b/net/qrtr/mhi.c
+>>>> @@ -15,6 +15,7 @@ struct qrtr_mhi_dev {
+>>>>  	struct qrtr_endpoint ep;
+>>>>  	struct mhi_device *mhi_dev;
+>>>>  	struct device *dev;
+>>>> +	struct completion ready;
+>>>>  };
+>>>> 
+>>>>  /* From MHI to QRTR */
+>>>> @@ -50,6 +51,10 @@ static int qcom_mhi_qrtr_send(struct 
+>>>> qrtr_endpoint
+>>>> *ep, struct sk_buff *skb)
+>>>>  	struct qrtr_mhi_dev *qdev = container_of(ep, struct qrtr_mhi_dev, 
+>>>> ep);
+>>>>  	int rc;
+>>>> 
+>>>> +	rc = wait_for_completion_interruptible(&qdev->ready);
+>>>> +	if (rc)
+>>>> +		goto free_skb;
+>>>> +
+>>>>  	if (skb->sk)
+>>>>  		sock_hold(skb->sk);
+>>>> 
+>>>> @@ -78,11 +83,6 @@ static int qcom_mhi_qrtr_probe(struct mhi_device 
+>>>> *mhi_dev,
+>>>>  	struct qrtr_mhi_dev *qdev;
+>>>>  	int rc;
+>>>> 
+>>>> -	/* start channels */
+>>>> -	rc = mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
+>>>> -	if (rc)
+>>>> -		return rc;
+>>>> -
+>>>>  	qdev = devm_kzalloc(&mhi_dev->dev, sizeof(*qdev), GFP_KERNEL);
+>>>>  	if (!qdev)
+>>>>  		return -ENOMEM;
+>>> would it be good to init completion variable here (call 
+>>> init_completion) ?
+>> You mean just before setting qdev->mhi_dev? I don't see why that would
+>> make a difference
+>> mainly because the qcom_mhi_qrtr_send() will only happen after 
+>> endpoint is
+>> registered and DL xfer cb will also only come in after we have 
+>> prepared the
+>> channels and completed ready with dev_data already set.
+> looks like qcom_mhi_qrtr_send is not going to get called directly. i
+> was thinking
+> what if this api is called before init_completion() returns. if it is
+> only possible
+> through ep.xmit call back only, can you move it right above
+> qdev->ep.xmit = qcom_mhi_qrtr_send; ?
+>> 
+Ah. OK. I see your point. I will do that and upload a v2.
 
-The use case is essentially 2 nesting locks, and only the innermost is
-used to update a field. So when you only read this field, it's safe if
-either of these two locks are held. Essentially this is a read/write lock
-type of thing, except for various reasons the two locks might not be of
-the same type (like here where the write lock is a mutex, but the read
-lock is a spinlock).
+>>>> @@ -90,12 +90,22 @@ static int qcom_mhi_qrtr_probe(struct mhi_device 
+>>>> *mhi_dev,
+>>>>  	qdev->mhi_dev = mhi_dev;
+>>>>  	qdev->dev = &mhi_dev->dev;
+>>>>  	qdev->ep.xmit = qcom_mhi_qrtr_send;
+>>>> +	init_completion(&qdev->ready);
+>>>> 
+>>> 
+>>>> 
+>>>>  	return 0;
+>> 
+>> Thanks,
+>> Bhaumik
+>> ---
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+> 
+> Thanks,
+> Hemant
+> ---
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+> Forum,
+> a Linux Foundation Collaborative Project
 
-It's a bit like the rcu_derefence macro where it's ok to either be in a
-rcu_read_lock() section, or holding the relevant lock that's used to
-update the value. We do _not_ have two different locks that allow writing
-to the same X.
-
-Does that make it clearer what's the use-case here?
-
-In an example:
-
-void * interesting_pointer.
-
-do_update_interesting_pointer()
-{
-	mutex_lock(A);
-	/* do more stuff to prepare things */
-	spin_lock(B);
-	interesting_pointer = new_value;
-	spin_unlock(B);
-	mutex_unlock(A);
-}
-
-read_interesting_thing_locked()
-{
-	lockdep_assert_held_either(A, B);
-
-	return interesting_pointer->thing;
-}
-
-read_interesting_thing()
-{
-	int thing;
-	spin_lock(B);
-	thing = interesting_pointer->thing;
-	spin_unlock(B);
-
-	return B;
-}
-
-spinlock might also be irqsafe here if this can be called from irq
-context.
-
-Cheers, Daniel
-
-> Regards,
-> Boqun
->
-> > Adding lockdep folks, maybe they have ideas.
-> >
-> > On the patch:
-> >
-> > Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> >
-> > >     return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
-> > >  }
-> > >
-> > > @@ -82,9 +83,9 @@ bool drm_is_current_master(struct drm_file *fpriv)
-> > >  {
-> > >     bool ret;
-> > >
-> > > -   mutex_lock(&fpriv->minor->dev->master_mutex);
-> > > +   spin_lock(&fpriv->master_lookup_lock);
-> > >     ret = drm_is_current_master_locked(fpriv);
-> > > -   mutex_unlock(&fpriv->minor->dev->master_mutex);
-> > > +   spin_unlock(&fpriv->master_lookup_lock);
-> > >
-> > >     return ret;
-> > >  }
-> > > --
-> > > 2.25.1
-> > >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks,
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
