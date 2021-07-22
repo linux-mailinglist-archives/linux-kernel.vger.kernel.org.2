@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263583D2BF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 20:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3A13D2BFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 20:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhGVRvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 13:51:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44822 "EHLO mail.kernel.org"
+        id S229990AbhGVRzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 13:55:52 -0400
+Received: from mga01.intel.com ([192.55.52.88]:44815 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhGVRvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 13:51:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80E3260E52;
-        Thu, 22 Jul 2021 18:32:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626978738;
-        bh=f+Xzx+cvZKHTFGwpY7JIGLwaDfSnqspVO2fRIGR6ADs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k28rRwb1XMOGOxr2Ec0NgAjsWGSLEn11EmQFvkgSx44zB0G/C4uyp0NND5A00ANRO
-         deStNiGfjAuiytL7cd+KP3KnCWBpYllLa2M8VCQ79Z30g/QoQRsTfY9kKJ7oi57qZl
-         HY6g512+f+ZQX13HXPRqY2GQcqOviXlDIyZZnqUPw4VxZfeJgOPTofnEhqtgWz+ITa
-         1jPtv/CHb6SwYxGhDxIRZfG8GsSGwm2OVLDLcY7pe/cYVONuW+7t1cegJT5GG9cTY1
-         jgayPaK1HdFIZNOVsnTJqxXxMWeSn9mNitR5goV17AdZbQc/0g9NdvUweAc7Psn2Nr
-         yAt0/oCxCijKQ==
-Date:   Thu, 22 Jul 2021 19:32:10 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rt-users@vger.kernel.org, x86@kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        id S229556AbhGVRzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 13:55:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="233538228"
+X-IronPort-AV: E=Sophos;i="5.84,261,1620716400"; 
+   d="scan'208";a="233538228"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 11:36:21 -0700
+X-IronPort-AV: E=Sophos;i="5.84,261,1620716400"; 
+   d="scan'208";a="565185253"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 11:36:16 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1m6dYG-00H8hf-Tq; Thu, 22 Jul 2021 21:36:08 +0300
+Date:   Thu, 22 Jul 2021 21:36:08 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH 3/3] arm64/fpsimd: Fix FPSIMD context handling vs
- PREEMPT_RT
-Message-ID: <20210722183210.GF5258@sirena.org.uk>
-References: <20210722175157.1367122-1-valentin.schneider@arm.com>
- <20210722175157.1367122-4-valentin.schneider@arm.com>
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Guodong Xu <guodong.xu@linaro.org>, tangchengchang@huawei.com,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        yangyicong <yangyicong@huawei.com>, tim.c.chen@linux.intel.com,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v7 4/4] lib: test_bitmap: add bitmap_print_to_buf test
+ cases
+Message-ID: <YPm6mNa+cF1d5Am4@smile.fi.intel.com>
+References: <20210715115856.11304-1-song.bao.hua@hisilicon.com>
+ <20210715115856.11304-5-song.bao.hua@hisilicon.com>
+ <YPAlg5c8uDSZ2WvZ@smile.fi.intel.com>
+ <YPCe+f3GPDUuvwnW@yury-ThinkPad>
+ <CAHp75VcoNPiKDaZzTVr3unV3F5u+LQwAjy1hKSq0WUw_tB6uAw@mail.gmail.com>
+ <YPDDdAwgYEptz2Uq@yury-ThinkPad>
+ <YPgHtJqXi8cKad1Q@kroah.com>
+ <YPmmR3JfgM/yIh1H@yury-ThinkPad>
+ <YPmvMJHouZFDHVds@kroah.com>
+ <YPm4eaqdx8mOIJ6p@yury-ThinkPad>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CXFpZVxO6m2Ol4tQ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210722175157.1367122-4-valentin.schneider@arm.com>
-X-Cookie: Who's scruffy-looking?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YPm4eaqdx8mOIJ6p@yury-ThinkPad>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 22, 2021 at 11:27:05AM -0700, Yury Norov wrote:
+> On Thu, Jul 22, 2021 at 07:47:28PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Jul 22, 2021 at 10:09:27AM -0700, Yury Norov wrote:
 
---CXFpZVxO6m2Ol4tQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+...
 
-On Thu, Jul 22, 2021 at 06:51:57PM +0100, Valentin Schneider wrote:
-> Running v5.13-rt1 on my arm64 Juno board triggers:
+> > And I have heard of systems much bigger than this as well.  Why do you
+> > not think that large number of CPUs are not around?
+> 
+> I asked a question: is it urgent?, and I've got an answer: not urgent.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Sometimes that kind of answers may include grain of politeness.
 
-> [   11.337654] WARNING: CPU: 4 PID: 1 at arch/arm64/kernel/fpsimd.c:296 task_fpsimd_load (arch/arm64/kernel/fpsimd.c:296 (discriminator 1))
-> [   11.337692] Modules linked in:
-> [   11.337705] CPU: 4 PID: 1 Comm: init Not tainted 5.13.0-rt1 #52
-> [   11.337719] Hardware name: ARM Juno development board (r0) (DT)
-> [   11.337727] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-> [   11.337740] pc : task_fpsimd_load (arch/arm64/kernel/fpsimd.c:296 (discriminator 1))
-> [   11.337755] lr : task_fpsimd_load (arch/arm64/kernel/fpsimd.c:296 (discriminator 3))
-> [   11.337769] sp : ffff800012f4bdd0
-> [   11.337775] x29: ffff800012f4bdd0 x28: ffff000800160000 x27: 0000000000000000
-> [   11.337797] x26: 0000000000000000 x25: 0000000000000000 x24: ffff0008001606f0
-> [   11.337816] x23: ffff000800160000 x22: ffff000800160700 x21: ffff000800160000
+-- 
+With Best Regards,
+Andy Shevchenko
 
-For readability it's probably better to not include the entire register
-contents here - the backtrace ends up about as large as the actual
-changelog, a good chunk of which is just the register contents.
 
---CXFpZVxO6m2Ol4tQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD5uakACgkQJNaLcl1U
-h9AXFQf/S9Uk8BsNr9Z+kVJ+rAhXbHiD71pa+gIempnKTu7eP6bY1H/w3nBPzQ+d
-0W8+2R7vkpdnt4/QuAkmRk83w/h5lngAnQoxS+C9lb7kgcAy2WImWtzYZ2H3oqKD
-Ww21EOX1mWTrlacFXk0a3syu7J9cVsQrr2UPD206ao0NPuL4r4nHu8uflbnMRl5c
-LzAR7Tli81wysBGSo6vhl1IIDSJNdoWkUhpLMZ9MpGeWrGNTvgoguHiSf5zsND2y
-7jSRCgbmwMWRjmFlqlYK4Q0tcE/4TSVl6xDrQ/JNUgi44h+4oJ3UZFB3zs0hKGNo
-upjxPB5ojkXQrZmDdnhgsQAIUvRneQ==
-=46wG
------END PGP SIGNATURE-----
-
---CXFpZVxO6m2Ol4tQ--
