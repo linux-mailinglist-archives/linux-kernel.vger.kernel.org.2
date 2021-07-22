@@ -2,118 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C1B3D2AF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3303D2AFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbhGVQgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhGVQgA (ORCPT
+        id S229607AbhGVQg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:36:57 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:36888
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229453AbhGVQgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:36:00 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F9CC061575;
-        Thu, 22 Jul 2021 10:16:35 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id k4so6727982wrc.8;
-        Thu, 22 Jul 2021 10:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=qN42ft8TO2D20OJfcUBVmNsGjubNKzxaIpoGBDjnO30=;
-        b=N9sGc0w6sreE1rBcKcYgbOCkI8XCbuX6TGFEbZad7NUHz3+DobUpspOinpyE4z+4WT
-         LIGpgaFJz+MdemeScOYdMqZWqgYHsRKxu0WPHLqVj9YO9CEToDkU+Tr3EFkubOI7zoCu
-         HLzc7UfVWSVQHYZNYoSQHLeu4FJq/Vj9oNzKTNOwchXCtVisJpBV3r7L+5D1B5BX77G1
-         wrYPfL4YWMhAohVmL2tEMONeaGFI87+s8ZiLW8PDSZKAsQlmJw4QOOTHenDhmVs/zURW
-         iSlijtCONe9xzs18HlnNIGSyZbeLhz1up190SV0qINS3zXw+G8ilBOsBzNx+ttfQrDT3
-         fOPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=qN42ft8TO2D20OJfcUBVmNsGjubNKzxaIpoGBDjnO30=;
-        b=f+Y1wchBH3F8gkTo+zZZyYN2Ho6V4MPnrw2x3y5knwTWkM3J4543iKxvDsEhCH72UA
-         xr5YoXS1kwhf/Jl6MmfJwvTroWqMItdt8NVJG3tavYJatz7VkXtB+f2u7VP/gSm2/ESa
-         +jqYnzmBiODqN60hHaVAboJwVPIFLh1tR9fVJQDkvQ3wXwww5LfyA15tcsiVUEiKcY43
-         LZVj8YsQOLI7sy2coyB3C/a+uVSWKoRzvPj3Zs/lk3fmOYdzthS36WuOF4a3iGj/mkwW
-         C9R+rBM/cnaW6WCAPGQcj18lkeVt/k+zRZuGp/ocChwX68AkC0+/43iAsbOHEAoGVTBN
-         UGvA==
-X-Gm-Message-State: AOAM530eXfgAymJVNWCwy4QzMik/IuGydxAvA3Z0ALhd9j1Hq48awvrW
-        KHgx6wPpTBZhp8c8DnKCsQc=
-X-Google-Smtp-Source: ABdhPJx+obe7SiWYAauUbkcctEtHZG/vskERzUfVPcrRc22QnlLsRBZH4wLuOC11l99X7asg3YPY6Q==
-X-Received: by 2002:adf:f8cd:: with SMTP id f13mr1027030wrq.328.1626974194227;
-        Thu, 22 Jul 2021 10:16:34 -0700 (PDT)
-Received: from pc ([196.235.233.206])
-        by smtp.gmail.com with ESMTPSA id p8sm3081038wmc.24.2021.07.22.10.16.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 10:16:33 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 18:16:30 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Romain Perier <romain.perier@gmail.com>,
-        Allen Pais <allen.lkml@gmail.com>, gregkh@linuxfoundation.org
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND] ppc4xx: replace sscanf() by kstrtoul()
-Message-ID: <20210722171630.GA4911@pc>
+        Thu, 22 Jul 2021 12:36:54 -0400
+Received: from localhost.localdomain (unknown [222.129.38.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id AF5EB3F331;
+        Thu, 22 Jul 2021 17:17:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626974247;
+        bh=a9h4fLy411Xg82JdVPluYXM5Ec86oeIATUPEuVF3mrc=;
+        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=aaXRmVInbPCBmiZlc4z8zTD4ux5qjvV9JQW+JGbmQOxgcRqkwyIOG1UrU+WsctdiZ
+         Bb2V6uidRCOwLLo8tWelMudoyEr21pE8OJ0j92IyDJ6O2ktoWJyaEMisL3MpWKY8wy
+         7vbvyJBRD4SJFLBTEvSGcg8/X8IuxKepD48lQIe3D1/eCehV1QZE8r4tSONZLOdzSM
+         rubNDRhsyjp0wbXSJCkb6Z8C+9GCgqIyc36J3MFql2maIYLIb6ZRGV3QqYM5TlonLS
+         H0/ePBXtaGm9/DVbcmbvfIc3xz7x1n0xsJ8eR2wD/t8wmEDsQGl9yr25gNAwvyq0mt
+         FGR28nr88GIOw==
+From:   Aaron Ma <aaron.ma@canonical.com>
+To:     aaron.ma@canonical.com, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        matthias.bgg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+Subject: [PATCH v2] Bluetooth: btusb: Add support for Foxconn Mediatek Chip
+Date:   Fri, 23 Jul 2021 01:17:18 +0800
+Message-Id: <20210722171718.134034-1-aaron.ma@canonical.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <E6EC3615-DAC0-4267-AD9B-3B0604EDAD87@holtmann.org>
+References: <E6EC3615-DAC0-4267-AD9B-3B0604EDAD87@holtmann.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the checkpatch.pl warning: "Prefer kstrto<type> to single variable sscanf".
+Add support for another Foxconn / Hon Hai device with MT7921 chip.
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
+T:  Bus=05 Lev=01 Prnt=01 Port=03 Cnt=02 Dev#=  3 Spd=480  MxCh= 0
+D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=0489 ProdID=e0cd Rev= 1.00
+S:  Manufacturer=MediaTek Inc.
+S:  Product=Wireless_Device
+S:  SerialNumber=000000000
+C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
+A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
+E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
+E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
+E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
+I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
+E:  Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
+E:  Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
+
+Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
 ---
- drivers/dma/ppc4xx/adma.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/bluetooth/btusb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/dma/ppc4xx/adma.c b/drivers/dma/ppc4xx/adma.c
-index df7704053d91..e2b5129c5f84 100644
---- a/drivers/dma/ppc4xx/adma.c
-+++ b/drivers/dma/ppc4xx/adma.c
-@@ -4319,6 +4319,7 @@ static ssize_t enable_store(struct device_driver *dev, const char *buf,
- 			    size_t count)
- {
- 	unsigned long val;
-+	int err;
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 1e5cac6f071b..7b69a97bd0e9 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -422,6 +422,9 @@ static const struct usb_device_id blacklist_table[] = {
+ 	{ USB_DEVICE(0x13d3, 0x3563), .driver_info = BTUSB_MEDIATEK |
+ 						     BTUSB_WIDEBAND_SPEECH |
+ 						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x0489, 0xe0cd), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
  
- 	if (!count || count > 11)
- 		return -EINVAL;
-@@ -4327,7 +4328,10 @@ static ssize_t enable_store(struct device_driver *dev, const char *buf,
- 		return -EFAULT;
- 
- 	/* Write a key */
--	sscanf(buf, "%lx", &val);
-+	err = kstrtoul(buf, 16, &val);
-+	if (err)
-+		return err;
-+
- 	dcr_write(ppc440spe_mq_dcr_host, DCRN_MQ0_XORBA, val);
- 	isync();
- 
-@@ -4368,7 +4372,7 @@ static ssize_t poly_store(struct device_driver *dev, const char *buf,
- 			  size_t count)
- {
- 	unsigned long reg, val;
--
-+	int err;
- #ifdef CONFIG_440SP
- 	/* 440SP uses default 0x14D polynomial only */
- 	return -EINVAL;
-@@ -4378,7 +4382,9 @@ static ssize_t poly_store(struct device_driver *dev, const char *buf,
- 		return -EINVAL;
- 
- 	/* e.g., 0x14D or 0x11D */
--	sscanf(buf, "%lx", &val);
-+	err = kstrtoul(buf, 16, &val);
-+	if (err)
-+		return err;
- 
- 	if (val & ~0x1FF)
- 		return -EINVAL;
+ 	/* Additional Realtek 8723AE Bluetooth devices */
+ 	{ USB_DEVICE(0x0930, 0x021d), .driver_info = BTUSB_REALTEK },
 -- 
-2.25.1
+2.32.0
 
