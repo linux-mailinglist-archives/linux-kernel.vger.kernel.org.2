@@ -2,225 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D283D1DD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 07:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F407D3D1DD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 07:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhGVFQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 01:16:03 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:34995 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229967AbhGVFP6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 01:15:58 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ugaix7h_1626933391;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Ugaix7h_1626933391)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 22 Jul 2021 13:56:32 +0800
-Date:   Thu, 22 Jul 2021 13:56:30 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v6] iomap: support tail packing inline read
-Message-ID: <YPkIjhVq+MzVl1Sk@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Christoph Hellwig <hch@lst.de>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-References: <20210722031729.51628-1-hsiangkao@linux.alibaba.com>
- <20210722053947.GA28594@lst.de>
+        id S230328AbhGVFPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 01:15:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:44456 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229510AbhGVFP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 01:15:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3FD4AD6E;
+        Wed, 21 Jul 2021 22:56:05 -0700 (PDT)
+Received: from [10.163.65.134] (unknown [10.163.65.134])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0C6333F66F;
+        Wed, 21 Jul 2021 22:56:02 -0700 (PDT)
+Subject: Re: [PATCH v3 07/12] mm/debug_vm_pgtable: Use struct
+ pgtable_debug_args in PTE modifying tests
+To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+References: <20210719130613.334901-1-gshan@redhat.com>
+ <20210719130613.334901-8-gshan@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <bfa07f56-f58c-f2c3-64e1-1cdb09dbf366@arm.com>
+Date:   Thu, 22 Jul 2021 11:26:52 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210719130613.334901-8-gshan@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210722053947.GA28594@lst.de>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
 
-On Thu, Jul 22, 2021 at 07:39:47AM +0200, Christoph Hellwig wrote:
-> I think some of the language here is confusing - mostly about tail
-> packing when we otherwise use inline data.  Can you take a look at
-> the version below?  This mostly cleans up the terminology, adds a
-> new helper to check the size, and removes the error on trying to
-> write with a non-zero pos, as it can be trivially supported now.
+
+On 7/19/21 6:36 PM, Gavin Shan wrote:
+> This uses struct pgtable_debug_args in PTE modifying tests. The allocated
+> page is used as set_pte_at() is used there. The tests are skipped if
+> the allocated page doesn't exist. Besides, the unused variable @ptep
+> and @pte_aligned in debug_vm_pgtable() are dropped.
+
+Please dont drop @ptep and @pte_aligned just yet.
+
 > 
-
-Many thanks for your time and hard work on revising this again. I'm
-fine with this version and the update for iomap_write_begin(), and
-I will do test hours later as I said before.
-
-Hopefully this version could be confirmed by Andreas on the gfs2
-side as well.
-
-Thanks,
-Gao Xiang
-
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
 > ---
-> From 0f9c6ac6c2e372739b29195d25bebb8dd87e583a Mon Sep 17 00:00:00 2001
-> From: Gao Xiang <hsiangkao@linux.alibaba.com>
-> Date: Thu, 22 Jul 2021 11:17:29 +0800
-> Subject: iomap: make inline data support more flexible
+>  mm/debug_vm_pgtable.c | 75 ++++++++++++++++++++++---------------------
+>  1 file changed, 39 insertions(+), 36 deletions(-)
 > 
-> Add support for offsets into the inline data page at iomap->inline_data
-> to cater for the EROFS tailpackng case where a small data is stored
-> right after the inode.
-> 
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> ---
->  fs/iomap/buffered-io.c | 35 ++++++++++++++++++-----------------
->  fs/iomap/direct-io.c   | 10 ++++++----
->  include/linux/iomap.h  | 14 ++++++++++++++
->  3 files changed, 38 insertions(+), 21 deletions(-)
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 87ccb3438becd9..0597f5c186a33f 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -205,25 +205,29 @@ struct iomap_readpage_ctx {
->  	struct readahead_control *rac;
->  };
->  
-> -static void
-> -iomap_read_inline_data(struct inode *inode, struct page *page,
-> -		struct iomap *iomap)
-> +static int iomap_read_inline_data(struct inode *inode, struct page *page,
-> +		struct iomap *iomap, loff_t pos)
->  {
-> -	size_t size = i_size_read(inode);
-> +	size_t size = iomap->length + iomap->offset - pos;
->  	void *addr;
->  
->  	if (PageUptodate(page))
-> -		return;
-> +		return PAGE_SIZE;
->  
-> -	BUG_ON(page_has_private(page));
-> -	BUG_ON(page->index);
-> -	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +	/* inline data must start page aligned in the file */
-> +	if (WARN_ON_ONCE(offset_in_page(pos)))
-> +		return -EIO;
-> +	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
-> +		return -EIO;
-> +	if (WARN_ON_ONCE(page_has_private(page)))
-> +		return -EIO;
->  
->  	addr = kmap_atomic(page);
-> -	memcpy(addr, iomap->inline_data, size);
-> +	memcpy(addr, iomap_inline_buf(iomap, pos), size);
->  	memset(addr + size, 0, PAGE_SIZE - size);
->  	kunmap_atomic(addr);
->  	SetPageUptodate(page);
-> +	return PAGE_SIZE;
+> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> index d32e55a95c55..eb6dda88e0d9 100644
+> --- a/mm/debug_vm_pgtable.c
+> +++ b/mm/debug_vm_pgtable.c
+> @@ -116,10 +116,7 @@ static void __init pte_basic_tests(struct pgtable_debug_args *args, int idx)
+>  	WARN_ON(!pte_dirty(pte_wrprotect(pte_mkdirty(pte))));
 >  }
 >  
->  static inline bool iomap_block_needs_zeroing(struct inode *inode,
-> @@ -246,11 +250,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
->  	unsigned poff, plen;
->  	sector_t sector;
->  
-> -	if (iomap->type == IOMAP_INLINE) {
-> -		WARN_ON_ONCE(pos);
-> -		iomap_read_inline_data(inode, page, iomap);
-> -		return PAGE_SIZE;
-> -	}
-> +	if (iomap->type == IOMAP_INLINE)
-> +		return iomap_read_inline_data(inode, page, iomap, pos);
->  
->  	/* zero post-eof blocks as the page may be mapped */
->  	iop = iomap_page_create(inode, page);
-> @@ -618,14 +619,14 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
->  	}
->  
->  	if (srcmap->type == IOMAP_INLINE)
-> -		iomap_read_inline_data(inode, page, srcmap);
-> +		status = iomap_read_inline_data(inode, page, srcmap, pos);
->  	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
->  		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
->  	else
->  		status = __iomap_write_begin(inode, pos, len, flags, page,
->  				srcmap);
->  
-> -	if (unlikely(status))
-> +	if (unlikely(status < 0))
->  		goto out_unlock;
->  
->  	*pagep = page;
-> @@ -675,7 +676,7 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
->  
->  	flush_dcache_page(page);
->  	addr = kmap_atomic(page);
-> -	memcpy(iomap->inline_data + pos, addr + pos, copied);
-> +	memcpy(iomap_inline_buf(iomap, pos), addr + pos, copied);
->  	kunmap_atomic(addr);
->  
->  	mark_inode_dirty(inode);
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 9398b8c31323b3..a6aaea2764a55f 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -378,23 +378,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
->  		struct iomap_dio *dio, struct iomap *iomap)
+> -static void __init pte_advanced_tests(struct mm_struct *mm,
+> -				      struct vm_area_struct *vma, pte_t *ptep,
+> -				      unsigned long pfn, unsigned long vaddr,
+> -				      pgprot_t prot)
+> +static void __init pte_advanced_tests(struct pgtable_debug_args *args)
 >  {
->  	struct iov_iter *iter = dio->submit.iter;
-> +	void *dst = iomap_inline_buf(iomap, pos);
->  	size_t copied;
+>  	pte_t pte;
 >  
-> -	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
-> +		return -EIO;
+> @@ -130,33 +127,38 @@ static void __init pte_advanced_tests(struct mm_struct *mm,
+>  	 */
 >  
->  	if (dio->flags & IOMAP_DIO_WRITE) {
->  		loff_t size = inode->i_size;
+>  	pr_debug("Validating PTE advanced\n");
+> -	pte = pfn_pte(pfn, prot);
+> -	set_pte_at(mm, vaddr, ptep, pte);
+> -	ptep_set_wrprotect(mm, vaddr, ptep);
+> -	pte = ptep_get(ptep);
+> +	if (args->pte_pfn == ULONG_MAX) {
+> +		pr_debug("%s: Skipped\n", __func__);
+> +		return;
+> +	}
+
+Just return. Please dont call out "Skipped". Also this check should be
+performed before printing pr_debug("Validating PTE advanced\n"). The
+print indicates that the test has started.
+
+> +
+> +	pte = pfn_pte(args->pte_pfn, args->page_prot);
+> +	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+> +	ptep_set_wrprotect(args->mm, args->vaddr, args->ptep);
+> +	pte = ptep_get(args->ptep);
+>  	WARN_ON(pte_write(pte));
+> -	ptep_get_and_clear(mm, vaddr, ptep);
+> -	pte = ptep_get(ptep);
+> +	ptep_get_and_clear(args->mm, args->vaddr, args->ptep);
+> +	pte = ptep_get(args->ptep);
+>  	WARN_ON(!pte_none(pte));
 >  
->  		if (pos > size)
-> -			memset(iomap->inline_data + size, 0, pos - size);
-> -		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-> +			memset(iomap_inline_buf(iomap, size), 0, pos - size);
-> +		copied = copy_from_iter(dst, length, iter);
->  		if (copied) {
->  			if (pos + copied > size)
->  				i_size_write(inode, pos + copied);
->  			mark_inode_dirty(inode);
->  		}
->  	} else {
-> -		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-> +		copied = copy_to_iter(dst, length, iter);
->  	}
->  	dio->size += copied;
->  	return copied;
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index 479c1da3e2211e..5efae7153912ed 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -97,6 +97,20 @@ iomap_sector(struct iomap *iomap, loff_t pos)
->  	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
+> -	pte = pfn_pte(pfn, prot);
+> +	pte = pfn_pte(args->pte_pfn, args->page_prot);
+>  	pte = pte_wrprotect(pte);
+>  	pte = pte_mkclean(pte);
+> -	set_pte_at(mm, vaddr, ptep, pte);
+> +	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+>  	pte = pte_mkwrite(pte);
+>  	pte = pte_mkdirty(pte);
+> -	ptep_set_access_flags(vma, vaddr, ptep, pte, 1);
+> -	pte = ptep_get(ptep);
+> +	ptep_set_access_flags(args->vma, args->vaddr, args->ptep, pte, 1);
+> +	pte = ptep_get(args->ptep);
+>  	WARN_ON(!(pte_write(pte) && pte_dirty(pte)));
+> -	ptep_get_and_clear_full(mm, vaddr, ptep, 1);
+> -	pte = ptep_get(ptep);
+> +	ptep_get_and_clear_full(args->mm, args->vaddr, args->ptep, 1);
+> +	pte = ptep_get(args->ptep);
+>  	WARN_ON(!pte_none(pte));
+>  
+> -	pte = pfn_pte(pfn, prot);
+> +	pte = pfn_pte(args->pte_pfn, args->page_prot);
+>  	pte = pte_mkyoung(pte);
+> -	set_pte_at(mm, vaddr, ptep, pte);
+> -	ptep_test_and_clear_young(vma, vaddr, ptep);
+> -	pte = ptep_get(ptep);
+> +	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+> +	ptep_test_and_clear_young(args->vma, args->vaddr, args->ptep);
+> +	pte = ptep_get(args->ptep);
+>  	WARN_ON(pte_young(pte));
 >  }
 >  
-> +static inline void *iomap_inline_buf(const struct iomap *iomap, loff_t pos)
-> +{
-> +	return iomap->inline_data - iomap->offset + pos;
-> +}
+> @@ -617,20 +619,24 @@ static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
+>  }
+>  #endif /* PAGETABLE_P4D_FOLDED */
+>  
+> -static void __init pte_clear_tests(struct mm_struct *mm, pte_t *ptep,
+> -				   unsigned long pfn, unsigned long vaddr,
+> -				   pgprot_t prot)
+> +static void __init pte_clear_tests(struct pgtable_debug_args *args)
+>  {
+> -	pte_t pte = pfn_pte(pfn, prot);
+> +	pte_t pte;
+>  
+>  	pr_debug("Validating PTE clear\n");
+> +	if (args->pte_pfn == ULONG_MAX) {
+> +		pr_debug("%s: Skipped\n", __func__);
+> +		return;
+> +	}
+
+Just return. Please dont call out "Skipped". Also this check should be
+performed before printing pr_debug("Validating PTE clear\n"). The print
+indicates that the test has started.
+
 > +
-> +/*
-> + * iomap->inline_data is a potentially kmapped page, ensure it never crosseѕ a
-> + * page boundary.
-> + */
-> +static inline bool iomap_inline_data_size_valid(const struct iomap *iomap)
-> +{
-> +	return iomap->length <= PAGE_SIZE - offset_in_page(iomap->inline_data);
-> +}
-> +
->  /*
->   * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
->   * and page_done will be called for each page written to.  This only applies to
-> -- 
-> 2.30.2
+> +	pte = pfn_pte(args->pte_pfn, args->page_prot);
+
+Please keep this unchanged and move to its original position.
+
+>  #ifndef CONFIG_RISCV
+>  	pte = __pte(pte_val(pte) | RANDOM_ORVALUE);
+>  #endif
+> -	set_pte_at(mm, vaddr, ptep, pte);
+> +	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+>  	barrier();
+> -	pte_clear(mm, vaddr, ptep);
+> -	pte = ptep_get(ptep);
+> +	pte_clear(args->mm, args->vaddr, args->ptep);
+> +	pte = ptep_get(args->ptep);
+>  	WARN_ON(!pte_none(pte));
+>  }
+>  
+> @@ -1150,11 +1156,10 @@ static int __init debug_vm_pgtable(void)
+>  	p4d_t *p4dp, *saved_p4dp;
+>  	pud_t *pudp, *saved_pudp;
+>  	pmd_t *pmdp, *saved_pmdp, pmd;
+> -	pte_t *ptep;
+>  	pgtable_t saved_ptep;
+>  	pgprot_t prot;
+>  	phys_addr_t paddr;
+> -	unsigned long vaddr, pte_aligned, pmd_aligned;
+> +	unsigned long vaddr, pmd_aligned;
+>  	unsigned long pud_aligned;
+>  	spinlock_t *ptl = NULL;
+>  	int idx, ret;
+> @@ -1189,10 +1194,8 @@ static int __init debug_vm_pgtable(void)
+>  	 */
+>  	paddr = __pa_symbol(&start_kernel);
+>  
+> -	pte_aligned = (paddr & PAGE_MASK) >> PAGE_SHIFT;
+
+Please dont drop pte_aligned just yet.
+
+>  	pmd_aligned = (paddr & PMD_MASK) >> PAGE_SHIFT;
+>  	pud_aligned = (paddr & PUD_MASK) >> PAGE_SHIFT;
+> -	WARN_ON(!pfn_valid(pte_aligned));
+
+This should go into init_args() at the right place as the following,
+after evaluating it from 'start_kernel' symbol - just to be sure.
+
+WARN_ON(!pfn_valid(args->fixed_pte_pfn))
+
+>  
+>  	pgdp = pgd_offset(mm, vaddr);
+>  	p4dp = p4d_alloc(mm, pgdp, vaddr);
+> @@ -1272,11 +1275,11 @@ static int __init debug_vm_pgtable(void)
+>  	 * Page table modifying tests. They need to hold
+>  	 * proper page table lock.
+>  	 */
+> -
+> -	ptep = pte_offset_map_lock(mm, pmdp, vaddr, &ptl);
+> -	pte_clear_tests(mm, ptep, pte_aligned, vaddr, prot);
+> -	pte_advanced_tests(mm, vma, ptep, pte_aligned, vaddr, prot);
+> -	pte_unmap_unlock(ptep, ptl);
+> +	ptl = pte_lockptr(args.mm, args.pmdp);
+> +	spin_lock(ptl);
+> +	pte_clear_tests(&args);
+> +	pte_advanced_tests(&args);
+> +	spin_unlock(ptl);
+
+Why pte_offset_map_lock()/pte_unmap_unlock() has been dropped and
+spin_lock()/spin_unlock() sequence has been added ? Please dont
+change the tests in these patches.
+
+>  
+>  	ptl = pmd_lock(mm, pmdp);
+>  	pmd_clear_tests(mm, pmdp);
+>
