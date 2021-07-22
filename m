@@ -2,169 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E043A3D1E7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69423D1E7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhGVGJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 02:09:14 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:34795
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S230152AbhGVGJM (ORCPT
+        id S231336AbhGVGJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 02:09:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31685 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230152AbhGVGJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 02:09:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=fCg1zJUymUzvnE4en0dJIKMhmqLZIV8SNjYU
-        JQOnRrU=; b=x7aOafxqXZ3rEES2R/MTmKWHtsYMxmIp2wFPT3HQpu98I0mLRmWh
-        62JHaceUJOM4lww4ARFmNi1B8ogfDzC2lAY98UFG5uHqfrbbeEntJVejwU5jhP9A
-        ePOw0Uc6oIuGLg2ol4bn+HV+/up8lBHGX65mxzUEguOSOvHhIMkEXFg=
-Received: by ajax-webmail-app1 (Coremail) ; Thu, 22 Jul 2021 14:49:37 +0800
- (GMT+08:00)
-X-Originating-IP: [10.162.86.133]
-Date:   Thu, 22 Jul 2021 14:49:37 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "Xiyu Yang" <19210240158@fudan.edu.cn>
-To:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Cc:     "Tejun Heo" <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        yuanxzhang@fudan.edu.cn, "Xin Tan" <tanxin.ctf@gmail.com>
-Subject: Re: Re: [PATCH] kernfs: Convert from atomic_t to refcount_t on
- kernfs_node->count
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20200917(8294e55f) Copyright (c) 2002-2021 www.mailtech.cn fudan.edu.cn
-In-Reply-To: <YPkQ8M9CLqeBvN2W@kroah.com>
-References: <60f8506d.1c69fb81.d8d4d.3bceSMTPIN_ADDED_BROKEN@mx.google.com>
- <YPkHAX1YdmxZtW49@kroah.com>
- <350c2c44.5a22.17acce3c8f4.Coremail.19210240158@fudan.edu.cn>
- <YPkQ8M9CLqeBvN2W@kroah.com>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: 7bit
-X-CM-CTRLDATA: d3+xvGZvb3Rlcl90eHQ9Mzc0NToxMA==
-Content-Type: text/plain; charset=UTF-8
+        Thu, 22 Jul 2021 02:09:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626936633;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fk2muRvzYt4MgiWSwmCB9Dn7niJNl9x/U3SGOZwiLOk=;
+        b=EJmzM+DrEFF3UVDUYqglsMNNaWCrgulikF28gOTS0SWsAn1j9L79kcDO4SBB4E/gHdon7T
+        OKZZe3z0MakiUt99MGxRoFHCgcSNVpfNtok+bYf1kfVbeZG2tSsGM0ZckFzW5VNf02rk/8
+        KDbD4ZQ9fAGiC1VvEZ8QVfDO+62AvEo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-250-SFrp5FOTNM2qLDN_Kyn3HA-1; Thu, 22 Jul 2021 02:50:31 -0400
+X-MC-Unique: SFrp5FOTNM2qLDN_Kyn3HA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7342A802C80;
+        Thu, 22 Jul 2021 06:50:30 +0000 (UTC)
+Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EC0A46091B;
+        Thu, 22 Jul 2021 06:50:27 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v3 10/12] mm/debug_vm_pgtable: Use struct
+ pgtable_debug_args in PGD and P4D modifying tests
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+References: <20210719130613.334901-1-gshan@redhat.com>
+ <20210719130613.334901-11-gshan@redhat.com>
+ <f636f6ae-ea37-aac6-47cd-ff97ceaa5268@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <2992c680-abb9-9925-c009-3ae843dec903@redhat.com>
+Date:   Thu, 22 Jul 2021 16:50:45 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Message-ID: <57e48621.5aed.17accfa0d36.Coremail.19210240158@fudan.edu.cn>
-X-Coremail-Locale: en_US
-X-CM-TRANSID: XAUFCgDnCZ4BFflg9FumAA--.15883W
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/1tbiAQ8KAVKp4xXwUgACso
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+In-Reply-To: <f636f6ae-ea37-aac6-47cd-ff97ceaa5268@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi Anshuman,
 
-I consider it as a reference count due to its related operations and the developer's comments, such as "put a reference count on a kernfs_node" around the kernfs_put(). If anything wrong, please let me know.
-
-Thanks.
-
-> -----Original Messages-----
-> From: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-> Sent Time: 2021-07-21 23:36:20 (Wednesday)
-> To: "Xiyu Yang" <xiyuyang19@fudan.edu.cn>
-> Cc: "Tejun Heo" <tj@kernel.org>, linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn, "Xin Tan" <tanxin.ctf@gmail.com>
-> Subject: Re: [PATCH] kernfs: Convert from atomic_t to refcount_t on kernfs_node->count
+On 7/22/21 3:09 PM, Anshuman Khandual wrote:
+> On 7/19/21 6:36 PM, Gavin Shan wrote:
+>> This uses struct pgtable_debug_args in PGD/P4D modifying tests. No
+>> allocated huge page is used in these tests. Besides, the unused
+>> variable @saved_p4dp and @saved_pudp are dropped.
 > 
-> On Mon, Jul 19, 2021 at 04:33:21PM +0800, Xiyu Yang wrote:
-> > refcount_t type and corresponding API can protect refcounters from
-> > accidental underflow and overflow and further use-after-free situations.
+> Please dont drop  @saved_p4dp and @saved_pudp just yet.
 > 
-> But this really is a count, not a refcount.
+
+It seems you have concern why I drop unused variables in individual
+patches. There is build warning 'unused variable', reported by 0-day.
+So we need to drop these unused variables in individual patches, but
+it make the review a bit harder :)
+
+>>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> ---
+>>   mm/debug_vm_pgtable.c | 86 +++++++++++++++++++------------------------
+>>   1 file changed, 38 insertions(+), 48 deletions(-)
+>>
+>> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+>> index 57b7ead0708b..5ebacc940b68 100644
+>> --- a/mm/debug_vm_pgtable.c
+>> +++ b/mm/debug_vm_pgtable.c
+>> @@ -520,27 +520,26 @@ static void __init pud_populate_tests(struct pgtable_debug_args *args) { }
+>>   #endif /* PAGETABLE_PUD_FOLDED */
+>>   
+>>   #ifndef __PAGETABLE_P4D_FOLDED
+>> -static void __init p4d_clear_tests(struct mm_struct *mm, p4d_t *p4dp)
+>> +static void __init p4d_clear_tests(struct pgtable_debug_args *args)
+>>   {
+>> -	p4d_t p4d = READ_ONCE(*p4dp);
+>> +	p4d_t p4d = READ_ONCE(*(args->p4dp));
+>>   
+>> -	if (mm_pud_folded(mm))
+>> +	if (mm_pud_folded(args->mm))
+>>   		return;
+>>   
+>>   	pr_debug("Validating P4D clear\n");
+>>   	p4d = __p4d(p4d_val(p4d) | RANDOM_ORVALUE);
+>> -	WRITE_ONCE(*p4dp, p4d);
+>> -	p4d_clear(p4dp);
+>> -	p4d = READ_ONCE(*p4dp);
+>> +	WRITE_ONCE(*(args->p4dp), p4d);
+>> +	p4d_clear(args->p4dp);
+>> +	p4d = READ_ONCE(*(args->p4dp));
+>>   	WARN_ON(!p4d_none(p4d));
+>>   }
+>>   
+>> -static void __init p4d_populate_tests(struct mm_struct *mm, p4d_t *p4dp,
+>> -				      pud_t *pudp)
+>> +static void __init p4d_populate_tests(struct pgtable_debug_args *args)
+>>   {
+>>   	p4d_t p4d;
+>>   
+>> -	if (mm_pud_folded(mm))
+>> +	if (mm_pud_folded(args->mm))
+>>   		return;
+>>   
+>>   	pr_debug("Validating P4D populate\n");
+>> @@ -548,34 +547,33 @@ static void __init p4d_populate_tests(struct mm_struct *mm, p4d_t *p4dp,
+>>   	 * This entry points to next level page table page.
+>>   	 * Hence this must not qualify as p4d_bad().
+>>   	 */
+>> -	pud_clear(pudp);
+>> -	p4d_clear(p4dp);
+>> -	p4d_populate(mm, p4dp, pudp);
+>> -	p4d = READ_ONCE(*p4dp);
+>> +	pud_clear(args->pudp);
+>> +	p4d_clear(args->p4dp);
+>> +	p4d_populate(args->mm, args->p4dp, args->start_pudp);
+>> +	p4d = READ_ONCE(*(args->p4dp));
+>>   	WARN_ON(p4d_bad(p4d));
+>>   }
+>>   
+>> -static void __init pgd_clear_tests(struct mm_struct *mm, pgd_t *pgdp)
+>> +static void __init pgd_clear_tests(struct pgtable_debug_args *args)
+>>   {
+>> -	pgd_t pgd = READ_ONCE(*pgdp);
+>> +	pgd_t pgd = READ_ONCE(*(args->pgdp));
+>>   
+>> -	if (mm_p4d_folded(mm))
+>> +	if (mm_p4d_folded(args->mm))
+>>   		return;
+>>   
+>>   	pr_debug("Validating PGD clear\n");
+>>   	pgd = __pgd(pgd_val(pgd) | RANDOM_ORVALUE);
+>> -	WRITE_ONCE(*pgdp, pgd);
+>> -	pgd_clear(pgdp);
+>> -	pgd = READ_ONCE(*pgdp);
+>> +	WRITE_ONCE(*(args->pgdp), pgd);
+>> +	pgd_clear(args->pgdp);
+>> +	pgd = READ_ONCE(*(args->pgdp));
+>>   	WARN_ON(!pgd_none(pgd));
+>>   }
+>>   
+>> -static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
+>> -				      p4d_t *p4dp)
+>> +static void __init pgd_populate_tests(struct pgtable_debug_args *args)
+>>   {
+>>   	pgd_t pgd;
+>>   
+>> -	if (mm_p4d_folded(mm))
+>> +	if (mm_p4d_folded(args->mm))
+>>   		return;
+>>   
+>>   	pr_debug("Validating PGD populate\n");
+>> @@ -583,23 +581,17 @@ static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
+>>   	 * This entry points to next level page table page.
+>>   	 * Hence this must not qualify as pgd_bad().
+>>   	 */
+>> -	p4d_clear(p4dp);
+>> -	pgd_clear(pgdp);
+>> -	pgd_populate(mm, pgdp, p4dp);
+>> -	pgd = READ_ONCE(*pgdp);
+>> +	p4d_clear(args->p4dp);
+>> +	pgd_clear(args->pgdp);
+>> +	pgd_populate(args->mm, args->pgdp, args->start_p4dp);
+>> +	pgd = READ_ONCE(*(args->pgdp));
+>>   	WARN_ON(pgd_bad(pgd));
+>>   }
+>>   #else  /* !__PAGETABLE_P4D_FOLDED */
+>> -static void __init p4d_clear_tests(struct mm_struct *mm, p4d_t *p4dp) { }
+>> -static void __init pgd_clear_tests(struct mm_struct *mm, pgd_t *pgdp) { }
+>> -static void __init p4d_populate_tests(struct mm_struct *mm, p4d_t *p4dp,
+>> -				      pud_t *pudp)
+>> -{
+>> -}
+>> -static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
+>> -				      p4d_t *p4dp)
+>> -{
+>> -}
+>> +static void __init p4d_clear_tests(struct pgtable_debug_args *args) { }
+>> +static void __init pgd_clear_tests(struct pgtable_debug_args *args) { }
+>> +static void __init p4d_populate_tests(struct pgtable_debug_args *args) { }
+>> +static void __init pgd_populate_tests(struct pgtable_debug_args *args) { }
+>>   #endif /* PAGETABLE_P4D_FOLDED */
+>>   
+>>   static void __init pte_clear_tests(struct pgtable_debug_args *args)
+>> @@ -1135,8 +1127,8 @@ static int __init debug_vm_pgtable(void)
+>>   	struct vm_area_struct *vma;
+>>   	struct mm_struct *mm;
+>>   	pgd_t *pgdp;
+>> -	p4d_t *p4dp, *saved_p4dp;
+>> -	pud_t *pudp, *saved_pudp;
+>> +	p4d_t *p4dp;
+>> +	pud_t *pudp;
+>>   	pmd_t *pmdp, *saved_pmdp, pmd;
+>>   	pgtable_t saved_ptep;
+>>   	unsigned long vaddr;
+>> @@ -1180,8 +1172,6 @@ static int __init debug_vm_pgtable(void)
+>>   	 * page table pages.
+>>   	 */
+>>   	pmd = READ_ONCE(*pmdp);
+>> -	saved_p4dp = p4d_offset(pgdp, 0UL);
+>> -	saved_pudp = pud_offset(p4dp, 0UL);
+>>   	saved_pmdp = pmd_offset(pudp, 0UL);
+>>   	saved_ptep = pmd_pgtable(pmd);
+>>   
+>> @@ -1259,15 +1249,15 @@ static int __init debug_vm_pgtable(void)
+>>   	pud_populate_tests(&args);
+>>   	spin_unlock(ptl);
+>>   
+>> -	spin_lock(&mm->page_table_lock);
+>> -	p4d_clear_tests(mm, p4dp);
+>> -	pgd_clear_tests(mm, pgdp);
+>> -	p4d_populate_tests(mm, p4dp, saved_pudp);
+>> -	pgd_populate_tests(mm, pgdp, saved_p4dp);
+>> -	spin_unlock(&mm->page_table_lock);
+>> +	spin_lock(&(args.mm->page_table_lock));
+>> +	p4d_clear_tests(&args);
+>> +	pgd_clear_tests(&args);
+>> +	p4d_populate_tests(&args);
+>> +	pgd_populate_tests(&args);
+>> +	spin_unlock(&(args.mm->page_table_lock));
+>>   
+>> -	p4d_free(mm, saved_p4dp);
+>> -	pud_free(mm, saved_pudp);
+>> +	p4d_free(mm, p4d_offset(pgdp, 0UL));
+>> +	pud_free(mm, pud_offset(p4dp, 0UL));
 > 
-> So are you _sure_ this should be changed?
+> Please keep @saved_pudp and @saved_p4dp declaration, assignment and
+> usage unchanged for now. Drop them only during [PATCH 11/12]. So in
+> each patch like these, drop the elements only if there is an unused
+> warning during build.
 > 
-> What did you to do to test this?
+> There are two set of page table debug elements i.e old and new. The
+> test is transitioning from old to new. Even after the transition is
+> complete, the old elements are properly declared, initialized and
+> freed up. Entire old set should be dropped only in [PATCH 11/12].
 > 
-> thanks,
-> 
-> greg k-h
-> > Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> > Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> > ---
-> >  fs/kernfs/dir.c        | 12 ++++++------
-> >  include/linux/kernfs.h |  3 ++-
-> >  2 files changed, 8 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-> > index 33166ec90a11..201091e2f2dc 100644
-> > --- a/fs/kernfs/dir.c
-> > +++ b/fs/kernfs/dir.c
-> > @@ -491,8 +491,8 @@ static void kernfs_drain(struct kernfs_node *kn)
-> >  void kernfs_get(struct kernfs_node *kn)
-> >  {
-> >  	if (kn) {
-> > -		WARN_ON(!atomic_read(&kn->count));
-> > -		atomic_inc(&kn->count);
-> > +		WARN_ON(!refcount_read(&kn->count));
-> > +		refcount_inc(&kn->count);
-> >  	}
-> >  }
-> >  EXPORT_SYMBOL_GPL(kernfs_get);
-> > @@ -508,7 +508,7 @@ void kernfs_put(struct kernfs_node *kn)
-> >  	struct kernfs_node *parent;
-> >  	struct kernfs_root *root;
-> >  
-> > -	if (!kn || !atomic_dec_and_test(&kn->count))
-> > +	if (!kn || !refcount_dec_and_test(&kn->count))
-> >  		return;
-> >  	root = kernfs_root(kn);
-> >   repeat:
-> > @@ -538,7 +538,7 @@ void kernfs_put(struct kernfs_node *kn)
-> >  
-> >  	kn = parent;
-> >  	if (kn) {
-> > -		if (atomic_dec_and_test(&kn->count))
-> > +		if (refcount_dec_and_test(&kn->count))
-> >  			goto repeat;
-> >  	} else {
-> >  		/* just released the root kn, free @root too */
-> > @@ -598,7 +598,7 @@ static struct kernfs_node *__kernfs_new_node(struct kernfs_root *root,
-> >  
-> >  	kn->id = (u64)id_highbits << 32 | ret;
-> >  
-> > -	atomic_set(&kn->count, 1);
-> > +	refcount_set(&kn->count, 1);
-> >  	atomic_set(&kn->active, KN_DEACTIVATED_BIAS);
-> >  	RB_CLEAR_NODE(&kn->rb);
-> >  
-> > @@ -691,7 +691,7 @@ struct kernfs_node *kernfs_find_and_get_node_by_id(struct kernfs_root *root,
-> >  	 * grab kernfs_mutex.
-> >  	 */
-> >  	if (unlikely(!(kn->flags & KERNFS_ACTIVATED) ||
-> > -		     !atomic_inc_not_zero(&kn->count)))
-> > +		     !refcount_inc_not_zero(&kn->count)))
-> >  		goto err_unlock;
-> >  
-> >  	spin_unlock(&kernfs_idr_lock);
-> > diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
-> > index 9e8ca8743c26..4378a5befcf7 100644
-> > --- a/include/linux/kernfs.h
-> > +++ b/include/linux/kernfs.h
-> > @@ -6,6 +6,7 @@
-> >  #ifndef __LINUX_KERNFS_H
-> >  #define __LINUX_KERNFS_H
-> >  
-> > +#include <linux/refcount.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/err.h>
-> >  #include <linux/list.h>
-> > @@ -121,7 +122,7 @@ struct kernfs_elem_attr {
-> >   * active reference.
-> >   */
-> >  struct kernfs_node {
-> > -	atomic_t		count;
-> > +	refcount_t		count;
-> >  	atomic_t		active;
-> >  #ifdef CONFIG_DEBUG_LOCK_ALLOC
-> >  	struct lockdep_map	dep_map;
-> > -- 
-> > 2.7.4
 
+As explained at the beginning and we need to drop the unused variable.
 
+>>   	pmd_free(mm, saved_pmdp);
+>>   	pte_free(mm, saved_ptep);
+>>   
+>>
 
-
-
-
+Thanks,
+Gavin
+  
 
