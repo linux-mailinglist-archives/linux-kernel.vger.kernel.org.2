@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FF93D2862
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 18:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4583D2866
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 18:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbhGVP44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:56:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59426 "EHLO mail.kernel.org"
+        id S231796AbhGVP5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:57:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232803AbhGVPzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:55:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0C0561375;
-        Thu, 22 Jul 2021 16:35:53 +0000 (UTC)
+        id S231126AbhGVPz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:55:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0EFD61378;
+        Thu, 22 Jul 2021 16:35:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971754;
-        bh=5TOpWB1pcM8gFuuZ8wVGaPryL5r1nQeuwb5SKodCLUM=;
+        s=korg; t=1626971759;
+        bh=o2+DIMKG+ANXAYmwk2LkDsSp8f1fh5jsvzyYiqGkwLA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xvIrj9+PfzF3mCwacgdMvSLttwX99DwgxKOEyF0qfDAQYuktcR38Ag1tmBzTxq3Lo
-         qf7O1eGEjj3Bynt5Cqr9U1IuqDL5A5CHQ8DJPdQB2dSixtJIqICFHSNlL1CsuY9HgE
-         NCNCtE4Qocv4Nkeuo9H3MphEDZ5zk3Jk4KZC0KqE=
+        b=Lj2P9p8rHU/6vtJtospOpGehQ8B0wsXRte5CS0LLYPPjMRHOtUyjCk1y9pfqgJmbV
+         FuoHkf+R6Tk1XT0dwoykRGnX840CnoQtjLw+qLnJccBo60qFwunhNs38r5tMPDdLe7
+         Ty3cq7Njj1sEbrswzfLwT5DbJS+AbiBueh88GdJ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 014/125] reset: ti-syscon: fix to_ti_syscon_reset_data macro
-Date:   Thu, 22 Jul 2021 18:30:05 +0200
-Message-Id: <20210722155625.152084343@linuxfoundation.org>
+Subject: [PATCH 5.10 016/125] ARM: Cygnus: dts: fix NAND nodes names
+Date:   Thu, 22 Jul 2021 18:30:07 +0200
+Message-Id: <20210722155625.222187360@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
 References: <20210722155624.672583740@linuxfoundation.org>
@@ -39,41 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Zabel <p.zabel@pengutronix.de>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit 05cf8fffcdeb47aef1203c08cbec5224fd3a0e1c ]
+[ Upstream commit e256b48a3b07ee1ae4bfa60abbf509ba8e386862 ]
 
-The to_ti_syscon_reset_data macro currently only works if the
-parameter passed into it is called 'rcdev'.
+This matches nand-controller.yaml requirements.
 
-Fixes a checkpatch --strict issue:
-
-  CHECK: Macro argument reuse 'rcdev' - possible side-effects?
-  #53: FILE: drivers/reset/reset-ti-syscon.c:53:
-  +#define to_ti_syscon_reset_data(rcdev)	\
-  +	container_of(rcdev, struct ti_syscon_reset_data, rcdev)
-
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/reset-ti-syscon.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/bcm-cygnus.dtsi      | 2 +-
+ arch/arm/boot/dts/bcm911360_entphn.dts | 4 ++--
+ arch/arm/boot/dts/bcm958300k.dts       | 4 ++--
+ arch/arm/boot/dts/bcm958305k.dts       | 4 ++--
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/reset/reset-ti-syscon.c b/drivers/reset/reset-ti-syscon.c
-index ef97c4dbbb4e..742056a2a756 100644
---- a/drivers/reset/reset-ti-syscon.c
-+++ b/drivers/reset/reset-ti-syscon.c
-@@ -58,8 +58,8 @@ struct ti_syscon_reset_data {
- 	unsigned int nr_controls;
+diff --git a/arch/arm/boot/dts/bcm-cygnus.dtsi b/arch/arm/boot/dts/bcm-cygnus.dtsi
+index dacaef2c14ca..ea3dc128b764 100644
+--- a/arch/arm/boot/dts/bcm-cygnus.dtsi
++++ b/arch/arm/boot/dts/bcm-cygnus.dtsi
+@@ -460,7 +460,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		nand: nand@18046000 {
++		nand_controller: nand-controller@18046000 {
+ 			compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1";
+ 			reg = <0x18046000 0x600>, <0xf8105408 0x600>,
+ 			      <0x18046f00 0x20>;
+diff --git a/arch/arm/boot/dts/bcm911360_entphn.dts b/arch/arm/boot/dts/bcm911360_entphn.dts
+index b2d323f4a5ab..a76c74b44bba 100644
+--- a/arch/arm/boot/dts/bcm911360_entphn.dts
++++ b/arch/arm/boot/dts/bcm911360_entphn.dts
+@@ -82,8 +82,8 @@
+ 	status = "okay";
  };
  
--#define to_ti_syscon_reset_data(rcdev)	\
--	container_of(rcdev, struct ti_syscon_reset_data, rcdev)
-+#define to_ti_syscon_reset_data(_rcdev)	\
-+	container_of(_rcdev, struct ti_syscon_reset_data, rcdev)
+-&nand {
+-	nandcs@1 {
++&nand_controller {
++	nand@1 {
+ 		compatible = "brcm,nandcs";
+ 		reg = <0>;
+ 		nand-on-flash-bbt;
+diff --git a/arch/arm/boot/dts/bcm958300k.dts b/arch/arm/boot/dts/bcm958300k.dts
+index b4a1392bd5a6..dda3e11b711f 100644
+--- a/arch/arm/boot/dts/bcm958300k.dts
++++ b/arch/arm/boot/dts/bcm958300k.dts
+@@ -60,8 +60,8 @@
+ 	status = "okay";
+ };
  
- /**
-  * ti_syscon_reset_assert() - assert device reset
+-&nand {
+-	nandcs@1 {
++&nand_controller {
++	nand@1 {
+ 		compatible = "brcm,nandcs";
+ 		reg = <0>;
+ 		nand-on-flash-bbt;
+diff --git a/arch/arm/boot/dts/bcm958305k.dts b/arch/arm/boot/dts/bcm958305k.dts
+index 3378683321d3..ea3c6b88b313 100644
+--- a/arch/arm/boot/dts/bcm958305k.dts
++++ b/arch/arm/boot/dts/bcm958305k.dts
+@@ -68,8 +68,8 @@
+ 	status = "okay";
+ };
+ 
+-&nand {
+-	nandcs@1 {
++&nand_controller {
++	nand@1 {
+ 		compatible = "brcm,nandcs";
+ 		reg = <0>;
+ 		nand-on-flash-bbt;
 -- 
 2.30.2
 
