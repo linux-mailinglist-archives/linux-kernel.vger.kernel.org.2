@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2DD3D2942
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9F03D2A6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233263AbhGVQCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:02:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36798 "EHLO mail.kernel.org"
+        id S235580AbhGVQLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:11:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233559AbhGVP7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:59:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEE446136E;
-        Thu, 22 Jul 2021 16:39:52 +0000 (UTC)
+        id S235146AbhGVQHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:07:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C72D6144E;
+        Thu, 22 Jul 2021 16:47:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971993;
-        bh=mp11EiE24wDcNafm9JEypj8lxrQqDu93h6rWFarLp/U=;
+        s=korg; t=1626972456;
+        bh=EFpnzNAE5hTcVD4qxLv0F2FRU29IaMMi9CYUaIANngw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LyATMjuLmCVoSuBE1tN+QfK0xXeSpwz9JiKLBHEXRVsy6V8NNci8SrFQacR6jL3CF
-         x2mzFwqQoNrNmlpaDDqDk8w0HbrhbyT1RbRra5DTrGLIBY/MMaW9AhAwHW6vzd8OTN
-         Ckd9urW8JKr7Twj77Nu6qQsL138zJ0B2E+BkR6FI=
+        b=nlPgBQxYCGQdOjqVNRP42nZnUmotlbZvBi9iRoO8CBAhVppQzw/30eDw/+9dn8GMs
+         sbE8MiCYzdUr+/u0rCi4wnHZ4PQ2qIgM8D4/dMYeo4Ewhr/Dp0uI15hjzYgx+uBDg5
+         vLFWydC0ifZD8vDs9yH5kgFslqlirAr1c6C7Swaw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 105/125] net: ti: fix UAF in tlan_remove_one
-Date:   Thu, 22 Jul 2021 18:31:36 +0200
-Message-Id: <20210722155628.193020169@linuxfoundation.org>
+Subject: [PATCH 5.13 122/156] net: marvell: always set skb_shared_info in mvneta_swbm_add_rx_fragment
+Date:   Thu, 22 Jul 2021 18:31:37 +0200
+Message-Id: <20210722155632.309998555@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-commit 0336f8ffece62f882ab3012820965a786a983f70 upstream.
+commit 6ff63a150b5556012589ae59efac1b5eeb7d32c3 upstream.
 
-priv is netdev private data and it cannot be
-used after free_netdev() call. Using priv after free_netdev()
-can cause UAF bug. Fix it by moving free_netdev() at the end of the
-function.
+Always set skb_shared_info data structure in mvneta_swbm_add_rx_fragment
+routine even if the fragment contains only the ethernet FCS.
 
-Fixes: 1e0a8b13d355 ("tlan: cancel work at remove path")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Fixes: 039fbc47f9f1 ("net: mvneta: alloc skb_shared_info on the mvneta_rx_swbm stack")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ti/tlan.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/marvell/mvneta.c |   20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
---- a/drivers/net/ethernet/ti/tlan.c
-+++ b/drivers/net/ethernet/ti/tlan.c
-@@ -313,9 +313,8 @@ static void tlan_remove_one(struct pci_d
- 	pci_release_regions(pdev);
- #endif
- 
--	free_netdev(dev);
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -2303,19 +2303,19 @@ mvneta_swbm_add_rx_fragment(struct mvnet
+ 		skb_frag_off_set(frag, pp->rx_offset_correction);
+ 		skb_frag_size_set(frag, data_len);
+ 		__skb_frag_set_page(frag, page);
 -
- 	cancel_work_sync(&priv->tlan_tqueue);
-+	free_netdev(dev);
+-		/* last fragment */
+-		if (len == *size) {
+-			struct skb_shared_info *sinfo;
+-
+-			sinfo = xdp_get_shared_info_from_buff(xdp);
+-			sinfo->nr_frags = xdp_sinfo->nr_frags;
+-			memcpy(sinfo->frags, xdp_sinfo->frags,
+-			       sinfo->nr_frags * sizeof(skb_frag_t));
+-		}
+ 	} else {
+ 		page_pool_put_full_page(rxq->page_pool, page, true);
+ 	}
++
++	/* last fragment */
++	if (len == *size) {
++		struct skb_shared_info *sinfo;
++
++		sinfo = xdp_get_shared_info_from_buff(xdp);
++		sinfo->nr_frags = xdp_sinfo->nr_frags;
++		memcpy(sinfo->frags, xdp_sinfo->frags,
++		       sinfo->nr_frags * sizeof(skb_frag_t));
++	}
+ 	*size -= len;
  }
  
- static void tlan_start(struct net_device *dev)
 
 
