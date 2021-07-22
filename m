@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1013D2358
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6EB3D235C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbhGVLtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 07:49:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32241 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231853AbhGVLtu (ORCPT
+        id S231872AbhGVLwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 07:52:25 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21353 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231797AbhGVLwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 07:49:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626957025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=WSL7ZJVKiQveNIWfD94p7ezZFAiUNBxVvFp4267kOUk=;
-        b=Ej5sJqC5YV2WBYZJKU9H9IsOaRXkiSrkiZCN/2LY9yLf+3jVLU4aRH5r45vuBs/PmanMFf
-        jLReZJ8qHudpM/HKP1pYv8MeDgT1Tq8Rv3RpzRFJ3IQAJOR8DEXhzXQUqMaSGMAOJXkDQb
-        r78t5K6zdX/v+zzwguXosrlXwJvoCh4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-391-D2Z8quUJPO-raM6b1OQUyQ-1; Thu, 22 Jul 2021 08:30:23 -0400
-X-MC-Unique: D2Z8quUJPO-raM6b1OQUyQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67CA98B0604;
-        Thu, 22 Jul 2021 12:30:22 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.41])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C391D10016F2;
-        Thu, 22 Jul 2021 12:30:19 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Oliver Upton <oupton@google.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86: Check the right feature bit for MSR_KVM_ASYNC_PF_ACK access
-Date:   Thu, 22 Jul 2021 14:30:18 +0200
-Message-Id: <20210722123018.260035-1-vkuznets@redhat.com>
+        Thu, 22 Jul 2021 07:52:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1626957169; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=RjraAwfcEUAaLLcBFBJiG//haboxoQTo3Vmy3KL3b75g26mGZAZhFMpM9O72bCBUhGM6UDnQIFsEd1vFcZYv/XiumjpinsXpaqdIaB5elaS+1GzAkShfjmWtdDhwnvNJ6OVy+zb94tZ39ZP5uFlem3P73ALEHPyDij50Wn0riTs=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1626957169; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=DsBLta2Pf+TK6Ka/qZ4n4thM6rf6CZnKPL/RL0BszfI=; 
+        b=Z2ZRV7vxTtq/Xxn7Q6JY8VduhXOtfMGxy4bXKCKK61vXzcXF/Rh1mmuZn6ccK7B/QXplsNIq7iAaZjguXv7urJ7hqIVHXjm8KrjsyxQsfuiz2xvBgvVOCxV+FXAqj1NORPsNpvtTYPO7v+77kztoeZdZ1pLgNRjkkaXLrWOzSrQ=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1626957169;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
+        bh=DsBLta2Pf+TK6Ka/qZ4n4thM6rf6CZnKPL/RL0BszfI=;
+        b=XDjE6nFmVDEwaEeX1E9VgWtxcRRMl1soEUUdB7bm44aaNA/760jrPSAZp92DyavE
+        79VCXo/KK1kW1egR4ePbxCQIbZVEV06KBXK8yTBhW10ZI4p41AS+VatvL/uzouMIC9f
+        Kn34uKzJMq0SMypI5LrqsfBugg3AJP/Zi/aYGFFs=
+Received: from localhost.localdomain (49.207.63.174 [49.207.63.174]) by mx.zohomail.com
+        with SMTPS id 1626957166177298.18070444753164; Thu, 22 Jul 2021 05:32:46 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     mcgrof@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
+        skhan@linuxfoundation.org
+Cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v6 0/2] firmware_loader: fix uaf in firmware_fallback_sysfs 
+Date:   Thu, 22 Jul 2021 18:02:27 +0530
+Message-Id: <20210722123229.8731-1-mail@anirudhrb.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MSR_KVM_ASYNC_PF_ACK MSR is part of interrupt based asynchronous page fault
-interface and not the original (deprecated) KVM_FEATURE_ASYNC_PF. This is
-stated in Documentation/virt/kvm/msr.rst.
+This series fixes the use after free in firmware_fallback_sysfs reported
+by syzbot at:
 
-Fixes: 66570e966dd9 ("kvm: x86: only provide PV features if enabled in guest's CPUID")
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/x86.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+https://syzkaller.appspot.com/bug?extid=de271708674e2093097b
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index d715ae9f9108..88ff7a1af198 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3406,7 +3406,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			return 1;
- 		break;
- 	case MSR_KVM_ASYNC_PF_ACK:
--		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
-+		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF_INT))
- 			return 1;
- 		if (data & 0x1) {
- 			vcpu->arch.apf.pageready_pending = false;
-@@ -3745,7 +3745,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		msr_info->data = vcpu->arch.apf.msr_int_val;
- 		break;
- 	case MSR_KVM_ASYNC_PF_ACK:
--		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
-+		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF_INT))
- 			return 1;
- 
- 		msr_info->data = 0;
+The first patch does some cleanup of the error codes and documents
+them properly. The second patch goes on to actually fix the bug.
+
+Changes in v6:
+1. v5 didn't actually remove -EAGAIN. So, fixed that.
+
+Changes in v5:
+1. Split the patch into two patches as discussed here:
+   https://lore.kernel.org/lkml/20210715232105.am4wsxfclj2ufjdw@garbanzo/
+
+Changes in v4:
+Documented the reasons behind the error codes returned from
+fw_sysfs_wait_timeout() as suggested by Luis Chamberlain.
+
+Changes in v3:
+Modified the patch to incorporate suggestions by Luis Chamberlain in
+order to fix the root cause instead of applying a "band-aid" kind of
+fix.
+https://lore.kernel.org/lkml/20210403013143.GV4332@42.do-not-panic.com/
+
+Changes in v2:
+1. Fixed 1 error and 1 warning (in the commit message) reported by
+checkpatch.pl. The error was regarding the format for referring to
+another commit "commit <sha> ("oneline")". The warning was for line
+longer than 75 chars.
+
+Anirudh Rayabharam (2):
+  firmware_loader: use -ETIMEDOUT instead of -EAGAIN in
+    fw_load_sysfs_fallback
+  firmware_loader: fix use-after-free in firmware_fallback_sysfs
+
+ drivers/base/firmware_loader/fallback.c | 44 +++++++++++++++++--------
+ drivers/base/firmware_loader/firmware.h |  6 +++-
+ drivers/base/firmware_loader/main.c     |  2 ++
+ 3 files changed, 38 insertions(+), 14 deletions(-)
+
 -- 
-2.31.1
+2.26.2
 
