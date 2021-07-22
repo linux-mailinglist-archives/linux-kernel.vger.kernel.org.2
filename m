@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F433D2B11
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E233D2B16
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbhGVQpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhGVQpc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:45:32 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A85BC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:26:06 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id t20so8332468ljd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:26:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fuOs6XPM+Q3/Q5FSz5nCr0Y7zobhha2fUoijl6Bu2BA=;
-        b=KFfv4h+yMAYsYLHv2rATQrjCbiBMCJfoJq06Mxs5adn4YXCUe5Em+QXV2L39tUNSrB
-         U347JBxT1yLJyFZ42neWsvHQuPeAHuKxSytJ0HXTxmSrn4JEyYp7NMI2Qe8Div/6cou3
-         HeWdJgKNMLJ+OM2KBu7XYNy40nFYwWFlqVmPk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fuOs6XPM+Q3/Q5FSz5nCr0Y7zobhha2fUoijl6Bu2BA=;
-        b=OXA6bOfxG4/bktdtuTPI+0lGWyohVYRol3tlypka/0I+jymzdxv0iF9x0fu8imADHQ
-         R3JYxzSlyQih8nWtHuAVinnpH4enpAkS3FSgZmsjr6HXTb1bk183oVEOoJaZYu5P1x6M
-         tDIIp5y3qV2E6fQh+ZWH1C9c3hZcOe3zcI5hn60ppgBx2V+xAViS0tOR/FmtRgjW8/Wa
-         b6eI0jrigsVLKF/2VNV2OBmvJ7KewX0ttRTJUDFfqHUL+wJOFG9juCjZf6v1Esu6aAlI
-         1m1/mYy+bqYpYdYN7CLtkJmnbaDJx4oXu3I50EayR/G6hycMnqS7LraWCOsIA9IVZt3W
-         drRA==
-X-Gm-Message-State: AOAM531MuwdxFKEyNRnEMzBSPt4cYWYa9OvjrI/z0ar2o3yaWRBVZqvV
-        bsGhib4pQxpAuYQ1vFi8lhOgprxWG/ic41+DMWA=
-X-Google-Smtp-Source: ABdhPJw1NtJNOqrVb1j7HgR/GAP8hmsGsLuolH+6CY+yfsMXJ9mPhYXmWKlk3b100o2XfxEBdEyIMA==
-X-Received: by 2002:a2e:a164:: with SMTP id u4mr703036ljl.121.1626974763010;
-        Thu, 22 Jul 2021 10:26:03 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id bp40sm1978236lfb.221.2021.07.22.10.26.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jul 2021 10:26:02 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id a12so9653696lfb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:26:02 -0700 (PDT)
-X-Received: by 2002:a05:6512:2388:: with SMTP id c8mr330523lfv.201.1626974761892;
- Thu, 22 Jul 2021 10:26:01 -0700 (PDT)
+        id S229453AbhGVQp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:45:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229809AbhGVQpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:45:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C645261358;
+        Thu, 22 Jul 2021 17:26:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626974789;
+        bh=4IqU9Z+o6ET0kK08k5QR9PdfMOnEz4ti7H4G7+Yim0U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U/8MEsGya6dK4aOoSlnwj+dO6eiagMt6rDAgYrQjX8anfzcLCYQIcyZO5VlNH4/yF
+         1xRzwMm0mu60EM4T7FuTVOl3OvTCTDadkk2u6M1+yaaBerxVpz65IEUBv9SRdeaCBR
+         NhzKPRi8ZzP/BS9veRpCaEvgqxVTs+G0hn8KACF0q6qOjJtKk1I1S3LLLq+qL6ciem
+         i23BGDWvWx4gIK8KhrNp+R4BnysfiyXArasgHC3ciBPPT5cTRb5WCYB5abulGb0f3b
+         xhplA5OyTAXdVUg+Z1FLyjQRUXPWqiRXdpN46Sh1OLMLSUiJJG082b2ecfHlKohkeE
+         O07XBLpyxG+ow==
+Received: by pali.im (Postfix)
+        id 620D5805; Thu, 22 Jul 2021 19:26:27 +0200 (CEST)
+Date:   Thu, 22 Jul 2021 19:26:27 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v8 3/3] PCI: uniphier: Add misc interrupt handler to
+ invoke PME and AER
+Message-ID: <20210722172627.i4n65lrz3j7pduiz@pali>
+References: <1603848703-21099-4-git-send-email-hayashi.kunihiko@socionext.com>
+ <20201124232037.GA595463@bjorn-Precision-5520>
+ <20201125102328.GA31700@e121166-lin.cambridge.arm.com>
+ <f49a236d-c5f8-c445-f74e-7aa4eea70c3a@socionext.com>
+ <20210718005109.6xwe3z7gxhuop5xc@pali>
+ <2dfa5ec9-2a33-ae72-3904-999d8b8a2f71@socionext.com>
 MIME-Version: 1.0
-References: <20210722140949.3knhduxozzaido2r@liuwe-devbox-debian-v2>
-In-Reply-To: <20210722140949.3knhduxozzaido2r@liuwe-devbox-debian-v2>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 22 Jul 2021 10:25:46 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wirFvNqAvaNaABHc2mi7FKL4n6TEAwQ3WTyTJueJcHCvA@mail.gmail.com>
-Message-ID: <CAHk-=wirFvNqAvaNaABHc2mi7FKL4n6TEAwQ3WTyTJueJcHCvA@mail.gmail.com>
-Subject: Re: [GIT PULL] Hyper-V fixes for 5.14-rc3
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        kys@microsoft.com, Stephen Hemminger <sthemmin@microsoft.com>,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2dfa5ec9-2a33-ae72-3904-999d8b8a2f71@socionext.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 7:09 AM Wei Liu <wei.liu@kernel.org> wrote:
->
->   - Reversion of a bogus patch that went into 5.14-rc1
+On Friday 23 July 2021 01:54:10 Kunihiko Hayashi wrote:
+> On 2021/07/18 9:51, Pali Rohar wrote:
+> > > > IMO this should be modelled with a separate IRQ domain and chip for
+> > > > the root port (yes this implies describing the root port in the dts
+> > > > file with a separate msi-parent).
+> > > >
+> > > > This series as it stands is a kludge.
+> > >
+> > > I see. However I need some time to consider the way to separate IRQ domain.
+> > > Is there any idea or example to handle PME/AER with IRQ domain?
+> >
+> > Seems that you are dealing with very similar issues as me with aardvark
+> > driver.
+> >
+> > As an inspiration look at my aardvark patch which setup separate IRQ
+> > domain for PME, AER and HP interrupts:
+> > https://lore.kernel.org/linux-pci/20210506153153.30454-32-pali@kernel.org/
+> >
+> > Thanks to custom driver map_irq function, it is not needed to describe
+> > root port with separate msi-parent in DTS.
+> 
+> I need to understand your solution, though, this might be the same situation as my driver.
 
-When doing a revert, please explain it.
+I think it is very very similar as aardvark also returns zero as hw irq
+number (and it is not possible to change it).
 
-Yes, they are simple in the sense that they just undo something, but
-at the same time, that "something" was done for a reason, and the
-reason why that original change was wrong, and how it was noticed (ie
-what the symptoms of the reverted patch were) is important.
+So simple solution for you is also to register separate IRQ domain for
+Root Port Bridge and then re-trigger interrupt with number 0 (which you
+wrote that is default) as:
 
-I've pulled this, so it's too late now, but please please please
-explain reverts in the future, not just a "This reverts commit XYZ".
+    virq = irq_find_mapping(priv->irq_domain, 0);
+    generic_handle_irq(virq);
 
-                     Linus
+in your uniphier_pcie_misc_isr() function.
+
+There is no need to modify DTS. And also no need to use complicated
+logic for finding registered virq number via pcie_port_service_get_irq()
+and uniphier_pcie_port_get_irq() functions.
