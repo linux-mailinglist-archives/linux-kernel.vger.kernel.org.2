@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2D43D2901
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D963D29C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbhGVQAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:00:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35056 "EHLO mail.kernel.org"
+        id S234336AbhGVQGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:06:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232859AbhGVP6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:58:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A071E61369;
-        Thu, 22 Jul 2021 16:38:41 +0000 (UTC)
+        id S234221AbhGVQE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:04:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0DFF61CD8;
+        Thu, 22 Jul 2021 16:44:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971922;
-        bh=F2JytO9c1WB6KQLXbwzXwCJnwm4B9ZBXTwzvFgQcCFE=;
+        s=korg; t=1626972294;
+        bh=PqWs7fVbREsPcJyM0yVYpc7JRLXrbGHa4Ro020FmzzI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WEs0+FHJ22HrTaZOmvi9pO1PSbXLjA+/C+OFVA7z8u8mP08h131kKeDgEVk/spbgV
-         y+YETRvg3BCaKPfCqiote+chUEGzSacts8Qzl5qa93RPYieIUd4zD8/GhHhOCAOLRI
-         zLXJAr58+TxRBjysnBOKNGd07zg/CoPSbzuJktIs=
+        b=B/iJsiyebduWDvyKGEIoBxqnOBGG3CPjpRaddY5VLcYxcpSUpuHu+AjdVqgqPc5YM
+         8CHBNmh5n8up0NLZRFngpcIPAWI3QAH4ySCo6iS3GvBUetED/O9TatkbfA7J/EGA92
+         cwZ2ToaC7B8NWQhJY4rb+c/CiD0axthiVcENh1BA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Grzegorz Szymaszek <gszymaszek@short.pl>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 042/125] ARM: dts: stm32: fix stm32mp157c-odyssey card detect pin
-Date:   Thu, 22 Jul 2021 18:30:33 +0200
-Message-Id: <20210722155626.093896000@linuxfoundation.org>
+        stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
+        Santosh Puranik <santosh.puranik@in.ibm.com>,
+        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 059/156] ARM: dts: aspeed: Everest: Fix cable card PCA chips
+Date:   Thu, 22 Jul 2021 18:30:34 +0200
+Message-Id: <20210722155630.315475405@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,220 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grzegorz Szymaszek <gszymaszek@short.pl>
+From: Santosh Puranik <santosh.puranik@in.ibm.com>
 
-[ Upstream commit 0171b07373cc8c2815ca5fa79a7308fdefa54ca4 ]
+[ Upstream commit 010da3daf9278ed03d38b7dcb0422f1a7df1bdd3 ]
 
-The microSD card detect pin is physically connected to the MPU pin PI3.
-The Device Tree configuration of the card detect pin was wrong—it was
-set to pin PB7 instead. If such configuration was used, the kernel would
-hang on “Waiting for root device” when booting from a microSD card.
+Correct two PCA chips which were placed on the wrong I2C bus and
+address.
 
-Signed-off-by: Grzegorz Szymaszek <gszymaszek@short.pl>
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Signed-off-by: Santosh Puranik <santosh.puranik@in.ibm.com>
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp157c-odyssey.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts | 168 +++++++++----------
+ 1 file changed, 83 insertions(+), 85 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey.dts b/arch/arm/boot/dts/stm32mp157c-odyssey.dts
-index a7ffec8f1516..be1dd5e9e744 100644
---- a/arch/arm/boot/dts/stm32mp157c-odyssey.dts
-+++ b/arch/arm/boot/dts/stm32mp157c-odyssey.dts
-@@ -64,7 +64,7 @@
- 	pinctrl-0 = <&sdmmc1_b4_pins_a>;
- 	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
- 	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
--	cd-gpios = <&gpiob 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-+	cd-gpios = <&gpioi 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
- 	disable-wp;
- 	st,neg-edge;
- 	bus-width = <4>;
+diff --git a/arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts b/arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts
+index 3295c8c7c05c..27af28c8847d 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts
+@@ -353,10 +353,47 @@
+ 
+ &i2c1 {
+ 	status = "okay";
++};
++
++&i2c2 {
++	status = "okay";
++};
+ 
+-	pca2: pca9552@61 {
++&i2c3 {
++	status = "okay";
++
++	eeprom@54 {
++		compatible = "atmel,24c128";
++		reg = <0x54>;
++	};
++
++	power-supply@68 {
++		compatible = "ibm,cffps";
++		reg = <0x68>;
++	};
++
++	power-supply@69 {
++		compatible = "ibm,cffps";
++		reg = <0x69>;
++	};
++
++	power-supply@6a {
++		compatible = "ibm,cffps";
++		reg = <0x6a>;
++	};
++
++	power-supply@6b {
++		compatible = "ibm,cffps";
++		reg = <0x6b>;
++	};
++};
++
++&i2c4 {
++	status = "okay";
++
++	pca2: pca9552@65 {
+ 		compatible = "nxp,pca9552";
+-		reg = <0x61>;
++		reg = <0x65>;
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+@@ -424,12 +461,54 @@
+ 			reg = <9>;
+ 			type = <PCA955X_TYPE_GPIO>;
+ 		};
++	};
+ 
++	i2c-switch@70 {
++		compatible = "nxp,pca9546";
++		reg = <0x70>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		status = "okay";
++		i2c-mux-idle-disconnect;
++
++		i2c4mux0chn0: i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++			eeprom@52 {
++				compatible = "atmel,24c64";
++				reg = <0x52>;
++			};
++		};
++
++		i2c4mux0chn1: i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++			eeprom@50 {
++				compatible = "atmel,24c64";
++				reg = <0x50>;
++			};
++		};
++
++		i2c4mux0chn2: i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++			eeprom@51 {
++				compatible = "atmel,24c64";
++				reg = <0x51>;
++			};
++		};
+ 	};
++};
+ 
+-	pca3: pca9552@62 {
++&i2c5 {
++	status = "okay";
++
++	pca3: pca9552@66 {
+ 		compatible = "nxp,pca9552";
+-		reg = <0x62>;
++		reg = <0x66>;
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+@@ -512,87 +591,6 @@
+ 
+ 	};
+ 
+-};
+-
+-&i2c2 {
+-	status = "okay";
+-};
+-
+-&i2c3 {
+-	status = "okay";
+-
+-	eeprom@54 {
+-		compatible = "atmel,24c128";
+-		reg = <0x54>;
+-	};
+-
+-	power-supply@68 {
+-		compatible = "ibm,cffps";
+-		reg = <0x68>;
+-	};
+-
+-	power-supply@69 {
+-		compatible = "ibm,cffps";
+-		reg = <0x69>;
+-	};
+-
+-	power-supply@6a {
+-		compatible = "ibm,cffps";
+-		reg = <0x6a>;
+-	};
+-
+-	power-supply@6b {
+-		compatible = "ibm,cffps";
+-		reg = <0x6b>;
+-	};
+-};
+-
+-&i2c4 {
+-	status = "okay";
+-
+-	i2c-switch@70 {
+-		compatible = "nxp,pca9546";
+-		reg = <0x70>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		status = "okay";
+-		i2c-mux-idle-disconnect;
+-
+-		i2c4mux0chn0: i2c@0 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0>;
+-			eeprom@52 {
+-				compatible = "atmel,24c64";
+-				reg = <0x52>;
+-			};
+-		};
+-
+-		i2c4mux0chn1: i2c@1 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <1>;
+-			eeprom@50 {
+-				compatible = "atmel,24c64";
+-				reg = <0x50>;
+-			};
+-		};
+-
+-		i2c4mux0chn2: i2c@2 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <2>;
+-			eeprom@51 {
+-				compatible = "atmel,24c64";
+-				reg = <0x51>;
+-			};
+-		};
+-	};
+-};
+-
+-&i2c5 {
+-	status = "okay";
+-
+ 	i2c-switch@70 {
+ 		compatible = "nxp,pca9546";
+ 		reg = <0x70>;
 -- 
 2.30.2
 
