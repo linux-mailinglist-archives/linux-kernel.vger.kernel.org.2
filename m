@@ -2,80 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE613D2539
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3893A3D253B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbhGVN3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:29:19 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:41482 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232105AbhGVN3R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:29:17 -0400
-Received: by mail-wr1-f51.google.com with SMTP id k4so6106331wrc.8;
-        Thu, 22 Jul 2021 07:09:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=iK1KJpHvpUOPSAnxMC0sFeO0mFYkseDin9zJ6vd6y/o=;
-        b=tzLs+OuIGAjr829/m+3N+T3ZlMt0MNxMk1DODgKOtBf1xgvESmgmWoGt5bMYg44uWK
-         QLlJlad1hDHYvZvgOlS4ANw6pW2c/IkQwLwkveLLxVas0EUpZg8ItN1YQlefq7ygf0kc
-         Oje9yuEPPRvfCx1lHWOMIuuk58vGYRGtMmsxOm13GxSUTV1An4JwKRdR9KritO1TflP0
-         qtT+9n49X4Y6c+wyQ9qc3TcBCZEa/5cQ9cJnxNFqjSiXlLdrT0KvgVFr+7fLveYdIHSV
-         8wuhac+uygrYLg3N4KxXZap3AKDNbgWWsMQTBWYUbmgwyDRUWijvbpUayL6grdJohKUy
-         JAvA==
-X-Gm-Message-State: AOAM530PoVZbYwuOmZ+XdhQapR2Lwq6ci5SPkO/IvP3H/0RNUXeb/ZsZ
-        wcKGbnXVW3r5cL5++MkgqNdkT8MbFPY=
-X-Google-Smtp-Source: ABdhPJwsFg9rnIh0o+ptn8qnUio595xkVhBJMZ3UUY3/1ZhZuc5GpdLvsIi+LAVRXcGqQCsh2KMfyg==
-X-Received: by 2002:a5d:6644:: with SMTP id f4mr91617wrw.177.1626962990920;
-        Thu, 22 Jul 2021 07:09:50 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id f26sm24765858wmc.29.2021.07.22.07.09.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 07:09:50 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 14:09:49 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        kys@microsoft.com, sthemmin@microsoft.com, haiyangz@microsoft.com,
-        decui@microsoft.com, Michael Kelley <mikelley@microsoft.com>
-Subject: [GIT PULL] Hyper-V fixes for 5.14-rc3
-Message-ID: <20210722140949.3knhduxozzaido2r@liuwe-devbox-debian-v2>
+        id S232278AbhGVN3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:29:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232105AbhGVN3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:29:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79B956100C;
+        Thu, 22 Jul 2021 14:10:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626963005;
+        bh=Zng5weqblYORm27hewy/vtF2ESUwu4tN0uaPT0saZ9Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nEyoEueBim62N99t9Q6ZzZsWX0NuxoabhK09ERdSN44HbtRH7e0GHYn2+u31oS/ox
+         Ac3NLpSBOTzk2cNo0KgCiOUAIL3VZAyF+r2KOmfQGwNHbwM5NAFrwBluy2eTXDNggI
+         9ERNOBPO3vX7gbtQ77lNr+5lJbSU8JW4HLnTlBz6hErLRPVmqzpIJNS/X5w7fg/5/o
+         HVxh9PeB8gTIgkzdgcKwoGaZOcq8/wT9jmaqMt3seBAiCjetUaqBJ5liBDAivos+bU
+         0HmliRIHDIXkxT+2m3ktORso0PimaSlrX925vwNT2Ezpx9AQdukJ597mNYsQKbCVqf
+         stmr8JGOmituw==
+Date:   Thu, 22 Jul 2021 19:40:01 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sanjay R Mehta <sanmehta@amd.com>
+Cc:     Sanjay R Mehta <Sanju.Mehta@amd.com>, gregkh@linuxfoundation.org,
+        dan.j.williams@intel.com, Thomas.Lendacky@amd.com,
+        Shyam-sundar.S-k@amd.com, Nehal-bakulchandra.Shah@amd.com,
+        robh@kernel.org, mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v10 0/3] Add support for AMD PTDMA controller driver
+Message-ID: <YPl8OZwMlKs7a+lK@matsya>
+References: <1624207298-115928-1-git-send-email-Sanju.Mehta@amd.com>
+ <5dd9b34f-3e12-6ca1-1d4d-ddc3f82e341f@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <5dd9b34f-3e12-6ca1-1d4d-ddc3f82e341f@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 22-07-21, 19:27, Sanjay R Mehta wrote:
+> 
+> 
+> On 6/20/2021 10:11 PM, Sanjay R Mehta wrote:
+> > From: Sanjay R Mehta <sanju.mehta@amd.com>
+> > 
+> > This patch series add support for AMD PTDMA controller which
+> > performs high bandwidth memory-to-memory and IO copy operation,
+> > performs DMA transfer through queue based descriptor management.
+> > 
+> > AMD Processor has multiple ptdma device instances with each controller
+> > having single queue. The driver also adds support for for multiple PTDMA
+> > instances, each device will get an unique identifier and uniquely
+> > named resources.
+> > 
+> > v10:
+> > 	- modified ISR to return IR_HANDLED only in non-error condition.
+> > 	- removed unnecessary prints, variables and made some cosmetic changes.
+> > 	- removed pt_ordinal atomic variable and instead using dev_name()
+> > 	  for device name.
+> > 	- removed the cmdlist dependency and instead using vc.desc_issued list.
+> > 	- freeing the desc and list which was missing in the pt_terminate_all()
+> > 	  funtion.
+> > 	- Added comment for marking PTDMA as DMA_PRIVATE.
+> > 	- removed unused pt_debugfs_lock from debufs code.
+> > 	- keeping same file permision for all the debug directoris.
+> > 
+> > v9:
+> > 	- Modified the help message in Kconfig as per Randy's comment.
+> > 	- reverted the split of code for "pt_handle_active_desc" as there
+> > 	  was driver hang being observerd after few iterations.
+> > 
+> > v8:
+> > 	- splitted the code into different functions, one to find active desc 
+> > 	  and second to	complete and invoke callback.
+> > 	- used FIELD_PREP & FIELD_GET instead of union struct bitfields.
+> > 	- modified all style fixes as per the comments.
+> > 
+> > v7:
+> > 	- Fixed module warnings reported ( by kernel test robot <lkp@intel.com> ).
+> > 
+> > v6:
+> > 	- Removed debug artifacts and made the suggested cosmetic changes.
+> > 	- implemented and used to_pt_chan and to_pt_desc inline functions.
+> > 	- Removed src and dst address check as framework does this.
+> > 	- Removed devm_kcalloc() usage and used devm_kzalloc() api.
+> > 	- Using framework debugfs directory to store dma info.
+> > 
+> > v5:
+> > 	- modified code to submit next tranction in ISR itself and removed the tasklet.
+> > 	- implemented .device_synchronize API.
+> > 	- converted debugfs code by using DEFINE_SHOW_ATTRIBUTE()
+> > 	- using dbg_dev_root for debugfs root directory.
+> > 	- removed dma_status from pt_dma_chan
+> > 	- removed module parameter cmd_queue_lenght.
+> > 	- removed global device list for multiple devics.
+> > 	- removed code related to dynamic adding/deleting to device list
+> > 	- removed pt_add_device and pt_del_device functions
+> > 
+> > v4:
+> > 	- modified DMA channel and descriptor management using virt-dma layer
+> > 	  instead of list based management.
+> > 	- return only status of the cookie from pt_tx_status
+> > 	- copyright year changed from 2019 to 2020
+> > 	- removed dummy code for suspend & resume
+> > 	- used bitmask and genmask
+> > 
+> > v3:
+> >         - Fixed the sparse warnings.
+> > 
+> > v2:
+> >         - Added controller description in cover letter
+> >         - Removed "default m" from Kconfig
+> >         - Replaced low_address() and high_address() functions with kernel
+> >           API's lower_32_bits & upper_32_bits().
+> >         - Removed the BH handler function pt_core_irq_bh() and instead
+> >           handling transaction in irq handler itself.
+> >         - Moved presetting of command queue registers into new function
+> >           "init_cmdq_regs()"
+> >         - Removed the kernel thread dependency to submit transaction.
+> >         - Increased the hardware command queue size to 32 and adding it
+> >           as a module parameter.
+> >         - Removed backlog command queue handling mechanism.
+> >         - Removed software command queue handling and instead submitting
+> >           transaction command directly to
+> >           hardware command queue.
+> >         - Added tasklet structure variable in "struct pt_device".
+> >           This is used to invoke pt_do_cmd_complete() upon receiving interrupt
+> >           for command completion.
+> >         - pt_core_perform_passthru() function parameters are modified and it is
+> >           now used to submit command directly to hardware from dmaengine framew
+> >         - Removed below structures, enums, macros and functions, as these value
+> >           constants. Making command submission simple,
+> >            - Removed "union pt_function"  and several macros like PT_VERSION,
+> >              PT_BYTESWAP, PT_CMD_* etc..
+> >            - enum pt_passthru_bitwise, enum pt_passthru_byteswap, enum pt_memty
+> >              struct pt_dma_info, struct pt_data, struct pt_mem, struct pt_passt
+> >              struct pt_op,
+> > 
+> > Links of the review comments for v10:
+> > 1. https://lkml.org/lkml/2021/6/8/976
+> > 2. https://lkml.org/lkml/2021/6/16/7
+> > 3. https://lkml.org/lkml/2021/6/16/65
+> > 4. https://lkml.org/lkml/2021/6/16/192
+> > 5. https://lkml.org/lkml/2021/6/16/273
+> > 6. https://lkml.org/lkml/2021/6/8/1698
+> > 7. https://lkml.org/lkml/2021/6/16/8
+> > 8. https://lkml.org/lkml/2021/6/9/808
+> > 
+> > Links of the review comments for v7:
+> > 1. https://lkml.org/lkml/2020/11/18/351
+> > 2. https://lkml.org/lkml/2020/11/18/384
+> > 
+> > Links of the review comments for v5:
+> > 1. https://lkml.org/lkml/2020/7/3/154
+> > 2. https://lkml.org/lkml/2020/8/25/431
+> > 3. https://lkml.org/lkml/2020/7/3/177
+> > 4. https://lkml.org/lkml/2020/7/3/186
+> > 
+> > Links of the review comments for v5:
+> > 1. https://lkml.org/lkml/2020/5/4/42
+> > 2. https://lkml.org/lkml/2020/5/4/45
+> > 3. https://lkml.org/lkml/2020/5/4/38
+> > 4. https://lkml.org/lkml/2020/5/26/70
+> > 
+> > Links of the review comments for v4:
+> > 1. https://lkml.org/lkml/2020/1/24/12
+> > 2. https://lkml.org/lkml/2020/1/24/17
+> > 
+> > Links of the review comments for v2:
+> > 1https://lkml.org/lkml/2019/12/27/630
+> > 2. https://lkml.org/lkml/2020/1/3/23
+> > 3. https://lkml.org/lkml/2020/1/3/314
+> > 4. https://lkml.org/lkml/2020/1/10/100
+> > 
+> > Links of the review comments for v1:
+> > 1. https://lkml.org/lkml/2019/9/24/490
+> > 2. https://lkml.org/lkml/2019/9/24/399
+> > 3. https://lkml.org/lkml/2019/9/24/862
+> > 4. https://lkml.org/lkml/2019/9/24/122
+> > 
+> > Sanjay R Mehta (3):
+> >   dmaengine: ptdma: Initial driver for the AMD PTDMA
+> >   dmaengine: ptdma: register PTDMA controller as a DMA resource
+> >   dmaengine: ptdma: Add debugfs entries for PTDMA
+> > 
+> >  MAINTAINERS                         |   6 +
+> >  drivers/dma/Kconfig                 |   2 +
+> >  drivers/dma/Makefile                |   1 +
+> >  drivers/dma/ptdma/Kconfig           |  13 ++
+> >  drivers/dma/ptdma/Makefile          |  10 +
+> >  drivers/dma/ptdma/ptdma-debugfs.c   | 110 ++++++++++
+> >  drivers/dma/ptdma/ptdma-dev.c       | 327 ++++++++++++++++++++++++++++++
+> >  drivers/dma/ptdma/ptdma-dmaengine.c | 389 ++++++++++++++++++++++++++++++++++++
+> >  drivers/dma/ptdma/ptdma-pci.c       | 245 +++++++++++++++++++++++
+> >  drivers/dma/ptdma/ptdma.h           | 334 +++++++++++++++++++++++++++++++
+> >  10 files changed, 1437 insertions(+)
+> >  create mode 100644 drivers/dma/ptdma/Kconfig
+> >  create mode 100644 drivers/dma/ptdma/Makefile
+> >  create mode 100644 drivers/dma/ptdma/ptdma-debugfs.c
+> >  create mode 100644 drivers/dma/ptdma/ptdma-dev.c
+> >  create mode 100644 drivers/dma/ptdma/ptdma-dmaengine.c
+> >  create mode 100644 drivers/dma/ptdma/ptdma-pci.c
+> >  create mode 100644 drivers/dma/ptdma/ptdma.h
+> 
+> Hi Vinod, Greg,
+> 
+> 
+> I had re-sent this patch series as per your advice a month ago with all
+> the review feedback's addressed.
+> 
+> Need your guidance and feedback to get this code reviewed and up-streamed.
 
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+This was sent during the merge window... and right now this is in my
+review queue and will be addressed shortly.
 
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-
-are available in the Git repository at:
-
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210722
-
-for you to fetch changes up to f5a11c69b69923a4367d24365ad4dff6d4f3fc42:
-
-  Revert "x86/hyperv: fix logical processor creation" (2021-07-21 15:55:43 +0000)
-
-----------------------------------------------------------------
-hyperv-fixes for 5.14-rc3
-  - A bug fix from Haiyang for vmbus CPU assignment
-  - Reversion of a bogus patch that went into 5.14-rc1
-----------------------------------------------------------------
-Haiyang Zhang (1):
-      Drivers: hv: vmbus: Fix duplicate CPU assignments within a device
-
-Wei Liu (1):
-      Revert "x86/hyperv: fix logical processor creation"
-
- arch/x86/kernel/cpu/mshyperv.c |  2 +-
- drivers/hv/channel_mgmt.c      | 96 ++++++++++++++++++++++++++++--------------
- 2 files changed, 65 insertions(+), 33 deletions(-)
+-- 
+~Vinod
