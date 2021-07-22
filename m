@@ -2,212 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028F43D3017
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 01:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0323D3019
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 01:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhGVWdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 18:33:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232445AbhGVWd3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 18:33:29 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C885C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 16:14:03 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id a17-20020a17090abe11b0290173ce472b8aso6436194pjs.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 16:14:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SegNg7H7cBrrJSTIu9IxhK9gndrxnfwXCQId3QaK+t4=;
-        b=pejoMsBXtkdB2ryuxXkEQ1dqQkG3twf1hTpmIjbAk970ydOc31x9Mv80KEK4ttynMk
-         2qEHSuwTva/NY53x2NJTXyGp5KsHZ+M9vaxO5XlkcKSYwSlrl5BgKqPV6A3qV2TSa5qj
-         ibNegrXaAd3faBJKNZ6MwBC0hOsWxPMUf75EQkqzFlp6cSa3zGE55W0FySt022VG8r9L
-         R45bFQWXLeJ3T2oV0HoxrwRnRJZbCtpa+ql/i9vD0+Tcwu7l4weC4qxDC7O9CJjukIT4
-         mB6mfjatTtP3Sr6n1mfxNDkmXyipdzZhFpqNkb9dHseejwuseJE9ROuj9wAVTPEI71H6
-         CWpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SegNg7H7cBrrJSTIu9IxhK9gndrxnfwXCQId3QaK+t4=;
-        b=p2FfpIXA2whHddgVtiUvxLaG1tYOh/X/lPuXt7CaFJWKcYmM6z016EgUJGEKzg0Zv7
-         1X6c37vKmdy3GR+PkwGMfe4Z3sbJWULCgP7QEMxLDZBooi16G0tUe3dB+jpOmftCdzUH
-         b0gQpIYEaMwBpUts03BvAV/w5vVCZEEdY2NRmdgMEDk5w5W7V8S0BUVwyMGp0USN6jQz
-         ox5pUe7m/KGz2yTOovgM9mZnfcbWZ4raK9/So3wuhRFZtIrOqwE6aYSN6jBnNk+dPjot
-         b0Ya/bRbL0dhl9lq3nfhO6CTfESzGiYc3tbJG+mM7dwDoX2uLXNR/fVExx6qcxS1hIhb
-         FS7w==
-X-Gm-Message-State: AOAM530Cv6mqKloHG1w8+T70PTtq2GzkYYR49WS+3UVCH3+ZeLK931jC
-        NcvGB/iEwcwXo09leWO41eOffInjwEg=
-X-Google-Smtp-Source: ABdhPJyuNcQNX49/ZMge3MPp6VSqkojAVznHFT5gNfz9ZlqDeqjJm958BzqCifmLQypswYRjXJQE8g==
-X-Received: by 2002:a17:90b:3b4c:: with SMTP id ot12mr1944328pjb.218.1626995642606;
-        Thu, 22 Jul 2021 16:14:02 -0700 (PDT)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:4610:babe:3aeb:2b63])
-        by smtp.gmail.com with ESMTPSA id a35sm20934756pgm.66.2021.07.22.16.14.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 16:14:02 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH] f2fs: add sysfs node to control ra_pages for fadvise seq file
-Date:   Thu, 22 Jul 2021 16:13:58 -0700
-Message-Id: <20210722231358.611801-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+        id S232644AbhGVWe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 18:34:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232628AbhGVWeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 18:34:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 138C260E8F;
+        Thu, 22 Jul 2021 23:14:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626995699;
+        bh=eb3jIUA27WuZiqMOHyn3peGQmh5dVT3HqvvzBdRVFcc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=NCx0VafwcDUgQxdGiVGEH1WRvGiDrLfm0PIdW0M228ZK6/JTb696B+7u64PQXaKI3
+         QilW7jzh5eKLnvVOxSkf/xCln1frHvUr+Nnm0EDmcGKQwVDaxLXUFunUFcqOrBDFko
+         M5RqW53Cm2gRsSWgmwi8uLw988ZfglpLaB5RZ/TdFv7nQzHPsg92J63qymesa503jY
+         A61B4w8GtQtRYIcHCNpPmmqljoR1A7m0OokV0TYJxQ9QLCTiVJHUlIYdu/pxI2XDUL
+         ssmoC5bm37yf5PbOQkMeieWlZyhgHDyPIDG7pVkhLW3vPszn3ygX5UW4lQl3JJy37o
+         iDgC9qWsxTKFQ==
+Subject: Re: [f2fs-dev] [PATCH] f2fs: simplify accounting inflight directIO
+ request
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     jaegeuk@kernel.org, Chao Yu <chao.yu@linux.dev>,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <20210722131617.749204-1-chao@kernel.org>
+ <YPmTP5EixgTp1Wze@gmail.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <e1b61b7f-a492-f28b-8a98-557e81a2022a@kernel.org>
+Date:   Fri, 23 Jul 2021 07:14:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YPmTP5EixgTp1Wze@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+On 2021/7/22 23:48, Eric Biggers wrote:
+> On Thu, Jul 22, 2021 at 09:16:17PM +0800, Chao Yu wrote:
+>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>> index ba120d55e9b1..d0a1ca6ae38e 100644
+>> --- a/fs/f2fs/data.c
+>> +++ b/fs/f2fs/data.c
+>> @@ -1720,6 +1720,9 @@ static int __get_data_block(struct inode *inode, sector_t iblock,
+>>   		map_bh(bh, inode->i_sb, map.m_pblk);
+>>   		bh->b_state = (bh->b_state & ~F2FS_MAP_FLAGS) | map.m_flags;
+>>   		bh->b_size = blks_to_bytes(inode, map.m_len);
+>> +
+>> +		if (flag == F2FS_GET_BLOCK_DIO)
+>> +			bh->b_private = (void *)may_write;
+> 
+> Why is this hunk needed?
 
-fadvise() allows the user to expand the readahead window to double with
-POSIX_FADV_SEQUENTIAL, now. But, in some use cases, it is not that
-sufficient and we need to meet the need in a restricted way. We can
-control the multiplier value of bdi device readahead between 2 (default)
-and 256 for POSIX_FADV_SEQUENTIAL advise option.
+For passing rw info from get_block() to dio->private.
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- Documentation/ABI/testing/sysfs-fs-f2fs |  6 +++++
- fs/f2fs/f2fs.h                          |  2 ++
- fs/f2fs/file.c                          | 32 +++++++++++++++++++++++++
- fs/f2fs/super.c                         |  1 +
- fs/f2fs/sysfs.c                         | 10 ++++++++
- 5 files changed, 51 insertions(+)
+> 
+>> +static int f2fs_dio_end_io(struct kiocb *iocb, loff_t offset,
+>> +					ssize_t bytes, void *private)
+>>   {
+>> -	struct f2fs_private_dio *dio = bio->bi_private;
+>> -
+>> -	dec_page_count(F2FS_I_SB(dio->inode),
+>> -			dio->write ? F2FS_DIO_WRITE : F2FS_DIO_READ);
+>> -
+>> -	bio->bi_private = dio->orig_private;
+>> -	bio->bi_end_io = dio->orig_end_io;
+>> -
+>> -	kfree(dio);
+>> +	struct inode *inode = file_inode(iocb->ki_filp);
+>> +	bool may_write = private;
+>>   
+>> -	bio_endio(bio);
+>> +	dec_dio_req_count(F2FS_I_SB(inode), may_write ? WRITE : READ);
+>> +	return 0;
+>>   }
+>>   
+>>   static void f2fs_dio_submit_bio(struct bio *bio, struct inode *inode,
+>>   							loff_t file_offset)
+>>   {
+>> -	struct f2fs_private_dio *dio;
+>> -	bool write = (bio_op(bio) == REQ_OP_WRITE);
+>> -
+>> -	dio = f2fs_kzalloc(F2FS_I_SB(inode),
+>> -			sizeof(struct f2fs_private_dio), GFP_NOFS);
+>> -	if (!dio)
+>> -		goto out;
+>> -
+>> -	dio->inode = inode;
+>> -	dio->orig_end_io = bio->bi_end_io;
+>> -	dio->orig_private = bio->bi_private;
+>> -	dio->write = write;
+>> -
+>> -	bio->bi_end_io = f2fs_dio_end_io;
+>> -	bio->bi_private = dio;
+>> -
+>> -	inc_page_count(F2FS_I_SB(inode),
+>> -			write ? F2FS_DIO_WRITE : F2FS_DIO_READ);
+>> +	inc_dio_req_count(F2FS_I_SB(inode),
+>> +			op_is_write(bio_op(bio)) ? WRITE : READ);
+>>   
+>>   	submit_bio(bio);
+>> -	return;
+>> -out:
+>> -	bio->bi_status = BLK_STS_IOERR;
+>> -	bio_endio(bio);
+>>   }
+> 
+> The inc and dec here aren't correctly paired, since f2fs_dio_submit_bio() is
+> called once per bio whereas f2fs_dio_end_io() is called when the entire direct
+> I/O request (which may have consisted of multiple bios) has completed.
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 3d1f853c6681..60f1f176374e 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -507,3 +507,9 @@ Date:		July 2021
- Contact:	"Daeho Jeong" <daehojeong@google.com>
- Description:	You can control for which gc mode the "gc_reclaimed_segments" node shows.
- 		Refer to the description of the modes in "gc_reclaimed_segments".
-+
-+What:		/sys/fs/f2fs/<disk>/seq_file_ra_mul
-+Date:		July 2021
-+Contact:	"Daeho Jeong" <daehojeong@google.com>
-+Description:	You can	control the multiplier value of	bdi device readahead window size
-+		between 2 (default) and 256 for POSIX_FADV_SEQUENTIAL advise option.
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 502e47936651..c59329dcb1f6 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1733,6 +1733,8 @@ struct f2fs_sb_info {
- 	unsigned int gc_segment_mode;		/* GC state for reclaimed segments */
- 	unsigned int gc_reclaimed_segs[MAX_GC_MODE];	/* Reclaimed segs for each mode */
- 
-+	unsigned long seq_file_ra_mul;		/* multiplier for ra_pages of seq. files in fadvise */
-+
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- 	struct kmem_cache *page_array_slab;	/* page array entry */
- 	unsigned int page_array_slab_size;	/* default page array slab size */
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 6afd4562335f..f71c90236815 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -23,6 +23,7 @@
- #include <linux/nls.h>
- #include <linux/sched/signal.h>
- #include <linux/fileattr.h>
-+#include <linux/fadvise.h>
- 
- #include "f2fs.h"
- #include "node.h"
-@@ -4332,6 +4333,36 @@ static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	return ret;
- }
- 
-+static int f2fs_file_fadvise(struct file *filp, loff_t offset, loff_t len,
-+		int advice)
-+{
-+	int ret;
-+	struct inode *inode;
-+	struct address_space *mapping;
-+	struct backing_dev_info *bdi;
-+
-+	if (advice == POSIX_FADV_SEQUENTIAL) {
-+		inode = file_inode(filp);
-+		if (S_ISFIFO(inode->i_mode))
-+			return -ESPIPE;
-+
-+		mapping = filp->f_mapping;
-+		if (!mapping || len < 0)
-+			return -EINVAL;
-+
-+		bdi = inode_to_bdi(mapping->host);
-+		filp->f_ra.ra_pages = bdi->ra_pages * F2FS_I_SB(inode)->seq_file_ra_mul;
-+		spin_lock(&filp->f_lock);
-+		filp->f_mode &= ~FMODE_RANDOM;
-+		spin_unlock(&filp->f_lock);
-+		return 0;
-+	}
-+
-+	ret = generic_fadvise(filp, offset, len, advice);
-+
-+	return ret;
-+}
-+
- #ifdef CONFIG_COMPAT
- struct compat_f2fs_gc_range {
- 	u32 sync;
-@@ -4460,4 +4491,5 @@ const struct file_operations f2fs_file_operations = {
- #endif
- 	.splice_read	= generic_file_splice_read,
- 	.splice_write	= iter_file_splice_write,
-+	.fadvise	= f2fs_file_fadvise,
- };
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 9089303f7f8c..ccb745807fe1 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3312,6 +3312,7 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
- 	sbi->next_victim_seg[FG_GC] = NULL_SEGNO;
- 	sbi->max_victim_search = DEF_MAX_VICTIM_SEARCH;
- 	sbi->migration_granularity = sbi->segs_per_sec;
-+	sbi->seq_file_ra_mul = 2;
- 
- 	sbi->dir_level = DEF_DIR_LEVEL;
- 	sbi->interval_time[CP_TIME] = DEF_CP_INTERVAL;
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index 15fe30d3aeb5..9a21be63436d 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -538,6 +538,14 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
- 		return count;
- 	}
- 
-+	if (!strcmp(a->attr.name, "seq_file_ra_mul")) {
-+		if (t >= 2 && t <= 256)
-+			sbi->seq_file_ra_mul = t;
-+		else
-+			return -EINVAL;
-+		return count;
-+	}
-+
- 	*ui = (unsigned int)t;
- 
- 	return count;
-@@ -763,6 +771,7 @@ F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_count, max_candidate_cou
- F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_weight, age_weight);
- F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_threshold, age_threshold);
- 
-+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, seq_file_ra_mul, seq_file_ra_mul);
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_segment_mode, gc_segment_mode);
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_reclaimed_segments, gc_reclaimed_segs);
- 
-@@ -838,6 +847,7 @@ static struct attribute *f2fs_attrs[] = {
- 	ATTR_LIST(atgc_candidate_count),
- 	ATTR_LIST(atgc_age_weight),
- 	ATTR_LIST(atgc_age_threshold),
-+	ATTR_LIST(seq_file_ra_mul),
- 	ATTR_LIST(gc_segment_mode),
- 	ATTR_LIST(gc_reclaimed_segments),
- 	NULL,
--- 
-2.32.0.432.gabb21c7263-goog
+Correct, it still needs to hook bio->bi_end_io rather than hooking dio->end_io,
+however, w/o one extra allocated memory, we have no way to pass sbi to
+f2fs_dio_end_io() for dec_dio_req_count(sbi, ...) invoking.
 
+> 
+> The correct way to do this would be to do the inc before calling
+> __blockdev_direct_IO(), and do the dec in end_io or if __blockdev_direct_IO()
+> returned without actually issuing any I/O.
+> 
+> But I think you shouldn't bother with this part of the change before we switch
+> to iomap, as it will then need to be changed again anyway.
+
+Agreed.
+
+Thanks,
+
+> 
+> - Eric
+> 
