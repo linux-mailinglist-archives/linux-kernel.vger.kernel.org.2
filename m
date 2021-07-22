@@ -2,90 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CBB3D1E65
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C19313D1E67
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhGVF7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 01:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbhGVF7r (ORCPT
+        id S230313AbhGVGAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 02:00:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43985 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229573AbhGVGAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 01:59:47 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF533C061575;
-        Wed, 21 Jul 2021 23:40:22 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id m16so6835888lfg.13;
-        Wed, 21 Jul 2021 23:40:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=492xaH9XskXIclTeD22F++BxCoQwu3EAB4wNMkhV3+I=;
-        b=UBf4kRx2uM7bZiE9TaM+KGMq00abCQsDBJ5ZR7AHeTFfw3d36MA3MhkdHw9DrgwPNh
-         vh91KmBF3+AzO06S771Y9JfM6hjstKYeHbTPOdu0+u2GvWgW/3FO0ckqGHBcX2ADqSOS
-         P8e7ZUchfJL1/bOt1rMhfsTe7nyWiR7D/xTkqaObVnDaY/idmu57nITJR5XbMN4fmZoT
-         PnXPOPqnqCdW10OK8qC7Y3tWKu+qGjiX8jez90t7Y7wqz+bnbzOEQrlb9LKdxKs1AMmN
-         QUtnrz7xGypyvJb67cKgJ17HtIEniV32pUOaFXhEWCjRgfOApuxFWeUKIRprJOElQUMU
-         JUvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=492xaH9XskXIclTeD22F++BxCoQwu3EAB4wNMkhV3+I=;
-        b=cKZRVaZPBCsEEn3cwNDUd/AcBzi7aNMIBfBNOA8Y5kfNAWlE+MKnrco7aWd+asB4hY
-         Y8CfsUDjAyNVWqML1/ojOBzdkJUiqAYfnTLIA1R8fY/yrp5vZw6InZZihlyPKsMa/mLc
-         wPpeWT1kGtepT/dfkUftTl7uZjIBdhNXgc9bPHPzGKlyqU5K/wlmUw0zN1/BCxzx4o4j
-         VAaOUdnpfjoZfSj1N9zLYeBIXtWiuWGWhfeuzN79IefesxMNt65/YEsL4M3vrYAQ4PZ8
-         3mgocLvIgxp6sU8FyWaWRbD+Jd+J+Fx89FzAJJac4EbkLpJC2uXYkSdO5vDKMFkbYU8K
-         nw4A==
-X-Gm-Message-State: AOAM531eKUPF54GCUgaGVX+ja+6NDO6r5emwbnUKdBnoNmXOZ30T5zWO
-        0j8qXMgxbr/reT07tfQShqXAnkDdrnRnLfSbNw==
-X-Google-Smtp-Source: ABdhPJzEsGglyTKJ2RljA2HYhKjC4ug+v2N8YFrUjpEGlyyYnYP1l9K+f7G5w+r8ICP7FaInxusXSg==
-X-Received: by 2002:ac2:44cc:: with SMTP id d12mr27963210lfm.264.1626936021062;
-        Wed, 21 Jul 2021 23:40:21 -0700 (PDT)
-Received: from localhost.localdomain (91-145-109-188.bb.dnainternet.fi. [91.145.109.188])
-        by smtp.gmail.com with ESMTPSA id b24sm790695lfp.26.2021.07.21.23.40.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 23:40:20 -0700 (PDT)
-From:   mika.penttila@gmail.com
-To:     linux-kernel@vger.kernel.org
-Cc:     lirongqing@baidu.com, pbonzini@redhat.com, mingo@redhat.com,
-        peterz@infradead.org, kvm@vger.kernel.org,
-        =?UTF-8?q?Mika=20Penttil=C3=A4?= <mika.penttila@gmail.com>
-Subject: [PATCH] is_core_idle() is using a wrong variable
-Date:   Thu, 22 Jul 2021 09:39:46 +0300
-Message-Id: <20210722063946.28951-1-mika.penttila@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 22 Jul 2021 02:00:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626936079;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rknGJhN13RsWe8LLMDZdbZVLoWIdM2z/zw9KCSVz7Oc=;
+        b=cpJDF/dxvkEleJu+QOYUHhryYA7CuOmWBP73RaXJhZEdklzbL741J88VrDnrOXoddEHM6W
+        TJg8/6AcShF0xvmQwKONcrdcjU7m5XK7FkJN1eKUgIxv1JOExshL/bPc/L2xmRgJ6KR71Z
+        m9FlEyxKGu1piy+Z+GwFor8KxejsT/0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-140-4OTsVoGUNOmeCbKvpFmlPw-1; Thu, 22 Jul 2021 02:41:18 -0400
+X-MC-Unique: 4OTsVoGUNOmeCbKvpFmlPw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACF111005D57;
+        Thu, 22 Jul 2021 06:41:16 +0000 (UTC)
+Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A70C260C59;
+        Thu, 22 Jul 2021 06:41:13 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v3 08/12] mm/debug_vm_pgtable: Use struct
+ pgtable_debug_args in PMD modifying tests
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+References: <20210719130613.334901-1-gshan@redhat.com>
+ <20210719130613.334901-9-gshan@redhat.com>
+ <52a61d4a-f93d-af9e-4a34-d8ea7c476838@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <e2707943-8645-a6d5-be15-7cf56791fedb@redhat.com>
+Date:   Thu, 22 Jul 2021 16:41:30 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <52a61d4a-f93d-af9e-4a34-d8ea7c476838@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mika Penttilä <mika.penttila@gmail.com>
+Hi Anshuman,
 
-is_core_idle() was using a wrong variable in the loop test. Fix it.
+On 7/22/21 3:45 PM, Anshuman Khandual wrote:
+> On 7/19/21 6:36 PM, Gavin Shan wrote:
+>> This uses struct pgtable_debug_args in PMD modifying tests. The allocated
+>> huge page is used when set_pmd_at() is used. The corresponding tests
+>> are skipped if the huge page doesn't exist. Besides, the unused variable
+>> @pmd_aligned in debug_vm_pgtable() is dropped.
+> 
+> Please dont drop @pmd_aligned just yet.
+> 
 
-Signed-off-by: Mika Penttilä <mika.penttila@gmail.com>
----
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We need do so. Otherwise, there is build warning to complain
+something like 'unused variable' after this patch is applied.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 44c452072a1b..30a6984a58f7 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1486,7 +1486,7 @@ static inline bool is_core_idle(int cpu)
- 		if (cpu == sibling)
- 			continue;
- 
--		if (!idle_cpu(cpu))
-+		if (!idle_cpu(sibling))
- 			return false;
- 	}
- #endif
--- 
-2.17.1
+>>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> ---
+>>   mm/debug_vm_pgtable.c | 102 ++++++++++++++++++++----------------------
+>>   1 file changed, 48 insertions(+), 54 deletions(-)
+>>
+>> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+>> index eb6dda88e0d9..cec3cbf99a6b 100644
+>> --- a/mm/debug_vm_pgtable.c
+>> +++ b/mm/debug_vm_pgtable.c
+>> @@ -213,54 +213,54 @@ static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx)
+>>   	WARN_ON(!pmd_bad(pmd_mkhuge(pmd)));
+>>   }
+>>   
+>> -static void __init pmd_advanced_tests(struct mm_struct *mm,
+>> -				      struct vm_area_struct *vma, pmd_t *pmdp,
+>> -				      unsigned long pfn, unsigned long vaddr,
+>> -				      pgprot_t prot, pgtable_t pgtable)
+>> +static void __init pmd_advanced_tests(struct pgtable_debug_args *args)
+>>   {
+>>   	pmd_t pmd;
+>> +	unsigned long vaddr = (args->vaddr & HPAGE_PMD_MASK);
+>>   
+>>   	if (!has_transparent_hugepage())
+>>   		return;
+>>   
+>>   	pr_debug("Validating PMD advanced\n");
+>> -	/* Align the address wrt HPAGE_PMD_SIZE */
+>> -	vaddr &= HPAGE_PMD_MASK;
+> 
+> Please just leave these unchanged. If has_transparent_hugepage() evaluates
+> negative, it skips the masking operation. As mentioned earlier please avoid
+> changing the test in any manner during these transition patches.
+> 
+
+Ok.
+
+>> +	if (args->pmd_pfn == ULONG_MAX) {
+>> +		pr_debug("%s: Skipped\n", __func__);
+>> +		return;
+>> +	}
+> 
+> Just return. Please dont call out "Skipped".
+> 
+
+Ok.
+
+>>   
+>> -	pgtable_trans_huge_deposit(mm, pmdp, pgtable);
+>> +	pgtable_trans_huge_deposit(args->mm, args->pmdp, args->start_ptep);
+>>   
+>> -	pmd = pfn_pmd(pfn, prot);
+>> -	set_pmd_at(mm, vaddr, pmdp, pmd);
+>> -	pmdp_set_wrprotect(mm, vaddr, pmdp);
+>> -	pmd = READ_ONCE(*pmdp);
+>> +	pmd = pfn_pmd(args->pmd_pfn, args->page_prot);
+>> +	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
+>> +	pmdp_set_wrprotect(args->mm, vaddr, args->pmdp);
+>> +	pmd = READ_ONCE(*(args->pmdp));
+>>   	WARN_ON(pmd_write(pmd));
+>> -	pmdp_huge_get_and_clear(mm, vaddr, pmdp);
+>> -	pmd = READ_ONCE(*pmdp);
+>> +	pmdp_huge_get_and_clear(args->mm, vaddr, args->pmdp);
+>> +	pmd = READ_ONCE(*(args->pmdp));
+>>   	WARN_ON(!pmd_none(pmd));
+>>   
+>> -	pmd = pfn_pmd(pfn, prot);
+>> +	pmd = pfn_pmd(args->pmd_pfn, args->page_prot);
+>>   	pmd = pmd_wrprotect(pmd);
+>>   	pmd = pmd_mkclean(pmd);
+>> -	set_pmd_at(mm, vaddr, pmdp, pmd);
+>> +	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
+>>   	pmd = pmd_mkwrite(pmd);
+>>   	pmd = pmd_mkdirty(pmd);
+>> -	pmdp_set_access_flags(vma, vaddr, pmdp, pmd, 1);
+>> -	pmd = READ_ONCE(*pmdp);
+>> +	pmdp_set_access_flags(args->vma, vaddr, args->pmdp, pmd, 1);
+>> +	pmd = READ_ONCE(*(args->pmdp));
+>>   	WARN_ON(!(pmd_write(pmd) && pmd_dirty(pmd)));
+>> -	pmdp_huge_get_and_clear_full(vma, vaddr, pmdp, 1);
+>> -	pmd = READ_ONCE(*pmdp);
+>> +	pmdp_huge_get_and_clear_full(args->vma, vaddr, args->pmdp, 1);
+>> +	pmd = READ_ONCE(*(args->pmdp));
+>>   	WARN_ON(!pmd_none(pmd));
+>>   
+>> -	pmd = pmd_mkhuge(pfn_pmd(pfn, prot));
+>> +	pmd = pmd_mkhuge(pfn_pmd(args->pmd_pfn, args->page_prot));
+>>   	pmd = pmd_mkyoung(pmd);
+>> -	set_pmd_at(mm, vaddr, pmdp, pmd);
+>> -	pmdp_test_and_clear_young(vma, vaddr, pmdp);
+>> -	pmd = READ_ONCE(*pmdp);
+>> +	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
+>> +	pmdp_test_and_clear_young(args->vma, vaddr, args->pmdp);
+>> +	pmd = READ_ONCE(*(args->pmdp));
+>>   	WARN_ON(pmd_young(pmd));
+>>   
+>>   	/*  Clear the pte entries  */
+>> -	pmdp_huge_get_and_clear(mm, vaddr, pmdp);
+>> -	pgtable = pgtable_trans_huge_withdraw(mm, pmdp);
+>> +	pmdp_huge_get_and_clear(args->mm, vaddr, args->pmdp);
+>> +	pgtable_trans_huge_withdraw(args->mm, args->pmdp);
+>>   }
+>>   
+>>   static void __init pmd_leaf_tests(struct pgtable_debug_args *args)
+>> @@ -417,12 +417,7 @@ static void __init pud_leaf_tests(struct pgtable_debug_args *args) { }
+>>   #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
+>>   static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx) { }
+>>   static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx) { }
+>> -static void __init pmd_advanced_tests(struct mm_struct *mm,
+>> -				      struct vm_area_struct *vma, pmd_t *pmdp,
+>> -				      unsigned long pfn, unsigned long vaddr,
+>> -				      pgprot_t prot, pgtable_t pgtable)
+>> -{
+>> -}
+>> +static void __init pmd_advanced_tests(struct pgtable_debug_args *args) { }
+>>   static void __init pud_advanced_tests(struct mm_struct *mm,
+>>   				      struct vm_area_struct *vma, pud_t *pudp,
+>>   				      unsigned long pfn, unsigned long vaddr,
+>> @@ -435,11 +430,11 @@ static void __init pmd_savedwrite_tests(struct pgtable_debug_args *args) { }
+>>   #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>>   
+>>   #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+>> -static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot)
+>> +static void __init pmd_huge_tests(struct pgtable_debug_args *args)
+>>   {
+>>   	pmd_t pmd;
+>>   
+>> -	if (!arch_vmap_pmd_supported(prot))
+>> +	if (!arch_vmap_pmd_supported(args->page_prot))
+>>   		return;
+>>   
+>>   	pr_debug("Validating PMD huge\n");
+>> @@ -447,10 +442,11 @@ static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot)
+>>   	 * X86 defined pmd_set_huge() verifies that the given
+>>   	 * PMD is not a populated non-leaf entry.
+>>   	 */
+>> -	WRITE_ONCE(*pmdp, __pmd(0));
+>> -	WARN_ON(!pmd_set_huge(pmdp, __pfn_to_phys(pfn), prot));
+>> -	WARN_ON(!pmd_clear_huge(pmdp));
+>> -	pmd = READ_ONCE(*pmdp);
+>> +	WRITE_ONCE(*(args->pmdp), __pmd(0));
+> 
+> Possible extra braces.
+> 
+
+Will drop it in v4, thanks!
+
+>> +	WARN_ON(!pmd_set_huge(args->pmdp, __pfn_to_phys(args->fixed_pmd_pfn),
+>> +			      args->page_prot));
+> 
+> Dont break the line.
+> 
+
+Ok.
+
+>> +	WARN_ON(!pmd_clear_huge(args->pmdp));
+>> +	pmd = READ_ONCE(*(args->pmdp));
+>>   	WARN_ON(!pmd_none(pmd));
+>>   }
+>>   
+>> @@ -473,7 +469,7 @@ static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+>>   	WARN_ON(!pud_none(pud));
+>>   }
+>>   #else /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
+>> -static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot) { }
+>> +static void __init pmd_huge_tests(struct pgtable_debug_args *args) { }
+>>   static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot) { }
+>>   #endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+>>   
+>> @@ -640,20 +636,19 @@ static void __init pte_clear_tests(struct pgtable_debug_args *args)
+>>   	WARN_ON(!pte_none(pte));
+>>   }
+>>   
+>> -static void __init pmd_clear_tests(struct mm_struct *mm, pmd_t *pmdp)
+>> +static void __init pmd_clear_tests(struct pgtable_debug_args *args)
+>>   {
+>> -	pmd_t pmd = READ_ONCE(*pmdp);
+>> +	pmd_t pmd = READ_ONCE(*(args->pmdp));
+>>   
+>>   	pr_debug("Validating PMD clear\n");
+>>   	pmd = __pmd(pmd_val(pmd) | RANDOM_ORVALUE);
+>> -	WRITE_ONCE(*pmdp, pmd);
+>> -	pmd_clear(pmdp);
+>> -	pmd = READ_ONCE(*pmdp);
+>> +	WRITE_ONCE(*(args->pmdp), pmd);
+>> +	pmd_clear(args->pmdp);
+>> +	pmd = READ_ONCE(*(args->pmdp));
+>>   	WARN_ON(!pmd_none(pmd));
+>>   }
+>>   
+>> -static void __init pmd_populate_tests(struct mm_struct *mm, pmd_t *pmdp,
+>> -				      pgtable_t pgtable)
+>> +static void __init pmd_populate_tests(struct pgtable_debug_args *args)
+>>   {
+>>   	pmd_t pmd;
+>>   
+>> @@ -662,8 +657,8 @@ static void __init pmd_populate_tests(struct mm_struct *mm, pmd_t *pmdp,
+>>   	 * This entry points to next level page table page.
+>>   	 * Hence this must not qualify as pmd_bad().
+>>   	 */
+>> -	pmd_populate(mm, pmdp, pgtable);
+>> -	pmd = READ_ONCE(*pmdp);
+>> +	pmd_populate(args->mm, args->pmdp, args->start_ptep);
+>> +	pmd = READ_ONCE(*(args->pmdp));
+>>   	WARN_ON(pmd_bad(pmd));
+>>   }
+>>   
+>> @@ -1159,7 +1154,7 @@ static int __init debug_vm_pgtable(void)
+>>   	pgtable_t saved_ptep;
+>>   	pgprot_t prot;
+>>   	phys_addr_t paddr;
+>> -	unsigned long vaddr, pmd_aligned;
+>> +	unsigned long vaddr;
+>>   	unsigned long pud_aligned;
+>>   	spinlock_t *ptl = NULL;
+>>   	int idx, ret;
+>> @@ -1194,7 +1189,6 @@ static int __init debug_vm_pgtable(void)
+>>   	 */
+>>   	paddr = __pa_symbol(&start_kernel);
+>>   
+>> -	pmd_aligned = (paddr & PMD_MASK) >> PAGE_SHIFT;
+> 
+> Please dont drop these just yet and wait until [PATCH 11/12].
+> 
+
+Otherwise, it causes build warning: 'unused variable'.
+
+>>   	pud_aligned = (paddr & PUD_MASK) >> PAGE_SHIFT;
+>>   
+>>   	pgdp = pgd_offset(mm, vaddr);
+>> @@ -1281,11 +1275,11 @@ static int __init debug_vm_pgtable(void)
+>>   	pte_advanced_tests(&args);
+>>   	spin_unlock(ptl);
+>>   
+>> -	ptl = pmd_lock(mm, pmdp);
+>> -	pmd_clear_tests(mm, pmdp);
+>> -	pmd_advanced_tests(mm, vma, pmdp, pmd_aligned, vaddr, prot, saved_ptep);
+>> -	pmd_huge_tests(pmdp, pmd_aligned, prot);
+>> -	pmd_populate_tests(mm, pmdp, saved_ptep);
+>> +	ptl = pmd_lock(args.mm, args.pmdp);
+>> +	pmd_clear_tests(&args);
+>> +	pmd_advanced_tests(&args);
+>> +	pmd_huge_tests(&args);
+>> +	pmd_populate_tests(&args);
+>>   	spin_unlock(ptl);
+>>   
+>>   	ptl = pud_lock(mm, pudp);
+>>
+> 
+
+Thanks,
+Gavin
 
