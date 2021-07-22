@@ -2,36 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B563D2930
+	by mail.lfdr.de (Postfix) with ESMTP id 4580D3D292E
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233686AbhGVQCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:02:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37010 "EHLO mail.kernel.org"
+        id S233300AbhGVQBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:01:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234024AbhGVP7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:59:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F38660E0C;
-        Thu, 22 Jul 2021 16:40:21 +0000 (UTC)
+        id S234028AbhGVP7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:59:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CA37610CC;
+        Thu, 22 Jul 2021 16:40:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972022;
-        bh=YRjJ9VB80lIjXJrb+1BLOGu/PkCrCOH0Rk74V8ZZmcI=;
+        s=korg; t=1626972024;
+        bh=HnNod2djNfv7zK0mtv2DoLbArs/EEOGHAzQi79gXess=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cPxgbUHpQlGxtQ18zhsAeziIMM+13O5JDEUS/MI1MAV0Ly9sqRolLyJRL6lx2MAw+
-         MT155CXBE84D6LMtIBlxQ9zK1wMyHz5fsVUNNpSthaR9YNpyWRcNzdc06N8h5ixI7/
-         Ueg8nha/B29ZojJHFNHhE/YL7xo60sjy67IL38tA=
+        b=JByTj7iDenchjZ0e7VIvHI6LKvUZKk+yinF8NhXkaiSnM03u5djuW1HmWmsc3zgTT
+         j1E9Fl1/+sr04pRIShJOHQMpzf9mYScmEqa9X5VqnxsE6Xl1joV13/nEG/1p4ZklHu
+         yu3OzCTjxWGcQmyOwm5xAhYGmcGsnDEuJGIHWJmE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        "From: Matthew Wilcox" <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Ying Huang <ying.huang@intel.com>, Alex Shi <alexs@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 082/125] arm64: dts: marvell: armada-37xx: move firmware node to generic dtsi file
-Date:   Thu, 22 Jul 2021 18:31:13 +0200
-Message-Id: <20210722155627.420060568@linuxfoundation.org>
+Subject: [PATCH 5.10 083/125] Revert "swap: fix do_swap_page() race with swapoff"
+Date:   Thu, 22 Jul 2021 18:31:14 +0200
+Message-Id: <20210722155627.451144121@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
 References: <20210722155624.672583740@linuxfoundation.org>
@@ -43,75 +54,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 3a52a48973b355b3aac5add92ef50650ae37c2bd ]
+This reverts commit 8e4af3917bfc5e82f8010417c12b755ef256fa5e which is
+commit 2799e77529c2a25492a4395db93996e3dacd762d upstream.
 
-Move the turris-mox-rwtm firmware node from Turris MOX' device tree into
-the generic armada-37xx.dtsi file and use the generic compatible string
-'marvell,armada-3700-rwtm-firmware' instead of the current one.
+It should not have been added to the stable trees, sorry about that.
 
-Turris MOX DTS file contains also old compatible string for backward
-compatibility.
-
-The Turris MOX rWTM firmware can be used on any Armada 37xx device,
-giving them access to the rWTM hardware random number generator, which
-is otherwise unavailable.
-
-This change allows Linux to load the turris-mox-rwtm.ko module on these
-boards.
-
-Tested on ESPRESSObin v5 with both default Marvell WTMI firmware and
-CZ.NIC's firmware. With default WTMI firmware the turris-mox-rwtm fails
-to probe, while with CZ.NIC's firmware it registers the HW random number
-generator.
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/YPVgaY6uw59Fqg5x@casper.infradead.org
+Reported-by: From: Matthew Wilcox <willy@infradead.org>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Ying Huang <ying.huang@intel.com>
+Cc: Alex Shi <alexs@kernel.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Dennis Zhou <dennis@kernel.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: Wei Yang <richard.weiyang@gmail.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 6 ++----
- arch/arm64/boot/dts/marvell/armada-37xx.dtsi           | 8 ++++++++
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ include/linux/swap.h |    9 ---------
+ mm/memory.c          |   11 ++---------
+ 2 files changed, 2 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-index cca143e4b6bf..389aebdb35f1 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-@@ -108,10 +108,8 @@
- 	};
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -503,15 +503,6 @@ static inline struct swap_info_struct *s
+ 	return NULL;
+ }
  
- 	firmware {
--		turris-mox-rwtm {
--			compatible = "cznic,turris-mox-rwtm";
--			mboxes = <&rwtm 0>;
--			status = "okay";
-+		armada-3700-rwtm {
-+			compatible = "marvell,armada-3700-rwtm-firmware", "cznic,turris-mox-rwtm";
- 		};
- 	};
- };
-diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-index 879115dfdf82..83d2d83f7692 100644
---- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-@@ -502,4 +502,12 @@
- 			};
- 		};
- 	};
+-static inline struct swap_info_struct *get_swap_device(swp_entry_t entry)
+-{
+-	return NULL;
+-}
+-
+-static inline void put_swap_device(struct swap_info_struct *si)
+-{
+-}
+-
+ #define swap_address_space(entry)		(NULL)
+ #define get_nr_swap_pages()			0L
+ #define total_swap_pages			0L
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3302,7 +3302,6 @@ vm_fault_t do_swap_page(struct vm_fault
+ {
+ 	struct vm_area_struct *vma = vmf->vma;
+ 	struct page *page = NULL, *swapcache;
+-	struct swap_info_struct *si = NULL;
+ 	swp_entry_t entry;
+ 	pte_t pte;
+ 	int locked;
+@@ -3330,16 +3329,14 @@ vm_fault_t do_swap_page(struct vm_fault
+ 		goto out;
+ 	}
+ 
+-	/* Prevent swapoff from happening to us. */
+-	si = get_swap_device(entry);
+-	if (unlikely(!si))
+-		goto out;
+ 
+ 	delayacct_set_flag(DELAYACCT_PF_SWAPIN);
+ 	page = lookup_swap_cache(entry, vma, vmf->address);
+ 	swapcache = page;
+ 
+ 	if (!page) {
++		struct swap_info_struct *si = swp_swap_info(entry);
 +
-+	firmware {
-+		armada-3700-rwtm {
-+			compatible = "marvell,armada-3700-rwtm-firmware";
-+			mboxes = <&rwtm 0>;
-+			status = "okay";
-+		};
-+	};
- };
--- 
-2.30.2
-
+ 		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+ 		    __swap_count(entry) == 1) {
+ 			/* skip swapcache */
+@@ -3510,8 +3507,6 @@ vm_fault_t do_swap_page(struct vm_fault
+ unlock:
+ 	pte_unmap_unlock(vmf->pte, vmf->ptl);
+ out:
+-	if (si)
+-		put_swap_device(si);
+ 	return ret;
+ out_nomap:
+ 	pte_unmap_unlock(vmf->pte, vmf->ptl);
+@@ -3523,8 +3518,6 @@ out_release:
+ 		unlock_page(swapcache);
+ 		put_page(swapcache);
+ 	}
+-	if (si)
+-		put_swap_device(si);
+ 	return ret;
+ }
+ 
 
 
