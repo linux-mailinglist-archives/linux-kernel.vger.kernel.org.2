@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEE53D29FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CC63D28B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234589AbhGVQHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:07:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40678 "EHLO mail.kernel.org"
+        id S232953AbhGVP6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:58:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233900AbhGVQEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:04:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 731C9619B4;
-        Thu, 22 Jul 2021 16:44:37 +0000 (UTC)
+        id S232663AbhGVP4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:56:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ADB660FDA;
+        Thu, 22 Jul 2021 16:37:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972278;
-        bh=rn9Udz48rVHFZj1BirUeXvUKeXRIJztrXZPaBTQxx0Y=;
+        s=korg; t=1626971836;
+        bh=nHVaMmFssVugTI/O0HVk9I2OZEDC1uJS2IkRqr+tM5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2MRBM/7yAx9I2YmWWbcjHPQEFwP2DVBQdktM5sWnzx7HkJ0hHqBzBvXnEkQKCKf8h
-         u9MksSRDBr38MPSXUGrNOXKwF1oP/DcL6uhjomxsXqQoV7LHouhSpgIyzw8nA5JUJN
-         AWmx86Mq2V2GDX7MrHHCsZxKnRca7hD4VoWTVsZo=
+        b=agpPfdZWVOpSEXTOeiYjSvvbFUUaumM6Qyd9q9X3Tdnp/z548gWC4p7x0EGoJeFid
+         FXhbUKfGQDVEznn6FpYCebezE0o1qJRmzQ5M+HP4W1v1LeTUwQNW+Bv3ui9Hp3swDr
+         jspSdg8eubNaoKrShzy+B/zkK6DuJB82Vi6bwKvA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 053/156] ARM: dts: stm32: fix gpio-keys node on STM32 MCU boards
-Date:   Thu, 22 Jul 2021 18:30:28 +0200
-Message-Id: <20210722155630.126467756@linuxfoundation.org>
+Subject: [PATCH 5.10 038/125] arm64: dts: qcom: msm8996: Make CPUCC actually probe (and work)
+Date:   Thu, 22 Jul 2021 18:30:29 +0200
+Message-Id: <20210722155625.957020845@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,127 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+From: Konrad Dybcio <konrad.dybcio@somainline.org>
 
-[ Upstream commit bf24b91f4baf7e421c770a1d9c7d381b10206ac9 ]
+[ Upstream commit 0a275a35ceab07cb622ff212c54d6866e246ac53 ]
 
-Fix following warning observed with "make dtbs_check W=1" command.
-It concerns f429 eval and disco boards, f769 disco board.
+Fix the compatible to make the driver probe and tell the
+driver where to look for the "xo" clock to make sure everything
+works.
 
-Warning (unit_address_vs_reg): /gpio_keys/button@0: node has a unit name,
-but no reg or ranges property
+Then we get a happy (eh, happier) 8996:
 
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+somainline-sdcard:/home/konrad# cat /sys/kernel/debug/clk/pwrcl_pll/clk_rate
+1152000000
+
+Don't backport without "arm64: dts: qcom: msm8996: Add CPU opps", as
+the system fails to boot without consumers for these clocks.
+
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Link: https://lore.kernel.org/r/20210527192958.775434-1-konrad.dybcio@somainline.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32429i-eval.dts  | 8 +++-----
- arch/arm/boot/dts/stm32746g-eval.dts  | 6 ++----
- arch/arm/boot/dts/stm32f429-disco.dts | 6 ++----
- arch/arm/boot/dts/stm32f469-disco.dts | 6 ++----
- arch/arm/boot/dts/stm32f769-disco.dts | 6 ++----
- 5 files changed, 11 insertions(+), 21 deletions(-)
+ arch/arm64/boot/dts/qcom/msm8996.dtsi | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stm32429i-eval.dts b/arch/arm/boot/dts/stm32429i-eval.dts
-index 7e10ae744c9d..9ac1ffe53413 100644
---- a/arch/arm/boot/dts/stm32429i-eval.dts
-+++ b/arch/arm/boot/dts/stm32429i-eval.dts
-@@ -119,17 +119,15 @@
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+index fd6ae5464dea..b774d5457328 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -1741,9 +1741,14 @@
+ 				};
+ 			};
  		};
- 	};
++
+ 		kryocc: clock-controller@6400000 {
+-			compatible = "qcom,apcc-msm8996";
++			compatible = "qcom,msm8996-apcc";
+ 			reg = <0x06400000 0x90000>;
++
++			clock-names = "xo";
++			clocks = <&xo_board>;
++
+ 			#clock-cells = <1>;
+ 		};
  
--	gpio_keys {
-+	gpio-keys {
- 		compatible = "gpio-keys";
--		#address-cells = <1>;
--		#size-cells = <0>;
- 		autorepeat;
--		button@0 {
-+		button-0 {
- 			label = "Wake up";
- 			linux,code = <KEY_WAKEUP>;
- 			gpios = <&gpioa 0 0>;
- 		};
--		button@1 {
-+		button-1 {
- 			label = "Tamper";
- 			linux,code = <KEY_RESTART>;
- 			gpios = <&gpioc 13 0>;
-diff --git a/arch/arm/boot/dts/stm32746g-eval.dts b/arch/arm/boot/dts/stm32746g-eval.dts
-index ca8c192449ee..327613fd9666 100644
---- a/arch/arm/boot/dts/stm32746g-eval.dts
-+++ b/arch/arm/boot/dts/stm32746g-eval.dts
-@@ -81,12 +81,10 @@
- 		};
- 	};
- 
--	gpio_keys {
-+	gpio-keys {
- 		compatible = "gpio-keys";
--		#address-cells = <1>;
--		#size-cells = <0>;
- 		autorepeat;
--		button@0 {
-+		button-0 {
- 			label = "Wake up";
- 			linux,code = <KEY_WAKEUP>;
- 			gpios = <&gpioc 13 0>;
-diff --git a/arch/arm/boot/dts/stm32f429-disco.dts b/arch/arm/boot/dts/stm32f429-disco.dts
-index 3dc068b91ca1..075ac57d0bf4 100644
---- a/arch/arm/boot/dts/stm32f429-disco.dts
-+++ b/arch/arm/boot/dts/stm32f429-disco.dts
-@@ -81,12 +81,10 @@
- 		};
- 	};
- 
--	gpio_keys {
-+	gpio-keys {
- 		compatible = "gpio-keys";
--		#address-cells = <1>;
--		#size-cells = <0>;
- 		autorepeat;
--		button@0 {
-+		button-0 {
- 			label = "User";
- 			linux,code = <KEY_HOME>;
- 			gpios = <&gpioa 0 0>;
-diff --git a/arch/arm/boot/dts/stm32f469-disco.dts b/arch/arm/boot/dts/stm32f469-disco.dts
-index 2e1b3bbbe4b5..8c982ae79f43 100644
---- a/arch/arm/boot/dts/stm32f469-disco.dts
-+++ b/arch/arm/boot/dts/stm32f469-disco.dts
-@@ -104,12 +104,10 @@
- 		};
- 	};
- 
--	gpio_keys {
-+	gpio-keys {
- 		compatible = "gpio-keys";
--		#address-cells = <1>;
--		#size-cells = <0>;
- 		autorepeat;
--		button@0 {
-+		button-0 {
- 			label = "User";
- 			linux,code = <KEY_WAKEUP>;
- 			gpios = <&gpioa 0 GPIO_ACTIVE_HIGH>;
-diff --git a/arch/arm/boot/dts/stm32f769-disco.dts b/arch/arm/boot/dts/stm32f769-disco.dts
-index 0ce7fbc20fa4..be943b701980 100644
---- a/arch/arm/boot/dts/stm32f769-disco.dts
-+++ b/arch/arm/boot/dts/stm32f769-disco.dts
-@@ -75,12 +75,10 @@
- 		};
- 	};
- 
--	gpio_keys {
-+	gpio-keys {
- 		compatible = "gpio-keys";
--		#address-cells = <1>;
--		#size-cells = <0>;
- 		autorepeat;
--		button@0 {
-+		button-0 {
- 			label = "User";
- 			linux,code = <KEY_HOME>;
- 			gpios = <&gpioa 0 GPIO_ACTIVE_HIGH>;
 -- 
 2.30.2
 
