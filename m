@@ -2,134 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0F13D26BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57723D26FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbhGVOyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 10:54:12 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:51608 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232702AbhGVOyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 10:54:08 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id 55AE449E60;
-        Thu, 22 Jul 2021 15:34:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-type:content-type:content-transfer-encoding:mime-version
-        :references:in-reply-to:x-mailer:message-id:date:date:subject
-        :subject:from:from:received:received:received; s=mta-01; t=
-        1626968081; x=1628782482; bh=L5nd/8rhafdGKRZUdWJQZk7JFquxlLTs0Ub
-        dn3fx5CA=; b=ULnx/J0uUL0NXE3QOaUoO/XPKh6b3K9cQXrfEg3IAwMrlErr5bz
-        ZPAkMUzTUdNMojPoMfbH1kXpAspszieGhMgskz+qlJk+8RmjQjvkt0eVhHjqlKqC
-        IVnIvykBc/6uwG+JwV70mefNJf/jc8LF+BOmAxwTVQ1m7oLyFZjQ4nls=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id IY2XXrZfXoRz; Thu, 22 Jul 2021 18:34:41 +0300 (MSK)
-Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 2092949E69;
-        Thu, 22 Jul 2021 18:34:39 +0300 (MSK)
-Received: from fedora.bbmc.yadro.com (10.199.0.147) by
- T-EXCH-04.corp.yadro.com (172.17.100.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.669.32; Thu, 22 Jul 2021 18:34:36 +0300
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-Subject: [PATCH v5 3/3] iio: proximity: vcnl3020: remove iio_claim/release_direct
-Date:   Thu, 22 Jul 2021 18:44:20 +0300
-Message-ID: <20210722154420.915082-4-i.mikhaylov@yadro.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210722154420.915082-1-i.mikhaylov@yadro.com>
-References: <20210722154420.915082-1-i.mikhaylov@yadro.com>
+        id S232586AbhGVPFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:05:14 -0400
+Received: from mga04.intel.com ([192.55.52.120]:57800 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230343AbhGVPFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:05:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="209777051"
+X-IronPort-AV: E=Sophos;i="5.84,261,1620716400"; 
+   d="scan'208";a="209777051"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 08:45:48 -0700
+X-IronPort-AV: E=Sophos;i="5.84,261,1620716400"; 
+   d="scan'208";a="462813165"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 08:45:46 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m6atI-00H1uh-7d; Thu, 22 Jul 2021 18:45:40 +0300
+Date:   Thu, 22 Jul 2021 18:45:40 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Dennis Giaya <dgiaya@whoi.edu>
+Subject: Re: [PATCH v1 1/1] serial: max310x: Use clock-names property
+ matching to recognize XTAL
+Message-ID: <YPmSpNZr/yQiPqsO@smile.fi.intel.com>
+References: <20210722150233.30897-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.199.0.147]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-04.corp.yadro.com (172.17.100.104)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722150233.30897-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove iio_claim/release and change it on mutex accordingly in
-vcnl3020_write_proxy_samp_freq.
+On Thu, Jul 22, 2021 at 06:02:33PM +0300, Andy Shevchenko wrote:
+> Dennis reported that on ACPI-based systems the clock frequency
+> isn't enough to configure device properly. We have to respect
+> the clock source as well. To achieve this match the clock-names
+> property against "xtal" to recognize crystal connection.
 
-Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
----
- drivers/iio/proximity/vcnl3020.c | 33 ++++++++++++++++++++------------
- 1 file changed, 21 insertions(+), 12 deletions(-)
+Dennis, please test this.
 
-diff --git a/drivers/iio/proximity/vcnl3020.c b/drivers/iio/proximity/vcnl3020.c
-index 6d724657677a..6a3b59e1a6f6 100644
---- a/drivers/iio/proximity/vcnl3020.c
-+++ b/drivers/iio/proximity/vcnl3020.c
-@@ -236,10 +236,15 @@ static int vcnl3020_write_proxy_samp_freq(struct vcnl3020_data *data, int val,
- {
- 	unsigned int i;
- 	int index = -1;
-+	int rc;
-+
-+	mutex_lock(&data->lock);
- 
- 	/* Protect against event capture. */
--	if (vcnl3020_is_in_periodic_mode(data))
--		return -EBUSY;
-+	if (vcnl3020_is_in_periodic_mode(data)) {
-+		rc = -EBUSY;
-+		goto err_unlock;
-+	}
- 
- 	for (i = 0; i < ARRAY_SIZE(vcnl3020_prox_sampling_frequency); i++) {
- 		if (val == vcnl3020_prox_sampling_frequency[i][0] &&
-@@ -249,10 +254,20 @@ static int vcnl3020_write_proxy_samp_freq(struct vcnl3020_data *data, int val,
- 		}
- 	}
- 
--	if (index < 0)
--		return -EINVAL;
-+	if (index < 0) {
-+		rc = -EINVAL;
-+		goto err_unlock;
-+	}
- 
--	return regmap_write(data->regmap, VCNL_PROXIMITY_RATE, index);
-+	rc = regmap_write(data->regmap, VCNL_PROXIMITY_RATE, index);
-+	if (rc)
-+		dev_err(data->dev,
-+			"Error (%d) writing proximity rate register\n", rc);
-+
-+err_unlock:
-+	mutex_unlock(&data->lock);
-+
-+	return rc;
- }
- 
- static bool vcnl3020_is_thr_enabled(struct vcnl3020_data *data)
-@@ -513,17 +528,11 @@ static int vcnl3020_write_raw(struct iio_dev *indio_dev,
- 			      struct iio_chan_spec const *chan,
- 			      int val, int val2, long mask)
- {
--	int rc;
- 	struct vcnl3020_data *data = iio_priv(indio_dev);
- 
- 	switch (mask) {
- 	case IIO_CHAN_INFO_SAMP_FREQ:
--		rc = iio_device_claim_direct_mode(indio_dev);
--		if (rc)
--			return rc;
--		rc = vcnl3020_write_proxy_samp_freq(data, val, val2);
--		iio_device_release_direct_mode(indio_dev);
--		return rc;
-+		return vcnl3020_write_proxy_samp_freq(data, val, val2);
- 	default:
- 		return -EINVAL;
- 	}
+...
+
+> -	s->clk = devm_clk_get_optional(dev, "osc");
+> +	xtal = device_property_match_string(dev, "clock-names", "xtal") >= 0;
+
+Meanwhile I will change this (not affects the testing in your case) to actually
+negative one as:
+
+	..., "osc") < 0;
+
+to be compatible with the original flow (in case there are two clock names, the
+"osc" has a priority).
+
+
 -- 
-2.31.1
+With Best Regards,
+Andy Shevchenko
+
 
