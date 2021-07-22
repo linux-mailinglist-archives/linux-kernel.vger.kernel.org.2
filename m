@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8FC3D2981
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EC83D28AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234298AbhGVQEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:04:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40494 "EHLO mail.kernel.org"
+        id S232823AbhGVP6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:58:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233867AbhGVQDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:03:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A05C561AC0;
-        Thu, 22 Jul 2021 16:43:25 +0000 (UTC)
+        id S231207AbhGVP4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:56:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5465060FDA;
+        Thu, 22 Jul 2021 16:37:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972206;
-        bh=DgSsGs98K04WovgFBHCS85LkSAQALYO/sYdvlm0Tcw8=;
+        s=korg; t=1626971830;
+        bh=OvR16ZenqIElBgrXesiwLXN0ZP6Isg5Niqy5vJWWQbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SVx3gFDuVV2SDDlrN/9dMjQtwe8uDajzZ2OI1qmWYRVa0EfIDo4pMcw7a43KFvWqI
-         w2e5908D17uVjJTLC6N5rOlIFfgcK4yJW8BuVa9JQyHm1nGti63qwPydGFP6GA/Bkg
-         crKquCqlIrXB3/AcqyuOHaZYII4DlEC2wqBJLSCU=
+        b=nFAxAq4Rae8oa4s8XEM1ma+VtKLLXy1pZmTRaYEyD1cmipHBfy46zNSdqxwKW2Nev
+         m9sRkaYba+CdVSIjvU5Cy3hucaUHwIoR9F//SjXv1j1P60V/dy2ik3+x2IYt1Aqxr7
+         tJAVlMuv4W2s3HPDZt3WyBH7cZmbbnlgZsYKVBCc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Primoz Fiser <primoz.fiser@norik.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Elaine Zhang <zhangqing@rock-chips.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 025/156] ARM: dts: imx6: phyFLEX: Fix UART hardware flow control
+Subject: [PATCH 5.10 009/125] ARM: dts: rockchip: Fix power-controller node names for rk3188
 Date:   Thu, 22 Jul 2021 18:30:00 +0200
-Message-Id: <20210722155629.224857956@linuxfoundation.org>
+Message-Id: <20210722155624.996616829@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Primoz Fiser <primoz.fiser@norik.com>
+From: Elaine Zhang <zhangqing@rock-chips.com>
 
-[ Upstream commit 14cdc1f243d79e0b46be150502b7dba9c5a6bdfd ]
+[ Upstream commit d3bcbcd396175ac26aa54919c0b31c7d2878fc24 ]
 
-Serial interface uart3 on phyFLEX board is capable of 5-wire connection
-including signals RTS and CTS for hardware flow control.
+Use more generic names (as recommended in the device tree specification
+or the binding documentation)
 
-Fix signals UART3_CTS_B and UART3_RTS_B padmux assignments and add
-missing property "uart-has-rtscts" to allow serial interface to be
-configured and used with the hardware flow control.
-
-Signed-off-by: Primoz Fiser <primoz.fiser@norik.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/20210417112952.8516-3-jbx6244@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/rk3188.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-index 7bd658b7bdda..f3236204cb5a 100644
---- a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-@@ -322,8 +322,8 @@
- 			fsl,pins = <
- 				MX6QDL_PAD_EIM_D24__UART3_TX_DATA	0x1b0b1
- 				MX6QDL_PAD_EIM_D25__UART3_RX_DATA	0x1b0b1
--				MX6QDL_PAD_EIM_D30__UART3_RTS_B		0x1b0b1
--				MX6QDL_PAD_EIM_D31__UART3_CTS_B		0x1b0b1
-+				MX6QDL_PAD_EIM_D31__UART3_RTS_B		0x1b0b1
-+				MX6QDL_PAD_EIM_D30__UART3_CTS_B		0x1b0b1
- 			>;
+diff --git a/arch/arm/boot/dts/rk3188.dtsi b/arch/arm/boot/dts/rk3188.dtsi
+index 2c08ae60e4a1..b6bde9d12c2b 100644
+--- a/arch/arm/boot/dts/rk3188.dtsi
++++ b/arch/arm/boot/dts/rk3188.dtsi
+@@ -699,7 +699,7 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+-		pd_vio@RK3188_PD_VIO {
++		power-domain@RK3188_PD_VIO {
+ 			reg = <RK3188_PD_VIO>;
+ 			clocks = <&cru ACLK_LCDC0>,
+ 				 <&cru ACLK_LCDC1>,
+@@ -721,7 +721,7 @@
+ 				 <&qos_rga>;
  		};
  
-@@ -410,6 +410,7 @@
- &uart3 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_uart3>;
-+	uart-has-rtscts;
- 	status = "disabled";
- };
+-		pd_video@RK3188_PD_VIDEO {
++		power-domain@RK3188_PD_VIDEO {
+ 			reg = <RK3188_PD_VIDEO>;
+ 			clocks = <&cru ACLK_VDPU>,
+ 				 <&cru ACLK_VEPU>,
+@@ -730,7 +730,7 @@
+ 			pm_qos = <&qos_vpu>;
+ 		};
  
+-		pd_gpu@RK3188_PD_GPU {
++		power-domain@RK3188_PD_GPU {
+ 			reg = <RK3188_PD_GPU>;
+ 			clocks = <&cru ACLK_GPU>;
+ 			pm_qos = <&qos_gpu>;
 -- 
 2.30.2
 
