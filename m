@@ -2,139 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0323D3019
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 01:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FDA3D301E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 01:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232644AbhGVWe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 18:34:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33790 "EHLO mail.kernel.org"
+        id S232620AbhGVWh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 18:37:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:35088 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232628AbhGVWeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 18:34:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 138C260E8F;
-        Thu, 22 Jul 2021 23:14:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626995699;
-        bh=eb3jIUA27WuZiqMOHyn3peGQmh5dVT3HqvvzBdRVFcc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=NCx0VafwcDUgQxdGiVGEH1WRvGiDrLfm0PIdW0M228ZK6/JTb696B+7u64PQXaKI3
-         QilW7jzh5eKLnvVOxSkf/xCln1frHvUr+Nnm0EDmcGKQwVDaxLXUFunUFcqOrBDFko
-         M5RqW53Cm2gRsSWgmwi8uLw988ZfglpLaB5RZ/TdFv7nQzHPsg92J63qymesa503jY
-         A61B4w8GtQtRYIcHCNpPmmqljoR1A7m0OokV0TYJxQ9QLCTiVJHUlIYdu/pxI2XDUL
-         ssmoC5bm37yf5PbOQkMeieWlZyhgHDyPIDG7pVkhLW3vPszn3ygX5UW4lQl3JJy37o
-         iDgC9qWsxTKFQ==
-Subject: Re: [f2fs-dev] [PATCH] f2fs: simplify accounting inflight directIO
- request
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     jaegeuk@kernel.org, Chao Yu <chao.yu@linux.dev>,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210722131617.749204-1-chao@kernel.org>
- <YPmTP5EixgTp1Wze@gmail.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <e1b61b7f-a492-f28b-8a98-557e81a2022a@kernel.org>
-Date:   Fri, 23 Jul 2021 07:14:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232024AbhGVWhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 18:37:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4E767106F;
+        Thu, 22 Jul 2021 16:17:59 -0700 (PDT)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5BC713F694;
+        Thu, 22 Jul 2021 16:17:57 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 00:17:21 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ondrej Jirman <megous@megous.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v7 06/19] rtc: sun6i: Add support for RTCs without
+ external LOSCs
+Message-ID: <20210723001721.0bb02cf2@slackpad.fritz.box>
+In-Reply-To: <20210616091431.6tm3zdf77p2x3upc@gilmour>
+References: <20210615110636.23403-1-andre.przywara@arm.com>
+        <20210615110636.23403-7-andre.przywara@arm.com>
+        <20210616091431.6tm3zdf77p2x3upc@gilmour>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YPmTP5EixgTp1Wze@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/22 23:48, Eric Biggers wrote:
-> On Thu, Jul 22, 2021 at 09:16:17PM +0800, Chao Yu wrote:
->> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->> index ba120d55e9b1..d0a1ca6ae38e 100644
->> --- a/fs/f2fs/data.c
->> +++ b/fs/f2fs/data.c
->> @@ -1720,6 +1720,9 @@ static int __get_data_block(struct inode *inode, sector_t iblock,
->>   		map_bh(bh, inode->i_sb, map.m_pblk);
->>   		bh->b_state = (bh->b_state & ~F2FS_MAP_FLAGS) | map.m_flags;
->>   		bh->b_size = blks_to_bytes(inode, map.m_len);
->> +
->> +		if (flag == F2FS_GET_BLOCK_DIO)
->> +			bh->b_private = (void *)may_write;
-> 
-> Why is this hunk needed?
+On Wed, 16 Jun 2021 11:14:31 +0200
+Maxime Ripard <maxime@cerno.tech> wrote:
 
-For passing rw info from get_block() to dio->private.
+Hi Maxime,
 
+> On Tue, Jun 15, 2021 at 12:06:23PM +0100, Andre Przywara wrote:
+> > Some newer Allwinner RTCs (for instance the one in the H616 SoC) lack
+> > a pin for an external 32768 Hz oscillator. As a consequence, this LOSC
+> > can't be selected as the RTC clock source, and we must rely on the
+> > internal RC oscillator.
+> > To allow additions of clocks to the RTC node, add a feature bit to ignore
+> > any provided clocks for now (the current code would think this is the
+> > external LOSC). Later DTs and code can then for instance add the PLL
+> > based clock input, and older kernel won't get confused.
+> > 
+> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>  
 > 
->> +static int f2fs_dio_end_io(struct kiocb *iocb, loff_t offset,
->> +					ssize_t bytes, void *private)
->>   {
->> -	struct f2fs_private_dio *dio = bio->bi_private;
->> -
->> -	dec_page_count(F2FS_I_SB(dio->inode),
->> -			dio->write ? F2FS_DIO_WRITE : F2FS_DIO_READ);
->> -
->> -	bio->bi_private = dio->orig_private;
->> -	bio->bi_end_io = dio->orig_end_io;
->> -
->> -	kfree(dio);
->> +	struct inode *inode = file_inode(iocb->ki_filp);
->> +	bool may_write = private;
->>   
->> -	bio_endio(bio);
->> +	dec_dio_req_count(F2FS_I_SB(inode), may_write ? WRITE : READ);
->> +	return 0;
->>   }
->>   
->>   static void f2fs_dio_submit_bio(struct bio *bio, struct inode *inode,
->>   							loff_t file_offset)
->>   {
->> -	struct f2fs_private_dio *dio;
->> -	bool write = (bio_op(bio) == REQ_OP_WRITE);
->> -
->> -	dio = f2fs_kzalloc(F2FS_I_SB(inode),
->> -			sizeof(struct f2fs_private_dio), GFP_NOFS);
->> -	if (!dio)
->> -		goto out;
->> -
->> -	dio->inode = inode;
->> -	dio->orig_end_io = bio->bi_end_io;
->> -	dio->orig_private = bio->bi_private;
->> -	dio->write = write;
->> -
->> -	bio->bi_end_io = f2fs_dio_end_io;
->> -	bio->bi_private = dio;
->> -
->> -	inc_page_count(F2FS_I_SB(inode),
->> -			write ? F2FS_DIO_WRITE : F2FS_DIO_READ);
->> +	inc_dio_req_count(F2FS_I_SB(inode),
->> +			op_is_write(bio_op(bio)) ? WRITE : READ);
->>   
->>   	submit_bio(bio);
->> -	return;
->> -out:
->> -	bio->bi_status = BLK_STS_IOERR;
->> -	bio_endio(bio);
->>   }
+> Honestly, I don't really know if it's worth it at this point.
 > 
-> The inc and dec here aren't correctly paired, since f2fs_dio_submit_bio() is
-> called once per bio whereas f2fs_dio_end_io() is called when the entire direct
-> I/O request (which may have consisted of multiple bios) has completed.
+> If we sums this up:
+> 
+>  - The RTC has 2 features that we use, mostly centered around 2
+>    registers set plus a global one
+> 
+>  - Those 2 features are programmed in a completely different way
+> 
+>  - Even the common part is different, given the discussion around the
+>    clocks that we have.
+> 
+> What is there to share in that driver aside from the probe, and maybe
+> the interrupt handling? Instead of complicating this further with more
+> special case that you were (rightfully) complaining about, shouldn't we
+> just acknowledge the fact that it's a completely separate design and
+> should be treated as such, with a completely separate driver?
 
-Correct, it still needs to hook bio->bi_end_io rather than hooking dio->end_io,
-however, w/o one extra allocated memory, we have no way to pass sbi to
-f2fs_dio_end_io() for dec_dio_req_count(sbi, ...) invoking.
+So I had a look, and I don't think it justifies a separate driver:
+- Indeed it looks like the core functionality is different, but there
+  are a lot of commonalities, with all the RTC and driver boilerplate,
+  register offsets, and also the special access pattern (rtc_wait and
+  rtc_setaie).
+- The actual difference is really in the way the *date* is stored
+  (the time is still in 24h H/M/S format), and the missing LOSC input
+  clock - which is already optional for existing devices. The two
+  patches just make this obvious, by using if() statements at the parts
+  where they differ.
 
-> 
-> The correct way to do this would be to do the inc before calling
-> __blockdev_direct_IO(), and do the dec in end_io or if __blockdev_direct_IO()
-> returned without actually issuing any I/O.
-> 
-> But I think you shouldn't bother with this part of the change before we switch
-> to iomap, as it will then need to be changed again anyway.
+So we would end up with possibly some shared .c file, and two driver
+front-end files, which I am not sure is really worth it.
 
-Agreed.
+Next I thought about providing separate rtc_class_ops, but even they
+share a lot of code, so they would be possibly be calling a shared
+function each. I don't think that is really better.
 
-Thanks,
+If you dislike the rather large if/else branches in the previous two
+patches, I could move that out into separate functions, but I feel this
+is more code, for no real benefit.
 
-> 
-> - Eric
-> 
+So for now I am tempted to keep it shared. I think Samuel had ideas for
+bigger changes in the clock part, at which point we could revisit this
+decision - for instance keep the RTC part (still quite similar) mostly
+in a shared file, while modelling the clocks in separate files - in a
+more "common clock" style for the new SoCs.
+
+Feel free to disagree, but when I tried to actually separate the drivers
+it just felt wrong.
+
+Cheers,
+Andre
