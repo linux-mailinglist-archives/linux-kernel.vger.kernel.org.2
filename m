@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3642E3D2251
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD773D2244
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhGVKOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 06:14:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231453AbhGVKOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 06:14:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10ACB60FF2;
-        Thu, 22 Jul 2021 10:55:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626951306;
-        bh=BJ6APhf3RzDbaRx9MSskmKukvlPphUZjkNXAiCLjq4U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tJS6H2raoggEzh/mOaRoAOyvnEvMH57PAQXqTQ7G1iQeQk6jp5JoZOjYupmVbzTt4
-         LrObS2Rf0tmov1bl59+wmqC+UO0vcN4IdgI9b6v5T90iNWgxV/NIjoaRqZaHBUy2n+
-         hx98jCTyUah9HfLz927v588OnDw5qI0POpV1Y3dCx61TN7ua+H+eVG1S/bzZ3Skd+T
-         HcybZomMzitJHpskL8JFWx6PACzq++Lajp5pJUTBPTKWb4uXCpIaevB7mLRSxU9xIq
-         qFdJfU8S8F1FM8ukEPBSH4FztIYCngfZ90hqEQ8lzov4WXOknIAgEYeRO/mxVVwX51
-         4M6PBGbiocQAA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jiri Slaby <jirislaby@kernel.org>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bob Copeland <me@bobcopeland.com>,
-        "John W. Linville" <linville@tuxdriver.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ath5k: fix building with LEDS=m
-Date:   Thu, 22 Jul 2021 12:54:46 +0200
-Message-Id: <20210722105501.1000781-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S231675AbhGVKIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 06:08:19 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:11463 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhGVKIS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 06:08:18 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GVpxz5xgHzch0G;
+        Thu, 22 Jul 2021 18:45:27 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 18:48:51 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 18:48:51 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
+        "Marek Szyprowski" <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        <iommu@lists.linux-foundation.org>
+Subject: [PATCH resend] dma-debug: Use memory_intersects() directly
+Date:   Thu, 22 Jul 2021 18:55:12 +0800
+Message-ID: <20210722105512.183795-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+There is already a memory_intersects() helper in sections.h,
+use memory_intersects() directly instead of private overlap().
 
-Randconfig builds still show a failure for the ath5k driver,
-similar to the one that was fixed for ath9k earlier:
-
-WARNING: unmet direct dependencies detected for MAC80211_LEDS
-  Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
-  Selected by [m]:
-  - ATH5K [=m] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_ATH [=y] && (PCI [=y] || ATH25) && MAC80211 [=y]
-net/mac80211/led.c: In function 'ieee80211_alloc_led_names':
-net/mac80211/led.c:34:22: error: 'struct led_trigger' has no member named 'name'
-   34 |         local->rx_led.name = kasprintf(GFP_KERNEL, "%srx",
-      |                      ^
-
-Copying the same logic from my ath9k patch makes this one work
-as well.
-
-Alternatively, we could just drop the 'select' from both ath5k and
-ath9k.
-
-Fixes: b64acb28da83 ("ath9k: fix build error with LEDS_CLASS=m")
-Fixes: 72cdab808714 ("ath9k: Do not select MAC80211_LEDS by default")
-Fixes: 3a078876caee ("ath5k: convert LED code to use mac80211 triggers")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: iommu@lists.linux-foundation.org
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- drivers/net/wireless/ath/ath5k/Kconfig | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath5k/Kconfig b/drivers/net/wireless/ath/ath5k/Kconfig
-index f35cd8de228e..6914b37bb0fb 100644
---- a/drivers/net/wireless/ath/ath5k/Kconfig
-+++ b/drivers/net/wireless/ath/ath5k/Kconfig
-@@ -3,9 +3,7 @@ config ATH5K
- 	tristate "Atheros 5xxx wireless cards support"
- 	depends on (PCI || ATH25) && MAC80211
- 	select ATH_COMMON
--	select MAC80211_LEDS
--	select LEDS_CLASS
--	select NEW_LEDS
-+	select MAC80211_LEDS if LEDS_CLASS=y || LEDS_CLASS=MAC80211
- 	select ATH5K_AHB if ATH25
- 	select ATH5K_PCI if !ATH25
- 	help
+Resend this patch only.
+
+ kernel/dma/debug.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+index dadae6255d05..fe6efd181614 100644
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -1064,20 +1064,10 @@ static void check_for_stack(struct device *dev,
+ 	}
+ }
+ 
+-static inline bool overlap(void *addr, unsigned long len, void *start, void *end)
+-{
+-	unsigned long a1 = (unsigned long)addr;
+-	unsigned long b1 = a1 + len;
+-	unsigned long a2 = (unsigned long)start;
+-	unsigned long b2 = (unsigned long)end;
+-
+-	return !(b1 <= a2 || a1 >= b2);
+-}
+-
+ static void check_for_illegal_area(struct device *dev, void *addr, unsigned long len)
+ {
+-	if (overlap(addr, len, _stext, _etext) ||
+-	    overlap(addr, len, __start_rodata, __end_rodata))
++	if (memory_intersects(_stext, _etext, addr, len) ||
++	    memory_intersects(__start_rodata, __end_rodata, addr, len))
+ 		err_printk(dev, NULL, "device driver maps memory from kernel text or rodata [addr=%p] [len=%lu]\n", addr, len);
+ }
+ 
 -- 
-2.29.2
+2.26.2
 
