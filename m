@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF1F3D29F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFD33D2899
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234288AbhGVQHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:07:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39720 "EHLO mail.kernel.org"
+        id S232873AbhGVP5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:57:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233987AbhGVQD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:03:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBB6D613D2;
-        Thu, 22 Jul 2021 16:44:21 +0000 (UTC)
+        id S232729AbhGVP4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:56:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EAB66135F;
+        Thu, 22 Jul 2021 16:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972262;
-        bh=f/nDuTmSBM2zGQCvfMo5Y9OdQYViJSBdYlNdo6D9zlM=;
+        s=korg; t=1626971805;
+        bh=uoDGQuWSsC6EbXIErUX21tiW49gmI7rXCrNW63HB6ms=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=atjJ5CuMkLtMKsuOvEDSlrzRLCeY3E8r7j4bxZ1Dfs32hE8PWOcSiZOGEMy3+yevK
-         GDQYC40SvIy6evAJyItQvLZWfpLykA3Rvl+qX8VaeoUsc9GdBhSFZlAGlRqK/wYpuD
-         waPwsS8CY4nIyltd0IaXBot83w5syFnBKK3bfJok=
+        b=NUSQtYBocJUMMXrOEIePUe/9ulmFZaX+Gfp4riVgLJ+LQdt8jOJ26xatpSnjvark8
+         WbJtXQWqT7m8PosI9MbevzSC51efAjHFAe8Oyz75awwGK4lh8sekzXMttANFGVw2fG
+         6ib96vgea4/N4qsB8PMl4Jct7TY8mkRSkgQ1XRsQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 048/156] arm64: dts: qcom: sm8250: fix display nodes
+Subject: [PATCH 5.10 032/125] ARM: dts: am437x-gp-evm: fix ti,no-reset-on-init flag for gpios
 Date:   Thu, 22 Jul 2021 18:30:23 +0200
-Message-Id: <20210722155629.960745197@linuxfoundation.org>
+Message-Id: <20210722155625.757605836@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,46 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Marek <jonathan@marek.ca>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-[ Upstream commit dc5d91250ae6b810bc8d599d8d6590a06a4ce84a ]
+[ Upstream commit 2566d5b8c1670f7d7a44cc1426d254147ec5c421 ]
 
-Use sm8250 compatibles instead of sdm845 compatibles
+The ti,no-reset-on-init flag need to be at the interconnect target module
+level for the modules that have it defined.
+The ti-sysc driver handles this case, but produces warning, not a critical
+issue.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20210329120051.3401567-5-dmitry.baryshkov@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/am437x-gp-evm.dts |    5 ++++-
+ arch/arm/boot/dts/am437x-l4.dtsi    |    2 +-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 4c0de12aaba6..75f9476109e6 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -2370,7 +2370,7 @@
+--- a/arch/arm/boot/dts/am437x-gp-evm.dts
++++ b/arch/arm/boot/dts/am437x-gp-evm.dts
+@@ -813,11 +813,14 @@
+ 	status = "okay";
+ };
+ 
++&gpio5_target {
++	ti,no-reset-on-init;
++};
++
+ &gpio5 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&display_mux_pins>;
+ 	status = "okay";
+-	ti,no-reset-on-init;
+ 
+ 	p8 {
+ 		/*
+--- a/arch/arm/boot/dts/am437x-l4.dtsi
++++ b/arch/arm/boot/dts/am437x-l4.dtsi
+@@ -2033,7 +2033,7 @@
+ 			};
  		};
  
- 		mdss: mdss@ae00000 {
--			compatible = "qcom,sdm845-mdss";
-+			compatible = "qcom,sm8250-mdss";
- 			reg = <0 0x0ae00000 0 0x1000>;
- 			reg-names = "mdss";
- 
-@@ -2402,7 +2402,7 @@
- 			ranges;
- 
- 			mdss_mdp: mdp@ae01000 {
--				compatible = "qcom,sdm845-dpu";
-+				compatible = "qcom,sm8250-dpu";
- 				reg = <0 0x0ae01000 0 0x8f000>,
- 				      <0 0x0aeb0000 0 0x2008>;
- 				reg-names = "mdp", "vbif";
--- 
-2.30.2
-
+-		target-module@22000 {			/* 0x48322000, ap 116 64.0 */
++		gpio5_target: target-module@22000 {		/* 0x48322000, ap 116 64.0 */
+ 			compatible = "ti,sysc-omap2", "ti,sysc";
+ 			reg = <0x22000 0x4>,
+ 			      <0x22010 0x4>,
 
 
