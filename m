@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9F43D2870
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 18:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C013D2857
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 18:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbhGVP5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:57:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59712 "EHLO mail.kernel.org"
+        id S232827AbhGVP4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:56:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232565AbhGVPzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:55:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE0D76135A;
-        Thu, 22 Jul 2021 16:36:09 +0000 (UTC)
+        id S232611AbhGVPzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:55:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E73761362;
+        Thu, 22 Jul 2021 16:35:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971770;
-        bh=LVYjTKltne4pNqzUjWqaLAEQe5qia2wIDuOXmHLSYdE=;
+        s=korg; t=1626971743;
+        bh=w6Nht8sxPymQxqC3vIPn2yVvyNgJE4gluPqbE4+t/Ok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TVs59H9HoN74nXcgfQiPEUkzDpcs2/8hXzCKcduge2ggFm0AIzPjoLssRdMtYBpal
-         K2DfozWh5d01nTLogfZnGH+1Uh+cvbUdQi6g6rZxWmz84xCmmPEhAFJ9VlIHNJqpzZ
-         HdQ1pF5rGua78fDUdEZk9H02HnW8XfzgoFRWO0iw=
+        b=Dw7cXZfYoR8LSWbNP6e8v63bjS1GeaX+2wMfY79QlKC4TSAufX/MCC8qynbkwJJEj
+         jIeSoVXHUh/F6yuvoct4EGyCrYvcGvXmWT2fzuFWKKaz9UYTUt0dmNxdv/BZ5CU5Ei
+         oxwrtVmmp9sBjQCNVtcxfYj441w03yJsn9r/kUVY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Elaine Zhang <zhangqing@rock-chips.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 002/125] ARM: dts: gemini: add device_type on pci
-Date:   Thu, 22 Jul 2021 18:29:53 +0200
-Message-Id: <20210722155624.752757277@linuxfoundation.org>
+Subject: [PATCH 5.10 010/125] ARM: dts: rockchip: Fix power-controller node names for rk3288
+Date:   Thu, 22 Jul 2021 18:30:01 +0200
+Message-Id: <20210722155625.025912822@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
 References: <20210722155624.672583740@linuxfoundation.org>
@@ -40,31 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe@baylibre.com>
+From: Elaine Zhang <zhangqing@rock-chips.com>
 
-[ Upstream commit 483f3645b3f7acfd1c78a19d51b80c0656161974 ]
+[ Upstream commit 970cdc53cb1afa73602028c103dbfb6a230080be ]
 
-Fixes DT warning on pci node by adding the missing device_type.
+Use more generic names (as recommended in the device tree specification
+or the binding documentation)
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/20210417112952.8516-4-jbx6244@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/gemini.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/rk3288.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/gemini.dtsi b/arch/arm/boot/dts/gemini.dtsi
-index 065ed10a79fa..07448c03dac9 100644
---- a/arch/arm/boot/dts/gemini.dtsi
-+++ b/arch/arm/boot/dts/gemini.dtsi
-@@ -286,6 +286,7 @@
- 			clock-names = "PCLK", "PCICLK";
- 			pinctrl-names = "default";
- 			pinctrl-0 = <&pci_default_pins>;
-+			device_type = "pci";
- 			#address-cells = <3>;
- 			#size-cells = <2>;
- 			#interrupt-cells = <1>;
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 49b196546cdf..0d89ad274268 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -788,7 +788,7 @@
+ 			 *	*_HDMI		HDMI
+ 			 *	*_MIPI_*	MIPI
+ 			 */
+-			pd_vio@RK3288_PD_VIO {
++			power-domain@RK3288_PD_VIO {
+ 				reg = <RK3288_PD_VIO>;
+ 				clocks = <&cru ACLK_IEP>,
+ 					 <&cru ACLK_ISP>,
+@@ -830,7 +830,7 @@
+ 			 * Note: The following 3 are HEVC(H.265) clocks,
+ 			 * and on the ACLK_HEVC_NIU (NOC).
+ 			 */
+-			pd_hevc@RK3288_PD_HEVC {
++			power-domain@RK3288_PD_HEVC {
+ 				reg = <RK3288_PD_HEVC>;
+ 				clocks = <&cru ACLK_HEVC>,
+ 					 <&cru SCLK_HEVC_CABAC>,
+@@ -844,7 +844,7 @@
+ 			 * (video endecoder & decoder) clocks that on the
+ 			 * ACLK_VCODEC_NIU and HCLK_VCODEC_NIU (NOC).
+ 			 */
+-			pd_video@RK3288_PD_VIDEO {
++			power-domain@RK3288_PD_VIDEO {
+ 				reg = <RK3288_PD_VIDEO>;
+ 				clocks = <&cru ACLK_VCODEC>,
+ 					 <&cru HCLK_VCODEC>;
+@@ -855,7 +855,7 @@
+ 			 * Note: ACLK_GPU is the GPU clock,
+ 			 * and on the ACLK_GPU_NIU (NOC).
+ 			 */
+-			pd_gpu@RK3288_PD_GPU {
++			power-domain@RK3288_PD_GPU {
+ 				reg = <RK3288_PD_GPU>;
+ 				clocks = <&cru ACLK_GPU>;
+ 				pm_qos = <&qos_gpu_r>,
 -- 
 2.30.2
 
