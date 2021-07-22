@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED65B3D28FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682F03D2A01
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233356AbhGVQAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:00:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34386 "EHLO mail.kernel.org"
+        id S234669AbhGVQHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:07:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233178AbhGVP6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:58:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1198E6135F;
-        Thu, 22 Jul 2021 16:38:39 +0000 (UTC)
+        id S234204AbhGVQE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:04:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FA5B61C9B;
+        Thu, 22 Jul 2021 16:44:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971919;
-        bh=r/Wqku1yiSU7HMaKZi7FiNF/b41U2VMNuPH/W1/npPw=;
+        s=korg; t=1626972291;
+        bh=7QWhwlfYo8rg/I07HsV6QlOlBvbgeaZrfGVtDMLbItA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JUhDhzPR62jQ+uTtALCa7Aq1xcbIuCUSSdrPIMerbJlpJCFmjDqBIKltyRVlJIg5f
-         wvM6CL4biV3+vhReGxRPqVT9045q0015vORTe5KN8S6vncMZFKr2bD++1WbSLUojs3
-         zUe4DvXMZU1bghOIj35cyc7rr8yblope0s+Zl6jI=
+        b=EHl4960nJ83JCURr+2jmz0ytiFKYD/k1h+m7HJy8kWLqMeoP2qyr3Vqq+AHqbJc9R
+         DULS9a1e8qYIYS6PvnLvQxHaq8JaEY203bu3QF/ZgpJqMglk91iOw7Du0QumiCfoGo
+         Mz/BeYBEhkugxA/945vIBNf6R1q8GPvzzTHYjmyk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Patrice Chotard <patrice.chotard@st.com>,
-        Patrick Delaunay <patrick.delaunay@st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        stable@vger.kernel.org,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        kernel test robot <lkp@intel.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 041/125] ARM: dts: stm32: Fix touchscreen node on dhcom-pdk2
-Date:   Thu, 22 Jul 2021 18:30:32 +0200
-Message-Id: <20210722155626.056970382@linuxfoundation.org>
+Subject: [PATCH 5.13 058/156] firmware: arm_scmi: Fix the build when CONFIG_MAILBOX is not selected
+Date:   Thu, 22 Jul 2021 18:30:33 +0200
+Message-Id: <20210722155630.285420047@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Sudeep Holla <sudeep.holla@arm.com>
 
-[ Upstream commit 4b5fadef3fc2ab8863ffdf31eed6a745b1bf6e61 ]
+[ Upstream commit ab7766b72855e6a68109b915d071181b93086e29 ]
 
-Fix make dtbs_check warning:
-arch/arm/boot/dts/stm32mp157c-dhcom-pdk2.dt.yaml:0:0: /soc/i2c@40015000/polytouch@38: failed to match any schema with compatible: ['edt,edt-ft5x06']
+0day CI kernel test robot reported following build error with randconfig
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>
-Cc: Patrice Chotard <patrice.chotard@st.com>
-Cc: Patrick Delaunay <patrick.delaunay@st.com>
-Cc: linux-stm32@st-md-mailman.stormreply.com
-To: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+aarch64-linux-ld: drivers/firmware/arm_scmi/driver.o:(.rodata+0x1e0):
+		undefined reference to `scmi_mailbox_desc'
+
+Fix the error by adding CONFIG_MAILBOX dependency for scmi_mailbox_desc.
+
+Link: https://lore.kernel.org/r/20210603072631.1660963-1-sudeep.holla@arm.com
+Cc: Etienne Carriere <etienne.carriere@linaro.org>
+Cc: Cristian Marussi <cristian.marussi@arm.com>
+Reviewed-by: Etienne Carriere <etienne.carriere@linaro.org>
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+Tested-by: Cristian Marussi <cristian.marussi@arm.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/firmware/arm_scmi/driver.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
-index 180a0187a956..a2d903c0d57f 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
-@@ -182,8 +182,8 @@
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index c2983ed53494..74986bf96656 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -1575,7 +1575,9 @@ ATTRIBUTE_GROUPS(versions);
  
- 	};
- 
--	polytouch@38 {
--		compatible = "edt,edt-ft5x06";
-+	touchscreen@38 {
-+		compatible = "edt,edt-ft5406";
- 		reg = <0x38>;
- 		interrupt-parent = <&gpiog>;
- 		interrupts = <2 IRQ_TYPE_EDGE_FALLING>; /* GPIO E */
+ /* Each compatible listed below must have descriptor associated with it */
+ static const struct of_device_id scmi_of_match[] = {
++#ifdef CONFIG_MAILBOX
+ 	{ .compatible = "arm,scmi", .data = &scmi_mailbox_desc },
++#endif
+ #ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+ 	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
+ #endif
 -- 
 2.30.2
 
