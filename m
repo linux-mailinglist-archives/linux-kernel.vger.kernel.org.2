@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A463D255B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447863D256A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhGVNeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:34:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
+        id S232443AbhGVNeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:34:31 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40438 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232270AbhGVNdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:33:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02759613AE;
-        Thu, 22 Jul 2021 14:14:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626963260;
-        bh=h9bt+2ABEwbCJSPYIOdamsWRy7Ya4biD/RS9Mrg+ThA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c+k9lvOj8/tIhhVZxZjWNi85TGPheT0wf4+cGKHGDQAb34O1JCu3o8oamx+y4HL6o
-         XaVstbjEumdqXmg2wfldglQibzJG337VQ3qpRfFEKIOf1RnCuAA0+4oK/bGW4mH906
-         oefHSWy18njvPGRK7YjDgJlH8mYMouk8nfvvX2BDP5yr6MZCFTGZCtG4YMhW2e1/uR
-         Dt4WfHs8l0XpC3fr6K/fcIByUdVp67EXnfUUtKRB4fL+HDCxer8xOu/JYYebGEiwAy
-         1u4FQ/OfVh9JF+kmP0FWn2PYkxYornAZ6lkritSHYanbBHKJ6e0rASuQpQOG9j9n9S
-         T1I3/IIS207yA==
-Date:   Thu, 22 Jul 2021 19:44:16 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, pierre-louis.bossart@linux.intel.com,
-        sanyog.r.kale@intel.com, bard.liao@intel.com
-Subject: Re: [PATCH] soundwire: dmi-quirks: add ull suffix for SoundWire _ADR
- values
-Message-ID: <YPl9ONsFv+3NeSfd@matsya>
-References: <20210714013027.17022-1-yung-chuan.liao@linux.intel.com>
+        id S232388AbhGVNeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:34:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=qFeeUQkr8zfksguLuRh3bK07OGK8cMlhPlcYMUoCyTw=; b=UrT/QE7wfZoUcW8S8Fln3bWdg1
+        nKl8gyRCYYqhtRcmtUA8kFjfV+CEgkuP7eZwym3wiFFWYvMzLR8ZQvb2tohyzFkxVItGivSW50rVB
+        Dk4YxQwOOlI6G1yiDRaqQPJb1F+l3NWFq69iJrI6JMXa/Ln3chw8C6xggU/lVwU8yHcw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1m6ZTF-00EL7p-1v; Thu, 22 Jul 2021 16:14:41 +0200
+Date:   Thu, 22 Jul 2021 16:14:41 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+        woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
+        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] net: dsa: ensure linearized SKBs in case of tail
+ taggers
+Message-ID: <YPl9UX52nfvLzIFy@lunn.ch>
+References: <20210721215642.19866-1-LinoSanfilippo@gmx.de>
+ <20210721215642.19866-2-LinoSanfilippo@gmx.de>
+ <20210721233549.mhqlrt3l2bbyaawr@skbuf>
+ <8460fa10-6db7-273c-a2c2-9b54cc660d9a@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210714013027.17022-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <8460fa10-6db7-273c-a2c2-9b54cc660d9a@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-07-21, 09:30, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Agreed, with those fixed:
 > 
-> Sparse throws the following type of warnings:
-> 
-> drivers/soundwire/dmi-quirks.c:25:17: error: constant
-> 0x000010025D070100 is so big it is long
-> 
-> Let's add the 'ull' suffix to make this go away and find real issues.
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Applied, thanks
+Hi Florian, Vladimir
 
--- 
-~Vinod
+I would suggest stop adding Reviewed-by: when you actual want changes
+made. The bot does not seem to be reading the actual emails, it just
+looks for tags. And when there are sufficient tags, it merges,
+independent of requests for change, open questions, etc.
+
+	    Andrew
