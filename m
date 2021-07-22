@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47E53D21C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0415A3D21D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbhGVJ3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 05:29:36 -0400
-Received: from m32-153.88.com ([43.250.32.153]:49783 "EHLO email.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231387AbhGVJ3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 05:29:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=To:From:Date; bh=4t1jEto3NTI4lB3Hlg4PXZ2RAVq7Neb+5f8AR
-        zkryx4=; b=K5jsdxKr7qCBYuLximRSJTQDKd0jGHLASLRRWdjd3Y0H6t3KyDejq
-        mwGAluSoGET1exy+yqyDovLhYB4/Uj5CeEiajSW/6CAREjEYRW6YUirU4WGQtB0m
-        YlB1Df7NJzCk25CSN/WzMPooZLZPI9hdnN5H1MpSMSlAFn/jhEfxnE=
-Received: from [0.0.0.0] (unknown [180.120.41.43])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgAnp6f9Q_lgpsIAAA--.2707S3;
-        Thu, 22 Jul 2021 18:10:07 +0800 (CST)
-Subject: Re: [PATCH v4 1/2] docs: add traditional Chinese translation for
- kernel Documentation
-To:     corbet@lwn.net
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        panyunwang849@gmail.com
-References: <20210721142537.29409-1-src.res@email.cn>
-From:   Hu Haowen <src.res@email.cn>
-Message-ID: <c41d175c-c665-dcf0-431d-cb186103b6b6@email.cn>
-Date:   Thu, 22 Jul 2021 18:10:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231618AbhGVJaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 05:30:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:49630 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231573AbhGVJ34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 05:29:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56BBC106F;
+        Thu, 22 Jul 2021 03:10:31 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6DF3C3F73D;
+        Thu, 22 Jul 2021 03:10:30 -0700 (PDT)
+Subject: Re: [PATCH] dma-debug: fix debugfs initialization order
+To:     Anthony Iliopoulos <ailiop@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210722091818.13434-1-ailiop@suse.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <1ea36b32-9bbc-a611-402d-9fa196eda166@arm.com>
+Date:   Thu, 22 Jul 2021 11:10:24 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210721142537.29409-1-src.res@email.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: GiKnCgAnp6f9Q_lgpsIAAA--.2707S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5N7k0a2IF6FyUM7kC6x804xWl1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
-        x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWU
-        JVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0E74AGY7Cv6cx26F4UJr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI
-        0SjxkI62AI1cAE67vIY487MxkIecxEwVAFwVW8twCF04k20xvY0x0EwIxGrwCF04k20xvE
-        74AGY7Cv6cx26F4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUjkucDUUUU
-X-Originating-IP: [180.120.41.43]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+In-Reply-To: <20210722091818.13434-1-ailiop@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/21 下午10:25, Hu Haowen 写道:
+On 2021-07-22 10:18, Anthony Iliopoulos wrote:
+> Due to link order, dma_debug_init is called before debugfs has a chance
+> to initialize (via debugfs_init which also happens in the core initcall
+> stage), so the directories for dma-debug are never created.
+> 
+> Move the dma_debug_init initcall from core to postcore stage so that
+> debugfs will already be initialized by the time this is called, making
+> it oblivious to link-ordering.
 
-> Add traditional Chinese translation (zh_TW) for the Linux Kernel
-> documentation with a series of translated files.
->
-> Signed-off-by: Hu Haowen <src.res@email.cn>
+Playing initcall chicken here doesn't work so well - the later you 
+initialise dma-debug itself, the more chance it has to miss early 
+mappings and raise false positives later. As discussed previously[1] the 
+better solution would be to decouple the debugfs setup so that just that 
+part can be deferred until core_initcall_sync or later.
 
-Mr. Pan, please take a review for this work during your spare time if
-possible.
+Robin.
 
-Thx,
-Hu Haowen
+[1] https://lore.kernel.org/linux-iommu/YIgGa6yF%2Fadg8OSN@kroah.com/
 
-
+> Fixes: 15b28bbcd567 ("dma-debug: move initialization to common code")
+> Signed-off-by: Anthony Iliopoulos <ailiop@suse.com>
+> ---
+>   kernel/dma/debug.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+> index 14de1271463f..49d80ef7f995 100644
+> --- a/kernel/dma/debug.c
+> +++ b/kernel/dma/debug.c
+> @@ -915,7 +915,7 @@ static int dma_debug_init(void)
+>   	pr_info("debugging enabled by kernel config\n");
+>   	return 0;
+>   }
+> -core_initcall(dma_debug_init);
+> +postcore_initcall(dma_debug_init);
+>   
+>   static __init int dma_debug_cmdline(char *str)
+>   {
+> 
