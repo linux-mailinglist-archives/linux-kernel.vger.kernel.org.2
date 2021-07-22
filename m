@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6FD3D2368
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08243D236F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbhGVL5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 07:57:10 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41116 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbhGVL5J (ORCPT
+        id S231896AbhGVL7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 07:59:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39457 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231772AbhGVL7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 07:57:09 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id A09192039A;
-        Thu, 22 Jul 2021 12:37:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626957463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 22 Jul 2021 07:59:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626957592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+1m+CfvaDK5C8e6mlOOeV2kSodv7cortzZU0gLSOIUo=;
-        b=qNEZYTWvmWL3Ol/o+Zb3cjGl5Ezm2LXxJSuK2yzlXCS6153r2XoOTbLTJEI754Rcx+7J/w
-        izRezrFLewxJ45n9r7tnvVLRxGHeh4aiLLfBvLZJAPiNs5ACFMImTwIlxkS8n4bmtVKdD5
-        0j6LsbyeyTW99SAmHlffvsB0BvEpPk8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626957463;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+1m+CfvaDK5C8e6mlOOeV2kSodv7cortzZU0gLSOIUo=;
-        b=51tJlsFhGxgpiD3viQZcNR/eY/ODdnc2TKCHmU3PtQ+E0U5DcMwyZGhSQzmNmdZUxte5iI
-        NmSWzhZ1moFLb7Dw==
-Received: from hawking.suse.de (hawking.suse.de [10.160.4.0])
-        by relay2.suse.de (Postfix) with ESMTP id 986C9A3B8E;
-        Thu, 22 Jul 2021 12:37:43 +0000 (UTC)
-Received: by hawking.suse.de (Postfix, from userid 17005)
-        id 855F1445C89; Thu, 22 Jul 2021 14:37:43 +0200 (CEST)
-From:   Andreas Schwab <schwab@suse.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Tobias Schramm <t.schramm@manjaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
-References: <mvmtukn6bmu.fsf@suse.de> <YPgwHcbK7XoXL/mD@smile.fi.intel.com>
-        <mvmpmvb68cg.fsf@suse.de> <YPg3VS/Ure6VRsuJ@smile.fi.intel.com>
-        <mvmlf5z66l9.fsf@suse.de>
-        <CAHp75VeFKn=--PuF6deOp6H-j7z8PXgkXA5PeSftiK5LWX30Qw@mail.gmail.com>
-        <mvmh7gn649v.fsf@suse.de> <YPhT1APE8QweDCoP@smile.fi.intel.com>
-        <mvmczra64yj.fsf@suse.de>
-        <CAHp75VfY-_xtRJyfez_4voDuOUcfJAfFjtnAipCt2_UA4wqbQg@mail.gmail.com>
-        <mvm8s1y5zbz.fsf@suse.de>
-X-Yow:  Vote for ME -- I'm well-tapered, half-cocked, ill-conceived and
- TAX-DEFERRED!
-Date:   Thu, 22 Jul 2021 14:37:43 +0200
-In-Reply-To: <mvm8s1y5zbz.fsf@suse.de> (Andreas Schwab's message of "Thu, 22
-        Jul 2021 14:04:48 +0200")
-Message-ID: <mvm4kcm5xt4.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        bh=Ykv5wmLf4ZccwydelwmDaJ14hxc/5bcYf6Q0csIyjtg=;
+        b=XS4UeyA7eBuMs3aNP9cIB0HJBkeQVAJyIQOV0qJawmFEVkZftJkQrASRozX8nYblDMN5AS
+        ts0f47rpPRTwWFJQsbnp/aPY0GYnrYcs3jNn2bhiKt6OE8Z2+JnYV9CLoW80NKdJ/tdBds
+        E4gnK2SxT8p5QN8W/E9WmteNlTrUuxc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-d918l_wTNZmGfLz9gz7SAg-1; Thu, 22 Jul 2021 08:39:51 -0400
+X-MC-Unique: d918l_wTNZmGfLz9gz7SAg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 762D28B0600;
+        Thu, 22 Jul 2021 12:39:49 +0000 (UTC)
+Received: from starship (unknown [10.40.192.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EB3425C1C2;
+        Thu, 22 Jul 2021 12:39:46 +0000 (UTC)
+Message-ID: <e2aa50650b118b877d4fc10cd832bd1c05271f8b.camel@redhat.com>
+Subject: Re: [PATCH] KVM: x86: Check the right feature bit for
+ MSR_KVM_ASYNC_PF_ACK access
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Oliver Upton <oupton@google.com>, linux-kernel@vger.kernel.org
+Date:   Thu, 22 Jul 2021 15:39:45 +0300
+In-Reply-To: <20210722123018.260035-1-vkuznets@redhat.com>
+References: <20210722123018.260035-1-vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul 22 2021, Andreas Schwab wrote:
+On Thu, 2021-07-22 at 14:30 +0200, Vitaly Kuznetsov wrote:
+> MSR_KVM_ASYNC_PF_ACK MSR is part of interrupt based asynchronous page fault
+> interface and not the original (deprecated) KVM_FEATURE_ASYNC_PF. This is
+> stated in Documentation/virt/kvm/msr.rst.
+> 
+> Fixes: 66570e966dd9 ("kvm: x86: only provide PV features if enabled in guest's CPUID")
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/kvm/x86.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d715ae9f9108..88ff7a1af198 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3406,7 +3406,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  			return 1;
+>  		break;
+>  	case MSR_KVM_ASYNC_PF_ACK:
+> -		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
+> +		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF_INT))
+>  			return 1;
+>  		if (data & 0x1) {
+>  			vcpu->arch.apf.pageready_pending = false;
+> @@ -3745,7 +3745,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		msr_info->data = vcpu->arch.apf.msr_int_val;
+>  		break;
+>  	case MSR_KVM_ASYNC_PF_ACK:
+> -		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
+> +		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF_INT))
+>  			return 1;
+>  
+>  		msr_info->data = 0;
 
-> On Jul 22 2021, Andy Shevchenko wrote:
->
->> Compare the code of
->> https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L649
->> vs.
->> https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L56
->>
->> and
->>
->> https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L139
->> vs.
->> https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L361
->
-> Thanks, I think I now know how to fix it correctly.
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-In fact, the correct fix has already been installed in commit
-3ce6c9e2617e ("spi: add of_device_uevent_modalias support"), which is
-part of -rc1, just incomplete, which explains the inconsistency above.
+Best regards,
+	Maxim Levitsky
 
-Andreas.
-
--- 
-Andreas Schwab, SUSE Labs, schwab@suse.de
-GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
-"And now for something completely different."
