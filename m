@@ -2,100 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536383D1E69
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0D03D1E47
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbhGVGBQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 02:01:16 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3958 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhGVGBO (ORCPT
+        id S231162AbhGVFvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 01:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229967AbhGVFvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 02:01:14 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4GVj4M3zjCz827t;
-        Thu, 22 Jul 2021 14:20:35 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 14:24:15 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2176.012; Thu, 22 Jul 2021 07:24:13 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Will Deacon <will@kernel.org>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "Alexandru.Elisei@arm.com" <Alexandru.Elisei@arm.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH v2 1/3] arch/arm64: Introduce a capability to tell whether
- 16-bit VMID is available
-Thread-Topic: [PATCH v2 1/3] arch/arm64: Introduce a capability to tell
- whether 16-bit VMID is available
-Thread-Index: AQHXYshKGBZfllyF/kqTqR+/q/JZlqtNslSAgAEMQiA=
-Date:   Thu, 22 Jul 2021 06:24:13 +0000
-Message-ID: <027c314e664c4d4889917e95a2aa58c1@huawei.com>
-References: <20210616155606.2806-1-shameerali.kolothum.thodi@huawei.com>
- <20210616155606.2806-2-shameerali.kolothum.thodi@huawei.com>
- <20210721152316.GB11003@willie-the-truck>
-In-Reply-To: <20210721152316.GB11003@willie-the-truck>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.80.98]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 22 Jul 2021 01:51:17 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AE8C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 23:31:52 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id f30so6882586lfj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 23:31:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CYkqe4g3VLBX8Hb5LmueO3C4AbVGUfd62D9jkXzQh10=;
+        b=mU/g1ltZPaGC8L3S24o+kCRancRgTxYtCXBsV2f759apd/DxxumZVbmGBi4VgZZ0Xm
+         ZAlExAwX63zwUgqwWo/2I9L0Rsq3PPO+xrrQbTpNbBUSbVdSEAi6HRP1Ilz/+39omogt
+         94uarhbtVjF0zRLc29bKdj72vCI5qYaoEiVgFW4pCpNLAduzpZoIED5F4okKq37ZpHGx
+         zmyZuyoziTl3SVfODmss6VMTDi7IyXZz2L6mSLtMTawBcqYVo07WFopVgMThm+tEUTnE
+         GkgnBfYgJlJdqdj7J0yv+83/xeygDILfhHLbd6BfPqQo8hne57nTJp57sUgwuiMW++8k
+         O5AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CYkqe4g3VLBX8Hb5LmueO3C4AbVGUfd62D9jkXzQh10=;
+        b=VNI5QMCUu3G9wJ2Voah5PnTNyBhuqAZKktfUiK2mekEWN9QN9ZdtCM3snaW1UVt25U
+         +OUx9VixsVLOxEPqaPoW2upQceI+MfwRpm/Xpc2Qhbb1KjnDknqqQ3IIyxM8lRx8ijL0
+         Jsfp/ZPAkBvtt8Mu0GT1BS4IOgLQso+uXebXACJ9ZvAEzK6qeTGygcQq7oAJMUR7LCZi
+         miDcy4FamVIgE5nlpQEAFtPUrWVOmy4nJfXonEFRbbjWySZJgGb3ptj+E5Mi+52aAMUh
+         OmlzEXV4VsPNy2cqY5xNQG6NGOLwGkSZA8kngl7QvYbmDYQMMB9o+ERpDMTBGVhg4+of
+         JXVA==
+X-Gm-Message-State: AOAM530l99mgINnTS8ixjEAGTHEutY2/MsG9OqC8kYl6RYWmX6PqDQtK
+        VfMfEeQ0HlJxB3jhWx1N7QzAFu/VH7cW5ySG5GLehA==
+X-Google-Smtp-Source: ABdhPJw7K0q3fw+k/PMYcM9dTkSADGg9BbZSydjrjfGRXUG8kRxrNL2OPsAA1EKRSD6SFd7GgLJ2JALBc22ZPQzXJSw=
+X-Received: by 2002:a05:6512:511:: with SMTP id o17mr28933803lfb.396.1626935511146;
+ Wed, 21 Jul 2021 23:31:51 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
+ <7b771da7b09a01c8b4da2ed21f05251ea797b2e8.1626885907.git-series.a.fatoum@pengutronix.de>
+In-Reply-To: <7b771da7b09a01c8b4da2ed21f05251ea797b2e8.1626885907.git-series.a.fatoum@pengutronix.de>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 22 Jul 2021 12:01:40 +0530
+Message-ID: <CAFA6WYOskwZNe5Wb5PTtnSHQBonSXZ48eEex0w9jQ+JW4vG=+w@mail.gmail.com>
+Subject: Re: [PATCH 2/4] KEYS: trusted: allow trust sources to use kernel RNG
+ for key material
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Richard Weinberger <richard@nod.at>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 21 Jul 2021 at 22:19, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>
+> The two existing trusted key sources don't make use of the kernel RNG,
+> but instead let the hardware that does the sealing/unsealing also
+> generate the random key material. While a previous change offers users
+> the choice to use the kernel RNG instead for both, new trust sources
+> may want to unconditionally use the kernel RNG for generating key
+> material, like it's done elsewhere in the kernel.
+>
+> This is especially prudent for hardware that has proven-in-production
+> HWRNG drivers implemented, as otherwise code would have to be duplicated
+> only to arrive at a possibly worse result.
+>
+> Make this possible by turning struct trusted_key_ops::get_random
+> into an optional member. If a driver leaves it NULL, kernel RNG
+> will be used instead.
+>
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> ---
+> To: James Bottomley <jejb@linux.ibm.com>
+> To: Jarkko Sakkinen <jarkko@kernel.org>
+> To: Mimi Zohar <zohar@linux.ibm.com>
+> To: David Howells <dhowells@redhat.com>
+> Cc: James Morris <jmorris@namei.org>
+> Cc: "Serge E. Hallyn" <serge@hallyn.com>
+> Cc: "Horia Geant=C4=83" <horia.geanta@nxp.com>
+> Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Udit Agarwal <udit.agarwal@nxp.com>
+> Cc: Eric Biggers <ebiggers@kernel.org>
+> Cc: Jan Luebbe <j.luebbe@pengutronix.de>
+> Cc: David Gstir <david@sigma-star.at>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Franck LENORMAND <franck.lenormand@nxp.com>
+> Cc: Sumit Garg <sumit.garg@linaro.org>
+> Cc: keyrings@vger.kernel.org
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-integrity@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-security-module@vger.kernel.org
+> ---
+>  include/keys/trusted-type.h               | 2 +-
+>  security/keys/trusted-keys/trusted_core.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/keys/trusted-type.h b/include/keys/trusted-type.h
+> index d89fa2579ac0..4eb64548a74f 100644
+> --- a/include/keys/trusted-type.h
+> +++ b/include/keys/trusted-type.h
+> @@ -64,7 +64,7 @@ struct trusted_key_ops {
+>         /* Unseal a key. */
+>         int (*unseal)(struct trusted_key_payload *p, char *datablob);
+>
+> -       /* Get a randomized key. */
+> +       /* Optional: Get a randomized key. */
+>         int (*get_random)(unsigned char *key, size_t key_len);
+>
+>         /* Exit key interface. */
+> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/tr=
+usted-keys/trusted_core.c
+> index 569af9af8df0..d2b7626cde8b 100644
+> --- a/security/keys/trusted-keys/trusted_core.c
+> +++ b/security/keys/trusted-keys/trusted_core.c
+> @@ -334,7 +334,7 @@ static int __init init_trusted(void)
+>                         continue;
+>
+>                 get_random =3D trusted_key_sources[i].ops->get_random;
+> -               if (trusted_kernel_rng)
+> +               if (trusted_kernel_rng || !get_random)
+>                         get_random =3D kernel_get_random;
+>
 
+For ease of understanding, I would prefer to write it as:
 
-> -----Original Message-----
-> From: Will Deacon [mailto:will@kernel.org]
-> Sent: 21 July 2021 16:23
-> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> Cc: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
-> linux-kernel@vger.kernel.org; maz@kernel.org; catalin.marinas@arm.com;
-> james.morse@arm.com; julien.thierry.kdev@gmail.com;
-> suzuki.poulose@arm.com; jean-philippe@linaro.org;
-> Alexandru.Elisei@arm.com; Linuxarm <linuxarm@huawei.com>
-> Subject: Re: [PATCH v2 1/3] arch/arm64: Introduce a capability to tell whether
-> 16-bit VMID is available
-> 
-> On Wed, Jun 16, 2021 at 04:56:04PM +0100, Shameer Kolothum wrote:
-> > From: Julien Grall <julien.grall@arm.com>
-> >
-> > At the moment, the function kvm_get_vmid_bits() is looking up for the
-> > sanitized value of ID_AA64MMFR1_EL1 and extract the information
-> > regarding the number of VMID bits supported.
-> >
-> > This is fine as the function is mainly used during VMID roll-over. New
-> > use in a follow-up patch will require the function to be called a every
-> > context switch so we want the function to be more efficient.
-> >
-> > A new capability is introduced to tell whether 16-bit VMID is
-> > available.
-> 
-> I don't really buy this rationale. The VMID allocator introduced later on
-> caches this value in the static 'vmid_bits' variable, and that gets used
-> on vCPU enter via vmid_gen_match() in the kvm_arm_update_vmid() fastpath.
-> 
-> So I would prefer that we just expose an accessor for that than introduce
-> a static key and new cpufeature just for kvm_get_vttbr().
+                  get_random =3D trusted_key_sources[i].ops->get_random ?:
+                                         kernel_get_random;
+                  if (trusted_kernel_rng)
+                        get_random =3D kernel_get_random;
 
-Ok. Will change it to an accessor.
+With that:
 
-Thanks,
-Shameer
+Acked-by: Sumit Garg <sumit.garg@linaro.org>
+
+-Sumit
+
+>                 static_call_update(trusted_key_init,
+> --
+> git-series 0.9.1
