@@ -2,76 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9673D2B87
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6D93D2B98
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 20:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhGVRNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 13:13:30 -0400
-Received: from mail-wm1-f51.google.com ([209.85.128.51]:56063 "EHLO
-        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbhGVRN1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 13:13:27 -0400
-Received: by mail-wm1-f51.google.com with SMTP id p9so1737146wmq.5;
-        Thu, 22 Jul 2021 10:54:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q0B/yryzjHjHCADhjVhPYgb/k0QAAR528CYj+zQWV20=;
-        b=IQv87zHct9wHL93uRNZSnbLgCo2z7JfSL9FpUSobv5D8aCxqTepEbqEfTPwPixxiX6
-         9QBsHrikgjUFGjAOWhppQvKeslgfrvGp7qQ5lKe6HDg4bQg1r1583GCiuuV73MERhqhc
-         A4FIE30UY8Ko8HxpWPOwC6OokioMX/ufy7pQC6ZhX97GiH54zVZAj5bMFUGxz/KpSq33
-         VeotmEGQoBxKAEkExq7ExHD7Sj7oO4L1P5K9YOvr6/tjwlwFEpkHAYN0YYXEdFZgwE7M
-         ++eWMlifrDh/DRSf3Uj6XfFQtsupUjjbi3QayRabd3Rs0kYtjZ6fhgKGQS/VFwPUJa0C
-         oO4w==
-X-Gm-Message-State: AOAM530iiihtbjwlCVwdWrFd7BKbny/dL2Nbs6xG+hFLyf4Y2eLocZBD
-        2afnavi2wOExHMejMfitUPY=
-X-Google-Smtp-Source: ABdhPJxLeZKAtm1SRMjNh1hBzb9ffyWvFGt7/fvTcc0vAZDEPuo3/no+KosM2eB77D2pqbvflLLFwQ==
-X-Received: by 2002:a05:600c:354e:: with SMTP id i14mr766889wmq.96.1626976440531;
-        Thu, 22 Jul 2021 10:54:00 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id o28sm32449730wra.71.2021.07.22.10.53.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 10:54:00 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 17:53:58 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        kys@microsoft.com, Stephen Hemminger <sthemmin@microsoft.com>,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [GIT PULL] Hyper-V fixes for 5.14-rc3
-Message-ID: <20210722175358.lnvjdhnx7frtgznc@liuwe-devbox-debian-v2>
-References: <20210722140949.3knhduxozzaido2r@liuwe-devbox-debian-v2>
- <CAHk-=wirFvNqAvaNaABHc2mi7FKL4n6TEAwQ3WTyTJueJcHCvA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wirFvNqAvaNaABHc2mi7FKL4n6TEAwQ3WTyTJueJcHCvA@mail.gmail.com>
+        id S230013AbhGVRTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 13:19:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229906AbhGVRTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 13:19:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AD7A56135F;
+        Thu, 22 Jul 2021 18:00:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626976829;
+        bh=NqPkRR7g/po4paDQaTml+qqx2l9t3M+pxAkEBuqR8Zo=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=QonTv+FdT0iqZNhJSENMWKuToZklURDFrZP4LYI0s18O3cEAZWllkt4xEDwZaHlTy
+         LlcehFGoeudem8gvLGg6ACMRS7JaEQw+iem8G5y7Ar7y3hmOpHFxDn2u8HT1Iwaf8c
+         plspfQ1B6RXS39Wniv0Ua+kDHyN176Oj/FdpqWkYi+KhZ6clAgsFgHvxv5mgCAz5Ju
+         0ctcTDkT2zV8AG0dp5jf3TdMlAaHMj4fjpOZdu305K+7byMx5qW2mX5Zal4Pq3Qy3I
+         fT0bJFV3lS3JcxGESaFjuY7Gretoc36PcZ6aSjXrVQ9s3rn3XX8LkMFtD+/zFKO1O9
+         ox0hg9xPtiSlQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A7E5860173;
+        Thu, 22 Jul 2021 18:00:29 +0000 (UTC)
+Subject: Re: [GIT PULL] arm64 fixes for -rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210722155509.GA12627@willie-the-truck>
+References: <20210722155509.GA12627@willie-the-truck>
+X-PR-Tracked-List-Id: <linux-arm-kernel.lists.infradead.org>
+X-PR-Tracked-Message-Id: <20210722155509.GA12627@willie-the-truck>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+X-PR-Tracked-Commit-Id: d8a719059b9dc963aa190598778ac804ff3e6a87
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9f42f674a89200d4f465a7db6070e079f3c6145f
+Message-Id: <162697682968.6012.16190544810150306970.pr-tracker-bot@kernel.org>
+Date:   Thu, 22 Jul 2021 18:00:29 +0000
+To:     Will Deacon <will@kernel.org>
+Cc:     torvalds@linux-foundation.org, catalin.marinas@arm.com,
+        maz@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        mpe@ellerman.id.au
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 10:25:46AM -0700, Linus Torvalds wrote:
-> On Thu, Jul 22, 2021 at 7:09 AM Wei Liu <wei.liu@kernel.org> wrote:
-> >
-> >   - Reversion of a bogus patch that went into 5.14-rc1
-> 
-> When doing a revert, please explain it.
-> 
-> Yes, they are simple in the sense that they just undo something, but
-> at the same time, that "something" was done for a reason, and the
-> reason why that original change was wrong, and how it was noticed (ie
-> what the symptoms of the reverted patch were) is important.
-> 
-> I've pulled this, so it's too late now, but please please please
-> explain reverts in the future, not just a "This reverts commit XYZ".
-> 
+The pull request you sent on Thu, 22 Jul 2021 16:55:10 +0100:
 
-Sure. Noted.
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
 
-Thanks,
-Wei.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9f42f674a89200d4f465a7db6070e079f3c6145f
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
