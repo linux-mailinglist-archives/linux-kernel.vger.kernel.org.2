@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D623D1C87
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF513D1C8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhGVDJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 23:09:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:42682 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229900AbhGVDJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 23:09:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5339D6E;
-        Wed, 21 Jul 2021 20:50:25 -0700 (PDT)
-Received: from [10.163.65.134] (unknown [10.163.65.134])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1C63A3F66F;
-        Wed, 21 Jul 2021 20:50:22 -0700 (PDT)
-Subject: Re: [PATCH v3 12/12] mm/debug_vm_pgtable: Fix corrupted page flag
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210719130613.334901-1-gshan@redhat.com>
- <20210719130613.334901-13-gshan@redhat.com>
- <57cb2f04-b3f2-2df4-3d9b-0b430b9c9f3e@arm.com>
- <8157142c-58e0-44c4-5cdb-76fff4a07210@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <5db75fd6-aeb9-c06f-30ab-839c09a0bc68@arm.com>
-Date:   Thu, 22 Jul 2021 09:21:11 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230143AbhGVDPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 23:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229900AbhGVDPd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 23:15:33 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359D4C061575;
+        Wed, 21 Jul 2021 20:56:07 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id gx2so4325785pjb.5;
+        Wed, 21 Jul 2021 20:56:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=osmz6EY8uXQ1knNao0xDpmsxbyJi+Dvgv0W3ozo2sXQ=;
+        b=mju5I/Qjw+NtbeIcS7Y38iQgQAq8F6E/DcavUTSClL9h0pMOejTBqRkiLuF2WCw2Wg
+         OL5gruZ1m+ipN3l3tBlmoKwXhJx4epyrBvOzfnBwan20+YwOIz6jCalqqK14fXvZEx4t
+         kr6FA42G96kBJYDzKaeUvV/8UDeZX6Gyr3r3JGkjn14xnEvG+amDZP784M9pbZ72ATqF
+         Ffk4h+OBiSTk+z7Z5+R4U6Z0TrGWLXPl48VXajCrxkCQ5i2F5T7pvQZ0Jbrosg5JbaSF
+         T7ST1tMakpTX7axUk4uid+bQ97/Lb0EooS1QLe0cvUT4FVoKB+C7uK+XRLIovdDpFkqw
+         WxIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=osmz6EY8uXQ1knNao0xDpmsxbyJi+Dvgv0W3ozo2sXQ=;
+        b=X6BtenehT6+LefNgnmOQ8n9M3E+W08m581Jot8yTD7MGc8BHw0/vOMnW5xMuKF5UHZ
+         aDiVHJN1Tzuq9DajYc+sTUGou6GD4LU3KQPOHHfmUldadreIo5Y4iIr/nSEovSzBv61y
+         UQuUvVJXEO8F4bWkjHRMuwdIdmZJvuM/RG0l4oJ37dDSuHkKBAEHlRZs1MHtZ470FU4f
+         7U+aA5dikZW7iW3llfpLRMrMzYn+GoRvPQG1ELmMcT1Ck18EJyVDAv2f+P3ZVGZn9Ybi
+         sUAkbYFXwJEd9KNQqrwtzN4GKZ2qoDUKXZ3yEZ+m9lVUmEmTDpVD28HgiG1qjysi89Bi
+         Csag==
+X-Gm-Message-State: AOAM530CT3076/1wgsY7YDjzyh0XBqpnIzgYArhaLLCOvyWanx+JLPoT
+        QKQjig8A8PtLtHtwy+9frhp3RttoCVU=
+X-Google-Smtp-Source: ABdhPJwag0I+B+I3EAkXtmsfu0gL0jiGPDpzTGtG/xOSrd2MOu4twfxcMPlol7364JiU73fcODbZ/Q==
+X-Received: by 2002:a17:90a:c89:: with SMTP id v9mr39147840pja.175.1626926166241;
+        Wed, 21 Jul 2021 20:56:06 -0700 (PDT)
+Received: from [10.230.31.46] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id f18sm1295868pjq.48.2021.07.21.20.56.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Jul 2021 20:56:05 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] net: dsa: tag_ksz: dont let the hardware process
+ the layer 4 checksum
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, woojung.huh@microchip.com,
+        olteanv@gmail.com
+Cc:     UNGLinuxDriver@microchip.com, andrew@lunn.ch,
+        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210721215642.19866-1-LinoSanfilippo@gmx.de>
+ <20210721215642.19866-3-LinoSanfilippo@gmx.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <06583db0-ac0e-8e9d-324c-faf3f8b38ac0@gmail.com>
+Date:   Wed, 21 Jul 2021 20:55:57 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <8157142c-58e0-44c4-5cdb-76fff4a07210@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210721215642.19866-3-LinoSanfilippo@gmx.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Small nit:
 
-s/Fix corrupted page flag/Fix page flag corruption on arm64/
 
-On 7/21/21 5:33 PM, Gavin Shan wrote:
-> Hi Anshuman,
+On 7/21/2021 2:56 PM, Lino Sanfilippo wrote:
+> If the checksum calculation is offloaded to the network device (e.g due to
+> NETIF_F_HW_CSUM inherited from the DSA master device), the calculated
+> layer 4 checksum is incorrect. This is since the DSA tag which is placed
+> after the layer 4 data is considered as being part of the daa and thus
+> errorneously included into the checksum calculation.
+> To avoid this, always calculate the layer 4 checksum in software.
 > 
-> On 7/21/21 8:18 PM, Anshuman Khandual wrote:
->> On 7/19/21 6:36 PM, Gavin Shan wrote:
->>> In page table entry modifying tests, set_xxx_at() are used to populate
->>> the page table entries. On ARM64, PG_arch_1 is set to the target page
->>> flag if execution permission is given. The page flag is kept when the
->>> page is free'd to buddy's free area list. However, it will trigger page
->>> checking failure when it's pulled from the buddy's free area list, as
->>> the following warning messages indicate.
->>>
->>>     BUG: Bad page state in process memhog  pfn:08000
->>>     page:0000000015c0a628 refcount:0 mapcount:0 \
->>>          mapping:0000000000000000 index:0x1 pfn:0x8000
->>>     flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
->>>     raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
->>>     raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
->>>     page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
->>>
->>> This fixes the issue by clearing PG_arch_1 through flush_dcache_page()
->>> after set_xxx_at() is called.
->>
->> Could you please add comments before each flush_dcache_page() instance
->> explaining why this is needed for arm64 platforms with relevant PG_arch_1
->> context and how this does not have any adverse effect on other platforms ?
->> It should be easy for some one looking at this code after a while to figure
->> out from where flush_dcache_page() came from.
->>
-> 
-> Good point. I will improve chage log to include the commit ID in v4 where the
-> page flag (PG_arch_1) is used and explain how. In that case, it's much clearer
-> to understand the reason why we need flush_dcache_page() after set_xxx_at() on
-> ARM64.
+> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
 
-But also some in code comments where flush_dcache_page() is being called.
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
