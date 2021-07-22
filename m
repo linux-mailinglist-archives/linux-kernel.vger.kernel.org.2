@@ -2,205 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608F43D2054
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEE03D2056
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhGVIYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 04:24:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55917 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230407AbhGVIYg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 04:24:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626944710;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=613H4wAGuEnZg548mMLIz3DNJ0VmDXrroK5bj+IIg9Q=;
-        b=Z6amGgMpJWyGu9uXdYbWbvnlys+Fd9XZTxqSadFj9GGEfWOGvzOW8FE/EWmOMHsiWDFCZb
-        KPQGYNvvz5GLLPoH+lvPKEfNtOa5scWyWfuIYnt7bjxmvRgi5iHveAB/K5ZxvMr8rNP1tF
-        FbrOt/R7r4nOtXWPXWhsfThZJz+QJw0=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-109-dbRqtg-QM1mGxTs4EWv0mQ-1; Thu, 22 Jul 2021 05:05:08 -0400
-X-MC-Unique: dbRqtg-QM1mGxTs4EWv0mQ-1
-Received: by mail-pl1-f197.google.com with SMTP id e12-20020a170902784cb02901298fdd4067so2406677pln.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 02:05:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=613H4wAGuEnZg548mMLIz3DNJ0VmDXrroK5bj+IIg9Q=;
-        b=XclxF6qFh8HakG1CpAkOi71u0ib5KhNcHuTJ6PumyLPvmRDaPWvoxyjchOYLpRbrP+
-         DbIoFu6bFqzIjivEa7IyCZfjSwh3fpmpXwnQ+5LgidnZHH86Zocu7GuHgBxFd8GiltlZ
-         SxW/8OGZmMw/S554UMMWX61wmVeOfudj18HBh7ReFl62xYW0HgA+57D1HRBSWvXtuzuh
-         phss6ePgc43/kTZBkM3dgH8GhxYz8wslNRbA2s2OyJVVdBRsw8p4e+QADWE2ZWNSt1Rs
-         lW2DSVDso7llAiXnUVJ5bAHU+RWqJP8rKhBG0qCtvTdT6ZWdEoSo93zjG8HhPIf6OBQU
-         4EAA==
-X-Gm-Message-State: AOAM5301wZwNO9SRJYqpSkgmzs2pVptE3W9PgEd+C06Q4YfVMPcs+PvF
-        o/iLNJj4uHoO/2LfLiUpCbi7ZBy9mJnYMaO7WskaNZKdMAOI+E3pOSDyZ7R01ktD8yY0Wf0HkV3
-        x9LTIVIlByXitTaZ5NXoptkI6
-X-Received: by 2002:a63:1658:: with SMTP id 24mr12874156pgw.307.1626944707783;
-        Thu, 22 Jul 2021 02:05:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy0+x8zNhuoIB4bhgvnGT/Lauq7S1tovNJXVfSEHqXJ8wvxOVkqIxFpT/VtggSDtTXoyT+32Q==
-X-Received: by 2002:a63:1658:: with SMTP id 24mr12874128pgw.307.1626944707458;
-        Thu, 22 Jul 2021 02:05:07 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id t3sm4781930pfd.153.2021.07.22.02.05.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jul 2021 02:05:07 -0700 (PDT)
-Subject: Re: [RFC 0/3] cpuidle: add poll_source API and virtio vq polling
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        virtualization@lists.linux-foundation.org,
-        linux-pm@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
-References: <20210713161906.457857-1-stefanha@redhat.com>
- <1008dee4-fce1-2462-1520-f5432bc89a07@redhat.com>
- <YPfryV7qZVRbjNgP@stefanha-x1.localdomain>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <869a993d-a1b0-1c39-d081-4cdd2b71041f@redhat.com>
-Date:   Thu, 22 Jul 2021 17:04:57 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        id S231321AbhGVIYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 04:24:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231259AbhGVIYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 04:24:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C92606120C;
+        Thu, 22 Jul 2021 09:05:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626944713;
+        bh=mDlBm1+st6/RYgagHA47JigTq8drz+tHlBP+CXPZbVk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZnI8FnerWIhS6ihirfALUw+u2q0hXQW0mcUNrGHQxMNBf7e9nxMlJ6hfE0uvuqBZQ
+         QHPLbZjjQ+JS+8st7iUbQSCGowkYzDp7ES/qFtLA7HL65Ac5RXGYo1ej69zmEc7hje
+         zdHOe2l6NLLC53fBQPTAemyVaDphW+9cs9lFEaeBtUZiuLfDEhS9r2pE/X5zh9Hvnu
+         VBrh4cLFwLEz4fjhULIFtlxBOoNmSUt7fqfh+7n2sTW94qzOe+ZKqzLq9C3CPEne5p
+         tRf22HctJ5G0kUVFOJejeD0im0lOU/R3KuXYdYX9UwYCuDB702mvbMrvKll6Ku6S3T
+         E9uBh7bfQjZpw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: atmel: atmel-isc: fix build failures after split
+Date:   Thu, 22 Jul 2021 11:04:59 +0200
+Message-Id: <20210722090509.1054249-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <YPfryV7qZVRbjNgP@stefanha-x1.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
-在 2021/7/21 下午5:41, Stefan Hajnoczi 写道:
-> On Wed, Jul 21, 2021 at 11:29:55AM +0800, Jason Wang wrote:
->> 在 2021/7/14 上午12:19, Stefan Hajnoczi 写道:
->>> These patches are not polished yet but I would like request feedback on this
->>> approach and share performance results with you.
->>>
->>> Idle CPUs tentatively enter a busy wait loop before halting when the cpuidle
->>> haltpoll driver is enabled inside a virtual machine. This reduces wakeup
->>> latency for events that occur soon after the vCPU becomes idle.
->>>
->>> This patch series extends the cpuidle busy wait loop with the new poll_source
->>> API so drivers can participate in polling. Such polling-aware drivers disable
->>> their device's irq during the busy wait loop to avoid the cost of interrupts.
->>> This reduces latency further than regular cpuidle haltpoll, which still relies
->>> on irqs.
->>>
->>> Virtio drivers are modified to use the poll_source API so all virtio device
->>> types get this feature. The following virtio-blk fio benchmark results show the
->>> improvement:
->>>
->>>                IOPS (numjobs=4, iodepth=1, 4 virtqueues)
->>>                  before   poll_source      io_poll
->>> 4k randread    167102  186049 (+11%)  186654 (+11%)
->>> 4k randwrite   162204  181214 (+11%)  181850 (+12%)
->>> 4k randrw      159520  177071 (+11%)  177928 (+11%)
->>>
->>> The comparison against io_poll shows that cpuidle poll_source achieves
->>> equivalent performance to the block layer's io_poll feature (which I
->>> implemented in a separate patch series [1]).
->>>
->>> The advantage of poll_source is that applications do not need to explicitly set
->>> the RWF_HIPRI I/O request flag. The poll_source approach is attractive because
->>> few applications actually use RWF_HIPRI and it takes advantage of CPU cycles we
->>> would have spent in cpuidle haltpoll anyway.
->>>
->>> The current series does not improve virtio-net. I haven't investigated deeply,
->>> but it is possible that NAPI and poll_source do not combine. See the final
->>> patch for a starting point on making the two work together.
->>>
->>> I have not tried this on bare metal but it might help there too. The cost of
->>> disabling a device's irq must be less than the savings from avoiding irq
->>> handling for this optimization to make sense.
->>>
->>> [1] https://lore.kernel.org/linux-block/20210520141305.355961-1-stefanha@redhat.com/
->>
->> Hi Stefan:
->>
->> Some questions:
->>
->> 1) What's the advantages of introducing polling at virtio level instead of
->> doing it at each subsystems? Polling in virtio level may only work well if
->> all (or most) of the devices are virtio
-> I'm not sure I understand the question. cpuidle haltpoll benefits all
-> devices today, except it incurs interrupt latency. The poll_source API
-> eliminates the interrupt latency for drivers that can disable device
-> interrupts cheaply.
->
-> This patch adds poll_source to core virtio code so that all virtio
-> drivers get this feature for free. No driver-specific changes are
-> needed.
->
-> If you mean networking, block layer, etc by "subsystems" then there's
-> nothing those subsystems can do to help. Whether poll_source can be used
-> depends on the specific driver, not the subsystem. If you consider
-> drivers/virtio/ a subsystem, then that's exactly what the patch series
-> is doing.
+When the two isc driver front-ends are both enabled, but one of them
+is built-in and the other one is a loadable module, the 'base' driver
+is in a state that does not really work, as it would have to be
+built in two different ways:
 
+arm-linux-gnueabi-ld: drivers/media/platform/atmel/atmel-isc-base.o: in function `isc_async_complete':
+atmel-isc-base.c:(.text+0x1e80): undefined reference to `__this_module'
+arm-linux-gnueabi-ld: drivers/media/platform/atmel/atmel-isc-base.o:(.rodata+0x3c8): undefined reference to `__this_module'
+arm-linux-gnueabi-ld: drivers/media/platform/atmel/atmel-isc-base.o:(__param+0x4): undefined reference to `__this_module'
+arm-linux-gnueabi-ld: drivers/media/platform/atmel/atmel-isc-base.o:(__param+0x18): undefined reference to `__this_module'
 
-I meant, if we choose to use idle poll, we have some several choices:
+As a workaround, turn the base portion of the driver into a library
+by itself that can become a standalone module rather than being built
+into the two drivers.
 
-1) bus level (e.g the virtio)
-2) subsystem level (e.g the networking and block)
+Fixes: 0a0e265515db ("media: atmel: atmel-isc: split driver into driver base and isc")
+Fixes: c9aa973884a1 ("media: atmel: atmel-isc: add microchip-xisc driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/media/platform/atmel/Makefile         |  8 ++++----
+ drivers/media/platform/atmel/atmel-isc-base.c | 10 ++++++++++
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
-I'm not sure which one is better.
-
-
->
->> 2) What's the advantages of using cpuidle instead of using a thread (and
->> leverage the scheduler)?
-> In order to combine with the existing cpuidle infrastructure. No new
-> polling loop is introduced and no additional CPU cycles are spent on
-> polling.
->
-> If cpuidle itself is converted to threads then poll_source would
-> automatically operate in a thread too, but this patch series doesn't
-> change how the core cpuidle code works.
-
-
-So networking subsystem can use NAPI busy polling in the process context 
-which means it can be leveraged by the scheduler.
-
-I'm not sure it's a good idea to poll drivers for a specific bus in the 
-general cpu idle layer.
-
-Another questions, are those numbers measured by APICV capable machine?
-
-Virtio-net turns on the tx interrupts since 2 years ago. And we don't 
-see too much difference when measured with a APICV host.
-
-
->
->> 3) Any reason it's virtio_pci specific not a general virtio one?
-> Good idea, it is possible to move the virtio_pci changes into virtio.c.
->
-> Other transports can't use this feature yet though. Only virtio_pci
-> supports vq irq affinity. But the code can be generic and if other
-> transports ever support vq irq affinity they'll get it for free.
-
-
-Yes.
-
-Thanks
-
-
->
->> (Btw, do we need to cc scheduler guys?)
-> I'm not sure. This patch series doesn't change how cpuidle interacts
-> with the scheduler. The cpuidle maintainers can pull in more people, if
-> necessary.
->
-> Stefan
+diff --git a/drivers/media/platform/atmel/Makefile b/drivers/media/platform/atmel/Makefile
+index c5c01556c653..03c896e478c2 100644
+--- a/drivers/media/platform/atmel/Makefile
++++ b/drivers/media/platform/atmel/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-atmel-isc-objs = atmel-sama5d2-isc.o atmel-isc-base.o
+-atmel-xisc-objs = atmel-sama7g5-isc.o atmel-isc-base.o
++atmel-isc-objs = atmel-sama5d2-isc.o
++atmel-xisc-objs = atmel-sama7g5-isc.o
+ 
+ obj-$(CONFIG_VIDEO_ATMEL_ISI) += atmel-isi.o
+-obj-$(CONFIG_VIDEO_ATMEL_ISC) += atmel-isc.o
+-obj-$(CONFIG_VIDEO_ATMEL_XISC) += atmel-xisc.o
++obj-$(CONFIG_VIDEO_ATMEL_ISC) += atmel-isc.o atmel-isc-base.o
++obj-$(CONFIG_VIDEO_ATMEL_XISC) += atmel-xisc.o atmel-isc-base.o
+diff --git a/drivers/media/platform/atmel/atmel-isc-base.c b/drivers/media/platform/atmel/atmel-isc-base.c
+index 19daa49bf604..b3730021dd89 100644
+--- a/drivers/media/platform/atmel/atmel-isc-base.c
++++ b/drivers/media/platform/atmel/atmel-isc-base.c
+@@ -378,6 +378,7 @@ int isc_clk_init(struct isc_device *isc)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(isc_clk_init);
+ 
+ void isc_clk_cleanup(struct isc_device *isc)
+ {
+@@ -392,6 +393,7 @@ void isc_clk_cleanup(struct isc_device *isc)
+ 			clk_unregister(isc_clk->clk);
+ 	}
+ }
++EXPORT_SYMBOL_GPL(isc_clk_cleanup);
+ 
+ static int isc_queue_setup(struct vb2_queue *vq,
+ 			    unsigned int *nbuffers, unsigned int *nplanes,
+@@ -1578,6 +1580,7 @@ irqreturn_t isc_interrupt(int irq, void *dev_id)
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(isc_interrupt);
+ 
+ static void isc_hist_count(struct isc_device *isc, u32 *min, u32 *max)
+ {
+@@ -2212,6 +2215,7 @@ const struct v4l2_async_notifier_operations isc_async_ops = {
+ 	.unbind = isc_async_unbind,
+ 	.complete = isc_async_complete,
+ };
++EXPORT_SYMBOL_GPL(isc_async_ops);
+ 
+ void isc_subdev_cleanup(struct isc_device *isc)
+ {
+@@ -2224,6 +2228,7 @@ void isc_subdev_cleanup(struct isc_device *isc)
+ 
+ 	INIT_LIST_HEAD(&isc->subdev_entities);
+ }
++EXPORT_SYMBOL_GPL(isc_subdev_cleanup);
+ 
+ int isc_pipeline_init(struct isc_device *isc)
+ {
+@@ -2264,6 +2269,7 @@ int isc_pipeline_init(struct isc_device *isc)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(isc_pipeline_init);
+ 
+ /* regmap configuration */
+ #define ATMEL_ISC_REG_MAX    0xd5c
+@@ -2273,4 +2279,8 @@ const struct regmap_config isc_regmap_config = {
+ 	.val_bits       = 32,
+ 	.max_register	= ATMEL_ISC_REG_MAX,
+ };
++EXPORT_SYMBOL_GPL(isc_regmap_config);
+ 
++MODULE_AUTHOR("Songjun Wu");
++MODULE_DESCRIPTION("The V4L2 driver for Atmel-ISC, common parts");
++MODULE_LICENSE("GPL v2");
+-- 
+2.29.2
 
