@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9A73D2AEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8347E3D2AF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233560AbhGVQ3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:29:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50634 "EHLO mail.kernel.org"
+        id S233773AbhGVQ3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:29:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233430AbhGVQ3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:29:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEC44610CC;
-        Thu, 22 Jul 2021 17:10:13 +0000 (UTC)
+        id S233717AbhGVQ3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:29:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AADA61183;
+        Thu, 22 Jul 2021 17:10:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626973814;
-        bh=CICPC0K7i8ZnmYxOvNvLJEa361LHxHiMVcLPXgxl+nY=;
+        s=k20201202; t=1626973819;
+        bh=6tXsqxQclTT6KIHVXllKY41+MDNoERgynR2skjDE3sY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Npgpt349pM2AdqnJEJHirXHAxtFWzJuUKnkFFF9HqMwv9e1C7VwKtOf9Pzh7riHTy
-         YD6WZreDg8owbB8IRAwLyrT/OZJ8UHyN3y552xfW5jDnBE9G0uuXk1m8hM3iaGNEXv
-         3MAem+MrgwJ20GL2Cacm6m3OX39zyUmjbQr2NEN1VRc14PxHIMQoH7lThUH1Vs06Bx
-         KW68ip4ZsEhCuFJLu+evI/ldM5AcxQanL0x3lUx0RibBPFIo+lnxsR5rh6TzGgRJap
-         +YSAhc6K6Xg49Af+zqgmdZSSwv/VTT8nl2IwW49sPcAHR4CbYAnfAjjRgFaSYgF8P+
-         SRssuV7YF02iQ==
+        b=bFfHL+A8EXu7CYstSQ+1IjYoikwZaKgrPiwMvO91klckkR1wPj3SEexReAnIpYE7w
+         SG5j7JiQ3veVXAqajXljEB0aT27fGq2Jw2t90a0aMwEHvYYL8WO4t7nNuzrr9R5Bec
+         zqKqPCeL+0sj94ieU8iXm3iqK8G7rBqtxLc20Llp/C4KAF3mlg5dg8Ubyh8BjXvQ0w
+         Pg7FBVyqjfQQzi1d0xjcL4Zvg2JEXTZn3BLwk1kBMxdYn+ynNrXnuMUFWB36IOxWHh
+         FMvktb/YdWSeu2FNYkuXn4z35oz+m/c6F8qPSBtTstDvgS7fWZ6GD+C2H6yrNtjxgA
+         X862uJ2jIDUPQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Marco Felsch <m.felsch@pengutronix.de>,
-        Andreas Schwab <schwab@suse.de>
-Cc:     Mark Brown <broonie@kernel.org>, kernel@pengutronix.de,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: update modalias_show after of_device_uevent_modalias support
-Date:   Thu, 22 Jul 2021 18:09:56 +0100
-Message-Id: <162697114030.3066.1118388104811208682.b4-ty@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH] spi: meson-spicc: fix memory leak in meson_spicc_remove
+Date:   Thu, 22 Jul 2021 18:09:58 +0100
+Message-Id: <162697114030.3066.15287754008678432008.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <mvmwnpi4fya.fsf@suse.de>
-References: <20210525091003.18228-1-m.felsch@pengutronix.de> <mvmwnpi4fya.fsf@suse.de>
+In-Reply-To: <20210720100116.1438974-1-mudongliangabcd@gmail.com>
+References: <20210720100116.1438974-1-mudongliangabcd@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,10 +45,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Jul 2021 15:48:45 +0200, Andreas Schwab wrote:
-> Commit 3ce6c9e2617e ("spi: add of_device_uevent_modalias support") is
-> incomplete, as it didn't update the modalias_show function to generate the
-> of: modalias string if available.
+On Tue, 20 Jul 2021 18:01:16 +0800, Dongliang Mu wrote:
+> In meson_spicc_probe, the error handling code needs to clean up master
+> by calling spi_master_put, but the remove function does not have this
+> function call. This will lead to memory leak of spicc->master.
 
 Applied to
 
@@ -52,8 +56,8 @@ Applied to
 
 Thanks!
 
-[1/1] spi: update modalias_show after of_device_uevent_modalias support
-      commit: e09f2ab8eecc6dcbd7013a1303cbe56b00dc9fb0
+[1/1] spi: meson-spicc: fix memory leak in meson_spicc_remove
+      commit: 8311ee2164c5cd1b63a601ea366f540eae89f10e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
