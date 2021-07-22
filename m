@@ -2,61 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296833D259A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A893D259C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbhGVNlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:41:01 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:51664 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232287AbhGVNjN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:39:13 -0400
-Received: from smtpclient.apple (p5b3d2eb8.dip0.t-ipconnect.de [91.61.46.184])
-        by mail.holtmann.org (Postfix) with ESMTPSA id D3988CECE1;
-        Thu, 22 Jul 2021 16:19:46 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH] 6lowpan: iphc: Fix an off-by-one check of array index
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210712121440.17860-1-colin.king@canonical.com>
-Date:   Thu, 22 Jul 2021 16:19:46 +0200
-Cc:     Alexander Aring <alex.aring@gmail.com>,
-        Jukka Rissanen <jukka.rissanen@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Schmidt <stefan@osg.samsung.com>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <6995CA71-5AE5-4E4D-8F3A-81A25324AE22@holtmann.org>
-References: <20210712121440.17860-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        id S232428AbhGVNlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:41:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232332AbhGVNjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:39:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFE616135B;
+        Thu, 22 Jul 2021 14:20:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626963601;
+        bh=mJ3JdT0Jl0HeZBBxWkcKK7bwXZcdzgqg5y3jXt3+kZs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ENCgLVRWTYWJGmbpAbWSfCDWo21E52HEXh7c50OdL/+YGGo4tdSiNuuo+dOLYkEsX
+         6QIfpekMB7Dy5uaOoI6/ve7Fg4ujPmH0iVrjeO0O/a88Y+Nhul0jarTbME/G8yYD3j
+         EdVDQnDzwW9ZDYTiD5Xu9lahxyOo63mZDqk1angMstTmSTOPOfy1JREfjZM3A4SdTH
+         u+PA7jaWbcQAcZAgP04bniCthOJbRwKBxHjrNzXVpLk52i7IrBVVpGOAI6x7OXjKM/
+         ynpK5INQnHPg5ZMtvF7nwE4uiV2uqb2pG5Dxth9b80+AsYiJPCKy/QgPgCfciOU+AN
+         IvtT5iQbHTfQg==
+Received: by mail-ej1-f51.google.com with SMTP id qa36so8593607ejc.10;
+        Thu, 22 Jul 2021 07:20:01 -0700 (PDT)
+X-Gm-Message-State: AOAM530jrq2ylAhf8X19GC7KWhr62T4XEF5Lkx1MsS07a24Hul/YYAq7
+        Pq8ecTOrQj/hCXf8S4y72vQ4XuiZbGlluw8DbA==
+X-Google-Smtp-Source: ABdhPJzPx2tAkBfnTYAJdL+pjejcJt5SFRuqenmexCc8UCCTJ3rc8BOHTUiTGbeTgwSbLXr4S6GftAjXVwj1/pePKQI=
+X-Received: by 2002:a17:906:28d1:: with SMTP id p17mr153498ejd.130.1626963600297;
+ Thu, 22 Jul 2021 07:20:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210719182001.1573-1-alexander.helms.jy@renesas.com>
+ <20210719182001.1573-2-alexander.helms.jy@renesas.com> <20210719224804.GA2768983@robh.at.kernel.org>
+ <6fbb307e-8835-224e-7912-2b956985a713@renesas.com>
+In-Reply-To: <6fbb307e-8835-224e-7912-2b956985a713@renesas.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 22 Jul 2021 08:19:47 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+2tpjNffzNPDa2XSZWAk3B-HS-bF7EmZ_j0t_=nfEWvg@mail.gmail.com>
+Message-ID: <CAL_Jsq+2tpjNffzNPDa2XSZWAk3B-HS-bF7EmZ_j0t_=nfEWvg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] dt-bindings: Add binding for Renesas 8T49N241
+To:     Alex Helms <alexander.helms.jy@renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
+        <linux-renesas-soc@vger.kernel.org>, david.cater.jc@renesas.com,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
+On Tue, Jul 20, 2021 at 10:58 AM Alex Helms
+<alexander.helms.jy@renesas.com> wrote:
+>
+> On 7/19/2021 3:48 PM, Rob Herring wrote:
+> > On Mon, 19 Jul 2021 11:20:00 -0700, Alex Helms wrote:
+> >> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
+> >> The 8T49N241 accepts up to two differential or single-ended input clocks
+> >> and a fundamental-mode crystal input. The internal PLL can lock to either
+> >> of the input reference clocks or to the crystal to behave as a frequency
+> >> synthesizer.
+> >>
+> >> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
+> >> ---
+> >>  .../bindings/clock/renesas,8t49n241.yaml      | 190 ++++++++++++++++++
+> >>  MAINTAINERS                                   |   6 +
+> >>  2 files changed, 196 insertions(+)
+> >>  create mode 100644 Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
+> >>
+> >
+> >
+> > Please add Acked-by/Reviewed-by tags when posting new versions. However,
+> > there's no need to repost patches *only* to add the tags. The upstream
+> > maintainer will do that for acks received on the version they apply.
+> >
+> > If a tag was not added on purpose, please state why and what changed.
+> >
+>
+> Thank you for the info. I'm new to the kernel process and appreciate your advice.
+>
+> I felt uncomfortable adding your Reviewed-By tag but since there were no changes to the dt
+> portion of the patch, in retrospect I guess I should have added it. I'll keep this in mind
+> for the future. Is there anything I need to do for this patch?
 
-> The bounds check of id is off-by-one and the comparison should
-> be >= rather >. Currently the WARN_ON_ONCE check does not stop
-> the out of range indexing of &ldev->ctx.table[id] so also add
-> a return path if the bounds are out of range.
-> 
-> Addresses-Coverity: ("Illegal address computation").
-> Fixes: 5609c185f24d ("6lowpan: iphc: add support for stateful compression")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
-> net/6lowpan/debugfs.c | 3 ++-
-> 1 file changed, 2 insertions(+), 1 deletion(-)
+For v5, no. If there's a v6 posted, then add any tags.
 
-patch has been applied to bluetooth-next tree.
-
-Regards
-
-Marcel
-
+Rob
