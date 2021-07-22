@@ -2,49 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8003D2909
+	by mail.lfdr.de (Postfix) with ESMTP id D8E193D290A
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233761AbhGVQAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:00:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35624 "EHLO mail.kernel.org"
+        id S233067AbhGVQAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:00:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233276AbhGVP60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:58:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67AA36137D;
-        Thu, 22 Jul 2021 16:39:00 +0000 (UTC)
+        id S233288AbhGVP62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:58:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3793B61380;
+        Thu, 22 Jul 2021 16:39:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971941;
-        bh=qmU8jWp3ILuM78HdmY8RoaBFc6QO04alvlDL60UAueM=;
+        s=korg; t=1626971943;
+        bh=Lhkw/Yi3B92k5+Ssl3V3pid2NFIun6+p/05Ke2nuSqo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AnWAVzLFEMhVa+wNt4eE8Ntobogk1J/ijegM/bMKDa1u93ZIaOwlBr2i1ijJmC31O
-         9orRCO+BV9db8Pp7/yT4TQKRlIA5SgnVl3WwtfpxkpPoVuZk4KldQo26ykNvKP5qe3
-         KvzPj98W7lFDgXwG+ouutFNfSz3G+AsDz1aj0CS4=
+        b=Q58hq+A4jFWGK92YvbvHEz/YI52U2wb1SDIjxJK6CViHRTyxX1mLssLCjAj/48G3g
+         lJnYzsDYOIUholtHBNJvhJxPU4H2k7lGYXrjfecij+cKFex+eqZ9FXys1+fv2fuNbx
+         9iQaYX00Aonkd8ak14N9A5pLMN5JKzknwDLVM8o4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Hugh Dickins <hughd@google.com>, Joe Perches <joe@perches.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>,
+        stable@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Boris Petkov <bp@alien8.de>,
+        Robert Shteynfeld <robert.shteynfeld@gmail.com>,
+        Baoquan He <bhe@redhat.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 086/125] mm/userfaultfd: fix uffd-wp special cases for fork()
-Date:   Thu, 22 Jul 2021 18:31:17 +0200
-Message-Id: <20210722155627.545159534@linuxfoundation.org>
+Subject: [PATCH 5.10 087/125] mm/page_alloc: fix memory map initialization for descending nodes
+Date:   Thu, 22 Jul 2021 18:31:18 +0200
+Message-Id: <20210722155627.576660385@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
 References: <20210722155624.672583740@linuxfoundation.org>
@@ -56,260 +44,265 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Xu <peterx@redhat.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-commit 8f34f1eac3820fc2722e5159acceb22545b30b0d upstream.
+commit 122e093c1734361dedb64f65c99b93e28e4624f4 upstream.
 
-We tried to do something similar in b569a1760782 ("userfaultfd: wp: drop
-_PAGE_UFFD_WP properly when fork") previously, but it's not doing it all
-right..  A few fixes around the code path:
+On systems with memory nodes sorted in descending order, for instance Dell
+Precision WorkStation T5500, the struct pages for higher PFNs and
+respectively lower nodes, could be overwritten by the initialization of
+struct pages corresponding to the holes in the memory sections.
 
-1. We were referencing VM_UFFD_WP vm_flags on the _old_ vma rather
-   than the new vma.  That's overlooked in b569a1760782, so it won't work
-   as expected.  Thanks to the recent rework on fork code
-   (7a4830c380f3a8b3), we can easily get the new vma now, so switch the
-   checks to that.
+For example for the below memory layout
 
-2. Dropping the uffd-wp bit in copy_huge_pmd() could be wrong if the
-   huge pmd is a migration huge pmd.  When it happens, instead of using
-   pmd_uffd_wp(), we should use pmd_swp_uffd_wp().  The fix is simply to
-   handle them separately.
+[    0.245624] Early memory node ranges
+[    0.248496]   node   1: [mem 0x0000000000001000-0x0000000000090fff]
+[    0.251376]   node   1: [mem 0x0000000000100000-0x00000000dbdf8fff]
+[    0.254256]   node   1: [mem 0x0000000100000000-0x0000001423ffffff]
+[    0.257144]   node   0: [mem 0x0000001424000000-0x0000002023ffffff]
 
-3. Forget to carry over uffd-wp bit for a write migration huge pmd
-   entry.  This also happens in copy_huge_pmd(), where we converted a
-   write huge migration entry into a read one.
+the range 0x1424000000 - 0x1428000000 in the beginning of node 0 starts in
+the middle of a section and will be considered as a hole during the
+initialization of the last section in node 1.
 
-4. In copy_nonpresent_pte(), drop uffd-wp if necessary for swap ptes.
+The wrong initialization of the memory map causes panic on boot when
+CONFIG_DEBUG_VM is enabled.
 
-5. In copy_present_page() when COW is enforced when fork(), we also
-   need to pass over the uffd-wp bit if VM_UFFD_WP is armed on the new
-   vma, and when the pte to be copied has uffd-wp bit set.
+Reorder loop order of the memory map initialization so that the outer loop
+will always iterate over populated memory regions in the ascending order
+and the inner loop will select the zone corresponding to the PFN range.
 
-Remove the comment in copy_present_pte() about this.  It won't help a huge
-lot to only comment there, but comment everywhere would be an overkill.
-Let's assume the commit messages would help.
+This way initialization of the struct pages for the memory holes will be
+always done for the ranges that are actually not populated.
 
-[peterx@redhat.com: fix a few thp pmd missing uffd-wp bit]
-  Link: https://lkml.kernel.org/r/20210428225030.9708-4-peterx@redhat.com
+[akpm@linux-foundation.org: coding style fixes]
 
-Link: https://lkml.kernel.org/r/20210428225030.9708-3-peterx@redhat.com
-Fixes: b569a1760782f ("userfaultfd: wp: drop _PAGE_UFFD_WP properly when fork")
-Signed-off-by: Peter Xu <peterx@redhat.com>
-Cc: Jerome Glisse <jglisse@redhat.com>
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Brian Geffon <bgeffon@google.com>
-Cc: "Dr . David Alan Gilbert" <dgilbert@redhat.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Joe Perches <joe@perches.com>
-Cc: Kirill A. Shutemov <kirill@shutemov.name>
-Cc: Lokesh Gidra <lokeshgidra@google.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Mina Almasry <almasrymina@google.com>
-Cc: Oliver Upton <oupton@google.com>
-Cc: Shaohua Li <shli@fb.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Wang Qing <wangqing@vivo.com>
+Link: https://lkml.kernel.org/r/YNXlMqBbL+tBG7yq@kernel.org
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=213073
+Link: https://lkml.kernel.org/r/20210624062305.10940-1-rppt@kernel.org
+Fixes: 0740a50b9baa ("mm/page_alloc.c: refactor initialization of struct page for holes in memory layout")
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Boris Petkov <bp@alien8.de>
+Cc: Robert Shteynfeld <robert.shteynfeld@gmail.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[rppt: tweak for compatibility with IA64's override of memmap_init]
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/huge_mm.h |    2 +-
- include/linux/swapops.h |    2 ++
- mm/huge_memory.c        |   27 ++++++++++++++-------------
- mm/memory.c             |   25 +++++++++++++------------
- 4 files changed, 30 insertions(+), 26 deletions(-)
+ arch/ia64/include/asm/pgtable.h |    5 +
+ arch/ia64/mm/init.c             |    6 +-
+ mm/page_alloc.c                 |  106 +++++++++++++++++++++++++---------------
+ 3 files changed, 75 insertions(+), 42 deletions(-)
 
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -10,7 +10,7 @@
- vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf);
- int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 		  pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
--		  struct vm_area_struct *vma);
-+		  struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma);
- void huge_pmd_set_accessed(struct vm_fault *vmf, pmd_t orig_pmd);
- int copy_huge_pud(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 		  pud_t *dst_pud, pud_t *src_pud, unsigned long addr,
---- a/include/linux/swapops.h
-+++ b/include/linux/swapops.h
-@@ -265,6 +265,8 @@ static inline swp_entry_t pmd_to_swp_ent
+--- a/arch/ia64/include/asm/pgtable.h
++++ b/arch/ia64/include/asm/pgtable.h
+@@ -520,8 +520,9 @@ extern struct page *zero_page_memmap_ptr
  
- 	if (pmd_swp_soft_dirty(pmd))
- 		pmd = pmd_swp_clear_soft_dirty(pmd);
-+	if (pmd_swp_uffd_wp(pmd))
-+		pmd = pmd_swp_clear_uffd_wp(pmd);
- 	arch_entry = __pmd_to_swp_entry(pmd);
- 	return swp_entry(__swp_type(arch_entry), __swp_offset(arch_entry));
+ #  ifdef CONFIG_VIRTUAL_MEM_MAP
+   /* arch mem_map init routine is needed due to holes in a virtual mem_map */
+-    extern void memmap_init (unsigned long size, int nid, unsigned long zone,
+-			     unsigned long start_pfn);
++void memmap_init(void);
++void arch_memmap_init(unsigned long size, int nid, unsigned long zone,
++		      unsigned long start_pfn);
+ #  endif /* CONFIG_VIRTUAL_MEM_MAP */
+ # endif /* !__ASSEMBLY__ */
+ 
+--- a/arch/ia64/mm/init.c
++++ b/arch/ia64/mm/init.c
+@@ -542,7 +542,7 @@ virtual_memmap_init(u64 start, u64 end,
  }
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1012,7 +1012,7 @@ struct page *follow_devmap_pmd(struct vm
  
- int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 		  pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
--		  struct vm_area_struct *vma)
-+		  struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
+ void __meminit
+-memmap_init (unsigned long size, int nid, unsigned long zone,
++arch_memmap_init (unsigned long size, int nid, unsigned long zone,
+ 	     unsigned long start_pfn)
  {
- 	spinlock_t *dst_ptl, *src_ptl;
- 	struct page *src_page;
-@@ -1021,7 +1021,7 @@ int copy_huge_pmd(struct mm_struct *dst_
- 	int ret = -ENOMEM;
+ 	if (!vmem_map) {
+@@ -562,6 +562,10 @@ memmap_init (unsigned long size, int nid
+ 	}
+ }
  
- 	/* Skip if can be re-fill on fault */
--	if (!vma_is_anonymous(vma))
-+	if (!vma_is_anonymous(dst_vma))
- 		return 0;
++void __init memmap_init(void)
++{
++}
++
+ int
+ ia64_pfn_valid (unsigned long pfn)
+ {
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6129,7 +6129,7 @@ void __ref memmap_init_zone_device(struc
+ 		return;
  
- 	pgtable = pte_alloc_one(dst_mm);
-@@ -1035,14 +1035,6 @@ int copy_huge_pmd(struct mm_struct *dst_
- 	ret = -EAGAIN;
- 	pmd = *src_pmd;
- 
--	/*
--	 * Make sure the _PAGE_UFFD_WP bit is cleared if the new VMA
--	 * does not have the VM_UFFD_WP, which means that the uffd
--	 * fork event is not enabled.
--	 */
--	if (!(vma->vm_flags & VM_UFFD_WP))
--		pmd = pmd_clear_uffd_wp(pmd);
--
- #ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
- 	if (unlikely(is_swap_pmd(pmd))) {
- 		swp_entry_t entry = pmd_to_swp_entry(pmd);
-@@ -1053,11 +1045,15 @@ int copy_huge_pmd(struct mm_struct *dst_
- 			pmd = swp_entry_to_pmd(entry);
- 			if (pmd_swp_soft_dirty(*src_pmd))
- 				pmd = pmd_swp_mksoft_dirty(pmd);
-+			if (pmd_swp_uffd_wp(*src_pmd))
-+				pmd = pmd_swp_mkuffd_wp(pmd);
- 			set_pmd_at(src_mm, addr, src_pmd, pmd);
- 		}
- 		add_mm_counter(dst_mm, MM_ANONPAGES, HPAGE_PMD_NR);
- 		mm_inc_nr_ptes(dst_mm);
- 		pgtable_trans_huge_deposit(dst_mm, dst_pmd, pgtable);
-+		if (!userfaultfd_wp(dst_vma))
-+			pmd = pmd_swp_clear_uffd_wp(pmd);
- 		set_pmd_at(dst_mm, addr, dst_pmd, pmd);
- 		ret = 0;
- 		goto out_unlock;
-@@ -1093,13 +1089,13 @@ int copy_huge_pmd(struct mm_struct *dst_
- 	 * best effort that the pinned pages won't be replaced by another
- 	 * random page during the coming copy-on-write.
+ 	/*
+-	 * The call to memmap_init_zone should have already taken care
++	 * The call to memmap_init should have already taken care
+ 	 * of the pages reserved for the memmap, so we can just jump to
+ 	 * the end of that region and start processing the device pages.
  	 */
--	if (unlikely(is_cow_mapping(vma->vm_flags) &&
-+	if (unlikely(is_cow_mapping(src_vma->vm_flags) &&
- 		     atomic_read(&src_mm->has_pinned) &&
- 		     page_maybe_dma_pinned(src_page))) {
- 		pte_free(dst_mm, pgtable);
- 		spin_unlock(src_ptl);
- 		spin_unlock(dst_ptl);
--		__split_huge_pmd(vma, src_pmd, addr, false, NULL);
-+		__split_huge_pmd(src_vma, src_pmd, addr, false, NULL);
- 		return -EAGAIN;
- 	}
- 
-@@ -1109,8 +1105,9 @@ int copy_huge_pmd(struct mm_struct *dst_
- out_zero_page:
- 	mm_inc_nr_ptes(dst_mm);
- 	pgtable_trans_huge_deposit(dst_mm, dst_pmd, pgtable);
--
- 	pmdp_set_wrprotect(src_mm, addr, src_pmd);
-+	if (!userfaultfd_wp(dst_vma))
-+		pmd = pmd_clear_uffd_wp(pmd);
- 	pmd = pmd_mkold(pmd_wrprotect(pmd));
- 	set_pmd_at(dst_mm, addr, dst_pmd, pmd);
- 
-@@ -1829,6 +1826,8 @@ int change_huge_pmd(struct vm_area_struc
- 			newpmd = swp_entry_to_pmd(entry);
- 			if (pmd_swp_soft_dirty(*pmd))
- 				newpmd = pmd_swp_mksoft_dirty(newpmd);
-+			if (pmd_swp_uffd_wp(*pmd))
-+				newpmd = pmd_swp_mkuffd_wp(newpmd);
- 			set_pmd_at(mm, addr, pmd, newpmd);
- 		}
- 		goto unlock;
-@@ -2995,6 +2994,8 @@ void remove_migration_pmd(struct page_vm
- 		pmde = pmd_mksoft_dirty(pmde);
- 	if (is_write_migration_entry(entry))
- 		pmde = maybe_pmd_mkwrite(pmde, vma);
-+	if (pmd_swp_uffd_wp(*pvmw->pmd))
-+		pmde = pmd_wrprotect(pmd_mkuffd_wp(pmde));
- 
- 	flush_cache_range(vma, mmun_start, mmun_start + HPAGE_PMD_SIZE);
- 	if (PageAnon(new))
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -696,10 +696,10 @@ out:
- 
- static unsigned long
- copy_nonpresent_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
--		pte_t *dst_pte, pte_t *src_pte, struct vm_area_struct *vma,
--		unsigned long addr, int *rss)
-+		pte_t *dst_pte, pte_t *src_pte, struct vm_area_struct *dst_vma,
-+		struct vm_area_struct *src_vma, unsigned long addr, int *rss)
+@@ -6194,7 +6194,7 @@ static void __meminit zone_init_free_lis
+ /*
+  * Only struct pages that correspond to ranges defined by memblock.memory
+  * are zeroed and initialized by going through __init_single_page() during
+- * memmap_init_zone().
++ * memmap_init_zone_range().
+  *
+  * But, there could be struct pages that correspond to holes in
+  * memblock.memory. This can happen because of the following reasons:
+@@ -6213,9 +6213,9 @@ static void __meminit zone_init_free_lis
+  *   zone/node above the hole except for the trailing pages in the last
+  *   section that will be appended to the zone/node below.
+  */
+-static u64 __meminit init_unavailable_range(unsigned long spfn,
+-					    unsigned long epfn,
+-					    int zone, int node)
++static void __init init_unavailable_range(unsigned long spfn,
++					  unsigned long epfn,
++					  int zone, int node)
  {
--	unsigned long vm_flags = vma->vm_flags;
-+	unsigned long vm_flags = dst_vma->vm_flags;
- 	pte_t pte = *src_pte;
- 	struct page *page;
- 	swp_entry_t entry = pte_to_swp_entry(pte);
-@@ -768,6 +768,8 @@ copy_nonpresent_pte(struct mm_struct *ds
- 			set_pte_at(src_mm, addr, src_pte, pte);
- 		}
+ 	unsigned long pfn;
+ 	u64 pgcnt = 0;
+@@ -6231,58 +6231,84 @@ static u64 __meminit init_unavailable_ra
+ 		pgcnt++;
  	}
-+	if (!userfaultfd_wp(dst_vma))
-+		pte = pte_swp_clear_uffd_wp(pte);
- 	set_pte_at(dst_mm, addr, dst_pte, pte);
- 	return 0;
- }
-@@ -839,6 +841,9 @@ copy_present_page(struct vm_area_struct
- 	/* All done, just insert the new page copy in the child */
- 	pte = mk_pte(new_page, dst_vma->vm_page_prot);
- 	pte = maybe_mkwrite(pte_mkdirty(pte), dst_vma);
-+	if (userfaultfd_pte_wp(dst_vma, *src_pte))
-+		/* Uffd-wp needs to be delivered to dest pte as well */
-+		pte = pte_wrprotect(pte_mkuffd_wp(pte));
- 	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
- 	return 0;
- }
-@@ -888,12 +893,7 @@ copy_present_pte(struct vm_area_struct *
- 		pte = pte_mkclean(pte);
- 	pte = pte_mkold(pte);
  
--	/*
--	 * Make sure the _PAGE_UFFD_WP bit is cleared if the new VMA
--	 * does not have the VM_UFFD_WP, which means that the uffd
--	 * fork event is not enabled.
--	 */
--	if (!(vm_flags & VM_UFFD_WP))
-+	if (!userfaultfd_wp(dst_vma))
- 		pte = pte_clear_uffd_wp(pte);
+-	return pgcnt;
++	if (pgcnt)
++		pr_info("On node %d, zone %s: %lld pages in unavailable ranges",
++			node, zone_names[zone], pgcnt);
+ }
+ #else
+-static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
+-					 int zone, int node)
++static inline void init_unavailable_range(unsigned long spfn,
++					  unsigned long epfn,
++					  int zone, int node)
+ {
+-	return 0;
+ }
+ #endif
  
- 	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
-@@ -968,7 +968,8 @@ again:
- 		if (unlikely(!pte_present(*src_pte))) {
- 			entry.val = copy_nonpresent_pte(dst_mm, src_mm,
- 							dst_pte, src_pte,
--							src_vma, addr, rss);
-+							dst_vma, src_vma,
-+							addr, rss);
- 			if (entry.val)
- 				break;
- 			progress += 8;
-@@ -1045,8 +1046,8 @@ copy_pmd_range(struct vm_area_struct *ds
- 			|| pmd_devmap(*src_pmd)) {
- 			int err;
- 			VM_BUG_ON_VMA(next-addr != HPAGE_PMD_SIZE, src_vma);
--			err = copy_huge_pmd(dst_mm, src_mm,
--					    dst_pmd, src_pmd, addr, src_vma);
-+			err = copy_huge_pmd(dst_mm, src_mm, dst_pmd, src_pmd,
-+					    addr, dst_vma, src_vma);
- 			if (err == -ENOMEM)
- 				return -ENOMEM;
- 			if (!err)
+-void __meminit __weak memmap_init(unsigned long size, int nid,
+-				  unsigned long zone,
+-				  unsigned long range_start_pfn)
++static void __init memmap_init_zone_range(struct zone *zone,
++					  unsigned long start_pfn,
++					  unsigned long end_pfn,
++					  unsigned long *hole_pfn)
++{
++	unsigned long zone_start_pfn = zone->zone_start_pfn;
++	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
++	int nid = zone_to_nid(zone), zone_id = zone_idx(zone);
++
++	start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
++	end_pfn = clamp(end_pfn, zone_start_pfn, zone_end_pfn);
++
++	if (start_pfn >= end_pfn)
++		return;
++
++	memmap_init_zone(end_pfn - start_pfn, nid, zone_id, start_pfn,
++			  zone_end_pfn, MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
++
++	if (*hole_pfn < start_pfn)
++		init_unavailable_range(*hole_pfn, start_pfn, zone_id, nid);
++
++	*hole_pfn = end_pfn;
++}
++
++void __init __weak memmap_init(void)
+ {
+-	static unsigned long hole_pfn;
+ 	unsigned long start_pfn, end_pfn;
+-	unsigned long range_end_pfn = range_start_pfn + size;
+-	int i;
+-	u64 pgcnt = 0;
++	unsigned long hole_pfn = 0;
++	int i, j, zone_id, nid;
+ 
+-	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
+-		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
+-		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
++	for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, &nid) {
++		struct pglist_data *node = NODE_DATA(nid);
+ 
+-		if (end_pfn > start_pfn) {
+-			size = end_pfn - start_pfn;
+-			memmap_init_zone(size, nid, zone, start_pfn, range_end_pfn,
+-					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
+-		}
++		for (j = 0; j < MAX_NR_ZONES; j++) {
++			struct zone *zone = node->node_zones + j;
++
++			if (!populated_zone(zone))
++				continue;
+ 
+-		if (hole_pfn < start_pfn)
+-			pgcnt += init_unavailable_range(hole_pfn, start_pfn,
+-							zone, nid);
+-		hole_pfn = end_pfn;
++			memmap_init_zone_range(zone, start_pfn, end_pfn,
++					       &hole_pfn);
++			zone_id = j;
++		}
+ 	}
+ 
+ #ifdef CONFIG_SPARSEMEM
+ 	/*
+-	 * Initialize the hole in the range [zone_end_pfn, section_end].
+-	 * If zone boundary falls in the middle of a section, this hole
+-	 * will be re-initialized during the call to this function for the
+-	 * higher zone.
++	 * Initialize the memory map for hole in the range [memory_end,
++	 * section_end].
++	 * Append the pages in this hole to the highest zone in the last
++	 * node.
++	 * The call to init_unavailable_range() is outside the ifdef to
++	 * silence the compiler warining about zone_id set but not used;
++	 * for FLATMEM it is a nop anyway
+ 	 */
+-	end_pfn = round_up(range_end_pfn, PAGES_PER_SECTION);
++	end_pfn = round_up(end_pfn, PAGES_PER_SECTION);
+ 	if (hole_pfn < end_pfn)
+-		pgcnt += init_unavailable_range(hole_pfn, end_pfn,
+-						zone, nid);
+ #endif
++		init_unavailable_range(hole_pfn, end_pfn, zone_id, nid);
++}
+ 
+-	if (pgcnt)
+-		pr_info("  %s zone: %llu pages in unavailable ranges\n",
+-			zone_names[zone], pgcnt);
++/* A stub for backwards compatibility with custom implementatin on IA-64 */
++void __meminit __weak arch_memmap_init(unsigned long size, int nid,
++				       unsigned long zone,
++				       unsigned long range_start_pfn)
++{
+ }
+ 
+ static int zone_batchsize(struct zone *zone)
+@@ -6981,7 +7007,7 @@ static void __init free_area_init_core(s
+ 		set_pageblock_order();
+ 		setup_usemap(pgdat, zone, zone_start_pfn, size);
+ 		init_currently_empty_zone(zone, zone_start_pfn, size);
+-		memmap_init(size, nid, j, zone_start_pfn);
++		arch_memmap_init(size, nid, j, zone_start_pfn);
+ 	}
+ }
+ 
+@@ -7507,6 +7533,8 @@ void __init free_area_init(unsigned long
+ 			node_set_state(nid, N_MEMORY);
+ 		check_for_memory(pgdat, nid);
+ 	}
++
++	memmap_init();
+ }
+ 
+ static int __init cmdline_parse_core(char *p, unsigned long *core,
 
 
