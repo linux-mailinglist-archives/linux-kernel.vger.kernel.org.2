@@ -2,197 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79EF3D270F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194CC3D2711
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232577AbhGVPNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbhGVPNW (ORCPT
+        id S232679AbhGVPOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:14:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58470 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232289AbhGVPNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:13:22 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F435C061575;
-        Thu, 22 Jul 2021 08:53:57 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id s5so5808303ild.5;
-        Thu, 22 Jul 2021 08:53:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tqbIeVytySLrVUqucnFueIZLeD4JyyzSEXHu7r6LWKY=;
-        b=T7OLQ4uB95BTSn7XrflN3dutNOasGlclR2ro3UFO1eTdyO5zRzDrZz00HSqd7Wefqe
-         RO0IKObjQ97rX5br9NR8WynJkInMzlmTnBw87xpH1xuiJAVjWAxSidQtvVLDOSlDSmlb
-         5Grw1l4y92/bZIO9FUSqgiaTs6RrrAZq72YLppYjzMyx5x53ZEBs3nl5rFJZk+zACvN1
-         GogNijrs/AiRIN7XDjBaViqSQWvzZ2MSMbHes1eCUab8AKTlRXThELswrJxoq/so6EG9
-         NMytZTJAT+xBCN8PWMzkhgP7bKOSIWs5IZufPC+Jk5Y3PwMuttTsGPU3SgLUuUD05PUV
-         BuXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tqbIeVytySLrVUqucnFueIZLeD4JyyzSEXHu7r6LWKY=;
-        b=HSl/HCSCx7ruoCDhPiu4qRkK13tMPdwQsQ/BSUOmd+ieVmJkp7dX2UXTONYDH2id0m
-         avydF4bUn2aWd5A9jdjriss/8hivzjnRoyeZAYY3BUV9nTQDgSbyEH9ev2+P3zCj7z0M
-         nSMhvahZGHwrnyLnDg1LDuduR0AxjA/0Em0wid3FHb0rWpXw39/pni0oFHE3myCbWRST
-         JLzRtODKce2f2hUOrOoe3tnT6qneLFvIO5NRFJrwSMJyNHbs98ZGgXPOxiWoKhfZn7yy
-         lI7PPFqgboKVDDRdptsF62JZ99JiRGd6nEhMXGp4jSAkrQ8wtDtyziiXfZUxhYd7iIdl
-         0QuA==
-X-Gm-Message-State: AOAM5307Sllv6M1zH5NALQMmGUA+xxEOqtTlx/uyKeBarFhopdyB9CWA
-        Gb5Qd3rhTpyZfICxWMBRXGo=
-X-Google-Smtp-Source: ABdhPJxj8N8OHDl/bP3f9RRslCV/V0WWELPx1Q49AuOX2FlR1HIOt1C6pi93dSzCJsoWMVLx1HUaAg==
-X-Received: by 2002:a05:6e02:a:: with SMTP id h10mr321144ilr.285.1626969236780;
-        Thu, 22 Jul 2021 08:53:56 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id u13sm15652794iot.29.2021.07.22.08.53.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 08:53:56 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 1D41627C0054;
-        Thu, 22 Jul 2021 11:53:55 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 22 Jul 2021 11:53:55 -0400
-X-ME-Sender: <xms:kpT5YPi72sXKo5FoY9y39_ul142YBMXO94-jjzab0Rg4R1r15N6N3w>
-    <xme:kpT5YMD0mGOHaqShxwo_ptb_tAehlozTeBSa_d9NeOzn90ZTeS1P3X5i96-B3YokM
-    DNNqE1ECMotz_Ulfw>
-X-ME-Received: <xmr:kpT5YPENZezIZD_vWwKyOMB7eqPeWWwvkHFeG3Rho2IF2BZeRRpmQKzsQYo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeeigdeltdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpeevieejtdfhieejfeduheehvdevgedugeethefggfdtvdeutdevgeetvddvfeeg
-    tdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgv
-    rhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfh
-    gvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:kpT5YMThnI6CNQqOl_WVs5IQ-ey5d9nZbAIoFA3bk4VSnXv0O8OyGA>
-    <xmx:kpT5YMz8lQDOsSUTF8fWqw-gtrpa20NobUMvOzn28ddbMfs4fva4Jw>
-    <xmx:kpT5YC6H8nVaCmmluTy3lgma1XQy4pi1Gkq4Y5eVE99hLTpnlkzH1g>
-    <xmx:k5T5YJESizdWq2BHo_QevkUU4HD6lHTa43mHgP5lZYkeW8VqQ1Dmt33BHUQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 22 Jul 2021 11:53:53 -0400 (EDT)
-Date:   Thu, 22 Jul 2021 23:53:50 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [RFC v5.1 1/8] PCI: Introduce domain_nr in pci_host_bridge
-Message-ID: <YPmUjgz2KoPBhHaY@boqun-archlinux>
-References: <0210720134429.511541-2-boqun.feng@gmail.com>
- <20210721005336.517760-1-boqun.feng@gmail.com>
+        Thu, 22 Jul 2021 11:13:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626969268;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qgWRIlTRPrFPSXBUW8Pt0zlG5aAoFdN/NE3i2abB5QA=;
+        b=EeClBSm4kpE4IQtWEy7Jg2KzTIK5JiA+9qnqP64mekgE65i1oLIh2aODbuWPJu+6gMFJdo
+        k80QaSRm9k5RDcPQqThw6xpTLrc1LEl3Ai3XnGOoL1XQ+07sB8n1mn22/x/ywWNLDXFv4S
+        fae8aLm62V7xoTPTAqq+zvtTkEheFjk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-jOWvxWLjNiW4zeSswEF1LA-1; Thu, 22 Jul 2021 11:54:25 -0400
+X-MC-Unique: jOWvxWLjNiW4zeSswEF1LA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 99ED280BCB1;
+        Thu, 22 Jul 2021 15:54:18 +0000 (UTC)
+Received: from T590 (ovpn-12-57.pek2.redhat.com [10.72.12.57])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4DA0E10016F2;
+        Thu, 22 Jul 2021 15:54:13 +0000 (UTC)
+Date:   Thu, 22 Jul 2021 23:54:08 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
+ from remote numa node
+Message-ID: <YPmUoBk9u+tU2rbS@T590>
+References: <YOhcOv1oOwm6fco+@T590>
+ <ad5bc549-d83f-bee0-9a9f-03a5afd7f3d9@huawei.com>
+ <YPd7IGFZrsTRfUxE@T590>
+ <74537f9c-af5f-cd84-60ab-49ca6220310e@huawei.com>
+ <YPfwAN1onpSKoeBj@T590>
+ <a2650064-41cf-cb62-7ab4-d14ef1856966@huawei.com>
+ <YPklDMng1hL3bQ+v@T590>
+ <9c929985-4fcb-e65d-0265-34c820b770ea@huawei.com>
+ <YPlGOOMSdm6Bcyy/@T590>
+ <fc552129-e89d-74ad-9e57-30e3ffe4cf5d@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210721005336.517760-1-boqun.feng@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fc552129-e89d-74ad-9e57-30e3ffe4cf5d@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 08:53:36AM +0800, Boqun Feng wrote:
-> Currently we retrieve the PCI domain number of the host bridge from the
-> bus sysdata (or pci_config_window if PCI_DOMAINS_GENERIC=y). Actually
-> we have the information at PCI host bridge probing time, and it makes
-> sense that we store it into pci_host_bridge. One benefit of doing so is
-> the requirement for supporting PCI on Hyper-V for ARM64, because the
-> host bridge of Hyper-V doesn't have pci_config_window, whereas ARM64 is
-> a PCI_DOMAINS_GENERIC=y arch, so we cannot retrieve the PCI domain
-> number from pci_config_window on ARM64 Hyper-V guest.
+On Thu, Jul 22, 2021 at 12:12:05PM +0100, John Garry wrote:
+> On 22/07/2021 11:19, Ming Lei wrote:
+> > > If you check below, you can see that cpu4 services an NVMe irq. From
+> > > checking htop, during the test that cpu is at 100% load, which I put the
+> > > performance drop (vs cpu0) down to.
+> > nvme.poll_queues is 2 in my test, and no irq is involved. But the irq mode
+> > fio test is still as bad as io_uring.
+> > 
 > 
-> As the preparation for ARM64 Hyper-V PCI support, we introduce the
-> domain_nr in pci_host_bridge and a sentinel value to allow drivers to
-> set domain numbers properly at probing time. Currently
-> CONFIG_PCI_DOMAINS_GENERIC=y archs are only users of this
-> newly-introduced field.
+> I tried that:
 > 
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
->  drivers/pci/probe.c |  6 +++++-
->  include/linux/pci.h | 10 ++++++++++
->  2 files changed, 15 insertions(+), 1 deletion(-)
+> dmesg | grep -i nvme
+> [    0.000000] Kernel command line: BOOT_IMAGE=/john/Image rdinit=/init
+> crashkernel=256M@32M console=ttyAMA0,115200 earlycon acpi=force
+> pcie_aspm=off noinitrd root=/dev/sda1 rw log_buf_len=16M user_debug=1
+> iommu.strict=1 nvme.use_threaded_interrupts=0 irqchip.gicv3_pseudo_nmi=1
+> nvme.poll_queues=2
 > 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 79177ac37880..60c50d4f156f 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -594,6 +594,7 @@ static void pci_init_host_bridge(struct pci_host_bridge *bridge)
->  	bridge->native_pme = 1;
->  	bridge->native_ltr = 1;
->  	bridge->native_dpc = 1;
-> +	bridge->domain_nr = PCI_DOMAIN_NR_NOT_SET;
->  
->  	device_initialize(&bridge->dev);
->  }
-> @@ -898,7 +899,10 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
->  	bus->ops = bridge->ops;
->  	bus->number = bus->busn_res.start = bridge->busnr;
->  #ifdef CONFIG_PCI_DOMAINS_GENERIC
-> -	bus->domain_nr = pci_bus_find_domain_nr(bus, parent);
-> +	if (bridge->domain_nr == PCI_DOMAIN_NR_NOT_SET)
-> +		bus->domain_nr = pci_bus_find_domain_nr(bus, parent);
-> +	else
-> +		bus->domain_nr = bridge->domain_nr;
->  #endif
->  
->  	b = pci_find_bus(pci_domain_nr(bus), bridge->busnr);
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 540b377ca8f6..ba61f4e144aa 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -526,6 +526,15 @@ static inline int pci_channel_offline(struct pci_dev *pdev)
->  	return (pdev->error_state != pci_channel_io_normal);
->  }
->  
-> +/*
-> +* Currently in ACPI spec, for each PCI host bridge, PCI Segment Group number is
-> +* limited to a 16-bit value, therefore (int)-1 is not a valid PCI domain number,
-> +* and can be used as a sentinel value indicating ->domain_nr is not set by the
-> +* driver (and CONFIG_PCI_DOMAINS_GENERIC=y archs will set it with
-> +* pci_bus_find_domain_nr()).
-> +*/
-
-Hmm.. I forgot to fix this part. Just fixed it locally. Apologies...
-
-Lorenzo, how does the rest look to you? If you think they are good to
-take then I can send a updated version of this patch #1 (version 5.2
-maybe), otherwise (if you think more reviews are needed), I will wait
-and resolve other feedbacks (if any) and put the updated patch #1 into
-next iteration (maybe after next -rc is out). Thanks!
-
-Just in case, this is the link for the whole series:
-https://lore.kernel.org/lkml/20210720134429.511541-1-boqun.feng@gmail.com/
-
-Regards,
-Boqun
-
-> +#define PCI_DOMAIN_NR_NOT_SET (-1)
-> +
->  struct pci_host_bridge {
->  	struct device	dev;
->  	struct pci_bus	*bus;		/* Root bus */
-> @@ -533,6 +542,7 @@ struct pci_host_bridge {
->  	struct pci_ops	*child_ops;
->  	void		*sysdata;
->  	int		busnr;
-> +	int		domain_nr;
->  	struct list_head windows;	/* resource_entry */
->  	struct list_head dma_ranges;	/* dma ranges resource list */
->  	u8 (*swizzle_irq)(struct pci_dev *, u8 *); /* Platform IRQ swizzler */
-> -- 
-> 2.30.2
+> [   30.531989] megaraid_sas 0000:08:00.0: NVMe passthru support : Yes
+> [   30.615336] megaraid_sas 0000:08:00.0: NVME page size   : (4096)
+> [   52.035895] nvme 0000:81:00.0: Adding to iommu group 5
+> [   52.047732] nvme nvme0: pci function 0000:81:00.0
+> [   52.067216] nvme nvme0: 22/0/2 default/read/poll queues
+> [   52.087318]  nvme0n1: p1
 > 
+> So I get these results:
+> cpu0 335K
+> cpu32 346K
+> cpu64 300K
+> cpu96 300K
+> 
+> So still not massive changes.
+
+In your last email, the results are the following with irq mode io_uring:
+
+ cpu0  497K
+ cpu4  307K
+ cpu32 566K
+ cpu64 488K
+ cpu96 508K
+
+So looks you get much worse result with real io_polling?
+
+> 
+> > > Here's some system info:
+> > > 
+> > > HW queue irq affinities:
+> > > PCI name is 81:00.0: nvme0n1
+> > > -eirq 298, cpu list 67, effective list 67
+> > > -eirq 299, cpu list 32-38, effective list 35
+> > > -eirq 300, cpu list 39-45, effective list 39
+> > > -eirq 301, cpu list 46-51, effective list 46
+> > > -eirq 302, cpu list 52-57, effective list 52
+> > > -eirq 303, cpu list 58-63, effective list 60
+> > > -eirq 304, cpu list 64-69, effective list 68
+> > > -eirq 305, cpu list 70-75, effective list 70
+> > > -eirq 306, cpu list 76-80, effective list 76
+> > > -eirq 307, cpu list 81-85, effective list 84
+> > > -eirq 308, cpu list 86-90, effective list 86
+> > > -eirq 309, cpu list 91-95, effective list 92
+> > > -eirq 310, cpu list 96-101, effective list 100
+> > > -eirq 311, cpu list 102-107, effective list 102
+> > > -eirq 312, cpu list 108-112, effective list 108
+> > > -eirq 313, cpu list 113-117, effective list 116
+> > > -eirq 314, cpu list 118-122, effective list 118
+> > > -eirq 315, cpu list 123-127, effective list 124
+> > > -eirq 316, cpu list 0-5, effective list 4
+> > > -eirq 317, cpu list 6-11, effective list 6
+> > > -eirq 318, cpu list 12-16, effective list 12
+> > > -eirq 319, cpu list 17-21, effective list 20
+> > > -eirq 320, cpu list 22-26, effective list 22
+> > > -eirq 321, cpu list 27-31, effective list 28
+> > > 
+> > > 
+> > > john@ubuntu:~$ lscpu | grep NUMA
+> > > NUMA node(s):  4
+> > > NUMA node0 CPU(s):   0-31
+> > > NUMA node1 CPU(s):   32-63
+> > > NUMA node2 CPU(s):   64-95
+> > > NUMA node3 CPU(s):   96-127
+> > > 
+> > > john@ubuntu:~$ lspci | grep -i non
+> > > 81:00.0 Non-Volatile memory controller: Huawei Technologies Co., Ltd. Device
+> > > 0123 (rev 45)
+> > > 
+> > > cat /sys/block/nvme0n1/device/device/numa_node
+> > > 2
+> > BTW, nvme driver doesn't apply the pci numa node, and I guess the
+> > following patch is needed:
+> > 
+> > diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+> > index 11779be42186..3c5e10e8b0c2 100644
+> > --- a/drivers/nvme/host/core.c
+> > +++ b/drivers/nvme/host/core.c
+> > @@ -4366,7 +4366,11 @@ int nvme_init_ctrl(struct nvme_ctrl *ctrl, struct device *dev,
+> >   	ctrl->dev = dev;
+> >   	ctrl->ops = ops;
+> >   	ctrl->quirks = quirks;
+> > +#ifdef CONFIG_NUMA
+> > +	ctrl->numa_node = dev->numa_node;
+> > +#else
+> >   	ctrl->numa_node = NUMA_NO_NODE;
+> > +#endif
+> 
+> From a quick look at the code, is this then later set for the PCI device in
+> nvme_pci_configure_admin_queue()?
+
+Yeah, you are right, the pci numa node has been used.
+
+> 
+> >   	INIT_WORK(&ctrl->scan_work, nvme_scan_work);
+> >   	INIT_WORK(&ctrl->async_event_work, nvme_async_event_work);
+> >   	INIT_WORK(&ctrl->fw_act_work, nvme_fw_act_work);
+> > 
+> > > [   52.968495] nvme 0000:81:00.0: Adding to iommu group 5
+> > > [   52.980484] nvme nvme0: pci function 0000:81:00.0
+> > > [   52.999881] nvme nvme0: 23/0/0 default/read/poll queues
+> > Looks you didn't enabling polling. In irq mode, it isn't strange
+> > to observe IOPS difference when running fio on different CPUs.
+> 
+> If you are still keen to investigate more, then can try either of these:
+> 
+> - add iommu.strict=0 to the cmdline
+> 
+> - use perf record+annotate to find the hotspot
+>   - For this you need to enable psuedo-NMI with 2x steps:
+>     CONFIG_ARM64_PSEUDO_NMI=y in defconfig
+>     Add irqchip.gicv3_pseudo_nmi=1
+> 
+>     See https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/Kconfig#n1745
+>     Your kernel log should show:
+>     [    0.000000] GICv3: Pseudo-NMIs enabled using forced ICC_PMR_EL1
+> synchronisation
+
+OK, will try the above tomorrow.
+
+> 
+> But my impression is that this may be a HW implementation issue, considering
+> we don't see such a huge drop off on our HW.
+
+Except for mpere-mtjade, we saw bad nvme performance on ThunderX2® CN99XX too,
+but I don't get one CN99XX system to check if the issue is same with
+this one.
+
+
+Thanks,
+Ming
+
