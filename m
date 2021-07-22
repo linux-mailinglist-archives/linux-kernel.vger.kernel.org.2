@@ -2,88 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A593D2660
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D21C3D2666
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbhGVOYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 10:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
+        id S232499AbhGVO3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 10:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbhGVOXt (ORCPT
+        with ESMTP id S232464AbhGVOYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 10:23:49 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DC7C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 08:04:24 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id a17-20020a17090abe11b0290173ce472b8aso4731196pjs.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 08:04:24 -0700 (PDT)
+        Thu, 22 Jul 2021 10:24:35 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05720C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 08:04:58 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id y6so5606874ilj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 08:04:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=2bgmx6aikWNECjNInrD83c4X9mWyCilMDwv4/EHVX7s=;
-        b=lNs30KEUEwb/M6gib0m08PWK/K753+CPfftNySVkFtyarDhNou9D61OKqCqKJjYxFy
-         HbJhhktBEGmikY0iJUP3ZvbNJdFURlDxfwey2orTPA511o7q5TaVc4LWD8/X1r/HUI04
-         Lt/ANNI3QNtz6aV5DqAxeyrwLeytqirbFB94JU/N6oBla4uzJdjnz8iLZiqwFQKPd8HP
-         hLobZ7Fhkzo3TXxxNhHNk3zd5/UT+/oLyR7vKDCe/QuqZKblPjNVOM5kgY0FmOzHzjNr
-         t4uyhb5rx7Fjs8RrZXDuuqhjowRkKJRDIx4Mi88kNbG8iv64Fk1kUbyGIGlaBrBa0h5k
-         Y/Dw==
+        bh=pdY6rhVpt2cvtRD9X+6uRamQHWbNgW9tGd+/rf6LByw=;
+        b=LfsodAg1o0ijTbK+UfgG4wZc2ri4Sy1nUrT/7gxYKMSxuvQ+PZJee8lZ8iU8iY7YFF
+         hYuYP7CWfASDCME7zXCXWrJMHrwbwEOoVAC6enIZFmZGsym+ZslNIazL0Yu3CiGMFDQm
+         JLmWMtUrUa4HuratO6FsGooWyNX1Mna9Y0z7CHCNCJTkrW7QD+1CEu5sJMGbVjPKGoks
+         JWXLdZ4HwnDvYbBD+1ckhsYvFxWiEFEs3T+198xWlTn0EU+Vrm4lspa2q6TFX+UWSY5+
+         0+GQHEm1qB+1uQyzFvO+k3OEIay5gz6KO2ZU7U1MSd44k0v3GKixXoOry47KjWPS3mTC
+         i4dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=2bgmx6aikWNECjNInrD83c4X9mWyCilMDwv4/EHVX7s=;
-        b=Z77IklQ9Ciieev9yksF9yF/QWBMu6LpnDv94lyXbfw4XW3YIjG/+NWsLwHhFIw++bg
-         k4lSda2aGNJbN9LPcilvfq6/oATdZJnR3ZULUli9dCfDOPvBjjngB++B9x0mktsHcwGF
-         eb1DhA6evRvfuUJE4UXLsC24X5xi/SZlaZcV1zS268gbmJbGcsXvJV+qXetoeb/gyppN
-         8ESu9nvPX7NF0TYB3Li7aq24OcaGTaDTOfsCc9FDFgtIo3WpgxaFmMbQLr0pbSeNmNk1
-         ClVw0CUJAsTpNbu7LGxEQOedlW1+fEVj4Iz66aPAG/xyvqeyPC7LZ4FS0r45Fhn0tTHG
-         mL+Q==
-X-Gm-Message-State: AOAM530mEDmo3xOdMQSv1oO38FINTF4mNB6WjHBAN1PxASSJ8Z45oOC2
-        EiC6m/qewvFnTUQoyw+LE+Q9HQ==
-X-Google-Smtp-Source: ABdhPJwbde1UDibb5IEr+miphhvXefqE/Dhh3KfUkSGExHO98zZN3vcgQbr6eAvcOHJdczN8D0aqcQ==
-X-Received: by 2002:a62:1c14:0:b029:34a:70f5:40da with SMTP id c20-20020a621c140000b029034a70f540damr293638pfc.37.1626966263551;
-        Thu, 22 Jul 2021 08:04:23 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j15sm30510959pfh.194.2021.07.22.08.04.22
+        bh=pdY6rhVpt2cvtRD9X+6uRamQHWbNgW9tGd+/rf6LByw=;
+        b=dS+zyQRztD6bhCm9YNriygd7oml5SqsDQ2TT738eiipyVLcyZl7AxHiFLx68C8YWHe
+         FdE78su+kEQ57Mvl2RMiIXB/vlpsI3epmn9XtwwzMiCsaD/fbL+x7wjAr5XTVyrJh9+E
+         h/TaTRTC0e3PrJYWPhr40uDLAv1dnBzQn55L3zzk86kqv85sxeVHEI9VqmbebW3Xrw9W
+         /XCZCWmwOMOhLZh6/nXOHu1yyshUoSQ0ofxB5KhrYMYLYC4QDivRb2hwG0ZJWyo1exUI
+         n8u9yfGYyCKTq4SZ27+pv4rp6djT8K/OcxV/j47dY0Ysbwaf+daqGaSPqdvVK5jPrHAE
+         YKKA==
+X-Gm-Message-State: AOAM5303wx4iZVgyzA3gr7S+o3VhXfQvXP2E2VHwxczXTmAlB486Yoo+
+        KgUlbBGH/FYsjgYSbwck91Y=
+X-Google-Smtp-Source: ABdhPJx/iCOEfKNx6SSZefLw/rcSZSwYcTvNl8FtSu3/Q1+/ix8XCODVcVTLTL+UhF83S6mF8+E0Ow==
+X-Received: by 2002:a92:c8c3:: with SMTP id c3mr193016ilq.153.1626966297417;
+        Thu, 22 Jul 2021 08:04:57 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id d9sm7011761ilv.62.2021.07.22.08.04.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 08:04:22 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 15:04:19 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: nVMX: Dynamically compute max VMCS index for vmcs12
-Message-ID: <YPmI8x2Qu3ZSS5Bc@google.com>
-References: <20210618214658.2700765-1-seanjc@google.com>
- <f5b512e85f2010ddf3ef621b75e3fb389e463a2c.camel@redhat.com>
+        Thu, 22 Jul 2021 08:04:56 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id DE65C27C0054;
+        Thu, 22 Jul 2021 11:04:54 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 22 Jul 2021 11:04:54 -0400
+X-ME-Sender: <xms:FYn5YAWD-wPR-RVw-WwgbE4Lz_ycSmb-gkti1iUf_GKPSuyM0GECsg>
+    <xme:FYn5YEljXxBbC0VSh0ebQokzBVcIcnrl0abPWqqHKUFaXSoDB_y7md7LMg0moircI
+    GhFOubvfNfPTQZQIg>
+X-ME-Received: <xmr:FYn5YEY0fXjO9nL8oqKGhmiVbxt2vJDbd4VVLFFaXI-DVT7NzWLz3N0GbW4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeeigdekudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpeegudegfedtjedtffdvleelteefuddvkefgheejuedujeehfeelkeetjeegtdef
+    gfenucffohhmrghinhepfhhffihllhdrtghhnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhs
+    ohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnh
+    hgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:FYn5YPWRsfO9ylx6MZT3WvV8V59fPf49rtUcHHSIj61yPQL1vpqR9g>
+    <xmx:FYn5YKkH3YsWLAzswxzjeD3_KE1Ukrxn1L_fk7uLNJDu7P8Ge3LPSQ>
+    <xmx:FYn5YEe1sEA8kHDMSNFZHjhtJ2AG0Ygx4w6cqst97KBNYafBlF2JCw>
+    <xmx:Fon5YAl3nQwOwvJ0QPtpedI0pnNG0cRa7eC3mLZlyOQFW5BfYWOtepdQhhk>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 22 Jul 2021 11:04:52 -0400 (EDT)
+Date:   Thu, 22 Jul 2021 23:04:49 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
+        airlied@linux.ie, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH 1/3] drm: use the lookup lock in drm_is_current_master
+Message-ID: <YPmJEYrnB0j17cZV@boqun-archlinux>
+References: <20210722092929.244629-1-desmondcheongzx@gmail.com>
+ <20210722092929.244629-2-desmondcheongzx@gmail.com>
+ <YPlKkvelm/mcnCj0@phenom.ffwll.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f5b512e85f2010ddf3ef621b75e3fb389e463a2c.camel@redhat.com>
+In-Reply-To: <YPlKkvelm/mcnCj0@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021, Maxim Levitsky wrote:
-> On Fri, 2021-06-18 at 14:46 -0700, Sean Christopherson wrote:
-> > Calculate the max VMCS index for vmcs12 by walking the array to find the
-> > actual max index.  Hardcoding the index is prone to bitrot, and the
-> > calculation is only done on KVM bringup (albeit on every CPU, but there
-> > aren't _that_ many null entries in the array).
+On Thu, Jul 22, 2021 at 12:38:10PM +0200, Daniel Vetter wrote:
+> On Thu, Jul 22, 2021 at 05:29:27PM +0800, Desmond Cheong Zhi Xi wrote:
+> > Inside drm_is_current_master, using the outer drm_device.master_mutex
+> > to protect reads of drm_file.master makes the function prone to creating
+> > lock hierarchy inversions. Instead, we can use the
+> > drm_file.master_lookup_lock that sits at the bottom of the lock
+> > hierarchy.
 > > 
-> > Fixes: 3c0f99366e34 ("KVM: nVMX: Add a TSC multiplier field in VMCS12")
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> > ---
+> >  drivers/gpu/drm/drm_auth.c | 9 +++++----
+> >  1 file changed, 5 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
+> > index f00354bec3fb..9c24b8cc8e36 100644
+> > --- a/drivers/gpu/drm/drm_auth.c
+> > +++ b/drivers/gpu/drm/drm_auth.c
+> > @@ -63,8 +63,9 @@
+> >  
+> >  static bool drm_is_current_master_locked(struct drm_file *fpriv)
+> >  {
+> > -	lockdep_assert_held_once(&fpriv->minor->dev->master_mutex);
+> > -
+> > +	/* Either drm_device.master_mutex or drm_file.master_lookup_lock
+> > +	 * should be held here.
+> > +	 */
 > 
-> Could you give me an example on how this fails in the KVM unit tests?
-> I have a bug report here and it might be related so I want to save some
-> time triaging it.
+> Disappointing that lockdep can't check or conditions for us, a
+> lockdep_assert_held_either would be really neat in some cases.
+> 
 
-FAIL: VMX_VMCS_ENUM.MAX_INDEX expected: 19, actual: 17
+The implementation is not hard but I don't understand the usage, for
+example, if we have a global variable x, and two locks L1 and L2, and
+the function
 
-FWIW, unless a kernel/hypervisor is sanity checking VMREAD/VMWRITE or doing something
-clever with the MAX_INDEX, I wouldn't expect this to cause any real world failures.
+	void do_something_to_x(void)
+	{
+		lockdep_assert_held_either(L1, L2);
+		x++;
+	}
+
+and two call sites:
+
+	void f(void)
+	{
+		lock(L1);
+		do_something_to_x();
+		unlock(L1);
+	}
+
+	void g(void)
+	{
+		lock(L2);
+		do_something_to_x();
+		unlock(L2);
+	}
+
+, wouldn't it be racy if f() and g() called by two threads at the same
+time? Usually I would expect there exists a third synchronazition
+mechanism (say M), which synchronizes the calls to f() and g(), and we
+put M in the lockdep_assert_held() check inside do_something_to_x()
+like:
+
+	void do_something_to_x(void)
+	{
+		lockdep_assert_held_once(M);
+		x++;
+	}
+
+But of course, M may not be a lock, so we cannot put the assert there.
+
+My cscope failed to find ->master_lookup_lock in -rc2 and seems it's not
+introduced in the patchset either, could you point me the branch this
+patchset is based on, so that I could understand this better, and maybe
+come up with a solution? Thanks ;-)
+
+Regards,
+Boqun
+
+> Adding lockdep folks, maybe they have ideas.
+> 
+> On the patch:
+> 
+> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> 
+> >  	return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
+> >  }
+> >  
+> > @@ -82,9 +83,9 @@ bool drm_is_current_master(struct drm_file *fpriv)
+> >  {
+> >  	bool ret;
+> >  
+> > -	mutex_lock(&fpriv->minor->dev->master_mutex);
+> > +	spin_lock(&fpriv->master_lookup_lock);
+> >  	ret = drm_is_current_master_locked(fpriv);
+> > -	mutex_unlock(&fpriv->minor->dev->master_mutex);
+> > +	spin_unlock(&fpriv->master_lookup_lock);
+> >  
+> >  	return ret;
+> >  }
+> > -- 
+> > 2.25.1
+> > 
+> 
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
