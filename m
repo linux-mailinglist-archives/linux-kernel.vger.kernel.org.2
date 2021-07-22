@@ -2,201 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8797D3D2B5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E15A3D2B78
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhGVRG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 13:06:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57626 "EHLO mail.kernel.org"
+        id S230058AbhGVRM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 13:12:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:57946 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229536AbhGVRGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 13:06:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8A9B6135A;
-        Thu, 22 Jul 2021 17:47:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626976050;
-        bh=XdqCZirstICjdLHQfMitOvR6dwyJLMO9kLydMKAiTxw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dPrHhcDaxL+k0xd8mwaVXIDJKy5lOyIXTIhmyQ3ee4E4+mUNzgM7W4FQFky7lXyLk
-         5m0LfXM5SMpF+E7naINdYUw+OptCA5t/R6OcFwCHUBYeOMqrfIQulDRsQCsbhMD9rV
-         hQkND0ZUR3xMnI06QMYIVmxiE5epkitAogEnmRMk=
-Date:   Thu, 22 Jul 2021 19:47:28 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        id S229955AbhGVRM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 13:12:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 687D5106F;
+        Thu, 22 Jul 2021 10:53:02 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 46A613F73D;
+        Thu, 22 Jul 2021 10:53:00 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rt-users@vger.kernel.org, x86@kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Guodong Xu <guodong.xu@linaro.org>, tangchengchang@huawei.com,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        yangyicong <yangyicong@huawei.com>, tim.c.chen@linux.intel.com,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v7 4/4] lib: test_bitmap: add bitmap_print_to_buf test
- cases
-Message-ID: <YPmvMJHouZFDHVds@kroah.com>
-References: <20210715115856.11304-1-song.bao.hua@hisilicon.com>
- <20210715115856.11304-5-song.bao.hua@hisilicon.com>
- <YPAlg5c8uDSZ2WvZ@smile.fi.intel.com>
- <YPCe+f3GPDUuvwnW@yury-ThinkPad>
- <CAHp75VcoNPiKDaZzTVr3unV3F5u+LQwAjy1hKSq0WUw_tB6uAw@mail.gmail.com>
- <YPDDdAwgYEptz2Uq@yury-ThinkPad>
- <YPgHtJqXi8cKad1Q@kroah.com>
- <YPmmR3JfgM/yIh1H@yury-ThinkPad>
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Mark Brown <broonie@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 0/3] sched, x86, arm64: PREEMPT_RT, FPU and preemption
+Date:   Thu, 22 Jul 2021 18:51:54 +0100
+Message-Id: <20210722175157.1367122-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPmmR3JfgM/yIh1H@yury-ThinkPad>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 10:09:27AM -0700, Yury Norov wrote:
-> On Wed, Jul 21, 2021 at 01:40:36PM +0200, Greg Kroah-Hartman wrote:
-> > On Thu, Jul 15, 2021 at 04:23:32PM -0700, Yury Norov wrote:
-> > > On Fri, Jul 16, 2021 at 12:32:45AM +0300, Andy Shevchenko wrote:
-> > > > On Thu, Jul 15, 2021 at 11:48 PM Yury Norov <yury.norov@gmail.com> wrote:
-> > > > > On Thu, Jul 15, 2021 at 03:09:39PM +0300, Andy Shevchenko wrote:
-> > > > > > On Thu, Jul 15, 2021 at 11:58:56PM +1200, Barry Song wrote:
-> > > > > > > The added test items cover both cases where bitmap buf of the printed
-> > > > > > > result is greater than and less than 4KB.
-> > > > > > > And it also covers the case where offset for bitmap_print_to_buf is
-> > > > > > > non-zero which will happen when printed buf is larger than one page
-> > > > > > > in sysfs bin_attribute.
-> > > > > >
-> > > > > > More test cases is always a good thing, thanks!
-> > > > >
-> > > > > Generally yes. But in this case... I believe, Barry didn't write that
-> > > > > huge line below by himself. Most probably he copy-pasted the output of
-> > > > > his bitmap_print_buf() into the test. If so, this code tests nothing,
-> > > > > and just enforces current behavior of snprintf.
-> > > > 
-> > > > I'm not sure I got what you are telling me. The big line is to test
-> > > > strings that are bigger than 4k.
-> > > 
-> > > I'm trying to say that human are not able to verify correctness of
-> > > this line. The test is supposed to check bitmap_print_to_buf(), but
-> > > reference output itself is generated by bitmap_print_to_buf(). This
-> > > test will always pass by design, even if there's an error somewhere
-> > > in the middle, isn't it?
-> > 
-> > Then please manually check it to verify it is correct or not.  Once we
-> > have it verified, that's fine, it will remain static in this test for
-> > always going forward.
-> > 
-> > That's what "oracles" are for, there is nothing wrong with this test
-> > case or "proof" that I can see.
-> > 
-> > > > 
-> > > > ...
-> > > > 
-> > > > > > > +static const char large_list[] __initconst = /* more than 4KB */
-> > > > > > > +   "0,4,8,12,16,20,24,28,32-33,36-37,40-41,44-45,48-49,52-53,56-57,60-61,64,68,72,76,80,84,88,92,96-97,100-101,104-1"
-> > > > > > > +   "05,108-109,112-113,116-117,120-121,124-125,128,132,136,140,144,148,152,156,160-161,164-165,168-169,172-173,176-1"
-> > > > > > > +   "77,180-181,184-185,188-189,192,196,200,204,208,212,216,220,224-225,228-229,232-233,236-237,240-241,244-245,248-2"
-> > > > >
-> > > > > I don't like this behavior of the code: each individual line is not a
-> > > > > valid bitmap_list. I would prefer to split original bitmap and print
-> > > > > list representation of parts in a compatible format; considering a
-> > > > > receiving part of this splitting machinery.
-> > > > 
-> > > > I agree that split is not the best here, but after all it's only 1
-> > > > line and this is on purpose.
-> > > 
-> > > What I see is that bitmap_print_to_buf() is called many times,
-> > 
-> > That is not what the above list shows at all, it's one long string all
-> > together, only split up to make it easier for us to work with.
-> > 
-> > > and
-> > > each time it returns something that is not a valid bitmap list string.
-> > > If the caller was be able to concatenate all the lines returned by
-> > > bitmap_print_to_buf(), he'd probably get correct result. But in such
-> > > case, why don't he use scnprintf("pbl") directly?
-> > 
-> > I do not understand the objection here at all.  This series is fixing a
-> > real problem that eeople are having
-> 
-> I explicitly asked about an example of this problem. Barry answered in
-> a great length, but the key points are:
-> 
->         https://lore.kernel.org/lkml/4ab928f1fb3e4420974dfafe4b32f5b7@hisilicon.com/
-> 
->         > > So, the root problem here is that some machines have so many CPUs that
->         > > their cpumask text representation may not fit into the full page in the
->         > > worst case. Is my understanding correct? Can you share an example of
->         > > such configuration?
->         > 
->         > in my understanding, I have not found any machine which has really
->         > caused the problem till now.
-> 
->         > [...]
->         > 
->         > This doesn't really happen nowadays as the maximum
->         > NR_CPUS is 8196 for X86_64 and 4096 for ARM64 since 8196 * 9 / 32 = 2305
->         > is still smaller than 4KB page size.
-> 
-> 
-> If it's not true, can you or Barry please share such an example?
+Hi folks,
 
-So for a 4k page size, if you have every-other-cpu-enabled on x86, it
-will overflow this, right?
+This stems from some more v5.13-rt1 breakage on arm64. This time per-CPU access
+safety isn't sufficient, we really need to keep preemption disabled.
 
-And I have heard of systems much bigger than this as well.  Why do you
-not think that large number of CPUs are not around?
+In a happy accident I stumbled on
 
-> > and your complaining about test
-> > strings is _VERY_ odd.
-> 
-> The test itself is bad, but it's a minor issue.
-> 
-> My main complain is that the bitmap part of this series introduces a
-> function that requires O(N^2) of CPU time and O(N) of memory to just
-> print a string. The existing snprintf does this in O(N) and O(1)
-> respectively. Additionally to that, the proposed function has some
-> flaws in design.
+  cba08c5dc6dc ("x86/fpu: Make kernel FPU protection RT friendly")
 
-Can you propose a better solution?
+so I packaged what was done there into some common helpers and plastered them
+over the problematic areas.
 
-And is O(N^2) even an issue for this?  Have you run it to determine the
-cpu load for such a tiny thing?  Why optimize something that no one has
-even tried yet?
+Cheers,
+Valentin
 
-> > If you have an alternate solution, please propose it, otherwise I will
-> > be taking this series in the next few days.
-> 
-> I think I suggested a better solution in the thread for v4:
-> 
-> https://lore.kernel.org/lkml/YMu2amhrdGZHJ5mY@yury-ThinkPad/
-> 
->         > kasprintf() does everything you need. Why don't you use it directly in
->         > your driver?
-> 
-> I'm not that familiar to sysfs internals to submit a patch, but the
-> idea in more details is like this:
-> 
->         cpulist_read(...)
->         {
->                if (bitmap_string == NULL)
->                         bitmap_string = kasprintf(bitmap, ...);
-> 
->         }
-> 
-> Where bitmap_string pointer may be stored in struct file, struct kobject,
-> struct bit_attribute or where it's convenient. 
+Valentin Schneider (3):
+  sched/preempt: Introduce preempt_{enable, disable}_bh()
+  x86/fpu: Make FPU protection reuse common helper
+  arm64/fpsimd: Fix FPSIMD context handling vs PREEMPT_RT
 
-No, we are not storing strings in a kobject, sorry.
+ arch/arm64/kernel/fpsimd.c     |  6 ++++--
+ arch/x86/include/asm/fpu/api.h | 19 ++-----------------
+ include/linux/bottom_half.h    | 26 ++++++++++++++++++++++++++
+ 3 files changed, 32 insertions(+), 19 deletions(-)
 
-thanks,
+--
+2.25.1
 
-greg k-h
