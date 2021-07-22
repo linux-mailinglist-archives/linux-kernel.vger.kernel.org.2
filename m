@@ -2,118 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B093D2515
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EC43D251B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbhGVNWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:22:04 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:33557 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232177AbhGVNWA (ORCPT
+        id S232268AbhGVNXQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 09:23:16 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:51693 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232118AbhGVNXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:22:00 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id 7B83E2B00BA0;
-        Thu, 22 Jul 2021 10:02:24 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 22 Jul 2021 10:02:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=C6CbgvrWGhTSu1mJtUQtOVibztV
-        iE1SUbR/gHueA4Ec=; b=cn/4EYJ/72loKaRLF/QhNBFjZ6M/iTZKsxYyiRNfmUW
-        /bjTttv/sGLHT5WhCnB1cf1xLWBnq0v/76gYOSwvqVj0DOhCHrO7x5a1jYUXC0vi
-        ZmPNispxN7PG7HQIA+zTy/9Gv1BW6S6p5zzkyZUGR2sTq8kYLpIwwzHdjQqcznte
-        d3wnUPojh20p/rTNjnth2Ffyr5JOfxf2fCblYIfQ0s7mgwyDBCyNCCUtAfD/rUHN
-        VpqrSf/zcOX86IjfVohj7kiz9WXVOrSqyed1v8jrvrpAIEESQmaQptHVD8SW1fuA
-        EptwgfhFB9NMQYEx5PPPd9+HflXPMl+BtGUVooiVwIQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=C6Cbgv
-        rWGhTSu1mJtUQtOVibztViE1SUbR/gHueA4Ec=; b=JctVrWUEhlKVgRiSy8dNS3
-        sb9GpI2BSiBqqsmmzJpVg8sDzKFxF3YRBtMNpC1zgu7q+N1g6EtylLL8HehitVwg
-        KxqpwpM5ZEf+tvJEGdEz04FyOzakg5AOAYW8bs7O+28BipdP9O9/J8dWdHYloD7D
-        iORaCnlDKgfi9jST/I38U747CM83PxPAmhQxu3qO2ygWDtd000mRWyn211+MT30N
-        s1JxxMry2ac6OKTqtYmmZtmO9ZAB3tmK+UlKDgkpPzkp6kN/QgYGfE+I4D9pl6sm
-        X42TFVzHZZdVV53ebFyQMOBZolUpFWB3j7IAk5Y82mhNRtBHFcPY7UDgnX9sGSaw
-        ==
-X-ME-Sender: <xms:b3r5YBEGXNbUbunn0Erl3Ne-pCJXaRUdUoVMIBFFltyCkAq6-P3ksQ>
-    <xme:b3r5YGX3Q5CYNgyCwZPpomKFF0SLB5ZgNRpiM-TAgTw6J2IWygA14otib8SdI4MFg
-    mcHnmn3UXq-ig>
-X-ME-Received: <xmr:b3r5YDJssRth_o-PDkQWus9RobylSNNE8w7kidtB9N3JX0SLcBErx8wNghNLxzverRtDiQI2cOlcGk1W--XeBLYTk5a_9gtt>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeeigdeilecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueelledthe
-    ekleethfeludduvdfhffeuvdffudevgeehkeegieffveehgeeftefgnecuffhomhgrihhn
-    pehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:b3r5YHFpu5AwD4syxJbefWI2MgXysHPhfcsd_TfzXMAPrO9gbfW1-g>
-    <xmx:b3r5YHUv92422nvmLxLtsEezvLZ6uBVaNZrzkNpux8vtqV-_zU0yjQ>
-    <xmx:b3r5YCPvpAqX0H2QyHWieYr94Vcon8CACNcfBt7TgYXV0o4GTfalQg>
-    <xmx:cHr5YLncO5kq_whLMPR5tUxILMUGV1KlR6fkMenA0kVL4m3tpMMe0FGlJkU>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 22 Jul 2021 10:02:22 -0400 (EDT)
-Date:   Thu, 22 Jul 2021 16:02:18 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Peter Xu <peterx@redhat.com>, stable <stable@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>, Igor Raits <igor@gooddata.com>
-Subject: Re: [PATCH stable 5.13.y/5.12.y 0/2] mm/thp: Fix uffd-wp with
- fork(); crash on pmd migration entry on fork
-Message-ID: <YPl6aimUo8XiBAcF@kroah.com>
-References: <796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com>
- <20210720155150.497148-1-peterx@redhat.com>
- <CANsGZ6aEW8pEncdoh_mGxKF-Se0_-O=E124EywULWvJ3qC0aVA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANsGZ6aEW8pEncdoh_mGxKF-Se0_-O=E124EywULWvJ3qC0aVA@mail.gmail.com>
+        Thu, 22 Jul 2021 09:23:15 -0400
+Received: from smtpclient.apple (p5b3d2eb8.dip0.t-ipconnect.de [91.61.46.184])
+        by mail.holtmann.org (Postfix) with ESMTPSA id ACF84CECDC;
+        Thu, 22 Jul 2021 16:03:48 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH v4 2/2] Bluetooth: btusb: Support Bluetooth Reset for
+ Mediatek Chip(MT7921)
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210701194243.5449-2-mark-yw.chen@mediatek.com>
+Date:   Thu, 22 Jul 2021 16:03:48 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>, chris.lu@mediatek.com,
+        will-cy.lee@mediatek.com, Sean Wang <sean.wang@mediatek.com>,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        michaelfsun@google.com, shawnku@google.com, jemele@google.com,
+        apusaka@google.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <0FDB7895-4ABF-4975-AF61-FCFA86597254@holtmann.org>
+References: <20210701194243.5449-1-mark-yw.chen@mediatek.com>
+ <20210701194243.5449-2-mark-yw.chen@mediatek.com>
+To:     =?utf-8?B?Ik1hcmstWVcgQ2hlbiAo6Zmz5o+a5paHKSI=?= 
+        <Mark-YW.Chen@mediatek.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 01:32:19PM -0700, Hugh Dickins wrote:
-> On Tue, Jul 20, 2021 at 8:52 AM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > In summary: this series should be needed for 5.10/5.12/5.13. This is the
-> > 5.13.y/5.12.y backport of the series, and it should be able to be applied on
-> > both of the branches.  Patch 1 is a dependency of patch 2, while patch 2 should
-> > be the real fix.
-> >
-> > This series should be able to fix a rare race that mentioned in thread:
-> >
-> > https://lore.kernel.org/linux-mm/796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com/
-> >
-> > This fact wasn't discovered when the fix got proposed and merged, because the
-> > fix was originally about uffd-wp and its fork event.  However it turns out that
-> > the problematic commit b569a1760782f3d is also causing crashing on fork() of
-> > pmd migration entries which is even more severe than the original uffd-wp
-> > problem.
-> >
-> > Stable kernels at least on 5.12.y has the crash reproduced, and it's possible
-> > 5.13.y and 5.10.y could hit it due to having the problematic commit
-> > b569a1760782f3d but lacking of the uffd-wp fix patch (8f34f1eac382, which is
-> > also patch 2 of this series).
-> >
-> > The pmd entry crash problem was reported by Igor Raits <igor@gooddata.com> and
-> > debugged by Hugh Dickins <hughd@google.com>.
-> >
-> > Please review, thanks.
-> 
-> These two 5.13.y patches look just right to me, thank you Peter (and
-> 5.12.19 announced EOL overnight, so nothing more wanted for that).
-> 
-> But these do just amount to asking stable@vger.kernel.org to
-> cherry-pick the two commits
-> 5fc7a5f6fd04bc18f309d9f979b32ef7d1d0a997
-> 8f34f1eac3820fc2722e5159acceb22545b30b0d
+Hi Mark,
 
-Thanks for the review, both now queued up to 5.13.y.
+> When the firmware hang or command no response, driver can reset the
+> bluetooth mcu via USB to recovery it. The reset steps as follows.
+> 
+> 1. Cancel USB transfer requests before reset.
+> 2. It use speicific USB HW Register to reset Bluetooth MCU, at the
+>   same time, the USB Endpoint0 still keep alive.
+> 3. Poll the USB HW register until reset is completed by Endpoint0.
+> 4. To recovery unexpected USB state and behavior during resetting the
+>   Bluetooth MCU, the driver need to reset the USB device for MT7921.
+> 5. After the reset is completed, the Bluetooth MCU need to re-setup,
+>   such as download patch, power-on sequence and etc.
+> 
+> Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
+> ---
+> drivers/bluetooth/btusb.c | 127 ++++++++++++++++++++++++++++++++++++++
+> 1 file changed, 127 insertions(+)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index b1249b664981..122a928ebcb5 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -3076,6 +3076,17 @@ static int btusb_shutdown_intel_new(struct hci_dev *hdev)
+> 	return 0;
+> }
+> 
+> +/* UHW CR mapping */
+> +#define BT_MISC			0x70002510
+> +#define BT_SUBSYS_RST		0x70002610
+> +#define UDMA_INT_STA_BT		0x74000024
+> +#define UDMA_INT_STA_BT1	0x74000308
+> +#define BT_WDT_STATUS		0x740003A0
+> +#define EP_RST_OPT		0x74011890
+> +#define EP_RST_IN_OUT_OPT	0x00010001
+> +#define BT_RST_DONE		0x00000100
+> +#define BT_RESET_WAIT_MS	100
+> +#define BT_RESET_NUM_TRIES	10
 
-greg k-h
+you need to prefix these with MTK since otherwise we get confused.
+
+And we need to work towards abstracting the vendor specific position out of btusb.c (and I include the Intel part here as well). The btusb.c is getting overloaded with vendor stuff.
+
+Regards
+
+Marcel
+
