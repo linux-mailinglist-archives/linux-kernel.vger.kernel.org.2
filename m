@@ -2,103 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5908E3D2577
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF8D3D2580
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbhGVNfO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 09:35:14 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:56597 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232359AbhGVNe7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:34:59 -0400
-Received: from smtpclient.apple (p5b3d2eb8.dip0.t-ipconnect.de [91.61.46.184])
-        by mail.holtmann.org (Postfix) with ESMTPSA id B8D5FCECDC;
-        Thu, 22 Jul 2021 16:15:33 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH] Bluetooth: btusb: Add support for Foxconn Mediatek Chip
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210708131214.695458-1-aaron.ma@canonical.com>
-Date:   Thu, 22 Jul 2021 16:15:33 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        matthias.bgg@gmail.com, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <E6EC3615-DAC0-4267-AD9B-3B0604EDAD87@holtmann.org>
-References: <20210708131214.695458-1-aaron.ma@canonical.com>
-To:     Aaron Ma <aaron.ma@canonical.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        id S232271AbhGVNgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:36:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232105AbhGVNga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:36:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED06A6128D;
+        Thu, 22 Jul 2021 14:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626963425;
+        bh=EMz3MoIH6oilj/w4Eak46dXF6qgmQ7i1PkMKQ+PtdmU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Iagwb3SPOUuPeZ+DkZCOSQzpxLQevduQVSPZAJuRQnQYSRtZypPuiW5mLsdpAHUPJ
+         z/Xb1keQTvNLQZs1e5yF0Gu+yJfyZ8e8I9uaJGxCvC9MhbJKLGMx3j7BPv9h3tDDE3
+         6W1B2QPN5tD33EBnZj1LqENFW9i7f+LTUpQqDAqLZwSKpSKAsLae9wt3U8DI+s/E9M
+         HJQjG3h9FNAFIwZ/bjMdDwd5qVq47apMTlRXF0RCwJ5bh8UiSOxIbJpH225Ptqf/Cm
+         EmyRjjhuaBhcW4XP778U4wmm8JemIVU9H2m2yZH9ztOD8x1a9dlqk9k0XVY3iPNOBZ
+         CTAYrhYo29PXQ==
+Date:   Thu, 22 Jul 2021 19:47:02 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+        sanyog.r.kale@intel.com, bard.liao@intel.com
+Subject: Re: [PATCH] soundwire: bus: filter out more -EDATA errors on clock
+ stop
+Message-ID: <YPl93hm715Nm6ZEe@matsya>
+References: <20210714014209.17357-1-yung-chuan.liao@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714014209.17357-1-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aaron,
-
-> Add support for another Foxconn / Hon Hai device with MT7921 chip.
+On 14-07-21, 09:42, Bard Liao wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> T:  Bus=05 Lev=01 Prnt=01 Port=03 Cnt=02 Dev#=  3 Spd=480  MxCh= 0
-> D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-> P:  Vendor=0489 ProdID=e0cd Rev= 1.00
-> S:  Manufacturer=MediaTek Inc.
-> S:  Product=Wireless_Device
-> S:  SerialNumber=000000000
-> C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
-> A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
-> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-> I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-> E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
-> E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
-> I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-> E:  Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
-> E:  Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
+> We've added quite a few filters to avoid throwing errors if a Device
+> does not respond to commands during the clock stop sequences, but we
+> missed one.
 > 
-> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
-> ---
-> drivers/bluetooth/btusb.c | 3 +++
-> 1 file changed, 3 insertions(+)
+> This will lead to an isolated message
+> [ 6115.294412] soundwire sdw-master-1: SDW_SCP_STAT bread failed:-61
 > 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index a9855a2dd561..240463d0e367 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -414,6 +414,9 @@ static const struct usb_device_id blacklist_table[] = {
-> 	{ USB_DEVICE(0x04ca, 0x3802), .driver_info = BTUSB_MEDIATEK |
-> 						     BTUSB_WIDEBAND_SPEECH |
-> 						     BTUSB_VALID_LE_STATES },
-> +	{ USB_DEVICE(0x0489, 0xe0cd), .driver_info = BTUSB_MEDIATEK |
-> +						     BTUSB_WIDEBAND_SPEECH |
-> +						     BTUSB_VALID_LE_STATES },
+> The callers already filter this error code, so there's no point in
+> keeping it at the lower level.
+> 
+> Since this is a recoverable error, make this dev_err() conditional and
+> only log cases with Command Failed.
 
-patch doesn’t not apply cleanly to bluetooth-next tree, please rebase it.
+Applied, thanks
 
-Regards
-
-Marcel
-
+-- 
+~Vinod
