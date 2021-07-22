@@ -2,144 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0B83D1B68
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 03:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D243D1B58
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 03:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhGVAfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 20:35:21 -0400
-Received: from sonic313-16.consmr.mail.ne1.yahoo.com ([66.163.185.39]:45556
-        "EHLO sonic313-16.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230182AbhGVAfT (ORCPT
+        id S230234AbhGVAcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 20:32:16 -0400
+Received: from relay-us1.mymailcheap.com ([51.81.35.219]:47874 "EHLO
+        relay-us1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhGVAcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 20:35:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1626916555; bh=Zs5PRqDTSPyCtuu45vKKUeviuxf3LXsqVRryLcTyfl8=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=giV6uSo6WfE0jmbFslrFW62d12g7SE628RTwbbeGI4Vv2s5knDgqIXHwqJkj3kTMb7GqrywtjTqSv5e6cyEPX1h69hk+CS7ctq79SAj8LxUv+n3MGcfX/RBzUgqAIvwSssCBsSE/cp+E1pPpE3SwZaaViEyTxs7ORApGgxwDRBUOj8oiO1tRh5v0eyTfmKn4xpLgTmKO6H6G+MPcMNs37s0FqTMUuUMWad4u1LEUKlWkQMRCFJTwJQOfcpB+/2EMR4WhLpsB7gOsf8bX3krRfY0KqIWHyD1yiGlkdg5WMswfVWfnTxNrIYTC5qQ/JhxMR6gfxvPa+8v3tsbJDDhYeQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1626916555; bh=ttIWdwOGKPZTjAFdOZNqpK+qJGCIjHJ66fNA+Eu1OEN=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=WhxQ4g/e/qeGWuNCTQDyGutS2Um+Ktn77r/xj4K/kQVFbGT4sXyPnggwFvTcFshMpe3faAfkYdWVqTXdc4Tb9SYqNJhRXAW/xW1P2R/vG2xFXMjCn4de3Y3SiCeCzHsGohzIQe0tFHy3f/4gN7whT7gIvDqc8qPSeGtpdJRfq6JWRPEMRqhgfMC+ywU+uNOQAQDAPBOLr1CzIFCfVW8zg/pQSgcU7pPxtWqV1N+iHNqmXnNw7j2Y8jmXHwGUZo6F6Cqy2xwoq4PsQkkrU2OP54RSqvOjlkP9IefMXiBiSU3WNW8SIqlTDy+Axp4gRtOizDrlyUvyQZ0BgpEbi/2Q/A==
-X-YMail-OSG: 9cLK3XIVM1kxiXENb0EpKJqoOSOg4kk_fObNRp2valBWOODGNZLSYEhN8wSoSza
- tPJdDc7CTQ6ujUplYnwvEXxYhD2v5G.BbZEYD0n7qCTztmjtx93JEaEsediQvgcIU7J8Rrjsce2n
- VTSZIcILrS7bBWTywTxPvnOGi_sn1PRI.8f1O4xlwxQxD_YN7SUHmChXqfTU6xHHoB8Fy28E6Cgk
- kr_sRrBY0A4N_sSTopNsgtsHj0kt_AGBRhmhp.xDJHhjNjA7Gyw5Nf1dPZoBrbEUhioZVP68_7mD
- cTKYm5tXmm7n6s7TWuSIUyF_TnxUhafJgi88NJjLKIOD3pc5W_QiJKK067bt6yBN0YvVxnqXw9tO
- 8Jl6gzVrTp7j42Yafhw2BW1tQWrJcrt3Jyye3M73FMTZnY1Cfuq1IwS82Wv3M7gnnuG47n.iIRA8
- RdyWBiAnuz5ZZRwLXz4yNPHhyWinUY8TsfFL96icaFcXTmTNELJe1X..6ZES2WzVQwbYBiDXgmkf
- RcjwgLFl8GEhnFJtk4_A49glsTi6Ip3a3GbYUdNBpCGyfIU.aOiWXEo7qm3y.XBP63_DjYMVjfPg
- 1Vpgaw_Diwee15hbcq7.ioIygVrE6Uoj3xOUtFCDww5pPg_rTxx.EYdYZRo7eEieDuQb5ypA4Cma
- uju2MuGLpojfCT3gXCXCynqdcFWfQD_VjhgHsUxNVYWb7lx5VHcmflkzkFhY7j7LNbxj0IVyFHD9
- kYScvf61oXz0AaoxHnpcYnPnkWjuFmSwN9ew4imSxkSnlzpyVDJr8I8xR_WbymJcTSRwfyMe5p7S
- 8ML4iyg7p.d4rHZQhaPxbva8rLxytyK3hWBukeC6fK96adM4qzy8O92xNO_ZQNeVyXtOGWd7mFLx
- qgPPHeyxYvrDJ.gFIDitp4q2GYri3aPw6zkEXx.4U6Cfx7o61epfTSlpxvz3TT8Kij5RICBJknOk
- tpyKF8hYmsoZUlFeRIrjDN_nEu8xSozz3Gg4BBJxfNyMTUv__msNYPVRkZtgIYMWEIT5CjXKqzSY
- 68NUfoDXMQnHGjU2_FpJM9g61rsxQXLh0PYs_aqdMbPJ4gOeBsY6QLfuQ2UC8Kmm0Tjn1_acLlNC
- nMCySo4ncmqA_M3Mg1uixGPIRH8QK2URmxtVOSlNrb73nitHpMRxCBYhmXbkTmFPmYxi6xgQ.76p
- 1E_JMeIVVkP2nMeIvZsoMbrUkDtD_D.cN8zjkgF_.qcas4k461BMQE2fi7A6_wFIMiVdmr9MB51H
- SDNkCwwn7TrbjYfnv86XZxoudSAVuT3NiFCi_REQTkpYYmrpo3D4ywNcQEN.o80JWYtJZqPPuDHp
- 2jFMsiJxEJf_5u2a5vLgC73.Qlht6KfQvk6PdiJHDAX0KoShmruSNvPx0t1scA8l.L0iK55yY7w9
- .TQkv5r3XkmQUZYmhY9lZACXto7Chic0jy_8For2tOumuJCGDy_x12f2kNdJZdXpqtbHhiHvGp.8
- e5BXZj6yoWjEY.tTJN3MmF1Wi9v6Tac58bnQj5TQcAAhdVA3XjoBE79nDbPgb3WhtgJMxnryIs1e
- eNv.kIYe7Nv2S.r6KYGjaxb2CaF6itUl55bYLU0CRyxVlCGr4rCwz1R8GWKJNRtVupq08Z_mIdEC
- VkybApwrBA4fSSMXsdQgeIhCFhi4hYQHvCOolpRE1f7Ojqbi.YXCbM0AwGEl4T4Kq1CXUY8sJ7F6
- m14YPFE_30CstR9KlMFHZ1Hq5TAYVrZ9KEzUW7ijlSSuotje.x3Aa.fOhimQ.zPpDPwyCH_8b6y6
- 0yO.AjmjmHOfaPpCh_Q1M2eDwMEhdYYIa1KZs_fX._ins_NVXxODykXS9m1kjsOACOq0.Ga9rb4A
- CC.ys46bf.txf45JiHnGQqX8xDZFPLYBNIozppDUKxwsVunnf3PWCadzvsgbQInRi8kBvqF3D1Hi
- WE8I4sALqJ.0pyNimuhWOZRgECZeGYy.Jl.wEGerqxWmaXbWklsn4bA.ThNYv4wlaOH7VRYPQ.10
- jeb4wm.hYqJw7Bit2pYVck75dG.eCV5cPgscVW2h51GLrgnNjbHq6BGD4lZxIOkkaOF35IGJPGWc
- LcoN.OqxKBUHXkL4va9.dOuRFpYawKpxCkxZk0NcU8tl7Uln8XoLpXuQ5rwsTot4KoUWlsT_B0TZ
- NK4dHoY_VtwRQ3j2gCKd4aXpiNV16d98YXUGTdLqLcsQHhA9YfetPWaViZ5V7Z42z8fQmmzWCeP1
- kKjhwNvLDPr4a_vBt4lxvBD59g_d86D7xqE5MdDYtvm_RlxsLice0gAuiMcMRdVBGix8e_2vUQgE
- zB7gunZdoRzwQxDPlwqVGXGAj8HfxOozvq..DQFSufaqxPWTR9D1Barl_9OwxlHo2QP0Dnsh_a8m
- gdDxdNvYro3_N4V8npciyiyue2drHxbOTIdA4PAkohTLyXiD9Q0tGG09wbc1kNk27eTkTnM1neFb
- X9F063Jc3vyyfNpkE8HCEC0Fbcatf9eOTadw9dUYyRG46X_0.e7bJY325fAW7ClQsZRE6ivj3tSm
- VN8AUvkC5uJx3HKmtHE8XxWIA1_d6m0tJOIIgdmsWTf.OIXL9J3CdVAYEbbrWzz1UKpDONHLwVKL
- Xpr5q8_U6wzv2FcxBAdN5kxFS2rLkY7._n.gNJLA4d87NnXN7w8VE1Es6hwpWeweWrHUXz_ArHk5
- bg925HUY1Mv9z6aRCS1JwSZ58X0lTVVrTwF_jSXQ4rE1kEPFeQqqJ2rixTLMXD2UFfS4Ds7J.Tql
- DIagdfT66f1MgJlLOpzMN18J4NKUPwJT4vb6f3lalJExxRF3kP88cf8V79FK_Txvqf3HIRhha.dt
- ox45L_MocPZHXBidzqdw3GmIYymfO7nExp5joLll9wob4JTcDddS8H1rnMaWOXoIMEACVEGphxqc
- cYztrHjbwULRbpGUTUOFmqpZUbuPj7wIoIrQlsod13xLR8o7q21H8XXukYx2j8Ty0Xk21dvK2Ab5
- sVB.dk5V6YZ06o3aYTed4P06Txu47lOWREJfVEkcVC0857dtkyLcgT.VkaF4d7CbV33_DtpK6.Xc
- DpWpCYYcQi.v1Tw.s930TVMM95h1dWrN65NQoqU9aDYmd6jI7.lvT6C7PFbm2BEdlI5iTwqJKetn
- FzQw4vkmD318golBH0wcghmmxI6I-
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.ne1.yahoo.com with HTTP; Thu, 22 Jul 2021 01:15:55 +0000
-Received: by kubenode520.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 2f3755ccd4bf344096bd339e2fe7a05a;
-          Thu, 22 Jul 2021 01:15:49 +0000 (UTC)
-From:   Casey Schaufler <casey@schaufler-ca.com>
-To:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Cc:     casey@schaufler-ca.com, linux-audit@redhat.com,
-        keescook@chromium.org, john.johansen@canonical.com,
-        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
-        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org
-Subject: [PATCH v28 25/25] AppArmor: Remove the exclusive flag
-Date:   Wed, 21 Jul 2021 17:47:58 -0700
-Message-Id: <20210722004758.12371-26-casey@schaufler-ca.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210722004758.12371-1-casey@schaufler-ca.com>
-References: <20210722004758.12371-1-casey@schaufler-ca.com>
+        Wed, 21 Jul 2021 20:32:15 -0400
+X-Greylist: delayed 541 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Jul 2021 20:32:15 EDT
+Received: from relay5.mymailcheap.com (relay5.mymailcheap.com [159.100.241.64])
+        by relay-us1.mymailcheap.com (Postfix) with ESMTPS id 4C6F620F4F;
+        Thu, 22 Jul 2021 01:03:50 +0000 (UTC)
+Received: from relay3.mymailcheap.com (relay3.mymailcheap.com [217.182.66.161])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 3FCA020100;
+        Thu, 22 Jul 2021 01:03:47 +0000 (UTC)
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay3.mymailcheap.com (Postfix) with ESMTPS id 9B2513F1CC;
+        Thu, 22 Jul 2021 03:03:43 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id DB91B2A0C8;
+        Wed, 21 Jul 2021 21:03:42 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1626915822;
+        bh=yDd2oKbRqrkbem8gSLtEdP0ZNN5cwHjZF/28VLiVO1c=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=LP4z8i74x9ARwf819TDIJpJHMFyM0kvG55HQI5uVR6q9LcPp6UqxYH82zLxqn0B6E
+         ItOP341JR915D4jr9YcCSMHrFDl4TfB4DkCvH+BCUg+8DxVk97vucv7ydwQmlK/KTC
+         fJwTd/VdUDYSw7oi604DxPFUnRIrgJYbT9Amxp/g=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jHCk167GoQY0; Wed, 21 Jul 2021 21:03:42 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Wed, 21 Jul 2021 21:03:41 -0400 (EDT)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 560CD40CD0;
+        Thu, 22 Jul 2021 01:03:40 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="vhOhl0fc";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [192.168.0.49] (unknown [14.154.30.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 3D19640CD0;
+        Thu, 22 Jul 2021 01:03:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1626915809; bh=yDd2oKbRqrkbem8gSLtEdP0ZNN5cwHjZF/28VLiVO1c=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=vhOhl0fckjsIGH1fYlKrhjgywXlH1bqwZz1xhQrlfvzyvMsfWEZ99FdPuk2qQIZ95
+         2jyvCtefM1DfNXbXnCStBZaNalvIaZ+MekKRq9I6YhBCAOeU+CXNKaZUeOGAYgwX2o
+         m1crbdVRm0S4qnZC7QG4vzxpYnQRRprxIbgdxNaw=
+Message-ID: <0a9bda1e91246c7e473fcbb833ac94159d13b084.camel@aosc.io>
+Subject: Re: [PATCH v3 0/6] PWM support for allwinner sun8i R40/T3/V40 SOCs.
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Hao Zhang <hao5781286@gmail.com>, robh+dt@kernel.org,
+        mark.rutland@arm.com, maxime.ripard@bootlin.com, wens@csie.org,
+        mturquette@baylibre.com, sboyd@kernel.org, thierry.reding@gmail.com
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org
+Date:   Thu, 22 Jul 2021 09:03:18 +0800
+In-Reply-To: <20181125161534.GA4481@arx-s1>
+References: <20181125161534.GA4481@arx-s1>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 560CD40CD0
+X-Rspamd-Server: mail20.mymailcheap.com
+X-Spamd-Result: default: False [1.40 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         RECEIVED_SPAMHAUS_PBL(0.00)[14.154.30.9:received];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_TWELVE(0.00)[14];
+         FREEMAIL_TO(0.00)[gmail.com,kernel.org,arm.com,bootlin.com,csie.org,baylibre.com];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the inclusion of the interface LSM process attribute
-mechanism AppArmor no longer needs to be treated as an
-"exclusive" security module. Remove the flag that indicates
-it is exclusive. Remove the stub getpeersec_dgram AppArmor
-hook as it has no effect in the single LSM case and
-interferes in the multiple LSM case.
+Hao,
 
-Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
-Acked-by: John Johansen <john.johansen@canonical.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
----
- security/apparmor/lsm.c | 20 +-------------------
- 1 file changed, 1 insertion(+), 19 deletions(-)
+Would you mind me to continue on this work? Newer Allwinner SoCs have
+PWM controllers similar to the R40 one.
 
-diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
-index 65a004597e53..15af5a5cb0c0 100644
---- a/security/apparmor/lsm.c
-+++ b/security/apparmor/lsm.c
-@@ -1138,22 +1138,6 @@ static int apparmor_socket_getpeersec_stream(struct socket *sock,
- 	return error;
- }
- 
--/**
-- * apparmor_socket_getpeersec_dgram - get security label of packet
-- * @sock: the peer socket
-- * @skb: packet data
-- * @secid: pointer to where to put the secid of the packet
-- *
-- * Sets the netlabel socket state on sk from parent
-- */
--static int apparmor_socket_getpeersec_dgram(struct socket *sock,
--					    struct sk_buff *skb, u32 *secid)
--
--{
--	/* TODO: requires secid support */
--	return -ENOPROTOOPT;
--}
--
- /**
-  * apparmor_sock_graft - Initialize newly created socket
-  * @sk: child sock
-@@ -1257,8 +1241,6 @@ static struct security_hook_list apparmor_hooks[] __lsm_ro_after_init = {
- #endif
- 	LSM_HOOK_INIT(socket_getpeersec_stream,
- 		      apparmor_socket_getpeersec_stream),
--	LSM_HOOK_INIT(socket_getpeersec_dgram,
--		      apparmor_socket_getpeersec_dgram),
- 	LSM_HOOK_INIT(sock_graft, apparmor_sock_graft),
- #ifdef CONFIG_NETWORK_SECMARK
- 	LSM_HOOK_INIT(inet_conn_request, apparmor_inet_conn_request),
-@@ -1928,7 +1910,7 @@ static int __init apparmor_init(void)
- 
- DEFINE_LSM(apparmor) = {
- 	.name = "apparmor",
--	.flags = LSM_FLAG_LEGACY_MAJOR | LSM_FLAG_EXCLUSIVE,
-+	.flags = LSM_FLAG_LEGACY_MAJOR,
- 	.enabled = &apparmor_enabled,
- 	.blobs = &apparmor_blob_sizes,
- 	.init = apparmor_init,
--- 
-2.31.1
+Yours sincerely,
+Icenowy Zheng
+
+
+在 2018-11-26星期一的 00:18 +0800，Hao Zhang写道：
+> PWM support for allwinner sun8i R40/T3/V40 SOCs.
+> 
+> The sun8i R40/T3/V40 PWM has 8 PWM channals and divides to 4 PWM
+> pairs,
+> each PWM pair built-in 1 clock module, 2 timer logic module and 1
+> programmable dead-time generator, it also support waveform capture.
+> It has 2 clock sources OSC24M and APB1, it is different with the
+> sun4i-pwm driver, Therefore add a new driver for it.
+> 
+> Some test method:
+> cd /sys/class/pwm/pwmchip0
+> echo 0 > export
+> cd pwm0
+> echo 1000 > period
+> echo 500 > duty_cycle
+> echo 1 > enable
+> then check the PB2 pin with oscilloscope.
+> 
+> v3 Changes:
+> 1. fix coding format.
+> 2. use 2/ilog2 instead of divide table
+> 3. remove spinlock.
+> 4. remove sun8i_pwm_data structure and use DT to parse pwm-channals  
+> 5. remove inline because complier knows it better.
+> 6. don't hardcode clock source and parse two clock source from dt
+> "mux-0"
+>    and "mux-1"
+> 7. remove bypass method.
+> 8. add a method to change clock source when mux-0 is not support the
+>    input period it can change to mux-1.
+> 9. add cycle range check.
+> 10. add some variable to make it more readability.
+> 11. add clk_disable_unprepare when some false accur.
+> 
+> v2 Changes:
+> 1. change sun8i-r40 symbol to sun8i.
+> 2. change pwm0_pin, pwm0-pin to pwm_ch0_pin, pwm-ch0-pin.
+> 3. remove clk_disable_unprepare(), check !match and IS_ERR(pwm-
+> >regmap).
+> 
+> Hao Zhang (6):
+>   Documentation: ARM: sunxi: pwm: add Allwinner sun8i.
+>   ARM: dtsi: add pwm node for sun8i R40.
+>   ARM: dts: add PWM for Bananapi M2 Ultrar board.
+>   DEV: CLK: add function to check the using clock name of driver.
+>   DEV: CLK: sunxi ccu: export clk_apb1 for sun8i-r40 soc pwm.
+>   ARM: PWM: add allwinner sun8i R40/T3/V40 PWM support.
+> 
+>  .../devicetree/bindings/pwm/pwm-sun8i.txt          |  24 ++
+>  arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts  |   6 +
+>  arch/arm/boot/dts/sun8i-r40.dtsi                   |  17 +
+>  drivers/clk/clk.c                                  |   6 +
+>  drivers/clk/sunxi-ng/ccu-sun8i-r40.h               |   4 +-
+>  drivers/pwm/Kconfig                                |  12 +-
+>  drivers/pwm/Makefile                               |   1 +
+>  drivers/pwm/pwm-sun8i.c                            | 418
+> +++++++++++++++++++++
+>  include/dt-bindings/clock/sun8i-r40-ccu.h          |   2 +
+>  include/linux/clk-provider.h                       |   1 +
+>  10 files changed, 489 insertions(+), 2 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-
+> sun8i.txt
+>  create mode 100644 drivers/pwm/pwm-sun8i.c
+> 
 
