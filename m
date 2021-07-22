@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1C63D24E9
+	by mail.lfdr.de (Postfix) with ESMTP id A4ADF3D24EA
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232178AbhGVNOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231925AbhGVNOP (ORCPT
+        id S232208AbhGVNOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:14:19 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3450 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231925AbhGVNOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:14:15 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED4CC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 06:54:49 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id e7so2100108uaj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 06:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=XFcLEzylnNkqNvuqnNb4WHh+ght78BMzZ5jaCLVXsZQ=;
-        b=oB7VFHKAYF2u10xgMegELJG0FkTwPoek8rERNyl5GOibo0ORUXPQOJgZqkvDjyfMpV
-         S5IJ0dTh2emkAScz6nIwMDjbqscYflVMFlfdumYmqB9hUIy4R4rXFXRRGNVQ6Ct9y35L
-         ntZY0kwseDgFbWt8CwD/50YAK7HBIzNjfR4Z8A+ZSmcUhrkZSzg/Ci1ByTADOlk+pdkH
-         VpXncR0JUypyvMD/v162L45DY7zyb1qKIuds/81empaM5XosyAZVHuL1EhXx6SJPFAWj
-         trh1GfZVWZatzJKEUdgTh1m8AcXdDRsNd4yUtvU09EhZ/DLMr0KP8MJufC2n0RBdnj3t
-         ZXVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=XFcLEzylnNkqNvuqnNb4WHh+ght78BMzZ5jaCLVXsZQ=;
-        b=N88sF12A5PM2St1/LFUOe2exwdGTLfPri0cc/EHw/TuZJG3J7Yo/weTgn8tNy9ghJW
-         TuvoFXN0HuJodv87qFCQvhRK5BUParrpcmBBQ7V+6HhDlnkuy58chHVEwa27Cmi5fYYJ
-         6KcnjqLSEem4ECLbjrBgvBwFH8XaDBib4KWoMxNbmVK1uXpdhCNzwUdUAc+IwKxBTlH5
-         kLyVSqRoXtKy2PLGuPXxmZsHv+iqAkj9HIFOoZMIYhN4DEDpLWuFE61tXXpXNItNYEDt
-         jdI8rscDvztdV+lDAV2YYOSZy/llaMsKvpRjCLy5V5brbvZLdSRpds2x5x5zq7Zk9c9a
-         iA0g==
-X-Gm-Message-State: AOAM531KnuqFCAQ+bPDXza62stmBFOuslwEgKVds5CMlaHwj+DJWAyGi
-        7IKRjymHY8Uxpv88WzNGssK/12wgdZarjdrBa7PCGg==
-X-Google-Smtp-Source: ABdhPJx2kKrPaqF4ynhjM+DpwLiZYn2xsWv5ebeRaOTF6JFvfB65g8noTp7P7ZkRSrBcx47xAayMjpY+VGuLwdx/ono=
-X-Received: by 2002:ab0:45cc:: with SMTP id u70mr41536169uau.85.1626962088661;
- Thu, 22 Jul 2021 06:54:48 -0700 (PDT)
+        Thu, 22 Jul 2021 09:14:18 -0400
+Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GVtyD4mF5z6DHHy;
+        Thu, 22 Jul 2021 21:45:56 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 15:54:51 +0200
+Received: from [10.47.26.161] (10.47.26.161) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 22 Jul
+ 2021 14:54:51 +0100
+Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
+ from remote numa node
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Ming Lei <ming.lei@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        <iommu@lists.linux-foundation.org>, Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <YOgK8fdv7dOQtkET@T590>
+ <23e7956b-f3b5-b585-3c18-724165994051@arm.com> <YOhcOv1oOwm6fco+@T590>
+ <ad5bc549-d83f-bee0-9a9f-03a5afd7f3d9@huawei.com> <YPd7IGFZrsTRfUxE@T590>
+ <74537f9c-af5f-cd84-60ab-49ca6220310e@huawei.com> <YPfwAN1onpSKoeBj@T590>
+ <a2650064-41cf-cb62-7ab4-d14ef1856966@huawei.com> <YPklDMng1hL3bQ+v@T590>
+ <9c929985-4fcb-e65d-0265-34c820b770ea@huawei.com> <YPlGOOMSdm6Bcyy/@T590>
+ <fc552129-e89d-74ad-9e57-30e3ffe4cf5d@huawei.com>
+ <411dfc7cd330df1f681137d77e846b78@misterjones.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <d975276a-5889-7bbd-5329-287ae661f04b@huawei.com>
+Date:   Thu, 22 Jul 2021 14:54:44 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-From:   Jue Wang <juew@google.com>
-Date:   Thu, 22 Jul 2021 06:54:37 -0700
-Message-ID: <CAPcxDJ7YsnYtyzSmgfBj-rmALkjigKx2ODB=SCYCzY8FJYg4iA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] x86/mce: Avoid infinite loop for copy from user recovery
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, dinghui@sangfor.com.cn,
-        huangcun@sangfor.com.cn, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        x86 <x86@kernel.org>, "Song, Youquan" <youquan.song@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <411dfc7cd330df1f681137d77e846b78@misterjones.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.26.161]
+X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch assumes the UC error consumed in kernel is always the same UC.
+On 22/07/2021 13:53, Marc Zyngier wrote:
+> Hi John,
+> 
+> [...]
+> 
+>>     Your kernel log should show:
+>>     [    0.000000] GICv3: Pseudo-NMIs enabled using forced ICC_PMR_EL1
+>> synchronisation
+> 
+> Unrelated, but you seem to be running with ICC_CTLR_EL3.PMHE set,
+> which makes the overhead of pseudo-NMIs much higher than it should be
+> (you take a DSB SY on each interrupt unmasking).
+> 
+> If you are not using 1:N distribution of SPIs on the secure side,
+> consider turning that off in your firmware. This should make NMIs
+> slightly more pleasant to use.
 
-Yet it's possible two UCs on different pages are consumed in a row.
-The patch below will panic on the 2nd MCE. How can we make the code works
-on multiple UC errors?
+Thanks for the hint. I speak to the BIOS guys.
 
-
-> + int count = ++current->mce_count;
-> +
-> + /* First call, save all the details */
-> + if (count == 1) {
-> + current->mce_addr = m->addr;
-> + current->mce_kflags = m->kflags;
-> + current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
-> + current->mce_whole_page = whole_page(m);
-> + current->mce_kill_me.func = func;
-> + }
-> ......
-> + /* Second or later call, make sure page address matches the one from first call */
-> + if (count > 1 && (current->mce_addr >> PAGE_SHIFT) != (m->addr >> PAGE_SHIFT))
-> + mce_panic("Machine checks to different user pages", m, msg);
+John
