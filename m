@@ -2,53 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688813D290E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AF63D2A4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233840AbhGVQAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:00:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35570 "EHLO mail.kernel.org"
+        id S235006AbhGVQKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:10:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233043AbhGVP6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:58:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 434FE61378;
-        Thu, 22 Jul 2021 16:38:58 +0000 (UTC)
+        id S234346AbhGVQGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:06:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33F5861DB0;
+        Thu, 22 Jul 2021 16:46:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971938;
-        bh=cCJn7qnt/0tEtvAPVPNZbSBA+jKoq+PJrCuPUMae/dE=;
+        s=korg; t=1626972409;
+        bh=atCHmd2+8/GACVK0I9+O61QtSMnHjd1iFC2leV6oMgA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d0UKGADsAQ/3XyBCn6rfe5S9pa63qCCfGcktL84m7ohF+dN3Ae/EWI/Osi6kQZbj6
-         TgbPPNau1PwK0h1kIcKS6hD5blD28tI9i5NyZC1fjedYcE/lXzrST0egVRpjkAkGxy
-         m9EJqIHj9H/CI9DYdZR67PO5egmERwWhHX3W7jNU=
+        b=yDo93+d8Wr0GDWiqvaJHY8vhQeu2LD6oGCMi71OxdifpuMtRpBRZanogWBRMjp5CN
+         wc2tkY5thdVOTmcuZ1Q7w0QlWN0pSV7Gs/xzhHL89TZ+kKlO4yTH15AT6yHvYkZFPH
+         Ny4VHaeJsjMdt7MVGAnlWQLa3/0D8awSX+Ya+d1c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH 5.10 085/125] mm/thp: simplify copying of huge zero page pmd when fork
-Date:   Thu, 22 Jul 2021 18:31:16 +0200
-Message-Id: <20210722155627.513082888@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 102/156] arm64: dts: marvell: armada-37xx: move firmware node to generic dtsi file
+Date:   Thu, 22 Jul 2021 18:31:17 +0200
+Message-Id: <20210722155631.672756224@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,103 +43,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Xu <peterx@redhat.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit 5fc7a5f6fd04bc18f309d9f979b32ef7d1d0a997 upstream.
+[ Upstream commit 3a52a48973b355b3aac5add92ef50650ae37c2bd ]
 
-Patch series "mm/uffd: Misc fix for uffd-wp and one more test".
+Move the turris-mox-rwtm firmware node from Turris MOX' device tree into
+the generic armada-37xx.dtsi file and use the generic compatible string
+'marvell,armada-3700-rwtm-firmware' instead of the current one.
 
-This series tries to fix some corner case bugs for uffd-wp on either thp
-or fork().  Then it introduced a new test with pagemap/pageout.
+Turris MOX DTS file contains also old compatible string for backward
+compatibility.
 
-Patch layout:
+The Turris MOX rWTM firmware can be used on any Armada 37xx device,
+giving them access to the rWTM hardware random number generator, which
+is otherwise unavailable.
 
-Patch 1:    cleanup for THP, it'll slightly simplify the follow up patches
-Patch 2-4:  misc fixes for uffd-wp here and there; please refer to each patch
-Patch 5:    add pagemap support for uffd-wp
-Patch 6:    add pagemap/pageout test for uffd-wp
+This change allows Linux to load the turris-mox-rwtm.ko module on these
+boards.
 
-The last test introduced can also verify some of the fixes in previous
-patches, as the test will fail without the fixes.  However it's not easy
-to verify all the changes in patch 2-4, but hopefully they can still be
-properly reviewed.
+Tested on ESPRESSObin v5 with both default Marvell WTMI firmware and
+CZ.NIC's firmware. With default WTMI firmware the turris-mox-rwtm fails
+to probe, while with CZ.NIC's firmware it registers the HW random number
+generator.
 
-Note that if considering the ongoing uffd-wp shmem & hugetlbfs work, patch
-5 will be incomplete as it's missing e.g.  hugetlbfs part or the special
-swap pte detection.  However that's not needed in this series, and since
-that series is still during review, this series does not depend on that
-one (the last test only runs with anonymous memory, not file-backed).  So
-this series can be merged even before that series.
-
-This patch (of 6):
-
-Huge zero page is handled in a special path in copy_huge_pmd(), however it
-should share most codes with a normal thp page.  Trying to share more code
-with it by removing the special path.  The only leftover so far is the
-huge zero page refcounting (mm_get_huge_zero_page()), because that's
-separately done with a global counter.
-
-This prepares for a future patch to modify the huge pmd to be installed,
-so that we don't need to duplicate it explicitly into huge zero page case
-too.
-
-Link: https://lkml.kernel.org/r/20210428225030.9708-1-peterx@redhat.com
-Link: https://lkml.kernel.org/r/20210428225030.9708-2-peterx@redhat.com
-Signed-off-by: Peter Xu <peterx@redhat.com>
-Cc: Kirill A. Shutemov <kirill@shutemov.name>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>, peterx@redhat.com
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Cc: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Jerome Glisse <jglisse@redhat.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Brian Geffon <bgeffon@google.com>
-Cc: "Dr . David Alan Gilbert" <dgilbert@redhat.com>
-Cc: Joe Perches <joe@perches.com>
-Cc: Lokesh Gidra <lokeshgidra@google.com>
-Cc: Mina Almasry <almasrymina@google.com>
-Cc: Oliver Upton <oupton@google.com>
-Cc: Shaohua Li <shli@fb.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Wang Qing <wangqing@vivo.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/huge_memory.c |    9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 6 ++----
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi           | 8 ++++++++
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1074,17 +1074,13 @@ int copy_huge_pmd(struct mm_struct *dst_
- 	 * a page table.
- 	 */
- 	if (is_huge_zero_pmd(pmd)) {
--		struct page *zero_page;
- 		/*
- 		 * get_huge_zero_page() will never allocate a new page here,
- 		 * since we already have a zero page to copy. It just takes a
- 		 * reference.
- 		 */
--		zero_page = mm_get_huge_zero_page(dst_mm);
--		set_huge_zero_page(pgtable, dst_mm, vma, addr, dst_pmd,
--				zero_page);
--		ret = 0;
--		goto out_unlock;
-+		mm_get_huge_zero_page(dst_mm);
-+		goto out_zero_page;
- 	}
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+index 53e817c5f6f3..ce2bcddf396f 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+@@ -109,10 +109,8 @@
+ 	};
  
- 	src_page = pmd_page(pmd);
-@@ -1110,6 +1106,7 @@ int copy_huge_pmd(struct mm_struct *dst_
- 	get_page(src_page);
- 	page_dup_rmap(src_page, true);
- 	add_mm_counter(dst_mm, MM_ANONPAGES, HPAGE_PMD_NR);
-+out_zero_page:
- 	mm_inc_nr_ptes(dst_mm);
- 	pgtable_trans_huge_deposit(dst_mm, dst_pmd, pgtable);
- 
+ 	firmware {
+-		turris-mox-rwtm {
+-			compatible = "cznic,turris-mox-rwtm";
+-			mboxes = <&rwtm 0>;
+-			status = "okay";
++		armada-3700-rwtm {
++			compatible = "marvell,armada-3700-rwtm-firmware", "cznic,turris-mox-rwtm";
+ 		};
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+index 6ffbb099fcac..5db81a416cd6 100644
+--- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+@@ -504,4 +504,12 @@
+ 			};
+ 		};
+ 	};
++
++	firmware {
++		armada-3700-rwtm {
++			compatible = "marvell,armada-3700-rwtm-firmware";
++			mboxes = <&rwtm 0>;
++			status = "okay";
++		};
++	};
+ };
+-- 
+2.30.2
+
 
 
