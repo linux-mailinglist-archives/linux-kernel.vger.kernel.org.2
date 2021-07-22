@@ -2,134 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0F53D2CCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5DE3D2CD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbhGVSx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhGVSx2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:53:28 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6185C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:34:01 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id k14-20020a05600c1c8eb02901f13dd1672aso3079756wms.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jhYsOx1LWs0cX/jFmHSeQJdM5hC2M39ceQWiy7371d4=;
-        b=KTUsRkXf4ffoeh8ZbMqm31lud2SqLwVvOFo7Cl2jnZ4J7pYL55bBrPIbwLHe7pbaIo
-         QmdCWIukoUmVQDGqMENWtc6ektd6uNOD0Zx6uv2T51mssBNN+QkOjO2Kf02iUMGrSdFP
-         rvHBMP34dGJ4DxuBpgwrmtNKsX0N6bwKa8S1iKjblT/SMsr/37cPbcPC5Qq4d2kyughj
-         NRfdclkQgGSeOoeH2m4zQvPUyHu5Ljw7VTnHtEDlEu1QZCJVkS6wsAYhqdUjNad07ELy
-         SvHcE1/bVW4/ZNw9ppykjxm++rFPjlt4PDvgUvZj5IpOG2vzz13X2TOIiU7OhY6ONeY1
-         Cvmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jhYsOx1LWs0cX/jFmHSeQJdM5hC2M39ceQWiy7371d4=;
-        b=ML4rLY2tw80osTt6TKpA5FYQozIeiPp+QgnE5RPhxucBMcye5k/HxkmG9d87Fa9f7u
-         EvMt/cDcAO+vC9xIz2Xjo7QJOrxcr9aH/MY22mADZ+ELLL2XCBiJUnTNo1aF/TiqnUw+
-         nTzXrmtLQCeYHxhs8v5S6T2jZClQ3MkHVdurxkK9mE3A4XLNwkBBLVrhK17s9RHH7uz/
-         dJFUzir19JaJsqBDR0CFPlbb6RlqkkiY/5B6gaP14NLkCq6YOWxL/YChMzTViuOFW2HZ
-         e2HGcK+fyKBSyINH1x0I4L52seR1lhY+nV9gKExG39n0wANixOqM8E2QeKxUwJo4+aXt
-         dX4A==
-X-Gm-Message-State: AOAM5319V+Z3NT0FBCyteZpg/FeQ6MbsMBu50JrRLbrWOezaXGoyg/wz
-        bA3cmBnJq5/wpAnxQNCn7EqEiA==
-X-Google-Smtp-Source: ABdhPJzAV0SGTymmduCOhJtF1fux4J5JcXs5+NUVNCIiqHcjF/y0IV5ZQ7B4UnjMDgV+7PIFPHmd6A==
-X-Received: by 2002:a7b:c351:: with SMTP id l17mr1121772wmj.120.1626982440145;
-        Thu, 22 Jul 2021 12:34:00 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:f1d2:f5fd:de90:c735])
-        by smtp.gmail.com with ESMTPSA id t6sm31102302wru.75.2021.07.22.12.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 12:33:59 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 21:33:52 +0200
-From:   Marco Elver <elver@google.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "Alexandru.Elisei@arm.com" <Alexandru.Elisei@arm.com>,
-        Linuxarm <linuxarm@huawei.com>, mark.rutland@arm.com
-Subject: Re: [PATCH v2 3/3] kvm/arm: Align the VMID allocation with the arm64
- ASID one
-Message-ID: <YPnIIAARHNhx9npt@elver.google.com>
-References: <20210616155606.2806-1-shameerali.kolothum.thodi@huawei.com>
- <20210616155606.2806-4-shameerali.kolothum.thodi@huawei.com>
- <20210721163138.GD11003@willie-the-truck>
- <f7d708704fb84380af85298a98f7a48c@huawei.com>
- <YPk2XqrOeP6dEtPL@google.com>
+        id S230388AbhGVSx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 14:53:56 -0400
+Received: from mga18.intel.com ([134.134.136.126]:46682 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229585AbhGVSxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 14:53:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="198995770"
+X-IronPort-AV: E=Sophos;i="5.84,261,1620716400"; 
+   d="scan'208";a="198995770"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 12:34:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,261,1620716400"; 
+   d="scan'208";a="577417126"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Jul 2021 12:34:27 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 7006FE7; Thu, 22 Jul 2021 22:34:55 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH v1 1/1] clk: x86: Rename clk-lpt to more specific clk-lpss-atom
+Date:   Thu, 22 Jul 2021 22:34:50 +0300
+Message-Id: <20210722193450.35321-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPk2XqrOeP6dEtPL@google.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 10:11AM +0100, Quentin Perret wrote:
-> On Thursday 22 Jul 2021 at 06:45:14 (+0000), Shameerali Kolothum Thodi wrote:
-> > > From: Will Deacon [mailto:will@kernel.org]
-> > > > diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> > > b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> > > > index 4b60c0056c04..a02c4877a055 100644
-> > > > --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> > > > +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> > > > @@ -106,8 +106,7 @@ int kvm_host_prepare_stage2(void *mem_pgt_pool,
-> > > void *dev_pgt_pool)
-> > > >  	mmu->pgd_phys = __hyp_pa(host_kvm.pgt.pgd);
-> > > >  	mmu->arch = &host_kvm.arch;
-> > > >  	mmu->pgt = &host_kvm.pgt;
-> > > > -	mmu->vmid.vmid_gen = 0;
-> > > > -	mmu->vmid.vmid = 0;
-> > > > +	atomic64_set(&mmu->vmid.id, 0);
-> > > 
-> > > I think this is the first atomic64 use in the EL2 object, which may pull in
-> > > some fatal KCSAN instrumentation. Quentin, have you run into this before?
-> > > 
-> > > Might be simple just to zero-initialise mmu for now, if it isn't already.
-> > 
-> > I will check that.
-> 
-> Yes I think what saves us here is that, AFAICT. arm64 doesn't support
-> KCSAN yet. But the day it does, this should fail to link (hopefully)
-> because of out-of-line calls into e.g. __kasan_check_write().
-> 
-> So yes, a simple zeroing here is probably preferable.
+The LPT stands for Lynxpoint PCH. However the driver is used on a few
+Intel Atom SoCs. Rename it to reflect this in a way how another clock
+driver, i.e. clk-pmc-atom, is called.
 
-Note: Do not worry about hypothetically breaking with sanitizers here --
-whether it's KASAN or KCSAN, they both instrument atomics. In files that
-enable instrumentation but the atomic instrumentation should not be
-pulled in, use the arch_ variants, but this doesn't apply here because
-instrumentation shouldn't even be on.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
 
-The indicator that when KCSAN is supported on arm64, the Makefile here
-just needs KCSAN_SANITIZE := n, is that all other instrumentation is
-also killed entirely:
+Good to go either via ACPI or CCF tree.
 
-  $ grep -E "(PROFILE|SANITIZE|INSTRUMENT)" arch/arm64/kvm/hyp/nvhe/Makefile
-  GCOV_PROFILE	:= n
-  KASAN_SANITIZE	:= n
-  UBSAN_SANITIZE	:= n
-  KCOV_INSTRUMENT	:= n
+ drivers/acpi/acpi_lpss.c                       |  6 ++++--
+ drivers/clk/x86/Makefile                       |  2 +-
+ drivers/clk/x86/{clk-lpt.c => clk-lpss-atom.c} | 12 ++++++------
+ include/linux/platform_data/x86/clk-lpss.h     |  2 +-
+ 4 files changed, 12 insertions(+), 10 deletions(-)
+ rename drivers/clk/x86/{clk-lpt.c => clk-lpss-atom.c} (76%)
 
-KCSAN isn't supported on arm64 yet, and when it does, I believe Mark's
-arm64 KCSAN series should take care of things like this.
+diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
+index 894b7e6ae144..7f163074e4e4 100644
+--- a/drivers/acpi/acpi_lpss.c
++++ b/drivers/acpi/acpi_lpss.c
+@@ -385,7 +385,9 @@ static struct platform_device *lpss_clk_dev;
+ 
+ static inline void lpt_register_clock_device(void)
+ {
+-	lpss_clk_dev = platform_device_register_simple("clk-lpt", -1, NULL, 0);
++	lpss_clk_dev = platform_device_register_simple("clk-lpss-atom",
++						       PLATFORM_DEVID_NONE,
++						       NULL, 0);
+ }
+ 
+ static int register_device_clock(struct acpi_device *adev,
+@@ -1337,7 +1339,7 @@ void __init acpi_lpss_init(void)
+ 	const struct x86_cpu_id *id;
+ 	int ret;
+ 
+-	ret = lpt_clk_init();
++	ret = lpss_atom_clk_init();
+ 	if (ret)
+ 		return;
+ 
+diff --git a/drivers/clk/x86/Makefile b/drivers/clk/x86/Makefile
+index 18564efdc651..1244c4e568ff 100644
+--- a/drivers/clk/x86/Makefile
++++ b/drivers/clk/x86/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_PMC_ATOM)		+= clk-pmc-atom.o
+ obj-$(CONFIG_X86_AMD_PLATFORM_DEVICE)	+= clk-fch.o
+-clk-x86-lpss-objs		:= clk-lpt.o
++clk-x86-lpss-y			:= clk-lpss-atom.o
+ obj-$(CONFIG_X86_INTEL_LPSS)	+= clk-x86-lpss.o
+ obj-$(CONFIG_CLK_LGM_CGU)	+= clk-cgu.o clk-cgu-pll.o clk-lgm.o
+diff --git a/drivers/clk/x86/clk-lpt.c b/drivers/clk/x86/clk-lpss-atom.c
+similarity index 76%
+rename from drivers/clk/x86/clk-lpt.c
+rename to drivers/clk/x86/clk-lpss-atom.c
+index fbe9fd3ed948..aa9d0bb98f8b 100644
+--- a/drivers/clk/x86/clk-lpt.c
++++ b/drivers/clk/x86/clk-lpss-atom.c
+@@ -13,7 +13,7 @@
+ #include <linux/platform_data/x86/clk-lpss.h>
+ #include <linux/platform_device.h>
+ 
+-static int lpt_clk_probe(struct platform_device *pdev)
++static int lpss_atom_clk_probe(struct platform_device *pdev)
+ {
+ 	struct lpss_clk_data *drvdata;
+ 	struct clk *clk;
+@@ -34,14 +34,14 @@ static int lpt_clk_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver lpt_clk_driver = {
++static struct platform_driver lpss_atom_clk_driver = {
+ 	.driver = {
+-		.name = "clk-lpt",
++		.name = "clk-lpss-atom",
+ 	},
+-	.probe = lpt_clk_probe,
++	.probe = lpss_atom_clk_probe,
+ };
+ 
+-int __init lpt_clk_init(void)
++int __init lpss_atom_clk_init(void)
+ {
+-	return platform_driver_register(&lpt_clk_driver);
++	return platform_driver_register(&lpss_atom_clk_driver);
+ }
+diff --git a/include/linux/platform_data/x86/clk-lpss.h b/include/linux/platform_data/x86/clk-lpss.h
+index 207e1a317800..41df326583f9 100644
+--- a/include/linux/platform_data/x86/clk-lpss.h
++++ b/include/linux/platform_data/x86/clk-lpss.h
+@@ -15,6 +15,6 @@ struct lpss_clk_data {
+ 	struct clk *clk;
+ };
+ 
+-extern int lpt_clk_init(void);
++extern int lpss_atom_clk_init(void);
+ 
+ #endif /* __CLK_LPSS_H */
+-- 
+2.30.2
 
-Thanks,
--- Marco
