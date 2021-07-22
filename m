@@ -2,81 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A013D2C3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F275A3D2C44
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhGVSU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:20:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52994 "EHLO
+        id S230224AbhGVSWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 14:22:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhGVSUy (ORCPT
+        with ESMTP id S229510AbhGVSWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:20:54 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE51C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:01:29 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id p67so7708028oig.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:01:29 -0700 (PDT)
+        Thu, 22 Jul 2021 14:22:11 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B674C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:02:45 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id l7so7012532wrv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:02:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=7Ps4RwIG6XxXEH9dDOqdo2BIvmsObr7mTJxhT6gePXI=;
-        b=gNpk0Cpx9lWZ2uCwsB/kcTfPh+1K9iB+EDMv+ITNQxIi0uF+cfnykM1D7qwr+sXIu1
-         C4UsfhxUoxPtHzoauLJAMCXX5ORhEV6TfPvly9wQSKI6Ndm+5GGQcZeJqoNU1YhHBqzd
-         3HUMA5UwuNAAXpkwhE+tCQ2ifijzqZJukQM8Y=
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NxAWTtoyjsf5ed4GT6Mn+COejMtj0Ij6Ef+0zC6Fp0I=;
+        b=GlYfJXLDmHKYXvI8nkXkzG+gacX7+T76k4N1wPXrW28aQH7doyu/scQErhKLXXeT5j
+         rjL1Zy95ogbryL7A6ufHOhbOYRJpkseGhqFKNJOtnO4d2rxbs/aeimJHRJADUojQ7bYT
+         yW1mQ5ZWHeoMzezARa4AkB8kHrYLFWHY/XjdI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=7Ps4RwIG6XxXEH9dDOqdo2BIvmsObr7mTJxhT6gePXI=;
-        b=uZQWtcDQ2zlyAXniS+rFaLJ/ODzXAcjDhLP+pEn7eaaSF6N5NJHLdSBMX7JlPg4tm2
-         2c5ceH1AMqn5AHBgQb6Grc4zldKIHPLsisLyZ9Bh6/6xIEE5B6nYZk1d1v044qZ9w4KB
-         tRmHOgYhq71KAoiHMyCn2OOkKmKKy/+i3EIT6Ee2XfpbMfPv0MtnWUbH7UoKYAz2rcDX
-         pF7Bn10hWlLbjt+h5CI2v5PmPAx5W1a7QXeoMUASHevRRkF2PEUjf3SGrvzA7+8KAD6d
-         RhLTrK8kUlEgW6zuEbXWA8sGcIYv0fz5i+zccpxzjG3JiMvKQyV9tBmpHSbCqdKxTRF5
-         YKGQ==
-X-Gm-Message-State: AOAM532dGi1K//0u2/AwgIad7IpEUkWfXCN2stPS0q5+xlzh0OcmdjFu
-        DxCzbM44UrrdXAILDUGx7M7ZI/ZdWM23OrHCaYoDlg==
-X-Google-Smtp-Source: ABdhPJxQNi5FQCMbhTIZY1DogS2Ny4lCD+0Ic7kNij6RwwSTL/wAv3FKZBJNJ150MFs4NFiNsZf52qF6aTUeZdpMpkM=
-X-Received: by 2002:a05:6808:a83:: with SMTP id q3mr6706715oij.125.1626980488491;
- Thu, 22 Jul 2021 12:01:28 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 22 Jul 2021 19:01:27 +0000
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=NxAWTtoyjsf5ed4GT6Mn+COejMtj0Ij6Ef+0zC6Fp0I=;
+        b=B6JidbPO8X369ckY2dzW4nBzg6suVlvj4bvCi/yMXRsrbyjj/bw7w3LqIanz0GEhN2
+         EnkMobeyByaT/ogZkkJjUzxbOBlby0Ti27VL0dtIb8gj6w+kxDkj4HmUqUZbtg0HAU2U
+         9qqDGC8qd8j5hNb+6JrwGhFmpHye2a0rQV5DgLAlWEAe4BHcHem1gE/sOPYd+Z3HWcVr
+         abVyE9HUVBN30Pf20gDpRnCyJdwdp+3p3//BXmvalbL5kFxYu4q+8eOBObhgwcYJL4IN
+         HLRD2X4IU3doqVI5mWVtLrbJigjgenvHf086/4+JKaJWHMizG419MVkYcVHNHU6MG5wQ
+         bKAg==
+X-Gm-Message-State: AOAM533Sx5j1oeTDYDbsZWHUeM+4hastHNiR22wNJYU+2IiWafBKJpFa
+        DBHzeWIX8jrb2T/wLTQecNWSuA==
+X-Google-Smtp-Source: ABdhPJwVzmJqzAbTzUQiqbsqbtxeYf6pKuPCwR/7bRFDwV/F5EQMooRx31ZbsMvESwO+Xg8SvVqZWg==
+X-Received: by 2002:adf:eb43:: with SMTP id u3mr1433153wrn.83.1626980563826;
+        Thu, 22 Jul 2021 12:02:43 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id c10sm25624941wmb.40.2021.07.22.12.02.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 12:02:43 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 21:02:41 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, Dave Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH 1/3] drm: use the lookup lock in drm_is_current_master
+Message-ID: <CAKMK7uGSc_YMf2e=oA23KeAvC8i_pqJBU82v8oRGfnwsT41WLQ@mail.gmail.com>
+Mail-Followup-To: Boqun Feng <boqun.feng@gmail.com>,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, Dave Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210722092929.244629-1-desmondcheongzx@gmail.com>
+ <20210722092929.244629-2-desmondcheongzx@gmail.com>
+ <YPlKkvelm/mcnCj0@phenom.ffwll.local>
+ <YPmJEYrnB0j17cZV@boqun-archlinux>
 MIME-Version: 1.0
-In-Reply-To: <1626191647-13901-2-git-send-email-khsieh@codeaurora.org>
-References: <1626191647-13901-1-git-send-email-khsieh@codeaurora.org> <1626191647-13901-2-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 22 Jul 2021 19:01:27 +0000
-Message-ID: <CAE-0n52F2bVLS8xnTefQ+3cEmcXVo7p=BPOBmky3NJ0=8oMmMg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] drm/msm/dp: use dp_ctrl_off_link_stream during PHY
- compliance test run
-To:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPmJEYrnB0j17cZV@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-07-13 08:54:01)
-> DP cable should always connect to DPU during the entire PHY compliance
-> testing run. Since DP PHY compliance test is executed at irq_hpd event
-> context, dp_ctrl_off_link_stream() should be used instead of dp_ctrl_off().
-> dp_ctrl_off() is used for unplug event which is triggered when DP cable is
-> dis connected.
+On Thu, Jul 22, 2021 at 6:00 PM Boqun Feng <boqun.feng@gmail.com> wrote:
 >
-> Changes in V2:
-> -- add fixes statement
+> On Thu, Jul 22, 2021 at 12:38:10PM +0200, Daniel Vetter wrote:
+> > On Thu, Jul 22, 2021 at 05:29:27PM +0800, Desmond Cheong Zhi Xi wrote:
+> > > Inside drm_is_current_master, using the outer drm_device.master_mutex
+> > > to protect reads of drm_file.master makes the function prone to creating
+> > > lock hierarchy inversions. Instead, we can use the
+> > > drm_file.master_lookup_lock that sits at the bottom of the lock
+> > > hierarchy.
+> > >
+> > > Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > > Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> > > ---
+> > >  drivers/gpu/drm/drm_auth.c | 9 +++++----
+> > >  1 file changed, 5 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
+> > > index f00354bec3fb..9c24b8cc8e36 100644
+> > > --- a/drivers/gpu/drm/drm_auth.c
+> > > +++ b/drivers/gpu/drm/drm_auth.c
+> > > @@ -63,8 +63,9 @@
+> > >
+> > >  static bool drm_is_current_master_locked(struct drm_file *fpriv)
+> > >  {
+> > > -   lockdep_assert_held_once(&fpriv->minor->dev->master_mutex);
+> > > -
+> > > +   /* Either drm_device.master_mutex or drm_file.master_lookup_lock
+> > > +    * should be held here.
+> > > +    */
+> >
+> > Disappointing that lockdep can't check or conditions for us, a
+> > lockdep_assert_held_either would be really neat in some cases.
+> >
 >
-> Fixes: f21c8a276c2d ("drm/msm/dp: handle irq_hpd with sink_count = 0 correctly")
+> The implementation is not hard but I don't understand the usage, for
+> example, if we have a global variable x, and two locks L1 and L2, and
+> the function
 >
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
+>         void do_something_to_x(void)
+>         {
+>                 lockdep_assert_held_either(L1, L2);
+>                 x++;
+>         }
+>
+> and two call sites:
+>
+>         void f(void)
+>         {
+>                 lock(L1);
+>                 do_something_to_x();
+>                 unlock(L1);
+>         }
+>
+>         void g(void)
+>         {
+>                 lock(L2);
+>                 do_something_to_x();
+>                 unlock(L2);
+>         }
+>
+> , wouldn't it be racy if f() and g() called by two threads at the same
+> time? Usually I would expect there exists a third synchronazition
+> mechanism (say M), which synchronizes the calls to f() and g(), and we
+> put M in the lockdep_assert_held() check inside do_something_to_x()
+> like:
+>
+>         void do_something_to_x(void)
+>         {
+>                 lockdep_assert_held_once(M);
+>                 x++;
+>         }
+>
+> But of course, M may not be a lock, so we cannot put the assert there.
+>
+> My cscope failed to find ->master_lookup_lock in -rc2 and seems it's not
+> introduced in the patchset either, could you point me the branch this
+> patchset is based on, so that I could understand this better, and maybe
+> come up with a solution? Thanks ;-)
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+The use case is essentially 2 nesting locks, and only the innermost is
+used to update a field. So when you only read this field, it's safe if
+either of these two locks are held. Essentially this is a read/write lock
+type of thing, except for various reasons the two locks might not be of
+the same type (like here where the write lock is a mutex, but the read
+lock is a spinlock).
+
+It's a bit like the rcu_derefence macro where it's ok to either be in a
+rcu_read_lock() section, or holding the relevant lock that's used to
+update the value. We do _not_ have two different locks that allow writing
+to the same X.
+
+Does that make it clearer what's the use-case here?
+
+In an example:
+
+void * interesting_pointer.
+
+do_update_interesting_pointer()
+{
+	mutex_lock(A);
+	/* do more stuff to prepare things */
+	spin_lock(B);
+	interesting_pointer = new_value;
+	spin_unlock(B);
+	mutex_unlock(A);
+}
+
+read_interesting_thing_locked()
+{
+	lockdep_assert_held_either(A, B);
+
+	return interesting_pointer->thing;
+}
+
+read_interesting_thing()
+{
+	int thing;
+	spin_lock(B);
+	thing = interesting_pointer->thing;
+	spin_unlock(B);
+
+	return B;
+}
+
+spinlock might also be irqsafe here if this can be called from irq
+context.
+
+Cheers, Daniel
+
+> Regards,
+> Boqun
+>
+> > Adding lockdep folks, maybe they have ideas.
+> >
+> > On the patch:
+> >
+> > Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> >
+> > >     return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
+> > >  }
+> > >
+> > > @@ -82,9 +83,9 @@ bool drm_is_current_master(struct drm_file *fpriv)
+> > >  {
+> > >     bool ret;
+> > >
+> > > -   mutex_lock(&fpriv->minor->dev->master_mutex);
+> > > +   spin_lock(&fpriv->master_lookup_lock);
+> > >     ret = drm_is_current_master_locked(fpriv);
+> > > -   mutex_unlock(&fpriv->minor->dev->master_mutex);
+> > > +   spin_unlock(&fpriv->master_lookup_lock);
+> > >
+> > >     return ret;
+> > >  }
+> > > --
+> > > 2.25.1
+> > >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
