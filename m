@@ -2,157 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5A73D25CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9983D25AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbhGVNuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhGVNuB (ORCPT
+        id S232335AbhGVNoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:44:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55641 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232312AbhGVNoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:50:01 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D5F0DC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 07:30:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=3XsudEKYcRttll5sEgMLgWk8c6RzLX/4Fr
-        2ingji3hE=; b=V88xAezyb7ZEVZifXoDdDOgZKoyXx+RWce2tCHCG4cRAm9c1F0
-        iXt6fT24fKRRqbMgvLLav7ynKskYbxpXTe1ImlF1rjTNfUejO0232o/mALAtykto
-        chIG6HG3asHmfj4ylj7J+rocnygg49jHZj4fIE44lGnKkP9gHxIrvvzzM=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAnL2_7gPlgVl8nAA--.552S2;
-        Thu, 22 Jul 2021 22:30:19 +0800 (CST)
-Date:   Thu, 22 Jul 2021 22:24:25 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Andreas Schwab <schwab@linux-m68k.org>, tongtiangen@huawei.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next v2] riscv: add VMAP_STACK overflow detection
-Message-ID: <20210722222425.28673e88@xhacker>
-In-Reply-To: <20210722213724.1f12a0e7@xhacker>
-References: <87bl6yrcmd.fsf@igel.home>
-        <mhng-e14c3232-cc4d-4146-8c93-c60ec81ed272@palmerdabbelt-glaptop>
-        <CAOnJCU+Ss0cO1mqr=GDVnpxV075uR+KipSnr7dN93099dAH+vQ@mail.gmail.com>
-        <20210722213724.1f12a0e7@xhacker>
+        Thu, 22 Jul 2021 09:44:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626963881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xxRxJnSuUSBg6S3Mu6d9msoL1c9ep8RmoIwicFHckLo=;
+        b=HixSCSHIQJwsTBxJ1eJEFvsG4oyfhVVgVgUA+n8J88jb30Ep9dWjyGRmGQr/ocQFqi9Nx5
+        rEe2l/LAInU1FAv9kvDqf4YKo8uUmlwIsDsui8e4m1sgff0c1yYdYg3tGPJxaTP92g10QQ
+        754q50nywBTyJ2ZRPi1iJcS7ydYteqw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-329-Ct5bAETdOJK754ythEqN7g-1; Thu, 22 Jul 2021 10:24:33 -0400
+X-MC-Unique: Ct5bAETdOJK754ythEqN7g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 881D61026200;
+        Thu, 22 Jul 2021 14:24:32 +0000 (UTC)
+Received: from ws.net.home (ovpn-113-182.ams2.redhat.com [10.36.113.182])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8EBCC60C05;
+        Thu, 22 Jul 2021 14:24:31 +0000 (UTC)
+Date:   Thu, 22 Jul 2021 16:24:28 +0200
+From:   Karel Zak <kzak@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        util-linux@vger.kernel.org
+Subject: [ANNOUNCE] util-linux v2.37.1
+Message-ID: <20210722142428.5dbmkxhu7jjqbzfy@ws.net.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygAnL2_7gPlgVl8nAA--.552S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw4fWryDArWkJr1xKF4kZwb_yoW5GF45pr
-        WUGFsF9F4Dtr1rtwn2vw18Wr10vrnrJ34aqwn8JFy5XryqvF45Xr1DWF15CrsrXr15KF1j
-        vr4UG3sruw1DJa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUy2b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
-        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-        1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
-        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
-        WUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_
-        Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07beAp5UUUUU=
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Jul 2021 21:37:24 +0800
-Jisheng Zhang  wrote:
 
-> On Thu, 22 Jul 2021 01:35:23 -0700
-> Atish Patra <atishp@atishpatra.org> wrote:
-> 
-> > On Wed, Jul 21, 2021 at 11:12 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:  
-> > >
-> > > On Mon, 19 Jul 2021 00:23:06 PDT (-0700), schwab@linux-m68k.org wrote:    
-> > > > On Jul 19 2021, tongtiangen wrote:
-> > > >    
-> > > >> On 2021/7/17 14:55, Andreas Schwab wrote:    
-> > > >>> Please use
-> > > >>> https://download.opensuse.org/repositories/home:/Andreas_Schwab:/riscv:/jeos/images/openSUSE-Tumbleweed-RISC-V-JeOS-efi.riscv64.raw.xz
-> > > >>> and run it in qemu with u-boot as kernel.
-> > > >>>
-> > > >>> Andreas.
-> > > >>>    
-> > > >>
-> > > >> Hi andreas:
-> > > >> I used today's latest mainline code and .config provided by you, and I
-> > > >> can't reproduce this panic.    
-> > > >
-> > > > Did you test it like I said above?
-> > > >
-> > > > Andreas.    
-> > >
-> > > I'm getting this on and off, with just
-> > >
-> > > CONFIG_VMAP_STACK=y
-> > >
-> > > on top of defconfig, when running on QEMU.  It's not showing up right
-> > > now: I'd thought it was an issue with that initrd patch, but it went
-> > > away when I re-ran the tests so I'm guessing it's something
-> > > non-deterministic.  I'll try to take a look if it comes back.
-> > >    
-> > 
-> > I got it very frequently on beagleV with the following branch & config.
-> > https://github.com/esmil/linux/commits/beaglev
-> > 
-> > beaglev_defconfig
-> > 
-> > Disabling CONFIG_VMAP_STACK avoids the crash.  
-> 
-> Hi all,
-> 
-> I think we need to pin the stack before calling get_wchan(), could you please
+The util-linux stable release v2.37.1 is available at
+ 
+  http://www.kernel.org/pub/linux/utils/util-linux/v2.37/
+ 
+Feedback and bug reports, as always, are welcomed.
+ 
+  Karel
 
-Typo: s/get_wchan/walk_stackframe
 
-> try below patch?
-> 
-> Thanks
-> 
-> diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
-> index ff467b98c3e3..ac7593607fa6 100644
-> --- a/arch/riscv/kernel/stacktrace.c
-> +++ b/arch/riscv/kernel/stacktrace.c
-> @@ -132,8 +132,12 @@ unsigned long get_wchan(struct task_struct *task)
->  {
->  	unsigned long pc = 0;
->  
-> -	if (likely(task && task != current && !task_is_running(task)))
-> +	if (likely(task && task != current && !task_is_running(task))) {
-> +		if (!try_get_task_stack(task))
-> +			return 0;
->  		walk_stackframe(task, NULL, save_wchan, &pc);
-> +		put_task_stack(task);
-> +	}
->  	return pc;
->  }
->  
-> 
-> 
-> >   
-> > > _______________________________________________
-> > > linux-riscv mailing list
-> > > linux-riscv@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-riscv    
-> > 
-> > 
-> >   
-> 
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
+util-linux 2.37.1 Release Notes
+===============================
+
+agetty:
+   - do not use atol()  [Karel Zak]
+blockdev:
+   - improve arguments parsing (remove atoi)  [Karel Zak]
+build-sys:
+   - Update configure.ac  [Alex Xu]
+   - add generated man-pages to distribution tarball  [Karel Zak]
+   - display cryptsetup status after ./configure  [Luca Boccassi]
+   - fix {release-version} man pages  [Karel Zak]
+   - install hardlink bash-completion  [Karel Zak]
+   - make re-use of generated man-pages more robust  [Karel Zak]
+   - use $LIBS rather than LDFLAGS  [Karel Zak]
+cfdisk:
+   - do not use atoi()  [Karel Zak]
+   - optimize mountpoint detection for PARTUUID  [Karel Zak]
+dmesg:
+   - fix indentation in man page  [Platon Pronko]
+   - fix possible memory leak [coverity scan]  [Karel Zak]
+   - remove  condition [lgtm scan]  [Karel Zak]
+docs:
+   - add uclampset to AUTHORS file  [Karel Zak]
+   - fix typo in v2.37-ReleaseNotes  [Karel Zak]
+   - update AUTHORS file  [Karel Zak]
+eject:
+   - add __format__ attribute  [Karel Zak]
+   - do not use atoi()  [Karel Zak]
+fdisk:
+   - do not print error message when partition reordering is not needed  [Pali Rohár]
+   - move reorder diag messages to fdisk_reorder_partitions()  [Pali Rohár]
+findmnt:
+   - (verify) fix cache related memory leaks on --nocanonicalize [coverity scan]  [Karel Zak]
+   - (verify) fix memory leak [asan]  [Karel Zak]
+   - add __format__ attribute  [Karel Zak]
+fsck:
+   - check errno after strto..()  [Karel Zak]
+   - do not use atoi()  [Karel Zak]
+fsck.cramfs:
+   - use open+fstat rather than stat+open  [Karel Zak]
+fstrim:
+   - clean return code on --quiet-unsupported  [Karel Zak]
+hardlink:
+   - remove pcre2posix.h support  [Karel Zak]
+hexdump:
+   - correctly display signed single byte integers  [Samir Benmendil]
+   - do not use atoi()  [Karel Zak]
+hwclock:
+   - check errno after strto..()  [Karel Zak]
+   - close adjtime on write error [coverity scan]  [Karel Zak]
+   - fix ul_path_scanf() use  [Karel Zak]
+include/c:
+   - add __format__ attribute  [Karel Zak]
+   - add drop_permissions(), consolidate UID/GID reset  [Karel Zak]
+include/path:
+   - add __format__attribute  [Karel Zak]
+include/strutils:
+   - cleanup strto..() functions  [Karel Zak]
+   - consolidate string to number conversion  [Karel Zak]
+   - fix __format__attribute  [Karel Zak]
+   - fix heap-buffer-overflow in normalize_whitespace()  [Karel Zak]
+include/strv:
+   - fix format attributes  [Karel Zak]
+ipcs:
+   - check errno after strto..()  [Karel Zak]
+   - do not use atoi()  [Karel Zak]
+kill:
+   - check errno after strto..()  [Karel Zak]
+ldattach:
+   - add __format__ attribute  [Karel Zak]
+lib/loopdev:
+   - perform retry on EAGAIN  [Karel Zak]
+lib/path:
+   - (test) fix ul_new_path() use  [Karel Zak]
+   - fix possible leak when use ul_path_read_string() [coverity scan]  [Karel Zak]
+   - improve ul_path_readlink() to be more robust  [Karel Zak]
+libblkid:
+   - Add hyphens to UUID string representation in Stratis superblock parsing  [John Baublitz]
+   - check errno after strto..()  [Karel Zak]
+   - vfat  Fix reading FAT16 boot label and serial id  [Pali Rohár]
+   - vfat  Fix reading FAT32 boot label  [Pali Rohár]
+libfdisk:
+   - add and fix __format__ attributes  [Karel Zak]
+libmount:
+   - add __format__ attribute  [Karel Zak]
+   - check errno after strto..()  [Karel Zak]
+libsmartcols:
+   - fix bare array on JSON output  [Karel Zak]
+libuuid:
+   - check errno after strto..()  [Karel Zak]
+logger:
+   - add __format__ attribute  [Karel Zak]
+login:
+   - add callback for close_range()  [Karel Zak]
+   - fix close_range() use  [Karel Zak]
+   - remove obsolete and confusing comment  [Karel Zak]
+lsblk:
+   - fix formatting in -e option  [ratijas]
+   - normalize space in SERIAL and MODEL  [Karel Zak]
+   - use ID_MODEL_ENC is possible  [Karel Zak]
+lscpu:
+   - check errno after strto..()  [Karel Zak]
+   - do not use atoi()  [Karel Zak]
+   - don't use DMI if executed with --sysroot  [Karel Zak]
+   - fix build on powerpc  [Georgy Yakovlev]
+lslocks:
+   - check errno after strto..()  [Karel Zak]
+lslogins:
+   - ask for supplementary groups only once [asan]  [Karel Zak]
+   - check errno after strto..()  [Karel Zak]
+   - consolidate and optimize utmp files use  [Karel Zak]
+   - fix memory leak [asan]  [Karel Zak]
+   - use sd_journal_get_data() in proper way  [Karel Zak]
+lsmem:
+   - check errno after strto..()  [Karel Zak]
+meson:
+   - fix crypt_activate_by_signed_key detection  [Luca Boccassi]
+   - fix dlopen support for cryptsetup  [Luca Boccassi]
+misc:
+   - improve string to number conversions  [Karel Zak]
+mkfs.cramfs:
+   - add comment to explain readlink() use  [Karel Zak]
+mkswap:
+   - fix holes detection (infinite loop and/or stack-buffer-underflow)  [Karel Zak]
+more:
+   - add __format__ attribute  [Karel Zak]
+   - fix null-pointer dereference  [Karel Zak]
+   - fix setuid/setgid order  [Karel Zak]
+mount:
+   - fix roothash signature extension in manpage  [Luca Boccassi]
+   - man-page; add all overlayfs options  [Tj]
+   - mount.8 fix overlayfs nfs_export= indention  [Karel Zak]
+mount.8.adoc:
+   - Remove context options exclusion  [Thiébaud Weksteen]
+   - document SELinux use of nosuid mount flag  [Topi Miettinen]
+namei:
+   - simplify code  [Karel Zak]
+newgrp:
+   - fix memory leak [coverity scan]  [Karel Zak]
+pg:
+   - do not use atoi()  [Karel Zak]
+po:
+   - merge changes  [Karel Zak]
+   - update es.po (from translationproject.org)  [Antonio Ceballos Roa]
+   - update pt_BR.po (from translationproject.org)  [Rafael Fontenelle]
+   - update sr.po (from translationproject.org)  [Мирослав Николић]
+readprofile:
+   - check errno after strto..()  [Karel Zak]
+rename:
+   - use readlink() in more robust way  [Karel Zak]
+rfkill:
+   - Set scols table name to make the json output valid  [Nicolai Dagestad]
+script:
+   - add __format__ attribute  [Karel Zak]
+sulogin:
+   - add missing ifdefs  [Karel Zak]
+   - use explicit_bzero() for buffer with password  [Karel Zak]
+swapon:
+   - do not use atoi()  [Karel Zak]
+test/eject:
+   - guard asan LD_PRELOAD with use-system-commands check  [Ross Burton]
+tests:
+   - check correct log file for errors in blkdiscard test  [Ross Burton]
+   - don't hardcode /bin/kill in the kill tests  [Ross Burton]
+   - fix lsns test on kernels without USER namespaces  [Anatoly Pugachev]
+   - mark ul/ul as a known failure  [Ross Burton]
+   - skip if scsi_debug model file is not accessible  [Karel Zak]
+   - update sfdisk reorder test  [Karel Zak]
+tools:
+   - report and use LDFLAGS in tools/config-gen  [Karel Zak]
+uclampset:
+   - Fix left over optind++  [Qais Yousef]
+utmpdump:
+   - do not use atoi()  [Karel Zak]
+verity:
+   - fix verity.roothashsig only working as last parameter  [Luca Boccassi]
+wall:
+   - add __format__ attribute  [Karel Zak]
+wipefs:
+   - check errno after strto..()  [Karel Zak]
+
+-- 
+ Karel Zak  <kzak@redhat.com>
+ http://karelzak.blogspot.com
 
