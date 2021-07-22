@@ -2,177 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6650A3D2495
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 009A33D2499
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232076AbhGVMrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 08:47:24 -0400
-Received: from mail-co1nam11on2064.outbound.protection.outlook.com ([40.107.220.64]:60225
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232145AbhGVMrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 08:47:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XSR98yxOOTTI3DLdamgc/wKkMRjdTwIchDAYcgzyxXW3MGNC8AOIgSXZSTrpyK1BVpdQkRHYW3VhtrYtiQSA9KS46JwNnAUBKBSoE8W3slr/sm2GRYWO8xBa/C2/YOvfAs3EZqwFMqGEnKXM+WaR2bvXQsYBuAvjCoumv1t9ooho6cEPtxOzBg0ni6IC38Z9jL6iwCNLmpiVkpwAYt9fg7NaBP5xh/0NOArnGQ8bJ5yavtHTCJaSIJIaSPkcC+xpzzZu3mZKzYMhbONyFZBpce7a/LSQDU8S86MedgXn6HkblRDzS2wfBckJYAXt7LAzcr2azDBdT2/Ny54sMs7RpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=adr18D6cQ5PK/DWR1UDQvMj4dyUhVaII/UtUkK7hdyI=;
- b=h4D4QnjEamaeh9gaVq0CevBW2kYou5bG55ZaaOcIs+3R/BZmdXtHqxMaOFZDNT1erqh6T2BToFNppw+Fr+jbKK8HO/ncnN8vnxb4NcOIZKyoCf4ehqnm+l0z5J5Vtt1DozOzjxfsn6JFPKleD0ndjm6nFbc8VXn/Sif8EzYW5vdDIL/C5AEJupD13mq8dmBT6RtrmRYTOKKYe5qE2u6cevtf7XfmsFXXf7DDrDqLJ5C0yJjlQ1YMFlCodz4rDrLIggwJjqdCmU36aggzfyOMFKAQK3S1jvOMnBDCLkXFSA964FKRe8migUBjjM8eyuRyZnJ8AC74423HpsUMi3zRIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=adr18D6cQ5PK/DWR1UDQvMj4dyUhVaII/UtUkK7hdyI=;
- b=Y1QrO5LdZwHcy5xqYX1DkAXS2KEur5RkqlJwpjbWx3Na3CqK7xTXYVWY/LzEAEqs59rh+QJ0iS8cDoPdmUpDi2rrz+Ope09blHHjPhA2ZFB9nyNbmehXaC80BBwM9DFZXhXiBMpAvJ/R7basv5F3h7j9xpTt5crk4xb3+j5ofrc=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from SA0PR12MB4510.namprd12.prod.outlook.com (2603:10b6:806:94::8)
- by SA0PR12MB4559.namprd12.prod.outlook.com (2603:10b6:806:9e::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.24; Thu, 22 Jul
- 2021 13:27:49 +0000
-Received: from SA0PR12MB4510.namprd12.prod.outlook.com
- ([fe80::c05f:7a93:601b:9861]) by SA0PR12MB4510.namprd12.prod.outlook.com
- ([fe80::c05f:7a93:601b:9861%7]) with mapi id 15.20.4331.034; Thu, 22 Jul 2021
- 13:27:49 +0000
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     broonie@kernel.org, alsa-devel@alsa-project.org,
-        Vijendar.Mukunda@amd.com
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Akshu Agrawal <akshu.agrawal@amd.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 2/2] ASoC: amd: Use dev_probe_err helper
-Date:   Thu, 22 Jul 2021 08:27:28 -0500
-Message-Id: <20210722132731.13264-2-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210722132731.13264-1-mario.limonciello@amd.com>
-References: <20210722132731.13264-1-mario.limonciello@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SN7PR04CA0048.namprd04.prod.outlook.com
- (2603:10b6:806:120::23) To SA0PR12MB4510.namprd12.prod.outlook.com
- (2603:10b6:806:94::8)
+        id S232163AbhGVMrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 08:47:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232151AbhGVMrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 08:47:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E95560FEE;
+        Thu, 22 Jul 2021 13:28:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626960489;
+        bh=l67UetnxqFdjROTyaLXIKzADYZefAq1fW4lD9rhDbJw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1c+Z/hIuXWavmOwXHO81rf8igLrlzmVrY9VnJ1il42bzeoEH0l5TY9c66FxoLHwNj
+         4d7lVuw8CYRjkzhfOodW18pkLzD+YDB9MIGojymxycTfn6MyYTv6dAwUgrpEIzpoca
+         isZGGeF7oXBBxZAypDx/G3bcaGE8XDTO/wfQ8sHA=
+Date:   Thu, 22 Jul 2021 15:28:06 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: Re: [PATCH resend] staging: rtl8188eu: move all source files from
+ core subdirectory
+Message-ID: <YPlyZsuRJpkUwWiJ@kroah.com>
+References: <20210719224601.255364-1-phil@philpotter.co.uk>
+ <7bc43fb0-2dab-190b-c480-9e77cff863d4@lwfinger.net>
+ <20210720090035.GB1406@agape.jhs>
+ <08a8b372-8ec2-afcc-cc54-305d1dd74a59@lwfinger.net>
+ <YPfRf8dgFd+u5hzm@equinox>
+ <0c2d97fa-e1e1-3564-98b8-37d5b9a1a9cb@lwfinger.net>
+ <20210721182836.GX1931@kadam>
+ <ed7b7d93-f754-dce9-ca4f-425e49c972ba@lwfinger.net>
+ <CAA=Fs0nvhxEhJhCTWH_KkYyB3Jz7Pi-t2a+6zL3K=O-_3-sLGg@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from AUS-LX-MLIMONCI.amd.com (76.251.167.31) by SN7PR04CA0048.namprd04.prod.outlook.com (2603:10b6:806:120::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.24 via Frontend Transport; Thu, 22 Jul 2021 13:27:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3274114b-513e-433d-232f-08d94d148058
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4559:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4559639154DA047EAFB14E1CE2E49@SA0PR12MB4559.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:580;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NbnC4ylSx5uX3OQvEh6NZuAaRUgV1vlNbIjx5oT/ewaIEcZXOjmrynnLZJ9sVxxX/Zyr8yNKoa7Ppdabe+e4dsbXWJAyvr0XtYmSY85uG0sk9uiGDuxViXcowfoCxZrS40wDSY4Bgfes5zJ6FGkftivcoNx9valvjofx1T86wm7qZMwy1dJG4TLuf9AkiS2uI3hUyQCMcuVVxeOfCIDCwzcNIeNlpbo5gSK/xOoAy/ne18QrN6nCxZSiRiKq+RRNCnWHk1nhN39Jss6Ghb7l98xs2h6DW0xCWpZbAe2/Qx+nUs8y0BmfGh/leQArE+s2jnzPWGG8wvzLRehV01e5EN0VgwF3UQ8J4sq3mBA4Bse69WwmuN3qyaTNBstgMYGSZ/jDVgwWn1FpoTSIypO3X/f7FVwOlhWlbnQU3OrTPVg4/ARCLxtj8Syj7vWns/v5aHm34+M65UsERSiOoDaOlN1j+5MHydo4A0ZpJ75AYSkvPen8sTDlgIr/PAS6UI2Be5SqA0THGmohfgzSQae39g/d1Mb2qtY3FlcbxqPcvY8NePDD9EChu4a/YGQP8f5qU1Az7Yu/JrsgDnf8PsQZQgStkYEZvz6nAqvA0pFZtWfoWvcdQFgAmVEzEktv1K+ETr9lOZY389by40InVHL5cEkIY+Sv7f8k+1YEjkSmi5u65w+/n/Qv25MJfM615+FeRj5z8nK2evQA2sDQr9uwLQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4510.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(6486002)(956004)(508600001)(5660300002)(66556008)(8676002)(7696005)(1076003)(186003)(86362001)(83380400001)(26005)(38350700002)(38100700002)(36756003)(316002)(4326008)(54906003)(6636002)(44832011)(8936002)(52116002)(66946007)(6666004)(2616005)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?u7LzaUQnRfjxQFrwQRESnM5hQfPqvXKqsnU2ySSEE29irmabSz2mwXh5cvxz?=
- =?us-ascii?Q?50s0ubhpsc7zs1lkCxHYlsjeTMYpvmpy99b6QkzYUluiB2yK4CJWzdGV1ou/?=
- =?us-ascii?Q?V3jOEEI0PAScEVq+kwkq+KzXg/tAJ9WYWpW4iAf2ixRYYhhl89KqquZW6upR?=
- =?us-ascii?Q?8Tb87bVnN1RDKj9DKl4ypvkCoEkEeXbr1yqqt49ojYprx+vfTIDFm1BpWE5S?=
- =?us-ascii?Q?itBQ2+ybIUKTkEo588IZ8vZQ81iPj68PVkTpJFjjhCLgjY84iMKaa2TB36O/?=
- =?us-ascii?Q?OFh9PiiUDgBLdLV1Pe1INLPXVD3fWGxyD6CBx+0ngy15VPFrQk6pWyzvPBrh?=
- =?us-ascii?Q?bQDBhllsA33wQc5kqFrSS+Cf7h/5Ahx0f0soJszCgH1O8zi7Gq7FyxcQf2hA?=
- =?us-ascii?Q?4i5HSBE00Qo0LulSbc7TTO0oZmLnvflLuDiE0rdT8MSWPhARuHI/pmcPvlbz?=
- =?us-ascii?Q?RcMFjlJM6ZzsT+nCIz5hSOyBp24vvCOKiv5amJkCvVAMBrWRDAVTQlBH6vXk?=
- =?us-ascii?Q?py85OWAH2LzIgjwP7zHdGGki43SRXxMBXy9ETUYaxrpgweKzb8NuQ7yGxbq6?=
- =?us-ascii?Q?ObkopaUi4rY6Qrb63GAE+C4XxQVE1pvOoWNpejUpxjVcDgAJ3nVVTkS9T6XG?=
- =?us-ascii?Q?eDKPK+VkJled9civGPDfs2SM+NiuXPpTU0Pg1bmqOMbff7wx/N4l/rfW8qZO?=
- =?us-ascii?Q?SoWS/WMUeSJtO+IBrDlhHirrMrJhpjl6D5Tuv2K6k1oEYH5Kf/5tJR05r8qt?=
- =?us-ascii?Q?QNitAJUtzRsTUaCX+1C79ASfdD4GL+gr+PURRhoxUcum/uVbknHTehwvLTBl?=
- =?us-ascii?Q?LzBY4rkc7iJmc8fyZpt8QceR9O82Rjm2ymwAzZB0lWmCPpKYlZYAHZPAVs90?=
- =?us-ascii?Q?xpHvEhbe17U4irCn9Q2ZZ581DVNSbxAivTAi6rT6x6TKAyLWxKFCN2OyCyMP?=
- =?us-ascii?Q?s1EPlV1Lc2kMi9DfWrEHFdJslo3LLhxayVmwSjliwYf0PNBc6J1Ox+KC0hzb?=
- =?us-ascii?Q?nCwop1RfJKNdXNWH85P3PMV4JDY2HYZ6PzViNmddtFrf78PqAlWtP6SfuhdH?=
- =?us-ascii?Q?Q8h7vVO8p6CSRRX6N68rqsbQVlhSLahqc/HB/xFTuw3Nu79+KsLfQ0VfK2Vw?=
- =?us-ascii?Q?UEzVW93cIAH7U/XyYFSzYvdSK/luZqz+6b0ekBUAPEic9g6fvDQZMxpn4uHb?=
- =?us-ascii?Q?HOJjK5RwE3I1kc9Ngx8fcJ/UZ7r+HyiAuk3Ka87qHHx+Vabq9mSwtSQNpCn5?=
- =?us-ascii?Q?18q0rILSHSvwtaQ8FazClIx6JpyC6PXuwyFR7/UJsqMOYu/sU1aV6kuIrmG3?=
- =?us-ascii?Q?0jMPKf1gGHK36xRCbd8/Xy8b?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3274114b-513e-433d-232f-08d94d148058
-X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4510.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2021 13:27:49.8765
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GogKlpvXsn7I9FWxtGLtsBZbyTOfI0SD9KSb3SW90t9O0a9YmKAivzYCj50P/QgMFQBix7QLVsFfQpOqAnbi5g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4559
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA=Fs0nvhxEhJhCTWH_KkYyB3Jz7Pi-t2a+6zL3K=O-_3-sLGg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the pattern of check for err to match -EPROBE_DEFER and only
-output errors to use the dev_err_probe helper instead.
+On Thu, Jul 22, 2021 at 11:44:10AM +0100, Phillip Potter wrote:
+> On Wed, 21 Jul 2021 at 20:18, Larry Finger <Larry.Finger@lwfinger.net> wrote:
+> >
+> > On 7/21/21 1:28 PM, Dan Carpenter wrote:
+> > > You're obviously not a Realtek employee, but what are they doing for
+> > > wireless drivers these days?
+> >
+> > You are correct in that I am not a Realtek employee, nor do I have any knowledge
+> > of the internals of any of their chips. I do have a close working arrangement
+> > with the head of their PCI driver development, and I have gotten free samples of
+> > some of their chips. I am a volunteer that is interested in providing drivers
+> > for the devices in new laptops with wireless chips that do not yet have a Linux
+> > driver in the kernel. I also provide relatively modern drivers for older USB
+> > devices through GitHub repos.
+> >
+> >  From what I know, the PCI group at Realtek is mainly working on new 802.11ac
+> > devices, but are leaving some hooks for the USB and SDIO equivalents of those
+> > chips (RTL8822BE, RTL8822CE, RTL8821CE, RTL8723DE, and RTL8852AE). These drivers
+> > are either in the drivers/net/wireless tree of the kernel, or are under review
+> > for such inclusion.
+> >
+> > I have no current contact with the USB part of their driver development.
+> >
+> > Larry
+> >
+> >
+> Dear Larry,
+> 
+> Thank you for this info, it's very useful. Are you saying that in its
+> current state the GitHub driver would not even be accepted into
+> staging in your opinion? I am happy to continue improving it, but in
+> my mind this should probably be done publicly, within the kernel tree.
+> Not sure what others think but if there is general consensus then I
+> can submit this new version to staging and integrate within build
+> framework etc, then we can start improving it and getting it ready to
+> move beyond that. Sounds like your driver is further along the path,
+> and we should be using it, but I'm interested in what others think of
+> course.
 
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- sound/soc/amd/acp-da7219-max98357a.c | 12 +++---------
- sound/soc/amd/acp3x-rt5682-max9836.c | 14 ++++----------
- 2 files changed, 7 insertions(+), 19 deletions(-)
+If the code looks "better", I have no objection to just adding it to
+drivers/staging/ and deleting the existing one here, so that everyone
+can work on this together in one single place.
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index 84e3906abd4f..c130eeb07cdf 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -746,15 +746,9 @@ static int cz_probe(struct platform_device *pdev)
- 	snd_soc_card_set_drvdata(card, machine);
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(&pdev->dev,
--				"devm_snd_soc_register_card(%s) failed: %d\n",
--				card->name, ret);
--		else
--			dev_dbg(&pdev->dev,
--				"devm_snd_soc_register_card(%s) probe deferred: %d\n",
--				card->name, ret);
--		return ret;
-+		return dev_err_probe(&pdev->dev, ret,
-+				"devm_snd_soc_register_card(%s) failed\n",
-+				card->name);
- 	}
- 	bt_uart_enable = !device_property_read_bool(&pdev->dev,
- 						    "bt-pad-enable");
-diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
-index d9980aba2910..e561464f7d60 100644
---- a/sound/soc/amd/acp3x-rt5682-max9836.c
-+++ b/sound/soc/amd/acp3x-rt5682-max9836.c
-@@ -512,17 +512,11 @@ static int acp3x_probe(struct platform_device *pdev)
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(&pdev->dev,
--				"devm_snd_soc_register_card(%s) failed: %d\n",
--				card->name, ret);
--		else
--			dev_dbg(&pdev->dev,
--				"devm_snd_soc_register_card(%s) probe deferred: %d\n",
--				card->name, ret);
-+		return dev_err_probe(&pdev->dev, ret,
-+				"devm_snd_soc_register_card(%s) failed\n",
-+				card->name);
- 	}
--
--	return ret;
-+	return 0;
- }
- 
- static const struct acpi_device_id acp3x_audio_acpi_match[] = {
--- 
-2.25.1
+Larry, any objection to that?
 
+thanks,
+
+greg k-h
