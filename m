@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2696A3D2A3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F55C3D2A48
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234632AbhGVQKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:10:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44790 "EHLO mail.kernel.org"
+        id S234839AbhGVQKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:10:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235049AbhGVQGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:06:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DDD461D2F;
-        Thu, 22 Jul 2021 16:46:40 +0000 (UTC)
+        id S235052AbhGVQGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:06:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2398A61D8D;
+        Thu, 22 Jul 2021 16:46:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972400;
-        bh=WQ9EPAJ7CrgSFrkWPiibeHpRd47dc4J6YQW5PQBj6UE=;
+        s=korg; t=1626972403;
+        bh=UXjGsuxw8e6sD4gzKdGcOklskqDi0rOL7rY+pW8L5TI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=td/zoivc7Jjd2mCOUcV2lSo021XKvvNmtXGaGbahc4pUO696xivtcTOh+ou6+zwr/
-         7RpFB6YXrh5+NuyQ6k8kXHyuOT8kdvwlPANLU/X64JSPOdBk69Yhj3t/NWqpKR532v
-         M4WB488TlYAMEcC7/VNjIcRprHMLq2e/vZVsn/kM=
+        b=HMjJBueKyv9GA0/0o2ZDigJd+0hKuduGS+vrfBYvuM55hi2LqGXTQRXRogw7OSoXQ
+         nfutJBFHm+Ga8YWmBTc2XYl+I4crkDOjFCA0azJW7njk3WxmQeh9GE6qXMvBjAZBGX
+         8cWknj1+pGR83hKibJ1NFqZ92tTud29Kn1Lhg6ZY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 100/156] cifs: prevent NULL deref in cifs_compose_mount_options()
-Date:   Thu, 22 Jul 2021 18:31:15 +0200
-Message-Id: <20210722155631.610949097@linuxfoundation.org>
+Subject: [PATCH 5.13 101/156] firmware: turris-mox-rwtm: add marvell,armada-3700-rwtm-firmware compatible string
+Date:   Thu, 22 Jul 2021 18:31:16 +0200
+Message-Id: <20210722155631.642673975@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
 References: <20210722155628.371356843@linuxfoundation.org>
@@ -40,35 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paulo Alcantara <pc@cjr.nz>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 03313d1c3a2f086bb60920607ab79ac8f8578306 ]
+[ Upstream commit 90ae47215de3fec862aeb1a0f0e28bb505ab1351 ]
 
-The optional @ref parameter might contain an NULL node_name, so
-prevent dereferencing it in cifs_compose_mount_options().
+Add more generic compatible string 'marvell,armada-3700-rwtm-firmware' for
+this driver, since it can also be used on other Armada 3720 devices.
 
-Addresses-Coverity: 1476408 ("Explicit null dereferenced")
-Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Current compatible string 'cznic,turris-mox-rwtm' is kept for backward
+compatibility.
+
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/cifs_dfs_ref.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/firmware/turris-mox-rwtm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/cifs/cifs_dfs_ref.c b/fs/cifs/cifs_dfs_ref.c
-index 8dec4edc8a9f..35a6007d88a9 100644
---- a/fs/cifs/cifs_dfs_ref.c
-+++ b/fs/cifs/cifs_dfs_ref.c
-@@ -151,6 +151,9 @@ char *cifs_compose_mount_options(const char *sb_mountdata,
- 		return ERR_PTR(-EINVAL);
+diff --git a/drivers/firmware/turris-mox-rwtm.c b/drivers/firmware/turris-mox-rwtm.c
+index 1cf4f1087492..c2d34dc8ba46 100644
+--- a/drivers/firmware/turris-mox-rwtm.c
++++ b/drivers/firmware/turris-mox-rwtm.c
+@@ -569,6 +569,7 @@ static int turris_mox_rwtm_remove(struct platform_device *pdev)
  
- 	if (ref) {
-+		if (WARN_ON_ONCE(!ref->node_name || ref->path_consumed < 0))
-+			return ERR_PTR(-EINVAL);
-+
- 		if (strlen(fullpath) - ref->path_consumed) {
- 			prepath = fullpath + ref->path_consumed;
- 			/* skip initial delimiter */
+ static const struct of_device_id turris_mox_rwtm_match[] = {
+ 	{ .compatible = "cznic,turris-mox-rwtm", },
++	{ .compatible = "marvell,armada-3700-rwtm-firmware", },
+ 	{ },
+ };
+ 
 -- 
 2.30.2
 
