@@ -2,930 +2,483 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1968C3D1E25
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66C43D1E26
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhGVFlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 01:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbhGVFln (ORCPT
+        id S231396AbhGVFmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 01:42:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37582 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230334AbhGVFmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 01:41:43 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20E5C061575;
-        Wed, 21 Jul 2021 23:22:17 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id b12so3293851plh.10;
-        Wed, 21 Jul 2021 23:22:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=H4RVKvvYpPGX6u828QZkGYanhg3yp8ESeHbuFmEzPwc=;
-        b=AHmzADFdhtMNxFTQ1bhFGv6XmXklZbwMGMrl61+blNzbnjPSlqvHgPxpnemPJLkVCD
-         EXfeGW1GO+yzzQSm19b3Tdp7vKqFv8kyRhe/ivik6qIpVcG/bcZXaFYgYyalsvY0/Rzx
-         K9NnHDe/zuW7Z65PMdTJHCPReuyivdmb4q3hao4kjblqiQlgDsh4JN5tFh7PcOz0SMYg
-         bdXJSVcqEZFnFY2OPnyAffwxVLInNOOdAixaXEdESFjNNck9u/HWm0OxBWoSynBKIIPE
-         rbgxM4JBLYyb/ZsBewDH4KhmNS/+fo1C1JM9ye2DJKQUNjmV1dE5ejJgyeDaKfUGA0tN
-         v30w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=H4RVKvvYpPGX6u828QZkGYanhg3yp8ESeHbuFmEzPwc=;
-        b=t/NntFFO0W8We3RrSOMQzsVBuDEpMk/8SbhEAYyDD88Ay/g6yCf+gMkyMi8j+ABY5+
-         qj/qViLQYz6DVAZHBEROoEY1StvxRVJP1X7UWO1bgdmj+tj4MV8+TxeLEkg+E503vDao
-         2mth4mXGKKb67gKD0DYQnMQQOlw6kWpI3jT1iHTDepNYe5R/JwrVpk/apct3V/f982rI
-         dNKeBjcZQ/5xlC986CERxqzAdCm1GCDlgCi3q+klXynlCMqJggms9lxBnyb/Hu83RHRO
-         OgmWqZAgRQdod6gI4pz0sjLUObL9ji1NT5u8rKi6jmcuI/0sMuN6lNNLhALCxpUN0tJj
-         Coxw==
-X-Gm-Message-State: AOAM532vXD6fyBC/XKULt9Cy+8zOGwzWm6YGdUVR2lI73RiePzcRUb4m
-        anaByUwzP+YRtCamFsFQWiC506R0Im9qk16s
-X-Google-Smtp-Source: ABdhPJyTCnXT9mbyqOkFNB4WmYCIkEjrseLzoVg565WsEOfFu2jHZe84ufF6o+pmLt5WcsfgPFhBNw==
-X-Received: by 2002:a17:90b:4acf:: with SMTP id mh15mr261960pjb.196.1626934937314;
-        Wed, 21 Jul 2021 23:22:17 -0700 (PDT)
-Received: from localhost.localdomain ([2409:4055:289:a04e:a741:7cf2:c19d:a4])
-        by smtp.googlemail.com with ESMTPSA id g123sm28239326pfb.187.2021.07.21.23.22.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 23:22:16 -0700 (PDT)
-From:   Puranjay Mohan <puranjay12@gmail.com>
-To:     Michael.Hennerich@analog.com, alexandru.ardelean@analog.com,
-        jic23@kernel.org, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lars@metafoo.de, Dragos.Bogdan@analog.com, Darius.Berghe@analog.com
-Cc:     Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH v2 2/2] iio: accel: Add driver support for ADXL355
-Date:   Thu, 22 Jul 2021 11:51:54 +0530
-Message-Id: <20210722062155.32998-3-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210722062155.32998-1-puranjay12@gmail.com>
-References: <20210722062155.32998-1-puranjay12@gmail.com>
+        Thu, 22 Jul 2021 01:42:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626934977;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+/j9lDJJR//R/1rtU4Q72mkECn/lkZxHLRnO/7ICo6A=;
+        b=O5FYjivGKcCPnlNTZkAQz9fqScnuCNLBopwIqn+csAZUcSMQEBp0hR7Phfq5AesfmBfHpD
+        F3dlcadysupjWg7OJg/kOjw4LqaUWJlQfc5YYSymC5HLxj6XJtbyFnNdr+v1pcQd79VXvN
+        jWbdSF+L/LOHYmS6FvG8jEd6or4oloU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-230-8vIb5JljPI6QSFF9xcnuzg-1; Thu, 22 Jul 2021 02:22:56 -0400
+X-MC-Unique: 8vIb5JljPI6QSFF9xcnuzg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 13723107ACF5;
+        Thu, 22 Jul 2021 06:22:55 +0000 (UTC)
+Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D59305B4BC;
+        Thu, 22 Jul 2021 06:22:51 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v3 01/12] mm/debug_vm_pgtable: Introduce struct
+ pgtable_debug_args
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+References: <20210719130613.334901-1-gshan@redhat.com>
+ <20210719130613.334901-2-gshan@redhat.com>
+ <ab0f9daa-0c49-e74c-e073-6e03a3cabb07@arm.com>
+ <280a5740-b5dc-4b78-3a38-67e5adbb0afd@redhat.com>
+ <04a4618f-9899-1518-cee1-0a48cb4df4c6@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <65078a0c-c35c-8e3f-d4d3-3090b0c3daaf@redhat.com>
+Date:   Thu, 22 Jul 2021 16:23:08 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
+In-Reply-To: <04a4618f-9899-1518-cee1-0a48cb4df4c6@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ADXL355 is 3-axis MEMS Accelerometer. It offers low noise density,
-low 0g offset drift, low power with selectable measurement ranges.
-It also features programmable high-pass and low-pass filters.
+Hi Anshuman,
 
-Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adxl354_adxl355.pdf
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- MAINTAINERS                      |   7 +
- drivers/iio/accel/Kconfig        |  29 ++
- drivers/iio/accel/Makefile       |   3 +
- drivers/iio/accel/adxl355.h      |  79 +++++
- drivers/iio/accel/adxl355_core.c | 536 +++++++++++++++++++++++++++++++
- drivers/iio/accel/adxl355_i2c.c  |  63 ++++
- drivers/iio/accel/adxl355_spi.c  |  66 ++++
- 7 files changed, 783 insertions(+)
- create mode 100644 drivers/iio/accel/adxl355.h
- create mode 100644 drivers/iio/accel/adxl355_core.c
- create mode 100644 drivers/iio/accel/adxl355_i2c.c
- create mode 100644 drivers/iio/accel/adxl355_spi.c
+On 7/22/21 2:41 PM, Anshuman Khandual wrote:
+> On 7/21/21 3:50 PM, Gavin Shan wrote:
+>> On 7/21/21 3:44 PM, Anshuman Khandual wrote:
+>>> On 7/19/21 6:36 PM, Gavin Shan wrote:
+>>>> In debug_vm_pgtable(), there are many local variables introduced to
+>>>> track the needed information and they are passed to the functions for
+>>>> various test cases. It'd better to introduce a struct as place holder
+>>>> for these information. With it, what the functions for various test
+>>>> cases need is the struct, to simplify the code. It also makes code
+>>>> easier to be maintained.
+>>>>
+>>>> Besides, set_xxx_at() could access the data on the corresponding pages
+>>>> in the page table modifying tests. So the accessed pages in the tests
+>>>> should have been allocated from buddy. Otherwise, we're accessing pages
+>>>> that aren't owned by us. This causes issues like page flag corruption.
+>>>>
+>>>> This introduces "struct pgtable_debug_args". The struct is initialized
+>>>> and destroyed, but the information in the struct isn't used yet. They
+>>>> will be used in subsequent patches.
+>>>>
+>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>>> ---
+>>>>    mm/debug_vm_pgtable.c | 197 +++++++++++++++++++++++++++++++++++++++++-
+>>>>    1 file changed, 196 insertions(+), 1 deletion(-)
+>>>>
+>>
+>> I saw you've finished the review on PATCH[v3 01/12] and PATCH[v3 02/12].
+>> I will wait to integrate your comments to v4 until you finish the review
+>> on all patches in v3 series.
+>>
+>>>> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+>>>> index 1c922691aa61..ea153ff40d23 100644
+>>>> --- a/mm/debug_vm_pgtable.c
+>>>> +++ b/mm/debug_vm_pgtable.c
+>>>> @@ -58,6 +58,36 @@
+>>>>    #define RANDOM_ORVALUE (GENMASK(BITS_PER_LONG - 1, 0) & ~ARCH_SKIP_MASK)
+>>>>    #define RANDOM_NZVALUE    GENMASK(7, 0)
+>>>>    +struct pgtable_debug_args {
+>>>> +    struct mm_struct    *mm;
+>>>> +    struct vm_area_struct    *vma;
+>>>> +
+>>>> +    pgd_t            *pgdp;
+>>>> +    p4d_t            *p4dp;
+>>>> +    pud_t            *pudp;
+>>>> +    pmd_t            *pmdp;
+>>>> +    pte_t            *ptep;
+>>>> +
+>>>> +    p4d_t            *start_p4dp;
+>>>> +    pud_t            *start_pudp;
+>>>> +    pmd_t            *start_pmdp;
+>>>> +    pgtable_t        start_ptep;
+>>>> +
+>>>> +    unsigned long        vaddr;
+>>>> +    pgprot_t        page_prot;
+>>>> +    pgprot_t        page_prot_none;
+>>>> +
+>>>> +    unsigned long        pud_pfn;
+>>>> +    unsigned long        pmd_pfn;
+>>>> +    unsigned long        pte_pfn;
+>>>> +
+>>>> +    unsigned long        fixed_pgd_pfn;
+>>>> +    unsigned long        fixed_p4d_pfn;
+>>>> +    unsigned long        fixed_pud_pfn;
+>>>> +    unsigned long        fixed_pmd_pfn;
+>>>> +    unsigned long        fixed_pte_pfn;
+>>>> +};
+>>>> +
+>>>>    static void __init pte_basic_tests(unsigned long pfn, int idx)
+>>>>    {
+>>>>        pgprot_t prot = protection_map[idx];
+>>>> @@ -955,8 +985,167 @@ static unsigned long __init get_random_vaddr(void)
+>>>>        return random_vaddr;
+>>>>    }
+>>>>    +static void __init destroy_args(struct pgtable_debug_args *args)
+>>>> +{
+>>>> +    struct page *page = NULL;
+>>>> +
+>>>> +    /* Free (huge) page */
+>>>> +    if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>>>> +        IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+>>>> +        has_transparent_hugepage() &&
+>>>> +        args->pud_pfn != ULONG_MAX) {
+>>>> +        page = pfn_to_page(args->pud_pfn);
+>>>> +        __free_pages(page, HPAGE_PUD_SHIFT - PAGE_SHIFT);
+>>>> +    } else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>>>> +           has_transparent_hugepage() &&
+>>>> +           args->pmd_pfn != ULONG_MAX) {
+>>>> +        page = pfn_to_page(args->pmd_pfn);
+>>>> +        __free_pages(page, HPAGE_PMD_ORDER);
+>>>> +    } else if (args->pte_pfn != ULONG_MAX) {
+>>>> +        page = pfn_to_page(args->pte_pfn);
+>>>> +        __free_pages(page, 0);
+>>>> +    }
+>>>> +
+>>>> +    /* Free page table */
+>>>> +    if (args->start_ptep) {
+>>>> +        pte_free(args->mm, args->start_ptep);
+>>>> +        mm_dec_nr_ptes(args->mm);
+>>>> +    }
+>>>> +
+>>>> +    if (args->start_pmdp) {
+>>>> +        pmd_free(args->mm, args->start_pmdp);
+>>>> +        mm_dec_nr_pmds(args->mm);
+>>>> +    }
+>>>> +
+>>>> +    if (args->start_pudp) {
+>>>> +        pud_free(args->mm, args->start_pudp);
+>>>> +        mm_dec_nr_puds(args->mm);
+>>>> +    }
+>>>> +
+>>>> +    if (args->start_p4dp)
+>>>> +        p4d_free(args->mm, args->p4dp);
+>>>> +
+>>>> +    /* Free vma and mm struct */
+>>>> +    if (args->vma)
+>>>> +        vm_area_free(args->vma);
+>>>> +    if (args->mm)
+>>>> +        mmdrop(args->mm);
+>>>> +}
+>>>> +
+>>>> +static int __init init_args(struct pgtable_debug_args *args)
+>>>> +{
+>>>> +    struct page *page = NULL;
+>>>> +    phys_addr_t phys;
+>>>> +    int ret = 0;
+>>>> +
+>>>> +    /* Initialize the debugging data */
+>>>> +    memset(args, 0, sizeof(*args));
+>>>> +    args->page_prot      = vm_get_page_prot(VMFLAGS);
+>>>> +    args->page_prot_none = __P000;
+>>>
+>>> Please preserve the existing comments before this assignment.
+>>>
+>>>           /*
+>>>            * __P000 (or even __S000) will help create page table entries with
+>>>            * PROT_NONE permission as required for pxx_protnone_tests().
+>>>            */
+>>>
+>>
+>> Sure. I will combine the comments in v4 as below:
+>>
+>>      /*
+>>       * Initialize the debugging arguments.
+>>       *
+>>       * __P000 (or even __S000) will help create page table entries with
+>>           * PROT_NONE permission as required for pxx_protnone_tests().
+>>           */
+>>
+>>
+>>>> +    args->pud_pfn        = ULONG_MAX;
+>>>> +    args->pmd_pfn        = ULONG_MAX;
+>>>> +    args->pte_pfn        = ULONG_MAX;
+>>>> +    args->fixed_pgd_pfn  = ULONG_MAX;
+>>>> +    args->fixed_p4d_pfn  = ULONG_MAX;
+>>>> +    args->fixed_pud_pfn  = ULONG_MAX;
+>>>> +    args->fixed_pmd_pfn  = ULONG_MAX;
+>>>> +    args->fixed_pte_pfn  = ULONG_MAX;
+>>>> +
+>>>> +    /* Allocate mm and vma */
+>>>> +    args->mm = mm_alloc();
+>>>> +    if (!args->mm) {
+>>>> +        pr_err("Failed to allocate mm struct\n");
+>>>> +        ret = -ENOMEM;
+>>>> +        goto error;
+>>>> +    }
+>>>> +
+>>>> +    args->vma = vm_area_alloc(args->mm);
+>>>> +    if (!args->vma) {
+>>>> +        pr_err("Failed to allocate vma\n");
+>>>> +        ret = -ENOMEM;
+>>>> +        goto error;
+>>>> +    }
+>>>> +
+>>>> +    /* Figure out the virtual address and allocate page table entries */
+>>>> +    args->vaddr = get_random_vaddr();
+>>>
+>>> Please group args->vaddr's init with page_prot and page_prot_none above.
+>>>
+>>
+>> Yes, It will make the code tidy. I'll move this line accordingly in v4,
+>> but the related comments will be dropped as the code is self-explanatory.
+>>
+>>          /* Allocate page table entries */
+>>
+>>>> +    args->pgdp = pgd_offset(args->mm, args->vaddr);
+>>>> +    args->p4dp = p4d_alloc(args->mm, args->pgdp, args->vaddr);
+>>>> +    args->pudp = args->p4dp ?
+>>>> +             pud_alloc(args->mm, args->p4dp, args->vaddr) : NULL;
+>>>> +    args->pmdp = args->pudp ?
+>>>> +             pmd_alloc(args->mm, args->pudp, args->vaddr) : NULL;
+>>>> +    args->ptep = args->pmdp ?
+>>>> +             pte_alloc_map(args->mm, args->pmdp, args->vaddr) : NULL;
+>>>> +    if (!args->ptep) {
+>>>> +        pr_err("Failed to allocate page table\n");
+>>>> +        ret = -ENOMEM;
+>>>> +        goto error;
+>>>> +    }
+>>>
+>>> Why not just assert that all page table level pointers are allocated
+>>> successfully, otherwise bail out the test completely. Something like
+>>> this at each level.
+>>>
+>>>      if (!args->p4dp) {
+>>>          pr_err("Failed to allocate page table\n");
+>>>          ret = -ENOMEM;
+>>>          goto error;
+>>>      }
+>>>
+>>> Is there any value in proceeding with the test when some page table
+>>> pointers have not been allocated. Also individual tests do not cross
+>>> check these pointers. Also asserting successful allocations will
+>>> make the freeing path simpler, as I had mentioned earlier.
+>>>
+>>
+>> There is no tests will be carried out if we fail to allocate any level
+>> of page table entries. For other questions, please refer below response.
+>> In summary, this snippet needs to be combined with next snippet, as below.
+>>
+>>>> +
+>>>> +    /*
+>>>> +     * The above page table entries will be modified. Lets save the
+>>>> +     * page table entries so that they can be released when the tests
+>>>> +     * are completed.
+>>>> +     */
+>>>> +    args->start_p4dp = p4d_offset(args->pgdp, 0UL);
+>>>> +    args->start_pudp = pud_offset(args->p4dp, 0UL);
+>>>> +    args->start_pmdp = pmd_offset(args->pudp, 0UL);
+>>>> +    args->start_ptep = pmd_pgtable(READ_ONCE(*(args->pmdp)));
+>>>
+>>> If the above page table pointers have been validated to be allocated
+>>> successfully, we could add these here.
+>>>
+>>>      WARN_ON(!args->start_p4dp)
+>>>      WARN_ON(!args->start_pudp)
+>>>      WARN_ON(!args->start_pmdp)
+>>>      WARN_ON(!args->start_ptep)
+>>>
+>>> Afterwards all those if (args->start_pxdp) checks in the freeing path
+>>> will not be required anymore.
+>>>
+>>
+>> The check on @args->start_pxdp is still needed in destroy_args() for
+>> couple of cases: (1) destroy_args() is called on failing to allocate
+>> @args->mm or @args->vma. That time, no page table entries are allocated.
+>> (2) It's possible to fail allocating current level of page table entries
+>> even the previous levels of page table entries are allocated successfully.
+> 
+> This makes sense as destroy_args() is getting called if any of these
+> allocations fails during init_args(). Did not realize that earlier.
+> 
+>>
+>> So Lets change these (above) two snippets as below in v4:
+>>
+>>      /*
+>>       * Allocate page table entries. The allocated page table entries
+>>       * will be modified in the tests. Lets save the page table entries
+>>       * so that they can be released when the tests are completed.
+>>       */
+>>      args->pgdp = pgd_offset(args->mm, args->vaddr);
+>>      args->p4dp = p4d_alloc(args->mm, args->pgdp, args->vaddr);
+>>      if (!args->p4dp) {
+>>          pr_err("Failed to allocate p4d entries\n");
+>>          ret = -ENOMEM;
+>>          goto error;
+>>      }
+>>
+>>      args->start_p4dp = p4d_offset(args->pgdp, 0UL);
+> 
+> Dont bring the arg->start_pxdp assignments here. If all page table level
+> pointer allocations succeed, they all get assigned together like we have
+> right now. Although a sanity check afterwards like the following, might
+> still be better.
+> 
+> WARN_ON(!args->start_p4dp)
+> WARN_ON(!args->start_pudp)
+> WARN_ON(!args->start_pmdp)
+> WARN_ON(!args->start_ptep)
+> 
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c1..461f2a192 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -586,6 +586,13 @@ W:	http://ez.analog.com/community/linux-device-drivers
- F:	Documentation/devicetree/bindings/iio/accel/adi,adxl345.yaml
- F:	drivers/input/misc/adxl34x.c
- 
-+ADXL355 THREE-AXIS DIGITAL ACCELEROMETER DRIVER
-+M:	Puranjay Mohan <puranjay12@gmail.com>
-+L:	linux-iio@vger.kernel.org
-+S:	Supported
-+F:	drivers/iio/accel/adxl34x.c
-+F:	Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
-+
- ADXL372 THREE-AXIS DIGITAL ACCELEROMETER DRIVER
- M:	Michael Hennerich <michael.hennerich@analog.com>
- S:	Supported
-diff --git a/drivers/iio/accel/Kconfig b/drivers/iio/accel/Kconfig
-index cceda3cec..9a65353a4 100644
---- a/drivers/iio/accel/Kconfig
-+++ b/drivers/iio/accel/Kconfig
-@@ -61,6 +61,35 @@ config ADXL345_SPI
- 	  will be called adxl345_spi and you will also get adxl345_core
- 	  for the core module.
- 
-+config ADXL355
-+	tristate
-+
-+config ADXL355_I2C
-+	tristate "Analog Devices ADXL355 3-Axis Digital Accelerometer I2C Driver"
-+	depends on I2C
-+	select ADXL355
-+	select REGMAP_I2C
-+	help
-+	  Say Y here if you want to build support for the Analog Devices
-+	  ADXL355 3-axis digital accelerometer.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called adxl355_i2c and you will also get adxl355_core
-+	  for the core module.
-+
-+config ADXL355_SPI
-+	tristate "Analog Devices ADXL355 3-Axis Digital Accelerometer SPI Driver"
-+	depends on SPI
-+	select ADXL355
-+	select REGMAP_SPI
-+	help
-+	  Say Y here if you want to build support for the Analog Devices
-+	  ADXL355 3-axis digital accelerometer.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called adxl355_spi and you will also get adxl355_core
-+	  for the core module.
-+
- config ADXL372
- 	tristate
- 	select IIO_BUFFER
-diff --git a/drivers/iio/accel/Makefile b/drivers/iio/accel/Makefile
-index 32cd1342a..0e4721d2d 100644
---- a/drivers/iio/accel/Makefile
-+++ b/drivers/iio/accel/Makefile
-@@ -9,6 +9,9 @@ obj-$(CONFIG_ADIS16209) += adis16209.o
- obj-$(CONFIG_ADXL345) += adxl345_core.o
- obj-$(CONFIG_ADXL345_I2C) += adxl345_i2c.o
- obj-$(CONFIG_ADXL345_SPI) += adxl345_spi.o
-+obj-$(CONFIG_ADXL355) += adxl355_core.o
-+obj-$(CONFIG_ADXL355_I2C) += adxl355_i2c.o
-+obj-$(CONFIG_ADXL355_SPI) += adxl355_spi.o
- obj-$(CONFIG_ADXL372) += adxl372.o
- obj-$(CONFIG_ADXL372_I2C) += adxl372_i2c.o
- obj-$(CONFIG_ADXL372_SPI) += adxl372_spi.o
-diff --git a/drivers/iio/accel/adxl355.h b/drivers/iio/accel/adxl355.h
-new file mode 100644
-index 000000000..e0b1e697f
---- /dev/null
-+++ b/drivers/iio/accel/adxl355.h
-@@ -0,0 +1,79 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * ADXL355 3-Axis Digital Accelerometer
-+ *
-+ * Copyright (c) 2021 Puranjay Mohan <puranjay12@gmail.com>
-+ */
-+
-+#ifndef _ADXL355_H_
-+#define _ADXL355_H_
-+
-+#include <linux/regmap.h>
-+
-+/* ADXL355 Register Definitions */
-+#define ADXL355_DEVID_AD	0x00
-+#define ADXL355_DEVID_MST	0x01
-+#define ADXL355_PARTID		0x02
-+#define ADXL355_REVID		0x03
-+#define ADXL355_STATUS		0x04
-+#define ADXL355_FIFO_ENTRIES	0x05
-+#define ADXL355_TEMP2		0x06
-+#define ADXL355_XDATA3		0x08
-+#define ADXL355_YDATA3		0x0B
-+#define ADXL355_ZDATA3		0x0E
-+#define ADXL355_FIFO_DATA	0x11
-+#define ADXL355_OFFSET_X_H	0x1E
-+#define ADXL355_OFFSET_Y_H	0x20
-+#define ADXL355_OFFSET_Z_H	0x22
-+#define ADXL355_ACT_EN		0x24
-+#define ADXL355_ACT_THRESH_H	0x25
-+#define ADXL355_ACT_THRESH_L	0x26
-+#define ADXL355_ACT_COUNT	0x27
-+#define ADXL355_FILTER		0x28
-+#define ADXL355_FIFO_SAMPLES	0x29
-+#define ADXL355_INT_MAP		0x2A
-+#define ADXL355_SYNC		0x2B
-+#define ADXL355_RANGE		0x2C
-+#define ADXL355_POWER_CTL	0x2D
-+#define ADXL355_SELF_TEST	0x2E
-+#define ADXL355_RESET		0x2F
-+
-+#define ADXL355_DEVID_AD_VAL	0xAD
-+#define ADXL355_DEVID_MST_VAL	0x1D
-+#define ADXL355_PARTID_VAL	0xED
-+#define ADXL355_REVID_VAL	0x01
-+#define ADXL355_RESET_CODE	0x52
-+
-+#define ADXL355_POWER_CTL_MODE_MSK	GENMASK(1, 0)
-+
-+#define ADXL355_FILTER_ODR_MSK			GENMASK(3, 0)
-+#define ADXL355_FILTER_ODR_MODE(x)		((x) & 0xF)
-+#define ADXL355_FILTER_HPF_MSK			GENMASK(6, 4)
-+#define ADXL355_FILTER_HPF_MODE(x)		(((x) & 0x7) << 4)
-+
-+/*
-+ * The datasheet defines an intercept of 1885 LSB at 25 degC
-+ * and a slope of -9.05 LSB/C. The following formula can be used to find the
-+ * temperature:
-+ * Temp = ((RAW - 1885)/(-9.05)) + 25 but this doesn't follow the format of
-+ * the IIO which is Temp = (RAW + OFFSET) * SCALE. Hence using some rearranging
-+ * we get the scale as -110.49723 and offset as -2111.25
-+ */
-+#define TEMP_SCALE_VAL -110
-+#define TEMP_SCALE_VAL2 497238
-+#define TEMP_OFFSET_VAL -2111
-+#define TEMP_OFFSET_VAL2 250000
-+
-+/*
-+ * At +/- 2g with 20-bit resolution, scale is given in datasheet as
-+ * 3.9ug/LSB = 0.0000039 * 9.80665 = 0.00003824593 m/s^2
-+ */
-+#define ADXL355_NSCALE	38245
-+
-+extern const struct regmap_access_table adxl355_readable_regs_tbl;
-+
-+extern const struct regmap_access_table adxl355_writeable_regs_tbl;
-+
-+int adxl355_core_probe(struct device *dev, struct regmap *regmap,
-+		       const char *name);
-+#endif /* _ADXL355_H_ */
-diff --git a/drivers/iio/accel/adxl355_core.c b/drivers/iio/accel/adxl355_core.c
-new file mode 100644
-index 000000000..fa0370d41
---- /dev/null
-+++ b/drivers/iio/accel/adxl355_core.c
-@@ -0,0 +1,536 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * ADXL355 3-Axis Digital Accelerometer IIO core driver
-+ *
-+ * Copyright (c) 2021 Puranjay Mohan <puranjay12@gmail.com>
-+ *
-+ * Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adxl354_adxl355.pdf
-+ */
-+
-+#include <linux/iio/iio.h>
-+#include <linux/iio/sysfs.h>
-+#include <linux/limits.h>
-+#include <linux/math64.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+
-+#include "adxl355.h"
-+
-+static const struct regmap_range adxl355_read_reg_range[] = {
-+	regmap_reg_range(ADXL355_DEVID_AD, ADXL355_FIFO_DATA),
-+	regmap_reg_range(ADXL355_OFFSET_X_H, ADXL355_SELF_TEST)
-+};
-+
-+const struct regmap_access_table adxl355_readable_regs_tbl = {
-+	.yes_ranges = adxl355_read_reg_range,
-+	.n_yes_ranges = ARRAY_SIZE(adxl355_read_reg_range),
-+};
-+EXPORT_SYMBOL_GPL(adxl355_readable_regs_tbl);
-+
-+static const struct regmap_range adxl355_write_reg_range[] = {
-+	regmap_reg_range(ADXL355_OFFSET_X_H, ADXL355_RESET)
-+};
-+
-+const struct regmap_access_table adxl355_writeable_regs_tbl = {
-+	.yes_ranges = adxl355_write_reg_range,
-+	.n_yes_ranges = ARRAY_SIZE(adxl355_write_reg_range),
-+};
-+EXPORT_SYMBOL_GPL(adxl355_writeable_regs_tbl);
-+
-+enum adxl355_op_mode {
-+	ADXL355_MEASUREMENT,
-+	ADXL355_STANDBY,
-+	ADXL355_TEMP_OFF
-+};
-+
-+enum adxl355_odr {
-+	ADXL355_ODR_4000HZ,
-+	ADXL355_ODR_2000HZ,
-+	ADXL355_ODR_1000HZ,
-+	ADXL355_ODR_500HZ,
-+	ADXL355_ODR_250HZ,
-+	ADXL355_ODR_125HZ,
-+	ADXL355_ODR_62_5HZ,
-+	ADXL355_ODR_31_25HZ,
-+	ADXL355_ODR_15_625HZ,
-+	ADXL355_ODR_7_813HZ,
-+	ADXL355_ODR_3_906HZ
-+};
-+
-+enum adxl355_hpf_3db {
-+	ADXL355_HPF_OFF,
-+	ADXL355_HPF_24_7,
-+	ADXL355_HPF_6_2084,
-+	ADXL355_HPF_1_5545,
-+	ADXL355_HPF_0_3862,
-+	ADXL355_HPF_0_0954,
-+	ADXL355_HPF_0_0238
-+};
-+
-+static const int adxl355_odr_table[][2] = {
-+	[0] = {4000, 0},
-+	[1] = {2000, 0},
-+	[2] = {1000, 0},
-+	[3] = {500, 0},
-+	[4] = {250, 0},
-+	[5] = {125, 0},
-+	[6] = {62, 500000},
-+	[7] = {31, 250000},
-+	[8] = {15, 625000},
-+	[9] = {7, 813000},
-+	[10] = {3, 906000}
-+};
-+
-+static const int adxl355_hpf_3db_multipliers[] = {
-+	0,
-+	247000,
-+	62084,
-+	15545,
-+	3862,
-+	954,
-+	238
-+};
-+
-+struct adxl355_data {
-+	struct regmap *regmap;
-+	struct device *dev;
-+	struct mutex lock; /* lock to protect op_mode */
-+	enum adxl355_op_mode op_mode;
-+	enum adxl355_odr odr;
-+	enum adxl355_hpf_3db hpf_3db;
-+	int x_calibbias;
-+	int y_calibbias;
-+	int z_calibbias;
-+	int adxl355_hpf_3db_table[7][2];
-+};
-+
-+static int adxl355_set_op_mode(struct adxl355_data *data,
-+			       enum adxl355_op_mode op_mode)
-+{
-+	int ret;
-+
-+	if (data->op_mode == op_mode)
-+		return 0;
-+
-+	ret = regmap_update_bits(data->regmap, ADXL355_POWER_CTL,
-+				 ADXL355_POWER_CTL_MODE_MSK, op_mode);
-+	if (ret < 0)
-+		return ret;
-+
-+	data->op_mode = op_mode;
-+
-+	return ret;
-+}
-+
-+static void adxl355_fill_3db_frequency_table(struct adxl355_data *data)
-+{
-+	int i;
-+	u64 rem;
-+	u64 div;
-+	u32 multiplier;
-+	u64 odr = mul_u64_u32_shr(adxl355_odr_table[data->odr][0], 1000000, 0) +
-+					adxl355_odr_table[data->odr][1];
-+
-+	for (i = 0; i < ARRAY_SIZE(adxl355_hpf_3db_multipliers); i++) {
-+		multiplier = adxl355_hpf_3db_multipliers[i];
-+		div = div64_u64_rem(mul_u64_u32_shr(odr, multiplier, 0),
-+				    100000000000000UL, &rem);
-+
-+		data->adxl355_hpf_3db_table[i][0] = div;
-+		data->adxl355_hpf_3db_table[i][1] = div_u64(rem, 100000000);
-+	}
-+}
-+
-+static int adxl355_setup(struct adxl355_data *data)
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(data->regmap, ADXL355_DEVID_AD, &regval);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (regval != ADXL355_DEVID_AD_VAL) {
-+		dev_err(data->dev, "Invalid ADI ID 0x%02x\n", regval);
-+		return -ENODEV;
-+	}
-+
-+	ret = regmap_read(data->regmap, ADXL355_DEVID_MST, &regval);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (regval != ADXL355_DEVID_MST_VAL) {
-+		dev_err(data->dev, "Invalid MEMS ID 0x%02x\n", regval);
-+		return -ENODEV;
-+	}
-+
-+	ret = regmap_read(data->regmap, ADXL355_PARTID, &regval);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (regval != ADXL355_PARTID_VAL) {
-+		dev_err(data->dev, "Invalid DEV ID 0x%02x\n", regval);
-+		return -ENODEV;
-+	}
-+
-+	/*
-+	 * Perform a software reset to make sure the device is in a consistent
-+	 * state after start up.
-+	 */
-+	ret = regmap_write(data->regmap, ADXL355_RESET, ADXL355_RESET_CODE);
-+	if (ret < 0)
-+		return ret;
-+
-+	adxl355_fill_3db_frequency_table(data);
-+
-+	return adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
-+}
-+
-+static int adxl355_get_temp_data(struct adxl355_data *data,
-+				 u8 addr, __be16 *out)
-+{
-+	return regmap_bulk_read(data->regmap, addr, out, sizeof(*out));
-+}
-+
-+static int adxl355_read_axis(struct adxl355_data *data, u8 addr)
-+{
-+	__be32 regval;
-+	int ret;
-+
-+	ret = regmap_bulk_read(data->regmap, addr, &regval, 3);
-+	if (ret < 0)
-+		return ret;
-+
-+	return be32_to_cpu(regval) >> 8;
-+}
-+
-+static int adxl355_find_match(const int (*freq_tbl)[2], const int n,
-+			      const int val, const int val2)
-+{
-+	int i;
-+
-+	for (i = 0; i < n; i++) {
-+		if (freq_tbl[i][0] == val && freq_tbl[i][1] == val2)
-+			return i;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int adxl355_set_odr(struct adxl355_data *data,
-+			   enum adxl355_odr odr)
-+{
-+	int ret = 0;
-+
-+	mutex_lock(&data->lock);
-+
-+	if (data->odr == odr)
-+		goto out_unlock;
-+
-+	ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
-+	if (ret < 0)
-+		goto out_unlock;
-+
-+	ret = regmap_update_bits(data->regmap, ADXL355_FILTER,
-+				 ADXL355_FILTER_ODR_MSK,
-+				 ADXL355_FILTER_ODR_MODE(odr));
-+	if (!ret) {
-+		data->odr = odr;
-+		adxl355_fill_3db_frequency_table(data);
-+	}
-+
-+out_unlock:
-+	ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
-+	mutex_unlock(&data->lock);
-+	return ret;
-+}
-+
-+static int adxl355_set_hpf_3db(struct adxl355_data *data,
-+			       enum adxl355_hpf_3db hpf)
-+{
-+	int ret = 0;
-+
-+	mutex_lock(&data->lock);
-+
-+	if (data->hpf_3db == hpf)
-+		goto out_unlock;
-+
-+	ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
-+	if (ret < 0)
-+		goto out_unlock;
-+
-+	ret = regmap_update_bits(data->regmap, ADXL355_FILTER,
-+				 ADXL355_FILTER_HPF_MSK,
-+				 ADXL355_FILTER_HPF_MODE(hpf));
-+	if (!ret)
-+		data->hpf_3db = hpf;
-+
-+out_unlock:
-+	ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
-+	mutex_unlock(&data->lock);
-+	return ret;
-+}
-+
-+static int adxl355_set_calibbias(struct adxl355_data *data,
-+				 int scan_index, int calibbias)
-+{
-+	int ret = 0;
-+	__be16 reg = cpu_to_be16(calibbias);
-+
-+	mutex_lock(&data->lock);
-+
-+	ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
-+	if (ret < 0)
-+		goto out_unlock;
-+
-+	switch (scan_index) {
-+	case 0:
-+		ret = regmap_bulk_write(data->regmap, ADXL355_OFFSET_X_H,
-+					&reg, 2);
-+		if (ret < 0)
-+			goto out_unlock;
-+		data->x_calibbias = calibbias;
-+		break;
-+	case 1:
-+		ret = regmap_bulk_write(data->regmap, ADXL355_OFFSET_Y_H,
-+					&reg, 2);
-+		if (ret < 0)
-+			goto out_unlock;
-+		data->y_calibbias = calibbias;
-+		break;
-+	case 2:
-+		ret = regmap_bulk_write(data->regmap, ADXL355_OFFSET_Z_H,
-+					&reg, 2);
-+		if (ret < 0)
-+			goto out_unlock;
-+		data->z_calibbias = calibbias;
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+out_unlock:
-+	ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
-+	mutex_unlock(&data->lock);
-+	return ret;
-+}
-+
-+static int adxl355_read_raw(struct iio_dev *indio_dev,
-+			    struct iio_chan_spec const *chan,
-+			    int *val, int *val2, long mask)
-+{
-+	struct adxl355_data *data = iio_priv(indio_dev);
-+	int ret;
-+	__be16 out;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_RAW:
-+		switch (chan->type) {
-+		case IIO_TEMP:
-+			ret = adxl355_get_temp_data(data, chan->address, &out);
-+			if (ret < 0)
-+				return ret;
-+			*val = be16_to_cpu(out);
-+
-+			return IIO_VAL_INT;
-+		case IIO_ACCEL:
-+			ret = adxl355_read_axis(data, chan->address);
-+			if (ret < 0)
-+				return ret;
-+			*val = sign_extend32(ret >> (chan->scan_type.shift),
-+					     chan->scan_type.realbits - 1);
-+			return IIO_VAL_INT;
-+		default:
-+			return -EINVAL;
-+		}
-+
-+	case IIO_CHAN_INFO_SCALE:
-+		switch (chan->type) {
-+		case IIO_TEMP:
-+			*val = TEMP_SCALE_VAL;
-+			*val2 = TEMP_SCALE_VAL2;
-+			return IIO_VAL_INT_PLUS_MICRO;
-+		case IIO_ACCEL:
-+			*val = 0;
-+			*val2 = ADXL355_NSCALE;
-+			return IIO_VAL_INT_PLUS_NANO;
-+		default:
-+			return -EINVAL;
-+		}
-+	case IIO_CHAN_INFO_OFFSET:
-+		*val = TEMP_OFFSET_VAL;
-+		*val2 = TEMP_OFFSET_VAL2;
-+		return IIO_VAL_INT_PLUS_MICRO;
-+	case IIO_CHAN_INFO_CALIBBIAS:
-+		if (chan->scan_index == 0)
-+			*val = data->x_calibbias;
-+		else if (chan->scan_index == 1)
-+			*val = data->y_calibbias;
-+		else
-+			*val = data->z_calibbias;
-+		*val = sign_extend32(*val, 15);
-+		return IIO_VAL_INT;
-+	case IIO_CHAN_INFO_SAMP_FREQ:
-+		*val = adxl355_odr_table[data->odr][0];
-+		*val2 = adxl355_odr_table[data->odr][1];
-+		return IIO_VAL_INT_PLUS_MICRO;
-+	case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
-+		*val = data->adxl355_hpf_3db_table[data->hpf_3db][0];
-+		*val2 = data->adxl355_hpf_3db_table[data->hpf_3db][1];
-+		return IIO_VAL_INT_PLUS_MICRO;
-+	}
-+	return -EINVAL;
-+}
-+
-+static int adxl355_write_raw(struct iio_dev *indio_dev,
-+			     struct iio_chan_spec const *chan,
-+			     int val, int val2, long mask)
-+{
-+	struct adxl355_data *data = iio_priv(indio_dev);
-+	int odr_idx, hpf_idx, calibbias;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_SAMP_FREQ:
-+		odr_idx = adxl355_find_match(adxl355_odr_table,
-+					     ARRAY_SIZE(adxl355_odr_table),
-+					     val, val2);
-+		if (odr_idx < 0)
-+			return odr_idx;
-+
-+		return adxl355_set_odr(data, odr_idx);
-+	case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
-+		hpf_idx = adxl355_find_match(data->adxl355_hpf_3db_table,
-+					ARRAY_SIZE(data->adxl355_hpf_3db_table),
-+					     val, val2);
-+		if (hpf_idx < 0)
-+			return hpf_idx;
-+
-+		return adxl355_set_hpf_3db(data, hpf_idx);
-+	case IIO_CHAN_INFO_CALIBBIAS:
-+		calibbias = clamp_t(int, val, S16_MIN, S16_MAX);
-+
-+		return adxl355_set_calibbias(data, chan->scan_index, calibbias);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int adxl355_read_avail(struct iio_dev *indio_dev,
-+			      struct iio_chan_spec const *chan,
-+			      const int **vals, int *type, int *length,
-+			      long mask)
-+{
-+	struct adxl355_data *data = iio_priv(indio_dev);
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_SAMP_FREQ:
-+		*vals = (const int *)adxl355_odr_table;
-+		*type = IIO_VAL_INT_PLUS_MICRO;
-+		/* Values are stored in a 2D matrix */
-+		*length = ARRAY_SIZE(adxl355_odr_table) * 2;
-+
-+		return IIO_AVAIL_LIST;
-+	case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
-+		*vals = (const int *)(data->adxl355_hpf_3db_table);
-+		*type = IIO_VAL_INT_PLUS_MICRO;
-+		/* Values are stored in a 2D matrix */
-+		*length = ARRAY_SIZE(data->adxl355_hpf_3db_table) * 2;
-+
-+		return IIO_AVAIL_LIST;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static const unsigned long adxl355_avail_scan_masks[] = {
-+	GENMASK(3, 0),
-+	0
-+};
-+
-+static const struct iio_info adxl355_info = {
-+	.read_raw	= adxl355_read_raw,
-+	.write_raw	= adxl355_write_raw,
-+	.read_avail	= &adxl355_read_avail
-+};
-+
-+#define ADXL355_ACCEL_CHANNEL(index, reg, axis) {			\
-+	.type = IIO_ACCEL,						\
-+	.address = reg,							\
-+	.modified = 1,							\
-+	.channel2 = IIO_MOD_##axis,					\
-+	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |			\
-+			      BIT(IIO_CHAN_INFO_CALIBBIAS),		\
-+	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE) |		\
-+				    BIT(IIO_CHAN_INFO_SAMP_FREQ) |	\
-+		BIT(IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY),	\
-+	.info_mask_shared_by_type_available =				\
-+		BIT(IIO_CHAN_INFO_SAMP_FREQ) |				\
-+		BIT(IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY),	\
-+	.scan_index = index,						\
-+	.scan_type = {							\
-+		.sign = 's',						\
-+		.realbits = 20,						\
-+		.storagebits = 32,					\
-+		.shift = 4,						\
-+		.endianness = IIO_BE,					\
-+	}								\
-+}
-+
-+static const struct iio_chan_spec adxl355_channels[] = {
-+	ADXL355_ACCEL_CHANNEL(0, ADXL355_XDATA3, X),
-+	ADXL355_ACCEL_CHANNEL(1, ADXL355_YDATA3, Y),
-+	ADXL355_ACCEL_CHANNEL(2, ADXL355_ZDATA3, Z),
-+	{
-+		.type = IIO_TEMP,
-+		.address = ADXL355_TEMP2,
-+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-+				      BIT(IIO_CHAN_INFO_SCALE) |
-+				      BIT(IIO_CHAN_INFO_OFFSET),
-+		.scan_index = 3,
-+		.scan_type = {
-+			.sign = 's',
-+			.realbits = 12,
-+			.storagebits = 16,
-+			.endianness = IIO_BE,
-+		},
-+	}
-+};
-+
-+int adxl355_core_probe(struct device *dev, struct regmap *regmap,
-+		       const char *name)
-+{
-+	struct adxl355_data *data;
-+	struct iio_dev *indio_dev;
-+	int ret;
-+
-+	indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
-+	if (!indio_dev)
-+		return -ENOMEM;
-+
-+	data = iio_priv(indio_dev);
-+	data->regmap = regmap;
-+	data->dev = dev;
-+	data->op_mode = ADXL355_STANDBY;
-+	mutex_init(&data->lock);
-+
-+	indio_dev->name = name;
-+	indio_dev->info = &adxl355_info;
-+	indio_dev->modes = INDIO_DIRECT_MODE;
-+	indio_dev->channels = adxl355_channels;
-+	indio_dev->num_channels = ARRAY_SIZE(adxl355_channels);
-+	indio_dev->available_scan_masks = adxl355_avail_scan_masks;
-+
-+	ret = adxl355_setup(data);
-+	if (ret < 0) {
-+		dev_err(dev, "ADXL355 setup failed\n");
-+		return ret;
-+	}
-+
-+	return devm_iio_device_register(dev, indio_dev);
-+}
-+EXPORT_SYMBOL_GPL(adxl355_core_probe);
-+
-+MODULE_AUTHOR("Puranjay Mohan <puranjay12@gmail.com>");
-+MODULE_DESCRIPTION("ADXL355 3-Axis Digital Accelerometer core driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/iio/accel/adxl355_i2c.c b/drivers/iio/accel/adxl355_i2c.c
-new file mode 100644
-index 000000000..6b84d8df2
---- /dev/null
-+++ b/drivers/iio/accel/adxl355_i2c.c
-@@ -0,0 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * ADXL355 3-Axis Digital Accelerometer I2C driver
-+ *
-+ * Copyright (c) 2021 Puranjay Mohan <puranjay12@gmail.com>
-+ */
-+
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+
-+#include "adxl355.h"
-+
-+static const struct regmap_config adxl355_i2c_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.max_register = 0x2F,
-+	.rd_table = &adxl355_readable_regs_tbl,
-+	.wr_table = &adxl355_writeable_regs_tbl
-+};
-+
-+static int adxl355_i2c_probe(struct i2c_client *client)
-+{
-+	struct regmap *regmap;
-+
-+	regmap = devm_regmap_init_i2c(client, &adxl355_i2c_regmap_config);
-+	if (IS_ERR(regmap)) {
-+		dev_err(&client->dev, "Error initializing i2c regmap: %ld\n",
-+			PTR_ERR(regmap));
-+		return PTR_ERR(regmap);
-+	}
-+
-+	return adxl355_core_probe(&client->dev, regmap, client->name);
-+}
-+
-+static const struct i2c_device_id adxl355_i2c_id[] = {
-+	{ "adxl355", 0 },
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(i2c, adxl355_i2c_id);
-+
-+static const struct of_device_id adxl355_of_match[] = {
-+	{ .compatible = "adi,adxl355" },
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(of, adxl355_of_match);
-+
-+static struct i2c_driver adxl355_i2c_driver = {
-+	.driver = {
-+		.name	= "adxl355_i2c",
-+		.of_match_table = adxl355_of_match,
-+	},
-+	.probe_new	= adxl355_i2c_probe,
-+	.id_table	= adxl355_i2c_id,
-+};
-+
-+module_i2c_driver(adxl355_i2c_driver);
-+
-+MODULE_AUTHOR("Puranjay Mohan <puranjay12@gmail.com>");
-+MODULE_DESCRIPTION("ADXL355 3-Axis Digital Accelerometer I2C driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/iio/accel/adxl355_spi.c b/drivers/iio/accel/adxl355_spi.c
-new file mode 100644
-index 000000000..108d1b308
---- /dev/null
-+++ b/drivers/iio/accel/adxl355_spi.c
-@@ -0,0 +1,66 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * ADXL355 3-Axis Digital Accelerometer SPI driver
-+ *
-+ * Copyright (c) 2021 Puranjay Mohan <puranjay12@gmail.com>
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/spi/spi.h>
-+
-+#include "adxl355.h"
-+
-+static const struct regmap_config adxl355_spi_regmap_config = {
-+	.reg_bits = 7,
-+	.pad_bits = 1,
-+	.val_bits = 8,
-+	.read_flag_mask = BIT(0),
-+	.max_register = 0x2F,
-+	.rd_table = &adxl355_readable_regs_tbl,
-+	.wr_table = &adxl355_writeable_regs_tbl
-+};
-+
-+static int adxl355_spi_probe(struct spi_device *spi)
-+{
-+	const struct spi_device_id *id = spi_get_device_id(spi);
-+	struct regmap *regmap;
-+
-+	regmap = devm_regmap_init_spi(spi, &adxl355_spi_regmap_config);
-+	if (IS_ERR(regmap)) {
-+		dev_err(&spi->dev, "Error initializing spi regmap: %ld\n",
-+			PTR_ERR(regmap));
-+		return PTR_ERR(regmap);
-+	}
-+
-+	return adxl355_core_probe(&spi->dev, regmap, id->name);
-+}
-+
-+static const struct spi_device_id adxl355_spi_id[] = {
-+	{ "adxl355", 0 },
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(spi, adxl355_spi_id);
-+
-+static const struct of_device_id adxl355_of_match[] = {
-+	{ .compatible = "adi,adxl355" },
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(of, adxl355_of_match);
-+
-+static struct spi_driver adxl355_spi_driver = {
-+	.driver = {
-+		.name	= "adxl355_spi",
-+		.of_match_table = adxl355_of_match,
-+	},
-+	.probe		= adxl355_spi_probe,
-+	.id_table	= adxl355_spi_id,
-+};
-+
-+module_spi_driver(adxl355_spi_driver);
-+
-+MODULE_AUTHOR("Puranjay Mohan <puranjay12@gmail.com>");
-+MODULE_DESCRIPTION("ADXL355 3-Axis Digital Accelerometer SPI driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.30.1
+We have to assign arg->start_pxdp here because destroy_args() relies
+it to release the corresponding page tables in failing path. For example,
+the args->start_p4dp is going to be release if we fail to populate
+args->start_pudp.
+
+Ok. I will add WARN_ON() for each level of page table entries right after
+they are assigned in v4.
+
+>>      args->pudp = pud_alloc(args->mm, args->p4dp, args->vaddr);
+>>      if (!args->pudp) {
+>>          pr_err("Failed to allocate pud entries\n");
+>>          ret = -ENOMEM;
+>>          goto error;
+>>      }
+>>
+>>      args->pmdp = pmd_alloc(args->mm, args->pudp, args->vaddr);
+>>      if (!args->pmdp) {
+>>          pr_err("Failed to allocate PMD entries\n");
+>>          ret = -ENOMEM;
+>>          goto error;
+>>      }
+>>
+>>      args->start_pmdp = pmd_offset(args->pudp, 0UL);
+>>      args->ptep = pte_alloc_map(args->mm, args->pmdp, args->vaddr);
+>>      if (!args->ptep) {
+>>          pr_err("Failed to allocate page table\n");
+>>          ret = -ENOMEM;
+>>          goto error;
+>>      }
+>>
+>>      args->start_ptep = pmd_pgtable(READ_ONCE(*(args->pmdp)));
+>>
+>>>> +
+>>>> +    /*
+>>>> +     * Figure out the fixed addresses, which are all around the kernel
+>>>> +     * symbol (@start_kernel). The corresponding PFNs might be invalid,
+>>>> +     * but it's fine as the following tests won't access the pages.
+>>>> +     */
+>>>> +    phys = __pa_symbol(&start_kernel);
+>>>> +    args->fixed_pgd_pfn = __phys_to_pfn(phys & PGDIR_MASK);
+>>>> +    args->fixed_p4d_pfn = __phys_to_pfn(phys & P4D_MASK);
+>>>> +    args->fixed_pud_pfn = __phys_to_pfn(phys & PUD_MASK);
+>>>> +    args->fixed_pmd_pfn = __phys_to_pfn(phys & PMD_MASK);
+>>>> +    args->fixed_pte_pfn = __phys_to_pfn(phys & PAGE_MASK);
+>>>> +
+>>>> +    /*
+>>>> +     * Allocate (huge) pages because some of the tests need to access
+>>>> +     * the data in the pages. The corresponding tests will be skipped
+>>>> +     * if we fail to allocate (huge) pages.
+>>>> +     */
+>>>> +    if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>>>> +        IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+>>>> +        has_transparent_hugepage()) {
+>>>> +        page = alloc_pages(GFP_KERNEL | __GFP_NOWARN,
+>>>> +                   HPAGE_PUD_SHIFT - PAGE_SHIFT);
+>>>
+>>> Please drop __GFP_NOWARN and instead use something like alloc_contig_pages()
+>>> when required allocation order exceed (MAX_ORDER - 1). Else the test might
+>>> not be able to execute on platform configurations, where PUD THP is enabled.
+>>>
+>>
+>> Yes, It's correct that alloc_contig_pages() should be used here, depending
+>> on CONFIG_CONTIG_ALLOC. Otherwise, alloc_pages(...__GFP_NOWARN...) is still
+>> used as we're doing. This snippet will be changed like below in v4:
+> 
+> First 'order > (MAX_ORDER - 1)' needs to be established before calling into
+> alloc_contig_pages() without __GFP_NOWARN and set a new flag indicating that
+> there is contig page allocated. But if 'order <= (MAX_ORDER - 1)', then call
+> alloc_pages(..) without  __GFP_NOWARN. There is no need to add  __GFP_NOWARN
+> in any case. In case CONFIG_CONTIG_ALLOC is not available, directly return a
+> NULL as that would have been the case with alloc_pages(...__GFP_NOWARN...) as
+> well.
+> 
+> Symbol alloc_contig_pages() is not available outside CONFIG_CONTIG_ALLOC. So
+> IS_ENABLED() construct will not work, unless there is an empty stub added in
+> the header. Otherwise #ifdef CONFIG_CONTIG_ALLOC needs to be used instead.
+> 
+> Regardless please do test this on a x86 platform with PUD based THP in order
+> to make sure every thing works as expected.
+> 
+
+Thanks, I will change the code accordingly in v4 and test it on x86
+before posting it.
+
+>>
+>>      /*
+>>       * Allocate (huge) pages because some of the tests need to access
+>>       * the data in the pages. The corresponding tests will be skipped
+>>       * if we fail to allocate (huge) pages.
+>>       */
+>>      if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>>          IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+>>          IS_ENABLED(CONFIG_CONTIG_ALLOC)) &&
+>>          has_transparent_hugepage()) {
+>>          page = alloc_contig_pages((1 << (HPAGE_PUD_SHIFT - PAGE_SHIFT)),
+>>                        GFP_KERNEL | __GFP_NOWARN,
+>>                        first_online_node, NULL);
+>>          if (page) {
+>>              args->is_contiguous_pud_page = true;
+>>              args->pud_pfn = page_to_pfn(page);
+>>              args->pmd_pfn = args->pud_pfn;
+>>              args->pte_pfn = args->pud_pfn;
+>>              return 0;
+>>          }
+>>      }
+>>
+>>      if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>>          IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+>>          has_transparent_hugepage()) {
+>>          page = alloc_pages(GFP_KERNEL | __GFP_NOWARN,
+>>                     HPAGE_PUD_SHIFT - PAGE_SHIFT);
+>>          if (page) {
+>>              args->is_contiguous_pud_page = false;
+>>              args->pud_pfn = page_to_pfn(page);
+>>              args->pmd_pfn = args->pud_pfn;
+>>              args->pte_pfn = args->pud_pfn;
+>>              return 0;
+>>          }
+>>      }
+>>
+>>      [... The logic to allocate PMD huge page or page is kept as of being]
+> 
+> IIRC it is also not guaranteed that PMD_SHIFT <= (MAX_ORDER - 1). Hence
+> this same scheme should be followed for PMD level allocation as well.
+> 
+
+In theory, it's possible to have PMD_SHIFT <= (MAX_ORDER - 1) with misconfigured
+kernel. I will apply the similar logic to PMD huge page in v4.
+
+>>      [... The code to release the PUD huge page needs changes based on @args->is_contiguous_pud_page]
+> 
+> Right, a flag would be needed to call the appropriate free function.
+> 
+
+Yes. We need two falgs for PUD and PMD huge pages separately.
+
+Thanks,
+Gavin
 
