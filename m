@@ -2,343 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27CF3D1D7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 07:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56B83D1D8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 07:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhGVE6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 00:58:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:44114 "EHLO foss.arm.com"
+        id S230144AbhGVE7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 00:59:16 -0400
+Received: from verein.lst.de ([213.95.11.211]:60999 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhGVE6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 00:58:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B081AD6E;
-        Wed, 21 Jul 2021 22:38:38 -0700 (PDT)
-Received: from [10.163.65.134] (unknown [10.163.65.134])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3FCBC3F66F;
-        Wed, 21 Jul 2021 22:38:36 -0700 (PDT)
-Subject: Re: [PATCH v3 09/12] mm/debug_vm_pgtable: Use struct
- pgtable_debug_args in PUD modifying tests
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210719130613.334901-1-gshan@redhat.com>
- <20210719130613.334901-10-gshan@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <8997bf56-ff67-060d-c25b-91e11f31e88a@arm.com>
-Date:   Thu, 22 Jul 2021 11:09:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229540AbhGVE7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 00:59:14 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 5219067373; Thu, 22 Jul 2021 07:39:47 +0200 (CEST)
+Date:   Thu, 22 Jul 2021 07:39:47 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Subject: Re: [PATCH v6] iomap: support tail packing inline read
+Message-ID: <20210722053947.GA28594@lst.de>
+References: <20210722031729.51628-1-hsiangkao@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20210719130613.334901-10-gshan@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210722031729.51628-1-hsiangkao@linux.alibaba.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I think some of the language here is confusing - mostly about tail
+packing when we otherwise use inline data.  Can you take a look at
+the version below?  This mostly cleans up the terminology, adds a
+new helper to check the size, and removes the error on trying to
+write with a non-zero pos, as it can be trivially supported now.
 
-On 7/19/21 6:36 PM, Gavin Shan wrote:
-> This uses struct pgtable_debug_args in PUD modifying tests. The allocated
-> huge page is used when set_pud_at() is used. The corresponding tests
-> are skipped if the huge page doesn't exist. Besides, the following unused
-> variables in debug_vm_pgtable() are dropped: @prot, @paddr, @pud_aligned.
+---
+From 0f9c6ac6c2e372739b29195d25bebb8dd87e583a Mon Sep 17 00:00:00 2001
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+Date: Thu, 22 Jul 2021 11:17:29 +0800
+Subject: iomap: make inline data support more flexible
 
-Please dont drop @prot, @paddr, @pud_aligned just yet.
+Add support for offsets into the inline data page at iomap->inline_data
+to cater for the EROFS tailpackng case where a small data is stored
+right after the inode.
 
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  mm/debug_vm_pgtable.c | 130 ++++++++++++++++--------------------------
->  1 file changed, 50 insertions(+), 80 deletions(-)
-> 
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index cec3cbf99a6b..57b7ead0708b 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -338,55 +338,55 @@ static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx)
->  	WARN_ON(!pud_bad(pud_mkhuge(pud)));
->  }
->  
-> -static void __init pud_advanced_tests(struct mm_struct *mm,
-> -				      struct vm_area_struct *vma, pud_t *pudp,
-> -				      unsigned long pfn, unsigned long vaddr,
-> -				      pgprot_t prot)
-> +static void __init pud_advanced_tests(struct pgtable_debug_args *args)
->  {
-> +	unsigned long vaddr = (args->vaddr & HPAGE_PUD_MASK);
->  	pud_t pud;
->  
->  	if (!has_transparent_hugepage())
->  		return;
->  
->  	pr_debug("Validating PUD advanced\n");
-> -	/* Align the address wrt HPAGE_PUD_SIZE */
-> -	vaddr &= HPAGE_PUD_MASK;
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+---
+ fs/iomap/buffered-io.c | 35 ++++++++++++++++++-----------------
+ fs/iomap/direct-io.c   | 10 ++++++----
+ include/linux/iomap.h  | 14 ++++++++++++++
+ 3 files changed, 38 insertions(+), 21 deletions(-)
 
-Please just leave these unchanged. If has_transparent_hugepage() evaluates
-negative, it skips the masking operation. As mentioned earlier please avoid
-changing the test in any manner during these transition patches.
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 87ccb3438becd9..0597f5c186a33f 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -205,25 +205,29 @@ struct iomap_readpage_ctx {
+ 	struct readahead_control *rac;
+ };
+ 
+-static void
+-iomap_read_inline_data(struct inode *inode, struct page *page,
+-		struct iomap *iomap)
++static int iomap_read_inline_data(struct inode *inode, struct page *page,
++		struct iomap *iomap, loff_t pos)
+ {
+-	size_t size = i_size_read(inode);
++	size_t size = iomap->length + iomap->offset - pos;
+ 	void *addr;
+ 
+ 	if (PageUptodate(page))
+-		return;
++		return PAGE_SIZE;
+ 
+-	BUG_ON(page_has_private(page));
+-	BUG_ON(page->index);
+-	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
++	/* inline data must start page aligned in the file */
++	if (WARN_ON_ONCE(offset_in_page(pos)))
++		return -EIO;
++	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
++		return -EIO;
++	if (WARN_ON_ONCE(page_has_private(page)))
++		return -EIO;
+ 
+ 	addr = kmap_atomic(page);
+-	memcpy(addr, iomap->inline_data, size);
++	memcpy(addr, iomap_inline_buf(iomap, pos), size);
+ 	memset(addr + size, 0, PAGE_SIZE - size);
+ 	kunmap_atomic(addr);
+ 	SetPageUptodate(page);
++	return PAGE_SIZE;
+ }
+ 
+ static inline bool iomap_block_needs_zeroing(struct inode *inode,
+@@ -246,11 +250,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+ 	unsigned poff, plen;
+ 	sector_t sector;
+ 
+-	if (iomap->type == IOMAP_INLINE) {
+-		WARN_ON_ONCE(pos);
+-		iomap_read_inline_data(inode, page, iomap);
+-		return PAGE_SIZE;
+-	}
++	if (iomap->type == IOMAP_INLINE)
++		return iomap_read_inline_data(inode, page, iomap, pos);
+ 
+ 	/* zero post-eof blocks as the page may be mapped */
+ 	iop = iomap_page_create(inode, page);
+@@ -618,14 +619,14 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+ 	}
+ 
+ 	if (srcmap->type == IOMAP_INLINE)
+-		iomap_read_inline_data(inode, page, srcmap);
++		status = iomap_read_inline_data(inode, page, srcmap, pos);
+ 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
+ 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
+ 	else
+ 		status = __iomap_write_begin(inode, pos, len, flags, page,
+ 				srcmap);
+ 
+-	if (unlikely(status))
++	if (unlikely(status < 0))
+ 		goto out_unlock;
+ 
+ 	*pagep = page;
+@@ -675,7 +676,7 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
+ 
+ 	flush_dcache_page(page);
+ 	addr = kmap_atomic(page);
+-	memcpy(iomap->inline_data + pos, addr + pos, copied);
++	memcpy(iomap_inline_buf(iomap, pos), addr + pos, copied);
+ 	kunmap_atomic(addr);
+ 
+ 	mark_inode_dirty(inode);
+diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+index 9398b8c31323b3..a6aaea2764a55f 100644
+--- a/fs/iomap/direct-io.c
++++ b/fs/iomap/direct-io.c
+@@ -378,23 +378,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
+ 		struct iomap_dio *dio, struct iomap *iomap)
+ {
+ 	struct iov_iter *iter = dio->submit.iter;
++	void *dst = iomap_inline_buf(iomap, pos);
+ 	size_t copied;
+ 
+-	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
++	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
++		return -EIO;
+ 
+ 	if (dio->flags & IOMAP_DIO_WRITE) {
+ 		loff_t size = inode->i_size;
+ 
+ 		if (pos > size)
+-			memset(iomap->inline_data + size, 0, pos - size);
+-		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
++			memset(iomap_inline_buf(iomap, size), 0, pos - size);
++		copied = copy_from_iter(dst, length, iter);
+ 		if (copied) {
+ 			if (pos + copied > size)
+ 				i_size_write(inode, pos + copied);
+ 			mark_inode_dirty(inode);
+ 		}
+ 	} else {
+-		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
++		copied = copy_to_iter(dst, length, iter);
+ 	}
+ 	dio->size += copied;
+ 	return copied;
+diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+index 479c1da3e2211e..5efae7153912ed 100644
+--- a/include/linux/iomap.h
++++ b/include/linux/iomap.h
+@@ -97,6 +97,20 @@ iomap_sector(struct iomap *iomap, loff_t pos)
+ 	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
+ }
+ 
++static inline void *iomap_inline_buf(const struct iomap *iomap, loff_t pos)
++{
++	return iomap->inline_data - iomap->offset + pos;
++}
++
++/*
++ * iomap->inline_data is a potentially kmapped page, ensure it never crosseѕ a
++ * page boundary.
++ */
++static inline bool iomap_inline_data_size_valid(const struct iomap *iomap)
++{
++	return iomap->length <= PAGE_SIZE - offset_in_page(iomap->inline_data);
++}
++
+ /*
+  * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
+  * and page_done will be called for each page written to.  This only applies to
+-- 
+2.30.2
 
-> +	if (args->pud_pfn == ULONG_MAX) {
-> +		pr_debug("%s: Skipped\n", __func__);
-
-Just return. Please dont call out "Skipped". Applicable for all transition
-patches here.
-
-> +		return;
-> +	}
->  
-> -	pud = pfn_pud(pfn, prot);
-> -	set_pud_at(mm, vaddr, pudp, pud);
-> -	pudp_set_wrprotect(mm, vaddr, pudp);
-> -	pud = READ_ONCE(*pudp);
-> +	pud = pfn_pud(args->pud_pfn, args->page_prot);
-> +	set_pud_at(args->mm, vaddr, args->pudp, pud);
-> +	pudp_set_wrprotect(args->mm, vaddr, args->pudp);
-> +	pud = READ_ONCE(*(args->pudp));
-
-Seems like an extra braces while de-referencing arg->pudp. Could these be
-dropped. Just READ_ONCE(*args->pudp).
-
->  	WARN_ON(pud_write(pud));
->  
->  #ifndef __PAGETABLE_PMD_FOLDED
-> -	pudp_huge_get_and_clear(mm, vaddr, pudp);
-> -	pud = READ_ONCE(*pudp);
-> +	pudp_huge_get_and_clear(args->mm, vaddr, args->pudp);
-> +	pud = READ_ONCE(*(args->pudp));
->  	WARN_ON(!pud_none(pud));
->  #endif /* __PAGETABLE_PMD_FOLDED */
-> -	pud = pfn_pud(pfn, prot);
-> +	pud = pfn_pud(args->pud_pfn, args->page_prot);
->  	pud = pud_wrprotect(pud);
->  	pud = pud_mkclean(pud);
-> -	set_pud_at(mm, vaddr, pudp, pud);
-> +	set_pud_at(args->mm, vaddr, args->pudp, pud);
->  	pud = pud_mkwrite(pud);
->  	pud = pud_mkdirty(pud);
-> -	pudp_set_access_flags(vma, vaddr, pudp, pud, 1);
-> -	pud = READ_ONCE(*pudp);
-> +	pudp_set_access_flags(args->vma, vaddr, args->pudp, pud, 1);
-> +	pud = READ_ONCE(*(args->pudp));
->  	WARN_ON(!(pud_write(pud) && pud_dirty(pud)));
->  
->  #ifndef __PAGETABLE_PMD_FOLDED
-> -	pudp_huge_get_and_clear_full(mm, vaddr, pudp, 1);
-> -	pud = READ_ONCE(*pudp);
-> +	pudp_huge_get_and_clear_full(args->mm, vaddr, args->pudp, 1);
-> +	pud = READ_ONCE(*(args->pudp));
->  	WARN_ON(!pud_none(pud));
->  #endif /* __PAGETABLE_PMD_FOLDED */
->  
-> -	pud = pfn_pud(pfn, prot);
-> +	pud = pfn_pud(args->pud_pfn, args->page_prot);
->  	pud = pud_mkyoung(pud);
-> -	set_pud_at(mm, vaddr, pudp, pud);
-> -	pudp_test_and_clear_young(vma, vaddr, pudp);
-> -	pud = READ_ONCE(*pudp);
-> +	set_pud_at(args->mm, vaddr, args->pudp, pud);
-> +	pudp_test_and_clear_young(args->vma, vaddr, args->pudp);
-> +	pud = READ_ONCE(*(args->pudp));
->  	WARN_ON(pud_young(pud));
->  
-> -	pudp_huge_get_and_clear(mm, vaddr, pudp);
-> +	pudp_huge_get_and_clear(args->mm, vaddr, args->pudp);
->  }
->  
->  static void __init pud_leaf_tests(struct pgtable_debug_args *args)
-> @@ -406,24 +406,14 @@ static void __init pud_leaf_tests(struct pgtable_debug_args *args)
->  }
->  #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
->  static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx) { }
-> -static void __init pud_advanced_tests(struct mm_struct *mm,
-> -				      struct vm_area_struct *vma, pud_t *pudp,
-> -				      unsigned long pfn, unsigned long vaddr,
-> -				      pgprot_t prot)
-> -{
-> -}
-> +static void __init pud_advanced_tests(struct pgtable_debug_args *args) { }
->  static void __init pud_leaf_tests(struct pgtable_debug_args *args) { }
->  #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
->  #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
->  static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx) { }
->  static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx) { }
->  static void __init pmd_advanced_tests(struct pgtable_debug_args *args) { }
-> -static void __init pud_advanced_tests(struct mm_struct *mm,
-> -				      struct vm_area_struct *vma, pud_t *pudp,
-> -				      unsigned long pfn, unsigned long vaddr,
-> -				      pgprot_t prot)
-> -{
-> -}
-> +static void __init pud_advanced_tests(struct pgtable_debug_args *args) { }
->  static void __init pmd_leaf_tests(struct pgtable_debug_args *args) { }
->  static void __init pud_leaf_tests(struct pgtable_debug_args *args) { }
->  static void __init pmd_savedwrite_tests(struct pgtable_debug_args *args) { }
-> @@ -450,11 +440,11 @@ static void __init pmd_huge_tests(struct pgtable_debug_args *args)
->  	WARN_ON(!pmd_none(pmd));
->  }
->  
-> -static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
-> +static void __init pud_huge_tests(struct pgtable_debug_args *args)
->  {
->  	pud_t pud;
->  
-> -	if (!arch_vmap_pud_supported(prot))
-> +	if (!arch_vmap_pud_supported(args->page_prot))
->  		return;
->  
->  	pr_debug("Validating PUD huge\n");
-> @@ -462,15 +452,16 @@ static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
->  	 * X86 defined pud_set_huge() verifies that the given
->  	 * PUD is not a populated non-leaf entry.
->  	 */
-> -	WRITE_ONCE(*pudp, __pud(0));
-> -	WARN_ON(!pud_set_huge(pudp, __pfn_to_phys(pfn), prot));
-> -	WARN_ON(!pud_clear_huge(pudp));
-> -	pud = READ_ONCE(*pudp);
-> +	WRITE_ONCE(*(args->pudp), __pud(0));
-> +	WARN_ON(!pud_set_huge(args->pudp, __pfn_to_phys(args->fixed_pud_pfn),
-> +			      args->page_prot));
-
-Please dont break the line, we could go upto 100 width. Please do
-the same for the entire series. Improves the readability.
-
-> +	WARN_ON(!pud_clear_huge(args->pudp));
-> +	pud = READ_ONCE(*(args->pudp));
->  	WARN_ON(!pud_none(pud));
->  }
->  #else /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
->  static void __init pmd_huge_tests(struct pgtable_debug_args *args) { }
-> -static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot) { }
-> +static void __init pud_huge_tests(struct pgtable_debug_args *args) { }
->  #endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
->  
->  static void __init p4d_basic_tests(void)
-> @@ -492,27 +483,26 @@ static void __init pgd_basic_tests(void)
->  }
->  
->  #ifndef __PAGETABLE_PUD_FOLDED
-> -static void __init pud_clear_tests(struct mm_struct *mm, pud_t *pudp)
-> +static void __init pud_clear_tests(struct pgtable_debug_args *args)
->  {
-> -	pud_t pud = READ_ONCE(*pudp);
-> +	pud_t pud = READ_ONCE(*(args->pudp));
->  
-> -	if (mm_pmd_folded(mm))
-> +	if (mm_pmd_folded(args->mm))
->  		return;
->  
->  	pr_debug("Validating PUD clear\n");
->  	pud = __pud(pud_val(pud) | RANDOM_ORVALUE);
-> -	WRITE_ONCE(*pudp, pud);
-> -	pud_clear(pudp);
-> -	pud = READ_ONCE(*pudp);
-> +	WRITE_ONCE(*(args->pudp), pud);
-> +	pud_clear(args->pudp);
-> +	pud = READ_ONCE(*(args->pudp));
->  	WARN_ON(!pud_none(pud));
->  }
->  
-> -static void __init pud_populate_tests(struct mm_struct *mm, pud_t *pudp,
-> -				      pmd_t *pmdp)
-> +static void __init pud_populate_tests(struct pgtable_debug_args *args)
->  {
->  	pud_t pud;
->  
-> -	if (mm_pmd_folded(mm))
-> +	if (mm_pmd_folded(args->mm))
->  		return;
->  
->  	pr_debug("Validating PUD populate\n");
-> @@ -520,16 +510,13 @@ static void __init pud_populate_tests(struct mm_struct *mm, pud_t *pudp,
->  	 * This entry points to next level page table page.
->  	 * Hence this must not qualify as pud_bad().
->  	 */
-> -	pud_populate(mm, pudp, pmdp);
-> -	pud = READ_ONCE(*pudp);
-> +	pud_populate(args->mm, args->pudp, args->start_pmdp);
-> +	pud = READ_ONCE(*(args->pudp));
->  	WARN_ON(pud_bad(pud));
->  }
->  #else  /* !__PAGETABLE_PUD_FOLDED */
-> -static void __init pud_clear_tests(struct mm_struct *mm, pud_t *pudp) { }
-> -static void __init pud_populate_tests(struct mm_struct *mm, pud_t *pudp,
-> -				      pmd_t *pmdp)
-> -{
-> -}
-> +static void __init pud_clear_tests(struct pgtable_debug_args *args) { }
-> +static void __init pud_populate_tests(struct pgtable_debug_args *args) { }
->  #endif /* PAGETABLE_PUD_FOLDED */
->  
->  #ifndef __PAGETABLE_P4D_FOLDED
-> @@ -1152,10 +1139,7 @@ static int __init debug_vm_pgtable(void)
->  	pud_t *pudp, *saved_pudp;
->  	pmd_t *pmdp, *saved_pmdp, pmd;
->  	pgtable_t saved_ptep;
-> -	pgprot_t prot;
-> -	phys_addr_t paddr;
->  	unsigned long vaddr;
-> -	unsigned long pud_aligned;
->  	spinlock_t *ptl = NULL;
->  	int idx, ret;
->  
-> @@ -1164,7 +1148,6 @@ static int __init debug_vm_pgtable(void)
->  	if (ret)
->  		return ret;
->  
-> -	prot = vm_get_page_prot(VMFLAGS);
-
-Please dont drop these just yet and wait until [PATCH 11/12].
-
->  	vaddr = get_random_vaddr();
->  	mm = mm_alloc();
->  	if (!mm) {
-> @@ -1178,19 +1161,6 @@ static int __init debug_vm_pgtable(void)
->  		return 1;
->  	}
->  
-> -	/*
-> -	 * PFN for mapping at PTE level is determined from a standard kernel
-> -	 * text symbol. But pfns for higher page table levels are derived by
-> -	 * masking lower bits of this real pfn. These derived pfns might not
-> -	 * exist on the platform but that does not really matter as pfn_pxx()
-> -	 * helpers will still create appropriate entries for the test. This
-> -	 * helps avoid large memory block allocations to be used for mapping
-> -	 * at higher page table levels.
-> -	 */
-
-Please move this comment as is to the right place inside init_args()
-in the first patch itself. If possible all comments should be moved
-during the first patch and just the code remains till [PATCH 11/12].
-
-> -	paddr = __pa_symbol(&start_kernel);
-> -
-> -	pud_aligned = (paddr & PUD_MASK) >> PAGE_SHIFT;
-> -
-
-Please dont drop these just yet and wait until [PATCH 11/12].
-
->  	pgdp = pgd_offset(mm, vaddr);
->  	p4dp = p4d_alloc(mm, pgdp, vaddr);
->  	pudp = pud_alloc(mm, p4dp, vaddr);
-> @@ -1282,11 +1252,11 @@ static int __init debug_vm_pgtable(void)
->  	pmd_populate_tests(&args);
->  	spin_unlock(ptl);
->  
-> -	ptl = pud_lock(mm, pudp);
-> -	pud_clear_tests(mm, pudp);
-> -	pud_advanced_tests(mm, vma, pudp, pud_aligned, vaddr, prot);
-> -	pud_huge_tests(pudp, pud_aligned, prot);
-> -	pud_populate_tests(mm, pudp, saved_pmdp);
-> +	ptl = pud_lock(args.mm, args.pudp);
-> +	pud_clear_tests(&args);
-> +	pud_advanced_tests(&args);
-> +	pud_huge_tests(&args);
-> +	pud_populate_tests(&args);
->  	spin_unlock(ptl);
->  
->  	spin_lock(&mm->page_table_lock);
-> 
