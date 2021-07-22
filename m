@@ -2,70 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581F53D1C33
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 150493D1C3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhGVCY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 22:24:27 -0400
-Received: from mail-il1-f182.google.com ([209.85.166.182]:46939 "EHLO
-        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbhGVCY0 (ORCPT
+        id S230427AbhGVC2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 22:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230463AbhGVC2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 22:24:26 -0400
-Received: by mail-il1-f182.google.com with SMTP id y6so4084065ilj.13;
-        Wed, 21 Jul 2021 20:05:01 -0700 (PDT)
+        Wed, 21 Jul 2021 22:28:46 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCF5C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 20:09:22 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id h9so5151373oih.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 20:09:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HRxzdd2cU7TP9bQqkyvQP8mNDhcOMiq0kQRkrXwpMGA=;
+        b=TXmr/lgi204QkWG+FfHEX0vyriVt1FZRxWyDpqRqBBz79fVsD+ov/vOCkb/OM0ew7x
+         BqnljLROkw9X90VtrP8cJbTNGzvsWpEVRQtgBZacB7j+le0LPXH3fE88KzL+zBBwehmc
+         /Mf8lQvkMowAe25kBVoC4Bs9K4sJFz9vVE+/xFROPVezM1wbfe5LJUtasHo5hENZ9yGd
+         ezvp8GoVaQGx8Syd+SDHjJ2VG0gZcjCSlYRMg47S+ksVp7rcTpfmzd8FSX4gnRSdHOum
+         iA+6wf/ELim3n81a7+yry7F2YhqIFTPpiZTJ2FWKINrA1YcDuk3MaWElmu9nBb+GepWu
+         eFPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qRC4i9IC5fmogXiHA+XMn95xo6OUhdJon7l31DRv27U=;
-        b=eB6gJ8xiEfkufi6jSD1xUIonYvYmITFc917NovJpvcA1xvQBXEvHPThef8HyymM+XE
-         RVqJ/odn7Xy3lN8rSYBZ8/Te9BSR7Xsn4BPT3iUnQkLyQ+miBhZ4u74wbXAytMc0Hbfd
-         Yxvk1PP95EgISGay4TJT1TBd3UrwpXoE5N5/uMfeM6MYmplFFZ9UF4TMVpfFWAPqKhKI
-         M9XFVoJSMwLu0OWRIcx0gYNFVfWr4b7JkxBml+8cwgbFbDPji82DHYKT1ajyJiQnyni3
-         Gvoai/Bl7Cys6XXK6Kh0IcmGvY8xFLTu67xGT55ascg4Srkg5Lf4vweyci1hDUBfJPab
-         Ng7A==
-X-Gm-Message-State: AOAM533KguOSGhYLkxQvhATdS6r4Jkx1qHlZywnNhD23NyoTGDG6+Nwo
-        m4AnhSELI94tuANAVVU0tQ==
-X-Google-Smtp-Source: ABdhPJwIIBszKvNLzbrWQ9Pc+iqwT5r+K+S0a6LFvfZ8CBjdst/QTKBOi4qyDVad4aeO2nxsamvo2g==
-X-Received: by 2002:a05:6e02:d93:: with SMTP id i19mr13978285ilj.72.1626923101275;
-        Wed, 21 Jul 2021 20:05:01 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id p8sm8863092iol.49.2021.07.21.20.04.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HRxzdd2cU7TP9bQqkyvQP8mNDhcOMiq0kQRkrXwpMGA=;
+        b=k3Kd3WN0h5cwTSmN9QW1pWg1xVlkdHmoTCTzyYO9ih/vcHC72f2FzvNJyDKmNKDkZC
+         5YembMS4kUPY7KKTabNCX4irxThQM2XKUbRfDwAyIYlQPNgE0yFiiBNmmbBovRlzHhDd
+         Xt0IDlyx1fTAiSkEl4d8zF29xEzkRsX2kcKJJE6l9W56+5sRAFYdWh04oWn9vSXEC2qK
+         uDv/DfdSB8d8wvgBfm8/gZEbm/+PEIfF0osk1XS6wtERP13Px7ngVRH6kWWUvLKe4GEi
+         //ZR0+CZnBt0FPql+5c9MStYln70DgKr3x6L9kX9wAKyFPT7sn7T4KkzNoJnve/zjCTX
+         aI2A==
+X-Gm-Message-State: AOAM5312wUsqhUiaaLtNNAMSy+9vixkeXIU98K5MbLpZy4gqfffcrYRq
+        7U93BpuQyVwwHeve1kb7zyxqbA==
+X-Google-Smtp-Source: ABdhPJyiHR6tqUP1L+4umx32f2vdjjcDm0+i3iT+RDo7C7N7HBVCkOR23PEO5rdRPJO+jJ8+eGy4+Q==
+X-Received: by 2002:aca:5f8b:: with SMTP id t133mr4346676oib.15.1626923361903;
+        Wed, 21 Jul 2021 20:09:21 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id v11sm2488909ott.68.2021.07.21.20.09.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 20:05:00 -0700 (PDT)
-Received: (nullmailer pid 3221816 invoked by uid 1000);
-        Thu, 22 Jul 2021 03:04:58 -0000
-Date:   Wed, 21 Jul 2021 21:04:58 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     dongsheng.qiu@ingenic.com, jun.jiang@ingenic.com,
-        daniel.lezcano@linaro.org, sihui.liu@ingenic.com,
-        linux-kernel@vger.kernel.org, aric.pzqi@ingenic.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com
-Subject: Re: [PATCH] dt-bindings: timer: Add ABIs for new Ingenic SoCs.
-Message-ID: <20210722030458.GA3221766@robh.at.kernel.org>
-References: <1626370605-120775-1-git-send-email-zhouyanjie@wanyeetech.com>
+        Wed, 21 Jul 2021 20:09:21 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] phy: qmp: Provide unique clock names for DP clocks
+Date:   Wed, 21 Jul 2021 20:07:38 -0700
+Message-Id: <20210722030738.3385821-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1626370605-120775-1-git-send-email-zhouyanjie@wanyeetech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 01:36:45 +0800, 周琰杰 (Zhou Yanjie) wrote:
-> 1.Add OST_CLK_EVENT_TIMER for new XBurst®1 SoCs.
-> 2.Add OST_CLK_EVENT_TIMER0 to OST_CLK_EVENT_TIMER15 for new XBurst®2 SoCs.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
->  include/dt-bindings/clock/ingenic,sysost.h | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
+The USB/DP combo PHY exposes the "qmp_dp_phy_pll_link_clk" and
+"qmp_dp_phy_pll_vco_div_clk" clocks, that are consumed by the display
+clock controller. But for boards with multiple enabled QMP USB/DP combo
+instances the hard coded names collides - and hence only the first
+probed device is allowed to register.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Given that clocks are no longer reference globally by name and it's
+possible to replace the hard coded names by something unique, but still
+user friendly.
+
+The two new clock names are based on dev_name() and results in names
+such as "88ee000.phy::link_clk" and "88ee000.phy::vco_div_clk".
+
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/phy/qualcomm/phy-qcom-qmp.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+index b7f2e36d7960..61707d99a9eb 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp.c
++++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+@@ -5213,6 +5213,7 @@ static int phy_dp_clks_register(struct qcom_qmp *qmp, struct qmp_phy *qphy,
+ {
+ 	struct clk_init_data init = { };
+ 	struct qmp_phy_dp_clks *dp_clks;
++	char name[64];
+ 	int ret;
+ 
+ 	dp_clks = devm_kzalloc(qmp->dev, sizeof(*dp_clks), GFP_KERNEL);
+@@ -5222,15 +5223,17 @@ static int phy_dp_clks_register(struct qcom_qmp *qmp, struct qmp_phy *qphy,
+ 	dp_clks->qphy = qphy;
+ 	qphy->dp_clks = dp_clks;
+ 
++	snprintf(name, sizeof(name), "%s::link_clk", dev_name(qmp->dev));
+ 	init.ops = &qcom_qmp_dp_link_clk_ops;
+-	init.name = "qmp_dp_phy_pll_link_clk";
++	init.name = name;
+ 	dp_clks->dp_link_hw.init = &init;
+ 	ret = devm_clk_hw_register(qmp->dev, &dp_clks->dp_link_hw);
+ 	if (ret)
+ 		return ret;
+ 
++	snprintf(name, sizeof(name), "%s::vco_div_clk", dev_name(qmp->dev));
+ 	init.ops = &qcom_qmp_dp_pixel_clk_ops;
+-	init.name = "qmp_dp_phy_pll_vco_div_clk";
++	init.name = name;
+ 	dp_clks->dp_pixel_hw.init = &init;
+ 	ret = devm_clk_hw_register(qmp->dev, &dp_clks->dp_pixel_hw);
+ 	if (ret)
+-- 
+2.29.2
+
