@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB913D2A8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B0F3D291E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234456AbhGVQNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:13:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42796 "EHLO mail.kernel.org"
+        id S230281AbhGVQBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:01:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235425AbhGVQJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:09:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D92361DC8;
-        Thu, 22 Jul 2021 16:49:14 +0000 (UTC)
+        id S232850AbhGVP6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:58:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44E3060FDA;
+        Thu, 22 Jul 2021 16:39:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972554;
-        bh=oDkEWm55rA+Kr6w4ZX+lOj+TdMvkxAEhwKtZC1dfrJI=;
+        s=korg; t=1626971958;
+        bh=qXdloxuoC0qo6en3pYbiKjKSZIYDaP0adUh8xTtlz54=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FEKirpQ1xPVa55PvY6Vb182rv+bPpKEPT5JB0OQJM0N6QVkfpIQas4bwRcP5ieLci
-         o2P7dz0zNgNllpWJVD6eBngMgldVcDpQbZy7z841jNyEbgdI6p/Qe/D6wXyzSUSWLt
-         b2iK6otaFHcQ3qdPQ6Um0MXbLQpbbvHeYoKDt+9M=
+        b=GPgV59eycKI/AyhNFXbSPbju6bG7bwjY7QkhuP4/0CSg/PM9wx67MIXcC15zV2qWN
+         45bvNJhwup5ZEJdG1FPdE0F9vSSFedYWyggbKhRS+b3NRp/xMiBfjmTeXBvey/z4r+
+         JRK8hbJtZ7lpXe4Mi7zCSIf6Vj46jRnSkUJYB/90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
         Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.13 109/156] net: dsa: mv88e6xxx: enable .port_set_policy() on Topaz
+Subject: [PATCH 5.10 093/125] net: dsa: mv88e6xxx: enable devlink ATU hash param for Topaz
 Date:   Thu, 22 Jul 2021 18:31:24 +0200
-Message-Id: <20210722155631.895441089@linuxfoundation.org>
+Message-Id: <20210722155627.782321095@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +43,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marek Behún <kabel@kernel.org>
 
-commit 7da467d82d1ed4fb317aff836f99709169e73f10 upstream.
+commit c07fff3492acae41cedbabea395b644dd5872b8c upstream.
 
-Commit f3a2cd326e44 ("net: dsa: mv88e6xxx: introduce .port_set_policy")
-introduced .port_set_policy() method with implementation for several
-models, but forgot to add Topaz, which can use the 6352 implementation.
+Commit 23e8b470c7788 ("net: dsa: mv88e6xxx: Add devlink param for ATU
+hash algorithm.") introduced ATU hash algorithm access via devlink, but
+did not enable it for Topaz.
 
-Use the 6352 implementation of .port_set_policy() on Topaz.
+Enable this feature also for Topaz.
 
 Signed-off-by: Marek Behún <kabel@kernel.org>
-Fixes: f3a2cd326e44 ("net: dsa: mv88e6xxx: introduce .port_set_policy")
+Fixes: 23e8b470c7788 ("net: dsa: mv88e6xxx: Add devlink param for ATU hash algorithm.")
 Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/mv88e6xxx/chip.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/dsa/mv88e6xxx/chip.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
 --- a/drivers/net/dsa/mv88e6xxx/chip.c
 +++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -3583,6 +3583,7 @@ static const struct mv88e6xxx_ops mv88e6
- 	.port_set_speed_duplex = mv88e6341_port_set_speed_duplex,
- 	.port_max_speed_mode = mv88e6341_port_max_speed_mode,
- 	.port_tag_remap = mv88e6095_port_tag_remap,
-+	.port_set_policy = mv88e6352_port_set_policy,
- 	.port_set_frame_mode = mv88e6351_port_set_frame_mode,
- 	.port_set_ucast_flood = mv88e6352_port_set_ucast_flood,
- 	.port_set_mcast_flood = mv88e6352_port_set_mcast_flood,
-@@ -4383,6 +4384,7 @@ static const struct mv88e6xxx_ops mv88e6
- 	.port_set_speed_duplex = mv88e6341_port_set_speed_duplex,
- 	.port_max_speed_mode = mv88e6341_port_max_speed_mode,
- 	.port_tag_remap = mv88e6095_port_tag_remap,
-+	.port_set_policy = mv88e6352_port_set_policy,
- 	.port_set_frame_mode = mv88e6351_port_set_frame_mode,
- 	.port_set_ucast_flood = mv88e6352_port_set_ucast_flood,
- 	.port_set_mcast_flood = mv88e6352_port_set_mcast_flood,
+@@ -3418,6 +3418,8 @@ static const struct mv88e6xxx_ops mv88e6
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6390_g1_rmu_disable,
++	.atu_get_hash = mv88e6165_g1_atu_get_hash,
++	.atu_set_hash = mv88e6165_g1_atu_set_hash,
+ 	.vtu_getnext = mv88e6352_g1_vtu_getnext,
+ 	.vtu_loadpurge = mv88e6352_g1_vtu_loadpurge,
+ 	.serdes_power = mv88e6390_serdes_power,
+@@ -4186,6 +4188,8 @@ static const struct mv88e6xxx_ops mv88e6
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6390_g1_rmu_disable,
++	.atu_get_hash = mv88e6165_g1_atu_get_hash,
++	.atu_set_hash = mv88e6165_g1_atu_set_hash,
+ 	.vtu_getnext = mv88e6352_g1_vtu_getnext,
+ 	.vtu_loadpurge = mv88e6352_g1_vtu_loadpurge,
+ 	.serdes_power = mv88e6390_serdes_power,
 
 
