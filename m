@@ -2,84 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F783D248D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD283D2494
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhGVMqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 08:46:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231938AbhGVMqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 08:46:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 709F360FEE;
-        Thu, 22 Jul 2021 13:26:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626960415;
-        bh=+uL4L29wsoeIrn9I4PopKZ7ciOxU0fozSHm7hEtJRaA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mOzAXRtqcugR4cbq3OZ5I8AKQ8QQhGkkyOozUUY9xBQ0I5NEwtkdgEsSwZCJsdN/+
-         3bjvn18Caqjm7YHAFh8jWTESB+wOgqiuj5PRefDbB42xcQurO6032HAthHLzg3O2Hd
-         5NQaMgvg+iMGAQSuZ7xMqrR8uynVN49YlEvWISUc=
-Date:   Thu, 22 Jul 2021 15:26:52 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Chris Clayton <chris2553@googlemail.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Boqun Feng <boqun.feng@gmail.com>, paulmck@kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Chris Rankin <rankincj@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Huang, Ying" <ying.huang@intel.com>
-Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
-Message-ID: <YPlyHF5eNDiTMKzq@kroah.com>
-References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
- <5812280.fcLxn8YiTP@natalenko.name>
- <YPVtBBumSTMKGuld@casper.infradead.org>
- <2237123.PRLUojbHBq@natalenko.name>
- <CAABZP2w4VKRPjNz+TW1_n=NhGw=CBNccMp-WGVRy32XxAVobRg@mail.gmail.com>
- <CAABZP2yh3J8+P=3PLZVaC47ymKC7PcfQCBBxjXJ9Ybn+HREbdg@mail.gmail.com>
- <fb8b8639-bf2d-161e-dc9a-6a63bf9db46e@googlemail.com>
- <CAABZP2xST9787xNujWeKODEW79KpjL7vHtqYjjGxOwoqXSWXDQ@mail.gmail.com>
- <YPlmMnZKgkcLderp@casper.infradead.org>
+        id S232140AbhGVMrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 08:47:12 -0400
+Received: from mail-bn8nam12on2089.outbound.protection.outlook.com ([40.107.237.89]:39648
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232118AbhGVMrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 08:47:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CcqTpIUhkl5MyEKa77dfO88vc1fHUdjECaXbFgwh9TY+FE/M3xmZkw9JQIHvcCexeHOQ/V2fqeVFRGjDo5VrzjeJCs0bMv7Qqz65hQnI2dQ/Pp16i1iuHpna08du5CGpZxd+Av2vXlAlfQdQ5Ti3AsOir1Qf4bx7pfdt7BRI4a3o+TkQ0udp56hxyqAk1lmGBOUrj0NdtBiLpEtyOy/Ocjb6nN6fOd78ZiRGoBy55C7er0W7+ShBtEcDqAN8IjroI40c2uGftkRpM5XiKLWwVzHzsRVu0nqV/bxBgPPsQTeb4YFbedOTtOmmQoV4KH0vOGLaxAi/rlBEfa2B0X8gBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RhpUEzAVOL2iLjkiZmRmnsFejAxQsWKqlb7XWGKFJBA=;
+ b=YMB4C9LNfgLw4upEE0forxlYvcruepwk4DndTO/oS2jtyAHSR4MYz1HponMh8+fHNnO9+rATXSQslo4gBDIH7IqUcnoKUMP9UtqAI+/ahbx1MYq+dW0u+UbG4BJDrwwBKEMs3LvexUTEoaFojjxMFLkIm4kDyEQ8Q/08jNCS/96YQzdh9J5YqkjZsygo0qpv3zlbUK7jkKZZFbN7ALZRbisvf0FEtpOLgPGWToG+GvdsVdhXOaybJXptQ64Ypxoy0ZbS25JOfDC3V/NXgJdbZiIhSpOJNJjQ58EOq+2YIiaVzrx7cwd4R61hpyFsUmXxIrWv4tL33wFtIy8HryOwrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RhpUEzAVOL2iLjkiZmRmnsFejAxQsWKqlb7XWGKFJBA=;
+ b=1ujemUadB1YkcV9mzwxTOYjhgCgAV5qHrNTUUpXKx52GBJ+MIszhHvR4k4TuyPuwZJ6rNdDYAUL4f69FyZScXsPPNxhlYrZrCYt2plbI8mG06locsBLJngcpa8LV/ZGwS6wRQsptPf2CUTvP/HYRbDZd1x66tvPhicznZmssNnY=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SA0PR12MB4510.namprd12.prod.outlook.com (2603:10b6:806:94::8)
+ by SA0PR12MB4592.namprd12.prod.outlook.com (2603:10b6:806:9b::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.26; Thu, 22 Jul
+ 2021 13:27:45 +0000
+Received: from SA0PR12MB4510.namprd12.prod.outlook.com
+ ([fe80::c05f:7a93:601b:9861]) by SA0PR12MB4510.namprd12.prod.outlook.com
+ ([fe80::c05f:7a93:601b:9861%7]) with mapi id 15.20.4331.034; Thu, 22 Jul 2021
+ 13:27:45 +0000
+From:   Mario Limonciello <mario.limonciello@amd.com>
+To:     broonie@kernel.org, alsa-devel@alsa-project.org,
+        Vijendar.Mukunda@amd.com
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        markpearson@lenovo.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3 1/2] ASoC: amd: Don't show messages about deferred probing by default
+Date:   Thu, 22 Jul 2021 08:27:27 -0500
+Message-Id: <20210722132731.13264-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SN7PR04CA0048.namprd04.prod.outlook.com
+ (2603:10b6:806:120::23) To SA0PR12MB4510.namprd12.prod.outlook.com
+ (2603:10b6:806:94::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPlmMnZKgkcLderp@casper.infradead.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from AUS-LX-MLIMONCI.amd.com (76.251.167.31) by SN7PR04CA0048.namprd04.prod.outlook.com (2603:10b6:806:120::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.24 via Frontend Transport; Thu, 22 Jul 2021 13:27:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7af41f97-11b2-48de-c676-08d94d147d8f
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4592:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4592120D8419C0DB39D98429E2E49@SA0PR12MB4592.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:765;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7uQaT1aN1tfUyflUxMmuxom0RkdXn6Kv4uwawtSwzaM2Azk3iFR8BRvX9pUJUhY3e4Xh4zWYuwCo8t70hAbFgsWev7jtC2DE03RTZAqoW2LwUnbsRPk9JYFSBwUyKye45Vyj/25ErgO/9wChdO0Mve3no9e5PLDQZjFRzNDEsN1wA67LVOmkteqcHGgfHG8vtrnZpQoLYRqWp07+or222ndf25VMEa51ZHX+D0pXFtKns2e5Oa47uBkjoCaOJhtkb4papA2/QBhPWISSiFQRdlkqKR3TW2sfpmv9NxJ8z60bAx+LHskrQUi3JJibJcxee5ebPptgqhb72LttAwU2OQO49yze3hNlVO9EaY+W6vwpD9VVdLQ8Y/MGkEQYnNrpwXS0DExNZIC+OROjJw5IMES6ljUU3c6zMDhmO6YmvyFIErSX6XCvIZwvdIv20a2v6ojeZfrT49R9+n1vombrneSnjWIEIr58597N40O7UF21z939niPGSyqUVLK9tYlNN0vqNa/YMGAwG9dHQnInjFKrCAajBrU+8MooTXKdcz4w5JfHhgO6ElKxrXJc5fVqrMcx01JPSJbeapO1u7IKkSz9ebof4NBe/Wu/Hrsr3norZd2UwlfYmzLCYLZFFtFbXqX9SIRcb1mwcHJOviIo5h2y3jcghXBB2R/eIW7ybwzCz99D6e++keRZwR6cr6ofqcCUM+WhKR4uWp3mU7dmwg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4510.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(396003)(136003)(366004)(6666004)(186003)(83380400001)(26005)(54906003)(38100700002)(38350700002)(7696005)(52116002)(86362001)(2906002)(15650500001)(8676002)(4326008)(1076003)(8936002)(6636002)(44832011)(316002)(5660300002)(2616005)(956004)(478600001)(66946007)(66556008)(6486002)(66476007)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xd7QJBRpM4vr6a7p0AqWffYC8Iy+SpP9NFNpR/y7v4TE0xo5xdXDvdVt+MFs?=
+ =?us-ascii?Q?3hbTgiSaB77aqZXl0fTFWJRkxS80bksBA6pyT4AHRwHirN4a1Ijm1H07Rq8k?=
+ =?us-ascii?Q?zRV6+vmUHx2wwI0gAu5ZbTeb3dTl6h5+fiqO2BS7yCiRMweoHimaJQ5naXXC?=
+ =?us-ascii?Q?sT2BbfYXlBMEdpXAKJVrNyYsuqvaTdSirlpD2dyf+xun/0MqDHnZ+KO5DgjD?=
+ =?us-ascii?Q?ooCSWy36nQWE/tUeciCuyeEdNqz4a0UAyAi71NBfLJBwxdXZL2kL2jP+UpIy?=
+ =?us-ascii?Q?OVU/Y8Mbf6OrV55GUvL3S4MgwTIFtALNRG1c9KLIXJ4ejK12Z3MY5Y2XZydZ?=
+ =?us-ascii?Q?9ZzFRDc6L6opw4oIGbi/R6Rd3g2hnA4M8cfy9kaD6evjiVOrSppwkSnUBGjS?=
+ =?us-ascii?Q?hg28f3wwjClq5NhuBnr3gGSOO4R55X8/DiJVQV7vvRsxh38nFv/LwitnfUtk?=
+ =?us-ascii?Q?EE1KFaK8KlMuEB6C8xKrR62H0nfGR4WLiitPw252sI+vqRKWC2YlFqT7T//O?=
+ =?us-ascii?Q?SOUbUeiW6I81YaDZaiXaMtDLQ5a598IiZrD25i/tRRLwHJeuUZTS0mW6B5R9?=
+ =?us-ascii?Q?cJIarDubypuJZb8DOlPUBlFC0wG5XBig3PCLMeSd+ZW7G1RpUtx41tLAKZ1q?=
+ =?us-ascii?Q?xCsIH/ooikisj8CUK24fvohipdOnAi/aaquYDvNGycy4XTrnYTJpubxJofAf?=
+ =?us-ascii?Q?koL94npod0wVLLwbqn17g75YUob8TSAd/9SDse0eqlilxbJz/pWFUvQ19o7C?=
+ =?us-ascii?Q?ukYOHD80f9kF5jIqTu7xXYpBAJ1RAsdqexoAje92x1hADAMVkTlqePjsNJhU?=
+ =?us-ascii?Q?dOQCzsefg9t9HoaghXKQ53jjOB2+5T1wx9oeLYaPngMDPCAAKu8CVT9eX8bn?=
+ =?us-ascii?Q?z/pslTj8ZFL4lDsLICK7TiOXCLk+Yb8b2WRVf+/UW7VYVjeIYAGyDhRrRPRe?=
+ =?us-ascii?Q?98Vk0ECQILunKnpt8danp/VAAa0npBVh6EfXr5XKx2FFtbrQNqQ/Wr3F94YW?=
+ =?us-ascii?Q?M+LxlNNbHEx8Fnu9+PQnqfRQns/tnzUSnEMy+xclM7aZh0mD0mLD0PN65Nf8?=
+ =?us-ascii?Q?9TYK6Qntp6B+hCIzCOa/WHm/bavdJYGeRWChdLtyiX+klIAOOcCz8hCz3LsW?=
+ =?us-ascii?Q?6iL9adEoTm16bRZ3ece4iLmuzOE2zF+cTxeswouGG/HpZTLeyG8uefmtAbG5?=
+ =?us-ascii?Q?LRedcp+Nnrkph7PjfFMqFJtWuuKoWLICxFpREgNuehZhP/F1zPaVn49lqajs?=
+ =?us-ascii?Q?dmyC0umWg3Rznfi7mlMUCSJseu88dHaxowpTX6bdgLF3vt9tXyhNOt9UBztl?=
+ =?us-ascii?Q?tEMYu+IHsYATWxohy/w6vLxX?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7af41f97-11b2-48de-c676-08d94d147d8f
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4510.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2021 13:27:45.2249
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3VIoEDKy6BzlEHXWclKfDgV2Cs41KLiyK5eTePs+MTE1/rCdnni08knXOOEIb927sIfmocyBi9U4Z0Yl2twLPA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4592
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 01:36:02PM +0100, Matthew Wilcox wrote:
-> On Thu, Jul 22, 2021 at 04:57:57PM +0800, Zhouyi Zhou wrote:
-> > Thanks for reviewing,
-> > 
-> > What I have deduced from the dmesg  is:
-> > In function do_swap_page,
-> > after invoking
-> > 3385        si = get_swap_device(entry); /* rcu_read_lock */
-> > and before
-> > 3561    out:
-> > 3562        if (si)
-> > 3563            put_swap_device(si);
-> > The thread got scheduled out in
-> > 3454        locked = lock_page_or_retry(page, vma->vm_mm, vmf->flags);
-> > 
-> > I am only familiar with Linux RCU subsystem, hope mm people can solve our
-> > confusions.
-> 
-> I don't understamd why you're still talking.  The problem is understood.
-> You need to revert the unnecessary backport of 2799e77529c2 and
-> 2efa33fc7f6e
+Nearly every boot with a Lenovo P14s is showing
+acp_pdm_mach acp_pdm_mach.0: snd_soc_register_card(acp) failed: -517
 
-Sorry for the delay, will go do so in a minute...
+This isn't useful to a user, especially as probing will run again.
+Use the dev_err_probe helper to hide the deferrerd probing messages.
 
-greg k-h
+CC: markpearson@lenovo.com
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+---
+ sound/soc/amd/renoir/acp3x-rn.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+v1->v2:
+ * Adjust return codes
+v2->v3:
+ * Use deferred probing helper
+ * Rebase on asoc-next/for-5.15
+
+diff --git a/sound/soc/amd/renoir/acp3x-rn.c b/sound/soc/amd/renoir/acp3x-rn.c
+index 306134b89a82..5d979a7b77fb 100644
+--- a/sound/soc/amd/renoir/acp3x-rn.c
++++ b/sound/soc/amd/renoir/acp3x-rn.c
+@@ -54,10 +54,9 @@ static int acp_probe(struct platform_device *pdev)
+ 	snd_soc_card_set_drvdata(card, machine);
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret) {
+-		dev_err(&pdev->dev,
+-			"snd_soc_register_card(%s) failed: %d\n",
+-			acp_card.name, ret);
+-		return ret;
++		return dev_err_probe(&pdev->dev, ret,
++				"snd_soc_register_card(%s) failed\n",
++				card->name);
+ 	}
+ 	return 0;
+ }
+-- 
+2.25.1
+
