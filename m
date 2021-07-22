@@ -2,84 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181C33D2FAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F523D2FC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232303AbhGVVgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 17:36:53 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39787 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232024AbhGVVgv (ORCPT
+        id S232431AbhGVVh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 17:37:56 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:41176 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231320AbhGVVhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 17:36:51 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16MMHGMV021590
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 18:17:16 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3A54115C37C0; Thu, 22 Jul 2021 18:17:16 -0400 (EDT)
-Date:   Thu, 22 Jul 2021 18:17:16 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Remy Card <card@masi.ibp.fr>,
-        "David S. Miller" <davem@caip.rutgers.edu>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/1] fs: ext4: namei: trivial: Fix a couple of small
- whitespace issues
-Message-ID: <YPnubECqbX47V3TK@mit.edu>
-References: <20210520125558.3476318-1-lee.jones@linaro.org>
- <YPlYD1BXyjIgh++K@google.com>
+        Thu, 22 Jul 2021 17:37:55 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 20CD71C0B96; Fri, 23 Jul 2021 00:18:29 +0200 (CEST)
+Date:   Fri, 23 Jul 2021 00:18:28 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/123] 5.10.53-rc2 review
+Message-ID: <20210722221828.GA4284@duo.ucw.cz>
+References: <20210722184939.163840701@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="+HP7ph2BbKc20aGI"
 Content-Disposition: inline
-In-Reply-To: <YPlYD1BXyjIgh++K@google.com>
+In-Reply-To: <20210722184939.163840701@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 12:35:43PM +0100, Lee Jones wrote:
-> On Thu, 20 May 2021, Lee Jones wrote:
-> 
-> > Cc: "Theodore Ts'o" <tytso@mit.edu>
-> > Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-> > Cc: Remy Card <card@masi.ibp.fr>
-> > Cc: "David S. Miller" <davem@caip.rutgers.edu>
-> > Cc: linux-ext4@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  fs/ext4/namei.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> Any news on this please?
-> 
-> Would you like me to submit a [RESEND]?
 
-Please don't send "checkpatch.pl --file" patches for the ext4 file
-system; if you must, please focus on files in the drivers directory,
-where they are more welcome.  If developers are making changes to a
-file, fixing some checkpatch.pl whines is fine, but white-sapace only
-changes just obfuscates "git blame" code archology, and so the costs
-far outwieghs the costs.  "Fix" is also not the right verb to use.
-For more information please see [1].
+--+HP7ph2BbKc20aGI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1] https://gist.github.com/17twenty/8154928
+Hi!
 
-If you are looking for subtantive ways of contributing to the ext4
-file system, feel free to look at various syzbot warnings[2] and try
-to figure out what is going on there.
+> This is the start of the stable review cycle for the 5.10.53 release.
+> There are 123 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-[2] https://syzkaller.appspot.com/upstream
+CIP testing did not find any problems here:
 
-(In some cases, the syzbot complaint has already been fixed, and it's
-just a matter of letting syzbot knoww that it has since been fixed by
-a particular commit.  See [3] for more details.)
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+5.10.y
 
-[3] https://github.com/google/syzkaller/blob/master/docs/syzbot.md
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
-Cheers,
+Best regards,
+                                                                Pavel
 
-						- Ted
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--+HP7ph2BbKc20aGI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYPnutAAKCRAw5/Bqldv6
+8rICAJ9dKTHUapI7Fo5DTrr+lyVxF3SDlQCfXoHEXGNhDMcK7wu3czSXT8xKH/4=
+=v9A1
+-----END PGP SIGNATURE-----
+
+--+HP7ph2BbKc20aGI--
