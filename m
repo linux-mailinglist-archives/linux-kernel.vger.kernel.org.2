@@ -2,198 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F3B3D249D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFF73D24A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232136AbhGVMsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 08:48:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231994AbhGVMsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 08:48:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0270860FED;
-        Thu, 22 Jul 2021 13:29:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626960566;
-        bh=GqbPKehGatmKhyx21NjzVmK1K3obNvpO5S2A73limN4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hpS88NIfubCj2wLMw36swVruCTadtbPG1fMckI02ULdzx35S4isWp2fLpkRMiWgaR
-         fPjjN1v1JZztJrljeANKsVTCBdx4j0NC4JSUrRt1/cBT1ukaQhYi+N/qgi5zxQZ2oD
-         jYuTJnEMSnQCSrGxWyl554ArAsiygR84gnZlDgiqO0PXrLAPtNUbeOELT0igGo/Lf9
-         5z0vdwSEsbAUGRdvYMeGxgyzlyOF5ODNnqOGAwkMtg/UsI87deQJn8WobjEH2FcDUT
-         6wI8TL+8iQoRJOeIg1QHOcblQVcJcPwZet8qyZypx1jtAbmj2rs+DFkoOG95L/NYoU
-         V0P8Gq8L5Rv6Q==
-Date:   Thu, 22 Jul 2021 22:29:24 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2] tracing: Allow execnames to be passed as args for
- synthetic events
-Message-Id: <20210722222924.c4ff024b507c69c08f8575a3@kernel.org>
-In-Reply-To: <20210721214702.4eeb1cd9@oasis.local.home>
-References: <20210721214702.4eeb1cd9@oasis.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232123AbhGVMti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 08:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232058AbhGVMtg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 08:49:36 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA17C061760;
+        Thu, 22 Jul 2021 06:30:11 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id h1so4409369plf.6;
+        Thu, 22 Jul 2021 06:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=skVRr7pJX847qbQAirHQqM0S7hugvX7TUGk8qrYrvpw=;
+        b=lmfeZZMKpPqEXQcDpqzrmY/rDt2uxHxvoc6nGPKY3UFWg4Zn9QdU3nnPbO1ooMBj5K
+         ye/VUROqpw7T1N18fRH9Fuk8/pk3aIlz6+Au3Neh3skg6n8Zvm9d5bnDbYXSrYPjB4Y7
+         6JmfSIbrNjQPOIZAar4NdbtdZ/RwbFSvmvWJxSKvDuyMACxRaDJjE6+WWk/3AFhhEjUM
+         9h6oIs9drK+3P1kSvVEnVbbAATxzhf6DqC2QXpZmIQJIyb71FEJVqacV5sPIO3PNlvwo
+         6DyrTiR6rnnM1Jjp2VhbXawxGoW51nJ9lMHCLIhdiTxolScGe5qOjCOeoFi0MK9TxLkv
+         0j3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=skVRr7pJX847qbQAirHQqM0S7hugvX7TUGk8qrYrvpw=;
+        b=KRR15lfoXCjKQK74gFRphiFhExy3Y24tTIfQVsjOeciUxX+pypMLz+OeS3IWKUWIMF
+         YMe9hK1zyuioQUKnx7LZYp5ROSBQ71+Rsm/EJapGKiULjF1+cS8ddQG42oj/Bp2/o965
+         PpTo2HvokL4nqfuQYza4SX/X+hfPUoAKWdMcR53EUFMud4m7fSxbuE0ndiBOx5NkmKE7
+         R9GLNpcYf+Y4zKxpAMSqBr8cKOR3wCfQAH4Az9GPJWFjPU6s82JehaI5fOJEf4hVNFbR
+         45XdXoZVkODWU94HQ4rfxknTPHk2pbPIMp5CsUdRqA/4a1ZPAausqP1mOB/gYiEq1eCH
+         pMbw==
+X-Gm-Message-State: AOAM532ex78Awtey9lvuREW61RdZ1I/q5zoD7k26dTYvpWuiX/DFPAf5
+        sEHnB3Vt+ge4pSygjTpuLdD1Vv9rAGMzqsqaJMw=
+X-Google-Smtp-Source: ABdhPJxfu87kq+q0AI8xU1rpnVUOVBNXUCTX+jsnygrn4TU1pfkMDKyS7CqGrnInzk6sPHxWpUSo6xJWyjm0VO3YXfI=
+X-Received: by 2002:a17:90a:3b4e:: with SMTP id t14mr39833151pjf.62.1626960610641;
+ Thu, 22 Jul 2021 06:30:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210720122800.384607-1-yang.yang29@zte.com.cn>
+In-Reply-To: <20210720122800.384607-1-yang.yang29@zte.com.cn>
+From:   teng sterling <sterlingteng@gmail.com>
+Date:   Thu, 22 Jul 2021 21:29:59 +0800
+Message-ID: <CAMU9jJr4t1xEjQFQhUhnoyagMvpKiOEnxQmS2GYeXhS419waSg@mail.gmail.com>
+Subject: Re: [PATCH] docs/zh_CN: Add zh_CN/accounting/psi.rst
+To:     cgel.zte@gmail.com
+Cc:     Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        yang.yang29@zte.com.cn, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yanteng Si <siyanteng@loongson.cn>,
+        Yanteng Si <siyanteng01@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Jul 2021 21:47:02 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> Allow common_pid.execname to be saved in a variable in one histogram to be
-> passed to another histogram that can pass it as a parameter to a synthetic
-> event.
-> 
->  ># echo 'hist:keys=pid:__arg__1=common_timestamp.usecs:arg2=common_pid.execname' \
->        > events/sched/sched_waking/trigger
->  ># echo 'wakeup_lat s32 pid; u64 delta; char wake_comm[]' > synthetic_events
->  ># echo 'hist:keys=next_pid:pid=next_pid,delta=common_timestamp.usecs-$__arg__1,exec=$arg2'\
-> ':onmatch(sched.sched_waking).trace(wakeup_lat,$pid,$delta,$exec)' \
->  > events/sched/sched_switch/trigger
-> 
-> The above is a wake up latency synthetic event setup that passes the execname
-> of the common_pid that woke the task to the scheduling of that task, which
-> triggers a synthetic event that passes the original execname as a
-> parameter to display it.
-> 
->  ># echo 1 > events/synthetic/enable
->  ># cat trace
->     <idle>-0       [006] d..4   186.863801: wakeup_lat: pid=1306 delta=65 wake_comm=kworker/u16:3
->     <idle>-0       [000] d..4   186.863858: wakeup_lat: pid=163 delta=27 wake_comm=<idle>
->     <idle>-0       [001] d..4   186.863903: wakeup_lat: pid=1307 delta=36 wake_comm=kworker/u16:4
->     <idle>-0       [000] d..4   186.863927: wakeup_lat: pid=163 delta=5 wake_comm=<idle>
->     <idle>-0       [006] d..4   186.863957: wakeup_lat: pid=1306 delta=24 wake_comm=kworker/u16:3
->       sshd-1306    [006] d..4   186.864051: wakeup_lat: pid=61 delta=62 wake_comm=<idle>
->     <idle>-0       [000] d..4   186.965030: wakeup_lat: pid=609 delta=18 wake_comm=<idle>
->     <idle>-0       [006] d..4   186.987582: wakeup_lat: pid=1306 delta=65 wake_comm=kworker/u16:3
->     <idle>-0       [000] d..4   186.987639: wakeup_lat: pid=163 delta=27 wake_comm=<idle>
-> 
-
-This looks an interesting improvement. If we can do this, can we also filter
-the event by 'comm' (or execname)? 
-
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
-> Changes since v1:
->   - Hit a bug on freeing the histogram, found that I used "char[]" for the
->     type, and it expects to be freed. Freed the old "type" and still use
->     "char[]" but have the normal freeing use kfree_const() on type.
-
-
-BTW, if we can use this technic on the hist_field->type, we can cleanup 
-other type = strdup("<any const type>", GFP_KERNEL) with type = "<any const type>" ?
-
-Anyway, that will be done in another patch (I think that should be done first,
-then we can avoid an odd kfree() in update_var_execname().)
-
-Thank you,
-
-> 
->  kernel/trace/trace_events_hist.c | 49 ++++++++++++++++++++++++++++----
->  1 file changed, 44 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index 34325f41ebc0..bb1956efd5ef 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -1395,17 +1395,17 @@ static int hist_trigger_elt_data_alloc(struct tracing_map_elt *elt)
->  	struct hist_trigger_data *hist_data = elt->map->private_data;
->  	unsigned int size = TASK_COMM_LEN;
->  	struct hist_elt_data *elt_data;
-> -	struct hist_field *key_field;
-> +	struct hist_field *hist_field;
->  	unsigned int i, n_str;
->  
->  	elt_data = kzalloc(sizeof(*elt_data), GFP_KERNEL);
->  	if (!elt_data)
->  		return -ENOMEM;
->  
-> -	for_each_hist_key_field(i, hist_data) {
-> -		key_field = hist_data->fields[i];
-> +	for_each_hist_field(i, hist_data) {
-> +		hist_field = hist_data->fields[i];
->  
-> -		if (key_field->flags & HIST_FIELD_FL_EXECNAME) {
-> +		if (hist_field->flags & HIST_FIELD_FL_EXECNAME) {
->  			elt_data->comm = kzalloc(size, GFP_KERNEL);
->  			if (!elt_data->comm) {
->  				kfree(elt_data);
-> @@ -1589,7 +1589,9 @@ static void __destroy_hist_field(struct hist_field *hist_field)
->  
->  	kfree(hist_field->var.name);
->  	kfree(hist_field->name);
-> -	kfree(hist_field->type);
-> +
-> +	/* execname vars use a constant type */
-> +	kfree_const(hist_field->type);
->  
->  	kfree(hist_field->system);
->  	kfree(hist_field->event_name);
-> @@ -3707,6 +3709,40 @@ static int create_val_field(struct hist_trigger_data *hist_data,
->  	return __create_val_field(hist_data, val_idx, file, NULL, field_str, 0);
->  }
->  
-> +static const char *no_comm = "(no comm)";
-> +
-> +static u64 hist_field_execname(struct hist_field *hist_field,
-> +			       struct tracing_map_elt *elt,
-> +			       struct trace_buffer *buffer,
-> +			       struct ring_buffer_event *rbe,
-> +			       void *event)
-> +{
-> +	struct hist_elt_data *elt_data;
-> +
-> +	if (WARN_ON_ONCE(!elt))
-> +		return (u64)(unsigned long)no_comm;
-> +
-> +	elt_data = elt->private_data;
-> +
-> +	if (WARN_ON_ONCE(!elt_data->comm))
-> +		return (u64)(unsigned long)no_comm;
-> +
-> +	return (u64)(unsigned long)(elt_data->comm);
-> +}
-> +
-> +/* Convert a var that points to common_pid.execname to a string */
-> +static void update_var_execname(struct hist_field *hist_field)
-> +{
-> +	hist_field->flags = HIST_FIELD_FL_STRING | HIST_FIELD_FL_VAR |
-> +		HIST_FIELD_FL_EXECNAME;
-> +	hist_field->size = MAX_FILTER_STR_VAL;
-> +	hist_field->is_signed = 0;
-> +	kfree(hist_field->type);
-> +	/* This uses kfree_const() to free */
-> +	hist_field->type = "char[]";
-> +	hist_field->fn = hist_field_execname;
-> +}
-> +
->  static int create_var_field(struct hist_trigger_data *hist_data,
->  			    unsigned int val_idx,
->  			    struct trace_event_file *file,
-> @@ -3731,6 +3767,9 @@ static int create_var_field(struct hist_trigger_data *hist_data,
->  
->  	ret = __create_val_field(hist_data, val_idx, file, var_name, expr_str, flags);
->  
-> +	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_EXECNAME)
-> +		update_var_execname(hist_data->fields[val_idx]);
-> +
->  	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
->  		hist_data->fields[val_idx]->var_str_idx = hist_data->n_var_str++;
->  
-> -- 
-> 2.31.1
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+SGkgWWFuZw0KDQpDQyBZYW50ZW5nIFNpDQoNCjxjZ2VsLnp0ZUBnbWFpbC5jb20+IOS6jjIwMjHl
+ubQ35pyIMjDml6Xlkajkuowg5LiL5Y2IODozMOWGmemBk++8mg0KPg0KPiBGcm9tOiBZYW5nIFlh
+bmcgPHlhbmcueWFuZzI5QHp0ZS5jb20uY24+DQo+DQo+IEFkZCB0cmFuc2xhdGlvbiB6aF9DTi9h
+Y2NvdW50aW5nL3BzaS5yc3QgYW5kIHpoX0NOL2FjY291bnRpbmcvaW5kZXgucnN0Lg0KPg0KPiBT
+aWduZWQtb2ZmLWJ5OiBZYW5nIFlhbmcgPHlhbmcueWFuZzI5QHp0ZS5jb20uY24+DQo+IC0tLQ0K
+PiAgLi4uL3RyYW5zbGF0aW9ucy96aF9DTi9hY2NvdW50aW5nL2luZGV4LnJzdCAgIHwgIDIxICsr
+Kw0KPiAgLi4uL3RyYW5zbGF0aW9ucy96aF9DTi9hY2NvdW50aW5nL3BzaS5yc3QgICAgIHwgMTU3
+ICsrKysrKysrKysrKysrKysrKw0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAxNzggaW5zZXJ0aW9ucygr
+KQ0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vdHJhbnNsYXRpb25zL3poX0NO
+L2FjY291bnRpbmcvaW5kZXgucnN0DQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlv
+bi90cmFuc2xhdGlvbnMvemhfQ04vYWNjb3VudGluZy9wc2kucnN0DQo+DQo+IGRpZmYgLS1naXQg
+YS9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9hY2NvdW50aW5nL2luZGV4LnJzdCBi
+L0RvY3VtZW50YXRpb24vdHJhbnNsYXRpb25zL3poX0NOL2FjY291bnRpbmcvaW5kZXgucnN0DQo+
+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+IGluZGV4IDAwMDAwMDAwMDAwMC4uNmE2MzcxNGJmM2Zi
+DQo+IC0tLSAvZGV2L251bGwNCj4gKysrIGIvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhf
+Q04vYWNjb3VudGluZy9pbmRleC5yc3QNCj4gQEAgLTAsMCArMSwyMSBAQA0KPiArLi4gU1BEWC1M
+aWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjANCj4gKw0KPiArLi4gaW5jbHVkZTo6IC4uL2Rpc2Ns
+YWltZXItemhfQ04ucnN0DQo+ICsNCj4gKzpPcmlnaW5hbDogRG9jdW1lbnRhdGlvbi9hY2NvdW50
+aW5nL2luZGV4LnJzdA0KPiArOlRyYW5zbGF0b3I6IFlhbmcgWWFuZyA8eWFuZy55YW5nMjlAenRl
+LmNvbS5jbj4NCj4gKw0KPiArLi4gX2NuX2FjY291bnRpbmdfaW5kZXg6DQo+ICsNCj4gKz09PT09
+PT09PT0NCj4gK+iuoeaVsA0KPiArPT09PT09PT09PQ0KdG9vIGxvbmcsIG9uZSBDaGluZXNlIGNo
+YXIgPSB0d28gIj0iLCBhbmQgb25lIEVuZ2xpc2ggY2hhciA9IG9uZSAiPSINCj4gKw0KPiArLi4g
+dG9jdHJlZTo6DQo+ICsgICA6bWF4ZGVwdGg6IDENCj4gKw0KPiArICAgY2dyb3Vwc3RhdHMNCj4g
+KyAgIGRlbGF5LWFjY291bnRpbmcNCj4gKyAgIHBzaQ0KPiArICAgdGFza3N0YXRzDQo+ICsgICB0
+YXNrc3RhdHMtc3RydWN0DQpQbGVhc2UgcmVmZXIgdG8gb3RoZXIgY2F0YWxvZ3Mgd2hlcmUgdHJh
+bnNsYXRpb24gd29yayBpcyBpbg0KcHJvZ3Jlc3PvvIxmb3IgZXhhbXBsZToNCkRvY3VtZW50YXRp
+b24vdHJhbnNsYXRpb25zL3poX0NOL2NvcmUtYXBpL2luZGV4LnJzdA0KPiBkaWZmIC0tZ2l0IGEv
+RG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vYWNjb3VudGluZy9wc2kucnN0IGIvRG9j
+dW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vYWNjb3VudGluZy9wc2kucnN0DQo+IG5ldyBm
+aWxlIG1vZGUgMTAwNjQ0DQo+IGluZGV4IDAwMDAwMDAwMDAwMC4uODM2ZTRjNmM1NzU5DQo+IC0t
+LSAvZGV2L251bGwNCj4gKysrIGIvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vYWNj
+b3VudGluZy9wc2kucnN0DQo+IEBAIC0wLDAgKzEsMTU3IEBADQo+ICsuLiBpbmNsdWRlOjogLi4v
+ZGlzY2xhaW1lci16aF9DTi5yc3QNCj4gKw0KPiArOk9yaWdpbmFsOiBEb2N1bWVudGF0aW9uL2Fj
+Y291bnRpbmcvcHNpLnJzdA0KPiArOlRyYW5zbGF0b3I6IFlhbmcgWWFuZyA8eWFuZy55YW5nMjlA
+enRlLmNvbS5jbj4NCj4gKw0KPiArLi4gX2NuX3BzaToNCj4gKw0KPiArPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT0NCj4gK1BTSeKAlOKAlOWOi+WKm+mYu+WhnuS/oeaBrw0KPiArPT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCiBeXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5e
+Xl5eXg0KPiArDQo+ICs6RGF0ZTogQXByaWwsIDIwMTgNCj4gKzpBdXRob3I6IEpvaGFubmVzIFdl
+aW5lciA8aGFubmVzQGNtcHhjaGcub3JnPg0KPiArDQo+ICvlvZNDUFXjgIFtZW1vcnnmiJZJT+iu
+vuWkh+WkhOS6juernuS6ieeKtuaAge+8jOS4muWKoei0n+i9veS8mumBreWPl+aXtuW7tuavm+WI
+uuOAgeWQnuWQkOmHj+mZjeS9ju+8jA0KPiAr5Y+K6Z2i5Li0T09N55qE6aOO6Zmp44CCDQo+ICsN
+Cj4gK+WmguaenOayoeacieS4gOenjeWHhuehrueahOaWueazleW6pumHj+ezu+e7n+ernuS6ieeo
+i+W6pu+8jOWImeacieS4pOenjeWQjuaenO+8muS4gOenjeaYr+eUqOaIt+i/h+S6juWFi+WItu+8
+jA0KaG93IGFib3V0IOKAnOi/h+S6juiKguWItuKAne+8nw0KPiAr5pyq5YWF5YiG5Yip55So57O7
+57uf6LWE5rqQ77yb5Y+m5LiA56eN5piv6L+H5bqm5L2/55So77yM57uP5bi45oCn6Z2i5Li05Lia
+5Yqh5Lit5pat55qE6aOO6Zmp44CCDQo+ICsNCj4gK3BzaeeJueaAp+iDveWkn+ivhuWIq+WSjOmH
+j+WMlui1hOa6kOernuS6ieWvvOiHtOeahOS4muWKoeS4reaWre+8jOWPiuWFtuWvueWkjeadgui0
+n+i9veS5g+iHs+aVtOS4quezu+e7n+WcqA0KPiAr5pe26Ze05LiK55qE5b2x5ZON44CCDQo+ICsN
+Cj4gK+WHhuehruW6pumHj+WboOi1hOa6kOS4jei2s+mAoOaIkOeahOeUn+S6p+WKm+aNn+Wkse+8
+jOacieWKqeS6jueUqOaIt+WfuuS6juehrOS7tuiwg+aVtOS4muWKoei0n+i9veWPke+8jOaIluWf
+ug0Kd2hhdCBpcyDigJzotJ/ovb3lj5HigJ3vvJ86LSkNCj4gK+S6juS4muWKoei0n+i9vemFjee9
+ruehrOS7tuOAgg0KPiArDQo+ICtwc2nog73lpJ/lrp7ml7bnmoTmj5Dkvpvnm7jlhbPkv6Hmga/v
+vIzlm6DmraTns7vnu5/lj6/ln7rkuo5wc2nlrp7njrDliqjmgIHnmoTotJ/ovb3nrqHnkIbjgILl
+poLlrp7mlr0NCj4gK+WNuOi9veOAgei/geenu+OAgeetlueVpeaAp+eahOWBnOatouaIluadgOat
+u+S9juS8mOWFiOe6p+aIluWPr+mHjeWQr+eahOaJueWkhOeQhuS7u+WKoeOAgg0KPiArDQo+ICtw
+c2nluK7liqnnlKjmiLflrp7njrDnoazku7botYTmupDliKnnlKjnjofnmoTmnIDlpKfljJbjgILl
+kIzml7bml6DpnIDnibrnibLkuJrliqHotJ/ovb3lgaXlurfluqbvvIzkuZ/ml6DpnIANCj4gK+md
+ouS4tE9PTeetiemAoOaIkOS4muWKoeS4reaWreeahOmjjumZqeOAgg0KPiArDQo+ICvljovlipvm
+jqXlj6MNCj4gKz09PT09PT09PT09PT09PT09PQ0KIF5eXl5eXl5eXl5eXl5eXl5eDQo+ICsNCj4g
+K+WOi+WKm+S/oeaBr+WPr+mAmui/hy9wcm9jL3ByZXNzdXJlLyAtLWNwdeOAgW1lbW9yeeOAgWlv
+5paH5Lu25YiG5Yir6I635Y+W44CCDQo+ICsNCj4gK0NQVeebuOWFs+S/oeaBr+agvOW8j+WmguS4
+i++8mg0KPiArDQo+ICsgICAgICAgIHNvbWUgYXZnMTA9MC4wMCBhdmc2MD0wLjAwIGF2ZzMwMD0w
+LjAwIHRvdGFsPTANCj4gKw0KPiAr5YaF5a2Y5ZKMSU/nm7jlhbPkv6Hmga/lpoLkuIvvvJoNCj4g
+Kw0KPiArICAgICAgICBzb21lIGF2ZzEwPTAuMDAgYXZnNjA9MC4wMCBhdmczMDA9MC4wMCB0b3Rh
+bD0wDQo+ICsgICAgICAgIGZ1bGwgYXZnMTA9MC4wMCBhdmc2MD0wLjAwIGF2ZzMwMD0wLjAwIHRv
+dGFsPTANCj4gKw0KPiArc29tZeihjOS7o+ihqOiHs+WwkeacieS4gOS4quS7u+WKoemYu+WhnuS6
+jueJueWumui1hOa6kOeahOaXtumXtOWNoOavlOOAgg0KPiArDQo+ICtmdWxs6KGM5Luj6KGo5omA
+5pyJ6Z2eaWRsZeS7u+WKoeWQjOaXtumYu+WhnuS6jueJueWumui1hOa6kOeahOaXtumXtOWNoOav
+lOOAguWcqOi/meenjeeKtuaAgeS4i0NQVei1hOa6kA0KPiAr5a6M5YWo6KKr5rWq6LS577yM55u4
+5a+55LqO5q2j5bi46L+Q6KGM77yM5Lia5Yqh6LSf6L2955Sx5LqO6ICX6LS55pu05aSa5pe26Ze0
+562J5b6F6ICM5Y+X5Yiw5Lil6YeN5b2x5ZON44CCDQo+ICsNCj4gK+atpOaDheWGteS4pemHjeW9
+seWTjeezu+e7n+aAp+iDve+8jOa4healmueahOivhuWIq+acrOaDheWGteW5tuS4jnNvbWXooYzm
+iYDku6PooajnmoTmg4XlhrXljLrliIblvIDvvIzlsIYNCmhvdyBhYm91dCBpbnNlcnQg4oCc5Zug
+5q2k4oCdIGJlZm9yZSAi5riF5qWa4oCc77yMDQoNCueUseS6juW9seWTjeaAp+iDve+8jOWboOat
+pOWIhuW8gOKApuKApg0KPiAr5pyJ5Yqp5LqO5YiG5p6Q5Y+K5o+Q5Y2H57O757uf5oCn6IO944CC
+6L+Z5bCx5pivZnVsbOeLrOeri+S6jnNvbWXooYznmoTljp/lm6DjgIINCj4gKw0KPiArYXZn5Luj
+6KGo6Zi75aGe5pe26Ze05Y2g5q+U77yI55m+5YiG5q+U77yJ77yM5Li65pyA6L+RMTDnp5LjgIE2
+MOenkuOAgTMwMOenkuWGheeahOWdh+WAvOOAgui/meagt+aIkeS7rA0KPiAr5pei5Y+v6KeC5a+f
+5Yiw55+t5pyf5LqL5Lu255qE5b2x5ZON77yM5Lmf5Y+v55yL5Yiw5Lit562J5Y+K6ZW/5pe26Ze0
+5YaF55qE6LaL5Yq/44CCdG90YWzku6PooajmgLvpmLvloZ4NCj4gK+aXtumXtO+8iOWNleS9jeW+
+ruenku+8ie+8jOWPr+eUqOS6juinguWvn+aXtuW7tuavm+WIuu+8jOi/meenjeavm+WIuuWPr+iD
+veWcqOWdh+WAvOS4reaXoOazleS9k+eOsOOAgg0KPiArDQo+ICvnm5Hmjqfljovlipvpl6jpmZAN
+Cj4gKz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCl5eXl5eXl5eXl5eXl5eXl5e
+Xg0KPiArDQo+ICvnlKjmiLflj6/ms6jlhozop6blj5HlmajvvIzpgJrov4dwb2xsKCnnm5Hmjqfo
+tYTmupDljovlipvmmK/lkKbotoXov4fpl6jpmZDjgIINCj4gKw0KPiAr6Kem5Y+R5Zmo5a6a5LmJ
+77ya5oyH5a6a5pe26Ze056qX5Y+j5pyf5YaF57Sv56ev6Zi75aGe5pe26Ze055qE5pyA5aSn5YC8
+44CC5q+U5aaC5Y+v5a6a5LmJNTAwbXPlhoXnp6/ntK8NCj4gKzEwMG1z6Zi75aGe77yM5Y2z6Kem
+5Y+R5LiA5qyh5ZSk6YaS5LqL5Lu244CCDQo+ICsNCj4gK+inpuWPkeWZqOazqOWGjOaWueazle+8
+mueUqOaIt+aJk+W8gOS7o+ihqOeJueWumui1hOa6kOeahHBzaeaOpeWPo+aWh+S7tu+8jOWGmeWF
+pemXqOmZkOOAgeaXtumXtOeql+WPo+eahOWAvOOAgg0KPiAr5omA5omT5byA55qE5paH5Lu25o+P
+6L+w56ym55So5LqO562J5b6F5LqL5Lu277yM5Y+v5L2/55Soc2VsZWN0KCnjgIFwb2xsKCnjgIFl
+cG9sbCgp44CCDQo+ICvlhpnlhaXkv6Hmga/nmoTmoLzlvI/lpoLkuIvvvJoNCj4gKw0KPiArICAg
+ICAgICA8c29tZXxmdWxsPiA8c3RhbGwgYW1vdW50IGluIHVzPiA8dGltZSB3aW5kb3cgaW4gdXM+
+DQo+ICsNCj4gK+ekuuS+i++8muWQkS9wcm9jL3ByZXNzdXJlL21lbW9yeeWGmeWFpSJzb21lIDE1
+MDAwMCAxMDAwMDAwIuWwhuaWsOWinuinpuWPkeWZqO+8jOWwhuWcqA0KPiArMeenkuWGheiHs+Ww
+keS4gOS4quS7u+WKoemYu+WhnuS6juWGheWtmOeahOaAu+aXtumXtOi2hei/hzE1MG1z5pe26Kem
+5Y+R44CC5ZCRL3Byb2MvcHJlc3N1cmUvaW/lhpnlhaUNCj4gKyJmdWxsIDUwMDAwIDEwMDAwMDAi
+5bCG5paw5aKe6Kem5Y+R5Zmo77yM5bCG5ZyoMeenkuWGheaJgOacieS7u+WKoemDvemYu+WhnuS6
+jmlv55qE5oC75pe26Ze06LaF6L+HNTBtc+aXtuinpuWPkeOAgg0KPiArDQo+ICvop6blj5Hlmajl
+j6/pkojlr7nlpJrkuKpwc2nluqbph4/lgLzorr7nva7vvIzlkIzkuIDkuKpwc2nluqbph4/lgLzl
+j6/orr7nva7lpJrkuKrop6blj5HlmajjgILmr4/kuKrop6blj5HlmajpnIDopoENCj4gK+WNleeL
+rOeahOaWh+S7tuaPj+i/sOespueUqOS6jui9ruivou+8jOS7peWMuuWIhuS6juWFtuS7luinpuWP
+keWZqOOAguaJgOS7peWNs+S9v+WvueS6juWQjOS4gOS4qnBzaeaOpeWPo+aWh+S7tu+8jA0KPiAr
+5q+P5Liq6Kem5Y+R5Zmo5Lmf6ZyA6KaB5Y2V54us55qE6LCD55Sob3Blbigp44CCDQo+ICsNCj4g
+K+ebkeaOp+WZqOWcqOiiq+ebkeaOp+i1hOa6kOi/m+WFpemYu+WhnueKtuaAgeaXtuWQr+WKqO+8
+jOWcqOezu+e7n+mAgOWHuumYu+WhnueKtuaAgeWQjuWBnOeUqOOAguezu+e7n+i/m+WFpemYu+Wh
+ng0KPiAr54q25oCB5ZCO77yM55uR5o6ncHNp5aKe6ZW/55qE6aKR546H5Li65q+P55uR5o6n56qX
+5Y+j5Yi35pawMTDmrKHjgIINCj4gKw0KPiAr5YaF5qC45o6l5Y+X55qE56qX5Y+j5Li6NTAwbXN+
+MTBz77yM5omA5Lul55uR5o6n6Ze06ZqU5Li6NTBtc34xc+OAguiuvue9rueql+WPo+S4i+mZkOeb
+rueahOaYr+S4uuS6hg0KPiAr6Ziy5q2i6L+H5LqO6aKR57mB55qE6L2u6K+i44CC6K6+572u56qX
+5Y+j5LiK6ZmQ55qE55uu55qE5piv5Zug5Li656qX5Y+j6L+H6ZW/5YiZ5peg5oSP5LmJ77yM5q2k
+5pe25p+l55yLDQo+ICtwc2nmjqXlj6Pmj5DkvpvnmoTlnYflgLzljbPlj6/jgIINCj4gKw0KPiAr
+55uR5o6n5Zmo5Zyo5r+A5rS75ZCO77yM6Iez5bCR5Zyo6Lef6Liq56qX5Y+j5pyf6Ze05bCG5L+d
+5oyB5rS75Yqo54q25oCB44CC5Lul6YG/5YWN6ZqP552A57O757uf6L+b5YWl5ZKM6YCA5Ye6DQo+
+ICvpmLvloZ7nirbmgIHvvIznm5Hmjqflmajov4fkuo7popHnuYHnmoTov5vlhaXlkozpgIDlh7rm
+tLvliqjnirbmgIHjgIINCj4gKw0KPiAr55So5oi35oCB6YCa55+l5Zyo55uR5o6n56qX5Y+j5YaF
+5Lya5Y+X5Yiw6YCf546H6ZmQ5Yi244CC5b2T5a+55bqU55qE5paH5Lu25o+P6L+w56ym5YWz6Zet
+77yM6Kem5Y+R5Zmo5Lya6Ieq5Yqo5rOo6ZSA44CCDQo+ICsNCj4gK+eUqOaIt+aAgeebkeaOp+WZ
+qOS9v+eUqOekuuS+iw0KPiArPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KXl5eXl5e
+Xl5eXl5eXl5eXl5eXl5eDQo+ICsNCj4gKzo6DQo+ICsNCj4gKyAgI2luY2x1ZGUgPGVycm5vLmg+
+DQo+ICsgICNpbmNsdWRlIDxmY250bC5oPg0KPiArICAjaW5jbHVkZSA8c3RkaW8uaD4NCj4gKyAg
+I2luY2x1ZGUgPHBvbGwuaD4NCj4gKyAgI2luY2x1ZGUgPHN0cmluZy5oPg0KPiArICAjaW5jbHVk
+ZSA8dW5pc3RkLmg+DQo+ICsNCj4gKyAgLyoNCj4gKyAgICogTW9uaXRvciBtZW1vcnkgcGFydGlh
+bCBzdGFsbCB3aXRoIDFzIHRyYWNraW5nIHdpbmRvdyBzaXplDQo+ICsgICAqIGFuZCAxNTBtcyB0
+aHJlc2hvbGQuDQpuZWVkIHRyYW5zbGF0ZQ0KDQo+ICsgICAqLw0KPiArICBpbnQgbWFpbigpIHsN
+Cj4gKyAgICAgICAgY29uc3QgY2hhciB0cmlnW10gPSAic29tZSAxNTAwMDAgMTAwMDAwMCI7DQo+
+ICsgICAgICAgIHN0cnVjdCBwb2xsZmQgZmRzOw0KPiArICAgICAgICBpbnQgbjsNCj4gKw0KPiAr
+ICAgICAgICBmZHMuZmQgPSBvcGVuKCIvcHJvYy9wcmVzc3VyZS9tZW1vcnkiLCBPX1JEV1IgfCBP
+X05PTkJMT0NLKTsNCj4gKyAgICAgICAgaWYgKGZkcy5mZCA8IDApIHsNCj4gKyAgICAgICAgICAg
+ICAgICBwcmludGYoIi9wcm9jL3ByZXNzdXJlL21lbW9yeSBvcGVuIGVycm9yOiAlc1xuIiwNCj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgIHN0cmVycm9yKGVycm5vKSk7DQo+ICsgICAgICAgICAg
+ICAgICAgcmV0dXJuIDE7DQo+ICsgICAgICAgIH0NCj4gKyAgICAgICAgZmRzLmV2ZW50cyA9IFBP
+TExQUkk7DQo+ICsNCj4gKyAgICAgICAgaWYgKHdyaXRlKGZkcy5mZCwgdHJpZywgc3RybGVuKHRy
+aWcpICsgMSkgPCAwKSB7DQo+ICsgICAgICAgICAgICAgICAgcHJpbnRmKCIvcHJvYy9wcmVzc3Vy
+ZS9tZW1vcnkgd3JpdGUgZXJyb3I6ICVzXG4iLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAg
+c3RyZXJyb3IoZXJybm8pKTsNCj4gKyAgICAgICAgICAgICAgICByZXR1cm4gMTsNCj4gKyAgICAg
+ICAgfQ0KPiArDQo+ICsgICAgICAgIHByaW50Zigid2FpdGluZyBmb3IgZXZlbnRzLi4uXG4iKTsN
+Cj4gKyAgICAgICAgd2hpbGUgKDEpIHsNCj4gKyAgICAgICAgICAgICAgICBuID0gcG9sbCgmZmRz
+LCAxLCAtMSk7DQo+ICsgICAgICAgICAgICAgICAgaWYgKG4gPCAwKSB7DQo+ICsgICAgICAgICAg
+ICAgICAgICAgICAgICBwcmludGYoInBvbGwgZXJyb3I6ICVzXG4iLCBzdHJlcnJvcihlcnJubykp
+Ow0KPiArICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIDE7DQo+ICsgICAgICAgICAgICAg
+ICAgfQ0KPiArICAgICAgICAgICAgICAgIGlmIChmZHMucmV2ZW50cyAmIFBPTExFUlIpIHsNCj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgIHByaW50ZigiZ290IFBPTExFUlIsIGV2ZW50IHNvdXJj
+ZSBpcyBnb25lXG4iKTsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAwOw0KPiAr
+ICAgICAgICAgICAgICAgIH0NCj4gKyAgICAgICAgICAgICAgICBpZiAoZmRzLnJldmVudHMgJiBQ
+T0xMUFJJKSB7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICBwcmludGYoImV2ZW50IHRyaWdn
+ZXJlZCFcbiIpOw0KPiArICAgICAgICAgICAgICAgIH0gZWxzZSB7DQo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICBwcmludGYoInVua25vd24gZXZlbnQgcmVjZWl2ZWQ6IDB4JXhcbiIsIGZkcy5y
+ZXZlbnRzKTsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAxOw0KPiArICAgICAg
+ICAgICAgICAgIH0NCj4gKyAgICAgICAgfQ0KPiArDQo+ICsgICAgICAgIHJldHVybiAwOw0KPiAr
+ICB9DQo+ICsNCj4gK0Nncm91cDLmjqXlj6MNCj4gKz09PT09PT09PT09PT09PT09DQpeXl5eXl5e
+Xl5eXl5eDQo+ICsNCj4gK+WvueS6jkNPTkZJR19DR1JPVVA9eeWPiuaMgui9veS6hmNncm91cDLm
+lofku7bns7vnu5/nmoTns7vnu5/vvIzog73lpJ/ojrflj5ZjZ3JvdXBz5YaF5Lu75Yqh55qEcHNp
+44CCDQo+ICvmraTlnLrmma/kuItjZ3JvdXBmc+aMgui9veeCueeahOWtkOebruW9leWMheWQq2Nw
+dS5wcmVzc3VyZeOAgW1lbW9yeS5wcmVzc3VyZeOAgWlvLnByZXNzdXJl5paH5Lu277yMDQo+ICvl
+hoXlrrnmoLzlvI/kuI4vcHJvYy9wcmVzc3VyZS/kuIvnmoTmlofku7bnm7jlkIzjgIINCj4gKw0K
+PiAr5Y+v6K6+572u5Z+65LqOY2dyb3Vw55qEcHNp55uR5o6n5Zmo77yM5pa55rOV5LiO57O757uf
+57qncHNp55uR5o6n5Zmo55u45ZCM44CCDQo+IC0tDQo+IDIuMjUuMQ0KPg0KQlRXOg0KDQpJIGRv
+bid0IGtub3cgaWYgeW91IGhhdmUgYnVpbGQgaXQgYmVmb3JlIHNlbnQsIGFuZCBjaGVjayBpdCx0
+aGlzIGlzIGENCm5lY2Vzc2FyeSBzdGVwLg0KDQpPYnZpb3VzbHkgSSBkaWRuJ3QgZG8gdGhhdC4g
+ICAgID5fPA0KDQpUaGFua3MsDQoNCllhbnRlbmcNCg==
