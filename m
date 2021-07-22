@@ -2,52 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF013D1E4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C073D1E50
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhGVFyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 01:54:02 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:12235 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhGVFyB (ORCPT
+        id S231419AbhGVFya convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 01:54:30 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:4021 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhGVFy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 01:54:01 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GVjFp12yFz1CM75;
-        Thu, 22 Jul 2021 14:28:46 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+        Thu, 22 Jul 2021 01:54:28 -0400
+X-Greylist: delayed 643 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Jul 2021 01:54:27 EDT
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4GVjKW2N7Jzmhtb;
+        Thu, 22 Jul 2021 14:31:59 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 14:34:33 +0800
-Received: from [10.174.177.91] (10.174.177.91) by
- dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 14:34:33 +0800
-Subject: Re: [PATCH -next] iommu/arm-smmu-v3: Add suspend and resume support
-To:     Marc Zyngier <maz@kernel.org>, Robin Murphy <robin.murphy@arm.com>
-CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <will@kernel.org>, <weiyongjun1@huawei.com>,
-        <john.wanghui@huawei.com>, <dingtianhong@huawei.com>,
-        <thunder.leizhen@huawei.com>, <guohanjun@huawei.com>,
-        <joro@8bytes.org>, <jean-philippe@linaro.org>,
-        <Jonathan.Cameron@huawei.com>, <song.bao.hua@hisilicon.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210721013350.17664-1-cuibixuan@huawei.com>
- <4e506481-5f6c-9c5e-eda3-300861581080@arm.com> <878s1z3j68.wl-maz@kernel.org>
- <848befb0-7a9a-0b2b-8be9-3dfa02919488@arm.com> <877dhj3e4b.wl-maz@kernel.org>
-From:   Bixuan Cui <cuibixuan@huawei.com>
-Message-ID: <5054a5cd-579f-3fe9-1884-5219c8d13531@huawei.com>
-Date:   Thu, 22 Jul 2021 14:34:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <877dhj3e4b.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+ 15.1.2176.2; Thu, 22 Jul 2021 14:34:59 +0800
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.2176.012; Thu, 22 Jul 2021 07:34:57 +0100
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     Will Deacon <will@kernel.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "Alexandru.Elisei@arm.com" <Alexandru.Elisei@arm.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH v2 2/3] kvm/arm: Introduce a new vmid allocator for KVM
+Thread-Topic: [PATCH v2 2/3] kvm/arm: Introduce a new vmid allocator for KVM
+Thread-Index: AQHXYshW/nzyI5jyG0eXMHJ9tLJ26qtNvlQAgAEAsAA=
+Date:   Thu, 22 Jul 2021 06:34:57 +0000
+Message-ID: <8c0345ae808140f79c2adc4e0fd2effc@huawei.com>
+References: <20210616155606.2806-1-shameerali.kolothum.thodi@huawei.com>
+ <20210616155606.2806-3-shameerali.kolothum.thodi@huawei.com>
+ <20210721160614.GC11003@willie-the-truck>
+In-Reply-To: <20210721160614.GC11003@willie-the-truck>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500004.china.huawei.com (7.185.36.219)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.80.98]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -55,110 +61,153 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2021/7/21 23:01, Marc Zyngier wrote:
-> On Wed, 21 Jul 2021 14:59:47 +0100,
-> Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> On 2021-07-21 14:12, Marc Zyngier wrote:
->>> On Wed, 21 Jul 2021 12:42:14 +0100,
->>> Robin Murphy <robin.murphy@arm.com> wrote:
->>>>
->>>> [ +Marc for MSI bits ]
->>>>
->>>> On 2021-07-21 02:33, Bixuan Cui wrote:
->>>>> Add suspend and resume support for arm-smmu-v3 by low-power mode.
->>>>>
->>>>> When the smmu is suspended, it is powered off and the registers are
->>>>> cleared. So saves the msi_msg context during msi interrupt initialization
->>>>> of smmu. When resume happens it calls arm_smmu_device_reset() to restore
->>>>> the registers.
->>>>>
->>>>> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
->>>>> Reviewed-by: Wei Yongjun <weiyongjun1@huawei.com>
->>>>> Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>>> Reviewed-by: Ding Tianhong <dingtianhong@huawei.com>
->>>>> Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
->>>>> ---
->>>>>
->>>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 72 ++++++++++++++++++---
->>>>>    1 file changed, 64 insertions(+), 8 deletions(-)
->>>>>
->>>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>>> index 235f9bdaeaf2..bf1163acbcb1 100644
->>>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>>> @@ -40,6 +40,7 @@ MODULE_PARM_DESC(disable_bypass,
->>>>>      static bool disable_msipolling;
->>>>>    module_param(disable_msipolling, bool, 0444);
->>>>> +static bool bypass;
->>>>>    MODULE_PARM_DESC(disable_msipolling,
->>>>>    	"Disable MSI-based polling for CMD_SYNC completion.");
->>>>>    @@ -3129,11 +3130,37 @@ static void arm_smmu_write_msi_msg(struct
->>>>> msi_desc *desc, struct msi_msg *msg)
->>>>>    	doorbell = (((u64)msg->address_hi) << 32) | msg->address_lo;
->>>>>    	doorbell &= MSI_CFG0_ADDR_MASK;
->>>>>    +	/* Saves the msg context for resume if desc->msg is empty */
->>>>> +	if (desc->msg.address_lo == 0 && desc->msg.address_hi == 0) {
->>>>> +		desc->msg.address_lo = msg->address_lo;
->>>>> +		desc->msg.address_hi = msg->address_hi;
->>>>> +		desc->msg.data = msg->data;
->>>>> +	}
->>>>
->>>> My gut feeling is that this is something a device driver maybe
->>>> shouldn't be poking into, but I'm not entirely familiar with the area
->>>> :/
->>>
->>> Certainly not. If you rely on the message being stored into the
->>> descriptors, then implement this in the core code, like we do for PCI.
->>
->> Ah, so it would be an acceptable compromise to *read* desc->msg (and
->> thus avoid having to store our own copy of the message) if the core
->> was guaranteed to cache it? That's good to know, thanks.
+> -----Original Message-----
+> From: Will Deacon [mailto:will@kernel.org]
+> Sent: 21 July 2021 17:06
+> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> Cc: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
+> linux-kernel@vger.kernel.org; maz@kernel.org; catalin.marinas@arm.com;
+> james.morse@arm.com; julien.thierry.kdev@gmail.com;
+> suzuki.poulose@arm.com; jean-philippe@linaro.org;
+> Alexandru.Elisei@arm.com; Linuxarm <linuxarm@huawei.com>
+> Subject: Re: [PATCH v2 2/3] kvm/arm: Introduce a new vmid allocator for KVM
 > 
-> Yeah, vfio, a couple of other weird drivers and (*surprise!*) ia64 are
-> using this kind of trick. I don't see a reason not to implement that
-> for platform-MSI (although level signalling may be interesting...), or
-> even to move it into the core MSI code.
-Agree. If msg is saved to desc->msg in MSI core, the code here will not need.
-During the initialization of the MSI interrupt of the SMMU, the desc->msg
-is never used. So I save msg to desc->msg for resume use.
-
-
->>
->>>>> +
->>>>>    	writeq_relaxed(doorbell, smmu->base + cfg[0]);
->>>>>    	writel_relaxed(msg->data, smmu->base + cfg[1]);
->>>>>    	writel_relaxed(ARM_SMMU_MEMATTR_DEVICE_nGnRE, smmu->base + cfg[2]);
->>>>>    }
->>>>>    +static void arm_smmu_resume_msis(struct arm_smmu_device *smmu)
->>>>> +{
->>>>> +	struct msi_desc *desc;
->>>>> +	struct device *dev = smmu->dev;
->>>>> +
->>>>> +	for_each_msi_entry(desc, dev) {
->>>>> +		switch (desc->platform.msi_index) {
->>>>> +		case EVTQ_MSI_INDEX:
->>>>> +		case GERROR_MSI_INDEX:
->>>>> +		case PRIQ_MSI_INDEX:
->>>>> +			arm_smmu_write_msi_msg(desc, &(desc->msg));
->>>
->>> Consider using get_cached_msi_msg() instead of using the internals of
->>> the descriptor.
->>
->> Oh, there's even a proper API for it, marvellous! I hadn't managed to
->> dig that far myself :)
+> On Wed, Jun 16, 2021 at 04:56:05PM +0100, Shameer Kolothum wrote:
+> > A new VMID allocator for arm64 KVM use. This is based on
+> > arm64 asid allocator algorithm.
+> >
+> > Signed-off-by: Shameer Kolothum
+> <shameerali.kolothum.thodi@huawei.com>
+> > ---
+> >  arch/arm64/include/asm/kvm_host.h |   4 +
+> >  arch/arm64/kvm/vmid.c             | 206
+> ++++++++++++++++++++++++++++++
+> >  2 files changed, 210 insertions(+)
+> >  create mode 100644 arch/arm64/kvm/vmid.c
 > 
-> It is a bit odd in the sense that it takes a copy of the message
-> instead of returning a pointer, but at least this solves lifetime
-> issues.
-The code of arm_smmu_write_msi_msg() is multiplexed to restore the register. Therefore,
-the parameter must be supplemented. Generally, desc is sufficient as an input parameter..
-:)
+> Generally, I prefer this to the alternative of creating a library. However,
+> I'd probably remove all the duplicated comments in favour of a reference
+> to the ASID allocator. That way, we can just comment any VMID-specific
+> behaviour in here.
+
+Agree. I retained the comments mainly for myself as its very difficult at times
+to follow :)
+
+> 
+> Some comments below...
+> 
+> > diff --git a/arch/arm64/include/asm/kvm_host.h
+> b/arch/arm64/include/asm/kvm_host.h
+> > index 7cd7d5c8c4bc..75a7e8071012 100644
+> > --- a/arch/arm64/include/asm/kvm_host.h
+> > +++ b/arch/arm64/include/asm/kvm_host.h
+> > @@ -680,6 +680,10 @@ int kvm_arm_pvtime_get_attr(struct kvm_vcpu
+> *vcpu,
+> >  int kvm_arm_pvtime_has_attr(struct kvm_vcpu *vcpu,
+> >  			    struct kvm_device_attr *attr);
+> >
+> > +int kvm_arm_vmid_alloc_init(void);
+> > +void kvm_arm_vmid_alloc_free(void);
+> > +void kvm_arm_update_vmid(atomic64_t *id);
+> > +
+> >  static inline void kvm_arm_pvtime_vcpu_init(struct kvm_vcpu_arch
+> *vcpu_arch)
+> >  {
+> >  	vcpu_arch->steal.base = GPA_INVALID;
+> > diff --git a/arch/arm64/kvm/vmid.c b/arch/arm64/kvm/vmid.c
+> > new file mode 100644
+> > index 000000000000..687e18d33130
+> > --- /dev/null
+> > +++ b/arch/arm64/kvm/vmid.c
+> > @@ -0,0 +1,206 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * VMID allocator.
+> > + *
+> > + * Based on arch/arm64/mm/context.c
+> > + *
+> > + * Copyright (C) 2002-2003 Deep Blue Solutions Ltd, all rights reserved.
+> > + * Copyright (C) 2012 ARM Ltd.
+> > + */
+> > +
+> > +#include <linux/bitfield.h>
+> > +#include <linux/bitops.h>
+> > +
+> > +#include <asm/kvm_asm.h>
+> > +#include <asm/kvm_mmu.h>
+> > +
+> > +static u32 vmid_bits;
+> > +static DEFINE_RAW_SPINLOCK(cpu_vmid_lock);
+> > +
+> > +static atomic64_t vmid_generation;
+> > +static unsigned long *vmid_map;
+> > +
+> > +static DEFINE_PER_CPU(atomic64_t, active_vmids);
+> > +static DEFINE_PER_CPU(u64, reserved_vmids);
+> > +static cpumask_t tlb_flush_pending;
+> > +
+> > +#define VMID_MASK		(~GENMASK(vmid_bits - 1, 0))
+> > +#define VMID_FIRST_VERSION	(1UL << vmid_bits)
+> > +
+> > +#define NUM_USER_VMIDS		VMID_FIRST_VERSION
+> > +#define vmid2idx(vmid)		((vmid) & ~VMID_MASK)
+> > +#define idx2vmid(idx)		vmid2idx(idx)
+> > +
+> > +#define vmid_gen_match(vmid) \
+> > +	(!(((vmid) ^ atomic64_read(&vmid_generation)) >> vmid_bits))
+> > +
+> > +static void flush_context(void)
+> > +{
+> > +	int cpu;
+> > +	u64 vmid;
+> > +
+> > +	bitmap_clear(vmid_map, 0, NUM_USER_VMIDS);
+> > +
+> > +	for_each_possible_cpu(cpu) {
+> > +		vmid = atomic64_xchg_relaxed(&per_cpu(active_vmids, cpu), 0);
+> > +		/*
+> > +		 * If this CPU has already been through a
+> > +		 * rollover, but hasn't run another task in
+> > +		 * the meantime, we must preserve its reserved
+> > +		 * VMID, as this is the only trace we have of
+> > +		 * the process it is still running.
+> > +		 */
+> > +		if (vmid == 0)
+> > +			vmid = per_cpu(reserved_vmids, cpu);
+> > +		__set_bit(vmid2idx(vmid), vmid_map);
+> > +		per_cpu(reserved_vmids, cpu) = vmid;
+> > +	}
+> 
+> Hmm, so here we're copying the active_vmids into the reserved_vmids on a
+> rollover, but I wonder if that's overly pessismistic? For the ASID
+> allocator, every CPU tends to have a current task so it makes sense, but
+> I'm not sure it's necessarily the case that every CPU tends to have a
+> vCPU as the current task. For example, imagine you have a nasty 128-CPU
+> system with 8-bit VMIDs and each CPU has at some point run a vCPU. Then,
+> on rollover, we'll immediately reserve half of the VMID space, even if
+> those vCPUs don't even exist any more.
+> 
+> Not sure if it's worth worrying about, but I wanted to mention it.
+
+Ok. I see your suggestion in patch #3 to avoid this.
+
+> 
+> > +void kvm_arm_update_vmid(atomic64_t *id)
+> > +{
+> 
+> Take the kvm_vmid here? That would make:
+> 
+> > +	/* Check that our VMID belongs to the current generation. */
+> > +	vmid = atomic64_read(id);
+> > +	if (!vmid_gen_match(vmid)) {
+> > +		vmid = new_vmid(id);
+> > +		atomic64_set(id, vmid);
+> > +	}
+> 
+> A bit more readable, as you could pass the pointer directly to new_vmid
+> for initialisation.
+
+Ok.
 
 Thanks,
-Bixuan Cui
-> 
-> Thanks,
-> 
-> 	M.
-> 
+Shameer
