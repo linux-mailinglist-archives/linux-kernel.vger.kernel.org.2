@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF973D2A97
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9333D2A88
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbhGVQNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:13:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44432 "EHLO mail.kernel.org"
+        id S234569AbhGVQMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:12:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233567AbhGVQIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:08:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10AE561DBB;
-        Thu, 22 Jul 2021 16:48:27 +0000 (UTC)
+        id S235284AbhGVQJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:09:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B55061DD2;
+        Thu, 22 Jul 2021 16:48:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972508;
-        bh=9JxbWpZnpb1n82uEG5CJzta3GX1lqw+YDx9gr2/Qvqk=;
+        s=korg; t=1626972538;
+        bh=tLTbp2wQX4NklGSuRsACp62/NbPWgqYc852I8m2h6QA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u0Oux6e3IprC5wmKVTew80EFYoHSKQWiBKyybPrcASrAEdpMVENAspOWqq7hDboUr
-         7B0NhVLUhjqDVLW0q+HuDAmDahJ6Tk7N7zPv/ultiHbhOnA4YJLxObtFmiDBgKMvvD
-         XS6h8/YYCe1pRafv5IMw/yEBIjXFJtXiux5yJj+Y=
+        b=frlMuEAtV0HYz6nUCDuA3ryeHT8yorS2XmGQJjw1sNqsXbuOiUgePb3ac1r7AsPtf
+         h/h1YiqIdLkVRQH/XxQcgx9HSbS7jImgHImdEphz+9lPlJ6hZvZFtj/2qlE6mgrixh
+         HorcaoiTDWlEEgTMit+fN0wz2tofUm3qa/m8Tr/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.13 112/156] net: dsa: mv88e6xxx: enable devlink ATU hash param for Topaz
-Date:   Thu, 22 Jul 2021 18:31:27 +0200
-Message-Id: <20210722155631.996636458@linuxfoundation.org>
+Subject: [PATCH 5.13 113/156] net: dsa: mv88e6xxx: enable SerDes RX stats for Topaz
+Date:   Thu, 22 Jul 2021 18:31:28 +0200
+Message-Id: <20210722155632.028064148@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
 References: <20210722155628.371356843@linuxfoundation.org>
@@ -43,42 +42,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marek Behún <kabel@kernel.org>
 
-commit c07fff3492acae41cedbabea395b644dd5872b8c upstream.
+commit a03b98d68367b18e5db6d6850e2cc18754fba94a upstream.
 
-Commit 23e8b470c7788 ("net: dsa: mv88e6xxx: Add devlink param for ATU
-hash algorithm.") introduced ATU hash algorithm access via devlink, but
-did not enable it for Topaz.
+Commit 0df952873636a ("mv88e6xxx: Add serdes Rx statistics") added
+support for RX statistics on SerDes ports for Peridot.
 
-Enable this feature also for Topaz.
+This same implementation is also valid for Topaz, but was not enabled
+at the time.
+
+We need to use the generic .serdes_get_lane() method instead of the
+Peridot specific one in the stats methods so that on Topaz the proper
+one is used.
 
 Signed-off-by: Marek Behún <kabel@kernel.org>
-Fixes: 23e8b470c7788 ("net: dsa: mv88e6xxx: Add devlink param for ATU hash algorithm.")
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Fixes: 0df952873636a ("mv88e6xxx: Add serdes Rx statistics")
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/mv88e6xxx/chip.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/dsa/mv88e6xxx/chip.c   |    6 ++++++
+ drivers/net/dsa/mv88e6xxx/serdes.c |    6 +++---
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
 --- a/drivers/net/dsa/mv88e6xxx/chip.c
 +++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -3608,6 +3608,8 @@ static const struct mv88e6xxx_ops mv88e6
- 	.pot_clear = mv88e6xxx_g2_pot_clear,
- 	.reset = mv88e6352_g1_reset,
- 	.rmu_disable = mv88e6390_g1_rmu_disable,
-+	.atu_get_hash = mv88e6165_g1_atu_get_hash,
-+	.atu_set_hash = mv88e6165_g1_atu_set_hash,
- 	.vtu_getnext = mv88e6352_g1_vtu_getnext,
- 	.vtu_loadpurge = mv88e6352_g1_vtu_loadpurge,
- 	.serdes_power = mv88e6390_serdes_power,
-@@ -4410,6 +4412,8 @@ static const struct mv88e6xxx_ops mv88e6
- 	.pot_clear = mv88e6xxx_g2_pot_clear,
- 	.reset = mv88e6352_g1_reset,
- 	.rmu_disable = mv88e6390_g1_rmu_disable,
-+	.atu_get_hash = mv88e6165_g1_atu_get_hash,
-+	.atu_set_hash = mv88e6165_g1_atu_set_hash,
- 	.vtu_getnext = mv88e6352_g1_vtu_getnext,
- 	.vtu_loadpurge = mv88e6352_g1_vtu_loadpurge,
- 	.serdes_power = mv88e6390_serdes_power,
+@@ -3623,6 +3623,9 @@ static const struct mv88e6xxx_ops mv88e6
+ 	.serdes_irq_enable = mv88e6390_serdes_irq_enable,
+ 	.serdes_irq_status = mv88e6390_serdes_irq_status,
+ 	.gpio_ops = &mv88e6352_gpio_ops,
++	.serdes_get_sset_count = mv88e6390_serdes_get_sset_count,
++	.serdes_get_strings = mv88e6390_serdes_get_strings,
++	.serdes_get_stats = mv88e6390_serdes_get_stats,
+ 	.phylink_validate = mv88e6341_phylink_validate,
+ };
+ 
+@@ -4429,6 +4432,9 @@ static const struct mv88e6xxx_ops mv88e6
+ 	.gpio_ops = &mv88e6352_gpio_ops,
+ 	.avb_ops = &mv88e6390_avb_ops,
+ 	.ptp_ops = &mv88e6352_ptp_ops,
++	.serdes_get_sset_count = mv88e6390_serdes_get_sset_count,
++	.serdes_get_strings = mv88e6390_serdes_get_strings,
++	.serdes_get_stats = mv88e6390_serdes_get_stats,
+ 	.phylink_validate = mv88e6341_phylink_validate,
+ };
+ 
+--- a/drivers/net/dsa/mv88e6xxx/serdes.c
++++ b/drivers/net/dsa/mv88e6xxx/serdes.c
+@@ -722,7 +722,7 @@ static struct mv88e6390_serdes_hw_stat m
+ 
+ int mv88e6390_serdes_get_sset_count(struct mv88e6xxx_chip *chip, int port)
+ {
+-	if (mv88e6390_serdes_get_lane(chip, port) < 0)
++	if (mv88e6xxx_serdes_get_lane(chip, port) < 0)
+ 		return 0;
+ 
+ 	return ARRAY_SIZE(mv88e6390_serdes_hw_stats);
+@@ -734,7 +734,7 @@ int mv88e6390_serdes_get_strings(struct
+ 	struct mv88e6390_serdes_hw_stat *stat;
+ 	int i;
+ 
+-	if (mv88e6390_serdes_get_lane(chip, port) < 0)
++	if (mv88e6xxx_serdes_get_lane(chip, port) < 0)
+ 		return 0;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(mv88e6390_serdes_hw_stats); i++) {
+@@ -770,7 +770,7 @@ int mv88e6390_serdes_get_stats(struct mv
+ 	int lane;
+ 	int i;
+ 
+-	lane = mv88e6390_serdes_get_lane(chip, port);
++	lane = mv88e6xxx_serdes_get_lane(chip, port);
+ 	if (lane < 0)
+ 		return 0;
+ 
 
 
