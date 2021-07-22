@@ -2,64 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D953D2AB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2833D2AB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234450AbhGVQTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:19:21 -0400
-Received: from smtprelay0163.hostedemail.com ([216.40.44.163]:52632 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235053AbhGVQS5 (ORCPT
+        id S230106AbhGVQUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233491AbhGVQTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:18:57 -0400
-Received: from omf16.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 435B01801EC49;
-        Thu, 22 Jul 2021 16:59:26 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id AF19F25510C;
-        Thu, 22 Jul 2021 16:59:24 +0000 (UTC)
-Message-ID: <ff955d0fa6c50954d52ca93f0bee2e79627fe861.camel@perches.com>
-Subject: Re: [PATCH] staging: rtl8188eu: Line over 100 characters
-From:   Joe Perches <joe@perches.com>
-To:     Jignesh Patel <jigs0101@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Ivan Safonov <insafonov@gmail.com>,
-        Paul McQuade <paulmcquad@gmail.com>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Thu, 22 Jul 2021 09:59:23 -0700
-In-Reply-To: <20210722164144.377781-1-jigs0101@gmail.com>
-References: <20210722164144.377781-1-jigs0101@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Thu, 22 Jul 2021 12:19:10 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFEEC061796;
+        Thu, 22 Jul 2021 09:59:42 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id k12-20020a05600c1c8cb02901f259f3a250so30356wms.2;
+        Thu, 22 Jul 2021 09:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=BM24k6H9LcY/dUUeA4LE+RhfS6GQmXK+4XERxfAvlv0=;
+        b=qgqjaOiR5GDdZTa15bTl9JTnbzB07s9U9I9cEwDWRuN5S2mke859hy+UUqa9AvmPFs
+         QnFQcBfyQYO2hoq+QCnMeAzFQrJjuhZwNSk8lKxsoQut82+gNyGeae8CX2fdtJ6AsPUJ
+         sIFDuSM228csEcVbnMRcDLNmkw37EjzdGSBxe/+i5FutmwIEz61FJPGoXcNnt7LdzFmq
+         7HMiDuUAhpP0zT8ZvB+6hGaL+M+s14GjFJ8edGsNTcFdoBf+Bjtotk6/Fz1gTx1H1MVo
+         lOn17fh/knU+cY7LH09yds5UE/7MbJXAnTDAQROY/7yRFOTdLDSVwG26C7HozDiY6WdQ
+         5ySA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=BM24k6H9LcY/dUUeA4LE+RhfS6GQmXK+4XERxfAvlv0=;
+        b=mvhuGWJ60aPNmMVb+Vx2YbfZpN/kpuEPadJQVEat+zTFdcs+MC5HbqnibKZTadFS8+
+         MfL4pMUoIaivvE26TF7Thn3SzgEhQuSwl9cL5WhK6kZKCHFni6aU0a2DJMgDxec1O2To
+         pwpriEU+4GWhAh83i7sCoiRB2frobrrSU0m5Gv/+XKSXSuq/XLx8xXF7zm6no/d1zB/N
+         gpmJqiVv32uosDzC2RQbGtqZ6pXdUtm7+CNYTOCknqL6jk/5Qe0UgE3TUx5DNiIcpKKe
+         Y5dYfEylkwUskiekkkSkEbDSGv8q1ZgliY/eV9C2Wz0/P5KDc2CRmZW8QgQHFLIXvrCT
+         HxvA==
+X-Gm-Message-State: AOAM532wXJlU4DfUb0HYG1kysebJ7QpYjgeTcoliOVaBiFbu4kAphem6
+        myO78AcT7fBo9mDDRwVjjf1qhKXYa58=
+X-Google-Smtp-Source: ABdhPJyg8BQJejnjRRm1BTEU8FOHujUxCDxVRnY3wBbr0UdKdyaOqBiZbD58vEBD+v7h6w/GM/G4Tw==
+X-Received: by 2002:a7b:ca50:: with SMTP id m16mr10037592wml.140.1626973181475;
+        Thu, 22 Jul 2021 09:59:41 -0700 (PDT)
+Received: from pc ([196.235.233.206])
+        by smtp.gmail.com with ESMTPSA id n23sm24009425wms.4.2021.07.22.09.59.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 09:59:40 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 17:59:38 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        ludovic.desroches@microchip.com, gregkh@linuxfoundation.org
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND] gpu: ipu-v3: use swap()
+Message-ID: <20210722165938.GA4116@pc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.20
-X-Stat-Signature: 9euwhj4p6rexifjirezs86fbna9cr3cj
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: AF19F25510C
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18K4fqFUH4ZUuHs1GOeAukvXKaS/Q2YgsU=
-X-HE-Tag: 1626973164-729998
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-22 at 22:11 +0530, Jignesh Patel wrote:
-> Break various lines into multiple lines to respect 100 character width limit.
-[]
-> diff --git a/drivers/staging/rtl8188eu/core/rtw_ap.c b/drivers/staging/rtl8188eu/core/rtw_ap.c
-[]
-> @@ -254,9 +254,12 @@ void expire_timeout_chk(struct adapter *padapter)
->  			updated = ap_free_sta(padapter, psta, true,
->  					      WLAN_REASON_DEAUTH_LEAVING);
->  		} else {
-> -			/* TODO: Aging mechanism to digest frames in sleep_q to avoid running out of xmitframe */
-> +			/** TODO: Aging mechanism to digest frames in
+Use swap() instead of implementing it in order to make code more clean.
 
-Please do not use double asterisks to start a comment.
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ drivers/crypto/atmel-aes.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
+index b1d286004295..60041022c4f5 100644
+--- a/drivers/crypto/atmel-aes.c
++++ b/drivers/crypto/atmel-aes.c
+@@ -1819,12 +1819,8 @@ static int atmel_aes_xts_process_data(struct atmel_aes_dev *dd)
+ 	 * the order of the ciphered tweak bytes need to be reversed before
+ 	 * writing them into the ODATARx registers.
+ 	 */
+-	for (i = 0; i < AES_BLOCK_SIZE/2; ++i) {
+-		u8 tmp = tweak_bytes[AES_BLOCK_SIZE - 1 - i];
+-
+-		tweak_bytes[AES_BLOCK_SIZE - 1 - i] = tweak_bytes[i];
+-		tweak_bytes[i] = tmp;
+-	}
++	for (i = 0; i < AES_BLOCK_SIZE/2; ++i)
++		swap(tweak_bytes[i], tweak_bytes[AES_BLOCK_SIZE - 1 - i]);
+ 
+ 	/* Process the data. */
+ 	atmel_aes_write_ctrl(dd, use_dma, NULL);
+-- 
+2.25.1
 
