@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB273D2047
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142333D204B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbhGVIVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 04:21:55 -0400
-Received: from mail-out.m-online.net ([212.18.0.10]:50991 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbhGVIVr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 04:21:47 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4GVmfr5TrWz1sGKb;
-        Thu, 22 Jul 2021 11:02:12 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4GVmfr45ZJz1qqkg;
-        Thu, 22 Jul 2021 11:02:12 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id B3xsr2CvvLrS; Thu, 22 Jul 2021 11:02:11 +0200 (CEST)
-X-Auth-Info: 5K2eEbDaqyAfIeaYUxnfMTLK7qDLkZsfKwuZYZ+up/2N3WzIN6C1Edq5vLWLBZlv
-Received: from igel.home (ppp-46-244-188-81.dynamic.mnet-online.de [46.244.188.81])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 22 Jul 2021 11:02:11 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id D0B2C2C2647; Thu, 22 Jul 2021 11:02:10 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     tongtiangen@huawei.com, jszhang3@mail.ustc.edu.cn,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v2] riscv: add VMAP_STACK overflow detection
-References: <mhng-e14c3232-cc4d-4146-8c93-c60ec81ed272@palmerdabbelt-glaptop>
-X-Yow:  Yow!!  "Janitor trapped in sewer uses ESP to find decayed burger"!!
-Date:   Thu, 22 Jul 2021 11:02:10 +0200
-In-Reply-To: <mhng-e14c3232-cc4d-4146-8c93-c60ec81ed272@palmerdabbelt-glaptop>
-        (Palmer Dabbelt's message of "Wed, 21 Jul 2021 23:12:20 -0700 (PDT)")
-Message-ID: <87k0lizppp.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S231304AbhGVIWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 04:22:32 -0400
+Received: from mga06.intel.com ([134.134.136.31]:38335 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230330AbhGVIWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 04:22:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="272716522"
+X-IronPort-AV: E=Sophos;i="5.84,260,1620716400"; 
+   d="scan'208";a="272716522"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 02:02:55 -0700
+X-IronPort-AV: E=Sophos;i="5.84,260,1620716400"; 
+   d="scan'208";a="462701664"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 02:02:52 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m6UbO-00GvE7-Gj; Thu, 22 Jul 2021 12:02:46 +0300
+Date:   Thu, 22 Jul 2021 12:02:46 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Wolfram Sang <wsa@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v1 2/6] staging: atomisp: Replace open-coded
+ i2c_acpi_find_client_by_adev()
+Message-ID: <YPk0NpOQWhzX31Dj@smile.fi.intel.com>
+References: <20210526124322.48915-1-andriy.shevchenko@linux.intel.com>
+ <20210526124322.48915-2-andriy.shevchenko@linux.intel.com>
+ <20210722105744.4a94d58d@coco.lan>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210722105744.4a94d58d@coco.lan>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul 21 2021, Palmer Dabbelt wrote:
+On Thu, Jul 22, 2021 at 10:57:44AM +0200, Mauro Carvalho Chehab wrote:
+> Em Wed, 26 May 2021 15:43:18 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> escreveu:
+> 
+> > gmin_i2c_dev_exists() is using open-coded variant of
+> > i2c_acpi_find_client_by_adev(). Replace it with a corresponding call.
+> > 
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> At least on the top of v5.14-rc1, this patch causes a compilation
+> issue:
+> 
+> 	drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c: In function ‘gmin_i2c_dev_exists’:
+> 	drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c:386:19: error: implicit declaration of function ‘i2c_acpi_find_client_by_adev’; did you mean ‘i2c_acpi_find_adapter_by_handle’? [-Werror=implicit-function-declaration]
+> 	  386 |         *client = i2c_acpi_find_client_by_adev(adev);
+> 	      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 	      |                   i2c_acpi_find_adapter_by_handle
+> 	drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c:386:17: warning: assignment to ‘struct i2c_client *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+> 	  386 |         *client = i2c_acpi_find_client_by_adev(adev);
+> 	      |                 ^
+> 
+> The reason is because such function is static:
+> 
+> 	$ git grep i2c_acpi_find_client_by_adev
+> 	drivers/i2c/i2c-core-acpi.c:static struct i2c_client *i2c_acpi_find_client_by_adev(struct acpi_device *adev)
+> 
+> IMO, a patch like that should be applied at the same tree as a patch
+> dropping "static" from drivers/i2c/i2c-core-acpi.c. If you want to do
+> so, feel free to add:
+> 
+> Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-> On Mon, 19 Jul 2021 00:23:06 PDT (-0700), schwab@linux-m68k.org wrote:
->> On Jul 19 2021, tongtiangen wrote:
->>
->>> On 2021/7/17 14:55, Andreas Schwab wrote:
->>>> Please use
->>>> https://download.opensuse.org/repositories/home:/Andreas_Schwab:/riscv:/jeos/images/openSUSE-Tumbleweed-RISC-V-JeOS-efi.riscv64.raw.xz
->>>> and run it in qemu with u-boot as kernel.
->>>>
->>>> Andreas.
->>>>
->>>
->>> Hi andreas:
->>> I used today's latest mainline code and .config provided by you, and I
->>> can't reproduce this panic.
->>
->> Did you test it like I said above?
->>
->> Andreas.
->
-> I'm getting this on and off, with just 
-> CONFIG_VMAP_STACK=y
->
-> on top of defconfig, when running on QEMU.  It's not showing up right now:
-> I'd thought it was an issue with that initrd patch, but it went away when
-> I re-ran the tests so I'm guessing it's something non-deterministic.  I'll
-> try to take a look if it comes back.
+Thanks!
 
-The crash happens reliably with the image above.
+There is a v2 of this where the patch is dropped from.
 
-Andreas.
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+With Best Regards,
+Andy Shevchenko
+
+
