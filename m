@@ -2,215 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AEF3D1CDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 06:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB663D1D10
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 06:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhGVDes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 23:34:48 -0400
-Received: from mail-eopbgr130052.outbound.protection.outlook.com ([40.107.13.52]:58166
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229779AbhGVDer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 23:34:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KVKNq9AJOZqFBX221p+LipgK1i8UsLNTcBhJBb75ed3B7XcIbTy/4APms84U9VOjJ0PMZzQDx6H6Qme4M7jEpbF/PteUxesGuBAof0PuU9K88nhz723yzgq5P2FURS3t1nfsRjcXIkQUPiQ3DU172vn4TeBMOGOcAkaBybYkTvJ/AOubccd8VitA5fRImGoRzHoKkbnouNhTC7FWRLP5dd54XM9bvL9bSfTEyH6I/WBhaGoZUmbADHuk8k6VmvOwmazxqyKHpSAMm5bKIVU3O7WKypN6W5VzLbuo7ILxxjydg2ibCUbWZ7ZPaCCTupogAEBcFIuI0BtJk3tAuAxwoQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=565WBIEQ6Gy3vPabFxqkkk+08bFVqJo6SldT8D9NM7s=;
- b=P8s8jzqTiiGOnta/fAdRWcndVR+YKU7c8lgwiwSTNIPSdMlbTroCNhYWoTuxrHqoWHWYkvH/Spon3h7QpnW9GX83hW71z8unlainJLE0ypUMldMFkXETkN51/6ZOlcLbbiKJbBUb2T3DqIVTHGXVFQUSoJDq06ZBaDVGh9Z64frpwv8dCsGia603+PiIspc73Hj9ne6qoIGZPkAORrOOHE3pX4GX99gKegaXkhMvdMlPl1Ac/KOtkXZ0Rl18BgzPJBonl9/INbiG5bZzxJnDpVp64ONkZITJePgZjtr2WSN8l8KVt0Dbxc4LVuLOM4EFa6hJuA2BXmv8lDZlEmyIKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nextfour.com; dmarc=pass action=none header.from=nextfour.com;
- dkim=pass header.d=nextfour.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=NextfourGroupOy.onmicrosoft.com;
- s=selector2-NextfourGroupOy-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=565WBIEQ6Gy3vPabFxqkkk+08bFVqJo6SldT8D9NM7s=;
- b=LU6v7vh0ymehlXqwchXCnfbbBP7uklrw5ghnzxMvh79oeZy4VM6rlBSi1tJAZ8NE3qB57FKZQW3PkIal71CVy+lxEdTjMVxBhCpcvvMupCJg1IITtdhz5xW7WDLpGxn9CqYSFDvgrxY9ASGe4DyLZM41WNxhvUFH6Uiv7pYNaJE=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=nextfour.com;
-Received: from DBAPR03MB6630.eurprd03.prod.outlook.com (2603:10a6:10:194::6)
- by DBAPR03MB6613.eurprd03.prod.outlook.com (2603:10a6:10:19b::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.26; Thu, 22 Jul
- 2021 04:15:19 +0000
-Received: from DBAPR03MB6630.eurprd03.prod.outlook.com
- ([fe80::254c:af9d:3060:2201]) by DBAPR03MB6630.eurprd03.prod.outlook.com
- ([fe80::254c:af9d:3060:2201%6]) with mapi id 15.20.4331.034; Thu, 22 Jul 2021
- 04:15:19 +0000
-Subject: Re: [PATCH] KVM: Consider SMT idle status when halt polling
-To:     Li RongQing <lirongqing@baidu.com>, pbonzini@redhat.com,
-        mingo@redhat.com, peterz@infradead.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210722035807.36937-1-lirongqing@baidu.com>
-From:   =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>
-Message-ID: <a05553b3-7475-c1b8-0282-81ab8b1185c6@nextfour.com>
-Date:   Thu, 22 Jul 2021 07:15:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210722035807.36937-1-lirongqing@baidu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: HE1PR08CA0066.eurprd08.prod.outlook.com
- (2603:10a6:7:2a::37) To DBAPR03MB6630.eurprd03.prod.outlook.com
- (2603:10a6:10:194::6)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.121] (91.145.109.188) by HE1PR08CA0066.eurprd08.prod.outlook.com (2603:10a6:7:2a::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.24 via Frontend Transport; Thu, 22 Jul 2021 04:15:18 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 98313f69-b99e-4a0c-5d67-08d94cc75111
-X-MS-TrafficTypeDiagnostic: DBAPR03MB6613:
-X-Microsoft-Antispam-PRVS: <DBAPR03MB66130D81D6B8C489E74643BD83E49@DBAPR03MB6613.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2043;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uhYdhXsNRdIbAtBafVBQDcSogwDNjPqCi5ZT01VF+nn2dFl11GweP9iu2+JmBIL2IFvIJouTJFm2DD1BJZU+7H6lkgjNnilJNCuP12DLEoQ3etPmRCe/+1dw7tBCaysMhYWl3OZ3o7r8nm3uuFBu1FJjLIp2WKzJ3pRAGo8c+ck3TxgmTiucgNUp8G1oMzE6oFKFxnbz7jUinfkVcIXQJ3shdIbrX/jqnmlAQtvFYDEo/getlPaEoreuY324xAs8nBAWnK7fUrIfzapemUcJsRNs/sxh00Pcg5EVQkjFITxumler0eP0SrdtQlevIvBfKXFJDSXcthk660s1Wht+roKgFrPaYoYCwd1TeRXARkQPkJH+ebE1OethVXLhT+JwT35bxYz3kR15WwxCYv//3hJoA4hjCCclaxOK69EG9/GPZ51aNOu8cno5JkptU28bUI09H3RPDfqg/eEisFDWOMvbf2G+LLPotWlf9E2PQqF1ANc2+72yHQwx4Y9A0mbm5Lm84neVqEdlEqhQYl9RSe39Zl7ZrBHbMHApJww0YWACEz26meyt9Vpk+QcCQelq6G5K4VX/X/mcOQgX2NrjSru2vGbo/mIHxopW/64NpenysgOnVruf4LFZaXP9i3S/8eq8aoqoP8n94p7G4/kt4levdC8kVCBhWuGuPzdE+DkYkCwUh5REHIDu+4Az3Y5PTVrxhOa5GRDyslgUqLoDVu5yJ+Yr5af3eVG7xSqirfnvbJRDxS5opswxgP5cLe1Ofwmcrhje8mYrOx4+W96A4A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBAPR03MB6630.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(136003)(39830400003)(346002)(366004)(31686004)(31696002)(186003)(66946007)(52116002)(8676002)(66556008)(36756003)(66476007)(6486002)(5660300002)(508600001)(26005)(83380400001)(956004)(2906002)(86362001)(8936002)(2616005)(38350700002)(316002)(16576012)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q0ZWbUdiSjE5VE9ZQm9Pc0dTSlFwQXZaTHYyTWZJSk5iRGxqS21oWWhNbVRM?=
- =?utf-8?B?cjdqQmZyNXFiT0NOOVJSNElsdmZRcEgrZEVpcWZxVnZWVnF1MmM2R0h0UDRS?=
- =?utf-8?B?QVVJVjdyMmExZmpTRFZ1dURZcms2RzhMN0lzd3JUS2ZGUnk2Ulp1MTlqS3Zh?=
- =?utf-8?B?Yy83Z2MzaVBLZ09GV3VqbFR0dURKMVUzWWVvZjFJK2tCaUtud0JKSGNqUGU1?=
- =?utf-8?B?eGlyVVVZYWN6V3FnR2xXZlhjNDQ4TzRDNlIrSkhXTE16SUIzTjFad25UVFNM?=
- =?utf-8?B?QjhPaHhKL2FDTWJTY0YvbnU3K2JCanIrb2IvT2x3VDdjb2xYQ0ZQRnJMZEdw?=
- =?utf-8?B?OHZnRlN0alRYV1pGZEdXaURvVVFLUlBicXZFQVgzV2dVd1ZsNTN2YkJWQWpa?=
- =?utf-8?B?VVdSbm9mNmZZZk1xSWFXam9mMk54MkpydzU5YkRrMFpNOEIxOCtHYzhocVE4?=
- =?utf-8?B?VzVZVFo4djFsZEk5d2VLK2szQ1dJcVVtQVhHRGg0Zmg4MFJvUkllZ1JSK24x?=
- =?utf-8?B?NzMyN2pzakdsZXp4cFl0Ty9yTVU1ZjU4K2FEQjlDOEhuM3AvcEMzMTVwYzR6?=
- =?utf-8?B?NGFqaDJ5OXZMZHhlRW5HWXlaRDZkRlJ1WW4vOHdmZFZvQ01seGNtM3RTOTVR?=
- =?utf-8?B?SnBMeFZoVFZmV0NwTktXQXNmcGlTRXJLU3UvWU5IWUFUWi9Ba20zVXNFT0xr?=
- =?utf-8?B?SWF6LzlhekdkQUhMOWJzOVMxRjhka2dMKzFNTWVyMWtCY1dSK08wTW5XWFZn?=
- =?utf-8?B?ZEphenFtVGpwMVBjM29Yd0x1cG0xdEtPb1VENXZELzRUazRBT25tdVQ0NkNV?=
- =?utf-8?B?MGJObUJlTlBaeFgrbCt5aThpTFRKK0NxYUhkRWtmbTZGdHpzaU1wRU5yak9L?=
- =?utf-8?B?ZThvTkVMWXFNSTUwWFdOQnlsU2JGR29aMHc3YnNpY2ZZMkJRd1MzUSs4S1pJ?=
- =?utf-8?B?Vm0rcjdidTM5czNabXIvZ05PQ1Z1VjNXeERveDlVNWQzN1d4S2Vmem9mczBQ?=
- =?utf-8?B?M1ZkMDBKL1AyVU1qV1JVYjlkSHRvVC8rSnlnRnVmYWR1QzQ5cEV2T1c5TXZN?=
- =?utf-8?B?ZWJtMjM2MGtlT1JqWWNVQ2ExdXRpZCt1QWE5RzQ5TmZabGo5aEtuSUF6OUs2?=
- =?utf-8?B?T2NzcXZZTHlMN2tLdzU4YzE0cDlBZmxPcFczY3dLSjNITTJydGhGU2NyWVNG?=
- =?utf-8?B?c2NuWkxjTERWWUlLTTMyNm5rNDRWTlc3bE5VdXFTWUN5azVTY0ZTTDZlRDFL?=
- =?utf-8?B?cTc1UTU4UVZXK0Vad2RBTkZPcVYyYTdOMmtJMzYzTVc2bFJaVzJmNDlqdGh2?=
- =?utf-8?B?VlRTY0ZsY1pzNG01aVhkK0ZsWndQSnA3SlFPVXRIaklRS01SYkpBQkpYZERx?=
- =?utf-8?B?bW5KZytNa3c2cnlFaFJ0Qm9vZVJUZng2b1d1WG5iZXZRZHhDQjM0dTl0d3VH?=
- =?utf-8?B?Q0MxZ0x4QmNwWEN3Z0N5WkhucEUvT0FOcm83UFozQWxJOVF5VVhGM1dUQVNs?=
- =?utf-8?B?c1NzeU5LVm81NHQydVhpQ2IySFhTQ0hmTFFMVCtJR01oWGorVnNCVmV3bHZi?=
- =?utf-8?B?ZDZoSTlPbUtFZXlDQU1yL05MTStVM3JVTHUzV0JLbElDM2lxTHVEWlNZTWk4?=
- =?utf-8?B?dmRXWFF6QVd1WUtJNTh5ZTFiRTZtTlpCSmRoSFp5NDQ0Y0pMQXlSaGVYTkgr?=
- =?utf-8?B?a2JvU2s3Mk91c3h6ZTRGTVNlbXRmRDBjeXE1K0xVWnpjSFV2aEpIUXIyeHZM?=
- =?utf-8?Q?ms9qAGBKBtg6RB2eqpHnoZcbAm/UBWW5+Foz/7I?=
-X-OriginatorOrg: nextfour.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98313f69-b99e-4a0c-5d67-08d94cc75111
-X-MS-Exchange-CrossTenant-AuthSource: DBAPR03MB6630.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2021 04:15:19.4340
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 972e95c2-9290-4a02-8705-4014700ea294
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WcdHrHnquEhCU8YS9vdXxWvHXmfkY7aR8Fb4uTANnBnlbZLe27cQ6b62MXnWehA6UzreBto86m6p6kb/Riwljr2AgyLb8o/6M77nPqHBCOU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR03MB6613
+        id S229966AbhGVDuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 23:50:24 -0400
+Received: from mga17.intel.com ([192.55.52.151]:9384 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229905AbhGVDuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 23:50:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="191838730"
+X-IronPort-AV: E=Sophos;i="5.84,259,1620716400"; 
+   d="scan'208";a="191838730"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 21:30:57 -0700
+X-IronPort-AV: E=Sophos;i="5.84,259,1620716400"; 
+   d="scan'208";a="454612687"
+Received: from km-skylake-client-platform.sc.intel.com ([172.25.103.115])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 21:30:57 -0700
+From:   Kyung Min Park <kyung.min.park@intel.com>
+To:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Cc:     baolu.lu@linux.intel.com, dwmw2@infradead.org, joro@8bytes.org,
+        will@kernel.org, yian.chen@intel.com, sohil.mehta@intel.com,
+        ravi.v.shankar@intel.com, ashok.raj@intel.com,
+        Kyung Min Park <kyung.min.park@intel.com>
+Subject: [PATCH v2] iommu/vt-d: Dump DMAR translation structure
+Date:   Wed, 21 Jul 2021 21:24:53 -0700
+Message-Id: <20210722042453.10579-1-kyung.min.park@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When the dmar translation fault happens, the kernel prints a single line
+fault reason with corresponding hexadecimal code defined in the Intel VT-d
+specification.
 
+Currently, when user wants to debug the translation fault in detail,
+debugfs is used for dumping the dmar_translation_struct, which is not
+available when the kernel failed to boot.
 
-On 22.7.2021 6.58, Li RongQing wrote:
-> SMT siblings share caches and other hardware, halt polling
-> will degrade its sibling performance if its sibling is busy
->
-> Signed-off-by: Li RongQing <lirongqing@baidu.com>
-> ---
->   include/linux/kvm_host.h |  5 ++++-
->   include/linux/sched.h    | 17 +++++++++++++++++
->   kernel/sched/fair.c      | 17 -----------------
->   3 files changed, 21 insertions(+), 18 deletions(-)
->
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index ae7735b..15b3ef4 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -269,7 +269,10 @@ static inline bool kvm_vcpu_mapped(struct kvm_host_map *map)
->   
->   static inline bool kvm_vcpu_can_poll(ktime_t cur, ktime_t stop)
->   {
-> -	return single_task_running() && !need_resched() && ktime_before(cur, stop);
-> +	return single_task_running() &&
-> +		   !need_resched() &&
-> +		   ktime_before(cur, stop) &&
-> +		   is_core_idle(raw_smp_processor_id());
->   }
->   
->   /*
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index ec8d07d..c333218 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -34,6 +34,7 @@
->   #include <linux/rseq.h>
->   #include <linux/seqlock.h>
->   #include <linux/kcsan.h>
-> +#include <linux/topology.h>
->   #include <asm/kmap_size.h>
->   
->   /* task_struct member predeclarations (sorted alphabetically): */
-> @@ -2191,6 +2192,22 @@ int sched_trace_rq_nr_running(struct rq *rq);
->   
->   const struct cpumask *sched_trace_rd_span(struct root_domain *rd);
->   
-> +static inline bool is_core_idle(int cpu)
-> +{
-> +#ifdef CONFIG_SCHED_SMT
-> +	int sibling;
-> +
-> +	for_each_cpu(sibling, cpu_smt_mask(cpu)) {
-> +		if (cpu == sibling)
-> +			continue;
-> +
-> +		if (!idle_cpu(cpu))
-> +			return false;
+Dump the DMAR translation structure, pagewalk the IO page table and print
+the page table entry when the fault happens.
 
-if (!idle_cpu(sibling))  instead, now it returns always false.
+Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
+---
+ChangeLog:
+- Change from v1 to v2:
+  1. fix compilation issue with different IOMMU config option.
+---
+ drivers/iommu/intel/dmar.c  |   8 ++-
+ drivers/iommu/intel/iommu.c | 107 ++++++++++++++++++++++++++++++++++++
+ include/linux/dmar.h        |   4 ++
+ 3 files changed, 116 insertions(+), 3 deletions(-)
 
-
-
-> +	}
-> +#endif
-> +	return true;
-> +}
-> +
->   #ifdef CONFIG_SCHED_CORE
->   extern void sched_core_free(struct task_struct *tsk);
->   extern void sched_core_fork(struct task_struct *p);
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 44c4520..5b0259c 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -1477,23 +1477,6 @@ struct numa_stats {
->   	int idle_cpu;
->   };
->   
-> -static inline bool is_core_idle(int cpu)
-> -{
-> -#ifdef CONFIG_SCHED_SMT
-> -	int sibling;
-> -
-> -	for_each_cpu(sibling, cpu_smt_mask(cpu)) {
-> -		if (cpu == sibling)
-> -			continue;
-> -
-> -		if (!idle_cpu(cpu))
-> -			return false;
-> -	}
-> -#endif
-> -
-> -	return true;
-> -}
-> -
->   struct task_numa_env {
->   	struct task_struct *p;
->   
+diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+index d66f79acd14d..c74d97c5ec21 100644
+--- a/drivers/iommu/intel/dmar.c
++++ b/drivers/iommu/intel/dmar.c
+@@ -1948,19 +1948,21 @@ static int dmar_fault_do_one(struct intel_iommu *iommu, int type,
+ 		       source_id >> 8, PCI_SLOT(source_id & 0xFF),
+ 		       PCI_FUNC(source_id & 0xFF), addr >> 48,
+ 		       fault_reason, reason);
+-	else if (pasid == INVALID_IOASID)
++	else if (pasid == INVALID_IOASID) {
+ 		pr_err("[%s NO_PASID] Request device [0x%02x:0x%02x.%d] fault addr 0x%llx [fault reason 0x%02x] %s\n",
+ 		       type ? "DMA Read" : "DMA Write",
+ 		       source_id >> 8, PCI_SLOT(source_id & 0xFF),
+ 		       PCI_FUNC(source_id & 0xFF), addr,
+ 		       fault_reason, reason);
+-	else
++		dmar_fault_dump_ptes(iommu, source_id, addr, pasid);
++	} else {
+ 		pr_err("[%s PASID 0x%x] Request device [0x%02x:0x%02x.%d] fault addr 0x%llx [fault reason 0x%02x] %s\n",
+ 		       type ? "DMA Read" : "DMA Write", pasid,
+ 		       source_id >> 8, PCI_SLOT(source_id & 0xFF),
+ 		       PCI_FUNC(source_id & 0xFF), addr,
+ 		       fault_reason, reason);
+-
++		dmar_fault_dump_ptes(iommu, source_id, addr, pasid);
++	}
+ 	return 0;
+ }
+ 
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index a6a07d985709..859ec0832429 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -173,6 +173,8 @@ static struct intel_iommu **g_iommus;
+ 
+ static void __init check_tylersburg_isoch(void);
+ static int rwbf_quirk;
++static inline struct device_domain_info *
++dmar_search_domain_by_dev_info(int segment, int bus, int devfn);
+ 
+ /*
+  * set to 1 to panic kernel if can't successfully enable VT-d
+@@ -998,6 +1000,111 @@ static void free_context_table(struct intel_iommu *iommu)
+ 	spin_unlock_irqrestore(&iommu->lock, flags);
+ }
+ 
++static void pgtable_walk(struct intel_iommu *iommu, unsigned long pfn, u8 bus, u8 devfn)
++{
++	struct dma_pte *parent, *pte = NULL;
++	struct device_domain_info *info;
++	struct dmar_domain *domain = NULL;
++	int offset, level;
++
++	info = dmar_search_domain_by_dev_info(iommu->segment, bus, devfn);
++	if (!info) {
++		pr_info("no iommu info for this device.\n");
++		return;
++	}
++
++	domain = info->domain;
++	if (!domain) {
++		pr_info("iommu domain does not exist for this device.\n");
++		return;
++	}
++	level = agaw_to_level(domain->agaw);
++	parent = domain->pgd;
++	if (!parent) {
++		pr_info("NULL pointer of page table entry.\n");
++		return;
++	}
++
++	while (1) {
++		offset = pfn_level_offset(pfn, level);
++		pte = &parent[offset];
++		if (!pte || (dma_pte_superpage(pte) || !dma_pte_present(pte))) {
++			pr_info("pte not present at level %d", level);
++			break;
++		}
++		pr_info("pte level: %d, pte value: %llx\n", level, pte->val);
++
++		if (level == 1)
++			break;
++		parent = phys_to_virt(dma_pte_addr(pte));
++		level--;
++	}
++}
++
++void dmar_fault_dump_ptes(struct intel_iommu *iommu, u16 source_id, unsigned long long addr,
++			  u32 pasid)
++{
++	struct pasid_dir_entry *dir, *pde;
++	struct pasid_entry *entries, *pte;
++	struct context_entry *ctx_entry;
++	struct root_entry *rt_entry;
++	u8 devfn = source_id & 0xff;
++	u8 bus = source_id >> 8;
++	int i, dir_index, index;
++
++	/* root entry dump */
++	rt_entry = &iommu->root_entry[bus];
++	if (!rt_entry) {
++		pr_info("root table entry is not present\n");
++		return;
++	}
++	if (!sm_supported(iommu))
++		pr_info("%s, root_entry[63:0]: %llx", iommu->name, rt_entry->lo);
++	else
++		pr_info("%s, root_entry[127:0]: %llx, %llx\n", iommu->name,
++			rt_entry->hi, rt_entry->lo);
++
++	/* context entry dump */
++	ctx_entry = iommu_context_addr(iommu, bus, devfn, 0);
++	if (!ctx_entry) {
++		pr_info("context table entry is not present\n");
++		return;
++	}
++	pr_info("%s, ctx_entry[127:0]: %llx, %llx\n", iommu->name, ctx_entry->hi, ctx_entry->lo);
++
++	/* legacy mode does not require PASID entries */
++	if (!sm_supported(iommu))
++		goto pgtable_walk;
++
++	/* get the pointer to pasid directory entry */
++	dir = phys_to_virt(ctx_entry->lo & VTD_PAGE_MASK);
++	if (!dir) {
++		pr_info("pasid directory entry is not present\n");
++		return;
++	}
++	/* For request-without-pasid, get the pasid from context entry */
++	if (intel_iommu_sm && pasid == INVALID_IOASID)
++		pasid = PASID_RID2PASID;
++
++	dir_index = pasid >> PASID_PDE_SHIFT;
++	pde = &dir[dir_index];
++	pr_info("%s, pasid_dir_entry: %llx\n", iommu->name, pde->val);
++
++	/* get the pointer to the pasid table entry */
++	entries = get_pasid_table_from_pde(pde);
++	if (!entries) {
++		pr_info("pasid table entry is not present\n");
++		return;
++	}
++	index = pasid & PASID_PTE_MASK;
++	pte = &entries[index];
++	for (i = 0; i < ARRAY_SIZE(pte->val); i++)
++		pr_info("%s, pasid_table_entry[%d]: %llx\n", iommu->name, i, pte->val[i]);
++
++pgtable_walk:
++	pgtable_walk(iommu, addr >> VTD_PAGE_SHIFT, bus, devfn);
++}
++
+ static struct dma_pte *pfn_to_dma_pte(struct dmar_domain *domain,
+ 				      unsigned long pfn, int *target_level)
+ {
+diff --git a/include/linux/dmar.h b/include/linux/dmar.h
+index e04436a7ff27..cdcb1b6d85b9 100644
+--- a/include/linux/dmar.h
++++ b/include/linux/dmar.h
+@@ -142,9 +142,13 @@ extern int dmar_parse_one_satc(struct acpi_dmar_header *hdr, void *arg);
+ extern int dmar_release_one_atsr(struct acpi_dmar_header *hdr, void *arg);
+ extern int dmar_iommu_hotplug(struct dmar_drhd_unit *dmaru, bool insert);
+ extern int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info);
++void dmar_fault_dump_ptes(struct intel_iommu *iommu, u16 source_id,
++			  unsigned long long addr, u32 pasid);
+ #else /* !CONFIG_INTEL_IOMMU: */
+ static inline int intel_iommu_init(void) { return -ENODEV; }
+ static inline void intel_iommu_shutdown(void) { }
++static inline void dmar_fault_dump_ptes(struct intel_iommu *iommu, u16 source_id,
++					unsigned long long addr, u32 pasid) {}
+ 
+ #define	dmar_parse_one_rmrr		dmar_res_noop
+ #define	dmar_parse_one_atsr		dmar_res_noop
+-- 
+2.17.1
 
