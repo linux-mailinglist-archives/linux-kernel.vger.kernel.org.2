@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F843D2A95
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4154D3D2955
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234598AbhGVQNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:13:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42674 "EHLO mail.kernel.org"
+        id S233680AbhGVQDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:03:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234744AbhGVQHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:07:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43D6161D1A;
-        Thu, 22 Jul 2021 16:48:12 +0000 (UTC)
+        id S233215AbhGVQB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:01:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F41DB613D2;
+        Thu, 22 Jul 2021 16:42:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972492;
-        bh=rEnJMih7c7qCwVmH0Nhd79TP9AADJe93o2uFvaEZPbA=;
+        s=korg; t=1626972151;
+        bh=bIzTXGsHr8QHJ+5atn7vpgyCBEq5bSAhFCqbgLtBvxs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BuroIVoNIdq3zONKDRK61ajgUP63xh9FY7NAn5u1Ir+RBdwc0bkqmgAOtyDwn+4eD
-         E2LCydByE6uqwsqeM7RX8MDxkFEoNju74Eduii2btTP7Dg0wS8kemqbOR6eriy0Qz0
-         P7HymL+hj1dx6BKKFIZPAsJBuPH/WeNbEVOegyUE=
+        b=lsdDwkg7jrTYP5uB8PbAJiUnmUWdhCGD+NqIHHiHdSQDrOk3np154VisJeRgVgGWY
+         9Ytzejs/FhU/LgY6opLwIjH5HqieGgaCjTzhnH0Wl9lByZTsHFDvLmadETlBKJd8jV
+         OXmlqxQ0wwgRpbCBmoYHyxfcnd/Y1eWSjdFamEvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Ekstrand <jason@jlekstrand.net>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gustavo Padovan <gustavo.padovan@collabora.co.uk>
-Subject: [PATCH 5.13 134/156] dma-buf/sync_file: Dont leak fences on merge failure
-Date:   Thu, 22 Jul 2021 18:31:49 +0200
-Message-Id: <20210722155632.686694580@linuxfoundation.org>
+        stable@vger.kernel.org, Talal Ahmad <talalahmad@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 119/125] tcp: call sk_wmem_schedule before sk_mem_charge in zerocopy path
+Date:   Thu, 22 Jul 2021 18:31:50 +0200
+Message-Id: <20210722155628.661907281@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Ekstrand <jason@jlekstrand.net>
+From: Talal Ahmad <talalahmad@google.com>
 
-commit ffe000217c5068c5da07ccb1c0f8cce7ad767435 upstream.
+commit 358ed624207012f03318235017ac6fb41f8af592 upstream.
 
-Each add_fence() call does a dma_fence_get() on the relevant fence.  In
-the error path, we weren't calling dma_fence_put() so all those fences
-got leaked.  Also, in the krealloc_array failure case, we weren't
-freeing the fences array.  Instead, ensure that i and fences are always
-zero-initialized and dma_fence_put() all the fences and kfree(fences) on
-every error path.
+sk_wmem_schedule makes sure that sk_forward_alloc has enough
+bytes for charging that is going to be done by sk_mem_charge.
 
-Signed-off-by: Jason Ekstrand <jason@jlekstrand.net>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Fixes: a02b9dc90d84 ("dma-buf/sync_file: refactor fence storage in struct sync_file")
-Cc: Gustavo Padovan <gustavo.padovan@collabora.co.uk>
-Cc: Christian König <christian.koenig@amd.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210624174732.1754546-1-jason@jlekstrand.net
-Signed-off-by: Christian König <christian.koenig@amd.com>
+In the transmit zerocopy path, there is sk_mem_charge but there was
+no call to sk_wmem_schedule. This change adds that call.
+
+Without this call to sk_wmem_schedule, sk_forward_alloc can go
+negetive which is a bug because sk_forward_alloc is a per-socket
+space that has been forward charged so this can't be negative.
+
+Fixes: f214f915e7db ("tcp: enable MSG_ZEROCOPY")
+Signed-off-by: Talal Ahmad <talalahmad@google.com>
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+Reviewed-by: Wei Wang <weiwan@google.com>
+Reviewed-by: Soheil Hassas Yeganeh <soheil@google.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma-buf/sync_file.c |   13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ net/ipv4/tcp.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/dma-buf/sync_file.c
-+++ b/drivers/dma-buf/sync_file.c
-@@ -211,8 +211,8 @@ static struct sync_file *sync_file_merge
- 					 struct sync_file *b)
- {
- 	struct sync_file *sync_file;
--	struct dma_fence **fences, **nfences, **a_fences, **b_fences;
--	int i, i_a, i_b, num_fences, a_num_fences, b_num_fences;
-+	struct dma_fence **fences = NULL, **nfences, **a_fences, **b_fences;
-+	int i = 0, i_a, i_b, num_fences, a_num_fences, b_num_fences;
- 
- 	sync_file = sync_file_alloc();
- 	if (!sync_file)
-@@ -236,7 +236,7 @@ static struct sync_file *sync_file_merge
- 	 * If a sync_file can only be created with sync_file_merge
- 	 * and sync_file_create, this is a reasonable assumption.
- 	 */
--	for (i = i_a = i_b = 0; i_a < a_num_fences && i_b < b_num_fences; ) {
-+	for (i_a = i_b = 0; i_a < a_num_fences && i_b < b_num_fences; ) {
- 		struct dma_fence *pt_a = a_fences[i_a];
- 		struct dma_fence *pt_b = b_fences[i_b];
- 
-@@ -277,15 +277,16 @@ static struct sync_file *sync_file_merge
- 		fences = nfences;
- 	}
- 
--	if (sync_file_set_fence(sync_file, fences, i) < 0) {
--		kfree(fences);
-+	if (sync_file_set_fence(sync_file, fences, i) < 0)
- 		goto err;
--	}
- 
- 	strlcpy(sync_file->user_name, name, sizeof(sync_file->user_name));
- 	return sync_file;
- 
- err:
-+	while (i)
-+		dma_fence_put(fences[--i]);
-+	kfree(fences);
- 	fput(sync_file->file);
- 	return NULL;
- 
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -1361,6 +1361,9 @@ new_segment:
+ 			}
+ 			pfrag->offset += copy;
+ 		} else {
++			if (!sk_wmem_schedule(sk, copy))
++				goto wait_for_space;
++
+ 			err = skb_zerocopy_iter_stream(sk, skb, msg, copy, uarg);
+ 			if (err == -EMSGSIZE || err == -EEXIST) {
+ 				tcp_mark_push(tp, skb);
 
 
