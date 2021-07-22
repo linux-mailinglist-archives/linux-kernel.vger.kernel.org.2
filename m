@@ -2,137 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026B43D2B28
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC69E3D2B2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhGVQu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:50:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:57558 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhGVQu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:50:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B231106F;
-        Thu, 22 Jul 2021 10:31:01 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C18053F694;
-        Thu, 22 Jul 2021 10:30:59 -0700 (PDT)
-Subject: Re: [PATCH 17/23] iommu/vt-d: Prepare for multiple DMA domain types
-To:     kernel test robot <lkp@intel.com>, joro@8bytes.org, will@kernel.org
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org
-References: <11efdfa4ee223d12769d17459fcf789c626d7b82.1626888445.git.robin.murphy@arm.com>
- <202107230049.1VfUKZOX-lkp@intel.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <df1377fc-ac09-6f76-f224-1d58e94473c5@arm.com>
-Date:   Thu, 22 Jul 2021 18:30:54 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S229809AbhGVQvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhGVQvm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:51:42 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0567BC061575;
+        Thu, 22 Jul 2021 10:32:17 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id a80-20020a1c98530000b0290245467f26a4so123485wme.0;
+        Thu, 22 Jul 2021 10:32:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=MGeh56W62eK1hUI+wy5/PVDZC2f+e5pmmh2hY+I14MU=;
+        b=G2MfvDi+mldKJYf+TVgjnyifVOvpHLgB2k53AwkYamHiyXHmTyDKLFUqTs5h+Rjgih
+         Ta6rD4sn6WlPpTiVGr7NRzzwluKUNaKFLMwQHO8BP1xvmOOPPsP7oL4EToNgTigVtjF6
+         mmy94+NOd83orVDahHQ5/jcHeU2R7B4DqwkryrTjhk4e9HFWcLwRmvtVjENy+OGu9eQ4
+         kgB+g09tUj9vLVXf7wtakZ0MoN+Uz0ykHlaJBRciwVVg1mlbGQUS2DS8yozi3cMervOV
+         /HB9T2CvTlmxOAZsvAg/yLU20bdjjFSGHgUGkU+vn0098j6JuiUzqYMzgbQgPoqyO5Ej
+         fjIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=MGeh56W62eK1hUI+wy5/PVDZC2f+e5pmmh2hY+I14MU=;
+        b=pNz/34ccGFEbSMTdJtE1hDzPqBgEfFtnti0p/KweBd+5ub9PO5Uep+iYOWlRhg4qHc
+         WhvJk8wq0Udz+0zDTsfvAV2nLg8hDNPUdVR9LvU8RlHREIIOr2ed2jg80J2s+v1Rt36x
+         FAAxQX3i2J2CqBuznfd5Qe935tyOidK3iM9wtniP4dlXvIPLHdF1TYlU6/IX3+yMNRFF
+         VjhbBxo5qM60RTXWW80207F7zcoDYObi3GprZ3FWo85HWj+wSQKHFx1R17QbIDF/Gd3Q
+         TF1qvcqHAizR8GREPKzeuCsPSprqH1H+8NqoyUKRsRgA3j+b2GSyqTCGS9vPW/P+TI7S
+         29oQ==
+X-Gm-Message-State: AOAM530m8IhcFxmYg8b8hwTopIFzsGg/SnbJTTq0iaGb16wJPtxefD4X
+        YWZtYprqZIG8w+zKubLv/yE=
+X-Google-Smtp-Source: ABdhPJzPAk/FJIkSAcuG4mS2521g3bfenS4eHybiHNRXIWhmRNWD/n8ikjjB4Hf45Zzdb+Yj3blavw==
+X-Received: by 2002:a7b:c041:: with SMTP id u1mr636335wmc.95.1626975135612;
+        Thu, 22 Jul 2021 10:32:15 -0700 (PDT)
+Received: from pc ([196.235.233.206])
+        by smtp.gmail.com with ESMTPSA id z17sm17018074wrr.35.2021.07.22.10.32.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 10:32:15 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 18:32:12 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     aacraid@microsemi.com, "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        gregkh@linuxfoundation.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND] scsi: aacraid: aachba: replace if with max()
+Message-ID: <20210722173212.GA5685@pc>
 MIME-Version: 1.0
-In-Reply-To: <202107230049.1VfUKZOX-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-22 17:44, kernel test robot wrote:
-> Hi Robin,
-> 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on iommu/next]
-> [also build test ERROR on rockchip/for-next linus/master v5.14-rc2 next-20210722]
-> [cannot apply to sunxi/sunxi/for-next]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Robin-Murphy/iommu-Refactor-DMA-domain-strictness/20210722-022514
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git next
-> config: ia64-allmodconfig (attached as .config)
-> compiler: ia64-linux-gcc (GCC) 10.3.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://github.com/0day-ci/linux/commit/c05e0e1856b394eff1167c00f7bbd6ac7cc9dea6
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review Robin-Murphy/iommu-Refactor-DMA-domain-strictness/20210722-022514
->          git checkout c05e0e1856b394eff1167c00f7bbd6ac7cc9dea6
->          # save the attached .config to linux build tree
->          mkdir build_dir
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=ia64 SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->     In file included from arch/ia64/include/asm/bug.h:17,
->                      from include/linux/bug.h:5,
->                      from include/linux/thread_info.h:13,
->                      from include/asm-generic/preempt.h:5,
->                      from ./arch/ia64/include/generated/asm/preempt.h:1,
->                      from include/linux/preempt.h:78,
->                      from include/linux/spinlock.h:51,
->                      from include/linux/wait.h:9,
->                      from include/linux/wait_bit.h:8,
->                      from include/linux/fs.h:6,
->                      from include/linux/debugfs.h:15,
->                      from drivers/iommu/intel/iommu.c:18:
->     drivers/iommu/intel/iommu.c: In function 'domain_get_iommu':
->>> drivers/iommu/intel/iommu.c:604:38: error: '__IOMMU_DOMAIN_DMA' undeclared (first use in this function); did you mean 'IOMMU_DOMAIN_DMA'?
->       604 |  if (WARN_ON(!(domain->domain.type & __IOMMU_DOMAIN_DMA)))
->           |                                      ^~~~~~~~~~~~~~~~~~
->     include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
->       121 |  int __ret_warn_on = !!(condition);    \
->           |                         ^~~~~~~~~
->     drivers/iommu/intel/iommu.c:604:38: note: each undeclared identifier is reported only once for each function it appears in
->       604 |  if (WARN_ON(!(domain->domain.type & __IOMMU_DOMAIN_DMA)))
->           |                                      ^~~~~~~~~~~~~~~~~~
->     include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
->       121 |  int __ret_warn_on = !!(condition);    \
->           |                         ^~~~~~~~~
-> 
-> 
-> vim +604 drivers/iommu/intel/iommu.c
-> 
->     597	
->     598	/* This functionin only returns single iommu in a domain */
->     599	struct intel_iommu *domain_get_iommu(struct dmar_domain *domain)
->     600	{
->     601		int iommu_id;
->     602	
->     603		/* si_domain and vm domain should not get here. */
->   > 604		if (WARN_ON(!(domain->domain.type & __IOMMU_DOMAIN_DMA)))
+Replace if with max() in order to make code more clean.
 
-Bleh, of course that should be __IOMMU_DOMAIN_DMA_API like the other two 
-instances. I'll fix this locally ready for v2.
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ drivers/scsi/aacraid/aachba.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Robin.
+diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
+index 46b8dffce2dd..330224f08fd3 100644
+--- a/drivers/scsi/aacraid/aachba.c
++++ b/drivers/scsi/aacraid/aachba.c
+@@ -485,8 +485,8 @@ int aac_get_containers(struct aac_dev *dev)
+ 	if (status != -ERESTARTSYS)
+ 		aac_fib_free(fibptr);
+ 
+-	if (maximum_num_containers < MAXIMUM_NUM_CONTAINERS)
+-		maximum_num_containers = MAXIMUM_NUM_CONTAINERS;
++	maximum_num_containers = max(maximum_num_containers, MAXIMUM_NUM_CONTAINERS);
++
+ 	if (dev->fsa_dev == NULL ||
+ 		dev->maximum_num_containers != maximum_num_containers) {
+ 
+-- 
+2.25.1
 
->     605			return NULL;
->     606	
->     607		for_each_domain_iommu(iommu_id, domain)
->     608			break;
->     609	
->     610		if (iommu_id < 0 || iommu_id >= g_num_of_iommus)
->     611			return NULL;
->     612	
->     613		return g_iommus[iommu_id];
->     614	}
->     615	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
-> 
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
-> 
