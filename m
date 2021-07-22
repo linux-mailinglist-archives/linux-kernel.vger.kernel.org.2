@@ -2,88 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F23A3D2CAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861FF3D2CAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbhGVSlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:41:35 -0400
-Received: from hosting.gsystem.sk ([212.5.213.30]:39432 "EHLO
-        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhGVSle (ORCPT
+        id S230214AbhGVSmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 14:42:52 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44992 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229556AbhGVSmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:41:34 -0400
-Received: from [192.168.0.2] (188-167-68-178.dynamic.chello.sk [188.167.68.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id 50A927A003B;
-        Thu, 22 Jul 2021 21:22:08 +0200 (CEST)
-From:   Ondrej Zary <linux@zary.sk>
-To:     Christian =?iso-8859-1?q?K=F6nig?= <christian.koenig@amd.com>
-Subject: nouveau broken again on Riva TNT2 in 5.14.0-rc2
-Date:   Thu, 22 Jul 2021 21:22:05 +0200
-User-Agent: KMail/1.9.10
-Cc:     Ben Skeggs <bskeggs@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+        Thu, 22 Jul 2021 14:42:51 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16MJ300w186773;
+        Thu, 22 Jul 2021 15:23:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Op/Bo1AO/LTdxBBrkjvePPmN6XyZKah3LgizjT4Ell4=;
+ b=M8SJjOSzeg+gec1EhqvUJgmpfTDaDue6qpK52ivLGMGBOIyMTpqePqOuHgB2hiW3mfTy
+ zf3jx8DdE+4+b5qmoTsNEpc22afQh3rDAsZNA8N4m2h0mMFOWzbqDPTdqtVX7kjtqK1I
+ 4C/ibnwvYX5m70VWNyF4/o5Ncn5b3mF93eB7wv+S9iaCLcrNUMOb3JH8Cxgghk2pyCZs
+ Q3lV8Q1jbUjqgtk/GP0Ng+5bH/OiBJbCk2WSpXk8WgpX9toy5wquerXK0J3gJ3gBA/+l
+ s6Nrw3KnY7+Xnz6GYUK4PNV/b3fo86Vyn0MPTed8F4CQij/+Hibpzq+yMXwzOXl6ty8a Pg== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39ycy9v6mw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Jul 2021 15:23:03 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16MJDCST021516;
+        Thu, 22 Jul 2021 19:23:01 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 39xhx48tr3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Jul 2021 19:23:01 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16MJKU5u33947950
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Jul 2021 19:20:30 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7B6B0AE045;
+        Thu, 22 Jul 2021 19:22:59 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0C99DAE053;
+        Thu, 22 Jul 2021 19:22:59 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.166.24])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 22 Jul 2021 19:22:58 +0000 (GMT)
+Subject: Re: [PATCH v2 0/4] Fix restricted DMA vs swiotlb_exit()
+To:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Claire Chang <tientzu@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Halil Pasic <pasic@linux.ibm.com>
+References: <20210720133826.9075-1-will@kernel.org>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <57e37ef9-c055-d6a6-2244-2c7dd243b5c1@de.ibm.com>
+Date:   Thu, 22 Jul 2021 21:22:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210720133826.9075-1-will@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: RmyVFFKxtFiVcNLrl6GSKmkPY-rhkY0N
+X-Proofpoint-ORIG-GUID: RmyVFFKxtFiVcNLrl6GSKmkPY-rhkY0N
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <202107222122.05546.linux@zary.sk>
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-22_09:2021-07-22,2021-07-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 malwarescore=0 mlxlogscore=999 adultscore=0 impostorscore=0
+ suspectscore=0 priorityscore=1501 spamscore=0 phishscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107220125
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-nouveau is broken again:
+On 20.07.21 15:38, Will Deacon wrote:
+> Hi again, folks,
+> 
+> This is version two of the patch series I posted yesterday:
+> 
+>    https://lore.kernel.org/r/20210719123054.6844-1-will@kernel.org
+> 
+> The only changes since v1 are:
+> 
+>    * Squash patches 2 and 3, amending the commit message accordingly
+>    * Add Reviewed-by and Tested-by tags from Christoph and Claire (thanks!)
+> 
+> I'd usually leave it a bit longer between postings, but since this fixes
+> issues with patches in -next I thought I'd spin a new version immediately.
+> 
+> Cheers,
 
-[   58.795794] BUG: kernel NULL pointer dereference, address: 0000017c
-[   58.795835] #PF: supervisor read access in kernel mode
-[   58.795844] #PF: error_code(0x0000) - not-present page
-[   58.795851] *pde = 00000000
-[   58.795862] Oops: 0000 [#1] SMP
-[   58.795875] CPU: 0 PID: 1730 Comm: Xorg Not tainted 5.14.0-rc2+ #391
-[   58.795886] Hardware name: VIA Technologies, Inc. VT82C694X/694X, BIOS 6.00 PG 02/19/2002
-[   58.795894] EIP: nouveau_bo_wr16+0x8/0x27 [nouveau]
-[   58.796716] Code: 85 ff 74 0d 80 7d f3 00 74 07 80 a6 c0 01 00 00 fe 89 f0 e8 e5 ee ff ff 8d 65 f4 89 f8 5b 5e 5f 5d c3 55 01 d2 89 e5 53 89 c3 <03> 93 7c 01 00 00 0f b7 c1 f6 83 84 01 00 00 80 74 07 e8 8a bc 72
-[   58.796728] EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
-[   58.796736] ESI: 00000020 EDI: c18bc600 EBP: c7c49d88 ESP: c7c49d84
-[   58.796744] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00210246
-[   58.796754] CR0: 80050033 CR2: 0000017c CR3: 07e12000 CR4: 00000690
-[   58.796762] Call Trace:
-[   58.796774]  nv04_crtc_cursor_set+0x148/0x1d8 [nouveau]
-[   58.796952]  ? ttm_bo_reserve.constprop.16+0x1c/0x1c [nouveau]
-[   58.797122]  drm_mode_cursor_common+0x13b/0x1ad
-[   58.797150]  ? ttm_bo_reserve.constprop.16+0x1c/0x1c [nouveau]
-[   58.797322]  drm_mode_cursor_ioctl+0x2e/0x36
-[   58.797335]  ? drm_mode_setplane+0x203/0x203
-[   58.797346]  drm_ioctl_kernel+0x66/0x99
-[   58.797366]  drm_ioctl+0x211/0x2d8
-[   58.797377]  ? drm_mode_setplane+0x203/0x203
-[   58.797389]  ? __cond_resched+0x1e/0x22
-[   58.797409]  ? mutex_lock+0xb/0x24
-[   58.797422]  ? rpm_resume.part.14+0x6f/0x362
-[   58.797447]  ? ktime_get_mono_fast_ns+0x5e/0xf2
-[   58.797469]  ? __pm_runtime_resume+0x5b/0x63
-[   58.797480]  nouveau_drm_ioctl+0x65/0x81 [nouveau]
-[   58.797662]  ? nouveau_cli_work+0xc3/0xc3 [nouveau]
-[   58.797838]  vfs_ioctl+0x1a/0x24
-[   58.797850]  __ia32_sys_ioctl+0x6ea/0x704
-[   58.797861]  ? doublefault_shim+0x120/0x120
-[   58.797872]  ? exit_to_user_mode_prepare+0x9e/0x10c
-[   58.797900]  do_int80_syscall_32+0x53/0x6e
-[   58.797910]  entry_INT80_32+0xf0/0xf0
-[   58.797923] EIP: 0xb7f04092
-[   58.797932] Code: 00 00 00 e9 90 ff ff ff ff a3 24 00 00 00 68 30 00 00 00 e9 80 ff ff ff ff a3 e8 ff ff ff 66 90 00 00 00 00 00 00 00 00 cd 80 <c3> 8d b4 26 00 00 00 00 8d b6 00 00 00 00 8b 1c 24 c3 8d b4 26 00
-[   58.797943] EAX: ffffffda EBX: 0000000e ECX: c01c64a3 EDX: bf9a15c0
-[   58.797952] ESI: 00997850 EDI: c01c64a3 EBP: 0000000e ESP: bf9a1574
-[   58.797959] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00200292
-[   58.797972] Modules linked in: i2c_dev nouveau wmi hwmon drm_ttm_helper psmouse serio_raw via_agp sg parport_pc 8139cp parport
-[   58.798016] CR2: 000000000000017c
-[   58.798147] ---[ end trace 732829d39ed65de9 ]---
+FWIW, I just bisected virtio-errors with secure execution mode
+qemu-system-s390x: virtio-serial-bus: Unexpected port id 4205794771 for device virtio-serial0.0
 
+to
+commit 903cd0f315fe426c6a64c54ed389de0becb663dc
+Author: Claire Chang <tientzu@chromium.org>
+Date:   Thu Jun 24 23:55:20 2021 +0800
 
-d02117f8efaa5fbc37437df1ae955a147a2a424a is the first bad commit
+      swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing
 
--- 
-Ondrej Zary
+Unfortunately this patch series does NOT fix this issue, so it seems that even more
+things are broken.
+
+Any idea what else might be broken?
+Shall we rather revert these patches from next until we have things under control?
