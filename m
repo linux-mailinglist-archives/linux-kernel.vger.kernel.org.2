@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB973D205D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2103D205F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhGVI0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 04:26:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60408 "EHLO mail.kernel.org"
+        id S231325AbhGVI1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 04:27:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230419AbhGVI0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 04:26:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EC9B610F7;
-        Thu, 22 Jul 2021 09:07:20 +0000 (UTC)
+        id S230419AbhGVI1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 04:27:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96F3A610F7;
+        Thu, 22 Jul 2021 09:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626944842;
-        bh=G6uggNtHBw06DrLEyrx3+EPLEQiuV1JfBOJ1R+sWWJ8=;
+        s=k20201202; t=1626944871;
+        bh=F2bOQ2wJZqaEp0uMz1Rd5Ay2IRD7Pb+qXdR/w1JV9jY=;
         h=From:To:Cc:Subject:Date:From;
-        b=KQeV/yh9kA3Pd9NOV0uvBntromN90sb9aiaaPGvLkaYVfUNU7O8bsgBgmvO/GMaao
-         LFhN0mq06HHJtG4ZO2HKrb9Y35Kf+x8VSCBty7LmZAqDvWlAN+01q6+P9hsjnc/pS5
-         Pq3wCiWrVQU+WsT+gJQa+4fqc6bRKBuB/W6E6fP4MRcNNHIFPUEGqMjbyX03kniPRw
-         HJqqoQZI6u1tjkjzwkx6c9yl/xRlmtD7bGpzoZYgJjaL2KuqMcAP4T7YW/T7wyRzf8
-         c1CeIPgNxz3WG9CfzPamEggWU3i9gd4RVaDmSPm20nO0AkFK7eBPZkDXhbFe8dLMsB
-         LGD0yeHyDmw0g==
+        b=Grns4zxjak8oi1LJ5h1bpkdXau/6RFwPeK3vANPxmNMApKnHhQJydq/3XML6Ecm1T
+         xbpW6HcPJNJFiVnN7Cuyt/IK90l+/pFQPhT9Ca8DhIj5acT55uMB3LYvPShl47fwcf
+         Pf+EVwKsEZNO5jayuvXPMuL3mZSF78K3ppq3Y8+Y2iN9wiujPSIDWYRrBndA8yQw8X
+         VVNtJRmDrW7LX1M7KxSnkzscTvQEb5GbmmfRVRFOL6EsPZWYSJTRkmpHDjSJfP/zKS
+         mJP5dnLPUgTOyaWOrUHvPrVi1GbbrQ+PtQKQmdbyn6bjSl7qbix4GO511Dwg9usqNd
+         t5+mnByDrELxg==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jean-Francois Dagenais <jeff.dagenais@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Amit Kucheria <amitk@kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] thermal: fix thermal_cooling_device_register() prototype
-Date:   Thu, 22 Jul 2021 11:06:44 +0200
-Message-Id: <20210722090717.1116748-1-arnd@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH] memory: tegra: fix unused-function warning
+Date:   Thu, 22 Jul 2021 11:07:43 +0200
+Message-Id: <20210722090748.1157470-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -46,48 +41,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-There are two pairs of declarations for thermal_cooling_device_register()
-and thermal_of_cooling_device_register(), and only one set was changed
-in a recent patch, so the other one now causes a compile-time warning:
+The tegra186_mc_client_sid_override() is only called from
+an #ifdef block:
 
-drivers/net/wireless/mediatek/mt76/mt7915/init.c: In function 'mt7915_thermal_init':
-drivers/net/wireless/mediatek/mt76/mt7915/init.c:134:48: error: passing argument 1 of 'thermal_cooling_device_register' discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]
-  134 |         cdev = thermal_cooling_device_register(wiphy_name(wiphy), phy,
-      |                                                ^~~~~~~~~~~~~~~~~
-In file included from drivers/net/wireless/mediatek/mt76/mt7915/init.c:7:
-include/linux/thermal.h:407:39: note: expected 'char *' but argument is of type 'const char *'
-  407 | thermal_cooling_device_register(char *type, void *devdata,
-      |                                 ~~~~~~^~~~
+drivers/memory/tegra/tegra186.c:74:13: error: 'tegra186_mc_client_sid_override' defined but not used [-Werror=unused-function]
+   74 | static void tegra186_mc_client_sid_override(struct tegra_mc *mc,
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Change the dummy helper functions to have the same arguments as the
-normal version.
+Add another #ifdef around the called function.
 
-Fixes: f991de53a8ab ("thermal: make device_register's type argument const")
+Fixes: 393d66fd2cac ("memory: tegra: Implement SID override programming")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/thermal.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/memory/tegra/tegra186.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index d296f3b88fb9..8050d929a5b4 100644
---- a/include/linux/thermal.h
-+++ b/include/linux/thermal.h
-@@ -404,12 +404,13 @@ static inline void thermal_zone_device_unregister(
- 	struct thermal_zone_device *tz)
- { }
- static inline struct thermal_cooling_device *
--thermal_cooling_device_register(char *type, void *devdata,
-+thermal_cooling_device_register(const char *type, void *devdata,
- 	const struct thermal_cooling_device_ops *ops)
- { return ERR_PTR(-ENODEV); }
- static inline struct thermal_cooling_device *
- thermal_of_cooling_device_register(struct device_node *np,
--	char *type, void *devdata, const struct thermal_cooling_device_ops *ops)
-+	const char *type, void *devdata,
-+	const struct thermal_cooling_device_ops *ops)
- { return ERR_PTR(-ENODEV); }
- static inline struct thermal_cooling_device *
- devm_thermal_of_cooling_device_register(struct device *dev,
+diff --git a/drivers/memory/tegra/tegra186.c b/drivers/memory/tegra/tegra186.c
+index e65eac5764d4..3d153881abc1 100644
+--- a/drivers/memory/tegra/tegra186.c
++++ b/drivers/memory/tegra/tegra186.c
+@@ -71,6 +71,7 @@ static int tegra186_mc_resume(struct tegra_mc *mc)
+ 	return 0;
+ }
+ 
++#if IS_ENABLED(CONFIG_IOMMU_API)
+ static void tegra186_mc_client_sid_override(struct tegra_mc *mc,
+ 					    const struct tegra_mc_client *client,
+ 					    unsigned int sid)
+@@ -108,6 +109,7 @@ static void tegra186_mc_client_sid_override(struct tegra_mc *mc,
+ 		writel(sid, mc->regs + client->regs.sid.override);
+ 	}
+ }
++#endif
+ 
+ static int tegra186_mc_probe_device(struct tegra_mc *mc, struct device *dev)
+ {
 -- 
 2.29.2
 
