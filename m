@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5CE3D297A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD0C3D28A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234086AbhGVQET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:04:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40490 "EHLO mail.kernel.org"
+        id S232929AbhGVP5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:57:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233855AbhGVQDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:03:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E97D0619C5;
-        Thu, 22 Jul 2021 16:43:15 +0000 (UTC)
+        id S229742AbhGVP43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:56:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C52AA6135B;
+        Thu, 22 Jul 2021 16:37:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972196;
-        bh=apA8RHD5W12YBM3+pnTmfSSVsoJSGQfk3hmpEoKrSEs=;
+        s=korg; t=1626971823;
+        bh=d892WuKNyEDxP3OV08oJUWPDyJUNbygnLdNYtABLJts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DFUgK3tZp4I6IvGttKV4TMJkbdKWRNOu3uSUdgnSkIGTBDyWzGRoS0K70A2hEi/m7
-         FZNxhJt3zw9KT2Dx/eP4SAUnPOCSFfsb8HpoZMwN8H45x8wGERBVox/Jpjh3tXyiVa
-         /G10kwcvxFmLNJxa5fYoI6TQwR7+icr6bg33T1kg=
+        b=LYC2pxsXmXxXOs1TvZc9A+fuxN9JGRuvNR3FbgCS2PZHYuFZoJ8W/hFoMp1R4XlMw
+         FkS1OuPSkBnYsktt7X+fLBWK3qNovS0xMbzBDcW2Br/rXI9gmpY3RFvomNf+51PPRx
+         hJxfWFUTAUUGFBEfpdjo6u2fCavy+DNkNXv2rbd0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Ezequiel Garcia <ezequiel@collabora.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 021/156] ARM: dts: Hurricane 2: Fix NAND nodes names
-Date:   Thu, 22 Jul 2021 18:29:56 +0200
-Message-Id: <20210722155629.096507380@linuxfoundation.org>
+Subject: [PATCH 5.10 006/125] ARM: dts: rockchip: Fix the timer clocks order
+Date:   Thu, 22 Jul 2021 18:29:57 +0200
+Message-Id: <20210722155624.903872837@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,32 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Ezequiel Garcia <ezequiel@collabora.com>
 
-[ Upstream commit a4528d9029e2eda16e4fc9b9da1de1fbec10ab26 ]
+[ Upstream commit 7b46d674ac000b101fdad92cf16cc11d90b72f86 ]
 
-This matches nand-controller.yaml requirements.
+Fixed order is the device-tree convention.
+The timer driver currently gets clocks by name,
+so no changes are needed there.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+Link: https://lore.kernel.org/r/20210506111136.3941-3-ezequiel@collabora.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/bcm-hr2.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/rk3188.dtsi | 8 ++++----
+ arch/arm/boot/dts/rk3288.dtsi | 4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm-hr2.dtsi b/arch/arm/boot/dts/bcm-hr2.dtsi
-index e8df458aad39..84cda16f68a2 100644
---- a/arch/arm/boot/dts/bcm-hr2.dtsi
-+++ b/arch/arm/boot/dts/bcm-hr2.dtsi
-@@ -179,7 +179,7 @@
- 			status = "disabled";
- 		};
+diff --git a/arch/arm/boot/dts/rk3188.dtsi b/arch/arm/boot/dts/rk3188.dtsi
+index 2298a8d840ba..2c08ae60e4a1 100644
+--- a/arch/arm/boot/dts/rk3188.dtsi
++++ b/arch/arm/boot/dts/rk3188.dtsi
+@@ -150,16 +150,16 @@
+ 		compatible = "rockchip,rk3188-timer", "rockchip,rk3288-timer";
+ 		reg = <0x2000e000 0x20>;
+ 		interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&cru SCLK_TIMER3>, <&cru PCLK_TIMER3>;
+-		clock-names = "timer", "pclk";
++		clocks = <&cru PCLK_TIMER3>, <&cru SCLK_TIMER3>;
++		clock-names = "pclk", "timer";
+ 	};
  
--		nand: nand@26000 {
-+		nand_controller: nand-controller@26000 {
- 			compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1";
- 			reg = <0x26000 0x600>,
- 			      <0x11b408 0x600>,
+ 	timer6: timer@200380a0 {
+ 		compatible = "rockchip,rk3188-timer", "rockchip,rk3288-timer";
+ 		reg = <0x200380a0 0x20>;
+ 		interrupts = <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&cru SCLK_TIMER6>, <&cru PCLK_TIMER0>;
+-		clock-names = "timer", "pclk";
++		clocks = <&cru PCLK_TIMER0>, <&cru SCLK_TIMER6>;
++		clock-names = "pclk", "timer";
+ 	};
+ 
+ 	i2s0: i2s@1011a000 {
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index fb2e89aa71c9..49b196546cdf 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -240,8 +240,8 @@
+ 		compatible = "rockchip,rk3288-timer";
+ 		reg = <0x0 0xff810000 0x0 0x20>;
+ 		interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&xin24m>, <&cru PCLK_TIMER>;
+-		clock-names = "timer", "pclk";
++		clocks = <&cru PCLK_TIMER>, <&xin24m>;
++		clock-names = "pclk", "timer";
+ 	};
+ 
+ 	display-subsystem {
 -- 
 2.30.2
 
