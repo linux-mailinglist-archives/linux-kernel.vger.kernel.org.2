@@ -2,133 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02253D2FA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181C33D2FAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbhGVVgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 17:36:37 -0400
-Received: from mail-pl1-f180.google.com ([209.85.214.180]:41800 "EHLO
-        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbhGVVgg (ORCPT
+        id S232303AbhGVVgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 17:36:53 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39787 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232024AbhGVVgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 17:36:36 -0400
-Received: by mail-pl1-f180.google.com with SMTP id e14so942827plh.8;
-        Thu, 22 Jul 2021 15:17:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KjDm2tntM7APsKw0ldKBybDQvh8O5xALMiXoPEkyZTI=;
-        b=aK9jPCxRz/gghaXzA/b2/yqVvgkg7N/H/XJceMUA3rKvUNlqwwNWoUIrbslPLCMFH2
-         LmTGbBI1tcMHs4HAgLMW6tmR+FvIvZMrLfPpQwcAWEgB5ORJV1HzH0a1LNWBglp7SdOM
-         BXEroyCdOjEzYj/EEQho2MdKYj3eapXaVUVmYVTTniKXnnTj0D/TgsRd3Pj5+821jycV
-         2C2l6d5Y28N8jyLfwsfJqK/DDbVEdJmI40+tyWKglwVE75jqTnrhNG2MhA49k2bgruF1
-         sA6LdhHWWTc19/mPtu06Fc3/1LSfz84dEdbOhHL+lM2oBsq+XTvgp7tsP+dZMclr3H1Z
-         3phw==
-X-Gm-Message-State: AOAM533fEMg96qPV1pOSrJvBqvlctwW1Uxjhl71teKF0+yq96CaFXfUc
-        30raG1w4nyVuIRWVxie9ct4=
-X-Google-Smtp-Source: ABdhPJzouoXE7Wgjzor7XhzXWq+ByqM9pelabWAXOU//gBHckMfX0mANrBFzySFWfklAhrdfb5KFUg==
-X-Received: by 2002:a63:3243:: with SMTP id y64mr2033130pgy.244.1626992229655;
-        Thu, 22 Jul 2021 15:17:09 -0700 (PDT)
-Received: from garbanzo ([191.96.121.239])
-        by smtp.gmail.com with ESMTPSA id bv22sm23528815pjb.21.2021.07.22.15.17.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 15:17:08 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 15:17:05 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        rafael@kernel.org, axboe@kernel.dk, tj@kernel.org, mbenes@suse.com,
-        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
-        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/3] zram: fix deadlock with sysfs attribute usage and
- module removal
-Message-ID: <20210722221705.kyrdkpt6fwf5k56o@garbanzo>
-References: <20210703001958.620899-1-mcgrof@kernel.org>
- <20210703001958.620899-3-mcgrof@kernel.org>
- <YPgFGd+FZQZWODY7@kroah.com>
+        Thu, 22 Jul 2021 17:36:51 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16MMHGMV021590
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Jul 2021 18:17:16 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3A54115C37C0; Thu, 22 Jul 2021 18:17:16 -0400 (EDT)
+Date:   Thu, 22 Jul 2021 18:17:16 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Remy Card <card@masi.ibp.fr>,
+        "David S. Miller" <davem@caip.rutgers.edu>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 1/1] fs: ext4: namei: trivial: Fix a couple of small
+ whitespace issues
+Message-ID: <YPnubECqbX47V3TK@mit.edu>
+References: <20210520125558.3476318-1-lee.jones@linaro.org>
+ <YPlYD1BXyjIgh++K@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YPgFGd+FZQZWODY7@kroah.com>
+In-Reply-To: <YPlYD1BXyjIgh++K@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 01:29:29PM +0200, Greg KH wrote:
-> On Fri, Jul 02, 2021 at 05:19:57PM -0700, Luis Chamberlain wrote:
-> > +#define MODULE_DEVICE_ATTR_FUNC_STORE(_name) \
-> > +static ssize_t module_ ## _name ## _store(struct device *dev, \
-> > +				   struct device_attribute *attr, \
-> > +				   const char *buf, size_t len) \
-> > +{ \
-> > +	ssize_t __ret; \
-> > +	if (!try_module_get(THIS_MODULE)) \
-> > +		return -ENODEV; \
+On Thu, Jul 22, 2021 at 12:35:43PM +0100, Lee Jones wrote:
+> On Thu, 20 May 2021, Lee Jones wrote:
 > 
-> I feel like this needs to be written down somewhere as I see it come up
-> all the time.
+> > Cc: "Theodore Ts'o" <tytso@mit.edu>
+> > Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+> > Cc: Remy Card <card@masi.ibp.fr>
+> > Cc: "David S. Miller" <davem@caip.rutgers.edu>
+> > Cc: linux-ext4@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  fs/ext4/namei.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> Any news on this please?
+> 
+> Would you like me to submit a [RESEND]?
 
-I'll go ahead and cook up a patch to do just this after I send this
-email out.
+Please don't send "checkpatch.pl --file" patches for the ext4 file
+system; if you must, please focus on files in the drivers directory,
+where they are more welcome.  If developers are making changes to a
+file, fixing some checkpatch.pl whines is fine, but white-sapace only
+changes just obfuscates "git blame" code archology, and so the costs
+far outwieghs the costs.  "Fix" is also not the right verb to use.
+For more information please see [1].
 
-> Again, this is racy and broken code.  You can NEVER try to increment
-> your own module reference count unless it has already been incremented
-> by someone external first.
+[1] https://gist.github.com/17twenty/8154928
 
-In the zram driver's case the sysfs files are still pegged on, because
-as we noted before the kernfs active reference will ensure the store
-operation still exists. If the driver removes the operation prior to
-getting the active reference, the write will just fail. kernfs ensures
-once a file is opened the op is not removed until the operation completes.
+If you are looking for subtantive ways of contributing to the ext4
+file system, feel free to look at various syzbot warnings[2] and try
+to figure out what is going on there.
 
-If a file is opened then, the module cannot possibly be removed. The
-piece of information we realy care about is the use of module_is_live()
-inside try_module_get() which does:
+[2] https://syzkaller.appspot.com/upstream
 
-static inline bool module_is_live(struct module *mod)
-{                                                                               
-	return mod->state != MODULE_STATE_GOING;
-}
+(In some cases, the syzbot complaint has already been fixed, and it's
+just a matter of letting syzbot knoww that it has since been fixed by
+a particular commit.  See [3] for more details.)
 
-The try allows module removal to trump use of the sysfs file. If
-userspace wants the module removed, it gives up in favor for that
-operation.
+[3] https://github.com/google/syzkaller/blob/master/docs/syzbot.md
 
-> As "proof", what happens if this module is unloaded right _before_ this
-> call happens?  The module will be unloaded, memory zeroed out (or
-> overridden), and then the processor will resume here and try to call (or
-> return into) this code path.
+Cheers,
 
-The use of try_module_get() is protected to be correct by the kernfs active
-reference, which in turn ensures the module is not gone. That is, when
-a sysfs file read / write op is issued, if the file was opened we *know*
-the module is not gone yet. It cannot possibly be removed. But once
-inside the operation, try_module_get() can check to see if userspace did
-want to remove the module, and if so it would immediately bail out and
-yield to that operation.
-
-Userspace cannot open a sysfs file with the module being gone.
-The kernfs active prevents that.
-
-> Boom.
-
-I think it would be good we add a self test for this particular case.
-I'll go ahead and extend my sysfs tests with one test for this case.
-
-I could do this by adding a new sysfs file to the test driver and where
-all it does is this try_module_get() thing. This can then be raced with
-module removals attempts.
-
-But it does not mean all you say is wrong.
-
-I think the value of what you are saying requires documenting as it
-was not clear to me either. I'll send a patch now.
-
-> Just say no to "try_module_get(THIS_MODULE)" as it is totally wrong.
-
-Context is required and documented. I'll end a patch.
-
-  Luis
+						- Ted
