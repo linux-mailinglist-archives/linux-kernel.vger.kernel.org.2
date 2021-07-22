@@ -2,127 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF53C3D3038
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 01:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50463D303A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 01:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232640AbhGVWuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 18:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
+        id S232685AbhGVWvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 18:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbhGVWuX (ORCPT
+        with ESMTP id S232024AbhGVWvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 18:50:23 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0F5C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 16:30:57 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id o4so2699653uae.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 16:30:57 -0700 (PDT)
+        Thu, 22 Jul 2021 18:51:19 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B28EC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 16:31:53 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id h1so477862iol.9
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 16:31:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BPY6X6Rtw90AF5qvM0t4dkoLpJt3vYNK9WYhKNctEG8=;
-        b=Z+/cUWopycJ/hLUaIbpaykOlK1CidWr4Ry5yl2uN8wfUATjJzR4e+vZ+FGKoqg8VUH
-         ZWk4+lVCRoJb55ZFkRhwzyTQt9MfWBxunFNr2oYRS+hXmoDgFiqIsltQAhGLzi+TAkvr
-         yd0VtOHHYiOReYQW9FAOYlXvTt/CtIFAuy13VrI1T0Pco3gGiOuLd27JGbJQfHUAfHnn
-         8T3t4rZpqUEqYu6E+PECBBuZj22G0XdJOB/DEfCsGMZiiVTWCbk1BTxNRadJbf5A5FJ8
-         lDKCXwDVyCYcDpB7UNUnnxLsfkoJbymP7hXeUpN0TyQM0PwwAKBEttR7TcNjgZIN2VRh
-         M9IQ==
+        bh=1Ah3hxIEkxG4Tfj2BhFU2Ycu/VLeQs8pazhZDcOSRuI=;
+        b=L/jbABCG0hw5gPUITvGkMBLiNMiW1P2E9lQr8zCrJyrrAmkBZkoncrILNrhXpXV8/s
+         B6TZiGk6/iEGHBPe2Ms4FDKZ7mr8Heh9xbs5Me1P+fUcBV3yU8W6Nawg0qszuz5ZHpsu
+         OpPv1zmMkN/1oVxJvt6W4ghM0WswFxQM47ZyEpUpAjgUkeouihsQPL0iXjZxplzXsrJp
+         6RS2Ul5ad0cGtFvMpASk5q74qpeb+JDBVZfGqn+5sdWemP2Kx43rG2nFJZS4Flc3EoAC
+         Jh1Jw9+UX3Mn7Zc02rjGSXcO3EmjkvDqCZbUQNznlyqjPkP9qL/4mSlmpveMOSsUE2t0
+         zXoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BPY6X6Rtw90AF5qvM0t4dkoLpJt3vYNK9WYhKNctEG8=;
-        b=E4H8qV1efFRNUi3BXjqm1A5ptJZ3jbtLwfAoKvt4GuCBb5RDTXeArrEbYedGRsU4y8
-         LGBtyt2D9KFM4KpruV2ACsQdDFd/NMqYsRlTsmzIgrKCGl/GlF8jMeofg++5qM4Xfac/
-         C7zgb8ivM16Jw97bwtz0X/F6w9zSWFOx05Zh5yQey9/XzjdfybXawqqzIuvLh9uhOVQ0
-         5AvezrEEZ1BJwoO0ZMYR8hrgrEt3V+2KI2vt9dZ6+bJcyBig14TVNZvSRB48qT8YxR2g
-         5MDzLoqRHj+PKlYbGhfy8TznpoIV71LuR4kho5I9hl2tiMsIMLkNuMNLYW30w5Buic5F
-         SNlQ==
-X-Gm-Message-State: AOAM531HpBeCzL83BS+iAKrRZh9TewtpbBC/babK96UWWZVVv0rveB3z
-        MrMo8azDnn6+lJy6xcb7QC8BKDl5xvO2AYYZ3avx+w==
-X-Google-Smtp-Source: ABdhPJzV1u7Nmx1s6U90suVoJm1WVLVMV8qE4Q4yO//QLsjdAGGbgcokX4grSdZuofesC94eqPdTCf3JR9oUyaaS3jY=
-X-Received: by 2002:ab0:5b59:: with SMTP id v25mr2722821uae.112.1626996655977;
- Thu, 22 Jul 2021 16:30:55 -0700 (PDT)
+        bh=1Ah3hxIEkxG4Tfj2BhFU2Ycu/VLeQs8pazhZDcOSRuI=;
+        b=OuTI4zE5A3xfxs6F/8j80DrKXhihpLquv7WTttjoq5wSP7ljrDbaEZmLgvyAKUgGy0
+         Pt6wrSbxjM/ZJ2th8emtpr+jRMlcdIemCwlZDEcatHO/LOkUjShSNUbxJJvQDat4no12
+         55LkhAXF7vjwbY8NpRZXlEkhHyj0aMwdIKUTwxFeMhu4J1BIWQy+0JnXkMbL+AJVhyLD
+         dYiSPX4El+bQNzu3ZDLhAC1XVYpbP3BLwwwasJBi7ja6TsfeAXgxzg7wnGvWRfmxJ6L8
+         GKx1L9cU2FM3thpzzN73q38FqWDEpTDVZxI9GK8j5vQ/z4bhT5Dmy4b1R8A/LEQ9Xif+
+         eQBQ==
+X-Gm-Message-State: AOAM532qN8ymiwlXsh4FE6Wy7NOjqyJe2K/Ulxg4ZE8QfzZA/UKoPEaz
+        hKf5ac4knanSrvGmjMVa5k9muoJCYLLIu1EeHwP/bQ==
+X-Google-Smtp-Source: ABdhPJxQDTtZ1I9K905D80K8OFIlnniKJQhcYDu31zNPQKLJxskE8hli0iKE8HJVoeO2yxuZcT1y+DrjRYxA9WvxSBI=
+X-Received: by 2002:a6b:4f16:: with SMTP id d22mr1644492iob.15.1626996712569;
+ Thu, 22 Jul 2021 16:31:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAPcxDJ7YsnYtyzSmgfBj-rmALkjigKx2ODB=SCYCzY8FJYg4iA@mail.gmail.com>
- <20210722151930.GA1453521@agluck-desk2.amr.corp.intel.com>
-In-Reply-To: <20210722151930.GA1453521@agluck-desk2.amr.corp.intel.com>
-From:   Jue Wang <juew@google.com>
-Date:   Thu, 22 Jul 2021 16:30:44 -0700
-Message-ID: <CAPcxDJ6bB7GEhTq9fkHuT4chRTUk_s-crci=nh+COCwAzMP8Yw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] x86/mce: Avoid infinite loop for copy from user recovery
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, dinghui@sangfor.com.cn,
-        huangcun@sangfor.com.cn, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        x86 <x86@kernel.org>, "Song, Youquan" <youquan.song@intel.com>
+References: <cover.1626966805.git.rickyman7@gmail.com>
+In-Reply-To: <cover.1626966805.git.rickyman7@gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 22 Jul 2021 16:31:40 -0700
+Message-ID: <CAP-5=fWxuGkJdFPNt7B=t3bc81jP8YWOUdyvfFcntStGqUxuag@mail.gmail.com>
+Subject: Re: [PATCH 0/3] tools: add gettid to libc_compat.h
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I think the challenge being the uncorrectable errors are essentially
-random. It's
-just a matter of time for >1 UC errors to show up in sequential kernel accesses.
+On Thu, Jul 22, 2021 at 8:34 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
+>
+> Hi Arnaldo,
+>
+> following our previous discussion on workqueue RFC patchset, I'm sending
+> this patchet to add gettid to tools/include/tools/libc_compat.h.
+> This new definition will replace existing uses and will be used by the
+> workqueue code.
+>
+> Thanks,
+> Riccardo
+>
+> Riccardo Mancini (3):
+>   tools libc_compat: add gettid
+>   perf jvmti: use gettid from libc_compat
+>   perf test: mmap-thread-lookup: use gettid
+>
+>  tools/include/tools/libc_compat.h     | 7 +++++++
+>  tools/perf/jvmti/jvmti_agent.c        | 9 +--------
+>  tools/perf/tests/mmap-thread-lookup.c | 4 ++--
+>  3 files changed, 10 insertions(+), 10 deletions(-)
 
-It's easy to create such cases with artificial error injections.
+All 3 patches look like great cleanup, thanks!
 
-I suspect we want to design this part of the kernel to be able to handle generic
-cases?
+Acked-by: Ian Rogers <irogers@google.com>
 
 Thanks,
--Jue
-
-On Thu, Jul 22, 2021 at 8:19 AM Luck, Tony <tony.luck@intel.com> wrote:
->
-> On Thu, Jul 22, 2021 at 06:54:37AM -0700, Jue Wang wrote:
-> > This patch assumes the UC error consumed in kernel is always the same UC.
-> >
-> > Yet it's possible two UCs on different pages are consumed in a row.
-> > The patch below will panic on the 2nd MCE. How can we make the code works
-> > on multiple UC errors?
-> >
-> >
-> > > + int count = ++current->mce_count;
-> > > +
-> > > + /* First call, save all the details */
-> > > + if (count == 1) {
-> > > + current->mce_addr = m->addr;
-> > > + current->mce_kflags = m->kflags;
-> > > + current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
-> > > + current->mce_whole_page = whole_page(m);
-> > > + current->mce_kill_me.func = func;
-> > > + }
-> > > ......
-> > > + /* Second or later call, make sure page address matches the one from first call */
-> > > + if (count > 1 && (current->mce_addr >> PAGE_SHIFT) != (m->addr >> PAGE_SHIFT))
-> > > + mce_panic("Machine checks to different user pages", m, msg);
->
-> The issue is getting the information about the location
-> of the error from the machine check handler to the "task_work"
-> function that processes it. Currently there is a single place
-> to store the address of the error in the task structure:
->
->         current->mce_addr = m->addr;
->
-> Plausibly that could be made into an array, indexed by
-> current->mce_count to save mutiple addresses (perhaps
-> also need mce_kflags, mce_ripv, etc. to also be arrays).
->
-> But I don't want to pre-emptively make such a change without
-> some data to show that situations arise with multiple errors
-> to different addresses:
-> 1) Actually occur
-> 2) Would be recovered if we made the change.
->
-> The first would be indicated by seeing the:
->
->         "Machine checks to different user pages"
->
-> panic. You'd have to code up the change to have arrays
-> to confirm that would fix the problem.
->
-> -Tony
+Ian
