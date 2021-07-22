@@ -2,250 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91733D2FCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C2E3D2FD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbhGVVnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 17:43:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231320AbhGVVnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 17:43:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3513260EB1;
-        Thu, 22 Jul 2021 22:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626992632;
-        bh=KweSwaLbhjPsHWnbE36IThydrkfovxRJ8o9A5OxnuNU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=N8C3IV6/7SFoMb0TY7JRYES0pjqk0tCaHYT017TBqfb9k7kaIMvojvhKokdtacg0z
-         u9I/n2iFN6muXrMmi3dymmdnsbXI75rwldlumIFhMOht8w2Xt1nYBlmwUCDnsCdiJn
-         vbMkQ/H7FZ/EaMOE9YDw8fBi/fCGOFoJ8GcnahCqVxihfSCwuCwztjhibxvcOs6iZA
-         UbT7sJ0yhD9Zb+jiRl8efxtn2C3dZQhmVM7lBydpPsV2qrVLinALbLQ/b57CF+/s4i
-         vc40EwR84vgutE8Df9oKwxvGtyE3Fg1Q1s7kYP+8DqgotAsyJMlog5UBOZNRxYxOQ8
-         HmOtHTn7UypiQ==
-Date:   Thu, 22 Jul 2021 17:23:51 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Russell Currey <ruscur@russell.cc>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lalithambika Krishnakumar <lalithambika.krishnakumar@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "open list:PCI ENHANCED ERROR HANDLING (EEH) FOR POWERPC" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] PCI/AER: Disable AER interrupt during suspend
-Message-ID: <20210722222351.GA354095@bjorn-Precision-5520>
+        id S231989AbhGVVrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 17:47:43 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:49668 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231320AbhGVVrm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 17:47:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626992897; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=K/DRu7ZbFRWkRW5sB/eRdjwaX6w7K6Rjm3k0kWJYiN4=;
+ b=MyXgp4V3NrBtTvhF7kU8hw9j/naYUBBscYwu7xcep59PWkh06Rhz4Mud6XfM514VoXd11O2X
+ nA8J1FqYnjcHxe7KJ5k4jk2lvfS2U18EUpmQtxZs0JVY8fmEgCzD63WQk+KAFGK5CHJy/i/9
+ f80aOASW0bwML1E3nzaASeKpL40=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60f9f0f338fa9bfe9c3f658b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Jul 2021 22:28:03
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 981FDC4360C; Thu, 22 Jul 2021 22:28:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 35831C433D3;
+        Thu, 22 Jul 2021 22:28:01 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAd53p6VN0ejKHcTRgj8mZ_iApR=KogpVZ-HkvdoZbJ=Yue98g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Thu, 22 Jul 2021 15:28:01 -0700
+From:   khsieh@codeaurora.org
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, rsubbia@codeaurora.org,
+        rnayak@codeaurora.org, freedreno@lists.freedesktop.org,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/dp_mst: Fix return code on sideband message
+ failure
+In-Reply-To: <2da3949fa3504592da42c9d01dc060691c6a8b8b.camel@redhat.com>
+References: <1625585434-9562-1-git-send-email-khsieh@codeaurora.org>
+ <87zguy7c5a.fsf@intel.com> <a514c19f712a6feeddf854dc17cb8eb5@codeaurora.org>
+ <2da3949fa3504592da42c9d01dc060691c6a8b8b.camel@redhat.com>
+Message-ID: <d9ec812b4be57e32246735ca2f5e9560@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 11:17:32PM +0800, Kai-Heng Feng wrote:
-> On Fri, Feb 5, 2021 at 7:28 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >
-> > [+cc Alex]
-> >
-> > On Thu, Jan 28, 2021 at 12:09:37PM +0800, Kai-Heng Feng wrote:
-> > > On Thu, Jan 28, 2021 at 4:51 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Thu, Jan 28, 2021 at 01:31:00AM +0800, Kai-Heng Feng wrote:
-> > > > > Commit 50310600ebda ("iommu/vt-d: Enable PCI ACS for platform opt in
-> > > > > hint") enables ACS, and some platforms lose its NVMe after resume from
-> > > > > firmware:
-> > > > > [   50.947816] pcieport 0000:00:1b.0: DPC: containment event, status:0x1f01 source:0x0000
-> > > > > [   50.947817] pcieport 0000:00:1b.0: DPC: unmasked uncorrectable error detected
-> > > > > [   50.947829] pcieport 0000:00:1b.0: PCIe Bus Error: severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Receiver ID)
-> > > > > [   50.947830] pcieport 0000:00:1b.0:   device [8086:06ac] error status/mask=00200000/00010000
-> > > > > [   50.947831] pcieport 0000:00:1b.0:    [21] ACSViol                (First)
-> > > > > [   50.947841] pcieport 0000:00:1b.0: AER: broadcast error_detected message
-> > > > > [   50.947843] nvme nvme0: frozen state error detected, reset controller
-> > > > >
-> > > > > It happens right after ACS gets enabled during resume.
-> > > > >
-> > > > > To prevent that from happening, disable AER interrupt and enable it on
-> > > > > system suspend and resume, respectively.
-> > > >
-> > > > Lots of questions here.  Maybe this is what we'll end up doing, but I
-> > > > am curious about why the error is reported in the first place.
-> > > >
-> > > > Is this a consequence of the link going down and back up?
-> > >
-> > > Could be. From the observations, it only happens when firmware suspend
-> > > (S3) is used.
-> > > Maybe it happens when it's gets powered up, but I don't have equipment
-> > > to debug at hardware level.
-> > >
-> > > If we use non-firmware suspend method, enabling ACS after resume won't
-> > > trip AER and DPC.
-> > >
-> > > > Is it consequence of the device doing a DMA when it shouldn't?
-> > >
-> > > If it's doing DMA while suspending, the same error should also happen
-> > > after NVMe is suspended and before PCIe port suspending.
-> > > Furthermore, if non-firmware suspend method is used, there's so such
-> > > issue, so less likely to be any DMA operation.
-> > >
-> > > > Are we doing something in the wrong order during suspend?  Or maybe
-> > > > resume, since I assume the error is reported during resume?
-> > >
-> > > Yes the error is reported during resume. The suspend/resume order
-> > > seems fine as non-firmware suspend doesn't have this issue.
-> >
-> > I really feel like we need a better understanding of what's going on
-> > here.  Disabling the AER interrupt is like closing our eyes and
-> > pretending that because we don't see it, it didn't happen.
-> >
-> > An ACS error is triggered by a DMA, right?  I'm assuming an MMIO
-> > access from the CPU wouldn't trigger this error.  And it sounds like
-> > the error is triggered before we even start running the driver after
-> > resume.
-> >
-> > If we're powering up an NVMe device from D3cold and it DMAs before the
-> > driver touches it, something would be seriously broken.  I doubt
-> > that's what's happening.  Maybe a device could resume some previously
-> > programmed DMA after powering up from D3hot.
+On 2021-07-22 10:53, Lyude Paul wrote:
+> On Tue, 2021-07-13 at 15:24 -0700, khsieh@codeaurora.org wrote:
+>> On 2021-07-07 01:37, Jani Nikula wrote:
+>> > On Tue, 06 Jul 2021, Kuogee Hsieh <khsieh@codeaurora.org> wrote:
+>> > > From: Rajkumar Subbiah <rsubbia@codeaurora.org>
+>> > >
+>> > > Commit 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing +
+>> > > selftests") added some debug code for sideband message tracing. But
+>> > > it seems to have unintentionally changed the behavior on sideband
+>> > > message
+>> > > failure. It catches and returns failure only if DRM_UT_DP is enabled.
+>> > > Otherwise it ignores the error code and returns success. So on an MST
+>> > > unplug, the caller is unaware that the clear payload message failed
+>> > > and
+>> > > ends up waiting for 4 seconds for the response. Fixes the issue by
+>> > > returning the proper error code.
+>> > >
+>> > > Changes in V2:
+>> > > -- Revise commit text as review comment
+>> > > -- add Fixes text
+>> > >
+>> > > Changes in V3:
+>> > > -- remove "unlikely" optimization
+>> > >
+>> > > Fixes: 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing +
+>> > > selftests")
+>> > >
+>> > > Signed-off-by: Rajkumar Subbiah <rsubbia@codeaurora.org>
+>> > > Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> > >
+>> > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>> >
+>> > Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+>> >
+>> >
+>> > > ---
+>> Lyude,
+>> Any comments from you?
+>> Thanks,
 > 
-> I am not that familiar with PCIe ACS/AER/DPC, so I can't really answer
-> questions you raised.
-> PCIe spec doesn't say the suspend/resume order is also not helping here.
+> Hey! Sorry did I forget to respond to this?
 > 
-> However, I really think it's a system firmware issue.
-> I've seen some suspend-to-idle platforms with NVMe can reach D3cold,
-> those are unaffected.
+> Reviewed-by: Lyude Paul <lyude@redhat.com>
+> 
 
-Marking both of these as "not applicable" for now because I don't
-think we really understand what's going on.
+It looks like this patch is good to go (mainlined).
+Anything needed from me to do?
+Thanks,
 
-Apparently a DMA occurs during suspend or resume and triggers an ACS
-violation.  I don't think think such a DMA should occur in the first
-place.
-
-Or maybe, since you say the problem happens right after ACS is enabled
-during resume, we're doing the ACS enable incorrectly?  Although I
-would think we should not be doing DMA at the same time we're enabling
-ACS, either.
-
-If this really is a system firmware issue, both HP and Dell should
-have the knowledge and equipment to figure out what's going on.
-
-> > Or maybe the error occurred on suspend, like if the device wasn't
-> > quiesced or something, but we didn't notice it until resume?  The
-> > AER error status bits are RW1CS, which means they can be preserved
-> > across hot/warm/cold resets.
-> >
-> > Can you instrument the code to see whether the AER error status bit is
-> > set before enabling ACS?  I'm not sure that merely enabling ACS (I
-> > assume you mean pci_std_enable_acs(), where we write PCI_ACS_CTRL)
-> > should cause an interrupt for a previously-logged error.  I suspect
-> > that could happen when enabling *AER*, but I wouldn't think it would
-> > happen when enabling *ACS*.
-> 
-> Diff to print AER status:
-> https://bugzilla.kernel.org/show_bug.cgi?id=209149#c11
-> 
-> And dmesg:
-> https://bugzilla.kernel.org/show_bug.cgi?id=209149#c12
-> 
-> Looks like the read before suspend and after resume are both fine.
-> 
-> >
-> > Does this error happen on multiple machines from different vendors?
-> > Wondering if it could be a BIOS issue, e.g., BIOS not cleaning up
-> > after it did something to cause an error.
-> 
-> AFAIK, systems from both HP and Dell are affected.
-> I was told that the reference platform from Intel is using
-> suspend-to-idle, but vendors changed the sleep method to S3 to have
-> lower power consumption to pass regulation.
-> 
-> Kai-Heng
-> 
-> >
-> > > > If we *do* take the error, why doesn't DPC recovery work?
-> > >
-> > > It works for the root port, but not for the NVMe drive:
-> > > [   50.947816] pcieport 0000:00:1b.0: DPC: containment event,
-> > > status:0x1f01 source:0x0000
-> > > [   50.947817] pcieport 0000:00:1b.0: DPC: unmasked uncorrectable error detected
-> > > [   50.947829] pcieport 0000:00:1b.0: PCIe Bus Error:
-> > > severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Receiver
-> > > ID)
-> > > [   50.947830] pcieport 0000:00:1b.0:   device [8086:06ac] error
-> > > status/mask=00200000/00010000
-> > > [   50.947831] pcieport 0000:00:1b.0:    [21] ACSViol                (First)
-> > > [   50.947841] pcieport 0000:00:1b.0: AER: broadcast error_detected message
-> > > [   50.947843] nvme nvme0: frozen state error detected, reset controller
-> > > [   50.948400] ACPI: EC: event unblocked
-> > > [   50.948432] xhci_hcd 0000:00:14.0: PME# disabled
-> > > [   50.948444] xhci_hcd 0000:00:14.0: enabling bus mastering
-> > > [   50.949056] pcieport 0000:00:1b.0: PME# disabled
-> > > [   50.949068] pcieport 0000:00:1c.0: PME# disabled
-> > > [   50.949416] e1000e 0000:00:1f.6: PME# disabled
-> > > [   50.949463] e1000e 0000:00:1f.6: enabling bus mastering
-> > > [   50.951606] sd 0:0:0:0: [sda] Starting disk
-> > > [   50.951610] nvme 0000:01:00.0: can't change power state from D3hot
-> > > to D0 (config space inaccessible)
-> > > [   50.951730] nvme nvme0: Removing after probe failure status: -19
-> > > [   50.952360] nvme nvme0: failed to set APST feature (-19)
-> > > [   50.971136] snd_hda_intel 0000:00:1f.3: PME# disabled
-> > > [   51.089330] pcieport 0000:00:1b.0: AER: broadcast resume message
-> > > [   51.089345] pcieport 0000:00:1b.0: AER: device recovery successful
-> > >
-> > > But I think why recovery doesn't work for NVMe is for another discussion...
-> > >
-> > > Kai-Heng
-> > >
-> > > >
-> > > > > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=209149
-> > > > > Fixes: 50310600ebda ("iommu/vt-d: Enable PCI ACS for platform opt in hint")
-> > > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > > > ---
-> > > > >  drivers/pci/pcie/aer.c | 18 ++++++++++++++++++
-> > > > >  1 file changed, 18 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> > > > > index 77b0f2c45bc0..0e9a85530ae6 100644
-> > > > > --- a/drivers/pci/pcie/aer.c
-> > > > > +++ b/drivers/pci/pcie/aer.c
-> > > > > @@ -1365,6 +1365,22 @@ static int aer_probe(struct pcie_device *dev)
-> > > > >       return 0;
-> > > > >  }
-> > > > >
-> > > > > +static int aer_suspend(struct pcie_device *dev)
-> > > > > +{
-> > > > > +     struct aer_rpc *rpc = get_service_data(dev);
-> > > > > +
-> > > > > +     aer_disable_rootport(rpc);
-> > > > > +     return 0;
-> > > > > +}
-> > > > > +
-> > > > > +static int aer_resume(struct pcie_device *dev)
-> > > > > +{
-> > > > > +     struct aer_rpc *rpc = get_service_data(dev);
-> > > > > +
-> > > > > +     aer_enable_rootport(rpc);
-> > > > > +     return 0;
-> > > > > +}
-> > > > > +
-> > > > >  /**
-> > > > >   * aer_root_reset - reset Root Port hierarchy, RCEC, or RCiEP
-> > > > >   * @dev: pointer to Root Port, RCEC, or RCiEP
-> > > > > @@ -1437,6 +1453,8 @@ static struct pcie_port_service_driver aerdriver = {
-> > > > >       .service        = PCIE_PORT_SERVICE_AER,
-> > > > >
-> > > > >       .probe          = aer_probe,
-> > > > > +     .suspend        = aer_suspend,
-> > > > > +     .resume         = aer_resume,
-> > > > >       .remove         = aer_remove,
-> > > > >  };
-> > > > >
-> > > > > --
-> > > > > 2.29.2
-> > > > >
+>> 
+>> > >  drivers/gpu/drm/drm_dp_mst_topology.c | 10 ++++++----
+>> > >  1 file changed, 6 insertions(+), 4 deletions(-)
+>> > >
+>> > > diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c
+>> > > b/drivers/gpu/drm/drm_dp_mst_topology.c
+>> > > index 1590144..df91110 100644
+>> > > --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+>> > > +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+>> > > @@ -2887,11 +2887,13 @@ static int process_single_tx_qlock(struct
+>> > > drm_dp_mst_topology_mgr *mgr,
+>> > >         idx += tosend + 1;
+>> > >
+>> > >         ret = drm_dp_send_sideband_msg(mgr, up, chunk, idx);
+>> > > -       if (unlikely(ret) && drm_debug_enabled(DRM_UT_DP)) {
+>> > > -               struct drm_printer p = drm_debug_printer(DBG_PREFIX);
+>> > > +       if (ret) {
+>> > > +               if (drm_debug_enabled(DRM_UT_DP)) {
+>> > > +                       struct drm_printer p =
+>> > > drm_debug_printer(DBG_PREFIX);
+>> > >
+>> > > -               drm_printf(&p, "sideband msg failed to send\n");
+>> > > -               drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
+>> > > +                       drm_printf(&p, "sideband msg failed to send\n");
+>> > > +                       drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
+>> > > +               }
+>> > >                 return ret;
+>> > >         }
+>> 
