@@ -2,212 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AC23D2B44
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA153D2B4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbhGVQzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:55:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50904 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229909AbhGVQza (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:55:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626975365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=guCqBWpVTzP+Sew+BobhY6iLap7ab0MnRptplCU8QQc=;
-        b=ICyl/CXptOcWoBn/OE9XB48lPDumiapdiQg6sW8QqTSYotn6s284MHD5wS718tjJN9eevD
-        oT9r3IDczUwZ6XG+YWMaOxHzxHq8JxnXzYabRwyfkObmjfHwrUyOQrOOq+9yIqagKBy7TS
-        cK4Y8a8tXLme/t8ItXU95OM3huE14Ac=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-604-B28Sw4rpOSKEUXVuW5qwIw-1; Thu, 22 Jul 2021 13:36:01 -0400
-X-MC-Unique: B28Sw4rpOSKEUXVuW5qwIw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA5EAC73A1;
-        Thu, 22 Jul 2021 17:35:59 +0000 (UTC)
-Received: from starship (unknown [10.40.192.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3EC9160936;
-        Thu, 22 Jul 2021 17:35:55 +0000 (UTC)
-Message-ID: <64ed28249c1895a59c9f2e2aa2e4c09a381f69e5.camel@redhat.com>
-Subject: Re: [PATCH v2 8/8] KVM: x86: hyper-v: Deactivate APICv only when
- AutoEOI feature is in use
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Date:   Thu, 22 Jul 2021 20:35:54 +0300
-In-Reply-To: <YPXJQxLaJuoF6aXl@google.com>
-References: <20210713142023.106183-1-mlevitsk@redhat.com>
-         <20210713142023.106183-9-mlevitsk@redhat.com>
-         <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
-         <YPXJQxLaJuoF6aXl@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S229666AbhGVQ7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:59:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:57742 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229456AbhGVQ7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:59:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42693106F;
+        Thu, 22 Jul 2021 10:40:24 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 120373F694;
+        Thu, 22 Jul 2021 10:40:22 -0700 (PDT)
+Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
+ from remote numa node
+To:     Ming Lei <ming.lei@redhat.com>, John Garry <john.garry@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <YOhcOv1oOwm6fco+@T590>
+ <ad5bc549-d83f-bee0-9a9f-03a5afd7f3d9@huawei.com> <YPd7IGFZrsTRfUxE@T590>
+ <74537f9c-af5f-cd84-60ab-49ca6220310e@huawei.com> <YPfwAN1onpSKoeBj@T590>
+ <a2650064-41cf-cb62-7ab4-d14ef1856966@huawei.com> <YPklDMng1hL3bQ+v@T590>
+ <9c929985-4fcb-e65d-0265-34c820b770ea@huawei.com> <YPlGOOMSdm6Bcyy/@T590>
+ <fc552129-e89d-74ad-9e57-30e3ffe4cf5d@huawei.com> <YPmUoBk9u+tU2rbS@T590>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <0adbe03b-ce26-e4d3-3425-d967bc436ef5@arm.com>
+Date:   Thu, 22 Jul 2021 18:40:18 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <YPmUoBk9u+tU2rbS@T590>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-07-19 at 18:49 +0000, Sean Christopherson wrote:
-> On Sun, Jul 18, 2021, Maxim Levitsky wrote:
-> > I am more inclined to fix this by just tracking if we hold the srcu
-> > lock on each VCPU manually, just as we track the srcu index anyway,
-> > and then kvm_request_apicv_update can use this to drop the srcu
-> > lock when needed.
+On 2021-07-22 16:54, Ming Lei wrote:
+[...]
+>> If you are still keen to investigate more, then can try either of these:
+>>
+>> - add iommu.strict=0 to the cmdline
+>>
+>> - use perf record+annotate to find the hotspot
+>>    - For this you need to enable psuedo-NMI with 2x steps:
+>>      CONFIG_ARM64_PSEUDO_NMI=y in defconfig
+>>      Add irqchip.gicv3_pseudo_nmi=1
+>>
+>>      See https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/Kconfig#n1745
+>>      Your kernel log should show:
+>>      [    0.000000] GICv3: Pseudo-NMIs enabled using forced ICC_PMR_EL1
+>> synchronisation
 > 
-> The entire approach of dynamically adding/removing the memslot seems doomed to
-> failure, and is likely responsible for the performance issues with AVIC, e.g. a
-> single vCPU temporarily inhibiting AVIC will zap all SPTEs _twice_; on disable
-> and again on re-enable.
-> 
-> Rather than pile on more gunk, what about special casing the APIC access page
-> memslot in try_async_pf()?  E.g. zap the GFN in avic_update_access_page() when
-> disabling (and bounce through kvm_{inc,dec}_notifier_count()), and have the page
-> fault path skip directly to MMIO emulation without caching the MMIO info.  It'd
-> also give us a good excuse to rename try_async_pf() :-)
-> 
-> If lack of MMIO caching is a performance problem, an alternative solution would
-> be to allow caching but add a helper to zap the MMIO SPTE and request all vCPUs to
-> clear their cache.
-> 
-> It's all a bit gross, especially hijacking the mmu_notifier path, but IMO it'd be
-> less awful than the current memslot+SRCU mess.
+> OK, will try the above tomorrow.
 
-Hi!
+Thanks, I was also going to suggest the latter, since it's what 
+arm_smmu_cmdq_issue_cmdlist() does with IRQs masked that should be most 
+indicative of where the slowness most likely stems from.
 
-I am testing your approach and it actually works very well! I can't seem to break it.
+FWIW I would expect iommu.strict=0 to give a proportional reduction in 
+SMMU overhead for both cases since it should effectively mean only 1/256 
+as many invalidations are issued.
 
-Could you explain why do I need to do something with kvm_{inc,dec}_notifier_count()) ?
+Could you also check whether the SMMU platform devices have "numa_node" 
+properties exposed in sysfs (and if so whether the values look right), 
+and share all the SMMU output from the boot log?
 
-I just use your patch as is, plus the changes that are needed in kvm_request_apicv_update.
+I still suspect that the most significant bottleneck is likely to be 
+MMIO access across chips, incurring the CML/CCIX latency twice for every 
+single read, but it's also possible that the performance of the SMMU 
+itself could be reduced if its NUMA affinity is not described and we end 
+up allocating stuff like pagetables on the wrong node as well.
 
-On AVIC unlike APICv, the page in this memslot is pinned in the physical memory still
-(AVIC misses the code that APICv has in this regard).
-It should be done in the future though.
+>> But my impression is that this may be a HW implementation issue, considering
+>> we don't see such a huge drop off on our HW.
+> 
+> Except for mpere-mtjade, we saw bad nvme performance on ThunderX2® CN99XX too,
+> but I don't get one CN99XX system to check if the issue is same with
+> this one.
 
-Best regards,
-	Maxim Levitsky
+I know Cavium's SMMU implementation didn't support MSIs, so that case 
+would quite possibly lean towards the MMIO polling angle as well (albeit 
+with a very different interconnect).
 
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index f4d35289f59e..ea434d76cfb0 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3767,9 +3767,9 @@ static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->                                   kvm_vcpu_gfn_to_hva(vcpu, gfn), &arch);
->  }
-> 
-> -static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
-> -                        gpa_t cr2_or_gpa, kvm_pfn_t *pfn, hva_t *hva,
-> -                        bool write, bool *writable)
-> +static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
-> +                           gpa_t cr2_or_gpa, kvm_pfn_t *pfn, hva_t *hva,
-> +                           bool write, bool *writable, int *r)
->  {
->         struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
->         bool async;
-> @@ -3780,13 +3780,26 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
->          * be zapped before KVM inserts a new MMIO SPTE for the gfn.
->          */
->         if (slot && (slot->flags & KVM_MEMSLOT_INVALID))
-> -               return true;
-> +               goto out_retry;
-> 
-> -       /* Don't expose private memslots to L2. */
-> -       if (is_guest_mode(vcpu) && !kvm_is_visible_memslot(slot)) {
-> -               *pfn = KVM_PFN_NOSLOT;
-> -               *writable = false;
-> -               return false;
-> +       if (!kvm_is_visible_memslot(slot)) {
-> +               /* Don't expose private memslots to L2. */
-> +               if (is_guest_mode(vcpu)) {
-> +                       *pfn = KVM_PFN_NOSLOT;
-> +                       *writable = false;
-> +                       return false;
-> +               }
-> +               /*
-> +                * If the APIC access page exists but is disabled, go directly
-> +                * to emulation without caching the MMIO access or creating a
-> +                * MMIO SPTE.  That way the cache doesn't need to be purged
-> +                * when the AVIC is re-enabled.
-> +                */
-> +               if (slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT &&
-> +                   !vcpu->kvm->arch.apic_access_memslot_enabled) {
-> +                       *r = RET_PF_EMULATE;
-> +                       return true;
-> +               }
->         }
-> 
->         async = false;
-> @@ -3800,14 +3813,19 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
->                 if (kvm_find_async_pf_gfn(vcpu, gfn)) {
->                         trace_kvm_async_pf_doublefault(cr2_or_gpa, gfn);
->                         kvm_make_request(KVM_REQ_APF_HALT, vcpu);
-> -                       return true;
-> -               } else if (kvm_arch_setup_async_pf(vcpu, cr2_or_gpa, gfn))
-> -                       return true;
-> +                       goto out_retry;
-> +               } else if (kvm_arch_setup_async_pf(vcpu, cr2_or_gpa, gfn)) {
-> +                       goto out_retry;
-> +               }
->         }
-> 
->         *pfn = __gfn_to_pfn_memslot(slot, gfn, false, NULL,
->                                     write, writable, hva);
->         return false;
-> +
-> +out_retry:
-> +       *r = RET_PF_RETRY;
-> +       return true;
->  }
-> 
->  static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
-> @@ -3839,9 +3857,9 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
->         mmu_seq = vcpu->kvm->mmu_notifier_seq;
->         smp_rmb();
-> 
-> -       if (try_async_pf(vcpu, prefault, gfn, gpa, &pfn, &hva,
-> -                        write, &map_writable))
-> -               return RET_PF_RETRY;
-> +       if (kvm_faultin_pfn(vcpu, prefault, gfn, gpa, &pfn, &hva, write,
-> +                           &map_writable, &r))
-> +               return r;
-> 
->         if (handle_abnormal_pfn(vcpu, is_tdp ? 0 : gpa, gfn, pfn, ACC_ALL, &r))
->                 return r;
-> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-> index 490a028ddabe..9747124b877d 100644
-> --- a/arch/x86/kvm/mmu/paging_tmpl.h
-> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
-> @@ -881,9 +881,9 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
->         mmu_seq = vcpu->kvm->mmu_notifier_seq;
->         smp_rmb();
->  
-> -       if (try_async_pf(vcpu, prefault, walker.gfn, addr, &pfn, &hva,
-> -                        write_fault, &map_writable))
-> -               return RET_PF_RETRY;
-> +       if (kvm_faultin_pfn(vcpu, prefault, walker.gfn, addr, &pfn, &hva,
-> +                           write_fault, &map_writable, &r))
-> +               return r;
->  
->         if (handle_abnormal_pfn(vcpu, addr, walker.gfn, pfn, walker.pte_access, &r))
->                 return r;
-> 
-
-
+Robin.
