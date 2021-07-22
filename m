@@ -2,206 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E963D245D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB3E3D245F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbhGVM27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 08:28:59 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14196 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230418AbhGVM26 (ORCPT
+        id S232084AbhGVM3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 08:29:13 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:15048 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230418AbhGVM3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 08:28:58 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16MD3aDW114791;
-        Thu, 22 Jul 2021 09:09:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=60ZIBTL4nRcdMkGZ5+Gr1uyO/GGeFIWhPy2DLRw1I7Y=;
- b=G/4Gh92cRxeLsgXugbVyQi2yvE5Ot3fxz9w+s9OxN5p9wOimmbMyMhtSckBCtMqE+qKi
- NIR5A2TTik0SW5Gr0eIYUKtUov9etZlRKaKoXCsXFFnCuMUTboldMnQnsMbYh+wZNDvq
- hH2kJgu7IGMdCykdsXX9SqrmL1exZBplU4h/DBjz2mK7kvGDKJVpW9n4TLPnp6kxKd3Z
- LI/cXinnxUM4WwpMj6T/Qdum40SfyUJc2mp8dId3IUDa4hwOrXrOGy6tyFmoYLwqFzr9
- mZ9HwuGWRN2okPQNDfw3X9Rp9UXe6tvgcC/GmunGgA3ludG0HDH5CJdPRXDAtErmxjR4 fg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39y716cfq9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 09:09:31 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16MD54bD124283;
-        Thu, 22 Jul 2021 09:09:31 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39y716cfpq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 09:09:31 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16MD3rxo018574;
-        Thu, 22 Jul 2021 13:09:29 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma03wdc.us.ibm.com with ESMTP id 39vqdwdnhp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 13:09:29 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16MD9Sod24248696
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Jul 2021 13:09:28 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5E5476A0B0;
-        Thu, 22 Jul 2021 13:09:28 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EEE3D6A0AE;
-        Thu, 22 Jul 2021 13:09:26 +0000 (GMT)
-Received: from [9.85.184.30] (unknown [9.85.184.30])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 22 Jul 2021 13:09:26 +0000 (GMT)
-Subject: Re: [PATCH 2/2] s390/vfio-ap: replace open coded locks for
- VFIO_GROUP_NOTIFY_SET_KVM notification
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
- <20210719193503.793910-3-akrowiak@linux.ibm.com>
- <20210721164550.5402fe1c.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <c3b80f79-6795-61ce-2dd1-f4cc7110e417@linux.ibm.com>
-Date:   Thu, 22 Jul 2021 09:09:26 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 22 Jul 2021 08:29:11 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GVt4X25DBzZrfs;
+        Thu, 22 Jul 2021 21:06:20 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 21:09:43 +0800
+Subject: Re: [PATH v2] scsi: scsi_dh_rdac: Avoid crash during rdac_bus_attach
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210113063103.2698953-1-yebin10@huawei.com>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <60F96E17.6030306@huawei.com>
+Date:   Thu, 22 Jul 2021 21:09:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-In-Reply-To: <20210721164550.5402fe1c.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vWYqOPynjKmImKnXrgJwTQdUgi7LStb0
-X-Proofpoint-ORIG-GUID: YgZYCFJEue99yfS7NTci2Ukd8SFKKnCv
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-22_07:2021-07-22,2021-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 clxscore=1015 spamscore=0 priorityscore=1501 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107220087
+In-Reply-To: <20210113063103.2698953-1-yebin10@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/21/21 10:45 AM, Halil Pasic wrote:
-> On Mon, 19 Jul 2021 15:35:03 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+On 2021/1/13 14:31, Ye Bin wrote:
+> We get follow BUG_ON when rdac scan:
+> [595952.944297] kernel BUG at drivers/scsi/device_handler/scsi_dh_rdac.c:427!
+> [595952.951143] Internal error: Oops - BUG: 0 [#1] SMP
+> ......
+> [595953.251065] Call trace:
+> [595953.259054]  check_ownership+0xb0/0x118
+> [595953.269794]  rdac_bus_attach+0x1f0/0x4b0
+> [595953.273787]  scsi_dh_handler_attach+0x3c/0xe8
+> [595953.278211]  scsi_dh_add_device+0xc4/0xe8
+> [595953.282291]  scsi_sysfs_add_sdev+0x8c/0x2a8
+> [595953.286544]  scsi_probe_and_add_lun+0x9fc/0xd00
+> [595953.291142]  __scsi_scan_target+0x598/0x630
+> [595953.295395]  scsi_scan_target+0x120/0x130
+> [595953.299481]  fc_user_scan+0x1a0/0x1c0 [scsi_transport_fc]
+> [595953.304944]  store_scan+0xb0/0x108
+> [595953.308420]  dev_attr_store+0x44/0x60
+> [595953.312160]  sysfs_kf_write+0x58/0x80
+> [595953.315893]  kernfs_fop_write+0xe8/0x1f0
+> [595953.319888]  __vfs_write+0x60/0x190
+> [595953.323448]  vfs_write+0xac/0x1c0
+> [595953.326836]  ksys_write+0x74/0xf0
+> [595953.330221]  __arm64_sys_write+0x24/0x30
 >
->> It was pointed out during an unrelated patch review that locks should not
-> [..]
+> BUG_ON code is in check_ownership:
+>                  list_for_each_entry_rcu(tmp, &h->ctlr->dh_list, node) {
+>                          /* h->sdev should always be valid */
+>                          BUG_ON(!tmp->sdev);
+>                          tmp->sdev->access_state = access_state;
+>                  }
+> rdac_bus_attach
+> 	initialize_controller
+> 		list_add_rcu(&h->node, &h->ctlr->dh_list);
+> 		h->sdev = sdev;
+> rdac_bus_detach
+> 	list_del_rcu(&h->node);
+> 	h->sdev = NULL;
 >
->> -static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
->> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev,
->> +				   struct kvm *kvm)
->>   {
->> -	/*
->> -	 * If the KVM pointer is in the process of being set, wait until the
->> -	 * process has completed.
->> -	 */
->> -	wait_event_cmd(matrix_mdev->wait_for_kvm,
->> -		       !matrix_mdev->kvm_busy,
->> -		       mutex_unlock(&matrix_dev->lock),
->> -		       mutex_lock(&matrix_dev->lock));
->> -
->> -	if (matrix_mdev->kvm) {
-> We used to check if matrix_mdev->kvm is null, but ...
+> Test as follow steps:
+> (1) Find IO error, remove disk;
+> (2) Insert disk back;
+> (3) trigger scan disk;
 >
->> -		matrix_mdev->kvm_busy = true;
->> -		mutex_unlock(&matrix_dev->lock);
->> -
->> -		if (matrix_mdev->kvm->arch.crypto.crycbd) {
->> -			down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
->> -			matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
->> -			up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
->> -
->> -			kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
->> -		}
->> +	if (kvm->arch.crypto.crycbd) {
-> ... now we just try to dereference it. And ..
-
-We used to check matrix_mdev->kvm, now the kvm pointer is passed into
-the function; however, having said that, the pointer passed in should be
-checked before de-referencing it.
-
+> There is race between rdac_bus_attach and rdac_bus_detach, maybe access
+> rdac_dh_data which h->sdev has been set NULL when process rdac attach. And also
+> find that "h->sdev" set value after add list, this may lead to reference NULL ptr.
 >
->> +		down_write(&kvm->arch.crypto.pqap_hook_rwsem);
->> +		kvm->arch.crypto.pqap_hook = NULL;
->> +		up_write(&kvm->arch.crypto.pqap_hook_rwsem);
->>
->> +		mutex_lock(&kvm->lock);
->>   		mutex_lock(&matrix_dev->lock);
->> +
->> +		kvm_arch_crypto_clear_masks(kvm);
->>   		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
->> -		kvm_put_kvm(matrix_mdev->kvm);
->> +		kvm_put_kvm(kvm);
->>   		matrix_mdev->kvm = NULL;
->> -		matrix_mdev->kvm_busy = false;
->> -		wake_up_all(&matrix_mdev->wait_for_kvm);
->> +
->> +		mutex_unlock(&kvm->lock);
->> +		mutex_unlock(&matrix_dev->lock);
->>   	}
->>   }
->>
-> [..]
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>   drivers/scsi/device_handler/scsi_dh_rdac.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >
->> @@ -1363,14 +1323,11 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
->>   {
->>   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->>
->> -	mutex_lock(&matrix_dev->lock);
->> -	vfio_ap_mdev_unset_kvm(matrix_mdev);
->> -	mutex_unlock(&matrix_dev->lock);
->> -
-> .. before access to the matrix_mdev->kvm used to be protected by
-> the matrix_dev->lock ...
->
->>   	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
->>   				 &matrix_mdev->iommu_notifier);
->>   	vfio_unregister_notifier(mdev_dev(mdev), VFIO_GROUP_NOTIFY,
->>   				 &matrix_mdev->group_notifier);
->> +	vfio_ap_mdev_unset_kvm(matrix_mdev, matrix_mdev->kvm);
-> ... but it is not any more. BTW I don't think the code is guaranteed
-> to fetch ->kvm just once.
-
-There are a couple of things to point out here:
-1. The vfio_ap_mdev_unset_kvm function() is the only place where the
-     matrix_mdev->kvm pointer is cleared. That function is called here
-     as well as by the group notifier callback for VFIO_GROUP_NOTIFY_SET_KVM
-     events. If you notice in the code above, the group notifier is 
-unregistered
-     before calling the unset function, so either the notifier will have 
-already
-     been invoked and the pointer cleared (which is why you are correct
-     that the KVM pointer passed in needs to get checked in the unset 
-function),
-     or will get cleared here.
-2. The release callback is invoked when the mdev fd is closed by userspace.
-     The remove callback is the only place where the matrix_mdev is 
-freed. The
-     remove callback is not called until the mdev fd is released, so it 
-is guaranteed
-     the matrix_mdev will exist when the release callback is invoked.
-3. The matrix_dev->lock is then taken in the vfio_ap_mdev_unset_kvm function
-     before doing any operations that modify the matrix_mdev.
-
-> Can you please explain why can we get away with being more
-> lax when dealing with matrix_mdev->kvm?
-
-See above.
-
->
-> Regards,
-> Halil
->
-> [..]
-
+> diff --git a/drivers/scsi/device_handler/scsi_dh_rdac.c b/drivers/scsi/device_handler/scsi_dh_rdac.c
+> index 5efc959493ec..85a71bafaea7 100644
+> --- a/drivers/scsi/device_handler/scsi_dh_rdac.c
+> +++ b/drivers/scsi/device_handler/scsi_dh_rdac.c
+> @@ -453,8 +453,8 @@ static int initialize_controller(struct scsi_device *sdev,
+>   		if (!h->ctlr)
+>   			err = SCSI_DH_RES_TEMP_UNAVAIL;
+>   		else {
+> -			list_add_rcu(&h->node, &h->ctlr->dh_list);
+>   			h->sdev = sdev;
+> +			list_add_rcu(&h->node, &h->ctlr->dh_list);
+>   		}
+>   		spin_unlock(&list_lock);
+>   		err = SCSI_DH_OK;
+> @@ -778,11 +778,11 @@ static void rdac_bus_detach( struct scsi_device *sdev )
+>   	spin_lock(&list_lock);
+>   	if (h->ctlr) {
+>   		list_del_rcu(&h->node);
+> -		h->sdev = NULL;
+>   		kref_put(&h->ctlr->kref, release_controller);
+>   	}
+>   	spin_unlock(&list_lock);
+>   	sdev->handler_data = NULL;
+> +	synchronize_rcu();
+>   	kfree(h);
+>   }
+>   
+ping ...
