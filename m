@@ -2,313 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7143D1B83
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 03:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1493B3D1B82
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 03:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbhGVBGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 21:06:47 -0400
-Received: from mga11.intel.com ([192.55.52.93]:55053 "EHLO mga11.intel.com"
+        id S230182AbhGVBGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 21:06:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230151AbhGVBGq (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 21:06:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="208431628"
-X-IronPort-AV: E=Sophos;i="5.84,259,1620716400"; 
-   d="scan'208";a="208431628"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 18:47:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,259,1620716400"; 
-   d="scan'208";a="470359857"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Jul 2021 18:47:19 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v1] perf pmu: Add PMU alias support
-Date:   Thu, 22 Jul 2021 09:45:46 +0800
-Message-Id: <20210722014546.11948-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S229937AbhGVBG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 21:06:29 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2C676120A;
+        Thu, 22 Jul 2021 01:47:04 +0000 (UTC)
+Date:   Wed, 21 Jul 2021 21:47:02 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v2] tracing: Allow execnames to be passed as args for
+ synthetic events
+Message-ID: <20210721214702.4eeb1cd9@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-A perf uncore PMU may have two PMU names, a real name and an alias. The
-alias is exported at /sys/bus/event_source/devices/uncore_*/alias.
-The perf tool should support the alias as well.
+Allow common_pid.execname to be saved in a variable in one histogram to be
+passed to another histogram that can pass it as a parameter to a synthetic
+event.
 
-Add alias_name in the struct perf_pmu to store the alias. For the PMU
-which doesn't have an alias. It's NULL.
+ ># echo 'hist:keys=pid:__arg__1=common_timestamp.usecs:arg2=common_pid.execname' \
+       > events/sched/sched_waking/trigger
+ ># echo 'wakeup_lat s32 pid; u64 delta; char wake_comm[]' > synthetic_events
+ ># echo 'hist:keys=next_pid:pid=next_pid,delta=common_timestamp.usecs-$__arg__1,exec=$arg2'\
+':onmatch(sched.sched_waking).trace(wakeup_lat,$pid,$delta,$exec)' \
+ > events/sched/sched_switch/trigger
 
-Introduce two X86 specific functions to retrieve the real name and the
-alias separately.
+The above is a wake up latency synthetic event setup that passes the execname
+of the common_pid that woke the task to the scheduling of that task, which
+triggers a synthetic event that passes the original execname as a
+parameter to display it.
 
-Only go through the sysfs to retrieve the mapping between the real name
-and the alias once. The result is cached in a list, uncore_pmu_list.
+ ># echo 1 > events/synthetic/enable
+ ># cat trace
+    <idle>-0       [006] d..4   186.863801: wakeup_lat: pid=1306 delta=65 wake_comm=kworker/u16:3
+    <idle>-0       [000] d..4   186.863858: wakeup_lat: pid=163 delta=27 wake_comm=<idle>
+    <idle>-0       [001] d..4   186.863903: wakeup_lat: pid=1307 delta=36 wake_comm=kworker/u16:4
+    <idle>-0       [000] d..4   186.863927: wakeup_lat: pid=163 delta=5 wake_comm=<idle>
+    <idle>-0       [006] d..4   186.863957: wakeup_lat: pid=1306 delta=24 wake_comm=kworker/u16:3
+      sshd-1306    [006] d..4   186.864051: wakeup_lat: pid=61 delta=62 wake_comm=<idle>
+    <idle>-0       [000] d..4   186.965030: wakeup_lat: pid=609 delta=18 wake_comm=<idle>
+    <idle>-0       [006] d..4   186.987582: wakeup_lat: pid=1306 delta=65 wake_comm=kworker/u16:3
+    <idle>-0       [000] d..4   186.987639: wakeup_lat: pid=163 delta=27 wake_comm=<idle>
 
-Nothing changed for the other ARCHs.
-
-With the patch, the perf tool can monitor the PMU with either the real
-name or the alias.
-
-Use the real name,
- $ perf stat -e uncore_cha_2/event=1/ -x,
-   4044879584,,uncore_cha_2/event=1/,2528059205,100.00,,
-
-Use the alias,
- $ perf stat -e uncore_type_0_2/event=1/ -x,
-   3659675336,,uncore_type_0_2/event=1/,2287306455,100.00,,
-
-Co-developed-by: Jin Yao <yao.jin@linux.intel.com>
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/perf/arch/x86/util/pmu.c | 109 ++++++++++++++++++++++++++++++++-
- tools/perf/util/parse-events.y |   3 +-
- tools/perf/util/pmu.c          |  26 +++++++-
- tools/perf/util/pmu.h          |   5 ++
- 4 files changed, 138 insertions(+), 5 deletions(-)
+Changes since v1:
+  - Hit a bug on freeing the histogram, found that I used "char[]" for the
+    type, and it expects to be freed. Freed the old "type" and still use
+    "char[]" but have the normal freeing use kfree_const() on type.
 
-diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
-index d48d608517fd..bb79b1d19b96 100644
---- a/tools/perf/arch/x86/util/pmu.c
-+++ b/tools/perf/arch/x86/util/pmu.c
-@@ -1,12 +1,28 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <string.h>
--
-+#include <stdio.h>
-+#include <sys/types.h>
-+#include <dirent.h>
-+#include <fcntl.h>
- #include <linux/stddef.h>
- #include <linux/perf_event.h>
-+#include <linux/zalloc.h>
-+#include <api/fs/fs.h>
+ kernel/trace/trace_events_hist.c | 49 ++++++++++++++++++++++++++++----
+ 1 file changed, 44 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 34325f41ebc0..bb1956efd5ef 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -1395,17 +1395,17 @@ static int hist_trigger_elt_data_alloc(struct tracing_map_elt *elt)
+ 	struct hist_trigger_data *hist_data = elt->map->private_data;
+ 	unsigned int size = TASK_COMM_LEN;
+ 	struct hist_elt_data *elt_data;
+-	struct hist_field *key_field;
++	struct hist_field *hist_field;
+ 	unsigned int i, n_str;
  
- #include "../../../util/intel-pt.h"
- #include "../../../util/intel-bts.h"
- #include "../../../util/pmu.h"
-+#include "../../../util/fncache.h"
-+
-+#define TEMPLATE_ALIAS	"%s/bus/event_source/devices/%s/alias"
-+
-+struct perf_pmu_alias_name {
-+	char *name;
-+	char *alias;
-+	struct list_head list;
-+};
-+
-+static LIST_HEAD(pmu_alias_name_list);
+ 	elt_data = kzalloc(sizeof(*elt_data), GFP_KERNEL);
+ 	if (!elt_data)
+ 		return -ENOMEM;
  
- struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
- {
-@@ -18,3 +34,94 @@ struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __mayb
- #endif
- 	return NULL;
- }
+-	for_each_hist_key_field(i, hist_data) {
+-		key_field = hist_data->fields[i];
++	for_each_hist_field(i, hist_data) {
++		hist_field = hist_data->fields[i];
+ 
+-		if (key_field->flags & HIST_FIELD_FL_EXECNAME) {
++		if (hist_field->flags & HIST_FIELD_FL_EXECNAME) {
+ 			elt_data->comm = kzalloc(size, GFP_KERNEL);
+ 			if (!elt_data->comm) {
+ 				kfree(elt_data);
+@@ -1589,7 +1589,9 @@ static void __destroy_hist_field(struct hist_field *hist_field)
+ 
+ 	kfree(hist_field->var.name);
+ 	kfree(hist_field->name);
+-	kfree(hist_field->type);
 +
-+static void setup_pmu_alias_list(void)
-+{
-+	char path[PATH_MAX];
-+	DIR *dir;
-+	struct dirent *dent;
-+	const char *sysfs = sysfs__mountpoint();
-+	struct perf_pmu_alias_name *pmu;
-+	char buf[MAX_PMU_NAME_LEN];
-+	FILE *file;
-+
-+	if (!sysfs)
-+		return;
-+
-+	snprintf(path, PATH_MAX,
-+		 "%s" EVENT_SOURCE_DEVICE_PATH, sysfs);
-+
-+	dir = opendir(path);
-+	if (!dir)
-+		return;
-+
-+	while ((dent = readdir(dir))) {
-+		if (!strcmp(dent->d_name, ".") ||
-+		    !strcmp(dent->d_name, ".."))
-+			continue;
-+
-+		snprintf(path, PATH_MAX,
-+			 TEMPLATE_ALIAS, sysfs, dent->d_name);
-+
-+		if (!file_available(path))
-+			continue;
-+
-+		file = fopen(path, "r");
-+		if (!file)
-+			continue;
-+
-+		if (fscanf(file, "%s", buf) != 1)
-+			continue;
-+
-+		pmu = zalloc(sizeof(*pmu));
-+		if (!pmu)
-+			continue;
-+
-+		pmu->alias = strdup(buf);
-+		if (!pmu->alias) {
-+			free(pmu);
-+			continue;
-+		}
-+		pmu->name = strdup(dent->d_name);
-+		list_add_tail(&pmu->list, &pmu_alias_name_list);
-+		fclose(file);
-+	}
-+
-+	closedir(dir);
-+}
-+
-+static char *__pmu_find_real_name(const char *name)
-+{
-+	struct perf_pmu_alias_name *pmu;
-+
-+	list_for_each_entry(pmu, &pmu_alias_name_list, list) {
-+		if (!strcmp(name, pmu->alias))
-+			return strdup(pmu->name);
-+	}
-+
-+	return strdup(name);
-+}
-+
-+char *pmu_find_real_name(const char *name)
-+{
-+	static bool cached_list;
-+
-+	if (cached_list)
-+		return __pmu_find_real_name(name);
-+
-+	setup_pmu_alias_list();
-+	cached_list = true;
-+
-+	return __pmu_find_real_name(name);
-+}
-+
-+char *pmu_find_alias_name(const char *name)
-+{
-+	struct perf_pmu_alias_name *pmu;
-+
-+	list_for_each_entry(pmu, &pmu_alias_name_list, list) {
-+		if (!strcmp(name, pmu->name))
-+			return strdup(pmu->alias);
-+	}
-+	return NULL;
-+}
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index 9321bd0e2f76..d94e48e1ff9b 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -316,7 +316,8 @@ event_pmu_name opt_pmu_config
- 			if (!strncmp(name, "uncore_", 7) &&
- 			    strncmp($1, "uncore_", 7))
- 				name += 7;
--			if (!perf_pmu__match(pattern, name, $1)) {
-+			if (!perf_pmu__match(pattern, name, $1) ||
-+			    !perf_pmu__match(pattern, pmu->alias_name, $1)) {
- 				if (parse_events_copy_term_list(orig_terms, &terms))
- 					CLEANUP_YYABORT;
- 				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 44b90d638ad5..cc9af7942e7b 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -944,13 +944,28 @@ static int pmu_max_precise(const char *name)
- 	return max_precise;
++	/* execname vars use a constant type */
++	kfree_const(hist_field->type);
+ 
+ 	kfree(hist_field->system);
+ 	kfree(hist_field->event_name);
+@@ -3707,6 +3709,40 @@ static int create_val_field(struct hist_trigger_data *hist_data,
+ 	return __create_val_field(hist_data, val_idx, file, NULL, field_str, 0);
  }
  
--static struct perf_pmu *pmu_lookup(const char *name)
-+char * __weak
-+pmu_find_real_name(const char *name)
++static const char *no_comm = "(no comm)";
++
++static u64 hist_field_execname(struct hist_field *hist_field,
++			       struct tracing_map_elt *elt,
++			       struct trace_buffer *buffer,
++			       struct ring_buffer_event *rbe,
++			       void *event)
 +{
-+	return strdup(name);
++	struct hist_elt_data *elt_data;
++
++	if (WARN_ON_ONCE(!elt))
++		return (u64)(unsigned long)no_comm;
++
++	elt_data = elt->private_data;
++
++	if (WARN_ON_ONCE(!elt_data->comm))
++		return (u64)(unsigned long)no_comm;
++
++	return (u64)(unsigned long)(elt_data->comm);
 +}
 +
-+char * __weak
-+pmu_find_alias_name(const char *name __maybe_unused)
++/* Convert a var that points to common_pid.execname to a string */
++static void update_var_execname(struct hist_field *hist_field)
 +{
-+	return NULL;
++	hist_field->flags = HIST_FIELD_FL_STRING | HIST_FIELD_FL_VAR |
++		HIST_FIELD_FL_EXECNAME;
++	hist_field->size = MAX_FILTER_STR_VAL;
++	hist_field->is_signed = 0;
++	kfree(hist_field->type);
++	/* This uses kfree_const() to free */
++	hist_field->type = "char[]";
++	hist_field->fn = hist_field_execname;
 +}
 +
-+static struct perf_pmu *pmu_lookup(const char *lookup_name)
- {
- 	struct perf_pmu *pmu;
-+	char *name;
- 	LIST_HEAD(format);
- 	LIST_HEAD(aliases);
- 	__u32 type;
+ static int create_var_field(struct hist_trigger_data *hist_data,
+ 			    unsigned int val_idx,
+ 			    struct trace_event_file *file,
+@@ -3731,6 +3767,9 @@ static int create_var_field(struct hist_trigger_data *hist_data,
  
-+	name = pmu_find_real_name(lookup_name);
+ 	ret = __create_val_field(hist_data, val_idx, file, var_name, expr_str, flags);
+ 
++	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_EXECNAME)
++		update_var_execname(hist_data->fields[val_idx]);
 +
- 	/*
- 	 * The pmu data we store & need consists of the pmu
- 	 * type value and format definitions. Load both right
-@@ -973,7 +988,8 @@ static struct perf_pmu *pmu_lookup(const char *name)
- 		return NULL;
+ 	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
+ 		hist_data->fields[val_idx]->var_str_idx = hist_data->n_var_str++;
  
- 	pmu->cpus = pmu_cpumask(name);
--	pmu->name = strdup(name);
-+	pmu->name = name;
-+	pmu->alias_name = pmu_find_alias_name(name);
- 	pmu->type = type;
- 	pmu->is_uncore = pmu_is_uncore(name);
- 	if (pmu->is_uncore)
-@@ -1003,7 +1019,8 @@ static struct perf_pmu *pmu_find(const char *name)
- 	struct perf_pmu *pmu;
- 
- 	list_for_each_entry(pmu, &pmus, list)
--		if (!strcmp(pmu->name, name))
-+		if (!strcmp(pmu->name, name) ||
-+		    (pmu->alias_name && !strcmp(pmu->alias_name, name)))
- 			return pmu;
- 
- 	return NULL;
-@@ -1898,6 +1915,9 @@ bool perf_pmu__has_hybrid(void)
- 
- int perf_pmu__match(char *pattern, char *name, char *tok)
- {
-+	if (!name)
-+		return -1;
-+
- 	if (fnmatch(pattern, name, 0))
- 		return -1;
- 
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 926da483a141..f6ca9f6a06ef 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -21,6 +21,7 @@ enum {
- #define PERF_PMU_FORMAT_BITS 64
- #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
- #define CPUS_TEMPLATE_CPU	"%s/bus/event_source/devices/%s/cpus"
-+#define MAX_PMU_NAME_LEN 128
- 
- struct perf_event_attr;
- 
-@@ -32,6 +33,7 @@ struct perf_pmu_caps {
- 
- struct perf_pmu {
- 	char *name;
-+	char *alias_name;	/* PMU alias name */
- 	char *id;
- 	__u32 type;
- 	bool selectable;
-@@ -135,4 +137,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
- bool perf_pmu__has_hybrid(void);
- int perf_pmu__match(char *pattern, char *name, char *tok);
- 
-+char *pmu_find_real_name(const char *name);
-+char *pmu_find_alias_name(const char *name);
-+
- #endif /* __PMU_H */
 -- 
-2.17.1
+2.31.1
 
