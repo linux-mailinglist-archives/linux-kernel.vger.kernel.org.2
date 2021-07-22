@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2833D2AB5
+	by mail.lfdr.de (Postfix) with ESMTP id DF8163D2AB7
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhGVQUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52312 "EHLO
+        id S233086AbhGVQUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233491AbhGVQTK (ORCPT
+        with ESMTP id S235960AbhGVQUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:19:10 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFEEC061796;
-        Thu, 22 Jul 2021 09:59:42 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id k12-20020a05600c1c8cb02901f259f3a250so30356wms.2;
-        Thu, 22 Jul 2021 09:59:42 -0700 (PDT)
+        Thu, 22 Jul 2021 12:20:03 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C24C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:00:38 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id s23so7251518oiw.12
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:00:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=BM24k6H9LcY/dUUeA4LE+RhfS6GQmXK+4XERxfAvlv0=;
-        b=qgqjaOiR5GDdZTa15bTl9JTnbzB07s9U9I9cEwDWRuN5S2mke859hy+UUqa9AvmPFs
-         QnFQcBfyQYO2hoq+QCnMeAzFQrJjuhZwNSk8lKxsoQut82+gNyGeae8CX2fdtJ6AsPUJ
-         sIFDuSM228csEcVbnMRcDLNmkw37EjzdGSBxe/+i5FutmwIEz61FJPGoXcNnt7LdzFmq
-         7HMiDuUAhpP0zT8ZvB+6hGaL+M+s14GjFJ8edGsNTcFdoBf+Bjtotk6/Fz1gTx1H1MVo
-         lOn17fh/knU+cY7LH09yds5UE/7MbJXAnTDAQROY/7yRFOTdLDSVwG26C7HozDiY6WdQ
-         5ySA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VnQgrFKyL09FZWGvfGlkFGfOAsk4lk9cRxNnmKHljlc=;
+        b=qzx2csD+ZONV/WpNcx7ZKj3ZCYB712jM1U7zmNX/eyFMm0ONOb7Zqu7XFRah2ru8Rx
+         YN1ki3WqYr6ppOdU+jmhj9hUrh5S0tz7GS+F5EjmofH3Humhnmsdh8cN0n3sR91LAAQ3
+         bmymODYV7FQHWuGJrKVD+t+qqgKWeSXn1XrlRcLN87VMwpQulwOBh3kNuLpjuOpSKw7Y
+         7bYBC0XoueexAFyPZSg7xJ3o2UPr7E40+6mSzW9M9Rivow5+AnYc/IPU6zz1KzRhmJji
+         P/KWRoWPHb+xH4++ovBYdIASU2r62+l4Ukp32bZcols4T/aUikq5mJ1ukWNEeEuKQBA9
+         R4ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=BM24k6H9LcY/dUUeA4LE+RhfS6GQmXK+4XERxfAvlv0=;
-        b=mvhuGWJ60aPNmMVb+Vx2YbfZpN/kpuEPadJQVEat+zTFdcs+MC5HbqnibKZTadFS8+
-         MfL4pMUoIaivvE26TF7Thn3SzgEhQuSwl9cL5WhK6kZKCHFni6aU0a2DJMgDxec1O2To
-         pwpriEU+4GWhAh83i7sCoiRB2frobrrSU0m5Gv/+XKSXSuq/XLx8xXF7zm6no/d1zB/N
-         gpmJqiVv32uosDzC2RQbGtqZ6pXdUtm7+CNYTOCknqL6jk/5Qe0UgE3TUx5DNiIcpKKe
-         Y5dYfEylkwUskiekkkSkEbDSGv8q1ZgliY/eV9C2Wz0/P5KDc2CRmZW8QgQHFLIXvrCT
-         HxvA==
-X-Gm-Message-State: AOAM532wXJlU4DfUb0HYG1kysebJ7QpYjgeTcoliOVaBiFbu4kAphem6
-        myO78AcT7fBo9mDDRwVjjf1qhKXYa58=
-X-Google-Smtp-Source: ABdhPJyg8BQJejnjRRm1BTEU8FOHujUxCDxVRnY3wBbr0UdKdyaOqBiZbD58vEBD+v7h6w/GM/G4Tw==
-X-Received: by 2002:a7b:ca50:: with SMTP id m16mr10037592wml.140.1626973181475;
-        Thu, 22 Jul 2021 09:59:41 -0700 (PDT)
-Received: from pc ([196.235.233.206])
-        by smtp.gmail.com with ESMTPSA id n23sm24009425wms.4.2021.07.22.09.59.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 09:59:40 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 17:59:38 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        ludovic.desroches@microchip.com, gregkh@linuxfoundation.org
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND] gpu: ipu-v3: use swap()
-Message-ID: <20210722165938.GA4116@pc>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VnQgrFKyL09FZWGvfGlkFGfOAsk4lk9cRxNnmKHljlc=;
+        b=AKhKxUz4BL21hex+Pk44RZW6iWimZ44jubtGVhrNl3YaPlKzTPoMS6F3e/YoTfQg75
+         yJAzXDDd/6t7YGcVLrJ1hccKp1C3FaMRv/qnZKLVx+wB7UnqICOXilID10GkYjBSYwL5
+         w9f7YI74jXd5CrbQVGjRQb7/NUBX9azhTUopSJUfT82+r1BLAL+WvHFpib9b+st4xwGS
+         ZeJyi7HCo2tKiFeiJq9cIETtSiMPIvU1+NxQ+J82828lua/dxPgyw8rmRPX4DkMY6stg
+         7/4SoXKgLAQMXgkUmIo58WcMik7HSpwFLknMiCjaxf8oyVcshlhxo9dycKliy9VXkje7
+         DLsw==
+X-Gm-Message-State: AOAM533l7O04C7SDJGVdI8ErdsUj8k15b97VELlcHar1Xwn9GHJqotJ/
+        z1crzGflEmEsJJIuxhE0slj2/g==
+X-Google-Smtp-Source: ABdhPJxCmixWOKi0mabBWT2LmHuw7Hr3B/1k5C/ebhNqD+gtPsOiV8bMW0JtgPNMuzfSMoPstxUGqQ==
+X-Received: by 2002:aca:a8cf:: with SMTP id r198mr634517oie.143.1626973237417;
+        Thu, 22 Jul 2021 10:00:37 -0700 (PDT)
+Received: from [192.168.17.50] ([189.219.74.83])
+        by smtp.gmail.com with ESMTPSA id t7sm489781otl.25.2021.07.22.10.00.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Jul 2021 10:00:36 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/125] 5.10.53-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, aford173@gmail.com
+References: <20210722155624.672583740@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <beeb7568-388f-38e4-eb1f-28b1557bc191@linaro.org>
+Date:   Thu, 22 Jul 2021 12:00:34 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use swap() instead of implementing it in order to make code more clean.
+Hello!
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
----
- drivers/crypto/atmel-aes.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+On 7/22/21 11:29 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.53 release.
+> There are 125 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 24 Jul 2021 15:56:00 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.53-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
-index b1d286004295..60041022c4f5 100644
---- a/drivers/crypto/atmel-aes.c
-+++ b/drivers/crypto/atmel-aes.c
-@@ -1819,12 +1819,8 @@ static int atmel_aes_xts_process_data(struct atmel_aes_dev *dd)
- 	 * the order of the ciphered tweak bytes need to be reversed before
- 	 * writing them into the ODATARx registers.
- 	 */
--	for (i = 0; i < AES_BLOCK_SIZE/2; ++i) {
--		u8 tmp = tweak_bytes[AES_BLOCK_SIZE - 1 - i];
--
--		tweak_bytes[AES_BLOCK_SIZE - 1 - i] = tweak_bytes[i];
--		tweak_bytes[i] = tmp;
--	}
-+	for (i = 0; i < AES_BLOCK_SIZE/2; ++i)
-+		swap(tweak_bytes[i], tweak_bytes[AES_BLOCK_SIZE - 1 - i]);
- 
- 	/* Process the data. */
- 	atmel_aes_write_ctrl(dd, use_dma, NULL);
--- 
-2.25.1
+Build regressions detected on Arm64:
 
+   make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc' 'HOSTCC=sccache gcc' dtbs
+   Error: /builds/linux/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi:298.1-13 Label or path usb2_clksel not found
+   FATAL ERROR: Syntax error parsing input tree
+   make[3]: *** [scripts/Makefile.lib:326: arch/arm64/boot/dts/renesas/r8a774a1-beacon-rzg2m-kit.dtb] Error 1
+   make[3]: Target '__build' not remade because of errors.
+   make[2]: *** [/builds/linux/scripts/Makefile.build:497: arch/arm64/boot/dts/renesas] Error 2
+   make[2]: Target '__build' not remade because of errors.
+   make[1]: *** [/builds/linux/Makefile:1359: dtbs] Error 2
+   make: *** [Makefile:185: __sub-make] Error 2
+   make: Target 'dtbs' not remade because of errors.
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
