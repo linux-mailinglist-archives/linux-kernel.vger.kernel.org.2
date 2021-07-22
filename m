@@ -2,230 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6C93D1D39
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 07:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349CE3D1D3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 07:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbhGVE1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 00:27:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:43678 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229488AbhGVE1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 00:27:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D413D6E;
-        Wed, 21 Jul 2021 22:08:22 -0700 (PDT)
-Received: from [10.163.65.134] (unknown [10.163.65.134])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 675F33F66F;
-        Wed, 21 Jul 2021 22:08:19 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH v3 10/12] mm/debug_vm_pgtable: Use struct
- pgtable_debug_args in PGD and P4D modifying tests
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210719130613.334901-1-gshan@redhat.com>
- <20210719130613.334901-11-gshan@redhat.com>
-Message-ID: <f636f6ae-ea37-aac6-47cd-ff97ceaa5268@arm.com>
-Date:   Thu, 22 Jul 2021 10:39:08 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229967AbhGVE3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 00:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhGVE26 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 00:28:58 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FA5C061575;
+        Wed, 21 Jul 2021 22:09:32 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id u1so4502153wrs.1;
+        Wed, 21 Jul 2021 22:09:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IPyvILfcy5g4pOCZ9oUbxLJdS8m8+UwpG2eFIHIG0/c=;
+        b=FnnBUFR9AJANRg5xEoaSmqlxeYelTG4x6mpxOkcibDEhEXqOybGBDAi7uGTasHsJOO
+         eGu4gPmx3Lxvp9bb7yZ2O59yEjuIGxZxmyOvF0LZz5Zoh0vFE28BA4Ffyd2KMQZ+A5UA
+         h7OmQWwFQYXwmSIvL5sz3wCBPvUltzp7vGPT4ktsKtpwRh+/C+ljXzm3dzZbT439vS8F
+         /fN3xQMB4de6a2OKWD6wQboE5xybm+ucA/SdKfKj0Gf1946EuMZow1QUVSwAgrdm0YR/
+         1oIfAV35J1K4eQdpPUC+tWXqJDdnFzmg22+dXhDJIVEMTWZqu2kF1WETTr6mKDigrF2q
+         fsBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IPyvILfcy5g4pOCZ9oUbxLJdS8m8+UwpG2eFIHIG0/c=;
+        b=rpQXXWNJc0aBzJM1jHPusKKQmlqaLwNQwlP+6OuiSUbBwbGq383iNsZXSERWOvs+g4
+         +zB4tdVAA8IE9VFvixfZjPGqZsaprXMQGSKXoqUCLJLWGw3dESfAi3Zw5zS6o/zCqZup
+         w9BI2ylvzWcAECSiQFano0Wx4t6fgn7Qvl1I8oeuEEpWFgXX6m4eVrJMlOlT6fIn67s2
+         pJQKXEQAN20krZUJytbHCRY/72FNGOu1LuH+oOLF3h2CdkPxcVUP6Tw4w/PsaW6A+jTQ
+         O9TJhIcQ88rFJyRterFsO/CEhVqC/r6YZQnV/aXQEJJacepxkkxTkqOIE2z4T2d4Iagx
+         BQPw==
+X-Gm-Message-State: AOAM5306MiUnhB4AhKsLaT7T1/+7YYWtFK2Uuv4Rfy9KrR63lZZWozkg
+        bceUuRXZGKHEG72inxpn4B6gUV74VLjKc93Nw64=
+X-Google-Smtp-Source: ABdhPJzMYwf7dP/U8+spn9cNNq0w4H62jP6C73Zl9vHKXEXAJh2dJh2O3ouULrH7LLMd0mpVpEbotuFTnJ51RYhloPo=
+X-Received: by 2002:adf:a54b:: with SMTP id j11mr46685838wrb.305.1626930571441;
+ Wed, 21 Jul 2021 22:09:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210719130613.334901-11-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210721105317.36742-1-cbranchereau@gmail.com>
+ <20210721105317.36742-4-cbranchereau@gmail.com> <BEXLWQ.Q6JDGD8HI0S31@crapouillou.net>
+In-Reply-To: <BEXLWQ.Q6JDGD8HI0S31@crapouillou.net>
+From:   Christophe Branchereau <cbranchereau@gmail.com>
+Date:   Thu, 22 Jul 2021 07:09:19 +0200
+Message-ID: <CAFsFa86rDydfvumcA7Ld5Vx=hJyYb9_soeYfRk_we1ZofFxUgQ@mail.gmail.com>
+Subject: Re: [PATCH 3/6] iio/adc: ingenic: add JZ4760 support to the sadc driver
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     jic23@kernel.org, lars@metafoo.de, linux-mips@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net,
+        contact@artur-rojek.eu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Paul, thank you for all the feedback, duly noted I will V2,
+there is just one I disagree with:
 
-
-On 7/19/21 6:36 PM, Gavin Shan wrote:
-> This uses struct pgtable_debug_args in PGD/P4D modifying tests. No
-> allocated huge page is used in these tests. Besides, the unused
-> variable @saved_p4dp and @saved_pudp are dropped.
-
-Please dont drop  @saved_p4dp and @saved_pudp just yet.
-
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  mm/debug_vm_pgtable.c | 86 +++++++++++++++++++------------------------
->  1 file changed, 38 insertions(+), 48 deletions(-)
-> 
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index 57b7ead0708b..5ebacc940b68 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -520,27 +520,26 @@ static void __init pud_populate_tests(struct pgtable_debug_args *args) { }
->  #endif /* PAGETABLE_PUD_FOLDED */
->  
->  #ifndef __PAGETABLE_P4D_FOLDED
-> -static void __init p4d_clear_tests(struct mm_struct *mm, p4d_t *p4dp)
-> +static void __init p4d_clear_tests(struct pgtable_debug_args *args)
->  {
-> -	p4d_t p4d = READ_ONCE(*p4dp);
-> +	p4d_t p4d = READ_ONCE(*(args->p4dp));
->  
-> -	if (mm_pud_folded(mm))
-> +	if (mm_pud_folded(args->mm))
->  		return;
->  
->  	pr_debug("Validating P4D clear\n");
->  	p4d = __p4d(p4d_val(p4d) | RANDOM_ORVALUE);
-> -	WRITE_ONCE(*p4dp, p4d);
-> -	p4d_clear(p4dp);
-> -	p4d = READ_ONCE(*p4dp);
-> +	WRITE_ONCE(*(args->p4dp), p4d);
-> +	p4d_clear(args->p4dp);
-> +	p4d = READ_ONCE(*(args->p4dp));
->  	WARN_ON(!p4d_none(p4d));
->  }
->  
-> -static void __init p4d_populate_tests(struct mm_struct *mm, p4d_t *p4dp,
-> -				      pud_t *pudp)
-> +static void __init p4d_populate_tests(struct pgtable_debug_args *args)
->  {
->  	p4d_t p4d;
->  
-> -	if (mm_pud_folded(mm))
-> +	if (mm_pud_folded(args->mm))
->  		return;
->  
->  	pr_debug("Validating P4D populate\n");
-> @@ -548,34 +547,33 @@ static void __init p4d_populate_tests(struct mm_struct *mm, p4d_t *p4dp,
->  	 * This entry points to next level page table page.
->  	 * Hence this must not qualify as p4d_bad().
->  	 */
-> -	pud_clear(pudp);
-> -	p4d_clear(p4dp);
-> -	p4d_populate(mm, p4dp, pudp);
-> -	p4d = READ_ONCE(*p4dp);
-> +	pud_clear(args->pudp);
-> +	p4d_clear(args->p4dp);
-> +	p4d_populate(args->mm, args->p4dp, args->start_pudp);
-> +	p4d = READ_ONCE(*(args->p4dp));
->  	WARN_ON(p4d_bad(p4d));
->  }
->  
-> -static void __init pgd_clear_tests(struct mm_struct *mm, pgd_t *pgdp)
-> +static void __init pgd_clear_tests(struct pgtable_debug_args *args)
->  {
-> -	pgd_t pgd = READ_ONCE(*pgdp);
-> +	pgd_t pgd = READ_ONCE(*(args->pgdp));
->  
-> -	if (mm_p4d_folded(mm))
-> +	if (mm_p4d_folded(args->mm))
->  		return;
->  
->  	pr_debug("Validating PGD clear\n");
->  	pgd = __pgd(pgd_val(pgd) | RANDOM_ORVALUE);
-> -	WRITE_ONCE(*pgdp, pgd);
-> -	pgd_clear(pgdp);
-> -	pgd = READ_ONCE(*pgdp);
-> +	WRITE_ONCE(*(args->pgdp), pgd);
-> +	pgd_clear(args->pgdp);
-> +	pgd = READ_ONCE(*(args->pgdp));
->  	WARN_ON(!pgd_none(pgd));
->  }
->  
-> -static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
-> -				      p4d_t *p4dp)
-> +static void __init pgd_populate_tests(struct pgtable_debug_args *args)
->  {
->  	pgd_t pgd;
->  
-> -	if (mm_p4d_folded(mm))
-> +	if (mm_p4d_folded(args->mm))
->  		return;
->  
->  	pr_debug("Validating PGD populate\n");
-> @@ -583,23 +581,17 @@ static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
->  	 * This entry points to next level page table page.
->  	 * Hence this must not qualify as pgd_bad().
->  	 */
-> -	p4d_clear(p4dp);
-> -	pgd_clear(pgdp);
-> -	pgd_populate(mm, pgdp, p4dp);
-> -	pgd = READ_ONCE(*pgdp);
-> +	p4d_clear(args->p4dp);
-> +	pgd_clear(args->pgdp);
-> +	pgd_populate(args->mm, args->pgdp, args->start_p4dp);
-> +	pgd = READ_ONCE(*(args->pgdp));
->  	WARN_ON(pgd_bad(pgd));
->  }
->  #else  /* !__PAGETABLE_P4D_FOLDED */
-> -static void __init p4d_clear_tests(struct mm_struct *mm, p4d_t *p4dp) { }
-> -static void __init pgd_clear_tests(struct mm_struct *mm, pgd_t *pgdp) { }
-> -static void __init p4d_populate_tests(struct mm_struct *mm, p4d_t *p4dp,
-> -				      pud_t *pudp)
-> -{
-> -}
-> -static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
-> -				      p4d_t *p4dp)
-> -{
-> -}
-> +static void __init p4d_clear_tests(struct pgtable_debug_args *args) { }
-> +static void __init pgd_clear_tests(struct pgtable_debug_args *args) { }
-> +static void __init p4d_populate_tests(struct pgtable_debug_args *args) { }
-> +static void __init pgd_populate_tests(struct pgtable_debug_args *args) { }
->  #endif /* PAGETABLE_P4D_FOLDED */
->  
->  static void __init pte_clear_tests(struct pgtable_debug_args *args)
-> @@ -1135,8 +1127,8 @@ static int __init debug_vm_pgtable(void)
->  	struct vm_area_struct *vma;
->  	struct mm_struct *mm;
->  	pgd_t *pgdp;
-> -	p4d_t *p4dp, *saved_p4dp;
-> -	pud_t *pudp, *saved_pudp;
-> +	p4d_t *p4dp;
-> +	pud_t *pudp;
->  	pmd_t *pmdp, *saved_pmdp, pmd;
->  	pgtable_t saved_ptep;
->  	unsigned long vaddr;
-> @@ -1180,8 +1172,6 @@ static int __init debug_vm_pgtable(void)
->  	 * page table pages.
->  	 */
->  	pmd = READ_ONCE(*pmdp);
-> -	saved_p4dp = p4d_offset(pgdp, 0UL);
-> -	saved_pudp = pud_offset(p4dp, 0UL);
->  	saved_pmdp = pmd_offset(pudp, 0UL);
->  	saved_ptep = pmd_pgtable(pmd);
->  
-> @@ -1259,15 +1249,15 @@ static int __init debug_vm_pgtable(void)
->  	pud_populate_tests(&args);
->  	spin_unlock(ptl);
->  
-> -	spin_lock(&mm->page_table_lock);
-> -	p4d_clear_tests(mm, p4dp);
-> -	pgd_clear_tests(mm, pgdp);
-> -	p4d_populate_tests(mm, p4dp, saved_pudp);
-> -	pgd_populate_tests(mm, pgdp, saved_p4dp);
-> -	spin_unlock(&mm->page_table_lock);
-> +	spin_lock(&(args.mm->page_table_lock));
-> +	p4d_clear_tests(&args);
-> +	pgd_clear_tests(&args);
-> +	p4d_populate_tests(&args);
-> +	pgd_populate_tests(&args);
-> +	spin_unlock(&(args.mm->page_table_lock));
->  
-> -	p4d_free(mm, saved_p4dp);
-> -	pud_free(mm, saved_pudp);
-> +	p4d_free(mm, p4d_offset(pgdp, 0UL));
-> +	pud_free(mm, pud_offset(p4dp, 0UL));
-
-Please keep @saved_pudp and @saved_p4dp declaration, assignment and
-usage unchanged for now. Drop them only during [PATCH 11/12]. So in
-each patch like these, drop the elements only if there is an unused
-warning during build.
-
-There are two set of page table debug elements i.e old and new. The
-test is transitioning from old to new. Even after the transition is
-complete, the old elements are properly declared, initialized and
-freed up. Entire old set should be dropped only in [PATCH 11/12].
-
->  	pmd_free(mm, saved_pmdp);
->  	pte_free(mm, saved_ptep);
->  
+On Wed, Jul 21, 2021 at 8:15 PM Paul Cercueil <paul@crapouillou.net> wrote:
 >
+> Hi Christophe,
+>
+> Le mer., juil. 21 2021 at 12:53:14 +0200, citral23
+> <cbranchereau@gmail.com> a =C3=A9crit :
+> > Signed-off-by: citral23 <cbranchereau@gmail.com>
+> > ---
+> >  drivers/iio/adc/ingenic-adc.c | 64
+> > +++++++++++++++++++++++++++++++++++
+> >  1 file changed, 64 insertions(+)
+> >
+> > diff --git a/drivers/iio/adc/ingenic-adc.c
+> > b/drivers/iio/adc/ingenic-adc.c
+> > index 40f2d8c2cf72..285e7aa8e37a 100644
+> > --- a/drivers/iio/adc/ingenic-adc.c
+> > +++ b/drivers/iio/adc/ingenic-adc.c
+> > @@ -71,6 +71,7 @@
+> >  #define JZ4725B_ADC_BATTERY_HIGH_VREF_BITS   10
+> >  #define JZ4740_ADC_BATTERY_HIGH_VREF         (7500 * 0.986)
+> >  #define JZ4740_ADC_BATTERY_HIGH_VREF_BITS    12
+> > +#define JZ4760_ADC_BATTERY_VREF                      2500
+> >  #define JZ4770_ADC_BATTERY_VREF                      1200
+> >  #define JZ4770_ADC_BATTERY_VREF_BITS         12
+> >
+> > @@ -295,6 +296,10 @@ static const int
+> > jz4740_adc_battery_scale_avail[] =3D {
+> >       JZ_ADC_BATTERY_LOW_VREF, JZ_ADC_BATTERY_LOW_VREF_BITS,
+> >  };
+> >
+> > +static const int jz4760_adc_battery_scale_avail[] =3D {
+> > +     JZ4760_ADC_BATTERY_VREF, JZ4770_ADC_BATTERY_VREF_BITS,
+> > +};
+> > +
+> >  static const int jz4770_adc_battery_raw_avail[] =3D {
+> >       0, 1, (1 << JZ4770_ADC_BATTERY_VREF_BITS) - 1,
+> >  };
+> > @@ -339,6 +344,8 @@ static int jz4725b_adc_init_clk_div(struct device
+> > *dev, struct ingenic_adc *adc)
+> >       return 0;
+> >  }
+> >
+> > +
+> > +
+>
+> Unrelated cosmetic change - remove it.
+
+This is not cosmetic, but to add a VREF of 2.5V for the jz4760, as per spec=
+s
+
+>
+> >  static int jz4770_adc_init_clk_div(struct device *dev, struct
+> > ingenic_adc *adc)
+> >  {
+> >       struct clk *parent_clk;
+> > @@ -400,6 +407,47 @@ static const struct iio_chan_spec
+> > jz4740_channels[] =3D {
+> >       },
+> >  };
+> >
+> > +static const struct iio_chan_spec jz4760_channels[] =3D {
+> > +     {
+> > +             .extend_name =3D "aux0",
+> > +             .type =3D IIO_VOLTAGE,
+> > +             .info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW) |
+> > +                                   BIT(IIO_CHAN_INFO_SCALE),
+> > +             .indexed =3D 1,
+> > +             .channel =3D INGENIC_ADC_AUX0,
+> > +             .scan_index =3D -1,
+> > +     },
+> > +     {
+> > +             .extend_name =3D "aux",
+> > +             .type =3D IIO_VOLTAGE,
+> > +             .info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW) |
+> > +                                   BIT(IIO_CHAN_INFO_SCALE),
+> > +             .indexed =3D 1,
+> > +             .channel =3D INGENIC_ADC_AUX,
+> > +             .scan_index =3D -1,
+> > +     },
+>
+> A couple of things. First, ".extend_name" is deprecated now... But
+> since the driver used it before, I suppose it doesn't make sense to use
+> labels just for this SoC (as we can't remove .extend_name for other
+> SoCs because of ABI). So I suppose it works here, but maybe Jonathan
+> disagrees.
+>
+> Also, you should probably use "aux1" as the channel's name instead of
+> "aux", independently of the macro name you used in the .channel field.
+>
+> > +     {
+> > +             .extend_name =3D "battery",
+> > +             .type =3D IIO_VOLTAGE,
+> > +             .info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW) |
+> > +                                   BIT(IIO_CHAN_INFO_SCALE),
+> > +             .info_mask_separate_available =3D BIT(IIO_CHAN_INFO_RAW) =
+|
+> > +                                             BIT(IIO_CHAN_INFO_SCALE),
+> > +             .indexed =3D 1,
+> > +             .channel =3D INGENIC_ADC_BATTERY,
+> > +             .scan_index =3D -1,
+> > +     },
+>
+> Swap the battery channel at the end, no? First the three AUX then the
+> battery channel?
+>
+> The rest looks pretty good to me.
+>
+> Cheers,
+> -Paul
+>
+> > +     {
+> > +             .extend_name =3D "aux2",
+> > +             .type =3D IIO_VOLTAGE,
+> > +             .info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW) |
+> > +                                   BIT(IIO_CHAN_INFO_SCALE),
+> > +             .indexed =3D 1,
+> > +             .channel =3D INGENIC_ADC_AUX2,
+> > +             .scan_index =3D -1,
+> > +     },
+> > +};
+> > +
+> >  static const struct iio_chan_spec jz4770_channels[] =3D {
+> >       {
+> >               .type =3D IIO_VOLTAGE,
+> > @@ -526,6 +574,20 @@ static const struct ingenic_adc_soc_data
+> > jz4740_adc_soc_data =3D {
+> >       .init_clk_div =3D NULL, /* no ADCLK register on JZ4740 */
+> >  };
+> >
+> > +static const struct ingenic_adc_soc_data jz4760_adc_soc_data =3D {
+> > +     .battery_high_vref =3D JZ4760_ADC_BATTERY_VREF,
+> > +     .battery_high_vref_bits =3D JZ4770_ADC_BATTERY_VREF_BITS,
+> > +     .battery_raw_avail =3D jz4770_adc_battery_raw_avail,
+> > +     .battery_raw_avail_size =3D ARRAY_SIZE(jz4770_adc_battery_raw_ava=
+il),
+> > +     .battery_scale_avail =3D jz4760_adc_battery_scale_avail,
+> > +     .battery_scale_avail_size =3D
+> > ARRAY_SIZE(jz4760_adc_battery_scale_avail),
+> > +     .battery_vref_mode =3D false,
+> > +     .has_aux_md =3D true,
+> > +     .channels =3D jz4760_channels,
+> > +     .num_channels =3D ARRAY_SIZE(jz4760_channels),
+> > +     .init_clk_div =3D jz4770_adc_init_clk_div,
+> > +};
+> > +
+> >  static const struct ingenic_adc_soc_data jz4770_adc_soc_data =3D {
+> >       .battery_high_vref =3D JZ4770_ADC_BATTERY_VREF,
+> >       .battery_high_vref_bits =3D JZ4770_ADC_BATTERY_VREF_BITS,
+> > @@ -621,6 +683,7 @@ static int ingenic_adc_read_raw(struct iio_dev
+> > *iio_dev,
+> >               return ingenic_adc_read_chan_info_raw(iio_dev, chan, val)=
+;
+> >       case IIO_CHAN_INFO_SCALE:
+> >               switch (chan->channel) {
+> > +             case INGENIC_ADC_AUX0:
+> >               case INGENIC_ADC_AUX:
+> >               case INGENIC_ADC_AUX2:
+> >                       *val =3D JZ_ADC_AUX_VREF;
+> > @@ -832,6 +895,7 @@ static int ingenic_adc_probe(struct
+> > platform_device *pdev)
+> >  static const struct of_device_id ingenic_adc_of_match[] =3D {
+> >       { .compatible =3D "ingenic,jz4725b-adc", .data =3D
+> > &jz4725b_adc_soc_data, },
+> >       { .compatible =3D "ingenic,jz4740-adc", .data =3D &jz4740_adc_soc=
+_data,
+> > },
+> > +     { .compatible =3D "ingenic,jz4760-adc", .data =3D &jz4760_adc_soc=
+_data,
+> > },
+> >       { .compatible =3D "ingenic,jz4770-adc", .data =3D &jz4770_adc_soc=
+_data,
+> > },
+> >       { },
+> >  };
+> > --
+> > 2.30.2
+> >
+>
+>
+KR
+CB
