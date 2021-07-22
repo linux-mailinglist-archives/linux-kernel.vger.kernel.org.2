@@ -2,267 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107E83D220D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978743D2212
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbhGVJoy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 05:44:54 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7414 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbhGVJoc (ORCPT
+        id S231499AbhGVJrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 05:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230367AbhGVJrG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 05:44:32 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GVpQ329mdz7y0K;
-        Thu, 22 Jul 2021 18:21:15 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 18:24:55 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 18:24:55 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
- Thu, 22 Jul 2021 18:24:55 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        "liuqi (BA)" <liuqi115@huawei.com>
-CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
-Thread-Topic: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
-Thread-Index: AQHXfJkyPamnf4yoyEqhBrLk7zE456tMmTOAgAIsGRA=
-Date:   Thu, 22 Jul 2021 10:24:54 +0000
-Message-ID: <332df5b7d7bb4bd096b6521ffefaabe6@hisilicon.com>
-References: <20210719122417.10355-1-liuqi115@huawei.com>
- <20210721174153.34c1898dc9eea135eb0b8be8@kernel.org>
-In-Reply-To: <20210721174153.34c1898dc9eea135eb0b8be8@kernel.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.151]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 22 Jul 2021 05:47:06 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0776AC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 03:27:42 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id e9so3021060vsk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 03:27:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D6NsNjR1zauQMuXAr/8MkgipURqkWQcL5tWcTpW2GWw=;
+        b=lTl71YmyLm/E8pzCx+pNYFhrr5Gnj2EwPJhWh4eAUUXOY5fHBF1iYEi+Q6u58lKi7O
+         cnenhxnMlEoTdgT947mx2ZMLiwUy1SymwnTFAL/N+oLwD2njh4NgV4wiolv0idmuSFTc
+         /iO/POWIHBcvWh7mn71FoT87QbrciHZCHH0wmNUMv/KtG4lT0LzcHCgY3G14quq/Bs7Y
+         M09ZLlRrkDgh8eFAC80PhYta6V0WM9fZ5FfPd2si1WwGY4KsEZX2ya1R4zkkn6TuKWGC
+         cUIiqd2Wxig5suzFwR/1kwqanE2JVWjNUxzojb7n/lOKMrKlWhhw5LnOeYNMOiWm4pJt
+         mtrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D6NsNjR1zauQMuXAr/8MkgipURqkWQcL5tWcTpW2GWw=;
+        b=iN87wOB0685Ev8QoEL2IHbBJocbZjDgzzWv2bvcRH3CrHU6dhQkCu1Zqnd+WxfE7/K
+         ORS3OfK9hm7MB42Q40rrm0YmxIs1eYHc3aElHZiCEOVcahQ0F/KMbdNgCb52lugIg18U
+         kAbG5vjRmuyYuPJyNG4WucWWBxcyG7uKnBUj15PsQB7aj9yPGczO7vDbOkmCprKpk9Se
+         atKJV2w+iODDHTefGtxSWG3gzn07Amc/9OSi9udaN7iBXbTR+4r+Tr+8ERg366+Lq7tQ
+         j6kWv9xrLD8RSCYPwGBrsKM/NulBV2juOa4tGCDB0L+9EoG8lBlbmrRl5cRlMP2rElWo
+         XjMw==
+X-Gm-Message-State: AOAM531pSL0z3mBTvGt7xg2ff01EFSqSi841ejMDSaAmjJjqkp5ER0wi
+        OOUOwUmIL3FbI+srU8dB8bNenQBJsdCnUPrpq6apIQ==
+X-Google-Smtp-Source: ABdhPJzpWkC9FA77SkwYQtOd/pIwnXgFDCAPg1oIGoBUk/5VNZqC5MQDte+YPKv9/8XdXUvLgvPvS0i78BqM57ytKcc=
+X-Received: by 2002:a67:ebd8:: with SMTP id y24mr38617533vso.19.1626949656227;
+ Thu, 22 Jul 2021 03:27:36 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210718104901.454843-1-dmitry.baryshkov@linaro.org> <20210718104901.454843-4-dmitry.baryshkov@linaro.org>
+In-Reply-To: <20210718104901.454843-4-dmitry.baryshkov@linaro.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 22 Jul 2021 12:26:59 +0200
+Message-ID: <CAPDyKFqws1iC+PtQ3iRzzFF1NQZ=huRbA3wNBbS2gmyVqgmhxQ@mail.gmail.com>
+Subject: Re: [PATCH v5 3/9] PM: runtime: add devm_pm_runtime_enable helper
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 18 Jul 2021 at 12:49, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> Add helper function handling typical driver action: call
+> pm_runtime_enable at the probe() time and disable it during remove().
+>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  drivers/base/power/runtime.c | 17 +++++++++++++++++
+>  include/linux/pm_runtime.h   |  4 ++++
+>  2 files changed, 21 insertions(+)
 
+First, this needs to be sent to the correct maintainers (Rafael) and
+also the mailing list (linux-pm).
 
-> -----Original Message-----
-> From: Masami Hiramatsu [mailto:mhiramat@kernel.org]
-> Sent: Wednesday, July 21, 2021 8:42 PM
-> To: liuqi (BA) <liuqi115@huawei.com>
-> Cc: catalin.marinas@arm.com; will@kernel.org; naveen.n.rao@linux.ibm.com;
-> anil.s.keshavamurthy@intel.com; davem@davemloft.net;
-> linux-arm-kernel@lists.infradead.org; Song Bao Hua (Barry Song)
-> <song.bao.hua@hisilicon.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
-> robin.murphy@arm.com; Linuxarm <linuxarm@huawei.com>;
-> linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
-> 
-> Hi Qi,
-> 
-> Thanks for your effort!
-> 
-> On Mon, 19 Jul 2021 20:24:17 +0800
-> Qi Liu <liuqi115@huawei.com> wrote:
-> 
-> > This patch introduce optprobe for ARM64. In optprobe, probed
-> > instruction is replaced by a branch instruction to detour
-> > buffer. Detour buffer contains trampoline code and a call to
-> > optimized_callback(). optimized_callback() calls opt_pre_handler()
-> > to execute kprobe handler.
-> 
-> OK so this will replace only one instruction.
-> 
-> >
-> > Limitations:
-> > - We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
-> > guarantee the offset between probe point and kprobe pre_handler
-> > is not larger than 128MiB.
-> 
-> Hmm, shouldn't we depends on !CONFIG_ARM64_MODULE_PLTS? Or,
-> allocate an intermediate trampoline area similar to arm optprobe
-> does.
+Second, to not stall the series by $subject patch as it will likely
+need to be funneled through Rafael's tree, perhaps it's just better to
+do the "open coding" in the qcom drivers for now.
 
-Depending on !CONFIG_ARM64_MODULE_PLTS will totally disable
-RANDOMIZE_BASE according to arch/arm64/Kconfig:
-config RANDOMIZE_BASE
-	bool "Randomize the address of the kernel image"
-	select ARM64_MODULE_PLTS if MODULES
-	select RELOCATABLE
+Kind regards
+Uffe
 
-Depending on !RANDOMIZE_MODULE_REGION_FULL seems to be still
-allowing RANDOMIZE_BASE via avoiding long jump according to:
-arch/arm64/Kconfig:
-
-config RANDOMIZE_MODULE_REGION_FULL
-	bool "Randomize the module region over a 4 GB range"
-	depends on RANDOMIZE_BASE
-	default y
-	help
-	  Randomizes the location of the module region inside a 4 GB window
-	  covering the core kernel. This way, it is less likely for modules
-	  to leak information about the location of core kernel data structures
-	  but it does imply that function calls between modules and the core
-	  kernel will need to be resolved via veneers in the module PLT.
-
-	  When this option is not set, the module region will be randomized over
-	  a limited range that contains the [_stext, _etext] interval of the
-	  core kernel, so branch relocations are always in range.
-
-and
-
-arch/arm64/kernel/kaslr.c:
-	if (IS_ENABLED(CONFIG_RANDOMIZE_MODULE_REGION_FULL)) {
-		/*
-		 * Randomize the module region over a 2 GB window covering the
-		 * kernel. This reduces the risk of modules leaking information
-		 * about the address of the kernel itself, but results in
-		 * branches between modules and the core kernel that are
-		 * resolved via PLTs. (Branches between modules will be
-		 * resolved normally.)
-		 */
-		module_range = SZ_2G - (u64)(_end - _stext);
-		module_alloc_base = max((u64)_end + offset - SZ_2G,
-					(u64)MODULES_VADDR);
-	} else {
-		/*
-		 * Randomize the module region by setting module_alloc_base to
-		 * a PAGE_SIZE multiple in the range [_etext - MODULES_VSIZE,
-		 * _stext) . This guarantees that the resulting region still
-		 * covers [_stext, _etext], and that all relative branches can
-		 * be resolved without veneers.
-		 */
-		module_range = MODULES_VSIZE - (u64)(_etext - _stext);
-		module_alloc_base = (u64)_etext + offset - MODULES_VSIZE;
-	}
-
-So depending on ! ARM64_MODULE_PLTS seems to narrow the scenarios
-while depending on ! RANDOMIZE_MODULE_REGION_FULL  permit more
-machines to use optprobe.
-
-I am not quite sure I am 100% right but tests seem to back this.
-hopefully Catalin and Will can correct me.
-
-> 
-> >
-> > Performance of optprobe on Hip08 platform is test using kprobe
-> > example module[1] to analyze the latency of a kernel function,
-> > and here is the result:
-> >
-> > [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sa
-> mples/kprobes/kretprobe_example.c
-> >
-> > kprobe before optimized:
-> > [280709.846380] do_empty returned 0 and took 1530 ns to execute
-> > [280709.852057] do_empty returned 0 and took 550 ns to execute
-> > [280709.857631] do_empty returned 0 and took 440 ns to execute
-> > [280709.863215] do_empty returned 0 and took 380 ns to execute
-> > [280709.868787] do_empty returned 0 and took 360 ns to execute
-> > [280709.874362] do_empty returned 0 and took 340 ns to execute
-> > [280709.879936] do_empty returned 0 and took 320 ns to execute
-> > [280709.885505] do_empty returned 0 and took 300 ns to execute
-> > [280709.891075] do_empty returned 0 and took 280 ns to execute
-> > [280709.896646] do_empty returned 0 and took 290 ns to execute
-> > [280709.902220] do_empty returned 0 and took 290 ns to execute
-> > [280709.907807] do_empty returned 0 and took 290 ns to execute
-> >
-> > optprobe:
-> > [ 2965.964572] do_empty returned 0 and took 90 ns to execute
-> > [ 2965.969952] do_empty returned 0 and took 80 ns to execute
-> > [ 2965.975332] do_empty returned 0 and took 70 ns to execute
-> > [ 2965.980714] do_empty returned 0 and took 60 ns to execute
-> > [ 2965.986128] do_empty returned 0 and took 80 ns to execute
-> > [ 2965.991507] do_empty returned 0 and took 70 ns to execute
-> > [ 2965.996884] do_empty returned 0 and took 70 ns to execute
-> > [ 2966.002262] do_empty returned 0 and took 80 ns to execute
-> > [ 2966.007642] do_empty returned 0 and took 70 ns to execute
-> > [ 2966.013020] do_empty returned 0 and took 70 ns to execute
-> > [ 2966.018400] do_empty returned 0 and took 70 ns to execute
-> > [ 2966.023779] do_empty returned 0 and took 70 ns to execute
-> > [ 2966.029158] do_empty returned 0 and took 70 ns to execute
-> 
-> Great result!
-> I have other comments on the code below.
-> 
-> [...]
-> > diff --git a/arch/arm64/kernel/probes/kprobes.c
-> b/arch/arm64/kernel/probes/kprobes.c
-> > index 6dbcc89f6662..83755ad62abe 100644
-> > --- a/arch/arm64/kernel/probes/kprobes.c
-> > +++ b/arch/arm64/kernel/probes/kprobes.c
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/kasan.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/kprobes.h>
-> > +#include <linux/moduleloader.h>
-> >  #include <linux/sched/debug.h>
-> >  #include <linux/set_memory.h>
-> >  #include <linux/slab.h>
-> > @@ -113,9 +114,21 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
-> >
-> >  void *alloc_insn_page(void)
-> >  {
-> > -	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
-> > -			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
-> > -			NUMA_NO_NODE, __builtin_return_address(0));
-> > +	void *page;
-> > +
-> > +	page = module_alloc(PAGE_SIZE);
-> > +	if (!page)
-> > +		return NULL;
-> > +
-> > +	set_vm_flush_reset_perms(page);
-> > +	/*
-> > +	 * First make the page read-only, and only then make it executable to
-> > +	 * prevent it from being W+X in between.
-> > +	 */
-> > +	set_memory_ro((unsigned long)page, 1);
-> > +	set_memory_x((unsigned long)page, 1);
-> > +
-> > +	return page;
-> 
-> Isn't this a separated change? Or any reason why you have to
-> change this function?
-
-As far as I can tell, this is still related with the 128MB
-short jump limitation.
-VMALLOC_START, VMALLOC_END is an fixed virtual address area
-which isn't necessarily modules will be put.
-So this patch is moving to module_alloc() which will get
-memory between module_alloc_base and module_alloc_end.
-
-Together with depending on !RANDOMIZE_MODULE_REGION_FULL,
-this makes all kernel, module and trampoline in short
-jmp area.
-
-As long as we can figure out a way to support long jmp
-for optprobe, the change in alloc_insn_page() can be
-dropped.
-
-Masami, any reference code from any platform to support long
-jump for optprobe? For long jmp, we need to put jmp address
-to a memory and then somehow load the target address
-to PC. Right now, we are able to replace an instruction
-only. That is the problem.
-
-Thanks
-Barry
-
+>
+> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> index 8a66eaf731e4..ec94049442b9 100644
+> --- a/drivers/base/power/runtime.c
+> +++ b/drivers/base/power/runtime.c
+> @@ -1447,6 +1447,23 @@ void pm_runtime_enable(struct device *dev)
+>  }
+>  EXPORT_SYMBOL_GPL(pm_runtime_enable);
+>
+> +static void pm_runtime_disable_action(void *data)
+> +{
+> +       pm_runtime_disable(data);
+> +}
+> +
+> +/**
+> + * devm_pm_runtime_enable - devres-enabled version of pm_runtime_enable.
+> + * @dev: Device to handle.
+> + */
+> +int devm_pm_runtime_enable(struct device *dev)
+> +{
+> +       pm_runtime_enable(dev);
+> +
+> +       return devm_add_action_or_reset(dev, pm_runtime_disable_action, dev);
+> +}
+> +EXPORT_SYMBOL_GPL(devm_pm_runtime_enable);
+> +
+>  /**
+>   * pm_runtime_forbid - Block runtime PM of a device.
+>   * @dev: Device to handle.
+> diff --git a/include/linux/pm_runtime.h b/include/linux/pm_runtime.h
+> index aab8b35e9f8a..222da43b7096 100644
+> --- a/include/linux/pm_runtime.h
+> +++ b/include/linux/pm_runtime.h
+> @@ -59,6 +59,8 @@ extern void pm_runtime_put_suppliers(struct device *dev);
+>  extern void pm_runtime_new_link(struct device *dev);
+>  extern void pm_runtime_drop_link(struct device_link *link);
+>
+> +extern int devm_pm_runtime_enable(struct device *dev);
+> +
+>  /**
+>   * pm_runtime_get_if_in_use - Conditionally bump up runtime PM usage counter.
+>   * @dev: Target device.
+> @@ -253,6 +255,8 @@ static inline void __pm_runtime_disable(struct device *dev, bool c) {}
+>  static inline void pm_runtime_allow(struct device *dev) {}
+>  static inline void pm_runtime_forbid(struct device *dev) {}
+>
+> +static inline int devm_pm_runtime_enable(struct device *dev) { return 0; }
+> +
+>  static inline void pm_suspend_ignore_children(struct device *dev, bool enable) {}
+>  static inline void pm_runtime_get_noresume(struct device *dev) {}
+>  static inline void pm_runtime_put_noidle(struct device *dev) {}
+> --
+> 2.30.2
+>
