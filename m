@@ -2,267 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66283D2D2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 22:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777233D2D32
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 22:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhGVT2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 15:28:08 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49686 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230079AbhGVT2G (ORCPT
+        id S230454AbhGVT2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 15:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229649AbhGVT2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 15:28:06 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16MK5slh171246;
-        Thu, 22 Jul 2021 16:07:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=pxAZategEXP9Z9IUmmXjkgKFL8QhCxHo+LvV20yfc2o=;
- b=fjjJhSDax+UCFsdpimc9E3TVazmtoFisK7o63Z+aHnuQ10h7P4+U6pvjKZwoioVpTMHE
- 3prsevvG27k8JeTXrgUpGjNwXCkR3ltK2BKT6W5/ln2pRbAdWSYnPsjTgH8K+KGJTsbv
- Y/ptFbQEjeTvs6oOFWslY/BLY8YsxBBnnydeqd4O+hPIxB+2LG28ogaJaQoH5F/GbdQX
- UucM8ZgGNnfKCKOOxhZqN5WD9tnFwX//42CGw1akKWTaVkDOJBWpUVYIgF9jarMzLcrI
- 2uVAsnYSDggZtLauY4Udme6XGd76gkt46EvqDithPRcBoF5qOEpryZ18nDPM1W7SQlW8 tQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39yf64rkbk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 16:07:41 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16MK6B6e178946;
-        Thu, 22 Jul 2021 16:07:39 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39yf64rk9n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 16:07:39 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16MK2eIe004461;
-        Thu, 22 Jul 2021 20:07:36 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 39upu8anje-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 20:07:36 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16MK7XZU23265788
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Jul 2021 20:07:33 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 47BAFA405D;
-        Thu, 22 Jul 2021 20:07:33 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 114A4A4059;
-        Thu, 22 Jul 2021 20:07:32 +0000 (GMT)
-Received: from osiris (unknown [9.145.157.138])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 22 Jul 2021 20:07:31 +0000 (GMT)
-Date:   Thu, 22 Jul 2021 22:07:30 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Brian Cain <bcain@codeaurora.org>,
-        Chris Zankel <chris@zankel.net>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Hellwig <hch@lst.de>, Guo Ren <guoren@kernel.org>,
-        Helge Deller <deller@gmx.de>, Jeff Dike <jdike@addtoit.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-csky@vger.kernel.org,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        linux-ia64@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        "moderated list:H8/300 ARCHITECTURE" 
-        <uclinux-h8-devel@lists.sourceforge.jp>
-Subject: Re: [PATCH v3 9/9] asm-generic: reverse GENERIC_{STRNCPY_FROM,
- STRNLEN}_USER symbols
-Message-ID: <YPnQAksI2+YBivHb@osiris>
-References: <20210722124814.778059-1-arnd@kernel.org>
- <20210722124814.778059-10-arnd@kernel.org>
- <29adc1c164805e355b37d1d4668ebda9fb7fa872.camel@sipsolutions.net>
- <CAK8P3a0xZAHknG8_kc62aaKrKdzD-QwQYHT61_wTbFDYADu-zw@mail.gmail.com>
+        Thu, 22 Jul 2021 15:28:46 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92FE2C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 13:09:19 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id u13so10305268lfs.11
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 13:09:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2N0Vh8zfm8OFgF7fX9h4wweWlSshRiJnnbrmkg/bTGo=;
+        b=spfOXrAO3yPOl1SfcSxOSufKzLyBB/nbchfZXMZ1GO33uesBhvpV0CQWlz/KJ0z77S
+         hE+M4WmjyCuHYzu1/U4M3tLtF4oVUUi1PnnTPo6Ql1TvdZuILFYnW2H0toCRGSRzBnW/
+         GbnSboReCVeo1/Hj7TBKRN0BtDj8cn+ybDC/DODa4Pij4v9nb3ssAlUg7zEmWoO4QTn6
+         tQYFlouBoeIu9/X7X4ybiQHIhXy0tYFe9jfGHbAewxUjTtUlIkp22a4osiq1AMnxIp8V
+         sc+WaI/WHkgwDxDcSlYR0GwDPtQhJilhv9OhGd2lqxUwiSvYLGfVezGVz6pZnPk0C2IG
+         sPpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2N0Vh8zfm8OFgF7fX9h4wweWlSshRiJnnbrmkg/bTGo=;
+        b=oQRNukvM+5x+IUYzim+e4kv7nhjluyqCEIVZcUH+k43pphDXshu3MO9QSRsb1FzGK/
+         gsCEc+Rvko0XdR1qMpYQqvgFfKoLGyhetSzTBWntQXRtAGvQnEJU2uHGRV9ayhoWbcpL
+         regxoS3GD2IY7IFFpWU5SJNen3ksfBP5JeHdrOm9oavujpr1C/HtqDgAaQwgZtT3+DxR
+         ZZAVuaJETd6MarV4HEp1ULcvVeIrbRSNNCaxT30oBfreKq9oZYK1Pu2jNzVOSnHGM36j
+         w5QArqffGxFM8q0S8YGV350oCtrpga+jtA3JuNPLum2WADy9uWOjayzViBTNPjX82RDg
+         sRLA==
+X-Gm-Message-State: AOAM5309kb1HJDoiyi5Z06hMCq68BgaP+YVLjWUndPzOy+Vpo9zSu/iv
+        kmz0e6aIUZrfQHZx53w42w+m8+wC2HYxDKpjTdfQqg==
+X-Google-Smtp-Source: ABdhPJyubHz666e94LPXPTqdQoqG+S7azHs313MTNWPbWKss8FLGCrVmPBocrKxyRUd8xjNGMizAMWugGNXjAbZtRBo=
+X-Received: by 2002:ac2:4a66:: with SMTP id q6mr713798lfp.204.1626984557883;
+ Thu, 22 Jul 2021 13:09:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0xZAHknG8_kc62aaKrKdzD-QwQYHT61_wTbFDYADu-zw@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: zBJG7-Su11TnE7WjI2sRjsyypGmhBA3s
-X-Proofpoint-GUID: 8rZiWLuXZ3udsmjyLVYaHJJmySsc38wu
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-22_12:2021-07-22,2021-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 spamscore=0 clxscore=1011
- priorityscore=1501 phishscore=0 suspectscore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107220131
+References: <20210714124807.o22mottsrg3tv6nt@mobilestation>
+ <YPfPDqJhfzbvDLvB@kroah.com> <20210721100220.ddfxwugivsndsedv@mobilestation>
+ <YPf29+ewbrYgHxRP@kroah.com> <0064cb2c-5ca6-e693-2e89-8f045c8f7502@kernel.org>
+ <YPf+shNM6cXb3mfe@kroah.com> <d853df77-8d36-30b0-dd26-da1bfcb068e0@kernel.org>
+ <20210721112531.xvu6ni5ksaehsrjh@mobilestation> <CALAqxLViEqSO17P3JGRGYJh-wDoHaJiQQV48zeoRgnar4Xd5Bg@mail.gmail.com>
+ <20210722181221.xh3r5kyu7zlcojjx@mobilestation> <YPnEO6NVFZDS1s//@yoga>
+In-Reply-To: <YPnEO6NVFZDS1s//@yoga>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Thu, 22 Jul 2021 13:09:05 -0700
+Message-ID: <CALAqxLUT0e+mHMVo685oVTxR8y76733cN0yciQ7ePS6GRE+_dg@mail.gmail.com>
+Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 04:01:39PM +0200, Arnd Bergmann wrote:
-> On Thu, Jul 22, 2021 at 3:57 PM Johannes Berg <johannes@sipsolutions.net> wrote:
-> >
+On Thu, Jul 22, 2021 at 12:17 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+> > On Jul 21, 2021, 1:45 PM +0200, Krzysztof Kozlowski wrote:
+> > > I had impression that kernel defines interfaces which should be used and
+> > > are stable (e.g. syscalls, sysfs and so on). This case is example of
+> > > user-space relying on something not being marked as part of ABI. Instead
+> > > they found something working for them and now it is being used in "we
+> > > cannot break existing systems". Basically, AOSP unilaterally created a
+> > > stable ABI and now kernel has to stick to it.
 > > >
-> > > The remaining architectures at the moment are: ia64, mips, parisc,
-> > > s390, um and xtensa. We should probably convert these as well, but
+> > > Really, all normal systems depend on aliases or names and here we have
+> > > dependency on device address. I proposed way how AOSP should be fixed.
+> > > Anything happened? Nope.
 > >
-> > I'm not sure it makes sense to convert um, the implementation uses
-> > strncpy(), and that should use the libc implementation, which is tuned
-> > for the actual hardware that the binary is running on, so performance
-> > wise that might be better.
+> > First time he sent a possible solution for the problem:
+> > https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
 > >
-> > OTOH, maybe this is all in the noise given the huge syscall overhead in
-> > um, so maybe unifying it would make more sense.
-> 
-> Right, makes sense. I suppose if we end up converting mips and s390,
-> we should just do arch/um and the others as well for consistency, even
-> if that adds some overhead.
+> > To sum up you could have used one of the more portable approaches
+> > 1. add an udc alias to the controller and use it then to refer to the
+> > corresponding USB controller
+>
+> Is there such a thing as "UDC alias"? Or are you suggesting that we
+> should add such feature?
+>
+> I think it would be wonderful if we could identify the UDCs on our
+> boards as "USB1" and "USB2", or "the one and only USB-C connector". But
+> unless that will fall back to the existing naming it would break John's
+> _existing_ userspace.
 
-Feel free to add the s390 patch below on top of your series. However
-one question: the strncpy_from_user() prototype now comes everywhere
-without the __must_check attribute. Is there any reason for that?
+Well, I'd not hold up the existing userspace I'm using as sacrosanct
+(AOSP devices still usually don't have to work cross-kernel versions -
+devboards being the main exception). I'm fine if we can rework
+userland as proposed, so that the issues can be avoided, but I
+honestly don't have enough context to really understand what that
+looks like (no idea what udc aliases are).
 
-At least for s390 I want to keep that.
+And whatever we do, the main constraint is that userland has to be
+able to work with existing LTS kernels and newer kernels.
 
-From 03ad679909af58e1dc6864f47ce67210f0534c39 Mon Sep 17 00:00:00 2001
-From: Heiko Carstens <hca@linux.ibm.com>
-Date: Thu, 22 Jul 2021 21:48:18 +0200
-Subject: [PATCH] s390: use generic strncpy/strnlen from_user
+> > 2. search through DT-nodes looking for a specific compatible/reg
+> > DT-properties.
+> >
+>
+> We could define that this is the way, but again we didn't yesterday so
+> your proposal is not backwards compatible.
 
-The s390 variant of strncpy_from_user() is slightly faster than the
-generic variant, however convert to the generic variant now to follow
-most if not all other architectures.
+It may be backwards compatible, but I'm still not clear exactly how it
+would work.
 
-Converting to the generic variant was already considered a couple of
-years ago. See commit f5c8b9601036 ("s390/uaccess: use sane length for
-__strncpy_from_user()").
+I guess if we look through all
+sys/bus/platform/devices/*/of_node/compatbile strings for the desired
+"snps,dwc3", then find which of the directories have the desired
+address in the string? (The suggestion for looking at reg seems
+better, but I don't get a char value out of the dwc3 of_node/reg
+file).
 
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
----
- arch/s390/Kconfig               |  2 --
- arch/s390/include/asm/uaccess.h | 18 ++----------
- arch/s390/lib/uaccess.c         | 52 ---------------------------------
- 3 files changed, 2 insertions(+), 70 deletions(-)
+It seems much more straightforward to do an `ls /sys/class/udc/$GADGET_ADDR.*`
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index f4f39087cad0..a0e2130f0100 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -75,8 +75,6 @@ config S390
- 	select ARCH_HAS_SET_MEMORY
- 	select ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_HAS_STRICT_MODULE_RWX
--	select ARCH_HAS_STRNCPY_FROM_USER
--	select ARCH_HAS_STRNLEN_USER
- 	select ARCH_HAS_SYSCALL_WRAPPER
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
- 	select ARCH_HAS_VDSO_DATA
-diff --git a/arch/s390/include/asm/uaccess.h b/arch/s390/include/asm/uaccess.h
-index 2316f2440881..9ed9aa37e836 100644
---- a/arch/s390/include/asm/uaccess.h
-+++ b/arch/s390/include/asm/uaccess.h
-@@ -233,23 +233,9 @@ raw_copy_in_user(void __user *to, const void __user *from, unsigned long n);
- /*
-  * Copy a null terminated string from userspace.
-  */
-+long __must_check strncpy_from_user(char *dst, const char __user *src, long count);
- 
--long __strncpy_from_user(char *dst, const char __user *src, long count);
--
--static inline long __must_check
--strncpy_from_user(char *dst, const char __user *src, long count)
--{
--	might_fault();
--	return __strncpy_from_user(dst, src, count);
--}
--
--unsigned long __must_check __strnlen_user(const char __user *src, unsigned long count);
--
--static inline unsigned long strnlen_user(const char __user *src, unsigned long n)
--{
--	might_fault();
--	return __strnlen_user(src, n);
--}
-+long __must_check strnlen_user(const char __user *src, long count);
- 
- /*
-  * Zero Userspace
-diff --git a/arch/s390/lib/uaccess.c b/arch/s390/lib/uaccess.c
-index 7ec8b1fa0f08..94ca99bde59d 100644
---- a/arch/s390/lib/uaccess.c
-+++ b/arch/s390/lib/uaccess.c
-@@ -338,55 +338,3 @@ unsigned long __clear_user(void __user *to, unsigned long size)
- 	return clear_user_xc(to, size);
- }
- EXPORT_SYMBOL(__clear_user);
--
--static inline unsigned long strnlen_user_srst(const char __user *src,
--					      unsigned long size)
--{
--	unsigned long tmp1, tmp2;
--
--	asm volatile(
--		"   lghi  0,0\n"
--		"   la    %2,0(%1)\n"
--		"   la    %3,0(%0,%1)\n"
--		"   slgr  %0,%0\n"
--		"   sacf  256\n"
--		"0: srst  %3,%2\n"
--		"   jo    0b\n"
--		"   la    %0,1(%3)\n"	/* strnlen_user results includes \0 */
--		"   slgr  %0,%1\n"
--		"1: sacf  768\n"
--		EX_TABLE(0b,1b)
--		: "+a" (size), "+a" (src), "=a" (tmp1), "=a" (tmp2)
--		:
--		: "cc", "memory", "0");
--	return size;
--}
--
--unsigned long __strnlen_user(const char __user *src, unsigned long size)
--{
--	if (unlikely(!size))
--		return 0;
--	return strnlen_user_srst(src, size);
--}
--EXPORT_SYMBOL(__strnlen_user);
--
--long __strncpy_from_user(char *dst, const char __user *src, long size)
--{
--	size_t done, len, offset, len_str;
--
--	if (unlikely(size <= 0))
--		return 0;
--	done = 0;
--	do {
--		offset = (size_t)src & (L1_CACHE_BYTES - 1);
--		len = min(size - done, L1_CACHE_BYTES - offset);
--		if (copy_from_user(dst, src, len))
--			return -EFAULT;
--		len_str = strnlen(dst, len);
--		done += len_str;
--		src += len_str;
--		dst += len_str;
--	} while ((len_str == len) && (done < size));
--	return done;
--}
--EXPORT_SYMBOL(__strncpy_from_user);
--- 
-2.25.1
+But again, if folks decide the names can be rearranged to usb.<addr>
+in the future, that would break too.
 
+thanks
+-john
