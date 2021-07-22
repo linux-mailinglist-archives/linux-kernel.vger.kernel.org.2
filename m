@@ -2,112 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1923D2309
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 13:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DDA3D230B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 13:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbhGVLN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 07:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231724AbhGVLNw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 07:13:52 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F597C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 04:54:27 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id c13so4025400qtd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 04:54:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:organization:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zhIyxXiIbu1rU1cVmeY2N8seyHsByuWZoVqbL9JnpnI=;
-        b=YZXYW4TfH4IGqIIgF8R137rFfe7tzpSYVlRVSO18GN5UpOk1YvnuTUHxgi4nV7hai8
-         LppFmS256q2lduWSyKGMQToKOQtN14U13v/uuuC8XznjzwoyGlxyvuBknrmLHrATxBK2
-         QLxuK4zEykFC8mGmFr3OXVKz8q4bWrewp7hTcCF2zb5A1ACB/O/9zvP6dwxozawJR8AI
-         GdwdWy/bIBx8lTaw51964oh9wPAhY3TIEkmvrrUPYs9QLT4XrjrkE3S/Ah3D4ygYX7ka
-         2+NN1WXn1kYiqFK+GgEKPlA/2nREyFc54T4AybXaUF6gFF0DPCK+1vEdkhfH8py2HQwX
-         O3Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=zhIyxXiIbu1rU1cVmeY2N8seyHsByuWZoVqbL9JnpnI=;
-        b=SsJdBPZPUrVpUmIA//H+UOvIdmcyMisbHEw64vvJCbf4AyO14HRLfUpsZEX+qn0E3l
-         cqaRPezLWorRXpML47oqsGZ+8jiF47m1rFBpERGkuOl7rps74UFv3xs30rsYjDLraqZ3
-         WZAEb2PwRjJ9yFz8W7czibtE8YMLrbhjjwl5h/Ae+OAocIw3FWEnu6kZftsiq+L7LtWa
-         VXt9+a6J9FOax8BsH/Cthi1hDcWEzlu/DdpxyawerezIqJj0Sfx36OQM5het8Ga+xel7
-         rcUTH+P7FTnUp8jUtghA1FvMhT1LB86hGYcx79TG6RPbDMd9U3Er1Ziyuci1NYv14O0W
-         GJKg==
-X-Gm-Message-State: AOAM531bXpo6eBAhkCQqIEbEVXnGow6R103PnPHudA46Pkcwcu+hLslv
-        cheOiEALFpWTzM3O1MFPdboOLw==
-X-Google-Smtp-Source: ABdhPJwin6WqV2CARkjjL0txCKbW66NjBuLPCSQp7QzQQz7IlS/DweegkfIEn2AxXpesZZDahE5yEQ==
-X-Received: by 2002:ac8:674d:: with SMTP id n13mr6809635qtp.63.1626954866343;
-        Thu, 22 Jul 2021 04:54:26 -0700 (PDT)
-Received: from iron-maiden.localnet ([50.225.136.98])
-        by smtp.gmail.com with ESMTPSA id f2sm10188219qth.11.2021.07.22.04.54.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 04:54:23 -0700 (PDT)
-From:   Carlos Bilbao <bilbao@vt.edu>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, jianyong.wu@arm.com,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v2] include: linux: Reorganize timekeeping and ktime headers
-Date:   Thu, 22 Jul 2021 07:54:22 -0400
-Message-ID: <5481133.DvuYhMxLoT@iron-maiden>
-Organization: Virginia Tech
-In-Reply-To: <87fsw7pe5d.ffs@nanos.tec.linutronix.de>
-References: <5729424.lOV4Wx5bFT@iron-maiden> <4663325.31r3eYUQgx@iron-maiden> <87fsw7pe5d.ffs@nanos.tec.linutronix.de>
+        id S231868AbhGVLO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 07:14:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231678AbhGVLOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 07:14:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79C9460FF4;
+        Thu, 22 Jul 2021 11:54:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626954900;
+        bh=RPZVwNiL1LbskPWPDNeRTevYMqkLaT9s20LL5W9zubc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P4h8DPv0wG+/e6Xljh6Tj+SjMCDix7iCtqIA1n8H63QeS5149I81MhgoiWdNJ4YIX
+         ua8kdrsgCttyLLXsr20mfxHNjpZYyEsRlflimlypknJOw0UVprfPXVRQ86/XCvtjLH
+         eUXv/J68kHYjbQ7ZV4NKfmDuVzU5hYUsD5x+KQCL+UltEVx0tao8SVdlLAUjyQD0vj
+         TnJsNmd33X6aitkeouwwIov/fle4sOrrrs+hSr2mq+oe2QqekNvb0YP+5QtdrAwuoc
+         T19LoXlihIfgLiulsU81OLFAAlCA0DrREf8MD6veekMwq9sBgPM3T9hE1TYlABhTtr
+         NFMGTm/KL9WEg==
+Date:   Thu, 22 Jul 2021 12:54:53 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/2] cx20442: tty_ldisc_ops::write_wakeup is optional
+Message-ID: <20210722115453.GC5258@sirena.org.uk>
+References: <20210722115141.516-1-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wxDdMuZNg1r63Hyj"
+Content-Disposition: inline
+In-Reply-To: <20210722115141.516-1-jslaby@suse.cz>
+X-Cookie: Who's scruffy-looking?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, July 21, 2021 5:09:50 PM EDT Thomas Gleixner wrote:
-> 
-> I have no objections against this change per se, but I'm missing the
-> actual problem it is trying to solve. What's the fail it fixes or is it
-> just a general consolidation? The above is blury in that regard.
-> 
 
-Well, at first I just wanted to fix the header dependencies, since timekeeping.h
-is using ktime_to_ns(), a static function defined ktime.h, but it does not 
-include the header. Then Arnd rightly pointed out this was an opportunity to
-perform a bit more housekeeping and consolidation, yes.
+--wxDdMuZNg1r63Hyj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > This patch also includes the header timekeeping.h wherever it is
-> > necessary for a successful compilation after the header code
-> > reorganization.
-> 
-> Please do:
-> 
->   git grep 'This patch' Documentation/process/
-> 
-> and follow the instructions there.
+On Thu, Jul 22, 2021 at 01:51:40PM +0200, Jiri Slaby wrote:
+> TTY layer does nothing if tty_ldisc_ops::write_wakeup is NULL, so there
+> is no need to implement an empty one in cx20442. Drop it.
 
-All right, I understand I should be following the imperative mood there.
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-> 
-> Aside of that I assume that you only covered x86 in build testing which
-> is not cutting it as this is generic infrastructure affecting _all_
-> architectures.
-> 
-> Thanks,
-> 
->         tglx
+--wxDdMuZNg1r63Hyj
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks for the feedback Thomas, I will cross compile with the other archs
-to make sure we are not leaving anyone behind and send updated version (v3).
+-----BEGIN PGP SIGNATURE-----
 
-Carlos-
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD5XIwACgkQJNaLcl1U
+h9B/iQf+MwQzsWT0jCi6a5UsrvNAyp0wA49hul7QMIqXD7tzpzsyETEG55NiqESV
+1Wl5utvCxoMtIhu3ys7sQT5WCSyYYstoq4OnDrvMgTHUTZjAzZSgdlM6ycHMsx9H
+EMrs4DczuoA3iZSbOXWBrSNdVfOJK//iDilqWNRlqHQ6vvIeXwrJQ8sa37kyBZpe
+nyUkJg6ZGly1h8Okqqwg3EgxV4PozyfEkJfAC5lRTipb/KhZtH6UZ+SP2sm/Zd7X
+gfxyyQMY04vnxI6QWafMA4S9dPIvqdXDtTfXG12Z6cMCqR0EfSgF1+bBdqPgb/mO
+9zzZVg5qVrlAaAxtxUTAxb89SVuoxg==
+=mL+P
+-----END PGP SIGNATURE-----
 
-
-
-
-
-
+--wxDdMuZNg1r63Hyj--
