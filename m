@@ -2,78 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2E63D25DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D0D3D25E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232385AbhGVNzy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 09:55:54 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:36025 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhGVNzv (ORCPT
+        id S232408AbhGVN4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:56:43 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:43785 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230343AbhGVN4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:55:51 -0400
-Received: from smtpclient.apple (p5b3d2eb8.dip0.t-ipconnect.de [91.61.46.184])
-        by mail.holtmann.org (Postfix) with ESMTPSA id A46E1CECDD;
-        Thu, 22 Jul 2021 16:36:24 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH] bluetooth: btrsi: use non-kernel-doc comment for
- copyright
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210721020334.3129-1-rdunlap@infradead.org>
-Date:   Thu, 22 Jul 2021 16:36:24 +0200
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        Prameela Rani Garnepudi <prameela.j04cs@gmail.com>,
-        Sanjay Kumar Konduri <sanjay.konduri@redpinesignals.com>,
-        Siva Rebbagondla <siva.rebbagondla@redpinesignals.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <BC3E0AE2-F6E7-43BE-8CEE-882722E0609F@holtmann.org>
-References: <20210721020334.3129-1-rdunlap@infradead.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Thu, 22 Jul 2021 09:56:42 -0400
+Received: by mail-io1-f54.google.com with SMTP id k16so6568574ios.10;
+        Thu, 22 Jul 2021 07:37:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=S9oqNdeEmjzMYqfxKnMhuJAig6YozFawShXYrQNAVqU=;
+        b=X1hUm9xqwI8NrHwal/4X82uyONyH7SmwaiYih7A/hO06kBBU6OHw9zbjqaXfV7apzm
+         zwqjfchs80zkTBtfROpaL8WL+WYqM9w9Cuc80+qfduVZYxBDPYBZW3csqGas/MgprH7H
+         0Uy747xKsmGaAa+ErPdFNc8FcwjIAWbT1YHnMGUwAMZIpskdAtpzofA45Ze6dFMvhAXK
+         tXSP42jPf8WtzVxodZCVvRASyDcpyZQPzQCxpc10Ru4ylyFVGJGtGht8RD7wn8ItsXtu
+         zfdKVQsSqo3/XPHBqOPHbBIGKoT1g4k5MR5i2a4zk7KGx1KX8FhHlc5W/wo5NU85mOte
+         fTmw==
+X-Gm-Message-State: AOAM533lJUaWNb6bWH0Y/Tqr7TOMmi+kpWkHnkDP+QQqCiuEQpDO/Udk
+        /uKpgllRmPOiruVfY3haGA==
+X-Google-Smtp-Source: ABdhPJzNL5asZ1slIsXmHQueoDE6m957UCPdvi3vzleu5OadU6dIPbq9iYTm6K3LzeoCsL6DjZtBxA==
+X-Received: by 2002:a05:6602:584:: with SMTP id v4mr45750iox.181.1626964635747;
+        Thu, 22 Jul 2021 07:37:15 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id p9sm14626199ilj.65.2021.07.22.07.37.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 07:37:15 -0700 (PDT)
+Received: (nullmailer pid 4183864 invoked by uid 1000);
+        Thu, 22 Jul 2021 14:37:12 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        linux-gpio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+In-Reply-To: <20210721191558.22484-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20210721191558.22484-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210721191558.22484-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH v3 1/4] dt-bindings: pinctrl: renesas,rzg2l-pinctrl: Add DT bindings for RZ/G2L pinctrl
+Date:   Thu, 22 Jul 2021 08:37:12 -0600
+Message-Id: <1626964632.914515.4183863.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
-
-> kernel-doc complains about a non-kernel-doc comment that uses "/**"
-> to begin the comment, so change it to just "/*".
+On Wed, 21 Jul 2021 20:15:55 +0100, Lad Prabhakar wrote:
+> Add device tree binding documentation and header file for Renesas
+> RZ/G2L pinctrl.
 > 
-> drivers/bluetooth/btrsi.c:2: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->    * Copyright (c) 2017 Redpine Signals Inc.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Aditya Srivastava <yashsri421@gmail.com>
-> Cc: Marcel Holtmann <marcel@holtmann.org>
-> Cc: Johan Hedberg <johan.hedberg@gmail.com>
-> Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-> Cc: linux-bluetooth@vger.kernel.org
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Cc: Prameela Rani Garnepudi <prameela.j04cs@gmail.com>
-> Cc: Sanjay Kumar Konduri <sanjay.konduri@redpinesignals.com>
-> Cc: Siva Rebbagondla <siva.rebbagondla@redpinesignals.com>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
-> drivers/bluetooth/btrsi.c |    2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../pinctrl/renesas,rzg2l-pinctrl.yaml        | 155 ++++++++++++++++++
+>  include/dt-bindings/pinctrl/rzg2l-pinctrl.h   |  23 +++
+>  2 files changed, 178 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+>  create mode 100644 include/dt-bindings/pinctrl/rzg2l-pinctrl.h
+> 
 
-patch has been applied to bluetooth-next tree.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Regards
+yamllint warnings/errors:
 
-Marcel
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.example.dts:29.34-35 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1418: dt_binding_check] Error 2
+\ndoc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1508385
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
