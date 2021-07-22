@@ -2,153 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A5E3D25B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623D13D25B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbhGVNsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:48:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44566 "EHLO mail.kernel.org"
+        id S232384AbhGVNsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:48:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229980AbhGVNsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:48:03 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1D5D6101E;
-        Thu, 22 Jul 2021 14:28:38 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1m6Zgj-001bCF-K4; Thu, 22 Jul 2021 10:28:37 -0400
-Message-ID: <20210722142837.458596338@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Thu, 22 Jul 2021 10:27:07 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH v2 2/2] tracing: Allow execnames to be passed as args for synthetic events
-References: <20210722142705.992001628@goodmis.org>
+        id S229934AbhGVNsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:48:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FE1A6101E;
+        Thu, 22 Jul 2021 14:29:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626964157;
+        bh=zM04WpA1f7iRwT47P4olhNDO3hfO6UH/Gt2Ynkv7aOQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cqbniFsd8XOi4XfrJjOLuySlDUQ7CBCdF3SdSpwbfun3l4gP0pHz9Wd5SRJfmw01D
+         rciF8Kv7FW46A5EwjsN3Vyf/5Rvh5E4R1qbfRkNj4Ah7m15FA70xcCyR2lJGOf7ydu
+         jIYTxKhsUR7/+TFmf1JMvzJem8QxdQDfXl9JoKgQvi8CA3aKTBIcT5vNSJ16PLNIQn
+         2iB22HcT9QKEsx04GsH092Gr337HqpBpxy1s9QDpdG8P/ZwhVhh5Akiv/OktZiNros
+         oQ4kaV5Pav2/o+o+R2LAoMB29VqRD9QNkOwZ0w8PFM5LeRC8/XOeJCgqB1Y3+bIYtV
+         oT1Qe8xs2kF/Q==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, Christoph Hellwig <hch@lst.de>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: [PATCH net-next v6 0/6] remove compat_alloc_user_space()
+Date:   Thu, 22 Jul 2021 16:28:57 +0200
+Message-Id: <20210722142903.213084-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Allow common_pid.execname to be saved in a variable in one histogram to be
-passed to another histogram that can pass it as a parameter to a synthetic
-event.
+This is the fifth version of my series, now spanning four patches
+instead of two, with a new approach for handling struct ifreq
+compatibility after I realized that my earlier approach introduces
+additional problems.
 
- ># echo 'hist:keys=pid:__arg__1=common_timestamp.usecs:arg2=common_pid.execname' \
-       > events/sched/sched_waking/trigger
- ># echo 'wakeup_lat s32 pid; u64 delta; char wake_comm[]' > synthetic_events
- ># echo 'hist:keys=next_pid:pid=next_pid,delta=common_timestamp.usecs-$__arg__1,exec=$arg2'\
-':onmatch(sched.sched_waking).trace(wakeup_lat,$pid,$delta,$exec)' \
- > events/sched/sched_switch/trigger
+The idea here is to always push down the compat conversion
+deeper into the call stack: rather than pretending to be
+native mode with a modified copy of the original data on
+the user space stack, have the code that actually works on
+the data understand the difference between native and compat
+versions.
 
-The above is a wake up latency synthetic event setup that passes the execname
-of the common_pid that woke the task to the scheduling of that task, which
-triggers a synthetic event that passes the original execname as a
-parameter to display it.
+I have spent a long time looking at all drivers that implement
+an ndo_do_ioctl callback to verify that my assumptions are
+correct. This has led to a series of ~30 additional patches
+that I am not including here but will post separately, fixing
+a number of bugs in SIOCDEVPRIVATE ioctls, removing dead
+code, and splitting ndo_do_ioctl into multiple new ndo callbacks
+for private and ethernet specific commands.
 
- ># echo 1 > events/synthetic/enable
- ># cat trace
-    <idle>-0       [006] d..4   186.863801: wakeup_lat: pid=1306 delta=65 wake_comm=kworker/u16:3
-    <idle>-0       [000] d..4   186.863858: wakeup_lat: pid=163 delta=27 wake_comm=<idle>
-    <idle>-0       [001] d..4   186.863903: wakeup_lat: pid=1307 delta=36 wake_comm=kworker/u16:4
-    <idle>-0       [000] d..4   186.863927: wakeup_lat: pid=163 delta=5 wake_comm=<idle>
-    <idle>-0       [006] d..4   186.863957: wakeup_lat: pid=1306 delta=24 wake_comm=kworker/u16:3
-      sshd-1306    [006] d..4   186.864051: wakeup_lat: pid=61 delta=62 wake_comm=<idle>
-    <idle>-0       [000] d..4   186.965030: wakeup_lat: pid=609 delta=18 wake_comm=<idle>
-    <idle>-0       [006] d..4   186.987582: wakeup_lat: pid=1306 delta=65 wake_comm=kworker/u16:3
-    <idle>-0       [000] d..4   186.987639: wakeup_lat: pid=163 delta=27 wake_comm=<idle>
+      Arnd
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace_events_hist.c | 46 +++++++++++++++++++++++++++++---
- 1 file changed, 42 insertions(+), 4 deletions(-)
+Link: https://lore.kernel.org/netdev/20201124151828.169152-1-arnd@kernel.org/
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 5c9082201bc2..14b840de1326 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -1395,17 +1395,17 @@ static int hist_trigger_elt_data_alloc(struct tracing_map_elt *elt)
- 	struct hist_trigger_data *hist_data = elt->map->private_data;
- 	unsigned int size = TASK_COMM_LEN;
- 	struct hist_elt_data *elt_data;
--	struct hist_field *key_field;
-+	struct hist_field *hist_field;
- 	unsigned int i, n_str;
- 
- 	elt_data = kzalloc(sizeof(*elt_data), GFP_KERNEL);
- 	if (!elt_data)
- 		return -ENOMEM;
- 
--	for_each_hist_key_field(i, hist_data) {
--		key_field = hist_data->fields[i];
-+	for_each_hist_field(i, hist_data) {
-+		hist_field = hist_data->fields[i];
- 
--		if (key_field->flags & HIST_FIELD_FL_EXECNAME) {
-+		if (hist_field->flags & HIST_FIELD_FL_EXECNAME) {
- 			elt_data->comm = kzalloc(size, GFP_KERNEL);
- 			if (!elt_data->comm) {
- 				kfree(elt_data);
-@@ -3703,6 +3703,41 @@ static int create_val_field(struct hist_trigger_data *hist_data,
- 	return __create_val_field(hist_data, val_idx, file, NULL, field_str, 0);
- }
- 
-+static const char *no_comm = "(no comm)";
-+
-+static u64 hist_field_execname(struct hist_field *hist_field,
-+			       struct tracing_map_elt *elt,
-+			       struct trace_buffer *buffer,
-+			       struct ring_buffer_event *rbe,
-+			       void *event)
-+{
-+	struct hist_elt_data *elt_data;
-+
-+	if (WARN_ON_ONCE(!elt))
-+		return (u64)(unsigned long)no_comm;
-+
-+	elt_data = elt->private_data;
-+
-+	if (WARN_ON_ONCE(!elt_data->comm))
-+		return (u64)(unsigned long)no_comm;
-+
-+	return (u64)(unsigned long)(elt_data->comm);
-+}
-+
-+/* Convert a var that points to common_pid.execname to a string */
-+static void update_var_execname(struct hist_field *hist_field)
-+{
-+	hist_field->flags = HIST_FIELD_FL_STRING | HIST_FIELD_FL_VAR |
-+		HIST_FIELD_FL_EXECNAME;
-+	hist_field->size = MAX_FILTER_STR_VAL;
-+	hist_field->is_signed = 0;
-+
-+	kfree_const(hist_field->type);
-+	hist_field->type = "char[]";
-+
-+	hist_field->fn = hist_field_execname;
-+}
-+
- static int create_var_field(struct hist_trigger_data *hist_data,
- 			    unsigned int val_idx,
- 			    struct trace_event_file *file,
-@@ -3727,6 +3762,9 @@ static int create_var_field(struct hist_trigger_data *hist_data,
- 
- 	ret = __create_val_field(hist_data, val_idx, file, var_name, expr_str, flags);
- 
-+	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_EXECNAME)
-+		update_var_execname(hist_data->fields[val_idx]);
-+
- 	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
- 		hist_data->fields[val_idx]->var_str_idx = hist_data->n_var_str++;
- 
+Changes in v6:
+ - Split out and expand linux/compat.h rework
+ - Split ifconf change into two patches
+ - Rebase on latest net-next/master
+
+Changes in v5:
+ - Rebase to v5.14-rc2
+ - Fix a few build issues
+
+Changes in v4:
+ - build fix without CONFIG_INET
+ - build fix without CONFIG_COMPAT
+ - style fixes pointed out by hch
+
+Changes in v3:
+ - complete rewrite of the series
+
+Arnd Bergmann (6):
+  compat: make linux/compat.h available everywhere
+  ethtool: improve compat ioctl handling
+  net: socket: rework SIOC?IFMAP ioctls
+  net: socket: remove register_gifconf
+  net: socket: simplify dev_ifconf handling
+  net: socket: rework compat_ifreq_ioctl()
+
+ arch/arm64/include/asm/compat.h   |  14 +-
+ arch/mips/include/asm/compat.h    |  24 ++-
+ arch/parisc/include/asm/compat.h  |  14 +-
+ arch/powerpc/include/asm/compat.h |  11 --
+ arch/s390/include/asm/compat.h    |  14 +-
+ arch/sparc/include/asm/compat.h   |  14 +-
+ arch/x86/include/asm/compat.h     |  14 +-
+ arch/x86/include/asm/signal.h     |   1 +
+ include/asm-generic/compat.h      |  17 ++
+ include/linux/compat.h            |  32 ++--
+ include/linux/ethtool.h           |   4 -
+ include/linux/inetdevice.h        |   9 +
+ include/linux/netdevice.h         |  12 +-
+ net/appletalk/ddp.c               |   4 +-
+ net/core/dev_ioctl.c              | 153 +++++++++-------
+ net/ethtool/ioctl.c               | 136 ++++++++++++--
+ net/ieee802154/socket.c           |   4 +-
+ net/ipv4/af_inet.c                |   6 +-
+ net/ipv4/devinet.c                |   4 +-
+ net/qrtr/qrtr.c                   |   4 +-
+ net/socket.c                      | 292 +++++++-----------------------
+ 21 files changed, 352 insertions(+), 431 deletions(-)
+
 -- 
-2.30.2
+2.29.2
+
+Cc: Al Viro <viro@zeniv.linux.org.uk> 
+Cc: Andrew Lunn <andrew@lunn.ch> 
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: David Ahern <dsahern@kernel.org> 
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org> 
+Cc: Jakub Kicinski <kuba@kernel.org> 
+Cc: Kees Cook <keescook@chromium.org> 
+Cc: Marco Elver <elver@google.com> 
+Cc: linux-kernel@vger.kernel.org 
+Cc: linux-arch@vger.kernel.org 
+Cc: netdev@vger.kernel.org 
