@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34E63D233A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3D83D233D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhGVLhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 07:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
+        id S231905AbhGVLhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 07:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231777AbhGVLhd (ORCPT
+        with ESMTP id S231853AbhGVLhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 07:37:33 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C827C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 05:18:08 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id i5so8226755lfe.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 05:18:08 -0700 (PDT)
+        Thu, 22 Jul 2021 07:37:35 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51846C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 05:18:10 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id h4so7076615ljo.6
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 05:18:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UtOWa2lL7DU7+uz9y77s+2dIz9u9H/PKNPEgTCXPwT4=;
-        b=FuFu3y+Cme1GCFNZiFBIv37H2HS/O/Cy1DUZmxv7gbVtxUxjDIVAHbyZUdWm4qmiWY
-         a0emq6HIL6CrntNYbiOhubaM/T+3zctQRWTKBz276xz6hlclOdYRulERamlH3wGIYFOY
-         lrglYhNTBkPmRHtcn2vIVrukXodl83js8pujNoAXpV+xenJKtV63LAIQDn8cf0PCKJx/
-         KGEaIHnTo8+fL8MFOeJSQaO1Ril53ef3lKNzfQD0ClgT8DA9AwGcwvlJfBd75ckalTvV
-         pDu40cG/hevkIRyfuzIUivgcmFne1zr7DU7rHx2LLQaCKMwT0i0GovgXAI97xBlJXd4C
-         Wlvg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Jho2K68ga+5iTIj/1FJanSXtGPFIBOymH8GgUKHdmJg=;
+        b=n4Cd5KUlVp+rn78A7tSLeP1QaCRnUqd5Wo68GOklD8bEXOYq87gcZd5mOYtFr8Jwru
+         VqI6QbD72tfLd26xc7jJwPjsSgpevZ7i7V5uB8e+yWtkDO9IdWspQvYRq2+klkkkjigm
+         BDTLd7cT9nJ+PLLGY/DGEGP0RJSidE5xmun3+CcbvNdCGXW0/N+Ut6+pKZiDf7pZ6XQZ
+         XBDXipn2wntiiUDqGmzxIyF6LyJRhkB0Kmgrb9r6DS80GpUOqZdTxfnm/nPoQLR9p8oC
+         eqvOJ69gI4kq7YoK/Btv/ikDII3s97K7mJnzJEu1PKXXul1rJiCis5xpJcLE+zPzZcUp
+         TnpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UtOWa2lL7DU7+uz9y77s+2dIz9u9H/PKNPEgTCXPwT4=;
-        b=IotPalEeyf9PrGcA4Mkp40jeVnTJTWJ9NQUOIi5qb+zQB+DG1pOjaabFJn10wPqH//
-         pR/cpkGGsRMMmwjkLBu2zJ1Vu3hYCsPjwGxwOslvd673SmC/ncyN1ZynA3+9v6W1q2mD
-         QtILUhMy6Z/PGnzfi2ktkXT3xOJmpqXEjEgCgnII3Eq2bGQrQOH7U6opxr6S9PJm5NL4
-         ZZSYe3FDZXJSNj9hPFT52ErPAKVzVV+R0FbXdedsQnE2DQ3YHVpBBAfXYXQcYYcfQgHJ
-         fvtLWH0ErIn25vHqVF1LjIQcnIC6E6muH6NAi3zDCw5nqqFn9Y54ikEY4DtNKeUNrnOQ
-         s0Xg==
-X-Gm-Message-State: AOAM533mz5uCy8JAVJf1Dq52+w8/nMx5zEdhfV/4wShODMwIxjoGsDhu
-        OvMsKt8Hh7/aSXQgoJuYIOgahJ6Uvh/PUw==
-X-Google-Smtp-Source: ABdhPJzAuK8mnM/roxQJVP/OoPkjfnPfIN0iaMP4V5osxSOh0fVjK8sVGS6gosrD0e44IU/RBlyigQ==
-X-Received: by 2002:a19:a403:: with SMTP id q3mr29802876lfc.287.1626956286415;
-        Thu, 22 Jul 2021 05:18:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Jho2K68ga+5iTIj/1FJanSXtGPFIBOymH8GgUKHdmJg=;
+        b=aucm32G+iUYD6fa8+Er1hPKjHqqtq6iZyXHLPT/nm4es++eH5rIyRwAuo3HG/j1Ryq
+         llnpsZx7hAUXmqovPbr7VK6p3CGmGSMFz4Khil7vUwbK0He0bbud8X4lMACp/XPsnTiW
+         ZQGucCEBPp4NT86qcyFAelsoWzGcUDxrf8ZfvdRIyYYwX5F52RfeA2SQAS7n2VYH1JJE
+         kpXU7xQw/DYapibaqDFa37Mcqs0YOs+WXfUV6GeJ0nW/3fqloZOnwKhUMT4ZZTOvzVhp
+         73phxLz7A1gMF0a5JWzGgXWjUJ/u7g9tuIljJ5okecZFxWocSbHZmw5sZ87BnfPWd9bU
+         DsFw==
+X-Gm-Message-State: AOAM532iNN2+W0Ss9nvEQXZ/Kev3qX7LK/TqPUssbS7PtbC9g6A28Hpq
+        RKh6n0ajRwzYPpH0nlluN0EY22Di612EWg==
+X-Google-Smtp-Source: ABdhPJxnX8s7IJblRfGI601d0Xtre+S/15kMK0Xhbddqz/BBy7LbQb6cZZ+5iKTudiLDPhSMvO0beA==
+X-Received: by 2002:a2e:9695:: with SMTP id q21mr7034810lji.509.1626956287123;
+        Thu, 22 Jul 2021 05:18:07 -0700 (PDT)
 Received: from jade.urgonet (h-94-254-48-165.A175.priv.bahnhof.se. [94.254.48.165])
-        by smtp.gmail.com with ESMTPSA id b41sm845090ljr.67.2021.07.22.05.18.05
+        by smtp.gmail.com with ESMTPSA id b41sm845090ljr.67.2021.07.22.05.18.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 22 Jul 2021 05:18:06 -0700 (PDT)
 From:   Jens Wiklander <jens.wiklander@linaro.org>
@@ -56,109 +56,52 @@ Cc:     Sumit Garg <sumit.garg@linaro.org>,
         Marc Bonnici <marc.bonnici@arm.com>,
         Jerome Forissier <jerome@forissier.org>,
         sughosh.ganu@linaro.org, Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH v3 0/5] Add FF-A support in OP-TEE driver
-Date:   Thu, 22 Jul 2021 14:17:52 +0200
-Message-Id: <20210722121757.1944658-1-jens.wiklander@linaro.org>
+Subject: [PATCH v3 1/5] tee: add sec_world_id to struct tee_shm
+Date:   Thu, 22 Jul 2021 14:17:53 +0200
+Message-Id: <20210722121757.1944658-2-jens.wiklander@linaro.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210722121757.1944658-1-jens.wiklander@linaro.org>
+References: <20210722121757.1944658-1-jens.wiklander@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Adds sec_world_id to struct tee_shm which describes a shared memory
+object. sec_world_id can be used by a driver to store an id assigned by
+secure world.
 
-This adds supports for the OP-TEE driver to communicate with secure world
-using FF-A [1] as transport.
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+---
+ include/linux/tee_drv.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-There is one change to the TEE subsystem with "tee: add sec_world_id to
-struct tee_shm" to add support for holding globally unique handle assigned
-by the FF-A. This is a field that I believe could useful for the AMDTEE
-driver too.
-
-For communication the OP-TEE message protocol is still used, but with a new
-type of memory reference, struct optee_msg_param_fmem, to carry the
-information needed by FF-A. The OP-TEE driver is refactored internally with
-to sets of callbacks, one for the old SMC based communication and another
-set with FF-A as transport. The functions relating to the SMC based ABI
-are moved to smc_abi.c while the FF-A based ABI is added in a ffa_abi.c.
-
-There is also a difference in how the drivers are instantiated. With the
-SMC based transport we have a platform driver, module_platform_driver(),
-today which we're keeping as is for this configuration. In a FF-A system we
-have a FF-A driver, module_ffa_driver(), instead.
-
-The OP-TEE driver can be compiled for both targets at the same time and
-it's up to runtime configuration (device tree or ACPI) to decide how it's
-initialized. Note that it's only the old SMC based driver instance that
-need device tree or ACPI to initialize. The FF-A based driver relies on the
-FF-A bus instead.
-
-This can be tested QEMU
-The repo for SPMC at S-EL1 retrieved by
-repo init -u https://github.com/jenswi-linaro/manifest.git -m
-qemu_v8.xml -b ffav4_spmc
-repo sync
-# Then checkout the branch optee_ffa_v3 from
-# git://git.linaro.org/people/jens.wiklander/linux-tee.git
-# in the linux directory
-
-To build do:
-cd build
-make toolchains
-make all
-
-To boot:
-make run-only
-
-Test with xtest, perhaps only with the command "xtest 1004" in case you're
-not interested in too many tests.
-
-Thanks,
-Jens
-
-[1] https://developer.arm.com/documentation/den0077/latest
-
-v2->v3:
-- Rebased on 5.14-rc2 which now have the FF-A patches merged
-- Fixed a couple bugs in optee_shm_register() and optee_shm_unregister()
-  which where introduced in "optee: refactor driver with internal callbacks"
-  in previous the version.
-- Separated SMC ABI specifics into smc_abi.c to keep it separated from
-  the FF-A ABI functions as requested by Sumit.
-- Added the FF-A specifics in ffa_abi.c
-- Provided an implementation for optee_ffa_remove()
-
-v1->v2:
-- Rebased to the FF-A v7 patch
-- Fixed a couple of reports from kernel test robot <lkp@intel.com>
-
-Jens Wiklander (5):
-  tee: add sec_world_id to struct tee_shm
-  optee: simplify optee_release()
-  optee: refactor driver with internal callbacks
-  optee: isolate smc abi
-  optee: add FF-A support
-
- drivers/tee/optee/Makefile        |    7 +-
- drivers/tee/optee/call.c          |  415 ++-------
- drivers/tee/optee/core.c          |  673 ++-------------
- drivers/tee/optee/ffa_abi.c       |  910 ++++++++++++++++++++
- drivers/tee/optee/optee_ffa.h     |  153 ++++
- drivers/tee/optee/optee_msg.h     |   27 +-
- drivers/tee/optee/optee_private.h |  155 +++-
- drivers/tee/optee/rpc.c           |  270 +-----
- drivers/tee/optee/shm_pool.c      |   89 --
- drivers/tee/optee/shm_pool.h      |   14 -
- drivers/tee/optee/smc_abi.c       | 1301 +++++++++++++++++++++++++++++
- include/linux/tee_drv.h           |    7 +-
- 12 files changed, 2650 insertions(+), 1371 deletions(-)
- create mode 100644 drivers/tee/optee/ffa_abi.c
- create mode 100644 drivers/tee/optee/optee_ffa.h
- delete mode 100644 drivers/tee/optee/shm_pool.c
- delete mode 100644 drivers/tee/optee/shm_pool.h
- create mode 100644 drivers/tee/optee/smc_abi.c
-
+diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+index 54269e47ac9a..1a29f0e66e13 100644
+--- a/include/linux/tee_drv.h
++++ b/include/linux/tee_drv.h
+@@ -196,7 +196,11 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+  * @num_pages:	number of locked pages
+  * @dmabuf:	dmabuf used to for exporting to user space
+  * @flags:	defined by TEE_SHM_* in tee_drv.h
+- * @id:		unique id of a shared memory object on this device
++ * @id:		unique id of a shared memory object on this device, shared
++ *		with user space
++ * @sec_world_id:
++ *		secure world assigned id of this shared memory object, not
++ *		used by all drivers
+  *
+  * This pool is only supposed to be accessed directly from the TEE
+  * subsystem and from drivers that implements their own shm pool manager.
+@@ -212,6 +216,7 @@ struct tee_shm {
+ 	struct dma_buf *dmabuf;
+ 	u32 flags;
+ 	int id;
++	u64 sec_world_id;
+ };
+ 
+ /**
 -- 
 2.31.1
 
