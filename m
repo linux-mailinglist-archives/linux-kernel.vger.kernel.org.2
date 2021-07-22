@@ -2,117 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A63B3D24D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994903D24CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbhGVNGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:06:55 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:4506 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231925AbhGVNGy (ORCPT
+        id S232155AbhGVNF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231925AbhGVNF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:06:54 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16MDkX6e026150;
-        Thu, 22 Jul 2021 06:47:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=+eqMGYBVdJOxU4+iETZGUjH9mWNPoLXvNsQYswa0TKo=;
- b=QRoTSXU0B//wh9jp+vX/Hxef59YvvZYzNQ+78hhnB6/pSMFhrnl0ISrjsrMJKin2ab9J
- g8h4/cTKNvFz3usEAi0dKbC5rsG/9604IjEHPzcyfD8cJhAHYyb+9CrhOlWkc4tSvwyW
- YFlhy++7Ow6TROTkLiMJkXHS2nPry0AWjua1skaPKUjTRMkLOVq8BByCPtRORNtGmAtj
- MDG1CJRCEVJumxKaKGGnY0yexMTxH6xxajy9h+38j8g0/Er3OE4hx4v5qBNaE5ViO3aP
- W48i5gilPY83iYRfwzCDW0tvIpAfu0zzX2d6B7eNL63w6l3NKQSsjZJxnasXeku8onAf hA== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 39y25bhq8y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 06:47:25 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 22 Jul
- 2021 06:47:24 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Thu, 22 Jul 2021 06:47:23 -0700
-Received: from jerin-lab.marvell.com (jerin-lab.marvell.com [10.28.34.14])
-        by maili.marvell.com (Postfix) with ESMTP id ECA213F7082;
-        Thu, 22 Jul 2021 06:47:20 -0700 (PDT)
-From:   <jerinj@marvell.com>
-To:     <netdev@vger.kernel.org>, <davem@davemloft.net>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     <jerinjacobk@gmail.com>
-Subject: [PATCH net-next v1] octeontx2-af: Enhance mailbox trace entry
-Date:   Thu, 22 Jul 2021 19:15:40 +0530
-Message-ID: <20210722134540.644370-1-jerinj@marvell.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 22 Jul 2021 09:05:27 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71314C061575;
+        Thu, 22 Jul 2021 06:46:02 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id u13so8570455lfs.11;
+        Thu, 22 Jul 2021 06:46:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=S5FBe7ueCEgBBBcVlYIV5ZQBPwUEDI96bGTpteUkpVg=;
+        b=ODQJCwhH4fpxxhVlyvc7qpPwR4JZiWsrgG8NvFvy5X3NG25wTU6ksHsU1cL8b1QGuU
+         tp875eIubB65RbEhE7PNrtCX89VD3dgDJHWmRbjJ9fWOo3S8i12JKyydfYJK5k8O4IOE
+         KTHILQtAAJA7SsGOAWfryjyQXAaZZg4ZS8+7xtQnzgv4DZGAUwMf2/poxEvFSI8dteOf
+         5V4oFyStMw5PiChxrAqttDR6C45175WAIq1FLMI6wrOKrPLTvI3CtdF7ipHlFsV8/MWo
+         u3I7bty7jolpesArC0A8mwuHZEK3ccnYiL+3b7KRvvG4ZsPH2OnVhIcDTlGXByw1z8Qv
+         mkZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S5FBe7ueCEgBBBcVlYIV5ZQBPwUEDI96bGTpteUkpVg=;
+        b=qKsoV6DOtwq/IYHkfEmOL4V+oAkfvmyeGpG9qGGasShQzmKMT32D07B+AqhlZaiyhZ
+         wOrsxgaPVkepUi7KGsNrEcm2RHufFt0eM1cRlKqE8wKel8TlsmpEjSVu7OZPkmrNjx3D
+         pykGXLHUxkvsLeXxK1NmOOWneD1aKqxHOlPIhLUKOGUfwDEwk0BC1BA8zDZMxAOHirQd
+         kMdZHpfG2PQfmawrkIctM8dLOsErxoZsvRQ1iONMIZ99L6+vbU39ZIi7dGLRx4mYyy/A
+         KqeJOAeeZO2V2XqHGASfqZRrZ7FdhbNbsv8z0byZt5x8T5I8aIogKGYcKWxZfE74W32L
+         EHMA==
+X-Gm-Message-State: AOAM532SRjaHJft8Tq+k7DfwjKLNBvwTyy/AGvbMdloHH+aNpVxZfJep
+        +3GVvXwh7p68UA8FWnPP0QY=
+X-Google-Smtp-Source: ABdhPJy36a3gqQAyT0+tVLg1bfWSzgW5dYJ2GTCxgOvalOUdOoeV5NbZ3uVv5LxINryzPiIxhI7AOg==
+X-Received: by 2002:a05:6512:3326:: with SMTP id l6mr28891434lfe.658.1626961560871;
+        Thu, 22 Jul 2021 06:46:00 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-184-182.dynamic.spd-mgts.ru. [79.139.184.182])
+        by smtp.googlemail.com with ESMTPSA id d23sm3102281ljl.115.2021.07.22.06.46.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Jul 2021 06:46:00 -0700 (PDT)
+Subject: Re: [PATCH v14 062/138] mm/migrate: Add folio_migrate_copy()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-63-willy@infradead.org>
+ <a670e7c1-95fb-324f-055f-74dd4c81c0d0@gmail.com>
+ <YPlko1ObxD/CEz8o@casper.infradead.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <fd3fe780-1a1b-1ba7-1725-72286470ce4c@gmail.com>
+Date:   Thu, 22 Jul 2021 16:45:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <YPlko1ObxD/CEz8o@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: W2IJMvYWXjV6z1K1UyJjrIexTBmtqBZD
-X-Proofpoint-GUID: W2IJMvYWXjV6z1K1UyJjrIexTBmtqBZD
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-22_07:2021-07-22,2021-07-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerin Jacob <jerinj@marvell.com>
+22.07.2021 15:29, Matthew Wilcox пишет:
+> On Thu, Jul 22, 2021 at 02:52:28PM +0300, Dmitry Osipenko wrote:
+...
+> The obvious solution is just to change folio_copy():
+> 
+>  {
+> -       unsigned i, nr = folio_nr_pages(src);
+> +       unsigned i = 0;
+> +       unsigned nr = folio_nr_pages(src);
+> 
+> -       for (i = 0; i < nr; i++) {
+> -               cond_resched();
+> +       for (;;) {
+>                 copy_highpage(folio_page(dst, i), folio_page(src, i));
+> +               if (i++ == nr)
 
-Added mailbox id to name translation on trace entry for
-better tracing output.
+This works with the ++i precedence change. Thanks!
 
-Before the change:
-otx2_msg_process: [0002:01:00.0] msg:(0x03) error:0
+> +                       break;
+> +               cond_resched();
+>         }
+>  }
+> 
+> now it only calls cond_resched() for multi-page folios.
 
-After the change:
-otx2_msg_process: [0002:01:00.0] msg:(DETACH_RESOURCES) error:0
+...
 
-Signed-off-by: Jerin Jacob <jerinj@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_trace.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Thank you for the explanation and for the fix!
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_trace.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu_trace.h
-index 64aa7d350df1..6af97ce69443 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_trace.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_trace.h
-@@ -14,6 +14,8 @@
- #include <linux/tracepoint.h>
- #include <linux/pci.h>
- 
-+#include "mbox.h"
-+
- TRACE_EVENT(otx2_msg_alloc,
- 	    TP_PROTO(const struct pci_dev *pdev, u16 id, u64 size),
- 	    TP_ARGS(pdev, id, size),
-@@ -25,8 +27,8 @@ TRACE_EVENT(otx2_msg_alloc,
- 			   __entry->id = id;
- 			   __entry->size = size;
- 	    ),
--	    TP_printk("[%s] msg:(0x%x) size:%lld\n", __get_str(dev),
--		      __entry->id, __entry->size)
-+	    TP_printk("[%s] msg:(%s) size:%lld\n", __get_str(dev),
-+		      otx2_mbox_id2name(__entry->id), __entry->size)
- );
- 
- TRACE_EVENT(otx2_msg_send,
-@@ -88,8 +90,8 @@ TRACE_EVENT(otx2_msg_process,
- 			   __entry->id = id;
- 			   __entry->err = err;
- 	    ),
--	    TP_printk("[%s] msg:(0x%x) error:%d\n", __get_str(dev),
--		      __entry->id, __entry->err)
-+	    TP_printk("[%s] msg:(%s) error:%d\n", __get_str(dev),
-+		      otx2_mbox_id2name(__entry->id), __entry->err)
- );
- 
- #endif /* __RVU_TRACE_H */
--- 
-2.32.0
-
+The fs/ and mm/ are mostly outside of my scope, hope you'll figure out
+the buffer-head case soon.
