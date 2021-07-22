@@ -2,104 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028343D2FC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CA23D2FCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232593AbhGVVig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 17:38:36 -0400
-Received: from mail-pl1-f171.google.com ([209.85.214.171]:39742 "EHLO
-        mail-pl1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbhGVVif (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 17:38:35 -0400
-Received: by mail-pl1-f171.google.com with SMTP id e5so996870pla.6;
-        Thu, 22 Jul 2021 15:19:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lWYwLLr1F+wEohZcNxTrxT9x/1X4krqlfhkjTKwn5LU=;
-        b=Zw5P5x4B2pcmiuvW4R7oJVCjTwx72gcEgkCCMUOy5gKQ80kuskDFmKGvfeUGP/6Ufx
-         P+odj9q3IHgbF16n45gtEGoLT7M6u0EibME0h7ty7yyUL533IY3mkojcsNjNyvM/suKQ
-         VIr3AxPM0YMMMNLDZR4R76d30xvukAiArdGkS3p1HO5ZcOMYQ4MMvHtAUx2oLhfx6P4k
-         b2Nl/XnTW/jlgmryoZ1NctDWkRNTuAXy/ehpZzc3BSX04PxFzIJ0pfAxyR8b/oaUuU6l
-         /wr8GC5wvRQqcH06ZdoDCIIPvIvSiG3hH61mKzVpbwNudIlmerO0eVLrLOFN4m6FmeUY
-         xkoQ==
-X-Gm-Message-State: AOAM530Sv1GhZQIjLRz8FKGpKUZkRUA856e6HXyucw/tLsX9gRK8p47t
-        F3FiVPZEKXiNdP2oC2ORq3A=
-X-Google-Smtp-Source: ABdhPJyUsy0ro4YtJRuFm4vTMWqvS3mmCKFzmHMvFVjaECINrpaZu6M8QdvGu3PqOECaJ4mkPhFXWg==
-X-Received: by 2002:a63:449:: with SMTP id 70mr2067429pge.174.1626992349448;
-        Thu, 22 Jul 2021 15:19:09 -0700 (PDT)
-Received: from localhost ([191.96.121.239])
-        by smtp.gmail.com with ESMTPSA id q31sm8997884pjh.13.2021.07.22.15.19.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jul 2021 15:19:08 -0700 (PDT)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     gregkh@linuxfoundation.org, tj@kernel.org, shuah@kernel.org,
-        akpm@linux-foundation.org, rafael@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, andriin@fb.com,
-        daniel@iogearbox.net, atenart@kernel.org, alobakin@pm.me,
-        weiwan@google.com, ap420073@gmail.com
-Cc:     jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
-        mcgrof@kernel.org, axboe@kernel.dk, mbenes@suse.com,
-        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
-        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] kernel/module: add documentation for try_module_get()
-Date:   Thu, 22 Jul 2021 15:19:05 -0700
-Message-Id: <20210722221905.1718213-1-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S232105AbhGVVj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 17:39:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54226 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231320AbhGVVj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 17:39:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F1BE60EBC
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 22:20:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626992430;
+        bh=UBbRW2dJdthNRV7ahn+zuo6vi/63CEXtWz9EMVemDGc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aeQCl8506WTehxEgSoqz2X579VZCIjQPDPuIi8+C6YZUAquNaVThYmdnOEvTk+EBE
+         ovvcOZeHKdrWrqY48qn1jcrG2CE+lwPEO6W47Owj10NZAJaVOqt06Kzh0IoAvAoOll
+         fgMcM681st3dfzTAFaRfFfM2SLgK32ESHrE938jm3xIptc7cR/R9vsNv3Gwv9CX3zX
+         ax4uKbUtF1AeHz2EwYpJVvI3FlLNMD0SNAiyvbI03BVeXBM0m0cauCL0tupia6rZsv
+         BSuzu0dZDR6zzWw+6snuTKV5bXXfw8iRvh6wKfqel09pj89euMBYxpybwuFfxIZOw7
+         pAYPpGDUCNv1A==
+Received: by mail-ej1-f48.google.com with SMTP id hq13so827439ejc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 15:20:30 -0700 (PDT)
+X-Gm-Message-State: AOAM533Y1bG0rzAE5ei+OEs/H7G1PjtFvt1aUxw2jDo1AE/7JZoMwFzO
+        nVsJ4YNztq4kBdH1Tk0/edu/WrAj0I+361af+Q==
+X-Google-Smtp-Source: ABdhPJwXWEw3S7jLgBAbvYSuo9ZwWc4hAPLcprn5CYHYEKMQ+XqOBxwDM/cEWRHTHPKaZNZdv/8X/1DchdPffow9340=
+X-Received: by 2002:a17:906:27da:: with SMTP id k26mr1895403ejc.267.1626992429164;
+ Thu, 22 Jul 2021 15:20:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210722014743.8377-1-jason-jh.lin@mediatek.com>
+In-Reply-To: <20210722014743.8377-1-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Fri, 23 Jul 2021 06:20:17 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9qY2OruAQwtAp4L+dDmeyh0iVm_-Ongk9CfsRjZi-CwQ@mail.gmail.com>
+Message-ID: <CAAOTY_9qY2OruAQwtAp4L+dDmeyh0iVm_-Ongk9CfsRjZi-CwQ@mail.gmail.com>
+Subject: Re: [PATCH v4] drm/mediatek: Fix cursor plane didn't update
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, ville.syrjala@linux.intel.com,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, seanpaul@chromium.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
+        David-YH.Chiu@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is quite a bit of tribal knowledge around proper use of
-try_module_get() and that it must be used only in a context which
-can ensure the module won't be gone during the operation. Document
-this little bit of tribal knowledge.
+Hi, Jason:
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- kernel/module.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=882=
+2=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=889:47=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> The cursor plane should use the current plane state in atomic_async_updat=
+e
+> because it would not be the new plane state in the global atomic state
+> since _swap_state happened when those hook are run.
+>
+> Fix cursor plane issue by below modification:
+> 1. Remove plane_helper_funcs->atomic_update(plane, state) in
+>    mtk_drm_crtc_async_update.
+> 2. Add mtk_drm_update_new_state in to mtk_plane_atomic_async_update to
+>    update the cursor plane by current plane state hook and update
+>    others plane by the new_state.
 
-diff --git a/kernel/module.c b/kernel/module.c
-index ed13917ea5f3..0d609647a54d 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -1066,6 +1066,28 @@ void __module_get(struct module *module)
- }
- EXPORT_SYMBOL(__module_get);
- 
-+/**
-+ * try_module_get - yields to module removal and bumps reference count otherwise
-+ * @module: the module we should check for
-+ *
-+ * This can be used to check if userspace has requested to remove a module,
-+ * and if so let the caller give up. Otherwise it takes a reference count to
-+ * ensure a request from userspace to remove the module cannot happen.
-+ *
-+ * Care must be taken to ensure the module cannot be removed during
-+ * try_module_get(). This can be done by having another entity other than the
-+ * module itself increment the module reference count, or through some other
-+ * means which gaurantees the module could not be removed during an operation.
-+ * An example of this later case is using this call in a sysfs file which the
-+ * module created. The sysfs store / read file operation is ensured to exist
-+ * and still be present by kernfs's active reference. If a sysfs file operation
-+ * is being run, the module which created it must still exist as the module is
-+ * in charge of removal of the sysfs file.
-+ *
-+ * The real value to try_module_get() is the module_is_live() check which
-+ * ensures this the caller of try_module_get() can yields to userspace module
-+ * removal requests and fail whatever it was about to process.
-+ */
- bool try_module_get(struct module *module)
- {
- 	bool ret = true;
--- 
-2.30.2
+Applied to mediatek-drm-fixes [1], thanks.
 
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-fixes
+
+Regards,
+Chun-Kuang.
+
+>
+> Fixes: 37418bf14c13 ("drm: Use state helper instead of the plane state po=
+inter")
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> ---
+>   Change in v4:
+>   - Fix compile warning:
+>     ../drivers/gpu/drm/mediatek/mtk_drm_crtc.c:578:39: warning: unused
+>     variable =E2=80=98plane_helper_funcs=E2=80=99 [-Wunused-variable
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c  |  3 --
+>  drivers/gpu/drm/mediatek/mtk_drm_plane.c | 60 ++++++++++++++----------
+>  2 files changed, 34 insertions(+), 29 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
+diatek/mtk_drm_crtc.c
+> index 40df2c823187..515315505e3b 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -532,13 +532,10 @@ void mtk_drm_crtc_async_update(struct drm_crtc *crt=
+c, struct drm_plane *plane,
+>                                struct drm_atomic_state *state)
+>  {
+>         struct mtk_drm_crtc *mtk_crtc =3D to_mtk_crtc(crtc);
+> -       const struct drm_plane_helper_funcs *plane_helper_funcs =3D
+> -                       plane->helper_private;
+>
+>         if (!mtk_crtc->enabled)
+>                 return;
+>
+> -       plane_helper_funcs->atomic_update(plane, state);
+>         mtk_drm_crtc_update_config(mtk_crtc, false);
+>  }
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/m=
+ediatek/mtk_drm_plane.c
+> index b5582dcf564c..e6dcb34d3052 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+> @@ -110,6 +110,35 @@ static int mtk_plane_atomic_async_check(struct drm_p=
+lane *plane,
+>                                                    true, true);
+>  }
+>
+> +static void mtk_plane_update_new_state(struct drm_plane_state *new_state=
+,
+> +                                      struct mtk_plane_state *mtk_plane_=
+state)
+> +{
+> +       struct drm_framebuffer *fb =3D new_state->fb;
+> +       struct drm_gem_object *gem;
+> +       struct mtk_drm_gem_obj *mtk_gem;
+> +       unsigned int pitch, format;
+> +       dma_addr_t addr;
+> +
+> +       gem =3D fb->obj[0];
+> +       mtk_gem =3D to_mtk_gem_obj(gem);
+> +       addr =3D mtk_gem->dma_addr;
+> +       pitch =3D fb->pitches[0];
+> +       format =3D fb->format->format;
+> +
+> +       addr +=3D (new_state->src.x1 >> 16) * fb->format->cpp[0];
+> +       addr +=3D (new_state->src.y1 >> 16) * pitch;
+> +
+> +       mtk_plane_state->pending.enable =3D true;
+> +       mtk_plane_state->pending.pitch =3D pitch;
+> +       mtk_plane_state->pending.format =3D format;
+> +       mtk_plane_state->pending.addr =3D addr;
+> +       mtk_plane_state->pending.x =3D new_state->dst.x1;
+> +       mtk_plane_state->pending.y =3D new_state->dst.y1;
+> +       mtk_plane_state->pending.width =3D drm_rect_width(&new_state->dst=
+);
+> +       mtk_plane_state->pending.height =3D drm_rect_height(&new_state->d=
+st);
+> +       mtk_plane_state->pending.rotation =3D new_state->rotation;
+> +}
+> +
+>  static void mtk_plane_atomic_async_update(struct drm_plane *plane,
+>                                           struct drm_atomic_state *state)
+>  {
+> @@ -126,8 +155,10 @@ static void mtk_plane_atomic_async_update(struct drm=
+_plane *plane,
+>         plane->state->src_h =3D new_state->src_h;
+>         plane->state->src_w =3D new_state->src_w;
+>         swap(plane->state->fb, new_state->fb);
+> -       new_plane_state->pending.async_dirty =3D true;
+>
+> +       mtk_plane_update_new_state(new_state, new_plane_state);
+> +       wmb(); /* Make sure the above parameters are set before update */
+> +       new_plane_state->pending.async_dirty =3D true;
+>         mtk_drm_crtc_async_update(new_state->crtc, plane, state);
+>  }
+>
+> @@ -189,14 +220,8 @@ static void mtk_plane_atomic_update(struct drm_plane=
+ *plane,
+>         struct drm_plane_state *new_state =3D drm_atomic_get_new_plane_st=
+ate(state,
+>                                                                          =
+  plane);
+>         struct mtk_plane_state *mtk_plane_state =3D to_mtk_plane_state(ne=
+w_state);
+> -       struct drm_crtc *crtc =3D new_state->crtc;
+> -       struct drm_framebuffer *fb =3D new_state->fb;
+> -       struct drm_gem_object *gem;
+> -       struct mtk_drm_gem_obj *mtk_gem;
+> -       unsigned int pitch, format;
+> -       dma_addr_t addr;
+>
+> -       if (!crtc || WARN_ON(!fb))
+> +       if (!new_state->crtc || WARN_ON(!new_state->fb))
+>                 return;
+>
+>         if (!new_state->visible) {
+> @@ -204,24 +229,7 @@ static void mtk_plane_atomic_update(struct drm_plane=
+ *plane,
+>                 return;
+>         }
+>
+> -       gem =3D fb->obj[0];
+> -       mtk_gem =3D to_mtk_gem_obj(gem);
+> -       addr =3D mtk_gem->dma_addr;
+> -       pitch =3D fb->pitches[0];
+> -       format =3D fb->format->format;
+> -
+> -       addr +=3D (new_state->src.x1 >> 16) * fb->format->cpp[0];
+> -       addr +=3D (new_state->src.y1 >> 16) * pitch;
+> -
+> -       mtk_plane_state->pending.enable =3D true;
+> -       mtk_plane_state->pending.pitch =3D pitch;
+> -       mtk_plane_state->pending.format =3D format;
+> -       mtk_plane_state->pending.addr =3D addr;
+> -       mtk_plane_state->pending.x =3D new_state->dst.x1;
+> -       mtk_plane_state->pending.y =3D new_state->dst.y1;
+> -       mtk_plane_state->pending.width =3D drm_rect_width(&new_state->dst=
+);
+> -       mtk_plane_state->pending.height =3D drm_rect_height(&new_state->d=
+st);
+> -       mtk_plane_state->pending.rotation =3D new_state->rotation;
+> +       mtk_plane_update_new_state(new_state, mtk_plane_state);
+>         wmb(); /* Make sure the above parameters are set before update */
+>         mtk_plane_state->pending.dirty =3D true;
+>  }
+> --
+> 2.18.0
+>
