@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6953D2331
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132553D2337
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231802AbhGVLeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 07:34:03 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:12239 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231724AbhGVLeC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 07:34:02 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GVrp63MY8z1CLm4;
-        Thu, 22 Jul 2021 20:08:46 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 20:14:34 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 20:14:34 +0800
-Subject: Re: [PATCH v2 3/3] kasan: arm64: Fix pcpu_page_first_chunk crash with
- KASAN_VMALLOC
-To:     Marco Elver <elver@google.com>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
-        <linux-mm@kvack.org>
-References: <20210720025105.103680-1-wangkefeng.wang@huawei.com>
- <20210720025105.103680-4-wangkefeng.wang@huawei.com>
- <YPlP6h4O1WA0NVDs@elver.google.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <99a9334e-ccda-dde9-954f-6717946324f8@huawei.com>
-Date:   Thu, 22 Jul 2021 20:14:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S231845AbhGVLgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 07:36:24 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:34472 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231724AbhGVLgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 07:36:23 -0400
+Received: from BC-Mail-Ex25.internal.baidu.com (unknown [172.31.51.19])
+        by Forcepoint Email with ESMTPS id 7A46AD832354F75AE26A;
+        Thu, 22 Jul 2021 20:16:54 +0800 (CST)
+Received: from BJHW-Mail-Ex16.internal.baidu.com (10.127.64.39) by
+ BC-Mail-Ex25.internal.baidu.com (172.31.51.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Thu, 22 Jul 2021 20:16:54 +0800
+Received: from BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) by
+ BJHW-Mail-Ex16.internal.baidu.com (10.127.64.39) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Thu, 22 Jul 2021 20:16:54 +0800
+Received: from BJHW-Mail-Ex15.internal.baidu.com ([100.100.100.38]) by
+ BJHW-Mail-Ex15.internal.baidu.com ([100.100.100.38]) with mapi id
+ 15.01.2308.014; Thu, 22 Jul 2021 20:16:54 +0800
+From:   "Li,Rongqing" <lirongqing@baidu.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+CC:     Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIEtWTTogQ29uc2lkZXIgU01UIGlkbGUgc3RhdHVz?=
+ =?utf-8?Q?_when_halt_polling?=
+Thread-Topic: [PATCH] KVM: Consider SMT idle status when halt polling
+Thread-Index: AQHXfr4fbqZtloIq0E2JewUw/QgE86tOkBDQgABUwoA=
+Date:   Thu, 22 Jul 2021 12:16:53 +0000
+Message-ID: <4efe4fdb91b747da93d7980c10d016c9@baidu.com>
+References: <20210722035807.36937-1-lirongqing@baidu.com>
+ <CANRm+Cx-5Yyxx5A4+qkYa01MG4BCdwXPd++bmxzOid+XL267cQ@mail.gmail.com> 
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.194.42]
+x-baidu-bdmsfe-datecheck: 1_BJHW-Mail-Ex16_2021-07-22 20:16:54:183
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <YPlP6h4O1WA0NVDs@elver.google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/7/22 19:00, Marco Elver wrote:
-> On Tue, Jul 20, 2021 at 10:51AM +0800, Kefeng Wang wrote:
->> With KASAN_VMALLOC and NEED_PER_CPU_PAGE_FIRST_CHUNK, it crashs,
->>
->> Unable to handle kernel paging request at virtual address ffff7000028f2000
->> ...
->> swapper pgtable: 64k pages, 48-bit VAs, pgdp=0000000042440000
->> [ffff7000028f2000] pgd=000000063e7c0003, p4d=000000063e7c0003, pud=000000063e7c0003, pmd=000000063e7b0003, pte=0000000000000000
->> Internal error: Oops: 96000007 [#1] PREEMPT SMP
->> Modules linked in:
->> CPU: 0 PID: 0 Comm: swapper Not tainted 5.13.0-rc4-00003-gc6e6e28f3f30-dirty #62
->> Hardware name: linux,dummy-virt (DT)
->> pstate: 200000c5 (nzCv daIF -PAN -UAO -TCO BTYPE=--)
->> pc : kasan_check_range+0x90/0x1a0
->> lr : memcpy+0x88/0xf4
->> sp : ffff80001378fe20
->> ...
->> Call trace:
->>   kasan_check_range+0x90/0x1a0
->>   pcpu_page_first_chunk+0x3f0/0x568
->>   setup_per_cpu_areas+0xb8/0x184
->>   start_kernel+0x8c/0x328
->>
->> The vm area used in vm_area_register_early() has no kasan shadow memory,
->> Let's add a new kasan_populate_early_vm_area_shadow() function to populate
->> the vm area shadow memory to fix the issue.
->>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Acked-by: Marco Elver <elver@google.com>
->
-> for the kasan bits.
-Thanks Marco.
+PiA+ID4gU01UIHNpYmxpbmdzIHNoYXJlIGNhY2hlcyBhbmQgb3RoZXIgaGFyZHdhcmUsIGhhbHQg
+cG9sbGluZyB3aWxsDQo+ID4gPiBkZWdyYWRlIGl0cyBzaWJsaW5nIHBlcmZvcm1hbmNlIGlmIGl0
+cyBzaWJsaW5nIGlzIGJ1c3kNCj4gPg0KPiA+IERvIHlvdSBoYXZlIGFueSByZWFsIHNjZW5hcmlv
+IGJlbmVmaXRzPyBBcyB0aGUgcG9sbGluZyBuYXR1cmUsIHNvbWUNCj4gPiBjbG91ZCBwcm92aWRl
+cnMgd2lsbCBjb25maWd1cmUgdG8gdGhlaXIgcHJlZmVycmVkIGJhbGFuY2Ugb2YgY3B1IHVzYWdl
+DQo+ID4gYW5kIHBlcmZvcm1hbmNlLCBhbmQgb3RoZXIgY2xvdWQgcHJvdmlkZXJzIGZvciB0aGVp
+ciBORlYgc2NlbmFyaW9zDQo+ID4gd2hpY2ggYXJlIG1vcmUgc2Vuc2l0aXZlIHRvIGxhdGVuY3kg
+YXJlIHZDUFUgYW5kIHBDUFUgMToxIHBpbu+8jHlvdQ0KPiA+IGRlc3Ryb3kgdGhlc2Ugc2V0dXBz
+Lg0KPiA+DQo+ID4gICAgIFdhbnBlbmcNCj4gDQoNCg0KUnVuIGEgY29weSAoc2luZ2xlIHRocmVh
+ZCkgVW5peGJlbmNoLCB3aXRoIG9yIHdpdGhvdXQgYSBidXN5IHBvbGwgcHJvZ3JhbSBpbiBpdHMg
+U01UIHNpYmxpbmcsICBhbmQgVW5peGJlbmNoIHNjb3JlIGNhbiBsb3dlciAxLzMgd2l0aCBTTVQg
+YnVzeSBwb2xsaW5nIHByb2dyYW0NCg0KQ2FuIHRoaXMgY2FzZSBzaG93IHRoaXMgaXNzdWU/DQoN
+Ci1MaSANCg0KDQo+IFRydWUsIGl0IGJlbmVmaXRzIGZvciBvdXIgcmVhbCBzY2VuYXJpby4NCj4g
+DQo+IHRoaXMgcGF0Y2ggY2FuIGxvd2VyIG91ciB3b3JrbG9hZCBjb21wdXRlIGxhdGVuY3kgaW4g
+b3VyIG11bHRpcGxlIGNvcmVzIFZNDQo+IHdoaWNoIHZDUFUgYW5kIHBDUFUgaXMgMToxIHBpbiwg
+YW5kIHRoZSB3b3JrbG9hZCB3aXRoIGxvdHMgb2YgY29tcHV0YXRpb24gYW5kDQo+IG5ldHdvcmtp
+bmcgcGFja2V0cy4NCj4gDQo+IC1MaQ0K
