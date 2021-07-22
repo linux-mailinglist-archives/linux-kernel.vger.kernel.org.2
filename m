@@ -2,167 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1493B3D1B82
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 03:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C2D3D1B8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 03:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhGVBGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 21:06:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59844 "EHLO mail.kernel.org"
+        id S230117AbhGVBOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 21:14:50 -0400
+Received: from smtpbgeu1.qq.com ([52.59.177.22]:54989 "EHLO smtpbgeu1.qq.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229937AbhGVBG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 21:06:29 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2C676120A;
-        Thu, 22 Jul 2021 01:47:04 +0000 (UTC)
-Date:   Wed, 21 Jul 2021 21:47:02 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v2] tracing: Allow execnames to be passed as args for
- synthetic events
-Message-ID: <20210721214702.4eeb1cd9@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229932AbhGVBOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 21:14:49 -0400
+X-QQ-mid: bizesmtp31t1626918915t01g3xrb
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Thu, 22 Jul 2021 09:55:14 +0800 (CST)
+X-QQ-SSF: 0140000000800020B000B00A0000000
+X-QQ-FEAT: wgl5Lpe0bqFJIbxZFiCG+P+3qbONXpGJAjR+gShnpifsoAS6TUtryBpiUQUoA
+        kwOpvr5orYHzO88VvE+oEcO4cxGxtqA9XkIPH97l+WzybzYZWRkNeBPJH4Jbvpj63AiQWij
+        wNnV+EUvhQrgiOF0Xv8WjdTAoxnEhO8iA+YqUdHbOQdngazB3GLXgYteor9e/U1e9pIs7Si
+        iAaV8olZIeUoBq9HCNzZi/arI7pGPYu5L1pCEO734I2KyDZF861xmZN0PvtORNwokkTQ9eu
+        k/zXGyLJqzWEmdEOrFZJd2tyJMFTUGgTXmGaKABzUBjtZ3w99AqsNBznHLC7/o3zXDdGzrE
+        tW3zbo4KlUdPuGeraKMlR92B2tucg==
+X-QQ-GoodBg: 2
+From:   Hao Chen <chenhaoa@uniontech.com>
+To:     peppe.cavallaro@st.com
+Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, qiangqing.zhang@nxp.com,
+        Hao Chen <chenhaoa@uniontech.com>
+Subject: [net,v7] net: stmmac: fix 'ethtool -P' return -EBUSY
+Date:   Thu, 22 Jul 2021 09:54:33 +0800
+Message-Id: <20210722015433.8563-1-chenhaoa@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+I want to get permanent MAC address when the card is down. And I think
+it is more convenient to get statistics in the down state by 'ethtool -S'.
+But current all of the ethool command return -EBUSY.
 
-Allow common_pid.execname to be saved in a variable in one histogram to be
-passed to another histogram that can pass it as a parameter to a synthetic
-event.
+I don't think we should detect that the network card is up in '. Begin',
+which will cause that all the ethtool commands can't be used when the
+network card is down. If some ethtool commands can only be used in the
+up state, check it in the corresponding ethool OPS function is better.
+This is too rude and unreasonable.
 
- ># echo 'hist:keys=pid:__arg__1=common_timestamp.usecs:arg2=common_pid.execname' \
-       > events/sched/sched_waking/trigger
- ># echo 'wakeup_lat s32 pid; u64 delta; char wake_comm[]' > synthetic_events
- ># echo 'hist:keys=next_pid:pid=next_pid,delta=common_timestamp.usecs-$__arg__1,exec=$arg2'\
-':onmatch(sched.sched_waking).trace(wakeup_lat,$pid,$delta,$exec)' \
- > events/sched/sched_switch/trigger
+I have checked the '. Begin' implementation of other drivers, most of which
+support the submission of NIC driver for the first time.
+They are too old to know why '. Begin' is implemented. I suspect that they
+have not noticed the usage of '. Begin'.
 
-The above is a wake up latency synthetic event setup that passes the execname
-of the common_pid that woke the task to the scheduling of that task, which
-triggers a synthetic event that passes the original execname as a
-parameter to display it.
+Fixes: 47dd7a540b8a ("net: add support for STMicroelectronics Ethernet
+		     controllers.")
 
- ># echo 1 > events/synthetic/enable
- ># cat trace
-    <idle>-0       [006] d..4   186.863801: wakeup_lat: pid=1306 delta=65 wake_comm=kworker/u16:3
-    <idle>-0       [000] d..4   186.863858: wakeup_lat: pid=163 delta=27 wake_comm=<idle>
-    <idle>-0       [001] d..4   186.863903: wakeup_lat: pid=1307 delta=36 wake_comm=kworker/u16:4
-    <idle>-0       [000] d..4   186.863927: wakeup_lat: pid=163 delta=5 wake_comm=<idle>
-    <idle>-0       [006] d..4   186.863957: wakeup_lat: pid=1306 delta=24 wake_comm=kworker/u16:3
-      sshd-1306    [006] d..4   186.864051: wakeup_lat: pid=61 delta=62 wake_comm=<idle>
-    <idle>-0       [000] d..4   186.965030: wakeup_lat: pid=609 delta=18 wake_comm=<idle>
-    <idle>-0       [006] d..4   186.987582: wakeup_lat: pid=1306 delta=65 wake_comm=kworker/u16:3
-    <idle>-0       [000] d..4   186.987639: wakeup_lat: pid=163 delta=27 wake_comm=<idle>
+Compile-tested on arm64. Tested on an arm64 system with an on-board
+STMMAC chip.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Changes v6 ... v7:
+- fix arg type error of 'dev' to 'priv->device'.
+
+Changes v5 ... v6:
+- The 4.19.90 kernel not support pm_runtime, so implemente '.begin' and
+  '.complete' again. Add return value check of pm_runtime function.
+
+Changes v4 ... v5:
+- test the '.begin' will return -13 error on my machine based on 4.19.90
+  kernel. The platform driver does not supported pm_runtime. So remove the
+  implementation of '.begin' and '.complete'.
+
+Changes v3 ... v4:
+- implement '.complete' ethtool OPS.
+
+Changes v2 ... v3:
+- add linux/pm_runtime.h head file.
+
+Changes v1 ... v2:
+- fix spell error of dev.
+
+Signed-off-by: Hao Chen <chenhaoa@uniontech.com>
 ---
-Changes since v1:
-  - Hit a bug on freeing the histogram, found that I used "char[]" for the
-    type, and it expects to be freed. Freed the old "type" and still use
-    "char[]" but have the normal freeing use kfree_const() on type.
+ .../ethernet/stmicro/stmmac/stmmac_ethtool.c  | 21 +++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
- kernel/trace/trace_events_hist.c | 49 ++++++++++++++++++++++++++++----
- 1 file changed, 44 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 34325f41ebc0..bb1956efd5ef 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -1395,17 +1395,17 @@ static int hist_trigger_elt_data_alloc(struct tracing_map_elt *elt)
- 	struct hist_trigger_data *hist_data = elt->map->private_data;
- 	unsigned int size = TASK_COMM_LEN;
- 	struct hist_elt_data *elt_data;
--	struct hist_field *key_field;
-+	struct hist_field *hist_field;
- 	unsigned int i, n_str;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+index d0ce608b81c3..fd5b68f6bf53 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+@@ -12,8 +12,9 @@
+ #include <linux/ethtool.h>
+ #include <linux/interrupt.h>
+ #include <linux/mii.h>
+-#include <linux/phylink.h>
+ #include <linux/net_tstamp.h>
++#include <linux/phylink.h>
++#include <linux/pm_runtime.h>
+ #include <asm/io.h>
  
- 	elt_data = kzalloc(sizeof(*elt_data), GFP_KERNEL);
- 	if (!elt_data)
- 		return -ENOMEM;
+ #include "stmmac.h"
+@@ -410,11 +411,18 @@ static void stmmac_ethtool_setmsglevel(struct net_device *dev, u32 level)
  
--	for_each_hist_key_field(i, hist_data) {
--		key_field = hist_data->fields[i];
-+	for_each_hist_field(i, hist_data) {
-+		hist_field = hist_data->fields[i];
- 
--		if (key_field->flags & HIST_FIELD_FL_EXECNAME) {
-+		if (hist_field->flags & HIST_FIELD_FL_EXECNAME) {
- 			elt_data->comm = kzalloc(size, GFP_KERNEL);
- 			if (!elt_data->comm) {
- 				kfree(elt_data);
-@@ -1589,7 +1589,9 @@ static void __destroy_hist_field(struct hist_field *hist_field)
- 
- 	kfree(hist_field->var.name);
- 	kfree(hist_field->name);
--	kfree(hist_field->type);
-+
-+	/* execname vars use a constant type */
-+	kfree_const(hist_field->type);
- 
- 	kfree(hist_field->system);
- 	kfree(hist_field->event_name);
-@@ -3707,6 +3709,40 @@ static int create_val_field(struct hist_trigger_data *hist_data,
- 	return __create_val_field(hist_data, val_idx, file, NULL, field_str, 0);
  }
  
-+static const char *no_comm = "(no comm)";
+-static int stmmac_check_if_running(struct net_device *dev)
++static int stmmac_ethtool_begin(struct net_device *dev)
+ {
+-	if (!netif_running(dev))
+-		return -EBUSY;
+-	return 0;
++	struct stmmac_priv *priv = netdev_priv(dev);
 +
-+static u64 hist_field_execname(struct hist_field *hist_field,
-+			       struct tracing_map_elt *elt,
-+			       struct trace_buffer *buffer,
-+			       struct ring_buffer_event *rbe,
-+			       void *event)
-+{
-+	struct hist_elt_data *elt_data;
-+
-+	if (WARN_ON_ONCE(!elt))
-+		return (u64)(unsigned long)no_comm;
-+
-+	elt_data = elt->private_data;
-+
-+	if (WARN_ON_ONCE(!elt_data->comm))
-+		return (u64)(unsigned long)no_comm;
-+
-+	return (u64)(unsigned long)(elt_data->comm);
++	return pm_runtime_resume_and_get(priv->device);
 +}
 +
-+/* Convert a var that points to common_pid.execname to a string */
-+static void update_var_execname(struct hist_field *hist_field)
++static void stmmac_ethtool_complete(struct net_device *dev)
 +{
-+	hist_field->flags = HIST_FIELD_FL_STRING | HIST_FIELD_FL_VAR |
-+		HIST_FIELD_FL_EXECNAME;
-+	hist_field->size = MAX_FILTER_STR_VAL;
-+	hist_field->is_signed = 0;
-+	kfree(hist_field->type);
-+	/* This uses kfree_const() to free */
-+	hist_field->type = "char[]";
-+	hist_field->fn = hist_field_execname;
-+}
++	struct stmmac_priv *priv = netdev_priv(dev);
 +
- static int create_var_field(struct hist_trigger_data *hist_data,
- 			    unsigned int val_idx,
- 			    struct trace_event_file *file,
-@@ -3731,6 +3767,9 @@ static int create_var_field(struct hist_trigger_data *hist_data,
++	pm_runtime_put(priv->device);
+ }
  
- 	ret = __create_val_field(hist_data, val_idx, file, var_name, expr_str, flags);
- 
-+	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_EXECNAME)
-+		update_var_execname(hist_data->fields[val_idx]);
-+
- 	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
- 		hist_data->fields[val_idx]->var_str_idx = hist_data->n_var_str++;
- 
+ static int stmmac_ethtool_get_regs_len(struct net_device *dev)
+@@ -1073,7 +1081,8 @@ static int stmmac_set_tunable(struct net_device *dev,
+ static const struct ethtool_ops stmmac_ethtool_ops = {
+ 	.supported_coalesce_params = ETHTOOL_COALESCE_USECS |
+ 				     ETHTOOL_COALESCE_MAX_FRAMES,
+-	.begin = stmmac_check_if_running,
++	.begin = stmmac_ethtool_begin,
++	.complete = stmmac_ethtool_complete,
+ 	.get_drvinfo = stmmac_ethtool_getdrvinfo,
+ 	.get_msglevel = stmmac_ethtool_getmsglevel,
+ 	.set_msglevel = stmmac_ethtool_setmsglevel,
 -- 
-2.31.1
+2.20.1
+
+
 
