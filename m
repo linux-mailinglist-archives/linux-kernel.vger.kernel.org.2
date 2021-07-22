@@ -2,51 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1133E3D206B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8DC3D206F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhGVIaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 04:30:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33166 "EHLO mail.kernel.org"
+        id S231359AbhGVIao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 04:30:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230491AbhGVIaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 04:30:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77A616008E;
-        Thu, 22 Jul 2021 09:10:44 +0000 (UTC)
+        id S231331AbhGVIan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 04:30:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60D136008E;
+        Thu, 22 Jul 2021 09:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626945045;
-        bh=UFRJTyfDU5ERSeJesOqndphPGq72ZxFE2ZfifURN+3A=;
+        s=k20201202; t=1626945079;
+        bh=++tXS1XNNR5+rOMypNW2O4Nv6hWoVgGOYZurO92H4JY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BSErgSXc3zIsanJlbIjWVuGFwc6SVUyPtmQ+AN6t5x7jkKjscQNYahvKperrjR25f
-         4L7rcX4jPE63oqQt3BZwo+NFZyFqibwNm9kAkCXca6R+bUTOMoWA8TJkm1zWbhHfIz
-         4x+YUeHATUI1+M2yjvNDMz8jvYTHDq6ss58Ie6+2CxXdl7+aGCwmrzLWdVJdOfa05m
-         zf7p/gn8PlLeJ+cwylepkdC5/T4jPQ8HiMzVOrJCo0slQ12nZV9W/cQYsRy4a4yPhH
-         NdQqTWXPKKQtRYt4o+6WRW8DdB/QFxRqtHxyA9J8qEuJbl59a2Xm5Acn7ZE+Fx2N8X
-         gOZfYmVZK1Jiw==
-Date:   Thu, 22 Jul 2021 14:40:41 +0530
+        b=XlIALtpBUEMrYlgS4RRMoNWt3+tyZx+kbipoYTOe/Rwjy54VFXUop4TXiBfHABqB4
+         1wedigSd9A+i7OSzJItb7quozecjCXtepaU0R9aWN9up4Vv6ukGx13VgI+VhRrh3/0
+         mX53A2HUJbqoPNupVaC3mcuz0Qm1/Z1h4cOa1qKUREzyPr/gYFLpMpE+iK+SjOoS/s
+         m8q1/1JpBi7UPnmGnP+OyWQDKfKzhlE0jXeXxvYLBW+QEwwjU0hXfMqkaJwO1TDwge
+         KnR8xTIscBhdVY5qH8iQJaNWQZa6tv0dT6z7uYfzhXfVX4xamAmeMaYlSN3gczmZha
+         4IDpOSjhOqF1g==
+Date:   Thu, 22 Jul 2021 14:41:15 +0530
 From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] phy: qcom-qmp: Fix sc8180x PCIe definition
-Message-ID: <YPk2ERxHcJ7YgW4X@matsya>
-References: <20210721163029.2813497-1-bjorn.andersson@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     JC Kuo <jckuo@nvidia.com>, Kishon Vijay Abraham I <kishon@ti.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-phy@lists.infradead.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] phy: tegra: xusb: mark PM functions as __maybe_unused
+Message-ID: <YPk2M8rNvorkkb8d@matsya>
+References: <20210721152550.2976003-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210721163029.2813497-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20210721152550.2976003-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-07-21, 09:30, Bjorn Andersson wrote:
-> A copy paste error was snuck into the patch going upstream that made the
-> SC8180x PCIe PHY use the SM8250 serdes table, but while this works
-> there's some differences in the tables (and the SC8180x was left
-> dangling). So correct the SC8180x definition to use the SC8180x serdes
-> table.
+On 21-07-21, 17:25, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When these are not referenced, gcc prints a harmless warning:
+> 
+> drivers/phy/tegra/xusb.c:1286:12: error: 'tegra_xusb_padctl_resume_noirq' defined but not used [-Werror=unused-function]
+>  1286 | static int tegra_xusb_padctl_resume_noirq(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/phy/tegra/xusb.c:1276:12: error: 'tegra_xusb_padctl_suspend_noirq' defined but not used [-Werror=unused-function]
+>  1276 | static int tegra_xusb_padctl_suspend_noirq(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
 
 Applied, thanks
 
