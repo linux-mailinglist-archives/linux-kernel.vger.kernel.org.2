@@ -2,240 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56143D1F69
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 09:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E263D1F77
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 09:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhGVHPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 03:15:54 -0400
-Received: from mga18.intel.com ([134.134.136.126]:52430 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230048AbhGVHPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 03:15:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="198861978"
-X-IronPort-AV: E=Sophos;i="5.84,260,1620716400"; 
-   d="scan'208";a="198861978"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 00:56:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,260,1620716400"; 
-   d="scan'208";a="577135293"
-Received: from lkp-server01.sh.intel.com (HELO b8b92b2878b0) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 22 Jul 2021 00:56:27 -0700
-Received: from kbuild by b8b92b2878b0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m6TZC-0000z4-Tw; Thu, 22 Jul 2021 07:56:26 +0000
-Date:   Thu, 22 Jul 2021 15:56:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/array-bounds] BUILD SUCCESS
- 7609aa6c9b48cfb7ba1b5de78aac28aba2137f23
-Message-ID: <60f9249d.mNOuA3M4eWxjIPuB%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230514AbhGVHRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 03:17:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59198 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229642AbhGVHRp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 03:17:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626940701;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6lwGJN8TiFLyvyvEI71qHXGC7kR0F74D2az+cv8IX3c=;
+        b=HB0VKaECu0q+wwwPr0ruUJk4JWWvcuQ03YjJ2+kpvFX4Ly9VHkdkGrBnt54xANSKWCyLT+
+        QNbEB1eWKop8sstuH74bgjapYfnTrBpkp5IlpIHYYDL0revlJgYKEUiq3rCcPyqGaapgn+
+        WZou1OkU0csnRR644/56z4x+lJOgXW0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-284--TOyIPhhNMqqiunAANAukQ-1; Thu, 22 Jul 2021 03:58:17 -0400
+X-MC-Unique: -TOyIPhhNMqqiunAANAukQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AB9D93923;
+        Thu, 22 Jul 2021 07:58:16 +0000 (UTC)
+Received: from T590 (ovpn-13-219.pek2.redhat.com [10.72.13.219])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DE72160CA1;
+        Thu, 22 Jul 2021 07:58:08 +0000 (UTC)
+Date:   Thu, 22 Jul 2021 15:58:04 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
+ from remote numa node
+Message-ID: <YPklDMng1hL3bQ+v@T590>
+References: <YOgK8fdv7dOQtkET@T590>
+ <23e7956b-f3b5-b585-3c18-724165994051@arm.com>
+ <YOhcOv1oOwm6fco+@T590>
+ <ad5bc549-d83f-bee0-9a9f-03a5afd7f3d9@huawei.com>
+ <YPd7IGFZrsTRfUxE@T590>
+ <74537f9c-af5f-cd84-60ab-49ca6220310e@huawei.com>
+ <YPfwAN1onpSKoeBj@T590>
+ <a2650064-41cf-cb62-7ab4-d14ef1856966@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <a2650064-41cf-cb62-7ab4-d14ef1856966@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/array-bounds
-branch HEAD: 7609aa6c9b48cfb7ba1b5de78aac28aba2137f23  Makefile: Enable -Warray-bounds
+On Wed, Jul 21, 2021 at 12:07:22PM +0100, John Garry wrote:
+> On 21/07/2021 10:59, Ming Lei wrote:
+> > > I have now removed that from the tree, so please re-pull.
+> > Now the kernel can be built successfully, but not see obvious improvement
+> > on the reported issue:
+> > 
+> > [root@ampere-mtjade-04 ~]# uname -a
+> > Linux ampere-mtjade-04.khw4.lab.eng.bos.redhat.com 5.14.0-rc2_smmu_fix+ #2 SMP Wed Jul 21 05:49:03 EDT 2021 aarch64 aarch64 aarch64 GNU/Linux
+> > 
+> > [root@ampere-mtjade-04 ~]# taskset -c 0 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
+> > + fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
+> > test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=io_uring, iodepth=64
+> > fio-3.27
+> > Starting 1 process
+> > Jobs: 1 (f=1): [r(1)][100.0%][r=1503MiB/s][r=385k IOPS][eta 00m:00s]
+> > test: (groupid=0, jobs=1): err= 0: pid=3143: Wed Jul 21 05:58:14 2021
+> >    read: IOPS=384k, BW=1501MiB/s (1573MB/s)(14.7GiB/10001msec)
+> 
+> I am not sure what baseline you used previously, but you were getting 327K
+> then, so at least this would be an improvement.
 
-elapsed time: 2033m
+Looks the improvement isn't from your patches, please see the test result on
+v5.14-rc2:
 
-configs tested: 182
-configs skipped: 3
+[root@ampere-mtjade-04 ~]# uname -a
+Linux ampere-mtjade-04.khw4.lab.eng.bos.redhat.com 5.14.0-rc2_linus #3 SMP Thu Jul 22 03:41:24 EDT 2021 aarch64 aarch64 aarch64 GNU/Linux
+[root@ampere-mtjade-04 ~]# taskset -c 0 ~/git/tools/test/nvme/io_uring 20 1 /dev/nvme1n1 4k
++ fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=20 --numjobs=1 --rw=randread --name=test --group_reporting
+test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=io_uring, iodepth=64
+fio-3.27
+Starting 1 process
+Jobs: 1 (f=1): [r(1)][100.0%][r=1489MiB/s][r=381k IOPS][eta 00m:00s]
+test: (groupid=0, jobs=1): err= 0: pid=3099: Thu Jul 22 03:53:04 2021
+  read: IOPS=381k, BW=1487MiB/s (1559MB/s)(29.0GiB/20001msec)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nds32                            alldefconfig
-sh                         ap325rxa_defconfig
-mips                           jazz_defconfig
-arm                       cns3420vb_defconfig
-mips                        vocore2_defconfig
-powerpc                     mpc5200_defconfig
-m68k                        m5307c3_defconfig
-mips                     decstation_defconfig
-powerpc                       ebony_defconfig
-powerpc                      bamboo_defconfig
-arm                      integrator_defconfig
-arm                        multi_v7_defconfig
-powerpc                      pasemi_defconfig
-m68k                        mvme16x_defconfig
-sh                          r7785rp_defconfig
-sparc64                             defconfig
-arc                     nsimosci_hs_defconfig
-m68k                             allyesconfig
-m68k                       m5208evb_defconfig
-arm                           sama5_defconfig
-mips                       rbtx49xx_defconfig
-mips                          ath25_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                    ge_imp3a_defconfig
-csky                             alldefconfig
-h8300                               defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                           gcw0_defconfig
-arm                        shmobile_defconfig
-parisc                generic-64bit_defconfig
-powerpc                     tqm8555_defconfig
-arm                           h5000_defconfig
-arc                              alldefconfig
-powerpc                 mpc8313_rdb_defconfig
-sh                               j2_defconfig
-powerpc                       ppc64_defconfig
-sh                          sdk7786_defconfig
-arm                           stm32_defconfig
-arm                           viper_defconfig
-sh                          rsk7201_defconfig
-arm                             mxs_defconfig
-arm                       aspeed_g5_defconfig
-powerpc                      ppc64e_defconfig
-arm                            xcep_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                  mpc866_ads_defconfig
-mips                     loongson2k_defconfig
-sh                ecovec24-romimage_defconfig
-arm                          ep93xx_defconfig
-powerpc                         wii_defconfig
-sh                           se7343_defconfig
-mips                  cavium_octeon_defconfig
-powerpc                      chrp32_defconfig
-powerpc                       holly_defconfig
-powerpc                      katmai_defconfig
-mips                         mpc30x_defconfig
-m68k                        m5407c3_defconfig
-arm                        realview_defconfig
-arm                            dove_defconfig
-arm                  colibri_pxa270_defconfig
-openrisc                 simple_smp_defconfig
-mips                           ip28_defconfig
-arm64                            alldefconfig
-mips                     cu1000-neo_defconfig
-riscv                    nommu_virt_defconfig
-mips                 decstation_r4k_defconfig
-xtensa                  nommu_kc705_defconfig
-m68k                             alldefconfig
-sh                          urquell_defconfig
-sh                   sh7724_generic_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                     rainier_defconfig
-mips                         tb0226_defconfig
-arm                        multi_v5_defconfig
-arm                         orion5x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-x86_64                            allnoconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210720
-x86_64               randconfig-a006-20210720
-x86_64               randconfig-a001-20210720
-x86_64               randconfig-a005-20210720
-x86_64               randconfig-a004-20210720
-x86_64               randconfig-a002-20210720
-i386                 randconfig-a005-20210720
-i386                 randconfig-a003-20210720
-i386                 randconfig-a004-20210720
-i386                 randconfig-a002-20210720
-i386                 randconfig-a001-20210720
-i386                 randconfig-a006-20210720
-i386                 randconfig-a005-20210722
-i386                 randconfig-a003-20210722
-i386                 randconfig-a004-20210722
-i386                 randconfig-a002-20210722
-i386                 randconfig-a001-20210722
-i386                 randconfig-a006-20210722
-i386                 randconfig-a005-20210719
-i386                 randconfig-a004-20210719
-i386                 randconfig-a006-20210719
-i386                 randconfig-a001-20210719
-i386                 randconfig-a003-20210719
-i386                 randconfig-a002-20210719
-x86_64               randconfig-a011-20210721
-x86_64               randconfig-a016-20210721
-x86_64               randconfig-a013-20210721
-x86_64               randconfig-a014-20210721
-x86_64               randconfig-a012-20210721
-x86_64               randconfig-a015-20210721
-i386                 randconfig-a016-20210720
-i386                 randconfig-a013-20210720
-i386                 randconfig-a012-20210720
-i386                 randconfig-a014-20210720
-i386                 randconfig-a011-20210720
-i386                 randconfig-a015-20210720
-i386                 randconfig-a016-20210722
-i386                 randconfig-a013-20210722
-i386                 randconfig-a012-20210722
-i386                 randconfig-a011-20210722
-i386                 randconfig-a014-20210722
-i386                 randconfig-a015-20210722
-i386                 randconfig-a016-20210721
-i386                 randconfig-a013-20210721
-i386                 randconfig-a012-20210721
-i386                 randconfig-a014-20210721
-i386                 randconfig-a011-20210721
-i386                 randconfig-a015-20210721
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+thanks, 
+Ming
 
-clang tested configs:
-x86_64               randconfig-b001-20210720
-x86_64               randconfig-b001-20210722
-x86_64               randconfig-a003-20210721
-x86_64               randconfig-a006-20210721
-x86_64               randconfig-a001-20210721
-x86_64               randconfig-a005-20210721
-x86_64               randconfig-a004-20210721
-x86_64               randconfig-a002-20210721
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
