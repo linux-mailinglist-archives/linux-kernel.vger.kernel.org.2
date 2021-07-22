@@ -2,69 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67E03D26F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CC73D26B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232588AbhGVPCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:02:24 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:48365 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhGVPCX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:02:23 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4GVxYB2TV3z1qy4L;
-        Thu, 22 Jul 2021 17:42:54 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4GVxYB0jbnz1rmYB;
-        Thu, 22 Jul 2021 17:42:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id bY5aEtjrg-3r; Thu, 22 Jul 2021 17:42:53 +0200 (CEST)
-X-Auth-Info: PIjtPIK9afYCsoiZrRCgLg1D74hHiwqDc3Ol8FTCod9odBW8gn7GZlgUh/jJPM+a
-Received: from igel.home (ppp-46-244-188-81.dynamic.mnet-online.de [46.244.188.81])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S232710AbhGVOyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 10:54:08 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:51578 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232585AbhGVOyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 10:54:06 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 3317549E32;
+        Thu, 22 Jul 2021 15:34:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-type:content-type:content-transfer-encoding:mime-version
+        :x-mailer:message-id:date:date:subject:subject:from:from
+        :received:received:received; s=mta-01; t=1626968079; x=
+        1628782480; bh=s32AEQlzcq96QVBl6KqGeatxYxM+EpyOkVvpXicGTGw=; b=S
+        5VFbELLDElKB6oeeXiFkYcTYUym6er+xOiSt4LBIP5Fi+mgiuw7fRnluMFOXQibI
+        4gaJarec/Pbg16pzzDXN2Pe10dzoD9VYU3E6G5WEXecYwxUfWiT5ukgRwcbK/Wng
+        oUQpiF/Bwo5fm/cBn5Fo1UlZi+e9SZmcvrVulQGYjQ=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Fuq3MT0BAKQT; Thu, 22 Jul 2021 18:34:39 +0300 (MSK)
+Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 22 Jul 2021 17:42:53 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 8D6C92C2659; Thu, 22 Jul 2021 17:42:52 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-Cc:     Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, tongtiangen@huawei.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next v2] riscv: add VMAP_STACK overflow detection
-References: <87bl6yrcmd.fsf@igel.home>
-        <mhng-e14c3232-cc4d-4146-8c93-c60ec81ed272@palmerdabbelt-glaptop>
-        <CAOnJCU+Ss0cO1mqr=GDVnpxV075uR+KipSnr7dN93099dAH+vQ@mail.gmail.com>
-        <20210722213724.1f12a0e7@xhacker>
-X-Yow:  Don't hit me!!  I'm in the Twilight Zone!!!
-Date:   Thu, 22 Jul 2021 17:42:52 +0200
-In-Reply-To: <20210722213724.1f12a0e7@xhacker> (Jisheng Zhang's message of
-        "Thu, 22 Jul 2021 21:37:24 +0800")
-Message-ID: <87zguexslf.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 769A549E28;
+        Thu, 22 Jul 2021 18:34:36 +0300 (MSK)
+Received: from fedora.bbmc.yadro.com (10.199.0.147) by
+ T-EXCH-04.corp.yadro.com (172.17.100.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.669.32; Thu, 22 Jul 2021 18:34:35 +0300
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+Subject: [PATCH v5 0/3] iio: vcnl3020: add periodic mode, threshold options
+Date:   Thu, 22 Jul 2021 18:44:17 +0300
+Message-ID: <20210722154420.915082-1-i.mikhaylov@yadro.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-Originating-IP: [10.199.0.147]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-04.corp.yadro.com (172.17.100.104)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul 22 2021, Jisheng Zhang wrote:
+Add periodic mode enablement, high/low threshold options.
 
-> I think we need to pin the stack before calling get_wchan(), could you please
-> try below patch?
+Changes from v1:
+ 1. Remove changes for hwmon driver and changes affecting
+vcnl3020 data structure.
+ 2. Add enable/disable periodic mode functions.
 
-Thanks, this fixes the crash for me.
+Changes from v2:
+ 1. Minor fixes from Jonathan's comments.
 
-Andreas.
+Changes from v3:
+ 1. add DMA safe buffer in vcnl3020_data and use it on bulk_read/write
+    calls
+ 2. put vcnl3020_is_in_periodic_mode in vcnl3020_measure_proximity and
+    vcnl3020_write_proxy_samp_freq
+ 3. add mutex instead of iio_claim in vcnl3020_write_proxy_samp_freq
+ 4. out_mutex -> err_unlock
+
+Changes from v4:
+ 1. split into 3 patches - DMA safe buffer, periodic mode, change
+    iio_claim/release on mutex.
+ 2. add dev_err for regmap_read/write
+
+Ivan Mikhaylov (3):
+  iio: proximity: vcnl3020: add DMA safe buffer
+  iio: proximity: vcnl3020: add periodic mode
+  iio: proximity: vcnl3020: remove iio_claim/release_direct
+
+ drivers/iio/proximity/vcnl3020.c | 354 +++++++++++++++++++++++++++++--
+ 1 file changed, 338 insertions(+), 16 deletions(-)
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+2.31.1
+
