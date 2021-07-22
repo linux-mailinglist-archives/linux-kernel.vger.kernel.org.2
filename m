@@ -2,230 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497F83D1C4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F603D1C50
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhGVChE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 22:37:04 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:44691 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230281AbhGVChB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 22:37:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R311e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UgZxNdf_1626923850;
-Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgZxNdf_1626923850)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 22 Jul 2021 11:17:35 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: [PATCH v6] iomap: support tail packing inline read
-Date:   Thu, 22 Jul 2021 11:17:29 +0800
-Message-Id: <20210722031729.51628-1-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
+        id S230473AbhGVCiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 22:38:18 -0400
+Received: from mga12.intel.com ([192.55.52.136]:47174 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230281AbhGVCiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 22:38:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="191139194"
+X-IronPort-AV: E=Sophos;i="5.84,259,1620716400"; 
+   d="scan'208";a="191139194"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 20:18:51 -0700
+X-IronPort-AV: E=Sophos;i="5.84,259,1620716400"; 
+   d="scan'208";a="501576889"
+Received: from yhuang6-desk2.sh.intel.com ([10.239.159.119])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 20:18:48 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Rik van Riel <riel@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Wei Xu <weixugc@google.com>, osalvador <osalvador@suse.de>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org
+Subject: [RFC -V7 0/6] NUMA balancing: optimize memory placement for memory tiering system
+Date:   Thu, 22 Jul 2021 11:18:13 +0800
+Message-Id: <20210722031819.3446711-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This tries to add tailpacking inline read to iomap, which only supports
-page-aligned tailpacking cases of a few extra inline bytes right after
-the inode itself, which is how the current EROFS tail-packing works.
-Similar to the previous approach, it cleans post-EOF in one iteration.
+This patchset is based on mmots tree of 2021-07-15.
 
-The write path remains untouched since EROFS cannot be used for testing.
-It'd be better to be implemented if upcoming real users care rather than
-leave untested dead code around.
+Especially, it depends on the following patchset in mmots tree,
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Darrick J. Wong <djwong@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
-v5: https://lore.kernel.org/r/20210721082323.41933-1-hsiangkao@linux.alibaba.com
-changes since v5 (pointed out by Darrick):
- - Update the code to handle inline data mappings where iomap->offset
-   is not zero but the start of the mapping is always page-aligned;
+[PATCH -V10 0/9] Migrate Pages in lieu of discard
+https://lore.kernel.org/lkml/20210715055145.195411-1-ying.huang@intel.com/
 
- - introduce a new helper called iomap_inline_buf() to wrap up:
-    (iomap->inline_data + pos - iomap->offset)
-   since it's used for buffered-io.c and direct-io.c, thus it keeps in
-   linux/iomap.h;
+This is part of a larger patch set.  If you want to apply these or
+play with them, I'd suggest using the tree from below,
 
- - simplify "size = iomap->length + iomap->offset - pos" since
-	if (WARN_ON_ONCE(iomap->length > PAGE_SIZE -
-			 offset_in_page(iomap->inline_data)))
-		return -EIO;
-   already limiting iomap->length within the PAGE_SIZE;
+https://github.com/hying-caritas/linux/commits/mt-20210722
 
- - update 2 inlined comments;
+The changes since the last post are as follows,
 
- - note that I leave "BUG_ON(page_has_private(page));" as-is since
-   it was just added in 5.14-rc2 and I'm not sure WARN_ON_ONCE and
-   bailing out such cases is really safe for fs developers.
+- Rebased on the mmots tree of 2021-07-15.
 
-Hopefully I don't miss anything and everyone is happy with this version,
-and I will retest this version with looping this 2-level random dir test
-this evening:
-https://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs-utils.git/commit/?id=af7de830f86c2f24a510857e413ea7992e699832
+- Some minor fixes.
 
-Many thanks for your time,
-Gao Xiang
+--
 
- fs/iomap/buffered-io.c | 43 +++++++++++++++++++++++++++++-------------
- fs/iomap/direct-io.c   | 15 +++++++++++----
- include/linux/iomap.h  |  6 ++++++
- 3 files changed, 47 insertions(+), 17 deletions(-)
+With the advent of various new memory types, some machines will have
+multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
+memory subsystem of these machines can be called memory tiering
+system, because the performance of the different types of memory are
+usually different.
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 87ccb3438bec..a3003f3e4d0e 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -205,25 +205,35 @@ struct iomap_readpage_ctx {
- 	struct readahead_control *rac;
- };
- 
--static void
-+static int
- iomap_read_inline_data(struct inode *inode, struct page *page,
--		struct iomap *iomap)
-+		struct iomap *iomap, loff_t pos)
- {
--	size_t size = i_size_read(inode);
-+	unsigned int size;
- 	void *addr;
- 
- 	if (PageUptodate(page))
--		return;
-+		return PAGE_SIZE;
- 
- 	BUG_ON(page_has_private(page));
--	BUG_ON(page->index);
--	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
- 
-+	/* only support page-aligned tailpacking for now */
-+	if (WARN_ON_ONCE(offset_in_page(pos)))
-+		return -EIO;
-+	/*
-+	 * iomap->inline_data is a kernel-mapped memory page, so we must
-+	 * terminate the read at the end of that page.
-+	 */
-+	if (WARN_ON_ONCE(iomap->length > PAGE_SIZE -
-+			 offset_in_page(iomap->inline_data)))
-+		return -EIO;
-+	size = iomap->length + iomap->offset - pos;
- 	addr = kmap_atomic(page);
--	memcpy(addr, iomap->inline_data, size);
-+	memcpy(addr, iomap_inline_buf(iomap, pos), size);
- 	memset(addr + size, 0, PAGE_SIZE - size);
- 	kunmap_atomic(addr);
- 	SetPageUptodate(page);
-+	return PAGE_SIZE;
- }
- 
- static inline bool iomap_block_needs_zeroing(struct inode *inode,
-@@ -246,11 +256,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 	unsigned poff, plen;
- 	sector_t sector;
- 
--	if (iomap->type == IOMAP_INLINE) {
--		WARN_ON_ONCE(pos);
--		iomap_read_inline_data(inode, page, iomap);
--		return PAGE_SIZE;
--	}
-+	if (iomap->type == IOMAP_INLINE)
-+		return iomap_read_inline_data(inode, page, iomap, pos);
- 
- 	/* zero post-eof blocks as the page may be mapped */
- 	iop = iomap_page_create(inode, page);
-@@ -589,6 +596,16 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
- 	return 0;
- }
- 
-+static int iomap_write_begin_inline(struct inode *inode,
-+		struct page *page, struct iomap *srcmap)
-+{
-+	/* needs more work for the tailpacking case, disable for now */
-+	if (WARN_ON_ONCE(srcmap->offset != 0))
-+		return -EIO;
-+	iomap_read_inline_data(inode, page, srcmap, 0);
-+	return 0;
-+}
-+
- static int
- iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-@@ -618,7 +635,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 	}
- 
- 	if (srcmap->type == IOMAP_INLINE)
--		iomap_read_inline_data(inode, page, srcmap);
-+		status = iomap_write_begin_inline(inode, page, srcmap);
- 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
- 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
- 	else
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 9398b8c31323..f9253cae5b24 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -379,22 +379,29 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
- {
- 	struct iov_iter *iter = dio->submit.iter;
- 	size_t copied;
-+	void *dst = iomap_inline_buf(iomap, pos);
- 
--	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/*
-+	 * iomap->inline_data is a kernel-mapped memory page, so we must
-+	 * terminate the write at the end of that page.
-+	 */
-+	if (WARN_ON_ONCE(length > PAGE_SIZE -
-+			 offset_in_page(iomap->inline_data)))
-+		return -EIO;
- 
- 	if (dio->flags & IOMAP_DIO_WRITE) {
- 		loff_t size = inode->i_size;
- 
- 		if (pos > size)
--			memset(iomap->inline_data + size, 0, pos - size);
--		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-+			memset(iomap_inline_buf(iomap, size), 0, pos - size);
-+		copied = copy_from_iter(dst, length, iter);
- 		if (copied) {
- 			if (pos + copied > size)
- 				i_size_write(inode, pos + copied);
- 			mark_inode_dirty(inode);
- 		}
- 	} else {
--		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-+		copied = copy_to_iter(dst, length, iter);
- 	}
- 	dio->size += copied;
- 	return copied;
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index 479c1da3e221..fb6934943eeb 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -97,6 +97,12 @@ iomap_sector(struct iomap *iomap, loff_t pos)
- 	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
- }
- 
-+static inline void *
-+iomap_inline_buf(const struct iomap *iomap, loff_t pos)
-+{
-+	return iomap->inline_data + pos - iomap->offset;
-+}
-+
- /*
-  * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
-  * and page_done will be called for each page written to.  This only applies to
--- 
-2.24.4
+After commit c221c0b0308f ("device-dax: "Hotplug" persistent memory
+for use like normal RAM"), the PMEM could be used as the
+cost-effective volatile memory in separate NUMA nodes.  In a typical
+memory tiering system, there are CPUs, DRAM and PMEM in each physical
+NUMA node.  The CPUs and the DRAM will be put in one logical node,
+while the PMEM will be put in another (faked) logical node.
 
+To optimize the system overall performance, the hot pages should be
+placed in DRAM node.  To do that, we need to identify the hot pages in
+the PMEM node and migrate them to DRAM node via NUMA migration.
+
+In the original NUMA balancing, there are already a set of existing
+mechanisms to identify the pages recently accessed by the CPUs in a
+node and migrate the pages to the node.  So we can reuse these
+mechanisms to build the mechanisms to optimize the page placement in
+the memory tiering system.  This has been implemented in this
+patchset.
+
+At the other hand, the cold pages should be placed in PMEM node.  So,
+we also need to identify the cold pages in the DRAM node and migrate
+them to PMEM node.
+
+In the following patchset (now in the latest mmots tree),
+
+[PATCH -V10 0/9] Migrate Pages in lieu of discard
+https://lore.kernel.org/lkml/20210715055145.195411-1-ying.huang@intel.com/
+
+A mechanism to demote the cold DRAM pages to PMEM node under memory
+pressure is implemented.  Based on that, the cold DRAM pages can be
+demoted to PMEM node proactively to free some memory space on DRAM
+node to accommodate the promoted hot PMEM pages.  This has been
+implemented in this patchset too.
+
+We have tested the solution with the pmbench memory accessing
+benchmark with the 80:20 read/write ratio and the normal access
+address distribution on a 2 socket Intel server with Optane DC
+Persistent Memory Model.  The test results of the base kernel and step
+by step optimizations are as follows,
+
+                Throughput	Promotion      DRAM bandwidth
+		  access/s           MB/s                MB/s
+               -----------     ----------      --------------
+Base            74238178.0                             4291.7
+Patch 2        146050652.3          359.4             11248.6
+Patch 3        146300787.1          355.2             11237.2
+Patch 4        162536383.0          211.7             11890.4
+Patch 5        157187775.0          105.9             10412.3
+Patch 6        164028415.2           73.3             10810.6
+
+The whole patchset improves the benchmark score up to 119.1%.  The
+basic NUMA balancing based optimization solution (patch 1), the hot
+page selection algorithm (patch 4), and the threshold automatic
+adjustment algorithms (patch 6) improves the performance or reduce the
+overhead (promotion MB/s) mostly.
+
+Changelog:
+
+v7:
+
+- Rebased on the mmots tree of 2021-07-15.
+
+- Some minor fixes.
+
+v6:
+
+- Rebased on the latest page demotion patchset. (which bases on v5.11)
+
+v5:
+
+- Rebased on the latest page demotion patchset. (which bases on v5.10)
+
+v4:
+
+- Rebased on the latest page demotion patchset. (which bases on v5.9-rc6)
+
+- Add page promotion counter.
+
+v3:
+
+- Move the rate limit control as late as possible per Mel Gorman's
+  comments.
+
+- Revise the hot page selection implementation to store page scan time
+  in struct page.
+
+- Code cleanup.
+
+- Rebased on the latest page demotion patchset.
+
+v2:
+
+- Addressed comments for V1.
+
+- Rebased on v5.5.
+
+Best Regards,
+Huang, Ying
