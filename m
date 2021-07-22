@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E2D3D2512
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B093D2515
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232251AbhGVNVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:21:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231925AbhGVNVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:21:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2101B6128A;
-        Thu, 22 Jul 2021 14:01:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626962518;
-        bh=RmFOlaV6cy8f6I9NP3ukwHIYeNH7OwEP2FaF3KMVtFM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FAJNHnFo1L7vDVOiC5UpRkaDx4pid4TNdNlKZLrXeCR+FFSWM3S5SOfKHU3NBCcgi
-         x/mbKRZuCP5sBZWLRH0QyC3jTezIcTdgPNuJkn722HgIPBdCNBSTL40ELD6XBnTs/y
-         1ZjVc7/Oq6j6jnQceie9Da0nul67XzXgLTZj2GmS3GDKLgwa7unHRN+n/B9s9iygfR
-         gHGpjMzt0PFMYc3FrdBQF57NRhZXStlwHBGM47znuAnJK24bV4xEdnVgYTuM2O9Q9l
-         cPPu7vcO0sT3ruel4hr978oxdF6OQbMo96r5w0ZtG5V3ocVCUbJ85hWT9lKdyIIY8o
-         uhvj1YnfZDenA==
-Received: by mail-wr1-f42.google.com with SMTP id c15so6078609wrs.5;
-        Thu, 22 Jul 2021 07:01:58 -0700 (PDT)
-X-Gm-Message-State: AOAM531dTsLBoyXY46jXwvz5czFANrce3/1ohs2mSfcIRgYYh2V2YWfX
-        anOKN93+gKWUubFcGJ5kbFbKeL8DFH7/BeQeBE0=
-X-Google-Smtp-Source: ABdhPJwKEmOULt07FXrSo8OqydMhW6AyGqw3Y4ZL7MXTHJEhxOwFXM5UwB4aLTKy+iIlhqkT2HtTedqadCpqLwCc8hw=
-X-Received: by 2002:a5d:438c:: with SMTP id i12mr49853wrq.99.1626962516717;
- Thu, 22 Jul 2021 07:01:56 -0700 (PDT)
+        id S232255AbhGVNWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:22:04 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:33557 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232177AbhGVNWA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:22:00 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.west.internal (Postfix) with ESMTP id 7B83E2B00BA0;
+        Thu, 22 Jul 2021 10:02:24 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 22 Jul 2021 10:02:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=C6CbgvrWGhTSu1mJtUQtOVibztV
+        iE1SUbR/gHueA4Ec=; b=cn/4EYJ/72loKaRLF/QhNBFjZ6M/iTZKsxYyiRNfmUW
+        /bjTttv/sGLHT5WhCnB1cf1xLWBnq0v/76gYOSwvqVj0DOhCHrO7x5a1jYUXC0vi
+        ZmPNispxN7PG7HQIA+zTy/9Gv1BW6S6p5zzkyZUGR2sTq8kYLpIwwzHdjQqcznte
+        d3wnUPojh20p/rTNjnth2Ffyr5JOfxf2fCblYIfQ0s7mgwyDBCyNCCUtAfD/rUHN
+        VpqrSf/zcOX86IjfVohj7kiz9WXVOrSqyed1v8jrvrpAIEESQmaQptHVD8SW1fuA
+        EptwgfhFB9NMQYEx5PPPd9+HflXPMl+BtGUVooiVwIQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=C6Cbgv
+        rWGhTSu1mJtUQtOVibztViE1SUbR/gHueA4Ec=; b=JctVrWUEhlKVgRiSy8dNS3
+        sb9GpI2BSiBqqsmmzJpVg8sDzKFxF3YRBtMNpC1zgu7q+N1g6EtylLL8HehitVwg
+        KxqpwpM5ZEf+tvJEGdEz04FyOzakg5AOAYW8bs7O+28BipdP9O9/J8dWdHYloD7D
+        iORaCnlDKgfi9jST/I38U747CM83PxPAmhQxu3qO2ygWDtd000mRWyn211+MT30N
+        s1JxxMry2ac6OKTqtYmmZtmO9ZAB3tmK+UlKDgkpPzkp6kN/QgYGfE+I4D9pl6sm
+        X42TFVzHZZdVV53ebFyQMOBZolUpFWB3j7IAk5Y82mhNRtBHFcPY7UDgnX9sGSaw
+        ==
+X-ME-Sender: <xms:b3r5YBEGXNbUbunn0Erl3Ne-pCJXaRUdUoVMIBFFltyCkAq6-P3ksQ>
+    <xme:b3r5YGX3Q5CYNgyCwZPpomKFF0SLB5ZgNRpiM-TAgTw6J2IWygA14otib8SdI4MFg
+    mcHnmn3UXq-ig>
+X-ME-Received: <xmr:b3r5YDJssRth_o-PDkQWus9RobylSNNE8w7kidtB9N3JX0SLcBErx8wNghNLxzverRtDiQI2cOlcGk1W--XeBLYTk5a_9gtt>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeeigdeilecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueelledthe
+    ekleethfeludduvdfhffeuvdffudevgeehkeegieffveehgeeftefgnecuffhomhgrihhn
+    pehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:b3r5YHFpu5AwD4syxJbefWI2MgXysHPhfcsd_TfzXMAPrO9gbfW1-g>
+    <xmx:b3r5YHUv92422nvmLxLtsEezvLZ6uBVaNZrzkNpux8vtqV-_zU0yjQ>
+    <xmx:b3r5YCPvpAqX0H2QyHWieYr94Vcon8CACNcfBt7TgYXV0o4GTfalQg>
+    <xmx:cHr5YLncO5kq_whLMPR5tUxILMUGV1KlR6fkMenA0kVL4m3tpMMe0FGlJkU>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 22 Jul 2021 10:02:22 -0400 (EDT)
+Date:   Thu, 22 Jul 2021 16:02:18 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Peter Xu <peterx@redhat.com>, stable <stable@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hillf Danton <hdanton@sina.com>, Igor Raits <igor@gooddata.com>
+Subject: Re: [PATCH stable 5.13.y/5.12.y 0/2] mm/thp: Fix uffd-wp with
+ fork(); crash on pmd migration entry on fork
+Message-ID: <YPl6aimUo8XiBAcF@kroah.com>
+References: <796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com>
+ <20210720155150.497148-1-peterx@redhat.com>
+ <CANsGZ6aEW8pEncdoh_mGxKF-Se0_-O=E124EywULWvJ3qC0aVA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210722124814.778059-1-arnd@kernel.org> <20210722124814.778059-10-arnd@kernel.org>
- <29adc1c164805e355b37d1d4668ebda9fb7fa872.camel@sipsolutions.net>
-In-Reply-To: <29adc1c164805e355b37d1d4668ebda9fb7fa872.camel@sipsolutions.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 22 Jul 2021 16:01:39 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0xZAHknG8_kc62aaKrKdzD-QwQYHT61_wTbFDYADu-zw@mail.gmail.com>
-Message-ID: <CAK8P3a0xZAHknG8_kc62aaKrKdzD-QwQYHT61_wTbFDYADu-zw@mail.gmail.com>
-Subject: Re: [PATCH v3 9/9] asm-generic: reverse GENERIC_{STRNCPY_FROM,
- STRNLEN}_USER symbols
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Brian Cain <bcain@codeaurora.org>,
-        Chris Zankel <chris@zankel.net>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Hellwig <hch@lst.de>, Guo Ren <guoren@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>, Jeff Dike <jdike@addtoit.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-csky@vger.kernel.org,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        linux-ia64@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        "moderated list:H8/300 ARCHITECTURE" 
-        <uclinux-h8-devel@lists.sourceforge.jp>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANsGZ6aEW8pEncdoh_mGxKF-Se0_-O=E124EywULWvJ3qC0aVA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 3:57 PM Johannes Berg <johannes@sipsolutions.net> wrote:
->
+On Tue, Jul 20, 2021 at 01:32:19PM -0700, Hugh Dickins wrote:
+> On Tue, Jul 20, 2021 at 8:52 AM Peter Xu <peterx@redhat.com> wrote:
 > >
-> > The remaining architectures at the moment are: ia64, mips, parisc,
-> > s390, um and xtensa. We should probably convert these as well, but
->
-> I'm not sure it makes sense to convert um, the implementation uses
-> strncpy(), and that should use the libc implementation, which is tuned
-> for the actual hardware that the binary is running on, so performance
-> wise that might be better.
->
-> OTOH, maybe this is all in the noise given the huge syscall overhead in
-> um, so maybe unifying it would make more sense.
+> > In summary: this series should be needed for 5.10/5.12/5.13. This is the
+> > 5.13.y/5.12.y backport of the series, and it should be able to be applied on
+> > both of the branches.  Patch 1 is a dependency of patch 2, while patch 2 should
+> > be the real fix.
+> >
+> > This series should be able to fix a rare race that mentioned in thread:
+> >
+> > https://lore.kernel.org/linux-mm/796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com/
+> >
+> > This fact wasn't discovered when the fix got proposed and merged, because the
+> > fix was originally about uffd-wp and its fork event.  However it turns out that
+> > the problematic commit b569a1760782f3d is also causing crashing on fork() of
+> > pmd migration entries which is even more severe than the original uffd-wp
+> > problem.
+> >
+> > Stable kernels at least on 5.12.y has the crash reproduced, and it's possible
+> > 5.13.y and 5.10.y could hit it due to having the problematic commit
+> > b569a1760782f3d but lacking of the uffd-wp fix patch (8f34f1eac382, which is
+> > also patch 2 of this series).
+> >
+> > The pmd entry crash problem was reported by Igor Raits <igor@gooddata.com> and
+> > debugged by Hugh Dickins <hughd@google.com>.
+> >
+> > Please review, thanks.
+> 
+> These two 5.13.y patches look just right to me, thank you Peter (and
+> 5.12.19 announced EOL overnight, so nothing more wanted for that).
+> 
+> But these do just amount to asking stable@vger.kernel.org to
+> cherry-pick the two commits
+> 5fc7a5f6fd04bc18f309d9f979b32ef7d1d0a997
+> 8f34f1eac3820fc2722e5159acceb22545b30b0d
 
-Right, makes sense. I suppose if we end up converting mips and s390,
-we should just do arch/um and the others as well for consistency, even
-if that adds some overhead.
+Thanks for the review, both now queued up to 5.13.y.
 
-      Arnd
+greg k-h
