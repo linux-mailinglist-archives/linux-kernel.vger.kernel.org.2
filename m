@@ -2,178 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691693D2619
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A743D261B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhGVOGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 10:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232328AbhGVOGX (ORCPT
+        id S232449AbhGVOGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 10:06:49 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:59497 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S232328AbhGVOGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 10:06:23 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4027C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 07:46:57 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id u8-20020a7bcb080000b02901e44e9caa2aso3115463wmj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 07:46:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DnmHNNXEi+D67CdXt2sdtRiYmXnF0UzDAK5d1qxhJYo=;
-        b=sh8hlv9dg7eFqGZTlCBS2fKOrpDKfSZK3zJeZAxqFqqhfvCmEK+p2ojCMdRWL4QTY1
-         qHojFkfGdIg6xnOeJsgldaeFwrZXI+0iVQAYPS3CL4l1xCGYemJTMcW38fTnJoXCdl/x
-         t/bhlRsTtobXIZx9KJPjblZFuuHKoNbtUftrzqGxFV6GnOBEyLkgCOHKzm89LzDkfnpy
-         bo1lPduqlKiYJzUzLcbCGTFOQ5vPoPyPxk+9Bdj6CZ1itgw5tz7j/fFh6Fu4QFmrkKG+
-         8qS9w+idYQf/1f/QWfl6Bc6iw2Hp3K25vaDVrlWaCKyoCu2YX52X2iXDrh+XKwdT25hL
-         SBbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DnmHNNXEi+D67CdXt2sdtRiYmXnF0UzDAK5d1qxhJYo=;
-        b=Tdp1JVPKA1xr4fGk1EG+yK09SbtNrRT0I6/wkQu+By0pfKWi3jboIRzfD312/ZnzZW
-         bNqT/92RdEb4zsCw6d6FQFGOXf8DpOM6opp8V1zTnibkbyXDqw+T5yOF2JhloTzHRmjq
-         5OndXZ1BZlhu6UW0TAt93bqHo4OlUQuJD2BuaVEkZl5m6mIiAPOoPai7pv0vwU5suoMT
-         ibE2z65RjETgMreGPibVONK2OICrEYAEyWJZ8/HA0RzAQ6Ac3zXoiRrpmUTqLmF0VyRT
-         mxsM4m3l/F2ZKwtHXB3GhM6svQi0Bv6hMafZ8poFSZAGAtWRzZpH5EqFvgONroiu2bKu
-         vGZA==
-X-Gm-Message-State: AOAM531JcUWPF0OWSBhadUynFezutEWQqr70wH6F+DTZTsZtCWzMTf+y
-        kkn81AxKkGJRcsGevppsfyzDVA==
-X-Google-Smtp-Source: ABdhPJyXKXdBb+fuVyS8Yn0+pkXgwpRuUuzEuOXAMYs5CxxpmGCrWsN6xeN3PEe8irE+we8l+OBkxg==
-X-Received: by 2002:a7b:c7cb:: with SMTP id z11mr9558960wmk.102.1626965216396;
-        Thu, 22 Jul 2021 07:46:56 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id z2sm10167362wma.45.2021.07.22.07.46.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 07:46:55 -0700 (PDT)
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>, Jingoo Han <jingoohan1@gmail.com>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        stable@vger.kernel.org
-Subject: [PATCH] backlight: pwm_bl: Improve bootloader/kernel device handover
-Date:   Thu, 22 Jul 2021 15:46:23 +0100
-Message-Id: <20210722144623.1572816-1-daniel.thompson@linaro.org>
-X-Mailer: git-send-email 2.30.2
+        Thu, 22 Jul 2021 10:06:48 -0400
+Received: (qmail 8120 invoked by uid 1000); 22 Jul 2021 10:47:22 -0400
+Date:   Thu, 22 Jul 2021 10:47:21 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     syzbot <syzbot+abd2e0dafb481b621869@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Thierry Escande <thierry.escande@collabora.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>
+Subject: Re: [syzbot] INFO: task hung in port100_probe
+Message-ID: <20210722144721.GA6592@rowland.harvard.edu>
+References: <000000000000c644cd05c55ca652@google.com>
+ <9e06e977-9a06-f411-ab76-7a44116e883b@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e06e977-9a06-f411-ab76-7a44116e883b@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently there are (at least) two problems in the way pwm_bl starts
-managing the enable_gpio pin. Both occur when the backlight is initially
-off and the driver finds the pin not already in output mode and, as a
-result, unconditionally switches it to output-mode and asserts the signal.
+On Thu, Jul 22, 2021 at 04:20:10PM +0200, Krzysztof Kozlowski wrote:
+> On 22/06/2021 17:43, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    fd0aa1a4 Merge tag 'for-linus' of git://git.kernel.org/pub..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=13e1500c300000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=7ca96a2d153c74b0
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=abd2e0dafb481b621869
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1792e284300000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13ad9d48300000
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+abd2e0dafb481b621869@syzkaller.appspotmail.com
+> > 
+> > INFO: task kworker/0:1:7 blocked for more than 143 seconds.
+> >       Not tainted 5.13.0-rc6-syzkaller #0
+> > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > task:kworker/0:1     state:D stack:25584 pid:    7 ppid:     2 flags:0x00004000
+> > Workqueue: usb_hub_wq hub_event
+> > Call Trace:
+> >  context_switch kernel/sched/core.c:4339 [inline]
+> >  __schedule+0x916/0x23e0 kernel/sched/core.c:5147
+> >  schedule+0xcf/0x270 kernel/sched/core.c:5226
+> >  schedule_timeout+0x1db/0x250 kernel/time/timer.c:1868
+> >  do_wait_for_common kernel/sched/completion.c:85 [inline]
+> >  __wait_for_common kernel/sched/completion.c:106 [inline]
+> >  wait_for_common kernel/sched/completion.c:117 [inline]
+> >  wait_for_completion+0x168/0x270 kernel/sched/completion.c:138
+> >  port100_send_cmd_sync drivers/nfc/port100.c:923 [inline]
+> >  port100_get_command_type_mask drivers/nfc/port100.c:1008 [inline]
+> >  port100_probe+0x9e4/0x1340 drivers/nfc/port100.c:1554
+> >  usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
+...
 
-Problem 1: This could cause the backlight to flicker since, at this stage
-in driver initialisation, we have no idea what the PWM and regulator are
-doing (an unconfigured PWM could easily "rest" at 100% duty cycle).
+> Cc: Thierry, Alan, Andrey,
+> 
+> The issue is reproducible immediately on QEMU instance with
+> USB_DUMMY_HCD and USB_RAW_GADGET. I don't know about real port100 NFC
+> device.
+> 
+> I spent some time looking into this and have no clue, except that it
+> looks like an effect of a race condition.
+> 
+> 1. When using syskaller reproducer against one USB device (In the C
+> reproducer change the loop in main() to use procid=0) - issue does not
+> happen.
+> 
+> 2. With two threads or more talking to separate Dummy USB devices, the
+> issue appears. The more of them, the better...
+> 
+> 3. The reported problem is in missing complete. The correct flow is like:
+> port100_probe()
+> port100_get_command_type_mask()
+> port100_send_cmd_sync()
+> port100_send_cmd_async()
+> port100_submit_urb_for_ack()
+> port100_send_complete()
+> [   63.363863] port100 2-1:0.0: NFC: Urb failure (status -71)
+> port100_recv_ack()
+> [   63.369942] port100 2-1:0.0: NFC: Urb failure (status -71)
+> 
+> and schedule_work() which completes and unblocks port100_send_cmd_sync
+> 
+> However in the failing case (hung task) the port100_recv_ack() is never
+> called. It looks like USB core / HCD / gadget does not send the Ack/URB
+> complete.
+> 
+> I don't know why. The port100 NFC driver code looks OK, except it is not
+> prepared for missing ack/urb so it waits indefinitely. I could try to
+> convert it to wait_for_completion_timeout() but it won't be trivial and
+> more important - I am not sure if this is the problem. Somehow the ACK
+> with Urb failure is not sent back to the port100 device. Therefore I am
+> guessing that the race condition is somwhere in USB stack, not in
+> port100 driver.
+> 
+> The lockdep and other testing tools did not find anything here.
+> 
+> Anyone hints where the issue could be?
 
-Problem 2: This will cause us not to correctly honour the
-post_pwm_on_delay (which also risks flickers).
+Here's what I wrote earlier: "It looks like the problem stems from the fact 
+that port100_send_frame_async() submits two URBs, but 
+port100_send_cmd_sync() only waits for one of them to complete.  The other 
+URB may then still be active when the driver tries to reuse it."
 
-Fix this by moving the code to configure the GPIO output mode until after
-we have examines the handover state. That allows us to initialize
-enable_gpio to off if the backlight is currently off and on if the
-backlight is on.
+Of course, there may be more than one problem, so we may not be talking 
+about the same thing.
 
-Reported-by: Marek Vasut <marex@denx.de>
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-Cc: stable@vger.kernel.org
-Acked-by: Marek Vasut <marex@denx.de>
-Tested-by: Marek Vasut <marex@denx.de>
----
- drivers/video/backlight/pwm_bl.c | 54 +++++++++++++++++---------------
- 1 file changed, 28 insertions(+), 26 deletions(-)
+Does that help at all?
 
-diff --git a/drivers/video/backlight/pwm_bl.c b/drivers/video/backlight/pwm_bl.c
-index e48fded3e414..8d8959a70e44 100644
---- a/drivers/video/backlight/pwm_bl.c
-+++ b/drivers/video/backlight/pwm_bl.c
-@@ -409,6 +409,33 @@ static bool pwm_backlight_is_linear(struct platform_pwm_backlight_data *data)
- static int pwm_backlight_initial_power_state(const struct pwm_bl_data *pb)
- {
- 	struct device_node *node = pb->dev->of_node;
-+	bool active = true;
-+
-+	/*
-+	 * If the enable GPIO is present, observable (either as input
-+	 * or output) and off then the backlight is not currently active.
-+	 * */
-+	if (pb->enable_gpio && gpiod_get_value_cansleep(pb->enable_gpio) == 0)
-+		active = false;
-+
-+	if (!regulator_is_enabled(pb->power_supply))
-+		active = false;
-+
-+	if (!pwm_is_enabled(pb->pwm))
-+		active = false;
-+
-+	/*
-+	 * Synchronize the enable_gpio with the observed state of the
-+	 * hardware.
-+	 */
-+	if (pb->enable_gpio)
-+		gpiod_direction_output(pb->enable_gpio, active);
-+
-+	/*
-+	 * Do not change pb->enabled here! pb->enabled essentially
-+	 * tells us if we own one of the regulator's use counts and
-+	 * right now we do not.
-+	 */
-
- 	/* Not booted with device tree or no phandle link to the node */
- 	if (!node || !node->phandle)
-@@ -420,20 +447,7 @@ static int pwm_backlight_initial_power_state(const struct pwm_bl_data *pb)
- 	 * assume that another driver will enable the backlight at the
- 	 * appropriate time. Therefore, if it is disabled, keep it so.
- 	 */
--
--	/* if the enable GPIO is disabled, do not enable the backlight */
--	if (pb->enable_gpio && gpiod_get_value_cansleep(pb->enable_gpio) == 0)
--		return FB_BLANK_POWERDOWN;
--
--	/* The regulator is disabled, do not enable the backlight */
--	if (!regulator_is_enabled(pb->power_supply))
--		return FB_BLANK_POWERDOWN;
--
--	/* The PWM is disabled, keep it like this */
--	if (!pwm_is_enabled(pb->pwm))
--		return FB_BLANK_POWERDOWN;
--
--	return FB_BLANK_UNBLANK;
-+	return active ? FB_BLANK_UNBLANK: FB_BLANK_POWERDOWN;
- }
-
- static int pwm_backlight_probe(struct platform_device *pdev)
-@@ -486,18 +500,6 @@ static int pwm_backlight_probe(struct platform_device *pdev)
- 		goto err_alloc;
- 	}
-
--	/*
--	 * If the GPIO is not known to be already configured as output, that
--	 * is, if gpiod_get_direction returns either 1 or -EINVAL, change the
--	 * direction to output and set the GPIO as active.
--	 * Do not force the GPIO to active when it was already output as it
--	 * could cause backlight flickering or we would enable the backlight too
--	 * early. Leave the decision of the initial backlight state for later.
--	 */
--	if (pb->enable_gpio &&
--	    gpiod_get_direction(pb->enable_gpio) != 0)
--		gpiod_direction_output(pb->enable_gpio, 1);
--
- 	pb->power_supply = devm_regulator_get(&pdev->dev, "power");
- 	if (IS_ERR(pb->power_supply)) {
- 		ret = PTR_ERR(pb->power_supply);
-
-base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
---
-2.30.2
-
+Alan Stern
