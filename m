@@ -2,282 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877323D2BE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 20:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC0F3D2BE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 20:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbhGVRpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 13:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
+        id S229962AbhGVRqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 13:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhGVRpv (ORCPT
+        with ESMTP id S229911AbhGVRp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 13:45:51 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8403C061575;
-        Thu, 22 Jul 2021 11:26:24 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id a12so9907359lfb.7;
-        Thu, 22 Jul 2021 11:26:24 -0700 (PDT)
+        Thu, 22 Jul 2021 13:45:59 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD8BC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 11:26:34 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id mv14-20020a17090b198eb0290176233dff9dso382405pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 11:26:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=++ilJkM9DmuNfERJEN/XEAayG4W80CgatuWGNaGVg5w=;
-        b=ANs6Uu+PYD4Bd9nlafLIO67bSXuqJFGHi/Ga7Qv2FT2/v6don60TfAeQOb2aL/MvrA
-         1rZRUk8E03Ad1KYTAizGc+9FVd3zRbkbqVApIf0qwKbWriQtuXVINP0aQKwtTl6bav72
-         962WPXOPBtEVrzjodQ88c+81xVxQYzVR1uFx0j0jTBsJh1Kc/Po1W2zjM9V+lO0K+6hh
-         7mpG2nOL3ybxfF9xrnlhTHfeKxixWWOAz0LQn16rAVrpPzP7p6fzq70pQ/6HkPRgRtUA
-         y85/tuOzYz6zlgW8zcJ7+I5g/ZGEaH4uBr9DicKfPT/oW+12Xx/zsaijE7rBmFeRySsg
-         woBg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=zdafpjZOpX7w6ukm7UkyAJ9U3xYdHtSO79XymBUPu/o=;
+        b=sdJPsNKSHYFbC/G+xIVl3Qk4+Rvo57mP9IEXixCOWBzjsFotznwfryTn0zYl4yGHpT
+         5FbXMLAs09OWq4xdRxZEWNwM37C7Yfl0z+VPM7fkn95Nvhi0H/e7MguHjswI8IY9Mp7G
+         S6uyExEloYAuxSMXUTRs7RX59i0LVbF7Y35beGZ/Cq6/wSnj/Bp2XIkL3GESUE28Aunf
+         KymWbsI5an9Me7Ud4ap2MSa3GHzDYoWngDnUwCY+tiKKQooheZHW4YdNkkQqGdw3zMrw
+         0j77ZArAzNLojl5RKH3amMWjXtdz+m2PmxAghXCgrthIgKOW1jpZ2r9FucoCbdjaNPhi
+         DxiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=++ilJkM9DmuNfERJEN/XEAayG4W80CgatuWGNaGVg5w=;
-        b=bkB+X2R4ziui7JCtOCJ/uyV1s22bPL4fM+6InyhcpWqO2O6c4f/zUaPLOEXc9RVnVd
-         2snSDJYBLq/xf2wbS6y3U0fvoDo9tVy9jqE4uFjw7kaFTRmEgE68boAxD/6zDi6W7nrg
-         sp8OxK2x7eYvjk/3nUZTo0SqA7NGcFzi6I4ZiK/UOamObM9LzvX31G0qRXCEHyo0/hj4
-         sJzblACIgR0iWsccWVVuyYj2Q4Dy/OmrXg7a9YkTDXf9nJBoQ+UAoutLiza8Up7ttQr5
-         hcYuHFgkuMu+1J85IZ1nxZioSkZfJehvZwgTeK59K0zreSq3P14qGDmrKP//JNd6+bvl
-         wxBw==
-X-Gm-Message-State: AOAM532uid5xH5OHTe2/9kjeCQQYyRvCZgnyzqLvdyd/RAnCDMQ1EEuT
-        AW1vS59z4Ewrp7agG6R5Uw0=
-X-Google-Smtp-Source: ABdhPJxklqZn3gmldenmoyrJBo0O5o1gTlEH7U3WESixsuKAjUQ8jFZCibITUk99zF6TBD3m54uZzg==
-X-Received: by 2002:a05:6512:3b94:: with SMTP id g20mr536144lfv.0.1626978383254;
-        Thu, 22 Jul 2021 11:26:23 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id r200sm2035203lff.208.2021.07.22.11.26.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 11:26:22 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 21:26:20 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     nandhini.srikandan@intel.com
-Cc:     broonie@kernel.org, robh+dt@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        mgross@linux.intel.com, kris.pan@intel.com,
-        kenchappa.demakkanavar@intel.com, furong.zhou@intel.com,
-        mallikarjunappa.sangannavar@intel.com, mahesh.r.vaidya@intel.com,
-        rashmi.a@intel.com
-Subject: Re: =?utf-8?B?W+KAnFBBVENI?= =?utf-8?B?4oCd?= 2/2] spi: dw: Add
- support for Intel Thunder Bay SPI
-Message-ID: <20210722182620.elakoxagvsjqnolj@mobilestation>
-References: <20210722053358.29682-1-nandhini.srikandan@intel.com>
- <20210722053358.29682-3-nandhini.srikandan@intel.com>
- <20210722170435.y6fla7ixfgzwkje2@mobilestation>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210722170435.y6fla7ixfgzwkje2@mobilestation>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=zdafpjZOpX7w6ukm7UkyAJ9U3xYdHtSO79XymBUPu/o=;
+        b=Dqjd+LS5Z3mEPDn941qrC23BcM7Mi90qM/gx0SmJetaS/ZLM/ORCvNLYTebTtEhy+e
+         fN1cqjgSFovs6q9wzylmcRuuIV+vWg05qThXtoOJLvI/2+3JRSBnYQXA9u0Op2KrpkmC
+         U2cpA8NP6acuWc127rl5iq2rdadgHOrMcESf7rpe0atPbd2PKfyJftEfqabgUglgduJt
+         85vnFg6o/ljLvFN3ja+Gvi9MpoYYpGOI2YvscbFJZT0bykBb+Pn9fVxTJ+FALFjIeC2P
+         TQxh7dEhpzoeF+CmZqamAdoaTucZkznZDVsoXixracnnY9+OZzv89yGksa1HDwTRloyE
+         qDwA==
+X-Gm-Message-State: AOAM531eqkjGd/4AB+rf8yYzPy8j+A8sNabrw69iomZJl8HMND5qnTM3
+        TqIGyciF72XSdfPVRTWv3x6G8eCaE1O0uQ==
+X-Google-Smtp-Source: ABdhPJwcAqY66M07KTVd1PIwkXpHctb2IIw+Mqa4e3ZiMuTmqXewQLqvt4qbhgjgAWx4ur65ahffx9kXqjiLIQ==
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:eee8:d6f7:9645:48ee])
+ (user=shakeelb job=sendgmr) by 2002:a63:5118:: with SMTP id
+ f24mr1257023pgb.34.1626978393555; Thu, 22 Jul 2021 11:26:33 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 11:26:27 -0700
+Message-Id: <20210722182627.2267368-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+Subject: [PATCH] writeback: memcg: simplify cgroup_writeback_by_id
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Jan Kara <jack@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One more nitpick below.
+Currently cgroup_writeback_by_id calls mem_cgroup_wb_stats() to get
+dirty pages for a memcg. However mem_cgroup_wb_stats() does a lot more
+than just get the number of dirty pages. Just directly get the number of
+dirty pages instead of calling mem_cgroup_wb_stats(). Also
+cgroup_writeback_by_id() is only called for best-effort dirty flushing,
+so remove the unused 'nr' parameter and no need to explicitly flush
+memcg stats.
 
-On Thu, Jul 22, 2021 at 08:04:35PM +0300, Serge Semin wrote:
-> On Thu, Jul 22, 2021 at 01:33:58PM +0800, nandhini.srikandan@intel.com wrote:
-> > From: Nandhini Srikandan <nandhini.srikandan@intel.com>
-> > 
-> > Add support for Intel Thunder Bay SPI controller, which uses DesignWare
-> > DWC_ssi core.
-> > Bit 31 of CTRLR0 register is added for Thunder Bay, to
-> > configure the device as a master or as a slave serial peripheral.
-> 
-> > Bit 14(SSTE) of CTRLR0 register should be set(1) for Thunder Bay.
-> 
-> Could you elaborate what this bit mean?
-> 
-> > Added reset of SPI controller required for Thunder Bay.
-> 
-> If it's really required (is it?) then you were supposed to reflect
-> that in the code by returning a negative error if the driver fails to
-> retrieve the reset control handler. In accordance with that the
-> bindings should have been also updated so the dtbs_check procedure
-> would make sure the Thunder Bay SPI DT-node comply to the requirements
-> in that matter.
-> 
-> Anyway I've got a few comments regarding this part of your patch.
-> Please see them below.
-> 
-> > 
-> > Signed-off-by: Nandhini Srikandan <nandhini.srikandan@intel.com>
-> > ---
-> >  drivers/spi/spi-dw-core.c |  6 ++++++
-> >  drivers/spi/spi-dw-mmio.c | 20 ++++++++++++++++++++
-> >  drivers/spi/spi-dw.h      | 15 +++++++++++++++
-> >  3 files changed, 41 insertions(+)
-> > 
-> > diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
-> > index a305074c482e..eecf8dcd0677 100644
-> > --- a/drivers/spi/spi-dw-core.c
-> > +++ b/drivers/spi/spi-dw-core.c
-> > @@ -302,6 +302,12 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
-> >  
-> >  		if (dws->caps & DW_SPI_CAP_KEEMBAY_MST)
-> >  			cr0 |= DWC_SSI_CTRLR0_KEEMBAY_MST;
-> > +
-> 
-> > +		if (dws->caps & DW_SPI_CAP_THUNDERBAY_MST)
-> > +			cr0 |= DWC_SSI_CTRLR0_THUNDERBAY_MST;
-> 
-> I guess that KeemBay and ThunderBay SPI controllers have been
-> synthesized based on the same IP-core with a few differences. Is that
-> true? Could you tell us what is the difference between them?
-> 
-> Anyway regarding this the Master/Slave part. Is the ThunderBay
-> implementation of the Master/Slave capability the same as it was
-> embedded in the KeemBay controller? If so then what do you think about
-> just renaming DW_SPI_CAP_KEEMBAY_MST to something like
-> DW_SPI_CAP_INTEL_MST and using it then for both Keembay and ThunderBay
-> versions of the SPI-controllers? (The similar renaming needs to be
-> provided for the DWC_SSI_CTRLR0_KEEMBAY_MST macro then.) You can
-> implement it as a preparation patch posted before this one in the
-> series.
-> 
-> > +
-> > +		if (dws->caps & DW_SPI_CAP_THUNDERBAY_SSTE)
-> > +			cr0 |= DWC_SSI_CTRLR0_THUNDERBAY_SSTE;
-> 
-> Similar question regarding the SSTE bit. Is it something ThunderBay
-> specific only? Was the corresponding functionality embedded into the
-> KeemBay or any other Intel version of the DW SPI controller?
-> 
-> >  	}
-> >  
-> >  	return cr0;
-> > diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-> > index 3379720cfcb8..ca9aad078752 100644
-> > --- a/drivers/spi/spi-dw-mmio.c
-> > +++ b/drivers/spi/spi-dw-mmio.c
-> > @@ -222,6 +222,15 @@ static int dw_spi_keembay_init(struct platform_device *pdev,
-> >  	return 0;
-> >  }
-> >  
-> > +static int dw_spi_thunderbay_init(struct platform_device *pdev,
-> > +				  struct dw_spi_mmio *dwsmmio)
-> > +{
-> 
-> > +	dwsmmio->dws.caps = DW_SPI_CAP_THUNDERBAY_MST | DW_SPI_CAP_THUNDERBAY_RST |
-> > +			    DW_SPI_CAP_THUNDERBAY_SSTE | DW_SPI_CAP_DWC_SSI;
-> > +
-> 
-> Originally the DW_SPI_CAP-functionality was provided to modify the DW
-> SPI core driver behavior when it was required. For instance it was
-> mostly connected with the platform-specific CR0-register
-> configurations. So as I see it the reset part can be successfully
-> handled fully in the framework of the MMIO-platform glue-driver.
-> Instead of defining a new capability you could have just added the
-> next code in the ThunderBay init-method:
-> 
-> +	if (!dwsmmio->rstc) {
-> +		dev_err(&pdev->dev, "Reset control is missing\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	reset_control_assert(dwsmmio->rstc);
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ fs/fs-writeback.c          | 20 +++++++++-----------
+ include/linux/memcontrol.h | 15 +++++++++++++++
+ include/linux/writeback.h  |  2 +-
+ mm/memcontrol.c            | 13 +------------
+ 4 files changed, 26 insertions(+), 24 deletions(-)
 
-> +	udelay(2);
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 867984e778c3..35894a2dba75 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -1039,20 +1039,20 @@ static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
+  * cgroup_writeback_by_id - initiate cgroup writeback from bdi and memcg IDs
+  * @bdi_id: target bdi id
+  * @memcg_id: target memcg css id
+- * @nr: number of pages to write, 0 for best-effort dirty flushing
+  * @reason: reason why some writeback work initiated
+  * @done: target wb_completion
+  *
+  * Initiate flush of the bdi_writeback identified by @bdi_id and @memcg_id
+  * with the specified parameters.
+  */
+-int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr,
++int cgroup_writeback_by_id(u64 bdi_id, int memcg_id,
+ 			   enum wb_reason reason, struct wb_completion *done)
+ {
+ 	struct backing_dev_info *bdi;
+ 	struct cgroup_subsys_state *memcg_css;
+ 	struct bdi_writeback *wb;
+ 	struct wb_writeback_work *work;
++	unsigned long dirty;
+ 	int ret;
+ 
+ 	/* lookup bdi and memcg */
+@@ -1081,24 +1081,22 @@ int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr,
+ 	}
+ 
+ 	/*
+-	 * If @nr is zero, the caller is attempting to write out most of
++	 * The caller is attempting to write out most of
+ 	 * the currently dirty pages.  Let's take the current dirty page
+ 	 * count and inflate it by 25% which should be large enough to
+ 	 * flush out most dirty pages while avoiding getting livelocked by
+ 	 * concurrent dirtiers.
++	 *
++	 * BTW the memcg stats are flushed periodically and this is best-effort
++	 * estimation, so some potential error is ok.
+ 	 */
+-	if (!nr) {
+-		unsigned long filepages, headroom, dirty, writeback;
+-
+-		mem_cgroup_wb_stats(wb, &filepages, &headroom, &dirty,
+-				      &writeback);
+-		nr = dirty * 10 / 8;
+-	}
++	dirty = memcg_page_state(mem_cgroup_from_css(memcg_css), NR_FILE_DIRTY);
++	dirty = dirty * 10 / 8;
+ 
+ 	/* issue the writeback work */
+ 	work = kzalloc(sizeof(*work), GFP_NOWAIT | __GFP_NOWARN);
+ 	if (work) {
+-		work->nr_pages = nr;
++		work->nr_pages = dirty;
+ 		work->sync_mode = WB_SYNC_NONE;
+ 		work->range_cyclic = 1;
+ 		work->reason = reason;
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index b4c6b613e162..7028d8e4a3d7 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -989,6 +989,16 @@ static inline void mod_memcg_state(struct mem_cgroup *memcg,
+ 	local_irq_restore(flags);
+ }
+ 
++static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
++{
++	long x = READ_ONCE(memcg->vmstats.state[idx]);
++#ifdef CONFIG_SMP
++	if (x < 0)
++		x = 0;
++#endif
++	return x;
++}
++
+ static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+ 					      enum node_stat_item idx)
+ {
+@@ -1444,6 +1454,11 @@ static inline void mod_memcg_state(struct mem_cgroup *memcg,
+ {
+ }
+ 
++static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
++{
++	return 0;
++}
++
+ static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+ 					      enum node_stat_item idx)
+ {
+diff --git a/include/linux/writeback.h b/include/linux/writeback.h
+index 1f34ddf284dc..109e0dcd1d21 100644
+--- a/include/linux/writeback.h
++++ b/include/linux/writeback.h
+@@ -218,7 +218,7 @@ void wbc_attach_and_unlock_inode(struct writeback_control *wbc,
+ void wbc_detach_inode(struct writeback_control *wbc);
+ void wbc_account_cgroup_owner(struct writeback_control *wbc, struct page *page,
+ 			      size_t bytes);
+-int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr_pages,
++int cgroup_writeback_by_id(u64 bdi_id, int memcg_id,
+ 			   enum wb_reason reason, struct wb_completion *done);
+ void cgroup_writeback_umount(void);
+ bool cleanup_offline_cgwb(struct bdi_writeback *wb);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 35bb5f8f9ea8..6580c2381a3e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -631,17 +631,6 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+ 	cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
+ }
+ 
+-/* idx can be of type enum memcg_stat_item or node_stat_item. */
+-static unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+-{
+-	long x = READ_ONCE(memcg->vmstats.state[idx]);
+-#ifdef CONFIG_SMP
+-	if (x < 0)
+-		x = 0;
+-#endif
+-	return x;
+-}
+-
+ /* idx can be of type enum memcg_stat_item or node_stat_item. */
+ static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+ {
+@@ -4609,7 +4598,7 @@ void mem_cgroup_flush_foreign(struct bdi_writeback *wb)
+ 		    atomic_read(&frn->done.cnt) == 1) {
+ 			frn->at = 0;
+ 			trace_flush_foreign(wb, frn->bdi_id, frn->memcg_id);
+-			cgroup_writeback_by_id(frn->bdi_id, frn->memcg_id, 0,
++			cgroup_writeback_by_id(frn->bdi_id, frn->memcg_id,
+ 					       WB_REASON_FOREIGN_FLUSH,
+ 					       &frn->done);
+ 		}
+-- 
+2.32.0.432.gabb21c7263-goog
 
-Please, don't forget to add a header file with udelay() declaration to
-this module.
-
--Sergey
-
-> +	reset_control_deassert(dwsmmio->rstc);
-> +
-> 
-> Thus you'd reuse the already implemented reset-controller handler
-> defined in the dw_spi_mmio structure with no need of implementing
-> a new capability.
-> 
-> > +	return 0;
-> > +}
-> > +
-> >  static int dw_spi_canaan_k210_init(struct platform_device *pdev,
-> >  				   struct dw_spi_mmio *dwsmmio)
-> >  {
-> > @@ -243,6 +252,7 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
-> >  			 struct dw_spi_mmio *dwsmmio);
-> >  	struct dw_spi_mmio *dwsmmio;
-> >  	struct resource *mem;
-> > +	struct reset_control *rst;
-> >  	struct dw_spi *dws;
-> >  	int ret;
-> >  	int num_cs;
-> > @@ -309,6 +319,15 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
-> >  			goto out;
-> >  	}
-> >  
-> 
-> > +	if (dws->caps & DW_SPI_CAP_THUNDERBAY_RST) {
-> > +		rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
-> > +		if (!IS_ERR(rst)) {
-> > +			reset_control_assert(rst);
-> > +			udelay(2);
-> > +			reset_control_deassert(rst);
-> > +		}
-> > +	}
-> > +
-> 
-> Please see my comment above. We don't need to have this code here if
-> you get to implement what I suggest there.
-> 
-> >  	pm_runtime_enable(&pdev->dev);
-> >  
-> >  	ret = dw_spi_add_host(&pdev->dev, dws);
-> > @@ -349,6 +368,7 @@ static const struct of_device_id dw_spi_mmio_of_match[] = {
-> >  	{ .compatible = "renesas,rzn1-spi", .data = dw_spi_dw_apb_init},
-> >  	{ .compatible = "snps,dwc-ssi-1.01a", .data = dw_spi_dwc_ssi_init},
-> >  	{ .compatible = "intel,keembay-ssi", .data = dw_spi_keembay_init},
-> > +	{ .compatible = "intel,thunderbay-ssi", .data = dw_spi_thunderbay_init},
-> >  	{ .compatible = "microchip,sparx5-spi", dw_spi_mscc_sparx5_init},
-> >  	{ .compatible = "canaan,k210-spi", dw_spi_canaan_k210_init},
-> >  	{ /* end of table */}
-> > diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
-> > index b665e040862c..bfe1d5edc25a 100644
-> > --- a/drivers/spi/spi-dw.h
-> > +++ b/drivers/spi/spi-dw.h
-> > @@ -82,6 +82,18 @@
-> >   */
-> >  #define DWC_SSI_CTRLR0_KEEMBAY_MST	BIT(31)
-> >  
-> 
-> > +/*
-> > + * For Thunder Bay, CTRLR0[14] should be set to 1.
-> > + */
-> 
-> Could you provide a bit more details what this bit has been
-> implemented for?
-> 
-> > +#define DWC_SSI_CTRLR0_THUNDERBAY_SSTE	BIT(14)
-> > +
-> 
-> > +/*
-> > + * For Thunder Bay, CTRLR0[31] is used to select controller mode.
-> > + * 0: SSI is slave
-> > + * 1: SSI is master
-> > + */
-> > +#define DWC_SSI_CTRLR0_THUNDERBAY_MST	BIT(31)
-> 
-> Please see my suggestion regarding the Master/Slave capability in one
-> of the comments above.
-> 
-> Regards
-> -Serge
-> 
-> > +
-> >  /* Bit fields in CTRLR1 */
-> >  #define SPI_NDF_MASK			GENMASK(15, 0)
-> >  
-> > @@ -125,6 +137,9 @@ enum dw_ssi_type {
-> >  #define DW_SPI_CAP_KEEMBAY_MST		BIT(1)
-> >  #define DW_SPI_CAP_DWC_SSI		BIT(2)
-> >  #define DW_SPI_CAP_DFS32		BIT(3)
-> > +#define DW_SPI_CAP_THUNDERBAY_MST	BIT(4)
-> > +#define DW_SPI_CAP_THUNDERBAY_RST	BIT(5)
-> > +#define DW_SPI_CAP_THUNDERBAY_SSTE	BIT(6)
-> >  
-> >  /* Slave spi_transfer/spi_mem_op related */
-> >  struct dw_spi_cfg {
-> > -- 
-> > 2.17.1
-> > 
