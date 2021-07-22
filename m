@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E163D2A73
+	by mail.lfdr.de (Postfix) with ESMTP id E56243D2A75
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234640AbhGVQLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:11:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45354 "EHLO mail.kernel.org"
+        id S233741AbhGVQMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:12:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229731AbhGVQHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:07:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE3161D2C;
-        Thu, 22 Jul 2021 16:47:38 +0000 (UTC)
+        id S235184AbhGVQHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:07:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DBDF61976;
+        Thu, 22 Jul 2021 16:47:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972459;
-        bh=Qvfjr4chl92hN6bxWW/vDQa324GuRuDpITR32cbDmEo=;
+        s=korg; t=1626972462;
+        bh=Rq/EY8oFCZ7BlqYqQNhEDdyj539dRv67Ieb8OT9TQNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PpBtL/Q+9mOjwY+xsnIjMe8CBeWeGAsnGMRR13OFRnTMiQtTpS7praIUXxLemC1jC
-         1dAsG7Afa/E31DVt1o9HI+A7KVwkvd3r3temrLVcLDqoe4Qz57qs8bmwW00HnikDBs
-         VNDtGyEMwxQyadW9JlvMETWMJZyBGFIfRQgykC70=
+        b=a7sWm/7K2F80tAH6cp8nFnSBhmJbWg314+qFyLfo0WR3JUQYvEOK5z/9qU0RixKo0
+         N4R1mlgWNblt/JtajzXy3tGvodSh1UXcxDUiupln0GXtU9B8Lshm3AXH9fvhKivzbi
+         c7aVO2V5+9n2k3DugKNEvi8H3Y4AsySE4cMz53Hs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
+        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.13 123/156] net: netdevsim: use xso.real_dev instead of xso.dev in callback functions of struct xfrmdev_ops
-Date:   Thu, 22 Jul 2021 18:31:38 +0200
-Message-Id: <20210722155632.340342592@linuxfoundation.org>
+Subject: [PATCH 5.13 124/156] net: bcmgenet: Ensure all TX/RX queues DMAs are disabled
+Date:   Thu, 22 Jul 2021 18:31:39 +0200
+Message-Id: <20210722155632.371118286@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
 References: <20210722155628.371356843@linuxfoundation.org>
@@ -39,105 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taehee Yoo <ap420073@gmail.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit 09adf7566d436322ced595b166dea48b06852efe upstream.
+commit 2b452550a203d88112eaf0ba9fc4b750a000b496 upstream.
 
-There are two pointers in struct xfrm_state_offload, *dev, *real_dev.
-These are used in callback functions of struct xfrmdev_ops.
-The *dev points whether bonding interface or real interface.
-If bonding ipsec offload is used, it points bonding interface If not,
-it points real interface.
-And real_dev always points real interface.
-So, netdevsim should always use real_dev instead of dev.
-Of course, real_dev always not be null.
+Make sure that we disable each of the TX and RX queues in the TDMA and
+RDMA control registers. This is a correctness change to be symmetrical
+with the code that enables the TX and RX queues.
 
-Test commands:
-    ip netns add A
-    ip netns exec A bash
-    modprobe netdevsim
-    echo "1 1" > /sys/bus/netdevsim/new_device
-    ip link add bond0 type bond mode active-backup
-    ip link set eth0 master bond0
-    ip link set eth0 up
-    ip link set bond0 up
-    ip x s add proto esp dst 14.1.1.1 src 15.1.1.1 spi 0x07 mode \
-transport reqid 0x07 replay-window 32 aead 'rfc4106(gcm(aes))' \
-0x44434241343332312423222114131211f4f3f2f1 128 sel src 14.0.0.52/24 \
-dst 14.0.0.70/24 proto tcp offload dev bond0 dir in
-
-Splat looks like:
-BUG: spinlock bad magic on CPU#5, kworker/5:1/53
- lock: 0xffff8881068c2cc8, .magic: 11121314, .owner: <none>/-1,
-.owner_cpu: -235736076
-CPU: 5 PID: 53 Comm: kworker/5:1 Not tainted 5.13.0-rc3+ #1168
-Workqueue: events linkwatch_event
-Call Trace:
- dump_stack+0xa4/0xe5
- do_raw_spin_lock+0x20b/0x270
- ? rwlock_bug.part.1+0x90/0x90
- _raw_spin_lock_nested+0x5f/0x70
- bond_get_stats+0xe4/0x4c0 [bonding]
- ? rcu_read_lock_sched_held+0xc0/0xc0
- ? bond_neigh_init+0x2c0/0x2c0 [bonding]
- ? dev_get_alias+0xe2/0x190
- ? dev_get_port_parent_id+0x14a/0x360
- ? rtnl_unregister+0x190/0x190
- ? dev_get_phys_port_name+0xa0/0xa0
- ? memset+0x1f/0x40
- ? memcpy+0x38/0x60
- ? rtnl_phys_switch_id_fill+0x91/0x100
- dev_get_stats+0x8c/0x270
- rtnl_fill_stats+0x44/0xbe0
- ? nla_put+0xbe/0x140
- rtnl_fill_ifinfo+0x1054/0x3ad0
-[ ... ]
-
-Fixes: 272c2330adc9 ("xfrm: bail early on slave pass over skb")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+Tested-by: Maxime Ripard <maxime@cerno.tech>
+Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/netdevsim/ipsec.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/net/netdevsim/ipsec.c
-+++ b/drivers/net/netdevsim/ipsec.c
-@@ -85,7 +85,7 @@ static int nsim_ipsec_parse_proto_keys(s
- 				       u32 *mykey, u32 *mysalt)
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -3238,15 +3238,21 @@ static void bcmgenet_get_hw_addr(struct
+ /* Returns a reusable dma control register value */
+ static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
  {
- 	const char aes_gcm_name[] = "rfc4106(gcm(aes))";
--	struct net_device *dev = xs->xso.dev;
-+	struct net_device *dev = xs->xso.real_dev;
- 	unsigned char *key_data;
- 	char *alg_name = NULL;
- 	int key_len;
-@@ -134,7 +134,7 @@ static int nsim_ipsec_add_sa(struct xfrm
- 	u16 sa_idx;
- 	int ret;
++	unsigned int i;
+ 	u32 reg;
+ 	u32 dma_ctrl;
  
--	dev = xs->xso.dev;
-+	dev = xs->xso.real_dev;
- 	ns = netdev_priv(dev);
- 	ipsec = &ns->ipsec;
+ 	/* disable DMA */
+ 	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
++	for (i = 0; i < priv->hw_params->tx_queues; i++)
++		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
+ 	reg = bcmgenet_tdma_readl(priv, DMA_CTRL);
+ 	reg &= ~dma_ctrl;
+ 	bcmgenet_tdma_writel(priv, reg, DMA_CTRL);
  
-@@ -194,7 +194,7 @@ static int nsim_ipsec_add_sa(struct xfrm
- 
- static void nsim_ipsec_del_sa(struct xfrm_state *xs)
- {
--	struct netdevsim *ns = netdev_priv(xs->xso.dev);
-+	struct netdevsim *ns = netdev_priv(xs->xso.real_dev);
- 	struct nsim_ipsec *ipsec = &ns->ipsec;
- 	u16 sa_idx;
- 
-@@ -211,7 +211,7 @@ static void nsim_ipsec_del_sa(struct xfr
- 
- static bool nsim_ipsec_offload_ok(struct sk_buff *skb, struct xfrm_state *xs)
- {
--	struct netdevsim *ns = netdev_priv(xs->xso.dev);
-+	struct netdevsim *ns = netdev_priv(xs->xso.real_dev);
- 	struct nsim_ipsec *ipsec = &ns->ipsec;
- 
- 	ipsec->ok++;
++	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
++	for (i = 0; i < priv->hw_params->rx_queues; i++)
++		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
+ 	reg = bcmgenet_rdma_readl(priv, DMA_CTRL);
+ 	reg &= ~dma_ctrl;
+ 	bcmgenet_rdma_writel(priv, reg, DMA_CTRL);
 
 
