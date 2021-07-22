@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E1B3D29D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5559A3D28C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234767AbhGVQGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:06:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39688 "EHLO mail.kernel.org"
+        id S233097AbhGVP6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:58:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234465AbhGVQEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:04:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2F216144E;
-        Thu, 22 Jul 2021 16:45:20 +0000 (UTC)
+        id S230182AbhGVP44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:56:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD4B66135F;
+        Thu, 22 Jul 2021 16:37:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972321;
-        bh=0TcEksb0S4SRI56JjLGAPblYLh9EjuKSotMt5Uz8RAo=;
+        s=korg; t=1626971851;
+        bh=i0GaGJ6IxpVa0nmdMXaTOnuoPLWsq6uRv6V6eYCMZH8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X1ggY6gDUtb1ZqQ5kNw+M7v+d/w4Lj30WT/C4iP/y68HixhnKSBOrJvo2f8IDtm9t
-         MZpD7u5HgghcPKq7AIJhlVs1ANWxsrJawauqiToYSSt1016SxrTUgnAbrx50nJwaS3
-         mgYj9a5V5HoSVdykIkKpKUJsqH4s4cNrWtHbVJ18=
+        b=HuWxBVC42hc+7e7G1HE5ZiKgT+6/JVQ77oaT0fHb0zmUOY/cWKj9mXJ3MDlg7wYgx
+         NZFRPpGmam5Oon9h9exjhcI3a0hUEgagSPkKDeBjgOeD2/JyR1a+qq0+pX1F0yjASx
+         VC8ufLNR9/M5JYLShCaVSiYm1o/hx9z0Fa+7zro8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Grzegorz Szymaszek <gszymaszek@short.pl>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 068/156] ARM: dts: stm32: fix the Odyssey SoM eMMC VQMMC supply
+Subject: [PATCH 5.10 052/125] ARM: dts: rockchip: fix supply properties in io-domains nodes
 Date:   Thu, 22 Jul 2021 18:30:43 +0200
-Message-Id: <20210722155630.595556046@linuxfoundation.org>
+Message-Id: <20210722155626.439474468@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grzegorz Szymaszek <gszymaszek@short.pl>
+From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit f493162319788802b6a49634f7268e691b4c10ec ]
+[ Upstream commit f07edc41220b14ce057a4e6d7161b30688ddb8a2 ]
 
-The Seeed SoM-STM32MP157C device tree had the eMMC’s (SDMMC2) VQMMC
-supply set to v3v3 (buck4), the same as the VMMC supply. That was
-incorrect, as on the SoM, the VQMMC supply is provided from vdd (buck3)
-instead.
+A test with rockchip-io-domain.yaml gives notifications
+for supply properties in io-domains nodes.
+Fix them all into ".*-supply$" format.
 
-Signed-off-by: Grzegorz Szymaszek <gszymaszek@short.pl>
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/20210606181632.13371-1-jbx6244@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/rk3288-rock2-som.dtsi | 2 +-
+ arch/arm/boot/dts/rk3288-vyasa.dts      | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-index 6cf49a0a9e69..b5601d270c8f 100644
---- a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-+++ b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-@@ -269,7 +269,7 @@
- 	st,neg-edge;
- 	bus-width = <8>;
- 	vmmc-supply = <&v3v3>;
--	vqmmc-supply = <&v3v3>;
-+	vqmmc-supply = <&vdd>;
- 	mmc-ddr-3_3v;
- 	status = "okay";
- };
+diff --git a/arch/arm/boot/dts/rk3288-rock2-som.dtsi b/arch/arm/boot/dts/rk3288-rock2-som.dtsi
+index 44bb5e6f83b1..76363b8afcb9 100644
+--- a/arch/arm/boot/dts/rk3288-rock2-som.dtsi
++++ b/arch/arm/boot/dts/rk3288-rock2-som.dtsi
+@@ -218,7 +218,7 @@
+ 	flash0-supply = <&vcc_flash>;
+ 	flash1-supply = <&vccio_pmu>;
+ 	gpio30-supply = <&vccio_pmu>;
+-	gpio1830 = <&vcc_io>;
++	gpio1830-supply = <&vcc_io>;
+ 	lcdc-supply = <&vcc_io>;
+ 	sdcard-supply = <&vccio_sd>;
+ 	wifi-supply = <&vcc_18>;
+diff --git a/arch/arm/boot/dts/rk3288-vyasa.dts b/arch/arm/boot/dts/rk3288-vyasa.dts
+index aa50f8ed4ca0..b156a83eb7d7 100644
+--- a/arch/arm/boot/dts/rk3288-vyasa.dts
++++ b/arch/arm/boot/dts/rk3288-vyasa.dts
+@@ -379,10 +379,10 @@
+ 	audio-supply = <&vcc_18>;
+ 	bb-supply = <&vcc_io>;
+ 	dvp-supply = <&vcc_io>;
+-	flash0-suuply = <&vcc_18>;
++	flash0-supply = <&vcc_18>;
+ 	flash1-supply = <&vcc_lan>;
+ 	gpio30-supply = <&vcc_io>;
+-	gpio1830 = <&vcc_io>;
++	gpio1830-supply = <&vcc_io>;
+ 	lcdc-supply = <&vcc_io>;
+ 	sdcard-supply = <&vccio_sd>;
+ 	wifi-supply = <&vcc_18>;
 -- 
 2.30.2
 
