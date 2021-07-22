@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818AA3D25DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2E63D25DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbhGVNx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbhGVNxz (ORCPT
+        id S232385AbhGVNzy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 09:55:54 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:36025 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230343AbhGVNzv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:53:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56890C061575;
-        Thu, 22 Jul 2021 07:34:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=JoQvWSbt6SW54dfwq8nTFQWZq5OjwOKf2hg/K4WfrbE=; b=mztzqYmyrfFAEWbV2CbDFhUOXR
-        cEzYUywmqyUMsCLXrc3bVj/8TenC/M8GeZ2GWlBhTFz9//PSBU/ElGsjV+jUg01gN2yDEr4AEo0c1
-        vrrzr2xcPj+XxkeWUNhtzv/sxAAH32AFvB7FiZDw5f+5vQH+6S+p6I0cok1ml0jR++fQ0/y+43cSV
-        J0EDbj69m7yMV+m1ZZKVVDpXzWTno8KflCrL9L463/L4H5WcX+ttBDw3C93SsIYMySQCRY0p7VP9T
-        30N32vApe7OorUFlCpdazvACkB1JNiB5yzr5X3gq/Ca4wVzZniayL2xSXeHdLxb/FS0pSxrcMJlXf
-        F7zkIJ6w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6ZmF-00ALhz-KV; Thu, 22 Jul 2021 14:34:23 +0000
-Date:   Thu, 22 Jul 2021 15:34:19 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>
-Subject: Re: [PATCH v14 062/138] mm/migrate: Add folio_migrate_copy()
-Message-ID: <YPmB60EwQPpEvdb/@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-63-willy@infradead.org>
- <a670e7c1-95fb-324f-055f-74dd4c81c0d0@gmail.com>
- <YPlko1ObxD/CEz8o@casper.infradead.org>
- <fd3fe780-1a1b-1ba7-1725-72286470ce4c@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fd3fe780-1a1b-1ba7-1725-72286470ce4c@gmail.com>
+        Thu, 22 Jul 2021 09:55:51 -0400
+Received: from smtpclient.apple (p5b3d2eb8.dip0.t-ipconnect.de [91.61.46.184])
+        by mail.holtmann.org (Postfix) with ESMTPSA id A46E1CECDD;
+        Thu, 22 Jul 2021 16:36:24 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH] bluetooth: btrsi: use non-kernel-doc comment for
+ copyright
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210721020334.3129-1-rdunlap@infradead.org>
+Date:   Thu, 22 Jul 2021 16:36:24 +0200
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Aditya Srivastava <yashsri421@gmail.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        Prameela Rani Garnepudi <prameela.j04cs@gmail.com>,
+        Sanjay Kumar Konduri <sanjay.konduri@redpinesignals.com>,
+        Siva Rebbagondla <siva.rebbagondla@redpinesignals.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <BC3E0AE2-F6E7-43BE-8CEE-882722E0609F@holtmann.org>
+References: <20210721020334.3129-1-rdunlap@infradead.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 04:45:59PM +0300, Dmitry Osipenko wrote:
-> 22.07.2021 15:29, Matthew Wilcox пишет:
-> > On Thu, Jul 22, 2021 at 02:52:28PM +0300, Dmitry Osipenko wrote:
-> ...
-> > The obvious solution is just to change folio_copy():
-> > 
-> >  {
-> > -       unsigned i, nr = folio_nr_pages(src);
-> > +       unsigned i = 0;
-> > +       unsigned nr = folio_nr_pages(src);
-> > 
-> > -       for (i = 0; i < nr; i++) {
-> > -               cond_resched();
-> > +       for (;;) {
-> >                 copy_highpage(folio_page(dst, i), folio_page(src, i));
-> > +               if (i++ == nr)
+Hi Randy,
+
+> kernel-doc complains about a non-kernel-doc comment that uses "/**"
+> to begin the comment, so change it to just "/*".
 > 
-> This works with the ++i precedence change. Thanks!
+> drivers/bluetooth/btrsi.c:2: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>    * Copyright (c) 2017 Redpine Signals Inc.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Aditya Srivastava <yashsri421@gmail.com>
+> Cc: Marcel Holtmann <marcel@holtmann.org>
+> Cc: Johan Hedberg <johan.hedberg@gmail.com>
+> Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+> Cc: linux-bluetooth@vger.kernel.org
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: netdev@vger.kernel.org
+> Cc: Prameela Rani Garnepudi <prameela.j04cs@gmail.com>
+> Cc: Sanjay Kumar Konduri <sanjay.konduri@redpinesignals.com>
+> Cc: Siva Rebbagondla <siva.rebbagondla@redpinesignals.com>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> ---
+> drivers/bluetooth/btrsi.c |    2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for testing!  (and fixing my bug)
-I just pushed out an update to for-next with this fix.
+patch has been applied to bluetooth-next tree.
 
-> The fs/ and mm/ are mostly outside of my scope, hope you'll figure out
-> the buffer-head case soon.
+Regards
 
-Thanks.  We don't need it fixed yet, but probably in the next six months.
+Marcel
+
