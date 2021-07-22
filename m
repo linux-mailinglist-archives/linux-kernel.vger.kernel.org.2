@@ -2,204 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56B83D1D8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 07:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F313D1D8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 07:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhGVE7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 00:59:16 -0400
-Received: from verein.lst.de ([213.95.11.211]:60999 "EHLO verein.lst.de"
+        id S230199AbhGVFBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 01:01:47 -0400
+Received: from mga17.intel.com ([192.55.52.151]:13805 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhGVE7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 00:59:14 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5219067373; Thu, 22 Jul 2021 07:39:47 +0200 (CEST)
-Date:   Thu, 22 Jul 2021 07:39:47 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v6] iomap: support tail packing inline read
-Message-ID: <20210722053947.GA28594@lst.de>
-References: <20210722031729.51628-1-hsiangkao@linux.alibaba.com>
+        id S229540AbhGVFBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 01:01:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="191845634"
+X-IronPort-AV: E=Sophos;i="5.84,260,1620716400"; 
+   d="scan'208";a="191845634"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 22:42:21 -0700
+X-IronPort-AV: E=Sophos;i="5.84,260,1620716400"; 
+   d="scan'208";a="512372243"
+Received: from vmm_a4_icx.sh.intel.com (HELO localhost.localdomain) ([10.239.53.245])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 22:42:17 -0700
+From:   Zhu Lingshan <lingshan.zhu@intel.com>
+To:     peterz@infradead.org, pbonzini@redhat.com
+Cc:     bp@alien8.de, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        kan.liang@linux.intel.com, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        like.xu.linux@gmail.com, boris.ostrvsky@oracle.com,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: [PATCH V9 00/18] KVM: x86/pmu: Add *basic* support to enable guest PEBS via DS
+Date:   Thu, 22 Jul 2021 13:41:41 +0800
+Message-Id: <20210722054159.4459-1-lingshan.zhu@intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210722031729.51628-1-hsiangkao@linux.alibaba.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I think some of the language here is confusing - mostly about tail
-packing when we otherwise use inline data.  Can you take a look at
-the version below?  This mostly cleans up the terminology, adds a
-new helper to check the size, and removes the error on trying to
-write with a non-zero pos, as it can be trivially supported now.
+The guest Precise Event Based Sampling (PEBS) feature can provide an
+architectural state of the instruction executed after the guest instruction
+that exactly caused the event. It needs new hardware facility only available
+on Intel Ice Lake Server platforms. This patch set enables the basic PEBS
+feature for KVM guests on ICX.
 
----
-From 0f9c6ac6c2e372739b29195d25bebb8dd87e583a Mon Sep 17 00:00:00 2001
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-Date: Thu, 22 Jul 2021 11:17:29 +0800
-Subject: iomap: make inline data support more flexible
+We can use PEBS feature on the Linux guest like native:
 
-Add support for offsets into the inline data page at iomap->inline_data
-to cater for the EROFS tailpackng case where a small data is stored
-right after the inode.
+   # echo 0 > /proc/sys/kernel/watchdog (on the host)
+   # perf record -e instructions:ppp ./br_instr a
+   # perf record -c 100000 -e instructions:pp ./br_instr a
 
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
- fs/iomap/buffered-io.c | 35 ++++++++++++++++++-----------------
- fs/iomap/direct-io.c   | 10 ++++++----
- include/linux/iomap.h  | 14 ++++++++++++++
- 3 files changed, 38 insertions(+), 21 deletions(-)
+To emulate guest PEBS facility for the above perf usages,
+we need to implement 2 code paths:
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 87ccb3438becd9..0597f5c186a33f 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -205,25 +205,29 @@ struct iomap_readpage_ctx {
- 	struct readahead_control *rac;
- };
- 
--static void
--iomap_read_inline_data(struct inode *inode, struct page *page,
--		struct iomap *iomap)
-+static int iomap_read_inline_data(struct inode *inode, struct page *page,
-+		struct iomap *iomap, loff_t pos)
- {
--	size_t size = i_size_read(inode);
-+	size_t size = iomap->length + iomap->offset - pos;
- 	void *addr;
- 
- 	if (PageUptodate(page))
--		return;
-+		return PAGE_SIZE;
- 
--	BUG_ON(page_has_private(page));
--	BUG_ON(page->index);
--	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* inline data must start page aligned in the file */
-+	if (WARN_ON_ONCE(offset_in_page(pos)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(page_has_private(page)))
-+		return -EIO;
- 
- 	addr = kmap_atomic(page);
--	memcpy(addr, iomap->inline_data, size);
-+	memcpy(addr, iomap_inline_buf(iomap, pos), size);
- 	memset(addr + size, 0, PAGE_SIZE - size);
- 	kunmap_atomic(addr);
- 	SetPageUptodate(page);
-+	return PAGE_SIZE;
- }
- 
- static inline bool iomap_block_needs_zeroing(struct inode *inode,
-@@ -246,11 +250,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 	unsigned poff, plen;
- 	sector_t sector;
- 
--	if (iomap->type == IOMAP_INLINE) {
--		WARN_ON_ONCE(pos);
--		iomap_read_inline_data(inode, page, iomap);
--		return PAGE_SIZE;
--	}
-+	if (iomap->type == IOMAP_INLINE)
-+		return iomap_read_inline_data(inode, page, iomap, pos);
- 
- 	/* zero post-eof blocks as the page may be mapped */
- 	iop = iomap_page_create(inode, page);
-@@ -618,14 +619,14 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 	}
- 
- 	if (srcmap->type == IOMAP_INLINE)
--		iomap_read_inline_data(inode, page, srcmap);
-+		status = iomap_read_inline_data(inode, page, srcmap, pos);
- 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
- 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
- 	else
- 		status = __iomap_write_begin(inode, pos, len, flags, page,
- 				srcmap);
- 
--	if (unlikely(status))
-+	if (unlikely(status < 0))
- 		goto out_unlock;
- 
- 	*pagep = page;
-@@ -675,7 +676,7 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
- 
- 	flush_dcache_page(page);
- 	addr = kmap_atomic(page);
--	memcpy(iomap->inline_data + pos, addr + pos, copied);
-+	memcpy(iomap_inline_buf(iomap, pos), addr + pos, copied);
- 	kunmap_atomic(addr);
- 
- 	mark_inode_dirty(inode);
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 9398b8c31323b3..a6aaea2764a55f 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -378,23 +378,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
- 		struct iomap_dio *dio, struct iomap *iomap)
- {
- 	struct iov_iter *iter = dio->submit.iter;
-+	void *dst = iomap_inline_buf(iomap, pos);
- 	size_t copied;
- 
--	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
-+		return -EIO;
- 
- 	if (dio->flags & IOMAP_DIO_WRITE) {
- 		loff_t size = inode->i_size;
- 
- 		if (pos > size)
--			memset(iomap->inline_data + size, 0, pos - size);
--		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-+			memset(iomap_inline_buf(iomap, size), 0, pos - size);
-+		copied = copy_from_iter(dst, length, iter);
- 		if (copied) {
- 			if (pos + copied > size)
- 				i_size_write(inode, pos + copied);
- 			mark_inode_dirty(inode);
- 		}
- 	} else {
--		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-+		copied = copy_to_iter(dst, length, iter);
- 	}
- 	dio->size += copied;
- 	return copied;
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index 479c1da3e2211e..5efae7153912ed 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -97,6 +97,20 @@ iomap_sector(struct iomap *iomap, loff_t pos)
- 	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
- }
- 
-+static inline void *iomap_inline_buf(const struct iomap *iomap, loff_t pos)
-+{
-+	return iomap->inline_data - iomap->offset + pos;
-+}
-+
-+/*
-+ * iomap->inline_data is a potentially kmapped page, ensure it never crosseѕ a
-+ * page boundary.
-+ */
-+static inline bool iomap_inline_data_size_valid(const struct iomap *iomap)
-+{
-+	return iomap->length <= PAGE_SIZE - offset_in_page(iomap->inline_data);
-+}
-+
- /*
-  * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
-  * and page_done will be called for each page written to.  This only applies to
+1) Fast path
+
+This is when the host assigned physical PMC has an identical index as the
+virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
+This path is used in most common use cases.
+
+2) Slow path
+
+This is when the host assigned physical PMC has a different index from the
+virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0) In this case,
+KVM needs to rewrite the PEBS records to change the applicable counter indexes
+to the virtual PMC indexes, which would otherwise contain the physical counter
+index written by PEBS facility, and switch the counter reset values to the
+offset corresponding to the physical counter indexes in the DS data structure.
+
+The previous version [0] enables both fast path and slow path, which seems
+a bit more complex as the first step. In this patchset, we want to start with
+the fast path to get the basic guest PEBS enabled while keeping the slow path
+disabled. More focused discussion on the slow path [1] is planned to be put to
+another patchset in the next step.
+
+Compared to later versions in subsequent steps, the functionality to support
+host-guest PEBS both enabled and the functionality to emulate guest PEBS when
+the counter is cross-mapped are missing in this patch set
+(neither of these are typical scenarios).
+
+With the basic support, the guest can retrieve the correct PEBS information from
+its own PEBS records on the Ice Lake servers. And we expect it should work when
+migrating to another Ice Lake and no regression about host perf is expected.
+
+Here are the results of pebs test from guest/host for same workload:
+
+perf report on guest:
+# Samples: 2K of event 'instructions:ppp', # Event count (approx.): 1473377250 # Overhead  Command   Shared Object      Symbol
+   57.74%  br_instr  br_instr           [.] lfsr_cond
+   41.40%  br_instr  br_instr           [.] cmp_end
+    0.21%  br_instr  [kernel.kallsyms]  [k] __lock_acquire
+
+perf report on host:
+# Samples: 2K of event 'instructions:ppp', # Event count (approx.): 1462721386 # Overhead  Command   Shared Object     Symbol
+   57.90%  br_instr  br_instr          [.] lfsr_cond
+   41.95%  br_instr  br_instr          [.] cmp_end
+    0.05%  br_instr  [kernel.vmlinux]  [k] lock_acquire
+    Conclusion: the profiling results on the guest are similar tothat on the host.
+
+A minimum guest kernel version may be v5.4 or a backport version support
+Icelake server PEBS.
+
+Please check more details in each commit and feel free to comment.
+
+Previous:
+https://lkml.org/lkml/2021/7/16/214
+
+[0]
+https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/
+[1]
+https://lore.kernel.org/kvm/20210115191113.nktlnmivc3edstiv@two.firstfloor.org/
+
+V8 -> V9 Changelog:
+-fix a brackets error in xen_guest_state()
+
+V7 -> V8 Changelog:
+- fix coding style, add {} for single statement of multiple lines(Peter Z)
+- fix coding style in xen_guest_state() (Boris Ostrovsky)
+- s/pmu/kvm_pmu/ in intel_guest_get_msrs() (Peter Z)
+- put lower cost branch in the first place for x86_pmu_handle_guest_pebs() (Peter Z)
+
+V6 -> V7 Changelog:
+- Fix conditions order and call x86_pmu_handle_guest_pebs() unconditionally; (PeterZ)
+- Add a new patch to make all that perf_guest_cbs stuff suck less; (PeterZ)
+- Document IA32_MISC_ENABLE[7] that that behavior matches bare metal; (Sean & Venkatesh)
+- Update commit message for fixed counter mask refactoring;(PeterZ)
+- Clarifying comments about {.host and .guest} for intel_guest_get_msrs(); (PeterZ)
+- Add pebs_capable to store valid PEBS_COUNTER_MASK value; (PeterZ)
+- Add more comments for perf's precise_ip field; (Andi & PeterZ)
+- Refactor perf_overflow_handler_t and make it more legible; (PeterZ)
+- Use "(unsigned long)cpuc->ds" instead of __this_cpu_read(cpu_hw_events.ds); (PeterZ)
+- Keep using "(struct kvm_pmu *)data" to follow K&R; (Andi)
+
+Like Xu (17):
+  perf/core: Use static_call to optimize perf_guest_info_callbacks
+  perf/x86/intel: Add EPT-Friendly PEBS for Ice Lake Server
+  perf/x86/intel: Handle guest PEBS overflow PMI for KVM guest
+  perf/x86/core: Pass "struct kvm_pmu *" to determine the guest values
+  KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit when vPMU is enabled
+  KVM: x86/pmu: Introduce the ctrl_mask value for fixed counter
+  KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS
+  KVM: x86/pmu: Reprogram PEBS event to emulate guest PEBS counter
+  KVM: x86/pmu: Adjust precise_ip to emulate Ice Lake guest PDIR counter
+  KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to support guest DS
+  KVM: x86/pmu: Add PEBS_DATA_CFG MSR emulation to support adaptive PEBS
+  KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE when PEBS is enabled
+  KVM: x86/pmu: Move pmc_speculative_in_use() to arch/x86/kvm/pmu.h
+  KVM: x86/pmu: Disable guest PEBS temporarily in two rare situations
+  KVM: x86/pmu: Add kvm_pmu_cap to optimize perf_get_x86_pmu_capability
+  KVM: x86/cpuid: Refactor host/guest CPU model consistency check
+  KVM: x86/pmu: Expose CPUIDs feature bits PDCM, DS, DTES64
+
+Peter Zijlstra (Intel) (1):
+  x86/perf/core: Add pebs_capable to store valid PEBS_COUNTER_MASK value
+
+ arch/arm/kernel/perf_callchain.c   |  16 +--
+ arch/arm64/kernel/perf_callchain.c |  29 +++--
+ arch/arm64/kvm/perf.c              |  22 ++--
+ arch/csky/kernel/perf_callchain.c  |   4 +-
+ arch/nds32/kernel/perf_event_cpu.c |  16 +--
+ arch/riscv/kernel/perf_callchain.c |   4 +-
+ arch/x86/events/core.c             |  44 ++++++--
+ arch/x86/events/intel/core.c       | 165 +++++++++++++++++++++++------
+ arch/x86/events/perf_event.h       |   6 +-
+ arch/x86/include/asm/kvm_host.h    |  18 +++-
+ arch/x86/include/asm/msr-index.h   |   6 ++
+ arch/x86/include/asm/perf_event.h  |   5 +-
+ arch/x86/kvm/cpuid.c               |  24 ++---
+ arch/x86/kvm/cpuid.h               |   5 +
+ arch/x86/kvm/pmu.c                 |  60 ++++++++---
+ arch/x86/kvm/pmu.h                 |  38 +++++++
+ arch/x86/kvm/vmx/capabilities.h    |  26 +++--
+ arch/x86/kvm/vmx/pmu_intel.c       | 116 ++++++++++++++++----
+ arch/x86/kvm/vmx/vmx.c             |  24 ++++-
+ arch/x86/kvm/vmx/vmx.h             |   2 +-
+ arch/x86/kvm/x86.c                 |  51 +++++----
+ arch/x86/xen/pmu.c                 |  33 +++---
+ include/linux/perf_event.h         |  12 ++-
+ kernel/events/core.c               |   9 ++
+ 24 files changed, 545 insertions(+), 190 deletions(-)
+
 -- 
-2.30.2
+2.27.0
 
