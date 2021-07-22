@@ -2,162 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18FB3D1DC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 07:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F008D3D1DCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 07:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhGVFNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 01:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhGVFNG (ORCPT
+        id S230199AbhGVFNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 01:13:41 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36414 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229971AbhGVFNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 01:13:06 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD91C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 22:53:41 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id nt18-20020a17090b2492b02901765d605e14so3032505pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 22:53:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=28owLvv+vL6tVtuvmnfHr7+qgTSNqBXGBIr+3Xh6M9I=;
-        b=hpbQp607GEFF9BCuVfEbDnBl6wt+QGW+IpFzORDnEq6cmOEC3dka+R5HSzK07WOoTN
-         UsWZ1gJQGUo9muaSIl3PVyy+mYkPB+BWkp7DntatitzmvMxcR3je7f0avV6Db4ND6xFm
-         9dBHri4GY2RS6qRoy2pgleiJgnn2O2oW5/nxLEr07DIZjiszDijILxRJKh6+uBRJtbVg
-         M7aDC6ykEPFUQ/SnhrnikWg0yz2y2c80GVmd91tqhsh25jusi/Q4UE5CJCyXGRX2c3/4
-         1wlXUiDx8PscIshdELj+35VYcbXbl5YU68Esmx7mcs60tZXSEhcWH5dbKux8ixpQkdVO
-         Aj1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=28owLvv+vL6tVtuvmnfHr7+qgTSNqBXGBIr+3Xh6M9I=;
-        b=fFDAKEqbWszD8TcAQ6Vp9GkVSMZFTRke3UB2oDAsg7133LZK8Va+oaOAN4qNRtYSpm
-         O4pHCUysQi1pLR54Y34Jqb5rcBOn45Og0NPh2pqJ1hAzG1VgTv44AgcjkbV7ohrv0siS
-         NvN7OViQBZD/uRQ/B4t1mBeBQ2hBDqspebr5yAmCUgxBJ28WmeKi898FnbcUfjA03hoV
-         MvTY/Ws9UnLgFA1lbV+QqJfpwQaAFeASvTP88r0D5ptNWao+8DJBPFG76bACqVOhMRxw
-         qWsWFPSyzH8NfYQHTXSZJFhRvMSho2F9aYkboVOPw908SvSo2OAQtirSTmBOzkPjOCbO
-         PBjQ==
-X-Gm-Message-State: AOAM532TdBoL96A64ONT3Sk/C+/1MBFSteSMC0Ls71tjlkRM3i2A4LRr
-        Ul8TBuMSBawT3HIwkbV+coSMFQ==
-X-Google-Smtp-Source: ABdhPJwg4kNrjPL5wglKUZNAdm57nuCLNRhTw7Jq2LqJ9dqrvFwcFcEnvN1fCwH5tuB07Uvu4TvIhw==
-X-Received: by 2002:a17:90b:4ac9:: with SMTP id mh9mr7595414pjb.226.1626933220572;
-        Wed, 21 Jul 2021 22:53:40 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id z15sm32360128pgc.13.2021.07.21.22.53.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 22:53:40 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 22:53:40 -0700 (PDT)
-X-Google-Original-Date: Wed, 21 Jul 2021 22:23:26 PDT (-0700)
-Subject:     Re: [PATCH] riscv: Fix 32-bit RISC-V boot failure
-In-Reply-To: <CAEUhbmVO_dV86LJLz3S4PFu9oFp4_5HWSkKLwqc-ZkQK=yYZfw@mail.gmail.com>
-CC:     wangkefeng.wang@huawei.com, Atish Patra <Atish.Patra@wdc.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        stable@vger.kernel.org
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     bmeng.cn@gmail.com, Greg KH <gregkh@linuxfoundation.org>
-Message-ID: <mhng-4e9664d5-a766-40d3-8757-230788677472@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Thu, 22 Jul 2021 01:13:40 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 434F91FEEF;
+        Thu, 22 Jul 2021 05:54:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626933255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nEQOsUBhG7WuceEdafdVcMY/cqYyTJYTe4BOBvgIZgM=;
+        b=FzsAUuKT9FbQwXQ3KEtoHkP8PVj0LRaZb5nqfoPxY3v5XjScaLtY3LhudrgyZU2GbiAwgf
+        CocoqrB672lsxB8PS2NDLR7blctdZlwgyuie4K+bWvT2nxPYmoQb5wEta7gn1mgsyLs0Ze
+        1thGT4zbJ4gVye4yLA8Kw5OaR7/VCsQ=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id DFDFA13299;
+        Thu, 22 Jul 2021 05:54:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id pPCSMwYI+WB6aQAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Thu, 22 Jul 2021 05:54:14 +0000
+Subject: Re: [PATCH] lib/string: Bring optimized memcmp from glibc
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        David Sterba <dsterba@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>
+References: <20210721135926.602840-1-nborisov@suse.com>
+ <CAHk-=whqJKKc9wUacLEkvTzXYfYOUDt=kHKX6Fa8Kb4kQftbbQ@mail.gmail.com>
+ <20210721201029.GQ19710@twin.jikos.cz>
+ <CAHk-=whCygw44p30Pmf+Bt8=LVtmij3_XOxweEA3OQNruhMg+A@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <792949a2-d987-f6a0-a153-8c5fe1e3a073@suse.com>
+Date:   Thu, 22 Jul 2021 08:54:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=whCygw44p30Pmf+Bt8=LVtmij3_XOxweEA3OQNruhMg+A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Jul 2021 19:14:20 PDT (-0700), bmeng.cn@gmail.com wrote:
-> On Thu, Jul 8, 2021 at 9:29 PM Bin Meng <bmeng.cn@gmail.com> wrote:
+
+
+On 21.07.21 г. 23:27, Linus Torvalds wrote:
+> On Wed, Jul 21, 2021 at 1:13 PM David Sterba <dsterba@suse.cz> wrote:
 >>
->> Hi Palmer,
->>
->> On Thu, Jul 1, 2021 at 10:20 AM Bin Meng <bmeng.cn@gmail.com> wrote:
->> >
->> > On Thu, Jul 1, 2021 at 10:08 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->> > >
->> > >
->> > > On 2021/6/30 19:58, Bin Meng wrote:
->> > > > On Mon, Jun 28, 2021 at 11:21 AM Bin Meng <bmeng.cn@gmail.com> wrote:
->> > > >> On Mon, Jun 28, 2021 at 10:28 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->> > > >>>
->> > > >>> On 2021/6/28 9:15, Bin Meng wrote:
->> > > >>>> On Mon, Jun 28, 2021 at 8:53 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->> > > >>>>> Hi， sorry for the mistake，the bug is fixed by
->> > > >>>>>
->> > > >>>>> https://lore.kernel.org/linux-riscv/20210602085517.127481-2-wangkefeng.wang@huawei.com/
->> > > >>>> What are we on the patch you mentioned?
->> > > >>>>
->> > > >>>> I don't see it applied in the linux/master.
->> > > >>>>
->> > > >>>> Also there should be a "Fixes" tag and stable@vger.kernel.org cc'ed
->> > > >>>> because 32-bit is broken since v5.12.
->> > > >>> https://kernel.googlesource.com/pub/scm/linux/kernel/git/riscv/linux/+/c9811e379b211c67ba29fb09d6f644dd44cfcff2
->> > > >>>
->> > > >>> it's on Palmer' riscv-next.
->> > > >> Not sure riscv-next is for which release? This is a regression and
->> > > >> should be on 5.13.
->> > > >>
->> > > >>> Hi Palmer, should I resend or could you help me to add the fixes tag?
->> > > > Your patch mixed 2 things (fix plus one feature) together, so it is
->> > > > not proper to back port your patch.
->> > >
->> > > "mem=" will change the range of memblock, so the fix part must be included.
->> > >
->> >
->> > Yes, so you can rebase the "mem=" changes on top of my patch.
->> >
->> > The practice is that we should not mix 2 things in one patch. I can
->> > imagine that you wanted to add "mem=" to RISC-V and suddenly found the
->> > existing logic was broken, so you sent one patch to do both.
->> >
->> > >
->> > > >
->> > > > Here is my 2 cents:
->> > > >
->> > > > 1. Drop your patch from riscv-next
->> > > > 2. Apply my patch as it is a simple fix to previous commit. This
->> > > > allows stable kernel to cherry-pick the fix to v5.12 and v5.13.
->> > > > 3. Rebase your patch against mine, and resend v2
->> > > >
->> > > > Let me know if this makes sense.
->> > >
->> > > It is not a big problem for me, but I have no right abourt riscv-next,
->> > >
->> > > let's wait Palmer's advise.
->> > >
->> >
->> > Sure. Palmer, let me know your thoughts.
->>
->> Ping?
->
-> Ping?
+>> adding a memcmp_large that compares by native words or u64 could be
+>> the best option.
+> 
+> Yeah, we could just special-case that one place.
 
-Sorry, I missed this one.  It looks like the patch that adds mem= and 
-fixes the bug has already been merged, so I'm not really quite sure what 
-the right thing to do is here: we don't really want the mem= code on 
-stable, but we do want the fix.  I went ahead and did
+This who thread started because I first implemented a special case just
+for dedupe and Dave Chinner suggested instead of playing whack-a-mole to
+get something decent for the generic memcmp so that we get an
+improvement across the whole of the kernel.
 
-commit 444818b599189fd8b6c814da542ff8cfc9fe67d4 (HEAD -> fixes, palmer/fixes)
-gpg: Signature made Wed 21 Jul 2021 10:21:05 PM PDT
-gpg:                using RSA key 2B3C3747446843B24A943A7A2E1319F35FBB1889
-gpg:                issuer "palmer@dabbelt.com"
-gpg: Good signature from "Palmer Dabbelt <palmer@dabbelt.com>" [ultimate]
-gpg:                 aka "Palmer Dabbelt <palmerdabbelt@google.com>" [ultimate]
-Merge: e73f0f0ee754 d0e4dae74470
-Author: Palmer Dabbelt <palmerdabbelt@google.com>
-Date:   Wed Jul 21 22:18:58 2021 -0700
-
-    Merge remote-tracking branch 'riscv/riscv-fix-32bit' into fixes
-
-    This contains a single fix for 32-bit boot.  It happens this was already
-    fixed by c9811e379b21 ("riscv: Add mem kernel parameter support"), but
-    the bug existed before that feature addition so I've applied the patch
-    earlier and then merged it in (which results in a conflict, which is
-    fixed via not changing the resulting tree).
-
-    * riscv/riscv-fix-32bit:
-      riscv: Fix 32-bit RISC-V boot failure
-
-as that"s the best I could come up with -- then the fix will land on 
-master, which should cause it to get pulled onto stable.
-
-Greg: is there a better way to make something like this get to stable?
+> 
+> But see the patches I sent out - I think we can get the best of both worlds.
+> 
+> A small and simple memcmp() that is good enough and not the
+> _completely_ stupid thing we have now.
+> 
+> The second patch I sent out even gets the mutually aligned case right.
+> 
+> Of course, the glibc code also ended up unrolling things a bit, but
+> honestly, the way it did it was too disgusting for words.
+> 
+> And if it really turns out that the unrolling makes a big difference -
+> although I doubt it's meaningful with any modern core - I can add a
+> couple of lines to that simple patch I sent out to do that too.
+> Without getting the monster that is that glibc code.
+> 
+> Of course, my patch depends on the fact that "get_unaligned()" is
+> cheap on all CPU's that really matter, and that caches aren't
+> direct-mapped any more. The glibc code seems to be written for a world
+> where registers are cheap, unaligned accesses are prohibitively
+> expensive, and unrolling helps because L1 caches are direct-mapped and
+> you really want to do chunking to not get silly way conflicts.
+> 
+> If old-style Sparc or MIPS was our primary target, that would be one
+> thing. But it really isn't.
+> 
+>               Linus
+> 
