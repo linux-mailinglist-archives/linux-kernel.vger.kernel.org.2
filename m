@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5868F3D29FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A867A3D289C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234616AbhGVQHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:07:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39726 "EHLO mail.kernel.org"
+        id S233127AbhGVP5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:57:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233324AbhGVQEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:04:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5CC561CC2;
-        Thu, 22 Jul 2021 16:44:31 +0000 (UTC)
+        id S232743AbhGVP4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:56:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F32F60FDA;
+        Thu, 22 Jul 2021 16:36:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972272;
-        bh=F2JytO9c1WB6KQLXbwzXwCJnwm4B9ZBXTwzvFgQcCFE=;
+        s=korg; t=1626971815;
+        bh=ZiOA/s70WvjpgZ6/0vN/EYqWGOePlUMZE4g9aDxbIDg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yke/+HLUNjj8Edk3jawEA+BQp4h0QTItQbme8xWV/1e9gFg4rvXLCT7R0+M/nW7IX
-         q9Ik8OvAQqahkLaqSKeqKmq4D+xvB8z+behpP1OR+WpSFIQciuKZmyKByoxyXt89uM
-         cgk0204LnIhBW8jYMduSS0VIUNHNNMSc/PwN5KYQ=
+        b=1xZpr/0GMA0DuIZgReGIQzU71x2TiXPVerk6afAEPTMOfvU3bAq1DME5iZrIMXz94
+         KWmID2ShO4HGj6GKql+52XiH9T2xe3kCUvUuCD5g0D0ujSx0yB3/nm3gx9V+eWDPe9
+         Tg8QvzT0ZSq9efegCPRqQoG36MjAfZ0NxdzUEDZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Grzegorz Szymaszek <gszymaszek@short.pl>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 052/156] ARM: dts: stm32: fix stm32mp157c-odyssey card detect pin
+Subject: [PATCH 5.10 036/125] ARM: tegra: wm8903: Fix polarity of headphones-detection GPIO in device-trees
 Date:   Thu, 22 Jul 2021 18:30:27 +0200
-Message-Id: <20210722155630.096810235@linuxfoundation.org>
+Message-Id: <20210722155625.894412591@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grzegorz Szymaszek <gszymaszek@short.pl>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit 0171b07373cc8c2815ca5fa79a7308fdefa54ca4 ]
+[ Upstream commit 5f45da704de425d74abd75feaa928fc8a3df03ba ]
 
-The microSD card detect pin is physically connected to the MPU pin PI3.
-The Device Tree configuration of the card detect pin was wrong—it was
-set to pin PB7 instead. If such configuration was used, the kernel would
-hang on “Waiting for root device” when booting from a microSD card.
+All Tegra boards which use WM8903 audio codec are specifying a wrong
+polarity for the headphones detection GPIO. The kernel driver hardcodes
+the polarity to active-low, which is the correct polarity, so we can fix
+the device-trees safely.
 
-Signed-off-by: Grzegorz Szymaszek <gszymaszek@short.pl>
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp157c-odyssey.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 2 +-
+ arch/arm/boot/dts/tegra20-harmony.dts           | 2 +-
+ arch/arm/boot/dts/tegra20-medcom-wide.dts       | 2 +-
+ arch/arm/boot/dts/tegra20-plutux.dts            | 2 +-
+ arch/arm/boot/dts/tegra20-seaboard.dts          | 2 +-
+ arch/arm/boot/dts/tegra20-tec.dts               | 2 +-
+ arch/arm/boot/dts/tegra20-ventana.dts           | 2 +-
+ arch/arm/boot/dts/tegra30-cardhu.dtsi           | 2 +-
+ 8 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey.dts b/arch/arm/boot/dts/stm32mp157c-odyssey.dts
-index a7ffec8f1516..be1dd5e9e744 100644
---- a/arch/arm/boot/dts/stm32mp157c-odyssey.dts
-+++ b/arch/arm/boot/dts/stm32mp157c-odyssey.dts
-@@ -64,7 +64,7 @@
- 	pinctrl-0 = <&sdmmc1_b4_pins_a>;
- 	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
- 	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
--	cd-gpios = <&gpiob 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-+	cd-gpios = <&gpioi 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
- 	disable-wp;
- 	st,neg-edge;
- 	bus-width = <4>;
+diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
+index 068aabcffb13..5d0f0fbba1d2 100644
+--- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
++++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
+@@ -1009,7 +1009,7 @@
+ 		nvidia,audio-codec = <&wm8903>;
+ 
+ 		nvidia,spkr-en-gpios = <&wm8903 2 GPIO_ACTIVE_HIGH>;
+-		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_HIGH>;
++		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_LOW>;
+ 		nvidia,int-mic-en-gpios = <&wm8903 1 GPIO_ACTIVE_HIGH>;
+ 		nvidia,headset;
+ 
+diff --git a/arch/arm/boot/dts/tegra20-harmony.dts b/arch/arm/boot/dts/tegra20-harmony.dts
+index 86494cb4d5a1..ae4312eedcbd 100644
+--- a/arch/arm/boot/dts/tegra20-harmony.dts
++++ b/arch/arm/boot/dts/tegra20-harmony.dts
+@@ -748,7 +748,7 @@
+ 
+ 		nvidia,spkr-en-gpios = <&wm8903 2 GPIO_ACTIVE_HIGH>;
+ 		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2)
+-			GPIO_ACTIVE_HIGH>;
++			GPIO_ACTIVE_LOW>;
+ 		nvidia,int-mic-en-gpios = <&gpio TEGRA_GPIO(X, 0)
+ 			GPIO_ACTIVE_HIGH>;
+ 		nvidia,ext-mic-en-gpios = <&gpio TEGRA_GPIO(X, 1)
+diff --git a/arch/arm/boot/dts/tegra20-medcom-wide.dts b/arch/arm/boot/dts/tegra20-medcom-wide.dts
+index a348ca30e522..b31c9bca16e6 100644
+--- a/arch/arm/boot/dts/tegra20-medcom-wide.dts
++++ b/arch/arm/boot/dts/tegra20-medcom-wide.dts
+@@ -84,7 +84,7 @@
+ 		nvidia,audio-codec = <&wm8903>;
+ 
+ 		nvidia,spkr-en-gpios = <&wm8903 2 GPIO_ACTIVE_HIGH>;
+-		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_HIGH>;
++		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_LOW>;
+ 
+ 		clocks = <&tegra_car TEGRA20_CLK_PLL_A>,
+ 			 <&tegra_car TEGRA20_CLK_PLL_A_OUT0>,
+diff --git a/arch/arm/boot/dts/tegra20-plutux.dts b/arch/arm/boot/dts/tegra20-plutux.dts
+index 378f23b2958b..5811b7006a9b 100644
+--- a/arch/arm/boot/dts/tegra20-plutux.dts
++++ b/arch/arm/boot/dts/tegra20-plutux.dts
+@@ -52,7 +52,7 @@
+ 		nvidia,audio-codec = <&wm8903>;
+ 
+ 		nvidia,spkr-en-gpios = <&wm8903 2 GPIO_ACTIVE_HIGH>;
+-		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_HIGH>;
++		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_LOW>;
+ 
+ 		clocks = <&tegra_car TEGRA20_CLK_PLL_A>,
+ 			 <&tegra_car TEGRA20_CLK_PLL_A_OUT0>,
+diff --git a/arch/arm/boot/dts/tegra20-seaboard.dts b/arch/arm/boot/dts/tegra20-seaboard.dts
+index c24d4a37613e..92d494b8c3d2 100644
+--- a/arch/arm/boot/dts/tegra20-seaboard.dts
++++ b/arch/arm/boot/dts/tegra20-seaboard.dts
+@@ -911,7 +911,7 @@
+ 		nvidia,audio-codec = <&wm8903>;
+ 
+ 		nvidia,spkr-en-gpios = <&wm8903 2 GPIO_ACTIVE_HIGH>;
+-		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(X, 1) GPIO_ACTIVE_HIGH>;
++		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(X, 1) GPIO_ACTIVE_LOW>;
+ 
+ 		clocks = <&tegra_car TEGRA20_CLK_PLL_A>,
+ 			 <&tegra_car TEGRA20_CLK_PLL_A_OUT0>,
+diff --git a/arch/arm/boot/dts/tegra20-tec.dts b/arch/arm/boot/dts/tegra20-tec.dts
+index 44ced60315de..10ff09d86efa 100644
+--- a/arch/arm/boot/dts/tegra20-tec.dts
++++ b/arch/arm/boot/dts/tegra20-tec.dts
+@@ -61,7 +61,7 @@
+ 
+ 		nvidia,spkr-en-gpios = <&wm8903 2 GPIO_ACTIVE_HIGH>;
+ 		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2)
+-			GPIO_ACTIVE_HIGH>;
++			GPIO_ACTIVE_LOW>;
+ 
+ 		clocks = <&tegra_car TEGRA20_CLK_PLL_A>,
+ 			 <&tegra_car TEGRA20_CLK_PLL_A_OUT0>,
+diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/tegra20-ventana.dts
+index 055334ae3d28..fe400fb84f02 100644
+--- a/arch/arm/boot/dts/tegra20-ventana.dts
++++ b/arch/arm/boot/dts/tegra20-ventana.dts
+@@ -686,7 +686,7 @@
+ 		nvidia,audio-codec = <&wm8903>;
+ 
+ 		nvidia,spkr-en-gpios = <&wm8903 2 GPIO_ACTIVE_HIGH>;
+-		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_HIGH>;
++		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_LOW>;
+ 		nvidia,int-mic-en-gpios = <&gpio TEGRA_GPIO(X, 0)
+ 			GPIO_ACTIVE_HIGH>;
+ 		nvidia,ext-mic-en-gpios = <&gpio TEGRA_GPIO(X, 1)
+diff --git a/arch/arm/boot/dts/tegra30-cardhu.dtsi b/arch/arm/boot/dts/tegra30-cardhu.dtsi
+index dab9989fa760..57aead7d8162 100644
+--- a/arch/arm/boot/dts/tegra30-cardhu.dtsi
++++ b/arch/arm/boot/dts/tegra30-cardhu.dtsi
+@@ -589,7 +589,7 @@
+ 
+ 		nvidia,spkr-en-gpios = <&wm8903 2 GPIO_ACTIVE_HIGH>;
+ 		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2)
+-			GPIO_ACTIVE_HIGH>;
++			GPIO_ACTIVE_LOW>;
+ 
+ 		clocks = <&tegra_car TEGRA30_CLK_PLL_A>,
+ 			 <&tegra_car TEGRA30_CLK_PLL_A_OUT0>,
 -- 
 2.30.2
 
