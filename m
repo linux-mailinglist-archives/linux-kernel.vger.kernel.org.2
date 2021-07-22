@@ -2,147 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749C93D2B0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F433D2B11
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbhGVQma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:42:30 -0400
-Received: from mail-mw2nam10on2071.outbound.protection.outlook.com ([40.107.94.71]:41825
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229453AbhGVQm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:42:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qm9IjCPCjA9B2zCsQayjtTFOTg2iFcWzTJKFHVCOj5pVBAzhiNxUXmVZCXb6ww4Boo/uvus1wF+pzZvX0l9vIs3aihZEM4WJqRYG4l7uBGdqKlSIHNfoGEKwUI23HkfgroTUKuZGVSpWXFdSq0eDfess5O17CcqW7SCtLMrnv+2q+yUjtKnA5hN30rrTA6EVMtQU7nlDM5sfIJN+ViIs0O65imy4xIce6TJop2EG5ALNxEMoQQ/oyCYR0r8eqekkZW/yPG0MOtajGnM/ZfTmEaEg5jYbRJpWMJNV2c7x+vIeJwLOC5Zgb9nCRmiLuGCnajOC6yWtwOQr4Ir1Z2SitA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cPBsGasY24YVR4aWVX1PXSwoQjhYfRNwd51+ZHzLW6Q=;
- b=KNndA+CYIOA3jrIcsLQ5MiW4Jlr8O+H/19zDETwHpTclZSP22mDVL0yGKDQBTyulPZDT85zicKMwoicy0Z81XKa3CgZuYZx/uvuhR6PH1TnTQUttsNMiJoELzYSi4YCkMk9UwbXR9cR3jfzpNebcqmD28OZhoR9Xd5IrOuLHR2MMecRh19HrGFelMzYEt1L/cQeetZEJ8D3C/pW1PLskWoJeYiaJK3/XnmnUsWG73+/QF/RE+pAYQuU0tt/zevAnJybbUo69JUk+RuY5ma+6FqAO7b/3CqDAskc2ADppOxfMS/CxdF/1YDyNBZyFyxQMAxMtizVHXrmYXgxBoqy9pw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cPBsGasY24YVR4aWVX1PXSwoQjhYfRNwd51+ZHzLW6Q=;
- b=p+eOli7cbq+vkNgE3eSRxQ54TnAY7bM1SKassOvlUol2G4g/9UnF5jpDsahFxrRdLNzjxn6AfDSBHIAnT5GNLHMlf9k6I6BNWZoWgGZ3r7wle4jbGEE5g05sQjBnurjMNWW8ydQZz+ZkT2REkgTEacz6i9j3k7IRWwTLsYuH/1gIhdYTskcQT7wuaIeL+PY/H6n+fraXLBqGhLUEioXyPLyzC5fLaAGc2zGNQGH5VKW6Br9mkDBHKMo64HtjML2ZELpLlKX1ayjSFo7plDFoDqjPtL6Zrq+08ZgRCZ5pacnP5CRYwue0iL8GqKHGLjizrnTI7UblERV9UhL03kJaZQ==
-Received: from MWHPR10CA0052.namprd10.prod.outlook.com (2603:10b6:300:2c::14)
- by MWHPR12MB1759.namprd12.prod.outlook.com (2603:10b6:300:113::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.24; Thu, 22 Jul
- 2021 17:23:01 +0000
-Received: from CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:2c:cafe::19) by MWHPR10CA0052.outlook.office365.com
- (2603:10b6:300:2c::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25 via Frontend
- Transport; Thu, 22 Jul 2021 17:23:01 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT061.mail.protection.outlook.com (10.13.175.200) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4352.24 via Frontend Transport; Thu, 22 Jul 2021 17:23:01 +0000
-Received: from [10.26.49.10] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Jul
- 2021 17:22:59 +0000
-Subject: Re: [PATCH] memory: tegra: fix unused-function warning
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     Arnd Bergmann <arnd@arndb.de>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>
-References: <20210722090748.1157470-1-arnd@kernel.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <84920cc2-f5ba-133b-8b2c-f7d2c69eaad3@nvidia.com>
-Date:   Thu, 22 Jul 2021 18:22:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229861AbhGVQpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:45:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhGVQpc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:45:32 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A85BC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:26:06 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id t20so8332468ljd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fuOs6XPM+Q3/Q5FSz5nCr0Y7zobhha2fUoijl6Bu2BA=;
+        b=KFfv4h+yMAYsYLHv2rATQrjCbiBMCJfoJq06Mxs5adn4YXCUe5Em+QXV2L39tUNSrB
+         U347JBxT1yLJyFZ42neWsvHQuPeAHuKxSytJ0HXTxmSrn4JEyYp7NMI2Qe8Div/6cou3
+         HeWdJgKNMLJ+OM2KBu7XYNy40nFYwWFlqVmPk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fuOs6XPM+Q3/Q5FSz5nCr0Y7zobhha2fUoijl6Bu2BA=;
+        b=OXA6bOfxG4/bktdtuTPI+0lGWyohVYRol3tlypka/0I+jymzdxv0iF9x0fu8imADHQ
+         R3JYxzSlyQih8nWtHuAVinnpH4enpAkS3FSgZmsjr6HXTb1bk183oVEOoJaZYu5P1x6M
+         tDIIp5y3qV2E6fQh+ZWH1C9c3hZcOe3zcI5hn60ppgBx2V+xAViS0tOR/FmtRgjW8/Wa
+         b6eI0jrigsVLKF/2VNV2OBmvJ7KewX0ttRTJUDFfqHUL+wJOFG9juCjZf6v1Esu6aAlI
+         1m1/mYy+bqYpYdYN7CLtkJmnbaDJx4oXu3I50EayR/G6hycMnqS7LraWCOsIA9IVZt3W
+         drRA==
+X-Gm-Message-State: AOAM531MuwdxFKEyNRnEMzBSPt4cYWYa9OvjrI/z0ar2o3yaWRBVZqvV
+        bsGhib4pQxpAuYQ1vFi8lhOgprxWG/ic41+DMWA=
+X-Google-Smtp-Source: ABdhPJw1NtJNOqrVb1j7HgR/GAP8hmsGsLuolH+6CY+yfsMXJ9mPhYXmWKlk3b100o2XfxEBdEyIMA==
+X-Received: by 2002:a2e:a164:: with SMTP id u4mr703036ljl.121.1626974763010;
+        Thu, 22 Jul 2021 10:26:03 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id bp40sm1978236lfb.221.2021.07.22.10.26.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Jul 2021 10:26:02 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id a12so9653696lfb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:26:02 -0700 (PDT)
+X-Received: by 2002:a05:6512:2388:: with SMTP id c8mr330523lfv.201.1626974761892;
+ Thu, 22 Jul 2021 10:26:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210722090748.1157470-1-arnd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3587c724-51fc-4a1a-a967-08d94d355b87
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1759:
-X-Microsoft-Antispam-PRVS: <MWHPR12MB1759035D6B13B4C2EBB7CD65D9E49@MWHPR12MB1759.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1UmrCKl2cgWvq16DR0lZDXP+PySc+ry0fY9GeEoXjAr7UToaR/7FACIv7YFbtm5Sj1eM9fkUtmTJb7BTvItXCYUFRzdnZmGXSzrx2pkyw0tC6zfUipJUuvwPFex/vXg9tYw3H8othxBJEw31qDcBM2T09tH1PTAbbMH0IZuCoM7fZf6BijvNp+0ZfUXT5R4WCaP4zdcPeLaUbNDovBIsUgoAO2A++udA1yk1PGuLoDfB2mgqYRA/dNwwFCUcTGprc+C8VSyM6IfuR3Uc3JGj2xNEAyr+hHZonQB0r+ZkXrSDnR/Si0xajI8p5wi8Y6lzTRfQcJYDeLUJ2LucRc702XJffNTzwpGC4sPL6zsaGx2CHp1MAwq9Dbfj7BNP5M4WfFsWeUlwgkksk9Rb4GBpakvQF6S1fkIfvzOSxAtiTZncYfIm2bFYwQKZqJy+HJybOBQUUhhRbizpQV+mY22vWsyN8jKPo+8sjJ7ID41K1bkNyqu21F/b8HBVdtFVsLfK2qYntLwvhMyo6afM3MIIM3uoSsPOVG412EL8exqzece1h6dlxtWlO7SQ2pO1g8xd7fXKKBL5+x7Bsej0PMQYNVRgOgw4eaOLi4BD9i6Bbtg+dMTGu1hUKh9uxfH8+/dw2jviprS7utJwE3L/1JSxWcJJ1IJ13cYe8HbC/UwkN7bzOQa7/EDeFHCJdrwJwRlVmBQ32a0P21N+mpPdPVVtuor6M3zi+AC5IlwfT308IvU=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(396003)(346002)(36840700001)(46966006)(4326008)(31686004)(82310400003)(36860700001)(82740400003)(70206006)(26005)(31696002)(7636003)(5660300002)(186003)(2616005)(356005)(54906003)(86362001)(8936002)(478600001)(53546011)(16576012)(316002)(16526019)(70586007)(8676002)(36756003)(47076005)(110136005)(426003)(2906002)(336012)(83380400001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2021 17:23:01.2619
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3587c724-51fc-4a1a-a967-08d94d355b87
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1759
+References: <20210722140949.3knhduxozzaido2r@liuwe-devbox-debian-v2>
+In-Reply-To: <20210722140949.3knhduxozzaido2r@liuwe-devbox-debian-v2>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 22 Jul 2021 10:25:46 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wirFvNqAvaNaABHc2mi7FKL4n6TEAwQ3WTyTJueJcHCvA@mail.gmail.com>
+Message-ID: <CAHk-=wirFvNqAvaNaABHc2mi7FKL4n6TEAwQ3WTyTJueJcHCvA@mail.gmail.com>
+Subject: Re: [GIT PULL] Hyper-V fixes for 5.14-rc3
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        kys@microsoft.com, Stephen Hemminger <sthemmin@microsoft.com>,
+        haiyangz@microsoft.com, decui@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 22, 2021 at 7:09 AM Wei Liu <wei.liu@kernel.org> wrote:
+>
+>   - Reversion of a bogus patch that went into 5.14-rc1
 
-On 22/07/2021 10:07, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The tegra186_mc_client_sid_override() is only called from
-> an #ifdef block:
-> 
-> drivers/memory/tegra/tegra186.c:74:13: error: 'tegra186_mc_client_sid_override' defined but not used [-Werror=unused-function]
->    74 | static void tegra186_mc_client_sid_override(struct tegra_mc *mc,
->       |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Add another #ifdef around the called function.
-> 
-> Fixes: 393d66fd2cac ("memory: tegra: Implement SID override programming")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/memory/tegra/tegra186.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/memory/tegra/tegra186.c b/drivers/memory/tegra/tegra186.c
-> index e65eac5764d4..3d153881abc1 100644
-> --- a/drivers/memory/tegra/tegra186.c
-> +++ b/drivers/memory/tegra/tegra186.c
-> @@ -71,6 +71,7 @@ static int tegra186_mc_resume(struct tegra_mc *mc)
->  	return 0;
->  }
->  
-> +#if IS_ENABLED(CONFIG_IOMMU_API)
->  static void tegra186_mc_client_sid_override(struct tegra_mc *mc,
->  					    const struct tegra_mc_client *client,
->  					    unsigned int sid)
-> @@ -108,6 +109,7 @@ static void tegra186_mc_client_sid_override(struct tegra_mc *mc,
->  		writel(sid, mc->regs + client->regs.sid.override);
->  	}
->  }
-> +#endif
->  
->  static int tegra186_mc_probe_device(struct tegra_mc *mc, struct device *dev)
->  {
-> 
+When doing a revert, please explain it.
 
+Yes, they are simple in the sense that they just undo something, but
+at the same time, that "something" was done for a reason, and the
+reason why that original change was wrong, and how it was noticed (ie
+what the symptoms of the reverted patch were) is important.
 
-Acked-by: Jon Hunter <jonathanh@nvidia.com>
+I've pulled this, so it's too late now, but please please please
+explain reverts in the future, not just a "This reverts commit XYZ".
 
-Thanks for fixing!
-
-Jon
-
--- 
-nvpublic
+                     Linus
