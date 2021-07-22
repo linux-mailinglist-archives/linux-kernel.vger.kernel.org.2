@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E99C3D1DF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822FD3D1DFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhGVF0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 01:26:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229502AbhGVF0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 01:26:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB3AF6120C;
-        Thu, 22 Jul 2021 06:06:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626934001;
-        bh=p/2Uc5VBVsF31pzvmQeIG0ihbNJEza0BqK/3Fxmnvgo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RKmYbK8pUIX0h9+BRZAG4KNlffU0luYQLtgeTrDMnOHoi2hw3f007IKGescfM/T12
-         3vKvJFOcJYlAW0LZ2OMaysmQ0nnyqSsWT51GEXzmR0kpUK3c2Z7GNpRfHT/p6Gj/ks
-         CgMYSUQSeKtpEAV7Q0r4m1voLhLzGWbqL+tls0OM=
-Date:   Thu, 22 Jul 2021 08:06:37 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jie Deng <jie.deng@intel.com>, wsa@kernel.org,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa+renesas@sang-engineering.com,
-        mst@redhat.com, arnd@arndb.de, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, yu1.wang@intel.com,
-        shuo.a.liu@intel.com, conghui.chen@intel.com, stefanha@redhat.com
-Subject: Re: [PATCH v14] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YPkK7RlufYj1b+2f@kroah.com>
-References: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
- <20210722051433.3f2ix75wbi5pphp2@vireshk-i7>
+        id S230286AbhGVF0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 01:26:39 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:12285 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229967AbhGVF0h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 01:26:37 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GVhgX4YFVz7vf1;
+        Thu, 22 Jul 2021 14:02:32 +0800 (CST)
+Received: from dggpemm500016.china.huawei.com (7.185.36.25) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 14:07:09 +0800
+Received: from DESKTOP-2MIM39K.china.huawei.com (10.67.101.83) by
+ dggpemm500016.china.huawei.com (7.185.36.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 14:07:09 +0800
+From:   Yuchen Wei <weiyuchen3@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>
+CC:     <mark.rutland@arm.com>, <vincenzo.frascino@arm.com>,
+        <keescook@chromium.org>, <pcc@google.com>, <weiyuchen3@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] arm64: audit: fix return value high 32bit truncation problem
+Date:   Thu, 22 Jul 2021 14:07:07 +0800
+Message-ID: <20210722060707.531-1-weiyuchen3@huawei.com>
+X-Mailer: git-send-email 2.31.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210722051433.3f2ix75wbi5pphp2@vireshk-i7>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.101.83]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500016.china.huawei.com (7.185.36.25)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 10:44:33AM +0530, Viresh Kumar wrote:
-> On 09-07-21, 10:25, Jie Deng wrote:
-> > Add an I2C bus driver for virtio para-virtualization.
-> > 
-> > The controller can be emulated by the backend driver in
-> > any device model software by following the virtio protocol.
-> > 
-> > The device specification can be found on
-> > https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
-> > 
-> > By following the specification, people may implement different
-> > backend drivers to emulate different controllers according to
-> > their needs.
-> > 
-> > Co-developed-by: Conghui Chen <conghui.chen@intel.com>
-> > Signed-off-by: Conghui Chen <conghui.chen@intel.com>
-> > Signed-off-by: Jie Deng <jie.deng@intel.com>
-> > ---
-> > Changes v13 -> v14
-> > 	- Put the headers in virtio_i2c.h in alphabetical order.
-> > 	- Dropped I2C_FUNC_SMBUS_QUICK support.
-> > 	- Dropped few unnecessary variables and checks.
-> > 	- Use "num" everywhere instead of num or nr, to be consistent.
-> > 	- Added few comments which make the design more clear. 
-> 
-> Wolfram,
-> 
-> Is it still possible to queue this for 5.14 ?
+From: weiyuchen <weiyuchen3@huawei.com>
 
-No new features are allowed for 5.14, you know this.  It's but fixes
-only now.
+Add error code judgment in invoke_syscall() to prevent kernel
+components such as audit and tracepoint from obtaining incorrect
+return values. For example:
 
-thanks,
+type=SYSCALL msg=audit(342.780:69): arch=40000028 syscall=235
+success=yes exit=4294967235
 
-greg k-h
+The syscall return value is -61, but due to the following process in
+invoke_syscall():
+
+	if (is_compat_task())
+		ret = lower_32_bits(ret);
+	regs->regs[0] = ret;
+
+The return value audit or tracepoint get from regs[0] is 4294967235,
+which is an incorrect return value.
+
+Signed-off-by: weiyuchen <weiyuchen3@huawei.com>
+---
+ arch/arm64/kernel/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
+index 263d6c1a525f..f9f042d9a088 100644
+--- a/arch/arm64/kernel/syscall.c
++++ b/arch/arm64/kernel/syscall.c
+@@ -54,7 +54,7 @@ static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
+ 		ret = do_ni_syscall(regs, scno);
+ 	}
+ 
+-	if (is_compat_task())
++	if (is_compat_task() && !IS_ERR_VALUE(ret))
+ 		ret = lower_32_bits(ret);
+ 
+ 	regs->regs[0] = ret;
+-- 
+2.12.3
+
