@@ -2,191 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00F73D269E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FC63D26A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbhGVOoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 10:44:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232465AbhGVOoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 10:44:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B10861029;
-        Thu, 22 Jul 2021 15:24:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626967476;
-        bh=D3DCd79KMbS6Af7mk2Jiy5QA+wt84B2YDIvpNYBuVqo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p6OZugovV5VEUJEDP6fSHCOwSxm4LNgKXZ79Iyd2oRgRvVEmtGNL63JxLcaD9T5tQ
-         wU0998+H3c8n6jjep/bVikweNEs7NE5elVQOgy4t3VKxNwrZOsJyiO96A8MgmwfohX
-         m9uiMxpi6Yigi1871t5p6mfyOPWsZWeQJhgmmMxm7PmiPAFuSm7h6CNsoMeXELHQdb
-         gOezVmu6colPi4HZ4H5R8awdj+GnhZIWgLCDUFqAI6fFfTkVmyXY4OSmsY6Qs7a7fY
-         2wZTpZS1z1RIKBETxZmo8YVoYmvck6U9D/h+LkYMShiZLDbUVU/a3rs7e3Ii5ds8ZI
-         QODVjwg/WgjWQ==
-Date:   Fri, 23 Jul 2021 00:24:33 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH v2 1/2] tracing: Have histogram types be constant when
- possible
-Message-Id: <20210723002433.8abeddba573035f0b7b21739@kernel.org>
-In-Reply-To: <20210722142837.280718447@goodmis.org>
-References: <20210722142705.992001628@goodmis.org>
-        <20210722142837.280718447@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232540AbhGVOtl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 10:49:41 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:34661 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232138AbhGVOtj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 10:49:39 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-154-E8XI6R9BMwq2Wfp8lcAmRg-1; Thu, 22 Jul 2021 16:30:10 +0100
+X-MC-Unique: E8XI6R9BMwq2Wfp8lcAmRg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Thu, 22 Jul 2021 16:30:09 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Thu, 22 Jul 2021 16:30:09 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Fabio M. De Francesco'" <fmdefrancesco@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 1/2] staging: rtl8188eu: Replace a custom function with
+ crc32_le()
+Thread-Topic: [PATCH v3 1/2] staging: rtl8188eu: Replace a custom function
+ with crc32_le()
+Thread-Index: AQHXfiEvucvRPynR106nc+5J/iJ13qtPHROQ
+Date:   Thu, 22 Jul 2021 15:30:08 +0000
+Message-ID: <f396ffee4a414ee092625ee486b871fe@AcuMS.aculab.com>
+References: <20210721110052.26376-1-fmdefrancesco@gmail.com>
+ <20210721110052.26376-2-fmdefrancesco@gmail.com>
+In-Reply-To: <20210721110052.26376-2-fmdefrancesco@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Jul 2021 10:27:06 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: Fabio M. De Francesco
+> Sent: 21 July 2021 12:01
 > 
-> Instead of kstrdup("const", GFP_KERNEL), have the hist_field type simply
-> assign the constant hist_field->type = "const"; And when the value passed
-> to it is a variable, use "kstrdup_const(var, GFP_KERNEL);" which will just
-> copy the value if the variable is already a constant. This saves on having
-> to allocate when not needed.
+> Use crc32_le() in place of the custom getcrc32().
 > 
-> All frees of the hist_field->type will need to use kfree_const().
+...
+> @@ -609,14 +595,15 @@ u32	rtw_tkip_encrypt(struct adapter *padapter, struct xmit_frame
+> *pxmitframe)
 > 
-
-Thanks! This looks good to me.
-
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-
-> Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace_events_hist.c | 32 ++++++++++++++------------------
->  1 file changed, 14 insertions(+), 18 deletions(-)
+>  				if ((curfragnum + 1) == pattrib->nr_frags) {	/* 4 the last fragment */
+>  					length = pattrib->last_txcmdsz - pattrib->hdrlen - pattrib->iv_len -
+> pattrib->icv_len;
+> -					*((__le32 *)crc) = getcrc32(payload, length);/* modified by Amy*/
+> +					*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length));
 > 
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index 34325f41ebc0..5c9082201bc2 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -1589,7 +1589,9 @@ static void __destroy_hist_field(struct hist_field *hist_field)
->  
->  	kfree(hist_field->var.name);
->  	kfree(hist_field->name);
-> -	kfree(hist_field->type);
+>  					arcfour_init(&mycontext, rc4key, 16);
+>  					arcfour_encrypt(&mycontext, payload, payload, length);
+>  					arcfour_encrypt(&mycontext, payload + length, crc, 4);
+>  				} else {
+>  					length = pxmitpriv->frag_len - pattrib->hdrlen - pattrib->iv_len -
+> pattrib->icv_len;
+> -					*((__le32 *)crc) = getcrc32(payload, length);/* modified by Amy*/
+> +					*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length));
 > +
-> +	/* Can likely be a const */
-> +	kfree_const(hist_field->type);
->  
->  	kfree(hist_field->system);
->  	kfree(hist_field->event_name);
-> @@ -1646,9 +1648,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
->  	if (flags & HIST_FIELD_FL_HITCOUNT) {
->  		hist_field->fn = hist_field_counter;
->  		hist_field->size = sizeof(u64);
-> -		hist_field->type = kstrdup("u64", GFP_KERNEL);
-> -		if (!hist_field->type)
-> -			goto free;
-> +		hist_field->type = "u64";
->  		goto out;
->  	}
->  
-> @@ -1662,7 +1662,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
->  		hist_field->fn = hist_field_log2;
->  		hist_field->operands[0] = create_hist_field(hist_data, field, fl, NULL);
->  		hist_field->size = hist_field->operands[0]->size;
-> -		hist_field->type = kstrdup(hist_field->operands[0]->type, GFP_KERNEL);
-> +		hist_field->type = kstrdup_const(hist_field->operands[0]->type, GFP_KERNEL);
->  		if (!hist_field->type)
->  			goto free;
->  		goto out;
-> @@ -1671,18 +1671,14 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
->  	if (flags & HIST_FIELD_FL_TIMESTAMP) {
->  		hist_field->fn = hist_field_timestamp;
->  		hist_field->size = sizeof(u64);
-> -		hist_field->type = kstrdup("u64", GFP_KERNEL);
-> -		if (!hist_field->type)
-> -			goto free;
-> +		hist_field->type = "u64";
->  		goto out;
->  	}
->  
->  	if (flags & HIST_FIELD_FL_CPU) {
->  		hist_field->fn = hist_field_cpu;
->  		hist_field->size = sizeof(int);
-> -		hist_field->type = kstrdup("unsigned int", GFP_KERNEL);
-> -		if (!hist_field->type)
-> -			goto free;
-> +		hist_field->type = "unsigned int";
->  		goto out;
->  	}
->  
-> @@ -1695,7 +1691,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
->  		flags |= HIST_FIELD_FL_STRING;
->  
->  		hist_field->size = MAX_FILTER_STR_VAL;
-> -		hist_field->type = kstrdup(field->type, GFP_KERNEL);
-> +		hist_field->type = kstrdup_const(field->type, GFP_KERNEL);
->  		if (!hist_field->type)
->  			goto free;
->  
-> @@ -1708,7 +1704,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
->  	} else {
->  		hist_field->size = field->size;
->  		hist_field->is_signed = field->is_signed;
-> -		hist_field->type = kstrdup(field->type, GFP_KERNEL);
-> +		hist_field->type = kstrdup_const(field->type, GFP_KERNEL);
->  		if (!hist_field->type)
->  			goto free;
->  
-> @@ -1794,7 +1790,7 @@ static int init_var_ref(struct hist_field *ref_field,
->  		}
->  	}
->  
-> -	ref_field->type = kstrdup(var_field->type, GFP_KERNEL);
-> +	ref_field->type = kstrdup_const(var_field->type, GFP_KERNEL);
->  	if (!ref_field->type) {
->  		err = -ENOMEM;
->  		goto free;
-> @@ -2163,7 +2159,7 @@ static struct hist_field *parse_unary(struct hist_trigger_data *hist_data,
->  	expr->operands[0] = operand1;
->  	expr->operator = FIELD_OP_UNARY_MINUS;
->  	expr->name = expr_str(expr, 0);
-> -	expr->type = kstrdup(operand1->type, GFP_KERNEL);
-> +	expr->type = kstrdup_const(operand1->type, GFP_KERNEL);
->  	if (!expr->type) {
->  		ret = -ENOMEM;
->  		goto free;
-> @@ -2289,7 +2285,7 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
->  	expr->operands[1] = operand2;
->  	expr->operator = field_op;
->  	expr->name = expr_str(expr, 0);
-> -	expr->type = kstrdup(operand1->type, GFP_KERNEL);
-> +	expr->type = kstrdup_const(operand1->type, GFP_KERNEL);
->  	if (!expr->type) {
->  		ret = -ENOMEM;
->  		goto free;
-> @@ -2677,10 +2673,10 @@ static struct hist_field *create_var(struct hist_trigger_data *hist_data,
->  	var->var.hist_data = var->hist_data = hist_data;
->  	var->size = size;
->  	var->var.name = kstrdup(name, GFP_KERNEL);
-> -	var->type = kstrdup(type, GFP_KERNEL);
-> +	var->type = kstrdup_const(type, GFP_KERNEL);
->  	if (!var->var.name || !var->type) {
-> +		kfree_const(var->type);
->  		kfree(var->var.name);
-> -		kfree(var->type);
->  		kfree(var);
->  		var = ERR_PTR(-ENOMEM);
->  	}
-> -- 
-> 2.30.2
+>  					arcfour_init(&mycontext, rc4key, 16);
+>  					arcfour_encrypt(&mycontext, payload, payload, length);
+>  					arcfour_encrypt(&mycontext, payload + length, crc, 4);
 
+Change crc to be __le32, kill the casts and pass &crc in the last call.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> @@ -682,7 +669,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, struct recv_frame *precvframe)
+>  			arcfour_init(&mycontext, rc4key, 16);
+>  			arcfour_encrypt(&mycontext, payload, payload, length);
+> 
+> -			*((__le32 *)crc) = getcrc32(payload, length - 4);
+> +			*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length - 4));
+> 
+>  			if (crc[3] != payload[length - 1] ||
+>  			    crc[2] != payload[length - 2] ||
+
+You could to the same here, or make crc u32, remove the cpu_to_le32()
+and use get_unaligned_u32(payload + length - 4) (or whatever it is called).
+
+But it is much better to do:
+	crc = crc32_le(~0, payload, length);
+	if (crc != VALID_CRC32)
+		res = _FAIL;
+
+You can lookup VALID_CRC32, but it is crc32_le(0, "\xff\xff\xff\xff", 4);
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
