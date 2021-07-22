@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E696B3D29F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706513D28A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234364AbhGVQH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:07:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40494 "EHLO mail.kernel.org"
+        id S233017AbhGVP5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:57:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233975AbhGVQD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:03:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A52A561C8C;
-        Thu, 22 Jul 2021 16:44:16 +0000 (UTC)
+        id S232234AbhGVP4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:56:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D66D6135A;
+        Thu, 22 Jul 2021 16:36:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972257;
-        bh=cKbrKWrpak8L0uBM/FvyHSAiZzF4hb5RFwSKwT9B0Rg=;
+        s=korg; t=1626971800;
+        bh=PmuHXE9H4zNBy25vnRaIZ9Atb03pBeeR/qmffxxS/XA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Io6VqEvgcQZ88AT0/Np6ENBES3TQAOP4rFVZ4ftti5guoGP6J3FkIqa6jlb6bjY0
-         eoGepDfN+F839ufSzRe5vsurFGhN41fzlYOSNKJB3NFD7RPmC9K7nZp20+/cbTeyvg
-         T6wl+IRadA1nT+xJh+sU+78GQed92kmMo9BJrK2E=
+        b=XsrQW5pJ0cUgYQaq0oZrcaer6xTWGKQIOffeW5DkynmZLJHpd2WawDM+MMYKWJYfX
+         BqCqKxwXSMR0I236ejlxZKAmUbgBxrd4SY9vFavzPXQJYE9NatBVt/nPpBRtwvdwCV
+         hcnJBtyhirQFBG38a5V1ydya/0SBAbGq3gHYw328=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Foss <robert.foss@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 046/156] arm64: dts: qcom: sm8350: fix the node unit addresses
+Subject: [PATCH 5.10 030/125] kbuild: sink stdout from cmd for silent build
 Date:   Thu, 22 Jul 2021 18:30:21 +0200
-Message-Id: <20210722155629.897199540@linuxfoundation.org>
+Message-Id: <20210722155625.690955017@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +39,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinod Koul <vkoul@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit 1dee9e3b0997fef7170f7ea2d8eab47d0cd334d8 ]
+[ Upstream commit 174a1dcc96429efce4ef7eb2f5c4506480da2182 ]
 
-Some node unit addresses were put wrongly in the dts, resulting in
-below warning when run with W=1
+When building with 'make -s', no output to stdout should be printed.
 
-arch/arm64/boot/dts/qcom/sm8350.dtsi:693.34-702.5: Warning (simple_bus_reg): /soc@0/thermal-sensor@c222000: simple-bus unit address format error, expected "c263000"
-arch/arm64/boot/dts/qcom/sm8350.dtsi:704.34-713.5: Warning (simple_bus_reg): /soc@0/thermal-sensor@c223000: simple-bus unit address format error, expected "c265000"
-arch/arm64/boot/dts/qcom/sm8350.dtsi:1180.32-1185.5: Warning (simple_bus_reg): /soc@0/interconnect@90e0000: simple-bus unit address format error, expected "90c0000"
+As Arnd Bergmann reported [1], mkimage shows the detailed information
+of the generated images.
 
-Fix by correcting to the correct address as given in reg node
+I think this should be suppressed by the 'cmd' macro instead of by
+individual scripts.
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20210513060733.382420-1-vkoul@kernel.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Insert 'exec >/dev/null;' in order to redirect stdout to /dev/null for
+silent builds.
+
+[Note about this implementation]
+
+'exec >/dev/null;' may look somewhat tricky, but this has a reason.
+
+Appending '>/dev/null' at the end of command line is a common way for
+redirection, so I first tried this:
+
+  cmd = @set -e; $(echo-cmd) $(cmd_$(1)) >/dev/null
+
+... but it would not work if $(cmd_$(1)) itself contains a redirection.
+
+For example, cmd_wrap in scripts/Makefile.asm-generic redirects the
+output from the 'echo' command into the target file.
+
+It would be expanded into:
+
+  echo "#include <asm-generic/$*.h>" > $@ >/dev/null
+
+Then, the target file gets empty because the string will go to /dev/null
+instead of $@.
+
+Next, I tried this:
+
+  cmd = @set -e; $(echo-cmd) { $(cmd_$(1)); } >/dev/null
+
+The form above would be expanded into:
+
+  { echo "#include <asm-generic/$*.h>" > $@; } >/dev/null
+
+This works as expected. However, it would be a syntax error if
+$(cmd_$(1)) is empty.
+
+When CONFIG_TRIM_UNUSED_KSYMS is disabled, $(call cmd,gen_ksymdeps) in
+scripts/Makefile.build would be expanded into:
+
+  set -e;  { ; } >/dev/null
+
+..., which causes an syntax error.
+
+I also tried this:
+
+  cmd = @set -e; $(echo-cmd) ( $(cmd_$(1)) ) >/dev/null
+
+... but this causes a syntax error for the same reason.
+
+So, finally I adopted:
+
+  cmd = @set -e; $(echo-cmd) exec >/dev/null; $(cmd_$(1))
+
+[1]: https://lore.kernel.org/lkml/20210514135752.2910387-1-arnd@kernel.org/
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8350.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ scripts/Kbuild.include | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-index ed0b51bc03ea..a2382eb8619b 100644
---- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-@@ -689,7 +689,7 @@
- 			interrupt-controller;
- 		};
+diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+index 08e011175b4c..0d6e11820791 100644
+--- a/scripts/Kbuild.include
++++ b/scripts/Kbuild.include
+@@ -174,8 +174,13 @@ clean := -f $(srctree)/scripts/Makefile.clean obj
+ echo-cmd = $(if $($(quiet)cmd_$(1)),\
+ 	echo '  $(call escsq,$($(quiet)cmd_$(1)))$(echo-why)';)
  
--		tsens0: thermal-sensor@c222000 {
-+		tsens0: thermal-sensor@c263000 {
- 			compatible = "qcom,sm8350-tsens", "qcom,tsens-v2";
- 			reg = <0 0x0c263000 0 0x1ff>, /* TM */
- 			      <0 0x0c222000 0 0x8>; /* SROT */
-@@ -700,7 +700,7 @@
- 			#thermal-sensor-cells = <1>;
- 		};
++# sink stdout for 'make -s'
++       redirect :=
++ quiet_redirect :=
++silent_redirect := exec >/dev/null;
++
+ # printing commands
+-cmd = @set -e; $(echo-cmd) $(cmd_$(1))
++cmd = @set -e; $(echo-cmd) $($(quiet)redirect) $(cmd_$(1))
  
--		tsens1: thermal-sensor@c223000 {
-+		tsens1: thermal-sensor@c265000 {
- 			compatible = "qcom,sm8350-tsens", "qcom,tsens-v2";
- 			reg = <0 0x0c265000 0 0x1ff>, /* TM */
- 			      <0 0x0c223000 0 0x8>; /* SROT */
-@@ -1176,7 +1176,7 @@
- 			};
- 		};
- 
--		dc_noc: interconnect@90e0000 {
-+		dc_noc: interconnect@90c0000 {
- 			compatible = "qcom,sm8350-dc-noc";
- 			reg = <0 0x090c0000 0 0x4200>;
- 			#interconnect-cells = <1>;
+ ###
+ # if_changed      - execute command if any prerequisite is newer than
 -- 
 2.30.2
 
