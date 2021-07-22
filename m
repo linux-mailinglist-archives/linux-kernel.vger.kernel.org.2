@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E713D2219
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B54E3D221B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbhGVJsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 05:48:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231609AbhGVJsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 05:48:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 092F06128A;
-        Thu, 22 Jul 2021 10:28:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626949734;
-        bh=dKkz0H90g75Jqm7Tv0Fj0nBgj32L9xL5yzrVGuWSxd0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ehlhd1I88u+UOpYo4uuAqDJZmujkb/zzPVO68lh4VsKsGbAS0GQ4bffDY+AG8w1FN
-         uINgg9X0Rsdhl2h4+yj5HePRqRoB264TqfSaruZmiSobSFjJGp4yKJDNlq3p/QAKn5
-         S4jscchMtclnJUaMy1PTWXVl8S3bsnHLdoeE5jLZLiCBMc44WNJOfxYJvLo+Gg4OQd
-         g+3jlWjNayJINWCR10so/xuaYvomJM2mSIdsawcrv64x8LC91MYl1ohNrNvcCZBWUS
-         lMcRBX8wZRdPfVe/caUtmAqM93EvkNz63XlJ3f+QPibA5XWwcTAx7s3jufOwqxkKa+
-         pMd9MR3d8cmjQ==
-Received: by mail-wr1-f52.google.com with SMTP id l7so5358077wrv.7;
-        Thu, 22 Jul 2021 03:28:53 -0700 (PDT)
-X-Gm-Message-State: AOAM53153SNi2JjWR+VIKnFtQdkm/AyknUsh8Ne/rsSMWuVUpaBscb9d
-        Eek1s9igm2GwtNg60+UhQXiu9b9kayry1P5TrRo=
-X-Google-Smtp-Source: ABdhPJxkSjTrQb/uN1KPB9MMMTm3daq3N1zrgRlAILlwLCIncbFfzr7m2+3Hu4Gw+BnhPDcRx+BoGjl3//ybpEvYzYw=
-X-Received: by 2002:a5d:65cb:: with SMTP id e11mr49542874wrw.105.1626949732596;
- Thu, 22 Jul 2021 03:28:52 -0700 (PDT)
+        id S231656AbhGVJsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 05:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231453AbhGVJst (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 05:48:49 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E5DC061575;
+        Thu, 22 Jul 2021 03:29:24 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id o8so3906314plg.11;
+        Thu, 22 Jul 2021 03:29:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D/T2v25ISKwnv+JiEOMpEorfBjmX5RIS7o1WRWb9zSI=;
+        b=giKvgL5mNpL7ZueglLsoIjxTM8iEkf/lQSwAd3w1o9qUSZuhxP6kcDyfFcH4a5u3jR
+         hcNE0sTliFTt6qLb1MgTpVygPhH8RQjFLKJWCIh67QfqW/BkQVoDNAy2e/N8qcDzzWp0
+         czN4xrEZsgFbsSVoZBOEQWOt4C3TrbCZGl6ETceKz9Bz2RB8oQsYQMVIv6E0qAh5JDNO
+         5p2EHdXs6y1g12iXkJNkcEbiyNjKa+YRCPTCMtXsQ6k0da0Sj0xmDXiQ7KkbeBWSVi5n
+         1y0jSm+XIXE/v7fpaXJfG3rETyb9hq5nHu7x+8iacyH66bmxy4B+wIc6yWhzE+9v73Z7
+         yYfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D/T2v25ISKwnv+JiEOMpEorfBjmX5RIS7o1WRWb9zSI=;
+        b=Dy4fW4P0AeiEUyq6I80X/WHVv8nlojnmjUaVD4zP/74nZZUL1mf33DtUqPLa8ATuNC
+         Rokj6TraaOPWGH5FRh913SoTDYZn9L9UW1zJdKDx2q3JH9IMZaAa2ty0W8e/6mOBH+iW
+         XeZ/j1YUmUIXY1iouMSp6uM3Q6to5rk+CgvUfpZehIAjFWmMcMoqHy6u2dGmLaj220QR
+         xCKWnVY83yISeyWCccUmchSZidDgBC7KVEATfWLEbYhMQUvXFjJ7YFft8drbJSCj7r7n
+         Aeh9YFIljrG+NuJU+kmSFbRZl1XKH+ZqvjASYKvFuEYOPuql/8cDd/Q9Dgj3h/KhlrAw
+         JENA==
+X-Gm-Message-State: AOAM5316T4ntT4mUpAZFfq4BEQv6AeQSV5J7GLCufUF3eT0wX8/c3kDd
+        yrKPPkcjdOl+/0U0Vaq7LP/I83Hy326SNsc0d1Y=
+X-Google-Smtp-Source: ABdhPJxoFCTp/NwlflZaAjqRTJvKvp0S635JhOGs61WECIltH+YXzHhAb9KefZ/ctEXb+XBhIbLUIbyfg78dqZ6hCc0=
+X-Received: by 2002:a17:90a:af90:: with SMTP id w16mr8455268pjq.129.1626949763784;
+ Thu, 22 Jul 2021 03:29:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1626947324.git.viresh.kumar@linaro.org> <fced2f2b9dcf3f32f16866d7d104f46171316396.1626947324.git.viresh.kumar@linaro.org>
-In-Reply-To: <fced2f2b9dcf3f32f16866d7d104f46171316396.1626947324.git.viresh.kumar@linaro.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 22 Jul 2021 12:28:36 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1jqtu1BJmnfFLEgNXsPCfiTzd0sxwJBxdgNySmETBQSg@mail.gmail.com>
-Message-ID: <CAK8P3a1jqtu1BJmnfFLEgNXsPCfiTzd0sxwJBxdgNySmETBQSg@mail.gmail.com>
-Subject: Re: [PATCH V2 1/5] dt-bindings: virtio: Add binding for virtio devices
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>
+References: <mvmtukn6bmu.fsf@suse.de> <YPgwHcbK7XoXL/mD@smile.fi.intel.com>
+ <mvmpmvb68cg.fsf@suse.de> <YPg3VS/Ure6VRsuJ@smile.fi.intel.com>
+ <mvmlf5z66l9.fsf@suse.de> <CAHp75VeFKn=--PuF6deOp6H-j7z8PXgkXA5PeSftiK5LWX30Qw@mail.gmail.com>
+ <mvmh7gn649v.fsf@suse.de> <YPhT1APE8QweDCoP@smile.fi.intel.com> <mvmczra64yj.fsf@suse.de>
+In-Reply-To: <mvmczra64yj.fsf@suse.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 22 Jul 2021 13:28:43 +0300
+Message-ID: <CAHp75VfY-_xtRJyfez_4voDuOUcfJAfFjtnAipCt2_UA4wqbQg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
+To:     Andreas Schwab <schwab@suse.de>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 11:57 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On Thu, Jul 22, 2021 at 1:03 PM Andreas Schwab <schwab@suse.de> wrote:
+> On Jul 21 2021, Andy Shevchenko wrote:
 >
-> Allow virtio device sub-nodes to be added to the virtio mmio or pci
-> nodes. The compatible property for virtio device must be of format
-> "virtio,<DID>", where DID is virtio device ID in hexadecimal format.
+> > Or problem is somewhere else?
 >
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> I don't know.  Why does the spi subsystem put "spi:mmc-spi-slot" into
+> the modalias file, instead of "of:N(null)T(null)Cmmc-spi-slot" or
+> similar?  The same problem exists with the other spi port on the board,
+> which has a jedec,spi-nor instance attached, also not auto loading.
 
-Looks good to me overall. One question would be for the exact format of
-the 'compatible' string. After seeing this version, I would slightly prefer
-"virtio,device22" over "virtio,22". I think in the previous version
-we had mentioned both, but not actually decided on which one to use.
+You see, there are two unrelated drivers that share the same issue
+(the common denominator is that they are SPI devices). I believe the
+issue is somewhere in the SPI core rather than here.
 
-      Arnd
+Compare the code of
+https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L649
+vs.
+https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L56
+
+and
+
+https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L139
+vs.
+https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L361
+
+The culprit is this one:
+https://lore.kernel.org/lkml/20190618052644.32446-1-bjorn.andersson@linaro.org/
+
+and in my humble opinion must be reverted.
+
+-- 
+With Best Regards,
+Andy Shevchenko
