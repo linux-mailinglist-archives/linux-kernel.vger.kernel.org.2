@@ -2,210 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D703D1E55
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8723D1E56
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhGVF42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 01:56:28 -0400
-Received: from mail-eopbgr10096.outbound.protection.outlook.com ([40.107.1.96]:42519
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230117AbhGVF41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 01:56:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MWqbBPFecb4dWF8KsfWJQQbR43LQ2HACvSiEglTVwzTUSyndmcfBkJZCMHCGYXX+nnt4keEpGsAsdhqMNo2MwtAbgAMNuc0OIVdkDTAF0BlPlwbc7Er8AZ3/p08irsHkA7BqdzpE/1KzRFwbdC/S2Jtwbay6Ow2VaojAgcKok/p6vM5JQNHvYL3RcqMHb1dLGudfUq8bFRddi3fJKFIKLltxCeTIv1jqf4biGQb7zhLkr5ceUWNVZmdykTcgeFTUByAUPykOSEl/0XJk1oOGM/Yd220QdcRJLaJTsAiksg3HpGMm1RnieUViyPY5g1R9zEVR24Z8+iy32jP2Lq6s4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ARbVZO/T2rJfVFSrgCcji+fRlxC2uWXKhkBmWGdqfzw=;
- b=NJFpEFNm9ye0h6jfAaxFEkTrx3U5gio9QKUmAm8jSQ/TYWImlRh5hYzVu5qOR4N/FLy1DX6g4m00O0rjst4dGzWrvUDk3ewtzNzA+oEOESa3nh3fbJsX6/qdolHFkRNbQDKUN0pjxOobFWVAAm8Vfb3xnDMf3LnfeDiPcjAEqvO1TiqsN4jKUzT0AFeXuivAV0xw6icdJkx7HOJaI017x2FV22EMYPhzQclbCaL9v/2XOegYy5BdmlDnpRxdKulcrZafQXY3ChHHvaf2PuSYzY77ijeZApPJRi/xavHya7j/g5oDesN3e+UdPzhtOasde4ke62At4SaPvnKjp+xAqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ARbVZO/T2rJfVFSrgCcji+fRlxC2uWXKhkBmWGdqfzw=;
- b=YrUDi29PD4B3C4iBJYX5Cmha0YiVcyoAyJewlWe7wdYMp0aFRadMpxHJK6VcKZHCTMDZ4Ftxb8Mf9YCqB/SS+3uWYccBdaNsze1o8hHRHcToId1wt4l1yUw4hnJ5S4Tgsv6uMZu67Th2l6nB0ahEsoZEc7QuEwP+yyzJ6EoFoCE=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=kontron.de;
-Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
- by AM8PR10MB4308.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1e4::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.26; Thu, 22 Jul
- 2021 06:37:00 +0000
-Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::1133:8761:6cc9:9703]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::1133:8761:6cc9:9703%5]) with mapi id 15.20.4331.034; Thu, 22 Jul 2021
- 06:37:00 +0000
-Subject: Re: [PATCH V2 00/13] soc: imx: gpcv2: support i.MX8MM
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        p.zabel@pengutronix.de, krzk@kernel.org, agx@sigxcpu.org,
-        marex@denx.de, andrew.smirnov@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ping.bai@nxp.com, aford173@gmail.com,
-        abel.vesa@nxp.com, Peng Fan <peng.fan@nxp.com>
-References: <20210506010440.7016-1-peng.fan@oss.nxp.com>
- <3c5ef283-0895-05ab-7568-0d108b761008@kontron.de>
- <f7937500-f2bb-aa5c-caa2-1788693895a7@kontron.de>
- <89534836-6688-9cbd-1f33-ca78a4db47d4@kontron.de>
- <689e5fd6c290ebec09d45c5d55354d78f5cea647.camel@pengutronix.de>
-From:   Frieder Schrempf <frieder.schrempf@kontron.de>
-Message-ID: <94d4a625-bdf2-9b40-8b6b-50c2bfd8f103@kontron.de>
-Date:   Thu, 22 Jul 2021 08:36:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <689e5fd6c290ebec09d45c5d55354d78f5cea647.camel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
+        id S231335AbhGVF4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 01:56:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34166 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230117AbhGVF4m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 01:56:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626935837;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T5yJXoswrtbBl372z9LAdEWN+q1EKTxAfgwD664hR5E=;
+        b=SKDkPUPjKk2rrWt8P2f40VkiKt5yiuEcXAE/cUqu0ui/nwDqdO9ipplkx/HkKCFxCzGPaL
+        f0nY8jxPI5y5N5HaUut0VxVhbnsH2ksXZGoUrCRnlQ8KCaDYoy6EMl+8tHnCA9XYTUIhjS
+        /FzvAh0kqLGhUdKJ6cnrP2M8q+RHACY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-454-LpOZS3vyP86UpbiWH7jigA-1; Thu, 22 Jul 2021 02:37:15 -0400
+X-MC-Unique: LpOZS3vyP86UpbiWH7jigA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96B1A802575;
+        Thu, 22 Jul 2021 06:37:14 +0000 (UTC)
+Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A989E5D6D1;
+        Thu, 22 Jul 2021 06:37:10 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v3 07/12] mm/debug_vm_pgtable: Use struct
+ pgtable_debug_args in PTE modifying tests
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+References: <20210719130613.334901-1-gshan@redhat.com>
+ <20210719130613.334901-8-gshan@redhat.com>
+ <bfa07f56-f58c-f2c3-64e1-1cdb09dbf366@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <99c73652-7294-17ff-0c4f-986b588ab022@redhat.com>
+Date:   Thu, 22 Jul 2021 16:37:26 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
+MIME-Version: 1.0
+In-Reply-To: <bfa07f56-f58c-f2c3-64e1-1cdb09dbf366@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR3P193CA0030.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:102:50::35) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:157::14)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.10.32] (89.247.39.170) by PR3P193CA0030.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:50::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25 via Frontend Transport; Thu, 22 Jul 2021 06:36:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d666ae1e-a9c9-49f5-c976-08d94cdb1bee
-X-MS-TrafficTypeDiagnostic: AM8PR10MB4308:
-X-Microsoft-Antispam-PRVS: <AM8PR10MB4308A945F9A399BBE63B460EE9E49@AM8PR10MB4308.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bkwoUurdMzigYosHZJ5WnSga++Zf4h3xB8zROFLg2dwp63HZ0Va2HFw8VFAXGhm20zRTrbiCxL0Pdt3NOkEb6XurLH+YWbb6KwP6GP7qaKhd9VTONXcKiqhu/IBbEd0/MnQSHJcaKjVXsu0swe2wuM0C3gcb2DaQ3Rzh/ZPM/PykKX3/8k5imZz/w3VuNul0MAX6Iu2elfb2PGcEh8qs+IDRk/33Kg+Lfldt7BjnTzxz2bZnyw79eq4PVoJlRCXAIMuVEKAxDcol+pQwzEuR8rgAllq+Sbj+yiz3iLNfaXTHGDN1FEWy1idTEkbVCQ8z4GSr0Eem8IZoRadSVZxpdWCj+b6xbUELRoEmD/NKblmG8xw2wAdzbVbFWwnYKOzp+0jeY3qhKEGzaPCcMBnr27f12Datezuoin7dNTpgmFFd6Fo6LfIXKeVViaTOaAi0ojwX5cAYt0QGR+cQNJr5QYNVLTEEqmy8sopmDgmIkwOX/fkmWs+vwKnd47MYoESItDvLsuktledo6nTyORE/Mm0w8QfDjHIWbzVyHppGCoV5jyPu3Jzhu48lsLxR3V1v115avQwzlyK5s/cm50aL7EsLkR+hg2e+i5/2dR3Q9FXH37oZFsRhhSfRr9P5NRcadg7IUjiyO5SLBRKgApoTsnhZKA9F6NeSNKF5HVig7ocMydFuPa3g13fXk5fKzFgmjtczdxsr/Sa4vYZfj3LNs0YLUDLco5Z3NAKOpTwRJ7o=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(7416002)(38100700002)(316002)(26005)(16576012)(956004)(44832011)(8676002)(66476007)(83380400001)(36756003)(31686004)(66556008)(31696002)(4326008)(508600001)(5660300002)(2616005)(6486002)(66946007)(110136005)(8936002)(53546011)(86362001)(186003)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WFVFOXhHR1FXa0g2bzl6M3JvTFlHakUzOWdNTWJlRWNiKzN1YXpVM1I2QlBM?=
- =?utf-8?B?dGxqVU5GSXlhMytvZDVNbEMrcm5aeDllV3l0Z0ZObDdnZmJLS0xrdXROd0J5?=
- =?utf-8?B?UXBPNFFYL3FlRWRTU0ZwV2dNd3RTWkwrRzFNYzdoN3V0UlFqR3BKSm9vV29m?=
- =?utf-8?B?V2FVa09xY0Z2Y3ZNRllJUkltdEFOUStDNFVXZUZNRVB1UmlrYVpTYUxSOGtV?=
- =?utf-8?B?TVkyZnBJRFJHdGNocXRIclE3ajU0ZEQrZHJRbmJKT0dOWmFlSUZnU09FQjdG?=
- =?utf-8?B?cmdBY1JyanlHOHpYc25BRTJMNERVS3lhdmlOVGNtOTk4QmtsazdXdWRKQWdY?=
- =?utf-8?B?Wno1VC9BRVpZS1ZIejNjVk1xbW5NazBHaGN1WkRBNjNsTVdLMStSTnhHRndP?=
- =?utf-8?B?MHA4WklndlROaGJ1bHJ5WWVyRVhnQVFOTFY3dUVSWm5PRmRCWlhYVmYzQkN3?=
- =?utf-8?B?VGc4U1ppaDlHTWVaUkJiZzRtSWliWXd3M3VuRWJKVXlobGtiV3lQbjB6K1Vh?=
- =?utf-8?B?b2FKc2NWMlpJQ2VDVUJwSy9Tc0VwZW5KeDJ1ZWg0ZGkxaURicDZvVjlpT3Ju?=
- =?utf-8?B?SmtaWjlyWGhTcithVjAzOW5Hd1JSTmViQ2p6NEhxcEN4ZGpYTDNNY3dUKzMy?=
- =?utf-8?B?b1IrQzlrYWJWcVJ6dVZFNXJ6eGJVRmNmV3RyZkdRYVBvSWNQQmRWMU9oSUZ3?=
- =?utf-8?B?RzNrVWgxRzBvL2JmR283UlJhVnNqbXdkNTYxM0UyNlFXaWVIRHBMS1lUeTVY?=
- =?utf-8?B?Q3dZTTlZdWwxeWJKTjBGb2lrL3Q5ZkgySFVtOEt6cGJ1Q2F1dUlCZnZRaTdC?=
- =?utf-8?B?aWVQR3BydTd2a3kvZFBNUFYrTVhEV0I3aTJOVDRRUEhKVjNZTllTS0lOT3Nl?=
- =?utf-8?B?K3BHU3FhZmFYZzZld251YlZyWEp0clJGdk8rcFdQQzlDQ3lxMjFoVFF5dEtj?=
- =?utf-8?B?a0VFUHlWYm9SUjZyNExudmRjViszTUVuNEtKbUVtTm1zL1lHeDhJMlorT1BC?=
- =?utf-8?B?NnhCZ1RwSWEyYmdjcm0rUTJva20ydVJGK01tV2RlYlVhRm56L0NoRXFwdFpI?=
- =?utf-8?B?M0hVY0RPYnJXbGxXRU91U3lkeUJBNUUvOU1TbmUwT0h1MW5lTHVNY3BxN0JR?=
- =?utf-8?B?bk8xSm1ZUDRQdHFrckZZL25iUzljVVJ4YUgvUTlVb1cvSHgzdUVOOWhiWlhx?=
- =?utf-8?B?S3cxQ0c3YzVTbC9HY0JsVFVNZW1oYWpJVVhJZnkwemdENmRlK004VVV5Wi95?=
- =?utf-8?B?dnhCQUZkMGFvTjRlM3VlTkRmY1BxRkhFK3V4akd4QkVVcWNia0dzU1g4UWNo?=
- =?utf-8?B?eWZVVUwzamZwSVBzUWYzVFdBenVpRGxCc1ppZDhOZFUwVTV6eUlYL3FoRnJx?=
- =?utf-8?B?YnRiZHVzdHlSRUZHK1VMN1hrc09qSVltakVQOTk1M1MxYmRqTHpxeGlmTGlF?=
- =?utf-8?B?WkdtWXYzNitjdk1MUHF4bHFQcDRDTVJyUlloTWs4YkdlWXpMRkFueHh5MTVM?=
- =?utf-8?B?NFBhQU5ibkJPNXU4TW9sUWpnNDBzcm42cXluNXhCWDJremJYc0lsZHp4Z042?=
- =?utf-8?B?ampBRVR1emdWZWg1bjVpVUFEdU9GN2tDcXpiR3NLdUR5M29ScEtDM3hJb0FB?=
- =?utf-8?B?VlhBTy9lZFNmZkJ2NUFTanJJb1Mxb0ttWG5xRTAveUZGSXVOVnVQdjhlVGhX?=
- =?utf-8?B?SGV5YSsrMzU5RHJsbVJJOUc5NkRYWitXb2RuRlhtdm45LzNYeVlnT0FXTUlw?=
- =?utf-8?Q?wv+5baZ8/SR8obu03UAfXpAUYxfNymYcCd2yWEy?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: d666ae1e-a9c9-49f5-c976-08d94cdb1bee
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2021 06:37:00.1987
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: su+6dbb3yHIHB0FvKhk3ds84FaYYqYeKwt7XdTsYUx7yI8a9My0nMDRKqsCLvhORxLHpujBgbsjUoZkMFlyHD0SK9TQHZPtFBa1ShCXRVTc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR10MB4308
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lucas,
+Hi Anshuman,
 
-On 21.07.21 22:51, Lucas Stach wrote:
-> Hi Frieder,
+On 7/22/21 3:56 PM, Anshuman Khandual wrote:
+> On 7/19/21 6:36 PM, Gavin Shan wrote:
+>> This uses struct pgtable_debug_args in PTE modifying tests. The allocated
+>> page is used as set_pte_at() is used there. The tests are skipped if
+>> the allocated page doesn't exist. Besides, the unused variable @ptep
+>> and @pte_aligned in debug_vm_pgtable() are dropped.
 > 
-> Am Donnerstag, dem 20.05.2021 um 17:16 +0200 schrieb Frieder Schrempf:
->> On 19.05.21 18:09, Frieder Schrempf wrote:
->>> On 06.05.21 10:32, Frieder Schrempf wrote:
->>>> On 06.05.21 03:04, Peng Fan (OSS) wrote:
->>>>> From: Peng Fan <peng.fan@nxp.com>
->>>>>
->>>>>
->>>>> V2:
->>>>>  - Add R-b/A-b tag
->>>>>  - Merge V1 patch 13 to V2 patch 6
->>>>>  - Drop V1 patch 15
->>>>>  - Merge V1 patch 16 to V2 patch 5 and add comments in patch 5
->>>>> to explain
->>>>>  details
->>>>>  - Add explaination in patch 8 for "why the resets are not
->>>>> defined"
->>>>>
->>>>> This patchset is a pick up Lucas's gpcv2 work for i.MX8MM and
->>>>> several
->>>>> minor changes from me to make it could work with i.MX BLK-CTL
->>>>> driver.
->>>>>
->>>>> Thanks for Lucas's work and suggestion, Frieder Schrempf for
->>>>> collecting
->>>>> all the patches, Jacky Bai on help debug issues.
->>>>
->>>> I tested this series together with the BLK CTL patches by using
->>>> the GPU and the display stack. Everything looks good to me.
->>>>
->>>> Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de>
->>>
->>> So after some more testing on different hardware I stumbled upon
->>> the problem that USB autosuspend doesn't work properly anymore.
->>>
->>> I have an onboard LTE module that is connected to OTG2 on the
->>> i.MX8MM. When using the mainline TF-A (that enables USB power-
->>> domains by default) and removing the power-domain control from the
->>> kernel, the device comes up after a few seconds and is enumerated
->>> on the bus.
->>>
->>> Now, when I let the kernel control the power-domains, the device
->>> comes up at boot, but isn't enumerated on the USB bus. As soon as I
->>> disable autosuspend for the port, it comes up.
->>>
->>> Is this something that needs to be fixed on the USB driver side or
->>> is something to be considered for the GPCv2 driver?
->>
->> So I think this is something that needs to be covered on the USB
->> driver side. I would expect that a device appearing on the bus should
->> resume the autosuspended bus, but I don't really know much about USB
->> so there might be other things I miss. For now I will disable
->> autosuspend in this case.
->>
->> A different, probably more severe problem is that I was still able to
->> reliably run into lockups with suspend/resume and the GPU. I thought
->> I had tested this before as it was one of the things that already
->> failed with the previous implementation, but I must have missed
->> something as it still fails with kernel v5.12.1 + v2 of the GPC
->> patches.
->>
->> This is how I run into the lockup:
->>
->> echo mem > /sys/power/state  # Sleep
->>                              # Wake up again
->> glmark2-es2-drm              # Use the GPU
->>                              # Device locks up
->>
->> Peng, is this something you can reproduce?
+> Please dont drop @ptep and @pte_aligned just yet.
 > 
-> I could reproduce this issue on my last GPC+BLK_CTRL series. This was
-> caused by a bad interaction between our slightly unusual way to control
-> the nested power domains via runtime PM and the system suspend/resume
-> code, which lead to some of the power domains not properly coming up
-> again in the resume path. v2 of my series fixes this issue and the
-> above sequence works as expected.
 
-Glad you could reproduce and fix this issue. Thanks for the effort. I will try to do some tests myself soon.
+We need to do so. Otherwise, there are build warning raised to
+complain something like 'unused variable'.
 
-Thanks
-Frieder
+>>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> ---
+>>   mm/debug_vm_pgtable.c | 75 ++++++++++++++++++++++---------------------
+>>   1 file changed, 39 insertions(+), 36 deletions(-)
+>>
+>> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+>> index d32e55a95c55..eb6dda88e0d9 100644
+>> --- a/mm/debug_vm_pgtable.c
+>> +++ b/mm/debug_vm_pgtable.c
+>> @@ -116,10 +116,7 @@ static void __init pte_basic_tests(struct pgtable_debug_args *args, int idx)
+>>   	WARN_ON(!pte_dirty(pte_wrprotect(pte_mkdirty(pte))));
+>>   }
+>>   
+>> -static void __init pte_advanced_tests(struct mm_struct *mm,
+>> -				      struct vm_area_struct *vma, pte_t *ptep,
+>> -				      unsigned long pfn, unsigned long vaddr,
+>> -				      pgprot_t prot)
+>> +static void __init pte_advanced_tests(struct pgtable_debug_args *args)
+>>   {
+>>   	pte_t pte;
+>>   
+>> @@ -130,33 +127,38 @@ static void __init pte_advanced_tests(struct mm_struct *mm,
+>>   	 */
+>>   
+>>   	pr_debug("Validating PTE advanced\n");
+>> -	pte = pfn_pte(pfn, prot);
+>> -	set_pte_at(mm, vaddr, ptep, pte);
+>> -	ptep_set_wrprotect(mm, vaddr, ptep);
+>> -	pte = ptep_get(ptep);
+>> +	if (args->pte_pfn == ULONG_MAX) {
+>> +		pr_debug("%s: Skipped\n", __func__);
+>> +		return;
+>> +	}
+> 
+> Just return. Please dont call out "Skipped". Also this check should be
+> performed before printing pr_debug("Validating PTE advanced\n"). The
+> print indicates that the test has started.
+> 
+
+Sure.
+
+>> +
+>> +	pte = pfn_pte(args->pte_pfn, args->page_prot);
+>> +	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+>> +	ptep_set_wrprotect(args->mm, args->vaddr, args->ptep);
+>> +	pte = ptep_get(args->ptep);
+>>   	WARN_ON(pte_write(pte));
+>> -	ptep_get_and_clear(mm, vaddr, ptep);
+>> -	pte = ptep_get(ptep);
+>> +	ptep_get_and_clear(args->mm, args->vaddr, args->ptep);
+>> +	pte = ptep_get(args->ptep);
+>>   	WARN_ON(!pte_none(pte));
+>>   
+>> -	pte = pfn_pte(pfn, prot);
+>> +	pte = pfn_pte(args->pte_pfn, args->page_prot);
+>>   	pte = pte_wrprotect(pte);
+>>   	pte = pte_mkclean(pte);
+>> -	set_pte_at(mm, vaddr, ptep, pte);
+>> +	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+>>   	pte = pte_mkwrite(pte);
+>>   	pte = pte_mkdirty(pte);
+>> -	ptep_set_access_flags(vma, vaddr, ptep, pte, 1);
+>> -	pte = ptep_get(ptep);
+>> +	ptep_set_access_flags(args->vma, args->vaddr, args->ptep, pte, 1);
+>> +	pte = ptep_get(args->ptep);
+>>   	WARN_ON(!(pte_write(pte) && pte_dirty(pte)));
+>> -	ptep_get_and_clear_full(mm, vaddr, ptep, 1);
+>> -	pte = ptep_get(ptep);
+>> +	ptep_get_and_clear_full(args->mm, args->vaddr, args->ptep, 1);
+>> +	pte = ptep_get(args->ptep);
+>>   	WARN_ON(!pte_none(pte));
+>>   
+>> -	pte = pfn_pte(pfn, prot);
+>> +	pte = pfn_pte(args->pte_pfn, args->page_prot);
+>>   	pte = pte_mkyoung(pte);
+>> -	set_pte_at(mm, vaddr, ptep, pte);
+>> -	ptep_test_and_clear_young(vma, vaddr, ptep);
+>> -	pte = ptep_get(ptep);
+>> +	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+>> +	ptep_test_and_clear_young(args->vma, args->vaddr, args->ptep);
+>> +	pte = ptep_get(args->ptep);
+>>   	WARN_ON(pte_young(pte));
+>>   }
+>>   
+>> @@ -617,20 +619,24 @@ static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
+>>   }
+>>   #endif /* PAGETABLE_P4D_FOLDED */
+>>   
+>> -static void __init pte_clear_tests(struct mm_struct *mm, pte_t *ptep,
+>> -				   unsigned long pfn, unsigned long vaddr,
+>> -				   pgprot_t prot)
+>> +static void __init pte_clear_tests(struct pgtable_debug_args *args)
+>>   {
+>> -	pte_t pte = pfn_pte(pfn, prot);
+>> +	pte_t pte;
+>>   
+>>   	pr_debug("Validating PTE clear\n");
+>> +	if (args->pte_pfn == ULONG_MAX) {
+>> +		pr_debug("%s: Skipped\n", __func__);
+>> +		return;
+>> +	}
+> 
+> Just return. Please dont call out "Skipped". Also this check should be
+> performed before printing pr_debug("Validating PTE clear\n"). The print
+> indicates that the test has started.
+> 
+
+Sure.
+
+>> +
+>> +	pte = pfn_pte(args->pte_pfn, args->page_prot);
+> 
+> Please keep this unchanged and move to its original position.
+> 
+
+Ok.
+
+>>   #ifndef CONFIG_RISCV
+>>   	pte = __pte(pte_val(pte) | RANDOM_ORVALUE);
+>>   #endif
+>> -	set_pte_at(mm, vaddr, ptep, pte);
+>> +	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+>>   	barrier();
+>> -	pte_clear(mm, vaddr, ptep);
+>> -	pte = ptep_get(ptep);
+>> +	pte_clear(args->mm, args->vaddr, args->ptep);
+>> +	pte = ptep_get(args->ptep);
+>>   	WARN_ON(!pte_none(pte));
+>>   }
+>>   
+>> @@ -1150,11 +1156,10 @@ static int __init debug_vm_pgtable(void)
+>>   	p4d_t *p4dp, *saved_p4dp;
+>>   	pud_t *pudp, *saved_pudp;
+>>   	pmd_t *pmdp, *saved_pmdp, pmd;
+>> -	pte_t *ptep;
+>>   	pgtable_t saved_ptep;
+>>   	pgprot_t prot;
+>>   	phys_addr_t paddr;
+>> -	unsigned long vaddr, pte_aligned, pmd_aligned;
+>> +	unsigned long vaddr, pmd_aligned;
+>>   	unsigned long pud_aligned;
+>>   	spinlock_t *ptl = NULL;
+>>   	int idx, ret;
+>> @@ -1189,10 +1194,8 @@ static int __init debug_vm_pgtable(void)
+>>   	 */
+>>   	paddr = __pa_symbol(&start_kernel);
+>>   
+>> -	pte_aligned = (paddr & PAGE_MASK) >> PAGE_SHIFT;
+> 
+> Please dont drop pte_aligned just yet.
+> 
+
+We need to drop the variable. Otherwise, there is build warning to
+complain: 'unused variable'.
+
+>>   	pmd_aligned = (paddr & PMD_MASK) >> PAGE_SHIFT;
+>>   	pud_aligned = (paddr & PUD_MASK) >> PAGE_SHIFT;
+>> -	WARN_ON(!pfn_valid(pte_aligned));
+> 
+> This should go into init_args() at the right place as the following,
+> after evaluating it from 'start_kernel' symbol - just to be sure.
+> 
+> WARN_ON(!pfn_valid(args->fixed_pte_pfn))
+> 
+
+Yes.
+
+>>   
+>>   	pgdp = pgd_offset(mm, vaddr);
+>>   	p4dp = p4d_alloc(mm, pgdp, vaddr);
+>> @@ -1272,11 +1275,11 @@ static int __init debug_vm_pgtable(void)
+>>   	 * Page table modifying tests. They need to hold
+>>   	 * proper page table lock.
+>>   	 */
+>> -
+>> -	ptep = pte_offset_map_lock(mm, pmdp, vaddr, &ptl);
+>> -	pte_clear_tests(mm, ptep, pte_aligned, vaddr, prot);
+>> -	pte_advanced_tests(mm, vma, ptep, pte_aligned, vaddr, prot);
+>> -	pte_unmap_unlock(ptep, ptl);
+>> +	ptl = pte_lockptr(args.mm, args.pmdp);
+>> +	spin_lock(ptl);
+>> +	pte_clear_tests(&args);
+>> +	pte_advanced_tests(&args);
+>> +	spin_unlock(ptl);
+> 
+> Why pte_offset_map_lock()/pte_unmap_unlock() has been dropped and
+> spin_lock()/spin_unlock() sequence has been added ? Please dont
+> change the tests in these patches.
+> 
+
+The semantics of pte_offset_map_lock() is to grab and take the lock
+and return the PTE entry, which is mapped if needed. We already had
+the PTE entry tracked by args->ptep in init_args(). So some of the
+operations covered by pte_offset_map_lock() isn't needed any more.
+
+>>   
+>>   	ptl = pmd_lock(mm, pmdp);
+>>   	pmd_clear_tests(mm, pmdp);
+>>
+> 
+
+Thanks,
+Gavin
+
