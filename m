@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37343D20C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C48C3D20D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhGVIkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 04:40:49 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38706 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231487AbhGVIin (ORCPT
+        id S231359AbhGVIqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 04:46:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60451 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231313AbhGVIqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 04:38:43 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Thu, 22 Jul 2021 04:46:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626945997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sitYVGzO7q3UBKDLxFbPwkC2YGfP0wGEiWAx0alN54M=;
+        b=Oybg+OT/pqdgmW+EMgb0dDlPpqHEc5hmLBS/bEUldxEX+yjcBxXKBB/z7NP9kSa2H5hgY6
+        +yV8Md2h6cVp+aaxZfRrl3/SaHIjcUtaI2Peo88IZGvN0GiEJEKPf3E9ZDbgM/hHkmqzVu
+        0laarlPyQL6rIwDoBaDb2tEQKimy3aA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-j62nvQofMZeeoLScZ1k2pA-1; Thu, 22 Jul 2021 05:26:34 -0400
+X-MC-Unique: j62nvQofMZeeoLScZ1k2pA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5DED81FEF8;
-        Thu, 22 Jul 2021 09:19:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626945558; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=wVV1NKQntPKSAXSmSaAxE4Ah/CdiL8B+h1eN+sjS5is=;
-        b=b5IGVdj0o0o3ZgqB7IKc1pzH0l/qkGcPh8eya4gUuqptwL1mrR7XgLvAAj6Poq+7r1UxMS
-        kXYVWCyYHAFehGHjWly6du60lhQ70F4+//lEctXmuixD269nIGvk7a3QZldsuKZ4Ur0FdZ
-        3TCiCzx1kv24vG2SfM7JhElTXTv2G8k=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4393D13DA5;
-        Thu, 22 Jul 2021 09:19:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id RknLDxY4+WCfewAAMHmgww
-        (envelope-from <ailiop@suse.com>); Thu, 22 Jul 2021 09:19:18 +0000
-From:   Anthony Iliopoulos <ailiop@suse.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dma-debug: fix debugfs initialization order
-Date:   Thu, 22 Jul 2021 11:18:18 +0200
-Message-Id: <20210722091818.13434-1-ailiop@suse.com>
-X-Mailer: git-send-email 2.32.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FFFC5A07F;
+        Thu, 22 Jul 2021 09:26:32 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.41])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0E05C10023AB;
+        Thu, 22 Jul 2021 09:26:29 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH] KVM: Documentation: Fix KVM_CAP_ENFORCE_PV_FEATURE_CPUID name
+Date:   Thu, 22 Jul 2021 11:26:28 +0200
+Message-Id: <20210722092628.236474-1-vkuznets@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to link order, dma_debug_init is called before debugfs has a chance
-to initialize (via debugfs_init which also happens in the core initcall
-stage), so the directories for dma-debug are never created.
+'KVM_CAP_ENFORCE_PV_CPUID' doesn't match the define in
+include/uapi/linux/kvm.h.
 
-Move the dma_debug_init initcall from core to postcore stage so that
-debugfs will already be initialized by the time this is called, making
-it oblivious to link-ordering.
-
-Fixes: 15b28bbcd567 ("dma-debug: move initialization to common code")
-Signed-off-by: Anthony Iliopoulos <ailiop@suse.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 ---
- kernel/dma/debug.c | 2 +-
+ Documentation/virt/kvm/api.rst | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
-index 14de1271463f..49d80ef7f995 100644
---- a/kernel/dma/debug.c
-+++ b/kernel/dma/debug.c
-@@ -915,7 +915,7 @@ static int dma_debug_init(void)
- 	pr_info("debugging enabled by kernel config\n");
- 	return 0;
- }
--core_initcall(dma_debug_init);
-+postcore_initcall(dma_debug_init);
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index b9ddce5638f5..52eba4a275ad 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -7049,7 +7049,7 @@ In combination with KVM_CAP_X86_USER_SPACE_MSR, this allows user space to
+ trap and emulate MSRs that are outside of the scope of KVM as well as
+ limit the attack surface on KVM's MSR emulation code.
  
- static __init int dma_debug_cmdline(char *str)
- {
+-8.28 KVM_CAP_ENFORCE_PV_CPUID
++8.28 KVM_CAP_ENFORCE_PV_FEATURE_CPUID
+ -----------------------------
+ 
+ Architectures: x86
 -- 
-2.32.0
+2.31.1
 
