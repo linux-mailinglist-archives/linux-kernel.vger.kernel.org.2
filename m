@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7213D2903
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB2D3D2A00
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233617AbhGVQA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:00:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35214 "EHLO mail.kernel.org"
+        id S234662AbhGVQHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:07:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233207AbhGVP6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:58:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DBE061375;
-        Thu, 22 Jul 2021 16:38:46 +0000 (UTC)
+        id S234209AbhGVQE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:04:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9182561CBF;
+        Thu, 22 Jul 2021 16:44:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971926;
-        bh=3gzh3ZVg94BnuS8r/f+mIflG8bwxx3Sw5qAMigbrg4o=;
+        s=korg; t=1626972297;
+        bh=5GbnxnRz/alVXZRk6E3oCgK2dZ1Z3wbNbQf9Z27cDn0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JU6o5UqONc0Zlaevo1Kj4Jb8WrWUtU18LP5EbefyGKUAGvJ5ojyENHidrUNUDdj+F
-         axGuaXHG6PwQnzdEQ0jIGoXCjuKASjavJ7DTQGZHcZRNAYFo8Oztk+PoqRQWcK/4oq
-         haGQD/0R/ylE0h312zLYDxzRAvgv2/mYFpJIsIc0=
+        b=z31BMH1W3il/xeQGm69M1+KHQ7Xf0ElnLK1pLhfe3Y3fyovro3ZKvKsFhGnArPvYh
+         hVzcWFMKmE3ErUSa2xiPNqiCxAd2v0i6m24mhXgki1lOc/cJEczOJsa2ou2k4FoV4F
+         tZwcxga2Nz25LQFexvxZgDc75vLXjK3EuifpRTsU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        stable@vger.kernel.org, Stefan Wahren <stefan.wahren@i2se.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 044/125] ARM: dts: stm32: fix RCC node name on stm32f429 MCU
+Subject: [PATCH 5.13 060/156] ARM: dts: bcm283x: Fix up MMC node names
 Date:   Thu, 22 Jul 2021 18:30:35 +0200
-Message-Id: <20210722155626.165860736@linuxfoundation.org>
+Message-Id: <20210722155630.346271461@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+From: Stefan Wahren <stefan.wahren@i2se.com>
 
-[ Upstream commit e4b948415a89a219d13e454011cdcf9e63ecc529 ]
+[ Upstream commit f230c32349eb0a43a012a81c08a7f13859b86cbb ]
 
-This prevent warning observed with "make dtbs_check W=1"
+Fix the node names for the MMC/SD card controller to conform
+to the standard node name mmc@..
 
-Warning (simple_bus_reg): /soc/rcc@40023810: simple-bus unit address format
-error, expected "40023800"
-
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+Link: https://lore.kernel.org/r/1622981777-5023-2-git-send-email-stefan.wahren@i2se.com
+Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32f429.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/bcm2711.dtsi | 2 +-
+ arch/arm/boot/dts/bcm283x.dtsi | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32f429.dtsi b/arch/arm/boot/dts/stm32f429.dtsi
-index ad715a0e1c9a..9adccd4209fb 100644
---- a/arch/arm/boot/dts/stm32f429.dtsi
-+++ b/arch/arm/boot/dts/stm32f429.dtsi
-@@ -709,7 +709,7 @@
+diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.dtsi
+index 720beec54d61..d872064db761 100644
+--- a/arch/arm/boot/dts/bcm2711.dtsi
++++ b/arch/arm/boot/dts/bcm2711.dtsi
+@@ -413,7 +413,7 @@
+ 		ranges = <0x0 0x7e000000  0x0 0xfe000000  0x01800000>;
+ 		dma-ranges = <0x0 0xc0000000  0x0 0x00000000  0x40000000>;
+ 
+-		emmc2: emmc2@7e340000 {
++		emmc2: mmc@7e340000 {
+ 			compatible = "brcm,bcm2711-emmc2";
+ 			reg = <0x0 0x7e340000 0x100>;
+ 			interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm/boot/dts/bcm283x.dtsi b/arch/arm/boot/dts/bcm283x.dtsi
+index b83a864e2e8b..0f3be55201a5 100644
+--- a/arch/arm/boot/dts/bcm283x.dtsi
++++ b/arch/arm/boot/dts/bcm283x.dtsi
+@@ -420,7 +420,7 @@
  			status = "disabled";
  		};
  
--		rcc: rcc@40023810 {
-+		rcc: rcc@40023800 {
- 			#reset-cells = <1>;
- 			#clock-cells = <2>;
- 			compatible = "st,stm32f42xx-rcc", "st,stm32-rcc";
+-		sdhci: sdhci@7e300000 {
++		sdhci: mmc@7e300000 {
+ 			compatible = "brcm,bcm2835-sdhci";
+ 			reg = <0x7e300000 0x100>;
+ 			interrupts = <2 30>;
 -- 
 2.30.2
 
