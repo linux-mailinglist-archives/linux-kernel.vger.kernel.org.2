@@ -2,159 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866563D3010
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 01:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 911583D3012
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 01:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbhGVW2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 18:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbhGVW2h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 18:28:37 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E58C061575;
-        Thu, 22 Jul 2021 16:09:11 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id z8so379834wru.7;
-        Thu, 22 Jul 2021 16:09:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=WoM9lOF7rkqISzlcDBAnEuQoNMpZpUDXvbZJFWhKlts=;
-        b=AA5EkpEOr9Ss7d9k4cvAGogXLVoWf7hTLeuV5wnhW4xiIkvaAvGT/Is6luF6k51oOt
-         LfGkwhlXp3vO/V/OXryTB9ppfp3KiUJmahf0XkYcALFaUthPjI6LIkJ6yygnqtVMW1T1
-         GGlL5asGWXIZ+mZCM966yQ/asf9ty7Ru/Myr0H4imG5VWMScSS3rM3e8Y5up9DDK3f6R
-         /botoFZM1uprtB3Owm7m1Et8yTQIN95ds17F5zlsShwaGcSolos0qYnLiOkjxk+CWDNx
-         2y060nlIeNEdeOgUrqfUWf8oyIwCkQrZMaPMk9763+8Vb1lcmdKCe0RpOTBs76MmF4V2
-         up3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=WoM9lOF7rkqISzlcDBAnEuQoNMpZpUDXvbZJFWhKlts=;
-        b=ZRP/BbDCEzJZpxS2Ku1v7QzU7tH96iqTSHlZWpBICVqENAkSbjvBq14PtyWEGNRxxi
-         IeTYhOEMOn5oFq0lkQJdNZVnfOgdtTYy+dUbwqUo/suVz5NXOC3lQgiQu6y9t7zAIQ4S
-         VnYOW+mEwcPse+qtlAu6xuD6kGmuYkVzLLJEuHxcIFaux4Z3O97TF6YqynWeG5PFCbIr
-         hN7MVU2UpREUk6QxlypDtDN2tEAehD7pF6/XFryKGOiQA/0n3cFDt0GAcJY4V+Fojju2
-         CJbRXcm6rW8sSVzfqmo0A6SBTzywazUJXmrfEDGd7bCuIjDts0Po66iIkLMRwZAz11sy
-         5mfA==
-X-Gm-Message-State: AOAM532iz/TG6WbKvvoSOlaW6kG5x5GpBse6oYM5x6RcCv52ITVvgWwV
-        grHgmCOuw5l/v5UZxaSTfcE=
-X-Google-Smtp-Source: ABdhPJxB+kVF7ksAVmcFEeO7X3K6KnN34qSuz/iDL0Bnj4GYOxZx5Xvrj3L6m0NKX5G1/vRWFTlwmw==
-X-Received: by 2002:a5d:4449:: with SMTP id x9mr2223877wrr.52.1626995350261;
-        Thu, 22 Jul 2021 16:09:10 -0700 (PDT)
-Received: from [192.168.1.211] ([2.29.20.106])
-        by smtp.gmail.com with ESMTPSA id f130sm31887449wmf.23.2021.07.22.16.09.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jul 2021 16:09:09 -0700 (PDT)
-Subject: Re: [PATCH 01/13] media: i2c: Add ACPI support to ov8865
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
-        <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>
-References: <20210722203407.3588046-1-djrscally@gmail.com>
- <20210722203407.3588046-2-djrscally@gmail.com>
- <CAHp75VfC1QMu=BcMZP8-vX_2paDp4CXqEYEDQnN+7=s3Up9VjA@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <eb13a7da-066f-aa91-e89f-c2171bff2aed@gmail.com>
-Date:   Fri, 23 Jul 2021 00:09:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232599AbhGVW3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 18:29:45 -0400
+Received: from mga11.intel.com ([192.55.52.93]:23079 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232024AbhGVW3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 18:29:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="208656082"
+X-IronPort-AV: E=Sophos;i="5.84,262,1620716400"; 
+   d="scan'208";a="208656082"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 16:10:17 -0700
+X-IronPort-AV: E=Sophos;i="5.84,262,1620716400"; 
+   d="scan'208";a="502084173"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 16:10:13 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        kvm list <kvm@vger.kernel.org>
+Subject: Re: [PATCH] mm,do_huge_pmd_numa_page: remove unnecessary TLB
+ flushing code
+References: <20210720065529.716031-1-ying.huang@intel.com>
+        <eadff602-3824-f69d-e110-466b37535c99@de.ibm.com>
+        <CAHbLzkp6LDLUK9TLM+geQM6+X6+toxAGi53UBd49Zm5xgc5aWQ@mail.gmail.com>
+        <0D75A92F-E2AA-480C-9E9A-0B6EE7897757@nvidia.com>
+        <CAHbLzkqZZEic7+H0ky9u+aKO5o_cF0N5xQ=JO2tMpc8jg8RcnQ@mail.gmail.com>
+        <YPhAEcHOCZ5yII/T@google.com>
+        <87lf5z9osl.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <572f1ddd-9ac6-fb09-9a24-1c667dbd1d03@de.ibm.com>
+Date:   Fri, 23 Jul 2021 07:10:12 +0800
+In-Reply-To: <572f1ddd-9ac6-fb09-9a24-1c667dbd1d03@de.ibm.com> (Christian
+        Borntraeger's message of "Thu, 22 Jul 2021 09:36:07 +0200")
+Message-ID: <87czra9c8b.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfC1QMu=BcMZP8-vX_2paDp4CXqEYEDQnN+7=s3Up9VjA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Christian Borntraeger <borntraeger@de.ibm.com> writes:
 
-On 22/07/2021 22:58, Andy Shevchenko wrote:
+> On 22.07.21 02:26, Huang, Ying wrote:
+>> Sean Christopherson <seanjc@google.com> writes:
+>>>>
+>>>> Thanks, I think you are correct. By looking into commit 7066f0f933a1
+>>>> ("mm: thp: fix mmu_notifier in migrate_misplaced_transhuge_page()"),
+>>>> the tlb flush and mmu notifier invalidate were needed since the old
+>>>> numa fault implementation didn't change PTE to migration entry so it
+>>>> may cause data corruption due to the writes from GPU secondary MMU.
+>>>>
+>>>> The refactor does use the generic migration code which converts PTE to
+>>>> migration entry before copying data to the new page.
+>>>
+>>> That's my understanding as well, based on this blurb from commit 7066f0f933a1.
+>>>
+>>>      The standard PAGE_SIZEd migrate_misplaced_page is less accelerated and
+>>>      uses the generic migrate_pages which transitions the pte from
+>>>      numa/protnone to a migration entry in try_to_unmap_one() and flushes TLBs
+>>>      and all mmu notifiers there before copying the page.
+>>>
+>>> That analysis/justification for removing the invalidate_range() call should be
+>>> captured in the changelog.  Confirmation from Andrea would be a nice bonus.
+>> When we flush CPU TLB for a page that may be shared with device/VM
+>> TLB,
+>> we will call MMU notifiers for the page to flush the device/VM TLB.
+>> Right?  So when we replaced CPU TLB flushing in do_huge_pmd_numa_page()
+>> with that in try_to_migrate_one(), we will replace the MMU notifiers
+>> calling too.  Do you agree?
 >
->
-> On Thursday, July 22, 2021, Daniel Scally <djrscally@gmail.com
-> <mailto:djrscally@gmail.com>> wrote:
->
->     The ov8865 sensor is sometimes found on x86 platforms enumerated
->     via ACPI.
->     Add an ACPI match table to the driver so that it's probed on those
->     platforms.
->
->     Signed-off-by: Daniel Scally <djrscally@gmail.com
->     <mailto:djrscally@gmail.com>>
->     ---
->      drivers/media/i2c/ov8865.c | 8 ++++++++
->      1 file changed, 8 insertions(+)
->
->     diff --git a/drivers/media/i2c/ov8865.c b/drivers/media/i2c/ov8865.c
->     index ce50f3ea87b8..fe60cda3dea7 100644
->     --- a/drivers/media/i2c/ov8865.c
->     +++ b/drivers/media/i2c/ov8865.c
->     @@ -5,6 +5,7 @@
->       * Author: Paul Kocialkowski <paul.kocialkowski@bootlin.com
->     <mailto:paul.kocialkowski@bootlin.com>>
->       */
->
->     +#include <linux/acpi.h>
->
->
->
-> No user of it. Probably you meant mod_devicetable.h
+> Can someone write an updated commit messages that contains this information?
 
+OK.  I will update the patch description to add MMU notifiers
+description.
 
-Huh, I guess I did yeah...for some reason I thought acpi_device_id was
-in acpi.h. Thanks very much; I'll fix it.
-
->  
->
->      #include <linux/clk.h>
->      #include <linux/delay.h>
->      #include <linux/device.h>
->     @@ -2946,6 +2947,12 @@ static const struct dev_pm_ops
->     ov8865_pm_ops = {
->             SET_RUNTIME_PM_OPS(ov8865_suspend, ov8865_resume, NULL)
->      };
->
->     +static const struct acpi_device_id ov8865_acpi_match[] = {
->     +       {"INT347A"},
->     +       {},
->     +};
->     +MODULE_DEVICE_TABLE(acpi, ov8865_acpi_match);
->     +
->      static const struct of_device_id ov8865_of_match[] = {
->             { .compatible = "ovti,ov8865" },
->             { }
->     @@ -2956,6 +2963,7 @@ static struct i2c_driver ov8865_driver = {
->             .driver = {
->                     .name = "ov8865",
->                     .of_match_table = ov8865_of_match,
->     +               .acpi_match_table = ov8865_acpi_match,
->                     .pm = &ov8865_pm_ops,
->             },
->             .probe_new = ov8865_probe,
->     -- 
->     2.25.1
->
->
->
-> -- 
-> With Best Regards,
-> Andy Shevchenko
->
->
+Best Regards,
+Huang, Ying
