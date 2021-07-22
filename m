@@ -2,111 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A90C3D208C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4113D2076
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhGVIbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 04:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhGVIb2 (ORCPT
+        id S231372AbhGVIbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 04:31:24 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:34715 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231296AbhGVIbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 04:31:28 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEE3C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 02:12:03 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id c15so5126924wrs.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 02:12:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NaNS9AMgRmwWpk7IwOuTN+Dqg/nfKEvds147rH9Tsw4=;
-        b=ecOgwWM0pxO8mzTAh4/Y9NmnUmrXKIT5LaCzZ6YB70MqSZc0e2QHL4FSMP/Cs70w71
-         Ur5QgKQQr5sD1sSbh/MO/Y1K1b3JmBpFyxtSX8JKjxNlzPtdQUIQFCtpPh4MgPMaNI9J
-         6U6SnNmQQ2n+xayFQbhYElJ3CYfYnE2pkowTi2ZIsJM7lyiug/9KoE7fly4mp3uddkFW
-         GNC496bmEs61CWvpFoFpFZmXdcQMUMP9MqRZYnmhYUG+IWztvLd2Kn3z01attIDw7zl1
-         A6jjXrbGH/PXNwY93OuFBHFGKmxWI5l+QIRigCPrc5YLVDdDFo0ziiuYJa7DFXmruZx4
-         BEYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NaNS9AMgRmwWpk7IwOuTN+Dqg/nfKEvds147rH9Tsw4=;
-        b=TIM/OYt0VZ7hlRI+tByVzRTNFPmih0AieV11oZIhKWGb7PNxP8Fn/pkbZlAIAaKYEV
-         JF9NNKxFje7oxZuYFnNR72ye6rZcb+I/lSEYLZagbBZiUq9vohEeyvu4C68PXFcavmp5
-         aUgvjdpaC082p3NBuQfAKGSc/Typ9+xY5Xt32PTgs8CIon1kfZWB4QgyRwuWNzzgQ/mT
-         aJXrBf5ruyKWEfkTc/YtoI8imCkwCUlYWcanPSqNZyK4DOJCCjOt5f8j+EfAfWPIy920
-         Sfo0FiXoYDyqflJoluPIeClGKQ+UxN1aQRzQls5m/PRZpsbU8dEyjcWVsBUBtNoZyFyJ
-         Ru1w==
-X-Gm-Message-State: AOAM531chWcG71NvtE+pnFe/xxtFsujaS0BJ3t9GOQBUzkR1HWC3WINg
-        HTACC4sBfwQLOx+Y8hG2s18rAQ==
-X-Google-Smtp-Source: ABdhPJyLWiHBnDA36VBmChvvNm3hWvX+VZpa3Rz7wOqMiZ8+/dewGGLnMKuFbyZcmEza8fsTByf6lg==
-X-Received: by 2002:a5d:568a:: with SMTP id f10mr28245004wrv.293.1626945121506;
-        Thu, 22 Jul 2021 02:12:01 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:efb1:2fcc:e84:52ad])
-        by smtp.gmail.com with ESMTPSA id f26sm24174882wmc.29.2021.07.22.02.12.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 02:12:01 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 10:11:58 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "Alexandru.Elisei@arm.com" <Alexandru.Elisei@arm.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 3/3] kvm/arm: Align the VMID allocation with the arm64
- ASID one
-Message-ID: <YPk2XqrOeP6dEtPL@google.com>
-References: <20210616155606.2806-1-shameerali.kolothum.thodi@huawei.com>
- <20210616155606.2806-4-shameerali.kolothum.thodi@huawei.com>
- <20210721163138.GD11003@willie-the-truck>
- <f7d708704fb84380af85298a98f7a48c@huawei.com>
+        Thu, 22 Jul 2021 04:31:23 -0400
+Received: (Authenticated sender: jacopo@jmondi.org)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id B3C0F20000C;
+        Thu, 22 Jul 2021 09:11:55 +0000 (UTC)
+From:   Jacopo Mondi <jacopo+renesas@jmondi.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-renesas-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/8] arm64: dts: renesas: Enable GMSL on Eagle and Condor
+Date:   Thu, 22 Jul 2021 11:12:31 +0200
+Message-Id: <20210722091239.26451-1-jacopo+renesas@jmondi.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7d708704fb84380af85298a98f7a48c@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 22 Jul 2021 at 06:45:14 (+0000), Shameerali Kolothum Thodi wrote:
-> > From: Will Deacon [mailto:will@kernel.org]
-> > > diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> > b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> > > index 4b60c0056c04..a02c4877a055 100644
-> > > --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> > > +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> > > @@ -106,8 +106,7 @@ int kvm_host_prepare_stage2(void *mem_pgt_pool,
-> > void *dev_pgt_pool)
-> > >  	mmu->pgd_phys = __hyp_pa(host_kvm.pgt.pgd);
-> > >  	mmu->arch = &host_kvm.arch;
-> > >  	mmu->pgt = &host_kvm.pgt;
-> > > -	mmu->vmid.vmid_gen = 0;
-> > > -	mmu->vmid.vmid = 0;
-> > > +	atomic64_set(&mmu->vmid.id, 0);
-> > 
-> > I think this is the first atomic64 use in the EL2 object, which may pull in
-> > some fatal KCSAN instrumentation. Quentin, have you run into this before?
-> > 
-> > Might be simple just to zero-initialise mmu for now, if it isn't already.
-> 
-> I will check that.
+Hello,
+   here we go again with the attempt to try enable GMSL for Eagle and this time
+also Condor board.
 
-Yes I think what saves us here is that, AFAICT. arm64 doesn't support
-KCSAN yet. But the day it does, this should fail to link (hopefully)
-because of out-of-line calls into e.g. __kasan_check_write().
+v5 highlighted an issue with the integration of RDACM20 which shown failures at
+start streaming time due to conflicts with i2c writes performed by the embedded
+microcontroller. A new patch
+- media: i2c: rdacm20: Re-program chip address earlier
+is aimed to fix the issue by reducing the collision window by re-programming the
+chip address earlier. All capture session I've run seems stable now.
 
-So yes, a simple zeroing here is probably preferable.
+Compared to v5 integration for the Condor board is now included.
 
-Thanks,
-Quentin
+Condor has 2 GMSL channels, something the current version of the MAX9286 driver
+does not support. However the DTS integration can be upstreamed but a single
+channel can be used at a time.
+
+Support for Condor required a reword of what was called eagle-gmsl.dtsi in v5
+and is now called gmsl-cameras.dtsi to expand support for the secondary GMSL
+channel.
+
+Integration of the new "maxim,gpio-poc" property required for Eagle/Condor is
+fully reviewed and can be eventually fast-tracked.
+
+The series is based on:
+https://patchwork.linuxtv.org/project/linux-media/list/?series=5847
+and has been tested on Eagle V3H board, while only compile tested for Condor.
+
+Thanks
+   j
+
+Jacopo Mondi (5):
+  dt-bindings: media: max9286: Re-indent example
+  dt-bindings: media: max9286: Define 'maxim,gpio-poc'
+  media: i2c: max9286: Use "maxim,gpio-poc" property
+  media: i2c: rdacm20: Re-program chip address earlier
+  arm64: dts: renesas: condor: Enable MAX9286
+
+Kieran Bingham (3):
+  arm64: dts: renesas: eagle: Enable MAX9286
+  arm64: dts: renesas: Add GMSL cameras .dtsi
+  DNI: arm64: dts: renesas: eagle: Include eagle-gmsl
+
+ .../bindings/media/i2c/maxim,max9286.yaml     | 275 +++++++++------
+ arch/arm64/boot/dts/renesas/gmsl-cameras.dtsi | 332 ++++++++++++++++++
+ .../arm64/boot/dts/renesas/r8a77970-eagle.dts | 112 ++++++
+ .../boot/dts/renesas/r8a77980-condor.dts      | 193 ++++++++++
+ drivers/media/i2c/max9286.c                   | 125 +++++--
+ drivers/media/i2c/rdacm20.c                   |  10 +-
+ 6 files changed, 906 insertions(+), 141 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/renesas/gmsl-cameras.dtsi
+
+--
+2.32.0
+
