@@ -2,82 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3869B3D2658
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA2B3D265E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232511AbhGVOVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 10:21:45 -0400
-Received: from mga02.intel.com ([134.134.136.20]:3653 "EHLO mga02.intel.com"
+        id S232562AbhGVOWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 10:22:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232431AbhGVOVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 10:21:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="198869950"
-X-IronPort-AV: E=Sophos;i="5.84,261,1620716400"; 
-   d="scan'208";a="198869950"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 08:02:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,261,1620716400"; 
-   d="scan'208";a="633017703"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga005.jf.intel.com with ESMTP; 22 Jul 2021 08:02:08 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 2DB9AE7; Thu, 22 Jul 2021 18:02:36 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dennis Giaya <dgiaya@whoi.edu>
-Subject: [PATCH v1 1/1] serial: max310x: Use clock-names property matching to recognize XTAL
-Date:   Thu, 22 Jul 2021 18:02:33 +0300
-Message-Id: <20210722150233.30897-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232517AbhGVOWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 10:22:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3823D61287;
+        Thu, 22 Jul 2021 15:03:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626966202;
+        bh=5BTaGyL/NvBqj4BxHigK5YfIyUIapiVwfbphBl/HXbI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q+DUro900J4Sk+qimI7KPe7khTQr+Esd1Fi7yLC+I8Xy2Y8t5AvPSRyh7Rxd6PVaa
+         5QpbvAoNRD7ZVtPYIEq9JMvuVGpbqtQydylBFUvHkk2tEZROtuWszbuD9+xMuLwqSt
+         ARs+sjKTjBj1SJuC7NtdxU0z0X/1+EkIUc/lJhoQ+QQFJ0+cIF3RkdQas1pjIgbbSN
+         l/hEyTGQsUU2LOmcz9ainUPEuXBh2EnuHOVSENTMk/n4d8CNfjQywyTFTjACe9Jrkx
+         HZVNxwrzm8Lb98GW6XH05P6KQw8tbgDv1nN1Wb7JFiJWlK5jQpR5FqctA/LOSnfCqS
+         z+F85z/J8tVhw==
+Date:   Fri, 23 Jul 2021 00:03:18 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     "liuqi (BA)" <liuqi115@huawei.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
+Message-Id: <20210723000318.5594c86e7c454aed82d9465d@kernel.org>
+In-Reply-To: <332df5b7d7bb4bd096b6521ffefaabe6@hisilicon.com>
+References: <20210719122417.10355-1-liuqi115@huawei.com>
+        <20210721174153.34c1898dc9eea135eb0b8be8@kernel.org>
+        <332df5b7d7bb4bd096b6521ffefaabe6@hisilicon.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dennis reported that on ACPI-based systems the clock frequency
-isn't enough to configure device properly. We have to respect
-the clock source as well. To achieve this match the clock-names
-property against "xtal" to recognize crystal connection.
+Hi Song,
 
-Reported-by: Dennis Giaya <dgiaya@whoi.edu>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tty/serial/max310x.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+On Thu, 22 Jul 2021 10:24:54 +0000
+"Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com> wrote:
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index ef11860cd69e..e2ab8d4eb7ad 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -1271,18 +1271,13 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
- 	/* Always ask for fixed clock rate from a property. */
- 	device_property_read_u32(dev, "clock-frequency", &uartclk);
- 
--	s->clk = devm_clk_get_optional(dev, "osc");
-+	xtal = device_property_match_string(dev, "clock-names", "xtal") >= 0;
-+	if (xtal)
-+		s->clk = devm_clk_get_optional(dev, "xtal");
-+	else
-+		s->clk = devm_clk_get_optional(dev, "osc");
- 	if (IS_ERR(s->clk))
- 		return PTR_ERR(s->clk);
--	if (s->clk) {
--		xtal = false;
--	} else {
--		s->clk = devm_clk_get_optional(dev, "xtal");
--		if (IS_ERR(s->clk))
--			return PTR_ERR(s->clk);
--
--		xtal = true;
--	}
- 
- 	ret = clk_prepare_enable(s->clk);
- 	if (ret)
+> 
+> 
+> > -----Original Message-----
+> > From: Masami Hiramatsu [mailto:mhiramat@kernel.org]
+> > Sent: Wednesday, July 21, 2021 8:42 PM
+> > To: liuqi (BA) <liuqi115@huawei.com>
+> > Cc: catalin.marinas@arm.com; will@kernel.org; naveen.n.rao@linux.ibm.com;
+> > anil.s.keshavamurthy@intel.com; davem@davemloft.net;
+> > linux-arm-kernel@lists.infradead.org; Song Bao Hua (Barry Song)
+> > <song.bao.hua@hisilicon.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
+> > robin.murphy@arm.com; Linuxarm <linuxarm@huawei.com>;
+> > linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
+> > 
+> > Hi Qi,
+> > 
+> > Thanks for your effort!
+> > 
+> > On Mon, 19 Jul 2021 20:24:17 +0800
+> > Qi Liu <liuqi115@huawei.com> wrote:
+> > 
+> > > This patch introduce optprobe for ARM64. In optprobe, probed
+> > > instruction is replaced by a branch instruction to detour
+> > > buffer. Detour buffer contains trampoline code and a call to
+> > > optimized_callback(). optimized_callback() calls opt_pre_handler()
+> > > to execute kprobe handler.
+> > 
+> > OK so this will replace only one instruction.
+> > 
+> > >
+> > > Limitations:
+> > > - We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
+> > > guarantee the offset between probe point and kprobe pre_handler
+> > > is not larger than 128MiB.
+> > 
+> > Hmm, shouldn't we depends on !CONFIG_ARM64_MODULE_PLTS? Or,
+> > allocate an intermediate trampoline area similar to arm optprobe
+> > does.
+> 
+> Depending on !CONFIG_ARM64_MODULE_PLTS will totally disable
+> RANDOMIZE_BASE according to arch/arm64/Kconfig:
+> config RANDOMIZE_BASE
+> 	bool "Randomize the address of the kernel image"
+> 	select ARM64_MODULE_PLTS if MODULES
+> 	select RELOCATABLE
+
+Yes, but why it is required for "RANDOMIZE_BASE"?
+Does that imply the module call might need to use PLT in
+some cases?
+
+> 
+> Depending on !RANDOMIZE_MODULE_REGION_FULL seems to be still
+> allowing RANDOMIZE_BASE via avoiding long jump according to:
+> arch/arm64/Kconfig:
+> 
+> config RANDOMIZE_MODULE_REGION_FULL
+> 	bool "Randomize the module region over a 4 GB range"
+> 	depends on RANDOMIZE_BASE
+> 	default y
+> 	help
+> 	  Randomizes the location of the module region inside a 4 GB window
+> 	  covering the core kernel. This way, it is less likely for modules
+> 	  to leak information about the location of core kernel data structures
+> 	  but it does imply that function calls between modules and the core
+> 	  kernel will need to be resolved via veneers in the module PLT.
+> 
+> 	  When this option is not set, the module region will be randomized over
+> 	  a limited range that contains the [_stext, _etext] interval of the
+> 	  core kernel, so branch relocations are always in range.
+
+Hmm, this dependency looks strange. If it always in range, don't we need
+PLT for modules?
+
+Cataline, would you know why?
+Maybe it's a KASLR's Kconfig issue?
+
+> 
+> and
+> 
+> arch/arm64/kernel/kaslr.c:
+> 	if (IS_ENABLED(CONFIG_RANDOMIZE_MODULE_REGION_FULL)) {
+> 		/*
+> 		 * Randomize the module region over a 2 GB window covering the
+> 		 * kernel. This reduces the risk of modules leaking information
+> 		 * about the address of the kernel itself, but results in
+> 		 * branches between modules and the core kernel that are
+> 		 * resolved via PLTs. (Branches between modules will be
+> 		 * resolved normally.)
+> 		 */
+> 		module_range = SZ_2G - (u64)(_end - _stext);
+> 		module_alloc_base = max((u64)_end + offset - SZ_2G,
+> 					(u64)MODULES_VADDR);
+> 	} else {
+> 		/*
+> 		 * Randomize the module region by setting module_alloc_base to
+> 		 * a PAGE_SIZE multiple in the range [_etext - MODULES_VSIZE,
+> 		 * _stext) . This guarantees that the resulting region still
+> 		 * covers [_stext, _etext], and that all relative branches can
+> 		 * be resolved without veneers.
+> 		 */
+> 		module_range = MODULES_VSIZE - (u64)(_etext - _stext);
+> 		module_alloc_base = (u64)_etext + offset - MODULES_VSIZE;
+> 	}
+> 
+> So depending on ! ARM64_MODULE_PLTS seems to narrow the scenarios
+> while depending on ! RANDOMIZE_MODULE_REGION_FULL  permit more
+> machines to use optprobe.
+
+OK, I see that the code ensures the range will be in the MODULE_VSIZE (=128MB).
+
+> 
+> I am not quite sure I am 100% right but tests seem to back this.
+> hopefully Catalin and Will can correct me.
+> 
+> > 
+> > >
+> > > Performance of optprobe on Hip08 platform is test using kprobe
+> > > example module[1] to analyze the latency of a kernel function,
+> > > and here is the result:
+> > >
+> > > [1]
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sa
+> > mples/kprobes/kretprobe_example.c
+> > >
+> > > kprobe before optimized:
+> > > [280709.846380] do_empty returned 0 and took 1530 ns to execute
+> > > [280709.852057] do_empty returned 0 and took 550 ns to execute
+> > > [280709.857631] do_empty returned 0 and took 440 ns to execute
+> > > [280709.863215] do_empty returned 0 and took 380 ns to execute
+> > > [280709.868787] do_empty returned 0 and took 360 ns to execute
+> > > [280709.874362] do_empty returned 0 and took 340 ns to execute
+> > > [280709.879936] do_empty returned 0 and took 320 ns to execute
+> > > [280709.885505] do_empty returned 0 and took 300 ns to execute
+> > > [280709.891075] do_empty returned 0 and took 280 ns to execute
+> > > [280709.896646] do_empty returned 0 and took 290 ns to execute
+> > > [280709.902220] do_empty returned 0 and took 290 ns to execute
+> > > [280709.907807] do_empty returned 0 and took 290 ns to execute
+> > >
+> > > optprobe:
+> > > [ 2965.964572] do_empty returned 0 and took 90 ns to execute
+> > > [ 2965.969952] do_empty returned 0 and took 80 ns to execute
+> > > [ 2965.975332] do_empty returned 0 and took 70 ns to execute
+> > > [ 2965.980714] do_empty returned 0 and took 60 ns to execute
+> > > [ 2965.986128] do_empty returned 0 and took 80 ns to execute
+> > > [ 2965.991507] do_empty returned 0 and took 70 ns to execute
+> > > [ 2965.996884] do_empty returned 0 and took 70 ns to execute
+> > > [ 2966.002262] do_empty returned 0 and took 80 ns to execute
+> > > [ 2966.007642] do_empty returned 0 and took 70 ns to execute
+> > > [ 2966.013020] do_empty returned 0 and took 70 ns to execute
+> > > [ 2966.018400] do_empty returned 0 and took 70 ns to execute
+> > > [ 2966.023779] do_empty returned 0 and took 70 ns to execute
+> > > [ 2966.029158] do_empty returned 0 and took 70 ns to execute
+> > 
+> > Great result!
+> > I have other comments on the code below.
+> > 
+> > [...]
+> > > diff --git a/arch/arm64/kernel/probes/kprobes.c
+> > b/arch/arm64/kernel/probes/kprobes.c
+> > > index 6dbcc89f6662..83755ad62abe 100644
+> > > --- a/arch/arm64/kernel/probes/kprobes.c
+> > > +++ b/arch/arm64/kernel/probes/kprobes.c
+> > > @@ -11,6 +11,7 @@
+> > >  #include <linux/kasan.h>
+> > >  #include <linux/kernel.h>
+> > >  #include <linux/kprobes.h>
+> > > +#include <linux/moduleloader.h>
+> > >  #include <linux/sched/debug.h>
+> > >  #include <linux/set_memory.h>
+> > >  #include <linux/slab.h>
+> > > @@ -113,9 +114,21 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
+> > >
+> > >  void *alloc_insn_page(void)
+> > >  {
+> > > -	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
+> > > -			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
+> > > -			NUMA_NO_NODE, __builtin_return_address(0));
+> > > +	void *page;
+> > > +
+> > > +	page = module_alloc(PAGE_SIZE);
+> > > +	if (!page)
+> > > +		return NULL;
+> > > +
+> > > +	set_vm_flush_reset_perms(page);
+> > > +	/*
+> > > +	 * First make the page read-only, and only then make it executable to
+> > > +	 * prevent it from being W+X in between.
+> > > +	 */
+> > > +	set_memory_ro((unsigned long)page, 1);
+> > > +	set_memory_x((unsigned long)page, 1);
+> > > +
+> > > +	return page;
+> > 
+> > Isn't this a separated change? Or any reason why you have to
+> > change this function?
+> 
+> As far as I can tell, this is still related with the 128MB
+> short jump limitation.
+> VMALLOC_START, VMALLOC_END is an fixed virtual address area
+> which isn't necessarily modules will be put.
+> So this patch is moving to module_alloc() which will get
+> memory between module_alloc_base and module_alloc_end.
+
+Ah, I missed that point. Yes, VMALLOC_START and VMALLOC_END
+are not correct range.
+
+> 
+> Together with depending on !RANDOMIZE_MODULE_REGION_FULL,
+> this makes all kernel, module and trampoline in short
+> jmp area.
+> 
+> As long as we can figure out a way to support long jmp
+> for optprobe, the change in alloc_insn_page() can be
+> dropped.
+
+No, I think above change is rather readable, so it is OK.
+
+> 
+> Masami, any reference code from any platform to support long
+> jump for optprobe? For long jmp, we need to put jmp address
+> to a memory and then somehow load the target address
+> to PC. Right now, we are able to replace an instruction
+> only. That is the problem.
+
+Hmm, I had read a paper about 2-stage jump idea 15years ago. That
+paper allocated an intermediate trampoline (like PLT) which did a long
+jump to the real trampoline on SPARC.
+(something like, "push x0; ldr x0, [pc+8]; br x0; <immediate-addr>" for
+a slot of the intermediate trampoline.)
+
+For the other (simpler) solution example is optprobe in powerpc
+(arch/powerpc/kernel/optprobes_head.S). That reserves a buffer page
+in the text section, and use it.
+
+But I think your current implementation is good enough for the
+first step. If someone needs CONFIG_RANDOMIZE_MODULE_REGION_FULL
+and optprobe, we can revisit this point.
+
+Thank you,
+
+
 -- 
-2.30.2
-
+Masami Hiramatsu <mhiramat@kernel.org>
