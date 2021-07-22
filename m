@@ -2,150 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769E43D2FA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02253D2FA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232154AbhGVVf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 17:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231799AbhGVVf0 (ORCPT
+        id S232227AbhGVVgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 17:36:37 -0400
+Received: from mail-pl1-f180.google.com ([209.85.214.180]:41800 "EHLO
+        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231533AbhGVVgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 17:35:26 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A1CC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 15:16:01 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id c2-20020a0568303482b029048bcf4c6bd9so237021otu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 15:16:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=1P30anYGrbFMw8Dp6P2ZgzncSWQNEGgjr9q3x/GFEIs=;
-        b=C1SUrjiuWpaElT428BGbbipfB4DWr1I5leetlyAHwKQsjc7oO8bVG8w69NH4QKnIXg
-         KVftEoIKILx962hypPEJx7xVs1j6Gs4X6vcOnS9LDrRAItrGM6v71uEBu0WmvVFc7gyT
-         T6U+S06UAygOVgK968qPysINuSZCtc9Vm2TuM=
+        Thu, 22 Jul 2021 17:36:36 -0400
+Received: by mail-pl1-f180.google.com with SMTP id e14so942827plh.8;
+        Thu, 22 Jul 2021 15:17:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=1P30anYGrbFMw8Dp6P2ZgzncSWQNEGgjr9q3x/GFEIs=;
-        b=c4/9VuXjar0ucPKLgZygyg1Opquk9X9FtIe2qWVkdGlZoWnTlpNYT9zo9YwUzWQppe
-         tSUos7ZNqqZby/o+u58WDocynx0NMCz4Psii6hydugZ/Zak85ZTsJIFtlhDm2kgZc30x
-         29CzdSaphhJ8VbBe00RmTv+GdxFvNRnjv6b3V8rhAv6zHYby7Z89XxL1794apOL0xu65
-         JqEpQSnOHSiNWGqZ3sLr6S7lK8CyNkc9PcHLj+CEQRMvL2m2jV6JN/Gr7zOXV49REFVq
-         tVJabXkEEr3+fy5L1Q9I61hBGhmr4Mc+7u+gS9jkHxdI5xR4i94vSViGTuA8zyMmTxuh
-         T33g==
-X-Gm-Message-State: AOAM530y57XdVrdU9icSOkWe4a4LlU1+DTMXXAi172D4Niu2ucofQ5B/
-        70eIR5mbP9TG5xzya6r/UHWgVnwecTomobl3b1LCTA==
-X-Google-Smtp-Source: ABdhPJxt5t5ka2lveLWssMiuxjw7+jYSepg33qJk0qaGv+6PNa+XJlnwapS9S7t/4p+6FpuN8HYaHmqlewv0QmKEkWg=
-X-Received: by 2002:a9d:650e:: with SMTP id i14mr1220198otl.233.1626992160462;
- Thu, 22 Jul 2021 15:16:00 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 22 Jul 2021 22:16:00 +0000
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KjDm2tntM7APsKw0ldKBybDQvh8O5xALMiXoPEkyZTI=;
+        b=aK9jPCxRz/gghaXzA/b2/yqVvgkg7N/H/XJceMUA3rKvUNlqwwNWoUIrbslPLCMFH2
+         LmTGbBI1tcMHs4HAgLMW6tmR+FvIvZMrLfPpQwcAWEgB5ORJV1HzH0a1LNWBglp7SdOM
+         BXEroyCdOjEzYj/EEQho2MdKYj3eapXaVUVmYVTTniKXnnTj0D/TgsRd3Pj5+821jycV
+         2C2l6d5Y28N8jyLfwsfJqK/DDbVEdJmI40+tyWKglwVE75jqTnrhNG2MhA49k2bgruF1
+         sA6LdhHWWTc19/mPtu06Fc3/1LSfz84dEdbOhHL+lM2oBsq+XTvgp7tsP+dZMclr3H1Z
+         3phw==
+X-Gm-Message-State: AOAM533fEMg96qPV1pOSrJvBqvlctwW1Uxjhl71teKF0+yq96CaFXfUc
+        30raG1w4nyVuIRWVxie9ct4=
+X-Google-Smtp-Source: ABdhPJzouoXE7Wgjzor7XhzXWq+ByqM9pelabWAXOU//gBHckMfX0mANrBFzySFWfklAhrdfb5KFUg==
+X-Received: by 2002:a63:3243:: with SMTP id y64mr2033130pgy.244.1626992229655;
+        Thu, 22 Jul 2021 15:17:09 -0700 (PDT)
+Received: from garbanzo ([191.96.121.239])
+        by smtp.gmail.com with ESMTPSA id bv22sm23528815pjb.21.2021.07.22.15.17.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 15:17:08 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 15:17:05 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        rafael@kernel.org, axboe@kernel.dk, tj@kernel.org, mbenes@suse.com,
+        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
+        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 2/3] zram: fix deadlock with sysfs attribute usage and
+ module removal
+Message-ID: <20210722221705.kyrdkpt6fwf5k56o@garbanzo>
+References: <20210703001958.620899-1-mcgrof@kernel.org>
+ <20210703001958.620899-3-mcgrof@kernel.org>
+ <YPgFGd+FZQZWODY7@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <1615361290-19238-2-git-send-email-pillair@codeaurora.org>
-References: <1615361290-19238-1-git-send-email-pillair@codeaurora.org> <1615361290-19238-2-git-send-email-pillair@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 22 Jul 2021 22:16:00 +0000
-Message-ID: <CAE-0n50=diAroo1FJMG_7_RbRmbyhkZpw+aCY4QDqpzg7uoWqw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
-To:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        ohad@wizery.com, p.zabel@pengutronix.de, robh+dt@kernel.org
-Cc:     sibis@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPgFGd+FZQZWODY7@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rakesh Pillai (2021-03-09 23:28:09)
-> Add WPSS PIL loading support for SC7280 SoCs.
->
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> ---
->  .../bindings/remoteproc/qcom,hexagon-v56.txt       | 35 ++++++++++++----------
->  1 file changed, 20 insertions(+), 15 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.txt b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.txt
-> index 1337a3d..edad5e8 100644
-> --- a/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.txt
-> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.txt
-> @@ -9,6 +9,7 @@ on the Qualcomm Technology Inc. Hexagon v56 core.
->         Definition: must be one of:
->                     "qcom,qcs404-cdsp-pil",
->                     "qcom,sdm845-adsp-pil"
-> +                   "qcom,sc7280-wpss-pil"
+On Wed, Jul 21, 2021 at 01:29:29PM +0200, Greg KH wrote:
+> On Fri, Jul 02, 2021 at 05:19:57PM -0700, Luis Chamberlain wrote:
+> > +#define MODULE_DEVICE_ATTR_FUNC_STORE(_name) \
+> > +static ssize_t module_ ## _name ## _store(struct device *dev, \
+> > +				   struct device_attribute *attr, \
+> > +				   const char *buf, size_t len) \
+> > +{ \
+> > +	ssize_t __ret; \
+> > +	if (!try_module_get(THIS_MODULE)) \
+> > +		return -ENODEV; \
+> 
+> I feel like this needs to be written down somewhere as I see it come up
+> all the time.
 
-alphabet sort please.
+I'll go ahead and cook up a patch to do just this after I send this
+email out.
 
->
->  - reg:
->         Usage: required
-> @@ -24,7 +25,13 @@ on the Qualcomm Technology Inc. Hexagon v56 core.
->  - interrupt-names:
->         Usage: required
->         Value type: <stringlist>
-> -       Definition: must be "wdog", "fatal", "ready", "handover", "stop-ack"
-> +       Definition: The interrupts needed depends on the compatible string
-> +       qcom,sdm845-adsp-pil:
-> +       qcom,qcs404-cdsp-pil:
-> +               must be "wdog", "fatal", "ready", "handover", "stop-ack"
-> +       qcom,sc7280-wpss-pil:
+> Again, this is racy and broken code.  You can NEVER try to increment
+> your own module reference count unless it has already been incremented
+> by someone external first.
 
-Alphabet sort too?
+In the zram driver's case the sysfs files are still pegged on, because
+as we noted before the kernfs active reference will ensure the store
+operation still exists. If the driver removes the operation prior to
+getting the active reference, the write will just fail. kernfs ensures
+once a file is opened the op is not removed until the operation completes.
 
-> +               must be "wdog", "fatal", "ready", "handover", "stop-ack"
-> +               "shutdown-ack"
->
->  - clocks:
->         Usage: required
-> @@ -35,19 +42,17 @@ on the Qualcomm Technology Inc. Hexagon v56 core.
->  - clock-names:
->         Usage: required for SDM845 ADSP
->         Value type: <stringlist>
-> -       Definition: List of clock input name strings sorted in the same
-> -                   order as the clocks property. Definition must have
-> -                   "xo", "sway_cbcr", "lpass_ahbs_aon_cbcr",
-> -                   "lpass_ahbm_aon_cbcr", "qdsp6ss_xo", "qdsp6ss_sleep"
-> -                   and "qdsp6ss_core".
-> -
-> -- clock-names:
-> -       Usage: required for QCS404 CDSP
-> -       Value type: <stringlist>
-> -       Definition: List of clock input name strings sorted in the same
-> -                   order as the clocks property. Definition must have
-> -                   "xo", "sway", "tbu", "bimc", "ahb_aon", "q6ss_slave",
-> -                   "q6ss_master", "q6_axim".
-> +       Definition: The clocks needed depends on the compatible string
-> +       qcom,sdm845-adsp-pil:
-> +               must be "xo", "sway_cbcr", "lpass_ahbs_aon_cbcr",
-> +               "lpass_ahbm_aon_cbcr", "qdsp6ss_xo", "qdsp6ss_sleep",
-> +               "qdsp6ss_core"
-> +       qcom,qcs404-cdsp-pil:
-> +               must be "xo", "sway", "tbu", "bimc", "ahb_aon", "q6ss_slave",
-> +               "q6ss_master", "q6_axim"
-> +       qcom,sc7280-wpss-pil:
+If a file is opened then, the module cannot possibly be removed. The
+piece of information we realy care about is the use of module_is_live()
+inside try_module_get() which does:
 
-Alphabet sort too?
+static inline bool module_is_live(struct module *mod)
+{                                                                               
+	return mod->state != MODULE_STATE_GOING;
+}
 
-> +               must be "gcc_wpss_ahb_bdg_mst_clk", "gcc_wpss_ahb_clk",
-> +               "gcc_wpss_rscp_clk"
->
->  - power-domains:
->         Usage: required
-> @@ -65,7 +70,7 @@ on the Qualcomm Technology Inc. Hexagon v56 core.
->          Definition: must be "pdc_sync" and "cc_lpass"
->
->  - reset-names:
-> -        Usage: required for QCS404 CDSP
-> +        Usage: required for QCS404 CDSP, SC7280 WPSS
->          Value type: <stringlist>
->          Definition: must be "restart"
->
-> --
-> 2.7.4
->
+The try allows module removal to trump use of the sysfs file. If
+userspace wants the module removed, it gives up in favor for that
+operation.
+
+> As "proof", what happens if this module is unloaded right _before_ this
+> call happens?  The module will be unloaded, memory zeroed out (or
+> overridden), and then the processor will resume here and try to call (or
+> return into) this code path.
+
+The use of try_module_get() is protected to be correct by the kernfs active
+reference, which in turn ensures the module is not gone. That is, when
+a sysfs file read / write op is issued, if the file was opened we *know*
+the module is not gone yet. It cannot possibly be removed. But once
+inside the operation, try_module_get() can check to see if userspace did
+want to remove the module, and if so it would immediately bail out and
+yield to that operation.
+
+Userspace cannot open a sysfs file with the module being gone.
+The kernfs active prevents that.
+
+> Boom.
+
+I think it would be good we add a self test for this particular case.
+I'll go ahead and extend my sysfs tests with one test for this case.
+
+I could do this by adding a new sysfs file to the test driver and where
+all it does is this try_module_get() thing. This can then be raced with
+module removals attempts.
+
+But it does not mean all you say is wrong.
+
+I think the value of what you are saying requires documenting as it
+was not clear to me either. I'll send a patch now.
+
+> Just say no to "try_module_get(THIS_MODULE)" as it is totally wrong.
+
+Context is required and documented. I'll end a patch.
+
+  Luis
