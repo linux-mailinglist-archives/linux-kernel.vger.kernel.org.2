@@ -2,143 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D15A3D2C1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 20:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0853D2C21
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 20:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhGVSGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:06:38 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:42080
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229556AbhGVSGh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:06:37 -0400
-Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 2A2523F23B;
-        Thu, 22 Jul 2021 18:47:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626979629;
-        bh=av4zwA2qg/IApI8WkrvTH+6ZHVMbOV6Gx7+f/fxSs4I=;
-        h=To:Cc:From:Subject:Message-ID:Date:MIME-Version:Content-Type;
-        b=itxpjq0PldP522d6DxhxMw3jsVgnjwkZjV99w5KSZQP/g5AG6mTWoqCgfWLnA9a/l
-         FTjLKxUFe6kywst+9YvjHcaVe9sYXxOBnQIt7WpofCgOMz1K4TNUU4a1sy4fKieOsw
-         flSOLql4O6IQk0Op7vXs5dKt+FzmORL5rrGMFiBIit4CsZHlm3WrlnyYkIXZjztRpm
-         32qq+e6dF2YPNP12Ne0fX6kZ4rjEVP09vPBxtFqdLg7mVxIy7Je4JdRz65PZ3qlw+p
-         4RtyL9x8KJNteIWuoGDyMjTaNFUmSHCm220JAWnmTzn2lPamfNPki+7xKZ/KYEeRsr
-         Njz5lj/sULA0g==
-To:     Subbaraya Sundeep <sbhatta@marvell.com>
-Cc:     Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: octeontx2-af: Introduce internal packet switching
-Message-ID: <8fc78a8c-08cb-467a-f333-031f084e3f73@canonical.com>
-Date:   Thu, 22 Jul 2021 19:47:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S229937AbhGVSIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 14:08:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229545AbhGVSIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 14:08:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21BB660EB2;
+        Thu, 22 Jul 2021 18:48:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626979729;
+        bh=vTlLoa/WDToa1gbyQ50HnoiDPfOr9BoWi+Ir6ioBPVY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mwZM5y9pw1lR0nx1LVm3RnI79TlByo7SkvDvJNttzEOY+hHwjZIgjxteZaNPxkK0V
+         euNhfCaBn/DOhY0M0GJ5gmc2CLQGCuIvG/podz1XuBk8xRn+PYTZt7PtUeL0u5dvgq
+         YH9wRkvtJLthxe3o568WvYVoRq9OKIqRDUV5ead8=
+Date:   Thu, 22 Jul 2021 20:48:47 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, aford173@gmail.com
+Subject: Re: [PATCH 5.10 000/125] 5.10.53-rc1 review
+Message-ID: <YPm9j7KqcRPnr+dP@kroah.com>
+References: <20210722155624.672583740@linuxfoundation.org>
+ <beeb7568-388f-38e4-eb1f-28b1557bc191@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <beeb7568-388f-38e4-eb1f-28b1557bc191@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jul 22, 2021 at 12:00:34PM -0500, Daniel Díaz wrote:
+> Hello!
+> 
+> On 7/22/21 11:29 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.53 release.
+> > There are 125 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sat, 24 Jul 2021 15:56:00 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.53-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> Build regressions detected on Arm64:
+> 
+>   make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc' 'HOSTCC=sccache gcc' dtbs
+>   Error: /builds/linux/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi:298.1-13 Label or path usb2_clksel not found
+>   FATAL ERROR: Syntax error parsing input tree
+>   make[3]: *** [scripts/Makefile.lib:326: arch/arm64/boot/dts/renesas/r8a774a1-beacon-rzg2m-kit.dtb] Error 1
+>   make[3]: Target '__build' not remade because of errors.
+>   make[2]: *** [/builds/linux/scripts/Makefile.build:497: arch/arm64/boot/dts/renesas] Error 2
+>   make[2]: Target '__build' not remade because of errors.
+>   make[1]: *** [/builds/linux/Makefile:1359: dtbs] Error 2
+>   make: *** [Makefile:185: __sub-make] Error 2
+>   make: Target 'dtbs' not remade because of errors.
 
-Static analysis of linux-next with Coverity has found a couple of
-uninitialized variable issues in the following commit:
+2 patches dropped should now fix this.  I will push out a -rc2 now.
 
-commit 23109f8dd06d0bd04c9360cf7c501c97b0ab1545
-Author: Subbaraya Sundeep <sbhatta@marvell.com>
-Date:   Mon Jul 19 14:29:34 2021 +0530
+thanks,
 
-    octeontx2-af: Introduce internal packet switching
-
-The analysis is as follows:
-
-195void rvu_switch_disable(struct rvu *rvu)
-196{
-197        struct npc_delete_flow_req uninstall_req = { 0 };
-198        struct npc_mcam_free_entry_req free_req = { 0 };
-199        struct rvu_switch *rswitch = &rvu->rswitch;
-200        struct rvu_hwinfo *hw = rvu->hw;
-
-   1. var_decl: Declaring variable numvfs without initializer.
-
-201        int pf, vf, numvfs, hwvf;
-202        struct msg_rsp rsp;
-203        u16 pcifunc;
-204        int err;
-205
-
-   2. Condition !rswitch->used_entries, taking false branch.
-
-206        if (!rswitch->used_entries)
-207                return;
-208
-
-   3. Condition pf < hw->total_pfs, taking true branch.
-
-209        for (pf = 1; pf < hw->total_pfs; pf++) {
-
-   4. Condition !is_pf_cgxmapped(rvu, pf), taking false branch.
-
-210                if (!is_pf_cgxmapped(rvu, pf))
-211                        continue;
-212
-213                pcifunc = pf << 10;
-214                err = rvu_switch_install_rx_rule(rvu, pcifunc, 0xFFF);
-
-   5. Condition err, taking false branch.
-
-215                if (err)
-216                        dev_err(rvu->dev,
-217                                "Reverting RX rule for PF%d
-failed(%d)\n",
-218                                pf, err);
-219
-
-   Uninitialized scalar variable (UNINIT)
-   6. uninit_use: Using uninitialized value numvfs.
-
-   Uninitialized scalar variable (UNINIT)
-   9. uninit_use: Using uninitialized value hwvf.
-
-220                for (vf = 0; vf < numvfs; vf++, hwvf++) {
-221                        pcifunc = pf << 10 | ((vf + 1) & 0x3FF);
-222                        err = rvu_switch_install_rx_rule(rvu,
-pcifunc, 0xFFF);
-
-   7. Condition err, taking false branch.
-
-223                        if (err)
-224                                dev_err(rvu->dev,
-225                                        "Reverting RX rule for
-PF%dVF%d failed(%d)\n",
-226                                        pf, vf, err);
-227                }
-
-   8. Jumping back to the beginning of the loop.
-
-228        }
-229
-230        uninstall_req.start = rswitch->start_entry;
-231        uninstall_req.end =  rswitch->start_entry +
-rswitch->used_entries - 1;
-232        free_req.all = 1;
-233        rvu_mbox_handler_npc_delete_flow(rvu, &uninstall_req, &rsp);
-234        rvu_mbox_handler_npc_mcam_free_entry(rvu, &free_req, &rsp);
-235        rswitch->used_entries = 0;
-236        kfree(rswitch->entry2pcifunc);
-237}
-
-Colin
+greg k-h
