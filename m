@@ -2,117 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3DF3D2AC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97FD3D2AC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbhGVQWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:22:21 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54678 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233829AbhGVQWO (ORCPT
+        id S229675AbhGVQW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:22:56 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50914 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230469AbhGVQWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:22:14 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16MGlT0K062493;
-        Thu, 22 Jul 2021 13:02:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=6TVmLsoFKmvY10YxmHyVkALKccJ2y7fUYOrKlnLe6lg=;
- b=noRGTNpBUO1u6JVoOFWbr78dQa5xBu6W262JVDliQknGzxWXAE1wj7KL6/8z44v64VGE
- NKCISGTig7eFH0XbkOmy56b8WGq2uwzaABIex0SHlEKZ17eMf9DFUavhISg3JtxYDnuA
- jBI/Iroir7NcO1VUbx/DsEe2bGOWhc4Le61Q0Z7HvzKRThK8E9cnQMj+oNLGalAvkneH
- 8EpZ2BtvfzUoOsRvMq0mS3Zi2hoOBlcPZWRQf+ZlWr5TJ8V9qOCHPavwQ1glNa+5Rf8y
- O2G02hSLiNs1pHt1ijYSTMT73F9a/5NtVEMfF2GmeNwAwaQBKwpkZcjlB359m03Okmpe wA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39ycge8d43-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 13:02:48 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16MGpGY3081012;
-        Thu, 22 Jul 2021 13:02:48 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39ycge8d2f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 13:02:48 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16MGxHWt032723;
-        Thu, 22 Jul 2021 17:02:45 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 39vng727gr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 17:02:45 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16MH2gvt11796872
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Jul 2021 17:02:42 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 88973AE057;
-        Thu, 22 Jul 2021 17:02:42 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 05AC6AE051;
-        Thu, 22 Jul 2021 17:02:42 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.18.177])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 22 Jul 2021 17:02:41 +0000 (GMT)
-From:   Pierre Morel <pmorel@linux.ibm.com>
-To:     kvm@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
-        david@redhat.com, thuth@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, pmorel@linux.ibm.com
-Subject: [PATCH v2 2/2] s390:kvm: Topology expose TOPOLOGY facility
-Date:   Thu, 22 Jul 2021 19:02:33 +0200
-Message-Id: <1626973353-17446-3-git-send-email-pmorel@linux.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1626973353-17446-1-git-send-email-pmorel@linux.ibm.com>
-References: <1626973353-17446-1-git-send-email-pmorel@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: sySRMIDBn7Mv9FaU3s-Lz0DAHNirrAQC
-X-Proofpoint-ORIG-GUID: TLueNPNqU5m56NNm0OnoDyqZnKYayh2g
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-22_09:2021-07-22,2021-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- mlxscore=0 spamscore=0 malwarescore=0 suspectscore=0 impostorscore=0
- bulkscore=0 phishscore=0 priorityscore=1501 lowpriorityscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107220110
+        Thu, 22 Jul 2021 12:22:52 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 31A20203E2;
+        Thu, 22 Jul 2021 17:03:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626973403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iGctC4EQ9hNVc3gaN3R5S7yichC5UDxNPtD6UtEHN7U=;
+        b=bX2bnjsCjXUeIvvsHtlTyjhnHEM7HjYuey/J7dpEg6wgAwdXJ2o1dDz/+pSStZB/yLwVMJ
+        mNXkGGo+IXqr3rwwIimY2un/36++0Qo4osXDXvb3dmP4kEqnTJ7UEzEfFUnol1AlRgR5h8
+        SMwNnZYGt7FTIhCYJBD/dCifs4lT/x4=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D70BA139A1;
+        Thu, 22 Jul 2021 17:03:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id rd0VMtqk+WDNLwAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Thu, 22 Jul 2021 17:03:22 +0000
+Subject: Re: [PATCH] lib/string: Bring optimized memcmp from glibc
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>
+References: <20210721135926.602840-1-nborisov@suse.com>
+ <CAHk-=whqJKKc9wUacLEkvTzXYfYOUDt=kHKX6Fa8Kb4kQftbbQ@mail.gmail.com>
+ <b24b5a9d-69a0-43b9-2ceb-8e4ee3bf2f17@suse.com>
+ <CAHk-=wgMyXh3gGuSzj_Dgw=Gn_XPxGSTPq6Pz7dEyx6JNuAh9g@mail.gmail.com>
+ <CAHk-=wgr3JSoasv3Kyzc0u-L36oAr=hzY9oUrCxaszWaxgLW0A@mail.gmail.com>
+ <eef30b51-c69f-0e70-11a8-c35f90aeca67@gmail.com>
+ <CAHk-=whTNJyEMmCpNh5FeT+bJzSE2CYDPWyDO12G4q39d1jn1g@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <c8262efc-e97a-4672-0cc1-90c778eecd94@suse.com>
+Date:   Thu, 22 Jul 2021 20:03:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=whTNJyEMmCpNh5FeT+bJzSE2CYDPWyDO12G4q39d1jn1g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We add a KVM extension KVM_CAP_S390_CPU_TOPOLOGY to tell the
-userland hypervisor it is safe to activate the CPU Topology facility.
 
-Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
----
- arch/s390/kvm/kvm-s390.c | 1 +
- include/uapi/linux/kvm.h | 1 +
- 2 files changed, 2 insertions(+)
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index b655a7d82bf0..8c695ee79612 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -568,6 +568,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 	case KVM_CAP_S390_VCPU_RESETS:
- 	case KVM_CAP_SET_GUEST_DEBUG:
- 	case KVM_CAP_S390_DIAG318:
-+	case KVM_CAP_S390_CPU_TOPOLOGY:
- 		r = 1;
- 		break;
- 	case KVM_CAP_SET_GUEST_DEBUG2:
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index d9e4aabcb31a..081ce0cd44b9 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1112,6 +1112,7 @@ struct kvm_ppc_resize_hpt {
- #define KVM_CAP_BINARY_STATS_FD 203
- #define KVM_CAP_EXIT_ON_EMULATION_FAILURE 204
- #define KVM_CAP_ARM_MTE 205
-+#define KVM_CAP_S390_CPU_TOPOLOGY 206
- 
- #ifdef KVM_CAP_IRQ_ROUTING
- 
--- 
-2.25.1
+On 22.07.21 г. 19:40, Linus Torvalds wrote:
+> On Thu, Jul 22, 2021 at 4:28 AM Nikolay Borisov
+> <n.borisov.lkml@gmail.com> wrote:
+>>
+>> This one also works, tested only on x86-64. Looking at the perf diff:
+>>
+>>     30.44%    -28.66%  [kernel.vmlinux]         [k] memcmp
+> 
+> Ok.
+> 
+> So the one that doesn't even bother to align is
+> 
+>     30.44%    -29.38%  [kernel.vmlinux]         [k] memcmp
+> 
+> and the one that aligns the first one is
+> 
+>     30.44%    -28.66%  [kernel.vmlinux]         [k] memcmp
+> 
+> and the difference between the two is basically in the noise:
+> 
+>      1.05%     +0.72%  [kernel.vmlinux]     [k] memcmp
+> 
+> but the first one does seem to be slightly better.
+> 
+>> Now on a more practical note, IIUC your 2nd version makes sense if the
+>> cost of doing a one unaligned access in the loop body is offset by the
+>> fact we are doing a native word-sized comparison, right?
+> 
+> So honestly, the reason the first one seems to beat the second one is
+> that the cost of unaligned accesses on modern x86 is basically
+> epsilon.
+> 
+> For all normal unaligned accesses there simply is no cost at all.
+> There is a _tiny_ cost when the unaligned access crosses a cacheline
+> access boundary (which on older CPU's is every 32 bytes, on modern
+> ones it's 64 bytes). And then there is another slightly bigger cost
+> when the unaligned access actually crosses a page boundary.
+> 
+> But even those non-zero cost cases are basically in the noise, because
+> under most circumstances they will be hidden by any out-of-order
+> engine, and completely dwarfed by the _real_ costs which are branch
+> mispredicts and cache misses.
+> 
+> So on the whole, unaligned accesses are basically no cost at all. You
+> almost have to have unusual code sequences for them to be even
+> measurable.
+> 
+> So that second patch that aligns one of the sources is basically only
+> extra overhead for no real advantage. The cost of it is probably one
+> more branch mispredict, and possibly a cycle or two for the extra
+> instructions.
+> 
+> Which is why the first one wins: it's simpler, and the extra work the
+> second one does is basically not worth it on x86. Plus I suspect your
+> test-case was all aligned anyway to begin with, so the extra work is
+> _doubly_ pointless.
+> 
+> I suspect the second patch would be worthwhile if
+> 
+>  (a) there really were a lot of strings that weren't aligned (likelihood: low)
+> 
+>  (b) other microarchitectures that do worse on unaligned accesses -
+> some microarchitectures spend extra cycles on _any_ unaligned accesses
+> even if they don't cross cache access boundaries etc.
+> 
+> and I can see (b) happening quite easily. You just won't see it on a
+> modern x86-64 setup.
+> 
+> I suspect we should start with the first version. It's not only better
+> on x86, but it's simpler, and it's guarded by that
+> 
+>     #ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> 
+> so it's fundamentally "safer" on architectures that are just horrible
+> about unaligned accesses.
+> 
+> Now, admittedly I don't personally even care about such architectures,
+> and because we use "get_unaligned()", the compiler should always
+> generate code that doesn't absolutely suck for bad architectures, but
+> considering how long we've gone with the completely brainlessly simple
+> "byte at a time" version without anybody even noticing, I think a
+> minimal change is a better change.
+> 
+> That said, I'm not convinced I want to apply even that minimal first
+> patch outside of the merge window.
+> 
+> So would you mind reminding me about this patch the next merge window?
+> Unless there was some big extrernal reason why the performance of
+> memcmp() mattered to you so much (ie some user that actually noticed
+> and complained) and we really want to prioritize this..
 
+I will do my best and hope I don't forget. OTOH there isn't anything
+pressing it's something I found while looking at fidedupe's performance
+and not even the major contributor but still, it looks sensible to fix
+it now, that I have a workload at hand which clearly demonstrates
+positive impact and can easily measure any changes.
+> 
+>               Linus
+> 
