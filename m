@@ -2,132 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233A23D230F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBEC3D2312
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 14:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbhGVLVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 07:21:32 -0400
-Received: from 8bytes.org ([81.169.241.247]:44266 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231712AbhGVLVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 07:21:31 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 1043E3D0; Thu, 22 Jul 2021 14:02:04 +0200 (CEST)
-Date:   Thu, 22 Jul 2021 14:01:56 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-coco@lists.linux.dev,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH v2.1 3/4] KVM: SVM: Add support for Hypervisor Feature
- support MSR protocol
-Message-ID: <YPleNFvmsEi3kBZk@8bytes.org>
-References: <20210722115245.16084-1-joro@8bytes.org>
- <20210722115245.16084-4-joro@8bytes.org>
+        id S231781AbhGVLY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 07:24:29 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36142 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231712AbhGVLYO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 07:24:14 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DE10E1FF07;
+        Thu, 22 Jul 2021 12:04:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626955488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y6zIvvc+aGMbYTBCMSNmSUsejo44QqaGf38QJZwX8sU=;
+        b=noNeRz+t6HY2X0JTwMVD9GC2fjJkPY2hirnvHgSauZmKwh2m3MU68S+0dL/ymRYN2qfKgp
+        /xkkpa5Ky0nGF14BZOMLtWz1D5EGozVhhFrfGMaoQP97xf2Qs/IMP1eXx11XCNDNFR4+AS
+        oA4ya/pUnuq5F6x/GOI3+I+d+w9LBtE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626955488;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y6zIvvc+aGMbYTBCMSNmSUsejo44QqaGf38QJZwX8sU=;
+        b=M5UBhb08BB9GFZEnGASYQlO+s7Qyx5wE8GaiqnpvUXxm2e38mSHj8tAH51DOSOZqH+MFAJ
+        sIZANhYlXnEYidAg==
+Received: from hawking.suse.de (hawking.suse.de [10.160.4.0])
+        by relay2.suse.de (Postfix) with ESMTP id D470CA3B8B;
+        Thu, 22 Jul 2021 12:04:48 +0000 (UTC)
+Received: by hawking.suse.de (Postfix, from userid 17005)
+        id C84DC445C89; Thu, 22 Jul 2021 14:04:48 +0200 (CEST)
+From:   Andreas Schwab <schwab@suse.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
+References: <mvmtukn6bmu.fsf@suse.de> <YPgwHcbK7XoXL/mD@smile.fi.intel.com>
+        <mvmpmvb68cg.fsf@suse.de> <YPg3VS/Ure6VRsuJ@smile.fi.intel.com>
+        <mvmlf5z66l9.fsf@suse.de>
+        <CAHp75VeFKn=--PuF6deOp6H-j7z8PXgkXA5PeSftiK5LWX30Qw@mail.gmail.com>
+        <mvmh7gn649v.fsf@suse.de> <YPhT1APE8QweDCoP@smile.fi.intel.com>
+        <mvmczra64yj.fsf@suse.de>
+        <CAHp75VfY-_xtRJyfez_4voDuOUcfJAfFjtnAipCt2_UA4wqbQg@mail.gmail.com>
+X-Yow:  It's OBVIOUS..  The FURS never reached ISTANBUL..  You were
+ an EXTRA in the REMAKE of ``TOPKAPI''..  Go home to your
+ WIFE..  She's making FRENCH TOAST!
+Date:   Thu, 22 Jul 2021 14:04:48 +0200
+In-Reply-To: <CAHp75VfY-_xtRJyfez_4voDuOUcfJAfFjtnAipCt2_UA4wqbQg@mail.gmail.com>
+        (Andy Shevchenko's message of "Thu, 22 Jul 2021 13:28:43 +0300")
+Message-ID: <mvm8s1y5zbz.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210722115245.16084-4-joro@8bytes.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brijesh Singh <brijesh.singh@amd.com>
+On Jul 22 2021, Andy Shevchenko wrote:
 
-Version 2 of the GHCB specification introduced advertisement of
-supported Hypervisor SEV features. This request is required to support
-a the GHCB version 2 protocol.
+> Compare the code of
+> https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L649
+> vs.
+> https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L56
+>
+> and
+>
+> https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L139
+> vs.
+> https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L361
 
-Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/include/uapi/asm/svm.h |  1 +
- arch/x86/kvm/svm/sev.c          | 21 +++++++++++++++++++++
- arch/x86/kvm/svm/svm.h          |  1 +
- 3 files changed, 23 insertions(+)
+Thanks, I think I now know how to fix it correctly.
 
-diff --git a/arch/x86/include/uapi/asm/svm.h b/arch/x86/include/uapi/asm/svm.h
-index efa969325ede..fbb6f8d27a80 100644
---- a/arch/x86/include/uapi/asm/svm.h
-+++ b/arch/x86/include/uapi/asm/svm.h
-@@ -108,6 +108,7 @@
- #define SVM_VMGEXIT_AP_JUMP_TABLE		0x80000005
- #define SVM_VMGEXIT_SET_AP_JUMP_TABLE		0
- #define SVM_VMGEXIT_GET_AP_JUMP_TABLE		1
-+#define SVM_VMGEXIT_HV_FT			0x8000fffd
- #define SVM_VMGEXIT_UNSUPPORTED_EVENT		0x8000ffff
- 
- /* Exit code reserved for hypervisor/software use */
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index a32ef011025f..4565c360d87d 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -2180,6 +2180,7 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
- 	case SVM_VMGEXIT_AP_HLT_LOOP:
- 	case SVM_VMGEXIT_AP_JUMP_TABLE:
- 	case SVM_VMGEXIT_UNSUPPORTED_EVENT:
-+	case SVM_VMGEXIT_HV_FT:
- 		break;
- 	default:
- 		goto vmgexit_err;
-@@ -2361,6 +2362,16 @@ static void set_ghcb_msr_ap_rst_resp(struct vcpu_svm *svm, u64 value)
- 	svm->vmcb->control.ghcb_gpa = GHCB_MSR_AP_RESET_HOLD_RESP | (value << GHCB_DATA_LOW);
- }
- 
-+static void set_ghcb_msr_hv_feat_resp(struct vcpu_svm *svm, u64 value)
-+{
-+	u64 msr;
-+
-+	msr  = GHCB_MSR_HV_FT_RESP;
-+	msr |= (value << GHCB_DATA_LOW);
-+
-+	svm->vmcb->control.ghcb_gpa = msr;
-+}
-+
- static void set_ghcb_msr(struct vcpu_svm *svm, u64 value)
- {
- 	svm->vmcb->control.ghcb_gpa = value;
-@@ -2425,6 +2436,10 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
- 
- 		break;
- 	}
-+	case GHCB_MSR_HV_FT_REQ: {
-+		set_ghcb_msr_hv_feat_resp(svm, GHCB_HV_FT_SUPPORTED);
-+		break;
-+	}
- 	case GHCB_MSR_TERM_REQ: {
- 		u64 reason_set, reason_code;
- 
-@@ -2537,6 +2552,12 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
- 		ret = 1;
- 		break;
- 	}
-+	case SVM_VMGEXIT_HV_FT: {
-+		ghcb_set_sw_exit_info_2(ghcb, GHCB_HV_FT_SUPPORTED);
-+
-+		ret = 1;
-+		break;
-+	}
- 	case SVM_VMGEXIT_UNSUPPORTED_EVENT:
- 		vcpu_unimpl(vcpu,
- 			    "vmgexit: unsupported event - exit_info_1=%#llx, exit_info_2=%#llx\n",
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 7e2090752d8f..9cafeba3340e 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -550,6 +550,7 @@ void svm_vcpu_unblocking(struct kvm_vcpu *vcpu);
- #define GHCB_VERSION_MAX	1ULL
- #define GHCB_VERSION_MIN	1ULL
- 
-+#define GHCB_HV_FT_SUPPORTED	0
- 
- extern unsigned int max_sev_asid;
- 
+Andreas.
+
 -- 
-2.31.1
-
+Andreas Schwab, SUSE Labs, schwab@suse.de
+GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
+"And now for something completely different."
