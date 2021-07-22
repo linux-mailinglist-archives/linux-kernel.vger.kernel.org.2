@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280EC3D2A50
+	by mail.lfdr.de (Postfix) with ESMTP id BAE0D3D2A52
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233888AbhGVQKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:10:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43114 "EHLO mail.kernel.org"
+        id S234543AbhGVQKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:10:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234458AbhGVQGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:06:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C2C561D30;
-        Thu, 22 Jul 2021 16:46:51 +0000 (UTC)
+        id S234584AbhGVQGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:06:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54BA861CBF;
+        Thu, 22 Jul 2021 16:46:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972412;
-        bh=sgwryQndVl1q+4bMEIwj9updmNdWQCwrnFia9KY0WUo=;
+        s=korg; t=1626972414;
+        bh=22Zknm2M3d/at4rn9m5xPN+0SfSf/sZaxjbaHuVwZKc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cTtSoJ/aC7Oo8bC7JHIwDc7YpobYrkonSrthnzPH3MhEex87hGLE/qtaZQMzZUsjE
-         f8jUcEwc2Y3UZPqNnuOg4CDee+rLVKamtlRCE2SOPuI8uKkuT2hl4XhneM6NkWmA8p
-         F5SpoyzXRLZ6VgZLDFftxoqfXkugF/aYoZsyePKo=
+        b=ik3fbQ+q0JYiB6H6G/0nr1m+QmHO5Q+juKTkmWZ081z5ZU+J4BcVA94fyFgMHMVEY
+         s3r10YPGhXQUw7riTBc0fcAMNZgaWfWgeFlHK5bk0ezKjeA+0mAMDRrjbL/h+k1YDU
+         iUnwODl/6drXY5qVn3cuZvFxivTwipR2Pd2ghcyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -40,9 +40,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 103/156] Revert "swap: fix do_swap_page() race with swapoff"
-Date:   Thu, 22 Jul 2021 18:31:18 +0200
-Message-Id: <20210722155631.702962561@linuxfoundation.org>
+Subject: [PATCH 5.13 104/156] Revert "mm/shmem: fix shmem_swapin() race with swapoff"
+Date:   Thu, 22 Jul 2021 18:31:19 +0200
+Message-Id: <20210722155631.734474731@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
 References: <20210722155628.371356843@linuxfoundation.org>
@@ -56,8 +56,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-This reverts commit c3b39134bbd088b7dce5e5f342ccd6bb9142fd18 which is
-commit 2799e77529c2a25492a4395db93996e3dacd762d upstream.
+This reverts commit a533a21b692fc15a6aadfa827b29c7d9989109ca which is
+commit 2efa33fc7f6ec94a3a538c1a264273c889be2b36 upstream.
 
 It should not have been added to the stable trees, sorry about that.
 
@@ -83,73 +83,51 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Sasha Levin <sashal@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/swap.h |    9 ---------
- mm/memory.c          |   11 ++---------
- 2 files changed, 2 insertions(+), 18 deletions(-)
+ mm/shmem.c |   14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -526,15 +526,6 @@ static inline struct swap_info_struct *s
- 	return NULL;
- }
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1696,8 +1696,7 @@ static int shmem_swapin_page(struct inod
+ 	struct address_space *mapping = inode->i_mapping;
+ 	struct shmem_inode_info *info = SHMEM_I(inode);
+ 	struct mm_struct *charge_mm = vma ? vma->vm_mm : current->mm;
+-	struct swap_info_struct *si;
+-	struct page *page = NULL;
++	struct page *page;
+ 	swp_entry_t swap;
+ 	int error;
  
--static inline struct swap_info_struct *get_swap_device(swp_entry_t entry)
--{
--	return NULL;
--}
--
--static inline void put_swap_device(struct swap_info_struct *si)
--{
--}
--
- #define swap_address_space(entry)		(NULL)
- #define get_nr_swap_pages()			0L
- #define total_swap_pages			0L
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3353,7 +3353,6 @@ vm_fault_t do_swap_page(struct vm_fault
- {
- 	struct vm_area_struct *vma = vmf->vma;
- 	struct page *page = NULL, *swapcache;
--	struct swap_info_struct *si = NULL;
- 	swp_entry_t entry;
- 	pte_t pte;
- 	int locked;
-@@ -3381,16 +3380,14 @@ vm_fault_t do_swap_page(struct vm_fault
- 		goto out;
- 	}
+@@ -1705,12 +1704,6 @@ static int shmem_swapin_page(struct inod
+ 	swap = radix_to_swp_entry(*pagep);
+ 	*pagep = NULL;
  
 -	/* Prevent swapoff from happening to us. */
--	si = get_swap_device(entry);
--	if (unlikely(!si))
--		goto out;
- 
- 	delayacct_set_flag(current, DELAYACCT_PF_SWAPIN);
- 	page = lookup_swap_cache(entry, vma, vmf->address);
- 	swapcache = page;
- 
+-	si = get_swap_device(swap);
+-	if (!si) {
+-		error = EINVAL;
+-		goto failed;
+-	}
+ 	/* Look it up and read it in.. */
+ 	page = lookup_swap_cache(swap, NULL, 0);
  	if (!page) {
-+		struct swap_info_struct *si = swp_swap_info(entry);
-+
- 		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
- 		    __swap_count(entry) == 1) {
- 			/* skip swapcache */
-@@ -3559,8 +3556,6 @@ vm_fault_t do_swap_page(struct vm_fault
- unlock:
- 	pte_unmap_unlock(vmf->pte, vmf->ptl);
- out:
+@@ -1772,8 +1765,6 @@ static int shmem_swapin_page(struct inod
+ 	swap_free(swap);
+ 
+ 	*pagep = page;
 -	if (si)
 -		put_swap_device(si);
- 	return ret;
- out_nomap:
- 	pte_unmap_unlock(vmf->pte, vmf->ptl);
-@@ -3572,8 +3567,6 @@ out_release:
- 		unlock_page(swapcache);
- 		put_page(swapcache);
+ 	return 0;
+ failed:
+ 	if (!shmem_confirm_swap(mapping, index, swap))
+@@ -1784,9 +1775,6 @@ unlock:
+ 		put_page(page);
  	}
+ 
 -	if (si)
 -		put_swap_device(si);
- 	return ret;
+-
+ 	return error;
  }
  
 
