@@ -2,92 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2059C3D1BB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 04:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C3F3D1BBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 04:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbhGVBgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 21:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
+        id S230308AbhGVBjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 21:39:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhGVBgq (ORCPT
+        with ESMTP id S229916AbhGVBjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 21:36:46 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0036CC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 19:17:21 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id bt15so4083300pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 19:17:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=07mq1tbTyL2EUpcAXYfDuJ/atzwMHIawr2ISlNOgil0=;
-        b=fll3GwPr5G609VlObfTF3PBHdPewGkU5Y7oNH+VWKn/lzjN7EbWyM3Uf3+iyN2r4gj
-         hgHYCiBbMCoZZOoPs2FhLDGRR1sJH7epGaZDjalcFdw8uqCd3g+/fe7sgf1+HB/1UYVB
-         eHF6m8xxUGRHfhZW5GmOClGyh2JMJCnEbWSVP5qTnYQtQovVSTCUltkfNWHmkc7KHz6N
-         rH+/xfr/inpgCniZt5DeTeNCKFrkWB9gJ1+G9A49LL/e4/OqqI38/ZMIXosYJGY2G4TL
-         xiRDr87bZqYXe9b33xjiZcxRBgTspxxcsFZI2CJsPIs30D0FLfNW8I9mJ1u2pPjsZF+c
-         L/xQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=07mq1tbTyL2EUpcAXYfDuJ/atzwMHIawr2ISlNOgil0=;
-        b=AlmVhIrCpFs/dj+JVYzSpI+bzkevd2qJc6lcM8J53USRv6M47ym/i/qhVWgI3cWSYO
-         eJQznPLQ1DqWpls2kTMSArImXz9mlEt/fqRiSKVntOYSrrVluP1vvpqjAx3RbTqmXF8n
-         icRFxcW4uIklau8xT8JpE9i5g7keN09+/nXPTiSN6FBusH6BmdfABcKDVOiLrzfXKw+p
-         imuQ+LqM6hWPyqMzdcccwwNHr6ih9vOkdXzdSNDbNjX4u5Kmb1mjLl3B/GWdkMHT6k7n
-         iGq1rR2iO8R8LQmYHrNVt5hdAQl1Q1bAAhuX6srpuyniGhWA/VO0a1ItPclLucLrmr7w
-         ZE0g==
-X-Gm-Message-State: AOAM531Cdh4sdXxcfQ4igfpWyNmV3Prtk4eeQtQRZsvKl+o543QnGr95
-        //vo8T+5wnGr9g0ODLwHzPQ=
-X-Google-Smtp-Source: ABdhPJya/laHEhbhnkuWT6LkpVzEG5xHxaJhq+pxOP5h+XehJ/ZBHvG0mQRxtrDKApw5VAPIbLrQVg==
-X-Received: by 2002:a62:be18:0:b029:318:df2e:c17c with SMTP id l24-20020a62be180000b0290318df2ec17cmr40104107pff.30.1626920241309;
-        Wed, 21 Jul 2021 19:17:21 -0700 (PDT)
-Received: from vultr.guest ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id b3sm1245448pju.47.2021.07.21.19.17.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 19:17:20 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH] riscv: kexec: do not add '-mno-relax' flag if compiler doesn't support it
-Date:   Thu, 22 Jul 2021 10:17:15 +0800
-Message-Id: <20210722021715.127066-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 21 Jul 2021 21:39:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5248FC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 19:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ZAUM6JsORpXKtfzwUl7e2bOgLpFXq7TN7LD+yIvdhvk=; b=FMiOv7KeBzACwgx99SAkMWD60i
+        ERupB85JGmpDr6YRZLeypz5ORgguEbKl9ZPRcYowzNk4fTnsDMoe8XBF40ihVy0Obi4HwvyayWDor
+        WZMTWEbNY9BRwA95cdM5bw+Ff5xeB/At9x1xDM6J6RKCjAUt4n1nDL6A0dQBeUpvifH3ALeTSBS9z
+        IJH1ND2GvhC2HoXcOihX/eR6sSMYR4yPoUouu0xV03W4r9KjLxRJrniYZymJeWuQnnIzsHaaFOUv0
+        hmZ1jUB25EBqX8uBU+UYVgxSu34zW5FqFlNxvBNmnmggvReYyzv1Lpv+Zj/y6OylH0CXF8i29TEjU
+        VhdpZRBQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m6OIS-009nkq-EC; Thu, 22 Jul 2021 02:18:54 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH] mm/doc: Include highmem.h in kernel-doc
+Date:   Thu, 22 Jul 2021 03:18:42 +0100
+Message-Id: <20210722021843.2336117-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RISC-V special option '-mno-relax' which to disable linker relaxations
-is supported by GCC8+. For GCC7 and lower versions do not support this
-option.
+There is lots of good documentation in highmem.h that isn't being pulled
+into the html documentation.  Fix up a couple of minor glitches and
+include it.
 
-Fixes: fba8a8674f ("RISC-V: Add kexec support")
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- arch/riscv/kernel/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/core-api/mm-api.rst |  1 +
+ include/linux/highmem.h           | 17 +++++++++--------
+ 2 files changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index d3081e4d9600..3397ddac1a30 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -11,7 +11,7 @@ endif
- CFLAGS_syscall_table.o	+= $(call cc-option,-Wno-override-init,)
+diff --git a/Documentation/core-api/mm-api.rst b/Documentation/core-api/mm-api.rst
+index 395835f9289f..2027aee5f2d9 100644
+--- a/Documentation/core-api/mm-api.rst
++++ b/Documentation/core-api/mm-api.rst
+@@ -54,6 +54,7 @@ Virtually Contiguous Mappings
  
- ifdef CONFIG_KEXEC
--AFLAGS_kexec_relocate.o := -mcmodel=medany -mno-relax
-+AFLAGS_kexec_relocate.o := -mcmodel=medany $(call cc-option,-mno-relax)
- endif
+ .. kernel-doc:: mm/vmalloc.c
+    :export:
++.. kernel-doc:: include/linux/highmem.h
  
- extra-y += head.o
+ File Mapping and Page Cache
+ ===========================
+diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+index 861ad00fb32a..fc43e81cf4db 100644
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -37,8 +37,8 @@
+ static inline void *kmap(struct page *page);
+ 
+ /**
+- * kunmap - Unmap the virtual address mapped by kmap()
+- * @addr:	Virtual address to be unmapped
++ * kunmap - Unmap the page mapped by kmap()
++ * @page: Page to be unmapped
+  *
+  * Counterpart to kmap(). A NOOP for CONFIG_HIGHMEM=n and for mappings of
+  * pages in the low memory area.
+@@ -69,13 +69,13 @@ static inline void kmap_flush_unused(void);
+  *
+  * Requires careful handling when nesting multiple mappings because the map
+  * management is stack based. The unmap has to be in the reverse order of
+- * the map operation:
++ * the map operation::
+  *
+- * addr1 = kmap_local_page(page1);
+- * addr2 = kmap_local_page(page2);
+- * ...
+- * kunmap_local(addr2);
+- * kunmap_local(addr1);
++ *   addr1 = kmap_local_page(page1);
++ *   addr2 = kmap_local_page(page2);
++ *   ...
++ *   kunmap_local(addr2);
++ *   kunmap_local(addr1);
+  *
+  * Unmapping addr1 before addr2 is invalid and causes malfunction.
+  *
+@@ -156,6 +156,7 @@ static inline void *kmap_atomic(struct page *page);
+  * the side effects of kmap_atomic(), i.e. reenabling pagefaults and
+  * preemption.
+  */
++static inline void kunmap_atomic(void *addr);
+ 
+ /* Highmem related interfaces for management code */
+ static inline unsigned int nr_free_highpages(void);
 -- 
-2.26.2
-
+2.30.2
 
