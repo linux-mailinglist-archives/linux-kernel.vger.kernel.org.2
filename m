@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B133D2B01
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9D43D2B06
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhGVQjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57478 "EHLO
+        id S229729AbhGVQkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhGVQjE (ORCPT
+        with ESMTP id S229453AbhGVQkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:39:04 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F355C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:19:39 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id p9so7140348pjl.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:19:39 -0700 (PDT)
+        Thu, 22 Jul 2021 12:40:33 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A91C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:21:07 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id a80-20020a1c98530000b0290245467f26a4so102743wme.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:21:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/3Yn5lGftevaZzFptJqzp7AFik0P8z+gOE4aOsnOdoI=;
-        b=GAt81+CoV1RZ3kbS40olQxYkXRKHjw9dJtksmAc1gHtHUrzcOZp6iI7SF2bNxm28yk
-         xk1dfU21iZbNpdMP2kDu2IShr/fL8wgNIA0idIDI3v9oCJc5g34bRcvQApg4hSEDKA9R
-         N/WX9ERrbi9bZQmFtXQ5ANLvQn0DdPB6lfHvTfO1dQvNzNqQsKu+AIx1sP4XK5EfAVJi
-         4J+CeD4pNY42EPReEReDWC6XqWJvTq1Z0NYAMyi94BesrR7hhQRTL9wYZDYnutxIH76m
-         LMPDJxp/13zHN/W7f6Udoj0doWM+V0/M5wrvnJkEUTjahSLPO+JoBrGyCPE4VM2z/xde
-         xdlA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=XiPHw5u5dlUXQvtcPtPmrVrUeEK7JBvZbFg3RjLxVe0=;
+        b=k8adYkRqg+0Yq3FALuAPTAWEbM9vSz4+e7CarbPmwL1yyhJGq51cZ3TDvE/KeJv625
+         vRdiuTvNUz1z0V63eKFM6GvXaKbqgxJu50/ENoSrI0PPmgb9hSGZqsAaqshJJWt9sNDq
+         gpx8Czg+hBn0oM1+9G9C8mnZDKfnKsmyiKvVVF5GUESeyq4OPxNHjTr3YiFHfPAffWsN
+         DSEJmdWJNUJn5AS8TGlcdRQzcJujc8dTTfIVMl7knMYsCKklTBffMKe8BJ3uLE4rWvdH
+         64eB4mzs5ZJ+hMz2ipFiomIZcfRYlsEoiCDaHFlgQAfWUSF09xrMiypGWorc4mj/aMfK
+         gBMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/3Yn5lGftevaZzFptJqzp7AFik0P8z+gOE4aOsnOdoI=;
-        b=MieLgKoWf+6Nq1X5Z1N4ggV/Py9DZV0TxYbkAxrYwWkQMQHEqu2nd8YysW5zlFaK9M
-         WCLK7nOWfwspuuH4GmwSlPZzj7O7AoskjdOPBClrpMOx0Qh5ZvO5BC1gfI73hsSandL7
-         YbktkqOEtEUTikYp8pp4wyAsyLgi9kRpiGo5TrzL8WCc2OmlOLJhoxmYuUu6//QZSDAB
-         RQjf8nWt1impq+07pkh5jnpePhCeUcu64Y/9m704JrwDZ4zun/MTc80LmBpUZ/Ze6KRq
-         vqnlYCigXESMqnfDZ5pNMElQKzZSwS+/WtREb7osHbvm8CiijL4VB9tHfgWExIRMMl9Z
-         ESyA==
-X-Gm-Message-State: AOAM533iptwCMzDVtqjGML/b69VuffEdAAvUIVpuBLVhQKK/MYBv03g7
-        QD0r2B52Thl2XWGovtn70aID0A==
-X-Google-Smtp-Source: ABdhPJzjKVMoAhpFwjzPcAUiY4cQADpfp1cv8osXVPebG3Yzibvqa7nPcInu/39qlg6bnXxuirch7A==
-X-Received: by 2002:a17:902:8f95:b029:12b:7e4b:f191 with SMTP id z21-20020a1709028f95b029012b7e4bf191mr529478plo.63.1626974378943;
-        Thu, 22 Jul 2021 10:19:38 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id u190sm17954046pfb.95.2021.07.22.10.19.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=XiPHw5u5dlUXQvtcPtPmrVrUeEK7JBvZbFg3RjLxVe0=;
+        b=PTv8V32SMDKIvgInU0gUlqDjWsdbVGy6zTAEpI3nWBiuV4/TvvswNd2kT5HOCFqjGB
+         IoAzEVKgsHHRiK1xppVMPt8Te8ATzSPofgDTn9Ga7uoKSBzM40WRS3DPFRCzo4JZXlOE
+         BburEc91S+pn8zP2INOBilBVQjY/GZ5dNhhmVlc6KQ5dLEcfIokRyhsM6Zr+m0uAs9Pw
+         mCgVrZik7uaCljuVnSTZuAt18ZHSkJ287wZ7YWw/gkGkkt7NlT22KdgyZY4IVlbi3+kt
+         DzZati/TN72HI157IxhUAWg+R9UUayLI+LaflqOxRWJ8QiTqXQ/3SDesYaIaqNoaV+yY
+         Ilfw==
+X-Gm-Message-State: AOAM531kjFJ8y0NufVehX6JkQMOHlA2fElRLBI06oEhLkJLUhagWWYb8
+        Dc42MZeDZ1sPkqd9VAR4FoOirpWW7Shgcw==
+X-Google-Smtp-Source: ABdhPJxGDjTtVBS4MxpPGbs38jJgXZud7Y5wLWAUhuFTV9hppvYsbdtWn2t8FCI0kezAPH/6+Yhk9g==
+X-Received: by 2002:a1c:2282:: with SMTP id i124mr632948wmi.166.1626974465657;
+        Thu, 22 Jul 2021 10:21:05 -0700 (PDT)
+Received: from pc ([196.235.233.206])
+        by smtp.gmail.com with ESMTPSA id d29sm37221986wrb.63.2021.07.22.10.21.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 10:19:38 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 17:19:34 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Oliver Upton <oupton@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: Check the right feature bit for
- MSR_KVM_ASYNC_PF_ACK access
-Message-ID: <YPmopoGY4hwuVHAp@google.com>
-References: <20210722123018.260035-1-vkuznets@redhat.com>
+        Thu, 22 Jul 2021 10:21:05 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 18:21:02 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     p.zabel@pengutronix.de, gregkh@linuxfoundation.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [RESEND] gpu: ipu-v3: use swap()
+Message-ID: <20210722172102.GA5144@pc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210722123018.260035-1-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021, Vitaly Kuznetsov wrote:
-> MSR_KVM_ASYNC_PF_ACK MSR is part of interrupt based asynchronous page fault
-> interface and not the original (deprecated) KVM_FEATURE_ASYNC_PF. This is
-> stated in Documentation/virt/kvm/msr.rst.
-> 
-> Fixes: 66570e966dd9 ("kvm: x86: only provide PV features if enabled in guest's CPUID")
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  arch/x86/kvm/x86.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index d715ae9f9108..88ff7a1af198 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3406,7 +3406,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  			return 1;
->  		break;
->  	case MSR_KVM_ASYNC_PF_ACK:
-> -		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
-> +		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF_INT))
+Use swap() instead of implementing it since it makes code cleaner.
 
-Do we want to require both, or do we want to let userspace be stupid?
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ drivers/gpu/ipu-v3/ipu-image-convert.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
->  			return 1;
->  		if (data & 0x1) {
->  			vcpu->arch.apf.pageready_pending = false;
-> @@ -3745,7 +3745,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  		msr_info->data = vcpu->arch.apf.msr_int_val;
->  		break;
->  	case MSR_KVM_ASYNC_PF_ACK:
-> -		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
-> +		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF_INT))
->  			return 1;
->  
->  		msr_info->data = 0;
-> -- 
-> 2.31.1
-> 
+diff --git a/drivers/gpu/ipu-v3/ipu-image-convert.c b/drivers/gpu/ipu-v3/ipu-image-convert.c
+index aa1d4b6d278f..af1612044eef 100644
+--- a/drivers/gpu/ipu-v3/ipu-image-convert.c
++++ b/drivers/gpu/ipu-v3/ipu-image-convert.c
+@@ -990,7 +990,7 @@ static int calc_tile_offsets_planar(struct ipu_image_convert_ctx *ctx,
+ 	const struct ipu_image_pixfmt *fmt = image->fmt;
+ 	unsigned int row, col, tile = 0;
+ 	u32 H, top, y_stride, uv_stride;
+-	u32 uv_row_off, uv_col_off, uv_off, u_off, v_off, tmp;
++	u32 uv_row_off, uv_col_off, uv_off, u_off, v_off;
+ 	u32 y_row_off, y_col_off, y_off;
+ 	u32 y_size, uv_size;
+ 
+@@ -1021,11 +1021,8 @@ static int calc_tile_offsets_planar(struct ipu_image_convert_ctx *ctx,
+ 
+ 			u_off = y_size - y_off + uv_off;
+ 			v_off = (fmt->uv_packed) ? 0 : u_off + uv_size;
+-			if (fmt->uv_swapped) {
+-				tmp = u_off;
+-				u_off = v_off;
+-				v_off = tmp;
+-			}
++			if (fmt->uv_swapped)
++				swap(u_off, v_off);
+ 
+ 			image->tile[tile].offset = y_off;
+ 			image->tile[tile].u_off = u_off;
+-- 
+2.25.1
+
