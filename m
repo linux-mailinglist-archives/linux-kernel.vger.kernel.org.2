@@ -2,323 +2,415 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA5D3D1AA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 02:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0F23D1AAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 02:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhGUXiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 19:38:13 -0400
-Received: from mga06.intel.com ([134.134.136.31]:52386 "EHLO mga06.intel.com"
+        id S229967AbhGUXih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 19:38:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229600AbhGUXiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 19:38:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="272653804"
-X-IronPort-AV: E=Sophos;i="5.84,259,1620716400"; 
-   d="scan'208";a="272653804"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 17:18:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,259,1620716400"; 
-   d="scan'208";a="511985589"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Jul 2021 17:18:45 -0700
-Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 21 Jul 2021 17:18:45 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Wed, 21 Jul 2021 17:18:45 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.48) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Wed, 21 Jul 2021 17:18:44 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YRjUQ1oVML3iA86s749kD9zZkdmzoL/lywvyZCB0W/S3tyWpVtEVveQl0IlQmo0v+Y1GVS2T0rDxZlH0Zmpmj/mN6EJzRPk7aWLf/SN8YKkz6m3z2+MlA2wNvyaaVqVGkRAvkN5L+2RnYMqY5amwwqO18iIXFqUxHHiroYZIIFnqRQrcm4LWt2ZVOWx70KV1myTF+KrFR/RP3gRrABV1wf0HG5t9Iwy7Xp2SIXStMjFOLsLRNq3XruWyKe9z0lhiD0h7iVwwPtgbBH0IWxBKIIT4Jj+DJLp7wDXtsOjy8B9yHfeXmcTgVwGfAiA3xzCiLrHme+VH61sBl1OkifaM+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2CgI7OWbuKdTYUtB5bjyby6iiW49/OtDq2kH/Sm7MnI=;
- b=NoQWoWLwa1Kc4oe+l7YPmdHGJM4TpZKQXtv9cvczjAFzhdHEMyLAl4tLsgyEf62fUe4aDNMQOoKzePQhc6Tt/DutD/XnqN5Uv30h2dwbs47foSztrbLyzkoFJkCrTzWwl36t856OFBA8DjrE3uVcxxHdHqlyw6fBGMRrnZAhuU7+J+6VgPBwc0Uib6kA1shpFEpt7EjCNREKrwTZhWAilXQQrXbHALbdUAo1FGpFwYZ5HcfYVfHDMaG3qIH19JcqEv7mhpEQYc4jiLvY6/iYmcPh8vE1qrbc4tDEcjTxreufQhsql3CmdUVxeGgXTOyJKWMW3Dx0co0zBhSJqkJF9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2CgI7OWbuKdTYUtB5bjyby6iiW49/OtDq2kH/Sm7MnI=;
- b=CDW1xXUgcGsmuDFKembDLpu4NWpDYMEkF7Kzhg5zawAcuHc6TvZI6pt0d67xR2zMsym+jsAlxGnHYArCRqSrKMNosZmWfeo5/PMB2OOd+uOE6OZhiEse9frJyK4ZKNG0+41/8wZLqRTSjIUP1S3/cwd2Bjao/k+hlVgR/5m5MO8=
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
- by DM6PR11MB4594.namprd11.prod.outlook.com (2603:10b6:5:2a0::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Thu, 22 Jul
- 2021 00:18:38 +0000
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::3dc3:868b:cec3:513b]) by DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::3dc3:868b:cec3:513b%6]) with mapi id 15.20.4308.027; Thu, 22 Jul 2021
- 00:18:38 +0000
-From:   "Wu, Hao" <hao.wu@intel.com>
-To:     Tom Rix <trix@redhat.com>, "mdf@kernel.org" <mdf@kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Weight, Russell H" <russell.h.weight@intel.com>
-CC:     "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 4/4] fpga: remove compat_id from fpga_manager and
- fpga_region
-Thread-Topic: [PATCH v2 4/4] fpga: remove compat_id from fpga_manager and
- fpga_region
-Thread-Index: AQHXdMhnnZ/opknHKEOx9KM5yJtYvas+kL3QgADx7QCADVWi4IAAvy2AgACaklA=
-Date:   Thu, 22 Jul 2021 00:18:38 +0000
-Message-ID: <DM6PR11MB38194D113950FA4B75C7F2C485E49@DM6PR11MB3819.namprd11.prod.outlook.com>
-References: <20210709134229.2510349-1-trix@redhat.com>
- <20210709134229.2510349-6-trix@redhat.com>
- <DM6PR11MB3819098B673C54530B227D4385159@DM6PR11MB3819.namprd11.prod.outlook.com>
- <2a3b3131-96a3-9761-f2e7-63a32fd277f6@redhat.com>
- <DM6PR11MB38193C3FE87830E9627E112C85E39@DM6PR11MB3819.namprd11.prod.outlook.com>
- <2056f88d-7215-8f6a-d3c3-2692741c2c2d@redhat.com>
-In-Reply-To: <2056f88d-7215-8f6a-d3c3-2692741c2c2d@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fc604af7-7745-47c2-3e21-08d94ca64102
-x-ms-traffictypediagnostic: DM6PR11MB4594:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB4594FB3282DE3374C6BF628A85E49@DM6PR11MB4594.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3YeQqsBQYqqk2oMAiZU3Fw7byt0FhHKtYXRCeMidIKCPuPdmrpLywgVLJUKrav33yHXWmfZi8MXNYOIT0BDp/SP4PHOeH7c5KvKGm0Wb/bvw5a+yWn7FgcLMVFcXcDgB/Vy5DfKP8+pK00dRVxbc/SOqs7pzeIhg1kg8lIvklET82z+VRfKaBi7S/AIjbb7lcikoD5yEM7rehYpngWTUYviCS1F33w+uGmKAQyhM/IDrgo9EuH8K7RPqSss0wtmejx6AFEK9ftMNuksXPveza/PXZ5eQWZbuIK592nZfLp/FBwi3hzBFVvdrlsvmcWeVTFMGK8Def1b+J83PYsvH5Qyg9ZsZDi8fCF8r6j1DztaKzPBj/73M+8Q/JZP7xGDfJhpeliwTzBn3urZc0RG+mLf8VB1bwx3VhDh8FAOseOn/ZgNpi8rIwZW0yXxYQz0YH2RiQXLoGSQDIko7q5vm1JHbL2uSkmH+dm8fLrDMjjGuVfxTehqUlurqbXxgdYqSeU84BAcijbK75QIa5I7yn/A/oqVeitM4EWazClUZXApODotoqrkUkA91FH+6+gKvwiP7+x8JsM5+pKICR93KHY7mle40pqSc33VAUcpfhT5cPwY3aqFFc/qKxnWj4krTISh9c9Ut6nvPJKmeHfck9x7szBJv+0AtyGN5WVqN9/YKnJ9P4kUP5iBNlS+ZuW0UiPsfD8xO5+OtJBEU7Wvm8hv9biA2U/+g2ZVHlNM5VDxa/ku6+MbDx2Z7XMcSdWh+ENCX7oyYrLa95zf8ZSDEdktNrLPHF8F41lA3RQ/9/wM7QQDdtJvELcW7JboFE1BJ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(76116006)(66946007)(83380400001)(38100700002)(508600001)(4326008)(53546011)(9686003)(66476007)(966005)(64756008)(66446008)(55016002)(6506007)(7696005)(86362001)(122000001)(2906002)(8676002)(71200400001)(8936002)(5660300002)(33656002)(316002)(26005)(54906003)(186003)(110136005)(52536014)(6636002)(9126006)(38070700004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OFgyNXQ1NkxKTDlVNWFPdVlxeUFORUh0cDBFemZqN1BkSmhLdng2bjR3Y2ti?=
- =?utf-8?B?SGptMEdVT012SURVckg0aDNyQXZya0ZRZjZjaytyUmNsTGdFV2l4ajhIMjN3?=
- =?utf-8?B?MmkzakdSYTI0NUEzaFlKTDhmbGJFb3A2c3RrSUVaTHlTUVhodWJtQjZSc1pY?=
- =?utf-8?B?Q2hJTUJEeWI5V1JPV21xY2tXWnJ4YU51Qld1cVRabHFrc2M5ZnNFcEZLM3pU?=
- =?utf-8?B?MUxkSWYyalA1QXhTbmNCMTJUajVrenJUSVBZRitQYmliOVA0Y242ZXRiYy9q?=
- =?utf-8?B?QUtWU204akFxbnRFVVBpaXZZUWZMSy9uVDIrMXZxK0hwZlJVY0k5WGpVRytu?=
- =?utf-8?B?K0FwcDVIV0pnYnN2T0dGM2pmM0JxeHYvd25sWFU2UVZ6RzNnN290YmVadVNu?=
- =?utf-8?B?QmtSS1hkcHFESG1mNUVmRzNpR1ZHdkgxYW5LQjdGcVBEbFZaTDJoTVFpQkt0?=
- =?utf-8?B?bGRBTVBtaUZkTmxrajh0YksrdDFadVNZam9VN1AzRHpkdlYvRDRGYnpUSXBm?=
- =?utf-8?B?S1d5eHV5SXVBWm0xK0lTd00vS1FDa3hhcU8vK1RNdS94MEtSZkM3VmdRTTdh?=
- =?utf-8?B?Ukw4M01wZnRyRGxydWJsTlJlcVNvcmZWd3R0dzhNSWlVbXIzUTU3NlVNMHpr?=
- =?utf-8?B?cFVhd0w4TjdrOFZVcWlZU3ZoeC9tYUZFYXlzMytuL3NFVU94TjRlZUZmQ0Ix?=
- =?utf-8?B?d2NCSlErVmFFQmlYazdLbTVxVDZRZVNadktxUGt0KzN0VmJFVHR6SFlFVHFB?=
- =?utf-8?B?WlA5cmR2cWorTFIwZklVRXVUbklsWFY0bUNXQ3Q4ZG11VU1MMkVpZlRIRFZP?=
- =?utf-8?B?L2QxbGlNc3hqMFM2VGhNZXBRcDFNZlBYVlpwZzNlTXFpMVV1K1Z3M2RmMWlL?=
- =?utf-8?B?eE1jd2RrOTRMcEFKeVBGOXFtTUFlNDNrSVVkYkhtZWRpM0QzRDRIdXNhSWoz?=
- =?utf-8?B?b2RkQkdtZmtOcWQwd1BhVk52UHd1cDFtR3JJMVZTNnZnNkpYSEh4d2dZZXdi?=
- =?utf-8?B?cG5EaVNzS0xacXBsOTdabk9LT1Z0eVV1dm95eVlWRU5DMGlXVnBwS3pnYkQw?=
- =?utf-8?B?WE5HQjVGSC9xUytvSnBQaE5yUCtWVm1xQzY2ajI0dmRpbDFERFJwaGFYTy9k?=
- =?utf-8?B?Y2ZhL05mNjlmVHltMi9XT3dvSTF4QUwrRlY3Uy9tZ3QrQ1ZGYjNYM2RpWXMy?=
- =?utf-8?B?dkhwczRpOXZlRnNWU08rZVhkUStIeUkrS1I1c0JsbXNPeFkxaGlwZEpsbDU4?=
- =?utf-8?B?WXdHWkROWVk1UHRFWkIrV3A2K1ltdERjSmFGV09oZDVIRXFxOWhva2l4Nkh2?=
- =?utf-8?B?N21KcU45S0VEMVg1TCtLSjJZdE1lTFFVUC85UUVPWlFRQ09YTkZhazg2enBR?=
- =?utf-8?B?cXE1dTdKSEtjbER6VE9OaVNYaGU3SllvU3plYmVvcVBZMTVqTWlDWFRmcGFF?=
- =?utf-8?B?bkNqMW5ISWZ6SnNPczdHSi85c0RUengwaFlsTmxwRXN0Wmd2UmYyRGExVmQw?=
- =?utf-8?B?OHlJRTJFZURBOE1ZM3JaUFFteGZHMEdrOFBrYTVSL0VPdWdWTnZvOXlZdW1I?=
- =?utf-8?B?QXF0NTVxZ2t6dzZ1S2NUbFNld004T3JVYTRIdWt3MzU5aUhwbE55d0RLUmtW?=
- =?utf-8?B?c2xHMzlHaEw0TzVGZ3RxRjVmd0hyQXZzbWdDL2k3RnRFM3hQOTZ6OWhvM1ll?=
- =?utf-8?B?TVN6c2YzaUxPWW1yZkZiMHllUXUydm1kV2JaSWNYTFY3cWFySktOaTlZZ3Nn?=
- =?utf-8?Q?qcxPcHNtQtyt7RIzK8DVUK8ylxN6FIFhQMN6J6o?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S229600AbhGUXig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 19:38:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3F6060D07;
+        Thu, 22 Jul 2021 00:19:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626913151;
+        bh=02WBJv43Ul3/E4zefrr5BSI7WykAgFvJVxBqMsob8jw=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=BeQmcfxx5mLOyMZ/2WBBPYKtwdyuU0jmC846ANp/fc77cIG4kZVbHmw1w3hDpnVRW
+         m+BKTS0l/HJQIRBgq9lQD6Z+fgMG7cxlbafV8srq5BhXgkPmz9y93aTkb3YkJhROrh
+         ykRB1KjCY9F4mU8MPl2qG1eRlZ8y9bJpYwEkUdTgAB6zPgz/Kr4WMJiOKbAkzHKmwO
+         gvYr0cows/yJeHw55ggnbU5IqtrQitAQurnrl084qAGbiZn026K8hInC/Yy7M2zATq
+         534fj6pTzMCLfvC3xpM1XjNH9SXL6SVxeoFVWMWDeBVSOV/1qNb79fvMSkQ3p16u/7
+         mVge+jWK0QTmg==
+Date:   Wed, 21 Jul 2021 17:19:11 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Subject: Re: [PATCH v5] iomap: support tail packing inline read
+Message-ID: <20210722001911.GD8572@magnolia>
+References: <20210721082323.41933-1-hsiangkao@linux.alibaba.com>
+ <20210721222404.GA8639@magnolia>
+ <YPi3/okpVH7Q1O2X@B-P7TQMD6M-0146.local>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc604af7-7745-47c2-3e21-08d94ca64102
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jul 2021 00:18:38.7224
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tUdpU9mLcNqaXcBUVICQ+inkWQAVFFE6LBXpjvETtmKXbt/tqjxPdYSfuyOGcptltWU37zRZ4C0CdfvSgZuwyw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4594
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPi3/okpVH7Q1O2X@B-P7TQMD6M-0146.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IA0KPiBPbiA3LzIwLzIxIDk6NDggUE0sIFd1LCBIYW8gd3JvdGU6DQo+ID4+IE9uIDcvMTEvMjEg
-Njo0MCBQTSwgV3UsIEhhbyB3cm90ZToNCj4gPj4+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
-LQ0KPiA+Pj4+IEZyb206IHRyaXhAcmVkaGF0LmNvbSA8dHJpeEByZWRoYXQuY29tPg0KPiA+Pj4+
-IFNlbnQ6IEZyaWRheSwgSnVseSA5LCAyMDIxIDk6NDIgUE0NCj4gPj4+PiBUbzogbWRmQGtlcm5l
-bC5vcmc7IGNvcmJldEBsd24ubmV0OyBXdSwgSGFvIDxoYW8ud3VAaW50ZWwuY29tPg0KPiA+Pj4+
-IENjOiBsaW51eC1mcGdhQHZnZXIua2VybmVsLm9yZzsgbGludXgtZG9jQHZnZXIua2VybmVsLm9y
-ZzsgbGludXgtDQo+ID4+Pj4ga2VybmVsQHZnZXIua2VybmVsLm9yZzsgVG9tIFJpeCA8dHJpeEBy
-ZWRoYXQuY29tPg0KPiA+Pj4+IFN1YmplY3Q6IFtQQVRDSCB2MiA0LzRdIGZwZ2E6IHJlbW92ZSBj
-b21wYXRfaWQgZnJvbSBmcGdhX21hbmFnZXIgYW5kDQo+ID4+Pj4gZnBnYV9yZWdpb24NCj4gPj4+
-Pg0KPiA+Pj4+IEZyb206IFRvbSBSaXggPHRyaXhAcmVkaGF0LmNvbT4NCj4gPj4+Pg0KPiA+Pj4+
-IGNvbXBhdF9pZCBpcyBpbXBsZW1lbnRhdGlvbiBzcGVjaWZpYy4gIFNvIHRoZSBkYXRhIHNob3Vs
-ZCBiZQ0KPiA+Pj4+IHN0b3JlZCBhdCB0aGUgaW1wbGVtZWF0aW9uIGxheWVyLCBub3QgdGhlIGlu
-ZnJhc3RydWN0dXJlIGxheWVyLg0KPiA+Pj4+IFJlbW92ZSB0aGUgY29tcGF0X2lkIGVsZW1lbnRz
-IGFuZCBzdXBwb3J0aW5nIGNvZGUuDQo+ID4+PiBJIHRoaW5rIGN1cnJlbnQgY29tcGF0X2lkIGZv
-cm1hdCBjYW4gbWVldCB0aGUgY2hlY2tpbmcgcmVxdWlyZW1lbnQuDQo+ID4+PiBBY3R1YWxseSBJ
-IGhvcGUgb3RoZXIgaGFyZHdhcmUgd2hpY2ggbmVlZHMgY29tcGF0aWJsZSBjaGVja2luZw0KPiA+
-Pj4gdG8gZXhwb3NlIHRoZSBzYW1lIGZvcm1hdCBjb21wYXRfaWQuIFRoZW4gd2UgY2FuIGhhdmUg
-bW9yZQ0KPiA+Pj4gdW5pZmllZC9jb21tb24gY29kZSwgZS5nLiB1c2Vyc3BhY2UgYXBwbGljYXRp
-b24vbGliIGhhbmRsaW5nLg0KPiA+PiB2MiBkb2VzIG5vdCBjaGFuZ2UgdGhlIGN1cnJlbnQgQUJJ
-LiBUaGUgZGZsIG91dHB1dCBpcyB0aGUgc2FtZSBhcw0KPiA+PiBiZWZvcmUsIHRoZSBvdGhlciBu
-b251c2VycyBnZXQgLUVOT0VOVC4NCj4gPiBJIHRoaW5rIHRoZSBjb21tb24gQUJJIGlzIGNoYW5n
-ZWQgc29tZWhvdywgYXMgb3V0cHV0IGZvcm1hdCBjYW4NCj4gPiBiZSBhbnl0aGluZyB3aXRoIHlv
-dXIgY2hhbmdlLCB0aGlzIGNvbmZ1c2VzIHVzZXJzcGFjZSB0b28uDQo+IA0KPiBPbmx5IGRmbCB1
-c2VzIHRoaXMgaW50ZXJmYWNlLCBhbnkgZGZsIHVzZXJzcGFjZSBsaWtlIG9wYWUgcmVhZGluZyB0
-aGUNCj4gc3lzZnMgY29tcGF0X2lkIHdvdWxkIHJlbWFpbiB1bmNoYW5nZWQuDQo+IA0KPiBPdGhl
-cnMgd2lsbCBjb250aW51ZSB0byByZWNlaXZlIHRoZSAtRU5PRU5ULg0KPiANCj4gSWYgdGhlIG90
-aGVycyB3YW50ZWQgdG8gdXNlIHRoaXMgZW50cnkgaW4gdGhlIGZ1dHVyZSwgdGhlDQo+IA0KPiBl
-eGlzdGluZyBBQkkgZG9jdW1lbnRhdGlvbiBpcyBjb25zaXN0ZW50IHdpdGggd2l0aCBhbGxvd2lu
-ZyB0aGVtIHRvDQo+IA0KPiBkZWZpbmUgaXQgYXMgdGhleSB3aXNoLsKgIFRoZSBmb3JtYXQgb2Yg
-dGhlIG91dHB1dCBpcyBub3Qgc3BlY2lmaWVkDQo+IA0KPiBvbmx5IHRoZSBlcnJvciBjb25kaXRp
-b24uIHdpdGggbGFuZ3VhZ2UgdGhlIGxlYXZlcyBpdCB1cCB0byB0aGUgcmVnaW9uDQo+IA0KPiBj
-cmVhdG9yIHRvIGRlZmluZS4NCj4gDQo+IGZyb20gc3lzZnMtY2xhc3MtZnBnYS1yZWdpb24NCj4g
-DQo+ICJGUEdBIHJlZ2lvbiBpZCBmb3IgY29tcGF0aWJpbGl0eSBjaGVjaywgZS5nLiBjb21wYXRp
-YmlsaXR5DQo+ICDCoG9mIHRoZSBGUEdBIHJlY29uZmlndXJhdGlvbiBoYXJkd2FyZSBhbmQgaW1h
-Z2UuIFRoaXMgdmFsdWUNCj4gIMKgaXMgZGVmaW5lZCBvciBjYWxjdWxhdGVkIGJ5IHRoZSBsYXll
-ciB0aGF0IGlzIGNyZWF0aW5nIHRoZQ0KPiAgwqBGUEdBIHJlZ2lvbi4gVGhpcyBpbnRlcmZhY2Ug
-cmV0dXJucyB0aGUgY29tcGF0X2lkIHZhbHVlIG9yDQo+ICDCoGp1c3QgZXJyb3IgY29kZSAtRU5P
-RU5UIGluIGNhc2UgY29tcGF0X2lkIGlzIG5vdCB1c2VkLiINCj4gDQoNCkFzIHdlIGhhdmUgZml4
-ZWQgY29tcGF0X2lkIGZvcm1hdCwgc28gdGhlIG91dHB1dCBmb3JtYXQgaXMgZml4ZWQuDQpJZiBv
-dXRwdXQgZm9ybWF0IGlzIG5vdCBmaXhlZCB0aGVuIHdlIHdpbGwgbmV2ZXIgaGF2ZSByZXVzYWJs
-ZSBjb2RlIGJhc2VkDQpvbiB0aGlzIGNvbW1vbiBBQkkgb24gZnBnYSByZWdpb24sIG9ubHkgdmVu
-ZG9yIHNwZWNpZmljIGNvZGUgY2FuLg0KDQo+ID4NCj4gPj4gRm9yIGRmbCBjb21wYXRfaWQgaXMg
-MiA2NCBiaXQgcmVnaXN0ZXJzLg0KPiA+Pg0KPiA+PiBGb3IgY29tcGF0X2lkIHRvIGJlIHVzZWZ1
-bCB0byB0aGUgb3RoZXJzLCB0aGV5IG5lZWQgdGhlIGZsZXhpYmlsaXR5IHRvDQo+ID4+IHByaW50
-IHRvIHRoZSBzeXNmcyBpbiB0aGUgbWFubmVyIHRoYXQgYWxpZ25zIHdpdGggd2hhdGV2ZXIgdGhl
-aXIgdXNlcg0KPiA+PiBsaWJyYXJ5IGludGVyZmFjZSBpcywgMiA2NCB2YWx1ZXMgaXNuJ3QgZ29p
-bmcgdG8gd29yayBmb3IgZXZlcnlvbmUuwqAgZXgvDQo+ID4+IHhydCBsaWtlbHkgd291bGQgYmUg
-YSB1dWlkX3QgcHJpbnRlZCBvdXQgYSBzcGVjaWFsIHdheS4gc29tZW9uZSBlbHNlDQo+ID4+IG1h
-eWJlIGp1c3Qgc3RyaW5nIGluIHRoZSBib2FyZCBmdywgbWF5YmUgc29tZSBoYXMgYSA4IG9yIDI1
-NiBiaXRzIG9mDQo+ID4+IGNvbXBhdF9pZMKgIGV0Yy4NCj4gPj4NCj4gPj4gYXMgYSBkcml2ZXIg
-cmVnaW9uIHNwZWNpZmljIG9wLCBvdGhlcnMgYXJlIGZyZWUgdG8gZG8gd2hhdGV2ZXIgaXMgcmVx
-dWlyZWQuDQo+ID4+DQo+ID4+PiBDdXJyZW50bHkgSSBkaWRuJ3Qgc2VlIGFueSBvdGhlciB1c2Fn
-ZSBvciByZXF1aXJlbWVudCBvbiB0aGlzIHBhcnQNCj4gPj4+IG5vdywgb25seSBERkwgdXNlcyBp
-dC4gIFNvIHNob3VsZCB3ZSBsZWF2ZSBpdCBoZXJlIGF0IHRoaXMgbW9tZW50Pw0KPiA+Pj4gSSBm
-ZWVsIHdlIGRvbid0IGhhdmUgdG8gY2hhbmdlIGl0IGZvciBub3cgdG8gbW92ZSBpdCB0byBhDQo+
-ID4+PiBQZXItZnBnYS1tZ3IgZm9ybWF0LiA6ICkNCj4gPj4gVGhlIG1vdGl2YXRpb24gZm9yIGRv
-aW5nIHRoaXMgbm93IGlzIHRoZSAndXNlIHN0YW5kYXJkIGNsYXNzIGRldiByZWxlYXNlDQo+ID4+
-IC4uICcgcGF0Y2hzZXQNCj4gPj4NCj4gPj4gSSByZWFsbHkgZG8gbm90IGxpa2UgMiByZWdpc3Rl
-ciBmdW5jdGlvbnMuDQo+ID4+DQo+ID4+IEJ5IG1vdmluZyBjb21wYXRfaWQsIHRoZSAyIHJlZ2lz
-dGVyIGZ1bmN0aW9ucyByZWR1Y2VzIGRvd24gdG8gMS4NCj4gPj4NCj4gPiBZb3UgZG9uJ3QgaGF2
-ZSB0byBtb3ZpbmcgY29tcGFjdF9pZCwgeW91IGNhbiBoYXZlIDEgcGFyYW1ldGVyDQo+ID4gd2l0
-aCBhIGRhdGEgc3RydWN0dXJlIGluY2x1ZGluZyBldmVyeXRoaW5nLg0KPiANCj4gSSBsaWtlIHRo
-ZSBmcGdhX21ncl9yZWdpc3RlciggLi4uICwgY29uc3Qgc3RydWN0IGZwZ2FfbWFnYWdlcl9pbmZv
-DQo+ICppbmZvKSBiZXR0ZXIgYXMgd2VsbCBiZWNhdXNlIGl0IHdpbGwgc3RhYmlsaXplIHRoZSBw
-dWJsaWMgYXBpLg0KPiANCj4gU2luY2Ugd2UgYWdyZWUgb24gdGhhdCwgZG8geW91IGFncmVlIFJ1
-c3MncyBwYXRjaCBjYW4gYmUgcmVzb2x2ZWQgYnkNCj4gDQo+IGZyb20gaW5jbHVkZS9saW51eC9m
-cGdhLW1nci5oDQo+IA0KPiBrZWVwDQo+IA0KPiBzdHJ1Y3QgZnBnYV9tYW5hZ2VyICoNCj4gZnBn
-YV9tZ3JfcmVnaXN0ZXIoc3RydWN0IGRldmljZSAqcGFyZW50LCBjb25zdCBzdHJ1Y3QgZnBnYV9t
-YW5hZ2VyX2luZm8NCj4gKmluZm8pOw0KPiANCj4gcmVtb3ZlICpzaW1wbGUoKSBmcm9tIHRoZSBw
-dWJsaWMgYXBpLCBtb3ZlIGl0IHRvIGRyaXZlci9mcGdhLw0KDQpZZXMsIHRoYXQgc291bmRzIGdv
-b2QgdG8gbWUuDQoNCj4gDQo+IGFuZCBzb21ldGhpbmcgc2ltaWxhciBmb3IgZnBnYS1yZWdpb24u
-aCA/DQo+IA0KPiBIb3dldmVyIHRoZSBjb21wYXRfaWQgcmVmYWN0b3IgZ29lcywgaGF2aW5nIGp1
-c3QgKnJlZ2lzdGVyKC4uLiAqaW5mbykgaXMNCj4gZmluZSBhbmQgY291bGQgYmUgZG9uZSBmaXJz
-dC4NCg0KWWVzLiBBZGRpbmcgb3IgcmVtb3ZpbmcgdGhpbmcgbGF0ZXIgd29uJ3QgaW1wYWN0IHRo
-aXMgcmVnaXN0ZXIgaW50ZXJmYWNlLg0KDQpIYW8NCg0KPiANCj4gVG9tDQo+IA0KPiANCj4gPg0K
-PiA+IFRoYW5rcw0KPiA+IEhhbw0KPiA+DQo+ID4+IEkgZGlkIGEgcG9jIGhlcmUNCj4gPj4NCj4g
-Pj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtZnBnYS8yMDIxMDcwOTE4NDUxMS4yNTIx
-NTA4LTEtDQo+ID4+IHRyaXhAcmVkaGF0LmNvbS8NCj4gPj4NCj4gPj4gVG9tDQo+ID4+DQo+ID4+
-PiBUaGFua3MNCj4gPj4+IEhhbw0KPiA+Pj4NCj4gPj4+PiBQcmludGluZyBvdXQgdGhlIGNvbXBh
-dF9pZCBpcyBkb25lIHdpdGggdGhlIGZwZ2FfcmVnaW9uDQo+ID4+Pj4gY29tcGF0X2lkX3Nob3co
-KSBvcC4NCj4gPj4+Pg0KPiA+Pj4+IFNpZ25lZC1vZmYtYnk6IFRvbSBSaXggPHRyaXhAcmVkaGF0
-LmNvbT4NCj4gPj4+PiAtLS0NCj4gPj4+PiAgICBkcml2ZXJzL2ZwZ2EvZGZsLWZtZS1tZ3IuYyAg
-ICAgICB8ICA3IC0tLS0tLS0NCj4gPj4+PiAgICBkcml2ZXJzL2ZwZ2EvZGZsLWZtZS1yZWdpb24u
-YyAgICB8ICAxIC0NCj4gPj4+PiAgICBkcml2ZXJzL2ZwZ2EvZnBnYS1yZWdpb24uYyAgICAgICB8
-ICA3ICstLS0tLS0NCj4gPj4+PiAgICBpbmNsdWRlL2xpbnV4L2ZwZ2EvZnBnYS1tZ3IuaCAgICB8
-IDEzIC0tLS0tLS0tLS0tLS0NCj4gPj4+PiAgICBpbmNsdWRlL2xpbnV4L2ZwZ2EvZnBnYS1yZWdp
-b24uaCB8ICAyIC0tDQo+ID4+Pj4gICAgNSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwg
-MjkgZGVsZXRpb25zKC0pDQo+ID4+Pj4NCj4gPj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9mcGdh
-L2RmbC1mbWUtbWdyLmMgYi9kcml2ZXJzL2ZwZ2EvZGZsLWZtZS1tZ3IuYw0KPiA+Pj4+IGluZGV4
-IGNkMGI5MTU3ZWE2ZTUuLjhjNTQyM2VlZmZlNzUgMTAwNjQ0DQo+ID4+Pj4gLS0tIGEvZHJpdmVy
-cy9mcGdhL2RmbC1mbWUtbWdyLmMNCj4gPj4+PiArKysgYi9kcml2ZXJzL2ZwZ2EvZGZsLWZtZS1t
-Z3IuYw0KPiA+Pj4+IEBAIC0yOTIsNyArMjkyLDYgQEAgRVhQT1JUX1NZTUJPTF9HUEwoZm1lX21n
-cl9nZXRfY29tcGF0X2lkKTsNCj4gPj4+PiAgICBzdGF0aWMgaW50IGZtZV9tZ3JfcHJvYmUoc3Ry
-dWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPj4+PiAgICB7DQo+ID4+Pj4gICAgCXN0cnVj
-dCBkZmxfZm1lX21ncl9wZGF0YSAqcGRhdGEgPSBkZXZfZ2V0X3BsYXRkYXRhKCZwZGV2LT5kZXYp
-Ow0KPiA+Pj4+IC0Jc3RydWN0IGZwZ2FfY29tcGF0X2lkICpjb21wYXRfaWQ7DQo+ID4+Pj4gICAg
-CXN0cnVjdCBkZXZpY2UgKmRldiA9ICZwZGV2LT5kZXY7DQo+ID4+Pj4gICAgCXN0cnVjdCBmbWVf
-bWdyX3ByaXYgKnByaXY7DQo+ID4+Pj4gICAgCXN0cnVjdCBmcGdhX21hbmFnZXIgKm1ncjsNCj4g
-Pj4+PiBAQCAtMzEyLDEwICszMTEsNiBAQCBzdGF0aWMgaW50IGZtZV9tZ3JfcHJvYmUoc3RydWN0
-IHBsYXRmb3JtX2RldmljZQ0KPiA+Pj4+ICpwZGV2KQ0KPiA+Pj4+ICAgIAkJCXJldHVybiBQVFJf
-RVJSKHByaXYtPmlvYWRkcik7DQo+ID4+Pj4gICAgCX0NCj4gPj4+Pg0KPiA+Pj4+IC0JY29tcGF0
-X2lkID0gZGV2bV9remFsbG9jKGRldiwgc2l6ZW9mKCpjb21wYXRfaWQpLCBHRlBfS0VSTkVMKTsN
-Cj4gPj4+PiAtCWlmICghY29tcGF0X2lkKQ0KPiA+Pj4+IC0JCXJldHVybiAtRU5PTUVNOw0KPiA+
-Pj4+IC0NCj4gPj4+PiAgICAJX2ZtZV9tZ3JfZ2V0X2NvbXBhdF9pZChwcml2LT5pb2FkZHIsICZw
-cml2LT5jb21wYXRfaWQpOw0KPiA+Pj4+DQo+ID4+Pj4gICAgCW1nciA9IGRldm1fZnBnYV9tZ3Jf
-Y3JlYXRlKGRldiwgIkRGTCBGTUUgRlBHQSBNYW5hZ2VyIiwNCj4gPj4+PiBAQCAtMzIzLDggKzMx
-OCw2IEBAIHN0YXRpYyBpbnQgZm1lX21ncl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlDQo+
-ID4+ICpwZGV2KQ0KPiA+Pj4+ICAgIAlpZiAoIW1ncikNCj4gPj4+PiAgICAJCXJldHVybiAtRU5P
-TUVNOw0KPiA+Pj4+DQo+ID4+Pj4gLQltZ3ItPmNvbXBhdF9pZCA9IGNvbXBhdF9pZDsNCj4gPj4+
-PiAtDQo+ID4+Pj4gICAgCXJldHVybiBkZXZtX2ZwZ2FfbWdyX3JlZ2lzdGVyKGRldiwgbWdyKTsN
-Cj4gPj4+PiAgICB9DQo+ID4+Pj4NCj4gPj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9mcGdhL2Rm
-bC1mbWUtcmVnaW9uLmMgYi9kcml2ZXJzL2ZwZ2EvZGZsLWZtZS1yZWdpb24uYw0KPiA+Pj4+IGlu
-ZGV4IGQyMWVhY2JmMjQ2OWYuLmJlMWQ1N2VlMzc2NjYgMTAwNjQ0DQo+ID4+Pj4gLS0tIGEvZHJp
-dmVycy9mcGdhL2RmbC1mbWUtcmVnaW9uLmMNCj4gPj4+PiArKysgYi9kcml2ZXJzL2ZwZ2EvZGZs
-LWZtZS1yZWdpb24uYw0KPiA+Pj4+IEBAIC02NCw3ICs2NCw2IEBAIHN0YXRpYyBpbnQgZm1lX3Jl
-Z2lvbl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlDQo+ID4+ICpwZGV2KQ0KPiA+Pj4+ICAg
-IAl9DQo+ID4+Pj4NCj4gPj4+PiAgICAJcmVnaW9uLT5wcml2ID0gcGRhdGE7DQo+ID4+Pj4gLQly
-ZWdpb24tPmNvbXBhdF9pZCA9IG1nci0+Y29tcGF0X2lkOw0KPiA+Pj4+ICAgIAlwbGF0Zm9ybV9z
-ZXRfZHJ2ZGF0YShwZGV2LCByZWdpb24pOw0KPiA+Pj4+DQo+ID4+Pj4gICAgCXJldCA9IGZwZ2Ff
-cmVnaW9uX3JlZ2lzdGVyKHJlZ2lvbik7DQo+ID4+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZnBn
-YS9mcGdhLXJlZ2lvbi5jIGIvZHJpdmVycy9mcGdhL2ZwZ2EtcmVnaW9uLmMNCj4gPj4+PiBpbmRl
-eCA4NjRkZDRmMjkwZTNiLi5iMDhkMzkxNDcxNmYwIDEwMDY0NA0KPiA+Pj4+IC0tLSBhL2RyaXZl
-cnMvZnBnYS9mcGdhLXJlZ2lvbi5jDQo+ID4+Pj4gKysrIGIvZHJpdmVycy9mcGdhL2ZwZ2EtcmVn
-aW9uLmMNCj4gPj4+PiBAQCAtMTcyLDEyICsxNzIsNyBAQCBzdGF0aWMgc3NpemVfdCBjb21wYXRf
-aWRfc2hvdyhzdHJ1Y3QgZGV2aWNlICpkZXYsDQo+ID4+Pj4gICAgCWlmIChyZWdpb24tPnJvcHMg
-JiYgcmVnaW9uLT5yb3BzLT5jb21wYXRfaWRfc2hvdykNCj4gPj4+PiAgICAJCXJldHVybiByZWdp
-b24tPnJvcHMtPmNvbXBhdF9pZF9zaG93KHJlZ2lvbiwgYnVmKTsNCj4gPj4+Pg0KPiA+Pj4+IC0J
-aWYgKCFyZWdpb24tPmNvbXBhdF9pZCkNCj4gPj4+PiAtCQlyZXR1cm4gLUVOT0VOVDsNCj4gPj4+
-PiAtDQo+ID4+Pj4gLQlyZXR1cm4gc3ByaW50ZihidWYsICIlMDE2bGx4JTAxNmxseFxuIiwNCj4g
-Pj4+PiAtCQkgICAgICAgKHVuc2lnbmVkIGxvbmcgbG9uZylyZWdpb24tPmNvbXBhdF9pZC0+aWRf
-aCwNCj4gPj4+PiAtCQkgICAgICAgKHVuc2lnbmVkIGxvbmcgbG9uZylyZWdpb24tPmNvbXBhdF9p
-ZC0+aWRfbCk7DQo+ID4+Pj4gKwlyZXR1cm4gLUVOT0VOVDsNCj4gPj4+PiAgICB9DQo+ID4+Pj4N
-Cj4gPj4+PiAgICBzdGF0aWMgREVWSUNFX0FUVFJfUk8oY29tcGF0X2lkKTsNCj4gPj4+PiBkaWZm
-IC0tZ2l0IGEvaW5jbHVkZS9saW51eC9mcGdhL2ZwZ2EtbWdyLmggYi9pbmNsdWRlL2xpbnV4L2Zw
-Z2EvZnBnYS1tZ3IuaA0KPiA+Pj4+IGluZGV4IGVjMmNkOGJmY2ViMDAuLmViZGVhMjE1YTg2NDMg
-MTAwNjQ0DQo+ID4+Pj4gLS0tIGEvaW5jbHVkZS9saW51eC9mcGdhL2ZwZ2EtbWdyLmgNCj4gPj4+
-PiArKysgYi9pbmNsdWRlL2xpbnV4L2ZwZ2EvZnBnYS1tZ3IuaA0KPiA+Pj4+IEBAIC0xNDMsMjQg
-KzE0MywxMiBAQCBzdHJ1Y3QgZnBnYV9tYW5hZ2VyX29wcyB7DQo+ID4+Pj4gICAgI2RlZmluZSBG
-UEdBX01HUl9TVEFUVVNfSVBfUFJPVE9DT0xfRVJSCQlCSVQoMykNCj4gPj4+PiAgICAjZGVmaW5l
-IEZQR0FfTUdSX1NUQVRVU19GSUZPX09WRVJGTE9XX0VSUglCSVQoNCkNCj4gPj4+Pg0KPiA+Pj4+
-IC0vKioNCj4gPj4+PiAtICogc3RydWN0IGZwZ2FfY29tcGF0X2lkIC0gaWQgZm9yIGNvbXBhdGli
-aWxpdHkgY2hlY2sNCj4gPj4+PiAtICoNCj4gPj4+PiAtICogQGlkX2g6IGhpZ2ggNjRiaXQgb2Yg
-dGhlIGNvbXBhdF9pZA0KPiA+Pj4+IC0gKiBAaWRfbDogbG93IDY0Yml0IG9mIHRoZSBjb21wYXRf
-aWQNCj4gPj4+PiAtICovDQo+ID4+Pj4gLXN0cnVjdCBmcGdhX2NvbXBhdF9pZCB7DQo+ID4+Pj4g
-LQl1NjQgaWRfaDsNCj4gPj4+PiAtCXU2NCBpZF9sOw0KPiA+Pj4+IC19Ow0KPiA+Pj4+IC0NCj4g
-Pj4+PiAgICAvKioNCj4gPj4+PiAgICAgKiBzdHJ1Y3QgZnBnYV9tYW5hZ2VyIC0gZnBnYSBtYW5h
-Z2VyIHN0cnVjdHVyZQ0KPiA+Pj4+ICAgICAqIEBuYW1lOiBuYW1lIG9mIGxvdyBsZXZlbCBmcGdh
-IG1hbmFnZXINCj4gPj4+PiAgICAgKiBAZGV2OiBmcGdhIG1hbmFnZXIgZGV2aWNlDQo+ID4+Pj4g
-ICAgICogQHJlZl9tdXRleDogb25seSBhbGxvd3Mgb25lIHJlZmVyZW5jZSB0byBmcGdhIG1hbmFn
-ZXINCj4gPj4+PiAgICAgKiBAc3RhdGU6IHN0YXRlIG9mIGZwZ2EgbWFuYWdlcg0KPiA+Pj4+IC0g
-KiBAY29tcGF0X2lkOiBGUEdBIG1hbmFnZXIgaWQgZm9yIGNvbXBhdGliaWxpdHkgY2hlY2suDQo+
-ID4+Pj4gICAgICogQG1vcHM6IHBvaW50ZXIgdG8gc3RydWN0IG9mIGZwZ2EgbWFuYWdlciBvcHMN
-Cj4gPj4+PiAgICAgKiBAcHJpdjogbG93IGxldmVsIGRyaXZlciBwcml2YXRlIGRhdGUNCj4gPj4+
-PiAgICAgKi8NCj4gPj4+PiBAQCAtMTY5LDcgKzE1Nyw2IEBAIHN0cnVjdCBmcGdhX21hbmFnZXIg
-ew0KPiA+Pj4+ICAgIAlzdHJ1Y3QgZGV2aWNlIGRldjsNCj4gPj4+PiAgICAJc3RydWN0IG11dGV4
-IHJlZl9tdXRleDsNCj4gPj4+PiAgICAJZW51bSBmcGdhX21ncl9zdGF0ZXMgc3RhdGU7DQo+ID4+
-Pj4gLQlzdHJ1Y3QgZnBnYV9jb21wYXRfaWQgKmNvbXBhdF9pZDsNCj4gPj4+PiAgICAJY29uc3Qg
-c3RydWN0IGZwZ2FfbWFuYWdlcl9vcHMgKm1vcHM7DQo+ID4+Pj4gICAgCXZvaWQgKnByaXY7DQo+
-ID4+Pj4gICAgfTsNCj4gPj4+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9mcGdhL2ZwZ2Et
-cmVnaW9uLmggYi9pbmNsdWRlL2xpbnV4L2ZwZ2EvZnBnYS0NCj4gPj4gcmVnaW9uLmgNCj4gPj4+
-PiBpbmRleCAyMzZkMzgxOWYxYzEzLi5hZmM3OTc4NGIyODIzIDEwMDY0NA0KPiA+Pj4+IC0tLSBh
-L2luY2x1ZGUvbGludXgvZnBnYS9mcGdhLXJlZ2lvbi5oDQo+ID4+Pj4gKysrIGIvaW5jbHVkZS9s
-aW51eC9mcGdhL2ZwZ2EtcmVnaW9uLmgNCj4gPj4+PiBAQCAtMzAsNyArMzAsNiBAQCBzdHJ1Y3Qg
-ZnBnYV9yZWdpb25fb3BzIHsNCj4gPj4+PiAgICAgKiBAYnJpZGdlX2xpc3Q6IGxpc3Qgb2YgRlBH
-QSBicmlkZ2VzIHNwZWNpZmllZCBpbiByZWdpb24NCj4gPj4+PiAgICAgKiBAbWdyOiBGUEdBIG1h
-bmFnZXINCj4gPj4+PiAgICAgKiBAaW5mbzogRlBHQSBpbWFnZSBpbmZvDQo+ID4+Pj4gLSAqIEBj
-b21wYXRfaWQ6IEZQR0EgcmVnaW9uIGlkIGZvciBjb21wYXRpYmlsaXR5IGNoZWNrLg0KPiA+Pj4+
-ICAgICAqIEBwcml2OiBwcml2YXRlIGRhdGENCj4gPj4+PiAgICAgKiBAcm9wczogb3B0aW9uYWwg
-cG9pbnRlciB0byBzdHJ1Y3QgZm9yIGZwZ2EgcmVnaW9uIG9wcw0KPiA+Pj4+ICAgICAqLw0KPiA+
-Pj4+IEBAIC00MCw3ICszOSw2IEBAIHN0cnVjdCBmcGdhX3JlZ2lvbiB7DQo+ID4+Pj4gICAgCXN0
-cnVjdCBsaXN0X2hlYWQgYnJpZGdlX2xpc3Q7DQo+ID4+Pj4gICAgCXN0cnVjdCBmcGdhX21hbmFn
-ZXIgKm1ncjsNCj4gPj4+PiAgICAJc3RydWN0IGZwZ2FfaW1hZ2VfaW5mbyAqaW5mbzsNCj4gPj4+
-PiAtCXN0cnVjdCBmcGdhX2NvbXBhdF9pZCAqY29tcGF0X2lkOw0KPiA+Pj4+ICAgIAl2b2lkICpw
-cml2Ow0KPiA+Pj4+ICAgIAljb25zdCBzdHJ1Y3QgZnBnYV9yZWdpb25fb3BzICpyb3BzOw0KPiA+
-Pj4+ICAgIH07DQo+ID4+Pj4gLS0NCj4gPj4+PiAyLjI2LjMNCg0K
+On Thu, Jul 22, 2021 at 08:12:46AM +0800, Gao Xiang wrote:
+> Hi Darrick,
+> 
+> On Wed, Jul 21, 2021 at 03:24:04PM -0700, Darrick J. Wong wrote:
+> > On Wed, Jul 21, 2021 at 04:23:23PM +0800, Gao Xiang wrote:
+> > > This tries to add tail packing inline read to iomap, which can support
+> > > several inline tail blocks. Similar to the previous approach, it cleans
+> > > post-EOF in one iteration.
+> > > 
+> > > The write path remains untouched since EROFS cannot be used for testing.
+> > > It'd be better to be implemented if upcoming real users care rather than
+> > > leave untested dead code around.
+> > 
+> > I had a conversation with Gao on IRC this morning, and I think I've
+> > finally gotten up to speed on where he's trying to go with this
+> > patchset.  Maybe that will make review of this patch easier, or at least
+> > not muddy the waters further.
+> 
+> Many thanks for your time on this and the detailed long reply.
+> 
+> > 
+> > Right now, inline data in iomap serves exactly two users -- gfs2 and
+> > ext4.  ext4 doesn't use iomap for buffered IO and doesn't support
+> > directio for inline data files, so we can ignore them for now.  gfs2
+> > uses iomap for buffered IO, and it stores the inline data after the
+> > gfs2_dinode.
+> > 
+> > iomap's inline data functions exist to serve the gfs2 use case, which is
+> > why the code has baked-in assumptions that iomap->offset is always zero,
+> > and the length is never more than a page.
+> > 
+> 
+> Yeah, that is why I need to update the iomap inline code before
+> convering all buffer I/O stuffs to iomap.
+> 
+> > It used to be the case that we'd always attach an iomap_page to a page
+> > for blocksize < pagesize files, but as of 5.14-rc2 we're starting to
+> > move towards creating and dropping them on demand.  IOWs, reads from
+> > inline data files always read the entire file contents into the page so
+> > we mark the whole page uptodate and do not attach an iomap_page (unlike
+> > regular reads).  Writes don't attach an iomap_page to inline data files.
+> > Writeback attaches an iomap_page.
+> 
+> Yeah.
+> 
+> > 
+> > Did I get that much right?  Onto the erofs part, now that I've also
+> > taken the time to figure out what it's doing by reading the ondisk
+> > format in Documentation/.  (Thanks for that, erofs developers!)
+> > 
+> > erofs can perform tail packing to reduce internal block fragmentation.
+> > Tails of files are written immediately after the ondisk inode, which is
+> > why Gao wants to use IOMAP_INLINE for this.  Note that erofs tailpacking
+> > is /not/ same as what reiserfs does, and the inlinedata model is /not/
+> > the same as what gfs2 does.
+> > 
+> > A tail-packed erofs file mapping looks like this:
+> > 
+> > x = round_down(i_size, blocksize);
+> > [0..(x - 1)]:		mapped to a range of external blocks
+> > [x..(i_size - 1)]:	inline data immediately after the inode
+> >
+> 
+> Correct.
+> 
+> > The previous discussions have gone a bit afield -- there's only one
+> > inline data region per file, it won't cross a page boundary because
+> > erofs requires blocksize == pagesize, and it's always at the end of the
+> > file.  I don't know how we got onto the topic of multiple inline data
+> > regions or encoded regions in the middle of a file, but that's not on
+> > anybody's requirement list today, AFAICT.
+> 
+> Sorry, I just tried to give an example. And I saw it misled the topic,
+> very sorry about that.
+> 
+> > 
+> > I suspect that adapting the inlinedata code to support regions that
+> > don't start at offset zero but are otherwise page-aligned can be done
+> > with fairly minor changes to the accounting, since I think that largely
+> > can be done by removing the asserts about offset==0.
+> 
+> I think I could try to figure out a page-size aligned only patch like
+> this, as long as each one is happy about that.
+> 
+> > 
+> > Did I get that right?
+> > 
+> > The next thing the erofs developers want to do is add support for
+> > blocksize < pagesize, presumably so that they can mount a 4k blocksize
+> > erofs volume on a machine with 64k pages.  For that, I think erofs needs
+> > to be able to read the tail bytes into the middle of an existing page.
+> > Hence the need to update the per-block uptodate bits in the iomap_page
+> > from the read function, and all the math changes where we increase the
+> > starting address of a copy by (iomap->offset - pos).  The end result
+> > should be that we can handle inline data regions anywhere, though we
+> > won't really have a way to test that until erofs starts supporting
+> > blocksize < pagesize.
+> 
+> Correct.
+> 
+> > 
+> > Assuming that my assumptions are correct, I think this patch decomposes
+> > into three more targeted changes, one of which applies now, and the rest
+> > which will go with the later effort.
+> > 
+> > 1) Update the code to handle inline data mappings where iomap->offset is
+> > not zero but the start of the mapping is always page-aligned.
+> 
+> I could write a patch just for page-aligned cases for now.
+> 
+> > 
+> > 2) Adapt the inline data code to create and update the iop as
+> > appropriate.  This could be a little tricky since I've seen elsewhere in
+> > the v4 discussion thread that people like the idea of not paying the iop
+> > overhead for pages that are backed by a single extent even when bs < ps.
+> > I suspect we have enough to decide this from the *iomap/*srcmap length
+> > in iomap_readpage_actor or iomap_write_begin, though I've not written
+> > any code that tries that.
+> > 
+> > 3) Update the code to handle inline data mappings where iomap->offset
+> > can point to the middle of a page.
+> 
+> Ok, so I think I will unprioritize 2) and 3) for now. and just address
+> the page-aligned approach since it's currently what EROFS needs.
+> 
+> > 
+> > My apologies if everyone else already figured all of this out; for all I
+> > know I'm merely scrawling this here as notes to refer back to for future
+> > discussions.
+> > 
+> > > Cc: Christoph Hellwig <hch@lst.de>
+> > > Cc: Darrick J. Wong <djwong@kernel.org>
+> > > Cc: Matthew Wilcox <willy@infradead.org>
+> > > Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+> > > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > > ---
+> > > v4: https://lore.kernel.org/r/20210720133554.44058-1-hsiangkao@linux.alibaba.com
+> > > changes since v4:
+> > >  - turn to WARN_ON_ONCE() suggested by Darrick;
+> > >  - fix size to "min(iomap->length + iomap->offset - pos,
+> > >                     PAGE_SIZE - poff)"
+> > > 
+> > >  fs/iomap/buffered-io.c | 58 +++++++++++++++++++++++++++---------------
+> > >  fs/iomap/direct-io.c   | 13 +++++++---
+> > >  2 files changed, 47 insertions(+), 24 deletions(-)
+> > > 
+> > > diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> > > index 87ccb3438bec..d8436d34a159 100644
+> > > --- a/fs/iomap/buffered-io.c
+> > > +++ b/fs/iomap/buffered-io.c
+> > > @@ -205,25 +205,27 @@ struct iomap_readpage_ctx {
+> > >  	struct readahead_control *rac;
+> > >  };
+> > >  
+> > > -static void
+> > > +static int
+> > >  iomap_read_inline_data(struct inode *inode, struct page *page,
+> > > -		struct iomap *iomap)
+> > > +		struct iomap *iomap, loff_t pos)
+> > >  {
+> > > -	size_t size = i_size_read(inode);
+> > > +	unsigned int size, poff = offset_in_page(pos);
+> > >  	void *addr;
+> > >  
+> > > -	if (PageUptodate(page))
+> > > -		return;
+> > > -
+> > > -	BUG_ON(page_has_private(page));
+> > > -	BUG_ON(page->index);
+> > > -	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> > > +	/* inline source data must be inside a single page */
+> > > +	if (WARN_ON_ONCE(iomap->length > PAGE_SIZE -
+> > > +			 offset_in_page(iomap->inline_data)))
+> > > +		return -EIO;
+> > > +	/* handle tail-packing blocks cross the current page into the next */
+> > > +	size = min_t(unsigned int, iomap->length + iomap->offset - pos,
+> > > +		     PAGE_SIZE - poff);
+> > 
+> > Part of my confusion has resulted from this comment -- now that I think
+> > I understand the problem domain better, I realize that the clamping code
+> > here is not because erofs will hand us a tail-packing iomap that crosses
+> > page boundaries; this clamp simply protects us from memory corruption.
+> > 
+> > 	/*
+> > 	 * iomap->inline_data is a kernel-mapped memory page, so we must
+> > 	 * terminate the read at the end of that page.
+> > 	 */
+> > 	if (WARN_ON_ONCE(...))
+> > 		return -EIO;
+> > 	size = min_t(...);
+> 
+> That sounds much better. I will update like this.
+> 
+> > 
+> > TBH I wonder if we merely need a rule that ->iomap_begin must not hand
+> > back an inline data mapping that crosses a page, since I think the
+> > check in the previous line is sufficient.
+> > 
+> > >  	addr = kmap_atomic(page);
+> > > -	memcpy(addr, iomap->inline_data, size);
+> > > -	memset(addr + size, 0, PAGE_SIZE - size);
+> > > +	memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
+> > 
+> > I keep seeing this (iomap->inline_data + pos - iomap->offset)
+> > construction in this patch, maybe it should be a helper?
+> 
+> I'm fine with this, (but I'm not good at naming), may I ask for
+> some suggested naming? e.g.
+> 
+> static inline void *iomap_adjusted_inline_data(iomap, pos)
+> 
+> does that look good?
+
+static inline void *
+iomap_inline_buf(const struct iomap *iomap, loff_t pos)
+{
+	return iomap->inline_data + pos - iomap->offset;
+}
+
+(gcc complaints about pointer arithmetic on void pointers notwithstanding)
+
+> 
+> > 
+> > > +	memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
+> > >  	kunmap_atomic(addr);
+> > > -	SetPageUptodate(page);
+> > > +	iomap_set_range_uptodate(page, poff, PAGE_SIZE - poff);
+> > > +	return PAGE_SIZE - poff;
+> > >  }
+> > >  
+> > >  static inline bool iomap_block_needs_zeroing(struct inode *inode,
+> > > @@ -245,19 +247,23 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+> > >  	loff_t orig_pos = pos;
+> > >  	unsigned poff, plen;
+> > >  	sector_t sector;
+> > > +	int ret;
+> > >  
+> > > -	if (iomap->type == IOMAP_INLINE) {
+> > > -		WARN_ON_ONCE(pos);
+> > > -		iomap_read_inline_data(inode, page, iomap);
+> > > -		return PAGE_SIZE;
+> > > -	}
+> > > -
+> > > -	/* zero post-eof blocks as the page may be mapped */
+> > >  	iop = iomap_page_create(inode, page);
+> > > +	/* needs to skip some leading uptodate blocks */
+> > >  	iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
+> > >  	if (plen == 0)
+> > >  		goto done;
+> > >  
+> > > +	if (iomap->type == IOMAP_INLINE) {
+> > > +		ret = iomap_read_inline_data(inode, page, iomap, pos);
+> > > +		if (ret < 0)
+> > > +			return ret;
+> > > +		plen = ret;
+> > > +		goto done;
+> > > +	}
+> > > +
+> > > +	/* zero post-eof blocks as the page may be mapped */
+> > >  	if (iomap_block_needs_zeroing(inode, iomap, pos)) {
+> > >  		zero_user(page, poff, plen);
+> > >  		iomap_set_range_uptodate(page, poff, plen);
+> > > @@ -589,6 +595,18 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
+> > >  	return 0;
+> > >  }
+> > >  
+> > > +static int iomap_write_begin_inline(struct inode *inode, loff_t pos,
+> > > +		struct page *page, struct iomap *srcmap)
+> > > +{
+> > > +	/* needs more work for the tailpacking case, disable for now */
+> > > +	if (WARN_ON_ONCE(srcmap->offset != 0))
+> > > +		return -EIO;
+> > > +	if (PageUptodate(page))
+> > > +		return 0;
+> > > +	iomap_read_inline_data(inode, page, srcmap, 0);
+> > > +	return 0;
+> > > +}
+> > > +
+> > >  static int
+> > >  iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+> > >  		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
+> > > @@ -618,7 +636,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+> > >  	}
+> > >  
+> > >  	if (srcmap->type == IOMAP_INLINE)
+> > > -		iomap_read_inline_data(inode, page, srcmap);
+> > > +		status = iomap_write_begin_inline(inode, pos, page, srcmap);
+> > >  	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
+> > >  		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
+> > >  	else
+> > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > > index 9398b8c31323..cbadb99fb88c 100644
+> > > --- a/fs/iomap/direct-io.c
+> > > +++ b/fs/iomap/direct-io.c
+> > > @@ -379,22 +379,27 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
+> > >  {
+> > >  	struct iov_iter *iter = dio->submit.iter;
+> > >  	size_t copied;
+> > > +	void *dst = iomap->inline_data + pos - iomap->offset;
+> > >  
+> > > -	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> > > +	/* inline data must be inside a single page */
+> > > +	if (WARN_ON_ONCE(length > PAGE_SIZE -
+> > > +			 offset_in_page(iomap->inline_data)))
+> > > +		return -EIO;
+> > 
+> > 	/*
+> > 	 * iomap->inline_data is a kernel-mapped memory page, so we must
+> > 	 * terminate the write at the end of that page.
+> > 	 */
+> > 	if (WARN_ON_ONCE(...))
+> > 		return -EIO;
+> 
+> Ok.
+> 
+> > 
+> > >  	if (dio->flags & IOMAP_DIO_WRITE) {
+> > 
+> > I thought we weren't allowing writes to an inline mapping unless
+> > iomap->offset == 0?  Why is it necessary to change the directio write
+> > path?  Shouldn't this be:
+> > 
+> > 		/* needs more work for the tailpacking case, disable for now */
+> > 		if (WARN_ON_ONCE(pos > 0))
+> > 			return -EIO;
+> 
+> That is because Andreas once pointed out a case in:
+> https://lore.kernel.org/r/CAHpGcMJ4T6byxqmO6zZF78wuw01twaEvSW5N6s90qWm0q_jCXQ@mail.gmail.com/
+> 
+> "This should be a WARN_ON_ONCE(srcmap->offset != 0). Otherwise, something like:
+> 
+>   xfs_io -ft -c 'pwrite 1 2'
+> 
+> will fail because pos will be 1."
+> 
+> I think that is reasonable to gfs2. So I changed like this.
+
+Ah, right.  I forgot that reads are always done for an entire page at a
+time, whereas writes are of course byte-aligned.  I still wonder why any
+changes are needed for directio write?
+
+--D
+
+> Thanks,
+> Gao Xiang
+> 
+> > 
+> > --D
+> > 
+> > >  		loff_t size = inode->i_size;
+> > >  
+> > >  		if (pos > size)
+> > > -			memset(iomap->inline_data + size, 0, pos - size);
+> > > -		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
+> > > +			memset(iomap->inline_data + size - iomap->offset,
+> > > +			       0, pos - size);
+> > > +		copied = copy_from_iter(dst, length, iter);
+> > >  		if (copied) {
+> > >  			if (pos + copied > size)
+> > >  				i_size_write(inode, pos + copied);
+> > >  			mark_inode_dirty(inode);
+> > >  		}
+> > >  	} else {
+> > > -		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
+> > > +		copied = copy_to_iter(dst, length, iter);
+> > >  	}
+> > >  	dio->size += copied;
+> > >  	return copied;
+> > > -- 
+> > > 2.24.4
+> > > 
