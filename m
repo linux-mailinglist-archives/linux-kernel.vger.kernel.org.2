@@ -2,144 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D97D3D2D34
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 22:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F3D3D2D6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 22:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhGVT2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 15:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbhGVT2r (ORCPT
+        id S230458AbhGVTak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 15:30:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45087 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229969AbhGVTai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 15:28:47 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C00BC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 13:09:21 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id u11so7939248oiv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 13:09:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=BcJKTAd+SXCAq4+hK48A80n6j+MuUYA2uIh6BPZjR1U=;
-        b=XVta9Wlk5xmpjfpjS6T5NbLjP3uLbxw2D8WZfnnBKiRY+DboAIeHHwVOmWSalHNbyC
-         vaoX7QNxDNK8fhyBBOCLbgeQJn3RlCAo6mhjnI7LFAITkc7tjyfbYjdbe/aGiO0EvPzZ
-         0TpyT9gbFRPBz8jRAUJoZTesVCz2w5sDTfLhg=
+        Thu, 22 Jul 2021 15:30:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626984673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FQiDBKKD741DQtVrx05XHx6TnZPGQkq3WyPqWgsemgI=;
+        b=UgWJ7u7JY3eZsNvzVA2B/FtXvpJVF7FJCs8U8TODR/MO7TnCr0GuVAHyYGgRfGZEqe1F3o
+        eMoArk/ZUAEGt4boFLRfx8bhoySqYvmjbZEA3KzdVDfvJYnLkzJDHSVSo/VBUvdljqmMRA
+        xyVkD3ohk0eRBRpcwpQhfZrqS18Z0dI=
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
+ [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-CK2ZxWbwPKOb0N4Ke7Q4Bg-1; Thu, 22 Jul 2021 16:11:11 -0400
+X-MC-Unique: CK2ZxWbwPKOb0N4Ke7Q4Bg-1
+Received: by mail-il1-f200.google.com with SMTP id o8-20020a92c6880000b0290214927ba4d8so4187212ilg.6
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 13:11:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=BcJKTAd+SXCAq4+hK48A80n6j+MuUYA2uIh6BPZjR1U=;
-        b=Wq7jlGh5nJ+PAubBXXEecDT9GY76dceFOibBtHqGsyrfpRmUqwuZaeZH1hd/yLFYqG
-         phM8moz9nI0LEZ9vLGY6cA5Yjb0dSYxzqPUiCvhU4hjkG0M0D9dDfqhlUbFFzB3hfFSp
-         MUy4HWnnZivT5q9kAEjWZPzKaf9lvodcH5j9g5a29oTcCBANp24OQ2YLK4pi/kqTL+yQ
-         yyQWMvl5g69IFOUZtzTnq1cWfa1SwLDROUPYirAIPkZV6F1cyyzy/E9Pqa2OhWxhLrLf
-         NHLRBSyUZwIUE09kURMmCJvMg5L+5z4GDmNFDPWqdtdDZB0sai+RjZyHEDXJsgultyKf
-         CW5A==
-X-Gm-Message-State: AOAM530TxJZp5AhDzYvDPdU79ys+n8z0pQ9e3HTw2eCpvAP1BosreNSa
-        uiN6j6l2I4uB6YAE2oEUcn6n0z/hlqxVaz85X4RdDQ==
-X-Google-Smtp-Source: ABdhPJyQAOc9yd5za8sXc+wp9Ht2s4bknqPuzxNR8G6jAhR6yKwtH3h66wVrY3lRyd3R7fQIVIs1wnidXeQUJ7kSPmo=
-X-Received: by 2002:aca:4dc6:: with SMTP id a189mr7098582oib.166.1626984560867;
- Thu, 22 Jul 2021 13:09:20 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 22 Jul 2021 20:09:20 +0000
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FQiDBKKD741DQtVrx05XHx6TnZPGQkq3WyPqWgsemgI=;
+        b=litNtTRyuJUz7vlf06IneD+YTsXgLemFnBCiWIt8ZuQ6J35/jEX5cVwN2HEgCULoKx
+         2+glY3E7b1g4kNfPvMoZBTBtnrkz//QHs5OF0dMP55t+HjJu2/felDfcwU0vsmJOU2tX
+         Pbzp4PeIXm0Z3Jy/mYjfxfhrWZ6rUZNzALU7cVWBajdfMzpAHwae/wqKPq8k3uAi+npg
+         D15575A0DFYJb6CY8YuegmjU86TK284mAx/8R0CKq/vXDcsphXg6L8Xd0N/ALo5wZPe7
+         3Xkobg0iyf+aeBEhO23lzEgEsT7tc2gQR7DFZRjVOwGsGs/BtrITCy4MJxhU2lztw5hi
+         ZAFA==
+X-Gm-Message-State: AOAM531s+4cIAyPCdMdNwzqsTQ+gCZJUiTO8dFdRTexoScLT1yUSkiLF
+        8z+kXTpcXuaa0VbvPg8wlKhgs+exVZ7gEKG72vkcRTNTcMKgQg0G+XMhn0D1IjNnj5cCFWI8BaJ
+        KUfpJnLnzm928oOj5Fl3S0ynQ
+X-Received: by 2002:a5d:89d6:: with SMTP id a22mr1111580iot.178.1626984671238;
+        Thu, 22 Jul 2021 13:11:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxJFAwPs+9TaQkgJnqjWfck0s69NuWgcN/6K4dwXO71x1EdNm8aK86jdgf3quWKyPITk0/jbg==
+X-Received: by 2002:a5d:89d6:: with SMTP id a22mr1111572iot.178.1626984671066;
+        Thu, 22 Jul 2021 13:11:11 -0700 (PDT)
+Received: from halaneylaptop (068-184-200-203.res.spectrum.com. [68.184.200.203])
+        by smtp.gmail.com with ESMTPSA id r1sm14629137ilt.37.2021.07.22.13.11.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 13:11:10 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 15:11:05 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rt-users@vger.kernel.org, x86@kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Mark Brown <broonie@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH 0/3] sched, x86, arm64: PREEMPT_RT, FPU and preemption
+Message-ID: <20210722201105.kcja2ndxv7rtsrbi@halaneylaptop>
+References: <20210722175157.1367122-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210722024227.3313096-4-bjorn.andersson@linaro.org>
-References: <20210722024227.3313096-1-bjorn.andersson@linaro.org> <20210722024227.3313096-4-bjorn.andersson@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 22 Jul 2021 20:09:20 +0000
-Message-ID: <CAE-0n50_Q7AtxGpU_MrcbFRwJRXAS+SEhZid1jyouh6DceUnVw@mail.gmail.com>
-Subject: Re: [PATCH 3/5] drm/msm/dp: Refactor ioremap wrapper
-To:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rob Clark <robdclark@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Sean Paul <sean@poorly.run>
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722175157.1367122-1-valentin.schneider@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-07-21 19:42:25)
-> In order to deal with multiple memory ranges in the following commit
-> change the ioremap wrapper to not poke directly into the dss_io_data
-> struct.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_parser.c | 28 ++++++++++++++--------------
->  drivers/gpu/drm/msm/dp/dp_parser.h |  2 +-
->  2 files changed, 15 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
-> index c064ced78278..e68dacef547c 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
-> @@ -19,39 +19,39 @@ static const struct dp_regulator_cfg sdm845_dp_reg_cfg = {
->         },
->  };
->
-> -static int msm_dss_ioremap(struct platform_device *pdev,
-> -                               struct dss_io_data *io_data)
-> +static void __iomem *dp_ioremap(struct platform_device *pdev, int idx, size_t *len)
->  {
->         struct resource *res = NULL;
+On Thu, Jul 22, 2021 at 06:51:54PM +0100, Valentin Schneider wrote:
+> Hi folks,
+> 
+> This stems from some more v5.13-rt1 breakage on arm64. This time per-CPU access
+> safety isn't sufficient, we really need to keep preemption disabled.
+> 
+> In a happy accident I stumbled on
+> 
+>   cba08c5dc6dc ("x86/fpu: Make kernel FPU protection RT friendly")
+> 
+> so I packaged what was done there into some common helpers and plastered them
+> over the problematic areas.
+> 
+> Cheers,
+> Valentin
+> 
+> Valentin Schneider (3):
+>   sched/preempt: Introduce preempt_{enable, disable}_bh()
+>   x86/fpu: Make FPU protection reuse common helper
+>   arm64/fpsimd: Fix FPSIMD context handling vs PREEMPT_RT
+> 
+>  arch/arm64/kernel/fpsimd.c     |  6 ++++--
+>  arch/x86/include/asm/fpu/api.h | 19 ++-----------------
+>  include/linux/bottom_half.h    | 26 ++++++++++++++++++++++++++
+>  3 files changed, 32 insertions(+), 19 deletions(-)
+> 
+> --
+> 2.25.1
+> 
 
-Can we drop assignment to NULL too?
+I'm an outsider on all of this, but this series makes sense and looks
+good to me.
 
-> +       void __iomem *base;
->
-> -       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       res = platform_get_resource(pdev, IORESOURCE_MEM, idx);
->         if (!res) {
->                 DRM_ERROR("%pS->%s: msm_dss_get_res failed\n",
->                         __builtin_return_address(0), __func__);
-> -               return -ENODEV;
-> +               return ERR_PTR(-ENODEV);
->         }
->
-> -       io_data->len = (u32)resource_size(res);
-> -       io_data->base = devm_ioremap(&pdev->dev, res->start, io_data->len);
-> -       if (!io_data->base) {
-> +       base = devm_ioremap_resource(&pdev->dev, res);
-> +       if (!base) {
+Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
 
-devm_ioremap_resource() returns an ERR_PTR on failure, not NULL.
-
->                 DRM_ERROR("%pS->%s: ioremap failed\n",
->                         __builtin_return_address(0), __func__);
-> -               return -EIO;
-> +               return ERR_PTR(-EIO);
->         }
->
-> -       return 0;
-> +       *len = resource_size(res);
-> +       return base;
->  }
->
->  static int dp_parser_ctrl_res(struct dp_parser *parser)
->  {
-> -       int rc = 0;
->         struct platform_device *pdev = parser->pdev;
->         struct dp_io *io = &parser->io;
-> +       struct dss_io_data *dss = &io->dp_controller;
->
-> -       rc = msm_dss_ioremap(pdev, &io->dp_controller);
-> -       if (rc) {
-> -               DRM_ERROR("unable to remap dp io resources, rc=%d\n", rc);
-> -               return rc;
-> +       dss->base = dp_ioremap(pdev, 0, &dss->len);
-> +       if (IS_ERR(dss->base)) {
-> +               DRM_ERROR("unable to remap dp io region: %pe\n", dss->base);
-> +               return PTR_ERR(dss->base);
->         }
->
->         io->phy = devm_phy_get(&pdev->dev, "dp");
