@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAE13D2A76
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6DD3D2920
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233576AbhGVQMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:12:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47280 "EHLO mail.kernel.org"
+        id S232867AbhGVQBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:01:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233989AbhGVQHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:07:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DE3861D0B;
-        Thu, 22 Jul 2021 16:47:55 +0000 (UTC)
+        id S233396AbhGVP6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:58:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1EE1610CC;
+        Thu, 22 Jul 2021 16:39:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972476;
-        bh=jnAhUh8GeqjJ2797yP1L4f47Ku2gjSRY0ZgUX5h0Wks=;
+        s=korg; t=1626971968;
+        bh=bvQNfpQ830/h9p5eEFxitxbkDTvpV3Q2eq0TWFknLf4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UEn3DL/KaWwXDDWITf0FyR0sjoDQLuacWGIZGPvyMtMV7OAUsTwCznEicQa4ZgknQ
-         Z3uviFyBzu+AU8ZWdaeKljk5dQ/kgxTDkUdImhm3eBuqGbW648eU8iGek+BKfOAgr0
-         PvVDAe8n49+qvW0mT8EdczI2VZtdmnE9aLX7z5jw=
+        b=RqA33SLyDmyyZ9KSeOxFP+MLJkl9m75cTN+3jrzk2r6UMTlFYwYie3W84AgXaIMik
+         ydThzr7JTqqvGBmaTwJ+joP3xNN4lEYR9riGvk9x/GRl0QtCxgBohbXuoBwLIz3zA6
+         fNjjf4k2UUvtdMXPdyUYMXVlK+Vtn8/HW3Q6fIYA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
+        stable@vger.kernel.org, wenxu <wenxu@ucloud.cn>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.13 111/156] net: dsa: mv88e6xxx: enable .rmu_disable() on Topaz
-Date:   Thu, 22 Jul 2021 18:31:26 +0200
-Message-Id: <20210722155631.963878835@linuxfoundation.org>
+Subject: [PATCH 5.10 096/125] net/sched: act_ct: fix err check for nf_conntrack_confirm
+Date:   Thu, 22 Jul 2021 18:31:27 +0200
+Message-Id: <20210722155627.880666502@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+From: wenxu <wenxu@ucloud.cn>
 
-commit 3709488790022c85720f991bff50d48ed5a36e6a upstream.
+commit 8955b90c3cdad199137809aac8ccbbb585355913 upstream.
 
-Commit 9e5baf9b36367 ("net: dsa: mv88e6xxx: add RMU disable op")
-introduced .rmu_disable() method with implementation for several models,
-but forgot to add Topaz, which can use the Peridot implementation.
+The confirm operation should be checked. If there are any failed,
+the packet should be dropped like in ovs and netfilter.
 
-Use the Peridot implementation of .rmu_disable() on Topaz.
-
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Fixes: 9e5baf9b36367 ("net: dsa: mv88e6xxx: add RMU disable op")
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Fixes: b57dc7c13ea9 ("net/sched: Introduce action ct")
+Signed-off-by: wenxu <wenxu@ucloud.cn>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/mv88e6xxx/chip.c |    2 ++
- 1 file changed, 2 insertions(+)
+ net/sched/act_ct.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -3607,6 +3607,7 @@ static const struct mv88e6xxx_ops mv88e6
- 	.mgmt_rsvd2cpu =  mv88e6390_g1_mgmt_rsvd2cpu,
- 	.pot_clear = mv88e6xxx_g2_pot_clear,
- 	.reset = mv88e6352_g1_reset,
-+	.rmu_disable = mv88e6390_g1_rmu_disable,
- 	.vtu_getnext = mv88e6352_g1_vtu_getnext,
- 	.vtu_loadpurge = mv88e6352_g1_vtu_loadpurge,
- 	.serdes_power = mv88e6390_serdes_power,
-@@ -4408,6 +4409,7 @@ static const struct mv88e6xxx_ops mv88e6
- 	.mgmt_rsvd2cpu =  mv88e6390_g1_mgmt_rsvd2cpu,
- 	.pot_clear = mv88e6xxx_g2_pot_clear,
- 	.reset = mv88e6352_g1_reset,
-+	.rmu_disable = mv88e6390_g1_rmu_disable,
- 	.vtu_getnext = mv88e6352_g1_vtu_getnext,
- 	.vtu_loadpurge = mv88e6352_g1_vtu_loadpurge,
- 	.serdes_power = mv88e6390_serdes_power,
+--- a/net/sched/act_ct.c
++++ b/net/sched/act_ct.c
+@@ -1023,7 +1023,8 @@ do_nat:
+ 		/* This will take care of sending queued events
+ 		 * even if the connection is already confirmed.
+ 		 */
+-		nf_conntrack_confirm(skb);
++		if (nf_conntrack_confirm(skb) != NF_ACCEPT)
++			goto drop;
+ 	}
+ 
+ 	if (!skip_add)
 
 
