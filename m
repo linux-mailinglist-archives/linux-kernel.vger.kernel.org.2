@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F8F3D28CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9E63D2A1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233412AbhGVP67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:58:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33186 "EHLO mail.kernel.org"
+        id S235239AbhGVQIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:08:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232989AbhGVP5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:57:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FFB36135F;
-        Thu, 22 Jul 2021 16:37:47 +0000 (UTC)
+        id S234919AbhGVQFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:05:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFB756144E;
+        Thu, 22 Jul 2021 16:45:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971868;
-        bh=E9pkm4zkkFHOL1rV9ln9ewQPHrGOU2PTd4JreUHm5dk=;
+        s=korg; t=1626972350;
+        bh=zwp8EAtBiBXideIlDMng0QphZkMg7ytoPdXUY8PP5jo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cUgHL2vOSS1Jg7/jxgWweUdAVu+BMq4jcq2zQ0NR1RoC+WaqC7UHBERIRPIfHZCb+
-         hO24ZQ3D7OAk3GzTMXoaZispeZ/pY3z8QL+J9dx4OFs92KxUpl4lSEyI8cu6gco28T
-         BbEFl/J4s/WDxrYPdd9XGTsF7ZLSYQeOrFdTioxg=
+        b=NXRUU+GjNwHxjjFEPU7dnfNSTJOb8nB36OWLXlwXuaQt06BzCZng8C0/6NgLI2l3p
+         VO4oxRxQVn/SWfDKEB+0kbHEFDrZPxUeZEsNKFGaubsGy85EaW+BUWVO3Hhg3LPZV7
+         lBo5ull6sQ9z6i9+MQm3YCE2TPaM32klUxJSWO8o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Patrick Delaunay <patrick.delaunay@foss.st.com>,
-        kernel@dh-electronics.com,
-        linux-stm32@st-md-mailman.stormreply.com,
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 057/125] ARM: dts: stm32: Rename spi-flash/mx66l51235l@N to flash@N on DHCOM SoM
+Subject: [PATCH 5.13 073/156] arm64: dts: qcom: sc7180: Add wakeup delay for adau codec
 Date:   Thu, 22 Jul 2021 18:30:48 +0200
-Message-Id: <20210722155626.596278452@linuxfoundation.org>
+Message-Id: <20210722155630.754694115@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,53 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 
-[ Upstream commit 9b8a9b389d8464e1ca5a4e92c6a4422844ad4ef3 ]
+[ Upstream commit ba5f9b5d7ff3452e69275080c3d59265bc1db8ea ]
 
-Fix the following dtbs_check warning:
-spi-flash@0: $nodename:0: 'spi-flash@0' does not match '^flash(@.*)?$'
+Add wakeup delay for fixing PoP noise during capture begin.
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: Patrice Chotard <patrice.chotard@foss.st.com>
-Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
-Cc: kernel@dh-electronics.com
-Cc: linux-stm32@st-md-mailman.stormreply.com
-To: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Link: https://lore.kernel.org/r/20210513122429.25295-1-srivasam@codeaurora.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi | 2 +-
- arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-index 27f19575fada..c43c5c93f8eb 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-@@ -338,7 +338,7 @@
- 	#size-cells = <0>;
- 	status = "okay";
- 
--	flash0: mx66l51235l@0 {
-+	flash0: flash@0 {
- 		compatible = "jedec,spi-nor";
- 		reg = <0>;
- 		spi-rx-bus-width = <4>;
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
-index 803eb8bc9c85..a9eb82b2f170 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
-@@ -194,7 +194,7 @@
- 	#size-cells = <0>;
- 	status = "okay";
- 
--	flash0: spi-flash@0 {
-+	flash0: flash@0 {
- 		compatible = "jedec,spi-nor";
- 		reg = <0>;
- 		spi-rx-bus-width = <4>;
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+index 4c6e433c8226..3eb8550da1fc 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+@@ -23,6 +23,7 @@ ap_h1_spi: &spi0 {};
+ 	adau7002: audio-codec-1 {
+ 		compatible = "adi,adau7002";
+ 		IOVDD-supply = <&pp1800_l15a>;
++		wakeup-delay-ms = <15>;
+ 		#sound-dai-cells = <0>;
+ 	};
+ };
 -- 
 2.30.2
 
