@@ -2,71 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A2D3D1E62
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0CBB3D1E65
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhGVF6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 01:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
+        id S231339AbhGVF7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 01:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhGVF6i (ORCPT
+        with ESMTP id S229918AbhGVF7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 01:58:38 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789ADC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 23:39:13 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id b26so6897925lfo.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 23:39:13 -0700 (PDT)
+        Thu, 22 Jul 2021 01:59:47 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF533C061575;
+        Wed, 21 Jul 2021 23:40:22 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id m16so6835888lfg.13;
+        Wed, 21 Jul 2021 23:40:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4B86nDMuJsoY5qaVZWGr+i+bgI9zMDCAz1H/UIdhBz8=;
-        b=q+O9W4orIuaeNsabKDYJdenqrODw+azr8aXxE8WE2t7KCGz3LPADfZOo2iv+qZajZU
-         3mTs4JhFZ9yvVkQfM5nJvuiuU5YrKEz0hBGhJilM3VJ1reXrDMyUXMNr6AinrMdENuGv
-         spbj/Ata35GquWd4NMa3obOowGEMEtk403fiSKifQmdKTdiq4stKfLauUc8NleTNuXby
-         TB3nlZ7v25wpDUlHM681a/X7YzSGIa8rfBTppXyBNTa/d8lpN8DUop4X3iq6KUM6oUIY
-         zZu0VBxYlpQwIPsNblp1PleNS024h8kfY6Bgm/kDXY6OxiD/jJX/WGWKy7Fnyd+nMOZI
-         oJUA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=492xaH9XskXIclTeD22F++BxCoQwu3EAB4wNMkhV3+I=;
+        b=UBf4kRx2uM7bZiE9TaM+KGMq00abCQsDBJ5ZR7AHeTFfw3d36MA3MhkdHw9DrgwPNh
+         vh91KmBF3+AzO06S771Y9JfM6hjstKYeHbTPOdu0+u2GvWgW/3FO0ckqGHBcX2ADqSOS
+         P8e7ZUchfJL1/bOt1rMhfsTe7nyWiR7D/xTkqaObVnDaY/idmu57nITJR5XbMN4fmZoT
+         PnXPOPqnqCdW10OK8qC7Y3tWKu+qGjiX8jez90t7Y7wqz+bnbzOEQrlb9LKdxKs1AMmN
+         QUtnrz7xGypyvJb67cKgJ17HtIEniV32pUOaFXhEWCjRgfOApuxFWeUKIRprJOElQUMU
+         JUvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4B86nDMuJsoY5qaVZWGr+i+bgI9zMDCAz1H/UIdhBz8=;
-        b=Ldol3sWMYVGnp4VFBgkKKU6C8Vbxenzs30GswMixR6bdJCvoL0/6dJoEZWKXwxZwWc
-         VmoQk4Q2TJAEHc0oY8cJqtyCHVC92Uq91S9MMm/VwyZgxZ9f+wdaTZMCHe9w8bdFpi7G
-         LaEcnJ5VhjqJyF4tMQ3cJwSG7wWR+w5BIHuxFj46/e83jt7rWKY1S4re/5uQBxz+VojX
-         oP7ngVVdGbD9YhxuyCUMk3KAH/MHRcPUsDArbLKCdSAuaQf14MNmP+eN7rc3faxqxYXL
-         w9O9aY+96BnlqR9vOiOq7Pz2gszAkqNqm+jJ66I9LmZ1udB3wizrZNDQ7JXFzN2YacvK
-         z5HA==
-X-Gm-Message-State: AOAM533uTdAnBeSMwgzV2A2GGrXGd6N6SofQ9etILXmTSRLW7iH5f7Om
-        xMWSvnJBhCb30j072Oss66tGHgNto+xPQaShn04=
-X-Google-Smtp-Source: ABdhPJyaimF+6x0uFzkHCnnoPurYpyM0AuYABbk6VtsF1U5CXoVeBVq77XwfAVla3StRIrVa5nsdcxuX+nAJ9O7LfPI=
-X-Received: by 2002:a19:c3d6:: with SMTP id t205mr27695615lff.622.1626935951887;
- Wed, 21 Jul 2021 23:39:11 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=492xaH9XskXIclTeD22F++BxCoQwu3EAB4wNMkhV3+I=;
+        b=cKZRVaZPBCsEEn3cwNDUd/AcBzi7aNMIBfBNOA8Y5kfNAWlE+MKnrco7aWd+asB4hY
+         Y8CfsUDjAyNVWqML1/ojOBzdkJUiqAYfnTLIA1R8fY/yrp5vZw6InZZihlyPKsMa/mLc
+         wPpeWT1kGtepT/dfkUftTl7uZjIBdhNXgc9bPHPzGKlyqU5K/wlmUw0zN1/BCxzx4o4j
+         VAaOUdnpfjoZfSj1N9zLYeBIXtWiuWGWhfeuzN79IefesxMNt65/YEsL4M3vrYAQ4PZ8
+         3mgocLvIgxp6sU8FyWaWRbD+Jd+J+Fx89FzAJJac4EbkLpJC2uXYkSdO5vDKMFkbYU8K
+         nw4A==
+X-Gm-Message-State: AOAM531eKUPF54GCUgaGVX+ja+6NDO6r5emwbnUKdBnoNmXOZ30T5zWO
+        0j8qXMgxbr/reT07tfQShqXAnkDdrnRnLfSbNw==
+X-Google-Smtp-Source: ABdhPJzEsGglyTKJ2RljA2HYhKjC4ug+v2N8YFrUjpEGlyyYnYP1l9K+f7G5w+r8ICP7FaInxusXSg==
+X-Received: by 2002:ac2:44cc:: with SMTP id d12mr27963210lfm.264.1626936021062;
+        Wed, 21 Jul 2021 23:40:21 -0700 (PDT)
+Received: from localhost.localdomain (91-145-109-188.bb.dnainternet.fi. [91.145.109.188])
+        by smtp.gmail.com with ESMTPSA id b24sm790695lfp.26.2021.07.21.23.40.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 23:40:20 -0700 (PDT)
+From:   mika.penttila@gmail.com
+To:     linux-kernel@vger.kernel.org
+Cc:     lirongqing@baidu.com, pbonzini@redhat.com, mingo@redhat.com,
+        peterz@infradead.org, kvm@vger.kernel.org,
+        =?UTF-8?q?Mika=20Penttil=C3=A4?= <mika.penttila@gmail.com>
+Subject: [PATCH] is_core_idle() is using a wrong variable
+Date:   Thu, 22 Jul 2021 09:39:46 +0300
+Message-Id: <20210722063946.28951-1-mika.penttila@gmail.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210721072048.3035928-1-daeho43@gmail.com> <YPkPLrBszwr1aiBe@infradead.org>
-In-Reply-To: <YPkPLrBszwr1aiBe@infradead.org>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Wed, 21 Jul 2021 23:39:00 -0700
-Message-ID: <CACOAw_yvmK3hPA_Be=dR5MQapV2uu98coEnJhLZO3bt7Ef3Pcg@mail.gmail.com>
-Subject: Re: [PATCH] f2fs: change fiemap way in printing compression chunk
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good point. I already made my second version of this.
-We could revisit later to make it simple.
+From: Mika Penttilä <mika.penttila@gmail.com>
 
-Thank you,
+is_core_idle() was using a wrong variable in the loop test. Fix it.
 
-On Wed, Jul 21, 2021 at 11:25 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> Btw, any chane you could switch f2fs to use iomap_fiemap instead of
-> the handrolled version?  Especially with the work from Eric to add
-> iomap based direct I/O this should be much simpler now.
+Signed-off-by: Mika Penttilä <mika.penttila@gmail.com>
+---
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 44c452072a1b..30a6984a58f7 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1486,7 +1486,7 @@ static inline bool is_core_idle(int cpu)
+ 		if (cpu == sibling)
+ 			continue;
+ 
+-		if (!idle_cpu(cpu))
++		if (!idle_cpu(sibling))
+ 			return false;
+ 	}
+ #endif
+-- 
+2.17.1
+
