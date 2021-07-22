@@ -2,111 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3303D2AFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B133D2B01
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbhGVQg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:36:57 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:36888
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229453AbhGVQgy (ORCPT
+        id S229742AbhGVQjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhGVQjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:36:54 -0400
-Received: from localhost.localdomain (unknown [222.129.38.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id AF5EB3F331;
-        Thu, 22 Jul 2021 17:17:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626974247;
-        bh=a9h4fLy411Xg82JdVPluYXM5Ec86oeIATUPEuVF3mrc=;
-        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=aaXRmVInbPCBmiZlc4z8zTD4ux5qjvV9JQW+JGbmQOxgcRqkwyIOG1UrU+WsctdiZ
-         Bb2V6uidRCOwLLo8tWelMudoyEr21pE8OJ0j92IyDJ6O2ktoWJyaEMisL3MpWKY8wy
-         7vbvyJBRD4SJFLBTEvSGcg8/X8IuxKepD48lQIe3D1/eCehV1QZE8r4tSONZLOdzSM
-         rubNDRhsyjp0wbXSJCkb6Z8C+9GCgqIyc36J3MFql2maIYLIb6ZRGV3QqYM5TlonLS
-         H0/ePBXtaGm9/DVbcmbvfIc3xz7x1n0xsJ8eR2wD/t8wmEDsQGl9yr25gNAwvyq0mt
-         FGR28nr88GIOw==
-From:   Aaron Ma <aaron.ma@canonical.com>
-To:     aaron.ma@canonical.com, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        matthias.bgg@gmail.com, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: [PATCH v2] Bluetooth: btusb: Add support for Foxconn Mediatek Chip
-Date:   Fri, 23 Jul 2021 01:17:18 +0800
-Message-Id: <20210722171718.134034-1-aaron.ma@canonical.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <E6EC3615-DAC0-4267-AD9B-3B0604EDAD87@holtmann.org>
-References: <E6EC3615-DAC0-4267-AD9B-3B0604EDAD87@holtmann.org>
+        Thu, 22 Jul 2021 12:39:04 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F355C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:19:39 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id p9so7140348pjl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 10:19:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/3Yn5lGftevaZzFptJqzp7AFik0P8z+gOE4aOsnOdoI=;
+        b=GAt81+CoV1RZ3kbS40olQxYkXRKHjw9dJtksmAc1gHtHUrzcOZp6iI7SF2bNxm28yk
+         xk1dfU21iZbNpdMP2kDu2IShr/fL8wgNIA0idIDI3v9oCJc5g34bRcvQApg4hSEDKA9R
+         N/WX9ERrbi9bZQmFtXQ5ANLvQn0DdPB6lfHvTfO1dQvNzNqQsKu+AIx1sP4XK5EfAVJi
+         4J+CeD4pNY42EPReEReDWC6XqWJvTq1Z0NYAMyi94BesrR7hhQRTL9wYZDYnutxIH76m
+         LMPDJxp/13zHN/W7f6Udoj0doWM+V0/M5wrvnJkEUTjahSLPO+JoBrGyCPE4VM2z/xde
+         xdlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/3Yn5lGftevaZzFptJqzp7AFik0P8z+gOE4aOsnOdoI=;
+        b=MieLgKoWf+6Nq1X5Z1N4ggV/Py9DZV0TxYbkAxrYwWkQMQHEqu2nd8YysW5zlFaK9M
+         WCLK7nOWfwspuuH4GmwSlPZzj7O7AoskjdOPBClrpMOx0Qh5ZvO5BC1gfI73hsSandL7
+         YbktkqOEtEUTikYp8pp4wyAsyLgi9kRpiGo5TrzL8WCc2OmlOLJhoxmYuUu6//QZSDAB
+         RQjf8nWt1impq+07pkh5jnpePhCeUcu64Y/9m704JrwDZ4zun/MTc80LmBpUZ/Ze6KRq
+         vqnlYCigXESMqnfDZ5pNMElQKzZSwS+/WtREb7osHbvm8CiijL4VB9tHfgWExIRMMl9Z
+         ESyA==
+X-Gm-Message-State: AOAM533iptwCMzDVtqjGML/b69VuffEdAAvUIVpuBLVhQKK/MYBv03g7
+        QD0r2B52Thl2XWGovtn70aID0A==
+X-Google-Smtp-Source: ABdhPJzjKVMoAhpFwjzPcAUiY4cQADpfp1cv8osXVPebG3Yzibvqa7nPcInu/39qlg6bnXxuirch7A==
+X-Received: by 2002:a17:902:8f95:b029:12b:7e4b:f191 with SMTP id z21-20020a1709028f95b029012b7e4bf191mr529478plo.63.1626974378943;
+        Thu, 22 Jul 2021 10:19:38 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u190sm17954046pfb.95.2021.07.22.10.19.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 10:19:38 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 17:19:34 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Oliver Upton <oupton@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: Check the right feature bit for
+ MSR_KVM_ASYNC_PF_ACK access
+Message-ID: <YPmopoGY4hwuVHAp@google.com>
+References: <20210722123018.260035-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722123018.260035-1-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for another Foxconn / Hon Hai device with MT7921 chip.
+On Thu, Jul 22, 2021, Vitaly Kuznetsov wrote:
+> MSR_KVM_ASYNC_PF_ACK MSR is part of interrupt based asynchronous page fault
+> interface and not the original (deprecated) KVM_FEATURE_ASYNC_PF. This is
+> stated in Documentation/virt/kvm/msr.rst.
+> 
+> Fixes: 66570e966dd9 ("kvm: x86: only provide PV features if enabled in guest's CPUID")
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/kvm/x86.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d715ae9f9108..88ff7a1af198 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3406,7 +3406,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  			return 1;
+>  		break;
+>  	case MSR_KVM_ASYNC_PF_ACK:
+> -		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
+> +		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF_INT))
 
-T:  Bus=05 Lev=01 Prnt=01 Port=03 Cnt=02 Dev#=  3 Spd=480  MxCh= 0
-D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=0489 ProdID=e0cd Rev= 1.00
-S:  Manufacturer=MediaTek Inc.
-S:  Product=Wireless_Device
-S:  SerialNumber=000000000
-C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
-A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
-E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
-I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
-E:  Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
+Do we want to require both, or do we want to let userspace be stupid?
 
-Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
----
- drivers/bluetooth/btusb.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 1e5cac6f071b..7b69a97bd0e9 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -422,6 +422,9 @@ static const struct usb_device_id blacklist_table[] = {
- 	{ USB_DEVICE(0x13d3, 0x3563), .driver_info = BTUSB_MEDIATEK |
- 						     BTUSB_WIDEBAND_SPEECH |
- 						     BTUSB_VALID_LE_STATES },
-+	{ USB_DEVICE(0x0489, 0xe0cd), .driver_info = BTUSB_MEDIATEK |
-+						     BTUSB_WIDEBAND_SPEECH |
-+						     BTUSB_VALID_LE_STATES },
- 
- 	/* Additional Realtek 8723AE Bluetooth devices */
- 	{ USB_DEVICE(0x0930, 0x021d), .driver_info = BTUSB_REALTEK },
--- 
-2.32.0
-
+>  			return 1;
+>  		if (data & 0x1) {
+>  			vcpu->arch.apf.pageready_pending = false;
+> @@ -3745,7 +3745,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		msr_info->data = vcpu->arch.apf.msr_int_val;
+>  		break;
+>  	case MSR_KVM_ASYNC_PF_ACK:
+> -		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
+> +		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF_INT))
+>  			return 1;
+>  
+>  		msr_info->data = 0;
+> -- 
+> 2.31.1
+> 
