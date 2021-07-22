@@ -2,267 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4983D2C9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080053D2CA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhGVSgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbhGVSgn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:36:43 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91871C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:17:18 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 31-20020a9d0ea20000b02904d360fbc71bso3577990otj.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:17:18 -0700 (PDT)
+        id S230363AbhGVShj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 14:37:39 -0400
+Received: from mail-eopbgr80083.outbound.protection.outlook.com ([40.107.8.83]:21057
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229745AbhGVShi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 14:37:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fd+RM6FzCzkN7nK9kZvTK9pah9xjw9joIZCMTyHtPeA7Gp0kaU0lFq18vRZhSnrpxsf5MzchgO4Ve1v2LUMU45mglgxOALMBrppdscLsIlsak51y22oZfAXFC3BBrlVM09bu3uaiXxygV6Tu8obkSMvZLjDyZDLjC5gUSz0LW7yaVPD1CO3v1GTqo23YoE0zm6mNqtFKc3kZwNPRfNEdkAKjcVGYv/YwfY3CCupRShmMgM4C/6LPAcpr+upgEvGm6kv4fCcNuX0k7/eo3GJC3GpdyhPZM0GTsCbVWry88YADwnU5O8zcRl7f8ItLbmFK3SUWZGf2HZ76VvWUC5jZ/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vS2C+UgRD8Y17E7vvrqk4Zf/Fw0eGzXlr32xmLf+Dd4=;
+ b=amujAFned5Gz6vQxWBQWxBoDJr8445CaJyq2fmLdOaGCHl2a/nsxVB8ODcNOONG3JYX/9YkqTDAI+kS/vXjKG9MQmgdE3k+EcZqvCvdn10d7nHdkGSRNT8EmHuqc1BZ9eJ14pcFBHZwN7JImkGDL050wu8FpUstXMXYTccKUGLHDcu+ZFCW7eOUJudYXGXbzlg9h4jUxZROuFe/JVrG3mtx4f20quu1NEAylxNkBGRfevPOTROMUK27Uzvi8Qo4YJ1mt9+oCQpJXWaHgUZ1EayJPuEUqo/1mCCcXs37CX+owKmFSUIGphtb1JcUJ/aJNhTxEznGXtWIFkxwdDjQXEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
+ dkim=pass header.d=seco.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+z8bicXlzPNjfZ0ZqDdwCkXcETQc9GOxXhm+HdBbiHc=;
-        b=j+dgX93g6HJH+i5KL+StjbpBA/OcP0bBcdln+9sZBmB3QaC4L1cN7oMzHMgCnNIYCL
-         CspsvkSQ8ZjGNixDPwKuiygJ5ZQx8b2ewkhecmdeyONa66fD1XzuLNs0k1P2vgHuWaos
-         CByoU+prN61+W2dL+klfFDUUZlMPZlJrHLYUQxtmi67BFN1d71UMKuXEdQfG90o1WhwH
-         KXhXFe0TQ3sfmn2sSmxd5HQIy0lfdOuRYbHvRBCtBNBWcFmBk9EQqJdHvEYrTLvTJ/UL
-         gxHukF0KV3MJ1OyHTKBbYchU3GtFL7AeGH/wfMPBcydOJ2brrBBrBfqBKPNPZhqJ1EPa
-         qlYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+z8bicXlzPNjfZ0ZqDdwCkXcETQc9GOxXhm+HdBbiHc=;
-        b=mw66sc3Ra/5l4NX0FvJ58hV1WskTlmt1pn2rQ13sKXG3EiIzji4ZtUm630CGaF4Z0V
-         QEFfsy4xJrPI0i8wTZP4Eu3Yy/9277fHIQ7mc0/RpJvpwCWIPR/TRMviRkdDnN4x3CHY
-         RUgyZ4UH+KKRP6oSOGQWHV+ghQZi71x2HPqRFhnWW0IWSqrd16wXEMFfWJ1ShZDBc58t
-         FcHMQwLrGziuW4KNennV/NDuHRygRCF3msJI14pME4m7lIAQnfpCqzHcRR8eE3WxerNz
-         v0ea4glT1X1ZrxE1P8iGFA5Ra871af5cDG/C9cBogMOIISbXyYzgUMCAihEaAkrpg/TM
-         nrGg==
-X-Gm-Message-State: AOAM533vO47GuwLFpQJS+WnlLMjU0BXWP1MUDDsDd6WIQ9NNdU7+mb8k
-        jEtE/amwy2BtLvxQlq+pz+f9kQ==
-X-Google-Smtp-Source: ABdhPJyv25+X2BSZeQ4sFXOMP2RZKUnYBJuccVK713NOCqehlrLBZk4GgsroeZ5/FjeCR/UO9ARTaw==
-X-Received: by 2002:a9d:2c61:: with SMTP id f88mr884727otb.62.1626981437872;
-        Thu, 22 Jul 2021 12:17:17 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id m4sm1055014oos.3.2021.07.22.12.17.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 12:17:17 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 14:17:15 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Amit Pundir <amit.pundir@linaro.org>
-Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-Message-ID: <YPnEO6NVFZDS1s//@yoga>
-References: <20210714124807.o22mottsrg3tv6nt@mobilestation>
- <YPfPDqJhfzbvDLvB@kroah.com>
- <20210721100220.ddfxwugivsndsedv@mobilestation>
- <YPf29+ewbrYgHxRP@kroah.com>
- <0064cb2c-5ca6-e693-2e89-8f045c8f7502@kernel.org>
- <YPf+shNM6cXb3mfe@kroah.com>
- <d853df77-8d36-30b0-dd26-da1bfcb068e0@kernel.org>
- <20210721112531.xvu6ni5ksaehsrjh@mobilestation>
- <CALAqxLViEqSO17P3JGRGYJh-wDoHaJiQQV48zeoRgnar4Xd5Bg@mail.gmail.com>
- <20210722181221.xh3r5kyu7zlcojjx@mobilestation>
+ d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vS2C+UgRD8Y17E7vvrqk4Zf/Fw0eGzXlr32xmLf+Dd4=;
+ b=Impxjjo3Swwo1SKIVkhQ8PSf4FJAnWmEvThQDmgzdL6mvN0uZlcG8TNO2Vf/wyxK3TTmwJMQQACBkMi37Xqo97iNiCeIzpPbVEYQ1w+vQVnl2u/lbGQoUL70Pe3WrXHI3kn6oJVY7OQJ57yFPIrs4z2qHGErxgYsPmUIBiu9mBo=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=seco.com;
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
+ by DB7PR03MB5129.eurprd03.prod.outlook.com (2603:10a6:10:33::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Thu, 22 Jul
+ 2021 19:18:11 +0000
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::dc6c:815b:2062:d1f1]) by DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::dc6c:815b:2062:d1f1%7]) with mapi id 15.20.4352.025; Thu, 22 Jul 2021
+ 19:18:10 +0000
+Subject: Re: [PATCH v5 3/3] pwm: Add support for Xilinx AXI Timer
+To:     kernel test robot <lkp@intel.com>, linux-pwm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     kbuild-all@lists.01.org, Alvaro Gamez <alvaro.gamez@hazent.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        michal.simek@xilinx.com, Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210719221322.3723009-3-sean.anderson@seco.com>
+ <202107212140.EAh7aLyD-lkp@intel.com>
+From:   Sean Anderson <sean.anderson@seco.com>
+Message-ID: <c895c09c-d1af-52bd-dff0-66dbc3d69a97@seco.com>
+Date:   Thu, 22 Jul 2021 15:18:05 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <202107212140.EAh7aLyD-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN2PR02CA0034.namprd02.prod.outlook.com
+ (2603:10b6:208:fc::47) To DB7PR03MB4523.eurprd03.prod.outlook.com
+ (2603:10a6:10:19::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210722181221.xh3r5kyu7zlcojjx@mobilestation>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.27.1.65] (50.195.82.171) by MN2PR02CA0034.namprd02.prod.outlook.com (2603:10b6:208:fc::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25 via Frontend Transport; Thu, 22 Jul 2021 19:18:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 23591ff5-2644-4265-d3cf-08d94d4571d5
+X-MS-TrafficTypeDiagnostic: DB7PR03MB5129:
+X-Microsoft-Antispam-PRVS: <DB7PR03MB512977886C7EB7234A8BEAF096E49@DB7PR03MB5129.eurprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SGq0+CYP00HgBFM6R2N4VKXdJSbG3ml1J/ghP4WGUOoZq40GWSFcXl/bn1TlEyGX84EvicXqVU31URR2l9c16tzm1qlgpwl11gVYWCz6qeaD/2Y7qGzDQy6o06gawc76wTlLrpn7pK5MB9eYRA1CDmOJZVWpXSkK0tIyqK2ENe4hmjBAu137cFFKBye7dWc9419jzIUE5N7D5K1pG5pd2NgXqeLtQJmqtif2DtrqUmwve9Mfk0go8wGPI4Fj8E5Jz/WN6IY6nOHlUEuIhc4mwBRBe9N0EYIK1do7NaCBauiDMZkMjvKmkUmLf6xKVjP/zgSCNnjyt+CgbFyaW5O/9z63j/3PacKyIx9pA7bgjPLY8i5yPU1C4J90JHpyAdb3fKbBscYrZhXEIDCFTCea9lUCSBjqWoPeufCeKBY/yxpAPNgFPkeJhlw1Mck3EtL595QQaPbMQbu1Fai2Yjnjiq6tqFiVSs5y13iX96Q8HSWFT5rwCvPqVjawPtPRxLZqcb10tdPZz0WZ0UqZnDMDgcmqzrsQlWQhHKsJ1CXxl6kYCXmka/AJEfVieBRdqFDVRlj2mRLH7SwmWjbgv5RASboZZsiTgsmsDD4HoeGTXvbe3BBb8qLhCUUfQ38s6+/UoJSbN0WE1ox0WrL8VYvy+FeLLf8ZQlJM0n3yFSw0ZY3bRvMPxQW8af0VLFDq6W583goSD+Zmo4QdtPNe/UeGG5NqN7wlEmgtojWfVaPReGDiSIwe+yKQBOAdy6tBPiMmxkQ/G/jChuJfWg+Q86eNX7Ta3li5wu8sTDVnCtmDDo2xJP6zHdSiaJRd6ayDIXia6jkS+VGDnjyimn5xw3pu5w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39830400003)(346002)(366004)(376002)(136003)(38100700002)(86362001)(38350700002)(31686004)(478600001)(36756003)(26005)(31696002)(186003)(44832011)(2616005)(956004)(54906003)(8936002)(5660300002)(110136005)(2906002)(52116002)(966005)(7416002)(53546011)(16576012)(316002)(6486002)(4326008)(66476007)(8676002)(66556008)(66946007)(6666004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?oB4yeUB2WnQ6mGOo/v9QZj2CyFX9EvI3PjBJFr2xKof4dbBd0yWFS5LT?=
+ =?Windows-1252?Q?EcKgAht2VSuzHXoZQePvn8AqB1k3Wu4w8dUFGQG7MCtIYCLpH+y7B3r+?=
+ =?Windows-1252?Q?+k45VPlqaY9bafwKNCIDlBjiHzuGqFo/DzwQtWdasFhyAmdHyCsfm14D?=
+ =?Windows-1252?Q?VujvG4EstNw9zjdLVuRi9ch9EEGG2yIsH0uHhXu5kh6SbjPpGKHhgM9o?=
+ =?Windows-1252?Q?mOcUCnbKkHgB4aR/9wZNaFPivO4DPBY+OvSkc/hfVfwBjxZZQdXgpbsR?=
+ =?Windows-1252?Q?wgMYmOEOlD4l9aqo/asptBGR3Us9Dld8uWQFe8NCLS+iCBYBGmF87vKV?=
+ =?Windows-1252?Q?05DLHCOhxMYTzk9+OcIlAo/s9uNdZL0BZOrwnXaViLSH7cKwkv7QEJNQ?=
+ =?Windows-1252?Q?dCJrVk7vrN3ikxz1R3kFF9y1PLEbVWhxJC+6Em53ROIYFJzP/j2og/a7?=
+ =?Windows-1252?Q?7JqsxLgeEep0f7RFnQ+EcaKZAoqBivOkO7UpKoxxOuM8YseQ2vQ9bfz7?=
+ =?Windows-1252?Q?XUp+FSUJlaqIaE/5E4ox0Jzt0MUJkYRZXcSYaNtPDyKyuFrVxbsQdACO?=
+ =?Windows-1252?Q?nfphOLS+XSd9cOYpZj+Le1KzLQca4Hzb4JRds/Bym/SdgVgQYvNuaSE3?=
+ =?Windows-1252?Q?G/BFom/Ak8mpwIJbzFEMgnpOP7t7CQwiiGmGWjPHDwovb6660PEOkK5p?=
+ =?Windows-1252?Q?e1fPLalX/ZbOP9X5YSHPvDtySMA6+It3VmNcCf4+BBOvqfou87bD9+b1?=
+ =?Windows-1252?Q?Zi928GFqC418hetQAtMlivNjIFlLS3bk498g2IWDuZcg2zOKC+nQHU66?=
+ =?Windows-1252?Q?qcAIc/2ayZDXW4LPW6WTUfXDvErv84DV4LBx7BWhniRbM15PD3EKEyQu?=
+ =?Windows-1252?Q?C8hYf/wG/BkGDQrfHl5ClsPpXHNlqGSsU2xVZwyevzW6Te9iqGI/4FR5?=
+ =?Windows-1252?Q?l/q0C0q3SQVW0O5KHNmWrrYUV9gvHGUuhlafmGcPxsMyylbUFABA9Vtk?=
+ =?Windows-1252?Q?Njf4fPuuaXROMsglrlXWCiwL3huHGzRqGuq1vMIAEbtMiYp2eE/Guasl?=
+ =?Windows-1252?Q?mAawhVulbdnx0Ao7C4V9EgmO62S4j1v6jnIrjKHsUJGa3ZGuCV4fYE9t?=
+ =?Windows-1252?Q?ErEoUR0pEqNQne1CCVNno0+cK9G5N688fW2jMnF86jHYXUM0UbKx8sAv?=
+ =?Windows-1252?Q?f8sJsF5dDMql2FwqBgdr9ZPmTEdL3DUTng1qHk6Sd/9DSNkv+dRLtBKh?=
+ =?Windows-1252?Q?aXy2D06sb3wPL9xWm+Up5qSBnitRTdwF8yeYp9mY/Vdsm0xk2ecLkl8d?=
+ =?Windows-1252?Q?fljtLADz3m0j08te0a8vb4Zt7LzZva6/vSYrBxRNwHdSSKW7OR4tsDQF?=
+ =?Windows-1252?Q?M1g6tNcHyyBTQgWT1c/Oyi3H+MOpY2XbHo3Cpisn+5UN+BwNE04H4g2N?=
+X-OriginatorOrg: seco.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 23591ff5-2644-4265-d3cf-08d94d4571d5
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2021 19:18:10.8486
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0faWQfWQ0EUCluHX25ok/WlL0oFoNZ7Fb+RkECu8zrKnT7Vjobee/Hjq9969LlUOdtxbLkv/uvFnOABftsTENQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR03MB5129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 22 Jul 13:12 CDT 2021, Serge Semin wrote:
 
-> On Wed, Jul 21, 2021 at 11:08:08AM -0700, John Stultz wrote:
-> > On Wed, Jul 21, 2021 at 4:25 AM Serge Semin <fancer.lancer@gmail.com> wrote:
-> > > On Wed, Jul 21, 2021 at 01:10:19PM +0200, Krzysztof Kozlowski wrote:
-> > > > It's not good example. The configfs entries (file names) are
-> > > > user-visible however the USB gadget exposes specific value for specific
-> > > > one device. It encodes device specific DT node name and HW address and
-> > > > gives it to user-space. It is valid only on this one HW, all other
-> > > > devices will have different values.
-> > > >
-> > > > User-space has hard-coded this value (DT node name and hardware
-> > > > address). This value was never part of configfs ABI, maybe except of its
-> > > > format "[a-z]+\.[0-9a-f]+". Format is not broken. Just the value changes
-> > > > for a specific device/hardware.
-> > > >
-> > > > It's like you depend that lsusb will always report:
-> > > >   Bus 003 Device 008: ID 046d:c52b Logitech, Inc. Unifying Receiver
-> > > > and then probing order changed and this Logitech ends as Device 009.
-> > > > Then AOSP guys come, wait, we hard-coded that Logitech on our device
-> > > > will be always Device 008, not 009. Please revert it, we depend on
-> > > > specific value of Device number. It must be always 009...
-> > > >
-> > > > For the record - the change discussed here it's nothing like USB VID/PID. :)
-> > >
-> > > Right I was wrong referring to the configfs names in this context.
-> > > That must have mislead Greg.
-> > >
-> > > Getting back to the topic AFAICS from what John said in here
-> > > https://lore.kernel.org/lkml/CALAqxLWGujgR7p8Vb5S_RimRVYxwm5XF-c4NkKgMH-43wEBaWg@mail.gmail.com/
-> > >
-> > > AOSP developers somehow hardcoded a USB-controller UDC name in the
-> > > internal property called "sys.usb.controller" with a value
-> > > "ff100000.dwc3". That value is generated by the kernel based on the
-> > > corresponding DT-node name. The property is then used to
-> > > pre-initialize the system like it's done here:
-> > > https://android.googlesource.com/platform/system/core/+/master/rootdir/init.usb.configfs.rc
-> > >
-> > > Since we changed the DT-node name in the recent kernel, we thus changed the
-> > > UDC controller name so AOSP init procedure now fails to bring up the Linux
-> > > USB-gadget using on the older UDC name. UDC is supposed to be ff100000.usb now
-> > > (after this patch has been merged in).
-> > >
-> > > What problems I see here:
-> > > 1) the AOSP developers shouldn't have hard-coded the value but read
-> > > from the /sys/class/udc/* directory and then decided which controller
-> > > to use. As it's described for instance here:
-> > > https://www.kernel.org/doc/Documentation/usb/gadget_configfs.txt
-> > 
+
+On 7/21/21 9:26 AM, kernel test robot wrote:
+> Hi Sean,
 > 
-> > The problem with this is there may be multiple USB controllers on a
-> > system (not all exposed outside the case - and also the dummy
-> > controller is often present). How can we configure the system to know
-> > which controller is which?
+> I love your patch! Yet something to improve:
 > 
-> How did you distinguish them before this change? It has nothing really
-> related with the patch in topic.
+> [auto build test ERROR on tip/timers/core]
+> [also build test ERROR on pwm/for-next linus/master v5.14-rc2 next-20210720]
+> [cannot apply to xlnx/master]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 > 
-> > 
-> > The only name we have for distinguishing the controllers is the DTS
-> > node. So it seems inherent that changes to that name will break the
-> > config.
+> url:    https://github.com/0day-ci/linux/commits/Sean-Anderson/dt-bindings-pwm-Add-Xilinx-AXI-Timer/20210720-144903
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 2d0a9eb23ccfdf11308bec6db0bc007585d919d2
+> config: m68k-allmodconfig (attached as .config)
+> compiler: m68k-linux-gcc (GCC) 10.3.0
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # https://github.com/0day-ci/linux/commit/338d061c42411ef012c4dce517355fd1d61c1cab
+>          git remote add linux-review https://github.com/0day-ci/linux
+>          git fetch --no-tags linux-review Sean-Anderson/dt-bindings-pwm-Add-Xilinx-AXI-Timer/20210720-144903
+>          git checkout 338d061c42411ef012c4dce517355fd1d61c1cab
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross ARCH=m68k
 > 
-> No, it's not the only way you have. I say it was the easiest way for
-> you to find a corresponding device. The DT-node name never was a part
-> of ABI for at least up until we finally get the DT-node names
-> consistent with DT spec. Only then it would be possible to consider
-> them as such. One more time I'll quote what @Krzisztof has already
-> told you twice:
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-
-The requirement to keep a stable userspace ABI does not consider the
-fact that the kernel made up part of that ABI based on things it found
-in e.g. DT.
-
-The name of the UDC devices has been and is simply the
-dev_name(dwc3-device) and this is directly based on the DT node.
-
-So changing DT indirectly changed the user space ABI and anyone who is
-using USB Gadget Configfs is directly affected by this.
-
-Regards,
-Bjorn
-
-> On Jul 21, 2021, 1:45 PM +0200, Krzysztof Kozlowski wrote:
-> > I had impression that kernel defines interfaces which should be used and
-> > are stable (e.g. syscalls, sysfs and so on). This case is example of
-> > user-space relying on something not being marked as part of ABI. Instead
-> > they found something working for them and now it is being used in "we
-> > cannot break existing systems". Basically, AOSP unilaterally created a
-> > stable ABI and now kernel has to stick to it.
-> > 
-> > Really, all normal systems depend on aliases or names and here we have
-> > dependency on device address. I proposed way how AOSP should be fixed.
-> > Anything happened? Nope.
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
 > 
-> First time he sent a possible solution for the problem:
-> https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
+>>> ERROR: modpost: "xilinx_timer_tlr_cycles" [drivers/pwm/pwm-xilinx.ko] undefined!
+>>> ERROR: modpost: "xilinx_timer_common_init" [drivers/pwm/pwm-xilinx.ko] undefined!
+>>> ERROR: modpost: "xilinx_timer_get_period" [drivers/pwm/pwm-xilinx.ko] undefined!
+
+Looks like I forgot my EXPORT_SYMBOLs. Will be fixed in v6.
+
+--Sean
+
 > 
-> To sum up you could have used one of the more portable approaches
-> 1. add an udc alias to the controller and use it then to refer to the
-> corresponding USB controller
-
-Is there such a thing as "UDC alias"? Or are you suggesting that we
-should add such feature?
-
-I think it would be wonderful if we could identify the UDCs on our
-boards as "USB1" and "USB2", or "the one and only USB-C connector". But
-unless that will fall back to the existing naming it would break John's
-_existing_ userspace.
-
-> 2. search through DT-nodes looking for a specific compatible/reg
-> DT-properties.
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 > 
-
-We could define that this is the way, but again we didn't yesterday so
-your proposal is not backwards compatible.
-
-> Of course it was easier to revert the patch. But if we always chose
-> such approach, the kernel would have been filled with tons of
-> workarounds and legacy parts without possibility to move forward to
-> having more unified interfaces.
-> 
-
-Yes, and that's exactly where we are heading with the ongoing DT
-validation work. But "don't break your users" isn't excused because the
-ABI is derived from some third party.
-
-> > 
-> > That said, this issue reminded me of the /dev/hda -> /dev/sda device
-> > name or the eth0 -> enp3s0 switch which both also had the potential to
-> > break configurations or scripts.  I get that having a standard naming
-> > scheme is important (I'm very sympathetic to this point)! I can
-> > imagine UI trying to show possible controllers for a user to select
-> > needs a simple way to determine if a device is a usb controller - but
-> > again this just shows that the node names are an ABI.
-> > 
-> > So I'm not the one to judge if this change is useful enough to push
-> > through the pain, but it did seem to be done a bit casually.
-> > 
-> > > 2) even if they hard-coded the value, then they should have used an
-> > > older dts file for their platform, since DTS is more
-> > > platform-specific, but not the kernel one. Even if a dts-file is
-> > > supplied in the kernel it isn't supposed to have the node names
-> > > unchanged from release to release.
-> > 
-> > DTS changes are a constant source of regressions in my experience. We
-> > mostly just have to roll with it, but it feels never ending. :)  I'd
-> > personally rather folks in general be more thoughtful about what DTS
-> > changes they make and accept, understanding that they do have impact
-> > on userland.  And I'd imagine If updates to linux-firmware broke the
-> > most recent LTS kernel, that would be seen as a regression too, and
-> > folks wouldn't be told to just keep the old firmware.
-> 
-> > But all the
-> > same, I'd also be happy for suggestions to remove any such
-> > dependencies userland has on specific dts naming, where possible, to
-> > make the constant pain go away. :)
-> 
-> Well, @Krzisztof has already given you such suggestions regarding this
-> issue not once. But you tend to ignore them.
-> 
-
-Those are good suggestions, but they require changes in userspace.
-
-> Anyway this patch doesn't break LTS kernel and doesn't break the
-> linux-firmware either. It changes DT-node name, which happens to
-> change the device name, which isn't guaranteed to be stable as it's
-> not part of the kernel ABI. If you think otherwise please provide some
-> proves to that. I didn't find any in the official Linux ABI docs.
-> 
-
-I think it's a gray area, at least I do want it to be a gray area,
-because I don't want device names to be part of the ABI.
-
-
-The problem is that someone decided to use the device name in the USB
-gadget configfs interface and as such made it part of the ABI.
-
-Regards,
-Bjorn
