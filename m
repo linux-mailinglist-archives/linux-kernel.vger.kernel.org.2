@@ -2,335 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50663D2B30
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742093D2B36
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhGVQwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhGVQwy (ORCPT
+        id S230000AbhGVQxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:53:49 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:37160 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhGVQxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:52:54 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A51C061575;
-        Thu, 22 Jul 2021 10:33:29 -0700 (PDT)
-Received: from [IPv6:2a02:810a:880:f54:9b:291e:f55f:ae5f] (unknown [IPv6:2a02:810a:880:f54:9b:291e:f55f:ae5f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Thu, 22 Jul 2021 12:53:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626975261; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=cJDgVCs2rvIlKUPXYolN/oe1dY90L5GjxrP/lVY81IQ=;
+ b=ENu++hepYWHLuPlXjVglOG4QtQLRTbsEmtB3+LX8GR720XGnYJF3ZPcGNWK4/QKBN8463GVs
+ lyAVyP/WjxaElMbReCH04+h5s2tXnp9tXtPsKS8nadMuYGgZHn+6zqeRb7Ht5A9o4AxSHOU7
+ 4fLwRC+Y+AdpN7owLWHs1B+v1mk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60f9ac0b96a66e66b2f1b17d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Jul 2021 17:34:03
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CDE6DC43217; Thu, 22 Jul 2021 17:34:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1EDAD1F4457F;
-        Thu, 22 Jul 2021 18:33:27 +0100 (BST)
-Subject: Re: [PATCHv3 7/8] videobuf2: handle V4L2_MEMORY_FLAG_NON_COHERENT
- flag
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>
-References: <20210709092027.1050834-1-senozhatsky@chromium.org>
- <20210709092027.1050834-8-senozhatsky@chromium.org>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <0c89ef1e-8abb-8749-bbce-c7e5a2e2f304@collabora.com>
-Date:   Thu, 22 Jul 2021 19:33:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2129FC4338A;
+        Thu, 22 Jul 2021 17:34:01 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210709092027.1050834-8-senozhatsky@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 22 Jul 2021 23:04:01 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     bjorn.andersson@linaro.org, mka@chromium.org, robh+dt@kernel.org,
+        saiprakash.ranjan@codeaurora.org, will@kernel.org, ohad@wizery.com,
+        agross@kernel.org, mathieu.poirier@linaro.org,
+        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
+        dianders@chromium.org
+Subject: Re: [PATCH v2 10/10] arm64: dts: qcom: sc7280: Update Q6V5 MSS node
+In-Reply-To: <CAE-0n51UbfpM94aOkdnSH9ZAvz-+V1X-hsOSMbkHJQDkYyD22w@mail.gmail.com>
+References: <1626775980-28637-1-git-send-email-sibis@codeaurora.org>
+ <1626775980-28637-11-git-send-email-sibis@codeaurora.org>
+ <CAE-0n53bRGouiycpcukPYB_+Gyz_Dr=rCAnb2MH64=+Q899aOA@mail.gmail.com>
+ <a021012616af266905099e0563d0fff5@codeaurora.org>
+ <CAE-0n51UbfpM94aOkdnSH9ZAvz-+V1X-hsOSMbkHJQDkYyD22w@mail.gmail.com>
+Message-ID: <2be424e6cc16e004ba64c5574cf607b9@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 09.07.21 11:20, Sergey Senozhatsky wrote:
-> This patch lets user-space to request a non-coherent memory
-> allocation during CREATE_BUFS and REQBUFS ioctl calls.
+On 2021-07-22 04:23, Stephen Boyd wrote:
+> Quoting Sibi Sankar (2021-07-21 10:16:14)
+>> On 2021-07-21 11:17, Stephen Boyd wrote:
+>> > Quoting Sibi Sankar (2021-07-20 03:13:00)
+>> >
+>> >> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> >> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> >> index 56ea172f641f..6d3687744440 100644
+>> >> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> >> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> >> @@ -586,7 +586,8 @@
+>> >>
+>> >>                 remoteproc_mpss: remoteproc@4080000 {
+>> >>                         compatible = "qcom,sc7280-mpss-pas";
+>> >> -                       reg = <0 0x04080000 0 0x10000>;
+>> >> +                       reg = <0 0x04080000 0 0x10000>, <0 0x04180000
+>> >> 0 0x48>;
+>> >> +                       reg-names = "qdsp6", "rmb";
+>> >>
+>> >>                         interrupts-extended = <&intc GIC_SPI 264
+>> >> IRQ_TYPE_EDGE_RISING>,
+>> >>                                               <&modem_smp2p_in 0
+>> >> IRQ_TYPE_EDGE_RISING>,
+>> >> @@ -597,8 +598,11 @@
+>> >>                         interrupt-names = "wdog", "fatal", "ready",
+>> >> "handover",
+>> >>                                           "stop-ack", "shutdown-ack";
+>> >>
+>> >> -                       clocks = <&rpmhcc RPMH_CXO_CLK>;
+>> >> -                       clock-names = "xo";
+>> >> +                       clocks = <&gcc GCC_MSS_CFG_AHB_CLK>,
+>> >> +                                <&gcc GCC_MSS_OFFLINE_AXI_CLK>,
+>> >> +                                <&gcc GCC_MSS_SNOC_AXI_CLK>,
+>> >> +                                <&rpmhcc RPMH_CXO_CLK>;
+>> >> +                       clock-names = "iface", "offline", "snoc_axi",
+>> >> "xo";
+>> >>
+>> >>                         power-domains = <&rpmhpd SC7280_CX>,
+>> >>                                         <&rpmhpd SC7280_MSS>;
+>> >> @@ -611,6 +615,15 @@
+>> >>                         qcom,smem-states = <&modem_smp2p_out 0>;
+>> >>                         qcom,smem-state-names = "stop";
+>> >>
+>> >> +                       resets = <&aoss_reset AOSS_CC_MSS_RESTART>,
+>> >> +                                <&pdc_reset PDC_MODEM_SYNC_RESET>;
+>> >> +                       reset-names = "mss_restart", "pdc_reset";
+>> >> +
+>> >> +                       qcom,halt-regs = <&tcsr_mutex 0x23000 0x25000
+>> >> 0x28000 0x33000>;
+>> >> +                       qcom,ext-regs = <&tcsr_regs 0x10000 0x10004
+>> >> +                                        &tcsr_mutex 0x26004 0x26008>;
+>> >> +                       qcom,qaccept-regs = <&tcsr_mutex 0x23030
+>> >> 0x23040 0x23020>;
+>> >> +
+>> >>                         status = "disabled";
+>> >>
+>> >>                         glink-edge {
+>> >
+>> > Any reason to not combine this stuff with the previous patch?
+>> 
+>> I split it into two separate
+>> patches just to show that sc7280
+>> supports two ways of bringing
+>> modem out of reset and method
+>> used is determined by the platform.
+>> 
 > 
-> = CREATE_BUFS
-> 
->    struct v4l2_create_buffers has seven 4-byte reserved areas,
->    so reserved[0] is renamed to ->flags. The struct, thus, now
->    has six reserved 4-byte regions.
-> 
-> = CREATE_BUFS32
-> 
->    struct v4l2_create_buffers32 has seven 4-byte reserved areas,
->    so reserved[0] is renamed to ->flags. The struct, thus, now
->    has six reserved 4-byte regions.
-> 
-> = REQBUFS
-> 
->   We use one byte of a 4 byte ->reserved[1] member of struct
->   v4l2_requestbuffers. The struct, thus, now has reserved 3 bytes.
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->   .../media/v4l/vidioc-create-bufs.rst          |  7 ++++-
->   .../media/v4l/vidioc-reqbufs.rst              | 11 ++++---
->   .../media/common/videobuf2/videobuf2-core.c   |  4 +--
->   .../media/common/videobuf2/videobuf2-v4l2.c   | 31 +++++++++++++++++--
->   drivers/media/v4l2-core/v4l2-compat-ioctl32.c |  9 +++++-
->   drivers/media/v4l2-core/v4l2-ioctl.c          |  4 +--
->   include/uapi/linux/videodev2.h                |  9 ++++--
->   7 files changed, 60 insertions(+), 15 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
-> index f98f18c9e91c..a048a9f6b7b6 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
-> @@ -113,7 +113,12 @@ than the number requested.
->   	``V4L2_MEMORY_MMAP`` and ``format.type`` to the buffer type.
->   
->       * - __u32
-> -      - ``reserved``\ [7]
-> +      - ``flags``
-> +      - Specifies additional buffer management attributes.
-> +	See :ref:`memory-flags`.
-> +
-> +    * - __u32
-> +      - ``reserved``\ [6]
->         - A place holder for future extensions. Drivers and applications
->   	must set the array to zero.
->   
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> index e59306aba2b0..099fa6695167 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> @@ -104,10 +104,13 @@ aborting or finishing any DMA in progress, an implicit
->   	``V4L2_MEMORY_MMAP`` and ``type`` set to the buffer type. This will
->   	free any previously allocated buffers, so this is typically something
->   	that will be done at the start of the application.
-> -    * - __u32
-> -      - ``reserved``\ [1]
-> -      - A place holder for future extensions. Drivers and applications
-> -	must set the array to zero.
-> +    * - __u8
-> +      - ``flags``
-> +      - Specifies additional buffer management attributes.
-> +	See :ref:`memory-flags`.
-> +    * - __u8
-> +      - ``reserved``\ [3]
-> +      - Reserved for future extensions.
->   
->   .. _v4l2-buf-capabilities:
->   .. _V4L2-BUF-CAP-SUPPORTS-MMAP:
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index af4db310cf5e..38505783247e 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -762,7 +762,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->   {
->   	unsigned int num_buffers, allocated_buffers, num_planes = 0;
->   	unsigned plane_sizes[VB2_MAX_PLANES] = { };
-> -	bool coherent_mem = true;
-> +	bool coherent_mem = !(flags & V4L2_MEMORY_FLAG_NON_COHERENT);
->   	unsigned int i;
->   	int ret;
->   
-> @@ -906,7 +906,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->   {
->   	unsigned int num_planes = 0, num_buffers, allocated_buffers;
->   	unsigned plane_sizes[VB2_MAX_PLANES] = { };
-> -	bool coherent_mem = true;
-> +	bool coherent_mem = !(flags & V4L2_MEMORY_FLAG_NON_COHERENT);
->   	int ret;
->   
->   	if (q->num_buffers == VB2_MAX_FRAME) {
-> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> index b4f70ddb09b0..6edf4508c636 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> @@ -692,12 +692,32 @@ static void fill_buf_caps(struct vb2_queue *q, u32 *caps)
->   #endif
->   }
->   
-> +static void validate_memory_flags(struct vb2_queue *q,
-> +				  int memory,
-> +				  u32 *flags)
-> +{
-> +	if (!q->allow_cache_hints || memory != V4L2_MEMORY_MMAP) {
-> +		/*
-> +		 * This needs to clear V4L2_MEMORY_FLAG_NON_COHERENT only,
-> +		 * but in order to avoid bugs we zero out all bits.
-> +		 */
-> +		*flags = 0;
-> +	} else {
-> +		/* Clear all unknown flags. */
-> +		*flags &= V4L2_MEMORY_FLAG_NON_COHERENT;
-> +	}
-> +}
-> +
->   int vb2_reqbufs(struct vb2_queue *q, struct v4l2_requestbuffers *req)
->   {
->   	int ret = vb2_verify_memory_type(q, req->memory, req->type);
-> +	u32 flags = req->flags;
->   
->   	fill_buf_caps(q, &req->capabilities);
-> -	return ret ? ret : vb2_core_reqbufs(q, req->memory, 0, &req->count);
-> +	validate_memory_flags(q, req->memory, &flags);
-> +	req->flags = flags;
+> Ok. But if there are two methods do they work with the same node in
+> sc7280.dtsi? Because I was expecting to see the node introduced in the
+> SoC dtsi file in the final form instead of the half form and then be
+> amended in this patch.
 
-you can do instead
+Board files enables the mss node
+and overloads the compatible depending
+on the platform it is expected to
+run on. So pretty much the same
+node with just changing the compatible
+and few additional properties support
+both methods. Patch 9 is complete in
+itself i.e. it is compliant with
+the pas yaml, while patch 10 adds
+the bits required to make alternate
+method work.
 
-validate_memory_flags(q, req->memory, &req->flags);
-
-> +	return ret ? ret : vb2_core_reqbufs(q, req->memory,
-> +					    req->flags, &req->count);
->   }
->   EXPORT_SYMBOL_GPL(vb2_reqbufs);
->   
-> @@ -729,6 +749,7 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
->   	unsigned i;
->   
->   	fill_buf_caps(q, &create->capabilities);
-> +	validate_memory_flags(q, create->memory, &create->flags);
->   	create->index = q->num_buffers;
->   	if (create->count == 0)
->   		return ret != -EBUSY ? ret : 0;
-> @@ -772,7 +793,7 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
->   		if (requested_sizes[i] == 0)
->   			return -EINVAL;
->   	return ret ? ret : vb2_core_create_bufs(q, create->memory,
-> -						0,
-> +						create->flags,
->   						&create->count,
->   						requested_planes,
->   						requested_sizes);
-> @@ -969,13 +990,16 @@ int vb2_ioctl_reqbufs(struct file *file, void *priv,
->   {
->   	struct video_device *vdev = video_devdata(file);
->   	int res = vb2_verify_memory_type(vdev->queue, p->memory, p->type);
-> +	u32 flags = p->flags;
->   
->   	fill_buf_caps(vdev->queue, &p->capabilities);
-> +	validate_memory_flags(vdev->queue, p->memory, &flags);
-> +	p->flags = flags;
-
-ditto
-
-
-thanks,
-Dafna
-
->   	if (res)
->   		return res;
->   	if (vb2_queue_is_busy(vdev, file))
->   		return -EBUSY;
-> -	res = vb2_core_reqbufs(vdev->queue, p->memory, 0, &p->count);
-> +	res = vb2_core_reqbufs(vdev->queue, p->memory, p->flags, &p->count);
->   	/* If count == 0, then the owner has released all buffers and he
->   	   is no longer owner of the queue. Otherwise we have a new owner. */
->   	if (res == 0)
-> @@ -993,6 +1017,7 @@ int vb2_ioctl_create_bufs(struct file *file, void *priv,
->   
->   	p->index = vdev->queue->num_buffers;
->   	fill_buf_caps(vdev->queue, &p->capabilities);
-> +	validate_memory_flags(vdev->queue, p->memory, &p->flags);
->   	/*
->   	 * If count == 0, then just check if memory and type are valid.
->   	 * Any -EBUSY result from vb2_verify_memory_type can be mapped to 0.
-> diff --git a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
-> index 47aff3b19742..8176769a89fa 100644
-> --- a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
-> +++ b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
-> @@ -126,6 +126,9 @@ struct v4l2_format32 {
->    * @memory:	buffer memory type
->    * @format:	frame format, for which buffers are requested
->    * @capabilities: capabilities of this buffer type.
-> + * @flags:	additional buffer management attributes (ignored unless the
-> + *		queue has V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS capability and
-> + *		configured for MMAP streaming I/O).
->    * @reserved:	future extensions
->    */
->   struct v4l2_create_buffers32 {
-> @@ -134,7 +137,8 @@ struct v4l2_create_buffers32 {
->   	__u32			memory;	/* enum v4l2_memory */
->   	struct v4l2_format32	format;
->   	__u32			capabilities;
-> -	__u32			reserved[7];
-> +	__u32			flags;
-> +	__u32			reserved[6];
->   };
->   
->   static int get_v4l2_format32(struct v4l2_format *p64,
-> @@ -182,6 +186,8 @@ static int get_v4l2_create32(struct v4l2_create_buffers *p64,
->   	if (copy_from_user(p64, p32,
->   			   offsetof(struct v4l2_create_buffers32, format)))
->   		return -EFAULT;
-> +	if (copy_from_user(&p64->flags, &p32->flags, sizeof(p32->flags)))
-> +		return -EFAULT;
->   	return get_v4l2_format32(&p64->format, &p32->format);
->   }
->   
-> @@ -227,6 +233,7 @@ static int put_v4l2_create32(struct v4l2_create_buffers *p64,
->   	if (copy_to_user(p32, p64,
->   			 offsetof(struct v4l2_create_buffers32, format)) ||
->   	    put_user(p64->capabilities, &p32->capabilities) ||
-> +	    put_user(p64->flags, &p32->flags) ||
->   	    copy_to_user(p32->reserved, p64->reserved, sizeof(p64->reserved)))
->   		return -EFAULT;
->   	return put_v4l2_format32(&p64->format, &p32->format);
-> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-> index 05d5db3d85e5..6a941da33998 100644
-> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> @@ -2004,7 +2004,7 @@ static int v4l_reqbufs(const struct v4l2_ioctl_ops *ops,
->   	if (ret)
->   		return ret;
->   
-> -	CLEAR_AFTER_FIELD(p, capabilities);
-> +	CLEAR_AFTER_FIELD(p, flags);
->   
->   	return ops->vidioc_reqbufs(file, fh, p);
->   }
-> @@ -2045,7 +2045,7 @@ static int v4l_create_bufs(const struct v4l2_ioctl_ops *ops,
->   	if (ret)
->   		return ret;
->   
-> -	CLEAR_AFTER_FIELD(create, capabilities);
-> +	CLEAR_AFTER_FIELD(create, flags);
->   
->   	v4l_sanitize_format(&create->format);
->   
-> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> index 9d11e1d9c934..7973aa0465d2 100644
-> --- a/include/uapi/linux/videodev2.h
-> +++ b/include/uapi/linux/videodev2.h
-> @@ -953,7 +953,8 @@ struct v4l2_requestbuffers {
->   	__u32			type;		/* enum v4l2_buf_type */
->   	__u32			memory;		/* enum v4l2_memory */
->   	__u32			capabilities;
-> -	__u32			reserved[1];
-> +	__u8			flags;
-> +	__u8			reserved[3];
->   };
->   
->   #define V4L2_MEMORY_FLAG_NON_COHERENT			(1 << 0)
-> @@ -2501,6 +2502,9 @@ struct v4l2_dbg_chip_info {
->    * @memory:	enum v4l2_memory; buffer memory type
->    * @format:	frame format, for which buffers are requested
->    * @capabilities: capabilities of this buffer type.
-> + * @flags:	additional buffer management attributes (ignored unless the
-> + *		queue has V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS capability
-> + *		and configured for MMAP streaming I/O).
->    * @reserved:	future extensions
->    */
->   struct v4l2_create_buffers {
-> @@ -2509,7 +2513,8 @@ struct v4l2_create_buffers {
->   	__u32			memory;
->   	struct v4l2_format	format;
->   	__u32			capabilities;
-> -	__u32			reserved[7];
-> +	__u32			flags;
-> +	__u32			reserved[6];
->   };
->   
->   /*
-> 
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
