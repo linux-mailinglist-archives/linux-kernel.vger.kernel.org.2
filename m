@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60173D2AD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5CA3D2AE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbhGVQ05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:26:57 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51290 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbhGVQ04 (ORCPT
+        id S233136AbhGVQ17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233071AbhGVQ15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:26:56 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id C66F0203E2;
-        Thu, 22 Jul 2021 17:07:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626973649; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=x3k96SXurbZA48P/lkQgfDs83i+1PSmUbdDIzs21Buk=;
-        b=SbrGRviqO/5Rbp6K6cW4TA4BOuFqZUqU8rWIiMYYycR2iXits2kTms76YBo9n7WU47uvr1
-        UDKv8X0LWrhcgnal7Cpi+aLnmtmuivyFnOrai2egjZ6a5anQYv1qQZiFtuEsuyDhx8Gd6W
-        reD6EpOUpU3IocwbHjN8iG92uw47lNU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626973649;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=x3k96SXurbZA48P/lkQgfDs83i+1PSmUbdDIzs21Buk=;
-        b=amAkSiUfcYAycWF5BcYuEPpJ/kUI4vnWa4L1wh1fSNqJJQJUKdD7cVsootjQyRsasadl2L
-        SgFbzdwy2TvoxKCw==
-Received: from hawking.suse.de (hawking.suse.de [10.160.4.0])
-        by relay2.suse.de (Postfix) with ESMTP id BF7E5ADCDC;
-        Thu, 22 Jul 2021 17:07:29 +0000 (UTC)
-Received: by hawking.suse.de (Postfix, from userid 17005)
-        id B24D1445C89; Thu, 22 Jul 2021 19:07:29 +0200 (CEST)
-From:   Andreas Schwab <schwab@suse.de>
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     broonie@kernel.org, linux-spi@vger.kernel.org,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: update modalias_show after of_device_uevent_modalias
- support
-X-Yow:  ..  Do you like ``TENDER VITTLES?''?
-Date:   Thu, 22 Jul 2021 19:07:29 +0200
-Message-ID: <mvmsg0646r2.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Thu, 22 Jul 2021 12:27:57 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E48C061575;
+        Thu, 22 Jul 2021 10:08:31 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so16539wmb.5;
+        Thu, 22 Jul 2021 10:08:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=BM24k6H9LcY/dUUeA4LE+RhfS6GQmXK+4XERxfAvlv0=;
+        b=EGJzKVW/kRPjNGPb3PpWvJp0lL9sDmOkyFaIWjQOFlnDL3jl44Mx6wQfAyNRu1guxz
+         wV1u73JJHMVl7EYbQOUcVLRVUPztU9PnIN3GXofRe7W6hfiBQMxPlW6d16YH80OBJ3rg
+         pmmt5MsFbbbujjtLZPN6UDNOfOnWbg8+gttPgueZw7XILapxG4uCF/EV71qBnLXvQZBO
+         Yqd1XHBsi1IjWqQbrGSDFuWtunt6ZUfRafXcAd55XGVZZcxId9f/bSjwwBd54cTec8rf
+         cj0wCX2BjGPE6t26cKZmHhsg/ZQhY1CAEgd2h7J+/p2NTOO+YBzt9Ng68SwsfrwaqvcT
+         gN2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=BM24k6H9LcY/dUUeA4LE+RhfS6GQmXK+4XERxfAvlv0=;
+        b=Fg48gkxz5vCxM8XuBmeeDdaAiZ/zV5o/jEJzegrYbFGtTog5YV+FYtpvRQOG82Yz3v
+         t8tSup4hwrkDbJFWHTvAyZZegc3oJ6rKKlHiXCCgbxyBhTopNyj8G96/0PMGap7DpQ6n
+         9oAaGD4/tc/paYFQkXUj6bGt+mhQkGZPCfbnSLezHLQR/fZ3+lrokxRW0Ig1Ddmjb29u
+         cC8Tr86rQPzfy6dyqQZqFySBFqBlujZZ0kS5KmcdFL5FxMh4k45Tui7D6I+vr9LDBbLP
+         CdIzv+VCSUzGvGmUdowmqCoDv95i0RZCeFHivY/ab813xBj3E9fji9LibK7zuq7fW3YE
+         qmjA==
+X-Gm-Message-State: AOAM530+a7W7NiPiqOLJ1G6kdRzuPtVeL0bnHADshu+99ji83kFYSgeq
+        hahyk7EtoOX5vZ/NlKIpCUw=
+X-Google-Smtp-Source: ABdhPJzDPSdBP2ulFJJaYkQ7EQ6LuTTGOgv1xIdTUYvQSiWPfuJf+HKhIuywvRz36Xfjg8BIhdAn7g==
+X-Received: by 2002:a7b:cd15:: with SMTP id f21mr601085wmj.148.1626973710339;
+        Thu, 22 Jul 2021 10:08:30 -0700 (PDT)
+Received: from pc ([196.235.233.206])
+        by smtp.gmail.com with ESMTPSA id w18sm8513884wrs.44.2021.07.22.10.08.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 10:08:29 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 18:08:27 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        gregkh@linuxfoundation.org
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND] crypto: atmel-aes: use swap()
+Message-ID: <20210722170827.GA4362@pc>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 3ce6c9e2617e ("spi: add of_device_uevent_modalias support") is
-incomplete, as it didn't update the modalias_show function to generate the
-of: modalias string if available.
+Use swap() instead of implementing it in order to make code more clean.
 
-Fixes: 3ce6c9e2617e ("spi: add of_device_uevent_modalias support")
-Signed-off-by: Andreas Schwab <schwab@suse.de>
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
 ---
- drivers/spi/spi.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/crypto/atmel-aes.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index c99181165321..e4dc593b1f32 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -58,6 +58,10 @@ modalias_show(struct device *dev, struct device_attribute *a, char *buf)
- 	const struct spi_device	*spi = to_spi_device(dev);
- 	int len;
+diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
+index b1d286004295..60041022c4f5 100644
+--- a/drivers/crypto/atmel-aes.c
++++ b/drivers/crypto/atmel-aes.c
+@@ -1819,12 +1819,8 @@ static int atmel_aes_xts_process_data(struct atmel_aes_dev *dd)
+ 	 * the order of the ciphered tweak bytes need to be reversed before
+ 	 * writing them into the ODATARx registers.
+ 	 */
+-	for (i = 0; i < AES_BLOCK_SIZE/2; ++i) {
+-		u8 tmp = tweak_bytes[AES_BLOCK_SIZE - 1 - i];
+-
+-		tweak_bytes[AES_BLOCK_SIZE - 1 - i] = tweak_bytes[i];
+-		tweak_bytes[i] = tmp;
+-	}
++	for (i = 0; i < AES_BLOCK_SIZE/2; ++i)
++		swap(tweak_bytes[i], tweak_bytes[AES_BLOCK_SIZE - 1 - i]);
  
-+	len = of_device_modalias(dev, buf, PAGE_SIZE);
-+	if (len != -ENODEV)
-+		return len;
-+
- 	len = acpi_device_modalias(dev, buf, PAGE_SIZE - 1);
- 	if (len != -ENODEV)
- 		return len;
+ 	/* Process the data. */
+ 	atmel_aes_write_ctrl(dd, use_dma, NULL);
 -- 
-2.32.0
+2.25.1
 
-
--- 
-Andreas Schwab, SUSE Labs, schwab@suse.de
-GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
-"And now for something completely different."
