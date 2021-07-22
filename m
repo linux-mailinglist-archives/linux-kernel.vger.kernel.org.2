@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54413D2193
+	by mail.lfdr.de (Postfix) with ESMTP id 944753D2192
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbhGVJUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 05:20:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49360 "EHLO mail.kernel.org"
+        id S231650AbhGVJUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 05:20:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231495AbhGVJTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231477AbhGVJTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 22 Jul 2021 05:19:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A24361283;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97AA061264;
         Thu, 22 Jul 2021 10:00:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626948020;
-        bh=pVBkAW3UaW40R77GioNci6Ib4btLYmcuRV9OgHl2IdE=;
+        bh=yFXn16NkBzlsfO+DUe4+E5BqYVGA9Si4dzWZdnC0EvU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GxaIv8NB2z50e2VaijTmY1WHrN16GSSdNH6+xPQJwnZyH9cB3l2zri45Nten+SHUS
-         1siegNac4XaIVvW23DWoPpQgFUni9/kdS1s3V/lFPoo4+QQyfs4puN0V3OLrJPGDgX
-         VYifCZ0XHQqd6NfIvdyCF9+iCPah1tctyhJfz13f/oMgdR6ni8xOylxFT518j48CV+
-         O9A9ymePqyrxTqEg/zQliazKjH93pz8P+T9E12gbkz5NTnSlGaBWXqabYD1xH+90ov
-         ev/piMI+pwqOgeyvpxOaSXK98E8+jan/+5TS4GkieT6TWP0Ji89k6wwyP63O+aWpUF
-         oan7T+quH4UCQ==
+        b=Fy2ygCq57s9l5A7zqtT6lDZeXHRTr9B0puG425TmVKIVQUbq8gxUkzQYIWb6L229o
+         yDecQq6o3VD1wHEh8L7Xvl6CnekSrHpo1NFHpcOhHEDjx8mF1/VuR7jkiLDlxTJhwb
+         tgzRqIvMtvqPY0N+u2Kb0XlMCBkJjSTLsu6ZFy5si/6/HISiISyp05YsprodSQIUp1
+         6Cbwb21QZdzOZ7WbLGMpugiigQooVHetdkzZUYcm0euGUWTM9te0d05W1qfDWaDj2z
+         Qv9oBvh1ZJ43xmpzFrC7e60pOaSoyzJlaqtpbKdN4G/8Y8jzDba5L3FSXwUejjTctw
+         9wsXUv7eqt83g==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1m6VUz-008mHl-Rk; Thu, 22 Jul 2021 12:00:13 +0200
+        id 1m6VUz-008mHo-Tr; Thu, 22 Jul 2021 12:00:13 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 07/15] MAINTAINERS: update faraday,ftrtc010.yaml reference
-Date:   Thu, 22 Jul 2021 12:00:04 +0200
-Message-Id: <a8e0e3227480fa8a5a045ec1ee06a08183a0a8b6.1626947923.git.mchehab+huawei@kernel.org>
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 08/15] MAINTAINERS: update fsl,fec.yaml reference
+Date:   Thu, 22 Jul 2021 12:00:05 +0200
+Message-Id: <3df6b6353f49dfe6fe76a0d62b504ce4744e80f0.1626947923.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1626947923.git.mchehab+huawei@kernel.org>
 References: <cover.1626947923.git.mchehab+huawei@kernel.org>
@@ -47,31 +46,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 8df65d4adca6 ("dt-bindings: convert rtc/faraday,ftrtc01 to yaml")
-renamed: Documentation/devicetree/bindings/rtc/faraday,ftrtc010.txt
-to: Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml.
+Changeset 96e4781b3d93 ("dt-bindings: net: fec: convert fsl,*fec bindings to yaml")
+renamed: Documentation/devicetree/bindings/net/fsl-fec.txt
+to: Documentation/devicetree/bindings/net/fsl,fec.yaml.
 
 Update its cross-reference accordingly.
 
-Fixes: 8df65d4adca6 ("dt-bindings: convert rtc/faraday,ftrtc01 to yaml")
+Fixes: 96e4781b3d93 ("dt-bindings: net: fec: convert fsl,*fec bindings to yaml")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
  MAINTAINERS | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 6b1cab4f01f8..b9339d4c8a17 100644
+index b9339d4c8a17..92be68e3efb5 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -1850,7 +1850,7 @@ T:	git git://github.com/ulli-kroll/linux.git
- F:	Documentation/devicetree/bindings/arm/gemini.txt
- F:	Documentation/devicetree/bindings/net/cortina,gemini-ethernet.txt
- F:	Documentation/devicetree/bindings/pinctrl/cortina,gemini-pinctrl.txt
--F:	Documentation/devicetree/bindings/rtc/faraday,ftrtc010.txt
-+F:	Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
- F:	arch/arm/boot/dts/gemini*
- F:	arch/arm/mach-gemini/
- F:	drivers/crypto/gemini/
+@@ -7365,7 +7365,7 @@ FREESCALE IMX / MXC FEC DRIVER
+ M:	Joakim Zhang <qiangqing.zhang@nxp.com>
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/net/fsl-fec.txt
++F:	Documentation/devicetree/bindings/net/fsl,fec.yaml
+ F:	drivers/net/ethernet/freescale/fec.h
+ F:	drivers/net/ethernet/freescale/fec_main.c
+ F:	drivers/net/ethernet/freescale/fec_ptp.c
 -- 
 2.31.1
 
