@@ -2,110 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF31A3D214F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6493D2156
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhGVJPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 05:15:06 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:47980 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231271AbhGVJPE (ORCPT
+        id S231454AbhGVJQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 05:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231271AbhGVJQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 05:15:04 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16M7GEwY021297;
-        Thu, 22 Jul 2021 04:55:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=MFSYCskN+1QDzOxOKrFIg7/n0TUbqpFAwQmpyPlf204=;
- b=ENZHGPM/4OmP7uz+p5ph0NRhjU1PAdM2Tw0tMKZJ5gvZv0hH1IAJyLiIXdBwh0U5chi2
- JdWLXfnGJI6tVXQcmICQlR1YQd/24mn5K/H7YTan77OYi+Z26VCMlTaNPPtBFb5Fdgg1
- chpVGryIuFD4ERMr413KENCcL/osp7aNhizrMHWr8T8rdQ0JkU/plAXHsZH7+KOE45e6
- YLCeRW7LHf6N3Pp6ovAZ2pqkCQggHkhGuWNiwBF5Mlm++mzQaOqJgQO79w+wLtTScNoJ
- /9Ky9VJoWJ9s4lB23KHfZV/9nczJD4epPL2AhhSy2Bl7MSpB1bxfISVZdTYopsuL1jSi Bw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 39xgrt9cby-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 22 Jul 2021 04:55:26 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 22 Jul
- 2021 10:55:24 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Thu, 22 Jul 2021 10:55:24 +0100
-Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.17])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 100B92BA;
-        Thu, 22 Jul 2021 09:55:24 +0000 (UTC)
-Subject: Re: [PATCH] ASoC: dapm: Revert "use component prefix when checking
- widget names"
-To:     Mark Brown <broonie@kernel.org>
-CC:     <pierre-louis.bossart@linux.intel.com>,
-        <rander.wang@linux.intel.com>, <shumingf@realtek.com>,
-        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210703125034.24655-1-rf@opensource.cirrus.com>
- <20210705165041.GC4574@sirena.org.uk>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <a882a9e0-db05-2f89-abb9-8b308ccb56c8@opensource.cirrus.com>
-Date:   Thu, 22 Jul 2021 10:55:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 22 Jul 2021 05:16:14 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DC5C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 02:56:49 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id e14so3848156plh.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 02:56:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=95+EWQpHPYU4UdkXqyGmVpXQnpCt50H8R7U1NdxVx1Y=;
+        b=i3U8N+tEhW+LW38nVEAcGy2SDigyEJu5MrcAHdaCZnZvI3yoKV3rgKaPZvna1Qaee/
+         wCFeLlbX3scqTlPnefRqOpyrBwWV+fjfK11fJYk1TDbvG6TjQDYEaJ/BcEyPL1QOPdWU
+         hugqnJ3SWjVw6XQxsCzhB8WiAWjX7iPr279lZ1QAPF3CeyfNovM72NaMrayS6ZIkxx5Z
+         UCfXcGquPRFyWbcJMr8CM+d2MDLywk6xC8Ib7XpyGyGSGPqRKckjNOQ7t8x3Ay12v3sy
+         URMVl1JsyV/idSQIO9eV/THkJAYYljbfRVW9H1vcW6UMt9XPutSjOsR3ZU36asE8QJnh
+         UiNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=95+EWQpHPYU4UdkXqyGmVpXQnpCt50H8R7U1NdxVx1Y=;
+        b=MQ1iJv32XLEwgukTkokJ31bIPze5D5/znnqhbCZ3HiYQLoZv4q9uKfGqdLjKsyM/uY
+         i8E/d7bW8ufxhe2tJtPeKiLoe5tu00+mKvdsPTSqnS9z35zOr5IDuHa7RTcFKTj5fylN
+         rfnEZuhFfYER9+rxc+/p3+wkZbG+0n0je/wXqC2DIlm8Phu/XWbzmyxz2k6ulmQicD0J
+         XGBUM3oVdbNEfheIPh+Hj4hURIoxBQet+XAIodhDQ2SpN8A4beyUbytTlmTJ+zSncIyj
+         1N0mKGw87rPWT0D60z1XztpX1gS7BD08QTNz3xt3jJ+5LTaNRdCYNw+HvpoU/BEB1b/u
+         HNeg==
+X-Gm-Message-State: AOAM532+d1wSrlOhlmmWS/8mqfsz/jiFgUomf9vC+kPRATyezgqM5lNL
+        JmR2tw1AZf/HP7JpSvo6jEiVYw==
+X-Google-Smtp-Source: ABdhPJzHw29QGU7w1n29t6HldkPP4fdUC6UQrBEYR9Zbf4pHntjA3REhqKrWZyLwpSmu9u5mGl6POg==
+X-Received: by 2002:a63:2fc2:: with SMTP id v185mr20230069pgv.71.1626947809408;
+        Thu, 22 Jul 2021 02:56:49 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id r15sm25273137pje.12.2021.07.22.02.56.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 02:56:47 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH V2 0/5] virtio: Add virtio-device bindings
+Date:   Thu, 22 Jul 2021 15:26:38 +0530
+Message-Id: <cover.1626947324.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-In-Reply-To: <20210705165041.GC4574@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: XCW_dW3XhHisG8xyfLH0o6NIRjmT_Q9G
-X-Proofpoint-ORIG-GUID: XCW_dW3XhHisG8xyfLH0o6NIRjmT_Q9G
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
- adultscore=0 spamscore=0 mlxlogscore=957 suspectscore=0 priorityscore=1501
- impostorscore=0 phishscore=0 bulkscore=0 clxscore=1011 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107220066
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/07/2021 17:50, Mark Brown wrote:
-> On Sat, Jul 03, 2021 at 01:50:34PM +0100, Richard Fitzgerald wrote:
-> 
->> That commit breaks all users of the snd_soc_component_*_pin() functions
->> because it results in the prefix being added twice. It also breaks code
->> that correctly uses the snd_soc_dapm_*_pin() functions.
-> 
->> Use the snd_soc_component_*_pin() functions if you want the component
->> prefix to be prepended automatically.
-> 
->> Use the raw snd_soc_dapm_*_pin() functions if the caller has the full
->> name that should be matched exactly.
-> 
-> I'm not sure the analysis of which function to use when is correct or
-> what we want here (though it will work ATM), though looking again more
-> closely at the patch it doesn't look entirely right either.  The way
-> this used to be done, and the way that older code will most likely
-> assume things work, was that the DAPM functions would first try to match
-> on the local DAPM context before falling back to doing a global match.
-> This is what the fallback loop is intended to do, and the dapm functions
-> are passing the "search other contexts" flag into dapm_find_widget().
-> 
-> I'd not expect the distinction you seem to expect between component and
-> DAPM and we probably have a bunch of older drivers that aren't working
-> correctly like the Realtek driver mentioned in the original fix.  I
-> think what needs to happen is that dapm_find_widget() needs to be
-> checking both the prefixed and non-prefixed names, and that the
-> component stuff shouldn't need to bother and just be a convenience
-> wrapper for users that happene to have a component to hand.
-> Alternatively we need to do an audit of all the non-machine drivers to
-> switch them to use the component functions exclusively (and possibly
-> some of the machine drivers as well), most of the CODEC users look to be
-> a small number of Wolfson/Cirrus ones.
-> 
+Hi,
 
-I don't mind if someone wants to change the core dapm functions if that
-is generally useful, providing that it also updates all callers of those
-functions to still work.
+Currently the DT only provides support for following node types for virtio-mmio
+nodes:
 
-Changing the behaviour of core code to fix the Realtek driver without
-updating other callers of those functions is a problem.
+        virtio_mmio@a000000 {
+                dma-coherent;
+                interrupts = <0x00 0x10 0x01>;
+                reg = <0x00 0xa000000 0x00 0x200>;
+                compatible = "virtio,mmio";
+        };
+
+Here, each virtio-mmio corresponds to a virtio-device. But there is no way for
+other users in the DT to show their dependency on virtio devices.
+
+This patchset provides that support.
+
+The first patch adds virtio-device bindings to allow for device sub-nodes to be
+present and the second patch updates the virtio core to update the of_node.
+
+Other patches add bindings for i2c and gpio devices.
+
+Tested on x86 with qemu for arm64.
+
+V1->V2:
+- The changes (both binding and code) are made at virtio level, instead of
+  virtio-mmio. This allows the same to be used by all device types, irrespective
+  of the transport mechanism.
+
+- Dropped the reg property and used compatible in the form "virtio,<DID>".
+
+- Dropped dt-bindings/virtio/virtio_ids.h.
+
+- Add a patch to sync virtio-ids from spec, required for the last patch.
+
+--
+Viresh
+
+Viresh Kumar (5):
+  dt-bindings: virtio: Add binding for virtio devices
+  dt-bindings: i2c: Add bindings for i2c-virtio
+  dt-bindings: gpio: Add bindings for gpio-virtio
+  uapi: virtio_ids: Sync ids with specification
+  virtio: Bind virtio device to device-tree node
+
+ .../devicetree/bindings/gpio/gpio-virtio.yaml | 60 +++++++++++++++++
+ .../devicetree/bindings/i2c/i2c-virtio.yaml   | 51 ++++++++++++++
+ .../devicetree/bindings/virtio/mmio.yaml      |  2 +-
+ .../bindings/virtio/virtio-device.yaml        | 47 +++++++++++++
+ drivers/virtio/virtio.c                       | 67 ++++++++++++++++++-
+ include/uapi/linux/virtio_ids.h               | 12 ++++
+ 6 files changed, 235 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
+ create mode 100644 Documentation/devicetree/bindings/i2c/i2c-virtio.yaml
+ create mode 100644 Documentation/devicetree/bindings/virtio/virtio-device.yaml
+
+-- 
+2.31.1.272.g89b43f80a514
+
