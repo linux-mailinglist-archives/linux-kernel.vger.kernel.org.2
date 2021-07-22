@@ -2,108 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D033D1ACF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 02:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CF93D1AD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 02:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhGVACS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 20:02:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44298 "EHLO mail.kernel.org"
+        id S229930AbhGVAFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 20:05:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229692AbhGVACQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 20:02:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE83061264
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 00:42:52 +0000 (UTC)
+        id S229692AbhGVAFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 20:05:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5B3161249;
+        Thu, 22 Jul 2021 00:46:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626914572;
-        bh=5gUuCHYoyXnxCTWjadK1ob5ANKNp6RQJVZAT7k9rS0o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FYHaJgCwwBDQfKT43ZcZrVpiPXWAlknCbCDxwcwgOkS3OV8dfY5fbxqlE9xftqXFn
-         QYFKzhtAgo2xkQSyuN0UtgqJMgtyyb8RX9M4ECyz9a7x0y+Mk7ylts6oCUVc64H6BE
-         4Evov4uuMQEhK40iWmj0oPxH0RbnxKdw8h0SZaB2IjvC1nIHjfwc/2XGT/KfZNzfyA
-         gc9tcVs/52Qxaw1x5j6MsmoTOvuoXeihwyQNj4A8qkLUCXeIbzL7X7/GWMktU0sc7z
-         GyhMvv9zdIKPjJxW71g9Id+XQ8RKvCVL6g3AuuCXgd0e+v+qj/bvtzaiZVZAtNh25o
-         r7/+87x19VhNQ==
-Received: by mail-ej1-f41.google.com with SMTP id c17so5863126ejk.13
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 17:42:52 -0700 (PDT)
-X-Gm-Message-State: AOAM532ularUXSoy9E0TcPKiBOr4gSS3FfrCpkhoGBsA3GwrbgFsa1bg
-        ZQZjLAFSWShh87EchFGIWeSWWQJIeESemejAmg==
-X-Google-Smtp-Source: ABdhPJyKf32KGYOx7/x5mSfSzBsftSabCd3owtHAjkGVEslJ3jlOd7OwePiukXqfZBwKpfVyyVggxJVBTrUCUsVgD+I=
-X-Received: by 2002:a17:906:27da:: with SMTP id k26mr41548451ejc.267.1626914571435;
- Wed, 21 Jul 2021 17:42:51 -0700 (PDT)
+        s=k20201202; t=1626914787;
+        bh=mz+LGLYopDu3grjmRh1FTALJXKcS5wBE1910DCuddj0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qzsxEazLzBmEZ437kjht81tKYqZt/WeJh3+pXlm50qFk6gmVtVXBzuOEhN5P05tfM
+         DzUGaqHxo5lS7zxHBOHFy5bnqtnzSZibKXI6NEwnWXDr8Ylsv+V5j+n7GEnqubPMtA
+         mEKB5ZxjFQV5OJAJQxWf3oOTHOlKKq6aVkkczCWdFGn/vit/6EMtTbnfwddL8d0htB
+         ZhEe3rE/RvYu74hnj6wUf9U76pJCglMFC2CIf7CtM5bMpJ71/Vkjl5Mzt34q9uW+Qp
+         KhOQXb82I5SjUkJoHEVgBz8sFjJoc6Q4hjl/gI4nmUIFeay3BX0dkocLyPyihr5v9R
+         D9g0UDm3lM5ow==
+Date:   Wed, 21 Jul 2021 17:46:26 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     jaegeuk@kernel.org, Chao Yu <chao.yu@linux.dev>,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix wrong inflight page stats for
+ directIO
+Message-ID: <YPi/4kMUAhlRZV3M@sol.localdomain>
+References: <20210719084548.25895-1-chao@kernel.org>
 MIME-Version: 1.0
-References: <20210712080736.116435-1-linux@fw-web.de>
-In-Reply-To: <20210712080736.116435-1-linux@fw-web.de>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 22 Jul 2021 08:42:40 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__rhehy6CG=A-0bEqn1-mCLh-xsz9UQ6dntCC69z4nvgw@mail.gmail.com>
-Message-ID: <CAAOTY__rhehy6CG=A-0bEqn1-mCLh-xsz9UQ6dntCC69z4nvgw@mail.gmail.com>
-Subject: Re: [PATCH] drm/mediatek: dpi: fix NULL dereference in mtk_dpi_bridge_atomic_check
-To:     Frank Wunderlich <linux@fw-web.de>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Rex-BC Chen <rex-bc.chen@mediatek.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719084548.25895-1-chao@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Frank:
-
-Frank Wunderlich <linux@fw-web.de> =E6=96=BC 2021=E5=B9=B47=E6=9C=8812=E6=
-=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=884:08=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> From: Frank Wunderlich <frank-w@public-files.de>
->
-> bridge->driver_private is not set (NULL) so use bridge_to_dpi(bridge)
-> like it's done in bridge_atomic_get_output_bus_fmts
-
-Applied to mediatek-drm-fixes [1], thanks.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-fixes
-
-Regards,
-Chun-Kuang.
-
->
-> Fixes: ec8747c52434 ("drm/mediatek: dpi: Add bus format negotiation")
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+On Mon, Jul 19, 2021 at 04:45:48PM +0800, Chao Yu wrote:
+> Previously, we use sbi->nr_pages[] to account direct IO, the count should
+> be based on page granularity rather than bio granularity, fix it.
+> 
+> Fixes: 02b16d0a34a1 ("f2fs: add to account direct IO")
+> Signed-off-by: Chao Yu <chao@kernel.org>
 > ---
->  drivers/gpu/drm/mediatek/mtk_dpi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediate=
-k/mtk_dpi.c
-> index bced555648b0..a2eca1f66984 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> @@ -605,7 +605,7 @@ static int mtk_dpi_bridge_atomic_check(struct drm_bri=
-dge *bridge,
->                                        struct drm_crtc_state *crtc_state,
->                                        struct drm_connector_state *conn_s=
-tate)
+> v2:
+> - There is one missing line when I reorder in development patches,
+> so just resend the patch as v2, sorry.
+>  fs/f2fs/data.c | 11 +++++++----
+>  fs/f2fs/f2fs.h | 13 +++++++++++++
+>  2 files changed, 20 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index e6f107de4c92..095350ccf80d 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -3494,8 +3494,9 @@ static void f2fs_dio_end_io(struct bio *bio)
 >  {
-> -       struct mtk_dpi *dpi =3D bridge->driver_private;
-> +       struct mtk_dpi *dpi =3D bridge_to_dpi(bridge);
->         unsigned int out_bus_format;
->
->         out_bus_format =3D bridge_state->output_bus_cfg.format;
-> --
-> 2.25.1
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+>  	struct f2fs_private_dio *dio = bio->bi_private;
+>  
+> -	dec_page_count(F2FS_I_SB(dio->inode),
+> -			dio->write ? F2FS_DIO_WRITE : F2FS_DIO_READ);
+> +	dec_page_counts(F2FS_I_SB(dio->inode),
+> +			dio->write ? F2FS_DIO_WRITE : F2FS_DIO_READ,
+> +			dio->blkcnt);
+>  
+>  	bio->bi_private = dio->orig_private;
+>  	bio->bi_end_io = dio->orig_end_io;
+> @@ -3510,6 +3511,7 @@ static void f2fs_dio_submit_bio(struct bio *bio, struct inode *inode,
+>  {
+>  	struct f2fs_private_dio *dio;
+>  	bool write = (bio_op(bio) == REQ_OP_WRITE);
+> +	unsigned int blkcnt = bio_sectors(bio) >> F2FS_LOG_SECTORS_PER_BLOCK;
+>  
+>  	dio = f2fs_kzalloc(F2FS_I_SB(inode),
+>  			sizeof(struct f2fs_private_dio), GFP_NOFS);
+> @@ -3519,13 +3521,14 @@ static void f2fs_dio_submit_bio(struct bio *bio, struct inode *inode,
+>  	dio->inode = inode;
+>  	dio->orig_end_io = bio->bi_end_io;
+>  	dio->orig_private = bio->bi_private;
+> +	dio->blkcnt = blkcnt;
+>  	dio->write = write;
+>  
+>  	bio->bi_end_io = f2fs_dio_end_io;
+>  	bio->bi_private = dio;
+>  
+> -	inc_page_count(F2FS_I_SB(inode),
+> -			write ? F2FS_DIO_WRITE : F2FS_DIO_READ);
+> +	inc_page_counts(F2FS_I_SB(inode),
+> +			write ? F2FS_DIO_WRITE : F2FS_DIO_READ, dio->blkcnt);
+>  
+>  	submit_bio(bio);
+>  	return;
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 867f2c5d9559..7369f8087f64 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1759,6 +1759,7 @@ struct f2fs_private_dio {
+>  	struct inode *inode;
+>  	void *orig_private;
+>  	bio_end_io_t *orig_end_io;
+> +	unsigned int blkcnt;
+>  	bool write;
+>  };
+>  
+> @@ -2267,6 +2268,12 @@ static inline void inc_page_count(struct f2fs_sb_info *sbi, int count_type)
+>  		set_sbi_flag(sbi, SBI_IS_DIRTY);
+>  }
+>  
+> +static inline void inc_page_counts(struct f2fs_sb_info *sbi, int count_type,
+> +							unsigned int count)
+> +{
+> +	atomic_add(count, &sbi->nr_pages[count_type]);
+> +}
+> +
+>  static inline void inode_inc_dirty_pages(struct inode *inode)
+>  {
+>  	atomic_inc(&F2FS_I(inode)->dirty_pages);
+> @@ -2281,6 +2288,12 @@ static inline void dec_page_count(struct f2fs_sb_info *sbi, int count_type)
+>  	atomic_dec(&sbi->nr_pages[count_type]);
+>  }
+>  
+> +static inline void dec_page_counts(struct f2fs_sb_info *sbi, int count_type,
+> +							unsigned int count)
+> +{
+> +	atomic_sub(count, &sbi->nr_pages[count_type]);
+> +}
+> +
+
+Please give these proper names like add_to_page_count() and
+sub_from_page_count().  They change one counter, not multiple.
+
+- Eric
