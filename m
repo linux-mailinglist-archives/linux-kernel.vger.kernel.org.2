@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B862A3D2CB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3814B3D2CC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhGVSoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
+        id S230308AbhGVSuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 14:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhGVSoI (ORCPT
+        with ESMTP id S229745AbhGVSuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:44:08 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2D2C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:24:41 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id f12-20020a056830204cb029048bcf4c6bd9so6321827otp.8
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:24:41 -0700 (PDT)
+        Thu, 22 Jul 2021 14:50:04 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DDBC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:30:37 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id a12so10175509lfb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:30:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=KuoKHa70CsW4LrT7bcKs/jVjMpHneRrtGiMYYCoaWt4=;
-        b=ODDEI+V9cWtMOLMoDoSf/Eso7AyIQN1IrQyHsmjBNLMM67HXTrSmNTGcMfzlvfF04I
-         Xl0GxDCskVr2bMK95Z5NurgL24fO4chAe5Vd74Qwg5YeOWpxXdiu1++dzqNL26zur3JO
-         bWJsxhH6u+8e4EaELYsJDemAduUlBjkWkzrl0=
+        d=ojab.ru; s=ojab;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ki3EP487cHlKuJ8BiqZxtwSYC7B4SnWzmdp/UL5pFnk=;
+        b=mfpcCjAgt8VnvUgRMgumJXzjEXRNrkL3py5aTk+1LV/vsKMx0cqZvEixFsf0yc8KFe
+         ETx+LR45QTT4sYGWN7VSFazuAe3C1x3wB9pazgl6tZDiTr9Kdd76pt1bCqhWcTXE0Ugm
+         8CuS7rIlHJwhGjVad+BVJUQix1FuYzrJNbLzNfziUWy2b+7vBy3N5zg4gQ3VgEh612f1
+         mS+mNWCOEHOPnOU0jSVAvvlIjgXnqgGkwPkyb0gOgllWevhGevwpIl3c3Po+CGYZjQlZ
+         ipsBTzQrffsE67Sjbu9TjTyXCVUJ9zf1MX45+DmqLcseV7Ibbd/yhUCG/WQrP5CtjEUI
+         JDYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=KuoKHa70CsW4LrT7bcKs/jVjMpHneRrtGiMYYCoaWt4=;
-        b=IP8JO4rdtCy6jukavgOhX/mDfwgbuezJ/wOdkHt2dFjRW2vwJa83kvnsc7vLlxtVJN
-         2BcGzBwI78XKhkk3n2/CEXmCqA4c9MIlCdkjUlhJkzmMFtUAnFBJcfhcy9m5XhSUb1r6
-         KszwsCqeBWtq+TUBLWvJD6mJXel9A6+bSxLEzhREF3litLJ5ZjUdBYCDhPVffNag+hxv
-         rF7Vz6xuu6Pyrtglm90xvvAQCJnR0eNvanPlte+6IFVHkOadLJaC1QhM3oeHkq0OpqWh
-         5gDyGSenpRJLKR5tTWQg4MZLHdW8vj42r1393OMZJ+FqnRrH5B4AslRi2ObUOWHzkw4F
-         0VYg==
-X-Gm-Message-State: AOAM533yXut0RQ73ouBhn6bV/k82J46OWNAK3xBJoYEdRTZFConrupkE
-        34SWABtdzfLBYytRoftDpsiVoXjze6trbEFrBxg2Gg==
-X-Google-Smtp-Source: ABdhPJxhpg6Vf9SRJDcvLibbgnzzwZMBFdPr2+2+u0dMH/k8tpteCCY8x1EBDEKXikNagWxWYufbywGdcpp1es+qvug=
-X-Received: by 2002:a9d:1b6e:: with SMTP id l101mr896344otl.34.1626981881398;
- Thu, 22 Jul 2021 12:24:41 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 22 Jul 2021 19:24:40 +0000
-MIME-Version: 1.0
-In-Reply-To: <1626191647-13901-5-git-send-email-khsieh@codeaurora.org>
-References: <1626191647-13901-1-git-send-email-khsieh@codeaurora.org> <1626191647-13901-5-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 22 Jul 2021 19:24:40 +0000
-Message-ID: <CAE-0n53v-5DynK5Y+8akMMBHSqHUD18pn+2AnBBL8uMKXHEDQw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/7] drm/msm/dp: replug event is converted into an
- unplug followed by an plug events
-To:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ki3EP487cHlKuJ8BiqZxtwSYC7B4SnWzmdp/UL5pFnk=;
+        b=TNdwFFNeX5BhhpuO3DzxjQVh+b2XeIaM8Fuf6xzJU+Y5OkZZ+vIztegrtr8g3SSqdK
+         yUyHLzHMXwRW9KtWqzluzl2qOSf1GaOsEMrVSDBiupjmA+EOuyvxSp18NnhQZpF1TXsu
+         OWhDhpVYHK8S+H7/5cD/aZ5xgLgDjjXvT6cTd8zVemLt6Mr7tJ7T0WunDabMFufvhJVS
+         K2QgbzADaaXy3k3UfnMAV/7AvelEQZADqrvV9Xurfix9pXtDIjm1YjWOWAFL3aO+l9CU
+         rZ9XyFxAcq8tzYQw3ytLYSREFJ5qniLqOM+cjQf3gK5gZ4sxyqgDPPXfCcwNoz8MWsbL
+         pHsQ==
+X-Gm-Message-State: AOAM532DA+qNm1bDevReb4j/290Ck01OPTkBgYMWDXlVfYWIXupcZJNZ
+        KAtLWJWPWjOEWF12nHGkl9SR1w==
+X-Google-Smtp-Source: ABdhPJwEsuMO5wqqYtkztd0Y+meQb5roqH3WyT+0VBq7dzbd2tAOaqH0lRXxnfnnpX20pzcB6cON4w==
+X-Received: by 2002:a05:6512:3393:: with SMTP id h19mr649086lfg.58.1626982236011;
+        Thu, 22 Jul 2021 12:30:36 -0700 (PDT)
+Received: from ojab.ru ([2a03:e2c0:1ce::2])
+        by smtp.gmail.com with ESMTPSA id e5sm3198061ljk.51.2021.07.22.12.30.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 12:30:35 -0700 (PDT)
+From:   ojab <ojab@ojab.ru>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     ojab <ojab@ojab.ru>, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH] ath10k: don't fail if IRAM write fails
+Date:   Thu, 22 Jul 2021 19:29:37 +0000
+Message-Id: <20210722192937.4847-1-ojab@ojab.ru>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-07-13 08:54:04)
-> Remove special handling of replug interrupt and instead treat replug event
-> as a sequential unplug followed by a plugin event. This is needed to meet
-> the requirements of DP Link Layer CTS test case 4.2.1.3.
->
-> Changes in V2:
-> -- add fixes statement
->
-> Fixes: f21c8a276c2d ("drm/msm/dp: handle irq_hpd with sink_count = 0 correctly")
->
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 13 +++++--------
->  1 file changed, 5 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 78c5301..d089ada 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -1146,9 +1146,6 @@ static int hpd_event_thread(void *data)
->                 case EV_IRQ_HPD_INT:
->                         dp_irq_hpd_handle(dp_priv, todo->data);
->                         break;
-> -               case EV_HPD_REPLUG_INT:
+After reboot with kernel & firmware updates I found `failed to copy
+target iram contents:` in dmesg and missing wlan interfaces for both
+of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
+it, so while I have no idea what's actually happening, I don't see why
+we should fail in this case, looks like some optional firmware ability
+that could be skipped.
 
-Please remove the enum as well.
+Also with additional logging there is
+```
+[    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
+[    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
+[    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
+[    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
+```
+so exact branch could be seen.
+---
+ drivers/net/wireless/ath/ath10k/core.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-> -                       /* do nothing */
-> -                       break;
->                 case EV_USER_NOTIFICATION:
->                         dp_display_send_hpd_notification(dp_priv,
->                                                 todo->data);
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 2f9be182fbfb..d9fd5294e142 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2691,8 +2691,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
+ 	u32 len, remaining_len;
+ 
+ 	hw_mem = ath10k_coredump_get_mem_layout(ar);
+-	if (!hw_mem)
++	if (!hw_mem) {
++		ath10k_warn(ar, "No hardware memory");
+ 		return -ENOMEM;
++	}
+ 
+ 	for (i = 0; i < hw_mem->region_table.size; i++) {
+ 		tmp = &hw_mem->region_table.regions[i];
+@@ -2702,8 +2704,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
+ 		}
+ 	}
+ 
+-	if (!mem_region)
++	if (!mem_region) {
++		ath10k_warn(ar, "No memory region");
+ 		return -ENOMEM;
++	}
+ 
+ 	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
+ 		if (ar->wmi.mem_chunks[i].req_id ==
+@@ -2917,7 +2921,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 		if (status) {
+ 			ath10k_warn(ar, "failed to copy target iram contents: %d",
+ 				    status);
+-			goto err_hif_stop;
+ 		}
+ 	}
+ 
+-- 
+2.32.0
+
