@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CD13D2AF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3823D2AF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbhGVQaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:30:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233724AbhGVQaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:30:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B20496120D;
-        Thu, 22 Jul 2021 17:10:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626973838;
-        bh=DeA3CYXsFlcMIQmyqXm6khDeOW5lwK6vbztR5SBgTkc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gQA11bcSMILqSjdJnIPBRdmGs7GdG7f0QT+9x7hY6uuzqgntCvPPTRZ1cdeEl8LjV
-         imFmfhUcy984y5wReMOCLviUXxiX9EGsN9l0O4PqFDBJr5LDA4VfVb+PvEE/Jsa326
-         7AGd1XxvoT5oBaukShY8FJ0dgAoNpoqw04N24CmCjGfyzQiDgDUYhZ3D3MFiUccdqt
-         OSj/gd63ZwISkwu/nhGiF3cwDSULacIq9LOUn/HmUrYo2nSu0SLQLxaSwergy0Dg+E
-         FJ5pnEulsMjicoZNKnz8nzyE/mhIHTEh2VFPKF96cE1NnKo+p07NX6c3zOaLuot6rt
-         sQHF2WBP76ZZA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ASoC: codecs: wcd938x: fix wcd module dependency
-Date:   Thu, 22 Jul 2021 18:10:05 +0100
-Message-Id: <162697068326.1747.12876707572437877614.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210721150510.1837221-1-arnd@kernel.org>
-References: <20210721150510.1837221-1-arnd@kernel.org>
+        id S233104AbhGVQbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230434AbhGVQbV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:31:21 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30C6C061575;
+        Thu, 22 Jul 2021 10:11:55 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id b16so7003360ljq.9;
+        Thu, 22 Jul 2021 10:11:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kW0eXva7xVNT5G9+x5mEsNAXW41r17zcwLN4lzd0IxQ=;
+        b=Vm6PLOPVETZO6N0X9Ba7B3KUZ7fxh0X83imeI35Xv/IdXsZIxFBMUHvgjbbLkFn2pC
+         vaD2gg+JavZWm28ryNIAwFRunEiCjdFjenIvEGbkdCjk+mU5UZvPM6omIEEJQnHY3MmR
+         ig1+495y4kS3cxP/D4MnopnK9t6z1PvLy2rjjkoKDIVzE24OIw4DIHhN4coRCEN14Xri
+         5YOleXTNLlWSMhJ+GdKjG+bEXHeOZhLgQ2LOLqdatADW8qfDMA9H/s8DaI3Y+91Ei2gS
+         Prj2NshJJ5AIdW6aqykduhEe7Frlb6ua1BQCiK+O1NlC3DjYEw8a7Rd49UmE/uaBTV4n
+         Xk+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kW0eXva7xVNT5G9+x5mEsNAXW41r17zcwLN4lzd0IxQ=;
+        b=Mcm9lBx/grEE77Ob9xFCWBWvyJypd7ZGfpIZH9RaDRWLVJ3jt8HdwSWqPaEvOu1myd
+         46/J5sGAhzzVX+TnAKLkn7juWTHe0c20CZPOTUAad6s+kc+kf+8+zlUundAn2azvKrXD
+         6zvyvKQsXfAPL3EIB3ikba+IGzSP1p+5CyjTYAz9kmZgHgCyurgVvqZbINDJosZjxDhB
+         f4diD9L7dNcijkUggiyb2ytY9IV/3An7TRBkXGsfakE3Tm1lbDJ1LLDs+8+7F8K5ZmvW
+         DLSTbDqIi49VWxA9xCwlyF5v9BFZkY7G8wCsezldYuZEcILuVHgCoZOJrBse3q28Blng
+         BryQ==
+X-Gm-Message-State: AOAM532YPhxUA2sVtBzr5rRVn7d3LaEmW7pQ1fwpdJ9lLZvDTGvQO3fx
+        xcMUQ4QvHzDeyH0rxke5mYc=
+X-Google-Smtp-Source: ABdhPJy87VsWPSRFkTl8PqSOtY3yxklXiYjLxBBJDaptvPUR/kvJ/ObPLSC1877ss4SnHSGbKv0WKg==
+X-Received: by 2002:a2e:9794:: with SMTP id y20mr645880lji.417.1626973909136;
+        Thu, 22 Jul 2021 10:11:49 -0700 (PDT)
+Received: from mobilestation ([95.79.127.110])
+        by smtp.gmail.com with ESMTPSA id j26sm1386101lfh.71.2021.07.22.10.11.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 10:11:48 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 20:11:46 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     nandhini.srikandan@intel.com
+Cc:     broonie@kernel.org, robh+dt@kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        mgross@linux.intel.com, kris.pan@intel.com,
+        kenchappa.demakkanavar@intel.com, furong.zhou@intel.com,
+        mallikarjunappa.sangannavar@intel.com, mahesh.r.vaidya@intel.com,
+        rashmi.a@intel.com
+Subject: Re: =?utf-8?B?W+KAnFBBVENI4oCdIDEvMg==?= =?utf-8?Q?=5D?=
+ dt-bindings: spi: Add bindings for Intel Thunder Bay SoC
+Message-ID: <20210722171146.fux2nkoz3gz5ck2p@mobilestation>
+References: <20210722053358.29682-1-nandhini.srikandan@intel.com>
+ <20210722053358.29682-2-nandhini.srikandan@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722053358.29682-2-nandhini.srikandan@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Jul 2021 17:04:45 +0200, Arnd Bergmann wrote:
-> With SND_SOC_ALL_CODECS=y and SND_SOC_WCD938X_SDW=m, there is a link
-> error from a reverse dependency, since the built-in codec driver calls
-> into the modular soundwire back-end:
+On Thu, Jul 22, 2021 at 01:33:57PM +0800, nandhini.srikandan@intel.com wrote:
+> From: Nandhini Srikandan <nandhini.srikandan@intel.com>
 > 
-> x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_free':
-> wcd938x.c:(.text+0x2c0): undefined reference to `wcd938x_sdw_free'
-> x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_hw_params':
-> wcd938x.c:(.text+0x2f6): undefined reference to `wcd938x_sdw_hw_params'
-> x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_set_sdw_stream':
-> wcd938x.c:(.text+0x332): undefined reference to `wcd938x_sdw_set_sdw_stream'
-> x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_tx_swr_ctrl':
-> wcd938x.c:(.text+0x23de): undefined reference to `wcd938x_swr_get_current_bank'
-> x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_bind':
-> wcd938x.c:(.text+0x2579): undefined reference to `wcd938x_sdw_device_get'
-> x86_64-linux-ld: wcd938x.c:(.text+0x25a1): undefined reference to `wcd938x_sdw_device_get'
-> x86_64-linux-ld: wcd938x.c:(.text+0x262a): undefined reference to `__devm_regmap_init_sdw'
+
+> Add documentation for SPI controller in Intel Thunder Bay SoC.
+
+In the driver-part of the patchset you said that the reset control
+is required for this controller. Then the bindings file needs to be
+accordingly altered. See the way it's done in the "allOf:" block here.
+
+If it isn't required then this part looks ok to me.
+
+Regards,
+-Sergey
+
 > 
-> [...]
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: codecs: wcd938x: fix wcd module dependency
-      commit: b9a4b57f423ff8ff9ab9b68a238bdc3e7678f723
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> Signed-off-by: Nandhini Srikandan <nandhini.srikandan@intel.com>
+> ---
+>  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> index ca91201a9926..88532bf8ba85 100644
+> --- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> @@ -61,6 +61,8 @@ properties:
+>            - const: snps,dw-apb-ssi
+>        - description: Intel Keem Bay SPI Controller
+>          const: intel,keembay-ssi
+> +      - description: Intel Thunder Bay SPI Controller
+> +        const: intel,thunderbay-ssi
+>        - description: Baikal-T1 SPI Controller
+>          const: baikal,bt1-ssi
+>        - description: Baikal-T1 System Boot SPI Controller
+> -- 
+> 2.17.1
+> 
