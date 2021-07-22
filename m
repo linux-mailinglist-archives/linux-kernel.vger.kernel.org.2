@@ -2,82 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14EC3D1C2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9CF3D1C2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhGVCXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 22:23:21 -0400
-Received: from mga07.intel.com ([134.134.136.100]:16804 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230093AbhGVCXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 22:23:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="275374957"
-X-IronPort-AV: E=Sophos;i="5.84,259,1620716400"; 
-   d="scan'208";a="275374957"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 20:03:54 -0700
-X-IronPort-AV: E=Sophos;i="5.84,259,1620716400"; 
-   d="scan'208";a="512019825"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.255.29.38]) ([10.255.29.38])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 20:03:46 -0700
-Subject: Re: [PATCH V8 01/18] perf/core: Use static_call to optimize
- perf_guest_info_callbacks
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     bp@alien8.de, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        kan.liang@linux.intel.com, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        boris.ostrvsky@oracle.com, Like Xu <like.xu@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        xen-devel@lists.xenproject.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <20210716085325.10300-1-lingshan.zhu@intel.com>
- <20210716085325.10300-2-lingshan.zhu@intel.com>
- <fd117e37-8063-63a4-43cd-7cb555e5bab5@gmail.com>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Message-ID: <e8a7de91-fe48-c570-3cea-a296278a7c8a@intel.com>
-Date:   Thu, 22 Jul 2021 11:03:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S230467AbhGVCXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 22:23:39 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7410 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230439AbhGVCXh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 22:23:37 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GVcdW3q26z7xtk;
+        Thu, 22 Jul 2021 11:00:31 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 11:04:10 +0800
+Received: from thunder-town.china.huawei.com (10.174.179.0) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 11:04:09 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v2 0/1] workqueue: Fix possible memory leaks in wq_numa_init()
+Date:   Thu, 22 Jul 2021 11:03:51 +0800
+Message-ID: <20210722030352.3966-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <fd117e37-8063-63a4-43cd-7cb555e5bab5@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+v1 --> v2:
+1. Keep the original "for_each_possible_cpu(cpu)" loop and "cpumask_set_cpu(cpu, tbl[node]);"
+2. Remove the comment: /* happens iff arch is bonkers, let's just proceed */
 
 
-On 7/21/2021 7:57 PM, Like Xu wrote:
-> On 16/7/2021 4:53 pm, Zhu Lingshan wrote:
->> +    } else if (xenpmu_data->pmu.r.regs.cpl & 3)
->
-> Lingshan, serious for this version ?
->
-> arch/x86/xen/pmu.c:438:9: error: expected identifier or ‘(’ before 
-> ‘return’
->   438 |         return state;
->       |         ^~~~~~
-> arch/x86/xen/pmu.c:439:1: error: expected identifier or ‘(’ before ‘}’ 
-> token
->   439 | }
->       | ^
-> arch/x86/xen/pmu.c: In function ‘xen_guest_state’:
-> arch/x86/xen/pmu.c:436:9: error: control reaches end of non-void 
-> function [-Werror=return-type]
->   436 |         }
->       |         ^
-> cc1: some warnings being treated as errors
->
->> +            state |= PERF_GUEST_USER;
->>       }
-forgot to enable XEN build in .config, V9 fixes this will come soon
+Zhen Lei (1):
+  workqueue: Fix possible memory leaks in wq_numa_init()
+
+ kernel/workqueue.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
