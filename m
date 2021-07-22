@@ -2,99 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5393C3D2540
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9F93D2543
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbhGVNbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:31:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40518 "EHLO mail.kernel.org"
+        id S232281AbhGVNbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:31:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232105AbhGVNbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:31:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9687C6128D;
-        Thu, 22 Jul 2021 14:11:43 +0000 (UTC)
+        id S232118AbhGVNbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:31:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4972B613AA;
+        Thu, 22 Jul 2021 14:12:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626963104;
-        bh=V+sLG4qAXAhb4gZ8Cas6iEjPeFVyhWhtpTlGXEov5Lg=;
+        s=korg; t=1626963137;
+        bh=Uws4FcnI2E78ZjWf4YvL6GyC8qkD43T2o2gKpCOur5c=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jN3HspfSGQrcBDlVWnOQq3eXWx4ndzEz0xp2E9yZsR8SpacrmA5QoUbdA6hhl89mD
-         zmJ74NCQojb5GKkcdVTrQEuFt3TqlT9st9AHgcrvqOWQ9OEY8EP4go0U/i0f+B1RgL
-         V6uqIem/q9mWdBniNzOgU2c2VkABNKNIi9y8KQac=
-Date:   Thu, 22 Jul 2021 16:11:41 +0200
+        b=Tl4NKjzuSQpoHwqkt0rtf0GQ6qfD/Ge3rYMGIlWS1BSDX493/Sx5chHONM/07gMs2
+         HxrNrwqw/OwHpLk7QwSEkVWqqgcXL6/MceEVa1NCj6vL8LYn6YCdvffYwibTIYP5BM
+         pxiWDgVU2Af82hdRaBYgZtfB5vr4FOvYfv2xBKow=
+Date:   Thu, 22 Jul 2021 16:12:15 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Joe Korty <joe.korty@concurrent-rt.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG] 4.4.262: infinite loop in futex_unlock_pi (EAGAIN loop)
-Message-ID: <YPl8nfZBjgmSnE7N@kroah.com>
-References: <20210719162418.GA28003@zipoli.concurrent-rt.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Xiaotian Feng <xtfeng@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        dri-devel@lists.freedesktop.org, Dave Airlie <airlied@redhat.com>
+Subject: Re: [PATCH 5.12 237/242] drm/ast: Remove reference to struct
+ drm_device.pdev
+Message-ID: <YPl8v+FZ6PUl7XTl@kroah.com>
+References: <20210715182551.731989182@linuxfoundation.org>
+ <20210715182634.577299401@linuxfoundation.org>
+ <CAJn8CcF+gfXToErpZv=pWmBKF-i--oVWmaM=6AQ8YZCb21X=oA@mail.gmail.com>
+ <YPVgtybrZLxe3XeW@kroah.com>
+ <2ba3d853-f334-ba0e-3cdc-1e9a03f99b51@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210719162418.GA28003@zipoli.concurrent-rt.com>
+In-Reply-To: <2ba3d853-f334-ba0e-3cdc-1e9a03f99b51@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 12:24:18PM -0400, Joe Korty wrote:
-> [BUG] 4.4.262: infinite loop in futex_unlock_pi (EAGAIN loop)
+On Mon, Jul 19, 2021 at 04:35:21PM +0200, Thomas Zimmermann wrote:
+> hi
 > 
->    [ replicator, attached ]
->    [ workaround patch that crudely clears the loop, attached ]
->    [ 4.4.256 does _not_ have this problem, 4.4.262 is known to have it ]
+> Am 19.07.21 um 13:23 schrieb Greg Kroah-Hartman:
+> > On Mon, Jul 19, 2021 at 05:57:30PM +0800, Xiaotian Feng wrote:
+> > > On Fri, Jul 16, 2021 at 5:13 AM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > > 
+> > > > From: Thomas Zimmermann <tzimmermann@suse.de>
+> > > > 
+> > > > commit 0ecb51824e838372e01330752503ddf9c0430ef7 upstream.
+> > > > 
+> > > > Using struct drm_device.pdev is deprecated. Upcast with to_pci_dev()
+> > > > from struct drm_device.dev to get the PCI device structure.
+> > > > 
+> > > > v9:
+> > > >          * fix remaining pdev references
+> > > > 
+> > > > Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> > > > Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+> > > > Fixes: ba4e0339a6a3 ("drm/ast: Fixed CVE for DP501")
+> > > > Cc: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+> > > > Cc: kernel test robot <lkp@intel.com>
+> > > > Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> > > > Cc: Dave Airlie <airlied@redhat.com>
+> > > > Cc: dri-devel@lists.freedesktop.org
+> > > > Link: https://patchwork.freedesktop.org/patch/msgid/20210429105101.25667-2-tzimmermann@suse.de
+> > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > ---
+> > > >   drivers/gpu/drm/ast/ast_main.c |    5 ++---
+> > > >   1 file changed, 2 insertions(+), 3 deletions(-)
+> > > > 
+> > > > --- a/drivers/gpu/drm/ast/ast_main.c
+> > > > +++ b/drivers/gpu/drm/ast/ast_main.c
+> > > > @@ -411,7 +411,6 @@ struct ast_private *ast_device_create(co
+> > > >                  return ast;
+> > > >          dev = &ast->base;
+> > > > 
+> > > > -       dev->pdev = pdev;
+> > > >          pci_set_drvdata(pdev, dev);
+> > > > 
+> > > >          ast->regs = pcim_iomap(pdev, 1, 0);
+> > > > @@ -453,8 +452,8 @@ struct ast_private *ast_device_create(co
+> > > > 
+> > > >          /* map reserved buffer */
+> > > >          ast->dp501_fw_buf = NULL;
+> > > > -       if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
+> > > > -               ast->dp501_fw_buf = pci_iomap_range(dev->pdev, 0, dev->vram_mm->vram_size, 0);
+> > > > +       if (dev->vram_mm->vram_size < pci_resource_len(pdev, 0)) {
+> > > > +               ast->dp501_fw_buf = pci_iomap_range(pdev, 0, dev->vram_mm->vram_size, 0);
+> > > >                  if (!ast->dp501_fw_buf)
+> > > >                          drm_info(dev, "failed to map reserved buffer!\n");
+> > > >          }
+> > > > 
+> > > 
+> > > Hi Greg,
+> > > 
+> > >       This backport is incomplete for 5.10 kernel,  kernel is panicked
+> > > on RIP: ast_device_create+0x7d.  When I look into the crash code, I
+> > > found
+> > > 
+> > > struct ast_private *ast_device_create(struct drm_driver *drv,
+> > >                                        struct pci_dev *pdev,
+> > >                                        unsigned long flags)
+> > > {
+> > > .......
+> > >          dev->pdev = pdev;  // This is removed
+> > >          pci_set_drvdata(pdev, dev);
+> > > 
+> > >          ast->regs = pcim_iomap(pdev, 1, 0);
+> > >          if (!ast->regs)
+> > >                  return ERR_PTR(-EIO);
+> > > 
+> > >          /*
+> > >           * If we don't have IO space at all, use MMIO now and
+> > >           * assume the chip has MMIO enabled by default (rev 0x20
+> > >           * and higher).
+> > >           */
+> > >          if (!(pci_resource_flags(dev->pdev, 2) & IORESOURCE_IO)) { //
+> > > dev->pdev is in used here.
+> > >                  drm_info(dev, "platform has no IO space, trying MMIO\n");
+> > >                  ast->ioregs = ast->regs + AST_IO_MM_OFFSET;
+> > >          }
+> > > 
+> > >          That's because commit 46fb883c3d0d8a823ef995ddb1f9b0817dea6882
+> > > is not backported to 5.10 kernel.
+> > 
+> > So what should I do here?  Backport that commit (was was not called
+> > out), or just revert this?
 > 
-> When a certain, secure-site application is run on 4.4.262, it locks up and
-> is unkillable.  Crash(8) and sysrq backtraces show that the application
-> is looping in the kernel in futex_unlock_pi.
-> 
-> Between 4.4.256 and .257, 4.4 got this 4.12 patch backported into it:
-> 
->    73d786b ("[PATCH] futex: Rework inconsistent rt_mutex/futex_q state")
-> 
-> This patch has the following comment:
-> 
->    The only problem is that this breaks RT timeliness guarantees. That
->    is, consider the following scenario:
-> 
->       T1 and T2 are both pinned to CPU0. prio(T2) > prio(T1)
-> 
->         CPU0
-> 
->         T1
->           lock_pi()
->           queue_me()  <- Waiter is visible
->    
->         preemption
-> 
->         T2
->           unlock_pi()
->             loops with -EAGAIN forever
-> 
->     Which is undesirable for PI primitives. Future patches will rectify
->     this.
-> 
-> This describes the situation exactly.  To prove, we developed a little
-> kernel patch that, on loop detection, puts a message into the kernel log for
-> just the first occurrence, keeps a count of the number of occurrences seen
-> since boot, and tries to break out of the loop via usleep_range(1000,1000).
-> Note that the patch is not really needed for replication.  It merely shows,
-> by 'fixing' the problem, that it really is the EAGAIN loop that triggers
-> the lockup.
-> 
-> Along with this patch, we submit a replicator.  Running this replicator
-> with this patch, it can be seen that 4.4.256 does not have the problem.
-> 4.4.267 and the latest 4.4, 4.4.275, do.  In addition, 4.9.274 (tested
-> w/o the patch) does not have the problem.
-> 
-> >From this pattern there may be some futex fixup patch that was ported
-> back into 4.9 but failed to make it to 4.4.
+> Best drop all these 'remove pdev' patches from stable. They are no bugfixes.
 
-Odd, I can't seem to find anything that we missed.  Can you dig to see
-if there is something that we need to do here so we can resolve this?
+Which specific commits were they?
 
 thanks,
 
