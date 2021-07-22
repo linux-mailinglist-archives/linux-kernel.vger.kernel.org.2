@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4893D28C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04923D29D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbhGVP6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:58:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33080 "EHLO mail.kernel.org"
+        id S234792AbhGVQGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:06:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230307AbhGVP47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:56:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 834916135C;
-        Thu, 22 Jul 2021 16:37:33 +0000 (UTC)
+        id S234495AbhGVQEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:04:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 547BA61C24;
+        Thu, 22 Jul 2021 16:45:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971854;
-        bh=oe/kEJZyEkECaWFGfCpBt5qd+LcQB6wCBZyDJmBpiFU=;
+        s=korg; t=1626972326;
+        bh=wgVnSA9coDv9nQFOI6Vo3gvUyprsyL4rHQTob/cqICM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2v2HCQf38h4CEfOPVfUI4wK+FA66R/UwIB0eqoXsX/w7O827BJVtcbSfZMonCkst6
-         UrO123vQK5VGol3/RKvcFW8renD7D2t2d56gAEAYe+cd0how9W9hoWPl4wG+k8WhGy
-         TwvDk7l8HKhjWFdVcjJoxORXPsOmGQHUNFa/txiU=
+        b=I+0BNedI+6xr5RKtmJc5cQoBixGzFJnot0XXpG/xah8YsQp1+ryGDJj4qEKuYqg+0
+         ubojeViwqbERNuJ3S4H3xre7AMJfbB+SvXU7Y/7o7eLip5RAeAthCK1xpUHiTpmdXA
+         VutS2/4geuE2+YDu4o4cZDLxnsgMnxLJC5kGt9qI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        kernel@dh-electronics.com,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 053/125] ARM: dts: stm32: fix i2c node name on stm32f746 to prevent warnings
-Date:   Thu, 22 Jul 2021 18:30:44 +0200
-Message-Id: <20210722155626.476712133@linuxfoundation.org>
+Subject: [PATCH 5.13 070/156] ARM: dts: stm32: Rename eth@N to ethernet@N on DHCOM SoM
+Date:   Thu, 22 Jul 2021 18:30:45 +0200
+Message-Id: <20210722155630.655106127@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit ad0ed10ba5792064fc3accbf8f0341152a57eecb ]
+[ Upstream commit b586250df24226f8a257e11e1f5953054c54fd35 ]
 
-Replace upper case by lower case in i2c nodes name.
+Fix the following dtbs_check warning:
+eth@1,0: $nodename:0: 'eth@1,0' does not match '^ethernet(@.*)?$'
 
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Cc: kernel@dh-electronics.com
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32f746.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stm32f746.dtsi b/arch/arm/boot/dts/stm32f746.dtsi
-index 81a6fe653e66..d49e481b3aa6 100644
---- a/arch/arm/boot/dts/stm32f746.dtsi
-+++ b/arch/arm/boot/dts/stm32f746.dtsi
-@@ -360,9 +360,9 @@
- 			status = "disabled";
- 		};
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+index 31d08423a32f..c3e3466dacaa 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+@@ -150,7 +150,7 @@
+ 	pinctrl-1 = <&fmc_sleep_pins_b>;
+ 	status = "okay";
  
--		i2c3: i2c@40005C00 {
-+		i2c3: i2c@40005c00 {
- 			compatible = "st,stm32f7-i2c";
--			reg = <0x40005C00 0x400>;
-+			reg = <0x40005c00 0x400>;
- 			interrupts = <72>,
- 				     <73>;
- 			resets = <&rcc STM32F7_APB1_RESET(I2C3)>;
+-	ksz8851: ks8851mll@1,0 {
++	ksz8851: ethernet@1,0 {
+ 		compatible = "micrel,ks8851-mll";
+ 		reg = <1 0x0 0x2>, <1 0x2 0x20000>;
+ 		interrupt-parent = <&gpioc>;
 -- 
 2.30.2
 
