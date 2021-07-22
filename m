@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3814B3D2CC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC433D2CC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbhGVSuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
+        id S230334AbhGVSvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 14:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhGVSuE (ORCPT
+        with ESMTP id S229556AbhGVSvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:50:04 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DDBC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:30:37 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id a12so10175509lfb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:30:37 -0700 (PDT)
+        Thu, 22 Jul 2021 14:51:16 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E3AC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:31:51 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id f93-20020a9d03e60000b02904b1f1d7c5f4so2801788otf.9
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:31:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ojab.ru; s=ojab;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ki3EP487cHlKuJ8BiqZxtwSYC7B4SnWzmdp/UL5pFnk=;
-        b=mfpcCjAgt8VnvUgRMgumJXzjEXRNrkL3py5aTk+1LV/vsKMx0cqZvEixFsf0yc8KFe
-         ETx+LR45QTT4sYGWN7VSFazuAe3C1x3wB9pazgl6tZDiTr9Kdd76pt1bCqhWcTXE0Ugm
-         8CuS7rIlHJwhGjVad+BVJUQix1FuYzrJNbLzNfziUWy2b+7vBy3N5zg4gQ3VgEh612f1
-         mS+mNWCOEHOPnOU0jSVAvvlIjgXnqgGkwPkyb0gOgllWevhGevwpIl3c3Po+CGYZjQlZ
-         ipsBTzQrffsE67Sjbu9TjTyXCVUJ9zf1MX45+DmqLcseV7Ibbd/yhUCG/WQrP5CtjEUI
-         JDYQ==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=3DPSLi1ybTov0O3fVuhOjatTS2Xdr450c8Bfvi+v/u0=;
+        b=GqohWEvgFPJC3JRlNzTRsN23DE727KvCgqmYzDx9xP2zTrTlCe2yEmDIMYGRLKzcTj
+         GKW94djcAqQ0Ad3gH1ni6cdXVomMkQkXdR+WpuRFETT/StZvuTroYsQWZDMyyJy5Unn6
+         Y1vAA4AeLgB7qZRtvOiM1F/LMgvfi2JdPuX+s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ki3EP487cHlKuJ8BiqZxtwSYC7B4SnWzmdp/UL5pFnk=;
-        b=TNdwFFNeX5BhhpuO3DzxjQVh+b2XeIaM8Fuf6xzJU+Y5OkZZ+vIztegrtr8g3SSqdK
-         yUyHLzHMXwRW9KtWqzluzl2qOSf1GaOsEMrVSDBiupjmA+EOuyvxSp18NnhQZpF1TXsu
-         OWhDhpVYHK8S+H7/5cD/aZ5xgLgDjjXvT6cTd8zVemLt6Mr7tJ7T0WunDabMFufvhJVS
-         K2QgbzADaaXy3k3UfnMAV/7AvelEQZADqrvV9Xurfix9pXtDIjm1YjWOWAFL3aO+l9CU
-         rZ9XyFxAcq8tzYQw3ytLYSREFJ5qniLqOM+cjQf3gK5gZ4sxyqgDPPXfCcwNoz8MWsbL
-         pHsQ==
-X-Gm-Message-State: AOAM532DA+qNm1bDevReb4j/290Ck01OPTkBgYMWDXlVfYWIXupcZJNZ
-        KAtLWJWPWjOEWF12nHGkl9SR1w==
-X-Google-Smtp-Source: ABdhPJwEsuMO5wqqYtkztd0Y+meQb5roqH3WyT+0VBq7dzbd2tAOaqH0lRXxnfnnpX20pzcB6cON4w==
-X-Received: by 2002:a05:6512:3393:: with SMTP id h19mr649086lfg.58.1626982236011;
-        Thu, 22 Jul 2021 12:30:36 -0700 (PDT)
-Received: from ojab.ru ([2a03:e2c0:1ce::2])
-        by smtp.gmail.com with ESMTPSA id e5sm3198061ljk.51.2021.07.22.12.30.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 12:30:35 -0700 (PDT)
-From:   ojab <ojab@ojab.ru>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     ojab <ojab@ojab.ru>, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ath10k: don't fail if IRAM write fails
-Date:   Thu, 22 Jul 2021 19:29:37 +0000
-Message-Id: <20210722192937.4847-1-ojab@ojab.ru>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=3DPSLi1ybTov0O3fVuhOjatTS2Xdr450c8Bfvi+v/u0=;
+        b=YQWqjprtbJK9enKvHyLp2/1RuQw1z7qNUNEV6TddQkRel9ddOnw5OBL1oSmX+j+w64
+         P9xoTo3NZ7sRT/DdoqMvpvSe9H3TlAY8hbCmp18GHucq8YqQwXbKRsdy1ij4074/aP0Y
+         NFeOtspblEclSRaIxtYHpDymxVCUdW5k+8ccElpM2Bhh5APr+UhNTwk8yAlGbYLpEgfZ
+         I7L7KHPc7bM94X8vnBXENTXSOsCsUOx7F3Eso2IMGAZ/1hbv7i1G5IV/iJTUE3HswZDG
+         NbA3hti7z1m7ypNKnOcI2QWVqVK16E5YPuQihCNhijXQm1xwc4gHNM2ATiU+9R6KZ1VB
+         O+6w==
+X-Gm-Message-State: AOAM530TVYzYJ07s59xWWI/UqRM7iKKTBbW27ji6rFjCVo6mENje5cYo
+        /xQ3DJ78YD3ATTb/ZzYuKTxgch/zU2LJX52c/4t1Qw==
+X-Google-Smtp-Source: ABdhPJw9ktILTFVqvmgK8/4f/ODg5WVoOdDcD7oHmbTkk7H7ihrgo6bxEqQNWbmdgqFDdtUm/MTGlBvbs8tOcVDnNms=
+X-Received: by 2002:a9d:8c7:: with SMTP id 65mr906170otf.25.1626982310796;
+ Thu, 22 Jul 2021 12:31:50 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 22 Jul 2021 19:31:50 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210722030738.3385821-1-bjorn.andersson@linaro.org>
+References: <20210722030738.3385821-1-bjorn.andersson@linaro.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 22 Jul 2021 19:31:50 +0000
+Message-ID: <CAE-0n52n=ci=k-1Q64L8_pjpjmmxZ74fHUQ4i8rBiOSFS0o_mg@mail.gmail.com>
+Subject: Re: [PATCH] phy: qmp: Provide unique clock names for DP clocks
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After reboot with kernel & firmware updates I found `failed to copy
-target iram contents:` in dmesg and missing wlan interfaces for both
-of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
-it, so while I have no idea what's actually happening, I don't see why
-we should fail in this case, looks like some optional firmware ability
-that could be skipped.
+Quoting Bjorn Andersson (2021-07-21 20:07:38)
+> The USB/DP combo PHY exposes the "qmp_dp_phy_pll_link_clk" and
+> "qmp_dp_phy_pll_vco_div_clk" clocks, that are consumed by the display
+> clock controller. But for boards with multiple enabled QMP USB/DP combo
+> instances the hard coded names collides - and hence only the first
+> probed device is allowed to register.
+>
+> Given that clocks are no longer reference globally by name and it's
+> possible to replace the hard coded names by something unique, but still
+> user friendly.
+>
+> The two new clock names are based on dev_name() and results in names
+> such as "88ee000.phy::link_clk" and "88ee000.phy::vco_div_clk".
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
 
-Also with additional logging there is
-```
-[    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
-[    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
-[    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
-[    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
-```
-so exact branch could be seen.
----
- drivers/net/wireless/ath/ath10k/core.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 2f9be182fbfb..d9fd5294e142 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2691,8 +2691,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
- 	u32 len, remaining_len;
- 
- 	hw_mem = ath10k_coredump_get_mem_layout(ar);
--	if (!hw_mem)
-+	if (!hw_mem) {
-+		ath10k_warn(ar, "No hardware memory");
- 		return -ENOMEM;
-+	}
- 
- 	for (i = 0; i < hw_mem->region_table.size; i++) {
- 		tmp = &hw_mem->region_table.regions[i];
-@@ -2702,8 +2704,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
- 		}
- 	}
- 
--	if (!mem_region)
-+	if (!mem_region) {
-+		ath10k_warn(ar, "No memory region");
- 		return -ENOMEM;
-+	}
- 
- 	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
- 		if (ar->wmi.mem_chunks[i].req_id ==
-@@ -2917,7 +2921,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		if (status) {
- 			ath10k_warn(ar, "failed to copy target iram contents: %d",
- 				    status);
--			goto err_hif_stop;
- 		}
- 	}
- 
--- 
-2.32.0
-
+Maybe we should make this a clk flag like CLK_NAME_PREFIX_DEVNAME so
+that clk_init_data::name is prefixed with dev_name() so the caller
+doesn't have to do the concatenation themselves.
