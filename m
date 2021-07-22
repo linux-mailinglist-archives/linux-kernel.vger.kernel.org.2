@@ -2,131 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0113E3D1FE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 10:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C3F3D1FE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 10:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhGVHyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 03:54:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52256 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230048AbhGVHyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 03:54:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23E486120C;
-        Thu, 22 Jul 2021 08:34:26 +0000 (UTC)
-Date:   Thu, 22 Jul 2021 14:04:18 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, Greg KH <greg@kroah.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Richard Laing <richard.laing@alliedtelesis.co.nz>
-Subject: Re: linux-next: manual merge of the mhi tree with the net-next tree
-Message-ID: <20210722083418.GA4446@workstation>
-References: <20210716133738.0d163701@canb.auug.org.au>
- <20210722143306.305aed6f@canb.auug.org.au>
+        id S231222AbhGVHzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 03:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230048AbhGVHzA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 03:55:00 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0F2C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 01:35:35 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id x192so7178718ybe.6
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 01:35:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KllKHw6d+WPSOXpmvy15856ZmrjGsxW2iASdgvJx0nE=;
+        b=IddLDRIXkQ8kAFb2rpcmLJS7qqi7RmdEnwI9rN3QPJguzsqXl5MXdswc1RQ7/MtkCQ
+         YZQZ0XYxJo8WbCzaOsIsn4f/oYB5fNwqpqgmrJrSpnnAFhJ9nn75BnPGnUVYNxSDKts0
+         OHyBUaqtV0BF9gXsqPoG6YL3QzF+Y9FuZsq7g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KllKHw6d+WPSOXpmvy15856ZmrjGsxW2iASdgvJx0nE=;
+        b=bSflgCq8Qgr9l8u9er37WPtg9VCMXWXsRXyvW0pPHwbXOg0wNe2FZbSSSF2FIrBpi4
+         eUVshoJQ92S+VPzFmhp9vhUGtfoAGFrNCLvBfAzXSvcOSxpRBk3l6p2pJj1htAPUtomv
+         gpXWRjdl9pzZJd1yDECuUMEiYmh7NSdJySOquuFpjtQAMdKpRYX4Io4fmpLLrjYmQNtC
+         JeGBai1rNBxsKw6zLHxMV39Nuv2Wnp/LWWwJ2m9m/xsCMHi1JeXzKsN0Jma+yniTi886
+         naiZTT6pLo1NFGQXviVuC1CgpPyLt/ziaETecexy9Fnz8NUv/p5kzJW6RcKtUHjabnrd
+         RbzA==
+X-Gm-Message-State: AOAM533sFFsJRTcmcLriqDQgDH00uhH9aIJIUe3G7TYKUIsqH3y5VhmC
+        jg/thrCV+F8AVXN0TTsC9Hsl6YgB4YctuQMR0UQV
+X-Google-Smtp-Source: ABdhPJyLR7b0ZrhBWqk7asdINPvehj9f9K1NUxr0+x/0+EepcQ/CJdz9tdgPDIjR+LSRsU2sVJTkGvqTuxlqCrijzzo=
+X-Received: by 2002:a05:6902:1142:: with SMTP id p2mr48483545ybu.147.1626942934542;
+ Thu, 22 Jul 2021 01:35:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210722143306.305aed6f@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <87bl6yrcmd.fsf@igel.home> <mhng-e14c3232-cc4d-4146-8c93-c60ec81ed272@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-e14c3232-cc4d-4146-8c93-c60ec81ed272@palmerdabbelt-glaptop>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Thu, 22 Jul 2021 01:35:23 -0700
+Message-ID: <CAOnJCU+Ss0cO1mqr=GDVnpxV075uR+KipSnr7dN93099dAH+vQ@mail.gmail.com>
+Subject: Re: [PATCH -next v2] riscv: add VMAP_STACK overflow detection
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>, tongtiangen@huawei.com,
+        Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 02:33:06PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Fri, 16 Jul 2021 13:37:38 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Wed, Jul 21, 2021 at 11:12 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Mon, 19 Jul 2021 00:23:06 PDT (-0700), schwab@linux-m68k.org wrote:
+> > On Jul 19 2021, tongtiangen wrote:
 > >
-> > Today's linux-next merge of the mhi tree got a conflict in:
-> > 
-> >   drivers/bus/mhi/pci_generic.c
-> > 
-> > between commit:
-> > 
-> >   5c2c85315948 ("bus: mhi: pci-generic: configurable network interface MRU")
-> > 
-> > from the net-next tree and commit:
-> > 
-> >   156ffb7fb7eb ("bus: mhi: pci_generic: Apply no-op for wake using sideband wake boolean")
-> > 
-> > from the mhi tree.
-> > 
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> > 
-> > 
-> > diff --cc drivers/bus/mhi/pci_generic.c
-> > index 19413daa0917,8bc6149249e3..000000000000
-> > --- a/drivers/bus/mhi/pci_generic.c
-> > +++ b/drivers/bus/mhi/pci_generic.c
-> > @@@ -32,7 -32,8 +32,9 @@@
-> >    * @edl: emergency download mode firmware path (if any)
-> >    * @bar_num: PCI base address register to use for MHI MMIO register space
-> >    * @dma_data_width: DMA transfer word size (32 or 64 bits)
-> >  + * @mru_default: default MRU size for MBIM network packets
-> > +  * @sideband_wake: Devices using dedicated sideband GPIO for wakeup instead
-> > +  *		   of inband wake support (such as sdx24)
-> >    */
-> >   struct mhi_pci_dev_info {
-> >   	const struct mhi_controller_config *config;
-> > @@@ -41,7 -42,7 +43,8 @@@
-> >   	const char *edl;
-> >   	unsigned int bar_num;
-> >   	unsigned int dma_data_width;
-> >  +	unsigned int mru_default;
-> > + 	bool sideband_wake;
-> >   };
-> >   
-> >   #define MHI_CHANNEL_CONFIG_UL(ch_num, ch_name, el_count, ev_ring) \
-> > @@@ -254,7 -256,7 +258,8 @@@ static const struct mhi_pci_dev_info mh
-> >   	.config = &modem_qcom_v1_mhiv_config,
-> >   	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> >   	.dma_data_width = 32,
-> >  +	.mru_default = 32768
-> > + 	.sideband_wake = false,
-> >   };
-> >   
-> >   static const struct mhi_pci_dev_info mhi_qcom_sdx24_info = {
-> > @@@ -643,11 -686,13 +689,14 @@@ static int mhi_pci_probe(struct pci_de
-> >   	mhi_cntrl->status_cb = mhi_pci_status_cb;
-> >   	mhi_cntrl->runtime_get = mhi_pci_runtime_get;
-> >   	mhi_cntrl->runtime_put = mhi_pci_runtime_put;
-> > - 	mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
-> > - 	mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
-> > - 	mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
-> >  +	mhi_cntrl->mru = info->mru_default;
-> >   
-> > + 	if (info->sideband_wake) {
-> > + 		mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
-> > + 		mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
-> > + 		mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
-> > + 	}
-> > + 
-> >   	err = mhi_pci_claim(mhi_cntrl, info->bar_num, DMA_BIT_MASK(info->dma_data_width));
-> >   	if (err)
-> >   		return err;
-> 
-> This is now a conflict between the char-misc.current tree (where commit
-> 156ffb7fb7eb is now 56f6f4c4eb2a) and the net-next tree.
+> >> On 2021/7/17 14:55, Andreas Schwab wrote:
+> >>> Please use
+> >>> https://download.opensuse.org/repositories/home:/Andreas_Schwab:/riscv:/jeos/images/openSUSE-Tumbleweed-RISC-V-JeOS-efi.riscv64.raw.xz
+> >>> and run it in qemu with u-boot as kernel.
+> >>>
+> >>> Andreas.
+> >>>
+> >>
+> >> Hi andreas:
+> >> I used today's latest mainline code and .config provided by you, and I
+> >> can't reproduce this panic.
+> >
+> > Did you test it like I said above?
+> >
+> > Andreas.
+>
+> I'm getting this on and off, with just
+>
+> CONFIG_VMAP_STACK=y
+>
+> on top of defconfig, when running on QEMU.  It's not showing up right
+> now: I'd thought it was an issue with that initrd patch, but it went
+> away when I re-ran the tests so I'm guessing it's something
+> non-deterministic.  I'll try to take a look if it comes back.
+>
 
-Yes, this is expected as I said before.
+I got it very frequently on beagleV with the following branch & config.
+https://github.com/esmil/linux/commits/beaglev
 
-Dave, please consider dropping/reverting the patch. The MHI patch should
-go through char-misc tree.
+beaglev_defconfig
 
-Thanks,
-Mani
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
+Disabling CONFIG_VMAP_STACK avoids the crash.
+
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
 
+
+-- 
+Regards,
+Atish
