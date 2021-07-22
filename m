@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AD53D2945
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068EE3D2927
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhGVQC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:02:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35868 "EHLO mail.kernel.org"
+        id S233379AbhGVQBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:01:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233578AbhGVP7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:59:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61E3061396;
-        Thu, 22 Jul 2021 16:39:55 +0000 (UTC)
+        id S233640AbhGVP7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:59:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E06B6136D;
+        Thu, 22 Jul 2021 16:39:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971996;
-        bh=xRfrSwOkKdlgNeMPUobboihd/W6Af5BoXt2BvE87T+Q=;
+        s=korg; t=1626971998;
+        bh=vkWlvfb4ycAPPd45vepT5PJubllMfFDd1nNu40uhXqs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kd1wO8owIQKxUnt+5ZLzR5tf7Joaf9mh+WQb7uwHEx7YCfEhFF68MCcbJqp6GkKDo
-         d5hGZ7CHrMi2ZFuL4yK4WoXiqljZgCqXxXViI/u0aAXs6096tOdzJ8J4p4UjJw6oXp
-         XErOIFO2yes0y0UdCiQKB1PzDN6+MT05jMXxJXyM=
+        b=bgaGCuxR/ziLhTAM/KFQ1fpqevFykqSCzpJjqTzjHeqZtLzBP8BsqCh/zmXFgFDu7
+         FUR9zNtCND49he386Vlcw+yZvkgNoT1KhT6bi1Qm5bJNjNhdQI+nl8wAcOE2blwkc1
+         6sHMqD2WmT9HTpZWPSSVxjr1DEBw+v7tZ43O6fm8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Ovechkin <ovov@yandex-team.ru>,
-        Dmitry Yakunin <zeil@yandex-team.ru>,
-        Eric Dumazet <edumazet@google.com>,
+        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 106/125] net: send SYNACK packet with accepted fwmark
-Date:   Thu, 22 Jul 2021 18:31:37 +0200
-Message-Id: <20210722155628.222212323@linuxfoundation.org>
+Subject: [PATCH 5.10 107/125] net: validate lwtstate->data before returning from skb_tunnel_info()
+Date:   Thu, 22 Jul 2021 18:31:38 +0200
+Message-Id: <20210722155628.260260833@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
 References: <20210722155624.672583740@linuxfoundation.org>
@@ -41,35 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Ovechkin <ovov@yandex-team.ru>
+From: Taehee Yoo <ap420073@gmail.com>
 
-commit 43b90bfad34bcb81b8a5bc7dc650800f4be1787e upstream.
+commit 67a9c94317402b826fc3db32afc8f39336803d97 upstream.
 
-commit e05a90ec9e16 ("net: reflect mark on tcp syn ack packets")
-fixed IPv4 only.
+skb_tunnel_info() returns pointer of lwtstate->data as ip_tunnel_info
+type without validation. lwtstate->data can have various types such as
+mpls_iptunnel_encap, etc and these are not compatible.
+So skb_tunnel_info() should validate before returning that pointer.
 
-This part is for the IPv6 side.
+Splat looks like:
+BUG: KASAN: slab-out-of-bounds in vxlan_get_route+0x418/0x4b0 [vxlan]
+Read of size 2 at addr ffff888106ec2698 by task ping/811
 
-Fixes: e05a90ec9e16 ("net: reflect mark on tcp syn ack packets")
-Signed-off-by: Alexander Ovechkin <ovov@yandex-team.ru>
-Acked-by: Dmitry Yakunin <zeil@yandex-team.ru>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+CPU: 1 PID: 811 Comm: ping Not tainted 5.13.0+ #1195
+Call Trace:
+ dump_stack_lvl+0x56/0x7b
+ print_address_description.constprop.8.cold.13+0x13/0x2ee
+ ? vxlan_get_route+0x418/0x4b0 [vxlan]
+ ? vxlan_get_route+0x418/0x4b0 [vxlan]
+ kasan_report.cold.14+0x83/0xdf
+ ? vxlan_get_route+0x418/0x4b0 [vxlan]
+ vxlan_get_route+0x418/0x4b0 [vxlan]
+ [ ... ]
+ vxlan_xmit_one+0x148b/0x32b0 [vxlan]
+ [ ... ]
+ vxlan_xmit+0x25c5/0x4780 [vxlan]
+ [ ... ]
+ dev_hard_start_xmit+0x1ae/0x6e0
+ __dev_queue_xmit+0x1f39/0x31a0
+ [ ... ]
+ neigh_xmit+0x2f9/0x940
+ mpls_xmit+0x911/0x1600 [mpls_iptunnel]
+ lwtunnel_xmit+0x18f/0x450
+ ip_finish_output2+0x867/0x2040
+ [ ... ]
+
+Fixes: 61adedf3e3f1 ("route: move lwtunnel state to dst_entry")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/tcp_ipv6.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/net/dst_metadata.h |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -540,7 +540,7 @@ static int tcp_v6_send_synack(const stru
- 		opt = ireq->ipv6_opt;
- 		if (!opt)
- 			opt = rcu_dereference(np->opt);
--		err = ip6_xmit(sk, skb, fl6, sk->sk_mark, opt,
-+		err = ip6_xmit(sk, skb, fl6, skb->mark ? : sk->sk_mark, opt,
- 			       tclass, sk->sk_priority);
- 		rcu_read_unlock();
- 		err = net_xmit_eval(err);
+--- a/include/net/dst_metadata.h
++++ b/include/net/dst_metadata.h
+@@ -45,7 +45,9 @@ skb_tunnel_info(const struct sk_buff *sk
+ 		return &md_dst->u.tun_info;
+ 
+ 	dst = skb_dst(skb);
+-	if (dst && dst->lwtstate)
++	if (dst && dst->lwtstate &&
++	    (dst->lwtstate->type == LWTUNNEL_ENCAP_IP ||
++	     dst->lwtstate->type == LWTUNNEL_ENCAP_IP6))
+ 		return lwt_tun_info(dst->lwtstate);
+ 
+ 	return NULL;
 
 
