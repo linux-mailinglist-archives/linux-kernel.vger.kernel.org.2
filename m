@@ -2,198 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C453D25D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955843D25D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhGVNtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:49:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232416AbhGVNsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:48:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F14936127C;
-        Thu, 22 Jul 2021 14:29:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626964169;
-        bh=EOoIV2dalOPoEOZSfB56YVD829AJM/wltGQv+39YEKM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eJPc+NbmXXXaKlj20nVhfscCVtIKkyAxPO7AioVBZYsLewdsbmpQIaYydtmRbVCuH
-         rd9PFjnJ/59OdaKmCuXeE0a/CM7uK6dJbxFhqCjvejP+RyaEAM26TCNCs5kNzkSleJ
-         z/z9I9kmy+XJ9YpsNVpzr58vQTXBcjzv0vdYR1Z5sRFgZyqMuGi4kpCBGG5iFMA5Ti
-         EeMjmsZwypvBDlya1Ck8MJ9MedeQR4CgiH9PLKEDqIjR/2mPGFcYGV//E/t8QkGrzT
-         HHnr14zixu2TEZr5MAZ6tcVgBaGyAGYZ8C2AGYPPKMSE6CCB5/rxFDreW1yfcqCItu
-         k5Su1ydchP2zA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, Christoph Hellwig <hch@lst.de>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: [PATCH net-next v6 4/6] net: socket: remove register_gifconf
-Date:   Thu, 22 Jul 2021 16:29:01 +0200
-Message-Id: <20210722142903.213084-5-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210722142903.213084-1-arnd@kernel.org>
-References: <20210722142903.213084-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232341AbhGVNvm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 09:51:42 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:49782 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230306AbhGVNvk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:51:40 -0400
+Received: from smtpclient.apple (p5b3d2eb8.dip0.t-ipconnect.de [91.61.46.184])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 536BECECDD;
+        Thu, 22 Jul 2021 16:32:14 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH v2 1/3] Bluetooth: hci_h5: add WAKEUP_DISABLE flag
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210715225146.v2.1.I68649745bd11a83265f1e816bf34ecc82775e95a@changeid>
+Date:   Thu, 22 Jul 2021 16:32:13 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Hilda Wu <hildawu@realtek.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <57AE120A-78AE-4990-8D7F-BA8D8077B610@holtmann.org>
+References: <20210715225146.v2.1.I68649745bd11a83265f1e816bf34ecc82775e95a@changeid>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Archie,
 
-Since dynamic registration of the gifconf() helper is only used for
-IPv4, and this can not be in a loadable module, this can be simplified
-noticeably by turning it into a direct function call as a preparation
-for cleaning up the compat handling.
+> Some RTL chips resets the FW on suspend, so wakeup is disabled on
+> those chips. This patch introduces this WAKEUP_DISABLE flag so that
+> chips that doesn't reset FW on suspend can leave the flag unset and
+> is allowed to wake the host.
+> 
+> This patch also left RTL8822 WAKEUP_DISABLE flag unset, therefore
+> allowing it to wake the host, and preventing reprobing on resume.
+> 
+> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> Reviewed-by: Hilda Wu <hildawu@realtek.com>
+> 
+> ---
+> 
+> Changes in v2:
+> * Remove unnecessary variable
+> 
+> drivers/bluetooth/hci_h5.c | 83 +++++++++++++++++++++++++++-----------
+> 1 file changed, 59 insertions(+), 24 deletions(-)
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-changes in v6:
-- split register_gifconf from compat changes
----
- include/linux/inetdevice.h |  9 ++++++++
- include/linux/netdevice.h  |  8 -------
- net/core/dev_ioctl.c       | 43 +++++++++-----------------------------
- net/ipv4/devinet.c         |  4 +---
- 4 files changed, 20 insertions(+), 44 deletions(-)
+so the set does not apply cleanly to bluetooth-next
 
-diff --git a/include/linux/inetdevice.h b/include/linux/inetdevice.h
-index 53aa0343bf69..67e042932681 100644
---- a/include/linux/inetdevice.h
-+++ b/include/linux/inetdevice.h
-@@ -178,6 +178,15 @@ static inline struct net_device *ip_dev_find(struct net *net, __be32 addr)
- 
- int inet_addr_onlink(struct in_device *in_dev, __be32 a, __be32 b);
- int devinet_ioctl(struct net *net, unsigned int cmd, struct ifreq *);
-+#ifdef CONFIG_INET
-+int inet_gifconf(struct net_device *dev, char __user *buf, int len, int size);
-+#else
-+static inline int inet_gifconf(struct net_device *dev, char __user *buf,
-+			       int len, int size)
-+{
-+	return 0;
-+}
-+#endif
- void devinet_init(void);
- struct in_device *inetdev_by_index(struct net *, int);
- __be32 inet_select_addr(const struct net_device *dev, __be32 dst, int scope);
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 42f6f866d5f3..6630a9f0b0f0 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -3289,14 +3289,6 @@ static inline bool dev_has_header(const struct net_device *dev)
- 	return dev->header_ops && dev->header_ops->create;
- }
- 
--typedef int gifconf_func_t(struct net_device * dev, char __user * bufptr,
--			   int len, int size);
--int register_gifconf(unsigned int family, gifconf_func_t *gifconf);
--static inline int unregister_gifconf(unsigned int family)
--{
--	return register_gifconf(family, NULL);
--}
--
- #ifdef CONFIG_NET_FLOW_LIMIT
- #define FLOW_LIMIT_HISTORY	(1 << 7)  /* must be ^2 and !overflow buckets */
- struct sd_flow_limit {
-diff --git a/net/core/dev_ioctl.c b/net/core/dev_ioctl.c
-index 62f45da7ecfe..c22c3dc15ce9 100644
---- a/net/core/dev_ioctl.c
-+++ b/net/core/dev_ioctl.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/kmod.h>
- #include <linux/netdevice.h>
-+#include <linux/inetdevice.h>
- #include <linux/etherdevice.h>
- #include <linux/rtnetlink.h>
- #include <linux/net_tstamp.h>
-@@ -25,26 +26,6 @@ static int dev_ifname(struct net *net, struct ifreq *ifr)
- 	return netdev_get_name(net, ifr->ifr_name, ifr->ifr_ifindex);
- }
- 
--static gifconf_func_t *gifconf_list[NPROTO];
--
--/**
-- *	register_gifconf	-	register a SIOCGIF handler
-- *	@family: Address family
-- *	@gifconf: Function handler
-- *
-- *	Register protocol dependent address dumping routines. The handler
-- *	that is passed must not be freed or reused until it has been replaced
-- *	by another handler.
-- */
--int register_gifconf(unsigned int family, gifconf_func_t *gifconf)
--{
--	if (family >= NPROTO)
--		return -EINVAL;
--	gifconf_list[family] = gifconf;
--	return 0;
--}
--EXPORT_SYMBOL(register_gifconf);
--
- /*
-  *	Perform a SIOCGIFCONF call. This structure will change
-  *	size eventually, and there is nothing I can do about it.
-@@ -72,19 +53,15 @@ int dev_ifconf(struct net *net, struct ifconf *ifc, int size)
- 
- 	total = 0;
- 	for_each_netdev(net, dev) {
--		for (i = 0; i < NPROTO; i++) {
--			if (gifconf_list[i]) {
--				int done;
--				if (!pos)
--					done = gifconf_list[i](dev, NULL, 0, size);
--				else
--					done = gifconf_list[i](dev, pos + total,
--							       len - total, size);
--				if (done < 0)
--					return -EFAULT;
--				total += done;
--			}
--		}
-+		int done;
-+		if (!pos)
-+			done = inet_gifconf(dev, NULL, 0, size);
-+		else
-+			done = inet_gifconf(dev, pos + total,
-+					    len - total, size);
-+		if (done < 0)
-+			return -EFAULT;
-+		total += done;
- 	}
- 
- 	/*
-diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
-index 94b648d9eaff..c82aded8da7d 100644
---- a/net/ipv4/devinet.c
-+++ b/net/ipv4/devinet.c
-@@ -1243,7 +1243,7 @@ int devinet_ioctl(struct net *net, unsigned int cmd, struct ifreq *ifr)
- 	return ret;
- }
- 
--static int inet_gifconf(struct net_device *dev, char __user *buf, int len, int size)
-+int inet_gifconf(struct net_device *dev, char __user *buf, int len, int size)
- {
- 	struct in_device *in_dev = __in_dev_get_rtnl(dev);
- 	const struct in_ifaddr *ifa;
-@@ -2766,8 +2766,6 @@ void __init devinet_init(void)
- 		INIT_HLIST_HEAD(&inet_addr_lst[i]);
- 
- 	register_pernet_subsys(&devinet_ops);
--
--	register_gifconf(PF_INET, inet_gifconf);
- 	register_netdevice_notifier(&ip_netdev_notifier);
- 
- 	queue_delayed_work(system_power_efficient_wq, &check_lifetime_work, 0);
--- 
-2.29.2
+Applying: Bluetooth: hci_h5: Add runtime suspend
+error: patch failed: drivers/bluetooth/hci_h5.c:11
+error: drivers/bluetooth/hci_h5.c: patch does not apply
+
+And I am really close to not accepting any patches for hci_h5.c anymore. This thing turns into crazy hacking and nobody is taking my hint to redo this as clean H:5 3-Wire serdev standalone driver.
+
+Regards
+
+Marcel
 
