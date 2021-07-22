@@ -2,125 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9312B3D1D1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 06:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53BD3D1D20
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 06:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbhGVEBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 00:01:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42871 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229530AbhGVEBb (ORCPT
+        id S229602AbhGVEGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 00:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhGVEGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 00:01:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626928926;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Np6AqHl19Qnq+fc5f537Pv3JR0dA3FodDzznrUqUHhY=;
-        b=FsXiL2oiSzcD+cmasOKS1IJnYxS6DXFlpVywpFcG1c0GDf+n28ODTfU3oCWzoNYiaBqg9K
-        V3KbqoRYOfkpfaHX/qSeG3kqz8wwi4P1R/JkuSpj+ES7yI330/8R2MuVvJdNTdSydMIciu
-        VQSbD/fsu5/rlfQYklZT73lseTH4wOA=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-i4mYyLp0NEeGk8vXOVNawg-1; Thu, 22 Jul 2021 00:42:05 -0400
-X-MC-Unique: i4mYyLp0NEeGk8vXOVNawg-1
-Received: by mail-wr1-f71.google.com with SMTP id r18-20020adfce920000b029013bbfb19640so1928307wrn.17
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 21:42:05 -0700 (PDT)
+        Thu, 22 Jul 2021 00:06:12 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5A2C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 21:46:47 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id u14so5835383ljh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 21:46:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m+ImiuWzNqmI8K2PIEg02Mz48WRBGIbjXfLvvXNUNok=;
+        b=uWoobcJ6wPxdEWQ+zIEubTT/8UDlnfjGagPUyBfi8xaCA10fP6SwaCCOkKMCSIDpFf
+         ZzipP3NUALF4BWTE5GSTZtmVLDEdZTH/y+k3wWL0aQTTTkvi79qLts3pRTsakOypiQRm
+         nWN5h8C7U4ia0J/3UaftG5jI4Xp7Iw7GzacJtRjtEKD6fXzOOT4+1r9fWjrCKEXar4xS
+         P+fqjf21PBlGMVJq44L+ZIy8IHW2txYgxm8XbnsJ8B9K/gwnwJVVHxakfe7H8JqohLpF
+         9c+kZPfZsUt5SapY+TluJ34w4B9yJHd9aESho97AfZQiy9g1oAgftcltdWWIcg0+j2Is
+         RUOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Np6AqHl19Qnq+fc5f537Pv3JR0dA3FodDzznrUqUHhY=;
-        b=kVb0uhQkoOAAzA4mP2QCe7YsE2TsEeAB1Nd1nP8HtAOkM6eSCFr1nw94K6BAtbRBrq
-         NO2RD0enhdix+Tn3ZEP0qvNLA4dwSELD/30Gy9aM+JNSCR2zwPZP/viQTez8GUPigBHj
-         SiSsC0SOFcjtoCVGCvatktCO3A1RXiXYNZ1uJpsL4mmXo6WD62HQmNLmRc6x3nRGduoK
-         QQqXICuwCprisfeT0nKGsdFObixDoxBukQ3qwcBfLNoc+VHlEB681UkoWZNSvVSbPOKD
-         68FzObVcmPrwUvT6zJMiXDb1Y9FiqLpqd/Gg9cXIL7ZJ+WY53ky+6OBVgiNNgbLWSCYt
-         PjRw==
-X-Gm-Message-State: AOAM5326h8x3GPYapkFIU9EQ/1nyXX3jboolA651gljSw0jwf8KLyVx9
-        6pzwhFGNIOvIvVsrOznpl5CeYkEIs38bR5FVBzLFmwT2ii4mU4yW5WD+4A6RmrSr+KzmNqK0C6r
-        OuyzkiNcFkoti7pzXtH+hjMAyP332gtg0rflvkq87A5WW0wV8j1c5D49qDqNdubqfn0MD7cYLgh
-        E=
-X-Received: by 2002:a7b:ca43:: with SMTP id m3mr40451645wml.74.1626928924104;
-        Wed, 21 Jul 2021 21:42:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyUBIHXzIjYaGO626+bK+iEh/ZLJSTjEs8WPcf4a0Ua/24DBKA4+HNNFqg4Xi4bHPzxIz4asg==
-X-Received: by 2002:a7b:ca43:: with SMTP id m3mr40451618wml.74.1626928923871;
-        Wed, 21 Jul 2021 21:42:03 -0700 (PDT)
-Received: from minerva.home ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id e6sm33694588wrg.18.2021.07.21.21.42.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 21:42:02 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        kernel test robot <lkp@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        He Ying <heying24@huawei.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>
-Subject: [PATCH] drivers/firmware: fix sysfb depends to prevent build failures
-Date:   Thu, 22 Jul 2021 06:41:55 +0200
-Message-Id: <20210722044155.864600-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m+ImiuWzNqmI8K2PIEg02Mz48WRBGIbjXfLvvXNUNok=;
+        b=pLUIQ9QBNU9QcwggNH1HpALhEJDZ89FEZfV6mxon8yzAw0gHpBVOJpq+KqGXDf1Wzp
+         CgejR7p4mhLCPZ73xH4sqb4IZqser806QOXuGQZj+tXk0ODkl+/D7nSBzG0JKHqunDMm
+         VieDVvrPpukuZ20iduIr8pKSFGBnucs7J2CU+bB6c7mRW0sgJI75iRztlK7pcbbfpwdO
+         9cLxQoecbaiRHEnNQfPUg/SEBPH89zfdRBiUAV0QRoziS+rpUkwbVonhfV4xcPl7+Urg
+         Mbs7ey+qNbXkSX1mtLDTlLoOgoiMlLEbExA9WSWyUA6UnPh50VAjqnVx/m5QrWbdVRvw
+         UWNA==
+X-Gm-Message-State: AOAM530sSuOanJMWS5vusT8sgjeoNWUTysRg2AeEBbEredrnLAMV5poD
+        fpdx0LzOxpFGULUKcRG0cqwrmTFANnzo43+U4RZ+Ig==
+X-Google-Smtp-Source: ABdhPJwpIXZELiOM8RYuH/iMiY6CUV6QgKd0XdEPCLARV9RJGVi/GRVX1zk7gJc80kEYUqwKhvkI+dY2lKZReh8xfjY=
+X-Received: by 2002:a2e:5348:: with SMTP id t8mr32751947ljd.343.1626929205224;
+ Wed, 21 Jul 2021 21:46:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210721160258.7024-1-a.fatoum@pengutronix.de>
+In-Reply-To: <20210721160258.7024-1-a.fatoum@pengutronix.de>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 22 Jul 2021 10:16:32 +0530
+Message-ID: <CAFA6WYPz048E7+LU=jefU=RrppuYd9Dgn1+jD6Dn8G=J9UJtpw@mail.gmail.com>
+Subject: Re: [PATCH v2] KEYS: trusted: fix use as module when CONFIG_TCG_TPM=m
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        kernel <kernel@pengutronix.de>,
+        Andreas Rammhold <andreas@rammhold.de>,
+        David Gstir <david@sigma-star.at>,
+        Richard Weinberger <richard@nod.at>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Generic System Framebuffers support is built when the COMPILE_TEST
-option is enabled. But this wrongly assumes that all the architectures
-declare a struct screen_info.
+On Wed, 21 Jul 2021 at 21:34, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>
+> Since commit 5d0682be3189 ("KEYS: trusted: Add generic trusted keys
+> framework"), trusted.ko built with CONFIG_TCG_TPM=CONFIG_TRUSTED_KEYS=m
+> will not register the TPM trusted key type at runtime.
+>
+> This is because, after that rework, CONFIG_DEPENDENCY of the TPM
+> and TEE backends were checked with #ifdef, but that's only true
+> when they're built-in.
+>
+> Fix this by introducing two new boolean Kconfig symbols:
+> TRUSTED_KEYS_TPM and TRUSTED_KEYS_TEE with the appropriate
+> dependencies and use them to check which backends are available.
+>
+> This also has a positive effect on user experience:
+>
+>  - It's now possible to use TEE trusted keys without CONFIG_TCG_TPM
+>  - It's now possible to enable CONFIG_TCG_TPM, but exclude TPM from
+>    available trust sources
+>  - TEE=m && TRUSTED_KEYS=y no longer leads to TEE support
+>    being silently dropped
+>
+> Any code depending on the TPM trusted key backend or symbols exported
+> by it will now need to explicitly state that it
+>
+>   depends on TRUSTED_KEYS && TRUSTED_KEYS_TPM
+>
+> The latter to ensure the dependency is built and the former to ensure
+> it's reachable for module builds. This currently only affects
+> CONFIG_ASYMMETRIC_TPM_KEY_SUBTYPE, so it's fixed up here as well.
+>
+> Reported-by: Andreas Rammhold <andreas@rammhold.de>
+> Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> ---
+>
+> (Implicit) v1 was as a preparatory patch for CAAM trusted keys[1] with the
+> goal of fixing the Kconfig inflexibility after the TEE trusted key rework.
+>
+> Unbeknownst to me, it also fixes a regression, which was later
+> reported by Andreas[2] along with a patch.
+>
+> I split out the fix from the CAAM series and adjusted the commit
+> message to explain the regression.
+>
+> v1 -> v2:
+>   - Move rest of TPM-related selects from TRUSTED_KEYS to
+>     TRUSTED_KEYS_TPM (Sumit)
+>   - Remove left-over line in Makefile (Sumit)
+>   - added Fixes: tag
+>   - adjust commit message to reference the regression reported
+>     by Andreas
+>   - have ASYMMETRIC_TPM_KEY_SUBTYPE depend on TRUSTED_KEYS_TPM,
+>     because it references global symbols that are exported
+>     by the trusted key TPM backend.
+>
+> [1]: https://lore.kernel.org/linux-integrity/f8285eb0135ba30c9d846cf9dd395d1f5f8b1efc.1624364386.git-series.a.fatoum@pengutronix.de/
+> [2]: https://lore.kernel.org/linux-integrity/20210719091335.vwfebcpkf4pag3wm@wrt/T/#t
+>
+> To: Jarkko Sakkinen <jarkko@kernel.org>
+> To: James Morris <jmorris@namei.org>
+> To: "Serge E. Hallyn" <serge@hallyn.com>
+> To: James Bottomley <jejb@linux.ibm.com>
+> To: Mimi Zohar <zohar@linux.ibm.com>
+> To: Sumit Garg <sumit.garg@linaro.org>
+> To: David Howells <dhowells@redhat.com>
+> To: Herbert Xu <herbert@gondor.apana.org.au>
+> To: "David S. Miller" <davem@davemloft.net>
+> Cc: David Gstir <david@sigma-star.at>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: keyrings@vger.kernel.org
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-security-module@vger.kernel.org
+> Cc: linux-integrity@vger.kernel.org
+> ---
+>  crypto/asymmetric_keys/Kconfig            |  2 +-
+>  security/keys/Kconfig                     | 18 ++++++--------
+>  security/keys/trusted-keys/Kconfig        | 29 +++++++++++++++++++++++
+>  security/keys/trusted-keys/Makefile       |  8 +++----
+>  security/keys/trusted-keys/trusted_core.c |  4 ++--
+>  5 files changed, 43 insertions(+), 18 deletions(-)
+>  create mode 100644 security/keys/trusted-keys/Kconfig
+>
 
-This is true for most architectures, but at least the following do not:
-arc, m68k, microblaze, openrisc, parisc and s390.
+Looks good to me apart from the minor comment below. With that fixed:
 
-By attempting to make this compile testeable on all architectures, it
-leads to linking errors as reported by the kernel test robot for parisc:
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
 
-  All errors (new ones prefixed by >>):
+> diff --git a/crypto/asymmetric_keys/Kconfig b/crypto/asymmetric_keys/Kconfig
+> index 1f1f004dc757..8886eddbf881 100644
+> --- a/crypto/asymmetric_keys/Kconfig
+> +++ b/crypto/asymmetric_keys/Kconfig
+> @@ -25,7 +25,7 @@ config ASYMMETRIC_PUBLIC_KEY_SUBTYPE
+>  config ASYMMETRIC_TPM_KEY_SUBTYPE
+>         tristate "Asymmetric TPM backed private key subtype"
+>         depends on TCG_TPM
+> -       depends on TRUSTED_KEYS
+> +       depends on TRUSTED_KEYS && TRUSTED_KEYS_TPM
+>         select CRYPTO_HMAC
+>         select CRYPTO_SHA1
+>         select CRYPTO_HASH_INFO
+> diff --git a/security/keys/Kconfig b/security/keys/Kconfig
+> index 64b81abd087e..9ec302962fe2 100644
+> --- a/security/keys/Kconfig
+> +++ b/security/keys/Kconfig
+> @@ -70,23 +70,19 @@ config BIG_KEYS
+>
+>  config TRUSTED_KEYS
+>         tristate "TRUSTED KEYS"
+> -       depends on KEYS && TCG_TPM
+> -       select CRYPTO
+> -       select CRYPTO_HMAC
+> -       select CRYPTO_SHA1
+> -       select CRYPTO_HASH_INFO
+> -       select ASN1_ENCODER
+> -       select OID_REGISTRY
+> -       select ASN1
+> +       depends on KEYS
+>         help
+>           This option provides support for creating, sealing, and unsealing
+>           keys in the kernel. Trusted keys are random number symmetric keys,
+> -         generated and RSA-sealed by the TPM. The TPM only unseals the keys,
+> -         if the boot PCRs and other criteria match.  Userspace will only ever
+> -         see encrypted blobs.
+> +         generated and sealed by a trust source selected at kernel boot-time.
+> +         Userspace will only ever see encrypted blobs.
+>
+>           If you are unsure as to whether this is required, answer N.
+>
+> +if TRUSTED_KEYS
+> +source "security/keys/trusted-keys/Kconfig"
+> +endif
+> +
+>  config ENCRYPTED_KEYS
+>         tristate "ENCRYPTED KEYS"
+>         depends on KEYS
+> diff --git a/security/keys/trusted-keys/Kconfig b/security/keys/trusted-keys/Kconfig
+> new file mode 100644
+> index 000000000000..c163cfeedff6
+> --- /dev/null
+> +++ b/security/keys/trusted-keys/Kconfig
+> @@ -0,0 +1,29 @@
+> +config TRUSTED_KEYS_TPM
+> +       bool "TPM-based trusted keys"
+> +       depends on TCG_TPM >= TRUSTED_KEYS
+> +       default y
+> +       select CRYPTO
+> +       select CRYPTO_HMAC
+> +       select CRYPTO_SHA1
+> +       select CRYPTO_HASH_INFO
+> +       select ASN1_ENCODER
+> +       select OID_REGISTRY
+> +       select ASN1
+> +       help
+> +         Enable use of the Trusted Platform Module (TPM) as trusted key
+> +         backend. Trusted keys are are random number symmetric keys,
 
-     hppa-linux-ld: drivers/firmware/sysfb.o: in function `sysfb_init':
-     (.init.text+0x24): undefined reference to `screen_info'
-  >> hppa-linux-ld: (.init.text+0x28): undefined reference to `screen_info'
+s/are are/are/
 
-To prevent these errors only allow sysfb to be built on systems that are
-going to need it, which are x86 BIOS and EFI.
+-Sumit
 
-The EFI Kconfig symbol is used instead of (ARM || ARM64 || RISC) because
-some of these architectures only declare a struct screen_info if EFI is
-enabled. And also, because the sysfb code is only used for EFI on these
-architectures. For !EFI the "simple-framebuffer" device is registered by
-OF when parsing the Device Tree Blob (if a DT node for this is defined).
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
-
- drivers/firmware/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index af6719cc576..897f5f25c64 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -254,7 +254,7 @@ config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
- config SYSFB
- 	bool
- 	default y
--	depends on X86 || ARM || ARM64 || RISCV || COMPILE_TEST
-+	depends on X86 || EFI
- 
- config SYSFB_SIMPLEFB
- 	bool "Mark VGA/VBE/EFI FB as generic system framebuffer"
--- 
-2.31.1
-
+> +         which will be generated and RSA-sealed by the TPM.
+> +         The TPM only unseals the keys, if the boot PCRs and other
+> +         criteria match.
+> +
+> +config TRUSTED_KEYS_TEE
+> +       bool "TEE-based trusted keys"
+> +       depends on TEE >= TRUSTED_KEYS
+> +       default y
+> +       help
+> +         Enable use of the Trusted Execution Environment (TEE) as trusted
+> +         key backend.
+> +
+> +if !TRUSTED_KEYS_TPM && !TRUSTED_KEYS_TEE
+> +comment "No trust source selected!"
+> +endif
+> diff --git a/security/keys/trusted-keys/Makefile b/security/keys/trusted-keys/Makefile
+> index feb8b6c3cc79..2e2371eae4d5 100644
+> --- a/security/keys/trusted-keys/Makefile
+> +++ b/security/keys/trusted-keys/Makefile
+> @@ -5,10 +5,10 @@
+>
+>  obj-$(CONFIG_TRUSTED_KEYS) += trusted.o
+>  trusted-y += trusted_core.o
+> -trusted-y += trusted_tpm1.o
+> +trusted-$(CONFIG_TRUSTED_KEYS_TPM) += trusted_tpm1.o
+>
+>  $(obj)/trusted_tpm2.o: $(obj)/tpm2key.asn1.h
+> -trusted-y += trusted_tpm2.o
+> -trusted-y += tpm2key.asn1.o
+> +trusted-$(CONFIG_TRUSTED_KEYS_TPM) += trusted_tpm2.o
+> +trusted-$(CONFIG_TRUSTED_KEYS_TPM) += tpm2key.asn1.o
+>
+> -trusted-$(CONFIG_TEE) += trusted_tee.o
+> +trusted-$(CONFIG_TRUSTED_KEYS_TEE) += trusted_tee.o
+> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
+> index d5c891d8d353..8cab69e5d0da 100644
+> --- a/security/keys/trusted-keys/trusted_core.c
+> +++ b/security/keys/trusted-keys/trusted_core.c
+> @@ -27,10 +27,10 @@ module_param_named(source, trusted_key_source, charp, 0);
+>  MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
+>
+>  static const struct trusted_key_source trusted_key_sources[] = {
+> -#if defined(CONFIG_TCG_TPM)
+> +#if defined(CONFIG_TRUSTED_KEYS_TPM)
+>         { "tpm", &trusted_key_tpm_ops },
+>  #endif
+> -#if defined(CONFIG_TEE)
+> +#if defined(CONFIG_TRUSTED_KEYS_TEE)
+>         { "tee", &trusted_key_tee_ops },
+>  #endif
+>  };
+> --
+> 2.30.2
+>
