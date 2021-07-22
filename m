@@ -2,168 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D473D2240
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB123D2248
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbhGVKGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 06:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbhGVKGc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 06:06:32 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73EE4C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 03:47:06 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id gb6so7723152ejc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 03:47:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UIjEw7LvBGrlUjquppZsCZAJs4MMNYvbssuJ9Tn9rvA=;
-        b=BSbiykPnrXMqDFLWYOlZ+Xx9F86RQC4xFFGNJKrQva9H34djT58I60UA0c2ryP0wMY
-         dQTMlwL7TZ+8OCgN8ZRAd5SpAQtoDzl5jb/O46f8bz9SLjuig5V0ZVlRUNdt8/szq8Jq
-         4kgNG3kxl2U06Reo0PMNqg4flHxCgalyEb3wE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=UIjEw7LvBGrlUjquppZsCZAJs4MMNYvbssuJ9Tn9rvA=;
-        b=EOK9aRl2QxGqgp5772Bx/EmwTcgmSo4HrXwsXksTPWo3AW2aNaV3upTW5bBastx629
-         nin3PQOzutkkmihk64WxgWraxy/39VyEsm+oCE6YmwwjMFtOXgU95MJ8SvC9/eY+iRK0
-         yzrQcccEXjNmoPumEiIC8zRkSVZyBVlNz8yy35kXwJ2Arwx7opLiWhzfdTpUXfGMW+IR
-         FugyYB03po4rK3hHfwTJxmw0KlkqEyVf77igDeH2fbtJ18SYDkUQJcuamB9r8zXwKdTr
-         zzlq7CaIIk/C1YFCuCHrefMwu8Wi3sKiWxeqKEY4Gqinn//bUXciPRYdUmVtDxOSmKe9
-         Z+fw==
-X-Gm-Message-State: AOAM531TWNfnQcRyeHyRgl330p5sc5EI0Rvi9md9z5kw9Qd1H5GYYMS8
-        Iv9we8yZQd2v89EIefW8R2D9jA==
-X-Google-Smtp-Source: ABdhPJyWUvquD40hkzO6znrNFD5xu/fiLgEjV2e4u4CI8X3eyK2lLuG4uvvQqbM15R7qGLm57hx5bQ==
-X-Received: by 2002:a17:906:538e:: with SMTP id g14mr23577022ejo.136.1626950824915;
-        Thu, 22 Jul 2021 03:47:04 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id gw8sm9336666ejb.44.2021.07.22.03.47.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 03:47:04 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 12:47:02 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Sean Paul <sean@poorly.run>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH] drm/msm: Add fence->wait() op
-Message-ID: <YPlMpoGbXYKUFwCq@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>
-References: <60ffb6f3-e932-d9af-3b90-81adf0c15250@gmail.com>
- <CAF6AEGtOW3EjZWo36ij8U1om=gAqvg8CSkJJq2GkyHFGWUH4kQ@mail.gmail.com>
- <CAKMK7uF1=Y6_9znGoWG8GrteXBBRmyW8C3bFE+eJQqOj0A1buA@mail.gmail.com>
- <CAF6AEGsOVPdMkXwU9C+nDfQpPThveJ2A0jbXi43RRkkJKtnz3w@mail.gmail.com>
- <CAKMK7uHMXFqic=9APJrSf6totB8nGZTDe4x8+sv-drmV4Q+4Bg@mail.gmail.com>
- <CAF6AEGsKoucxt4a2pcdQM9+L0+YU-6TcAt8eF=3ur169646Jhw@mail.gmail.com>
- <YPhvein5e8do2AR+@phenom.ffwll.local>
- <113b5858-9020-d1c1-292b-96b7f9cc717a@gmail.com>
- <YPk1izQFR+tRV8js@phenom.ffwll.local>
- <9c1e797b-8860-d1f5-e6f2-e06380ec9012@gmail.com>
+        id S231686AbhGVKJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 06:09:03 -0400
+Received: from mail-bn8nam08on2067.outbound.protection.outlook.com ([40.107.100.67]:56865
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231626AbhGVKJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 06:09:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d5G+9cmD83w8OjkSFlq5PHeSr1VUNFJhOqc49UUvEe6gUx/y8ryFiH+RfsyYKuJyr+G6dHp7rV3FYJAccu5c4Zv0QcJgQ2rCBFS+t6kLjczE1lGn7CqWpnzNwjkKJl5sfpHpb3QkB4mkRTwM42YY4qiez28Y33bEkheA1T01aCS97GFfP7D60IceslBBDVYcGq4vhHBgEuTjX3O2VCl9P2TU/aAk1mqQIN5ITTrpwM9R1JXWQckPjGt5Fxvdj5LmfOsskLIhJickMJRndt69mZkmFXZUilbZkEi8bkJ4EWDFniDjvxqxuvXl9VAUJNYEmeOYhMXUX8eKhiLfNdYhnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RccrGeROE1R1aVHQ0hICRFUchpJm/ozOkeoiKwQV+ng=;
+ b=Td28pVGvyGeTeolZ5Ti9SPgELJmamMoY5pkPUKGUxiWhCfnV7jNIn1ENHAR1ykuDYgUNhR10dxKPxtrJ7t137XM2/9Cm16TsD43sfRn+ILdpya7b1geVtoRRvYOZBCO7DEvi4yI3w9LcPfqmpxLwGZyVK15h5ePEVKgRTBMmMSqZfuvR8Y+8qgMSOapIW0wA3BAfCFQa7jDD3WBj42SfjA8fS6OZVQ5/9JyxN0hpfP5+fZjeGwv+436LBWvB7LcI/XNSzNG1HiGZYGZeLqRencB9eYrzOZinuXjAd5O0Z4e4mNO3Y4yKQTC9slUkyRQM+CR9FAPKz+cVH4LrDrgIZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RccrGeROE1R1aVHQ0hICRFUchpJm/ozOkeoiKwQV+ng=;
+ b=Zbjo3n3p7iF7fFpMIzTPNa8Y13waJJwl15bovzwX7WrgjDNzIAZ/IkA1jG46uGWxRS3LbnGSO7KgKg76WLHu2mPL2CuLSJL8SAN7nfwHi580ZZfS1UUqEmnNSDT5UA2e0BbbGYTNMbqoz1nAP1LCVPDrv0UmxN3GBVrQRePFo991JMYtlBgdh4pSWOKLbUW6rNdXriVUbLzEoqkB9OqjjnAWjET8XGqUiZhSweusGvgBAgfhTPteJXzNpcRtPu98pGEkSFXGmqWlamPcah0HWnvTvddm54aP0+OtunCuuy7j3uWoW2gIE8k30GblLqTkaS54PSGksi6L28lyCXTS/A==
+Received: from BN9PR03CA0032.namprd03.prod.outlook.com (2603:10b6:408:fb::7)
+ by BYAPR12MB3048.namprd12.prod.outlook.com (2603:10b6:a03:ad::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.29; Thu, 22 Jul
+ 2021 10:49:35 +0000
+Received: from BN8NAM11FT050.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:fb:cafe::ca) by BN9PR03CA0032.outlook.office365.com
+ (2603:10b6:408:fb::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.24 via Frontend
+ Transport; Thu, 22 Jul 2021 10:49:34 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT050.mail.protection.outlook.com (10.13.177.5) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4352.24 via Frontend Transport; Thu, 22 Jul 2021 10:49:34 +0000
+Received: from [10.26.49.10] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Jul
+ 2021 10:49:32 +0000
+Subject: Re: [PATCH v2] soc/tegra: Make regulator couplers depend on
+ CONFIG_REGULATOR
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Arnd Bergmann <arnd@kernel.org>
+CC:     Mark Brown <broonie@kernel.org>, <soc@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>
+References: <20210721232616.1935-1-digetx@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <770eb9dc-ba9a-acfd-b73a-23e7628dbcb1@nvidia.com>
+Date:   Thu, 22 Jul 2021 11:49:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9c1e797b-8860-d1f5-e6f2-e06380ec9012@gmail.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <20210721232616.1935-1-digetx@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5b0bc8bc-bf5f-4f79-cd84-08d94cfe64fd
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3048:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB3048518AB14A33D480972783D9E49@BYAPR12MB3048.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jRi3mnJ1X/KiFeNsiw1atYc3nh9cbYBPMMESkQLsYaLeJN13ALJfMj3FihtGvVQ39pBMUAiiGOh8wVw/2Kw0p6eauwvWsfn+5bOQcNe0XEX4T6teTJSKc9FdW5flb7PEZgRKXxdB1v90pjhIA8uUNXLpkXqwBlWHysI7VcJZdiAE7dF5M3d1uymEGxGu9FUB87wxQ13EyNNIgi+P5qkKESZuoFGK3MGDS9vvUgODdZAQTGsmSOmb0RXDokTpq0S/kdCHowKnZdpgn3PYOsXF4i0fTnvC2klJYgJR4/QbdHbJ7wP1Qs1OIz3sUqTPxFAtZ+82GsY6KHeP8S6ZqoeX1LDinqRDtMerAYraMSunGjJ3RDX18yNARXzd74Xu38sUeT8CmRTxqMqn+4ckiqY5roxlLY62X0KA13bTjOxq7TzrOcXLaedud/ZByCNJUgsSnq3dL2RrzXZOcVYcBr0Bdeo5/QEIhKnzQJ/mnkM1sWSI8eXRirwZb6R7vO45tI1zsWqlUEs5rvKPY5ZOKOvwsaUivJyL3kEAqgrvBxzzEU6pB1FaB8BU8CoX1sZeWoVgdnl/9KzxxMx+poJmOrqUFgixsZIhEJ1O6+l5yx9rH0pGLrkv/VO5TIsbMqGAK6WOt0KryKq6uljt6uXEkWp7Y0vgjgYl2oodhJCU6TH4TMy8i70d+NLnjVXi/7iVysRYqV73DZ/bMpPnrTTfsc+O1Utvra4kIquGPCbuUROo/MI=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(83380400001)(16576012)(8676002)(2906002)(70206006)(2616005)(31686004)(31696002)(86362001)(186003)(316002)(5660300002)(36906005)(16526019)(356005)(54906003)(36756003)(508600001)(70586007)(26005)(47076005)(110136005)(7636003)(4326008)(336012)(82310400003)(53546011)(8936002)(426003)(36860700001)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2021 10:49:34.7835
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b0bc8bc-bf5f-4f79-cd84-08d94cfe64fd
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT050.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 11:28:01AM +0200, Christian König wrote:
-> Am 22.07.21 um 11:08 schrieb Daniel Vetter:
-> > [SNIP]
-> > > As far as I know wake_up_state() tries to run the thread on the CPU it was
-> > > scheduled last, while wait_event_* makes the thread run on the CPU who
-> > > issues the wake by default.
-> > > 
-> > > And yes I've also noticed this already and it was one of the reason why I
-> > > suggested to use a wait_queue instead of the hand wired dma_fence_wait
-> > > implementation.
-> > The first versions had used wait_queue, but iirc we had some issues with
-> > the callbacks and stuff and that was the reasons for hand-rolling. Or
-> > maybe it was the integration of the lockless fastpath for
-> > dma_fence_is_signalled().
-> > 
-> > > [SNIP]
-> > > Well it would have been nicer if we used the existing infrastructure instead
-> > > of re-inventing stuff for dma_fence, but that chance is long gone.
-> > > 
-> > > And you don't need a dma_fence_context base class, but rather just a flag in
-> > > the dma_fence_ops if you want to change the behavior.
-> > If there's something broken we should just fix it, not force everyone to
-> > set a random flag. dma_fence work like special wait_queues, so if we
-> > differ then we should go back to that.
+
+On 22/07/2021 00:26, Dmitry Osipenko wrote:
+> The regulator coupler drivers now use regulator-driver API function that
+> isn't available during compile-testing. Make regulator coupler drivers
+> dependent on CONFIG_REGULATOR in Kconfig.
 > 
-> Wait a second with that, this is not broken. It's just different behavior
-> and there are good arguments for both sides.
-
-Oh I know, but since dma_fence is meant to be a wait_queue with hw
-support, they really should work the same and have the same tuning.
-
-> If a wait is short you can have situations where you want to start the
-> thread on the original CPU.
->     This is because you can assume that the caches on that CPU are still hot
-> and heating up the caches on the local CPU would take longer than an inter
-> CPU interrupt.
+> Fixes: 03978d42ed0d ("soc/tegra: regulators: Bump voltages on system reboot")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
 > 
-> But if the wait is long it makes more sense to run the thread on the CPU
-> where you noticed the wake up event.
->     This is because you can assume that the caches are cold anyway and
-> starting the thread on the current CPU (most likely from an interrupt
-> handler) gives you the absolutely best latency.
->     In other words you usually return from the interrupt handler and just
-> directly switch to the now running thread.
+> Changelog:
 > 
-> I'm not sure if all drivers want the same behavior. Rob here seems to prefer
-> number 2, but we have used 1 for dma_fence for a rather long time now and it
-> could be that some people start to complain when we switch unconditionally.
+> v2: - No changes. Re-sending to Arnd Bergmann and soc@kernel.org.
+> 
+>  drivers/soc/tegra/Kconfig | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/soc/tegra/Kconfig b/drivers/soc/tegra/Kconfig
+> index db49075b1946..1224e1c8c2c9 100644
+> --- a/drivers/soc/tegra/Kconfig
+> +++ b/drivers/soc/tegra/Kconfig
+> @@ -15,7 +15,7 @@ config ARCH_TEGRA_2x_SOC
+>  	select PL310_ERRATA_769419 if CACHE_L2X0
+>  	select SOC_TEGRA_FLOWCTRL
+>  	select SOC_TEGRA_PMC
+> -	select SOC_TEGRA20_VOLTAGE_COUPLER
+> +	select SOC_TEGRA20_VOLTAGE_COUPLER if REGULATOR
+>  	select TEGRA_TIMER
+>  	help
+>  	  Support for NVIDIA Tegra AP20 and T20 processors, based on the
+> @@ -29,7 +29,7 @@ config ARCH_TEGRA_3x_SOC
+>  	select PL310_ERRATA_769419 if CACHE_L2X0
+>  	select SOC_TEGRA_FLOWCTRL
+>  	select SOC_TEGRA_PMC
+> -	select SOC_TEGRA30_VOLTAGE_COUPLER
+> +	select SOC_TEGRA30_VOLTAGE_COUPLER if REGULATOR
+>  	select TEGRA_TIMER
+>  	help
+>  	  Support for NVIDIA Tegra T30 processor family, based on the
+> @@ -154,7 +154,9 @@ config SOC_TEGRA_POWERGATE_BPMP
+>  config SOC_TEGRA20_VOLTAGE_COUPLER
+>  	bool "Voltage scaling support for Tegra20 SoCs"
+>  	depends on ARCH_TEGRA_2x_SOC || COMPILE_TEST
+> +	depends on REGULATOR
+>  
+>  config SOC_TEGRA30_VOLTAGE_COUPLER
+>  	bool "Voltage scaling support for Tegra30 SoCs"
+>  	depends on ARCH_TEGRA_3x_SOC || COMPILE_TEST
+> +	depends on REGULATOR
+> 
 
-I think the defaults are different because usually if you wake up a wait
-queue, there's a 1:1 relationship between waker and waiter.
 
-Otoh if you just wake a thread it's probably some kinda of service thread,
-so N:1 relationship between waker and waiter. And in that case moving the
-waiter is a really bad idea.
+Acked-by: Jon Hunter <jonathanh@nvidia.com>
 
-I think dma_fence is generally much closer to 1:1 (with the most common
-one irq handler -> scheduler thread for that engine), so having the "same
-cpu" wake behaviour really sounds like the right thing to do. And not
-anything that is specifically an issue with how qualcom gpus work, and
-hence should be msm specific.
+Thanks!
+Jon
 
-If it turns out to be the wrong thing, well I guess we'll learn
-something. And then maybe we have a different version of dma_fence_wait.
--Daniel
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+nvpublic
