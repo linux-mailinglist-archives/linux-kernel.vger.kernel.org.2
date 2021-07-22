@@ -2,79 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774CF3D2A93
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC993D28FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234015AbhGVQNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:13:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51588 "EHLO mail.kernel.org"
+        id S233489AbhGVQAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:00:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235585AbhGVQJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:09:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C1186139A;
-        Thu, 22 Jul 2021 16:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972574;
-        bh=tfFLnZJ5cbp46h2m1QVdO6q4hAjT1hWrCrz6ppi0hWU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2vHCNWlkNj8PmyGHxQcs35jmcVNPFGqDjiRB3QlrdvaWrxnFG/tExY4MKTsOaIcwH
-         FjVlVcGxaBSTcVbxjPVAEbGqsXdklXOEgOQtKDYfWrhKfbjATbl7EVseFbeT4SrFCt
-         hR39e5E9zk4alGAyQnrwqBrH6oaHnpVjnZ/SF07U=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaron Ma <aaron.ma@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.13 156/156] mt76: mt7921: continue to probe driver when fw already downloaded
-Date:   Thu, 22 Jul 2021 18:32:11 +0200
-Message-Id: <20210722155633.397039609@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232743AbhGVP6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:58:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4FA9613B9;
+        Thu, 22 Jul 2021 16:38:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626971927;
+        bh=K22sXvT77+U4vZ2hm8O0W74Lzv6RbJaEUTbBahny+ws=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HDxNhU+V6DtqKv7PeJsAlCxpURgndzXbeq0+ncNCAJ9HtAx4EXS5bzr2jrcn8oPqb
+         yzdGl/6wsKu1IjuwuZRZaKRYu8N7r7QfF8EkBrSpx5BwGK1rcWGCRM87XbPBabUA2m
+         jgutFvBqPwSeOjL5Vpd/KuzWjRoTqmKyMAT/DmR0UXSn/ai2o2l1AdqU8wvQMONLdW
+         2eTV4guMTvdgLKaSKa6BXhe+ux4l1GIgB0f2RfOGqwsYxeMrI9Urb4/hwKMyEGj78z
+         iUWJ4FOpqSiC8x31ZHDMm9SHnkB8NWkv4x96v9EkrX59Nv+nHNHQu4qnmxU63KWr45
+         Af421fP2LU7jg==
+Date:   Thu, 22 Jul 2021 11:38:45 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Christian Gmeiner <christian.gmeiner@gmail.com>
+Cc:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] PCI: dwc: do not ignore link errors
+Message-ID: <20210722163845.GA314985@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210721171142.GA189373@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aaron Ma <aaron.ma@canonical.com>
+On Wed, Jul 21, 2021 at 12:11:42PM -0500, Bjorn Helgaas wrote:
+> On Wed, Jul 21, 2021 at 05:28:21PM +0200, Christian Gmeiner wrote:
+> > This fixes long boot delays of about 10 seconds.
+> > 
+> > I am working on a device powered by an TI am65 SoC where
+> > we have a PCIe expansion slot. If there is no PCIe device
+> > connected I see boot delays caused by pci_host_probe(..).
 
-commit c34269041185dad1bab7a34f42ef9fab967a1684 upstream.
+Oh, and I forgot to mention: Please follow the convention of
+capitalizing the first word of the subject (use "git log --oneline
+drivers/pci/controller/dwc/pcie-designware-host.c" to see what the
+convention is).
 
-When reboot system, no power cycles, firmware is already downloaded,
-return -EIO will break driver as error:
-mt7921e: probe of 0000:03:00.0 failed with error -5
-
-Skip firmware download and continue to probe.
-
-Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
-Fixes: 1c099ab44727c ("mt76: mt7921: add MCU support")
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/wireless/mediatek/mt76/mt7921/mcu.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-@@ -921,7 +921,7 @@ static int mt7921_load_firmware(struct m
- 	ret = mt76_get_field(dev, MT_CONN_ON_MISC, MT_TOP_MISC2_FW_N9_RDY);
- 	if (ret) {
- 		dev_dbg(dev->mt76.dev, "Firmware is already download\n");
--		return -EIO;
-+		goto fw_loaded;
- 	}
- 
- 	ret = mt7921_load_patch(dev);
-@@ -939,6 +939,7 @@ static int mt7921_load_firmware(struct m
- 		return -EIO;
- 	}
- 
-+fw_loaded:
- 	mt76_queue_tx_cleanup(dev, dev->mt76.q_mcu[MT_MCUQ_FWDL], false);
- 
- #ifdef CONFIG_PM
-
-
+Also, the commit log does not actually say what the patch *does*.
+Please include an imperative statement about what it does in the
+commit log.  https://chris.beams.io/posts/git-commit/ has good tips.
