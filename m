@@ -2,121 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E045D3D1C83
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D623D1C87
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhGVDAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 23:00:21 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:12234 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbhGVDAD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 23:00:03 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GVdP555Kpz1CMXP;
-        Thu, 22 Jul 2021 11:34:49 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 11:40:37 +0800
-Received: from thunder-town.china.huawei.com (10.174.179.0) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 11:40:36 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Tony Lindgren <tony@atomide.com>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 2/2] pinctrl: single: Move test PCS_HAS_PINCONF in pcs_parse_bits_in_pinctrl_entry() to the beginning
-Date:   Thu, 22 Jul 2021 11:39:30 +0800
-Message-ID: <20210722033930.4034-3-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210722033930.4034-1-thunder.leizhen@huawei.com>
-References: <20210722033930.4034-1-thunder.leizhen@huawei.com>
+        id S230315AbhGVDJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 23:09:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:42682 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229900AbhGVDJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 23:09:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5339D6E;
+        Wed, 21 Jul 2021 20:50:25 -0700 (PDT)
+Received: from [10.163.65.134] (unknown [10.163.65.134])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1C63A3F66F;
+        Wed, 21 Jul 2021 20:50:22 -0700 (PDT)
+Subject: Re: [PATCH v3 12/12] mm/debug_vm_pgtable: Fix corrupted page flag
+To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+References: <20210719130613.334901-1-gshan@redhat.com>
+ <20210719130613.334901-13-gshan@redhat.com>
+ <57cb2f04-b3f2-2df4-3d9b-0b430b9c9f3e@arm.com>
+ <8157142c-58e0-44c4-5cdb-76fff4a07210@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <5db75fd6-aeb9-c06f-30ab-839c09a0bc68@arm.com>
+Date:   Thu, 22 Jul 2021 09:21:11 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+In-Reply-To: <8157142c-58e0-44c4-5cdb-76fff4a07210@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value of pcs->flags is not overwritten in function
-pcs_parse_bits_in_pinctrl_entry() and its subfunctions, so moving this
-check to the beginning of the function eliminates unnecessary rollback
-operations.
+Small nit:
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/pinctrl/pinctrl-single.c | 22 ++++++++--------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+s/Fix corrupted page flag/Fix page flag corruption on arm64/
 
-diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index 4fcae8458359..d8b4dc40f3c6 100644
---- a/drivers/pinctrl/pinctrl-single.c
-+++ b/drivers/pinctrl/pinctrl-single.c
-@@ -1115,7 +1115,7 @@ static int pcs_parse_bits_in_pinctrl_entry(struct pcs_device *pcs,
- {
- 	const char *name = "pinctrl-single,bits";
- 	struct pcs_func_vals *vals;
--	int rows, *pins, found = 0, res = -ENOMEM, i, fsel, gsel;
-+	int rows, *pins, found = 0, res = -ENOMEM, i, fsel;
- 	int npins_in_row;
- 	struct pcs_function *function = NULL;
- 
-@@ -1125,6 +1125,11 @@ static int pcs_parse_bits_in_pinctrl_entry(struct pcs_device *pcs,
- 		return -EINVAL;
- 	}
- 
-+	if (PCS_HAS_PINCONF) {
-+		dev_err(pcs->dev, "pinconf not supported\n");
-+		return -ENOTSUPP;
-+	}
-+
- 	npins_in_row = pcs->width / pcs->bits_per_pin;
- 
- 	vals = devm_kzalloc(pcs->dev,
-@@ -1212,30 +1217,19 @@ static int pcs_parse_bits_in_pinctrl_entry(struct pcs_device *pcs,
- 		goto free_pins;
- 	}
- 
--	gsel = pinctrl_generic_add_group(pcs->pctl, np->name, pins, found, pcs);
--	if (gsel < 0) {
--		res = gsel;
-+	res = pinctrl_generic_add_group(pcs->pctl, np->name, pins, found, pcs);
-+	if (res < 0)
- 		goto free_function;
--	}
- 
- 	(*map)->type = PIN_MAP_TYPE_MUX_GROUP;
- 	(*map)->data.mux.group = np->name;
- 	(*map)->data.mux.function = np->name;
- 
--	if (PCS_HAS_PINCONF) {
--		dev_err(pcs->dev, "pinconf not supported\n");
--		res = -ENOTSUPP;
--		goto free_pingroups;
--	}
--
- 	*num_maps = 1;
- 	mutex_unlock(&pcs->mutex);
- 
- 	return 0;
- 
--free_pingroups:
--	pinctrl_generic_remove_group(pcs->pctl, gsel);
--	*num_maps = 1;
- free_function:
- 	pinmux_generic_remove_function(pcs->pctl, fsel);
- free_pins:
--- 
-2.25.1
+On 7/21/21 5:33 PM, Gavin Shan wrote:
+> Hi Anshuman,
+> 
+> On 7/21/21 8:18 PM, Anshuman Khandual wrote:
+>> On 7/19/21 6:36 PM, Gavin Shan wrote:
+>>> In page table entry modifying tests, set_xxx_at() are used to populate
+>>> the page table entries. On ARM64, PG_arch_1 is set to the target page
+>>> flag if execution permission is given. The page flag is kept when the
+>>> page is free'd to buddy's free area list. However, it will trigger page
+>>> checking failure when it's pulled from the buddy's free area list, as
+>>> the following warning messages indicate.
+>>>
+>>>     BUG: Bad page state in process memhog  pfn:08000
+>>>     page:0000000015c0a628 refcount:0 mapcount:0 \
+>>>          mapping:0000000000000000 index:0x1 pfn:0x8000
+>>>     flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
+>>>     raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
+>>>     raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+>>>     page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
+>>>
+>>> This fixes the issue by clearing PG_arch_1 through flush_dcache_page()
+>>> after set_xxx_at() is called.
+>>
+>> Could you please add comments before each flush_dcache_page() instance
+>> explaining why this is needed for arm64 platforms with relevant PG_arch_1
+>> context and how this does not have any adverse effect on other platforms ?
+>> It should be easy for some one looking at this code after a while to figure
+>> out from where flush_dcache_page() came from.
+>>
+> 
+> Good point. I will improve chage log to include the commit ID in v4 where the
+> page flag (PG_arch_1) is used and explain how. In that case, it's much clearer
+> to understand the reason why we need flush_dcache_page() after set_xxx_at() on
+> ARM64.
 
+But also some in code comments where flush_dcache_page() is being called.
