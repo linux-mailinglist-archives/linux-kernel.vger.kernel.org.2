@@ -2,176 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C723D2C4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC443D2C4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhGVSYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:24:32 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:40584 "EHLO m43-7.mailgun.net"
+        id S230249AbhGVSYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 14:24:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230261AbhGVSYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:24:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626980705; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=WduP3o7gBFrmEiLJhLfBl2y3nG4pbHLqEz9PeWRtcrs=;
- b=qvbkEVGvQiUtzIOxHAi7FP96+OMl0/ZbV2MEVfC8w901ZpPmGzcODoZntAQU5tKRNSW+z/JU
- icH1sWfpCNnxCW/SahYzrWULMS8Ik+tFWOOE9k1OzBhMU+iX5Q+VK83qZQuPiXxx1iJceoiP
- kQRyqlmSfI56TjDei5S8yaxxMpM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60f9c1424815712f3ae551f2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Jul 2021 19:04:34
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 16AFEC433F1; Thu, 22 Jul 2021 19:04:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91A72C433D3;
-        Thu, 22 Jul 2021 19:04:33 +0000 (UTC)
+        id S229510AbhGVSYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 14:24:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9748D60EB9;
+        Thu, 22 Jul 2021 19:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626980689;
+        bh=oWDsz2mqAq9NcEEh1BJyznZQCPm+facoTqPnYlRRhJQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QilYXNDAdzMfF+frM57wtEsK8q1xBhGM/Fw6ySzsoC5LukRf2pi9r343XIPOGGjhw
+         inNMRBNKyr2+WCSrrUv7uZJuoNSJm64GbfIJc7Nquu2D6EMLTWmWw7Xcm69xxwN3em
+         MyoZQsSMilN6DlmympazHrgl3V3HkOqFgjlkpozftLq0ixlYnwg7iEVqAdfLcbBwTk
+         ZW76MEHP/kBQ047J1PXSwSXqVmaV5PZ0ohUOezoWPe17OJPGuQKeNSN8UQV9MkpcKg
+         zqijpJkmcGOjHCLVgEUIRAlnaOnsquR9/cTWbypuBNqFkKdQ78gVo4VnpOSwqM3DnS
+         zmr2Bt9gIvk1A==
+Date:   Thu, 22 Jul 2021 12:04:49 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v9 6/9] iomap: support direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <20210722190449.GH559212@magnolia>
+References: <20210604210908.2105870-1-satyat@google.com>
+ <20210604210908.2105870-7-satyat@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 22 Jul 2021 12:04:33 -0700
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     hemantk@codeaurora.org
-Cc:     manivannan.sadhasivam@linaro.org, bqiang@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, clew@codeaurora.org,
-        linux-kernel@vger.kernel.org, bbhatt=codeaurora.org@codeaurora.org,
-        hemantk=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] net: qrtr: mhi: synchronize qrtr and mhi preparation
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <dc0f806dde7494629a4e4f85b0ba5b7e@codeaurora.org>
-References: <1626831778-31796-1-git-send-email-bbhatt@codeaurora.org>
- <4214f00fa8cbcced4f389125b392f3b3@codeaurora.org>
- <0da23f32f4313c0b701bafc078942a4e@codeaurora.org>
- <dc0f806dde7494629a4e4f85b0ba5b7e@codeaurora.org>
-Message-ID: <0e06bf8a7132cc9539e4d9b1e41b8863@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604210908.2105870-7-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-21 03:27 PM, hemantk@codeaurora.org wrote:
-> On 2021-07-21 11:07, Bhaumik Bhatt wrote:
->> On 2021-07-21 10:52 AM, hemantk@codeaurora.org wrote:
->>> On 2021-07-20 18:42, Bhaumik Bhatt wrote:
->>>> A dl callback can be received anytime after mhi_prepare_for_transfer
->>>> has been called. There is a window where the callback may happen
->>>> before the probe initializes the qrtr_mhi_dev state. Move the
->>>> mhi_prepare_for_transfer call after the registering the endpoint.
->>>> 
->>>> Once moved, the reverse can happen where qrtr will try to send a 
->>>> packet
->>>> before the channels are prepared. Add a wait in the sending path to
->>>> ensure the channels are prepared before trying to do a ul transfer.
->>>> 
->>>> Fixes: a2e2cc0dbb11 ("net: qrtr: Start MHI channels during init")
->>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->>>> ---
->>>>  net/qrtr/mhi.c | 20 +++++++++++++++-----
->>>>  1 file changed, 15 insertions(+), 5 deletions(-)
->>>> 
->>>> diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
->>>> index 29b4fa3..22b0395 100644
->>>> --- a/net/qrtr/mhi.c
->>>> +++ b/net/qrtr/mhi.c
->>>> @@ -15,6 +15,7 @@ struct qrtr_mhi_dev {
->>>>  	struct qrtr_endpoint ep;
->>>>  	struct mhi_device *mhi_dev;
->>>>  	struct device *dev;
->>>> +	struct completion ready;
->>>>  };
->>>> 
->>>>  /* From MHI to QRTR */
->>>> @@ -50,6 +51,10 @@ static int qcom_mhi_qrtr_send(struct 
->>>> qrtr_endpoint
->>>> *ep, struct sk_buff *skb)
->>>>  	struct qrtr_mhi_dev *qdev = container_of(ep, struct qrtr_mhi_dev, 
->>>> ep);
->>>>  	int rc;
->>>> 
->>>> +	rc = wait_for_completion_interruptible(&qdev->ready);
->>>> +	if (rc)
->>>> +		goto free_skb;
->>>> +
->>>>  	if (skb->sk)
->>>>  		sock_hold(skb->sk);
->>>> 
->>>> @@ -78,11 +83,6 @@ static int qcom_mhi_qrtr_probe(struct mhi_device 
->>>> *mhi_dev,
->>>>  	struct qrtr_mhi_dev *qdev;
->>>>  	int rc;
->>>> 
->>>> -	/* start channels */
->>>> -	rc = mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
->>>> -	if (rc)
->>>> -		return rc;
->>>> -
->>>>  	qdev = devm_kzalloc(&mhi_dev->dev, sizeof(*qdev), GFP_KERNEL);
->>>>  	if (!qdev)
->>>>  		return -ENOMEM;
->>> would it be good to init completion variable here (call 
->>> init_completion) ?
->> You mean just before setting qdev->mhi_dev? I don't see why that would
->> make a difference
->> mainly because the qcom_mhi_qrtr_send() will only happen after 
->> endpoint is
->> registered and DL xfer cb will also only come in after we have 
->> prepared the
->> channels and completed ready with dev_data already set.
-> looks like qcom_mhi_qrtr_send is not going to get called directly. i
-> was thinking
-> what if this api is called before init_completion() returns. if it is
-> only possible
-> through ep.xmit call back only, can you move it right above
-> qdev->ep.xmit = qcom_mhi_qrtr_send; ?
->> 
-Ah. OK. I see your point. I will do that and upload a v2.
-
->>>> @@ -90,12 +90,22 @@ static int qcom_mhi_qrtr_probe(struct mhi_device 
->>>> *mhi_dev,
->>>>  	qdev->mhi_dev = mhi_dev;
->>>>  	qdev->dev = &mhi_dev->dev;
->>>>  	qdev->ep.xmit = qcom_mhi_qrtr_send;
->>>> +	init_completion(&qdev->ready);
->>>> 
->>> 
->>>> 
->>>>  	return 0;
->> 
->> Thanks,
->> Bhaumik
->> ---
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
+On Fri, Jun 04, 2021 at 09:09:05PM +0000, Satya Tangirala wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Thanks,
-> Hemant
-> ---
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-> Forum,
-> a Linux Foundation Collaborative Project
+> Set bio crypt contexts on bios by calling into fscrypt when required.
+> No DUN contiguity checks are done - callers are expected to set up the
+> iomap correctly to ensure that each bio submitted by iomap will not have
+> blocks with incontiguous DUNs by calling fscrypt_limit_io_blocks()
+> appropriately.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Co-developed-by: Satya Tangirala <satyat@google.com>
+> Signed-off-by: Satya Tangirala <satyat@google.com>
 
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Looks like a straightforward conversion...
+
+Acked-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> ---
+>  fs/iomap/direct-io.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index 9398b8c31323..1c825deb36a9 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/module.h>
+>  #include <linux/compiler.h>
+>  #include <linux/fs.h>
+> +#include <linux/fscrypt.h>
+>  #include <linux/iomap.h>
+>  #include <linux/backing-dev.h>
+>  #include <linux/uio.h>
+> @@ -185,11 +186,14 @@ static void
+>  iomap_dio_zero(struct iomap_dio *dio, struct iomap *iomap, loff_t pos,
+>  		unsigned len)
+>  {
+> +	struct inode *inode = file_inode(dio->iocb->ki_filp);
+>  	struct page *page = ZERO_PAGE(0);
+>  	int flags = REQ_SYNC | REQ_IDLE;
+>  	struct bio *bio;
+>  
+>  	bio = bio_alloc(GFP_KERNEL, 1);
+> +	fscrypt_set_bio_crypt_ctx(bio, inode, pos >> inode->i_blkbits,
+> +				  GFP_KERNEL);
+>  	bio_set_dev(bio, iomap->bdev);
+>  	bio->bi_iter.bi_sector = iomap_sector(iomap, pos);
+>  	bio->bi_private = dio;
+> @@ -306,6 +310,8 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
+>  		}
+>  
+>  		bio = bio_alloc(GFP_KERNEL, nr_pages);
+> +		fscrypt_set_bio_crypt_ctx(bio, inode, pos >> inode->i_blkbits,
+> +					  GFP_KERNEL);
+>  		bio_set_dev(bio, iomap->bdev);
+>  		bio->bi_iter.bi_sector = iomap_sector(iomap, pos);
+>  		bio->bi_write_hint = dio->iocb->ki_hint;
+> -- 
+> 2.32.0.rc1.229.g3e70b5a671-goog
+> 
