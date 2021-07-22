@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64763D2F6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 23:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D493D2F70
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 23:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbhGVVRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 17:17:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231336AbhGVVRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 17:17:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C3FE60EB4;
-        Thu, 22 Jul 2021 21:57:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626991066;
-        bh=jxHLi9bM6Hq+3vf5t//DlAv09jjPbBHB2nQxogyaotI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HuiSFsbPNO4Ffxt3+mAvxMTMoqe8AB3wjCAbc8L9bjtP/7VLqTomE1tbVss2cTk9C
-         gCKzDk9iIErDPnc6i8+BAaA3ELCWYEYO7EsrsUn24BbteMEygIYJL4noaUsJY4wYkn
-         qf8NO1SxTmEEh1Pq6PoxFm3DI5Q+y1nj0llY3dEfkWcWNB1BCWnIndCKy4eG3Dv2Ad
-         W48MtT5N/QT03aPxC/Ds/vMsAoHLr+EhDrOJV7iB83XdqdumbmS4rMOAcquJBxyimh
-         7wRId4g7kklBZqE4VFXI1G24pBNqE4EdqZbD9zScKK/egZ2HwtuMep9WPFAyTD+yS8
-         9bCVvQp2ul+yA==
-Received: by pali.im (Postfix)
-        id 9ECB3805; Thu, 22 Jul 2021 23:57:43 +0200 (CEST)
-Date:   Thu, 22 Jul 2021 23:57:43 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Willy Tarreau <w@1wt.eu>
-Subject: Re: [PATCH v3 1/5] math64: New DIV_U64_ROUND_CLOSEST helper
-Message-ID: <20210722215743.gtwccvokecvoocmm@pali>
-References: <20210624224909.6350-1-pali@kernel.org>
- <20210717123829.5201-1-pali@kernel.org>
- <20210717123829.5201-2-pali@kernel.org>
- <CAHp75VeCC3cYu3RZPxuRN4iaM+vxp2rX+E4z+ZxzRGM8oHaMkw@mail.gmail.com>
+        id S232171AbhGVVSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 17:18:01 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37725 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231336AbhGVVSA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 17:18:00 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16MLwOFW015534
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Jul 2021 17:58:24 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id F2E6115C37C0; Thu, 22 Jul 2021 17:58:23 -0400 (EDT)
+Date:   Thu, 22 Jul 2021 17:58:23 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     butt3rflyh4ck <butterflyhuangxx@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: A shift-out-of-bounds in minix_statfs in fs/minix/inode.c
+Message-ID: <YPnp/zXp3saLbz03@mit.edu>
+References: <CAFcO6XOdMe-RgN8MCUT59cYEVBp+3VYTW-exzxhKdBk57q0GYw@mail.gmail.com>
+ <YPhbU/umyUZLdxIw@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VeCC3cYu3RZPxuRN4iaM+vxp2rX+E4z+ZxzRGM8oHaMkw@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <YPhbU/umyUZLdxIw@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 19 July 2021 15:47:07 Andy Shevchenko wrote:
-> On Sat, Jul 17, 2021 at 3:39 PM Pali Rohár <pali@kernel.org> wrote:
-> >
-> > Provide DIV_U64_ROUND_CLOSEST helper which uses div_u64 to perform
-> > division rounded to the closest integer using unsigned 64bit
-> > dividend and unsigned 32bit divisor.
+On Wed, Jul 21, 2021 at 06:37:23PM +0100, Matthew Wilcox wrote:
+> On Thu, Jul 22, 2021 at 01:14:06AM +0800, butt3rflyh4ck wrote:
+> > ms = (struct minix_super_block *) bh->b_data; /// --------------> set
+> > minix_super_block pointer
+> > sbi->s_ms = ms;
+> > sbi->s_sbh = bh;
+> > sbi->s_mount_state = ms->s_state;
+> > sbi->s_ninodes = ms->s_ninodes;
+> > sbi->s_nzones = ms->s_nzones;
+> > sbi->s_imap_blocks = ms->s_imap_blocks;
+> > sbi->s_zmap_blocks = ms->s_zmap_blocks;
+> > sbi->s_firstdatazone = ms->s_firstdatazone;
+> > sbi->s_log_zone_size = ms->s_log_zone_size;  // ------------------>
+> > set sbi->s_log_zone_size
 > 
-> ...
-> 
-> > +/*
-> > + * DIV_U64_ROUND_CLOSEST - unsigned 64bit divide with 32bit divisor rounded to nearest integer
-> 
-> > + * @dividend: unsigned 64bit dividend
-> 
-> Here you insist users to provide a u64 (or compatible) type.
-> 
-> > + * @divisor: unsigned 32bit divisor
-> > + *
-> > + * Divide unsigned 64bit dividend by unsigned 32bit divisor
-> > + * and round to closest integer.
-> > + *
-> > + * Return: dividend / divisor rounded to nearest integer
-> > + */
-> > +#define DIV_U64_ROUND_CLOSEST(dividend, divisor)       \
-> 
-> > +       ({ u32 _tmp = (divisor); div_u64((u64)(dividend) + _tmp / 2, _tmp); })
-> 
-> Here is the casting to u64. Why? (Yes, I have read v1 discussion and I
-> just want to continue it here).
+> So what you're saying is that if you construct a malicious minix image,
+> you can produce undefined behaviour?  That's not something we're
+> traditionally interested in, unless the filesystem is one customarily
+> used for data interchange (like FAT or iso9660).
 
-See also Willy's response: https://lore.kernel.org/lkml/20210625155008.GB16901@1wt.eu/
+It's going to depend on the file system maintainer.  The traditional
+answer is that block device is part of the Trusted Computing Base, and
+malicious file system images are not considered part of the threat
+model.  A system adminstration or developer which allows potentially
+malicious agents to mount file system agents are cray-cray.
 
-Macro does not enforce type as opposite to function.
+Unfortunately, those developers are also known as "Linux desktop devs"
+(who implement unprivileged mounts of USB cards) or "container
+evangelists" who think containers should be treated as being Just As
+Good as VM's From A Security Perspective.
 
-There is no compile time check for correct type and neither compile time
-warning if smaller typed value is passed.
+So I do care about this for ext4, although I don't guarantee immediate
+response, as it's something that I usually end up doing on my own
+time.  I do get cranky that Syzkaller makes it painful to extract out
+the fuzzed file system image, and I much prefer those fuzzing systems
+which provide the file system image and the C program used to trigger
+the failre as two seprate files.  Or failing that, if there was some
+trivial way to get the syzkaller reproducer program to disgorge the
+file system image to a specified output file.  As a result, if I have
+a choice of spending time investigating fuzzing report from a more
+file-system friendly fuzzing program and syzkaller, I'll tend choose
+to spend my time dealing with other file system fuzzing reports first.
 
-And e.g. passing constant with explicit ULL suffix or casting external
-constant to 64bit type is impractical.
+The problem for Minix is that it does not have an active maintainer.
+So if you submit fuzzing reports for Minix, it's unlikely anyone will
+spend time working on it.  But if you submit a patch, it can go in,
+probably via Andrew Morton.  (Recent Minix fixes that have gone in
+this way: 0a12c4a8069 and 32ac86efff9)
+
+Cheers,
+
+					- Ted
+					
