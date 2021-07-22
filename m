@@ -2,77 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9803D2FD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5A83D2FDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhGVVyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 17:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbhGVVyG (ORCPT
+        id S232413AbhGVVyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 17:54:22 -0400
+Received: from mail-pl1-f174.google.com ([209.85.214.174]:43829 "EHLO
+        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232320AbhGVVyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 17:54:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702EDC061575;
-        Thu, 22 Jul 2021 15:34:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=ePleACZs1ZsydqUvDnxgo+oZtae2ZwTuTK5A4YacCoI=; b=SqGQvGubmRSX5z6BjCjuw+xEDr
-        I6P/kC+e4Tk6N+of1b2zAJDnnHUqwHk3E/t5gR1d3ktMRWwtx9Kg2TCYIomWfDEAPHQlM17+zgKkt
-        Xn/RYJwQ50sjdfd4EguIuEopwtI8uo2nMuFD7HyFylL3MDlwFq2YyRqXto2SJlejjxs9CBi3nOEiy
-        JMtkT8N2sXCzpgbb/oDr90EnS4b2tgrpoLYCxjUD8rfd1deEJSANI5pMZWX+KXzfr78l2k9nNg8BM
-        Fi/ZxQM5/pwmq9qOM7ffeWpTh6HfWhO+DElp+RamcyEWm/5UO5eXBGbMD7KQEkFsux8/ahD5J8ptK
-        4oyfef2Q==;
-Received: from [2601:1c0:6280:3f0:7629:afff:fe72:e49d]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6hH3-002tcC-VI; Thu, 22 Jul 2021 22:34:38 +0000
-Subject: Re: A shift-out-of-bounds in minix_statfs in fs/minix/inode.c
-To:     Theodore Ts'o <tytso@mit.edu>, Matthew Wilcox <willy@infradead.org>
-Cc:     butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <CAFcO6XOdMe-RgN8MCUT59cYEVBp+3VYTW-exzxhKdBk57q0GYw@mail.gmail.com>
- <YPhbU/umyUZLdxIw@casper.infradead.org> <YPnp/zXp3saLbz03@mit.edu>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e494c34c-1118-584f-a001-2929df747f8b@infradead.org>
-Date:   Thu, 22 Jul 2021 15:34:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 22 Jul 2021 17:54:20 -0400
+Received: by mail-pl1-f174.google.com with SMTP id d17so923592plh.10;
+        Thu, 22 Jul 2021 15:34:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VyLGTqswjAT6qLthwUe8GNmcXwOWxADqbicD6omyIuc=;
+        b=tf+aLkVdAD4vPdXF88uXQy+vB3CYIO2MMdZ0hkxdyELg+W9F5P7mq8Cy1JLKF7eBCh
+         qiR2evj8JTDVZ1XN7HlrJSMCXgUFh36RfuqkNPQ+nJFrnqs51WkBsySYLzLbWcvW56qj
+         fDFvUsVvayrAzPYSzuSJQUIm6laskj/RnnW+sLk4LIReGQmtwM0BEb2hLhdt9ObQ8Btt
+         +K1xwX/vW8WUGaN+kpWucKNHoPCfcEGsIAutTxCkvQL7+PoCnpCKsX7Vlzl/QLoHBJfl
+         WZFKQcBlUsYzXkVeMqv0R7ZFr0i0xBQVyGZT/35S7xfDEcv5jRXz96gZ4euhrqZVHFck
+         Mytw==
+X-Gm-Message-State: AOAM533L/9nV55B49Xv8/zYBEU72IWC3R8hfk4q4L2YB5tLrz7MUYcYW
+        35IKjaTFBnWS12tYKSyEiz0=
+X-Google-Smtp-Source: ABdhPJxx0yOHbOnXxEhWB9G1POpQL+iRei2o0jQLKVrRd192woRgvj3mqtJOy4mH9/kNcn0rJ+kQGg==
+X-Received: by 2002:a63:1d18:: with SMTP id d24mr2084173pgd.69.1626993293716;
+        Thu, 22 Jul 2021 15:34:53 -0700 (PDT)
+Received: from garbanzo ([191.96.121.239])
+        by smtp.gmail.com with ESMTPSA id l2sm30573920pfc.157.2021.07.22.15.34.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 15:34:52 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 15:34:49 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     tj@kernel.org, shuah@kernel.org, akpm@linux-foundation.org,
+        rafael@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, andriin@fb.com, daniel@iogearbox.net,
+        atenart@kernel.org, alobakin@pm.me, weiwan@google.com,
+        ap420073@gmail.com, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] selftests: add tests_sysfs module
+Message-ID: <20210722223449.ot5272wpc6o5uzlk@garbanzo>
+References: <20210703004632.621662-1-mcgrof@kernel.org>
+ <20210703004632.621662-2-mcgrof@kernel.org>
+ <YPgF2VAoxPIiKWX1@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <YPnp/zXp3saLbz03@mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPgF2VAoxPIiKWX1@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/21 2:58 PM, Theodore Ts'o wrote:
-...
-
+On Wed, Jul 21, 2021 at 01:32:41PM +0200, Greg KH wrote:
+> On Fri, Jul 02, 2021 at 05:46:29PM -0700, Luis Chamberlain wrote:
+> > This selftests will shortly be expanded upon with more tests which
+> > require further kernel changes in order to provide better test
+> > coverage.
 > 
-> So I do care about this for ext4, although I don't guarantee immediate
-> response, as it's something that I usually end up doing on my own
-> time.  I do get cranky that Syzkaller makes it painful to extract out
-> the fuzzed file system image, and I much prefer those fuzzing systems
-> which provide the file system image and the C program used to trigger
-> the failre as two seprate files.  Or failing that, if there was some
+> Why is this not using kunit?  We should not be adding new in-kernel
+> tests that are not using that api anymore.
 
-gosh yes. I have added a patch to the syzkaller C reproducer multiple times
-so that it would write out the fs image and then I could just use that
-with 'mount' etc. instead of running the (unreadable) C reproducer.
+No way. That cannot possibly be true. When was this decided? Did
+Shuah Khan, the maintainer of selftests, all of a sudden decide we
+are going to deprecate selftests in favor for trying to only use
+kunit? Did we have a conference where this was talked about and decided?
 
-> trivial way to get the syzkaller reproducer program to disgorge the
-> file system image to a specified output file.  As a result, if I have
-> a choice of spending time investigating fuzzing report from a more
-> file-system friendly fuzzing program and syzkaller, I'll tend choose
-> to spend my time dealing with other file system fuzzing reports first.
+If so all these are huge news to me and I missed the memo!
 
+If I would have been at such meeting I would have definitely yelled
+bloody murder!
 
+kunit relies on UML and UML is a simple one core architecture, to start
+with. This means I cannot run tests for multicore with it, which is
+where many races do happen! Yes, you can run kunit on other
+architectures, but all that is new.
 
--- 
-~Randy
+Second, I did help review kunit getting upstream, and suggested a few
+example tests, part of which were for sysctl to compare and contrast
+what is possible and what we cannot do.
 
+Not everything we want to test should be written as a kunit test.
+No way.
+
+In this case kunit is not ideal given I want to mimic something in
+userspace interaction, and expose races through error injection and
+if we can use as many cores to busy races out.
+
+Trust me, I'm an advocate of kunit, and I'm even trying to see ideally
+what tests from fstests / blktests could be kunit'ified. But in this
+case, no. Using a selftests is much better target framework.
+
+> > diff --git a/lib/test_sysfs.c b/lib/test_sysfs.c
+> > new file mode 100644
+> > index 000000000000..bf43016d40b5
+> > --- /dev/null
+> > +++ b/lib/test_sysfs.c
+> > @@ -0,0 +1,943 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> 
+> This does not match your "boiler-plate" text below, sorry.
+
+Indeed, I'll fix it.
+
+  Luis
