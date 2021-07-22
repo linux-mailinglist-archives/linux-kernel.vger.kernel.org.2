@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3A63D245A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DAD73D2455
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhGVM2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 08:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230418AbhGVM2U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 08:28:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74790C061575;
-        Thu, 22 Jul 2021 06:08:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+mjAA153JG0Ln8wFYY041kj2Rsi0lJ7YGWt7SwKJF/8=; b=PCpF0eOlIHL6HnaeLDPKGuJyur
-        Pj7KAq8ENbbzU+SxmHu185G55Dox0US5sMQr1fkTbdb/zTJoE2dUMURZfqMgPvnY8Hw0Llq333J0/
-        oYE1BbgMLmoWGIzHtyuYyyCjalyd5tJdIFcFM4VCDTmiZoYCPAA7QYxkWdeGOKGZNvkzZQGuGbuAu
-        Jk2CxbLLWhfMRsoZbr62BVyBGiSsCcw0KdRDbcOTDQaShIX0iKY0n7puoBCH+YYkpr1ODbfZcIDZr
-        VPW+l2FIH+WqntMDhWe4muRuevFo7ZNkAA3hAJHgAoXtN3DhasPfQxNY3uEhb/YUUsj/C4mQgg8Tr
-        QgC9QV6w==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6YQZ-00AHI5-Mg; Thu, 22 Jul 2021 13:07:53 +0000
-Date:   Thu, 22 Jul 2021 14:07:51 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v2 1/2] lib/scatterlist: Fix wrong update of
- orig_nents
-Message-ID: <YPltp39n9URglTXT@infradead.org>
-References: <cover.1626605893.git.leonro@nvidia.com>
- <36d655a0ff45f4c86762358c7b6a7b58939313fb.1626605893.git.leonro@nvidia.com>
- <20210722130040.GH1117491@nvidia.com>
+        id S231971AbhGVM1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 08:27:46 -0400
+Received: from mga09.intel.com ([134.134.136.24]:2347 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230418AbhGVM1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 08:27:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="211641954"
+X-IronPort-AV: E=Sophos;i="5.84,261,1620716400"; 
+   d="scan'208";a="211641954"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 06:08:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,261,1620716400"; 
+   d="scan'208";a="577228422"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Jul 2021 06:08:15 -0700
+Received: from [10.212.167.204] (kliang2-MOBL.ccr.corp.intel.com [10.212.167.204])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 4183D5807B4;
+        Thu, 22 Jul 2021 06:08:13 -0700 (PDT)
+Subject: Re: [PATCH V8 00/18] KVM: x86/pmu: Add *basic* support to enable
+ guest PEBS via DS
+To:     Liuxiangdong <liuxiangdong5@huawei.com>, lingshan.zhu@intel.com,
+        like.xu.linux@gmail.com
+Cc:     ak@linux.intel.com, boris.ostrvsky@oracle.com, bp@alien8.de,
+        eranian@google.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, peterz@infradead.org, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, wei.w.wang@intel.com,
+        x86@kernel.org, Xiexiangyou <xiexiangyou@huawei.com>,
+        "Fangyi (Eric)" <eric.fangyi@huawei.com>
+References: <20210716085325.10300-1-lingshan.zhu@intel.com>
+ <60F96A3F.3030703@huawei.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <4e990190-069e-4769-b0be-7db7d721f8a6@linux.intel.com>
+Date:   Thu, 22 Jul 2021 09:08:12 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210722130040.GH1117491@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <60F96A3F.3030703@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 10:00:40AM -0300, Jason Gunthorpe wrote:
-> this is better:
-> 
->    struct sg_append_table state;
-> 
->    sg_append_init(&state, sgt, gfp_mask);
-> 
->    while (..)
->      ret = sg_append_pages(&state, pages, n_pages, ..)
->      if (ret)
-> 	 sg_append_abort(&state); // Frees the sgt and puts it to NULL
->    sg_append_complete(&state)
-> 
-> Which allows sg_alloc_table_from_pages() to be written as
-> 
->    struct sg_append_table state;
->    sg_append_init(&state, sgt, gfp_mask);
->    ret = sg_append_pages(&state,pages, n_pages, offset, size, UINT_MAX)
->    if (ret) {
->       sg_append_abort(&state);
->       return ret;
->    }
->    sg_append_complete(&state);
->    return 0;
-> 
-> And then the API can manage all of this in some sane and
-> understandable way.
 
-That would be a lot easier to use for sure.  Not sure how invasive the
-changes would be, though.
+
+On 7/22/2021 8:53 AM, Liuxiangdong wrote:
+> Hi，like and lingshan.
+> 
+> We can use pebs on the Icelake by using "perf record -e $event:pp", but 
+> how can we get all the supported $event for the Icelake?
+> Because it seems like that all the hardware event/software event/kernel 
+> pmu event listed by "perf list" can use ":pp" without error.
+> 
+> 
+> By quering events list for Icelake("https://perfmon-events.intel.com/), 
+> we can use "perf record -e cpu/event=0xXX,unask=0xXX/pp"
+> to enable sampling. There are some events with "PEBS： 
+> [PreciseEventingIP]" in "Additional Info" column. Are they the only 
+> supported
+> precise events? Do those events which have "PEBS:[NonPreciseEventingIP]" 
+> in last column support PEBS?
+>
+
+Starts from Ice Lake, the extended PEBS feature is supported, which 
+extend the PEBS for all counters and all performance monitoring events 
+(both precise event and non-precise). You can sample any events with PEBS.
+For details, please refer to the 18.9.1 extended PEBS in the latest SDM 
+vol3.
+
+Thanks,
+Kan
