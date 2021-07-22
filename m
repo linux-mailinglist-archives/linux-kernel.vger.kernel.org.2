@@ -2,213 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6013D1E73
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C293D1E77
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhGVGEt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 02:04:49 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3982 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbhGVGEo (ORCPT
+        id S230352AbhGVGGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 02:06:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42092 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229573AbhGVGGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 02:04:44 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4GVjWW3rB9zPy7X;
-        Thu, 22 Jul 2021 14:40:39 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 14:45:16 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2176.012; Thu, 22 Jul 2021 07:45:14 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Will Deacon <will@kernel.org>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "Alexandru.Elisei@arm.com" <Alexandru.Elisei@arm.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "qperret@google.com" <qperret@google.com>
-Subject: RE: [PATCH v2 3/3] kvm/arm: Align the VMID allocation with the arm64
- ASID one
-Thread-Topic: [PATCH v2 3/3] kvm/arm: Align the VMID allocation with the arm64
- ASID one
-Thread-Index: AQHXYshdKTToNwJp/0KRL8OlJabnS6tNxW6AgAD8jbA=
-Date:   Thu, 22 Jul 2021 06:45:14 +0000
-Message-ID: <f7d708704fb84380af85298a98f7a48c@huawei.com>
-References: <20210616155606.2806-1-shameerali.kolothum.thodi@huawei.com>
- <20210616155606.2806-4-shameerali.kolothum.thodi@huawei.com>
- <20210721163138.GD11003@willie-the-truck>
-In-Reply-To: <20210721163138.GD11003@willie-the-truck>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.80.98]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 22 Jul 2021 02:06:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626936436;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/ntfzdG8h0mkgDF4UOYcoxJpXB1efH8Z9tdhayqWXAU=;
+        b=MpX7kiGRm60goJjWavtRWo7Na09eW5Mnz/kWLOJIsjGoCxdOtxp8OFxwGbduvAYahKVBJ9
+        6kKneRXsJvc2yaPpLX5d4W40Pvaop4dfSHtm+n8CkP01OMgtGlokunwqfoPW4P4Y9sTEml
+        YP4bnUCSe3W3bs6lBXO0l0gl4tIfqxY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-310-aTMc3AkrOG6gYJTgrYV9Hg-1; Thu, 22 Jul 2021 02:47:14 -0400
+X-MC-Unique: aTMc3AkrOG6gYJTgrYV9Hg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 703BA804140;
+        Thu, 22 Jul 2021 06:47:13 +0000 (UTC)
+Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6A99460FB8;
+        Thu, 22 Jul 2021 06:47:10 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v3 09/12] mm/debug_vm_pgtable: Use struct
+ pgtable_debug_args in PUD modifying tests
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+References: <20210719130613.334901-1-gshan@redhat.com>
+ <20210719130613.334901-10-gshan@redhat.com>
+ <8997bf56-ff67-060d-c25b-91e11f31e88a@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <49ced5c2-5001-9cb7-663e-0d0845f1890a@redhat.com>
+Date:   Thu, 22 Jul 2021 16:47:27 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <8997bf56-ff67-060d-c25b-91e11f31e88a@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Anshuman,
 
+On 7/22/21 3:39 PM, Anshuman Khandual wrote:
+> On 7/19/21 6:36 PM, Gavin Shan wrote:
+>> This uses struct pgtable_debug_args in PUD modifying tests. The allocated
+>> huge page is used when set_pud_at() is used. The corresponding tests
+>> are skipped if the huge page doesn't exist. Besides, the following unused
+>> variables in debug_vm_pgtable() are dropped: @prot, @paddr, @pud_aligned.
+> 
+> Please dont drop @prot, @paddr, @pud_aligned just yet.
+> 
 
-> -----Original Message-----
-> From: Will Deacon [mailto:will@kernel.org]
-> Sent: 21 July 2021 17:32
-> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> Cc: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
-> linux-kernel@vger.kernel.org; maz@kernel.org; catalin.marinas@arm.com;
-> james.morse@arm.com; julien.thierry.kdev@gmail.com;
-> suzuki.poulose@arm.com; jean-philippe@linaro.org;
-> Alexandru.Elisei@arm.com; Linuxarm <linuxarm@huawei.com>;
-> qperret@google.com
-> Subject: Re: [PATCH v2 3/3] kvm/arm: Align the VMID allocation with the
-> arm64 ASID one
+Otherwise it will cause build warning ("unused variable") as
+explain in previous reply.
+
+>>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> ---
+>>   mm/debug_vm_pgtable.c | 130 ++++++++++++++++--------------------------
+>>   1 file changed, 50 insertions(+), 80 deletions(-)
+>>
+>> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+>> index cec3cbf99a6b..57b7ead0708b 100644
+>> --- a/mm/debug_vm_pgtable.c
+>> +++ b/mm/debug_vm_pgtable.c
+>> @@ -338,55 +338,55 @@ static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx)
+>>   	WARN_ON(!pud_bad(pud_mkhuge(pud)));
+>>   }
+>>   
+>> -static void __init pud_advanced_tests(struct mm_struct *mm,
+>> -				      struct vm_area_struct *vma, pud_t *pudp,
+>> -				      unsigned long pfn, unsigned long vaddr,
+>> -				      pgprot_t prot)
+>> +static void __init pud_advanced_tests(struct pgtable_debug_args *args)
+>>   {
+>> +	unsigned long vaddr = (args->vaddr & HPAGE_PUD_MASK);
+>>   	pud_t pud;
+>>   
+>>   	if (!has_transparent_hugepage())
+>>   		return;
+>>   
+>>   	pr_debug("Validating PUD advanced\n");
+>> -	/* Align the address wrt HPAGE_PUD_SIZE */
+>> -	vaddr &= HPAGE_PUD_MASK;
 > 
-> [+Quentin]
+> Please just leave these unchanged. If has_transparent_hugepage() evaluates
+> negative, it skips the masking operation. As mentioned earlier please avoid
+> changing the test in any manner during these transition patches.
 > 
-> On Wed, Jun 16, 2021 at 04:56:06PM +0100, Shameer Kolothum wrote:
-> > From: Julien Grall <julien.grall@arm.com>
-> >
-> > At the moment, the VMID algorithm will send an SGI to all the CPUs to
-> > force an exit and then broadcast a full TLB flush and I-Cache
-> > invalidation.
-> >
-> > This patch use the new VMID allocator. The
-> > benefits are:
-> >     - CPUs are not forced to exit at roll-over. Instead the VMID will be
-> >     marked reserved and the context will be flushed at next exit. This
-> >     will reduce the IPIs traffic.
-> >     - Context invalidation is now per-CPU rather than broadcasted.
-> >     - Catalin has a formal model of the ASID allocator.
-> >
-> > With the new algo, the code is now adapted:
-> >     - The function __kvm_flush_vm_context() has been renamed to
-> >     __kvm_tlb_flush_local_all() and now only flushing the current CPU
-> >     context.
-> >     - The call to update_vmid() will be done with preemption disabled
-> >     as the new algo requires to store information per-CPU.
-> >     - The TLBs associated to EL1 will be flushed when booting a CPU to
-> >     deal with stale information. This was previously done on the
-> >     allocation of the first VMID of a new generation.
-> >
-> > Signed-off-by: Julien Grall <julien.grall@arm.com>
-> > Signed-off-by: Shameer Kolothum
-> <shameerali.kolothum.thodi@huawei.com>
-> > ---
-> >  arch/arm64/include/asm/kvm_asm.h      |   4 +-
-> >  arch/arm64/include/asm/kvm_host.h     |   6 +-
-> >  arch/arm64/include/asm/kvm_mmu.h      |   3 +-
-> >  arch/arm64/kvm/Makefile               |   2 +-
-> >  arch/arm64/kvm/arm.c                  | 115 +++++++-------------------
-> >  arch/arm64/kvm/hyp/nvhe/hyp-main.c    |   6 +-
-> >  arch/arm64/kvm/hyp/nvhe/mem_protect.c |   3 +-
-> >  arch/arm64/kvm/hyp/nvhe/tlb.c         |  10 +--
-> >  arch/arm64/kvm/hyp/vhe/tlb.c          |  10 +--
-> >  arch/arm64/kvm/mmu.c                  |   1 -
-> >  10 files changed, 52 insertions(+), 108 deletions(-)
-> 
-> [...]
-> 
-> > diff --git a/arch/arm64/include/asm/kvm_host.h
-> b/arch/arm64/include/asm/kvm_host.h
-> > index 75a7e8071012..d96284da8571 100644
-> > --- a/arch/arm64/include/asm/kvm_host.h
-> > +++ b/arch/arm64/include/asm/kvm_host.h
-> > @@ -70,9 +70,7 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu);
-> >  void kvm_arm_vcpu_destroy(struct kvm_vcpu *vcpu);
-> >
-> >  struct kvm_vmid {
-> > -	/* The VMID generation used for the virt. memory system */
-> > -	u64    vmid_gen;
-> > -	u32    vmid;
-> > +	atomic64_t id;
-> 
-> Maybe a typedef would be better if this is the only member of the structure?
 
 Ok.
 
+>> +	if (args->pud_pfn == ULONG_MAX) {
+>> +		pr_debug("%s: Skipped\n", __func__);
 > 
-> > diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> > index 4b60c0056c04..a02c4877a055 100644
-> > --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> > +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> > @@ -106,8 +106,7 @@ int kvm_host_prepare_stage2(void *mem_pgt_pool,
-> void *dev_pgt_pool)
-> >  	mmu->pgd_phys = __hyp_pa(host_kvm.pgt.pgd);
-> >  	mmu->arch = &host_kvm.arch;
-> >  	mmu->pgt = &host_kvm.pgt;
-> > -	mmu->vmid.vmid_gen = 0;
-> > -	mmu->vmid.vmid = 0;
-> > +	atomic64_set(&mmu->vmid.id, 0);
+> Just return. Please dont call out "Skipped". Applicable for all transition
+> patches here.
 > 
-> I think this is the first atomic64 use in the EL2 object, which may pull in
-> some fatal KCSAN instrumentation. Quentin, have you run into this before?
-> 
-> Might be simple just to zero-initialise mmu for now, if it isn't already.
 
-I will check that.
+Ok.
 
+>> +		return;
+>> +	}
+>>   
+>> -	pud = pfn_pud(pfn, prot);
+>> -	set_pud_at(mm, vaddr, pudp, pud);
+>> -	pudp_set_wrprotect(mm, vaddr, pudp);
+>> -	pud = READ_ONCE(*pudp);
+>> +	pud = pfn_pud(args->pud_pfn, args->page_prot);
+>> +	set_pud_at(args->mm, vaddr, args->pudp, pud);
+>> +	pudp_set_wrprotect(args->mm, vaddr, args->pudp);
+>> +	pud = READ_ONCE(*(args->pudp));
 > 
-> > diff --git a/arch/arm64/kvm/hyp/nvhe/tlb.c
-> b/arch/arm64/kvm/hyp/nvhe/tlb.c
-> > index 83dc3b271bc5..42df9931ed9a 100644
-> > --- a/arch/arm64/kvm/hyp/nvhe/tlb.c
-> > +++ b/arch/arm64/kvm/hyp/nvhe/tlb.c
-> > @@ -140,10 +140,10 @@ void __kvm_flush_cpu_context(struct
-> kvm_s2_mmu *mmu)
-> >  	__tlb_switch_to_host(&cxt);
-> >  }
-> >
-> > -void __kvm_flush_vm_context(void)
-> > +void __kvm_tlb_flush_local_all(void)
-> >  {
-> > -	dsb(ishst);
-> > -	__tlbi(alle1is);
-> > +	dsb(nshst);
-> > +	__tlbi(alle1);
-> >
-> >  	/*
-> >  	 * VIPT and PIPT caches are not affected by VMID, so no maintenance
-> > @@ -155,7 +155,7 @@ void __kvm_flush_vm_context(void)
-> >  	 *
-> >  	 */
-> >  	if (icache_is_vpipt())
-> > -		asm volatile("ic ialluis");
-> > +		asm volatile("ic iallu" : : );
-> >
-> > -	dsb(ish);
-> > +	dsb(nsh);
+> Seems like an extra braces while de-referencing arg->pudp. Could these be
+> dropped. Just READ_ONCE(*args->pudp).
 > 
-> Hmm, I'm wondering whether having this local stuff really makes sense for
-> VMIDs. For ASIDs, where rollover can be frequent and TLBI could result in
-> IPI on 32-bit, the local option was important, but here rollover is less
-> frequent, DVM is relied upon to work and the cost of a hypercall is
-> significant with nVHE.
-> 
-> So I do think you could simplify patch 2 slightly to drop the
-> flush_pending and just issue inner-shareable invalidation on rollover.
-> With that, it might also make it straightforward to clear active_asids
-> when scheduling out a vCPU, which would solve the other problem I
-> mentioned
-> about unnecessarily reserving a bunch of the VMID space.
 
-Ok. I will try out the above suggestion. Hope it will be acceptable for 8 bit 
-VMID systems as well as there is a higher chance for rollover especially
-when we introduce pinned VMIDs(I am not sure such platforms care about
-Pinned VMID or not. If not, we could limit Pinned VMIDs to 16 bit systems).
+Ok. Will be dropped in v4.
+
+>>   	WARN_ON(pud_write(pud));
+>>   
+>>   #ifndef __PAGETABLE_PMD_FOLDED
+>> -	pudp_huge_get_and_clear(mm, vaddr, pudp);
+>> -	pud = READ_ONCE(*pudp);
+>> +	pudp_huge_get_and_clear(args->mm, vaddr, args->pudp);
+>> +	pud = READ_ONCE(*(args->pudp));
+>>   	WARN_ON(!pud_none(pud));
+>>   #endif /* __PAGETABLE_PMD_FOLDED */
+>> -	pud = pfn_pud(pfn, prot);
+>> +	pud = pfn_pud(args->pud_pfn, args->page_prot);
+>>   	pud = pud_wrprotect(pud);
+>>   	pud = pud_mkclean(pud);
+>> -	set_pud_at(mm, vaddr, pudp, pud);
+>> +	set_pud_at(args->mm, vaddr, args->pudp, pud);
+>>   	pud = pud_mkwrite(pud);
+>>   	pud = pud_mkdirty(pud);
+>> -	pudp_set_access_flags(vma, vaddr, pudp, pud, 1);
+>> -	pud = READ_ONCE(*pudp);
+>> +	pudp_set_access_flags(args->vma, vaddr, args->pudp, pud, 1);
+>> +	pud = READ_ONCE(*(args->pudp));
+>>   	WARN_ON(!(pud_write(pud) && pud_dirty(pud)));
+>>   
+>>   #ifndef __PAGETABLE_PMD_FOLDED
+>> -	pudp_huge_get_and_clear_full(mm, vaddr, pudp, 1);
+>> -	pud = READ_ONCE(*pudp);
+>> +	pudp_huge_get_and_clear_full(args->mm, vaddr, args->pudp, 1);
+>> +	pud = READ_ONCE(*(args->pudp));
+>>   	WARN_ON(!pud_none(pud));
+>>   #endif /* __PAGETABLE_PMD_FOLDED */
+>>   
+>> -	pud = pfn_pud(pfn, prot);
+>> +	pud = pfn_pud(args->pud_pfn, args->page_prot);
+>>   	pud = pud_mkyoung(pud);
+>> -	set_pud_at(mm, vaddr, pudp, pud);
+>> -	pudp_test_and_clear_young(vma, vaddr, pudp);
+>> -	pud = READ_ONCE(*pudp);
+>> +	set_pud_at(args->mm, vaddr, args->pudp, pud);
+>> +	pudp_test_and_clear_young(args->vma, vaddr, args->pudp);
+>> +	pud = READ_ONCE(*(args->pudp));
+>>   	WARN_ON(pud_young(pud));
+>>   
+>> -	pudp_huge_get_and_clear(mm, vaddr, pudp);
+>> +	pudp_huge_get_and_clear(args->mm, vaddr, args->pudp);
+>>   }
+>>   
+>>   static void __init pud_leaf_tests(struct pgtable_debug_args *args)
+>> @@ -406,24 +406,14 @@ static void __init pud_leaf_tests(struct pgtable_debug_args *args)
+>>   }
+>>   #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+>>   static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx) { }
+>> -static void __init pud_advanced_tests(struct mm_struct *mm,
+>> -				      struct vm_area_struct *vma, pud_t *pudp,
+>> -				      unsigned long pfn, unsigned long vaddr,
+>> -				      pgprot_t prot)
+>> -{
+>> -}
+>> +static void __init pud_advanced_tests(struct pgtable_debug_args *args) { }
+>>   static void __init pud_leaf_tests(struct pgtable_debug_args *args) { }
+>>   #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+>>   #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
+>>   static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx) { }
+>>   static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx) { }
+>>   static void __init pmd_advanced_tests(struct pgtable_debug_args *args) { }
+>> -static void __init pud_advanced_tests(struct mm_struct *mm,
+>> -				      struct vm_area_struct *vma, pud_t *pudp,
+>> -				      unsigned long pfn, unsigned long vaddr,
+>> -				      pgprot_t prot)
+>> -{
+>> -}
+>> +static void __init pud_advanced_tests(struct pgtable_debug_args *args) { }
+>>   static void __init pmd_leaf_tests(struct pgtable_debug_args *args) { }
+>>   static void __init pud_leaf_tests(struct pgtable_debug_args *args) { }
+>>   static void __init pmd_savedwrite_tests(struct pgtable_debug_args *args) { }
+>> @@ -450,11 +440,11 @@ static void __init pmd_huge_tests(struct pgtable_debug_args *args)
+>>   	WARN_ON(!pmd_none(pmd));
+>>   }
+>>   
+>> -static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+>> +static void __init pud_huge_tests(struct pgtable_debug_args *args)
+>>   {
+>>   	pud_t pud;
+>>   
+>> -	if (!arch_vmap_pud_supported(prot))
+>> +	if (!arch_vmap_pud_supported(args->page_prot))
+>>   		return;
+>>   
+>>   	pr_debug("Validating PUD huge\n");
+>> @@ -462,15 +452,16 @@ static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+>>   	 * X86 defined pud_set_huge() verifies that the given
+>>   	 * PUD is not a populated non-leaf entry.
+>>   	 */
+>> -	WRITE_ONCE(*pudp, __pud(0));
+>> -	WARN_ON(!pud_set_huge(pudp, __pfn_to_phys(pfn), prot));
+>> -	WARN_ON(!pud_clear_huge(pudp));
+>> -	pud = READ_ONCE(*pudp);
+>> +	WRITE_ONCE(*(args->pudp), __pud(0));
+>> +	WARN_ON(!pud_set_huge(args->pudp, __pfn_to_phys(args->fixed_pud_pfn),
+>> +			      args->page_prot));
+> 
+> Please dont break the line, we could go upto 100 width. Please do
+> the same for the entire series. Improves the readability.
+> 
+>> +	WARN_ON(!pud_clear_huge(args->pudp));
+>> +	pud = READ_ONCE(*(args->pudp));
+>>   	WARN_ON(!pud_none(pud));
+>>   }
+>>   #else /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
+>>   static void __init pmd_huge_tests(struct pgtable_debug_args *args) { }
+>> -static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot) { }
+>> +static void __init pud_huge_tests(struct pgtable_debug_args *args) { }
+>>   #endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+>>   
+>>   static void __init p4d_basic_tests(void)
+>> @@ -492,27 +483,26 @@ static void __init pgd_basic_tests(void)
+>>   }
+>>   
+>>   #ifndef __PAGETABLE_PUD_FOLDED
+>> -static void __init pud_clear_tests(struct mm_struct *mm, pud_t *pudp)
+>> +static void __init pud_clear_tests(struct pgtable_debug_args *args)
+>>   {
+>> -	pud_t pud = READ_ONCE(*pudp);
+>> +	pud_t pud = READ_ONCE(*(args->pudp));
+>>   
+>> -	if (mm_pmd_folded(mm))
+>> +	if (mm_pmd_folded(args->mm))
+>>   		return;
+>>   
+>>   	pr_debug("Validating PUD clear\n");
+>>   	pud = __pud(pud_val(pud) | RANDOM_ORVALUE);
+>> -	WRITE_ONCE(*pudp, pud);
+>> -	pud_clear(pudp);
+>> -	pud = READ_ONCE(*pudp);
+>> +	WRITE_ONCE(*(args->pudp), pud);
+>> +	pud_clear(args->pudp);
+>> +	pud = READ_ONCE(*(args->pudp));
+>>   	WARN_ON(!pud_none(pud));
+>>   }
+>>   
+>> -static void __init pud_populate_tests(struct mm_struct *mm, pud_t *pudp,
+>> -				      pmd_t *pmdp)
+>> +static void __init pud_populate_tests(struct pgtable_debug_args *args)
+>>   {
+>>   	pud_t pud;
+>>   
+>> -	if (mm_pmd_folded(mm))
+>> +	if (mm_pmd_folded(args->mm))
+>>   		return;
+>>   
+>>   	pr_debug("Validating PUD populate\n");
+>> @@ -520,16 +510,13 @@ static void __init pud_populate_tests(struct mm_struct *mm, pud_t *pudp,
+>>   	 * This entry points to next level page table page.
+>>   	 * Hence this must not qualify as pud_bad().
+>>   	 */
+>> -	pud_populate(mm, pudp, pmdp);
+>> -	pud = READ_ONCE(*pudp);
+>> +	pud_populate(args->mm, args->pudp, args->start_pmdp);
+>> +	pud = READ_ONCE(*(args->pudp));
+>>   	WARN_ON(pud_bad(pud));
+>>   }
+>>   #else  /* !__PAGETABLE_PUD_FOLDED */
+>> -static void __init pud_clear_tests(struct mm_struct *mm, pud_t *pudp) { }
+>> -static void __init pud_populate_tests(struct mm_struct *mm, pud_t *pudp,
+>> -				      pmd_t *pmdp)
+>> -{
+>> -}
+>> +static void __init pud_clear_tests(struct pgtable_debug_args *args) { }
+>> +static void __init pud_populate_tests(struct pgtable_debug_args *args) { }
+>>   #endif /* PAGETABLE_PUD_FOLDED */
+>>   
+>>   #ifndef __PAGETABLE_P4D_FOLDED
+>> @@ -1152,10 +1139,7 @@ static int __init debug_vm_pgtable(void)
+>>   	pud_t *pudp, *saved_pudp;
+>>   	pmd_t *pmdp, *saved_pmdp, pmd;
+>>   	pgtable_t saved_ptep;
+>> -	pgprot_t prot;
+>> -	phys_addr_t paddr;
+>>   	unsigned long vaddr;
+>> -	unsigned long pud_aligned;
+>>   	spinlock_t *ptl = NULL;
+>>   	int idx, ret;
+>>   
+>> @@ -1164,7 +1148,6 @@ static int __init debug_vm_pgtable(void)
+>>   	if (ret)
+>>   		return ret;
+>>   
+>> -	prot = vm_get_page_prot(VMFLAGS);
+> 
+> Please dont drop these just yet and wait until [PATCH 11/12].
+> 
+>>   	vaddr = get_random_vaddr();
+>>   	mm = mm_alloc();
+>>   	if (!mm) {
+>> @@ -1178,19 +1161,6 @@ static int __init debug_vm_pgtable(void)
+>>   		return 1;
+>>   	}
+>>   
+>> -	/*
+>> -	 * PFN for mapping at PTE level is determined from a standard kernel
+>> -	 * text symbol. But pfns for higher page table levels are derived by
+>> -	 * masking lower bits of this real pfn. These derived pfns might not
+>> -	 * exist on the platform but that does not really matter as pfn_pxx()
+>> -	 * helpers will still create appropriate entries for the test. This
+>> -	 * helps avoid large memory block allocations to be used for mapping
+>> -	 * at higher page table levels.
+>> -	 */
+> 
+> Please move this comment as is to the right place inside init_args()
+> in the first patch itself. If possible all comments should be moved
+> during the first patch and just the code remains till [PATCH 11/12].
+> 
+
+I will include all comments in PATCH[01/12]. In that case, we won't
+introduce more changes to unrelated function (init_args()).
+
+>> -	paddr = __pa_symbol(&start_kernel);
+>> -
+>> -	pud_aligned = (paddr & PUD_MASK) >> PAGE_SHIFT;
+>> -
+> 
+> Please dont drop these just yet and wait until [PATCH 11/12].
+> 
+
+Otherwise, it will cause build warning.
+
+>>   	pgdp = pgd_offset(mm, vaddr);
+>>   	p4dp = p4d_alloc(mm, pgdp, vaddr);
+>>   	pudp = pud_alloc(mm, p4dp, vaddr);
+>> @@ -1282,11 +1252,11 @@ static int __init debug_vm_pgtable(void)
+>>   	pmd_populate_tests(&args);
+>>   	spin_unlock(ptl);
+>>   
+>> -	ptl = pud_lock(mm, pudp);
+>> -	pud_clear_tests(mm, pudp);
+>> -	pud_advanced_tests(mm, vma, pudp, pud_aligned, vaddr, prot);
+>> -	pud_huge_tests(pudp, pud_aligned, prot);
+>> -	pud_populate_tests(mm, pudp, saved_pmdp);
+>> +	ptl = pud_lock(args.mm, args.pudp);
+>> +	pud_clear_tests(&args);
+>> +	pud_advanced_tests(&args);
+>> +	pud_huge_tests(&args);
+>> +	pud_populate_tests(&args);
+>>   	spin_unlock(ptl);
+>>   
+>>   	spin_lock(&mm->page_table_lock);
+>>
+> 
 
 Thanks,
-Shameer
+Gavin
+
