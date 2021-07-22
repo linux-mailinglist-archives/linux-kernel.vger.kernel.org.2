@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6503D2712
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E890E3D2715
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbhGVPOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:14:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230343AbhGVPOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:14:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE53C6101E;
-        Thu, 22 Jul 2021 15:55:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626969315;
-        bh=QUR6QNDvRdcJPSeR2Cm6YLmShamr5QXRO3rk1PHR2lo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OPZoGJlqlCo/IaBWy7NOJgQSGbH4YbgtRX+TXJr8ZM4ETtJnDvbfl3/44FbPWnH6N
-         H6LBxwYlV2gvJD8oaIe8RCxUoFuSKA8mVpTQm/eP9nq3GLTStbCJyKOOjc1/1p5T2+
-         jR26SgHGAYZNdOuBnWgCz3ZRozP7D+Ep7CMl0OA5///BOD3c0hRnzv7XsbMPOWxbHB
-         xardrtdITXxRblI0R8Ya1rQvPXDGlmz9ZpZ3ndFnZjweClC5Wh8rI9XYWgHaYQqoyX
-         IpF01gjoWWSl+97FTKjybw1JpTnREt0fD/0totAcsPMtwX/ZBnxgmbneEMjHW0f4A0
-         vAuoD8Lm+KyrQ==
-Date:   Thu, 22 Jul 2021 16:55:10 +0100
-From:   Will Deacon <will@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     catalin.marinas@arm.com, maz@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, mpe@ellerman.id.au
-Subject: [GIT PULL] arm64 fixes for -rc3
-Message-ID: <20210722155509.GA12627@willie-the-truck>
+        id S232641AbhGVPOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230343AbhGVPOy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:14:54 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE0EC061760;
+        Thu, 22 Jul 2021 08:55:28 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id o72-20020a9d224e0000b02904bb9756274cso5712978ota.6;
+        Thu, 22 Jul 2021 08:55:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pEI9JoD+EK/NQibnY1I31vk0qudP9D/krryg6PZfRnY=;
+        b=uspIcQM5PhSYwYzZZR+fn1zErcWeV+JFzXKqecRhfmJmEyqySJgAsIRxONQW4tBRM6
+         00KJthNIrjXaydppLa2HWm8hFaJt9zEDeHT+ea9Lxa04U6kdsy/SAnEUoyyaOY7nzRNz
+         2aeH5TriQbfqa2pI+FNFRomY85vROLOEI351mB+7at3nkv3y50TDfGCMf5OPOGJkh3Dj
+         ZRgt23fu5qLf+Lmr1eA9dwMG/5fUfzGRbMBBNNHUOts4s/M9vv6s54MuKh3KhBgkCwcI
+         Kzv4n9t1BwQ68UHhOjKl+EfBWgNU6jk0+HCFmhtGi0KcgJ+FHLKCpii9H+mW9jqS8+Bm
+         MAqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=pEI9JoD+EK/NQibnY1I31vk0qudP9D/krryg6PZfRnY=;
+        b=TxcxYRMcmyVtJya2jJIjJGYb6RZvGZAicb570XKSAHfYH4fBC3j4rRIHNcx+wcbDsi
+         HLcKtkVH/XQUwq4h+dOv1zPSZRHstW3GU1VwheB0DjTsTYESkF8iYcIZ+QPGEKcUa7+I
+         cEJdEKpVMZNNttSnYnLckfjXRlNS/l62U5LwsjHHFyfQHLK3bJOpegv2ksN1RmYTFQ8P
+         FfYHe+IeCiOUatavp3y25fbtnOOSWEI7sKmmkPwe8IbYTM2uMvVu0wlOr3215xWe52Na
+         /trOstBFpU1Tl5tkcF5NFpjYbSXI7VhBzclc4sJXTZcY7h/byPXILJhqSGFcNwqch8up
+         dACg==
+X-Gm-Message-State: AOAM530KdiMaG6/vLds7FPllSR7gjIuBfFAuEspz1OiNT4ratN/PjG8X
+        axAkD2JEJny/rUhPRrVwnRw=
+X-Google-Smtp-Source: ABdhPJz815fgYZGdhbFAKwJRnDFTOlCEwBGSbPHJavudPzt52w02lj8OvUugq9e02yFANCbpEPlzng==
+X-Received: by 2002:a9d:37c9:: with SMTP id x67mr294339otb.2.1626969327645;
+        Thu, 22 Jul 2021 08:55:27 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s19sm973940ooj.7.2021.07.22.08.55.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 08:55:27 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 22 Jul 2021 08:55:25 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/15] dt-bindings: firmware: update arm,scpi.yaml
+ reference
+Message-ID: <20210722155525.GA3369686@roeck-us.net>
+References: <cover.1626947923.git.mchehab+huawei@kernel.org>
+ <b5a2b0cb83e7f8193b4be4cef9250dd4c42877ab.1626947923.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <b5a2b0cb83e7f8193b4be4cef9250dd4c42877ab.1626947923.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Jul 22, 2021 at 11:59:59AM +0200, Mauro Carvalho Chehab wrote:
+> Changeset 1496be719468 ("dt-bindings: firmware: arm,scpi: Convert to json schema")
+> renamed: Documentation/devicetree/bindings/arm/arm,scpi.txt
+> to: Documentation/devicetree/bindings/firmware/arm,scpi.yaml.
+> 
+> Update its cross-reference accordingly.
+> 
+> Fixes: 1496be719468 ("dt-bindings: firmware: arm,scpi: Convert to json schema")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Acked-by: Sudeep Holla <sudeep.holla@arm.com>
 
-Please pull this pair of arm64 fixes for -rc3. The straightforward one
-is a fix to our firmware calling stub, which accidentally started
-corrupting the link register on machines with SVE. Since these machines
-don't really exist yet, it wasn't spotted in -next.
+Applied to hwmon-next.
 
-The other fix is a revert-and-a-bit of a patch originally intended to
-allow PTE-level huge mappings for the VMAP area on 32-bit PPC 8xx. A
-side-effect of this change was that our pXd_set_huge() implementations
-could be replaced with generic dummy functions depending on the levels
-of page-table being used, which in turn broke the boot if we fail to
-create the linear mapping as a result of using these functions to
-operate on the pgd. Huge thanks to Michael Ellerman for modifying the
-revert so as not to regress PPC 8xx in terms of functionality.
+Thanks,
+Guenter
 
-Anyway, that's the background and it's also available in the commit
-message along with Link tags pointing at all of the fun. Please pull.
-
-Cheers,
-
-Will
-
---->8
-
-The following changes since commit e6f85cbeb23bd74b8966cf1f15bf7d01399ff625:
-
-  arm64: entry: fix KCOV suppression (2021-07-15 17:37:55 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
-
-for you to fetch changes up to d8a719059b9dc963aa190598778ac804ff3e6a87:
-
-  Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge" (2021-07-21 11:28:09 +0100)
-
-----------------------------------------------------------------
-arm64 fixes for -rc3
-
-- Fix hang when issuing SMC on SVE-capable system due to clobbered LR
-
-- Fix boot failure due to missing block mappings with folded page-table
-
-----------------------------------------------------------------
-Jean-Philippe Brucker (1):
-      arm64: smccc: Save lr before calling __arm_smccc_sve_check()
-
-Jonathan Marek (1):
-      Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge"
-
- arch/arm64/kernel/smccc-call.S |  9 ++++++---
- arch/arm64/mm/mmu.c            | 20 ++++++++------------
- arch/powerpc/mm/nohash/8xx.c   | 10 ++++++++++
- arch/x86/mm/pgtable.c          | 34 +++++++++++++++-------------------
- include/linux/pgtable.h        | 26 +-------------------------
- 5 files changed, 40 insertions(+), 59 deletions(-)
+> ---
+>  Documentation/hwmon/scpi-hwmon.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/hwmon/scpi-hwmon.rst b/Documentation/hwmon/scpi-hwmon.rst
+> index eee7022b44db..1e3f83ec0658 100644
+> --- a/Documentation/hwmon/scpi-hwmon.rst
+> +++ b/Documentation/hwmon/scpi-hwmon.rst
+> @@ -32,5 +32,5 @@ Usage Notes
+>  
+>  The driver relies on device tree node to indicate the presence of SCPI
+>  support in the kernel. See
+> -Documentation/devicetree/bindings/arm/arm,scpi.txt for details of the
+> +Documentation/devicetree/bindings/firmware/arm,scpi.yaml for details of the
+>  devicetree node.
