@@ -2,90 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6D93D1FD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 10:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DB23D1FFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 10:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhGVHsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 03:48:25 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57386 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhGVHsX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 03:48:23 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A126420394;
-        Thu, 22 Jul 2021 08:28:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626942537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rJEk1owH52y6Qtju7I5k2CaWgV6Tg6KlHTHLAnNPcqk=;
-        b=P+21jWwHuJeX3oA7YjaxJga00O7zvBY5ysftiiH2+8rybxc8//yr4cf16a8EXLUpQTzUgQ
-        bzJaN+NLzzACURhUqwAFSXCK3p8MP8At1CNhNxGKm64R0QEqzNQ0UbOJIFuAtXdM3z7l69
-        kb1QgfFQKjomIDnwkC1AyG9/v9T6WG8=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 5A0DF13889;
-        Thu, 22 Jul 2021 08:28:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id K8gmEkks+WBcFwAAGKfGzw
-        (envelope-from <nborisov@suse.com>); Thu, 22 Jul 2021 08:28:57 +0000
-Subject: Re: [PATCH] lib/string: Bring optimized memcmp from glibc
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>
-References: <20210721135926.602840-1-nborisov@suse.com>
- <CAHk-=whqJKKc9wUacLEkvTzXYfYOUDt=kHKX6Fa8Kb4kQftbbQ@mail.gmail.com>
- <b24b5a9d-69a0-43b9-2ceb-8e4ee3bf2f17@suse.com>
- <CAHk-=wgMyXh3gGuSzj_Dgw=Gn_XPxGSTPq6Pz7dEyx6JNuAh9g@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <80b4bbe8-2394-cfbb-ace1-9402169f5131@suse.com>
-Date:   Thu, 22 Jul 2021 11:28:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgMyXh3gGuSzj_Dgw=Gn_XPxGSTPq6Pz7dEyx6JNuAh9g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S231296AbhGVIFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 04:05:03 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:50588 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231237AbhGVIC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 04:02:29 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 76DDE20085E;
+        Thu, 22 Jul 2021 10:42:54 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 403AF20098A;
+        Thu, 22 Jul 2021 10:42:54 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id E8BB4183AC72;
+        Thu, 22 Jul 2021 16:42:52 +0800 (+08)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     robh@kernel.org, galak@kernel.crashing.org, shawnguo@kernel.org,
+        devicetree@vger.kernel.org
+Cc:     l.stach@pengutronix.de, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RFC 0/2] convert fsl,imx6q-pcie.txt to yaml
+Date:   Thu, 22 Jul 2021 16:22:33 +0800
+Message-Id: <1626942155-9209-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[RFC 1/2] dt-bindings: PCI: imx6: add fsl,imx6q-pcie.yaml
+[RFC 2/2] dt-bindings: PCI: imx6: remove fsl,imx6q-pcie.txt
 
-
-On 21.07.21 г. 21:45, Linus Torvalds wrote:
-> On Wed, Jul 21, 2021 at 11:17 AM Nikolay Borisov <nborisov@suse.com> wrote:
->>
->> I find it somewhat arbitrary that we choose to align the 2nd pointer and
->> not the first.
-> 
-> Yeah, that's a bit odd, but I don't think it matters.
-> 
-> The hope is obviously that they are mutually aligned, and in that case
-> it doesn't matter which one you aim to align.
-> 
->> So you are saying that the current memcmp could indeed use improvement
->> but you don't want it to be based on the glibc's code due to the ugly
->> misalignment handling?
-> 
-> Yeah. I suspect that this (very simple) patch gives you the same
-> performance improvement that the glibc code does.
-
-You suspect correctly, perf profile:
-
-30.44%    -29.38%  [kernel.vmlinux]         [k] memcmp
-
-This is only on x86-64 as I don't have other arch handy. But this one is
-definitely good.
-
+.../devicetree/bindings/pci/fsl,imx6q-pcie.txt     | 102 ----------
+.../devicetree/bindings/pci/fsl,imx6q-pcie.yaml    | 212 +++++++++++++++++++++
+MAINTAINERS                                        |   2 +-
+3 files changed, 213 insertions(+), 103 deletions(-)
+delete mode 100644 Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
+create mode 100644 Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
 
