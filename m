@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CE53D28BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E1B3D29D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233167AbhGVP6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:58:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33114 "EHLO mail.kernel.org"
+        id S234767AbhGVQGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:06:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232800AbhGVP4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:56:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F22D6135A;
-        Thu, 22 Jul 2021 16:37:28 +0000 (UTC)
+        id S234465AbhGVQEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:04:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2F216144E;
+        Thu, 22 Jul 2021 16:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971848;
-        bh=MvI+frgT/AbbiXzrZnbC3G9PjgHKmRPiSezCUpyFtq0=;
+        s=korg; t=1626972321;
+        bh=0TcEksb0S4SRI56JjLGAPblYLh9EjuKSotMt5Uz8RAo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RPbDiZbjjw5dhyZXBTppY8+TGLH9Gg3H70tRr10k1RHp3BAOTmbSO5dRBm3hkPWY6
-         erW82bLEBmCcyViGMOu+ovl5Xx2IyKz74WKts7sElMIDBbF3c0Q1uTmeevtAzcfACQ
-         ISi6Oz+tCTUypjg7rLR4wdCUtrL2AW5QgPODuGp0=
+        b=X1ggY6gDUtb1ZqQ5kNw+M7v+d/w4Lj30WT/C4iP/y68HixhnKSBOrJvo2f8IDtm9t
+         MZpD7u5HgghcPKq7AIJhlVs1ANWxsrJawauqiToYSSt1016SxrTUgnAbrx50nJwaS3
+         mgYj9a5V5HoSVdykIkKpKUJsqH4s4cNrWtHbVJ18=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        stable@vger.kernel.org, Grzegorz Szymaszek <gszymaszek@short.pl>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 051/125] arm64: dts: juno: Update SCPI nodes as per the YAML schema
-Date:   Thu, 22 Jul 2021 18:30:42 +0200
-Message-Id: <20210722155626.409601518@linuxfoundation.org>
+Subject: [PATCH 5.13 068/156] ARM: dts: stm32: fix the Odyssey SoM eMMC VQMMC supply
+Date:   Thu, 22 Jul 2021 18:30:43 +0200
+Message-Id: <20210722155630.595556046@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,50 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudeep Holla <sudeep.holla@arm.com>
+From: Grzegorz Szymaszek <gszymaszek@short.pl>
 
-[ Upstream commit 70010556b158a0fefe43415fb0c58347dcce7da0 ]
+[ Upstream commit f493162319788802b6a49634f7268e691b4c10ec ]
 
-The SCPI YAML schema expects standard node names for clocks and
-power domain controllers. Fix those as per the schema for Juno
-platforms.
+The Seeed SoM-STM32MP157C device tree had the eMMC’s (SDMMC2) VQMMC
+supply set to v3v3 (buck4), the same as the VMMC supply. That was
+incorrect, as on the SoM, the VQMMC supply is provided from vdd (buck3)
+instead.
 
-Link: https://lore.kernel.org/r/20210608145133.2088631-1-sudeep.holla@arm.com
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Grzegorz Szymaszek <gszymaszek@short.pl>
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/arm/juno-base.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/arm/juno-base.dtsi b/arch/arm64/boot/dts/arm/juno-base.dtsi
-index f6c55877fbd9..2c0161125ece 100644
---- a/arch/arm64/boot/dts/arm/juno-base.dtsi
-+++ b/arch/arm64/boot/dts/arm/juno-base.dtsi
-@@ -564,13 +564,13 @@
- 		clocks {
- 			compatible = "arm,scpi-clocks";
- 
--			scpi_dvfs: scpi-dvfs {
-+			scpi_dvfs: clocks-0 {
- 				compatible = "arm,scpi-dvfs-clocks";
- 				#clock-cells = <1>;
- 				clock-indices = <0>, <1>, <2>;
- 				clock-output-names = "atlclk", "aplclk","gpuclk";
- 			};
--			scpi_clk: scpi-clk {
-+			scpi_clk: clocks-1 {
- 				compatible = "arm,scpi-variable-clocks";
- 				#clock-cells = <1>;
- 				clock-indices = <3>;
-@@ -578,7 +578,7 @@
- 			};
- 		};
- 
--		scpi_devpd: scpi-power-domains {
-+		scpi_devpd: power-controller {
- 			compatible = "arm,scpi-power-domains";
- 			num-domains = <2>;
- 			#power-domain-cells = <1>;
+diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
+index 6cf49a0a9e69..b5601d270c8f 100644
+--- a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
++++ b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
+@@ -269,7 +269,7 @@
+ 	st,neg-edge;
+ 	bus-width = <8>;
+ 	vmmc-supply = <&v3v3>;
+-	vqmmc-supply = <&v3v3>;
++	vqmmc-supply = <&vdd>;
+ 	mmc-ddr-3_3v;
+ 	status = "okay";
+ };
 -- 
 2.30.2
 
