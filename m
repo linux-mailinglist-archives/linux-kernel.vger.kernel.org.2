@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55653D289A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE90F3D29B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbhGVP5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:57:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60448 "EHLO mail.kernel.org"
+        id S235037AbhGVQF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232475AbhGVP4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:56:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A65C46135A;
-        Thu, 22 Jul 2021 16:36:52 +0000 (UTC)
+        id S233991AbhGVQEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:04:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5975961363;
+        Thu, 22 Jul 2021 16:44:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971813;
-        bh=951XAj+7fEED2bRukSo6nI5SJePslyE9DXxDl+A0YbE=;
+        s=korg; t=1626972269;
+        bh=se/Fcewivkq0mxygLjsZdp0UilqaX+2jLDTcd0Fp+a0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JUQl717tFBEcCcgLoF+FuWCJqDQVsZDtvyXOotcIdqfJgyxQjxWzbaurDcVgM4yQu
-         fg9wlqljQUsqmiJOnNRN7LHjn8+1b+zoXT3kDC3c6nuM6/6CPfVRELt6yYvZ/GyOQB
-         za10Zcyw8Mkz6zyVp+1NMqsq9VkBmppFD/O96wnQ=
+        b=D1U4gFZ9gHNNjG3EmBbEIm/cJj8b0ShtTpQbEpOuINShyBiCIWZwMtV8+6miGgV6g
+         i8rqUimKWuHAdHdQDHOB5NHOaXh2pEvJXG6mrJb2N2imCOjO+5j6FnAK/r72chMM+5
+         NM0lKvtbNfDLgs7K8YxJ7undkwsDyfSeOY1bkQYY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 035/125] arm64: dts: ti: k3-am654x/j721e/j7200-common-proc-board: Fix MCU_RGMII1_TXC direction
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Patrick Delaunay <patrick.delaunay@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 051/156] ARM: dts: stm32: Fix touchscreen node on dhcom-pdk2
 Date:   Thu, 22 Jul 2021 18:30:26 +0200
-Message-Id: <20210722155625.862274795@linuxfoundation.org>
+Message-Id: <20210722155630.059470361@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 69db725cdb2b803af67897a08ea54467d11f6020 ]
+[ Upstream commit 4b5fadef3fc2ab8863ffdf31eed6a745b1bf6e61 ]
 
-The MCU RGMII MCU_RGMII1_TXC pin is defined as input by mistake, although
-this does not make any difference functionality wise it's better to update
-to avoid confusion.
+Fix make dtbs_check warning:
+arch/arm/boot/dts/stm32mp157c-dhcom-pdk2.dt.yaml:0:0: /soc/i2c@40015000/polytouch@38: failed to match any schema with compatible: ['edt,edt-ft5x06']
 
-Hence fix MCU RGMII MCU_RGMII1_TXC pin pinmux definitions to be an output
-in K3 am654x/j721e/j7200 board files.
-
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: Nishanth Menon <nm@ti.com>
-Link: https://lore.kernel.org/r/20210526132041.6104-1-grygorii.strashko@ti.com
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: Patrice Chotard <patrice.chotard@st.com>
+Cc: Patrick Delaunay <patrick.delaunay@st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/ti/k3-am654-base-board.dts        | 2 +-
- arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts | 2 +-
- arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-index d12dd89f3405..937dd7280c7a 100644
---- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-@@ -111,7 +111,7 @@
- 			AM65X_WKUP_IOPAD(0x007c, PIN_INPUT, 0) /* (L5) MCU_RGMII1_RD2 */
- 			AM65X_WKUP_IOPAD(0x0080, PIN_INPUT, 0) /* (M6) MCU_RGMII1_RD1 */
- 			AM65X_WKUP_IOPAD(0x0084, PIN_INPUT, 0) /* (L6) MCU_RGMII1_RD0 */
--			AM65X_WKUP_IOPAD(0x0070, PIN_INPUT, 0) /* (N1) MCU_RGMII1_TXC */
-+			AM65X_WKUP_IOPAD(0x0070, PIN_OUTPUT, 0) /* (N1) MCU_RGMII1_TXC */
- 			AM65X_WKUP_IOPAD(0x0074, PIN_INPUT, 0) /* (M1) MCU_RGMII1_RXC */
- 		>;
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+index 0fbf9913e8df..b8c8f0b284c3 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+@@ -182,8 +182,8 @@
+ 
  	};
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-index ef03e7636b66..e8a4143e1c24 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-@@ -29,7 +29,7 @@
- 			J721E_WKUP_IOPAD(0x008c, PIN_INPUT, 0) /* MCU_RGMII1_RD2 */
- 			J721E_WKUP_IOPAD(0x0090, PIN_INPUT, 0) /* MCU_RGMII1_RD1 */
- 			J721E_WKUP_IOPAD(0x0094, PIN_INPUT, 0) /* MCU_RGMII1_RD0 */
--			J721E_WKUP_IOPAD(0x0080, PIN_INPUT, 0) /* MCU_RGMII1_TXC */
-+			J721E_WKUP_IOPAD(0x0080, PIN_OUTPUT, 0) /* MCU_RGMII1_TXC */
- 			J721E_WKUP_IOPAD(0x0084, PIN_INPUT, 0) /* MCU_RGMII1_RXC */
- 		>;
- 	};
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-index 7cd31ac67f88..479abff9cb8e 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-@@ -206,7 +206,7 @@
- 			J721E_WKUP_IOPAD(0x007c, PIN_INPUT, 0) /* MCU_RGMII1_RD2 */
- 			J721E_WKUP_IOPAD(0x0080, PIN_INPUT, 0) /* MCU_RGMII1_RD1 */
- 			J721E_WKUP_IOPAD(0x0084, PIN_INPUT, 0) /* MCU_RGMII1_RD0 */
--			J721E_WKUP_IOPAD(0x0070, PIN_INPUT, 0) /* MCU_RGMII1_TXC */
-+			J721E_WKUP_IOPAD(0x0070, PIN_OUTPUT, 0) /* MCU_RGMII1_TXC */
- 			J721E_WKUP_IOPAD(0x0074, PIN_INPUT, 0) /* MCU_RGMII1_RXC */
- 		>;
- 	};
+ 
+-	polytouch@38 {
+-		compatible = "edt,edt-ft5x06";
++	touchscreen@38 {
++		compatible = "edt,edt-ft5406";
+ 		reg = <0x38>;
+ 		interrupt-parent = <&gpiog>;
+ 		interrupts = <2 IRQ_TYPE_EDGE_FALLING>; /* GPIO E */
 -- 
 2.30.2
 
