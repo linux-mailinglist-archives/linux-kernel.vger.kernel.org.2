@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8378A3D297C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5683D28AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234133AbhGVQEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:04:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39714 "EHLO mail.kernel.org"
+        id S233094AbhGVP6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 11:58:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233866AbhGVQDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:03:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9010619CB;
-        Thu, 22 Jul 2021 16:43:20 +0000 (UTC)
+        id S229871AbhGVP4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:56:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 563FD6135A;
+        Thu, 22 Jul 2021 16:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972201;
-        bh=JApliMSbP4eWKiuwY4+sr/M1qExj+z1PXmkl7snZtJw=;
+        s=korg; t=1626971825;
+        bh=sbMz3kMP+vB8lEc+nL5kf4fnl7cc6bewMpbJEVOAa0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cZnhnpljw5NGZPG0s4tcaUXcTEiBoVbs74nNJeLsdr3vAZrrZYxB6CJ75C6Qcx+SQ
-         aB4ZFta3i4UkW7Vh8FcALyyMe1gvVsaACMNDgGwsI2FfQERnC/LfmUB99FSn0E/hWT
-         K+bjtbzeENs/7TJ/pkd82b/R4yt0U469Ryu7FGSw=
+        b=FWvyXSr41UZN76g1Kac9zXBVQsjBScIajdbu8C+qyiQHU9FlakmrpFhxJqXYbaSOJ
+         Nh6nKtLlVHx/LGyHErITY8OmYe4VSPw3kfd+dPfo16GtJ49iq4Cjv7XQebsv1H7vVl
+         erkOnBnpTzaLOYac+qp2M4MsX1knekoPNoz0OF9Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 023/156] soc: bcm: brcmstb: remove unused variable brcmstb_machine_match
+Subject: [PATCH 5.10 007/125] ARM: dts: rockchip: Fix IOMMU nodes properties on rk322x
 Date:   Thu, 22 Jul 2021 18:29:58 +0200
-Message-Id: <20210722155629.159833418@linuxfoundation.org>
+Message-Id: <20210722155624.933751117@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 
-[ Upstream commit c1f512182c54dc87efd2f7ac19f16a49ff8bb19e ]
+[ Upstream commit 6b023929666f0be5df75f5e0278d1b70effadf42 ]
 
-Fix the following clang warning:
+Add '#" to iommu-cells properties.
+Remove useless interrupt-names properties
 
-drivers/soc/bcm/brcmstb/common.c:17:34: warning: unused variable
-'brcmstb_machine_match' [-Wunused-const-variable].
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Link: https://lore.kernel.org/r/20210507090232.233049-4-benjamin.gaignard@collabora.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/bcm/brcmstb/common.c | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/arm/boot/dts/rk322x.dtsi | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/soc/bcm/brcmstb/common.c b/drivers/soc/bcm/brcmstb/common.c
-index e87dfc6660f3..2a010881f4b6 100644
---- a/drivers/soc/bcm/brcmstb/common.c
-+++ b/drivers/soc/bcm/brcmstb/common.c
-@@ -14,11 +14,6 @@
- static u32 family_id;
- static u32 product_id;
+diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
+index 5fdea760ffd4..7de8b006ca13 100644
+--- a/arch/arm/boot/dts/rk322x.dtsi
++++ b/arch/arm/boot/dts/rk322x.dtsi
+@@ -565,10 +565,9 @@
+ 		compatible = "rockchip,iommu";
+ 		reg = <0x20020800 0x100>;
+ 		interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+-		interrupt-names = "vpu_mmu";
+ 		clocks = <&cru ACLK_VPU>, <&cru HCLK_VPU>;
+ 		clock-names = "aclk", "iface";
+-		iommu-cells = <0>;
++		#iommu-cells = <0>;
+ 		status = "disabled";
+ 	};
  
--static const struct of_device_id brcmstb_machine_match[] = {
--	{ .compatible = "brcm,brcmstb", },
--	{ }
--};
--
- u32 brcmstb_get_family_id(void)
- {
- 	return family_id;
+@@ -576,10 +575,9 @@
+ 		compatible = "rockchip,iommu";
+ 		reg = <0x20030480 0x40>, <0x200304c0 0x40>;
+ 		interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+-		interrupt-names = "vdec_mmu";
+ 		clocks = <&cru ACLK_RKVDEC>, <&cru HCLK_RKVDEC>;
+ 		clock-names = "aclk", "iface";
+-		iommu-cells = <0>;
++		#iommu-cells = <0>;
+ 		status = "disabled";
+ 	};
+ 
+@@ -609,7 +607,6 @@
+ 		compatible = "rockchip,iommu";
+ 		reg = <0x20053f00 0x100>;
+ 		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+-		interrupt-names = "vop_mmu";
+ 		clocks = <&cru ACLK_VOP>, <&cru HCLK_VOP>;
+ 		clock-names = "aclk", "iface";
+ 		#iommu-cells = <0>;
+@@ -630,10 +627,9 @@
+ 		compatible = "rockchip,iommu";
+ 		reg = <0x20070800 0x100>;
+ 		interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
+-		interrupt-names = "iep_mmu";
+ 		clocks = <&cru ACLK_IEP>, <&cru HCLK_IEP>;
+ 		clock-names = "aclk", "iface";
+-		iommu-cells = <0>;
++		#iommu-cells = <0>;
+ 		status = "disabled";
+ 	};
+ 
 -- 
 2.30.2
 
